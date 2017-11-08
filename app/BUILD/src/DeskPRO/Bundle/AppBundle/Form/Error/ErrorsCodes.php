@@ -52,6 +52,7 @@ final class ErrorsCodes
     const INVALID_JSON_BODY         = 'invalid_json_body';
     const INVALID_DATA_TYPE         = 'invalid_data_type';
     const EXTRA_FIELDS              = 'extra_fields';
+    const IP_VERIFY                 = 'ip_verify';
 
     /** Some specific authentication codes */
     const INVALID_SESSION_ID             = 'invalid_session_id';

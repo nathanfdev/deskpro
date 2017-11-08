@@ -763,7 +763,7 @@ class AgentHelper implements PersonContextInterface
                 'id_field'     => 'feedback_id',
                 'rev_table'    => 'feedback_revisions',
             ],
-            'topics' => [
+            'topic' => [
                 'content_type' => 'topics',
                 'entity'       => Topic::class,
                 'id_field'     => 'topic_id',
@@ -775,21 +775,21 @@ class AgentHelper implements PersonContextInterface
         // Fetch each comment in the result
         //------------------------------
 
-        $result_ids_typed = [];
+        $resultIdsTyped = [];
 
         foreach ($results as $r) {
-            if (!isset($result_ids_typed[$r['content_type']])) {
-                $result_ids_typed[$r['content_type']] = [];
+            if (!isset($resultIdsTyped[$r['content_type']])) {
+                $resultIdsTyped[$r['content_type']] = [];
             }
 
-            $result_ids_typed[$r['content_type']][] = $r['content_id'];
+            $resultIdsTyped[$r['content_type']][] = $r['content_id'];
         }
 
-        $results_typed = [];
+        $resultsTyped = [];
 
-        foreach ($result_ids_typed as $t => $ids) {
-            $t_info            = $types[$t];
-            $results_typed[$t] = App::getEntityRepository($t_info['entity'])->getByIds($ids);
+        foreach ($resultIdsTyped as $t => $ids) {
+            $tInfo            = $types[$t];
+            $resultsTyped[$t] = App::getEntityRepository($tInfo['entity'])->getByIds($ids);
         }
 
         //------------------------------
@@ -797,18 +797,18 @@ class AgentHelper implements PersonContextInterface
         // as a combined array
         //------------------------------
 
-        $results_ordered = [];
+        $resultsOrdered = [];
 
         foreach ($results as $r) {
-            if (isset($results_typed[$r['content_type']][$r['content_id']])) {
-                $results_ordered[] = [
+            if (isset($resultsTyped[$r['content_type']][$r['content_id']])) {
+                $resultsOrdered[] = [
                     'info' => $r,
-                    'obj'  => $results_typed[$r['content_type']][$r['content_id']],
+                    'obj'  => $resultsTyped[$r['content_type']][$r['content_id']],
                 ];
             }
         }
 
-        return $results_ordered;
+        return $resultsOrdered;
     }
 
     /**

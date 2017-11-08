@@ -96,7 +96,7 @@ abstract class AbstractStrategy implements NotificationStrategyInterface
     /**
      * @return mixed
      */
-    abstract public function deliver();
+    abstract public function deliver($postpone = false);
 
     /**
      * @return $this

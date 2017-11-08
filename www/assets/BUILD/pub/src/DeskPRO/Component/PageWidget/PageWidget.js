@@ -1,4 +1,4 @@
-import _ from 'lodash';
+import isFunction from 'lodash/isFunction';
 import $ from 'jquery';
 
 /**
@@ -256,7 +256,7 @@ export class PageWidget {
       $context = $(document);
     }
 
-    if (_.isFunction(selector)) {
+    if (isFunction(selector)) {
       matches = selector(widgetClass, $context, this);
     } else {
       matches = $context.find(selector);

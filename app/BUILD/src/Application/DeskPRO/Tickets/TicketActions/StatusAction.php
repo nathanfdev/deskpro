@@ -77,16 +77,16 @@ class StatusAction extends AbstractAction implements PermissionableAction
             return true;
         }
 
-        if (($this->status == 'hidden.deleted' || $this->status == 'hidden.spam') && !$person->PermissionsManager->TicketChecker->canDelete($ticket)) {
+        if (($this->status == 'hidden.deleted' || $this->status == 'hidden.spam') && !$person->getPermissionsManager()->TicketChecker->canDelete($ticket)) {
             return false;
         }
-        if ($this->status == 'awaiting_agent' && !$person->PermissionsManager->TicketChecker->canModify($ticket, 'set_awaiting_agent')) {
+        if ($this->status == 'awaiting_agent' && !$person->getPermissionsManager()->TicketChecker->canModify($ticket, 'set_awaiting_agent')) {
             return false;
         }
-        if ($this->status == 'awaiting_user' && !$person->PermissionsManager->TicketChecker->canModify($ticket, 'set_awaiting_user')) {
+        if ($this->status == 'awaiting_user' && !$person->getPermissionsManager()->TicketChecker->canModify($ticket, 'set_awaiting_user')) {
             return false;
         }
-        if ($this->status == 'resolved' && !$person->PermissionsManager->TicketChecker->canModify($ticket, 'set_resolved')) {
+        if ($this->status == 'resolved' && !$person->getPermissionsManager()->TicketChecker->canModify($ticket, 'set_resolved')) {
             return false;
         }
 
@@ -158,7 +158,7 @@ class StatusAction extends AbstractAction implements PermissionableAction
     }
 
     /**
-     * Get the full status (stauts.hidden_status).
+     * Get the full status (status.hidden_status).
      *
      * @return string
      */

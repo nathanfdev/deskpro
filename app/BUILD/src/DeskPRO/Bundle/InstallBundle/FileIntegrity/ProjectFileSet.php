@@ -217,8 +217,7 @@ class ProjectFileSet
             '%DP_APP_DIR%/vendor/zendframework/zend-ldap/src/Node.php', // because we patch it ourselves
             '%DP_APP_DIR%/vendor/doctrine/orm/lib/Doctrine/ORM/UnitOfWork.php', // because we patch it ourselves
             '%DP_APP_DIR%/vendor/doctrine/orm/lib/Doctrine/ORM/Event/PreUpdateEventArgs.php', // because we patch it ourselves
-            '%DP_APP_KERNEL_CACHE%/dev/',
-            '%DP_APP_KERNEL_CACHE%/test/',
+            '%DP_APP_KERNEL_CACHE%/',
             '%DP_APP_WWW_ASSET%'.DIRECTORY_SEPARATOR.'pub'.DIRECTORY_SEPARATOR.'build'.DIRECTORY_SEPARATOR.'storybook',
         ];
 

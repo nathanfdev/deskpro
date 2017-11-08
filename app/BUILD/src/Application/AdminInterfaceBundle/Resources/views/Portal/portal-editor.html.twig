@@ -232,7 +232,7 @@
                                     <a ng-href="{{ '{{ file.url }}' }}" target="_blank" class="file">
                                         <i class="fa fa-file"></i> {{ '{{ file.name }}' }}
                                     </a>
-                                    <a href clip-copy="file.url" clip-click="Portal.notifyUrlCopied()" clip-click-fallback="Portal.copyUrl(file)" class="file-url-copy">Copy file URL</a>
+                                    <a href dp-clipboard data-clipboard-text="{{ ng_var('file.url') }}" ngclipboard-success="Portal.notifyUrlCopied()" class="file-url-copy">Copy file URL</a>
                                     <a href ng-click="Portal.delete(file)" class="file-url-copy">Delete</a>
                                 </li>
                             </ul>

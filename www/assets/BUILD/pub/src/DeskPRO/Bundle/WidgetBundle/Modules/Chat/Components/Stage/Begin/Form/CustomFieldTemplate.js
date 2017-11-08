@@ -1,4 +1,5 @@
-import React, { PropTypes } from 'react';
+import PropTypes from 'prop-types';
+import React from 'react';
 import { FormItem } from './FormItem';
 
 export class CustomFieldTemplate extends React.Component {

@@ -32,8 +32,8 @@ use Application\DeskPRO\Entity\Person;
 use Application\DeskPRO\Entity\Ticket;
 use Application\DeskPRO\Entity\TicketMacro;
 use Application\DeskPRO\Entity\TicketMessage;
+use Application\DeskPRO\Tickets\TicketActions\AbstractReplyAction;
 use Application\DeskPRO\Tickets\TicketActions\ActionsCollection;
-use Application\DeskPRO\Tickets\TicketActions\ReplyAction;
 use Application\DeskPRO\Tickets\TicketActions\StatusAction;
 use DeskPRO\Bundle\ApiBundle\Request\ApiClientInfo;
 use DeskPRO\Bundle\ApiBundle\Security\Token\ApiKeySecurityToken;
@@ -273,9 +273,16 @@ class TicketMessageType extends AbstractType
      */
     public function onEnsureMessageTextExists(FormEvent $event)
     {
+        $form = $event->getForm();
         $data = $event->getData();
         if (is_array($data) && !isset($data['message'])) {
             $data['message'] = '';
+        }
+
+        // add original message to handle agent note mentions
+        $ticketMessage = $form->getData();
+        if ($ticketMessage instanceof TicketMessage) {
+            $ticketMessage->setOriginalMessage(isset($data['message']) ? $data['message'] : '');
         }
 
         $event->setData($data);
@@ -423,6 +430,9 @@ class TicketMessageType extends AbstractType
         $form   = $event->getForm();
         $config = $form->getConfig();
 
+        /** @var TicketMessage $data */
+        $data = $event->getData();
+
         /** @var Ticket $ticket */
         $ticket = $config->getOption('ticket');
         $person = $config->getOption('person');
@@ -439,12 +449,28 @@ class TicketMessageType extends AbstractType
 
             $actions = new ActionsCollection();
             foreach ($macro->getActionsCollection()->getActions() as $action) {
-                // skip reply and status actions
-                if ($action instanceof ReplyAction || $action instanceof StatusAction) {
+                // status actions
+                if ($action instanceof StatusAction) {
                     continue;
                 }
 
-                $actions->add($action);
+                // apply reply actions to the ticket message
+                if ($action instanceof AbstractReplyAction) {
+                    $actionContent = $action->getMessageContent($ticket);
+                    if ($actionContent) {
+                        if ($action->getReplyPos() === AbstractReplyAction::REPLY_POS_PREPEND) {
+                            $contentParts = [$actionContent, $data->getMessageHtml()];
+                        } elseif ($action->getReplyPos() === AbstractReplyAction::REPLY_POS_APPEND) {
+                            $contentParts = [$data->getMessageHtml(), $actionContent];
+                        } else {
+                            $contentParts = [$actionContent];
+                        }
+
+                        $data->setMessageHtml(implode("\n<br/><br/>\n", $contentParts));
+                    }
+                } else {
+                    $actions->add($action);
+                }
             }
 
             $actions->apply($ticket->getTicketLogger(), $ticket, $person);

@@ -26,45 +26,20 @@
  * ~ Thanks, Everyone at Team DeskPRO
  */
 
-namespace DpTest\DeskPRO\Bundle\AppStoreBundle\Request\Infrastructure;
+namespace DpTest\DeskPRO\Bundle\AppStoreBundle\Infrastructure;
 
 use DeskPRO\Bundle\AppStoreBundle\Infrastructure;
-use DeskPRO\Bundle\AppStoreBundle\Domain;
 use DpTest\DeskProTestCase;
 
 class AppZipArchiveBundleTest extends DeskProTestCase
 {
-    private function createArchiveInTempFolder(\ZipArchive $archive, $firstFile)
-    {
-        $archiveFileLocation = tempnam(sys_get_temp_dir(), 'foo') ;
-        $archive->open($archiveFileLocation, \ZipArchive::CREATE);
-        $archive->addFile($firstFile);
-        $archive->close();
-
-        return new \SplFileInfo($archiveFileLocation);
-    }
-
-    private function createArchiveWithManifestInTempFolder(\ZipArchive $archive, $manifestContents)
-    {
-        $archiveFileLocation = tempnam(sys_get_temp_dir(), 'foo') ;
-        $archive->open($archiveFileLocation, \ZipArchive::CREATE);
-
-        $archive->addFromString(Domain\Constants::BUNDLE_MANIFEST_PATH, $manifestContents);
-        $archive->close();
-
-        return new \SplFileInfo($archiveFileLocation);
-    }
-
     /**
      * @test
      */
     public function retrieve_contents_of_manifest()
     {
         $manifestContents = 'dummy manifest contents';
-        $emptyArchive = new \ZipArchive();
-        $archiveFileInfo = $this->createArchiveWithManifestInTempFolder($emptyArchive, $manifestContents);
-
-        $zipArchiveBundle = new Infrastructure\AppZipArchiveBundle($emptyArchive, $archiveFileInfo);
+        $zipArchiveBundle = Infrastructure\AppZipBundleBuilder::fromTmp()->setManifest($manifestContents)->build();
 
         $actualManifestContents = $zipArchiveBundle->getManifestAsString();
         $this->assertEquals($manifestContents, $actualManifestContents, 'retrieving the contents of a missing manifest should return null');
@@ -75,15 +50,13 @@ class AppZipArchiveBundleTest extends DeskProTestCase
      */
     public function retrieve_the_contents_of_a_missing_manifest_should_return_null()
     {
-        $emptyArchive = new \ZipArchive();
-        $archiveFileInfo = $this->createArchiveInTempFolder($emptyArchive, __FILE__);
-        $zipArchiveBundle = new Infrastructure\AppZipArchiveBundle($emptyArchive, $archiveFileInfo);
+        $zipArchiveBundle = Infrastructure\AppZipBundleBuilder::fromTmp()->addFile(__FILE__)->build();
 
         $manifestString = $zipArchiveBundle->getManifestAsString();
         $this->assertNull($manifestString, 'retrieving the contents of a missing manifest should return null');
 
         //clean up
-        unlink($archiveFileInfo->getRealPath());
+        unlink($zipArchiveBundle->getFilePath());
     }
 
     /**
@@ -91,32 +64,32 @@ class AppZipArchiveBundleTest extends DeskProTestCase
      */
     public function returns_a_list_of_all_the_bundled_files()
     {
-        $archiveFileLocation = tempnam(sys_get_temp_dir(), 'foo') ;
-        $archive = new \ZipArchive();
-        $archive->open($archiveFileLocation, \ZipArchive::CREATE);
-
-        $filePathList = [];
         global $DP_ENV;
         $wwwRoot = $DP_ENV->getWwwRoot();
-        $iterator = new \RecursiveIteratorIterator(new \RecursiveDirectoryIterator($wwwRoot), \RecursiveIteratorIterator::LEAVES_ONLY);
-        $iterator->setMaxDepth(2);
-        foreach ($iterator as $name => $file) {
-            if (! $file->isDir()) { //only add files
-                $filePath = $file->getRealPath();
-                $archive->addFile($filePath);
-                $filePathList[] = $filePath;
-            }
-        }
-        $archive->close();
 
-        $archiveFileInfo = new \SplFileInfo($archiveFileLocation);
-        $zipArchiveBundle = new Infrastructure\AppZipArchiveBundle($archive, $archiveFileInfo);
-
+        $zipArchiveBundle   = Infrastructure\AppZipBundleBuilder::fromTmp()->addFolder($wwwRoot, 2)->build();
         $actualFilePathList = [];
-        $resourceObjects = $zipArchiveBundle->listAllResources();
+        $resourceObjects    = $zipArchiveBundle->listAllResources();
         foreach ($resourceObjects as $object) {
             $actualFilePathList[] = $object->getPath();
         }
+        //clean up
+        unlink($zipArchiveBundle->getFilePath());
+
+        $filePathList = [];
+        $iterator     = new \RecursiveIteratorIterator(new \RecursiveDirectoryIterator($wwwRoot), \RecursiveIteratorIterator::LEAVES_ONLY);
+        $iterator->setMaxDepth(2);
+        foreach ($iterator as $name => $file) {
+            if (!$file->isDir()) { //only add files
+
+                $localName = substr($file, strlen($wwwRoot));
+                $localName = ltrim($localName, '/');
+
+//                $filePathList[] = $file->getRealPath();
+                $filePathList[] = $localName;
+            }
+        }
+
         $this->assertEquals($filePathList, $actualFilePathList, 'unexpected list of app bundle files');
     }
 }

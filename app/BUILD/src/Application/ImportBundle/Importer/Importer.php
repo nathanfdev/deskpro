@@ -202,9 +202,10 @@ class Importer
      * Writes a collection of entities.
      *
      * @param ImporterCollection $collection
+     * @param string             $brandName
      * @param bool               $dryRun
      */
-    public function writeData(ImporterCollection $collection, $dryRun = false)
+    public function writeData(ImporterCollection $collection, $brandName = null, $dryRun = false)
     {
         $col = $collection->toArray();
         foreach ($col as $type => $models) {
@@ -213,7 +214,7 @@ class Importer
             }
             $this->printHeader("Write `$type` collection");
             foreach ($models as $model) {
-                $this->writer->writeData($model, $dryRun);
+                $this->writer->writeData($model, $brandName, $dryRun);
             }
         }
     }

@@ -35,7 +35,11 @@ namespace Application\DeskPRO\WorkerProcess\Job;
 use Application\DeskPRO\App;
 use Application\DeskPRO\Entity\TmpData;
 use DeskPRO\Bundle\UpdateBundle\Service\UpdateCleanup;
+use Exception;
+use Monolog\Logger;
 use Symfony\Bridge\Monolog\Handler\DebugHandler;
+use Symfony\Component\Filesystem\Filesystem;
+use Symfony\Component\Finder\Finder;
 
 class CleanupDaily extends AbstractJob
 {
@@ -49,26 +53,37 @@ class CleanupDaily extends AbstractJob
 
     private function doRun()
     {
-        //------------------------------
-        // log_items
-        //------------------------------
+        $this->_cleanupLogItems();
+        $this->_cleanupAgentAlerts();
+        $this->_cleanupResultCaches();
+        $this->_cleanupTaskQueueLogsItems();
+        $this->_cleanupRefReserve();
+        $this->_cleanupWhiteListIPs();
+        $this->_cleanupTempFiles();
+        $this->_cleanupOldExports();
+        $this->_truncateBigIdTables();
+        $this->_cleanupRateLimitLogs();
+        $this->_cleanupOldBuilds();
+        $this->_cleanHttpCache();
+    }
 
-        $last_id = App::getDb()->fetchColumn('SELECT id FROM log_items ORDER BY id DESC LIMIT 1');
-        if ($last_id) {
-            $delete_before_id = $last_id - 25000; // approx 10 days worth of cron logs
-            $num              = App::getDb()->executeUpdate("DELETE FROM log_items WHERE id < $delete_before_id");
+    private function _cleanupLogItems()
+    {
+        $lastId = App::getDb()->fetchColumn('SELECT id FROM log_items ORDER BY id DESC LIMIT 1');
+        if ($lastId) {
+            $deleteBeforeId = $lastId - 25000; // approx 10 days worth of cron logs
+            $num            = App::getDb()->executeUpdate("DELETE FROM log_items WHERE id < $deleteBeforeId");
 
             if ($num) {
                 $this->logStatus("Cleaned up $num cron log items");
             }
         }
+    }
 
-        //------------------------------
-        // Agent alerts
-        //------------------------------
-
-        if ($maxage = App::getSetting('agent.alerts_cleanup_time_always')) {
-            $datetime = date('Y-m-d H:i:s', time() - $maxage);
+    private function _cleanupAgentAlerts()
+    {
+        if ($maxAge = App::getSetting('agent.alerts_cleanup_time_always')) {
+            $datetime = date('Y-m-d H:i:s', time() - $maxAge);
             $num      = App::getDb()->executeUpdate('
 				DELETE FROM agent_alerts
 				WHERE date_created < ?
@@ -79,8 +94,8 @@ class CleanupDaily extends AbstractJob
             }
         }
 
-        if ($maxage = App::getSetting('agent.alerts_cleanup_time')) {
-            $datetime = date('Y-m-d H:i:s', time() - $maxage);
+        if ($maxAge = App::getSetting('agent.alerts_cleanup_time')) {
+            $datetime = date('Y-m-d H:i:s', time() - $maxAge);
             $num      = App::getDb()->executeUpdate('
 				DELETE FROM agent_alerts
 				WHERE date_created < ? AND is_dismissed = 1
@@ -90,120 +105,119 @@ class CleanupDaily extends AbstractJob
                 $this->logStatus("Cleaned up $num dismissed agent alerts");
             }
         }
+    }
 
-        //------------------------------
-        // result caches
-        //------------------------------
-
-        $datecut = date('Y-m-d H:i:s', time() - 86400);
+    private function _cleanupResultCaches()
+    {
+        $dateCut = date('Y-m-d H:i:s', time() - 86400);
         $num     = App::getDb()->executeUpdate('
             DELETE FROM result_cache
             WHERE date_created < ?
-        ', [$datecut]);
+        ', [$dateCut]);
 
         if ($num) {
             $this->logStatus("Cleaned up $num old result caches");
         }
+    }
 
-        //------------------------------
-        // Task queue logs Items
-        //------------------------------
-
+    private function _cleanupTaskQueueLogsItems()
+    {
         $cutoff  = 86400 * 14; // 15 days
-        $datecut = date('Y-m-d H:i:s', time() - $cutoff);
+        $dateCut = date('Y-m-d H:i:s', time() - $cutoff);
         $num     = App::getDb()->executeUpdate("
             DELETE FROM task_queue
             WHERE status = 'completed' AND date_completed < ?
-        ", [$datecut]);
+        ", [$dateCut]);
 
         if ($num) {
             $this->logStatus("Cleaned up $num task queue logs");
         }
+    }
 
-        //------------------------------
-        // ref_reserve
-        //------------------------------
-
+    private function _cleanupRefReserve()
+    {
         $cutoff  = 86400; // 1 day
-        $datecut = date('Y-m-d H:i:s', time() - $cutoff);
+        $dateCut = date('Y-m-d H:i:s', time() - $cutoff);
         $num     = App::getDb()->executeUpdate('
             DELETE FROM ref_reserve
             WHERE date_created < ?
-        ', [$datecut]);
+        ', [$dateCut]);
 
         if ($num) {
             $this->logStatus("Cleaned up $num ref_reserve records");
         }
+    }
 
-        //------------------------------
-        // whitelisted IPs
-        //------------------------------
-
+    private function _cleanupWhiteListIPs()
+    {
         if (App::getSetting('agent.ip_security.enabled')) {
             $cutoff  = App::getSetting('agent.ip_security.whitelist_lifetime');
-            $datecut = date('Y-m-d H:i:s', time() - $cutoff);
+            $dateCut = date('Y-m-d H:i:s', time() - $cutoff);
             $num     = App::getDb()->executeUpdate('
                 DELETE FROM white_listed_ips
                 WHERE date_created < ?
-            ', [$datecut]);
+            ', [$dateCut]);
 
             if ($num) {
                 $this->logStatus("Cleaned up $num white_listed_ips records");
             }
         }
+    }
 
+    private function _cleanupTempFiles()
+    {
         //------------------------------
         // Temp files
         //------------------------------
 
         // 50 days, sanity check
-        $min_time = time() - 4320000;
+        $minTime = time() - 4320000;
 
-        $cleanup_list = [];
+        $cleanupList = [];
 
-        $tmpdir       = dp_get_tmp_dir();
-        $tmpdir_swift = dp_get_tmp_dir().DIRECTORY_SEPARATOR.'swiftmailer-cache';
+        $tmpDir      = dp_get_tmp_dir();
+        $tmpDirSwift = dp_get_tmp_dir().DIRECTORY_SEPARATOR.'swiftmailer-cache';
 
-        if (is_dir($tmpdir) && is_readable($tmpdir)) {
-            $dir = dir($tmpdir);
+        if (is_dir($tmpDir) && is_readable($tmpDir)) {
+            $dir = dir($tmpDir);
 
             while ($f = $dir->read()) {
                 if ($f == '.' || $f == '..') {
                     continue;
                 }
 
-                $f_path = $dir->path.DIRECTORY_SEPARATOR.$f;
-                $mtime  = @filemtime($f_path);
+                $fPath = $dir->path.DIRECTORY_SEPARATOR.$f;
+                $mTime = @filemtime($fPath);
 
-                if (!$mtime || $mtime < $min_time) {
+                if (!$mTime || $mTime < $minTime) {
                     continue;
                 }
 
-                $do_cleanup = false;
+                $doCleanup = false;
 
                 // Temp email files are dpm* and eml*
-                if (is_file($f_path) && (strpos($f, 'dpm') === 0 || strpos($f, 'eml') === 0) && $mtime < strtotime('-3 days')) {
-                    $do_cleanup = true;
+                if (is_file($fPath) && (strpos($f, 'dpm') === 0 || strpos($f, 'eml') === 0) && $mTime < strtotime('-3 days')) {
+                    $doCleanup = true;
 
-                // Temp files created for ticket debug export are dpd
-                } elseif (is_dir($f_path) && strpos($f, 'dpd') === 0 && $mtime < strtotime('-1 day')) {
-                    $do_cleanup = true;
+                    // Temp files created for ticket debug export are dpd
+                } elseif (is_dir($fPath) && strpos($f, 'dpd') === 0 && $mTime < strtotime('-1 day')) {
+                    $doCleanup = true;
 
-                // Unzipped distros created during upgrade
-                } elseif (is_dir($f_path) && is_file($f_path.DIRECTORY_SEPARATOR.'config.new.php') && $mtime < strtotime('-1 day')) {
-                    $do_cleanup = true;
+                    // Unzipped distros created during upgrade
+                } elseif (is_dir($fPath) && is_file($fPath.DIRECTORY_SEPARATOR.'config.new.php') && $mTime < strtotime('-1 day')) {
+                    $doCleanup = true;
                 }
 
-                if ($do_cleanup) {
-                    $cleanup_list[] = $f_path;
+                if ($doCleanup) {
+                    $cleanupList[] = $fPath;
                 }
             }
 
             $dir->close();
         }
 
-        if (is_dir($tmpdir_swift) && is_readable($tmpdir_swift)) {
-            $dir = dir($tmpdir_swift);
+        if (is_dir($tmpDirSwift) && is_readable($tmpDirSwift)) {
+            $dir = dir($tmpDirSwift);
 
             // Swiftmailer may write to the fs sometimes
             while ($f = $dir->read()) {
@@ -211,37 +225,36 @@ class CleanupDaily extends AbstractJob
                     continue;
                 }
 
-                $f_path = $dir->path.DIRECTORY_SEPARATOR.$f;
-                $mtime  = @filemtime($f_path);
+                $fPath = $dir->path.DIRECTORY_SEPARATOR.$f;
+                $mTime = @filemtime($fPath);
 
-                if (!$mtime || $mtime > strtotime('-4 days') || !is_dir($f_path)) {
+                if (!$mTime || $mTime > strtotime('-4 days') || !is_dir($fPath)) {
                     continue;
                 }
 
-                $cleanup_list[] = $f_path;
+                $cleanupList[] = $fPath;
             }
 
             $dir->close();
         }
 
-        if ($cleanup_list) {
-            $file_util = new \Symfony\Component\Filesystem\Filesystem();
-            $x         = 0;
-            foreach ($cleanup_list as $f) {
+        if ($cleanupList) {
+            $fileUtil = new Filesystem();
+            $x        = 0;
+            foreach ($cleanupList as $f) {
                 try {
-                    $file_util->remove($f);
+                    $fileUtil->remove($f);
                     ++$x;
-                } catch (\Exception $e) {
+                } catch (Exception $e) {
                 }
             }
 
-            $this->logStatus("Cleaned up $x of ".count($cleanup_list).' old files');
+            $this->logStatus("Cleaned up $x of ".count($cleanupList).' old files');
         }
+    }
 
-        //------------------------------
-        // Clean old exports
-        //------------------------------
-
+    private function _cleanupOldExports()
+    {
         $q = App::getOrm()->createQuery('
             SELECT t FROM DeskPRO:TmpData t
             WHERE t.name = :name and t.date_expire < :date
@@ -268,7 +281,10 @@ class CleanupDaily extends AbstractJob
             App::getOrm()->flush();
             $this->logStatus("Cleaned up $num old exports");
         }
+    }
 
+    private function _truncateBigIdTables()
+    {
         //------------------------------
         // Truncate tables approaching max INT size
         //------------------------------
@@ -288,26 +304,27 @@ class CleanupDaily extends AbstractJob
 
         $threshold = 2145000000;
         foreach ($tables as $t) {
-            $table_max_id = $db->fetchColumn("SELECT id FROM $t ORDER BY id DESC LIMIT 1");
-            if ($table_max_id && $table_max_id >= $threshold) {
-                $this->logStatus("Truncating big table $t which has $table_max_id records");
+            $tableMaxId = $db->fetchColumn("SELECT id FROM $t ORDER BY id DESC LIMIT 1");
+            if ($tableMaxId && $tableMaxId >= $threshold) {
+                $this->logStatus("Truncating big table $t which has $tableMaxId records");
                 $db->executeUpdate("DELETE FROM `$t`");
                 $db->executeUpdate('SET FOREIGN_KEY_CHECKS = 0');
                 $db->executeUpdate("TRUNCATE TABLE `$t`");
                 $db->executeUpdate('SET FOREIGN_KEY_CHECKS = 1');
             }
         }
+    }
 
-        //------------------------------
-        // Cleanup rate limit logs
-        //------------------------------
+    private function _cleanupRateLimitLogs()
+    {
+        $db = App::getDb();
+
         $db->executeQuery('DELETE FROM `rate_limit_log` WHERE `date_created` < (NOW() - INTERVAL 1 DAY)');
+    }
 
-        //------------------------------
-        // Cleanup old builds
-        //------------------------------
-
-        $logger = new \Monolog\Logger('out');
+    private function _cleanupOldBuilds()
+    {
+        $logger = new Logger('out');
         $debug  = new DebugHandler();
         $logger->pushHandler($debug);
 
@@ -320,6 +337,38 @@ class CleanupDaily extends AbstractJob
 
         if ($logString) {
             $this->logStatus($logString);
+        }
+    }
+
+    private function _cleanHttpCache()
+    {
+        $env = App::$container->get('deskpro.app_env');
+        if ($env->getConfig('settings.disable_portal_http_cache')) {
+            return;
+        }
+        $cacheDir = $env->getUserCacheDir().DIRECTORY_SEPARATOR.'http_cache';
+
+        if (!is_dir($cacheDir)) {
+            return;
+        }
+
+        $dirFinder = new Finder();
+        $dirFinder->directories()->in([$cacheDir])->depth('== 0');
+
+        /* @var \Symfony\Component\Finder\SplFileInfo $dirName */
+        $maybeDeleteDirs = [];
+        foreach ($dirFinder as $dirName) {
+            if ($dirName->getFilename() !== $env->getAppName()) {
+                // cannot delete here, as it might mess up the $finder iterator
+                $maybeDeleteDirs[] = $dirName->getRealPath();
+            }
+        }
+
+        $fs = new Filesystem();
+
+        try {
+            $fs->remove($maybeDeleteDirs);
+        } catch (Exception $e) {
         }
     }
 }

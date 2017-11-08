@@ -4,7 +4,7 @@
     <table class="ticket_list_table" width="100%" border="0" cellspacing="0">
 
         <tr>
-            <td>{{ phrase('agent.tickets.message_number', {'number':loop.index}) }}</td>
+            <td>{{ phrase(message.is_agent_note ? 'agent.tickets.note_number' : 'agent.tickets.message_number', {'number':loop.index}) }}</td>
             <td align="right">{{ phrase('agent.general.by_person_at_date', {'person':message.person.name,'date':message.date_created|date('fulltime')}) }}</td>
         </tr>
     </table>

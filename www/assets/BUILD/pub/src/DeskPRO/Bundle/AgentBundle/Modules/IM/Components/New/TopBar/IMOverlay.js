@@ -1,7 +1,8 @@
-import React, { PropTypes } from 'react';
+import PropTypes from 'prop-types';
+import React from 'react';
 import Loader from 'react-loader';
 import classNames from 'classnames';
-import debounce from 'lodash/function/debounce';
+import debounce from 'lodash/debounce';
 import { ClickOut } from 'DeskPRO/Component/ClickOut';
 import { Detached } from 'DeskPRO/Component/Positioned/Detached';
 import { Tabs } from 'DeskPRO/Component/Semantic/Tabs';
@@ -266,27 +267,22 @@ export default class IMOverlay extends React.Component {
     if (filter) {
       chats = chats.filter((chat) => {
         switch (chat.get('chat_type')) {
-          case 'agent':
-            {
-              let agentId = 0;
-              chat.get('agents').forEach((item) => {
-                if (item !== me.get('id')) {
-                  agentId = item;
-                }
-              });
-              const agent = agents.get(agentId);
-              return agent ? agent.get('name').test(new RegExp(filter, 'gi')) : true;
-            }
+          case 'agent': {
+            let agentId = 0;
+            chat.get('agents').forEach((item) => {
+              if (item !== me.get('id')) {
+                agentId = item;
+              }
+            });
+            const agent = agents.get(agentId);
+            return agent ? (agent.get('name') || '').test(new RegExp(filter, 'gi')) : true;
+          }
           case 'department':
-            return departments
-              .getIn([chat.getIn(['departments', 0]), 'title'])
-              .test(new RegExp(filter, 'gi'));
+            return (departments.getIn([chat.getIn(['departments', 0]), 'title']) || '').test(new RegExp(filter, 'gi'));
           case 'team':
-            return teams
-              .getIn([chat.getIn(['agent_teams', 0]), 'name'])
-              .test(new RegExp(filter, 'gi'));
+            return (teams.getIn([chat.getIn(['agent_teams', 0]), 'name']) || '').test(new RegExp(filter, 'gi'));
           case 'group':
-            return chat.get('name').test(new RegExp(filter, 'gi'));
+            return (chat.get('name') || '').test(new RegExp(filter, 'gi'));
           case 'everyone':
             return 'everyone'.indexOf(filter) !== -1;
           default:

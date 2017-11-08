@@ -144,7 +144,7 @@ DeskPRO.Agent.ElementHandler.TicketReplyBox = new Orb.Class({
 					var isCtrl = false;
 					if (ev.ctrlKey && DeskPRO_Window.keyboardShortcuts.isMac) {
 						isCtrl = true;
-					} else if (ev.altKey) {
+					} else if (ev.altKey && !DeskPRO_Window.keyboardShortcuts.isMac) {
 						isCtrl = true;
 					}
 
@@ -570,14 +570,7 @@ DeskPRO.Agent.ElementHandler.TicketReplyBox = new Orb.Class({
 		// Snippets Viewer
 		//------------------------------
 
-		var recordSnippetUse = function(snippetId) {
-			var el = $("#" + self.page.meta.baseId + "_snippet_ids");
-			var current = el.val() || '';
-			var newval = current.length ? current + ',' + snippetId : snippetId+'';
-			el.val(newval);
-		};
-
-    if (window.DP_HAS_NEW_SNIPPETS) {
+		if (window.DP_HAS_NEW_SNIPPETS) {
       snippetBtn.on('click', function () {
         self.openNewSnippets();
 			});
@@ -681,7 +674,7 @@ DeskPRO.Agent.ElementHandler.TicketReplyBox = new Orb.Class({
 						textarea.data('redactor').insertHtml(html);
 					}
 					textarea.addClass('touched');
-					recordSnippetUse(snippetId);
+					self.recordSnippetUse(snippetId);
 
 					self.snippetsViewer.close();
 				}
@@ -765,6 +758,7 @@ DeskPRO.Agent.ElementHandler.TicketReplyBox = new Orb.Class({
               var snippet = window.LegacyStoreProvider.getSnippets().get(snippetId);
               var blobs = window.LegacyStoreProvider.getSnippetBlobs();
               self.insertSnippet(snippet.toJS(), blobs.toJS());
+              if (self.page) self.page.pauseSend = false;
             } else {
 							$.ajax({
 								url: BASE_URL + 'agent/text-snippets/tickets/' + snippetId + '.json',
@@ -778,7 +772,7 @@ DeskPRO.Agent.ElementHandler.TicketReplyBox = new Orb.Class({
 									var snippetId = snippet.id;
 									var snippetCode = snippet.snippet;
 
-									recordSnippetUse(snippetId);
+									self.recordSnippetUse(snippetId);
 
 									var agentText;
 									var defaultText;
@@ -1153,7 +1147,7 @@ DeskPRO.Agent.ElementHandler.TicketReplyBox = new Orb.Class({
 				// titles are treated as a string. jquery will convert data-macro-title="123" into an int which has no toLowerCase
 				var label = (($(this).data('macro-title') || '')+'').toLowerCase();
 				var macro_id = parseInt($(this).data('macro-id'));
-				window.DESKPRO_MACRO_LABELS.push([macro_id, label.toLowerCase()])
+				window.DESKPRO_MACRO_LABELS.push([macro_id, label.toLowerCase()]);
 				statusMacroListMap[macro_id] = this;
 			});
 		}
@@ -1521,6 +1515,7 @@ DeskPRO.Agent.ElementHandler.TicketReplyBox = new Orb.Class({
       blobs,
       ticketLangId,
       vars,
+      'ticket',
       this.textarea,
       this.attachBlobs.bind(this),
       this.recordSnippetUse.bind(this)

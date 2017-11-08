@@ -1,4 +1,5 @@
-import React, { PropTypes } from 'react';
+import PropTypes from 'prop-types';
+import React from 'react';
 import { connect } from 'react-redux';
 import Timer from 'DeskPRO/Component/Timer';
 import { voiceAgentsSelector } from '../../../Selectors/agents';
@@ -50,10 +51,6 @@ class CallFrom extends React.Component {
         {person &&
           <div className="call-from-email">
             {person.get('primary_email')}
-          </div>}
-        {person &&
-          <div className="call-from-group">
-            ACME Group
           </div>}
       </div>
     );

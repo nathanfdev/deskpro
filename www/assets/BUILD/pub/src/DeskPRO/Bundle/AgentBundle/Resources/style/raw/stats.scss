@@ -257,9 +257,14 @@
       margin: 0;
       padding: 0;
       margin-bottom: 10px;
+      display: inline-block;
 
-      &:last-child {
-        margin-bottom: 0px;
+      &.filter-title {
+        width: 70%;
+      }
+
+      &.filter-label {
+        width: 29%;
       }
     }
   }

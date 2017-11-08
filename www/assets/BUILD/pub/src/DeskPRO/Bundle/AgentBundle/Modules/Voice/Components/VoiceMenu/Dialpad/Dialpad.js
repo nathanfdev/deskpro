@@ -1,11 +1,12 @@
-import React, { PropTypes } from 'react';
-import { Fieldset, createValue } from 'react-forms';
+import PropTypes from 'prop-types';
+import React from 'react';
+import { Fieldset, createValue } from '@deskpro/react-forms';
 import { Form, Field } from 'DeskPRO/Component/Semantic/ReactForm';
 import { ClickOut } from 'DeskPRO/Component/ClickOut';
 import $ from 'jquery';
 import Immutable from 'immutable';
 import 'mark.js';
-import debounce from 'lodash/function/debounce';
+import debounce from 'lodash/debounce';
 import classNames from 'classnames';
 import NumberSelect from '../NumberSelect';
 import DialGrid from '../../Common/DialGrid';
@@ -123,7 +124,7 @@ class Dialpad extends React.Component {
   };
 
   onClickNumber = (number) => {
-    const $input = $(this.callToInput);
+    const $input = $(this.callToInput.input);
     const { formData } = this.state;
     const currentValue = formData.value.call_to || '';
 
@@ -168,17 +169,9 @@ class Dialpad extends React.Component {
             <Field select="call_from" label="Call from">
               <NumberSelect numbers={numbers} />
             </Field>
-
-            <div className="ui icon input">
-              <i className="search icon" />
-              <Field select="call_to">
-                <input
-                  type="text"
-                  className="voice-dialpad-input"
-                  ref={(c) => { this.callToInput = c; }}
-                />
-              </Field>
-            </div>
+            <Field select="call_to">
+              <SearchInput ref={(c) => { this.callToInput = c; }} />
+            </Field>
 
             {searchResults.size > 0 &&
             <ClickOut onClickOut={this.onClearSearchResults}>
@@ -197,6 +190,31 @@ class Dialpad extends React.Component {
             </button>
           </Fieldset>
         </Form>
+      </div>
+    );
+  }
+}
+
+class SearchInput extends React.Component {
+
+  static propTypes = {
+    value:    PropTypes.string,
+    onChange: PropTypes.func
+  };
+
+  render() {
+    const { value, onChange } = this.props;
+
+    return (
+      <div className="ui icon input">
+        <i className="search icon" />
+        <input
+          type="text"
+          className="voice-dialpad-input"
+          ref={(c) => { this.input = c; }}
+          value={value}
+          onChange={onChange}
+        />
       </div>
     );
   }

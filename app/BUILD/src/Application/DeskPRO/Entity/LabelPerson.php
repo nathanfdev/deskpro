@@ -49,6 +49,14 @@ class LabelPerson extends LabelAssocAbstract
      */
     protected $person;
 
+    /**
+     * @return Person
+     */
+    public function getPerson()
+    {
+        return $this->person;
+    }
+
     //###########################################################################
     // Doctrine Metadata
     //###########################################################################

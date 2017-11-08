@@ -21,36 +21,36 @@ DeskPRO.Agent.PageHelper.TicketFields = new Orb.Class({
 				return parseInt(catId) || 0;
 			},
 			getCategoryId: function() {
-				var catId = self.display.find('.prop-input-category_id').first().val();
+				var catId = self.display.find('select.prop-input-category_id').first().val();
 				return parseInt(catId) || 0;
 			},
 			getPriorityId: function() {
-				var catId = self.display.find('.prop-input-priority_id').first().val();
+				var catId = self.display.find('select.prop-input-priority_id').first().val();
 				return parseInt(catId) || 0;
 			},
 			getProductId: function() {
-				var catId = self.display.find('.prop-input-product').first().val();
+				var catId = self.display.find('select.prop-input-product').first().val();
 				return parseInt(catId) || 0;
 			},
 			getOrganizationId: function() {
 				return 0;
 			},
 			getWorkflowId: function() {
-				var catId = self.display.find('.prop-input-workflow_id').first().val();
+				var catId = self.display.find('select.prop-input-workflow_id').first().val();
 				return parseInt(catId) || 0;
 			},
 			getFieldValue: function(name) {
 				var $holders = self.page.getEl('field_holders');
 
 				// check single fields
-				var $field = $holders.find('[name="' + name + '"], [name="' + name + '[]"]').first();
-				if (!$field[0]) {
+				var $field = $holders.find('[name="' + name + '"], [name="' + name + '[]"]');
+				if (!$field.length) {
           // field is not present on the form
           // e.g. org field if user doesn't belong to a org
           return;
 				}
 
-        if ($field.is(':checkbox')) {
+        if ($field.length === 1 && $field.is(':checkbox')) {
           return $field.is(':checked');
         }
         if ($field.attr('type') === 'hidden') {
@@ -145,7 +145,7 @@ DeskPRO.Agent.PageHelper.TicketFields = new Orb.Class({
         var $el = $(el);
         value = allowDefaultValue ? $el.data('default-value') : value;
         $el.find('input[type=text], textarea, select').val(value);
-        $el.find('.with-select2').select2('val', value);
+        $el.find('.with-select2').val(Array.isArray(value) ? value : value.split(',')).change();
         $el.find('input[type=radio]').each(function(i, field) {
           var $field = $(field);
 
@@ -495,6 +495,7 @@ DeskPRO.Agent.PageHelper.TicketFields = new Orb.Class({
 	replaceHolders: function(html) {
 		var labels = this.display.find('tbody.labels-row');
 		var last = this.display.find('tbody.controls-row');
+		$('select', this.display).select2('close');
 		this.$scope.$destroy();
 
 		var old = this.display;

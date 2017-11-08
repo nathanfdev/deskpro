@@ -49,6 +49,14 @@ class LabelTicket extends LabelAssocAbstract
      */
     protected $ticket;
 
+    /**
+     * @return Ticket
+     */
+    public function getTicket()
+    {
+        return $this->ticket;
+    }
+
     //###########################################################################
     // Doctrine Metadata
     //###########################################################################

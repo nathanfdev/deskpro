@@ -10,20 +10,20 @@
                     <table style="width: 100%;">
                         <tr>
                             <td style="width: 30%;">Consumer Service URL (ACS)</td>
-                            <td style="width:55%"><input type="text" style="width: 100%" disabled="disabled"
+                            <td style="width:55%"><input type="text" style="width: 100%" readonly="readonly" id="consumer_url"
                                                          value="{{ usersource_details.consumer_url }}"/></td>
                             <td>
-                                <button class="btn btn-default btn-sm" clip-copy="usersource_details.consumer_url">Copy
+                                <button class="btn btn-default btn-sm" dp-clipboard data-clipboard-target="#consumer_url">Copy
                                     URL
                                 </button>
                             </td>
                         </tr>
                         <tr>
                             <td>Entity ID</td>
-                            <td><input style="width: 100%" type="text" disabled="disabled"
+                            <td><input style="width: 100%" type="text" readonly="readonly" id="metadata_url"
                                        value="{{ usersource_details.metadata_url }}"/></td>
                             <td>
-                                <button class="btn btn-default btn-sm" clip-copy="usersource_details.metadata_url">Copy
+                                <button class="btn btn-default btn-sm" dp-clipboard data-clipboard-target="#metadata_url">Copy
                                     URL
                                 </button>
                             </td>

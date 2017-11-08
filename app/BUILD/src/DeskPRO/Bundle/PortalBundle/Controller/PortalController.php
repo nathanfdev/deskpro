@@ -318,21 +318,25 @@ class PortalController extends AbstractController
      */
     public function changeLanguageAction(Request $request)
     {
-        $new_lang_code = $request->get('lang_code');
-        $referer       = $request->server->get('HTTP_REFERER');
+        $newLangCode = $request->get('lang_code');
+        $referer     = $request->server->get('HTTP_REFERER');
+        $langChanger = $this->get('language_changer');
 
-        $lang_changer = $this->get('language_changer');
-        $redirect_url = $lang_changer->changeLanguage($new_lang_code, $referer);
+        try {
+            $redirectUrl = $langChanger->changeLanguage($newLangCode, $referer);
+        } catch (\Exception $e) {
+            $redirectUrl = $this->get('router')->generate('portal_home');
+        }
 
         $person = $this->getCurrentPerson();
         if (!$person instanceof PersonGuest) {
-            if ($lang = $this->get('language_manager')->getLanguage($new_lang_code)) {
+            if ($lang = $this->get('language_manager')->getLanguage($newLangCode)) {
                 $person->setLanguage($lang);
                 $this->persistAndFlushEntity($person);
             }
         }
 
-        return $this->redirect($redirect_url);
+        return $this->redirect($redirectUrl);
     }
 
     /**
@@ -509,6 +513,43 @@ class PortalController extends AbstractController
         }
 
         throw $this->createNotFoundException('usersource / adapter not suitable for SLS');
+    }
+
+    /**
+     * @Route("/.well-known/apple-app-site-association", name="portal_apple_app_site_assoc")
+     *
+     * @return JsonResponse
+     */
+    public function appleAppSiteAssociationAction()
+    {
+        $router = $this->get('router');
+        $paths  = [
+            $router->generate('go_to_ticket_id', ['id' => 0]),
+            $router->generate('go_to_person_id', ['id' => 0]),
+            $router->generate('go_to_organization_id', ['id' => 0]),
+        ];
+
+        foreach ($paths as &$path) {
+            $path = str_replace(0, '*', $path);
+        }
+
+        $data = [
+            'applinks' => [
+                'apps'    => [],
+                'details' => [
+                    [
+                        'appID' => 'HC9N5Z797X.com.deskpro.mobile.ios',
+                        'paths' => $paths,
+                    ],
+                ],
+            ],
+        ];
+
+        $response = new JsonResponse();
+        $response->setEncodingOptions(\JSON_UNESCAPED_SLASHES);
+        $response->setData($data);
+
+        return $response;
     }
 
     /**

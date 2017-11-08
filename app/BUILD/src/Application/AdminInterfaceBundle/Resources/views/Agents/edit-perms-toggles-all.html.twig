@@ -19,16 +19,9 @@
         <li dp-tab-btn="main.perms.profile">
             <a href="#"><i class="fa fa-pencil"></i> {{ phrase('adm.agents.perm_title_profile') }}</a>
         </li>
-        {% if app.getSetting('core.apps_tasks') %}
-            <li dp-tab-btn="main.perms.tasks">
-                <a href="#"><i class="fa fa-calendar-o"></i> {{ phrase('adm.agents.perm_title_tasks') }}</a>
-            </li>
-        {% endif %}
-        {% if app.getSetting('core.problems.enabled') %}
-            <li dp-tab-btn="main.perms.problems">
-                <a href="#"><i class="fa fa-bullhorn"></i> {{ phrase('adm.agents.perm_title_problems') }}</a>
-            </li>
-        {% endif %}
+        <li dp-tab-btn="main.perms.others">
+            <a href="#"><i class="fa fa-cogs"></i> {{ phrase('adm.agents.perm_title_others') }}</a>
+        </li>
     </ul>
 
     {% include 'AdminInterfaceBundle:Agents:edit-perms-global-toggle.html.twig' with {tab: 'main.perms.tickets', type: 'perms', section: 'ticket'} %}
@@ -38,6 +31,7 @@
     {% include 'AdminInterfaceBundle:Agents:edit-perms-global-toggle.html.twig' with {tab: 'main.perms.profile', type: 'perms', section: 'general'} %}
     {% include 'AdminInterfaceBundle:Agents:edit-perms-global-toggle.html.twig' with {tab: 'main.perms.tasks', type: 'perms', section: 'tasks'} %}
     {% include 'AdminInterfaceBundle:Agents:edit-perms-global-toggle.html.twig' with {tab: 'main.perms.problems', type: 'perms', section: 'problems'} %}
+    {% include 'AdminInterfaceBundle:Agents:edit-perms-global-toggle.html.twig' with {tab: 'main.perms.snippets', type: 'perms', section: 'snippet'} %}
 </nav>
 
 {# TICKET PERMISSIONS #}
@@ -233,13 +227,36 @@
 </table>
 {# /GENERAL PERMISSIONS #}
 
-    {# TASKS PERMISSIONS #}
-<table class="table table-hover" dp-tab-body="main.perms.tasks">
-    <tbody>
-    {{ macro.perm_row('tasks', 'use') }}
-    </tbody>
+    {# OTHER PERMISSIONS #}
+<table class="table table-hover agent-perms-table" dp-tab-body="main.perms.others">
+    {% if app.getSetting('core.apps_tasks') %}
+        <thead><tr><th>Tasks</th></tr></thead>
+        <tbody>
+        {{ macro.perm_row('tasks', 'use') }}
+        </tbody>
+    {% endif %}
+    {% if app.getSetting('core.problems.enabled') %}
+        <thead><tr><th>Problems</th></tr></thead>
+        <tbody>
+        {{ macro.perm_row('problems', 'view') }}
+        {{ macro.perm_row('problems', 'create') }}
+        {{ macro.perm_row('problems', 'close') }}
+        {{ macro.perm_row('problems', 'reopen') }}
+        </tbody>
+    {% endif %}
+    {% if app.hasBeta('new_snippets') %}
+        <thead><tr><th>Snippets</th></tr></thead>
+        <tbody>
+        {{ macro.perm_row('snippet', 'create_snippet',        {showToggler: true}) }}
+        {{ macro.perm_row('snippet', 'create_self_snippet',   {toggleName: 'snippet.create_snippet'}) }}
+        {{ macro.perm_row('snippet', 'create_team_snippet',   {toggleName: 'snippet.create_snippet'}) }}
+        {{ macro.perm_row('snippet', 'create_global_snippet', {toggleName: 'snippet.create_snippet'}) }}
+        {{ macro.perm_row('snippet', 'edit_by_others') }}
+        {{ macro.perm_row('snippet', 'delete_by_others', {destructive: true}) }}
+        </tbody>
+    {% endif %}
 </table>
-{# /TASKS PERMISSIONS #}
+{# /OTHER PERMISSIONS #}
 
 
     {# PROBLEMS PERMISSIONS #}

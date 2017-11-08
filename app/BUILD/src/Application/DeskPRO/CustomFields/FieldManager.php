@@ -701,6 +701,13 @@ class FieldManager
             $object->addCustomData($custom_data);
         }
 
+        // remove dupes
+        foreach ($object->getCustomData() as $existCustomData) {
+            if ($existCustomData->getField() === $set_field && $existCustomData !== $custom_data) {
+                $object->getCustomData()->removeElement($existCustomData);
+            }
+        }
+
         return $custom_data;
     }
 

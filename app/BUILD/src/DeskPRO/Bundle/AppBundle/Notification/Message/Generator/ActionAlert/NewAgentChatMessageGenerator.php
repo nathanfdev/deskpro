@@ -52,12 +52,12 @@ class NewAgentChatMessageGenerator extends AbstractAgentChatMessageGenerator
      * Constructor.
      *
      * @param EntityManager         $em
-     * @param TokenStorageInterface $token_storage
+     * @param TokenStorageInterface $tokenStorage
      * @param Serializer            $serializer
      */
-    public function __construct(EntityManager $em, TokenStorageInterface $token_storage, Serializer $serializer)
+    public function __construct(EntityManager $em, TokenStorageInterface $tokenStorage, Serializer $serializer)
     {
-        parent::__construct($em, $token_storage);
+        parent::__construct($em, $tokenStorage);
         $this->serializer = $serializer;
     }
 

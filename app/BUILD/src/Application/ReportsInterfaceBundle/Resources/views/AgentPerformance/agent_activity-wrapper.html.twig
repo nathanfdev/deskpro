@@ -1,0 +1,37 @@
+<div class="alert alert-info">
+    <div>
+        Showing Agent Activity for:
+        <select
+                ui-select2
+                ng-model="service.filter.agent_or_team"
+                style="width: 200px;"
+                >
+            <option value="all">All Agents</option>
+            <option ng-repeat="agent in service.all_agents" ng-value="agent.id">
+                {{ ng_var('agent.name') }}
+            </option>
+            <optgroup label="Teams">
+                <option ng-repeat="team in service.agent_teams" value="team-{{ ng_var('team.id') }}">
+                    {{ ng_var('team.name') }}
+                </option>
+            </optgroup>
+        </select>
+        on
+			<span>
+				<input type="text" class="form-control"
+                       style="width: 140px; display: inline-block;"
+                       datepicker-popup="dd MMMM yyyy" ng-model="service.date"
+                       datepicker-options="{'show-weeks': false}"/>
+			</span>
+
+        <button class="btn btn-primary" ng-click="service.updateFilter()">Show</button>
+    </div>
+</div>
+{#
+<span dp-show-spinning="loading_results" class="padd">
+		<i class="spinner-flat"></i>
+	</span>#}
+
+<section class="padd" ng-bind-html="service.html" {#dp-hide-spinning="loading_results"#}>
+
+</section>

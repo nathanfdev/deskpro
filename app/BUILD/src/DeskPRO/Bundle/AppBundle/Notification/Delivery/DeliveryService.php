@@ -83,11 +83,15 @@ class DeliveryService
         }
     }
 
-    public function deliver()
+    public function deliver($postpone = false)
     {
         foreach ($this->collection as $handler) {
             /* @var DeliveryHandlerInterface $handler */
-            $handler->deliver();
+            if ($postpone) {
+                $handler->deliverSoon();
+            } else {
+                $handler->deliver();
+            }
         }
     }
 

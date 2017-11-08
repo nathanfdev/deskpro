@@ -1,10 +1,10 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
+import $ from 'jquery';
 import { PageWidget } from 'DeskPRO/Component/PageWidget/PageWidget';
 import { LanguageChanger } from '../React/LanguageChanger';
 import { portalWindow } from '../PortalWindow';
 import { portalUrlGenerator } from '../Http/PortalUrlGenerator';
-import $ from 'jquery';
 
 export class LanguageChangerWidget extends PageWidget {
 
@@ -23,9 +23,9 @@ export class LanguageChangerWidget extends PageWidget {
     this.$rElement = $('<div class="dp-react-widget"></div>').insertAfter(this.$element);
 
     const component = React.createElement(LanguageChanger, {
-      active_lang_code: portalWindow.lang,
-      enabled_langs:    portalWindow.enabled_langs,
-      clickLanguage:    this.clickLanguage.bind(this)
+      activeLangCode: portalWindow.lang,
+      enabledLangs:   portalWindow.enabled_langs,
+      clickLanguage:  this.clickLanguage.bind(this)
     });
 
     ReactDOM.render(component, this.$rElement.get(0));

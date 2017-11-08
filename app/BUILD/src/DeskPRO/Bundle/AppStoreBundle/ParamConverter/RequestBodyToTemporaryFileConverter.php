@@ -72,7 +72,7 @@ class RequestBodyToTemporaryFileConverter implements ParamConverterInterface
 
     public function apply(Request $request, ParamConverter $configuration)
     {
-        $file      = $this->writeInputStreamToFile();
+        $file      = $this->writeRequestContentToFile($request);
         $converted = $this->applyConversion($file, $request, $configuration);
 
         if (!empty($converted)) {
@@ -90,6 +90,14 @@ class RequestBodyToTemporaryFileConverter implements ParamConverterInterface
         $fileInfo = new \SplFileInfo($file);
 
         return $fileInfo;
+    }
+
+    private function writeRequestContentToFile(Request $request)
+    {
+        $file = tempnam($this->tmpDir, 'deskpro_');
+        file_put_contents($file, $request->getContent());
+
+        return $file;
     }
 
     /**

@@ -133,6 +133,37 @@ $definition->setClass('Application\\DeskPRO\\Settings\\ServiceUrls');
 $definition->addMethodCall('loadPack', ['%kernel.root_dir%/config/service-urls.php']);
 $container->setDefinition('deskpro.service_urls', $definition);
 
+$definition = new Definition();
+$definition->setClass('Application\\LegacyApiBundle\\Service\\DashboardPermissions');
+$definition->setArguments([new Reference('doctrine.orm.entity_manager')]);
+$container->setDefinition('dashboard.permissions.service', $definition);
+
+$definition = new Definition();
+$definition->setClass('Application\\LegacyApiBundle\\Service\\DashboardWidget');
+$definition->setArguments([new Reference('doctrine.orm.entity_manager')]);
+$container->setDefinition('dashboard.widget.service', $definition);
+
+$definition = new Definition();
+$definition
+    ->setClass('Application\\DeskPRO\\Reports\\Form\\Type\\ReportWidgetType')
+    ->setArguments([new Reference('dashboard.service')])
+    ->addTag('form.type');
+$container->setDefinition('form_dashboards_report_widget', $definition);
+
+$definition = new Definition();
+$definition->setClass('Application\\LegacyApiBundle\\Service\\Dashboard');
+$definition->setArguments([
+    new Reference('doctrine.orm.entity_manager'),
+    new Reference('dashboard.widget.service'),
+    new Reference('deskpro.core.translate'),
+]);
+$container->setDefinition('dashboard.service', $definition);
+
+$definition = new Definition();
+$definition->setClass('Application\\DeskPRO\\Reports\\ReportsWidgetService');
+$definition->setArguments([new Reference('doctrine.orm.entity_manager'), new Reference('dashboard.widget.service')]);
+$container->setDefinition('reports.widget.service', $definition);
+
 //###########################################################################
 // Validators and Constraints
 //###########################################################################

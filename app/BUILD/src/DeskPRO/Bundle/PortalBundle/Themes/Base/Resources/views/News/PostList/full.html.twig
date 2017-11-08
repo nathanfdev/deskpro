@@ -12,10 +12,14 @@
           <h1><a href="{{ portal_path(item) }}">{{ item.title }}</a></h1>
 
           <div class="article-meta">
-            {% if item.person %}{{ phrase('portal.general.by') }} <span style="background: url({{ avatar_url(item.person) }}) no-repeat; background-size: cover" class="agent-avatar agent-avatar-mini"></span> {{ item.person.display_name_user }} {% endif %}
-            <hr>
-            <span class="comments"><i class="fa fa-comments"></i> <a href="{{ portal_path(item) }}#comments">{{ phrase('portal.general.comments-count', {count: item.calc_num_comments}) }}</a></span>
-            <hr>
+            {% if item.person %}
+                {{ phrase('portal.general.by') }} <span style="background: url({{ avatar_url(item.person) }}) no-repeat; background-size: cover" class="agent-avatar agent-avatar-mini"></span> {{ item.person.display_name_user }}
+                <hr>
+            {% endif %}
+            {% if brand_setting('user.publish_comments') %}
+              <span class="comments"><i class="fa fa-comments"></i> <a href="{{ portal_path(item) }}#comments">{{ phrase('portal.general.comments-count', {count: item.calc_num_comments}) }}</a></span>
+              <hr>
+            {% endif %}
             {{ phrase('portal.general.in') }} <a href="{{ portal_path(item.category) }}">{{ object_phrase(item.category) }}</a>
           </div>
         </div>

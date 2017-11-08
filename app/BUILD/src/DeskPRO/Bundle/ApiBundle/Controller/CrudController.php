@@ -220,7 +220,7 @@ abstract class CrudController extends BaseController
             }
 
             $qb->andWhere('e.id IN (:ids)');
-            $qb->setParameters(compact('ids'));
+            $qb->setParameter('ids', $ids);
         }
 
         $limit = (int) $request->query->getInt('limit', static::$listLimit);
@@ -545,6 +545,8 @@ abstract class CrudController extends BaseController
             throw new InvalidFormException($form);
         }
 
+        $this->additionalValidation($model, $request);
+
         $this->persistModel($model, $form);
 
         $view = View::create(!$isModify ? $this->wrap($model) : null, $status);
@@ -563,6 +565,14 @@ abstract class CrudController extends BaseController
     protected function getPermissionGroupContext(Request $request)
     {
         return new PermissionGroupContext(static::$entity);
+    }
+
+    /**
+     * @param $model
+     * @param Request $request
+     */
+    protected function additionalValidation($model, Request $request)
+    {
     }
 
     /**

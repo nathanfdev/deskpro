@@ -71,6 +71,20 @@ class AuthContext extends BaseContext
     }
 
     /**
+     * @Given I'm authenticated as person with email :role
+     *
+     * @param string $email
+     */
+    public function iAmAuthenticatedAsPersonWithEmail($email)
+    {
+        // Log in ------------------------------------------------------------------------------------------------------
+        $person = $this->peopleDataContext->findPersonByEmail($email);
+        $this->authenticateAs($person);
+
+        self::initOm();
+    }
+
+    /**
      * @Given I'm authenticated as :role
      *
      * @param string $role

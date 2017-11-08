@@ -11,24 +11,24 @@
 					<table style="width: 100%;">
 						<tr>
 							<td style="width: 30%;">Consumer Service URL (ACS)</td>
-							<td style="width:55%"><input type="text" style="width: 100%" disabled="disabled"
-								value="{{ usersource_details.consumer_url }}" /></td>
+							<td style="width:55%"><input type="text" style="width: 100%" readonly="readonly"
+								value="{{ usersource_details.consumer_url }}" id="consumer_url" /></td>
 							<td>
-								<button class="btn btn-default btn-sm" clip-copy="usersource_details.consumer_url">Copy URL</button></td>
+								<button class="btn btn-default btn-sm" dp-clipboard data-clipboard-target="#consumer_url">Copy URL</button></td>
 						</tr>
 						<tr>
 							<td style="width: 30%;">Single Logout Service URL (SLS)</td>
-							<td style="width:55%"><input type="text" style="width: 100%" disabled="disabled"
-								value="{{ usersource_details.slo_url }}" /></td>
+							<td style="width:55%"><input type="text" style="width: 100%" readonly="readonly"
+								value="{{ usersource_details.slo_url }}" id="slo_url" /></td>
 							<td>
-								<button class="btn btn-default btn-sm" clip-copy="usersource_details.slo_url">Copy URL</button></td>
+								<button class="btn btn-default btn-sm" dp-clipboard data-clipboard-target="#slo_url">Copy URL</button></td>
 						</tr>
 						<tr>
 							<td>Metadata URL (Entity ID)</td>
-							<td><input style="width: 100%" type="text" disabled="disabled"
-								value="{{ usersource_details.metadata_url }}" /></td>
+							<td><input style="width: 100%" type="text" readonly="readonly"
+								value="{{ usersource_details.metadata_url }}" id="metadata_url" /></td>
 							<td>
-								<button class="btn btn-default btn-sm" clip-copy="usersource_details.metadata_url">Copy URL</button>
+								<button class="btn btn-default btn-sm" dp-clipboard data-clipboard-target="#metadata_url">Copy URL</button>
 							</td>
 						</tr>
 					</table>

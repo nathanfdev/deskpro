@@ -1,4 +1,5 @@
-import React, { PropTypes } from 'react';
+import PropTypes from 'prop-types';
+import React from 'react';
 import { connect } from 'react-redux';
 import { Button } from 'DeskPRO/Component/Semantic/Button';
 import 'froala-editor/js/froala_editor.pkgd.min';

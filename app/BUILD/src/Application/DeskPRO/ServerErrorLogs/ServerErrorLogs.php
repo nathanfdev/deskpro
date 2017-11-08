@@ -61,11 +61,16 @@ class ServerErrorLogs
      */
     public function getAll()
     {
-        $log_reader = new ErrorLogReader($this->logsPath.'/error.log');
-        $log_reader->setDateTimezone(App::getSession()->getPerson()->getDateTimezone());
+        if (filesize($this->logsPath.'/error.log') < 10 * 1024 * 1024) {
+            $logReader = new ErrorLogReader($this->logsPath.'/error.log');
+            $logReader->setDateTimezone(App::getSession()->getPerson()->getDateTimezone());
+            $logs = array_values($logReader->getAll());
+        } else {
+            $logs = false;
+        }
 
         return [
-            'logs'                  => array_values($log_reader->getAll()),
+            'logs'                  => $logs,
             'deskpro_error_log_url' => $this->_generateUrl('logs/errors'),
             'web_error_log_url'     => $this->_generateUrl('logs/php-errors'),
         ];
@@ -78,12 +83,12 @@ class ServerErrorLogs
      */
     public function getById($id)
     {
-        $log_reader = new ErrorLogReader($this->logsPath.'/error.log');
-        $log_reader->setDateTimezone(App::getSession()->getPerson()->getDateTimezone());
-        $log_reader->enableRawLog();
-        $log_reader->setIdFilter($id);
+        $logReader = new ErrorLogReader($this->logsPath.'/error.log');
+        $logReader->setDateTimezone(App::getSession()->getPerson()->getDateTimezone());
+        $logReader->enableRawLog();
+        $logReader->setIdFilter($id);
 
-        $log = $log_reader->current();
+        $log = $logReader->current();
 
         return $log;
     }

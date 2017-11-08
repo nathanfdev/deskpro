@@ -51,11 +51,11 @@ class ReportsBuilderController extends AbstractController
 
     public function listAction()
     {
-        /** @var Builder $reports_builder */
-        $reports_builder = $this->container->getSystemService('reports_builder');
+        /** @var Builder $reportsBuilder */
+        $reportsBuilder = $this->container->getSystemService('reports_builder');
 
         return $this->createApiResponse([
-            'reports' => $reports_builder->getAll(),
+            'reports' => $reportsBuilder->getAll(),
         ]);
     }
 
@@ -65,11 +65,11 @@ class ReportsBuilderController extends AbstractController
 
     public function listCustomAction()
     {
-        /** @var Builder $reports_builder */
-        $reports_builder = $this->container->getSystemService('reports_builder');
+        /** @var Builder $reportsBuilder */
+        $reportsBuilder = $this->container->getSystemService('reports_builder');
 
         return $this->createApiResponse([
-            'reports' => $reports_builder->getCustomReports(),
+            'reports' => $reportsBuilder->getCustomReports(),
         ]);
     }
 
@@ -79,11 +79,11 @@ class ReportsBuilderController extends AbstractController
 
     public function listBuiltInAction()
     {
-        /** @var Builder $reports_builder */
-        $reports_builder = $this->container->getSystemService('reports_builder');
+        /** @var Builder $reportsBuilder */
+        $reportsBuilder = $this->container->getSystemService('reports_builder');
 
         return $this->createApiResponse([
-            'reports' => $reports_builder->getBuiltInReports(),
+            'reports' => $reportsBuilder->getBuiltInReports(),
         ]);
     }
 
@@ -93,12 +93,10 @@ class ReportsBuilderController extends AbstractController
 
     public function getGroupParamsAction()
     {
-        /*
-         * @var \Application\DeskPRO\Reports\Builder
-         */
-        $reports_builder = $this->container->getSystemService('reports_builder');
+        /** @var Builder $reportsBuilder */
+        $reportsBuilder = $this->container->getSystemService('reports_builder');
 
-        return $this->createApiResponse($reports_builder->getGroupParams());
+        return $this->createApiResponse($reportsBuilder->getGroupParams());
     }
 
     //###################################################################################################################
@@ -107,16 +105,16 @@ class ReportsBuilderController extends AbstractController
 
     public function getAction($id)
     {
-        /** @var Builder $reports_builder */
-        $reports_builder = $this->container->getSystemService('reports_builder');
-        $report          = $reports_builder->getById($id);
+        /** @var Builder $reportsBuilder */
+        $reportsBuilder = $this->container->getSystemService('reports_builder');
+        $report         = $reportsBuilder->getById($id);
 
         if (!$report) {
             throw $this->createNotFoundException();
         }
 
-        $rendered_result = $reports_builder->getRenderedResult($id);
-        $query_parts     = $reports_builder->getQueryParts($id, false);
+        $rendered_result = $reportsBuilder->getRenderedResult($id);
+        $query_parts     = $reportsBuilder->getQueryParts($id, false);
 
         return $this->createApiResponse([
             'rendered_result' => $rendered_result,
@@ -132,23 +130,23 @@ class ReportsBuilderController extends AbstractController
 
     public function saveAction($id)
     {
-        /** @var Builder $reports_builder */
-        $reports_builder = $this->container->getSystemService('reports_builder');
+        /** @var Builder $reportsBuilder */
+        $reportsBuilder = $this->container->getSystemService('reports_builder');
 
         if ($id) {
-            $report = $reports_builder->getById($id);
+            $report = $reportsBuilder->getById($id);
             if (!$report) {
                 throw $this->createNotFoundException();
             }
         } else {
-            $report = $reports_builder->createNew();
+            $report = $reportsBuilder->createNew();
         }
 
         if (!$report->is_custom) {
             throw ValidationException::create('you can edit only custom report');
         }
 
-        if ($error = $reports_builder->getErrors($id, 'from_request')) {
+        if ($error = $reportsBuilder->getErrors($id, 'from_request')) {
             return $this->createApiResponse(['error' => $error]);
         } else {
             $postData    = $this->in->getAll('req');
@@ -165,8 +163,8 @@ class ReportsBuilderController extends AbstractController
                 );
             }
 
-            $reports_builder->saveQuery($report, 'from_request');
-            $rendered_result = $reports_builder->getRenderedResult($id, 'from_request');
+            $reportsBuilder->saveQuery($report, 'from_request');
+            $rendered_result = $reportsBuilder->getRenderedResult($id, 'from_request');
 
             return $this->createApiResponse([
                 'success'         => true,
@@ -182,15 +180,15 @@ class ReportsBuilderController extends AbstractController
 
     public function cloneAction($id)
     {
-        /** @var Builder $reports_builder */
-        $reports_builder = $this->container->getSystemService('reports_builder');
-        $report          = $reports_builder->getById($id);
+        /** @var Builder $reportsBuilder */
+        $reportsBuilder = $this->container->getSystemService('reports_builder');
+        $report         = $reportsBuilder->getById($id);
 
         if (!$report) {
             throw $this->createNotFoundException();
         }
 
-        $new_report              = $reports_builder->createNew();
+        $new_report              = $reportsBuilder->createNew();
         $new_report->title       = $this->in->getString('title') ?: $report->title;
         $new_report->description = $this->in->getString('description') ?: $report->description;
         $new_report->query       = $report->query;
@@ -226,9 +224,9 @@ class ReportsBuilderController extends AbstractController
 
     public function deleteAction($id)
     {
-        /** @var Builder $reports_builder */
-        $reports_builder = $this->container->getSystemService('reports_builder');
-        $report          = $reports_builder->getById($id);
+        /** @var Builder $reportsBuilder */
+        $reportsBuilder = $this->container->getSystemService('reports_builder');
+        $report         = $reportsBuilder->getById($id);
 
         if (!$report) {
             throw $this->createNotFoundException();
@@ -238,7 +236,7 @@ class ReportsBuilderController extends AbstractController
             throw ValidationException::create('you can delete only custom report');
         }
 
-        $reports_builder->remove($report);
+        $reportsBuilder->remove($report);
 
         return $this->createSuccessResponse(['id' => $id]);
     }
@@ -249,16 +247,16 @@ class ReportsBuilderController extends AbstractController
 
     public function testAction($id)
     {
-        /** @var Builder $reports_builder */
-        $reports_builder = $this->container->getSystemService('reports_builder');
+        /** @var Builder $reportsBuilder */
+        $reportsBuilder = $this->container->getSystemService('reports_builder');
 
-        if ($error = $reports_builder->getErrors($id, 'from_request')) {
+        if ($error = $reportsBuilder->getErrors($id, 'from_request')) {
             return $this->createApiResponse([
                 'error' => $error,
                 'sql'   => SqlSelect::getLastCompiledSql(),
             ]);
         } else {
-            $rendered_result = $reports_builder->getRenderedResult($id, 'from_request');
+            $rendered_result = $reportsBuilder->getRenderedResult($id, 'from_request');
 
             return $this->createApiResponse([
                 'rendered_result' => $rendered_result,
@@ -273,10 +271,10 @@ class ReportsBuilderController extends AbstractController
 
     public function parseAction()
     {
-        /** @var Builder $reports_builder */
-        $reports_builder = $this->container->getSystemService('reports_builder');
+        /** @var Builder $reportsBuilder */
+        $reportsBuilder = $this->container->getSystemService('reports_builder');
 
-        return $this->createApiResponse($reports_builder->parseInput());
+        return $this->createApiResponse($reportsBuilder->parseInput());
     }
 
     //###################################################################################################################
@@ -285,9 +283,9 @@ class ReportsBuilderController extends AbstractController
 
     public function downloadAction($id, $type)
     {
-        /** @var Builder $reports_builder */
-        $reports_builder = $this->container->getSystemService('reports_builder');
+        /** @var Builder $reportsBuilder */
+        $reportsBuilder = $this->container->getSystemService('reports_builder');
 
-        return $reports_builder->outputDownloadContent($id, $type);
+        return $reportsBuilder->outputDownloadContent($id, $type);
     }
 }

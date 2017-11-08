@@ -1,16 +1,24 @@
-import React, { PropTypes } from 'react';
+import PropTypes from 'prop-types';
+import React from 'react';
 import { connect } from 'react-redux';
 import Immutable from 'immutable';
 import Isvg from 'react-inlinesvg';
-import { Input } from 'deskpro-components/lib/Components/Forms';
-import { Button } from 'deskpro-components/lib/Components/Buttons';
+import debounce from 'lodash/debounce';
+import { Input } from '@deskpro/react-components/lib/Components/Forms';
+import { Button } from '@deskpro/react-components/lib/Components/Buttons';
+import Progress from '@deskpro/react-components/lib/Components/Progress';
+import ProgressBar from '@deskpro/react-components/lib/Components/ProgressBar';
 import { meSelector } from 'DeskPRO/Bundle/AppBundle/Modules/RecordsStore/Shortcuts/me';
 import { allSelectorFactory } from 'DeskPRO/Bundle/AppBundle/Modules/RecordsStore';
 import agentPhrases from 'DeskPRO/Bundle/AgentBundle/AgentPhrases';
+import MassActions from 'DeskPRO/Bundle/AgentBundle/Modules/Snippets/Components/MassActions';
 import SnippetsFiltering from 'DeskPRO/Bundle/AgentBundle/Modules/Snippets/Components/SnippetsFiltering';
 import { SnippetsModalContainer } from 'DeskPRO/Bundle/AgentBundle/Modules/Snippets/Components/SnippetsModal';
 import { SnippetsList } from 'DeskPRO/Bundle/AgentBundle/Modules/Snippets/Components/SnippetsList';
+import * as actions from '../Actions/snippetsActions';
 import { allSnippetsSelector, allSnippetBlobsSelector } from '../Selectors/snippets';
+import { LanguageSelect } from './Menus/LanguageSelect';
+import { MassActionsSelect } from './Menus/MassActionsSelect';
 
 @connect(state => ({
   me:        meSelector(state),
@@ -26,6 +34,7 @@ export class SnippetsMenuContainer extends React.Component {
     languages:     PropTypes.object,
     closeMenu:     PropTypes.func,
     insertSnippet: PropTypes.func,
+    dispatch:      PropTypes.func,
     open:          PropTypes.bool,
     type:          PropTypes.string,
     department:    PropTypes.number,
@@ -36,10 +45,17 @@ export class SnippetsMenuContainer extends React.Component {
     department: 0,
     langId:     window.DP_PERSON_LANG_ID
   };
+  static batchSize = 50;
 
-  static getSnippetTranslationToUse(snippetTranslations, langPref) {
+  static defaultLangPref = new Set(['context', 'agent', 'helpdesk']);
+
+  static getSnippetTranslationToUse(snippet, langPref, type) {
+    const snippetTranslations = snippet.get('translations');
+    const isSplit = snippet.get('is_split', false);
     for (let i = 0; i < langPref.length; i++) {
-      const found = snippetTranslations.find(tr => tr.get('language') === langPref[i]);
+      const found = snippetTranslations.find(tr =>
+        tr.get('language') === langPref[i]  && (!isSplit || tr.get('type') === type)
+      );
       if (found) {
         return found;
       }
@@ -50,9 +66,30 @@ export class SnippetsMenuContainer extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
-      filter:   '',
-      showMode: 'all',
+      filter:              '',
+      showMode:            'all',
+      langPref:            SnippetsMenuContainer.defaultLangPref,
+      massActionsSelected: new Set(),
+      massActionsProgress: null,
     };
+    this.props.dispatch(actions.loadSnippetLanguagePreferences())
+      .then((data) => {
+        const values = data.value.map((l) => {
+          if (l.match(/^\d+$/)) {
+            return parseInt(l, 10);
+          }
+          return l;
+        });
+        this.setState({ langPref: new Set(values) });
+      },
+        (reason) => {
+          if (reason.data && reason.data.status === 404) {
+            this.props.dispatch(actions.createSnippetLanguagePreferences([...SnippetsMenuContainer.defaultLangPref]));
+          }
+        });
+    this.debouncedSavePrefs = debounce((value) => {
+      this.props.dispatch(actions.saveSnippetLanguagePreferences([...value]));
+    }, 1000);
   }
 
   shouldComponentUpdate(nextProps, nextState) {
@@ -80,11 +117,32 @@ export class SnippetsMenuContainer extends React.Component {
     if (nextState.showMode !== this.state.showMode) {
       return true;
     }
+    if (nextState.langPref !== this.state.langPref) {
+      return true;
+    }
+    if (nextState.massActionsSelected !== this.state.massActionsSelected) {
+      return true;
+    }
+    if (nextState.massActionsProgress !== this.state.massActionsProgress) {
+      return true;
+    }
     return nextProps.department !== this.props.department;
+  }
+
+  componentWillUnmount() {
+    this.debouncedSavePrefs.flush();
   }
 
   onClose = () => {
     this.menu.onClose();
+  };
+
+  updateLanguagePref = (newPrefs) => {
+    this.setState({
+      langPref: newPrefs
+    });
+    this.forceUpdate();
+    this.debouncedSavePrefs(newPrefs);
   };
 
   insertSnippet = (e, snippet, langId) => {
@@ -102,9 +160,88 @@ export class SnippetsMenuContainer extends React.Component {
     this.setState({ showMode });
   };
 
+  selectForMassAction = (checked, value) => {
+    const { me } = this.props;
+    let newMassActionsSelected = new Set(this.state.massActionsSelected);
+    if (value.length) {
+      if (checked) {
+        newMassActionsSelected = new Set(value.map((snippet) => {
+          if (window.DESKPRO_PERSON_PERMS['agent_snippets.edit_by_others'] || snippet.get('person') === me.get('id')) {
+            return snippet.get('id');
+          }
+          return false;
+        }));
+      } else {
+        newMassActionsSelected.clear();
+      }
+    } else if (checked) {
+      newMassActionsSelected.add(value);
+    } else {
+      newMassActionsSelected.delete(value);
+    }
+    this.setState({
+      massActionsSelected: newMassActionsSelected
+    });
+  };
+
+  processBatch(evolution) {
+    const { dispatch } = this.props;
+    const { payload, selected } = evolution;
+    const { i } = evolution;
+
+    const self = this;
+    if (i < selected.length) {
+      return new Promise((resolve) => {
+        payload.selected = selected.slice(i, Math.min(i + SnippetsMenuContainer.batchSize, selected.length));
+        dispatch(actions.massActions(payload))
+          .then(() => {
+            self.setState({
+              massActionsProgress: { current: i + SnippetsMenuContainer.batchSize, total: selected.length }
+            });
+            return resolve({ payload, selected, i: i + SnippetsMenuContainer.batchSize });
+          });
+      }).then((newEvolution) => {
+        self.processBatch(newEvolution);
+      });
+    }
+    this.setState({
+      massActionsProgress: null
+    });
+    return true;
+  }
+
+  runMassActions = (payload) => {
+    const { dispatch } = this.props;
+    const selected = [...this.state.massActionsSelected];
+    if (payload.action === 'export') {
+      dispatch(actions.exportSnippets(selected));
+    } else if (selected.length > SnippetsMenuContainer.batchSize) {
+      this.setState({
+        massActionsProgress: { current: 0, total: selected.length }
+      });
+      const i = 0;
+      this.processBatch({ selected, payload, i });
+    } else {
+      payload.selected = selected;
+      dispatch(actions.massActions(payload));
+    }
+  };
+
   render() {
     const { me, closeMenu, type, department, languages, width, langId, open } = this.props;
-    const langPref = [langId, window.DP_PERSON_LANG_ID, window.DP_DEFAULT_LANG_ID];
+    const langContext = [langId, window.DP_PERSON_LANG_ID, window.DP_DEFAULT_LANG_ID];
+    const langDisplay = [...this.state.langPref].map((lang) => {
+      if (lang === 'context') {
+        return langId;
+      }
+      if (lang === 'agent') {
+        return window.DP_PERSON_LANG_ID;
+      }
+      if (lang === 'helpdesk') {
+        return window.DP_DEFAULT_LANG_ID;
+      }
+      return lang;
+    });
     let labels = new Set();
     this.props.snippets.map(snippet => snippet.get('labels').forEach(label => labels.add(label)));
     labels = Array.from(labels);
@@ -114,7 +251,7 @@ export class SnippetsMenuContainer extends React.Component {
           return false;
         }
         if (!snippet.get('translations').find(translation =>
-            langPref.indexOf(translation.get('language')) !== -1
+            langDisplay.indexOf(translation.get('language')) !== -1
           )) {
           return false;
         }
@@ -131,7 +268,9 @@ export class SnippetsMenuContainer extends React.Component {
         return snippet.get('labels').find(label => label.match(re))
           || snippet.get('title').match(re)
           || snippet.get('shortcut_code').match(re)
-          || SnippetsMenuContainer.getSnippetTranslationToUse(snippet.get('translations'), langPref).get('content').match(re);
+          || SnippetsMenuContainer
+              .getSnippetTranslationToUse(snippet, langContext, type)
+            .get('content').match(re);
       });
 
     const snippets = filteredSnippets.filter((snippet) => {
@@ -179,8 +318,15 @@ export class SnippetsMenuContainer extends React.Component {
         type={type}
         filter={this.state.filter}
         showMode={this.state.showMode}
-        langId={langId}
-        langPref={langPref}
+        langId={isNaN(langId) ? window.DP_PERSON_LANG_ID : langId}
+        langDisplay={langDisplay}
+        langContext={langContext}
+        langPref={this.state.langPref}
+        updateLanguagePref={this.updateLanguagePref}
+        selectForMassAction={this.selectForMassAction}
+        runMassActions={this.runMassActions}
+        massActionsProgress={this.state.massActionsProgress}
+        massActionsSelected={this.state.massActionsSelected}
         open={open}
         width={width}
         ref={(c) => { this.menu = c; }}
@@ -191,22 +337,29 @@ export class SnippetsMenuContainer extends React.Component {
 
 export class SnippetsMenu extends React.Component {
   static propTypes = {
-    me:               PropTypes.object,
-    snippets:         PropTypes.object,
-    labels:           PropTypes.array,
-    filteredSnippets: PropTypes.object,
-    languages:        PropTypes.object,
-    langId:           PropTypes.number,
-    width:            PropTypes.number,
-    closeMenu:        PropTypes.func,
-    insertSnippet:    PropTypes.func,
-    handleFilter:     PropTypes.func,
-    handleShowMode:   PropTypes.func,
-    open:             PropTypes.bool,
-    type:             PropTypes.string,
-    filter:           PropTypes.string,
-    showMode:         PropTypes.string,
-    langPref:         PropTypes.array,
+    me:                  PropTypes.object,
+    snippets:            PropTypes.object,
+    labels:              PropTypes.array,
+    filteredSnippets:    PropTypes.object,
+    languages:           PropTypes.object,
+    langId:              PropTypes.number,
+    width:               PropTypes.number,
+    closeMenu:           PropTypes.func,
+    insertSnippet:       PropTypes.func,
+    handleFilter:        PropTypes.func,
+    handleShowMode:      PropTypes.func,
+    open:                PropTypes.bool,
+    type:                PropTypes.string,
+    filter:              PropTypes.string,
+    showMode:            PropTypes.string,
+    langContext:         PropTypes.array,
+    langDisplay:         PropTypes.array,
+    langPref:            PropTypes.object,
+    updateLanguagePref:  PropTypes.func,
+    selectForMassAction: PropTypes.func,
+    runMassActions:      PropTypes.func,
+    massActionsProgress: PropTypes.object,
+    massActionsSelected: PropTypes.object,
   };
   static defaultProps = {
     handleFilter() {},
@@ -216,15 +369,17 @@ export class SnippetsMenu extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
-      selectedLabel: '',
-      multiLabels:   [],
-      multiMode:     'any',
-      editOpen:      false,
-      snippetEdit:   {},
-      labelFilter:   '',
-      focusedIndex:  null,
-      editLang:      this.props.langId,
-      height:        0,
+      selectedLabel:    '',
+      multiLabels:      [],
+      multiMode:        'any',
+      massActionMode:   '',
+      selectedSnippets: [],
+      editOpen:         false,
+      snippetEdit:      {},
+      labelFilter:      '',
+      focusedIndex:     null,
+      editLang:         this.props.langId,
+      height:           0,
     };
   }
 
@@ -295,14 +450,34 @@ export class SnippetsMenu extends React.Component {
     });
   };
 
+  massActionsMode = (action) => {
+    this.setState({
+      massActionMode: action
+    });
+  };
+
+  closeMassActions = (e) => {
+    if (e) {
+      e.preventDefault();
+    }
+    this.setState({
+      massActionMode: ''
+    });
+    // Hack to unselect all snippets
+    this.props.selectForMassAction(false, [1]);
+  };
+
   closeShortCut = (ev) => {
     if (!this.props.open) {
       return;
     }
 
-    if (ev.ctrlKey && DeskPRO_Window.keyboardShortcuts.isMac || ev.altKey && !DeskPRO_Window.keyboardShortcuts.isMac) { // eslint-disable-line no-undef
-      if (ev.key === 's') {
-        this.props.closeMenu();
+    if (window.DESKPRO_ENABLE_KB_SHORTCUTS) {
+      if (ev.ctrlKey && window.DeskPRO_Window.keyboardShortcuts.isMac
+        || ev.altKey && !window.DeskPRO_Window.keyboardShortcuts.isMac) {
+        if (ev.key === 's') {
+          this.props.closeMenu();
+        }
       }
     }
   };
@@ -362,15 +537,18 @@ export class SnippetsMenu extends React.Component {
   };
 
   newSnippet = () => {
+    const isOwnershipGlobal = (window.DESKPRO_PERSON_PERMS['agent_snippets.create_snippet']
+      || window.DESKPRO_PERSON_PERMS['agent_snippets.create_global_snippet']);
     const snippet = Immutable.fromJS({
       is_visible_global:   true,
-      is_ownership_global: true,
+      is_ownership_global: isOwnershipGlobal,
       translations:        [],
       type:                [this.props.type],
     });
     this.setState({
       editOpen:    true,
       snippetEdit: snippet,
+      editLang:    this.props.langId,
     });
   };
 
@@ -438,7 +616,9 @@ export class SnippetsMenu extends React.Component {
 
   selectFocused = (e) => {
     const snippet = this.props.snippets.toSeq().slice(this.focusedIndex).first();
-    const langId = SnippetsMenuContainer.getSnippetTranslationToUse(snippet.get('translations'), this.props.langPref).get('language');
+    const langId = SnippetsMenuContainer
+      .getSnippetTranslationToUse(snippet, this.props.langPref, this.props.type)
+      .get('language');
     this.props.insertSnippet(e, snippet, langId);
   };
 
@@ -453,14 +633,26 @@ export class SnippetsMenu extends React.Component {
       filter,
       handleFilter,
       width,
+      langContext,
+      langDisplay,
       langPref,
+      updateLanguagePref,
       showMode,
       handleShowMode,
+      type,
+      selectForMassAction,
+      massActionsSelected,
+      massActionsProgress,
     } = this.props;
     const style = {};
     if (width) {
       style.width = width - 5;
     }
+    let listHeight = this.state.height - 123;
+    if (this.state.massActionMode) {
+      listHeight -= 80;
+    }
+    const massActionsHeight = this.state.massActionMode ? 80 : 0;
     return (
       <div id="snippets__menu" style={style}>
         <div className="header">
@@ -487,16 +679,34 @@ export class SnippetsMenu extends React.Component {
           </div>
           <div className="top">
             <h1>{agentPhrases.get('agent.general.snippets')}</h1> <span className="count">({snippets.size})</span>
-            <Button
-              className="dp-button--primary add-snippet"
-              onClick={this.newSnippet}
-              size="medium"
-            >
-              + {agentPhrases.get('agent.general.snippet')}
-            </Button>
+            { (
+              window.DESKPRO_PERSON_PERMS['agent_snippets.create_snippet']
+              || window.DESKPRO_PERSON_PERMS['agent_snippets.create_self_snippet']
+              || window.DESKPRO_PERSON_PERMS['agent_snippets.create_team_snippet']
+              || window.DESKPRO_PERSON_PERMS['agent_snippets.create_global_snippet']
+            ) ?
+              <Button
+                type="primary"
+                className="add-snippet"
+                onClick={this.newSnippet}
+                size="medium"
+              >
+                + {agentPhrases.get('agent.general.snippet')}
+              </Button>
+              : null}
+            <MassActionsSelect
+              onChange={this.massActionsMode}
+            />
+            <LanguageSelect
+              languages={languages}
+              langContext={langContext}
+              langPref={langPref}
+              onChange={updateLanguagePref}
+              type={type}
+            />
           </div>
         </div>
-        <div className="body">
+        <div className="body" style={{ height: this.state.height - 113 }}>
           <SnippetsFiltering
             me={me}
             snippets={snippets}
@@ -514,20 +724,44 @@ export class SnippetsMenu extends React.Component {
             height={this.state.height}
             handleShowMode={handleShowMode}
           />
-          <SnippetsList
-            snippets={snippets}
-            languages={languages}
-            langPref={langPref}
-            filter={filter}
-            height={this.state.height}
-            width={width}
-            focusedIndex={this.state.focusedIndex}
-            selectedLabel={this.state.selectedLabel}
-            multiLabels={this.state.multiLabels}
-            multiMode={this.state.multiMode}
-            editSnippet={this.editSnippet}
-            insertSnippet={insertSnippet}
-          />
+          <div className="snippets__mass-actions" style={{ flexBasis: massActionsHeight }}>
+            {this.state.massActionMode ?
+              <MassActions
+                action={this.state.massActionMode}
+                selected={massActionsSelected}
+                close={this.closeMassActions}
+                runMassActions={this.props.runMassActions}
+              />
+              : null}
+          </div>
+          {massActionsProgress !== null ?
+            <div className="snippets__mass-actions__progress">
+              <Progress size="large" type="cta" style={{ margin: 10, border: '1px solid #ccc' }}>
+                <ProgressBar percent={massActionsProgress.current * 100 / massActionsProgress.total} />
+              </Progress>
+              {agentPhrases.get('agent.snippets.mass_actions_progress',
+                { current: massActionsProgress.current, total: massActionsProgress.total })}
+            </div>
+            : <SnippetsList
+              me={me}
+              snippets={snippets}
+              languages={languages}
+              langPref={langDisplay}
+              filter={filter}
+              height={listHeight}
+              width={width}
+              type={type}
+              focusedIndex={this.state.focusedIndex}
+              selectedLabel={this.state.selectedLabel}
+              multiLabels={this.state.multiLabels}
+              multiMode={this.state.multiMode}
+              editSnippet={this.editSnippet}
+              insertSnippet={insertSnippet}
+              massActionMode={this.state.massActionMode}
+              selectForMassAction={selectForMassAction}
+              massActionsSelected={massActionsSelected}
+            />
+          }
         </div>
         {this.getEditSnippet()}
       </div>

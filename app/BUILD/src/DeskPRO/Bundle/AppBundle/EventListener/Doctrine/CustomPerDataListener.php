@@ -55,6 +55,11 @@ class CustomPerDataListener implements EventSubscriber
     private $updateQueue = [];
 
     /**
+     * @var array
+     */
+    private $collectionCache = [];
+
+    /**
      * {@inheritdoc}
      */
     public function getSubscribedEvents()
@@ -107,7 +112,8 @@ class CustomPerDataListener implements EventSubscriber
 
     public function onClear()
     {
-        $this->updateQueue = [];
+        $this->updateQueue     = [];
+        $this->collectionCache = [];
     }
 
     /**
@@ -136,6 +142,7 @@ class CustomPerDataListener implements EventSubscriber
 
         $qb->getQuery()->execute();
         unset($this->updateQueue[spl_object_hash($entity)]);
+        unset($this->collectionCache[spl_object_hash($entity)]);
     }
 
     /**
@@ -183,12 +190,16 @@ class CustomPerDataListener implements EventSubscriber
      */
     private function getLazyCriteriaCollection(CustomPerDataOwnerInterface $entity, EntityManager $em)
     {
-        $persister = $em->getUnitOfWork()->getEntityPersister(CustomFieldData::class);
-        $criteria  = new Criteria();
-        $criteria->andWhere($criteria->expr()->eq('owner_id', $entity->getId()));
-        $criteria->andWhere($criteria->expr()->in('root_definition', $this->getDefIds($entity, $em)));
+        if (!isset($this->collectionCache[spl_object_hash($entity)])) {
+            $persister = $em->getUnitOfWork()->getEntityPersister(CustomFieldData::class);
+            $criteria  = new Criteria();
+            $criteria->andWhere($criteria->expr()->eq('owner_id', $entity->getId()));
+            $criteria->andWhere($criteria->expr()->in('root_definition', $this->getDefIds($entity, $em)));
 
-        return new LazyCriteriaCollection($persister, $criteria);
+            $this->collectionCache[spl_object_hash($entity)] = new LazyCriteriaCollection($persister, $criteria);
+        }
+
+        return $this->collectionCache[spl_object_hash($entity)];
     }
 
     /**

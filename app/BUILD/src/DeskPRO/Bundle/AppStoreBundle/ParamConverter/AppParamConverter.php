@@ -59,12 +59,9 @@ class AppParamConverter implements ParamConverterInterface
         }
 
         $application = $this->convert($from);
-        if (! empty($application)) {
-            $request->attributes->set($attributeName, $application);
-            return true;
-        }
+        $request->attributes->set($attributeName, $application);
 
-        return false;
+        return true;
     }
 
     /**
@@ -74,7 +71,9 @@ class AppParamConverter implements ParamConverterInterface
      */
     private function convert($from)
     {
-        if ($this->identifierParser->recognizeApplicationName($from)) {
+        $from = urldecode($from);
+        $appRef  = $this->identifierParser->parseApplicationRef($from);
+        if (!is_null($appRef)) {
             return $this->finder->findByName($from);
         }
 

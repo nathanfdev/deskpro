@@ -1,4 +1,5 @@
-import React, { PropTypes } from 'react';
+import PropTypes from 'prop-types';
+import React from 'react';
 import $ from 'jquery';
 
 export class AbstractFileUpload extends React.Component {
@@ -29,8 +30,7 @@ export class AbstractFileUpload extends React.Component {
     this.initializeFileUpload();
 
     $input.fileupload('send', {
-      fileInput: $input,
-      files:     [file]
+      files: [file]
     });
   }
 }

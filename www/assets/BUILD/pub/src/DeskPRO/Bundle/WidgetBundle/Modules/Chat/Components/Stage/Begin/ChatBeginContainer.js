@@ -1,6 +1,7 @@
-import React, { PropTypes } from 'react';
+import PropTypes from 'prop-types';
+import React from 'react';
 import { connect } from 'react-redux';
-import { Fieldset, createValue } from 'react-forms';
+import { Fieldset, createValue } from '@deskpro/react-forms';
 import $ from 'jquery';
 import Immutable from 'immutable';
 import { loadAll, loadWithParams, isLoadedCollectionSelectorFactory, collectionSelectorFactory } from 'DeskPRO/Bundle/AppBundle/Modules/RecordsStore';
@@ -26,10 +27,8 @@ import { ChatBeginSimple } from './ChatBeginSimple';
   liveDemo:                 liveDemoSelector(state),
   customFieldsLoaded:       isLoadedCollectionSelectorFactory('CustomDefChat', 'all')(state),
   customFields:             customChatFieldsOrderedSelector(state),
-  allChatDepartments:       collectionSelectorFactory('ChatDepartment', 'all')(state),
   chatDepartments:          collectionSelectorFactory('ChatDepartment', 'online')(state),
   chatDepartmentsLoaded:    isLoadedCollectionSelectorFactory('ChatDepartment', 'online')(state),
-  allChatDepartmentsLoaded: isLoadedCollectionSelectorFactory('ChatDepartment', 'all')(state),
   chatSelectDepartmentType: chatSelectDepartmentTypeSelector(state),
   chatDefaultDepartment:    chatDefaultDepartmentSelector(state),
   chatRequiredName:         chatRequiredNameSelector(state),
@@ -47,12 +46,10 @@ export class ChatBeginContainer extends React.Component {
     liveDemo:                 PropTypes.bool,
     customFieldsLoaded:       PropTypes.bool,
     chatDepartmentsLoaded:    PropTypes.bool,
-    allChatDepartmentsLoaded: PropTypes.bool,
     chatSelectDepartmentType: PropTypes.string,
     chatDefaultDepartment:    PropTypes.number,
     loggedIn:                 PropTypes.bool,
     chatDepartments:          PropTypes.object,
-    allChatDepartments:       PropTypes.object,
     customFields:             PropTypes.object
   };
 
@@ -172,7 +169,8 @@ export class ChatBeginContainer extends React.Component {
     }
 
     this.setState({
-      submit: true
+      submit: true,
+      banned: false
     });
 
     const promise = dispatch(createChat(this.state.formData.value));
@@ -188,10 +186,17 @@ export class ChatBeginContainer extends React.Component {
       },
       (result) => {
         if (this.mounted) {
-          this.setState({
+          const data = result.getData();
+          const newState = {
             submit: false,
-            errors: result.getData()
-          });
+            errors: data
+          };
+
+          if (data.message === 'banned') {
+            newState.banned = true;
+          }
+
+          this.setState(newState);
         }
       }
     );
@@ -261,10 +266,10 @@ export class ChatBeginContainer extends React.Component {
   render() {
     const { loggedIn } = this.props;
     const { customFields, customFieldsLoaded } = this.props;
-    const { allChatDepartments, chatDepartmentsLoaded, allChatDepartmentsLoaded, chatSelectDepartmentType } = this.props;
-    const allowDepartmentSelection = chatSelectDepartmentType !== 'default' && allChatDepartments.size > 1;
+    const { chatDepartments, chatDepartmentsLoaded, chatSelectDepartmentType } = this.props;
+    const allowDepartmentSelection = chatSelectDepartmentType !== 'default' && chatDepartments.size > 1;
 
-    if (!customFieldsLoaded || !chatDepartmentsLoaded || !allChatDepartmentsLoaded) {
+    if (!customFieldsLoaded || !chatDepartmentsLoaded) {
       return <ChatBeginLoadingSpinner />;
     }
 

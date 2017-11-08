@@ -70,7 +70,7 @@ return [
     /*
      * Are agent teams enabled?
      */
-    'core.use_agent_team' => false,
+    'core.use_agent_team' => true,
 
     /*
      * Are products enabled?
@@ -903,6 +903,7 @@ return [
     'user.news_subscriptions'       => true,
     'user.downloads_subscriptions'  => true,
     'user.feedback_subscriptions'   => true,
+    'user.kb_categories_with_tree'  => true,
 
     //###################################################################################################################
     // captcha : FALSE (off), 'guests', 'everyone'
@@ -1099,6 +1100,8 @@ return [
     'notification.settings.pusher_client.appId'   => '',
     'notification.settings.pusher_client.cluster' => 'mt1',
     'notification.settings.pusher_client.debug'   => false,
+    'notification.settings.pusher_client.timeout' => 5,
+    'notification.settings.pusher_client.tries'   => 2,
 
     // Simple delivery handler with polling
     'notification.settings.polling_client.polling_interval' => 5000,

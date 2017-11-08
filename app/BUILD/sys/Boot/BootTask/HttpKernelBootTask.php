@@ -29,6 +29,7 @@
 namespace DpSys\Boot\BootTask;
 
 use DeskPRO\Bundle\PortalBundle\HttpCache\PortalHttpCache;
+use DpRun\DpEnv;
 use DpSys\Kernel;
 use Symfony\Component\HttpFoundation\Request;
 
@@ -37,7 +38,7 @@ use Symfony\Component\HttpFoundation\Request;
  */
 class HttpKernelBootTask implements BootTaskInterface
 {
-    public function run(\DpRun\DpEnv $env, array $resources)
+    public function run(DpEnv $env, array $resources)
     {
         /** @var Request $request */
         $request = $resources['request'];
@@ -73,13 +74,13 @@ class HttpKernelBootTask implements BootTaskInterface
     }
 
     /**
-     * @param Request      $request
-     * @param string       $interface_id
-     * @param \DpRun\DpEnv $env
+     * @param Request $request
+     * @param string  $interface_id
+     * @param DpEnv   $env
      *
      * @return PortalHttpCache|Kernel\ApiKernel|Kernel\DpKernel|Kernel\InstallKernel|Kernel\PortalKernel
      */
-    private function getKernelClass(Request $request, $interface_id, \DpRun\DpEnv $env)
+    private function getKernelClass(Request $request, $interface_id, DpEnv $env)
     {
         switch ($interface_id) {
             case 'apiv2':
@@ -92,7 +93,7 @@ class HttpKernelBootTask implements BootTaskInterface
 
                     return new PortalHttpCache(
                         $kernel,
-                        $env->getUserCacheDir().DIRECTORY_SEPARATOR.'http_cache',
+                        $env->getUserCacheDir().DIRECTORY_SEPARATOR.'http_cache'.DIRECTORY_SEPARATOR.$env->getAppName(),
                         $request->getBasePath()
                     );
                 }

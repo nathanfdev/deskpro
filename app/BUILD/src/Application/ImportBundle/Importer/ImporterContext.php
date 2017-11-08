@@ -48,6 +48,11 @@ class ImporterContext
     private $inputPath;
 
     /**
+     * @var string
+     */
+    private $brand;
+
+    /**
      * Constructor.
      */
     public function __construct()
@@ -103,5 +108,25 @@ class ImporterContext
     public function setBatchConfig(BatchConfig $batchConfig = null)
     {
         $this->batchConfig = $batchConfig ?: new BatchConfig();
+    }
+
+    /**
+     * @return string
+     */
+    public function getBrand()
+    {
+        return $this->brand;
+    }
+
+    /**
+     * @param string $brand
+     *
+     * @return $this
+     */
+    public function setBrand($brand)
+    {
+        $this->brand = $brand;
+
+        return $this;
     }
 }

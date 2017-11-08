@@ -16,7 +16,7 @@ import {
 } from '../Selectors/dpWindow';
 import { chatIdSelector } from '../../Chat/Selectors/chat';
 import { loadNewTicketForm } from '../../Ticket/Actions/ticketActions';
-import { history, getLocation } from '../../../Services/history';
+import { history } from '../../../Services/history';
 import { dispatchWidgetStatus } from '../../../Services/WindowApi';
 
 const openChatBeginStageByMode = (chatBeginMode) => {
@@ -111,16 +111,12 @@ export const openWidget = createAction(
 );
 
 export const reopenWidget = createAction('WIDGET_REOPEN', () => (dispatch) => {
-  getLocation((location) => {
-    // if history location was changed then just reopen widget, no need to resolve path
-    // /chat is default path
-    if (location.pathname !== '/chat') {
-      dispatch(windowResize());
-    } else {
-      dispatch(openWidget());
-    }
-  });
-
+  const location = history.getCurrentLocation();
+  if (location.pathname !== '/chat') {
+    dispatch(windowResize());
+  } else {
+    dispatch(openWidget());
+  }
   return null;
 });
 

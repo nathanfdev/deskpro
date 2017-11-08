@@ -769,7 +769,7 @@ class Article extends ContentAbstract implements HighlightableModelInterface, La
             [
                 'fieldName'    => 'categories',
                 'targetEntity' => 'Application\\DeskPRO\\Entity\\ArticleCategory',
-                'cascade'      => [0 => 'remove', 1 => 'persist', 3 => 'merge'],
+                'cascade'      => ['persist', 'merge'],
                 'inversedBy'   => 'articles',
                 'joinTable'    => [
                     'name'        => 'article_to_categories',

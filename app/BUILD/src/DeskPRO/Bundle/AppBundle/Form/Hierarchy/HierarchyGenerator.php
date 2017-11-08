@@ -286,6 +286,11 @@ class HierarchyGenerator
                 foreach ($allowedDepartments as $department) {
                     $foundRoot = null;
                     if ($department->getParent()) {
+                        // skip department if its parent is not available
+                        if (!$department->getParent()->isTicketsEnabled()) {
+                            continue;
+                        }
+
                         // go through all parents, add them to the "allowed" array so they are in our hierarchy.
                         $parents = $department->getAllParents();
                         foreach ($parents as $parentDep) {

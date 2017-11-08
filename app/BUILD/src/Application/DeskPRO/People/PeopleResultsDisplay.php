@@ -33,14 +33,23 @@
 namespace Application\DeskPRO\People;
 
 use Application\DeskPRO\App;
+use Application\DeskPRO\CustomFields\FieldManager;
+use Application\DeskPRO\DBAL\Connection;
 use Application\DeskPRO\Entity\Person;
+use Application\DeskPRO\EntityRepository\Ticket as TicketEntityRepository;
+use Doctrine\ORM\EntityManager;
 
 class PeopleResultsDisplay
 {
     /**
-     * @var \Application\DeskPRO\Entity\Person[]
+     * @var Person[]
      */
     protected $people;
+
+    /**
+     * @var Person
+     */
+    protected $agent;
 
     /**
      * @var array
@@ -48,17 +57,17 @@ class PeopleResultsDisplay
     protected $people_ids;
 
     /**
-     * @var \Doctrine\ORM\EntityManager
+     * @var EntityManager
      */
     protected $em;
 
     /**
-     * @var \Application\DeskPRO\DBAL\Connection
+     * @var Connection
      */
     protected $db;
 
     /**
-     * @var \Application\DeskPRO\CustomFields\FieldManager
+     * @var FieldManager
      */
     protected $field_manager;
 
@@ -98,11 +107,13 @@ class PeopleResultsDisplay
     protected $all_fields_data;
 
     /**
-     * @param \Application\DeskPRO\Entity\People[] $people
+     * @param Person[] $people
+     * @param Person   $agent
      */
-    public function __construct(array $people)
+    public function __construct(array $people, Person $agent)
     {
         $this->people       = $people;
+        $this->agent        = $agent;
         $this->people_count = count($people);
         $this->people_ids   = [];
         foreach ($this->people as $p) {
@@ -123,7 +134,7 @@ class PeopleResultsDisplay
     }
 
     /**
-     * @return \Application\DeskPRO\Entity\Person[]
+     * @return Person[]
      */
     public function getPeople()
     {
@@ -183,7 +194,9 @@ class PeopleResultsDisplay
     }
 
     /**
-     * @param \Application\DeskPRO\Entity\Person $person
+     * @param Person $person
+     *
+     * @return array
      */
     public function getEmail(Person $person)
     {
@@ -205,6 +218,9 @@ class PeopleResultsDisplay
         return $this->primary_emails[$person->primary_email->getId()];
     }
 
+    /**
+     * @return array
+     */
     public function getAllFieldsData()
     {
         if ($this->all_fields_data !== null) {
@@ -244,7 +260,9 @@ class PeopleResultsDisplay
     }
 
     /**
-     * @param \Application\DeskPRO\Entity\Person $person
+     * @param Person $person
+     *
+     * @return array
      */
     public function getCustomFields(Person $person)
     {
@@ -281,7 +299,7 @@ class PeopleResultsDisplay
     /**
      * Get an array of labels applied to a person.
      *
-     * @param \Application\DeskPRO\Entity\Person $person
+     * @param Person $person
      *
      * @return array
      */
@@ -295,7 +313,7 @@ class PeopleResultsDisplay
     /**
      * Get an array of usernames from usersources applied to a person.
      *
-     * @param \Application\DeskPRO\Entity\Person $person
+     * @param Person $person
      *
      * @return array
      */
@@ -309,7 +327,7 @@ class PeopleResultsDisplay
     /**
      * Check if a person has labels.
      *
-     * @param \Application\DeskPRO\Entity\Person $person
+     * @param Person $person
      *
      * @return bool
      */
@@ -329,7 +347,9 @@ class PeopleResultsDisplay
             return $this->people_ticket_counts;
         }
 
-        $this->people_ticket_counts = $this->em->getRepository('DeskPRO:Ticket')->getTicketCountsForPeople($this->people);
+        /** @var TicketEntityRepository $ticketRepository */
+        $ticketRepository           = $this->em->getRepository('DeskPRO:Ticket');
+        $this->people_ticket_counts = $ticketRepository->getTicketCountsForPeople($this->people, $this->agent);
 
         return $this->people_ticket_counts;
     }
@@ -337,7 +357,7 @@ class PeopleResultsDisplay
     /**
      * Get the number of tickets submitted by a user.
      *
-     * @param \Application\DeskPRO\Entity\Person $person
+     * @param Person $person
      *
      * @return int
      */

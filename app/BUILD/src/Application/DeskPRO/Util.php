@@ -312,7 +312,7 @@ class Util
      *
      * @return array
      */
-    public static function labelsArrayFromString($labels, $toLower = true)
+    public static function labelsArrayFromString($labels, $toLower = false)
     {
         if (!is_array($labels)) {
             $labels = explode(',', $labels);

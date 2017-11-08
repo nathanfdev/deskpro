@@ -1,0 +1,262 @@
+//
+
+
+
+.site-header {
+  color: $top-bar-text-color;
+  padding: 7px;
+  background: $top-bar-blue;
+  height: 44px;
+
+  > *, .header-right > *, .header-left > * {// Turn everything directly under the site header into an inline-block item
+    display: inline-block;
+    vertical-align: top;
+  }
+
+  .header-left {
+    width: 50%;
+    float: left;
+  }
+
+  .header-right {
+    width: 50%;
+    float: right;
+    text-align: right;
+  }
+
+  a { text-decoration: none; }
+
+
+  // Force a full width form by using a container with a background and a blank input field
+  .site-header-search {
+    display: inline-block;
+    position: relative;
+    width: 100%;
+    max-width: 600px;
+    background: #ededed;
+    border-radius: 2px;
+    height: 30px;
+
+    form {
+      display: block;
+      width: 100%;
+      margin-bottom: 0px;
+      height: 30px;
+    }
+
+    input[type="text"], input[type="button"] {
+      float: left;
+      font-size: 0.9em;
+      line-height: 1em;
+      display: block;
+      height: 30px;
+      line-height: 1em;
+      padding: 0px;
+
+      // needed for gecko - aligns input text properly
+      //padding-bottom: 2px;
+
+      border: 0px;
+      background: none;
+      font-family: "Lato";
+      border-radius: 2px;
+    }
+
+    input[type="text"] {
+      width: 80%;
+      padding-left: 10px;
+    }
+
+    input[type="button"] {
+      display: block;
+      width: 20%;
+      color: #969696;
+      font-size: 1em;
+      border-left: 1px solid rgba(0, 0, 0, 0.1);
+    }
+  }
+
+  // Deskpro logo
+  .logo {
+    display: inline-block;
+    width: 45px;
+    height: 30px;
+    background-size: cover;
+  }
+}
+
+
+// Notifications
+
+.notification-button {
+  padding: 5px;
+  display: block;
+  height: 32px;
+  width: 32px;
+  text-align: center;
+  position: relative;
+  color: #fff;
+
+  i { font-size: 1.5em; }
+
+  .notification-count {
+    display: block;
+    position: absolute;
+    background: #3f74a0;
+    color: #fff;
+    border-radius: 199px;
+    font-size: 9px;
+    line-height: 1em;
+    font-weight: 800;
+    padding: 2px 5px;
+    top: -2px;
+    right: -4px;
+    border: 2px solid #4681b2;
+    z-index: 9999;
+  }
+}
+
+
+
+
+// Chat bubbles
+
+.open-chats { display: inline-block; }
+
+.chat {
+  display: inline-block;
+  line-height: 1em;
+  width: 30px;
+  height: 30px;
+  background-size: cover;
+  background-position: center center;
+  border-radius: 3px;
+  position: relative;
+  box-shadow: 0px 0px 2px rgba(0, 0, 0, 0.3);
+  margin: 0 4px;
+}
+
+.chat-bubble {
+  position: absolute;
+  display: inline-block;
+  font-size: 9px;
+  font-weight: 800;
+  padding: 2px 3px;
+  top: -6px;
+  right: -7px;
+  line-height: 1em;
+  min-width: 17px;
+  height: 17px;
+  text-align: center;
+  border-radius: 199px;
+  background: #56bb70;
+  color: #fff;
+  border: 2px solid #4681b2;
+}
+
+
+// On/Off switches
+
+.switch-bucket {
+  display: inline-block;
+  height: 30px;
+  padding-top: 3px;// Vertical align for switches: (Total height (30) - .switch height(24)) / 2
+  border-right: 1px solid rgba(255, 255, 255, 0.1);
+  // grrr
+  padding-left: 4px;
+  padding-right: 6px;
+}
+
+.switch {
+  background: #3f74a0;
+  padding: 2px;
+  border-radius: 2px;
+  height: 24px;
+  display: inline-block;
+  font-weight: 600;
+  color: #fff;
+  text-decoration: none;
+
+
+  // Button with icon
+  .button {
+    display: block;
+    position: absolute;
+    height: 20px;
+    width: 24px;
+    border-radius: 2px;
+    background: #62ad8c;
+    top: 0px;
+    right: 0px;
+    box-shadow: 0px 0px 5px rgba(0, 0, 0, 0.3);
+    text-align: center;
+
+    i {
+      position: relative;
+      top: 3px;
+    }
+  }
+
+  // What the button says
+  .status {
+    position: relative;
+    top: 3px;
+    font-size: 10px;
+    padding-left: 7px;
+    padding-right: 33px;
+  }
+  &.on { color: rgba(255, 255, 255, 0.9); }
+  &.off { color: rgba(255, 255, 255, 0.5);
+
+    .button {
+      background: #a9ad62;
+      right: none;
+      left: 0px;
+    }
+
+    .status {
+      padding-right: 5px;
+      padding-left: 33px;
+    }
+  }
+}
+
+.switch-body {
+  position: relative;
+  background: #7398b7;
+  height: 20px;
+  width: 100%;
+  border-radius: 2px;
+}
+
+
+
+
+.user-dropdown {
+  height: 30px;
+  background: #3f74a0;
+  // width: 50px;
+  border-bottom: 2px solid #325d80;
+  border-radius: 2px;
+  margin-left: 10px;
+  padding: 5px;
+  color: #bcbcbc;
+
+  i {
+    display: inline-block;
+    line-height: 1em;
+    position: relative;
+    font-size: 1.6em;
+    margin-left: 5px;
+    top: -4px;
+  }
+
+  .user-photo {
+    display: inline-block;
+    border-radius: 2px;
+    width: 20px;
+    height: 20px;
+    background-size: 100%;
+    background-repeat: no-repeat;
+  }
+}

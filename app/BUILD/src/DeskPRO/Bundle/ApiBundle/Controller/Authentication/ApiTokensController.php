@@ -70,6 +70,31 @@ class ApiTokensController extends BaseController
 {
     /**
      * @ApiDoc(
+     *      description="creates a new api token based on the authenticated user's session",
+     *      output="token",
+     *      statusCodes={
+     *          201="Created token",
+     *          401="Invalid credentials",
+     *      }
+     * )
+     * @Rest\Get("/session")
+     * @Rest\View(serializerGroups={"token"})
+     *
+     *
+     * @param Request $request
+     * @return View
+     */
+    public function newSessionTokenAction(Request $request) {
+        $person = $this->getUser();
+        if (!$person) {
+            $this->throwUnauthorized();
+        }
+
+        return View::create($this->wrap($this->createToken($person)), Response::HTTP_CREATED);
+    }
+
+    /**
+     * @ApiDoc(
      *      description="create a new api token",
      *      output="token",
      *      parameters={

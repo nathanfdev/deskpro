@@ -190,7 +190,7 @@ class CustomRef implements RefGeneratorInterface
                 ++$append_count;
 
                 if ($attempt > $this->max_tries) {
-                    throw new \Exception("Cannot find unique ref after $attempt attempts with pattern {$this->format_string}. Aborting.");
+                    throw new RefGeneratorException("Cannot find unique ref after $attempt attempts with pattern {$this->format_string}. Aborting.");
                 }
 
                 if ($attempt > $this->max_tries - 5) {

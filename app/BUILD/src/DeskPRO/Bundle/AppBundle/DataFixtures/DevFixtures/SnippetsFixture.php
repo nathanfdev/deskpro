@@ -87,7 +87,7 @@ class SnippetsFixture extends DeskProAbstractFixture implements OrderedFixtureIn
             for ($i = 0; $i < self::NUM_SNIPPETS; ++$i) {
                 $batch[] = [
                     'category_id'   => $category,
-                    'shortcut_code' => $this->faker->words(2, true),
+                    'shortcut_code' => str_replace(' ', '_', $this->faker->words(2, true)),
                     'is_draft'      => 0,
                 ];
             }

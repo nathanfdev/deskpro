@@ -28,8 +28,11 @@
 
 namespace DeskPRO\Bundle\AppStoreBundle\Domain;
 
-class SearchFilterValueArrayMap implements SearchAssetFilterValueMap, SearchStateFilterValueMap, SettingsFilterValueMap
+class SearchFilterValueArrayMap implements SearchAssetFilterOptions, SearchAppStorageFilterOptions, SearchSettingsFilterOptions
 {
+    /** @var string */
+    private $applicationId;
+
     /** @var string */
     private $filePathPattern;
 
@@ -37,7 +40,7 @@ class SearchFilterValueArrayMap implements SearchAssetFilterValueMap, SearchStat
     private $fileExtension;
 
     /** @var string */
-    private $scopeList;
+    private $entityId;
 
     /** @var string */
     private $stateVariableName;
@@ -56,7 +59,7 @@ class SearchFilterValueArrayMap implements SearchAssetFilterValueMap, SearchStat
     /**
      * @param string $filePathPattern
      */
-    public function setFilePathPattern(string $filePathPattern)
+    public function setFilePathPattern($filePathPattern)
     {
         $this->filePathPattern = $filePathPattern;
     }
@@ -72,7 +75,7 @@ class SearchFilterValueArrayMap implements SearchAssetFilterValueMap, SearchStat
     /**
      * @param string $fileExtension
      */
-    public function setFileExtension(string $fileExtension)
+    public function setFileExtension($fileExtension)
     {
         $this->fileExtension = $fileExtension;
     }
@@ -80,17 +83,25 @@ class SearchFilterValueArrayMap implements SearchAssetFilterValueMap, SearchStat
     /**
      * @return string
      */
-    public function getScopeList()
+    public function getEntityId()
     {
-        return $this->scopeList;
+        return $this->entityId;
+    }
+
+    /**
+     * @param string $id
+     */
+    public function setEntityId($id)
+    {
+        $this->entityId = $id;
     }
 
     /**
      * @param string $scopeList
      */
-    public function setStateVariableScope(string $scopeList)
+    public function setStateVariableScope($scopeList)
     {
-        $this->scopeList = $scopeList;
+        $this->entityId = $scopeList;
     }
 
     /**
@@ -104,7 +115,7 @@ class SearchFilterValueArrayMap implements SearchAssetFilterValueMap, SearchStat
     /**
      * @param string $stateVariableName
      */
-    public function setStateVariableName(string $stateVariableName)
+    public function setStateVariableName($stateVariableName)
     {
         $this->stateVariableName = $stateVariableName;
     }
@@ -120,9 +131,24 @@ class SearchFilterValueArrayMap implements SearchAssetFilterValueMap, SearchStat
     /**
      * @param string $showPrivateSettings
      */
-    public function setShowPrivateSettings(string $showPrivateSettings)
+    public function setShowPrivateSettings($showPrivateSettings)
     {
         $this->showPrivateSettings = $showPrivateSettings;
     }
 
+    /**
+     * @return string
+     */
+    public function getApplicationId()
+    {
+        return $this->applicationId;
+    }
+
+    /**
+     * @param string $applicationId
+     */
+    public function setApplicationId($applicationId)
+    {
+        $this->applicationId = $applicationId;
+    }
 }

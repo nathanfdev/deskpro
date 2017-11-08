@@ -56,24 +56,16 @@ pageMeta.baseId = '{{ baseId }}';
 			</td>
 		</tr>
 	</table>
-	<input
-		type="checkbox"
-		id="{{ baseId }}_no_content"
-		{% if noContent %}checked="checked"{% endif %}
-		{% if (topic.parent is null) %}disabled="disabled"{% endif %}
-	/>
-	<label for="{{ baseId }}_no_content">
-        {{ phrase('agent.publish.no_content') }}
-	</label>
-	<br class="clear" />
 </header>
 
-<div class="profile-box-container" id="{{baseId}}_no_content_block" {% if not noContent %}style="display: none"{% endif %}>
-	<header>
-		<h4>{{ phrase('agent.general.properties') }}</h4>
-	</header>
-	{% include 'AgentBundle:Guide:view-properties-tab.html.twig' %}
-</div>
+{% if noContent %}
+	<div class="profile-box-container" id="{{baseId}}_no_content_block">
+		<header>
+			<h4>{{ phrase('agent.general.properties') }}</h4>
+		</header>
+		{% include 'AgentBundle:Guide:view-properties-tab.html.twig' %}
+	</div>
+{% endif %}
 
 <div class="profile-box-container reply-box-wrap" id="{{baseId}}_with_content_block" {% if noContent %}style="display: none"{% endif %}>
 	<header>
@@ -83,7 +75,7 @@ pageMeta.baseId = '{{ baseId }}';
 				<li data-tab-for="#{{baseId}}_tab_contents .topic-props"><span>{{ phrase('agent.general.properties') }}</span></li>
 				<li data-tab-for="#{{baseId}}_tab_contents .comments-tab"><span>{{ phrase('agent.general.comments') }} (<span id="{{baseId}}_count_comments">{{comments|length|default(0)}}</span>)</span></li>
 				<li data-tab-for="#{{baseId}}_tab_contents .revisions-tab"><span>{{ phrase('agent.general.label_revisions') }} (<span id="{{baseId}}_count_revs">{{topic.revisions|length|default(0)}}</span>)</span></li>
-				<li data-tab-for="#{{baseId}}_tab_contents .related-content-tab"><span>{{ phrase('agent.general.related_content') }} (<span id="{{baseId}}_count_related">0</span>)</span></li>
+				{#<li data-tab-for="#{{baseId}}_tab_contents .related-content-tab"><span>{{ phrase('agent.general.related_content') }} (<span id="{{baseId}}_count_related">0</span>)</span></li>#}
 				<li data-tab-for="#{{baseId}}_tab_contents .search-tab"><span>{{ phrase('agent.general.search') }}</span></li>
 			</ul>
 		</nav>

@@ -74,7 +74,7 @@ services:
   avatar_resolver:
     class: DeskPRO\Bundle\AppBundle\Content\AvatarResolver
     #todo #portal second param here needs to be setting for gravatar
-    arguments: ["@router.default", "@doctrine.orm.default_entity_manager", true]
+    arguments: ["@router.default", "@doctrine.orm.default_entity_manager", "@settings_resolver"]
 
   agent_data:
     class: DeskPRO\Bundle\AppBundle\Agent\AgentData
@@ -108,7 +108,7 @@ services:
 
   pdf_renderer:
     class: DeskPRO\Component\Pdf\mPdfRenderer
-    arguments: ["@brand_stack"]
+    arguments: ["@brand_stack","@deskpro.app_env"]
 
   widget_loader_code_renderer:
     class: DeskPRO\Bundle\AppBundle\Templating\WidgetLoader
@@ -138,7 +138,7 @@ services:
 
   url_corrector_factory:
     class: DeskPRO\Bundle\AppBundle\Request\UrlCorrectorFactory
-    arguments: ["@brand_aware_settings_resolver"]
+    arguments: ["@deskpro.app_env", "@brand_aware_settings_resolver"]
 
   request_matcher:
     class: DeskPRO\Bundle\AppBundle\Routing\RequestMatcher

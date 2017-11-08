@@ -47,6 +47,11 @@ class TicketRepository extends AbstractRepository implements WithLabelsInterface
         'messages' => ['fragment_size' => 100, 'number_of_fragments' => 1],
     ];
 
+    protected function getSource()
+    {
+        return ['excludes' => ['attachment']];
+    }
+
     /**
      * Sets the person context.
      *

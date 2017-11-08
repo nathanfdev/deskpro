@@ -58,6 +58,11 @@ class LanguageManager
     private $multiLanguage;
 
     /**
+     * @var Language
+     */
+    private $callLanguage;
+
+    /**
      * Constructor.
      *
      * @param Translate     $translate
@@ -155,7 +160,9 @@ class LanguageManager
      */
     public function getTranslator($lang = null)
     {
-        if (!$lang) {
+        if ($this->callLanguage) {
+            $lang = $this->callLanguage;
+        } elseif (!$lang) {
             if (!$lang = $this->languageStack->getActive()) {
                 $lang = $this->languageStack->getDefaultLanguage();
             }
@@ -194,5 +201,25 @@ class LanguageManager
     public function objectPhrase($object, $property = null, Language $lang = null)
     {
         return $this->getTranslator($lang)->getPhraseObject($object, $property);
+    }
+
+    /**
+     * Call a function with the language set ot $language. After the call,
+     * the language is reset back to the default.
+     *
+     * @param Language $language
+     * @param callable $func
+     *
+     * @return mixed
+     */
+    public function callWithLanguage(Language $language = null, $func)
+    {
+        $this->callLanguage = $language;
+
+        try {
+            return $this->translate->callWithLanguage($this->callLanguage, $func);
+        } finally {
+            $this->callLanguage = null;
+        }
     }
 }

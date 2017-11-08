@@ -1,4 +1,5 @@
-import _ from 'lodash';
+import forEach from 'lodash/forEach';
+import includes from 'lodash/includes';
 import $ from 'jquery';
 import { PageWidget } from 'DeskPRO/Component/PageWidget/PageWidget';
 import moment from 'moment';
@@ -21,12 +22,12 @@ export class DpxDateWidget extends PageWidget {
     const calendar = $el.data('calendar');
 
     if (!calendar || calendar === 'gregorian') {
-      if (window.DESKPRO_LANG) {
+      if (window.DESKPRO_LOCALE) {
         // datetime picker has locale for month/day names
-        $.datetimepicker.setLocale(window.DESKPRO_LANG.toLowerCase().split('_')[0]);
+        $.datetimepicker.setLocale(window.DESKPRO_LOCALE.toLowerCase().split('_')[0]);
 
         // we have to use moment for formatting tho
-        moment.locale(window.DESKPRO_LANG.toLowerCase().replace('_', '-'));
+        moment.locale(window.DESKPRO_LOCALE.toLowerCase().replace('_', '-'));
       }
 
       $.datetimepicker.setDateFormatter({
@@ -124,8 +125,8 @@ export class DpxDateWidget extends PageWidget {
         // disable all days of week
         options.onGenerate = function () {
           const that = this;
-          _.forEach([0, 1, 2, 3, 4, 5, 6], (weekDay) => {
-            if (!_.includes(weekdays, weekDay)) {
+          forEach([0, 1, 2, 3, 4, 5, 6], (weekDay) => {
+            if (!includes(weekdays, weekDay)) {
               $(that).find(`.xdsoft_day_of_week${weekDay}`).addClass('xdsoft_disabled');
             }
           });

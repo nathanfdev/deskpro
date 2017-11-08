@@ -262,4 +262,9 @@ interface AppEnvInterface
      * @return string
      */
     public function getVersionName();
+
+    /**
+     * @return bool
+     */
+    public function isCloud();
 }

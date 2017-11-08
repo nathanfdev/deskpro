@@ -1,0 +1,129 @@
+<div class="reports-editor-panel full-editor">
+    <div class="editor-form full-editor-form">
+        <div class="inline-input">
+            <div class="query-part title">
+                <div ui-ace="editor_conf({minLines: 1})"
+                     ng-model="widget.title"></div>
+            </div>
+        </div>
+        <div class="inline-input">
+            <label>Display:</label>
+            <select ui-select2 style="min-width:70px;" ng-model="widget.query_parts.display.0">
+                <option value="BAR" ng-selected="widget.query_parts.display[0] == 'BAR'">
+                    BAR
+                </option>
+                <option value="LINE" ng-selected="widget.query_parts.display[0] == 'LINE'">
+                    LINE
+                </option>
+                <option value="AREA" ng-selected="widget.query_parts.display[0] == 'AREA'">
+                    AREA
+                </option>
+                <option value="PIE" ng-selected="widget.query_parts.display[0] == 'PIE'">
+                    PIE
+                </option>
+                <option value="TABLE" ng-selected="widget.query_parts.display[0] == 'TABLE'">
+                    TABLE
+                </option>
+            </select>
+            <select ui-select2 style="min-width:70px;" ng-model="widget.query_parts.display.1">
+                <option value="BAR" ng-selected="widget.query_parts.display[1] == 'BAR'">
+                    BAR
+                </option>
+                <option value="LINE" ng-selected="widget.query_parts.display[1] == 'LINE'">
+                    LINE
+                </option>
+                <option value="AREA" ng-selected="widget.query_parts.display[1] == 'AREA'">
+                    AREA
+                </option>
+                <option value="PIE" ng-selected="widget.query_parts.display[1] == 'PIE'">
+                    PIE
+                </option>
+                <option value="TABLE" ng-selected="widget.query_parts.display[1] == 'TABLE'">
+                    TABLE
+                </option>
+            </select>
+        </div>
+        <div class="inline-input">
+            <label>Select:</label>
+            <div class="input-container"><div class="query-part"><div ui-ace="editor_conf({minLines: 1})" ng-model="widget.query_parts.select"></div></div></div>
+        </div>
+        <div class="inline-input">
+            <label>From:</label>
+            <div class="input-container"><div class="query-part short"><div ui-ace="editor_conf({minLines: 1})" ng-model="widget.query_parts.from"></div></div></div>
+        </div>
+        <div class="inline-input">
+            <label>Where:</label>
+            <div class="input-container"><div class="query-part"><div ui-ace="editor_conf({minLines: 3})" ng-model="widget.query_parts.where"></div></div></div>
+        </div>
+        <div class="inline-input">
+            <label>Split By:</label>
+            <div class="input-container"><div class="query-part"><div ui-ace="editor_conf({minLines: 1})" ng-model="widget.query_parts.splitBy"></div></div></div>
+        </div>
+        <div class="inline-input">
+            <label>Group By:</label>
+            <div class="input-container"><div class="query-part"><div ui-ace="editor_conf({minLines: 1})" ng-model="widget.query_parts.groupBy"></div></div></div>
+        </div>
+        <div class="inline-input">
+            <label>Order By:</label>
+            <div class="input-container"><div class="query-part"><div ui-ace="editor_conf({minLines: 1})" ng-model="widget.query_parts.orderBy"></div></div></div>
+        </div>
+        <div class="inline-input">
+            <label>Limit:</label>
+            <div class="input-container"><input type="text" ng-model="widget.query_parts.limit" style="width:100px"></div>
+            <div class="offset">
+                <label>Offset:</label><input type="text" ng-model="widget.query_parts.offset">
+            </div>
+        </div>
+
+        <div class="widget-vars">
+            <h3>Variables</h3>
+            <div ng-repeat="var in widget.variables track by $index">
+                <div class="inline-input">
+                    <label style="padding: 3px 10px;"><i class="fa fa-times" ng-click="deleteVariable($index)"></i></label>
+
+                    <input ng-model="var.name" />
+
+                    <select ui-select2 style="min-width:70px;" ng-model="var.type">
+                        <option value="dates" ng-selected="var.type == 'dates'">
+                            Date
+                        </option>
+                        <option value="fields" ng-selected="var.type == 'fields'">
+                            Group by field
+                        </option>
+                        <option value="statuses" ng-selected="var.type == 'statuses'">
+                            Status group
+                        </option>
+                        <option value="orders" ng-selected="var.type == 'orders'">
+                            Order group
+                        </option>
+                    </select>
+
+                    <select style="min-width: 200px;" ng-model="var.default" ui-select2="" ng-if="var.type == 'dates'">
+                        <option ng-repeat='(key, value) in groupParams[var.type]' ng-value="key" ng-selected="var.default == key">
+                            {{ ng_var('value.0') }}
+                        </option>
+                    </select>
+
+                    <select ui-select2 style="min-width: 200px;" ng-model="var.field_type" ng-if="var.type != 'dates'">
+                        <option ng-repeat="fieldType in fieldTypes[var.type]" ng-value="fieldType" ng-selected='fieldType == var.field_type'>
+                            {{ ng_var('fieldType') }}
+                        </option>
+                    </select>
+                    <select style="min-width: 200px;" ng-model="var.default" ui-select2="" ng-if="var.type != 'dates'">
+                        <option ng-repeat='(key, value) in groupParams[var.type][var.field_type]' ng-value="key" ng-selected="var.default == key">
+                            {{ ng_var('value.0') }}
+                        </option>
+                    </select>
+
+                </div>
+            </div>
+            <i class="fa fa-plus-circle" ng-click="addVariable()"></i> Add new var
+        </div>
+
+
+        <div class="editor-controls">
+            <a ng-if="widget.is_custom || !widget.id" href="#" ng-click="saveWidget($event)" class="button">Save Query <i class="fa fa-save"></i></a>
+            <a href="#" class="button button-edit">Test <i class="fa fa-fast-forward"></i></a>
+        </div>
+    </div>
+</div>

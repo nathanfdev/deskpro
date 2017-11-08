@@ -1,9 +1,10 @@
-import React, { PropTypes } from 'react';
+import PropTypes from 'prop-types';
+import React from 'react';
 import classNames from 'classnames';
 import Immutable from 'immutable';
 import Isvg from 'react-inlinesvg';
-import { Input, Checkbox, Radio } from 'deskpro-components/lib/Components/Forms';
-import { List, ListElement } from 'deskpro-components/lib/Components/Common';
+import { Input, Checkbox, Radio } from '@deskpro/react-components/lib/Components/Forms';
+import { List, ListElement } from '@deskpro/react-components/lib/Components/Common';
 import agentPhrases from 'DeskPRO/Bundle/AgentBundle/AgentPhrases';
 
 class SnippetsFiltering extends React.Component {
@@ -59,10 +60,7 @@ class SnippetsFiltering extends React.Component {
     if (nextProps.snippets !== this.props.snippets) {
       return true;
     }
-    if (nextProps.selectedLabels !== this.props.selectedLabel) {
-      return true;
-    }
-    return false;
+    return nextProps.selectedLabels !== this.props.selectedLabel;
   }
 
   getChildren = (label) => {
@@ -96,7 +94,7 @@ class SnippetsFiltering extends React.Component {
     labels
       .filter((value) => {
         const { labelFilter } = this.props;
-        if (this.state.labelFilter === '') {
+        if (labelFilter === '') {
           return true;
         }
         const re = new RegExp(labelFilter, 'i');
@@ -259,7 +257,7 @@ class SnippetsFiltering extends React.Component {
               checked={option.value === this.props.showMode}
               value={option.value}
             >
-              {option.label} ({option.count})
+              <span className="label">{option.label}</span> ({option.count})
             </Radio>
           )}
         </div>

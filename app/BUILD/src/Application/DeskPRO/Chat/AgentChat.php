@@ -26,16 +26,11 @@
  * ~ Thanks, Everyone at Team DeskPRO
  */
 
-/**
- * DeskPRO.
- */
-
 namespace Application\DeskPRO\Chat;
 
 use Application\DeskPRO\App;
 use Application\DeskPRO\Entity\ChatConversation;
 use Application\DeskPRO\Entity\Person;
-use Application\DeskPRO\Entity\Session;
 use DeskPRO\Bundle\AppBundle\Notification\Event\LegacySystemEvent;
 
 /**
@@ -46,15 +41,17 @@ class AgentChat
 {
     /** @var \Application\DeskPRO\Entity\Person */
     protected $person;
-    /** @var \Application\DeskPRO\Entity\Session */
-    protected $session;
     /** @var bool */
     protected $suppress_offline_email = false;
 
-    public function __construct(Person $person, Session $session)
+    /**
+     * Constructor.
+     *
+     * @param Person $person
+     */
+    public function __construct(Person $person)
     {
-        $this->person  = $person;
-        $this->session = $session;
+        $this->person = $person;
     }
 
     public function disableOfflineEmailAlert()

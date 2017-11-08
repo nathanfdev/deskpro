@@ -365,6 +365,11 @@ class TicketMerge implements PersonContextInterface
     private function mergeParticipants()
     {
         foreach ($this->other_ticket->participants as $part) {
+            // don't store participants if they are already belongs to a ticket as person or agent of the ticket
+            if ($this->ticket->getPerson() === $part->person || $this->ticket->getAgent() === $part->person) {
+                continue;
+            }
+
             $this->ticket->addParticipantPerson($part->person);
         }
     }

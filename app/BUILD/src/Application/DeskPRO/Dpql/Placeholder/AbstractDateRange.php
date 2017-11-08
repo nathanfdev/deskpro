@@ -169,7 +169,12 @@ abstract class AbstractDateRange extends AbstractPlaceholder
         } else {
             $format = 'Y-m-d H:i:s';
         }
-        $dt = new \DateTime($date);
+        try {
+            $dt = new \DateTime($date);
+        } catch (\Exception $e) {
+            throw new Dpql\Exception($e->getMessage(), $e->getCode());
+        }
+
         foreach ($intervals as $interval) {
             $operator = $interval->operator == \Application\DeskPRO\Dpql\Parser::T_OP_PLUS ? '+' : '-';
             $dt->modify("$operator $interval->amount $interval->unit");

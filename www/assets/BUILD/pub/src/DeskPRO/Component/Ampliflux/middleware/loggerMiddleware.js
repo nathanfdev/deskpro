@@ -1,6 +1,6 @@
-import isPlainObject from 'lodash/lang/isPlainObject';
-import { isDSA, getActionType } from '../actions/actionUtils';
+import isPlainObject from 'lodash/isPlainObject';
 import Immutable from 'immutable';
+import { isDSA, getActionType } from '../actions/actionUtils';
 
 function jsValue(val) {
   if ((/boolean|number|string/).test(typeof val)) {
@@ -22,7 +22,7 @@ function jsValue(val) {
 }
 
 export function loggerMiddleware({ getState }) {
-  return next => action => {
+  return next => (action) => {
     if (!window.DP_DEV_MODE) {
       return next(action);
     }
@@ -34,9 +34,9 @@ export function loggerMiddleware({ getState }) {
     const dispatchTitle = actionType + (sequenceType ? ` - ${sequenceType} ${sequence}` : '');
 
     if (console.groupCollapsed) {
-      console.groupCollapsed('[Dispatch] ' + dispatchTitle);
+      console.groupCollapsed(`[Dispatch] ${dispatchTitle}`);
     } else {
-      console.group('[Dispatch] ' + dispatchTitle);
+      console.group(`[Dispatch] ${dispatchTitle}`);
     }
 
     console.debug('Action', jsValue(action));
@@ -60,7 +60,7 @@ export function loggerMiddleware({ getState }) {
       console.groupEnd();
 
       if (isErrorStatus) {
-        console.warn('Note: Last action ' + actionType + ' had error status');
+        console.warn(`Note: Last action ${actionType} had error status`);
       }
       return result;
     } catch (e) {

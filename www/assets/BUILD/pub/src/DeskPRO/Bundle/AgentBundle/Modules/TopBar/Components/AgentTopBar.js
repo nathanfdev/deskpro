@@ -1,9 +1,11 @@
-import React, { PropTypes } from 'react';
+import PropTypes from 'prop-types';
+import React from 'react';
 import { connect } from 'react-redux';
 import Isvg from 'react-inlinesvg';
-import uuid from 'node-uuid';
+import uuid from 'uuid';
 import striptags from 'striptags';
 import Notify from 'notifyjs';
+import linkifyHtml from 'linkifyjs/html';
 import $ from 'jquery';
 import agentPhrases from 'DeskPRO/Bundle/AgentBundle/AgentPhrases';
 import { Container } from 'DeskPRO/Bundle/AgentBundle/Modules/IM/Components/New/ChatWindow';
@@ -93,6 +95,17 @@ export class AgentTopBarContainer extends SeparateComponent {
     groupCreation:       PropTypes.bool.isRequired
   };
 
+  static addLinks(message) {
+    const linkedMessage = linkifyHtml(message);
+    function replacer(match, scheme) {
+      if (!scheme) {
+        return `${match}http://`;
+      }
+      return match;
+    }
+    return linkedMessage.replace(/<a[^>]+href="([a-z]+:\/\/)?/gi, replacer);
+  }
+
   constructor(props) {
     super(props);
     this.state = {
@@ -170,7 +183,7 @@ export class AgentTopBarContainer extends SeparateComponent {
     this.props.dispatch(chatsActions.hideChat(chat));
   };
 
-  onSubmit = (message) => {
+  onSubmitChatMessage = (message) => {
     let testMessage = striptags(message, ['img', 'svg', 'video', 'object', 'embed']);
     testMessage = testMessage.replace(/(&nbsp;\s)+$/g, '');
     testMessage = testMessage.replace(/(&nbsp;|\s)+$/g, '');
@@ -179,7 +192,8 @@ export class AgentTopBarContainer extends SeparateComponent {
 
     if (testMessage.trim() || message.indexOf('<video') !== -1) { // another dancing around froala, it wraps <video> into <span>
       const { dispatch, current, me } = this.props;
-      dispatch(messagesActions.addMessage(current.get('id'), message, uuid(), me));
+      const linkedMessage = AgentTopBarContainer.addLinks(message);
+      dispatch(messagesActions.addMessage(current.get('id'), linkedMessage, uuid(), me));
     }
   };
 
@@ -359,7 +373,7 @@ export class AgentTopBarContainer extends SeparateComponent {
       saveDraft:            this.saveDraft,
       recentClick:          this.recentClick,
       participantClick:     this.participantClick,
-      onSubmit:             this.onSubmit,
+      onSubmitChatMessage:  this.onSubmitChatMessage,
       markNewMessages:      this.markNewMessages,
       openGroupDrawer:      this.openGroupDrawer,
       createGroup:          this.createGroup,
@@ -407,7 +421,7 @@ export class AgentTopBar extends React.Component {
     participantClick:     PropTypes.func,
     createGroup:          PropTypes.func,
     updateGroup:          PropTypes.func,
-    onSubmit:             PropTypes.func,
+    onSubmitChatMessage:  PropTypes.func,
     markNewMessages:      PropTypes.func,
     onScroll:             PropTypes.func,
     loadMessages:         PropTypes.func,
@@ -468,10 +482,10 @@ export class AgentTopBar extends React.Component {
 
     const { groupCreation, myTeamsLoaded, myDepartmentsLoaded, agentsLoaded, loadingMessages } = this.props;
     const { current, chating, messages, onChatClose, participantClick, recentClick, createGroup } = this.props;
-    const { onChatSearch, onScroll, openGroupDrawer, markNewMessages, onSubmit, toggleImOverlay } = this.props;
-    const { searchQuery, counts, groupChats, checkedAgents, me, myDepartments, myTeams, recentChats } = this.props;
-    const { agents, people, onSearchFocus, onSearchBlur, editChat, updateGroup, loadMessages, activeTabs } = this.props;
-    const { recentLoaded, groupLoaded, overlayShown, startedByMeChats, drafts, saveDraft }  = this.props;
+    const { onChatSearch, onScroll, openGroupDrawer, markNewMessages, onSubmitChatMessage } = this.props;
+    const { toggleImOverlay, searchQuery, counts, groupChats, checkedAgents, me, myDepartments, myTeams } = this.props;
+    const { recentChats, agents, people, onSearchFocus, onSearchBlur, editChat, updateGroup, loadMessages } = this.props;
+    const { activeTabs, recentLoaded, groupLoaded, overlayShown, startedByMeChats, drafts, saveDraft }  = this.props;
     const { leaveGroup, deleteGroup, onHideChat, onSearchMessageClick, imSettings, updateChatsOrder } = this.props;
 
     const groupDrawerTarget = document.getElementById('im-button');
@@ -553,7 +567,7 @@ export class AgentTopBar extends React.Component {
           drafts={drafts}
           current={current}
           activeTabs={activeTabs}
-          onSubmit={onSubmit}
+          onSubmit={onSubmitChatMessage}
           onClose={onChatClose}
           saveDraft={saveDraft}
           loadMessages={loadMessages}

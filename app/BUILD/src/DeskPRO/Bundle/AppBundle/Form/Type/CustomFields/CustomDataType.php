@@ -33,6 +33,8 @@ use Application\DeskPRO\Entity\CustomDefAbstract;
 use Application\DeskPRO\Entity\Ticket;
 use DeskPRO\Bundle\AppBundle\Form\FormField;
 use DeskPRO\Bundle\AppBundle\Form\Type\ApiBooleanType;
+use DeskPRO\Bundle\AppBundle\Form\Type\DataJsonType;
+use DeskPRO\Bundle\AppBundle\Form\Type\DataListType;
 use DeskPRO\Bundle\AppBundle\Form\Type\DateTimeType;
 use DeskPRO\Bundle\AppBundle\Form\Type\DisplayHtmlType;
 use DeskPRO\Bundle\AppBundle\Form\Type\DpDateType;
@@ -42,6 +44,7 @@ use DeskPRO\Bundle\PortalBundle\Form\Form\Type\SingleCheckboxType;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Symfony\Component\Form\AbstractType;
+use Symfony\Component\Form\Extension\Core\Type\FormType;
 use Symfony\Component\Form\Extension\Core\Type\TextareaType;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\FormBuilderInterface;
@@ -133,6 +136,7 @@ class CustomDataType extends AbstractType
         // child field is not mapped so the form tries to get data from the options
         // so we should pass stored value via its options
         $options['data'] = $this->getFormData($event->getData() ?: new ArrayCollection(), $customDef);
+
         $form->add('data', $field->getType(), $options);
     }
 
@@ -153,6 +157,8 @@ class CustomDataType extends AbstractType
 
         /* @var CustomDataAbstract[]|ArrayCollection $allCustomData */
         $allCustomData = $form->getData() ?: new ArrayCollection();
+
+        /** @var CustomDataAbstract[] */
         $customDefData = $this->filterCustomDefData($allCustomData, $customDef);
 
         if ($customDef->isChoiceType()) {
@@ -185,6 +191,26 @@ class CustomDataType extends AbstractType
 
                     $customDefData->add($customData);
                 }
+            }
+        } else if ($customDef->isDataListType()) {
+            $data = $form->get('data')->getData();
+            $itemList = is_string($data) ? json_decode($data) : [];
+
+            // remove deleted items and collect the id's of existing ones
+            $existingItemList = [];
+            foreach ($customDefData as $customData) {
+                if (!in_array($customData->getData(), $itemList)) {
+                    $customDefData->removeElement($customData);
+                } else {
+                    array_push($existingItemList, $customData->getData());
+                }
+            }
+
+            $newItemList = array_diff($itemList, $existingItemList);
+            foreach ($newItemList as $item) {
+                $customData = $customDef->createCustomData();
+                $customData->setData($item);
+                $customDefData->add($customData);
             }
         } else {
             $data = $form->get('data')->getData();
@@ -325,6 +351,14 @@ class CustomDataType extends AbstractType
         $allCustomData = $customData ?: new ArrayCollection();
         $customDefData = $this->filterCustomDefData($allCustomData, $customDef);
 
+        if ($customDef->isDataListType()) {
+            $formFieldData = [];
+            foreach ($customDefData as $data) {
+                array_push($formFieldData, $data->getData());
+            }
+            return $formFieldData;
+        }
+
         $formFieldData = null;
         if ($customDefData->count()) {
             $formFieldData = $customDefData->first()->getData();
@@ -394,6 +428,11 @@ class CustomDataType extends AbstractType
                     $customDefData->add($defaultCustomData);
                 }
             }
+        } else {
+            // make sure we have no dupes
+            if (!$customDef->isChoiceType()) {
+                $customDefData = new ArrayCollection([$customDefData->first()]);
+            }
         }
 
         return $customDefData;
@@ -435,6 +474,14 @@ class CustomDataType extends AbstractType
     private function createCustomField(CustomDefAbstract $def, $isInline = false)
     {
         switch ($def->getType()) {
+            case CustomDefAbstract::TYPE_DATA_LIST:
+                return new FormField(DataListType::class, [
+                    'help' => $def->getRealDescription(),
+                ]);
+            case CustomDefAbstract::TYPE_DATA_JSON:
+                return new FormField(DataJsonType::class, [
+                    'help' => $def->getRealDescription(),
+                ]);
             case CustomDefAbstract::TYPE_DATA:
             case CustomDefAbstract::TYPE_TEXT:
                 return new FormField(TextType::class, [

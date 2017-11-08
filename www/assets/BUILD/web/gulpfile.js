@@ -38,6 +38,7 @@ gulp.task('default', ['less', 'sass', 'semantic-copy', 'less-dp-semantic', 'sass
     './app/Admin*/**/*.coffee',
     './app/Agent*/**/*.coffee',
     './app/Reports*/**/*.coffee',
+    './app/Interface*/**/*.coffee',
     './app/DeskPRO*/**/*.coffee'
   ]);
 });
@@ -58,6 +59,7 @@ deskpro.watches = [
   ['./app/Admin*/**/*.coffee', ['coffee-admin']],
   ['./app/Agent*/**/*.coffee', ['coffee-agent']],
   ['./app/Reports/**/*.coffee', ['coffee-reports']],
+  ['./app/Interface/**/*.coffee', ['coffee-interface']],
   ['./app/DeskPRO/**/*.coffee', ['coffee-deskpro']],
   ['./app/**/Resources/style/*.less', ['less-app']],
   ['./app/**/Resources/style/*.scss', ['sass-app']],
@@ -187,6 +189,10 @@ gulp.task('coffee-agent', function () {
   return deskpro.taskGen.coffeeScript('./app/Agent*/**/*.coffee');
 });
 
+gulp.task('coffee-interface', function () {
+  return deskpro.taskGen.coffeeScript('./app/Interface*/**/*.coffee');
+});
+
 gulp.task('coffee-reports', function () {
   return deskpro.taskGen.coffeeScript('./app/Reports*/**/*.coffee');
 });
@@ -200,6 +206,7 @@ gulp.task('coffee', ['clean'], function() {
     './app/Admin*/**/*.coffee',
     './app/Agent*/**/*.coffee',
     './app/Reports*/**/*.coffee',
+    './app/Interface*/**/*.coffee',
     './app/DeskPRO*/**/*.coffee'
   ]);
 });
@@ -209,6 +216,7 @@ gulp.task('dirty-coffee', function() {
     './app/Admin*/**/*.coffee',
     './app/Agent*/**/*.coffee',
     './app/Reports*/**/*.coffee',
+    './app/Interface*/**/*.coffee',
     './app/DeskPRO*/**/*.coffee'
   ]);
 });
@@ -229,7 +237,7 @@ gulp.task('cpjs-all', function() {
     .pipe(gulpif(deskpro.isWatching, using({prefix: '>> Wrote --'})));
 });
 
-gulp.task('cpjs', ['clean'], function() {
+gulp.task('cpjs', ['clean', 'cpjs-clipboard'], function() {
 
   var glob       = './app/**/*.js';
   var target_dir = './app-build/';
@@ -239,6 +247,11 @@ gulp.task('cpjs', ['clean'], function() {
     .pipe(gulpif(deskpro.isWatching, plumber()))
     .pipe(gulp.dest(target_dir))
     .pipe(gulpif(deskpro.isWatching, using({prefix: '>> Wrote --'})));
+});
+
+// it's unable to add to config.assets.php, failed on yui-compressor filter
+gulp.task('cpjs-clipboard', ['clean'], function () {
+  gulp.src('./node_modules/clipboard/dist/clipboard.min.js').pipe(gulp.dest('./app-build/'));
 });
 
 //------------------------------
@@ -257,12 +270,14 @@ gulp.task('less', ['clean'], function () {
 
 gulp.task('less-dp-semantic-app', function () {
   deskpro.taskGen.copyThemeConfig();
-  return deskpro.taskGen.lessCss('./stylesheets-less/admin/*.less', './app-build/Admin/Resources/style');
+  deskpro.taskGen.lessCss('./stylesheets-less/admin/*.less', './app-build/Admin/Resources/style');
+  return deskpro.taskGen.lessCss('./stylesheets-less/admin/*.less', './app-build/Interface/Resources/style');
 });
 
 gulp.task('less-dp-semantic', ['clean'], function () {
   deskpro.taskGen.copyThemeConfig();
-  return deskpro.taskGen.lessCss('./stylesheets-less/admin/*.less', './app-build/Admin/Resources/style');
+  deskpro.taskGen.lessCss('./stylesheets-less/admin/*.less', './app-build/Admin/Resources/style');
+  return deskpro.taskGen.lessCss('./stylesheets-less/admin/*.less', './app-build/Interface/Resources/style');
 });
 
 //------------------------------
@@ -275,7 +290,8 @@ gulp.task('semantic', function () {
 });
 
 gulp.task('semantic-watch', function () {
-  return deskpro.taskGen.semantic('./app-build/Admin/Resources/style/');
+  deskpro.taskGen.semantic('./app-build/Admin/Resources/style/');
+  return deskpro.taskGen.semantic('./app-build/Interface/Resources/style/');
 });
 
 gulp.task('semantic-copy', ['clean'], function () {
@@ -284,9 +300,11 @@ gulp.task('semantic-copy', ['clean'], function () {
       autoprefixer(),
       comments({})
     ]))
-    .pipe(gulp.dest('./app-build/Admin/Resources/style/'));
+    .pipe(gulp.dest('./app-build/Admin/Resources/style/'))
+    .pipe(gulp.dest('./app-build/Interface/Resources/style/'));
   gulp.src('./stylesheets-less/semantic-ui/semantic.css.map')
-    .pipe(gulp.dest('./app-build/Admin/Resources/style/'));
+    .pipe(gulp.dest('./app-build/Admin/Resources/style/'))
+    .pipe(gulp.dest('./app-build/Interface/Resources/style/'));
 });
 
 gulp.task('semantic-copy-prod', ['clean'], function () {
@@ -296,9 +314,11 @@ gulp.task('semantic-copy-prod', ['clean'], function () {
       comments({}),
       cssnano()
     ]))
-    .pipe(gulp.dest('./app-build/Admin/Resources/style/'));
+    .pipe(gulp.dest('./app-build/Admin/Resources/style/'))
+    .pipe(gulp.dest('./app-build/Interface/Resources/style/'));
   gulp.src('./stylesheets-less/semantic-ui/semantic.css.map')
-    .pipe(gulp.dest('./app-build/Admin/Resources/style/'));
+    .pipe(gulp.dest('./app-build/Admin/Resources/style/'))
+    .pipe(gulp.dest('./app-build/Interface/Resources/style/'));
 });
 
 deskpro.taskGen.semantic = function(target_dir) {
@@ -393,6 +413,7 @@ var rjsLoadFiles = [
   './app/AdminStart/AdminStartLoad.js',
   './app/AdminUpdateWatcher/AdminUpdateWatcherLoad.js',
   './app/Reports/ReportsLoad.js',
+  './app/Interface/InterfaceLoad.js',
   './app/Agent/AgentLoad.js'
 ];
 
@@ -416,6 +437,9 @@ function addRjsTask(rjsBundle) {
       break;
     case 'ReportsLoad':
       target = 'Reports/ReportsLoad.min.js';
+      break;
+    case 'InterfaceLoad':
+      target = 'Interface/InterfaceLoad.min.js';
       break;
     case 'AgentLoad':
       target = 'Agent/AgentLoad.min.js';

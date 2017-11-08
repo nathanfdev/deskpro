@@ -68,12 +68,16 @@ class DeskproDeliveryService extends DeliveryService
     /**
      * {@inheritdoc}
      */
-    public function deliver()
+    public function deliver($postpone = false)
     {
-        parent::deliver();
+        parent::deliver($postpone);
         foreach ($this->targettedHandlers as $handler) {
             /* @var DeliveryHandlerInterface $handler */
-            $handler->deliver();
+            if ($postpone) {
+                $handler->deliverSoon();
+            } else {
+                $handler->deliver();
+            }
         }
     }
 

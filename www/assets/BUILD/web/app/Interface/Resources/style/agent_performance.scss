@@ -1,0 +1,92 @@
+.chart_parent_table td {
+  height: 24px;
+  vertical-align: middle;
+}
+.chart_container {
+  vertical-align: top !important;
+}
+.chart_container td {
+  height: 25px;
+  vertical-align: middle;
+}
+
+
+.alert-info {
+  background-color: #d9edf7;
+  border-color: #bce8f1;
+  color: #3a87ad;
+}
+.alert {
+  padding: 15px;
+  margin-bottom: 17px;
+  border: 1px solid transparent;
+  border-radius: 4px;
+}
+.padd {
+  padding: 15px;
+}
+
+.table-bordered {
+  border: 1px solid #dddddd;
+}
+.table {
+  width: 100%;
+  max-width: 100%;
+  margin-bottom: 17px;
+}
+table {
+  background-color: transparent;
+}
+table {
+  border-collapse: collapse;
+  border-spacing: 0;
+}
+
+table.table > tbody > tr > td.dp-id-col {
+  width: 5px;
+  white-space: nowrap;
+  text-wrap: none;
+  text-align: left;
+}
+table.table > tbody > tr > td.alt {
+  background: #f1f1f1;
+}
+.table-bordered > thead > tr > th, .table-bordered > tbody > tr > th, .table-bordered > tfoot > tr > th, .table-bordered > thead > tr > td, .table-bordered > tbody > tr > td, .table-bordered > tfoot > tr > td {
+  border: 1px solid #dddddd;
+}
+.table > thead > tr > th, .table > tbody > tr > th, .table > tfoot > tr > th, .table > thead > tr > td, .table > tbody > tr > td, .table > tfoot > tr > td {
+  padding: 8px;
+  line-height: 1.42857143;
+  vertical-align: top;
+  border-top: 1px solid #dddddd;
+}
+td, th {
+  padding: 0;
+}
+* {
+  -webkit-box-sizing: border-box;
+  -moz-box-sizing: border-box;
+  box-sizing: border-box;
+}
+
+.activity_table .activity {
+  vertical-align: middle;
+}
+* {
+  -webkit-box-sizing: border-box;
+  -moz-box-sizing: border-box;
+  box-sizing: border-box;
+}
+
+.activity_table .activity_type_ticket .type_icon {
+  background-image: url('../../../../images/agent/tabs/tabtype-ticket.png');
+}
+.activity_table .activity .type_icon {
+  width: 15px;
+  height: 14px;
+  display: inline-block;
+  background-repeat: no-repeat;
+  background-position: 50% 50%;
+  position: relative;
+  top: 3px;
+}

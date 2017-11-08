@@ -219,7 +219,7 @@
                     {{ nav.list_item_group(phrase('adm.general.apps_server'), 'fa-database', '', 'server') }}
                         {{ nav.list_subitem('Server Settings', ng_href('server.server_settings'), 'server.server_settings', 'fa-cog') }}
                         {{ nav.list_subitem('ElasticSearch', ng_href('server.elastic_search'), 'server.settings_elastic_search', 'fa-search') }}
-                        {{ nav.list_subitem('Pusher (Realtime Events)', ng_href('server.notifications'), 'server.notifications', 'fa-rss') }}
+                        {{ nav.list_subitem('Realtime Events', ng_href('server.notifications'), 'server.notifications', 'fa-rss') }}
                         {{ nav.list_subitem('Report File', ng_href('server.report_file'), 'server.report_file', 'fa-download') }}
                         {{ nav.list_subitem('Server Requirements', ng_href('server.server_reqs'), 'server.server_reqs', 'fa-check-square-o') }}
                         {{ nav.list_subitem('File Check', ng_href('server.file_check'), 'server.file_check', 'fa-shield') }}
@@ -337,7 +337,6 @@
 
         window.DP_REDIRECT_TO_LICENSE = {% if redirect_license %}true{% else %}false{% endif %};
 
-        window.DP_ZEROCLIPBOARD_PATH = '{{ asset('bower_components/zeroclipboard/dist/ZeroClipboard.swf') }}';
         window.DP_ADMIN_BUNDLE_PATH = '{{ asset('DeskPRO_AdminBundle.js', 'app_assets') }}';
         window.DP_DISABLE_RELATIVE_TIMES = {% if app.isRelativeTimesDisabled() %}true{% else %}false{% endif %};
     </script>

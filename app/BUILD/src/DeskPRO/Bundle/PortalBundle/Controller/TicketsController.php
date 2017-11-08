@@ -34,12 +34,15 @@ namespace DeskPRO\Bundle\PortalBundle\Controller;
 
 use Application\DeskPRO\Entity\Person;
 use Application\DeskPRO\Entity\Ticket;
+use Application\DeskPRO\Entity\TicketFeedback;
 use Application\DeskPRO\Entity\TicketMessage;
 use Application\DeskPRO\Entity\TicketParticipant;
 use Application\DeskPRO\Entity\TicketTrigger;
 use Application\DeskPRO\People\PersonGuest;
 use Carbon\Carbon;
 use DeskPRO\Bundle\AppBundle\Annotation\AutoPostOnGetRequest;
+use DeskPRO\Bundle\AppBundle\Entity\Repository\SnippetUseLogRepository;
+use DeskPRO\Bundle\AppBundle\Entity\SnippetUseLog;
 use DeskPRO\Bundle\AppBundle\Form\Type\Tickets\TicketWithLayouts\TicketWithLayoutsContext;
 use DeskPRO\Bundle\AppBundle\Form\Type\Tickets\TicketWithLayouts\TicketWithLayoutsWebFullType;
 use DeskPRO\Bundle\AppBundle\Form\Type\Tickets\TicketWithLayouts\TicketWithLayoutsWebType;
@@ -56,6 +59,7 @@ use Doctrine\Common\Collections\ArrayCollection;
 use Pagerfanta\Pagerfanta;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Security;
+use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
@@ -264,8 +268,7 @@ class TicketsController extends AbstractController
 
         list($last_user_reply_in_seconds, $created_in_seconds) = $this->getRecentTimes($ticket);
 
-        $form_full = $this->createForm(TicketWithLayoutsWebFullType::class, $ticket, [
-            'person'              => $person,
+        $form_full = $this->createForm(TicketWithLayoutsWebFullType::class, null, [
             'action'              => $this->generateUrl('portal_tickets_edit', ['ticket_ref' => $ticket->getPublicId()]),
             'ticket_view_context' => TicketWithLayoutsContext::VIEW_USER,
             'ticket_visibility'   => TicketWithLayoutsContext::VISIBILITY_EDIT,
@@ -422,7 +425,7 @@ class TicketsController extends AbstractController
 
         $redirectResponse = $this->redirectToRoute('portal_tickets_view', ['ticket_ref' => $ticket_ref]);
 
-        $participant = $this->getEm()->getRepository('DeskPRO:TicketParticipant')->find($cc_id);
+        $participant = $this->getEm()->getRepository(TicketParticipant::class)->find($cc_id);
         if (!$participant instanceof TicketParticipant) {
             return $redirectResponse;
         }
@@ -450,6 +453,13 @@ class TicketsController extends AbstractController
     /**
      * @Route("/ticket-rate/{ticket_ref}/{auth}/{message_id}", name="portal_tickets_feedback", defaults={"message_id"=null})
      * @Route("/ticket-rate/{ticket_ref}/{auth}/{message_id}", name="user_tickets_feedback", defaults={"message_id"=null})
+     *
+     * @param Request $request
+     * @param $ticket_ref
+     * @param $auth
+     * @param null $message_id
+     *
+     * @return RedirectResponse|Response
      */
     public function rateTicketAction(Request $request, $ticket_ref, $auth, $message_id = null)
     {
@@ -461,14 +471,14 @@ class TicketsController extends AbstractController
             throw new NotFoundHttpException('auth does not match ticket');
         }
 
-        /** @var \Application\DeskPRO\EntityRepository\TicketMessage $ticket_message_repo */
-        $ticket_message_repo = $this->getRepo('DeskPRO:TicketMessage');
+        /** @var \Application\DeskPRO\EntityRepository\TicketMessage $ticketMessageRepo */
+        $ticketMessageRepo = $this->getRepo(TicketMessage::class);
         if ($message_id) {
             /** @var \Application\DeskPRO\Entity\TicketMessage $message */
-            $message = $ticket_message_repo->find($message_id);
+            $message = $ticketMessageRepo->find($message_id);
         } else {
             /** @var \Application\DeskPRO\Entity\TicketMessage $message */
-            $message = $ticket_message_repo->getLastAgentReply($ticket);
+            $message = $ticketMessageRepo->getLastAgentReply($ticket);
         }
 
         // message must exist and belong to the ticket requested
@@ -483,12 +493,16 @@ class TicketsController extends AbstractController
 
         $person = $this->getAuthenticatedUserOrTicketPerson($ticket);
 
-        /** @var \Application\DeskPRO\EntityRepository\TicketFeedback $ticket_feedback_repo */
-        $ticket_feedback_repo = $this->getRepo('DeskPRO:TicketFeedback');
-        $feedback             = $ticket_feedback_repo->getFeedback($message, $person, true);
+        /** @var \Application\DeskPRO\EntityRepository\TicketFeedback $ticketFeedbackRepo */
+        $ticketFeedbackRepo = $this->getRepo(TicketFeedback::class);
+        $feedback           = $ticketFeedbackRepo->getFeedback($message, $person, true);
 
-        $rating             = null;
-        $set_rating_via_get = false;
+        /** @var SnippetUseLogRepository $snippetUseLogRepo */
+        $snippetUseLogRepo = $this->getRepo(SnippetUseLog::class);
+        $uses              = $snippetUseLogRepo->getLogsByTicketMessage($message);
+
+        $rating          = null;
+        $setRatingViaGet = false;
         if (null !== $request->get('rating', null)) {
             $rating = $request->get('rating'); // from the form
         }
@@ -503,8 +517,44 @@ class TicketsController extends AbstractController
             if ($isPostRequest) {
                 $feedback->setMessage($request->get('message', ''));
             }
-            if ($isPostRequest || $set_rating_via_get) {
+            if ($isPostRequest || $setRatingViaGet) {
                 $this->updateTicketFeedbackRating($ticket, $message, $feedback);
+                /** @var SnippetUseLog $use */
+                foreach ($uses as $use) {
+                    $snippet = $use->getSnippet();
+                    // Compensate previous answered feedback
+                    if ($use->getRating() !== null) {
+                        switch ($use->getRating()) {
+                            case 1:
+                                $snippet->setPositiveRatings((int) $snippet->getPositiveRatings() - 1);
+                                break;
+                            case 0:
+                                $snippet->setNeutralRatings((int) $snippet->getNeutralRatings() - 1);
+                                break;
+                            case -1:
+                                $snippet->setNegativeRatings((int) $snippet->getNegativeRatings() - 1);
+                                break;
+                            default:
+                                break;
+                        }
+                    }
+                    $use->setRating($rating);
+                    switch ($rating) {
+                        case 1:
+                            $snippet->setPositiveRatings((int) $snippet->getPositiveRatings() + 1);
+                            break;
+                        case 0:
+                            $snippet->setNeutralRatings((int) $snippet->getNeutralRatings() + 1);
+                            break;
+                        case -1:
+                            $snippet->setNegativeRatings((int) $snippet->getNegativeRatings() + 1);
+                            break;
+                        default:
+                            break;
+                    }
+                    $this->getEm()->persist($snippet);
+                    $this->getEm()->persist($use);
+                }
 
                 $this->getEm()->persist($feedback);
                 $this->getEm()->flush();
@@ -525,7 +575,7 @@ class TicketsController extends AbstractController
             'ticket'      => $ticket,
             'message'     => $message,
             'feedback'    => $feedback,
-            'setrating'   => $set_rating_via_get,
+            'setrating'   => $setRatingViaGet,
         ]);
     }
 
@@ -614,7 +664,7 @@ class TicketsController extends AbstractController
      */
     protected function getTicketByRef($ticket_ref)
     {
-        return $this->getRepo('DeskPRO:Ticket')->findOneBy(['ref' => $ticket_ref]);
+        return $this->getRepo(Ticket::class)->findOneBy(['ref' => $ticket_ref]);
     }
 
     /**
@@ -624,7 +674,7 @@ class TicketsController extends AbstractController
      */
     protected function getTicketByAuthIfGrantedAccess($auth)
     {
-        $ticket = $this->getRepo('DeskPRO:Ticket')->findOneBy(['auth' => $auth]);
+        $ticket = $this->getRepo(Ticket::class)->findOneBy(['auth' => $auth]);
 
         if (!$this->isGranted(TicketsVoter::TICKET_VIEW_AUTH, $ticket)) {
             // the user has a valid auth code for a ticket, but isn't logged in
@@ -647,7 +697,7 @@ class TicketsController extends AbstractController
      */
     protected function getTicketById($ticket_ref)
     {
-        return $this->getRepo('DeskPRO:Ticket')->findOneBy(['id' => $ticket_ref]);
+        return $this->getRepo(Ticket::class)->findOneBy(['id' => $ticket_ref]);
     }
 
     private function saveEditedTicket(Ticket $ticket, Person $person, $event_type = TicketTrigger::EVENT_TYPE_UPDATE)

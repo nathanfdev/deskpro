@@ -1,4 +1,5 @@
-import React, { PropTypes } from 'react';
+import PropTypes from 'prop-types';
+import React from 'react';
 import classNames from 'classnames';
 import agentPhrases from 'DeskPRO/Bundle/AgentBundle/AgentPhrases';
 import PopUp from 'DeskPRO/Component/Semantic/PopUp/PopUp';
@@ -7,6 +8,8 @@ import VoiceMenu from './VoiceMenu';
 class VoiceMenuDropdown extends React.Component {
 
   static propTypes = {
+    voiceSynced:    PropTypes.bool,
+    isSecure:       PropTypes.bool,
     micEnabled:     PropTypes.bool,
     incomingCall:   PropTypes.object,
     outgoingCall:   PropTypes.object,
@@ -33,10 +36,19 @@ class VoiceMenuDropdown extends React.Component {
   }
 
   getStatus() {
-    const { onlineAgents, callsEnabled, voiceEnabled, micEnabled } = this.props;
+    const { onlineAgents, callsEnabled, voiceSynced, isSecure, micEnabled } = this.props;
     const status = callsEnabled ? agentPhrases.get('agent.general.on') : agentPhrases.get('agent.general.off');
 
-    if (!voiceEnabled) {
+    if (!voiceSynced) {
+      return (
+        <div className="status">
+          Syncing
+          <i className="spinner-flat" />
+        </div>
+      );
+    }
+
+    if (!isSecure) {
       return (
         <div className="status">
           Insecure
@@ -89,7 +101,7 @@ class VoiceMenuDropdown extends React.Component {
           zIndex={99999}
           content={<VoiceMenu {...this.props} />}
           className={classNames('voice-menu-popup', { green: incomingCall })}
-          allowClose={!incomingCall && !outgoingCall}
+          allowCloseOnClickOut={!incomingCall && !outgoingCall}
         >
           {this.getIcon()}
           {this.getStatus()}

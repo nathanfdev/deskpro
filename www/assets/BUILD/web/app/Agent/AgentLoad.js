@@ -6,7 +6,10 @@ define([
   'Agent/AppPlatform/Context/AppContext',
   'DeskPRO/Util/Util',
   'angularSelect2',
-], function(angular, AgentApp, AppPlatformClass, AppPlatformConfig, AppContext, Util,angularSelect2) {
+  'clipboard'
+], function(angular, AgentApp, AppPlatformClass, AppPlatformConfig, AppContext, Util, angularSelect2, Clipboard) {
+
+  window.Clipboard = Clipboard;
 
   if (!window.console) {
     window.console = {

@@ -34,7 +34,7 @@
 
 		{##################################################################################################}
 
-		<article class="padd" ng-if="server_error_logs.logs">
+		<article class="padd" ng-if="server_error_logs.logs !== false">
 			<table class="table table-bordered">
 				<thead>
 					<tr>
@@ -82,6 +82,9 @@
 					</tr>
 				</tbody>
 			</table>
+		</article>
+		<article class="padd" ng-if="server_error_logs.logs === false">
+			The log file is too big to show here. <a href="{{ ng_var('server_error_logs.web_error_log_url') }}">Click here</a> to download it to your computer.
 		</article>
 
 	</section>

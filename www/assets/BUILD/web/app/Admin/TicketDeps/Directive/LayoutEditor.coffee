@@ -108,7 +108,7 @@ define [
         parent = el.closest('ul')
         el.detach().appendTo(parent)
       )
-      tab.find('.form-elements').find('li').not('.disabled').not('.done-init').draggable({
+      tab.find('.form-elements').find('li').not('.disabled').draggable({
         appendTo: 'body',
         helper: 'clone',
         connectToSortable: tab.find('.form-worksheet').find('ul')

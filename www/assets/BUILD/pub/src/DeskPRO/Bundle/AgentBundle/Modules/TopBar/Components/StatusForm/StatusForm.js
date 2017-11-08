@@ -1,8 +1,10 @@
-import React, { PropTypes } from 'react';
+import PropTypes from 'prop-types';
+import React from 'react';
 import { Field, Select, Checkbox } from 'DeskPRO/Component/Semantic/ReactForm';
-import { Fieldset, createValue } from 'react-forms';
+import { Fieldset, createValue } from '@deskpro/react-forms';
 import Immutable from 'immutable';
 import Isvg from 'react-inlinesvg';
+import classNames from 'classnames';
 import '../../../../../AgentBundle/Resources/img/topbar/chat.svg';
 import '../../../../../AgentBundle/Resources/img/topbar/IM.svg';
 
@@ -103,7 +105,7 @@ class StatusForm extends React.Component {
                   <Field select="calls">
                     <Checkbox />
                   </Field>
-                  <Isvg src={`${assetPath}/topbar/IM.svg`} />
+                  <i className={classNames('ui call icon', formData.value.calls ? 'green' : 'disabled')} />
                   <span className="voice-profile-status-checkbox-title">
                     Calls
                     {!voiceEnabled &&

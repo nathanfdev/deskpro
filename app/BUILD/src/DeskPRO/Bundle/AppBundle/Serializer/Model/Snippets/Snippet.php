@@ -30,6 +30,7 @@ namespace DeskPRO\Bundle\AppBundle\Serializer\Model\Snippets;
 
 use Application\DeskPRO\Entity\AgentTeam;
 use Application\DeskPRO\Entity\Department;
+use DateTime;
 use DeskPRO\Bundle\AppBundle\Entity\Snippet as SnippetEntity;
 use DeskPRO\Bundle\AppBundle\Entity\SnippetLabel;
 use DeskPRO\Bundle\AppBundle\Entity\SnippetTranslation;
@@ -110,7 +111,16 @@ class Snippet
     private $isDraft;
 
     /**
-     * Is this just a draft?
+     * Flag indicates that content is different for different types.
+     *
+     * @JMS\Type("boolean")
+     *
+     * @var bool
+     */
+    protected $isSplit;
+
+    /**
+     * Flag indicates that snippet is accessible to everyone.
      *
      * @JMS\Type("boolean")
      *
@@ -119,7 +129,7 @@ class Snippet
     private $isOwnershipGlobal;
 
     /**
-     * Is this just a draft?
+     * Flag indicates that snippet is visible with all departments.
      *
      * @JMS\Type("boolean")
      *
@@ -141,6 +151,42 @@ class Snippet
      */
     private $visibleDepartments;
 
+    /**
+     * @JMS\Type("integer")
+     *
+     * @var int
+     */
+    private $usageCount;
+
+    /**
+     * @JMS\Type("integer")
+     *
+     * @var int
+     */
+    private $positiveRatings;
+
+    /**
+     * @JMS\Type("integer")
+     *
+     * @var int
+     */
+    private $neutralRatings;
+
+    /**
+     * @JMS\Type("integer")
+     *
+     * @var int
+     */
+    private $negativeRatings;
+
+    /**
+     * @JMS\Expose()
+     * @JMS\Type("DateTime")
+     *
+     * @var DateTime
+     */
+    private $dateCreated;
+
     public function __construct(SnippetEntity $snippet)
     {
         $this->id                 = $snippet->getId();
@@ -149,11 +195,17 @@ class Snippet
         $this->types              = $snippet->getTypes();
         $this->shortcutCode       = $snippet->getShortcutCode();
         $this->isDraft            = $snippet->isDraft();
+        $this->isSplit            = $snippet->isSplit();
         $this->translations       = $snippet->getTranslations();
         $this->isOwnershipGlobal  = $snippet->isOwnershipGlobal();
         $this->isVisibleGlobal    = $snippet->isVisibleGlobal();
         $this->ownershipTeams     = $snippet->getOwnershipTeams();
         $this->visibleDepartments = $snippet->getVisibleDepartments();
         $this->labels             = $snippet->getLabels();
+        $this->usageCount         = $snippet->getUsageCount();
+        $this->positiveRatings    = $snippet->getPositiveRatings();
+        $this->neutralRatings     = $snippet->getNeutralRatings();
+        $this->negativeRatings    = $snippet->getNegativeRatings();
+        $this->dateCreated        = $snippet->getDateCreated();
     }
 }

@@ -1,7 +1,7 @@
 <table class="dp-props-table" border="0" cellspacing="0" cellpadding="0">
 	<tr>
 		<td class="dp-td-heading" colspan="2">
-			{{ phrase('agent.emails.view_ticket_online') }}: <a href="{{ url_full('agent') }}#app.tickets,t:{{ ticket.id }}" title="(#{{ tac.access_code }})">{{ url_full('agent') }}#app.tickets,t:{{ ticket.id }}</a>
+			{{ phrase('agent.emails.view_ticket_online') }}: <a href="{{ url_full('agent') }}go/ticket/{{ ticket.id }}" title="(#{{ tac.access_code }})">{{ url_full('agent') }}go/ticket/{{ ticket.id }}</a>
 		</td>
 	</tr>
 	<tr>

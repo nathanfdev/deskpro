@@ -1,4 +1,5 @@
-import React, { PropTypes } from 'react';
+import PropTypes from 'prop-types';
+import React from 'react';
 import { connect } from 'react-redux';
 import { meSelector } from 'DeskPRO/Bundle/AppBundle/Modules/RecordsStore/Shortcuts/me';
 import { voiceParticipantsSelector } from '../../Selectors/agents';
@@ -69,12 +70,19 @@ class VoiceControlsContainer extends React.Component {
 
     this.interval = setInterval(() => {
       const connectionStatus = connection.status();
-      const { status } = this.state;
+      const { me } = this.props;
+      const { status, participants } = this.state;
 
-      if (connectionStatus === 'open' && status !== 'active') {
-        this.setState({
-          status: 'connected'
-        });
+      if (connectionStatus === 'open') {
+        if (participants.contains(me.get('id')) || connection.message.Outbound) {
+          this.setState({
+            status: 'active'
+          });
+        } else {
+          this.setState({
+            status: 'connected'
+          });
+        }
       } else if (connectionStatus === 'closed' && status !== 'closed') {
         onEndCall();
         this.setState({
@@ -148,20 +156,15 @@ class VoiceControlsContainer extends React.Component {
     const newState  = {};
 
     // change current call status
-    if (event.agent_id === me.get('id')) {
-      if (eventName === 'participant-join') {
-        newState.status = 'active';
-      } else if (eventName === 'participant-leave') {
-        newState.status = 'closed';
-      }
+    if (event.agent_id === me.get('id') && eventName === 'participant-leave') {
+      newState.status = 'closed';
     }
 
     // update participant list
-    if (['participant-join', 'participant-leave'].indexOf(eventName) !== -1) {
-      newState.participants = event.agent_participants;
-
+    if (event.agent_participants) {
       const { addTarget, transferTarget } = this.state;
 
+      newState.participants = event.agent_participants;
       if (addTarget && newState.participants.contains(addTarget.get('id'))) {
         newState.addTarget     = null;
         newState.addTargetType = null;

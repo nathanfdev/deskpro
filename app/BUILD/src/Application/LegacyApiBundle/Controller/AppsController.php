@@ -45,7 +45,7 @@ use DeskPRO\Bundle\AppBundle\Notification\Event\LegacySystemEvent;
 use DeskPRO\Bundle\AppBundle\Serializer\ApiWrapper;
 use DeskPRO\Bundle\AppBundle\Serializer\Sideload\SideloadSerializationContext;
 use DeskPRO\Bundle\AppStoreBundle\Domain\AppBundleValidator;
-use DeskPRO\Bundle\AppStoreBundle\Infrastructure\AppManifestJsonReader;
+use DeskPRO\Bundle\AppStoreBundle\Infrastructure\AppManifestReader;
 use DeskPRO\Bundle\AppStoreBundle\Infrastructure\AppZipArchiveBundle;
 use DeskPRO\Component\Filesystem\SafeFile;
 use DpSys\LowError\SystemErrorHandler;
@@ -141,17 +141,23 @@ class AppsController extends AbstractController
 
     public function getPackageAction($name)
     {
+        // we are expecting the client to double url encode $name
+        // in case it contains forward slashes, e.g @deskproapps/app-name
+        // the actual problem can be solved by just double encoding of '/', / => %2F => %252F
+        // but it is simpler on the client to double encode everything
+        $name = urldecode(urldecode($name));
         $manager = $this->container->getAppManager();
 
         if (!$manager->hasPackage($name)) {
             // app v2 package info
             $appArchive = $this->getAppV2ArchiveBundle($name);
+
             $app        = $this->em->getRepository(App::class)->findOneBy([
                 'name' => $name,
             ]);
-
             if ($appArchive) {
-                $manifestReader = new AppManifestJsonReader();
+                $manifestReader = new AppManifestReader();
+
                 $manifest       = $manifestReader->readManifestFromJson($appArchive->getManifestAsString());
                 $iconBlob       = $this->container->get('blob.storage')->createBlobRecordFromString(
                     $appArchive->getIcon(),
@@ -193,7 +199,7 @@ class AppsController extends AbstractController
                 'author_name'  => $manifest->getAuthor()->getName(),
                 'author_email' => $manifest->getAuthor()->getEmail(),
                 'author_link'  => $manifest->getAuthor()->getUrl(),
-                'version_name' => $manifest->getVersion(),
+                'version_name' => $manifest->getAppVersion(),
                 'apps'         => $apps,
                 'app_version'  => 2,
             ];
@@ -308,17 +314,23 @@ class AppsController extends AbstractController
 
     public function installPackageAction($name)
     {
+        // we are expecting the client to double url encode $name
+        // in case it contains forward slashes, e.g @deskproapps/app-name
+        // the actual problem can be solved by just double encoding of '/', / => %2F => %252F
+        // but it is simpler on the client to double encode everything
+        $name = urldecode(urldecode($name));
         $manager = $this->container->getAppManager();
 
         if (!$manager->hasPackage($name)) {
             // app v2 package info
             $appArchive = $this->getAppV2ArchiveBundle($name);
+
             if ($appArchive) {
                 $app = $this->em->getRepository(App::class)->findOneBy([
                     'name' => $name,
                 ]);
 
-                $manifestReader = new AppManifestJsonReader();
+                $manifestReader = new AppManifestReader();
                 $manifest       = $manifestReader->readManifestFromJson($appArchive->getManifestAsString());
                 $isAppUpdate    = $manifest->isSingle() && $app && $app->getInstances()->count() > 0;
 
@@ -940,45 +952,39 @@ class AppsController extends AbstractController
         }
 
         // detect apps v2
-        $json = SafeFile::fileGetContents($app_dir.'/manifest.json', $app_dir);
-        $data = @json_decode($json, true);
+        $appBundle       = new AppZipArchiveBundle(new \ZipArchive(), new \SplFileInfo($file));
+        $bundleValidator = $this->container->get(AppBundleValidator::class);
+        if ($bundleValidator->validateBundle($appBundle)) {
+            $manifestString = SafeFile::fileGetContents($app_dir.'/manifest.json', $app_dir);
+            $manifestReader = new AppManifestReader();
+            $manifest       = $manifestReader->readManifestFromJson($manifestString);
 
-        if (isset($data['version']) && version_compare($data['version'], '2.0.0', '>=')) {
-            $appBundle       = new AppZipArchiveBundle(new \ZipArchive(), new \SplFileInfo($file));
-            $bundleValidator = $this->container->get(AppBundleValidator::class);
-
-            if (!$bundleValidator->validateBundle($appBundle)) {
-                return $this->createApiErrorResponse('invalid_file', 'Uploaded app archive file is not valid.');
+            $app = $this->em->getRepository(App::class)->findOneBy([
+                'name' => $manifest->getName(),
+            ]);
+            $isAppUpdate    = $manifest->isSingle() && $app && $app->getInstances()->count() > 0;
+            if ($isAppUpdate) {
+                $this->container->get('apps2.application_manager')->createOrUpdateAppEntity($appBundle);
+                $instance = $app->getInstances()->first();
+            } else {
+                $instance = $this->container->get('apps2.application_manager')->createFirstInstance($appBundle);
             }
 
-            $slug    = Strings::slugifyTitle($data['name']);
-            $sysName = 'apps_v2_zip_'.$slug;
-
-            // delete previous blobs
-            $qb = $this->em->createQueryBuilder();
-            $qb
-                ->delete(Blob::class, 'b')
-                ->where('b.sys_name = :sys_name')
-                ->setParameter('sys_name', $sysName)
-            ;
-
-            $qb->getQuery()->execute();
-
-            // save uploaded one
-            $file   = $request->files->get('file');
-            $accept = $this->getContainer()->getAttachmentAccepter();
-            $blob   = $accept->accept($file);
-            $blob->setIsTemp(false);
-            $blob->setSysName($sysName);
-
-            $this->em->persist($blob);
-            $this->em->flush();
+            $context = new SideloadSerializationContext();
+            $context->setIncludes(['app']);
+            $context->setInlineSideloads(true);
+            $serialized = $this->container->get('serializer')->toArray(new ApiWrapper($instance), $context);
 
             return $this->createApiCreateResponse(
-                [
-                    'package_name' => $slug,
-                ],
-                $this->generateUrl('api_apps_package', ['name' => $slug])
+                array_merge(
+                    $serialized,
+                    [
+                        'version' => 2,
+                        'package_name' => $manifest->getName(),
+                        'updated' => $isAppUpdate,
+                    ]
+                ),
+                $this->generateUrl('api_get_app_instance', ['application' => $instance->getId()])
             );
         }
 
@@ -1046,10 +1052,16 @@ class AppsController extends AbstractController
      */
     private function getAppV2ArchiveBundle($name)
     {
+
         $assetDir = $this->container->get('deskpro.app_env')->getAppWwwAssetDir();
         $blobPath = $assetDir.'/apps/v2/'.$name.'.zip';
+
+        // make sure the name is slugified
+        $slug = Strings::slugifyTitle($name);
+        $sysName = 'apps_v2_zip_'.$slug;
+
         $blob     = $this->em->getRepository(Blob::class)->findOneBy([
-            'sys_name' => 'apps_v2_zip_'.$name,
+            'sys_name' => $sysName,
         ]);
 
         if ($blob) {

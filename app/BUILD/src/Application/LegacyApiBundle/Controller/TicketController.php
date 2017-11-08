@@ -761,36 +761,30 @@ class TicketController extends AbstractController implements ProtectedController
             return $this->createApiErrorResponse('required_field', 'message cannot be empty');
         }
 
-        $message           = new \Application\DeskPRO\Entity\TicketMessage();
-        $message['ticket'] = $ticket;
+        $message = new TicketMessage();
+        $message->setTicket($ticket);
 
         if ($pid = $this->in->getUInt('person_id')) {
             if (!$person = $this->em->getRepository('DeskPRO:Person')->find($pid)) {
                 throw new NotFoundHttpException();
             }
-            $message['person'] = $person;
+            $message->setPerson($person);
         } else {
-            $message['person'] = ($this->in->getBool('message_as_agent') ? $this->person : $ticket->person);
+            $message->setPerson($this->in->getBool('message_as_agent') ? $this->person : $ticket->person);
         }
 
-        $message['ip_address']      = $this->getRequest()->getClientIp();
-        $message['creation_system'] = \Application\DeskPRO\Entity\TicketMessage::CREATED_WEB_API;
+        $message->setIpAddress($this->getRequest()->getClientIp());
+        $message->setCreationSystem(TicketMessage::CREATED_WEB_API);
 
         if ($this->in->getBool('dp_is_mobile')) {
-            $message['creation_system'] = \Application\DeskPRO\Entity\TicketMessage::CREATED_MOBILE_AGENT;
+            $message->setCreationSystem(TicketMessage::CREATED_MOBILE_AGENT);
         }
 
-        $notify_agent_ids = [];
-
         if ($this->in->getBool('message_is_html')) {
-            $message_text     = Strings::trimHtml($this->in->getHtmlCore('message'));
-            $message_text     = Strings::prepareWysiwygHtml($message_text);
-            $message->message = $message_text;
-
-            preg_match_all('/<span[^>]+data-notify-agent-id="(\d+)"/i', $this->in->getString('message'), $matches, PREG_SET_ORDER);
-            foreach ($matches as $match) {
-                $notify_agent_ids[] = $match[1];
-            }
+            $message_text = Strings::trimHtml($this->in->getHtmlCore('message'));
+            $message_text = Strings::prepareWysiwygHtml($message_text);
+            $message->setMessageHtml($message_text);
+            $message->setOriginalMessage($this->in->getRaw('message'));
         } else {
             $message->setMessageText($this->in->getString('message'));
         }
@@ -816,7 +810,7 @@ class TicketController extends AbstractController implements ProtectedController
         }
 
         if ($this->in->getString('status')) {
-            $ticket->status = $this->in->getString('status');
+            $ticket->setStatus($this->in->getString('status'));
         }
 
         // need to ensure we treat things as the message owner
@@ -831,53 +825,6 @@ class TicketController extends AbstractController implements ProtectedController
         } catch (\Exception $e) {
             $this->db->rollback();
             throw $e;
-        }
-
-        App::setCurrentPerson($this->person);
-
-        if ($this->in->getBool('message_as_agent') && $this->in->getBool('is_note') && $notify_agent_ids) {
-            $agent_chat = new \Application\DeskPRO\Chat\AgentChat($this->person, $this->session->getEntity());
-            $agent_chat->disableOfflineEmailAlert(); // we'll handle offline notifs as part of normal notifications
-
-            $notify_chat  = [];
-            $notify_email = [];
-
-            $notify_agent_ids = array_unique($notify_agent_ids);
-            foreach ($notify_agent_ids as $agent_id) {
-                if (!($agent = $this->container->getAgentData()->get($agent_id))) {
-                    continue;
-                }
-
-                $notify_chat[$agent->id] = $agent;
-
-                $pref = $agent->getPref('agent_notif.ticket_mention', 'always_send');
-                if ($pref == 'always_send' || ($pref == 'smart_send' && !$this->container->getAgentData()->isAgentOnline($agent))) {
-                    $notify_email[$agent->id] = $agent;
-                }
-            }
-
-            if ($notify_chat) {
-                $agentIds   = array_keys($notify_chat);
-                $notifyText = sprintf(
-                    '%s alerted you in a note in {{t-%d}}: %s',
-                    $message->getPerson()->getDisplayName(),
-                    $ticket->getId(),
-                    $ticket->getSubject()
-                );
-                $agent_chat->sendAgentMessage($notifyText, $agentIds);
-                if ($this->container->get('deskpro.feature_flags')->hasBeta('agent_chat')) {
-                    $newIMtext = sprintf(
-                        '[{{t-%d}}] @ %s',
-                        $ticket->getId(),
-                        Strings::prepareWysiwygHtml(Strings::trimHtml($this->in->getHtmlCore('message')))
-                    );
-                    $this->container->get('deskpro.notification.service')->sendNote($this->person, $agentIds, $newIMtext);
-                }
-            }
-
-            if ($notify_email) {
-                $ticket->getTicketLogger()->recordExtra('mention_agents', $notify_email);
-            }
         }
 
         return $this->createApiCreateResponse(

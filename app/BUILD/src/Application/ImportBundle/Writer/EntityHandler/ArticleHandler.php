@@ -51,7 +51,7 @@ class ArticleHandler extends AbstractEntityHandler
      *
      * @param Model\Article $model
      */
-    public function writeModel(Model\PrimaryImportModelInterface $model)
+    public function writeModel(Model\PrimaryImportModelInterface $model, $brandName = null)
     {
         /** @var Entity\Article $entity */
         $entity = $this->findOrCreateEntity($this->mappers->getArticleMapper(), $model);
@@ -87,7 +87,8 @@ class ArticleHandler extends AbstractEntityHandler
             /** @var Entity\ArticleCategory $categoryEntity */
             $categoryEntity = $this->helpers->getCategoryHelper()->findOrCreateCategory(
                 $this->mappers->getArticleCategoryMapper(),
-                $categoryPath
+                $categoryPath,
+                $brandName
             );
 
             if ($entity->getCategories()->contains($categoryEntity)) {

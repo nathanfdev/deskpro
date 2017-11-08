@@ -1,6 +1,9 @@
-import React, { PropTypes } from 'react';
+import PropTypes from 'prop-types';
+import React from 'react';
 import ReactPaginate from 'react-paginate';
 import moment from 'moment';
+import Immutable from 'immutable';
+import { Checkbox } from 'DeskPRO/Component/Semantic/ReactForm';
 import SectionHeader from '../../../../Common/Components/SectionHeader';
 import PersonName from '../../../../Common/Components/PersonName';
 import CallStatus from '../Common/CallStatus';
@@ -9,26 +12,32 @@ import CallDuration from '../Common/CallDuration';
 class CallLogsList extends React.Component {
 
   static propTypes = {
-    calls:         PropTypes.object,
-    numbers:       PropTypes.object,
-    pageCount:     PropTypes.number,
-    onPageChange:  PropTypes.func,
-    onOpenCallLog: PropTypes.func
+    calls:               PropTypes.object,
+    numbers:             PropTypes.object,
+    pageCount:           PropTypes.number,
+    liveUpdates:         PropTypes.bool,
+    onPageChange:        PropTypes.func,
+    onOpenCallLog:       PropTypes.func,
+    openDialpad:         PropTypes.func,
+    onToggleLiveUpdates: PropTypes.func
   };
 
   render() {
-    const { calls, numbers, pageCount, onPageChange, onOpenCallLog } = this.props;
+    const { calls, numbers, pageCount, liveUpdates } = this.props;
+    const { onPageChange, onOpenCallLog, openDialpad, onToggleLiveUpdates } = this.props;
 
     return (
       <div className="page">
         <SectionHeader title="Call logs" dividing />
 
+        <Checkbox label="Live updates" value={liveUpdates} onChange={onToggleLiveUpdates} />
         <table className="table">
           <colgroup>
             <col width="1%" />
             <col width="10%" />
             <col width="10%" />
             <col width="25%" />
+            <col width="10%" />
             <col width="10%" />
             <col width="5%" />
             <col width="5%" />
@@ -41,7 +50,8 @@ class CallLogsList extends React.Component {
               <th>Date</th>
               <th>Caller</th>
               <th>Callee(s)</th>
-              <th>Number</th>
+              <th>From Number</th>
+              <th>To Number</th>
               <th>Ticket</th>
               <th>Type</th>
               <th>Duration</th>
@@ -51,6 +61,10 @@ class CallLogsList extends React.Component {
           <tbody>
             {calls.map((call, index) => {
               const ticketId = call.get('ticket');
+              const fromNumber = call.getIn(['data', 'From']);
+              const toNumber = call.getIn(['data', 'To']);
+              const isInbound = call.get('type') === 'inbound';
+              const number = numbers.get(call.get('number')) || Immutable.fromJS({});
               const onOpen = (event) => {
                 event.preventDefault();
                 onOpenCallLog(call.get('id'));
@@ -75,7 +89,20 @@ class CallLogsList extends React.Component {
                     )}
                   </td>
                   <td className="overflow-ellipsis">
-                    {numbers.getIn([call.get('number'), 'number'])}
+                    {isInbound
+                      ? <button onClick={() => openDialpad(fromNumber)}>
+                        {fromNumber}
+                      </button>
+                      : number.get('number')
+                    }
+                  </td>
+                  <td className="overflow-ellipsis">
+                    {isInbound
+                      ? number.get('number')
+                      : <button onClick={() => openDialpad(toNumber)}>
+                        {toNumber}
+                      </button>
+                    }
                   </td>
                   <td className="overflow-ellipsis">
                     {ticketId

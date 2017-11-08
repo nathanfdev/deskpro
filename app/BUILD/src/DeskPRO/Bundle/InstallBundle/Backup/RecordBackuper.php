@@ -86,6 +86,11 @@ class RecordBackuper
         $name = preg_replace('#[^a-zA-Z0-9\-_\.]#', '_', $name);
         $name = preg_replace('#_{2,}#', '_', $name);
 
+        // max 80 chars
+        if (isset($name[81])) {
+            $name = substr($name, 0, 80);
+        }
+
         return $name;
     }
 }

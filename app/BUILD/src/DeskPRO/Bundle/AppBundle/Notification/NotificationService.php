@@ -39,6 +39,7 @@ use DeskPRO\Bundle\AppBundle\Serializer\Model\Notifications\NotificationClient;
 use DeskPRO\Bundle\AppBundle\Serializer\Model\Notifications\NotificationConfiguration;
 use DeskPRO\Component\Util\RandUtils;
 use Doctrine\ORM\EntityManager;
+use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorageInterface;
 
 /**
  * Class NotificationService.
@@ -56,13 +57,20 @@ class NotificationService
     protected $settings;
 
     /**
-     * @param EntityManager    $em
-     * @param SettingsResolver $settings
+     * @var TokenStorageInterface
      */
-    public function __construct(EntityManager $em, SettingsResolver $settings)
+    protected $tokenStorage;
+
+    /**
+     * @param EntityManager         $em
+     * @param SettingsResolver      $settings
+     * @param TokenStorageInterface $tokenStorage
+     */
+    public function __construct(EntityManager $em, SettingsResolver $settings, TokenStorageInterface $tokenStorage)
     {
-        $this->em       = $em;
-        $this->settings = $settings->getGlobalSettings();
+        $this->em           = $em;
+        $this->settings     = $settings->getGlobalSettings();
+        $this->tokenStorage = $tokenStorage;
     }
 
     /**
@@ -202,9 +210,27 @@ class NotificationService
                     'last_alert'  => $this->lastAlert(),
                     'last_notify' => $this->lastNotify(),
                 ]);
-
+            case 'deskpro':
+                return new NotificationClient('deskpro', [
+                    'token' => $this->getJwtToken(),
+                    'debug' => $this->settings->get('notification.settings.deskpro_client.debug'),
+                    'host'  => $this->settings->get('notification.settings.deskpro_client.host'),
+                    'port'  => $this->settings->get('notification.settings.deskpro_client.port'),
+                ]);
             default:
                 throw new \RuntimeException(sprintf('We can\'t find settings for [ %s ] client', $handler));
         }
+    }
+
+    protected function getJwtToken()
+    {
+        $user = $this->tokenStorage->getToken()->getUser();
+
+        return \JWT::encode(
+            [
+                'id' => $user instanceof Person ? $user->getId() : 0,
+            ],
+            $this->settings->get('notification.settings.deskpro_client.secret')
+        );
     }
 }

@@ -1,4 +1,5 @@
-import React, { PropTypes } from 'react';
+import PropTypes from 'prop-types';
+import React from 'react';
 import { AttachedFile } from './AttachedFile';
 
 export class AttachedFiles extends React.Component {

@@ -28,7 +28,7 @@
 
 namespace DpBehat\Http;
 
-use Sanpi\Behatch\Context\BaseContext;
+use Behatch\Context\BaseContext;
 use Symfony\Component\HttpFoundation\File\UploadedFile;
 
 /**

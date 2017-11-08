@@ -34,6 +34,7 @@ use DeskPRO\Bundle\AppBundle\Entity\Snippet;
 use DeskPRO\Bundle\AppBundle\Entity\SnippetTranslation;
 use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 use Symfony\Component\Form\AbstractType;
+use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\Form\FormEvent;
@@ -54,6 +55,10 @@ class SnippetTranslationType extends AbstractType
             ])
             ->add('snippet', EntityType::class, [
                 'class' => Snippet::class,
+            ])
+            ->add('type', ChoiceType::class, [
+                'choices_as_values' => true,
+                'choices'           => [Snippet::TYPE_CHAT, Snippet::TYPE_TICKET],
             ])
             ->add('id', TextType::class, [
                 'mapped'   => false,

@@ -1,86 +1,34 @@
-import React, { PropTypes } from 'react';
+import PropTypes from 'prop-types';
+import React from 'react';
 import { connect } from 'react-redux';
 import classNames from 'classnames';
 import Immutable from 'immutable';
 import Isvg from 'react-inlinesvg';
-import Modal from 'deskpro-components/lib/Components/Modal';
-import { Button, ConfirmButton } from 'deskpro-components/lib/Components/Buttons';
-import { Checkbox, Input, Label, TagSet, Select } from 'deskpro-components/lib/Components/Forms';
+import htmlToText from 'html-to-text';
+import Modal from '@deskpro/react-components/lib/Components/Modal';
+import { Button, ConfirmButton } from '@deskpro/react-components/lib/Components/Buttons';
+import Icon from '@deskpro/react-components/lib/Components/Icon';
+import { Checkbox, Input, Label, TagInput, Select } from '@deskpro/react-components/lib/Components/Forms';
+import { Tabs, TabLink } from '@deskpro/react-components/lib/Components/Tabs';
 import { UploadButton } from 'DeskPRO/Component/Uploader/UploadButton';
 import agentPhrases from 'DeskPRO/Bundle/AgentBundle/AgentPhrases';
+import { meSelector } from 'DeskPRO/Bundle/AppBundle/Modules/RecordsStore/Shortcuts/me';
 import { allSelectorFactory, collectionSelectorFactory } from 'DeskPRO/Bundle/AppBundle/Modules/RecordsStore';
 import * as actions from '../Actions/snippetsActions';
 import { allSnippetBlobsSelector } from '../Selectors/snippets';
+import { ModalLanguageSelect } from './Menus/ModalLanguageSelect';
 import { OwnershipSelectContainer } from './Menus/OwnershipSelect';
 import { VisibilitySelectContainer } from './Menus/VisibilitySelect';
+import { UsageHistoryModal } from './UsageHistoryModal';
+import { ChangeLogModal } from './ChangeLogModal';
 
-class LanguageOption extends React.Component {
-  static propTypes = {
-    children:  PropTypes.node,
-    className: PropTypes.string,
-    isFocused: PropTypes.bool,
-    onFocus:   PropTypes.func,
-    onSelect:  PropTypes.func,
-    option:    PropTypes.object.isRequired,
-  };
-
-  handleMouseDown = (event) => {
-    event.preventDefault();
-    event.stopPropagation();
-    this.props.onSelect(this.props.option, event);
-  };
-
-  handleMouseEnter = (event) => {
-    this.props.onFocus(this.props.option, event);
-  };
-
-  handleMouseMove = (event) => {
-    if (this.props.isFocused) return;
-    this.props.onFocus(this.props.option, event);
-  };
-
-  render() {
-    return (
-      <div
-        className={this.props.className}
-        onMouseDown={this.handleMouseDown}
-        onMouseEnter={this.handleMouseEnter}
-        onMouseMove={this.handleMouseMove}
-        title={this.props.option.title}
-      >
-        <img src={this.props.option.flag_image} role="presentation" />&nbsp;
-        {this.props.children}
-      </div>
-    );
-  }
-}
-class LanguageValue extends React.Component {
-  static propTypes = {
-    children: PropTypes.node,
-    value:    PropTypes.object
-  };
-
-  render() {
-    if (!this.props.value) {
-      return null;
-    }
-    return (
-      <div className="Select-value" title={this.props.value.title}>
-        <span className="Select-value-label">
-          <img src={this.props.value.flag_image} role="presentation" />&nbsp;
-          {this.props.children}
-        </span>
-      </div>
-    );
-  }
-}
 class VariableValue extends React.Component {
   render() {
     return (
       <div className="Select-value">
         <span className="Select-value-label">
           <i className="fa fa-dollar" />&nbsp;
-          Variables
+          {agentPhrases.get('agent.snippets.variables')}
         </span>
       </div>
     );
@@ -88,6 +36,7 @@ class VariableValue extends React.Component {
 }
 
 @connect(state => ({
+  me:                   meSelector(state),
   languages:            allSelectorFactory('Language')(state),
   chatDepartments:      collectionSelectorFactory('Department', 'all_chat')(state),
   userChatCustomFields: allSelectorFactory('UserChatCustomFields')(state),
@@ -97,6 +46,7 @@ class VariableValue extends React.Component {
 }))
 export class SnippetsModalContainer extends React.Component {
   static propTypes = {
+    me:                   PropTypes.object,
     snippet:              PropTypes.object,
     languages:            PropTypes.object,
     userChatCustomFields: PropTypes.object,
@@ -117,35 +67,27 @@ export class SnippetsModalContainer extends React.Component {
 
   constructor(props) {
     super(props);
-    this.state = {
-      labels:            [],
-      translations:      [],
-      departments:       new Set(),
-      teams:             new Set(),
-      types:             [],
-      isOwnershipGlobal: true,
-      title:             this.props.snippet.get('title', ''),
-      shortcutCode:      this.props.snippet.get('shortcut_code', ''),
-      isDraft:           false,
-      langId:            props.langId,
-    };
-  }
-
-  componentWillMount() {
     const { snippet, type } = this.props;
     const departments = snippet.get('visible_departments', new Immutable.List()).toArray();
     const teams = snippet.get('ownership_teams', new Immutable.List()).toArray();
     const types = snippet.get('types', new Immutable.List([type])).toArray();
-    this.setState({
-      translations:      snippet.get('translations', []),
+    this.state = {
       labels:            snippet.get('labels', new Immutable.List()).toArray(),
-      types,
-      isDraft:           snippet.get('is_draft', false),
+      translations:      snippet.get('translations', []),
       departments:       new Set(departments),
       teams:             new Set(teams),
+      saving:            false,
+      type,
+      types,
       isOwnershipGlobal: snippet.get('is_ownership_global'),
       isVisibleGlobal:   snippet.get('is_visible_global'),
-    });
+      isSplit:           snippet.get('is_split', false),
+      title:             snippet.get('title', ''),
+      shortcutCode:      snippet.get('shortcut_code', ''),
+      isDraft:           !!snippet.get('is_draft', false),
+      langId:            props.langId,
+      mergeKeepValue:    'ticket',
+    };
   }
 
   componentDidMount() {
@@ -175,9 +117,11 @@ export class SnippetsModalContainer extends React.Component {
   setLanguage = (value) => {
     this.saveTranslation();
     this.setState({
-      langId: value.id
+      langId: value
     });
-    const translation = this.state.translations.find(t => t.get('language') === value.id);
+    const translation = this.state.translations.find(t =>
+      t.get('language') === value && (!this.state.isSplit || t.get('type') === this.state.type)
+    );
     if (translation) {
       this.redactor.setCode(translation.get('content'));
     } else {
@@ -185,19 +129,28 @@ export class SnippetsModalContainer extends React.Component {
     }
   };
 
+  setContent = (content) => {
+    this.redactor.setCode(content);
+    this.saveTranslation();
+  };
+
   saveTranslation = () => {
-    const index = this.state.translations.findIndex(translation => translation.get('language') === this.state.langId);
+    const index = this.state.translations.findIndex(t =>
+      t.get('language') === this.state.langId && (!this.state.isSplit || t.get('type') === this.state.type)
+    );
     let translations = {};
     if (index !== -1) {
-      translations = this.state.translations.update(index, translation =>
-        translation.set('content', this.redactor.getCode().replace(/^<p>/, '').replace(/(<p>)?<\/p>\s*$/, '')));
+      translations = this.state.translations.update(index, t =>
+        t.set('content', this.redactor.getCode().replace(/^<p>/, '').replace(/(<p>)?<\/p>\s*$/, '')));
     } else {
       translations = this.state.translations.push(Immutable.fromJS({
         language: this.state.langId,
         content:  this.redactor.getCode(),
+        type:     this.state.isSplit ? this.state.type : null,
         blobs:    [],
       }));
     }
+    translations = translations.filter(t => htmlToText.fromString(t.get('content')).replace(/\s*/, '') !== '');
     this.setState({
       translations
     });
@@ -206,6 +159,12 @@ export class SnippetsModalContainer extends React.Component {
 
   saveSnippet = () => {
     const { snippet, dispatch, closeModal } = this.props;
+    if (this.state.saving) {
+      return false;
+    }
+    this.setState({
+      saving: true
+    });
     const translations = this.saveTranslation();
     const snippetData = {
       title:               this.state.title,
@@ -213,6 +172,7 @@ export class SnippetsModalContainer extends React.Component {
       shortcut_code:       this.state.shortcutCode,
       labels:              this.state.labels,
       translations:        translations.toJS(),
+      is_split:            this.state.isSplit,
       is_draft:            this.state.isDraft,
       is_visible_global:   this.state.isVisibleGlobal,
       is_ownership_global: this.state.isOwnershipGlobal,
@@ -224,17 +184,26 @@ export class SnippetsModalContainer extends React.Component {
     }
     dispatch(actions.saveSnippet(snippetData))
       .then((newSnippet) => {
-        const shortcodes = window.DESKPRO_TICKET_SNIPPET_SHORTCODES;
-        if (shortcodes[newSnippet.shortcut_code]) {
-          shortcodes[newSnippet.shortcut_code] = shortcodes[newSnippet.shortcut_code].concat([newSnippet.id]);
-        } else {
-          shortcodes[newSnippet.shortcut_code] = [newSnippet.id];
+        const shortCodes = window.DESKPRO_TICKET_SNIPPET_SHORTCODES;
+        const previousCode = snippet.get('shortcut_code');
+        if (shortCodes[previousCode]
+          && shortCodes[previousCode].indexOf(snippet.get('id') !== -1)) {
+          shortCodes[previousCode] = shortCodes[previousCode].filter(i => i !== snippet.get('id'));
         }
+        if (shortCodes[snippet.shortcut_code] && shortCodes[snippet.shortcut_code].indexOf(snippet.id) === -1) {
+          shortCodes[newSnippet.shortcut_code] = shortCodes[newSnippet.shortcut_code].concat([newSnippet.id]);
+        } else if (!shortCodes[snippet.shortcut_code]) {
+          shortCodes[newSnippet.shortcut_code] = [newSnippet.id];
+        }
+        this.setState({
+          saving: false
+        });
         closeModal();
       }, (error) => {
         console.log(error);
       })
     ;
+    return true;
   };
 
   deleteSnippet = () => {
@@ -254,7 +223,7 @@ export class SnippetsModalContainer extends React.Component {
     this.props.dispatch(actions.addSnippetAttachment(blob));
 
     // Add blob to translation Map
-    const index = this.state.translations.findIndex(translation => translation.get('language') === this.state.langId);
+    const index = this.state.translations.findIndex(t => t.get('language') === this.state.langId);
 
     let translations = {};
     if (index !== -1) {
@@ -265,9 +234,22 @@ export class SnippetsModalContainer extends React.Component {
       translations = this.state.translations.push(Immutable.fromJS({
         language: this.state.langId,
         content:  this.redactor.getCode(),
+        type:     this.state.isSplit ? this.state.type : null,
         blobs:    [blob.blob_id],
       }));
     }
+    this.setState({
+      translations
+    });
+  };
+
+  removeAttachment = (blobId) => {
+    // Add blob to translation Map
+    const index = this.state.translations.findIndex(t => t.get('language') === this.state.langId);
+
+    const translations = this.state.translations.update(index, translation =>
+      translation.update('blobs', blobs => blobs.filter(blob => blob !== blobId))
+    );
     this.setState({
       translations
     });
@@ -343,8 +325,74 @@ export class SnippetsModalContainer extends React.Component {
     return true;
   };
 
+  changeType = (type) => {
+    this.saveTranslation();
+    this.setState({
+      type
+    });
+    const translation = this.state.translations.find(t =>
+      t.get('language') === this.state.langId && t.get('type') === type
+    );
+    if (translation) {
+      this.redactor.setCode(translation.get('content'));
+    } else {
+      this.redactor.setCode('');
+    }
+  };
+
+  splitSnippet = (e) => {
+    e.preventDefault();
+    const { type, types } = this.state;
+    let newTranslations = new Immutable.List();
+    let translations = this.saveTranslation();
+    translations = translations.map((t) => {
+      let newType = t;
+      newType = newType.set('type', type === 'ticket' ? 'chat' : 'ticket').delete('id').delete('snippet');
+      newTranslations = newTranslations.push(newType);
+      return t.set('type', type);
+    });
+    if (types.length < 2) {
+      if (types[0] === 'ticket') {
+        types.push('chat');
+      } else {
+        types.push('ticket');
+      }
+    }
+    translations = translations.concat(newTranslations);
+    this.setState({
+      types,
+      translations,
+      isSplit: true,
+    });
+  };
+
+  mergeSnippet = (e) => {
+    e.preventDefault();
+    const translations = this.saveTranslation().filter(t => t.get('type') === this.state.mergeKeepValue);
+    this.setState({
+      translations,
+      isSplit: false,
+    });
+    const translation = translations.find(t =>
+      t.get('language') === this.state.langId && t.get('type') === this.state.mergeKeepValue
+    );
+    if (translation) {
+      this.redactor.setCode(translation.get('content'));
+    } else {
+      this.redactor.setCode('');
+    }
+    this.modal.displayMerge();
+  };
+
+  updateMergeKeep = (value) => {
+    this.setState({
+      mergeKeepValue: value.value
+    });
+  };
+
   render() {
     const {
+      me,
       snippet,
       closeModal,
       languages,
@@ -356,20 +404,25 @@ export class SnippetsModalContainer extends React.Component {
       height,
     } = this.props;
 
-    let translation = this.state.translations.find(t => t.get('language') === this.state.langId);
+    let translation = this.state.translations.find(t =>
+      t.get('language') === this.state.langId && (!this.state.isSplit || t.get('type') === this.state.type)
+    );
     if (!translation) {
       translation = Immutable.fromJS({
         language: this.state.langId,
         content:  '',
+        type:     this.state.isSplit ? this.state.type : null,
         blobs:    [],
       });
     }
     return (
       <SnippetsModal
+        me={me}
         snippet={snippet}
         labels={this.state.labels}
         labelsSource={this.props.labelsSource}
         translation={translation}
+        translations={this.state.translations}
         closeModal={closeModal}
         languages={languages}
         userChatCustomFields={userChatCustomFields}
@@ -382,15 +435,20 @@ export class SnippetsModalContainer extends React.Component {
         isDraft={this.state.isDraft}
         isOwnershipGlobal={this.state.isOwnershipGlobal}
         isVisibleGlobal={this.state.isVisibleGlobal}
+        isSplit={this.state.isSplit}
+        type={this.state.type}
         types={this.state.types}
         langId={this.state.langId}
         height={height}
         shortcutCode={this.state.shortcutCode}
         title={this.state.title}
+        mergeKeepValue={this.state.mergeKeepValue}
+        saving={this.state.saving}
         addAttachment={this.addAttachment}
         saveSnippet={this.saveSnippet}
         deleteSnippet={this.deleteSnippet}
         setLanguage={this.setLanguage}
+        setContent={this.setContent}
         changeLabels={this.changeLabels}
         insertVariable={this.insertVariable}
         handleChangeDraft={this.handleChangeDraft}
@@ -399,6 +457,11 @@ export class SnippetsModalContainer extends React.Component {
         handleTeamsChange={this.handleTeamsChange}
         handleShortcutCode={this.handleShortcutCode}
         handleTitle={this.handleTitle}
+        splitSnippet={this.splitSnippet}
+        mergeSnippet={this.mergeSnippet}
+        updateMergeKeep={this.updateMergeKeep}
+        changeType={this.changeType}
+        removeAttachment={this.removeAttachment}
         ref={(c) => { this.modal = c; }}
       />
     );
@@ -406,8 +469,10 @@ export class SnippetsModalContainer extends React.Component {
 }
 export class SnippetsModal extends React.Component {
   static propTypes = {
+    me:                      PropTypes.object,
     snippet:                 PropTypes.object,
     translation:             PropTypes.object,
+    translations:            PropTypes.object,
     languages:               PropTypes.object,
     userChatCustomFields:    PropTypes.object,
     personCustomFields:      PropTypes.object,
@@ -419,17 +484,22 @@ export class SnippetsModal extends React.Component {
     isDraft:                 PropTypes.bool.isRequired,
     isOwnershipGlobal:       PropTypes.bool.isRequired,
     isVisibleGlobal:         PropTypes.bool.isRequired,
+    isSplit:                 PropTypes.bool.isRequired,
+    saving:                  PropTypes.bool,
+    type:                    PropTypes.string,
     types:                   PropTypes.array.isRequired,
     langId:                  PropTypes.number,
     height:                  PropTypes.number,
     shortcutCode:            PropTypes.string,
     title:                   PropTypes.string,
+    mergeKeepValue:          PropTypes.string,
     labels:                  PropTypes.array,
     labelsSource:            PropTypes.array,
     addAttachment:           PropTypes.func,
     saveSnippet:             PropTypes.func,
     deleteSnippet:           PropTypes.func,
     setLanguage:             PropTypes.func,
+    setContent:              PropTypes.func,
     closeModal:              PropTypes.func,
     changeLabels:            PropTypes.func,
     insertVariable:          PropTypes.func,
@@ -439,10 +509,28 @@ export class SnippetsModal extends React.Component {
     handleShortcutCode:      PropTypes.func,
     handleTeamsChange:       PropTypes.func,
     handleTitle:             PropTypes.func,
+    splitSnippet:            PropTypes.func,
+    mergeSnippet:            PropTypes.func,
+    updateMergeKeep:         PropTypes.func,
+    changeType:              PropTypes.func,
+    removeAttachment:        PropTypes.func,
   };
   static defaultProps = {
     shortcutCode: '',
     changeLabels() {},
+  };
+
+  constructor(props) {
+    super(props);
+    this.state = {
+      displayMerge:          false,
+      changeLogModalOpen:    false,
+      usageHistoryModalOpen: false,
+    };
+  }
+
+  onSubmit = (e) => {
+    e.preventDefault();
   };
 
   getVariables = () => {
@@ -490,6 +578,8 @@ export class SnippetsModal extends React.Component {
     variables = variables.concat([
       { value: 'user', label: agentPhrases.get('agent.general.user'), disabled: true },
       { value: 'entity.person.display_name', label: agentPhrases.get('agent.general.name') },
+      { value: 'entity.person.first_name', label: agentPhrases.get('agent.general.first_name') },
+      { value: 'entity.person.last_name', label: agentPhrases.get('agent.general.last_name') },
       { value: 'entity.person.primary_email.email', label: agentPhrases.get('agent.general.email_address') },
       { value: 'entity.person.organization.name', label: agentPhrases.get('agent.general.organization') },
       { value: 'entity.person.organization_position', label: agentPhrases.get('agent.general.org_position') },
@@ -553,7 +643,91 @@ export class SnippetsModal extends React.Component {
     return departments;
   };
 
+  getModalTitle = () => {
+    const { snippet } = this.props;
+    let usage = null;
+    if (snippet.get('usage_count')) {
+      usage = (<a className="usage_history" onClick={this.openUsageHistoryModal}>
+        {agentPhrases.get('agent.snippets.usage_history')} ({snippet.get('usage_count')})
+      </a>);
+    }
+    return (
+      <div>
+        {snippet.get('id', false) ? agentPhrases.get('agent.snippets.edit_snippet') : 'New snippet'}
+        {usage}
+        {snippet.get('id', false) ?
+          <a className="change_log" onClick={this.openChangeLogModal}>{agentPhrases.get('agent.general.changelog')}</a>
+          : null }
+      </div>
+    );
+  };
+
+  getUsageHistoryModal = () => {
+    if (!this.state.usageHistoryModalOpen) {
+      return null;
+    }
+    return (
+      <UsageHistoryModal
+        snippet={this.props.snippet}
+        closeModal={this.closeUsageHistoryModal}
+      />
+    );
+  };
+
+  getChangeLogModal = () => {
+    if (!this.state.changeLogModalOpen) {
+      return null;
+    }
+    return (
+      <ChangeLogModal
+        snippet={this.props.snippet}
+        langId={this.props.langId}
+        languages={this.props.languages}
+        translation={this.props.translation}
+        translations={this.props.translations}
+        type={this.props.type}
+        revertContent={this.revertContent}
+        closeModal={this.closeChangeLogModal}
+      />
+    );
+  };
+
   getUploadUrl = () => '/api/v2/blobs/temp';
+
+  openUsageHistoryModal = () => {
+    this.setState({
+      usageHistoryModalOpen: true,
+    });
+  };
+
+  closeUsageHistoryModal = () => {
+    this.setState({
+      usageHistoryModalOpen: false,
+    });
+  };
+
+  openChangeLogModal = () => {
+    this.setState({
+      changeLogModalOpen: true,
+    });
+  };
+
+  closeChangeLogModal = () => {
+    this.setState({
+      changeLogModalOpen: false,
+    });
+  };
+
+  revertContent = (content, langId, type) => {
+    if (type !== null) {
+      this.props.changeType(type);
+    }
+    if (langId !== this.props.langId) {
+      this.props.setLanguage(langId);
+    }
+    this.props.setContent(content);
+    this.closeChangeLogModal();
+  };
 
   isValid = () => this.isTitleValid() && this.isShortcutCodeValid();
 
@@ -561,12 +735,23 @@ export class SnippetsModal extends React.Component {
 
   isShortcutCodeValid = () => this.props.shortcutCode.match(/^[-_a-z0-9]*$/i);
 
+  displayMerge = (e) => {
+    if (e) {
+      e.preventDefault();
+    }
+    this.setState({
+      displayMerge: !this.state.displayMerge
+    });
+  };
+
   render() {
     const {
+      me,
       snippet,
       labels,
       labelsSource,
       translation,
+      translations,
       languages,
       langId,
       height,
@@ -582,34 +767,52 @@ export class SnippetsModal extends React.Component {
       closeModal,
       saveSnippet,
       deleteSnippet,
+      splitSnippet,
+      mergeSnippet,
+      mergeKeepValue,
+      updateMergeKeep,
+      changeType,
+      saving,
+      removeAttachment,
     } = this.props;
     if (!snippet) {
       return null;
     }
-    const languageOptions = languages.map((language) => {
-      let option = language.set('label', language.get('title'));
-      option = option.set('value', language.get('id'));
-      return option.toJS();
-    });
+    const canDelete = snippet.get('id') &&
+      (snippet.get('person') === me.get('id') || window.DESKPRO_PERSON_PERMS['agent_snippets.delete_by_others']);
     // ratio between viewport and needed dropdowns size
     const maxHeight = height * 0.52 - 200;
+    const mergeOptions = [
+      { value: 'ticket', label: 'Keep ticket text' },
+      { value: 'chat', label: 'Keep chat text' }
+    ];
     return (
       <div id="snippets__modal">
         <Modal
-          title={snippet.get('id', false) ? agentPhrases.get('agent.snippets.edit_snippet') : 'New snippet'}
+          title={this.getModalTitle()}
           closeModal={closeModal}
           buttons={
             <div>
-              <Button className="dp-button--l" onClick={saveSnippet} disabled={!this.isValid()}>
+              <Button type="primary" size="large" onClick={saveSnippet} disabled={!this.isValid()} loading={saving}>
                 {agentPhrases.get('agent.general.save')}
               </Button>
-              <Button className="dp-button--l dp-button--secondary" onClick={closeModal}>
+              <Checkbox
+                checked={this.props.isDraft}
+                value="is_draft"
+                className="draft"
+                onChange={handleChangeDraft}
+              >
+                {agentPhrases.get('agent.snippets.snippet_is_draft')}
+              </Checkbox>
+              <Button type="secondary" size="large" className="right" onClick={closeModal}>
                 {agentPhrases.get('agent.general.cancel')}
               </Button>
               <ConfirmButton
-                className="dp-button--l dp-button--secondary right"
+                type="secondary"
+                size="large"
+                className="right"
                 onClick={deleteSnippet}
-                disabled={!snippet.get('id')}
+                disabled={!canDelete}
                 message={agentPhrases.get('agent.general.are_you_sure')}
               >
                 {agentPhrases.get('agent.general.delete')}
@@ -617,18 +820,7 @@ export class SnippetsModal extends React.Component {
             </div>
         }
         >
-          <div className="language-switch field">
-            <Select
-              onChange={setLanguage}
-              optionComponent={LanguageOption}
-              options={languageOptions.toArray()}
-              value={langId}
-              clearable={false}
-              valueComponent={LanguageValue}
-            />
-          </div>
-          {this.getVariables()}
-          <form id="snippet_form">
+          <form id="snippet_form" onSubmit={this.onSubmit}>
             <div className="title-field field">
               <Label htmlFor="snippet_title" required>{agentPhrases.get('agent.general.title')}</Label>
               <Input
@@ -638,60 +830,6 @@ export class SnippetsModal extends React.Component {
                 required
               />
             </div>
-            <textarea
-              id="snippet__editor"
-              cols="30"
-              rows="10"
-              defaultValue={translation.get('content', '')}
-              ref={(c) => { this.textArea = c; }}
-            />
-            <span className="files">
-              {translation.get('blobs').map((blobId, key) => <SnippetAttachment key={key} blobId={blobId} />)}
-            </span>
-            <UploadButton
-              id={'upload_attachment'}
-              ref={(c) => { this.uploadButton = c; }}
-              name="file"
-              onSuccess={addAttachment}
-              uploadUrl={this.getUploadUrl()}
-            />
-            <div className="labels-field field">
-              <Label htmlFor="snippet_label_input">{agentPhrases.get('agent.general.labels')}</Label>
-              <TagSet
-                tags={labels}
-                onChange={changeLabels}
-                options={labelsSource}
-                editable
-              />
-            </div>
-            <div className="types-field field">
-              <Label htmlFor="snippet_types_input">{agentPhrases.get('agent.general.types')}</Label>
-              <Checkbox
-                checked={this.props.types.find(type => type === 'ticket')}
-                value="ticket"
-                onChange={handleChangeTypes}
-              >
-                {agentPhrases.get('agent.general.ticket')}
-              </Checkbox>
-              <Checkbox
-                checked={this.props.types.find(type => type === 'chat')}
-                value="chat"
-                onChange={handleChangeTypes}
-              >
-                {agentPhrases.get('agent.general.chat')}
-              </Checkbox>
-            </div>
-            <div className="draft-field field">
-              <Label htmlFor="snippet_draft_input">{agentPhrases.get('agent.general.draft')}</Label>
-              <Checkbox
-                checked={this.props.isDraft}
-                value="is_draft"
-                onChange={handleChangeDraft}
-              >
-                {agentPhrases.get('agent.snippets.snippet_is_draft')}
-              </Checkbox>
-            </div>
-            <br />
             <div className="shortcut-field field">
               <Label htmlFor="snippet_shortcut_code">
                 {agentPhrases.get('agent.snippets.shortcut_code')}
@@ -705,6 +843,92 @@ export class SnippetsModal extends React.Component {
                 required
                 onChange={handleShortcutCode}
               />
+            </div>
+            <div className="labels-field field">
+              <Label htmlFor="snippet_label_input">{agentPhrases.get('agent.general.labels')}</Label>
+              <TagInput
+                tags={labels}
+                onChange={changeLabels}
+                options={labelsSource}
+                inputProps={{ placeholder: agentPhrases.get('agent.general.add_a_label') }}
+                editable
+              />
+            </div>
+            {this.props.isSplit ?
+              <div>
+                <div className="type-tabs">
+                  <Tabs active={this.props.type} onChange={changeType}>
+                    <TabLink name="ticket">
+                      {agentPhrases.get('agent.general.ticket')}
+                    </TabLink>
+                    <TabLink name="chat">
+                      {agentPhrases.get('agent.general.chat')}
+                    </TabLink>
+                  </Tabs>
+                </div>
+                {this.state.displayMerge ?
+                  <div className="merge-snippet">
+                    <Select
+                      value={mergeKeepValue}
+                      options={mergeOptions}
+                      clearable={false}
+                      searchable={false}
+                      onChange={updateMergeKeep}
+                    />
+                    <Button type="primary" size="medium" onClick={mergeSnippet}>
+                      <Icon name="compress" />
+                      {agentPhrases.get('agent.general.merge')}
+                    </Button>
+                    <Button type="secondary" size="medium" onClick={this.displayMerge}>
+                      {agentPhrases.get('agent.general.cancel')}
+                    </Button>
+                  </div>
+                 : <a href="#merge" className="merge-link" onClick={this.displayMerge}>
+                   <Icon name="compress" /> Merge
+                  </a>
+                }
+              </div>
+              : null}
+            <div className="editor">
+              <textarea
+                id="snippet__editor"
+                cols="30"
+                rows="10"
+                defaultValue={translation.get('content', '')}
+                ref={(c) => { this.textArea = c; }}
+              />
+              <div className="language-switch field">
+                <ModalLanguageSelect
+                  langId={langId}
+                  languages={languages}
+                  onChange={setLanguage}
+                  translations={translations}
+                />
+              </div>
+              {this.getVariables()}
+            </div>
+            <div className="upload">
+              <div className="upload-button">
+                <span className="styled-button">
+                  <Icon name="paperclip" /> {agentPhrases.get('agent.general.attach_files')}
+                </span>
+                <UploadButton
+                  id={'upload_attachment'}
+                  ref={(c) => { this.uploadButton = c; }}
+                  name="file"
+                  onSuccess={addAttachment}
+                  uploadUrl={this.getUploadUrl()}
+                />
+              </div>
+              <span className="files">
+                {translation.get('blobs').map((blobId, key) =>
+                  <SnippetAttachment
+                    key={key}
+                    blobId={blobId}
+                    removeAttachment={removeAttachment}
+                  />
+                )}
+              </span>
             </div>
             <div className="ownership-field field">
               <Label htmlFor="snippet_ownership">{agentPhrases.get('agent.snippets.ownership')}</Label>
@@ -725,8 +949,32 @@ export class SnippetsModal extends React.Component {
                 style={{ maxHeight }}
               />
             </div>
+            <div className="types-field field">
+              <Label htmlFor="snippet_types_input">{agentPhrases.get('agent.general.types')}</Label>
+              <Checkbox
+                checked={!!this.props.types.find(type => type === 'ticket')}
+                value="ticket"
+                onChange={handleChangeTypes}
+              >
+                {agentPhrases.get('agent.general.ticket')}
+              </Checkbox>
+              <Checkbox
+                checked={!!this.props.types.find(type => type === 'chat')}
+                value="chat"
+                onChange={handleChangeTypes}
+              >
+                {agentPhrases.get('agent.general.chat')}
+              </Checkbox>
+              {!this.props.isSplit ?
+                <a href="#expand" onClick={splitSnippet}><Icon name="expand" />
+                  &nbsp;{agentPhrases.get('agent.snippets.split_snippet')}
+                </a>
+              : null}
+            </div>
           </form>
         </Modal>
+        {this.getUsageHistoryModal()}
+        {this.getChangeLogModal()}
       </div>
     );
   }
@@ -737,8 +985,13 @@ export class SnippetsModal extends React.Component {
 }))
 class SnippetAttachment extends React.Component {
   static propTypes = {
-    blobs:  PropTypes.object,
-    blobId: PropTypes.number,
+    blobs:            PropTypes.object,
+    blobId:           PropTypes.number,
+    removeAttachment: PropTypes.func,
+  };
+
+  removeAttachment = () => {
+    this.props.removeAttachment(this.props.blobId);
   };
 
   render() {
@@ -747,15 +1000,20 @@ class SnippetAttachment extends React.Component {
       return null;
     }
     const blob = blobs.find(b => b.get('id') === blobId);
+    if (!blob) {
+      return null;
+    }
     return (
       <div className="snippet-attachment">
         <i className="fa fa-paperclip" />&nbsp;
         <strong>Attachment:</strong>&nbsp;
         {blob.get('filename')} ({blob.get('filesize_readable')})
-        <Isvg
-          className="close-icon"
-          src={`${window.DESKPRO_APP_ASSETS_URL}/DeskPRO/Bundle/AgentBundle/Resources/img/general/close.svg`}
-        />
+        <span onClick={this.removeAttachment}>
+          <Isvg
+            className="close-icon"
+            src={`${window.DESKPRO_APP_ASSETS_URL}/DeskPRO/Bundle/AgentBundle/Resources/img/general/close.svg`}
+          />
+        </span>
       </div>
     );
   }

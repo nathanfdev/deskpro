@@ -1,19 +1,27 @@
+import PropTypes from 'prop-types';
 import React from 'react';
+import map from 'lodash/map';
 import { Tab } from './Tab';
 import { SortWidget } from './SortWidget';
-import _ from 'lodash';
 
 export class TabRow extends React.Component {
+  static propTypes = {
+    available:         PropTypes.object,
+    filter:            PropTypes.object,
+    setSort:           PropTypes.func,
+    setStatus:         PropTypes.func,
+    setStatusCategory: PropTypes.func,
+  };
 
   render() {
     return (
       <ul className="flat-tabs">
-        {_.map(this.props.available.status, (status, status_id) =>
+        {map(this.props.available.status, (status, statusId) =>
           <Tab
-            key={status_id}
+            key={statusId}
             label={status}
-            id={status_id}
-            active={this.props.filter.getStatus() == status_id}
+            id={statusId}
+            active={this.props.filter.getStatus() === statusId}
             activeCategories={this.props.filter.status_categories}
             setStatus={this.props.setStatus}
             available={this.props.available}

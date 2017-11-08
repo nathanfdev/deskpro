@@ -12,6 +12,11 @@ define [
       @field_id = parseInt(@$stateParams.id || 0)
       @field_type = '0'
       @field_type_chooser = 'text'
+
+      @showFieldType = true
+      @showEnabled = true
+      @showAgentOnly = true
+
       @fieldDataService = @getDataService()
       return
 
@@ -27,7 +32,7 @@ define [
         @field      = data.field
         @field_type = data.field_type
         @form       = data.form
-        @postLoad()
+        @postLoad(data)
       )
 
       if p

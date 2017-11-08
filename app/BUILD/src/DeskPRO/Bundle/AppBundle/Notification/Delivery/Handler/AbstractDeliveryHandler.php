@@ -38,6 +38,8 @@ abstract class AbstractDeliveryHandler implements DeliveryHandlerInterface
 {
     const TYPE = 'notification.delivery.handler.abstract';
 
+    const MAX_MESSAGE_SIZE = 10240; // 10Kb for pusherapp;
+
     /**
      * @return string
      */
@@ -50,5 +52,16 @@ abstract class AbstractDeliveryHandler implements DeliveryHandlerInterface
         return static::TYPE;
     }
 
+    /**
+     * {@inheritdoc}
+     */
     abstract protected function getChannel(MessageInterface $message);
+
+    /**
+     * {@inheritdoc}
+     */
+    public function deliverSoon()
+    {
+        $this->deliver();
+    }
 }

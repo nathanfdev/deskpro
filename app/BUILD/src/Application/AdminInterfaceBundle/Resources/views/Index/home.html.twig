@@ -348,6 +348,11 @@
 											<i class="fa fa-warning"></i>
 											There are <a href="{{ ng_href('server.error_logs') }}">{{ ng_var('Home.error_status.error_count') }} system errors</a> in the error log.
 										</p>
+										<p ng-show="Home.error_status.error_log_size">
+											<i class="fa fa-warning"></i>
+											Your <a href="{{ ng_href('server.error_logs') }}">error log</a> has reached {{ ng_var('Home.error_status.error_log_max_size | filesize_display') }} in size,
+											error logging has been disabled to conserve disk space. <a href="#" ng-click="Home.deleteLogFile();$event.preventDefault();">Delete log file.</a>
+										</p>
 										<p ng-show="Home.error_status.gateway_error_count > 0">
 											<i class="fa fa-envelope"></i>
 											There have been <a href="{{ ng_href('tickets.ticket_accounts.emailsources') }}">{{ ng_var('Home.error_status.gateway_error_count') }} email errors</a>.

@@ -187,7 +187,8 @@ define [
               value.options            = {}
               value.options[prop_name] = val
               value.options.op         = model.op
-              value.options.with_formatter = !!model.with_formatter
+              if options.with_formatter
+                value.options.with_formatter = !!model.with_formatter
               return value
           }
       }
@@ -203,6 +204,7 @@ define [
       if field.type_name == 'choice'
         options.options  = field.choices.map((o) -> { title: o.title, value: o.id + "" })
         options.template = 'OptionBuilder/type-actions-custom-select.html'
+        options.isMulti  = !!field.options.multiple
         return @getStandardSelect(options)
       else if field.type_name == 'toggle'
         options.options  = [{ title: 'On', value: "1" }, { title: "Off", value: "0" }]
@@ -210,6 +212,7 @@ define [
         return @getStandardSelect(options)
       else
         options.template = 'OptionBuilder/type-actions-custom-input.html'
+        options.with_formatter = true
         return @getStandardInput(options)
 
 

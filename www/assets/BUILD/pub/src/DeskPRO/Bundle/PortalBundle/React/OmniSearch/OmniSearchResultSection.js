@@ -1,6 +1,9 @@
-import React, { PropTypes } from 'react';
+import PropTypes from 'prop-types';
+import React from 'react';
 import { portalHttp } from 'DeskPRO/Bundle/PortalBundle/Http/PortalHttp';
-import _ from 'lodash';
+import filter from 'lodash/filter';
+import forEach from 'lodash/forEach';
+import map from 'lodash/map';
 import TimeAgo from 'react-timeago';
 import moment from 'moment';
 import { timeAgoFormatter } from '../../../WidgetBundle/Services/timeago';
@@ -14,7 +17,7 @@ class SearchResultCollection {
 
   addItem(item) {
     // only add unique
-    const same = _.filter(this.items, (a) => a.id === item.id);
+    const same = filter(this.items, a => a.id === item.id);
 
     if (same.length > 0) {
       // exit if we have it in the collection already
@@ -60,12 +63,13 @@ export class OmniSearchResultSection extends React.Component {
       display_amount:       10,
       currently_displaying: 10,
       page:                 1,
-      total_results:        _.parseInt(props.initialResult.length ? props.initialResult.pageinfo.total_results : 0),
+      total_results:        parseInt(props.initialResult.length ? props.initialResult.pageinfo.total_results : 0, 10),
       q:                    props.q,
       doSpin:               false
     };
 
     this.state.items = this.createsItemsFromProps(props);
+    this.showMore = this.showMore.bind(this);
   }
 
   componentWillReceiveProps(newProps) {
@@ -76,7 +80,7 @@ export class OmniSearchResultSection extends React.Component {
       display_amount:       10,
       currently_displaying: 10,
       page:                 1,
-      total_results:        _.parseInt(newProps.initialResult.length ? newProps.initialResult.pageinfo.total_results : 0),
+      total_results:        parseInt(newProps.initialResult.length ? newProps.initialResult.pageinfo.total_results : 0, 10),
       q:                    newProps.q,
       doSpin:               false,
       items:                this.createsItemsFromProps(newProps)
@@ -84,7 +88,7 @@ export class OmniSearchResultSection extends React.Component {
   }
 
   getShowMoreNum() {
-    const diff = _.parseInt(this.state.total_results) - _.parseInt(this.state.currently_displaying);
+    const diff = parseInt(this.state.total_results, 10) - parseInt(this.state.currently_displaying, 10);
     if (diff > 10) {
       return 10;
     } else if (diff > 0) {
@@ -99,7 +103,7 @@ export class OmniSearchResultSection extends React.Component {
       doSpin: true
     });
 
-    return new Promise(resolve => {
+    return new Promise((resolve) => {
       const newpage = this.state.page + 1;
 
       portalHttp.sendGet('DP_URL/search/omni', {
@@ -108,7 +112,7 @@ export class OmniSearchResultSection extends React.Component {
           page:      newpage,
           'types[]': this.state.nameApi
         }
-      }).then(response => {
+      }).then((response) => {
         if (response.isError()) {
           return;
         }
@@ -117,7 +121,7 @@ export class OmniSearchResultSection extends React.Component {
         this.setState({
           doSpin:        false,
           page:          newpage,
-          total_results: _.parseInt(resultData.pageinfo.total_results)
+          total_results: parseInt(resultData.pageinfo.total_results, 10)
         });
 
         resolve(resultData);
@@ -142,7 +146,7 @@ export class OmniSearchResultSection extends React.Component {
 
   addItems(items) {
     const theItems = this.state.items;
-    _.forEach(items, (val) => {
+    forEach(items, (val) => {
       theItems.addItem(val.object);
     });
     this.setState({
@@ -150,9 +154,9 @@ export class OmniSearchResultSection extends React.Component {
     });
   }
 
-  createsItemsFromProps(props) {
+  createsItemsFromProps(props) { // eslint-disable-line
     const theItems = new SearchResultCollection();
-    _.forEach(props.initialResult.results, (item) => {
+    forEach(props.initialResult.results, (item) => {
       theItems.addItem(item.object);
     });
 
@@ -191,7 +195,7 @@ export class OmniSearchResultSection extends React.Component {
     } else if (this.state.nameApi === 'download') {
       t = (
         <span>
-          <span dangerouslySetInnerHTML={{ __html: item.icon_html }}></span>
+          <span dangerouslySetInnerHTML={{ __html: item.icon_html }} />
           <span className="item-name">{item.name}</span>
         </span>
       );
@@ -215,13 +219,13 @@ export class OmniSearchResultSection extends React.Component {
 
     return (
       <div className="search-result-collection">
-        <h1><i className={nameIcon}></i> {name}</h1>
+        <h1><i className={nameIcon} /> {name}</h1>
         <ul>
-          {_.map(this.state.items.getNum(this.state.currently_displaying), item => this.renderItem(item))}
+          {map(this.state.items.getNum(this.state.currently_displaying), item => this.renderItem(item))}
         </ul>
 
         {this.getShowMoreNum() !== null && !this.state.doSpin &&
-          <a onClick={this.showMore.bind(this)} className="search-results-show-more">
+          <a onClick={this.showMore} className="search-results-show-more">
             {this.getShowMoreNum()} More <i className="fa fa-angle-double-down" />
           </a>
         }

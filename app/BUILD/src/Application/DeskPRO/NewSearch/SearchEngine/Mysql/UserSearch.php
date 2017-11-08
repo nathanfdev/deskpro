@@ -343,7 +343,7 @@ class UserSearch implements UserSearchInterface
      *
      * @return ResultSet
      */
-    private function buildParams(SearchContextInterface $context, array $limit_types = null)
+    public function buildParams(SearchContextInterface $context, array $limit_types = null)
     {
         $types  = [];
         $joins  = [];

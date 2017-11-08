@@ -29,33 +29,21 @@
 /**
  * DeskPRO.
  */
-
 namespace Application\LegacyApiBundle\Controller;
 
+use Application\LegacyApiBundle\PermissionStrategy\UserTypePermission;
 use Application\DeskPRO\Banning\EmailBanEdit;
 use Application\DeskPRO\Banning\EmailBans;
 use Application\DeskPRO\Banning\Form\Type\EmailBanType;
 use Application\DeskPRO\Banning\Form\Type\IpBanType;
 use Application\DeskPRO\Banning\IpBanEdit;
-use Application\DeskPRO\Banning\IpBans;
-use Application\DeskPRO\Entity\BanEmail;
-use Application\DeskPRO\Entity\BanIp;
-use Application\DeskPRO\EntityRepository\BanEmail as BanEmailRepository;
-use Application\DeskPRO\EntityRepository\BanIp as BanIpRepository;
+use Application\DeskPRO\EntityRepository\BanEmail;
 use Application\DeskPRO\Exception\ValidationException;
-use Application\LegacyApiBundle\HttpFoundation\JsonResponse;
-use Application\LegacyApiBundle\PermissionStrategy\UserTypePermission;
-use DeskPRO\Bundle\AppBundle\Annotation\ActionPermissions\Annotation\ApiModes;
+use DeskPRO\Component\Filesystem\SafeFile;
 use Symfony\Component\HttpFoundation\File\UploadedFile;
 use Symfony\Component\HttpFoundation\ResponseHeaderBag;
 use Symfony\Component\HttpFoundation\StreamedResponse;
-use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 
-/**
- * Class BanningController.
- *
- * @ApiModes("all")
- */
 class BanningController extends AbstractController implements ProtectedControllerInterface
 {
     /**
@@ -66,222 +54,205 @@ class BanningController extends AbstractController implements ProtectedControlle
         return new UserTypePermission(UserTypePermission::AGENT);
     }
 
-    //###################################################################################################################
-    // list
-    //###################################################################################################################
+    ####################################################################################################################
+    # list
+    ####################################################################################################################
 
-    /**
-     * @return \Symfony\Component\HttpFoundation\Response
-     */
     public function listAction()
     {
-        $ipBanPage            = $this->in->getUInt('ip_ban_page');
-        $emailBanPage         = $this->in->getUInt('email_ban_page');
-        $ipBanSearchPhrase    = $this->in->getString('ip_ban_search_phrase');
-        $emailBanSearchPhrase = $this->in->getString('email_ban_search_phrase');
-        $emailBanWildcard     = $this->in->getUInt('email_ban_wildcard');
+        $ip_ban_page             = $this->in->getUint('ip_ban_page');
+        $email_ban_page          = $this->in->getUint('email_ban_page');
+        $ip_ban_search_phrase    = $this->in->getString('ip_ban_search_phrase');
+        $email_ban_search_phrase = $this->in->getString('email_ban_search_phrase');
+        $email_ban_wildcard      = $this->in->getUInt('email_ban_wildcard');
 
-        $ipBans = $this->getIpBans();
-        $ipBans
-            ->setPage($ipBanPage)
-            ->setSearchPhrase($ipBanSearchPhrase);
+        /*
+         * @var \Application\DeskPRO\Banning\IpBans
+         */
+        $ip_bans = $this->container->getSystemService('ip_bans');
+        $ip_bans
+            ->setPage($ip_ban_page)
+            ->setSearchPhrase($ip_ban_search_phrase);
 
-        $emailBans = $this->getEmailBans();
-        $emailBans
-            ->setPage($emailBanPage)
-            ->setSearchPhrase($emailBanSearchPhrase)
-            ->setWildcard($emailBanWildcard);
+        /*
+         * @var \Application\DeskPRO\Banning\EmailBans
+         */
+        $email_bans = $this->container->getSystemService('email_bans');
+        $email_bans
+            ->setPage($email_ban_page)
+            ->setSearchPhrase($email_ban_search_phrase)
+            ->setWildcard($email_ban_wildcard);
 
         return $this->createApiResponse(
-            [
-                 'bans' => [
-                     'pagination' => [
-                         'ip_bans' => [
-                             'num_pages' => $ipBans->getPageCount(),
-                             'page'      => $ipBanPage,
-                             'total'     => $ipBans->getCount(),
-                         ],
-                         'email_bans' => [
-                             'num_pages' => $emailBans->getPageCount(),
-                             'page'      => $emailBanPage,
-                             'total'     => $emailBans->getCount(),
-                         ],
-                     ],
-                     'ip_bans'    => $ipBans->getAllAsNestedArray(),
-                     'email_bans' => $emailBans->getAllAsNestedArray(),
-                 ],
-            ]
+            array(
+                 'bans' => array(
+                     'pagination' => array(
+                         'ip_bans' => array(
+                             'num_pages' => $ip_bans->getPageCount(),
+                             'page'      => $ip_ban_page,
+                             'total'     => $ip_bans->getCount(),
+                         ),
+                         'email_bans' => array(
+                             'num_pages' => $email_bans->getPageCount(),
+                             'page'      => $email_ban_page,
+                             'total'     => $email_bans->getCount(),
+                         ),
+                     ),
+                     'ip_bans'    => $ip_bans->getAllAsNestedArray(),
+                     'email_bans' => $email_bans->getAllAsNestedArray(),
+                 ),
+            )
         );
     }
 
-    //##################################################################################################################
-    // get IP
-    //###################################################################################################################
+    ###################################################################################################################
+    # get IP
+    ####################################################################################################################
 
-    /**
-     * @param $id
-     *
-     * @return \Symfony\Component\HttpFoundation\Response
-     */
     public function getIpAction($id)
     {
-        $ipBans = $this->getIpBans();
-        $ipBan  = $ipBans->getById($id);
+        /*
+         * @var \Application\DeskPRO\Banning\IpBans
+         */
+        $ip_bans = $this->container->getSystemService('ip_bans');
+        $ip_ban  = $ip_bans->getById($id);
 
-        if (!$ipBan) {
+        if (!$ip_ban) {
             throw $this->createNotFoundException();
         }
 
         return $this->createApiResponse(
-            [
-                 'ip_ban' => $this->getApiData($ipBan),
-            ]
+            array(
+                 'ip_ban' => $this->getApiData($ip_ban),
+            )
         );
     }
 
-    //##################################################################################################################
-    // get Email
-    //###################################################################################################################
+    ###################################################################################################################
+    # get Email
+    ####################################################################################################################
 
-    /**
-     * @param $id
-     *
-     * @return \Symfony\Component\HttpFoundation\Response
-     */
     public function getEmailAction($id)
     {
-        $emailBans = $this->getEmailBans();
-        $emailBan  = $emailBans->getById($id);
+        /*
+         * @var \Application\DeskPRO\Banning\EmailBans
+         */
+        $email_bans = $this->container->getSystemService('email_bans');
+        $email_ban  = $email_bans->getById($id);
 
-        if (!$emailBan) {
+        if (!$email_ban) {
             throw $this->createNotFoundException();
         }
 
         return $this->createApiResponse(
-            [
-                 'email_ban' => $this->getApiData($emailBan),
-            ]
+            array(
+                 'email_ban' => $this->getApiData($email_ban),
+            )
         );
     }
 
-    //###################################################################################################################
-    // save IP
-    //###################################################################################################################
+    ####################################################################################################################
+    # save IP
+    ####################################################################################################################
 
-    /**
-     * @param $id
-     *
-     * @throws ValidationException
-     * @throws \Exception
-     *
-     * @return \Symfony\Component\HttpFoundation\Response
-     */
     public function saveIpAction($id)
     {
-        $ipBans = $this->getIpBans();
+        /*
+         * @var \Application\DeskPRO\Banning\IpBans
+         */
+        $ip_bans = $this->container->getSystemService('ip_bans');
 
         if ($id) {
-            $ipBan = $ipBans->getById($id);
+            $ip_ban = $ip_bans->getById($id);
 
-            if (!$ipBan) {
+            if (!$ip_ban) {
                 throw $this->createNotFoundException();
             }
         } else {
-            $ipBan = $ipBans->createNew();
+            $ip_ban = $ip_bans->createNew();
         }
 
         $postData = $this->in->getAll('post');
 
-        $ipBanEdit = new IpBanEdit($ipBan);
+        $ip_ban_edit = new IpBanEdit($ip_ban);
 
-        $form = $this->createForm(new IpBanType(), $ipBanEdit, ['cascade_validation' => true]);
+        $form = $this->createForm(new IpBanType(), $ip_ban_edit, array('cascade_validation' => true));
         $form->submit($this->deleteExtraDataFromRequest($form, $postData, 'ip_ban'), true);
 
         if ($form->isValid()) {
-            $ipBanEdit->save($this->em);
+            $ip_ban_edit->save($this->em);
         } else {
             throw ValidationException::create($this->getFormValidationErrorsString($form));
         }
 
         return $this->createApiResponse(
-            [
+            array(
                  'success'   => true,
-                 'banned_ip' => $ipBan->banned_ip,
-            ]
+                 'banned_ip' => $ip_ban->banned_ip,
+            )
         );
     }
 
-    //###################################################################################################################
-    // save Email
-    //###################################################################################################################
+    ####################################################################################################################
+    # save Email
+    ####################################################################################################################
 
-    /**
-     * @param $id
-     *
-     * @throws ValidationException
-     *
-     * @return \Symfony\Component\HttpFoundation\Response
-     */
     public function saveEmailAction($id)
     {
-        /** @var \Application\DeskPRO\Banning\EmailBans $emailBans */
-        $emailBans = $this->getEmailBans();
+        /*
+         * @var \Application\DeskPRO\Banning\EmailBans
+         */
+        $email_bans = $this->container->getSystemService('email_bans');
 
         if ($id) {
-            $emailBan = $emailBans->getById($id);
+            $email_ban = $email_bans->getById($id);
 
-            if (!$emailBan) {
+            if (!$email_ban) {
                 throw $this->createNotFoundException();
             }
         } else {
-            $emailBan = $emailBans->createNew();
+            $email_ban = $email_bans->createNew();
         }
 
         $postData = $this->in->getAll('post');
-        $this->createOrUpdateEmailBan($emailBan, $postData);
+        $this->createOrUpdateEmailBan($email_ban, $postData);
 
         return $this->createApiResponse(
-            [
+            array(
                  'success'      => true,
-                 'banned_email' => $emailBan->banned_email,
-            ]
+                 'banned_email' => $email_ban->banned_email,
+            )
         );
     }
 
-    //###################################################################################################################
-    // remove IP
-    //###################################################################################################################
+    ####################################################################################################################
+    # remove IP
+    ####################################################################################################################
 
-    /**
-     * @param $id
-     *
-     * @throws \Exception
-     *
-     * @return \Symfony\Component\HttpFoundation\Response
-     */
     public function removeIpAction($id)
     {
         if (null === $id) {
-            /** @var BanIpRepository $banIpRepository */
-            $banIpRepository = $this->em->getRepository(BanIp::class);
-            $banIpRepository->removeAll();
+            $this->em->getRepository('DeskPRO:BanIp')->removeAll();
 
             return $this->createSuccessResponse();
         }
 
-        $ipBans = $this->getIpBans();
-        $ipBan  = $ipBans->getById($id);
+        /*
+         * @var \Application\DeskPRO\Banning\IpBans
+         */
+        $ip_bans = $this->container->getSystemService('ip_bans');
+        $ip_ban  = $ip_bans->getById($id);
 
-        if (!$ipBan) {
+        if (!$ip_ban) {
             throw $this->createNotFoundException();
         }
 
-        $oldId = $ipBan->banned_ip;
+        $old_id = $ip_ban->banned_ip;
 
         $this->db->beginTransaction();
 
         try {
-            $this->em->remove($ipBan);
+            $this->em->remove($ip_ban);
             $this->em->flush();
 
             $this->db->commit();
@@ -290,44 +261,38 @@ class BanningController extends AbstractController implements ProtectedControlle
             throw $e;
         }
 
-        return $this->createSuccessResponse(['old_id' => $oldId]);
+        return $this->createSuccessResponse(array('old_id' => $old_id));
     }
 
-    //###################################################################################################################
-    // remove Email
-    //###################################################################################################################
+    ####################################################################################################################
+    # remove Email
+    ####################################################################################################################
 
-    /**
-     * @param $id
-     *
-     * @throws \Exception
-     *
-     * @return \Symfony\Component\HttpFoundation\Response
-     */
     public function removeEmailAction($id)
     {
+        /*
+         * @var \Application\DeskPRO\Banning\EmailBans $email_bans
+         */
+
         if (null === $id) {
-            /** @var BanEmailRepository $banEmailRepository */
-            $banEmailRepository = $this->em->getRepository(BanEmail::class);
-            $banEmailRepository->removeAll();
+            $this->em->getRepository('DeskPRO:BanEmail')->removeAll();
 
             return $this->createSuccessResponse();
         }
 
-        /** @var \Application\DeskPRO\Banning\EmailBans $emailBans */
-        $emailBans = $this->getEmailBans();
-        $emailBan  = $emailBans->getById($id);
+        $email_bans = $this->container->getSystemService('email_bans');
+        $email_ban  = $email_bans->getById($id);
 
-        if (!$emailBan) {
+        if (!$email_ban) {
             throw $this->createNotFoundException();
         }
 
-        $oldId = $emailBan->banned_email;
+        $old_id = $email_ban->banned_email;
 
         $this->db->beginTransaction();
 
         try {
-            $this->em->remove($emailBan);
+            $this->em->remove($email_ban);
             $this->em->flush();
 
             $this->db->commit();
@@ -336,7 +301,7 @@ class BanningController extends AbstractController implements ProtectedControlle
             throw $e;
         }
 
-        return $this->createSuccessResponse(['old_id' => $oldId]);
+        return $this->createSuccessResponse(array('old_id' => $old_id));
     }
 
     /**
@@ -346,43 +311,42 @@ class BanningController extends AbstractController implements ProtectedControlle
      */
     public function exportEmailsAction()
     {
-        /** @var BanEmailRepository $banEmailRepository */
-        $banEmailRepository = $this->em->getRepository(BanEmail::class);
-        $response           = new StreamedResponse();
-        $disp               = $response->headers->makeDisposition(
+        /* @var BanEmail $bs */
+        $rep = $this->em->getRepository('DeskPRO:BanEmail');
+
+        $response = new StreamedResponse();
+        $disp     = $response->headers->makeDisposition(
             ResponseHeaderBag::DISPOSITION_ATTACHMENT,
             'banned_emails.txt'
         );
         $response->headers->set('Content-Disposition', $disp);
-        $response->setCallback(
-            function () use ($banEmailRepository) {
-                foreach ($banEmailRepository->getAll() as $k => $email) {
-                    if ($k > 0) {
-                        echo ',';
-                    }
-                    echo $email['banned_email'];
+        $response->setCallback(function () use ($rep) {
+            foreach ($rep->getAll() as $k => $email) {
+                if ($k > 0) {
+                    echo ',';
                 }
+                echo $email['banned_email'];
             }
-        );
+        });
 
         return $response;
     }
 
     /**
-     * @param BanEmail $model
-     * @param array    $data
+     * @param \Application\DeskPRO\Entity\BanEmail $model
+     * @param array                                $data
      *
-     * @throws ValidationException
+     * @throws \Application\DeskPRO\Exception\ValidationException
      */
-    protected function createOrUpdateEmailBan(BanEmail $model, array $data)
+    protected function createOrUpdateEmailBan(\Application\DeskPRO\Entity\BanEmail $model, array $data)
     {
-        $emailBanEdit = new EmailBanEdit($model);
+        $email_ban_edit = new EmailBanEdit($model);
 
-        $form = $this->createForm(new EmailBanType(), $emailBanEdit, ['cascade_validation' => true]);
+        $form = $this->createForm(new EmailBanType(), $email_ban_edit, array('cascade_validation' => true));
         $form->submit($this->deleteExtraDataFromRequest($form, $data, 'email_ban'), true);
 
         if ($form->isValid()) {
-            $emailBanEdit->save($this->em);
+            $email_ban_edit->save($this->em);
         } else {
             throw ValidationException::create($this->getFormValidationErrorsString($form));
         }
@@ -391,9 +355,9 @@ class BanningController extends AbstractController implements ProtectedControlle
     /**
      * import emails from file.
      *
-     * @throws NotFoundHttpException
+     * @throws \Symfony\Component\HttpKernel\Exception\NotFoundHttpException
      *
-     * @return JsonResponse
+     * @return Response
      */
     public function importEmailsAction()
     {
@@ -402,36 +366,21 @@ class BanningController extends AbstractController implements ProtectedControlle
             throw $this->createNotFoundException();
         }
 
-        $emailBans = $this->getEmailBans();
-        $content   = file_get_contents($file->getPath().'/'.$file->getFilename());
+        /** @var EmailBans $email_bans */
+        $email_bans = $this->container->getSystemService('email_bans');
+        $content    = SafeFile::fileGetContents($file->getPath().'/'.$file->getFilename(), dirname($file->getRealPath()));
 
         foreach (explode(',', $content) as $email) {
             try {
                 $this->createOrUpdateEmailBan(
-                    $emailBans->createNew(),
-                    ['email_ban' => ['banned_email' => trim($email)]]
+                    $email_bans->createNew(),
+                    array('email_ban' => array('banned_email' => trim($email)))
                 );
             } catch (\Exception $e) {
                 // silent
             }
         }
 
-        return $this->createApiResponse(['filename' => true]);
-    }
-
-    /**
-     * @return EmailBans
-     */
-    private function getEmailBans()
-    {
-        return $this->container->getSystemService('email_bans');
-    }
-
-    /**
-     * @return IpBans
-     */
-    private function getIpBans()
-    {
-        return $this->container->getSystemService('ip_bans');
+        return $this->createApiResponse(array('filename' => true));
     }
 }

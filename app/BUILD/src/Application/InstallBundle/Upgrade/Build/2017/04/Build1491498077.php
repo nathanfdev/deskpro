@@ -32,7 +32,6 @@ class Build1491498077 extends AbstractBuild implements OnlineBuildInterface, Ski
 {
     public function addNewTables()
     {
-
     }
 
     public function runAlters()
@@ -43,6 +42,5 @@ class Build1491498077 extends AbstractBuild implements OnlineBuildInterface, Ski
 
     public function run()
     {
-
     }
 }

@@ -247,31 +247,41 @@ DeskPRO.Agent.PageFragment.Page.NewTicket = new Orb.Class({
 			},
 			getFieldValue: function(name) {
 				var $cont = self.getEl('fields_container');
-				var $field = $('[name="' + name + '"]', $cont);
-
-				// field is not present on the form
-				// e.g. org field if user doesn't belogn to a org
+				var $field = $cont.find('[name="' + name + '"], [name="' + name + '[]"]');
 				if (!$field.length) {
-					return null;
+					// field is not present on the form
+					// e.g. org field if user doesn't belong to a org
+					return;
 				}
 
-				if ($field.is(':checkbox')) {
+				if ($field.length === 1 && $field.is(':checkbox')) {
 					return $field.is(':checked');
 				}
-        if ($field.attr('type') === 'hidden') {
+				if ($field.attr('type') === 'hidden') {
 					return $.trim($field.parent().text());
 				}
-        if ($field.is('input:not(:radio, :checkbox), textarea, select:not(.with-select2)')) {
-          return $field.val();
-        }
-				$field = $('[name="' + name + '"], [name="' + name + '[]"]', $cont);
-				if ($field.hasClass('with-select2')) {
-          var val = $.trim($field.select2('val'));
-					return $field.select2('val');
+				if ($field.is('input:not(:radio, :checkbox), textarea, select:not(.with-select2)')) {
+					return $field.val();
 				}
+				if ($field.hasClass('with-select2')) {
+					var val = $.trim($field.select2('val'));
+					return val || null;
+				}
+
 				return $field.filter(':checked').map(function(i, el) { return el.value; }).get();
 			},
 			getTicketFieldValue: function(fieldId) {
+				switch (fieldId) {
+					case 'category':
+						return this.getCategoryId();
+					case 'workflow':
+						return this.getWorkflowId();
+					case 'priority':
+						return this.getPriorityId();
+					case 'product':
+						return this.getProductId();
+				}
+
 				return this.getFieldValue('custom_fields[field_' + fieldId + ']');
 			},
 			getUserFieldValue: function(fieldId) {
@@ -684,7 +694,11 @@ DeskPRO.Agent.PageFragment.Page.NewTicket = new Orb.Class({
 			this.updateUi();
 			this.wrapper.find('div.layout-content').trigger('goscrollbottom');
 
-			$.ajax({
+      if (self.meta.person_api_data) {
+				macroUrl += '&person_id=' + self.meta.person_api_data.id;
+			}
+
+      $.ajax({
 				url: macroUrl,
 				type: 'GET',
 				context: this,
@@ -1361,51 +1375,53 @@ DeskPRO.Agent.PageFragment.Page.NewTicket = new Orb.Class({
 		var ed = textarea.getEditor();
 		var api = textarea.data('redactor');
 		var lastH = ed.height();
-		ed.on('keyup', function(ev) {
-			var isCtrl = false;
-			if (ev.ctrlKey && DeskPRO_Window.keyboardShortcuts.isMac) {
-				isCtrl = true;
-			} else if (ev.altKey) {
-				isCtrl = true;
-			}
+    if (DESKPRO_ENABLE_KB_SHORTCUTS) {
+      ed.on('keyup', function (ev) {
+        var isCtrl = false;
+        if (ev.ctrlKey && DeskPRO_Window.keyboardShortcuts.isMac) {
+          isCtrl = true;
+        } else if (ev.altKey && !DeskPRO_Window.keyboardShortcuts.isMac) {
+          isCtrl = true;
+        }
 
-			if (isCtrl) {
-				if (isCtrl && (ev.which === 85)) {
-					ev.preventDefault();
-					self.shortcutReplySetAwaitingUser();
-					return;
-				}
-				if (isCtrl && (ev.which === 65)) {
-					ev.preventDefault();
-					self.shortcutReplySetAwaitingAgent();
-					return;
-				}
-				if (isCtrl && (ev.which === 68)) {
-					ev.preventDefault();
-					self.shortcutReplySetResolved();
-					return;
-				}
-				if (isCtrl && (ev.which === 82)) {
-					ev.preventDefault();
-					self.shortcutSendReply();
-					return;
-				}
-				if (isCtrl && (ev.which === 83)) {
-					ev.preventDefault();
-					window.setTimeout(function() {
-						self.shortcutOpenSnippets();
-					}, 10);
-					return;
-				}
-				if (isCtrl && (ev.which === 79)) {
-					ev.preventDefault();
-					window.setTimeout(function() {
-						self.shortcutReplyOpenProperties();
-					}, 10);
-					return;
-				}
-			}
-		});
+        if (isCtrl) {
+          if (isCtrl && (ev.which === 85)) {
+            ev.preventDefault();
+            self.shortcutReplySetAwaitingUser();
+            return;
+          }
+          if (isCtrl && (ev.which === 65)) {
+            ev.preventDefault();
+            self.shortcutReplySetAwaitingAgent();
+            return;
+          }
+          if (isCtrl && (ev.which === 68)) {
+            ev.preventDefault();
+            self.shortcutReplySetResolved();
+            return;
+          }
+          if (isCtrl && (ev.which === 82)) {
+            ev.preventDefault();
+            self.shortcutSendReply();
+            return;
+          }
+          if (isCtrl && (ev.which === 83)) {
+            ev.preventDefault();
+            window.setTimeout(function () {
+              self.shortcutOpenSnippets();
+            }, 10);
+            return;
+          }
+          if (isCtrl && (ev.which === 79)) {
+            ev.preventDefault();
+            window.setTimeout(function () {
+              self.shortcutReplyOpenProperties();
+            }, 10);
+            return;
+          }
+        }
+      });
+    }
 		ed.on('keypress change', function() {
 			textarea.addClass('touched');
 
@@ -1458,6 +1474,7 @@ DeskPRO.Agent.PageFragment.Page.NewTicket = new Orb.Class({
                 var snippet = window.LegacyStoreProvider.getSnippets().get(snippetId);
                 var blobs = window.LegacyStoreProvider.getSnippetBlobs();
                 self.insertSnippet(snippet.toJS(), blobs.toJS());
+                self.pauseSend = false;
               } else {
                 $.ajax({
                   url:      BASE_URL + 'agent/text-snippets/tickets/' + snippetId + '.json',
@@ -1721,6 +1738,7 @@ DeskPRO.Agent.PageFragment.Page.NewTicket = new Orb.Class({
       {
         person: this.meta.person_api_data
       },
+      'ticket',
       this.textarea,
 			this.attachBlobs.bind(this),
 			this.recordSnippetUse.bind(this)
@@ -1930,7 +1948,7 @@ DeskPRO.Agent.PageFragment.Page.NewTicket = new Orb.Class({
 				});
 			},
       load: function(backup) {
-				if (!self.wrapper) {
+      	if (!self.wrapper) {
 					return;
 				}
 
@@ -1942,49 +1960,51 @@ DeskPRO.Agent.PageFragment.Page.NewTicket = new Orb.Class({
 					person = 0,
 					map = {};
 
-        item.form.forEach(function(el, i){
-					map[el.name] = el.value;
-          (function(el){
+      	if (item.form.length) {
+					item.form.forEach(function(el, i){
+						map[el.name] = el.value;
+						(function(el){
 
-            if (['newticket[person][id]', 'newticket[person][email]', 'newticket[person][name]'].indexOf(el.name) !== -1) {
-							return;
-						}
+							if (['newticket[person][id]', 'newticket[person][email]', 'newticket[person][name]'].indexOf(el.name) !== -1) {
+								return;
+							}
 
-            if ('newticket[message]' === el.name) {
-              redactor && self.textarea.setCode(el.value);
-							return;
-            }
+							if ('newticket[message]' === el.name) {
+								redactor && self.textarea.setCode(el.value);
+								return;
+							}
 
-            $('[name="' + el.name + '"]', $form).each(function() {
+							$('[name="' + el.name + '"]', $form).each(function() {
 
-              if ($(this).is(':checkbox') || $(this).is(':radio')) {
-                $(this).val() === el.value && $(this).prop('checked', true);
-              } else if ($(this).is('select')) {
-                $('option[value="' + el.value + '"]', $(this)).prop('selected', true);
-              } else {
-                $(this).val(el.value);
-              }
+								if ($(this).is(':checkbox') || $(this).is(':radio')) {
+									$(this).val() === el.value && $(this).prop('checked', true);
+								} else if ($(this).is('select')) {
+									$('option[value="' + el.value + '"]', $(this)).prop('selected', true);
+								} else {
+									$(this).val(el.value);
+								}
 
-              $(this).trigger('change', true);
-            });
-          })(el);
+								$(this).trigger('change', true);
+							});
+						})(el);
 
-        });
-
-				if (map['newticket[person][id]']) {
-					person = parseInt(map['newticket[person][id]']);
-					self.setUser(person, null, true);
-				} else if (map['newticket[person][name]'] || map['newticket[person][email_address]']) {
-					self.setUser(0, map['newticket[person][email_address]'], true).then(function() {
-						$('input[name="newticket[person][name]"]', $form).val(map['newticket[person][name]']);
-						$('input[name="newticket[person][email_address]"]', $form).val(map['newticket[person][email_address]']);
 					});
-				}
 
-				var html = window.tmpl($('.template-download', self.wrapper).attr('id'))({files: item.attachments});
-				$attachRow.find('ul.files').empty();
-				$attachRow.find('ul.files:first').append(html);
-				item.attachments.length && $attachRow.removeClass('is-hidden').show();
+					if (map['newticket[person][id]']) {
+						person = parseInt(map['newticket[person][id]']);
+						self.setUser(person, null, true);
+					} else if (map['newticket[person][name]'] || map['newticket[person][email_address]']) {
+						self.setUser(0, map['newticket[person][email_address]'], true).then(function() {
+							$('input[name="newticket[person][name]"]', $form).val(map['newticket[person][name]']);
+							$('input[name="newticket[person][email_address]"]', $form).val(map['newticket[person][email_address]']);
+						});
+					}
+
+					var html = window.tmpl($('.template-download', self.wrapper).attr('id'))({files: item.attachments});
+					$attachRow.find('ul.files').empty();
+					$attachRow.find('ul.files:first').append(html);
+					item.attachments.length && $attachRow.removeClass('is-hidden').show();
+				}
 
         d.isEmpty() || backup ? $discard.hide() : $discard.show();
       },

@@ -125,7 +125,7 @@ class SlackAction extends AbstractContainerAwareAction implements ActionInterfac
 
         $attachment = [
             'color'      => '#1D7AB2',
-            'text'       => Strings::htmlEntityEncodeUtf8($message->getMessagePreviewText(160)),
+            'text'       => htmlspecialchars($message->getMessagePreviewText(160)),
             'title'      => '#'.$ticket->id.' '.htmlspecialchars($ticket->subject),
             'title_link' => $this->getContainer()->getBrandSetting('core.deskpro_url').'agent/#app.tickets,t:'.$ticket->id,
         ];

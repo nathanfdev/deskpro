@@ -1,7 +1,15 @@
-import React, { PropTypes } from 'react';
+import PropTypes from 'prop-types';
+import React from 'react';
 import MediumEditor from 'medium-editor';
 import $ from 'jquery';
-import { clipboardHasImages, getBlobsFromItems, getBlobsFromHtml, getBlobFromUrl } from 'DeskPRO/Component/Uploader/PasteCatcher';
+import {
+  clipboardHasImages,
+  clipboardIEHasImages,
+  getBlobsFromItems,
+  getBlobsFromIEItems,
+  getBlobsFromHtml,
+  getBlobFromUrl
+} from 'DeskPRO/Component/Uploader/PasteCatcher';
 
 export default class RteEditor extends React.Component {
 
@@ -48,7 +56,7 @@ export default class RteEditor extends React.Component {
     };
 
     // Override default paste listener to upload images
-    $(node).on('paste', this.onPaste);
+    node.addEventListener('paste', this.onPaste);
     const overrideOptions = {
       paste: { cleanPastedHTML: false, forcePlainText: false }
     };
@@ -89,7 +97,7 @@ export default class RteEditor extends React.Component {
   }
 
   componentWillUnmount() {
-    $(this.getNode()).off('paste', this.onPaste);
+    this.getNode().removeEventListener('paste', this.onPaste);
     this.medium.destroy();
   }
 
@@ -103,7 +111,7 @@ export default class RteEditor extends React.Component {
     event.stopPropagation();
 
     const { onPasteImage } = this.props;
-    const clipboardData = event.originalEvent.clipboardData;
+    const clipboardData = event.clipboardData;
     if (clipboardData) {
       // Non-IE browsers
       if (!clipboardHasImages(clipboardData)) {
@@ -125,14 +133,18 @@ export default class RteEditor extends React.Component {
       }
     } else if (window.clipboardData) {
       // IE browser
-      let content = window.clipboardData.getData('Text');
-      if (content) {
-        try {
-          getBlobFromUrl(content, onPasteImage);
-        } catch (e) {
-          content = content.replace(/\n/g, '<br />');
-          this.medium.cleanPaste(content);
+      if (!clipboardIEHasImages(window.clipboardData)) {
+        let content = window.clipboardData.getData('Text');
+        if (content) {
+          try {
+            getBlobFromUrl(content, onPasteImage);
+          } catch (e) {
+            content = content.replace(/\n/g, '<br />');
+            this.medium.cleanPaste(content);
+          }
         }
+      } else {
+        getBlobsFromIEItems(window.clipboardData.files, event, onPasteImage);
       }
     }
   };
@@ -229,6 +241,11 @@ export default class RteEditor extends React.Component {
 
   render() {
     const { tag = 'div' } = this.props;
-    return React.createElement(tag, { ...this.props, ref: (c) => { this.node = c; } });
+    const props = Object.assign({}, this.props);
+    delete props.onPasteImage;
+    delete props.ctrlEnterSubmit;
+    delete props.options;
+    delete props.inline;
+    return React.createElement(tag, { ...props, ref: (c) => { this.node = c; } });
   }
 }

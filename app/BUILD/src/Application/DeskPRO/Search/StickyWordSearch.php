@@ -40,6 +40,7 @@ use Application\DeskPRO\Searcher\ArticleSearch;
 use Application\DeskPRO\Searcher\DownloadSearch;
 use Application\DeskPRO\Searcher\FeedbackSearch;
 use Application\DeskPRO\Searcher\NewsSearch;
+use Application\DeskPRO\Searcher\TopicSearch;
 use Doctrine\DBAL\Connection;
 use Doctrine\ORM\EntityManager;
 use Orb\Util\Arrays;
@@ -146,7 +147,7 @@ class StickyWordSearch implements PersonContextInterface
      *
      * @return array
      */
-    public function getResults($query, $limit = 10, $limit_types = ['article', 'news', 'download', 'feedback'])
+    public function getResults($query, $limit = 10, $limit_types = ['article', 'news', 'download', 'feedback', 'topic'])
     {
         $words = $this->getWordsFromQuery($query);
 
@@ -167,6 +168,7 @@ class StickyWordSearch implements PersonContextInterface
                 case 'news':     return 'DeskPRO:News';
                 case 'download': return 'DeskPRO:Download';
                 case 'feedback': return 'DeskPRO:Feedback';
+                case 'topic':    return 'DeskPRO:Topic';
                 default: return $t;
             }
         }, $limit_types);
@@ -193,6 +195,7 @@ class StickyWordSearch implements PersonContextInterface
             'DeskPRO:News'     => [],
             'DeskPRO:Download' => [],
             'DeskPRO:Feedback' => [],
+            'DeskPRO:Topic'    => [],
         ];
 
         if (empty($check_ids)) {
@@ -229,6 +232,12 @@ class StickyWordSearch implements PersonContextInterface
                 $search->setPersonContext($this->person_context);
                 $search->addTerm(FeedbackSearch::TERM_ID, FeedbackSearch::OP_CONTAINS, $check_ids['DeskPRO:Feedback']);
                 $valid_ids['DeskPRO:Feedback'] = $search->getMatches();
+            }
+            if ($check_ids['DeskPRO:Topic']) {
+                $search = new TopicSearch();
+                $search->setPersonContext($this->person_context);
+                $search->addTerm(TopicSearch::TERM_ID, TopicSearch::OP_CONTAINS, $check_ids['DeskPRO:Topic']);
+                $valid_ids['DeskPRO:Topic'] = $search->getMatches();
             }
         } else {
             // No person context means any of the matches are valid

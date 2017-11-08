@@ -193,16 +193,30 @@ SQL;
         /** @var \Application\DeskPRO\DBAL\Connection $connection */
         $connection = $em->getConnection();
         $sql        = <<<'SQL'
-SELECT `person_id` FROM `agent_chat_message` WHERE `agent_chat_id` = ? ORDER BY `date_created` ASC LIMIT 1
+SELECT `person_id` FROM `agent_chat_message` WHERE `agent_chat_id` = ? GROUP BY `person_id` ORDER BY `date_created` 
 SQL;
-        $personId = $connection->fetchColumn($sql, [$chatId]);
-        if ($personId) {
-            $personId = $personId[0];
+        $personIds = $connection->fetchAllCol($sql, [$chatId]);
+        $person    = null;
+        foreach ($personIds as $personId) {
+            if (!$personId) {
+                continue;
+            }
+            if ($person = $em->find(Person::class, $personId)) { // we need actual person to avoid constraint fail
+                break;
+            }
         }
+
+        if (!$person) { // edge case fallback - all users in chat are deleted?
+            $person = $em
+                ->getRepository(Person::class)
+                ->findOneBy(['can_admin' => true, 'is_deleted' => false, 'is_disabled' => false]);
+            $this->insertParticipants($em, $chatId, [$person->getId()]);
+        }
+
         $sql = <<<'SQL'
         UPDATE `agent_chat` SET `admin_id` = ? WHERE `id` = ?
 SQL;
-        $connection->executeQuery($sql, [$personId, $chatId]);
+        $connection->executeQuery($sql, [$person->getId(), $chatId]);
     }
 
     /**

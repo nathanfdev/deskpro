@@ -16,6 +16,16 @@ import {
 import { OwnershipSelect } from 'DeskPRO/Bundle/AgentBundle/Modules/Snippets/Components/Menus/OwnershipSelect';
 import { css } from '../../../decorators';
 
+window.DeskPRO_Window = {
+  keyboardShortcuts: {
+    isPaused: true
+  }
+};
+
+window.DESKPRO_PERSON_PERMS = {
+  'agent_snippets.delete_by_others': true
+};
+
 storiesOf('Agent: Snippets', module)
   .addDecorator(story => css(story()))
   .add(
@@ -24,6 +34,7 @@ storiesOf('Agent: Snippets', module)
       snippets={snippetsState}
       langId={1}
       me={me}
+      langDisplay={[1, 2, 3]}
       langPref={[1, 2, 3]}
       width={700}
       languages={languages}
@@ -32,6 +43,7 @@ storiesOf('Agent: Snippets', module)
   .add(
     'Modal',
     () => <SnippetsModal
+      me={me}
       snippet={editSnippet}
       translation={editTranslation}
       languages={languages}

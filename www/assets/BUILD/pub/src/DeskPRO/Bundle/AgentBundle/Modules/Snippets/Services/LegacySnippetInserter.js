@@ -2,45 +2,46 @@
 import Twig from 'twig';
 
 class LegacySnippetInserter {
-  getTranslation(snippetCode, langId) {
+  getTranslation(translations, langId, isSplit, type) {
     let agentText;
     let defaultText;
     let wantText;
-    let useText;
+    let translation;
 
-    for (let i = 0; i < snippetCode.length; i++) {
-      if (snippetCode[i].content) {
-        if (snippetCode[i].language === parseInt(langId, 10)) {
-          wantText = snippetCode[i];
+    for (let i = 0; i < translations.length; i++) {
+      if (translations[i].content) {
+        if (translations[i].language === parseInt(langId, 10) && (!isSplit || translations[i].type === type)) {
+          wantText = translations[i];
         }
-        if (snippetCode[i].language === window.DESKPRO_PERSON_LANG_ID) {
-          agentText = snippetCode[i];
+        if (translations[i].language === window.DESKPRO_PERSON_LANG_ID && (!isSplit || translations[i].type === type)) {
+          agentText = translations[i];
         }
-        if (snippetCode[i].language === window.DESKPRO_DEFAULT_LANG_ID) {
-          defaultText = snippetCode[i];
+        if (translations[i].language === window.DESKPRO_DEFAULT_LANG_ID && (!isSplit || translations[i].type === type)) {
+          defaultText = translations[i];
         }
-        useText = snippetCode[i];
+        translation = translations[i];
       }
     }
 
     if (wantText) {
-      useText = wantText;
+      translation = wantText;
     } else if (agentText) {
-      useText = agentText;
+      translation = agentText;
     } else if (defaultText) {
-      useText = defaultText;
+      translation = defaultText;
     }
 
-    return useText;
+    return translation;
   }
-  insertSnippet(snippet, blobs, langId, metadata, textArea, attachBlobs, recordSnippetUse) {
-    const snippetId = snippet.id;
-    const snippetCode = snippet.translations;
-
-    recordSnippetUse(snippetId);
+  insertSnippet(snippet, blobs, langId, metadata, type, textArea, attachBlobs, recordSnippetUse) {
+    const snippetId   = snippet.id;
+    const isSplit     = snippet.is_split;
+    const translations = snippet.translations;
 
     let result;
-    let useText = this.getTranslation(snippetCode, langId);
+    let useText = this.getTranslation(translations, langId, isSplit, type);
+
+    recordSnippetUse(useText.id);
 
     if (useText.blobs.length) {
       attachBlobs(useText.blobs, blobs);

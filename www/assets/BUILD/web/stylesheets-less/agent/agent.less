@@ -2088,7 +2088,6 @@ ul.pane-tabs {
 			line-height: 16px;
 			cursor: pointer;
 			.rounded(2px);
-			width: 16px;
 			text-align: center;
 			color: #8E99A4;
 
@@ -3016,6 +3015,10 @@ i.spinner-circle-32 {
 				right: 0;
 				.opacity(0);
 				z-index: 2;
+
+				option {
+					color: black;
+				}
 			}
 		}
 	}
@@ -3398,7 +3401,7 @@ section.dp-overlay > header nav h3 {
 				border-radius: 3px;
 				background: #cf4436 url('@{img_path}/btn-red.png') repeat-x top center;
 				box-shadow: inset 0px 1px 0px 0px #ff9878;
-				width: 63px;
+				min-width: 63px;
 			}
 
 			.extended {

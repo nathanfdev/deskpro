@@ -1,6 +1,11 @@
-import React, { PropTypes } from 'react';
+import PropTypes from 'prop-types';
+import React from 'react';
 import ReactDOM from 'react-dom';
-import _ from 'lodash';
+import clone from 'lodash/clone';
+import find from 'lodash/find';
+import flattenDeep from 'lodash/flattenDeep';
+import uniqueId from 'lodash/uniqueId';
+import some from 'lodash/some';
 import $ from 'jquery';
 import { FormActionStore } from 'DeskPRO/Component/React/Standalone/FormActionStore';
 import PortalSimpleSelectBox from './PortalSimpleSelectBox';
@@ -10,7 +15,7 @@ export class LevelSelectActionStore extends FormActionStore {
   onValueChanged(data) {
     const opts = this.el.find('option');
     opts.each((x, el) => {
-      el.selected = _.some(data.value, v => _.parseInt(v) === _.parseInt(el.value));
+      el.selected = some(data.value, v => parseInt(v, 10) === parseInt(el.value, 10));
     });
     this.el.trigger('change');
   }
@@ -46,7 +51,7 @@ export class LevelSelectActionStore extends FormActionStore {
       const r = [];
       options.forEach((opt) => {
         if (opt.parent === parent) {
-          opt.path = _.clone(path);
+          opt.path = clone(path);
           path.push(opt.id);
           opt.children = walkerFn(opt.id, path);
           path.pop();
@@ -117,10 +122,10 @@ export class PortalMultipleSelectBox extends React.Component {
     };
 
     let options = this.optionData.hierarchy.map(mapOption);
-    options = _.flattenDeep(options);
+    options = flattenDeep(options);
 
     const values = this.state.value.map(selectedId =>
-      _.find(options, opt => _.parseInt(opt.id) === _.parseInt(selectedId))
+      find(options, opt => parseInt(opt.id, 10) === parseInt(selectedId, 10))
     );
 
     return (
@@ -153,7 +158,7 @@ export function createComponent(select, renderTo, widgetOptions = {}) {
   $select.find('option, optgroup').each((x, opt) => {
     const $opt = $(opt);
     if (!$opt.data('id')) {
-      $opt.data('id', $opt.data('id', _.uniqueId('opt_')));
+      $opt.data('id', $opt.data('id', uniqueId('opt_')));
     }
   });
 

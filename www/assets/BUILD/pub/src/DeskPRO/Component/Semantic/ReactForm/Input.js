@@ -1,17 +1,35 @@
-import React, { PropTypes } from 'react';
+import PropTypes from 'prop-types';
+import React from 'react';
+import classNames from 'classnames';
 
 class Input extends React.Component {
 
   static propTypes = {
-    onChange: PropTypes.func
+    icon:         PropTypes.string,
+    iconPosition: PropTypes.string,
+    onChange:     PropTypes.func
   };
 
   onChange = (event) => {
     this.props.onChange(event.currentTarget.value || '');
   };
 
+  getIcon = () => {
+    if (this.props.icon) {
+      return <i className={classNames('icon', this.props.icon)} />;
+    }
+    return null;
+  };
+
   render() {
-    return <input {...this.props} onChange={this.onChange} />;
+    const { icon, iconPosition } = this.props;
+
+    return (
+      <div className={classNames('ui', 'input', iconPosition, { icon: !!icon })}>
+        <input {...this.props} onChange={this.onChange} />
+        {this.getIcon()}
+      </div>
+    );
   }
 }
 

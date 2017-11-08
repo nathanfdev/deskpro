@@ -1,0 +1,167 @@
+#!/bin/bash
+
+################################################################
+# Read options
+################################################################
+
+EXTRA_ARGS=""
+
+while [[ $# -gt 0 ]];
+do
+key="$1"
+
+if [[ "${OPT_DOUBLE_DASH}" = true ]]; then
+    EXTRA_ARGS="${EXTRA_ARGS} ${key}"
+else
+    case $key in
+        -d|--deskpro)
+            OPT_DESKPRO="$2"
+            shift
+        ;;
+
+        -p|--php)
+            OPT_PHP="$2"
+            shift
+        ;;
+
+        -v|--verbose)
+            OPT_VERBOSE=true
+        ;;
+
+        -l|--pidfile)
+            OPT_PIDFILE="$2"
+            shift
+        ;;
+
+        -h|--help)
+            printf 'Usage:\n  %s [OPTION...]\n\n' "$(basename "$0")"
+            printf 'Usage:\n  %s [OPTION...] -- [extra args to deskpro cron command]\n\n' "$(basename "$0")"
+
+            printf 'Help Options:\n'
+            printf '  %-30s %s\n' '-h, --help' 'Show this help message'
+            echo
+
+            printf 'Options:\n'
+            printf '  %-30s %s\n' '-d dir, --deskpro dir' 'The path to Deskpro. This is only needed if this script is run outside of the default Deskpro bin/ directory (i.e. you moved/copied it).'
+            printf '  %-30s %s\n' '-p path, --php path' 'The path to PHP. This should be the same as the PHP defined in config/config.paths.php'
+            printf '  %-30s %s\n' '-v, --verbose' 'Enable verbose output'
+            printf '  %-30s %s\n' '-l path, --pidfile path' 'Path to the cron pid file. Defaults to the tmp directory within the Deskpro dir.'
+            printf '  %-30s %s\n' '--status' 'Show if cron is currently running or not'
+            printf '  %-30s %s\n' '-- extra args' 'Anything after the double-dash will be passed on to the Deskpro cron command as-is'
+
+            echo
+            exit 0
+        ;;
+
+        --status)
+            OPT_SHOWSTATUS=true
+            OPT_VERBOSE=true
+        ;;
+
+        --)
+           OPT_DOUBLE_DASH=true
+        ;;
+
+        -*|--*)
+            echo "Unknown option: $key"
+            echo "Use --help for usage information"
+            exit 1
+        ;;
+
+        *)
+            echo "Unknown argument: $1"
+            echo "Use --help for usage information"
+        ;;
+    esac
+fi
+shift
+done
+
+################################################################
+# Validate options
+################################################################
+
+if [[ -z "${OPT_DESKPRO}" ]]; then
+    SCRIPT_DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
+    OPT_DESKPRO="$( cd "${SCRIPT_DIR}/.." && pwd )"
+fi
+
+if [[ ! -f "${OPT_DESKPRO}/bin/cron" ]]; then
+    echo "Invalid path to Deskpro: ${OPT_DESKPRO}"
+    exit 1
+fi
+
+if [[ -z "${OPT_PIDFILE}" ]]; then
+    OPT_PIDFILE="${OPT_DESKPRO}/var/tmp/cron.pid"
+fi
+
+if [[ -z "${OPT_PHP}" ]]; then
+    OPT_PHP=$(which php)
+fi
+
+if [[ ! -x "${OPT_PHP}" ]]; then
+    echo "${OPT_PHP} is not an executable. Wrong path to PHP?"
+    exit 1
+fi
+
+if [[ "${OPT_VERBOSE}" = true ]]; then
+    echo "Deskpro path:   ${OPT_DESKPRO}"
+    echo "PHP executable: ${OPT_PHP}"
+    echo "PID path:       ${OPT_PIDFILE}"
+fi
+
+################################################################
+# Check status
+################################################################
+
+if [[ -z "${PID}" && -e ${OPT_PIDFILE} ]]; then
+  PID=$(cat ${OPT_PIDFILE});
+fi
+
+if [[ -z "${PID}" ]]; then
+    IS_RUNNING=false
+    if [[ "${OPT_VERBOSE}" = true ]]; then
+        echo "Cron is not running (no PID)"
+    fi
+elif ps -p"${PID}" -o "pid=" >/dev/null 2>&1; then
+    IS_RUNNING=true
+    if [[ "${OPT_VERBOSE}" = true ]]; then
+        echo "Cron is running (PID: ${PID})"
+    fi
+else
+    IS_RUNNING=false
+    if [[ "${OPT_VERBOSE}" = true ]]; then
+        echo "Cron is not running (tested PID: ${PID})."
+    fi
+fi
+
+if [[ "${OPT_SHOWSTATUS}" = true ]]; then
+    exit 0
+fi
+
+if [[ "${IS_RUNNING}" = true ]]; then
+    if [[ "${OPT_VERBOSE}" = true ]]; then
+        echo "Cron is already running. Not running again."
+    fi
+    exit 0
+fi
+
+################################################################
+# Run cron
+################################################################
+
+if [[ "${OPT_VERBOSE}" = true ]]; then
+    echo "Command: $OPT_PHP $OPT_DESKPRO/bin/cron --no-croncheck --verbose $EXTRA_ARGS"
+    $OPT_PHP $OPT_DESKPRO/bin/cron --no-croncheck --verbose $EXTRA_ARGS &
+    PID=$!
+else
+    $OPT_PHP $OPT_DESKPRO/bin/cron --no-croncheck $EXTRA_ARGS &
+    PID=$!
+fi
+
+if [[ "${OPT_VERBOSE}" = true ]]; then
+    echo "PID ${PID} written"
+fi
+
+echo $PID > $OPT_PIDFILE
+wait $PID

@@ -1,3 +1,4 @@
+import debounce from 'lodash/debounce';
 import { newActionAlerts } from '../Modules/Application/Actions/notificationActions';
 import { startChat } from '../Modules/IM/Actions/chatsActions';
 import { markMessages } from '../Modules/IM/Actions/messagesActions';
@@ -16,6 +17,9 @@ class ActionAlertsHandler {
     const { data, linked } = payload.data;
     const records = [];
     switch (payload.type) {
+      case 'multiplex_message':
+        this.handleMultiplex(payload);
+        break;
       case 'agents.update_online':
         if (payload.data.online) {
           payload.data.online.forEach((item) => {
@@ -35,8 +39,8 @@ class ActionAlertsHandler {
       case 'helpdesk.agent.refresh_interface': {
         const { who, message, isIgnoreAllowed, reasonCode } = payload.data;
         if (reasonCode === 'upgrade_complete') {
-          if (!DeskPRO_Window.update_running) {
-            // the upgrading message was never disaplyed,
+          if (!window.DeskPRO_Window.update_running) {
+            // the upgrading message was never displayed,
             // show a fake one now and then refresh
             $('#reload_overlay').show();
             $('#reload_overlay_updates').show();
@@ -45,7 +49,7 @@ class ActionAlertsHandler {
           // on a slight delay to let any offline trigger files to be unset
           window.setTimeout(() => window.location.reload(false), 5000);
         } else {
-          DeskPRO_Window.showRefreshAlert(who, message, isIgnoreAllowed);
+          window.DeskPRO_Window.showRefreshAlert(who, message, isIgnoreAllowed);
         }
       }
         break;
@@ -75,7 +79,7 @@ class ActionAlertsHandler {
       case 'snippet.snippets_updated':
         switch (payload.data.action) {
           case 'update':
-            this.options.dispatch(snippetActions.getSnippet([payload.data.snippet_id]));
+            this.handleNewSnippet(payload.data.snippet_id);
             break;
           case 'remove':
             this.options.dispatch(removeFromCollection('Snippets', 'all', [payload.data.snippet_id]));
@@ -91,6 +95,29 @@ class ActionAlertsHandler {
           this.options.dispatch(newActionAlerts(payload));
         }
     }
+  }
+
+  snippetIds = new Set();
+
+  loadBatch = () => {
+    this.options.dispatch(snippetActions.getSnippets([...this.snippetIds])).then((snippets) => {
+      const shortcutCodes = window.DESKPRO_TICKET_SNIPPET_SHORTCODES;
+      snippets.forEach((snippet) => {
+        if (shortcutCodes[snippet.shortcut_code] && shortcutCodes[snippet.shortcut_code].indexOf(snippet.id) === -1) {
+          shortcutCodes[snippet.shortcut_code] = shortcutCodes[snippet.shortcut_code].concat([snippet.id]);
+        } else if (!shortcutCodes[snippet.shortcut_code]) {
+          shortcutCodes[snippet.shortcut_code] = [snippet.id];
+        }
+      });
+    });
+    this.snippetIds.clear();
+  };
+
+  debouncedLoad = debounce(() => this.loadBatch(), 1000);
+
+  handleNewSnippet(snippetId) {
+    this.snippetIds.add(snippetId);
+    this.debouncedLoad();
   }
 
   static handleLegacyClientMessage(payload) {

@@ -28,14 +28,19 @@
 
 namespace Application\AgentBundle\Controller;
 
+use Application\AgentBundle\Form\Model\SettingsProfile as SettingsProfileModel;
+use Application\AgentBundle\Form\Type\SettingsProfile;
+use Application\AgentBundle\Validator\AgentProfileValidator;
 use Application\DeskPRO\App;
 use Application\DeskPRO\Entity;
-use Application\DeskPRO\Entity\Brand;
 use Application\DeskPRO\People\AgentNotifPrefs\PrefsLoader as AgentNotifPrefsLoader;
 use Application\DeskPRO\People\PersonEditManager;
 use Application\DeskPRO\Tickets\Filters\TicketFilterCollection;
 use Application\DeskPRO\UI\RuleBuilder;
+use DateTimeZone;
+use Orb\Util\Strings;
 use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 
 class SettingsController extends AbstractController
 {
@@ -46,8 +51,8 @@ class SettingsController extends AbstractController
     public function profileAction()
     {
         $defaultCountryCode = $this->getContainer()->get('deskpro.core.settings')->get('core.default_country_code');
-        $edit_profile       = new \Application\AgentBundle\Form\Model\SettingsProfile($this->person, $defaultCountryCode);
-        $edit_form          = new \Application\AgentBundle\Form\Type\SettingsProfile();
+        $edit_profile       = new SettingsProfileModel($this->person, $defaultCountryCode);
+        $edit_form          = new SettingsProfile();
         $form               = $this->get('form.factory')->create($edit_form, $edit_profile);
 
         /** @var \Application\DeskPRO\People\PasswordPolicyValidator $password_validator */
@@ -67,8 +72,8 @@ class SettingsController extends AbstractController
      */
     public function profileSaveAction(Request $request)
     {
-        $edit_profile = new \Application\AgentBundle\Form\Model\SettingsProfile($this->person);
-        $edit_form    = new \Application\AgentBundle\Form\Type\SettingsProfile();
+        $edit_profile = new SettingsProfileModel($this->person);
+        $edit_form    = new SettingsProfile();
         $form         = $this->get('form.factory')->create($edit_form, $edit_profile);
 
         $form->handleRequest($request);
@@ -89,7 +94,7 @@ class SettingsController extends AbstractController
             $check_exists = $this->em->getRepository('DeskPRO:Person')->findByEmail($edit_profile->email);
             if ($check_exists && $check_exists->getId() != $this->person->getId() && !$check_exists->is_agent) {
                 // Insert the merge code
-                $tmpdata = \Application\DeskPRO\Entity\TmpData::create('validated_merge_user', [
+                $tmpdata = Entity\TmpData::create('validated_merge_user', [
                     'agent_id'      => $this->person->getId(),
                     'other_user_id' => $check_exists->getId(),
                     'email_address' => $edit_profile->email,
@@ -119,7 +124,7 @@ class SettingsController extends AbstractController
             }
         }
 
-        $validator = new \Application\AgentBundle\Validator\AgentProfileValidator();
+        $validator = new AgentProfileValidator();
         if (!$validator->isValid($edit_profile)) {
             return $this->createJsonResponse([
                 'error'       => true,
@@ -146,13 +151,13 @@ class SettingsController extends AbstractController
         }
 
         if ($blob_id = $this->in->getString('new_blob_id')) {
-            $blob = $this->em->getRepository('DeskPRO:Blob')->getByAuthId($blob_id);
+            $blob = $this->em->getRepository(Entity\Blob::class)->getByAuthId($blob_id);
             if ($blob) {
                 $this->person->picture_blob = $blob;
             }
         }
 
-        if (($tz = $this->in->getString('timezone')) && in_array($tz, \DateTimeZone::listIdentifiers())) {
+        if (($tz = $this->in->getString('timezone')) && in_array($tz, DateTimeZone::listIdentifiers())) {
             $this->person->timezone = $tz;
         }
 
@@ -176,7 +181,7 @@ class SettingsController extends AbstractController
     public function signatureAction()
     {
         if (!$this->person->PermissionsManager->GeneralChecker->canSetSignature()) {
-            throw new \Symfony\Component\HttpKernel\Exception\NotFoundHttpException();
+            throw new NotFoundHttpException();
         }
 
         return $this->render('AgentBundle:Settings:signature.html.twig', [
@@ -189,15 +194,15 @@ class SettingsController extends AbstractController
     public function signatureSaveAction()
     {
         if (!$this->person->PermissionsManager->GeneralChecker->canSetSignature()) {
-            throw new \Symfony\Component\HttpKernel\Exception\NotFoundHttpException();
+            throw new NotFoundHttpException();
         }
 
         if ($this->in->getBool('is_html_signature')) {
             $signature_html = $this->in->getHtmlCore('ticket_signature');
-            $signature_html = \Orb\Util\Strings::trimHtml($signature_html);
+            $signature_html = Strings::trimHtml($signature_html);
 
             foreach ($this->in->getCleanValueArray('blob_inline_ids', 'uint', 'discard') as $blob_id) {
-                $blob = App::getEntityRepository('DeskPRO:Blob')->find($blob_id);
+                $blob = App::getEntityRepository(Entity\Blob::class)->find($blob_id);
                 if ($blob) {
                     $regex          = '#(<img[^>]+src=")'.preg_quote($blob->getDownloadUrl(true), '#').'("[^>]*>)#i';
                     $replace        = $blob->getEmbedCode(true, 'signature_image');
@@ -240,7 +245,7 @@ class SettingsController extends AbstractController
     {
         $tz = $this->in->getString('timezone');
 
-        if (!in_array($tz, \DateTimeZone::listIdentifiers())) {
+        if (!in_array($tz, DateTimeZone::listIdentifiers())) {
             return $this->createJsonResponse(['error' => true, 'error_code' => 'invalid_timezone']);
         }
 
@@ -268,7 +273,7 @@ class SettingsController extends AbstractController
         $loader = new AgentNotifPrefsLoader($this->person, $this->em);
         $prefs  = $loader->getPrefs();
 
-        $filters = new TicketFilterCollection($this->em->getRepository('DeskPRO:LegacyTicketFilter')->getFiltersForPerson($this->person));
+        $filters = new TicketFilterCollection($this->em->getRepository(Entity\LegacyTicketFilter::class)->getFiltersForPerson($this->person));
 
         $all_filters      = $filters->getAllFilters();
         $sys_filters      = $filters->getSystemFilters();
@@ -300,27 +305,27 @@ class SettingsController extends AbstractController
         $person_editor = $this->container->getSystemService('person_edit_manager');
         $person_editor->saveFilterSubscriptions($this->person, $subs);
 
-        $this->em->getRepository('DeskPRO:PersonPref')->savePref(
+        $this->em->getRepository(Entity\PersonPref::class)->savePref(
             $this->person,
             'agent_notif.ticket_mention',
             $this->in->getString('ticket_mention') == 'smart_send' ? 'smart_send' : 'always_send'
         );
-        $this->em->getRepository('DeskPRO:PersonPref')->savePref(
+        $this->em->getRepository(Entity\PersonPref::class)->savePref(
             $this->person,
             'agent_notify_override.all.email',
             $this->in->getBool('agent_notify_override_all_email') ? 1 : 0
         );
-        $this->em->getRepository('DeskPRO:PersonPref')->savePref(
+        $this->em->getRepository(Entity\PersonPref::class)->savePref(
             $this->person,
             'agent_notify_override.forward.email',
             $this->in->getBool('agent_notify_override_forward_email') ? 1 : 0
         );
-        $this->em->getRepository('DeskPRO:PersonPref')->savePref(
+        $this->em->getRepository(Entity\PersonPref::class)->savePref(
             $this->person,
             'agent_notify_override.all.alert',
             $this->in->getBool('agent_notify_override_all_alert') ? 1 : 0
         );
-        $this->em->getRepository('DeskPRO:PersonPref')->savePref(
+        $this->em->getRepository(Entity\PersonPref::class)->savePref(
             $this->person,
             'agent_notify_override.forward.alert',
             $this->in->getBool('agent_notify_override_forward_alert') ? 1 : 0
@@ -335,7 +340,7 @@ class SettingsController extends AbstractController
 
     public function otherNotificationsAction()
     {
-        $my_prefs = $this->em->getRepository('DeskPRO:PersonPref')->getPrefgroupForPersonId('agent_notif', $this->person->id, true);
+        $my_prefs = $this->em->getRepository(Entity\PersonPref::class)->getPrefgroupForPersonId('agent_notif', $this->person->id, true);
 
         return $this->render('AgentBundle:Settings:other-notifications.html.twig', [
             'my_prefs' => $my_prefs,
@@ -361,8 +366,8 @@ class SettingsController extends AbstractController
      */
     public function ticketFiltersAction()
     {
-        $filters        = $this->em->getRepository('DeskPRO:LegacyTicketFilter')->getPersonalFilters($this->person);
-        $filters_shared = $this->em->getRepository('DeskPRO:LegacyTicketFilter')->getSharedFilters($this->person);
+        $filters        = $this->em->getRepository(Entity\LegacyTicketFilter::class)->getPersonalFilters($this->person);
+        $filters_shared = $this->em->getRepository(Entity\LegacyTicketFilter::class)->getSharedFilters($this->person);
 
         //agent.ui.filter
         $filter_show_options = $this->db->fetchAllKeyValue("
@@ -384,7 +389,7 @@ class SettingsController extends AbstractController
     public function ticketFilterEditAction($filter_id)
     {
         if ($filter_id) {
-            $filter = $this->em->find('DeskPRO:LegacyTicketFilter', $filter_id);
+            $filter = $this->em->find(Entity\LegacyTicketFilter::class, $filter_id);
             if ($filter and $filter['sys_name']) {
                 $filter = null;
             }
@@ -414,7 +419,7 @@ class SettingsController extends AbstractController
     {
         if ($filter_id) {
             $is_new = false;
-            $filter = $this->em->find('DeskPRO:LegacyTicketFilter', $filter_id);
+            $filter = $this->em->find(Entity\LegacyTicketFilter::class, $filter_id);
             if ($filter and $filter['sys_name']) {
                 $filter = null;
             }
@@ -445,7 +450,7 @@ class SettingsController extends AbstractController
 
     public function ticketFilterDeleteAction($filter_id)
     {
-        $filter = $this->em->find('DeskPRO:LegacyTicketFilter', $filter_id);
+        $filter = $this->em->find(Entity\LegacyTicketFilter::class, $filter_id);
         if (!$filter) {
             throw $this->createNotFoundException('Could not find filter');
         }
@@ -480,7 +485,7 @@ class SettingsController extends AbstractController
 
         if ($macro_id) {
             $is_new = false;
-            $macro  = $this->em->getRepository('DeskPRO:TicketMacro')->find($macro_id);
+            $macro  = $this->em->getRepository(Entity\TicketMacro::class)->find($macro_id);
             if (!$macro || (!$macro->is_global && $macro->person->id != $this->person->id)) {
                 throw $this->createNotFoundException('Could not find macro');
             }
@@ -495,7 +500,7 @@ class SettingsController extends AbstractController
         $ticket_options['custom_ticket_fields'] = $custom_fields;
 
         // People stuff
-        $ticket_options['people_organizations'] = $this->em->getRepository('DeskPRO:Organization')->getOrganizationNames();
+        $ticket_options['people_organizations'] = $this->em->getRepository(Entity\Organization::class)->getOrganizationNames();
         $people_field_defs                      = App::getApi('custom_fields.people')->getEnabledFields();
         $ticket_options['custom_people_fields'] = $custom_fields = App::getApi('custom_fields.people')->getFieldsDisplayArray($people_field_defs);
 
@@ -510,7 +515,7 @@ class SettingsController extends AbstractController
     {
         if ($macro_id) {
             $is_new = false;
-            $macro  = $this->em->getRepository('DeskPRO:TicketMacro')->find($macro_id);
+            $macro  = $this->em->getRepository(Entity\TicketMacro::class)->find($macro_id);
             if (!$macro || (!$macro->is_global && $macro->person->id != $this->person->id)) {
                 throw $this->createNotFoundException('Could not find macro');
             }
@@ -545,7 +550,7 @@ class SettingsController extends AbstractController
 
     public function ticketMacroDeleteAction($macro_id)
     {
-        $macro = $this->em->getRepository('DeskPRO:TicketMacro')->find($macro_id);
+        $macro = $this->em->getRepository(Entity\TicketMacro::class)->find($macro_id);
         if (!$macro || (!$macro->is_global && $macro->person->id != $this->person->id)) {
             throw $this->createNotFoundException('Could not find macro');
         }
@@ -566,7 +571,7 @@ class SettingsController extends AbstractController
     public function ticketSlasAction()
     {
         $sla_filter = $this->person->getPref('agent.ui.sla.ticket-filter');
-        $slas       = $this->em->getRepository('DeskPRO:Sla')->getAllSlas();
+        $slas       = $this->em->getRepository(Entity\Sla::class)->getAllSlas();
 
         //agent.ui.filter
         $filter_show_options = $this->db->fetchAllKeyValue("
@@ -583,15 +588,15 @@ class SettingsController extends AbstractController
     }
 
     /**
-     * @return Brand[]
+     * @return Entity\Brand[]
      */
     protected function getAgentBrands()
     {
         /** @var Entity\Department[] $departments */
         $departments = $this->container->getDataService('Department')
             ->getPersonDepartments($this->person, 'tickets', [], 'assign');
-        /** @var Brand[] $brands */
-        $brands = $this->em->getRepository(Brand::class)->findAll();
+        /** @var Entity\Brand[] $brands */
+        $brands = $this->em->getRepository(Entity\Brand::class)->findAll();
         foreach ($brands as $key => $brand) {
             $department_found = false;
             foreach ($departments as $department) {

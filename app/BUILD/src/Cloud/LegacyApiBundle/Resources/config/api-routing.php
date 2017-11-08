@@ -119,6 +119,7 @@ $collection->removeRoutes(
     'api_server_mysql_sort_order_status',
     'api_server_cron_status',
     'api_server_error_status',
+    'api_server_delete_error_log',
     'api_server_apc_status',
     'api_server_autoupdate_begin',
     'api_server_autoupdate_abort',

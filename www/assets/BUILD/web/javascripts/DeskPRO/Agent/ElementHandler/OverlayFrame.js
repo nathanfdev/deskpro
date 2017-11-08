@@ -39,7 +39,7 @@ DeskPRO.Agent.ElementHandler.OverlayFrame = new Orb.Class({
         right:           0,
         bottom:          0,
         left:            '52px',
-        zIndex:          2000,
+        zIndex:          1799,
         backgroundColor: '#F5F7FA'
       }
     });
@@ -110,7 +110,7 @@ DeskPRO.Agent.ElementHandler.OverlayFrame = new Orb.Class({
     }
 
     if (!path && this.url.indexOf('#') !== -1) {
-      path = this.url.substr(url.indexOf('#') + 1);
+      path = this.url.substr(this.url.indexOf('#') + 1);
     }
 
     this.setHash(path);

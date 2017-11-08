@@ -16,13 +16,14 @@ DeskPRO.Agent.KeyboardShortcuts = new Orb.Class({
 		if (this.isMac) {
 			$(document).bind('keydown', 'ctrl+shift+left', this.tabLeft.bind(this));
 			$(document).bind('keydown', 'ctrl+shift+right', this.tabRight.bind(this));
+			$(document).bind('keydown', 'ctrl+c', this.saveContent.bind(this));
 		} else {
 			$(document).bind('keydown', 'alt+shift+left', this.tabLeft.bind(this));
 			$(document).bind('keydown', 'alt+shift+right', this.tabRight.bind(this));
+			$(document).bind('keydown', 'alt+c', this.saveContent.bind(this));
 		}
 
 		$(document).bind('keydown', 'ctrl+shift+c', this.closeTab.bind(this));
-		$(document).bind('keydown', 'alt+c', this.saveContent.bind(this));
 		$(document).bind('keydown', 'shift+t', this.goTabTop.bind(this));
 		$(document).bind('keydown', 'shift+/', function() {
 			if ($('#dp_header_help').hasClass('active')) {

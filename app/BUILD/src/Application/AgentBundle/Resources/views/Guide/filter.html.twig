@@ -11,6 +11,7 @@
       pageMeta.url_fragment = '{{ url_fragment('agent_guides_list', {'guide_id': guide.id}) }}';
       pageMeta.baseId = '{{ tplvars.baseId }}';
       pageMeta.guideId = {{ guide.id }};
+      pageMeta.display_fields = {{ display_fields|json_encode|raw }};
     </script>
 {% endblock top %}
 
@@ -133,6 +134,14 @@
                                 </tbody>
                             </table>
                         </div>
+                    </article>
+                </section>
+
+                <section class="pane-section last">
+                    <header><h1>{{ phrase('agent.publish.reorder_guide_title') }}</h1></header>
+                    <article>
+                        <div style="padding: 10px;" id="{{ tplvars.baseId }}_cattree" data-treedata="{{ cat_structure_data|json_encode }}"></div>
+                        <input type="hidden" id="{{ tplvars.baseId }}_cattree_struct" name="category_structure" value="" />
                     </article>
                 </section>
 

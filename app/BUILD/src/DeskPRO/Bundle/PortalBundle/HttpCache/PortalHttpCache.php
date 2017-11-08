@@ -130,7 +130,7 @@ class PortalHttpCache extends EventDispatchingHttpCache
             $statusCode = $statusCode ? (int) $statusCode : null;
             $response   = null;
 
-            if ($statusCode && $statusCode >= 300 && $statusCode < 400) {
+            if ($statusCode && $statusCode >= 300 && $statusCode < 500) {
                 // error in a tag/esi
                 $response = '';
             } elseif ($type !== HttpKernelInterface::MASTER_REQUEST) {

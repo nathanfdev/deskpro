@@ -93,10 +93,10 @@ class PortalPermissionsLoader
             'sys_name' => Usergroup::REGISTERED,
         ]);
 
-        if ($everyoneGroup && !$userGroups->contains($everyoneGroup)) {
+        if ($everyoneGroup && $everyoneGroup->isEnabled() && !$userGroups->contains($everyoneGroup)) {
             $userGroups->add($everyoneGroup);
         }
-        if ($registeredGroup && !$userGroups->contains($registeredGroup)) {
+        if ($registeredGroup && $registeredGroup->isEnabled() && !$userGroups->contains($registeredGroup)) {
             $customGroups = $userGroups->filter(function (Usergroup $userGroup) {
                 return !in_array($userGroup->getSysName(), [Usergroup::EVERYONE, Usergroup::REGISTERED]);
             });
@@ -252,13 +252,16 @@ class PortalPermissionsLoader
                 "SELECT id, parent_id FROM departments WHERE is_{$app}_enabled = 1"
             );
 
-            $this->departmentsCache[$app] = $departments;
+            $this->departmentsCache[$app] = [];
+            foreach ($departments as $department) {
+                $this->departmentsCache[$app][$department['id']] = $department;
+            }
         }
 
         $departmentParents  = [];
         $departmentChildren = [];
         foreach ($this->departmentsCache[$app] as $department) {
-            if ($department['parent_id']) {
+            if ($department['parent_id'] && isset($this->departmentsCache[$app][$department['parent_id']])) {
                 $departmentParents[$department['id']][$department['parent_id']]  = true;
                 $departmentChildren[$department['parent_id']][$department['id']] = true;
             }

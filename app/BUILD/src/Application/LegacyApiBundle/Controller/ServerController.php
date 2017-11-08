@@ -38,13 +38,20 @@ use Application\DeskPRO\Exception\ValidationException;
 use Application\DeskPRO\Log\ErrorLog\ErrorLogReader;
 use Application\DeskPRO\Server\ApcStatus;
 use Application\DeskPRO\Server\CronStatus;
+use Application\DeskPRO\Server\ServerPhpInfo;
+use Application\DeskPRO\ServerCron\ServerCron;
+use Application\DeskPRO\ServerErrorLogs\ServerErrorLogs;
 use Application\DeskPRO\ServerFileCheck\ServerFileCheck;
 use Application\DeskPRO\ServerFileUploads\ServerFileUploads;
 use Application\DeskPRO\ServerMysqlInfo\ServerMysqlInfo;
 use Application\DeskPRO\ServerMysqlSortOrder\ServerMysqlSortOrder;
+use Application\DeskPRO\ServerMysqlStatus\ServerMysqlStatus;
 use Application\DeskPRO\ServerReportFile\ServerReportFile;
+use Application\DeskPRO\ServerTaskQueue\ServerTaskQueue;
 use Application\LegacyApiBundle\PermissionStrategy\AdminManagePermission;
 use DeskPRO\Bundle\AppBundle\Annotation\ActionPermissions\Annotation\ApiModes;
+use DpRun\DpEnv;
+use DpSys\LowError\SystemErrorHandler;
 use Orb\Util\Util;
 use Symfony\Component\HttpFoundation\Request;
 
@@ -67,7 +74,7 @@ class ServerController extends AbstractController implements ProtectedController
 
     public function getServerReqsAction(Request $request)
     {
-        /* @var \DpRun\DpEnv $DP_ENV */
+        /* @var DpEnv $DP_ENV */
         global $DP_ENV;
 
         $auth = $DP_ENV->getDatManager()->readTxtFile('server_info_auth', '');
@@ -82,14 +89,12 @@ class ServerController extends AbstractController implements ProtectedController
 
     public function getPhpInfoAction()
     {
-        /*
-         * @var \Application\DeskPRO\ServerPhpInfo\ServerPhpInfo
-         */
-        $server_php_info = $this->container->getSystemService('server_php_info');
+        /** @var ServerPhpInfo $serverPhpInfo */
+        $serverPhpInfo = $this->container->getSystemService('server_php_info');
 
         return $this->createApiResponse(
             [
-                'server_php_info' => $server_php_info->getPhpInfo(),
+                'server_php_info' => $serverPhpInfo->getPhpInfo(),
             ]
         );
     }
@@ -100,28 +105,24 @@ class ServerController extends AbstractController implements ProtectedController
 
     public function getMysqlInfoAction()
     {
-        /*
-         * @var \Application\DeskPRO\ServerMysqlInfo\ServerMysqlInfo $server_mysql_info
-         */
-        $mysql_info = new ServerMysqlInfo($this->db, [
+        /** @var ServerMysqlInfo $mysqlInfo */
+        $mysqlInfo = new ServerMysqlInfo($this->db, [
             'default' => $this->getContainer()->get('doctrine.orm.default_entity_manager'),
             'sys'     => $this->getContainer()->get('doctrine.orm.system_entity_manager'),
         ]);
 
-        return $this->createApiResponse(['server_mysql_info' => $mysql_info->getMysqlInfo()]);
+        return $this->createApiResponse(['server_mysql_info' => $mysqlInfo->getMysqlInfo()]);
     }
 
     public function getMysqlSchemaDiffAction()
     {
-        /*
-         * @var \Application\DeskPRO\ServerMysqlInfo\ServerMysqlInfo $server_mysql_info
-         */
-        $mysql_info = new ServerMysqlInfo($this->db, [
+        /** @var ServerMysqlInfo $mysqlInfo */
+        $mysqlInfo = new ServerMysqlInfo($this->db, [
             'default' => $this->getContainer()->get('doctrine.orm.default_entity_manager'),
             'sys'     => $this->getContainer()->get('doctrine.orm.system_entity_manager'),
         ]);
 
-        return $this->createApiResponse(['mysql_schema_diff' => $mysql_info->getSchemaDiff()]);
+        return $this->createApiResponse(['mysql_schema_diff' => $mysqlInfo->getSchemaDiff()]);
     }
 
     //###################################################################################################################
@@ -130,14 +131,12 @@ class ServerController extends AbstractController implements ProtectedController
 
     public function getMysqlStatusAction()
     {
-        /*
-         * @var \Application\DeskPRO\ServerMysqlStatus\ServerMysqlStatus
-         */
-        $server_mysql_status = $this->container->getSystemService('server_mysql_status');
+        /** @var ServerMysqlStatus $serverMysqlStatus */
+        $serverMysqlStatus = $this->container->getSystemService('server_mysql_status');
 
         return $this->createApiResponse(
             [
-                'server_mysql_status' => $server_mysql_status->getMysqlStatus(),
+                'server_mysql_status' => $serverMysqlStatus->getMysqlStatus(),
             ]
         );
     }
@@ -148,12 +147,12 @@ class ServerController extends AbstractController implements ProtectedController
 
     public function getMysqlSortOrderAction()
     {
-        $server_mysql_sort_order = new ServerMysqlSortOrder($this->settings);
+        $serverMysqlSortOrder = new ServerMysqlSortOrder($this->settings);
 
         return $this->createApiResponse(
             [
-                'server_mysql_sort_order' => $server_mysql_sort_order->toArray(),
-                'all_collations'          => $server_mysql_sort_order->getCollationsTable(),
+                'server_mysql_sort_order' => $serverMysqlSortOrder->toArray(),
+                'all_collations'          => $serverMysqlSortOrder->getCollationsTable(),
             ]
         );
     }
@@ -164,9 +163,9 @@ class ServerController extends AbstractController implements ProtectedController
 
     public function saveMysqlSortOrderAction()
     {
-        $server_mysql_sort_order = new ServerMysqlSortOrder($this->settings);
-        $server_mysql_sort_order->setArray($this->in->getCleanValueArray('server_mysql_sort_order'));
-        $server_mysql_sort_order->save();
+        $serverMysqlSortOrder = new ServerMysqlSortOrder($this->settings);
+        $serverMysqlSortOrder->setArray($this->in->getCleanValueArray('server_mysql_sort_order'));
+        $serverMysqlSortOrder->save();
 
         return $this->createSuccessResponse();
     }
@@ -177,9 +176,9 @@ class ServerController extends AbstractController implements ProtectedController
 
     public function getMysqlSortOrderStatusAction()
     {
-        $server_mysql_sort_order = new ServerMysqlSortOrder($this->settings);
+        $serverMysqlSortOrder = new ServerMysqlSortOrder($this->settings);
 
-        return $this->createApiResponse($server_mysql_sort_order->getUpdateStatus());
+        return $this->createApiResponse($serverMysqlSortOrder->getUpdateStatus());
     }
 
     //###################################################################################################################
@@ -188,15 +187,13 @@ class ServerController extends AbstractController implements ProtectedController
 
     public function listErrorLogsAction()
     {
-        /*
-         * @var \Application\DeskPRO\ServerErrorLogs\ServerErrorLogs
-         */
-        $server_error_logs = $this->container->getSystemService('server_error_logs');
+        /** @var ServerErrorLogs $serverErrorLogs */
+        $serverErrorLogs = $this->container->getSystemService('server_error_logs');
 
         return $this->createApiResponse(
             [
                 'path'              => $this->container->get('deskpro.app_env')->getUserLogsDir(),
-                'server_error_logs' => $server_error_logs->getAll(),
+                'server_error_logs' => $serverErrorLogs->getAll(),
             ]
         );
     }
@@ -207,19 +204,17 @@ class ServerController extends AbstractController implements ProtectedController
 
     public function getErrorLogsAction($id)
     {
-        /*
-         * @var \Application\DeskPRO\ServerErrorLogs\ServerErrorLogs
-         */
-        $server_error_logs = $this->container->getSystemService('server_error_logs');
-        $server_error_log  = $server_error_logs->getById($id);
+        /** @var ServerErrorLogs $serverErrorLogs */
+        $serverErrorLogs = $this->container->getSystemService('server_error_logs');
+        $serverErrorLog  = $serverErrorLogs->getById($id);
 
-        if (!$server_error_log) {
+        if (!$serverErrorLog) {
             throw $this->createNotFoundException();
         }
 
         return $this->createApiResponse(
             [
-                'server_error_log' => $server_error_log,
+                'server_error_log' => $serverErrorLog,
             ]
         );
     }
@@ -230,12 +225,10 @@ class ServerController extends AbstractController implements ProtectedController
 
     public function removeErrorLogsAction()
     {
-        /*
-         * @var \Application\DeskPRO\ServerErrorLogs\ServerErrorLogs
-         */
-        $server_error_logs = $this->container->getSystemService('server_error_logs');
+        /** @var ServerErrorLogs $serverErrorLogs */
+        $serverErrorLogs = $this->container->getSystemService('server_error_logs');
 
-        if (!$server_error_logs->clearAllErrors()) {
+        if (!$serverErrorLogs->clearAllErrors()) {
             throw ValidationException::create('server_error_logs.clear_all.file_not_writable');
         }
 
@@ -248,14 +241,12 @@ class ServerController extends AbstractController implements ProtectedController
 
     public function getTaskQueueAction()
     {
-        /*
-         * @var \Application\DeskPRO\ServerTaskQueue\ServerTaskQueue
-         */
-        $server_task_queue = $this->container->getSystemService('server_task_queue');
+        /** @var ServerTaskQueue $serverTaskQueue */
+        $serverTaskQueue = $this->container->getSystemService('server_task_queue');
 
         return $this->createApiResponse(
             [
-                'server_task_queue' => $server_task_queue->getInfo(),
+                'server_task_queue' => $serverTaskQueue->getInfo(),
             ]
         );
     }
@@ -266,13 +257,11 @@ class ServerController extends AbstractController implements ProtectedController
 
     public function listCronAction()
     {
-        /*
-         * @var \Application\DeskPRO\ServerCron\ServerCron
-         */
-        $server_cron = $this->container->getSystemService('server_cron');
+        /** @var ServerCron $serverCron */
+        $serverCron = $this->container->getSystemService('server_cron');
 
-        $returnedData         = $server_cron->getTimes();
-        $returnedData['jobs'] = $server_cron->getAllForApi();
+        $returnedData         = $serverCron->getTimes();
+        $returnedData['jobs'] = $serverCron->getAllForApi();
 
         return $this->createApiResponse(
             [
@@ -287,13 +276,11 @@ class ServerController extends AbstractController implements ProtectedController
 
     public function logsCronAction()
     {
-        /*
-         * @var \Application\DeskPRO\ServerCron\ServerCron
-         */
-        $server_cron = $this->container->getSystemService('server_cron');
+        /** @var ServerCron $serverCron */
+        $serverCron = $this->container->getSystemService('server_cron');
 
         $priority = $this->in->getUint('priority');
-        $job_id   = $this->in->getString('job_id');
+        $jobId    = $this->in->getString('job_id');
         $page     = $this->in->getUint('page');
 
         // this is for case when we just cleared cron logs
@@ -303,12 +290,12 @@ class ServerController extends AbstractController implements ProtectedController
         }
 
         $returnedData['page']      = $page;
-        $returnedData['num_pages'] = $server_cron->getPagesCount($job_id, $priority);
+        $returnedData['num_pages'] = $serverCron->getPagesCount($jobId, $priority);
         $returnedData['priority']  = $priority;
-        $returnedData['job_id']    = $job_id;
+        $returnedData['job_id']    = $jobId;
 
-        $returnedData['logs'] = $server_cron->getLogs($job_id, $priority, $page);
-        $returnedData['jobs'] = $server_cron->getAllForApi();
+        $returnedData['logs'] = $serverCron->getLogs($jobId, $priority, $page);
+        $returnedData['jobs'] = $serverCron->getAllForApi();
 
         return $this->createApiResponse(
             [
@@ -323,11 +310,9 @@ class ServerController extends AbstractController implements ProtectedController
 
     public function removeCronAction()
     {
-        /*
-         * @var \Application\DeskPRO\ServerCron\ServerCron
-         */
-        $server_cron = $this->container->getSystemService('server_cron');
-        $server_cron->clearAllLogs();
+        /** @var ServerCron $serverCron */
+        $serverCron = $this->container->getSystemService('server_cron');
+        $serverCron->clearAllLogs();
 
         return $this->createSuccessResponse();
     }
@@ -387,7 +372,7 @@ class ServerController extends AbstractController implements ProtectedController
 
     public function switchFileStorageAction()
     {
-        /** @var \Application\DeskPRO\ServerFileUploads\ServerFileUploads */
+        /** @var ServerFileUploads $serverFileUploads */
         $serverFileUploads = $this->container->getSystemService('server_file_uploads');
         $serverFileUploads->switchStorage($this->in->getArrayValue('options'));
 
@@ -400,7 +385,7 @@ class ServerController extends AbstractController implements ProtectedController
 
     public function switchFileStorageStatusAction()
     {
-        /** @var \Application\DeskPRO\ServerFileUploads\ServerFileUploads $serverFileUploads */
+        /** @var ServerFileUploads $serverFileUploads */
         $serverFileUploads = $this->container->getSystemService('server_file_uploads');
 
         $serverFileUploads->switchStorageStatus();
@@ -414,11 +399,11 @@ class ServerController extends AbstractController implements ProtectedController
 
     public function listFileCheckAction()
     {
-        $server_file_check = new ServerFileCheck($this->em);
+        $serverFileCheck = new ServerFileCheck($this->em);
 
         return $this->createApiResponse(
             [
-                'server_file_check' => $server_file_check->getCount(),
+                'server_file_check' => $serverFileCheck->getCount(),
             ]
         );
     }
@@ -429,11 +414,11 @@ class ServerController extends AbstractController implements ProtectedController
 
     public function getFileCheckAction($id)
     {
-        $server_file_check = new ServerFileCheck($this->em);
+        $serverFileCheck = new ServerFileCheck($this->em);
 
         return $this->createApiResponse(
             [
-                'server_file_check' => $server_file_check->getById($id),
+                'server_file_check' => $serverFileCheck->getById($id),
             ]
         );
     }
@@ -444,11 +429,11 @@ class ServerController extends AbstractController implements ProtectedController
 
     public function getReportFileAction()
     {
-        $server_report_file = new ServerReportFile($this->em, null, $this->get('deskpro.app_env'));
-        $server_report_file->setSystemEntityManager($this->get('doctrine.orm.system_entity_manager'));
-        $server_report_file->setInstructionGenerator($this->get('dp_sys.alerts.instructions_generator'));
-        $server_report_file->createArchive();
-        $server_report_file->outputArchive();
+        $serverReportFile = new ServerReportFile($this->em, null, $this->get('deskpro.app_env'));
+        $serverReportFile->setSystemEntityManager($this->get('doctrine.orm.system_entity_manager'));
+        $serverReportFile->setInstructionGenerator($this->get('dp_sys.alerts.instructions_generator'));
+        $serverReportFile->createArchive();
+        $serverReportFile->outputArchive();
     }
 
     //###################################################################################################################
@@ -457,11 +442,11 @@ class ServerController extends AbstractController implements ProtectedController
 
     public function saveFileCheckResultsAction()
     {
-        $server_report_file = new ServerReportFile($this->em, null, $this->get('deskpro.app_env'));
-        $file_check_results = $this->in->getValue('file_check_results', 'post');
+        $serverReportFile = new ServerReportFile($this->em, null, $this->get('deskpro.app_env'));
+        $fileCheckResults = $this->in->getValue('file_check_results', 'post');
 
-        if (!empty($file_check_results)) {
-            $server_report_file->saveFileCheckResults($file_check_results);
+        if (!empty($fileCheckResults)) {
+            $serverReportFile->saveFileCheckResults($fileCheckResults);
         }
 
         return $this->createSuccessResponse();
@@ -490,16 +475,25 @@ class ServerController extends AbstractController implements ProtectedController
 
     public function errorStatusAction()
     {
-        $err_reader  = new ErrorLogReader(dp_get_log_dir().'/error.log');
-        $error_count = $err_reader->quickCount();
+        $errorLogFile = $this->get('deskpro.app_env')->getUserLogsDir().'/error.log';
+        $errReader    = new ErrorLogReader($errorLogFile);
+        $errorLogSize = false;
+        $maxSize      = SystemErrorHandler::$maxErrorLogFileSize;
+        try {
+            $errorLogSize = is_file($errorLogFile) && filesize($errorLogFile) > $maxSize;
+        } catch (\Exception $e) {
+        }
+        $errorCount = $errReader->quickCount();
 
-        $gateway_error_count  = $this->em->getRepository('DeskPRO:EmailSource')->countErrorStatus(['ticket', 'ticketmessage']);
-        $sendmail_error_count = $this->db->fetchColumn("SELECT COUNT(*) FROM sendmail_sources WHERE status = 'error'");
+        $gatewayErrorCount  = $this->em->getRepository('DeskPRO:EmailSource')->countErrorStatus(['ticket', 'ticketmessage']);
+        $sendmailErrorCount = $this->db->fetchColumn("SELECT COUNT(*) FROM sendmail_sources WHERE status = 'error'");
 
         return $this->createJsonResponse([
-            'error_count'          => $error_count,
-            'gateway_error_count'  => $gateway_error_count,
-            'sendmail_error_count' => $sendmail_error_count,
+            'error_count'          => $errorCount,
+            'error_log_size'       => $errorLogSize,
+            'error_log_max_size'   => $maxSize,
+            'gateway_error_count'  => $gatewayErrorCount,
+            'sendmail_error_count' => $sendmailErrorCount,
         ]);
     }
 
@@ -540,8 +534,8 @@ class ServerController extends AbstractController implements ProtectedController
 
     public function beginAutomaticUpdateAction()
     {
-        $update_time = $this->container->getSetting('core.upgrade_time');
-        if ($update_time) {
+        $updateTime = $this->container->getSetting('core.upgrade_time');
+        if ($updateTime) {
             return $this->createApiErrorResponse('already_scheduled', 'An automatic update has already been scheduled. To rescheduled, abort the update first.');
         }
 
@@ -562,9 +556,9 @@ class ServerController extends AbstractController implements ProtectedController
         @file_put_contents($this->container->getParameter('dp.user.cache_dir').'/helpdesk-offline-message.txt', $this->in->getString('user_message'));
 
         if ($mins) {
-            $agent_chat = new \Application\DeskPRO\Chat\AgentChat($this->person, $this->session->getEntity());
-            $agent_ids  = array_keys($this->em->getRepository('DeskPRO:Person')->getAgents());
-            $agent_chat->sendAgentMessage('Warning: The helpdesk will go down for maintenance in '.$mins.' minutes.', $agent_ids, 0);
+            $agentChat = new \Application\DeskPRO\Chat\AgentChat($this->person, $this->session->getEntity());
+            $agentIds  = array_keys($this->em->getRepository('DeskPRO:Person')->getAgents());
+            $agentChat->sendAgentMessage('Warning: The helpdesk will go down for maintenance in '.$mins.' minutes.', $agentIds, 0);
         }
 
         return $this->createSuccessResponse();
@@ -576,13 +570,13 @@ class ServerController extends AbstractController implements ProtectedController
 
     public function getAutomaticUpdateStatusAction()
     {
-        $update_time = $this->container->getSetting('core.upgrade_time');
-        if (!$update_time) {
+        $updateTime = $this->container->getSetting('core.upgrade_time');
+        if (!$updateTime) {
             return $this->createApiResponse(['is_scheduled' => false]);
         } else {
             return $this->createApiResponse([
                 'is_scheduled'    => true,
-                'start_time'      => $update_time,
+                'start_time'      => $updateTime,
                 'scheduled_at'    => $this->container->getSetting('core.upgrade_set_at'),
                 'backup_files'    => $this->container->getSetting('core.upgrade_backup_files'),
                 'backup_db'       => $this->container->getSetting('core.upgrade_backup_db'),
@@ -622,37 +616,37 @@ class ServerController extends AbstractController implements ProtectedController
      */
     private function getEncStatus()
     {
-        $key_file         = $this->container->get('deskpro.app_env')->findConfigFile('encryption-key.bin');
-        $has_key_file     = file_exists($key_file) && is_readable($key_file);
-        $is_enabled       = $this->container->getSetting('core.use_encryption');
-        $can_disable_file = $this->container->get('deskpro.app_env')->findConfigFile('can-disable-encryption.txt');
-        $can_disable      = is_file($can_disable_file);
+        $keyFile        = $this->container->get('deskpro.app_env')->findConfigFile('encryption-key.bin');
+        $hasKeyFile     = file_exists($keyFile) && is_readable($keyFile);
+        $isEnabled      = $this->container->getSetting('core.use_encryption');
+        $canDisableFile = $this->container->get('deskpro.app_env')->findConfigFile('can-disable-encryption.txt');
+        $canDisable     = is_file($canDisableFile);
 
         if (!extension_loaded('openssl')) {
-            $is_able       = false;
-            $is_able_error = 'Missing the OpenSSL PHP extension.';
+            $isAble      = false;
+            $isAbleError = 'Missing the OpenSSL PHP extension.';
         } elseif (!extension_loaded('mcrypt')) {
-            $is_able       = false;
-            $is_able_error = 'Missing the mcrypt PHP extension.';
+            $isAble      = false;
+            $isAbleError = 'Missing the mcrypt PHP extension.';
         } else {
-            $is_able       = true;
-            $is_able_error = null;
+            $isAble      = true;
+            $isAbleError = null;
             try {
                 $key = \Crypto::CreateNewRandomKey();
             } catch (\Exception $e) {
-                $is_able_error = 'The server was unable to use crypto: '.Util::getBaseClassname($e).' '.$e->getMessage();
-                $is_able       = false;
+                $isAbleError = 'The server was unable to use crypto: '.Util::getBaseClassname($e).' '.$e->getMessage();
+                $isAble      = false;
             }
         }
 
         return [
-            'is_able'          => $is_able,
-            'unable_error'     => $is_able_error,
-            'key_file'         => $key_file,
-            'has_key_file'     => $has_key_file,
-            'is_enabled'       => (bool) ((int) $is_enabled),
-            'can_disable_file' => $can_disable_file,
-            'can_disable'      => $can_disable,
+            'is_able'          => $isAble,
+            'unable_error'     => $isAbleError,
+            'key_file'         => $keyFile,
+            'has_key_file'     => $hasKeyFile,
+            'is_enabled'       => (bool) ((int) $isEnabled),
+            'can_disable_file' => $canDisableFile,
+            'can_disable'      => $canDisable,
         ];
     }
 

@@ -721,3 +721,50 @@ $brand-danger: #d9534f !default;
     }
   }
 }
+
+.inline-form-alert {
+  background: #fafafa;
+  border: 1px solid #f0f0f0;
+  border-radius: 2px;
+  position: relative;
+  padding: 10px;
+  margin: 10px;
+
+  .content-wrapper, .form-alert-icon {
+    display: inline-block;
+    vertical-align: middle;
+  }
+
+  .form-alert-icon {
+    border: 1px solid rgba(0, 0, 0, 0.1);
+    border-radius: 2px;
+    width: 28px;
+    height: 28px;
+    line-height: 1.2em;
+    text-align: center;
+    margin-right: 8px;
+    margin-left: 6px;
+    i {
+      position: relative;
+      top: 5px;
+      opacity: 0.5;
+      @-moz-document url-prefix() {
+        margin-left: 1px;
+      }
+    }
+  }
+
+  h1 {
+    font-weight: normal;
+    font-size: 1.5em;
+    padding: 0;
+    margin: 0;
+  }
+
+  p {
+    font-size: $font-size-base;
+    padding: 0;
+    margin: 0;
+    opacity: 0.6;
+  }
+}

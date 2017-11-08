@@ -84,15 +84,7 @@ class CustomDataProduct extends CustomDataAbstract
         $metadata->setPrimaryTable(
             [
                 'name'              => 'custom_data_product',
-                'uniqueConstraints' => [
-                    'unique_idx' => [
-                        'columns' => [
-                            'field_id',
-                            'product_id',
-                            'root_field_id',
-                        ],
-                    ],
-                ],
+                'uniqueConstraints' => [],
             ]
         );
         $metadata->setChangeTrackingPolicy(ClassMetadataInfo::CHANGETRACKING_NOTIFY);

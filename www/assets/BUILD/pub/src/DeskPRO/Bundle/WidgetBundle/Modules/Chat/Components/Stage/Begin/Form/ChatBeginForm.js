@@ -1,5 +1,6 @@
-import React, { PropTypes } from 'react';
-import { Field } from 'react-forms';
+import PropTypes from 'prop-types';
+import React from 'react';
+import { Field } from '@deskpro/react-forms';
 import { Input } from 'DeskPRO/Component/Semantic/ReactForm';
 import { portalPhrases } from 'DeskPRO/Bundle/PortalBundle/PortalPhrases';
 import { CustomField } from 'DeskPRO/Component/CustomField/CustomField';
@@ -8,10 +9,12 @@ import { FormItem } from './FormItem';
 import { CustomFieldTemplate } from './CustomFieldTemplate';
 import { WidgetBodyScrollAreaContainer } from '../../../../../Application/Components/Widget/Parts/Body/WidgetBodyScrollAreaContainer';
 import { ChatBeginContainer } from '../ChatBeginContainer';
+import BannedMessage from '../BannedMessage';
 
 export class ChatBeginForm extends React.Component {
 
   static propTypes = {
+    banned:                   PropTypes.bool,
     submit:                   PropTypes.bool,
     errors:                   PropTypes.object,
     onSubmit:                 PropTypes.func,
@@ -41,7 +44,7 @@ export class ChatBeginForm extends React.Component {
 
   render() {
     const { customFields, allowDepartmentSelection, chatRequiredName, chatRequiredEmail } = this.props;
-    const { submit, errors, onSubmit, widgetLanguage, loggedIn, primaryColor } = this.props;
+    const { banned, submit, errors, onSubmit, widgetLanguage, loggedIn, primaryColor } = this.props;
 
     const buttonStyles = {};
     if (primaryColor) {
@@ -50,6 +53,7 @@ export class ChatBeginForm extends React.Component {
 
     return (
       <WidgetBodyScrollAreaContainer>
+        {banned && <BannedMessage />}
         <div className="dpdesignportal-open-new-chat">
           <form className="dpdesignportal-form" onSubmit={onSubmit}>
             {!loggedIn &&

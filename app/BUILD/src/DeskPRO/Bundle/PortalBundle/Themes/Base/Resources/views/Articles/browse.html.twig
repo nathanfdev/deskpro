@@ -15,7 +15,10 @@
       </div>
     </header>
 
-    {% show kb %}
+    {% show kb with {
+      with_tree: brand_setting('user.kb_categories_with_tree')
+
+    }%}
     {% show kb_list_detail %}
   </div>
 {% endblock inner_content %}

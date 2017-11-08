@@ -11,7 +11,6 @@
 	</div>
 	<div class="content">
 		<header>
-			<span class="edit-gear comment-edit-btn"></span>
 			{% if comment_num %}
 				<span class="message-counter">#{{ comment_num }}</span>
 			{% endif %}
@@ -38,6 +37,7 @@
 			>
                 {{ comment.date_created|date('fulltime') }}
 			</time>
+			<span class="edit-gear comment-edit-btn"></span>
 		</header>
 		<div class="body-text">
 			<div class="rendered-message">{{ comment.content_html|raw }}</div>

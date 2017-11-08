@@ -220,6 +220,7 @@ class WorkerJob extends \Application\DeskPRO\Domain\DomainObject
 
     /**
      * @param \Application\DeskPRO\Log\Logger $logger
+     * @param array                           $options
      *
      * @return \Application\DeskPRO\WorkerProcess\Job\AbstractJob
      */

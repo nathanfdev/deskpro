@@ -65,6 +65,7 @@ class StylesheetCompiler
         $source      = file_get_contents($source_file);
         $source      = $this->hackScss($source, $source_dir, $variables);
         $project->addIncludePath($source_dir);
+        $project->addIncludePath(DP_WEB_ROOT.'/pub/src');
         $project->addIncludePath(DP_WEB_ROOT.'/pub/node_modules');
         $project->setSource($source);
 

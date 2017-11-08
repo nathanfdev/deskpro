@@ -1,4 +1,5 @@
-import React, { Component, PropTypes } from 'react';
+import PropTypes from 'prop-types';
+import React, { Component } from 'react';
 import { CollectionField } from '../../../Common/Components/Popup';
 import { DepartmentsListContainer } from './Lists/DepartmentsListContainer';
 import Immutable from 'immutable';

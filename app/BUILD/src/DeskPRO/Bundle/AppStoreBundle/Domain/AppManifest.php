@@ -32,25 +32,36 @@ use JMS\Serializer\Annotation as JMS;
 
 /**
  * Representation of an application's manifest. This is a mutable class to be used when creating other objects, like Application.
+ * @JMS\ExclusionPolicy("all")
  */
 class AppManifest
 {
     /**
      * @JMS\Type("string")
-     *
+     * @JMS\Expose()
      * @var string
      */
     private $name;
 
     /**
      * @JMS\Type("string")
+     * @JMS\Expose()
+     * @JMS\SerializedName("appVersion")
      *
+     * @var string
+     */
+    private $appVersion;
+
+    /**
+     * @JMS\Type("string")
+     * @JMS\Expose()
      * @var string
      */
     private $version;
 
     /**
      * @JMS\Type("string")
+     * @JMS\Expose()
      *
      * @var string
      */
@@ -58,6 +69,7 @@ class AppManifest
 
     /**
      * @JMS\Type("string")
+     * @JMS\Expose()
      *
      * @var string
      */
@@ -65,41 +77,76 @@ class AppManifest
 
     /**
      * @JMS\Type("string")
+     * @JMS\Expose()
      *
      * @var string
      */
     private $scope;
 
     /**
-     * @JMS\Type("array<DeskPRO\Bundle\AppStoreBundle\Domain\AppManifestSetting>")
+     * @JMS\Type("array<DeskPRO\Bundle\AppStoreBundle\Domain\AppManifest\Setting>")
+     * @JMS\Expose()
+     * @JMS\SerializedName("settings")
      *
-     * @var AppManifestSetting[]
+     * @var AppManifest\Setting[]
      */
     private $settings = [];
 
     /**
-     * @JMS\Type("array")
+     * @JMS\Type("array<DeskPRO\Bundle\AppStoreBundle\Domain\AppManifest\CustomField>")
+     * @JMS\Expose()
+     * @JMS\SerializedName("customFields")
      *
-     * @var array
+     * @var AppManifest\CustomField[]
      */
-    private $defaultSettings;
+    private $customFields = [];
 
     /**
-     * @JMS\Type("DeskPRO\Bundle\AppStoreBundle\Domain\AppManifestAuthor")
+     * @JMS\Type("array<DeskPRO\Bundle\AppStoreBundle\Domain\AppManifest\AppTarget>")
+     * @JMS\Expose()
      *
-     * @var AppManifestAuthor
+     * @var AppManifest\AppTarget[]
+     */
+    private $targets = [];
+
+    /**
+     * @JMS\Type("array<DeskPRO\Bundle\AppStoreBundle\Domain\AppManifest\StorageAccessRule>")
+     * @JMS\Expose()
+     *
+     * @var AppManifest\StorageAccessRule[]
+     */
+    private $storage = [];
+
+    /**
+     * @JMS\Type("DeskPRO\Bundle\AppStoreBundle\Domain\AppManifest\AppAuthor")
+     * @JMS\Expose()
+     *
+     * @var AppManifest\AppAuthor
      */
     private $author;
 
     /**
      * @JMS\Type("array<string>")
+     * @JMS\Expose()
+     * @JMS\SerializedName("externalApis")
      *
      * @var string[]
      */
     private $externalApis = [];
 
     /**
+     * @JMS\Type("array<string>")
+     * @JMS\Expose()
+     * @JMS\SerializedName("deskproApiTags")
+     *
+     * @var string[]
+     */
+    private $deskproApiTags = [];
+
+    /**
      * @JMS\Type("boolean")
+     * @JMS\Expose()
+     * @JMS\SerializedName("isSingle")
      *
      * @var bool
      */
@@ -206,47 +253,7 @@ class AppManifest
     }
 
     /**
-     * @return array
-     */
-    public function getDefaultSettings()
-    {
-        return $this->defaultSettings;
-    }
-
-    /**
-     * @param array $defaultSettings
-     *
-     * @return $this
-     */
-    public function setDefaultSettings(array $defaultSettings)
-    {
-        $this->defaultSettings = $defaultSettings;
-
-        return $this;
-    }
-
-    /**
-     * @return AppManifestAuthor
-     */
-    public function getAuthor()
-    {
-        return $this->author;
-    }
-
-    /**
-     * @param AppManifestAuthor $author
-     *
-     * @return $this
-     */
-    public function setAuthor(AppManifestAuthor $author = null)
-    {
-        $this->author = $author;
-
-        return $this;
-    }
-
-    /**
-     * @return AppManifestSetting[]
+     * @return AppManifest\Setting[]
      */
     public function getSettings()
     {
@@ -254,13 +261,33 @@ class AppManifest
     }
 
     /**
-     * @param AppManifestSetting[] $settings
+     * @param AppManifest\Setting[] $settings
      *
      * @return $this
      */
     public function setSettings(array $settings)
     {
         $this->settings = $settings;
+
+        return $this;
+    }
+
+    /**
+     * @return AppManifest\AppAuthor
+     */
+    public function getAuthor()
+    {
+        return $this->author;
+    }
+
+    /**
+     * @param AppManifest\AppAuthor $author
+     *
+     * @return $this
+     */
+    public function setAuthor(AppManifest\AppAuthor $author = null)
+    {
+        $this->author = $author;
 
         return $this;
     }
@@ -303,5 +330,89 @@ class AppManifest
         $this->isSingle = $isSingle;
 
         return $this;
+    }
+
+    /**
+     * @return AppManifest\AppTarget[]
+     */
+    public function getTargets()
+    {
+        return $this->targets;
+    }
+
+    /**
+     * @param AppManifest\AppTarget[] $targets
+     *
+     * @return $this
+     */
+    public function setTargets(array $targets)
+    {
+        $this->targets = $targets;
+
+        return $this;
+    }
+
+    /**
+     * @return \string[]
+     */
+    public function getDeskproApiTags()
+    {
+        return $this->deskproApiTags;
+    }
+
+    /**
+     * @param \string[] $deskproApiTags
+     */
+    public function setDeskproApiTags(array $deskproApiTags)
+    {
+        $this->deskproApiTags = $deskproApiTags;
+    }
+
+    /**
+     * @return AppManifest\StorageAccessRule[]
+     */
+    public function getStorage()
+    {
+        return $this->storage;
+    }
+
+    /**
+     * @param AppManifest\StorageAccessRule[] $state
+     */
+    public function setStorage( array $state)
+    {
+        $this->storage = $state;
+    }
+
+    /**
+     * @return string
+     */
+    public function getAppVersion()
+    {
+        return $this->appVersion;
+    }
+
+    /**
+     * @param string $appVersion
+     */
+    public function setAppVersion($appVersion)
+    {
+        $this->appVersion = $appVersion;
+    }
+
+    /**
+     * @return AppManifest\CustomField[]
+     */
+    public function getCustomFields()
+    {
+        return $this->customFields;
+    }
+
+    /**
+     * @param AppManifest\CustomField[] $customFields
+     */
+    public function setCustomFields( $customFields )
+    {
+        $this->customFields = $customFields;
     }
 }

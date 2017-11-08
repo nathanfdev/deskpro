@@ -1,4 +1,5 @@
-import React, { PropTypes } from 'react';
+import PropTypes from 'prop-types';
+import React from 'react';
 import { Provider } from 'react-redux';
 import { Router, Route } from 'react-router';
 import toastr from 'toastr';
@@ -9,12 +10,14 @@ import { history } from '../../../Services/history';
 import * as Voice from '../../Voice/Components/index';
 import * as Dev from '../../Dev/Components/index';
 import * as Apps from '../../Apps/Components/index';
-import { loadAdmintPhraseTranslations } from '../Actions/bootstrapActions';
+import { loadAdminPhraseTranslations } from '../Actions/bootstrapActions';
+import { InstallerFactory } from '../../DeskproApps';
 
 class AppContainer extends React.Component {
 
   static propTypes = {
-    routePath: PropTypes.string
+    routePath:      PropTypes.string,
+    legacyNavigate: PropTypes.func
   };
 
   constructor(props) {
@@ -24,7 +27,7 @@ class AppContainer extends React.Component {
     setApi(api);
     loadRepositoriesConfig(repositoriesConfig);
 
-    store.dispatch(loadAdmintPhraseTranslations());
+    store.dispatch(loadAdminPhraseTranslations());
   }
 
   componentWillMount() {
@@ -76,6 +79,13 @@ class AppContainer extends React.Component {
             <Route path="oauth_clients/new" component={Apps.NewOAuthClientForm} />
             <Route path="oauth_clients/:clientId" component={Apps.EditOAuthClientForm} />
           </Route>
+          <Route
+            path="app-installer/:app"
+            getComponent={(nextState, cb) => cb(null, InstallerFactory.routeFactory({
+              windowObject:   window.parent || window,
+              legacyNavigate: this.props.legacyNavigate
+            }))}
+          />
         </Router>
       </Provider>
     );

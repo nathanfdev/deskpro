@@ -16,6 +16,13 @@
       box-sizing: border-box;
     }
 
+    &.hidden,
+    &.archived {
+      .rowContents {
+        background-color: $dp-greyscale-250;
+      }
+    }
+
     &.active .rowContents {
       color: white;
       background-color: $dp-sonic-midnight;

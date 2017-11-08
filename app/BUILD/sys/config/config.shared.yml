@@ -6,6 +6,7 @@ parameters:
   doctrine.dbal.connection_factory.class: DeskPRO\Bundle\AppBundle\Doctrine\ConnectionFactory
   templating.cache_warmer.template_paths.class: DeskPRO\Bundle\AppBundle\CacheWarmer\TemplatePathsCacheWarmer
   jms_serializer.twig_extension.class: DeskPRO\Bundle\AppBundle\Twig\SerializerExtension
+  validator.email.class: DeskPRO\Bundle\AppBundle\Validator\Constraints\Person\Email\EmailFormatValidator
   portal.session.name: sess_data
   security.encoder_factory.generic.class: DeskPRO\Bundle\AppBundle\Security\Encoder\EncoderFactory
 
@@ -22,6 +23,11 @@ services:
     arguments:
       - "@dp.dynamic_context_router.inner"
       - "@dp.url_request_context_factory"
+
+  doctrine_cache.providers.metadata_cache:
+    class: DeskPRO\Component\Doctrine\Common\Cache\FilesystemCache
+    factory: [DeskPRO\Bundle\AppBundle\Doctrine\DoctrineMetadataCacheFactory, create]
+    arguments: ["@deskpro.app_env"]
 
 monolog:
   channels: # you MUST also update portal_config.yml if you change these

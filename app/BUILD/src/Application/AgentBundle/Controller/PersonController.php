@@ -115,11 +115,18 @@ class PersonController extends AbstractController
 
         $notes = $this->em->getRepository('DeskPRO:PersonNote')->getNotesForPerson($person);
         /** @var Ticket $rep */
-        $rep                  = $this->em->getRepository('DeskPRO:Ticket');
-        $person_tickets       = $rep->getPersonTickets($person, 251, 'status');
+        $rep = $this->em->getRepository('DeskPRO:Ticket');
+
+        $permissionsHelper          = $this->getPerson()->getHelper('AgentPermissions');
+        $allowedTicketDepartmentIds = $permissionsHelper->getAllowedDepartments('tickets', false, 'full');
+
+        $person_tickets       = $rep->getPersonTickets($person, $this->getPerson(), 251, 'status', 'DESC', $allowedTicketDepartmentIds);
         $person_tickets_count = $rep->countTicketsForPerson(
             $person,
-            ['awaiting_agent', 'awaiting_user', 'resolved', 'archived', 'hidden']
+            $this->getPerson(),
+            ['awaiting_agent', 'awaiting_user', 'resolved', 'archived', 'hidden'],
+            $allowedTicketDepartmentIds
+
         );
 
         $person_files       = $this->em->getRepository('DeskPRO:PersonFile')->getFilesForPerson($person);
@@ -205,9 +212,11 @@ class PersonController extends AbstractController
             }
         }
 
+        $allowedChatDepartmentsIds = $permissionsHelper->getAllowedDepartments('chat');
+
         /** @var ChatConversationRepository $chatConversationRepository */
         $chatConversationRepository = $this->em->getRepository(ChatConversation::class);
-        $person_chats               = $chatConversationRepository->getPastChatsForPerson($person);
+        $person_chats               = $chatConversationRepository->getPastChatsForPerson($person, $this->getPerson(), 'date_created', 'DESC', $allowedChatDepartmentsIds);
         $person_chats_count         = count($person_chats);
 
         $is_editable = $this->isPersonEditable($person);
@@ -602,10 +611,11 @@ class PersonController extends AbstractController
 
             case 'remove-usersource':
 
-                $us_id = $this->in->getUint('usersource_id');
-                foreach ($person->usersource_assoc as $assoc) {
-                    if ($assoc->usersource->id == $us_id) {
+                $userSourceId = $this->in->getUint('usersource_id');
+                foreach ($person->getUsersourceAssoc() as $assoc) {
+                    if ($assoc->getUsersource()->getId() === $userSourceId) {
                         $this->em->remove($assoc);
+                        $person->getUsersourceAssoc()->removeElement($assoc);
                     }
                 }
 
@@ -1616,7 +1626,13 @@ class PersonController extends AbstractController
 
         $sort_by = $this->in->getString('sort_by');
 
-        $person_tickets = $this->em->getRepository('DeskPRO:Ticket')->getPersonTickets($person, 250, $sort_by);
+        /** @var Ticket $rep */
+        $rep = $this->em->getRepository('DeskPRO:Ticket');
+
+        $permissionsHelper          = $this->getPerson()->getHelper('AgentPermissions');
+        $allowedTicketDepartmentIds = $permissionsHelper->getAllowedDepartments('tickets', false, 'full');
+
+        $person_tickets = $rep->getPersonTickets($person, $this->getPerson(), 250, $sort_by, 'DESC', $allowedTicketDepartmentIds);
 
         return $this->render('AgentBundle:Person:view-tickets.html.twig', [
             'tickets' => $person_tickets,
@@ -1632,7 +1648,7 @@ class PersonController extends AbstractController
 
         $orderBy  = $this->in->getString('order_by');
         $orderDir = $this->in->getString('order_dir');
-        $chats    = $chatConversationRepository->getPastChatsForPerson($person, $orderBy, $orderDir);
+        $chats    = $chatConversationRepository->getPastChatsForPerson($person, $this->getPerson(), $orderBy, $orderDir);
 
         return $this->render('AgentBundle:Person:view-chats.html.twig', [
             'chats' => $chats,
@@ -1692,27 +1708,5 @@ class PersonController extends AbstractController
         $ret = $rep->getTeamsRaw();
 
         return $this->createJsonResponse($ret);
-    }
-
-    /**
-     * @return \Symfony\Component\HttpFoundation\Response
-     */
-    public function getNotifierMapAction()
-    {
-        /** @var PersonRepository $personRepo */
-        $personRepo = $this->em->getRepository(Person::class);
-        $agents     = $personRepo->getAgents();
-        $agentMap   = [];
-
-        foreach ($agents as $agent) {
-            $agentMap[$agent->getId()] = [
-                'name'        => $agent->getDisplayName(),
-                'picture_url' => $agent->getPictureUrl(20),
-            ];
-        }
-
-        unset($agentMap[$this->person->getId()]);
-
-        return $this->createJsonResponse($agentMap);
     }
 }

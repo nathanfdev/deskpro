@@ -52,7 +52,7 @@ interface Application
     /**
      * Returns the manifest.
      *
-     * @return array
+     * @return AppManifest
      */
     public function getManifest();
 }

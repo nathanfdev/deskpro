@@ -31,7 +31,7 @@ define ['Admin/Usersources/Ctrl/EditInstance', 'DeskPRO/Util/Util']
           disable_notifications:          res.data.settings.disable_notifications,
           enable_agent_rememberme:        res.data.settings.enable_agent_rememberme,
           enable_user_rememberme:         res.data.settings.enable_user_rememberme,
-          agent_enable_kb_shortcuts: res.data.settings.agent_enable_kb_shortcuts,
+          agent_enable_kb_shortcuts:      res.data.settings.agent_enable_kb_shortcuts,
         }
 
         @$scope.rate_limit_settings = res.data.rate_limit_settings

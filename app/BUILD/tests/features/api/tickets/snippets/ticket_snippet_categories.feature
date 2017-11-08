@@ -246,3 +246,22 @@ Feature: /ticket_snippet_categories endpoint
 
     When I send a DELETE request to "/api/v2/ticket_snippet_categories/{c1}"
     Then the response status code should be 200
+
+  Scenario: I filter by a query string
+    Given only the following TextSnippetCategory records exist:
+      | #  | Person  | Typename |
+      | c1 | {admin} | tickets  |
+      | c2 | {admin} | tickets  |
+    And only the following ObjectLang records exist:
+      | #  | Ref                          | Ref Type                | Ref Id  | Prop Name | Value     |
+      | o1 | text_snippet_categories.~c1~ | text_snippet_categories | ~c1:id~ | title     | Category1 |
+      | o2 | text_snippet_categories.~c2~ | text_snippet_categories | ~c2:id~ | title     | Category2 |
+
+    When I send a GET request to "/api/v2/ticket_snippet_categories?q=category"
+    Then the JSON node "data" should have 2 elements
+    And the JSON node "data[0].id" should be equal to "{c1}"
+    And the JSON node "data[1].id" should be equal to "{c2}"
+
+    When I send a GET request to "/api/v2/ticket_snippet_categories?q=Category1"
+    Then the JSON node "data" should have 1 elements
+    And the JSON node "data[0].id" should be equal to "{c1}"

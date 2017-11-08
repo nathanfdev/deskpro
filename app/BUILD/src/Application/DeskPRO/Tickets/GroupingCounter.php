@@ -36,6 +36,8 @@ use Application\DeskPRO\App;
 use Application\DeskPRO\CustomFields\Handler\Date;
 use Application\DeskPRO\CustomFields\Handler\DateTime;
 use Application\DeskPRO\Entity\Brand;
+use Application\DeskPRO\Entity\CustomDefAbstract;
+use Application\DeskPRO\Entity\CustomDefTicket;
 use Application\DeskPRO\Entity\Language;
 use Application\DeskPRO\Entity\Person;
 use Application\DeskPRO\Searcher\TicketSearch;
@@ -366,11 +368,14 @@ class GroupingCounter
 
         $parts = [];
         foreach ($times as $t) {
+            if ($t === 0) {
+                continue;
+            }
             if ($field == TicketSearch::TERM_TOTAL_USER_WAITING) {
                 // total time is stored in seconds, so we're not doing a date compare
                 $from    = $ranges[$t];
                 $to      = $t;
-                $parts[] = " WHEN tickets.$fieldname BETWEEN $from AND $to THEN $t ";
+                $parts[] = " WHEN (tickets.total_user_waiting + ($now - COALESCE(UNIX_TIMESTAMP(tickets.date_user_waiting)))) BETWEEN $from AND $to THEN $t ";
             } else {
                 // Get a real time so we dont have mysql doing calculations,
                 // and we dont need to do a subquery etc
@@ -380,7 +385,7 @@ class GroupingCounter
             }
         }
 
-        $sql .= implode('', $parts).' ELSE '.self::LAST_TIME_MARKER." END AS $select_name";
+        $sql .= implode('', $parts)." ELSE 0 END AS $select_name";
 
         return $sql;
     }
@@ -457,6 +462,16 @@ class GroupingCounter
             $titles2 = $this->getFieldTitles($this->grouping2, $ids2);
         }
 
+        if (in_array($this->grouping1, ['organization', 'person'])) {
+            asort($titles1);
+
+            if (isset($titles1[0])) {
+                $none = $titles1[0];
+                unset($titles1[0]);
+                $titles1 = [0 => $none] + $titles1;
+            }
+        }
+
         return [
             'titles1' => $titles1,
             'titles2' => $titles2,
@@ -477,40 +492,59 @@ class GroupingCounter
      */
     public function getFieldStructure($field, array $titles, array $ids)
     {
-        switch ($field) {
-            case TicketSearch::TERM_DEPARTMENT:
-                $group_structure = App::getDataService('Department')->getInHierarchy();
-                break;
+        $groupStructure = [];
+        if ($field === TicketSearch::TERM_DEPARTMENT) {
+            $groupStructure = App::getDataService('Department')->getInHierarchy();
+        } elseif ($field === TicketSearch::TERM_CATEGORY) {
+            $groupStructure      = App::getDataService('TicketCategory')->getInHierarchy();
+            $groupStructure['0'] = ['id' => 0, 'title' => App::getTranslator()->phrase('agent.general.none')];
+        } elseif ($field === TicketSearch::TERM_PRODUCT) {
+            $groupStructure      = App::getDataService('Product')->getInHierarchy();
+            $groupStructure['0'] = ['id' => 0, 'title' => App::getTranslator()->phrase('agent.general.none')];
+        } elseif (preg_match('/ticket_field_(\d+)/', $field, $matches)) {
+            $fieldId = (int) $matches[1];
+            $field   = App::$container->getEm()->getRepository(CustomDefTicket::class)->find($fieldId);
 
-            case TicketSearch::TERM_CATEGORY:
-                $group_structure      = App::getDataService('TicketCategory')->getInHierarchy();
-                $group_structure['0'] = ['id' => 0, 'title' => App::getTranslator()->phrase('agent.general.none')];
-                break;
+            if ($field && $field->isChoiceType()) {
+                $groupStructure['0'] = ['id' => 0, 'title' => App::getTranslator()->phrase('agent.general.none')];
 
-            case TicketSearch::TERM_PRODUCT:
-                $group_structure      = App::getDataService('Product')->getInHierarchy();
-                $group_structure['0'] = ['id' => 0, 'title' => App::getTranslator()->phrase('agent.general.none')];
-                break;
+                $iterator = function (&$groupStructure, $parentId = 0) use ($field, &$iterator) {
+                    foreach ($field->getChildren() as $choice) {
+                        if ((int) $parentId !== (int) $choice->getOption('parent_id')) {
+                            continue;
+                        }
 
-            default:
-                $group_structure = [];
-                foreach ($titles as $id => $t) {
-                    $group_structure[$id] = ['id' => $id, 'title' => $t];
-                }
+                        $groupStructure[$choice->getId()] = [
+                            'id'       => $choice->getId(),
+                            'title'    => $choice->getTitle(),
+                            'children' => [],
+                        ];
 
-                // Make note of unknown items (should never happen, but better to include than not!)
-                foreach ($ids as $id) {
-                    if (!isset($group_structure[$id])) {
-                        $group_structure[$id] = ['id' => $id, 'title' => "Unknown $id"];
+                        $iterator($groupStructure[$choice->getId()]['children'], $choice->getId());
                     }
-                }
+                };
 
-                // But remove the -1 rollups
-                unset($group_structure[-1]);
-                break;
+                $iterator($groupStructure);
+            }
         }
 
-        return $group_structure;
+        if (!$groupStructure) {
+            foreach ($titles as $id => $t) {
+                $groupStructure[$id] = ['id' => $id, 'title' => $t];
+            }
+
+            // Make note of unknown items (should never happen, but better to include than not!)
+            foreach ($ids as $id) {
+                if (!isset($groupStructure[$id])) {
+                    $groupStructure[$id] = ['id' => $id, 'title' => "Unknown $id"];
+                }
+            }
+
+            // But remove the -1 rollups
+            unset($groupStructure[-1]);
+        }
+
+        return $groupStructure;
     }
 
     /**
@@ -665,12 +699,13 @@ class GroupingCounter
             default:
 
                 if ($f = $this->getCustomDefField($field)) {
-                    $this->grouping_summary = $f->title;
+                    $this->grouping_summary = $f->getTitle();
 
                     if ($f->isChoiceType()) {
                         $titles = ['0' => 'None'];
+                        /** @var CustomDefAbstract $subf */
                         foreach (App::getSystemService('TicketFieldsManager')->getFieldChildren($f) as $subf) {
-                            $titles[$subf->getId()] = $subf->title;
+                            $titles[$subf->getId()] = $subf->getTitle();
                         }
                     } else {
                         if ($ids) {
@@ -720,6 +755,7 @@ class GroupingCounter
     public static function getTimeTitles()
     {
         $times = [
+            0                      => 'agent.time.group_not_waiting',
             300                    => 'agent.time.group_lt_5_mins',
             900                    => 'agent.time.group_5_to_15_mins',
             1800                   => 'agent.time.group_15_to_30_mins',
@@ -836,10 +872,7 @@ class GroupingCounter
                 $key   = array_search($groupchoice, $times);
 
                 if ($key == 0) {
-                    $date1 = new \DateTime('-5 minutes');
-                    $date2 = new \DateTime('now');
-
-                    return ['type' => $groupvar, 'op' => 'between', 'options' => ['date1' => $date1, 'date2' => $date2]];
+                    return ['type' => $groupvar, 'op' => 'is', 'options' => [null]];
                 } elseif ($key == (count($times) - 1)) {
                     $date = new \DateTime('@'.(time() - 14515201));
 
@@ -856,9 +889,9 @@ class GroupingCounter
             case TicketSearch::TERM_TOTAL_USER_WAITING:
 
                 $times = array_keys(self::getTimeTitles());
-                $key   = array_search($groupchoice, $times);
+                $key   = array_search($groupchoice, $times) - 1;
 
-                if ($key == 0) {
+                if ($key < 1) {
                     $term = ['type' => $groupvar, 'op' => 'lte', 'options' => 300];
                 } elseif ($key == (count($times) - 1)) {
                     $term = ['type' => $groupvar, 'op' => 'gte', 'options' => 14515200];

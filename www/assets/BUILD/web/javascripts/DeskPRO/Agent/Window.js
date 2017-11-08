@@ -2143,7 +2143,7 @@ DeskPRO.Agent.Window = new Orb.Class({
 					successFn(data);
 				}).bind(this),
 				noErrorOverride: true,
-				timeout: 60000
+				timeout: 90000
 			};
 
 			if (errorFn) {
@@ -3420,7 +3420,7 @@ DeskPRO.Agent.Window = new Orb.Class({
 		$.ajax({
 			url: url,
 			data: extra_data || {},
-			timeout: 15000,
+			timeout: 90000,
 			dataType: 'json',
 			success: function(data) {
 				delete self.loadingSections[section_id];
@@ -3480,7 +3480,7 @@ DeskPRO.Agent.Window = new Orb.Class({
 			type: 'GET',
 			data: data,
 			dataType: 'json',
-			timeout: 30000,
+			timeout: 90000,
 			tryCount : 0,
 		    retryLimit: 3,
 			error: function(xhr, textStatus, errorThrown) {
@@ -3606,43 +3606,17 @@ DeskPRO.Agent.Window = new Orb.Class({
 	},
 
 	initAgentNotifierForRte: function(obj, textarea, alwaysAvailable) {
-		var self = this;
-		var cacheKey = 'dp_agent_notifier_map';
-
-		if (sessionStorage[cacheKey]) {
-			var agentMap = JSON.parse(sessionStorage[cacheKey]);
-			self._initAgentNotifierForRte(obj, textarea, agentMap, alwaysAvailable);
-		} else {
-			$.ajax({
-				url: BASE_URL + "agent/people/agent_notifier_map.json",
-				type: 'GET',
-				dataType: 'json',
-				noErrorOverride: true,
-				success: function(data) {
-					sessionStorage[cacheKey] = JSON.stringify(data);
-					self._initAgentNotifierForRte(obj, textarea, data, alwaysAvailable);
-				}
-			});
-		}
-	},
-
-	_initAgentNotifierForRte: function(obj, textarea, agentMap, alwaysAvailable) {
 		var api = textarea.data('redactor');
 		if (!api) {
-			return;
-		}
-
-		if (!agentMap) {
 			return;
 		}
 
 		var ed = textarea.getEditor();
 		var self = this;
 
-		delete agentMap[0];
-
 		var agentMapLower = {}, hasAgents = false;
-		Object.each(agentMap, function(data, agentId) {
+		var notifyAgentMap = window.notifyAgentMap || [];
+		Object.each(notifyAgentMap, function(data, agentId) {
 			hasAgents = true;
 			agentMapLower[agentId] = data.name.toLowerCase();
 		});
@@ -3654,7 +3628,7 @@ DeskPRO.Agent.Window = new Orb.Class({
 		obj.agentNotifyList = $('<ul />').addClass('message-agent-notify-list').hide().appendTo(document.body);
 
 		var insertAgentNotify = function(agentId) {
-			if (typeof agentMap[agentId] === 'undefined') {
+			if (typeof notifyAgentMap[agentId] === 'undefined') {
 				return;
 			}
 
@@ -3686,7 +3660,7 @@ DeskPRO.Agent.Window = new Orb.Class({
 			// web kit handles content editable without an issue. this prevents the span
 			// from being extended unnecessarily
 			var editable = $.browser.webkit ? ' contenteditable="false"' : '';
-			api.insertHtml('<span' + editable + ' data-notify-agent-id="' + agentId + '">@' + Orb.escapeHtml(agentMap[agentId].name) + '</span>&nbsp;');
+			api.insertHtml('<span' + editable + ' data-notify-agent-id="' + agentId + '">@' + Orb.escapeHtml(notifyAgentMap[agentId].name) + '</span>&nbsp;');
 		};
 
 		obj.agentNotifyList.on('mousedown', 'li', function(e) {
@@ -3824,7 +3798,7 @@ DeskPRO.Agent.Window = new Orb.Class({
 				var afterAt = testText.substring(lastAt + 1, testText.length).toLowerCase();
 
 				if (afterAt.length >= 2 && afterAt.length < 75) {
-					Object.each(agentMap, function(data, agentId) {
+					Object.each(notifyAgentMap, function(data, agentId) {
 						if (agentMapLower[agentId].indexOf(afterAt) == 0) {
 							matches.push(agentId);
 						}
@@ -3838,8 +3812,8 @@ DeskPRO.Agent.Window = new Orb.Class({
 				obj.agentNotifyList.empty();
 				for (var i = 0; i < matches.length; i++) {
 					var li = $('<li>')
-						.text(agentMap[matches[i]].name)
-						.css('background-image', 'url('+agentMap[matches[i]].picture_url+')')
+						.text(notifyAgentMap[matches[i]].name)
+						.css('background-image', 'url('+notifyAgentMap[matches[i]].picture_url+')')
 						.data('agent-id', matches[i]);
 					if (matches[i] === selectedId) {
 						li.addClass('selected');

@@ -42,13 +42,29 @@ use Symfony\Component\HttpFoundation;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 use Symfony\Component\HttpKernel\Exception\ServiceUnavailableHttpException;
 use Symfony\Component\HttpKernel\Exception\UnprocessableEntityHttpException;
+use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\HttpKernel\Exception\BadRequestHttpException;
 
 /**
  * Class AppsController.
  *
- * @ApiModes("standard")
+ * @ApiModes("all")
  * @Rest\Route("/apps")
  * @ApiUnstable()
+ * @ApiDoc(
+ *     target="updateAppAction",
+ *     input={
+ *      "class"="DeskPRO\Bundle\ApiBundle\Controller\Apps\ApplicationStatus",
+ *      "options"={
+ *          "data"="Application\DeskPRO\Entity\CustomDefTicket"
+ *      }
+ *     },
+ *     output="DeskPRO\Bundle\AppBundle\Entity\AppStore\App",
+ *     statusCodes={
+ *         200="Application updated",
+ *         400="Invalid request"
+ *     }
+ *  )
  */
 class AppsController extends BaseController
 {
@@ -72,6 +88,14 @@ class AppsController extends BaseController
         $parameterBag = $request->attributes;
         if ($parameterBag->has('scope')) {
             $searchFilter->setScope($parameterBag->get('scope'));
+        }
+
+        $queryParams = $request->query;
+        if ($queryParams->has('isInstalled')) {
+            $searchFilter->setIsInstalled(filter_var($queryParams->get('isInstalled'), FILTER_VALIDATE_BOOLEAN));
+        }
+        if ($queryParams->has('isDev')) {
+            $searchFilter->setIsDev(filter_var($queryParams->get('isDev'), FILTER_VALIDATE_BOOLEAN));
         }
 
         /** @var AppStoreBundle\Domain\ApplicationInstanceFinder $instanceFinder */
@@ -172,6 +196,63 @@ class AppsController extends BaseController
     }
 
     /**
+     * @Rest\Put("/{application}", condition="request.headers.get('Content-Type') matches '#application/json#i'")
+     * @ParamConverter("application", class="AppBundle:Entity\AppStore\App", converter="DeskPRO\Bundle\AppStoreBundle\ParamConverter\AppInstanceParamConverter")
+     *
+     * @param Entity\AppStore\AppInstance $application
+     * @return \DeskPRO\Bundle\AppBundle\Serializer\ApiWrapper
+     */
+    public function updateAppAction(Entity\AppStore\AppInstance $application = null, Request $request)
+    {
+        if (empty($application)) {
+            throw new NotFoundHttpException('could not find application');
+        }
+
+        //parse response body
+        $body = $request->getContent();
+        $representation = json_decode($body, $associative = true);
+
+        $properties = [
+            'is_installed' => function(Entity\AppStore\AppInstance $app, $value) {
+                if (is_bool($value)) {
+                    $app->setIsInstalled($value);
+                    return true;
+                }
+                return false;
+            }
+        ];
+
+        if (!is_array($representation)) {
+            throw new BadRequestHttpException('could not decode value');
+        }
+
+        $validRequest = false;
+        foreach ($properties as $name => $mapper) {
+            if (array_key_exists($name, $representation)) {
+                $validRequest = $validRequest | $mapper($application, $representation[$name]);
+            }
+        }
+
+        if (! $validRequest)  {
+            throw new BadRequestHttpException('invalid representation');
+        }
+
+        $em = $this->getManager();
+        $em->persist($application);
+        $em->flush();
+
+        $this->container
+            ->get('event_dispatcher')
+            ->dispatch(LegacySystemEvent::EVENT_NAME, new LegacySystemEvent('agent.ui.reload', [
+                'type'        => 'admin',
+                'person_id'   => 0,
+                'person_name' => 'System',
+            ]));
+
+        return $this->wrap($application);
+    }
+
+    /**
      * @Rest\Delete("/{application}")
      *
      * @param Entity\AppStore\AppInstance $application
@@ -185,9 +266,10 @@ class AppsController extends BaseController
             throw new NotFoundHttpException('could not find application');
         }
 
-        $em = $this->getManager();
-        $em->remove($application);
-        $em->flush();
+        /** @var AppStoreBundle\Infrastructure\ApplicationManagerService $appManager */
+        $appManager = $this->container->get('apps2.application_manager');
+        $strategy = $appManager->getRemoveStrategy($application);
+        $appManager->remove($application, $strategy);
 
         $this->container
             ->get('event_dispatcher')
@@ -256,5 +338,26 @@ class AppsController extends BaseController
         $assets      = $assetFinder->findApplicationAssets($application, $searchFilter);
 
         return $assets;
+    }
+
+    /**
+     * @Rest\Get("/{application}/status")
+     *
+     * @ParamConverter("application", class="AppBundle:Entity\AppStore\App", converter="DeskPRO\Bundle\AppStoreBundle\ParamConverter\AppInstanceParamConverter")
+     *
+     * @param Entity\AppStore\AppInstance $application
+     *
+     * @return array
+     */
+    public function getStatusAction(Entity\AppStore\AppInstance $application = null)
+    {
+        if (empty($application)) {
+            throw new NotFoundHttpException('could not find application');
+        }
+
+        $status = new ApplicationStatus();
+        $status->setIsDev($application->getApp()->getIsDev());
+        $status->setIsInstalled($application->getIsInstalled());
+        return $status;
     }
 }

@@ -1,4 +1,5 @@
-import React, { PropTypes } from 'react';
+import PropTypes from 'prop-types';
+import React from 'react';
 
 export class Email extends React.Component {
 
@@ -19,7 +20,8 @@ export class Email extends React.Component {
 
     return (
       <div className="bucket-column">
-        <input type="text"
+        <input
+          type="text"
           placeholder="Your email"
           value={emails.join(',')}
           onChange={this.onChange}

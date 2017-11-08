@@ -76,6 +76,8 @@ class PortalSettingsResolver extends AbstractBrandAwareSettingsResolver implemen
     const SUBSCRIPTION_DOWNLOADS = 'user.downloads_subscriptions';
     const SUBSCRIPTION_GUIDES    = 'user.downloads_guides';
 
+    const KB_WITH_TREE = 'user.kb_categories_with_tree';
+
     /**
      * {@inheritdoc}
      *
@@ -194,6 +196,7 @@ class PortalSettingsResolver extends AbstractBrandAwareSettingsResolver implemen
             ->setEnabled($this->getSetting(self::APPS_KB, $brand))
             ->setTabEnabled($this->getSetting(self::TAB_KB, $brand))
             ->setSubscriptions($this->getSetting(self::SUBSCRIPTION_KB, $brand))
+            ->setKnowledgebaseDeepTree($this->getSetting(self::KB_WITH_TREE, $brand))
             ->setBrand($brand)
         ;
 

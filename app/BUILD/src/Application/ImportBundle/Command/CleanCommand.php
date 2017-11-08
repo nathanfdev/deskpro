@@ -29,6 +29,7 @@
 namespace Application\ImportBundle\Command;
 
 use Symfony\Component\Console\Input\InputInterface;
+use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Filesystem\Filesystem;
 
@@ -47,6 +48,12 @@ class CleanCommand extends AbstractImporterCommand
         $this
             ->setName('import:clean')
             ->setHelp('Deletes json files from the filesystem.')
+            ->addOption(
+                'input-path',
+                null,
+                InputOption::VALUE_REQUIRED,
+                'The path to the directory where the exporting files are present'
+            )
         ;
     }
 
@@ -55,8 +62,14 @@ class CleanCommand extends AbstractImporterCommand
      */
     protected function execute(InputInterface $input, OutputInterface $output)
     {
+        if ($input->getOption('input-path')) {
+            $inputPath = $input->getOption('input-path');
+        } else {
+            $inputPath = $this->getImporterDefaultOutputPath();
+        }
+
         $fs = new Filesystem();
-        $fs->remove($this->getImporterDefaultOutputPath());
+        $fs->remove($inputPath);
 
         $output->writeln('All done.');
     }

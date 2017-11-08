@@ -134,8 +134,21 @@ class OrganizationController extends AbstractController
         $orgFiles      = $organizationFileRepository->getFilesForOrganization($org);
         $orgFilesCount = count($orgFiles);
 
+        $permissionsHelper          = $this->getPerson()->getHelper('AgentPermissions');
+        $allowedTicketDepartmentIds = $permissionsHelper->getAllowedDepartments('tickets', false, 'assign');
+
         $search = new TicketSearch();
-        $search->addTerm(TicketSearch::TERM_ORGANIZATION, 'is', $org->getId());
+        $search
+            ->addTerm(TicketSearch::TERM_ORGANIZATION, TicketSearch::OP_IS, $org->getId())
+            ->addTerm(TicketSearch::TERM_DEPARTMENT, TicketSearch::OP_IS, $allowedTicketDepartmentIds);
+        if (!$this->getPerson()->hasPerm('agent_tickets.view_unassigned')) {
+            $search->addRawWhere('(tickets.agent_id IS NOT NULL OR tickets.agent_team_id IS NOT NULL)');
+        }
+        if (!$this->getPerson()->hasPerm('agent_tickets.view_others')) {
+            $search->addRawWhere('tickets.agent_id IS NULL');
+            $search->addRawWhere('tickets.agent_team_id IS NULL');
+        }
+        $search->addRawWhere('1 OR (tickets.agent_id = '.$this->getPerson()->getId().' AND tickets.organization_id = '.$org->getId().')');
         $search->setOrderBy('ticket.status', 'ASC');
 
         $orgTckets       = $search->getMatches(['offset' => 0, 'limit' => 30]);

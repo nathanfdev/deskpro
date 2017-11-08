@@ -352,19 +352,52 @@ class ChatConversation extends AbstractEntityRepository
      * @param PersonEntity $person
      * @param string       $orderBy
      * @param string       $orderDir
+     * @param array        $departmentsIds
      *
      * @return mixed
      */
-    public function getPastChatsForPerson(PersonEntity $person, $orderBy = 'date_created', $orderDir = 'DESC')
-    {
-        return $this->getEntityManager()->createQuery("
+    public function getPastChatsForPerson(
+        PersonEntity $person,
+        PersonEntity $agent,
+        $orderBy = 'date_created',
+        $orderDir = 'DESC',
+        $departmentsIds = []
+    ) {
+        $agentPermissionsWhere = 'c.agent = ?3';
+        $wheres                = [];
+
+        if (!$agent->hasPerm('agent_chat.view_others')) {
+            $wheres[] = 'c.agent IS NULL';
+        }
+
+        if (!$agent->hasPerm('agent_chat.view_unassigned')) {
+            $wheres[] = 'c.agent IS NOT NULL';
+        }
+
+        if ($departmentsIds) {
+            $wheres[] = 'c.department IN (?4)';
+        }
+
+        if ($wheres) {
+            $where = sprintf('AND (%s OR (%s))', $agentPermissionsWhere, implode(' AND ', $wheres));
+        } else {
+            $where = sprintf('AND %s', $agentPermissionsWhere);
+        }
+
+        $query = $this->getEntityManager()->createQuery("
             SELECT c
             FROM DeskPRO:ChatConversation c INDEX BY c.id
-            WHERE (c.person = ?1 OR c.person_email = ?2) AND c.status = 'ended'
+            WHERE (c.person = ?1 OR c.person_email = ?2) AND c.status = 'ended' $where
             ORDER BY c.{$orderBy} {$orderDir}
         ")->setParameter(1, $person)
           ->setParameter(2, $person->getPrimaryEmailAddress())
-          ->execute();
+          ->setParameter(3, $agent->getId());
+
+        if ($departmentsIds) {
+            $query->setParameter(4, $departmentsIds, Connection::PARAM_INT_ARRAY);
+        }
+
+        return $query->execute();
     }
 
     public function getLatestChatForSession($session, $allow_timeout = false)

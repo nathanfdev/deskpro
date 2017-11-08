@@ -62,6 +62,7 @@ use Doctrine\ORM\Mapping\ClassMetadataInfo;
  * @property \DateTime $date_feedback_rating
  * @property \DateTime $date_created
  * @property \DateTime $date_resolved
+ * @property \DateTime $date_on_hold
  * @property \DateTime $date_first_agent_assign
  * @property \DateTime $date_first_agent_reply
  * @property \DateTime $date_last_agent_reply
@@ -208,6 +209,11 @@ class TicketSearchActive extends DomainObject
     /**
      * @var \DateTime
      */
+    protected $date_on_hold;
+
+    /**
+     * @var \DateTime
+     */
     protected $date_first_agent_assign = null;
 
     /**
@@ -270,7 +276,7 @@ class TicketSearchActive extends DomainObject
             'workflow_id', 'priority_id', 'product_id', 'person_id', 'person_email_id',
             'agent_id', 'agent_team_id', 'organization_id', 'email_account_id', 'creation_system', 'creation_system_option',
             'status', 'is_hold', 'urgency', 'feedback_rating', 'date_feedback_rating',
-            'date_created', 'date_resolved', 'date_first_agent_assign', 'date_first_agent_reply',
+            'date_created', 'date_resolved', 'date_on_hold', 'date_first_agent_assign', 'date_first_agent_reply',
             'date_last_agent_reply', 'date_last_user_reply', 'date_agent_waiting', 'date_user_waiting', 'date_status',
             'total_user_waiting', 'total_to_first_reply',
             'subject', 'original_subject',
@@ -498,6 +504,12 @@ class TicketSearchActive extends DomainObject
         $metadata->mapField([
             'fieldName'  => 'date_resolved',
             'columnName' => 'date_resolved',
+            'type'       => 'datetime',
+            'nullable'   => true,
+        ]);
+        $metadata->mapField([
+            'fieldName'  => 'date_on_hold',
+            'columnName' => 'date_on_hold',
             'type'       => 'datetime',
             'nullable'   => true,
         ]);

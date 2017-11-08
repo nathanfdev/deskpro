@@ -163,14 +163,14 @@ class TwitterAccountStatus extends \Application\DeskPRO\Domain\DomainObject
             !$this->status->isMessage()
             && $this->status->getUserId() != $this->account->getUserId()
             && (!$this->status->isRetweet() || $this->status->retweet->getUserId() != $this->account->getUserId())
-        ;
+            ;
     }
 
     public function isFromSelf()
     {
         return
             $this->status->getUserId() == $this->account->getUserId()
-        ;
+            ;
     }
 
     //###########################################################################
@@ -216,20 +216,20 @@ class TwitterAccountStatus extends \Application\DeskPRO\Domain\DomainObject
             'columnName' => 'status_type',
         ]);
         $metadata->mapField([
-            'fieldName'   => 'is_archived',
-             'type'       => 'boolean',
-             'precision'  => 0,
-             'scale'      => 0,
-             'nullable'   => false,
-             'columnName' => 'is_archived',
+            'fieldName'  => 'is_archived',
+            'type'       => 'boolean',
+            'precision'  => 0,
+            'scale'      => 0,
+            'nullable'   => false,
+            'columnName' => 'is_archived',
         ]);
         $metadata->mapField([
-            'fieldName'   => 'is_favorited',
-             'type'       => 'boolean',
-             'precision'  => 0,
-             'scale'      => 0,
-             'nullable'   => false,
-             'columnName' => 'is_favorited',
+            'fieldName'  => 'is_favorited',
+            'type'       => 'boolean',
+            'precision'  => 0,
+            'scale'      => 0,
+            'nullable'   => false,
+            'columnName' => 'is_favorited',
         ]);
         $metadata->setIdGeneratorType(ClassMetadataInfo::GENERATOR_TYPE_IDENTITY);
         $metadata->mapManyToOne([

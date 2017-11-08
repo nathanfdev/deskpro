@@ -80,7 +80,10 @@ class ReqCheck implements ReqCheckInterface, LoggerAwareInterface
         }
 
         $decoder = new ReqCheckCommandDecoder();
+        $results = $decoder->decodeResults($out);
 
-        return $decoder->decodeResults($out);
+        if (!empty($results['failed_requirements'])) {
+            throw ReqCheckException::createFailedRequirementsException($results['failed_requirements']);
+        }
     }
 }

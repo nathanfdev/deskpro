@@ -17,11 +17,13 @@
 
                     <span style="background: url({{ avatar_url(post.person) }}) no-repeat; background-size: cover" class="agent-avatar agent-avatar-mini"></span>{{ post.person.display_name_user }}
 
-                    -
+                    {% if brand_setting('user.publish_comments') %}
+                        -
 
-                    <span class="comments"><i class="fa fa-comments"></i>
-                        <a href="#comments">{{ phrase('portal.general.comments-count', {count: post.calc_num_comments}) }}</a>
-                    </span>
+                        <span class="comments"><i class="fa fa-comments"></i>
+                            <a href="#comments">{{ phrase('portal.general.comments-count', {count: post.calc_num_comments}) }}</a>
+                        </span>
+                    {% endif %}
 
                     {% if post.category %}
                         -
@@ -53,7 +55,7 @@
 
     {% show related_content %}
 
-    {% if post.calc_num_comments or new_comment_form %}
+    {% if brand_setting('user.publish_comments') and post.calc_num_comments %}
         <div class="comment-box" id="comments">
             <div class="titled-header">
                 <h1>{{ phrase('portal.general.comments-title', {count: post.calc_num_comments}) }}</h1>

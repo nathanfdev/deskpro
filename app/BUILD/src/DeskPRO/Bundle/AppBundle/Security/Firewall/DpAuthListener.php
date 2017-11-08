@@ -204,6 +204,13 @@ class DpAuthListener extends AbstractAuthenticationListener implements Container
 
         $adapter = $authManager->getAuthAdapterFactory()->getAuthAdapter($usersource, $request->get('context'));
         if ($adapter instanceof \Orb\Auth\Adapter\CallbackInterface) {
+            // set return path only if it's defined in query params, otherwise it could be set in auth listener
+            // so don't clear it
+            $return = $request->get('return');
+            if ($return) {
+                $session->set('_security.'.$this->providerKey.'.target_path', $return);
+            }
+
             try {
                 $result = $adapter->authenticate();
             } catch (\Exception $e) {
@@ -216,14 +223,6 @@ class DpAuthListener extends AbstractAuthenticationListener implements Container
 
                 // We expect a redirect to be required
             } elseif ($result->isRedirectRequired()) {
-                $return = $request->get('return');
-
-                // set return path only if it's defined in query params, otherwise it could be set in auth listener
-                // so don't clear it
-                if ($return) {
-                    $session->set('_security.'.$this->providerKey.'.target_path', $return);
-                }
-
                 $r = $this->redirect($result->getRedirectUrl());
                 $r->headers->set(RedirectProtectionListener::ALLOW_REDIRECT_OFFSITE_HEADER, 'Yes');
 

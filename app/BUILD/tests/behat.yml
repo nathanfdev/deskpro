@@ -42,6 +42,7 @@ api:
                 - DpBehat\Data\LabelContext
                 - DpBehat\Data\NotificationsContext
                 - DpBehat\BrandSettingContext
+                - DpBehat\AppsContext
     extensions:
         Behatch\Extension: ~
         Behat\MinkExtension:

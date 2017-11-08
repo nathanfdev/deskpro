@@ -6,7 +6,7 @@ Feature: /voice_assets endpoint
     And no VoiceTextAsset records exist
     And no VoiceRecordAsset records exist
     And no VoiceUploadAsset records exist
-    And no Blob records exist
+    And there are no Blob records in the DB
     And the setting "beta_features.voice" is set to 1
 
   Scenario: I create text asset

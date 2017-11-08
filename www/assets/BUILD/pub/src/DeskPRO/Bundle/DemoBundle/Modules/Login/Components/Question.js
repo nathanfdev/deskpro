@@ -1,4 +1,5 @@
-import React, { PropTypes } from 'react';
+import PropTypes from 'prop-types';
+import React from 'react';
 import { injectIntl, FormattedMessage } from 'react-intl';
 import classNames from 'classnames';
 import { Button } from 'DeskPRO/Component/Semantic/Button';

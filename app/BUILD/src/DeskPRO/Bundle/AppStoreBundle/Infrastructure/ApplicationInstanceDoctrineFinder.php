@@ -37,12 +37,41 @@ class ApplicationInstanceDoctrineFinder implements Domain\ApplicationInstanceFin
     /** @var ORM\EntityManager */
     private $entityManager;
 
+    /** @var EntityQueryBuilders */
+    private $queryBuilder;
+
     /**
      * @param ORM\EntityManager $entityManager
+     * @param EntityQueryBuilders $queryBuilder
      */
-    public function __construct(ORM\EntityManager $entityManager)
+    public function __construct(ORM\EntityManager $entityManager, EntityQueryBuilders $queryBuilder = null)
     {
         $this->entityManager = $entityManager;
+        if (is_null($queryBuilder)) {
+            $this->queryBuilder = new EntityQueryBuilders();
+        } else {
+            $this->queryBuilder = $queryBuilder;
+        }
+    }
+
+    public function findSoleApplicationInstanceByRef( ApplicationRef $appRef) {
+        $query = null;
+        $id = $appRef->getIdentifier();
+        if ($appRef->isName()) {
+            $query = $this->queryBuilder->buildFindApplicationInstanceByNameQuery($this->entityManager, $id);
+        } else {
+            $query = $this->queryBuilder->buildFindApplicationInstanceByAppId($this->entityManager, $id);
+        }
+
+        $result = $query->setMaxResults(2)->getResult();
+
+        /** @var Entity\AppStore\AppInstance $instance */
+        $instance = null;
+        if (1 === count($result)) { // must find exactly one
+            $instance = array_pop($result);
+        }
+
+        return $instance;
     }
 
     /**
@@ -51,24 +80,7 @@ class ApplicationInstanceDoctrineFinder implements Domain\ApplicationInstanceFin
      */
     function findSoleApplicationInstance($applicationName)
     {
-        $qb = $this->entityManager->createQueryBuilder();
-        $qb
-            ->from(Entity\AppStore\AppInstance::class, 'i')
-            ->select('i, a')
-            ->innerJoin('i.app', 'a')
-            ->where('a.name = :name')
-            ->setMaxResults(2)
-            ->setParameter('name', $applicationName)
-        ;
-
-        $result = $qb->getQuery()->getResult();
-        if (1 != count($result)) { //instance not found or more than one
-            return null;
-        }
-
-        /** @var Entity\AppStore\AppInstance $instance */
-        $instance = array_pop($result);
-        return $instance;
+        return $this->findSoleApplicationInstanceByRef(new ApplicationRef($applicationName, true));
     }
 
     function findAll()
@@ -84,48 +96,14 @@ class ApplicationInstanceDoctrineFinder implements Domain\ApplicationInstanceFin
         return $result;
     }
 
-    /**
-     * @param string $applicationName
-     * @return Entity\AppStore\AppInstance[]
-     */
-    function findByApplication($applicationName) {
-
-        $qb = $this->entityManager->createQueryBuilder();
-        $qb
-            ->from(Entity\AppStore\AppInstance::class, 'i')
-            ->select('i, a')
-            ->innerJoin('i.app', 'a')
-            ->where('a.name = :name')
-            ->setParameter('name', $applicationName)
-        ;
-
-        $result = $qb->getQuery()->getResult();
-        return $result;
-    }
-
     function findByFilter(Domain\SearchApplicationInstanceFilter $filter)
     {
         if ($filter->isEmpty()) {
             return [];
         }
 
-        $qb = $this->entityManager->createQueryBuilder();
-        $qb
-            ->from(Entity\AppStore\AppInstance::class, 'i')
-            ->select('i')
-            ->where('1')
-            ->where('i.app.id != 1')
-        ;
-
-        if ($filter->hasScope()) {
-            $qb->andWhere('i.scope = :scope')->setParameter('scope', $filter->getScope());
-        }
-
-        if ($filter->hasApplicationIdList()) {
-            $qb->andWhere('i.app IN (:appIds)')->setParameter('appIds', $filter->getApplicationIdList());
-        }
-
-        $result = $qb->getQuery()->getResult();
+        $query = $this->queryBuilder->buildFindApplicationInstanceByFilterQuery($this->entityManager, $filter);
+        $result = $query->getResult();
         return $result;
     }
 

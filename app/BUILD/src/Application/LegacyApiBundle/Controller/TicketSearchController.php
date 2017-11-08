@@ -330,6 +330,7 @@ class TicketSearchController extends AbstractController
         $date_search_map = [
             'date_created'          => TicketSearch::TERM_DATE_CREATED,
             'date_resolved'         => TicketSearch::TERM_DATE_RESOLVED,
+            'date_on_hold'          => TicketSearch::TERM_DATE_ON_HOLD,
             'date_archived'         => TicketSearch::TERM_DATE_ARCHIVED,
             'date_status'           => TicketSearch::TERM_DATE_STATUS,
             'date_last_agent_reply' => TicketSearch::TERM_DATE_LAST_AGENT_REPLY,
@@ -579,7 +580,7 @@ class TicketSearchController extends AbstractController
      * Get array of filters and counts.
      *
      * SWG\Api(
-     * 	path="/tickets/filters/count",
+     * 	path="/tickets/filters/counts",
      * 	SWG\Operation(
      * 		method="GET",
      * 		summary="Get array of filters and counts",

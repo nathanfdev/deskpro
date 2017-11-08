@@ -111,6 +111,13 @@ class SystemErrorHandler
 
     private static $noShowErrors = false;
 
+    /**
+     * Max error log file size (512MB).
+     *
+     * @var int
+     */
+    public static $maxErrorLogFileSize = 536870912;
+
     //###################################################################################################################
     // Exceptions
     //###################################################################################################################
@@ -613,8 +620,11 @@ class SystemErrorHandler
      *
      * @param array $errinfo
      */
-    public static function logErrorInfo(array $errinfo)
+    public static function logErrorInfo($errinfo = null)
     {
+        if (!$errinfo) {
+            return;
+        }
         if (self::$isLogging) {
             return;
         }
@@ -742,14 +752,29 @@ class SystemErrorHandler
             echo "\n";
         }
 
-        $logFiles = [self::getLogDir().DIRECTORY_SEPARATOR.'/error.log'];
+        if (self::getLogDir()) {
+            $logFiles = [self::getLogDir().DIRECTORY_SEPARATOR.'error.log'];
+        } else {
+            // we dont have an env log, so lets try to re-use server error log
+            $phpErrLog = ini_get('error_log');
+            if ($phpErrLog) {
+                $logFiles = [$phpErrLog];
+            } else {
+                $logFiles = [];
+            }
+        }
 
         if ($secondaryLogFile = self::getDpEnv()->getConfig('settings.secondary_errorlog_file')) {
             $logFiles[] = $secondaryLogFile;
         }
 
         foreach ($logFiles as $errorLogFile) {
-            if ($errorLogFile && ($fh = @fopen($errorLogFile, 'a')) !== false) {
+            if (
+                $errorLogFile
+                && is_file($errorLogFile)
+                && filesize($errorLogFile) < self::$maxErrorLogFileSize
+                && ($fh = @fopen($errorLogFile, 'a')) !== false
+            ) {
                 @fwrite($fh, $str);
                 @fclose($fh);
                 @chmod($errorLogFile, 0777);
@@ -771,7 +796,7 @@ class SystemErrorHandler
                 }
             }
 
-            if ($errinfo['no_send_error']) {
+            if (!$errinfo['no_send_error']) { // if no send is false - then send
                 if ($bs = self::getBugsnagClient()) {
                     if ($errinfo['type'] === 'exception') {
                         $bs->notifyException($errinfo['exception']);
@@ -845,6 +870,10 @@ class SystemErrorHandler
             return self::$bugsnagClient;
         }
 
+        if (self::getDpEnv() instanceof UnknownDpEnv) {
+            return;
+        }
+
         if (self::$bugsnagConfig['backend_api_key']) {
             if (!class_exists('Bugsnag_Client', true)) {
                 // failed to autoload the class, so ignore
@@ -898,12 +927,25 @@ class SystemErrorHandler
     }
 
     /**
+     * Get the DP environment.
+     *
+     * NOTE: Only use methods that are added to UnknownDpEnv below.
+     *
      * @return \DpRun\DpEnv
      */
     private static function getDpEnv()
     {
+        static $unknownEnv;
         /* @var \DpRun\DpEnv */
         global $DP_ENV;
+
+        if (!$DP_ENV) {
+            if (!$unknownEnv) {
+                $unknownEnv = new UnknownDpEnv();
+            }
+
+            return $unknownEnv;
+        }
 
         return $DP_ENV;
     }
@@ -924,20 +966,16 @@ class SystemErrorHandler
             'Swift_TransportException',
             'Swift_IoException',
             'Zend\\Mail\\Protocol\\Exception\\RuntimeException',
+            'Symfony\\Component\\HttpKernel\\Exception\\MethodNotAllowedHttpException',
+            'Elastica\\Exception\\Connection\\HttpException',
+            'Application\\DeskPRO\\\JIRA\\\ApiGeneralException',
+            'DeskPRO\Bundle\\AppBundle\\Exception\\HelpdeskInstanceExceptionInterface',
         ];
 
         foreach ($ignore as $cls) {
             if ($exception instanceof $cls) {
                 return true;
             }
-        }
-
-        if ($exception instanceof \Symfony\Component\HttpKernel\Exception\MethodNotAllowedHttpException) {
-            return true;
-        }
-
-        if ($exception instanceof \Symfony\Component\Routing\Exception\MethodNotAllowedException) {
-            return true;
         }
 
         if ($exception instanceof \Doctrine\DBAL\Types\ConversionException && strpos($exception->getMessage(), 'Doctrine Type array') !== false) {
@@ -1055,14 +1093,6 @@ class SystemErrorHandler
         }
 
         if ($exception instanceof \RuntimeException && strpos($exception->getMessage(), 'Cannot create Imagine instance') !== false) {
-            return true;
-        }
-
-        if ($exception instanceof \Elastica\Exception\Connection\HttpException) {
-            return true;
-        }
-
-        if ($exception instanceof \Application\DeskPRO\JIRA\ApiGeneralException) {
             return true;
         }
 
@@ -1375,5 +1405,42 @@ class SystemErrorHandler
         } finally {
             self::$noShowErrors = false;
         }
+    }
+}
+
+/**
+ * In some rare cases we might not have a real DpEnv loaded (see getDpEnv above) when an error
+ * happens before it could be set. So this is a duck'd class that has the methods used above.
+ */
+class UnknownDpEnv
+{
+    public function getDpRoot()
+    {
+        return '';
+    }
+
+    public function getAppName()
+    {
+        return '';
+    }
+
+    public function getAppDir()
+    {
+        return '';
+    }
+
+    public function getUserLogsDir()
+    {
+        return '';
+    }
+
+    public function getRuntimeVar($name, $defaultVal = null)
+    {
+        return $defaultVal;
+    }
+
+    public function getConfig($name, $defaultVal = null)
+    {
+        return $defaultVal;
     }
 }

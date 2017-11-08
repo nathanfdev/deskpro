@@ -1,20 +1,26 @@
+import PropTypes from 'prop-types';
 import React from 'react';
+import includes from 'lodash/includes';
+import map from 'lodash/map';
 import { TypeSlider } from './TypeSlider';
-import { portalUrlGenerator } from '../../../Http/PortalUrlGenerator';
-import _ from 'lodash';
 
 export class TypeRow extends React.Component {
+  static propTypes = {
+    available:  PropTypes.object,
+    selected:   PropTypes.array,
+    toggleType: PropTypes.func
+  };
 
   render() {
     return (
       <div className="types">
         <ul className="slider-list">
-          {_.map(this.props.available, (type, type_id) =>
+          {map(this.props.available, (type, typeId) =>
             <TypeSlider
-              key={type_id}
+              key={typeId}
               label={type}
-              id={type_id}
-              active={_.includes(this.props.selected, _.parseInt(type_id))}
+              id={typeId}
+              active={includes(this.props.selected, parseInt(typeId, 10))}
               toggleType={this.props.toggleType}
             />
           )}

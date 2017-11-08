@@ -33,7 +33,7 @@
 namespace Application\LegacyApiBundle\Controller;
 
 use Application\DeskPRO\Entity\CustomDefChat;
-use Application\LegacyApiBundle\Controller\Helper\CustomFieldHelper;
+use Application\DeskPRO\CustomFields\Form;
 use Application\LegacyApiBundle\PermissionStrategy\AdminManagePermission;
 use DeskPRO\Bundle\AppBundle\Annotation\ActionPermissions\Annotation\ApiModes;
 
@@ -129,7 +129,8 @@ class ChatFieldsController extends AbstractController implements ProtectedContro
 
         $post = $this->in->getAll('req');
 
-        $helper = new CustomFieldHelper($this);
+        $container = $this->getContainer();
+        $helper = new Form\FormHelper($container->getEm(), $container->getFormFactory());
         $helper->saveFormToField($field, $post);
 
         if ($id) {
@@ -216,7 +217,8 @@ class ChatFieldsController extends AbstractController implements ProtectedContro
     {
         $fields = $this->in->getCleanValueArray('custom_fields');
 
-        $helper = new CustomFieldHelper($this);
+        $container = $this->getContainer();
+        $helper = new Form\FormHelper($container->getEm(), $container->getFormFactory());
 
         foreach ($fields as $fieldData) {
             $field = $this->em->find(CustomDefChat::class, $fieldData['id']);

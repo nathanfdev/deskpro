@@ -1,4 +1,5 @@
-import React, { PropTypes } from 'react';
+import PropTypes from 'prop-types';
+import React from 'react';
 import TransferListButton from '../TransferListButton';
 import TransferSearch from '../TransferSearch';
 import AgentList from '../AgentList';
@@ -36,6 +37,9 @@ class AddList extends React.Component {
   onWarmAdd = () => {
     const { onAddAgent } = this.props;
     const { selectedTarget } = this.state;
+    this.setState({
+      selectedTarget: null
+    });
 
     setTimeout(() => onAddAgent(selectedTarget, 'warm'), 1);
   };

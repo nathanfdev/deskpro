@@ -4,10 +4,10 @@ import { createAction } from 'Ampliflux';
 export const quickSearchAction = createAction(
   'APP_SEARCH',
   (data) => {
-    const type = encodeURIComponent(data.type.join(','));
+    const types = encodeURIComponent(data.types.join(','));
     const query = encodeURIComponent(data.query || '');
-    const limit = parseInt(data.limit) || 5;
+    const limit = parseInt(data.limit, 10) || 5;
 
-    return api.sendGet(`DP_API/search?types=${type}&q=${query}&limit=${limit}`);
+    return api.sendGet(`DP_API/search?types=${types}&q=${query}&limit=${limit}`);
   }
 );

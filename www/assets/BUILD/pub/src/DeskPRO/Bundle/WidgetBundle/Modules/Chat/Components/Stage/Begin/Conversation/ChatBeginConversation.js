@@ -1,5 +1,6 @@
-import React, { PropTypes } from 'react';
-import { Field } from 'react-forms';
+import PropTypes from 'prop-types';
+import React from 'react';
+import { Field } from '@deskpro/react-forms';
 import { Input } from 'DeskPRO/Component/Semantic/ReactForm';
 import { portalPhrases } from 'DeskPRO/Bundle/PortalBundle/PortalPhrases';
 import { CustomField } from 'DeskPRO/Component/CustomField/CustomField';
@@ -8,10 +9,12 @@ import { hasErrors } from 'DeskPRO/Component/Form/FormErrors';
 import { UserInfoForm } from './UserInfoForm';
 import { ChatBeginContainer } from '../ChatBeginContainer';
 import { CustomFieldTemplate } from './CustomFieldTemplate';
+import BannedMessage from '../BannedMessage';
 
 export class ChatBeginConversation extends React.Component {
 
   static propTypes = {
+    banned:       PropTypes.bool,
     errors:       PropTypes.object,
     onSubmit:     PropTypes.func,
     customFields: PropTypes.object
@@ -162,9 +165,11 @@ export class ChatBeginConversation extends React.Component {
 
   render() {
     const { fields, current } = this.state;
+    const { banned } = this.props;
 
     return (
       <div>
+        {banned && <BannedMessage />}
         {fields[current]}
       </div>
     );

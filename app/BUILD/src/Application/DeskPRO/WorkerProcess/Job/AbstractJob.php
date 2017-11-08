@@ -45,6 +45,11 @@ abstract class AbstractJob
     const DEFAULT_INTERVAL = 3600;
 
     /**
+     * @var int
+     */
+    protected $startTs;
+
+    /**
      * @var \Orb\Util\OptionsArray
      */
     protected $options;
@@ -54,8 +59,9 @@ abstract class AbstractJob
      */
     protected $logger;
 
-    final public function __construct(Logger $logger, array $options = null)
+    public function __construct(Logger $logger, array $options = null)
     {
+        $this->startTs = time();
         $this->options = new \Orb\Util\OptionsArray($options);
         $this->logger  = $logger;
         $this->init();
@@ -135,5 +141,57 @@ abstract class AbstractJob
         $settings[$setting] = $value;
 
         return $value;
+    }
+
+    /**
+     * @return bool
+     */
+    public function isPastTimeLimit()
+    {
+        $timeLimit = $this->getTimeLimit();
+        if (!$timeLimit) {
+            return false;
+        }
+
+        $timeTaken = time() - $this->getStartTime();
+
+        return $timeTaken > $timeLimit;
+    }
+
+    /**
+     * @return int|null
+     */
+    public function getTimeLimit()
+    {
+        // no time limit
+        if (!isset($this->options['time_limit']) || !$this->options['time_limit'] || $this->options['time_limit'] < 1) {
+            return null;
+        }
+
+        return $this->options['time_limit'];
+    }
+
+    /**
+     * @return int|null
+     */
+    public function getRemainingTime()
+    {
+        $timeLimit = $this->getTimeLimit();
+        if (!$timeLimit) {
+            return null;
+        }
+
+        $timeTaken  = time() - $this->getStartTime();
+        $timeRemain = max($timeLimit - $timeTaken, 0);
+
+        return $timeRemain;
+    }
+
+    /**
+     * @return float|int
+     */
+    public function getStartTime()
+    {
+        return $this->startTs;
     }
 }

@@ -28,8 +28,10 @@
         <hr>
         {{ article.date_published | date('Y-m-d') }}
         <hr>
-        <span class="comments"><i class="fa fa-comments-o"></i> <a href="#comments">{{ phrase('portal.general.comments-count', {count: article.calc_num_comments}) }}</a></span>
-        <hr>
+        {% if brand_setting('user.publish_comments') %}
+          <span class="comments"><i class="fa fa-comments-o"></i> <a href="#comments">{{ phrase('portal.general.comments-count', {count: article.calc_num_comments}) }}</a></span>
+          <hr>
+        {% endif %}
         {{ phrase('portal.general.in') }} <a href="{{ portal_path(article.primary_category) }}">{{ object_phrase(article.primary_category) }}</a>
       </div>
       {% if article.status != 'published' and article.status != 'archived' and app.user.is_agent %}
@@ -57,7 +59,7 @@
   {% show kb_ratings %}
   {% show related_content %}
 
-  {% if article.calc_num_comments or new_comment_form %}
+  {% if brand_setting('user.publish_comments') and (article.calc_num_comments or new_comment_form) %}
     <div class="comment-box" id="comments">
       <div class="titled-header">
         <h1>{{ phrase('portal.general.comments-title', {count: article.calc_num_comments}) }}</h1>

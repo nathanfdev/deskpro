@@ -19,7 +19,35 @@
 		/>{% if message.person.is_disabled %}<span class="person-disabled"></span>{% endif %}</div>
 	<div class="content">
 		<header class="dp-message-header">
-			<span class="edit-gear ticket-message-edit-btn" data-message-id="{{ message.id }}"><i class="icon-cog"></i></span>
+			<span class="message-counter message-counter-{{ message.id }}" data-message-id="{{ message.id }}">#{{ message_num }}</span>
+            {% if message.person.is_agent %}
+				<h4	class="agent-link" data-agent-id="{{ message.person.id }}">
+					{{message.person.display_name}} <span class="email-part">&lt;{{ message.person.getPrimaryEmailAddress() }}&gt;</span>
+                    {% if message.getGeoCountry() %}
+						<span class="dp-flag-{{ message.getGeoCountry()|lower }} with-stickytip" data-stickytip-target="#{{ elid }}"></span>
+                    {% endif %}
+				</h4>
+            {% elseif message.person %}
+				<h4 class="as-popover" data-route="person:{{ path('agent_people_view', {'person_id': message.person.id}) }}">
+					{{message.person.getNameWithTitle()}} <span class="email-part">&lt;{{ message.person.getPrimaryEmailAddress() }}&gt;</span>
+                    {% if message.getGeoCountry() %}
+						<span class="dp-flag-{{ message.getGeoCountry()|lower }} with-stickytip" data-stickytip-target="#{{ elid }}"></span>
+                    {% endif %}
+				</h4>
+            {% endif %}
+			<time class="full-time">{{message.date_created|date('fulltime')}}</time>
+            {% set elid = el_uid() %}
+			<time
+                    {% if not app.isRelativeTimesDisabled() %}
+						class="timeago with-stickytip"
+						datetime="{{message.date_created|date('c', 'UTC')}}"
+                    {% else %}
+						class="with-stickytip"
+                    {% endif %}
+					data-stickytip-target="#{{ elid }}"
+			>
+                {{message.date_created|date('fulltime')}}
+			</time>
 			<div class="message-header-extra-controls">
 				{% if app.isAppInstalled('deskpro_ms_translator') %}
 					<div class="message-translate-controls">
@@ -73,24 +101,7 @@
 					</div>
 				{% endif %}
 			</div>
-			<span class="message-counter message-counter-{{ message.id }}" data-message-id="{{ message.id }}">#{{ message_num }}</span>
-			{% if message.getGeoCountry() %}
-				<span class="dp-flag-{{ message.getGeoCountry()|lower }} with-stickytip" data-stickytip-target="#{{ elid }}"></span>
-			{% endif %}
-			{% if message.person.is_agent %}<h4	class="agent-link" data-agent-id="{{ message.person.id }}">{{message.person.display_name}} <span class="email-part">&lt;{{ message.person.getPrimaryEmailAddress() }}&gt;</span></h4>
-			{% elseif message.person %}<h4 class="as-popover" data-route="person:{{ path('agent_people_view', {'person_id': message.person.id}) }}">{{message.person.getNameWithTitle()}} <span class="email-part">&lt;{{ message.person.getPrimaryEmailAddress() }}&gt;</span></h4>
-			{% endif %}
-			<time class="full-time">{{message.date_created|date('fulltime')}}</time>
-			{% set elid = el_uid() %}
-			<time
-				{% if not app.isRelativeTimesDisabled() %}
-					class="timeago with-stickytip"
-					datetime="{{message.date_created|date('c', 'UTC')}}"
-					data-stickytip-target="#{{ elid }}"
-				{% endif %}
-			>
-				{{message.date_created|date('fulltime')}}
-			</time>
+			<span class="edit-gear ticket-message-edit-btn" data-message-id="{{ message.id }}"><i class="icon-cog"></i></span>
 			<div class="dp-stickytip" id="{{ elid }}" style="width: 325px; display: none;">
 				<table cellspacing="0" cellpadding="0" width="100%">
 					<tr>

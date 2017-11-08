@@ -1,7 +1,8 @@
-import React, { PropTypes } from 'react';
+import PropTypes from 'prop-types';
+import React from 'react';
 import { portalPhrases } from 'DeskPRO/Bundle/PortalBundle/PortalPhrases';
 import PortalSimpleSelectBox from 'DeskPRO/Bundle/PortalBundle/React/Form/PortalSimpleSelectBox';
-import _ from 'lodash';
+import map from 'lodash/map';
 
 export class SortWidget extends React.Component {
 
@@ -34,7 +35,7 @@ export class SortWidget extends React.Component {
       selectedSort.title = sorts[selectedSort.id];
     }
 
-    const options = _.map(sorts, (title, id) => ({ id, title }));
+    const options = map(sorts, (title, id) => ({ id, title }));
     const widgetOptions = {
       widgetClassName: ['small', 'borderless', 'right']
     };

@@ -6,6 +6,12 @@ define [
     @CTRL_AS = 'EditCtrl'
     @DEPS = []
 
+    init: ->
+      super
+      @showLayouts = false
+      @referencedByApp = { status: false, appName: "", appUrl: "#" }
+      return
+
     initialLoadExtra: ->
       return @Api.sendGet('/ticket_layouts/fields/ticket_field_' + (@field_id || '__undefined__')).success((data) =>
         @user_layouts = data.user_layouts
@@ -16,7 +22,34 @@ define [
             @user_layouts[l].enabled = true
           for own l of @agent_layouts
             @agent_layouts[l].enabled = true
+
       )
+
+    postLoad: (fieldData) ->
+      referencedByAppFilter = (reference) ->
+        reference.entity == 'app'
+
+      referencingApps = if fieldData.referencedBy instanceof Array then fieldData.referencedBy.filter referencedByAppFilter else []
+
+      isReferenced = referencingApps.length != 0
+      @showLayouts = !isReferenced
+      @showFieldType = !isReferenced
+      @showEnabled = !isReferenced
+      @showAgentOnly = !isReferenced
+
+      @referencedByApp  = {
+        status: isReferenced,
+        appName: if isReferenced then referencingApps[0].appName else '',
+        appUrl: if isReferenced then  'apps/apps/v2_' + referencingApps[0].appId else '#'
+      }
+
+      return
+
+    startDelete: ->
+      if (@referencedByApp.status)
+        @showAlert('This field can not be deleted until the app has been deleted')
+        return
+      super
 
     postSave: ->
       postData = {

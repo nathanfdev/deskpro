@@ -7,6 +7,9 @@ define ['require', 'Admin/Main/Ctrl/Base', 'Admin/Usersources/Helper/UsersourceT
 
     init: ->
       @packageName = @$stateParams.name.replace(/\.install$/, '')
+      # TODO: this is a hack to allow installation of packages which might be scoped to an organization, for instance
+      # @deskproapps/app-mailchimp
+      @packageName = @packageName.replace(/\//, '-').replace('@', '');
       @usersourceType = Admin_Usersources_Helper_UsersourceTypeDecider.decide(@$state)
       @$scope.getController      = => return this
       @$scope.setPresaveCallback = (callback) => @presaveCallback = callback

@@ -34,7 +34,6 @@ use DeskPRO\Bundle\PortalBundle\Request\TagRequest;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration;
 use Sensio\Bundle\FrameworkExtraBundle\Request\ParamConverter\ParamConverterInterface;
 use Symfony\Component\HttpFoundation\Request;
-use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 
 class AppInstanceParamConverter implements ParamConverterInterface
 {
@@ -53,21 +52,22 @@ class AppInstanceParamConverter implements ParamConverterInterface
     public function apply(Request $request, Configuration\ParamConverter $configuration)
     {
         $attributeName = $configuration->getName();
-        $from          = $request->attributes->get($attributeName);
+        $from          = $request->attributes->get($attributeName, null);
 
         if (empty($from)) {
             return false;
         }
 
         $application = $this->convert($from);
-        if (empty($application)) {
-            //TODO provide a better exception context, serialization etc
-            throw new NotFoundHttpException('could not find application instance');
+        if (!empty($application)) {
+            $request->attributes->set($attributeName, $application);
+
+            return true;
         }
 
-        $request->attributes->set($attributeName, $application);
+        $request->attributes->set($attributeName, null);
 
-        return true;
+        return false;
     }
 
     /**
@@ -77,8 +77,10 @@ class AppInstanceParamConverter implements ParamConverterInterface
      */
     private function convert($from)
     {
-        if ($this->identifierParser->recognizeApplicationName($from)) {
-            return $this->finder->findSoleApplicationInstance($from);
+        $from = urldecode($from);
+        $appRef  = $this->identifierParser->parseApplicationRef($from);
+        if (!is_null($appRef)) {
+            return $this->finder->findSoleApplicationInstanceByRef($appRef);
         }
 
         if ($this->identifierParser->recognizeApplicationInstanceId($from)) {

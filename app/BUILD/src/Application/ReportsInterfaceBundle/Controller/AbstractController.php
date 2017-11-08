@@ -34,6 +34,7 @@ namespace Application\ReportsInterfaceBundle\Controller;
 
 use Application\DeskPRO\Service\CheckWhitelistedIP;
 use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\HttpKernel\Exception\BadRequestHttpException;
 
 abstract class AbstractController extends \Application\DeskPRO\Controller\AbstractController
 {
@@ -88,7 +89,7 @@ abstract class AbstractController extends \Application\DeskPRO\Controller\Abstra
 
                 return $this->createJsonResponse($data, 403);
             } else {
-                return $this->renderStandardPermissionError('The form you are trying to submit has expired. Please go back and try again.');
+                throw new BadRequestHttpException('The form you are trying to submit has expired. Please go back and try again.');
             }
         }
 

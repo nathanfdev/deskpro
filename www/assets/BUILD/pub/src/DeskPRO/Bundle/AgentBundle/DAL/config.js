@@ -1,10 +1,7 @@
 import { api } from 'DeskPRO/Bundle/AppBundle/DAL';
-import { TicketFilterRepository } from './Repositories/TicketFilterRepository';
 import { UserChatRepository } from './Repositories/UserChatRepository';
 import BlobRepository from './Repositories/BlobRepository';
 import { AgentChatRepository } from './Repositories/AgentChatRepository';
-import { FeedbackRepository } from './Repositories/FeedbackRepository';
-import { FeedbackCommentRepository } from './Repositories/FeedbackCommentRepository';
 import { PersonSettingRepository } from './Repositories/PersonSettingRepository';
 import { ArticlePendingCreateRepository } from './Repositories/ArticlePendingCreateRepository';
 import { ContentRepository } from './Repositories/ContentRepository';
@@ -18,9 +15,6 @@ export const repositoriesConfig = {
   Blob:                 { type: 'api', url: '/blobs', repositoryClass: BlobRepository },
   Content:              { type: 'factory', factory: () => new ContentRepository(api) },
   Comment:              { type: 'factory', factory: () => new CommentsRepository(api) },
-  Feedback:             { type: 'api', url: '/feedback', repositoryClass: FeedbackRepository },
-  FeedbackCategory:     { type: 'api', url: '/feedback_categories' },
-  FeedbackComment:      { type: 'api', url: '/feedback_comments', repositoryClass: FeedbackCommentRepository },
   Guide:                { type: 'api', url: '/guides', repositoryClass: GuideRepository },
   Organization:         { type: 'api', url: '/organizations' },
   Onboarding:           { type: 'api', url: '/people/onboarding', repositoryClass: OnboardingRepository },
@@ -28,11 +22,6 @@ export const repositoriesConfig = {
   PersonSetting:        { type: 'api', url: '/person_setting', repositoryClass: PersonSettingRepository },
   Project:              { type: 'api', url: '/task_projects', allowAll: true },
   Snippets:             { type: 'api', url: '/snippets', repositoryClass: SnippetsRepository },
-  Tasks:                { type: 'api', url: '/tasks' },
-  TaskLabel:            { type: 'api', url: '/task_labels', allowAll: true },
-  TaskList:             { type: 'api', url: '/task_lists', allowAll: true },
-  Ticket:               { type: 'api', url: '/tickets' },
-  TicketFilter:         { type: 'api', url: '/new/ticket_filters', repositoryClass: TicketFilterRepository },
   Timezone:             { type: 'api', url: '/timezones', allowAll: true },
   Topic:                { type: 'api', url: '/topics' },
   UserChat:             { type: 'api', url: '/user_chats', repositoryClass: UserChatRepository },

@@ -29,7 +29,7 @@
             <div class="topic-content">
                 {{ topic.content|content|raw }}
             </div>
-            {% if topic.calc_num_comments or new_comment_form %}
+            {% if brand_setting('user.publish_comments') and (topic.calc_num_comments or new_comment_form) %}
                 <div class="comment-box" id="comments">
                     <div class="titled-header">
                         <h1>{{ phrase('portal.general.comments-title', {count: topic.calc_num_comments}) }}</h1>

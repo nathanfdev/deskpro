@@ -79,33 +79,33 @@ class ArticlesController extends AbstractController
         $person = $this->getCurrentPerson();
 
         if ($category) {
-            $permissions_bag = $this->getPermissionBag($person);
-            if (!$permissions_bag->hasContentCategoryAccess($category)) {
+            $permissionsBag = $this->getPermissionBag($person);
+            if (!$permissionsBag->hasContentCategoryAccess($category)) {
                 return new Response(''); // no access to the category will exclude children
             }
         }
 
-        $category_children = $this->getArticlesDataService()->getCategoryChildren($category, $person);
+        $categoryChildren = $this->getArticlesDataService()->getCategoryChildren($category, $person);
 
-        if (empty($category_children)) {
+        if (empty($categoryChildren)) {
             return new Response(''); // nothing to display here
         }
 
         // the cat list might want details on the total # of articles, and we need a pager because it
         // takes into account permissions
-        $category_pager           = $this->getArticlesDataService()->getArticlesPager($category, 1, 1, $person, $options['with_tree']);
-        $category_children_pagers = [];
-        foreach ($category_children as $child_cat) {
-            $category_children_pagers[$child_cat->getId()] = $this->getArticlesDataService()->getArticlesPager($child_cat, 1, 5, $person, $options['with_tree']);
+        $categoryPager          = $this->getArticlesDataService()->getArticlesPager($category, 1, 1, $person, $options['with_tree']);
+        $categoryChildrenPagers = [];
+        foreach ($categoryChildren as $childCat) {
+            $categoryChildrenPagers[$childCat->getId()] = $this->getArticlesDataService()->getArticlesPager($childCat, 1, 5, $person, $options['with_tree']);
         }
 
         return $this->renderThemeView(
             sprintf('Theme:Articles:CategoryList/%s.html.twig', $options['style']),
             [
                 'category'                 => $category,
-                'category_pager'           => $category_pager,
-                'category_children'        => $category_children,
-                'category_children_pagers' => $category_children_pagers,
+                'category_pager'           => $categoryPager,
+                'category_children'        => $categoryChildren,
+                'category_children_pagers' => $categoryChildrenPagers,
                 'articles_count'           => $options['articles_count'],
                 'with_tree'                => $options['with_tree'],
             ]
@@ -140,6 +140,12 @@ class ArticlesController extends AbstractController
      * )
      *
      * @Security("is_granted('USE_ARTICLES')")
+     *
+     * @param TagRequest           $tag_request
+     * @param array                $options
+     * @param ArticleCategory|null $category
+     *
+     * @return Response
      */
     public function listAction(TagRequest $tag_request, array $options, ArticleCategory $category = null)
     {
@@ -179,6 +185,12 @@ class ArticlesController extends AbstractController
      * )
      *
      * @Security("is_granted('USE_ARTICLES')")
+     *
+     * @param TagRequest $tag_request
+     * @param array      $options
+     * @param Article    $article
+     *
+     * @return Response
      */
     public function commentsAction(TagRequest $tag_request, array $options, Article $article)
     {

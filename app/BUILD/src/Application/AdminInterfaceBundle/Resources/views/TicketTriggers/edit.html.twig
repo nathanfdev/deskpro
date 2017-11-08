@@ -10,13 +10,23 @@
 							<div class="col-lg-2">
 								<h3>{{ phrase('agent.general.title') }} *</h3>
 							</div>
-							<div class="col-lg-10">
+							<div class="col-lg-8">
 								<div class="inner-group" dp-error-class="form_props.title">
 									<input type="text" class="form-control" name="title" ng-model="form.title" style="width: 50%;" required autofocus />
 									<span class="help-block">
 										{{ phrase('adm.ticket_triggers.title_explain') }}
 									</span>
 								</div>
+							</div>
+							<div class="col-lg-2">
+								<nav class="dp-blocktabs responsive">
+									<menu dropdown>
+										<button class="btn btn-default" type="button" dropdown-toggle><span><i class="fa fa-cog"></i></span> <i class="fa fa-caret-down"></i></button>
+										<ul class="dropdown-menu pull-right">
+											<li><a ng-click="TicketTriggersEdit.showCopySettings()"><i class="fa fa-copy"></i> {{ phrase('adm.ticket_triggers.copy_trigger') }}</a></li>
+										</ul>
+									</menu>
+								</nav>
 							</div>
 						</div>
 						<div class="form-group">

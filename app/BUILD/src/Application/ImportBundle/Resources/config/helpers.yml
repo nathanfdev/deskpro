@@ -38,6 +38,17 @@ services:
     tags:
       - { name: dp.importer.writer.helper }
 
+  dp.importer.writer.helper.department:
+    class: Application\ImportBundle\Writer\Helper\DepartmentHelper
+    arguments:
+      - "@dp.importer.writer.mapper.import_map"
+      - "@dp.importer.writer.mapper.brand"
+      - "@dp.importer.writer.mapper.department"
+      - "@dp.importer.entity_persister"
+      - "@dp.importer_logger"
+    tags:
+      - { name: dp.importer.writer.helper }
+
   dp.importer.writer.helper.custom_data:
     class: Application\ImportBundle\Writer\Helper\CustomDataHelper
     arguments: ["@dp.importer.writer.mapper.import_map", "@dp.importer.entity_persister", "@dp.importer_logger"]

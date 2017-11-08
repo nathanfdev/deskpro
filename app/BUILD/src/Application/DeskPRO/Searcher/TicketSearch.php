@@ -73,6 +73,7 @@ class TicketSearch extends SearcherAbstract
     const TERM_DATE_LAST_USER_REPLY  = 'date_last_user_reply';
     const TERM_DATE_LAST_AGENT_REPLY = 'date_last_agent_reply';
     const TERM_DATE_LAST_REPLY       = 'date_last_reply';
+    const TERM_DATE_ON_HOLD          = 'date_on_hold';
     const TERM_URGENCY               = 'urgency';
     const TERM_USER_WAITING          = 'user_waiting';
     const TERM_TOTAL_USER_WAITING    = 'total_user_waiting';
@@ -259,9 +260,11 @@ class TicketSearch extends SearcherAbstract
     /**
      * Add a new term.
      *
-     * @param  $term
+     * @param string $term
      * @param  $op
-     * @param  $data
+     * @param array $data
+     *
+     * @return $this
      */
     public function addTerm($term, $op, $data)
     {
@@ -270,14 +273,18 @@ class TicketSearch extends SearcherAbstract
         if ($this->isArchiveTerm($term, $op, $data)) {
             $this->is_archive = true;
         }
+
+        return $this;
     }
 
     /**
      * Add a new term.
      *
-     * @param  $term
+     * @param string $term
      * @param  $op
-     * @param  $data
+     * @param array $data
+     *
+     * @return $this
      */
     public function addAnyTerm($term, $op, $data)
     {
@@ -286,11 +293,13 @@ class TicketSearch extends SearcherAbstract
         if ($this->isArchiveTerm($term, $op, $data)) {
             $this->is_archive = true;
         }
+
+        return $this;
     }
 
     /**
-     * @param $term
-     * @param $data
+     * @param string $term
+     * @param array  $data
      *
      * @return bool
      */
@@ -434,6 +443,9 @@ class TicketSearch extends SearcherAbstract
                         break;
                     case self::TERM_DATE_RESOLVED:
                         $this->affected_fields[] = 'ticket.date_resolved';
+                        break;
+                    case self::TERM_DATE_ON_HOLD:
+                        $this->affected_fields[] = 'ticket.date_on_hold';
                         break;
                     case self::TERM_DATE_ARCHIVED:
                         $this->affected_fields[] = 'ticket.date_archived';
@@ -1071,18 +1083,21 @@ class TicketSearch extends SearcherAbstract
         $sql2 .= " GROUP BY part_perm.id $order_by $limit_sql ";
 
         if ($with_part_union) {
-            $select_query = "
+            $unionLimit  = !empty($page_info['limit']) ? $page_info['limit'] : $this->limit;
+            $selectQuery = "
                 ($sql)
                 UNION
                 ($sql2)
+                $order_by
+                LIMIT {$unionLimit}
             ";
         } else {
-            $select_query = $sql;
+            $selectQuery = $sql;
         }
 
-        $this->_last_sql = $select_query;
+        $this->_last_sql = $selectQuery;
 
-        return $select_query;
+        return $selectQuery;
     }
 
     /**
@@ -1450,6 +1465,22 @@ class TicketSearch extends SearcherAbstract
                     case self::TERM_CATEGORY:
                         $this->affected_fields[] = 'ticket.category_id';
 
+                        if (!$choice) {
+                            $choice = '0';
+                        }
+                        if ($choice && (!is_array($choice) || !in_array('0', $choice))) {
+                            $choice = (array) $choice;
+                        }
+
+                        if ($choice) {
+                            $childIds = App::getDb()->fetchAllCol('SELECT * FROM ticket_categories WHERE parent_id IN (:parent_id)', [
+                                'parent_id' => implode(', ', $choice),
+                            ]);
+
+                            $choice = array_merge($choice, $childIds);
+                            $choice = array_unique($choice, \SORT_NUMERIC);
+                        }
+
                         if (count($choice) == 1) {
                             $this->specific_fields[] = self::TERM_CATEGORY;
                         }
@@ -1458,6 +1489,22 @@ class TicketSearch extends SearcherAbstract
                         break;
                     case self::TERM_PRODUCT:
                         $this->affected_fields[] = 'ticket.product_id';
+
+                        if (!$choice) {
+                            $choice = '0';
+                        }
+                        if ($choice && (!is_array($choice) || !in_array('0', $choice))) {
+                            $choice = (array) $choice;
+                        }
+
+                        if ($choice) {
+                            $childIds = App::getDb()->fetchAllCol('SELECT * FROM products WHERE parent_id IN (:parent_id)', [
+                                'parent_id' => implode(', ', $choice),
+                            ]);
+
+                            $choice = array_merge($choice, $childIds);
+                            $choice = array_unique($choice, \SORT_NUMERIC);
+                        }
 
                         if (count($choice) == 1) {
                             $this->specific_fields[] = self::TERM_PRODUCT;
@@ -1489,6 +1536,11 @@ class TicketSearch extends SearcherAbstract
                         $wheres[]                = $this->_dateMatch("$tickets_table.date_resolved", $op, $choice);
                         $wheres[]                = $this->_choiceMatch("$tickets_table.status", 'is', ['resolved']);
                         $this->is_archive        = false;
+                        break;
+                    case self::TERM_DATE_ON_HOLD:
+                        $this->affected_fields[] = 'ticket.date_on_hold';
+                        $wheres[]                = $this->_dateMatch("$tickets_table.date_on_hold", $op, $choice);
+                        $wheres[]                = $this->_choiceMatch("$tickets_table.status", 'is', ['awaiting_agent']);
                         break;
                     case self::TERM_DATE_ARCHIVED:
                         $this->affected_fields[] = 'ticket.date_archived';
@@ -2242,6 +2294,24 @@ class TicketSearch extends SearcherAbstract
                                     }
                                 }
 
+                                // collect all sub-choices
+                                $choices_in = explode(',', $choices_in);
+                                $iterator   = function ($parentId) use ($field, &$choices_in, &$iterator) {
+                                    /** @var Entity\CustomDefAbstract $child */
+                                    foreach ($field->getChildren() as $child) {
+                                        if ((int) $child->getOption('parent_id') === (int) $parentId) {
+                                            $choices_in[] = $child->getId();
+                                            $iterator($child->getId());
+                                        }
+                                    }
+                                };
+
+                                foreach ($choices_in as $choiceId) {
+                                    $iterator($choiceId);
+                                }
+
+                                $choices_in = implode(',', $choices_in);
+
                                 $field = 'custom_data_ticket_'.$join_id.'.field_id';
                                 switch ($op) {
                                     case self::OP_CONTAINS:
@@ -2824,6 +2894,14 @@ class TicketSearch extends SearcherAbstract
                     return false;
                 }
                 if (!$this->_testDateMatch($ticket->getDateResolved(), $op, $choice)) {
+                    return false;
+                }
+                break;
+            case self::TERM_DATE_ON_HOLD:
+                if (!$ticket->getDateOnHold()) {
+                    return false;
+                }
+                if (!$this->_testDateMatch($ticket->getDateOnHold(), $op, $choice)) {
                     return false;
                 }
                 break;

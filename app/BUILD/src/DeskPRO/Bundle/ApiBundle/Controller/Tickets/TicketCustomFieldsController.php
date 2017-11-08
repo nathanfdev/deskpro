@@ -41,7 +41,7 @@ use FOS\RestBundle\Controller\Annotations as Rest;
  * @Rest\Route("/ticket_custom_fields")
  * @ApiDoc(target="all", section="Tickets", output="Application\DeskPRO\Entity\CustomDefTicket")
  * @ApiDoc(
- *     target="putAction",
+ *     target="postAction, putAction",
  *     input={
  *      "class"="DeskPRO\Bundle\AppBundle\Form\Type\CustomFields\CustomFieldType",
  *      "options"={

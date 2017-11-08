@@ -113,6 +113,15 @@ class Snippet implements EntityInterface, NotifyPropertyChanged
     protected $isDraft = false;
 
     /**
+     * Flag indicates that content is different for different types.
+     *
+     * @ORM\Column(type="boolean", nullable=false, name="is_split", options={"default" : 0})
+     *
+     * @var bool
+     */
+    protected $isSplit = false;
+
+    /**
      * @ORM\OneToMany(targetEntity="DeskPRO\Bundle\AppBundle\Entity\SnippetTranslation", mappedBy="snippet",
      *     cascade={"persist", "remove"}, orphanRemoval=true)
      *
@@ -122,14 +131,14 @@ class Snippet implements EntityInterface, NotifyPropertyChanged
 
     /**
      * @ORM\OneToMany(targetEntity="DeskPRO\Bundle\AppBundle\Entity\SnippetLabel", mappedBy="snippet",
-     *     cascade={"persist", "remove"}, orphanRemoval=true)
+     *     cascade={"persist", "remove"}, orphanRemoval=true, fetch="EAGER")
      *
      * @var SnippetLabel[]|ArrayCollection
      */
     protected $labels;
 
     /**
-     * Flag indicates that request is dupe.
+     * Flag indicates that snippet is accessible to everyone.
      *
      * @ORM\Column(type="boolean", nullable=false, name="ownership_global")
      *
@@ -154,7 +163,7 @@ class Snippet implements EntityInterface, NotifyPropertyChanged
     protected $ownershipTeams;
 
     /**
-     * Flag indicates that request is dupe.
+     * Flag indicates that snippet is visible with all departments.
      *
      * @ORM\Column(type="boolean", nullable=false, name="visible_global")
      *
@@ -179,6 +188,45 @@ class Snippet implements EntityInterface, NotifyPropertyChanged
     protected $visibleDepartments;
 
     /**
+     * @ORM\Column(name="usage_count", type="integer")
+     *
+     * @var int
+     */
+    protected $usageCount = 0;
+
+    /**
+     * @ORM\Column(name="positive_ratings", type="integer")
+     *
+     * @var int
+     */
+    protected $positiveRatings = 0;
+
+    /**
+     * @ORM\Column(name="neutral_ratings", type="integer")
+     *
+     * @var int
+     */
+    protected $neutralRatings = 0;
+
+    /**
+     * @ORM\Column(name="negative_ratings", type="integer")
+     *
+     * @var int
+     */
+    protected $negativeRatings = 0;
+
+    /**
+     * When snippet was created.
+     *
+     * @ORM\Column(name="date_created", type="datetime", nullable=false)
+     *
+     * @Assert\NotNull()
+     *
+     * @var \DateTime
+     */
+    protected $dateCreated;
+
+    /**
      * Constructor.
      */
     public function __construct()
@@ -187,6 +235,7 @@ class Snippet implements EntityInterface, NotifyPropertyChanged
         $this->ownershipTeams     = new ArrayCollection();
         $this->visibleDepartments = new ArrayCollection();
         $this->labels             = new ArrayCollection();
+        $this->setModelField('dateCreated', new \DateTime());
     }
 
     /**
@@ -294,16 +343,23 @@ class Snippet implements EntityInterface, NotifyPropertyChanged
         if (!in_array($type, $this->types, true)) {
             $this->types[] = $type;
         }
+        $this->setModelField('types', $this->types);
 
         return $this;
     }
 
-    public function removeEvent($type)
+    public function hasType($type)
+    {
+        return in_array($type, $this->types, true);
+    }
+
+    public function removeType($type)
     {
         if (false !== $key = array_search($type, $this->types, true)) {
             unset($this->types[$key]);
             $this->types = array_values($this->types);
         }
+        $this->setModelField('types', $this->types);
 
         return $this;
     }
@@ -329,6 +385,26 @@ class Snippet implements EntityInterface, NotifyPropertyChanged
     }
 
     /**
+     * @return bool
+     */
+    public function isSplit()
+    {
+        return $this->isSplit;
+    }
+
+    /**
+     * @param bool $isSplit
+     *
+     * @return Snippet
+     */
+    public function setIsSplit($isSplit)
+    {
+        $this->setModelField('isSplit', $isSplit);
+
+        return $this;
+    }
+
+    /**
      * @return SnippetTranslation[]|ArrayCollection
      */
     public function getTranslations()
@@ -344,14 +420,18 @@ class Snippet implements EntityInterface, NotifyPropertyChanged
     public function addTranslation(SnippetTranslation $translation)
     {
         foreach ($this->translations as $t) {
-            if ($t->getLanguage()->getId() === $translation->getLanguage()->getId()) {
+            if ($t->getLanguage()->getId() === $translation->getLanguage()->getId()
+            && (!$t->getType() || $t->getType() === $translation->getType())) {
                 $t->setContent($translation->getContent());
+                $t->setType($translation->getType());
 
                 return $this;
             }
         }
-        $translation->setSnippet($this);
-        $this->translations->add($translation);
+        if ($translation->getContent()) {
+            $translation->setSnippet($this);
+            $this->translations->add($translation);
+        }
 
         return $this;
     }
@@ -383,7 +463,7 @@ class Snippet implements EntityInterface, NotifyPropertyChanged
      */
     public function addLabel(SnippetLabel $label)
     {
-        if (!$this->labels->contains($label)) {
+        if (!$this->hasLabel($label)) {
             $this->labels->add($label);
             $label->setSnippet($this);
         }
@@ -394,11 +474,31 @@ class Snippet implements EntityInterface, NotifyPropertyChanged
     /**
      * @param SnippetLabel $label
      *
+     * @return bool
+     */
+    public function hasLabel($label)
+    {
+        foreach ($this->labels as $l) {
+            if ($l->getLabel() === $label->getLabel()) {
+                return true;
+            }
+        }
+
+        return false;
+    }
+
+    /**
+     * @param SnippetLabel $label
+     *
      * @return $this
      */
     public function removeLabel(SnippetLabel $label)
     {
-        $this->labels->removeElement($label);
+        foreach ($this->labels as $l) {
+            if ($l->getLabel() === $label->getLabel()) {
+                $this->labels->removeElement($l);
+            }
+        }
 
         return $this;
     }
@@ -424,7 +524,7 @@ class Snippet implements EntityInterface, NotifyPropertyChanged
     }
 
     /**
-     * @return mixed
+     * @return AgentTeam[]
      */
     public function getOwnershipTeams()
     {
@@ -509,5 +609,105 @@ class Snippet implements EntityInterface, NotifyPropertyChanged
     public function getVisibleDepartments()
     {
         return $this->visibleDepartments;
+    }
+
+    /**
+     * @return int
+     */
+    public function getUsageCount()
+    {
+        return $this->usageCount;
+    }
+
+    /**
+     * @param int $usageCount
+     *
+     * @return Snippet
+     */
+    public function setUsageCount($usageCount)
+    {
+        $this->setModelField('usageCount', $usageCount);
+
+        return $this;
+    }
+
+    /**
+     * @return int
+     */
+    public function getPositiveRatings()
+    {
+        return $this->positiveRatings;
+    }
+
+    /**
+     * @param int $positiveRatings
+     *
+     * @return Snippet
+     */
+    public function setPositiveRatings($positiveRatings)
+    {
+        $this->setModelField('positiveRatings', $positiveRatings);
+
+        return $this;
+    }
+
+    /**
+     * @return int
+     */
+    public function getNeutralRatings()
+    {
+        return $this->neutralRatings;
+    }
+
+    /**
+     * @param int $neutralRatings
+     *
+     * @return Snippet
+     */
+    public function setNeutralRatings($neutralRatings)
+    {
+        $this->setModelField('neutralRatings', $neutralRatings);
+
+        return $this;
+    }
+
+    /**
+     * @return int
+     */
+    public function getNegativeRatings()
+    {
+        return $this->negativeRatings;
+    }
+
+    /**
+     * @param int $negativeRatings
+     *
+     * @return Snippet
+     */
+    public function setNegativeRatings($negativeRatings)
+    {
+        $this->setModelField('negativeRatings', $negativeRatings);
+
+        return $this;
+    }
+
+    /**
+     * @return \DateTime
+     */
+    public function getDateCreated()
+    {
+        return $this->dateCreated;
+    }
+
+    /**
+     * @param \DateTime $dateCreated
+     *
+     * @return Snippet
+     */
+    public function setDateCreated($dateCreated)
+    {
+        $this->setModelField('dateCreated', $dateCreated);
+
+        return $this;
     }
 }

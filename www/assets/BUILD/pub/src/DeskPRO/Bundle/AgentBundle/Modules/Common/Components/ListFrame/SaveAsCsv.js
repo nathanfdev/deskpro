@@ -1,4 +1,5 @@
-import React, { Component, PropTypes } from 'react';
+import PropTypes from 'prop-types';
+import React, { Component } from 'react';
 import { saveAs } from 'file-saver';
 import json2csv from 'json2csv';
 import { repository } from 'DeskPRO/Bundle/AppBundle/DAL';

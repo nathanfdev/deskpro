@@ -32,6 +32,7 @@ use DeskPRO\Bundle\ApiBundle\Request\ApiVersionInfo;
 use DeskPRO\Bundle\AppBundle\Routing\RequestMatcher;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\HttpKernel\Event\FilterResponseEvent;
 use Symfony\Component\HttpKernel\Event\GetResponseEvent;
 use Symfony\Component\HttpKernel\KernelEvents;
 
@@ -69,7 +70,8 @@ class VersionListener implements EventSubscriberInterface
     {
         return [
             // call before RouterListener
-            KernelEvents::REQUEST => ['onRequest', 40],
+            KernelEvents::REQUEST  => ['onRequest', 40],
+            KernelEvents::RESPONSE => ['onResponse', 40],
         ];
     }
 
@@ -149,5 +151,19 @@ class VersionListener implements EventSubscriberInterface
         }
 
         return $versions;
+    }
+
+    /**
+     * @param FilterResponseEvent $event
+     */
+    public function onResponse(FilterResponseEvent $event)
+    {
+        $request  = $event->getRequest();
+        $response = $event->getResponse();
+        $headers  = [
+            'X-DeskPRO-Version'    => defined('DP_ACTIVE_BUILD') ? DP_ACTIVE_BUILD : 'NA',
+            'X-DeskPRO-ApiVersion' => $request->get('version'),
+        ];
+        $response->headers->add($headers);
     }
 }

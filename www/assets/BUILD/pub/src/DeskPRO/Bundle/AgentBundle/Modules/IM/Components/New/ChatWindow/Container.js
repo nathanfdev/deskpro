@@ -1,5 +1,6 @@
 import 'froala-editor/js/froala_editor.pkgd.min';
-import React, { PropTypes } from 'react';
+import PropTypes from 'prop-types';
+import React from 'react';
 import ReactTooltip from 'react-tooltip';
 import Isvg from 'react-inlinesvg';
 import $ from 'jquery';

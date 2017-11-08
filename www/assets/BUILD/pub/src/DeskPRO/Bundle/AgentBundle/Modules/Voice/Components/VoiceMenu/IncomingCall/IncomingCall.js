@@ -1,4 +1,5 @@
-import React, { PropTypes } from 'react';
+import PropTypes from 'prop-types';
+import React from 'react';
 import Immutable from 'immutable';
 import { Button } from 'DeskPRO/Component/Semantic/Button';
 import Timer from 'DeskPRO/Component/Timer';
@@ -14,6 +15,7 @@ class IncomingCall extends React.Component {
     me:                    PropTypes.object,
     agents:                PropTypes.object,
     people:                PropTypes.object,
+    queues:                PropTypes.object,
     incomingCall:          PropTypes.object,
     onAccept:              PropTypes.func,
     onDecline:             PropTypes.func,
@@ -55,7 +57,7 @@ class IncomingCall extends React.Component {
   };
 
   renderAcceptCall() {
-    const { me, agents, people, incomingCall, ringingVolume } = this.props;
+    const { me, agents, people, queues, incomingCall, ringingVolume } = this.props;
 
     let callType = 'Direct';
     if (incomingCall instanceof Immutable.Map && incomingCall.get('call_id')) {
@@ -70,6 +72,11 @@ class IncomingCall extends React.Component {
         if (agent) {
           callType += ` from ${agent.get('name')}`;
         }
+      }
+    } else if (incomingCall.task && incomingCall.task.attributes.deskpro_queue_id) {
+      const queue = queues.get(incomingCall.task.attributes.deskpro_queue_id);
+      if (queue) {
+        callType = queue.get('name');
       }
     }
 

@@ -83,7 +83,7 @@ define ['angular', 'moment'], (angular, moment) ->
     controller: ->
 
     link: ($scope, $el) ->
-      date = if $scope.date? then moment($scope.date) else moment()
+      date = if $scope.date? && $scope.date != 'undefined' then moment($scope.date) else moment()
       today = moment()
 
       $scope.modes = modes =
@@ -130,8 +130,8 @@ define ['angular', 'moment'], (angular, moment) ->
 
       isValid = (targetMoment, granularity) ->
         return false if !targetMoment.isValid()
-        return false if $scope.minDate && targetMoment.isBefore($scope.minDate, granularity)
-        return false if $scope.maxDate && targetMoment.isAfter($scope.maxDate, granularity)
+        return false if $scope.minDate? && $scope.minDate != 'undefined' && targetMoment.isBefore($scope.minDate, granularity)
+        return false if $scope.maxDate? && $scope.maxDate != 'undefined' && targetMoment.isAfter($scope.maxDate, granularity)
         return true
 
       renderers = {}
@@ -150,7 +150,7 @@ define ['angular', 'moment'], (angular, moment) ->
         $scope.years.length = 0
         $scope.headerDisabled = true
         $scope.header = startY.year() + '-' + endY.year()
-        while !startY.isAfter(endY, 'y')
+        while date.isValid() && !startY.isAfter(endY, 'y')
           $scope.years.push startY.year()
           startY.add(1, 'y')
       renderers[modes.month] = ->
@@ -168,7 +168,7 @@ define ['angular', 'moment'], (angular, moment) ->
         $scope.days.length = 0
         $scope.header = date.format defaults.dayViewHeaderFormat
         currentDate = date.clone().startOf('M').startOf('week')
-        while !date.clone().endOf('M').endOf('w').isBefore(currentDate, 'd')
+        while date.isValid() && !date.clone().endOf('M').endOf('w').isBefore(currentDate, 'd')
           if 0 == currentDate.weekday()
             row = []
             $scope.days.push row
@@ -195,15 +195,10 @@ define ['angular', 'moment'], (angular, moment) ->
             n = '0' + n
           $scope.minutes.push n
 
-      getUTCTime = (dt) ->
-        tmp = dt.toDate()
-        tmp = new Date(tmp.getTime() - tmp.getTimezoneOffset() * 60000)
-        tmp
-
       setDatetime = (dt) ->
         dt.locale(defaults.locale)
         return if !isValid(dt)
-        $scope.date = getUTCTime(dt)
+        $scope.date = dt
         $scope.active = dt.clone()
         date = dt
         if modes.day == $scope.minMode

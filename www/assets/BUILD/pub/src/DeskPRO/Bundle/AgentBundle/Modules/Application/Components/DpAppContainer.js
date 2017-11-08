@@ -1,19 +1,14 @@
-import React, { PropTypes } from 'react';
+import React from 'react';
+import PropTypes from 'prop-types';
 import { Router, Route, Redirect } from 'react-router';
 import { connect } from 'react-redux';
+import $ from 'jquery';
 import { preloadData } from '../../Application/Actions/bootstrapActions';
 import { DpAppRouteContainer } from './DpAppRouteContainer';
-import { TicketsApp } from '../../Tickets/Components/TicketsApp';
-import { TasksApp } from '../../Tasks/Components/TasksApp';
-import { FeedbackApp } from '../../Feedback/Components/FeedbackApp';
-import { CrmApp } from '../../CRM/Components/CrmApp';
-import { ChatApp } from '../../Chat/Components/ChatApp';
-import { PublishApp } from '../../Publish/Components/PublishApp';
 import { LoginApp } from '../../Login/Components/LoginApp';
 import { hashChanged } from '../../Application/Actions/routingActions';
 import { setActiveApp } from '../../Application/Actions/appActions';
 import { history } from '../../../Services/history';
-import $ from 'jquery';
 
 @connect()
 export class DpAppContainer extends React.Component {
@@ -22,11 +17,11 @@ export class DpAppContainer extends React.Component {
     dispatch: PropTypes.func.isRequired
   };
 
-  componentWillMount() {
+  componentWillMount() { // eslint-disable-line class-methods-use-this
     $.ajaxSetup(
       {
         statusCode: {
-          401: () => history.replace(`${DP_BASE_URL_RELATIVE}/${DP_AGENT_INTERFACE_PATH_NAMESPACE}/login`)
+          401: () => history.replace(`${window.DP_BASE_URL_RELATIVE}/${window.DP_AGENT_INTERFACE_PATH_NAMESPACE}/login`)
         }
       }
     );
@@ -50,10 +45,10 @@ export class DpAppContainer extends React.Component {
     dispatch(hashChanged(window.location.hash));
   }
 
-  workOutBasePath() {
-    const baseEnd = DP_BASE_URL.indexOf('/', DP_BASE_URL.indexOf('://') + 3);
+  workOutBasePath() { // eslint-disable-line class-methods-use-this
+    const baseEnd = window.DP_BASE_URL.indexOf('/', window.DP_BASE_URL.indexOf('://') + 3);
 
-    return (baseEnd !== -1 ? DP_BASE_URL.substr(baseEnd) : '') + '/' + DP_AGENT_INTERFACE_PATH_NAMESPACE;
+    return `${baseEnd !== -1 ? window.DP_BASE_URL.substr(baseEnd) : ''}/${window.DP_AGENT_INTERFACE_PATH_NAMESPACE}`;
   }
 
   render() {
@@ -63,14 +58,7 @@ export class DpAppContainer extends React.Component {
     return (
       <Router history={history}>
         <Redirect from={basePath} to={defaultPath} />
-        <Route path={basePath} component={DpAppRouteContainer}>
-          <Route name="crm" path="crm" component={CrmApp} />
-          <Route name="chat" path="chat" component={ChatApp} />
-          <Route name="tickets" path="tickets" component={TicketsApp} />
-          <Route name="tasks" path="tasks" component={TasksApp} />
-          <Route name="publish" path="publish" component={PublishApp} />
-          <Route name="feedback" path="feedback" component={FeedbackApp} />
-        </Route>
+        <Route path={basePath} component={DpAppRouteContainer} />
         <Route path={basePath}>
           <Route name="login" path="login" component={LoginApp} />
         </Route>

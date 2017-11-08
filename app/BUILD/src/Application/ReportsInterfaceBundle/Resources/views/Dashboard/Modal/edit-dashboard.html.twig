@@ -1,0 +1,152 @@
+<section class="popup">
+    <!-- Popup Header & Title -->
+    <header>
+        <h1 ng-if="!is_new">Edit dashboard</h1>
+        <h1 ng-if="is_new">Create dashboard</h1>
+        <div class="controls"><a ng-click="cancel()"><i class="fa fa-times"></i></a></div>
+    </header>
+
+    <!-- Popup Sidebar -->
+    <div class="popup-sidebar" style="height: 580px;"><!-- Need to calculate the height of popup with js and update the sidebar -->
+        <div class="popup-sidebar-content">
+            <ul>
+                <li ng-class="{'active': activeTab == 'info'}">
+                    <a ng-click="activeTab = 'info'">Properties</a>
+                </li>
+                <li ng-class="{'active': activeTab == 'permissions'}">
+                    <a ng-click="activeTab = 'permissions'">Agent Permissions</a>
+                </li>
+            </ul>
+        </div>
+    </div>
+    <!-- End Popup Sidebar -->
+
+    <!-- Popup Content -->
+    <div class="popup-content" ng-show="!loaded">
+        <div style="margin: 40px; text-align: center;">
+            <i class="spinner-big-circle"></i>
+        </div>
+    </div>
+    <div class="popup-content" ng-show="loaded" style="height: 580px;">
+
+        {##############################################################################################################}
+        {# Properties #}
+        {##############################################################################################################}
+
+        <form ng-show="activeTab == 'info'" class="popup-form-default">
+
+            <div ng-if="dashboard.is_default">
+                <div class="bucket" style="margin: 40px;">
+                    <h2>"{{ ng_var('dashboard.title') }}" is a built-in dashboard</h2>
+                    <p>
+                        You cannot edit the properties of this built-in dashboard.
+                    </p>
+                </div>
+            </div>
+
+            <div ng-if="!dashboard.is_default">
+                <div class="bucket">
+                    <label class="label">Dashboard Title:</label>
+                    <div class="bucket-column"><input type="text" ng-model="dashboard.title" placeholder="Name of your new dashboard"></div>
+                </div>
+
+                <hr>
+
+                <div class="bucket reports-list-form">
+                    <label class="label">Reports:</label>
+                    <div class="bucket-column">
+                        <p style="margin-top: 9px;">
+                            Reports appear as tabs on your dashboard. Use reports to create groups of stats that you want
+                            to see all at once.
+                        </p>
+                        <div style="margin: 15px 0;" ui-sortable="sortableOptions" ng-model="reports">
+                            <div class="report-row" ng-if="!report.deleted" ng-repeat="report in reports track by report.id">
+                                <label class="drag-handle"><i class="fa fa-bars"></i></label>
+                                <span class="meta"><a ng-click="removeReport(report)">Remove</a></span>
+                                <div class="row-input">
+                                    <input type="text" ng-model="report.title" placeholder="Report title" ng-change="did_edit_reports = true">
+                                    <div ng-if="report.isNew" class="new-report-info">
+                                        <i class="fa fa-asterisk"></i> New report
+                                    </div>
+                                    <div ng-if="report.fromDashboardTitle" class="new-report-info">
+                                        <i class="fa fa-copy"></i> Cloned from dashboard "{{ ng_var('report.fromDashboardTitle') }}"
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div>
+                            <div>
+                                <div ng-show="show_clone_menu">
+                                    <div style="float:right; position: relative; top: -5px;">
+                                        <span class="meta"><a ng-click="closeCloneMenu()">Cancel</a></span>
+                                    </div>
+                                    <h2>Clone a report or dashboard</h2>
+                                    <ul class="clone-list">
+                                        <li ng-repeat="db in dashboards" ng-if="db.reports.length">
+                                            <a ng-click="cloneDashboard(db)">{{ ng_var('db.title') }}</a>
+                                            <ul>
+                                                <li ng-repeat="r in db.reports">
+                                                    <a ng-click="cloneReport(db, r)">{{ ng_var('r.title') }}</a>
+                                                </li>
+                                            </ul>
+                                        </li>
+                                    </ul>
+                                </div>
+
+                                <div ng-hide="show_clone_menu">
+                                    <a ng-click="addReport()" class="button button-secondary half-width">Add new report</a>
+                                    <a ng-click="openCloneMenu()" class="button button-secondary half-width">Clone existing report</a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </form>
+
+        {##############################################################################################################}
+        {# Permissions #}
+        {##############################################################################################################}
+
+        <form ng-show="activeTab == 'permissions'" class="popup-form-default">
+            <div class="popup-blurb">
+                <h2>Choose agents that can see this dashboard</h2>
+            </div>
+
+            <div class="agent-list">
+                <table>
+                    <thead>
+                    <td class="agent-name"></td>
+                    <td>View</td>
+                    <td>Edit</td>
+                    </thead>
+
+                    <tr ng-repeat="agent in dashboard.permissions track by agent.id">
+                        <td class="agent-name">
+                            <span class="avatar" style="background-image: url({{ ng_var('agent.avatar') }})"></span>
+                            {{ ng_var('agent.name') }}
+                        </td>
+                        <td>
+                            <input ng-click='agent.permissions = (agent.permissions == 0 ? 1 : Math.max(1, agent.permissions))' ng-checked="agent.permissions == 1 || agent.permissions == 2" type="checkbox">
+                        </td>
+                        <td>
+                            <input ng-click='agent.permissions = (agent.permissions == 0 ? 2 : 2)' ng-checked="agent.permissions == 2" type="checkbox">
+                        </td>
+                    </tr>
+                </table>
+            </div>
+        </form>
+    </div>
+
+    <footer ng-show="loaded">
+        <div ng-hide="saving">
+            <a ng-click="saveDashboard()" class="button">Save Dashboard</a>
+        </div>
+        <div ng-show="saving">
+            <i class="spinner-flat"></i>
+        </div>
+    </footer>
+    <!-- End Popup Content -->
+
+</section>
+<div class="cover"></div><!-- Transparent background to the popup -->

@@ -1,4 +1,5 @@
-import React, { PropTypes } from 'react';
+import PropTypes from 'prop-types';
+import React from 'react';
 import '../../../../../Resources/sounds/incoming-call.mp3';
 import '../../../../../Resources/sounds/incoming-call.ogg';
 import '../../../../../Resources/sounds/incoming-call.wav';

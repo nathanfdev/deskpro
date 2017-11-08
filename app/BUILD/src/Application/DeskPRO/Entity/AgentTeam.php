@@ -112,6 +112,14 @@ class AgentTeam extends DomainObject implements PersonList, AvatarOwner
         $this->members = new ArrayCollection();
     }
 
+    /**
+     * @return ArrayCollection
+     */
+    public function getMembers()
+    {
+        return $this->members;
+    }
+
     public function addPerson(Entity\Person $person)
     {
         if ($this->members->contains($person)) {
@@ -135,7 +143,7 @@ class AgentTeam extends DomainObject implements PersonList, AvatarOwner
     public function getAvatarUrl($size = 50)
     {
         if (!$this->hasAvatar()) {
-            return App::get('router')->generate(
+            return App::get('router.default')->generate(
                 'serve_default_picture',
                 [
                     's'        => $size,

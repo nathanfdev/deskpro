@@ -42,6 +42,8 @@ class PusherFactory
             $settings->get('notification.settings.pusher_client.appId'),
             [
                 'cluster' => $settings->get('notification.settings.pusher_client.cluster'),
+                'timeout' => $settings->get('notification.settings.pusher_client.timeout', 5), //in seconds as Pusher
+                // uses CURLOPT_TIMEOUT
             ]
             );
     }

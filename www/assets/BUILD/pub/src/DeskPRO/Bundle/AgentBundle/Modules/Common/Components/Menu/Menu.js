@@ -1,3 +1,4 @@
+import PropTypes from 'prop-types';
 import React from 'react';
 import classNames from 'classnames';
 
@@ -8,11 +9,11 @@ export class Menu extends React.Component {
    * @type {Object}
    */
   static propTypes = {
-    widgetClass:         React.PropTypes.string,
-    overrideWidgetClass: React.PropTypes.bool,
-    children:            React.PropTypes.node,
-    menuLevel:           React.PropTypes.number,
-    isOpen:              React.PropTypes.bool
+    widgetClass:         PropTypes.string,
+    overrideWidgetClass: PropTypes.bool,
+    children:            PropTypes.node,
+    menuLevel:           PropTypes.number,
+    isOpen:              PropTypes.bool
   };
 
   static displayName = 'Menu';

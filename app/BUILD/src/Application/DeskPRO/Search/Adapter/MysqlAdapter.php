@@ -106,8 +106,8 @@ class MysqlAdapter extends AbstractAdapter
 
             foreach ($data as $k => $v) {
                 App::getDb()->executeUpdate('
-                    DELETE FROM content_search_attribute WHERE object_type = ? AND object_id = ?
-                ', [$doc->getContentTypeName(), $doc->getId()]);
+                    DELETE FROM content_search_attribute WHERE object_type = ? AND object_id = ? AND content = ?
+                ', [$doc->getContentTypeName(), $doc->getId(), $v]);
                 App::getDb()->executeUpdate('
                     REPLACE INTO content_search_attribute
                     SET object_type = ?, object_id = ?, attribute_id = ?, content = ?

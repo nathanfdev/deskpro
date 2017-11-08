@@ -58,6 +58,7 @@ class TicketEscalation extends DomainObject
     const EVENT_TYPE_TIME_TOTAL_USER_WAITING = 'time.total_user_waiting';
     const EVENT_TYPE_TIME_AGENT_WAITING      = 'time.agent_waiting';
     const EVENT_TYPE_TIME_RESOLVED           = 'time.resolved';
+    const EVENT_TYPE_TIME_ON_HOLD            = 'time.on_hold';
 
     /**
      * @var int
@@ -150,6 +151,8 @@ class TicketEscalation extends DomainObject
 
             case self::EVENT_TYPE_TIME_RESOLVED:
                 return 'date_resolved';
+            case self::EVENT_TYPE_TIME_ON_HOLD:
+                return 'date_on_hold';
         }
 
         return;

@@ -110,39 +110,15 @@ DeskPRO.Agent.PageFragment.Page.Ticket = new Orb.Class({
 			this.getEl('linked_wrap_tab').hide();
 		}
 
-    this.clip = null;
-    try {
-			var flashEnabled = !!(navigator.mimeTypes["application/x-shockwave-flash"] || window.ActiveXObject && new ActiveXObject('ShockwaveFlash.ShockwaveFlash'));
-			if (flashEnabled) {
-				// Set timeout to have it exec in global scope,
-				// so errors (eg flash has crashed) can be ignored and dont break the rest of this init
-				window.setTimeout(function() {
-					try {
-						self.clip = new ZeroClipboard(self.wrapper.find('.copy-btn'));
-
-						self.clip.on('mouseover', function(client, args) {
-							$(client.options.btnEl).addClass('over');
-						});
-						self.clip.on('mouseout', function(client, args) {
-							$(client.options.btnEl).removeClass('over');
-						});
-						self.clip.on('complete', function(client, args) {
-							DeskPRO_Window.util.showSavePuff($(this).closest('.id-number'));
-						});
-
-						self.addEvent('activate', function() {
-							try {
-								self.clip.reposition();
-							} catch (e) {}
-						});
-					} catch (e) {}
-				}, 100);
-			} else {
-				this.wrapper.find('.copy-btn').remove();
-			}
-		} catch (e) {
-			this.wrapper.find('.copy-btn').remove();
-		}
+		self.wrapper.find('.copy-btn').each(function(i, el) {
+			$(el).on('click', function(e) {
+				e.stopPropagation();
+			});
+			var clip = new window.Clipboard(el);
+			clip.on('success', function() {
+				DeskPRO_Window.util.showSavePuff($(el).closest('.copy-btn-outer'));
+			});
+		});
 
 		this.valueForm = $('form.value-form:first', this.wrapper);
 		this.valueForm.on('submit', function(ev) {
@@ -180,6 +156,8 @@ DeskPRO.Agent.PageFragment.Page.Ticket = new Orb.Class({
 
 			var langLocale = DESKPRO_NAME_REGISTRY.lang_data[langId].locale;
 			var langTitle  = $.trim(DESKPRO_NAME_REGISTRY.lang_data[langId].title);
+
+			self.meta.ticket.language = { id: langId, title: langTitle };
 
 			self.getEl('message_page_wrap').find('.translate-from-lang').each(function() {
 				$(this).text(langTitle).data(langLocale);
@@ -1149,7 +1127,7 @@ DeskPRO.Agent.PageFragment.Page.Ticket = new Orb.Class({
 
 	handleReplySave: function(ev, formData, handler, meta) {
 
-		this.replyHasBillingControl = meta.hasBillingControl;
+  	this.replyHasBillingControl = meta.hasBillingControl;
 
 		if (this.pauseSend) {
 			window.setTimeout((function() {
@@ -1264,7 +1242,7 @@ DeskPRO.Agent.PageFragment.Page.Ticket = new Orb.Class({
 			}
 
 			self.handleTicketUpdate(result);
-		};
+		}
 
 		this.clearAlerts();
 
@@ -1447,12 +1425,6 @@ DeskPRO.Agent.PageFragment.Page.Ticket = new Orb.Class({
     this.valueForm = null;
     this.mergeMenu = null;
 
-    var btns = this.wrapper.find('.copy-btn');
-    if (btns.length && this.clip) {
-      this.clip.unglue(btns);
-		}
-    this.clip = null;
-
 		DeskPRO_Window.getMessageBroker().sendMessage('ui.ticket.closed', { ticketId: this.getMetaData('ticket_id') });
 	},
 
@@ -1545,7 +1517,7 @@ DeskPRO.Agent.PageFragment.Page.Ticket = new Orb.Class({
 
 		if (data.replybox_html) {
 			// Only refresh the box if we've not begun writing a message
-			if (!this.getEl('replybox_wrap').find('textarea.touched')[0]) {
+			if (!this.getEl('replybox_wrap').find('textarea.touched')[0] && !data.active_drafts.length) {
 				var chargeCheckboxState = $('input[name="charge_time"]', this.wrapper).prop('checked');
 				var textarea = this.getReplyTextArea();
 				if (textarea.data('redactor')) {
@@ -1669,9 +1641,9 @@ DeskPRO.Agent.PageFragment.Page.Ticket = new Orb.Class({
 			if (pageHeaderEl && pageHeaderEl.length) {
 				pos = pageHeaderEl.position();
 				if (pos && pos.top > 20) {
-					this.getEl('layout_sidebar_icons').css('top', pos.top + 10)
+					this.getEl('layout_sidebar_icons').css('top', pos.top + 10);
 				} else {
-					this.getEl('layout_sidebar_icons').css('top', 0)
+					this.getEl('layout_sidebar_icons').css('top', 0);
 				}
 			}
 		}

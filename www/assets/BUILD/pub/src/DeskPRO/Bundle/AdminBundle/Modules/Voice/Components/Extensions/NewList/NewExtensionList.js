@@ -1,7 +1,8 @@
-import React, { PropTypes } from 'react';
+import PropTypes from 'prop-types';
+import React from 'react';
 import Immutable from 'immutable';
-import _ from 'lodash';
-import { Fieldset, createValue } from 'react-forms';
+import range from 'lodash/range';
+import { Fieldset, createValue } from '@deskpro/react-forms';
 import { Input, Form, Field } from 'DeskPRO/Component/Semantic/ReactForm';
 import { PersonAvatar } from 'DeskPRO/Bundle/AgentBundle/Modules/Common/Components/Avatar/index';
 import BackButton from '../../../../Common/Components/BackButton';
@@ -10,7 +11,7 @@ import NumberTargetList from '../../Common/NumberTarget/NumberTargetList';
 
 const minNumber = 1001;
 const maxNumber = 9999;
-const rangeNumbers = _.range(minNumber, maxNumber);
+const rangeNumbers = range(minNumber, maxNumber);
 
 class NewExtensionList extends React.Component {
 

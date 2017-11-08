@@ -62,9 +62,9 @@ class DeferredStrategy extends AbstractStrategy
     /**
      * {@inheritdoc}
      */
-    public function deliver()
+    public function deliver($postpone = false)
     {
-        $this->deliveryService->deliver();
+        $this->deliveryService->deliver($postpone);
     }
 
     /**

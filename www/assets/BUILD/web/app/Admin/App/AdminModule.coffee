@@ -1,6 +1,5 @@
 define [
   'angular'
-  'ZeroClipboard'
 
   'angularAnimate'
   'angularSanitize'
@@ -32,9 +31,6 @@ define [
   'sifter'
   'selectize'
 
-  'ZeroClipboard'
-  'ngClip'
-
   'bootstrapTooltip'
 
   'select2'
@@ -46,10 +42,7 @@ define [
   'DeskPRO/CategoryBuilder/Module'
   'DeskPRO/Directive/DpDateTimePicker'
 ], (angular
-  ZeroClipboard
 ) ->
-
-  window.ZeroClipboard = ZeroClipboard
 
   # Set path for ace editor
   if ace
@@ -61,7 +54,6 @@ define [
   AdminModule = angular.module('Admin_App', [
     'ngAnimate'
     'ngSanitize'
-    'ngClipboard'
     'ui.router'
     'ui.bootstrap'
     'ui.select2'
@@ -84,11 +76,6 @@ define [
     datepickerConfig.showWeeks = false
     datepickerPopupConfig.showWeeks = false
     datepickerPopupConfig.dateFormat = 'dd MMMM yyyy'
-  ])
-
-  AdminModule.config(['ngClipProvider', (ngClipProvider) ->
-    ZeroClipboard.config({swfPath: window.DP_ZEROCLIPBOARD_PATH});
-    ngClipProvider.setPath(window.DP_ZEROCLIPBOARD_PATH)
   ])
 
   AdminModule.run(['uiSelect2Config', (uiSelect2Config) ->

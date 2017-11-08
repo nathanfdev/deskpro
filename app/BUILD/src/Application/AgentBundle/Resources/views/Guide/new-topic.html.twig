@@ -98,7 +98,6 @@ pageMeta.baseId = '{{ baseId }}';
 			<nav id="{{baseId}}_other_props_tabs_wrap">
 				<ul id="{{baseId}}_other_props_tabs">
 					<li data-tab-for="> .tab-properties">{{ phrase('agent.general.properties') }}</li>
-					<li data-tab-for="> .tab-attach">{{ phrase('agent.general.attachments') }}</li>
 				</ul>
 			</nav>
 			<div class="content-wrapper" id="{{baseId}}_other_props_tabs_content" style="display: none">
@@ -114,17 +113,6 @@ pageMeta.baseId = '{{ baseId }}';
 					</dl>
 				</div>
 				{# /Tab Properties #}
-
-				{# Tab Attach #}
-				<div class="tab-attach" style="display: none">
-					{% include 'AgentBundle:Common:attach-row-tmpl.html.twig' with {formname: 'newnews[attach][]'} %}
-					<h6>{{ phrase('agent.general.attachments') }}</h6>
-					<div class="file-input">
-						<input type="file" name="file-upload" multiple="multiple" /> <button class="clean-gray xxx-small">{{ phrase('agent.general.upload') }}</button>
-					</div>
-					<ul class="files file-list"></ul>
-				</div>
-				{# /Tab Attach #}
 			</div>
 		</div>
 		{# /Tab Container #}
@@ -133,7 +121,7 @@ pageMeta.baseId = '{{ baseId }}';
 
 <footer class="pop-footer">
 	<div class="is-not-loading">
-		<button class="submit-trigger clean-white">{{ phrase('agent.general.create_topic') }} <kbd>{{ phrase('agent.general.altc') }}</kbd></button>
+		<button class="submit-trigger clean-white">{{ phrase('agent.general.create_topic') }} <kbd class="noshowmac">{{ phrase('agent.general.altc') }}</kbd><kbd class="showmac">{{ phrase('agent.general.ctrlc') }}</kbd></button>
 	</div>
 	<div class="is-loading" style="padding-top: 9px;">
 		<img src="{{ asset('images/spinners/loading-small.gif') }}" />

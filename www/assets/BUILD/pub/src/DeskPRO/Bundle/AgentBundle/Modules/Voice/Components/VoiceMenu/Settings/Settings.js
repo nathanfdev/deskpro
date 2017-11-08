@@ -3,6 +3,7 @@ import Accordion from 'DeskPRO/Component/Semantic/Accordion/Accordion';
 import QueuesToggleContainer from './QueuesToggleContainer';
 import VolumeContainer from './VolumeContainer';
 import Voicemail from './Voicemail';
+import OnlineAgentsContainer from './OnlineAgentsContainer';
 
 class Settings extends React.Component {
 
@@ -27,7 +28,12 @@ class Settings extends React.Component {
       ]
     };
 
-    return <Accordion {...props} />;
+    return (
+      <div>
+        <Accordion {...props} />
+        <OnlineAgentsContainer />
+      </div>
+    );
   }
 }
 

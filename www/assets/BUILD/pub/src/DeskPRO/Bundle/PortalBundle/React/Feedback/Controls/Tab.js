@@ -1,33 +1,53 @@
+import PropTypes from 'prop-types';
 import React from 'react';
-import { StatusCategory } from './StatusCategory';
+import filter from 'lodash/filter';
+import includes from 'lodash/includes';
+import map from 'lodash/map';
+import $ from 'jquery';
 import { TouchFocusWidget } from 'DeskPRO/Bundle/PortalBundle/PageWidget/TouchFocusWidget';
-import _ from 'lodash';
+import { StatusCategory } from './StatusCategory';
 
 export class Tab extends React.Component {
+  static propTypes = {
+    id:                PropTypes.string,
+    available:         PropTypes.object,
+    active:            PropTypes.bool,
+    activeCategories:  PropTypes.array,
+    label:             PropTypes.string,
+    types:             PropTypes.string,
+    setStatus:         PropTypes.func,
+    setStatusCategory: PropTypes.func,
+  };
 
-  clickTab(e) {
-    e.preventDefault();
-    this.props.setStatus(this.props.id);
-  }
+  constructor(props) {
+    super(props);
 
-  isActiveStatusCategory(cat_id) {
-    return _.includes(this.props.activeCategories, cat_id);
+    this.clickTab = this.clickTab.bind(this);
   }
 
   componentDidMount() {
-    if (this.refs.quickJump) {
-      const $el = $(this.refs.quickJump);
+    if (this.quickJump) {
+      const $el = $(this.quickJump);
 
       const widget = new TouchFocusWidget($el);
       widget.render();
     }
   }
 
+  isActiveStatusCategory(catId) {
+    return includes(this.props.activeCategories, catId);
+  }
+
+  clickTab(e) {
+    e.preventDefault();
+    this.props.setStatus(this.props.id);
+  }
+
   renderActive() {
-    let dropdownCats = this.props.available.getStatusCategoriesForStatus(this.props.id);
-    let canRenderDropdown = dropdownCats.length > 0;
+    const dropdownCats = this.props.available.getStatusCategoriesForStatus(this.props.id);
+    const canRenderDropdown = dropdownCats.length > 0;
     return (
-      <div className={'quick-jump' + (canRenderDropdown ? '' : ' no-dropdown')} ref="quickJump">
+      <div className={`quick-jump${canRenderDropdown ? '' : ' no-dropdown'}`} ref={(c) => { this.quickJump = c; }}>
         <span className={this.props.active ? 'link active' : 'link'}>
           {this.props.label}
           {this.renderActiveCats()}
@@ -40,11 +60,12 @@ export class Tab extends React.Component {
 
   renderInactive() {
     return (
-      <div className={"quick-jump no-dropdown"} ref="quickJump">
-        <a href={'/feedback/browse/' + this.props.id + '/' + this.props.types}
+      <div className={'quick-jump no-dropdown'} ref={(c) => { this.quickJump = c; }}>
+        <a
+          href={`/feedback/browse/${this.props.id}/${this.props.types}`}
           className={this.props.active ? 'active' : ''}
-          onClick={this.clickTab.bind(this)}
-          onTouchStart={this.clickTab.bind(this)}
+          onClick={this.clickTab}
+          onTouchStart={this.clickTab}
         >
           {this.props.label}
         </a>
@@ -52,37 +73,30 @@ export class Tab extends React.Component {
     );
   }
 
-  render() {
-    return (
-      <li>
-          {this.props.active ? this.renderActive() : this.renderInactive()}
-      </li>
-    );
-  }
   renderActiveCats() {
-    let cat_titles = _.map(this.props.activeCategories, (active_status_category) => {
-      let cat = this.props.available.getStatusCategoryById(this.props.id, active_status_category);
+    let catTitles = map(this.props.activeCategories, (activeStatusCategory) => {
+      const cat = this.props.available.getStatusCategoryById(this.props.id, activeStatusCategory);
       if (typeof cat !== 'undefined') {
         return cat.title;
       }
+      return null;
     });
 
-    cat_titles = _.filter(cat_titles, (title) => {
-      return typeof title !== 'undefined';
-    });
+    catTitles = filter(catTitles, title => typeof title !== 'undefined');
 
-    let avail = this.props.available.getStatusCategoriesForStatus(this.props.id);
+    const avail = this.props.available.getStatusCategoriesForStatus(this.props.id);
 
-    if (cat_titles.length > 0 && cat_titles.length !== avail.length) {
-      return (<small> ({cat_titles.length}/{avail.length})</small>);
+    if (catTitles.length > 0 && catTitles.length !== avail.length) {
+      return (<small> ({catTitles.length}/{avail.length})</small>);
     }
+    return null;
   }
 
   renderDropdown(dropdownCats) {
     return (
       <div className="dropdown-content no-touch-focus">
         <ul>
-          {_.map(dropdownCats, (cat) =>
+          {map(dropdownCats, cat =>
             <li key={cat.id}>
               <StatusCategory
                 cat={cat}
@@ -93,6 +107,14 @@ export class Tab extends React.Component {
           )}
         </ul>
       </div>
+    );
+  }
+
+  render() {
+    return (
+      <li>
+        {this.props.active ? this.renderActive() : this.renderInactive()}
+      </li>
     );
   }
 }

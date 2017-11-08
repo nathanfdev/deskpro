@@ -194,10 +194,14 @@ class ExecutorContext implements ExecutorContextInterface
      * - update
      *
      * @param string $event_type
+     *
+     * @return $this
      */
     public function setEventType($event_type)
     {
         $this->event_type = $event_type;
+
+        return $this;
     }
 
     /**

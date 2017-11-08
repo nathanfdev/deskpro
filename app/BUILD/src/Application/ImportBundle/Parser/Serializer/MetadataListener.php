@@ -67,6 +67,11 @@ class MetadataListener implements EventSubscriberInterface
 
         $modelClass = $event->getType()['name'];
 
+        // exposed for the import bundle models only
+        if (strpos($modelClass, 'Application\ImportBundle') !== 0) {
+            return;
+        }
+
         if (!isset($this->cache[$modelClass])) {
             $availableProps = [];
             $reflection     = new \ReflectionClass($modelClass);

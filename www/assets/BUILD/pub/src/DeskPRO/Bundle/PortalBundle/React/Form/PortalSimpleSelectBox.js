@@ -1,8 +1,9 @@
-import React, { PropTypes } from 'react';
+import PropTypes from 'prop-types';
+import React from 'react';
 import { portalPhrases } from 'DeskPRO/Bundle/PortalBundle/PortalPhrases';
 import { ClickOut } from 'DeskPRO/Component/ClickOut';
 import classNames from 'classnames';
-import _ from 'lodash';
+import uniqueId from 'lodash/uniqueId';
 
 class SelectOption extends React.Component {
 
@@ -63,7 +64,7 @@ export default class PortalSimpleSelectBox extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
-      id:             _.uniqueId('selectbox_'),
+      id:             uniqueId('selectbox_'),
       options:        props.options,
       visibleOptions: props.options,
       filterText:     '',

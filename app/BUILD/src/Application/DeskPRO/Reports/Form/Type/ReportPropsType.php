@@ -49,7 +49,7 @@ class ReportPropsType extends AbstractType
     {
         $resolver->setDefaults(
             [
-                'data_class' => ReportBuilder::class,
+                 'data_class' => ReportBuilder::class,
             ]
         );
     }

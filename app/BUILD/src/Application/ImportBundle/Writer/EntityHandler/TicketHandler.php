@@ -52,24 +52,28 @@ class TicketHandler extends AbstractEntityHandler
      *
      * @param Model\Ticket $model
      */
-    public function writeModel(Model\PrimaryImportModelInterface $model)
+    public function writeModel(Model\PrimaryImportModelInterface $model, $brandName = null)
     {
         /** @var Entity\Ticket $entity */
         $entity = $this->findOrCreateEntity($this->mappers->getTicketMapper(), $model);
         $entity
             ->disableAutoTicketProcess()
             ->setSubject($model->getSubject())
-            ->setDepartment($this->findOrCreateTicketDepartment($model->getDepartment()))
             ->setStatus($model->getStatus())
             ->setLanguage($this->helpers->getLanguageHelper()->findOrCreateLanguage($model->getLanguage()))
             ->setDateResolved($model->getDateResolved())
             ->setDateArchived($model->getDateArchived())
         ;
 
+        if ($model->getRef()) {
+            $entity->setRef($model->getRef());
+        }
+        if ($model->getDepartment()) {
+            $entity->setDepartment($this->helpers->getDepartmentHelper()->findOrCreateDepartment('ticket', $model->getDepartment()));
+        }
         if ($model->getUrgency()) {
             $entity->setUrgency($model->getUrgency());
         }
-
         if ($model->getDateCreated()) {
             $entity->setDateCreated($model->getDateCreated());
         }
@@ -148,7 +152,8 @@ class TicketHandler extends AbstractEntityHandler
         if ($model->getCategory()) {
             $entity->setCategory($this->helpers->getCategoryHelper()->findOrCreateCategory(
                 $this->mappers->getTicketCategoryMapper(),
-                $model->getCategory()
+                $model->getCategory(),
+                $brandName
             ));
         }
 
@@ -156,7 +161,8 @@ class TicketHandler extends AbstractEntityHandler
         if ($model->getProduct()) {
             $entity->setProduct($this->helpers->getCategoryHelper()->findOrCreateCategory(
                 $this->mappers->getTicketProductMapper(),
-                $model->getProduct()
+                $model->getProduct(),
+                $brandName
             ));
         }
 
@@ -168,6 +174,14 @@ class TicketHandler extends AbstractEntityHandler
         // update ticket priority
         if ($model->getPriority()) {
             $entity->setPriority($this->findOrCreatePriority($model->getPriority()));
+        }
+
+        if ($brandName) {
+            // set specific brand for multi-brand helpdesks
+            $brand = $this->mappers->getBrandMapper()->findByName($brandName);
+            if ($brand) {
+                $entity->setBrand($brand);
+            }
         }
 
         // ensure that the ticket has brand and department
@@ -269,41 +283,6 @@ class TicketHandler extends AbstractEntityHandler
                 $this->mappers->getTicketAttachmentMapper(), $attachmentModel, $messageEntity
             );
         }
-    }
-
-    /**
-     * Returns a department by title
-     * Creates a new department if not found.
-     *
-     * @param string $title
-     *
-     * @return Entity\Department|null
-     */
-    private function findOrCreateTicketDepartment($title)
-    {
-        $department = null;
-        if ($title) {
-            $department = $this->mappers->getDepartmentMapper()->findOneBy(['title' => $title]);
-            if ($department instanceof Entity\Department) {
-                $this->logger->debug(sprintf(
-                    'Found existing department `%d` with title `%s`',
-                    $department->getId(), $department->getTitle()
-                ));
-            } else {
-                $department = Entity\Department::createTicketDepartment();
-                $department->setRealTitle($title);
-
-                $defaultBrand = $this->mappers->getBrandMapper()->getDefaultBrand();
-                if ($defaultBrand) {
-                    $department->addBrand($defaultBrand);
-                }
-
-                $this->logger->notice(sprintf('New department creating `%s`', $department->getTitle()));
-                $this->persister->persistAndFlush($department);
-            }
-        }
-
-        return $department;
     }
 
     /**

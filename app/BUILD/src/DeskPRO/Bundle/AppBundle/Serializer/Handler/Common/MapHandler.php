@@ -65,10 +65,10 @@ class MapHandler implements SubscribingHandlerInterface
     public function serialize(JsonSerializationVisitor $visitor, $collection, $type, SideloadSerializationContext $context)
     {
         $entity_type = isset($type['params'][0]) ? $type['params'][0] : null;
-        $result      = [];
+        $result      = new \ArrayObject();
 
         foreach ($collection as $k => $entity) {
-            $result[$k] = $context->accept($entity, $entity_type);
+            $result[$k ?: 0] = $context->accept($entity, $entity_type);
         }
 
         return $result ?: new \ArrayObject();

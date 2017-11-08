@@ -1,5 +1,6 @@
-import React, { PropTypes } from 'react';
-import { Fieldset } from 'react-forms';
+import PropTypes from 'prop-types';
+import React from 'react';
+import { Fieldset } from '@deskpro/react-forms';
 import classNames from 'classnames';
 import { Input, Form, Field } from 'DeskPRO/Component/Semantic/ReactForm';
 import BaseForm from 'DeskPRO/Component/Form/BaseForm';
@@ -93,7 +94,7 @@ class AutoAttendantForm extends BaseForm {
 
               {autoAttendant &&
               <span className="voice-delete-button" onClick={this.onDelete}>
-                Delete this auto-attendant
+                Delete this Auto Attendant
               </span>}
             </Fieldset>
           </Form>

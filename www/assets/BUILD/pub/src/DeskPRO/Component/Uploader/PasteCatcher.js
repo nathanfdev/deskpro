@@ -1,4 +1,5 @@
-import React, { PropTypes } from 'react';
+import PropTypes from 'prop-types';
+import React from 'react';
 import { getImageDataUrl, dataUrlToBlob } from 'DeskPRO/Component/Util/Blob';
 import $ from 'jquery';
 
@@ -17,6 +18,20 @@ export const clipboardHasImages = (clipboardData) => {
 
   return false;
 };
+export const clipboardIEHasImages = (clipboardData) => {
+  if (!clipboardData || !clipboardData.files) {
+    return false;
+  }
+
+  for (let i = 0; i < clipboardData.files.length; i += 1) {
+    const file = clipboardData.files[i];
+
+    if (file.type.indexOf('image') !== -1) {
+      return true;
+    }
+  }
+  return false;
+};
 
 export const getBlobsFromItems = (items, onPasteImage) => {
   if (!items) {
@@ -32,6 +47,29 @@ export const getBlobsFromItems = (items, onPasteImage) => {
       const imgUrl = urlObj.createObjectURL(blob);
 
       onPasteImage(blob, imgUrl, item.type);
+    }
+  }
+};
+
+export const getBlobsFromIEItems = (files, event, onPasteImage) => {
+  if (!files) {
+    return;
+  }
+
+  for (let i = 0; i < files.length; i += 1) {
+    const file = files[i];
+
+    if (file.type.indexOf('image') !== -1) {
+      const url = URL.createObjectURL(file);
+      const reader = new window.FileReader();
+
+      reader.onloadend = function () {
+        const base64Image = reader.result;
+        const blob = dataUrlToBlob(base64Image);
+        onPasteImage(blob, url, file.type);
+      };
+
+      reader.readAsDataURL(file);
     }
   }
 };

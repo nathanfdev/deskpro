@@ -214,6 +214,11 @@ class DbTable extends PluginAdapter implements FormLoginInterface, UserInfoFetch
         }
 
         $identity = $this->getIdentityFromUserInfo($userinfo);
+        if (!$identity->getIdentity()) {
+            $this->logger->log('No identity id provided', Logger::DEBUG);
+
+            return new Result(Result::FAILURE, null, ['error_code' => 'missing_identity', 'error_message' => 'No identity id provided']);
+        }
 
         if ($this->logger) {
             if ($userinfo) {

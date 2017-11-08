@@ -75,7 +75,7 @@ class UserChatManager
     protected $session;
 
     /**
-     * @var \Application\DeskPRO\Entity\Person
+     * @var Person
      */
     protected $person;
 
@@ -126,7 +126,7 @@ class UserChatManager
     /**
      * Start a new chat conversation, or if its within time and sitll open, resume the previous.
      *
-     * @return \Application\DeskPRO\Entity\ChatConversation|null
+     * @return ChatConversation|null
      */
     public function startChat(array $chat_options, $is_window_mode = false, &$error_code = false)
     {
@@ -330,7 +330,7 @@ class UserChatManager
     /**
      * Get an open chat for the users session.
      *
-     * @return \Application\DeskPRO\Entity\ChatConversation
+     * @return ChatConversation
      */
     public function getChat($allow_timeout = false)
     {
@@ -374,8 +374,8 @@ class UserChatManager
     }
 
     /**
-     * @param \Application\DeskPRO\Entity\ChatConversation $convo
-     * @param \Application\DeskPRO\Entity\Person           $person
+     * @param ChatConversation $convo
+     * @param Person           $person
      *
      * @throws \Exception
      */
@@ -423,8 +423,8 @@ class UserChatManager
     }
 
     /**
-     * @param \Application\DeskPRO\Entity\ChatConversation $convo
-     * @param \Application\DeskPRO\Entity\Person           $who
+     * @param ChatConversation $convo
+     * @param Person           $who
      */
     public function personLeft(ChatConversation $convo, Person $person)
     {
@@ -473,9 +473,9 @@ class UserChatManager
      * Change the department of a chat.
      *
      *
-     * @param \Application\DeskPRO\Entity\ChatConversation $convo
-     * @param \Application\DeskPRO\Entity\Department|null  $dep
-     * @param \Application\DeskPRO\Entity\Person           $who
+     * @param ChatConversation                            $convo
+     * @param \Application\DeskPRO\Entity\Department|null $dep
+     * @param Person                                      $who
      *
      * @throws \Exception
      *
@@ -526,8 +526,8 @@ class UserChatManager
     /**
      * Assigns a chat to an agent.
      *
-     * @param \Application\DeskPRO\Entity\ChatConversation $convo
-     * @param                                              $agent
+     * @param ChatConversation $convo
+     * @param                  $agent
      */
     public function assignAgent(ChatConversation $convo, Person $agent)
     {
@@ -582,8 +582,8 @@ class UserChatManager
     /**
      * Add a new user track (the page theyre viewing) message.
      *
-     * @param \Application\DeskPRO\Entity\ChatConversation $convo
-     * @param string                                       $url
+     * @param ChatConversation $convo
+     * @param string           $url
      */
     public function addUserTrack(ChatConversation $convo, $url)
     {
@@ -607,7 +607,7 @@ class UserChatManager
     /**
      * Unassign the chat.
      *
-     * @param \Application\DeskPRO\Entity\ChatConversation $convo
+     * @param ChatConversation $convo
      */
     public function unassignAgent(ChatConversation $convo)
     {
@@ -652,7 +652,7 @@ class UserChatManager
      * Mark an agent as timed out and unassign the chat.
      *
      *
-     * @param \Application\DeskPRO\Entity\ChatConversation $convo
+     * @param ChatConversation $convo
      *
      * @throws \Exception
      */
@@ -688,7 +688,7 @@ class UserChatManager
     /**
      * Mark a user as timed out and end the chat.
      *
-     * @param \Application\DeskPRO\Entity\ChatConversation $convo
+     * @param ChatConversation $convo
      */
     public function userTimeout(ChatConversation $convo)
     {
@@ -713,7 +713,7 @@ class UserChatManager
     /**
      * Mark the chat as ended due to a wait timeout.
      *
-     * @param \Application\DeskPRO\Entity\ChatConversation $convo
+     * @param ChatConversation $convo
      */
     public function waitTimeout(ChatConversation $convo)
     {
@@ -738,7 +738,7 @@ class UserChatManager
     /**
      * Mark the chat as ended due to a wait timeout.
      *
-     * @param \Application\DeskPRO\Entity\ChatConversation $convo
+     * @param ChatConversation $convo
      */
     public function userAbandoned(ChatConversation $convo)
     {
@@ -768,16 +768,16 @@ class UserChatManager
         $convo->status = 'ended';
 
         if ($author) {
-            $convo->ended_by = \Application\DeskPRO\Entity\ChatConversation::ENDED_AGENT;
+            $convo->ended_by = ChatConversation::ENDED_AGENT;
         } elseif ($reason == 'timeout') {
             $reason          = '';
-            $convo->ended_by = \Application\DeskPRO\Entity\ChatConversation::ENDED_TIMEOUT;
+            $convo->ended_by = ChatConversation::ENDED_TIMEOUT;
         } elseif ($reason == 'wait_timeout') {
             $reason          = '';
-            $convo->ended_by = \Application\DeskPRO\Entity\ChatConversation::ENDED_WAIT_TIMEOUT;
+            $convo->ended_by = ChatConversation::ENDED_WAIT_TIMEOUT;
         } elseif ($reason == 'abandoned') {
             $reason          = '';
-            $convo->ended_by = \Application\DeskPRO\Entity\ChatConversation::ENDED_ABANDONED;
+            $convo->ended_by = ChatConversation::ENDED_ABANDONED;
         }
 
         if ($convo->ended_by != 'timeout' && $convo->ended_by != 'wait_timeout' && $convo->ended_by != 'abandoned') {
@@ -799,7 +799,7 @@ class UserChatManager
      * The user ended the chat.
      *
      *
-     * @param \Application\DeskPRO\Entity\ChatConversation $convo
+     * @param ChatConversation $convo
      *
      * @throws \Exception
      */
@@ -826,9 +826,9 @@ class UserChatManager
     /**
      * Send a transcript of a chat to a user.
      *
-     * @param \Application\DeskPRO\Entity\ChatConversation $convo
-     * @param                                              $email
-     * @param string                                       $name
+     * @param ChatConversation $convo
+     * @param                  $email
+     * @param string           $name
      *
      * @deprecated Emails are sent through a WorkerProcess now
      */
@@ -856,7 +856,7 @@ class UserChatManager
     /**
      * Send a chat transcript to the user who started a chat if we have an email for them.
      *
-     * @param \Application\DeskPRO\Entity\ChatConversation $convo
+     * @param ChatConversation $convo
      *
      * @return bool
      */
@@ -887,11 +887,11 @@ class UserChatManager
     /**
      * Add a new message form the user who started the chat.
      *
-     * @param \Application\DeskPRO\Entity\ChatConversation $convo
-     * @param                                              $message
-     * @param array                                        $metadata
+     * @param ChatConversation $convo
+     * @param                  $message
+     * @param array            $metadata
      *
-     * @return \Application\DeskPRO\Entity\ChatMessage
+     * @return ChatMessage
      */
     public function addUserMessage(ChatConversation $convo, $message, array $metadata = [])
     {
@@ -908,11 +908,14 @@ class UserChatManager
     /**
      * Add a new message from a user.
      *
-     * @param \Application\DeskPRO\Entity\Person           $author
-     * @param                                              $message
-     * @param \Application\DeskPRO\Entity\ChatConversation $convo
+     * @param ChatConversation $convo
+     * @param Person           $author
+     * @param $message
+     * @param array $metadata
      *
-     * @return \Application\DeskPRO\Entity\ChatMessage
+     * @throws \Exception
+     *
+     * @return ChatMessage
      */
     public function addMessage(ChatConversation $convo, Person $author = null, $message, array $metadata = [])
     {
@@ -985,10 +988,10 @@ class UserChatManager
     }
 
     /**
-     * @param                                              $message_id
-     * @param \Application\DeskPRO\Entity\ChatConversation $convo
+     * @param                  $message_id
+     * @param ChatConversation $convo
      *
-     * @return \Application\DeskPRO\Entity\ChatMessage
+     * @return ChatMessage
      */
     public function addSystemMessage(ChatConversation $convo, $message_id, array $vars = [], $metadata = [])
     {
@@ -1058,8 +1061,8 @@ class UserChatManager
     }
 
     /**
-     * @param \Application\DeskPRO\Entity\ChatConversation $convo
-     * @param                                              $preview_string
+     * @param ChatConversation $convo
+     * @param                  $preview_string
      */
     public function setUserTypingIndicator(ChatConversation $convo, $preview_string)
     {
@@ -1067,8 +1070,8 @@ class UserChatManager
     }
 
     /**
-     * @param \Application\DeskPRO\Entity\ChatConversation $convo
-     * @param array                                        $message_ids
+     * @param ChatConversation $convo
+     * @param array            $message_ids
      */
     public function ackMessages(ChatConversation $convo, array $message_ids)
     {

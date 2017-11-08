@@ -871,7 +871,6 @@ class Blob extends \Application\DeskPRO\Domain\DomainObject
             ['table' => 'people', 'columns' => ['picture_blob_id']],
             ['table' => 'people_files', 'columns' => ['blob_id']],
             ['table' => 'sendmail_sources', 'columns' => ['blob_id', 'log_blob_id']],
-            ['table' => 'task_attachments', 'columns' => ['blob_id']],
             ['table' => 'theme_set_assets', 'columns' => ['blob_id']],
             ['table' => 'tickets_attachments', 'columns' => ['blob_id']],
             ['table' => 'ticket_proc_log', 'columns' => ['blob_id']],
@@ -966,7 +965,7 @@ class Blob extends \Application\DeskPRO\Domain\DomainObject
         $metadata->mapField([
             'fieldName'  => 'filename',
             'type'       => 'string',
-            'length'     => 120,
+            'length'     => 255,
             'precision'  => 0,
             'scale'      => 0,
             'nullable'   => false,

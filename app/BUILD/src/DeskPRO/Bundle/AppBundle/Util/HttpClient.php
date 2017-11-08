@@ -31,9 +31,12 @@ namespace DeskPRO\Bundle\AppBundle\Util;
 use Composer\CaBundle\CaBundle;
 use GuzzleHttp\Client;
 use GuzzleHttp\RequestOptions;
+use Psr\Http\Message\ResponseInterface;
+use Psr\Http\Message\UriInterface;
 
 /**
- * Class HttpClient.
+ * @method ResponseInterface post(string|UriInterface $uri, array $options = [])
+ * Class HttpClient
  */
 class HttpClient extends Client
 {

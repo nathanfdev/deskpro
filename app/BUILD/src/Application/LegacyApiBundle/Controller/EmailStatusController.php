@@ -40,7 +40,6 @@ use Application\DeskPRO\EmailGateway\Runner;
 use Application\EmailBundle\Entity\SendmailSource;
 use Application\LegacyApiBundle\PermissionStrategy\UserTypePermission;
 use DeskPRO\Bundle\AppBundle\Annotation\ActionPermissions\Annotation\ApiModes;
-use deskpro_sendgrid\InstallerHandler;
 use Doctrine\DBAL\Connection;
 use Orb\Util\Strings;
 
@@ -268,9 +267,8 @@ class EmailStatusController extends AbstractController implements ProtectedContr
             [
                 'page'             => $filter->getPage(),
                 'num_pages'        => $info['num_pages'],
-                'count'            => $info['count'],
                 'sendmail_queue'   => $data,
-                'tracking_enabled' => (bool) $this->container->getSetting(InstallerHandler::NAME.'.enabled'),
+                'tracking_enabled' => false,
             ]
         );
     }
@@ -511,10 +509,8 @@ class EmailStatusController extends AbstractController implements ProtectedContr
             $info['sendmail_raw'] = null;
         }
 
-        if ($this->container->getSetting(InstallerHandler::NAME.'.enabled')) {
-            foreach ($sendmail->getStatuses() as $status) {
-                $info['statuses'][] = $status->toArray();
-            }
+        foreach ($sendmail->getStatuses() as $status) {
+            $info['statuses'][] = $status->toArray();
         }
 
         return $this->createApiResponse($info);

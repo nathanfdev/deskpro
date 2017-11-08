@@ -42,6 +42,7 @@ return [
     'api.error_codes.empty'                          => 'This value should be blank.',
     'api.error_codes.error'                          => 'Error.',
     'api.error_codes.extra_fields'                   => 'Unexpected field names: {{ extra_fields }}',
+    'api.error_codes.ip_verify'                      => 'You are attempting to access api from an unverified IP address. You should check your email and follow the instructions within to verify your IP address.',
     'api.error_codes.facebook_url'                   => 'This value is not a valid profile URL.',
     'api.error_codes.forbidden'                      => 'You are not authorized to make this request.',
     'api.error_codes.internal_error'                 => 'Internal error.',

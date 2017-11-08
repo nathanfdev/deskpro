@@ -39,8 +39,9 @@ DeskPRO.Agent.PageFragment.Page.UserChat = new Orb.Class({
 				messageTextarea.setCode('');
 				messageTextarea.change();
 
-				self.getEl('replybox').css('height', 40+69);
-				self.getEl('messages_box').css('bottom', 40+69);
+				var size = 40+69;
+				self.getEl('replybox').css('height', size);
+				self.getEl('messages_box').css('bottom', size);
 			} else {
 				messageTextarea.val('');
 			}
@@ -77,6 +78,8 @@ DeskPRO.Agent.PageFragment.Page.UserChat = new Orb.Class({
 				// Sets the real message ID after we've come back from ajax
 				self.getEl('messages_box').find('.message-' + tmp_id).addClass('message-' + message_id).addClass('server-ack').data('message-id', message_id).attr('title', 'User read message at: ' + time);
 			});
+
+      self.sendSnippetAttachments();
 		};
 
 		this.doSendMsg = function() {
@@ -216,8 +219,12 @@ DeskPRO.Agent.PageFragment.Page.UserChat = new Orb.Class({
 						var tmp = ed.height();
 						if (lastH != tmp) {
 							lastH = tmp;
-							self.getEl('replybox').css('height', lastH+44);
-							self.getEl('messages_box').css('bottom', lastH+44);
+							var newHeight = 44 + lastH;
+							if (self.hasAttachments) {
+								newHeight += 31;
+							}
+							self.getEl('replybox').css('height', newHeight);
+							self.getEl('messages_box').css('bottom', newHeight);
 						}
 					}, 50);
 				});
@@ -467,8 +474,12 @@ DeskPRO.Agent.PageFragment.Page.UserChat = new Orb.Class({
               var tmp = ed.height();
               if (lastH != tmp) {
                 lastH = tmp;
-                self.getEl('replybox').css('height', lastH + 69);
-                self.getEl('messages_box').css('bottom', lastH + 69);
+                var newHeight = 69 + lastH;
+                if (self.hasAttachments) {
+                  newHeight += 31;
+                }
+                self.getEl('replybox').css('height', newHeight);
+                self.getEl('messages_box').css('bottom', newHeight);
               }
             }, 100);
           } else {
@@ -512,17 +523,18 @@ DeskPRO.Agent.PageFragment.Page.UserChat = new Orb.Class({
 				}
 			},
 			onContentSet: function(eventData) {
-				$('.unassign-trigger').on('click', function() {
+				var el = eventData.contentEl;
+        el.find('.unassign-trigger').on('click', function() {
 					self._confirmCloseOverlay.close();
 					self.closeAction = 'unassign';
 					DeskPRO_Window.TabBar.removeTabById(self.meta.tabId);
 				});
-				$('.end-trigger').on('click', function() {
+        el.find('.end-trigger').on('click', function() {
 					self._confirmCloseOverlay.close();
 					self.closeAction = 'end';
 					DeskPRO_Window.TabBar.removeTabById(self.meta.tabId);
 				});
-				$('.cancel-trigger').on('click', function() {
+        el.find('.cancel-trigger').on('click', function() {
 					self._confirmCloseOverlay.close();
 				});
 			}
@@ -611,6 +623,12 @@ DeskPRO.Agent.PageFragment.Page.UserChat = new Orb.Class({
 				}
       });
     });
+
+    this.el.on('click', '.remove-attach-trigger', function() {
+      var blobId = $(this).prev('input').val();
+      var row = $(this).closest('li');
+      self.removeBlob(blobId, row);
+    });
 	},
 
 	insertSnippet: function(snippet, blobs, langId) {
@@ -619,6 +637,7 @@ DeskPRO.Agent.PageFragment.Page.UserChat = new Orb.Class({
       blobs,
       langId,
       this.meta.api_data,
+      'chat',
       this.textarea,
       this.attachBlobs.bind(this),
       this.recordSnippetUse.bind(this)
@@ -629,7 +648,66 @@ DeskPRO.Agent.PageFragment.Page.UserChat = new Orb.Class({
   attachBlobs: function(blobs, source) {
     // At the moment attachment as sent straight away we need to be able to edit them or review the message
     // before sending them
+    var self = this;
+    var $attachRow = this.getEl('attach_row');
+    Array.each(blobs, function (info) {
+      var blob = source[info];
+      if (blob) {
+        var html = window.tmpl($('.template-download', self.wrapper).attr('id'))({files: [blob]});
+        $attachRow.find('ul.files:first').append(html);
+      }
+    });
+    $attachRow.slideDown().removeClass('is-hidden');
+    self.hasAttachments = true;
+    var ed = this.textarea.getEditor();
+    var lastH = ed.height();
+    self.getEl('replybox').css('height', lastH+75);
+    self.getEl('messages_box').css('bottom', lastH+75);
 	},
+
+	sendSnippetAttachments: function() {
+    var self = this;
+    var rows = $('ul.files li', self.getEl('attach_row'));
+    var blob_id;
+
+    if (!rows.length) {
+    	return;
+		}
+
+    for (var x = 0; x < rows.length; x++) {
+      blob_id = $('input', rows[x]).val();
+      if (blob_id) {
+        DeskPRO_Window.util.ajaxWithClientMessages({
+          url: BASE_URL + 'agent/chat/send-file-message/' + self.meta.conversation_id,
+          data: {send_blob_id: blob_id }
+        });
+      }
+      rows[x].remove();
+    }
+    self.getEl('attach_row').hide().addClass('is-hidden');
+    var ed = self.textarea.getEditor();
+    var lastH = ed.height();
+    self.getEl('replybox').css('height', lastH + 45);
+    self.getEl('messages_box').css('bottom', lastH + 45);
+    self.hasAttachments = false;
+	},
+
+  removeBlob: function(blobId, row) {
+    $(this).trigger('blobremove', [blobId]);
+    var self = this;
+    row.fadeOut('fast', function() {
+      row.remove();
+      var rows = $('ul.files li', self.getEl('attach_row'));
+      if (!rows.length) {
+        self.getEl('attach_row').hide().addClass('is-hidden');
+        var ed = self.textarea.getEditor();
+        var lastH = ed.height();
+        self.getEl('replybox').css('height', lastH+45);
+        self.getEl('messages_box').css('bottom', lastH+45);
+        self.hasAttachments = false;
+      }
+    });
+  },
 
   recordSnippetUse: function(snippetId) {
     // Add Snippet usage record mechanism
@@ -883,6 +961,11 @@ DeskPRO.Agent.PageFragment.Page.UserChat = new Orb.Class({
 			return;
 		}
 
+		var authorName = name || '';
+		if (type == 'user') {
+			authorName = this.meta.convo.person_name || '';
+		}
+
 		if (type == 'sys') {
 			name = '* ';
 		} else {
@@ -910,13 +993,6 @@ DeskPRO.Agent.PageFragment.Page.UserChat = new Orb.Class({
 		if (person_avatar.indexOf('gravatar.com') !== -1) {
 			person_avatar = person_avatar.replace(/&?s=\d+\//, "", person_avatar);
 			person_avatar = Orb.appendQueryData(person_avatar, 's', '25');
-		}
-
-		var authorName = '';
-		if (type == 'agent') {
-			authorName = this.meta.youName || '';
-		} else if (type == 'user') {
-			authorName = this.meta.convo.person_name || '';
 		}
 
 		avatarHtml = '<div class="avatar tipped" title="'+ Orb.escapeHtml(authorName) +'"><img src="' + person_avatar + '" /></div>';
@@ -1214,9 +1290,18 @@ DeskPRO.Agent.PageFragment.Page.UserChat = new Orb.Class({
 		};
 
 		// TODO handle resize without element resize monitor
-		chatPositioner.on('resize', syncChatSize);
-		box1.on('resize', syncSizes);
-		box2.on('resize', syncSizes);
+		chatPositioner.on('resize', function (ev) {
+			ev.stopPropagation(); // needed to prevent resize loops
+			syncChatSize();
+    });
+		box1.on('resize', function(ev) {
+      ev.stopPropagation(); // needed to prevent resize loops
+      syncSizes();
+		});
+		box2.on('resize', function(ev) {
+      ev.stopPropagation(); // needed to prevent resize loops
+      syncSizes();
+		});
 
 		chatView.on('click', '.join-convo', $.proxy(self.joinConvo, this));
 

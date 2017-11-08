@@ -1,4 +1,5 @@
-import React, { PropTypes } from 'react';
+import PropTypes from 'prop-types';
+import React from 'react';
 import { PersonAvatar } from 'DeskPRO/Bundle/AgentBundle/Modules/Common/Components/Avatar/index';
 import { Checkbox } from 'DeskPRO/Component/Semantic/ReactForm';
 import { Toggle } from 'DeskPRO/Component/Semantic/Form/index';

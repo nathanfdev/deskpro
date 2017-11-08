@@ -5,7 +5,7 @@
 
 	<div class="overlay-content">
 		{% if other_ticket and other_ticket.id == ticket.id %}
-			{{ phrase('agent.tickets.error_merge_with_self') }}
+			<div class="locked-message">{{ phrase('agent.tickets.error_merge_with_self') }}</div>
 		{% else %}
 			<form>
 				<div
@@ -40,7 +40,9 @@
 					</div>
 				</div>
 			</form>
-
+			{% if merge_failed_reason %}
+				<div class="locked-message">{{ phrase(merge_failed_reason) }}</div>
+			{% endif %}
 			{% if other_ticket %}
 				<div class="merge-data-wrap">
 					<table class="merge-data" width="100%">
@@ -68,11 +70,18 @@
                                     </div>
 								</div></td>
 							</tr>
-                            {% if ticket.getLockedByAgent() or other_ticket.getLockedByAgent() %}
+                            {% if ticket.hasLock() or other_ticket.hasLock() %}
                             <tr class="header-row">
-                                <td class="first locked-ticket">{{ phrase('agent.tickets.merge_force') }}</td>
+
+                                <td class="first locked-ticket">
+                                    {% if ticket.isLocked(app.getUser()) or other_ticket.isLocked(app.getUser()) %}
+										{{ phrase('agent.tickets.merge_force') }}
+									{% else %}
+										&nbsp;
+									{% endif %}
+								</td>
                                 <td class="locked-ticket">
-                                    {% if ticket.getLockedByAgent() %}
+                                    {% if ticket.hasLock() and ticket.isLocked(app.getUser()) %}
                                         <label for="ticket_force">
                                             {{ phrase('agent.tickets.merge_ticket_locked', {
                                                 'id': ticket.getId(),
@@ -86,12 +95,20 @@
                                                 value="1"
                                             />
                                         </label>
-                                    {% else %}
-                                        &nbsp;
+                                    {% elseif ticket.hasLock() and not ticket.isLocked(app.getUser()) %}
+										<label for="ticket_force">
+                                            {{ phrase('agent.tickets.merge_ticket_locked', {
+                                                'id': ticket.getId(),
+                                                'agent_name': 'you'
+                                            })
+                                            }}
+										</label>
+									{% else %}
+										&nbsp;
                                     {% endif %}
                                 </td>
                                 <td class="locked-ticket">
-                                    {% if other_ticket.getLockedByAgent() %}
+                                    {% if other_ticket.hasLock() and other_ticket.isLocked(app.getUser()) %}
                                         <label for="other_ticket_force">
                                             {{ phrase('agent.tickets.merge_ticket_locked', {
                                                 'id': other_ticket.getId(),
@@ -105,8 +122,16 @@
                                                 value="1"
                                             />
                                         </label>
+                                    {% elseif other_ticket.hasLock() and not other_ticket.isLocked(app.getUser()) %}
+										<label for="ticket_force">
+                                            {{ phrase('agent.tickets.merge_ticket_locked', {
+                                                'id': other_ticket.getId(),
+                                                'agent_name': 'you'
+                                            })
+                                            }}
+										</label>
                                     {% else %}
-                                        &nbsp;
+										&nbsp;
                                     {% endif %}
                                 </td>
                             </tr>

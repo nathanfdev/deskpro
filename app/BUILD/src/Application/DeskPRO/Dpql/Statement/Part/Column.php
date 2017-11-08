@@ -81,12 +81,18 @@ class Column extends AbstractPart
     ELSE CONCAT(\'ID-\', %1$s.id)
 END)
 ', 'person'],
-        'products'          => ['id', 'title'],
-        'slas'              => ['id', 'title'],
-        'tickets'           => ['id', 'subject', 'ticket'],
-        'ticket_categories' => ['id', 'title'],
-        'ticket_priorities' => ['id', 'title'],
-        'ticket_workflows'  => ['id', 'title'],
+        'products'                 => ['id', 'title'],
+        'slas'                     => ['id', 'title'],
+        'tickets'                  => ['id', 'subject', 'ticket'],
+        'ticket_categories'        => ['id', 'title'],
+        'ticket_priorities'        => ['id', 'title'],
+        'ticket_workflows'         => ['id', 'title'],
+        'custom_def_article'       => ['id', 'title'],
+        'custom_def_chat'          => ['id', 'title'],
+        'custom_def_feedback'      => ['id', 'title'],
+        'custom_def_organizations' => ['id', 'title'],
+        'custom_def_ticket'        => ['id', 'title'],
+        'custom_def_people'        => ['id', 'title'],
     ];
 
     /**
@@ -103,6 +109,7 @@ END)
         'custom_data_person'        => '%1$s.root_field_id = %2$s',
         'custom_data_ticket'        => '%1$s.root_field_id = %2$s',
         'custom_data_billing'       => '%1$s.root_field_id = %2$s',
+        'custom_field_data'         => '%1$s.root_definition_id = %2$s',
         'ticket_slas'               => '%1$s.sla_id = %2$s',
     ];
 
@@ -290,13 +297,26 @@ END)
                         throw new Exception("$partsString cannot be accessed via DPQL.");
                     }
 
-                    $childSqlTable  = $childRepository->getTableName();
-                    $joinAlias      = "{$sqlTable}_{$name}";
-                    $joinConditions = sprintf($association['conditions'], $joinAlias, $sqlTable);
+                    $childSqlTable = $childRepository->getTableName();
+                    $joinAlias     = "{$sqlTable}_{$name}";
+                    if ($extraConditionValue !== false) {
+                        if (!isset(self::$_conditionResolver[$childSqlTable])) {
+                            throw new Exception("$partsString contains an unexpected extra condition");
+                        }
+
+                        $joinAlias .= '_'.preg_replace('/[^a-zA-Z0-9_]/', '_', $extraConditionValue);
+                    }
+
+                    $joinConditions[] = sprintf($association['conditions'], $joinAlias, $sqlTable);
+                    if ($extraConditionValue !== false) {
+                        $joinConditions[] = sprintf(
+                            self::$_conditionResolver[$childSqlTable], $joinAlias, App::getDb()->quote($extraConditionValue)
+                        );
+                    }
 
                     $select->addJoin(
                         "$joinAlias",
-                        "LEFT JOIN `$childSqlTable` AS `$joinAlias` ON ($joinConditions)"
+                        "LEFT JOIN `$childSqlTable` AS `$joinAlias` ON (".implode(' AND ', $joinConditions).')'
                     );
 
                     $repository = $childRepository; // now references come from this table
@@ -391,6 +411,15 @@ END)
                 $prepped = $call->prepare($statement, $section, $stack, $select, $result);
 
                 return new Prepared($prepped->sql(), $this->_prettifyColumnName($name), $prepped->printed());
+            } elseif ($assocTable === 'custom_field_data') {
+                $call = new FunctionCall('if', [
+                    new self(array_merge($this->parts, ['id'])),
+                    new self(array_merge($this->parts, ['definition', 'title'])),
+                    new self(array_merge($this->parts, ['input'])),
+                ]);
+                $prepped = $call->prepare($statement, $section, $stack, $select, $result);
+
+                return new Prepared($prepped->sql(), $this->_prettifyColumnName($name), false, $renderer);
             } elseif (preg_match('/^custom_data_/', $assocTable)) {
                 $custom_def_table = str_replace('_data_', '_def_', $assocTable);
                 switch ($custom_def_table) {
@@ -435,7 +464,7 @@ END)
                     $prepped = $call->prepare($statement, $section, $stack, $select, $result);
                 }
 
-                return new Prepared($prepped->sql(), $this->_prettifyColumnName($name), false, $renderer);
+                return new Prepared($prepped->sql(), $this->_prettifyColumnName($field ? $field->getTitle() : $name), false, $renderer);
             } elseif (preg_match('/^custom_def_/', $assocTable)) {
                 $call = new FunctionCall('if', [
                     new self(array_merge($this->parts, ['parent', 'id'])),

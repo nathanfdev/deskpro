@@ -1,10 +1,12 @@
-import React, { PropTypes } from 'react';
+import PropTypes from 'prop-types';
+import React from 'react';
+import Immutable from 'immutable';
 import classNames from 'classnames';
-import _ from 'lodash';
-import { Fieldset } from 'react-forms';
+import range from 'lodash/range';
+import { Fieldset } from '@deskpro/react-forms';
 import { Input, Form, Field, Select, MultiSelect, Checkbox, RecordsChoiceWrapper } from 'DeskPRO/Component/Semantic/ReactForm';
 import BaseForm from 'DeskPRO/Component/Form/BaseForm';
-import AgentChoiceListWrapper from '../../Common/AgentChoiceListWrapper';
+import { PersonAvatar } from 'DeskPRO/Bundle/AgentBundle/Modules/Common/Components/Avatar/index';
 import AccountChoiceWrapper from '../../Common/AccountChoiceWrapper';
 import AudioWidgetFormContainer from '../../Common/AudioWidgetFormContainer';
 import AgentsSelectContainer from '../../../../Common/Components/Select/AgentsSelectContainer';
@@ -55,7 +57,7 @@ class QueueForm extends BaseForm {
     return {
       account,
       name:                 queue ? queue.get('name') : '',
-      agents:               queue ? queue.get('agents').toArray() : [],
+      agents:               queue ? queue.get('agents').toArray().map(voiceAgent => voiceAgent.toJS()) : [],
       routing_model:        queue ? queue.get('routing_model') : 'automatic',
       max_queue_size:       queue ? queue.get('max_queue_size') : 0,
       greet_asset:          greetAsset ? greetAsset.toJS() : null,
@@ -87,9 +89,7 @@ class QueueForm extends BaseForm {
             </Field>
             {agents && agents.size > 0 &&
               <Field select="agents" label="Agents">
-                <AgentChoiceListWrapper agents={agents}>
-                  <MultiSelect />
-                </AgentChoiceListWrapper>
+                <VoiceAgentChoiceList agents={agents} />
               </Field>}
             <Field select="routing_model" label="Routing model" className="routing-model">
               <RoutingModel />
@@ -160,7 +160,7 @@ class RoutingModel extends React.Component {
   render() {
     const { value, onChange } = this.props;
     const choices = [
-      { value: 'automatic', label: 'Automatic', help: 'Call will be routed amongst all agents evenly. The system will automatically balance calls so that no single agent handles more or less than any other agent. For example, given three agents online, if AgentA and AgentB have both accepted a call, then they won\'t recieve another call until AgentC has also accepted a call.' },
+      { value: 'automatic', label: 'Automatic', help: 'Call will be routed amongst all agents evenly. The system will automatically balance calls so that no single agent handles more or less than any other agent. For example, given three agents online, if AgentA and AgentB have both accepted a call, then they won\'t receive another call until AgentC has also accepted a call.' },
       { value: 'least_utilized', label: 'Least Utilized', help: 'Calls will be routed towards agents who have handled the fewest calls.' },
       { value: 'simulring', label: 'Simulring', help: 'Any incoming call will ring ALL agents at the same time. The first to answer wil handle the call.' }
     ];
@@ -195,7 +195,7 @@ class MaxQueueSize extends React.Component {
 
   render() {
     const { value, onChange } = this.props;
-    const choices = _.range(1, 10).map(num => ({
+    const choices = range(1, 10).map(num => ({
       value: num,
       label: num
     }));
@@ -304,6 +304,54 @@ class VoicemailProperty extends React.Component {
         <Checkbox label={label} value={expanded} onChange={this.onToggleExpanded} />
         {expanded && React.cloneElement(children, { ...children.props, value, onChange })}
       </div>
+    );
+  }
+}
+
+class VoiceAgentChoiceList extends React.Component {
+
+  static propTypes = {
+    value:    PropTypes.array,
+    onChange: PropTypes.func,
+    agents:   PropTypes.object
+  };
+
+  onChange = (data) => {
+    const { value, onChange } = this.props;
+    const oldAgentIds = value.map(voiceAgent => voiceAgent.agent);
+    const newValue = value.filter(voiceAgent => data.indexOf(voiceAgent.agent) !== -1);
+
+    data.forEach((agentId) => {
+      if (oldAgentIds.indexOf(agentId) === -1) {
+        newValue.push(({ agent: agentId, is_enabled: true }));
+      }
+    });
+
+    onChange(newValue);
+  };
+
+  render() {
+    const { value, agents = Immutable.fromJS([]) } = this.props;
+    const agentIds = value.map(voiceAgent => voiceAgent.agent);
+    const choices = agents.map(agent => ({
+      value: agent.get('id'),
+      label: (
+        <div className="multi-select-label">
+          <PersonAvatar person={agent} size={16} />
+          <span className={classNames({ disabled: !agent.getIn(['agent_data', 'is_voice_enabled']) })}>
+            {agent.get('name')}
+          </span>
+        </div>
+      )
+    })).toArray();
+
+    return (
+      <MultiSelect
+        {...this.props}
+        value={agentIds}
+        choices={choices}
+        onChange={this.onChange}
+      />
     );
   }
 }

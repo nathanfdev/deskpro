@@ -48,6 +48,13 @@ define [
         return if not @form?.zones?
         @form.zones.reports = @form.zones.reports || @form.zones.admin
       )
+
+      @$scope.show_selected_permissions = false
+      @$scope.show_selected_teams = false
+      @$scope.selectedFilter = (show_selected) ->
+        return (itm) ->
+          return !show_selected || itm.value
+
       return
 
     initialLoad: ->
@@ -206,6 +213,7 @@ define [
         general: {}
         tasks: {}
         problems: {}
+        snippet: {}
       }
 
       @ugEffectiveDepPerms = {
@@ -249,11 +257,9 @@ define [
                 @ugEffectivePerms[type][pname] = pval
 
     hasSomePerms: (typename, permname) ->
-      suffix = permname.replace(/^.*?_(.*?)$/, '$1')
+      prefix = permname.replace(/(^.*?_).*?$/, '$1')
+      suffix = permname.replace(/^.*?(_.*?)$/, '$1')
       return if not suffix or not (@ugEffectivePerms?[typename]? || @perm_form?[typename]?)
-
-      suffix = "_" + suffix
-      prefix = "modify_"
 
       if @ugEffectivePerms?[typename]?
         for own name, val of @ugEffectivePerms[typename]
@@ -351,6 +357,7 @@ define [
                 (res) =>
                   $scope.is_saving = false
                   $scope.error = res.data.error_message
+                  $scope.error_code = res.data.error_info.error_code
               )
             else
               doReset(false).then(
@@ -574,6 +581,17 @@ define [
         }
       })
 
+    mergeDupePerson: (personId) ->
+      merge = new window.parent.DeskPRO.Agent.Widget.Merge({
+        tabType: 'person',
+        metaId: @agentId,
+        metaIdName: 'person_id',
+        overlayUrl: DP_BASE_URL + 'agent/people/{id}/merge-overlay/{other}',
+        mergeUrl: DP_BASE_URL + 'agent/people/{id}/merge/{other}',
+        loadRoute: 'person:' + DP_BASE_URL + 'agent/people/{id}'
+      })
+
+      merge.openWithId(personId)
 
     ###
       # Returns an object hash of the complete form data

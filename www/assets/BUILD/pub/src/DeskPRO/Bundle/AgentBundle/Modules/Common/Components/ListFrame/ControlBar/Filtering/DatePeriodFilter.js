@@ -1,5 +1,5 @@
-import React, { Component, PropTypes } from 'react';
-import createFragment from 'react-addons-create-fragment';
+import PropTypes from 'prop-types';
+import React, { Component } from 'react';
 import { Menu } from 'DeskPRO/Bundle/AgentBundle/Modules/Common/Components/Menu/Menu';
 import { DatePeriods } from 'DeskPRO/Bundle/AgentBundle/Services/DatePeriods';
 import { FilterItem } from 'DeskPRO/Bundle/AgentBundle/Modules/Common/Components/Menu/FilterItem';
@@ -54,9 +54,9 @@ export class DatePeriodFilter extends Component {
 
   renderPeriods = () => {
     const periods = DatePeriods.all;
-    const options = { placeholder: <option key={0} value="">Select period</option> };
-    Object.keys(periods).forEach(period => {
-      options[period] = <option key={period} value={period}>{periods[period]}</option>;
+    const options = [<option key={0} value="">Select period</option>];
+    Object.keys(periods).forEach((period) => {
+      options.push(<option key={period} value={period}>{periods[period]}</option>);
     });
 
     return options;
@@ -74,7 +74,7 @@ export class DatePeriodFilter extends Component {
         filterType = '';
         filterValue = value;
       } else {
-        Object.keys(value).forEach(property => {
+        Object.keys(value).forEach((property) => {
           filterType = property;
           filterValue = value[property];
         });
@@ -106,7 +106,7 @@ export class DatePeriodFilter extends Component {
                     value={filterValue}
                     onChange={this.handleChange}
                   >
-                    {createFragment(this.renderPeriods())}
+                    {this.renderPeriods()}
                   </select>
                 </div>
               </div>

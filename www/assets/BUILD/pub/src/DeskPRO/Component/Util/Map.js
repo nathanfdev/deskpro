@@ -1,6 +1,6 @@
-import objGet from 'lodash/object/get';
-import isArray from 'lodash/lang/isArray';
-import isObject from 'lodash/lang/isObject';
+import objGet from 'lodash/get';
+import isArray from 'lodash/isArray';
+import isObject from 'lodash/isObject';
 import Immutable from 'immutable';
 import warning from 'warning';
 import invariant from 'invariant';
@@ -18,49 +18,43 @@ export function mapKeyedFromArray(arrayVal, keyProp) {
 
   // Already an Immutable object
   if (Immutable.Iterable.isIterable(arrayVal)) {
-    return Immutable.Map().withMutations(map => {
-      arrayVal.forEach(v => {
+    return Immutable.Map().withMutations((map) => {
+      arrayVal.forEach((v) => {
         const k = isDeepKey ? v.getIn(keyProp) : v.get(keyProp);
         if (k !== null && typeof k !== 'undefined') {
           map.set(k, Immutable.fromJS(v));
-        } else {
-          if (__DEV__) {
-            warning(
+        } else if (__DEV__) { // eslint-disable-line no-undef
+          warning(
               true, 'mapKeyedFromArray() the key property %s doesn\'t exist in %s from %s', keyProp, v, arrayVal);
-          }
         }
       });
     });
 
     // A POJO
   } else if (isObject(arrayVal)) {
-    return Immutable.Map().withMutations(map => {
-      Object.keys(arrayVal).forEach(key => {
+    return Immutable.Map().withMutations((map) => {
+      Object.keys(arrayVal).forEach((key) => {
         const v = arrayVal[key];
         const k = isDeepKey ? objGet(v, keyProp) : v[keyProp];
         if (k !== null && typeof k !== 'undefined') {
           map.set(k, Immutable.fromJS(v));
-        } else {
-          if (__DEV__) {
-            warning(
+        } else if (__DEV__) { // eslint-disable-line no-undef
+          warning(
               true, 'mapKeyedFromArray() the key property %s doesn\'t exist in %s from %s', keyProp, v, arrayVal);
-          }
         }
       });
     });
 
     // An array
   }
-  return Immutable.Map().withMutations(map => {
-    arrayVal.forEach(v => {
+  return Immutable.Map().withMutations((map) => {
+    arrayVal.forEach((v) => {
       const k = isDeepKey ? objGet(v, keyProp) : v[keyProp];
       if (k !== null && typeof k !== 'undefined') {
         map.set(k, Immutable.fromJS(v));
-      } else {
-        if (__DEV__) {
-          warning(
+      } else if (__DEV__) { // eslint-disable-line no-undef
+        warning(
             true, 'mapKeyedFromArray() the key property %s doesn\'t exist in %s from %s', keyProp, v, arrayVal);
-        }
       }
     });
   });
@@ -75,8 +69,8 @@ export function mapKeyedFromArray(arrayVal, keyProp) {
  */
 export function reduceMapToProperty(property, map) {
   const reduced = {};
-  Object.keys(map).forEach(key => {
-    if (__DEV__) {
+  Object.keys(map).forEach((key) => {
+    if (__DEV__) { // eslint-disable-line no-undef
       warning(
         !map[key][property],
         'reduceMapToProperty() the key property %s doesn\'t exist in %s from %s',
@@ -103,8 +97,8 @@ export function reduceImmutableToProperty(property, obj) {
     obj
   );
 
-  return obj.map(el => {
-    if (__DEV__) {
+  return obj.map((el) => {
+    if (__DEV__) { // eslint-disable-line no-undef
       warning(
         el.has(property),
         'reduceImmutableToProperty() the key property %s doesn\'t exist in %s from %s',
@@ -128,8 +122,8 @@ export function toPropsMap(keyProp, valProp, target) {
   invariant(Immutable.Iterable.isIterable(target), 'toPropsMap() target must be an Immutable instance. Got %s', target);
 
   let map = new Immutable.Map();
-  target.forEach(el => {
-    if (__DEV__) {
+  target.forEach((el) => {
+    if (__DEV__) { // eslint-disable-line no-undef
       warning(
         el.has(keyProp),
         'toPropsMap() the key property %s doesn\'t exist in %s from %s',
@@ -146,4 +140,15 @@ export function toPropsMap(keyProp, valProp, target) {
   });
 
   return map;
+}
+
+export function sortByAttribute(a, b, attribute) {
+  const attrA = a.get(attribute).toLowerCase();
+  const attrB = b.get(attribute).toLowerCase();
+  if (attrA > attrB) {
+    return 1;
+  } else if (attrA < attrB) {
+    return -1;
+  }
+  return 0;
 }

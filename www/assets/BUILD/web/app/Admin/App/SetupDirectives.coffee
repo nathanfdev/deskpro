@@ -1,5 +1,6 @@
 define [
   'DeskPRO/Directive/DpClickHref',
+  'DeskPRO/Directive/DpOpenPopover',
   'DeskPRO/Directive/DpClosestNumber',
   'DeskPRO/Directive/DpTimeWithUnit',
   'DeskPRO/Directive/DpFilesizeWithUnit',
@@ -63,6 +64,7 @@ define [
   'Admin/Portal/Directive/Editor/CodeEditor'
 ], (
   DeskPRO_Directive_DpClickHref,
+  DeskPRO_Directive_DpOpenPopover,
   DeskPRO_Directive_DpClosestNumber,
   DeskPRO_Directive_DpTimeWithUnit,
   DeskPRO_Directive_DpFilesizeWithUnit,
@@ -127,6 +129,7 @@ define [
 ) ->
   return (Module) ->
     Module.directive('dpClickHref',                    DeskPRO_Directive_DpClickHref)
+    Module.directive('dpOpenPopover',                  DeskPRO_Directive_DpOpenPopover)
     Module.directive('dpClosestNumber',                DeskPRO_Directive_DpClosestNumber)
     Module.directive('dpTimeWithUnit',                 DeskPRO_Directive_DpTimeWithUnit)
     Module.directive('dpFilesizeWithUnit',             DeskPRO_Directive_DpFilesizeWithUnit)

@@ -359,7 +359,7 @@ class PeopleContext extends BaseContext
      *
      * @return Person|null
      */
-    private function findPersonByEmail($email)
+    public function findPersonByEmail($email)
     {
         $email = $this->repository(PersonEmail::class)->findOneBy(['email' => $email]);
 

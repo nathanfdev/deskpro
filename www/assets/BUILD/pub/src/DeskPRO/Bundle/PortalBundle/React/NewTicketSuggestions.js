@@ -1,5 +1,8 @@
-import React, { PropTypes } from 'react';
-import _ from 'lodash';
+import PropTypes from 'prop-types';
+import React from 'react';
+import debounce from 'lodash/debounce';
+import map from 'lodash/map';
+import slice from 'lodash/slice';
 import $ from 'jquery';
 import { portalHttp } from 'DeskPRO/Bundle/PortalBundle/Http/PortalHttp';
 import { portalPhrases } from 'DeskPRO/Bundle/PortalBundle/PortalPhrases';
@@ -114,14 +117,14 @@ class Suggestions extends React.Component {
 
     let visibleResults;
     if (!this.state.show_all) {
-      visibleResults = _.slice(results, 0, 5);
+      visibleResults = slice(results, 0, 5);
     } else {
       visibleResults = results;
     }
 
     return (
       <ul>
-        { _.map(visibleResults, (result, idx) =>
+        { map(visibleResults, (result, idx) =>
           <SuggestionRow key={result.type + result.object.id} alt={idx % 2 === 0} result={result} />)}
         {
           (!this.state.show_all && results.length > 5) ? (<SuggestionMore alt={visibleResults.length % 2 === 0} count={results.length - 5} showAll={this.showMore} />) : null
@@ -156,7 +159,7 @@ export class NewTicketSuggestions extends React.Component {
   }
 
   componentDidMount() {
-    const debounceChanges = _.debounce((e) => {
+    const debounceChanges = debounce((e) => {
       this.doSearch({ content: e.target.value });
     }, 500);
     this.state.$input.on('keyup', debounceChanges);

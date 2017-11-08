@@ -172,6 +172,14 @@ class DataContext extends BaseContext
     }
 
     /**
+     * @AfterScenario
+     */
+    public function resetQueriesCounter()
+    {
+        $this->container()->get('test.queries.counter_listener')->resetSettings();
+    }
+
+    /**
      * Clean up DB.
      */
     private function cleanup()
@@ -468,6 +476,19 @@ class DataContext extends BaseContext
         $this->em()->persist($record);
         $this->em()->flush();
         $this->em()->clear();
+
+    }
+
+    /**
+     * @Given I set max_queries=:maxQueriesCount, max_rows=:maxFetchRows
+     *
+     * @param int $maxQueriesCount
+     * @param int $maxFetchRows
+     */
+    public function setQueriesCounterSettings($maxQueriesCount, $maxFetchRows)
+    {
+        $this->container()->get('test.queries.counter_listener')->setMaxQueriesCount($maxQueriesCount);
+        $this->container()->get('test.queries.counter_listener')->setMaxFetchRows($maxFetchRows);
     }
 
     /**

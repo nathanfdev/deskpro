@@ -40,6 +40,7 @@ use Application\DeskPRO\Tickets\TicketManager;
 use Composer\CaBundle\CaBundle;
 use DeskPRO\Bundle\SystemBundle\Entity\SystemAlerts\Event\Exception\JiraApiExceptionEvent;
 use DeskPRO\Bundle\SystemBundle\SystemAlerts\EventLogger;
+use Orb\Util\Strings;
 use Symfony\Component\DependencyInjection\Container;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 use Symfony\Component\Routing\RouterInterface;
@@ -369,7 +370,9 @@ class JIRA
     public function createComment($issueId, Person $author, Ticket $ticket, $message)
     {
         try {
-            $url = $this->container->get('router')->generate('agent', [], RouterInterface::ABSOLUTE_URL)
+            $message = Strings::trimHtmlAdvanced($message);
+            $message = strip_tags($message);
+            $url     = $this->container->get('router')->generate('agent', [], RouterInterface::ABSOLUTE_URL)
                 .'#app.tickets,t.o:'.$ticket['id'];
 
             return $this->getApi()->post('/issue/'.$issueId.'/comment?expand=renderedBody', [

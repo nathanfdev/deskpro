@@ -658,7 +658,7 @@ class MainController extends AbstractController
             case 'person':
                 /** @var TicketRepository $ticketRepository */
                 $ticketRepository = $this->em->getRepository(Ticket::class);
-                $counts           = $ticketRepository->getTicketCountsForPeople($results);
+                $counts           = $ticketRepository->getTicketCountsForPeople($results, $this->getPerson());
                 foreach ($results as $r) {
                     $rows[] = $render_person($r, $counts);
                 }
@@ -729,9 +729,13 @@ class MainController extends AbstractController
         }
 
         /** @var TicketRepository $rep */
-        $rep     = $this->em->getRepository(Ticket::class);
-        $limit   = $request->get('all') ? null : 15;
-        $tickets = $rep->getPersonTickets($person, $limit, $sort);
+        $rep   = $this->em->getRepository(Ticket::class);
+        $limit = $request->get('all') ? null : 15;
+
+        $permissionsHelper          = $this->getPerson()->getHelper('AgentPermissions');
+        $allowedTicketDepartmentIds = $permissionsHelper->getAllowedDepartments('tickets', false, 'assign');
+
+        $tickets = $rep->getPersonTickets($person, $this->getPerson(), $limit, $sort, 'DESC', $allowedTicketDepartmentIds);
 
         return $this->createJsonResponse([
             'results' => $this->renderSearchResults('ticket', $tickets),

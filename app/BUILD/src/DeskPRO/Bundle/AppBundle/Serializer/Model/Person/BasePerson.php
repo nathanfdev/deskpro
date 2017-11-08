@@ -131,7 +131,7 @@ class BasePerson
     /**
      * Agent data.
      *
-     * @JMS\Type("DeskPRO\Bundle\AppBundle\Entity\AgentData")
+     * @JMS\Type("deferred<DeskPRO\Bundle\AppBundle\Entity\AgentData>")
      *
      * @var AgentData
      */
@@ -153,7 +153,6 @@ class BasePerson
         $this->displayName  = $person->getDisplayNameUser();
         $this->isAgent      = $person->isAgent();
         $this->primaryEmail = $person->getPrimaryEmail();
-        $this->agentData    = $person->getAgentData();
         $this->avatar       = $avatar;
     }
 
@@ -177,6 +176,18 @@ class BasePerson
     public function setLastSeen($lastSeen = null)
     {
         $this->lastSeen = $lastSeen;
+
+        return $this;
+    }
+
+    /**
+     * @param $agentData
+     *
+     * @return $this
+     */
+    public function setAgentData($agentData = null)
+    {
+        $this->agentData = $agentData;
 
         return $this;
     }

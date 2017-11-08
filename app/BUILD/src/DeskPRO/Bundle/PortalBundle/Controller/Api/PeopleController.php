@@ -48,24 +48,39 @@ class PeopleController extends AbstractApiController
     /**
      * @Rest\Get("/online_agents")
      *
+     * @param Request $request
+     *
      * @return View
      */
-    public function getOnlineAgentsAction()
+    public function getOnlineAgentsAction(Request $request)
     {
-        $agentIds           = $this->getPersonRepository()->getActiveAgentIdsForUserChat();
-        $userDepartmentIds  = $this->get('permissions_manager')->getPortalPermissionsBag($this->getUser())->getAllowedChatDepartmentIds();
-        $brand              = $this->getBrandContainer()->getBrand();
-        $brandDepartmentIds = $brand->getChatDepartments()->map(function (Department $department) {
+        $defaultDepartmentId = $request->query->getInt('default_department');
+        $agentIds            = $this->getPersonRepository()->getActiveAgentIdsForUserChat();
+        $userDepartmentIds   = $this->get('permissions_manager')->getPortalPermissionsBag($this->getUser())->getAllowedChatDepartmentIds();
+        $brand               = $this->getBrandContainer()->getBrand();
+        $brandDepartmentIds  = $brand->getChatDepartments()->map(function (Department $department) {
             return $department->getId();
         })->getValues();
 
         $agents = $this->getPersonRepository()->findBy(['id' => $agentIds]);
-        $agents = array_filter($agents, function (Person $agent) use ($brandDepartmentIds, $userDepartmentIds) {
+        $agents = array_filter($agents, function (Person $agent) use ($brandDepartmentIds, $userDepartmentIds, $defaultDepartmentId) {
             $agent->loadHelper('AgentPermissions');
             $agentDepartmentIds = $agent->getHelper('AgentPermissions')->getAllowedDepartments('chat');
 
-            return $agent->hasPerm('agent_chat.use')
-                && array_intersect($brandDepartmentIds, $agentDepartmentIds, $userDepartmentIds);
+            if (!$agent->hasPerm('agent_chat.use')) {
+                return false;
+            }
+
+            $allowedDepartmentIds = array_intersect($brandDepartmentIds, $agentDepartmentIds, $userDepartmentIds);
+            if (!$allowedDepartmentIds) {
+                return false;
+            }
+
+            if ($defaultDepartmentId && !in_array($defaultDepartmentId, $allowedDepartmentIds)) {
+                return false;
+            }
+
+            return true;
         });
 
         return new View($this->wrap($agents));

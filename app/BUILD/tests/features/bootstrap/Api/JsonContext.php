@@ -33,12 +33,14 @@
 namespace DpBehat\Api;
 
 use Behat\Behat\Hook\Scope\BeforeScenarioScope;
+use Behat\Gherkin\Node\PyStringNode;
+use Behatch\Json\Json;
 use DpBehat\Data\DataContext;
 
 /**
  * Class JsonContext.
  */
-class JsonContext extends \Sanpi\Behatch\Context\JsonContext
+class JsonContext extends \Behatch\Context\JsonContext
 {
     /**
      * @var RestContext
@@ -115,7 +117,9 @@ class JsonContext extends \Sanpi\Behatch\Context\JsonContext
     public function theJsonNodeShouldBeEqualToTheString($node, $text)
     {
         $node = DataContext::replace($node);
-        parent::theJsonNodeShouldBeEqualTo($node, $text);
+        $text = str_replace('\n', "\n", $text);
+
+        parent::theJsonNodeShouldBeEqualToTheString($node, $text);
     }
 
     /**
@@ -167,4 +171,54 @@ class JsonContext extends \Sanpi\Behatch\Context\JsonContext
     {
         parent::theJsonNodeShouldBeEqualTo($node, $value);
     }
+
+    /**
+     * Checks, that given JSON node is equal to given value
+     *
+     * @Then the JSON node :node should be equal to node:
+     */
+    public function theJsonNodeShouldBeEqualToNode($node, PyStringNode $text)
+    {
+        $json = $this->getJson();
+        try {
+            $node = DataContext::replace($node);
+            $actual = $this->inspector->evaluate($json, $node);
+            $actual = new Json(json_encode($actual));
+        }
+        catch (\Exception $e) {
+            throw new \Exception('The actual JSON is not valid', 0, $e);
+        }
+
+        try {
+
+            $expected = DataContext::replace($text->getRaw(), false);
+            $expected = new Json($expected);
+        }
+        catch (\Exception $e) {
+            throw new \Exception('The expected JSON is not valid', 0, $e);
+        }
+
+
+        $this->assertSame(
+            (string) $expected,
+            (string) $actual,
+            "The json is equal to:\n". $expected->encode(true) . "\n" , $actual->encode(true)
+        );
+    }
+
+    /**
+     *
+     * @Given I save the JSON node :node as placeholder :placeholder
+     *
+     * @param $node
+     * @param $placeholder
+     */
+    public function iSaveTheJsonNodeAsPlaceholder($node, $placeholder)
+    {
+        $json   = $this->getJson();
+        $actual = $this->inspector->evaluate($json, $node);
+
+        DataContext::setPlaceholder($placeholder, $actual);
+    }
+
 }

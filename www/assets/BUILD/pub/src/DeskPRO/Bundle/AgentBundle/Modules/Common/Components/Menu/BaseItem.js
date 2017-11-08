@@ -1,5 +1,5 @@
-import React, { Component, PropTypes } from 'react';
-import createFragment from 'react-addons-create-fragment';
+import PropTypes from 'prop-types';
+import React, { Component } from 'react';
 import classNames from 'classnames';
 import { Menu } from './Menu';
 import { ItemFormat } from './ItemFormat';
@@ -29,6 +29,11 @@ export class BaseItem extends Component {
     setActiveItem:       PropTypes.func,
     closeMenu:           PropTypes.func,
     isActive:            PropTypes.bool
+  };
+
+  static defautProps = {
+    onMouseOver() {},
+    onMouseOut() {},
   };
 
   constructor(props) {
@@ -102,7 +107,8 @@ export class BaseItem extends Component {
     if (format) {
       if (format === 'item') {
         return (
-          <ItemFormat {...this.props}
+          <ItemFormat
+            {...this.props}
             hasMenu={hasMenu}
             hasItemList={hasItemList}
             toggleInnerList={this.toggleInnerList}
@@ -121,11 +127,6 @@ export class BaseItem extends Component {
     const { label, overrideWidgetClass, disabled, activeItem, isActive, condensed } = this.props;
     const { onMouseOver, onMouseOut } = this.props;
     if (label) {
-      const onMouseOverAction = onMouseOver ? onMouseOver : () => {
-      };
-      const onMouseOutAction  = onMouseOut ? onMouseOut : () => {
-      };
-
       const divClasses = classNames(this.props.widgetClass, {
         'dpw-navigation-dropdown-item dropdown-nav-item': !overrideWidgetClass,
         'dpw-navigation-dropdown-item-disabled':          disabled,
@@ -138,8 +139,8 @@ export class BaseItem extends Component {
           href="#"
           className={divClasses}
           onClick={this.onClickAction}
-          onMouseOver={onMouseOverAction}
-          onMouseOut={onMouseOutAction}
+          onMouseOver={onMouseOver}
+          onMouseOut={onMouseOut}
         >
           {this.formatOutput(label, hasMenu, hasItemList)}
         </a>
@@ -150,7 +151,7 @@ export class BaseItem extends Component {
 
   renderMenu() {
     if (this.props.hasMenu) {
-      return React.Children.map(this.props.children, child => {
+      return React.Children.map(this.props.children, (child) => {
         const isOpen = this.state.openMenu;
         if (child && child.type && child.type.displayName === 'Menu') {
           const parentLevel = this.props.parentMenuLevel ? this.props.parentMenuLevel : 1;
@@ -169,7 +170,8 @@ export class BaseItem extends Component {
                 onClickOut={this.closeMenu}
                 ignoreNodes={[this.refs.item]}
               >
-                <Menu {...childProps}
+                <Menu
+                  {...childProps}
                   menuLevel={menuLevel}
                   isOpen={isOpen}
                 />
@@ -185,7 +187,7 @@ export class BaseItem extends Component {
 
   renderItemList(expanded) {
     if (this.props.hasItemList) {
-      return React.Children.map(this.props.children, child => {
+      return React.Children.map(this.props.children, (child) => {
         if (child && child.type && child.type.displayName === 'ItemList' && expanded) {
           return child;
         }
@@ -197,7 +199,6 @@ export class BaseItem extends Component {
 
   render() {
     const { hasMenu, hasItemList } = this.props;
-    const childrenOutput = { menu: this.renderMenu(), itemList: this.renderItemList(this.state.openInnerList) };
 
     return (
       <li
@@ -206,7 +207,8 @@ export class BaseItem extends Component {
         onClick={this.props.subMenuMode && this.props.subMenuMode === 'click' ? this.toggleMenu : () => {}}
       >
         {this.renderLabel(hasMenu, hasItemList)}
-        {createFragment(childrenOutput)}
+        {this.renderMenu()}
+        {this.renderItemList(this.state.openInnerList)}
       </li>
     );
   }

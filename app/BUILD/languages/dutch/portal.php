@@ -921,7 +921,7 @@ return [
     'user.error.permission-denied'                          => 'Sorry, de actie die u probeert uit te voeren is niet toegestaan.',
     'user.error.permission-denied-login'                    => 'U bent momenteel uitgelogd. <a href="{{login_url}}">Log in </a> en probeer het opnieuw.',
     'user.error.permission-denied-title'                    => 'Dit is niet toegestaan',
-    'user.error.server-error'                               => 'Er is een serverfout opgetreden die heeft voorkomen dat de pagina wordt geladen. Probeer het opnieuw.',
+    'user.error.server-error'                               => 'Excuses, er is een serverfout opgetreden die heeft voorkomen dat de pagina wordt geladen. Probeer het opnieuw.',
     'user.feedback.submit_feedback'                         => 'Feedback verzenden',
     'user.general.deskpro'                                  => 'DeskPRO',
     'user.general.helpdesk_by'                              => 'Helpdesk software door <strong>{{deskpro}}</strong>',

@@ -1,6 +1,7 @@
-import React, { PropTypes } from 'react';
+import PropTypes from 'prop-types';
+import React from 'react';
 import Immutable from 'immutable';
-import ScrollArea from 'react-scrollbar';
+import ScrollArea from '@deskpro/react-scrollbar';
 import { MessageFactoryContainer } from './MessageFactoryContainer';
 import { TypingEventContainer } from './Event/TypingEventContainer';
 import '../../../../../../Resources/sounds/pop.mp3';

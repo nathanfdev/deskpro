@@ -1,10 +1,13 @@
-import React, { PropTypes } from 'react';
+import PropTypes from 'prop-types';
+import React from 'react';
 import { portalHttp } from 'DeskPRO/Bundle/PortalBundle/Http/PortalHttp';
 import { portalUrlGenerator } from 'DeskPRO/Bundle/PortalBundle/Http/PortalUrlGenerator';
 import { OmniSearchResultSection } from 'DeskPRO/Bundle/PortalBundle/React/OmniSearch/OmniSearchResultSection';
 import { portalPhrases } from 'DeskPRO/Bundle/PortalBundle/PortalPhrases';
 import { ClickOut } from 'DeskPRO/Component/ClickOut';
-import _ from 'lodash';
+import forOwn from 'lodash/forOwn';
+import keys from 'lodash/keys';
+import throttle from 'lodash/throttle';
 import moment from 'moment';
 
 export class OmniSearch extends React.Component {
@@ -18,19 +21,15 @@ export class OmniSearch extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
-      doSpin:     false, // a search is in progress
-      lastSearch: moment(), // the last time a user executed a search (typed something in)
-      userTyping: false,
-
-      data: {
+      doSpin:      false, // a search is in progress
+      lastSearch:  moment(), // the last time a user executed a search (typed something in)
+      userTyping:  false,
+      searchQuery: '',
+      data:        {
         pageinfo: {
           total_results: 0,
           curpage:       1
         }
-      },
-
-      searchQuery: {
-        q: ''
       }
     };
   }
@@ -40,15 +39,15 @@ export class OmniSearch extends React.Component {
 
     // typing listener
     let lastVal = null;
-    const throttleChanges = _.throttle((e) => {
+    const throttleChanges = throttle((e) => {
       // ensure we don't trigger a search if the actual search val hasn't changed
       if (lastVal !== e.target.value) {
         lastVal = e.target.value;
-        this.doSearch({ q: e.target.value });
+        this.doSearch(lastVal);
       }
-    }, 250);
+    }, 500);
 
-    $input.on('keyup change', throttleChanges);
+    $input.on('keyup change', event => throttleChanges(event));
     $close.click(this.onClickOut);
 
     // 1000ms pause before showing "no results"
@@ -71,45 +70,46 @@ export class OmniSearch extends React.Component {
     event.preventDefault();
 
     this.props.$input.val('');
-    this.doSearch({ q: '' }); // reset/close search
+    this.setState({
+      data:        {},
+      doSpin:      false,
+      userTyping:  false,
+      searchQuery: ''
+    });
   };
 
-  doSearch(queryModifications) {
-    const lastQuery = this.state.searchQuery || {};
-    const searchQuery = { ...lastQuery, ...queryModifications };
-    this.setState({
-      lastSearch: moment(),
-      searchQuery
-    });
-
-    if (!searchQuery.q || searchQuery.q.length < 3) {
+  doSearch(newQuery) {
+    if (!newQuery || newQuery.length < 3) {
       // we need a query with a length of at least 3 for the server to do any real searching
       // so don't do a HTTP request if we don't at least have that
       return;
     }
 
     this.setState({
-      doSpin: true
-    });
+      data:        {},
+      doSpin:      true,
+      userTyping:  true,
+      searchQuery: newQuery,
+      lastSearch:  moment()
+    }, () => {
+      portalHttp.sendGet('DP_URL/search/omni', { data: { q: newQuery } }).then((response) => {
+        if (response.isError() || (newQuery !== this.state.searchQuery)) {
+          return;
+        }
 
-    portalHttp.sendGet('DP_URL/search/omni', { data: searchQuery }).then((response) => {
-      if (response.isError()) {
-        return;
-      }
-
-      this.setState({
-        data:   response.data.data,
-        searchQuery,
-        doSpin: false
+        this.setState({
+          data:   response.data.data,
+          doSpin: false
+        });
       });
     });
   }
 
   doResultsExist() {
     let grandTotal = 0;
-    _.forOwn(this.state.data, (typeResults) => {
+    forOwn(this.state.data, (typeResults) => {
       if ('results' in typeResults) {
-        grandTotal += _.keys(typeResults.results).length;
+        grandTotal += keys(typeResults.results).length;
       }
     });
 
@@ -127,49 +127,49 @@ export class OmniSearch extends React.Component {
             nameApi="ticket"
             nameIcon="fa fa-support"
             initialResult={'ticket' in data ? data.ticket : {}}
-            q={this.state.searchQuery.q}
+            q={this.state.searchQuery}
           />
           <OmniSearchResultSection
             name={portalPhrases.get('portal.general.nav-kb')}
             nameApi="article"
             nameIcon="fa fa-file-text-o"
             initialResult={'article' in data ? data.article : {}}
-            q={this.state.searchQuery.q}
+            q={this.state.searchQuery}
           />
           <OmniSearchResultSection
             name={portalPhrases.get('portal.general.nav-downloads')}
             nameApi="download"
             nameIcon="fa fa-download"
             initialResult={'download' in data ? data.download : {}}
-            q={this.state.searchQuery.q}
+            q={this.state.searchQuery}
           />
           <OmniSearchResultSection
             name={portalPhrases.get('portal.general.nav-news')}
             nameApi="news"
             nameIcon="fa fa-file-text-o"
             initialResult={'news' in data ? data.news : {}}
-            q={this.state.searchQuery.q}
+            q={this.state.searchQuery}
           />
           <OmniSearchResultSection
             name={portalPhrases.get('portal.general.nav-feedback')}
             nameApi="feedback"
             nameIcon="fa fa-comments"
             initialResult={'feedback' in data ? data.feedback : {}}
-            q={this.state.searchQuery.q}
+            q={this.state.searchQuery}
           />
           <OmniSearchResultSection
             name={portalPhrases.get('portal.general.nav-guides')}
             nameApi="topic"
             nameIcon="fa fa-book"
             initialResult={'topic' in data ? data.topic : {}}
-            q={this.state.searchQuery.q}
+            q={this.state.searchQuery}
           />
           <OmniSearchResultSection
             name={portalPhrases.get('portal.general.nav-chat')}
             nameApi="chat_conversation"
             nameIcon="fa fa-comments"
             initialResult={'chat_conversation' in data ? data.chat_conversation : {}}
-            q={this.state.searchQuery.q}
+            q={this.state.searchQuery}
           />
         </div>
       );
@@ -185,7 +185,7 @@ export class OmniSearch extends React.Component {
   render() {
     const { $input, $button } = this.props;
 
-    if (this.state.searchQuery.q.length < 3) {
+    if (this.state.searchQuery.length < 3) {
       return null;
     }
 
@@ -194,7 +194,7 @@ export class OmniSearch extends React.Component {
         <div
           className="expanded-search-results"
           style={{
-            display: this.state.searchQuery.q.length > 0 ? 'block' : 'none',
+            display: this.state.searchQuery.length > 0 ? 'block' : 'none',
             width:   $input.closest('.search-form').width()
           }}
         >

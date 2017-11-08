@@ -38,6 +38,7 @@ use Application\DeskPRO\App;
 use Application\DeskPRO\CustomFields\Handler;
 use Application\DeskPRO\Translate\HasPhraseName;
 use Application\DeskPRO\Translate\Translate;
+use DeskPRO\Bundle\AppBundle\ObjectAlias;
 use Doctrine\Common\Collections\ArrayCollection;
 use Orb\Util\Numbers;
 use Symfony\Component\Validator\Constraints as Assert;
@@ -62,6 +63,8 @@ class CustomDefAbstract extends \Application\DeskPRO\Domain\DomainObject impleme
     const HANDLER_CLASS_DISPLAY  = Handler\Display::class;
     const HANDLER_CLASS_HIDDEN   = Handler\Hidden::class;
     const HANDLER_CLASS_DATA     = Handler\Data::class;
+    const HANDLER_CLASS_DATAJSON = Handler\DataJson::class;
+    const HANDLER_CLASS_DATALIST = Handler\DataList::class;
 
     const TYPE_TEXT     = 'text';
     const TYPE_TEXTAREA = 'textarea';
@@ -72,6 +75,8 @@ class CustomDefAbstract extends \Application\DeskPRO\Domain\DomainObject impleme
     const TYPE_DISPLAY  = 'display';
     const TYPE_HIDDEN   = 'hidden';
     const TYPE_DATA     = 'data';
+    const TYPE_DATA_JSON = 'datajson';
+    const TYPE_DATA_LIST = 'datalist';
 
     /**
      * The unique ID.
@@ -214,6 +219,14 @@ class CustomDefAbstract extends \Application\DeskPRO\Domain\DomainObject impleme
     }
 
     /**
+     * @return ObjectAlias\ObjectAliasInterface[]|null
+     */
+    public function getAliases()
+    {
+        return [];
+    }
+
+    /**
      * @return int
      */
     public function getId()
@@ -346,7 +359,7 @@ class CustomDefAbstract extends \Application\DeskPRO\Domain\DomainObject impleme
         $subChoices = new ArrayCollection();
         if ($this->children->contains($parentChoice)) {
             foreach ($this->children as $child) {
-                if ($child->getOption('parent_id') === $parentChoice->getId()) {
+                if ((int) $child->getOption('parent_id') === $parentChoice->getId()) {
                     $subChoices->add($child);
                 }
             }
@@ -1128,6 +1141,22 @@ class CustomDefAbstract extends \Application\DeskPRO\Domain\DomainObject impleme
     public function isDisplayType()
     {
         return $this->handler_class === self::HANDLER_CLASS_DISPLAY;
+    }
+
+    /**
+     * @return bool
+     */
+    public function isDataJsonType()
+    {
+        return $this->handler_class === self::HANDLER_CLASS_DATAJSON;
+    }
+
+    /**
+     * @return bool
+     */
+    public function isDataListType()
+    {
+        return $this->handler_class === self::HANDLER_CLASS_DATALIST;
     }
 
     /**

@@ -5,9 +5,10 @@ services:
     arguments:
       - "@doctrine.orm.default_entity_manager"
       - "@settings_resolver"
+      - "@security.token_storage"
 
   #
-  # Strategis
+  # Strategies
   #
   deskpro.notification.strategy_factory:
     class: DeskPRO\Bundle\AppBundle\Notification\Strategy\StrategyFactory
@@ -59,6 +60,21 @@ services:
     class: DeskPRO\Bundle\AppBundle\Notification\Delivery\Handler\PusherDeliveryHandler
     arguments:
       - "@deskpro.notification.pusher"
+      - "@settings_resolver"
+      - "@database_connection"
+
+  deskpro.notification.delivery.handler.deskpro:
+    class: DeskPRO\Bundle\AppBundle\Notification\Delivery\Handler\DeskproDeliveryHandler
+    arguments:
+      - "@settings_resolver"
+      - "@deskpro.notification.deskpro_client"
+
+  deskpro.notification.deskpro_client_factory:
+    class: DeskPRO\Bundle\AppBundle\Notification\Delivery\DeskproClientFactory
+  deskpro.notification.deskpro_client:
+    class: DeskPRO\Bundle\AppBundle\Util\HttpClient
+    factory: ["@deskpro.notification.deskpro_client_factory", createClient]
+    arguments:
       - "@settings_resolver"
 
   deskpro.notification.pusher_factory:
@@ -152,6 +168,7 @@ services:
     arguments:
       - "@doctrine.orm.default_entity_manager"
       - "@security.token_storage"
+      - "@data.agent"
     tags:
       - { name: deskpro.notification.action_alert.generator }
 
@@ -198,5 +215,6 @@ services:
         - "@security.token_storage"
         - "@data.agent"
         - "@templating"
+        - "@language_manager"
       tags:
         - { name: deskpro.notification.action_alert.generator }

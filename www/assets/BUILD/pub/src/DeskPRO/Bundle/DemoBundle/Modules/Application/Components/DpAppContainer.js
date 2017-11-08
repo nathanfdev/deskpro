@@ -1,4 +1,5 @@
-import React, { PropTypes } from 'react';
+import PropTypes from 'prop-types';
+import React from 'react';
 import { Router, Route, hashHistory, RouterContext, IndexRoute } from 'react-router';
 import { connect } from 'react-redux';
 import { meSelector } from 'DeskPRO/Bundle/AppBundle/Modules/RecordsStore/Shortcuts/me';

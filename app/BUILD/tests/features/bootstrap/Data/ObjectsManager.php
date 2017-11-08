@@ -102,9 +102,14 @@ use DeskPRO\Bundle\AppBundle\Entity\AgentChat;
 use DeskPRO\Bundle\AppBundle\Entity\AgentChatMessage;
 use DeskPRO\Bundle\AppBundle\Entity\AgentChatParticipant;
 use DeskPRO\Bundle\AppBundle\Entity\AgentData;
+use DeskPRO\Bundle\AppBundle\Entity\AppStore\App;
+use DeskPRO\Bundle\AppBundle\Entity\AppStore\AppAssetBlob;
+use DeskPRO\Bundle\AppBundle\Entity\AppStore\AppState;
 use DeskPRO\Bundle\AppBundle\Entity\ClientDevice;
 use DeskPRO\Bundle\AppBundle\Entity\Notification;
 use DeskPRO\Bundle\AppBundle\Entity\OAuthClient;
+use DeskPRO\Bundle\AppBundle\Entity\Snippet;
+use DeskPRO\Bundle\AppBundle\Entity\SnippetTranslation;
 use DeskPRO\Bundle\AppBundle\Entity\TicketFilter;
 use DeskPRO\Bundle\AppBundle\Entity\VoiceAccount;
 use DeskPRO\Bundle\AppBundle\Entity\VoiceAsset\AbstractVoiceAsset;
@@ -117,6 +122,7 @@ use DeskPRO\Bundle\AppBundle\Entity\VoiceQueue;
 use DeskPRO\Bundle\AppBundle\Entity\VoiceTarget\VoiceAgentTarget;
 use DeskPRO\Bundle\AppBundle\Entity\VoiceTarget\VoiceAutoAttendantTarget;
 use DeskPRO\Bundle\AppBundle\Entity\VoiceTarget\VoiceQueueTarget;
+use DeskPRO\Bundle\AppBundle\Entity\Webhooks\TicketWebhook;
 use Doctrine\ORM\EntityManager;
 
 /**
@@ -357,6 +363,8 @@ class ObjectsManager
             'Problem'                  => [Factory\SimpleFactory::class, 'create', Problem::class],
             'PersonPref'               => [Factory\SimpleFactory::class, 'create', PersonPref::class],
             'Blob'                     => [Factory\SimpleFactory::class, 'create', Blob::class],
+            'Snippet'                  => [Factory\SimpleFactory::class, 'create', Snippet::class],
+            'SnippetTranslation'       => [Factory\SimpleFactory::class, 'create', SnippetTranslation::class],
             'TextSnippet'              => [Factory\SimpleFactory::class, 'create', TextSnippet::class],
             'TextSnippetCategory'      => [Factory\SimpleFactory::class, 'create', TextSnippetCategory::class],
             'ObjectLang'               => [Factory\SimpleFactory::class, 'create', ObjectLang::class],
@@ -375,6 +383,9 @@ class ObjectsManager
     private function initTypeLocators()
     {
         $this->typeLocators = [
+            'AppAssetBlob'             => [$this, 'find', AppAssetBlob::class],
+            'App'                      => [$this, 'find', App::class],
+            'AppState'                 => [$this, 'find', AppState::class],
             'AgentTeam'                => [$this, 'find', AgentTeam::class],
             'Person'                   => [$this, 'find', Person::class],
             'PersonEmail'              => [$this, 'find', PersonEmail::class],
@@ -464,8 +475,11 @@ class ObjectsManager
             'Problem'                  => [$this, 'find', Problem::class],
             'PersonPref'               => [$this, 'find', PersonPref::class],
             'Sla'                      => [$this, 'find', Sla::class],
+            'Snippet'                  => [$this, 'find', Snippet::class],
+            'SnippetTranslation'       => [$this, 'find', SnippetTranslation::class],
             'TextSnippet'              => [$this, 'find', TextSnippet::class],
             'TextSnippetCategory'      => [$this, 'find', TextSnippetCategory::class],
+            'TicketWebhook'            => [$this, 'find', TicketWebhook::class],
             'ObjectLang'               => [$this, 'find', ObjectLang::class],
             'Phrase'                   => [$this, 'find', Phrase::class],
             'ActionAlert'              => [$this, 'find', ActionAlert::class],

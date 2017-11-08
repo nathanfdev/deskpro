@@ -1,5 +1,6 @@
-import objGet from 'lodash/object/get';
-import React, { PropTypes } from 'react';
+import objGet from 'lodash/get';
+import PropTypes from 'prop-types';
+import React from 'react';
 import { connect } from 'react-redux';
 import * as card from 'DeskPRO/Component/Form/Card';
 import { hasErrors } from 'DeskPRO/Component/Form/FormErrors';

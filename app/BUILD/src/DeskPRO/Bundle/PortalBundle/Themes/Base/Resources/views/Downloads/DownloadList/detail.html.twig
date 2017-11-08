@@ -19,7 +19,7 @@
                                 <i class="fa fa-download"></i>
                             </a>
                         </li>
-                        {%- if dl.calc_num_comments > 0 -%}
+                        {%- if brand_setting('user.publish_comments') and dl.calc_num_comments > 0 -%}
                             <li>
                                 <a href="{{ portal_path(dl) }}#comments">
                                     <i class="fa fa-comments"></i>

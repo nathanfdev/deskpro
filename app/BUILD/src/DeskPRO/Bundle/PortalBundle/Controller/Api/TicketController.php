@@ -155,8 +155,7 @@ class TicketController extends AbstractApiController
             }
         }
 
-        $formFull = $this->createForm(TicketWithLayoutsWebFullType::class, $ticket, [
-            'person'              => $person,
+        $formFull = $this->createForm(TicketWithLayoutsWebFullType::class, null, [
             'action'              => $this->generateUrl('portal_api_ticket_new'),
             'ticket_view_context' => TicketWithLayoutsContext::VIEW_USER,
             'ticket_visibility'   => TicketWithLayoutsContext::VISIBILITY_NEW,

@@ -145,6 +145,9 @@ abstract class AbstractRepository extends Repository
                 'post_filter' => $this->getFilters($options),
             ]);
         }
+        if ($this->getSource()) {
+            $query->setSource($this->getSource());
+        }
 
         return $query;
     }
@@ -159,7 +162,7 @@ abstract class AbstractRepository extends Repository
     protected function escapeQueryStringTerm($q)
     {
         $q = ElasticaUtil::escapeTerm($q);
-        $q = str_replace(['AND', 'OR', 'NOT'], ['and', 'or', 'not'], $q);
+        $q = str_replace(['AND', 'NOT'], ['and', 'not'], $q);
 
         return $q;
     }
@@ -188,6 +191,7 @@ abstract class AbstractRepository extends Repository
 
         $queryString = new Query\QueryString($term);
         $queryString->setFields($this->getQueryFields());
+        $queryString->setAnalyzer('text_content_analyzer');
         $queryString->setDefaultOperator('AND');
 
         return $queryString;
@@ -211,6 +215,11 @@ abstract class AbstractRepository extends Repository
     protected function getFilters(array $options = [])
     {
         return [];
+    }
+
+    protected function getSource()
+    {
+        return false;
     }
 
     /**

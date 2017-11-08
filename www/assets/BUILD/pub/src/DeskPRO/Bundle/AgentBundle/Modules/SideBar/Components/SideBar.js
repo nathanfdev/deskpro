@@ -1,4 +1,5 @@
-import React, { PropTypes } from 'react';
+import PropTypes from 'prop-types';
+import React from 'react';
 import Isvg from 'react-inlinesvg';
 import { connect } from 'react-redux';
 import classNames from 'classnames';
@@ -133,6 +134,11 @@ export class SideBarContainer extends SeparateComponent {
     window.DP_FRAME_OVERLAYS.reports.open();
   };
 
+  openReports2 = () => {
+    closeIframes();
+    window.DP_FRAME_OVERLAYS.reports2.open();
+  };
+
   openBilling = () => {
     closeIframes();
     window.DP_FRAME_OVERLAYS.admin.open('/license');
@@ -183,6 +189,7 @@ export class SideBarContainer extends SeparateComponent {
       canUsePortal:     SideBarContainer.canUsePortal,
       openAdmin:        this.openAdmin,
       openReports:      this.openReports,
+      openReports2:     this.openReports2,
       openBilling:      this.openBilling,
       changeSection:    this.changeSection,
       resumeOnboarding: this.resumeOnboarding,
@@ -206,6 +213,7 @@ export class SideBar extends React.PureComponent {
     canUsePortal:     PropTypes.func.isRequired,
     openAdmin:        PropTypes.func.isRequired,
     openReports:      PropTypes.func.isRequired,
+    openReports2:     PropTypes.func.isRequired,
     openBilling:      PropTypes.func.isRequired,
     changeSection:    PropTypes.func.isRequired,
     currentSection:   PropTypes.string.isRequired,
@@ -310,6 +318,17 @@ export class SideBar extends React.PureComponent {
           this.props.openReports();
         }
       });
+      if (window.DP_HAS_NEW_REPORTS) {
+        menus.push({
+          className: 'reports2',
+          label:     'New Reports',
+          link:      '/agent/#r:/',
+          icon:      `${window.DESKPRO_APP_ASSETS_URL}/DeskPRO/Bundle/AgentBundle/Resources/img/sidebar/reports.svg`,
+          callback:  () => {
+            this.props.openReports2();
+          }
+        });
+      }
     }
     if (this.props.canUseAdmin()) {
       menus.push({

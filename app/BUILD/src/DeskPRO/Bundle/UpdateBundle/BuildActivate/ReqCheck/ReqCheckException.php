@@ -63,7 +63,7 @@ class ReqCheckException extends BuildActivatorException
             'Command returned error status code: '.$proc->getExitCode().': '.$proc->getExitCodeText(),
             self::CMD_ERROR,
             null,
-            ['description' => 'Requirements checker', 'help' => 'The requirements checker command failed with an error status']
+            [['description' => 'Requirements checker', 'help' => 'The requirements checker command failed with an error status']]
         );
     }
 

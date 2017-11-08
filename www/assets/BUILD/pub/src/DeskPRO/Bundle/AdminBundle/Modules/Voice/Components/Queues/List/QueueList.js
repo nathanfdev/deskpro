@@ -1,4 +1,5 @@
-import React, { PropTypes } from 'react';
+import PropTypes from 'prop-types';
+import React from 'react';
 import Immutable from 'immutable';
 import { PopUp } from 'DeskPRO/Component/Semantic/PopUp';
 import { PersonAvatar } from 'DeskPRO/Bundle/AgentBundle/Modules/Common/Components/Avatar/index';
@@ -34,7 +35,7 @@ class QueueRow extends React.Component {
 
   render() {
     const { queue, agents } = this.props;
-    const queueAgentIds = queue.get('agents') || Immutable.fromJS([]);
+    const queueAgentIds = queue.get('agents') ? queue.get('agents').map(voiceAgent => voiceAgent.get('agent')) : Immutable.fromJS([]);
     const queueAgents = agents.filter(agent => queueAgentIds.contains(agent.get('id')));
 
     const displayQueueAgents = queueAgents.slice(0, 5);

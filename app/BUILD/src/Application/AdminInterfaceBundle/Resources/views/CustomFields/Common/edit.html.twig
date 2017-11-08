@@ -83,7 +83,9 @@
 					</div>
 					<div class="panel-body" ng-show="EditCtrl.field_type != 0">
 
-						<div class="form-group with-border">
+                        {% block message %}{% endblock %}
+
+						<div class="form-group with-border" ng-show="EditCtrl.showFieldType">
 							<div class="col-lg-3">
 								<h3>Field Type</h3>
 							</div>
@@ -104,7 +106,7 @@
 							</div>
 						</div>
 
-						<div class="form-group">
+						<div class="form-group" ng-show="EditCtrl.showEnabled">
 							<div class="col-lg-3">
 								<h3>Enabled</h3>
 							</div>
@@ -625,7 +627,7 @@
 						{% block pre_bottomdefault_fields %}{% endblock %}
 
 						{% block bottomdefault_fields %}
-							<div class="form-group">
+							<div class="form-group" ng-show="EditCtrl.showAgentOnly">
 								<div class="col-lg-3">
 									<h3>Agent Only Field</h3>
 								</div>

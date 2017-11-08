@@ -1,21 +1,18 @@
-import React, { PropTypes } from 'react';
+import PropTypes from 'prop-types';
+import React from 'react';
 import Loader from 'react-loader';
 import { connect } from 'react-redux';
+import uuid from 'uuid';
 import { ClickOut } from 'DeskPRO/Component/ClickOut';
-import * as chatsActions from '../../Actions/chatsActions';
-import uuid from 'node-uuid';
-
-// components
+import { meSelector } from 'DeskPRO/Bundle/AppBundle/Modules/RecordsStore/Shortcuts/me';
+import { agentsSelector } from 'DeskPRO/Bundle/AppBundle/Modules/RecordsStore/Shortcuts/agents';
 import { Footer } from './Footer';
 import { Header } from './Header';
 import { MessageList } from './MessageList';
 import { Offline } from './Offline';
 import { SearchForm } from './SearchForm';
-
-// messages
-import { meSelector } from 'DeskPRO/Bundle/AppBundle/Modules/RecordsStore/Shortcuts/me';
+import * as chatsActions from '../../Actions/chatsActions';
 import { addMessage } from '../../Actions/messagesActions';
-import { agentsSelector } from 'DeskPRO/Bundle/AppBundle/Modules/RecordsStore/Shortcuts/agents';
 
 @connect(state => ({
   me:       meSelector(state),
@@ -30,6 +27,10 @@ export class Chat extends React.Component {
     agents:   PropTypes.object.isRequired,
     dispatch: PropTypes.func.isRequired
   };
+
+  static typing() {
+    return <div className="active-chat-user-typing">Jeniffer is typing a message <span id="typing">...</span></div>;
+  }
 
   constructor(props) {
     super(props);
@@ -57,15 +58,13 @@ export class Chat extends React.Component {
     return online;
   }
 
-  messageList = () => {
-    return (
-      <div style={{ minHeight: 75 }}>
-        <Loader loaded={this.props.current.id > 0} opacity={0} width={3} top="45%">
-          <MessageList current={this.props.current} searchQuery={this.state.searchQuery} />
-        </Loader>
-      </div>
+  messageList = () => (
+    <div style={{ minHeight: 75 }}>
+      <Loader loaded={this.props.current.id > 0} opacity={0} width={3} top="45%">
+        <MessageList current={this.props.current} searchQuery={this.state.searchQuery} />
+      </Loader>
+    </div>
     );
-  };
 
   handleType = (event) => {
     event.preventDefault();
@@ -77,12 +76,12 @@ export class Chat extends React.Component {
     }
   };
 
-  handleClear() {
+  handleClear = () => {
     this.setState({
       searchTyped: '',
       searchQuery: ''
     });
-  }
+  };
 
   handleOnClose = () => {
     this.props.dispatch(chatsActions.closeChat(this.props.current.id));
@@ -106,7 +105,7 @@ export class Chat extends React.Component {
     this.setState(newState);
   };
 
-  handleAddMessage = message => {
+  handleAddMessage = (message) => {
     const { dispatch, current, me } = this.props;
     dispatch(addMessage(current.id, message, uuid(), me));
   };
@@ -114,39 +113,36 @@ export class Chat extends React.Component {
   searchForm() {
     return (this.state.searchShown)
       ?
-      <SearchForm
-        handleClear={this.handleClear.bind(this)}
-        handleType={this.handleType}
-        handleSearch={this.handleSearch}
-        searching={this.state.searchTyped}
-      />
+        <SearchForm
+          handleClear={this.handleClear}
+          handleType={this.handleType}
+          handleSearch={this.handleSearch}
+          searching={this.state.searchTyped}
+        />
       : null;
-  }
-
-  static typing() {
-    return <div className="active-chat-user-typing">Jeniffer is typing a message <span id="typing">...</span></div>;
   }
 
   offline() {
     if (this.isAgentChat()) {
       return <Offline online={this.isOnline()} />;
     }
+    return null;
   }
 
   render() {
     return (
-    <ClickOut
-      onClickOut={this.handleOnClose}
-      additionalNodes={['#active-chat-search-clear', '.emoticon']}
-    >
-      <div className="dropdown active-chat-dropdown" id="active-chat-dropdown">
-        <Header toggleSearch={this.toggleSearch} onClose={this.handleOnClose} online={this.isOnline()} />
-        {this.searchForm()}
-        {this.messageList()}
-        {this.offline()}
-        <Footer handleAddMessage={this.handleAddMessage} />
-      </div>
-    </ClickOut>
+      <ClickOut
+        onClickOut={this.handleOnClose}
+        additionalNodes={['#active-chat-search-clear', '.emoticon']}
+      >
+        <div className="dropdown active-chat-dropdown" id="active-chat-dropdown">
+          <Header toggleSearch={this.toggleSearch} onClose={this.handleOnClose} online={this.isOnline()} />
+          {this.searchForm()}
+          {this.messageList()}
+          {this.offline()}
+          <Footer handleAddMessage={this.handleAddMessage} />
+        </div>
+      </ClickOut>
 
     );
   }

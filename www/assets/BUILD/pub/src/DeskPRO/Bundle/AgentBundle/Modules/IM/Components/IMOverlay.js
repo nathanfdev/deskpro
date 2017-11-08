@@ -1,4 +1,5 @@
-import React, { PropTypes } from 'react';
+import PropTypes from 'prop-types';
+import React from 'react';
 import { AgentsList } from './Agents/AgentsList';
 import { TeamsList } from './Teams/TeamsList';
 import { DepartmentsList } from './Departments/DepartmentsList';

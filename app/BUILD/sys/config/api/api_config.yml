@@ -140,47 +140,43 @@ nelmio_api_doc:
 # Security Configuration
 security:
 
-  role_hierarchy:
-    ROLE_AGENT: ROLE_USER
-    ROLE_ADMIN: ROLE_AGENT
+    role_hierarchy:
+      ROLE_AGENT: ROLE_USER
+      ROLE_ADMIN: ROLE_AGENT
 
-  providers:
-    dp_person_user_provider:
-      id: dp_person_user_provider
+    providers:
+        dp_person_user_provider:
+            id: dp_person_user_provider
 
-  firewalls:
-    api_anonymous_home:
-      pattern: ^/api/v2/?$
-      stateless: true
-      anonymous: ~
-
-    api_oauth_anonymous:
-      pattern: ^/api/v2/oauth/token
-      stateless: true
-      anonymous: ~
-
-    api_oauth_access:
-      pattern: ^/api/v2/oauth/(agent|user|auth)
-      stateless: true
-      simple_preauth:
-        authenticator: api_oauth_authenticator
-      anonymous: ~
-
-    api_cloud_anonymous:
-      pattern: ^/api/v2/cloud/(countries|states|eu_countries|geo_ip)
-      stateless: true
-      anonymous: ~
-
-    api_anonymous:
-      pattern: ^/api/v2/(doc|man$|api_tokens|get_session|helpdesk/discover|twilio_callbacks|user_sources)
-      stateless: true
-      anonymous: ~
-
-    api:
-      pattern: ^/api/v2
-      stateless: true
-      simple_preauth:
-        authenticator: api_authenticator
+    firewalls:
+        api_anonymous_home:
+          pattern: ^/api/v2/?$
+          stateless: true
+          anonymous: ~
+        session_token:
+            pattern: ^/api/v2/api_tokens/session$
+            stateless: true
+            simple_preauth:
+                authenticator: api_authenticator
+        api_oauth_anonymous:
+            pattern: ^/api/v2/oauth/token
+            stateless: true
+            anonymous: ~
+        api_oauth_access:
+            pattern: ^/api/v2/oauth/(agent|user|auth)
+            stateless: true
+            simple_preauth:
+                authenticator: api_oauth_authenticator
+            anonymous: ~
+        api_anonymous:
+            pattern: ^/api/v2/(doc|man$|api_tokens|get_session|helpdesk/discover|get_session|twilio_callbacks|user_sources|cloud/countries|cloud/states|cloud/eu_countries|cloud/geo_ip|cloud/forgot_password)
+            stateless: true
+            anonymous: ~
+        api:
+            pattern: ^/api/v2
+            stateless: true
+            simple_preauth:
+                authenticator: api_authenticator
 
 sensio_framework_extra:
     cache:    { annotations: true }

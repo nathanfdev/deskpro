@@ -107,7 +107,6 @@ class MassLoader
 
         $this->connection->executeUpdate('TRUNCATE TABLE ticket_filter_subscriptions');
         $this->connection->executeUpdate('TRUNCATE TABLE permissions');
-        $this->connection->executeUpdate('TRUNCATE TABLE task_attachments');
         $this->connection->executeUpdate('DELETE FROM ticket_filters');
         $this->connection->executeUpdate('DELETE FROM people_emails WHERE person_id != 1');
         $this->connection->executeUpdate('TRUNCATE TABLE agent_team_members');
@@ -422,6 +421,8 @@ class MassLoader
             Ticket::STATUS_RESOLVED,
         ];
 
+        $allDepartmentIds = $this->connection->fetchAllCol('SELECT id FROM departments WHERE is_tickets_enabled = 1');
+
         for ($i = 0; $i < $batchSize; ++$i) {
             $ref         = DpStrings::random(10, Strings::CHARS_ALPHA_IU).'-'.date('YzB');
             $dateCreated = $this->faker->dateTime->format('c');
@@ -431,11 +432,12 @@ class MassLoader
                 'subject'               => $this->faker->title,
                 'ref'                   => $ref,
                 'date_created'          => $dateCreated,
+                'department_id'         => $this->faker->randomElement($allDepartmentIds),
                 'person_id'             => $this->faker->randomElement($this->fetchAllIds('people')),
                 'agent_id'              => $this->faker->randomElement($this->fetchAllIds('people')),
                 'status'                => $this->faker->randomElement($statuses),
                 'ticket_hash'           => md5($ref.$dateCreated),
-                'brand_id'              => $this->faker->randomElement($this->connection->fetchAllCol('SELECT id FROM brands')),
+                'brand_id'              => $this->faker->randomElement($this->fetchAllIds('brands')),
                 'date_last_user_reply'  => $this->faker->dateTimeBetween('-1 year', 'now')->format('Y-m-d H:i:s'),
                 'date_last_agent_reply' => $this->faker->dateTimeBetween('-1 year', 'now')->format('Y-m-d H:i:s'),
             ];

@@ -115,8 +115,10 @@ class RunCommand extends ContainerAwareCommand
 
         $currentBuildId = $buildStatus->getSchemaBuild();
 
+        $logger->debug("Current Build #$currentBuildId (".date('Y-m-d', $currentBuildId).')');
+
         while ($nextBuildId = $manifestReader->getNextBuildId($currentBuildId)) {
-            $logger->debug("Build #$nextBuildId");
+            $logger->debug("Build #$nextBuildId (".date('Y-m-d', $nextBuildId).')');
             $buildInfo = $manifestReader->findBuild($nextBuildId);
 
             // e.g. online builds can be run separately, so we need to check

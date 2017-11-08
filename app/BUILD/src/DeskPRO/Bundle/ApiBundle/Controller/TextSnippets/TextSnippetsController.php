@@ -30,8 +30,6 @@ namespace DeskPRO\Bundle\ApiBundle\Controller\TextSnippets;
 
 use Application\DeskPRO\Entity\TextSnippet;
 use DeskPRO\Bundle\ApiBundle\ApiDoc\Annotation\ApiDoc;
-use DeskPRO\Bundle\ApiBundle\Controller\CrudController;
-use DeskPRO\Bundle\ApiBundle\Traits\TextSnippets\ContextTypeTrait;
 use DeskPRO\Bundle\AppBundle\Annotation\ActionPermissions\Annotation\ApiModes;
 use DeskPRO\Bundle\AppBundle\Entity\TextSnippetContent;
 use DeskPRO\Bundle\AppBundle\Form\Type\TextSnippet\TextSnippetType;
@@ -63,10 +61,8 @@ use Symfony\Component\HttpKernel\HttpKernelInterface;
  *     }
  * )
  */
-class TextSnippetsController extends CrudController
+class TextSnippetsController extends AbstractTextSnippetsController
 {
-    use ContextTypeTrait;
-
     public static $entity    = TextSnippet::class;
     public static $type      = TextSnippetType::class;
     public static $listOrder = 'asc';
@@ -179,7 +175,7 @@ class TextSnippetsController extends CrudController
             $qb->setParameter('is_draft', $query->getInt('draft'));
         }
 
-        $this->applyFilterByLanguage($request, $qb, 'text_snippets');
+        $this->applyFilterByLanguageAndQueryString($request, $qb, 'text_snippets');
     }
 
     /**

@@ -41,7 +41,7 @@ use FOS\RestBundle\Controller\Annotations as Rest;
  * @Rest\Route("/person_custom_fields")
  * @ApiDoc(target="all", section="People", output="Application\DeskPRO\Entity\CustomDefPerson")
  * @ApiDoc(
- *     target="putAction",
+ *     target="postAction,putAction",
  *     input={
  *      "class"="DeskPRO\Bundle\AppBundle\Form\Type\CustomFields\CustomFieldType",
  *      "options"={

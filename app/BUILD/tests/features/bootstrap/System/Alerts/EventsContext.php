@@ -33,12 +33,12 @@
 namespace DpBehat\System\Alerts;
 
 use Behat\Symfony2Extension\Context\KernelAwareContext;
+use Behatch\Context\BaseContext;
 use DeskPRO\Bundle\SystemBundle\Entity\SystemAlerts\Event\AbstractEvent;
 use DeskPRO\Bundle\SystemBundle\Entity\SystemAlerts\Event\Exception\ExceptionEvent;
 use DeskPRO\Bundle\SystemBundle\Entity\SystemAlerts\Event\PHP\ErrorEvent;
 use Doctrine\ORM\EntityManager;
 use DpBehat\KernelAwareTrait;
-use Sanpi\Behatch\Context\BaseContext;
 
 /**
  * Class EventsContext.

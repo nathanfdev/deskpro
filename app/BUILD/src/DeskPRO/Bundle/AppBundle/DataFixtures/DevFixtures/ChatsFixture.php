@@ -100,11 +100,11 @@ SQL;
             $cc->setPerson($this->person)
                 ->setStatus($status)
                 ->setPersonName($this->person->getDisplayName())
-                ->setPersonEmail($this->person->getEmail())
+                ->setPersonEmail($this->person->getEmail() ?: '')
                 ->setEndedBy(ChatConversation::ENDED_AGENT)
-                ->setAgent($this->agent);
-            $cc->date_created = $this->faker->dateTimeBetween('-2 months', '-10 days');
-            $conversations[]  = $cc;
+                ->setAgent($this->agent)
+                ->setDateCreated($this->faker->dateTimeBetween('-2 months', '-10 days'));
+            $conversations[] = $cc;
         }
 
         $conversations[0]->subject    = 'Hi there, how can I help you? | Hi | Do you have a problem? | File: Screen Shot 2015-11-27 at 11.02.12 AM.png (493.95 KB) | Yes look at this file | ok ill have a look';

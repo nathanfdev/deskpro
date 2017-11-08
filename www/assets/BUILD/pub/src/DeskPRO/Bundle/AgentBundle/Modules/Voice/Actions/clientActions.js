@@ -7,7 +7,7 @@ import { loadBatch, addToCollection, updateCollection } from 'DeskPRO/Bundle/App
 import { meSelector } from 'DeskPRO/Bundle/AppBundle/Modules/RecordsStore/Shortcuts/me';
 import { agentsSelector } from 'DeskPRO/Bundle/AppBundle/Modules/RecordsStore/Shortcuts/agents';
 import { callsEnabledSelector } from '../Selectors/agents';
-import { phoneTokenSelector, workerTokenSelector, idleActivitySidSelector, busyActivitySidSelector, offlineActivitySidSelector } from '../Selectors/client';
+import { phoneTokenSelector, workerTokenSelector, idleActivitySidSelector, busyActivitySidSelector, offlineActivitySidSelector, connectionsSelector } from '../Selectors/client';
 import { allPhoneCallsSelector } from '../Selectors/phoneCalls';
 import { allNumbersSelector } from '../Selectors/numbers';
 import { closeIframes } from '../../Application/Actions/bootstrapActions';
@@ -223,6 +223,22 @@ export const voiceBootstrap = createAction(
             dispatch(addToCollection('Person', 'all',  Object.values(data.linked.person)));
           }
         });
+        messageBroker.addMessageListener('agent.voice.incoming-call-answered', (data) => {
+          dispatch(removeIncomingCall(data));
+        });
+        messageBroker.addMessageListener('agent.voice.outgoing-call-answered', (data) => {
+          const state       = getState();
+          const connections = connectionsSelector(state);
+          const connection  = connections.filter(c => c.parameters.CallSid === data.CallSid).first();
+
+          if (connection) {
+            closeIframes();
+
+            dispatch(resetOutgoingCall());
+            connection.message.TicketId = data.ticket.id;
+            window.DeskPRO_Window.runPageRoute(`ticket:/agent/tickets/${data.ticket.id}`);
+          }
+        });
       })
       .catch(() => {
         // catch mic disabled exception
@@ -360,12 +376,12 @@ export const transferCall = createAction(
   (connection, agent, type) => (dispatch) => {
     dispatch(toggleHold(connection, true));
 
-    if (type === 'cold') {
-      connection.disconnect();
-    }
-
     const callId = connection.message.CallId;
-    return api.sendPut(`DP_API/voice_client/phone_call/${callId}/transfer/${agent.get('id')}/${type}`);
+    return api.sendPut(`DP_API/voice_client/phone_call/${callId}/transfer/${agent.get('id')}/${type}`).success(() => {
+      if (type === 'cold') {
+        connection.disconnect();
+      }
+    });
   }
 );
 

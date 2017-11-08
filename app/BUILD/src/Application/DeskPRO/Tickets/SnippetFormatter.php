@@ -85,6 +85,7 @@ class SnippetFormatter implements PersonContextInterface
     {
         $data           = $this->extra_vars;
         $data['ticket'] = $ticket->toApiData();
+        $data['entity'] = $ticket->toApiData();
 
         if (isset($data['ticket']['person'])) {
             $data['user'] = $data['ticket']['person'];

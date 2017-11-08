@@ -17,6 +17,7 @@ define [
     # Just doing all the necessary AJAX calls here
     ###
     initialLoad: ->
+      @$scope.getStats = @getStats
       agentTeamsPromise = @Api2.sendGet('/agent_teams').then( (res) =>
         teams = res.data.data
         if teams.length
@@ -86,6 +87,7 @@ define [
         else
           @setDataForBarGraphs(data_key)
       )
+
 
 
     ###

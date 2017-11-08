@@ -28,6 +28,7 @@
 
 namespace DeskPRO\Component\Pdf;
 
+use DeskPRO\Bundle\AppBundle\AppEnv\AppEnv;
 use DeskPRO\Bundle\PortalBundle\Brand\BrandStack;
 use Dompdf\Dompdf;
 
@@ -40,7 +41,7 @@ use Dompdf\Dompdf;
 class domPdfRenderer implements PdfRendererInterface
 {
     /**
-     * @var \mPDF
+     * @var Dompdf
      */
     private $object;
 
@@ -49,7 +50,12 @@ class domPdfRenderer implements PdfRendererInterface
      */
     private $brandStack;
 
-    public function __construct($brandStack)
+    /**
+     * @var AppEnv
+     */
+    private $appEnv;
+
+    public function __construct(BrandStack $brandStack, AppEnv $appEnv)
     {
         $this->brandStack = $brandStack;
 

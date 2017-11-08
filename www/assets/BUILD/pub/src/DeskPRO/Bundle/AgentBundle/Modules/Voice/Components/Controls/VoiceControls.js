@@ -1,4 +1,5 @@
-import React, { PropTypes } from 'react';
+import PropTypes from 'prop-types';
+import React from 'react';
 import classNames from 'classnames';
 import { Button } from 'DeskPRO/Component/Semantic/Button';
 import Timer from 'DeskPRO/Component/Timer';
@@ -213,6 +214,7 @@ class Active extends React.Component {
           positionAt="right bottom"
           isOpen={transferMenuOpened}
           positionTarget={this.transferButton}
+          zIndex={1000}
         >
           <ClickOut onClickOut={this.onCloseTransferMenu}>
             <TransferList {...this.props} />
@@ -223,6 +225,7 @@ class Active extends React.Component {
           positionAt="right bottom"
           isOpen={addMenuOpened}
           positionTarget={this.addButton}
+          zIndex={1000}
         >
           <ClickOut onClickOut={this.onCloseAddMenu}>
             <AddList {...this.props} />

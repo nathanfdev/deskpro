@@ -448,6 +448,11 @@ class Ticket extends DomainObject implements HighlightableModelInterface, Labels
     protected $date_status = null;
 
     /**
+     * @var \DateTime
+     */
+    protected $date_on_hold = null;
+
+    /**
      * @var int
      */
     protected $total_user_waiting = 0;
@@ -3195,8 +3200,10 @@ class Ticket extends DomainObject implements HighlightableModelInterface, Labels
     {
         if ($is_hold) {
             $this->setStatus(self::STATUS_AWAITING_AGENT);
+            $this->setModelField('date_on_hold', new \DateTime());
             $this->setModelField('is_hold', true);
         } else {
+            $this->setModelField('date_on_hold', null);
             $this->setModelField('is_hold', false);
         }
 
@@ -3307,12 +3314,22 @@ class Ticket extends DomainObject implements HighlightableModelInterface, Labels
 
     public function getWorstSlaStatus()
     {
-        if (!count($this->ticket_slas)) {
+        return self::calctWorstSlaStatus($this->ticket_slas);
+    }
+
+    /**
+     * @param $ticketSlas
+     *
+     * @return string
+     */
+    public static function calctWorstSlaStatus($ticketSlas)
+    {
+        if (!count($ticketSlas)) {
             return;
         }
 
         $status = null;
-        foreach ($this->ticket_slas as $ticket_sla) {
+        foreach ($ticketSlas as $ticket_sla) {
             if ($ticket_sla->is_completed) {
                 continue;
             }
@@ -4502,6 +4519,26 @@ class Ticket extends DomainObject implements HighlightableModelInterface, Labels
     }
 
     /**
+     * @return \DateTime
+     */
+    public function getDateOnHold()
+    {
+        return $this->date_on_hold;
+    }
+
+    /**
+     * @param \DateTime $date_on_hold
+     *
+     * @return $this
+     */
+    public function setDateOnHold(\DateTime $date_on_hold = null)
+    {
+        $this->setModelField('date_on_hold', $date_on_hold);
+
+        return $this;
+    }
+
+    /**
      * @return int
      */
     public function getTotalUserWaiting()
@@ -4876,6 +4913,14 @@ class Ticket extends DomainObject implements HighlightableModelInterface, Labels
                 'columnName' => 'date_status',
                 'type'       => 'datetime',
                 'nullable'   => false,
+            ]
+        );
+        $metadata->mapField(
+            [
+                'fieldName'  => 'date_on_hold',
+                'columnName' => 'date_on_hold',
+                'type'       => 'datetime',
+                'nullable'   => true,
             ]
         );
         $metadata->mapField(

@@ -29,6 +29,7 @@
 namespace DeskPRO\Bundle\AppBundle\Form\Type\People;
 
 use Application\DeskPRO\Entity\AgentTeam;
+use Application\DeskPRO\Entity\CustomDefPerson;
 use Application\DeskPRO\Entity\LabelPerson;
 use Application\DeskPRO\Entity\Language;
 use Application\DeskPRO\Entity\Organization;
@@ -122,6 +123,7 @@ class PersonType extends AbstractType
             ->add('agent_data', PersonAgentDataType::class, [
                 'property_path' => 'agentData',
                 'required'      => false,
+                'person'        => $builder->getData(),
             ])
             ->add('phone_numbers', CollectionType::class, [
                 'allow_add'     => true,
@@ -137,6 +139,10 @@ class PersonType extends AbstractType
             ])
         ;
 
+        // resolve field name aliases
+        $fieldNameResolver = $this->fieldManager->getFieldNameResolver(CustomDefPerson::class);
+        $builder->addEventSubscriber($fieldNameResolver);
+
         $builder->addEventListener(FormEvents::PRE_SUBMIT, [$this, 'onSyncName']);
         $builder->addEventListener(FormEvents::POST_SUBMIT, [$this, 'onUnsetAgentData'], 100);
     }
@@ -146,11 +152,9 @@ class PersonType extends AbstractType
      */
     public function configureOptions(OptionsResolver $resolver)
     {
-        $resolver
-            ->setDefaults([
-                'agent_interface' => false,
-            ])
-        ;
+        $resolver->setDefaults([
+            'agent_interface' => false,
+        ]);
     }
 
     /**

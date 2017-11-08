@@ -1,4 +1,5 @@
-import React, { PropTypes } from 'react';
+import PropTypes from 'prop-types';
+import React from 'react';
 import { connect } from 'react-redux';
 import { Simple } from 'DeskPRO/Component/Positioned/Simple';
 import { ClickOut } from 'DeskPRO/Component/ClickOut';
@@ -27,7 +28,7 @@ export class TranscriptContainer extends React.Component {
 
   static propTypes = {
     dispatch:    PropTypes.func,
-    chatId:      PropTypes.number,
+    chatId:      PropTypes.string,
     authorName:  PropTypes.string,
     authorEmail: PropTypes.string,
     checked:     PropTypes.bool,

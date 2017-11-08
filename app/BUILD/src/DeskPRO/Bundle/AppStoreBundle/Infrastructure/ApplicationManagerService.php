@@ -72,6 +72,69 @@ class ApplicationManagerService
     }
 
     /**
+     * @param AppInstance $instance
+     * @param string $strategy
+     */
+    public function remove(AppInstance $instance, $strategy)
+    {
+        $entity = null;
+        /** @var DeskPRO\Entity\Blob $blobs */
+        $blobs = [];
+        if ($strategy === 'instance') {
+            $entity = $instance;
+        } else if ($strategy === 'last-instance') {
+            $entity = $instance->getApp();
+            $blobs = $instance->getApp()->getAssets()->map(function (AppAssetBlob $asset) {
+                return $asset->getBlob();
+            })->toArray();
+        }
+
+        if (is_null($entity)) {
+            $msg = sprintf('Could not handle remove strategy: %s', $strategy);
+            throw new \DomainException($msg);
+        }
+
+        $this->em->remove($entity);
+        $this->em->flush();
+
+        // delete the blobs, one by one :(
+        foreach ($blobs as $blob) {
+            $this->blobStorage->deleteBlobRecord($blob);
+        }
+    }
+
+    /**
+     * @param AppInstance $instance
+     * @return string
+     */
+    public function getRemoveStrategy(AppInstance $instance)
+    {
+        $appId = $instance->getApplicationId();
+        $instanceId = $instance->getId();
+        if (! $appId || !$instanceId) {
+            return 'none';
+        }
+
+        // perhaps should check that app instance is still linked to App in the db, but at this point we can
+        // be pretty certain of this fact
+        $qb = $this->em->createQueryBuilder();
+        $query = $qb->select('i.id')
+            ->from(AppInstance::class, 'i')
+            ->where('i.app = :appId')
+            ->andWhere('i.id <> :id')
+            ->setParameter('appId', $appId)
+            ->setParameter('id', $instanceId)
+            ->getQuery()
+        ;
+
+        $otherId = $query->setMaxResults(1)->getOneOrNullResult(\Doctrine\ORM\AbstractQuery::HYDRATE_SCALAR);
+        if (is_null($otherId)) {
+            return 'last-instance';
+        }
+        return 'instance';
+    }
+
+    /**
      * @param Domain\AppBundle $bundle
      *
      * @return Domain\ApplicationInstance
@@ -91,7 +154,7 @@ class ApplicationManagerService
      */
     public function createOrUpdateAppEntity(Domain\AppBundle $bundle)
     {
-        $manifestReader = new Infrastructure\AppManifestJsonReader();
+        $manifestReader = new Infrastructure\AppManifestReader();
         $manifest       = $manifestReader->readManifestFromJson($bundle->getManifestAsString());
 
         $app = $this->em->getRepository(App::class)->findOneBy(['name' => $manifest->getName()]);
@@ -141,9 +204,9 @@ class ApplicationManagerService
         $instance = new AppInstance();
         $instance
             ->setApp($app)
-            ->setName($app->getParsedManifest()->getTitle())
+            ->setName($app->getManifest()->getTitle())
             ->setSettings($settings)
-            ->setScope($app->getParsedManifest()->getScope())
+            ->setScope($app->getManifest()->getScope())
         ;
 
         $this->em->persist($instance);

@@ -1,6 +1,9 @@
-import React, { PropTypes } from 'react';
+import PropTypes from 'prop-types';
+import React from 'react';
 import ReactDOM from 'react-dom';
-import _ from 'lodash';
+import clone from 'lodash/clone';
+import find from 'lodash/find';
+import uniqueId from 'lodash/uniqueId';
 import $ from 'jquery';
 import { FormActionStore } from 'DeskPRO/Component/React/Standalone/FormActionStore';
 import PortalSimpleSelectBox from './PortalSimpleSelectBox';
@@ -40,7 +43,7 @@ export class LevelSelectActionStore extends FormActionStore {
       const r = [];
       options.forEach((opt) => {
         if (opt.parent === parent) {
-          opt.path = _.clone(path);
+          opt.path = clone(path);
           path.push(opt.id);
           opt.children = walkerFn(opt.id, path);
           path.pop();
@@ -103,9 +106,9 @@ export class PortalSelectBox extends React.Component {
       return path;
     }
 
-    const opt = _.find(this.optionData.options, o => o.id === value);
+    const opt = find(this.optionData.options, o => o.id === value);
     if (opt) {
-      path = _.clone(opt.path);
+      path = clone(opt.path);
     } else {
       path = [];
     }
@@ -124,7 +127,7 @@ export class PortalSelectBox extends React.Component {
     let subGroup = null;
 
     if (this.state.valuePath.length) {
-      subGroup = _.find(group, i => this.state.valuePath.indexOf(i.id) !== -1);
+      subGroup = find(group, i => this.state.valuePath.indexOf(i.id) !== -1);
     }
 
     const options = group.map(g => ({ id: g.id, title: g.title }));
@@ -171,7 +174,7 @@ export function createComponent(select, renderTo, widgetOptions = {}) {
     const $optgroup = $(optgroup);
 
     const memSel = $('<select>');
-    const parentId = _.uniqueId('opt_');
+    const parentId = uniqueId('opt_');
     const newOpt = $('<option>');
     newOpt.attr('data-id', parentId);
     newOpt.attr('data-name', $optgroup.attr('label'));
@@ -182,7 +185,7 @@ export function createComponent(select, renderTo, widgetOptions = {}) {
 
     $optgroup.find('option').each((i, opt) => {
       const $opt = $(opt).clone();
-      $opt.attr('data-id', _.uniqueId('opt_'));
+      $opt.attr('data-id', uniqueId('opt_'));
       $opt.attr('data-parent', parentId);
       memSel.append($opt);
     });
@@ -196,7 +199,7 @@ export function createComponent(select, renderTo, widgetOptions = {}) {
   $select.find('option').each((x, opt) => {
     const $opt = $(opt);
     if (!$opt.data('id')) {
-      const newId = _.uniqueId('opt_');
+      const newId = uniqueId('opt_');
       $opt.data('id', newId);
     }
   });

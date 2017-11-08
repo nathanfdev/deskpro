@@ -20,9 +20,7 @@
 				<li id="feedback_section" data-section-handler="DeskPRO.Agent.WindowElement.Section.Feedback"></li>
 			{% endif %}
 
-			{% if brand_app_settings['core.apps_kb'] or brand_app_settings['core.apps_news'] or brand_app_settings['core.apps_downloads'] %}
-				<li id="publish_section" data-section-handler="DeskPRO.Agent.WindowElement.Section.Publish"></li>
-			{% endif %}
+			<li id="publish_section" data-section-handler="DeskPRO.Agent.WindowElement.Section.Publish"></li>
 
 			{% if app.getSetting('core.apps_tasks') and app.user.hasPerm('agent_tasks.use')  %}
 				<li id="tasks_section" data-section-handler="DeskPRO.Agent.WindowElement.Section.Tasks"></li>
@@ -40,6 +38,13 @@
 			data-frame-url="{{ app.request.getBaseUrl() }}/reports"
 			data-element-handler="DeskPRO.Agent.ElementHandler.OverlayFrame"
 			data-frame-id="reports"
+			data-win-title="DeskPRO Reports Interface"
+	></script>
+	<script
+			id="reports2_interface_trigger"
+			data-frame-url="{{ app.request.getBaseUrl() }}/agent/reports-interface#/"
+			data-element-handler="DeskPRO.Agent.ElementHandler.OverlayFrame"
+			data-frame-id="reports2"
 			data-win-title="DeskPRO Reports Interface"
 	></script>
 {% endif %}

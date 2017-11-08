@@ -8,9 +8,6 @@ services:
       - "@request"
       - "@settings_resolver"
 
-  api_view_representation_factory:
-    class: DeskPRO\Bundle\ApiBundle\View\ApiViewRepresentationFactory
-
   version_listener:
     class: DeskPRO\Bundle\ApiBundle\EventListener\VersionListener
     arguments:

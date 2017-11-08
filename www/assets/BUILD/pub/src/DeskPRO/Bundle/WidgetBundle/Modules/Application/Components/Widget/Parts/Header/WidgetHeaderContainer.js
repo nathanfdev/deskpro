@@ -1,4 +1,5 @@
-import React, { PropTypes } from 'react';
+import PropTypes from 'prop-types';
+import React from 'react';
 import { connect } from 'react-redux';
 import { storageAvailable } from 'DeskPRO/Component/Util/storageAvailable';
 import { closeWidget, closeTriggerPopup } from '../../../../Actions/dpWindowActions';

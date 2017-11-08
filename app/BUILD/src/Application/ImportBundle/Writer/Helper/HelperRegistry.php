@@ -110,6 +110,14 @@ class HelperRegistry
     }
 
     /**
+     * @return DepartmentHelper
+     */
+    public function getDepartmentHelper()
+    {
+        return $this->getHelper(DepartmentHelper::class);
+    }
+
+    /**
      * @return CustomDataHelper
      */
     public function getCustomDataHelper()

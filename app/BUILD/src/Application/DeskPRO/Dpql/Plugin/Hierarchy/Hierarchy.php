@@ -52,8 +52,14 @@ class Hierarchy
      */
     public static function isHierarchical(SqlSelect $sql)
     {
-        $isSimpleGrouping = count($sql->getGroupBy()) === 1;
-        if ($isSimpleGrouping && in_array(self::getGroupingTargetTable($sql), self::$hierarchicalTables)) {
+        $isSimpleGrouping    = count($sql->getGroupBy()) === 1;
+        $groupingTargetTable = self::getGroupingTargetTable($sql);
+
+        if ($isSimpleGrouping && (
+                in_array($groupingTargetTable, self::$hierarchicalTables)
+                || strpos($groupingTargetTable, 'custom_data_') === 0
+                || strpos($groupingTargetTable, 'custom_def_') === 0
+            )) {
             return true;
         }
         if (in_array($sql->getTable(), self::$hierarchicalTables)) {
@@ -107,7 +113,12 @@ class Hierarchy
                 if (array_key_exists($tableAlias, $joins)) {
                     preg_match("/.+`(.+)` AS `$tableAlias`.+/isU", $joins[$tableAlias], $joinData);
                     if (count($joinData) > 0) {
-                        return $joinData[1];
+                        $joinTable = $joinData[1];
+                        if (strpos($joinTable, 'custom_data_') === 0) {
+                            return str_replace('custom_data_', 'custom_def_', $joinTable);
+                        }
+
+                        return $joinTable;
                     }
                 }
             }

@@ -35,6 +35,12 @@ gulp.task('default', ['clean'], (cb) => {
   runSeq(['bundle'], cb);
 });
 
+// used in init-project-dev, builds to filesystem but without any optimisations
+// so its quicker during a new project checkout
+gulp.task('default-dev', ['clean'], (cb) => {
+  runSeq(['bundle:dev'], cb);
+});
+
 gulp.task('prod', ['clean', 'priv:start-prod'], (cb) => {
   runSeq(['bundle'], cb);
 });
@@ -165,8 +171,6 @@ function getWebpackConfig(mode, isProd) {
       ],
 
       alias: {
-        'xcomponent/src':       path.resolve(__dirname, 'node_modules', 'xcomponent', 'dist', 'xcomponent.js'),
-        'post-robot/src':       path.resolve(__dirname, 'node_modules', 'post-robot', 'dist', 'post-robot.js'),
         invariant:              'fbjs/lib/invariant',
         warning:                'fbjs/lib/warning',
         'jquery.ui':            'jquery-ui',
@@ -187,10 +191,12 @@ function getWebpackConfig(mode, isProd) {
           loader:  'app-reducer-gen',
           include: [
             path.resolve(__dirname, 'src/DeskPRO/Bundle/AdminBundle/Modules'),
+            path.resolve(__dirname, 'src/DeskPRO/Bundle/ReportBundle/Modules'),
             path.resolve(__dirname, 'src/DeskPRO/Bundle/AgentBundle/Modules'),
             path.resolve(__dirname, 'src/DeskPRO/Bundle/AppBundle/Modules'),
             path.resolve(__dirname, 'src/DeskPRO/Bundle/DemoBundle/Modules'),
-            path.resolve(__dirname, 'src/DeskPRO/Bundle/WidgetBundle/Modules')
+            path.resolve(__dirname, 'src/DeskPRO/Bundle/WidgetBundle/Modules'),
+            path.resolve(__dirname, 'src/DeskPRO/Bundle/Apps/Modules'),
           ]
         }
       ],
@@ -220,6 +226,7 @@ function getWebpackConfig(mode, isProd) {
           test:    /\.scss$/,
           include: [
             path.resolve(__dirname, 'src/DeskPRO/Bundle/AdminBundle/Resources/style'),
+            path.resolve(__dirname, 'src/DeskPRO/Bundle/ReportBundle/Resources/style'),
             path.resolve(__dirname, 'src/DeskPRO/Bundle/AgentBundle/Resources/style'),
             path.resolve(__dirname, 'src/DeskPRO/Bundle/PortalBundle/Resources/style'),
             path.resolve(__dirname, 'src/DeskPRO/Bundle/AppBundle/Resources/style'),
@@ -246,7 +253,7 @@ function getWebpackConfig(mode, isProd) {
         { test: require.resolve('react'), loader: 'expose-loader?React' },
         { test: require.resolve('react-dom'), loader: 'expose-loader?ReactDOM' },
       ],
-      noParse: [/(^(froala|jquery\.mark))\.min\.js/, /xcomponent/]
+      noParse: [/(^(froala|jquery\.mark))\.min\.js/]
     },
 
     plugins: [
@@ -312,6 +319,10 @@ function getWebpackConfig(mode, isProd) {
     config.entry.DeskPRO_AdminBundle             = ['./src/DeskPRO/Bundle/AdminBundle/DeskPRO_AdminBundle'];
     config.entry.DeskPRO_AdminBundle_style       = ['./src/DeskPRO/Bundle/AdminBundle/Resources/style/admin-style.scss'];
   }
+  if (mode === 'all' || mode === 'report') {
+    config.entry.DeskPRO_ReportBundle             = ['./src/DeskPRO/Bundle/ReportBundle/DeskPRO_ReportBundle'];
+    config.entry.DeskPRO_ReportBundle_style       = ['./src/DeskPRO/Bundle/ReportBundle/Resources/style/report-style.scss'];
+  }
   if (mode === 'all' || mode === 'demo') {
     config.entry.DeskPRO_DemoBundle             = ['./src/DeskPRO/Bundle/DemoBundle/DeskPRO_DemoBundle'];
     config.entry.DeskPRO_DemoBundle_style       = ['./src/DeskPRO/Bundle/DemoBundle/Resources/style/demo-style.scss'];
@@ -339,6 +350,9 @@ function getWebpackConfig(mode, isProd) {
 
     if (config.entry.DeskPRO_AdminBundle) {
       config.entry.DeskPRO_AdminBundle.unshift('webpack-hot-middleware/client?path=http://localhost:9666/__webpack_hmr');
+    }
+    if (config.entry.DeskPRO_ReportBundle) {
+      config.entry.DeskPRO_ReportBundle.unshift('webpack-hot-middleware/client?path=http://localhost:9666/__webpack_hmr');
     }
     if (config.entry.DeskPRO_AgentBundle) {
       config.entry.DeskPRO_AgentBundle.unshift('webpack-hot-middleware/client?path=http://localhost:9666/__webpack_hmr');
@@ -409,7 +423,7 @@ function startWebpackServer(config) {
     }
 
     gutil.log('[webpack-dev-server]', 'http://localhost:9666/');
-    gutil.log('[webpack-dev-server]', 'In your config.paths.php, ensure these lines exists: ');
+    gutil.log('[webpack-dev-server]', 'In your config.paths.php, ensure these lines exist: ');
     gutil.log('[webpack-dev-server]', '\r\n$PATHS_CONFIG[\'asset_paths\'][\'app_assets\'] = [' +
       '\r\n    \'type\' => \'url\',' +
       '\r\n    \'value\' => \'http://localhost:9666/pub/build/\'' +
@@ -427,6 +441,7 @@ function startWebpackServer(config) {
 gulp.task('refresh-reducers', () => {
   reducerRefresh('App', path.join(__dirname, 'src/DeskPRO/Bundle/AppBundle'));
   reducerRefresh('Admin', path.join(__dirname, 'src/DeskPRO/Bundle/AdminBundle'));
+  reducerRefresh('Report', path.join(__dirname, 'src/DeskPRO/Bundle/ReportBundle'));
   reducerRefresh('Agent', path.join(__dirname, 'src/DeskPRO/Bundle/AgentBundle'));
   reducerRefresh('Demo', path.join(__dirname, 'src/DeskPRO/Bundle/DemoBundle'));
   reducerRefresh('Widget', path.join(__dirname, 'src/DeskPRO/Bundle/WidgetBundle'));
@@ -435,6 +450,7 @@ gulp.task('refresh-reducers', () => {
 gulp.task('bundle', (callback) => {
   reducerRefresh('App', path.join(__dirname, 'src/DeskPRO/Bundle/AppBundle'));
   reducerRefresh('Admin', path.join(__dirname, 'src/DeskPRO/Bundle/AdminBundle'));
+  reducerRefresh('Report', path.join(__dirname, 'src/DeskPRO/Bundle/ReportBundle'));
   reducerRefresh('Agent', path.join(__dirname, 'src/DeskPRO/Bundle/AgentBundle'));
   reducerRefresh('Demo', path.join(__dirname, 'src/DeskPRO/Bundle/DemoBundle'));
   reducerRefresh('Widget', path.join(__dirname, 'src/DeskPRO/Bundle/WidgetBundle'));
@@ -443,6 +459,20 @@ gulp.task('bundle', (callback) => {
   refreshWidgetLoader('embed_loader');
   refreshPortalDesignerVariables();
   runWebpackBundle(getWebpackConfig('all', true), callback);
+});
+
+gulp.task('bundle:dev', (callback) => {
+  reducerRefresh('App', path.join(__dirname, 'src/DeskPRO/Bundle/AppBundle'));
+  reducerRefresh('Admin', path.join(__dirname, 'src/DeskPRO/Bundle/AdminBundle'));
+  reducerRefresh('Report', path.join(__dirname, 'src/DeskPRO/Bundle/ReportBundle'));
+  reducerRefresh('Agent', path.join(__dirname, 'src/DeskPRO/Bundle/AgentBundle'));
+  reducerRefresh('Demo', path.join(__dirname, 'src/DeskPRO/Bundle/DemoBundle'));
+  reducerRefresh('Widget', path.join(__dirname, 'src/DeskPRO/Bundle/WidgetBundle'));
+  refreshWidgetLoader('widget_loader');
+  refreshWidgetLoader('hit_recorder');
+  refreshWidgetLoader('embed_loader');
+  refreshPortalDesignerVariables();
+  runWebpackBundle(getWebpackConfig('all', false), callback);
 });
 
 gulp.task('bundle:agent', (callback) => {
@@ -478,6 +508,7 @@ gulp.task('bundle:dev-server', () => {
   refreshWidgetLoader('embed_loader');
   reducerRefresh('App', path.join(__dirname, 'src/DeskPRO/Bundle/AppBundle'));
   reducerRefresh('Admin', path.join(__dirname, 'src/DeskPRO/Bundle/AdminBundle'));
+  reducerRefresh('Report', path.join(__dirname, 'src/DeskPRO/Bundle/ReportBundle'));
   reducerRefresh('Agent', path.join(__dirname, 'src/DeskPRO/Bundle/AgentBundle'));
   reducerRefresh('Demo', path.join(__dirname, 'src/DeskPRO/Bundle/DemoBundle'));
   reducerRefresh('Widget', path.join(__dirname, 'src/DeskPRO/Bundle/WidgetBundle'));

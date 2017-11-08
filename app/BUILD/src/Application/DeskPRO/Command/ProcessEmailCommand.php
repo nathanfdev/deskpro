@@ -160,11 +160,13 @@ class ProcessEmailCommand extends ContainerAwareCommand
             $reader->setRawSource($rawSource);
             $account = $this->findEmailAccountFrom($reader);
 
-            $source = new EmailSource();
+            $fromEmail = $reader->getFromAddress();
+            $source    = new EmailSource();
             $source->fromArray([
                 'email_account' => $account,
                 'headers'       => $rawHeaders,
                 'status'        => 'inserted',
+                'from_email'    => $fromEmail ? $fromEmail->getEmail() : null,
             ]);
 
             // Rough matching, just for info purposes when browsing a list

@@ -21,9 +21,9 @@ $flag-icon-css-path: "../../../../../../node_modules/flag-icon-css/flags";
 @import '../../../AppBundle/Resources/style/widget-modal';
 @import 'tree/node-renderer-default';
 
-$dp-styles-font-path: '../../../../../../node_modules/deskpro-components/src/styles/fonts/';
+$dp-styles-font-path: '../../../../../../node_modules/@deskpro/react-components/src/styles/fonts/';
 $fa-font-path: "//netdna.bootstrapcdn.com/font-awesome/4.7.0/fonts" !default;
-@import "../../../../../../node_modules/deskpro-components/src/styles/main";
+@import "../../../../../../node_modules/@deskpro/react-components/src/styles/main_no_apps";
 @import "snippets";
 
 .menu-with-panel {

@@ -33,9 +33,10 @@ use Behat\Gherkin\Node\PyStringNode;
 use Behat\Gherkin\Node\TableNode;
 use Behat\Mink\Driver\Goutte\Client;
 use Behat\Mink\Exception\ExpectationException;
+use Behatch\Context\BaseContext;
 use DpBehat\Data\DataContext;
 use Orb\Util\Util;
-use Sanpi\Behatch\Context\BaseContext;
+use Symfony\Component\HttpFoundation\Request;
 
 class RestContext extends BaseContext
 {
@@ -101,6 +102,7 @@ class RestContext extends BaseContext
         $url = DataContext::replace($url);
         DataContext::setPlaceholder('lastRequestUrl', $url);
 
+        /** @var \Symfony\Bundle\FrameworkBundle\Client $client */
         $client = $this->getSession()->getDriver()->getClient();
 
         // intercept redirection
@@ -186,6 +188,78 @@ class RestContext extends BaseContext
     }
 
     /**
+     * Sends a HTTP request with a file as body body.
+     *
+     * @Given I send a :method request to :url with content type :contentType and file :filePath as body
+     *
+     * @param $method
+     * @param $url
+     * @param $contentType
+     * @param $filePath
+     */
+    public function iSendARequestToWithFileAsBody($method, $url, $contentType, $filePath)
+    {
+        $url      = DataContext::replace($url);
+        $filePath = DataContext::replace($filePath);
+
+        /** @var \Symfony\Bundle\FrameworkBundle\Client $client */
+        $client = $this->getSession()->getDriver()->getClient();
+
+        // intercept redirection
+        $client->followRedirects(false);
+
+        $serverParams = array_merge($this->server_params, ['CONTENT_TYPE' => $contentType]);
+        $client->request($method, $this->locatePath($url), [], [], $serverParams, file_get_contents($filePath));
+
+        $page = $this->getSession()->getPage();
+        if (strtoupper($method) === 'POST') {
+            $this->saveLastCreatedId($page->getContent());
+        }
+
+        return $page;
+    }
+
+    /**
+     * Sends a HTTP request with a body.
+     *
+     * @Given I send a :method request to :url with a json body:
+     */
+    public function iSendARequestToWithJsonBody($method, $url, PyStringNode $body)
+    {
+        $url = DataContext::replace($url);
+        DataContext::setPlaceholder('lastRequestUrl', $url);
+
+        $client = $this->getSession()->getDriver()->getClient();
+
+        // intercept redirection
+        $client->followRedirects(false);
+
+        $content = DataContext::replace($body->getRaw(), true);
+        $encodedContent = json_encode(json_decode($content));
+
+        $client->request($method, $this->locatePath($url), [], [], $this->server_params, $encodedContent);
+        $client->followRedirects(true);
+
+        $page = $this->getSession()->getPage();
+        if (strtoupper($method) === 'POST') {
+            $this->saveLastCreatedId($page->getContent());
+        }
+
+        return $page;
+    }
+
+    /**
+     * Saves the last created id as a different alias so it can be reused when multiple requests fire in same scenario
+     *
+     * @Given I save the last created id as :alias
+     */
+    public function iSaveLastCreatedIdAs($alias)
+    {
+        $placeholder = DataContext::getPlaceholder('lastCreatedId', true);
+        DataContext::setPlaceholder($alias, $placeholder);
+    }
+
+    /**
      * Checks, whether the response content is equal to given text.
      *
      * @Then the response should be equal to
@@ -235,20 +309,6 @@ class RestContext extends BaseContext
         $actual = $this->getHttpHeader($name);
         $this->assertEquals(strtolower($value), strtolower($actual),
             sprintf('The header "%s" is equal to "%s"', $name, $actual)
-        );
-    }
-
-    /**
-     * Checks, whether the db queries counter equal or less than value.
-     *
-     * @Then the db queries counter should be equal or less than :value
-     */
-    public function theDbQueriesCounterShouldBeEqualOrLessThan($value)
-    {
-        $actual = $this->getHttpHeader('DB-QUERIES-COUNT');
-        $this->assert(
-            intval($actual) <= intval($value),
-            sprintf('The db queries counter "%s" is greater than "%s"', $actual, $value)
         );
     }
 
@@ -346,30 +406,41 @@ class RestContext extends BaseContext
     }
 
     /**
+     * @Then print last response body
+     */
+    public function printLastResponseBody()
+    {
+        $page = $this->getSession()->getPage();
+        if ($page) {
+            echo $page->getContent();
+        }
+    }
+
+    /**
      * @Then print the corresponding curl command
      */
     public function printTheCorrespondingCurlCommand()
     {
+        /** @var Request $request */
         $request = $this->getSession()->getDriver()->getClient()->getRequest();
 
         $method = $request->getMethod();
         $url    = $request->getUri();
 
         $headers = '';
-        foreach ($request->getServer() as $name => $value) {
-            if (substr($name, 0, 5) !== 'HTTP_' && $name !== 'HTTPS') {
-                $headers .= " -H '$name: $value'";
-            }
+        foreach ($request->headers->all() as $name => $value) {
+            $headerValue = is_array($value) ? implode(' ', $value) : $value;
+            $headers .= " -H '$name: $headerValue'";
         }
 
-        $data   = '';
-        $params = $request->getParameters();
-        if (!empty($params)) {
-            $query = http_build_query($params);
-            $data  = " --data '$query'";
+        $dataBinary = '';
+        $content = $request->getContent();
+        if (! empty($content)) {
+            $content = str_replace("\n", "\\\n", $content);
+            $dataBinary = "--data-binary '$content'";
         }
 
-        echo "curl -X $method$data$headers '$url'";
+        echo "curl -X $method $headers $dataBinary '$url'";
     }
 
     /**

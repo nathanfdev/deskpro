@@ -1,17 +1,18 @@
-import React, { PropTypes } from 'react';
+import PropTypes from 'prop-types';
+import React from 'react';
 import { connect } from 'react-redux';
 import HTML5Backend from 'react-dnd-html5-backend';
 import { DragDropContext } from 'react-dnd';
-import debounce from 'lodash/function/debounce';
+import debounce from 'lodash/debounce';
+import $ from 'jquery';
+import { meSelector } from 'DeskPRO/Bundle/AppBundle/Modules/RecordsStore/Shortcuts/me';
+import { TabBodyPane } from 'DeskPRO/Bundle/AgentBundle/Modules/Application/Components/panes';
 import { Header } from './Header';
 import { AppSwitcher } from './AppSwitcher';
-import { TabBodyPane } from 'DeskPRO/Bundle/AgentBundle/Modules/Application/Components/panes';
 import { TabFrame } from './TabFrame';
 import { NotificationsContainer } from './Notifications/notifications';
-import { meSelector } from 'DeskPRO/Bundle/AppBundle/Modules/RecordsStore/Shortcuts/me';
 import { workspaceDimsSelector } from '../Selectors/workspace';
 import { setActiveApp, togglePreferences, toggleWorkspace, windowResize } from '../Actions/appActions';
-import $ from 'jquery';
 
 @connect(state => ({
   user:          meSelector(state),
@@ -44,16 +45,16 @@ export class DpApp extends React.Component {
     this.props.dispatch(windowResize($(window).width(), $(window).height()));
   }
 
-  switchApp = appId => {
+  switchApp = (appId) => {
     this.props.dispatch(setActiveApp(appId));
   };
 
-  toggleWorkspace = event => {
+  toggleWorkspace = (event) => {
     event.preventDefault();
     this.props.dispatch(toggleWorkspace());
   };
 
-  togglePreferences = event => {
+  togglePreferences = (event) => {
     event.preventDefault();
     this.props.dispatch(togglePreferences());
   };

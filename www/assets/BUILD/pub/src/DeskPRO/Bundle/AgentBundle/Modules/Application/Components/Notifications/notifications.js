@@ -1,4 +1,5 @@
-import React, { PropTypes } from 'react';
+import PropTypes from 'prop-types';
+import React from 'react';
 import { connect } from 'react-redux';
 import { destroyNotification } from '../../Actions/notificationActions';
 import { notificationsSelector } from  '../../Selectors/notifications';
@@ -14,8 +15,8 @@ export class NotificationsContainer extends React.Component {
 
   render() {
     const props = {
-      notifications: this.props.notifications,
-      destroyNotification: (id) => () => this.props.dispatch(destroyNotification(id))
+      notifications:       this.props.notifications,
+      destroyNotification: id => () => this.props.dispatch(destroyNotification(id))
     };
 
     return <Notifications {...props} />;
@@ -220,7 +221,7 @@ class UndoableActionNotification extends BaseCountdownNotification {
   renderOther() {
     return (
       <div className="dpwd--notication--growl-undo-button">
-        <a href="#" onClick={e => { e.preventDefault(); this.props.undo(); }}><i className="fa fa-undo" /> Undo</a>
+        <a href="#" onClick={(e) => { e.preventDefault(); this.props.undo(); }}><i className="fa fa-undo" /> Undo</a>
       </div>
     );
   }

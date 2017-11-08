@@ -1,0 +1,259 @@
+.report-widget-edit-n-run-content {
+  position: absolute;
+  top: 0;
+  left: $report-list-width;
+  right: 0;
+  bottom: 0;
+  overflow: auto;
+  background: #fff;
+  border-left: 1px solid $global-border;
+
+  .dp-loader {
+    width: 100%;
+    height: 100%;
+    position: absolute;
+    top: 0;
+    left: 0;
+    text-align: center;
+    background: #fff;
+    display: block;
+
+    > svg {
+      margin: 40%;
+    }
+  }
+}
+
+.reports-editor-panel {
+  background: #ffffff;
+  padding: 10px;
+
+  position: absolute;
+  top: 0; right: 0; bottom: 0; left: 0;
+  overflow: auto;
+
+  .editor-header {
+    font-size: 1.1em;
+    padding: 10px;
+    padding-top: 5px;
+    border-bottom: 1px solid #d9d9d9;
+    margin-bottom: 5px;
+  }
+
+  .stat-label {
+    background: #fff;
+    color: #929292;
+    i { color: #cdcdcd; }
+  }
+
+  .editor-form {
+    padding: 5px 0px 5px 0px;
+    color: #6b6b69;
+
+    [type="text"], textarea, .select {
+      font-family: monaco, monospace;
+      font-size: 0.9em;
+      color: #6e6e6e;
+      border: 1px solid #bdbdbd;
+      border-radius: 2px;
+      padding: 7px 10px;
+      width: 100%;
+      display: block;
+      line-height: 1.7em;
+      background: #fff;
+    }
+
+    textarea {
+      min-height: 60px;
+      overflow: scroll;
+    }
+
+    .select {
+      text-decoration: none;
+      i { float: right; top: 3px; }
+    }
+
+    .inline-input {
+      @include clearfix();
+      display: block;
+      width: 100%;
+      margin: 5px 0px;
+      position: relative;
+
+      label {
+        display: block;
+        width: 85px;
+        float: left;
+        padding: 10px;
+        text-align: right;
+      }
+
+      .input-container {
+        width: 100%;
+        padding-left: 90px;
+
+        [type="text"], .select {
+          width: 40%;
+        }
+      }
+
+      [type="text"], textarea {
+      }
+
+      .offset {
+        display: inline-block;
+        width: auto;
+        position: absolute;
+        top: 0px;
+        left: 200px;
+
+        [type="text"] {
+          display: inline-block;
+          width: 50px;
+        }
+      }
+    }
+  }
+
+  .button {
+    display: inline-block;
+    line-height: 1em;
+    background: #4681b2;
+    color: #fff;
+    border-radius: 2px;
+    padding: 10px 20px;
+    text-decoration: none;
+    text-transform: uppercase;
+    font-size: 0.8em;
+    margin-right: 3px;
+
+    i { margin-left: 5px;}
+
+    &.button-edit { background: #62ad8c }
+    &.button-clone { background: #787878;}
+    &.button-delete { background: #d6d5d4; color: #333; }
+  }
+
+  .report-editor-description {
+    padding: 10px 0px;
+    margin-top: 10px;
+    font-size: 0.95em;
+    line-height: 1.6em;
+    p { color: #8e8e8c; }
+  }
+}
+
+.reports-editor-panel.full-editor {
+  .report-description {
+    overflow: auto;
+  }
+  .title-input {
+    font-family: $font-stack;
+  }
+}
+
+.reports-editor-panel {
+  .full-editor-form {
+    float: left;
+    width: 75%;
+    padding-right: 10px;
+    padding-top: 10px;
+
+    .ui.input {
+      width: 100%;
+    }
+
+    .ui.button.olive {
+      box-shadow: 0 2px 0 darken(#b5cc18, 10%);
+    }
+  }
+}
+
+
+.editor-form-fields {
+  float: left;
+  width: 25%;
+  background: #f6f6f6;
+  border-left: 1px solid #cbcfd4;
+  padding: 10px;
+  color: #585858;
+  overflow-y: scroll;
+
+  .header {
+    display: block;
+    margin-bottom: 15px;
+    margin-top: 5px;
+  }
+
+  .field-group {
+    background: #ffffff;
+    border: 1px solid #bdbdbd;
+    margin-bottom: 10px;
+
+    .field-group-header {
+      position: relative;
+      padding: 8px 10px;
+      padding-right: 20px;
+      font-weight: 600;
+      font-size: 1.1em;
+      overflow: hidden;
+      white-space: nowrap;
+      text-overflow: ellipsis;
+
+      a {
+        position: absolute;
+        top: 11px;
+        right: 10px;
+      }
+    }
+    ul {
+      margin: 0;
+      padding: 0;
+      list-style: none;
+
+      a {
+        text-decoration: none;
+        display: block;
+        line-height: 1em;
+        padding: 5px 10px;
+        border-top: 1px solid rgba(0, 0, 0, 0.1);
+        color: #8c8c8c;
+
+        overflow: hidden;
+        white-space: nowrap;
+        text-overflow: ellipsis;
+
+        &:hover {
+          text-decoration: underline;
+          color: #333;
+        }
+      }
+    }
+  }
+}
+
+.query-part {
+  width: 80%;
+  background: #fff;
+  border: 1px solid #bdbdbd;
+  border-radius: 2px;
+  padding: 7px 10px;
+
+  &.short {
+    width: 30%;
+  }
+
+  &.title {
+    margin-left: 17px;
+  }
+}
+.query-part .ace-xcode {
+  background: transparent;
+  overflow: visible;
+  .ace_marker-layer .ace_active-line {
+    background: transparent;
+  }
+  .ace_hidden-cursors .ace_cursor {
+    display: none;
+  }
+}

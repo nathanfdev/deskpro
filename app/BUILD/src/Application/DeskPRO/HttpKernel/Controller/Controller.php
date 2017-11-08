@@ -195,8 +195,8 @@ abstract class Controller extends \Symfony\Bundle\FrameworkBundle\Controller\Con
     /**
      * Create a JSON response.
      *
-     * @param string $content
-     * @param int    $status_code
+     * @param string|array $content
+     * @param int          $status_code
      *
      * @return Response
      */
@@ -244,7 +244,7 @@ abstract class Controller extends \Symfony\Bundle\FrameworkBundle\Controller\Con
      *
      * Remember that personal data (e.g., account info) should never be exposed via jsonp.
      *
-     * @param string $content
+     * @param mixed  $content
      * @param int    $status_code
      * @param string $callback_name
      *

@@ -31,7 +31,6 @@ namespace DeskPRO\Bundle\AppStoreBundle\Infrastructure;
 use DeskPRO\Bundle\AppBundle\Entity;
 use DeskPRO\Bundle\AppStoreBundle\Domain\Application;
 use DeskPRO\Bundle\AppStoreBundle\Domain\ApplicationFinder;
-use DeskPRO\Bundle\AppStoreBundle\Domain\SearchApplicationInstanceFilter;
 use Doctrine\ORM;
 
 class ApplicationDoctrineFinder implements ApplicationFinder
@@ -39,12 +38,24 @@ class ApplicationDoctrineFinder implements ApplicationFinder
     /** @var ORM\EntityManager */
     private $entityManager;
 
-    public function __construct(ORM\EntityManager $entityManager)
+    /** @var EntityQueryBuilders */
+    private $queryBuilder;
+
+    /**
+     * @param ORM\EntityManager   $entityManager
+     * @param EntityQueryBuilders $queryBuilder
+     */
+    public function __construct(ORM\EntityManager $entityManager, EntityQueryBuilders $queryBuilder = null)
     {
         $this->entityManager = $entityManager;
+        if (is_null($queryBuilder)) {
+            $this->queryBuilder = new EntityQueryBuilders();
+        } else {
+            $this->queryBuilder = $queryBuilder;
+        }
     }
 
-    function findAll()
+    public function findAll()
     {
         $qb = $this->entityManager->createQueryBuilder();
         $qb
@@ -53,10 +64,11 @@ class ApplicationDoctrineFinder implements ApplicationFinder
         ;
 
         $result = $qb->getQuery()->getResult();
+
         return $result;
     }
 
-    function findAllById($idList)
+    public function findAllById($idList)
     {
         $qb = $this->entityManager->createQueryBuilder();
         $qb
@@ -66,23 +78,26 @@ class ApplicationDoctrineFinder implements ApplicationFinder
         ;
 
         $result = $qb->getQuery()->getResult();
-        return $result;
 
+        return $result;
     }
 
-    /**
-     * @param string $name
-     * @return Entity\AppStore\App|null
-     */
-    function findByName($name)
+    public function findByReference(ApplicationRef $reference)
     {
         $qb = $this->entityManager->createQueryBuilder();
         $qb
             ->from(Entity\AppStore\App::class, 'a')
             ->select('a')
-            ->where('a.name = :name')
-            ->setParameter('name', $name)
         ;
+
+        $id = $reference->getIdentifier();
+        if ($reference->isName()) {
+            $qb->where('a.name = :name')->setParameter('name', $id);
+        } elseif ($reference->isId()) {
+            $qb->where('a.id = :id')->setParameter('id', $id);
+        } else {
+            throw new \DomainException('unknown application reference');
+        }
 
         $result = $qb->getQuery()->getResult();
         if (1 != count($result)) { //instance not found or more than one
@@ -91,31 +106,36 @@ class ApplicationDoctrineFinder implements ApplicationFinder
 
         /** @var Entity\AppStore\App $instance */
         $instance = array_pop($result);
+
         return $instance;
     }
 
     /**
-     * @param string $id
+     * @param string $name
+     *
      * @return Entity\AppStore\App|null
      */
-    function findByInstanceId($id)
+    public function findByName( $name)
     {
-        $qb = $this->entityManager->createQueryBuilder();
-        $qb
-            ->from(Entity\AppStore\AppInstance::class, 'i')
-            ->select('i, a')
-            ->innerJoin('i.app', 'a')
-            ->where('i.id = :id')
-            ->setParameter('id', $id)
-        ;
+        return $this->findByReference(new ApplicationRef($name, true));
+    }
 
-        $result = $qb->getQuery()->getResult();
-        if (1 != count($result)) { //instance not found or more than one
-            return null;
+    /**
+     * @param string $id
+     *
+     * @return Entity\AppStore\App|null
+     */
+    public function findByInstanceId($id)
+    {
+        $query  = $this->queryBuilder->buildFindApplicationByInstanceIdQuery($this->entityManager, $id);
+        $result = $query->setMaxResults(2)->getResult();
+
+        /** @var Entity\AppStore\App $instance */
+        $instance = null;
+        if (1 === count($result)) { // must find exactly one
+            $instance = array_pop($result);
         }
 
-        /** @var Entity\AppStore\AppInstance $instance */
-        $instance = array_pop($result);
-        return $instance->getApp();
+        return $instance;
     }
 }

@@ -214,7 +214,7 @@ class Filters
     {
         $coll = App::getOrm()
             ->getRepository('DeskPRO:LegacyTicketFilter')
-            ->getCustomFiltersForPerson($person);
+            ->getFiltersForPerson($person);
 
         return $this->getAllCountsForFiltersCollection($coll);
     }

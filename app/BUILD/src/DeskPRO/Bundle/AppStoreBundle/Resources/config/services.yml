@@ -1,12 +1,20 @@
+parameters:
+    manifest.current.version: 2.3.0
+
 services:
   DeskPRO\Bundle\AppStoreBundle\Domain\AppBundleValidator:
     class: DeskPRO\Bundle\AppStoreBundle\Domain\AppBundleValidator
     factory: [DeskPRO\Bundle\AppStoreBundle\Infrastructure\Services, createAppBundleValidator]
-    arguments: ["@file_locator"]
+    arguments: ["@file_locator", %manifest.current.version%]
 
   apps2.application_manager:
     class: DeskPRO\Bundle\AppStoreBundle\Infrastructure\ApplicationManagerService
     arguments: ["@doctrine.orm.default_entity_manager", "@blob.storage"]
+
+  DeskPRO\Bundle\AppStoreBundle\Infrastructure\AppStorage\AccessService:
+    class: DeskPRO\Bundle\AppStoreBundle\Infrastructure\AppStorage\AccessService
+    factory: [DeskPRO\Bundle\AppStoreBundle\Infrastructure\Services, createAppStorageAccessService]
+    arguments: ["@doctrine.orm.default_entity_manager"]
 
   DeskPRO\Bundle\AppStoreBundle\Domain\ApplicationInstanceFinder:
     class: DeskPRO\Bundle\AppStoreBundle\Domain\ApplicationInstanceFinder
@@ -22,17 +30,6 @@ services:
     class: DeskPRO\Bundle\AppStoreBundle\Domain\ApplicationFinder
     factory: [DeskPRO\Bundle\AppStoreBundle\Infrastructure\Services, createApplicationFinder]
     arguments: ["@doctrine.orm.default_entity_manager"]
-
-  DeskPRO\Bundle\AppStoreBundle\Domain\ApplicationStateFinder:
-    class: DeskPRO\Bundle\AppStoreBundle\Domain\ApplicationStateFinder
-    factory: [DeskPRO\Bundle\AppStoreBundle\Infrastructure\Services, createApplicationStateFinder]
-    arguments: ["@doctrine.orm.default_entity_manager"]
-
-  DeskPRO\Bundle\AppStoreBundle\ParamConverter\StateFilterParamConverter:
-    class: DeskPRO\Bundle\AppStoreBundle\ParamConverter\StateFilterParamConverter
-    factory: [DeskPRO\Bundle\AppStoreBundle\ParamConverter\ParamConverters, createStateFilterConverter]
-    tags:
-        - { name: request.param_converter, converter: DeskPRO\Bundle\AppStoreBundle\ParamConverter\StateFilterParamConverter }
 
   DeskPRO\Bundle\AppStoreBundle\ParamConverter\AssetFilterParamConverter:
     class: DeskPRO\Bundle\AppStoreBundle\ParamConverter\AssetFilterParamConverter
@@ -54,12 +51,12 @@ services:
     tags:
         - { name: request.param_converter, converter: DeskPRO\Bundle\AppStoreBundle\ParamConverter\AppParamConverter }
 
-  DeskPRO\Bundle\AppStoreBundle\ParamConverter\AppStateParamConverter:
-    class: DeskPRO\Bundle\AppStoreBundle\ParamConverter\AppStateParamConverter
-    factory: [DeskPRO\Bundle\AppStoreBundle\ParamConverter\ParamConverters, createAppStateConverter]
-    arguments: ["@doctrine.orm.default_entity_manager", "@security.token_storage"]
+  DeskPRO\Bundle\AppStoreBundle\ParamConverter\OauthProviderConnectionLoaderConverter:
+    class: DeskPRO\Bundle\AppStoreBundle\ParamConverter\OauthProviderConnectionLoaderConverter
+    factory: [DeskPRO\Bundle\AppStoreBundle\ParamConverter\ParamConverters, createOauthProviderConnectionLoader]
+    arguments: ["@doctrine.orm.default_entity_manager"]
     tags:
-        - { name: request.param_converter, converter: DeskPRO\Bundle\AppStoreBundle\ParamConverter\AppStateParamConverter }
+        - { name: request.param_converter, converter: DeskPRO\Bundle\AppStoreBundle\ParamConverter\OauthProviderConnectionLoaderConverter }
 
   DeskPRO\Bundle\AppStoreBundle\ParamConverter\AppZipArchiveBundleParamConverter:
     class: DeskPRO\Bundle\AppStoreBundle\ParamConverter\AppZipArchiveBundleParamConverter
@@ -73,12 +70,8 @@ services:
     tags:
         - { name: request.param_converter, converter: DeskPRO\Bundle\AppStoreBundle\ParamConverter\SerializedParamConverter }
 
-  DeskPRO\Bundle\AppStoreBundle\ParamConverter\AppStateOptionsConverter:
-    class: DeskPRO\Bundle\AppStoreBundle\ParamConverter\AppStateOptionsConverter
+  DeskPRO\Bundle\AppStoreBundle\ParamConverter\AppStorageItemOptionsConverter:
+    class: DeskPRO\Bundle\AppStoreBundle\ParamConverter\AppStorageItemOptionsConverter
     tags:
-        - { name: request.param_converter, converter: DeskPRO\Bundle\AppStoreBundle\ParamConverter\AppStateOptionsConverter }
+        - { name: request.param_converter, converter: DeskPRO\Bundle\AppStoreBundle\ParamConverter\AppStorageItemOptionsConverter }
 
-  DeskPRO\Bundle\AppStoreBundle\TypeMapping\StateScopeJmsHandler:
-    class: DeskPRO\Bundle\AppStoreBundle\TypeMapping\StateScopeJmsHandler
-    tags:
-      - { name: "jms_serializer.subscribing_handler" }

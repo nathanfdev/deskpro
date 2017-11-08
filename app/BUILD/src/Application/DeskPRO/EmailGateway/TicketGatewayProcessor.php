@@ -615,9 +615,16 @@ class TicketGatewayProcessor extends AbstractGatewayProcessor
                 App::$container->getEm()->persist($tmpdata);
                 App::$container->getEm()->flush($tmpdata);
 
-                App::$container->get('portal_validation')->sendTicketByEmailVerificationEmail($person, $this->reader, $tmpdata->getCode());
-
-                $this->logMessage('--> User was sent validation link');
+                if (!$this->reader->isFromRobot() && !$ticket_email->is_bounce) {
+                    App::$container->get('portal_validation')->sendTicketByEmailVerificationEmail(
+                        $person,
+                        $this->reader,
+                        $tmpdata->getCode()
+                    );
+                    $this->logMessage('--> User was sent validation link');
+                } else {
+                    $this->logMessage('--> Bounce or robot detected no validation link sent');
+                }
 
                 $this->error      = EmailSource::ERR_USER_VALIDATING;
                 $this->error_type = EmailSource::STATUS_REJECTED_SOFT;
@@ -640,6 +647,14 @@ class TicketGatewayProcessor extends AbstractGatewayProcessor
         if ($person && $person->is_agent && $ticket_email->is_bounce) {
             $this->logMessage('[TicketGatewayProcessor] Is an agent message and is detected as bounced. Rejecting message.');
             $this->error      = 'agent_bounce';
+            $this->error_type = 'rejected';
+
+            return null;
+        }
+
+        if ($person && ($person->is_disabled || $person->is_deleted)) {
+            $this->logMessage('[TicketGatewayProcessor] User is disabeld, rejecting message');
+            $this->error      = 'from_disabled_user';
             $this->error_type = 'rejected';
 
             return null;

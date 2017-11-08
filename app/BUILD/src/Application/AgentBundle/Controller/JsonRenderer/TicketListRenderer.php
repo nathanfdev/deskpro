@@ -202,6 +202,15 @@ class TicketListRenderer
             }
         }
 
+        $data['date_last_reply_ts'] = max(
+            $data['date_created_ts'],
+            isset($data['date_last_user_reply_ts']) ? $data['date_last_user_reply_ts'] : 0,
+            isset($data['date_last_agent_reply_ts']) ? $data['date_last_agent_reply_ts'] : 0
+        );
+        $data['date_last_reply_is_agent_reply'] = isset($data['date_last_agent_reply_ts']) &&
+            $data['date_last_agent_reply_ts'] > (isset($data['date_last_user_reply_ts']) ? $data['date_last_user_reply_ts'] : 0)
+            && $data['date_last_agent_reply_ts'] > $data['date_created_ts'];
+
         $data['total_user_waiting']   = $ticket->getTotalUserWaiting();
         $data['total_to_first_reply'] = $ticket->getTotalToFirstReply();
         $data['subject']              = $ticket->getSubject();
@@ -267,8 +276,8 @@ class TicketListRenderer
                 case 'organization':
                     if (isset($this->cache_orgs[$ticket->organization->getId()])) {
                         $data['organization'] = [
-                            'id'   => $this->cache_orgs[$ticket->organization->getId()]->id,
-                            'name' => $this->cache_orgs[$ticket->organization->getId()]->name,
+                            'id'   => $this->cache_orgs[$ticket->organization->getId()]->getId(),
+                            'name' => $this->cache_orgs[$ticket->organization->getId()]->getName(),
                         ];
                     }
                     break;

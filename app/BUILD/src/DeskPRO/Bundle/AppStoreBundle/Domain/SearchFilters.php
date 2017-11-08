@@ -31,10 +31,10 @@ namespace DeskPRO\Bundle\AppStoreBundle\Domain;
 class SearchFilters
 {
     /**
-     * @param SearchAssetFilterValueMap $valueMap
+     * @param SearchAssetFilterOptions $valueMap
      * @return SearchAssetFilter
      */
-    public function convertValueMapToAssetFilter(SearchAssetFilterValueMap $valueMap)
+    public function convertValueMapToAssetFilter(SearchAssetFilterOptions $valueMap)
     {
         $fileExtension = $valueMap->getFileExtension();
         if ("" == $fileExtension || is_null($fileExtension) || false == (bool) preg_match('#[^/]+#', $fileExtension)) {
@@ -50,11 +50,11 @@ class SearchFilters
         return new SearchAssetFilter($fileExtension, $pathPattern, $usePrefixPathMatchingStrategy);
     }
 
-    public function convertValueMapToStateFilter(SearchStateFilterValueMap $valueMap)
+    public function convertValueMapToStateFilter( SearchAppStorageFilterOptions $valueMap)
     {
-        //TODO parse filters list
         $name = $valueMap->getStateVariableName();
-        return new SearchStateFilter([], $name);
+        $entityId = AppStorage\EntityId::parse($valueMap->getEntityId());
+        return new AppStorageSearchFilter($valueMap->getApplicationId(), $entityId, $name);
     }
 
 }
