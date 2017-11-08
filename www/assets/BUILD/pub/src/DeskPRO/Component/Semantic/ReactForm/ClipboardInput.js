@@ -1,5 +1,5 @@
 import React, { PropTypes } from 'react';
-import Clipboard from 'clipboard/lib/clipboard';
+import Clipboard from 'clipboard';
 import toastr from 'toastr';
 
 class ClipboardInput extends React.Component {

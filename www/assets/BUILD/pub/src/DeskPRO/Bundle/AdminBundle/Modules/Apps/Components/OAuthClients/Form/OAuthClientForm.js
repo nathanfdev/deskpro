@@ -1,5 +1,5 @@
 import React, { PropTypes } from 'react';
-import { Fieldset } from 'react-forms';
+import { Fieldset } from '@deskpro/react-forms';
 import classNames from 'classnames';
 import BaseForm from 'DeskPRO/Component/Form/BaseForm';
 import { Form, Field, Input, Checkbox, Radio, ClipboardInput, Select } from 'DeskPRO/Component/Semantic/ReactForm';
