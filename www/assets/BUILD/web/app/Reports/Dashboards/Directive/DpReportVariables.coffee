@@ -1,6 +1,4 @@
-define ['DeskPRO/Util/Arrays'], (Arrays) ->
-
-
+define ->
   Reports_Directive_DpReportVariables = ['$state', '$compile', '$sce', '$http', 'TemplateManager', ($state, $compile, $sce, $http, TemplateManager) ->
     return {
       restrict: 'AE',

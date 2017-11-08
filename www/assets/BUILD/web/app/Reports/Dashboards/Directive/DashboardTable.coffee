@@ -1,5 +1,5 @@
 define ['datatables'], () ->
-  Reports_Directive_DashboardTable = ['$sce', 'DashboardWidgetService', 'DashboardService', ($sce, DashboardWidgetService, DashboardService) ->
+  Reports_Directive_DashboardTable = ['$sce', 'DashboardWidgetService', ($sce, DashboardWidgetService) ->
     return {
       restrict: 'E'
       replace: true

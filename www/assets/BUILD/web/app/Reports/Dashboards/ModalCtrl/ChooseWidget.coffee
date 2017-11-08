@@ -1,4 +1,4 @@
-define ['DeskPRO/Util/Arrays', 'DeskPRO/Util/Util'], () -> [
+define -> [
   '$scope', '$q', '$modalInstance', 'report', 'widget', 'reportWidget', 'DashboardsInfo', 'DashboardService', 'DashboardWidgetService',
   ($scope, $q, $modalInstance, report, widget, reportWidget, DashboardsInfo, DashboardService, DashboardWidgetService) ->
 
