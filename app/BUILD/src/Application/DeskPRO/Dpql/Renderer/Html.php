@@ -866,7 +866,7 @@ class Html extends AbstractRenderer
                 foreach ($pieData as $pie) {
                     $sum = 0;
                     foreach ($pie['data'] as $info) {
-                        $sum += $info['value'];
+                        $sum += (int) $info['value'];
                     }
                     $data[] = [
                         'category' => $pie['title'],
@@ -944,7 +944,7 @@ class Html extends AbstractRenderer
                     chart.categoryAxis.gridCount = '.min(15, count($rows)).';
                     chart.marginBottom = '.$labelHeight.';
                 ';
-                $height += $labelHeight;
+                $height += (int) $labelHeight;
             } else {
                 $verticalLabels = '';
             }

@@ -57,10 +57,8 @@ class Run extends React.Component {
     chart.validateData();
   }
 
-  renderReport() {
-    const { report } = this.props;
-    let options = report.get('rendered_result') ? report.get('rendered_result') : Immutable.Map();
-
+  static renderChart(renderedResult) {
+    let options = renderedResult;
     if (typeof options === 'object') {
       options = options.set('listeners', [{
         event:  'clickSlice',
@@ -73,6 +71,12 @@ class Run extends React.Component {
       : <span dangerouslySetInnerHTML={{ __html: options }} />;
   }
 
+  renderReport() {
+    const { report } = this.props;
+    const results = report.get('rendered_result') ? report.get('rendered_result') : Immutable.List();
+    return results.map( renderedResult => Run.renderChart(renderedResult));
+  }
+
   renderRun() {
     const { report, onChangeReportVar, groupParams } = this.props;
 
@@ -81,7 +85,7 @@ class Run extends React.Component {
       groupParams={groupParams}
       report={report}
     />);
-    const content = report.get('rendered_result')
+    const content = report.get('rendered_result').size > 0
       ? this.renderReport()
       : <span>No results found. Please try another query (e.g. change vars) to find something</span>;
 

@@ -27,6 +27,8 @@ define ->
           initChart()
 
         initChart = () ->
+          if attrs.chtype != 'graph'
+            return
           if chart
             chart.destroy()
           if chartData and chartData.dataProvider?
@@ -42,51 +44,48 @@ define ->
 
         drawWidget = (widget) ->
           # ugly, but works right now
+          chartDiv.height(chartParent.height() - chartHeader.outerHeight())
+          chart = new AmCharts.makeChart('ch' + i, widget);
+          chart.handleResize()
+          chart.invalidateSize()
+          if widget.multiplePies?
+            defaultDataProvider = widget.dataProvider
+            chart.addListener "clickSlice", (event) ->
+              if (event.dataItem.dataContext.id != undefined)
+                selected = event.dataItem.dataContext.id
+              else
+                selected = undefined
+              if selected?
+                data = []
+                angular.forEach defaultDataProvider, (element, index) ->
+                  if index == selected
+                    angular.forEach widget.pies[selected].dataProvider, (pie) ->
+                      pie.color = '#'+Math.floor(Math.random()*16777215).toString(16);
+                      data.push pie
+                  else
+                    data.push element
+                chart.dataProvider = data
+              else
+                chart.dataProvider = defaultDataProvider
+              chart.validateData()
+
+          if (!widget.noRedraw)
+            width = chartParent.height();
+            height = chartParent.width();
+
+            setInterval \
+              () ->
+                w = chartParent.width()
+                h = chartParent.height()
+
+                if h != height or width != w
+    # ugly, but works right now
                   chartDiv.height(chartParent.height() - chartHeader.outerHeight())
-                  chart = new AmCharts.makeChart('ch' + i, widget);
-                  chart.handleResize()
-                  chart.invalidateSize()
-                  if widget.multiplePies?
-                    defaultDataProvider = widget.dataProvider
-                    chart.addListener "clickSlice", (event) ->
-                      if (event.dataItem.dataContext.id != undefined)
-                        selected = event.dataItem.dataContext.id
-                      else
-                        selected = undefined
-                      if selected?
-                        data = []
-                        angular.forEach defaultDataProvider, (element, index) ->
-                          if index == selected
-                            angular.forEach widget.pies[selected].dataProvider, (pie) ->
-                              pie.color = '#'+Math.floor(Math.random()*16777215).toString(16);
-                              data.push pie
-                          else
-                            data.push element
-                        chart.dataProvider = data
-                      else
-                        chart.dataProvider = defaultDataProvider
-                      chart.validateData()
+                  chart.handleResize();
 
-                  if (!widget.noRedraw)
-                    width = chartParent.height();
-                    height = chartParent.width();
-
-                    setInterval \
-                      () ->
-                        w = chartParent.width()
-                        h = chartParent.height()
-
-                        if h != height or width != w
-            # ugly, but works right now
-                          chartDiv.height(chartParent.height() - chartHeader.outerHeight())
-                          chart.handleResize();
-
-                          width = w
-                          height = h
-                    , 500
-
-        if attrs.chtype == 'graph'
-          initChart()
+                  width = w
+                  height = h
+            , 500
     }
   ]
 
