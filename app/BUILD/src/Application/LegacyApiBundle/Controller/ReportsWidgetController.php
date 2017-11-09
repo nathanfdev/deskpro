@@ -160,6 +160,7 @@ class ReportsWidgetController extends AbstractController
     {
         /* @var ReportsWidgetService */
         $reportsWidget = $reportsWidget = $this->container->get('reports.widget.service');
+        $displayOnly   = $this->in->getBool('displayOnly');
         if ($id) {
             $report = $reportsWidget->getById($id);
             if (!$report) {
@@ -171,7 +172,7 @@ class ReportsWidgetController extends AbstractController
         if (!$report->isCustom()) {
             throw ValidationException::create('you can edit only custom report');
         }
-        if ($error = $reportsWidget->getErrors($id, 'from_request')) {
+        if ($error = $reportsWidget->getErrors($id, $displayOnly ? false : 'from_request')) {
             return $this->createApiResponse(['error' => $error]);
         } else {
             $postData = $this->in->getAll('req');
@@ -186,7 +187,9 @@ class ReportsWidgetController extends AbstractController
                     $this->container->getValidator()->validate($report)
                 );
             }
-            $reportsWidget->saveQuery($report);
+            if (!$displayOnly) {
+                $reportsWidget->saveQuery($report);
+            }
 
             return $this->createApiResponse([
                 'success' => true,

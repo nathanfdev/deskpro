@@ -2,7 +2,7 @@ import PropTypes from 'prop-types';
 import React from 'react';
 import AmCharts from '@amcharts/amcharts3-react';
 import { Loader } from '@deskpro/react-components';
-import { Select } from 'DeskPRO/Component/Semantic/ReactForm';
+import { MultiSelect } from 'DeskPRO/Component/Semantic/ReactForm';
 import Immutable from 'immutable';
 import TitleWithVars from './TitleWithVars';
 import { displayTypes } from './helper';
@@ -11,15 +11,18 @@ import Header from '../../../../../Component/Semantic/Common/Header';
 class Run extends React.Component {
 
   static propTypes = {
-    report:            PropTypes.object,
-    reportLoading:     PropTypes.bool.isRequired,
-    runReport:         PropTypes.func.isRequired,
-    onChangeReportVar: PropTypes.func.isRequired,
-    groupParams:       PropTypes.object.isRequired,
+    report:                     PropTypes.object,
+    reportLoading:              PropTypes.bool.isRequired,
+    onChangeReportDisplayTypes: PropTypes.func.isRequired,
+    onChangeReportVar:          PropTypes.func.isRequired,
+    groupParams:                PropTypes.object.isRequired,
   };
 
-  static renderChart(renderedResult) {
+  static renderChart(renderedResult, index) {
     let options = renderedResult;
+    if (!options) {
+      return null;
+    }
     if (typeof options === 'object') {
       options = options.set('listeners', [{
         event:  'clickSlice',
@@ -28,21 +31,25 @@ class Run extends React.Component {
     }
 
     return typeof options === 'object'
-      ? <AmCharts.React style={{ width: '100%', height: '500px' }} options={options.toJS()} />
+      ? <AmCharts.React key={index} style={{ width: '100%', height: '500px' }} options={options.toJS()} />
       : <span dangerouslySetInnerHTML={{ __html: options }} />;
   }
 
   constructor(props) {
     super(props);
     this.state = {
-      runAs: 'table'
+      displayTypes: props.report.get('display_types', Immutable.List()).toJS()
     };
-    this.onChange   = this.onChange.bind(this);
-    this.clickSlice = this.clickSlice.bind(this);
+    this.onChangeReportDisplayTypes = this.onChangeReportDisplayTypes.bind(this);
+    this.clickSlice                 = this.clickSlice.bind(this);
   }
 
-  onChange(runAs) {
-    this.setState({ runAs }, () => this.props.runReport(runAs));
+  componentWillReceiveProps(props) {
+    this.setState({ displayTypes: props.report.get('display_types', Immutable.List()).toJS() });
+  }
+
+  onChangeReportDisplayTypes(runDisplayTypes) {
+    this.setState({ displayTypes: runDisplayTypes }, () => this.props.onChangeReportDisplayTypes(runDisplayTypes));
   }
 
   clickSlice(event) {
@@ -74,7 +81,7 @@ class Run extends React.Component {
   renderReport() {
     const { report } = this.props;
     const results = report.get('rendered_result') ? report.get('rendered_result') : Immutable.List();
-    return results.map(renderedResult => Run.renderChart(renderedResult));
+    return results.map((renderedResult, index) => Run.renderChart(renderedResult, index));
   }
 
   renderRun() {
@@ -89,13 +96,24 @@ class Run extends React.Component {
       ? this.renderReport()
       : <span>No results found. Please try another query (e.g. change vars) to find something</span>;
 
+    const choices = displayTypes.map((value) => {
+      const newValue = value;
+      newValue.disabled = !report.get('is_custom');
+      return newValue;
+    });
+
     return (
       <div className="ui form">
         <Header content={title} level={3} />
         <div className="inline fields">
           <div className="eight wide field">
             <label htmlFor="runAs">Run this report as</label>
-            <Select style={{ minWidth: '150px' }} id="runAs" value={this.state.runAs} onChange={this.onChange} choices={displayTypes} />
+            <MultiSelect
+              toggleAll={false}
+              choices={choices}
+              value={this.state.displayTypes}
+              onChange={this.onChangeReportDisplayTypes}
+            />
           </div>
         </div>
         { content }

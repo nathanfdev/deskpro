@@ -2,13 +2,12 @@ import PropTypes from 'prop-types';
 import React from 'react';
 import BaseForm from 'DeskPRO/Component/Form/BaseForm';
 import { Loader } from '@deskpro/react-components';
-import { Input, Form, Field, MultiSelect, Textarea } from 'DeskPRO/Component/Semantic/ReactForm';
+import { Input, Form, Field, Textarea } from 'DeskPRO/Component/Semantic/ReactForm';
 import { Fieldset, createValue } from '@deskpro/react-forms';
 import classNames from 'classnames';
 import Immutable from 'immutable';
 import VarsField from './Fields/VarsField';
 import LabelsField from './Fields/LabelsField';
-import { displayTypes } from './helper';
 
 class Edit extends BaseForm {
 
@@ -102,9 +101,6 @@ class Edit extends BaseForm {
             </Field>
             <Field select="desc" label="Provide short description for this report">
               <Textarea className="report-description" />
-            </Field>
-            <Field select="display_types" label="Available display types">
-              <MultiSelect choices={displayTypes} />
             </Field>
             <Field select="select" label="Select">
               <Input type="text" />

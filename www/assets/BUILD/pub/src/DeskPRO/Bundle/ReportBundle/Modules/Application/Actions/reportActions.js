@@ -76,6 +76,43 @@ export const runReport = createAction(
     );
   });
 
+export const saveAndRun = createAction(
+  'REPORTS_SAVE_AND_RUN_REPORT',
+  data => (dispatch) => {
+    const dataToSend = {
+      report: {
+        title:         data.title,
+        description:   data.desc,
+        display_types: data.display_types,
+        variables:     data.vars,
+        labels:        data.labels,
+      },
+      parts: {
+        select:  data.select,
+        from:    data.from,
+        where:   data.where,
+        splitBy: data.splitBy,
+        groupBy: data.groupBy,
+        orderBy: data.orderBy,
+        limit:   data.limit,
+        offset:  data.offset
+      },
+      displayOnly: data.displayOnly,
+    };
+
+    const config = {
+      headers: {
+        'X-DeskPRO-API-Token':     window.DP_API_TOKEN,
+        'X-DeskPRO-Session-ID':    window.DP_SESSION_ID,
+        'X-DeskPRO-Request-Token': window.DP_REQUEST_TOKEN,
+      }
+    };
+
+    const promise = api.sendPost(`DP_API_OLD/reports/widget/${data.id}`, dataToSend, config);
+    return promise.success((response) => { if (response.id) { dispatch(runReport(response.id, data)); } });
+  }
+);
+
 export const loadGroupParams = createAction(
   'REPORTS_LOAD_GROUP_PARAMS',
   () => () => new Promise(resolve => api
@@ -111,7 +148,8 @@ export const saveReport = createAction(
         orderBy: data.orderBy,
         limit:   data.limit,
         offset:  data.offset
-      }
+      },
+      displayOnly: data.displayOnly,
     };
 
     const config = {
@@ -129,7 +167,7 @@ export const saveReport = createAction(
       promise = api.sendPut('DP_API_OLD/reports/widget', dataToSend, config);
     }
 
-    return promise.success((response) => { dispatch(loadReport(response.id)); });
+    return promise.success((response) => { if (response.id) { dispatch(loadReport(response.id)); } });
   }
 );
 

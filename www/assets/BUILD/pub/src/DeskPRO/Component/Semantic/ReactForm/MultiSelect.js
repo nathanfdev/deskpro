@@ -6,9 +6,14 @@ import classNames from 'classnames';
 class SemanticMultiSelect extends React.Component {
 
   static propTypes = {
-    value:    PropTypes.array,
-    choices:  PropTypes.array,
-    onChange: PropTypes.func
+    value:     PropTypes.array,
+    choices:   PropTypes.array,
+    onChange:  PropTypes.func,
+    toggleAll: PropTypes.bool,
+  };
+
+  static defaultProps = {
+    toggleAll: true,
   };
 
   onToggleAll = () => {
@@ -42,20 +47,25 @@ class SemanticMultiSelect extends React.Component {
   };
 
   render() {
-    const { choices, value } = this.props;
+    const { choices, value, toggleAll } = this.props;
 
     return (
       <div>
-        <span onClick={this.onToggleAll} className="multi-select-toggle-all">
-          Toggle all
-        </span>
+        { toggleAll ? <span onClick={this.onToggleAll} className="multi-select-toggle-all">Toggle all</span> : null }
         <ScrollArea className="multi-select" vertical>
           {choices.map((choice, index) => {
             const checked = value.indexOf(choice.value) !== -1;
 
             return (
-              <div key={index} onClick={() => this.onChange(choice.value)}>
-                <div className={classNames('ui', { checked }, 'checkbox')}>
+              <div
+                key={index}
+                onClick={() => {
+                  if (!choice.disabled) {
+                    this.onChange(choice.value);
+                  }
+                }}
+              >
+                <div className={classNames('ui', { checked, disabled: choice.disabled }, 'checkbox')}>
                   <input type="checkbox" checked={checked ? 'checked' : ''} className="hidden" />
                   <label htmlFor="checkbox">{choice.label}</label>
                 </div>
