@@ -1,7 +1,9 @@
 import React from 'react';
 import PropTypes from 'prop-types';
+import htmlToText from 'html-to-text';
 import { Select, Label, Button, Radio } from '@deskpro/react-components';
 import newid from '@deskpro/react-components/lib/utils/newid';
+import agentPhrases from 'DeskPRO/Bundle/AgentBundle/AgentPhrases';
 import EditModal from './EditModal';
 
 
@@ -36,11 +38,18 @@ class Action extends React.Component {
   }
 
   onSelectChange = (data, name) => {
-    this.updateData(data.value, name);
+    this.updateData({ [name]: data.value });
   };
 
   onRadioChange = (checked, value, name) => {
-    this.updateData(value, name);
+    this.updateData({ [name]: value });
+  };
+
+  onEditorChange = (content) => {
+    this.updateData({
+      reply_text: content,
+      is_note:    this.props.action.type === 'note'
+    });
   };
 
   getEditModal = (mode) => {
@@ -50,7 +59,9 @@ class Action extends React.Component {
     return (
       <EditModal
         mode={mode}
+        value={this.props.action.options.reply_text}
         closeModal={this.closeEditReply}
+        onChange={this.onEditorChange}
       />
     );
   };
@@ -71,9 +82,9 @@ class Action extends React.Component {
     this.props.updateAction({ type: type.value, options: {} });
   };
 
-  updateData = (data, name) => {
+  updateData = (data) => {
     const action = this.props.action;
-    action.options[name] = data;
+    action.options = data;
     this.props.updateAction(action);
   };
 
@@ -136,17 +147,19 @@ class Action extends React.Component {
 
   renderReply = () => (
     <div>
-      <span key="preview" className="preview">Reply: </span><br />
-      <Button size="m" onClick={this.editReply}>Edit Reply</Button>
-      {this.getEditModal('reply')}
+      <span key="preview" className="preview">
+        Reply: <span className="reply">{htmlToText.fromString(this.props.action.options.reply_text)}</span>
+      </span><br />
+      <Button size="m" onClick={this.editReply}>Edit Reply</Button><br />
     </div>
   );
 
   renderNote = () => (
     <div>
-      <span key="preview" className="preview">Note: </span><br />
-      <Button size="m" onClick={this.editReply}>Edit Note</Button>
-      {this.getEditModal('note')}
+      <span key="preview" className="preview">
+        Note: <span className="reply">{htmlToText.fromString(this.props.action.options.reply_text)}</span>
+      </span><br />
+      <Button size="m" onClick={this.editReply}>Edit Note</Button><br />
     </div>
   );
 
@@ -178,9 +191,9 @@ class Action extends React.Component {
   renderStatus = () => {
     const { action } = this.props;
     const options = [
-      { value: 'awaiting_agent', label: 'agent.tickets.status_awaiting_agent' },
-      { value: 'awaiting_user', label: 'agent.tickets.status_awaiting_user' },
-      { value: 'resolved', label: 'agent.tickets.status_resolved' },
+      { value: 'awaiting_agent', label: agentPhrases.get('agent.tickets.status_awaiting_agent') },
+      { value: 'awaiting_user', label: agentPhrases.get('agent.tickets.status_awaiting_user') },
+      { value: 'resolved', label: agentPhrases.get('agent.tickets.status_resolved') },
     ];
     return (
       <div>
@@ -206,11 +219,11 @@ class Action extends React.Component {
       <div>
         <Label>Team</Label>
         <Select
-          name="macro"
+          name="macroId"
           options={macros}
           clearable={false}
           searchable={false}
-          value={action.options.macro}
+          value={action.options.macroId}
           onChange={this.onSelectChange}
         />
       </div>
@@ -235,6 +248,7 @@ class Action extends React.Component {
         <div className="details">
           {this[this.detailsMethod()]()}
         </div>
+        {this.getEditModal()}
         <i className="close-cross" title="Remove" onClick={this.props.removeAction} />
       </div>
     );

@@ -21,3 +21,13 @@ export const createFollowUp = createAction(
     });
   })
 );
+
+export const deleteFollowUp = createAction(
+  'TICKET_DELETE_FOLLOW_UP',
+  (ticketId, followUpId) => new Promise((resolve) => {
+    repository('Ticket').deleteFollowUp(ticketId, followUpId).then((promise) => {
+      const res = promise.getData();
+      resolve(res.data);
+    });
+  })
+);

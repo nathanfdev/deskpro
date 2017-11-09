@@ -1,15 +1,17 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import { Modal, Button } from '@deskpro/react-components';
+import { Button } from '@deskpro/react-components';
 
 export default class EditModal extends React.Component {
   static propTypes = {
     closeModal: PropTypes.func,
-    mode:       PropTypes.string,
+    value:      PropTypes.string,
+    onChange:   PropTypes.func,
   };
 
   static defaultProps = {
-    mode: 'reply'
+    mode:  'reply',
+    value: '',
   };
 
   componentDidMount() {
@@ -38,32 +40,29 @@ export default class EditModal extends React.Component {
 
   save = () => {
     const content = this.redactor.getCode();
-    console.log(content);
+    this.props.onChange(content);
+    this.props.closeModal();
   };
 
   render() {
     return (
-      <Modal
-        title={`Edit ${this.props.mode}`}
-        closeModal={this.props.closeModal}
-        buttons={
-          <div>
-            <Button type="primary" size="large" onClick={this.save}>
-              Save
-            </Button>
-            <Button type="secondary" size="large" onClick={this.props.closeModal}>
-              Cancel
-            </Button>
-          </div>
-        }
-      >
+      <div>
         <textarea
           id="reply_editor"
           cols="30"
           rows="10"
+          defaultValue={this.props.value}
           ref={(c) => { this.textArea = c; }}
         />
-      </Modal>
+        <div>
+          <Button type="primary" size="large" onClick={this.save}>
+            Save
+          </Button>
+          <Button type="secondary" size="large" onClick={this.props.closeModal}>
+            Cancel
+          </Button>
+        </div>
+      </div>
     );
   }
 }

@@ -39,8 +39,7 @@ export class FollowUpContainer extends React.Component {
       });
   }
 
-  saveFollowUp = (data) => {
-    this.props.dispatch(followUpActions.createFollowUp(this.props.ticketId, data))
+  saveFollowUp = data => this.props.dispatch(followUpActions.createFollowUp(this.props.ticketId, data))
       .then((followUp) => {
         const followUps = this.state.followUps.push(Immutable.fromJS(followUp));
         this.setState({
@@ -48,11 +47,11 @@ export class FollowUpContainer extends React.Component {
         });
         this.props.updateCount('+', 1);
       });
-  };
 
   deleteFollowUp = (followUp) => {
     const { followUps } = this.state;
     const index = followUps.findIndex(f => f.get('id') === followUp.get('id'));
+    this.props.dispatch(followUpActions.deleteFollowUp(this.props.ticketId, followUp.get('id')));
     this.setState({
       followUps: followUps.delete(index)
     });
@@ -85,30 +84,65 @@ export class FollowUp extends React.Component {
     super(props);
 
     this.state = {
-      actions:           [{ type: 'reply' }],
+      displayForm: false
+    };
+  }
+
+  displayForm = () => {
+    this.setState({
+      displayForm: true
+    });
+  };
+
+  render() {
+    return (
+      <Container className="follow_up">
+        <h4>Follow Ups</h4>
+        <FollowUpTable
+          followUps={this.props.followUps}
+          agents={this.props.agents}
+          agentTeams={this.props.agentTeams}
+          macros={this.props.macros}
+          deleteFollowUp={this.props.deleteFollowUp}
+        />
+        {this.state.displayForm ?
+          <FollowUpForm
+            agents={this.props.agents}
+            agentTeams={this.props.agentTeams}
+            macros={this.props.macros}
+            saveFollowUp={this.props.saveFollowUp}
+          />
+          :
+          <Button
+            size="m"
+            onClick={this.displayForm}
+          >
+            New Follow Up
+          </Button>
+        }
+      </Container>
+    );
+  }
+}
+
+class FollowUpForm extends React.Component {
+  static propTypes = {
+    agents:       PropTypes.object.isRequired,
+    agentTeams:   PropTypes.object.isRequired,
+    macros:       PropTypes.object.isRequired,
+    saveFollowUp: PropTypes.func,
+  };
+
+  constructor(props) {
+    super(props);
+
+    this.state = {
+      actions:           [{ type: 'reply', options: {} }],
       dateToRun:         {},
       cancelIfUserReply: false,
       errors:            [],
     };
   }
-
-  updateActions = (actions) => {
-    this.setState({
-      actions
-    });
-  };
-
-  updateCancelIfUserReply = (cancelIfUserReply) => {
-    this.setState({
-      cancelIfUserReply
-    });
-  };
-
-  updateTime = (dateToRun) => {
-    this.setState({
-      dateToRun
-    });
-  };
 
   convertTime = () => {
     const { dateToRun } = this.state;
@@ -143,6 +177,24 @@ export class FollowUp extends React.Component {
     }
   };
 
+  updateActions = (actions) => {
+    this.setState({
+      actions
+    });
+  };
+
+  updateCancelIfUserReply = (cancelIfUserReply) => {
+    this.setState({
+      cancelIfUserReply
+    });
+  };
+
+  updateTime = (dateToRun) => {
+    this.setState({
+      dateToRun
+    });
+  };
+
   renderErrors = () => {
     if (this.state.errors.length === 0) {
       return null;
@@ -158,13 +210,7 @@ export class FollowUp extends React.Component {
 
   render() {
     return (
-      <Container className="follow_up">
-        <h4>Follow Ups</h4>
-        <FollowUpTable
-          followUps={this.props.followUps}
-          agents={this.props.agents}
-          deleteFollowUp={this.props.deleteFollowUp}
-        />
+      <div>
         <h4>Add Follow Up</h4>
         <h5>Follow Up Time</h5>
         <FollowUpTime
@@ -193,7 +239,7 @@ export class FollowUp extends React.Component {
           Create
         </Button>
         {this.renderErrors()}
-      </Container>
+      </div>
     );
   }
 }
