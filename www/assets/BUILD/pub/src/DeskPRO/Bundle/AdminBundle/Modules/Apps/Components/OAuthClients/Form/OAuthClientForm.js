@@ -1,4 +1,5 @@
-import React, { PropTypes } from 'react';
+import PropTypes from 'prop-types';
+import React from 'react';
 import { Fieldset } from '@deskpro/react-forms';
 import classNames from 'classnames';
 import BaseForm from 'DeskPRO/Component/Form/BaseForm';

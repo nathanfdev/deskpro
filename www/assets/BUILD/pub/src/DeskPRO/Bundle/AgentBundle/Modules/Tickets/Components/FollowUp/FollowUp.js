@@ -6,6 +6,7 @@ import { agentsSelector } from 'DeskPRO/Bundle/AppBundle/Modules/RecordsStore/Sh
 import { allSelectorFactory } from 'DeskPRO/Bundle/AppBundle/Modules/RecordsStore';
 import { ActionsBlock } from './ActionsBlock';
 import { FollowUpTime } from './FollowUpTime';
+import * as followUpActions from '../../Actions/followUpActions';
 
 @connect(state => ({
   agents:     agentsSelector(state),
@@ -13,6 +14,21 @@ import { FollowUpTime } from './FollowUpTime';
   macros:     allSelectorFactory('TicketMacros')(state)
 }))
 export class FollowUpContainer extends React.Component {
+  static propTypes = {
+    ticketId:    PropTypes.number,
+    updateCount: PropTypes.func,
+    dispatch:    PropTypes.func,
+  };
+
+  constructor(props) {
+    super(props);
+    this.props.dispatch(followUpActions.loadFollowUps({ ticketId: props.ticketId }))
+      .then((res) => {
+        console.log(res);
+        props.updateCount(res.meta.pagination.total);
+      });
+  }
+
   render() {
     const props = this.props;
     return (
@@ -25,10 +41,9 @@ export class FollowUpContainer extends React.Component {
 
 export class FollowUp extends React.Component {
   static propTypes = {
-    agents:      PropTypes.object.isRequired,
-    agentTeams:  PropTypes.object.isRequired,
-    macros:      PropTypes.object.isRequired,
-    updateCount: PropTypes.func,
+    agents:     PropTypes.object.isRequired,
+    agentTeams: PropTypes.object.isRequired,
+    macros:     PropTypes.object.isRequired,
   };
 
   constructor(props) {
@@ -71,9 +86,6 @@ export class FollowUp extends React.Component {
     this.setState({
       errors
     });
-    if (errors.length === 0) {
-      this.props.updateCount(1);
-    }
   };
 
   renderErrors = () => {

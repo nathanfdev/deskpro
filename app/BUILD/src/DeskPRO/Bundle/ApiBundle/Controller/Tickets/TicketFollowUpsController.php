@@ -32,6 +32,7 @@ use Application\DeskPRO\Entity\Ticket;
 use DeskPRO\Bundle\ApiBundle\ApiDoc\Annotation\ApiDoc;
 use DeskPRO\Bundle\ApiBundle\Controller\CrudSubController;
 use DeskPRO\Bundle\AppBundle\Annotation\ActionPermissions\Annotation\ApiModes;
+use DeskPRO\Bundle\AppBundle\Annotation\ActionPermissions\Annotation\Feature;
 use DeskPRO\Bundle\AppBundle\Entity\TicketFollowUp;
 use DeskPRO\Bundle\AppBundle\Form\Type\Tickets\TicketFollowUpType;
 use FOS\RestBundle\Controller\Annotations as Rest;
@@ -44,6 +45,7 @@ use Symfony\Component\HttpFoundation\Response;
  *
  * @ApiModes("session")
  * @Rest\Route("/tickets/{ticket}/follow-ups")
+ * @Feature("follow_up")
  * @ApiDoc(target="all", section="Tickets", output="DeskPRO\Bundle\AppBundle\Entity\TicketFollowUp")
  * @ApiDoc(
  *     target="postAction,putAction",
