@@ -26,55 +26,33 @@
  * ~ Thanks, Everyone at Team DeskPRO
  */
 
-namespace DeskPRO\Bundle\AppStoreBundle\Infrastructure;
+namespace DpTest\DeskPRO\Bundle\AppStoreBundle\Infrastructure;
 
-/**
- * Parser / recognizer for various identifiers.
- */
-class IdentifierParser
+use DeskPRO\Bundle\AppStoreBundle\Infrastructure\IdentifierParser;
+use DpTest\DeskProTestCase;
+
+class IdentifierParserTest extends DeskProTestCase
 {
-    /**
-     * @param string $raw
-     *
-     * @return ApplicationRef|null
-     */
-    public function parseApplicationRef($raw)
+    public function testParseApplicationRef()
     {
-        if ($this->recognizeApplicationInstanceId($raw)) {
-            return null;
-        }
+        $parser = new IdentifierParser();
+        $ref = $parser->parseApplicationRef('app:123');
 
-        $appId = $this->parseApplicationId($raw);
-        if (!is_null($appId)) {
-            return new ApplicationRef($appId, false);
-        }
+        $this->assertEquals('123', $ref->getIdentifier());
+        $this->assertFalse($ref->isName());
 
-        //let's consider it an application name
-        return new ApplicationRef($raw, true);
+
+        $ref = $parser->parseApplicationRef('123');
+        $this->assertNull($ref);
     }
 
-    /**
-     * @param $raw
-     *
-     * @return string|null
-     */
-    public function parseApplicationId($raw)
+    public function testRecognizeApplicationInstanceId()
     {
-        if (1 === preg_match('#^app:(\d+)$#', $raw, $matches)) {
-            return $matches[1];
-        }
+        $parser = new IdentifierParser();
+        $ref = $parser->recognizeApplicationInstanceId('123');
+        $this->assertTrue($ref);
 
-        return null;
-    }
-
-    /**
-     * @param string $raw
-     *
-     * @return bool
-     */
-    public function recognizeApplicationInstanceId($raw)
-    {
-        //TODO: implement application instance id recognition
-        return (bool) preg_match('#^(\d+)$#', $raw);
+        $ref = $parser->recognizeApplicationInstanceId('app:123');
+        $this->assertFalse($ref);
     }
 }

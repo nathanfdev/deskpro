@@ -108,6 +108,15 @@ class SerializedOauth2Connection
      */
     private $clientSecret;
 
+    /**
+     * @JMS\Type("array<string>")
+     * @JMS\SerializedName("scopes")
+     *
+     * @var string
+     */
+    private $scopes;
+
+
     public function getAuthorizationUrl(array $options = [])
     {
         $provider = new GenericProvider([
@@ -116,7 +125,8 @@ class SerializedOauth2Connection
             'urlResourceOwnerDetails' => $this->urlResourceOwnerDetails,
             'clientId' => $this->clientId,
             'clientSecret' => $this->clientSecret,
-            'redirectUri' => $this->urlRedirect
+            'redirectUri' => $this->urlRedirect,
+            'scopes' => $this->scopes
         ]);
 
 
@@ -136,7 +146,8 @@ class SerializedOauth2Connection
             'urlResourceOwnerDetails' => $this->urlResourceOwnerDetails,
             'clientId' => $this->clientId,
             'clientSecret' => $this->clientSecret,
-            'redirectUri' => $this->urlRedirect
+            'redirectUri' => $this->urlRedirect,
+            'scopes' => $this->scopes
         ]);
 
         return $provider->getAccessToken($grant, $options);
