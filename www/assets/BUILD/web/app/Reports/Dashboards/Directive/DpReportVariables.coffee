@@ -1,6 +1,4 @@
-define ['DeskPRO/Util/Arrays'], (Arrays) ->
-
-
+define ->
   Reports_Directive_DpReportVariables = ['$state', '$compile', '$sce', '$http', 'TemplateManager', ($state, $compile, $sce, $http, TemplateManager) ->
     return {
       restrict: 'AE',
@@ -31,6 +29,8 @@ define ['DeskPRO/Util/Arrays'], (Arrays) ->
             for key, value of scope.vars
               vars[key] = {'value': value}
             scope.changeParams {params: vars}
+
+        scope.changeValue()
     }
   ]
 

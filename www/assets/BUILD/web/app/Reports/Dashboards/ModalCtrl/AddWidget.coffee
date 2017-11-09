@@ -1,6 +1,6 @@
 define ['DeskPRO/Util/Arrays',], (Arrays) -> [
-  '$scope', '$q', '$modalInstance', 'DashboardsInfo', 'DashboardWidgetService', 'report_id', 'widget', 'TemplateManager',
-  ($scope, $q, $modalInstance, DashboardsInfo, DashboardWidgetService, report_id, widget, TemplateManager) ->
+  '$scope', '$q', '$modalInstance', 'DashboardsInfo', 'DashboardWidgetService', 'report_id', 'TemplateManager',
+  ($scope, $q, $modalInstance, DashboardsInfo, DashboardWidgetService, report_id, TemplateManager) ->
 
     ####################################################################################################################
     # LOADING
@@ -8,27 +8,24 @@ define ['DeskPRO/Util/Arrays',], (Arrays) -> [
 
     load_promises = []
     $scope.loaded = false
-    $scope.widget = widget
+
+    $scope.widget =
+      col: "0"
+      row: "0"
+      data: []
+      id: 0
+      title: "new widget"
+      sizeX: "8"
+      sizeY: "5"
+      type: null
+      widget_id: 0
+      widget_variables: null
+
     $scope.state = 'stats'
     $scope.searchText = ''
     $scope.reports = []
     $scope.labels = []
     $scope.selectedLabels = 0
-
-    $scope.statTypeMapping =
-      simple_bars: "BAR"
-      bars: "BAR"
-      lines: "LINE"
-      simple_lines: "LINE"
-      area: "AREA"
-      simple_area: "AREA"
-      pie: "PIE"
-      table: "TABLE"
-      simple_stat: "STATS"
-      group_stats_table: "STATS TABLE"
-      group_stats_list: "STATS LIST"
-
-    $scope.typeName = $scope.statTypeMapping[widget.type]
 
     $scope.groupParams = DashboardWidgetService.groupParams
 
@@ -39,8 +36,7 @@ define ['DeskPRO/Util/Arrays',], (Arrays) -> [
     TemplateManager.queue('ReportsInterfaceBundle:Dashboard/Modal:add-widget-variables.html')
 
     load_promises.push DashboardWidgetService.getReports().then (result) ->
-      $scope.reports = result.reports.filter (report)->
-        return true for display_type in report.display_types when display_type == $scope.widget.type
+      $scope.reports = result.reports
       $scope.labels.push {title: label.label, active: false} for label in result.labels
       $scope.filterByLabels()
 
@@ -110,21 +106,16 @@ define ['DeskPRO/Util/Arrays',], (Arrays) -> [
           return true for label in value.labels when label.toLocaleLowerCase().indexOf(search) >= 0
           return false
 
-    $scope.saveWidget = ->
-      $modalInstance.close({widget: $scope.widget, report: $scope.report})
-
     ####################################################################################################################
     # SAVE
     ####################################################################################################################
 
     $scope.makeChoice = (report) ->
+      $scope.reportWidget     = report
       $scope.widget.widget_id = report.id
 
-    $scope.insert = () ->
-      DashboardWidgetService.addWidget $scope.report, $scope.widget
-
-    $scope.changeType = () ->
-      $modalInstance.close({changeType: true, widget: $scope.widget})
+    $scope.chooseType = () ->
+      $modalInstance.close({reportWidget: $scope.reportWidget, report: $scope.report, widget: $scope.widget})
 
     $scope.changeWidgetParams = (params) ->
       $scope.widget.variables = params

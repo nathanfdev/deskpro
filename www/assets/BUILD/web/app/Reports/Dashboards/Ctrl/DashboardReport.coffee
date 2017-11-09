@@ -97,17 +97,16 @@ define ['DeskPRO/Util/Arrays'], (Arrays) -> [
     # MODAL HANDLERS
     ####################################################################################################################
 
-    $scope.openWidgetChoose = (widget) ->
+    $scope.openWidgetChoose = (report, widget, reportWidget) ->
       return if $scope.dashboard.is_default
-      modalInstance = $modal.open({
+      $modal.open({
         templateUrl: 'ReportsInterfaceBundle:Dashboard/Modal:widget-type-choose.html',
         controller: 'Reports.Dashboards.Modals.ChooseWidget'
         resolve:
-          report_id: -> report_id
-          widget: -> return if widget? then widget else null
+          report:       -> report
+          widget:       -> widget
+          reportWidget: -> reportWidget
       })
-      modalInstance.result.then (saved) ->
-        $scope.openAddWidget saved
 
     $scope.openAddWidget = (widget) ->
       modalInstance = $modal.open {
@@ -119,8 +118,7 @@ define ['DeskPRO/Util/Arrays'], (Arrays) -> [
       }
 
       modalInstance.result.then (result) ->
-        if result.changeType? and result.changeType == true
-          $scope.openWidgetChoose result.widget
+        $scope.openWidgetChoose result.report, result.widget, result.reportWidget
 
     $scope.openEditWidget = (widget) ->
       modalInstance = $modal.open {

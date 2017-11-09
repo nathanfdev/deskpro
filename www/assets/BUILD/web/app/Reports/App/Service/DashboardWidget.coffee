@@ -72,6 +72,31 @@ define ['DeskPRO/Util/Arrays',], (Arrays) ->
         newWidget = response.data
         report.widgets.push newWidget
 
+    testWidget: (reportWidget) ->
+      url = "/reports/widget/test/#{reportWidget.id}"
+      dataToSend =
+        report:
+          title:         reportWidget.title,
+          description:   reportWidget.desc,
+          display_types: reportWidget.display_types,
+          variables:     reportWidget.variables,
+          labels:        reportWidget.labels,
+        parts:
+          select:  reportWidget.select,
+          from:    reportWidget.from,
+          where:   reportWidget.where,
+          splitBy: reportWidget.splitBy,
+          groupBy: reportWidget.groupBy,
+          orderBy: reportWidget.orderBy,
+          limit:   reportWidget.limit,
+          offset:  reportWidget.offset
+
+      if (reportWidget.jsonTable?)
+        dataToSend.report.jsonTable = reportWidget.jsonTable
+
+      @Api
+        .sendPostJson url, dataToSend
+
 
     removeWidget: (widget) ->
       @Api.sendDelete "/dashboards/widgets/#{widget.id}"

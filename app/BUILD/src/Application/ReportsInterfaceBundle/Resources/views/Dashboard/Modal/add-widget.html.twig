@@ -1,15 +1,11 @@
-<section class="popup no-footer" style="width: 850px">
+<section class="popup add-widget select-stat" style="width: 850px">
 
     <!-- Popup Header & Title -->
     <header>
-        <h1>Add new stat</h1>
+        <h1>Add widget</h1>
+        <h3>Select a stat</h3>
         <div class="controls"><a class="link-pointer" ng-click="cancel()"><i class="fa fa-times"></i></a></div>
     </header>
-
-    <div class="popup-breadcrumbs">
-        You are creating a {{ ng_var('typeName') }} chart <i class="fa fa-bar-chart"></i>
-        <a ng-click="changeType()" class="link-pointer">Change stat type?</a>
-    </div>
 
     <div class="big-list-of-stats-filters">
         <div style="margin: 40px; text-align: center;" ng-show="!loaded">
@@ -58,14 +54,12 @@
                         <i class="fa fa-tag"></i> {{ ng_var('label') }}
                     </a>
                 </p>
-
-                <div class="controls" ng-show="report.id == widget.widget_id">
-                    <a class='link-pointer' ng-click="preview()">Preview <i class="fa fa-external-link"></i></a>
-                    <a class='link-pointer' ng-click="insert()">Insert into report</a>
-                </div>
             </li>
         </ul>
     </div>
+    <footer>
+        <a ng-click="chooseType()" class="link-pointer button">Next</a>
+    </footer>
 
 </section>
 
