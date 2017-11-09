@@ -12,7 +12,7 @@ if [ ! -d $DP_DIR/app/BUILD ]; then
     exit 1
 fi
 
-DIR_ROOT=$DP_DIR
+DIR_ROOT="`cd "$DP_DIR";pwd`"
 DP_APP_DIR=$DP_DIR/app
 DIR_VENDOR=$DIR_ROOT/app/BUILD/vendor
 DIR_WEB_BOWER=$DIR_ROOT/www/assets/BUILD/web/bower_components
@@ -37,6 +37,20 @@ cd $DP_DIR/www/assets/BUILD/pub
 rm -rf node_modules/
 npm install --production
 rm -rf $DP_DIR/www/assets/BUILD/pub/node_modules/@deskpro/react-components/node_modules/react
+
+# re-install importer
+cd $DIR_ROOT
+git submodule init
+git submodule update
+cd $DIR_ROOT/app/BUILD/modules/importer-tools/importers
+
+for f in *; do
+    if [[ -d $f ]]; then
+        if [[ -f $f/config.dist.php ]]; then
+            cp $f/config.dist.php $DIR_ROOT/config/importer/$(basename $f).dist.php
+        fi
+    fi
+done
 
 ########################################################################################################################
 # Cleanup for distro

@@ -452,6 +452,7 @@ return [
     'adm.general.agent_perms'                                                              => 'Agent Permissions',
     'adm.general.api_keys'                                                                 => 'API Keys',
     'adm.general.oauth'                                                                    => 'OAuth',
+    'adm.general.importer'                                                                 => 'Importer',
     'adm.general.apps'                                                                     => 'Apps',
     'adm.general.apps_agents'                                                              => 'Agents',
     'adm.general.apps_brands'                                                              => 'Brands',

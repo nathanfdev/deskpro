@@ -7,11 +7,11 @@ $actions = ['verify', 'apply', 'clean'];
 if (array_intersect($_SERVER['argv'], $actions)) {
     foreach ($_SERVER['argv'] as &$arg) {
         if (in_array($arg, $actions)) {
-            $arg = 'import:'.$arg;
+            $arg = 'dp:import:'.$arg;
         }
     }
 } else {
-    array_splice($_SERVER['argv'], 1, 0, ['import']);
+    array_splice($_SERVER['argv'], 1, 0, ['dp:import']);
 }
 
 $_SERVER['argv'][] = '--kernel';

@@ -57,6 +57,7 @@ use Application\DeskPRO\Entity\FeedbackComment;
 use Application\DeskPRO\Entity\FeedbackStatusCategory;
 use Application\DeskPRO\Entity\GlossaryWord;
 use Application\DeskPRO\Entity\GlossaryWordDefinition;
+use Application\DeskPRO\Entity\Job;
 use Application\DeskPRO\Entity\LabelChatConversation;
 use Application\DeskPRO\Entity\LabelDef;
 use Application\DeskPRO\Entity\LabelFeedback;
@@ -394,6 +395,7 @@ class ObjectsManager
             'ReportDashboardReport'     => [Factory\SimpleFactory::class, 'create', ReportDashboardReport::class],
             'ReportDashboardWidget'     => [Factory\SimpleFactory::class, 'create', ReportDashboardWidget::class],
             'ScheduledReport'           => [Factory\SimpleFactory::class, 'create', ScheduledReport::class],
+            'Job'                       => [Factory\SimpleFactory::class, 'create', Job::class],
         ];
     }
 
@@ -515,6 +517,7 @@ class ObjectsManager
             'ReportDashboardReport'     => [$this, 'find', ReportDashboardReport::class],
             'ReportDashboardWidget'     => [$this, 'find', ReportDashboardWidget::class],
             'ScheduledReport'           => [$this, 'find', ScheduledReport::class],
+            'Job'                       => [$this, 'find', Job::class],
         ];
     }
 }

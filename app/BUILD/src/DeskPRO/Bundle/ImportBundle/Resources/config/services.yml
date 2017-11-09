@@ -1,0 +1,64 @@
+services:
+
+  # validator annotations are disabled for most kernels
+  # force enable them for the importer
+  dp.importer_validator:
+    class: Symfony\Component\Validator\Validator\RecursiveValidator
+    factory: ['DeskPRO\Bundle\ImportBundle\Validator\ImporterValidatorFactory', getValidator]
+    arguments:
+      - '@service_container'
+
+  dp.importer.parser:
+    class: DeskPRO\Bundle\ImportBundle\Parser\Parser
+    arguments:
+      - "@serializer"
+      - "@dp.importer_logger"
+
+  dp.importer.writer:
+    class: DeskPRO\Bundle\ImportBundle\Writer\ModelWriter
+    arguments:
+      - "@dp.importer.writer.entity_handler_registry"
+      - "@doctrine.orm.entity_manager"
+      - "@deskpro.search.entity_listener"
+      - "@serializer"
+      - "@deskpro.app_env"
+      - "@dp.importer.writer.mapper.import_map"
+      - "@dp.importer_logger"
+
+  dp.importer:
+    class: DeskPRO\Bundle\ImportBundle\Writer\Importer
+    arguments:
+      - "@dp.importer.storage"
+      - "@dp.importer_validator"
+      - "@dp.importer.writer"
+      - "@dp.importer.writer.entity_handler_registry"
+      - "@dp.importer.event_dispatcher"
+      - "@dp.importer_logger"
+
+  dp.importer.entity_persister:
+    class: DeskPRO\Bundle\ImportBundle\Writer\EntityPersister
+    arguments:
+      - "@doctrine.orm.entity_manager"
+      - "@ticket_manager"
+      - "@dp.importer_validator"
+      - "@dp.importer.writer.mapper.import_map"
+      - "@dp.importer_logger"
+
+  dp.importer.csv:
+    class: DeskPRO\Bundle\ImportBundle\CsvImport\CsvImporter
+    arguments:
+      - "@doctrine.orm.entity_manager"
+      - "@dp.importer"
+      - "@dp.importer.parser"
+      - "@mailer"
+      - "@deskpro.core.translate"
+      - "@email.user_viewmodel_factory"
+      - "@email.email_sender"
+      - "@deskpro.feature_flags"
+
+  dp.importer.source_script_resolver:
+    class: DeskPRO\Bundle\ImportBundle\Source\SourceScriptResolver
+    arguments:
+      - "@service_container"
+      - "@deskpro.app_env"
+      - "@dp.importer_logger"

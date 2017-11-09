@@ -39,7 +39,6 @@ use Application\DeskPRO\BlobStorage\StorageAdapter\AmazonS3Storage;
 use Application\DeskPRO\BlobStorage\StorageAdapter\DatabaseStorage;
 use Application\DeskPRO\BlobStorage\StorageAdapter\FilesystemStorage;
 use Application\DeskPRO\DependencyInjection\DeskproContainer;
-use Aws\S3\S3Client;
 use Orb\Log\Logger;
 
 class BlobStorageService
@@ -83,49 +82,16 @@ class BlobStorageService
         $s3_adapter  = null;
         $settingsBag = $container->get('settings_resolver')->getGlobalSettings();
         if ($settingsBag->get('core.filestorage_s3_key') && $settingsBag->get('core.filestorage_s3_secret') && $settingsBag->get('core.filestorage_s3_bucket')) {
-            if (!defined('CURLOPT_CONNECTTIMEOUT')) {
-                define(CURLOPT_CONNECTTIMEOUT, 78);
-            }
-            if (!defined('CURLOPT_TIMEOUT')) {
-                define(CURLOPT_TIMEOUT, 13);
-            }
-
-            $connectTimeout    = $settingsBag->get('filestorage.s3.web.connect_timeout', 2);
-            $timeout           = $settingsBag->get('filestorage.s3.web.upload_timeout', 4);
             $cumulativeTimeout = $settingsBag->get('filestorage.s3.web.cumulative_timeout', 5);
 
             if (php_sapi_name() === 'cli') {
                 // allow extra time for CLI upload
                 // e.g. a bigger upload that was first saved to db on a web request that is now being moved
-                $connectTimeout    = $settingsBag->get('filestorage.s3.cli.connect_timeout', 4);
-                $timeout           = $settingsBag->get('filestorage.s3.cli.upload_timeout', 10);
                 $cumulativeTimeout = $settingsBag->get('filestorage.s3.cli.cumulative_timeout');
             }
 
-            $s3Config = [
-                'credentials' => [
-                    'key'    => $settingsBag->get('core.filestorage_s3_key'),
-                    'secret' => $settingsBag->get('core.filestorage_s3_secret'),
-                ],
-                'region'          => $settingsBag->get('core.filestorage_s3_region'),
-                'version'         => 'latest',
-                'request.options' => [
-                    'connect_timeout' => $connectTimeout,
-                    'timeout'         => $timeout,
-                ],
-                'curl.options' => [
-                    CURLOPT_CONNECTTIMEOUT => $connectTimeout,
-                    CURLOPT_TIMEOUT        => $timeout,
-                ],
-            ];
-
-            if ($endpoint = $settingsBag->get('core.filestorage_s3_endpoint')) {
-                $s3Config['endpoint'] = $endpoint;
-            }
-
-            $client     = new S3Client($s3Config);
             $s3_adapter = new AmazonS3Storage([
-                's3_client'              => $client,
+                's3_client'              => $container->get('amazon_s3_client'),
                 'bucket'                 => $settingsBag->get('core.filestorage_s3_bucket'),
                 'file_url_domain'        => $settingsBag->get('core.filestorage_s3_file_url_domain'),
                 'base_path'              => $settingsBag->get('core.filestorage_s3_basepath'),

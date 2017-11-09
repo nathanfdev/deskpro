@@ -33,6 +33,7 @@
 namespace Application\DeskPRO\Command;
 
 use Application\DeskPRO\App;
+use Application\DeskPRO\Entity\Job;
 use Application\DeskPRO\Log\Logger;
 use DeskPRO\Bundle\UpdateBundle\Logger\LogKeyEvent;
 use Orb\Util\Env;
@@ -78,7 +79,8 @@ class WorkerJobCommand extends \Symfony\Bundle\FrameworkBundle\Command\Container
         $GLOBALS['DP_PREF_MAX_EXEC_TIME'] = 1800;
         @set_time_limit($GLOBALS['DP_PREF_MAX_EXEC_TIME']);
 
-        $is_verbose = $output->getVerbosity() == OutputInterface::VERBOSITY_VERBOSE;
+        $isVerbose = $output->getVerbosity() == OutputInterface::VERBOSITY_VERBOSE;
+        $appEnv    = $this->getContainer()->get('deskpro.app_env');
 
         // see if we need to do an ES index
         if (!defined('DPC_IS_CLOUD')) {
@@ -89,9 +91,9 @@ class WorkerJobCommand extends \Symfony\Bundle\FrameworkBundle\Command\Container
                     $id = mt_rand(10000, 99999);
                     \Application\DeskPRO\App::getDb()->insertIgnore('settings', ['name' => 'elastica.requires_reset_started', 'value' => $id]);
 
-                    $cmd = $this->getContainer()->get('deskpro.app_env')->getConsolePhpCommand('dp:elastica:populate --auto-reset '.$id);
+                    $cmd = $appEnv->getConsolePhpCommand('dp:elastica:populate --auto-reset '.$id);
 
-                    if ($is_verbose && defined('DP_START_TIME')) {
+                    if ($isVerbose && defined('DP_START_TIME')) {
                         $output->writeln('Starting ElasticSearch indexing: '.$cmd);
                     }
 
@@ -113,7 +115,7 @@ class WorkerJobCommand extends \Symfony\Bundle\FrameworkBundle\Command\Container
             }
         }
 
-        if ($is_verbose && defined('DP_START_TIME')) {
+        if ($isVerbose && defined('DP_START_TIME')) {
             $output->writeln(sprintf('[%s] Time to enter execute: %.4f', date('Y-m-d H:i:s'), $time_cron_start - DP_START_TIME));
         }
 
@@ -226,9 +228,9 @@ class WorkerJobCommand extends \Symfony\Bundle\FrameworkBundle\Command\Container
                 } while ($check);
 
                 if ($updaterStatus->isNextManual()) {
-                    $cmd = $this->getContainer()->get('deskpro.app_env')->getConsolePhpCommand('dp:update --no-interaction');
+                    $cmd = $appEnv->getConsolePhpCommand('dp:update --no-interaction');
                 } else {
-                    $cmd = $this->getContainer()->get('deskpro.app_env')->getConsolePhpCommand('dp:update --no-interaction --only-auto');
+                    $cmd = $appEnv->getConsolePhpCommand('dp:update --no-interaction --only-auto');
                 }
                 if ($output->getVerbosity() > OutputInterface::VERBOSITY_NORMAL) {
                     $output->writeln("Running upgrade: $cmd");
@@ -259,12 +261,12 @@ class WorkerJobCommand extends \Symfony\Bundle\FrameworkBundle\Command\Container
                 };
 
                 try {
-                    $proc = new Process($cmd);
-                    $proc->setTimeout(36000);
-                    $proc->run($cb);
+                    $process = new Process($cmd);
+                    $process->setTimeout(36000);
+                    $process->run($cb);
 
-                    if (!$proc->isSuccessful()) {
-                        $e = new \RuntimeException('Updater exited with a non-success status: '.$proc->getExitCode().' ('.$proc->getExitCodeText().')');
+                    if (!$process->isSuccessful()) {
+                        $e = new \RuntimeException('Updater exited with a non-success status: '.$process->getExitCode().' ('.$process->getExitCodeText().')');
                         $output->writeln('<error>Updater stopped unexpectedly: '.$e->getMessage().'</error>');
                         $getLogger()->error(
                             'Updater from cron: finished unexpectedly',
@@ -303,18 +305,62 @@ class WorkerJobCommand extends \Symfony\Bundle\FrameworkBundle\Command\Container
         $phpinfo = ob_get_clean();
 
         @file_put_contents(
-            $this->getContainer()->get('deskpro.app_env')->getUserCacheDir().'/cli-phpinfo.html',
+            $appEnv->getUserCacheDir().'/cli-phpinfo.html',
             $phpinfo
         );
 
         @file_put_contents(
-            $this->getContainer()->get('deskpro.app_env')->getUserCacheDir().'/cli-phpconfig.json',
+            $appEnv->getUserCacheDir().'/cli-phpconfig.json',
             json_encode([
                 'version'      => phpversion(),
                 'memory_limit' => Env::getMemoryLimit(),
                 'error_log'    => ini_get('error_log'),
             ], \JSON_PRETTY_PRINT)
         );
+
+        //------------------------------
+        // Import jobs
+        //------------------------------
+
+        $em              = $this->getContainer()->get('doctrine.orm.default_entity_manager');
+        $importerRunning = App::getDb()->fetchColumn('SELECT value FROM settings WHERE name LIKE ?', ['core.croncheck.importer']);
+        $importerJob     = $this->getContainer()->get('dp.importer.data_service.job')->getWaitingJob();
+        if (!$importerRunning && $importerJob) {
+            App::getDb()->replace('settings', [
+                'name'  => 'core.croncheck.importer',
+                'value' => 1,
+            ]);
+
+            // run the job
+            $failed  = false;
+            $cmd     = $appEnv->getConsolePhpCommand("dp:import -j {$importerJob->getId()}");
+            $process = new Process($cmd);
+            $process->setTimeout(null);
+            $process->run();
+
+            if ($process->isSuccessful()) {
+                $cmd     = $appEnv->getConsolePhpCommand("dp:import:apply -j {$importerJob->getId()}");
+                $process = new Process($cmd);
+                $process->setTimeout(null);
+                $process->run();
+
+                if (!$process->isSuccessful()) {
+                    $failed = true;
+                }
+            } else {
+                $failed = true;
+            }
+
+            if ($failed) {
+                $importerJob->setStatus(Job::STATUS_ERROR);
+                $em->persist($importerJob);
+                $em->flush();
+            }
+
+            App::getDb()->delete('settings', ['name' => 'core.croncheck.importer']);
+
+            return 0;
+        }
 
         //------------------------------
         // Run
@@ -452,7 +498,7 @@ class WorkerJobCommand extends \Symfony\Bundle\FrameworkBundle\Command\Container
 
         unset($GLOBALS['DP_CRON_ID']);
 
-        if ($is_verbose) {
+        if ($isVerbose) {
             $output->writeln(sprintf('[%s] Time until execute end: %.4f', date('Y-m-d H:i:s'), microtime(true) - $time_cron_start));
         }
 
