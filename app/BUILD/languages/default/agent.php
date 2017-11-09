@@ -1949,6 +1949,8 @@ return [
     'agent.tickets.add_org_managers_action'                    => 'Add organization managers to ticket',
     'agent.tickets.add_reply_action'                           => 'Add reply',
     'agent.tickets.add_reply_x_action'                         => 'Add reply {{desc}}',
+    'agent.tickets.add_note_action'                            => 'Add note',
+    'agent.tickets.add_note_x_action'                          => 'Add note {{desc}}',
     'agent.tickets.add_sla_action'                             => 'Add SLA: {{sla}}',
     'agent.tickets.adding_your_note'                           => 'Adding your note',
     'agent.tickets.admin_trigger_notifications'                => 'Triggers that notify you',
