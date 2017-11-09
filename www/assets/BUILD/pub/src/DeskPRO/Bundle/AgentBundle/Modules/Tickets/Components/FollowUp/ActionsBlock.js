@@ -1,8 +1,8 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import { Action } from './Action';
+import Action from './Action';
 
-export class ActionsBlock extends React.Component {
+class ActionsBlock extends React.Component {
   static propTypes = {
     actions:    PropTypes.array,
     agents:     PropTypes.object.isRequired,
@@ -25,7 +25,8 @@ export class ActionsBlock extends React.Component {
   addAction = () => {
     const actions = this.props.actions;
     actions.push({
-      type: 'agent'
+      type:    'agent',
+      options: {}
     });
     this.props.onChange(actions);
   };
@@ -61,3 +62,4 @@ export class ActionsBlock extends React.Component {
     );
   }
 }
+export default ActionsBlock;

@@ -3,7 +3,7 @@ import PropTypes from 'prop-types';
 import classNames from 'classnames';
 import { Select, Input, Datepicker } from '@deskpro/react-components';
 
-export class FollowUpTime extends React.Component {
+class FollowUpTime extends React.Component {
   static propTypes = {
     value:    PropTypes.object,
     onChange: PropTypes.func,
@@ -15,47 +15,46 @@ export class FollowUpTime extends React.Component {
   };
 
   static presets = [
-    { value: '15 minutes', label: '15 minutes' },
-    { value: '1 hours', label: '1 hour' },
-    { value: '6 hours', label: '6 hours' },
-    { value: '1 days', label: '1 day' },
-    { value: '3 days', label: '3 days' },
+    { time: { value: '15', unit: 'minutes' }, label: '15 minutes' },
+    { time: { value: '1', unit: 'hours' }, label: '1 hour' },
+    { time: { value: '6', unit: 'hours' }, label: '6 hours' },
+    { time: { value: '1', unit: 'days' }, label: '1 day' },
+    { time: { value: '3', unit: 'days' }, label: '3 days' },
   ];
 
   onSelectorUnitChange = (unit) => {
-    let input = '';
+    let value = '';
     if (this.props.value.type === 'selector') {
-      [input] = this.props.value.value.split(' ');
+      value = this.props.value.time.value;
     }
     this.props.onChange({
-      type:  'selector',
-      value: `${input} ${unit.value}`
+      type: 'selector',
+      time: { unit: unit.value, value },
     });
   };
 
   onSelectorValueChange = (value) => {
     let unit = null;
-    let input; // eslint-disable-line no-unused-vars
     if (this.props.value.type === 'selector') {
-      [input, unit] = this.props.value.value.split(' ');
+      unit = this.props.value.time.unit;
     }
     this.props.onChange({
-      type:  'selector',
-      value: `${value} ${unit}`
+      type: 'selector',
+      time: { value, unit },
     });
   };
 
   selectPreset = (preset) => {
     this.props.onChange({
-      type:  'preset',
-      value: preset.value
+      type: 'preset',
+      time: preset.time
     });
   };
 
   renderPresets = () => FollowUpTime.presets.map((preset) => {
-    const selected = this.props.value.type === 'preset' && this.props.value.value === preset.value;
+    const selected = this.props.value.type === 'preset' && this.props.value.time === preset.time;
     return (<li
-      key={preset.value}
+      key={`${preset.time.value} ${preset.time.unit}`}
       onClick={() => this.selectPreset(preset)}
       className={classNames({ selected })}
     >
@@ -70,15 +69,16 @@ export class FollowUpTime extends React.Component {
       { value: 'days', label: 'Days' },
       { value: 'months', label: 'Months' },
     ];
-    let input = '';
-    let unit = null;
+    let value = '';
+    let unit  = null;
     if (this.props.value.type === 'selector') {
-      [input, unit] = this.props.value.value.split(' ');
+      console.log(this.props.value);
+      ({ value, unit } = this.props.value.time);
     }
     return (
       <li>
         <Input
-          value={input}
+          value={value}
           className="selector_value"
           onChange={this.onSelectorValueChange}
         />
@@ -111,3 +111,4 @@ export class FollowUpTime extends React.Component {
     );
   }
 }
+export default FollowUpTime;

@@ -5,7 +5,7 @@ import newid from '@deskpro/react-components/lib/utils/newid';
 import EditModal from './EditModal';
 
 
-export class Action extends React.Component {
+class Action extends React.Component {
   static propTypes = {
     action:       PropTypes.object,
     agents:       PropTypes.object.isRequired,
@@ -68,13 +68,12 @@ export class Action extends React.Component {
   };
 
   updateType = (type) => {
-    this.props.updateAction({ type: type.value });
+    this.props.updateAction({ type: type.value, options: {} });
   };
 
   updateData = (data, name) => {
     const action = this.props.action;
-    action[name] = data;
-    console.log(action);
+    action.options[name] = data;
     this.props.updateAction(action);
   };
 
@@ -105,7 +104,7 @@ export class Action extends React.Component {
           options={agents}
           clearable={false}
           searchable={false}
-          value={action.agent}
+          value={action.options.agent}
           onChange={this.onSelectChange}
         />
       </div>
@@ -128,7 +127,7 @@ export class Action extends React.Component {
           options={agentTeams}
           clearable={false}
           searchable={false}
-          value={action.agent_team}
+          value={action.options.agent_team}
           onChange={this.onSelectChange}
         />
       </div>
@@ -158,17 +157,17 @@ export class Action extends React.Component {
         <span>Team</span><br />
         <Radio
           name="is_hold"
-          checked={action.is_hold === '0'}
+          checked={action.options.is_hold === 0}
           onChange={this.onRadioChange}
-          value="0"
+          value={0}
         >
           Unhold ticket
         </Radio>
         <Radio
           name="is_hold"
-          checked={action.is_hold === '1'}
+          checked={action.options.is_hold === 1}
           onChange={this.onRadioChange}
-          value="1"
+          value={1}
         >
           Put ticket on hold
         </Radio>
@@ -187,11 +186,11 @@ export class Action extends React.Component {
       <div>
         <Label>Status</Label>
         <Select
-          name="agent_team"
+          name="status"
           options={options}
           clearable={false}
           searchable={false}
-          value={action.agent_team}
+          value={action.options.status}
           onChange={this.onSelectChange}
         />
       </div>
@@ -211,7 +210,7 @@ export class Action extends React.Component {
           options={macros}
           clearable={false}
           searchable={false}
-          value={action.macro}
+          value={action.options.macro}
           onChange={this.onSelectChange}
         />
       </div>
@@ -241,3 +240,4 @@ export class Action extends React.Component {
     );
   }
 }
+export default Action;

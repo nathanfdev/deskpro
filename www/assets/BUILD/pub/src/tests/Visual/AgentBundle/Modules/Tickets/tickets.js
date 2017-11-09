@@ -1,6 +1,7 @@
 import React from 'react';
 import Immutable from 'immutable';
-import { storiesOf } from '@kadira/storybook'; // eslint-disable-line import/no-extraneous-dependencies
+import moment from 'moment';
+import { storiesOf, action } from '@kadira/storybook'; // eslint-disable-line import/no-extraneous-dependencies
 import { ArchiveFiles } from 'DeskPRO/Bundle/AgentBundle/Modules/Tickets/Components/Archive/ArchiveFiles';
 import { FollowUp } from 'DeskPRO/Bundle/AgentBundle/Modules/Tickets/Components/FollowUp/FollowUp';
 import { list } from 'DemoState/AgentBundle/Modules/Tickets/tickets';
@@ -42,6 +43,48 @@ const agents = Immutable.fromJS([
   }
 ]);
 
+const followUps = Immutable.fromJS(
+  [
+    {
+      id:      1,
+      person:  1,
+      actions: [
+        { type: 'agent', options: { agent: '2' } },
+        { type: 'status', options: { status: 'awaiting_agent' } }
+      ],
+      cancel_if_user_reply: false,
+      status:               'pending',
+      date_created:         moment().subtract(1, 'days').format(),
+      date_to_run:          moment().add(6, 'hours').format(),
+      date_did_run:         null
+    },
+    {
+      id:      2,
+      person:  3,
+      actions: [
+        { type: 'hold', options: { is_hold: 1 } },
+      ],
+      cancel_if_user_reply: false,
+      status:               'done',
+      date_created:         moment().subtract(1, 'days').format(),
+      date_to_run:          moment().subtract(2, 'hours').format(),
+      date_did_run:         moment().subtract(2, 'hours').format()
+    },
+    {
+      id:      3,
+      person:  1,
+      actions: [
+        { type: 'reply', options: { reply: 'Dear John, please ' } },
+      ],
+      cancel_if_user_reply: false,
+      status:               'cancelled',
+      date_created:         moment().subtract(1, 'days').format(),
+      date_to_run:          moment().add(20, 'minutes').format(),
+      date_did_run:         null
+    }
+  ]
+);
+
 const macros = Immutable.fromJS([
   {
     summary: [
@@ -75,7 +118,10 @@ storiesOf('Agent: Tickets', module)
     () => <FollowUp
       agents={agents}
       agentTeams={agentTeams}
+      followUps={followUps}
       macros={macros}
+      deleteFollowUp={action('delete Follow Up')}
+      saveFollowUp={action('save Follow Up')}
     />
   )
 ;

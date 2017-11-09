@@ -3552,8 +3552,8 @@ DeskPRO.Agent.PageFragment.Page.Ticket = new Orb.Class({
     var countEl = self.getEl('follow_up_count');
     var data = {
       ticketId:    self.meta.ticket_id,
-    	updateCount: function(count) {
-    		DeskPRO_Window.util.modCountEl(countEl, '', count);
+    	updateCount: function(op, count) {
+    		DeskPRO_Window.util.modCountEl(countEl, op, count);
 			}
   	};
 

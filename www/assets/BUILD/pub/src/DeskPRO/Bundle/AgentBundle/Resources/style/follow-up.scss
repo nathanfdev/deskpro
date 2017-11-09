@@ -1,4 +1,9 @@
 .follow_up {
+  table {
+    .delete-follow-up {
+      cursor: pointer;
+    }
+  }
   .time {
     ul {
       display: flex;
@@ -100,7 +105,7 @@
       display: inline-block;
       height: 20px;
       width: 20px;
-      background-color: $dp-greyscale-50;
+      background-color: $dp-greyscale-250;
       border-radius: 50%;
       position: relative;
       vertical-align: middle;
