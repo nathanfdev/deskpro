@@ -30,7 +30,7 @@ class Action extends React.Component {
       { value: 'note', label: agentPhrases.get('agent.tickets.add_note_action') },
       { value: 'hold', label: 'Hold' },
       { value: 'status', label: agentPhrases.get('agent.general.status') },
-      { value: 'macro', label: 'Run macro' },
+      { value: 'run_macro', label: 'Run macro' },
     ];
 
     this.typeId = newid('type');
@@ -199,7 +199,7 @@ class Action extends React.Component {
     );
   };
 
-  renderMacro = () => {
+  renderRunMacro = () => {
     const { action } = this.props;
     const macros = this.props.macros.toArray().map(macro => (
       { value: macro.get('id'), label: macro.get('title') }

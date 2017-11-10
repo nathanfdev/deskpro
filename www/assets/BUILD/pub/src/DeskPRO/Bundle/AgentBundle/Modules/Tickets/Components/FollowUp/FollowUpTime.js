@@ -104,7 +104,6 @@ class FollowUpTime extends React.Component {
         <ul>
           {this.renderPresets()}
           {this.renderSelector()}
-          {this.renderPicker()}
         </ul>
       </div>
     );
