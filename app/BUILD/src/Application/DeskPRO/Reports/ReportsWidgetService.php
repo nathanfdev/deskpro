@@ -144,15 +144,9 @@ class ReportsWidgetService
         $params              = $this->getParamsInput('params');
         $reportData          = $this->in->getArrayValue('report');
         $params['variables'] = $reportData['variables'];
-        $displayType         = isset($reportData['display_types'][0]) ? $reportData['display_types'][0] : DashboardWidget::WIDGET_RENDER_TYPE_BAR;
 
-        if ($displayType === DashboardWidget::WIDGET_RENDER_TYPE_TABLE) {
-            $format = 'html';
-            if(isset($reportData['jsonTable']) && $reportData['jsonTable'] === true) {
-                $format = 'json';
-            }
-        }
 
+        $resultsStack = [];
         if ($query == 'from_request') {
             $parts = $this->in->getArrayValue('parts');
             $query = Display::getQueryStringFromParts($parts);
@@ -160,20 +154,31 @@ class ReportsWidgetService
             $query = $report->getQuery();
         }
 
-        $results = $this->dashboardWidget->renderQuery($query, $params, $displayType, $format);
-
-        if ($results && $displayType == DashboardWidget::WIDGET_RENDER_TYPE_TABLE && $format === 'json') {
-            $aoColumns = [];
-            $columns   = [];
-            foreach ($results['columns'] as $column) {
-                $aoColumns[] = null;
-                $columns[]   = ['title' => $column];
+        foreach($reportData['display_types'] as $displayType) {
+            $renderFormat = $format;
+            if ($displayType === DashboardWidget::WIDGET_RENDER_TYPE_TABLE) {
+                $renderFormat = 'html';
+                if(isset($reportData['jsonTable']) && $reportData['jsonTable'] === true) {
+                    $renderFormat = 'json';
+                }
             }
-            $results['aoColumns'] = $aoColumns;
-            $results['columns']   = $columns;
+
+            $results = $this->dashboardWidget->renderQuery($query, $params, $displayType, $renderFormat);
+
+            if ($results && $displayType == DashboardWidget::WIDGET_RENDER_TYPE_TABLE && $renderFormat === 'json') {
+                $aoColumns = [];
+                $columns   = [];
+                foreach ($results['columns'] as $column) {
+                    $aoColumns[] = null;
+                    $columns[]   = ['title' => $column];
+                }
+                $results['aoColumns'] = $aoColumns;
+                $results['columns']   = $columns;
+            }
+            $resultsStack[] = $results;
         }
 
-        return $results;
+        return $resultsStack;
     }
 
     /**

@@ -36,6 +36,7 @@ export function transformReportData(report) {
     offset:        queryParts.get('offset', ''),
     limit:         queryParts.get('limit', ''),
     vars:          report.get('variables', Immutable.List()).toJS(),
+    id:            report.get('id', 0),
   };
 }
 

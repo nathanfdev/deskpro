@@ -1,34 +1,46 @@
-import React, { PropTypes } from 'react';
+import PropTypes from 'prop-types';
+import React from 'react';
 import { Select } from 'DeskPRO/Component/Semantic/ReactForm';
 
-class ListItemTitle extends React.Component {
+class TitleWithVars extends React.Component {
 
   static propTypes = {
     report:            PropTypes.object.isRequired,
     groupParams:       PropTypes.object.isRequired,
     onChangeReportVar: PropTypes.func.isRequired,
-    onRunClick:        PropTypes.func.isRequired,
+    onRunClick:        PropTypes.func,
   };
+
+  static defaultProps = {
+    onRunClick: () => {},
+  };
+
+  static transformVars(report) {
+    const vars = {};
+    report
+      .get('variables')
+      .filter(value => value.has('default') && value.get('default') || value.has('value') && value.get('value'))
+      .forEach((value) => {
+        vars[value.get('name')] = value.has('value') && value.get('value') ? value.get('value') : value.get('default');
+      });
+    return vars;
+  }
 
   constructor(props) {
     super(props);
-    const vars = {};
-    props.report
-      .get('variables')
-      .filter(value => value.has('default') && value.get('default'))
-      .forEach((value) => {
-        vars[value.get('name')] = value.get('default');
-      });
-    this.state = {
-      title: props.report.get('title'),
-      vars
-    };
+    const vars = TitleWithVars.transformVars(props.report);
+    this.state = { vars };
     this.dateChoices = this.props.groupParams.get('dates').map((date, index) => { const choice = { value: index, label: date.get(0) }; return choice; }).toList().toJS();
   }
 
+  componentWillReceiveProps(props) {
+    const vars = TitleWithVars.transformVars(props.report);
+    this.setState({ vars });
+  }
+
   onChange(varName, value) {
-    const { vars } = this.state;
     const { report, onChangeReportVar } = this.props;
+    const { vars } = this.state;
     vars[varName] = value;
     this.setState({ vars });
     let newReport = report;
@@ -38,7 +50,7 @@ class ListItemTitle extends React.Component {
         newReport = newReport.setIn(['variables', index, 'value'], value);
       }
     });
-    onChangeReportVar(newReport);
+    onChangeReportVar(report, varName, value);
   }
 
   replaceVars() {
@@ -112,11 +124,11 @@ class ListItemTitle extends React.Component {
 
     return (
       <span>
-        <a>{ title }</a>
+        { title }
         { missingVars }
       </span>
     );
   }
 }
 
-export default ListItemTitle;
+export default TitleWithVars;

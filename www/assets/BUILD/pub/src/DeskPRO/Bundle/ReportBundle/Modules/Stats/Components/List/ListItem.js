@@ -1,7 +1,8 @@
-import React, { PropTypes } from 'react';
+import PropTypes from 'prop-types';
+import React from 'react';
 import classNames from 'classnames';
 import { transformReportData } from '../helper';
-import ListItemTitle from './ListItemTitle';
+import TitleWithVars from '../TitleWithVars';
 
 class ListItem extends React.Component {
 
@@ -13,16 +14,13 @@ class ListItem extends React.Component {
     labels:            PropTypes.object.isRequired,
     isActive:          PropTypes.bool.isRequired,
     groupParams:       PropTypes.object.isRequired,
+    onChangeReportVar: PropTypes.func.isRequired,
   };
 
   constructor(props) {
     super(props);
     this.onEditClick       = this.onEditClick.bind(this);
     this.onRunClick        = this.onRunClick.bind(this);
-    this.onChangeReportVar = this.onChangeReportVar.bind(this);
-    this.state = {
-      report: this.props.report
-    };
   }
 
   onRunClick(event) {
@@ -30,20 +28,15 @@ class ListItem extends React.Component {
       event.preventDefault();
       event.stopPropagation();
     }
-    const { onRunReportClick } = this.props;
-    const { report } = this.state;
+    const { onRunReportClick, report } = this.props;
     const data = transformReportData(report);
     onRunReportClick(report, data);
-  }
-
-  onChangeReportVar(report) {
-    this.setState({ report }, this.onRunClick);
   }
 
   onEditClick(event) {
     event.preventDefault();
     event.stopPropagation();
-    this.props.onEditReportClick(this.state.report);
+    this.props.onEditReportClick(this.props.report);
   }
 
   isLabelActive(label) {
@@ -52,13 +45,12 @@ class ListItem extends React.Component {
   }
 
   render() {
-    const { isActive, groupParams } = this.props;
-    const { report } = this.state;
+    const { isActive, groupParams, onChangeReportVar, report } = this.props;
 
     return (
       <li className={classNames({ active: isActive })}>
         <h1>
-          <ListItemTitle onRunClick={this.onRunClick} onChangeReportVar={this.onChangeReportVar} groupParams={groupParams} report={report} />
+          <TitleWithVars onRunClick={this.onRunClick} onChangeReportVar={onChangeReportVar} groupParams={groupParams} report={report} />
           <span onClick={this.onEditClick} className="controls"><i className="pencil icon" /></span>
         </h1>
         { report.get('labels').size > 0 || !report.get('is_custom') ?
