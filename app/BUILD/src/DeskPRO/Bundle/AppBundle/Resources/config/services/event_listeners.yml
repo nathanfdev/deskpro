@@ -18,6 +18,14 @@ services:
       - { name: doctrine.event_listener, event: postPersist }
       - { name: doctrine.event_listener, event: postRemove }
 
+  dp.api.event_listeners.ticket_follow_up_entity:
+    class: DeskPRO\Bundle\AppBundle\EventListener\Doctrine\TicketFollowUpListener
+    arguments: ["@service_container"]
+    tags:
+      - { name: doctrine.event_listener, event: postPersist }
+      - { name: doctrine.event_listener, event: postUpdate }
+      - { name: doctrine.event_listener, event: preRemove }
+
   dp.api.event_listeners.snippet_entity:
     class: DeskPRO\Bundle\AppBundle\EventListener\Doctrine\SnippetListener
     arguments: ["@service_container"]

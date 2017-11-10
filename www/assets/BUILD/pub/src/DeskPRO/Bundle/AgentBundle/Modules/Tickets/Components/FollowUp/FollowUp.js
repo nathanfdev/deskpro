@@ -26,18 +26,29 @@ export class FollowUpContainer extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
-      count:     0,
       followUps: Immutable.List()
     };
-    this.props.dispatch(followUpActions.loadFollowUps(props.ticketId))
+    this.loadFollowUps();
+  }
+
+  componentWillMount = () => {
+    window.document.addEventListener('dpFollowUpUpdate', (e) => {
+      if (e.detail.ticketId === this.props.ticketId) {
+        this.loadFollowUps();
+      }
+    });
+  };
+
+  loadFollowUps = () => {
+    this.props.dispatch(followUpActions.loadFollowUps(this.props.ticketId))
       .then((res) => {
-        props.updateCount('', res.meta.pagination.total);
+        const followUps = Immutable.fromJS(res.data);
+        this.props.updateCount('', followUps.count(f => f.get('status') === 'pending'));
         this.setState({
-          count:     res.meta.pagination.total,
-          followUps: Immutable.fromJS(res.data),
+          followUps,
         });
       });
-  }
+  };
 
   saveFollowUp = data => this.props.dispatch(followUpActions.createFollowUp(this.props.ticketId, data))
       .then((followUp) => {
@@ -94,6 +105,13 @@ export class FollowUp extends React.Component {
     });
   };
 
+  saveFollowUp = data => this.props.saveFollowUp(data)
+      .then(() => {
+        this.setState({
+          displayForm: false
+        });
+      });
+
   render() {
     return (
       <Container className="follow_up">
@@ -110,7 +128,7 @@ export class FollowUp extends React.Component {
             agents={this.props.agents}
             agentTeams={this.props.agentTeams}
             macros={this.props.macros}
-            saveFollowUp={this.props.saveFollowUp}
+            saveFollowUp={this.saveFollowUp}
           />
           :
           <Button

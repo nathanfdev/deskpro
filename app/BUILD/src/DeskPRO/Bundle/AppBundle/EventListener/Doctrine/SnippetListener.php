@@ -28,8 +28,6 @@
 
 namespace DeskPRO\Bundle\AppBundle\EventListener\Doctrine;
 
-use Application\DeskPRO\Entity\LabelDef;
-use Application\DeskPRO\Entity\Labels\Label;
 use Application\DeskPRO\Entity\Person;
 use DeskPRO\Bundle\AppBundle\Entity\Snippet;
 use DeskPRO\Bundle\AppBundle\Entity\SnippetChangeLog;
@@ -40,9 +38,7 @@ use Doctrine\ORM\Event\OnFlushEventArgs;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 
 /**
- * Class LabelListener.
- *
- * Listens for Label entities lifecycle callbacks and performs needed actions on corresponding LabelDef
+ * Class SnippetListener.
  */
 class SnippetListener
 {

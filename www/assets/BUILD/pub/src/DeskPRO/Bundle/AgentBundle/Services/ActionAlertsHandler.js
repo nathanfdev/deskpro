@@ -76,6 +76,11 @@ class ActionAlertsHandler {
       case 'read.notifications.alert':
         this.options.dispatch(newActionAlerts(payload));
         break;
+      case 'ticket.follow_up_updated': {
+        const event = new CustomEvent('dpFollowUpUpdate', { detail: { ticketId: payload.data.ticket_id } });
+        window.document.dispatchEvent(event);
+        break;
+      }
       case 'snippet.snippets_updated':
         switch (payload.data.action) {
           case 'update':
