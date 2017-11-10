@@ -14,6 +14,9 @@
       text-overflow: ellipsis;
       max-width: 300px;
     }
+    td:last-child {
+      max-width: 30px;
+    }
   }
   .h4 {
     margin-bottom: 5px;

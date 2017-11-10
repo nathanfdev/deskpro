@@ -146,6 +146,7 @@ class ActionsFactory
                     $options['remove_labels'] = Strings::explodeTrim(',', $value['labels']);
                 }
                 break;
+            case 'note':
             case 'reply':
                 if (empty($value['reply_text']) || !trim(strip_tags($value['reply_text']))) {
                     return;
