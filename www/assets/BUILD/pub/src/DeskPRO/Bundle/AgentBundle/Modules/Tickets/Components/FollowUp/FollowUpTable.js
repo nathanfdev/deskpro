@@ -47,8 +47,18 @@ class FollowUpTable extends React.Component {
 
   renderAction = (action) => {
     switch (action.get('type')) {
-      case 'agent':
-        return `Agent: Assign to ${this.getAgent(action.getIn(['options', 'agent']))}`;
+      case 'agent': {
+        const agentId = action.getIn(['options', 'agent']);
+        let agent;
+        if (agentId === -1) {
+          agent = agentPhrases.get('agent.general.me');
+        } else if (agentId === 0) {
+          return 'Agent: Unassign';
+        } else {
+          agent = this.getAgent(agentId);
+        }
+        return `Agent: Assign to ${agent}`;
+      }
       case 'team':
         return `Agent team: Assign to ${this.getAgentTeam(action.getIn(['options', 'agent_team']))}`;
       case 'macro':
@@ -60,13 +70,13 @@ class FollowUpTable extends React.Component {
           resolved:       agentPhrases.get('agent.tickets.status_resolved')
         };
         const status = statuses[action.getIn(['options', 'status'])];
-        return `Status: ${status}`;
+        return `${agentPhrases.get('agent.general.status')}: ${status}`;
       }
       case 'reply':
       case 'note': {
         const labels = {
-          reply: 'Reply',
-          note:  'Note',
+          reply: agentPhrases.get('agent.general.reply'),
+          note:  agentPhrases.get('agent.general.note'),
         };
         return `${labels[action.get('type')]}: ${htmlToText.fromString(
           action.getIn(['options', 'reply_text']).substr(0, 100)
@@ -80,20 +90,34 @@ class FollowUpTable extends React.Component {
   };
 
   render() {
+    const statuses = {
+      pending:   agentPhrases.get('agent.general.pending'),
+      done:      agentPhrases.get('agent.general.done'),
+      cancelled: agentPhrases.get('agent.general.cancelled'),
+    };
     return (
       <table className="field-holders-table th-la">
         <thead>
           <tr>
             <th>When</th>
-            <th>Agent</th>
-            <th>Actions</th>
-            <th>Criteria</th>
-            <th>Status</th>
+            <th>{agentPhrases.get('agent.general.agent')}</th>
+            <th>{agentPhrases.get('agent.general.actions')}</th>
+            <th>{agentPhrases.get('agent.general.criteria')}</th>
+            <th>{agentPhrases.get('agent.general.status')}</th>
             <th />
           </tr>
         </thead>
         <tbody>
           {this.props.followUps
+            .sort((a, b) => {
+              if (a.get('date_to_run') > b.get('date_to_run')) {
+                return -1;
+              }
+              if (a.get('date_to_run') < b.get('date_to_run')) {
+                return 1;
+              }
+              return 0;
+            })
             .map(followUp =>
               <tr key={followUp.get('id')}>
                 <td title={moment(followUp.get('date_to_run')).format('YYYY-MM-DD H:mm:ss')}>
@@ -109,7 +133,7 @@ class FollowUpTable extends React.Component {
                   {this.getCriteria(followUp)}
                 </td>
                 <td>
-                  {followUp.get('status')}
+                  {statuses[followUp.get('status')]}
                 </td>
                 <td>
                   {followUp.get('status') === 'pending' ?
@@ -125,8 +149,8 @@ class FollowUpTable extends React.Component {
           {this.props.followUps.size === 0 ?
             <tr>
               <td colSpan={6}>
-              No Follow Ups
-            </td>
+                {agentPhrases.get('agent.follow_up.no_follow_ups')}
+              </td>
             </tr>
         : null }
         </tbody>

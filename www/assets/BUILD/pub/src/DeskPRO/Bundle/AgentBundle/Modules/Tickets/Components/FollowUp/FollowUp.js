@@ -6,6 +6,7 @@ import Immutable from 'immutable';
 import { Container, Button, Checkbox } from '@deskpro/react-components';
 import { agentsSelector } from 'DeskPRO/Bundle/AppBundle/Modules/RecordsStore/Shortcuts/agents';
 import { allSelectorFactory } from 'DeskPRO/Bundle/AppBundle/Modules/RecordsStore';
+import agentPhrases from 'DeskPRO/Bundle/AgentBundle/AgentPhrases';
 import ActionsBlock from './ActionsBlock';
 import FollowUpTime from './FollowUpTime';
 import FollowUpTable from './FollowUpTable';
@@ -115,7 +116,7 @@ export class FollowUp extends React.Component {
   render() {
     return (
       <Container className="follow_up">
-        <h4>Follow Ups</h4>
+        <h4>{agentPhrases.get('agent.general.follow_ups')}</h4>
         <FollowUpTable
           followUps={this.props.followUps}
           agents={this.props.agents}
@@ -135,7 +136,7 @@ export class FollowUp extends React.Component {
             size="m"
             onClick={this.displayForm}
           >
-            New Follow Up
+            {agentPhrases.get('agent.follow_up.new_follow_up')}
           </Button>
         }
       </Container>
@@ -176,10 +177,10 @@ class FollowUpForm extends React.Component {
   createFollowUp = () => {
     const errors = [];
     if (this.state.actions.length === 0) {
-      errors.push('You must add at least one action');
+      errors.push(agentPhrases.get('agent.follow_up.you_must_add_one_action'));
     }
     if (!this.state.dateToRun.time) {
-      errors.push('You must select when the follow up will be performed');
+      errors.push(agentPhrases.get('agent.follow_up.you_must_select_time'));
     }
     const dateToRun = this.convertTime();
     this.setState({
@@ -229,13 +230,13 @@ class FollowUpForm extends React.Component {
   render() {
     return (
       <div>
-        <h4>Add Follow Up</h4>
-        <h5>Follow Up Time</h5>
+        <h4>{agentPhrases.get('agent.follow_up.add_follow_up')}</h4>
+        <h5>{agentPhrases.get('agent.follow_up.follow_up_time')}</h5>
         <FollowUpTime
           value={this.state.dateToRun}
           onChange={this.updateTime}
         />
-        <h5>Follow Up Actions</h5>
+        <h5>{agentPhrases.get('agent.follow_up.follow_up_actions')}</h5>
         <ActionsBlock
           actions={this.state.actions}
           onChange={this.updateActions}
@@ -243,18 +244,18 @@ class FollowUpForm extends React.Component {
           agentTeams={this.props.agentTeams}
           macros={this.props.macros}
         />
-        <h5>Criteria</h5>
+        <h5>{agentPhrases.get('agent.general.criteria')}</h5>
         <Checkbox
           checked={this.state.cancelIfUserReply}
           onChange={this.updateCancelIfUserReply}
         >
-          Cancel follow up if user replies
+          {agentPhrases.get('agent.follow_up.cancel_if_reply')}
         </Checkbox>
         <Button
           size="medium"
           onClick={this.createFollowUp}
         >
-          Create
+          {agentPhrases.get('agent.general.create')}
         </Button>
         {this.renderErrors()}
       </div>

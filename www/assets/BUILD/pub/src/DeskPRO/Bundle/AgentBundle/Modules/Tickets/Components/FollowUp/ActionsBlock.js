@@ -1,5 +1,6 @@
 import React from 'react';
 import PropTypes from 'prop-types';
+import agentPhrases from 'DeskPRO/Bundle/AgentBundle/AgentPhrases';
 import Action from './Action';
 
 class ActionsBlock extends React.Component {
@@ -56,7 +57,7 @@ class ActionsBlock extends React.Component {
           { this.renderActions() }
         </div>
         <div className="add_action" onClick={this.addAction}>
-          <i className="plus" /> Add action
+          <i className="plus" /> {agentPhrases.get('agent.general.add_action_term')}
         </div>
       </div>
     );

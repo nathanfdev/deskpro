@@ -1,10 +1,9 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import htmlToText from 'html-to-text';
-import { Select, Label, Button, Radio } from '@deskpro/react-components';
+import { Select, Label, Radio } from '@deskpro/react-components';
 import newid from '@deskpro/react-components/lib/utils/newid';
 import agentPhrases from 'DeskPRO/Bundle/AgentBundle/AgentPhrases';
-import EditModal from './EditModal';
+import Editor from './Editor';
 
 
 class Action extends React.Component {
@@ -27,10 +26,10 @@ class Action extends React.Component {
     this.types = [
       { value: 'agent', label: 'Assign Agent' },
       { value: 'team', label: 'Assign Team' },
-      { value: 'reply', label: 'Add reply' },
-      { value: 'note', label: 'Add note' },
+      { value: 'reply', label: agentPhrases.get('agent.tickets.add_reply_action') },
+      { value: 'note', label: agentPhrases.get('agent.tickets.add_note_action') },
       { value: 'hold', label: 'Hold' },
-      { value: 'status', label: 'Status' },
+      { value: 'status', label: agentPhrases.get('agent.general.status') },
       { value: 'macro', label: 'Run macro' },
     ];
 
@@ -48,17 +47,18 @@ class Action extends React.Component {
   onEditorChange = (content) => {
     this.updateData({
       reply_text: content,
-      is_note:    this.props.action.type === 'note'
+      is_note:    this.props.action.type === 'note' ? 1 : 0
     });
   };
 
   getEditModal = (mode) => {
-    if (!this.state.replyModalOpen) {
+    if (['reply', 'note'].indexOf(this.props.action.type) === -1) {
       return null;
     }
     return (
-      <EditModal
+      <Editor
         mode={mode}
+        ref={(c) => { this.editor = c; }}
         value={this.props.action.options.reply_text}
         closeModal={this.closeEditReply}
         onChange={this.onEditorChange}
@@ -80,6 +80,9 @@ class Action extends React.Component {
 
   updateType = (type) => {
     this.props.updateAction({ type: type.value, options: {} });
+    if (this.editor) {
+      this.editor.redactor.setCode('');
+    }
   };
 
   updateData = (data) => {
@@ -145,23 +148,9 @@ class Action extends React.Component {
     );
   };
 
-  renderReply = () => (
-    <div>
-      <span key="preview" className="preview">
-        Reply: <span className="reply">{htmlToText.fromString(this.props.action.options.reply_text)}</span>
-      </span><br />
-      <Button size="m" onClick={this.editReply}>Edit Reply</Button><br />
-    </div>
-  );
+  renderReply = () => {};
 
-  renderNote = () => (
-    <div>
-      <span key="preview" className="preview">
-        Note: <span className="reply">{htmlToText.fromString(this.props.action.options.reply_text)}</span>
-      </span><br />
-      <Button size="m" onClick={this.editReply}>Edit Note</Button><br />
-    </div>
-  );
+  renderNote = () => {};
 
   renderHold = () => {
     const { action } = this.props;
@@ -174,7 +163,7 @@ class Action extends React.Component {
           onChange={this.onRadioChange}
           value={0}
         >
-          Unhold ticket
+          {agentPhrases.get('agent.tickets.unhold_btn')}
         </Radio>
         <Radio
           name="is_hold"
@@ -182,7 +171,7 @@ class Action extends React.Component {
           onChange={this.onRadioChange}
           value={1}
         >
-          Put ticket on hold
+          {agentPhrases.get('agent.tickets.hold_btn')}
         </Radio>
       </div>
     );

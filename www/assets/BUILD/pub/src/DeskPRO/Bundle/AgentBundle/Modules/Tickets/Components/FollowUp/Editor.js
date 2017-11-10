@@ -1,8 +1,7 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import { Button } from '@deskpro/react-components';
 
-export default class EditModal extends React.Component {
+export default class Editor extends React.Component {
   static propTypes = {
     closeModal: PropTypes.func,
     value:      PropTypes.string,
@@ -31,6 +30,9 @@ export default class EditModal extends React.Component {
         cleanup:       true,
         buttons,
         interval:      1,
+        keyupCallback() {
+          self.props.onChange(self.redactor.getCode());
+        },
         callback(obj) {
           self.redactor = obj;
         }
@@ -54,14 +56,6 @@ export default class EditModal extends React.Component {
           defaultValue={this.props.value}
           ref={(c) => { this.textArea = c; }}
         />
-        <div>
-          <Button type="primary" size="large" onClick={this.save}>
-            Save
-          </Button>
-          <Button type="secondary" size="large" onClick={this.props.closeModal}>
-            Cancel
-          </Button>
-        </div>
       </div>
     );
   }
