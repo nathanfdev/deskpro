@@ -59,7 +59,7 @@ class FollowUpTable extends React.Component {
         }
         return `Agent: Assign to ${agent}`;
       }
-      case 'team':
+      case 'agent_team':
         return `Agent team: Assign to ${this.getAgentTeam(action.getIn(['options', 'agent_team']))}`;
       case 'macro':
         return `Macro: Run ${this.getMacro(action.getIn(['options', 'macroId']))}`;

@@ -3,6 +3,7 @@ Feature: /ticket_follow_ups endpoint
 
   Background:
     Given I'm authenticated via session as admin
+    And the setting "beta_features.follow_up" is set to 1
     And agent and user exist
     And only the following Ticket records exist:
       | #  | Subject  | Status         |

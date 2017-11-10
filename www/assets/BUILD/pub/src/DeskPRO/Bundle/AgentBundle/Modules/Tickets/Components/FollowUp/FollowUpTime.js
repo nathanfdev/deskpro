@@ -72,7 +72,6 @@ class FollowUpTime extends React.Component {
     let value = '';
     let unit  = null;
     if (this.props.value.type === 'selector') {
-      console.log(this.props.value);
       ({ value, unit } = this.props.value.time);
     }
     return (

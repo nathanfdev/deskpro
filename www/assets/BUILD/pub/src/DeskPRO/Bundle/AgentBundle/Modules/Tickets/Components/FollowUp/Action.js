@@ -25,7 +25,7 @@ class Action extends React.Component {
 
     this.types = [
       { value: 'agent', label: 'Assign Agent' },
-      { value: 'team', label: 'Assign Team' },
+      { value: 'agent_team', label: 'Assign Team' },
       { value: 'reply', label: agentPhrases.get('agent.tickets.add_reply_action') },
       { value: 'note', label: agentPhrases.get('agent.tickets.add_note_action') },
       { value: 'hold', label: 'Hold' },
@@ -93,7 +93,7 @@ class Action extends React.Component {
 
   detailsMethod = () => {
     const string = this.props.action.type;
-    const method = `render${string[0].toUpperCase()}${string.substring(1)}`;
+    const method = `render${string[0].toUpperCase()}${string.substring(1).replace(/_\w/g, m => m[1].toUpperCase())}`;
     if (typeof this[method] === 'function') {
       return method;
     }
@@ -125,7 +125,7 @@ class Action extends React.Component {
     );
   };
 
-  renderTeam = () => {
+  renderAgentTeam = () => {
     const { action } = this.props;
     const agentTeams = [
       { value: -1, label: 'My Team' },
