@@ -192,6 +192,7 @@ class FollowUpForm extends React.Component {
     if (!this.state.dateToRun.type) {
       errors.push(agentPhrases.get('agent.follow_up.you_must_select_time'));
     }
+    errors.push(this.validateActions());
     this.setState({
       errors
     });
@@ -209,6 +210,19 @@ class FollowUpForm extends React.Component {
       });
     }
     return true;
+  };
+
+  validateActions = () => {
+    const { actions } = this.state;
+    const errors = [];
+    for (let i = 0; i < actions.length; i++) {
+      for (let j = i + 1; j < actions.length; j++) {
+        if (actions[i].type === actions[j].type && actions[i].type !== 'macro') {
+          errors.push(`You can have only action of type ${actions[i].type}`);
+        }
+      }
+    }
+    return errors;
   };
 
   updateActions = (actions) => {
