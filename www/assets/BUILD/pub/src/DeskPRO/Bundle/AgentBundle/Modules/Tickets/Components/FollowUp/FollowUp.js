@@ -218,8 +218,48 @@ class FollowUpForm extends React.Component {
     for (let i = 0; i < actions.length; i++) {
       for (let j = i + 1; j < actions.length; j++) {
         if (actions[i].type === actions[j].type && actions[i].type !== 'macro') {
-          errors.push(`You can have only action of type ${actions[i].type}`);
+          errors.push(`You can have only action of type "${actions[i].type}"`);
         }
+      }
+      const action = actions[i];
+      switch (action.type) {
+        case 'agent':
+          if (typeof action.options.agent === 'undefined') {
+            errors.push(agentPhrases.get('agent.follow_up.error_agent'));
+          }
+          break;
+        case 'agent_team':
+          if (typeof action.options.agent_team === 'undefined') {
+            errors.push(agentPhrases.get('agent.follow_up.error_agent_team'));
+          }
+          break;
+        case 'reply':
+          if (typeof action.options.reply_text === 'undefined') {
+            errors.push(agentPhrases.get('agent.follow_up.error_reply'));
+          }
+          break;
+        case 'note':
+          if (typeof action.options.reply_text === 'undefined') {
+            errors.push(agentPhrases.get('agent.follow_up.error_note'));
+          }
+          break;
+        case 'hold':
+          if (typeof action.options.is_hold === 'undefined') {
+            errors.push(agentPhrases.get('agent.follow_up.error_hold'));
+          }
+          break;
+        case 'status':
+          if (typeof action.options.status === 'undefined') {
+            errors.push(agentPhrases.get('agent.follow_up.error_status'));
+          }
+          break;
+        case 'macro':
+          if (typeof action.options.macroId === 'undefined') {
+            errors.push(agentPhrases.get('agent.follow_up.error_macro'));
+          }
+          break;
+        default:
+          throw Error('Unknown type');
       }
     }
     return errors;
