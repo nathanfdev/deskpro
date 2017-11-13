@@ -766,6 +766,7 @@ return [
     'agent.general.lost_field'                                 => 'Lost {{field}}',
     'agent.general.lost_password'                              => 'Lost Password',
     'agent.general.lost_qm'                                    => 'lost?',
+    'agent.general.macro'                                      => 'Macro',
     'agent.general.macros'                                     => 'Macros',
     'agent.general.manage_macros'                              => 'Manage Macros',
     'agent.general.mass_actions'                               => 'Mass actions',

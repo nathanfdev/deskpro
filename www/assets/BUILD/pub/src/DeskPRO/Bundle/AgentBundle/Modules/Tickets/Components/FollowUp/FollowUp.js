@@ -62,11 +62,13 @@ export class FollowUpContainer extends React.Component {
 
   deleteFollowUp = (followUp) => {
     const { followUps } = this.state;
-    const index = followUps.findIndex(f => f.get('id') === followUp.get('id'));
-    this.props.dispatch(followUpActions.deleteFollowUp(this.props.ticketId, followUp.get('id')));
-    this.setState({
-      followUps: followUps.delete(index)
-    });
+    if (confirm('Are you sure you want to delete this follow up?')) {
+      const index = followUps.findIndex(f => f.get('id') === followUp.get('id'));
+      this.props.dispatch(followUpActions.deleteFollowUp(this.props.ticketId, followUp.get('id')));
+      this.setState({
+        followUps: followUps.delete(index)
+      });
+    }
   };
 
   render() {
@@ -179,6 +181,10 @@ class FollowUpForm extends React.Component {
     if (this.state.saving) {
       return false;
     }
+    this.setState({
+      saving: true
+    });
+
     const errors = [];
     if (this.state.actions.length === 0) {
       errors.push(agentPhrases.get('agent.follow_up.you_must_add_one_action'));
@@ -192,13 +198,14 @@ class FollowUpForm extends React.Component {
     if (errors.length === 0) {
       const dateToRun = this.convertTime();
       const { actions, cancelIfUserReply } = this.state;
-      this.setState({
-        saving: true
-      });
       this.props.saveFollowUp({
         actions,
         date_to_run:          dateToRun,
         cancel_if_user_reply: cancelIfUserReply,
+      });
+    } else {
+      this.setState({
+        saving: false
       });
     }
     return true;
