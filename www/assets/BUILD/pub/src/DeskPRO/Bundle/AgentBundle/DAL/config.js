@@ -9,6 +9,7 @@ import { CommentsRepository } from './Repositories/CommentsRepository';
 import GuideRepository from './Repositories/GuideRepository';
 import OnboardingRepository from './Repositories/OnboardingRepository';
 import SnippetsRepository from './Repositories/SnippetsRepository';
+import TicketRepository from './Repositories/TicketRepository';
 
 export const repositoriesConfig = {
   AgentChat:            { type: 'api', url: '/agent_chats', repositoryClass: AgentChatRepository },
@@ -34,5 +35,7 @@ export const repositoriesConfig = {
   VoiceNumber:     { type: 'api', url: '/voice_numbers', allowAll: true },
   VoicePhoneCall:  { type: 'api', url: '/voice_phone_calls' },
   VoicemailRecord: { type: 'api', url: '/voicemail_records', allowAll: true },
-  Brands:          { type: 'api', url: '/brands', allowAll: true }
+  Brands:          { type: 'api', url: '/brands', allowAll: true },
+  TicketMacros:    { type: 'api', url: '/ticket_macros', allowAll: true },
+  Ticket:          { type: 'api', url: '/tickets', allowAll: true, repositoryClass: TicketRepository },
 };

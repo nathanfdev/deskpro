@@ -10,6 +10,7 @@ import './AgentBundle/Modules/Snippets/snippets';
 import './AgentBundle/Modules/Common/NavFrame/Section';
 import './AgentBundle/Modules/Common/NavFrame/grouping-control';
 import './AgentBundle/Modules/Common/NavFrame/Lists/NestedList';
+import './AgentBundle/Modules/Tickets/tickets';
 import './AgentBundle/Modules/Voice/index';
 import './DemoBundle/Modules/Application/login';
 import './AgentBundle/Modules/IM/im';

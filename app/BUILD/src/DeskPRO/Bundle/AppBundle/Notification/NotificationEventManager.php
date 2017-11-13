@@ -38,6 +38,7 @@ use DeskPRO\Bundle\AppBundle\Notification\Event\People\AgentStatusChangedEvent;
 use DeskPRO\Bundle\AppBundle\Notification\Event\People\UpdateOnlineEvent;
 use DeskPRO\Bundle\AppBundle\Notification\Event\Snippet\SnippetsUpdatedEvent;
 use DeskPRO\Bundle\AppBundle\Notification\Event\SystemEventInterface;
+use DeskPRO\Bundle\AppBundle\Notification\Event\Ticket\TicketFollowUpUpdatedEvent;
 use DeskPRO\Bundle\AppBundle\Notification\Event\Ticket\TicketUpdatedEvent;
 use DeskPRO\Bundle\AppBundle\Notification\Event\UserChat\UserChatEvent;
 use DeskPRO\Bundle\AppBundle\Notification\Strategy\NotificationStrategyInterface;
@@ -65,6 +66,7 @@ class NotificationEventManager implements EventSubscriberInterface
             OrganizationCreatedEvent::EVENT_NAME   => 'handleEvent',
             UserChatEvent::EVENT_NAME              => 'handleEvent',
             RefreshAgentInterfaceEvent::EVENT_NAME => 'handleEvent',
+            TicketFollowUpUpdatedEvent::EVENT_NAME => 'handleEvent',
             SnippetsUpdatedEvent::EVENT_NAME       => 'handleEvent',
         ];
     }

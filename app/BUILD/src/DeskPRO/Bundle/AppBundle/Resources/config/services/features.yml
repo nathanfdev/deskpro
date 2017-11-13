@@ -50,3 +50,10 @@ services:
       - "@settings_resolver"
     tags:
       - { name: deskpro.feature }
+
+  deskpro.features.follow_up:
+    class: DeskPRO\Bundle\AppBundle\Features\FollowUpFeature
+    arguments:
+      - "@settings_resolver"
+    tags:
+      - { name: deskpro.feature }

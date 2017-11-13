@@ -258,6 +258,11 @@ class AppVariable extends BaseAppVariable implements GlobalVariablesInterface
         return $this->container->get('templating.globals')->getProducts();
     }
 
+    public function getMacros()
+    {
+        return $this->container->get('templating.globals')->getMacros();
+    }
+
     public function getCustomFieldManager($type)
     {
         return $this->container->get('templating.globals')->getCustomFieldManager($type);

@@ -149,8 +149,6 @@ class EditAgent
     {
         $agent = $this->agent;
 
-        $em->persist($agent);
-
         //------------------------------
         // General props
         //------------------------------
@@ -159,6 +157,8 @@ class EditAgent
         $agent->is_confirmed = true;
         $agent->is_agent     = true;
         $agent->can_agent    = true;
+
+        $em->persist($agent);
 
         $agent->name                  = $this->name;
         $agent->override_display_name = $this->override_name ?: '';

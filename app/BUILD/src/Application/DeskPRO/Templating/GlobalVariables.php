@@ -33,6 +33,7 @@
 namespace Application\DeskPRO\Templating;
 
 use Application\DeskPRO\App;
+use Application\DeskPRO\Entity\TicketMacro;
 use Application\DeskPRO\HttpFoundation\LegacyRequestUtils;
 use Application\DeskPRO\Service\JIRA;
 use DpSys\License;
@@ -241,6 +242,11 @@ class GlobalVariables extends BaseGlobalVariables implements GlobalVariablesInte
     public function getProducts()
     {
         return App::getDataService('Product');
+    }
+
+    public function getMacros()
+    {
+        return App::$container->get('doctrine.orm.default_entity_manager')->getRepository(TicketMacro::class)->findAll();
     }
 
     public function getCustomFieldManager($type)

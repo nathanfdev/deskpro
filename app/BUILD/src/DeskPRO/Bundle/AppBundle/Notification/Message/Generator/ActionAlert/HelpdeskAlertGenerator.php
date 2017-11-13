@@ -33,6 +33,7 @@ use DeskPRO\Bundle\AppBundle\Notification\Delivery\Handler\DbDeliveryHandler;
 use DeskPRO\Bundle\AppBundle\Notification\Event\Helpdesk\RefreshAgentInterfaceEvent;
 use DeskPRO\Bundle\AppBundle\Notification\Event\Snippet\SnippetsUpdatedEvent;
 use DeskPRO\Bundle\AppBundle\Notification\Event\SystemEventInterface;
+use DeskPRO\Bundle\AppBundle\Notification\Event\Ticket\TicketFollowUpUpdatedEvent;
 use DeskPRO\Bundle\AppBundle\Notification\Message\ActionAlert;
 use DeskPRO\Bundle\AppBundle\Notification\Message\Generator\AbstractGenerator;
 use DeskPRO\Bundle\AppBundle\Notification\Message\MessageInterface;
@@ -51,6 +52,8 @@ class HelpdeskAlertGenerator extends AbstractGenerator
                 return $this->createRefreshAgentInterfaceAlerts($event);
             case SnippetsUpdatedEvent::class:
                 return $this->createReloadSnippetsAlert($event);
+            case TicketFollowUpUpdatedEvent::class:
+                return $this->createReloadTicketFollowUpAlert($event);
             default:
                 return [];
         }
@@ -121,6 +124,28 @@ class HelpdeskAlertGenerator extends AbstractGenerator
         return $alerts;
     }
 
+    private function createReloadTicketFollowUpAlert(TicketFollowUpUpdatedEvent $event)
+    {
+        $ticket = $event->getTicket();
+        $agents = $this->em->getRepository(Person::class)->getActiveAgents(true);
+
+        // we always send through Db delivery because its possible
+        // the client doesnt have an open connection to any other
+        // service (e.g. imagine i just enabled pusher, i need this refresh
+        // signal to go to already connected clients still using db)
+        $meta = ['targettedHandlers' => [DbDeliveryHandler::TYPE]];
+
+        $alerts = [];
+        foreach ($agents as $agentId) {
+            $alerts[] = new ActionAlert($agentId, [
+                'ticket_id' => $ticket->getId(),
+                'action'    => $event->getAction(),
+            ], $event->getName(), $meta);
+        }
+
+        return $alerts;
+    }
+
     /**
      * @param SystemEventInterface $event
      *
@@ -128,6 +153,9 @@ class HelpdeskAlertGenerator extends AbstractGenerator
      */
     public function canCreateMessage(SystemEventInterface $event)
     {
-        return $event instanceof RefreshAgentInterfaceEvent || $event instanceof SnippetsUpdatedEvent;
+        return
+            $event instanceof RefreshAgentInterfaceEvent
+            || $event instanceof SnippetsUpdatedEvent
+            || $event instanceof TicketFollowUpUpdatedEvent;
     }
 }

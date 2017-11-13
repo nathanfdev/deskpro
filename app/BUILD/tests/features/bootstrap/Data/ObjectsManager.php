@@ -111,6 +111,7 @@ use DeskPRO\Bundle\AppBundle\Entity\OAuthClient;
 use DeskPRO\Bundle\AppBundle\Entity\Snippet;
 use DeskPRO\Bundle\AppBundle\Entity\SnippetTranslation;
 use DeskPRO\Bundle\AppBundle\Entity\TicketFilter;
+use DeskPRO\Bundle\AppBundle\Entity\TicketFollowUp;
 use DeskPRO\Bundle\AppBundle\Entity\VoiceAccount;
 use DeskPRO\Bundle\AppBundle\Entity\VoiceAsset\AbstractVoiceAsset;
 use DeskPRO\Bundle\AppBundle\Entity\VoiceAsset\VoiceRecordAsset;
@@ -327,6 +328,7 @@ class ObjectsManager
             'TicketMessage'            => [Factory\SimpleFactory::class, 'create', TicketMessage::class],
             'TicketSla'                => [Factory\SimpleFactory::class, 'create', TicketSla::class],
             'TicketLog'                => [Factory\SimpleFactory::class, 'create', TicketLog::class],
+            'TicketFollowUp'           => [Factory\SimpleFactory::class, 'create', TicketFollowUp::class],
             'Sla'                      => [Factory\CommonFactories::class, 'sla'],
             'SLA'                      => [Factory\CommonFactories::class, 'sla'],
             'Usergroup'                => [Factory\SimpleFactory::class, 'create', Usergroup::class],
@@ -409,6 +411,7 @@ class ObjectsManager
             'TicketFilter'             => [$this, 'find', TicketFilter::class],
             'TicketSla'                => [$this, 'find', TicketSla::class],
             'TicketLog'                => [$this, 'find', TicketLog::class],
+            'TicketFollowUp'           => [$this, 'find', TicketFollowUp::class],
             'SLA'                      => [$this, 'find', Sla::class],
             'Organization'             => [$this, 'find', Organization::class],
             'OrganizationNote'         => [$this, 'find', OrganizationNote::class],

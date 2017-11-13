@@ -250,6 +250,10 @@
 				<option value="prepend">Prepend to existing reply text</option>
 				<option value="overwrite">Overwrite existing reply text</option>
 			</select>
+			<select name="is_note">
+				<option value="0"> Create as reply
+				<option value="1"> Create as agent note
+			</select>
 		</div>
 	</div>
 </div>
@@ -401,6 +405,18 @@
 	{% for plugin_event_type, object in term_options.plugin_actions %}
 		{% include object.getActionTemplate() %}
 	{% endfor %}
+{% endif %}
+
+{% if app.getMacros() %}
+	<div class="builder-type" title="Run macro" data-rule-type="run_macro">
+		<div class="builder-options">
+			<select name="macroId">
+				{% for macro in app.getMacros() %}
+					<option value="{{ macro.id }}">{{ macro.title }}</option>
+				{% endfor %}
+			</select>
+		</div>
+	</div>
 {% endif %}
 
 <div class="builder-type" title="Close ticket tab" data-rule-type="close_ticket_tab">

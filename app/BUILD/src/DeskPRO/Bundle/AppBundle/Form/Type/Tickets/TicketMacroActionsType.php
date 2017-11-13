@@ -26,25 +26,23 @@
  * ~ Thanks, Everyone at Team DeskPRO
  */
 
-namespace DeskPRO\Bundle\AppBundle\Form\Type\Tickets\TicketLogs;
+namespace DeskPRO\Bundle\AppBundle\Form\Type\Tickets;
 
 use Symfony\Component\Form\AbstractType;
-use Symfony\Component\Form\FormBuilderInterface;
-use Symfony\Component\Form\FormEvent;
-use Symfony\Component\Form\FormEvents;
+use Symfony\Component\Form\Extension\Core\Type\CollectionType;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 
 /**
- * Class TicketLogDetailsType.
+ * Class TicketMacroActionsType.
  */
-class TicketLogDetailsType extends AbstractType
+class TicketMacroActionsType extends AbstractType
 {
     /**
      * {@inheritdoc}
      */
-    public function buildForm(FormBuilderInterface $builder, array $options)
+    public function getParent()
     {
-        $builder->addEventListener(FormEvents::SUBMIT, [$this, 'onPreSubmit']);
+        return CollectionType::class;
     }
 
     /**
@@ -53,19 +51,9 @@ class TicketLogDetailsType extends AbstractType
     public function configureOptions(OptionsResolver $resolver)
     {
         $resolver->setDefaults([
-            'error_bubbling'     => false,
-            'allow_extra_fields' => true,
-            'compound'           => true,
+            'entry_type'   => TicketMacroActionType::class,
+            'allow_add'    => true,
+            'allow_delete' => true,
         ]);
-    }
-
-    /**
-     * @internal
-     *
-     * @param FormEvent $event
-     */
-    public function onPreSubmit(FormEvent $event)
-    {
-        $event->setData($event->getForm()->getExtraData());
     }
 }

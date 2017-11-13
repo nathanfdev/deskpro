@@ -434,6 +434,9 @@
                             {% if app.getSetting('core.apps_tasks') and app.user.hasPerm('agent_tasks.use') %}
                                 <li data-tab-for="#{{ baseId }}_tasks_wrap">{{ phrase('agent.general.tasks') }} (<span
                                   id="{{ baseId }}_task_count">{{ tasks|length }}</span>)</li>{% endif %}
+                            {% if app.hasBeta('follow_up') %}
+                                <li data-tab-for="#{{ baseId }}_follow_ups_wrap">{{ phrase('agent.general.follow_ups') }} (<span
+                                  id="{{ baseId }}_follow_up_count">{{ follow_ups|length }}</span>)</li>{% endif %}
                             {% if (addable_slas is not empty and ticket_perms.modify_slas) or ticket.ticket_slas is not empty %}
                                 <li data-tab-for="#{{ baseId }}_sla_wrap">{{ phrase('agent.general.slas') }} {{ sla_pips|raw }}</li>
                             {% endif %}
@@ -682,6 +685,9 @@
                         <article id="{{ baseId }}_tasks_wrap">
                             {% include 'AgentBundle:Ticket:view-tasks.html.twig' %}
                         </article>
+                    {% endif %}
+                    {% if app.hasBeta('follow_up') %}
+                        <article id="{{ baseId }}_follow_ups_wrap"></article>
                     {% endif %}
                     {% if (addable_slas is not empty and ticket_perms.modify_slas) or ticket.ticket_slas is not empty %}
                         <article id="{{ baseId }}_sla_wrap">

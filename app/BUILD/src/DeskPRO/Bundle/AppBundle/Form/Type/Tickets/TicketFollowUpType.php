@@ -28,24 +28,21 @@
 
 namespace DeskPRO\Bundle\AppBundle\Form\Type\Tickets;
 
-use Application\DeskPRO\Entity\Department;
 use Application\DeskPRO\Entity\Person;
-use Application\DeskPRO\Entity\TicketMacro;
+use Application\DeskPRO\Entity\Ticket;
+use DeskPRO\Bundle\AppBundle\Entity\TicketFollowUp;
 use DeskPRO\Bundle\AppBundle\Form\Type\ApiBooleanType;
-use DeskPRO\Bundle\AppBundle\Validator\Constraints as AppAssert;
-use Doctrine\ORM\EntityRepository;
-use Symfony\Bridge\Doctrine\Form\Type\EntityType;
+use DeskPRO\Bundle\AppBundle\Form\Type\DateTimeType;
 use Symfony\Component\Form\AbstractType;
-use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\Form\FormEvent;
 use Symfony\Component\Form\FormEvents;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 
 /**
- * Class TicketMacroType.
+ * Class TicketFollowUpType.
  */
-class TicketMacroType extends AbstractType
+class TicketFollowUpType extends AbstractType
 {
     /**
      * {@inheritdoc}
@@ -53,25 +50,14 @@ class TicketMacroType extends AbstractType
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
         $builder
-            ->add('title', TextType::class)
-            ->add('is_global', ApiBooleanType::class)
-            ->add('person', EntityType::class, [
-                'class'       => Person::class,
-                'required'    => false,
-                'constraints' => [
-                    new AppAssert\Person\PersonType([
-                        'type' => 'agent',
-                    ]),
-                ],
-            ])
-            ->add('department', EntityType::class, [
-                'class'         => Department::class,
-                'required'      => false,
-                'query_builder' => function (EntityRepository $er) {
-                    return $er->createQueryBuilder('p')->where('p.is_tickets_enabled = true');
-                },
+            ->add('date_to_run', DateTimeType::class, [
+                'property_path' => 'dateToRun',
+                'widget'        => 'single_text',
             ])
             ->add('actions', TicketMacroActionsType::class)
+            ->add('cancel_if_user_reply', ApiBooleanType::class, [
+                'property_path' => 'cancelIfUserReply',
+            ])
         ;
 
         $builder->addEventListener(FormEvents::POST_SUBMIT, [$this, 'onPostSubmit']);
@@ -82,9 +68,14 @@ class TicketMacroType extends AbstractType
      */
     public function configureOptions(OptionsResolver $resolver)
     {
-        $resolver->setDefaults([
-            'data_class' => TicketMacro::class,
-        ]);
+        $resolver
+            ->setDefaults([
+                'data_class' => TicketFollowUp::class,
+            ])
+            ->setRequired(['person', 'ticket'])
+            ->setAllowedTypes('person', Person::class)
+            ->setAllowedTypes('ticket', Ticket::class)
+        ;
     }
 
     /**
@@ -95,13 +86,11 @@ class TicketMacroType extends AbstractType
     public function onPostSubmit(FormEvent $event)
     {
         $data = $event->getData();
-        if (!$data instanceof TicketMacro) {
-            return;
-        }
+        $form = $event->getForm();
 
-        // force set global if no assignment
-        if (!$data->getPerson() && !$data->getDepartment()) {
-            $data->setIsGlobal(true);
+        if ($data instanceof TicketFollowUp) {
+            $data->setPerson($form->getConfig()->getOption('person'));
+            $data->setTicket($form->getConfig()->getOption('ticket'));
         }
     }
 }
