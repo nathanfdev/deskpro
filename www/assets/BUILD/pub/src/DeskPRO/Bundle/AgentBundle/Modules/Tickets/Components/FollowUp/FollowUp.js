@@ -185,14 +185,14 @@ class FollowUpForm extends React.Component {
       saving: true
     });
 
-    const errors = [];
+    let errors = [];
     if (this.state.actions.length === 0) {
       errors.push(agentPhrases.get('agent.follow_up.you_must_add_one_action'));
     }
     if (!this.state.dateToRun.type) {
       errors.push(agentPhrases.get('agent.follow_up.you_must_select_time'));
     }
-    errors.push(this.validateActions());
+    errors = errors.concat(this.validateActions());
     this.setState({
       errors
     });
@@ -203,6 +203,22 @@ class FollowUpForm extends React.Component {
         actions,
         date_to_run:          dateToRun,
         cancel_if_user_reply: cancelIfUserReply,
+      }).catch((error) => {
+        switch (error.data.status) {
+          case 403:
+            errors = ['You don\'t have the permission to create a follow up'];
+            break;
+          case 500:
+            errors = ['There was an error with the error'];
+            break;
+          default:
+            errors = ['There was an error please retry later or contact assistance'];
+        }
+        this.setState({
+          saving: false,
+          errors
+        });
+        console.log(error);
       });
     } else {
       this.setState({
@@ -287,6 +303,7 @@ class FollowUpForm extends React.Component {
     if (this.state.errors.length === 0) {
       return null;
     }
+    console.log(this.state.errors);
     return (
       <div className="errors">
         <ul>

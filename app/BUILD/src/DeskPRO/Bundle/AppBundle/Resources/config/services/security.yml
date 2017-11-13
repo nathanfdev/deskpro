@@ -238,6 +238,11 @@ services:
     tags:
       - { name: security.voter.permission_groups }
 
+  security.voter.permission_groups.ticket_follow_up:
+      class: DeskPRO\Bundle\AppBundle\Security\Voter\PermissionGroups\EntityVoter\TicketFollowUpVoter
+      tags:
+        - { name: security.voter.permission_groups }
+
   security.voter.permission_groups.ticket_messages:
     class: DeskPRO\Bundle\AppBundle\Security\Voter\PermissionGroups\EntityVoter\TicketMessagesVoter
     tags:

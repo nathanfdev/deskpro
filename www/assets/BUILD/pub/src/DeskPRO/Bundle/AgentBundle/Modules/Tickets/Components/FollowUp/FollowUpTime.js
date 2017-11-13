@@ -35,7 +35,7 @@ class FollowUpTime extends React.Component {
 
   onSelectorValueChange = (value) => {
     let unit = null;
-    if (value.match(/\d*/)) {
+    if (value.match(/^\d*$/)) {
       if (this.props.value.type === 'selector') {
         unit = this.props.value.time.unit;
       }
