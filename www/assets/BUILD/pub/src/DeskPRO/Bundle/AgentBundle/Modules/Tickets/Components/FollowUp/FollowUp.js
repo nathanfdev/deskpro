@@ -172,6 +172,8 @@ class FollowUpForm extends React.Component {
       case 'selector':
       case 'preset':
         return moment().add(dateToRun.time.value, dateToRun.time.unit).format();
+      case 'picker':
+        return moment(dateToRun.time.date).format();
       default:
         throw Error('Unknown type');
     }

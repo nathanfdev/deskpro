@@ -5,7 +5,7 @@
   "author": "DeskPRO <support@deskpro.com>",
   "dependencies": {
     "@amcharts/amcharts3-react": "^3.0.3",
-    "@deskpro/react-components": "^1.2.1",
+    "@deskpro/react-components": "^1.2.3",
     "@deskpro/react-forms": "^2.0.0-beta36",
     "@deskpro/react-scrollbar": "^0.5.1",
     "amcharts3": "github:amcharts/amcharts3",
