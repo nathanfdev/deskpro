@@ -92,7 +92,7 @@ class Run extends React.Component {
       groupParams={groupParams}
       report={report}
     />);
-    const content = report.get('rendered_result').filter(value => value).size > 0
+    const content = report.get('rendered_result', Immutable.List()).filter(value => value).size > 0
       ? this.renderReport()
       : <span>No results found. Please try another query (e.g. change vars) to find something</span>;
 
