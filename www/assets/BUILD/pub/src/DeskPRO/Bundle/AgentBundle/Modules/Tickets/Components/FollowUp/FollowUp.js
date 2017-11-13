@@ -160,6 +160,7 @@ class FollowUpForm extends React.Component {
       dateToRun:         {},
       cancelIfUserReply: false,
       errors:            [],
+      saving:            false,
     };
   }
 
@@ -175,25 +176,32 @@ class FollowUpForm extends React.Component {
   };
 
   createFollowUp = () => {
+    if (this.state.saving) {
+      return false;
+    }
     const errors = [];
     if (this.state.actions.length === 0) {
       errors.push(agentPhrases.get('agent.follow_up.you_must_add_one_action'));
     }
-    if (!this.state.dateToRun.time) {
+    if (!this.state.dateToRun.type) {
       errors.push(agentPhrases.get('agent.follow_up.you_must_select_time'));
     }
-    const dateToRun = this.convertTime();
     this.setState({
       errors
     });
     if (errors.length === 0) {
+      const dateToRun = this.convertTime();
       const { actions, cancelIfUserReply } = this.state;
+      this.setState({
+        saving: true
+      });
       this.props.saveFollowUp({
         actions,
         date_to_run:          dateToRun,
         cancel_if_user_reply: cancelIfUserReply,
       });
     }
+    return true;
   };
 
   updateActions = (actions) => {
@@ -254,6 +262,7 @@ class FollowUpForm extends React.Component {
         <Button
           size="medium"
           onClick={this.createFollowUp}
+          loading={this.state.saving}
         >
           {agentPhrases.get('agent.general.create')}
         </Button>
