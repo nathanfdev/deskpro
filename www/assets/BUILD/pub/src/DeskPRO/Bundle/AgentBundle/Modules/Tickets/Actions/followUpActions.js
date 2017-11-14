@@ -14,10 +14,12 @@ export const loadFollowUps = createAction(
 
 export const createFollowUp = createAction(
   'TICKET_SAVE_FOLLOW_UP',
-  (ticketId, data) => new Promise((resolve) => {
+  (ticketId, data) => new Promise((resolve, reject) => {
     repository('Ticket').createFollowUp(ticketId, data).then((promise) => {
       const res = promise.getData();
       resolve(res.data);
+    }, (error) => {
+      reject(error);
     });
   })
 );

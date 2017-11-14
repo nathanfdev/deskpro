@@ -62,11 +62,13 @@ export class FollowUpContainer extends React.Component {
 
   deleteFollowUp = (followUp) => {
     const { followUps } = this.state;
-    const index = followUps.findIndex(f => f.get('id') === followUp.get('id'));
-    this.props.dispatch(followUpActions.deleteFollowUp(this.props.ticketId, followUp.get('id')));
-    this.setState({
-      followUps: followUps.delete(index)
-    });
+    if (confirm('Are you sure you want to delete this follow up?')) {
+      const index = followUps.findIndex(f => f.get('id') === followUp.get('id'));
+      this.props.dispatch(followUpActions.deleteFollowUp(this.props.ticketId, followUp.get('id')));
+      this.setState({
+        followUps: followUps.delete(index)
+      });
+    }
   };
 
   render() {
@@ -160,6 +162,7 @@ class FollowUpForm extends React.Component {
       dateToRun:         {},
       cancelIfUserReply: false,
       errors:            [],
+      saving:            false,
     };
   }
 
@@ -175,25 +178,107 @@ class FollowUpForm extends React.Component {
   };
 
   createFollowUp = () => {
-    const errors = [];
+    if (this.state.saving) {
+      return false;
+    }
+    this.setState({
+      saving: true
+    });
+
+    let errors = [];
     if (this.state.actions.length === 0) {
       errors.push(agentPhrases.get('agent.follow_up.you_must_add_one_action'));
     }
-    if (!this.state.dateToRun.time) {
+    if (!this.state.dateToRun.type) {
       errors.push(agentPhrases.get('agent.follow_up.you_must_select_time'));
     }
-    const dateToRun = this.convertTime();
+    errors = errors.concat(this.validateActions());
     this.setState({
       errors
     });
     if (errors.length === 0) {
+      const dateToRun = this.convertTime();
       const { actions, cancelIfUserReply } = this.state;
       this.props.saveFollowUp({
         actions,
         date_to_run:          dateToRun,
         cancel_if_user_reply: cancelIfUserReply,
+      }).catch((error) => {
+        switch (error.data.status) {
+          case 403:
+            errors = ['You don\'t have the permission to create a follow up'];
+            break;
+          case 500:
+            errors = ['There was an error with the error'];
+            break;
+          default:
+            errors = ['There was an error please retry later or contact assistance'];
+        }
+        this.setState({
+          saving: false,
+          errors
+        });
+        console.log(error);
+      });
+    } else {
+      this.setState({
+        saving: false
       });
     }
+    return true;
+  };
+
+  validateActions = () => {
+    const { actions } = this.state;
+    const errors = [];
+    for (let i = 0; i < actions.length; i++) {
+      for (let j = i + 1; j < actions.length; j++) {
+        if (actions[i].type === actions[j].type && actions[i].type !== 'macro') {
+          errors.push(`You can have only action of type "${actions[i].type}"`);
+        }
+      }
+      const action = actions[i];
+      switch (action.type) {
+        case 'agent':
+          if (typeof action.options.agent === 'undefined') {
+            errors.push(agentPhrases.get('agent.follow_up.error_agent'));
+          }
+          break;
+        case 'agent_team':
+          if (typeof action.options.agent_team === 'undefined') {
+            errors.push(agentPhrases.get('agent.follow_up.error_agent_team'));
+          }
+          break;
+        case 'reply':
+          if (typeof action.options.reply_text === 'undefined') {
+            errors.push(agentPhrases.get('agent.follow_up.error_reply'));
+          }
+          break;
+        case 'note':
+          if (typeof action.options.reply_text === 'undefined') {
+            errors.push(agentPhrases.get('agent.follow_up.error_note'));
+          }
+          break;
+        case 'hold':
+          if (typeof action.options.is_hold === 'undefined') {
+            errors.push(agentPhrases.get('agent.follow_up.error_hold'));
+          }
+          break;
+        case 'status':
+          if (typeof action.options.status === 'undefined') {
+            errors.push(agentPhrases.get('agent.follow_up.error_status'));
+          }
+          break;
+        case 'macro':
+          if (typeof action.options.macroId === 'undefined') {
+            errors.push(agentPhrases.get('agent.follow_up.error_macro'));
+          }
+          break;
+        default:
+          throw Error('Unknown type');
+      }
+    }
+    return errors;
   };
 
   updateActions = (actions) => {
@@ -218,6 +303,7 @@ class FollowUpForm extends React.Component {
     if (this.state.errors.length === 0) {
       return null;
     }
+    console.log(this.state.errors);
     return (
       <div className="errors">
         <ul>
@@ -254,6 +340,7 @@ class FollowUpForm extends React.Component {
         <Button
           size="medium"
           onClick={this.createFollowUp}
+          loading={this.state.saving}
         >
           {agentPhrases.get('agent.general.create')}
         </Button>

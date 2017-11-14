@@ -112,7 +112,7 @@ class Action extends React.Component {
     )));
     return (
       <div>
-        <Label>Agent</Label>
+        <Label>{agentPhrases.get('agent.general.agent')}</Label>
         <Select
           name="agent"
           options={agents}
@@ -135,7 +135,7 @@ class Action extends React.Component {
     )));
     return (
       <div>
-        <Label>Team</Label>
+        <Label>{agentTeams.get('agent.general.team')}</Label>
         <Select
           name="agent_team"
           options={agentTeams}
@@ -156,7 +156,7 @@ class Action extends React.Component {
     const { action } = this.props;
     return (
       <div>
-        <span>Team</span><br />
+        <span>Hold</span><br />
         <Radio
           name="is_hold"
           checked={action.options.is_hold === 0}
@@ -186,7 +186,7 @@ class Action extends React.Component {
     ];
     return (
       <div>
-        <Label>Status</Label>
+        <Label>{agentPhrases.get('agent.general.status')}</Label>
         <Select
           name="status"
           options={options}
@@ -206,7 +206,7 @@ class Action extends React.Component {
     ));
     return (
       <div>
-        <Label>Team</Label>
+        <Label>{agentPhrases.get('agent.general.macro')}</Label>
         <Select
           name="macroId"
           options={macros}
