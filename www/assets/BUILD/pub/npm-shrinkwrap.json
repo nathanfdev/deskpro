@@ -13,9 +13,9 @@
       }
     },
     "@deskpro/react-components": {
-      "version": "1.2.1",
-      "resolved": "https://registry.npmjs.org/@deskpro/react-components/-/react-components-1.2.1.tgz",
-      "integrity": "sha1-2KRgbDmpIxCo18M2lFiqTqfSlis=",
+      "version": "1.2.3",
+      "resolved": "https://registry.npmjs.org/@deskpro/react-components/-/react-components-1.2.3.tgz",
+      "integrity": "sha1-1+UgHaOVCOZDfJPKo5NjEIz4EYo=",
       "requires": {
         "bourbon": "4.3.4",
         "bourbon-neat": "2.1.0",
