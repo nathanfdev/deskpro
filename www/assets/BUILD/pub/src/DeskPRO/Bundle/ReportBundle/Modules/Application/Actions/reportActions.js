@@ -1,6 +1,7 @@
 import { createAction } from 'DeskPRO/Component/Ampliflux';
 import { repository, api } from 'DeskPRO/Bundle/AppBundle/DAL';
 import { setCollection, addToCollection } from 'DeskPRO/Bundle/AppBundle/Modules/RecordsStore';
+import Immutable from 'immutable';
 
 export const reportsLoaded = createAction(
   'REPORTS_LOADED'
@@ -112,6 +113,33 @@ export const saveAndRun = createAction(
     return promise.success((response) => { if (response.id) { dispatch(runReport(response.id, data)); } });
   }
 );
+
+export const parseQuery = createAction(
+  'REPORT_PARSE_QUERY',
+  (report, query) => dispatch => new Promise((resolve) => {
+    const dataToSend = {
+      query:       `DISPLAY TABLE ${query}`,
+      parts:       {},
+      currentType: 'query',
+      newType:     'builder'
+    };
+
+    const config = {
+      headers: {
+        'X-DeskPRO-API-Token':     window.DP_API_TOKEN,
+        'X-DeskPRO-Session-ID':    window.DP_SESSION_ID,
+        'X-DeskPRO-Request-Token': window.DP_REQUEST_TOKEN,
+      }
+    };
+
+    const promise = api.sendPost('DP_API_OLD/reports/widget/parse', dataToSend, config);
+    promise.success((response) => {
+      const newReport = report.set('query_parts', Immutable.fromJS(response.parts));
+      dispatch(addToCollection('Reports', 'all', { [report.get('id')]: newReport }, [report.get('id')]));
+      resolve(newReport);
+    });
+  }
+));
 
 export const loadGroupParams = createAction(
   'REPORTS_LOAD_GROUP_PARAMS',

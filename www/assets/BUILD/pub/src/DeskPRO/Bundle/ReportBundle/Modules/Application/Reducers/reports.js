@@ -24,6 +24,11 @@ export default createReducer(initialState, {
   [actions.newReport]: async({
     success: (state, payload) => state.set('currentReport', Immutable.fromJS(payload)),
   }),
+  [actions.parseQuery]: async({
+    start:   state => state.set('reportLoading', true),
+    success: (state, payload) => state.set('currentReport', payload),
+    done:    state => state.set('reportLoading', false),
+  }),
   [actions.reportsLoaded]:   state => state.set('reportsLoaded', true),
   [actions.loadGroupParams]: async({
     success: setFullPayload('groupParams'),

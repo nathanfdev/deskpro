@@ -176,6 +176,9 @@
   .report-description {
     overflow: auto;
   }
+  .report-query {
+    min-height: 200px;
+  }
   .title-input {
     font-family: $font-stack;
   }

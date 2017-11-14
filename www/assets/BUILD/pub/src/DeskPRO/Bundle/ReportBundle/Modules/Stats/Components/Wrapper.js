@@ -6,7 +6,7 @@ import ListHeader from './List/ListHeader';
 import List from './List/List';
 import Edit from './Edit';
 import Run from './Run';
-import { loadReport, saveReport, newReport, runReport, saveAndRun } from '../../Application/Actions/reportActions';
+import { loadReport, saveReport, newReport, runReport, saveAndRun, parseQuery } from '../../Application/Actions/reportActions';
 import { allReportsSelector, allReportsLabelsSelector } from '../Selectors/reports';
 import { regex, activateLabel, transformLabels, transformReportData } from './helper';
 
@@ -55,6 +55,7 @@ class Wrapper extends React.Component {
     this.onSubmit                   = this.onSubmit.bind(this);
     this.onAddClick                 = this.onAddClick.bind(this);
     this.filter                     = this.filter.bind(this);
+    this.parseReportQuery           = this.parseReportQuery.bind(this);
   }
 
   componentWillReceiveProps(props) {
@@ -145,6 +146,10 @@ class Wrapper extends React.Component {
     }
   }
 
+  parseReportQuery(report, query) {
+    this.props.dispatch(parseQuery(report, query));
+  }
+
   filter(value) {
     let result = true;
 
@@ -210,6 +215,7 @@ class Wrapper extends React.Component {
         </div>
         { currentReport.get('query_parts') && mode === 'edit'
           ? <Edit
+            parseQuery={this.parseReportQuery}
             reportLoading={reportLoading}
             labels={labels}
             report={currentReport}
