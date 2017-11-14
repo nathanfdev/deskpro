@@ -220,7 +220,6 @@ class FollowUpForm extends React.Component {
           saving: false,
           errors
         });
-        console.log(error);
       });
     } else {
       this.setState({
@@ -305,7 +304,6 @@ class FollowUpForm extends React.Component {
     if (this.state.errors.length === 0) {
       return null;
     }
-    console.log(this.state.errors);
     return (
       <div className="errors">
         <ul>

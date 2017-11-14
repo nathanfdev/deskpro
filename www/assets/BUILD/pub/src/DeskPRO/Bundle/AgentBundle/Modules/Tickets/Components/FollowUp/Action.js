@@ -19,10 +19,6 @@ class Action extends React.Component {
   constructor(props) {
     super(props);
 
-    this.state = {
-      replyModalOpen: false
-    };
-
     this.types = [
       { value: 'agent', label: 'Assign Agent' },
       { value: 'agent_team', label: 'Assign Team' },
@@ -60,22 +56,9 @@ class Action extends React.Component {
         mode={mode}
         ref={(c) => { this.editor = c; }}
         value={this.props.action.options.reply_text}
-        closeModal={this.closeEditReply}
         onChange={this.onEditorChange}
       />
     );
-  };
-
-  closeEditReply = () => {
-    this.setState({
-      replyModalOpen: false,
-    });
-  };
-
-  editReply = () => {
-    this.setState({
-      replyModalOpen: true,
-    });
   };
 
   updateType = (type) => {
