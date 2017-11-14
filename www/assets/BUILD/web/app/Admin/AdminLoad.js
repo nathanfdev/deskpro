@@ -181,6 +181,8 @@ define([
   'Admin/GuidesSettings/Ctrl/GuidesSettings',
   'Admin/RoundRobin/Ctrl/List',
   'Admin/RoundRobin/Ctrl/Edit',
+  'Admin/ChatRoundRobin/Ctrl/List',
+  'Admin/ChatRoundRobin/Ctrl/Edit',
   'Admin/Icons/Ctrl/List',
   'Admin/CustomFields/Ctrl/Edit',
   'Admin/AntiAbuse/Ctrl/CaptchaSettings',
