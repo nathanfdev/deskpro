@@ -5,7 +5,7 @@ define [
   BaseListEdit,
   ReportEditFormMapper
 )  ->
-  class ReportBuilderAbstract extends BaseListEdit
+  class ReportBuiltInAbstract extends BaseListEdit
     @$inject = ['Api', '$q']
 
     ###

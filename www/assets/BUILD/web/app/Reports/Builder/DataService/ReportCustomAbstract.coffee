@@ -5,7 +5,7 @@ define [
   BaseListEdit,
   ReportEditFormMapper
 )  ->
-  class ReportBuilderCustom extends BaseListEdit
+  class ReportCustomAbstract extends BaseListEdit
     @$inject = ['Api', '$q']
 
     getUrlPart: ->
