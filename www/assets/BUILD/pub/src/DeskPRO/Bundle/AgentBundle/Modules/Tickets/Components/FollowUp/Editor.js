@@ -3,9 +3,8 @@ import PropTypes from 'prop-types';
 
 export default class Editor extends React.Component {
   static propTypes = {
-    closeModal: PropTypes.func,
-    value:      PropTypes.string,
-    onChange:   PropTypes.func,
+    value:    PropTypes.string,
+    onChange: PropTypes.func, // eslint-disable-line react/no-unused-prop-types
   };
 
   static defaultProps = {
@@ -39,12 +38,6 @@ export default class Editor extends React.Component {
       });
     }
   }
-
-  save = () => {
-    const content = this.redactor.getCode();
-    this.props.onChange(content);
-    this.props.closeModal();
-  };
 
   render() {
     return (

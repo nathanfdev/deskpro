@@ -220,7 +220,6 @@ class FollowUpForm extends React.Component {
           saving: false,
           errors
         });
-        console.log(error);
       });
     } else {
       this.setState({
@@ -235,7 +234,7 @@ class FollowUpForm extends React.Component {
     const errors = [];
     for (let i = 0; i < actions.length; i++) {
       for (let j = i + 1; j < actions.length; j++) {
-        if (actions[i].type === actions[j].type && actions[i].type !== 'macro') {
+        if (actions[i].type === actions[j].type && actions[i].type !== 'run_macro') {
           errors.push(`You can have only action of type "${actions[i].type}"`);
         }
       }
@@ -271,7 +270,7 @@ class FollowUpForm extends React.Component {
             errors.push(agentPhrases.get('agent.follow_up.error_status'));
           }
           break;
-        case 'macro':
+        case 'run_macro':
           if (typeof action.options.macroId === 'undefined') {
             errors.push(agentPhrases.get('agent.follow_up.error_macro'));
           }
@@ -305,7 +304,6 @@ class FollowUpForm extends React.Component {
     if (this.state.errors.length === 0) {
       return null;
     }
-    console.log(this.state.errors);
     return (
       <div className="errors">
         <ul>
