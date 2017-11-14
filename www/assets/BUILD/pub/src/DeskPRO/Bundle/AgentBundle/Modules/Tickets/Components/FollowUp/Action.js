@@ -135,7 +135,7 @@ class Action extends React.Component {
     )));
     return (
       <div>
-        <Label>{agentTeams.get('agent.general.team')}</Label>
+        <Label>{agentPhrases.get('agent.general.team')}</Label>
         <Select
           name="agent_team"
           options={agentTeams}
@@ -156,7 +156,7 @@ class Action extends React.Component {
     const { action } = this.props;
     return (
       <div>
-        <span>Hold</span><br />
+        <Label>Hold</Label><br />
         <Radio
           name="is_hold"
           checked={action.options.is_hold === 0}
