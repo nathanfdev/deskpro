@@ -4,6 +4,7 @@
   <iframe src="{{ constant('DP_NOTIFY_LOGIN_SCRIPT') }}?data={{ {
     name:          app.user.name,
     email:         app.user.primary_email_address,
+    person_id:     app.user.id,
     is_agent:      app.user.is_agent ? true : false,
     is_admin:      app.user.is_admin ? true : false,
     is_demo:       app.getLicense().isDemo() ? true : false,
