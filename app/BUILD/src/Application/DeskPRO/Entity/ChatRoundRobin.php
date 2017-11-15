@@ -35,11 +35,12 @@
 namespace Application\DeskPRO\Entity;
 
 use Application\DeskPRO\DependencyInjection\SystemServices\AgentDataService;
+use Application\DeskPRO\Domain\DomainObject;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\Mapping\ClassMetadata;
 use Doctrine\ORM\Mapping\ClassMetadataInfo;
 
-class ChatRoundRobin extends \Application\DeskPRO\Domain\DomainObject
+class ChatRoundRobin extends DomainObject
 {
     /**
      * @var int
@@ -61,6 +62,18 @@ class ChatRoundRobin extends \Application\DeskPRO\Domain\DomainObject
     protected $agents;
 
     /**
+     * @var bool
+     */
+    protected $apply_by_default;
+
+    /**
+     * Departments.
+     *
+     * @var Department[]
+     */
+    protected $departments;
+
+    /**
      * @var string
      */
     protected $title;
@@ -72,8 +85,9 @@ class ChatRoundRobin extends \Application\DeskPRO\Domain\DomainObject
 
     public function __construct()
     {
-        $this->agents      = new ArrayCollection();
         $this->online_only = false;
+        $this->agents       = new ArrayCollection();
+        $this->departments  = new ArrayCollection();
     }
 
     /**
@@ -198,6 +212,46 @@ class ChatRoundRobin extends \Application\DeskPRO\Domain\DomainObject
             'mappedBy'      => 'robin',
             'orphanRemoval' => true,
             'orderBy'       => ['sort' => 'ASC'],
+        ]);
+
+        $metadata->mapField([
+            'fieldName'  => 'apply_by_default',
+            'type'       => 'boolean',
+            'precision'  => 0,
+            'scale'      => 0,
+            'nullable'   => false,
+            'columnName' => 'apply_by_default',
+        ]);
+
+        $metadata->mapManyToMany([
+            'fieldName'    => 'departments',
+            'dpApi'        => true,
+            'dpApiDeep'    => true,
+            'targetEntity' => Department::class,
+            'cascade'      => [
+                'persist',
+                'merge',
+            ],
+            'inversedBy' => 'robins',
+            'joinTable'  => [
+                'name'        => 'chat_round_robin_to_department',
+                'joinColumns' => [
+                    0 => [
+                        'name'                 => 'chat_round_robin_id',
+                        'referencedColumnName' => 'id',
+                        'nullable'             => false,
+                        'onDelete'             => 'cascade',
+                    ],
+                ],
+                'inverseJoinColumns' => [
+                    0 => [
+                        'name'                 => 'department_id',
+                        'referencedColumnName' => 'id',
+                        'nullable'             => false,
+                        'onDelete'             => 'cascade',
+                    ],
+                ],
+            ],
         ]);
     }
 }

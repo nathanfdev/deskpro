@@ -115,9 +115,17 @@ class ChatRoundRobinController extends AbstractController implements ProtectedCo
         $data = $this->in->getAll('req');
         unset($data['next']);
 
-        $agents = $data['agents'];
+        $agents      = $data['agents'];
+        $departments = $data['departments'];
+
         unset($data['agents']);
+        unset($data['departments']);
+
         $rr->fromArray($data);
+        $rr->agents->clear();
+        $rr->departments->clear();
+
+        $rep->setDepartments($rr, $departments);
         $rep->setAgents($rr, $agents);
 
         $this->em->flush();

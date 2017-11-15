@@ -28,7 +28,7 @@
                                 <div class="inner-group">
                                     <label>
                                         <input type="checkbox" ng-model="EditCtrl.robin.online_only" />
-                                        {{ phrase('adm.round_robins.online_description') }}
+                                        &nbsp;{{ phrase('adm.round_robins.online_description') }}
                                     </label>
                                 </div>
                             </div>
@@ -93,6 +93,43 @@
                                     </optgroup>
                                 </select>
                                 &nbsp;<button class="btn btn-default" type="button" ng-click="EditCtrl.handleBulk()">Add</button>
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <div class="col-lg-3">
+                                <h3>{{ phrase('adm.round_robins.apply_title') }}</h3>
+                            </div>
+                            <div class="col-lg-9">
+                                <div class="inner-group">
+                                    <label>
+                                        <input name="when_to_apply" type="radio" value="1" ng-model="EditCtrl.robin.apply_by_default" />
+                                        &nbsp;{{ phrase('adm.round_robins.apply_by_default') }}
+                                    </label><br />
+                                    <label>
+                                        <input name="when_to_apply" type="radio" value="0" ng-model="EditCtrl.robin.apply_by_default" />
+                                        &nbsp;{{ phrase('adm.round_robins.apply_to_departments') }}
+                                    </label><br />
+                                    <ul class="dp-item-list checkbox-list" ui-sortable="EditCtrl.sortedListOptions"  ng-model="EditCtrl.robin.departments"
+                                        style="overflow-y: auto; max-height: {{ 20 * 24 }}px;min-width: 250px;max-width:400px;" ng-show="EditCtrl.robin.apply_by_default == 0">
+
+                                        <li ng-repeat="dep in EditCtrl.deps">
+                                            <label style="width: 100%;padding-left:20px;position: relative;white-space: nowrap;">
+                                                <input type="checkbox" ng-checked="EditCtrl.robin.departments.indexOf(dep) > -1"
+                                                       ng-click="EditCtrl.handleDepartment(dep);" />
+
+                                                <span>
+                                                {{ ng_var('dep.title') }}
+                                            </span>
+                                                <span ng-if="EditCtrl.robin.next === dep" class="label label-default">
+                                                {{ phrase('adm.round_robins.next') }}
+                                            </span>
+                                            </label>
+
+                                        </li>
+
+                                    </ul>
+                                </div>
                             </div>
                         </div>
 

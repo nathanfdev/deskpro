@@ -41,14 +41,14 @@ use Doctrine\ORM\Mapping\ClassMetadataInfo;
 class ChatRoundRobinAgent extends DomainObject
 {
     /**
-     * @var \Application\DeskPRO\Entity\ChatRoundRobin
+     * @var ChatRoundRobin
      */
     protected $robin;
 
     /**
      * Next agent in queue.
      *
-     * @var \Application\DeskPRO\Entity\Person
+     * @var Person
      */
     protected $agent;
 

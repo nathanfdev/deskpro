@@ -45,17 +45,22 @@ define ['Admin/Main/Ctrl/Base', 'DeskPRO/Util/Arrays'], (Admin_Ctrl_Base, Arrays
 
     mapFormModel: (model) ->
       @robin.agents = []
+      @robin.departments = []
       return if !model?
 
       @robin.id = model.id
       @robin.title = model.title
       @robin.online_only = model.online_only
+      @robin.apply_by_default = model.apply_by_default
 
       @serviceAgents.get(model.next.id).then((agent) => @robin.next = agent) if model.next?
       # remap agents to list models
       promises = []
       model.agents.map (data) =>
         promise = @serviceAgents.get(data.id).then (agent) => @robin.agents.push agent
+        promises.push promise
+      model.departments.map (data) =>
+        promise = @serviceDeps.get(data.id).then (dep) => @robin.departments.push dep
         promises.push promise
 
       @$q.all(promises).then => @sortAgents()
@@ -77,6 +82,13 @@ define ['Admin/Main/Ctrl/Base', 'DeskPRO/Util/Arrays'], (Admin_Ctrl_Base, Arrays
       return if @agents.indexOf(agent) == -1
       index = @robin.agents.indexOf agent
       if index == -1 then @robin.agents.unshift agent else @robin.agents.splice(index, 1)
+
+
+
+    handleDepartment: (department) ->
+      return if @deps.indexOf(department) == -1
+      index = @robin.departments.indexOf department
+      if index == -1 then @robin.departments.unshift department else @robin.departments.splice(index, 1)
 
 
 

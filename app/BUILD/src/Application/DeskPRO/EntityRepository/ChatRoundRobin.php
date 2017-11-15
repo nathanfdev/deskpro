@@ -34,6 +34,7 @@
 
 namespace Application\DeskPRO\EntityRepository;
 
+use Application\DeskPRO\Entity\ChatRoundRobin as ChatRoundRobinEntity;
 use Application\DeskPRO\Entity\ChatRoundRobinAgent as ChatRoundRobinAgentEntity;
 
 class ChatRoundRobin extends AbstractEntityRepository
@@ -42,22 +43,37 @@ class ChatRoundRobin extends AbstractEntityRepository
     protected $availableAgents = null;
 
     /**
-     * @param \Application\DeskPRO\Entity\ChatRoundRobin $robin
-     * @param array                                      $agents
+     * @param ChatRoundRobinEntity $robin
+     * @param array                $agents
      */
-    public function setAgents(\Application\DeskPRO\Entity\ChatRoundRobin $robin, array $agents = [])
+    public function setAgents(ChatRoundRobinEntity $robin, array $agents = [])
     {
-        $robin->agents->clear();
         $this->_em->flush();
         $sort = 0;
 
         foreach ($agents as $agentData) {
             $agentRef        = new ChatRoundRobinAgentEntity();
             $agentRef->robin = $robin;
-            $agentRef->agent = $this->_em->getReference(Person::class, $agentData['id']);
+            $agentRef->agent = $this->_em->getReference('DeskPRO:Person', $agentData['id']);
             $this->_em->persist($agentRef);
             $agentRef['sort'] = ++$sort;
             $robin->agents->add($agentRef);
+        }
+
+        $this->_em->flush();
+    }
+
+    /**
+     * @param ChatRoundRobinEntity $robin
+     * @param array                $departments
+     */
+    public function setDepartments(ChatRoundRobinEntity $robin, array $departments = [])
+    {
+        $this->_em->flush();
+
+        foreach ($departments as $departmentId) {
+            $department = $this->_em->getReference('DeskPRO:Department', $departmentId);
+            $robin->departments->add($department);
         }
 
         $this->_em->flush();
