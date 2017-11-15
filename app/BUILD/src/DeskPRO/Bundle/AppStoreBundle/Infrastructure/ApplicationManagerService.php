@@ -73,7 +73,7 @@ class ApplicationManagerService
 
     /**
      * @param AppInstance $instance
-     * @param string $strategy
+     * @param string      $strategy
      */
     public function remove(AppInstance $instance, $strategy)
     {
@@ -82,9 +82,9 @@ class ApplicationManagerService
         $blobs = [];
         if ($strategy === 'instance') {
             $entity = $instance;
-        } else if ($strategy === 'last-instance') {
+        } elseif ($strategy === 'last-instance') {
             $entity = $instance->getApp();
-            $blobs = $instance->getApp()->getAssets()->map(function (AppAssetBlob $asset) {
+            $blobs  = $instance->getApp()->getAssets()->map(function (AppAssetBlob $asset) {
                 return $asset->getBlob();
             })->toArray();
         }
@@ -104,20 +104,25 @@ class ApplicationManagerService
     }
 
     /**
+     * Returns the name of the strategy that must be applied when removing $instance.
+     *
+     * When this instance is the last one we want to also remove the app itself
+     *
      * @param AppInstance $instance
+     *
      * @return string
      */
     public function getRemoveStrategy(AppInstance $instance)
     {
-        $appId = $instance->getApplicationId();
+        $appId      = $instance->getApplicationId();
         $instanceId = $instance->getId();
-        if (! $appId || !$instanceId) {
+        if (!$appId || !$instanceId) {
             return 'none';
         }
 
         // perhaps should check that app instance is still linked to App in the db, but at this point we can
         // be pretty certain of this fact
-        $qb = $this->em->createQueryBuilder();
+        $qb    = $this->em->createQueryBuilder();
         $query = $qb->select('i.id')
             ->from(AppInstance::class, 'i')
             ->where('i.app = :appId')
@@ -131,23 +136,8 @@ class ApplicationManagerService
         if (is_null($otherId)) {
             return 'last-instance';
         }
+
         return 'instance';
-    }
-
-    public function install( Domain\AppBundle $bundle)
-    {
-        $manifestReader = new Infrastructure\AppManifestReader();
-        $manifest       = $manifestReader->readManifestFromJson($bundle->getManifestAsString());
-
-        $app = $this->em->getRepository(App::class)->findOneBy(['name' => $manifest->getName()]);
-
-        if ($app && $manifest->isSingle() && $app->getInstances()->count() > 0) {
-            return $this->createOrUpdateAppEntity($bundle);
-        }
-
-        $appEntity      = $this->createOrUpdateAppEntity($bundle);
-        $this->createInstance($appEntity);
-        return $appEntity;
     }
 
     /**
@@ -219,6 +209,7 @@ class ApplicationManagerService
     {
         $instance = new AppInstance();
         $instance
+            ->setIsInstalled(false)
             ->setApp($app)
             ->setName($app->getManifest()->getTitle())
             ->setSettings($settings)

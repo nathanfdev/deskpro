@@ -51,7 +51,9 @@ class AppParamConverter implements ParamConverterInterface
 
     public function apply(Request $request, Configuration\ParamConverter $configuration)
     {
-        $attributeName = $configuration->getName();
+        $options       = $configuration->getOptions();
+        $paramName     = $configuration->getName();
+        $attributeName = is_array($options) && array_key_exists('attribute', $options) ? $options['attribute'] : $paramName;
         $from          = $request->attributes->get($attributeName);
 
         if (empty($from)) {
@@ -59,7 +61,7 @@ class AppParamConverter implements ParamConverterInterface
         }
 
         $application = $this->convert($from);
-        $request->attributes->set($attributeName, $application);
+        $request->attributes->set($paramName, $application);
 
         return true;
     }
@@ -71,8 +73,8 @@ class AppParamConverter implements ParamConverterInterface
      */
     private function convert($from)
     {
-        $from = urldecode($from);
-        $appRef  = $this->identifierParser->parseApplicationRef($from);
+        $from   = urldecode($from);
+        $appRef = $this->identifierParser->parseApplicationRef($from);
         if (!is_null($appRef)) {
             return $this->finder->findByName($from);
         }

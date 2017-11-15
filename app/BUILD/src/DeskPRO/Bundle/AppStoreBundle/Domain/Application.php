@@ -30,8 +30,6 @@ namespace DeskPRO\Bundle\AppStoreBundle\Domain;
 
 /**
  * Representation of a Deskpro app store application.
- *
- * @deprecated Use entity class instead
  */
 interface Application
 {
