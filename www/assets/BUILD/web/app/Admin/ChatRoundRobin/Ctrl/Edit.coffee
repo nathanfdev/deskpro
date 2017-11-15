@@ -52,6 +52,7 @@ define ['Admin/Main/Ctrl/Base', 'DeskPRO/Util/Arrays'], (Admin_Ctrl_Base, Arrays
       @robin.title = model.title
       @robin.online_only = model.online_only
       @robin.apply_by_default = model.apply_by_default
+      @robin.routing_type = model.routing_type
 
       @serviceAgents.get(model.next.id).then((agent) => @robin.next = agent) if model.next?
       # remap agents to list models

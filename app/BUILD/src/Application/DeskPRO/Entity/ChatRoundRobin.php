@@ -42,6 +42,8 @@ use Doctrine\ORM\Mapping\ClassMetadataInfo;
 
 class ChatRoundRobin extends DomainObject
 {
+    const ROUTING_RR             = 0;
+    const ROUTING_LEAST_UTILIZED = 1;
     /**
      * @var int
      */
@@ -67,6 +69,11 @@ class ChatRoundRobin extends DomainObject
     protected $apply_by_default;
 
     /**
+     * @var int
+     */
+    protected $routing_type;
+
+    /**
      * Departments.
      *
      * @var Department[]
@@ -85,9 +92,10 @@ class ChatRoundRobin extends DomainObject
 
     public function __construct()
     {
-        $this->online_only = false;
         $this->agents       = new ArrayCollection();
         $this->departments  = new ArrayCollection();
+        $this->online_only  = false;
+        $this->routing_type = 0;
     }
 
     /**
@@ -186,6 +194,12 @@ class ChatRoundRobin extends DomainObject
             'fieldName'  => 'online_only',
             'columnName' => 'online_only',
             'type'       => 'boolean',
+            'nullable'   => false,
+        ]);
+        $metadata->mapField([
+            'fieldName'  => 'routing_type',
+            'columnName' => 'routing_type',
+            'type'       => 'integer',
             'nullable'   => false,
         ]);
 
