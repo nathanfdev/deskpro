@@ -239,14 +239,6 @@ class AppInstance implements Domain\ApplicationInstance, EntityInterface, Notify
     }
 
     /**
-     * @return ArrayCollection|AppInstance[]
-     */
-    public function getInstances()
-    {
-        return $this->instances;
-    }
-
-    /**
      * @return mixed
      */
     public function getIsInstalled()
@@ -255,10 +247,12 @@ class AppInstance implements Domain\ApplicationInstance, EntityInterface, Notify
     }
 
     /**
-     * @param mixed $isInstalled
+     * @param boolean $isInstalled
+     * @return AppInstance
      */
     public function setIsInstalled( $isInstalled )
     {
         $this->isInstalled = $isInstalled;
+        return $this;
     }
 }
