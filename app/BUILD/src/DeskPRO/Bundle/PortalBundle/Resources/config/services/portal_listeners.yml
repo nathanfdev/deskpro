@@ -105,6 +105,13 @@ services:
     tags:
       - { name: kernel.event_subscriber}
 
+  user_disabled.listener:
+    class: DeskPRO\Bundle\PortalBundle\EventListener\UserDisabledListener
+    arguments:
+      - "@security.token_storage"
+    tags:
+      - { name: kernel.event_subscriber}
+
   controller_name_converter:
       class: DeskPRO\Bundle\PortalBundle\HttpKernel\ControllerNameParser
       tags: [{name: monolog.logger, channel: request}]
