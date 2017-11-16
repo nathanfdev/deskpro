@@ -106,8 +106,8 @@ class Run extends React.Component {
       <div className="ui form">
         <Header content={title} level={3} />
         <div className="inline fields">
-          <div className="eight wide field">
-            <label htmlFor="runAs">Run this report as</label>
+          <div className="twelve wide field display-types">
+            <label htmlFor="displayTypes">Available display types</label>
             <MultiSelect
               toggleAll={false}
               choices={choices}

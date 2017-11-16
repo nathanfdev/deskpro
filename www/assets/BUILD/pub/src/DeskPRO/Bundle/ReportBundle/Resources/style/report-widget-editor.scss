@@ -10,6 +10,15 @@
 
   .ui.form {
     padding: 10px;
+
+    .display-types .multi-select .scrollarea-content > div {
+      display: inline-block;
+      margin-left: 10px;
+      &:first-child {
+        margin-left: 0;
+      }
+    }
+
     .ui.header {
       &:first-child {
         margin: calc(2rem - .14285714em) 0 1rem;
