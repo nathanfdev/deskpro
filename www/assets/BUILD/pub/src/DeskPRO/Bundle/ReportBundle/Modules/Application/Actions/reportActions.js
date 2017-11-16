@@ -195,7 +195,12 @@ export const saveReport = createAction(
       promise = api.sendPut('DP_API_OLD/reports/widget', dataToSend, config);
     }
 
-    return promise.success((response) => { if (response.id) { dispatch(loadReport(response.id)); } });
+    return promise.success((response) => {
+      if (response.id) {
+        dispatch(loadReport(response.id));
+        dispatch(setCollection('ReportsLabels', 'all', response.labels));
+      }
+    });
   }
 );
 

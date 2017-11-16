@@ -46,6 +46,14 @@ class ReportsWidgetController extends AbstractController
      */
     public function listAction()
     {
+        return $this->createApiResponse($this->getReportsAndLabels());
+    }
+
+    /**
+     * @return array
+     */
+    protected function getReportsAndLabels()
+    {
         /** @var ReportWidgetRepository $repository */
         $repository = $this->em->getRepository(ReportWidget::class);
         $reports    = $repository->getAllReports();
@@ -53,6 +61,7 @@ class ReportsWidgetController extends AbstractController
             'reports' => [],
             'labels'  => [],
         ];
+
         $translator = $this->container->getTranslator();
         $i          = 0;
         foreach ($reports as $report) {
@@ -73,9 +82,10 @@ class ReportsWidgetController extends AbstractController
             $datum['labels']      = $translatedLabels;
             $apiData['reports'][] = $datum;
         }
+
         $apiData['labels'] = array_values($apiData['labels']);
 
-        return $this->createApiResponse($apiData);
+        return $apiData;
     }
 
     /**
@@ -166,9 +176,12 @@ class ReportsWidgetController extends AbstractController
                 $reportsWidget->saveQuery($report);
             }
 
+            $apiData = $this->getReportsAndLabels();
+
             return $this->createApiResponse([
                 'success' => true,
                 'id'      => $report->getId(),
+                'labels'  => $apiData['labels'],
             ]);
         }
     }

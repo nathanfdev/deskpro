@@ -8,7 +8,7 @@ import Edit from './Edit';
 import Run from './Run';
 import { loadReport, saveReport, newReport, runReport, saveAndRun, parseQuery } from '../../Application/Actions/reportActions';
 import { allReportsSelector, allReportsLabelsSelector } from '../Selectors/reports';
-import { regex, activateLabel, transformLabels, transformReportData } from './helper';
+import { regex, activateLabel, transformLabels, transformReportData, countActiveLabels } from './helper';
 
 @connect(state => ({
   reports:       allReportsSelector(state),
@@ -140,9 +140,15 @@ class Wrapper extends React.Component {
   }
 
   setLabels(props) {
-    if (props.labels && this.state.labels.size < 1) {
-      const newLabels = transformLabels(props.labels);
-      this.setState({ labels: newLabels, activeLabels: 0 });
+    if (props.labels) {
+      let newLabels = transformLabels(props.labels);
+      this.state.labels.forEach((label) => {
+        const entry = newLabels.findEntry(newLabel => newLabel.get('value') === label.get('value'));
+        if (entry && entry[1] && label.get('active')) {
+          newLabels = newLabels.setIn([entry[0], 'active'], true);
+        }
+      });
+      this.setState({ labels: newLabels, activeLabels: countActiveLabels(newLabels) });
     }
   }
 
