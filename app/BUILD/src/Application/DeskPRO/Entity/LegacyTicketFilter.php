@@ -282,6 +282,14 @@ class LegacyTicketFilter extends DomainObject
             $this->_searcher = $searcher;
         }
 
+        if ($this->id) {
+            $note = 'filter:'.$this->id;
+            if ($this->sys_name) {
+                $note .= ' ('.$this->sys_name.')';
+            }
+            $this->_searcher->setQueryNote($note);
+        }
+
         return $searcher;
     }
 
