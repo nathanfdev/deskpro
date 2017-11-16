@@ -146,6 +146,7 @@ class ActionsFactory
                     $options['remove_labels'] = Strings::explodeTrim(',', $value['labels']);
                 }
                 break;
+            case 'note':
             case 'reply':
                 if (empty($value['reply_text']) || !trim(strip_tags($value['reply_text']))) {
                     return;
@@ -154,6 +155,7 @@ class ActionsFactory
                 $options['attach_ids'] = !empty($value['attach_ids']) && is_array($value['attach_ids']) ? $value['attach_ids'] : [];
                 $options['reply_pos']  = !empty($value['reply_pos']) ? $value['reply_pos'] : 'prepend';
                 $options['person_id']  = !empty($value['person_id']) && $value['person_id'] ? $value['person_id'] : null;
+                $options['is_note']    = !empty($value['is_note']) && $value['is_note'];
                 break;
             case 'reply_snippet':
                 if (@$value['snippet_id']) {

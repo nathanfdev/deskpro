@@ -36,6 +36,9 @@ namespace Application\InstallBundle\Data\DefaultData;
 
 use Application\DeskPRO\WorkerProcess\Job;
 
+/**
+ * Class WorkerJobsData.
+ */
 class WorkerJobsData extends AbstractDefaultData
 {
     public function runInstall()
@@ -179,6 +182,15 @@ class WorkerJobsData extends AbstractDefaultData
             'description'  => 'Sends reminders to users who created a ticket but have not yet validated their email',
             'job_class'    => Job\TicketReminders::class,
             'run_interval' => Job\TicketReminders::DEFAULT_INTERVAL,
+        ];
+
+        $jobs[] = [
+            'id'           => 'ticket_follow_ups',
+            'worker_group' => 'ticket_follow_ups',
+            'title'        => 'Ticket Follow Ups',
+            'description'  => 'Basically like macros except they run on a schedule, e.g. automatically add a reply after 3 days.',
+            'job_class'    => Job\TicketFollowUps::class,
+            'run_interval' => Job\TicketFollowUps::DEFAULT_INTERVAL,
         ];
 
         $jobs[] = [

@@ -205,8 +205,6 @@ export class AgentOnboarding extends React.Component {
   };
 
   addSteps = (steps) => {
-    const joyride = this.joyride;
-
     let stepsArray = steps;
     if (!Array.isArray(stepsArray)) {
       stepsArray = [steps];
@@ -225,7 +223,7 @@ export class AgentOnboarding extends React.Component {
 
     this.setState((currentState) => {
       const result = {};
-      result.steps = currentState.steps.concat(joyride.parseSteps(stepsArray));
+      result.steps = currentState.steps.concat(stepsArray);
       return result;
     });
     return true;
@@ -236,7 +234,7 @@ export class AgentOnboarding extends React.Component {
   };
 
   resumeOnboarding = () => {
-    this.joyride.toggleTooltip(true, this.state.currentStep);
+    this.joyride.toggleTooltip({ show: true, index: this.state.currentStep, action: 'jump' });
   };
 
   waitFor = (waitFor, open) => {

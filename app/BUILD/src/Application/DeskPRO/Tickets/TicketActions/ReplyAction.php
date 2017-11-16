@@ -56,6 +56,11 @@ class ReplyAction extends AbstractReplyAction
     protected $is_html = false;
 
     /**
+     * @var bool
+     */
+    protected $is_note = false;
+
+    /**
      * @var int|null
      */
     protected $person_id = null;
@@ -67,14 +72,16 @@ class ReplyAction extends AbstractReplyAction
      * @param array  $attach_ids
      * @param null   $reply_pos
      * @param bool   $is_html
+     * @param bool   $is_note
      * @param null   $person_id
      */
-    public function __construct($reply_text, array $attach_ids = [], $reply_pos = null, $is_html = false, $person_id = null)
+    public function __construct($reply_text, array $attach_ids = [], $reply_pos = null, $is_html = false, $is_note = false, $person_id = null)
     {
         $this->reply_text = $reply_text;
         $this->attach_ids = $attach_ids;
         $this->reply_pos  = $reply_pos;
         $this->is_html    = $is_html;
+        $this->is_note    = $is_note;
         $this->person_id  = $person_id;
     }
 
@@ -110,6 +117,7 @@ class ReplyAction extends AbstractReplyAction
 
         $message = new TicketMessage();
         $message->setPerson($person);
+        $message->setAsAgentNote($this->is_note);
         $message->setDateCreated(new \DateTime('+1 second'));
         $message->setMessageHtml($this->getMessageContent($ticket));
 
@@ -142,6 +150,7 @@ class ReplyAction extends AbstractReplyAction
                 'reply_text' => $this->reply_text,
                 'attach_ids' => $this->attach_ids,
                 'is_html'    => $this->is_html,
+                'is_note'    => $this->is_note,
                 'person_id'  => $this->person_id,
             ],
         ];
@@ -210,10 +219,14 @@ class ReplyAction extends AbstractReplyAction
                 return $ret;
             }
 
-            return $tr->phrase('agent.tickets.add_reply_x_action', ['desc' => $desc]);
+            return $this->is_note
+                ? $tr->phrase('agent.tickets.add_note_x_action', ['desc' => $desc])
+                : $tr->phrase('agent.tickets.add_reply_x_action', ['desc' => $desc]);
         }
 
-        return $tr->phrase('agent.tickets.add_reply_action');
+        return $this->is_note
+            ? $tr->phrase('agent.tickets.add_note_action')
+            : $tr->phrase('agent.tickets.add_reply_action');
     }
 
     /**

@@ -37,6 +37,16 @@ class Build1509706442 extends AbstractBuild implements OnlineBuildInterface
     public function addNewTables()
     {
         $this->out('Creating report dashboards tables');
+
+        $this->execDbQuery('default', 'SET FOREIGN_KEY_CHECKS = 0');
+        $this->execDbQuery('default', 'DROP TABLE IF EXISTS report_widget');
+        $this->execDbQuery('default', 'DROP TABLE IF EXISTS report_widget_favorite');
+        $this->execDbQuery('default', 'DROP TABLE IF EXISTS report_dashboard');
+        $this->execDbQuery('default', 'DROP TABLE IF EXISTS report_dashboard_report');
+        $this->execDbQuery('default', 'DROP TABLE IF EXISTS report_dashboard_widget');
+        $this->execDbQuery('default', 'DROP TABLE IF EXISTS report_dashboard_permission');
+        $this->execDbQuery('default', 'SET FOREIGN_KEY_CHECKS = 1');
+
         $this->execDbQuery('default', '
 CREATE TABLE `report_widget` (
 	`id` INT(11) NOT NULL AUTO_INCREMENT,

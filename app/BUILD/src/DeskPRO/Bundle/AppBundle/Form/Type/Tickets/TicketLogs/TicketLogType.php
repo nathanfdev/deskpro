@@ -32,6 +32,7 @@ use Application\DeskPRO\Entity\Person;
 use Application\DeskPRO\Entity\Ticket;
 use Application\DeskPRO\Entity\TicketLog;
 use DeskPRO\Bundle\AppBundle\Form\Type\HtmlTextareaType;
+use DeskPRO\Bundle\AppBundle\Form\Type\JsonArrayType;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\TextareaType;
 use Symfony\Component\Form\FormBuilderInterface;
@@ -52,7 +53,7 @@ class TicketLogType extends AbstractType
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
         $builder
-            ->add('details', TicketLogDetailsType::class)
+            ->add('details', JsonArrayType::class)
             ->add('message_html', HtmlTextareaType::class, [
                 'mapped'   => false,
                 'required' => false,

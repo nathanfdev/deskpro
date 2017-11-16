@@ -71,6 +71,7 @@ class TicketMacroType extends AbstractType
                     return $er->createQueryBuilder('p')->where('p.is_tickets_enabled = true');
                 },
             ])
+            ->add('actions', TicketMacroActionsType::class)
         ;
 
         $builder->addEventListener(FormEvents::POST_SUBMIT, [$this, 'onPostSubmit']);

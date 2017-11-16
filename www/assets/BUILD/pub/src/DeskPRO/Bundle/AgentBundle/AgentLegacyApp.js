@@ -24,6 +24,7 @@ import DeskproAppStore from 'DeskPRO/Bundle/AgentBundle/Modules/DeskproApps/Desk
 import LegacyStoreProvider from 'DeskPRO/Bundle/AgentBundle/Services/LegacyStoreProvider';
 import LegacySnippetInserter from 'DeskPRO/Bundle/AgentBundle/Modules/Snippets/Services/LegacySnippetInserter';
 import store from 'DeskPRO/Bundle/AgentBundle/Services/store';
+import { FollowUpContainer } from './Modules/Tickets/Components/FollowUp/FollowUp';
 
 
 class AgentLegacyApp {
@@ -169,6 +170,17 @@ class AgentLegacyApp {
         />
       </Provider>,
       node.get(0)
+    );
+  }
+
+  renderFollowUpTab(node, data) {
+    ReactDOM.render(
+      <Provider store={this.store}>
+        <FollowUpContainer
+          {...data}
+        />
+      </Provider>,
+      node
     );
   }
 

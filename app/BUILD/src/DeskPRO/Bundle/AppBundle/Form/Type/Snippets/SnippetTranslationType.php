@@ -38,6 +38,7 @@ use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\Form\FormEvent;
+use Symfony\Component\Form\FormEvents;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 
 class SnippetTranslationType extends AbstractType
@@ -65,6 +66,7 @@ class SnippetTranslationType extends AbstractType
                 'required' => false,
             ])
         ;
+        $builder->addEventListener(FormEvents::POST_SUBMIT, [$this, 'onPostSubmit']);
     }
 
     /**
@@ -91,6 +93,29 @@ class SnippetTranslationType extends AbstractType
 
         if ($data instanceof SnippetTranslation) {
             $data->setSnippet($form->getConfig()->getOption('snippet'));
+        }
+    }
+
+    /**
+     * @internal
+     *
+     * @param FormEvent $event
+     */
+    public function onPostSubmit(FormEvent $event)
+    {
+        $form = $event->getForm();
+        /** @var SnippetTranslation $snippetTranslation */
+        $snippetTranslation = $event->getData();
+
+        if (!is_object($snippetTranslation)) {
+            return;
+        }
+
+        $blobs = $snippetTranslation->getBlobs();
+        foreach ($blobs as $blob) {
+            if ($blob instanceof Blob && $blob->getId()) {
+                $blob->setIsTemp(false);
+            }
         }
     }
 }
