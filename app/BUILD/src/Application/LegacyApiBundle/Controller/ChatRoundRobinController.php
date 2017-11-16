@@ -34,6 +34,8 @@ namespace Application\LegacyApiBundle\Controller;
 
 use Application\DeskPRO\Entity\ChatRoundRobin;
 use Application\DeskPRO\Entity\ChatRoundRobinLogEntry;
+use Application\DeskPRO\Entity\DataStore;
+use Application\DeskPRO\Entity\Person;
 use Application\DeskPRO\Entity\TicketTrigger;
 use Application\DeskPRO\Tickets\Actions\ActionComposite;
 use Application\DeskPRO\Tickets\Actions\SetRoundRobin;
@@ -62,12 +64,15 @@ class ChatRoundRobinController extends AbstractController implements ProtectedCo
 
     public function listAction()
     {
-        $data  = [];
-        $adata = $this->container->getAgentData();
+        $data = [];
+
+        /** @var PersonRepository $personRepository */
+        $personRepository = $this->em->getRepository(Person::class);
+
         /** @var $rr ChatRoundRobin */
         foreach ($this->em->getRepository(ChatRoundRobin::class)->findAll() as $rr) {
             $rrdata = $rr->toApiData();
-            if ($next = $rr->getNextAgent($adata)) {
+            if ($next = $rr->getNextAgent($personRepository)) {
                 $rrdata['next'] = $next->toApiData();
             }
             $data[] = $rrdata;
@@ -87,8 +92,11 @@ class ChatRoundRobinController extends AbstractController implements ProtectedCo
             throw $this->createNotFoundException();
         }
 
+        /** @var PersonRepository $personRepository */
+        $personRepository = $this->em->getRepository(Person::class);
+
         $data = $rr->toApiData();
-        if ($next = $rr->getNextAgent($this->container->getAgentData())) {
+        if ($next = $rr->getNextAgent($personRepository)) {
             $data['next'] = $next->toApiData();
         }
 
@@ -165,6 +173,9 @@ class ChatRoundRobinController extends AbstractController implements ProtectedCo
                 $this->countRoundRobinTriggers(true);
             }
         }
+
+        $this->em->getRepository(DataStore::class)->findOneBy(['name' => 'widget.brand_settings.']);
+        $this->get('settings_resolver')->getBrandSettings();
 
         return $this->createApiResponse([
             'enabled' => (bool) $this->settings->get('core.chat_round_robin.enabled', false),

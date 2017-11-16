@@ -59,9 +59,15 @@
 		{% endif %}
 	</div>
 	<footer>
+		{% if convo.agent %}
+			<div>
+				<a href="#" class="btn accept-trigger"><i class="icon-ok"></i> {{ phrase('agent.general.okay') }} </a>
+			</div>
+		{% else %}
 		<div>
 			<a href="#" class="btn cancel dismiss-trigger"><i class="icon-ban-circle"></i>{{ phrase('agent.general.dismiss') }}</a>
 			<a href="#" class="btn accept-trigger"><i class="icon-ok"></i> {{ phrase('agent.userchat.take_chat') }} </a>
 		</div>
+		{% endif %}
 	</footer>
 </section>

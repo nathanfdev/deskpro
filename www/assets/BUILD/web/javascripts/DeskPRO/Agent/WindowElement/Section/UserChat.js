@@ -599,6 +599,8 @@ DeskPRO.Agent.WindowElement.Section.UserChat = new Orb.Class({
 	handleNewChat: function(data) {
 		var self = this;
 
+		console.log(data);
+
 		if (!this.isDepAllowed(data.department_id)) {
 			return;
 		}
@@ -633,6 +635,10 @@ DeskPRO.Agent.WindowElement.Section.UserChat = new Orb.Class({
 					delete self.openingChatTimeout[data.conversation_id];
 					DeskPRO_Window.faviconBadge.disableCrazyMode();
 				}, 1000);
+				// Round robin assigned
+				if (data.eventType === 'chat.new') {
+          this.showNewChatRoundRobinAlert(data);
+				}
 			}
 
 			DeskPRO_Window.getSectionData('chat_section', self._initSection.bind(self));
@@ -800,10 +806,11 @@ DeskPRO.Agent.WindowElement.Section.UserChat = new Orb.Class({
 		DeskPRO_Window.handleSoundElements(alertEl);
 
 		var titles = this.getNewChatTitles();
-		if (titles.length == 1) {
-			var winTitle = 'New chat: ' + titles[0];
+    var winTitle;
+		if (titles.length === 1) {
+			winTitle = 'New chat: ' + titles[0];
 		} else {
-			var winTitle = titles.length + ' New chats: ' + titles.join(', ');
+			winTitle = titles.length + ' New chats: ' + titles.join(', ');
 		}
 		DeskPRO_Window.faviconBadge.enableCrazyMode(winTitle);
 
@@ -863,6 +870,59 @@ DeskPRO.Agent.WindowElement.Section.UserChat = new Orb.Class({
 //			}
 		}).data('route', 'page:' + BASE_URL + 'agent/chat/view/' + conversation_id + '/join');
 	},
+
+  showNewChatRoundRobinAlert: function(data) {
+    this.refreshOpenCounts();
+
+    var conversation_id = data.conversation_id;
+
+    if (document.visibilityState && document.visibilityState !== 'visible') {
+      var alertEl = $(data.html);
+      alertEl.appendTo('body');
+      DeskPRO_Window.handleSoundElements(alertEl);
+
+      var audio = $('audio', alertEl).get(0);
+      var self = this;
+
+      var secEl = alertEl.find('span.wait-timer');
+      function up() {
+        var secs = parseInt(secEl.data('time'));
+        secs++;
+        secEl.data('time', secs);
+
+        if (secs > 60) {
+          secEl.text((Math.floor(secs / 60)) + " minutes");
+        } else {
+          secEl.text(secs + " seconds");
+        }
+      };
+      var waitTimer = window.setInterval(up, 1000);
+
+      $('.accept-trigger, .join-trigger', alertEl).on('click', function(ev) {
+        ev.stopPropagation();
+        self.closeIframes();
+        if (audio) {
+          try {
+            audio.pause();
+          } catch(e) {}
+        }
+        alertEl.remove();
+        window.clearTimeout(waitTimer);
+
+      });
+    }
+
+    var titles = this.getNewChatTitles();
+    var winTitle;
+    if (titles.length === 1) {
+      winTitle = 'New chat: ' + titles[0];
+    } else {
+      winTitle = titles.length + ' New chats: ' + titles.join(', ');
+    }
+    DeskPRO_Window.faviconBadge.enableCrazyMode(winTitle);
+
+    DeskPRO_Window.notifications.addMessage('chat', 'New chat by ' + data.person_name, 'page:' + BASE_URL + 'agent/chat/view/' + conversation_id, 'chat-' + conversation_id)
+  },
 
 	getNewChatTitles: function() {
 		var titles = [];

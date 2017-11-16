@@ -28,12 +28,18 @@
 
 namespace DeskPRO\Bundle\AppBundle\Notification\Message\Generator\Notification;
 
+use Application\DeskPRO\App;
+use Application\DeskPRO\Entity\ChatConversation;
+use Application\DeskPRO\Entity\ChatRoundRobin;
+use Application\DeskPRO\Entity\ChatRoundRobinLogEntry;
 use Application\DeskPRO\Entity\Person;
+use Application\DeskPRO\EntityRepository\ChatRoundRobin as ChatRoundRobinRepository;
 use Application\DeskPRO\EntityRepository\Person as PersonRepository;
 use Application\DeskPRO\People\Helpers\AgentPermissions;
 use DeskPRO\Bundle\AppBundle\Content\AvatarResolver;
 use DeskPRO\Bundle\AppBundle\DataService\AgentDataService;
 use DeskPRO\Bundle\AppBundle\EventListener\ClientMessage\ClientMessageEvent;
+use DeskPRO\Bundle\AppBundle\Notification\Event\LegacySystemEvent;
 use DeskPRO\Bundle\AppBundle\Notification\Event\SystemEventInterface;
 use DeskPRO\Bundle\AppBundle\Notification\Event\UserChat\UserChatEvent;
 use DeskPRO\Bundle\AppBundle\Notification\Message\Generator\SystemEventGenerator;
@@ -169,5 +175,55 @@ class NewUserChatMessageGenerator extends SystemEventGenerator
         $agentPermissions = $person->getHelper('AgentPermissions');
 
         return in_array($data['department'], $agentPermissions->getAllowedDepartments('chat'));
+    }
+
+    /**
+     * @param LegacySystemEvent $event
+     *
+     * @return array|\int[]
+     */
+    protected function getTarget(LegacySystemEvent $event)
+    {
+        $targets = $event->getTargets();
+        if ($targets) {
+            return array_diff($targets, $event->getExcludeTargets());
+        }
+
+        /** @var ChatRoundRobinRepository $repo */
+        $repo = $this->em->getRepository(ChatRoundRobin::class);
+        $data = $event->getData();
+        if ($data['department']) {
+            /** @var ChatRoundRobin $rr */
+            $rr = $repo->findByDepartment($data['department']);
+        }
+        if (empty($rr)) {
+            $rr = $repo->findOneBy(['apply_by_default' => 1]);
+        }
+        if (!$rr) {
+            return parent::getTarget($event);
+        }
+        /** @var PersonRepository $personRepository */
+        $personRepository = $this->em->getRepository(Person::class);
+
+        $entry                = new ChatRoundRobinLogEntry();
+        $entry->rr            = $rr;
+        $entry['chatId']      = $data['id'];
+        $entry['chatSubject'] = $data['subject'];
+        $this->em->persist($entry);
+
+        $agent = $rr->getNextAgent($personRepository, $entry, $data['department']);
+        if (!$agent) {
+            return parent::getTarget($event);
+        }
+        /** @var $chatManager \Application\DeskPRO\Chat\UserChat\UserChatManager */
+        $chatManager = App::getSystemObject('user_chat_manager', ['session' => null]);
+
+        $conversation = $this->em->getRepository(ChatConversation::class)->find($data['id']);
+        $chatManager->assignAgent($conversation, $agent);
+        $chatManager->personJoined($conversation, $agent);
+
+        $this->em->flush();
+
+        return [$agent->getId()];
     }
 }

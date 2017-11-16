@@ -34,8 +34,9 @@
 
 namespace Application\DeskPRO\Entity;
 
-use Application\DeskPRO\DependencyInjection\SystemServices\AgentDataService;
 use Application\DeskPRO\Domain\DomainObject;
+use Application\DeskPRO\EntityRepository\Person as PersonRepository;
+use Application\DeskPRO\People\Helpers\AgentPermissions;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\Mapping\ClassMetadata;
 use Doctrine\ORM\Mapping\ClassMetadataInfo;
@@ -124,12 +125,13 @@ class ChatRoundRobin extends DomainObject
     }
 
     /**
-     * @param AgentDataService       $adata
+     * @param PersonRepository       $personRepo
      * @param ChatRoundRobinLogEntry $entry
+     * @param int|null               $department
      *
      * @return Person|mixed
      */
-    public function getNextAgent(AgentDataService $adata, ChatRoundRobinLogEntry $entry = null)
+    public function getNextAgent(PersonRepository $personRepo, ChatRoundRobinLogEntry $entry = null, $department = null)
     {
         $agents = [];
         foreach ($this->agents as $ref) {
@@ -142,6 +144,8 @@ class ChatRoundRobin extends DomainObject
             $agents = array_merge($agents, $end);
         }
 
+        $availableAgents = $personRepo->getActiveAgentIdsForUserChat();
+
         while ($agent = array_shift($agents)) {
             /** @var $agent Person */
             if (!$agent['is_agent'] || $agent['is_disabled'] || $agent['is_deleted']) {
@@ -149,7 +153,24 @@ class ChatRoundRobin extends DomainObject
                 continue;
             }
 
-            if ($this['online_only'] && !$adata->isAgentOnline($agent)) {
+            if (!$agent->hasPerm('agent_chat.use')) {
+                $entry && $entry->addActionSkippedNoPerm($agent);
+                continue;
+            }
+
+            if ($department) {
+                /** @var AgentPermissions $agentPermissions */
+                $agentPermissions = $agent->getHelper('AgentPermissions');
+
+                if (!in_array($department, $agentPermissions->getAllowedDepartments('chat'))) {
+                    $entry && $entry->addActionSkippedNoPermDep($agent);
+                    continue;
+                }
+            }
+
+            $agent->getHelper('AgentPermissions')->getAllowedDepartments('chat');
+
+            if (array_search($agent->getId(), $availableAgents) === false) {
                 $entry && $entry->addActionSkippedOffline($agent);
                 continue;
             }
@@ -159,7 +180,7 @@ class ChatRoundRobin extends DomainObject
             return $agent;
         }
 
-        if ($entry && $this['online_only']) {
+        if ($entry) {
             $entry->addActionNoOnline();
         }
     }

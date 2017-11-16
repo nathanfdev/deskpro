@@ -7,18 +7,18 @@
         <table class="table table-condensed">
             <thead>
                 <tr>
-                    <th>Ticket ID</th>
-                    <th>Ticket Subject</th>
+                    <th>Conversation ID</th>
+                    <th>Chat Subject</th>
                     <th>Round Robin Actions</th>
                 </tr>
             </thead>
             <tbody>
                 {% for entry in entries %}
                 <tr>
-                    <td>{{ entry.ticketId }}</td>
+                    <td>{{ entry.chatId }}</td>
                     <td>
-                        <a href="{{ path('agent') }}#app.tickets,t.o:{{ entry.ticketId }}" target="_blank">
-                            {{ entry.ticketSubject }}
+                        <a href="{{ path('agent') }}#app.userchat,c.o:{{ entry.chatId }}" target="_blank">
+                            {{ entry.chatSubject }}
                         </a>
                     </td>
                     <td>

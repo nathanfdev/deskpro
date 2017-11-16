@@ -64,7 +64,7 @@ class ChatRoundRobinLogEntry extends DomainObject
     public function addActionNoOnline()
     {
         $this->actions[] = [
-            'phrase' => 'adm.round_robins.log_no_agents_online',
+            'phrase' => 'adm.round_robins.log_no_agents_online_broadcast',
             'params' => [],
         ];
     }
@@ -89,6 +89,22 @@ class ChatRoundRobinLogEntry extends DomainObject
     {
         $this->actions[] = [
             'phrase' => 'adm.round_robins.log_skipped_disabled',
+            'params' => ['name' => $person->getDisplayName()],
+        ];
+    }
+
+    public function addActionSkippedNoPerm(Person $person)
+    {
+        $this->actions[] = [
+            'phrase' => 'adm.round_robins.log_skipped_no_permissions',
+            'params' => ['name' => $person->getDisplayName()],
+        ];
+    }
+
+    public function addActionSkippedNoPermDep(Person $person)
+    {
+        $this->actions[] = [
+            'phrase' => 'adm.round_robins.log_skipped_no_permissions_dep',
             'params' => ['name' => $person->getDisplayName()],
         ];
     }

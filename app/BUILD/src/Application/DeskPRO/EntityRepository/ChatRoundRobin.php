@@ -78,4 +78,18 @@ class ChatRoundRobin extends AbstractEntityRepository
 
         $this->_em->flush();
     }
+
+    public function findByDepartment($departmentId)
+    {
+        $qb = $this->getEntityManager()->createQueryBuilder();
+
+        return $qb->select('r')
+            ->from(ChatRoundRobinEntity::class, 'r')
+            ->join('r.departments', 'd')
+            ->where('d.id = ?1')
+            ->setParameter(1, $departmentId)
+            ->setMaxResults(1)
+            ->getQuery()
+            ->getOneOrNullResult();
+    }
 }
