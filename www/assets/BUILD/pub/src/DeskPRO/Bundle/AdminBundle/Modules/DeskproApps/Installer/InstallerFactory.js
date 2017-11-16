@@ -4,7 +4,7 @@ import uuid from 'uuid';
 import { AppsRegistry, AppsConfigBuilder } from 'DeskPRO/Bundle/AppsBundle/Modules/Config';
 import { Context } from 'DeskPRO/Bundle/AppsBundle/Modules/Domain';
 import { DeskproAppContainerProps, DeskproAppContainer } from 'DeskPRO/Bundle/AppsBundle/Modules/Components';
-import { ManifestLoader } from 'DeskPRO/Bundle/AppsBundle/Modules/Manifest';
+import { ManifestLoader, ManifestParsers } from 'DeskPRO/Bundle/AppsBundle/Modules/Manifest';
 
 import { api } from 'DeskPRO/Bundle/AppBundle/DAL';
 import { InstallerContainer } from './Components';
@@ -24,9 +24,29 @@ class InstallerFactory extends React.Component {
     builder.addWindowParams(windowObject);
     const config = builder.build();
 
-    const containerProps = new InstallerContainerProps({});
     const manifestLoader = new ManifestLoader(api);
-    containerProps.loadAppManifest = manifestLoader.loadApp.bind(manifestLoader);
+
+    const containerProps = new InstallerContainerProps({
+      loadAppManifest: (action, app) => {
+        if (action === 'update') {
+          return manifestLoader.loadApp(app);
+        }
+
+        if (action === 'install') {
+          // double encoded as symfony decodes the uri before matching the routes so forward slashes which are part of the
+          // name will influence the matching algorithm
+          const encodedAppName = encodeURIComponent(encodeURIComponent(app));
+          return api.sendPost(`DP_API/apps/${encodedAppName}?include=app`)
+            .then(response => response.data)
+            .then(ManifestParsers.parseManifestResponseBody)
+          ;
+        }
+
+        throw new Error('unknown installer action');
+      },
+      loadPackageManifest: manifestLoader.loadPackage.bind(manifestLoader)
+    });
+
 
     if (config.environment === 'development') {
       containerProps.loadInstallerManifest = manifestLoader.loadDev.bind(manifestLoader, config.endpoint);
