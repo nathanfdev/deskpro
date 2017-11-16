@@ -29,6 +29,8 @@
 namespace Application\LegacyApiBundle\Controller;
 
 use Application\DeskPRO\Dpql\Statement\Display;
+use Application\DeskPRO\Entity\ReportWidget;
+use Application\DeskPRO\EntityRepository\ReportWidget as ReportWidgetRepository;
 use Application\DeskPRO\Exception\ValidationException;
 use Application\DeskPRO\Reports\ReportsWidgetService;
 use DeskPRO\Bundle\AppBundle\Annotation\ActionPermissions\Annotation\ApiModes;
@@ -44,63 +46,36 @@ class ReportsWidgetController extends AbstractController
      */
     public function listAction()
     {
-        /* @var ReportsWidgetService */
-        $reportsWidget = $reportsWidget = $this->container->get('reports.widget.service');
-
-        $data = [
-            'reports' => $reportsWidget->getAll(),
+        /** @var ReportWidgetRepository $repository */
+        $repository = $this->em->getRepository(ReportWidget::class);
+        $reports    = $repository->getAllReports();
+        $apiData    = [
+            'reports' => [],
+            'labels'  => [],
         ];
-
         $translator = $this->container->getTranslator();
-        foreach ($data['reports'] as &$report) {
-            foreach ($report['labels'] as &$label) {
-                $phraseName = 'reports.labels.'.strtolower($label);
-                $label      = [
-                    'label' => $translator->hasPhrase($phraseName) ? $translator->phrase($phraseName) : $label,
-                    'value' => $label,
+        $i          = 0;
+        foreach ($reports as $report) {
+            $datum            = $report->toApiData();
+            $translatedLabels = [];
+            foreach ($datum['labels'] as $label) {
+                $phraseName      = 'reports.labels.'.strtolower($label);
+                $translatedLabel = $translator->hasPhrase($phraseName)
+                    ? $translator->phrase($phraseName)
+                    : ucfirst($label);
+                $translatedLabels[]        = $translatedLabel;
+                $apiData['labels'][$label] = [
+                    'id'    => ++$i,
+                    'label' => $translatedLabel,
+                    'value' => ucfirst($label),
                 ];
             }
+            $datum['labels']      = $translatedLabels;
+            $apiData['reports'][] = $datum;
         }
+        $apiData['labels'] = array_values($apiData['labels']);
 
-        return $this->createApiResponse($data);
-    }
-
-    /**
-     * @return Response
-     */
-    public function listCustomAction()
-    {
-        /* @var ReportsWidgetService */
-        $reportsWidget = $reportsWidget = $this->container->get('reports.widget.service');
-        $customReports = $reportsWidget->getCustomReports();
-        $translator    = $this->container->getTranslator();
-        foreach ($customReports as &$report) {
-            foreach ($report['labels'] as &$label) {
-                $phraseName = 'reports.labels.'.strtolower($label);
-                $label      = $translator->hasPhrase($phraseName) ? $translator->phrase($phraseName) : $label;
-            }
-        }
-
-        return $this->createApiResponse(['reports' => $customReports]);
-    }
-
-    /**
-     * @return Response
-     */
-    public function listBuiltInAction()
-    {
-        /* @var ReportsWidgetService */
-        $reportsWidget  = $reportsWidget  = $this->container->get('reports.widget.service');
-        $builtInReports = $reportsWidget->getBuiltInReports();
-        $translator     = $this->container->getTranslator();
-        foreach ($builtInReports as &$report) {
-            foreach ($report['labels'] as &$label) {
-                $phraseName = 'reports.labels.'.strtolower($label);
-                $label      = $translator->hasPhrase($phraseName) ? $translator->phrase($phraseName) : $label;
-            }
-        }
-
-        return $this->createApiResponse(['reports' => $builtInReports]);
+        return $this->createApiResponse($apiData);
     }
 
     /**

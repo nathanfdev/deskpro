@@ -6993,24 +6993,6 @@ $collection->create(
 );
 
 $collection->create(
-    'api_reports_widget_list_custom',
-    [
-        'path'       => '/reports/widget/custom',
-        'controller' => 'LegacyApiBundle:ReportsWidget:listCustom',
-        'methods'    => ['GET'],
-    ]
-);
-
-$collection->create(
-    'api_reports_widget_list_builtIn',
-    [
-        'path'       => '/reports/widget/builtIn',
-        'controller' => 'LegacyApiBundle:ReportsWidget:listBuiltIn',
-        'methods'    => ['GET'],
-    ]
-);
-
-$collection->create(
     'api_reports_widget_get_group_params',
     [
         'path'       => '/reports/widget/group-params',
@@ -7529,13 +7511,6 @@ $collection->create('dashboard_widget_delete    ', [
     'requirements' => ['id' => '\\d+'],
     'defaults'     => ['action' => 'deleteWidget'],
     'methods'      => ['DELETE'],
-]);
-
-$collection->create('dashboard_widget_reports_list', [
-    'path'       => '/dashboards/widgets/reports/list',
-    'controller' => 'LegacyApiBundle:DashboardWidget:reportsList',
-    'defaults'   => ['action' => 'reportsList'],
-    'methods'    => ['GET'],
 ]);
 
 //#######################################################################################################################
