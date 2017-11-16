@@ -191,7 +191,7 @@ class Edit extends BaseForm {
 
   renderQuery() {
     const { saving } = this.state;
-    console.log(this.state.query);
+
     return (
       <div className="editor-form full-editor-form">
         <button onClick={this.switchToForm} className={classNames('ui olive button', { loading: saving })}>Show Form</button>

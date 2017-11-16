@@ -1,7 +1,6 @@
 import PropTypes from 'prop-types';
 import React from 'react';
 import classNames from 'classnames';
-import { transformReportData } from '../helper';
 import TitleWithVars from '../TitleWithVars';
 
 class ListItem extends React.Component {
@@ -29,8 +28,7 @@ class ListItem extends React.Component {
       event.stopPropagation();
     }
     const { onRunReportClick, report } = this.props;
-    const data = transformReportData(report);
-    onRunReportClick(report, data);
+    onRunReportClick(report);
   }
 
   onEditClick(event) {

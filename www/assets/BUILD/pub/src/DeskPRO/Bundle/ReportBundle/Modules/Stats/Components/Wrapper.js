@@ -81,8 +81,8 @@ class Wrapper extends React.Component {
     this.setState({ mode: 'edit' });
   }
 
-  onRunReportClick(report, data) {
-    this.props.dispatch(runReport(report.get('id'), data));
+  onRunReportClick(report) {
+    this.props.dispatch(runReport(report.get('id'), transformReportData(report)));
     this.setState({ mode: 'run' });
   }
 
@@ -128,11 +128,6 @@ class Wrapper extends React.Component {
     newSearchText = `${labels.join('')} ${newSearchText.trim()}`;
 
     this.setState({ labels: newLabels, activeLabels: newActiveLabels, searchText: newSearchText });
-  }
-
-  onRunClick(report) {
-    console.log(report, this.props.currentReport);
-    console.log('open modal window to show report example');
   }
 
   onSubmit(data) {
@@ -227,7 +222,7 @@ class Wrapper extends React.Component {
             report={currentReport}
             groupParams={groupParams}
             onSubmit={this.onSubmit}
-            onRunClick={this.onRunClick}
+            onRunClick={this.onRunReportClick}
           />
           : null
         }
