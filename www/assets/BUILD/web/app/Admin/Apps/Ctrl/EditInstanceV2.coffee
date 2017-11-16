@@ -5,7 +5,7 @@ define ['Admin/Main/Ctrl/Base', 'DeskPRO/Util/Util'], (Admin_Ctrl_Base, Util) ->
     @DEPS      = ['$http', 'dpTemplateManager', '$q']
 
     init: ->
-      @instanceId = parseInt(@$stateParams.id.replace(/^v2_/, ''))
+      @instanceId = parseInt(@$stateParams.instanceId)
       @$scope.getController = => return this
       @$scope.setPresaveCallback = (callback) => @presaveCallback = callback
       @$scope.enableCustomFooter = => @$scope.has_own_footer = true
@@ -14,111 +14,19 @@ define ['Admin/Main/Ctrl/Base', 'DeskPRO/Util/Util'], (Admin_Ctrl_Base, Util) ->
 
     initialLoad: ->
       d = @$q.defer()
-      d2 = @$q.defer()
-
-      service = {
-        groups: @DataService.get('AgentGroups'),
-        agents: @DataService.get('Agents')
-      }
 
       @Api2.sendGet('/apps/' + @instanceId + '?include=app&inline_sideloads=true').then( (result) =>
         @app = result.data.data
         @$scope.appId = @app.id
 
-        if @app.with_permissions
-          service.agents.all()
-          service.groups.all()
-
         @pack = @app.app
         @packageName = @pack.name
+        @pack.icon_48 = @pack.icon_url + '?s=48'
 
-        @pack.icon_48 = @pack.icon_url
-        @pack.icon_48 = @pack.icon_48.replace('{{size}}', 48);
-        @pack.icon_48 = @pack.icon_48.replace(encodeURIComponent('{{size}}'), 48);
-
-        if not @app.with_permissions
-          d.resolve()
-        else
-          @$q.all([service.agents.all(), service.groups.all()]).then( (res) =>
-            @$scope.perms = {}
-            @$scope.perms.type = @app.perm_type
-            @$scope.perms.usergroups = res[1].map((x) =>
-              return {
-                id: x.id,
-                name: x.title,
-                checked: @app.permissions.usergroup_ids.indexOf(x.id) != -1
-              }
-            )
-            @$scope.perms.agents = res[0].map((x) =>
-              return {
-                id: x.id,
-                name: x.display_name,
-                checked: @app.permissions.person_ids.indexOf(x.id) != -1
-              }
-            )
-
-            @$scope.selected_agents_count = => @$scope.perms.agents.filter((x) -> x.checked).length
-            @$scope.selected_groups_count = => @$scope.perms.usergroups.filter((x) -> x.checked).length
-
-            d.resolve()
-        )
+        d.resolve()
       )
 
-      d.promise.then( =>
-        @$scope.pack = @pack
-        @$scope.setting_values = @app.settings
-        if not @$scope.setting_values || Util.isArray(@$scope.setting_values)
-          @$scope.setting_values = {}
-        @$scope.setting_values.dp_app = {title: @app.title}
-
-        @$scope.has_display_settings = @pack.manifest.settings.filter( (x) -> x.type != 'hidden').length > 0
-        form_template = @packageName + '/AdminInterface/Install/settings.html'
-        installCtrl = null
-        loadingAssets = []
-
-        getResourcePath = (tag, name) =>
-          asset = @pack.assets.filter((x) -> x.tag == tag && x.name == name)[0]
-          if asset
-            cachebust = window.DP_BUILD_TIME
-            asset.blob.relative_url + '?' + cachebust
-          else
-            null
-
-        if path = getResourcePath('html', 'AdminInterface/Install/settings.html')
-          loadingAssets.push(@$http.get(path, { responseType: "text"}).success((data) =>
-            @dpTemplateManager.setTemplate(form_template, data)
-          ))
-        if path = getResourcePath('js', 'AdminInterface/Install/settings.js')
-          jsDeferred = @$q.defer()
-          require([path], (c) ->
-            installCtrl = c
-            jsDeferred.resolve()
-          )
-          loadingAssets.push(jsDeferred.promise)
-
-        if loadingAssets.length
-          @$q.all(loadingAssets).then(=>
-            if installCtrl
-              @$scope.install_ctrl = installCtrl
-            else
-              @$scope.install_ctrl = [->
-                return
-              ]
-
-            if form_template
-              @$scope.form_template = form_template
-              @$scope.default_form = false
-            else
-              @$scope.default_form = true
-
-            d2.resolve()
-          )
-        else
-          @$scope.default_form = true
-          d2.resolve()
-      )
-
-      return d2.promise
+      return d.promise
 
     saveSettings: ->
       @startSpinner('saving_settings')
@@ -159,8 +67,8 @@ define ['Admin/Main/Ctrl/Base', 'DeskPRO/Util/Util'], (Admin_Ctrl_Base, Util) ->
       )
 
     ###
-      # Shows readme modal window
-      ###
+    # Shows readme modal window
+    ###
     showReadme: ->
       @$modal.open({
         templateUrl: @getTemplatePath('Apps/readme-modal.html'),

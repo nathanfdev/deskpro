@@ -12,6 +12,7 @@ define([
   'Admin/Apps/Ctrl/ImportersList',
   'Admin/Apps/Ctrl/ImportersView',
   'Admin/Apps/Ctrl/InstallAppV2',
+  'Admin/Apps/Ctrl/UpdateAppV2',
   'Admin/Apps/Ctrl/Resync',
   'Admin/Agents/Ctrl/Edit',
   'Admin/Agents/Ctrl/EditProfile',

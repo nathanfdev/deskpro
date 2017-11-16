@@ -40,11 +40,11 @@
 			</li>
 			<li ng-repeat="app in ListCtrl.listInstalledAppsV2()" dp-state-mark="apps.apps.instance_v2.{{ ng_var('app.id') }}">
 				<aside ng-if="!app.package.is_usersource_app">
-					<a href="{{ ng_href('apps.apps.instance_v2', "{id: 'v2_' + app.id}") }}"><img ng-src="{{ ng_var('app.app.icon_32') }}" alt="Icon" /></a>
+					<a href="{{ ng_href('apps.apps.edit-v2', "{instanceId: app.id}") }}"><img ng-src="{{ ng_var('app.app.icon_32') }}" alt="Icon" /></a>
 				</aside>
 				<div class="content" ng-if="!app.package.is_usersource_app">
 					<h4>
-						<a href="{{ ng_href('apps.apps.instance_v2', "{id: 'v2_' + app.id}") }}">
+						<a href="{{ ng_href('apps.apps.edit-v2', "{instanceId: app.id}") }}">
 							<span class="title-text">{{ ng_var('app.name') }}</span>
 						</a>
 					</h4>
@@ -71,10 +71,10 @@
 {% endmacro %}
 {% macro package_v2_row() %}
 	<aside>
-		<a href="{{ ng_href('apps.apps.installer-v2-reload', 'ListCtrl.getInstallerRouteParams(package)') }}" ><img ng-src="{{ ng_var('package.icon_48') }}" alt="Icon" /></a>
+		<a href="{{ ng_href('apps.apps.install-v2-reload', 'ListCtrl.getInstallerRouteParams(package)') }}" ><img ng-src="{{ ng_var('package.icon_48') }}" alt="Icon" /></a>
 	</aside>
 	<div class="content">
-		<h4><a href="{{ ng_href('apps.apps.installer-v2-reload', 'ListCtrl.getInstallerRouteParams(package)') }}" ><span class="title-text">{{ ng_var('package.manifest.title') }}</span></a></h4>
+		<h4><a href="{{ ng_href('apps.apps.install-v2-reload', 'ListCtrl.getInstallerRouteParams(package)') }}" ><span class="title-text">{{ ng_var('package.manifest.title') }}</span></a></h4>
 		<p class="info">
 			by {{ ng_var('package.manifest.author.name') }} &middot; <a ng-href="{{ ng_var('package.manifest.author.url') }}">Website</a>
 		</p>

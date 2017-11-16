@@ -32,21 +32,15 @@ define ['Admin/Main/Ctrl/Base', 'angular'], (Admin_Ctrl_Base, angular) ->
       apps2Promise = @Api2.sendGet('/apps?include=app&inline_sideloads=true')
       apps2Promise.then( (result) =>
         result.data.data.forEach((instance) =>
-          instance.app.icon_32 = instance.app.icon_url;
-          instance.app.icon_32 = instance.app.icon_32.replace('{{size}}', 32);
-          instance.app.icon_32 = instance.app.icon_32.replace(encodeURIComponent('{{size}}'), 32);
-
+          instance.app.icon_32 = instance.app.icon_url+ '?s=32';
           @apps_v2.push(instance)
         )
       )
 
-      apps2PackagesPromise = @Api2.sendGet('/app_packages')
+      apps2PackagesPromise = @Api2.sendGet('/apps/packages')
       apps2PackagesPromise.then( (result) =>
         result.data.data.forEach((app) =>
-          app.icon_48 = app.icon_url;
-          app.icon_48 = app.icon_48.replace('{{size}}', 48);
-          app.icon_48 = app.icon_48.replace(encodeURIComponent('{{size}}'), 48);
-
+          app.icon_48 = app.icon_url + '?s=48';
           @apps_v2_packages.push(app)
         )
       )
@@ -55,15 +49,12 @@ define ['Admin/Main/Ctrl/Base', 'angular'], (Admin_Ctrl_Base, angular) ->
 
     listInstalledAppsV2: () ->
       if @apps_v2 instanceof Array
-        return @apps_v2.filter((p) -> p.is_installed == true);
+        return @apps_v2;
       []
 
     addAppInstance: (instanceInfo, isNew = false) ->
       if isNew
-        instanceInfo.app.icon_32 = instanceInfo.app.icon_url;
-        instanceInfo.app.icon_32 = instanceInfo.app.icon_32.replace('{{size}}', 32);
-        instanceInfo.app.icon_32 = instanceInfo.app.icon_32.replace(encodeURIComponent('{{size}}'), 32);
-
+        instanceInfo.app.icon_32 = instanceInfo.app.icon_url+ '?s=32';
         @apps_v2.push(instanceInfo)
       else
         @apps.push(instanceInfo)
@@ -154,7 +145,7 @@ define ['Admin/Main/Ctrl/Base', 'angular'], (Admin_Ctrl_Base, angular) ->
 
               me.$timeout(->
                 if (data.version == 2)
-                  me.$state.go('apps.apps.installer-v2-reload', {appName: encodeURIComponent(data.package_name)})
+                  me.$state.go('apps.apps.install-v2-reload', {appName: encodeURIComponent(data.package_name)})
                 else
                   me.$state.go('apps.go_apps_install', {name: 'go-apps-' + @normalizedPackageName})
 
