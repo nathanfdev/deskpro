@@ -51,36 +51,39 @@ class AppParamConverter implements ParamConverterInterface
 
     public function apply(Request $request, Configuration\ParamConverter $configuration)
     {
-        $options       = $configuration->getOptions();
-        $paramName     = $configuration->getName();
-        $attributeName = is_array($options) && array_key_exists('attribute', $options) ? $options['attribute'] : $paramName;
-        $from          = $request->attributes->get($attributeName);
+        $configOptions = $configuration->getOptions();
 
+        $paramName     = $configuration->getName();
+        $attributeName = is_array($configOptions) && array_key_exists('attribute', $configOptions) ? $configOptions['attribute'] : $paramName;
+        $from          = $request->attributes->get($attributeName);
         if (empty($from)) {
             return false;
         }
 
-        $application = $this->convert($from);
+        $numericIdentifierStrategy = is_array($configOptions) && array_key_exists('numericId', $configOptions) ? $configOptions['numericId'] : 'application';
+        $application               = $this->convert($from, $numericIdentifierStrategy);
         $request->attributes->set($paramName, $application);
 
         return true;
     }
 
     /**
-     * @param string $from
+     * @param string      $from
+     * @param string|null $numericIdentifierStrategy
      *
      * @return Entity\AppStore\App
      */
-    private function convert($from)
+    private function convert($from, $numericIdentifierStrategy = null)
     {
-        $from   = urldecode($from);
-        $appRef = $this->identifierParser->parseApplicationRef($from);
-        if (!is_null($appRef)) {
-            return $this->finder->findByName($from);
+        $from = urldecode($from);
+
+        if ($this->identifierParser->recognizeNumericIdentifier($from) && $numericIdentifierStrategy === 'instanceId') {
+            return $this->finder->findByInstanceId($from);
         }
 
-        if ($this->identifierParser->recognizeApplicationInstanceId($from)) {
-            return $this->finder->findByInstanceId($from);
+        $appRef = $this->identifierParser->parseApplicationRef($from);
+        if (!is_null($appRef)) {
+            return $this->finder->findByReference($appRef);
         }
 
         return null;
