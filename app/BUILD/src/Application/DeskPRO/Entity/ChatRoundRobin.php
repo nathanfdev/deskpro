@@ -137,6 +137,9 @@ class ChatRoundRobin extends DomainObject
             $department = $department->getId();
         }
 
+        if ($this->routing_type === self::ROUTING_LEAST_UTILIZED) {
+            return $this->getNextAgentLeastUtilized($personRepo, $entry, $department);
+        }
         $agents = [];
         foreach ($this->agents as $ref) {
             $agents[] = $ref->agent;
@@ -187,6 +190,12 @@ class ChatRoundRobin extends DomainObject
         if ($entry) {
             $entry->addActionNoOnline();
         }
+
+        return null;
+    }
+
+    public function getNextAgentLeastUtilized(PersonRepository $personRepo, ChatRoundRobinLogEntry $entry = null, $department = null)
+    {
     }
 
     //###########################################################################

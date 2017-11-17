@@ -34,7 +34,6 @@ namespace Application\LegacyApiBundle\Controller;
 
 use Application\DeskPRO\Entity\ChatRoundRobin;
 use Application\DeskPRO\Entity\ChatRoundRobinLogEntry;
-use Application\DeskPRO\Entity\DataStore;
 use Application\DeskPRO\Entity\Person;
 use Application\DeskPRO\Entity\TicketTrigger;
 use Application\DeskPRO\Tickets\Actions\ActionComposite;
@@ -173,8 +172,6 @@ class ChatRoundRobinController extends AbstractController implements ProtectedCo
                 $this->countRoundRobinTriggers(true);
             }
         }
-
-        $this->em->getRepository(DataStore::class)->findOneBy(['name' => 'widget.brand_settings.']);
 
         return $this->createApiResponse([
             'enabled' => (bool) $this->settings->get('core.chat_round_robin.enabled', false),

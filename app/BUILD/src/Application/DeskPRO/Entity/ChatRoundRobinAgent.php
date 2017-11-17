@@ -35,6 +35,7 @@
 namespace Application\DeskPRO\Entity;
 
 use Application\DeskPRO\Domain\DomainObject;
+use DateTime;
 use Doctrine\ORM\Mapping\ClassMetadata;
 use Doctrine\ORM\Mapping\ClassMetadataInfo;
 
@@ -58,6 +59,11 @@ class ChatRoundRobinAgent extends DomainObject
      * @var int
      */
     protected $sort;
+
+    /**
+     * @var DateTime
+     */
+    protected $last_activity;
 
     public function __construct()
     {
@@ -90,6 +96,13 @@ class ChatRoundRobinAgent extends DomainObject
             'type'       => 'integer',
             'nullable'   => false,
             'columnName' => 'sort',
+        ]);
+
+        $metadata->mapField([
+            'fieldName'  => 'last_activity',
+            'type'       => 'datetime',
+            'nullable'   => true,
+            'columnName' => 'last_activity',
         ]);
 
         $metadata->mapOneToOne([
@@ -125,5 +138,31 @@ class ChatRoundRobinAgent extends DomainObject
                 ],
             ],
         ]);
+    }
+
+    /**
+     * @return DateTime
+     */
+    public function getLastActivity()
+    {
+        return $this->last_activity;
+    }
+
+    /**
+     * @param DateTime $lastActivity
+     */
+    public function setLastActivity(DateTime $lastActivity = null)
+    {
+        if (!$lastActivity) {
+            $lastActivityTime = time();
+        } else {
+            $lastActivityTime = $lastActivity->getTimestamp();
+        }
+        // Round down the time to the closest 5 minutes
+        $lastActivityTime = floor($lastActivityTime / 300) * 300;
+
+        $lastActivity = date_create('@'.$lastActivityTime);
+
+        $this->setModelField('last_activity', $lastActivity);
     }
 }

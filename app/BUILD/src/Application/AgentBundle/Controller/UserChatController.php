@@ -514,7 +514,7 @@ class UserChatController extends AbstractController
         $erase = $this->in->getBoolInt('erase');
 
         /** @var ChatConversation $conversation */
-        $conversation = $this->em->find('DeskPRO:ChatConversation', $conversation_id);
+        $conversation = $this->em->find(ChatConversation::class, $conversation_id);
         $conversation->setDateAgentTyping($erase ? null : new \DateTime());
 
         $this->em->persist($conversation);
@@ -536,7 +536,7 @@ class UserChatController extends AbstractController
             // sendAgentMessageAction calls this with the convo already
             $convo = $conversation_id;
         } else {
-            $convo = $this->em->find('DeskPRO:ChatConversation', $conversation_id);
+            $convo = $this->em->find(ChatConversation::class, $conversation_id);
         }
 
         $otherData = [];
