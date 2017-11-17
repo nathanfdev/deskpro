@@ -28,7 +28,6 @@
 
 namespace Application\LegacyApiBundle\Controller;
 
-use Application\DeskPRO\Dpql\Statement\Display;
 use Application\DeskPRO\Entity\ReportWidget;
 use Application\DeskPRO\EntityRepository\ReportWidget as ReportWidgetRepository;
 use Application\DeskPRO\Exception\ValidationException;
@@ -204,16 +203,15 @@ class ReportsWidgetController extends AbstractController
             throw $this->createNotFoundException();
         }
         $newReport = $reportsWidget->createNew();
-        $newReport->setTitle($this->in->getString('title') ?: $report->getTitle());
-        $newReport->setDescription($this->in->getString('description') ?: $report->getDescription());
-        $newReport->setQuery($report->getQuery());
-        $parts = $this->in->getArrayValue('parts');
-        if ($parts) {
-            $query = Display::getQueryStringFromParts($parts);
-            if ($query) {
-                $newReport->setQuery($query);
-            }
-        }
+        $newReport
+            ->setTitle($report->getTitle())
+            ->setDescription($report->getDescription())
+            ->setQuery($report->getQuery())
+            ->setVariables($report->getVariables())
+            ->setDisplayTypes($report->getDisplayTypes())
+            ->setLabels($report->getLabels())
+            ->setIsCustom(true);
+
         $this->em->getConnection()->beginTransaction();
         try {
             $this->em->persist($newReport);

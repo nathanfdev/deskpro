@@ -204,6 +204,25 @@ export const saveReport = createAction(
   }
 );
 
+export const cloneReport = createAction(
+  'REPORTS_CLONE_REPORT',
+  id => (dispatch) => {
+    const config = {
+      headers: {
+        'X-DeskPRO-API-Token':     window.DP_API_TOKEN,
+        'X-DeskPRO-Session-ID':    window.DP_SESSION_ID,
+        'X-DeskPRO-Request-Token': window.DP_REQUEST_TOKEN,
+      }
+    };
+
+    return api.sendPost(`DP_API_OLD/reports/widget/clone/${id}`, {}, config).success((response) => {
+      if (response.id) {
+        dispatch(loadReport(response.id));
+      }
+    });
+  }
+);
+
 export const newReport = createAction(
   'REPORTS_NEW_REPORT',
   () => new Promise((resolve) => {

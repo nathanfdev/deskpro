@@ -6,7 +6,15 @@ import ListHeader from './List/ListHeader';
 import List from './List/List';
 import Edit from './Edit';
 import Run from './Run';
-import { loadReport, saveReport, newReport, runReport, saveAndRun, parseQuery } from '../../Application/Actions/reportActions';
+import {
+  loadReport,
+  saveReport,
+  newReport,
+  runReport,
+  saveAndRun,
+  parseQuery,
+  cloneReport
+} from '../../Application/Actions/reportActions';
 import { allReportsSelector, allReportsLabelsSelector } from '../Selectors/reports';
 import { regex, activateLabel, transformLabels, transformReportData, countActiveLabels } from './helper';
 
@@ -48,6 +56,7 @@ class Wrapper extends React.Component {
 
     this.onEditReportClick          = this.onEditReportClick.bind(this);
     this.onRunReportClick           = this.onRunReportClick.bind(this);
+    this.onCloneReportClick         = this.onCloneReportClick.bind(this);
     this.onChangeReportDisplayTypes = this.onChangeReportDisplayTypes.bind(this);
     this.onChangeFilterText         = this.onChangeFilterText.bind(this);
     this.onChangeReportVar          = this.onChangeReportVar.bind(this);
@@ -84,6 +93,10 @@ class Wrapper extends React.Component {
   onRunReportClick(report) {
     this.props.dispatch(runReport(report.get('id'), transformReportData(report)));
     this.setState({ mode: 'run' });
+  }
+
+  onCloneReportClick(report) {
+    this.props.dispatch(cloneReport(report.get('id')));
   }
 
   onChangeReportDisplayTypes(displayTypes) {
@@ -223,6 +236,7 @@ class Wrapper extends React.Component {
             groupParams={groupParams}
             onSubmit={this.onSubmit}
             onRunClick={this.onRunReportClick}
+            onCloneClick={this.onCloneReportClick}
           />
           : null
         }

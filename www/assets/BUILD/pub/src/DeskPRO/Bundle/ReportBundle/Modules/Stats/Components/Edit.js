@@ -12,11 +12,12 @@ import LabelsField from './Fields/LabelsField';
 class Edit extends BaseForm {
 
   static propTypes = {
-    report:      PropTypes.object,
-    labels:      PropTypes.object,
-    groupParams: PropTypes.object,
-    onRunClick:  PropTypes.func.isRequired,
-    parseQuery:  PropTypes.func.isRequired,
+    report:       PropTypes.object,
+    labels:       PropTypes.object,
+    groupParams:  PropTypes.object,
+    onRunClick:   PropTypes.func.isRequired,
+    onCloneClick: PropTypes.func.isRequired,
+    parseQuery:   PropTypes.func.isRequired,
   };
 
 
@@ -57,6 +58,7 @@ class Edit extends BaseForm {
     const queryParts  = report.has('query_parts') ? report.get('query_parts') : Immutable.fromJS({});
     this.state.query  = Edit.buildQuery(queryParts.toJS());
     this.onRunClick   = this.onRunClick.bind(this);
+    this.onCloneClick = this.onCloneClick.bind(this);
     this.switchToForm = this.switchToForm.bind(this);
   }
 
@@ -133,8 +135,16 @@ class Edit extends BaseForm {
     }
   }
 
-  onRunClick() {
+  onRunClick(event) {
+    event.preventDefault();
+    event.stopPropagation();
     this.props.onRunClick(this.props.report);
+  }
+
+  onCloneClick(event) {
+    event.preventDefault();
+    event.stopPropagation();
+    this.props.onCloneClick(this.props.report);
   }
 
   renderForm() {
@@ -185,6 +195,7 @@ class Edit extends BaseForm {
         <br />
         { report.get('is_custom') ? <button className={classNames('ui button', { loading: saving })}>Save</button> : null }
         <button onClick={this.onRunClick} className={classNames('ui olive button', { loading: saving })}>Run</button>
+        <button onClick={this.onCloneClick} className={classNames('ui orange button', { loading: saving })}>Clone</button>
       </Fieldset>
     </Form>);
   }
