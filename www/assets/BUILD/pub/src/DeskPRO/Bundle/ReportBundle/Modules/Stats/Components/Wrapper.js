@@ -29,7 +29,7 @@ import { regex, activateLabel, transformLabels, transformReportData, countActive
 class Wrapper extends React.Component {
 
   static propTypes = {
-    reports:       PropTypes.object,
+    reports:       PropTypes.object.isRequired, // eslint-disable-line react/no-unused-prop-types
     reportsLoaded: PropTypes.bool,
     reportLoading: PropTypes.bool,
     currentReport: PropTypes.object,
@@ -68,8 +68,14 @@ class Wrapper extends React.Component {
   }
 
   componentWillReceiveProps(props) {
-    const { currentReport, reports } = props;
-    this.setState({ currentReport, reports });
+    const { currentReport } = props;
+    let newReports = props.reports;
+    this.state.reports.forEach((report) => { // we have to persist changed var values, to keep run mode work
+      if (report.get('varChanged')) {
+        newReports = newReports.mergeIn([report.get('id')], { variables: report.get('variables'), varChanged: true });
+      }
+    });
+    this.setState({ currentReport, reports: newReports });
     this.setLabels(props);
   }
 
@@ -77,12 +83,11 @@ class Wrapper extends React.Component {
     let changedReport = report;
     changedReport.get('variables').forEach((val, index) => {
       if (val.get('name') === varName) {
-        changedReport = changedReport.setIn(['variables', index, 'value'], value);
+        changedReport = changedReport.setIn(['variables', index, 'value'], value).set('varChanged', true);
       }
     });
-    const data = transformReportData(changedReport);
-    const newReports = this.state.reports.set(report.get('id'), report);
-    this.setState({ currentReport: report, reports: newReports }, () => this.onRunReportClick(report, data));
+    const newReports = this.state.reports.set(report.get('id'), changedReport);
+    this.setState({ currentReport: report, reports: newReports }, () => this.onRunReportClick(changedReport));
   }
 
   onEditReportClick(report) {
