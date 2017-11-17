@@ -406,6 +406,91 @@ class TicketHandlerTest extends AbstractEntityHandlerTest
         $this->assertTrue($entity->isArchived());
     }
 
+    public function test_write_logs()
+    {
+        $log1 = new Model\TicketLog();
+        $log1->setActionType('free');
+        $log1->setDetails([
+            'message' => 'log 1',
+        ]);
+
+        $log2 = new Model\TicketLog();
+        $log2->setActionType('free');
+        $log2->setDetails([
+            'message' => 'log 2',
+        ]);
+
+        $log3 = new Model\TicketLog();
+        $log3->setActionType('free');
+        $log3->setDetails([
+            'message' => 'log 3',
+        ]);
+
+        $model = $this->createBaseModel();
+        $model->setLogs([$log1, $log2, $log3]);
+
+        $this->writer->writeData($model);
+        $this->em()->clear();
+
+        $entity = $this->getBaseEntity();
+        $this->assertCount(4, $entity->getLogs());
+        $this->assertEquals('log 1', $entity->getLogs()[0]->getDetails()['message']);
+        $this->assertEquals('log 2', $entity->getLogs()[1]->getDetails()['message']);
+        $this->assertEquals('log 3', $entity->getLogs()[2]->getDetails()['message']);
+        $this->assertEquals('Imported (old ticket ID #1)', $entity->getLogs()[3]->getDetails()['message']);
+    }
+
+    public function test_dupe_logs_on_update()
+    {
+        $log1 = new Model\TicketLog();
+        $log1->setOid(1);
+        $log1->setActionType('free');
+        $log1->setDetails([
+            'message' => 'log 1',
+        ]);
+
+        $log2 = new Model\TicketLog();
+        $log2->setOid(2);
+        $log2->setActionType('free');
+        $log2->setDetails([
+            'message' => 'log 2',
+        ]);
+
+        $log3 = new Model\TicketLog();
+        $log3->setOid(3);
+        $log3->setActionType('free');
+        $log3->setDetails([
+            'message' => 'log 3',
+        ]);
+
+        $log4 = new Model\TicketLog();
+        $log4->setOid(4);
+        $log4->setActionType('free');
+        $log4->setDetails([
+            'message' => 'log 4',
+        ]);
+
+        $model = $this->createBaseModel();
+        $model->setLogs([$log1, $log2, $log3]);
+
+        $this->writer->writeData($model);
+        $this->em()->clear();
+
+        $model->setLogs([$log1, $log2, $log3, $log4]);
+
+        $this->writer->writeData($model);
+        $this->em()->clear();
+
+        $entity = $this->getBaseEntity();
+        $this->assertCount(6, $entity->getLogs());
+        $this->assertEquals('log 1', $entity->getLogs()[0]->getDetails()['message']);
+        $this->assertEquals('log 2', $entity->getLogs()[1]->getDetails()['message']);
+        $this->assertEquals('log 3', $entity->getLogs()[2]->getDetails()['message']);
+        $this->assertEquals('Imported (old ticket ID #1)', $entity->getLogs()[3]->getDetails()['message']);
+        $this->assertEquals('log 4', $entity->getLogs()[4]->getDetails()['message']);
+        $this->assertEquals('Imported (old ticket ID #1)', $entity->getLogs()[5]->getDetails()['message']);
+    }
+
     /**
      * @return Model\Ticket
      */

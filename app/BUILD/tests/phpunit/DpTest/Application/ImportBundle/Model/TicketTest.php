@@ -63,24 +63,29 @@ class TicketTest extends AbstractModelTest
             'messages'      => [],
             'is_hold'       => false,
             'urgency'       => 1,
-            'log_message'   => 'Imported',
+            'logs'          => [],
         ]));
     }
 
     public function test_full_params()
     {
         $params = [
-            'ref'           => 'ABCDEFG',
-            'subject'       => 'Ticket subject',
-            'department'    => 'Department Name',
-            'person'        => '1',
-            'agent'         => '2',
-            'status'        => 'awaiting_user',
-            'labels'        => ['label 1', 'label 2'],
-            'participants'  => ['user_1@deskpro.dev', 'user_2@deskpro.dev'],
-            'urgency'       => 5,
-            'is_hold'       => true,
-            'log_message'   => 'Imported from ZD',
+            'ref'          => 'ABCDEFG',
+            'subject'      => 'Ticket subject',
+            'department'   => 'Department Name',
+            'person'       => '1',
+            'agent'        => '2',
+            'status'       => 'awaiting_user',
+            'labels'       => ['label 1', 'label 2'],
+            'participants' => ['user_1@deskpro.dev', 'user_2@deskpro.dev'],
+            'urgency'      => 5,
+            'is_hold'      => true,
+            'logs'         => [
+                [
+                    'action_type' => 'free',
+                    'details'     => ['message' => 'Imported from ZD'],
+                ],
+            ],
             'date_created'  => '2016-07-15T12:55:01+0300',
             'date_archived' => '2016-07-15T12:55:01+0300',
             'date_resolved' => '2016-07-15T12:55:01+0300',

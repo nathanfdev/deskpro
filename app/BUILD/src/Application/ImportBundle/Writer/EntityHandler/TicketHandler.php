@@ -226,17 +226,28 @@ class TicketHandler extends AbstractEntityHandler
         $entity->setIsHold($model->isHold());
         $this->persister->persistAndFlush($entity, $model);
 
-        // write ticket log message
-        $ticketLogEntity = new Entity\TicketLog();
-        $ticketLogEntity
-            ->setTicket($entity)
-            ->setActionType('free')
-            ->setDetails([
-                'message' => $model->getLogMessage() ?: sprintf('Imported (old ticket ID #%s)', $model->getOid()),
-            ])
-        ;
+        // write ticket logs
+        foreach ($model->getLogs() as $logModel) {
+            /** @var Entity\TicketLog $logEntity */
+            $logEntity = $this->findOrCreateEntity($this->mappers->getTicketLogMapper(), $logModel);
+            $logEntity->setTicket($entity);
+            $logEntity->setActionType($logModel->getActionType());
+            $logEntity->setDetails($logModel->getDetails());
+            if ($logModel->getDateCreated()) {
+                $logEntity->setDateCreated($logModel->getDateCreated());
+            }
 
-        $this->persister->persistAndFlush($ticketLogEntity);
+            $this->persister->persistAndFlush($logEntity, $logModel);
+        }
+
+        $logEntity = new Entity\TicketLog();
+        $logEntity->setTicket($entity);
+        $logEntity->setActionType('free');
+        $logEntity->setDetails([
+            'message' => sprintf('Imported (old ticket ID #%s)', $model->getOid()),
+        ]);
+
+        $this->persister->persistAndFlush($logEntity);
     }
 
     /**

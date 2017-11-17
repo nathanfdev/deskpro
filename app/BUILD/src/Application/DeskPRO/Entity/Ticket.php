@@ -641,6 +641,11 @@ class Ticket extends DomainObject implements HighlightableModelInterface, Labels
     protected $followUps;
 
     /**
+     * @var TicketLog[]
+     */
+    protected $logs;
+
+    /**
      * Constructor.
      */
     public function __construct()
@@ -662,6 +667,7 @@ class Ticket extends DomainObject implements HighlightableModelInterface, Labels
         $this->children_tickets = new ArrayCollection();
         $this->stars            = new ArrayCollection();
         $this->followUps        = new ArrayCollection();
+        $this->logs             = new ArrayCollection();
 
         // Default ref (is reset with ref generator)
         $this->ref = DpStrings::random(10, Strings::CHARS_ALPHA_IU).'-'.date('YzB');
@@ -4672,6 +4678,14 @@ class Ticket extends DomainObject implements HighlightableModelInterface, Labels
     }
 
     /**
+     * @return TicketLog[]|ArrayCollection
+     */
+    public function getLogs()
+    {
+        return $this->logs;
+    }
+
+    /**
      * @return array
      */
     public static function getTicketStatuses()
@@ -5259,6 +5273,17 @@ class Ticket extends DomainObject implements HighlightableModelInterface, Labels
             [
                 'fieldName'     => 'messages',
                 'targetEntity'  => 'Application\\DeskPRO\\Entity\\TicketMessage',
+                'cascade'       => ['remove', 'persist', 'merge'],
+                'mappedBy'      => 'ticket',
+                'fetch'         => ClassMetadataInfo::FETCH_EXTRA_LAZY,
+                'orderBy'       => ['date_created' => 'ASC'],
+                'orphanRemoval' => true,
+            ]
+        );
+        $metadata->mapOneToMany(
+            [
+                'fieldName'     => 'logs',
+                'targetEntity'  => 'Application\\DeskPRO\\Entity\\TicketLog',
                 'cascade'       => ['remove', 'persist', 'merge'],
                 'mappedBy'      => 'ticket',
                 'fetch'         => ClassMetadataInfo::FETCH_EXTRA_LAZY,
