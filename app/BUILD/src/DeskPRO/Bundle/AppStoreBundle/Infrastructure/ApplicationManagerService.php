@@ -72,29 +72,49 @@ class ApplicationManagerService
     }
 
     /**
+     * @param AppAssetBlob $asset
+     *
+     * @return Domain\AppManifest
+     */
+    public function readManifestFromAssetBlob(AppAssetBlob $asset)
+    {
+        // TODO this should be moved into DI container
+        AppAssetBlob::setBlobStorageService($this->blobStorage);
+        $reader = new AppManifestReader();
+
+        return $reader->readManifestFromJson($asset->getRawContent());
+    }
+
+    /**
      * @param AppInstance $instance
      * @param string      $strategy
      */
     public function remove(AppInstance $instance, $strategy)
     {
         $entity = null;
-        /** @var DeskPRO\Entity\Blob $blobs */
-        $blobs = [];
+        /** @var DeskPRO\Entity\Blob $entities */
+        $entities = [];
+        $blobs    = [];
         if ($strategy === 'instance') {
-            $entity = $instance;
+            $entities[] = $instance;
         } elseif ($strategy === 'last-instance') {
-            $entity = $instance->getApp();
-            $blobs  = $instance->getApp()->getAssets()->map(function (AppAssetBlob $asset) {
-                return $asset->getBlob();
-            })->toArray();
-        }
+            $entities[] = $instance;
 
-        if (is_null($entity)) {
+            $app = $instance->getApp();
+            foreach ($app->getAssets() as $asset) {
+                if ($asset->getPath() === '.deskpro/versions/manifest.json.prev') {
+                    $entities[] = $asset;
+                    $blobs      = $asset->getBlob();
+                }
+            }
+        } else {
             $msg = sprintf('Could not handle remove strategy: %s', $strategy);
             throw new \DomainException($msg);
         }
 
-        $this->em->remove($entity);
+        foreach ($entities as $entity) {
+            $this->em->remove($entity);
+        }
         $this->em->flush();
 
         // delete the blobs, one by one :(
@@ -168,12 +188,28 @@ class ApplicationManagerService
             $app = new App();
         }
 
+        // TODO move into service method
+        $instanceCount = count($app->getInstances());
+
         $app->setManifest(json_decode($bundle->getManifestAsString(), true));
         $app->setName($manifest->getName());
 
-        //save blob assets
-        foreach ($app->getAssets() as $asset) {
-            $app->getAssets()->removeElement($asset);
+        $specialAssets = [];
+
+        // save the previous manifest into .deskpro/manifest.json.prev only if we have any instances
+        if ($instanceCount) {
+            // TODO this should be moved into DI container
+            AppAssetBlob::setBlobStorageService($this->blobStorage);
+            foreach ($app->getAssets() as $specialAsset) {
+                if ($specialAsset->getPath() === 'manifest.json') {
+                    $specialAssets[] = $specialAsset->copy('.deskpro/versions/manifest.json.prev');
+                }
+                $app->getAssets()->removeElement($specialAsset);
+            }
+        }
+
+        foreach ($specialAssets as $specialAsset) {
+            $app->addAsset($specialAsset);
         }
 
         foreach ($bundle->listAllResources() as $resource) {
@@ -185,12 +221,12 @@ class ApplicationManagerService
                 $contentType = 'application/octet-stream';
             }
 
-            $blob  = $this->blobStorage->createBlobRecordFromString($resource->getContent(), $resource->getPath(), $contentType);
-            $asset = new AppAssetBlob();
-            $asset->setPath($resource->getPath());
-            $asset->setBlob($blob);
+            $blob         = $this->blobStorage->createBlobRecordFromString($resource->getContent(), $resource->getPath(), $contentType);
+            $specialAsset = new AppAssetBlob();
+            $specialAsset->setPath($resource->getPath());
+            $specialAsset->setBlob($blob);
 
-            $app->addAsset($asset);
+            $app->addAsset($specialAsset);
         }
 
         $this->em->persist($app);
