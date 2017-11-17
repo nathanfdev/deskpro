@@ -81,6 +81,9 @@ class ChatRoundRobin extends AbstractEntityRepository
 
     public function findByDepartment($departmentId)
     {
+        if ($departmentId instanceof \Application\DeskPRO\Entity\Department) {
+            $departmentId = $departmentId->getId();
+        }
         $qb = $this->getEntityManager()->createQueryBuilder();
 
         return $qb->select('r')

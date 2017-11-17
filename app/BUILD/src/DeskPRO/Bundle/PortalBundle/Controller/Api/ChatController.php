@@ -28,12 +28,16 @@
 
 namespace DeskPRO\Bundle\PortalBundle\Controller\Api;
 
+use Application\DeskPRO\App;
 use Application\DeskPRO\Entity\Blob;
 use Application\DeskPRO\Entity\ChatBlock;
 use Application\DeskPRO\Entity\ChatConversation;
 use Application\DeskPRO\Entity\ChatMessage;
+use Application\DeskPRO\Entity\ChatRoundRobin;
+use Application\DeskPRO\Entity\ChatRoundRobinLogEntry;
 use Application\DeskPRO\Entity\CustomDefChat;
 use Application\DeskPRO\Entity\Department;
+use Application\DeskPRO\Entity\Person;
 use Application\DeskPRO\Entity\Session;
 use Application\DeskPRO\EntityRepository\Department as DepartmentRepository;
 use DeskPRO\Bundle\AppBundle\Entity\HitRecord;
@@ -133,12 +137,24 @@ class ChatController extends AbstractApiController
 
         $this->saveConversation($conversation);
 
+        $assignAgent = $this->getAssignFromRr($conversation);
+
+        if ($assignAgent) {
+            $conversation->setAgent($assignAgent);
+        }
+
         // If an email validation code was generated then user needs to validate the entered email first,
         // so skip agent notify until the user validates it
         if ($conversation->getEmailValidationCode()) {
             $this->dispatch(UserChatEvent::VALIDATE_EMAIL, new UserChatEvent($conversation));
         } else {
             $this->dispatch(UserChatEvent::STARTED, new UserChatEvent($conversation));
+        }
+
+        if ($assignAgent) {
+            /** @var $chatManager \Application\DeskPRO\Chat\UserChat\UserChatManager */
+            $chatManager = App::getSystemObject('user_chat_manager', ['session' => null]);
+            $chatManager->sendMessageAssignEvent($conversation);
         }
 
         $this->setWidgetOption('chat_id', $conversation->getAuthId());
@@ -158,6 +174,41 @@ class ChatController extends AbstractApiController
         }
 
         return View::create($this->wrap($conversation));
+    }
+
+    private function getAssignFromRr(ChatConversation $conversation)
+    {
+        $em = $this->getDoctrine()->getManager();
+
+        /** @var \Application\DeskPRO\EntityRepository\ChatRoundRobin $repo */
+        $repo = $em->getRepository(ChatRoundRobin::class);
+
+        if ($conversation->getDepartment()) {
+            /** @var ChatRoundRobin $rr */
+            $rr = $repo->findByDepartment($conversation->getDepartment());
+        }
+        if (empty($rr)) {
+            $rr = $repo->findOneBy(['apply_by_default' => true]);
+        }
+        if (!$rr) {
+            return;
+        }
+
+        /** @var \Application\DeskPRO\EntityRepository\Person $personRepository */
+        $personRepository = $em->getRepository(Person::class);
+
+        $entry                = new ChatRoundRobinLogEntry();
+        $entry->rr            = $rr;
+        $entry['chatId']      = $conversation->getId();
+        $entry['chatSubject'] = $conversation->getSubjectLine();
+        $em->persist($entry);
+
+        $agent = $rr->getNextAgent($personRepository, $entry, $conversation->getDepartment());
+        if (!$agent) {
+            return;
+        }
+
+        return $agent;
     }
 
     /**

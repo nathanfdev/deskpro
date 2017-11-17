@@ -133,6 +133,10 @@ class ChatRoundRobin extends DomainObject
      */
     public function getNextAgent(PersonRepository $personRepo, ChatRoundRobinLogEntry $entry = null, $department = null)
     {
+        if ($department && $department instanceof Department) {
+            $department = $department->getId();
+        }
+
         $agents = [];
         foreach ($this->agents as $ref) {
             $agents[] = $ref->agent;

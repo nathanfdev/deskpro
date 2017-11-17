@@ -175,7 +175,6 @@ class ChatRoundRobinController extends AbstractController implements ProtectedCo
         }
 
         $this->em->getRepository(DataStore::class)->findOneBy(['name' => 'widget.brand_settings.']);
-        $this->get('settings_resolver')->getBrandSettings();
 
         return $this->createApiResponse([
             'enabled' => (bool) $this->settings->get('core.chat_round_robin.enabled', false),
