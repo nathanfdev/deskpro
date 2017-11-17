@@ -275,6 +275,8 @@ class IncomingAccountTester
                 default:
                     $this->logger->logError('Unknown error. Details:');
             }
+
+            $this->logger->logError($storage->getLastResponse());
             $this->logger->logError(str_repeat('-', 35));
             $this->logger->logError(sprintf('Error: %s', $e->getMessage()));
             $this->logger->logError(sprintf('(Code: %s:%s)', get_class($e), $e->getCode()));
