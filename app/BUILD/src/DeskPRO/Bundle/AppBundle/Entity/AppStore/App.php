@@ -139,12 +139,11 @@ class App implements Domain\Application, EntityInterface, NotifyPropertyChanged
     }
 
     /**
-     * @return Domain\AppManifest
-     * @deprecated
+     * @return array
      */
-    public function getParsedManifest()
+    public function getRawManifest()
     {
-        return $this->getManifest();
+        return $this->manifest;
     }
 
     /**
