@@ -169,7 +169,7 @@ class AppsController extends AbstractController
                 $this->em->persist($iconBlob);
                 $this->em->flush();
             } elseif ($app) {
-                $manifest = $app->getParsedManifest();
+                $manifest = $app->getManifest();
                 $iconBlob = $app->getIconAsset()->getBlob();
             } else {
                 throw $this->createNotFoundException();
@@ -365,7 +365,7 @@ class AppsController extends AbstractController
                             'updated' => $isAppUpdate,
                         ]
                     ),
-                    $this->generateUrl('api_get_app_instance', ['application' => $instance->getId()])
+                    sprintf('api/v2/apps/packages/%s', $app->getId())
                 );
             }
 
@@ -955,36 +955,28 @@ class AppsController extends AbstractController
         $appBundle       = new AppZipArchiveBundle(new \ZipArchive(), new \SplFileInfo($file));
         $bundleValidator = $this->container->get(AppBundleValidator::class);
         if ($bundleValidator->validateBundle($appBundle)) {
+
+
             $manifestString = SafeFile::fileGetContents($app_dir.'/manifest.json', $app_dir);
             $manifestReader = new AppManifestReader();
             $manifest       = $manifestReader->readManifestFromJson($manifestString);
 
-            $app = $this->em->getRepository(App::class)->findOneBy([
-                'name' => $manifest->getName(),
-            ]);
-            $isAppUpdate    = $manifest->isSingle() && $app && $app->getInstances()->count() > 0;
-            if ($isAppUpdate) {
-                $this->container->get('apps2.application_manager')->createOrUpdateAppEntity($appBundle);
-                $instance = $app->getInstances()->first();
-            } else {
-                $instance = $this->container->get('apps2.application_manager')->createFirstInstance($appBundle);
-            }
+            $app = $this->container->get('apps2.application_manager')->createOrUpdateAppEntity($appBundle);
 
             $context = new SideloadSerializationContext();
             $context->setIncludes(['app']);
             $context->setInlineSideloads(true);
-            $serialized = $this->container->get('serializer')->toArray(new ApiWrapper($instance), $context);
+            $serialized = $this->container->get('serializer')->toArray(new ApiWrapper($app), $context);
 
             return $this->createApiCreateResponse(
                 array_merge(
                     $serialized,
                     [
                         'version' => 2,
-                        'package_name' => $manifest->getName(),
-                        'updated' => $isAppUpdate,
+                        'package_name' => $manifest->getName()
                     ]
                 ),
-                $this->generateUrl('api_get_app_instance', ['application' => $instance->getId()])
+                $this->generateUrl('api_get_app_instance', ['application' => $app->getId()])
             );
         }
 

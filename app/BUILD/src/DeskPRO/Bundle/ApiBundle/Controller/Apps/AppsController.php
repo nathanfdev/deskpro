@@ -35,6 +35,7 @@ use DeskPRO\Bundle\AppBundle\Annotation\ActionPermissions\Annotation\ApiModes;
 use DeskPRO\Bundle\AppBundle\Entity;
 use DeskPRO\Bundle\AppBundle\Notification\Event\LegacySystemEvent;
 use DeskPRO\Bundle\AppStoreBundle;
+use DeskPRO\Bundle\AppStoreBundle\Domain\AppManifest;
 use DeskPRO\Bundle\AppStoreBundle\Infrastructure\ApplicationManagerService;
 use FOS\RestBundle\Controller\Annotations as Rest;
 use FOS\RestBundle\View\View;
@@ -154,7 +155,7 @@ class AppsController extends BaseController
 
     /**
      * @Rest\Post("/{application}")
-     * @ParamConverter("application", class="AppBundle:Entity\AppStore\App", converter="DeskPRO\Bundle\AppStoreBundle\ParamConverter\AppParamConverter")
+     * @ParamConverter("application", class="AppBundle:Entity\AppStore\App", converter="DeskPRO\Bundle\AppStoreBundle\ParamConverter\AppParamConverter", options={"numericId" = "instanceId"})
      */
      public function createAction(Entity\AppStore\App $application = null)
      {
@@ -179,8 +180,6 @@ class AppsController extends BaseController
          $instance        = $instanceCreator->createInstance($application);
          return $this->wrap($instance);
      }
-
-
 
     /**
      * @Rest\Put("/{application}", condition="request.headers.get('Content-Type') matches '#application/json#i'")
@@ -255,8 +254,8 @@ class AppsController extends BaseController
 
         /** @var AppStoreBundle\Infrastructure\ApplicationManagerService $appManager */
         $appManager = $this->container->get('apps2.application_manager');
-        // we are only deleting the instance, regardless if this instance is the only one
-        $appManager->remove($application, 'instance');
+        $strategy = $appManager->getRemoveStrategy($application);
+        $appManager->remove($application, $strategy);
 
         $this->container
             ->get('event_dispatcher')
@@ -267,6 +266,22 @@ class AppsController extends BaseController
             ]));
 
         return new View(null, HttpFoundation\Response::HTTP_NO_CONTENT);
+    }
+
+    /**
+     * @Rest\Get("/{application}/manifest")
+     * @ParamConverter("application", class="AppBundle:Entity\AppStore\App", converter="DeskPRO\Bundle\AppStoreBundle\ParamConverter\AppInstanceParamConverter")
+     *
+     * @param Entity\AppStore\AppInstance $application
+     * @return AppManifest
+     */
+    public function getManifestAction(Entity\AppStore\AppInstance $application = null)
+    {
+        if (empty($application)) {
+            throw new NotFoundHttpException('could not find application');
+        }
+
+        return $application->getApp()->getManifest();
     }
 
     /**
@@ -290,21 +305,22 @@ class AppsController extends BaseController
     /**
      * @Rest\Get("/{application}/assets")
      *
-     * @ParamConverter("application", class="AppBundle:Entity\AppStore\App", converter="DeskPRO\Bundle\AppStoreBundle\ParamConverter\AppParamConverter")
+     * @ParamConverter("application", class="AppBundle:Entity\AppStore\App", converter="DeskPRO\Bundle\AppStoreBundle\ParamConverter\AppInstanceParamConverter")
      * @ParamConverter("searchFilter", class="AppStoreBundle:Domain\AssetFilter", converter="DeskPRO\Bundle\AppStoreBundle\ParamConverter\AssetFilterParamConverter")
      *
-     * @param Entity\AppStore\App                     $application
+     * @param Entity\AppStore\AppInstance                     $application
      * @param AppStoreBundle\Domain\SearchAssetFilter $searchFilter
      */
-    public function listAssetsAction(Entity\AppStore\App $application = null, AppStoreBundle\Domain\SearchAssetFilter $searchFilter)
+    public function listAssetsAction(Entity\AppStore\AppInstance $application = null, AppStoreBundle\Domain\SearchAssetFilter $searchFilter)
     {
         if (empty($application)) {
             throw new NotFoundHttpException('could not find application');
         }
 
+        $app = $application->getApp();
         /** @var AppStoreBundle\Domain\AssetFinder $assetFinder */
         $assetFinder = $this->container->get(AppStoreBundle\Domain\AssetFinder::class);
-        $assets      = $assetFinder->findApplicationAssets($application, $searchFilter);
+        $assets      = $assetFinder->findApplicationAssets($app, $searchFilter);
 
         return $assets;
     }
@@ -316,7 +332,7 @@ class AppsController extends BaseController
      *
      * @param Entity\AppStore\AppInstance $application
      *
-     * @return array
+     * @return ApplicationStatus
      */
     public function getStatusAction(Entity\AppStore\AppInstance $application = null)
     {

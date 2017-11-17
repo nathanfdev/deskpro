@@ -34,7 +34,13 @@ use DeskPRO\Bundle\ApiBundle\ApiDoc\Annotation\ApiUnstable;
 use DeskPRO\Bundle\ApiBundle\Controller\CrudController;
 use DeskPRO\Bundle\AppBundle\Annotation\ActionPermissions\Annotation\ApiModes;
 use DeskPRO\Bundle\AppBundle\Entity\AppStore\App;
+use DeskPRO\Bundle\AppBundle\Entity\AppStore\AppAssetBlob;
 use DeskPRO\Bundle\AppBundle\Security\Voter\PermissionGroups\PermissionGroupVoter;
+use DeskPRO\Bundle\AppStoreBundle\Domain\AppManifest;
+use DeskPRO\Bundle\AppStoreBundle\Domain\AppManifestChanges\ChangeDetector;
+use DeskPRO\Bundle\AppStoreBundle\Domain\AppManifestChanges\GenericChange;
+use DeskPRO\Bundle\AppStoreBundle\Infrastructure\ApplicationManagerService;
+use DeskPRO\Bundle\AppStoreBundle\Infrastructure\AppManifestReader;
 use FOS\RestBundle\Controller\Annotations as Rest;
 use FOS\RestBundle\View\View;
 use Symfony\Component\HttpFoundation\Request;
@@ -64,7 +70,7 @@ class AppPackagesController extends CrudController
      *      requirements={
      *          {
      *              "name"="application",
-     *              "requirement"="^(?=.*[^\d].*).+$",
+     *              "requirement"="^(?=.*[^\d].*)[^/]+$",
      *              "description"="The name of the application",
      *              "dataType"="string"
      *          }
@@ -75,7 +81,7 @@ class AppPackagesController extends CrudController
      *      }
      * )
 
-     * @Rest\Get("/{application}", requirements={"application"="^(?=.*[^\d].*).+$"})
+     * @Rest\Get("/{application}", requirements={"application"="^(?=.*[^\d].*)[^/]+$"})
      * @ParamConverter("app", class="AppBundle:Entity\AppStore\App", converter="DeskPRO\Bundle\AppStoreBundle\ParamConverter\AppParamConverter", options={"attribute" = "application"})
      *
      * @param App $app
@@ -106,6 +112,60 @@ class AppPackagesController extends CrudController
         }
 
         throw new ServiceUnavailableHttpException('endpoint not available');
+    }
+
+    /**
+     * @Rest\Get("/{application}/manifest")
+     * @ParamConverter("application", class="AppBundle:Entity\AppStore\App", converter="DeskPRO\Bundle\AppStoreBundle\ParamConverter\AppParamConverter")
+     *
+     * @param App $application
+     *
+     * @return AppManifest
+     */
+    public function getManifestAction(App $application = null)
+    {
+        if (empty($application)) {
+            throw new NotFoundHttpException('could not find application');
+        }
+
+        return $application->getManifest();
+    }
+
+    /**
+     * @Rest\Get("/{application}/manifest-changes")
+     *
+     * @ParamConverter("application", class="AppBundle:Entity\AppStore\App", converter="DeskPRO\Bundle\AppStoreBundle\ParamConverter\AppParamConverter")
+     *
+     * @param App $application
+     *
+     * @return array|object[]
+     */
+    public function getManifestChangesAction(App $application = null)
+    {
+        if (empty($application)) {
+            throw new NotFoundHttpException('could not find application');
+        }
+
+        $manifest = $application->getManifest();
+        /** @var AppAssetBlob $previousManifestAsset */
+        $previousManifestAsset = $application->getAssets()->filter((function (AppAssetBlob $asset) {
+            return $asset->getPath() === '.deskpro/versions/manifest.json.prev';
+        }))->first();
+
+        if (!$previousManifestAsset) {
+            $previousManifest = new AppManifest();
+        } else {
+            /** @var ApplicationManagerService $instanceManager */
+            $instanceManager = $this->container->get('apps2.application_manager');
+            $previousManifest = $instanceManager->readManifestFromAssetBlob($previousManifestAsset);
+        }
+
+        $changeDetector = new ChangeDetector();
+        $changes = [];
+        $changes = array_merge($changes, $changeDetector->customFieldChanges($manifest, $previousManifest));
+        $changes = array_merge($changes, $changeDetector->settingsChanges($manifest, $previousManifest));
+
+        return $changes;
     }
 
 }
