@@ -50,6 +50,7 @@ use Application\DeskPRO\Usersource\UsersourceInfo;
 use Application\DeskPRO\Usersource\UsersourceManager;
 use DeskPRO\Bundle\AppBundle\Routing\RouterUtils;
 use DeskPRO\Bundle\AppBundle\Settings\BrandAwareSettingsResolver;
+use DeskPRO\Bundle\AppBundle\Twig\TwigTemplateRenderer;
 use DeskPRO\Component\Filesystem\SafeFile;
 use DeskPRO\Component\Util\RegexUtils;
 use DpSys\License;
@@ -1787,7 +1788,8 @@ class TemplatingExtension extends \Twig_Extension
         }
 
         try {
-            $rendered = $this->getContainer()->getTwig()->renderStringTemplate($string, $vars);
+            $tr       = new TwigTemplateRenderer($this->getContainer()->getTwig(), $this->getContainer()->get('brand_aware_settings_resolver'));
+            $rendered = $tr->renderStringTemplate($string, $vars);
         } catch (\Exception $e) {
             return $string;
         }
