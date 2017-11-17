@@ -127,7 +127,7 @@ class TicketMessagesController extends CrudSubController
     public function getAttachmentsAction(Request $request, $id)
     {
         return TicketAttachmentsController::subRequestSearch($this->getKernel(), $request, [
-            'message' => $id,
+            'message' => $this->findEntity($id, $request)->getId(),
             'parentId' => $request->get(static::$parentParameter)
         ]);
     }

@@ -80,12 +80,8 @@ class TicketAttachmentsController extends CrudSubController
 
         if (null !== $request->get('message')) {
             $message = (int) $request->get('message');
-            if ($message > 0) {
-                $qb->andWhere("$alias.message = :message_id");
-                $qb->setParameter('message_id', $message);
-            } else {
-                $qb->andWhere("$alias.message IS NULL");
-            }
+            $qb->andWhere("$alias.message = :message_id");
+            $qb->setParameter('message_id', $message);
         }
     }
 }
