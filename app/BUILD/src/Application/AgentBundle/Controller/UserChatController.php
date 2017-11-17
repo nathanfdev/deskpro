@@ -39,6 +39,7 @@ use Application\DeskPRO\CustomFields\Handler\HandlerAbstract;
 use Application\DeskPRO\Entity\Blob;
 use Application\DeskPRO\Entity\ChatBlock;
 use Application\DeskPRO\Entity\ChatConversation;
+use Application\DeskPRO\Entity\ChatRoundRobinAgent;
 use Application\DeskPRO\Entity\CustomDefChat;
 use Application\DeskPRO\Entity\Department;
 use Application\DeskPRO\Entity\Person;
@@ -187,6 +188,8 @@ class UserChatController extends AbstractController
         );
 
         $chatManager->personJoined($convo, $this->person);
+
+        $this->registerActivity();
 
         if ($convo->status == 'open') {
             if (!$convo['agent']) {
@@ -564,6 +567,8 @@ class UserChatController extends AbstractController
 
             // Reset last agent typing time on send message
             $convo->setDateAgentTyping(null);
+
+            $this->registerActivity();
 
             $this->em->persist($convo);
             $this->em->flush();
@@ -1080,6 +1085,17 @@ class UserChatController extends AbstractController
             case 'missed':
                 $searcher->addTerm(ChatConversationSearch::TERM_AGENT_ID, SearcherAbstract::OP_IS, 0);
                 break;
+        }
+    }
+
+    protected function registerActivity()
+    {
+        //Register activity to round robins
+        $rras = $this->em->getRepository(ChatRoundRobinAgent::class)->findBy(['agent' => $this->getPerson()]);
+        foreach ($rras as $rra) {
+            /* @var $rra ChatRoundRobinAgent */
+            $rra->setLastActivity();
+            $this->em->persist($rra);
         }
     }
 

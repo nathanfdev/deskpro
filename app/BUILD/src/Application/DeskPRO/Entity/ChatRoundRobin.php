@@ -37,6 +37,7 @@ namespace Application\DeskPRO\Entity;
 use Application\DeskPRO\Domain\DomainObject;
 use Application\DeskPRO\EntityRepository\Person as PersonRepository;
 use Application\DeskPRO\People\Helpers\AgentPermissions;
+use DateTime;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\Mapping\ClassMetadata;
 use Doctrine\ORM\Mapping\ClassMetadataInfo;
@@ -175,8 +176,6 @@ class ChatRoundRobin extends DomainObject
                 }
             }
 
-            $agent->getHelper('AgentPermissions')->getAllowedDepartments('chat');
-
             if (array_search($agent->getId(), $availableAgents) === false) {
                 $entry && $entry->addActionSkippedOffline($agent);
                 continue;
@@ -194,8 +193,76 @@ class ChatRoundRobin extends DomainObject
         return null;
     }
 
+    /**
+     * @param PersonRepository            $personRepo
+     * @param ChatRoundRobinLogEntry|null $entry
+     * @param null                        $department
+     *
+     * @return Person|null
+     */
     public function getNextAgentLeastUtilized(PersonRepository $personRepo, ChatRoundRobinLogEntry $entry = null, $department = null)
     {
+        $orderedAgents = [];
+        foreach ($this->agents as $ref) {
+            $orderedAgents[] = $ref->agent->getId();
+        }
+
+        if ($this->last) {
+            $lastIdx = array_search($this->last->getId(), $orderedAgents, 1);
+            if (false !== $lastIdx) {
+                $end           = array_splice($orderedAgents, 0, $lastIdx + 1);
+                $orderedAgents = array_merge($orderedAgents, $end);
+            }
+        }
+
+        $onlineAgents    = $personRepo->getActiveAgentIdsForUserChat();
+        $availableAgents = $this->agents->filter(function ($rra) use ($onlineAgents, $department) {
+            /** @var $rra ChatRoundRobinAgent */
+            if (!in_array($rra->getAgent()->getId(), $onlineAgents)) {
+                return false;
+            }
+            $agentPermissions = $rra->getAgent()->getHelper('AgentPermissions');
+
+            if (!in_array($department, $agentPermissions->getAllowedDepartments('chat'))) {
+                return false;
+            }
+
+            return true;
+        });
+
+        if ($availableAgents->count() === 0) {
+            if ($entry) {
+                $entry->addActionNoOnline();
+            }
+
+            return null;
+        }
+
+        $min      = new DateTime();
+        $min      = $min->format('U');
+        $llAgents = [];
+        /** @var ChatRoundRobinAgent $rra */
+        foreach ($availableAgents as $rra) {
+            $lastActivity = $rra->getLastActivity()->format('U');
+            if ($lastActivity < $min || ($lastActivity === null && $min !== null)) {
+                $min      = $lastActivity;
+                $llAgents = [$rra->getAgent()];
+            } elseif ($lastActivity === $min) {
+                $llAgents[] = $rra->getAgent();
+            }
+        }
+        if (count($llAgents) === 1) {
+            return array_shift($llAgents);
+        }
+        foreach ($orderedAgents as $oid) {
+            foreach ($llAgents as $agent) {
+                if ($agent->getId() === $oid) {
+                    return $agent;
+                }
+            }
+        }
+
+        return null;
     }
 
     //###########################################################################
@@ -301,5 +368,13 @@ class ChatRoundRobin extends DomainObject
                 ],
             ],
         ]);
+    }
+
+    /**
+     * @param Person $last
+     */
+    public function setLast($last)
+    {
+        $this->setModelField('last', $last);
     }
 }

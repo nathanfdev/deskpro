@@ -34,6 +34,7 @@ use Application\DeskPRO\Entity\ChatBlock;
 use Application\DeskPRO\Entity\ChatConversation;
 use Application\DeskPRO\Entity\ChatMessage;
 use Application\DeskPRO\Entity\ChatRoundRobin;
+use Application\DeskPRO\Entity\ChatRoundRobinAgent;
 use Application\DeskPRO\Entity\ChatRoundRobinLogEntry;
 use Application\DeskPRO\Entity\CustomDefChat;
 use Application\DeskPRO\Entity\Department;
@@ -139,10 +140,6 @@ class ChatController extends AbstractApiController
 
         $assignAgent = $this->getAssignFromRr($conversation);
 
-        if ($assignAgent) {
-            $conversation->setAgent($assignAgent);
-        }
-
         // If an email validation code was generated then user needs to validate the entered email first,
         // so skip agent notify until the user validates it
         if ($conversation->getEmailValidationCode()) {
@@ -207,6 +204,16 @@ class ChatController extends AbstractApiController
         if (!$agent) {
             return;
         }
+        $conversation->setAgent($agent);
+        //Register activity to round robins
+        $rras = $em->getRepository(ChatRoundRobinAgent::class)->findBy(['agent' => $agent]);
+        foreach ($rras as $rra) {
+            /* @var $rra ChatRoundRobinAgent */
+            $rra->setLastActivity();
+            $em->persist($rra);
+        }
+        $rr->setLast($agent);
+        $em->persist($rr);
 
         return $agent;
     }

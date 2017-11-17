@@ -508,6 +508,7 @@ return [
     'adm.round_robins.enable'                                                              => 'Enable Round Robin',
     'adm.round_robins.help_bulk'                                                           => 'Bulk add agents that are members of teams, departments or permission groups',
     'adm.round_robins.log_assigned'                                                        => 'Assigned to {{ name }}',
+    'adm.round_robins.log_assigned_last_activity'                                          => 'Assigned to {{ name }} (last activity: {{ last_activity }}',
     'adm.round_robins.log_no_agents_online'                                                => 'No Agents online: Remains Unassigned',
     'adm.round_robins.log_no_agents_online_broadcast'                                      => 'No Agents in the round robin online: Broadcast to available agents',
     'adm.round_robins.log_skipped_disabled'                                                => 'Skipped disabled {{ name }}',

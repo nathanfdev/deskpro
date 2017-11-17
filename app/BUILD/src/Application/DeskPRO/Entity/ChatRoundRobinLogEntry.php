@@ -77,6 +77,14 @@ class ChatRoundRobinLogEntry extends DomainObject
         ];
     }
 
+    public function addActionAssignedLeastUtilized(Person $person, \DateTime $lastActivity)
+    {
+        $this->actions[] = [
+            'phrase' => 'adm.round_robins.log_assigned_last_activity',
+            'params' => ['name' => $person->getDisplayName(), 'last_activity' => $lastActivity->format('Y-m-d H:i')],
+        ];
+    }
+
     public function addActionSkippedOffline(Person $person)
     {
         $this->actions[] = [

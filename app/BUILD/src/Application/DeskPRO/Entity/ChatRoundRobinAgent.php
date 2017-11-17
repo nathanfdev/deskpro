@@ -70,6 +70,48 @@ class ChatRoundRobinAgent extends DomainObject
         $this['sort'] = 0;
     }
 
+    /**
+     * @return DateTime
+     */
+    public function getLastActivity()
+    {
+        return $this->last_activity;
+    }
+
+    /**
+     * @param DateTime $lastActivity
+     */
+    public function setLastActivity(DateTime $lastActivity = null)
+    {
+        if (!$lastActivity) {
+            $lastActivityTime = time();
+        } else {
+            $lastActivityTime = $lastActivity->getTimestamp();
+        }
+        // Round down the time to the closest 5 minutes
+        $lastActivityTime = floor($lastActivityTime / 300) * 300;
+
+        $lastActivity = date_create('@'.$lastActivityTime);
+
+        $this->setModelField('last_activity', $lastActivity);
+    }
+
+    /**
+     * @return Person
+     */
+    public function getAgent()
+    {
+        return $this->agent;
+    }
+
+    /**
+     * @param Person $agent
+     */
+    public function setAgent($agent)
+    {
+        $this->setModelField('agent', $agent);
+    }
+
     public function toApiData($primary = true, $deep = true, array $visited = [])
     {
         //		$data = parent::toApiData($primary, $deep, $visited);
@@ -138,31 +180,5 @@ class ChatRoundRobinAgent extends DomainObject
                 ],
             ],
         ]);
-    }
-
-    /**
-     * @return DateTime
-     */
-    public function getLastActivity()
-    {
-        return $this->last_activity;
-    }
-
-    /**
-     * @param DateTime $lastActivity
-     */
-    public function setLastActivity(DateTime $lastActivity = null)
-    {
-        if (!$lastActivity) {
-            $lastActivityTime = time();
-        } else {
-            $lastActivityTime = $lastActivity->getTimestamp();
-        }
-        // Round down the time to the closest 5 minutes
-        $lastActivityTime = floor($lastActivityTime / 300) * 300;
-
-        $lastActivity = date_create('@'.$lastActivityTime);
-
-        $this->setModelField('last_activity', $lastActivity);
     }
 }
