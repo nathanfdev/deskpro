@@ -599,8 +599,6 @@ DeskPRO.Agent.WindowElement.Section.UserChat = new Orb.Class({
 	handleNewChat: function(data) {
 		var self = this;
 
-		console.log(data);
-
 		if (!this.isDepAllowed(data.department_id)) {
 			return;
 		}
@@ -621,23 +619,25 @@ DeskPRO.Agent.WindowElement.Section.UserChat = new Orb.Class({
 			}
 		} else {
 			if (data.agent_id == DESKPRO_PERSON_ID && !this.isChatOpen(data.conversation_id)) {
-				var self = this;
-				// Its possible we opened the chat, then closed+unassigned ourselves before the last
-				// poll was done. This would create a series of client messages like:
-				// - Assigned (from opening the chat)
-				// - Unassigned (from leaving)
-				// Then the CM would be delievered, and right here we'd see the assigned-to-me message
-				// and attempt to re-open the chat we just closed.
-				// So we timeout so we can add some logic to see if the chat was closed before running this,
-				// this is just a easy way to process CM messages before running the open (since they're executed in sequence)
-				this.openingChatTimeout[data.conversation_id] = window.setTimeout(function() {
-					DeskPRO_Window.runPageRoute('page:' + BASE_URL + 'agent/chat/view/' + data.conversation_id, {noToggle:true});
-					delete self.openingChatTimeout[data.conversation_id];
-					DeskPRO_Window.faviconBadge.disableCrazyMode();
-				}, 1000);
-				// Round robin assigned
-				if (data.eventType === 'chat.new') {
+        if (data.eventType === 'chat.new') {
+					// Round robin assigned
           this.showNewChatRoundRobinAlert(data);
+          DeskPRO_Window.runPageRoute('page:' + BASE_URL + 'agent/chat/view/' + data.conversation_id, {focus: false, isBackgroundLoad: true, noToggle:true});
+        } else {
+					var self = this;
+					// Its possible we opened the chat, then closed+unassigned ourselves before the last
+					// poll was done. This would create a series of client messages like:
+					// - Assigned (from opening the chat)
+					// - Unassigned (from leaving)
+					// Then the CM would be delievered, and right here we'd see the assigned-to-me message
+					// and attempt to re-open the chat we just closed.
+					// So we timeout so we can add some logic to see if the chat was closed before running this,
+					// this is just a easy way to process CM messages before running the open (since they're executed in sequence)
+					this.openingChatTimeout[data.conversation_id] = window.setTimeout(function() {
+						DeskPRO_Window.runPageRoute('page:' + BASE_URL + 'agent/chat/view/' + data.conversation_id, {noToggle:true});
+						delete self.openingChatTimeout[data.conversation_id];
+						DeskPRO_Window.faviconBadge.disableCrazyMode();
+					}, 1000);
 				}
 			}
 

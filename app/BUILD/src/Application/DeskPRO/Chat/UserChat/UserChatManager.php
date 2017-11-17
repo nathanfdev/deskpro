@@ -527,7 +527,9 @@ class UserChatManager
      * Assigns a chat to an agent.
      *
      * @param ChatConversation $convo
-     * @param                  $agent
+     * @param Person           $agent
+     *
+     * @throws \Exception
      */
     public function assignAgent(ChatConversation $convo, Person $agent)
     {
@@ -536,7 +538,7 @@ class UserChatManager
         }
 
         // Already assigned to that agent
-        if ($convo->agent && $convo->agent->id == $agent->id) {
+        if ($convo->getAgent() && $convo->getAgent()->id == $agent->id) {
             return;
         }
 
