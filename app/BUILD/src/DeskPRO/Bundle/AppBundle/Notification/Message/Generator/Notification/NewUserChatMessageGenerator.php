@@ -220,8 +220,8 @@ class NewUserChatMessageGenerator extends SystemEventGenerator
 
         $conversation = $this->em->getRepository(ChatConversation::class)->find($data['id']);
         $conversation->setAgent($agent);
-//        $chatManager->assignAgent($conversation, $agent);
-//        $chatManager->personJoined($conversation, $agent);
+        $conversation->addParticipant($agent);
+//        $chatManager->sendMessageAssignEvent($conversation);
 
         $this->em->flush();
 

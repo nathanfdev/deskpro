@@ -554,14 +554,7 @@ class UserChatManager
             $convo->agent = $agent;
             $this->em->persist($convo);
 
-            $this->addSystemMessage($convo, 'message_assigned', ['name' => $agent->display_name_user], [
-                'chat_assigned'     => true,
-                'assigned_to'       => $agent->id,
-                'assigned_name'     => $agent->getDisplayNameUser(),
-                'assigned_avatar'   => $agent->getPictureUrl(16),
-                'old_assigned_to'   => $old_agent_id,
-                'old_assigned_name' => $old_agent_name,
-            ]);
+            $this->sendMessageAssignEvent($convo, $old_agent_id, $old_agent_name);
 
             $this->em->flush();
 
@@ -579,6 +572,24 @@ class UserChatManager
             $this->em->rollback();
             throw $e;
         }
+    }
+
+    /**
+     * @param ChatConversation $conversation
+     * @param null             $old_agent_id
+     * @param string           $old_agent_name
+     */
+    public function sendMessageAssignEvent(ChatConversation $conversation, $old_agent_id = null, $old_agent_name = '')
+    {
+        $agent = $conversation->getAgent();
+        $this->addSystemMessage($conversation, 'message_assigned', ['name' => $agent->display_name_user], [
+            'chat_assigned'     => true,
+            'assigned_to'       => $agent->id,
+            'assigned_name'     => $agent->getDisplayNameUser(),
+            'assigned_avatar'   => $agent->getPictureUrl(16),
+            'old_assigned_to'   => $old_agent_id,
+            'old_assigned_name' => $old_agent_name,
+        ]);
     }
 
     /**
@@ -990,8 +1001,12 @@ class UserChatManager
     }
 
     /**
-     * @param                  $message_id
      * @param ChatConversation $convo
+     * @param string           $message_id
+     * @param array            $vars
+     * @param array            $metadata
+     *
+     * @throws \Exception
      *
      * @return ChatMessage
      */
