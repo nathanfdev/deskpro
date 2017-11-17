@@ -86,7 +86,7 @@ class NewUserChatMessageGenerator extends SystemEventGenerator
 
         $data = $event->getData();
 
-        if ($data['agent']) {
+        if (isset($data['agent']) && $data['agent']) {
             $messages[] = new Notification($data['agent'], $this->getData($event), $event->getName());
         } else {
             foreach ($this->getTarget($event) as $target) {
