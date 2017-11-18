@@ -43,6 +43,7 @@ use Application\DeskPRO\Templating\GlobalVariables;
 use Application\DeskPRO\Tickets\ExecutorContextInterface;
 use Application\DeskPRO\Usersource\UsersourceInfo;
 use DeskPRO\Bundle\AppBundle\Routing\RouterUtils;
+use DeskPRO\Bundle\AppBundle\Twig\TwigTemplateRenderer;
 use DeskPRO\Component\Util\RegexUtils;
 use DpSys\License;
 use Orb\Auth\Adapter\IframeSsoInterface;
@@ -2581,7 +2582,8 @@ HTML;
         }
 
         try {
-            $rendered = $this->getContainer()->getTwig()->renderStringTemplate($string, $vars);
+            $tr       = new TwigTemplateRenderer($this->getContainer()->getTwig(), $this->getContainer()->get('brand_aware_settings_resolver'));
+            $rendered = $tr->renderStringTemplate($string, $vars);
         } catch (\Exception $e) {
             return $string;
         }

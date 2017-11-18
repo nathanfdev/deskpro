@@ -201,6 +201,23 @@ class Exchange extends AbstractFetcher
      */
     public function _readNext()
     {
+        try {
+            return $this->_doReadNext();
+        } catch (\Exception $e) {
+            $this->logger->logError(sprintf('Exchange error: <%s> [%s] %s', get_class($e), $e->getCode(), $e->getMessage()));
+            $this->logger->logDebug($e->getTraceAsString());
+            $this->logger->logInfo('Last response: '.$this->storage->getLastResponse());
+            throw $e;
+        }
+    }
+
+    /**
+     * {@inheritdoc}
+     *
+     * @return \Application\DeskPRO\EmailGateway\Fetcher\RawMessage
+     */
+    private function _doReadNext()
+    {
         if (!$this->storage) {
             $this->_initConnection();
         }

@@ -208,6 +208,15 @@ class Environment extends \Twig_Environment
         return false;
     }
 
+    public function getTemplateClass($name, $index = null)
+    {
+        $key = $this->getLoader()->getCacheKey($name);
+        $key .= json_encode(array_keys($this->extensions));
+        $key .= function_exists('twig_template_get_attributes');
+
+        return $this->templateClassPrefix.hash('sha256', $key).(null === $index ? '' : '_'.$index);
+    }
+
     public function getCacheFilename($name)
     {
         if (!($this->loader instanceof HybridLoader) || !$this->loader->dbHasTemplate($name)) {
