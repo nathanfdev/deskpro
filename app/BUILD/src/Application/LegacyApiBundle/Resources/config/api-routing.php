@@ -7505,7 +7505,7 @@ $collection->create('dashboard_widget_create', [
     'methods'      => ['POST'],
 ]);
 
-$collection->create('dashboard_widget_delete    ', [
+$collection->create('dashboard_widget_delete', [
     'path'         => '/dashboards/widgets/{id}',
     'controller'   => 'LegacyApiBundle:DashboardWidget:deleteWidget',
     'requirements' => ['id' => '\\d+'],

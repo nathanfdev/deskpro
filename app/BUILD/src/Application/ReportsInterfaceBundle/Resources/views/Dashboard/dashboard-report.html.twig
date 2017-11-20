@@ -24,7 +24,7 @@
 
 
     <div class="graph-container">
-        <div class="graph-container-controls">
+        <div class="graph-container-controls" ng-if="!dashboard.is_default">
             <a
                 ng-click="toggleLayoutEdit()"
                 class="control"
