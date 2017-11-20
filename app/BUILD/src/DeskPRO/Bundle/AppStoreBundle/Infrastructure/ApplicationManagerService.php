@@ -104,7 +104,7 @@ class ApplicationManagerService
             foreach ($app->getAssets() as $asset) {
                 if ($asset->getPath() === '.deskpro/versions/manifest.json.prev') {
                     $entities[] = $asset;
-                    $blobs      = $asset->getBlob();
+                    $blobs[]      = $asset->getBlob();
                 }
             }
         } else {

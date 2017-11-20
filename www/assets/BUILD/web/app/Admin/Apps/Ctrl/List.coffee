@@ -28,7 +28,7 @@ define ['Admin/Main/Ctrl/Base', 'angular'], (Admin_Ctrl_Base, angular) ->
             if (pkg.id == instance.application_id)
               return false;
 
-          return false
+          return true
       return
 
     initialLoad: ->
