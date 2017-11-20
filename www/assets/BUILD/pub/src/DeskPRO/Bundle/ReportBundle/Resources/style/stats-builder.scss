@@ -1,18 +1,15 @@
 // Stat list
 
+.report-list-content, .report-list-content, .reports-list {
+  height: 100%;
+  overflow: hidden;
+}
+
 .big-list-of-stats-filters {
-  @include clearfix;
-  padding: 10px;
-  padding-bottom: 0;
-
-  .bucket {
-    float: left;
-    width: 50%;
-
-    &:first-child {
-      padding-right: 6px;
-    }
-  }
+  background: #ecedee;
+  padding: 4px;
+  border-bottom: 1px solid $global-border;
+  flex-shrink: 0;
 
   form {
     border: 1px solid rgba(0, 0, 0, 0.1);
@@ -39,49 +36,60 @@
   }
 
   .select {
+    margin-left: 4px;
     border: 1px solid rgba(0, 0, 0, 0.1);
-
-    i {
-      float: right;
-      margin-right: 5px;
-    }
   }
 
 
   input[type="text"], input[type="password"], .select, .button {
     border: 1px solid #bdbdbd;
     border-radius: 2px;
+    color: #333;
     padding: $item-padding;
-    width: 100%;
+    padding-top: 0;
+    padding-bottom: 0;
+    line-height: 32px;
     background: #fff;
     text-decoration: none;
-    display: inline-block;
+    display: block;
     font-size: 1em;
+    width: 100%;
+  }
+  .button {
+    border: none;
   }
 
+  display: flex;
+  flex-direction: row;
 
+  .filter-title {
+    flex-grow: 1;
+  }
+  .filter-label {
+    flex-shrink: 1;
+  }
+  .filter-addbtn {
+    margin-left: 4px;
+    flex-shrink: 1;
+  }
 }
 
 
 .big-list-of-stats {
-  padding: 10px;
-  background: #f5f6f7;
-  max-height: 460px;
+  padding: 0;
+  background: #ffffff;
   overflow-y: auto;
+  flex-grow: 1;
 
   ul.stat-list {
     @extend %flat-list;
-    border: 1px solid #bdbdbd;
-    border-radius: 2px;
-    background: #fff;
+    border: none;
+    border-radius: 0;
 
     > li {
       padding: 10px;
       border-bottom: 1px solid #d9d9d9;
-      padding-left: 30px;
       position: relative;
-
-
 
       &:hover, &.active {
         background: $dp-morning-sky;
@@ -148,6 +156,7 @@
     }
 
     p {
+      margin-top: 3px;
       font-size: 1em;
       color: #898989;
       line-height: 1.6em;
@@ -209,23 +218,6 @@
 // Stat list on page
 .report-list-wrapper {
   .big-list-of-stats-filters {
-    @include clearfix;
-    padding: 10px 10px 0 10px;
-    position: absolute;
-    height: 40px;
-    width: 575px;
-    top: 0;
-    left: 0;
-
-    .bucket {
-      float: left;
-      width: 50%;
-
-      &:first-child {
-        padding-right: 6px;
-      }
-    }
-
     form {
       border: 1px solid rgba(0, 0, 0, 0.1);
       border-radius: 2px;
@@ -250,53 +242,25 @@
       }
     }
 
-    .select {
-      border: 1px solid rgba(0, 0, 0, 0.1);
-      color: #333;
-
-      i {
-        float: right;
-        margin-right: 5px;
-      }
-    }
-
     .ui.button {
       font-size: 1em;
-      height: 35px;
+      height: 34px;
       width: 75px;
       margin-left: 4px;
-    }
-
-    input[type="text"], input[type="password"], .select {
-      border: 1px solid #bdbdbd;
-      border-radius: 2px;
-      padding: $item-padding;
-      width: 100%;
-      background: #fff;
-      text-decoration: none;
-      display: inline-block;
-      font-size: 1em;
     }
   }
 
 
   .big-list-of-stats {
-    height: 100%;
-    max-height: 100%;
-    padding: 0 0 10px 10px;
-    background: #ffffff;
-
     ul.stat-list {
       @extend %flat-list;
-      border: 1px solid #bdbdbd;
-      border-radius: 2px;
-      background: #fff;
 
       > li {
         .Select {
           display: inline-block;
           height: 20px;
           width: 90px;
+          vertical-align: text-bottom;
           > .Select-control {
             height: 22px;
             .Select-input, .Select-placeholder, .Select-value {
@@ -344,39 +308,54 @@
   font-size: 0.85em;
   margin-left: 3px;
   cursor: pointer;
-
-  &.active, &:hover {
-    color: $dp-sonic-primary;
-  }
 }
 
 
 
 .select-label-dropdown {
-  border: 1px solid rgba(0, 0, 0, 0.1);
+  border: 1px solid $global-border;
   padding: 10px;
   background: #fff;
   z-index: 199;
   margin-top: -2px;
   position: absolute;
+  right: 0;
+  width: 400px;
 
-  a { margin-bottom: 5px; }
+  a { margin-bottom: 5px; text-wrap: none; }
 }
 
 .reports-list {
-  height: 100%;
-  padding-top: 35px;
+  display: flex;
+  flex-direction: column;
 }
 
 
 .report-list-content {
-  padding-top: 10px;
-  height: 100%;
+
+}
+
+.stats-app-wrapper {
+  position: absolute;
+  top: 0; right: 0; bottom: 0; left: 0;
+  overflow: hidden;
+  display: flex;
+  flex-direction: row;
+}
+
+.report-list-pane-wrapper {
+  flex-wrap: nowrap;
+  flex-grow: 1;
+  max-height: 100%;
+  overflow: auto;
 }
 
 // Stats in page (not in popup)
 .report-list-wrapper {
-  height: 100%;
+  width: $report-list-width;
+  overflow: auto;
+  border-right: 1px solid $global-border;
+  background: #eceef0;
 
   .big-list-of-stats {
     .stat-list-wrapper {
@@ -392,29 +371,6 @@
       }
     }
 
-  }
-
-  .big-list-of-stats-filters:after {
-    clear: none;
-    display: none;
-  }
-
-  .big-list-of-stats-filters {
-    .bucket {
-      float: none;
-      width: 100%;
-      margin: 0 0 10px;
-      padding: 0;
-      display: inline-block;
-
-      &.filter-title {
-        width: 55%;
-      }
-
-      &.filter-label {
-        width: 29%;
-      }
-    }
   }
 }
 
@@ -532,12 +488,4 @@
 .content-wrapper {
   padding-left: $content-width;
   position: relative;
-}
-
-.report-list-wrapper {
-  position: absolute;
-  top: 0;
-  left: 0;
-  bottom: 0;
-  width: $report-list-width;
 }

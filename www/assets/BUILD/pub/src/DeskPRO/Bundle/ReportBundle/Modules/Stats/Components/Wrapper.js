@@ -205,7 +205,7 @@ class Wrapper extends React.Component {
     const filteredBuiltInReports = reports.filter(report => !report.get('is_custom')).filter(this.filter);
 
     return (
-      <span>
+      <div className="stats-app-wrapper">
         <div className="report-list-wrapper">
           <div className="report-list-content">
             <div className="reports-list">
@@ -232,30 +232,32 @@ class Wrapper extends React.Component {
             </div>
           </div>
         </div>
-        { currentReport.get('query_parts') && mode === 'edit'
-          ? <Edit
-            parseQuery={this.parseReportQuery}
-            reportLoading={reportLoading}
-            labels={labels}
-            report={currentReport}
-            groupParams={groupParams}
-            onSubmit={this.onSubmit}
-            onRunClick={this.onRunReportClick}
-            onCloneClick={this.onCloneReportClick}
-          />
-          : null
-        }
-        { currentReport && mode === 'run'
-          ? <Run
-            onChangeReportVar={this.onChangeReportVar}
-            groupParams={groupParams}
-            onChangeReportDisplayTypes={this.onChangeReportDisplayTypes}
-            report={currentReport}
-            reportLoading={reportLoading}
-          />
-          : null
-        }
-      </span>
+        <div className="report-list-pane-wrapper">
+          { currentReport.get('query_parts') && mode === 'edit'
+            ? <Edit
+              parseQuery={this.parseReportQuery}
+              reportLoading={reportLoading}
+              labels={labels}
+              report={currentReport}
+              groupParams={groupParams}
+              onSubmit={this.onSubmit}
+              onRunClick={this.onRunReportClick}
+              onCloneClick={this.onCloneReportClick}
+            />
+            : null
+          }
+          { currentReport && mode === 'run'
+            ? <Run
+              onChangeReportVar={this.onChangeReportVar}
+              groupParams={groupParams}
+              onChangeReportDisplayTypes={this.onChangeReportDisplayTypes}
+              report={currentReport}
+              reportLoading={reportLoading}
+            />
+            : null
+          }
+        </div>
+      </div>
     );
   }
 }

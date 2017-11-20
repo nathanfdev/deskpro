@@ -53,6 +53,10 @@ class TitleWithVars extends React.Component {
     onChangeReportVar(report, varName, value);
   }
 
+  cancelClick(ev) {
+    ev.stopPropagation();
+  }
+
   replaceVars() {
     let title = this.props.report.get('title');
     title = title.replace(/\$\{([a-zA-Z0-9_]+)\}/g, '#VAR#$$$$$1#VAR#');
@@ -92,13 +96,13 @@ class TitleWithVars extends React.Component {
 
   renderDatesSelectBox(entry) {
     const varName = entry[1].get('name');
-    return (<Select
+    return (<span onClick={this.cancelClick}><Select
       key={`dates_${entry[0]}`}
       clearable={false}
       value={this.state.vars[varName]}
       choices={this.dateChoices}
       onChange={value => this.onChange(varName, value)}
-    />);
+    /></span>);
   }
 
   renderGroupSelectBox(entry) {
@@ -109,13 +113,13 @@ class TitleWithVars extends React.Component {
       .toList()
       .toJS();
 
-    return (<Select
+    return (<span onClick={this.cancelClick}><Select
       key={`${entry[1].get('type')}_${entry[0]}`}
       clearable={false}
       value={this.state.vars[varName]}
       choices={choices}
       onChange={value => this.onChange(varName, value)}
-    />);
+    /></span>);
   }
 
   render() {

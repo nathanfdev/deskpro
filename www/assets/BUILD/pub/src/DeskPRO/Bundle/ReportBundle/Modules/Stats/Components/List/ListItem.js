@@ -46,7 +46,7 @@ class ListItem extends React.Component {
     const { isActive, groupParams, onChangeReportVar, report } = this.props;
 
     return (
-      <li className={classNames({ active: isActive })}>
+      <li className={classNames({ active: isActive })} onClick={this.onRunClick}>
         <h1>
           <TitleWithVars onRunClick={this.onRunClick} onChangeReportVar={onChangeReportVar} groupParams={groupParams} report={report} />
           <span onClick={this.onEditClick} className="controls"><i className="pencil icon" /></span>

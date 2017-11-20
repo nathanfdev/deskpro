@@ -48,15 +48,15 @@ class ListHeader extends React.Component {
 
     return (
       <div className="big-list-of-stats-filters">
-        <div className="bucket filter-title">
+        <div className="filter-title">
           <div className="box">
             <input {...inputProps} />
           </div>
         </div>
 
-        <div className="bucket filter-label" style={{ position: 'relative' }}>
+        <div className="filter-label" style={{ position: 'relative' }}>
           <a className="link-pointer select" onClick={this.toggleSelect}>
-            {activeLabels > 0 ? `Selected: ${activeLabels}` : 'Select labels:'}  <i className={classNames('fa', { 'fa-caret-down': !active, 'fa-caret-up': active })} />
+            {activeLabels > 0 ? `${activeLabels} labels` : 'Labels'}  <i className={classNames('fa', { 'fa-caret-down': !active, 'fa-caret-up': active })} />
           </a>
           {active ? <div className="select-label-dropdown">
             { labels.map((label, index) => (
@@ -70,8 +70,9 @@ class ListHeader extends React.Component {
             )}
           </div> : null }
         </div>
-
-        <button className="ui button green" onClick={this.props.onAddClick}><i className="fa fa-plus" /> ADD</button>
+        <div className="filter-addbtn">
+          <button className="ui button green" onClick={this.props.onAddClick}><i className="fa fa-plus" /> ADD</button>
+        </div>
       </div>
     );
   }

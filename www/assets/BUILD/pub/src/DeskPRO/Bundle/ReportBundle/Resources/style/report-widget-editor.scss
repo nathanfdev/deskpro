@@ -1,12 +1,5 @@
 .report-widget-edit-n-run-content {
-  position: absolute;
-  top: 0;
-  left: $report-list-width;
-  right: 0;
-  bottom: 0;
-  overflow: auto;
   background: #fff;
-  border-left: 1px solid $global-border;
 
   .ui.form {
     padding: 10px;
@@ -65,10 +58,6 @@
 .reports-editor-panel {
   background: #ffffff;
   padding: 10px;
-
-  position: absolute;
-  top: 0; right: 0; bottom: 0; left: 0;
-  overflow: auto;
 
   .editor-header {
     font-size: 1.1em;
