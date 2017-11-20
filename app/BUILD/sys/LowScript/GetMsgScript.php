@@ -526,7 +526,7 @@ class GetMsgScript extends LowScriptAbstract
 
     public function getOnlineAgentsMessage()
     {
-        $timeout = $this->_getSetting('core_chat.agent_timeout', 20);
+        $timeout = $this->_getSetting('core_chat.agent_timeout', 120);
         $cutoff  = date('Y-m-d H:i:s', time() - $timeout);
 
         $q = $this->getPdoRead()->prepare("
