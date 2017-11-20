@@ -17,8 +17,8 @@ export default class HeaderHelper {
 
     const agent =  agents.get(agentId);
     return [
-      this.getAgentHeaderText(chat),
-      agent ? <GroupAdd onClick={() => { openGroupDrawer([agent.get('id')]); }} /> : null
+      <span key="header">{this.getAgentHeaderText(chat)}</span>,
+      agent ? <GroupAdd key="groupadd" onClick={() => { openGroupDrawer([agent.get('id')]); }} /> : null
     ];
   }
 
