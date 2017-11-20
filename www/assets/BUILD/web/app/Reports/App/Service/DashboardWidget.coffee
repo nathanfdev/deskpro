@@ -29,7 +29,7 @@ define ['DeskPRO/Util/Arrays',], (Arrays) ->
       deferred = @$q.defer()
       if @storage.reports.length == 0
         @Api
-          .sendGet "/dashboards/widgets/reports/list"
+          .sendGet "/reports/widget"
           .then (result) =>
             @storage.reports = result.data.reports
             @storage.labels = result.data.labels
