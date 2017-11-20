@@ -79,7 +79,7 @@ class Topic extends React.Component {
     return (
       <li className="topic-item" key={topic.slug}>
         {clickable ?
-          <Link to={`/${locale}/guides/${guideSlug}${topic.parents_slug}/${topic.slug}`} activeClassName="active" onClick={this.toggleChildren}>
+          <Link to={`${locale}/guides/${guideSlug}${topic.parents_slug}/${topic.slug}`} activeClassName="active" onClick={this.toggleChildren}>
             {topic.title}
             {expandable ? <i
               className={classNames(

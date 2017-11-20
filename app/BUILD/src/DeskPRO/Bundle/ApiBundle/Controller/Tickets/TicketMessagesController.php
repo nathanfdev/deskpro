@@ -100,4 +100,35 @@ class TicketMessagesController extends CrudSubController
 
         $this->saveTicket($ticket);
     }
+
+    /**
+     * @ApiDoc(
+     *      description="Get collection of resources",
+     *      filters={
+     *          {"name"="page", "pattern"="\d", "description"="Which page to display", "dataType"="integer"},
+     *          {"name"="count", "pattern"="\d", "description"="Resource per page count", "dataType"="integer"},
+     *          {"name"="limit", "pattern"="\d", "description"="Max number of resources to return", "dataType"="integer"},
+     *          {"name"="ids", "pattern"="[\d,]+", "description"="Comma separated list of IDs", "dataType"="string"},
+     *      },
+     *      statusCodes={
+     *          200="Returned if your request was successful",
+     *          400="An error will occur if you provide wrong filters set",
+     *      },
+     *      output="array<Application\DeskPRO\Entity\TicketAttachment>"
+     * )
+     * 
+     * @Rest\Get("/{id}/attachments")
+     *
+     * @param Request $request
+     * @param int     $id
+     *
+     * @return View
+     */
+    public function getAttachmentsAction(Request $request, $id)
+    {
+        return TicketAttachmentsController::subRequestSearch($this->getKernel(), $request, [
+            'message' => $this->findEntity($id, $request)->getId(),
+            'parentId' => $request->get(static::$parentParameter)
+        ]);
+    }
 }

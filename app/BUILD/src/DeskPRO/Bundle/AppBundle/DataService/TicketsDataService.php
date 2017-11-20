@@ -327,6 +327,10 @@ class TicketsDataService extends AbstractDataService
      */
     public function getOrganizationTicketCount(Person $person, $status = 'all', $ignoreOnlyNotes = true)
     {
+        if (!$person->getOrganization() || !$person->isOrganizationManager()) {
+            return 0;
+        }
+
         $em = $this->em;
 
         $brand = $this->brandStack->getActive()->getBrand();
@@ -366,9 +370,7 @@ class TicketsDataService extends AbstractDataService
                     $this->ignoreTicketsWithOnlyAgentNotes($qb);
                 }
 
-                if ($person->getOrganization() && $person->isOrganizationManager()) {
-                    $qb->andWhere('t.organization = :organization')->setParameter('organization', $person->getOrganization());
-                }
+                $qb->andWhere('t.organization = :organization')->setParameter('organization', $person->getOrganization());
 
                 $qb->distinct(true);
 

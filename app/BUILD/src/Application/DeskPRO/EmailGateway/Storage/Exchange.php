@@ -185,6 +185,10 @@ class Exchange
 
         $response = $this->service->FindItem($request);
 
+        if (!$response) {
+            throw new \EWS_Exception('FindItem failed');
+        }
+
         if ($response->ResponseMessages->FindItemResponseMessage->ResponseCode == 'NoError' &&
             $response->ResponseMessages->FindItemResponseMessage->ResponseClass == 'Success'
         ) {
@@ -241,6 +245,10 @@ class Exchange
         $request->ItemIds->ItemId->Id = $message_id;
 
         $response = $this->service->GetItem($request);
+
+        if (!$response) {
+            throw new \EWS_Exception('GetItem failed');
+        }
 
         if ($response && $response->ResponseMessages->GetItemResponseMessage->ResponseCode == 'NoError' &&
             $response->ResponseMessages->GetItemResponseMessage->ResponseClass == 'Success'
@@ -514,5 +522,13 @@ class Exchange
     public function close()
     {
         return true;
+    }
+
+    /**
+     * @return string
+     */
+    public function getLastResponse()
+    {
+        return $this->service->getClient()->__getLastResponse() ?: '';
     }
 }

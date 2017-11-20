@@ -32,7 +32,7 @@ class ViewTopic extends React.Component {
     this.contentChanged = false;
     this.ticking = false;
     window.onload = this.defineSizes;
-    moment.locale('en');
+    moment.locale(window.DESKPRO_LOCALE);
   }
 
   componentDidMount() {
@@ -413,24 +413,32 @@ class ViewTopic extends React.Component {
       const topic = Object.values(topics).sort(
         (a, b) => parseInt(a.display_order, 10) - parseInt(b.display_order, 10)
       ).shift();
+      let locale = '';
+      if (this.props.params.locale) {
+        locale = `/${this.props.params.locale}`;
+      }
       if (Object.values(topic.children).length) {
         const child = Object.values(topic.children).sort(
           (a, b) => parseInt(a.display_order, 10) - parseInt(b.display_order, 10)
         ).shift();
-        browserHistory.push(`/${this.props.params.locale}/guides/${guide.slug}/${topic.slug}/${child.slug}`);
+        browserHistory.push(`${locale}/guides/${guide.slug}/${topic.slug}/${child.slug}`);
       } else {
-        browserHistory.push(`/${this.props.params.locale}/guides/${guide.slug}/${topic.slug}`);
+        browserHistory.push(`${locale}/guides/${guide.slug}/${topic.slug}`);
       }
     });
   };
 
   render() {
     const { topics, topic } = this.state;
-    const { locale, splat } = this.props.params;
+    const { splat } = this.props.params;
     const guideSlug = this.getGuideSlug(splat);
     const { fixed } = this.state;
     const agentBarHeight = this.sizes ? this.agentBarHeight : 0;
 
+    let locale = '';
+    if (this.props.params.locale) {
+      locale = `/${this.props.params.locale}`;
+    }
     return (
       <div>
         <div className={classNames('topic-list', { fixed })} ref={(c) => { this.topicList = c; }} >

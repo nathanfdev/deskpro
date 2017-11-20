@@ -75,16 +75,6 @@ class NTLMSoapClient extends SoapClient
     private $preferred_http_auth = null;
 
     /**
-     * @var string
-     */
-    protected $__last_request_headers = '';
-
-    /**
-     * @var string
-     */
-    protected $__last_response = '';
-
-    /**
      * Performs a SOAP request.
      *
      * @link http://php.net/manual/en/function.soap-soapclient-dorequest.php
@@ -106,8 +96,6 @@ class NTLMSoapClient extends SoapClient
             'Content-Type: text/xml; charset=utf-8',
             'SOAPAction: "'.$action.'"',
         );
-
-        $this->__last_request_headers = $headers;
 
         // DESKPRO EDIT : Some versions of curl fail with some
         // values of CURLOPT_HTTPAUTH, so we try multiple times
@@ -146,8 +134,6 @@ class NTLMSoapClient extends SoapClient
             }
         }
 
-        $this->__last_response = $response;
-
         // If the response if false than there was an error and we should throw
         // an exception.
         if ($response === false) {
@@ -157,27 +143,8 @@ class NTLMSoapClient extends SoapClient
             );
         }
 
+        $response = preg_replace('/(?!&#x0?(9|A|D))(&#x[0-1]?[0-9A-F];)/', ' ', $response);
         return $response;
-    }
-
-    /**
-     * Returns last SOAP request headers.
-     *
-     * @link http://php.net/manual/en/function.soap-soapclient-getlastrequestheaders.php
-     *
-     * @return string the last soap request headers
-     */
-    public function __getLastRequestHeaders()
-    {
-        return implode("\n", $this->__last_request_headers)."\n";
-    }
-
-    /**
-     * @return string
-     */
-    public function __getLastResponse()
-    {
-        return $this->__last_response;
     }
 
     /**
