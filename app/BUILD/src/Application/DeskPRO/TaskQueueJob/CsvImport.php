@@ -37,6 +37,8 @@ namespace Application\DeskPRO\TaskQueueJob;
 use Application\DeskPRO\App;
 use Application\DeskPRO\Entity\Blob;
 use Application\DeskPRO\Entity\DataStore;
+use Application\DeskPRO\Entity\Person;
+use Application\DeskPRO\Entity\PersonEmail;
 use Application\DeskPRO\Entity\TaskQueue;
 use Application\ImportBundle\CsvImport\CsvImporter;
 use Monolog\Logger;
@@ -107,7 +109,7 @@ class CsvImport extends AbstractJob
      */
     public function run($max_time)
     {
-        $max_time = 800;
+        $max_time = 300;
         $em       = App::getOrm();
         $tmpDir   = App::$container->get('deskpro.app_env')->getUserTmpDir();
         $logger   = App::$container->get('dp.importer_logger');
@@ -115,6 +117,8 @@ class CsvImport extends AbstractJob
         $logger->pushHandler($handler);
         /** @var CsvImporter $importer */
         $importer = App::$container->get('dp.importer.csv');
+
+        $this->trimLogs();
 
         /** @var Blob $blob */
         $blob = $em->find(Blob::class, $this->data['blob_id']);
@@ -166,6 +170,11 @@ class CsvImport extends AbstractJob
             } else {
                 ++$skipped;
             }
+
+            if (($imported + $skipped) % 100 === 0) {
+                $em->clear(Person::class);
+                $em->clear(PersonEmail::class);
+            }
         }
 
         $this->data['fseek'] = ftell($fp);
@@ -175,6 +184,8 @@ class CsvImport extends AbstractJob
         if ($this->getLogger()) {
             $this->getLogger()->logDebug("Imported $imported people");
         }
+
+        $this->trimLogs();
 
         $task = $this->getTask();
         $blob = $em->find(Blob::class, $this->data['blob_id']);
@@ -195,7 +206,7 @@ class CsvImport extends AbstractJob
 
             if ($taskLog && ($fp = fopen($tmpFile, 'w'))) {
                 foreach ($taskLog as $logEntry) {
-                    fputcsv($fp, $logEntry, $options['delimeter'], $options['enclosure']);
+                    fputcsv($fp, [$logEntry], $options['delimeter'], $options['enclosure']);
                 }
 
                 fclose($fp);
@@ -266,7 +277,20 @@ class CsvImport extends AbstractJob
     protected function log(array $errors)
     {
         ++$this->data['failed'];
-        $this->data['log'][] = $errors;
+        $this->data['log'] = array_merge($this->data['log'], $errors);
+
+        $this->trimLogs();
+    }
+
+    /**
+     * Trims logs to last 1000. This is important or else logs get too big and
+     * exceed memory limit.
+     */
+    private function trimLogs()
+    {
+        if (!empty($this->data['log']) && count($this->data['log']) > 1000) {
+            $this->data['log'] = array_slice($this->data['log'], 0, -1000);
+        }
     }
 
     /**
