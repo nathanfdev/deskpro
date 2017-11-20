@@ -24,6 +24,8 @@ export const setOnlineUserChatAgents = createAction(
   }
 );
 
+export const updateAgentStatus = createAction('AGENT_UPDATE_STATUS');
+
 export const toggleUserChat = createAction(
   'AGENT_TOGGLE_USER_CHAT',
   enabled => (dispatch, getState) => {
