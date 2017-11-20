@@ -79,80 +79,7 @@ class RawExchangeTransport implements RawTransportInterface
             return $sent;
         }
 
-//		$raw = $this->decoder->createRawMessage($raw_fp);
-
         $msg = new \EWSType_MessageType();
-
-//		$msg->Subject = $raw->getSubject();
-
-//		$body = new \EWSType_BodyType();
-//		$body->BodyType = 'TEXT';
-//		$body->_ = $raw->getTextPart();
-
-//		if ($html = $raw->getHtmlPart()) {
-//			$body->BodyType = 'HTML';
-//			$body->_ = $html;
-//		}
-//		$msg->Body = $body;
-
-//		$msg->From = new \EWSType_SingleRecipientType();
-//		$msg->From->Mailbox = new \EWSType_EmailAddressType();
-//		$msg->From->Mailbox->EmailAddress = $from['email'];
-//		$msg->From->Mailbox->Name = $from['name'];
-
-//		$included = array();
-//		$msg->ToRecipients = array();
-//		foreach ($raw->getTos() as $to) {
-//			$adds = new \EWSType_EmailAddressType();
-//			$adds->Name = $to['name'];
-//			$adds->EmailAddress = $to['email'];
-//			$msg->ToRecipients[] = $adds;
-//			$included[] = $to['email'];
-//		}
-
-//		$msg->CcRecipients = array();
-//		foreach ($raw->getCcs() as $cc) {
-//			$adds = new \EWSType_EmailAddressType();
-//			$adds->Name = $cc['name'];
-//			$adds->EmailAddress = $cc['email'];
-//			$msg->CcRecipients[] = $adds;
-//			$included[] = $to['email'];
-//		}
-
-//		$bccs = array_diff($tos, $included);
-//		$msg->BccRecipients = array();
-//		foreach ($bccs as $bcc) {
-//			$adds = new \EWSType_EmailAddressType();
-//			$adds->Name = $bcc['name'];
-//			$adds->EmailAddress = $bcc['email'];
-//			$msg->BccRecipients[] = $adds;
-//		}
-
-//		$_attachments = array();
-//		foreach ($raw->getAttachments() as $attach) {
-//			$at = new \EWSType_FileAttachmentType();
-//			$at->Name = $attach['filename'];
-//			$at->ContentType = $attach['type'];
-//			$at->Content = $attach['bin_data'];
-//			$_attachments[] = $at;
-//			$msg->Attachments[] = $at;
-//		}
-//		if ($_attachments) {
-//			$msg->Attachments = $_attachments;
-//		}
-
-//		$_headers = array();
-//		foreach ($raw->getHeaders() as $header_name => $header_values) {
-//			foreach ($header_values as $v) {
-//				$hdr = new \EWSType_InternetHeaderType();
-//				$hdr->HeaderName = $header_name;
-//				$hdr->_ = $v;
-//				$_headers[] = $hdr;
-//			}
-//		}
-//		if ($_headers) {
-//			$msg->InternetMessageHeaders = $_headers;
-//		}
 
         $msg->MimeContent    = new \EWSType_MimeContentType();
         $msg->MimeContent->_ = base64_encode(stream_get_contents($raw_fp, -1, 0));
@@ -163,15 +90,24 @@ class RawExchangeTransport implements RawTransportInterface
         $msgRequest->MessageDisposition = 'SendOnly';
 
         $this->logger->info('[RawExchangeTransport] Sending raw mail');
-        $response = $this->ews()->CreateItem($msgRequest);
 
-        if ($response && $response->ResponseMessages && ($response = $response->ResponseMessages->CreateItemResponseMessage)) {
-            if ('Error' === $response->ResponseClass) {
-                $this->logger->error(sprintf('[RawExchangeTransport] %s', $response->MessageText));
-            } elseif ('Success' === $response->ResponseClass) {
-                $this->logger->info('[RawExchangeTransport] success');
-                ++$sent;
+        try {
+            $response = $this->ews()->CreateItem($msgRequest);
+
+            if ($response && $response->ResponseMessages && ($response = $response->ResponseMessages->CreateItemResponseMessage)) {
+                if ('Error' === $response->ResponseClass) {
+                    $this->logger->error(sprintf('[RawExchangeTransport] %s', $response->MessageText));
+                    $this->logger->debug('last response: '.$this->ews()->getClient()->__getLastResponse());
+                    $failed = $tos;
+                } elseif ('Success' === $response->ResponseClass) {
+                    $this->logger->info('[RawExchangeTransport] success');
+                    ++$sent;
+                }
             }
+        } catch (\Exception $e) {
+            $this->logger->info(sprintf('[RawExchangeTransport] Exception: <%s> [%s] %s', get_class($e), $e->getCode(), $e->getMessage()));
+            $this->logger->debug($this->ews()->getClient()->__getLastResponse());
+            throw $e;
         }
 
         return $sent;
