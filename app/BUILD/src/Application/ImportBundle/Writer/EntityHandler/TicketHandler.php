@@ -94,7 +94,7 @@ class TicketHandler extends AbstractEntityHandler
 
         // update ticket agent
         if ($model->getAgent()) {
-            $agentEntity = $this->helpers->getPersonHelper()->findOrCreatePerson($model->getAgent());
+            $agentEntity = $this->helpers->getPersonHelper()->findOrCreatePerson($model->getAgent(), true);
             if ($agentEntity && $agentEntity->isAgent()) {
                 $entity->setAgent($agentEntity);
             } else {
