@@ -58,7 +58,7 @@ export default class RteEditor extends React.Component {
     // Override default paste listener to upload images
     node.addEventListener('paste', this.onPaste);
     const overrideOptions = {
-      paste: { cleanPastedHTML: false, forcePlainText: false }
+      paste: { cleanPastedHTML: false, forcePlainText: false, keyboardCommands: false }
     };
 
     this.medium = new MediumEditor(node, { ...options, ...overrideOptions });
