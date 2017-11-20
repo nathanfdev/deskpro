@@ -101,7 +101,7 @@
 			<li ng-repeat="package in ListCtrl.packages | filter:packagesFilter(hide_installed)" dp-state-mark="apps.apps.package.{{ ng_var('package.name') }}">
 				{{ _self.package_row() }}
 			</li>
-			<li ng-repeat="package in ListCtrl.apps_v2_packages" dp-state-mark="apps.apps.package.{{ ng_var('package.name') }}">
+			<li ng-repeat="package in ListCtrl.apps_v2_packages | filter:packagesV2Filter(hide_installed)" dp-state-mark="apps.apps.package.{{ ng_var('package.name') }}">
 				{{ _self.package_v2_row() }}
 			</li>
 		</ul>

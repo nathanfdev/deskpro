@@ -78,7 +78,8 @@ class AppPackagesController extends CrudController
      *      statusCodes={
      *          200="We will return such status in case we found your entity",
      *          404="Not Found error will returned in case we can't find entity with specified name"
-     *      }
+     *      },
+     *     output="DeskPRO\Bundle\AppBundle\Entity\AppStore\App"
      * )
 
      * @Rest\Get("/{application}", requirements={"application"="^(?=.*[^\d].*)[^/]+$"})

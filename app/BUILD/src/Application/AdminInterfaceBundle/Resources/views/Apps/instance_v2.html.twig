@@ -27,7 +27,7 @@
 
 		<footer ng-hide="has_own_footer" style="height: 60px;">
 			<div class="dp-content">
-				<a class="btn btn-default" href="{{ ng_href('apps.apps.update-v2-reload', "{instanceId: Ctrl.instanceId}") }}" style="float:left">Change Settings</a>
+				<a ng-if="Ctrl.showChangeSettings" class="btn btn-default" href="{{ ng_href('apps.apps.update-v2-reload', "{instanceId: Ctrl.instanceId}") }}" style="float:left">Change Settings</a>
 
 				<div class="dp-delete-control">
 					<button class="btn btn-danger" ng-click="Ctrl.startDelete();">Uninstall App</button>

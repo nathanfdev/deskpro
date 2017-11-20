@@ -19,6 +19,12 @@ define ['Admin/Main/Ctrl/Base', 'DeskPRO/Util/Util'], (Admin_Ctrl_Base, Util) ->
         @app = result.data.data
         @$scope.appId = @app.id
 
+        try
+          @showChangeSettings = 0 < @app.app.manifest.settings.length
+        catch e
+          @showChangeSettings = false;
+
+
         @pack = @app.app
         @packageName = @pack.name
         @pack.icon_48 = @pack.icon_url + '?s=48'
@@ -27,44 +33,6 @@ define ['Admin/Main/Ctrl/Base', 'DeskPRO/Util/Util'], (Admin_Ctrl_Base, Util) ->
       )
 
       return d.promise
-
-    saveSettings: ->
-      @startSpinner('saving_settings')
-      if @presaveCallback
-        @presaveCallback().then( =>
-          @doSaveSettings().catch(=>
-            @stopSpinner('saving_settings', true)
-          )
-        , =>
-          @stopSpinner('saving_settings', true)
-        )
-      else
-        @doSaveSettings().finally(=>
-          @stopSpinner('saving_settings', true)
-        )
-
-    doSaveSettings: ->
-
-      if @app.with_permissions and @$scope.perms.type? and @$scope.perms.type == 'set'
-        perms = {
-          type: 'set',
-          usergroup_ids: @$scope.perms.usergroups.filter((x) -> x.checked).map((x) -> x.id)
-          person_ids: @$scope.perms.agents.filter((x) -> x.checked).map((x) -> x.id)
-        }
-      else
-        perms = { type: 'global' }
-
-      postData = {
-        settings: @$scope.setting_values,
-        permissions: perms
-      }
-
-      @Api.sendPostJson("/apps/instances/#{@instanceId}", postData).then(=>
-        @stopSpinner('saving_settings').then(=>
-          @$scope.$parent.ListCtrl.updateAppTitle(@instanceId, @$scope.setting_values.dp_app.title)
-          @Growl.success(@getRegisteredMessage('saved_settings'))
-        )
-      )
 
     ###
     # Shows readme modal window

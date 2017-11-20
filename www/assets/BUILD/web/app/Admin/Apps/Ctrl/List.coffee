@@ -4,19 +4,34 @@ define ['Admin/Main/Ctrl/Base', 'angular'], (Admin_Ctrl_Base, angular) ->
     @CTRL_AS   = 'ListCtrl'
     @DEPS      = []
 
+
     init: ->
+      @apps = [];
+      @apps_v2 = [];
+      @apps_v2_packages = [];
+
       @$scope.hide_installed = true;
+
+      ctrl = @$scope.ListCtrl
+
       @$scope.packagesFilter = (hide_installed) ->
         is_installed = !hide_installed
         return (itm) ->
           return !itm.is_usersource_app && (!itm.is_installed || itm.is_installed == is_installed)
 
+      @$scope.packagesV2Filter = (hide_installed) ->
+        return (pkg) ->
+          if !hide_installed
+            return true
+
+          for instance in ctrl.apps_v2
+            if (pkg.id == instance.application_id)
+              return false;
+
+          return false
       return
 
     initialLoad: ->
-      @apps = [];
-      @apps_v2 = [];
-      @apps_v2_packages = [];
 
       appsPromise = @Api.sendDataGet({ apps: '/apps' })
       appsPromise.then( (result) =>
