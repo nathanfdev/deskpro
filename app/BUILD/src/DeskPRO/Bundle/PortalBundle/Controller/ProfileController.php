@@ -196,6 +196,27 @@ class ProfileController extends AbstractController
     }
 
     /**
+     * @Route("/profile/disabled", name="portal_user_disabled")
+     *
+     * @param Request $request
+     *
+     * @return RedirectResponse|Response
+     */
+    public function disabledAction(Request $request)
+    {
+        $person = $this->getUser();
+        if (!$person || !$person->is_disabled) {
+            return $this->redirectToRoute('portal_user_profile');
+        }
+
+        return $this->renderThemeView(
+            'Theme:Portal:User/user_disabled.html.twig', [
+                'person' => $person,
+            ]
+        );
+    }
+
+    /**
      * @Route("/profile", name="portal_user_profile")
      * @Route("/profile", name="user_profile")
      * @Security("is_granted('EDIT_PROFILE', user)")
