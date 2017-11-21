@@ -37,7 +37,6 @@ use \Application\DeskPRO\DependencyInjection\DeskproContainer;
 use \Application\DeskPRO\DBAL\Connection;
 use DpTest\DeskProTestCase;
 use Application\DeskPRO\App;
-use Orb\Util\Util;
 
 class PersonSearchTest extends DeskProTestCase
 {
@@ -188,6 +187,8 @@ class PersonSearchTest extends DeskProTestCase
     }
 
     /**
+     * @runTestsInSeparateProcesses
+     * @preserveGlobalState disabled
      * @dataProvider searchByUserGroupDataProvider
      */
     public function testSearchByUserGroup(
