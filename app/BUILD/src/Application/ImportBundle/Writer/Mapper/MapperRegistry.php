@@ -63,6 +63,7 @@ use Application\DeskPRO\Entity\Ticket;
 use Application\DeskPRO\Entity\TicketAttachment;
 use Application\DeskPRO\Entity\TicketCategory;
 use Application\DeskPRO\Entity\TicketLayout;
+use Application\DeskPRO\Entity\TicketLog;
 use Application\DeskPRO\Entity\TicketMessage;
 use Application\DeskPRO\Entity\TicketPriority;
 use Application\DeskPRO\Entity\TicketWorkflow;
@@ -363,6 +364,16 @@ class MapperRegistry
     public function getTicketMessageMapper()
     {
         return $this->getMapper(TicketMessage::class);
+    }
+
+    /**
+     * Returns the ticket message mapper.
+     *
+     * @return CommonMapper
+     */
+    public function getTicketLogMapper()
+    {
+        return $this->getMapper(TicketLog::class);
     }
 
     /**

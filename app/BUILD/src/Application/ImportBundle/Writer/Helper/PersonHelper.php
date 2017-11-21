@@ -139,10 +139,15 @@ class PersonHelper
         if (!$entity) {
             $emailPart = strtolower($personOidOrEmail);
             $emailPart = preg_replace('#[^\w\d\.]#', '', $emailPart);
+            $emailPart = preg_replace('#^(user|agent)_(.+)#', '$2', $emailPart);
 
-            $personEmail = "imported.user.$emailPart@example.com";
-            $entity      = $this->personMapper->findOneByEmail($personEmail);
+            if ($isAgent) {
+                $personEmail = "imported.agent.$emailPart@example.com";
+            } else {
+                $personEmail = "imported.user.$emailPart@example.com";
+            }
 
+            $entity = $this->personMapper->findOneByEmail($personEmail);
             if (!$entity) {
                 $entity = new Entity\Person();
                 $entity->setEmail($personEmail);

@@ -195,11 +195,11 @@ class Ticket implements PersonAwareInterface, LabelAwareModelInterface, Language
     private $messages = [];
 
     /**
-     * @var string
+     * @var TicketLog[]
      *
-     * @JMS\Type("string")
+     * @JMS\Type("array<Application\ImportBundle\Model\TicketLog>")
      */
-    private $log_message = 'Imported';
+    private $logs = [];
 
     /**
      * @return int
@@ -598,21 +598,33 @@ class Ticket implements PersonAwareInterface, LabelAwareModelInterface, Language
     }
 
     /**
-     * @return string
+     * @return TicketLog[]
      */
-    public function getLogMessage()
+    public function getLogs()
     {
-        return $this->log_message;
+        return $this->logs;
     }
 
     /**
-     * @param string $log_message
+     * @param TicketLog $log
      *
      * @return $this
      */
-    public function setLogMessage($log_message)
+    public function addTicketLog(TicketLog $log)
     {
-        $this->log_message = $log_message;
+        $this->logs[] = $log;
+
+        return $this;
+    }
+
+    /**
+     * @param TicketLog[] $logs
+     *
+     * @return $this
+     */
+    public function setLogs($logs)
+    {
+        $this->logs = $logs;
 
         return $this;
     }
