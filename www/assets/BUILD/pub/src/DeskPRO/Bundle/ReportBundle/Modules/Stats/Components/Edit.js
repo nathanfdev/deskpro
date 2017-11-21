@@ -2,6 +2,7 @@ import PropTypes from 'prop-types';
 import React from 'react';
 import BaseForm from 'DeskPRO/Component/Form/BaseForm';
 import { Loader } from '@deskpro/react-components';
+import Button from '@deskpro/react-components/lib/Components/Buttons/Button';
 import { Input, Form, Field, Textarea } from 'DeskPRO/Component/Semantic/ReactForm';
 import { Fieldset, createValue } from '@deskpro/react-forms';
 import classNames from 'classnames';
@@ -213,7 +214,13 @@ class Edit extends BaseForm {
 
   renderReport() {
     return (
-      <div className="reports-editor-panel full-editor">
+      <div className="report-view edit">
+        <div className="title-bar">
+          <div className="title">{this.state.formData.value.title}</div>
+          <div className="ctrl">
+            <Button type="secondary" size="medium" onClick={this.onRunClick.bind(this)}><i className="fa fa-undo"></i> Cancel</Button>
+          </div>
+        </div>
         {this.state.mode === 'form' ? this.renderForm() : this.renderQuery()}
       </div>
     );

@@ -49,7 +49,7 @@ class ListItem extends React.Component {
       <li className={classNames({ active: isActive })} onClick={this.onRunClick}>
         <h1>
           <TitleWithVars onRunClick={this.onRunClick} onChangeReportVar={onChangeReportVar} groupParams={groupParams} report={report} />
-          <span onClick={this.onEditClick} className="controls"><i className="pencil icon" /></span>
+          <span onClick={this.onEditClick} className="controls"><i className="fa fa-pencil" /></span>
         </h1>
         { report.get('labels').size > 0 || !report.get('is_custom') ?
           <p>

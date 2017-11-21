@@ -30,6 +30,7 @@ class List extends React.Component {
   showList() {
     const { labels, currentReport, groupParams, customReports, builtInReports } = this.props;
     const { onLabelClick, onEditReportClick, onRunReportClick, onChangeReportVar } = this.props;
+
     return (
       <div className="stat-list-wrapper">
         <ul className="stat-list">
@@ -46,7 +47,7 @@ class List extends React.Component {
                 labels={labels}
                 groupParams={groupParams}
               />
-          )}
+          ).toArray()}
           {builtInReports.map(
             report =>
               <ListItem
@@ -60,7 +61,7 @@ class List extends React.Component {
                 labels={labels}
                 groupParams={groupParams}
               />
-          )}
+          ).toArray()}
         </ul>
       </div>
     );

@@ -7,7 +7,7 @@
 
 .big-list-of-stats-filters {
   background: #ecedee;
-  padding: 4px;
+  padding: 6px;
   border-bottom: 1px solid $global-border;
   flex-shrink: 0;
 
@@ -90,10 +90,7 @@
       padding: 10px;
       border-bottom: 1px solid #d9d9d9;
       position: relative;
-
-      &:hover, &.active {
-        background: $dp-morning-sky;
-      }
+      cursor: pointer;
 
       &.active .mark {
         opacity: 1;
@@ -118,7 +115,7 @@
     }
 
     h1 {
-      font-size: 1.1em;
+      font-size: 1em;
       line-height: 1.7em;
       margin: 0;
       font-weight: 400;
@@ -256,28 +253,6 @@
       @extend %flat-list;
 
       > li {
-        .Select {
-          display: inline-block;
-          height: 20px;
-          width: 90px;
-          vertical-align: text-bottom;
-          > .Select-control {
-            height: 22px;
-            .Select-input, .Select-placeholder, .Select-value {
-              line-height: 20px;
-              height: 20px;
-              padding: 0 5px;
-            }
-            .Select-value {
-              padding: 2px 5px;
-            }
-          }
-          .Select-option {
-            line-height: 20px;
-            padding: 2px 5px;
-          }
-        }
-
         .controls {
           display: none;
           position: absolute;
@@ -308,10 +283,6 @@
   font-size: 0.85em;
   margin-left: 3px;
   cursor: pointer;
-
-  &.active, &:hover {
-    color: $dp-sonic-primary;
-  }
 }
 
 
@@ -492,4 +463,126 @@
 .content-wrapper {
   padding-left: $content-width;
   position: relative;
+}
+
+.title-with-vars {
+  display: block;
+
+  @include clearfix();
+
+  > div.text {
+    line-height: 24px;
+  }
+
+  > div {
+    float: left;
+    margin-right: 4px;
+  }
+
+  .dp-select .Select {
+    width: 85px;
+  }
+
+  .dp-select .Select-placeholder, .dp-select .Select--single > .Select-control .Select-value {
+    padding-right: 17px;
+  }
+}
+
+.report-view {
+  .title-bar {
+    background: #ecedee;
+    border-bottom: 1px solid $global-border;
+    padding: 11px;
+    min-height: 47px;
+    font-size: 1.3em;
+
+    display: flex;
+    flex-direction: row;
+
+    > .title {
+      flex-grow: 1;
+    }
+    > .ctrl {
+      flex-shrink: 1;
+      button {
+        margin-left: 4px;
+      }
+    }
+  }
+
+  .display-as-option {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    padding: 10px;
+
+    label {
+      flex-shrink: 1;
+      margin-right: 10px;
+    }
+    .Select {
+      width: 360px;
+    }
+  }
+
+  .no-results {
+    margin: 25px;
+    padding: 25px;
+    background: #efefef;
+  }
+
+  .results-wrap {
+    margin-top: 25px;
+    padding: 25px;
+    border-top: 1px solid $global-border;
+  }
+}
+
+.inline-select {
+  position: relative;
+  display: inline-block;
+
+  .inline-select-label {
+    cursor: pointer;
+    border-bottom: 1px dotted #888;
+
+    &:hover {
+      color: $dp-sonic-primary;
+      border-bottom: 1px solid $dp-sonic-primary;
+    }
+  }
+
+  .inline-select-arrow {
+    font-size: 7px;
+    color: #666;
+    margin-left: 2px;
+  }
+}
+
+.inline-select-menu {
+  position: absolute;
+  background: #fff;
+  border: 1px solid $global-border;
+  max-width: 300px;
+  min-width: 100px;
+  max-height: 400px;
+  min-height: 100px;
+  overflow: auto;
+  z-index: 100;
+  cursor: pointer;
+}
+
+.inline-select-menu-item {
+  &:hover {
+    background: $dp-morning-sky;
+  }
+  &:last-child {
+    border-bottom: none;
+  }
+  padding: 3px 8px;
+  border-bottom: 1px solid $global-border;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+  padding: 3px 8px;
+  cursor: pointer;
 }

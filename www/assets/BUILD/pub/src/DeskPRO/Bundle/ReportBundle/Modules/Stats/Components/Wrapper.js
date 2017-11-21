@@ -253,6 +253,8 @@ class Wrapper extends React.Component {
               onChangeReportDisplayTypes={this.onChangeReportDisplayTypes}
               report={currentReport}
               reportLoading={reportLoading}
+              onEditReportClick={this.onEditReportClick}
+              onRunClick={this.onRunReportClick}
             />
             : null
           }

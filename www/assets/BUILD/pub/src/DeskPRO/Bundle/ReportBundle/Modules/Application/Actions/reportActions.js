@@ -38,8 +38,9 @@ export const loadReport = createAction(
 
 export const runReport = createAction(
   'REPORTS_RUN_REPORT',
-  (reportId, data) => (dispatch) => {
+  (reportId, data, saveVars) => (dispatch) => {
     const dataToSend = {
+      saveVars: !!saveVars,
       report: {
         title:         data.title,
         description:   data.desc,

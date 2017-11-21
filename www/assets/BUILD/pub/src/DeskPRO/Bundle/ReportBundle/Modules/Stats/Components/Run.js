@@ -1,12 +1,12 @@
 import PropTypes from 'prop-types';
 import React from 'react';
 import AmCharts from '@amcharts/amcharts3-react';
+import Button from '@deskpro/react-components/lib/Components/Buttons/Button';
 import { Loader } from '@deskpro/react-components';
-import { MultiSelect } from 'DeskPRO/Component/Semantic/ReactForm';
+import Select from 'react-select';
 import Immutable from 'immutable';
 import TitleWithVars from './TitleWithVars';
 import { displayTypes } from './helper';
-import Header from '../../../../../Component/Semantic/Common/Header';
 
 class Run extends React.Component {
 
@@ -15,6 +15,8 @@ class Run extends React.Component {
     reportLoading:              PropTypes.bool.isRequired,
     onChangeReportDisplayTypes: PropTypes.func.isRequired,
     onChangeReportVar:          PropTypes.func.isRequired,
+    onRunClick:                 PropTypes.func.isRequired,
+    onEditReportClick:          PropTypes.func.isRequired,
     groupParams:                PropTypes.object.isRequired,
   };
 
@@ -49,7 +51,20 @@ class Run extends React.Component {
   }
 
   onChangeReportDisplayTypes(runDisplayTypes) {
-    this.setState({ displayTypes: runDisplayTypes }, () => this.props.onChangeReportDisplayTypes(runDisplayTypes));
+    const types = runDisplayTypes ? runDisplayTypes.map(v => v.value) : [];
+    this.setState({ displayTypes: types }, () => this.props.onChangeReportDisplayTypes(types));
+  }
+
+  onEditClick(event) {
+    event.preventDefault();
+    event.stopPropagation();
+    this.props.onEditReportClick(this.props.report);
+  }
+
+  onRunClick(event) {
+    event.preventDefault();
+    event.stopPropagation();
+    this.props.onRunClick(this.props.report);
   }
 
   clickSlice(event) {
@@ -93,28 +108,29 @@ class Run extends React.Component {
       report={report}
     />);
     const content = report.get('rendered_result', Immutable.List()).filter(value => value).size > 0
-      ? this.renderReport()
-      : <span>No results found. Please try another query (e.g. change vars) to find something</span>;
+      ? <div className="results-wrap">{this.renderReport()}</div>
+      : <div className="no-results">No results found. Please try another query (e.g. change vars) to find something</div>;
 
-    const choices = displayTypes.map((value) => {
-      const newValue = value;
-      newValue.disabled = !report.get('is_custom');
-      return newValue;
-    });
+    const choices = displayTypes;
 
     return (
-      <div className="ui form">
-        <Header content={title} level={3} />
-        <div className="inline fields">
-          <div className="twelve wide field display-types">
-            <label htmlFor="displayTypes">Available display types</label>
-            <MultiSelect
-              toggleAll={false}
-              choices={choices}
-              value={this.state.displayTypes}
-              onChange={this.onChangeReportDisplayTypes}
-            />
+      <div className="report-view run">
+        <div className="title-bar">
+          <div className="title">{title}</div>
+          <div className="ctrl">
+            <Button size="medium" type="secondary" onClick={this.onRunClick.bind(this)}><i className="fa fa-refresh"></i></Button>
+            <Button size="medium" onClick={this.onEditClick.bind(this)}>Edit Report</Button>
           </div>
+        </div>
+        <div className="display-as-option">
+          <label htmlFor="displayTypes">Display</label>
+          <Select
+            multi
+            closeOnSelect={false}
+            options={choices}
+            value={this.state.displayTypes}
+            onChange={this.onChangeReportDisplayTypes}
+          />
         </div>
         { content }
       </div>

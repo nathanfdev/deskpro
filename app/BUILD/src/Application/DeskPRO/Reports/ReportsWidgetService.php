@@ -288,6 +288,18 @@ class ReportsWidgetService
     }
 
     /**
+     * @param string $query
+     *
+     * @return array
+     */
+    public function parseQueryString($query)
+    {
+        $compiler  = new Compiler();
+        $statement = $compiler->lexAndParse($query);
+        return $this->getDpqlPartsForInput($statement);
+    }
+
+    /**
      * @param ReportWidget $report
      *
      * @throws \Exception

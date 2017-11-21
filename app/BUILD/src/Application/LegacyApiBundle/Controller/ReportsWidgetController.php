@@ -28,11 +28,13 @@
 
 namespace Application\LegacyApiBundle\Controller;
 
+use Application\DeskPRO\Dpql\Statement\Display;
 use Application\DeskPRO\Entity\ReportWidget;
 use Application\DeskPRO\EntityRepository\ReportWidget as ReportWidgetRepository;
 use Application\DeskPRO\Exception\ValidationException;
 use Application\DeskPRO\Reports\ReportsWidgetService;
 use DeskPRO\Bundle\AppBundle\Annotation\ActionPermissions\Annotation\ApiModes;
+use DeskPRO\Component\Util\MapUtils;
 use Symfony\Component\HttpFoundation\Response;
 
 /**
@@ -142,37 +144,42 @@ class ReportsWidgetController extends AbstractController
      */
     public function saveAction($id)
     {
-        /* @var ReportsWidgetService */
-        $reportsWidget = $reportsWidget = $this->container->get('reports.widget.service');
-        $displayOnly   = $this->in->getBool('displayOnly');
+        /* @var $reportsWidget ReportsWidgetService */
+        $reportsWidget = $this->container->get('reports.widget.service');
         if ($id) {
-            $report = $reportsWidget->getById($id);
+            $displayOnly = $this->in->getBool('displayOnly');
+            $report      = $reportsWidget->getById($id);
+
             if (!$report) {
                 throw $this->createNotFoundException();
             }
         } else {
-            $report = $reportsWidget->createNew();
+            $displayOnly = false;
+            $report      = $reportsWidget->createNew();
         }
-        if (!$report->isCustom()) {
+        if (!$report->isCustom() && !$displayOnly) {
             throw ValidationException::create('you can edit only custom report');
         }
-        if ($error = $reportsWidget->getErrors($id, $displayOnly ? false : 'from_request')) {
+        if ($error = $reportsWidget->getErrors($id, !$displayOnly ? 'from_request' : false)) {
             return $this->createApiResponse(['error' => $error]);
         } else {
-            $postData = $this->in->getAll('req');
-            $form     = $this->createForm('form_dashboards_report_widget', $report, ['cascade_validation' => true]);
-            $form->submit($postData['report'], true);
-
-            if ($form->isValid()) {
+            if ($displayOnly) {
+                $report->setDisplayTypes($this->in->getArrayOfStrings('report.display_types'));
                 $this->em->persist($report);
                 $this->em->flush();
             } else {
-                return $this->createApiValidationErrorResponse(
-                    $this->container->getValidator()->validate($report)
-                );
-            }
-            if (!$displayOnly) {
-                $reportsWidget->saveQuery($report);
+                $postData = $this->in->getAll('req');
+                $form     = $this->createForm('form_dashboards_report_widget', $report, ['cascade_validation' => true]);
+                $form->submit($postData['report'], true);
+
+                if ($form->isValid()) {
+                    $this->em->persist($report);
+                    $this->em->flush();
+                } else {
+                    return $this->createApiValidationErrorResponse(
+                        $this->container->getValidator()->validate($report)
+                    );
+                }
             }
 
             $apiData = $this->getReportsAndLabels();
@@ -262,7 +269,7 @@ class ReportsWidgetController extends AbstractController
      */
     public function testAction($id)
     {
-        /* @var ReportsWidgetService */
+        /* @var $reportsWidget ReportsWidgetService */
         $reportsWidget = $reportsWidget = $this->container->get('reports.widget.service');
         $parts         = $this->in->getArrayValue('parts');
         $query         = $parts && isset($parts['from']) && $parts['from'] ? 'from_request' : null;
