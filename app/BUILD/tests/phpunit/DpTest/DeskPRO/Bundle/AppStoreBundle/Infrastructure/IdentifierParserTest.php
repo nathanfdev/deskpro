@@ -38,21 +38,23 @@ class IdentifierParserTest extends DeskProTestCase
         $parser = new IdentifierParser();
         $ref = $parser->parseApplicationRef('app:123');
 
+        $this->assertNotNull($ref);
         $this->assertEquals('123', $ref->getIdentifier());
         $this->assertFalse($ref->isName());
 
 
         $ref = $parser->parseApplicationRef('123');
-        $this->assertNull($ref);
+        $this->assertEquals('123', $ref->getIdentifier());
+        $this->assertFalse($ref->isName());
     }
 
     public function testRecognizeApplicationInstanceId()
     {
         $parser = new IdentifierParser();
-        $ref = $parser->recognizeApplicationInstanceId('123');
+        $ref = $parser->recognizeNumericIdentifier('123');
         $this->assertTrue($ref);
 
-        $ref = $parser->recognizeApplicationInstanceId('app:123');
+        $ref = $parser->recognizeNumericIdentifier('app:123');
         $this->assertFalse($ref);
     }
 }

@@ -58,7 +58,7 @@ class Apps2Data extends AbstractDefaultData
         $bundle          = AppZipArchiveBundle::fromFile($bundlePath);
         /** @var ApplicationManagerService $appManager */
         $appManager = $this->getContainer()->get('apps2.application_manager');
-        $appManager->install($bundle);
+        $appManager->createOrUpdateAppEntity($bundle);
     }
 
     /**

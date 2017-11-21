@@ -26,31 +26,72 @@
  * ~ Thanks, Everyone at Team DeskPRO
  */
 
-namespace DeskPRO\Bundle\AppStoreBundle\Domain;
+namespace DeskPRO\Bundle\AppStoreBundle\Domain\AppManifestChanges;
+
+use DeskPRO\Bundle\AppStoreBundle\Domain\AppManifest\CustomField;
+use DeskPRO\Bundle\AppStoreBundle\Domain\AppManifest\Setting;
+use JMS\Serializer\Annotation as JMS;
 
 /**
- * Representation of a Deskpro app store application.
+ * @JMS\ExclusionPolicy("all")
  */
-interface Application
+class SettingChange
 {
     /**
-     * Returns the system identifier assigned to the application.
+     * @JMS\Type("string")
+     * @JMS\Expose()
      *
-     * @return string
+     * @var string
      */
-    public function getId();
+    private $module = 'settings';
 
     /**
-     * Returns the name given by the owner.
+     * @JMS\Type("string")
+     * @JMS\Expose()
      *
-     * @return string
+     * @var string
      */
-    public function getName();
+    private $type;
 
     /**
-     * Returns the manifest.
+     * @JMS\Type("DeskPRO\Bundle\AppStoreBundle\Domain\AppManifest\Setting")
+     * @JMS\Expose()
      *
-     * @return AppManifest
+     * @var CustomField
      */
-    public function getManifest();
+    private $value;
+
+    /**
+     * @param $changeType
+     * @param Setting $value
+     */
+    public function __construct($changeType, Setting $value)
+    {
+        $this->type  = $changeType;
+        $this->value = $value;
+    }
+
+    /**
+     * @return string
+     */
+    public function getModule()
+    {
+        return $this->module;
+    }
+
+    /**
+     * @return string
+     */
+    public function getType()
+    {
+        return $this->type;
+    }
+
+    /**
+     * @return CustomField
+     */
+    public function getValue()
+    {
+        return $this->value;
+    }
 }

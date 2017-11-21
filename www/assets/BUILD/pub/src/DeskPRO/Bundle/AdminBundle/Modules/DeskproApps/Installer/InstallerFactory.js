@@ -1,17 +1,65 @@
 import React from 'react';
-import uuid from 'uuid';
 
-import { AppsRegistry, AppsConfigBuilder } from 'DeskPRO/Bundle/AppsBundle/Modules/Config';
-import { Context } from 'DeskPRO/Bundle/AppsBundle/Modules/Domain';
-import { DeskproAppContainerProps, DeskproAppContainer } from 'DeskPRO/Bundle/AppsBundle/Modules/Components';
-import { ManifestLoader } from 'DeskPRO/Bundle/AppsBundle/Modules/Manifest';
+import { AppsConfigBuilder } from 'DeskPRO/Bundle/AppsBundle/Modules/Config';
+import { ManifestLoader, ManifestParsers } from 'DeskPRO/Bundle/AppsBundle/Modules/Manifest';
 
 import { api } from 'DeskPRO/Bundle/AppBundle/DAL';
-import { InstallerContainer } from './Components';
-import { InstallerContainerProps } from './InstallerContainerProps';
+import { InstallerContainer, ScreenInstallerBundled, ScreenInstallerDefault } from './Components';
 
 const TARGET_INSTALL = 'install';
-const INSTALL_STATUS_EVENT = 'install.status';
+
+/**
+ * @param {String} app
+ * @return Promise
+ */
+function loadInstance(app) {
+  const manifestLoader = new ManifestLoader(api);
+  return manifestLoader.loadApp(app);
+}
+
+/**
+ * @param {String} app
+ * @return Promise
+ */
+function createInstance(app) {
+  const encodedAppName = encodeURIComponent(encodeURIComponent(app));
+  return api.sendPost(`DP_API/apps/${encodedAppName}?include=app`)
+    .then(response => response.data)
+    .then(ManifestParsers.parseManifestResponseBody)
+  ;
+}
+
+function createLoadInstaller(config) {
+  const manifestLoader = new ManifestLoader(api);
+
+  if (config.environment === 'development') {
+    return manifestLoader.loadDev.bind(manifestLoader, config.endpoint);
+  }
+
+  return (manifest) => {
+    if (manifest.targets.filter(({ target }) => target === TARGET_INSTALL).length) {
+      return Promise.resolve(manifest);
+    }
+    return Promise.resolve(null);
+  };
+}
+
+/**
+ * @param {String} app
+ * @return Promise
+ */
+function loadPackage(app) {
+  const manifestLoader = new ManifestLoader(api);
+  return manifestLoader.loadPackage(app);
+}
+
+function renderInstallerDefault(navigateToApp, { installType,  appManifest, packageManifest }) {
+  return (<ScreenInstallerDefault onInstallFinished={navigateToApp} instanceId={appManifest.id} packageManifest={packageManifest} installType={installType} />);
+}
+
+function renderInstallerBundled(config, navigateToApp, { installType,  appManifest, installerManifest }) {
+  return (<ScreenInstallerBundled onInstallFinished={navigateToApp} config={config} installType={installType} appManifest={appManifest} installerManifest={installerManifest} />);
+}
 
 class InstallerFactory extends React.Component {
   /**
@@ -24,70 +72,25 @@ class InstallerFactory extends React.Component {
     builder.addWindowParams(windowObject);
     const config = builder.build();
 
-    const containerProps = new InstallerContainerProps({});
-    const manifestLoader = new ManifestLoader(api);
-    containerProps.loadAppManifest = manifestLoader.loadApp.bind(manifestLoader);
-
-    if (config.environment === 'development') {
-      containerProps.loadInstallerManifest = manifestLoader.loadDev.bind(manifestLoader, config.endpoint);
-    } else {
-      containerProps.loadInstallerManifest = (manifest) => {
-        if (manifest.targets.filter(({ target }) => target === TARGET_INSTALL).length) {
-          return manifest;
-        }
-        return null;
-      };
-    }
-
-    /**
-     * @param {Widget} widget
-     * @param {String} eventName
-     * @param {WidgetRequest|WidgetResponse} widgetMessage
-     * @param {function} next
-     */
-    const dispatchIncomingWidgetMessage = (eventName, widgetMessage, widget, next)  => {
-      if (eventName === INSTALL_STATUS_EVENT) {
-        const { manifest, status } = widgetMessage.body; // eslint-disable-line no-unused-expressions, no-unused-vars
-        if (status === 'success') {
-          legacyNavigate('apps.apps.instance_v2', { id: `v2_${widget.instanceId}` });
-          return;
-        }
-      }
-      next(eventName, widgetMessage, widget);
+    const navigateToApp = (id) => {
+      legacyNavigate('apps.apps.edit-v2', { instanceId: id });
     };
 
     return class extends React.Component {
       render() {
-        containerProps.setRouteProps(this.props);
+        const { app, installType } = this.props.params; // eslint-disable-line react/prop-types
         return (
-          <InstallerContainer {...containerProps.toJS()}>
-            {({ appManifest, installerManifest }) => {
-              if (!installerManifest) {
-                api.sendPut(`DP_API/apps/app:${appManifest.application_id}`, { is_installed: true  })
-                  .then(() => {
-                    legacyNavigate('apps.apps.instance_v2', { id: `v2_${appManifest.id}` });
-                  });
-                return null;
-              }
-
-              const installerConfiguration = AppsRegistry.appConfiguration(installerManifest, config);
-              const widgetsConfigList = [AppsRegistry.createWidget(TARGET_INSTALL, installerConfiguration)];
-
-              const context = new Context({
-                id:              uuid.v4(),
-                target:          TARGET_INSTALL,
-                type:            'app',
-                entityId:        appManifest.application_id,
-                onInstallStatus: {
-                  event:          INSTALL_STATUS_EVENT,
-                  invocationType: 'event.invocation_fireandforget'
-                }
-              });
-
-              const props = DeskproAppContainerProps.create({ context, widgetsConfigList, dispatchIncomingWidgetMessage });
-              return (<DeskproAppContainer {...props} />);
-            }}
-          </InstallerContainer>);
+          <InstallerContainer
+            app={decodeURIComponent(app)}
+            installType={installType}
+            loadInstance={loadInstance}
+            createInstance={createInstance}
+            loadPackage={loadPackage}
+            loadInstaller={createLoadInstaller(config)}
+            renderInstallerBundled={props => renderInstallerBundled(config, navigateToApp, props)}
+            renderInstallerDefault={props => renderInstallerDefault(navigateToApp, props)}
+          />
+        );
       }
     };
   }

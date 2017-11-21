@@ -40,8 +40,8 @@ class IdentifierParser
      */
     public function parseApplicationRef($raw)
     {
-        if ($this->recognizeApplicationInstanceId($raw)) {
-            return null;
+        if ($this->recognizeNumericIdentifier($raw)) {
+            return new ApplicationRef($raw, false);
         }
 
         $appId = $this->parseApplicationId($raw);
@@ -72,7 +72,7 @@ class IdentifierParser
      *
      * @return bool
      */
-    public function recognizeApplicationInstanceId($raw)
+    public function recognizeNumericIdentifier($raw)
     {
         //TODO: implement application instance id recognition
         return (bool) preg_match('#^(\d+)$#', $raw);

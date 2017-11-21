@@ -35,11 +35,14 @@ use DeskPRO\Bundle\AppBundle\Annotation\ActionPermissions\Annotation\ApiModes;
 use DeskPRO\Bundle\AppBundle\Entity;
 use DeskPRO\Bundle\AppBundle\Notification\Event\LegacySystemEvent;
 use DeskPRO\Bundle\AppStoreBundle;
+use DeskPRO\Bundle\AppStoreBundle\Domain\AppManifest;
+use DeskPRO\Bundle\AppStoreBundle\Infrastructure\ApplicationManagerService;
 use FOS\RestBundle\Controller\Annotations as Rest;
 use FOS\RestBundle\View\View;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\ParamConverter;
 use Symfony\Component\HttpFoundation;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
+use Symfony\Component\HttpKernel\Exception\ConflictHttpException;
 use Symfony\Component\HttpKernel\Exception\ServiceUnavailableHttpException;
 use Symfony\Component\HttpKernel\Exception\UnprocessableEntityHttpException;
 use Symfony\Component\HttpFoundation\Request;
@@ -151,49 +154,32 @@ class AppsController extends BaseController
     }
 
     /**
-     * @Rest\Post("/{application}", condition="request.headers.get('Content-Type') matches '#application/zip#i'")
-     * @ParamConverter("application", class="AppBundle:Entity\AppStore\AppInstance", converter="DeskPRO\Bundle\AppStoreBundle\ParamConverter\AppInstanceParamConverter")
-     * @ParamConverter("bundle", class="AppStoreBundle:Infrastructure\AppZipArchiveBundle", converter="DeskPRO\Bundle\AppStoreBundle\ParamConverter\AppZipArchiveBundleParamConverter")
-     *
-     * @param Entity\AppStore\AppInstance|null                  $application
-     * @param AppStoreBundle\Infrastructure\AppZipArchiveBundle $bundle
-     *
-     * @return string
+     * @Rest\Post("/{application}")
+     * @ParamConverter("application", class="AppBundle:Entity\AppStore\App", converter="DeskPRO\Bundle\AppStoreBundle\ParamConverter\AppParamConverter", options={"numericId" = "instanceId"})
      */
-    public function updateFromZipFileAction(Entity\AppStore\AppInstance $application = null, AppStoreBundle\Infrastructure\AppZipArchiveBundle $bundle)
-    {
-        if (empty($application)) {
-            throw new NotFoundHttpException('could not find application');
-        }
+     public function createAction(Entity\AppStore\App $application = null)
+     {
+         if (empty($application)) {
+             throw new NotFoundHttpException('could not find application');
+         }
 
-        throw new ServiceUnavailableHttpException('endpoint not available');
-    }
+         /** @var ApplicationManagerService $instanceCreator */
+         $instanceCreator = $this->container->get('apps2.application_manager');
 
-    /**
-     * @Rest\POST("", condition="request.headers.get('Content-Type') matches '#application/json#i'")
-     * @ParamConverter("file", class="SplFileInfo", converter="DeskPRO\Bundle\ApiBundle\ParamConverter\RequestBodyToTemporaryFileConverter")
-     *
-     * @return string
-     */
-    public function createFromUrlAction()
-    {
-        throw new ServiceUnavailableHttpException('endpoint not available');
-    }
+         $isSingle = $application->getManifest()->isSingle();
+         if ($isSingle) {
+             /** @var AppStoreBundle\Domain\ApplicationInstanceFinder $instanceFinder */
+             $instanceFinder = $this->container->get(AppStoreBundle\Domain\ApplicationInstanceFinder::class);
+             $instance = $instanceFinder->findSoleApplicationInstance($application->getName());
 
-    /**
-     * @Rest\Post("/{application}", condition="request.headers.get('Content-Type') matches '#application/json#i'")
-     * @ParamConverter("application", class="AppBundle:Entity\AppStore\App", converter="DeskPRO\Bundle\AppStoreBundle\ParamConverter\AppParamConverter")
-     *
-     * @param Entity\AppStore\App $application
-     */
-    public function updateAppFromUrlAction(Entity\AppStore\App $application = null)
-    {
-        if (empty($application)) {
-            throw new NotFoundHttpException('could not find application');
-        }
+             if (! is_null($instance)) {
+                 throw new ConflictHttpException('application can only have one instance');
+             }
+         }
 
-        throw new ServiceUnavailableHttpException('endpoint not available');
-    }
+         $instance        = $instanceCreator->createInstance($application);
+         return $this->wrap($instance);
+     }
 
     /**
      * @Rest\Put("/{application}", condition="request.headers.get('Content-Type') matches '#application/json#i'")
@@ -284,20 +270,18 @@ class AppsController extends BaseController
 
     /**
      * @Rest\Get("/{application}/manifest")
+     * @ParamConverter("application", class="AppBundle:Entity\AppStore\App", converter="DeskPRO\Bundle\AppStoreBundle\ParamConverter\AppInstanceParamConverter")
      *
-     * @ParamConverter("application", class="AppBundle:Entity\AppStore\App", converter="DeskPRO\Bundle\AppStoreBundle\ParamConverter\AppParamConverter")
-     *
-     * @param Entity\AppStore\App $application
-     *
-     * @return array
+     * @param Entity\AppStore\AppInstance $application
+     * @return AppManifest
      */
-    public function getManifestAction(Entity\AppStore\App $application = null)
+    public function getManifestAction(Entity\AppStore\AppInstance $application = null)
     {
         if (empty($application)) {
             throw new NotFoundHttpException('could not find application');
         }
 
-        return $application->getManifest();
+        return $application->getApp()->getManifest();
     }
 
     /**
@@ -321,21 +305,22 @@ class AppsController extends BaseController
     /**
      * @Rest\Get("/{application}/assets")
      *
-     * @ParamConverter("application", class="AppBundle:Entity\AppStore\App", converter="DeskPRO\Bundle\AppStoreBundle\ParamConverter\AppParamConverter")
+     * @ParamConverter("application", class="AppBundle:Entity\AppStore\App", converter="DeskPRO\Bundle\AppStoreBundle\ParamConverter\AppInstanceParamConverter")
      * @ParamConverter("searchFilter", class="AppStoreBundle:Domain\AssetFilter", converter="DeskPRO\Bundle\AppStoreBundle\ParamConverter\AssetFilterParamConverter")
      *
-     * @param Entity\AppStore\App                     $application
+     * @param Entity\AppStore\AppInstance                     $application
      * @param AppStoreBundle\Domain\SearchAssetFilter $searchFilter
      */
-    public function listAssetsAction(Entity\AppStore\App $application = null, AppStoreBundle\Domain\SearchAssetFilter $searchFilter)
+    public function listAssetsAction(Entity\AppStore\AppInstance $application = null, AppStoreBundle\Domain\SearchAssetFilter $searchFilter)
     {
         if (empty($application)) {
             throw new NotFoundHttpException('could not find application');
         }
 
+        $app = $application->getApp();
         /** @var AppStoreBundle\Domain\AssetFinder $assetFinder */
         $assetFinder = $this->container->get(AppStoreBundle\Domain\AssetFinder::class);
-        $assets      = $assetFinder->findApplicationAssets($application, $searchFilter);
+        $assets      = $assetFinder->findApplicationAssets($app, $searchFilter);
 
         return $assets;
     }
@@ -347,7 +332,7 @@ class AppsController extends BaseController
      *
      * @param Entity\AppStore\AppInstance $application
      *
-     * @return array
+     * @return ApplicationStatus
      */
     public function getStatusAction(Entity\AppStore\AppInstance $application = null)
     {

@@ -11,6 +11,10 @@ $flag-icon-css-path: "../../../../../../node_modules/flag-icon-css/flags";
 @import 'voice';
 @import 'dev';
 
+$dp-styles-font-path: '../../../../../../node_modules/@deskpro/react-components/src/styles/fonts/';
+$fa-font-path: "//netdna.bootstrapcdn.com/font-awesome/4.7.0/fonts" !default;
+@import "../../../../../../node_modules/@deskpro/react-components/src/styles/main";
+
 .two-panels-menu {
   display: table;
   border-collapse: collapse;

@@ -139,12 +139,11 @@ class App implements Domain\Application, EntityInterface, NotifyPropertyChanged
     }
 
     /**
-     * @return Domain\AppManifest
-     * @deprecated
+     * @return array
      */
-    public function getParsedManifest()
+    public function getRawManifest()
     {
-        return $this->getManifest();
+        return $this->manifest;
     }
 
     /**
@@ -203,7 +202,7 @@ class App implements Domain\Application, EntityInterface, NotifyPropertyChanged
     /**
      * @return AppAssetBlob
      */
-    public function getIconAsset()
+    private function getIconAsset()
     {
         return $this->assets->filter(function (AppAssetBlob $asset) {
             return $asset->getPath() === 'assets/icon.png';
@@ -218,8 +217,16 @@ class App implements Domain\Application, EntityInterface, NotifyPropertyChanged
     public function getIconUrl()
     {
         $asset = $this->getIconAsset();
+        $blob = null;
+        if ($asset) {
+            $blob = $asset->getBlob();
+        }
 
-        return $asset ? $asset->getBlob()->getThumbnailUrl('{{size}}') : null;
+        if ($blob && $blob->isImage()) {
+            return $blob->getDownloadUrl();
+        }
+
+        return  null;
     }
 
     /**

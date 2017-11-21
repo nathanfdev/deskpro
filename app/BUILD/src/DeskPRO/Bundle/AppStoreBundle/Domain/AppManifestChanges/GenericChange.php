@@ -26,31 +26,72 @@
  * ~ Thanks, Everyone at Team DeskPRO
  */
 
-namespace DeskPRO\Bundle\AppStoreBundle\Domain;
+namespace DeskPRO\Bundle\AppStoreBundle\Domain\AppManifestChanges;
+
+use JMS\Serializer\Annotation as JMS;
 
 /**
- * Representation of a Deskpro app store application.
+ * @JMS\ExclusionPolicy("all")
  */
-interface Application
+class GenericChange
 {
     /**
-     * Returns the system identifier assigned to the application.
+     * @JMS\Type("string")
+     * @JMS\Expose()
      *
-     * @return string
+     * @var string
      */
-    public function getId();
+    private $module;
 
     /**
-     * Returns the name given by the owner.
+     * @JMS\Type("string")
+     * @JMS\Expose()
      *
-     * @return string
+     * @var string
      */
-    public function getName();
+    private $type;
 
     /**
-     * Returns the manifest.
+     * @JMS\Type("string")
+     * @JMS\Expose()
      *
-     * @return AppManifest
+     * @var string
      */
-    public function getManifest();
+    private $value;
+
+    /**
+     * @param $component
+     * @param $changeType
+     * @param $value
+     */
+    public function __construct($component, $changeType, $value)
+    {
+        $this->module = $component;
+        $this->type   = $changeType;
+        $this->value  = $value;
+    }
+
+    /**
+     * @return string
+     */
+    public function getModule()
+    {
+        return $this->module;
+    }
+
+    /**
+     * @return string
+     */
+    public function getChangeType()
+    {
+        return $this->type;
+    }
+
+    /**
+     * @return string
+     */
+    public function getValue()
+    {
+        return $this->value;
+    }
 }

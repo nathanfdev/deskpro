@@ -26,31 +26,71 @@
  * ~ Thanks, Everyone at Team DeskPRO
  */
 
-namespace DeskPRO\Bundle\AppStoreBundle\Domain;
+namespace DeskPRO\Bundle\AppStoreBundle\Domain\AppManifestChanges;
+
+use DeskPRO\Bundle\AppStoreBundle\Domain\AppManifest\CustomField;
+use JMS\Serializer\Annotation as JMS;
 
 /**
- * Representation of a Deskpro app store application.
+ * @JMS\ExclusionPolicy("all")
  */
-interface Application
+class CustomFieldChange
 {
     /**
-     * Returns the system identifier assigned to the application.
+     * @JMS\Type("string")
+     * @JMS\Expose()
      *
-     * @return string
+     * @var string
      */
-    public function getId();
+    private $module = 'customFields';
 
     /**
-     * Returns the name given by the owner.
+     * @JMS\Type("string")
+     * @JMS\Expose()
      *
-     * @return string
+     * @var string
      */
-    public function getName();
+    private $type;
 
     /**
-     * Returns the manifest.
+     * @JMS\Type("DeskPRO\Bundle\AppStoreBundle\Domain\AppManifest\CustomField")
+     * @JMS\Expose()
      *
-     * @return AppManifest
+     * @var CustomField
      */
-    public function getManifest();
+    private $value;
+
+    /**
+     * @param $changeType
+     * @param CustomField $value
+     */
+    public function __construct($changeType, CustomField $value)
+    {
+        $this->type  = $changeType;
+        $this->value = $value;
+    }
+
+    /**
+     * @return string
+     */
+    public function getModule()
+    {
+        return $this->module;
+    }
+
+    /**
+     * @return string
+     */
+    public function getType()
+    {
+        return $this->type;
+    }
+
+    /**
+     * @return CustomField
+     */
+    public function getValue()
+    {
+        return $this->value;
+    }
 }
