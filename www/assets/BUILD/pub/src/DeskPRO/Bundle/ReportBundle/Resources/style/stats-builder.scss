@@ -308,6 +308,10 @@
   font-size: 0.85em;
   margin-left: 3px;
   cursor: pointer;
+
+  &.active, &:hover {
+    color: $dp-sonic-primary;
+  }
 }
 
 
