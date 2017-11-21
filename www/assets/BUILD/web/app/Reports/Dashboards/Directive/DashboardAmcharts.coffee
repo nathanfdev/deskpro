@@ -7,6 +7,7 @@ define ->
         widgetId: '@'
         myIndex: '@'
         chartData: '@'
+        reportLevelVars: '@'
 
       link: (scope, element, attrs) ->
         i = attrs.widgetId
@@ -16,6 +17,7 @@ define ->
         element.replaceWith(content)
         chart = false
         conf = scope.widgetId || 0;
+        console.log(scope.reportLevelVars);
 
         chartDiv    = angular.element(document.getElementById("ch" + i))
         chartParent = chartDiv.parent().parent()

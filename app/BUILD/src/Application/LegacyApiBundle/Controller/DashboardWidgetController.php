@@ -178,8 +178,15 @@ class DashboardWidgetController extends AbstractController
         if (!$widget->getWidget()) {
             throw $this->createNotFoundException('Widget not found!');
         }
-        $pos  = $widget->getPosition();
-        $size = $widget->getSize();
+        $pos             = $widget->getPosition();
+        $size            = $widget->getSize();
+        $reportLevelVars = $widget->getReport()->getVariables();
+        $widgetVars      = $widget->getVariables();
+        foreach ($widgetVars as $key => &$var) {
+            if ($reportLevelVars[$key]) {
+                $var['value'] = $reportLevelVars[$key]['value'];
+            }
+        }
 
         $realData = $this->widgetService->renderWidgetQuery($widget);
         if ($realData && $widget->getType() == DashboardWidgetService::WIDGET_TYPE_TABLE) {

@@ -21,6 +21,9 @@ define ['DeskPRO/Util/Arrays'], (Arrays) -> [
       dashboard_id: 0
       options:
         columns: 24
+      variables: {
+        date: 'ever'
+      }
     }
 
     report_id = parseInt($stateParams.report_id)

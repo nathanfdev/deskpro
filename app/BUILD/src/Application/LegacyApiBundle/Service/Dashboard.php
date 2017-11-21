@@ -121,15 +121,13 @@ class Dashboard
             'id'         => $dashboard->getId(),
             'title'      => $dashboard->getTitle(),
             'is_default' => $dashboard->isDefault(),
-            'reports'    => [],
+            'reports'    => array_map(
+                function (DashboardReportEntity $r) {
+                    return ['id' => $r->getId(), 'title' => $r->getTitle()];
+                },
+                $dashboard->getReports()->toArray() ?: []
+            ),
         ];
-
-        foreach ($dashboard->getReports() as $r) {
-            $data['reports'][] = [
-                'id'    => $r->id,
-                'title' => $r->title,
-            ];
-        }
 
         return $data;
     }
@@ -183,7 +181,8 @@ class Dashboard
                 'floating' => false,
                 'swapping' => false,
             ],
-            'widgets' => $widgets,
+            'widgets'   => $widgets,
+            'variables' => $report->getVariables(),
         ];
 
         return $data;

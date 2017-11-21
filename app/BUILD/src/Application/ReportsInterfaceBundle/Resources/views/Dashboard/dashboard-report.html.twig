@@ -61,6 +61,7 @@
                     </div>
                     <div class="box" ng-if="widget.type=='graph'">
                         <dashboard-amcharts
+                            report-level-vars={{ ng_var('report.variables') }}
                             my-index="{{ ng_var('$index') }}"
                             title="{{ ng_var('widget.title') }}"
                             widget-id = "{{ ng_var('widget.id') }}"
