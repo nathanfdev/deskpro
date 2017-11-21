@@ -26,6 +26,14 @@ export default class RteEditor extends React.Component {
     onBlur:          PropTypes.func
   };
 
+  constructor(props) {
+    super(props);
+
+    this.state = {
+      value: this.props.value
+    };
+  }
+
   componentDidMount() {
     const { inline, ctrlEnterSubmit, value = '', options = {} } = this.props;
     const {
@@ -51,6 +59,7 @@ export default class RteEditor extends React.Component {
         // refocus after the modification
         this.focus();
       }
+      this.updated = true;
 
       onChange(node.innerHTML);
     };
@@ -85,15 +94,16 @@ export default class RteEditor extends React.Component {
     }
   }
 
-  componentWillReceiveProps(newProps) {
-    if (this.getNode() && newProps.value !== this.getNode().innerHTML) {
-      let content = newProps.value;
-      if (!content) {
-        content = '<p></p>';
-      }
-
-      this.medium.setContent(content);
+  componentWillReceiveProps(nextProps) {
+    if (nextProps.value !== this.state.value && !this.updated) {
+      this.setState({ value: nextProps.value });
     }
+
+    if (this.updated) this.updated = false;
+  }
+
+  componentDidUpdate() {
+    this.medium.restoreSelection();
   }
 
   componentWillUnmount() {
@@ -246,6 +256,13 @@ export default class RteEditor extends React.Component {
     delete props.ctrlEnterSubmit;
     delete props.options;
     delete props.inline;
+
+    props.dangerouslySetInnerHTML = { __html: this.state.value };
+
+    if (this.medium) {
+      this.medium.saveSelection();
+    }
+
     return React.createElement(tag, { ...props, ref: (c) => { this.node = c; } });
   }
 }
