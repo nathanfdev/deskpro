@@ -133,12 +133,7 @@ class GetMsgScript extends LowScriptAbstract
                 $dos[] = 'get-online-visitors';
             }
 
-            // We don't do custom filters data based on request, but instead based on the poll count
-            // We do it every 125 polls, which is roughly 10 minutes or on refresh_check == 1
-            $dos = array_filter($dos, function ($v) {
-                return $v !== 'get-custom-filters-data';
-            });
-            if (($count && $count % 125 === 0) || (isset($_REQUEST['refresh_check']) && $_REQUEST['refresh_check'] == 1)) {
+            if (isset($_REQUEST['get-custom-filters-data-batch'])) {
                 $dos[] = 'get-custom-filters-data';
             }
 
@@ -440,13 +435,38 @@ class GetMsgScript extends LowScriptAbstract
         $this->_getContainer();
         $filters_api = new \Application\DeskPRO\Tickets\Filters();
 
-        $filter_info = $filters_api->getGroupedFiltersForPerson($this->_getPerson());
+        $filter_info    = $filters_api->getGroupedFiltersForPerson($this->_getPerson());
+        $custom_filters = $filter_info['custom_filters'];
 
-        $filter_counts = App::getApi('tickets.filters')->getAllCountsForFiltersCollection($filter_info['custom_filters'], $this->_getPerson());
+        if (!empty($_REQUEST['get-custom-filters-data-ignore'])) {
+            $ignore         = explode(',', $_REQUEST['get-custom-filters-data-ignore']);
+            $custom_filters = array_filter($custom_filters, function ($f) use ($ignore) {
+                return !in_array($f['id'], $ignore);
+            });
+        }
+
+        if (!$custom_filters) {
+            return [];
+        }
+
+        $batched  = array_chunk($custom_filters, 10);
+        $batchNum = !empty($_REQUEST['get-custom-filters-data-batch']) ? $_REQUEST['get-custom-filters-data-batch'] : 0;
+        if (!isset($batched[$batchNum])) {
+            return [];
+        }
+
+        $filter_counts = App::getApi('tickets.filters')->getAllCountsForFiltersCollection($batched[$batchNum], $this->_getPerson());
+
+        if (isset($batched[$batchNum + 1])) {
+            $nextBatch = $batchNum + 1;
+        } else {
+            $nextBatch = null;
+        }
 
         $filter_data = [
-            'ids'    => [],
-            'counts' => $filter_counts,
+            'ids'        => [],
+            'counts'     => $filter_counts,
+            'next_batch' => $nextBatch,
         ];
 
         return [[null, 'filters.filter_data', $filter_data]];
