@@ -115,8 +115,8 @@
 			DP_USERCHAT_HIDE_CLAIMED_CHAT = false;
 		{% endif %}
 
-		DP_POLLER_INTERVAL = {% if reduce_poll_rate %}300000{% else %}5000{% endif %};
-		DP_POLLER_INTERVAL_FAST = {% if reduce_poll_rate %}300000{% else %}2000{% endif %};
+		DP_POLLER_INTERVAL = {% if reduce_poll_rate %}75000{% else %}5000{% endif %};
+		DP_POLLER_INTERVAL_FAST = {% if reduce_poll_rate %}75000{% else %}2000{% endif %};
 
 		{% if constant('DP_DEBUG') %}
 			window.DeskPRO_Window.DEBUG = {
