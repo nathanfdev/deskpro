@@ -181,7 +181,7 @@ class DashboardWidgetController extends AbstractController
         $pos             = $widget->getPosition();
         $size            = $widget->getSize();
         $reportLevelVars = $widget->getReport()->getVariables();
-        $widgetVars      = $widget->getVariables();
+        $widgetVars      = $widget->getVariables() ?: [];
         foreach ($widgetVars as $key => &$var) {
             if ($reportLevelVars[$key]) {
                 $var['value'] = $reportLevelVars[$key]['value'];
