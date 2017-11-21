@@ -543,6 +543,8 @@
   display: inline-block;
 
   .inline-select-label {
+    position: relative;
+    top: 1px;
     cursor: pointer;
     border-bottom: 1px dotted #888;
 
