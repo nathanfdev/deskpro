@@ -1,6 +1,6 @@
 define ['Admin/Main/Ctrl/Base'], (Admin_Ctrl_Base) ->
-  class Admin_VoiceChannel_Ctrl_ReactComponent extends Admin_Ctrl_Base
-    @CTRL_ID = 'Admin_VoiceChannel_Ctrl_ReactComponent'
+  class Admin_ReactRoutes_Ctrl_ReactComponent extends Admin_Ctrl_Base
+    @CTRL_ID = 'Admin_ReactRoutes_Ctrl_ReactComponent'
 
     init: ->
       routePath = window.location.hash.replace(/#\//, '');
@@ -19,4 +19,4 @@ define ['Admin/Main/Ctrl/Base'], (Admin_Ctrl_Base) ->
         window.AdminBundle.unmount(element);
       )
 
-  Admin_VoiceChannel_Ctrl_ReactComponent.EXPORT_CTRL()
+  Admin_ReactRoutes_Ctrl_ReactComponent.EXPORT_CTRL()

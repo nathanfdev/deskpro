@@ -1,4 +1,5 @@
-import React, { PropTypes } from 'react';
+import PropTypes from 'prop-types';
+import React from 'react';
 import classNames from 'classnames';
 import { UploadButton } from 'DeskPRO/Component/Uploader/UploadButton';
 import DropZone from 'DeskPRO/Component/Uploader/DropZone';

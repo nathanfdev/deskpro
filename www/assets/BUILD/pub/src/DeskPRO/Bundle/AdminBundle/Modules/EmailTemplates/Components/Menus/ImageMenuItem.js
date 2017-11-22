@@ -1,4 +1,5 @@
-import React, { PropTypes } from 'react';
+import PropTypes from 'prop-types';
+import React from 'react';
 import { PopUp } from 'DeskPRO/Component/Semantic/PopUp';
 import { MenuItem } from 'DeskPRO/Component/Semantic/Menu';
 

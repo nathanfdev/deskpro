@@ -191,7 +191,7 @@ define([
   'Admin/AntiAbuse/Ctrl/CaptchaSettings',
   'Admin/AntiAbuse/Ctrl/EmailRateLimiting',
   'Admin/AntiAbuse/Ctrl/PortalRateLimiting',
-  'Admin/VoiceChannel/Ctrl/ReactComponent',
+  'Admin/ReactRoutes/Ctrl/ReactComponent',
   'Admin/Main/Ctrl/Features',
   'Admin/Settings/Ctrl/Notifications/List',
 

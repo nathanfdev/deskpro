@@ -1,4 +1,5 @@
-import React, { PropTypes } from 'react';
+import PropTypes from 'prop-types';
+import React from 'react';
 import classNames from 'classnames';
 import CodeMirror from './CodeMirror';
 import { PhraseWidget, TemplateWidget } from './Editor/';
@@ -104,7 +105,8 @@ class Editor extends React.Component {
             setCurrentWidget,
             this.props.loadTemplate,
             this.props.resetTemplate,
-            this.props.setTemplateValue
+            this.props.setTemplateValue,
+            this.addMarks
           ));
           match = re.exec(content);
         }

@@ -1,4 +1,5 @@
-import React, { PropTypes } from 'react';
+import PropTypes from 'prop-types';
+import React from 'react';
 import classNames from 'classnames';
 import { MimeIcon } from 'DeskPRO/Component/Semantic/Icon';
 import { filenameMaxLength } from 'DeskPRO/Component/Util/Filename';

@@ -1,4 +1,5 @@
-import React, { PropTypes } from 'react';
+import PropTypes from 'prop-types';
+import React from 'react';
 import { connect } from 'react-redux';
 import classNames from 'classnames';
 import { fromJS } from 'immutable';
@@ -28,7 +29,7 @@ class EmailTemplatesEditorContainer extends React.Component {
     route:          PropTypes.object
   };
   static contextTypes = {
-    router: React.PropTypes.object.isRequired
+    router: PropTypes.object.isRequired
   };
 
   constructor(props) {

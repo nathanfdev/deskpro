@@ -1,4 +1,5 @@
-import React, { PropTypes } from 'react';
+import PropTypes from 'prop-types';
+import React from 'react';
 import { connect } from 'react-redux';
 import { MenuWrapper, Menu, MenuItem } from 'DeskPRO/Component/Semantic/Menu';
 import classNames from 'classnames';

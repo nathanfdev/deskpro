@@ -1,4 +1,5 @@
-import React, { PropTypes } from 'react';
+import PropTypes from 'prop-types';
+import React from 'react';
 import { render } from 'react-dom';
 import classNames from 'classnames';
 import { PopUp } from 'DeskPRO/Component/Semantic/PopUp';
@@ -13,6 +14,7 @@ class TemplatePopup extends React.Component {
     resetTemplate:    PropTypes.func,
     setCurrentWidget: PropTypes.func,
     setValue:         PropTypes.func,
+    addMarks:         PropTypes.func,
   };
   static defaultProps = {
     loadTemplate() {},
@@ -154,7 +156,7 @@ class TemplatePopup extends React.Component {
   }
 }
 class TemplateWidget extends Widget {
-  constructor(cm, pos, code, text, setCurrentWidget, loadTemplate, resetTemplate, setValue) {
+  constructor(cm, pos, code, text, setCurrentWidget, loadTemplate, resetTemplate, setValue, addMarks) {
     super(cm, pos);
     try {
       const element = document.createElement('span');
