@@ -36,6 +36,7 @@ use Application\DeskPRO\Entity\ReportDashboardReport as Tab;
 use Application\DeskPRO\Entity\ReportDashboardWidget as Widget;
 use Application\LegacyApiBundle\Service\Dashboard as DashboardService;
 use Application\LegacyApiBundle\Service\DashboardPermissions as DashboardPermissionService;
+use Application\LegacyApiBundle\Service\DashboardWidget;
 use Application\LegacyApiBundle\Service\DashboardWidget as DashboardWidgetService;
 use DeskPRO\Bundle\AppBundle\Annotation\ActionPermissions\Annotation\ApiModes;
 use Symfony\Component\HttpFoundation\Response;
@@ -183,11 +184,12 @@ class DashboardWidgetController extends AbstractController
         $reportLevelVars = $widget->getReport()->getVariables();
         $widgetVars      = $widget->getVariables() ?: [];
         foreach ($widgetVars as $key => &$var) {
-            if ($reportLevelVars[$key]) {
+            if ($var['value'] === DashboardWidget::WIDGET_VALUE_FROM_REPORT
+                 && isset($reportLevelVars[$key]) && $reportLevelVars[$key] && $reportLevelVars[$key]['value']) {
                 $var['value'] = $reportLevelVars[$key]['value'];
             }
         }
-
+        $widget->setVariables($widgetVars);
         $realData = $this->widgetService->renderWidgetQuery($widget);
         if ($realData && $widget->getType() == DashboardWidgetService::WIDGET_TYPE_TABLE) {
             $aoColumns = [];
