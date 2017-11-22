@@ -1,16 +1,13 @@
 import PropTypes from 'prop-types';
 import React from 'react';
-import BaseForm from 'DeskPRO/Component/Form/BaseForm';
-import { Loader } from '@deskpro/react-components';
-import Button from '@deskpro/react-components/lib/Components/Buttons/Button';
+import { reduxForm } from 'redux-form';
+import { Button, Loader } from '@deskpro/react-components';
 import { Input, Form, Field, Textarea } from 'DeskPRO/Component/Semantic/ReactForm';
-import { Fieldset, createValue } from '@deskpro/react-forms';
 import classNames from 'classnames';
 import Immutable from 'immutable';
-import VarsField from './Fields/VarsField';
-import LabelsField from './Fields/LabelsField';
+import { EditForm } from './EditForm';
 
-class Edit extends BaseForm {
+class Edit extends React.Component {
 
   static propTypes = {
     report:       PropTypes.object,
@@ -54,13 +51,10 @@ class Edit extends BaseForm {
 
   constructor(props) {
     super(props);
-    this.state.mode   = 'form';
     const { report }  = props;
     const queryParts  = report.has('query_parts') ? report.get('query_parts') : Immutable.fromJS({});
-    this.state.query  = Edit.buildQuery(queryParts.toJS());
     this.onRunClick   = this.onRunClick.bind(this);
     this.onCloneClick = this.onCloneClick.bind(this);
-    this.switchToForm = this.switchToForm.bind(this);
   }
 
   getDefaultState() {
@@ -89,14 +83,8 @@ class Edit extends BaseForm {
     return state;
   }
 
-  switchToForm() {
-    const { parseQuery, report } = this.props;
-    const { query } = this.state;
-    parseQuery(report, query);
-    this.setState({ mode: 'form' });
-  }
-
   componentWillReceiveProps(props) {
+    return;
     const { report } = props;
     if (report) {
       const queryParts = report.has('query_parts') ? report.get('query_parts') : Immutable.fromJS({});
@@ -123,8 +111,10 @@ class Edit extends BaseForm {
         formData.value.id = report.get('id');
       }
 
+      // TODO
+
       const state = {
-        formData: createValue(formData),
+        formData: formData,
         query:    Edit.buildQuery(queryParts.toJS()),
       };
 
@@ -149,79 +139,32 @@ class Edit extends BaseForm {
   }
 
   renderForm() {
-    const { formData, saving } = this.state;
-    const { groupParams, report, labels } = this.props;
+    const saving = false;
+    const { groupParams, report } = this.props;
 
-    return (<Form formValue={formData} className="editor-form full-editor-form" onSubmit={this.onSubmit}>
-      <button onClick={() => this.setState({ mode: 'query' })} className={classNames('ui olive button', { loading: saving })}>Show Query</button>
-      <Fieldset>
-        <Field select="title" label="Title">
-          <Input type="text" />
-        </Field>
-        <Field select="labels"  label="Labels">
-          <LabelsField labels={labels} />
-        </Field>
-        <Field select="desc" label="Provide short description for this report">
-          <Textarea className="report-description" />
-        </Field>
-        <Field select="select" label="Select">
-          <Input type="text" />
-        </Field>
-        <Field select="from" label="From">
-          <Input type="text" />
-        </Field>
-        <Field select="where" label="Where">
-          <Input type="text" />
-        </Field>
-        <Field select="splitBy" label="Split By">
-          <Input type="text" />
-        </Field>
-        <Field select="groupBy" label="Group By">
-          <Input type="text" />
-        </Field>
-        <Field select="orderBy" label="Order By">
-          <Input type="text" />
-        </Field>
-        <Field select="limit" label="Limit">
-          <Input type="text" />
-        </Field>
-        <Field select="offset" label="Offset">
-          <Input type="text" />
-        </Field>
+    const EditStateForm = reduxForm({
+      form: 'editStat'
+    })(EditForm);
 
-        <Field select="vars" label="Vars" className="vars">
-          <VarsField loading={saving} groupParams={groupParams} />
-        </Field>
-        <br />
-        <br />
-        { report.get('is_custom') ? <button className={classNames('ui button', { loading: saving })}>Save</button> : null }
-        <button onClick={this.onRunClick} className={classNames('ui olive button', { loading: saving })}>Run</button>
-        <button onClick={this.onCloneClick} className={classNames('ui orange button', { loading: saving })}>Clone</button>
-      </Fieldset>
-    </Form>);
-  }
+    return (<div>
+      <EditStateForm groupParams={groupParams} />
 
-  renderQuery() {
-    const { saving } = this.state;
-
-    return (
-      <div className="editor-form full-editor-form">
-        <button onClick={this.switchToForm} className={classNames('ui olive button', { loading: saving })}>Show Form</button>
-        <Textarea className="report-query" value={this.state.query} onChange={(query) => { this.setState({ query }); }} />
-      </div>
-    );
+      { report.get('is_custom') ? <button className={classNames('ui button', { loading: saving })}>Save</button> : null }
+      <button onClick={this.onRunClick} className={classNames('ui olive button', { loading: saving })}>Run</button>
+      <button onClick={this.onCloneClick} className={classNames('ui orange button', { loading: saving })}>Clone</button>
+    </div>);
   }
 
   renderReport() {
     return (
       <div className="report-view edit">
         <div className="title-bar">
-          <div className="title">{this.state.formData.value.title}</div>
+          <div className="title">{this.props.report.get('title')}</div>
           <div className="ctrl">
             <Button type="secondary" size="medium" onClick={this.onRunClick.bind(this)}><i className="fa fa-undo"></i> Cancel</Button>
           </div>
         </div>
-        {this.state.mode === 'form' ? this.renderForm() : this.renderQuery()}
+        {this.renderForm()}
       </div>
     );
   }

@@ -22,3 +22,4 @@ import './Semantic/Menu/menu';
 import './Semantic/PopUp/popup';
 import './Semantic/Segment/segment';
 import './Semantic/Tabs/tabs';
+import './ReportBundle/Modules/Stat/edit';

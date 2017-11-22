@@ -6,7 +6,6 @@ import DateField from './DateField';
 import TypeField from './TypeField';
 import TypeValueField from './TypeValueField';
 
-
 class VarsField extends React.Component {
 
   static propTypes = {
@@ -43,22 +42,19 @@ class VarsField extends React.Component {
     const { value, onChange } = this.props;
 
     event.preventDefault();
-    value.push({ type: 'dates', name: 'new var' });
-    onChange(value);
+    onChange((value || []).concat([{ type: 'dates', name: 'new var' }]));
   }
 
   onDeleteVarClick(index) {
     const { value, onChange } = this.props;
-
-    delete value[index];
-    onChange(value);
+    onChange(value.splice(index));
   }
 
   render() {
     const { groupParams } = this.props;
 
     return (<span>
-      {this.props.value.map((variable, index) =>
+      {this.props.fields && this.props.value.map((variable, index) =>
         (
           <Fieldset key={index} select={`${index}`}>
             <Field className="name" select="name" label="Name">
