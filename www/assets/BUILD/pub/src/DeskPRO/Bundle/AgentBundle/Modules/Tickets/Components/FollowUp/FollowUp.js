@@ -90,6 +90,7 @@ export class FollowUp extends React.Component {
     agentTeams:     PropTypes.object.isRequired,
     followUps:      PropTypes.object.isRequired,
     macros:         PropTypes.object.isRequired,
+    ticketPerms:    PropTypes.object,
     saveFollowUp:   PropTypes.func,
     deleteFollowUp: PropTypes.func,
   };
@@ -131,6 +132,7 @@ export class FollowUp extends React.Component {
             agents={this.props.agents}
             agentTeams={this.props.agentTeams}
             macros={this.props.macros}
+            ticketPerms={this.props.ticketPerms}
             saveFollowUp={this.saveFollowUp}
           />
           :
@@ -151,6 +153,7 @@ class FollowUpForm extends React.Component {
     agents:       PropTypes.object.isRequired,
     agentTeams:   PropTypes.object.isRequired,
     macros:       PropTypes.object.isRequired,
+    ticketPerms:  PropTypes.object,
     saveFollowUp: PropTypes.func,
   };
 
@@ -328,6 +331,7 @@ class FollowUpForm extends React.Component {
           onChange={this.updateActions}
           agents={this.props.agents}
           agentTeams={this.props.agentTeams}
+          ticketPerms={this.props.ticketPerms}
           macros={this.props.macros}
         />
         <h5>{agentPhrases.get('agent.general.criteria')}</h5>

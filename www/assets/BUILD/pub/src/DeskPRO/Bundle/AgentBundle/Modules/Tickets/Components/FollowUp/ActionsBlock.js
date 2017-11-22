@@ -5,11 +5,12 @@ import Action from './Action';
 
 class ActionsBlock extends React.Component {
   static propTypes = {
-    actions:    PropTypes.array,
-    agents:     PropTypes.object.isRequired,
-    agentTeams: PropTypes.object.isRequired,
-    macros:     PropTypes.object.isRequired,
-    onChange:   PropTypes.func,
+    actions:     PropTypes.array,
+    agents:      PropTypes.object.isRequired,
+    agentTeams:  PropTypes.object.isRequired,
+    macros:      PropTypes.object.isRequired,
+    ticketPerms: PropTypes.object,
+    onChange:    PropTypes.func,
   };
 
   static defaultProps = {
@@ -45,6 +46,7 @@ class ActionsBlock extends React.Component {
       agents={this.props.agents}
       agentTeams={this.props.agentTeams}
       macros={this.props.macros}
+      ticketPerms={this.props.ticketPerms}
       updateAction={a => this.updateAction(a, index)}
       removeAction={() => this.removeAction(index)}
     />
