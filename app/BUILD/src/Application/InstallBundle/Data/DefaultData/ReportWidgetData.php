@@ -355,8 +355,8 @@ GROUP BY ALIAS(DATE(tickets.date_created), \'Date Created\'), ${ticket}',
 SELECT COUNT() AS \'Total Tickets\'
 FROM tickets
 WHERE tickets.date_created = ${date}
-GROUP BY MATRIX(${ticket}, ${group_by_field_3})',
-                'variables' => '[{"name":"ticket_2","type":"fields","field_type":"tickets","table":"tickets","default":"department"},{"name":"group_by_field_3","type":"fields","field_type":"tickets","table":"tickets","default":"agent"},{"name":"date","type":"dates"}]',
+GROUP BY MATRIX(${ticket}, ${ticket_2})',
+                'variables' => '[{"name":"ticket","type":"fields","field_type":"tickets","table":"tickets","default":"department"},{"name":"ticket_2","type":"fields","field_type":"tickets","table":"tickets","default":"agent"},{"name":"date","type":"dates"}]',
             ],
         'number-tickets-created-date-grouped-first-agent-x' => [
                 'title'         => 'Number of tickets created ${date} grouped by first agent response time & ${ticket}',
@@ -670,7 +670,7 @@ WHERE tickets.status IN (\'awaiting_agent\', \'awaiting_user\')
 SPLIT BY ${ticket}
 ORDER BY ${ticket_2}
 LIMIT 100',
-                'variables' => '[{"name":"group_by_field_1","type":"fields","field_type":"tickets","table":"tickets"},{"name":"ticket_2","type":"orders","field_type":"tickets","table":"tickets"}]',
+                'variables' => '[{"name":"ticket","type":"fields","field_type":"tickets","table":"tickets"},{"name":"ticket_2","type":"orders","field_type":"tickets","table":"tickets"}]',
             ],
         'total-tickets-unresolved-after-week' => [
                 'title'         => 'Total tickets unresolved after a week',
