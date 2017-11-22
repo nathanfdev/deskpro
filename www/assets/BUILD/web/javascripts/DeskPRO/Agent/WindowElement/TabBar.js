@@ -564,6 +564,7 @@ DeskPRO.Agent.WindowElement.TabBar = new Orb.Class({
 		}
 		var wrapper = data.wrapper.show();
 
+		console.log(data);
 		if (!data.isInited) {
 			data.isInited = true;
 
