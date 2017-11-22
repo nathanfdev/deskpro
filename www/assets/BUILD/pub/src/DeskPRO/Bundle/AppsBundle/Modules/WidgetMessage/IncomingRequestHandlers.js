@@ -291,7 +291,33 @@ export const EVENT_RESET_SIZE = (response, widget, message, services) => {
  */
 export const EVENT_SUBSCRIBE = (response, widget, message, services) => {
   const { events  } = message.body; // eslint-disable-line no-shadow
-  events.each(eventName => services.addEventListener(eventName, widget));
+  if (!(events instanceof Array)) {
+    response(new Error('expecting a list of event names'));
+    return;
+  }
+
+  const availableEvents = [
+    {
+      name:           'context.ticket.reply',
+      invocationType: 'event.invocation_requestresponse'
+    },
+    {
+      name:           'context.ticket.reply-success',
+      invocationType: 'event.invocation_fireandforget'
+    },
+    {
+      name:           'context.ticket.update-success',
+      invocationType: 'event.invocation_fireandforget'
+    }
+  ];
+
+  const actualEvents = availableEvents.filter(ev => events.indexOf(ev.name) !== -1);
+  if (actualEvents.length) {
+    actualEvents.each(event => services.addEventListener(event.name, widget));
+    response(null, actualEvents);
+  }
+
+  response(new Error('no such events found'));
 };
 
 // DESKPRO WINDOW EVENT HANDLERS
@@ -335,6 +361,65 @@ export const EVENT_DESKPROWINDOW_INSERT_MARKUP = (response, widget, message, ser
   }
 };
 
+export const EVENT_DESKPROWINDOW_DOM_INSERT = (response, widget, message, services) => {
+  const { parent, markup } = message.body;
+
+  const { $, window } = services;
+
+  try {
+    const parentEl = typeof parent === 'string' ? $(parent) : $(window.document.body);
+    if (parentEl.length) {
+      parentEl.append(markup);
+      response(null, markup);
+    } else {
+      response(new Error('could not find parent element for insertion'), { ...message.body });
+    }
+  } catch (e) {
+    response(e);
+  }
+};
+
+
+export const EVENT_DESKPROWINDOW_DOM_QUERY = (response, widget, message, services) => {
+  const { $ } = services;
+
+  let patterns;
+  if (!(message.body instanceof Array)) {
+    patterns = [message.body];
+  } else {
+    patterns = message.body.concat([]);
+  }
+
+  const evaluator = (pattern) => {
+    // send back unrecognized objects
+    if (typeof pattern !== 'object') {
+      return pattern;
+    }
+
+    const { type, selector } = pattern;
+    if (typeof type === 'string' && type === 'valueOf') {
+      const value = $(selector).val();
+      return { ...pattern, value };
+    } else if (typeof type === 'string' && type === 'exists') {
+      const exists = $(selector).length > 0;
+      return { ...pattern, exists };
+    }
+
+    return pattern;
+  }
+  ;
+
+  try {
+    patterns = patterns.map(evaluator);
+    if (message.body instanceof Array) {
+      response(null, patterns);
+    } else {
+      response(null, patterns.pop());
+    }
+  } catch (e) {
+    response(e);
+  }
+};
 
 export const handlers = {
 
@@ -374,8 +459,11 @@ export const handlers = {
 
   EVENT_DESKPROWINDOW_SHOW_NOTIFICATION,
 
-  EVENT_DESKPROWINDOW_INSERT_MARKUP
+  EVENT_DESKPROWINDOW_INSERT_MARKUP,
 
+  EVENT_DESKPROWINDOW_DOM_INSERT,
+
+  EVENT_DESKPROWINDOW_DOM_QUERY
 };
 
 /**
