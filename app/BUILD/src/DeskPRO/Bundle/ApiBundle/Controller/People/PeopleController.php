@@ -190,40 +190,40 @@ class PeopleController extends CrudController
         $this->getManager()->flush();
     }
 
-//    /**
-//     * @ApiDoc(
-//     *     section="People",
-//     *     description="Clear all session data",
-//     *     statusCodes={
-//     *         200="OK"
-//     *     }
-//     * )
-//     * @Rest\Post("/{id}/sessions/clear")
-//     *
-//     * @param         $id
-//     * @param Request $request
-//     */
-//    public function clearSessionAction($id, Request $request)
-//    {
-////        $this->denyAccessUnlessGranted(PermissionGroupVoter::MODIFY, $this->getPermissionGroupEntityContext($id, $request));
-////
-////        $person = $this->findEntity($id, $request);
-////
-////        $this->getManager()->getConnection()->executeUpdate(
-////            'DELETE FROM sessions WHERE person_id = :person_id',
-////            [
-////                'person_id' => $person->getId(),
-////            ]
-////        );
-////        $this->getManager()->getConnection()->executeUpdate(
-////            'DELETE FROM sess_data WHERE person_id = :person_id',
-////            [
-////                'person_id' => $person->getId(),
-////            ]
-////        );
-//
-//        return new View(null, Response::HTTP_NO_CONTENT);
-//    }
+    /**
+     * @ApiDoc(
+     *     section="People",
+     *     description="Clear all session data",
+     *     statusCodes={
+     *         200="OK"
+     *     }
+     * )
+     * @Rest\Post("/{id}/sessions/clear")
+     *
+     * @param         $id
+     * @param Request $request
+     */
+    public function clearSessionAction($id, Request $request)
+    {
+        $this->denyAccessUnlessGranted(PermissionGroupVoter::MODIFY, $this->getPermissionGroupEntityContext($id, $request));
+
+        $person = $this->findEntity($id, $request);
+
+        $this->getManager()->getConnection()->executeUpdate(
+            'DELETE FROM sessions WHERE person_id = :person_id',
+            [
+                'person_id' => $person->getId(),
+            ]
+        );
+        $this->getManager()->getConnection()->executeUpdate(
+            'DELETE FROM sess_data WHERE person_id = :person_id',
+            [
+                'person_id' => $person->getId(),
+            ]
+        );
+
+        return new View(null, Response::HTTP_NO_CONTENT);
+    }
 
     /**
      * {@inheritdoc}
