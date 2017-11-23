@@ -229,4 +229,4 @@ Feature: /people endpoint
       | s1 | {guineapig@deskpro.dev}  |
       | s2 | {guineapig@deskpro.dev}  |
     When I send a POST request to "/api/v2/people/{guineapig@deskpro.dev}/sessions/clear"
-    Then the response status code should be 204
+    Then the response status code should be 200
