@@ -19,7 +19,9 @@
 
         <br/>
 
-        {{ phrase('user.emails.register-password', {password: new_password}) }}<br/>
+        {% if new_password %}
+            {{ phrase('user.emails.register-password', {password: new_password}) }}<br/>
+        {% endif %}
     </container>
 
 {% include 'SendmailBundle:blocks:footer.html.twig' %}
