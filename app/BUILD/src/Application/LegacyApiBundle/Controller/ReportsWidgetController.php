@@ -28,13 +28,11 @@
 
 namespace Application\LegacyApiBundle\Controller;
 
-use Application\DeskPRO\Dpql\Statement\Display;
 use Application\DeskPRO\Entity\ReportWidget;
 use Application\DeskPRO\EntityRepository\ReportWidget as ReportWidgetRepository;
 use Application\DeskPRO\Exception\ValidationException;
 use Application\DeskPRO\Reports\ReportsWidgetService;
 use DeskPRO\Bundle\AppBundle\Annotation\ActionPermissions\Annotation\ApiModes;
-use DeskPRO\Component\Util\MapUtils;
 use Symfony\Component\HttpFoundation\Response;
 
 /**

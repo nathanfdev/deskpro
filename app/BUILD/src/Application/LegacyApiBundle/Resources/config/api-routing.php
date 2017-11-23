@@ -7548,6 +7548,13 @@ $collection->create('dashboard_reports_update', [
     'methods'      => ['POST'],
 ]);
 
+$collection->create('dashboard_reports_vars_update', [
+    'path'         => '/dashboards/reports/{id}/vars',
+    'controller'   => 'LegacyApiBundle:DashboardReport:saveReportVars',
+    'requirements' => ['id' => '\\d+'],
+    'methods'      => ['POST'],
+]);
+
 $collection->create('dashboards_reports_clone', [
     'path'         => '/dashboards/reports/clone/{id}/{dashboard_id}',
     'controller'   => 'LegacyApiBundle:DashboardReport:clone',

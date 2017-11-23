@@ -26,9 +26,11 @@ define ->
 
         scope.$watch 'chartData', (n) ->
           chartData = JSON.parse(n)
+          console.log('chartData changed!')
           initChart()
 
         initChart = () ->
+          console.log('initChart')
           if attrs.chtype != 'graph'
             return
           if chart
@@ -37,6 +39,7 @@ define ->
             chartData.noRedraw = true
             drawWidget chartData
           else
+            console.log('getting widget!')
             DashboardWidgetService
               .getWidget(conf)
               .then (widget) =>

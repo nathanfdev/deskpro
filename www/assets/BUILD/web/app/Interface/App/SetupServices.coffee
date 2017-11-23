@@ -53,9 +53,7 @@ define [
       return new TemplateManager(TemplateLoader, $templateCache, $q)
     ])
 
-    Module.run(['TemplateLoader', (TemplateLoader) ->
-    # this is just so the loader is loaded
-    ])
+    Module.run(['TemplateLoader', (TemplateLoader) -> ])
 
     Module.run(['TemplateManager', (TemplateManager) ->
       templates = [
@@ -166,3 +164,4 @@ define [
         SessionPing.startInterval()
       , 20000)
     ])
+    Module.run(['DashboardWidgetService', (DashboardWidgetService) -> ])

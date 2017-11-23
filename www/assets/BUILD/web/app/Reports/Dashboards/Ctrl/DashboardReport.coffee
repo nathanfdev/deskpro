@@ -147,4 +147,12 @@ define ['DeskPRO/Util/Arrays'], (Arrays) -> [
           $scope.report = savedReport
           $state.go('reports.dashboards.view.report', { report_id: savedReport.id})
 
+
+    $scope.changeReportLevelVar = () ->
+      DashboardService.saveReportVars($scope.report).then( () ->
+        $scope.report.widgets = [];
+        DashboardsInfo.getReportDetail($scope.report.id, true).then((loadedReport) ->
+          $scope.report = loadedReport
+        )
+      );
   ]

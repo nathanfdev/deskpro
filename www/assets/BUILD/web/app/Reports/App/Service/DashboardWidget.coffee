@@ -103,12 +103,9 @@ define ['DeskPRO/Util/Arrays',], (Arrays) ->
 
     getWidget: (id) ->
       deferred = @$q.defer()
-      if @storage[id]?
-        deferred.resolve(@storage[id])
-      else
-        @Api
-          .sendGet "/dashboards/widgets/#{id}"
-          .then (resp) =>
-            @storage[id] = resp.data.data
-            deferred.resolve(@storage[id])
+
+      @Api
+        .sendGet "/dashboards/widgets/#{id}"
+        .then (resp) =>
+          deferred.resolve(resp.data.data)
       return deferred.promise
