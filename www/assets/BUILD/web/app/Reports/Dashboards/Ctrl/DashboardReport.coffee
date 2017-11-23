@@ -21,9 +21,7 @@ define ['DeskPRO/Util/Arrays'], (Arrays) -> [
       dashboard_id: 0
       options:
         columns: 24
-      variables: {
-        date: 'ever'
-      }
+      variables: []
     }
 
     report_id = parseInt($stateParams.report_id)
@@ -45,8 +43,10 @@ define ['DeskPRO/Util/Arrays'], (Arrays) -> [
     DashboardsInfo.getReportDetail(report_id).then((loadedReport) ->
       $scope.report = loadedReport
 
+
       DashboardsInfo.getDashboardList().then((dbs) ->
         $scope.dashboard = Arrays.find(dbs, (x) -> x.id == loadedReport.dashboard_id)
+        $scope.groupParams = DashboardWidgetService.groupParams
         $scope.loaded = true
       )
     )

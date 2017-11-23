@@ -9,7 +9,7 @@ define ['DeskPRO/Util/Arrays',], (Arrays) ->
       @groupParams = []
       @widgets = {}
 
-      @Api.sendGet('reports/builder/group-params').then (response) =>
+      @Api.sendGet('reports/widget/group-params').then (response) =>
         @groupParams = response.data
 
     getIndexById: (storage, id) ->

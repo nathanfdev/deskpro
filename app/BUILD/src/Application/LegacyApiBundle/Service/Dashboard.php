@@ -36,6 +36,7 @@
 namespace Application\LegacyApiBundle\Service;
 
 use Application\DeskPRO\Entity\ReportDashboard as DashboardEntity;
+use Application\DeskPRO\Entity\ReportDashboardReport;
 use Application\DeskPRO\Entity\ReportDashboardReport as DashboardReportEntity;
 use Application\DeskPRO\Entity\ReportWidget;
 use Application\DeskPRO\Translate\Translate;
@@ -62,6 +63,10 @@ class Dashboard
      * @var array
      */
     private $labelsStorage;
+
+    protected $reportLevelVars = [
+        'date' => ['type' => 'dates', 'name' => 'date'],
+    ];
 
     /**
      * @param EntityManager   $em
@@ -158,6 +163,19 @@ class Dashboard
     /// REPORTS SECTION
     ///
 
+    protected function getReportLevelVar(ReportDashboardReport $report, $name)
+    {
+        $data          = $this->reportLevelVars[$name];
+        $data['value'] = $report->getVariables()[$name]['value'];
+
+        return $data;
+    }
+
+    protected function inReportLevelVars(ReportDashboardReport $report, $name)
+    {
+        return isset($this->reportLevelVars[$name]) && isset($report->getVariables()[$name]);
+    }
+
     /**
      * @param $report
      *
@@ -165,12 +183,21 @@ class Dashboard
      */
     public function getReportData($report)
     {
-        $report  = $this->getReport($report);
-        $widgets = [];
+        $report                   = $this->getReport($report);
+        $widgets                  = [];
+        $availableReportLevelVars = [];
         foreach ($report->getWidgets() as $widget) {
-            $wdata     = $this->widgetService->getWidgetData($widget);
+            $wdata = $this->widgetService->getWidgetData($widget);
+            foreach ($wdata['widget_variables'] ?: [] as $name => $widgetVariable) {
+                if (
+                    $widgetVariable['value'] === DashboardWidget::WIDGET_VALUE_FROM_REPORT
+                    && $this->inReportLevelVars($report, $name)) {
+                    $availableReportLevelVars[$name] = $this->getReportLevelVar($report, $name);
+                }
+            }
             $widgets[] = $wdata;
         }
+
         $data = [
             'title'        => $report->getTitle(),
             'id'           => $report->getId(),
@@ -182,7 +209,7 @@ class Dashboard
                 'swapping' => false,
             ],
             'widgets'   => $widgets,
-            'variables' => $report->getVariables(),
+            'variables' => array_values($availableReportLevelVars),
         ];
 
         return $data;
