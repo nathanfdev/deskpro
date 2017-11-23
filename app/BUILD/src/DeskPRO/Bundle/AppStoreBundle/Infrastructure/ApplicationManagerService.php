@@ -194,22 +194,32 @@ class ApplicationManagerService
         $app->setManifest(json_decode($bundle->getManifestAsString(), true));
         $app->setName($manifest->getName());
 
-        $specialAssets = [];
+        $new = [];
+        $removals = [];
 
-        // save the previous manifest into .deskpro/manifest.json.prev only if we have any instances
-        if ($instanceCount) {
-            // TODO this should be moved into DI container
-            AppAssetBlob::setBlobStorageService($this->blobStorage);
-            foreach ($app->getAssets() as $specialAsset) {
-                if ($specialAsset->getPath() === 'manifest.json') {
-                    $specialAssets[] = $specialAsset->copy('.deskpro/versions/manifest.json.prev');
+        foreach ($app->getAssets() as $asset) {
+            if ($instanceCount) {
+                // save the previous manifest into .deskpro/manifest.json.prev only if we have any instances
+                if ($asset->getPath() === 'manifest.json') {
+                    // TODO this should be moved into DI container
+                    AppAssetBlob::setBlobStorageService($this->blobStorage);
+                    $new[] = $asset->copy('.deskpro/versions/manifest.json.prev');
+
+                } else if ($asset->getPath() === '.deskpro/versions/manifest.json.prev') {
+                    $removals[] = $asset;
+                } else if (substr($asset->getPath(), 0, strlen('.deskpro/')) !== ".deskpro/") {
+                    $removals[] = $asset;
                 }
-                $app->getAssets()->removeElement($specialAsset);
+            } else {
+                $removals[] = $asset;
             }
         }
 
-        foreach ($specialAssets as $specialAsset) {
-            $app->addAsset($specialAsset);
+        foreach ($removals as $asset) {
+            $app->getAssets()->removeElement($asset);
+        }
+        foreach ($new as $asset) {
+            $app->addAsset($asset);
         }
 
         foreach ($bundle->listAllResources() as $resource) {
@@ -229,6 +239,9 @@ class ApplicationManagerService
             $app->addAsset($specialAsset);
         }
 
+        foreach ($removals as $asset) {
+            $this->em->remove($asset);
+        }
         $this->em->persist($app);
         $this->em->flush();
 
