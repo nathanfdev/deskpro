@@ -45,6 +45,7 @@ use DeskPRO\Bundle\AppBundle\Form\Type\People\PersonType;
 use DeskPRO\Bundle\AppBundle\Security\Voter\PermissionGroups\PermissionGroupVoter;
 use Doctrine\ORM\QueryBuilder;
 use FOS\RestBundle\Controller\Annotations as Rest;
+use FOS\RestBundle\View\View;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpKernel\HttpKernelInterface;
@@ -193,9 +194,19 @@ class PeopleController extends CrudController
      * @ApiDoc(
      *     section="People",
      *     description="Clear all session data",
+     *     requirements={
+     *         {
+     *             "name"="id",
+     *             "requirement"="\d+",
+     *             "description"="The id of the resource",
+     *             "dataType"="integer"
+     *         }
+     *     },
      *     statusCodes={
-     *         200="OK"
-     *     }
+     *        204="OK"
+     *     },
+     *     noInput=true,
+     *     noOutput=true
      * )
      * @Rest\Post("/{id}/sessions/clear")
      *
@@ -221,9 +232,7 @@ class PeopleController extends CrudController
             ]
         );
 
-        return $this->wrap([
-            'success' => true,
-        ]);
+        return new View(null, Response::HTTP_NO_CONTENT);
     }
 
     /**

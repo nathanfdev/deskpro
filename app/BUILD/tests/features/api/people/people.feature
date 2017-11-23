@@ -224,9 +224,5 @@ Feature: /people endpoint
 
   Scenario: I clear session data for person
     Given "guineapig@deskpro.dev" user exists
-    And only the following Session records exist:
-      | #  | Person                   |
-      | s1 | {guineapig@deskpro.dev}  |
-      | s2 | {guineapig@deskpro.dev}  |
     When I send a POST request to "/api/v2/people/{guineapig@deskpro.dev}/sessions/clear"
-    Then the response status code should be 200
+    Then the response status code should be 204
