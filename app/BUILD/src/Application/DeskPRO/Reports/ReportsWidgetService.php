@@ -300,6 +300,17 @@ class ReportsWidgetService
     }
 
     /**
+     * @param array $parts
+     *
+     * @return string
+     */
+    public function getQueryStringFromParts(array $parts)
+    {
+        $query = Display::getQueryStringFromParts($parts);
+        return $query;
+    }
+
+    /**
      * @param ReportWidget $report
      *
      * @throws \Exception

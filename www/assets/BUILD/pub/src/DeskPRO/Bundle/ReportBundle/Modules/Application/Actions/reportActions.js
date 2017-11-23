@@ -2,6 +2,7 @@ import { createAction } from 'DeskPRO/Component/Ampliflux';
 import { repository, api } from 'DeskPRO/Bundle/AppBundle/DAL';
 import { setCollection, addToCollection } from 'DeskPRO/Bundle/AppBundle/Modules/RecordsStore';
 import Immutable from 'immutable';
+import {SubmissionError} from "redux-form";
 
 export const reportsLoaded = createAction(
   'REPORTS_LOADED'
@@ -176,9 +177,11 @@ export const saveReport = createAction(
         groupBy: data.groupBy,
         orderBy: data.orderBy,
         limit:   data.limit,
-        offset:  data.offset
+        offset:  data.offset,
+        raw:     data.raw
       },
       displayOnly: data.displayOnly,
+      inputMode:   data.inputMode
     };
 
     const config = {
@@ -200,6 +203,8 @@ export const saveReport = createAction(
       if (response.id) {
         dispatch(loadReport(response.id));
         dispatch(setCollection('ReportsLabels', 'all', response.labels));
+      } else {
+        return response;
       }
     });
   }
@@ -207,38 +212,29 @@ export const saveReport = createAction(
 
 export const cloneReport = createAction(
   'REPORTS_CLONE_REPORT',
-  id => (dispatch) => {
-    const config = {
-      headers: {
-        'X-DeskPRO-API-Token':     window.DP_API_TOKEN,
-        'X-DeskPRO-Session-ID':    window.DP_SESSION_ID,
-        'X-DeskPRO-Request-Token': window.DP_REQUEST_TOKEN,
-      }
-    };
-
-    return api.sendPost(`DP_API_OLD/reports/widget/clone/${id}`, {}, config).success((response) => {
-      if (response.id) {
-        dispatch(loadReport(response.id));
-      }
-    });
+  (cloneReport) => (dispatch) => {
+    dispatch(newReport(cloneReport));
   }
 );
 
 export const newReport = createAction(
   'REPORTS_NEW_REPORT',
-  () => new Promise((resolve) => {
+  (cloneReport) => new Promise((resolve) => {
+    if (!cloneReport) {
+      cloneReport = {};
+    }
     const newReportObject = {
       id:            0,
       unique_key:    '',
-      title:         'new report',
+      title:         '',
       description:   '',
       query:         '',
       labels:        [],
       display_order: 10,
       display_types: [],
-      variables:     [],
-      query_parts:   {
-        display:    ['TABLE', 'BAR'],
+      variables:     cloneReport.variables || {},
+      query_parts:   cloneReport.query_parts || {
+        display:    ['TABLE'],
         select:     '',
         from:       '',
         where:      '',

@@ -156,7 +156,7 @@ class ReportsWidgetController extends AbstractController
             $report      = $reportsWidget->createNew();
         }
         if (!$report->isCustom() && !$displayOnly) {
-            throw ValidationException::create('you can edit only custom report');
+            throw ValidationException::create('you can edit only custom reports');
         }
         if ($error = $reportsWidget->getErrors($id, !$displayOnly ? 'from_request' : false)) {
             return $this->createApiResponse(['error' => $error]);
@@ -170,13 +170,26 @@ class ReportsWidgetController extends AbstractController
                 $form     = $this->createForm('form_dashboards_report_widget', $report, ['cascade_validation' => true]);
                 $form->submit($postData['report'], true);
 
+                try {
+                    if (@$postData['inputMode'] === 'dpql') {
+                        $parts = $reportsWidget->parseQueryString($postData['parts']['raw']);
+                        $report->setQuery($reportsWidget->getQueryStringFromParts($parts));
+                    } else {
+                        $query = $reportsWidget->getQueryStringFromParts($postData['parts']);
+                        if (!$query) {
+                            throw new \InvalidArgumentException("Empty query");
+                        }
+                        $report->setQuery($query);
+                    }
+                } catch (\Exception $e) {
+                    throw ValidationException::create($e->getMessage());
+                }
+
                 if ($form->isValid()) {
                     $this->em->persist($report);
                     $this->em->flush();
                 } else {
-                    return $this->createApiValidationErrorResponse(
-                        $this->container->getValidator()->validate($report)
-                    );
+                    throw ValidationException::create($this->getFormValidationErrorsString($form));
                 }
             }
 
@@ -289,7 +302,7 @@ class ReportsWidgetController extends AbstractController
      */
     public function parseAction()
     {
-        /* @var ReportsWidgetService */
+        /* @var $reportsWidget ReportsWidgetService */
         $reportsWidget = $reportsWidget = $this->container->get('reports.widget.service');
 
         return $this->createApiResponse($reportsWidget->parseInput());

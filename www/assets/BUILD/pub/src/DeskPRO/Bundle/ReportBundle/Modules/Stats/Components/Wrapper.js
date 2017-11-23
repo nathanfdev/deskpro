@@ -4,7 +4,7 @@ import { connect } from 'react-redux';
 import Immutable from 'immutable';
 import ListHeader from './List/ListHeader';
 import List from './List/List';
-import Edit from './Edit';
+import { Edit } from './Edit';
 import Run from './Run';
 import {
   loadReport,
@@ -101,7 +101,7 @@ class Wrapper extends React.Component {
   }
 
   onCloneReportClick(report) {
-    this.props.dispatch(cloneReport(report.get('id')));
+    this.props.dispatch(cloneReport(report.toJS()));
   }
 
   onChangeReportDisplayTypes(displayTypes) {
@@ -134,9 +134,9 @@ class Wrapper extends React.Component {
     this.setState(state);
   }
 
-  onAddClick() {
+  onAddClick(cloneReport) {
     this.setState({ mode: 'edit' });
-    this.props.dispatch(newReport());
+    this.props.dispatch(newReport(cloneReport));
   }
 
   onLabelClick(clickedLabel) {

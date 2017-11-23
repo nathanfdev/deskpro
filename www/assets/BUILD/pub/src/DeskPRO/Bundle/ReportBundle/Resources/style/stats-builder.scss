@@ -536,6 +536,11 @@
     padding: 25px;
     border-top: 1px solid $global-border;
   }
+
+  .form-error-message {
+    margin: 15px;
+    color: red;
+  }
 }
 
 .inline-select {
