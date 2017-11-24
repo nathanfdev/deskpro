@@ -134,9 +134,9 @@ class Wrapper extends React.Component {
     this.setState(state);
   }
 
-  onAddClick(cloneReport) {
+  onAddClick(cloneReportObj) {
     this.setState({ mode: 'edit' });
-    this.props.dispatch(newReport(cloneReport));
+    this.props.dispatch(newReport(cloneReportObj));
   }
 
   onLabelClick(clickedLabel) {
