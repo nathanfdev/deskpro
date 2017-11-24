@@ -204,7 +204,7 @@ class ApplicationManagerService
                     // TODO this should be moved into DI container
                     AppAssetBlob::setBlobStorageService($this->blobStorage);
                     $new[] = $asset->copy('.deskpro/versions/manifest.json.prev');
-
+                    $removals[] = $asset;
                 } else if ($asset->getPath() === '.deskpro/versions/manifest.json.prev') {
                     $removals[] = $asset;
                 } else if (substr($asset->getPath(), 0, strlen('.deskpro/')) !== ".deskpro/") {

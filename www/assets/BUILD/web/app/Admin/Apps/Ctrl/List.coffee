@@ -4,12 +4,11 @@ define ['Admin/Main/Ctrl/Base', 'angular'], (Admin_Ctrl_Base, angular) ->
     @CTRL_AS   = 'ListCtrl'
     @DEPS      = []
 
+    @apps = [];
+    @apps_v2 = [];
+    @apps_v2_packages = [];
 
     init: ->
-      @apps = [];
-      @apps_v2 = [];
-      @apps_v2_packages = [];
-
       @$scope.hide_installed = true;
 
       ctrl = @$scope.ListCtrl
@@ -32,6 +31,10 @@ define ['Admin/Main/Ctrl/Base', 'angular'], (Admin_Ctrl_Base, angular) ->
       return
 
     initialLoad: ->
+
+      @apps = [];
+      @apps_v2 = [];
+      @apps_v2_packages = [];
 
       appsPromise = @Api.sendDataGet({ apps: '/apps' })
       appsPromise.then( (result) =>
