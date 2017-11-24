@@ -5,6 +5,7 @@ import { Fieldset } from '@deskpro/react-forms';
 import DateField from './DateField';
 import TypeField from './TypeField';
 import TypeValueField from './TypeValueField';
+import { varTypes } from '../helper';
 
 class VarsField extends React.Component {
 
@@ -12,26 +13,8 @@ class VarsField extends React.Component {
     value:       PropTypes.array,
     groupParams: PropTypes.object,
     onChange:    PropTypes.func,
+    fields:      PropTypes.object,
   };
-
-  static types = [
-    {
-      label: 'Date',
-      value: 'dates',
-    },
-    {
-      label: 'Status',
-      value: 'statuses',
-    },
-    {
-      label: 'Field',
-      value: 'fields',
-    },
-    {
-      label: 'Order',
-      value: 'orders',
-    },
-  ];
 
   constructor(props) {
     super(props);
@@ -61,7 +44,7 @@ class VarsField extends React.Component {
               <Input type="text" />
             </Field>
             <Field className="type" select="type">
-              <Select choices={VarsField.types} clearable={false} />
+              <Select choices={varTypes} clearable={false} />
             </Field>
             { variable.type === 'dates'
               ? <DateField  key={`date_${index}`} dates={groupParams.get('dates')} />

@@ -4,7 +4,7 @@ import { Button, Container, Tabs, TabLink, Section } from '@deskpro/react-compon
 import { Input, Checkbox, Textarea, Select, validators } from '@deskpro/react-components/lib/bindings/redux-form';
 import { formValues, Field, FieldArray, FormSection } from 'redux-form';
 import classNames from 'classnames';
-import { displayTypes } from './helper';
+import { varTypes } from './helper';
 
 class VarsFieldComponent extends React.PureComponent {
 
@@ -94,7 +94,7 @@ class VarsFieldComponent extends React.PureComponent {
               />
               <Select
                 label="Type"
-                options={displayTypes}
+                options={varTypes}
                 name={`${varName}.type`}
               />
               { variable.type === 'dates' && VarsFieldComponent.renderDateField(`${varName}.field_value`, groupParams.dates) }

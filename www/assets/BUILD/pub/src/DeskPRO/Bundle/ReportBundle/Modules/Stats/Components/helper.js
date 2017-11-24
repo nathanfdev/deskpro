@@ -67,3 +67,22 @@ export const displayTypes = [
     value: 'table',
   },
 ];
+
+export const varTypes = [
+  {
+    label: 'Date',
+    value: 'dates',
+  },
+  {
+    label: 'Status',
+    value: 'statuses',
+  },
+  {
+    label: 'Field',
+    value: 'fields',
+  },
+  {
+    label: 'Order',
+    value: 'orders',
+  },
+];
