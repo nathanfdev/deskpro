@@ -85,4 +85,8 @@ export const varTypes = [
     label: 'Order',
     value: 'orders',
   },
+  {
+    label: 'Value',
+    value: 'values',
+  },
 ];

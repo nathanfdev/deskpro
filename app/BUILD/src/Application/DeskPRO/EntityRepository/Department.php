@@ -39,14 +39,24 @@ use Application\DeskPRO\Entity\Department as DepartmentEntity;
 
 class Department extends AbstractCategoryRepository
 {
+    /**
+     * @return mixed
+     */
     public function countAll()
     {
         return $this->_em->createQuery('SELECT count(d) FROM DeskPRO:Department d')->getSingleScalarResult();
     }
 
+    /**
+     * @return \Application\DeskPRO\Entity\Department[]
+     */
     public function getAll()
     {
-        return $this->getRootNodes();
+        return $this->_em->createQuery('
+            SELECT d
+            FROM DeskPRO:Department d
+            ORDER BY d.display_order ASC
+        ')->execute();
     }
 
     /**

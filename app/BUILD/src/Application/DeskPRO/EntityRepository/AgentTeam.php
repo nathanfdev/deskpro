@@ -40,6 +40,9 @@ use Application\DeskPRO\Entity\AgentTeam as AgentTeamEntity;
 
 class AgentTeam extends AbstractEntityRepository
 {
+    /**
+     * @return \Application\DeskPRO\Entity\AgentTeam[]
+     */
     public function getTeams()
     {
         if (($teams = $this->getIdentityHelper()->getCollection('all')) === null) {
