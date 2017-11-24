@@ -163,7 +163,13 @@ define ['Admin/Main/Ctrl/Base', 'angular'], (Admin_Ctrl_Base, angular) ->
 
               me.$timeout(->
                 if (data.version == 2)
-                  me.$state.go('apps.apps.install-v2-reload', {appName: encodeURIComponent(data.package_name)})
+                  instance = if data.data.manifest.isSingle then me.apps_v2.filter((x) -> return x.app.name == data.data.manifest.name).pop() else null
+
+                  if (data.install_type == 'upgrade' && instance)
+                    me.$state.go('apps.apps.edit-v2', {instanceId: instance.id})
+                  else
+                    me.$state.go('apps.apps.install-v2-reload', {appName: encodeURIComponent(data.package_name)})
+
                 else
                   me.$state.go('apps.go_apps_install', {name: 'go-apps-' + @normalizedPackageName})
 

@@ -175,27 +175,75 @@ class ApplicationManagerService
 
     /**
      * @param Domain\AppBundle $bundle
+     * @return string
+     */
+    public function findAppForBundle( Domain\AppBundle $bundle) {
+        $manifestReader = new Infrastructure\AppManifestReader();
+        $manifest       = $manifestReader->readManifestFromJson($bundle->getManifestAsString());
+
+        $app = $this->em->getRepository(App::class)->findOneBy(['name' => $manifest->getName()]);
+        return $app ? $app : null;
+    }
+
+    /**
+     * @param Domain\AppBundle $bundle
+     *
+     * @return InstallBundleDetails
+     */
+    public function installBundle(Domain\AppBundle $bundle)
+    {
+        $app = $this->findAppForBundle($bundle);
+        $installType = $app ? InstallBundleDetails::INSTALL_TYPE_UPGRADE : InstallBundleDetails::INSTALL_TYPE_INSTALL;
+
+        if (!$app) {
+            $manifestReader = new Infrastructure\AppManifestReader();
+            $manifest       = $manifestReader->readManifestFromJson($bundle->getManifestAsString());
+
+            $app = new App();
+            $app->setName($manifest->getName());
+        }
+
+        $app->setManifest(json_decode($bundle->getManifestAsString(), true));
+        $this->updateAssets($app, $bundle);
+
+        return new InstallBundleDetails($app, $installType);
+    }
+
+    /**
+     * @param Domain\AppBundle $bundle
      *
      * @return App
      */
     public function createOrUpdateAppEntity(Domain\AppBundle $bundle)
     {
-        $manifestReader = new Infrastructure\AppManifestReader();
-        $manifest       = $manifestReader->readManifestFromJson($bundle->getManifestAsString());
-
-        $app = $this->em->getRepository(App::class)->findOneBy(['name' => $manifest->getName()]);
+        $app = $this->findAppForBundle($bundle);
         if (!$app) {
             $app = new App();
+
+            $manifestReader = new Infrastructure\AppManifestReader();
+            $manifest       = $manifestReader->readManifestFromJson($bundle->getManifestAsString());
+            $app->setName($manifest->getName());
         }
+
+        $app->setManifest(json_decode($bundle->getManifestAsString(), true));
+
+        $this->updateAssets($app, $bundle);
+        return $app;
+    }
+
+    /**
+     * @param App $app
+     * @param Domain\AppBundle $bundle
+     * @return App
+     */
+    private function updateAssets(App $app, Domain\AppBundle $bundle)
+    {
+        $app->setManifest(json_decode($bundle->getManifestAsString(), true));
+        $new = [];
+        $removals = [];
 
         // TODO move into service method
         $instanceCount = count($app->getInstances());
-
-        $app->setManifest(json_decode($bundle->getManifestAsString(), true));
-        $app->setName($manifest->getName());
-
-        $new = [];
-        $removals = [];
 
         foreach ($app->getAssets() as $asset) {
             if ($instanceCount) {

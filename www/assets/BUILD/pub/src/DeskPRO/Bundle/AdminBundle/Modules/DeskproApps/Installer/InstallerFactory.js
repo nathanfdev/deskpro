@@ -73,6 +73,9 @@ class InstallerFactory extends React.Component {
     const config = builder.build();
 
     const navigateToApp = (id) => {
+      if (window && window.location) {
+        window.location.hash = `/apps/apps/v2/${id}`;
+      }
       legacyNavigate('apps.apps.edit-v2', { instanceId: id });
     };
 
