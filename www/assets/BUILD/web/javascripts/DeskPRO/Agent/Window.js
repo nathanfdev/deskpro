@@ -1737,11 +1737,12 @@ DeskPRO.Agent.Window = new Orb.Class({
 	},
 
 
-	/**
-	 * Loads a route.
-	 *
-	 * @param {String} route The route to match, like navpane:tickets:filters
-	 */
+  /**
+   * Loads a route.
+   *
+   * @param {String} route The route to match, like navpane:tickets:filters
+   * @param {object} extraData
+   */
 	runPageRoute: function(route, extraData) {
 		var found_listener = false;
 

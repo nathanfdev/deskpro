@@ -43,7 +43,7 @@ class SystemEventGenerator extends AbstractGenerator
     /**
      * @var AgentDataService
      */
-    private $agentDataService;
+    protected $agentDataService;
 
     /**
      * Constructor.

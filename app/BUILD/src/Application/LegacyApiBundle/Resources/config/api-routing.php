@@ -3459,6 +3459,75 @@ $collection->create(
 );
 
 //#######################################################################################################################
+// Chat Round Robin
+//#######################################################################################################################
+
+$collection->create(
+    'api_chat_roundrobins_list',
+    [
+        'path'       => '/chat_round_robin',
+        'controller' => 'LegacyApiBundle:ChatRoundRobin:list',
+        'methods'    => ['GET'],
+    ]
+);
+
+$collection->create(
+    'api_chat_roundrobins_settings',
+    [
+        'path'       => '/chat_round_robin/settings',
+        'controller' => 'LegacyApiBundle:ChatRoundRobin:settings',
+        'methods'    => ['GET', 'PUT'],
+    ]
+);
+
+$collection->create(
+    'api_chat_roundrobins_triggers',
+    [
+        'path'       => '/chat_round_robin/triggers/{id}',
+        'controller' => 'LegacyApiBundle:ChatRoundRobin:checkTriggers',
+        'defaults'   => ['id' => null],
+        'methods'    => ['GET'],
+    ]
+);
+
+$collection->create(
+    'api_chat_roundrobins_get',
+    [
+        'path'       => '/chat_round_robin/{id}',
+        'controller' => 'LegacyApiBundle:ChatRoundRobin:get',
+        'methods'    => ['GET'],
+    ]
+);
+
+$collection->create(
+    'api_chat_roundrobins_set',
+    [
+        'path'       => '/chat_round_robin/{id}',
+        'controller' => 'LegacyApiBundle:ChatRoundRobin:set',
+        'methods'    => ['POST', 'PUT'],
+        'defaults'   => ['id' => 0],
+    ]
+);
+
+$collection->create(
+    'api_chat_roundrobins_delete',
+    [
+        'path'       => '/chat_round_robin/{id}',
+        'controller' => 'LegacyApiBundle:ChatRoundRobin:delete',
+        'methods'    => ['DELETE'],
+    ]
+);
+
+$collection->create(
+    'api_chat_roundrobins_logs',
+    [
+        'path'       => '/chat_round_robin/{id}/logs',
+        'controller' => 'LegacyApiBundle:ChatRoundRobin:logs',
+        'methods'    => ['GET'],
+    ]
+);
+
+//#######################################################################################################################
 // Start Settings
 //#######################################################################################################################
 
