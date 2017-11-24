@@ -288,7 +288,6 @@ class PersonSearch extends SearcherAbstract
         $people_table = 'people';
 
         $db = App::getDbRead('search.filter.people');
-        $tr = App::getTranslator();
 
         $wheres_all = [];
         $wheres_any = [];
@@ -423,15 +422,23 @@ class PersonSearch extends SearcherAbstract
                                 "LEFT JOIN person2usergroups AS $join_name ON ($join_name.person_id = $people_table.id)",
                             ];
                             if ($org_ids) {
-                                $wheres[] = '('.$this->_choiceMatch("$join_name.usergroup_id", $op, $choice)." OR $people_table.organization_id IN (".implode(',', $org_ids).'))';
+                                $wheres[] = '('
+                                                . $this->_choiceMatch("$join_name.usergroup_id", $op, $choice)
+                                                . ($op == self::OP_NOT ? ' AND ' : ' OR ')
+                                                . $this->_choiceMatch("$people_table.organization_id", $op, $org_ids)
+                                            . ')';
                             } else {
                                 $wheres[] = $this->_choiceMatch("$join_name.usergroup_id", $op, $choice);
                             }
                         } else {
                             if ($org_ids) {
-                                $wheres[] = "($people_table.id IN (".implode(',', $person_ids).") OR $people_table.organization_id IN (".implode(',', $org_ids).'))';
+                                $wheres[] = '('
+                                                . $this->_choiceMatch("$people_table.id", $op, $person_ids)
+                                                . ($op == self::OP_NOT ? ' AND ' : ' OR ')
+                                                . $this->_choiceMatch("$people_table.organization_id", $op, $org_ids)
+                                            .')';
                             } else {
-                                $wheres[] = "$people_table.id IN (".implode(',', $person_ids).')';
+                                $wheres[] = $this->_choiceMatch("$people_table.id", $op, $person_ids);
                             }
                         }
 
