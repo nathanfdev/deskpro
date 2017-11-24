@@ -7,7 +7,7 @@ import Portal from 'react-portal/build/portal';
 class InlineSelectComp extends React.Component {
   static propTypes = {
     options:     PropTypes.array.isRequired,
-    value:       PropTypes.oneOf([PropTypes.string, PropTypes.number, PropTypes.array, PropTypes.object]),
+    value:       PropTypes.oneOfType([PropTypes.string, PropTypes.number, PropTypes.array, PropTypes.object]),
     onChange:    PropTypes.func,
     defaultText: PropTypes.string
   };
