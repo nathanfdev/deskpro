@@ -520,7 +520,7 @@ DeskPRO.Agent.WindowElement.TabBar = new Orb.Class({
 		}
 
 		var id = this.addTab(page);
-		if (existTab && this.getActiveTab() === existTab) {
+		if ((existTab && this.getActiveTab() === existTab) || page.meta.routeData.isBackgroundLoad) {
 			// nothing, dont focus it
 		} else {
 			this.activateTabById(id);
