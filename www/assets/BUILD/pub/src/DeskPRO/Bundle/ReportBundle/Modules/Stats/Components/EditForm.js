@@ -4,6 +4,7 @@ import { Button, Container, Tabs, TabLink, Section } from '@deskpro/react-compon
 import { Input, Checkbox, Textarea, Select, validators } from '@deskpro/react-components/lib/bindings/redux-form';
 import { formValues, Field, FieldArray, FormSection } from 'redux-form';
 import classNames from 'classnames';
+import { displayTypes } from './helper';
 
 class VarsFieldComponent extends React.PureComponent {
 
@@ -12,25 +13,6 @@ class VarsFieldComponent extends React.PureComponent {
     fields:      PropTypes.object,
     vars:        PropTypes.array
   };
-
-  static types = [
-    {
-      label: 'Date',
-      value: 'dates',
-    },
-    {
-      label: 'Status',
-      value: 'statuses',
-    },
-    {
-      label: 'Field',
-      value: 'fields',
-    },
-    {
-      label: 'Order',
-      value: 'orders',
-    },
-  ];
 
   static validateVarName(name) {
     if (!name || name.length === 0) {
@@ -112,7 +94,7 @@ class VarsFieldComponent extends React.PureComponent {
               />
               <Select
                 label="Type"
-                options={VarsFieldComponent.types}
+                options={displayTypes}
                 name={`${varName}.type`}
               />
               { variable.type === 'dates' && VarsFieldComponent.renderDateField(`${varName}.field_value`, groupParams.dates) }

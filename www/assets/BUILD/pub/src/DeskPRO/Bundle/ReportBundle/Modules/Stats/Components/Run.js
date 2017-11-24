@@ -44,6 +44,8 @@ class Run extends React.Component {
     };
     this.onChangeReportDisplayTypes = this.onChangeReportDisplayTypes.bind(this);
     this.clickSlice                 = this.clickSlice.bind(this);
+    this.onEditClick                = this.onEditClick.bind(this);
+    this.onRunClick                 = this.onRunClick.bind(this);
   }
 
   componentWillReceiveProps(props) {
@@ -118,8 +120,8 @@ class Run extends React.Component {
         <div className="title-bar">
           <div className="title">{title}</div>
           <div className="ctrl">
-            <Button size="medium" type="secondary" onClick={this.onRunClick.bind(this)}><i className="fa fa-refresh"></i></Button>
-            <Button size="medium" onClick={this.onEditClick.bind(this)}>Edit Report</Button>
+            <Button size="medium" type="secondary" onClick={this.onRunClick}><i className="fa fa-refresh" /></Button>
+            <Button size="medium" onClick={this.onEditClick}>Edit Report</Button>
           </div>
         </div>
         <div className="display-as-option">
