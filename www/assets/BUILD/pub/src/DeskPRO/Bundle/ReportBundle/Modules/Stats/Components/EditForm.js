@@ -2,7 +2,7 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import { Button, Container, Tabs, TabLink, Section } from '@deskpro/react-components';
 import { Input, Checkbox, Textarea, Select, validators } from '@deskpro/react-components/lib/bindings/redux-form';
-import { formValues, Field, FieldArray, FormSection, SubmissionError } from 'redux-form';
+import { formValues, Field, FieldArray, FormSection } from 'redux-form';
 import classNames from 'classnames';
 
 class VarsFieldComponent extends React.PureComponent {
@@ -42,7 +42,7 @@ class VarsFieldComponent extends React.PureComponent {
     return undefined;
   }
 
-  renderDateField(name, dates) {
+  static renderDateField(name, dates) {
     if (!dates) {
       return null;
     }
@@ -55,7 +55,7 @@ class VarsFieldComponent extends React.PureComponent {
     return (<Select key={name} name={name} options={choices} />);
   }
 
-  renderTypeField(name, values) {
+  static renderTypeField(name, values) {
     if (!values) {
       return null;
     }
@@ -68,7 +68,7 @@ class VarsFieldComponent extends React.PureComponent {
     return (<Select label="Record Type" key={name} name={name} options={choices} />);
   }
 
-  renderTypeValueField(name, values) {
+  static renderTypeValueField(name, values) {
     if (!values) {
       return null;
     }
@@ -80,6 +80,12 @@ class VarsFieldComponent extends React.PureComponent {
 
     return (<Select label="Default Value" key={name} name={name} options={choices} />);
   }
+
+  onAddButtonClick = (event) => {
+    event.preventDefault();
+    event.stopPropagation();
+    this.props.fields.push();
+  };
 
   render() {
     const { fields, groupParams, vars } = this.props;
@@ -109,15 +115,15 @@ class VarsFieldComponent extends React.PureComponent {
                 options={VarsFieldComponent.types}
                 name={`${varName}.type`}
               />
-              { variable.type === 'dates' && this.renderDateField(`${varName}.field_value`, groupParams.dates) }
+              { variable.type === 'dates' && VarsFieldComponent.renderDateField(`${varName}.field_value`, groupParams.dates) }
               { variable.type && variable.type !== 'dates' && groupParams[variable.type] && [
-                this.renderTypeField(`${varName}.field_type`, groupParams[variable.type]),
-                variable.field_type && groupParams[variable.type][variable.field_type] && this.renderTypeValueField(`${varName}.field_value`, groupParams[variable.type][variable.field_type])
+                VarsFieldComponent.renderTypeField(`${varName}.field_type`, groupParams[variable.type]),
+                variable.field_type && groupParams[variable.type][variable.field_type] && VarsFieldComponent.renderTypeValueField(`${varName}.field_value`, groupParams[variable.type][variable.field_type])
               ] }
             </div>);
           })}
         </div>
-        <Button onClick={() => fields.push() } type="secondary" size="medium">Add Variable</Button>
+        <Button onClick={this.onAddButtonClick} type="secondary" size="medium">Add Variable</Button>
       </div>
     );
   }
@@ -131,34 +137,12 @@ export class EditFormComponent extends React.PureComponent {
     groupParams:  PropTypes.object,
     select:       PropTypes.string,
     groupBy:      PropTypes.string,
-    dpqlParser:   PropTypes.func
+    dpqlParser:   PropTypes.func,
+    change:       PropTypes.func,
+    queryValues:  PropTypes.object,
+    handleSubmit: PropTypes.func,
+    error:        PropTypes.string,
   };
-
-  constructor(props) {
-    super(props);
-    this.state = {
-      queryInputMode:   'form',
-      queryModeChanging: true
-    };
-  }
-
-  componentDidMount() {
-    this.props.change('query_input_mode', this.state.queryInputMode);
-  }
-
-  shouldComponentUpdate(nextProps, nextState) {
-    for (const k of Object.keys(nextProps)) {
-      if (k !== 'queryValues' && nextProps[k] !== this.props[k]) {
-        return true;
-      }
-    }
-    for (const k of Object.keys(nextState)) {
-      if (nextState[k] !== this.state[k]) {
-        return true;
-      }
-    }
-    return false;
-  }
 
   static toDpql(fields) {
     const parts = [];
@@ -183,33 +167,56 @@ export class EditFormComponent extends React.PureComponent {
     } else if (fields.offset) {
       parts.push(`LIMIT 1000, ${fields.offset}`);
     }
-    return parts.join("\n");
-  };
+    return parts.join('\n');
+  }
+
+  constructor(props) {
+    super(props);
+    this.state = {
+      queryInputMode:    'form',
+      queryModeChanging: true
+    };
+  }
+
+  componentDidMount() {
+    this.props.change('query_input_mode', this.state.queryInputMode);
+  }
+
+  shouldComponentUpdate(nextProps, nextState) {
+    for (const k of Object.keys(nextProps)) {
+      if (k !== 'queryValues' && nextProps[k] !== this.props[k]) {
+        return true;
+      }
+    }
+    for (const k of Object.keys(nextState)) {
+      if (nextState[k] !== this.state[k]) {
+        return true;
+      }
+    }
+    return false;
+  }
 
   queryModeChange = (to) => {
     if (to === 'dpql') {
       const dpql = EditFormComponent.toDpql(this.props.queryValues || {});
-      this.setState({queryInputMode: to, queryModeChanging: false, origDpql: dpql });
+      this.setState({ queryInputMode: to, queryModeChanging: false, origDpql: dpql });
       this.props.change('query.raw', dpql);
+    } else if (this.props.queryValues.raw === this.state.origDpql) {
+      this.setState({ queryInputMode: to, queryModeChanging: false });
     } else {
-      // user didnt change anything
-      if (this.props.queryValues.raw === this.state.origDpql) {
-        this.setState({queryInputMode: to, queryModeChanging: false});
+      this.setState({ queryInputMode: to, queryModeChanging: true });
+      if (this.props.dpqlParser) {
+        this.setState({ queryInputMode: to, queryModeChanging: true });
+        this.props.dpqlParser(this.props.queryValues.raw).then((fields) => {
+          if (this.state.queryInputMode === 'form') {
+            this.setState({ queryModeChanging: false });
+            Object.keys(fields).forEach((f) => {
+              this.props.change(`query.${f}`, fields[f]);
+            });
+          }
+        });
       } else {
-        this.setState({queryInputMode: to, queryModeChanging: true});
-        if (this.props.dpqlParser) {
-          this.setState({queryInputMode: to, queryModeChanging: true});
-          this.props.dpqlParser(this.props.queryValues.raw).then((fields) => {
-            if (this.state.queryInputMode === 'form') {
-              this.setState({queryModeChanging: false});
-              Object.keys(fields).forEach((f) => {
-                this.props.change(`query.${f}`, fields[f]);
-              });
-            }
-          });
-        } else {
-          this.setState({queryInputMode: to, queryModeChanging: false});
-        }
+        this.setState({ queryInputMode: to, queryModeChanging: false });
       }
     }
   }
@@ -218,11 +225,7 @@ export class EditFormComponent extends React.PureComponent {
     const select  = this.props.select;
     const groupBy = this.props.groupBy || '';
 
-    const renderVars = (field) => {
-      return (
-        <VarsField fields={field.fields} groupParams={this.props.groupParams || {}} />
-      );
-    };
+    const renderVars = field => <VarsField fields={field.fields} groupParams={this.props.groupParams || {}} />;
 
     return (
       <form onSubmit={this.props.handleSubmit}>
@@ -277,7 +280,7 @@ export class EditFormComponent extends React.PureComponent {
                       name="with_rollup"
                     />
                   </div>
-                  <div style={{width: '150px'}}>
+                  <div style={{ width: '150px' }}>
                     <Input
                       label="LIMIT"
                       name="limit"
