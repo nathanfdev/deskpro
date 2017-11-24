@@ -82,7 +82,7 @@ class VarsFieldComponent extends React.PureComponent {
             if (!variable.name) {
               hint = 'ID';
             } else {
-              hint = (<span>ID as <em>{'${'}{variable.name}{'}'}</em></span>);
+              hint =  (<span>ID as <em>{`\${${variable.name}}`}</em></span>);
             }
 
             return (<div className="varsfield-item" key={index}>
@@ -201,7 +201,7 @@ export class EditFormComponent extends React.PureComponent {
         this.setState({ queryInputMode: to, queryModeChanging: false });
       }
     }
-  }
+  };
 
   render() {
     const select  = this.props.select;
@@ -226,36 +226,17 @@ export class EditFormComponent extends React.PureComponent {
           <Field component="input" type="hidden" name="query_input_mode" />
           <div className="query-builder-input">
             <Tabs active={this.state.queryInputMode} onChange={this.queryModeChange}>
-              <TabLink name="form">
-                Query Builder
-              </TabLink>
-              <TabLink name="dpql">
-                Raw DPQL
-              </TabLink>
+              <TabLink name="form">Query Builder</TabLink>
+              <TabLink name="dpql">Raw DPQL</TabLink>
             </Tabs>
             <div className="input-wrap">
               <FormSection name="query">
                 <Section hidden={this.state.queryInputMode !== 'form'}>
-                  <Input
-                    label="SELECT"
-                    name="select"
-                  />
-                  <Input
-                    label="FROM"
-                    name="from"
-                  />
-                  <Input
-                    label="WHERE"
-                    name="where"
-                  />
-                  <Input
-                    label="SPLIT BY"
-                    name="splitBy"
-                  />
-                  <Input
-                    label="GROUP BY"
-                    name="groupBy"
-                  />
+                  <Input label="SELECT" name="select" />
+                  <Input label="FROM" name="from" />
+                  <Input label="WHERE" name="where" />
+                  <Input label="SPLIT BY" name="splitBy" />
+                  <Input label="GROUP BY" name="groupBy" />
                   <div className={classNames({ 'field-hidden': !(select && select.match(/count\s*\(.*?\)/i) && groupBy.length) })}>
                     <Checkbox
                       label="WITH ROLLUP - Adds a Total column to grouped COUNT queries made against hierarchies"
@@ -263,20 +244,12 @@ export class EditFormComponent extends React.PureComponent {
                     />
                   </div>
                   <div style={{ width: '150px' }}>
-                    <Input
-                      label="LIMIT"
-                      name="limit"
-                    />
-                    <Input
-                      label="OFFSET"
-                      name="offset"
-                    />
+                    <Input label="LIMIT" name="limit" />
+                    <Input label="OFFSET" name="offset" />
                   </div>
                 </Section>
                 <Section hidden={this.state.queryInputMode !== 'dpql'}>
-                  <Textarea
-                    name="raw"
-                  />
+                  <Textarea name="raw" />
                 </Section>
               </FormSection>
               <div className="vars-wrap">
