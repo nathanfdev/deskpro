@@ -58,43 +58,79 @@ class CmdBuilder implements CmdBuilderInterface
     public function getDumpCmd($filename, array $dbInfo, array $options = [])
     {
         $cmd = [
-            escapeshellarg($this->mysqldumpPath),
+            $this->escapeArgument($this->mysqldumpPath),
         ];
 
         if ($dbInfo['unix_socket']) {
             $cmd[] = '--protocol=socket';
-            $cmd[] = '-S '.escapeshellarg($dbInfo['unix_socket']);
+            $cmd[] = '-S '.$this->escapeArgument($dbInfo['unix_socket']);
         } else {
             $cmd[] = '-h '.$dbInfo['host'];
             $cmd[] = '--port '.$dbInfo['port'];
         }
 
-        if (defined('PHP_WINDOWS_VERSION_BUILD')) {
-            $password = escapeshellarg(str_replace('%', '{percent}', $dbInfo['password']));
-            $password = str_replace('{percent}', '%', $password);
-        } else {
-            $password = escapeshellarg($dbInfo['password']);
-        }
+        $password = $this->escapeArgument($dbInfo['password']);
 
-        if ((isset($options['with_gzip']) && $options['with_gzip']) && !defined('PHP_WINDOWS_VERSION_BUILD')) {
+        if ((isset($options['with_gzip']) && $options['with_gzip']) && !$this->isWindowsMode()) {
             $cmd = array_merge($cmd, [
-                '-u '.escapeshellarg($dbInfo['user']),
+                '-u '.$this->escapeArgument($dbInfo['user']),
                 '-p'.$password,
                 '--opt', '-Q', '--hex-blob', '--lock-tables=false', '--single-transaction',
-                escapeshellarg($dbInfo['dbname']),
+                $this->escapeArgument($dbInfo['dbname']),
                 '|', 'gzip',
-                '>', escapeshellarg($filename),
+                '>', $this->escapeArgument($filename),
             ]);
         } else {
             $cmd = array_merge($cmd, [
-                '-u '.escapeshellarg($dbInfo['user']),
+                '-u '.$this->escapeArgument($dbInfo['user']),
                 '-p'.$password,
                 '--opt', '-Q', '--hex-blob', '--lock-tables=false', '--single-transaction',
-                escapeshellarg($dbInfo['dbname']),
-                '>', escapeshellarg($filename),
+                $this->escapeArgument($dbInfo['dbname']),
+                '>', $this->escapeArgument($filename),
             ]);
         }
 
         return implode(' ', $cmd);
+    }
+
+    /**
+     * Escapes a string to be used as a shell argument.
+     *
+     * Copy pasted from
+     * https://github.com/symfony/process/blob/v3.3.13/Process.php
+     *
+     * @param string $argument
+     * @return string
+     */
+    private function escapeArgument(string $argument)
+    {
+        // we modified next if condition
+        // originally, DIRECTORY_SEPARATOR was used to determinate WIN mode
+        if (!$this->isWindowsMode()) {
+            return "'".str_replace("'", "'\\''", $argument)."'";
+        }
+        if ('' === $argument = (string) $argument) {
+            return '""';
+        }
+        if (false !== strpos($argument, "\0")) {
+            $argument = str_replace("\0", '?', $argument);
+        }
+        if (!preg_match('/[\/()%!^"<>&|\s]/', $argument)) {
+            return $argument;
+        }
+        $argument = preg_replace('/(\\\\+)$/', '$1$1', $argument);
+
+        return '"'.str_replace(array('"', '^', '%', '!', "\n"), array('""', '"^^"', '"^%"', '"^!"', '!LF!'), $argument).'"';
+    }
+
+    /**
+     * Check if run under windows env
+     * Used to avoid hardcoded dependencies in test
+     *
+     * @return bool
+     */
+    protected function isWindowsMode()
+    {
+        return defined('PHP_WINDOWS_VERSION_BUILD');
     }
 }
