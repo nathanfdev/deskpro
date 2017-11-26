@@ -19,7 +19,7 @@
                 <description>{{ file.contentDesc }}</description>
                 <link>{{ url('portal_downloads_view', { slug: file.slug }) }}</link>
                 <guid>{{ url('portal_downloads_view', { slug: file.id }) }}</guid>
-                <pubDate>{{ file.date_published|date('r') }}</pubDate>
+                <pubDate>{{ file.date_updated|date('r') }}</pubDate>
             </item>
         {% endfor %}
     </channel>
