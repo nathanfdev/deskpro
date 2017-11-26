@@ -102,7 +102,7 @@ class CmdBuilder implements CmdBuilderInterface
      * @param string $argument
      * @return string
      */
-    private function escapeArgument(string $argument)
+    private function escapeArgument($argument)
     {
         // we modified next if condition
         // originally, DIRECTORY_SEPARATOR was used to determinate WIN mode
