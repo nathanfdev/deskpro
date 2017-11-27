@@ -9,7 +9,7 @@
                                class="dpx-download-popup"
                                data-filename="{{ dl.realTitle }}"
                                data-filesize="{{ dl.readableFileSize }}"
-                            {% if not dl.fileurl %}data-date-uploaded="{{ dl.date_created | date('Y-m-d') }}"{% endif %}
+                            {% if not dl.fileurl %}data-date-uploaded="{{ dl.date_updated | date('Y-m-d') }}"{% endif %}
                                data-vote-count="{{ dl.total_rating }}"
                                data-vote-up-url="{{ portal_path(dl, 'vote_up') }}"
                                data-vote-down-url="{{ portal_path(dl, 'vote_down') }}"
@@ -52,7 +52,7 @@
                 </h1>
                 {% if not dl.fileurl %}
                 <span class="date">
-                    {{ phrase('portal.downloads.uploaded-on') }}: {{ dl.date_created | date('Y-m-d') }}
+                    {{ phrase('portal.downloads.uploaded-on') }}: {{ dl.date_updated | date('Y-m-d') }}
                 </span>
                 {%  endif %}
 

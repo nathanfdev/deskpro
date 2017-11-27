@@ -83,9 +83,16 @@ class NewUserChatMessageGenerator extends SystemEventGenerator
     {
         /* @var UserChatEvent $event */
         $messages = [];
-        foreach ($this->getTarget($event) as $target) {
-            if (in_array($target, $this->getAvailableAgents()) && $this->checkPermissions($target, $event->getData())) {
-                $messages[] = new Notification($target, $this->getData($event), $event->getName());
+
+        $data = $event->getData();
+
+        if (isset($data['agent']) && $data['agent']) {
+            $messages[] = new Notification($data['agent'], $this->getData($event), $event->getName());
+        } else {
+            foreach ($this->getTarget($event) as $target) {
+                if (in_array($target, $this->getAvailableAgents()) && $this->checkPermissions($target, $event->getData())) {
+                    $messages[] = new Notification($target, $this->getData($event), $event->getName());
+                }
             }
         }
 

@@ -34,10 +34,10 @@ Feature: /tickets/{ticket_id}/logs endpoint
     And the JSON node "data[1].person" should be equal to "{user}"
     And the JSON node "data[1].ticket" should be equal to "{t1}"
     And the JSON node "data[1].action_type" should be equal to "changed_status"
-    And the JSON node "data[1].message_html" should contain "Status set to"
+    And the JSON node "data[1].message_html" should contain "Status set"
     And the JSON node "data[1].message_html" should contain "<span class="
     And the JSON node "data[1].message_html" should contain "Awaiting Agent"
-    And the JSON node "data[1].message_text" should be equal to "Status set to to Awaiting Agent"
+    And the JSON node "data[1].message_text" should be equal to "Status set to Awaiting Agent"
     And the JSON node "data[1].details.old_status" should be equal to the string ""
     And the JSON node "data[1].details.new_status" should be equal to "awaiting_agent"
 

@@ -402,6 +402,11 @@ class LoginProcessor
 
                     $accept = App::getContainer()->getAttachmentAccepter();
                     $blob   = $accept->accept($file);
+                    if ($this->person->getPictureBlob()) {
+                        App::getContainer()->getBlobStorage()->deleteBlobRecord(
+                            $this->person->getPictureBlob()
+                        );
+                    }
                     $this->person->setPictureBlob($blob);
                 }
             }

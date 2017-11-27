@@ -59,6 +59,8 @@ class NTLMSoapClient_Exchange extends NTLMSoapClient
             );
         }
 
+        $options['trace'] = true;
+
         parent::__construct($wsdl, $options);
     }
 

@@ -223,6 +223,7 @@ class Container extends React.Component {
   };
 
   closeContainer() {
+    window.DeskPRO_Window.keyboardShortcuts.isPaused = false;
     this.closeEmoji();
     this.setState({ searching: false, expandedHeader: false });
     this.props.onChatSearch('');
@@ -262,6 +263,7 @@ class Container extends React.Component {
     this.editor = editor;
     editor.events.on('keydown', this.handleKeydown, true);
     if (document.activeElement.tagName.toLowerCase() === 'body') {
+      window.DeskPRO_Window.keyboardShortcuts.isPaused = true;
       editor.events.focus();
     }
   };

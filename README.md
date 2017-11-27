@@ -62,6 +62,18 @@ If you want to change old/legacy assets, you can run the old asset dev watcher (
     $ vim config/config.all.php # edit db details and anything else as necessary
     $ bin/run-tests-quick
 
+    # Run a specific API test
+    bin/behat --profile=api features/api/tickets/messages/ticket_messages.feature
+
+    # Run a specific API feature
+    bin/behat --profile=api --name 'Person primary email CRUD' features/api/tickets/messages/ticket_messages.feature
+
+    # Run a specific phpunit test
+    bin/phpunit phpunit/DpTest/Orb/Util/StringsTest.php
+
+    # Run a specific spec test (not used much anymore)
+    bin/phpspec run spec/DeskPRO/Bundle/AppBundle/EventListener/SecurityHeadersResponseListenerSpec.php
+
 # Wiki
 
 | Wiki     | http://wiki.deskprodev.com/ |

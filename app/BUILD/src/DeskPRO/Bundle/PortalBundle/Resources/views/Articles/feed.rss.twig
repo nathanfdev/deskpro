@@ -19,7 +19,7 @@
                 <description>{{ article.content }}</description>
                 <link>{{ url('portal_kb_view', { slug: article.slug }) }}</link>
                 <guid>{{ url('portal_kb_view', { slug: article.id }) }}</guid>
-                <pubDate>{{ article.date_published|date('r') }}</pubDate>
+                <pubDate>{{ article.date_updated|date('r') }}</pubDate>
             </item>
         {% endfor %}
     </channel>

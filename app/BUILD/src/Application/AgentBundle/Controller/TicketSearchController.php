@@ -100,8 +100,8 @@ class TicketSearchController extends AbstractController
         }
 
         $archive_filter_counts = App::getApi('tickets.filters')->getAllCountsForFiltersCollection($archive_filters, $this->person);
-        $custom_filter_counts  = App::getApi('tickets.filters')->getAllCountsForFiltersCollection(
-            array_merge($custom_filters, $problem_filters),
+        $problem_filter_counts = App::getApi('tickets.filters')->getAllCountsForFiltersCollection(
+            $problem_filters,
             $this->person
         );
 
@@ -167,7 +167,7 @@ class TicketSearchController extends AbstractController
             'archive_filters'        => $archive_filters,
             'problem_filters'        => $problem_filters,
             'archive_filter_counts'  => $archive_filter_counts,
-            'custom_filter_counts'   => $custom_filter_counts,
+            'problem_filter_counts'  => $problem_filter_counts,
             'filter_id_matches'      => $filter_id_matches,
             'custom_filters'         => $custom_filters,
             'flags'                  => $flags,

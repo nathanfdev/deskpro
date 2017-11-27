@@ -299,6 +299,18 @@ class TicketLog extends DomainObject
     }
 
     /**
+     * @param \DateTime $dateCreated
+     *
+     * @return $this
+     */
+    public function setDateCreated(\DateTime $dateCreated = null)
+    {
+        $this->setModelField('date_created', $dateCreated);
+
+        return $this;
+    }
+
+    /**
      * @return \DateTime
      */
     public function getDateCreated()

@@ -463,6 +463,17 @@ DeskPRO.Agent.WindowElement.Section.Tickets = new Orb.Class({
 	// Filters/Inbox
 	//#########################################################################
 
+	sendRefreshCustomFilters: function(batch) {
+    DeskPRO_Window.getPoller().addData([{name: 'get-custom-filters-data-batch', value: batch || 0 }]);
+
+    var ignoreIds = $.map($('#tickets_outline_custom_filters').find('.filter-hidden'), function(el) { return $(el).data('filter-id'); });
+    if (ignoreIds) {
+      DeskPRO_Window.getPoller().addData([{name: 'get-custom-filters-data-ignore', value: ignoreIds.join(',')}]);
+		}
+
+    DeskPRO_Window.getPoller().sendNow();
+	},
+
 	_initFilters: function() {
 		var self = this;
 		DeskPRO_Window.getPoller().addData(
@@ -485,15 +496,29 @@ DeskPRO.Agent.WindowElement.Section.Tickets = new Orb.Class({
 				];
 			},
 			'filters.filter_data',
-			{recurring: true, minDelay: 33000/*33sec*/ }
+			{recurring: true, minDelay: DP_SYS_FILTER_REFRESH_INTERVAL }
 		);
 		DeskPRO_Window.getPoller().addData(
-			[{name: 'do[]', value: 'get-custom-filters-data'}],
+			function() {
+				var ignoreIds = $.map($('#tickets_outline_custom_filters').find('.filter-hidden'), function(el) { return $(el).data('filter-id'); });
+
+				return [
+					{name: 'do[]', value: 'get-custom-filters-data'},
+					{name: 'get-custom-filters-data-ignore', value: ignoreIds.join(',')},
+				];
+			},
 			'filters.filter_data',
-			{recurring: true, minDelay: 68000/*68sec*/, minDelayAfterOne:true }
+			{recurring: true, minDelay: DP_CUST_FILTER_REFRESH_INTERVAL, minDelayAfterOne:true }
 		);
 
-		DeskPRO_Window.getMessageBroker().addMessageListener('filters.filter_data', this.updateFilterData, this);
+		DeskPRO_Window.getMessageBroker().addMessageListener('filters.filter_data', function (data) {
+      this.updateFilterData(data);
+
+      // still more to refresh
+      if (data.next_batch && data.next_batch !== null) {
+      	this.sendRefreshCustomFilters(data.next_batch);
+			}
+		}, this);
 
 		DeskPRO_Window.getMessageBroker().addMessageListener('agent.ticket-updated', function (data) {
 			var ticketId = data.ticket_id;
@@ -566,6 +591,7 @@ DeskPRO.Agent.WindowElement.Section.Tickets = new Orb.Class({
 		}).bind(this));
 
 		this._recountHold();
+    this.sendRefreshCustomFilters();
 	},
 
 	getFilterCount: function(filter_id) {

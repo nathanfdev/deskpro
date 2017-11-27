@@ -1188,6 +1188,10 @@ class ExchangeWebServices
      */
     protected function initializeSoapClient()
     {
+        if ($this->soap) {
+            return $this->soap;
+        }
+
         // DESKPRO EDIT: Temporarily re-enable entity loader
         $v = libxml_disable_entity_loader(false);
 

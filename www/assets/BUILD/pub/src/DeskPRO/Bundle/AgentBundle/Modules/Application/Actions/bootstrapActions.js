@@ -7,6 +7,7 @@ import { setAgentSettings } from 'DeskPRO/Bundle/AgentBundle/Modules/Agent/Actio
 import { setupActionAlerts } from 'DeskPRO/Bundle/AgentBundle/Modules/Application/Actions/notificationActions';
 import { setImMe, loadDrafts } from 'DeskPRO/Bundle/AgentBundle/Modules/IM/Actions/messagesActions';
 import { agentsSelector } from 'DeskPRO/Bundle/AppBundle/Modules/RecordsStore/Shortcuts/agents';
+import { updateAgentStatus } from 'DeskPRO/Bundle/AgentBundle/Modules/Agent/Actions/agentActions';
 import agentPhrases from 'DeskPRO/Bundle/AgentBundle/AgentPhrases';
 import DeskproAppStore from 'DeskPRO/Bundle/AgentBundle/Modules/DeskproApps/DeskproAppStore';
 import { setVoiceTokens, setVoiceActivities, setVoiceSettings } from '../../Voice/Actions/clientActions';
@@ -49,6 +50,7 @@ export const preloadData    = createAction(
         me:                      { endpoint: 'me' },
         agent_teams:             { endpoint: 'agent_teams' },
         my_agent_teams:          { endpoint: 'agent_teams', query: 'my=true' },
+        assigned_to_chat:        { endpoint: 'agents/assigned_to_chat' },
         ticket_departments:      { endpoint: 'ticket_departments', query: 'include=department_agent_ids' },
         my_ticket_departments:   { endpoint: 'ticket_departments', query: 'my=true&include=department_agent_ids' },
         chat_departments:        { endpoint: 'chat_departments', query: 'include=department_agent_ids' },
@@ -98,6 +100,7 @@ export const preloadData    = createAction(
         dispatch(setCollection('PersonCustomFields', 'all', data.person_custom_fields));
         dispatch(setCollection('TicketCustomFields', 'all', data.ticket_custom_fields));
         dispatch(setupActionAlerts(data.alerts));
+        dispatch(updateAgentStatus({ agent_ids: data.assigned_to_chat.map(a => a.id) }));
 
         if (data.onboardings) {
           dispatch(setCollection('Onboarding', 'pending', [data.onboardings]));

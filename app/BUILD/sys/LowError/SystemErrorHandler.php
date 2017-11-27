@@ -580,6 +580,14 @@ class SystemErrorHandler
             $no_send_error = true;
         }
 
+        // GD errors (gd-png)
+        if (
+            strpos($errstr, 'imagecreatefromstring') !== false
+            || strpos($errstr, 'gd-png') !== false
+        ) {
+            $no_send_error = true;
+        }
+
         $summary = "[$errname:$errno] $errstr ($errfile:$errline)";
 
         $url = '';

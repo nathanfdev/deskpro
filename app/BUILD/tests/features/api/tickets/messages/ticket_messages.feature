@@ -248,3 +248,39 @@ Feature: /tickets/{id}/messages endpoint
 
     When I send a GET request to "/api/v2/tickets/{t1}"
     Then the JSON node "data.status" should be equal to the string "resolved"
+
+  Scenario: I retrieve a ticket message attachments empty list
+    Given only the following TicketMessage records exist:
+      | #  | Person  | Ticket | Message         |
+      | m1 | {admin} | {t1}   | my message      |
+    When I send a GET request to "/api/v2/tickets/{t1}/messages/{m1}/attachments"
+    Then the response status code should be 200
+    And the JSON node "data" should have 0 elements
+
+  Scenario: I retrieve a ticket message attachments list for non existing message
+    When I send a GET request to "/api/v2/tickets/{t1}/messages/0/attachments"
+    Then the response status code should be 404
+
+  Scenario: I retrieve a ticket message attachments
+    Given only the following TicketMessage records exist:
+      | #  | Person  | Ticket | Message         |
+      | m1 | {admin} | {t1}   | my message      |
+      | m2 | {admin} | {t1}   | noisy message   |
+    And I create blob with auth code "m1blob_AAAAAAAAAAA"
+    And I create blob with auth code "m1blob_BBBBBBBBBBB"
+    And I create blob with auth code "m2blob_CCCCCCCCCCC"
+    And only the following TicketAttachment records exist:
+      | Ticket | Person  | Message | Blob                      |
+      | {t1}   | {admin} | {m1}    | {blob_m1blob_AAAAAAAAAAA} |
+      | {t1}   | {admin} | {m1}    | {blob_m1blob_BBBBBBBBBBB} |
+      | {t1}   | {admin} | {m2}    | {blob_m2blob_CCCCCCCCCCC} |
+    When I send a GET request to "/api/v2/tickets/{t1}/messages/{m1}/attachments"
+    Then the response status code should be 200
+    And the JSON node "data" should have 2 elements
+    And the JSON node "data[0].blob.blob_auth" should contain "m1blob_AAAAAAAAAAA"
+    And the JSON node "data[1].blob.blob_auth" should contain "m1blob_BBBBBBBBBBB"
+
+    When I send a GET request to "/api/v2/tickets/{t1}/messages/{m2}/attachments"
+    Then the response status code should be 200
+    And the JSON node "data" should have 1 elements
+    And the JSON node "data[0].blob.blob_auth" should contain "m2blob_CCCCCCCCCCC"

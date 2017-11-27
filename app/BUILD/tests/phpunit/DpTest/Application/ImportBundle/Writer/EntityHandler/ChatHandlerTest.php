@@ -148,7 +148,7 @@ class ChatHandlerTest extends AbstractEntityHandlerTest
         $this->assertEquals('subject', $entity->getSubjectLine());
         $this->assertEquals('user', $entity->getEndedBy());
         $this->assertEquals('imported.user.1@example.com', $entity->getPerson()->getPrimaryEmailAddress());
-        $this->assertEquals('imported.user.2@example.com', $entity->getAgent()->getPrimaryEmailAddress());
+        $this->assertEquals('imported.agent.2@example.com', $entity->getAgent()->getPrimaryEmailAddress());
         $this->assertEquals(5, $entity->getRatingOverall());
         $this->assertEquals('feedback comment', $entity->getRatingComment());
         $this->assertEquals('2016-07-10', $entity->getDateCreated()->format('Y-m-d'));

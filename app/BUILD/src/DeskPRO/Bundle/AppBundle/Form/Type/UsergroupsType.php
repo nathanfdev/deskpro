@@ -75,7 +75,7 @@ class UsergroupsType extends AbstractType
                         ->createQueryBuilder('u')
                         ->where('u.is_agent_group = :is_agent_group')
                         ->andWhere('u.is_enabled = 1')
-                        ->andWhere("u.sys_name NOT IN ('everyone', 'registered')")
+                        ->andWhere("u.sys_name NOT IN ('everyone', 'registered') OR u.sys_name IS NULL")
                         ->setParameter('is_agent_group', $options['is_agent_group'])
                     ;
                 },

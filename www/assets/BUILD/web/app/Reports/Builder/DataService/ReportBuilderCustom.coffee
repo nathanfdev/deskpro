@@ -1,8 +1,8 @@
 define [
-  'Reports/Builder/DataService/ReportBuiltInAbstract'
+  'Reports/Builder/DataService/ReportCustomAbstract'
 ], (
-  ReportBuiltInAbstract
+  ReportCustomAbstract
 )  ->
-  class ReportBuilderCustom extends ReportBuiltInAbstract
+  class ReportBuilderCustom extends ReportCustomAbstract
     getUrlPart: ->
       return 'builder'

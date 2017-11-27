@@ -19,10 +19,6 @@ class Action extends React.Component {
   constructor(props) {
     super(props);
 
-    this.state = {
-      replyModalOpen: false
-    };
-
     this.types = [
       { value: 'agent', label: 'Assign Agent' },
       { value: 'agent_team', label: 'Assign Team' },
@@ -60,22 +56,9 @@ class Action extends React.Component {
         mode={mode}
         ref={(c) => { this.editor = c; }}
         value={this.props.action.options.reply_text}
-        closeModal={this.closeEditReply}
         onChange={this.onEditorChange}
       />
     );
-  };
-
-  closeEditReply = () => {
-    this.setState({
-      replyModalOpen: false,
-    });
-  };
-
-  editReply = () => {
-    this.setState({
-      replyModalOpen: true,
-    });
   };
 
   updateType = (type) => {
@@ -107,12 +90,24 @@ class Action extends React.Component {
     const agents = [
       { value: -1, label: 'Me' },
       { value: 0, label: 'Unassigned' },
-    ].concat(this.props.agents.toArray().map(agent => (
-      { value: agent.get('id'), label: agent.get('name') }
-    )));
+    ].concat(this.props.agents
+      .sort((a, b) => {
+        if (a.get('name') < b.get('name')) {
+          return -1;
+        }
+        if (a.get('name') > b.get('name')) {
+          return 1;
+        }
+        return 0;
+      })
+      .toArray()
+      .map(agent => (
+        { value: agent.get('id'), label: agent.get('name') }
+      )
+    ));
     return (
       <div>
-        <Label>Agent</Label>
+        <Label>{agentPhrases.get('agent.general.agent')}</Label>
         <Select
           name="agent"
           options={agents}
@@ -130,12 +125,24 @@ class Action extends React.Component {
     const agentTeams = [
       { value: -1, label: 'My Team' },
       { value: 0, label: 'None' },
-    ].concat(this.props.agentTeams.toArray().map(team => (
-      { value: team.get('id'), label: team.get('name') }
-    )));
+    ].concat(this.props.agentTeams
+      .sort((a, b) => {
+        if (a.get('name') < b.get('name')) {
+          return -1;
+        }
+        if (a.get('name') > b.get('name')) {
+          return 1;
+        }
+        return 0;
+      })
+      .toArray()
+      .map(team => (
+        { value: team.get('id'), label: team.get('name') }
+      )
+    ));
     return (
       <div>
-        <Label>Team</Label>
+        <Label>{agentPhrases.get('agent.general.team')}</Label>
         <Select
           name="agent_team"
           options={agentTeams}
@@ -156,7 +163,7 @@ class Action extends React.Component {
     const { action } = this.props;
     return (
       <div>
-        <span>Team</span><br />
+        <Label>Hold</Label><br />
         <Radio
           name="is_hold"
           checked={action.options.is_hold === 0}
@@ -186,7 +193,7 @@ class Action extends React.Component {
     ];
     return (
       <div>
-        <Label>Status</Label>
+        <Label>{agentPhrases.get('agent.general.status')}</Label>
         <Select
           name="status"
           options={options}
@@ -201,12 +208,24 @@ class Action extends React.Component {
 
   renderRunMacro = () => {
     const { action } = this.props;
-    const macros = this.props.macros.toArray().map(macro => (
-      { value: macro.get('id'), label: macro.get('title') }
-    ));
+    const macros = this.props.macros
+      .sort((a, b) => {
+        if (a.get('name') < b.get('name')) {
+          return -1;
+        }
+        if (a.get('name') > b.get('name')) {
+          return 1;
+        }
+        return 0;
+      })
+      .toArray()
+      .map(macro => (
+        { value: macro.get('id'), label: macro.get('title') }
+      )
+    );
     return (
       <div>
-        <Label>Team</Label>
+        <Label>{agentPhrases.get('agent.general.macro')}</Label>
         <Select
           name="macroId"
           options={macros}

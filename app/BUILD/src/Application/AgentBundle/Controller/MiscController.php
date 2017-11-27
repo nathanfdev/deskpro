@@ -36,6 +36,7 @@ use Application\AgentBundle\FragmentRouter;
 use Application\DeskPRO\App;
 use Application\DeskPRO\App\Assets\RequireJsConfigGenerator as AppsRequireJsConfigGenerator;
 use Application\DeskPRO\Assets\RequireJsConfigGenerator;
+use Application\DeskPRO\Chat\UserChat\AvailableTrigger;
 use Application\DeskPRO\Entity;
 use Application\DeskPRO\Entity\TextSnippet;
 use Application\DeskPRO\Entity\Usersource;
@@ -916,13 +917,13 @@ JS;
             $em->flush();
         });
 
-        \Application\DeskPRO\Chat\UserChat\AvailableTrigger::update();
+        AvailableTrigger::update();
 
         $this->container->get('event_dispatcher')->dispatch(
             AgentStatusChangedEvent::EVENT_NAME,
             new AgentStatusChangedEvent(
                 'agent.ui.user-chat-status',
-                $this->person,
+                $this->person->getId(),
                 $this->in->getBool('is_chat_available')
             )
         );

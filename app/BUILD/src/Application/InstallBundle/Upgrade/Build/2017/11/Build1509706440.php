@@ -44,14 +44,6 @@ class Build1509706440 extends AbstractBuild implements BlockingBuildInterface, S
 
     public function runAlters()
     {
-        $this->execDbQuery('default', 'DROP INDEX unique_idx ON custom_data_chat');
-        $this->execDbQuery('default', 'DROP INDEX unique_idx ON custom_data_organizations');
-        $this->execDbQuery('default', 'DROP INDEX unique_idx ON custom_data_billing');
-        $this->execDbQuery('default', 'DROP INDEX unique_idx ON custom_data_feedback');
-        $this->execDbQuery('default', 'DROP INDEX unique_idx ON custom_data_ticket');
-        $this->execDbQuery('default', 'DROP INDEX unique_idx ON custom_data_article');
-        $this->execDbQuery('default', 'DROP INDEX unique_idx ON custom_data_person');
-        $this->execDbQuery('default', 'DROP INDEX unique_idx ON custom_data_product');
         $this->execDbQuery('default', 'ALTER TABLE app2_app_instance DROP FOREIGN KEY FK_B1B171047987212D');
         $this->execDbQuery('default', "ALTER TABLE app2_app_instance ADD `is_installed` TINYINT(1) DEFAULT '0' NOT NULL");
         $this->execDbQuery('default', 'ALTER TABLE app2_app_instance ADD CONSTRAINT FK_B1B171047987212D FOREIGN KEY (app_id) REFERENCES app2_app (id) ON DELETE CASCADE');

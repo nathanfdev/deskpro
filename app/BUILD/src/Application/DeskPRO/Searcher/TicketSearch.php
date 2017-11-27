@@ -182,6 +182,11 @@ class TicketSearch extends SearcherAbstract
     protected $done_person_context_check = false;
 
     /**
+     * @var string
+     */
+    protected $queryNote = false;
+
+    /**
      * @var null|string
      */
     public $_last_sql = null;
@@ -209,6 +214,17 @@ class TicketSearch extends SearcherAbstract
         if ($this->person_search) {
             $this->person_search->setPerson($person);
         }
+    }
+
+    /**
+     * Set a note on the query that will get run. This adds the note in a comment at the top of the query
+     * to aid in debugging (e.g. slow query logs, process list, etc).
+     *
+     * @param string $queryNote
+     */
+    public function setQueryNote($queryNote)
+    {
+        $this->queryNote = $queryNote;
     }
 
     /**
@@ -845,6 +861,10 @@ class TicketSearch extends SearcherAbstract
             $count_sql = $sql;
         }
 
+        if ($this->queryNote) {
+            $count_sql = "/*{$this->queryNote}*/ $count_sql";
+        }
+
         $this->getLogger()->logDebug('Search Count Query: '.$count_sql);
         $time = microtime(true);
 
@@ -1089,10 +1109,13 @@ class TicketSearch extends SearcherAbstract
                 UNION
                 ($sql2)
                 $order_by
-                LIMIT {$unionLimit}
-            ";
+            " . ($unionLimit ? "LIMIT {$unionLimit}" : '');
         } else {
             $selectQuery = $sql;
+        }
+
+        if ($this->queryNote) {
+            $selectQuery = "/*{$this->queryNote}*/ $selectQuery";
         }
 
         $this->_last_sql = $selectQuery;

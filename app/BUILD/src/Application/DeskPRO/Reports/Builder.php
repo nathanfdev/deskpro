@@ -108,7 +108,7 @@ class Builder
      */
     public function createNew()
     {
-        $report = ReportBuilder::createReportWidget();
+        $report = ReportBuilder::createReportBuilder();
         $report->setIsCustom(true);
 
         return $report;

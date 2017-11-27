@@ -139,7 +139,7 @@ class TextSnippetsController extends AbstractController
         /** @var \Application\DeskPRO\EntityRepository\TextSnippet $rep */
         $rep = $this->em->getRepository('DeskPRO:TextSnippet');
 
-        $results = $rep->filterSnippetsForAgent($filter_string, $typename, $this->person, 1, 1000, $category_id, $language_id);
+        $results = $rep->filterSnippetsForAgent($filter_string, $typename, $this->person, 1, 2500, $category_id, $language_id);
 
         return $this->createJsonResponse(['snippets' => $results]);
     }
