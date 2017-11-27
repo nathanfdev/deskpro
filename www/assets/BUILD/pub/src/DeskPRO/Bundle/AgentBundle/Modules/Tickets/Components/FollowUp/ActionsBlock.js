@@ -11,6 +11,7 @@ class ActionsBlock extends React.Component {
     macros:      PropTypes.object.isRequired,
     ticketPerms: PropTypes.object,
     onChange:    PropTypes.func,
+    types:       PropTypes.array,
   };
 
   static defaultProps = {
@@ -27,7 +28,7 @@ class ActionsBlock extends React.Component {
   addAction = () => {
     const actions = this.props.actions;
     actions.push({
-      type:    'agent',
+      type:    this.types[0].value,
       options: {}
     });
     this.props.onChange(actions);
@@ -49,6 +50,7 @@ class ActionsBlock extends React.Component {
       ticketPerms={this.props.ticketPerms}
       updateAction={a => this.updateAction(a, index)}
       removeAction={() => this.removeAction(index)}
+      types={this.props.types}
     />
   ));
 

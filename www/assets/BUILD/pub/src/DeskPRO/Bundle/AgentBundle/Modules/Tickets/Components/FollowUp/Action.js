@@ -20,38 +20,11 @@ class Action extends React.Component {
     me:           PropTypes.object,
     removeAction: PropTypes.func,
     updateAction: PropTypes.func,
+    types:        PropTypes.array,
   };
 
   constructor(props) {
     super(props);
-
-    const { ticketPerms } = this.props;
-
-    this.types = [];
-
-    if (ticketPerms.modify_assign_agent || ticketPerms.modify_assign_self) {
-      this.types.push({ value: 'agent', label: 'Assign Agent' });
-    }
-    if (ticketPerms.modify_assign_team) {
-      this.types.push({ value: 'agent_team', label: 'Assign Team' });
-    }
-    if (ticketPerms.reply) {
-      this.types.push({ value: 'reply', label: agentPhrases.get('agent.tickets.add_reply_action') });
-    }
-    if (ticketPerms.modify_notes) {
-      this.types.push({ value: 'note', label: agentPhrases.get('agent.tickets.add_note_action') });
-    }
-    if (ticketPerms.modify_set_hold) {
-      this.types.push({ value: 'hold', label: 'Hold' });
-    }
-    if (ticketPerms.modify_set_awaiting_agent
-      || ticketPerms.modify_set_awaiting_user
-      || ticketPerms.modify_set_resolved) {
-      this.types.push({ value: 'status', label: agentPhrases.get('agent.general.status') });
-    }
-    if (this.props.macros.size) {
-      this.types.push({ value: 'run_macro', label: 'Run macro' });
-    }
 
     this.typeId = newid('type');
   }
@@ -270,14 +243,14 @@ class Action extends React.Component {
   };
 
   render() {
-    const { action } = this.props;
+    const { action, types } = this.props;
     return (
       <div className="action">
         <div className="type">
           <Label htmlFor={this.typeId}>Type</Label>
           <Select
             id={this.typeId}
-            options={this.types}
+            options={types}
             clearable={false}
             searchable={false}
             value={action.type}

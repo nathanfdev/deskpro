@@ -160,8 +160,36 @@ class FollowUpForm extends React.Component {
   constructor(props) {
     super(props);
 
+    const { ticketPerms } = this.props;
+
+    this.types = [];
+
+    if (ticketPerms.modify_assign_agent || ticketPerms.modify_assign_self) {
+      this.types.push({ value: 'agent', label: 'Assign Agent' });
+    }
+    if (ticketPerms.modify_assign_team) {
+      this.types.push({ value: 'agent_team', label: 'Assign Team' });
+    }
+    if (ticketPerms.reply) {
+      this.types.push({ value: 'reply', label: agentPhrases.get('agent.tickets.add_reply_action') });
+    }
+    if (ticketPerms.modify_notes) {
+      this.types.push({ value: 'note', label: agentPhrases.get('agent.tickets.add_note_action') });
+    }
+    if (ticketPerms.modify_set_hold) {
+      this.types.push({ value: 'hold', label: 'Hold' });
+    }
+    if (ticketPerms.modify_set_awaiting_agent
+      || ticketPerms.modify_set_awaiting_user
+      || ticketPerms.modify_set_resolved) {
+      this.types.push({ value: 'status', label: agentPhrases.get('agent.general.status') });
+    }
+    if (this.props.macros.size) {
+      this.types.push({ value: 'run_macro', label: 'Run macro' });
+    }
+
     this.state = {
-      actions:           [{ type: 'reply', options: {} }],
+      actions:           [{ type: ticketPerms.reply ? 'reply' : this.types[0].value, options: {} }],
       dateToRun:         {},
       cancelIfUserReply: false,
       errors:            [],
@@ -333,6 +361,7 @@ class FollowUpForm extends React.Component {
           agentTeams={this.props.agentTeams}
           ticketPerms={this.props.ticketPerms}
           macros={this.props.macros}
+          types={this.types}
         />
         <h5>{agentPhrases.get('agent.general.criteria')}</h5>
         <Checkbox
