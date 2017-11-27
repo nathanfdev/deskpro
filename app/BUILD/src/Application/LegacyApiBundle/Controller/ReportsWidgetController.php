@@ -177,7 +177,7 @@ class ReportsWidgetController extends AbstractController
                     } else {
                         $query = $reportsWidget->getQueryStringFromParts($postData['parts']);
                         if (!$query) {
-                            throw new \InvalidArgumentException("Empty query");
+                            throw new \InvalidArgumentException('Empty query');
                         }
                         $report->setQuery($query);
                     }
@@ -287,7 +287,10 @@ class ReportsWidgetController extends AbstractController
         if ($error = $reportsWidget->getErrors($id, $query)) {
             return $this->createApiResponse(['error' => $error]);
         } else {
-            $renderedResult            = $reportsWidget->getRenderedResult($id, $query);
+            $renderedResult = $reportsWidget->getRenderedResult($id, $query);
+//            if($renderedResult && $renderedResult[0] === null && count($renderedResult) === 1) {
+//                $renderedResult = [];
+//            }
             $widget                    = $this->getReportWidgetData($id, true);
             $widget['rendered_result'] = $renderedResult;
 

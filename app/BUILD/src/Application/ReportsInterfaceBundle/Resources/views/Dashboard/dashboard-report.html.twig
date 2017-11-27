@@ -25,12 +25,12 @@
                 <li ng-repeat="(index, var) in report.variables">
                     {{ ng_var('var.name') }}
                     <select ng-change="changeReportLevelVar()" style="min-width: 150px;" ui-select2 ng-model="report.variables[index].value" ng-if="var.type != 'dates'">
-                        <option ng-repeat="(key, param) in groupParams[var.type][var.field_type]" ng-value="key" ng-selected="key === report.variables[index].value">
+                        <option ng-if="key != 'from_report_value'" ng-repeat="(key, param) in groupParams[var.type][var.field_type]" ng-value="key" ng-selected="key === report.variables[index].value">
                             {{ ng_var('param[0]') }}
                         </option>
                     </select>
                     <select ng-change="changeReportLevelVar()" style="min-width: 150px;" ui-select2 ng-model="report.variables[index].value" ng-if="var.type == 'dates'">
-                        <option ng-repeat="(key, param) in groupParams[var.type]" ng-value="key" ng-selected="key === report.variables[index].value">
+                        <option ng-if="key != 'from_report_value'" ng-repeat="(key, param) in groupParams[var.type]" ng-value="key" ng-selected="key === report.variables[index].value">
                             {{ ng_var('param[0]') }}
                         </option>
                     </select>
@@ -69,17 +69,9 @@
                         </div>
                         <h3 class="ng-binding">{{ ng_var('widget.title') }}</h3>
                     </div>
-                    <div class="box" ng-if="widget.type=='stat'">
-                        <dashboard-stat
-                            title="{{ ng_var('widget.title') }}"
-                            value="{{ ng_var('widget.data.value') }}"
-                            wtype="{{ ng_var('widget.type') }}"
-                        />
-                    </div>
                     <div class="box" ng-if="widget.type=='graph'">
                         <dashboard-amcharts
                             report-level-vars={{ ng_var('report.variables') }}
-                            my-index="{{ ng_var('$index') }}"
                             title="{{ ng_var('widget.title') }}"
                             widget-id = "{{ ng_var('widget.id') }}"
                             chart-data = "{{ ng_var('widget.data') }}"
@@ -88,7 +80,6 @@
                     </div>
                     <div class="box" ng-if="widget.type=='table'">
                         <dashboard-table
-                            my-index="{{ ng_var('$index') }}"
                             title="{{ ng_var('widget.title') }}"
                             table-data="{{ ng_var('widget.data') }}"
                             widget-id = "{{ ng_var('widget.id') }}"

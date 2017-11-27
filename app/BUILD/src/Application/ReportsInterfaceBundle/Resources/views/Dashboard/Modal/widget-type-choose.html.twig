@@ -76,11 +76,13 @@
                         title="{{ ng_var('widgetPreview.title') }}"
                         widget-id = "{{ ng_var('reportWidget.id') }}"
                         chart-data = "{{ ng_var('widgetPreview.rendered_result') }}"
+                        render-type = "test"
                         chtype="graph"
                 />
             </div>
             <div class="stat-preview" ng-if="widgetPreview && widgetPreview.type=='table'">
                 <dashboard-table
+                        render-type = "test"
                         my-index="{{ ng_var('$index') }}"
                         title="{{ ng_var('widgetPreview.title') }}"
                         table-data="{{ ng_var('widgetPreview.rendered_result') }}"
