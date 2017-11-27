@@ -48,20 +48,25 @@ class ListItem extends React.Component {
     return (
       <li className={classNames({ active: isActive })} onClick={this.onRunClick}>
         <h1>
-          <TitleWithVars onRunClick={this.onRunClick} onChangeReportVar={onChangeReportVar} groupParams={groupParams} report={report} />
+          <TitleWithVars
+            onRunClick={this.onRunClick}
+            onChangeReportVar={onChangeReportVar}
+            groupParams={groupParams}
+            report={report}
+          />
           <span onClick={this.onEditClick} className="controls"><i className="fa fa-pencil" /></span>
         </h1>
         { report.get('labels').size > 0 || !report.get('is_custom') ?
           <p>
             {report.get('labels').map(
-              (label, index) =>
+              label =>
                 <span
                   onClick={(event) => {
                     event.preventDefault();
                     event.stopPropagation();
                     this.props.onLabelClick(label);
                   }}
-                  key={index}
+                  key={label}
                   className={classNames('stat-label', { active: this.isLabelActive(label) })}
                 >
                   <i className="fa fa-tag" /> { label }

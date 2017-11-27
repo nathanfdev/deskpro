@@ -5,6 +5,10 @@ import ListItem from './ListItem';
 
 class List extends React.Component {
 
+  static defaultProps = {
+    currentReport: null
+  };
+
   static propTypes = {
     customReports:     PropTypes.object.isRequired,
     builtInReports:    PropTypes.object.isRequired,

@@ -11,7 +11,7 @@ import { displayTypes } from './helper';
 class Run extends React.Component {
 
   static propTypes = {
-    report:                     PropTypes.object,
+    report:                     PropTypes.object.isRequired,
     reportLoading:              PropTypes.bool.isRequired,
     onChangeReportDisplayTypes: PropTypes.func.isRequired,
     onChangeReportVar:          PropTypes.func.isRequired,
@@ -111,7 +111,7 @@ class Run extends React.Component {
     />);
     const content = report.get('rendered_result', Immutable.List()).filter(value => value).size > 0
       ? <div className="results-wrap">{this.renderReport()}</div>
-      : <div className="no-results">No results found. Please try another query (e.g. change vars) to find something</div>;
+      : <div className="no-results">No results found.</div>;
 
     const choices = displayTypes;
 

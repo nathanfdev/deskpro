@@ -12,8 +12,8 @@ import { saveReport } from '../../Application/Actions/reportActions';
 class EditContainer extends React.Component {
 
   static propTypes = {
-    report:       PropTypes.object,
-    groupParams:  PropTypes.object,
+    report:       PropTypes.object.isRequired,
+    groupParams:  PropTypes.object.isRequired,
     onCloneClick: PropTypes.func.isRequired,
     onRunClick:   PropTypes.func.isRequired,
     dispatch:     PropTypes.func.isRequired,
@@ -153,7 +153,9 @@ class EditContainer extends React.Component {
           <div className="title-bar">
             <div className="title">{this.props.report.get('title')}</div>
             <div className="ctrl">
-              <Button type="secondary" size="medium" onClick={this.onRunClick}><i className="fa fa-undo" /> Cancel</Button>
+              <Button type="secondary" size="medium" onClick={this.onRunClick}>
+                <i className="fa fa-undo" /> Cancel
+              </Button>
               <Button size="medium" onClick={this.onCloneClick}><i className="fa fa-clone" /> Clone</Button>
             </div>
           </div>

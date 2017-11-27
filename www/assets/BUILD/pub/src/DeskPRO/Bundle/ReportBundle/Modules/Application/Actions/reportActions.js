@@ -2,7 +2,6 @@ import { createAction } from 'DeskPRO/Component/Ampliflux';
 import { repository, api } from 'DeskPRO/Bundle/AppBundle/DAL';
 import { setCollection, addToCollection } from 'DeskPRO/Bundle/AppBundle/Modules/RecordsStore';
 import Immutable from 'immutable';
-import {SubmissionError} from "redux-form";
 
 export const reportsLoaded = createAction(
   'REPORTS_LOADED'
@@ -42,7 +41,7 @@ export const runReport = createAction(
   (reportId, data, saveVars) => (dispatch) => {
     const dataToSend = {
       saveVars: !!saveVars,
-      report: {
+      report:   {
         title:         data.title,
         description:   data.desc,
         display_types: data.display_types,
@@ -203,25 +202,19 @@ export const saveReport = createAction(
       if (response.id) {
         dispatch(loadReport(response.id));
         dispatch(setCollection('ReportsLabels', 'all', response.labels));
-      } else {
         return response;
       }
+      return response;
     });
-  }
-);
-
-export const cloneReport = createAction(
-  'REPORTS_CLONE_REPORT',
-  (cloneReport) => (dispatch) => {
-    dispatch(newReport(cloneReport));
   }
 );
 
 export const newReport = createAction(
   'REPORTS_NEW_REPORT',
-  (cloneReport) => new Promise((resolve) => {
-    if (!cloneReport) {
-      cloneReport = {};
+  report => new Promise((resolve) => {
+    let toClone = report;
+    if (!report) {
+      toClone = {};
     }
     const newReportObject = {
       id:            0,
@@ -232,8 +225,8 @@ export const newReport = createAction(
       labels:        [],
       display_order: 10,
       display_types: [],
-      variables:     cloneReport.variables || {},
-      query_parts:   cloneReport.query_parts || {
+      variables:     toClone.variables || {},
+      query_parts:   toClone.query_parts || {
         display:    ['TABLE'],
         select:     '',
         from:       '',
@@ -250,4 +243,11 @@ export const newReport = createAction(
     };
     return resolve(newReportObject);
   })
+);
+
+export const cloneReport = createAction(
+  'REPORTS_CLONE_REPORT',
+  report => (dispatch) => {
+    dispatch(newReport(report));
+  }
 );

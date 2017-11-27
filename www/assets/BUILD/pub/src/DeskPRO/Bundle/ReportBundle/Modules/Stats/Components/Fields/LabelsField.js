@@ -5,6 +5,11 @@ import { TagInput } from '@deskpro/react-components';
 
 class LabelsField extends React.Component {
 
+  static defaultProps = {
+    value:    null,
+    onChange: null
+  };
+
   static propTypes = {
     value:    PropTypes.array,
     onChange: PropTypes.func,

@@ -5,9 +5,17 @@ import onClickOutside from 'react-onclickoutside';
 import Portal from 'react-portal/build/portal';
 
 class InlineSelectComp extends React.Component {
+
+  static defaultProps = {
+    onChange:    null,
+    defaultText: ''
+  };
+
   static propTypes = {
-    options:     PropTypes.array.isRequired,
-    value:       PropTypes.oneOfType([PropTypes.string, PropTypes.number, PropTypes.array, PropTypes.object]),
+    options: PropTypes.array.isRequired,
+    value:   PropTypes.oneOfType([
+      PropTypes.string, PropTypes.number, PropTypes.array, PropTypes.object
+    ]).isRequired,
     onChange:    PropTypes.func,
     defaultText: PropTypes.string
   };
@@ -68,9 +76,9 @@ class InlineSelectComp extends React.Component {
   }
 
   renderMenu() {
-    const options = this.props.options.map((o, idx) => (
+    const options = this.props.options.map(o => (
       <div
-        key={`itm_${idx}`}
+        key={`${o.value || o.label}`}
         className="inline-select-menu-item ignore-react-onclickoutside"
         onClick={ev => this.onClick(ev, o.value)}
       >
@@ -97,7 +105,9 @@ class InlineSelectComp extends React.Component {
   render() {
     const defaultText = this.props.defaultText || 'Select...';
     const value       = this.props.value || null;
-    const valueOpt    = this.props.options.filter(o => o.value === value || o === value || (value.value && o.value === value.value));
+
+    const valueOpt = this.props.options
+      .filter(o => o.value === value || o === value || (value.value && o.value === value.value));
 
     return (
       <div ref={(el) => { this.$el = $(el); }} className="inline-select">
@@ -183,14 +193,22 @@ class TitleWithVars extends React.Component {
         const varName = value.substr(2);
         return this.replaceVarWithSelectBox(varName);
       }
+      // eslint-disable-next-line react/no-array-index-key
       return <div key={`title_${index}`} onClick={this.props.onRunClick} className="text">{value}</div>;
     });
   }
 
   replaceMissingVars() {
     const title = this.props.report.get('title');
-    const vars = this.props.report.get('variables').filter(value => title.indexOf(`\${${value.get('name')}}`) === -1);
-    return vars.map((value, index) => <div key={`missing_${index}`}>{`\${${value.get('name')}}`}: {this.replaceVarWithSelectBox(value.get('name'))}</div>);
+    const vars = this.props.report
+      .get('variables')
+      .filter(value => title.indexOf(`\${${value.get('name')}}`) === -1);
+
+    return vars.map(value => (
+      <div key={`${value.get('name')}`}>
+        {`\${${value.get('name')}}`}: {this.replaceVarWithSelectBox(value.get('name'))}
+      </div>
+    ));
   }
 
   replaceVarWithSelectBox(varName) {

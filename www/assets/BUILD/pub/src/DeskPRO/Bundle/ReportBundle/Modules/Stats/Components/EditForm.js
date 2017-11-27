@@ -8,9 +8,13 @@ import { varTypes } from './helper';
 
 class VarsFieldComponent extends React.PureComponent {
 
+  static defaultProps = {
+    vars: []
+  };
+
   static propTypes = {
-    groupParams: PropTypes.object,
-    fields:      PropTypes.object,
+    groupParams: PropTypes.object.isRequired,
+    fields:      PropTypes.object.isRequired,
     vars:        PropTypes.array
   };
 
@@ -69,6 +73,19 @@ class VarsFieldComponent extends React.PureComponent {
     this.props.fields.push();
   };
 
+  // eslint-disable-next-line class-methods-use-this
+  isDateType(variable) {
+    return variable.type === 'dates';
+  }
+
+  isVarType(variable) {
+    return variable.type && variable.type !== 'dates' && this.props.groupParams[variable.type];
+  }
+
+  varTypeHasValue(variable) {
+    return this.isVarType(variable) && variable.field_type && this.props.groupParams[variable.type][variable.field_type];
+  }
+
   render() {
     const { fields, groupParams, vars } = this.props;
 
@@ -76,16 +93,18 @@ class VarsFieldComponent extends React.PureComponent {
       <div className="varsfield-wrap">
         <div className="varsfield-list">
           {fields.map((varName, index) => {
+            const key = index;
             const variable = vars && vars[index] ? vars[index] : {};
 
             let hint;
+
             if (!variable.name) {
               hint = 'ID';
             } else {
               hint =  (<span>ID as <em>{`\${${variable.name}}`}</em></span>);
             }
 
-            return (<div className="varsfield-item" key={index}>
+            return (<div className="varsfield-item" key={key}>
               <div className="remove-ctrl" onClick={() => fields.remove(index)}><i className="fa fa-trash" /></div>
               <Input
                 label={hint}
@@ -97,11 +116,15 @@ class VarsFieldComponent extends React.PureComponent {
                 options={varTypes}
                 name={`${varName}.type`}
               />
-              { variable.type === 'dates' && VarsFieldComponent.renderDateField(`${varName}.field_value`, groupParams.dates) }
-              { variable.type && variable.type !== 'dates' && groupParams[variable.type] && [
-                VarsFieldComponent.renderTypeField(`${varName}.field_type`, groupParams[variable.type]),
-                variable.field_type && groupParams[variable.type][variable.field_type] && VarsFieldComponent.renderTypeValueField(`${varName}.field_value`, groupParams[variable.type][variable.field_type])
-              ] }
+              { this.isDateType(variable) &&
+                VarsFieldComponent.renderDateField(`${varName}.field_value`, groupParams.dates) }
+              { this.isVarType(variable) &&
+                VarsFieldComponent.renderTypeField(`${varName}.field_type`, groupParams[variable.type]) }
+              { this.varTypeHasValue(variable) &&
+                VarsFieldComponent.renderTypeValueField(
+                  `${varName}.field_value`,
+                  groupParams[variable.type][variable.field_type]
+                ) }
             </div>);
           })}
         </div>
@@ -115,8 +138,18 @@ const VarsField = formValues('vars')(VarsFieldComponent);
 
 export class EditFormComponent extends React.PureComponent {
 
+  static defaultProps = {
+    select:       '',
+    groupBy:      '',
+    dpqlParser:   null,
+    change:       null,
+    queryValues:  {},
+    handleSubmit: null,
+    error:        null
+  };
+
   static propTypes = {
-    groupParams:  PropTypes.object,
+    groupParams:  PropTypes.object.isRequired,
     select:       PropTypes.string,
     groupBy:      PropTypes.string,
     dpqlParser:   PropTypes.func,
@@ -237,7 +270,11 @@ export class EditFormComponent extends React.PureComponent {
                   <Input label="WHERE" name="where" />
                   <Input label="SPLIT BY" name="splitBy" />
                   <Input label="GROUP BY" name="groupBy" />
-                  <div className={classNames({ 'field-hidden': !(select && select.match(/count\s*\(.*?\)/i) && groupBy.length) })}>
+                  <div
+                    className={classNames({
+                      'field-hidden': !(select && select.match(/count\s*\(.*?\)/i) && groupBy.length)
+                    })}
+                  >
                     <Checkbox
                       label="WITH ROLLUP - Adds a Total column to grouped COUNT queries made against hierarchies"
                       name="with_rollup"

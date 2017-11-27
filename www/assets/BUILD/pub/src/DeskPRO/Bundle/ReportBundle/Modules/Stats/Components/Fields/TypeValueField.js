@@ -3,6 +3,11 @@ import React from 'react';
 import { Field, Select } from 'DeskPRO/Component/Semantic/ReactForm';
 
 class TypeValueField extends React.Component {
+
+  static defaultProps = {
+    values: null
+  };
+
   static propTypes = {
     values: PropTypes.object,
   };

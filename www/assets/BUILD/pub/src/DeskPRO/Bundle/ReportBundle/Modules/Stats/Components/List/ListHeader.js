@@ -56,12 +56,13 @@ class ListHeader extends React.Component {
 
         <div className="filter-label" style={{ position: 'relative' }}>
           <a className="link-pointer select" onClick={this.toggleSelect}>
-            {activeLabels > 0 ? `${activeLabels} labels` : 'Labels'}  <i className={classNames('fa', { 'fa-caret-down': !active, 'fa-caret-up': active })} />
+            { activeLabels > 0 ? `${activeLabels} labels` : 'Labels'}
+            <i className={classNames('fa', { 'fa-caret-down': !active, 'fa-caret-up': active })} />
           </a>
           {active ? <div className="select-label-dropdown">
-            { labels.map((label, index) => (
+            { labels.map(label => (
               <a
-                key={index}
+                key={label}
                 onClick={() => this.onLabelClick(label.get('label'))}
                 className={classNames('link-pointer stat-label', { active: label.get('active') })}
               >

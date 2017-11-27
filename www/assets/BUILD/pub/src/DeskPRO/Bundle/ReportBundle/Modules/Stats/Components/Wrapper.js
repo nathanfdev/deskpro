@@ -28,12 +28,19 @@ import { regex, activateLabel, transformLabels, transformReportData, countActive
 }))
 class Wrapper extends React.Component {
 
+  static defaultProps = {
+    reportsLoaded: false,
+    reportLoading: false,
+    currentReport: null,
+    labels:        null
+  };
+
   static propTypes = {
-    reports:       PropTypes.object.isRequired, // eslint-disable-line react/no-unused-prop-types
+    reports:       PropTypes.object.isRequired,
     reportsLoaded: PropTypes.bool,
     reportLoading: PropTypes.bool,
     currentReport: PropTypes.object,
-    groupParams:   PropTypes.object,
+    groupParams:   PropTypes.object.isRequired,
     labels:        PropTypes.object,
     dispatch:      PropTypes.func.isRequired,
   };
@@ -48,7 +55,7 @@ class Wrapper extends React.Component {
 
     this.state = {
       currentReport: Immutable.Map(),
-      reports:       Immutable.List(),
+      reports:       props.reports || Immutable.Map(),
       searchText:    '',
       labels:        newLabels,
       activeLabels:  0,
@@ -142,7 +149,12 @@ class Wrapper extends React.Component {
   onLabelClick(clickedLabel) {
     const { newLabels, newActiveLabels } = activateLabel(clickedLabel, this.state.labels);
     let newSearchText = this.state.searchText.replace(regex, '');
-    const labels = newLabels.filter(value => value.get('active')).map(value => `[${value.get('label')}]`).toList().toJS();
+
+    const labels = newLabels
+      .filter(value => value.get('active'))
+      .map(value => `[${value.get('label')}]`)
+      .toList().toJS();
+
     newSearchText = `${labels.join('')} ${newSearchText.trim()}`;
 
     this.setState({ labels: newLabels, activeLabels: newActiveLabels, searchText: newSearchText });
