@@ -37,6 +37,8 @@ class Action extends React.Component {
     }
     if (ticketPerms.reply) {
       this.types.push({ value: 'reply', label: agentPhrases.get('agent.tickets.add_reply_action') });
+    }
+    if (ticketPerms.modify_notes) {
       this.types.push({ value: 'note', label: agentPhrases.get('agent.tickets.add_note_action') });
     }
     if (ticketPerms.modify_set_hold) {
