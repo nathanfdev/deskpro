@@ -1430,6 +1430,10 @@ DeskPRO.Agent.PageFragment.Page.Ticket = new Orb.Class({
     	this.closeTicketOnFail = null;
 		}
 
+    if (window.DP_HAS_FOLLOW_UP) {
+      window.AgentLegacyBundle.unmountVoiceControls(self.getEl('follow_ups_wrap')[0]);
+    }
+
     this.valueForm = null;
     this.mergeMenu = null;
 
@@ -3567,6 +3571,7 @@ DeskPRO.Agent.PageFragment.Page.Ticket = new Orb.Class({
     var countEl = self.getEl('follow_up_count');
     var data = {
       ticketId:    self.meta.ticket_id,
+      ticketPerms: self.meta.ticket_perms,
     	updateCount: function(op, count) {
     		DeskPRO_Window.util.modCountEl(countEl, op, count);
 			}

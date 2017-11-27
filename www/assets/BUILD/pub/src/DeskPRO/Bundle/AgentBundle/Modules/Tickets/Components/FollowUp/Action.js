@@ -1,33 +1,30 @@
 import React from 'react';
 import PropTypes from 'prop-types';
+import { connect } from 'react-redux';
 import { Select, Label, Radio } from '@deskpro/react-components';
 import newid from '@deskpro/react-components/lib/utils/newid';
 import agentPhrases from 'DeskPRO/Bundle/AgentBundle/AgentPhrases';
+import { meSelector } from 'DeskPRO/Bundle/AppBundle/Modules/RecordsStore/Shortcuts/me';
 import Editor from './Editor';
 
-
+@connect(state => ({
+  me: meSelector(state),
+}))
 class Action extends React.Component {
   static propTypes = {
     action:       PropTypes.object,
     agents:       PropTypes.object.isRequired,
     agentTeams:   PropTypes.object.isRequired,
     macros:       PropTypes.object.isRequired,
+    ticketPerms:  PropTypes.object,
+    me:           PropTypes.object,
     removeAction: PropTypes.func,
     updateAction: PropTypes.func,
+    types:        PropTypes.array,
   };
 
   constructor(props) {
     super(props);
-
-    this.types = [
-      { value: 'agent', label: 'Assign Agent' },
-      { value: 'agent_team', label: 'Assign Team' },
-      { value: 'reply', label: agentPhrases.get('agent.tickets.add_reply_action') },
-      { value: 'note', label: agentPhrases.get('agent.tickets.add_note_action') },
-      { value: 'hold', label: 'Hold' },
-      { value: 'status', label: agentPhrases.get('agent.general.status') },
-      { value: 'run_macro', label: 'Run macro' },
-    ];
 
     this.typeId = newid('type');
   }
@@ -86,25 +83,27 @@ class Action extends React.Component {
   renderMissingMethod = () => <div>Missing method</div>;
 
   renderAgent = () => {
-    const { action } = this.props;
-    const agents = [
-      { value: -1, label: 'Me' },
-      { value: 0, label: 'Unassigned' },
-    ].concat(this.props.agents
-      .sort((a, b) => {
-        if (a.get('name') < b.get('name')) {
-          return -1;
-        }
-        if (a.get('name') > b.get('name')) {
-          return 1;
-        }
-        return 0;
-      })
-      .toArray()
-      .map(agent => (
-        { value: agent.get('id'), label: agent.get('name') }
-      )
-    ));
+    const { action, me, ticketPerms } = this.props;
+    const agents = [];
+    if (ticketPerms.modify_assign_self) {
+      agents.push({ value: -1, label: 'Me' });
+    }
+    if (ticketPerms.modify_assign_agent) {
+      agents.push({ value: 0, label: 'Unassigned' });
+      this.props.agents
+        .filter(a => a.get('id') !== me.get('id'))
+        .sort((a, b) => {
+          if (a.get('name') < b.get('name')) {
+            return -1;
+          }
+          if (a.get('name') > b.get('name')) {
+            return 1;
+          }
+          return 0;
+        })
+        .toArray()
+        .forEach(agent => agents.push({ value: agent.get('id'), label: agent.get('name') }));
+    }
     return (
       <div>
         <Label>{agentPhrases.get('agent.general.agent')}</Label>
@@ -185,12 +184,17 @@ class Action extends React.Component {
   };
 
   renderStatus = () => {
-    const { action } = this.props;
-    const options = [
-      { value: 'awaiting_agent', label: agentPhrases.get('agent.tickets.status_awaiting_agent') },
-      { value: 'awaiting_user', label: agentPhrases.get('agent.tickets.status_awaiting_user') },
-      { value: 'resolved', label: agentPhrases.get('agent.tickets.status_resolved') },
-    ];
+    const { action, ticketPerms } = this.props;
+    const options = [];
+    if (ticketPerms.modify_set_awaiting_agent) {
+      options.push({ value: 'awaiting_agent', label: agentPhrases.get('agent.tickets.status_awaiting_agent') });
+    }
+    if (ticketPerms.modify_set_awaiting_user) {
+      options.push({ value: 'awaiting_user', label: agentPhrases.get('agent.tickets.status_awaiting_user') });
+    }
+    if (ticketPerms.modify_set_resolved) {
+      options.push({ value: 'resolved', label: agentPhrases.get('agent.tickets.status_resolved') });
+    }
     return (
       <div>
         <Label>{agentPhrases.get('agent.general.status')}</Label>
@@ -239,14 +243,14 @@ class Action extends React.Component {
   };
 
   render() {
-    const { action } = this.props;
+    const { action, types } = this.props;
     return (
       <div className="action">
         <div className="type">
           <Label htmlFor={this.typeId}>Type</Label>
           <Select
             id={this.typeId}
-            options={this.types}
+            options={types}
             clearable={false}
             searchable={false}
             value={action.type}
