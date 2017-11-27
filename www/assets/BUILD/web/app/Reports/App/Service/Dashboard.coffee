@@ -74,7 +74,7 @@ define ['DeskPRO/Util/Arrays'], (Arrays) ->
             @storage.dbs.push clonedOne
             deferred.resolve clonedOne
         , () =>
-          console.error('something goes wrong!')
+          console.error 'something goes wrong!'
       deferred.promise
 
     getDashboards: () ->
@@ -238,7 +238,6 @@ define ['DeskPRO/Util/Arrays'], (Arrays) ->
 
     saveReportVars: (report) ->
       d = @$q.defer()
-      console.log(report);
 
       @Api.sendPostJson \
         "/dashboards/reports/#{report.id}/vars",

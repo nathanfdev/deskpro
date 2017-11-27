@@ -5,26 +5,24 @@ define ->
       replace: true
       scope:
         widgetId: '@'
-        myIndex: '@'
         chartData: '@'
         reportLevelVars: '@'
+        renderType: '@'
 
       link: (scope, element, attrs) ->
-        i = attrs.widgetId
-        template = "<div id=\"ch#{i}\"></div>"
+        template = "<div id=\"ch#{scope.widgetId}\"></div>"
         linkFn = $compile(template)
         content = linkFn(scope)
         element.replaceWith(content)
         chart = false
-        conf = scope.widgetId || 0;
 
-        chartDiv    = angular.element(document.getElementById("ch" + i))
+        chartDiv    = angular.element(document.getElementById("ch#{scope.widgetId}"))
         chartParent = chartDiv.parent().parent()
         chartHeader = chartDiv.parent().siblings('.box-header')
-        chartData   = JSON.parse(scope.chartData)
+        chartData   = if scope.chartData then JSON.parse(scope.chartData) else []
 
         scope.$watch 'chartData', (n) ->
-          chartData = JSON.parse(n)
+          chartData = if n then JSON.parse(n) else []
           initChart()
 
         initChart = () ->
@@ -35,9 +33,9 @@ define ->
           if chartData and chartData.dataProvider?
             chartData.noRedraw = true
             drawWidget chartData
-          else
+          else if (scope.renderType != 'test')
             DashboardWidgetService
-              .getWidget(conf)
+              .getWidget(scope.widgetId || 0)
               .then (widget) =>
                 if widget? and widget and widget.dataProvider
                   widget.noRedraw = false
@@ -46,7 +44,7 @@ define ->
         drawWidget = (widget) ->
           # ugly, but works right now
           chartDiv.height(chartParent.height() - chartHeader.outerHeight())
-          chart = new AmCharts.makeChart('ch' + i, widget);
+          chart = new AmCharts.makeChart("ch#{scope.widgetId}", widget);
           chart.handleResize()
           chart.invalidateSize()
           if widget.multiplePies?

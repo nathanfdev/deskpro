@@ -12,7 +12,7 @@ define ['datatables'], () ->
 
       templateUrl: $sce.trustAsResourceUrl("ReportsInterfaceBundle:Dashboard/Widget:table_dt.html")
 
-      link: (scope, element, attrs) ->
+      link: (scope, element) ->
         el = $(element)
         dt = null
 
@@ -22,7 +22,7 @@ define ['datatables'], () ->
         width = listItem.width()
         height = listItem.height()
         conf = scope.widgetId || 0;
-        tableData   = JSON.parse(scope.tableData)
+        tableData   = if scope.tableData then JSON.parse(scope.tableData) else []
 
         initTable = (widget) ->
           scope.columns = widget.columns
