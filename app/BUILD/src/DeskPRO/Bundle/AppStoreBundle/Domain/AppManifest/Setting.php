@@ -33,7 +33,7 @@ use JMS\Serializer\Annotation as JMS;
 /**
  * @JMS\Discriminator(field = "type", map = {
  *    "text": "DeskPRO\Bundle\AppStoreBundle\Domain\AppManifest\SettingText",
- *    "textarea": "DeskPRO\Bundle\AppStoreBundle\Domain\AppManifest\SettingText",
+ *    "textarea": "DeskPRO\Bundle\AppStoreBundle\Domain\AppManifest\SettingTextarea",
  *    "choice": "DeskPRO\Bundle\AppStoreBundle\Domain\AppManifest\SettingChoice",
  *    "boolean": "DeskPRO\Bundle\AppStoreBundle\Domain\AppManifest\SettingBoolean"
  * })

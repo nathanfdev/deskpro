@@ -175,41 +175,99 @@ class ApplicationManagerService
 
     /**
      * @param Domain\AppBundle $bundle
+     * @return string
+     */
+    public function findAppForBundle( Domain\AppBundle $bundle) {
+        $manifestReader = new Infrastructure\AppManifestReader();
+        $manifest       = $manifestReader->readManifestFromJson($bundle->getManifestAsString());
+
+        $app = $this->em->getRepository(App::class)->findOneBy(['name' => $manifest->getName()]);
+        return $app ? $app : null;
+    }
+
+    /**
+     * @param Domain\AppBundle $bundle
+     *
+     * @return InstallBundleDetails
+     */
+    public function installBundle(Domain\AppBundle $bundle)
+    {
+        $app = $this->findAppForBundle($bundle);
+        $installType = $app ? InstallBundleDetails::INSTALL_TYPE_UPGRADE : InstallBundleDetails::INSTALL_TYPE_INSTALL;
+
+        if (!$app) {
+            $manifestReader = new Infrastructure\AppManifestReader();
+            $manifest       = $manifestReader->readManifestFromJson($bundle->getManifestAsString());
+
+            $app = new App();
+            $app->setName($manifest->getName());
+        }
+
+        $app->setManifest(json_decode($bundle->getManifestAsString(), true));
+        $this->updateAssets($app, $bundle);
+
+        return new InstallBundleDetails($app, $installType);
+    }
+
+    /**
+     * @param Domain\AppBundle $bundle
      *
      * @return App
      */
     public function createOrUpdateAppEntity(Domain\AppBundle $bundle)
     {
-        $manifestReader = new Infrastructure\AppManifestReader();
-        $manifest       = $manifestReader->readManifestFromJson($bundle->getManifestAsString());
-
-        $app = $this->em->getRepository(App::class)->findOneBy(['name' => $manifest->getName()]);
+        $app = $this->findAppForBundle($bundle);
         if (!$app) {
             $app = new App();
+
+            $manifestReader = new Infrastructure\AppManifestReader();
+            $manifest       = $manifestReader->readManifestFromJson($bundle->getManifestAsString());
+            $app->setName($manifest->getName());
         }
+
+        $app->setManifest(json_decode($bundle->getManifestAsString(), true));
+
+        $this->updateAssets($app, $bundle);
+        return $app;
+    }
+
+    /**
+     * @param App $app
+     * @param Domain\AppBundle $bundle
+     * @return App
+     */
+    private function updateAssets(App $app, Domain\AppBundle $bundle)
+    {
+        $app->setManifest(json_decode($bundle->getManifestAsString(), true));
+        $new = [];
+        $removals = [];
 
         // TODO move into service method
         $instanceCount = count($app->getInstances());
 
-        $app->setManifest(json_decode($bundle->getManifestAsString(), true));
-        $app->setName($manifest->getName());
-
-        $specialAssets = [];
-
-        // save the previous manifest into .deskpro/manifest.json.prev only if we have any instances
-        if ($instanceCount) {
-            // TODO this should be moved into DI container
-            AppAssetBlob::setBlobStorageService($this->blobStorage);
-            foreach ($app->getAssets() as $specialAsset) {
-                if ($specialAsset->getPath() === 'manifest.json') {
-                    $specialAssets[] = $specialAsset->copy('.deskpro/versions/manifest.json.prev');
+        foreach ($app->getAssets() as $asset) {
+            if ($instanceCount) {
+                // save the previous manifest into .deskpro/manifest.json.prev only if we have any instances
+                if ($asset->getPath() === 'manifest.json') {
+                    // TODO this should be moved into DI container
+                    AppAssetBlob::setBlobStorageService($this->blobStorage);
+                    $new[] = $asset->copy('.deskpro/versions/manifest.json.prev');
+                    $removals[] = $asset;
+                } else if ($asset->getPath() === '.deskpro/versions/manifest.json.prev') {
+                    $removals[] = $asset;
+                } else if (substr($asset->getPath(), 0, strlen('.deskpro/')) !== ".deskpro/") {
+                    $removals[] = $asset;
                 }
-                $app->getAssets()->removeElement($specialAsset);
+            } else {
+                $removals[] = $asset;
             }
         }
 
-        foreach ($specialAssets as $specialAsset) {
-            $app->addAsset($specialAsset);
+        foreach ($removals as $asset) {
+            $app->getAssets()->removeElement($asset);
+        }
+        foreach ($new as $asset) {
+            $app->addAsset($asset);
         }
 
         foreach ($bundle->listAllResources() as $resource) {
@@ -229,6 +287,9 @@ class ApplicationManagerService
             $app->addAsset($specialAsset);
         }
 
+        foreach ($removals as $asset) {
+            $this->em->remove($asset);
+        }
         $this->em->persist($app);
         $this->em->flush();
 

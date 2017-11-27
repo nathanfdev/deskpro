@@ -373,7 +373,8 @@
                         {{ phrase('agent.tickets.forward_message') }}
 					</a>
 				</div>
-			</td><td valign="middle" style="vertical-align: middle;">
+			</td>
+			<td valign="middle" style="vertical-align: middle;"  id="{{ "ticket#{ticket.id}-reply-controls" }}" >
 				<div class="cell">
 					{% if ticket.agent %}
 						{% set assign_opt = 'core_tickets.reply_assign_assigned' %}

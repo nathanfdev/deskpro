@@ -45,6 +45,7 @@ use DeskPRO\Bundle\AppBundle\Notification\Event\LegacySystemEvent;
 use DeskPRO\Bundle\AppBundle\Serializer\ApiWrapper;
 use DeskPRO\Bundle\AppBundle\Serializer\Sideload\SideloadSerializationContext;
 use DeskPRO\Bundle\AppStoreBundle\Domain\AppBundleValidator;
+use DeskPRO\Bundle\AppStoreBundle\Infrastructure\ApplicationManagerService;
 use DeskPRO\Bundle\AppStoreBundle\Infrastructure\AppManifestReader;
 use DeskPRO\Bundle\AppStoreBundle\Infrastructure\AppZipArchiveBundle;
 use DeskPRO\Component\Filesystem\SafeFile;
@@ -961,22 +962,25 @@ class AppsController extends AbstractController
             $manifestReader = new AppManifestReader();
             $manifest       = $manifestReader->readManifestFromJson($manifestString);
 
-            $app = $this->container->get('apps2.application_manager')->createOrUpdateAppEntity($appBundle);
+            /** @var ApplicationManagerService $appsManager */
+            $appsManager = $this->container->get('apps2.application_manager');
+            $installDetails = $appsManager->installBundle($appBundle);
 
             $context = new SideloadSerializationContext();
             $context->setIncludes(['app']);
             $context->setInlineSideloads(true);
-            $serialized = $this->container->get('serializer')->toArray(new ApiWrapper($app), $context);
+            $serialized = $this->container->get('serializer')->toArray(new ApiWrapper($installDetails->getApp()), $context);
 
             return $this->createApiCreateResponse(
                 array_merge(
                     $serialized,
                     [
                         'version' => 2,
-                        'package_name' => $manifest->getName()
+                        'package_name' => $manifest->getName(),
+                        'install_type' => $installDetails->getInstallType()
                     ]
                 ),
-                $this->generateUrl('api_get_app_instance', ['application' => $app->getId()])
+                sprintf('/api/v2/apps/packages/%s', $installDetails->getApp()->getId())
             );
         }
 
