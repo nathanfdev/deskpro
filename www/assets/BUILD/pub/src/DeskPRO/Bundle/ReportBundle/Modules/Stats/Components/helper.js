@@ -78,11 +78,11 @@ export const varTypes = [
     value: 'statuses',
   },
   {
-    label: 'Field',
+    label: 'Grouping fields',
     value: 'fields',
   },
   {
-    label: 'Order',
+    label: 'Ordering fields',
     value: 'orders',
   },
   {
