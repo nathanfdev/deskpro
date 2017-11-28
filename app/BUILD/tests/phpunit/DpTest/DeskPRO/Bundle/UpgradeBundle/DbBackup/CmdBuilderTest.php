@@ -115,11 +115,13 @@ class CmdBuilderTest extends DeskProTestCase
     }
 
     /**
+     * @testWith [false, "'/usr/bin/mysqldump' -h localhost --port 3306 -u 'deskpro' -p'pass\"word!@$.,,<>--'\\''\\' --opt -Q --hex-blob --lock-tables=false --single-transaction 'dpdb' > '/example/dump.sql'"]
+     *           [true, "\"/usr/bin/mysqldump\" -h localhost --port 3306 -u deskpro -p\"pass\"\"word\"^!\"@$.,,<>--'\\\\\" --opt -Q --hex-blob --lock-tables=false --single-transaction dpdb > \"/example/dump.sql\""]
      * @test
      */
-    public function it_returns_correct_mysqldump_weird_chars()
+    public function it_returns_correct_mysqldump_weird_chars($isWindowsMode, $expectedResult)
     {
-        $cmdBuilder = $this->getCmdBuilder();
+        $cmdBuilder = $this->getCmdBuilder($isWindowsMode);
         $dbInfo     = \DpRun\LowUtil::getMysqlInfoFromConfigArray([
             'host'     => 'localhost',
             'user'     => 'deskpro',
@@ -128,7 +130,7 @@ class CmdBuilderTest extends DeskProTestCase
         ]);
 
         $this->assertEquals(
-            "'/usr/bin/mysqldump' -h localhost --port 3306 -u 'deskpro' -p'pass\"word!@$.,,<>--'\\''\\' --opt -Q --hex-blob --lock-tables=false --single-transaction 'dpdb' > '/example/dump.sql'",
+            $expectedResult,
             $cmdBuilder->getDumpCmd('/example/dump.sql', $dbInfo)
         );
     }
@@ -136,8 +138,15 @@ class CmdBuilderTest extends DeskProTestCase
     /**
      * @return CmdBuilder
      */
-    private function getCmdBuilder()
+    private function getCmdBuilder($isWindowsMode = false)
     {
-        return new CmdBuilder('/usr/bin/mysql', '/usr/bin/mysqldump');
+        $builderMock = $this
+            ->getMockBuilder(CmdBuilder::class)
+            ->setConstructorArgs(['/usr/bin/mysql', '/usr/bin/mysqldump'])
+            ->setMethods(['isWindowsMode'])
+            ->getMock();
+        $builderMock->expects($this->any())->method('isWindowsMode')->willReturn($isWindowsMode);
+
+        return $builderMock;
     }
 }
