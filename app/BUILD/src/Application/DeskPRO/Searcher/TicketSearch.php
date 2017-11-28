@@ -1109,8 +1109,7 @@ class TicketSearch extends SearcherAbstract
                 UNION
                 ($sql2)
                 $order_by
-                LIMIT {$unionLimit}
-            ";
+            " . ($unionLimit ? "LIMIT {$unionLimit}" : '');
         } else {
             $selectQuery = $sql;
         }

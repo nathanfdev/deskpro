@@ -66,10 +66,12 @@ DeskPRO.Agent.PageFragment.Page.Ticket = new Orb.Class({
 
 	initPage: function(el) {
 
-    var boundHandleReplySave = this.handleReplySave.bind(this);
+    var handleReplySave = this.handleReplySave.bind(this);
 
     var onActivateScope = this;
-    var onActivate = function () { return { ticket_id: onActivateScope.meta.ticket_id, meta: onActivateScope.meta } };
+    var onActivate = function () {
+      return { ticket_id: onActivateScope.meta.ticket_id, meta: onActivateScope.meta }
+    };
     onActivate.bind(this);
 
     var onResponse = function (handlerTrap, widget, message) {
@@ -85,14 +87,14 @@ DeskPRO.Agent.PageFragment.Page.Ticket = new Orb.Class({
     };
 
 		if (window.DeskPRO_APPSTORE) {
-			this.handleReplySaveInterceptor = window.DeskPRO_APPSTORE.dispatchOutgoingWidgetRequestOnIntercept(
+			this.handleReplySaveInterceptor = window.DeskPRO_APPSTORE.interceptEvent(
 				'context.ticket.reply',
 				onResponse,
 				onActivate,
-				boundHandleReplySave
+				handleReplySave
 			);
 		} else {
-			this.handleReplySaveInterceptor = boundHandleReplySave;
+			this.handleReplySaveInterceptor = handleReplySave;
 		}
 
 		this.wrapper = el;
@@ -1282,6 +1284,10 @@ DeskPRO.Agent.PageFragment.Page.Ticket = new Orb.Class({
 					result.client_messages = null;
 				}
 
+				if (typeof window.DeskPRO_APPSTORE.dispatchEvent === 'function') {
+          window.DeskPRO_APPSTORE.dispatchEvent('context.ticket.reply-success', result);
+        }
+
 				if (result.error_messages) {
 
 					var prop = self.changeManager.getPropertyManager('status');
@@ -1304,6 +1310,7 @@ DeskPRO.Agent.PageFragment.Page.Ticket = new Orb.Class({
 					DeskPRO_Window.showAlert('Your reply was saved but the status was not set to resolved because of form errors. You should correct these errors and then you may set the status to resolved.');
 					keepOpen = true;
 				} else if (DeskPRO_Window.$scope) {
+
           var trigger = false,
             action = null;
           for (var i = 0; i < formData.length; i++) {
@@ -1423,6 +1430,10 @@ DeskPRO.Agent.PageFragment.Page.Ticket = new Orb.Class({
     	this.closeTicketOnFail = null;
 		}
 
+    if (window.DP_HAS_FOLLOW_UP) {
+      window.AgentLegacyBundle.unmountVoiceControls(self.getEl('follow_ups_wrap')[0]);
+    }
+
     this.valueForm = null;
     this.mergeMenu = null;
 
@@ -1454,7 +1465,15 @@ DeskPRO.Agent.PageFragment.Page.Ticket = new Orb.Class({
 
 	handleTicketUpdate: function(data) {
 		this.doHandleTicketUpdate(data);
+
+		console.log('handleTicketUpdate');
+
+		// other events
 		this.fireEvent('ticket_updated', [data]);
+    if (typeof window.DeskPRO_APPSTORE.dispatchEvent === 'function') {
+      window.DeskPRO_APPSTORE.dispatchEvent('context.ticket.update-success', data);
+    }
+
 	},
 
 	doHandleTicketUpdate: function(data) {
@@ -3552,6 +3571,7 @@ DeskPRO.Agent.PageFragment.Page.Ticket = new Orb.Class({
     var countEl = self.getEl('follow_up_count');
     var data = {
       ticketId:    self.meta.ticket_id,
+      ticketPerms: self.meta.ticket_perms,
     	updateCount: function(op, count) {
     		DeskPRO_Window.util.modCountEl(countEl, op, count);
 			}

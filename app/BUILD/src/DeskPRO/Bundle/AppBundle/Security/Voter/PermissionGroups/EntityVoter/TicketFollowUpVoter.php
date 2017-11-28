@@ -61,11 +61,10 @@ class TicketFollowUpVoter extends AbstractTicketsVoter
 
         switch ($attribute) {
             case PermissionGroupVoter::VIEW:
-                return $this->getTicketChecker($user)->canView($ticket);
             case PermissionGroupVoter::CREATE:
             case PermissionGroupVoter::MODIFY:
             case PermissionGroupVoter::DELETE:
-                return $this->canModify($user, $ticket);
+                return $this->getTicketChecker($user)->canView($ticket);
         }
 
         return true;

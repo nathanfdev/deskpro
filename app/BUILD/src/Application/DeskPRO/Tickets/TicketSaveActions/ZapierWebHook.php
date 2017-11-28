@@ -104,18 +104,20 @@ class ZapierWebHook implements TicketSaveActionInterface
 
             $ticketMessage = $ticket->getLastReply();
 
-            $options['body'] = $this->serializer->serialize($ticketMessage, 'json', $serializationContext);
+            if ($ticketMessage) {
+                $options['body'] = $this->serializer->serialize($ticketMessage, 'json', $serializationContext);
 
-            $hooks = $this->em->getRepository(ZapierHook::class)->findBy(['event' => 'new_ticket_reply']);
+                $hooks = $this->em->getRepository(ZapierHook::class)->findBy(['event' => 'new_ticket_reply']);
 
-            /** @var ZapierHook $zapierHook */
-            foreach ($hooks as $zapierHook) {
-                try {
-                    $httpClient->request('POST', $zapierHook->getTargetUrl(), $options);
-                } catch (ClientException $e) {
-                    // Hooks needs to be unsubscribe
-                    if ($e->getCode() === 410) {
-                        $this->em->remove($zapierHook);
+                /** @var ZapierHook $zapierHook */
+                foreach ($hooks as $zapierHook) {
+                    try {
+                        $httpClient->request('POST', $zapierHook->getTargetUrl(), $options);
+                    } catch (ClientException $e) {
+                        // Hooks needs to be unsubscribe
+                        if ($e->getCode() === 410) {
+                            $this->em->remove($zapierHook);
+                        }
                     }
                 }
             }

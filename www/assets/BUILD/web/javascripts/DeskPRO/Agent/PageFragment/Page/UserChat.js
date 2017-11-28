@@ -108,6 +108,12 @@ DeskPRO.Agent.PageFragment.Page.UserChat = new Orb.Class({
 			}
 		});
 
+    this.addEvent('activate', function() {
+    	window.setTimeout(function() {
+        self.getEl('messages_box').scrollTop(10000);
+      }, 100);
+    });
+
 		this._initMenus();
 		this._initAssignControl();
 		this._initBlock();
@@ -120,6 +126,15 @@ DeskPRO.Agent.PageFragment.Page.UserChat = new Orb.Class({
 		DeskPRO_Window.getMessageBroker().addMessageListener('chat_convo.' + this.meta.conversation_id + '.unassigned', function(data) { this.chatReassignedTo(data.agent_id); }, this, [this.OBJ_ID]);
 		DeskPRO_Window.getMessageBroker().addMessageListener('chat_convo.' + this.meta.conversation_id + '.usertyping', function(data) { this.userTyping(data); }, this, [this.OBJ_ID]);
 		DeskPRO_Window.getMessageBroker().addMessageListener('chat_convo.' + this.meta.conversation_id + '.ack_messages', function(data) { this.ackMessages(data); }, this, [this.OBJ_ID]);
+
+		var tab = this.getTab();
+		if (!tab.isActive) {
+      this.alertTab(tab);
+      // Add 'pop' sound if its not us
+      var alertEl = $.tmpl('user_chat_newmsg_sound');
+      alertEl.appendTo(this.el);
+      DeskPRO_Window.handleSoundElements(alertEl);
+		}
 
 		DeskPRO_Window.getMessageBroker().addMessageListener('chat.ended', function(data) {
 		  if (this.meta.conversation_id == data.conversation_id) {

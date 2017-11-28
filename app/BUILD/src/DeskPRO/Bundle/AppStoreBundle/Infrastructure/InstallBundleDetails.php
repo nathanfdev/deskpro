@@ -26,41 +26,40 @@
  * ~ Thanks, Everyone at Team DeskPRO
  */
 
-namespace DeskPRO\Bundle\AppBundle\Notification\Message\Generator\ActionAlert;
+namespace DeskPRO\Bundle\AppStoreBundle\Infrastructure;
 
-use DeskPRO\Bundle\AppBundle\Notification\Event\People\AgentStatusChangedEvent;
-use DeskPRO\Bundle\AppBundle\Notification\Event\SystemEventInterface;
-use DeskPRO\Bundle\AppBundle\Notification\Message\ActionAlert;
-use DeskPRO\Bundle\AppBundle\Notification\Message\Generator\AbstractGenerator;
+use DeskPRO\Bundle\AppBundle\Entity\AppStore\App;
 
-/**
- * Class AgentStatusChangedMeessageGenerator.
- */
-class AgentStatusChangedMeessageGenerator extends AbstractGenerator
+class InstallBundleDetails
 {
-    /**
-     * {@inheritdoc}
-     */
-    public function createMessages(SystemEventInterface $event)
+    const INSTALL_TYPE_INSTALL = 'install';
+
+    const INSTALL_TYPE_UPGRADE = 'upgrade';
+
+    /** @var App  */
+    private $app;
+
+    /** @var string  */
+    private $installType;
+
+    public function __construct($app, $installType)
     {
-        /* @var AgentStatusChangedEvent $event */
-        return [
-            new ActionAlert(
-                $event->getPersonId(),
-                [
-                    'type'      => $event->getEventType(),
-                    'is_online' => $event->getOnline(),
-                ],
-                $event->getName()
-            ),
-        ];
+        $this->app = $app;
+        $this->installType = $installType;
     }
 
     /**
-     * {@inheritdoc}
+     * @return App
      */
-    public function canCreateMessage(SystemEventInterface $event)
+    public function getApp()
     {
-        return $event instanceof AgentStatusChangedEvent;
+        return $this->app;
     }
+
+    public function getInstallType()
+    {
+        return $this->installType;
+    }
+
+
 }

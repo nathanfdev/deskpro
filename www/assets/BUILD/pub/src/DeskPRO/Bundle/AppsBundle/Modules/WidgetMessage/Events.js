@@ -34,6 +34,10 @@ export const EVENT_DESKPROWINDOW_SHOW_NOTIFICATION = 'deskpro_window.show_notifi
 
 export const EVENT_DESKPROWINDOW_INSERT_MARKUP = 'deskpro_window.insert_markup';
 
+export const EVENT_DESKPROWINDOW_DOM_INSERT = 'deskpro_window.dom_insert';
+
+export const EVENT_DESKPROWINDOW_DOM_QUERY = 'deskpro_window.dom_query';
+
 // USER EVENTS
 
 export const EVENT_ME_GET = 'context.me_get';
@@ -78,8 +82,11 @@ export const events =
 
     EVENT_DESKPROWINDOW_SHOW_NOTIFICATION,
 
-    EVENT_DESKPROWINDOW_INSERT_MARKUP
+    EVENT_DESKPROWINDOW_INSERT_MARKUP,
 
+    EVENT_DESKPROWINDOW_DOM_INSERT,
+
+    EVENT_DESKPROWINDOW_DOM_QUERY
   };
 
 export const eventNames = Object.keys(events).map(key => events[key]);

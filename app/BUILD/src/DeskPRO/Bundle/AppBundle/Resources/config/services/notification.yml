@@ -163,6 +163,14 @@ services:
     tags:
       - { name: deskpro.notification.action_alert.generator }
 
+  deskpro.notification.generator.action_alert.agent_status_changed:
+    class: DeskPRO\Bundle\AppBundle\Notification\Message\Generator\ActionAlert\AgentStatusChangedMessageGenerator
+    arguments:
+      - "@doctrine.orm.default_entity_manager"
+      - "@security.token_storage"
+    tags:
+      - { name: deskpro.notification.action_alert.generator }
+
   deskpro.notification.generator.action_alert.read_notifications:
     class: DeskPRO\Bundle\AppBundle\Notification\Message\Generator\ActionAlert\ReadNotificationsMessageGenerator
     arguments:

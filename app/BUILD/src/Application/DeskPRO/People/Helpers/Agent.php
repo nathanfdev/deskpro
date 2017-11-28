@@ -344,7 +344,7 @@ class Agent extends \Application\DeskPRO\Domain\DomainObject implements \Orb\Hel
                 );
             };
 
-            return preg_replace_callback('#\[attach:signature_image:(.*?):(.*?)\]#', $fn, $sig_html);
+            return preg_replace_callback('#\[attach:signature_image:([a-zA-Z0-9\-_\.]+):([a-zA-Z0-9\-_\. ]+)\]#', $fn, $sig_html);
         }
 
         return '';
