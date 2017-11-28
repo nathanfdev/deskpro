@@ -2318,7 +2318,7 @@ class TicketSearch extends SearcherAbstract
                                 }
 
                                 // collect all sub-choices
-                                $choices_in = explode(',', $choices_in);
+                                $choices_in = !is_array($choices_in) ? explode(',', $choices_in) : $choices_in;
                                 $iterator   = function ($parentId) use ($field, &$choices_in, &$iterator) {
                                     /** @var Entity\CustomDefAbstract $child */
                                     foreach ($field->getChildren() as $child) {
