@@ -31,6 +31,7 @@ namespace Application\DeskPRO\Chat;
 use Application\DeskPRO\App;
 use Application\DeskPRO\Entity\ChatConversation;
 use Application\DeskPRO\Entity\Person;
+use Application\DeskPRO\Entity\Session;
 use DeskPRO\Bundle\AppBundle\Notification\Event\LegacySystemEvent;
 
 /**
@@ -111,7 +112,7 @@ class AgentChat
             ));
         }
 
-        // If any of the targets are not online, we might need to nofigy them of the message via email
+        // If any of the targets are not online, we might need to notify them of the message via email
         if (!$this->suppressOfflineEmail && !$chatMessage->is_sys) {
             foreach ($conversation->getParticipants() as $part) {
                 if ($part['id'] == $this->person['id']) {
