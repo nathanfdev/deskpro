@@ -32,6 +32,7 @@ use Application\DeskPRO\Entity\CommentAbstract;
 use Application\DeskPRO\Entity\Guide;
 use Application\DeskPRO\Entity\Topic;
 use Application\DeskPRO\Entity\TopicComment;
+use Application\DeskPRO\Notifications\NewCommentNotification;
 use DeskPRO\Bundle\AppBundle\Annotation\ActionPermissions\Annotation\Feature;
 use DeskPRO\Bundle\AppBundle\Security\Voter\Portal\ContentCommentVoter;
 use FOS\RestBundle\View\View;
@@ -139,6 +140,9 @@ class GuidesController extends AbstractApiController
         }
         if (!$formResult && $errors = $newCommentForm->getErrors(true)) {
             $response['errors'] = $errors;
+        } else {
+            $notify = new NewCommentNotification($comment);
+            $notify->send();
         }
 
         return new View($this->wrap($response), Response::HTTP_OK);

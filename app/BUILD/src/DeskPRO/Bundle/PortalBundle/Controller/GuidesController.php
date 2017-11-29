@@ -31,6 +31,7 @@ namespace DeskPRO\Bundle\PortalBundle\Controller;
 use Application\DeskPRO\Entity\Guide;
 use Application\DeskPRO\Entity\Topic;
 use Application\DeskPRO\Entity\TopicComment;
+use Application\DeskPRO\Notifications\NewCommentNotification;
 use DeskPRO\Bundle\AppBundle\Annotation\ActionPermissions\Annotation\Feature;
 use DeskPRO\Bundle\AppBundle\Form\Type\Captcha\ReCaptchaType;
 use DeskPRO\Bundle\AppBundle\Security\Voter\Portal\ContentCommentVoter;
@@ -193,6 +194,10 @@ class GuidesController extends AbstractController
             $comment->setIpAddress($request->getClientIp());
             $newCommentForm = $formHandler->createForm($comment, $request);
             $formResult     = $formHandler->handle($newCommentForm, $request, $topic, $comment);
+            if ($formResult) {
+                $notify = new NewCommentNotification($comment);
+                $notify->send();
+            }
             if ($formResult instanceof Response) {
                 return $formResult;
             }

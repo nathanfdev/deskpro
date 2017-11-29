@@ -32,6 +32,7 @@ use Application\DeskPRO\Entity\News;
 use Application\DeskPRO\Entity\NewsCategory;
 use Application\DeskPRO\Entity\NewsComment;
 use Application\DeskPRO\Entity\PageViewLog;
+use Application\DeskPRO\Notifications\NewCommentNotification;
 use DeskPRO\Bundle\AppBundle\Annotation\AutoPostOnGetRequest;
 use DeskPRO\Bundle\AppBundle\AntiAbuse\Event\SubmitCommentAbuseCheck;
 use DeskPRO\Bundle\AppBundle\Security\Voter\Portal\ContentCommentVoter;
@@ -52,6 +53,11 @@ class NewsController extends AbstractController
      * @Route("/news", name="user_news_home")
      * @Security("is_granted('USE_NEWS')")
      * @PageHttpCache()
+     *
+     * @param Request $request
+     * @param $_format
+     *
+     * @return Response
      */
     public function indexAction(Request $request, $_format)
     {
@@ -112,6 +118,12 @@ class NewsController extends AbstractController
      * @ParamConverter(name="category", converter="deskpro_slug")
      * @Security("is_granted('USE_NEWS') and is_granted('VIEW_NEWS_CATEGORY', category)")
      * @PageHttpCache()
+     *
+     * @param Request      $request
+     * @param NewsCategory $category
+     * @param $_format
+     *
+     * @return Response
      */
     public function browseAction(Request $request, NewsCategory $category, $_format)
     {
@@ -200,13 +212,17 @@ class NewsController extends AbstractController
 
         $newCommentForm = null;
         if ($this->isGranted(ContentCommentVoter::COMMENT_NEWS, $post)) {
-            /** @var CommentFormHandler $form_handler */
-            $form_handler = $this->get('form_handler.comment');
-            $comment      = new NewsComment();
+            /** @var CommentFormHandler $formHandler */
+            $formHandler = $this->get('form_handler.comment');
+            $comment     = new NewsComment();
             $comment->setVisitorId($visitor_id);
             $comment->setIpAddress($request->getClientIp());
-            $newCommentForm = $form_handler->createForm($comment, $request);
-            $formResult     = $form_handler->handle($newCommentForm, $request, $post, $comment);
+            $newCommentForm = $formHandler->createForm($comment, $request);
+            $formResult     = $formHandler->handle($newCommentForm, $request, $post, $comment);
+            if ($formResult) {
+                $notify = new NewCommentNotification($comment);
+                $notify->send();
+            }
             if ($formResult instanceof Response) {
                 return $formResult;
             }
