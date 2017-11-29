@@ -32,7 +32,7 @@ namespace DeskPRO\Component\FilterQueryLanguage;
  * Takes a FQL query and compiles an expression where field values are all contained under 'fields', and
  * user-vars are just variables.
  */
-class ExpressionLanguageCompiler
+class ExpressionCompiler
 {
     /**
      * @param array $queryParts
@@ -78,6 +78,10 @@ class ExpressionLanguageCompiler
 
     private function walkTerm(array $termPart)
     {
+        if ($termPart['type'] === 'BOOL') {
+            return $this->walkBool($termPart);
+        }
+
         $fieldExpr = $this->buildFieldExpr($termPart['field']);
 
         switch ($termPart['operator']) {

@@ -26,33 +26,29 @@
  * ~ Thanks, Everyone at Team DeskPRO
  */
 
-namespace Application\DeskPRO\Command;
+/**
+ * DeskPRO.
+ */
 
-use DeskPRO\Component\FilterQueryLanguage\ExpressionCompiler;
-use DeskPRO\Component\FilterQueryLanguage\Parser;
+namespace DeskPRO\Bundle\DevBundle\Command\Fql;
+
+use DeskPRO\Component\FilterQueryLanguage;
 use Symfony\Bundle\FrameworkBundle\Command\ContainerAwareCommand;
+use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
+use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
 
-/**
- * Class TestCommand.
- */
-class TestCommand extends ContainerAwareCommand
+class ParseFqlCommand extends ContainerAwareCommand
 {
     /**
      * {@inheritdoc}
      */
     protected function configure()
     {
-        $this->setName('dp:test');
-    }
-
-    /**
-     * @return \Application\DeskPRO\DependencyInjection\DeskproContainer
-     */
-    public function getContainer()
-    {
-        return parent::getContainer();
+        $this->setName('dpdev:fql:parse');
+        $this->addOption('output', 'o', InputOption::VALUE_REQUIRED, 'Output options: expr for expression engine, debug for debug out, json for JSON', 'debug');
+        $this->addArgument('query', InputArgument::REQUIRED, 'The FQL query to parse');
     }
 
     /**
@@ -60,14 +56,34 @@ class TestCommand extends ContainerAwareCommand
      */
     protected function execute(InputInterface $input, OutputInterface $output)
     {
-        $query  = 'num_comments > 22 OR fa = BAR(a, $bc)';
-        $parser = new Parser($query);
-        $ast    = $parser->parse();
+        $parser = new FilterQueryLanguage\Parser();
 
-        $eec  = new ExpressionCompiler();
-        $expr = $eec->compile($ast);
+        $query = $input->getArgument('query');
+        $parts = $parser->parseQuery($query);
 
-        echo $expr;
+        switch ($input->getOption('output')) {
+            case 'debug':
+                $debugc = new FilterQueryLanguage\DebugCompiler();
+                echo $debugc->compile($parts);
+                echo "\n";
+                break;
+
+            case 'json':
+                echo json_encode($parts, \JSON_PRETTY_PRINT);
+                echo "\n";
+                break;
+
+            case 'expr':
+                $eec = new FilterQueryLanguage\ExpressionCompiler();
+                echo $eec->compile($parts);
+                echo "\n";
+                break;
+
+            default:
+                $output->writeln('<error>Unknown output format</error>');
+
+                return 1;
+        }
 
         return 0;
     }
