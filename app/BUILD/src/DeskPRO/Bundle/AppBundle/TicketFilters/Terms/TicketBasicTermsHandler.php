@@ -62,6 +62,28 @@ class TicketBasicTermsHandler implements TermsHandlerInterface
      */
     public function doesTicketMatch(array $term, TicketModel $ticketModel, AgentContext $agentContext)
     {
-        return false;
+        $fieldId = $term['field']['identity'];
+        switch ($fieldId) {
+            case Terms::TICKET_ID:            $fieldValue = $ticketModel->id; break;
+            case Terms::TICKET_STATUS:        $fieldValue = $ticketModel->status; break;
+            case Terms::TICKET_DEPARTMENT:    $fieldValue = $ticketModel->department; break;
+            case Terms::TICKET_AGENT:         $fieldValue = $ticketModel->agent; break;
+            case Terms::TICKET_AGENT_TEAM:    $fieldValue = $ticketModel->agent; break;
+            case Terms::TICKET_FOLLOWERS:     $fieldValue = $ticketModel->followers; break;
+            case Terms::TICKET_LANGUAGE:      $fieldValue = $ticketModel->language; break;
+            case Terms::TICKET_PRODUCT:       $fieldValue = $ticketModel->product; break;
+            case Terms::TICKET_CATEGORY:      $fieldValue = $ticketModel->category; break;
+            case Terms::TICKET_PRIORITY:      $fieldValue = $ticketModel->priority; break;
+            case Terms::TICKET_URGENCY:       $fieldValue = $ticketModel->urgency; break;
+            case Terms::TICKET_WORKFLOW:      $fieldValue = $ticketModel->workflow; break;
+            case Terms::TICKET_LABELS:        $fieldValue = $ticketModel->labels; break;
+            case Terms::TICKET_EMAIL_ACCOUNT: $fieldValue = $ticketModel->email_account; break;
+            case Terms::TICKET_IS_HOLD:       $fieldValue = $ticketModel->is_hold; break;
+            default: throw new \InvalidArgumentException('Unknown field');
+        }
+
+        return ValueCheckHelper::checkFromTermNode($fieldValue, $term, [
+            'me' => $agentContext,
+        ]);
     }
 }

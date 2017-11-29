@@ -90,8 +90,6 @@ class QueryParser
      * error.
      *
      * @param int $token The token type
-     *
-     * @throws QueryException If the tokens don't match
      */
     public function match($token)
     {
@@ -130,8 +128,6 @@ class QueryParser
      *
      * @param string     $expected Expected string
      * @param array|null $token    Got token
-     *
-     * @throws \Doctrine\ORM\Query\QueryException
      */
     public function syntaxError($expected = '', $token = null)
     {
@@ -153,8 +149,6 @@ class QueryParser
      *
      * @param string     $message Optional message
      * @param array|null $token   Optional token
-     *
-     * @throws \Doctrine\ORM\Query\QueryException
      */
     public function semanticalError($message = '', $token = null)
     {
@@ -411,7 +405,7 @@ class QueryParser
         // Peek beyond the matching closing parenthesis ')'
         $peek = $this->peekBeyondClosingParenthesis();
 
-        if (in_array($peek['value'], ['=',  '<', '<=', '<>', '>', '>=', '!=']) ||
+        if (in_array($peek['value'], ['=',  '<', '<=', '>', '>=', '!=']) ||
             in_array($peek['type'], [Lexer::T_NOT, Lexer::T_BETWEEN, Lexer::T_IN, Lexer::T_IS, Lexer::T_EXISTS])) {
             return $this->SimpleConditionalExpression();
         }
@@ -956,7 +950,7 @@ class QueryParser
                 $this->match(Lexer::T_NEGATE);
                 $this->match(Lexer::T_EQUALS);
 
-                return '<>';
+                return '!=';
 
             default:
                 $this->syntaxError('=, <, <=, <>, >, >=, !=');
