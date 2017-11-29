@@ -39,7 +39,7 @@ class ExpressionCompiler
      */
     public function compile(array $root)
     {
-        $expr = $this->walk($root);
+        $expr = $this->walk($root['query']);
 
         if ($expr[0] === '(') {
             $expr = substr($expr, 1, -1);

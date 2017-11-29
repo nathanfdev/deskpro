@@ -76,7 +76,10 @@ class QueryParser
             $this->syntaxError('end of string');
         }
 
-        return $expr;
+        return [
+            'fql'   => $this->query,
+            'query' => $expr,
+        ];
     }
 
     /**
@@ -856,7 +859,7 @@ class QueryParser
             return [
                 'type'     => 'TERM',
                 'field'    => $var,
-                'op'       => $not ? 'NOT_IN' : 'IN',
+                'operator' => $not ? 'NOT_IN' : 'IN',
                 'options'  => ['valueList' => $literals],
                 'tokenPos' => $tokenPos,
             ];
@@ -866,7 +869,7 @@ class QueryParser
             return [
                 'type'     => 'TERM',
                 'field'    => $var,
-                'op'       => $not ? 'NOT_IN' : 'IN',
+                'operator' => $not ? 'NOT_IN' : 'IN',
                 'options'  => ['value' => $expr],
                 'tokenPos' => $tokenPos,
             ];

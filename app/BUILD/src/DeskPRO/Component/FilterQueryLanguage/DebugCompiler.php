@@ -43,7 +43,7 @@ class DebugCompiler
      */
     public function compile(array $root)
     {
-        $expr = $this->walk($root);
+        $expr = $this->walk($root['query']);
 
         return $expr;
     }

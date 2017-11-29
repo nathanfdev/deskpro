@@ -1,18 +1,20 @@
 {
+  "$schema": "http://json-schema.org/draft-06/schema#",
   "title": "Filter Query",
   "description": "The schema for a JSON representation of a filter query",
   "type": "object",
   "properties": {
-    "oneOf": [
-      { "$ref": "#/definitions/termGroup" },
-      { "$ref": "#/definitions/term" }
-    ]
+    "fql": { "type": "string" },
+    "query": {
+      "type": "object",
+      "oneOf": [ { "$ref": "#/definitions/termGroup" }, { "$ref": "#/definitions/term" } ]
+    }
   },
   "definitions": {
     "termGroup": {
       "required": ["type", "operator", "terms"],
       "properties": {
-        "type": { "const": "TERM_GROUP" },
+        "type": { "type": "string", "const": "TERM_GROUP" },
         "operator": { "enum": ["OR", "AND", "NOT"] },
         "terms": {
           "items": {
@@ -27,19 +29,20 @@
     "term": {
       "required": ["type", "operator", "field"],
       "properties": {
-        "type": { "const": "TERM" },
+        "type": { "type": "string", "const": "TERM" },
         "operator": {
           "enum": [
-            '=', '!=', '<', '<=', '>', '>=', '!',
-            'IN', 'NOT_IN',
-            'IS', 'IS_NOT',
-            'IS_NULL', 'NOT_NULL',
-            'EMPTY', 'NOT_EMPTY',
-            'EXISTS', 'NOT_EXISTS',
-            'BETWEEN', 'NOT_BETWEEN'
+            "=", "!=", "<", "<=", ">", ">=", "!",
+            "IN", "NOT_IN",
+            "IS", "IS_NOT",
+            "IS_NULL", "NOT_NULL",
+            "EMPTY", "NOT_EMPTY",
+            "EXISTS", "NOT_EXISTS",
+            "BETWEEN", "NOT_BETWEEN"
           ],
           "field": { "$ref": "#/definitions/field" },
           "options": {
+            "type": "object",
             "oneOf": [
               { "$ref": "#/definitions/compareOption" },
               { "$ref": "#/definitions/betweenOption" },
@@ -62,16 +65,16 @@
       "properties": {
         "valueType": {
           "enum": [
-            'BOOLEAN', 'NUMERIC',
+            "BOOLEAN", "NUMERIC"
           ]
         },
-        "value": { }
+        "value": {}
       }
     },
     "varValue": {
       "required": ["valueType", "identity"],
       "properties": {
-        "valueType": { "const": "VAR" },
+        "valueType": { "type": "string", "const": "VAR" },
         "identity": { "type": "string" },
         "name": { "type": "string" },
         "path": { "type": "string" }
@@ -80,10 +83,11 @@
     "funcValue": {
       "required": ["valueType", "name"],
       "properties": {
-        "valueType": { "const": "FUNC" },
+        "valueType": { "type": "string", "const": "FUNC" },
         "name": { "type": "string" },
         "params": {
           "items": {
+            "type": "object",
             "oneOf": [
               { "$ref": "#/definitions/scalarValue" },
               { "$ref": "#/definitions/varValue" },
