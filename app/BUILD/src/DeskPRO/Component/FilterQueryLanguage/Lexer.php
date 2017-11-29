@@ -30,6 +30,8 @@ namespace DeskPRO\Component\FilterQueryLanguage;
 
 class Lexer extends \Doctrine\Common\Lexer
 {
+    const REL_TIME_REGEX = '(?:[\-\+]{1}(?:[0-9]+(?:[\.][0-9]+)?[hdwmy]{1})+)';
+
     // All tokens that are not valid identifiers must be < 100
     const T_NONE              = 1;
     const T_INTEGER           = 2;
@@ -44,6 +46,7 @@ class Lexer extends \Doctrine\Common\Lexer
     const T_GREATER_THAN      = 12;
     const T_LOWER_THAN        = 13;
     const T_NEGATE            = 16;
+    const T_REL_TIME          = 17;
 
     // All tokens that are also identifiers should be >= 100
     const T_IDENTIFIER = 100;
@@ -77,10 +80,11 @@ class Lexer extends \Doctrine\Common\Lexer
     protected function getCatchablePatterns()
     {
         return [
-            '\$?[a-z_][a-z0-9_]*[a-z0-9_]{1}',
-            '(?:[\-\+]?[0-9]+(?:[\.][0-9]+)?)',
-            "'(?:''|[^'])*+'",
-            '"(?:""|[^"])*+"',
+            '\$?[a-z_][a-z0-9_]*[a-z0-9_]{1}',                // vars and idents
+            self::REL_TIME_REGEX,                             // relative dates/times
+            '(?:[\-\+]?[0-9]+(?:[\.][0-9]+)?)',               // numeric
+            "'(?:''|[^'])*+'",                                // single-quoted strings
+            '"(?:""|[^"])*+"',                                // double-quoted strings
         ];
     }
 
@@ -138,6 +142,9 @@ class Lexer extends \Doctrine\Common\Lexer
                 $value = substr($value, 1);
 
                 return self::T_INPUT_PARAMETER;
+
+            case preg_match('#'.self::REL_TIME_REGEX.'#', $value):
+                return self::T_REL_TIME;
 
             // Recognize symbols
             case $value === '.': return self::T_DOT;

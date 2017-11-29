@@ -614,6 +614,41 @@ class QueryParser
                     'value'     => $this->lexer->token['type'] === Lexer::T_TRUE ? true : false,
                     'tokenPos'  => $this->lexer->token['position'],
                 ];
+
+            case Lexer::T_REL_TIME:
+                $this->match(Lexer::T_REL_TIME);
+
+                $m       = null;
+                $pattern = '#^(?P<sign>[\-\+]{1}(?P<times>(?:[0-9]+(?:[\.][0-9]+)?[hdwmy]{1})+))$#';
+                if (!preg_match($pattern, $this->lexer->token['value'], $m)) {
+                    $this->semanticalError('Invalid relative date', $this->lexer->token);
+                }
+
+                $sign         = $m['sign'];
+                $timePartsRaw = preg_split('/(\d\w{1})/', $m['times'], -1, PREG_SPLIT_DELIM_CAPTURE | PREG_SPLIT_NO_EMPTY);
+
+                $timeParts = array_map(function ($t) {
+                    $num = substr($t, 0, -1);
+                    switch (substr($t, -1)) {
+                        case 'h': $unit = 'hour'; break;
+                        case 'd': $unit = 'day'; break;
+                        case 'w': $unit = 'week'; break;
+                        case 'm': $unit = 'month'; break;
+                        case 'y': $unit = 'year'; break;
+                        default: $this->semanticalError('Invalid relative date unit', $this->lexer->token);
+                    }
+
+                    return ['unit' => $unit, 'num' => $num];
+                }, $timePartsRaw);
+
+                return [
+                    'valueType' => 'RELATIVE_TIME',
+                    'value'     => [
+                        'mode'  => $sign === '-' ? 'past' : 'future',
+                        'times' => $timeParts,
+                    ],
+                    'tokenPos' => $this->lexer->token['position'],
+                ];
         }
 
         $this->syntaxError('Literal');
