@@ -456,8 +456,8 @@ class TicketManager
         if (!$is_trivial_change) {
             $this->eventDispatcher->dispatch(TicketUpdatedEvent::EVENT_NAME, new TicketUpdatedEvent(
                 'agent.ticket-updated',
-                $ticket->getId(),
                 [
+                    'ticket_id'      => $ticket->getId(),
                     'changed_fields' => $ticket->getStateChangeRecorder()->getChangedFields(),
                     'via_person'     => $context->getPersonContext() ? $context->getPersonContext()->getId() : null,
                 ]
@@ -469,8 +469,8 @@ class TicketManager
 
             $this->eventDispatcher->dispatch(TicketUpdatedEvent::EVENT_NAME, new TicketUpdatedEvent(
                 'agent-notification.tickets.locked-status',
-                $ticket->getId(),
                 [
+                    'ticket_id'      => $ticket->getId(),
                     'is_locked'      => (bool) $lockedByAgent,
                     'locked_by'      => $lockedByAgent ? $lockedByAgent->getId() : null,
                     'locked_by_name' => $lockedByAgent ? $lockedByAgent->getDisplayName() : null,

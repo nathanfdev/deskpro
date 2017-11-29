@@ -48,7 +48,9 @@ class TicketMessageGenerator extends SystemEventGenerator
         /* @var TicketUpdatedEvent $event */
         $messages = [];
         foreach ($this->getTarget($event) as $target) {
-            $messages[] = new ActionAlert($target, $event->getData(), $event->getName());
+            $actionAlert = new ActionAlert($target, $event->getData(), $event->getName());
+            $actionAlert->setBroadcast($event->getEventType() === 'agent.filter-update');
+            $messages[] = $actionAlert;
         }
 
         return $messages;

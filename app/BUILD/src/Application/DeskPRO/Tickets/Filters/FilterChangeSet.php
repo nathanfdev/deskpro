@@ -155,6 +155,8 @@ class FilterChangeSet
      */
     public function getListUpdateClientMessages(array $onlineAgentsIds)
     {
+        $operations = [];
+
         foreach ($this->changed_filters as $filter_change) {
             $filter = $filter_change->getFilter();
 
@@ -166,18 +168,12 @@ class FilterChangeSet
                     continue;
                 }
 
-                $this->eventDispatcher->dispatch(
-                    TicketUpdatedEvent::EVENT_NAME,
-                    new TicketUpdatedEvent(
-                        'agent.filter-update',
-                        $ticketId,
-                        [
-                            'op'        => 'add',
-                            'filter_id' => $filterId,
-                            'target'    => $agent->getId(),
-                        ]
-                    )
-                );
+                $operations[] = [
+                    'op'        => 'add',
+                    'filter_id' => $filterId,
+                    'target'    => $agent->getId(),
+                    'ticket_id' => $ticketId,
+                ];
             }
 
             foreach ($filter_change->getAgentsRemoved() as $agent) {
@@ -185,20 +181,25 @@ class FilterChangeSet
                     continue;
                 }
 
-                $this->eventDispatcher->dispatch(
-                    TicketUpdatedEvent::EVENT_NAME,
-                    new TicketUpdatedEvent(
-                        'agent.filter-update',
-                        $ticketId,
-                        [
-                            'op'        => 'del',
-                            'filter_id' => $filterId,
-                            'target'    => $agent->getId(),
-                        ]
-                    )
-                );
+                $operations[] = [
+                    'op'        => 'del',
+                    'filter_id' => $filterId,
+                    'target'    => $agent->getId(),
+                    'ticket_id' => $ticketId,
+                ];
             }
         }
+
+        if ($operations) {
+            $this->eventDispatcher->dispatch(
+                TicketUpdatedEvent::EVENT_NAME,
+                new TicketUpdatedEvent(
+                    'agent.filter-update',
+                    ['data' => $operations]
+                )
+            );
+        }
+
         $this->eventManager->deliver(true);
     }
 }
