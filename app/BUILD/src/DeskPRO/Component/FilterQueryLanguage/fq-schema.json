@@ -63,6 +63,7 @@
     "scalarValue": {
       "required": ["valueType", "value"],
       "properties": {
+        "type": { "type": "string", "const": "VAL" },
         "valueType": {
           "enum": [
             "BOOLEAN", "NUMERIC"
@@ -74,6 +75,7 @@
     "varValue": {
       "required": ["valueType", "identity"],
       "properties": {
+        "type": { "type": "string", "const": "VAL" },
         "valueType": { "type": "string", "const": "VAR" },
         "identity": { "type": "string" },
         "name": { "type": "string" },
@@ -83,6 +85,7 @@
     "funcValue": {
       "required": ["valueType", "name"],
       "properties": {
+        "type": { "type": "string", "const": "VAL" },
         "valueType": { "type": "string", "const": "FUNC" },
         "name": { "type": "string" },
         "params": {

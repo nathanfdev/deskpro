@@ -31,13 +31,13 @@ namespace DeskPRO\Component\FilterQueryLanguage;
 class Parser
 {
     /**
-     * @param string $query
+     * @param string $fqlQuery
      *
      * @return array
      */
-    public function parseQuery($query)
+    public function parseQuery($fqlQuery)
     {
-        $qp = new QueryParser($query);
+        $qp = new QueryParser($fqlQuery);
 
         return $qp->parse();
     }

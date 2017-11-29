@@ -78,6 +78,7 @@ class QueryParser
 
         return [
             'fql'   => $this->query,
+            'type'  => 'QUERY',
             'query' => $expr,
         ];
     }
@@ -292,6 +293,7 @@ class QueryParser
                 $this->match($lookahead);
 
                 return [
+                    'type'      => 'VAL',
                     'valueType' => 'BOOLEAN',
                     'value'     => $lookahead === Lexer::T_TRUE ? true : false,
                     'tokenPos'  => $this->lexer->token['position'],
@@ -575,6 +577,7 @@ class QueryParser
                 $this->match(Lexer::T_STRING);
 
                 return [
+                    'type'      => 'VAL',
                     'valueType' => 'STRING',
                     'value'     => $this->lexer->token['value'],
                     'tokenPos'  => $this->lexer->token['position'],
@@ -585,6 +588,7 @@ class QueryParser
                     $this->match(Lexer::T_IDENTIFIER);
 
                     return [
+                        'type'      => 'VAL',
                         'valueType' => 'STRING',
                         'value'     => $this->lexer->token['value'],
                         'tokenPos'  => $this->lexer->token['position'],
@@ -599,6 +603,7 @@ class QueryParser
                 );
 
                 return [
+                    'type'      => 'VAL',
                     'valueType' => 'NUMERIC',
                     'value'     => $this->lexer->token['value'],
                     'tokenPos'  => $this->lexer->token['position'],
@@ -611,6 +616,7 @@ class QueryParser
                 );
 
                 return [
+                    'type'      => 'VAL',
                     'valueType' => 'BOOLEAN',
                     'value'     => $this->lexer->token['type'] === Lexer::T_TRUE ? true : false,
                     'tokenPos'  => $this->lexer->token['position'],
@@ -643,6 +649,7 @@ class QueryParser
                 }, $timePartsRaw);
 
                 return [
+                    'type'      => 'VAL',
                     'valueType' => 'RELATIVE_TIME',
                     'value'     => [
                         'mode'  => $sign === '-' ? 'past' : 'future',
@@ -765,6 +772,7 @@ class QueryParser
                 $this->match(Lexer::T_STRING);
 
                 return [
+                    'type'      => 'VAL',
                     'valueType' => 'STRING',
                     'value'     => $this->lexer->token['value'],
                     'tokenPos'  => $this->lexer->token['position'],
@@ -978,6 +986,7 @@ class QueryParser
         $this->match(Lexer::T_CLOSE_PARENTHESIS);
 
         return [
+            'type'      => 'VAL',
             'valueType' => 'FUNC',
             'name'      => $funcName,
             'params'    => $literals,

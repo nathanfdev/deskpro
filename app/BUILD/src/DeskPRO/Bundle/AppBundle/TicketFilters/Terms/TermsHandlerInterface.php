@@ -26,47 +26,26 @@
  * ~ Thanks, Everyone at Team DeskPRO
  */
 
-namespace Application\DeskPRO\Command;
+namespace DeskPRO\Bundle\AppBundle\TicketFilters\Terms;
 
-use Symfony\Bundle\FrameworkBundle\Command\ContainerAwareCommand;
-use Symfony\Component\Console\Input\InputInterface;
-use Symfony\Component\Console\Output\OutputInterface;
+use DeskPRO\Bundle\AppBundle\TicketFilters\Model\Context\AgentContext;
+use DeskPRO\Bundle\AppBundle\TicketFilters\Model\Entity\TicketModel;
 
-/**
- * Class TestCommand.
- */
-class TestCommand extends ContainerAwareCommand
+interface TermsHandlerInterface
 {
     /**
-     * {@inheritdoc}
+     * Return an array of fieds this term handler handles.
+     *
+     * @return string[]
      */
-    protected function configure()
-    {
-        $this->setName('dp:test');
-    }
+    public function getHandledFields();
 
     /**
-     * @return \Application\DeskPRO\DependencyInjection\DeskproContainer
+     * @param array        $term
+     * @param TicketModel  $ticketModel
+     * @param AgentContext $agentContext
+     *
+     * @return bool
      */
-    public function getContainer()
-    {
-        return parent::getContainer();
-    }
-
-    /**
-     * {@inheritdoc}
-     */
-    protected function execute(InputInterface $input, OutputInterface $output)
-    {
-        global $DP_ENV;
-
-        echo 'Base:      '.$DP_ENV->getDpRoot();
-        echo "\n";
-        echo 'Build:     '.$DP_ENV->getAppName();
-        echo "\n";
-        echo 'Build Dir: '.$DP_ENV->getAppDir();
-        echo "\n";
-
-        return 0;
-    }
+    public function doesTicketMatch(array $term, TicketModel $ticketModel, AgentContext $agentContext);
 }

@@ -26,47 +26,55 @@
  * ~ Thanks, Everyone at Team DeskPRO
  */
 
-namespace Application\DeskPRO\Command;
-
-use Symfony\Bundle\FrameworkBundle\Command\ContainerAwareCommand;
-use Symfony\Component\Console\Input\InputInterface;
-use Symfony\Component\Console\Output\OutputInterface;
+namespace DeskPRO\Component\FilterQueryLanguage;
 
 /**
- * Class TestCommand.
+ * Use this iterator to iterate over every node of a query.
  */
-class TestCommand extends ContainerAwareCommand
+class QueryIterator extends \ArrayIterator implements \RecursiveIterator
 {
-    /**
-     * {@inheritdoc}
-     */
-    protected function configure()
+    public function __construct(array $query)
     {
-        $this->setName('dp:test');
+        parent::__construct($query['query']);
     }
 
-    /**
-     * @return \Application\DeskPRO\DependencyInjection\DeskproContainer
-     */
-    public function getContainer()
+    public function hasChildren()
     {
-        return parent::getContainer();
+        $c = $this->current();
+
+        return !empty($c['type']) && $c['type'] === 'TERM_GROUP';
     }
 
     /**
      * {@inheritdoc}
      */
-    protected function execute(InputInterface $input, OutputInterface $output)
+    public function getChildren()
     {
-        global $DP_ENV;
+        $c = $this->current();
 
-        echo 'Base:      '.$DP_ENV->getDpRoot();
-        echo "\n";
-        echo 'Build:     '.$DP_ENV->getAppName();
-        echo "\n";
-        echo 'Build Dir: '.$DP_ENV->getAppDir();
-        echo "\n";
+        return !empty($c['type']) && $c['type'] === 'TERM_GROUP'
+            ? $c['terms']
+            : [];
+    }
 
-        return 0;
+    /**
+     * Iterate through a query and collect the identities of all
+     * referenced fields.
+     *
+     * @param array $query
+     *
+     * @return string[]
+     */
+    public static function collectFieldIds(array $query)
+    {
+        $fields = [];
+
+        foreach (new self($query) as $n) {
+            if ($n['type'] === 'TERM') {
+                $fields[] = $n['field']['identity'];
+            }
+        }
+
+        return $fields;
     }
 }

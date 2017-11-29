@@ -26,47 +26,44 @@
  * ~ Thanks, Everyone at Team DeskPRO
  */
 
-namespace Application\DeskPRO\Command;
+namespace DeskPRO\Bundle\AppBundle\TicketFilters\Model\Context;
 
-use Symfony\Bundle\FrameworkBundle\Command\ContainerAwareCommand;
-use Symfony\Component\Console\Input\InputInterface;
-use Symfony\Component\Console\Output\OutputInterface;
-
-/**
- * Class TestCommand.
- */
-class TestCommand extends ContainerAwareCommand
+class AgentContext
 {
     /**
-     * {@inheritdoc}
+     * @var int
      */
-    protected function configure()
-    {
-        $this->setName('dp:test');
-    }
+    public $id = 0;
 
     /**
-     * @return \Application\DeskPRO\DependencyInjection\DeskproContainer
+     * @var int
      */
-    public function getContainer()
-    {
-        return parent::getContainer();
-    }
+    public $primary_team = 0;
 
     /**
-     * {@inheritdoc}
+     * @var int[]
      */
-    protected function execute(InputInterface $input, OutputInterface $output)
-    {
-        global $DP_ENV;
+    public $teams = [];
 
-        echo 'Base:      '.$DP_ENV->getDpRoot();
-        echo "\n";
-        echo 'Build:     '.$DP_ENV->getAppName();
-        echo "\n";
-        echo 'Build Dir: '.$DP_ENV->getAppDir();
-        echo "\n";
+    /**
+     * Shortcut to remove perm checks from filter queries.
+     *
+     * @var bool
+     */
+    public $view_all = false;
 
-        return 0;
-    }
+    /**
+     * @var int[]
+     */
+    public $allowed_departments = [];
+
+    /**
+     * @var bool
+     */
+    public $view_unassigned = false;
+
+    /**
+     * @var bool
+     */
+    public $view_assigned = false;
 }

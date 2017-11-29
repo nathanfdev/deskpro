@@ -26,47 +26,27 @@
  * ~ Thanks, Everyone at Team DeskPRO
  */
 
-namespace Application\DeskPRO\Command;
+namespace DeskPRO\Bundle\AppBundle\TicketFilters\Model\Entity;
 
-use Symfony\Bundle\FrameworkBundle\Command\ContainerAwareCommand;
-use Symfony\Component\Console\Input\InputInterface;
-use Symfony\Component\Console\Output\OutputInterface;
-
-/**
- * Class TestCommand.
- */
-class TestCommand extends ContainerAwareCommand
+class OrgModel
 {
     /**
-     * {@inheritdoc}
+     * @var int
      */
-    protected function configure()
-    {
-        $this->setName('dp:test');
-    }
+    public $id = 0;
 
     /**
-     * @return \Application\DeskPRO\DependencyInjection\DeskproContainer
+     * @var string[]
      */
-    public function getContainer()
-    {
-        return parent::getContainer();
-    }
+    public $labels = [];
 
     /**
-     * {@inheritdoc}
+     * @var int[]
      */
-    protected function execute(InputInterface $input, OutputInterface $output)
-    {
-        global $DP_ENV;
+    public $user_groups = [];
 
-        echo 'Base:      '.$DP_ENV->getDpRoot();
-        echo "\n";
-        echo 'Build:     '.$DP_ENV->getAppName();
-        echo "\n";
-        echo 'Build Dir: '.$DP_ENV->getAppDir();
-        echo "\n";
-
-        return 0;
-    }
+    /**
+     * @var CustomData[]
+     */
+    public $custom_fields = [];
 }

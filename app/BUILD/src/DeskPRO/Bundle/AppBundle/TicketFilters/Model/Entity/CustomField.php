@@ -26,47 +26,28 @@
  * ~ Thanks, Everyone at Team DeskPRO
  */
 
-namespace Application\DeskPRO\Command;
+namespace DeskPRO\Bundle\AppBundle\TicketFilters\Model\Entity;
 
-use Symfony\Bundle\FrameworkBundle\Command\ContainerAwareCommand;
-use Symfony\Component\Console\Input\InputInterface;
-use Symfony\Component\Console\Output\OutputInterface;
-
-/**
- * Class TestCommand.
- */
-class TestCommand extends ContainerAwareCommand
+class CustomField
 {
     /**
-     * {@inheritdoc}
+     * The field ID the value is for.
+     *
+     * @var int
      */
-    protected function configure()
-    {
-        $this->setName('dp:test');
-    }
+    public $field = 0;
 
     /**
-     * @return \Application\DeskPRO\DependencyInjection\DeskproContainer
+     * The deskpro field type (e.g. choice, text, etc).
+     *
+     * @var string
      */
-    public function getContainer()
-    {
-        return parent::getContainer();
-    }
+    public $type = null;
 
     /**
-     * {@inheritdoc}
+     * The filter data type. E.g. STRING or INT[].
+     *
+     * @var string
      */
-    protected function execute(InputInterface $input, OutputInterface $output)
-    {
-        global $DP_ENV;
-
-        echo 'Base:      '.$DP_ENV->getDpRoot();
-        echo "\n";
-        echo 'Build:     '.$DP_ENV->getAppName();
-        echo "\n";
-        echo 'Build Dir: '.$DP_ENV->getAppDir();
-        echo "\n";
-
-        return 0;
-    }
+    public $valueType;
 }
