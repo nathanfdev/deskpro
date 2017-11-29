@@ -1,0 +1,140 @@
+{
+  "title": "Filter Query",
+  "description": "The schema for a JSON representation of a filter query",
+  "type": "object",
+  "properties": {
+    "oneOf": [
+      { "$ref": "#/definitions/termGroup" },
+      { "$ref": "#/definitions/term" }
+    ]
+  },
+  "definitions": {
+    "termGroup": {
+      "required": ["type", "operator", "terms"],
+      "properties": {
+        "type": { "const": "TERM_GROUP" },
+        "operator": { "enum": ["OR", "AND", "NOT"] },
+        "terms": {
+          "items": {
+            "oneOf": [
+              { "$ref": "#/definitions/termGroup" },
+              { "$ref": "#/definitions/term" }
+            ]
+          }
+        }
+      }
+    },
+    "term": {
+      "required": ["type", "operator", "field"],
+      "properties": {
+        "type": { "const": "TERM" },
+        "operator": {
+          "enum": [
+            '=', '!=', '<', '<=', '>', '>=', '!',
+            'IN', 'NOT_IN',
+            'IS', 'IS_NOT',
+            'IS_NULL', 'NOT_NULL',
+            'EMPTY', 'NOT_EMPTY',
+            'EXISTS', 'NOT_EXISTS',
+            'BETWEEN', 'NOT_BETWEEN'
+          ],
+          "field": { "$ref": "#/definitions/field" },
+          "options": {
+            "oneOf": [
+              { "$ref": "#/definitions/compareOption" },
+              { "$ref": "#/definitions/betweenOption" },
+              { "$ref": "#/definitions/inOption" }
+            ]
+          }
+        }
+      }
+    },
+    "field": {
+      "required": ["identity"],
+      "properties": {
+        "identity": { "type": "string" },
+        "name": { "type": "string" },
+        "path": { "type": "string" }
+      }
+    },
+    "scalarValue": {
+      "required": ["valueType", "value"],
+      "properties": {
+        "valueType": {
+          "enum": [
+            'BOOLEAN', 'NUMERIC',
+          ]
+        },
+        "value": { }
+      }
+    },
+    "varValue": {
+      "required": ["valueType", "identity"],
+      "properties": {
+        "valueType": { "const": "VAR" },
+        "identity": { "type": "string" },
+        "name": { "type": "string" },
+        "path": { "type": "string" }
+      }
+    },
+    "funcValue": {
+      "required": ["valueType", "name"],
+      "properties": {
+        "valueType": { "const": "FUNC" },
+        "name": { "type": "string" },
+        "params": {
+          "items": {
+            "oneOf": [
+              { "$ref": "#/definitions/scalarValue" },
+              { "$ref": "#/definitions/varValue" },
+              { "$ref": "#/definitions/funcValue" }
+            ]
+          }
+        }
+      }
+    },
+    "betweenOption": {
+      "required": ["value1", "value2"],
+      "properties": {
+        "value1": {
+          "oneOf": [
+            { "$ref": "#/definitions/scalarValue" },
+            { "$ref": "#/definitions/varValue" },
+            { "$ref": "#/definitions/funcValue" }
+          ]
+        },
+        "value2": {
+          "oneOf": [
+            { "$ref": "#/definitions/scalarValue" },
+            { "$ref": "#/definitions/varValue" },
+            { "$ref": "#/definitions/funcValue" }
+          ]
+        }
+      }
+    },
+    "compareOption": {
+      "required": ["value"],
+      "value": {
+        "oneOf": [
+          { "$ref": "#/definitions/scalarValue" },
+          { "$ref": "#/definitions/varValue" },
+          { "$ref": "#/definitions/funcValue" }
+        ]
+      }
+    },
+    "inOption": {
+      "valueList": {
+        "items": {
+          "oneOf": [
+            { "$ref": "#/definitions/scalarValue" },
+            { "$ref": "#/definitions/varValue" },
+            { "$ref": "#/definitions/funcValue" }
+          ]
+        }
+      },
+      "value": {
+        "$ref": "#/definitions/funcValue"
+      }
+    }
+  }
+}

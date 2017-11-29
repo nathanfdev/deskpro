@@ -51,8 +51,8 @@ class ExpressionCompiler
     private function walk($part)
     {
         switch ($part['type']) {
-            case 'BOOL':
-                return $this->walkBool($part);
+            case 'TERM_GROUP':
+                return $this->walkGroup($part);
             case 'TERM':
                 return $this->walkTerm($part);
             case 'VALUE':
@@ -60,7 +60,7 @@ class ExpressionCompiler
         }
     }
 
-    private function walkBool(array $boolPart)
+    private function walkGroup(array $boolPart)
     {
         $expr = [];
         foreach ($boolPart['terms'] as $term) {
@@ -78,8 +78,8 @@ class ExpressionCompiler
 
     private function walkTerm(array $termPart)
     {
-        if ($termPart['type'] === 'BOOL') {
-            return $this->walkBool($termPart);
+        if ($termPart['type'] === 'TERM_GROUP') {
+            return $this->walkGroup($termPart);
         }
 
         $fieldExpr = $this->buildFieldExpr($termPart['field']);

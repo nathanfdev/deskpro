@@ -28,8 +28,6 @@
 
 namespace DeskPRO\Component\FilterQueryLanguage;
 
-use Doctrine\ORM\Query\AST;
-
 /**
  * This actually parses a query. This is meant for internal use only.
  * Use the Parser class as the wrapper around this.
@@ -342,7 +340,7 @@ class QueryParser
         }
 
         return [
-            'type'     => 'BOOL',
+            'type'     => 'TERM_GROUP',
             'operator' => 'OR',
             'terms'    => $conditionalTerms,
         ];
@@ -366,7 +364,7 @@ class QueryParser
         }
 
         return [
-            'type'     => 'BOOL',
+            'type'     => 'TERM_GROUP',
             'operator' => 'AND',
             'terms'    => $conditionalFactors,
         ];
@@ -391,7 +389,7 @@ class QueryParser
         }
 
         return [
-            'type'     => 'BOOL',
+            'type'     => 'TERM_GROUP',
             'operator' => 'NOT',
             'terms'    => [
                 $conditionalPrimary,
@@ -856,11 +854,11 @@ class QueryParser
             $this->match(Lexer::T_CLOSE_PARENTHESIS);
 
             return [
-                'type'      => 'TERM',
-                'field'     => $var,
-                'op'        => $not ? 'NOT_IN' : 'IN',
-                'valueList' => $literals,
-                'tokenPos'  => $tokenPos,
+                'type'     => 'TERM',
+                'field'    => $var,
+                'op'       => $not ? 'NOT_IN' : 'IN',
+                'options'  => ['valueList' => $literals],
+                'tokenPos' => $tokenPos,
             ];
         } else {
             $expr = $this->FunctionDeclaration();
@@ -869,7 +867,7 @@ class QueryParser
                 'type'     => 'TERM',
                 'field'    => $var,
                 'op'       => $not ? 'NOT_IN' : 'IN',
-                'value'    => $expr,
+                'options'  => ['value' => $expr],
                 'tokenPos' => $tokenPos,
             ];
         }
