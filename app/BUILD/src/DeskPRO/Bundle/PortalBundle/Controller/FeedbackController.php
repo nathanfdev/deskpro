@@ -34,6 +34,7 @@ use Application\DeskPRO\Entity\FeedbackStatusCategory;
 use Application\DeskPRO\Entity\PageViewLog;
 use Application\DeskPRO\Entity\Person;
 use Application\DeskPRO\Notifications\NewCommentNotification;
+use Application\DeskPRO\Notifications\NewFeedbackNotification;
 use Application\DeskPRO\People\PersonGuest;
 use DeskPRO\Bundle\AppBundle\Annotation\AutoPostOnGetRequest;
 use DeskPRO\Bundle\AppBundle\AntiAbuse\Event\SubmitCommentAbuseCheck;
@@ -266,6 +267,9 @@ class FeedbackController extends AbstractController
             $this->addFlash('success', $this->phrase('portal.flashes.new_feedback_awaiting_review'));
             $destination = $this->generateUrl('portal_feedback');
         }
+
+        $notify = new NewFeedbackNotification($newFeedback);
+        $notify->send();
 
         $this->getEmailSender()->sendNewFeedbackEmail($newFeedback);
 
