@@ -30,7 +30,6 @@ namespace Application\ImportBundle\Writer\Helper;
 
 use Application\DeskPRO\Entity\Department;
 use Application\ImportBundle\Writer\EntityPersister;
-use Application\ImportBundle\Writer\Mapper\BrandMapper;
 use Application\ImportBundle\Writer\Mapper\DepartmentMapper;
 use Application\ImportBundle\Writer\Mapper\ImportMapMapper;
 use Psr\Log\LoggerInterface;
@@ -46,9 +45,9 @@ class DepartmentHelper
     private $importMapMapper;
 
     /**
-     * @var BrandMapper
+     * @var BrandHelper
      */
-    private $brandMapper;
+    private $brandHelper;
 
     /**
      * @var DepartmentMapper
@@ -69,20 +68,20 @@ class DepartmentHelper
      * Constructor.
      *
      * @param ImportMapMapper  $importMapMapper
-     * @param BrandMapper      $brandMapper
+     * @param BrandHelper      $brandHelper
      * @param DepartmentMapper $departmentMapper
      * @param EntityPersister  $persister
      * @param LoggerInterface  $logger
      */
     public function __construct(
         ImportMapMapper  $importMapMapper,
-        BrandMapper      $brandMapper,
+        BrandHelper      $brandHelper,
         DepartmentMapper $departmentMapper,
         EntityPersister  $persister,
         LoggerInterface  $logger
     ) {
         $this->importMapMapper  = $importMapMapper;
-        $this->brandMapper      = $brandMapper;
+        $this->brandHelper      = $brandHelper;
         $this->departmentMapper = $departmentMapper;
         $this->persister        = $persister;
         $this->logger           = $logger;
@@ -94,10 +93,11 @@ class DepartmentHelper
      *
      * @param string $type
      * @param string $departmentPath
+     * @param string $brandName
      *
      * @return Department
      */
-    public function findOrCreateDepartment($type, $departmentPath)
+    public function findOrCreateDepartment($type, $departmentPath, $brandName = null)
     {
         if (!$departmentPath) {
             throw new \RuntimeException('Department path is empty');
@@ -141,9 +141,13 @@ class DepartmentHelper
                     $parent->getChildren()->add($entity);
                 }
 
-                $defaultBrand = $this->brandMapper->getDefaultBrand();
-                if ($defaultBrand) {
-                    $entity->addBrand($defaultBrand);
+                if ($brandName && $brand = $this->brandHelper->findOrCreateBrand($brandName)) {
+                    $entity->addBrand($brand);
+                } else {
+                    $defaultBrand = $this->brandHelper->getDefaultBrand();
+                    if ($defaultBrand) {
+                        $entity->addBrand($defaultBrand);
+                    }
                 }
 
                 $this->persister->persistAndFlush($entity);

@@ -110,6 +110,14 @@ class HelperRegistry
     }
 
     /**
+     * @return BrandHelper
+     */
+    public function getBrandHelper()
+    {
+        return $this->getHelper(BrandHelper::class);
+    }
+
+    /**
      * @return DepartmentHelper
      */
     public function getDepartmentHelper()

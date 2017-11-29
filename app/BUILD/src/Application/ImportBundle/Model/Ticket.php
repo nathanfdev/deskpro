@@ -32,9 +32,7 @@ use JMS\Serializer\Annotation as JMS;
 use Symfony\Component\Validator\Constraints as Assert;
 
 /**
- * Exporting ticket entity.
- *
- * Class Ticket
+ * Class Ticket.
  */
 class Ticket implements PersonAwareInterface, LabelAwareModelInterface, LanguageAwareInterface, CustomDataAwareModelInterface, PrimaryImportModelInterface
 {
@@ -46,6 +44,13 @@ class Ticket implements PersonAwareInterface, LabelAwareModelInterface, Language
      * @JMS\Type("string")
      */
     private $ref;
+
+    /**
+     * @var string
+     *
+     * @JMS\Type("string")
+     */
+    private $brand;
 
     /**
      * @var string
@@ -217,6 +222,26 @@ class Ticket implements PersonAwareInterface, LabelAwareModelInterface, Language
     public function setRef($ref)
     {
         $this->ref = $ref;
+
+        return $this;
+    }
+
+    /**
+     * @return string
+     */
+    public function getBrand()
+    {
+        return $this->brand;
+    }
+
+    /**
+     * @param string $brand
+     *
+     * @return string
+     */
+    public function setBrand($brand)
+    {
+        $this->brand = $brand;
 
         return $this;
     }

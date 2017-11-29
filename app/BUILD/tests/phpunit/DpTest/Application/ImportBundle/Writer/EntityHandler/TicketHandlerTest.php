@@ -491,6 +491,24 @@ class TicketHandlerTest extends AbstractEntityHandlerTest
         $this->assertEquals('Imported (old ticket ID #1)', $entity->getLogs()[5]->getDetails()['message']);
     }
 
+    public function test_custom_brand()
+    {
+        $model = $this->createBaseModel();
+        $model->setDepartment('my department');
+        $model->setBrand('my brand');
+
+        $this->writer->writeData($model);
+        $this->em()->clear();
+
+        $entity = $this->getBaseEntity();
+        $this->assertEquals('my brand', $entity->getBrand()->getName());
+        $this->assertEquals('my department', $entity->getDepartment()->getTitle());
+        $this->assertEquals(1, $entity->getDepartment()->getBrands()->count());
+        $this->assertEquals('my brand', $entity->getDepartment()->getBrands()->first()->getName());
+        $this->assertEquals(1, $entity->getBrand()->getDepartments()->count());
+        $this->assertEquals('my department', $entity->getBrand()->getDepartments()->first()->getTitle());
+    }
+
     /**
      * @return Model\Ticket
      */
