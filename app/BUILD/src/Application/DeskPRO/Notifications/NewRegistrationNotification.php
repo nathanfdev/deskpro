@@ -49,9 +49,7 @@ class NewRegistrationNotification extends AbstractAgentNotification
 
     public function shouldSendBrowserNotification(Person $agent)
     {
-        if ($this->person->is_confirmed) {
-            return true;
-        } elseif ($this->person->is_confirmed && $agent->getPref('agent_notif.new_user.alert')) {
+        if ($this->person->is_confirmed && $agent->getPref('agent_notif.new_user.alert')) {
             return true;
         }
 
@@ -60,9 +58,7 @@ class NewRegistrationNotification extends AbstractAgentNotification
 
     public function shouldSendEmailNotification(Person $agent)
     {
-        if ($this->person->is_confirmed) {
-            return true;
-        } elseif ($this->person->is_confirmed && $agent->getPref('agent_notif.new_user.email')) {
+        if ($this->person->is_confirmed && $agent->getPref('agent_notif.new_user.email')) {
             return true;
         }
 
