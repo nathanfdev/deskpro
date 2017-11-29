@@ -95,12 +95,17 @@ class ExpressionCompiler
 
             case 'IN':
             case 'NOT_IN':
-                $values = [];
-                foreach ($termPart['options']['values'] as $v) {
-                    $values[] = $this->walkValue($v);
-                }
 
-                $expr = $fieldExpr.' in ['.implode(', ', $values).']';
+                if (!empty($termPart['options']['valueList'])) {
+                    $values = [];
+                    foreach ($termPart['options']['valueList'] as $v) {
+                        $values[] = $this->walkValue($v);
+                    }
+
+                    $expr = $fieldExpr.' in ['.implode(', ', $values).']';
+                } else {
+                    $expr = $fieldExpr.' in ['.$this->walkValue($termPart['options']['value']).']';
+                }
 
                 if ($termPart['operator'] === 'NOT_IN') {
                     $expr = "!($expr)";

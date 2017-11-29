@@ -101,15 +101,17 @@ class DebugCompiler
 
             case 'IN':
             case 'NOT_IN':
-                $values = [];
-                foreach ($termPart['options']['values'] as $v) {
-                    $values[] = $this->walkValue($v);
-                }
+                $opStr = $termPart['operator'] === 'NOT_IN' ? 'NOT IN' : 'IN';
 
-                $expr = $fieldExpr.' in ['.implode(', ', $values).']';
+                if (!empty($termPart['options']['valueList'])) {
+                    $values = [];
+                    foreach ($termPart['options']['valueList'] as $v) {
+                        $values[] = $this->walkValue($v);
+                    }
 
-                if ($termPart['operator'] === 'NOT_IN') {
-                    $expr = "!($expr)";
+                    $expr = $fieldExpr.' '.$opStr.' ['.implode(', ', $values).']';
+                } else {
+                    $expr = $fieldExpr.' '.$opStr.' '.$this->walkValue($termPart['options']['value']).'';
                 }
 
                 return $expr;
@@ -132,7 +134,7 @@ class DebugCompiler
                 return var_export($valuePart['value'], true);
 
             case 'VAR':
-                return $valuePart['identity'];
+                return '$'.$valuePart['identity'];
 
             case 'FUNC':
                 $params = [];
