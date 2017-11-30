@@ -34,6 +34,7 @@
 
 namespace Application\DeskPRO\Tickets\Filters;
 
+use Application\DeskPRO\Entity\Person;
 use Application\DeskPRO\Entity\Ticket;
 use DeskPRO\Bundle\AppBundle\Notification\Event\Ticket\TicketUpdatedEvent;
 use DeskPRO\Bundle\AppBundle\Notification\NotificationEventManager;
@@ -163,30 +164,34 @@ class FilterChangeSet
             $ticketId = $this->ticket->getId();
             $filterId = $filter['id'];
 
-            foreach ($filter_change->getAgentsAdded() as $agent) {
-                if (!in_array($agent->getId(), $onlineAgentsIds)) {
-                    continue;
-                }
+            $addedTargets = array_values(array_map(
+                function (Person $agent) {
+                    return $agent->getId();
+                },
+                $filter_change->getAgentsAdded()
+            ));
 
+            if ($addedTargets) {
                 $operations[] = [
                     'op'        => 'add',
                     'filter_id' => $filterId,
-                    'target'    => $agent->getId(),
-                    'ticket_id' => $ticketId,
+                    'targets'   => $addedTargets,
                 ];
             }
 
-            foreach ($filter_change->getAgentsRemoved() as $agent) {
-                if (!in_array($agent->getId(), $onlineAgentsIds)) {
-                    continue;
-                }
+            $removedTargets = array_values(array_map(
+                function (Person $agent) {
+                    return $agent->getId();
+                },
+                $filter_change->getAgentsRemoved()
+            ));
 
+            if ($removedTargets) {
                 $operations[] = [
                     'op'        => 'del',
                     'filter_id' => $filterId,
-                    'target'    => $agent->getId(),
-                    'ticket_id' => $ticketId,
-                ];
+                    'targets'   => $removedTargets,
+            ];
             }
         }
 
@@ -195,7 +200,10 @@ class FilterChangeSet
                 TicketUpdatedEvent::EVENT_NAME,
                 new TicketUpdatedEvent(
                     'agent.filter-update',
-                    ['data' => $operations]
+                    [
+                        'ticket_id'  => $ticketId,
+                        'operations' => $operations,
+                    ]
                 )
             );
         }

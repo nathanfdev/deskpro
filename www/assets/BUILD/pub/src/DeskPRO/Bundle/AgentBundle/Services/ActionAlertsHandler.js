@@ -99,10 +99,11 @@ class ActionAlertsHandler {
         this.options.dispatch(updateAgentStatus(payload.data));
         break;
       case 'agent.filter-update':
-        payload.data.data.forEach((datum) => {
+        payload.data.operations.forEach((datum) => {
           const newData = clone(datum);
           newData.eventType = payload.data.eventType;
-          this.handleLegacyClientMessage(newData, true);
+          newData.ticket_id = payload.data.ticket_id;
+          this.handleLegacyBroadcastClientMessage(newData, true);
         });
         break;
       default:
@@ -141,6 +142,14 @@ class ActionAlertsHandler {
     if (!payload.eventType) {
       console.error('payload.eventType is not set', payload);
     } else if (!checkTarget || (checkTarget && payload.target === this.options.me)) {
+      DeskPRO_Window.messageBroker.sendMessage(payload.eventType, payload); // eslint-disable-line no-undef
+    }
+  }
+
+  handleLegacyBroadcastClientMessage(payload, checkTarget = false) {
+    if (!payload.eventType) {
+      console.error('payload.eventType is not set', payload);
+    } else if (!checkTarget || (checkTarget && payload.targets.indexOf(this.options.me) !== -1)) {
       DeskPRO_Window.messageBroker.sendMessage(payload.eventType, payload); // eslint-disable-line no-undef
     }
   }
