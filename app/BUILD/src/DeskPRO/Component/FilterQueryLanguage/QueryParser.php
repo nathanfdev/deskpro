@@ -378,7 +378,7 @@ class QueryParser
         $peek = $this->peekBeyondClosingParenthesis();
 
         if (in_array($peek['value'], ['=',  '<', '<=', '>', '>=', '!=']) ||
-            in_array($peek['type'], [Lexer::T_NOT, Lexer::T_BETWEEN, Lexer::T_IN, Lexer::T_IS, Lexer::T_EXISTS])) {
+            in_array($peek['type'], [Lexer::T_NOT, Lexer::T_BETWEEN, Lexer::T_IN, Lexer::T_IS, Lexer::T_EXISTS, Lexer::T_HAS])) {
             return $this->SimpleConditionalExpression();
         }
 
@@ -450,6 +450,10 @@ class QueryParser
 
         if ($token['type'] === Lexer::T_IN) {
             return $this->InExpression();
+        }
+
+        if ($token['type'] === Lexer::T_HAS) {
+            return $this->HasExpression();
         }
 
         if ($token['type'] === Lexer::T_IS && $lookahead['type'] === Lexer::T_NULL) {
@@ -769,6 +773,39 @@ class QueryParser
 
         return $this->addTokenPos(new Query\Node\Term(
             Query\Op\Op::createOp(!$not ? Query\Query::OP_IN : Query\Query::OP_NOT_IN),
+            $field,
+            $opt
+        ), $tokenPos);
+    }
+
+    public function HasExpression()
+    {
+        $field    = $this->CompareField();
+        $tokenPos = $this->lexer->token['position'];
+
+        $this->match(Lexer::T_HAS);
+
+        if ($this->lexer->isNextToken(Lexer::T_OPEN_PARENTHESIS)) {
+            $this->match(Lexer::T_OPEN_PARENTHESIS);
+
+            $literals   = [];
+            $literals[] = $this->Literal(true);
+
+            while ($this->lexer->isNextToken(Lexer::T_COMMA)) {
+                $this->match(Lexer::T_COMMA);
+                $literals[] = $this->Literal(true);
+            }
+
+            $this->match(Lexer::T_CLOSE_PARENTHESIS);
+
+            $opt = new Query\Opt\InOpt($literals);
+        } else {
+            $expr = $this->FunctionDeclaration();
+            $opt  = new Query\Opt\InOpt([$expr]);
+        }
+
+        return $this->addTokenPos(new Query\Node\Term(
+            Query\Op\Op::createOp(Query\Query::OP_HAS),
             $field,
             $opt
         ), $tokenPos);

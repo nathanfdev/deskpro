@@ -26,41 +26,33 @@
  * ~ Thanks, Everyone at Team DeskPRO
  */
 
-namespace DeskPRO\Component\FilterQueryLanguage;
+namespace DeskPRO\Bundle\AppBundle\TicketFilters\Model\Entity;
 
-/**
- * This helps validate a query by allowing you to specify constraints.
- * For example, certain functions might only make sense with certain operators or fields.
- */
-interface QueryDefinitionInterface
+class TicketSlaModel
 {
     /**
-     * Check if a field is a valid field.
-     *
-     * @param string $identity
-     *
-     * @return string[]
+     * @var int
      */
-    public function validateField($identity);
+    public $sla_id;
+
+    /***
+     * ok, warning, fail
+     * @var string
+     */
+    public $static;
 
     /**
-     * Check if a variable is valid.
-     *
-     * @param string $varId
-     *
-     * @return string[]
+     * @var \DateTime|null
      */
-    public function validateVariable($varId);
+    public $warn_date;
 
     /**
-     * Check if a function call is a valid function call.
-     *
-     * @param string   $name
-     * @param string[] $params
-     * @param string   $op
-     * @param string   $fieldId
-     *
-     * @return string[]
+     * @var \DateTime|null
      */
-    public function validateFunctionCall($name, $params, $op, $fieldId);
+    public $fail_date;
+
+    /**
+     * @var bool
+     */
+    public $is_completed = false;
 }

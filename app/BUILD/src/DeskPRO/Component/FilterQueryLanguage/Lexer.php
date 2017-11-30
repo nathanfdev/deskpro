@@ -63,6 +63,7 @@ class Lexer extends \Doctrine\Common\Lexer
     const T_NULL       = 139;
     const T_OR         = 142;
     const T_TRUE       = 151;
+    const T_HAS        = 152;
 
     /**
      * Creates a new query scanner object.

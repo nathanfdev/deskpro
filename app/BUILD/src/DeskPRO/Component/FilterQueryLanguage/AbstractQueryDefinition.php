@@ -158,17 +158,4 @@ abstract class AbstractQueryDefinition implements QueryDefinitionInterface
 
         return true;
     }
-
-    /**
-     * {@inheritdoc}
-     */
-    public function fieldType($identity)
-    {
-        $this->initDefs();
-        if (!isset($this->fieldDefs[$identity])) {
-            return '';
-        }
-
-        return $this->fieldDefs[$identity]['type'];
-    }
 }

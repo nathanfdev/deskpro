@@ -60,6 +60,7 @@ class Query
     const OP_GT          = '>';
     const OP_GTE         = '>=';
     const OP_IN          = 'IN';
+    const OP_HAS         = 'HAS';
     const OP_NOT_IN      = 'NOT_IN';
     const OP_IS_NULL     = 'IS_NULL';
     const OP_NOT_NULL    = 'NOT_NULL';

@@ -26,41 +26,11 @@
  * ~ Thanks, Everyone at Team DeskPRO
  */
 
-namespace DeskPRO\Component\FilterQueryLanguage;
+namespace DeskPRO\Component\FilterQueryLanguage\Query\Op;
 
-/**
- * This helps validate a query by allowing you to specify constraints.
- * For example, certain functions might only make sense with certain operators or fields.
- */
-interface QueryDefinitionInterface
+use DeskPRO\Component\FilterQueryLanguage\Query\Query;
+
+class HasOp extends Op
 {
-    /**
-     * Check if a field is a valid field.
-     *
-     * @param string $identity
-     *
-     * @return string[]
-     */
-    public function validateField($identity);
-
-    /**
-     * Check if a variable is valid.
-     *
-     * @param string $varId
-     *
-     * @return string[]
-     */
-    public function validateVariable($varId);
-
-    /**
-     * Check if a function call is a valid function call.
-     *
-     * @param string   $name
-     * @param string[] $params
-     * @param string   $op
-     * @param string   $fieldId
-     *
-     * @return string[]
-     */
-    public function validateFunctionCall($name, $params, $op, $fieldId);
+    const OP = Query::OP_HAS;
 }
