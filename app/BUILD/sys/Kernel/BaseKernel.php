@@ -26,10 +26,6 @@
  * ~ Thanks, Everyone at Team DeskPRO
  */
 
-/**
- * DeskPRO.
- */
-
 namespace DpSys\Kernel;
 
 use Application\AgentBundle\AgentBundle;
@@ -38,12 +34,16 @@ use Application\DeskPRO\DependencyInjection\DeskproContainer;
 use DeskPRO\Bundle\ApiBundle\ApiBundle;
 use DeskPRO\Bundle\AppBundle\AppBundle;
 use DeskPRO\Bundle\PortalBundle\PortalBundle;
+use DpRun\DpEnv;
 use DpSys\LowError\SystemErrorHandler;
 use Symfony\Component\Config\ConfigCache;
 use Symfony\Component\DependencyInjection\Container;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
 use Symfony\Component\HttpKernel\Kernel;
 
+/**
+ * Class BaseKernel.
+ */
 abstract class BaseKernel extends Kernel
 {
     /**
@@ -388,8 +388,7 @@ CODE;
      */
     private function cleanupContainer(Container $container)
     {
-        // Close mysql connections
-
+        // close mysql connections
         if ($container->has('doctrine.orm.default_entity_manager')) {
             $container->get('doctrine.orm.default_entity_manager')->getConnection()->close();
         }
@@ -400,8 +399,14 @@ CODE;
             $container->get('doctrine.orm.audit_entity_manager')->getConnection()->close();
         }
 
-        // Remove all container references from all loaded services
+        // unset runtime vars
+        $reflection = new \ReflectionClass(DpEnv::class);
+        $property   = $reflection->getProperty('runtime_vars');
+        $property->setAccessible(true);
+        $property->setValue($container->get('deskpro.low_dp_env'), []);
+        $property->setAccessible(false);
 
+        // remove all container references from all loaded services
         $containerReflection        = new \ReflectionObject($container);
         $servicesPropertyReflection = $containerReflection->getProperty('services');
         $servicesPropertyReflection->setAccessible(true);
