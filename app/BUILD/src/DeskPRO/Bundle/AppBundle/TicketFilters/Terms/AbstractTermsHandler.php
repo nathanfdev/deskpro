@@ -28,6 +28,7 @@
 
 namespace DeskPRO\Bundle\AppBundle\TicketFilters\Terms;
 
+use DeskPRO\Bundle\AppBundle\TicketFilters\MatcherContext;
 use DeskPRO\Bundle\AppBundle\TicketFilters\Model\Entity\TicketModel;
 use DeskPRO\Bundle\AppBundle\TicketFilters\ValueResolver;
 use DeskPRO\Component\FilterQueryLanguage\Query\Node\Term;
@@ -36,6 +37,21 @@ use DeskPRO\Component\FilterQueryLanguage\Query\Val\FuncVal;
 
 abstract class AbstractTermsHandler implements TermsHandlerInterface
 {
+    /**
+     * @var ValueResolver
+     */
+    protected $valueResolver;
+
+    /**
+     * AbstractTermsHandler constructor.
+     *
+     * @param ValueResolver $valueResolver
+     */
+    public function __construct(ValueResolver $valueResolver)
+    {
+        $this->valueResolver = $valueResolver;
+    }
+
     /**
      * Check if the current term check is a functioncall we want to handle.
      *
@@ -65,14 +81,14 @@ abstract class AbstractTermsHandler implements TermsHandlerInterface
         return [];
     }
 
-    /**
-     * @param Term          $term
-     * @param TicketModel   $ticketModel
-     * @param ValueResolver $valueResolver
+    /***
+     * @param Term           $term
+     * @param TicketModel    $ticketModel
+     * @param MatcherContext $matcherContext
      *
-     * @return bool|mixed
+     * @return bool
      */
-    public function doesTicketMatch(Term $term, TicketModel $ticketModel, ValueResolver $valueResolver)
+    public function doesTicketMatch(Term $term, TicketModel $ticketModel, MatcherContext $matcherContext)
     {
         return false;
     }

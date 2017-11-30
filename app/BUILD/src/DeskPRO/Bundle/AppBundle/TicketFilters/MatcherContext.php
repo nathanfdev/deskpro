@@ -28,12 +28,43 @@
 
 namespace DeskPRO\Bundle\AppBundle\TicketFilters;
 
-interface ValueCheckContext
+use DeskPRO\Bundle\AppBundle\TicketFilters\Model\Context\AgentContext;
+use Symfony\Component\PropertyAccess\PropertyAccess;
+
+class MatcherContext
 {
+    /**
+     * @var AgentContext
+     */
+    private $agentContext;
+
+    /**
+     * @var array
+     */
+    private $context;
+
+    /**
+     * @var \Symfony\Component\PropertyAccess\PropertyAccessor
+     */
+    private $contextAccessor;
+
+    public function __construct(AgentContext $agentContext)
+    {
+        $this->agentContext = $agentContext;
+        $this->context      = [
+            'me'       => $agentContext->id,
+            'my_teams' => $agentContext->teams,
+        ];
+        $this->contextAccessor = PropertyAccess::createPropertyAccessor();
+    }
+
     /**
      * @param string $id
      *
      * @return mixed
      */
-    public function getContextVariable($id);
+    public function getContextVariable($id)
+    {
+        return $this->contextAccessor->getValue($this->context, $id);
+    }
 }

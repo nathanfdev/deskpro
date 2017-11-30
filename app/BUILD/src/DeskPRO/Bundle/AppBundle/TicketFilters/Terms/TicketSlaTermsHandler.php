@@ -29,6 +29,7 @@
 namespace DeskPRO\Bundle\AppBundle\TicketFilters\Terms;
 
 use Application\DeskPRO\Entity\TicketSla;
+use DeskPRO\Bundle\AppBundle\TicketFilters\MatcherContext;
 use DeskPRO\Bundle\AppBundle\TicketFilters\Model\Entity\TicketModel;
 use DeskPRO\Bundle\AppBundle\TicketFilters\ValueResolver;
 use DeskPRO\Component\FilterQueryLanguage\Query\Node\Term;
@@ -61,7 +62,7 @@ class TicketSlaTermsHandler extends AbstractTermsHandler
     /**
      * {@inheritdoc}
      */
-    public function doesTicketMatch(Term $term, TicketModel $ticketModel, ValueResolver $valueResolver)
+    public function doesTicketMatch(Term $term, TicketModel $ticketModel, MatcherContext $matcherContext)
     {
         $fieldId = $term->field->identity;
 
@@ -70,44 +71,20 @@ class TicketSlaTermsHandler extends AbstractTermsHandler
             default: throw new \InvalidArgumentException('Unknown field');
         }
 
-        return $valueResolver->checkTermWithFieldValue($fieldValue, $term, $ticketModel);
+        return $this->valueResolver->checkTermWithFieldValue($fieldValue, $term, $ticketModel, $matcherContext);
     }
 
-    /**
-     * @param array         $params
-     * @param Term          $term
-     * @param TicketModel   $ticketModel
-     * @param ValueResolver $valueResolver
-     *
-     * @return bool
-     */
-    public function hasPassingSlas(array $params, Term $term, TicketModel $ticketModel, ValueResolver $valueResolver)
+    public function hasPassingSlas(array $params, Term $term, TicketModel $ticketModel, MatcherContext $matcherContext)
     {
         return $this->anySlasStatus($ticketModel, TicketSla::STATUS_OK, $params);
     }
 
-    /**
-     * @param array         $params
-     * @param Term          $term
-     * @param TicketModel   $ticketModel
-     * @param ValueResolver $valueResolver
-     *
-     * @return bool
-     */
-    public function hasWarningSlas(array $params, Term $term, TicketModel $ticketModel, ValueResolver $valueResolver)
+    public function hasWarningSlas(array $params, Term $term, TicketModel $ticketModel, MatcherContext $matcherContext)
     {
         return $this->anySlasStatus($ticketModel, TicketSla::STATUS_WARNING, $params);
     }
 
-    /**
-     * @param array         $params
-     * @param Term          $term
-     * @param TicketModel   $ticketModel
-     * @param ValueResolver $valueResolver
-     *
-     * @return bool
-     */
-    public function hasFailingSlas(array $params, Term $term, TicketModel $ticketModel, ValueResolver $valueResolver)
+    public function hasFailingSlas(array $params, Term $term, TicketModel $ticketModel, MatcherContext $matcherContext)
     {
         return $this->anySlasStatus($ticketModel, TicketSla::STATUS_FAIL, $params);
     }

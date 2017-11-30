@@ -43,7 +43,7 @@ use DeskPRO\Component\FilterQueryLanguage\Query\Val\FuncVal;
 class TicketMatcher
 {
     /**
-     * @var
+     * @var ValueResolver
      */
     private $valueResovler;
 
@@ -105,14 +105,14 @@ class TicketMatcher
         }
     }
 
-    public function doesQueryMatch(Query $query, TicketModel $ticketModel)
+    public function doesQueryMatch(Query $query, TicketModel $ticketModel, MatcherContext $matcherContext)
     {
         $rootPart = $query->root;
 
         if ($rootPart instanceof TermGroup) {
-            return $this->doesTermGroupMatch($rootPart, $ticketModel);
+            return $this->doesTermGroupMatch($rootPart, $ticketModel, $matcherContext);
         } else {
-            return $this->doesTermMatch($rootPart, $ticketModel);
+            return $this->doesTermMatch($rootPart, $ticketModel, $matcherContext);
         }
     }
 
@@ -123,7 +123,7 @@ class TicketMatcher
      *
      * @return bool
      */
-    private function doesTermGroupMatch(TermGroup $termGroup, TicketModel $ticketModel)
+    private function doesTermGroupMatch(TermGroup $termGroup, TicketModel $ticketModel, MatcherContext $matcherContext)
     {
         $op       = $termGroup->operator;
         $anyMatch = false;
@@ -131,13 +131,13 @@ class TicketMatcher
 
         foreach ($termGroup->terms as $term) {
             if ($term instanceof TermGroup) {
-                if ($this->doesTermGroupMatch($term, $ticketModel)) {
+                if ($this->doesTermGroupMatch($term, $ticketModel, $matcherContext)) {
                     $anyMatch = true;
                 } else {
                     $anyFail = true;
                 }
             } else {
-                if ($this->doesTermMatch($term, $ticketModel)) {
+                if ($this->doesTermMatch($term, $ticketModel, $matcherContext)) {
                     $anyMatch = true;
                 } else {
                     $anyFail = true;
@@ -173,7 +173,7 @@ class TicketMatcher
      * @param TicketModel  $ticketModel
      * @param AgentContext $agentContext
      */
-    public function doesTermMatch(Term $term, TicketModel $ticketModel)
+    public function doesTermMatch(Term $term, TicketModel $ticketModel, MatcherContext $matcherContext)
     {
         $fieldId = $term->field->identity;
 
@@ -192,10 +192,10 @@ class TicketMatcher
             if ($matchFn) {
                 return call_user_func(
                     $matchFn,
-                    $this->valueResovler->getFuncCallParamValues($term->options->value, $term, $ticketModel),
+                    $this->valueResovler->getFuncCallParamValues($term->options->value, $term, $ticketModel, $matcherContext),
                     $term,
                     $ticketModel,
-                    $this->valueResovler
+                    $matcherContext
                 );
             }
         }
@@ -206,7 +206,7 @@ class TicketMatcher
 
         foreach ($this->fieldToHandler[$fieldId] as $handler) {
             /** @var $handler TermsHandlerInterface */
-            if ($handler->doesTicketMatch($term, $ticketModel, $this->valueResovler)) {
+            if ($handler->doesTicketMatch($term, $ticketModel, $matcherContext)) {
                 return true;
             }
         }

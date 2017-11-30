@@ -28,8 +28,8 @@
 
 namespace DeskPRO\Bundle\AppBundle\TicketFilters\Terms;
 
+use DeskPRO\Bundle\AppBundle\TicketFilters\MatcherContext;
 use DeskPRO\Bundle\AppBundle\TicketFilters\Model\Entity\TicketModel;
-use DeskPRO\Bundle\AppBundle\TicketFilters\ValueResolver;
 use DeskPRO\Component\FilterQueryLanguage\Query\Node\Term;
 
 interface TermsHandlerInterface
@@ -63,11 +63,11 @@ interface TermsHandlerInterface
     public function getMatchFunctions();
 
     /**
-     * @param Term          $term
-     * @param TicketModel   $ticketModel
-     * @param ValueResolver $valueResolver
+     * @param Term           $term
+     * @param TicketModel    $ticketModel
+     * @param MatcherContext $valueResolver
      *
-     * @return mixed
+     * @return bool
      */
-    public function doesTicketMatch(Term $term, TicketModel $ticketModel, ValueResolver $valueResolver);
+    public function doesTicketMatch(Term $term, TicketModel $ticketModel, MatcherContext $valueResolver);
 }

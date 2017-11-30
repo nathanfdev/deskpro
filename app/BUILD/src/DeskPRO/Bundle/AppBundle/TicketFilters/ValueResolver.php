@@ -40,36 +40,9 @@ use DeskPRO\Component\FilterQueryLanguage\Query\Val\ScalarVal;
 use DeskPRO\Component\FilterQueryLanguage\Query\Val\Val;
 use DeskPRO\Component\FilterQueryLanguage\Query\Val\VarVal;
 use DeskPRO\Component\Util\ListUtils;
-use Symfony\Component\PropertyAccess\PropertyAccess;
 
-class ValueResolver implements ValueCheckContext
+class ValueResolver
 {
-    /**
-     * @var mixed
-     */
-    private $context;
-
-    /**
-     * @var callable
-     */
-    private $functionCaller;
-
-    /**
-     * @var \Symfony\Component\PropertyAccess\PropertyAccessor
-     */
-    private $contextAccess;
-
-    /**
-     * @param mixed    $context
-     * @param callable $functionCaller
-     */
-    public function __construct($context, callable $functionCaller = null)
-    {
-        $this->context        = $context;
-        $this->functionCaller = $functionCaller;
-        $this->contextAccess  = PropertyAccess::createPropertyAccessor();
-    }
-
     /**
      * @param mixed  $fieldValue
      * @param string $operator
@@ -172,62 +145,64 @@ class ValueResolver implements ValueCheckContext
     }
 
     /**
-     * @param             $fieldValue
-     * @param Term        $term
-     * @param TicketModel $ticketModel
-     * @param callable    $functionCaller Optionally a function caller that will be called before trying to call the one on this checker
+     * @param                $fieldValue
+     * @param Term           $term
+     * @param TicketModel    $ticketModel
+     * @param MatcherContext $matcherContext
      *
      * @return bool
      */
-    public function checkTermWithFieldValue($fieldValue, Term $term, TicketModel $ticketModel)
+    public function checkTermWithFieldValue($fieldValue, Term $term, TicketModel $ticketModel, MatcherContext $matcherContext)
     {
-        $optValue = $this->queryOptionValueFromTerm($term, $ticketModel);
+        $optValue = $this->queryOptionValueFromTerm($term, $ticketModel, $matcherContext);
         $operator = $term->operator->getOperator();
 
         return self::checkValue($fieldValue, $operator, $optValue);
     }
 
     /**
-     * @param FuncVal     $funcVal
-     * @param Term        $term
-     * @param TicketModel $ticketModel
+     * @param FuncVal        $funcVal
+     * @param Term           $term
+     * @param TicketModel    $ticketModel
+     * @param MatcherContext $matcherContext
      *
      * @return array
      */
-    public function getFuncCallParamValues(FuncVal $funcVal, Term $term, TicketModel $ticketModel)
+    public function getFuncCallParamValues(FuncVal $funcVal, Term $term, TicketModel $ticketModel, MatcherContext $matcherContext)
     {
         $params = [];
         foreach ($funcVal->params as $p) {
-            $params[] = $this->valueFromQueryValue($p, $term, $ticketModel);
+            $params[] = $this->valueFromQueryValue($p, $term, $ticketModel, $matcherContext);
         }
 
         return $params;
     }
 
     /**
-     * @param Term        $term
-     * @param TicketModel $ticketModel
+     * @param Term           $term
+     * @param TicketModel    $ticketModel
+     * @param MatcherContext $matcherContext
      *
      * @return array|mixed|null
      */
-    private function queryOptionValueFromTerm(Term $term, TicketModel $ticketModel)
+    private function queryOptionValueFromTerm(Term $term, TicketModel $ticketModel, MatcherContext $matcherContext)
     {
         $options = $term->options;
 
         switch (true) {
             case $options instanceof CompareOpt:
-                return self::valueFromQueryValue($options->value, $term, $ticketModel);
+                return self::valueFromQueryValue($options->value, $term, $ticketModel, $matcherContext);
 
             case $options instanceof BetweenOpt:
                 return [
-                    self::valueFromQueryValue($options->value1, $term, $ticketModel),
-                    self::valueFromQueryValue($options->value2, $term, $ticketModel),
+                    self::valueFromQueryValue($options->value1, $term, $ticketModel, $matcherContext),
+                    self::valueFromQueryValue($options->value2, $term, $ticketModel, $matcherContext),
                 ];
 
             case $term->options instanceof InOpt:
                 $value = [];
                 foreach ($term->options->valueList as $v) {
-                    $value[] = self::valueFromQueryValue($v, $term, $ticketModel);
+                    $value[] = self::valueFromQueryValue($v, $term, $ticketModel, $matcherContext);
                 }
 
                 return $value;
@@ -241,13 +216,14 @@ class ValueResolver implements ValueCheckContext
     }
 
     /**
-     * @param Val         $queryValue
-     * @param Term        $termContext
-     * @param TicketModel $ticketModel
+     * @param Val            $queryValue
+     * @param Term           $termContext
+     * @param TicketModel    $ticketModel
+     * @param MatcherContext $matcherContext
      *
      * @return mixed
      */
-    private function valueFromQueryValue(Val $queryValue, Term $termContext, TicketModel $ticketModel)
+    private function valueFromQueryValue(Val $queryValue, Term $termContext, TicketModel $ticketModel, MatcherContext $matcherContext)
     {
         switch (true) {
             case $queryValue instanceof ScalarVal:
@@ -262,19 +238,11 @@ class ValueResolver implements ValueCheckContext
                     $queryValue->params,
                     $termContext,
                     $ticketModel,
-                    $this /* for ValueCheckContext */
+                    $matcherContext
                 );
 
             default:
                 throw new \InvalidArgumentException("Unknown value type {$queryValue['valueType']}");
         }
-    }
-
-    /**
-     * {@inheritdoc}
-     */
-    public function getContextVariable($id)
-    {
-        return $this->contextAccess->getValue($this->context, $id);
     }
 }

@@ -28,6 +28,7 @@
 
 namespace DpTest\Bundle\AppBundle\TicketFilters;
 
+use DeskPRO\Bundle\AppBundle\TicketFilters\MatcherContext;
 use DeskPRO\Bundle\AppBundle\TicketFilters\Model\Context\AgentContext;
 use DeskPRO\Bundle\AppBundle\TicketFilters\Model\Entity\OrgModel;
 use DeskPRO\Bundle\AppBundle\TicketFilters\Model\Entity\PersonModel;
@@ -57,6 +58,11 @@ class TicketMatcherTest extends \PHPUnit_Framework_TestCase
     private $agentContext;
 
     /**
+     * @var MatcherContext
+     */
+    private $matcherContext;
+
+    /**
      * @var TicketMatcher
      */
     private $matcher;
@@ -66,11 +72,16 @@ class TicketMatcherTest extends \PHPUnit_Framework_TestCase
      */
     protected function setUp()
     {
-        $checker = new ValueResolver($this->agentContext, function () {
-        });
-        $this->matcher = new TicketMatcher($checker, [
-            new TicketBasicTermsHandler($checker),
-            new TicketSlaTermsHandler($checker),
+        $resolver                  = new ValueResolver();
+        $this->agentContext        = new AgentContext();
+        $this->agentContext->id    = 1;
+        $this->agentContext->teams = [1, 2, 3];
+
+        $this->matcherContext = new MatcherContext($this->agentContext);
+
+        $this->matcher = new TicketMatcher($resolver, [
+            new TicketBasicTermsHandler($resolver),
+            new TicketSlaTermsHandler($resolver),
         ]);
 
         // Ticket 1
@@ -182,7 +193,7 @@ class TicketMatcherTest extends \PHPUnit_Framework_TestCase
         return $this->matcher->doesQueryMatch(
             $this->parseFql($fql),
             $this->ticket1,
-            $this->agentContext
+            $this->matcherContext
         );
     }
 
@@ -191,7 +202,7 @@ class TicketMatcherTest extends \PHPUnit_Framework_TestCase
         return $this->matcher->doesQueryMatch(
             $this->parseFql($fql),
             $this->ticket2,
-            $this->agentContext
+            $this->matcherContext
         );
     }
 
