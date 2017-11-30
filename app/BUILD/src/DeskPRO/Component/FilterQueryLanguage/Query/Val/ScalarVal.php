@@ -26,27 +26,26 @@
  * ~ Thanks, Everyone at Team DeskPRO
  */
 
-namespace DeskPRO\Bundle\AppBundle\TicketFilters\Terms;
+namespace DeskPRO\Component\FilterQueryLanguage\Query\Val;
 
-use DeskPRO\Bundle\AppBundle\TicketFilters\Model\Context\AgentContext;
-use DeskPRO\Bundle\AppBundle\TicketFilters\Model\Entity\TicketModel;
-use DeskPRO\Component\FilterQueryLanguage\Query\Node\Term;
-
-interface TermsHandlerInterface
+class ScalarVal extends Val
 {
-    /**
-     * Return an array of fieds this term handler handles.
-     *
-     * @return string[]
-     */
-    public function getHandledFields();
+    const VAL_TYPE = '';
 
     /**
-     * @param Term         $term
-     * @param TicketModel  $ticketModel
-     * @param AgentContext $agentContext
-     *
-     * @return bool
+     * @var mixed
      */
-    public function doesTicketMatch(Term $term, TicketModel $ticketModel, AgentContext $agentContext);
+    public $value;
+
+    /**
+     * {@inheritdoc}
+     */
+    public function toArray()
+    {
+        return [
+            'valueType' => static::VAL_TYPE,
+            'value'     => $this->value,
+            'tokenPos'  => $this->tokenPos,
+        ];
+    }
 }

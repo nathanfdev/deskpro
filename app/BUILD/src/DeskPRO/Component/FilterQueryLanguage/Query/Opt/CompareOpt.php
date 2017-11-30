@@ -26,27 +26,35 @@
  * ~ Thanks, Everyone at Team DeskPRO
  */
 
-namespace DeskPRO\Bundle\AppBundle\TicketFilters\Terms;
+namespace DeskPRO\Component\FilterQueryLanguage\Query\Opt;
 
-use DeskPRO\Bundle\AppBundle\TicketFilters\Model\Context\AgentContext;
-use DeskPRO\Bundle\AppBundle\TicketFilters\Model\Entity\TicketModel;
-use DeskPRO\Component\FilterQueryLanguage\Query\Node\Term;
+use DeskPRO\Component\FilterQueryLanguage\Query\Val\Val;
 
-interface TermsHandlerInterface
+class CompareOpt extends Opt
 {
     /**
-     * Return an array of fieds this term handler handles.
-     *
-     * @return string[]
+     * @var Val
      */
-    public function getHandledFields();
+    public $value;
 
     /**
-     * @param Term         $term
-     * @param TicketModel  $ticketModel
-     * @param AgentContext $agentContext
+     * CompareOpt constructor.
      *
-     * @return bool
+     * @param Val $value
      */
-    public function doesTicketMatch(Term $term, TicketModel $ticketModel, AgentContext $agentContext);
+    public function __construct(Val $value)
+    {
+        $this->value = $value;
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function toArray()
+    {
+        return [
+            'optType' => self::OPT,
+            'value'   => $this->value->toArray(),
+        ];
+    }
 }

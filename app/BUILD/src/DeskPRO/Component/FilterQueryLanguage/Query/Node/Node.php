@@ -26,27 +26,14 @@
  * ~ Thanks, Everyone at Team DeskPRO
  */
 
-namespace DeskPRO\Bundle\AppBundle\TicketFilters\Terms;
+namespace DeskPRO\Component\FilterQueryLanguage\Query\Node;
 
-use DeskPRO\Bundle\AppBundle\TicketFilters\Model\Context\AgentContext;
-use DeskPRO\Bundle\AppBundle\TicketFilters\Model\Entity\TicketModel;
-use DeskPRO\Component\FilterQueryLanguage\Query\Node\Term;
+use DeskPRO\Component\FilterQueryLanguage\Query\QueryPart;
 
-interface TermsHandlerInterface
+abstract class Node extends QueryPart
 {
     /**
-     * Return an array of fieds this term handler handles.
-     *
-     * @return string[]
+     * @return array
      */
-    public function getHandledFields();
-
-    /**
-     * @param Term         $term
-     * @param TicketModel  $ticketModel
-     * @param AgentContext $agentContext
-     *
-     * @return bool
-     */
-    public function doesTicketMatch(Term $term, TicketModel $ticketModel, AgentContext $agentContext);
+    abstract public function toArray();
 }

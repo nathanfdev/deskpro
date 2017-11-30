@@ -26,27 +26,43 @@
  * ~ Thanks, Everyone at Team DeskPRO
  */
 
-namespace DeskPRO\Bundle\AppBundle\TicketFilters\Terms;
+namespace DeskPRO\Component\FilterQueryLanguage\Query\Opt;
 
-use DeskPRO\Bundle\AppBundle\TicketFilters\Model\Context\AgentContext;
-use DeskPRO\Bundle\AppBundle\TicketFilters\Model\Entity\TicketModel;
-use DeskPRO\Component\FilterQueryLanguage\Query\Node\Term;
+use DeskPRO\Component\FilterQueryLanguage\Query\Val\Val;
 
-interface TermsHandlerInterface
+class BetweenOpt extends Opt
 {
     /**
-     * Return an array of fieds this term handler handles.
-     *
-     * @return string[]
+     * @var Val
      */
-    public function getHandledFields();
+    public $value1;
 
     /**
-     * @param Term         $term
-     * @param TicketModel  $ticketModel
-     * @param AgentContext $agentContext
-     *
-     * @return bool
+     * @var Val
      */
-    public function doesTicketMatch(Term $term, TicketModel $ticketModel, AgentContext $agentContext);
+    public $value2;
+
+    /**
+     * BetweenOpt constructor.
+     *
+     * @param Val $value1
+     * @param Val $value2
+     */
+    public function __construct(Val $value1, Val $value2)
+    {
+        $this->value1 = $value1;
+        $this->value2 = $value2;
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function toArray()
+    {
+        return [
+            'optType' => self::OPT,
+            'value1'  => $this->value1->toArray(),
+            'value2'  => $this->value2->toArray(),
+        ];
+    }
 }

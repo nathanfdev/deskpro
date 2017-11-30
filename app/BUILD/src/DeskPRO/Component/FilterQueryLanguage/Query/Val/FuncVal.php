@@ -26,27 +26,51 @@
  * ~ Thanks, Everyone at Team DeskPRO
  */
 
-namespace DeskPRO\Bundle\AppBundle\TicketFilters\Terms;
+namespace DeskPRO\Component\FilterQueryLanguage\Query\Val;
 
-use DeskPRO\Bundle\AppBundle\TicketFilters\Model\Context\AgentContext;
-use DeskPRO\Bundle\AppBundle\TicketFilters\Model\Entity\TicketModel;
-use DeskPRO\Component\FilterQueryLanguage\Query\Node\Term;
+use DeskPRO\Component\FilterQueryLanguage\Query\Query;
 
-interface TermsHandlerInterface
+class FuncVal extends ComputedVal
 {
-    /**
-     * Return an array of fieds this term handler handles.
-     *
-     * @return string[]
-     */
-    public function getHandledFields();
+    const VAL_TYPE = Query::VAL_FUNC;
 
     /**
-     * @param Term         $term
-     * @param TicketModel  $ticketModel
-     * @param AgentContext $agentContext
-     *
-     * @return bool
+     * @var string
      */
-    public function doesTicketMatch(Term $term, TicketModel $ticketModel, AgentContext $agentContext);
+    public $name;
+
+    /**
+     * @var Val[]
+     */
+    public $params = [];
+
+    /**
+     * FuncVal constructor.
+     *
+     * @param string $name
+     * @param Val[]  $params
+     */
+    public function __construct($name, array $params = [])
+    {
+        $this->name   = $name;
+        $this->params = $params;
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function toArray()
+    {
+        $params = [];
+        foreach ($this->params as $p) {
+            $params[] = $p->toArray();
+        }
+
+        return [
+            'valueType' => self::VAL_TYPE,
+            'name'      => $this->name,
+            'params'    => $params,
+            'tokenPos'  => $this->tokenPos,
+        ];
+    }
 }

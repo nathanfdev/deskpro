@@ -33,7 +33,7 @@ class Parser
     /**
      * @param string $fqlQuery
      *
-     * @return array
+     * @return Query\Query
      */
     public function parseQuery($fqlQuery)
     {

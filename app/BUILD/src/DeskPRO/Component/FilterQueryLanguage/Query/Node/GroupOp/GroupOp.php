@@ -26,27 +26,28 @@
  * ~ Thanks, Everyone at Team DeskPRO
  */
 
-namespace DeskPRO\Bundle\AppBundle\TicketFilters\Terms;
+namespace DeskPRO\Component\FilterQueryLanguage\Query\Node\GroupOp;
 
-use DeskPRO\Bundle\AppBundle\TicketFilters\Model\Context\AgentContext;
-use DeskPRO\Bundle\AppBundle\TicketFilters\Model\Entity\TicketModel;
-use DeskPRO\Component\FilterQueryLanguage\Query\Node\Term;
+use DeskPRO\Component\FilterQueryLanguage\Query\Query;
+use DeskPRO\Component\FilterQueryLanguage\Query\QueryPart;
 
-interface TermsHandlerInterface
+abstract class GroupOp extends QueryPart
 {
-    /**
-     * Return an array of fieds this term handler handles.
-     *
-     * @return string[]
-     */
-    public function getHandledFields();
+    const OP = '';
 
-    /**
-     * @param Term         $term
-     * @param TicketModel  $ticketModel
-     * @param AgentContext $agentContext
-     *
-     * @return bool
-     */
-    public function doesTicketMatch(Term $term, TicketModel $ticketModel, AgentContext $agentContext);
+    public static function createGroupOp($op)
+    {
+        switch ($op) {
+            case Query::GROUP_OP_AND: return new AndGroupOp();
+            case Query::GROUP_OP_OR: return new OrGroupOp();
+            case Query::GROUP_OP_NOT: return new NotGroupOp();
+            default:
+                throw new \InvalidArgumentException('Invalid group op');
+        }
+    }
+
+    public function getOperator()
+    {
+        return static::OP;
+    }
 }

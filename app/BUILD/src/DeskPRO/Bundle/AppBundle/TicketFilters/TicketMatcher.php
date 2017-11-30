@@ -31,6 +31,12 @@ namespace DeskPRO\Bundle\AppBundle\TicketFilters;
 use DeskPRO\Bundle\AppBundle\TicketFilters\Model\Context\AgentContext;
 use DeskPRO\Bundle\AppBundle\TicketFilters\Model\Entity\TicketModel;
 use DeskPRO\Bundle\AppBundle\TicketFilters\Terms\TermsHandlerInterface;
+use DeskPRO\Component\FilterQueryLanguage\Query\Node\GroupOp\AndGroupOp;
+use DeskPRO\Component\FilterQueryLanguage\Query\Node\GroupOp\NotGroupOp;
+use DeskPRO\Component\FilterQueryLanguage\Query\Node\GroupOp\OrGroupOp;
+use DeskPRO\Component\FilterQueryLanguage\Query\Node\Term;
+use DeskPRO\Component\FilterQueryLanguage\Query\Node\TermGroup;
+use DeskPRO\Component\FilterQueryLanguage\Query\Query;
 
 class TicketMatcher
 {
@@ -66,11 +72,11 @@ class TicketMatcher
         }
     }
 
-    public function doesQueryMatch(array $query, TicketModel $ticketModel, AgentContext $agentContext)
+    public function doesQueryMatch(Query $query, TicketModel $ticketModel, AgentContext $agentContext)
     {
-        $rootPart = $query['query'];
+        $rootPart = $query->root;
 
-        if ($rootPart['type'] === 'TERM_GROUP') {
+        if ($rootPart instanceof TermGroup) {
             return $this->doesTermGroupMatch($rootPart, $ticketModel, $agentContext);
         } else {
             return $this->doesTermMatch($rootPart, $ticketModel, $agentContext);
@@ -84,18 +90,14 @@ class TicketMatcher
      *
      * @return bool
      */
-    private function doesTermGroupMatch(array $termGroup, TicketModel $ticketModel, AgentContext $agentContext)
+    private function doesTermGroupMatch(TermGroup $termGroup, TicketModel $ticketModel, AgentContext $agentContext)
     {
-        if ($termGroup['type'] !== 'TERM_GROUP') {
-            throw new \InvalidArgumentException('Only TERM_GROUP types can be matched');
-        }
-
-        $op       = $termGroup['operator'];
+        $op       = $termGroup->operator;
         $anyMatch = false;
         $anyFail  = false;
 
-        foreach ($termGroup['terms'] as $term) {
-            if ($term['type'] === 'TERM_GROUP') {
+        foreach ($termGroup->terms as $term) {
+            if ($term instanceof TermGroup) {
                 if ($this->doesTermGroupMatch($term, $ticketModel, $agentContext)) {
                     $anyMatch = true;
                 } else {
@@ -110,23 +112,23 @@ class TicketMatcher
             }
 
             // possible return early
-            if ($op === 'OR' && $anyMatch) {
+            if ($op instanceof OrGroupOp && $anyMatch) {
                 return true;
-            } elseif ($op === 'AND' && $anyFail) {
+            } elseif ($op instanceof AndGroupOp && $anyFail) {
                 return false;
             }
         }
 
-        if ($op === 'OR') {
+        if ($op instanceof OrGroupOp) {
             return $anyMatch;
         }
 
-        if ($op === 'AND') {
+        if ($op instanceof AndGroupOp) {
             return $anyMatch && !$anyFail;
         }
 
         // not is actually interretted as NOT (AND)
-        if ($op === 'NOT') {
+        if ($op instanceof NotGroupOp) {
             return !($anyMatch && !$anyFail);
         }
 
@@ -138,13 +140,9 @@ class TicketMatcher
      * @param TicketModel  $ticketModel
      * @param AgentContext $agentContext
      */
-    public function doesTermMatch(array $term, TicketModel $ticketModel, AgentContext $agentContext)
+    public function doesTermMatch(Term $term, TicketModel $ticketModel, AgentContext $agentContext)
     {
-        if ($term['type'] !== 'TERM') {
-            throw new \InvalidArgumentException('Only TERM types can be matched');
-        }
-
-        $fieldId = $term['field']['identity'];
+        $fieldId = $term->field->identity;
 
         if (empty($this->fieldToHandler[$fieldId])) {
             throw new \OutOfBoundsException("No handler is capable of handling $fieldId");

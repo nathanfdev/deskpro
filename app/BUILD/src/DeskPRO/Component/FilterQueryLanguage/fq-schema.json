@@ -34,7 +34,6 @@
           "enum": [
             "=", "!=", "<", "<=", ">", ">=", "!",
             "IN", "NOT_IN",
-            "IS", "IS_NOT",
             "IS_NULL", "NOT_NULL",
             "EMPTY", "NOT_EMPTY",
             "EXISTS", "NOT_EXISTS",
@@ -56,14 +55,11 @@
       "required": ["identity"],
       "properties": {
         "identity": { "type": "string" },
-        "name": { "type": "string" },
-        "path": { "type": "string" }
       }
     },
     "scalarValue": {
       "required": ["valueType", "value"],
       "properties": {
-        "type": { "type": "string", "const": "VAL" },
         "valueType": {
           "enum": [
             "BOOLEAN", "NUMERIC", "STRING"
@@ -75,17 +71,13 @@
     "varValue": {
       "required": ["valueType", "identity"],
       "properties": {
-        "type": { "type": "string", "const": "VAL" },
         "valueType": { "type": "string", "const": "VAR" },
-        "identity": { "type": "string" },
-        "name": { "type": "string" },
-        "path": { "type": "string" }
+        "identity": { "type": "string" }
       }
     },
     "funcValue": {
       "required": ["valueType", "name"],
       "properties": {
-        "type": { "type": "string", "const": "VAL" },
         "valueType": { "type": "string", "const": "FUNC" },
         "name": { "type": "string" },
         "params": {

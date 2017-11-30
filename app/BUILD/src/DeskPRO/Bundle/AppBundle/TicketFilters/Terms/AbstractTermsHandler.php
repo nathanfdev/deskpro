@@ -28,25 +28,22 @@
 
 namespace DeskPRO\Bundle\AppBundle\TicketFilters\Terms;
 
-use DeskPRO\Bundle\AppBundle\TicketFilters\Model\Context\AgentContext;
-use DeskPRO\Bundle\AppBundle\TicketFilters\Model\Entity\TicketModel;
-use DeskPRO\Component\FilterQueryLanguage\Query\Node\Term;
+use DeskPRO\Bundle\AppBundle\TicketFilters\ValueChecker;
 
-interface TermsHandlerInterface
+abstract class AbstractTermsHandler implements TermsHandlerInterface
 {
     /**
-     * Return an array of fieds this term handler handles.
-     *
-     * @return string[]
+     * @var ValueChecker
      */
-    public function getHandledFields();
+    protected $valueChecker;
 
     /**
-     * @param Term         $term
-     * @param TicketModel  $ticketModel
-     * @param AgentContext $agentContext
+     * AbstractTermsHandler constructor.
      *
-     * @return bool
+     * @param ValueChecker $valueChecker
      */
-    public function doesTicketMatch(Term $term, TicketModel $ticketModel, AgentContext $agentContext);
+    public function __construct(ValueChecker $valueChecker)
+    {
+        $this->valueChecker = $valueChecker;
+    }
 }

@@ -30,6 +30,7 @@ namespace DeskPRO\Bundle\AppBundle\TicketFilters\Terms;
 
 use DeskPRO\Bundle\AppBundle\TicketFilters\Model\Context\AgentContext;
 use DeskPRO\Bundle\AppBundle\TicketFilters\Model\Entity\TicketModel;
+use DeskPRO\Component\FilterQueryLanguage\Query\Node\Term;
 
 class TicketDateTermsHandler implements TermsHandlerInterface
 {
@@ -50,7 +51,7 @@ class TicketDateTermsHandler implements TermsHandlerInterface
     /**
      * {@inheritdoc}
      */
-    public function doesTicketMatch(array $term, TicketModel $ticketModel, AgentContext $agentContext)
+    public function doesTicketMatch(Term $term, TicketModel $ticketModel, AgentContext $agentContext)
     {
         return false;
     }

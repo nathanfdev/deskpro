@@ -26,31 +26,55 @@
  * ~ Thanks, Everyone at Team DeskPRO
  */
 
-namespace DeskPRO\Bundle\AppBundle\TicketFilters\Terms;
+namespace DeskPRO\Component\FilterQueryLanguage\Query\Node;
 
-use DeskPRO\Bundle\AppBundle\TicketFilters\Model\Context\AgentContext;
-use DeskPRO\Bundle\AppBundle\TicketFilters\Model\Entity\TicketModel;
-use DeskPRO\Component\FilterQueryLanguage\Query\Node\Term;
+use DeskPRO\Component\FilterQueryLanguage\Query\Field;
+use DeskPRO\Component\FilterQueryLanguage\Query\Op\Op;
+use DeskPRO\Component\FilterQueryLanguage\Query\Opt\Opt;
+use DeskPRO\Component\FilterQueryLanguage\Query\Query;
 
-class OrgTermsHandler implements TermsHandlerInterface
+class Term extends Node
 {
+    const TYPE = Query::NODE_TERM;
+
     /**
-     * {@inheritdoc}
+     * @var Op
      */
-    public function getHandledFields()
+    public $operator;
+
+    /**
+     * @var Field
+     */
+    public $field;
+
+    /**
+     * @var array|Opt
+     */
+    public $options;
+
+    /**
+     * @param Op    $operator
+     * @param Field $field
+     * @param Opt   $options
+     */
+    public function __construct(Op $operator, Field $field, Opt $options)
     {
-        return [
-            Terms::ORG_ID,
-            Terms::ORG_LABELS,
-            Terms::ORG_USERGROUPS,
-        ];
+        $this->operator = $operator;
+        $this->field    = $field;
+        $this->options  = $options;
     }
 
     /**
-     * {@inheritdoc}
+     * @return array
      */
-    public function doesTicketMatch(Term $term, TicketModel $ticketModel, AgentContext $agentContext)
+    public function toArray()
     {
-        return false;
+        return [
+            'type'     => self::TYPE,
+            'field'    => $this->field->toArray(),
+            'operator' => $this->operator->getOperator(),
+            'options'  => $this->options->toArray(),
+            'tokenPos' => $this->tokenPos,
+        ];
     }
 }

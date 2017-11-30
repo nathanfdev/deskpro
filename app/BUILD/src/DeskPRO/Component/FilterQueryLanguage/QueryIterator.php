@@ -28,21 +28,26 @@
 
 namespace DeskPRO\Component\FilterQueryLanguage;
 
+use DeskPRO\Component\FilterQueryLanguage\Query\Node\Term;
+use DeskPRO\Component\FilterQueryLanguage\Query\Node\TermGroup;
+
 /**
  * Use this iterator to iterate over every node of a query.
  */
 class QueryIterator extends \ArrayIterator implements \RecursiveIterator
 {
-    public function __construct(array $query)
+    public function __construct(Query\Query $query)
     {
-        parent::__construct($query['query']);
+        if ($query->root instanceof TermGroup) {
+            parent::__construct($query->root->terms);
+        } else {
+            parent::__construct($query->root);
+        }
     }
 
     public function hasChildren()
     {
-        $c = $this->current();
-
-        return !empty($c['type']) && $c['type'] === 'TERM_GROUP';
+        return $this->current() instanceof TermGroup;
     }
 
     /**
@@ -50,28 +55,24 @@ class QueryIterator extends \ArrayIterator implements \RecursiveIterator
      */
     public function getChildren()
     {
-        $c = $this->current();
-
-        return !empty($c['type']) && $c['type'] === 'TERM_GROUP'
-            ? $c['terms']
-            : [];
+        return $this->current()->terms;
     }
 
     /**
      * Iterate through a query and collect the identities of all
      * referenced fields.
      *
-     * @param array $query
+     * @param Query\Query $query
      *
      * @return string[]
      */
-    public static function collectFieldIds(array $query)
+    public static function collectFieldIds(Query\Query $query)
     {
         $fields = [];
 
         foreach (new self($query) as $n) {
-            if ($n['type'] === 'TERM') {
-                $fields[] = $n['field']['identity'];
+            if ($n instanceof Term) {
+                $fields[] = $n->field->identity;
             }
         }
 

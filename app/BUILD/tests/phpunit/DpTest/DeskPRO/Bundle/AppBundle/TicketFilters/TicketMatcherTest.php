@@ -37,6 +37,7 @@ use DeskPRO\Bundle\AppBundle\TicketFilters\Terms\PersonTermsHandler;
 use DeskPRO\Bundle\AppBundle\TicketFilters\Terms\TicketBasicTermsHandler;
 use DeskPRO\Bundle\AppBundle\TicketFilters\Terms\TicketDateTermsHandler;
 use DeskPRO\Bundle\AppBundle\TicketFilters\TicketMatcher;
+use DeskPRO\Bundle\AppBundle\TicketFilters\ValueChecker;
 use DeskPRO\Component\FilterQueryLanguage\Parser;
 
 class TicketMatcherTest extends \PHPUnit_Framework_TestCase
@@ -66,8 +67,10 @@ class TicketMatcherTest extends \PHPUnit_Framework_TestCase
      */
     protected function setUp()
     {
+        $checker = new ValueChecker($this->agentContext, function () {
+        });
         $this->matcher = new TicketMatcher([
-            new TicketBasicTermsHandler(),
+            new TicketBasicTermsHandler($checker),
             new TicketDateTermsHandler(),
             new PersonTermsHandler(),
             new OrgTermsHandler(),

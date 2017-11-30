@@ -28,6 +28,8 @@
 
 namespace DeskPRO\Component\FilterQueryLanguage;
 
+use DeskPRO\Component\FilterQueryLanguage\Query\QueryPart;
+
 /**
  * This actually parses a query. This is meant for internal use only.
  * Use the Parser class as the wrapper around this.
@@ -48,21 +50,23 @@ class QueryParser
      *
      * @var Query
      */
-    private $query;
+    private $fqlQuery;
 
     /**
      * Creates a new query parser object.
      *
-     * @param Query $query The Query to parse
+     * @param Query $fqlQuery The Query to parse
      */
-    public function __construct($query)
+    public function __construct($fqlQuery)
     {
-        $this->query = $query;
-        $this->lexer = new Lexer($query);
+        $this->fqlQuery = $fqlQuery;
+        $this->lexer    = new Lexer($fqlQuery);
     }
 
     /**
      * Parses a filter query to simple arrays.
+     *
+     * @return Query\Query
      */
     public function parse()
     {
@@ -76,11 +80,7 @@ class QueryParser
             $this->syntaxError('end of string');
         }
 
-        return [
-            'fql'   => $this->query,
-            'type'  => 'QUERY',
-            'query' => $expr,
-        ];
+        return new Query\Query($expr, $this->fqlQuery);
     }
 
     /**
@@ -141,7 +141,7 @@ class QueryParser
         $message .= ($expected !== '') ? "Expected {$expected}, got " : 'Unexpected ';
         $message .= ($this->lexer->lookahead === null) ? 'end of string.' : "'{$token['value']}'";
 
-        throw QueryException::syntaxError($message, QueryException::queryError($this->query));
+        throw QueryException::syntaxError($message, QueryException::queryError($this->fqlQuery));
     }
 
     /**
@@ -160,7 +160,7 @@ class QueryParser
         $distance = 12;
 
         // Find a position of a final word to display in error string
-        $dql    = $this->query;
+        $dql    = $this->fqlQuery;
         $length = strlen($dql);
         $pos    = $token['position'] + $distance;
         $pos    = strpos($dql, ' ', ($length > $pos) ? $pos : $length);
@@ -172,7 +172,7 @@ class QueryParser
         // Building informative message
         $message = 'line 0, col '.$tokenPos." near '".$tokenStr."': Error: ".$message;
 
-        throw QueryException::semanticalError($message, QueryException::queryError($this->query));
+        throw QueryException::semanticalError($message, QueryException::queryError($this->fqlQuery));
     }
 
     /**
@@ -228,6 +228,9 @@ class QueryParser
 
     // -----------------------------------------------------------------------------------------------------------------
 
+    /**
+     * @return Query\Field
+     */
     public function IdentificationVariable()
     {
         $this->match(Lexer::T_IDENTIFIER);
@@ -249,25 +252,10 @@ class QueryParser
             }
         }
 
-        // Creating AST node
-        $pathExpr = [
-            'identity' => $identVariable.($field ? '.'.$field : ''),
-            'name'     => $identVariable,
-            'path'     => $field ?: null,
-            'tokenPos' => $tokenPos,
-        ];
-
-        return $pathExpr;
-    }
-
-    public function CompareFieldValue()
-    {
-        $peek = $this->lexer->glimpse();
-        if ($peek['type'] === Lexer::T_OPEN_PARENTHESIS) {
-            return $this->FunctionDeclaration();
-        } else {
-            return $this->IdentificationVariable();
-        }
+        return $this->addTokenPos(
+            new Query\Field($identVariable.($field ? '.'.$field : '')),
+            $tokenPos
+        );
     }
 
     public function ScalarExpression()
@@ -286,18 +274,12 @@ class QueryParser
             case $lookahead === Lexer::T_FALSE:
                 $this->match($lookahead);
 
-                return [
-                    'type'      => 'VAL',
-                    'valueType' => 'BOOLEAN',
-                    'value'     => $lookahead === Lexer::T_TRUE ? true : false,
-                    'tokenPos'  => $this->lexer->token['position'],
-                ];
+                return $this->addTokenPos(new Query\Val\BoolVal(
+                    $lookahead === Lexer::T_TRUE ? true : false
+                ), $this->lexer->token['position']);
 
             case $lookahead === Lexer::T_INPUT_PARAMETER:
-                switch (true) {
-                    default:
-                        return $this->InputParameter();
-                }
+                return $this->InputParameter();
 
             case $lookahead === Lexer::T_OPEN_PARENTHESIS:
                 return $this->ArithmeticPrimary();
@@ -306,14 +288,9 @@ class QueryParser
             case $this->isFunction():
                 $this->lexer->peek(); // "("
                 return $this->FunctionDeclaration();
-                break;
+
             // it is no function, so it must be a field path
             case $lookahead === Lexer::T_IDENTIFIER:
-                $this->lexer->peek(); // lookahead => '.'
-                $this->lexer->peek(); // lookahead => token after '.'
-                $peek = $this->lexer->peek(); // lookahead => token after the token after the '.'
-                $this->lexer->resetPeek();
-
                 return $this->IdentificationVariable();
 
             default:
@@ -338,11 +315,10 @@ class QueryParser
             return $conditionalTerms[0];
         }
 
-        return [
-            'type'     => 'TERM_GROUP',
-            'operator' => 'OR',
-            'terms'    => $conditionalTerms,
-        ];
+        return new Query\Node\TermGroup(
+            Query\Node\GroupOp\GroupOp::createGroupOp(Query\Query::GROUP_OP_OR),
+            $conditionalTerms
+        );
     }
 
     public function ConditionalTerm()
@@ -362,11 +338,10 @@ class QueryParser
             return $conditionalFactors[0];
         }
 
-        return [
-            'type'     => 'TERM_GROUP',
-            'operator' => 'AND',
-            'terms'    => $conditionalFactors,
-        ];
+        return new Query\Node\TermGroup(
+            Query\Node\GroupOp\GroupOp::createGroupOp(Query\Query::GROUP_OP_AND),
+            $conditionalFactors
+        );
     }
 
     public function ConditionalFactor()
@@ -387,13 +362,10 @@ class QueryParser
             return $conditionalPrimary;
         }
 
-        return [
-            'type'     => 'TERM_GROUP',
-            'operator' => 'NOT',
-            'terms'    => [
-                $conditionalPrimary,
-            ],
-        ];
+        return new Query\Node\TermGroup(
+            Query\Node\GroupOp\GroupOp::createGroupOp(Query\Query::GROUP_OP_NOT),
+            [$conditionalPrimary]
+        );
     }
 
     public function ConditionalPrimary()
@@ -427,7 +399,7 @@ class QueryParser
             $token = $this->lexer->glimpse();
         }
 
-        if ($token['type'] === Lexer::T_IDENTIFIER || $token['type'] === Lexer::T_INPUT_PARAMETER || $this->isFunction()) {
+        if ($token['type'] === Lexer::T_IDENTIFIER) {
             // Peek beyond the matching closing parenthesis.
             $beyond = $this->lexer->peek();
 
@@ -497,22 +469,9 @@ class QueryParser
 
     public function EmptyCollectionComparisonExpression()
     {
-        switch (true) {
-            case $this->lexer->isNextToken(Lexer::T_INPUT_PARAMETER):
-                $expr = $this->InputParameter();
-                break;
-
-            case $this->isFunction():
-                $expr = $this->FunctionDeclaration();
-                break;
-
-            default:
-                $expr = $this->IdentificationVariable();
-                break;
-        }
-
-        $this->match(Lexer::T_IS);
+        $field    = $this->CompareField();
         $tokenPos = $this->lexer->token['position'];
+        $this->match(Lexer::T_IS);
 
         $not = false;
         if ($this->lexer->isNextToken(Lexer::T_NOT)) {
@@ -522,30 +481,16 @@ class QueryParser
 
         $this->match(Lexer::T_EMPTY);
 
-        return [
-            'type'     => 'TERM',
-            'field'    => $expr,
-            'operator' => $not ? 'NOT_EMPTY' : 'IS_EMPTY',
-            'tokenPos' => $tokenPos,
-        ];
+        return $this->addTokenPos(new Query\Node\Term(
+            Query\Op\Op::createOp($not ? Query\Query::OP_NOT_EMPTY : Query\Query::OP_EMPTY),
+            $field,
+            new Query\Opt\NoOpt()
+        ), $tokenPos);
     }
 
     public function ExistsExpression()
     {
-        switch (true) {
-            case $this->lexer->isNextToken(Lexer::T_INPUT_PARAMETER):
-                $expr = $this->InputParameter();
-                break;
-
-            case $this->isFunction():
-                $expr = $this->FunctionDeclaration();
-                break;
-
-            default:
-                $expr = $this->IdentificationVariable();
-                break;
-        }
-
+        $field    = $this->CompareField();
         $tokenPos = $this->lexer->token['position'];
 
         $not = false;
@@ -556,12 +501,11 @@ class QueryParser
 
         $this->match(Lexer::T_EXISTS);
 
-        return [
-            'type'     => 'TERM',
-            'field'    => $expr,
-            'operator' => $not ? 'NOT_EXISTS' : 'EXISTS',
-            'tokenPos' => $tokenPos,
-        ];
+        return $this->addTokenPos(new Query\Node\Term(
+            Query\Op\Op::createOp($not ? Query\Query::OP_NOT_EXISTS : Query\Query::OP_EXISTS),
+            $field,
+            new Query\Opt\NoOpt()
+        ), $tokenPos);
     }
 
     public function Literal($identifierAsString = false)
@@ -570,23 +514,17 @@ class QueryParser
             case Lexer::T_STRING:
                 $this->match(Lexer::T_STRING);
 
-                return [
-                    'type'      => 'VAL',
-                    'valueType' => 'STRING',
-                    'value'     => $this->lexer->token['value'],
-                    'tokenPos'  => $this->lexer->token['position'],
-                ];
+                return $this->addTokenPos(new Query\Val\StringVal(
+                    $this->lexer->token['value']
+                ), $this->lexer->token['position']);
 
             case Lexer::T_IDENTIFIER:
                 if ($identifierAsString) {
                     $this->match(Lexer::T_IDENTIFIER);
 
-                    return [
-                        'type'      => 'VAL',
-                        'valueType' => 'STRING',
-                        'value'     => $this->lexer->token['value'],
-                        'tokenPos'  => $this->lexer->token['position'],
-                    ];
+                    return $this->addTokenPos(new Query\Val\StringVal(
+                        $this->lexer->token['value']
+                    ), $this->lexer->token['position']);
                 }
                 break;
 
@@ -596,12 +534,9 @@ class QueryParser
                     $this->lexer->isNextToken(Lexer::T_INTEGER) ? Lexer::T_INTEGER : Lexer::T_FLOAT
                 );
 
-                return [
-                    'type'      => 'VAL',
-                    'valueType' => 'NUMERIC',
-                    'value'     => $this->lexer->token['value'],
-                    'tokenPos'  => $this->lexer->token['position'],
-                ];
+                return $this->addTokenPos(new Query\Val\NumericVal(
+                    $this->lexer->token['value']
+                ), $this->lexer->token['position']);
 
             case Lexer::T_TRUE:
             case Lexer::T_FALSE:
@@ -609,12 +544,9 @@ class QueryParser
                     $this->lexer->isNextToken(Lexer::T_TRUE) ? Lexer::T_TRUE : Lexer::T_FALSE
                 );
 
-                return [
-                    'type'      => 'VAL',
-                    'valueType' => 'BOOLEAN',
-                    'value'     => $this->lexer->token['type'] === Lexer::T_TRUE ? true : false,
-                    'tokenPos'  => $this->lexer->token['position'],
-                ];
+                return $this->addTokenPos(new Query\Val\BoolVal(
+                    $this->lexer->token['type'] === Lexer::T_TRUE ? true : false
+                ), $this->lexer->token['position']);
 
             case Lexer::T_REL_TIME:
                 $this->match(Lexer::T_REL_TIME);
@@ -630,6 +562,7 @@ class QueryParser
 
                 $timeParts = array_map(function ($t) {
                     $num = substr($t, 0, -1);
+                    $unit = null;
                     switch (substr($t, -1)) {
                         case 'h': $unit = 'hour'; break;
                         case 'd': $unit = 'day'; break;
@@ -639,30 +572,16 @@ class QueryParser
                         default: $this->semanticalError('Invalid relative date unit', $this->lexer->token);
                     }
 
-                    return ['unit' => $unit, 'num' => $num];
+                    return Query\Val\RelativeTimeVal::makeTime($num, $unit);
                 }, $timePartsRaw);
 
-                return [
-                    'type'      => 'VAL',
-                    'valueType' => 'RELATIVE_TIME',
-                    'value'     => [
-                        'mode'  => $sign === '-' ? 'past' : 'future',
-                        'times' => $timeParts,
-                    ],
-                    'tokenPos' => $this->lexer->token['position'],
-                ];
+                return $this->addTokenPos(new Query\Val\RelativeTimeVal(
+                    $sign === '-' ? Query\Val\RelativeTimeVal::MODE_PAST : Query\Val\RelativeTimeVal::MODE_FUTURE,
+                    $timeParts
+                ), $this->lexer->token['position']);
         }
 
         $this->syntaxError('Literal');
-    }
-
-    public function InParameter()
-    {
-        if ($this->lexer->lookahead['type'] == Lexer::T_INPUT_PARAMETER) {
-            return $this->InputParameter();
-        }
-
-        return $this->Literal(true);
     }
 
     public function InputParameter()
@@ -686,14 +605,10 @@ class QueryParser
             }
         }
 
-        // Creating AST node
-        $pathExpr = [
-            'valueType' => 'VAR',
-            'identity'  => $identVariable.($field !== null ? '.'.$field : ''),
-            'name'      => $identVariable,
-            'path'      => $field !== null ? $field : '',
-            'tokenPos'  => $tokenPos,
-        ];
+        return $this->addTokenPos(
+            new Query\Val\VarVal($identVariable.($field !== null ? '.'.$field : '')),
+            $tokenPos
+        );
 
         return $pathExpr;
     }
@@ -716,10 +631,6 @@ class QueryParser
                 if ($identifierAsString) {
                     return $this->Literal(true);
                 } else {
-                    if ($peek['value'] == '.') {
-                        return $this->IdentificationVariable();
-                    }
-
                     return $this->IdentificationVariable();
                 }
 
@@ -765,12 +676,9 @@ class QueryParser
             case Lexer::T_STRING:
                 $this->match(Lexer::T_STRING);
 
-                return [
-                    'type'      => 'VAL',
-                    'valueType' => 'STRING',
-                    'value'     => $this->lexer->token['value'],
-                    'tokenPos'  => $this->lexer->token['position'],
-                ];
+                return $this->addTokenPos(new Query\Val\StringVal(
+                    $this->lexer->token['value']
+                ), $this->lexer->token['position']);
 
             case Lexer::T_INPUT_PARAMETER:
                 return $this->InputParameter();
@@ -782,7 +690,7 @@ class QueryParser
         }
 
         $this->syntaxError(
-            'StateFieldPathExpression | string | InputParameter | FunctionsReturningStrings | AggregateExpression'
+            'string | variable | function'
         );
     }
 
@@ -790,7 +698,8 @@ class QueryParser
     {
         $not = false;
 
-        $var = $this->IdentificationVariable();
+        $field    = $this->CompareField();
+        $tokenPos = $this->lexer->token['position'];
 
         if ($this->lexer->isNextToken(Lexer::T_NOT)) {
             $this->match(Lexer::T_NOT);
@@ -798,44 +707,39 @@ class QueryParser
         }
 
         $this->match(Lexer::T_BETWEEN);
-        $tokenPos   = $this->lexer->token['position'];
         $arithExpr2 = $this->ArithmeticExpression(true);
         $this->match(Lexer::T_AND);
         $arithExpr3 = $this->ArithmeticExpression(true);
 
-        $betweenExpr = [
-            'type'     => 'TERM',
-            'field'    => $var,
-            'operator' => $not ? 'BETWEEN' : 'NOT_BETWEEN',
-            'options'  => ['value1' => $arithExpr2, 'value2' => $arithExpr3],
-            'tokenPos' => $tokenPos,
-        ];
-
-        return $betweenExpr;
+        return $this->addTokenPos(new Query\Node\Term(
+            Query\Op\Op::createOp(!$not ? Query\Query::OP_BETWEEN : Query\Query::OP_NOT_BETWEEN),
+            $field,
+            new Query\Opt\BetweenOpt($arithExpr2, $arithExpr3)
+        ), $tokenPos);
     }
 
     public function ComparisonExpression()
     {
         $this->lexer->glimpse();
 
-        $var       = $this->CompareFieldValue();
+        $field     = $this->CompareField();
         $tokenPos  = $this->lexer->token['position'];
         $operator  = $this->ComparisonOperator();
         $rightExpr = $this->ArithmeticExpression(true);
 
-        return [
-            'type'     => 'TERM',
-            'field'    => $var,
-            'operator' => $operator,
-            'options'  => ['value' => $rightExpr],
-            'tokenPos' => $tokenPos,
-        ];
+        return $this->addTokenPos(new Query\Node\Term(
+            Query\Op\Op::createOp($operator),
+            $field,
+            new Query\Opt\CompareOpt($rightExpr)
+        ), $tokenPos);
     }
 
     public function InExpression()
     {
-        $var = $this->IdentificationVariable();
-        $not = false;
+        $field = $this->CompareField();
+        $not   = false;
+
+        $tokenPos = $this->lexer->token['position'];
 
         if ($this->lexer->isNextToken(Lexer::T_NOT)) {
             $this->match(Lexer::T_NOT);
@@ -843,56 +747,36 @@ class QueryParser
         }
 
         $this->match(Lexer::T_IN);
-        $tokenPos = $this->lexer->token['position'];
 
         if ($this->lexer->isNextToken(Lexer::T_OPEN_PARENTHESIS)) {
             $this->match(Lexer::T_OPEN_PARENTHESIS);
 
             $literals   = [];
-            $literals[] = $this->InParameter();
+            $literals[] = $this->Literal(true);
 
             while ($this->lexer->isNextToken(Lexer::T_COMMA)) {
                 $this->match(Lexer::T_COMMA);
-                $literals[] = $this->InParameter();
+                $literals[] = $this->Literal(true);
             }
 
             $this->match(Lexer::T_CLOSE_PARENTHESIS);
 
-            return [
-                'type'     => 'TERM',
-                'field'    => $var,
-                'operator' => $not ? 'NOT_IN' : 'IN',
-                'options'  => ['valueList' => $literals],
-                'tokenPos' => $tokenPos,
-            ];
+            $opt = new Query\Opt\InOpt($literals);
         } else {
             $expr = $this->FunctionDeclaration();
-
-            return [
-                'type'     => 'TERM',
-                'field'    => $var,
-                'operator' => $not ? 'NOT_IN' : 'IN',
-                'options'  => ['value' => $expr],
-                'tokenPos' => $tokenPos,
-            ];
+            $opt  = new Query\Opt\InFuncOpt([$expr]);
         }
+
+        return $this->addTokenPos(new Query\Node\Term(
+            Query\Op\Op::createOp(!$not ? Query\Query::OP_IN : Query\Query::OP_NOT_IN),
+            $field,
+            $opt
+        ), $tokenPos);
     }
 
     public function NullComparisonExpression()
     {
-        switch (true) {
-            case $this->lexer->isNextToken(Lexer::T_INPUT_PARAMETER):
-                $expr = $this->InputParameter();
-                break;
-
-            case $this->isFunction():
-                $expr = $this->FunctionDeclaration();
-                break;
-
-            default:
-                $expr = $this->IdentificationVariable();
-                break;
-        }
+        $field = $this->CompareField();
 
         $this->match(Lexer::T_IS);
         $tokenPos = $this->lexer->token['position'];
@@ -905,12 +789,11 @@ class QueryParser
 
         $this->match(Lexer::T_NULL);
 
-        return [
-            'type'     => 'TERM',
-            'field'    => $expr,
-            'operator' => $not ? 'NOT_NULL' : 'IS_NULL',
-            'tokenPos' => $tokenPos,
-        ];
+        return $this->addTokenPos(new Query\Node\Term(
+            Query\Op\Op::createOp(!$not ? Query\Query::OP_IS_NULL : Query\Query::OP_NOT_NULL),
+            $field,
+            new Query\Opt\NoOpt()
+        ), $tokenPos);
     }
 
     public function ComparisonOperator()
@@ -957,6 +840,25 @@ class QueryParser
         }
     }
 
+    public function CompareField()
+    {
+        switch (true) {
+            case $this->lexer->isNextToken(Lexer::T_INPUT_PARAMETER):
+                $token = $this->lexer->glimpse();
+                $expr  = $this->InputParameter();
+                $this->semanticalError("Only fields can be filtered on, got a variable \${$expr->identity}", $token);
+                break;
+
+            case $this->isFunction():
+                $token = $this->lexer->token;
+                $expr  = $this->FunctionDeclaration();
+                $this->semanticalError("Only fields can be filtered on, got a function {$expr->name}()", $token);
+                break;
+        }
+
+        return $this->IdentificationVariable();
+    }
+
     public function FunctionDeclaration()
     {
         $token    = $this->lexer->lookahead;
@@ -969,22 +871,28 @@ class QueryParser
         $literals = [];
 
         if ($this->lexer->lookahead['type'] !== Lexer::T_CLOSE_PARENTHESIS) {
-            $literals[] = $this->InParameter();
+            $literals[] = $this->Literal(true);
 
             while ($this->lexer->isNextToken(Lexer::T_COMMA)) {
                 $this->match(Lexer::T_COMMA);
-                $literals[] = $this->InParameter();
+                $literals[] = $this->Literal(true);
             }
         }
 
         $this->match(Lexer::T_CLOSE_PARENTHESIS);
 
-        return [
-            'type'      => 'VAL',
-            'valueType' => 'FUNC',
-            'name'      => $funcName,
-            'params'    => $literals,
-            'tokenPos'  => $tokenPos,
-        ];
+        return $this->addTokenPos(new Query\Val\FuncVal(
+            $funcName,
+            $literals
+        ), $tokenPos);
+    }
+
+    private function addTokenPos(QueryPart $p, $tokenPos)
+    {
+        if ($tokenPos) {
+            $p->tokenPos = $tokenPos;
+        }
+
+        return $p;
     }
 }

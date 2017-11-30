@@ -36,7 +36,6 @@ use DeskPRO\Component\FilterQueryLanguage;
 use Symfony\Bundle\FrameworkBundle\Command\ContainerAwareCommand;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
-use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
 
 class ParseFqlCommand extends ContainerAwareCommand
@@ -47,8 +46,7 @@ class ParseFqlCommand extends ContainerAwareCommand
     protected function configure()
     {
         $this->setName('dpdev:fql:parse');
-        $this->addOption('output', 'o', InputOption::VALUE_REQUIRED, 'Output options: expr for expression engine, debug for debug out, json for JSON', 'debug');
-        $this->addArgument('query', InputArgument::REQUIRED, 'The FQL query to parse');
+        $this->addArgument('fqlQuery', InputArgument::REQUIRED, 'The FQL query to parse');
     }
 
     /**
@@ -58,24 +56,14 @@ class ParseFqlCommand extends ContainerAwareCommand
     {
         $parser = new FilterQueryLanguage\Parser();
 
-        $query = $input->getArgument('query');
-        $parts = $parser->parseQuery($query);
+        $fqlQuery = $input->getArgument('fqlQuery');
+        $query    = $parser->parseQuery($fqlQuery);
 
-        switch ($input->getOption('output')) {
-            case 'debug':
-                $debugc = new FilterQueryLanguage\DebugCompiler();
-                echo $debugc->compile($parts);
-                echo "\n";
-                break;
+        $format = 'json';
 
+        switch ($format) {
             case 'json':
-                echo json_encode($parts, \JSON_PRETTY_PRINT);
-                echo "\n";
-                break;
-
-            case 'expr':
-                $eec = new FilterQueryLanguage\ExpressionCompiler();
-                echo $eec->compile($parts);
+                echo json_encode($query->toArray(), \JSON_PRETTY_PRINT);
                 echo "\n";
                 break;
 

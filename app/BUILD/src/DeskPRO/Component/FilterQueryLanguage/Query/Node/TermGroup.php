@@ -26,27 +26,52 @@
  * ~ Thanks, Everyone at Team DeskPRO
  */
 
-namespace DeskPRO\Bundle\AppBundle\TicketFilters\Terms;
+namespace DeskPRO\Component\FilterQueryLanguage\Query\Node;
 
-use DeskPRO\Bundle\AppBundle\TicketFilters\Model\Context\AgentContext;
-use DeskPRO\Bundle\AppBundle\TicketFilters\Model\Entity\TicketModel;
-use DeskPRO\Component\FilterQueryLanguage\Query\Node\Term;
+use DeskPRO\Component\FilterQueryLanguage\Query\Node\GroupOp\GroupOp;
+use DeskPRO\Component\FilterQueryLanguage\Query\Query;
 
-interface TermsHandlerInterface
+class TermGroup extends Node
 {
-    /**
-     * Return an array of fieds this term handler handles.
-     *
-     * @return string[]
-     */
-    public function getHandledFields();
+    const TYPE = Query::NODE_TERM_GROUP;
 
     /**
-     * @param Term         $term
-     * @param TicketModel  $ticketModel
-     * @param AgentContext $agentContext
-     *
-     * @return bool
+     * @var GroupOp
      */
-    public function doesTicketMatch(Term $term, TicketModel $ticketModel, AgentContext $agentContext);
+    public $operator;
+
+    /**
+     * @var Node[]
+     */
+    public $terms = [];
+
+    /**
+     * TermGroup constructor.
+     *
+     * @param GroupOp $operator
+     * @param Node[]  $terms
+     */
+    public function __construct(GroupOp $operator, array $terms)
+    {
+        $this->operator = $operator;
+        $this->terms    = $terms;
+    }
+
+    /**
+     * @return array
+     */
+    public function toArray()
+    {
+        $terms = [];
+        foreach ($this->terms as $t) {
+            $terms[] = $t->toArray();
+        }
+
+        return [
+            'type'     => self::TYPE,
+            'operator' => $this->operator->getOperator(),
+            'terms'    => $terms,
+            'tokenPos' => $this->tokenPos,
+        ];
+    }
 }
