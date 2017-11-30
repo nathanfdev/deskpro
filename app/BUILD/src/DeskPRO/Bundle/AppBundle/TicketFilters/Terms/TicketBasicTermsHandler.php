@@ -28,8 +28,8 @@
 
 namespace DeskPRO\Bundle\AppBundle\TicketFilters\Terms;
 
-use DeskPRO\Bundle\AppBundle\TicketFilters\Model\Context\AgentContext;
 use DeskPRO\Bundle\AppBundle\TicketFilters\Model\Entity\TicketModel;
+use DeskPRO\Bundle\AppBundle\TicketFilters\ValueResolver;
 use DeskPRO\Component\FilterQueryLanguage\Query\Node\Term;
 
 class TicketBasicTermsHandler extends AbstractTermsHandler
@@ -61,7 +61,7 @@ class TicketBasicTermsHandler extends AbstractTermsHandler
     /**
      * {@inheritdoc}
      */
-    public function doesTicketMatch(Term $term, TicketModel $ticketModel, AgentContext $agentContext)
+    public function doesTicketMatch(Term $term, TicketModel $ticketModel, ValueResolver $valueResolver)
     {
         $fieldId = $term->field->identity;
 
@@ -84,6 +84,6 @@ class TicketBasicTermsHandler extends AbstractTermsHandler
             default: throw new \InvalidArgumentException('Unknown field');
         }
 
-        return $this->valueChecker->checkTermWithFieldValue($fieldValue, $term);
+        return $valueResolver->checkTermWithFieldValue($fieldValue, $term, $ticketModel);
     }
 }

@@ -39,7 +39,7 @@ class TicketSlaModel
      * ok, warning, fail
      * @var string
      */
-    public $static;
+    public $status;
 
     /**
      * @var \DateTime|null

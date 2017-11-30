@@ -28,8 +28,8 @@
 
 namespace DeskPRO\Bundle\AppBundle\TicketFilters\Terms;
 
-use DeskPRO\Bundle\AppBundle\TicketFilters\Model\Context\AgentContext;
 use DeskPRO\Bundle\AppBundle\TicketFilters\Model\Entity\TicketModel;
+use DeskPRO\Bundle\AppBundle\TicketFilters\ValueResolver;
 use DeskPRO\Component\FilterQueryLanguage\Query\Node\Term;
 
 interface TermsHandlerInterface
@@ -42,11 +42,32 @@ interface TermsHandlerInterface
     public function getHandledFields();
 
     /**
-     * @param Term         $term
-     * @param TicketModel  $ticketModel
-     * @param AgentContext $agentContext
+     * Functions that handle calls specially for specific operators. E.g.: foo HAS myFunc().
      *
-     * @return bool
+     * These functions are called and must return true/false to determine the match.
+     * If a function matches, doesTicketMatch does NOT get called for that term.
+     *
+     * This is different from other callable functions that just return a value like any other,
+     * which are then just used as-is by normal comparators.
+     *
+     * The format for each entry is:
+     *
+     * <code>
+     * $matchFns = [
+     *     ['name' => 'myFunc', 'method' => 'classMethodName', 'operators' => [Query::OP_HAS]]
+     * ];
+     * </code>
+     *
+     * @return array
      */
-    public function doesTicketMatch(Term $term, TicketModel $ticketModel, AgentContext $agentContext);
+    public function getMatchFunctions();
+
+    /**
+     * @param Term          $term
+     * @param TicketModel   $ticketModel
+     * @param ValueResolver $valueResolver
+     *
+     * @return mixed
+     */
+    public function doesTicketMatch(Term $term, TicketModel $ticketModel, ValueResolver $valueResolver);
 }

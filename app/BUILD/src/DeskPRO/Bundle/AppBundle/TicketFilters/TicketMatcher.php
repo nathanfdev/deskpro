@@ -36,10 +36,17 @@ use DeskPRO\Component\FilterQueryLanguage\Query\Node\GroupOp\NotGroupOp;
 use DeskPRO\Component\FilterQueryLanguage\Query\Node\GroupOp\OrGroupOp;
 use DeskPRO\Component\FilterQueryLanguage\Query\Node\Term;
 use DeskPRO\Component\FilterQueryLanguage\Query\Node\TermGroup;
+use DeskPRO\Component\FilterQueryLanguage\Query\Opt\CompareOpt;
 use DeskPRO\Component\FilterQueryLanguage\Query\Query;
+use DeskPRO\Component\FilterQueryLanguage\Query\Val\FuncVal;
 
 class TicketMatcher
 {
+    /**
+     * @var
+     */
+    private $valueResovler;
+
     /**
      * @var TermsHandlerInterface[]
      */
@@ -53,15 +60,26 @@ class TicketMatcher
     private $fieldToHandler;
 
     /**
+     * The match ID is a concat of the operator and function name and field id.
+     *
+     * @var matchId => [handler, fn]
+     */
+    private $matchFunctionMap;
+
+    /**
      * TicketMatcher constructor.
      *
-     * @param TermsHandlerInterface[] $handlers
+     * @param ValueResolver $valueResolver
+     * @param array         $handlers
      */
-    public function __construct(array $handlers)
+    public function __construct(ValueResolver $valueResolver, array $handlers)
     {
-        $this->handlers = $handlers;
+        $this->valueResovler = $valueResolver;
+        $this->handlers      = $handlers;
 
-        $this->fieldToHandler = [];
+        $this->fieldToHandler   = [];
+        $this->matchFunctionMap = [];
+
         foreach ($handlers as $h) {
             foreach ($h->getHandledFields() as $fid) {
                 if (!isset($this->fieldToHandler[$fid])) {
@@ -69,17 +87,32 @@ class TicketMatcher
                 }
                 $this->fieldToHandler[$fid][] = $h;
             }
+
+            foreach ($h->getMatchFunctions() as $def) {
+                $name = strtolower($def['name']);
+                $ops  = $def['operators'];
+                if (!is_array($ops)) {
+                    $ops = [$ops];
+                }
+
+                foreach ($ops as $op) {
+                    foreach ($def['fields'] as $field) {
+                        $id                          = $name.'--'.$op.'--'.$field;
+                        $this->matchFunctionMap[$id] = [$h, $def['method']];
+                    }
+                }
+            }
         }
     }
 
-    public function doesQueryMatch(Query $query, TicketModel $ticketModel, AgentContext $agentContext)
+    public function doesQueryMatch(Query $query, TicketModel $ticketModel)
     {
         $rootPart = $query->root;
 
         if ($rootPart instanceof TermGroup) {
-            return $this->doesTermGroupMatch($rootPart, $ticketModel, $agentContext);
+            return $this->doesTermGroupMatch($rootPart, $ticketModel);
         } else {
-            return $this->doesTermMatch($rootPart, $ticketModel, $agentContext);
+            return $this->doesTermMatch($rootPart, $ticketModel);
         }
     }
 
@@ -90,7 +123,7 @@ class TicketMatcher
      *
      * @return bool
      */
-    private function doesTermGroupMatch(TermGroup $termGroup, TicketModel $ticketModel, AgentContext $agentContext)
+    private function doesTermGroupMatch(TermGroup $termGroup, TicketModel $ticketModel)
     {
         $op       = $termGroup->operator;
         $anyMatch = false;
@@ -98,13 +131,13 @@ class TicketMatcher
 
         foreach ($termGroup->terms as $term) {
             if ($term instanceof TermGroup) {
-                if ($this->doesTermGroupMatch($term, $ticketModel, $agentContext)) {
+                if ($this->doesTermGroupMatch($term, $ticketModel)) {
                     $anyMatch = true;
                 } else {
                     $anyFail = true;
                 }
             } else {
-                if ($this->doesTermMatch($term, $ticketModel, $agentContext)) {
+                if ($this->doesTermMatch($term, $ticketModel)) {
                     $anyMatch = true;
                 } else {
                     $anyFail = true;
@@ -140,9 +173,32 @@ class TicketMatcher
      * @param TicketModel  $ticketModel
      * @param AgentContext $agentContext
      */
-    public function doesTermMatch(Term $term, TicketModel $ticketModel, AgentContext $agentContext)
+    public function doesTermMatch(Term $term, TicketModel $ticketModel)
     {
         $fieldId = $term->field->identity;
+
+        if ($term->options instanceof CompareOpt && $term->options->value instanceof FuncVal) {
+            $matchFunc    = $term->options->value->name.'--'.$term->operator->getOperator();
+            $matchFuncId  = $matchFunc.'--'.$term->field->identity;
+            $matchFuncAny = $matchFunc.'--*';
+
+            $matchFn = null;
+            if (isset($this->matchFunctionMap[$matchFuncId])) {
+                $matchFn = $this->matchFunctionMap[$matchFuncId];
+            } elseif (isset($this->matchFunctionMap[$matchFuncAny])) {
+                $matchFn = $this->matchFunctionMap[$matchFuncAny];
+            }
+
+            if ($matchFn) {
+                return call_user_func(
+                    $matchFn,
+                    $this->valueResovler->getFuncCallParamValues($term->options->value, $term, $ticketModel),
+                    $term,
+                    $ticketModel,
+                    $this->valueResovler
+                );
+            }
+        }
 
         if (empty($this->fieldToHandler[$fieldId])) {
             throw new \OutOfBoundsException("No handler is capable of handling $fieldId");
@@ -150,7 +206,7 @@ class TicketMatcher
 
         foreach ($this->fieldToHandler[$fieldId] as $handler) {
             /** @var $handler TermsHandlerInterface */
-            if ($handler->doesTicketMatch($term, $ticketModel, $agentContext)) {
+            if ($handler->doesTicketMatch($term, $ticketModel, $this->valueResovler)) {
                 return true;
             }
         }

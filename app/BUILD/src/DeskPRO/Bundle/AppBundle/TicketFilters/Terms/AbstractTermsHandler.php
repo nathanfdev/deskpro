@@ -28,22 +28,52 @@
 
 namespace DeskPRO\Bundle\AppBundle\TicketFilters\Terms;
 
-use DeskPRO\Bundle\AppBundle\TicketFilters\ValueChecker;
+use DeskPRO\Bundle\AppBundle\TicketFilters\Model\Entity\TicketModel;
+use DeskPRO\Bundle\AppBundle\TicketFilters\ValueResolver;
+use DeskPRO\Component\FilterQueryLanguage\Query\Node\Term;
+use DeskPRO\Component\FilterQueryLanguage\Query\Opt\CompareOpt;
+use DeskPRO\Component\FilterQueryLanguage\Query\Val\FuncVal;
 
 abstract class AbstractTermsHandler implements TermsHandlerInterface
 {
     /**
-     * @var ValueChecker
+     * Check if the current term check is a functioncall we want to handle.
+     *
+     * @param Term            $term
+     * @param string|string[] $expectOp
+     * @param string          $expectFn
+     *
+     * @return bool
      */
-    protected $valueChecker;
+    public function isTermFunctionCall(Term $term, $expectOp, $expectFn)
+    {
+        if (!is_array($expectOp)) {
+            $expectOp = [$expectOp];
+        }
+
+        return in_array($term->operator->getOperator(), $expectOp, true)
+            && $term->options instanceof CompareOpt
+            && $term->options->value instanceof FuncVal
+            && $term->options->value->name === $expectFn;
+    }
 
     /**
-     * AbstractTermsHandler constructor.
-     *
-     * @param ValueChecker $valueChecker
+     * {@inheritdoc}
      */
-    public function __construct(ValueChecker $valueChecker)
+    public function getMatchFunctions()
     {
-        $this->valueChecker = $valueChecker;
+        return [];
+    }
+
+    /**
+     * @param Term          $term
+     * @param TicketModel   $ticketModel
+     * @param ValueResolver $valueResolver
+     *
+     * @return bool|mixed
+     */
+    public function doesTicketMatch(Term $term, TicketModel $ticketModel, ValueResolver $valueResolver)
+    {
+        return false;
     }
 }

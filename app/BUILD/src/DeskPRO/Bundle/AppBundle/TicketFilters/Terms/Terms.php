@@ -101,24 +101,22 @@ class Terms extends AbstractQueryDefinition
     public function getFieldDefs()
     {
         $defs = [
-            self::TICKET_ID            => ['type' => 'ID'],
-            self::TICKET_STATUS        => ['type' => 'STRING'],
-            self::TICKET_DEPARTMENT    => ['type' => 'ID'],
-            self::TICKET_AGENT         => ['type' => 'ID'],
-            self::TICKET_AGENT_TEAM    => ['type' => 'ID'],
-            self::TICKET_FOLLOWERS     => ['type' => 'ID[]'],
-            self::TICKET_LANGUAGE      => ['type' => 'ID'],
-            self::TICKET_PRODUCT       => ['type' => 'ID'],
-            self::TICKET_CATEGORY      => ['type' => 'ID'],
-            self::TICKET_PRIORITY      => ['type' => 'ID'],
-            self::TICKET_URGENCY       => ['type' => 'ID'],
-            self::TICKET_WORKFLOW      => ['type' => 'ID'],
-            self::TICKET_LABELS        => ['type' => 'STRING[]'],
-            self::TICKET_EMAIL_ACCOUNT => ['type' => 'ID'],
-            self::TICKET_IS_HOLD       => ['type' => 'BOOLEAN'],
-
-            self::TICKET_SLAS => ['type' => '[]'],
-
+            self::TICKET_ID                    => ['type' => 'ID'],
+            self::TICKET_STATUS                => ['type' => 'STRING'],
+            self::TICKET_DEPARTMENT            => ['type' => 'ID'],
+            self::TICKET_AGENT                 => ['type' => 'ID'],
+            self::TICKET_AGENT_TEAM            => ['type' => 'ID'],
+            self::TICKET_FOLLOWERS             => ['type' => 'ID[]'],
+            self::TICKET_LANGUAGE              => ['type' => 'ID'],
+            self::TICKET_PRODUCT               => ['type' => 'ID'],
+            self::TICKET_CATEGORY              => ['type' => 'ID'],
+            self::TICKET_PRIORITY              => ['type' => 'ID'],
+            self::TICKET_URGENCY               => ['type' => 'ID'],
+            self::TICKET_WORKFLOW              => ['type' => 'ID'],
+            self::TICKET_LABELS                => ['type' => 'STRING[]'],
+            self::TICKET_EMAIL_ACCOUNT         => ['type' => 'ID'],
+            self::TICKET_IS_HOLD               => ['type' => 'BOOLEAN'],
+            self::TICKET_SLAS                  => ['type' => 'ID[]'],
             self::TICKET_DATE_CREATED          => ['type' => 'DATE'],
             self::TICKET_DATE_LAST_AGENT_REPLY => ['type' => 'DATE'],
             self::TICKET_DATE_LAST_USER_REPLY  => ['type' => 'DATE'],
@@ -162,7 +160,7 @@ class Terms extends AbstractQueryDefinition
         return [
             self::FUNC_FAILED_SLAS => [
                 'fields'    => [self::TICKET_SLAS],
-                'operators' => ['IN', 'NOT_IN', 'EMPTY', 'NOT_EMPTY'],
+                'operators' => ['EMPTY', 'NOT_EMPTY'],
                 'params'    => [],
             ],
             self::FUNC_WARNING_SLAS => [

@@ -46,6 +46,11 @@ abstract class AbstractQueryDefinition implements QueryDefinitionInterface
     private $funcDefs;
 
     /**
+     * @var array
+     */
+    private $funcResultDefs;
+
+    /**
      * A field definition array:.
      *
      * <code>
@@ -79,14 +84,13 @@ abstract class AbstractQueryDefinition implements QueryDefinitionInterface
     }
 
     /**
-     * A function definition array:.
+     * A function definition array.
      *
      * <code>
      * $funcDefs = [
      *     'myFunc' => [
      *         'fields'    => ['field.id', '*'],
-     *         'operators' => ['=', 'IN', '!=', 'NOT_IN'],
-     *         'params'    => ['INT', 'INT']
+     *         'operators' => ['=', 'IN', '!=', 'NOT_IN']
      *     ]
      * ];
      * </code>

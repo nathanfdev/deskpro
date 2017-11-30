@@ -32,12 +32,11 @@ use DeskPRO\Bundle\AppBundle\TicketFilters\Model\Context\AgentContext;
 use DeskPRO\Bundle\AppBundle\TicketFilters\Model\Entity\OrgModel;
 use DeskPRO\Bundle\AppBundle\TicketFilters\Model\Entity\PersonModel;
 use DeskPRO\Bundle\AppBundle\TicketFilters\Model\Entity\TicketModel;
-use DeskPRO\Bundle\AppBundle\TicketFilters\Terms\OrgTermsHandler;
-use DeskPRO\Bundle\AppBundle\TicketFilters\Terms\PersonTermsHandler;
+use DeskPRO\Bundle\AppBundle\TicketFilters\Model\Entity\TicketSlaModel;
 use DeskPRO\Bundle\AppBundle\TicketFilters\Terms\TicketBasicTermsHandler;
-use DeskPRO\Bundle\AppBundle\TicketFilters\Terms\TicketDateTermsHandler;
+use DeskPRO\Bundle\AppBundle\TicketFilters\Terms\TicketSlaTermsHandler;
 use DeskPRO\Bundle\AppBundle\TicketFilters\TicketMatcher;
-use DeskPRO\Bundle\AppBundle\TicketFilters\ValueChecker;
+use DeskPRO\Bundle\AppBundle\TicketFilters\ValueResolver;
 use DeskPRO\Component\FilterQueryLanguage\Parser;
 
 class TicketMatcherTest extends \PHPUnit_Framework_TestCase
@@ -67,13 +66,11 @@ class TicketMatcherTest extends \PHPUnit_Framework_TestCase
      */
     protected function setUp()
     {
-        $checker = new ValueChecker($this->agentContext, function () {
+        $checker = new ValueResolver($this->agentContext, function () {
         });
-        $this->matcher = new TicketMatcher([
+        $this->matcher = new TicketMatcher($checker, [
             new TicketBasicTermsHandler($checker),
-            new TicketDateTermsHandler(),
-            new PersonTermsHandler(),
-            new OrgTermsHandler(),
+            new TicketSlaTermsHandler($checker),
         ]);
 
         // Ticket 1
@@ -90,6 +87,22 @@ class TicketMatcherTest extends \PHPUnit_Framework_TestCase
 
         $this->ticket1->organization         = new OrgModel();
         $this->ticket1->organization->labels = ['olabel1', 'olabel2'];
+
+        $this->ticket1->slas = [1, 2, 3];
+
+        $slaPass         = new TicketSlaModel();
+        $slaPass->sla_id = 1;
+        $slaPass->status = 'ok';
+
+        $slaWarn         = new TicketSlaModel();
+        $slaWarn->sla_id = 2;
+        $slaWarn->status = 'warning';
+
+        $slaFail         = new TicketSlaModel();
+        $slaFail->sla_id = 3;
+        $slaFail->status = 'fail';
+
+        $this->ticket1->slasInfo = [$slaPass, $slaWarn, $slaFail];
 
         // Ticket 2
         $this->ticket2             = new TicketModel();
@@ -125,6 +138,43 @@ class TicketMatcherTest extends \PHPUnit_Framework_TestCase
         $this->assertTrue($this->runTicket1Query('ticket.id BETWEEN 1 AND 100'));
 
         $this->assertFalse($this->runTicket2Query('ticket.id = 1'));
+    }
+
+    public function test_sla_match()
+    {
+        $this->assertTrue($this->runTicket1Query('ticket.slas IN (1, 2, 3)'));
+        $this->assertTrue($this->runTicket1Query('ticket.slas IN (4, 1, 2, 3)'));
+        $this->assertFalse($this->runTicket1Query('ticket.slas IN (4, 5)'));
+        $this->assertTrue($this->runTicket1Query('ticket.slas HAS 1'));
+        $this->assertFalse($this->runTicket1Query('ticket.slas HAS 4'));
+    }
+
+    public function test_sla_passing()
+    {
+        $this->assertTrue($this->runTicket1Query('ticket.slas HAS passingSlas()'));
+        $this->assertTrue($this->runTicket1Query('ticket.slas HAS passingSlas(1, 3)'));
+        $this->assertFalse($this->runTicket1Query('ticket.slas HAS passingSlas(3)'));
+    }
+
+    public function test_sla_warning()
+    {
+        $this->assertTrue($this->runTicket1Query('ticket.slas HAS warningSlas()'));
+        $this->assertTrue($this->runTicket1Query('ticket.slas HAS warningSlas(2, 3)'));
+        $this->assertFalse($this->runTicket1Query('ticket.slas HAS warningSlas(3)'));
+    }
+
+    public function test_sla_failing()
+    {
+        $this->assertTrue($this->runTicket1Query('ticket.slas HAS failedSlas()'));
+        $this->assertTrue($this->runTicket1Query('ticket.slas HAS failedSlas(2, 3)'));
+        $this->assertFalse($this->runTicket1Query('ticket.slas HAS failedSlas(1)'));
+    }
+
+    public function test_sla_multicheck()
+    {
+        $this->assertTrue($this->runTicket1Query('ticket.slas HAS passingSlas() AND ticket.slas HAS warningSlas() AND ticket.slas HAS failedSlas()'));
+        $this->assertFalse($this->runTicket1Query('ticket.slas HAS passingSlas() AND NOT ticket.slas HAS warningSlas()'));
+        $this->assertTrue($this->runTicket1Query('ticket.slas HAS passingSlas() AND NOT ticket.slas HAS warningSlas(1)'));
     }
 
     private function runTicket1Query($fql)

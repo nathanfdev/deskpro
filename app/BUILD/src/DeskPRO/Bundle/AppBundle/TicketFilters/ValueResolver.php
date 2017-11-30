@@ -28,6 +28,7 @@
 
 namespace DeskPRO\Bundle\AppBundle\TicketFilters;
 
+use DeskPRO\Bundle\AppBundle\TicketFilters\Model\Entity\TicketModel;
 use DeskPRO\Component\FilterQueryLanguage\Query\Node\Term;
 use DeskPRO\Component\FilterQueryLanguage\Query\Opt\BetweenOpt;
 use DeskPRO\Component\FilterQueryLanguage\Query\Opt\CompareOpt;
@@ -41,7 +42,7 @@ use DeskPRO\Component\FilterQueryLanguage\Query\Val\VarVal;
 use DeskPRO\Component\Util\ListUtils;
 use Symfony\Component\PropertyAccess\PropertyAccess;
 
-class ValueChecker implements ValueCheckContext
+class ValueResolver implements ValueCheckContext
 {
     /**
      * @var mixed
@@ -62,7 +63,7 @@ class ValueChecker implements ValueCheckContext
      * @param mixed    $context
      * @param callable $functionCaller
      */
-    public function __construct($context, callable $functionCaller)
+    public function __construct($context, callable $functionCaller = null)
     {
         $this->context        = $context;
         $this->functionCaller = $functionCaller;
@@ -98,6 +99,7 @@ class ValueChecker implements ValueCheckContext
                 return $fieldValue >= $checkValue;
 
             case Query::OP_IN:
+            case Query::OP_HAS:
             case Query::OP_NOT_IN:
                 if ($checkValue === null) {
                     $checkValue = [];
@@ -170,42 +172,62 @@ class ValueChecker implements ValueCheckContext
     }
 
     /**
-     * @param mixed $fieldValue
-     * @param Term  $term
+     * @param             $fieldValue
+     * @param Term        $term
+     * @param TicketModel $ticketModel
+     * @param callable    $functionCaller Optionally a function caller that will be called before trying to call the one on this checker
      *
      * @return bool
      */
-    public function checkTermWithFieldValue($fieldValue, Term $term)
+    public function checkTermWithFieldValue($fieldValue, Term $term, TicketModel $ticketModel)
     {
-        $optValue = $this->queryOptionValueFromTerm($term);
+        $optValue = $this->queryOptionValueFromTerm($term, $ticketModel);
         $operator = $term->operator->getOperator();
 
         return self::checkValue($fieldValue, $operator, $optValue);
     }
 
     /**
-     * @param Term $term
+     * @param FuncVal     $funcVal
+     * @param Term        $term
+     * @param TicketModel $ticketModel
      *
-     * @return mixed
+     * @return array
      */
-    private function queryOptionValueFromTerm(Term $term)
+    public function getFuncCallParamValues(FuncVal $funcVal, Term $term, TicketModel $ticketModel)
+    {
+        $params = [];
+        foreach ($funcVal->params as $p) {
+            $params[] = $this->valueFromQueryValue($p, $term, $ticketModel);
+        }
+
+        return $params;
+    }
+
+    /**
+     * @param Term        $term
+     * @param TicketModel $ticketModel
+     *
+     * @return array|mixed|null
+     */
+    private function queryOptionValueFromTerm(Term $term, TicketModel $ticketModel)
     {
         $options = $term->options;
 
         switch (true) {
             case $options instanceof CompareOpt:
-                return self::valueFromQueryValue($options->value, $term);
+                return self::valueFromQueryValue($options->value, $term, $ticketModel);
 
             case $options instanceof BetweenOpt:
                 return [
-                    self::valueFromQueryValue($options->value1, $term),
-                    self::valueFromQueryValue($options->value2, $term),
+                    self::valueFromQueryValue($options->value1, $term, $ticketModel),
+                    self::valueFromQueryValue($options->value2, $term, $ticketModel),
                 ];
 
             case $term->options instanceof InOpt:
                 $value = [];
                 foreach ($term->options->valueList as $v) {
-                    $value[] = self::valueFromQueryValue($v, $term);
+                    $value[] = self::valueFromQueryValue($v, $term, $ticketModel);
                 }
 
                 return $value;
@@ -219,12 +241,13 @@ class ValueChecker implements ValueCheckContext
     }
 
     /**
-     * @param Val  $queryValue
-     * @param Term $termContext
+     * @param Val         $queryValue
+     * @param Term        $termContext
+     * @param TicketModel $ticketModel
      *
      * @return mixed
      */
-    private function valueFromQueryValue(Val $queryValue, Term $termContext)
+    private function valueFromQueryValue(Val $queryValue, Term $termContext, TicketModel $ticketModel)
     {
         switch (true) {
             case $queryValue instanceof ScalarVal:
@@ -238,6 +261,7 @@ class ValueChecker implements ValueCheckContext
                     $queryValue->name,
                     $queryValue->params,
                     $termContext,
+                    $ticketModel,
                     $this /* for ValueCheckContext */
                 );
 

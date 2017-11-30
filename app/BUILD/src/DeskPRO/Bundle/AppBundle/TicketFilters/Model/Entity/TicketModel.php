@@ -146,6 +146,11 @@ class TicketModel
     public $slas = [];
 
     /**
+     * @var TicketSlaModel[]
+     */
+    public $slasInfo;
+
+    /**
      * @var CustomData[]
      */
     public $custom_fields = [];

@@ -28,11 +28,7 @@
 
 namespace DeskPRO\Bundle\AppBundle\TicketFilters\Terms;
 
-use DeskPRO\Bundle\AppBundle\TicketFilters\Model\Context\AgentContext;
-use DeskPRO\Bundle\AppBundle\TicketFilters\Model\Entity\TicketModel;
-use DeskPRO\Component\FilterQueryLanguage\Query\Node\Term;
-
-class OrgTermsHandler implements TermsHandlerInterface
+class OrgTermsHandler extends AbstractTermsHandler
 {
     /**
      * {@inheritdoc}
@@ -44,13 +40,5 @@ class OrgTermsHandler implements TermsHandlerInterface
             Terms::ORG_LABELS,
             Terms::ORG_USERGROUPS,
         ];
-    }
-
-    /**
-     * {@inheritdoc}
-     */
-    public function doesTicketMatch(Term $term, TicketModel $ticketModel, AgentContext $agentContext)
-    {
-        return false;
     }
 }

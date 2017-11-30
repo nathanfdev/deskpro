@@ -452,16 +452,20 @@ class QueryParser
             return $this->InExpression();
         }
 
-        if ($token['type'] === Lexer::T_HAS) {
-            return $this->HasExpression();
-        }
-
         if ($token['type'] === Lexer::T_IS && $lookahead['type'] === Lexer::T_NULL) {
             return $this->NullComparisonExpression();
         }
 
         if ($token['type'] === Lexer::T_IS && $lookahead['type'] === Lexer::T_EMPTY) {
             return $this->EmptyCollectionComparisonExpression();
+        }
+
+        if ($token['type'] === Lexer::T_HAS) {
+            return $this->HasExpression();
+        }
+
+        if ($token['type'] === Lexer::T_IS) {
+            return $this->IsExpression();
         }
 
         if ($token['type'] === Lexer::T_EXISTS) {
@@ -785,29 +789,28 @@ class QueryParser
 
         $this->match(Lexer::T_HAS);
 
-        if ($this->lexer->isNextToken(Lexer::T_OPEN_PARENTHESIS)) {
-            $this->match(Lexer::T_OPEN_PARENTHESIS);
-
-            $literals   = [];
-            $literals[] = $this->Literal(true);
-
-            while ($this->lexer->isNextToken(Lexer::T_COMMA)) {
-                $this->match(Lexer::T_COMMA);
-                $literals[] = $this->Literal(true);
-            }
-
-            $this->match(Lexer::T_CLOSE_PARENTHESIS);
-
-            $opt = new Query\Opt\InOpt($literals);
-        } else {
-            $expr = $this->FunctionDeclaration();
-            $opt  = new Query\Opt\InOpt([$expr]);
-        }
+        $rightExpr = $this->ArithmeticExpression(true);
 
         return $this->addTokenPos(new Query\Node\Term(
             Query\Op\Op::createOp(Query\Query::OP_HAS),
             $field,
-            $opt
+            new Query\Opt\CompareOpt($rightExpr)
+        ), $tokenPos);
+    }
+
+    public function IsExpression()
+    {
+        $field    = $this->CompareField();
+        $tokenPos = $this->lexer->token['position'];
+
+        $this->match(Lexer::T_IS);
+
+        $rightExpr = $this->ArithmeticExpression(true);
+
+        return $this->addTokenPos(new Query\Node\Term(
+            Query\Op\Op::createOp(Query\Query::OP_IS),
+            $field,
+            $rightExpr
         ), $tokenPos);
     }
 
