@@ -33,7 +33,7 @@ use DeskPRO\Component\FilterQueryLanguage\Query\QueryPart;
 
 abstract class Op extends QueryPart
 {
-    const OP = '';
+    const OP = 'ABSTRACT_TYPE';
 
     public static function createOp($op)
     {

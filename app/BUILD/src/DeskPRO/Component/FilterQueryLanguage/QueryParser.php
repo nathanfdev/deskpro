@@ -764,7 +764,7 @@ class QueryParser
             $opt = new Query\Opt\InOpt($literals);
         } else {
             $expr = $this->FunctionDeclaration();
-            $opt  = new Query\Opt\InFuncOpt([$expr]);
+            $opt  = new Query\Opt\InOpt([$expr]);
         }
 
         return $this->addTokenPos(new Query\Node\Term(

@@ -43,8 +43,21 @@ class Field extends QueryPart
         $this->identity = $identity;
     }
 
+    /**
+     * @return array
+     */
     public function toArray()
     {
         return ['identity' => $this->identity];
+    }
+
+    /**
+     * @param array $props
+     *
+     * @return Field
+     */
+    public static function fromArray(array $props)
+    {
+        return new self($props['identity']);
     }
 }

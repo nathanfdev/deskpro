@@ -90,4 +90,23 @@ class RelativeTimeVal extends Val
             'tokenPos'  => $this->tokenPos,
         ];
     }
+
+    /**
+     * @param array $props
+     *
+     * @return RelativeTimeVal
+     */
+    public static function fromArray(array $props)
+    {
+        if ($props['valueType'] !== static::VAL_TYPE) {
+            throw new \InvalidArgumentException(sprintf('Expected valueType of %s', static::VAL_TYPE));
+        }
+
+        $o = new self($props['mode'], $props['times']);
+        if (!empty($props['tokenPos'])) {
+            $o->tokenPos = $props['tokenPos'];
+        }
+
+        return $o;
+    }
 }

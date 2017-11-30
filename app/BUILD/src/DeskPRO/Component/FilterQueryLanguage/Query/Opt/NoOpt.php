@@ -41,4 +41,18 @@ class NoOpt extends Opt
             'optType' => self::OPT,
         ];
     }
+
+    /**
+     * @param array $props
+     *
+     * @return NoOpt
+     */
+    public static function fromArray(array $props)
+    {
+        if ($props['optType'] !== self::OPT) {
+            throw new \InvalidArgumentException('Expected optType of NONE_OPTION');
+        }
+
+        return new self();
+    }
 }

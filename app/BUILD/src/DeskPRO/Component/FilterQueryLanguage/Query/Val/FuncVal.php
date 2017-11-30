@@ -73,4 +73,28 @@ class FuncVal extends ComputedVal
             'tokenPos'  => $this->tokenPos,
         ];
     }
+
+    /**
+     * @param array $props
+     *
+     * @return FuncVal
+     */
+    public static function fromArray(array $props)
+    {
+        if ($props['valueType'] !== static::VAL_TYPE) {
+            throw new \InvalidArgumentException(sprintf('Expected valueType of %s', static::VAL_TYPE));
+        }
+
+        $params = [];
+        foreach ($props['params'] as $p) {
+            $params[] = Val::fromArray($p);
+        }
+
+        $o = new self($props['name'], $params);
+        if (!empty($props['tokenPos'])) {
+            $o->tokenPos = $props['tokenPos'];
+        }
+
+        return $o;
+    }
 }

@@ -33,7 +33,7 @@ use DeskPRO\Component\FilterQueryLanguage\Query\QueryPart;
 
 abstract class GroupOp extends QueryPart
 {
-    const OP = '';
+    const OP = 'ABSTRACT_GROUP_OP';
 
     public static function createGroupOp($op)
     {

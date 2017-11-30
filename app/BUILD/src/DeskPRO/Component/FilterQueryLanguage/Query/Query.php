@@ -29,6 +29,7 @@
 namespace DeskPRO\Component\FilterQueryLanguage\Query;
 
 use DeskPRO\Component\FilterQueryLanguage\Query\Node\Node;
+use DeskPRO\Component\FilterQueryLanguage\Query\Node\TermGroup;
 
 class Query
 {
@@ -69,7 +70,14 @@ class Query
     const OP_BETWEEN     = 'BETWEEN';
     const OP_NOT_BETWEEN = 'NOT_BETWEEN';
 
+    /**
+     * @var null|string
+     */
     public $fql;
+
+    /**
+     * @var Node
+     */
     public $root;
 
     /**
@@ -78,7 +86,7 @@ class Query
      * @param Node   $root
      * @param string $fql
      */
-    public function __construct($root, $fql = '')
+    public function __construct($root, $fql = null)
     {
         $this->root = $root;
         $this->fql  = $fql;
@@ -93,5 +101,33 @@ class Query
             'fql'   => $this->fql,
             'query' => $this->root->toArray(),
         ];
+    }
+
+    public static function fromArray(array $parts)
+    {
+        // didnt put it in the query wrapper
+        if (!isset($parts['query'])) {
+            $parts = ['query' => $parts];
+        }
+
+        $type = !empty($parts['query']['type']) ? $parts['query']['type'] : null;
+
+        switch ($type) {
+            case self::NODE_TERM_GROUP:
+                $root = TermGroup::fromArray($parts['query']);
+                break;
+
+            case self::NODE_TERM:
+                $root = Term::fromArray($parts['query']);
+                break;
+
+            default:
+                throw new \InvalidArgumentException('Expected a root node type (TERM or TERM_GROUP)');
+        }
+
+        return new self(
+            $root,
+            !empty($parts['fql']) ? $parts['fql'] : null
+        );
     }
 }

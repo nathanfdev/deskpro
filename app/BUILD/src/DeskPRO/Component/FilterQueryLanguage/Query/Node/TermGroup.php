@@ -74,4 +74,35 @@ class TermGroup extends Node
             'tokenPos' => $this->tokenPos,
         ];
     }
+
+    /**
+     * @param array $props
+     *
+     * @return TermGroup
+     */
+    public static function fromArray(array $props)
+    {
+        if ($props['type'] !== self::TYPE) {
+            throw new \InvalidArgumentException('Expected TERM_GROUP type');
+        }
+
+        $terms = [];
+        foreach ($props['terms'] as $t) {
+            if ($t['type'] === Query::NODE_TERM_GROUP) {
+                $terms[] = self::fromArray($t);
+            } else {
+                $terms[] = Term::fromArray($t);
+            }
+        }
+
+        $o = new self(
+            GroupOp::createGroupOp($props['operator']),
+            $terms
+        );
+        if (!empty($props['tokenPos'])) {
+            $o->tokenPos = $props['tokenPos'];
+        }
+
+        return $o;
+    }
 }

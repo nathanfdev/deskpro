@@ -77,4 +77,27 @@ class Term extends Node
             'tokenPos' => $this->tokenPos,
         ];
     }
+
+    /**
+     * @param array $props
+     *
+     * @return Term
+     */
+    public static function fromArray(array $props)
+    {
+        if ($props['type'] !== self::TYPE) {
+            throw new \InvalidArgumentException('Expected TERM type');
+        }
+
+        $o = new self(
+            Op::createOp($props['operator']),
+            Field::fromArray($props['field']),
+            Opt::fromArray($props['options'])
+        );
+        if (!empty($props['tokenPos'])) {
+            $o->tokenPos = $props['tokenPos'];
+        }
+
+        return $o;
+    }
 }
