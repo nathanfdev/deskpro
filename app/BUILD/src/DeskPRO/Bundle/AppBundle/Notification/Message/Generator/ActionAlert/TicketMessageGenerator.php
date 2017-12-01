@@ -52,7 +52,7 @@ class TicketMessageGenerator extends SystemEventGenerator
         // process broadcast message probably idea to move it to standalone broadcast event is good
 
         if ($event->getEventType() === 'agent.filter-update' || $event->getEventType() === 'agent.ticket-updated') {
-            $actionAlert = new ActionAlert([NotificationService::TARGET_BROADCAST], $event->getData(), $event->getName());
+            $actionAlert = new ActionAlert(NotificationService::TARGET_BROADCAST, $event->getData(), $event->getName());
             $actionAlert->setBroadcast();
             $messages[] = $actionAlert;
         } else {

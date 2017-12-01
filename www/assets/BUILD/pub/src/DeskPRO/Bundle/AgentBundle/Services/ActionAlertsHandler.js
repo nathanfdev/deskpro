@@ -149,7 +149,7 @@ class ActionAlertsHandler {
   handleLegacyBroadcastClientMessage(payload, checkTarget = false) {
     if (!payload.eventType) {
       console.error('payload.eventType is not set', payload);
-    } else if (!checkTarget || (checkTarget && payload.targets.indexOf(this.options.me) !== -1)) {
+    } else if (!checkTarget || (checkTarget && payload.targets && payload.targets.indexOf(this.options.me) !== -1)) {
       DeskPRO_Window.messageBroker.sendMessage(payload.eventType, payload); // eslint-disable-line no-undef
     }
   }

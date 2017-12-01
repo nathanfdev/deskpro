@@ -30,9 +30,9 @@ export default class DpClient extends AbstractClient {
 
   getDefaultOptions() { // eslint-disable-line class-methods-use-this
     return {
-      me: 0,
-      // host: localhost,
-      // port: 3000,
+      me:   0,
+      host: 'localhost',
+      port: 3000,
     };
   }
 
@@ -42,7 +42,7 @@ export default class DpClient extends AbstractClient {
       if (that.options.debug === true) {
         console.log(`DpClient received message with type: ${eventName}`, data);
       }
-      if (parseInt(data.target, 10) === that.options.me) {
+      if (parseInt(data.target, 10) === that.options.me || data.target === 'agent_public') {
         that.options.dispatcher(eventName, data);
       }
     });

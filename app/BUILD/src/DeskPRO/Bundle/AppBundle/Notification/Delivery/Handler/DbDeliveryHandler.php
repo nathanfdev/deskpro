@@ -71,9 +71,15 @@ class DbDeliveryHandler extends AbstractDeliveryHandler
 
         $date = new \DateTime($message->getDate());
 
+        $targetId = $message->getTarget();
+
+        if ($message instanceof ActionAlert && $message->isBroadcast()) {
+            $targetId = -100;
+        }
+
         $this->messages[$table][] = [
             'uuid'         => $message->getId(),
-            'target_id'    => $message->getTarget(),
+            'target_id'    => $targetId,
             'date_created' => $date->format('Y-m-d H:i:s'),
             'data'         => json_encode($message->getData()['data']),
             'type'         => $message->getType(),

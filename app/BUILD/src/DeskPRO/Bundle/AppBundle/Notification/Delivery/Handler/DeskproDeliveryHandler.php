@@ -79,6 +79,11 @@ class DeskproDeliveryHandler extends AbstractDeliveryHandler
      */
     public function schedule(MessageInterface $message)
     {
+        $channel = $message->getTarget();
+        if ($message instanceof ActionAlert && $message->isBroadcast()) {
+            $channel = 'agent_public';
+        }
+
         $data = [
                 'target' => $message->getTarget(),
                 'date'   => $message->getDate(),
@@ -87,7 +92,7 @@ class DeskproDeliveryHandler extends AbstractDeliveryHandler
             ] + $message->getData();
 
         $this->messages[] = [
-            'channel' => $message->getTarget(),
+            'channel' => $channel,
             'name'    => $this->getChannel($message),
             'data'    => $data,
         ];
@@ -103,7 +108,7 @@ class DeskproDeliveryHandler extends AbstractDeliveryHandler
                     $response = $this->triggerBatch($chunk);
                     if ($response->getStatusCode() !== 200) {
                         if (!$exception) {
-                            $exception = new \RuntimeException('Failed to send Pusher events: '.print_r($response, true));
+                            $exception = new \RuntimeException('Failed to send events: '.print_r($response, true));
                         }
                     } else {
                         $exception = null;
