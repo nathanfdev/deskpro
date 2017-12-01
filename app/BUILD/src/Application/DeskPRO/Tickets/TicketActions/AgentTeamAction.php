@@ -151,9 +151,9 @@ class AgentTeamAction extends AbstractAction implements PersonContextInterface, 
     /**
      * {@inheritdoc}
      */
-    public function merge(ActionInterface $other_action)
+    public function merge(ActionInterface $otherAction)
     {
-        return $other_action;
+        return $otherAction;
     }
 
     /**

@@ -335,6 +335,10 @@
 				</td>
 				<td>
 					<input name="date_due" type="text" class="date-input" />
+					<input name="date_due_relative" type="text" class="date-input-relative" placeholder="Days after" />
+					<br/>
+					<input type="checkbox" name="use_date_relative" class="date-input-relative-checkbox" />
+					Use relative date
 				</td>
 			</tr>
 			<tr>
@@ -359,6 +363,9 @@
 							<option value="{{ agent.id }}">{{ agent.display_name }}</option>
 						{% endfor %}
 					</select>
+					<br/>
+					<input type="checkbox" name="create_by_ticket_agent" />
+					Use the assigned agent if there is one
 				</td>
 			</tr>
 			<tr>
@@ -379,6 +386,9 @@
 							{% endfor %}
 						</optgroup>
 					</select>
+					<br/>
+					<input type="checkbox" name="assign_to_ticket_agent" />
+					Use the assigned agent if there is one
 				</td>
 			</tr>
 		</table>

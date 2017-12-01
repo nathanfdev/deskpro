@@ -118,9 +118,9 @@ class RemoveLabelsAction extends AbstractAction implements PermissionableAction
     /**
      * {@inheritdoc}
      */
-    public function merge(ActionInterface $other_action)
+    public function merge(ActionInterface $otherAction)
     {
-        $labels = array_merge($this->remove_labels, $other_action->getLabels());
+        $labels = array_merge($this->remove_labels, $otherAction->getLabels());
         $labels = array_unique($labels);
 
         return new self($labels);

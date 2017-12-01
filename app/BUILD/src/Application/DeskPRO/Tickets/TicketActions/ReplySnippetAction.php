@@ -182,9 +182,9 @@ class ReplySnippetAction extends AbstractReplyAction
     /**
      * {@inheritdoc}
      */
-    public function merge(ActionInterface $other_action)
+    public function merge(ActionInterface $otherAction)
     {
-        foreach ($other_action->getSnippetItems() as $item) {
+        foreach ($otherAction->getSnippetItems() as $item) {
             $this->addSnippetItem($item);
         }
 
