@@ -6,12 +6,27 @@ services:
 
   tickets.view:
     class: DeskPRO\Bundle\AppBundle\DataService\TicketViewDataService
-    arguments: ["@doctrine.orm.default_entity_manager", "@custom_field_manager", "@ticket_layout_factory", "@deskpro.core.translate", "@brand_aware_settings_resolver"]
+    arguments:
+      - "@doctrine.orm.default_entity_manager"
+      - "@custom_field_manager"
+      - "@ticket_layout_factory"
+      - "@deskpro.core.translate"
+      - "@brand_aware_settings_resolver"
+      - "@data.custom_field_util"
 
   chat.view:
     class: DeskPRO\Bundle\AppBundle\DataService\Chat\ChatViewDataService
-    arguments: ["@doctrine.orm.default_entity_manager"]
+    arguments:
+      - "@doctrine.orm.default_entity_manager"
+      - "@data.custom_field_util"
 
   tickets.table:
     class: DeskPRO\Bundle\AppBundle\DataService\TicketTableDataService
-    arguments: ["@doctrine.orm.default_entity_manager", "@data.tickets", "@language_manager", "@data.departments", "@ticket_layout_factory", "@custom_field_manager", "@brand_aware_settings_resolver"]
+    arguments:
+      - "@doctrine.orm.default_entity_manager"
+      - "@data.tickets"
+      - "@language_manager"
+      - "@data.departments"
+      - "@ticket_layout_factory"
+      - "@custom_field_manager"
+      - "@brand_aware_settings_resolver"
