@@ -22,6 +22,7 @@ import {
   canReopenSelector,
   lastAgentIdSelector
 } from '../Selectors/chat';
+import { jwtTokenSelector } from '../../Application/Selectors/dpWindow';
 
 const visitorTrack = window.DP_SEND_VISITOR_TRACK;
 const visitorId    = visitorTrack && visitorTrack.visitorId ? visitorTrack.visitorId : '';
@@ -116,21 +117,26 @@ export const showNotHelpfulForm = createAction('WIDGET_CHAT_SHOW_NOT_HELPFUL_FOR
 // Api actions
 export const createChat = createAction(
   'WIDGET_CHAT_CREATE_NEW',
-  params => dispatch => widgetApi
-    .sendPost(`DP_API/chats/create?dp__v=${visitorId}`, params, { ...ajaxOptions })
-    .success((response) => {
-      const data = response.data || {};
-      const chatId = data.auth_id;
+  params => (dispatch, getState) => {
+    const state = getState();
+    const jwt = jwtTokenSelector(state);
 
-      if (chatId) {
-        if (storageAvailable('sessionStorage')) {
-          sessionStorage['dpWidget.chat.id'] = chatId;
-          sessionStorage.removeItem('dpWidget.chat.lastAgentId');
+    return widgetApi
+      .sendPost(`DP_API/chats/create?dp__v=${visitorId}`, { ...params, jwt }, { ...ajaxOptions })
+      .success((response) => {
+        const data = response.data || {};
+        const chatId = data.auth_id;
+
+        if (chatId) {
+          if (storageAvailable('sessionStorage')) {
+            sessionStorage['dpWidget.chat.id'] = chatId;
+            sessionStorage.removeItem('dpWidget.chat.lastAgentId');
+          }
+
+          dispatch(setChatId(chatId));
         }
-
-        dispatch(setChatId(chatId));
-      }
-    })
+      });
+  }
 );
 
 export const ackChatMessages = createAction(

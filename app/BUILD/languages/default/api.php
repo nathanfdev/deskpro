@@ -60,6 +60,8 @@ return [
     'api.error_codes.invalid_phone_number_format'    => 'Invalid phone number format.',
     'api.error_codes.invalid_session_id'             => 'Invalid session ID.',
     'api.error_codes.invalid_url'                    => 'This value is not a valid URL.',
+    'api.error_codes.invalid_jwt_token'              => 'This value is not a valid JWT token.',
+    'api.error_codes.missing_jwt_token'              => 'JWT token is required.',
     'api.error_codes.length_invalid'                 => 'This value should have exactly {{ limit }} characters.',
     'api.error_codes.length_too_long'                => 'This value is too long. It should have {{ limit }} characters or less.',
     'api.error_codes.length_too_short'               => 'This value is too short. It should have {{ limit }} characters or more.',

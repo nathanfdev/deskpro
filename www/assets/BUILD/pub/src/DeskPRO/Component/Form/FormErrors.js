@@ -12,6 +12,10 @@ import React from 'react';
  * @returns {Array}
  */
 export function getErrorPath(propertyPath, subPath = false) {
+  if (!propertyPath) {
+    return ['errors'];
+  }
+
   let arrayPath = [];
   if (propertyPath && typeof propertyPath === 'string') {
     arrayPath = propertyPath.split('.');

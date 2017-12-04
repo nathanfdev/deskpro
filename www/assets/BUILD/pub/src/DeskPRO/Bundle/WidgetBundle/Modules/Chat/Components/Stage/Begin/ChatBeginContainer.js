@@ -169,8 +169,9 @@ export class ChatBeginContainer extends React.Component {
     }
 
     this.setState({
-      submit: true,
-      banned: false
+      submit:   true,
+      banned:   false,
+      jwtError: false
     });
 
     const promise = dispatch(createChat(this.state.formData.value));

@@ -759,6 +759,31 @@
                             </div>
                         </div>
                     </div>
+                    <div class="ui segment" ng-show="show_embed_help || !brand_settings.widget.enabled">
+                        <div class="field">
+                            <div>
+                                <label>JWT Token Secret:</label>
+                                <div class="inline field">
+                                    <input type="text" ng-model="jwt_settings.secret" />
+                                </div>
+                            </div>
+                        </div>
+                        <div class="ui radio checkbox">
+                            <input type="radio" name="jwt_settings_required" id="jwt_settings_optional" ng-model="jwt_settings.required" value="0" />
+                            <label for="jwt_settings_optional">
+                                <h4>Continue to allow non-signed widgets.</h4>
+                                <div class="detail">This makes it possible to embed the widget without JWT signing. This makes it possible to optionally use JWT in specific cases where you want to make the system trust the supplied options (for example, user email). This is useful for internal pages like user account pages, billing, etc.</div>
+                            </label>
+
+                        </div>
+                        <div class="ui radio checkbox">
+                            <input type="radio" name="jwt_settings_required" id="jwt_settings_required" ng-model="jwt_settings.required" value="1" />
+                            <label for="jwt_settings_required">
+                                <h4>Always require JWT signing.</h4>
+                                <div class="detail">This means you CANNOT embed the widget into a page without using JWT signing. This will prevent your widget from being used on ANY site other than ones you control and sign with JWT.</div>
+                            </label>
+                        </div>
+                    </div>
                 </div>
 
                 <div class="preview" ng-hide="show_embed_help || !brand_settings.widget.enabled">

@@ -234,6 +234,8 @@ return [
     'portal.chat.unblock'                                    => 'Unblock',
     'portal.chat.upload_file'                                => 'Upload file',
     'portal.chat.user_is_blocked'                            => 'User is blocked',
+    'portal.chat.missing_jwt_token'                          => 'JWT token is required.',
+    'portal.chat.invalid_jwt_token'                          => 'Your JWT token is not valid.',
     'portal.chat.validation_email_was_sent'                  => 'Another email was successfully sent.',
     'portal.chat.visitor_info'                               => 'Visitor Information',
     'portal.chat.you'                                        => 'You',

@@ -9,7 +9,7 @@ import { hasErrors } from 'DeskPRO/Component/Form/FormErrors';
 import { UserInfoForm } from './UserInfoForm';
 import { ChatBeginContainer } from '../ChatBeginContainer';
 import { CustomFieldTemplate } from './CustomFieldTemplate';
-import BannedMessage from '../BannedMessage';
+import { BannedMessage, FormErrorMessage } from '../FormMessages';
 
 export class ChatBeginConversation extends React.Component {
 
@@ -165,11 +165,12 @@ export class ChatBeginConversation extends React.Component {
 
   render() {
     const { fields, current } = this.state;
-    const { banned } = this.props;
+    const { banned, errors } = this.props;
 
     return (
       <div>
         {banned && <BannedMessage />}
+        {errors && errors.errors && <FormErrorMessage errors={errors.errors} />}
         {fields[current]}
       </div>
     );
