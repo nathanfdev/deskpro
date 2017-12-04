@@ -120,6 +120,15 @@ class BasePerson
     protected $online;
 
     /**
+     * Is user online for chat?
+     *
+     * @JMS\Type("deferred<boolean>")
+     *
+     * @var bool
+     */
+    protected $onlineForChat;
+
+    /**
      * Date when user was last seen online.
      *
      * @JMS\Type("deferred<DateTime>")
@@ -164,6 +173,18 @@ class BasePerson
     public function setOnline($online)
     {
         $this->online = $online;
+
+        return $this;
+    }
+
+    /**
+     * @param $onlineForChat
+     *
+     * @return $this
+     */
+    public function setOnlineForChat($onlineForChat)
+    {
+        $this->onlineForChat = $onlineForChat;
 
         return $this;
     }
