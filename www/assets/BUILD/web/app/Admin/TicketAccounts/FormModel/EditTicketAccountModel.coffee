@@ -31,6 +31,8 @@ define [
       @form.in_exchange_account.mode = "read"
       @form.in_exchange_account.read_mailbox_type = "inbox"
       @form.out_smtp_account.secure_mode = "ssl"
+      @form.in_pop3_account.port = 110;
+      @form.out_smtp_account.port = 25;
 
       if @account.other_addresses and @account.other_addresses.length
         @form.with_email_aliases = true
