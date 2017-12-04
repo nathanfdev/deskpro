@@ -41,13 +41,20 @@ class ContentCommentVoter extends AbstractVoter
     const COMMENT_FEEDBACK = 'COMMENT_FEEDBACK';
     const COMMENT_DOWNLOAD = 'COMMENT_DOWNLOAD';
     const COMMENT_NEWS     = 'COMMENT_NEWS';
+    const COMMENT_TOPIC    = 'COMMENT_TOPIC';
 
     /**
      * {@inheritdoc}
      */
     protected function supports($attribute, $subject)
     {
-        $supported = [self::COMMENT_ARTICLE, self::COMMENT_FEEDBACK, self::COMMENT_DOWNLOAD, self::COMMENT_NEWS];
+        $supported = [
+            self::COMMENT_ARTICLE,
+            self::COMMENT_FEEDBACK,
+            self::COMMENT_DOWNLOAD,
+            self::COMMENT_NEWS,
+            self::COMMENT_TOPIC,
+        ];
 
         return in_array($attribute, $supported);
     }
@@ -60,26 +67,28 @@ class ContentCommentVoter extends AbstractVoter
         $user = $token->getUser();
 
         if ($this->isLoggedIn($user)) {
-            $permission_bag = $this->getPortalPermissionsManager()->getPermissionsBagForPerson($user);
+            $permissionsBag = $this->getPortalPermissionsManager()->getPermissionsBagForPerson($user);
         } else {
-            $permission_bag = $this->getPortalPermissionsManager()->getPermissionsBagForGuest();
+            $permissionsBag = $this->getPortalPermissionsManager()->getPermissionsBagForGuest();
         }
 
         if (!$this->getActiveBrandSetting('user.publish_comments', false)) {
             return false; // if this setting is off, never allow comments
         }
 
-        $permitted = $permission_bag->hasContentCategoryAccess($object);
+        $permitted = $permissionsBag->hasContentCategoryAccess($object);
 
         switch ($attribute) {
             case static::COMMENT_ARTICLE:
-                return $permission_bag->get('articles.comment') && $permitted;
+                return $permissionsBag->get('articles.comment') && $permitted;
             case static::COMMENT_FEEDBACK:
-                return $permission_bag->get('feedback.comment') && $permitted;
+                return $permissionsBag->get('feedback.comment') && $permitted;
             case static::COMMENT_DOWNLOAD:
-                return $permission_bag->get('downloads.comment') && $permitted;
+                return $permissionsBag->get('downloads.comment') && $permitted;
             case static::COMMENT_NEWS:
-                return $permission_bag->get('news.comment') && $permitted;
+                return $permissionsBag->get('news.comment') && $permitted;
+            case static::COMMENT_TOPIC:
+                return $permissionsBag->get('guides.comment') && $permitted;
         }
 
         return false;

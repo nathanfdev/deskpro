@@ -186,7 +186,7 @@ class GuidesController extends AbstractController
         // COMMENT FORM
         $newCommentForm = null;
         $captcha        = null;
-        if ($this->isGranted(ContentCommentVoter::COMMENT_ARTICLE, $topic)) {
+        if ($this->isGranted(ContentCommentVoter::COMMENT_TOPIC, $topic)) {
             $formHandler = $this->get('form_handler.comment');
             $comment     = new TopicComment();
             $comment->setVisitorId($visitor_id);

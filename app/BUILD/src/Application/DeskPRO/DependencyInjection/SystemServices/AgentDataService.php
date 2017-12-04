@@ -363,8 +363,6 @@ class AgentDataService
      * Get an array of agents who are online now (have active sessions).
      *
      * @return int[]
-     *
-     * @deprecated It works slow and bad for performance. Use entity repository instead. See class description above
      */
     public function getOnlineAgentIds()
     {

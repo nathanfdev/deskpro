@@ -115,7 +115,7 @@ class TimeTitles
             $parts[] = " WHEN $field <= $t THEN $t ";
         }
 
-        $sql .= implode('', $parts).' ELSE '.self::LAST_TIME_MARKER.' END AS time_group';
+        $sql .= implode('', $parts).' ELSE 0 END AS time_group';
 
         return $sql;
     }
