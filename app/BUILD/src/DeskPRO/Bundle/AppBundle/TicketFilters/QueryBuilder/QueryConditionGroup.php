@@ -60,6 +60,25 @@ class QueryConditionGroup
     }
 
     /**
+     * @param $part
+     */
+    public function add($part)
+    {
+        switch (true) {
+            case $part instanceof self:
+                $this->addSubGroup($part);
+                break;
+
+            case $part instanceof QueryCondition:
+                $this->addCondition($part);
+                break;
+
+            default:
+                throw new \InvalidArgumentException();
+        }
+    }
+
+    /**
      * @param QueryConditionGroup $g
      */
     public function addSubGroup(QueryConditionGroup $g)

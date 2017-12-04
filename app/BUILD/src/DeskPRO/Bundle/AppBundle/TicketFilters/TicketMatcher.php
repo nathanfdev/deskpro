@@ -47,18 +47,18 @@ class TicketMatcher extends AbstractMatcher
     /**
      * @param Query       $query
      * @param TicketModel $ticketModel
-     * @param Context     $matcherContext
+     * @param Context     $context
      *
      * @return bool
      */
-    public function doesQueryMatch(Query $query, TicketModel $ticketModel, Context $matcherContext)
+    public function doesQueryMatch(Query $query, TicketModel $ticketModel, Context $context)
     {
         $rootPart = $query->root;
 
         if ($rootPart instanceof TermGroup) {
-            return $this->doesTermGroupMatch($rootPart, $ticketModel, $matcherContext);
+            return $this->doesTermGroupMatch($rootPart, $ticketModel, $context);
         } else {
-            return $this->doesTermMatch($rootPart, $ticketModel, $matcherContext);
+            return $this->doesTermMatch($rootPart, $ticketModel, $context);
         }
     }
 
@@ -69,7 +69,7 @@ class TicketMatcher extends AbstractMatcher
      *
      * @return bool
      */
-    private function doesTermGroupMatch(TermGroup $termGroup, TicketModel $ticketModel, Context $matcherContext)
+    private function doesTermGroupMatch(TermGroup $termGroup, TicketModel $ticketModel, Context $context)
     {
         $op       = $termGroup->operator;
         $anyMatch = false;
@@ -77,13 +77,13 @@ class TicketMatcher extends AbstractMatcher
 
         foreach ($termGroup->terms as $term) {
             if ($term instanceof TermGroup) {
-                if ($this->doesTermGroupMatch($term, $ticketModel, $matcherContext)) {
+                if ($this->doesTermGroupMatch($term, $ticketModel, $context)) {
                     $anyMatch = true;
                 } else {
                     $anyFail = true;
                 }
             } else {
-                if ($this->doesTermMatch($term, $ticketModel, $matcherContext)) {
+                if ($this->doesTermMatch($term, $ticketModel, $context)) {
                     $anyMatch = true;
                 } else {
                     $anyFail = true;
@@ -119,7 +119,7 @@ class TicketMatcher extends AbstractMatcher
      * @param TicketModel  $ticketModel
      * @param AgentContext $agentContext
      */
-    public function doesTermMatch(Term $term, TicketModel $ticketModel, Context $matcherContext)
+    public function doesTermMatch(Term $term, TicketModel $ticketModel, Context $context)
     {
         $fieldId  = $term->field->identity;
         $operator = $term->operator->getOperator();
@@ -140,9 +140,9 @@ class TicketMatcher extends AbstractMatcher
                 [$h, $def->matchFn],
                 $fieldId,
                 $operator,
-                $this->getValueResovler()->getFuncCallParamValues($term->options->value, $term, $matcherContext),
+                $this->getValueResovler()->getFuncCallParamValues($term->options->value, $term, $context),
                 $ticketModel,
-                $matcherContext,
+                $context,
                 $term
             );
         }
@@ -153,7 +153,7 @@ class TicketMatcher extends AbstractMatcher
             throw new \OutOfBoundsException("No handler is capable of handling $fieldId");
         }
 
-        $options = $this->getValueResovler()->optionValueFromTerm($term, $matcherContext);
+        $options = $this->getValueResovler()->optionValueFromTerm($term, $context);
 
         foreach ($fieldHandlers as  $handler) {
             /** @var $handler TermsHandlerInterface */
@@ -162,7 +162,7 @@ class TicketMatcher extends AbstractMatcher
                 $operator,
                 $options,
                 $ticketModel,
-                $matcherContext,
+                $context,
                 $term
             )) {
                 return true;

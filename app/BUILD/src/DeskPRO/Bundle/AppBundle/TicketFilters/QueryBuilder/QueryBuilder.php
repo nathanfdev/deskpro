@@ -143,7 +143,7 @@ class QueryBuilder extends \Doctrine\DBAL\Query\QueryBuilder
 
         foreach ($cond->getSharedJoins() as $j) {
             if (!in_array($j['table'], $joinNames)) {
-                $fromAlias = $this->replaceLocalNames($j['fromAlias'], null, $joinRenames);
+                $fromAlias = $this->replaceLocalNames('{'.$j['fromAlias'].'}', null, $joinRenames);
                 $on        = $this->replaceLocalNames($j['on'], $varRenames, $joinRenames);
                 switch ($j['type']) {
                     case 'LEFT':  $this->leftJoin($fromAlias, $j['table'], $joinRenames[$j['localAlias']], $on); break;
@@ -154,7 +154,7 @@ class QueryBuilder extends \Doctrine\DBAL\Query\QueryBuilder
         }
         foreach ($cond->getUniqueJoins() as $j) {
             if (!in_array($j['table'], $joinNames)) {
-                $fromAlias = $this->replaceLocalNames($j['fromAlias'], null, $joinRenames);
+                $fromAlias = $this->replaceLocalNames('{'.$j['fromAlias'].'}', null, $joinRenames);
                 $on        = $this->replaceLocalNames($j['on'], $varRenames, $joinRenames);
                 switch ($j['type']) {
                     case 'LEFT':  $this->leftJoin($fromAlias, $j['table'], $joinRenames[$j['localAlias']], $on); break;

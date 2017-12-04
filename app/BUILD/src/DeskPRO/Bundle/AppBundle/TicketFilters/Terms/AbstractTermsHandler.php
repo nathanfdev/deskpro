@@ -31,9 +31,11 @@ namespace DeskPRO\Bundle\AppBundle\TicketFilters\Terms;
 use DeskPRO\Bundle\AppBundle\TicketFilters\Context;
 use DeskPRO\Bundle\AppBundle\TicketFilters\Model\Entity\TicketModel;
 use DeskPRO\Bundle\AppBundle\TicketFilters\OptValue\OptValue;
+use DeskPRO\Bundle\AppBundle\TicketFilters\QueryBuilder\QueryCondition;
 use DeskPRO\Component\FilterQueryLanguage\Query\Node\Term;
 use DeskPRO\Component\FilterQueryLanguage\Query\Query;
 use DeskPRO\Component\Util\ListUtils;
+use Doctrine\DBAL\Connection;
 
 abstract class AbstractTermsHandler implements TermsHandlerInterface
 {
@@ -56,7 +58,7 @@ abstract class AbstractTermsHandler implements TermsHandlerInterface
     /**
      * {@inheritdoc}
      */
-    public function buildQuery($fieldId, $operator, OptValue $options, Context $context, Term $term)
+    public function buildQueryCondition($fieldId, $operator, OptValue $options, Context $context, Term $term)
     {
         return null;
     }
@@ -158,11 +160,157 @@ abstract class AbstractTermsHandler implements TermsHandlerInterface
             case Query::OP_NOT_EXISTS:
                 $res = !empty($fieldValue);
 
-                if ($operator === Query::OP_NOT_EMPTY) {
+                if ($operator === Query::OP_NOT_EXISTS) {
                     $res = !$res;
                 }
 
                 return $res;
+
+            default:
+                throw new \InvalidArgumentException("Unknown operator: {$operator}");
+        }
+    }
+
+    /**
+     * @param $fieldColumn
+     * @param $operator
+     * @param $checkValue
+     *
+     * @return QueryCondition
+     */
+    public function checkValueQueryCondition($fieldColumn, $operator, $checkValue, $cond = null)
+    {
+        $where = $this->checkValueQueryWhere($fieldColumn, $operator, $checkValue);
+
+        if (!$cond) {
+            $cond = new QueryCondition();
+        }
+        $cond->setWhere($where['where']);
+        if (!empty($where['params'])) {
+            foreach ($where['params'] as $name => $info) {
+                $cond->setParam($name, $info[0], $info[1]);
+            }
+        }
+
+        return $cond;
+    }
+
+    /**
+     * @param string         $fieldColumn
+     * @param string         $operator
+     * @param mixed|OptValue $checkValue
+     *
+     * @return array Array of ['where' => XXX, 'params' => ['x' => ['val', type]]]
+     */
+    public function checkValueQueryWhere($fieldColumn, $operator, $checkValue)
+    {
+        if ($checkValue instanceof OptValue) {
+            $checkValue = $checkValue->getValue();
+        }
+
+        $colVarName = preg_replace('/[^a-zA-Z0-9]/', '', $fieldColumn);
+
+        switch ($operator) {
+            case Query::OP_EQ:
+                return [
+                    'where'  => "$fieldColumn = :$colVarName",
+                    'params' => [$colVarName => [$checkValue, null]],
+                ];
+
+            case Query::OP_NEQ:
+                return [
+                    'where'  => "$fieldColumn != :$colVarName",
+                    'params' => [$colVarName => [$checkValue, null]],
+                ];
+
+            case Query::OP_LT:
+                return [
+                    'where'  => "$fieldColumn < :$colVarName",
+                    'params' => [$colVarName => [$checkValue, null]],
+                ];
+
+            case Query::OP_LTE:
+                return [
+                    'where'  => "$fieldColumn <= :$colVarName",
+                    'params' => [$colVarName => [$checkValue, null]],
+                ];
+
+            case Query::OP_GT:
+                return [
+                    'where'  => "$fieldColumn > :$colVarName",
+                    'params' => [$colVarName => [$checkValue, null]],
+                ];
+
+            case Query::OP_GTE:
+                return [
+                    'where'  => "$fieldColumn >= :$colVarName",
+                    'params' => [$colVarName => [$checkValue, null]],
+                ];
+
+            case Query::OP_IN:
+            case Query::OP_HAS:
+            case Query::OP_NOT_IN:
+                if ($checkValue === null) {
+                    $checkValue = [];
+                }
+                if ($checkValue === 0 || $checkValue === '0') {
+                    $checkValue = [];
+                }
+                if (!is_array($checkValue)) {
+                    $checkValue = [$checkValue];
+                }
+
+                $checkValue = ListUtils::flatten($checkValue);
+
+                $op = $operator === Query::OP_NOT_IN ? 'NOT IN' : 'IN';
+
+                return [
+                    'where'  => "$fieldColumn $op (:$colVarName)",
+                    'params' => [$colVarName => [$checkValue, Connection::PARAM_STR_ARRAY]],
+                ];
+
+            case Query::OP_BETWEEN:
+            case Query::OP_NOT_BETWEEN:
+                if (!isset($checkValue[0]) || !isset($checkValue[1])) {
+                    return false;
+                }
+
+                $op = $operator === Query::OP_NOT_BETWEEN ? 'NOT BETWEEN' : 'BETWEEN';
+
+                return [
+                    'where'  => "$fieldColumn $op :{$colVarName}1 AND :{$colVarName}2",
+                    'params' => [
+                        "{$colVarName}1" => [$checkValue[0], null],
+                        "{$colVarName}2" => [$checkValue[1], null],
+                    ],
+                ];
+
+            case Query::OP_IS_NULL:
+            case Query::OP_NOT_NULL:
+                $op = $operator === Query::OP_NOT_NULL ? 'IS NOT NULL' : 'IS NULL';
+
+                return [
+                    'where'  => "$fieldColumn $op",
+                    'params' => [],
+                ];
+
+            case Query::OP_EMPTY:
+            case Query::OP_NOT_EMPTY:
+                $op = $operator === Query::OP_NOT_EMPTY ? 'IS NOT NULL' : 'IS NULL';
+
+                return [
+                    'where'  => "$fieldColumn $op",
+                    'params' => [],
+                ];
+
+            case Query::OP_EXISTS:
+            case Query::OP_NOT_EXISTS:
+                $op = $operator === Query::OP_NOT_EXISTS ? 'IS NOT NULL' : 'IS NULL';
+
+                return [
+                    'where'  => "$fieldColumn $op",
+                    'params' => [],
+                ];
 
             default:
                 throw new \InvalidArgumentException("Unknown operator: {$operator}");

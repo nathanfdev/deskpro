@@ -28,9 +28,175 @@
 
 namespace DeskPRO\Bundle\AppBundle\TicketFilters;
 
+use DeskPRO\Bundle\AppBundle\TicketFilters\QueryBuilder\QueryBuilder;
+use DeskPRO\Bundle\AppBundle\TicketFilters\QueryBuilder\QueryCondition;
+use DeskPRO\Bundle\AppBundle\TicketFilters\QueryBuilder\QueryConditionGroup;
+use DeskPRO\Component\FilterQueryLanguage\Query\Node\Term;
+use DeskPRO\Component\FilterQueryLanguage\Query\Node\TermGroup;
+use DeskPRO\Component\FilterQueryLanguage\Query\Query;
+use Doctrine\DBAL\Connection;
+
 class TicketSqlMatcher extends AbstractMatcher
 {
-    public function buildQueryBuilder()
+    /**
+     * @var Connection
+     */
+    private $db;
+
+    /**
+     * TicketSqlMatcher constructor.
+     *
+     * @param ValueResolver $valueResolver
+     * @param array         $handlers
+     * @param Connection    $db
+     */
+    public function __construct(ValueResolver $valueResolver, array $handlers, Connection $db)
     {
+        parent::__construct($valueResolver, $handlers);
+        $this->db = $db;
+    }
+
+    /**
+     * @param Query   $query
+     * @param Context $context
+     *
+     * @return QueryBuilder
+     */
+    public function getCountQueryBuilder(Query $query, Context $context)
+    {
+        $qb = $this->buildQueryBuilder($query, $context);
+        $qb->select('COUNT(*)');
+
+        return $qb;
+    }
+
+    /**
+     * @param Query   $query
+     * @param Context $context
+     *
+     * @return QueryBuilder
+     */
+    public function buildQueryBuilder(Query $query, Context $context)
+    {
+        $qb = new QueryBuilder($this->db);
+        $qb->from('tickets', 'tickets');
+        $qb->setMainTableAlias('tickets');
+
+        $rootPart = $query->root;
+
+        if ($rootPart instanceof TermGroup) {
+            $condGroup = $this->doesTermGroupMatch($rootPart, $context);
+            $qb->addQueryConditionGroup($condGroup);
+        } else {
+            $cond = $this->buildTerm($rootPart, $context);
+            if ($cond instanceof QueryConditionGroup) {
+                $qb->addQueryConditionGroup($cond);
+            } else {
+                $qb->addQueryCondition($cond);
+            }
+        }
+
+        return $qb;
+    }
+
+    /**
+     * @param TermGroup $termGroup
+     * @param Context   $context
+     *
+     * @return QueryConditionGroup
+     */
+    private function buildTermGroup(TermGroup $termGroup, Context $context)
+    {
+        $condGroup = new QueryConditionGroup($termGroup->operator->getOperator());
+
+        foreach ($termGroup->terms as $term) {
+            if ($termGroup instanceof TermGroup) {
+                $condGroup->add($this->buildTermGroup($term, $context));
+            } else {
+                $condGroup->add($this->buildTerm($term, $context));
+            }
+        }
+
+        return $condGroup;
+    }
+
+    /**
+     * @param Term    $term
+     * @param Context $context
+     *
+     * @return QueryCondition
+     */
+    private function buildTerm(Term $term, Context $context)
+    {
+        $fieldId  = $term->field->identity;
+        $operator = $term->operator->getOperator();
+
+        // Top-level value is a function call,
+        // see if we handle it with a special handler
+        if ($match = $this->getMatchFunctionForTerm($term)) {
+            /** @var TermsHandlerInterface $h */
+            $h = $match[0];
+            /** @var FunctionCompareDef $def */
+            $def = $match[1];
+
+            if (!in_array($operator, $def->operators)) {
+                throw new \InvalidArgumentException("Cannot use function {$def->name} with operator {$term->operator->getOperator()}. Allowed operators: ".implode(', ', $def->operators));
+            }
+
+            return call_user_func(
+                [$h, $def->matchFn],
+                $fieldId,
+                $operator,
+                $this->getValueResovler()->getFuncCallParamValues($term->options->value, $term, $context),
+                $context,
+                $term
+            );
+        }
+
+        $fieldHandlers = $this->getHandlersForFieldId($fieldId);
+
+        if (empty($fieldHandlers)) {
+            throw new \OutOfBoundsException("No handler is capable of handling $fieldId");
+        }
+
+        $options = $this->getValueResovler()->optionValueFromTerm($term, $context);
+
+        $parts = [];
+        foreach ($fieldHandlers as  $handler) {
+            /** @var $handler TermsHandlerInterface */
+            if ($c = $handler->buildQueryCondition(
+                $fieldId,
+                $operator,
+                $options,
+                $context,
+                $term
+            )) {
+                if ($c) {
+                    if (is_array($c)) {
+                        $parts = array_merge($parts, $c);
+                    } else {
+                        $parts[] = $c;
+                    }
+                }
+            }
+        }
+
+        if (empty($parts)) {
+            $c = new QueryCondition();
+            $c->setWhere('0');
+
+            return $c;
+        }
+
+        if (count($parts) === 1) {
+            return $parts[0];
+        }
+
+        $group = new QueryConditionGroup('AND');
+        foreach ($parts as $p) {
+            $group->add($p);
+        }
+
+        return $group;
     }
 }
