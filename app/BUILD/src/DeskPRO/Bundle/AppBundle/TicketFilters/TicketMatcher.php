@@ -37,71 +37,13 @@ use DeskPRO\Component\FilterQueryLanguage\Query\Node\GroupOp\NotGroupOp;
 use DeskPRO\Component\FilterQueryLanguage\Query\Node\GroupOp\OrGroupOp;
 use DeskPRO\Component\FilterQueryLanguage\Query\Node\Term;
 use DeskPRO\Component\FilterQueryLanguage\Query\Node\TermGroup;
-use DeskPRO\Component\FilterQueryLanguage\Query\Opt\CompareOpt;
 use DeskPRO\Component\FilterQueryLanguage\Query\Query;
-use DeskPRO\Component\FilterQueryLanguage\Query\Val\FuncVal;
 
 /**
  * The matcher matches a ticket against in-memory model values.
  */
-class TicketMatcher
+class TicketMatcher extends AbstractMatcher
 {
-    /**
-     * @var ValueResolver
-     */
-    private $valueResovler;
-
-    /**
-     * @var TermsHandlerInterface[]
-     */
-    private $handlers;
-
-    /**
-     * FieldId => Handler.
-     *
-     * @var TermsHandlerInterface[]
-     */
-    private $fieldToHandler;
-
-    /**
-     * The match ID is a concat of the operator and function name and field id.
-     *
-     * @var matchId => [handler, def]
-     */
-    private $matchFunctionMap;
-
-    /**
-     * TicketMatcher constructor.
-     *
-     * @param ValueResolver           $valueResolver
-     * @param TermsHandlerInterface[] $handlers
-     */
-    public function __construct(ValueResolver $valueResolver, array $handlers)
-    {
-        $this->valueResovler = $valueResolver;
-        $this->handlers      = $handlers;
-
-        $this->fieldToHandler   = [];
-        $this->matchFunctionMap = [];
-
-        foreach ($handlers as $h) {
-            foreach ($h->getHandledFields() as $fid) {
-                if (!isset($this->fieldToHandler[$fid])) {
-                    $this->fieldToHandler[$fid] = [];
-                }
-                $this->fieldToHandler[$fid][] = $h;
-            }
-
-            foreach ($h->getCompareFunctions() as $def) {
-                $name = $def->getIdName();
-                foreach ($def->fields as $field) {
-                    $id                          = $name.'--'.$field;
-                    $this->matchFunctionMap[$id] = [$h, $def];
-                }
-            }
-        }
-    }
-
     /**
      * @param Query       $query
      * @param TicketModel $ticketModel
@@ -184,47 +126,36 @@ class TicketMatcher
 
         // Top-level value is a function call,
         // see if we handle it with a special handler
-        if ($term->options instanceof CompareOpt && $term->options->value instanceof FuncVal) {
-            $name         = strtolower($term->options->value->name);
-            $matchFuncId  = $name.'--'.$term->field->identity;
-            $matchFuncAny = $name.'--*';
+        if ($match = $this->getMatchFunctionForTerm($term)) {
+            /** @var TermsHandlerInterface $h */
+            $h = $match[0];
+            /** @var FunctionCompareDef $def */
+            $def = $match[1];
 
-            $match = null;
-            if (isset($this->matchFunctionMap[$matchFuncId])) {
-                $match = $this->matchFunctionMap[$matchFuncId];
-            } elseif (isset($this->matchFunctionMap[$matchFuncAny])) {
-                $match = $this->matchFunctionMap[$matchFuncAny];
+            if (!in_array($operator, $def->operators)) {
+                throw new \InvalidArgumentException("Cannot use function {$def->name} with operator {$term->operator->getOperator()}. Allowed operators: ".implode(', ', $def->operators));
             }
 
-            if ($match) {
-                /** @var TermsHandlerInterface $h */
-                $h = $match[0];
-                /** @var FunctionCompareDef $def */
-                $def = $match[1];
-
-                if (!in_array($operator, $def->operators)) {
-                    throw new \InvalidArgumentException("Cannot use function {$def->name} with operator {$term->operator->getOperator()}. Allowed operators: ".implode(', ', $def->operators));
-                }
-
-                return call_user_func(
-                    [$h, $def->matchFn],
-                    $fieldId,
-                    $operator,
-                    $this->valueResovler->getFuncCallParamValues($term->options->value, $term, $matcherContext),
-                    $ticketModel,
-                    $matcherContext,
-                    $term
-                );
-            }
+            return call_user_func(
+                [$h, $def->matchFn],
+                $fieldId,
+                $operator,
+                $this->getValueResovler()->getFuncCallParamValues($term->options->value, $term, $matcherContext),
+                $ticketModel,
+                $matcherContext,
+                $term
+            );
         }
 
-        if (empty($this->fieldToHandler[$fieldId])) {
+        $fieldHandlers = $this->getHandlersForFieldId($fieldId);
+
+        if (empty($fieldHandlers)) {
             throw new \OutOfBoundsException("No handler is capable of handling $fieldId");
         }
 
-        $options = $this->valueResovler->optionValueFromTerm($term, $matcherContext);
+        $options = $this->getValueResovler()->optionValueFromTerm($term, $matcherContext);
 
-        foreach ($this->fieldToHandler[$fieldId] as $handler) {
+        foreach ($fieldHandlers as  $handler) {
             /** @var $handler TermsHandlerInterface */
             if ($handler->doesTicketMatch(
                 $fieldId,

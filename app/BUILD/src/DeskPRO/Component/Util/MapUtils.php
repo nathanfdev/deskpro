@@ -432,6 +432,77 @@ class MapUtils
     }
 
     /**
+     * Sorts a map using the return value of $fn(item).
+     *
+     * The return value of an item is typically an integer. If it is not,
+     * we will try to handle it th ebest we can (e.g. true/false, nulls, objects with toString, etc).
+     *
+     * @param \Traversable|array $array
+     * @param callable           $fn      Accepts key, value
+     * @param bool               $reverse
+     *
+     * @return array
+     */
+    public static function sortByFnValue($array, $fn, $reverse = false)
+    {
+        $procType = function ($val) {
+            $type = strtolower(gettype($val));
+
+            switch ($type) {
+                case $val instanceof \Countable:
+                    return count($val);
+                case 'null':
+                    return 2;
+                case 'boolean':
+                    return $val ? -1 : 1;
+                case 'array':
+                    return count($val);
+                case 'object':
+                    if (method_exists($val, '__toString')) {
+                        return $val->__toString();
+                    } else {
+                        return 1;
+                    }
+                case 'integer':
+                case 'double':
+                case 'float':
+                    return $val;
+                case 'resource':
+                    return 0;
+                default:
+                    return 0;
+            }
+        };
+
+        $sortedKeys = array_keys($array);
+        usort($sortedKeys, function ($a, $b) use ($fn, $procType, $reverse, $array) {
+            $aVal = $procType($fn($a, $array[$a]));
+            $bVal = $procType($fn($b, $array[$b]));
+
+            if ($aVal === $bVal) {
+                $order = 0;
+            } elseif (is_string($aVal) && is_string($bVal)) {
+                $order = strcmp($aVal, $bVal);
+            } else {
+                $order = $aVal < $bVal ? -1 : 1;
+            }
+
+            if ($reverse) {
+                $order = $order * -1;
+            }
+
+            return $order;
+        });
+
+        $array2 = [];
+        foreach ($sortedKeys as $k) {
+            $array2[$k] = $array[$k];
+        }
+
+        return $array2;
+    }
+
+    /**
      * @param \Traversable|array $array
      *
      * @return mixed

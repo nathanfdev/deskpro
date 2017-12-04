@@ -28,6 +28,9 @@
 
 namespace DeskPRO\Bundle\AppBundle\TicketFilters;
 
-class TicketQuery
+class TicketSqlMatcher extends AbstractMatcher
 {
+    public function buildQueryBuilder()
+    {
+    }
 }
