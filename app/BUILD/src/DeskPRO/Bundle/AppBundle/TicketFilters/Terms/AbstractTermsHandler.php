@@ -28,69 +28,27 @@
 
 namespace DeskPRO\Bundle\AppBundle\TicketFilters\Terms;
 
-use DeskPRO\Bundle\AppBundle\TicketFilters\MatcherContext;
+use DeskPRO\Bundle\AppBundle\TicketFilters\Context;
 use DeskPRO\Bundle\AppBundle\TicketFilters\Model\Entity\TicketModel;
-use DeskPRO\Bundle\AppBundle\TicketFilters\QueryBuilder;
-use DeskPRO\Bundle\AppBundle\TicketFilters\QueryContext;
-use DeskPRO\Bundle\AppBundle\TicketFilters\ValueResolver;
+use DeskPRO\Bundle\AppBundle\TicketFilters\OptValue\OptValue;
 use DeskPRO\Component\FilterQueryLanguage\Query\Node\Term;
-use DeskPRO\Component\FilterQueryLanguage\Query\Opt\CompareOpt;
-use DeskPRO\Component\FilterQueryLanguage\Query\Val\FuncVal;
+use DeskPRO\Component\FilterQueryLanguage\Query\Query;
+use DeskPRO\Component\Util\ListUtils;
 
 abstract class AbstractTermsHandler implements TermsHandlerInterface
 {
     /**
-     * @var ValueResolver
+     * {@inheritdoc}
      */
-    protected $valueResolver;
-
-    /**
-     * AbstractTermsHandler constructor.
-     *
-     * @param ValueResolver $valueResolver
-     */
-    public function __construct(ValueResolver $valueResolver)
+    public function getCompareFunctions()
     {
-        $this->valueResolver = $valueResolver;
-    }
-
-    /**
-     * Check if the current term check is a functioncall we want to handle.
-     *
-     * @param Term            $term
-     * @param string|string[] $expectOp
-     * @param string          $expectFn
-     *
-     * @return bool
-     */
-    public function isTermFunctionCall(Term $term, $expectOp, $expectFn)
-    {
-        if (!is_array($expectOp)) {
-            $expectOp = [$expectOp];
-        }
-
-        return in_array($term->operator->getOperator(), $expectOp, true)
-            && $term->options instanceof CompareOpt
-            && $term->options->value instanceof FuncVal
-            && $term->options->value->name === $expectFn;
+        return [];
     }
 
     /**
      * {@inheritdoc}
      */
-    public function getFunctions()
-    {
-        return [];
-    }
-
-    /***
-     * @param Term           $term
-     * @param TicketModel    $ticketModel
-     * @param MatcherContext $matcherContext
-     *
-     * @return bool
-     */
-    public function doesTicketMatch(Term $term, TicketModel $ticketModel, MatcherContext $matcherContext)
+    public function doesTicketMatch($fieldId, $operator, OptValue $options, TicketModel $ticketModel, Context $context, Term $term)
     {
         return false;
     }
@@ -98,8 +56,116 @@ abstract class AbstractTermsHandler implements TermsHandlerInterface
     /**
      * {@inheritdoc}
      */
-    public function buildQuery(QueryBuilder $qb, Term $term, QueryContext $queryContext)
+    public function buildQuery($fieldId, $operator, OptValue $options, Context $context, Term $term)
     {
-        $qb->andWhere('0');
+        return null;
+    }
+
+    /**
+     * @param mixed          $fieldValue
+     * @param string         $operator
+     * @param mixed|OptValue $checkValue
+     *
+     * @return bool
+     */
+    public function checkValue($fieldValue, $operator, $checkValue)
+    {
+        if ($checkValue instanceof OptValue) {
+            $checkValue = $checkValue->getValue();
+        }
+
+        switch ($operator) {
+            case Query::OP_EQ:
+                return $fieldValue == $checkValue;
+
+            case Query::OP_NEQ:
+                return $fieldValue != $checkValue;
+
+            case Query::OP_LT:
+                return $fieldValue < $checkValue;
+
+            case Query::OP_LTE:
+                return $fieldValue <= $checkValue;
+
+            case Query::OP_GT:
+                return $fieldValue > $checkValue;
+
+            case Query::OP_GTE:
+                return $fieldValue >= $checkValue;
+
+            case Query::OP_IN:
+            case Query::OP_HAS:
+            case Query::OP_NOT_IN:
+                if ($checkValue === null) {
+                    $checkValue = [];
+                }
+                if ($checkValue === 0 || $checkValue === '0') {
+                    $checkValue = [];
+                }
+                if (!is_array($checkValue)) {
+                    $checkValue = [$checkValue];
+                }
+
+                $checkValue = ListUtils::flatten($checkValue);
+
+                if (is_array($fieldValue)) {
+                    $res = ListUtils::containsAny($fieldValue, $checkValue, false);
+                } else {
+                    $res = in_array($fieldValue, $checkValue);
+                }
+
+                if ($operator === Query::OP_NOT_IN) {
+                    $res = !$res;
+                }
+
+                return $res;
+
+            case Query::OP_BETWEEN:
+            case Query::OP_NOT_BETWEEN:
+                if (!isset($checkValue[0]) || !isset($checkValue[1])) {
+                    return false;
+                }
+
+                $res = $fieldValue >= $checkValue[0] and $fieldValue <= $checkValue[1];
+
+                if ($operator === Query::OP_NOT_BETWEEN) {
+                    $res = !$res;
+                }
+
+                return $res;
+
+            case Query::OP_IS_NULL:
+            case Query::OP_NOT_NULL:
+                $res = $fieldValue === null || $fieldValue === 0 || $fieldValue === '0';
+
+                if ($operator === Query::OP_NOT_NULL) {
+                    $res = !$res;
+                }
+
+                return $res;
+
+            case Query::OP_EMPTY:
+            case Query::OP_NOT_EMPTY:
+                $res = empty($fieldValue);
+
+                if ($operator === Query::OP_NOT_EMPTY) {
+                    $res = !$res;
+                }
+
+                return $res;
+
+            case Query::OP_EXISTS:
+            case Query::OP_NOT_EXISTS:
+                $res = !empty($fieldValue);
+
+                if ($operator === Query::OP_NOT_EMPTY) {
+                    $res = !$res;
+                }
+
+                return $res;
+
+            default:
+                throw new \InvalidArgumentException("Unknown operator: {$operator}");
+        }
     }
 }

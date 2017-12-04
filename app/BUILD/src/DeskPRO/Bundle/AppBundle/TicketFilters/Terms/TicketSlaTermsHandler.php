@@ -29,9 +29,9 @@
 namespace DeskPRO\Bundle\AppBundle\TicketFilters\Terms;
 
 use Application\DeskPRO\Entity\TicketSla;
-use DeskPRO\Bundle\AppBundle\TicketFilters\MatcherContext;
+use DeskPRO\Bundle\AppBundle\TicketFilters\Context;
 use DeskPRO\Bundle\AppBundle\TicketFilters\Model\Entity\TicketModel;
-use DeskPRO\Bundle\AppBundle\TicketFilters\ValueResolver;
+use DeskPRO\Bundle\AppBundle\TicketFilters\OptValue\OptValue;
 use DeskPRO\Component\FilterQueryLanguage\Query\Node\Term;
 use DeskPRO\Component\FilterQueryLanguage\Query\Query;
 
@@ -50,58 +50,53 @@ class TicketSlaTermsHandler extends AbstractTermsHandler
     /**
      * {@inheritdoc}
      */
-    public function getFunctions()
+    public function getCompareFunctions()
     {
         return [
-            TermFunctionCallDef::build()
+            FunctionCompareDef::create()
                 ->setName('passingSlas')
                 ->setFields(Terms::TICKET_SLAS)
                 ->setMatchFn('matchHasPassingSlas')
-                ->setOperators(Query::OP_HAS)
-                ->getDef(),
+                ->setOperators(Query::OP_HAS),
 
-            TermFunctionCallDef::build()
+            FunctionCompareDef::create()
                 ->setName('warningSlas')
                 ->setFields(Terms::TICKET_SLAS)
                 ->setMatchFn('matchHasWarningSlas')
-                ->setOperators(Query::OP_HAS)
-                ->getDef(),
+                ->setOperators(Query::OP_HAS),
 
-            TermFunctionCallDef::build()
+            FunctionCompareDef::create()
                 ->setName('failedSlas')
                 ->setFields(Terms::TICKET_SLAS)
                 ->setMatchFn('matchHasFailingSlas')
-                ->setOperators(Query::OP_HAS)
-                ->getDef(),
+                ->setOperators(Query::OP_HAS),
         ];
     }
 
     /**
      * {@inheritdoc}
      */
-    public function doesTicketMatch(Term $term, TicketModel $ticketModel, MatcherContext $matcherContext)
+    public function doesTicketMatch($fieldId, $operator, OptValue $options, TicketModel $ticketModel, Context $context, Term $term)
     {
-        $fieldId = $term->field->identity;
-
         switch ($fieldId) {
             case Terms::TICKET_SLAS: $fieldValue = $ticketModel->id; break;
             default: throw new \InvalidArgumentException('Unknown field');
         }
 
-        return $this->valueResolver->checkTermWithFieldValue($fieldValue, $term, $ticketModel, $matcherContext);
+        return $this->checkValue($fieldValue, $operator, $options);
     }
 
-    public function matchHasPassingSlas(array $params, Term $term, TicketModel $ticketModel, MatcherContext $matcherContext)
+    public function matchHasPassingSlas($fieldId, $operator, array $params, TicketModel $ticketModel, Context $context, Term $term)
     {
         return $this->matchAnySlasStatus($ticketModel, TicketSla::STATUS_OK, $params);
     }
 
-    public function matchHasWarningSlas(array $params, Term $term, TicketModel $ticketModel, MatcherContext $matcherContext)
+    public function matchHasWarningSlas($fieldId, $operator, array $params, TicketModel $ticketModel, Context $context, Term $term)
     {
         return $this->matchAnySlasStatus($ticketModel, TicketSla::STATUS_WARNING, $params);
     }
 
-    public function matchHasFailingSlas(array $params, Term $term, TicketModel $ticketModel, MatcherContext $matcherContext)
+    public function matchHasFailingSlas($fieldId, $operator, array $params, TicketModel $ticketModel, Context $context, Term $term)
     {
         return $this->matchAnySlasStatus($ticketModel, TicketSla::STATUS_FAIL, $params);
     }

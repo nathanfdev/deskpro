@@ -26,21 +26,8 @@
  * ~ Thanks, Everyone at Team DeskPRO
  */
 
-namespace DeskPRO\Bundle\AppBundle\TicketFilters\Terms;
+namespace DeskPRO\Bundle\AppBundle\TicketFilters;
 
-class TermFunctionCallDef
+class TicketQuery
 {
-    public $name;
-    public $fields = [];
-    public $matchFn;
-    public $queryBuilderFn;
-    public $operators;
-
-    /**
-     * @return TermFunctionCallDefBuilder
-     */
-    public static function build()
-    {
-        return new TermFunctionCallDefBuilder();
-    }
 }

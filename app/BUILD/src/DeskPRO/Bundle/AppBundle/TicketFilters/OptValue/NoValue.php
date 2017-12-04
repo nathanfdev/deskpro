@@ -26,19 +26,19 @@
  * ~ Thanks, Everyone at Team DeskPRO
  */
 
-namespace DeskPRO\Bundle\AppBundle\TicketFilters;
+namespace DeskPRO\Bundle\AppBundle\TicketFilters\OptValue;
 
-class QueryBuilder extends \Doctrine\DBAL\Query\QueryBuilder
+use DeskPRO\Component\FilterQueryLanguage\Query\Opt\NoOpt;
+
+class NoValue extends OptValue
 {
-    /**
-     * Generate an ID that is unique in the query.
-     *
-     * @return string
-     */
-    public function generateId()
-    {
-        static $id = 0;
+    const OPT = NoOpt::OPT;
 
-        return 'id_'.$id++;
+    /**
+     * {@inheritdoc}
+     */
+    public function getValue()
+    {
+        return null;
     }
 }

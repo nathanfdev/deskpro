@@ -42,6 +42,15 @@ class RelativeTimeVal extends Val
     const UNIT_MONTH = 'month';
     const UNIT_YEAR  = 'year';
 
+    public $mode;
+
+    /**
+     * Array of [num, unit].
+     *
+     * @var array
+     */
+    public $times;
+
     /**
      * RelativeTimeVal constructor.
      *
@@ -74,9 +83,6 @@ class RelativeTimeVal extends Val
 
         return [$num, $unit];
     }
-
-    public $mode;
-    public $times;
 
     /**
      * {@inheritdoc}

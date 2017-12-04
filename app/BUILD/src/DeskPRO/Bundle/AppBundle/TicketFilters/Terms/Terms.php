@@ -28,10 +28,10 @@
 
 namespace DeskPRO\Bundle\AppBundle\TicketFilters\Terms;
 
-use DeskPRO\Bundle\AppBundle\TicketFilters\Model\Entity\CustomField;
-use DeskPRO\Component\FilterQueryLanguage\AbstractQueryDefinition;
-
-class Terms extends AbstractQueryDefinition
+/**
+ * This is just used to define constants.
+ */
+class Terms
 {
     const TICKET_ID                    = 'ticket.id';
     const TICKET_STATUS                = 'ticket.status';
@@ -69,110 +69,10 @@ class Terms extends AbstractQueryDefinition
     const VAR_MY_TEAM  = 'me.primary_team';
     const VAR_MY_TEAMS = 'me.teams';
 
+    const FUNC_NOW  = 'now';
+    const FUNC_DATE = 'date';
+
     const FUNC_PASSING_SLAS = 'passingSlas';
     const FUNC_WARNING_SLAS = 'warningSlas';
     const FUNC_FAILED_SLAS  = 'failedSlas';
-
-    /**
-     * @var CustomField[]
-     */
-    private $customTicketFields = [];
-
-    /**
-     * @var CustomField[]
-     */
-    private $customPersonFields = [];
-
-    /**
-     * Terms constructor.
-     *
-     * @param CustomField[] $customTicketFields
-     * @param CustomField[] $customPersonFields
-     */
-    public function __construct(array $customTicketFields = [], array $customPersonFields = [])
-    {
-        $this->customTicketFields = $customTicketFields;
-        $this->customPersonFields = $customPersonFields;
-    }
-
-    /**
-     * @return array
-     */
-    public function getFieldDefs()
-    {
-        $defs = [
-            self::TICKET_ID                    => ['type' => 'ID'],
-            self::TICKET_STATUS                => ['type' => 'STRING'],
-            self::TICKET_DEPARTMENT            => ['type' => 'ID'],
-            self::TICKET_AGENT                 => ['type' => 'ID'],
-            self::TICKET_AGENT_TEAM            => ['type' => 'ID'],
-            self::TICKET_FOLLOWERS             => ['type' => 'ID[]'],
-            self::TICKET_LANGUAGE              => ['type' => 'ID'],
-            self::TICKET_PRODUCT               => ['type' => 'ID'],
-            self::TICKET_CATEGORY              => ['type' => 'ID'],
-            self::TICKET_PRIORITY              => ['type' => 'ID'],
-            self::TICKET_URGENCY               => ['type' => 'ID'],
-            self::TICKET_WORKFLOW              => ['type' => 'ID'],
-            self::TICKET_LABELS                => ['type' => 'STRING[]'],
-            self::TICKET_EMAIL_ACCOUNT         => ['type' => 'ID'],
-            self::TICKET_IS_HOLD               => ['type' => 'BOOLEAN'],
-            self::TICKET_SLAS                  => ['type' => 'ID[]'],
-            self::TICKET_DATE_CREATED          => ['type' => 'DATE'],
-            self::TICKET_DATE_LAST_AGENT_REPLY => ['type' => 'DATE'],
-            self::TICKET_DATE_LAST_USER_REPLY  => ['type' => 'DATE'],
-            self::TICKET_DATE_AGENT_WAITING    => ['type' => 'DATE'],
-            self::TICKET_DATE_USER_WAITING     => ['type' => 'DATE'],
-            self::PERSON_ID                    => ['type' => 'INT'],
-            self::PERSON_LABELS                => ['type' => 'STRING[]'],
-            self::PERSON_USERGROUPS            => ['type' => 'ID[]'],
-            self::ORG_ID                       => ['type' => 'ID'],
-            self::ORG_LABELS                   => ['type' => 'STRING[]'],
-            self::ORG_USERGROUPS               => ['type' => 'ID[]'],
-        ];
-
-        foreach ($this->customTicketFields as $f) {
-            $defs[sprintf(self::TICKET_CUSTOM, $f->field)] = ['type' => $f->valueType];
-        }
-        foreach ($this->customPersonFields as $f) {
-            $defs[sprintf(self::PERSON_CUSTOM, $f->field)] = ['type' => $f->valueType];
-        }
-
-        return $defs;
-    }
-
-    /**
-     * {@inheritdoc}
-     */
-    public function getVariableDefs()
-    {
-        return [
-            self::VAR_ME       => ['type' => 'INT'],
-            self::VAR_MY_TEAM  => ['type' => 'INT'],
-            self::VAR_MY_TEAMS => ['type' => 'INT[]'],
-        ];
-    }
-
-    /**
-     * {@inheritdoc}
-     */
-    public function getFunctionDefs()
-    {
-        return [
-            self::FUNC_FAILED_SLAS => [
-                'fields'    => [self::TICKET_SLAS],
-                'operators' => ['EMPTY', 'NOT_EMPTY'],
-                'params'    => [],
-            ],
-            self::FUNC_WARNING_SLAS => [
-                'fields'    => [self::TICKET_SLAS],
-                'operators' => ['IN', 'NOT_IN', 'EMPTY', 'NOT_EMPTY'],
-                'params'    => [],
-            ],
-            self::FUNC_FAILED_SLAS => [
-                'fields'    => [self::TICKET_SLAS],
-                'operators' => ['IN', 'NOT_IN', 'EMPTY', 'NOT_EMPTY'],
-                'params'    => [],
-            ],
-        ];
-    }
 }

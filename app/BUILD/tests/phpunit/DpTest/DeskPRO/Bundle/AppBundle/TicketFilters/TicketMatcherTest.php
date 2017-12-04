@@ -28,17 +28,29 @@
 
 namespace DpTest\Bundle\AppBundle\TicketFilters;
 
-use DeskPRO\Bundle\AppBundle\TicketFilters\MatcherContext;
+use DeskPRO\Bundle\AppBundle\TicketFilters\Context;
 use DeskPRO\Bundle\AppBundle\TicketFilters\Model\Context\AgentContext;
 use DeskPRO\Bundle\AppBundle\TicketFilters\Model\Entity\OrgModel;
 use DeskPRO\Bundle\AppBundle\TicketFilters\Model\Entity\PersonModel;
 use DeskPRO\Bundle\AppBundle\TicketFilters\Model\Entity\TicketModel;
 use DeskPRO\Bundle\AppBundle\TicketFilters\Model\Entity\TicketSlaModel;
 use DeskPRO\Bundle\AppBundle\TicketFilters\Terms\TicketBasicTermsHandler;
+use DeskPRO\Bundle\AppBundle\TicketFilters\Terms\TicketDateTermsHandler;
 use DeskPRO\Bundle\AppBundle\TicketFilters\Terms\TicketSlaTermsHandler;
 use DeskPRO\Bundle\AppBundle\TicketFilters\TicketMatcher;
 use DeskPRO\Bundle\AppBundle\TicketFilters\ValueResolver;
 use DeskPRO\Component\FilterQueryLanguage\Parser;
+
+class TestValueResolver extends ValueResolver
+{
+    /**
+     * {@inheritdoc}
+     */
+    public function fnNow()
+    {
+        return \DateTime::createFromFormat('Y-m-d H:i:s', '2017-12-04 14:09:00');
+    }
+}
 
 class TicketMatcherTest extends \PHPUnit_Framework_TestCase
 {
@@ -72,26 +84,28 @@ class TicketMatcherTest extends \PHPUnit_Framework_TestCase
      */
     protected function setUp()
     {
-        $resolver                  = new ValueResolver();
+        $resolver                  = new TestValueResolver();
         $this->agentContext        = new AgentContext();
         $this->agentContext->id    = 1;
         $this->agentContext->teams = [1, 2, 3];
 
-        $this->matcherContext = new MatcherContext($this->agentContext);
+        $this->matcherContext = new Context($this->agentContext);
 
         $this->matcher = new TicketMatcher($resolver, [
-            new TicketBasicTermsHandler($resolver),
-            new TicketSlaTermsHandler($resolver),
+            new TicketBasicTermsHandler(),
+            new TicketSlaTermsHandler(),
+            new TicketDateTermsHandler(),
         ]);
 
         // Ticket 1
-        $this->ticket1             = new TicketModel();
-        $this->ticket1->id         = 1;
-        $this->ticket1->agent      = 1;
-        $this->ticket1->agent_team = 1;
-        $this->ticket1->department = 1;
-        $this->ticket1->followers  = [100, 102];
-        $this->ticket1->labels     = ['label1', 'label2'];
+        $this->ticket1               = new TicketModel();
+        $this->ticket1->date_created = \DateTime::createFromFormat('Y-m-d H:i:s', '2017-12-04 14:00:00');
+        $this->ticket1->id           = 1;
+        $this->ticket1->agent        = 1;
+        $this->ticket1->agent_team   = 1;
+        $this->ticket1->department   = 1;
+        $this->ticket1->followers    = [100, 102];
+        $this->ticket1->labels       = ['label1', 'label2'];
 
         $this->ticket1->person         = new PersonModel();
         $this->ticket1->person->labels = ['plabel1', 'plabel2'];
@@ -142,13 +156,22 @@ class TicketMatcherTest extends \PHPUnit_Framework_TestCase
     public function test_id_match()
     {
         $this->assertTrue($this->runTicket1Query('ticket.id = 1'));
-        $this->assertfalse($this->runTicket1Query('ticket.id != 2'));
+        $this->assertTrue($this->runTicket1Query('ticket.id != 2'));
+        $this->assertFalse($this->runTicket1Query('ticket.id != 1'));
+        $this->assertFalse($this->runTicket1Query('ticket.id = 2'));
         $this->assertTrue($this->runTicket1Query('ticket.id < 10'));
         $this->assertFalse($this->runTicket1Query('ticket.id > 10'));
         $this->assertTrue($this->runTicket1Query('ticket.id <= 1'));
         $this->assertTrue($this->runTicket1Query('ticket.id BETWEEN 1 AND 100'));
 
         $this->assertFalse($this->runTicket2Query('ticket.id = 1'));
+    }
+
+    public function test_fn_match()
+    {
+        $this->assertTrue($this->runTicket1Query('ticket.date_created < NOW()'));
+        $this->assertFalse($this->runTicket1Query('ticket.date_created > NOW()'));
+        $this->assertTrue($this->runTicket1Query('ticket.date_created BETWEEN DATE("2017-12-04 13:00:00") AND DATE("2017-12-04 15:00:00")'));
     }
 
     public function test_sla_match()

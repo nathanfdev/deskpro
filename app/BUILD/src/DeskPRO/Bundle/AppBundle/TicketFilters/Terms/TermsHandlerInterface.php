@@ -28,10 +28,9 @@
 
 namespace DeskPRO\Bundle\AppBundle\TicketFilters\Terms;
 
-use DeskPRO\Bundle\AppBundle\TicketFilters\MatcherContext;
+use DeskPRO\Bundle\AppBundle\TicketFilters\Context;
 use DeskPRO\Bundle\AppBundle\TicketFilters\Model\Entity\TicketModel;
-use DeskPRO\Bundle\AppBundle\TicketFilters\QueryBuilder;
-use DeskPRO\Bundle\AppBundle\TicketFilters\QueryContext;
+use DeskPRO\Bundle\AppBundle\TicketFilters\OptValue\OptValue;
 use DeskPRO\Component\FilterQueryLanguage\Query\Node\Term;
 
 /**
@@ -56,6 +55,10 @@ interface TermsHandlerInterface
     /**
      * Functions that handle calls specially for specific operators. E.g.: foo HAS myFunc().
      *
+     * These are "compare" functions because they are used as the target of an operator. This is
+     * different from value functions (defined on the value resolver) that only return a literal
+     * value.
+     *
      * A function needs both a matcher as well as a queryer. The matcher needs to
      * return true/false, and the queryer needs to operate on the query builder
      * to add the required conditions.
@@ -68,40 +71,46 @@ interface TermsHandlerInterface
      *
      * <code>
      * $matchFns = [
-     *     TicketFunctionCallDef::build()
+     *     TicketFunctionCallDef::create()
      *         ->setName('myFunc')
      *         ->setMatchFn('matchMyFunc')
      *         ->setQueryBuilderFn('qbMyFunc')
      *         ->setOperators(Query::TERM_HAS)
      *         ->setFields('foo', 'tickets.agent)
-     *         ->getDef()
      * ];
      * </code>
      *
      * The signatures for the functions:
      *
      * <code>
-     * matchMyFunc(array $params, Term $term, TicketModel $ticketModel, MatcherContext $matcherContext)
-     * qbMyFunc(array $params, QueryBuilder $qb, Term $term, QueryContext $queryContext)
+     * matchMyFunc(string $fieldId, string $operator, array $params, TicketModel $ticketModel, Context $context, Term $term)
+     * qbMyFunc(string $fieldId, string $operator, array $params, Context $context, Term $term)
      * </code>
      *
-     * @return TermFunctionCallDef[]
+     * @return FunctionCompareDef[]
      */
-    public function getFunctions();
+    public function getCompareFunctions();
 
     /**
-     * @param Term           $term
-     * @param TicketModel    $ticketModel
-     * @param MatcherContext $valueResolver
+     * @param string      $fieldId     The field the term is based on
+     * @param string      $operator    The term operator
+     * @param OptValue    $options     The value for the term
+     * @param TicketModel $ticketModel The current ticket model
+     * @param Context     $context     The current context
+     * @param Term        $term        The raw term from which fieldId, operator, and options were read from
      *
      * @return bool
      */
-    public function doesTicketMatch(Term $term, TicketModel $ticketModel, MatcherContext $valueResolver);
+    public function doesTicketMatch($fieldId, $operator, OptValue $options, TicketModel $ticketModel, Context $context, Term $term);
 
     /**
-     * @param QueryBuilder $qb
-     * @param Term         $term
-     * @param QueryContext $queryContext
+     * @param string   $fieldId  The field the term is based on
+     * @param string   $operator The term operator
+     * @param OptValue $options  The value for the term
+     * @param Context  $context  The current context
+     * @param Term     $term     The raw term from which fieldId, operator, and options were read from
+     *
+     * @return mixed
      */
-    public function buildQuery(QueryBuilder $qb, Term $term,  QueryContext $queryContext);
+    public function buildQuery($fieldId, $operator, OptValue $options, Context $context, Term $term);
 }

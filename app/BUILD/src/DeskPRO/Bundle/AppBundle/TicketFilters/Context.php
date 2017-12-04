@@ -31,7 +31,7 @@ namespace DeskPRO\Bundle\AppBundle\TicketFilters;
 use DeskPRO\Bundle\AppBundle\TicketFilters\Model\Context\AgentContext;
 use Symfony\Component\PropertyAccess\PropertyAccess;
 
-class MatcherContext
+class Context
 {
     /**
      * @var AgentContext

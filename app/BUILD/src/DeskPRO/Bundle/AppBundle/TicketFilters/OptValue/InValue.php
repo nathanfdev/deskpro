@@ -26,41 +26,34 @@
  * ~ Thanks, Everyone at Team DeskPRO
  */
 
-namespace DeskPRO\Component\FilterQueryLanguage;
+namespace DeskPRO\Bundle\AppBundle\TicketFilters\OptValue;
 
-/**
- * This helps validate a query by allowing you to specify constraints.
- * For example, certain functions might only make sense with certain operators or fields.
- */
-interface QueryDefinitionInterface
+use DeskPRO\Component\FilterQueryLanguage\Query\Opt\InOpt;
+
+class InValue extends OptValue
 {
-    /**
-     * Check if a field is a valid field.
-     *
-     * @param string $identity
-     *
-     * @return string[]
-     */
-    public function validateField($identity);
+    const OPT = InOpt::OPT;
 
     /**
-     * Check if a variable is valid.
-     *
-     * @param string $varId
-     *
-     * @return string[]
+     * @var array
      */
-    public function validateVariable($varId);
+    public $values = [];
 
     /**
-     * Check if a function call is a valid function call.
+     * InValue constructor.
      *
-     * @param string   $name
-     * @param string[] $params
-     * @param string   $op
-     * @param string   $fieldId
-     *
-     * @return string[]
+     * @param array $values
      */
-    public function validateFunctionCall($name, $params, $op, $fieldId);
+    public function __construct(array $values)
+    {
+        $this->values = $values;
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function getValue()
+    {
+        return $this->values;
+    }
 }

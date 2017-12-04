@@ -26,27 +26,34 @@
  * ~ Thanks, Everyone at Team DeskPRO
  */
 
-namespace DeskPRO\Bundle\AppBundle\TicketFilters;
+namespace DeskPRO\Bundle\AppBundle\TicketFilters\OptValue;
 
-use DeskPRO\Bundle\AppBundle\TicketFilters\Model\Context\AgentContext;
+use DeskPRO\Component\FilterQueryLanguage\Query\Opt\CompareOpt;
 
-class QueryContext
+class CompareValue extends OptValue
 {
-    /**
-     * @var AgentContext
-     */
-    private $agentContext;
+    const OPT = CompareOpt::OPT;
 
-    public function __construct(AgentContext $agentContext)
+    /**
+     * @var scalar
+     */
+    public $value;
+
+    /**
+     * CompareValue constructor.
+     *
+     * @param mixed $value
+     */
+    public function __construct($value)
     {
-        $this->agentContext = $agentContext;
+        $this->value = $value;
     }
 
     /**
-     * @return AgentContext
+     * {@inheritdoc}
      */
-    public function getAgentContext()
+    public function getValue()
     {
-        return $this->agentContext;
+        return $this->value;
     }
 }

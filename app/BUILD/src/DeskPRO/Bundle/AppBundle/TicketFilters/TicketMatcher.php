@@ -30,6 +30,7 @@ namespace DeskPRO\Bundle\AppBundle\TicketFilters;
 
 use DeskPRO\Bundle\AppBundle\TicketFilters\Model\Context\AgentContext;
 use DeskPRO\Bundle\AppBundle\TicketFilters\Model\Entity\TicketModel;
+use DeskPRO\Bundle\AppBundle\TicketFilters\Terms\FunctionCompareDef;
 use DeskPRO\Bundle\AppBundle\TicketFilters\Terms\TermsHandlerInterface;
 use DeskPRO\Component\FilterQueryLanguage\Query\Node\GroupOp\AndGroupOp;
 use DeskPRO\Component\FilterQueryLanguage\Query\Node\GroupOp\NotGroupOp;
@@ -65,7 +66,7 @@ class TicketMatcher
     /**
      * The match ID is a concat of the operator and function name and field id.
      *
-     * @var matchId => [handler, fn]
+     * @var matchId => [handler, def]
      */
     private $matchFunctionMap;
 
@@ -91,31 +92,24 @@ class TicketMatcher
                 $this->fieldToHandler[$fid][] = $h;
             }
 
-            foreach ($h->getFunctions() as $def) {
-                $name = strtolower($def->name);
-                $ops  = $def->operators;
-                if (!is_array($ops)) {
-                    $ops = [$ops];
-                }
-
-                foreach ($ops as $op) {
-                    foreach ($def->fields as $field) {
-                        $id                          = $name.'--'.$op.'--'.$field;
-                        $this->matchFunctionMap[$id] = [$h, $def->matchFn];
-                    }
+            foreach ($h->getCompareFunctions() as $def) {
+                $name = $def->getIdName();
+                foreach ($def->fields as $field) {
+                    $id                          = $name.'--'.$field;
+                    $this->matchFunctionMap[$id] = [$h, $def];
                 }
             }
         }
     }
 
     /**
-     * @param Query          $query
-     * @param TicketModel    $ticketModel
-     * @param MatcherContext $matcherContext
+     * @param Query       $query
+     * @param TicketModel $ticketModel
+     * @param Context     $matcherContext
      *
      * @return bool
      */
-    public function doesQueryMatch(Query $query, TicketModel $ticketModel, MatcherContext $matcherContext)
+    public function doesQueryMatch(Query $query, TicketModel $ticketModel, Context $matcherContext)
     {
         $rootPart = $query->root;
 
@@ -133,7 +127,7 @@ class TicketMatcher
      *
      * @return bool
      */
-    private function doesTermGroupMatch(TermGroup $termGroup, TicketModel $ticketModel, MatcherContext $matcherContext)
+    private function doesTermGroupMatch(TermGroup $termGroup, TicketModel $ticketModel, Context $matcherContext)
     {
         $op       = $termGroup->operator;
         $anyMatch = false;
@@ -183,29 +177,43 @@ class TicketMatcher
      * @param TicketModel  $ticketModel
      * @param AgentContext $agentContext
      */
-    public function doesTermMatch(Term $term, TicketModel $ticketModel, MatcherContext $matcherContext)
+    public function doesTermMatch(Term $term, TicketModel $ticketModel, Context $matcherContext)
     {
-        $fieldId = $term->field->identity;
+        $fieldId  = $term->field->identity;
+        $operator = $term->operator->getOperator();
 
+        // Top-level value is a function call,
+        // see if we handle it with a special handler
         if ($term->options instanceof CompareOpt && $term->options->value instanceof FuncVal) {
-            $matchFunc    = $term->options->value->name.'--'.$term->operator->getOperator();
-            $matchFuncId  = $matchFunc.'--'.$term->field->identity;
-            $matchFuncAny = $matchFunc.'--*';
+            $name         = strtolower($term->options->value->name);
+            $matchFuncId  = $name.'--'.$term->field->identity;
+            $matchFuncAny = $name.'--*';
 
-            $matchFn = null;
+            $match = null;
             if (isset($this->matchFunctionMap[$matchFuncId])) {
-                $matchFn = $this->matchFunctionMap[$matchFuncId];
+                $match = $this->matchFunctionMap[$matchFuncId];
             } elseif (isset($this->matchFunctionMap[$matchFuncAny])) {
-                $matchFn = $this->matchFunctionMap[$matchFuncAny];
+                $match = $this->matchFunctionMap[$matchFuncAny];
             }
 
-            if ($matchFn) {
+            if ($match) {
+                /** @var TermsHandlerInterface $h */
+                $h = $match[0];
+                /** @var FunctionCompareDef $def */
+                $def = $match[1];
+
+                if (!in_array($operator, $def->operators)) {
+                    throw new \InvalidArgumentException("Cannot use function {$def->name} with operator {$term->operator->getOperator()}. Allowed operators: ".implode(', ', $def->operators));
+                }
+
                 return call_user_func(
-                    $matchFn,
-                    $this->valueResovler->getFuncCallParamValues($term->options->value, $term, $ticketModel, $matcherContext),
-                    $term,
+                    [$h, $def->matchFn],
+                    $fieldId,
+                    $operator,
+                    $this->valueResovler->getFuncCallParamValues($term->options->value, $term, $matcherContext),
                     $ticketModel,
-                    $matcherContext
+                    $matcherContext,
+                    $term
                 );
             }
         }
@@ -214,9 +222,18 @@ class TicketMatcher
             throw new \OutOfBoundsException("No handler is capable of handling $fieldId");
         }
 
+        $options = $this->valueResovler->optionValueFromTerm($term, $matcherContext);
+
         foreach ($this->fieldToHandler[$fieldId] as $handler) {
             /** @var $handler TermsHandlerInterface */
-            if ($handler->doesTicketMatch($term, $ticketModel, $matcherContext)) {
+            if ($handler->doesTicketMatch(
+                $fieldId,
+                $operator,
+                $options,
+                $ticketModel,
+                $matcherContext,
+                $term
+            )) {
                 return true;
             }
         }

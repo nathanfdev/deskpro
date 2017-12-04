@@ -28,46 +28,50 @@
 
 namespace DeskPRO\Bundle\AppBundle\TicketFilters\Terms;
 
-class TermFunctionCallDefBuilder
+class FunctionCompareDef
 {
-    /**
-     * @var TermFunctionCallDef
-     */
-    private $def;
+    public $name;
+    public $fields = [];
+    public $matchFn;
+    public $queryBuilderFn;
+    public $operators;
 
-    public function __construct()
+    /**
+     * @return FunctionCompareDef
+     */
+    public static function create()
     {
-        $this->def = new TermFunctionCallDef();
+        return new self();
     }
 
     /**
-     * @return TermFunctionCallDef
+     * @return string
      */
-    public function getDef()
+    public function getIdName()
     {
-        return $this->def;
+        return strtolower($this->name);
     }
 
     /**
      * @param mixed $name
      *
-     * @return TermFunctionCallDefBuilder
+     * @return FunctionCompareDef
      */
     public function setName($name)
     {
-        $this->def->name = $name;
+        $this->name = $name;
 
         return $this;
     }
 
     /**
-     * @param string... $fields
+     * @param array $fields
      *
-     * @return TermFunctionCallDefBuilder
+     * @return FunctionCompareDef
      */
     public function setFields($fields)
     {
-        $this->def->fields = func_get_args();
+        $this->fields = func_get_args();
 
         return $this;
     }
@@ -75,35 +79,35 @@ class TermFunctionCallDefBuilder
     /**
      * @param mixed $matchFn
      *
-     * @return TermFunctionCallDefBuilder
+     * @return FunctionCompareDef
      */
     public function setMatchFn($matchFn)
     {
-        $this->def->matchFn = $matchFn;
+        $this->matchFn = $matchFn;
 
         return $this;
     }
 
     /**
-     * @param mixed $queryFn
+     * @param mixed $queryBuilderFn
      *
-     * @return TermFunctionCallDefBuilder
+     * @return FunctionCompareDef
      */
-    public function setQueryBuilderFn($queryFn)
+    public function setQueryBuilderFn($queryBuilderFn)
     {
-        $this->def->queryBuilderFn = $queryFn;
+        $this->queryBuilderFn = $queryBuilderFn;
 
         return $this;
     }
 
     /**
-     * @param string... $operators
+     * @param mixed $operators
      *
-     * @return TermFunctionCallDefBuilder
+     * @return FunctionCompareDef
      */
     public function setOperators($operators)
     {
-        $this->def->operators = func_get_args();
+        $this->operators = func_get_args();
 
         return $this;
     }

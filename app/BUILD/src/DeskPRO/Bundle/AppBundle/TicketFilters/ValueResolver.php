@@ -28,187 +28,71 @@
 
 namespace DeskPRO\Bundle\AppBundle\TicketFilters;
 
-use DeskPRO\Bundle\AppBundle\TicketFilters\Model\Entity\TicketModel;
+use DeskPRO\Bundle\AppBundle\TicketFilters\OptValue\BetweenValue;
+use DeskPRO\Bundle\AppBundle\TicketFilters\OptValue\CompareValue;
+use DeskPRO\Bundle\AppBundle\TicketFilters\OptValue\InValue;
+use DeskPRO\Bundle\AppBundle\TicketFilters\OptValue\NoValue;
+use DeskPRO\Bundle\AppBundle\TicketFilters\OptValue\OptValue;
 use DeskPRO\Component\FilterQueryLanguage\Query\Node\Term;
 use DeskPRO\Component\FilterQueryLanguage\Query\Opt\BetweenOpt;
 use DeskPRO\Component\FilterQueryLanguage\Query\Opt\CompareOpt;
 use DeskPRO\Component\FilterQueryLanguage\Query\Opt\InOpt;
 use DeskPRO\Component\FilterQueryLanguage\Query\Opt\NoOpt;
-use DeskPRO\Component\FilterQueryLanguage\Query\Query;
 use DeskPRO\Component\FilterQueryLanguage\Query\Val\FuncVal;
+use DeskPRO\Component\FilterQueryLanguage\Query\Val\RelativeTimeVal;
 use DeskPRO\Component\FilterQueryLanguage\Query\Val\ScalarVal;
 use DeskPRO\Component\FilterQueryLanguage\Query\Val\Val;
 use DeskPRO\Component\FilterQueryLanguage\Query\Val\VarVal;
-use DeskPRO\Component\Util\ListUtils;
 
 class ValueResolver
 {
     /**
-     * @param mixed  $fieldValue
-     * @param string $operator
-     * @param mixed  $checkValue
-     *
-     * @return bool
-     */
-    public static function checkValue($fieldValue, $operator, $checkValue)
-    {
-        switch ($operator) {
-            case Query::OP_EQ:
-                return $fieldValue == $checkValue;
-
-            case Query::OP_NEQ:
-                return $fieldValue == $checkValue;
-
-            case Query::OP_LT:
-                return $fieldValue < $checkValue;
-
-            case Query::OP_LTE:
-                return $fieldValue <= $checkValue;
-
-            case Query::OP_GT:
-                return $fieldValue > $checkValue;
-
-            case Query::OP_GTE:
-                return $fieldValue >= $checkValue;
-
-            case Query::OP_IN:
-            case Query::OP_HAS:
-            case Query::OP_NOT_IN:
-                if ($checkValue === null) {
-                    $checkValue = [];
-                }
-                if ($checkValue === 0 || $checkValue === '0') {
-                    $checkValue = [];
-                }
-                if (!is_array($checkValue)) {
-                    $checkValue = [$checkValue];
-                }
-
-                $checkValue = ListUtils::flatten($checkValue);
-
-                if (is_array($fieldValue)) {
-                    $res = ListUtils::containsAny($fieldValue, $checkValue, false);
-                } else {
-                    $res = in_array($fieldValue, $checkValue);
-                }
-
-                if ($operator === Query::OP_NOT_IN) {
-                    $res = !$res;
-                }
-
-                return $res;
-
-            case Query::OP_BETWEEN:
-            case Query::OP_NOT_BETWEEN:
-                if (!isset($checkValue[0]) || !isset($checkValue[1])) {
-                    return false;
-                }
-
-                $res = $fieldValue >= $checkValue[0] and $fieldValue <= $checkValue[1];
-
-                if ($operator === Query::OP_NOT_BETWEEN) {
-                    $res = !$res;
-                }
-
-                return $res;
-
-            case Query::OP_IS_NULL:
-            case Query::OP_NOT_NULL:
-                $res = $fieldValue === null || $fieldValue === 0 || $fieldValue === '0';
-
-                if ($operator === Query::OP_NOT_NULL) {
-                    $res = !$res;
-                }
-
-                return $res;
-
-            case Query::OP_EMPTY:
-            case Query::OP_NOT_EMPTY:
-                $res = empty($fieldValue);
-
-                if ($operator === Query::OP_NOT_EMPTY) {
-                    $res = !$res;
-                }
-
-                return $res;
-
-            case Query::OP_EXISTS:
-            case Query::OP_NOT_EXISTS:
-                $res = !empty($fieldValue);
-
-                if ($operator === Query::OP_NOT_EMPTY) {
-                    $res = !$res;
-                }
-
-                return $res;
-        }
-    }
-
-    /**
-     * @param                $fieldValue
-     * @param Term           $term
-     * @param TicketModel    $ticketModel
-     * @param MatcherContext $matcherContext
-     *
-     * @return bool
-     */
-    public function checkTermWithFieldValue($fieldValue, Term $term, TicketModel $ticketModel, MatcherContext $matcherContext)
-    {
-        $optValue = $this->queryOptionValueFromTerm($term, $ticketModel, $matcherContext);
-        $operator = $term->operator->getOperator();
-
-        return self::checkValue($fieldValue, $operator, $optValue);
-    }
-
-    /**
-     * @param FuncVal        $funcVal
-     * @param Term           $term
-     * @param TicketModel    $ticketModel
-     * @param MatcherContext $matcherContext
+     * @param FuncVal $funcVal
+     * @param Term    $term
+     * @param Context $context
      *
      * @return array
      */
-    public function getFuncCallParamValues(FuncVal $funcVal, Term $term, TicketModel $ticketModel, MatcherContext $matcherContext)
+    public function getFuncCallParamValues(FuncVal $funcVal, Term $term, Context $context)
     {
         $params = [];
         foreach ($funcVal->params as $p) {
-            $params[] = $this->valueFromQueryValue($p, $term, $ticketModel, $matcherContext);
+            $params[] = $this->rawValueFromQueryVal($p, $term, $context);
         }
 
         return $params;
     }
 
     /**
-     * @param Term           $term
-     * @param TicketModel    $ticketModel
-     * @param MatcherContext $matcherContext
+     * @param Term    $term
+     * @param Context $context
      *
-     * @return array|mixed|null
+     * @return OptValue
      */
-    private function queryOptionValueFromTerm(Term $term, TicketModel $ticketModel, MatcherContext $matcherContext)
+    public function optionValueFromTerm(Term $term, Context $context)
     {
         $options = $term->options;
 
         switch (true) {
             case $options instanceof CompareOpt:
-                return self::valueFromQueryValue($options->value, $term, $ticketModel, $matcherContext);
+                return new CompareValue(self::rawValueFromQueryVal($options->value, $term, $context));
 
             case $options instanceof BetweenOpt:
-                return [
-                    self::valueFromQueryValue($options->value1, $term, $ticketModel, $matcherContext),
-                    self::valueFromQueryValue($options->value2, $term, $ticketModel, $matcherContext),
-                ];
+                return new BetweenValue(
+                    self::rawValueFromQueryVal($options->value1, $term, $context),
+                    self::rawValueFromQueryVal($options->value2, $term, $context)
+                );
 
             case $term->options instanceof InOpt:
-                $value = [];
+                $values = [];
                 foreach ($term->options->valueList as $v) {
-                    $value[] = self::valueFromQueryValue($v, $term, $ticketModel, $matcherContext);
+                    $values[] = self::rawValueFromQueryVal($v, $term, $context);
                 }
 
-                return $value;
+                return new InValue($values);
 
             case $term->options instanceof NoOpt:
-                return null;
+                return new NoValue();
 
             default:
                 throw new \InvalidArgumentException('Unknown term option type');
@@ -216,33 +100,101 @@ class ValueResolver
     }
 
     /**
-     * @param Val            $queryValue
-     * @param Term           $termContext
-     * @param TicketModel    $ticketModel
-     * @param MatcherContext $matcherContext
+     * @param Val     $queryValue
+     * @param Term    $termContext
+     * @param Context $context
      *
      * @return mixed
      */
-    private function valueFromQueryValue(Val $queryValue, Term $termContext, TicketModel $ticketModel, MatcherContext $matcherContext)
+    private function rawValueFromQueryVal(Val $queryValue, Term $term, Context $context)
     {
         switch (true) {
             case $queryValue instanceof ScalarVal:
                 return $queryValue->value;
 
             case $queryValue instanceof VarVal:
-                return $this->contextAccess->getValue($this->context, $queryValue->identity);
+                return $context->getContextVariable($queryValue->identity);
+
+            case $queryValue instanceof RelativeTimeVal:
+                $time = new \DateTime();
+                $sign = $queryValue->mode === RelativeTimeVal::MODE_FUTURE ? '+' : '-';
+
+                foreach ($queryValue->times as $t) {
+                    $num = (int) $t[0];
+                    if (!$num) {
+                        continue;
+                    }
+                    switch ($t[1]) {
+                        case RelativeTimeVal::UNIT_HOUR:  $time->modify("{$sign}{$num} hours"); break;
+                        case RelativeTimeVal::UNIT_DAY:   $time->modify("{$sign}{$num} days"); break;
+                        case RelativeTimeVal::UNIT_WEEK:  $time->modify("{$sign}{$num} weeks"); break;
+                        case RelativeTimeVal::UNIT_MONTH:  $time->modify("{$sign}{$num} month"); break;
+                        case RelativeTimeVal::UNIT_YEAR:  $time->modify("{$sign}{$num} years"); break;
+                    }
+                }
+
+                return $time;
 
             case $queryValue instanceof FuncVal:
+                $params = [];
+                foreach ($queryValue->params as $p) {
+                    $params[] = $this->rawValueFromQueryVal($p, $term, $context);
+                }
+
                 return $this->functionCaller(
                     $queryValue->name,
-                    $queryValue->params,
-                    $termContext,
-                    $ticketModel,
-                    $matcherContext
+                    $params,
+                    $term,
+                    $context
                 );
 
             default:
                 throw new \InvalidArgumentException("Unknown value type {$queryValue['valueType']}");
         }
+    }
+
+    /**
+     * @param string $name
+     * @param array  $params
+     *
+     * @return mixed
+     */
+    public function functionCaller($name, array $params)
+    {
+        $name = strtolower($name);
+
+        switch ($name) {
+            case 'now':
+                return $this->fnNow();
+
+            case 'date':
+                if (empty($params[0])) {
+                    return $this->fnNow();
+                }
+
+                return $this->fnDate($params[0]);
+
+            default:
+                $nameErr = substr($name, 0, 25);
+                throw new \InvalidArgumentException("Function $nameErr() is not a valid value function");
+        }
+    }
+
+    /**
+     * @return string
+     */
+    public function fnNow()
+    {
+        return date('Y-m-d H:i:s');
+    }
+
+    /**
+     * @param $dateStr
+     *
+     * @return \DateTime
+     */
+    public function fnDate($dateStr)
+    {
+        return new \DateTime($dateStr);
     }
 }
