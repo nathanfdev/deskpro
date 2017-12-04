@@ -43,7 +43,7 @@ use Application\DeskPRO\Settings\RegistrationSettings;
 use Application\DeskPRO\Settings\ServerSettings;
 use Application\DeskPRO\Settings\TicketFwdSettings;
 use Application\DeskPRO\Settings\TicketSettings;
-use Application\LegacyApiBundle\Form\CustomField\Type\PersonStartType;
+use Application\DeskPRO\CustomFields\Form\Type\PersonStartType;
 use Application\LegacyApiBundle\PermissionStrategy\AdminManagePermission;
 use DeskPRO\Bundle\AppBundle\Annotation\ActionPermissions\Annotation\ApiModes;
 use DpSys\License;

@@ -32,7 +32,6 @@ use Application\DeskPRO\Entity\CustomDefPerson;
 use Application\DeskPRO\Entity\Person;
 use Application\DeskPRO\Entity\Ticket;
 use DeskPRO\Bundle\ApiBundle\ApiDoc\Annotation\ApiDoc;
-use DeskPRO\Bundle\ApiBundle\Controller\CrudController;
 use DeskPRO\Bundle\ApiBundle\Controller\Tickets\TicketsController;
 use DeskPRO\Bundle\ApiBundle\Doctrine\RequestHelper\CustomDataHelper;
 use DeskPRO\Bundle\ApiBundle\Doctrine\RequestHelper\DateHelper;
@@ -94,7 +93,7 @@ use Symfony\Component\HttpKernel\HttpKernelInterface;
  *     }
  * )
  */
-class PeopleController extends CrudController
+class PeopleController extends AbstractPeopleController
 {
     public static $entity      = Person::class;
     public static $type        = PersonType::class;
@@ -212,6 +211,8 @@ class PeopleController extends CrudController
      *
      * @param         $id
      * @param Request $request
+     *
+     * @return View
      */
     public function clearSessionAction($id, Request $request)
     {
@@ -240,6 +241,8 @@ class PeopleController extends CrudController
      */
     protected function applyListFilters(QueryBuilder $qb, $alias, Request $request)
     {
+        parent::applyListFilters($qb, $alias, $request);
+
         $context = new RequestQueryContext($qb, $alias, $request);
 
         DateHelper::applyDatePeriodFilter($context, 'date_created', 'period_created');
@@ -251,11 +254,6 @@ class PeopleController extends CrudController
         if (null !== $request->get('is_agent')) {
             $qb->andWhere("$alias.is_agent = :is_agent");
             $qb->setParameter('is_agent', (int) $request->get('is_agent'));
-        }
-
-        if (null !== $request->get('is_deleted')) {
-            $qb->andWhere("$alias.is_deleted = :is_deleted");
-            $qb->setParameter('is_deleted', (int) $request->get('is_deleted'));
         }
 
         if ($request->get('not_me')) {

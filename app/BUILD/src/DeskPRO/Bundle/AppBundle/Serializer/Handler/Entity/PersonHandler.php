@@ -121,6 +121,11 @@ class PersonHandler extends AbstractEntityHandler
     private $emails;
 
     /**
+     * @var int[]
+     */
+    private $onlineForChatIds;
+
+    /**
      * Constructor.
      *
      * @param AvatarResolver   $avatarResolver
@@ -176,6 +181,7 @@ class PersonHandler extends AbstractEntityHandler
         $this->personIds[$entity->getId()] = true;
         $model->setLastSeen(new CallbackDeferredProperty([$this, 'getLastSeen'], [$entity]));
         $model->setAgentData(new CallbackDeferredProperty([$this, 'getAgentData'], [$entity]));
+        $model->setOnlineForChat(new CallbackDeferredProperty([$this, 'getOnlineForChat'], [$entity]));
 
         return $model;
     }
@@ -193,6 +199,7 @@ class PersonHandler extends AbstractEntityHandler
         $model
             ->setOnline($this->agentDataService->isAgentOnline($entity))
             ->setLastSeen(new CallbackDeferredProperty([$this, 'getLastSeen'], [$entity]))
+            ->setOnlineForChat(new CallbackDeferredProperty([$this, 'getOnlineForChat'], [$entity]))
             ->setCustomData(new CallbackDeferredProperty([$this, 'getCustomData'], [$entity]))
             ->setContactData(new CallbackDeferredProperty([$this, 'getContactData'], [$entity]))
             ->setAgentData(new CallbackDeferredProperty([$this, 'getAgentData'], [$entity]))
@@ -502,5 +509,21 @@ class PersonHandler extends AbstractEntityHandler
         }
 
         return [];
+    }
+
+    /**
+     * @param Person $entity
+     *
+     * @return bool
+     */
+    public function getOnlineForChat(Person $entity)
+    {
+        if (null === $this->onlineForChatIds) {
+            /** @var \Application\DeskPRO\EntityRepository\Person $personRepo */
+            $personRepo             = $this->em->getRepository(Person::class);
+            $this->onlineForChatIds = $personRepo->getActiveAgentIdsForUserChat();
+        }
+
+        return in_array($entity->getId(), $this->onlineForChatIds);
     }
 }

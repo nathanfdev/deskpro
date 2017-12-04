@@ -65,11 +65,19 @@ class TicketHandler extends AbstractEntityHandler
             ->setDateArchived($model->getDateArchived())
         ;
 
+        if ($model->getBrand()) {
+            // overwrite custom ticket brand from the model
+            $brandName = $model->getBrand();
+        }
         if ($model->getRef()) {
             $entity->setRef($model->getRef());
         }
         if ($model->getDepartment()) {
-            $entity->setDepartment($this->helpers->getDepartmentHelper()->findOrCreateDepartment('ticket', $model->getDepartment()));
+            $entity->setDepartment($this->helpers->getDepartmentHelper()->findOrCreateDepartment(
+                'ticket',
+                $model->getDepartment(),
+                $brandName
+            ));
         }
         if ($model->getUrgency()) {
             $entity->setUrgency($model->getUrgency());
@@ -178,7 +186,7 @@ class TicketHandler extends AbstractEntityHandler
 
         if ($brandName) {
             // set specific brand for multi-brand helpdesks
-            $brand = $this->mappers->getBrandMapper()->findByName($brandName);
+            $brand = $this->helpers->getBrandHelper()->findOrCreateBrand($brandName);
             if ($brand) {
                 $entity->setBrand($brand);
             }

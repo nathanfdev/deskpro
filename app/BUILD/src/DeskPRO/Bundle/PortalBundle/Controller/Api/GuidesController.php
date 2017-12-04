@@ -116,7 +116,7 @@ class GuidesController extends AbstractApiController
      */
     public function postNewComment(Request $request, Topic $topic, $visitor_id)
     {
-        if (!$this->isGranted(ContentCommentVoter::COMMENT_ARTICLE, $topic)) {
+        if (!$this->isGranted(ContentCommentVoter::COMMENT_TOPIC, $topic)) {
             return $this->createAccessDeniedException();
         }
 
