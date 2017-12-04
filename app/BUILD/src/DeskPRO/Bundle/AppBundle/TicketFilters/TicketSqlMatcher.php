@@ -76,6 +76,20 @@ class TicketSqlMatcher extends AbstractMatcher
      *
      * @return QueryBuilder
      */
+    public function getIdsQueryBuilder(Query $query, Context $context)
+    {
+        $qb = $this->buildQueryBuilder($query, $context);
+        $qb->select('tickets.id');
+
+        return $qb;
+    }
+
+    /**
+     * @param Query   $query
+     * @param Context $context
+     *
+     * @return QueryBuilder
+     */
     public function buildQueryBuilder(Query $query, Context $context)
     {
         $qb = new QueryBuilder($this->db);

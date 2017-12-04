@@ -59,7 +59,7 @@ class QueryBuilderTest extends ApiTestCase
         $qb->select('COUNT(*)');
 
         $part = new QueryCondition();
-        $part->addUniqueJoin('{from}', 'tickets_messages', 'm', '{m}.ticket_id = {from}.id');
+        $part->addUniqueJoin('from', 'tickets_messages', 'm', '{m}.ticket_id = {from}.id');
         $part->setParam('foo', 'bar');
         $part->setWhere('{from}.foo = :foo');
 
@@ -79,13 +79,13 @@ class QueryBuilderTest extends ApiTestCase
         $qb->select('COUNT(*)');
 
         $part = new QueryCondition();
-        $part->addUniqueJoin('{from}', 'tickets_messages', 'm', '{m}.ticket_id = {from}.id');
+        $part->addUniqueJoin('from', 'tickets_messages', 'm', '{m}.ticket_id = {from}.id');
         $part->setParam('foo', 'bar');
         $part->setWhere('{from}.foo = :foo');
         $qb->addQueryCondition($part);
 
         $part = new QueryCondition();
-        $part->addUniqueJoin('{from}', 'people', 'agent', '{agent}.person_id = {from}.agent_id');
+        $part->addUniqueJoin('from', 'people', 'agent', '{agent}.person_id = {from}.agent_id');
         $part->setParam('agent_name', 'John');
         $part->setWhere('{agent}.name = :agent_name');
         $qb->addQueryCondition($part);
