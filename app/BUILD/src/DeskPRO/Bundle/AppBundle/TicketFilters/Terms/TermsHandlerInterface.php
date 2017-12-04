@@ -30,8 +30,20 @@ namespace DeskPRO\Bundle\AppBundle\TicketFilters\Terms;
 
 use DeskPRO\Bundle\AppBundle\TicketFilters\MatcherContext;
 use DeskPRO\Bundle\AppBundle\TicketFilters\Model\Entity\TicketModel;
+use DeskPRO\Bundle\AppBundle\TicketFilters\QueryBuilder;
+use DeskPRO\Bundle\AppBundle\TicketFilters\QueryContext;
 use DeskPRO\Component\FilterQueryLanguage\Query\Node\Term;
 
+/**
+ * A terms handler has two jobs:.
+ *
+ * - It matches in-memory ticket models -- referred to as matching
+ * - And it also compiles a term into SQL -- referred to as querying
+ *
+ * Every handler can handle multiple terms. The way you split up term
+ * handlers is largely arbitrary; it's just a way to group related
+ * terms together to keep from any single class becoming too large.
+ */
 interface TermsHandlerInterface
 {
     /**
@@ -44,23 +56,38 @@ interface TermsHandlerInterface
     /**
      * Functions that handle calls specially for specific operators. E.g.: foo HAS myFunc().
      *
-     * These functions are called and must return true/false to determine the match.
-     * If a function matches, doesTicketMatch does NOT get called for that term.
+     * A function needs both a matcher as well as a queryer. The matcher needs to
+     * return true/false, and the queryer needs to operate on the query builder
+     * to add the required conditions.
      *
-     * This is different from other callable functions that just return a value like any other,
-     * which are then just used as-is by normal comparators.
+     * Note that when a function is encountered, the methods defiend on the function def
+     * are called and NOT the default doesTicketMatch or buildQuery functions.
      *
-     * The format for each entry is:
+     * The format for each entry is is a TicketFunctionCallDef. You can use the bilder for
+     * a fluid interface.
      *
      * <code>
      * $matchFns = [
-     *     ['name' => 'myFunc', 'method' => 'classMethodName', 'operators' => [Query::OP_HAS]]
+     *     TicketFunctionCallDef::build()
+     *         ->setName('myFunc')
+     *         ->setMatchFn('matchMyFunc')
+     *         ->setQueryBuilderFn('qbMyFunc')
+     *         ->setOperators(Query::TERM_HAS)
+     *         ->setFields('foo', 'tickets.agent)
+     *         ->getDef()
      * ];
      * </code>
      *
-     * @return array
+     * The signatures for the functions:
+     *
+     * <code>
+     * matchMyFunc(array $params, Term $term, TicketModel $ticketModel, MatcherContext $matcherContext)
+     * qbMyFunc(array $params, QueryBuilder $qb, Term $term, QueryContext $queryContext)
+     * </code>
+     *
+     * @return TermFunctionCallDef[]
      */
-    public function getMatchFunctions();
+    public function getFunctions();
 
     /**
      * @param Term           $term
@@ -70,4 +97,11 @@ interface TermsHandlerInterface
      * @return bool
      */
     public function doesTicketMatch(Term $term, TicketModel $ticketModel, MatcherContext $valueResolver);
+
+    /**
+     * @param QueryBuilder $qb
+     * @param Term         $term
+     * @param QueryContext $queryContext
+     */
+    public function buildQuery(QueryBuilder $qb, Term $term,  QueryContext $queryContext);
 }

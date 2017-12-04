@@ -40,6 +40,9 @@ use DeskPRO\Component\FilterQueryLanguage\Query\Opt\CompareOpt;
 use DeskPRO\Component\FilterQueryLanguage\Query\Query;
 use DeskPRO\Component\FilterQueryLanguage\Query\Val\FuncVal;
 
+/**
+ * The matcher matches a ticket against in-memory model values.
+ */
 class TicketMatcher
 {
     /**
@@ -69,8 +72,8 @@ class TicketMatcher
     /**
      * TicketMatcher constructor.
      *
-     * @param ValueResolver $valueResolver
-     * @param array         $handlers
+     * @param ValueResolver           $valueResolver
+     * @param TermsHandlerInterface[] $handlers
      */
     public function __construct(ValueResolver $valueResolver, array $handlers)
     {
@@ -88,23 +91,30 @@ class TicketMatcher
                 $this->fieldToHandler[$fid][] = $h;
             }
 
-            foreach ($h->getMatchFunctions() as $def) {
-                $name = strtolower($def['name']);
-                $ops  = $def['operators'];
+            foreach ($h->getFunctions() as $def) {
+                $name = strtolower($def->name);
+                $ops  = $def->operators;
                 if (!is_array($ops)) {
                     $ops = [$ops];
                 }
 
                 foreach ($ops as $op) {
-                    foreach ($def['fields'] as $field) {
+                    foreach ($def->fields as $field) {
                         $id                          = $name.'--'.$op.'--'.$field;
-                        $this->matchFunctionMap[$id] = [$h, $def['method']];
+                        $this->matchFunctionMap[$id] = [$h, $def->matchFn];
                     }
                 }
             }
         }
     }
 
+    /**
+     * @param Query          $query
+     * @param TicketModel    $ticketModel
+     * @param MatcherContext $matcherContext
+     *
+     * @return bool
+     */
     public function doesQueryMatch(Query $query, TicketModel $ticketModel, MatcherContext $matcherContext)
     {
         $rootPart = $query->root;

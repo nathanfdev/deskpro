@@ -30,6 +30,8 @@ namespace DeskPRO\Bundle\AppBundle\TicketFilters\Terms;
 
 use DeskPRO\Bundle\AppBundle\TicketFilters\MatcherContext;
 use DeskPRO\Bundle\AppBundle\TicketFilters\Model\Entity\TicketModel;
+use DeskPRO\Bundle\AppBundle\TicketFilters\QueryBuilder;
+use DeskPRO\Bundle\AppBundle\TicketFilters\QueryContext;
 use DeskPRO\Bundle\AppBundle\TicketFilters\ValueResolver;
 use DeskPRO\Component\FilterQueryLanguage\Query\Node\Term;
 use DeskPRO\Component\FilterQueryLanguage\Query\Opt\CompareOpt;
@@ -76,7 +78,7 @@ abstract class AbstractTermsHandler implements TermsHandlerInterface
     /**
      * {@inheritdoc}
      */
-    public function getMatchFunctions()
+    public function getFunctions()
     {
         return [];
     }
@@ -91,5 +93,13 @@ abstract class AbstractTermsHandler implements TermsHandlerInterface
     public function doesTicketMatch(Term $term, TicketModel $ticketModel, MatcherContext $matcherContext)
     {
         return false;
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function buildQuery(QueryBuilder $qb, Term $term, QueryContext $queryContext)
+    {
+        $qb->andWhere('0');
     }
 }

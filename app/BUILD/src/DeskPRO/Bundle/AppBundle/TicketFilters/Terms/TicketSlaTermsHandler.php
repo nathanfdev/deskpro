@@ -50,12 +50,29 @@ class TicketSlaTermsHandler extends AbstractTermsHandler
     /**
      * {@inheritdoc}
      */
-    public function getMatchFunctions()
+    public function getFunctions()
     {
         return [
-            ['name' => 'passingSlas', 'fields' => [Terms::TICKET_SLAS], 'method' => 'hasPassingSlas', 'operators' => [Query::OP_HAS]],
-            ['name' => 'warningSlas', 'fields' => [Terms::TICKET_SLAS], 'method' => 'hasWarningSlas', 'operators' => [Query::OP_HAS]],
-            ['name' => 'failedSlas',  'fields' => [Terms::TICKET_SLAS], 'method' => 'hasFailingSlas', 'operators' => [Query::OP_HAS]],
+            TermFunctionCallDef::build()
+                ->setName('passingSlas')
+                ->setFields(Terms::TICKET_SLAS)
+                ->setMatchFn('matchHasPassingSlas')
+                ->setOperators(Query::OP_HAS)
+                ->getDef(),
+
+            TermFunctionCallDef::build()
+                ->setName('warningSlas')
+                ->setFields(Terms::TICKET_SLAS)
+                ->setMatchFn('matchHasWarningSlas')
+                ->setOperators(Query::OP_HAS)
+                ->getDef(),
+
+            TermFunctionCallDef::build()
+                ->setName('failedSlas')
+                ->setFields(Terms::TICKET_SLAS)
+                ->setMatchFn('matchHasFailingSlas')
+                ->setOperators(Query::OP_HAS)
+                ->getDef(),
         ];
     }
 
@@ -74,19 +91,19 @@ class TicketSlaTermsHandler extends AbstractTermsHandler
         return $this->valueResolver->checkTermWithFieldValue($fieldValue, $term, $ticketModel, $matcherContext);
     }
 
-    public function hasPassingSlas(array $params, Term $term, TicketModel $ticketModel, MatcherContext $matcherContext)
+    public function matchHasPassingSlas(array $params, Term $term, TicketModel $ticketModel, MatcherContext $matcherContext)
     {
-        return $this->anySlasStatus($ticketModel, TicketSla::STATUS_OK, $params);
+        return $this->matchAnySlasStatus($ticketModel, TicketSla::STATUS_OK, $params);
     }
 
-    public function hasWarningSlas(array $params, Term $term, TicketModel $ticketModel, MatcherContext $matcherContext)
+    public function matchHasWarningSlas(array $params, Term $term, TicketModel $ticketModel, MatcherContext $matcherContext)
     {
-        return $this->anySlasStatus($ticketModel, TicketSla::STATUS_WARNING, $params);
+        return $this->matchAnySlasStatus($ticketModel, TicketSla::STATUS_WARNING, $params);
     }
 
-    public function hasFailingSlas(array $params, Term $term, TicketModel $ticketModel, MatcherContext $matcherContext)
+    public function matchHasFailingSlas(array $params, Term $term, TicketModel $ticketModel, MatcherContext $matcherContext)
     {
-        return $this->anySlasStatus($ticketModel, TicketSla::STATUS_FAIL, $params);
+        return $this->matchAnySlasStatus($ticketModel, TicketSla::STATUS_FAIL, $params);
     }
 
     /**
@@ -96,7 +113,7 @@ class TicketSlaTermsHandler extends AbstractTermsHandler
      *
      * @return bool
      */
-    private function anySlasStatus(TicketModel $ticketModel, $findStatus, array $specificIds)
+    private function matchAnySlasStatus(TicketModel $ticketModel, $findStatus, array $specificIds)
     {
         foreach ($ticketModel->slasInfo as $slaInfo) {
             if ($slaInfo->status === $findStatus) {
