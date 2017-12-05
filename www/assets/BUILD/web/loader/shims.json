@@ -40,7 +40,6 @@
   "angularBootstrapDatetime":        ["angular"],
   "angularUiDatetime":               ["angular"],
   "angularOcLazyLoad":               ["angular"],
-  "ngTable":                         ["angular"],
   "angularGridster":                 ["angular"],
   "datatables":                      {"exports": "DataTable"}
 }

@@ -13,6 +13,7 @@
     "jquery": "^3.1.0",
     "jquery-ui": "^1.12.0",
     "less": "^2.7.1",
+    "ng-table": "^3.0.1",
     "scriptjs": "^2.5.8",
     "semantic-ui-less": "^2.2.3"
   },
