@@ -877,33 +877,6 @@ define(function() {
   });
 
   //###
-  //# Email Templates
-  //###
-  routes.push({
-    id: 'emails.email_templates',
-    url: '/email_templates',
-    templateName: 'Templates/email-groups.html',
-    controller: 'Admin_Templates_Ctrl_EmailGroupList'
-  });
-
-  //###
-  //# Temporary Email Templates
-  //###
-  routes.push({
-    id: 'emails.email_templates_legacy',
-    url: '/email_templates_legacy',
-    templateName: 'Templates/email-groups-legacy.html',
-    controller: 'Admin_Templates_Ctrl_EmailGroupListOld'
-  });
-
-  routes.push({
-    id: 'emails.email_templates.list',
-    url: '/{groupName:.*?}',
-    templateName: 'Templates/email-listing.html',
-    controller: 'Admin_Templates_Ctrl_EmailList'
-  });
-
-  //###
   //# Settings
   //###
   routes.push({
@@ -1109,96 +1082,6 @@ define(function() {
     url: '/{id:[0-9]+}',
     templateName: 'ChannelFacebook/edit.html',
     controller: 'Admin_ChannelFacebook_Ctrl_Edit'
-  });
-
-
-  //###
-  //# Ticket Accounts
-  //###
-  routes.push({
-    id: 'emails.ticket_accounts',
-    url: '/ticket_accounts',
-    templateName: 'TicketAccounts/list.html',
-    controller: 'Admin_TicketAccounts_Ctrl_List'
-  });
-
-  routes.push({
-    id: 'emails.ticket_accounts.gocreate',
-    url: '/go-create',
-    template: '',
-    controller: ['$state', function ($state) { $state.go('emails.ticket_accounts.create'); }]
-  });
-
-  routes.push({
-    id: 'emails.ticket_accounts.create',
-    url: '/create',
-    templateName: 'TicketAccounts/edit.html',
-    controller: 'Admin_TicketAccounts_Ctrl_Edit'
-  });
-
-  routes.push({
-    id: 'emails.ticket_accounts.edit',
-    url: '/{id:[0-9]+}',
-    templateName: 'TicketAccounts/edit.html',
-    controller: 'Admin_TicketAccounts_Ctrl_Edit'
-  });
-
-  routes.push({
-    id: 'emails.ticket_accounts.goemailsourcesview',
-    url: '/go-incoming-email/{id:[0-9]+}',
-    template: '',
-    controller: ['$state', '$stateParams', function ($state, $stateParams) {
-      $state.go('emails.ticket_accounts.emailsourcesview', $stateParams);
-    }]
-  });
-
-  routes.push({
-    id: 'emails.ticket_accounts.emailsourcesview',
-    url: '/incoming-email/{id:[0-9]+}',
-    templateName: 'EmailStatus/emailsource-view.html',
-    controller: 'Admin_EmailStatus_Ctrl_ViewSource',
-    target: "appbody@tickets"
-  });
-
-  routes.push({
-    id: 'emails.ticket_accounts.gosendmailview',
-    url: '/go-outgoing-email/{id:[0-9]+}',
-    template: '',
-    controller: ['$state', '$stateParams', function ($state, $stateParams) {
-      $state.go('emails.ticket_accounts.sendmailqueueview', $stateParams);
-    }]
-  });
-
-  routes.push({
-    id: 'emails.ticket_accounts.sendmailqueueview',
-    url: '/outgoing-email/{id:[0-9]+}',
-    templateName: 'EmailStatus/sendmail-view.html',
-    controller: 'Admin_EmailStatus_Ctrl_ViewSend',
-    target: "appbody@tickets"
-  });
-
-  routes.push({
-    id: 'emails.ticket_accounts.emailsources',
-    url: '/incoming-email',
-    templateName: 'EmailStatus/emailsource-list.html',
-    controller: 'Admin_EmailStatus_Ctrl_SourceList',
-    target: "appbody@tickets"
-  });
-
-  routes.push({
-    id: 'emails.ticket_accounts.sendmailqueue',
-    url: '/outgoing-email',
-    templateName: 'EmailStatus/sendmail-list.html',
-    controller: 'Admin_EmailStatus_Ctrl_SendmailList',
-    target: "appbody@tickets"
-  });
-
-  routes.push({
-    id: 'emails.ticket_accounts.advancedsettings',
-    url: '/advanced-settings',
-    templateName: 'TicketAccounts/advanced-settings.html',
-    controller: 'Admin_TicketAccounts_Ctrl_Settings',
-    target: "appbody@tickets"
   });
 
 
@@ -2169,6 +2052,96 @@ define(function() {
     controller: 'Admin_TwitterAccounts_Ctrl_Edit'
   });
 
+
+  //###
+  //# Email Accounts
+  //###
+  routes.push({
+    id: 'emails.ticket_accounts',
+    url: '/ticket_accounts',
+    templateName: 'TicketAccounts/list.html',
+    controller: 'Admin_TicketAccounts_Ctrl_List'
+  });
+
+  routes.push({
+    id: 'emails.ticket_accounts.gocreate',
+    url: '/go-create',
+    template: '',
+    controller: ['$state', function ($state) { $state.go('emails.ticket_accounts.create'); }]
+  });
+
+  routes.push({
+    id: 'emails.ticket_accounts.create',
+    url: '/create',
+    templateName: 'TicketAccounts/edit.html',
+    controller: 'Admin_TicketAccounts_Ctrl_Edit'
+  });
+
+  routes.push({
+    id: 'emails.ticket_accounts.edit',
+    url: '/{id:[0-9]+}',
+    templateName: 'TicketAccounts/edit.html',
+    controller: 'Admin_TicketAccounts_Ctrl_Edit'
+  });
+
+  routes.push({
+    id: 'emails.ticket_accounts.goemailsourcesview',
+    url: '/go-incoming-email/{id:[0-9]+}',
+    template: '',
+    controller: ['$state', '$stateParams', function ($state, $stateParams) {
+      $state.go('emails.ticket_accounts.emailsourcesview', $stateParams);
+    }]
+  });
+
+  routes.push({
+    id: 'emails.ticket_accounts.emailsourcesview',
+    url: '/incoming-email/{id:[0-9]+}',
+    templateName: 'EmailStatus/emailsource-view.html',
+    controller: 'Admin_EmailStatus_Ctrl_ViewSource',
+    target: "appbody@emails"
+  });
+
+  routes.push({
+    id: 'emails.ticket_accounts.gosendmailview',
+    url: '/go-outgoing-email/{id:[0-9]+}',
+    template: '',
+    controller: ['$state', '$stateParams', function ($state, $stateParams) {
+      $state.go('emails.ticket_accounts.sendmailqueueview', $stateParams);
+    }]
+  });
+
+  routes.push({
+    id: 'emails.ticket_accounts.sendmailqueueview',
+    url: '/outgoing-email/{id:[0-9]+}',
+    templateName: 'EmailStatus/sendmail-view.html',
+    controller: 'Admin_EmailStatus_Ctrl_ViewSend',
+    target: "appbody@emails"
+  });
+
+  routes.push({
+    id: 'emails.ticket_accounts.emailsources',
+    url: '/incoming-email',
+    templateName: 'EmailStatus/emailsource-list.html',
+    controller: 'Admin_EmailStatus_Ctrl_SourceList',
+    target: "appbody@emails"
+  });
+
+  routes.push({
+    id: 'emails.ticket_accounts.sendmailqueue',
+    url: '/outgoing-email',
+    templateName: 'EmailStatus/sendmail-list.html',
+    controller: 'Admin_EmailStatus_Ctrl_SendmailList',
+    target: "appbody@emails"
+  });
+
+  routes.push({
+    id: 'emails.ticket_accounts.advancedsettings',
+    url: '/advanced-settings',
+    templateName: 'TicketAccounts/advanced-settings.html',
+    controller: 'Admin_TicketAccounts_Ctrl_Settings',
+    target: "appbody@emails"
+  });
+
   //##################################################################################################################
   // Email templates
   //##################################################################################################################
@@ -2185,6 +2158,33 @@ define(function() {
     url:          '/{name}',
     templateName: 'ReactRoutes/react_component.html',
     controller:   'Admin_ReactRoutes_Ctrl_ReactComponent'
+  });
+
+  //###
+  //# Email Templates
+  //###
+  routes.push({
+    id: 'emails.email_templates',
+    url: '/email_templates',
+    templateName: 'Templates/email-groups.html',
+    controller: 'Admin_Templates_Ctrl_EmailGroupList'
+  });
+
+  //###
+  //# Temporary Email Templates
+  //###
+  routes.push({
+    id: 'emails.email_templates_legacy',
+    url: '/email_templates_legacy',
+    templateName: 'Templates/email-groups-legacy.html',
+    controller: 'Admin_Templates_Ctrl_EmailGroupListOld'
+  });
+
+  routes.push({
+    id: 'emails.email_templates.list',
+    url: '/{groupName:.*?}',
+    templateName: 'Templates/email-listing.html',
+    controller: 'Admin_Templates_Ctrl_EmailList'
   });
 
   //##################################################################################################################

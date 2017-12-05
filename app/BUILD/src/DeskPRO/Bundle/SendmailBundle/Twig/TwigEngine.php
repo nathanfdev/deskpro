@@ -32,7 +32,7 @@
 
 namespace DeskPRO\Bundle\SendmailBundle\Twig;
 
-use Application\EmailBundle\Twig\PostRenderFilter\EmailPostRenderFilter;
+use DeskPRO\Bundle\SendmailBundle\Twig\PostRenderFilter\EmailPostRenderFilter;
 use DpSys\LowError\SystemErrorHandler;
 
 class TwigEngine extends \Symfony\Bundle\TwigBundle\TwigEngine
@@ -63,7 +63,7 @@ class TwigEngine extends \Symfony\Bundle\TwigBundle\TwigEngine
             try {
                 $GLOBALS['DP_IS_RENDERING_TPL'] = true;
                 $code                           = parent::render($name, $parameters);
-                if (strpos($name, 'DeskPRO:emails_') !== false) {
+                if (strpos($name, 'SendmailBundle:emails_') !== false) {
                     $proc = new EmailPostRenderFilter();
                     $code = $proc->process($name, $code);
                 }
