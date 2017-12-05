@@ -211,6 +211,12 @@ class TicketMatcherTest extends \PHPUnit_Framework_TestCase
         $this->assertTrue($this->runTicket1Query('ticket.slas HAS passingSlas() AND NOT ticket.slas HAS warningSlas(1)'));
     }
 
+    public function test_null_check()
+    {
+        $this->assertTrue($this->runTicket1Query('ticket.product IS NULL'));
+        $this->assertTrue($this->runTicket1Query('ticket.product IS NULL AND ticket.priority IS NULL'));
+    }
+
     private function runTicket1Query($fql)
     {
         return $this->matcher->doesQueryMatch(

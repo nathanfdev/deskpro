@@ -26,19 +26,30 @@
  * ~ Thanks, Everyone at Team DeskPRO
  */
 
-namespace DeskPRO\Bundle\AppBundle\TicketFilters;
+namespace DeskPRO\Bundle\AppBundle\TicketFilters\Diff;
 
 use DeskPRO\Bundle\AppBundle\TicketFilters\Model\Context\AgentContext;
-use DeskPRO\Bundle\AppBundle\TicketFilters\Model\Entity\TicketModel;
 
-class AgentPermsCollection
+class PermSets
 {
     /**
-     * @var[]
+     * @var AgentContext[]
      */
     private $agentContexts;
 
     /**
+     * @var array
+     */
+    private $setToAgent;
+
+    /**
+     * @var array
+     */
+    private $agentToSet;
+
+    /**
+     * PermSets constructor.
+     *
      * @param AgentContext[] $agentContexts
      */
     public function __construct(array $agentContexts)
@@ -47,58 +58,59 @@ class AgentPermsCollection
     }
 
     /**
-     * @param TicketModel $ticketModel
+     * Returns an array of distinct agent permissin sets.
      *
      * @return array
      */
-    public function getPermsForTicket(TicketModel $ticketModel)
+    public function getSets()
     {
-        $canView  = [];
-        $cantView = [];
+        $this->initMap();
 
-        foreach ($this->agentContexts as $a) {
-            if ($this->canView($ticketModel, $a)) {
-                $canView[] = $a->id;
-            } else {
-                $cantView[] = $a->id;
-            }
-        }
-
-        return [
-            'canView'  => $canView,
-            'cantView' => $cantView,
-        ];
+        return $this->setToAgent;
     }
 
     /**
-     * @param TicketModel  $ticketModel
-     * @param AgentContext $a
-     *
-     * @return bool
+     * Lazy inits the maps.
      */
-    private function canView(TicketModel $ticketModel, AgentContext $a)
+    private function initMap()
     {
-        if ($a->view_all) {
-            return true;
+        if ($this->setToAgent !== null) {
+            return;
         }
 
-        if ($ticketModel->agent === $a->agent_id) {
-            return true;
-        }
+        $this->setToAgent = [];
+        $this->agentToSet = [];
 
-        if ($ticketModel->agent_team && in_array($ticketModel->agent_team, $a->teams)) {
-            return true;
-        }
-
-        if (in_array($ticketModel->department, $a->allowed_departments)) {
-            if ($a->view_assigned && $ticketModel->agent !== 0) {
-                return true;
+        foreach ($this->agentContexts as $agent) {
+            $setId = $this->getSetId($agent);
+            if (!isset($this->setToAgent[$setId])) {
+                $this->setToAgent[$setId] = [];
             }
-            if ($a->view_unassigned && $ticketModel->agent === 0) {
-                return true;
-            }
+
+            $this->setToAgent[$setId][]   = $agent;
+            $this->agentToSet[$agent->id] = $setId;
+        }
+    }
+
+    /**
+     * @param AgentContext $agentContext
+     *
+     * @return string
+     */
+    private function getSetId(AgentContext $agentContext)
+    {
+        if ($agentContext->view_all) {
+            return 'all';
         }
 
-        return false;
+        $parts = $agentContext->allowed_departments;
+        if ($agentContext->view_assigned) {
+            $parts[] = 'other';
+        }
+        if ($agentContext->view_unassigned) {
+            $parts[] = 'un';
+        }
+
+        return implode(',', $parts);
     }
 }

@@ -526,6 +526,9 @@ class QueryParser
                     $this->lexer->token['value']
                 ), $this->lexer->token['position']);
 
+            case Lexer::T_INPUT_PARAMETER:
+                return $this->InputParameter();
+
             case Lexer::T_IDENTIFIER:
                 if ($identifierAsString) {
                     $this->match(Lexer::T_IDENTIFIER);

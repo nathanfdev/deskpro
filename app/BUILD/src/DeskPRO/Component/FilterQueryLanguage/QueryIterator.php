@@ -41,7 +41,7 @@ class QueryIterator extends \ArrayIterator implements \RecursiveIterator
         if ($query->root instanceof TermGroup) {
             parent::__construct($query->root->terms);
         } else {
-            parent::__construct($query->root);
+            parent::__construct([$query->root]);
         }
     }
 

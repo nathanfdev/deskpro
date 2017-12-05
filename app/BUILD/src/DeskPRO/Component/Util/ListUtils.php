@@ -498,4 +498,31 @@ class ListUtils
             return $array[$len - 1];
         }
     }
+
+    /**
+     * Checks if two arrays contain the same elements in any order.
+     *
+     * @param \Traversable|array $array1
+     * @param \Traversable|array $array2
+     *
+     * @return bool
+     */
+    public static function isSame($array1, $array2)
+    {
+        if (count($array1) !== count($array2)) {
+            return false;
+        }
+
+        $diff1 = array_diff($array1, $array2);
+        if (!empty($diff1)) {
+            return false;
+        }
+
+        $diff2 = array_diff($array2, $array1);
+        if (!empty($diff2)) {
+            return false;
+        }
+
+        return true;
+    }
 }

@@ -26,35 +26,29 @@
  * ~ Thanks, Everyone at Team DeskPRO
  */
 
-namespace DeskPRO\Component\FilterQueryLanguage\Query\Opt;
+namespace DpTest\Bundle\AppBundle\TicketFilters\Diff;
 
-use DeskPRO\Component\FilterQueryLanguage\Query\Query;
+use DeskPRO\Bundle\AppBundle\TicketFilters\Model\Entity\TicketModel;
 
-class NoOpt extends Opt
+class ChangedFieldsTest extends \PHPUnit_Framework_TestCase
 {
-    const OPT = Query::OPT_NONE;
-
-    /**
-     * {@inheritdoc}
-     */
-    public function toArray()
+    public function testTicketChanges()
     {
-        return [
-            'optType' => self::OPT,
-        ];
-    }
+        $ticketA            = new TicketModel();
+        $ticketA->id        = 1;
+        $ticketA->followers = [1, 2];
+        $ticketA->labels    = ['foo'];
 
-    /**
-     * @param array $props
-     *
-     * @return NoOpt
-     */
-    public static function fromArray(array $props)
-    {
-        if ($props['optType'] !== self::OPT) {
-            throw new \InvalidArgumentException('Expected optType of NONE_OPTION');
-        }
+        $ticketB            = new TicketModel();
+        $ticketB->id        = 2;
+        $ticketA->followers = [1, 2, 3];
+        $ticketA->labels    = ['foo', 'bar'];
 
-        return new self();
+        $diff = $ticketA->getChangedFields($ticketB);
+
+        $this->assertEquals(
+            ['ticket.id', 'ticket.followers', 'ticket.labels'],
+            $diff
+        );
     }
 }

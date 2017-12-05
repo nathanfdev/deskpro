@@ -28,6 +28,8 @@
 
 namespace DeskPRO\Bundle\AppBundle\TicketFilters\Model;
 
+use DeskPRO\Component\FilterQueryLanguage\Query\Query;
+
 class Filter
 {
     /**
@@ -36,7 +38,14 @@ class Filter
     public $id = 0;
 
     /**
-     * @var array
+     * Agents who can see the filter.
+     *
+     * @var int[]
      */
-    public $query = [];
+    public $agents = [];
+
+    /**
+     * @var Query
+     */
+    public $query;
 }

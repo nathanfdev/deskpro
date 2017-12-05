@@ -51,11 +51,28 @@ class Context
     public function __construct(AgentContext $agentContext)
     {
         $this->agentContext = $agentContext;
-        $this->context      = [
-            'me'       => $agentContext->id,
-            'my_teams' => $agentContext->teams,
-        ];
+
+        $this->context           = new \stdClass();
+        $this->context->me       = $agentContext->id;
+        $this->context->my_teams = $agentContext->teams;
+
         $this->contextAccessor = PropertyAccess::createPropertyAccessor();
+    }
+
+    /**
+     * @return int
+     */
+    public function getAgentId()
+    {
+        return $this->agentContext->id;
+    }
+
+    /**
+     * @return AgentContext
+     */
+    public function getAgentContext()
+    {
+        return $this->agentContext;
     }
 
     /**
@@ -66,5 +83,15 @@ class Context
     public function getContextVariable($id)
     {
         return $this->contextAccessor->getValue($this->context, $id);
+    }
+
+    /**
+     * @param AgentContext $agentContext
+     *
+     * @return Context
+     */
+    public static function createContext(AgentContext $agentContext)
+    {
+        return new self($agentContext);
     }
 }

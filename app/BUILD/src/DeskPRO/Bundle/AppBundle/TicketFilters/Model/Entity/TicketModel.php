@@ -28,6 +28,8 @@
 
 namespace DeskPRO\Bundle\AppBundle\TicketFilters\Model\Entity;
 
+use DeskPRO\Component\Util\ListUtils;
+
 class TicketModel
 {
     /**
@@ -146,12 +148,78 @@ class TicketModel
     public $slas = [];
 
     /**
+     * Keyed by sla ID.
+     *
      * @var TicketSlaModel[]
      */
-    public $slasInfo;
+    public $slasInfo = [];
 
     /**
+     * Keyed by field ID.
+     *
      * @var CustomData[]
      */
     public $custom_fields = [];
+
+    /**
+     * @var array
+     */
+    public $new_messages = [];
+
+    public function getChangedFields(TicketModel $other)
+    {
+        $changed = [];
+
+        foreach ([
+            'id', 'status', 'department', 'agent', 'agent_team',
+            'language', 'email_account', 'product', 'priority',
+            'urgency', 'workflow', 'is_hold', 'date_created',
+            'date_last_agent_reply', 'date_last_user_reply',
+            'date_agent_waiting', 'date_user_waiting',
+        ] as $simpleField) {
+            if ($this->$simpleField != $other->$simpleField) {
+                $changed[] = "ticket.$simpleField";
+            }
+        }
+
+        foreach ([
+            'followers', 'labels',
+        ] as $arrayField) {
+            if (!ListUtils::isSame($this->$arrayField, $other->$arrayField)) {
+                $changed[] = "ticket.$arrayField";
+            }
+        }
+
+        // SLAs
+        if (!ListUtils::isSame($this->slasInfo, $other->slas)) {
+            $changed[] = 'ticket.slas';
+        } else {
+            foreach ($this->slasInfo as $sla) {
+                if ($sla->getChangedFields($other->slasInfo[$sla->id])) {
+                    $changed[] = 'ticket.slas';
+                    break;
+                }
+            }
+        }
+
+        // Custom fields
+        $customFieldChanged = CustomData::compareFieldArrays($this->custom_fields, $other->custom_fields);
+        foreach ($customFieldChanged as $fieldId) {
+            $changed[] = "ticket.field$fieldId";
+        }
+
+        // Models
+        foreach ([
+            'person', 'agent', 'organization',
+        ] as $modelField) {
+            if ($this->$modelField && $other->$modelField) {
+                $modelChanged = $this->$modelField->getChangedFields($other->$modelField);
+                $changed      = array_merge($changed, $modelChanged);
+            } elseif ($this->$modelField && !$other->$modelField || $other->$modelField && !$this->$modelField) {
+                $changed[] = "ticket.$modelField";
+            }
+        }
+
+        return $changed;
+    }
 }

@@ -26,22 +26,73 @@
  * ~ Thanks, Everyone at Team DeskPRO
  */
 
-namespace DeskPRO\Bundle\AppBundle\TicketFilters\Model;
+namespace DeskPRO\Bundle\AppBundle\TicketFilters\Diff;
 
-class FilterChange
+class FilterOp
 {
     /**
      * @var int
      */
-    public $filter_id = 0;
+    private $filterId;
 
     /**
-     * @var bool
+     * @var int[]
      */
-    public $match_before = false;
+    private $addAgentIds = [];
 
     /**
-     * @var bool
+     * @var int[]
      */
-    public $match_after = false;
+    private $delAgentIds = [];
+
+    /**
+     * FilterOp constructor.
+     *
+     * @param int   $filterId
+     * @param int[] $agentIds
+     */
+    public function __construct($filterId)
+    {
+        $this->filterId = $filterId;
+    }
+
+    /**
+     * @return int
+     */
+    public function getFilterId()
+    {
+        return $this->filterId;
+    }
+
+    /**
+     * @param int $aid
+     */
+    public function addAddAgentId($aid)
+    {
+        $this->addAgentIds[] = $aid;
+    }
+
+    /**
+     * @param int $aid
+     */
+    public function addDelAgentId($aid)
+    {
+        $this->delAgentIds[] = $aid;
+    }
+
+    /**
+     * @return int[]
+     */
+    public function getAddAgentIds()
+    {
+        return $this->addAgentIds;
+    }
+
+    /**
+     * @return int[]
+     */
+    public function getDelAgentIds()
+    {
+        return $this->delAgentIds;
+    }
 }
