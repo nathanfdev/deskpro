@@ -249,6 +249,11 @@ class EmailRendererTest extends SendmailTestCase
                         'type'        => 'boolean',
                         'attribute'   => 'is_agent',
                     ],
+                    'online_for_chat' => [
+                        'description' => 'Is user online for chat?',
+                        'type'        => 'boolean',
+                        'attribute'   => 'online_for_chat',
+                    ],
                 ],
             ],
             'site_url' => [
