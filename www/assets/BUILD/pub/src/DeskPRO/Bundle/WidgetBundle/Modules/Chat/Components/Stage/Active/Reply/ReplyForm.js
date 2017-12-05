@@ -88,6 +88,7 @@ export class ReplyForm extends React.Component {
 
     this.props.onSendMessage(this.state.message);
     this.setState({ message: '' });
+    this.editor.setContent('');
   };
 
   renderRte() {

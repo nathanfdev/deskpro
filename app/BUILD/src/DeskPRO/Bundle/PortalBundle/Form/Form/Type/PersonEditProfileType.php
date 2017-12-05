@@ -140,6 +140,9 @@ class PersonEditProfileType extends AbstractType
                     $file->getClientMimeType()
                 );
 
+                if ($person->getPictureBlob()) {
+                    $blob_storage->deleteBlobRecord($person->getPictureBlob());
+                }
                 $person->setPictureBlob($blob);
                 $em->persist($blob);
 

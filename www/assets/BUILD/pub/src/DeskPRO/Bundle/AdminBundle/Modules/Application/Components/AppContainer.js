@@ -80,7 +80,7 @@ class AppContainer extends React.Component {
             <Route path="oauth_clients/:clientId" component={Apps.EditOAuthClientForm} />
           </Route>
           <Route
-            path="app-installer/:app"
+            path="app-install/:installType/:app"
             getComponent={(nextState, cb) => cb(null, InstallerFactory.routeFactory({
               windowObject:   window.parent || window,
               legacyNavigate: this.props.legacyNavigate

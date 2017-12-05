@@ -10,6 +10,7 @@
                     <th>Ticket ID</th>
                     <th>Ticket Subject</th>
                     <th>Round Robin Actions</th>
+                    <th>Date</th>
                 </tr>
             </thead>
             <tbody>
@@ -25,6 +26,9 @@
                         {% for action in entry.actions %}
                             {{ phrase(action.phrase, action.params) }}<br />
                         {% endfor %}
+                    </td>
+                    <td>
+                        {{ entry.created|date('Y-m-d H:i:s') }}
                     </td>
                 </tr>
                 {% endfor %}

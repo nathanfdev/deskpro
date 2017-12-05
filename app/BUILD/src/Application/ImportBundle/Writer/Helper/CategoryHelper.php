@@ -32,7 +32,6 @@ use Application\DeskPRO\Entity\CategoryAbstract;
 use Application\DeskPRO\Entity\ImportMap;
 use Application\DeskPRO\Entity\TicketCategory;
 use Application\ImportBundle\Writer\EntityPersister;
-use Application\ImportBundle\Writer\Mapper\BrandMapper;
 use Application\ImportBundle\Writer\Mapper\CategoryMapperInterface;
 use Application\ImportBundle\Writer\Mapper\ImportMapMapper;
 use Psr\Log\LoggerInterface;
@@ -48,9 +47,9 @@ class CategoryHelper
     private $importMapMapper;
 
     /**
-     * @var BrandMapper
+     * @var BrandHelper
      */
-    private $brandMapper;
+    private $brandHelper;
 
     /**
      * @var UserGroupHelper
@@ -71,20 +70,20 @@ class CategoryHelper
      * Constructor.
      *
      * @param ImportMapMapper $importMapMapper
-     * @param BrandMapper     $brandMapper
+     * @param BrandHelper     $brandHelper
      * @param UserGroupHelper $userGroupHelper
      * @param EntityPersister $persister
      * @param LoggerInterface $logger
      */
     public function __construct(
         ImportMapMapper $importMapMapper,
-        BrandMapper     $brandMapper,
+        BrandHelper     $brandHelper,
         UserGroupHelper $userGroupHelper,
         EntityPersister $persister,
         LoggerInterface $logger
     ) {
         $this->importMapMapper = $importMapMapper;
-        $this->brandMapper     = $brandMapper;
+        $this->brandHelper     = $brandHelper;
         $this->userGroupHelper = $userGroupHelper;
         $this->persister       = $persister;
         $this->logger          = $logger;
@@ -194,7 +193,7 @@ class CategoryHelper
             // try to get custom brand
             if ($brandName) {
                 // set specific brand for multi-brand helpdesks
-                $brand = $this->brandMapper->findByName($brandName);
+                $brand = $this->brandHelper->findOrCreateBrand($brandName);
                 if ($brand) {
                     $entity->setBrand($brand);
                 }
@@ -202,7 +201,7 @@ class CategoryHelper
 
             // get default brand
             if (!$brand) {
-                $brand = $this->brandMapper->findOneBy([]);
+                $brand = $this->brandHelper->getDefaultBrand();
             }
 
             $entity->setBrand($brand);

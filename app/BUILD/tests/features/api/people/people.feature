@@ -221,3 +221,8 @@ Feature: /people endpoint
 
     When I send a GET request to "/api/v2/people?no_labels=1"
     Then the JSON node "data" should have 2 element
+
+  Scenario: I clear session data for person
+    Given "guineapig@deskpro.dev" user exists
+    When I send a POST request to "/api/v2/people/{guineapig@deskpro.dev}/sessions/clear"
+    Then the response status code should be 204

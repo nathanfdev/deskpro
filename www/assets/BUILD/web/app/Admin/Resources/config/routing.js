@@ -2086,6 +2086,23 @@ define(function() {
     data: {type: 'chat'}
   });
 
+  //###
+  //# Round Robin
+  //###
+  routes.push({
+    id: 'chat.roundrobin',
+    url: '/roundrobin',
+    templateName: 'ChatRoundRobin/list.html',
+    controller: 'Admin_ChatRoundRobin_Ctrl_List'
+  });
+
+  routes.push({
+    id: 'chat.roundrobin.edit',
+    url: '/{id:.*}',
+    templateName: 'ChatRoundRobin/edit.html',
+    controller: 'Admin_ChatRoundRobin_Ctrl_Edit'
+  });
+
 
   //##################################################################################################################
   // Twitter
@@ -2319,13 +2336,6 @@ define(function() {
   });
 
   routes.push({
-    id: 'apps.apps.instance_v2',
-    url: '/{id:v2_\\d+}',
-    templateName: 'Apps/instance_v2.html',
-    controller: 'Admin_Apps_Ctrl_EditInstanceV2'
-  });
-
-  routes.push({
     id: 'apps.apps.custom_instance',
     url: '/{custom_id:custom_\\d+}',
     templateName: 'Apps/custom-instance.html',
@@ -2346,20 +2356,42 @@ define(function() {
     controller: 'Admin_Apps_Ctrl_PackageInfo'
   });
 
+  routes.push({
+    id: 'apps.apps.edit-v2',
+    url: '/v2/{instanceId:\\d+}',
+    templateName: 'Apps/instance_v2.html',
+    controller: 'Admin_Apps_Ctrl_EditInstanceV2'
+  });
+
   // this route allows reloading of the apps.apps.installer-v2 route
   routes.push({
-    id: 'apps.apps.installer-v2-reload',
-    url: '/app-installer-reload/{appName:[a-zA-Z0-9@%\\/\\-_\\.]+}',
+    id: 'apps.apps.install-v2-reload',
+    url: '/app-install-reload/{appName:[a-zA-Z0-9@%\\/\\-_\\.]+}',
     templateName: 'Index/blank.html',
-    controller: ['$state', '$stateParams', function ($state, $stateParams) { $state.go('apps.apps.installer-v2', { appName: $stateParams.appName }); }]
+    controller: ['$state', '$stateParams', function ($state, $stateParams) { $state.go('apps.apps.install-v2', { appName: $stateParams.appName }); }]
   });
 
   routes.push({
-    id: 'apps.apps.installer-v2',
-    url: '/app-installer/{appName:[a-zA-Z0-9@%\\/\\-_\\.]+}',
+    id: 'apps.apps.install-v2',
+    url: '/app-install/{appName:[a-zA-Z0-9@%\\/\\-_\\.]+}',
     templateName: 'Apps/install-app-v2.html',
     controller: 'Admin_Apps_Ctrl_InstallAppV2'
   });
+
+  routes.push({
+    id: 'apps.apps.update-v2-reload',
+    url: '/app-update-reload/{instanceId:\\d+}',
+    templateName: 'Index/blank.html',
+    controller: ['$state', '$stateParams', function ($state, $stateParams) { $state.go('apps.apps.update-v2', { instanceId: $stateParams.instanceId }); }]
+  });
+
+  routes.push({
+    id: 'apps.apps.update-v2',
+    url: '/app-update/{instanceId:\\d+}',
+    templateName: 'Apps/install-app-v2.html',
+    controller: 'Admin_Apps_Ctrl_UpdateAppV2'
+  });
+
 
   //###
   //# API Keys

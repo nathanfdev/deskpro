@@ -42,7 +42,7 @@
 				</a>
 			</li>
 		{% endif %}
-		{% macro recursiveGroupHierachy(cat, grouped_info, grouping_url, parent_cat = null) %}
+		{% macro recursiveGroupHierachy(cat, grouped_info, grouping_url, grouping_option, tplvars, parent_cat) %}
 			{% set count = grouped_info.counts[cat.id].total %}
 			{% set count_all = calcGroupedHierarchyCount(grouped_info, cat) %}
 			<li data-grouping-option="{{ cat.id }}" {% if not (grouping_option == 'DP_NOT_SET' or grouping_option == '-1') and grouping_option == cat.id %}class="on" id="{{ tplvars.baseId }}_total_grouped_count"{% endif %} {% if count_all == 0 %}style="display: none;"{% endif %}>
@@ -65,13 +65,13 @@
 			</li>
 			{% if cat.children %}
 				{% for subcat in cat.children %}
-					{{ _self.recursiveGroupHierachy(subcat, grouped_info, grouping_url, cat) }}
+					{{ _self.recursiveGroupHierachy(subcat, grouped_info, grouping_url, grouping_option, tplvars, cat) }}
 				{% endfor %}
 			{% endif %}
 		{% endmacro %}
 
 		{% for cat in grouped_info.group1_structure %}
-			{{ _self.recursiveGroupHierachy(cat, grouped_info, grouping_url) }}
+			{{ _self.recursiveGroupHierachy(cat, grouped_info, grouping_url, grouping_option, tplvars, null) }}
 		{% endfor %}
 		</ul>
 		<br class="clear" />

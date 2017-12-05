@@ -569,6 +569,11 @@ class PersonController extends AbstractController implements ProtectedController
             }
         }
 
+        $blobCurr = $person->getPictureBlob();
+        if ($blobCurr && $blobCurr->getId() !== $blob->getId()) {
+            $this->container->getBlobStorage()->deleteBlobRecord($blobCurr);
+        }
+
         $person->setPictureBlob($blob);
         $this->em->persist($person);
         $this->em->flush();
@@ -587,6 +592,9 @@ class PersonController extends AbstractController implements ProtectedController
     {
         $person = $this->_getPersonOr404($person_id, 'edit');
 
+        if ($person->getPictureBlob()) {
+            $this->container->getBlobStorage()->deleteBlobRecord($person->getPictureBlob());
+        }
         $person->setPictureBlob(null);
         $this->em->persist($person);
         $this->em->flush();

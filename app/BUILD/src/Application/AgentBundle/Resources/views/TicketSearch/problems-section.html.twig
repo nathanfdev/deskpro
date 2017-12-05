@@ -47,7 +47,7 @@
                             <h3>{{ p.title }}</h3>
 
                             <div class="float-side">
-                                {% if filterId %}<em class="counter list-counter" id="ticket_filter_{{ filterId }}_count" data-count="{{ custom_filter_counts[filterId]|default(0) }}">{{ custom_filter_counts[filterId]|default(0) }}</em>{% endif %}
+                                {% if filterId %}<em class="counter list-counter" id="ticket_filter_{{ filterId }}_count" data-count="{{ problem_filter_counts[filterId]|default(0) }}">{{ problem_filter_counts[filterId]|default(0) }}</em>{% endif %}
                             </div>
                         </div>
                     </li>

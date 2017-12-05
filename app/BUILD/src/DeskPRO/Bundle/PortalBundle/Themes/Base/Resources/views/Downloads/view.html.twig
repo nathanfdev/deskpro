@@ -18,7 +18,7 @@
 
             <div class="article-meta">
                 <span class="agent-avatar agent-avatar-mini"><img src="{{ avatar_url(file.person, 20) }}"></span>
-                {{ phrase('portal.articles.by-line', { name: file.person.display_name_user, date: file.date_published | date('day') }) }}
+                {{ phrase('portal.articles.by-line', { name: file.person.display_name_user, date: file.date_updated | date('day') }) }}
                 {% if brand_setting('user.publish_comments') %}
                     <hr>
                     <span class="comments"><i class="fa fa-comments"></i> <a

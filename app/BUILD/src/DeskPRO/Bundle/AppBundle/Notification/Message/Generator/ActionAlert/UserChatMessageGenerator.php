@@ -129,6 +129,10 @@ class UserChatMessageGenerator extends SystemEventGenerator
                 $tickets = null;
             }
 
+            if ($convo->getAgent()) {
+                $data['agent_id'] = $convo->getAgent()->getId();
+            }
+
             $this->languageManager->callWithLanguage($agent->getLanguage(), function () use (&$data, $convo, $tickets) {
                 $data['html'] = $this->templating->render('AgentBundle:UserChat:chat-alert.html.twig', [
                     'convo'        => $convo,

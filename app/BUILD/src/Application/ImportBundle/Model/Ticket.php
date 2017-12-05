@@ -32,9 +32,7 @@ use JMS\Serializer\Annotation as JMS;
 use Symfony\Component\Validator\Constraints as Assert;
 
 /**
- * Exporting ticket entity.
- *
- * Class Ticket
+ * Class Ticket.
  */
 class Ticket implements PersonAwareInterface, LabelAwareModelInterface, LanguageAwareInterface, CustomDataAwareModelInterface, PrimaryImportModelInterface
 {
@@ -46,6 +44,13 @@ class Ticket implements PersonAwareInterface, LabelAwareModelInterface, Language
      * @JMS\Type("string")
      */
     private $ref;
+
+    /**
+     * @var string
+     *
+     * @JMS\Type("string")
+     */
+    private $brand;
 
     /**
      * @var string
@@ -195,11 +200,11 @@ class Ticket implements PersonAwareInterface, LabelAwareModelInterface, Language
     private $messages = [];
 
     /**
-     * @var string
+     * @var TicketLog[]
      *
-     * @JMS\Type("string")
+     * @JMS\Type("array<Application\ImportBundle\Model\TicketLog>")
      */
-    private $log_message = 'Imported';
+    private $logs = [];
 
     /**
      * @return int
@@ -217,6 +222,26 @@ class Ticket implements PersonAwareInterface, LabelAwareModelInterface, Language
     public function setRef($ref)
     {
         $this->ref = $ref;
+
+        return $this;
+    }
+
+    /**
+     * @return string
+     */
+    public function getBrand()
+    {
+        return $this->brand;
+    }
+
+    /**
+     * @param string $brand
+     *
+     * @return string
+     */
+    public function setBrand($brand)
+    {
+        $this->brand = $brand;
 
         return $this;
     }
@@ -598,21 +623,33 @@ class Ticket implements PersonAwareInterface, LabelAwareModelInterface, Language
     }
 
     /**
-     * @return string
+     * @return TicketLog[]
      */
-    public function getLogMessage()
+    public function getLogs()
     {
-        return $this->log_message;
+        return $this->logs;
     }
 
     /**
-     * @param string $log_message
+     * @param TicketLog $log
      *
      * @return $this
      */
-    public function setLogMessage($log_message)
+    public function addTicketLog(TicketLog $log)
     {
-        $this->log_message = $log_message;
+        $this->logs[] = $log;
+
+        return $this;
+    }
+
+    /**
+     * @param TicketLog[] $logs
+     *
+     * @return $this
+     */
+    public function setLogs($logs)
+    {
+        $this->logs = $logs;
 
         return $this;
     }

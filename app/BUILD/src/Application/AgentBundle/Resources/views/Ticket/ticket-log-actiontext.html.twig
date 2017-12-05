@@ -309,7 +309,7 @@
 		{% set phrase_name = 'agent.tickets.status_' ~ log.details.new_status|replace({'.': '_'}) %}
 		{{ phrase('agent.tickets.changed_to') }} <span class="new-val">{% if has_phrase(phrase_name) %}{{ phrase(phrase_name) }}{% else %}{{ log.details.new_status }}{% endif %}</span>
 	{% else %}
-		Status set to
+		Status set
 		{% set phrase_name = 'agent.tickets.status_' ~ log.details.new_status|replace({'.': '_'}) %}
 		{{ phrase('agent.tickets.changed_to') }} <span class="new-val">{% if has_phrase(phrase_name) %}{{ phrase(phrase_name) }}{% else %}{{ log.details.new_status }}{% endif %}</span>
 	{% endif %}

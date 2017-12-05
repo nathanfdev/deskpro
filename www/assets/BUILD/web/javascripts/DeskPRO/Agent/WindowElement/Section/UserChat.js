@@ -619,20 +619,26 @@ DeskPRO.Agent.WindowElement.Section.UserChat = new Orb.Class({
 			}
 		} else {
 			if (data.agent_id == DESKPRO_PERSON_ID && !this.isChatOpen(data.conversation_id)) {
-				var self = this;
-				// Its possible we opened the chat, then closed+unassigned ourselves before the last
-				// poll was done. This would create a series of client messages like:
-				// - Assigned (from opening the chat)
-				// - Unassigned (from leaving)
-				// Then the CM would be delievered, and right here we'd see the assigned-to-me message
-				// and attempt to re-open the chat we just closed.
-				// So we timeout so we can add some logic to see if the chat was closed before running this,
-				// this is just a easy way to process CM messages before running the open (since they're executed in sequence)
-				this.openingChatTimeout[data.conversation_id] = window.setTimeout(function() {
-					DeskPRO_Window.runPageRoute('page:' + BASE_URL + 'agent/chat/view/' + data.conversation_id, {noToggle:true});
-					delete self.openingChatTimeout[data.conversation_id];
-					DeskPRO_Window.faviconBadge.disableCrazyMode();
-				}, 1000);
+        if (data.eventType === 'chat.new') {
+					// Round robin assigned
+          this.showNewChatRoundRobinAlert(data);
+          DeskPRO_Window.runPageRoute('page:' + BASE_URL + 'agent/chat/view/' + data.conversation_id, {focus: false, isBackgroundLoad: true, noToggle:true});
+        } else {
+					var self = this;
+					// Its possible we opened the chat, then closed+unassigned ourselves before the last
+					// poll was done. This would create a series of client messages like:
+					// - Assigned (from opening the chat)
+					// - Unassigned (from leaving)
+					// Then the CM would be delievered, and right here we'd see the assigned-to-me message
+					// and attempt to re-open the chat we just closed.
+					// So we timeout so we can add some logic to see if the chat was closed before running this,
+					// this is just a easy way to process CM messages before running the open (since they're executed in sequence)
+					this.openingChatTimeout[data.conversation_id] = window.setTimeout(function() {
+						DeskPRO_Window.runPageRoute('page:' + BASE_URL + 'agent/chat/view/' + data.conversation_id, {noToggle:true});
+						delete self.openingChatTimeout[data.conversation_id];
+						DeskPRO_Window.faviconBadge.disableCrazyMode();
+					}, 1000);
+				}
 			}
 
 			DeskPRO_Window.getSectionData('chat_section', self._initSection.bind(self));
@@ -800,10 +806,11 @@ DeskPRO.Agent.WindowElement.Section.UserChat = new Orb.Class({
 		DeskPRO_Window.handleSoundElements(alertEl);
 
 		var titles = this.getNewChatTitles();
-		if (titles.length == 1) {
-			var winTitle = 'New chat: ' + titles[0];
+    var winTitle;
+		if (titles.length === 1) {
+			winTitle = 'New chat: ' + titles[0];
 		} else {
-			var winTitle = titles.length + ' New chats: ' + titles.join(', ');
+			winTitle = titles.length + ' New chats: ' + titles.join(', ');
 		}
 		DeskPRO_Window.faviconBadge.enableCrazyMode(winTitle);
 
@@ -863,6 +870,59 @@ DeskPRO.Agent.WindowElement.Section.UserChat = new Orb.Class({
 //			}
 		}).data('route', 'page:' + BASE_URL + 'agent/chat/view/' + conversation_id + '/join');
 	},
+
+  showNewChatRoundRobinAlert: function(data) {
+    this.refreshOpenCounts();
+
+    var conversation_id = data.conversation_id;
+
+    if (document.visibilityState && document.visibilityState !== 'visible') {
+      var alertEl = $(data.html);
+      alertEl.appendTo('body');
+      DeskPRO_Window.handleSoundElements(alertEl);
+
+      var audio = $('audio', alertEl).get(0);
+      var self = this;
+
+      var secEl = alertEl.find('span.wait-timer');
+      function up() {
+        var secs = parseInt(secEl.data('time'));
+        secs++;
+        secEl.data('time', secs);
+
+        if (secs > 60) {
+          secEl.text((Math.floor(secs / 60)) + " minutes");
+        } else {
+          secEl.text(secs + " seconds");
+        }
+      };
+      var waitTimer = window.setInterval(up, 1000);
+
+      $('.accept-trigger, .join-trigger', alertEl).on('click', function(ev) {
+        ev.stopPropagation();
+        self.closeIframes();
+        if (audio) {
+          try {
+            audio.pause();
+          } catch(e) {}
+        }
+        alertEl.remove();
+        window.clearTimeout(waitTimer);
+
+      });
+    }
+
+    var titles = this.getNewChatTitles();
+    var winTitle;
+    if (titles.length === 1) {
+      winTitle = 'New chat: ' + titles[0];
+    } else {
+      winTitle = titles.length + ' New chats: ' + titles.join(', ');
+    }
+    DeskPRO_Window.faviconBadge.enableCrazyMode(winTitle);
+
+    DeskPRO_Window.notifications.addMessage('chat', 'New chat by ' + data.person_name, 'page:' + BASE_URL + 'agent/chat/view/' + conversation_id, 'chat-' + conversation_id)
+  },
 
 	getNewChatTitles: function() {
 		var titles = [];

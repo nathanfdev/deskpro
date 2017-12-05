@@ -148,6 +148,28 @@ class AppAssetBlob implements Domain\ApplicationAsset, EntityInterface, NotifyPr
         $this->path = $path;
     }
 
+    public function copy($newPath)
+    {
+        if ($this->blob) {
+            $blobStorage = self::getBlobStorageService();
+            $blob        = $blobStorage->createBlobRecordFromString(
+                $blobStorage->copyBlobRecordToString($this->blob),
+                $newPath,
+                $this->blob->content_type
+            );
+            $assetBlob = new self();
+            $assetBlob->setBlob($blob);
+            $assetBlob->setPath($newPath);
+
+            return $assetBlob;
+        }
+
+        $assetBlob = new self();
+        $assetBlob->setPath($newPath);
+
+        return $assetBlob;
+    }
+
     /**
      * @param Blob $blob
      *
@@ -180,6 +202,18 @@ class AppAssetBlob implements Domain\ApplicationAsset, EntityInterface, NotifyPr
             $blobStorage = self::getBlobStorageService();
 
             return $blobStorage->copyBlobRecordToString($this->blob);
+        }
+
+        return null;
+    }
+
+    /**
+     * @return string
+     */
+    public function getContentType()
+    {
+        if ($this->blob) {
+            return $this->blob->content_type;
         }
 
         return null;

@@ -25,6 +25,7 @@ DeskPRO.AjaxPoller.Poller = new Orb.Class({
 		this.isPaused = false;
 
 		this.autoSendTimeout = null;
+		this.sendPending = false;
 
 		this.options = {
 			ajaxUrl: null,
@@ -62,14 +63,26 @@ DeskPRO.AjaxPoller.Poller = new Orb.Class({
 
 		// reset timer
     this._clearDelays();
-    this.autoSendTimeout = this.send.delay(this.options.interval, this);
+
+    if (this.sendPending) {
+    	this.sendNow();
+		} else {
+      this.autoSendTimeout = this.send.delay(this.options.interval, this);
+    }
 	},
 
 	setInterval: function(interval) {
 		this.options.interval = interval;
 	},
 
-
+	sendNow: function(delay) {
+    this._clearDelays();
+    if (this.currentAjax || this.isPaused) {
+    	this.sendPending = true;
+		} else {
+      this.autoSendTimeout = this.send.delay(delay || 750, this);
+		}
+	},
 
 	/**
 	 * Data transformers intercept data before it's sent and can change it
@@ -256,7 +269,12 @@ DeskPRO.AjaxPoller.Poller = new Orb.Class({
 		}
 
 		// Start auto timer
-		this.autoSendTimeout = this.send.delay(this.options.interval, this);
+		if (this.sendPending) {
+      this.sendPending = false;
+			this.sendNow(250);
+		} else {
+      this.autoSendTimeout = this.send.delay(this.options.interval, this);
+    }
 
 		this.resetSentItems(sent_info);
 

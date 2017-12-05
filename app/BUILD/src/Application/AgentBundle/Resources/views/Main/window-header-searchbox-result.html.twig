@@ -57,7 +57,7 @@
 		<div class="userinfo">
 			<a class="name click-through" route-notabreload="1" data-route="person:{{ path('agent_people_view', {'person_id': '0000'})|replace({'0000': '<%= ticket.person.id %>'})|raw }}" data-route-title="@selector(.person-tip)">
 			<span class="with-icon" style="background-image: url('<%- ticket.person.picture_url_16 %>');"><%- ticket.person.display_name %></span></a>
-			<span class="email" ng-if="ticket.person.primary_email">&lt;<%- ticket.person.primary_email.email %>&gt;</span>
+			<span class="email" ng-if="result.person.primary_email">&lt;<%- ticket.person.primary_email.email %>&gt;</span>
 			<div class="bound-fade"></div>
 		</div>
 	</article>
@@ -72,7 +72,7 @@
 	<div class="userinfo" style="height: auto; overflow: auto;">
 		<a class="name click-through" route-notabreload="1" data-route="person:{{ path('agent_people_view', {'person_id': '0000'})|replace({'0000': '<%= person.id %>'})|raw }}" data-route-title="@selector(.person-tip)">
 			<span class="with-icon" style="background-image: url('<%- person.picture_url_16 %>');"><%- person.display_name %></span></a>
-		<span class="email" ng-if="person.primary_email">&lt;<%- (person.primary_email || {}).email %>&gt;</span>
+		<span class="email" ng-if="result.primary_email">&lt;<%- (person.primary_email || {}).email %>&gt;</span>
 		<div class="bound-fade" style="width: auto;">
 			<% if (person.tickets_count > 0) { %>
                 <span class="sub-items-link" ng-click="loadPersonTickets(result); $event.stopPropagation()">
@@ -168,7 +168,7 @@
             </div>
         </div>
     </article>
-    <article ng-if="org.members_data && org.members > 15" class="row-item single-row sub-item" ng-click="openAllMembers(result); $event.stopPropagation()">
+    <article ng-if="result.members_data && result.members > 15" class="row-item single-row sub-item" ng-click="openAllMembers(result); $event.stopPropagation()">
         <div class="top-row">
             <div class="top-row-left">
                 <h3>

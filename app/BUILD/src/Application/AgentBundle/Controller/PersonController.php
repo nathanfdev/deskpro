@@ -482,6 +482,9 @@ class PersonController extends AbstractController
 
             case 'delete-picture':
                 $person->setDisablePicture(false);
+                if ($person->getPictureBlob()) {
+                    $this->container->getBlobStorage()->deleteBlobRecord($person->getPictureBlob());
+                }
                 $person->setPictureBlob(null);
 
                 if ($this->in->getBool('disable_picture')) {
@@ -495,6 +498,10 @@ class PersonController extends AbstractController
                 $person->setDisablePicture(false);
                 $blob = $this->em->find('DeskPRO:Blob', $this->in->getUint('blob_id'));
                 if ($blob) {
+                    $blobCurr = $person->getPictureBlob();
+                    if ($blobCurr && $blobCurr->getId() !== $blob->getId()) {
+                        $this->container->getBlobStorage()->deleteBlobRecord($blobCurr);
+                    }
                     $person->setPictureBlob($blob);
                     $this->em->persist($person);
                 }

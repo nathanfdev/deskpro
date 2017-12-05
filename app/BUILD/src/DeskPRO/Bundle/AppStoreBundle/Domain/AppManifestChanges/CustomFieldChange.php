@@ -26,41 +26,71 @@
  * ~ Thanks, Everyone at Team DeskPRO
  */
 
-namespace DeskPRO\Bundle\AppBundle\Notification\Message\Generator\ActionAlert;
+namespace DeskPRO\Bundle\AppStoreBundle\Domain\AppManifestChanges;
 
-use DeskPRO\Bundle\AppBundle\Notification\Event\People\AgentStatusChangedEvent;
-use DeskPRO\Bundle\AppBundle\Notification\Event\SystemEventInterface;
-use DeskPRO\Bundle\AppBundle\Notification\Message\ActionAlert;
-use DeskPRO\Bundle\AppBundle\Notification\Message\Generator\AbstractGenerator;
+use DeskPRO\Bundle\AppStoreBundle\Domain\AppManifest\CustomField;
+use JMS\Serializer\Annotation as JMS;
 
 /**
- * Class AgentStatusChangedMeessageGenerator.
+ * @JMS\ExclusionPolicy("all")
  */
-class AgentStatusChangedMeessageGenerator extends AbstractGenerator
+class CustomFieldChange
 {
     /**
-     * {@inheritdoc}
+     * @JMS\Type("string")
+     * @JMS\Expose()
+     *
+     * @var string
      */
-    public function createMessages(SystemEventInterface $event)
+    private $module = 'customFields';
+
+    /**
+     * @JMS\Type("string")
+     * @JMS\Expose()
+     *
+     * @var string
+     */
+    private $type;
+
+    /**
+     * @JMS\Type("DeskPRO\Bundle\AppStoreBundle\Domain\AppManifest\CustomField")
+     * @JMS\Expose()
+     *
+     * @var CustomField
+     */
+    private $value;
+
+    /**
+     * @param $changeType
+     * @param CustomField $value
+     */
+    public function __construct($changeType, CustomField $value)
     {
-        /* @var AgentStatusChangedEvent $event */
-        return [
-            new ActionAlert(
-                $event->getPersonId(),
-                [
-                    'type'      => $event->getEventType(),
-                    'is_online' => $event->getOnline(),
-                ],
-                $event->getName()
-            ),
-        ];
+        $this->type  = $changeType;
+        $this->value = $value;
     }
 
     /**
-     * {@inheritdoc}
+     * @return string
      */
-    public function canCreateMessage(SystemEventInterface $event)
+    public function getModule()
     {
-        return $event instanceof AgentStatusChangedEvent;
+        return $this->module;
+    }
+
+    /**
+     * @return string
+     */
+    public function getType()
+    {
+        return $this->type;
+    }
+
+    /**
+     * @return CustomField
+     */
+    public function getValue()
+    {
+        return $this->value;
     }
 }

@@ -45,6 +45,7 @@ use DeskPRO\Bundle\AppBundle\Notification\Event\LegacySystemEvent;
 use DeskPRO\Bundle\AppBundle\Serializer\ApiWrapper;
 use DeskPRO\Bundle\AppBundle\Serializer\Sideload\SideloadSerializationContext;
 use DeskPRO\Bundle\AppStoreBundle\Domain\AppBundleValidator;
+use DeskPRO\Bundle\AppStoreBundle\Infrastructure\ApplicationManagerService;
 use DeskPRO\Bundle\AppStoreBundle\Infrastructure\AppManifestReader;
 use DeskPRO\Bundle\AppStoreBundle\Infrastructure\AppZipArchiveBundle;
 use DeskPRO\Component\Filesystem\SafeFile;
@@ -145,21 +146,21 @@ class AppsController extends AbstractController
         // in case it contains forward slashes, e.g @deskproapps/app-name
         // the actual problem can be solved by just double encoding of '/', / => %2F => %252F
         // but it is simpler on the client to double encode everything
-        $name = urldecode(urldecode($name));
+        $name    = urldecode(urldecode($name));
         $manager = $this->container->getAppManager();
 
         if (!$manager->hasPackage($name)) {
             // app v2 package info
             $appArchive = $this->getAppV2ArchiveBundle($name);
 
-            $app        = $this->em->getRepository(App::class)->findOneBy([
+            $app = $this->em->getRepository(App::class)->findOneBy([
                 'name' => $name,
             ]);
             if ($appArchive) {
                 $manifestReader = new AppManifestReader();
 
-                $manifest       = $manifestReader->readManifestFromJson($appArchive->getManifestAsString());
-                $iconBlob       = $this->container->get('blob.storage')->createBlobRecordFromString(
+                $manifest = $manifestReader->readManifestFromJson($appArchive->getManifestAsString());
+                $iconBlob = $this->container->get('blob.storage')->createBlobRecordFromString(
                     $appArchive->getIcon(),
                     'icon.png',
                     'image/png'
@@ -169,7 +170,7 @@ class AppsController extends AbstractController
                 $this->em->persist($iconBlob);
                 $this->em->flush();
             } elseif ($app) {
-                $manifest = $app->getParsedManifest();
+                $manifest = $app->getManifest();
                 $iconBlob = $app->getIconAsset()->getBlob();
             } else {
                 throw $this->createNotFoundException();
@@ -318,7 +319,7 @@ class AppsController extends AbstractController
         // in case it contains forward slashes, e.g @deskproapps/app-name
         // the actual problem can be solved by just double encoding of '/', / => %2F => %252F
         // but it is simpler on the client to double encode everything
-        $name = urldecode(urldecode($name));
+        $name    = urldecode(urldecode($name));
         $manager = $this->container->getAppManager();
 
         if (!$manager->hasPackage($name)) {
@@ -365,7 +366,7 @@ class AppsController extends AbstractController
                             'updated' => $isAppUpdate,
                         ]
                     ),
-                    $this->generateUrl('api_get_app_instance', ['application' => $instance->getId()])
+                    sprintf('api/v2/apps/packages/%s', $app->getId())
                 );
             }
 
@@ -959,32 +960,25 @@ class AppsController extends AbstractController
             $manifestReader = new AppManifestReader();
             $manifest       = $manifestReader->readManifestFromJson($manifestString);
 
-            $app = $this->em->getRepository(App::class)->findOneBy([
-                'name' => $manifest->getName(),
-            ]);
-            $isAppUpdate    = $manifest->isSingle() && $app && $app->getInstances()->count() > 0;
-            if ($isAppUpdate) {
-                $this->container->get('apps2.application_manager')->createOrUpdateAppEntity($appBundle);
-                $instance = $app->getInstances()->first();
-            } else {
-                $instance = $this->container->get('apps2.application_manager')->createFirstInstance($appBundle);
-            }
+            /** @var ApplicationManagerService $appsManager */
+            $appsManager    = $this->container->get('apps2.application_manager');
+            $installDetails = $appsManager->installBundle($appBundle);
 
             $context = new SideloadSerializationContext();
             $context->setIncludes(['app']);
             $context->setInlineSideloads(true);
-            $serialized = $this->container->get('serializer')->toArray(new ApiWrapper($instance), $context);
+            $serialized = $this->container->get('serializer')->toArray(new ApiWrapper($installDetails->getApp()), $context);
 
             return $this->createApiCreateResponse(
                 array_merge(
                     $serialized,
                     [
-                        'version' => 2,
+                        'version'      => 2,
                         'package_name' => $manifest->getName(),
-                        'updated' => $isAppUpdate,
+                        'install_type' => $installDetails->getInstallType(),
                     ]
                 ),
-                $this->generateUrl('api_get_app_instance', ['application' => $instance->getId()])
+                sprintf('/api/v2/apps/packages/%s', $installDetails->getApp()->getId())
             );
         }
 
@@ -1052,15 +1046,14 @@ class AppsController extends AbstractController
      */
     private function getAppV2ArchiveBundle($name)
     {
-
         $assetDir = $this->container->get('deskpro.app_env')->getAppWwwAssetDir();
         $blobPath = $assetDir.'/apps/v2/'.$name.'.zip';
 
         // make sure the name is slugified
-        $slug = Strings::slugifyTitle($name);
+        $slug    = Strings::slugifyTitle($name);
         $sysName = 'apps_v2_zip_'.$slug;
 
-        $blob     = $this->em->getRepository(Blob::class)->findOneBy([
+        $blob = $this->em->getRepository(Blob::class)->findOneBy([
             'sys_name' => $sysName,
         ]);
 

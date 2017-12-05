@@ -6,7 +6,7 @@ define ['Admin/Main/Ctrl/Base'], (Admin_Ctrl_Base) ->
       @$scope.getController = => return this
 
       reactProps = {
-        routePath: 'app-installer/' + @$stateParams.appName
+        routePath: 'app-install/install/' + @$stateParams.appName
         legacyNavigate: @$state.go.bind(@$state)
       }
 

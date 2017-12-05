@@ -5,7 +5,8 @@ import { AppServices, mountContextInWindow, unmountContextInWindow, ContainerMou
 import {
   registerIncomingWidgetRequestListeners,
   registerOutgoingWidgetRequestListeners,
-  dispatchOutgoingWidgetRequestOnIntercept
+  dispatchOutgoingWidgetRequestOnIntercept,
+  dispatchOutgoingWidgetMessage
 } from 'DeskPRO/Bundle/AppsBundle/Modules/WidgetMessage';
 
 
@@ -88,7 +89,8 @@ class DeskproAppStore {
   static onAgentLegacyAppRun(reduxStore, window) {
     // register the global object which is referenced by legacy code
     window.DeskPRO_APPSTORE = {
-      dispatchOutgoingWidgetRequestOnIntercept // TODO this needs a better name
+      interceptEvent: dispatchOutgoingWidgetRequestOnIntercept, // TODO this needs a better name
+      dispatchEvent:  (eventName, message) => dispatchOutgoingWidgetMessage(eventName, message)
     };
   }
 

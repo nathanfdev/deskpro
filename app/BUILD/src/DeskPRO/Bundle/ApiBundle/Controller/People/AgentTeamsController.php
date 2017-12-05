@@ -54,6 +54,16 @@ use Symfony\Component\HttpFoundation\Request;
  *      }
  *     }
  * )
+ * @ApiDoc(
+ *     target="listAction",
+ *     description="get list of teams",
+ *     filters={
+ *         {"name"="my", "pattern"="(1|0)", "description"="limit to my teams only", "dataType"="boolean"}
+ *     },
+ *     statusCodes={
+ *         200="OK"
+ *     }
+ * )
  */
 class AgentTeamsController extends CrudController
 {

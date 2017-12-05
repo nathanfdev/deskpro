@@ -2,6 +2,7 @@ import debounce from 'lodash/debounce';
 import { newActionAlerts } from '../Modules/Application/Actions/notificationActions';
 import { startChat } from '../Modules/IM/Actions/chatsActions';
 import { markMessages } from '../Modules/IM/Actions/messagesActions';
+import { updateAgentStatus } from '../Modules/Agent/Actions/agentActions';
 import { addToCollection, updateCollection, removeFromCollection } from '../../AppBundle/Modules/RecordsStore/Actions/store';
 import * as snippetActions from '../Modules/Snippets/Actions/snippetsActions';
 
@@ -92,6 +93,9 @@ class ActionAlertsHandler {
           default:
             break;
         }
+        break;
+      case 'agent.update_status':
+        this.options.dispatch(updateAgentStatus(payload.data));
         break;
       default:
         if (payload.data && payload.data.eventType) {

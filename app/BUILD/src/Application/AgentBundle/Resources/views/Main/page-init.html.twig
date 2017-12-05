@@ -102,7 +102,7 @@
 
 		window.DeskPRO_Window = new DeskPRO.Agent.Window({
 			messageChanneler: {
-				ajaxMessagesUrl: BASE_PATH + 'get_messages.php'{% if reduce_poll_rate %} + '?refresh_check=1'{% endif %},
+				ajaxMessagesUrl: BASE_PATH + 'get_messages.php',
 				lastMessageId: {% if last_message_id %}{{last_message_id}}{% else %}0{% endif %}
 			},
 			faviconCount: {% if app.user.getPref('agent.ui.favicon_count') %}'{{ app.user.getPref('agent.ui.favicon_count') }}'{% else %}false{% endif %},
@@ -115,8 +115,10 @@
 			DP_USERCHAT_HIDE_CLAIMED_CHAT = false;
 		{% endif %}
 
-		DP_POLLER_INTERVAL = {% if reduce_poll_rate %}300000{% else %}5000{% endif %};
-		DP_POLLER_INTERVAL_FAST = {% if reduce_poll_rate %}300000{% else %}2000{% endif %};
+		DP_POLLER_INTERVAL = {% if reduce_poll_rate %}75000{% else %}5000{% endif %};
+		DP_POLLER_INTERVAL_FAST = {% if reduce_poll_rate %}75000{% else %}2000{% endif %};
+		DP_SYS_FILTER_REFRESH_INTERVAL  = {{ sys_filter_refresh_interval * 1000 }};
+		DP_CUST_FILTER_REFRESH_INTERVAL = {{ cust_filter_refresh_interval * 1000 }};
 
 		{% if constant('DP_DEBUG') %}
 			window.DeskPRO_Window.DEBUG = {

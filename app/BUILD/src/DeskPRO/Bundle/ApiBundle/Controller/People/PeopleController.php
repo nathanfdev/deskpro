@@ -32,7 +32,6 @@ use Application\DeskPRO\Entity\CustomDefPerson;
 use Application\DeskPRO\Entity\Person;
 use Application\DeskPRO\Entity\Ticket;
 use DeskPRO\Bundle\ApiBundle\ApiDoc\Annotation\ApiDoc;
-use DeskPRO\Bundle\ApiBundle\Controller\CrudController;
 use DeskPRO\Bundle\ApiBundle\Controller\Tickets\TicketsController;
 use DeskPRO\Bundle\ApiBundle\Doctrine\RequestHelper\CustomDataHelper;
 use DeskPRO\Bundle\ApiBundle\Doctrine\RequestHelper\DateHelper;
@@ -42,8 +41,10 @@ use DeskPRO\Bundle\ApiBundle\Doctrine\RequestHelper\RequestQueryContext;
 use DeskPRO\Bundle\ApiBundle\Doctrine\RequestHelper\UsergroupsHelper;
 use DeskPRO\Bundle\AppBundle\Annotation\ActionPermissions\Annotation\ApiModes;
 use DeskPRO\Bundle\AppBundle\Form\Type\People\PersonType;
+use DeskPRO\Bundle\AppBundle\Security\Voter\PermissionGroups\PermissionGroupVoter;
 use Doctrine\ORM\QueryBuilder;
 use FOS\RestBundle\Controller\Annotations as Rest;
+use FOS\RestBundle\View\View;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpKernel\HttpKernelInterface;
@@ -92,7 +93,7 @@ use Symfony\Component\HttpKernel\HttpKernelInterface;
  *     }
  * )
  */
-class PeopleController extends CrudController
+class PeopleController extends AbstractPeopleController
 {
     public static $entity      = Person::class;
     public static $type        = PersonType::class;
@@ -189,10 +190,59 @@ class PeopleController extends CrudController
     }
 
     /**
+     * @ApiDoc(
+     *     section="People",
+     *     description="Clear all session data",
+     *     requirements={
+     *         {
+     *             "name"="id",
+     *             "requirement"="\d+",
+     *             "description"="The id of the resource",
+     *             "dataType"="integer"
+     *         }
+     *     },
+     *     statusCodes={
+     *        204="OK"
+     *     },
+     *     noInput=true,
+     *     noOutput=true
+     * )
+     * @Rest\Post("/{id}/sessions/clear")
+     *
+     * @param         $id
+     * @param Request $request
+     *
+     * @return View
+     */
+    public function clearSessionAction($id, Request $request)
+    {
+        $this->denyAccessUnlessGranted(PermissionGroupVoter::MODIFY, $this->getPermissionGroupEntityContext($id, $request));
+
+        $person = $this->findEntity($id, $request);
+
+        $this->getManager()->getConnection()->executeUpdate(
+            'DELETE FROM sessions WHERE person_id = :person_id',
+            [
+                'person_id' => $person->getId(),
+            ]
+        );
+        $this->getManager()->getConnection()->executeUpdate(
+            'DELETE FROM sess_data WHERE person_id = :person_id',
+            [
+                'person_id' => $person->getId(),
+            ]
+        );
+
+        return new View(null, Response::HTTP_NO_CONTENT);
+    }
+
+    /**
      * {@inheritdoc}
      */
     protected function applyListFilters(QueryBuilder $qb, $alias, Request $request)
     {
+        parent::applyListFilters($qb, $alias, $request);
+
         $context = new RequestQueryContext($qb, $alias, $request);
 
         DateHelper::applyDatePeriodFilter($context, 'date_created', 'period_created');
@@ -204,11 +254,6 @@ class PeopleController extends CrudController
         if (null !== $request->get('is_agent')) {
             $qb->andWhere("$alias.is_agent = :is_agent");
             $qb->setParameter('is_agent', (int) $request->get('is_agent'));
-        }
-
-        if (null !== $request->get('is_deleted')) {
-            $qb->andWhere("$alias.is_deleted = :is_deleted");
-            $qb->setParameter('is_deleted', (int) $request->get('is_deleted'));
         }
 
         if ($request->get('not_me')) {
