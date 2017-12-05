@@ -29,7 +29,6 @@
 namespace DpTest\Bundle\AppBundle\TicketFilters;
 
 use DeskPRO\Bundle\AppBundle\TicketFilters\Context;
-use DeskPRO\Bundle\AppBundle\TicketFilters\Model\Context\AgentContext;
 use DeskPRO\Bundle\AppBundle\TicketFilters\Model\Entity\TicketModel;
 use DeskPRO\Bundle\AppBundle\TicketFilters\Terms\TicketBasicTermsHandler;
 use DeskPRO\Bundle\AppBundle\TicketFilters\Terms\TicketDateTermsHandler;
@@ -72,7 +71,7 @@ class TicketSqlMatcherTest extends ApiTestCase
     protected function setUp()
     {
         $resolver                  = new ValueResolver();
-        $this->agentContext        = new AgentContext();
+        $this->agentContext        = new Context();
         $this->agentContext->id    = 1;
         $this->agentContext->teams = [1, 2, 3];
 

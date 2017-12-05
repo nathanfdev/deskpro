@@ -29,7 +29,6 @@
 namespace DeskPRO\Bundle\AppBundle\TicketFilters\Diff;
 
 use DeskPRO\Bundle\AppBundle\TicketFilters\Context;
-use DeskPRO\Bundle\AppBundle\TicketFilters\Model\Context\AgentContext;
 use DeskPRO\Component\Util\ListUtils;
 
 class Differ
@@ -80,10 +79,10 @@ class Differ
             $filterOp = new FilterOp($filter->id);
 
             foreach ($agentSets as $agentSet) {
-                $agents = ListUtils::filter($agentSet['agents'], function ($a) use ($filter) {
+                $agentContexts = ListUtils::filter($agentSet['agentContexts'], function ($a) use ($filter) {
                     return in_array($a->getAgentId(), $filter->agents);
                 });
-                if (empty($agents)) {
+                if (empty($agentContexts)) {
                     continue;
                 }
 
@@ -92,7 +91,7 @@ class Differ
                 //------------------------------
 
                 if ($this->diffEnv->isFilterContextUnique($filter->id)) {
-                    foreach ($agents as $agentContext) {
+                    foreach ($agentContexts as $agentContext) {
                         if ($agentSet['viewBefore']) {
                             $matchBefore = $matcher->doesQueryMatch($filter->query, $ticketA, $agentContext);
                         } else {
@@ -116,7 +115,7 @@ class Differ
                 // Common terms, we only need to run it once per group
                 //------------------------------
                 } else {
-                    $agentContext = ListUtils::first($agents);
+                    $agentContext = ListUtils::first($agentContexts);
                     if ($agentSet['viewBefore']) {
                         $matchBefore = $matcher->doesQueryMatch($filter->query, $ticketA, $agentContext);
                     } else {
@@ -130,7 +129,7 @@ class Differ
                     }
 
                     // Apply this result to all agents in the group
-                    foreach ($agents as $agent) {
+                    foreach ($agentContexts as $agent) {
                         if ($matchBefore && !$matchAfter) {
                             $filterOp->addDelAgentId($agent->getAgentId());
                         } elseif (!$matchBefore && $matchAfter) {
@@ -171,7 +170,7 @@ class Differ
             'seeAfterOnly'  => [],
         ];
 
-        foreach ($this->diffEnv->getGroupedAgentContexts() as $group) {
+        foreach ($this->diffEnv->getGroupedAgents() as $group) {
             $group = ListUtils::filter($group, function (AgentContext $a) use ($affectedAgentIds) {
                 return isset($affectedAgentIds[$a->id]);
             });
@@ -207,23 +206,23 @@ class Differ
         $agentSets = [];
         if (!empty($agentSetsByPerm['seeBoth'])) {
             $agentSets[] = [
-                'viewBefore' => true,
-                'viewAfter'  => true,
-                'agents'     => ListUtils::map(ListUtils::flatten($agentSetsByPerm['seeBoth']), [Context::class, 'createContext']),
+                'viewBefore'    => true,
+                'viewAfter'     => true,
+                'agentContexts' => ListUtils::map(ListUtils::flatten($agentSetsByPerm['seeBoth']), [Context::class, 'createContext']),
             ];
         }
         if (!empty($agentSetsByPerm['seeBeforeOnly'])) {
             $agentSets[] = [
-                'viewBefore' => true,
-                'viewAfter'  => false,
-                'agents'     => ListUtils::map(ListUtils::flatten($agentSetsByPerm['seeBeforeOnly']), [Context::class, 'createContext']),
+                'viewBefore'    => true,
+                'viewAfter'     => false,
+                'agentContexts' => ListUtils::map(ListUtils::flatten($agentSetsByPerm['seeBeforeOnly']), [Context::class, 'createContext']),
             ];
         }
         if (!empty($agentSetsByPerm['seeAfterOnly'])) {
             $agentSets[] = [
-                'viewBefore' => true,
-                'viewAfter'  => false,
-                'agents'     => ListUtils::map(ListUtils::flatten($agentSetsByPerm['seeAfterOnly']), [Context::class, 'createContext']),
+                'viewBefore'    => true,
+                'viewAfter'     => false,
+                'agentContexts' => ListUtils::map(ListUtils::flatten($agentSetsByPerm['seeAfterOnly']), [Context::class, 'createContext']),
             ];
         }
 

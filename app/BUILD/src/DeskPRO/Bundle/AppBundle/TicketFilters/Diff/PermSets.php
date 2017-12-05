@@ -28,7 +28,7 @@
 
 namespace DeskPRO\Bundle\AppBundle\TicketFilters\Diff;
 
-use DeskPRO\Bundle\AppBundle\TicketFilters\Model\Context\AgentContext;
+use DeskPRO\Bundle\AppBundle\TicketFilters\Model\Agent;
 
 class PermSets
 {
@@ -50,7 +50,7 @@ class PermSets
     /**
      * PermSets constructor.
      *
-     * @param AgentContext[] $agentContexts
+     * @param Agent[] $agentContexts
      */
     public function __construct(array $agentContexts)
     {
@@ -93,11 +93,11 @@ class PermSets
     }
 
     /**
-     * @param AgentContext $agentContext
+     * @param Agent $agentContext
      *
      * @return string
      */
-    private function getSetId(AgentContext $agentContext)
+    private function getSetId(Agent $agentContext)
     {
         if ($agentContext->view_all) {
             return 'all';

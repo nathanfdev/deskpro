@@ -28,7 +28,6 @@
 
 namespace DeskPRO\Bundle\AppBundle\TicketFilters;
 
-use DeskPRO\Bundle\AppBundle\TicketFilters\Model\Context\AgentContext;
 use DeskPRO\Bundle\AppBundle\TicketFilters\Model\Entity\TicketModel;
 use DeskPRO\Bundle\AppBundle\TicketFilters\Terms\FunctionCompareDef;
 use DeskPRO\Bundle\AppBundle\TicketFilters\Terms\TermsHandlerInterface;
@@ -63,9 +62,9 @@ class TicketMatcher extends AbstractMatcher
     }
 
     /**
-     * @param array        $termGroup
-     * @param TicketModel  $ticketModel
-     * @param AgentContext $agentContext
+     * @param array       $termGroup
+     * @param TicketModel $ticketModel
+     * @param Context     $context
      *
      * @return bool
      */

@@ -26,11 +26,11 @@
  * ~ Thanks, Everyone at Team DeskPRO
  */
 
-namespace DeskPRO\Bundle\AppBundle\TicketFilters\Model\Context;
+namespace DeskPRO\Bundle\AppBundle\TicketFilters\Model;
 
 use DeskPRO\Bundle\AppBundle\TicketFilters\Model\Entity\TicketModel;
 
-class AgentContext
+class Agent
 {
     /**
      * @var int

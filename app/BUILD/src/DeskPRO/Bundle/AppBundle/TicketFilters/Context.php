@@ -28,7 +28,7 @@
 
 namespace DeskPRO\Bundle\AppBundle\TicketFilters;
 
-use DeskPRO\Bundle\AppBundle\TicketFilters\Model\Context\AgentContext;
+use DeskPRO\Bundle\AppBundle\TicketFilters\Model\Agent;
 use Symfony\Component\PropertyAccess\PropertyAccess;
 
 class Context
@@ -36,7 +36,7 @@ class Context
     /**
      * @var AgentContext
      */
-    private $agentContext;
+    private $agent;
 
     /**
      * @var array
@@ -48,13 +48,13 @@ class Context
      */
     private $contextAccessor;
 
-    public function __construct(AgentContext $agentContext)
+    public function __construct(Agent $agent)
     {
-        $this->agentContext = $agentContext;
+        $this->agent = $agent;
 
         $this->context           = new \stdClass();
-        $this->context->me       = $agentContext->id;
-        $this->context->my_teams = $agentContext->teams;
+        $this->context->me       = $agent->id;
+        $this->context->my_teams = $agent->teams;
 
         $this->contextAccessor = PropertyAccess::createPropertyAccessor();
     }
@@ -64,15 +64,15 @@ class Context
      */
     public function getAgentId()
     {
-        return $this->agentContext->id;
+        return $this->agent->id;
     }
 
     /**
      * @return AgentContext
      */
-    public function getAgentContext()
+    public function getAgent()
     {
-        return $this->agentContext;
+        return $this->agent;
     }
 
     /**
@@ -86,12 +86,12 @@ class Context
     }
 
     /**
-     * @param AgentContext $agentContext
+     * @param Agent $agent
      *
      * @return Context
      */
-    public static function createContext(AgentContext $agentContext)
+    public static function createContext(Agent $agent)
     {
-        return new self($agentContext);
+        return new self($agent);
     }
 }

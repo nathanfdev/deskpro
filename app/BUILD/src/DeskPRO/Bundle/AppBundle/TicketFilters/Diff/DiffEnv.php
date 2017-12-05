@@ -28,7 +28,7 @@
 
 namespace DeskPRO\Bundle\AppBundle\TicketFilters\Diff;
 
-use DeskPRO\Bundle\AppBundle\TicketFilters\Model\Context\AgentContext;
+use DeskPRO\Bundle\AppBundle\TicketFilters\Model\Agent;
 use DeskPRO\Bundle\AppBundle\TicketFilters\Model\Filter;
 use DeskPRO\Bundle\AppBundle\TicketFilters\Terms\Terms;
 use DeskPRO\Bundle\AppBundle\TicketFilters\TicketMatcher;
@@ -48,9 +48,9 @@ class DiffEnv
     private $ticketMatcher;
 
     /**
-     * @var AgentContext[]
+     * @var Agent[]
      */
-    private $agentContexts;
+    private $agents;
 
     /**
      * @var
@@ -84,15 +84,15 @@ class DiffEnv
     /**
      * DiffEnv constructor.
      *
-     * @param AgentContext[] $agentContexts
-     * @param Filter[]       $filters
+     * @param Agent[]  $agents
+     * @param Filter[] $filters
      */
-    public function __construct(TicketMatcher $ticketMatcher, array $agentContexts, array $filters)
+    public function __construct(TicketMatcher $ticketMatcher, array $agents, array $filters)
     {
         $this->ticketMatcher = $ticketMatcher;
-        $this->agentContexts = $agentContexts;
+        $this->agents        = $agents;
         $this->filters       = $filters;
-        $this->agentPermSets = new PermSets($this->agentContexts);
+        $this->agentPermSets = new PermSets($this->agents);
     }
 
     /**
@@ -121,11 +121,11 @@ class DiffEnv
     /**
      * Gets agents grouped by their common permission sets.
      *
-     * Returns array(AgentContext[], AgentContext[], AgentContext[])
+     * Returns array(Agent[], Agent[], Agent[])
      *
      * @return array
      */
-    public function getGroupedAgentContexts()
+    public function getGroupedAgents()
     {
         return $this->agentPermSets->getSets();
     }
@@ -133,9 +133,9 @@ class DiffEnv
     /**
      * @return AgentContext[]
      */
-    public function getAgentContexts()
+    public function getAgents()
     {
-        return $this->agentContexts;
+        return $this->agents;
     }
 
     /**

@@ -29,7 +29,7 @@
 namespace DpTest\Bundle\AppBundle\TicketFilters\Diff;
 
 use DeskPRO\Bundle\AppBundle\TicketFilters\Diff\PermSets;
-use DeskPRO\Bundle\AppBundle\TicketFilters\Model\Context\AgentContext;
+use DeskPRO\Bundle\AppBundle\TicketFilters\Model\Agent;
 use DeskPRO\Component\Util\ListUtils;
 use DeskPRO\Component\Util\MapUtils;
 
@@ -39,20 +39,20 @@ class PermSetTest extends \PHPUnit_Framework_TestCase
     {
         $agentContexts = [
             //all
-            $this->makeAgentContext(1, [1, 2, 3], true, true, true),
-            $this->makeAgentContext(2, [1, 2, 3], true, true, true),
+            $this->makeAgent(1, [1, 2, 3], true, true, true),
+            $this->makeAgent(2, [1, 2, 3], true, true, true),
 
             // dep
-            $this->makeAgentContext(3, [1, 2, 3], false, true, true),
-            $this->makeAgentContext(4, [1, 2, 3], false, true, true),
+            $this->makeAgent(3, [1, 2, 3], false, true, true),
+            $this->makeAgent(4, [1, 2, 3], false, true, true),
 
             // mixed dep
-            $this->makeAgentContext(5, [1, 2, 3, 4], false, true, true),
-            $this->makeAgentContext(6, [1, 2, 3, 5], false, true, true),
+            $this->makeAgent(5, [1, 2, 3, 4], false, true, true),
+            $this->makeAgent(6, [1, 2, 3, 5], false, true, true),
 
             // dep mixed perm
-            $this->makeAgentContext(7, [1, 2, 3], false, true, false),
-            $this->makeAgentContext(8, [1, 2, 3], false, false, true),
+            $this->makeAgent(7, [1, 2, 3], false, true, false),
+            $this->makeAgent(8, [1, 2, 3], false, false, true),
         ];
 
         $set  = new PermSets($agentContexts);
@@ -95,15 +95,15 @@ class PermSetTest extends \PHPUnit_Framework_TestCase
         );
     }
 
-    private function makeAgentContext($id, $depids, $all, $other, $unassigned)
+    private function makeAgent($id, $depids, $all, $other, $unassigned)
     {
-        $agentContext                      = new AgentContext();
-        $agentContext->id                  = $id;
-        $agentContext->allowed_departments = $depids;
-        $agentContext->view_all            = $all;
-        $agentContext->view_assigned       = $other;
-        $agentContext->view_unassigned     = $unassigned;
+        $agent                      = new Agent();
+        $agent->id                  = $id;
+        $agent->allowed_departments = $depids;
+        $agent->view_all            = $all;
+        $agent->view_assigned       = $other;
+        $agent->view_unassigned     = $unassigned;
 
-        return $agentContext;
+        return $agent;
     }
 }

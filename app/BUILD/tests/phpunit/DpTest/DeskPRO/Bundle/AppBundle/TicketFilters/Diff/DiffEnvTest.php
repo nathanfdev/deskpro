@@ -32,7 +32,7 @@ use DeskPRO\Bundle\AppBundle\TicketFilters\Diff\DiffEnv;
 use DeskPRO\Bundle\AppBundle\TicketFilters\Diff\Differ;
 use DeskPRO\Bundle\AppBundle\TicketFilters\Diff\FilterOp;
 use DeskPRO\Bundle\AppBundle\TicketFilters\Diff\TicketChange;
-use DeskPRO\Bundle\AppBundle\TicketFilters\Model\Context\AgentContext;
+use DeskPRO\Bundle\AppBundle\TicketFilters\Model\Agent;
 use DeskPRO\Bundle\AppBundle\TicketFilters\Model\Entity\TicketModel;
 use DeskPRO\Bundle\AppBundle\TicketFilters\Terms\TicketBasicTermsHandler;
 use DeskPRO\Bundle\AppBundle\TicketFilters\TicketMatcher;
@@ -54,9 +54,9 @@ class DiffEnvTest extends \PHPUnit_Framework_TestCase
         ]);
 
         $agentContexts = [
-            $this->makeAgentContext(1, [1, 2, 3], true, true, true),
-            $this->makeAgentContext(2, [1, 2, 3], false, true, true),
-            $this->makeAgentContext(3, [6], false, true, true),
+            $this->makeAgent(1, [1, 2, 3], true, true, true),
+            $this->makeAgent(2, [1, 2, 3], false, true, true),
+            $this->makeAgent(3, [6], false, true, true),
         ];
 
         $filters = FilterData::getFilters();
@@ -134,15 +134,15 @@ class DiffEnvTest extends \PHPUnit_Framework_TestCase
         return $plain;
     }
 
-    private function makeAgentContext($id, $depids, $all, $other, $unassigned)
+    private function makeAgent($id, $depids, $all, $other, $unassigned)
     {
-        $agentContext                      = new AgentContext();
-        $agentContext->id                  = $id;
-        $agentContext->allowed_departments = $depids;
-        $agentContext->view_all            = $all;
-        $agentContext->view_assigned       = $other;
-        $agentContext->view_unassigned     = $unassigned;
+        $agent                      = new Agent();
+        $agent->id                  = $id;
+        $agent->allowed_departments = $depids;
+        $agent->view_all            = $all;
+        $agent->view_assigned       = $other;
+        $agent->view_unassigned     = $unassigned;
 
-        return $agentContext;
+        return $agent;
     }
 }

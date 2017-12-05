@@ -29,7 +29,7 @@
 namespace DpTest\Bundle\AppBundle\TicketFilters;
 
 use DeskPRO\Bundle\AppBundle\TicketFilters\Context;
-use DeskPRO\Bundle\AppBundle\TicketFilters\Model\Context\AgentContext;
+use DeskPRO\Bundle\AppBundle\TicketFilters\Model\Agent;
 use DeskPRO\Bundle\AppBundle\TicketFilters\Model\Entity\OrgModel;
 use DeskPRO\Bundle\AppBundle\TicketFilters\Model\Entity\PersonModel;
 use DeskPRO\Bundle\AppBundle\TicketFilters\Model\Entity\TicketModel;
@@ -85,7 +85,7 @@ class TicketMatcherTest extends \PHPUnit_Framework_TestCase
     protected function setUp()
     {
         $resolver                  = new TestValueResolver();
-        $this->agentContext        = new AgentContext();
+        $this->agentContext        = new Agent();
         $this->agentContext->id    = 1;
         $this->agentContext->teams = [1, 2, 3];
 
@@ -145,7 +145,7 @@ class TicketMatcherTest extends \PHPUnit_Framework_TestCase
         $this->ticket2->organization->labels = ['olabel3', 'olabel4'];
 
         // Agent context
-        $this->agentContext                      = new AgentContext();
+        $this->agentContext                      = new Agent();
         $this->agentContext->id                  = 2;
         $this->agentContext->allowed_departments = [1, 100];
         $this->agentContext->view_assigned       = true;
