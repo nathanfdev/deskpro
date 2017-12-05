@@ -208,7 +208,7 @@ HTML;
             // Set the auto_increment to the minimum value it needs
             $connection->query('ALTER TABLE snippets AUTO_INCREMENT = 1');
             $connection->query('DROP TABLE IF EXISTS perms');
-            $connection->query('CREATE TEMPORARY TABLE perms (`name` VARCHAR (255))');
+            $connection->query('CREATE TEMPORARY TABLE perms (`name` VARCHAR (255)) COLLATE utf8_general_ci');
             $connection->query('INSERT INTO perms (`name`) VALUES (\'agent_snippets.edit_by_others\'), (\'agent_snippets.delete_by_others\'), (\'agent_snippets.create_snippet\')');
             $connection->query(
                 'INSERT INTO permissions
