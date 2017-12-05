@@ -78,8 +78,8 @@
 		</header>
 		<article>
 			<ul class="dp-item-list">
-				<li dp-state-mark="groupName!:tickets.email_templates.list.{{ ng_var("'layout:top'|murmurhash") }}">
-					<a href="{{ ng_href('tickets.email_templates.list', "{groupName: 'layout:top'}") }}">
+				<li dp-state-mark="groupName!:emails.email_templates.list.{{ ng_var("'layout:top'|murmurhash") }}">
+					<a href="{{ ng_href('emails.email_templates.list', "{groupName: 'layout:top'}") }}">
 						<h4>
 							<i class="fa fa-folder"></i>
 							<span class="title-text">Layout (Header, footer, CSS)</span>
@@ -96,8 +96,8 @@
 		</header>
 		<article>
 			<ul class="dp-item-list">
-				<li dp-state-mark="groupName:tickets.email_templates.list.custom">
-					<a href="{{ ng_href('tickets.email_templates.list', "{groupName: 'custom'}") }}">
+				<li dp-state-mark="groupName:emails.email_templates.list.custom">
+					<a href="{{ ng_href('emails.email_templates.list', "{groupName: 'custom'}") }}">
 						<h4>
 							<i class="fa fa-folder"></i>
 							<span class="title-text">Custom Email Templates</span>
@@ -114,8 +114,8 @@
 		</header>
 		<article>
 			<ul class="dp-item-list">
-				<li ng-repeat="info in ListCtrl.templateInfo.user.groups" dp-state-mark="groupName!:tickets.email_templates.list.{{ ng_var("'user:' + info.groupId|murmurhash") }}">
-					<a href="{{ ng_href('tickets.email_templates.list', "{groupName: 'user:' + info.groupId}") }}">
+				<li ng-repeat="info in ListCtrl.templateInfo.user.groups" dp-state-mark="groupName!:emails.email_templates.list.{{ ng_var("'user:' + info.groupId|murmurhash") }}">
+					<a href="{{ ng_href('emails.email_templates.list', "{groupName: 'user:' + info.groupId}") }}">
 						<h4>
 							<i class="fa fa-folder"></i>
 							<span class="title-text">{{ ng_var('info.title') }}</span>
@@ -132,8 +132,8 @@
 		</header>
 		<article>
 			<ul class="dp-item-list">
-				<li ng-repeat="info in ListCtrl.templateInfo.agent.groups" dp-state-mark="groupName!:tickets.email_templates.list.{{ ng_var("'agent:' + info.groupId|murmurhash") }}">
-					<a href="{{ ng_href('tickets.email_templates.list', "{groupName: 'agent:' + info.groupId}") }}">
+				<li ng-repeat="info in ListCtrl.templateInfo.agent.groups" dp-state-mark="groupName!:emails.email_templates.list.{{ ng_var("'agent:' + info.groupId|murmurhash") }}">
+					<a href="{{ ng_href('emails.email_templates.list', "{groupName: 'agent:' + info.groupId}") }}">
 						<h4>
 							<i class="fa fa-folder"></i>
 							<span class="title-text">{{ ng_var('info.title') }}</span>

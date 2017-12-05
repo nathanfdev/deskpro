@@ -627,7 +627,7 @@ Download the raw email here:
 $downloadUrl
 
 View more information about this email online:
-{$hdUrl}admin/#/tickets/ticket_accounts/incoming-email/{$source->id}
+{$hdUrl}admin/#/emails/ticket_accounts/incoming-email/{$source->id}
 BODY;
             $message->setBody($body);
             $mailer->send($message);

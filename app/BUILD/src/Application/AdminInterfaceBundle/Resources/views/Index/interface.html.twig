@@ -116,16 +116,11 @@
                 {{ nav.list_item_group_end() }}
                 {{ nav.list_item_group(phrase('adm.general.apps_tickets'), 'fa-envelope', '', 'tickets') }}
                     {% if app.getSetting('experimental_admin_features') %}
-                        {{ nav.list_subitem('Email triggers', ng_href('tickets.ticket_accounts'), 'tickets.ticket_accounts', 'fa-envelope') }}
-                        {{ nav.list_subitem('SMS triggers', ng_href('tickets.channel_sms'), 'tickets.ticket_accounts', 'fa-group') }}
-                        {{ nav.list_subitem('Facebook triggers', ng_href('tickets.channel_facebook'), 'tickets.ticket_accounts', 'fa-group') }}
+                        {{ nav.list_subitem('SMS triggers', ng_href('tickets.channel_sms'), 'tickets.channel_sms', 'fa-group') }}
+                        {{ nav.list_subitem('Facebook triggers', ng_href('tickets.channel_facebook'), 'tickets.channel_facebook', 'fa-group') }}
                     {% endif %}
 
                     {{ nav.list_subitem('Departments', ng_href('tickets.ticket_deps'), 'tickets.ticket_deps', 'fa-briefcase') }}
-
-                    {%  if not app.getSetting('experimental_admin_features') %}
-                        {{ nav.list_subitem('Email Accounts', ng_href('tickets.ticket_accounts'), 'tickets.ticket_accounts', 'fa-envelope') }}
-                    {% endif %}
 
                     {{ nav.list_subitem('Statuses', ng_href('tickets.statuses'), 'tickets.statuses', 'fa-ticket') }}
                     {{ nav.list_subitem('Urgency', ng_href('tickets.urgency'), 'tickets.urgency', 'fa-exclamation') }}
@@ -146,20 +141,23 @@
                     {{ nav.list_subitem('Time Log & Billing Settings', ng_href('tickets.timelog_billing_settings'), 'tickets.timelog_billing_settings', 'fa-cog') }}
                     {{ nav.list_subitem('Time Log & Billing Fields', ng_href('tickets.timelog_billing_fields'), 'tickets.timelog_billing_fields', 'fa-terminal') }}
 
-                    {% if app.hasBeta('email_templates') %}
-                        {{ nav.list_subitem('Email Templates (legacy)', ng_href('tickets.email_templates_legacy'), 'tickets.email_templates_legacy', 'fa-file-text') }}
-                    {%  else %}
-                        {{ nav.list_subitem('Email Templates', ng_href('tickets.email_templates'), 'tickets.email_templates', 'fa-file-text') }}
-                    {%  endif %}
                     {{ nav.list_subitem('Forward Settings', ng_href('tickets.fwd_settings'), 'tickets.fwd_settings', 'fa-mail-forward') }}
                     {{ nav.list_subitem(phrase('adm.problems.title'), ng_href('tickets.problems'), 'tickets.problems', 'fa-bullhorn') }}
                     {{ nav.list_subitem('Settings', ng_href('tickets.settings'), 'tickets.settings', 'fa-cog') }}
                 {{ nav.list_item_group_end() }}
-                {% if app.hasBeta('email_templates') %}
-                    {{ nav.list_item_group(phrase('adm.general.apps_emails'), 'fa-envelope', '', 'emails') }}
+                {{ nav.list_item_group(phrase('adm.general.apps_emails'), 'fa-envelope-o', '', 'emails') }}
+                    {%  if not app.getSetting('experimental_admin_features') %}
+                        {{ nav.list_subitem('Email Accounts', ng_href('emails.ticket_accounts'), 'emails.ticket_accounts', 'fa-envelope-o') }}
+                    {%  else %}
+                        {{ nav.list_subitem('Email triggers', ng_href('emails.ticket_accounts'), 'emails.ticket_accounts', 'fa-envelope-o') }}
+                    {% endif %}
+                    {% if app.hasBeta('email_templates') %}
                         {{ nav.list_subitem('Templates Editor', ng_href('emails.templates_editor'), 'emails.templates_editor', 'fa-file-text') }}
-                    {{ nav.list_item_group_end() }}
-                {% endif %}
+                        {{ nav.list_subitem('Email Templates (legacy)', ng_href('emails.email_templates_legacy'), 'emails.email_templates_legacy', 'fa-file-text') }}
+                    {%  else %}
+                        {{ nav.list_subitem('Email Templates', ng_href('emails.email_templates'), 'emails.email_templates', 'fa-file-text') }}
+                    {%  endif %}
+                {{ nav.list_item_group_end() }}
                 {{ nav.list_item_group(phrase('adm.general.apps_crm'), 'fa-users', '', 'crm') }}
                     {{ nav.list_subitem('Auth & SSO', ng_href('crm.usersources'), 'crm.usersources', 'fa-key') }}
                     {{ nav.list_subitem('User Groups', ng_href('crm.groups'), 'crm.groups', 'fa-group') }}

@@ -6,8 +6,8 @@ define [
   routeModify = {
     "home":                           { route: {controller: 'Admin_Cloud_Main_Ctrl_Home'} }
     "license":                        { route: {controller: 'Admin_Cloud_License_Ctrl_License'} }
-    "tickets.ticket_accounts.create": { route: {controller: 'Admin_Cloud_TicketAccounts_Ctrl_Edit'} }
-    "tickets.ticket_accounts.edit":   { route: {controller: 'Admin_Cloud_TicketAccounts_Ctrl_Edit'} }
+    "emails.ticket_accounts.create": { route: {controller: 'Admin_Cloud_TicketAccounts_Ctrl_Edit'} }
+    "emails.ticket_accounts.edit":   { route: {controller: 'Admin_Cloud_TicketAccounts_Ctrl_Edit'} }
     "dev_ui":                         { cancel: true }
     "dev_ui_table":                   { cancel: true }
     "twitter":                        { cancel: true }
