@@ -110,6 +110,12 @@ class Differ
                         } elseif (!$matchBefore && $matchAfter) {
                             $filterOp->addAddAgentId($agentContext->getAgentId());
                         }
+                        if ($matchBefore) {
+                            $filterOp->addBeforeMatchAgentId($agentContext->getAgentId());
+                        }
+                        if ($matchAfter) {
+                            $filterOp->addAfterMatchAgentId($agentContext->getAgentId());
+                        }
                     }
 
                 //------------------------------
@@ -130,18 +136,24 @@ class Differ
                     }
 
                     // Apply this result to all agents in the group
-                    foreach ($agentContexts as $agent) {
+                    foreach ($agentContexts as $agentContext) {
                         if ($matchBefore && !$matchAfter) {
-                            $filterOp->addDelAgentId($agent->getAgentId());
+                            $filterOp->addDelAgentId($agentContext->getAgentId());
                         } elseif (!$matchBefore && $matchAfter) {
-                            $filterOp->addAddAgentId($agent->getAgentId());
+                            $filterOp->addAddAgentId($agentContext->getAgentId());
+                        }
+                        if ($matchBefore) {
+                            $filterOp->addBeforeMatchAgentId($agentContext->getAgentId());
+                        }
+                        if ($matchAfter) {
+                            $filterOp->addAfterMatchAgentId($agentContext->getAgentId());
                         }
                     }
                 }
             }
 
             if (!empty($filterOp->getAddAgentIds()) || !empty($filterOp->getDelAgentIds())) {
-                $filterOps[] = $filterOp;
+                $filterOps[$filter->id] = $filterOp;
             }
         }
 

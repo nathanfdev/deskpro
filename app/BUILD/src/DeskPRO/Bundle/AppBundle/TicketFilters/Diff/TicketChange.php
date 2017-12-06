@@ -116,6 +116,14 @@ class TicketChange
     }
 
     /**
+     * @return array
+     */
+    public function getNewFollowers()
+    {
+        return array_diff($this->ticketB->followers, $this->ticketA->followers);
+    }
+
+    /**
      * Is there a change that might affect permissions?
      *
      * @return bool
