@@ -28,20 +28,15 @@
 
 namespace DeskPRO\Bundle\PortalBundle\EventListener;
 
-use Application\DeskPRO\Entity\Brand;
 use Application\DeskPRO\Entity\Person;
 use Application\DeskPRO\NewSettings\SettingsResolver;
 use DeskPRO\Bundle\AppBundle\HttpKernel\SkipLowRequestInterface;
-use DeskPRO\Bundle\AppBundle\Settings\WidgetSettingsResolver;
-use DeskPRO\Bundle\PortalBundle\Brand\BrandContainer;
 use DeskPRO\Bundle\PortalBundle\Brand\BrandStack;
 use DeskPRO\Bundle\PortalBundle\Mode\PortalModeStorage;
 use Psr\Log\LoggerInterface;
 use Symfony\Bundle\FrameworkBundle\Templating\EngineInterface;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
-use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
-use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpKernel\Event\GetResponseEvent;
 use Symfony\Component\HttpKernel\KernelEvents;
 use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorageInterface;
@@ -51,28 +46,6 @@ use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorageInt
  */
 class DisabledPortalListener implements EventSubscriberInterface, SkipLowRequestInterface
 {
-    public static $whitelistedChatWidgetRouteNames = [
-        'deskpro_portal_api_chat_createnewchat',
-        'deskpro_portal_api_chat_regenerateemailvalidationcode',
-        'deskpro_portal_api_chat_validateemail',
-        'deskpro_portal_api_chat_pollingchat',
-        'deskpro_portal_api_chat_sendmessage',
-        'deskpro_portal_api_chat_ackmessages',
-        'deskpro_portal_api_chat_usertyping',
-        'deskpro_portal_api_chat_sendtranscriptinfo',
-        'deskpro_portal_api_chat_toggleshouldsendtranscript',
-        'deskpro_portal_api_chat_endchat',
-        'deskpro_portal_api_chat_reopenchat',
-        'deskpro_portal_api_chat_feedback',
-        'deskpro_portal_api_chatdepartments_getchatdepartments',
-        'deskpro_portal_api_chat_getcustomfields',
-        'deskpro_portal_api_people_getonlineagents',
-        'deskpro_portal_api_auth_getsession',
-        'deskpro_portal_api_widget_getwidgetoptions',
-        'portal_api_lang_widget_phrases',
-        'portal_api_ticket_new',
-    ];
-
     /**
      * @var SettingsResolver
      */
@@ -152,6 +125,7 @@ class DisabledPortalListener implements EventSubscriberInterface, SkipLowRequest
             || $this->isAdminPreview()
             || $this->isAdminPreviewApiCall($event)
             || $this->isFavicon($event)
+            || $this->isPortalApi($event)
         ) {
             // we only make this decision on master requests. sub requests are never "offline".
             // whitlisted routes obviously should pass
@@ -165,18 +139,7 @@ class DisabledPortalListener implements EventSubscriberInterface, SkipLowRequest
         $brandPortalEnabled = (bool) $brand->getSetting('core.iface_portal', true);
 
         if (!$brandPortalEnabled) {
-            if ($this->isWhiteListedChatRoute($event->getRequest(), $brand)) {
-                return;
-            }
-
-            if (strpos($event->getRequest()->getPathInfo(), '/portal/api') === 0) {
-                $event->setResponse(new JsonResponse([
-                    'code'    => Response::HTTP_FORBIDDEN,
-                    'message' => 'The portal has been disabled.',
-                ], Response::HTTP_FORBIDDEN));
-            } else {
-                $event->setResponse($this->portalTpl->renderResponse('Theme:Portal:portal-disabled.html.twig'));
-            }
+            $event->setResponse($this->portalTpl->renderResponse('Theme:Portal:portal-disabled.html.twig'));
         }
     }
 
@@ -193,26 +156,6 @@ class DisabledPortalListener implements EventSubscriberInterface, SkipLowRequest
         $routeName = $request->attributes->get('_route');
 
         return in_array($routeName, $routes);
-    }
-
-    /**
-     * @param Request              $request
-     * @param Brand|BrandContainer $brand
-     *
-     * @return bool
-     */
-    protected function isWhiteListedChatRoute(Request $request, BrandContainer $brand)
-    {
-        if (
-            $brand->getSetting(WidgetSettingsResolver::ENABLED_ON_PORTAL)
-            && $brand->getSetting(WidgetSettingsResolver::CHAT_ENABLED)
-        ) {
-            if ($this->isWhitelisted($request, static::$whitelistedChatWidgetRouteNames)) {
-                return true;
-            }
-        }
-
-        return false;
     }
 
     /**
@@ -246,5 +189,15 @@ class DisabledPortalListener implements EventSubscriberInterface, SkipLowRequest
     private function isFavicon(GetResponseEvent $event)
     {
         return $event->getRequest()->getPathInfo() === '/favicon.ico';
+    }
+
+    /**
+     * @param GetResponseEvent $event
+     *
+     * @return bool
+     */
+    private function isPortalApi(GetResponseEvent $event)
+    {
+        return strpos($event->getRequest()->getPathInfo(), '/portal/api') === 0;
     }
 }
