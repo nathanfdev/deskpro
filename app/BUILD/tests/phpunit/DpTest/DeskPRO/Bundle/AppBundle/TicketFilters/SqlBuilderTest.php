@@ -28,11 +28,11 @@
 
 namespace DpTest\Bundle\AppBundle\TicketFilters;
 
-use DeskPRO\Bundle\AppBundle\TicketFilters\QueryBuilder\QueryBuilder;
-use DeskPRO\Bundle\AppBundle\TicketFilters\QueryBuilder\QueryCondition;
+use DeskPRO\Bundle\AppBundle\TicketFilters\SqlBuilder\QueryBuilder;
+use DeskPRO\Bundle\AppBundle\TicketFilters\SqlBuilder\QueryCondition;
 use DpTest\ApiTestCase;
 
-class QueryBuilderTest extends ApiTestCase
+class SqlBuilderTest extends ApiTestCase
 {
     public function test_plain_part()
     {

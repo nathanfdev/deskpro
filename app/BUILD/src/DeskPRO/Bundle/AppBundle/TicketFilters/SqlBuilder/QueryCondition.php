@@ -26,7 +26,7 @@
  * ~ Thanks, Everyone at Team DeskPRO
  */
 
-namespace DeskPRO\Bundle\AppBundle\TicketFilters\QueryBuilder;
+namespace DeskPRO\Bundle\AppBundle\TicketFilters\SqlBuilder;
 
 /**
  * A QueryCondition represents a self-contained part of a query for use in a filter.

@@ -28,9 +28,9 @@
 
 namespace DeskPRO\Bundle\AppBundle\TicketFilters;
 
-use DeskPRO\Bundle\AppBundle\TicketFilters\QueryBuilder\QueryBuilder;
-use DeskPRO\Bundle\AppBundle\TicketFilters\QueryBuilder\QueryCondition;
-use DeskPRO\Bundle\AppBundle\TicketFilters\QueryBuilder\QueryConditionGroup;
+use DeskPRO\Bundle\AppBundle\TicketFilters\SqlBuilder\QueryBuilder;
+use DeskPRO\Bundle\AppBundle\TicketFilters\SqlBuilder\QueryCondition;
+use DeskPRO\Bundle\AppBundle\TicketFilters\SqlBuilder\QueryConditionGroup;
 use DeskPRO\Component\FilterQueryLanguage\Query\Node\Term;
 use DeskPRO\Component\FilterQueryLanguage\Query\Node\TermGroup;
 use DeskPRO\Component\FilterQueryLanguage\Query\Query;

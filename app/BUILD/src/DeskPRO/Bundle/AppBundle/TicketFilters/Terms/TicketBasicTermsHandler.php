@@ -31,7 +31,7 @@ namespace DeskPRO\Bundle\AppBundle\TicketFilters\Terms;
 use DeskPRO\Bundle\AppBundle\TicketFilters\Context;
 use DeskPRO\Bundle\AppBundle\TicketFilters\Model\Entity\TicketModel;
 use DeskPRO\Bundle\AppBundle\TicketFilters\OptValue\OptValue;
-use DeskPRO\Bundle\AppBundle\TicketFilters\QueryBuilder\QueryCondition;
+use DeskPRO\Bundle\AppBundle\TicketFilters\SqlBuilder\QueryCondition;
 use DeskPRO\Component\FilterQueryLanguage\Query\Node\Term;
 
 class TicketBasicTermsHandler extends AbstractTermsHandler

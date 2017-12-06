@@ -40,7 +40,7 @@ use DeskPRO\Bundle\AppBundle\TicketFilters\TicketMatcher;
 use DeskPRO\Bundle\AppBundle\TicketFilters\ValueResolver;
 use DpTest\Bundle\AppBundle\TicketFilters\Diff\FilterData;
 
-require __DIR__.'/../Diff/FilterData.php';
+require_once __DIR__.'/../Diff/FilterData.php';
 
 class NotifyListBuilderTest extends \PHPUnit_Framework_TestCase
 {

@@ -39,7 +39,7 @@ use DeskPRO\Bundle\AppBundle\TicketFilters\TicketMatcher;
 use DeskPRO\Bundle\AppBundle\TicketFilters\ValueResolver;
 use DeskPRO\Component\Util\ListUtils;
 
-require __DIR__.'/FilterData.php';
+require_once __DIR__.'/FilterData.php';
 
 class DiffEnvTest extends \PHPUnit_Framework_TestCase
 {

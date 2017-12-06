@@ -26,7 +26,7 @@
  * ~ Thanks, Everyone at Team DeskPRO
  */
 
-namespace DeskPRO\Bundle\AppBundle\TicketFilters\QueryBuilder;
+namespace DeskPRO\Bundle\AppBundle\TicketFilters\SqlBuilder;
 
 use DeskPRO\Component\Util\MapUtils;
 

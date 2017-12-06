@@ -118,7 +118,7 @@ class FilterOp
      */
     public function getAddAgentIds()
     {
-        return $this->addAgentIds;
+        return array_values($this->addAgentIds);
     }
 
     /**
@@ -126,7 +126,7 @@ class FilterOp
      */
     public function getDelAgentIds()
     {
-        return $this->delAgentIds;
+        return array_values($this->delAgentIds);
     }
 
     /**
@@ -134,7 +134,7 @@ class FilterOp
      */
     public function getAfterMatchAgentIds()
     {
-        return $this->afterMatchAgentIds;
+        return array_values($this->afterMatchAgentIds);
     }
 
     /**
@@ -142,7 +142,7 @@ class FilterOp
      */
     public function getBeforeMatchAgentIds()
     {
-        return $this->beforeMatchAgentIds;
+        return array_values($this->beforeMatchAgentIds);
     }
 
     /**
