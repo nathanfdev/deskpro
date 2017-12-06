@@ -49,7 +49,7 @@ Feature: /user_chats endpoint
     Then the JSON node "data[0].id" should be equal to "{c1}"
     Then the JSON node "data[1].id" should be equal to "{c4}"
 
-  Scenario: I filter by status 'open'
+  Scenario: I filter by status 'ended'
     When I send a GET request to "/api/v2/user_chats?status=ended&order_by=id&order_dir=asc"
     Then the JSON node "data" should have 2 elements
     Then the JSON node "data[0].id" should be equal to "{c2}"
