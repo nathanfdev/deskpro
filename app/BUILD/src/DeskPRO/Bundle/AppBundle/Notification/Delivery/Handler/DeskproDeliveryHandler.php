@@ -34,6 +34,7 @@ use DeskPRO\Bundle\AppBundle\Notification\Message\MessageInterface;
 use DeskPRO\Bundle\AppBundle\Notification\Message\Notification;
 use DeskPRO\Bundle\AppBundle\Util\HttpClient;
 use DpSys\LowError\SystemErrorHandler;
+use Firebase\JWT\JWT;
 use GuzzleHttp\RequestOptions;
 
 /**
@@ -140,6 +141,6 @@ class DeskproDeliveryHandler extends AbstractDeliveryHandler
      */
     protected function triggerBatch($chunk)
     {
-        return $this->client->post('/send', [RequestOptions::JSON => ['jwt' => \JWT::encode($chunk, $this->secret)]]);
+        return $this->client->post('/send', [RequestOptions::JSON => ['jwt' => JWT::encode($chunk, $this->secret)]]);
     }
 }

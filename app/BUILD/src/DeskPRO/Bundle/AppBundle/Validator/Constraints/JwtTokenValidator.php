@@ -28,6 +28,8 @@
 
 namespace DeskPRO\Bundle\AppBundle\Validator\Constraints;
 
+use Firebase\JWT\ExpiredException;
+use Firebase\JWT\JWT;
 use Symfony\Component\Validator\Constraint;
 use Symfony\Component\Validator\ConstraintValidator;
 use Symfony\Component\Validator\Exception\UnexpectedTypeException;
@@ -61,11 +63,19 @@ class JwtTokenValidator extends ConstraintValidator
         }
 
         try {
-            \JWT::decode(
+            JWT::decode(
                 $value,
                 $constraint->secret,
-                $constraint->algo ? [$constraint->algo] : array_keys(\JWT::$supported_algs)
+                $constraint->algo ? [$constraint->algo] : array_keys(JWT::$supported_algs)
             );
+        } catch (ExpiredException $e) {
+            /** @var \Symfony\Component\Validator\Context\ExecutionContext $context */
+            $context = $this->context;
+            $context
+                ->buildViolation($constraint->expiredMessage)
+                ->setCode(JwtToken::EXPIRED_JWT_TOKEN)
+                ->addViolation()
+            ;
         } catch (\Exception $e) {
             /** @var \Symfony\Component\Validator\Context\ExecutionContext $context */
             $context = $this->context;

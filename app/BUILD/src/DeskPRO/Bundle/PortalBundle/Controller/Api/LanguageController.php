@@ -168,6 +168,7 @@ class LanguageController extends AbstractApiController
             'portal.chat.user_is_blocked',
             'portal.chat.missing_jwt_token',
             'portal.chat.invalid_jwt_token',
+            'portal.chat.expired_jwt_token',
             'portal.widget.new-ticket-title',
             'portal.widget.label_add_attachment',
             'portal.widget.online_agents',

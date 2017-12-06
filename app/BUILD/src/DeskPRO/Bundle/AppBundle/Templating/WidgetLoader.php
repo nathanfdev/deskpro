@@ -29,10 +29,13 @@
 namespace DeskPRO\Bundle\AppBundle\Templating;
 
 use Application\DeskPRO\Entity\Brand;
+use Application\DeskPRO\Entity\Person;
 use DeskPRO\Bundle\AppBundle\AppEnv\AppEnvInterface;
 use DeskPRO\Bundle\AppBundle\Settings\WidgetSettingsResolver;
+use Firebase\JWT\JWT;
 use JMS\Serializer\Serializer;
 use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorage;
 
 /**
  * Class WidgetLoader.
@@ -55,17 +58,28 @@ class WidgetLoader
     private $serializer;
 
     /**
+     * @var TokenStorage
+     */
+    private $tokenStorage;
+
+    /**
      * Constructor.
      *
      * @param AppEnvInterface        $appEnv
      * @param WidgetSettingsResolver $settingsResolver
      * @param Serializer             $serializer
+     * @param TokenStorage           $tokenStorage
      */
-    public function __construct(AppEnvInterface $appEnv, WidgetSettingsResolver $settingsResolver, Serializer $serializer)
-    {
+    public function __construct(
+        AppEnvInterface        $appEnv,
+        WidgetSettingsResolver $settingsResolver,
+        Serializer             $serializer,
+        TokenStorage           $tokenStorage
+    ) {
         $this->appEnv           = $appEnv;
         $this->settingsResolver = $settingsResolver;
         $this->serializer       = $serializer;
+        $this->tokenStorage     = $tokenStorage;
     }
 
     /**
@@ -91,6 +105,20 @@ class WidgetLoader
             $options = array_merge($options, [
                 'noFetchOptions' => true,
             ]);
+
+            // add jwt token
+            if ($this->settingsResolver->isJwtRequired($brand)) {
+                $expire  = new \DateTime('+1 hour');
+                $secret  = $this->settingsResolver->getJwtSecret($brand);
+                $token   = $this->tokenStorage->getToken();
+                $user    = $token ? $token->getUser() : null;
+                $payload = [
+                    'person_id' => $user instanceof Person ? $user->getId() : null,
+                    'exp'       => $expire->getTimestamp(),
+                ];
+
+                $options['jwt'] = JWT::encode($payload, $secret);
+            }
         } else {
             $options = [];
         }

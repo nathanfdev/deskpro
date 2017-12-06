@@ -1,18 +1,42 @@
-<?php namespace DeskPRO\Bundle\ApiBundle\Controller\Apps;
+<?php
+
+/*
+ * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
+ * a British company located in London, England.
+ *
+ * All source code and content Copyright (c) 2017, DeskPRO Ltd.
+ *
+ * The license agreement under which this software is released
+ * can be found at https://www.deskpro.com/eula/
+ *
+ * By using this software, you acknowledge having read the license
+ * and agree to be bound thereby.
+ *
+ * Please note that DeskPRO is not free software. We release the full
+ * source code for our software because we trust our users to pay us for
+ * the huge investment in time and energy that has gone into both creating
+ * this software and supporting our customers. By providing the source code
+ * we preserve our customers' ability to modify, audit and learn from our
+ * work. We have been developing DeskPRO since 2001, please help us make it
+ * another decade.
+ *
+ * Like the work you see? Think you could make it better? We are always
+ * looking for great developers to join us: http://www.deskpro.com/jobs/
+ *
+ * ~ Thanks, Everyone at Team DeskPRO
+ */
+
+namespace DeskPRO\Bundle\ApiBundle\Controller\Apps;
 
 use Application\DeskPRO\DependencyInjection\DeskproContainer;
-use DeskPRO\Bundle\ApiBundle\ApiDoc\Annotation\ApiDoc;
 use DeskPRO\Bundle\ApiBundle\Controller\BaseController;
 use DeskPRO\Bundle\AppBundle\Annotation\ActionPermissions\Annotation\ApiModes;
 use DeskPRO\Bundle\AppBundle\Annotation\ActionPermissions\Annotation\ApiUserContext;
 use DeskPRO\Bundle\AppBundle\Entity\AppStore\AppInstance;
-use DeskPRO\Bundle\AppBundle\Entity\AppStore\AppState;
-use DeskPRO\Bundle\AppBundle\Entity\Repository\AppStateRepository;
 use DeskPRO\Bundle\AppStoreBundle\Infrastructure\Security\OauthProviderConnectionLoader;
 use DeskPRO\Bundle\AppStoreBundle\Infrastructure\Security\SerializedOauth2Connection;
+use Firebase\JWT\JWT;
 use FOS\RestBundle\Controller\Annotations as Rest;
-use League\OAuth2\Client\Token\AccessToken;
-use Psr\Http\Message\ResponseInterface;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\ParamConverter;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Request;
@@ -30,34 +54,38 @@ class Oauth2ProxyController extends BaseController
     /**
      * @param array $state
      * @param $secret
+     *
      * @return null|string
      */
-    static public function encode($state, $secret)
+    public static function encode($state, $secret)
     {
         if (empty($secret)) {
             return null;
         }
 
-        $token = \JWT::encode($state, 'oauth:' . $secret, 'HS512');
+        $token = JWT::encode($state, 'oauth:'.$secret, 'HS512');
+
         return $token;
     }
 
     /**
      * @param string $token
      * @param string $secret
+     *
      * @return array|null
      */
-    static public function decode($token, $secret)
+    public static function decode($token, $secret)
     {
         if (empty($secret)) {
             return null;
         }
 
         try {
-            $state = (array) \JWT::decode($token, 'oauth:' . $secret, ['HS512']);
+            $state = (array) JWT::decode($token, 'oauth:'.$secret, ['HS512']);
             if (empty($state)) {
                 return null;
             }
+
             return $state;
         } catch (\UnexpectedValueException $e) {
             return null;
@@ -66,6 +94,7 @@ class Oauth2ProxyController extends BaseController
 
     /**
      * @param DeskproContainer $container
+     *
      * @return null|string
      */
     private function readJWTSecret(DeskproContainer $container)
@@ -82,11 +111,13 @@ class Oauth2ProxyController extends BaseController
      * @ParamConverter("provider", class="AppStoreBundle:Infrastructure\Security\OauthProviderConnectionLoader", converter="DeskPRO\Bundle\AppStoreBundle\ParamConverter\OauthProviderConnectionLoaderConverter")
      *
      * @Rest\Get("/{provider}/authorize")
+     *
      * @param OauthProviderConnectionLoader|null $provider
-     * @param Request $request
+     * @param Request                            $request
+     *
      * @return RedirectResponse|Response
      */
-    public function authorizeAction( OauthProviderConnectionLoader $provider = null, Request $request)
+    public function authorizeAction(OauthProviderConnectionLoader $provider = null, Request $request)
     {
         // check that we have an application
         $applicationId = $request->query->get('applicationId', null);
@@ -96,7 +127,7 @@ class Oauth2ProxyController extends BaseController
 
         // check that we can post back messages. if we can not then, we show html errors
         $callbackMethod = $request->query->get('callbackMethod', 'postMessage');
-        $callbackUrl = $request->query->get('callbackUrl');
+        $callbackUrl    = $request->query->get('callbackUrl');
         if ($callbackMethod !== 'postMessage' || empty($callbackUrl)) {
             return new Response('Invalid callback method', 400);
         }
@@ -126,18 +157,19 @@ class Oauth2ProxyController extends BaseController
 
         if ($clientProfile === 'web-server') {
             $proxyState = [
-                'appState' => $request->query->get('state', null),
+                'appState'       => $request->query->get('state', null),
                 'callbackMethod' => $callbackMethod,
-                'callbackUrl' => $request->query->get('callbackUrl'),
+                'callbackUrl'    => $request->query->get('callbackUrl'),
             ];
 
             $secret = $this->readJWTSecret($this->getContainer());
-            $state = Oauth2ProxyController::encode($proxyState, $secret);
+            $state  = self::encode($proxyState, $secret);
             if (empty($state)) {
                 return $errorResponseBuilder->withErrorType('failed to secure the request')->buildPostMessage();
             }
 
-            $authorizationUrl = $connection->getAuthorizationUrl([ 'state' => $state ]);
+            $authorizationUrl = $connection->getAuthorizationUrl(['state' => $state]);
+
             return new RedirectResponse($authorizationUrl);
         }
 
@@ -149,21 +181,23 @@ class Oauth2ProxyController extends BaseController
      * @ParamConverter("provider", class="AppStoreBundle:Infrastructure\Security\OauthProviderConnectionLoader", converter="DeskPRO\Bundle\AppStoreBundle\ParamConverter\OauthProviderConnectionLoaderConverter")
      *
      * @Rest\Get("/{provider}/grant-access/{application}")
-     * @param AppInstance $application
+     *
+     * @param AppInstance                        $application
      * @param OauthProviderConnectionLoader|null $provider
-     * @param Request $request
+     * @param Request                            $request
+     *
      * @return Response
      */
-    public function grantAccessAction( AppInstance $application = null, OauthProviderConnectionLoader $provider = null, Request $request)
+    public function grantAccessAction(AppInstance $application = null, OauthProviderConnectionLoader $provider = null, Request $request)
     {
         if (is_null($application) || empty($provider)) {
             return new Response('Connection not found', 404);
         }
 
         // let's try and decode the state first so we can postMessage back an error
-        $state = $request->query->get('state', null);
-        $secret = Oauth2ProxyController::readJWTSecret($this->getContainer());
-        $proxyState = Oauth2ProxyController::decode($state, $secret);
+        $state      = $request->query->get('state', null);
+        $secret     = self::readJWTSecret($this->getContainer());
+        $proxyState = self::decode($state, $secret);
         if (empty($proxyState)) {
             return new Response('Invalid oauth request', 400);
         }
@@ -186,8 +220,9 @@ class Oauth2ProxyController extends BaseController
             }
 
             try {
-                $code = $request->query->get('code');
+                $code  = $request->query->get('code');
                 $token = $connection->getAccessToken('authorization_code', ['code' => $code]);
+
                 return OauthResponseBuilder::forResponseType('token')
                     ->withApplicationState($proxyState['appState'])
                     ->withOauth2Token($token)

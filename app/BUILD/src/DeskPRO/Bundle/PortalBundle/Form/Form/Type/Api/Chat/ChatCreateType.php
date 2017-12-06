@@ -40,6 +40,7 @@ use DeskPRO\Bundle\AppBundle\Validator\Constraints as AppAssert;
 use DeskPRO\Bundle\PortalBundle\Brand\BrandStack;
 use Doctrine\ORM\EntityManager;
 use Doctrine\ORM\EntityRepository;
+use Firebase\JWT\JWT;
 use Orb\Util\Arrays;
 use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 use Symfony\Component\Form\AbstractType;
@@ -264,7 +265,7 @@ class ChatCreateType extends AbstractType
             try {
                 $brand      = $this->brandStack->getActive()->getBrand();
                 $jwtSecret  = $this->settingsResolver->getJwtSecret($brand);
-                $decodedJwt = \JWT::decode($data['jwt'], $jwtSecret, array_keys(\JWT::$supported_algs));
+                $decodedJwt = JWT::decode($data['jwt'], $jwtSecret, array_keys(JWT::$supported_algs));
                 $decodedJwt = Arrays::fromStdClass($decodedJwt);
 
                 // set person email from the jwt token
@@ -315,9 +316,17 @@ class ChatCreateType extends AbstractType
      */
     public function onPostSubmit(FormEvent $event)
     {
+        $form = $event->getForm();
+
         /** @var ChatConversation $conversation */
         $conversation = $event->getData();
-        $conversation->setVisitorId($event->getForm()->getConfig()->getOption('visitor_id'));
+        $conversation->setVisitorId($form->getConfig()->getOption('visitor_id'));
+
+        // if a jwt token was provided, then it means the person is already validated
+        // set session person as well
+        if ($conversation->getPerson() && $conversation->getSession() && $form->get('jwt')->getData()) {
+            $conversation->getSession()->setPerson($conversation->getPerson());
+        }
     }
 
     /**

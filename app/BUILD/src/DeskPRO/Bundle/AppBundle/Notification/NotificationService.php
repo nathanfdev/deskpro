@@ -39,6 +39,7 @@ use DeskPRO\Bundle\AppBundle\Serializer\Model\Notifications\NotificationClient;
 use DeskPRO\Bundle\AppBundle\Serializer\Model\Notifications\NotificationConfiguration;
 use DeskPRO\Component\Util\RandUtils;
 use Doctrine\ORM\EntityManager;
+use Firebase\JWT\JWT;
 use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorageInterface;
 
 /**
@@ -226,7 +227,7 @@ class NotificationService
     {
         $user = $this->tokenStorage->getToken()->getUser();
 
-        return \JWT::encode(
+        return JWT::encode(
             [
                 'id' => $user instanceof Person ? $user->getId() : 0,
             ],
