@@ -32,8 +32,24 @@ namespace DeskPRO\Bundle\AppBundle\TicketFilters\SqlBuilder;
  * A QueryCondition represents a self-contained part of a query for use in a filter.
  * Variables and table aliases have a "local name" that are used within conditional
  * clauses (e.g. WHERE or ON) which are re-named when combined back into the main query.
+ *
+ * Notes:
+ * - Variables must be used as named params. Positional params aren't supported.
+ * - The syntax for referring to tables (e.g. joins) is special in this component.
+ *   Join aliases must be surrounded by curlies as demonstrated below. The special
+ *   alias {from} refers to the base table (the implementation may also define a
+ *   default alias, e.g. {ticket} and {from} could be the same thing).
+ *
+ * <code>
+ * $q->setParam('foo', 123);
+ * $a->addUniqueJoin('ticket', 'ticket_participants', 'part', '{part}.ticket_id = {from}.id');
+ * $q->setWhere('{part}.agent_id = :foo');
+ * </code>
+ *
+ * When the QueryCondition is compiled into a real query, the param name and unique joins are namespaced so other
+ * parts using the same params don't conflict.
  */
-class QueryCondition
+class SqlCondition
 {
     const JOIN_LEFT  = 'LEFT';
     const JOIN_RIGHT = 'RIGHT';

@@ -28,9 +28,9 @@
 
 namespace DeskPRO\Bundle\AppBundle\TicketFilters;
 
-use DeskPRO\Bundle\AppBundle\TicketFilters\SqlBuilder\QueryBuilder;
-use DeskPRO\Bundle\AppBundle\TicketFilters\SqlBuilder\QueryCondition;
-use DeskPRO\Bundle\AppBundle\TicketFilters\SqlBuilder\QueryConditionGroup;
+use DeskPRO\Bundle\AppBundle\TicketFilters\SqlBuilder\SqlBuilder;
+use DeskPRO\Bundle\AppBundle\TicketFilters\SqlBuilder\SqlCondition;
+use DeskPRO\Bundle\AppBundle\TicketFilters\SqlBuilder\SqlConditionGroup;
 use DeskPRO\Component\FilterQueryLanguage\Query\Node\Term;
 use DeskPRO\Component\FilterQueryLanguage\Query\Node\TermGroup;
 use DeskPRO\Component\FilterQueryLanguage\Query\Query;
@@ -60,7 +60,7 @@ class TicketSqlMatcher extends AbstractMatcher
      * @param Query   $query
      * @param Context $context
      *
-     * @return QueryBuilder
+     * @return SqlBuilder
      */
     public function getCountQueryBuilder(Query $query, Context $context)
     {
@@ -74,7 +74,7 @@ class TicketSqlMatcher extends AbstractMatcher
      * @param Query   $query
      * @param Context $context
      *
-     * @return QueryBuilder
+     * @return SqlBuilder
      */
     public function getIdsQueryBuilder(Query $query, Context $context)
     {
@@ -88,11 +88,11 @@ class TicketSqlMatcher extends AbstractMatcher
      * @param Query   $query
      * @param Context $context
      *
-     * @return QueryBuilder
+     * @return SqlBuilder
      */
     public function buildQueryBuilder(Query $query, Context $context)
     {
-        $qb = new QueryBuilder($this->db);
+        $qb = new SqlBuilder($this->db);
         $qb->from('tickets', 'tickets');
         $qb->setMainTableAlias('tickets');
 
@@ -103,7 +103,7 @@ class TicketSqlMatcher extends AbstractMatcher
             $qb->addQueryConditionGroup($condGroup);
         } else {
             $cond = $this->buildTerm($rootPart, $context);
-            if ($cond instanceof QueryConditionGroup) {
+            if ($cond instanceof SqlConditionGroup) {
                 $qb->addQueryConditionGroup($cond);
             } else {
                 $qb->addQueryCondition($cond);
@@ -117,11 +117,11 @@ class TicketSqlMatcher extends AbstractMatcher
      * @param TermGroup $termGroup
      * @param Context   $context
      *
-     * @return QueryConditionGroup
+     * @return SqlConditionGroup
      */
     private function buildTermGroup(TermGroup $termGroup, Context $context)
     {
-        $condGroup = new QueryConditionGroup($termGroup->operator->getOperator());
+        $condGroup = new SqlConditionGroup($termGroup->operator->getOperator());
 
         foreach ($termGroup->terms as $term) {
             if ($termGroup instanceof TermGroup) {
@@ -138,7 +138,7 @@ class TicketSqlMatcher extends AbstractMatcher
      * @param Term    $term
      * @param Context $context
      *
-     * @return QueryCondition
+     * @return SqlCondition
      */
     private function buildTerm(Term $term, Context $context)
     {
@@ -196,7 +196,7 @@ class TicketSqlMatcher extends AbstractMatcher
         }
 
         if (empty($parts)) {
-            $c = new QueryCondition();
+            $c = new SqlCondition();
             $c->setWhere('0');
 
             return $c;
@@ -206,7 +206,7 @@ class TicketSqlMatcher extends AbstractMatcher
             return $parts[0];
         }
 
-        $group = new QueryConditionGroup('AND');
+        $group = new SqlConditionGroup('AND');
         foreach ($parts as $p) {
             $group->add($p);
         }

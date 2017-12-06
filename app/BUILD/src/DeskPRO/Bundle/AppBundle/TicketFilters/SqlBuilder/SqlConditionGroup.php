@@ -28,7 +28,7 @@
 
 namespace DeskPRO\Bundle\AppBundle\TicketFilters\SqlBuilder;
 
-class QueryConditionGroup
+class SqlConditionGroup
 {
     const OP_AND = 'AND';
     const OP_OR  = 'OR';
@@ -40,12 +40,12 @@ class QueryConditionGroup
     private $op;
 
     /**
-     * @var QueryCondition[]
+     * @var SqlCondition[]
      */
     private $conds = [];
 
     /**
-     * @var QueryConditionGroup[]
+     * @var SqlConditionGroup[]
      */
     private $subGroups = [];
 
@@ -69,7 +69,7 @@ class QueryConditionGroup
                 $this->addSubGroup($part);
                 break;
 
-            case $part instanceof QueryCondition:
+            case $part instanceof SqlCondition:
                 $this->addCondition($part);
                 break;
 
@@ -79,23 +79,23 @@ class QueryConditionGroup
     }
 
     /**
-     * @param QueryConditionGroup $g
+     * @param SqlConditionGroup $g
      */
-    public function addSubGroup(QueryConditionGroup $g)
+    public function addSubGroup(SqlConditionGroup $g)
     {
         $this->subGroups[] = $g;
     }
 
     /**
-     * @param QueryCondition $c
+     * @param SqlCondition $c
      */
-    public function addCondition(QueryCondition $c)
+    public function addCondition(SqlCondition $c)
     {
         $this->conds[] = $c;
     }
 
     /**
-     * @return QueryConditionGroup[]
+     * @return SqlConditionGroup[]
      */
     public function getSubGroups()
     {

@@ -31,8 +31,8 @@ namespace DeskPRO\Bundle\AppBundle\TicketFilters\Terms;
 use DeskPRO\Bundle\AppBundle\TicketFilters\Context;
 use DeskPRO\Bundle\AppBundle\TicketFilters\Model\Entity\TicketModel;
 use DeskPRO\Bundle\AppBundle\TicketFilters\OptValue\OptValue;
-use DeskPRO\Bundle\AppBundle\TicketFilters\SqlBuilder\QueryCondition;
-use DeskPRO\Bundle\AppBundle\TicketFilters\SqlBuilder\QueryConditionGroup;
+use DeskPRO\Bundle\AppBundle\TicketFilters\SqlBuilder\SqlCondition;
+use DeskPRO\Bundle\AppBundle\TicketFilters\SqlBuilder\SqlConditionGroup;
 use DeskPRO\Component\FilterQueryLanguage\Query\Node\Term;
 
 /**
@@ -112,7 +112,7 @@ interface TermsHandlerInterface
      * @param Context  $context  The current context
      * @param Term     $term     The raw term from which fieldId, operator, and options were read from
      *
-     * @return QueryCondition|QueryConditionGroup|QueryCondition[]|QueryConditionGroup[]
+     * @return SqlCondition|SqlConditionGroup|SqlCondition[]|SqlConditionGroup[]
      */
     public function buildQueryCondition($fieldId, $operator, OptValue $options, Context $context, Term $term);
 }

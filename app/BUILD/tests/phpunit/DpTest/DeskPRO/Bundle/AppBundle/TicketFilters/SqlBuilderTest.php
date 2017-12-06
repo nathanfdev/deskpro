@@ -28,18 +28,18 @@
 
 namespace DpTest\Bundle\AppBundle\TicketFilters;
 
-use DeskPRO\Bundle\AppBundle\TicketFilters\SqlBuilder\QueryBuilder;
-use DeskPRO\Bundle\AppBundle\TicketFilters\SqlBuilder\QueryCondition;
+use DeskPRO\Bundle\AppBundle\TicketFilters\SqlBuilder\SqlBuilder;
+use DeskPRO\Bundle\AppBundle\TicketFilters\SqlBuilder\SqlCondition;
 use DpTest\ApiTestCase;
 
 class SqlBuilderTest extends ApiTestCase
 {
     public function test_plain_part()
     {
-        $qb = new QueryBuilder($this->getContainer()->get('database_connection'));
+        $qb = new SqlBuilder($this->getContainer()->get('database_connection'));
         $qb->from('tickets', 't');
         $qb->select('COUNT(*)');
-        $part = new QueryCondition();
+        $part = new SqlCondition();
         $part->setParam('foo', 'bar');
         $part->setWhere('{from}.foo = :foo');
 
@@ -54,11 +54,11 @@ class SqlBuilderTest extends ApiTestCase
 
     public function test_joins()
     {
-        $qb = new QueryBuilder($this->getContainer()->get('database_connection'));
+        $qb = new SqlBuilder($this->getContainer()->get('database_connection'));
         $qb->from('tickets', 't');
         $qb->select('COUNT(*)');
 
-        $part = new QueryCondition();
+        $part = new SqlCondition();
         $part->addUniqueJoin('from', 'tickets_messages', 'm', '{m}.ticket_id = {from}.id');
         $part->setParam('foo', 'bar');
         $part->setWhere('{from}.foo = :foo');
@@ -74,17 +74,17 @@ class SqlBuilderTest extends ApiTestCase
 
     public function test_multi_joins()
     {
-        $qb = new QueryBuilder($this->getContainer()->get('database_connection'));
+        $qb = new SqlBuilder($this->getContainer()->get('database_connection'));
         $qb->from('tickets', 't');
         $qb->select('COUNT(*)');
 
-        $part = new QueryCondition();
+        $part = new SqlCondition();
         $part->addUniqueJoin('from', 'tickets_messages', 'm', '{m}.ticket_id = {from}.id');
         $part->setParam('foo', 'bar');
         $part->setWhere('{from}.foo = :foo');
         $qb->addQueryCondition($part);
 
-        $part = new QueryCondition();
+        $part = new SqlCondition();
         $part->addUniqueJoin('from', 'people', 'agent', '{agent}.person_id = {from}.agent_id');
         $part->setParam('agent_name', 'John');
         $part->setWhere('{agent}.name = :agent_name');

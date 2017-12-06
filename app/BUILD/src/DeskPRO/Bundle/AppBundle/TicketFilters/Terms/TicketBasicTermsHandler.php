@@ -31,7 +31,7 @@ namespace DeskPRO\Bundle\AppBundle\TicketFilters\Terms;
 use DeskPRO\Bundle\AppBundle\TicketFilters\Context;
 use DeskPRO\Bundle\AppBundle\TicketFilters\Model\Entity\TicketModel;
 use DeskPRO\Bundle\AppBundle\TicketFilters\OptValue\OptValue;
-use DeskPRO\Bundle\AppBundle\TicketFilters\SqlBuilder\QueryCondition;
+use DeskPRO\Bundle\AppBundle\TicketFilters\SqlBuilder\SqlCondition;
 use DeskPRO\Component\FilterQueryLanguage\Query\Node\Term;
 
 class TicketBasicTermsHandler extends AbstractTermsHandler
@@ -116,13 +116,13 @@ class TicketBasicTermsHandler extends AbstractTermsHandler
 
         switch ($fieldId) {
             case Terms::TICKET_FOLLOWERS:
-                $cond = new QueryCondition();
+                $cond = new SqlCondition();
                 $cond->addUniqueJoin('tickets', 'tickets_participants', 'part', '{part}.ticket_id = {tickets}.id');
 
                 return $this->checkValueQueryCondition('{part}.person_id', $operator, $operator, $context);
 
             case Terms::TICKET_LABELS:
-                $cond = new QueryCondition();
+                $cond = new SqlCondition();
                 $cond->addUniqueJoin('tickets', 'labels_tickets', 'label', '{label}.ticket_id = {tickets}.id');
 
                 return $this->checkValueQueryCondition('{label}.label', $operator, $operator, $context);

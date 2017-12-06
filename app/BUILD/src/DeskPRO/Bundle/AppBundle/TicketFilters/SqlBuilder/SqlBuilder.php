@@ -30,7 +30,7 @@ namespace DeskPRO\Bundle\AppBundle\TicketFilters\SqlBuilder;
 
 use DeskPRO\Component\Util\MapUtils;
 
-class QueryBuilder extends \Doctrine\DBAL\Query\QueryBuilder
+class SqlBuilder extends \Doctrine\DBAL\Query\QueryBuilder
 {
     private $queryPartCount = 0;
     private $mainTableAlias = null;
@@ -49,29 +49,29 @@ class QueryBuilder extends \Doctrine\DBAL\Query\QueryBuilder
     }
 
     /**
-     * @param QueryConditionGroup $group
+     * @param SqlConditionGroup $group
      */
-    public function addQueryConditionGroup(QueryConditionGroup $group)
+    public function addQueryConditionGroup(SqlConditionGroup $group)
     {
         $where = $this->initQueryCondGroup($group);
         $this->andWhere($where);
     }
 
     /**
-     * @param QueryCondition $cond
+     * @param SqlCondition $cond
      */
-    public function addQueryCondition(QueryCondition $cond)
+    public function addQueryCondition(SqlCondition $cond)
     {
         $where = $this->initQueryCond($cond);
         $this->andWhere($where);
     }
 
     /**
-     * @param QueryConditionGroup $group
+     * @param SqlConditionGroup $group
      *
      * @return string
      */
-    private function initQueryCondGroup(QueryConditionGroup $group)
+    private function initQueryCondGroup(SqlConditionGroup $group)
     {
         $wheres = [];
         foreach ($group->getConditions() as $cond) {
@@ -89,11 +89,11 @@ class QueryBuilder extends \Doctrine\DBAL\Query\QueryBuilder
     /**
      * Inits a query condition and returns the WHERE clause.
      *
-     * @param QueryCondition $cond
+     * @param SqlCondition $cond
      *
      * @return string
      */
-    private function initQueryCond(QueryCondition $cond)
+    private function initQueryCond(SqlCondition $cond)
     {
         $queryParts = $this->getQueryParts();
 

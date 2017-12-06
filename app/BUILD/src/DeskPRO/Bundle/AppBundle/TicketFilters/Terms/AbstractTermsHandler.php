@@ -31,7 +31,7 @@ namespace DeskPRO\Bundle\AppBundle\TicketFilters\Terms;
 use DeskPRO\Bundle\AppBundle\TicketFilters\Context;
 use DeskPRO\Bundle\AppBundle\TicketFilters\Model\Entity\TicketModel;
 use DeskPRO\Bundle\AppBundle\TicketFilters\OptValue\OptValue;
-use DeskPRO\Bundle\AppBundle\TicketFilters\SqlBuilder\QueryCondition;
+use DeskPRO\Bundle\AppBundle\TicketFilters\SqlBuilder\SqlCondition;
 use DeskPRO\Component\FilterQueryLanguage\Query\Node\Term;
 use DeskPRO\Component\FilterQueryLanguage\Query\Query;
 use DeskPRO\Component\Util\ListUtils;
@@ -176,14 +176,14 @@ abstract class AbstractTermsHandler implements TermsHandlerInterface
      * @param $operator
      * @param $checkValue
      *
-     * @return QueryCondition
+     * @return SqlCondition
      */
     public function checkValueQueryCondition($fieldColumn, $operator, $checkValue, $cond = null)
     {
         $where = $this->checkValueQueryWhere($fieldColumn, $operator, $checkValue);
 
         if (!$cond) {
-            $cond = new QueryCondition();
+            $cond = new SqlCondition();
         }
         $cond->setWhere($where['where']);
         if (!empty($where['params'])) {
