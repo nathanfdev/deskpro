@@ -262,35 +262,29 @@ class ChatCreateType extends AbstractType
             $data['jwt'] = '';
         }
         if ($data['jwt']) {
-            try {
-                $brand      = $this->brandStack->getActive()->getBrand();
-                $jwtSecret  = $this->settingsResolver->getJwtSecret($brand);
-                $decodedJwt = JWT::decode($data['jwt'], $jwtSecret, array_keys(JWT::$supported_algs));
-                $decodedJwt = Arrays::fromStdClass($decodedJwt);
+            $decodedJwt = $this->decodeJwtPayload($data['jwt']);
 
-                // set person email from the jwt token
-                foreach (['email', 'user_email'] as $option) {
-                    if (isset($decodedJwt[$option])) {
-                        $data['email'] = $decodedJwt[$option];
-                    }
+            // set person email from the jwt token
+            foreach (['email', 'user_email'] as $option) {
+                if (isset($decodedJwt[$option])) {
+                    $data['email'] = $decodedJwt[$option];
                 }
+            }
 
-                // set person name from the jwt token
-                foreach (['name', 'user_name'] as $option) {
-                    if (isset($decodedJwt[$option])) {
-                        $data['name'] = $decodedJwt[$option];
-                    }
+            // set person name from the jwt token
+            foreach (['name', 'user_name'] as $option) {
+                if (isset($decodedJwt[$option])) {
+                    $data['name'] = $decodedJwt[$option];
                 }
+            }
 
-                // set person info from 'person_id' option of the jwt token
-                if (isset($decodedJwt['person_id'])) {
-                    $person = $this->em->find(Person::class, $decodedJwt['person_id']);
-                    if ($person) {
-                        $data['email'] = $person->getPrimaryEmailAddress();
-                        $data['name']  = $person->getDisplayName();
-                    }
+            // set person info from 'person_id' option of the jwt token
+            if (isset($decodedJwt['person_id'])) {
+                $person = $this->em->find(Person::class, $decodedJwt['person_id']);
+                if ($person) {
+                    $data['email'] = $person->getPrimaryEmailAddress();
+                    $data['name']  = $person->getDisplayName();
                 }
-            } catch (\Exception $e) {
             }
         }
 
@@ -324,8 +318,28 @@ class ChatCreateType extends AbstractType
 
         // if a jwt token was provided, then it means the person is already validated
         // set session person as well
-        if ($conversation->getPerson() && $conversation->getSession() && $form->get('jwt')->getData()) {
-            $conversation->getSession()->setPerson($conversation->getPerson());
+        $jwtPayload = $form->get('jwt')->getData();
+        $person     = $conversation->getPerson();
+        $session    = $conversation->getSession();
+
+        if ($person && $session && $decodedJwt = $this->decodeJwtPayload($jwtPayload)) {
+            $matched = false;
+
+            // check payload by person id
+            if (isset($decodedJwt['person_id']) && (int) $decodedJwt['person_id'] === $person->getId()) {
+                $matched = true;
+            }
+
+            // check payload by person email
+            foreach (['email', 'user_email'] as $option) {
+                if (isset($decodedJwt[$option]) && $person->hasEmailAddress($decodedJwt[$option])) {
+                    $matched = true;
+                }
+            }
+
+            if ($matched) {
+                $session->setPerson($person);
+            }
         }
     }
 
@@ -351,5 +365,29 @@ class ChatCreateType extends AbstractType
         }
 
         return $fields;
+    }
+
+    /**
+     * @param string $payload
+     *
+     * @return array|null
+     */
+    private function decodeJwtPayload($payload)
+    {
+        if (!$payload) {
+            return;
+        }
+
+        $brand     = $this->brandStack->getActive()->getBrand();
+        $jwtSecret = $this->settingsResolver->getJwtSecret($brand);
+
+        try {
+            $payload = JWT::decode($payload, $jwtSecret, array_keys(JWT::$supported_algs));
+            $payload = Arrays::fromStdClass($payload);
+
+            return $payload;
+        } catch (\Exception $e) {
+            return;
+        }
     }
 }
