@@ -184,7 +184,7 @@ class SendUserNewEmail extends AbstractEmailAction
             $brandStack->push($ticket->getBrand());
         }
 
-        if ($ticket->getTicketPersonEmail() && $ticket->getTicketPersonEmail()->getPerson() === $this->toPerson) {
+        if ($ticket->getTicketPersonEmail() && $ticket->getTicketPersonEmail()->getPerson()) {
             $toEmail = $ticket->getTicketPersonEmail()->getEmail();
         } else {
             throw new \RuntimeException('no email address');
