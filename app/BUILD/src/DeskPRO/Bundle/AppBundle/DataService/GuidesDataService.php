@@ -26,10 +26,6 @@
  * ~ Thanks, Everyone at Team DeskPRO
  */
 
-/**
- * DeskPRO.
- */
-
 namespace DeskPRO\Bundle\AppBundle\DataService;
 
 use Application\DeskPRO\Entity\Guide;
@@ -38,6 +34,7 @@ use Application\DeskPRO\Entity\Topic;
 use Application\DeskPRO\Entity\TopicComment;
 use DeskPRO\Bundle\AppBundle\Security\Permissions\PermissionsManager;
 use Doctrine\ORM\EntityManager;
+use Symfony\Component\Security\Core\Exception\AccessDeniedException;
 
 /**
  * Class DownloadsDataService.
@@ -117,7 +114,7 @@ class GuidesDataService extends AbstractDataService
                 )->getAllowedGuides();
 
                 if (!in_array($guide->getId(), $allowedIds)) {
-                    throw new \Exception('Unauthorized guide');
+                    throw new AccessDeniedException('Unauthorized guide');
                 }
 
                 if (!$guide instanceof Guide) { // if not already category, try to make it one
