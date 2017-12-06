@@ -56,6 +56,7 @@ use Application\DeskPRO\Entity\FeedbackComment;
 use Application\DeskPRO\Entity\FeedbackStatusCategory;
 use Application\DeskPRO\Entity\GlossaryWord;
 use Application\DeskPRO\Entity\GlossaryWordDefinition;
+use Application\DeskPRO\Entity\LabelChatConversation;
 use Application\DeskPRO\Entity\LabelDef;
 use Application\DeskPRO\Entity\LabelFeedback;
 use Application\DeskPRO\Entity\LabelPerson;
@@ -344,6 +345,7 @@ class ObjectsManager
             'LabelDef'                 => [Factory\SimpleFactory::class, 'create', LabelDef::class],
             'LabelFeedback'            => [Factory\SimpleFactory::class, 'create', LabelFeedback::class],
             'LabelTask'                => [Factory\SimpleFactory::class, 'create', LabelTask::class],
+            'LabelChatConversation'    => [Factory\SimpleFactory::class, 'create', LabelChatConversation::class],
             'Brand'                    => [Factory\SimpleFactory::class, 'create', Brand::class],
             'BrandSetting'             => [Factory\SimpleFactory::class, 'create', BrandSetting::class],
             'Usersource'               => [Factory\SimpleFactory::class, 'create', Usersource::class],
@@ -454,6 +456,7 @@ class ObjectsManager
             'LabelTicket'              => [$this, 'find', LabelTicket::class],
             'LabelTask'                => [$this, 'find', LabelTask::class],
             'LabelPerson'              => [$this, 'find', LabelPerson::class],
+            'LabelChatConversation'    => [$this, 'find', LabelChatConversation::class],
             'Brand'                    => [$this, 'find', Brand::class],
             'BrandSetting'             => [$this, 'find', BrandSetting::class],
             'Usergroup'                => [$this, 'find', Usergroup::class],

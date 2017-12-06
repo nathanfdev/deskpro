@@ -35,6 +35,7 @@ use DeskPRO\Bundle\ApiBundle\ApiDoc\Annotation\ApiDoc;
 use DeskPRO\Bundle\ApiBundle\Controller\CrudController;
 use DeskPRO\Bundle\ApiBundle\Doctrine\RequestHelper\CustomDataHelper;
 use DeskPRO\Bundle\ApiBundle\Doctrine\RequestHelper\DateHelper;
+use DeskPRO\Bundle\ApiBundle\Doctrine\RequestHelper\LabelHelper;
 use DeskPRO\Bundle\ApiBundle\Doctrine\RequestHelper\ListHelper;
 use DeskPRO\Bundle\ApiBundle\Doctrine\RequestHelper\RequestQueryContext;
 use DeskPRO\Bundle\AppBundle\Annotation\ActionPermissions\Annotation\ApiModes;
@@ -213,6 +214,7 @@ class UserChatsController extends CrudController
         DateHelper::applyDatePeriodFilter($context, 'date_created', 'date_period');
         ListHelper::applyInListFilter($context, 'department');
         CustomDataHelper::applyCustomDataFilters($context, 'chat', CustomDefChat::class);
+        LabelHelper::applyLabelFilters($context, static::$entity);
 
         $agent = $request->get('agent');
         if ($agent) {
@@ -220,8 +222,22 @@ class UserChatsController extends CrudController
                 $agent = $this->getUser()->getId();
             }
 
-            $qb->andWhere($qb->expr()->eq("$alias.agent", ':agent'));
+            $qb->andWhere("$alias.agent = :agent");
             $qb->setParameter('agent', $agent);
+        }
+
+        $person = $request->get('person');
+        if ($person) {
+            $qb->andWhere("$alias.person = :person");
+            $qb->setParameter('person', $person);
+        }
+
+        $status = $request->get('status');
+        if (!empty($status)) {
+            $status = (array) $status;
+
+            $qb->andWhere("$alias.status IN (:status)");
+            $qb->setParameter('status', $status);
         }
 
         // only user chats
