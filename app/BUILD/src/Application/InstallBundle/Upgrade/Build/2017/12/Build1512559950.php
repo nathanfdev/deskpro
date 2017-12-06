@@ -28,7 +28,7 @@
 
 namespace Application\InstallBundle\Upgrade\Build;
 
-class Build1511781236 extends AbstractBuild
+class Build1512559950 extends AbstractBuild
 {
     public function run()
     {
