@@ -29,6 +29,7 @@
 namespace DeskPRO\Bundle\AppBundle\TicketFilters\Diff;
 
 use DeskPRO\Bundle\AppBundle\TicketFilters\Context;
+use DeskPRO\Bundle\AppBundle\TicketFilters\Model\Agent;
 use DeskPRO\Component\Util\ListUtils;
 
 class Differ
@@ -171,7 +172,7 @@ class Differ
         ];
 
         foreach ($this->diffEnv->getGroupedAgents() as $group) {
-            $group = ListUtils::filter($group, function (AgentContext $a) use ($affectedAgentIds) {
+            $group = ListUtils::filter($group, function (Agent $a) use ($affectedAgentIds) {
                 return isset($affectedAgentIds[$a->id]);
             });
 

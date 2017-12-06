@@ -34,7 +34,6 @@ use DeskPRO\Bundle\AppBundle\TicketFilters\Terms\Terms;
 use DeskPRO\Bundle\AppBundle\TicketFilters\TicketMatcher;
 use DeskPRO\Component\FilterQueryLanguage\Query\Node\Term;
 use DeskPRO\Component\FilterQueryLanguage\Query\Query;
-use DeskPRO\Component\FilterQueryLanguage\Query\Val\ScalarVal;
 use DeskPRO\Component\FilterQueryLanguage\Query\Val\VarVal;
 use DeskPRO\Component\FilterQueryLanguage\QueryIterator;
 use DeskPRO\Component\FilterQueryLanguage\ValueIterator;
@@ -75,11 +74,6 @@ class DiffEnv
      * @var int[]
      */
     private $uniqueContextFilters;
-
-    /**
-     * @var List of filters that have a term on status being awaiting agent
-     */
-    private $awaitingAgentFilters;
 
     /**
      * DiffEnv constructor.
@@ -159,20 +153,6 @@ class DiffEnv
     }
 
     /**
-     * Check if a filter has a critera making it only match awaiting agent.
-     *
-     * @param int $filterId
-     *
-     * @return bool
-     */
-    public function isFilterAwaitingAgent($filterId)
-    {
-        $this->initTermsMap();
-
-        return in_array($filterId, $this->awaitingAgentFilters);
-    }
-
-    /**
      * Lazy inits maps.
      */
     private function initTermsMap()
@@ -184,9 +164,8 @@ class DiffEnv
         $this->filterFieldsMap = [];
 
         foreach ($this->filters as $f) {
-            $fields          = [];
-            $isUnique        = false;
-            $isAwaitingAgent = false;
+            $fields   = [];
+            $isUnique = false;
 
             foreach (new QueryIterator($f->query) as $node) {
                 if (!$node instanceof Term) {
@@ -194,31 +173,8 @@ class DiffEnv
                 }
                 $fields[] = $node->field->identity;
 
-                // If we havent calculated the is* flags yet,
-                // we need ot iterate ove values to determine if they need to be set
-                // (this outer if check is just to avoid the iterator if we already have the flags)
-                if (!$isUnique || (!$isAwaitingAgent && $node->field->identity === Terms::TICKET_STATUS)) {
-                    foreach (new ValueIterator($node) as $val) {
-
-                        // Check if its a unique term
-                        if (!$isUnique && $val instanceof VarVal) {
-                            switch ($val->identity) {
-                                case 'me':
-                                case 'my_teams':
-                                    $isUnique = true;
-                            }
-                        }
-
-                        // Check if its a filter based on awaiting agent
-                        if (!$isAwaitingAgent
-                            && $node->field->identity === Terms::TICKET_STATUS
-                            && $val instanceof ScalarVal
-                            && $val->value === 'awaiting_agent'
-                            && ($node->operator->getOperator() === Query::OP_EQ || $node->operator->getOperator() === Query::OP_IN)
-                        ) {
-                            $isAwaitingAgent = true;
-                        }
-                    }
+                if (!$isUnique && $this->isUniqueContextTerm($node)) {
+                    $isUnique = true;
                 }
             }
 
@@ -227,9 +183,29 @@ class DiffEnv
             if ($isUnique) {
                 $this->uniqueContextFilters[] = $f->id;
             }
-            if ($isAwaitingAgent) {
-                $this->awaitingAgentFilters[] = $f->id;
+        }
+    }
+
+    /**
+     * Check if a term has some value that is unique per-agent, therefore
+     * would need to be checked in each agent context.
+     *
+     * @param Term $term
+     *
+     * @return bool
+     */
+    private function isUniqueContextTerm(Term $term)
+    {
+        foreach (new ValueIterator($term) as $val) {
+            if ($val instanceof VarVal) {
+                switch ($val->identity) {
+                    case 'me':
+                    case 'my_teams':
+                        return true;
+                }
             }
         }
+
+        return false;
     }
 }
