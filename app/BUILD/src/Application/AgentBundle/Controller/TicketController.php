@@ -4507,11 +4507,17 @@ class TicketController extends AbstractController
             $storage     = $this->container->getBlobStorage();
 
             foreach ($message->attachments as $attach) {
-                $newBlob = $storage->createBlobRecordFromString(
-                    $storage->copyBlobRecordToString($attach->blob),
-                    $attach->blob['filename'],
-                    $attach->blob['content_type']
-                );
+                try {
+                    $newBlob = $storage->createBlobRecordFromString(
+                        $storage->copyBlobRecordToString($attach->blob),
+                        $attach->blob['filename'],
+                        $attach->blob['content_type']
+                    );
+                } catch (\Exception $ex) {
+                    // $ex should be looged internally in services
+                    // no need to additional log here
+                    continue;
+                }
                 $this->em->persist($newBlob);
 
                 $attachData         = [];
