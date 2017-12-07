@@ -841,7 +841,14 @@ class AgentsController extends AbstractController implements ProtectedController
 
         $max_agents = License::getLicense()->getMaxAgents();
         if ($max_agents && $current_agents + $num > $max_agents) {
-            return $this->createApiErrorResponse('license_agents_reached', "Your license allows $max_agents. You cannot create $num more agents until you upgrade your license.");
+            $active_agents = $this->em->getRepository(Person::class)->getActiveAgentsCount();
+
+            return $this->createApiErrorInfoResponse(
+                'license_exceeded', 'You have used all available agent seats that your license allows', [
+                    'agent_seats'    => $max_agents,
+                    'agents_created' => $active_agents,
+                ]
+            );
         }
 
         return;
