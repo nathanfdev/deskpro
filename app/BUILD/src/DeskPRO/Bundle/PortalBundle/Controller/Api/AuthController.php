@@ -63,6 +63,9 @@ class AuthController extends AbstractApiController
      */
     public function getSessionAction(Request $request)
     {
+        $widgetSettingsResolver = $this->get('widget_settings_resolver');
+
+        // track visitor id
         $visitorId = $this->get('visitor_identification_provider')->getVisitorIdentifier(true);
         $request->attributes->set(VisitorIdentificationProvider::ATTRIBUTE_NAME, $visitorId);
 
@@ -97,7 +100,7 @@ class AuthController extends AbstractApiController
 
         $model = new WidgetSession(
             $this->get('security.token_storage')->getToken(),
-            $this->container->get('widget_settings_resolver')->getWidgetGlobalOptions(),
+            $widgetSettingsResolver->getWidgetGlobalOptions(),
             $this->isGranted(UseSectionVoter::USE_CHAT),
             $this->container->get('language_stack')->getActiveOrDefault(),
             $lastChat ? $lastChat->getAuthId() : null,

@@ -651,7 +651,7 @@
                         <label>Embed code</label>
                         <div class="inline fields">
                             <div class="ui twelve wide field">
-                                <input type="text" id="widget_code" readonly="readonly" onClick="this.select();" ng-model="code"/>
+                                <textarea id="widget_code" readonly="readonly" onClick="this.select();" ng-model="code" style="height: 80px;"></textarea>
                             </div>
                             <div class="ui four wide field">
                                 <button dp-clipboard
@@ -757,6 +757,31 @@
                                     </a>
                                 </div>
                             </div>
+                        </div>
+                    </div>
+                    <div class="ui segment" ng-show="show_embed_help || !brand_settings.widget.enabled">
+                        <div class="field">
+                            <div>
+                                <label>JWT Token Secret <a href="https://support.deskpro.com/en/guides/admin-guide/website-embeds/chat-embed#signing-the-chat-widget-with-a-jwt-token" target="_blank">(read more about JWT signing)</a></label>
+                                <div class="inline field">
+                                    <input type="text" ng-model="jwt_settings.secret" />
+                                </div>
+                            </div>
+                        </div>
+                        <div class="ui radio checkbox">
+                            <input type="radio" name="jwt_settings_required" id="jwt_settings_optional" ng-model="jwt_settings.required" value="0" />
+                            <label for="jwt_settings_optional">
+                                <h4>Continue to allow non-signed widgets.</h4>
+                                <div class="detail">This makes it possible to embed the widget without JWT signing. You can optionally use JWT in specific cases where you want to make the system trust the supplied options (for example, user email). This is useful for internal pages like user account pages, billing, etc. where you want Deskpro to know the identity of the user who is already logged-in to your site.</div>
+                            </label>
+
+                        </div>
+                        <div class="ui radio checkbox">
+                            <input type="radio" name="jwt_settings_required" id="jwt_settings_required" ng-model="jwt_settings.required" value="1" />
+                            <label for="jwt_settings_required">
+                                <h4>Always require JWT signing.</h4>
+                                <div class="detail">This means you CANNOT embed the widget into a page without using JWT signing. This will prevent your widget from being used on ANY site other than ones you control and sign with JWT.</div>
+                            </label>
                         </div>
                     </div>
                 </div>

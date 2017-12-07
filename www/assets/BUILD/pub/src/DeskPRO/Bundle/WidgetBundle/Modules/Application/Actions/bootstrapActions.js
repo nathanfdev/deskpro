@@ -9,7 +9,7 @@ import { loadOnlineAgents } from './peopleActions';
 import { loadOptions, fetchOptions, openWidget, reopenWidget, closeWidget } from './dpWindowActions';
 import { pollingChat, setChatId, unsetChatId, setLastAgentId } from '../../Chat/Actions/chatActions';
 import { widgetHasChatSelector, widgetSessionChatIdSelector, buildNumSelector } from '../Selectors/bootstrap';
-import { liveDemoSelector, noFetchOptionsSelector, widgetLanguageSelector, widgetEnabledSelector } from '../Selectors/dpWindow';
+import { liveDemoSelector, noFetchOptionsSelector, widgetLanguageSelector, widgetEnabledSelector, jwtTokenSelector } from '../Selectors/dpWindow';
 import { onlineAgentsCountSelector } from '../Selectors/peopleSelectors';
 
 export const ajaxOptions = { crossDomain: true, dataType: 'json' };
@@ -24,21 +24,26 @@ export const setLiveDemoSession = createAction(
 );
 export const getSession = createAction(
   'WIDGET_GET_SESSION',
-  () => dispatch => new Promise(resolve => widgetApi
-    .sendPost('DP_API/auth/session', {
-      trackVisitor: window.DP_SEND_VISITOR_TRACK || {}
-    }, { ...ajaxOptions })
-    .success((response) => {
-      const data = response.data;
+  () => (dispatch, getState) => new Promise((resolve) => {
+    const state = getState();
+    const jwtToken = jwtTokenSelector(state);
 
-      dispatch(setSettings(data.global_settings));
-      resolve(data);
+    return widgetApi
+      .sendPost('DP_API/auth/session', {
+        trackVisitor: window.DP_SEND_VISITOR_TRACK || {},
+        jwt:          jwtToken
+      }, { ...ajaxOptions })
+      .success((response) => {
+        const data = response.data;
 
-      if (data.person) {
-        dispatch(loadBatch('Person', [data.person], 'all'));
-      }
-    })
-  )
+        dispatch(setSettings(data.global_settings));
+        resolve(data);
+
+        if (data.person) {
+          dispatch(loadBatch('Person', [data.person], 'all'));
+        }
+      });
+  })
 );
 
 // live demo action

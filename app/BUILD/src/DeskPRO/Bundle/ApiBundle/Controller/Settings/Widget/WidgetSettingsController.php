@@ -319,6 +319,8 @@ class WidgetSettingsController extends AbstractBrandAwareSettingsController
             ->getSettingRepository()
             ->updateSetting(WidgetSettingsResolver::CHAT_ENABLED, $chat->isEnabled(), $brand)
             ->updateSetting(WidgetSettingsResolver::ENABLED_ON_PORTAL, $model->isEnabledOnPortal(), $brand)
+            ->updateSetting(WidgetSettingsResolver::JWT_SECRET, $model->getJwtSettings()->getSecret(), $brand)
+            ->updateSetting(WidgetSettingsResolver::JWT_REQUIRED, $model->getJwtSettings()->isRequired(), $brand)
         ;
     }
 }

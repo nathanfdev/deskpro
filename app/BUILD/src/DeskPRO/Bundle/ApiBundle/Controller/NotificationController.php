@@ -40,6 +40,7 @@ use DeskPRO\Bundle\AppBundle\Model\PusherModel;
 use DeskPRO\Bundle\AppBundle\Notification\Delivery\PusherLogger;
 use DeskPRO\Bundle\AppBundle\Notification\Event\LegacySystemEvent;
 use DeskPRO\Bundle\AppBundle\Util\HttpClient;
+use Firebase\JWT\JWT;
 use FOS\RestBundle\Controller\Annotations as Rest;
 use FOS\RestBundle\View\View;
 use GuzzleHttp\Exception\ClientException;
@@ -343,7 +344,7 @@ class NotificationController extends BaseController
             $response = $client->post(
                 '/test',
                 [
-                    RequestOptions::JSON => ['jwt' => \JWT::encode($testData, $deskproClientModel->getSecret())],
+                    RequestOptions::JSON => ['jwt' => JWT::encode($testData, $deskproClientModel->getSecret())],
                 ]
             );
         } catch (ClientException $e) {

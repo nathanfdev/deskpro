@@ -111,6 +111,7 @@ services:
   form.api.chat_create:
     class: DeskPRO\Bundle\PortalBundle\Form\Form\Type\Api\Chat\ChatCreateType
     arguments:
+      - "@doctrine.orm.default_entity_manager"
       - "@form.api.chat.set_person_listener"
       - "@widget_settings_resolver"
       - "@custom_field_manager"

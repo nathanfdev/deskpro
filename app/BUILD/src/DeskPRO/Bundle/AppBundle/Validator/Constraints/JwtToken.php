@@ -26,42 +26,35 @@
  * ~ Thanks, Everyone at Team DeskPRO
  */
 
-namespace DeskPRO\Bundle\AppBundle\Form\Type\Settings\Widget;
+namespace DeskPRO\Bundle\AppBundle\Validator\Constraints;
 
-use DeskPRO\Bundle\AppBundle\Form\Type\ApiBooleanType;
-use DeskPRO\Bundle\AppBundle\Settings\Model\Widget\WidgetSettings;
-use Symfony\Component\Form\AbstractType;
-use Symfony\Component\Form\FormBuilderInterface;
-use Symfony\Component\OptionsResolver\OptionsResolver;
+use Symfony\Component\Validator\Constraint;
 
 /**
- * Class WidgetSettingsType.
+ * Class JwtToken.
  */
-class WidgetSettingsType extends AbstractType
+class JwtToken extends Constraint
 {
-    /**
-     * {@inheritdoc}
-     */
-    public function buildForm(FormBuilderInterface $builder, array $options)
-    {
-        $builder
-            ->add('settings', WidgetOptionsType::class)
-            ->add('jwt_settings', JwtSettingsType::class, [
-                'property_path' => 'jwtSettings',
-            ])
-            ->add('enabled_on_portal', ApiBooleanType::class, [
-                'property_path' => 'enabledOnPortal',
-            ])
-        ;
-    }
+    const MISSING_JWT_TOKEN = 'missing_jwt_token';
+    const INVALID_JWT_TOKEN = 'invalid_jwt_token';
+    const EXPIRED_JWT_TOKEN = 'expired_jwt_token';
+
+    public $missingMessage = 'JWT token is required.';
+    public $invalidMessage = 'This value is not a valid JWT token.';
+    public $expiredMessage = 'JWT token is expired.';
 
     /**
-     * {@inheritdoc}
+     * @var string
      */
-    public function configureOptions(OptionsResolver $resolver)
-    {
-        $resolver->setDefaults([
-            'data_class' => WidgetSettings::class,
-        ]);
-    }
+    public $secret;
+
+    /**
+     * @var string
+     */
+    public $algo;
+
+    /**
+     * @var bool
+     */
+    public $required = false;
 }

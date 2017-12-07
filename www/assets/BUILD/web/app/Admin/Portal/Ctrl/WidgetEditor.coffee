@@ -11,6 +11,7 @@ define ['Admin/Main/Ctrl/Base', 'DeskPRO/Util/Functions', 'jquery', 'angular'], 
       @$scope.remote_settings = {}
       @$scope.brand_settings = {}
       @$scope.global_settings = {}
+      @$scope.jwt_settings = {}
       @$scope.chat_custom_fields = []
       @$scope.user_groups = []
       @$scope.user_group_permission = []
@@ -56,6 +57,7 @@ define ['Admin/Main/Ctrl/Base', 'DeskPRO/Util/Functions', 'jquery', 'angular'], 
       @$scope.$watch('enabled_on_portal', updateLiveDemoDebounce, true)
       @$scope.$watch('brand_settings', updateLiveDemoDebounce, true)
       @$scope.$watch('global_settings', updateLiveDemoDebounce, true)
+      @$scope.$watch('jwt_settings', updateLiveDemoDebounce, true)
 
       # widget editor bootstrap promises
       # preload form data
@@ -69,6 +71,7 @@ define ['Admin/Main/Ctrl/Base', 'DeskPRO/Util/Functions', 'jquery', 'angular'], 
         data = response.data.data
         @$scope.remote_settings = JSON.parse(JSON.stringify(data.settings))
         @$scope.remote_settings.enabled_on_portal = data.enabled_on_portal
+        @$scope.remote_settings.jwt = angular.copy(data.jwt_settings)
 
         @$scope.url = data.url
         @$scope.company = data.company
@@ -86,6 +89,7 @@ define ['Admin/Main/Ctrl/Base', 'DeskPRO/Util/Functions', 'jquery', 'angular'], 
         else
           @$scope.brand_settings = data.settings.brand
         @$scope.enabled_on_portal = data.enabled_on_portal
+        @$scope.jwt_settings = data.jwt_settings
 
         @$scope.saving_code = true
         @loadCode().then (codeResponse) =>
@@ -182,6 +186,7 @@ define ['Admin/Main/Ctrl/Base', 'DeskPRO/Util/Functions', 'jquery', 'angular'], 
         global: @$scope.global_settings
         brand: @$scope.brand_settings
       }
+      jwt_settings: @$scope.jwt_settings
     }
 
     getBrandCustomField: (fieldId) ->
@@ -275,7 +280,8 @@ define ['Admin/Main/Ctrl/Base', 'DeskPRO/Util/Functions', 'jquery', 'angular'], 
     hasChanged: ->
       angular.toJson(@$scope.enabled_on_portal) != angular.toJson(@$scope.remote_settings.enabled_on_portal) or
       angular.toJson(@$scope.global_settings) != angular.toJson(@$scope.remote_settings.global) or
-      angular.toJson(@$scope.brand_settings) != angular.toJson(@$scope.remote_settings.brand)
+      angular.toJson(@$scope.brand_settings) != angular.toJson(@$scope.remote_settings.brand) or
+      angular.toJson(@$scope.jwt_settings) != angular.toJson(@$scope.remote_settings.jwt)
 
     loadCode: ->
       @Api2.sendGet('settings/brands/'+@$scope.brand_id+'/widget/code')
@@ -309,6 +315,7 @@ define ['Admin/Main/Ctrl/Base', 'DeskPRO/Util/Functions', 'jquery', 'angular'], 
           global: angular.copy(widgetData.settings.global)
           brand: angular.copy(widgetData.settings.brand)
           enabled_on_portal: angular.copy(widgetData.enabled_on_portal)
+          jwt: angular.copy(widgetData.jwt_settings)
         }
         @$scope.flag_has_changed = @hasChanged()
         localStorage.removeItem 'dpWidgetSettings'+@$scope.brand_id
