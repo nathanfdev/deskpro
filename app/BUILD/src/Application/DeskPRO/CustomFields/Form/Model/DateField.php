@@ -33,8 +33,11 @@
 namespace Application\DeskPRO\CustomFields\Form\Model;
 
 use Application\DeskPRO\App;
+use Application\DeskPRO\Validator\HasValidationMetadataInterface;
+use Symfony\Component\Validator\Constraints\Date;
+use Symfony\Component\Validator\Mapping\ClassMetadata as ValidatorClassMetadata;
 
-class DateField extends CustomFieldAbstract
+class DateField extends CustomFieldAbstract implements HasValidationMetadataInterface
 {
     const DEFAULT_CALENDAR = 'gregorian';
 
@@ -63,6 +66,15 @@ class DateField extends CustomFieldAbstract
     public $date_valid_dow = null;
     /** @var string */
     public $calendar;
+
+    //###########################################################################
+    // Validation Metadata
+    //###########################################################################
+
+    public static function loadValidatorMetadata(ValidatorClassMetadata $metadata)
+    {
+        $metadata->addPropertyConstraint('default_value', new Date());
+    }
 
     public function init()
     {

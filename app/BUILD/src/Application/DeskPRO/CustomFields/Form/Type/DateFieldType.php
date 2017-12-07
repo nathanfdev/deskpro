@@ -34,12 +34,14 @@ namespace Application\DeskPRO\CustomFields\Form\Type;
 
 use Application\DeskPRO\CustomFields\Form\Model\DateField;
 use Symfony\Component\Form\FormBuilderInterface;
+use Symfony\Component\OptionsResolver\OptionsResolver;
+use Symfony\Component\Validator\Constraints\Date;
 
 class DateFieldType extends CustomFieldTypeAbstract
 {
     protected function buildCustomFieldForm(FormBuilderInterface $builder, array $options)
     {
-        $builder->add('default_value', 'text', ['required' => false]);
+        $builder->add('default_value', 'text', ['required' => false, 'constraints' => [new Date()]]);
         $builder->add('default_mode', 'text', ['required' => true]);
         $builder->add('required', 'checkbox', ['required' => false]);
         $builder->add('agent_required', 'checkbox', ['required' => false]);
@@ -62,10 +64,21 @@ class DateFieldType extends CustomFieldTypeAbstract
         ]);
     }
 
+    public function configureOptions(OptionsResolver $resolver)
+    {
+        $resolver->setDefaults(
+            [
+                'data_class'         => DateField::class,
+                'allow_extra_fields' => true,
+            ]
+        );
+    }
+
     public function getDefaultOptions(array $options)
     {
         return [
-            'data_class' => DateField::class,
+            'allow_extra_fields' => true,
+            'data_class'         => DateField::class,
         ];
     }
 }

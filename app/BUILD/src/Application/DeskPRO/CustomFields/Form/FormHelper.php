@@ -47,13 +47,20 @@ class FormHelper
     private $formFactory;
 
     /**
+     * @var array
+     */
+    private $errors = [];
+
+    private $type;
+
+    /**
      * @var \Doctrine\ORM\EntityManager
      */
     private $em;
 
     public function __construct(EntityManager $em, FormFactoryInterface $formFactory)
     {
-        $this->em         = $em;
+        $this->em          = $em;
         $this->formFactory = $formFactory;
     }
 
@@ -65,6 +72,8 @@ class FormHelper
      */
     public function saveFormToField(CustomDefAbstract $field, array $formData)
     {
+        $this->errors = [];
+        $this->type   = null;
         $handlerClass = empty($formData['handler_class']) ? $field['handler_class'] : $formData['handler_class'];
         if (empty($handlerClass)) {
             throw new \DomainException('missing handler_class');
@@ -99,12 +108,27 @@ class FormHelper
             }
 
             $form->submit($formData);
-            $editField->save();
-
-            $this->em->getConnection()->commit();
+            if ($form->isValid()) {
+                $editField->save();
+                $this->em->getConnection()->commit();
+            } else {
+                $this->errors = $form->getErrors(true, true);
+                $this->type   = $editField;
+                throw new \Exception('One of given fields is invalid, please check the form');
+            }
         } catch (\Exception $e) {
             $this->em->getConnection()->rollback();
             throw $e;
         }
+    }
+
+    public function getErrors()
+    {
+        return $this->errors;
+    }
+
+    public function getType()
+    {
+        return $this->type;
     }
 }

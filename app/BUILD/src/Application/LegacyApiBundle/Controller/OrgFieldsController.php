@@ -114,8 +114,13 @@ class OrgFieldsController extends AbstractController implements ProtectedControl
         }
 
         $container = $this->getContainer();
-        $helper = new Form\FormHelper($container->getEm(), $container->getFormFactory());
-        $helper->saveFormToField($field, $post);
+        $helper    = new Form\FormHelper($container->getEm(), $container->getFormFactory());
+
+        try {
+            $helper->saveFormToField($field, $post);
+        } catch (\Exception $e) {
+            return $this->createApiValidationErrorResponse($this->container->getValidator()->validate($helper->getType()));
+        }
 
         if ($id) {
             return $this->createSuccessResponse(
