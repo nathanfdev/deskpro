@@ -523,7 +523,7 @@ class LoginController extends AbstractController
         if ($person->getPref($prefName) && !$person->isDeleted()) {
             if ($this->get('deskpro.feature_flags')->hasBeta('email_templates')) {
                 $viewModel = $this->get('email.agent_viewmodel_factory')
-                    ->createLoginAlertModel(
+                    ->createAgentLoginAlertModel(
                         $request,
                         $this->session->getEntity()->getDateCreated(),
                         $success
