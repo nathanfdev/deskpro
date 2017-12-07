@@ -58,10 +58,13 @@ use Symfony\Component\HttpFoundation\Response;
  * @ApiDoc(
  *     target="listAction,countAction",
  *     filters={
+ *          {"name"="status", "description"="status filter", "dataType"="string", "pattern"="open|ended"},
  *          {"name"="date_created", "dataType"="string", "pattern"="Y-m-d:Y-m-d"},
  *          {"name"="date_period", "dataType"="string", "pattern"="today|yesterday|etc"},
+ *          {"name"="person", "dataType"="integer", "pattern"="\d+"},
  *          {"name"="agent", "dataType"="integer", "pattern"="\d+"},
  *          {"name"="department", "dataType"="integer", "pattern"="\d+"},
+ *          {"name"="label", "description"="labels filter option", "dataType"="array", "pattern"="[\w+,]+"},
  *          {
  *              "name"="chat_field.{id}",
  *              "description"="
