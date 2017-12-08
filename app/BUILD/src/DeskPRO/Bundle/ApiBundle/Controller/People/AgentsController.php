@@ -58,7 +58,9 @@ use Symfony\Component\HttpFoundation\Response;
  *     target="listAction",
  *     description="get list of agents",
  *     filters={
- *         {"name"="is_deleted", "pattern"="(1|0|-1)", "description"="deleted filter, defaults to 0", "dataType"="integer"}
+ *         {"name"="is_deleted", "pattern"="(1|0|-1)", "description"="deleted filter, defaults to 0", "dataType"="integer"},
+ *         {"name"="online", "pattern"="(1|0|-1)", "description"="is online filter, defaults to 0", "dataType"="integer"},
+ *         {"name"="online_for_chat", "pattern"="(1|0|-1)", "description"="is online for chat filter, defaults to 0", "dataType"="integer"}
  *     },
  *     statusCodes={
  *         200="OK"
