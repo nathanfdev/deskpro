@@ -11,7 +11,7 @@
 	<container>
 		{{ phrase('agent.emails.newagent-created-account', {
 			admin_name: app.user.display_name,
-			admin_email: app.user.primary_email_address,
+			admin_email: app.user.primary_email,
 			helpdesk_url: brand_setting('core.deskpro_url')
 		}) }}
 

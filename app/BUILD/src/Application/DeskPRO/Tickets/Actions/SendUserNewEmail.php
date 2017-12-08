@@ -114,7 +114,7 @@ class SendUserNewEmail extends AbstractEmailAction
                     ]
                 );
                 if ($messages) {
-                    $lastMessage = array_pop($messages);
+                    $lastMessage = array_shift($messages);
                     $viewModel   = $factory->createTicketReplyByAgentModel($ticket, $lastMessage);
                 } else {
                     $context->getLogger()->info('No reply to send: '.$context->getEventType());

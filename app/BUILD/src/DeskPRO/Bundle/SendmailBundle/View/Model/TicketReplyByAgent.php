@@ -46,6 +46,8 @@ class TicketReplyByAgent extends TicketEmailType
 
     protected $templateFile = 'emails_user:ticket_reply_by_agent.html.twig';
 
+    protected $showRatingLink = false;
+
     /**
      * TicketReplyByAgent constructor.
      *
@@ -55,11 +57,13 @@ class TicketReplyByAgent extends TicketEmailType
      * @param string        $ticketLink
      * @param TicketMessage $ticketMessages
      * @param TicketMessage $reply
+     * @param bool          $showRatingLink
      */
-    public function __construct(Ticket $ticket, $ticketPerson, $ticketAgent, $ticketLink, $ticketMessages, TicketMessage $reply)
+    public function __construct(Ticket $ticket, $ticketPerson, $ticketAgent, $ticketLink, $ticketMessages, TicketMessage $reply, $showRatingLink)
     {
         parent::__construct($ticket, $ticketPerson, $ticketAgent, $ticketLink, $ticketMessages);
 
-        $this->reply = $reply;
+        $this->reply          = $reply;
+        $this->showRatingLink = $showRatingLink;
     }
 }

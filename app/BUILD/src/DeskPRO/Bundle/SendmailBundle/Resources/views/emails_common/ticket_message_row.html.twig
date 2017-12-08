@@ -2,9 +2,9 @@
 	<tr><td>
 		<div class="dp-author-row">
 			{% if show_author_email or person_id == message.person.id or not message.person.is_agent %}
-				{{ phrase('user.emails.ticket_message_title', { date: message.date_created|date('full'), time: message.date_created|date('time'), author: (is_to_agent ? message.person.display_name|e : message.person.display_name_user|e) ~ ' &lt;' ~ message.person.primary_email_address ~ '&gt;' }, true) }}
+				{{ phrase('user.emails.ticket_message_title', { date: message.date_created|date('full'), time: message.date_created|date('time'), author: (is_to_agent ? message.person.display_name|e : message.person.display_name|e) ~ ' &lt;' ~ message.person.primary_email ~ '&gt;' }, true) }}
 			{% else %}
-				{{ phrase('user.emails.ticket_message_title', { date: message.date_created|date('full'), time: message.date_created|date('time'), author: (is_to_agent ? message.person.display_name|e : message.person.display_name_user|e) }, true) }}
+				{{ phrase('user.emails.ticket_message_title', { date: message.date_created|date('full'), time: message.date_created|date('time'), author: (is_to_agent ? message.person.display_name|e : message.person.display_name|e) }, true) }}
 			{% endif %}
 		</div>
 	</td></tr>

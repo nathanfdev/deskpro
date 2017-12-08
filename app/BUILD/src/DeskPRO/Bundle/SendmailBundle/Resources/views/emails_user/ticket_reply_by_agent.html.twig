@@ -10,21 +10,20 @@
 {% include 'SendmailBundle:blocks:header.html.twig' %}
 
 	<container>
-		{% set message = ticket_messages|first %}
 		{% if message.person.is_agent %}
-			{% include 'SendmailBundle:emails_common:ticket_message_agent.html.twig' with {message: message, ticketdisplay: context.ticketdisplay } %}
+			{% include 'SendmailBundle:emails_common:ticket_message_agent.html.twig' with {message: reply, ticketdisplay: context.ticketdisplay } %}
 		{% else %}
-			{% include 'SendmailBundle:emails_common:ticket_message.html.twig' with {message: message, ticketdisplay: context.ticketdisplay } %}
+			{% include 'SendmailBundle:emails_common:ticket_message.html.twig' with {message: reply, ticketdisplay: context.ticketdisplay } %}
 		{% endif %}
 
 		{% if show_rating_link and app.isPortalEnabled() %}
-			{% set message = ticket_messages|first %}
+			{% set message = reply %}
 			{% include 'SendmailBundle:emails_common:ticket_rating_links.html.twig' with {message: message, ticket: ticket} %}
 		{% endif %}
 
 		<br /><br />
 
-		{% for message in ticket_messages|slice(1) %}
+		{% for message in ticket_messages|reverse|slice(1) %}
 			{% if not context.message_limit or loop.index0 < context.message_limit %}
 				{% include 'SendmailBundle:emails_common:ticket_message_row.html.twig' with { message: message, ticketdisplay: context.ticketdisplay } %}
 			{% endif %}

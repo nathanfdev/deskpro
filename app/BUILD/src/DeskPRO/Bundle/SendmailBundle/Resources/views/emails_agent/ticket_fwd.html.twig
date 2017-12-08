@@ -17,7 +17,7 @@
 
         ---------- {{ phrase('agent.tickets.forwarded_message') }} ----------<br/>
         {% for message in ticket_messages %}
-        <strong>{{ phrase('agent.general.from') }}:</strong> {{ message.person.display_name }} &lt;{{ message.person.primary_email_address }}&gt;<br/>
+        <strong>{{ phrase('agent.general.from') }}:</strong> {{ message.person.display_name }} &lt;{{ message.person.primary_email }}&gt;<br/>
         <strong>{{ phrase('agent.general.date') }}:</strong> {{ message.date_created|date('full') }}<br/>
         <strong>{{ phrase('agent.general.subject') }}:</strong> {{ ticket.subject }}<br/>
 

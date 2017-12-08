@@ -582,7 +582,12 @@ class UserViewModelFactory extends AbstractViewModelFactory
     ) {
         $arguments = $this->getTicketArguments($ticket);
 
-        $arguments = array_merge($arguments, [$message]);
+        $showRatingLink = false;
+        if ($this->container->get('settings_resolver')->getGlobalSettings()->get('core_tickets.enable_feedback') && $message && $message->getPerson()->isAgent() && !$message->isAgentNote()) {
+            $showRatingLink = true;
+        }
+
+        $arguments = array_merge($arguments, [$message, $showRatingLink]);
 
         return $this->convertParameters(TicketReplyByAgent::class, $arguments);
     }
