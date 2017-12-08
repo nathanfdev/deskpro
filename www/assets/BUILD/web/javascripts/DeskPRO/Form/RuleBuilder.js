@@ -235,6 +235,8 @@ DeskPRO.Form.RuleBuilder = new Orb.Class({
 									$(this).prop('selected', true);
 								}
 							});
+						} else if (el.is(':checkbox')) {
+							el.attr('checked', !!val).change();
 						}
 					} else if (typeOf(val) == 'object') {
 						Object.each(val, function(subval, subname) {
@@ -440,6 +442,19 @@ DeskPRO.Form.RuleBuilder = new Orb.Class({
 				$(this).trigger('change');
 			});
 		});
+
+		var toggleDateInputType = function() {
+			var $parent = $(this).parent();
+			if ($(this).is(':checked')) {
+				$parent.find('.date-input').hide();
+				$parent.find('.date-input-relative').show();
+			} else {
+				$parent.find('.date-input').show();
+				$parent.find('.date-input-relative').hide();
+			}
+		};
+		$('.builder-options .date-input-relative-checkbox').each(toggleDateInputType);
+		$('.builder-options .date-input-relative-checkbox').on('change', toggleDateInputType);
 
 		this.fireEvent('selectChange', [row, type]);
 	},

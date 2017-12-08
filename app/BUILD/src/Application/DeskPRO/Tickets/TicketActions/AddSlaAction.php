@@ -86,9 +86,9 @@ class AddSlaAction extends AbstractAction
     /**
      * {@inheritdoc}
      */
-    public function merge(ActionInterface $other_action)
+    public function merge(ActionInterface $otherAction)
     {
-        $this->sla_ids = array_merge($this->sla_ids, $other_action->getSlaIds());
+        $this->sla_ids = array_merge($this->sla_ids, $otherAction->getSlaIds());
         $this->sla_ids = array_unique($this->sla_ids);
 
         return $this;

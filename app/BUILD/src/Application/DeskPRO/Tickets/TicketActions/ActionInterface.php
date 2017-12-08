@@ -66,11 +66,11 @@ interface ActionInterface
      * But if you were adding a value to a collection, then you could merge the two collections
      * together so the new action had new items from both actions.
      *
-     * @param ActionInterface $other_action
+     * @param ActionInterface $otherAction
      *
      * @return ActionInterface
      */
-    public function merge(ActionInterface $other_action);
+    public function merge(ActionInterface $otherAction);
 
     /**
      * Get a text description of the action.

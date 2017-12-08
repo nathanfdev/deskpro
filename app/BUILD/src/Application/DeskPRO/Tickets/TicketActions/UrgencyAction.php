@@ -95,9 +95,9 @@ class UrgencyAction extends AbstractAction implements PermissionableAction
     /**
      * {@inheritdoc}
      */
-    public function merge(ActionInterface $other_action)
+    public function merge(ActionInterface $otherAction)
     {
-        return new self($this->getNum() + $other_action->getNum());
+        return new self($this->getNum() + $otherAction->getNum());
     }
 
     /**
