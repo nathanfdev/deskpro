@@ -108,14 +108,8 @@ class FormHelper
             }
 
             $form->submit($formData);
-            if ($form->isValid()) {
-                $editField->save();
-                $this->em->getConnection()->commit();
-            } else {
-                $this->errors = $form->getErrors(true, true);
-                $this->type   = $editField;
-                throw new \Exception('One of given fields is invalid, please check the form');
-            }
+            $editField->save(); // sic! save anyway (as it was)
+            $this->em->getConnection()->commit();
         } catch (\Exception $e) {
             $this->em->getConnection()->rollback();
             throw $e;
