@@ -206,6 +206,10 @@ class TicketHandler extends AbstractEntityHandler
      */
     public function getTicketErrors(TicketEntity $entity, SideloadSerializationContext $context, $viewContext)
     {
+        if (!$context->getUser()) {
+            return;
+        }
+
         $form = $this->formFactory->create(TicketWithLayoutsApiType::class, $entity, [
             'ticket_view_context' => $viewContext,
             'ticket_visibility'   => TicketWithLayoutsContext::VISIBILITY_EDIT,
