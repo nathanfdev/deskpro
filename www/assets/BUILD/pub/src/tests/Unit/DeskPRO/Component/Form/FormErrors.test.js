@@ -1,10 +1,10 @@
 jest.dontMock('DeskPRO/Component/Form/FormErrors.js');
 
-describe('Form errors component', () => {
-  const FormErrors = require('DeskPRO/Component/Form/FormErrors.js');
+const FormErrors = require('DeskPRO/Component/Form/FormErrors.js');
 
+describe('Form errors component', () => {
   it('Convert property path to error path', () => {
-    expect(FormErrors.getErrorPath('')).toEqual([]);
+    expect(FormErrors.getErrorPath('')).toEqual(['errors']);
     expect(FormErrors.getErrorPath('name')).toEqual(['fields', 'name', 'errors']);
     expect(FormErrors.getErrorPath('person.name')).toEqual(['fields', 'person', 'fields', 'name', 'errors']);
     expect(FormErrors.getErrorPath('ticket.person.name')).toEqual(['fields', 'ticket', 'fields', 'person', 'fields', 'name', 'errors']);

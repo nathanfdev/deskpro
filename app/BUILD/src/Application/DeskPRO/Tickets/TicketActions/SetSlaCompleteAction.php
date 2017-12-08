@@ -103,9 +103,9 @@ class SetSlaCompleteAction extends AbstractAction
     /**
      * {@inheritdoc}
      */
-    public function merge(ActionInterface $other_action)
+    public function merge(ActionInterface $otherAction)
     {
-        $actions = $other_action->getSlaActions();
+        $actions = $otherAction->getSlaActions();
         foreach ($actions as $complete => $sla_ids) {
             if (isset($this->actions[$complete])) {
                 $this->actions[$complete] = array_merge($this->actions[$complete], $sla_ids);

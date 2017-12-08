@@ -26,52 +26,38 @@
  * ~ Thanks, Everyone at Team DeskPRO
  */
 
+namespace DeskPRO\Bundle\AppBundle\Form\Type\Settings\Widget;
+
+use DeskPRO\Bundle\AppBundle\Form\Type\ApiBooleanType;
+use DeskPRO\Bundle\AppBundle\Settings\Model\Widget\JwtSettings;
+use Symfony\Component\Form\AbstractType;
+use Symfony\Component\Form\Extension\Core\Type\TextType;
+use Symfony\Component\Form\FormBuilderInterface;
+use Symfony\Component\OptionsResolver\OptionsResolver;
+
 /**
- * DeskPRO.
+ * Class JwtSettingsType.
  */
-
-namespace Application\DeskPRO\Tickets\TicketActions;
-
-use Application\DeskPRO\App;
-use Application\DeskPRO\Entity\Ticket;
-
-/**
- * Recalculate SLA status - this is really a no-op as the SLA processor will do it.
- */
-class RecalculateSlaStatusAction extends AbstractAction
+class JwtSettingsType extends AbstractType
 {
     /**
      * {@inheritdoc}
      */
-    public function apply(Ticket $ticket)
+    public function buildForm(FormBuilderInterface $builder, array $options)
     {
-        // there's nothing to do here - this only shows up when editing an sla trigger
-        // and the cron process will handle it. This just means that there's always an action listed.
+        $builder
+            ->add('secret', TextType::class)
+            ->add('required', ApiBooleanType::class)
+        ;
     }
 
     /**
      * {@inheritdoc}
      */
-    public function getApplyActions(Ticket $ticket)
+    public function configureOptions(OptionsResolver $resolver)
     {
-        return [];
-    }
-
-    /**
-     * {@inheritdoc}
-     */
-    public function merge(ActionInterface $otherAction)
-    {
-        return $otherAction;
-    }
-
-    /**
-     * {@inheritdoc}
-     */
-    public function getDescription($as_html = true)
-    {
-        $tr = App::getTranslator();
-
-        return $tr->phrase('agent.tickets.recalculate_sla_status_action');
+        $resolver->setDefaults([
+            'data_class' => JwtSettings::class,
+        ]);
     }
 }

@@ -67,6 +67,11 @@ class TicketViewDataService extends AbstractDataService
     private $brandAwareSettings;
 
     /**
+     * @var CustomFieldUtil
+     */
+    private $customFieldUtil;
+
+    /**
      * Constructor.
      *
      * @param EntityManager              $em
@@ -74,13 +79,15 @@ class TicketViewDataService extends AbstractDataService
      * @param TicketLayoutFactory        $ticketLayoutFactory
      * @param Translate                  $translate
      * @param BrandAwareSettingsResolver $brandAwareSettings
+     * @param CustomFieldUtil            $customFieldUtil
      */
     public function __construct(
         EntityManager              $em,
         CustomFieldManager         $customFieldManager,
         TicketLayoutFactory        $ticketLayoutFactory,
         Translate                  $translate,
-        BrandAwareSettingsResolver $brandAwareSettings
+        BrandAwareSettingsResolver $brandAwareSettings,
+        CustomFieldUtil            $customFieldUtil
     ) {
         parent::__construct($em);
 
@@ -88,6 +95,7 @@ class TicketViewDataService extends AbstractDataService
         $this->ticketLayoutFactory = $ticketLayoutFactory;
         $this->translate           = $translate;
         $this->brandAwareSettings  = $brandAwareSettings;
+        $this->customFieldUtil     = $customFieldUtil;
     }
 
     /**
@@ -168,7 +176,7 @@ class TicketViewDataService extends AbstractDataService
                     }
 
                     /* @var \Application\DeskPRO\Entity\CustomDataTicket $data */
-                    $data = CustomFieldUtil::getCustomDataForField($fieldDef, $ticket->getCustomData());
+                    $data = $this->customFieldUtil->getCustomDataForField($fieldDef, $ticket->getCustomData());
                     $this->addCustomDataProperty($view, $field_id, $fieldDef, $data, $layout_field->isVisibleOnViewAlways());
                     break;
                 case FormFields::ORG_FIELD:
@@ -187,7 +195,7 @@ class TicketViewDataService extends AbstractDataService
                     }
 
                     /* @var \Application\DeskPRO\Entity\CustomDataOrganization $data */
-                    $data = CustomFieldUtil::getCustomDataForField($fieldDef, $organization->getCustomData());
+                    $data = $this->customFieldUtil->getCustomDataForField($fieldDef, $organization->getCustomData());
                     $this->addCustomDataProperty($view, $field_id, $fieldDef, $data, $layout_field->isVisibleOnViewAlways());
                     break;
                 case FormFields::USER_FIELD:
@@ -202,7 +210,7 @@ class TicketViewDataService extends AbstractDataService
                     }
 
                     /* @var \Application\DeskPRO\Entity\CustomDataPerson $data */
-                    $data = CustomFieldUtil::getCustomDataForField($fieldDef, $ticket->person->getCustomData());
+                    $data = $this->customFieldUtil->getCustomDataForField($fieldDef, $ticket->person->getCustomData());
                     $this->addCustomDataProperty($view, $field_id, $fieldDef, $data, $layout_field->isVisibleOnViewAlways());
                     break;
                 case FormFields::CUSTOM_FIELD: // per-user custom fields
@@ -247,11 +255,11 @@ class TicketViewDataService extends AbstractDataService
     {
         if (is_array($data)) {
             $value = array_map(function ($data) use ($def) {
-                return $data ? CustomFieldUtil::getValueForCustomFormField($def, $data) : null;
+                return $data ? $this->customFieldUtil->getValueForCustomFormField($def, $data) : null;
             }, $data);
             $value = implode(', ', $value);
         } else {
-            $value = $data ? CustomFieldUtil::getValueForCustomFormField($def, $data) : null;
+            $value = $data ? $this->customFieldUtil->getValueForCustomFormField($def, $data) : null;
         }
 
         $view->addProperty(

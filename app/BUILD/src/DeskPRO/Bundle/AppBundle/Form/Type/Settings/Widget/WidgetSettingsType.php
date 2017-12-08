@@ -46,6 +46,9 @@ class WidgetSettingsType extends AbstractType
     {
         $builder
             ->add('settings', WidgetOptionsType::class)
+            ->add('jwt_settings', JwtSettingsType::class, [
+                'property_path' => 'jwtSettings',
+            ])
             ->add('enabled_on_portal', ApiBooleanType::class, [
                 'property_path' => 'enabledOnPortal',
             ])

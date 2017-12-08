@@ -9,7 +9,7 @@ import { FormItem } from './FormItem';
 import { CustomFieldTemplate } from './CustomFieldTemplate';
 import { WidgetBodyScrollAreaContainer } from '../../../../../Application/Components/Widget/Parts/Body/WidgetBodyScrollAreaContainer';
 import { ChatBeginContainer } from '../ChatBeginContainer';
-import BannedMessage from '../BannedMessage';
+import { BannedMessage, FormErrorMessage } from '../FormMessages';
 
 export class ChatBeginForm extends React.Component {
 
@@ -54,6 +54,7 @@ export class ChatBeginForm extends React.Component {
     return (
       <WidgetBodyScrollAreaContainer>
         {banned && <BannedMessage />}
+        {errors && errors.errors && <FormErrorMessage errors={errors.errors} />}
         <div className="dpdesignportal-open-new-chat">
           <form className="dpdesignportal-form" onSubmit={onSubmit}>
             {!loggedIn &&

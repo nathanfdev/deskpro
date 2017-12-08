@@ -684,6 +684,10 @@ define [
           res.data.errors.errors.map (error) =>
             if 'agent.primary_phone.number' == error.prop
               @invalid_phone_error = error.message
+        if res?.data?.error_code == 'license_exceeded'
+          @DpLicense.openUpgradeLicense('upgrade_plan').then(=>
+            @doSaveAgent()
+          )
 
         @stopSpinner('saving', true)
         @applyErrorResponseToView(res)

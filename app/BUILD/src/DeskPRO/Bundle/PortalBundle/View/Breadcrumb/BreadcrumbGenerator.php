@@ -161,9 +161,13 @@ class BreadcrumbGenerator
             }
         }
 
-        return $this->createKbCategoryBuilder($cat)
-            ->addKbView($a)
-            ->done();
+        if ($cat) {
+            $builder = $this->createKbCategoryBuilder($cat);
+        } else {
+            $builder = $this->createBuilder()->addKb();
+        }
+
+        return $builder->addKbView($a)->done();
     }
 
     //####################################################################################################################

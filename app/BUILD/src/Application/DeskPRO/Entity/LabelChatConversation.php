@@ -49,6 +49,26 @@ use Doctrine\ORM\Mapping\ClassMetadataInfo;
          */
         protected $chat;
 
+        /**
+         * @return ChatConversation
+         */
+        public function getChat()
+        {
+            return $this->chat;
+        }
+
+        /**
+         * @param ChatConversation $chat
+         *
+         * @return $this
+         */
+        public function setChat(ChatConversation $chat = null)
+        {
+            $this->setModelField('chat', $chat);
+
+            return $this;
+        }
+
         //###########################################################################
         // Doctrine Metadata
         //###########################################################################

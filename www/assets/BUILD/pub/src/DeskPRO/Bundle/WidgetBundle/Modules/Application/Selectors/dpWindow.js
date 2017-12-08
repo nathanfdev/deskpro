@@ -83,6 +83,11 @@ export const noFetchOptionsSelector = createSelector(
   options => options.get('noFetchOptions')
 );
 
+export const jwtTokenSelector = createSelector(
+  widgetOptionsSelector,
+  options => options.get('jwt')
+);
+
 // Base widget options selectors
 export const widgetBaseOptionsSelector = createSelector(
   widgetOptionsSelector,

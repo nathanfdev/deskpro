@@ -26,52 +26,35 @@
  * ~ Thanks, Everyone at Team DeskPRO
  */
 
-/**
- * DeskPRO.
- */
+namespace DeskPRO\Bundle\AppBundle\Validator\Constraints;
 
-namespace Application\DeskPRO\Tickets\TicketActions;
-
-use Application\DeskPRO\App;
-use Application\DeskPRO\Entity\Ticket;
+use Symfony\Component\Validator\Constraint;
 
 /**
- * Recalculate SLA status - this is really a no-op as the SLA processor will do it.
+ * Class JwtToken.
  */
-class RecalculateSlaStatusAction extends AbstractAction
+class JwtToken extends Constraint
 {
-    /**
-     * {@inheritdoc}
-     */
-    public function apply(Ticket $ticket)
-    {
-        // there's nothing to do here - this only shows up when editing an sla trigger
-        // and the cron process will handle it. This just means that there's always an action listed.
-    }
+    const MISSING_JWT_TOKEN = 'missing_jwt_token';
+    const INVALID_JWT_TOKEN = 'invalid_jwt_token';
+    const EXPIRED_JWT_TOKEN = 'expired_jwt_token';
+
+    public $missingMessage = 'JWT token is required.';
+    public $invalidMessage = 'This value is not a valid JWT token.';
+    public $expiredMessage = 'JWT token is expired.';
 
     /**
-     * {@inheritdoc}
+     * @var string
      */
-    public function getApplyActions(Ticket $ticket)
-    {
-        return [];
-    }
+    public $secret;
 
     /**
-     * {@inheritdoc}
+     * @var string
      */
-    public function merge(ActionInterface $otherAction)
-    {
-        return $otherAction;
-    }
+    public $algo;
 
     /**
-     * {@inheritdoc}
+     * @var bool
      */
-    public function getDescription($as_html = true)
-    {
-        $tr = App::getTranslator();
-
-        return $tr->phrase('agent.tickets.recalculate_sla_status_action');
-    }
+    public $required = false;
 }

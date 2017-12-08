@@ -241,23 +241,22 @@ class PageTitleGenerator
         return (string) $builder;
     }
 
-    public function kb($content_or_cat = null)
+    public function kb($contentOrCat = null)
     {
-        $builder = $this->createHelpdeskTitleBuilder();
+        $builder      = $this->createHelpdeskTitleBuilder();
+        $sectionTitle = $this->phrase('portal.articles.section-title');
 
-        $section_title = $this->phrase('portal.articles.section-title');
-
-        if ($content_or_cat instanceof ArticleCategory) {
+        if ($contentOrCat instanceof ArticleCategory) {
             $builder->prependSection(
-                $this->getCategorySection($content_or_cat, $section_title)
+                $this->getCategorySection($contentOrCat, $sectionTitle)
             );
-        } elseif ($content_or_cat instanceof Article) {
+        } elseif ($contentOrCat instanceof Article) {
             $permission_bag = $this->getCurrentUserPermissionBag();
-            $cat            = $content_or_cat->getPrimaryCategory();
+            $cat            = $contentOrCat->getPrimaryCategory();
 
             // if no access to this cat, try our best to loop to one he can see
             if (!$permission_bag->hasContentCategoryAccess($cat)) {
-                foreach ($content_or_cat->getCategories() as $cat_to_check) {
+                foreach ($contentOrCat->getCategories() as $cat_to_check) {
                     if ($permission_bag->hasContentCategoryAccess($cat_to_check)) {
                         $cat = $cat_to_check;
                         break;
@@ -265,15 +264,20 @@ class PageTitleGenerator
                 }
             }
 
-            $builder->prependSection(
-                $this->getCategorySection(
-                    $cat,
-                    $section_title
-                )
-            );
-            $builder->prependSection($content_or_cat->getTitle());
+            if ($cat) {
+                $builder->prependSection(
+                    $this->getCategorySection(
+                        $cat,
+                        $sectionTitle
+                    )
+                );
+            } else {
+                $builder->prependSection([$sectionTitle]);
+            }
+
+            $builder->prependSection($contentOrCat->getTitle());
         } else {
-            $builder->prependSection($section_title);
+            $builder->prependSection($sectionTitle);
         }
 
         return (string) $builder;

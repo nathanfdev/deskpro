@@ -35,7 +35,7 @@
 namespace Application\DeskPRO\EntityRepository;
 
 use Application\DeskPRO\App;
-use Application\DeskPRO\Entity\CustomDefOrganization;
+use Application\DeskPRO\Entity\CustomDefOrganization as CustomDefOrganizationEntity;
 use Application\DeskPRO\Entity\CustomDefPerson;
 use Application\DeskPRO\Entity\CustomDefTicket;
 use Application\DeskPRO\Entity\ReportWidget as ReportWidgetEntity;
@@ -334,7 +334,7 @@ class ReportWidget extends AbstractEntityRepository
         }
 
         /** @var CustomDefOrganizationRepository $customDefOrganizationRepository */
-        $customDefOrganizationRepository = $this->getEntityManager()->getRepository(CustomDefOrganization::class);
+        $customDefOrganizationRepository = $this->getEntityManager()->getRepository(CustomDefOrganizationEntity::class);
         $fields                          = $customDefOrganizationRepository->getTopFields();
         foreach ($fields as $field) {
             $escaped                                            = addslashes($field->title);

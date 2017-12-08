@@ -26,56 +26,83 @@
  * ~ Thanks, Everyone at Team DeskPRO
  */
 
-/**
- * DeskPRO.
- */
+namespace DeskPRO\Bundle\AppBundle\Settings\Model\Widget;
 
-namespace Application\DeskPRO\Tickets\TicketActions;
-
-use Application\DeskPRO\Entity\Ticket;
+use JMS\Serializer\Annotation as JMS;
+use Symfony\Component\Validator\Constraints as Assert;
+use Symfony\Component\Validator\GroupSequenceProviderInterface;
 
 /**
- * Signals that the ticket tab should be closed during a macro call.
+ * Class JwtSettings.
  */
-class CloseTicketTabAction extends AbstractAction
+class JwtSettings implements GroupSequenceProviderInterface
 {
-    /** @var \Application\DeskPRO\Tickets\TicketChangeTracker */
-    protected $tracker;
+    /**
+     * @JMS\Type("string")
+     *
+     * @Assert\NotBlank(groups={"RequiredSecret"})
+     *
+     * @var string
+     */
+    private $secret;
 
-    public function __construct(\Application\DeskPRO\Tickets\TicketChangeTracker $tracker = null)
+    /**
+     * @JMS\Type("boolean")
+     *
+     * @var bool
+     */
+    private $required = false;
+
+    /**
+     * @return string
+     */
+    public function getSecret()
     {
-        $this->tracker = $tracker;
+        return $this->secret;
+    }
+
+    /**
+     * @param string $secret
+     *
+     * @return $this
+     */
+    public function setSecret($secret)
+    {
+        $this->secret = $secret;
+
+        return $this;
+    }
+
+    /**
+     * @return bool
+     */
+    public function isRequired()
+    {
+        return $this->required;
+    }
+
+    /**
+     * @param bool $required
+     *
+     * @return $this
+     */
+    public function setRequired($required)
+    {
+        $this->required = $required;
+
+        return $this;
     }
 
     /**
      * {@inheritdoc}
      */
-    public function apply(Ticket $ticket)
+    public function getGroupSequence()
     {
-        $GLOBALS['DP_TICKET_CLOSE_TAB'] = true;
-    }
+        $groups = ['Common'];
+        if ($this->required) {
+            $groups[] = 'RequiredSecret';
+        }
 
-    /**
-     * {@inheritdoc}
-     */
-    public function getApplyActions(Ticket $ticket)
-    {
-        return [];
-    }
-
-    /**
-     * {@inheritdoc}
-     */
-    public function merge(ActionInterface $otherAction)
-    {
-        return $otherAction;
-    }
-
-    /**
-     * {@inheritdoc}
-     */
-    public function getDescription($as_html = true)
-    {
-        return '<span class="with-close-tab">Close ticket tab</span>';
+        return $groups;
     }
 }

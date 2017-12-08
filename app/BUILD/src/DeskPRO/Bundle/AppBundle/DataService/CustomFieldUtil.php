@@ -38,6 +38,8 @@ use Application\DeskPRO\CustomFields\Handler\Textarea;
 use Application\DeskPRO\CustomFields\Handler\Toggle;
 use Application\DeskPRO\Entity\CustomDataAbstract;
 use Application\DeskPRO\Entity\CustomDefAbstract;
+use Application\DeskPRO\Entity\Person;
+use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorage;
 
 /**
  * Class CustomFieldUtil.
@@ -47,32 +49,55 @@ use Application\DeskPRO\Entity\CustomDefAbstract;
 class CustomFieldUtil
 {
     /**
-     * @param $field_def
-     * @param $data
+     * @var TokenStorage
+     */
+    private $tokenStorage;
+
+    /**
+     * Constructor.
+     *
+     * @param TokenStorage $tokenStorage
+     */
+    public function __construct(TokenStorage $tokenStorage)
+    {
+        $this->tokenStorage = $tokenStorage;
+    }
+
+    /**
+     * @param CustomDefAbstract  $fieldDef
+     * @param CustomDataAbstract $data
      *
      * @return bool|string
      */
-    public static function getValueForCustomFormField(CustomDefAbstract $field_def, CustomDataAbstract $data)
+    public function getValueForCustomFormField(CustomDefAbstract $fieldDef, CustomDataAbstract $data)
     {
-        switch ($field_def->getHandlerClass()) {
+        switch ($fieldDef->getHandlerClass()) {
             case Date::class:
-                $value = Date::getDisplayValue($data->getData(), $field_def->getOption('calendar'));
+                $value = Date::getDisplayValue($data->getData(), $fieldDef->getOption('calendar'));
                 break;
             case DateTime::class:
                 try {
+                    /** @var \Application\DeskPRO\Entity\Person $user */
+                    $token    = $this->tokenStorage->getToken();
+                    $user     = $token ? $token->getUser() : null;
+                    $timezone = new \DateTimeZone($user instanceof Person ? $user->getTimezone() : 'UTC');
+
                     if (is_numeric($data->getData())) {
                         $datetime = new \DateTime('@'.$data->getData());
                     } else {
                         $datetime = new \DateTime($data->getData());
                     }
-                    $value = date('F j, Y, g:i a', $datetime->getTimestamp());
+
+                    $datetime->setTimezone($timezone);
+
+                    $value = $datetime->format('F j, Y, g:i a');
                 } catch (\Exception $e) {
                     $value = ''.$data->getData();
                 }
                 break;
             case Toggle::class:
                 if ($data->getData() == 1) {
-                    $value = $field_def->getOption('label_text') ?: 'Checked';
+                    $value = $fieldDef->getOption('label_text') ?: 'Checked';
                 } else {
                     $value = 'None';
                 }
@@ -89,8 +114,8 @@ class CustomFieldUtil
                 }
                 $selected = [];
                 foreach ($ids as $id) {
-                    if ($selected_field = $field_def->getChildById($id)) {
-                        $selected[] = $selected_field->getTitle();
+                    if ($selectedField = $fieldDef->getChildById($id)) {
+                        $selected[] = $selectedField->getTitle();
                     }
                 }
                 $value = implode(', ', $selected);
@@ -99,7 +124,7 @@ class CustomFieldUtil
                 $value = $data->getInput();
                 break;
             case Display::class:
-                $value = $field_def->getHtmlOption();
+                $value = $fieldDef->getHtmlOption();
                 break;
             default:
                 $value = null;
@@ -115,10 +140,12 @@ class CustomFieldUtil
      *
      * @return CustomDataAbstract[]
      */
-    public static function getCustomDataForField(CustomDefAbstract $field, $customData)
+    public function getCustomDataForField(CustomDefAbstract $field, $customData)
     {
         $fieldId = $field->getId();
         $matches = [];
+
+        /** @var CustomDataAbstract $data */
         foreach ($customData as $data) {
             $cdField     = $data->getField();
             $cdRootField = $data->getRootField();

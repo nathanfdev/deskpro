@@ -28,6 +28,7 @@
 
 namespace Application\DeskPRO\WorkerProcess\Job;
 
+use Application\DeskPRO\Tickets\ExecutorContext;
 use DeskPRO\Bundle\AppBundle\Entity\TicketFollowUp;
 use DpSys\LowError\SystemErrorHandler;
 
@@ -70,8 +71,15 @@ class TicketFollowUps extends AbstractJob
                 $ticket = $followUp->getTicket();
                 $ticket->disableAutoTicketProcess();
 
-                $followUp->getActionsCollection()->apply($ticket->getTicketLogger(), $ticket, $person);
-                $context = $ticketManager->createSystemExecutorContext();
+                $actionCollection = $followUp->getActionsCollection();
+                $actionCollection->apply($ticket->getTicketLogger(), $ticket, $person);
+
+                $eventType = ExecutorContext::EVENT_UPDATE;
+                if ($actionCollection->getReplyActionsCollection()->countActions() > 0) {
+                    $eventType = ExecutorContext::EVENT_REPLY;
+                }
+
+                $context = $ticketManager->createAgentExecutorContext($person, $eventType, ExecutorContext::METHOD_WEB);
                 $ticketManager->saveTicket($ticket, $context);
 
                 // mark the follow up status as done
