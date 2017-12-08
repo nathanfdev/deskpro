@@ -110,7 +110,7 @@ class SearchController extends AbstractController
                 'Theme:Search:search_results_ajax.html.twig',
                 [
                     'is_search'  => $isSearch,
-                    'result_set' => $results[$type],
+                    'result_set' => isset($results[$type]) ? $results[$type] : null,
                 ]
             );
         }
