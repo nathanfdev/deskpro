@@ -28,6 +28,7 @@ define ['DeskPRO/Util/Arrays'], (Arrays) -> [
 
     $scope.gridsterOptions =
       margins: [10, 10],
+      width: 10000,
       columns: 150,
       colWidth: 50,
       draggable:
