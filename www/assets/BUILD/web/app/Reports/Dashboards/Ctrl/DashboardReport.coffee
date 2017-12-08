@@ -29,6 +29,7 @@ define ['DeskPRO/Util/Arrays'], (Arrays) -> [
     $scope.gridsterOptions =
       margins: [10, 10],
       columns: $scope.report.options.columns,
+      widget_base_dimensions: ['auto', 140],
       draggable:
         enabled: false
         handle: 'h3'
