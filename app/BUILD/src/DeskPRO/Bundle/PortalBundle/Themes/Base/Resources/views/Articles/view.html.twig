@@ -32,7 +32,9 @@
           <span class="comments"><i class="fa fa-comments-o"></i> <a href="#comments">{{ phrase('portal.general.comments-count', {count: article.calc_num_comments}) }}</a></span>
           <hr>
         {% endif %}
-        {{ phrase('portal.general.in') }} <a href="{{ portal_path(article.primary_category) }}">{{ object_phrase(article.primary_category) }}</a>
+        {% if article.primary_category %}
+          {{ phrase('portal.general.in') }} <a href="{{ portal_path(article.primary_category) }}">{{ object_phrase(article.primary_category) }}</a>
+        {% endif %}
       </div>
       {% if article.status != 'published' and article.status != 'archived' and app.user.is_agent %}
         <div class="sub-note">{{ phrase('portal.articles.view-as-agent') }}</div>
