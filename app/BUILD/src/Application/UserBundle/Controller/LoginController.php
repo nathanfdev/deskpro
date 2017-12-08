@@ -133,6 +133,10 @@ class LoginController extends AbstractController
     }
 
     /**
+     * @throws ORMException
+     * @throws OptimisticLockException
+     * @throws TransactionRequiredException
+     *
      * @return bool
      */
     protected function loginViaToken()
@@ -238,6 +242,10 @@ class LoginController extends AbstractController
     /**
      * @param $usersource_id
      *
+     * @throws ORMException
+     * @throws OptimisticLockException
+     * @throws TransactionRequiredException
+     *
      * @return Response
      */
     public function samlSingleLogoutServiceAction($usersource_id)
@@ -259,6 +267,10 @@ class LoginController extends AbstractController
 
     /**
      * @param $usersource_id
+     *
+     * @throws ORMException
+     * @throws OptimisticLockException
+     * @throws TransactionRequiredException
      *
      * @return Response
      */
@@ -514,8 +526,11 @@ class LoginController extends AbstractController
     }
 
     /**
-     * @param Person $person
-     * @param bool   $success
+     * @param Person  $person
+     * @param Request $request
+     * @param bool    $success
+     *
+     * @throws Exception
      */
     protected function sendLoginAlert(Person $person, Request $request, $success = true)
     {
@@ -587,6 +602,8 @@ class LoginController extends AbstractController
 
     /**
      * @param Request $request
+     *
+     * @throws Exception
      */
     protected function handleLoginAttempt(Request $request)
     {

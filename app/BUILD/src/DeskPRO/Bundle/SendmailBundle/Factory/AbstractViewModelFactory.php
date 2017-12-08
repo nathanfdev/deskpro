@@ -42,6 +42,7 @@ use Application\DeskPRO\Entity\Ticket;
 use Application\DeskPRO\Entity\TicketMessage;
 use Application\DeskPRO\Entity\Topic;
 use Application\DeskPRO\Entity\TopicComment;
+use Application\DeskPRO\People\PersonGuest;
 use DeskPRO\Bundle\AppBundle\ObjectRouter\ObjectRouter;
 use DeskPRO\Bundle\AppBundle\Serializer\Sideload\SideloadSerializationContext;
 use DeskPRO\Bundle\SendmailBundle\View\Model\EmailBaseType;
@@ -110,6 +111,7 @@ abstract class AbstractViewModelFactory
                 $handler = $this->container->get('api_serializer.handler.news');
                 break;
             case Person::class:
+            case PersonGuest::class:
                 $handler = $this->container->get('api_serializer.handler.person');
                 break;
             case Task::class:
