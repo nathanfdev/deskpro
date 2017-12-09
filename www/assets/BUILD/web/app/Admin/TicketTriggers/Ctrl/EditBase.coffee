@@ -92,6 +92,12 @@ define [
       for opt in setActionOptions
         @$scope.actionOptionTypes.push(opt)
 
+      # filter out usergroup 'Everyone'
+      # doesn't make sense to use it in Triggers
+      options_data = @criteraTypeDef.options_data;
+      if options_data?.usergroups
+        options_data.usergroups = options_data.usergroups.filter((group) -> group.sys_name != 'everyone');
+
     ###
     # Load the trigger
     ###

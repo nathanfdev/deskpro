@@ -401,6 +401,17 @@ class PersonSearch extends SearcherAbstract
                         if (!$choice) {
                             $choice = [0];
                         }
+
+                        // Some groups should be processed differently
+                        $specialGroupsWhere = '';
+                        $registeredGroupId = $this->extractRegisteredUsergroupId($choice);
+                        if ($registeredGroupId) {
+                            $specialGroupsWhere = $this->_choiceMatch("$people_table.is_user", self::OP_IS, 1);
+                            if (!$choice) {
+                                $choice = [0];
+                            }
+                        }
+
                         $person_ids = App::getDbRead('search.filter.people')->fetchAllCol('
                             SELECT person_id
                             FROM person2usergroups
@@ -440,6 +451,11 @@ class PersonSearch extends SearcherAbstract
                             } else {
                                 $wheres[] = $this->_choiceMatch("$people_table.id", $op, $person_ids);
                             }
+                        }
+
+                        if ($specialGroupsWhere) {
+                            $currWhere = array_pop($wheres);
+                            $wheres[] = sprintf("(%s) OR (%s)", $specialGroupsWhere, $currWhere);
                         }
 
                         $this->mode = self::MODE_ANY;
@@ -914,6 +930,25 @@ class PersonSearch extends SearcherAbstract
         ];
 
         return $this->sql_parts;
+    }
+
+    /**
+     * Extract and return Id of User Group 'Registered'
+     *
+     * @param array $usergroupIds
+     * @return int|false
+     */
+    protected function extractRegisteredUsergroupId(&$usergroupIds)
+    {
+        $registeredUserGroup = App::getEntityRepository('DeskPRO:Usergroup')->findOneBy(['sys_name' => 'registered']);
+
+        if (!in_array($registeredUserGroup->getId(), $usergroupIds)) {
+            return false;
+        }
+
+        $usergroupIds = array_diff($usergroupIds, [$registeredUserGroup->getId()]);
+
+        return $registeredUserGroup->getId();
     }
 
     /**
