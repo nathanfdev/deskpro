@@ -60,6 +60,7 @@ class TicketDepartmentsController extends AbstractDepartmentsController
 
     protected static $property       = 'is_tickets_enabled';
     protected static $departmentType = 'tickets';
+    public static $listPaginate   = false;
 
     /**
      * {@inheritdoc}
