@@ -36,10 +36,12 @@ use Application\DeskPRO\Entity\Download;
 use Application\DeskPRO\Entity\Feedback;
 use Application\DeskPRO\Entity\FeedbackComment;
 use Application\DeskPRO\Entity\News;
+use Application\DeskPRO\Entity\Organization;
 use Application\DeskPRO\Entity\Person;
 use Application\DeskPRO\Entity\Task;
 use Application\DeskPRO\Entity\Ticket;
 use Application\DeskPRO\Entity\TicketMessage;
+use Application\DeskPRO\Entity\TicketParticipant;
 use Application\DeskPRO\Entity\Topic;
 use Application\DeskPRO\Entity\TopicComment;
 use Application\DeskPRO\People\PersonGuest;
@@ -76,8 +78,13 @@ abstract class AbstractViewModelFactory
 
     protected function convertParameter($entity)
     {
-        if (is_array($entity)) {
-            return array_map([$this, 'convertParameter'], $entity);
+        if (is_array($entity) || $entity instanceof \Traversable) {
+            $result = [];
+            foreach ($entity as $item) {
+                $result[] = $this->convertParameter($item);
+            }
+
+            return $result;
         }
         if (!is_object($entity)) {
             return $entity;
@@ -110,6 +117,9 @@ abstract class AbstractViewModelFactory
             case News::class:
                 $handler = $this->container->get('api_serializer.handler.news');
                 break;
+            case Organization::class:
+                $handler = $this->container->get('api_serializer.handler.organization');
+                break;
             case Person::class:
             case PersonGuest::class:
                 $handler = $this->container->get('api_serializer.handler.person');
@@ -122,6 +132,9 @@ abstract class AbstractViewModelFactory
                 break;
             case TicketMessage::class:
                 $handler = $this->container->get('api_serializer.handler.ticket_message');
+                break;
+            case TicketParticipant::class:
+                $handler = $this->container->get('api_serializer.handler.ticket_participant');
                 break;
             case Topic::class:
                 $handler = $this->container->get('api_serializer.handler.topic');

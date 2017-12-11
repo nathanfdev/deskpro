@@ -30,7 +30,7 @@ namespace DeskPRO\Bundle\SendmailBundle\View\Model;
 
 use JMS\Serializer\Annotation as JMS;
 
-class AgentTicketNew extends TicketEmailType
+class AgentTicketNew extends AgentTicketEmailType
 {
     /**
      * The ticket access code.

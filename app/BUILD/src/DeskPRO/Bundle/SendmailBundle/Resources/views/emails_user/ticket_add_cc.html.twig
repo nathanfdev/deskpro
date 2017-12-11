@@ -14,7 +14,7 @@
 
         <br /><br />
 
-        {{ phrase('portal.emails.ticket_cc-added', {author_name: author.name, author_email: author.email_address}) }}
+        {{ phrase('portal.emails.ticket_cc-added', {author_name: author.name, author_email: author.primary_email}) }}
 
         {% if app.isPortalEnabled() %}
             <br /><br />

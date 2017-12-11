@@ -270,6 +270,8 @@ class AgentViewModelFactory extends AbstractViewModelFactory
     {
         $arguments = $this->getTicketArguments($ticket);
 
+        array_push($arguments, $ticket->getParticipants());
+
         return $this->convertParameters(AgentTicketNew::class, $arguments);
     }
 
@@ -282,6 +284,8 @@ class AgentViewModelFactory extends AbstractViewModelFactory
     {
         $arguments = $this->getTicketArguments($ticket);
 
+        array_push($arguments, $ticket->getParticipants());
+
         return $this->convertParameters(AgentTicketUpdate::class, $arguments);
     }
 
@@ -293,6 +297,8 @@ class AgentViewModelFactory extends AbstractViewModelFactory
     public function createAgentTicketReplyModel(Ticket $ticket)
     {
         $arguments = $this->getTicketArguments($ticket);
+
+        array_push($arguments, $ticket->getParticipants());
 
         return $this->convertParameters(AgentTicketReply::class, $arguments);
     }

@@ -17,15 +17,15 @@
 	<tr>
 		<td class="dp-td-heading">{{ phrase('agent.general.ticket_starter') }}</td>
 		<td>
-			{{ ticket_person.display_name }} &lt;{% if ticket.person_email %}{{ ticket.person_email.email }}{% else %}{{ ticket_person.primary_email }}{% endif %}&gt;
+			{{ ticket_person.display_name }} &lt;{% if ticket.person_email %}{{ ticket.person_email }}{% else %}{{ ticket_person.primary_email }}{% endif %}&gt;
 		</td>
 	</tr>
-	{% if ticket.getUserParticipants()|length %}
+	{% if participants|length %}
 		<tr>
 			<td class="dp-td-heading">{{ phrase('agent.general.ccs') }}</td>
 			<td>
-				{% for p in ticket.getUserParticipants() %}
-					&bull; {{ p.getDisplayContact() }}<br/>
+				{% for p in participants %}
+					&bull; {{ p.display_contact }}<br/>
 				{% endfor %}
 			</td>
 		</tr>
