@@ -65,7 +65,7 @@
         <!-- needs js to fit verticaly to it's container -->
         <div class="popup-stat-preview">
             <div class="stat-preview-header">Chart Preview</div>
-            <div class="stat-preview" ng-if="widgetPreview && widgetPreview.type=='graph'">
+            <div class="stat-preview" ng-if="widgetPreview && widgetPreview.type=='graph' && widgetPreview.rendered_result">
                 <dashboard-amcharts
                         my-index="{{ ng_var('$index') }}"
                         title="{{ ng_var('widgetPreview.title') }}"
@@ -75,7 +75,7 @@
                         chtype="graph"
                 />
             </div>
-            <div class="stat-preview" ng-if="widgetPreview && widgetPreview.type=='table'">
+            <div class="stat-preview" ng-if="widgetPreview && widgetPreview.type=='table' && widgetPreview.rendered_result">
                 <dashboard-table
                         render-type = "test"
                         my-index="{{ ng_var('$index') }}"
@@ -83,6 +83,9 @@
                         table-data="{{ ng_var('widgetPreview.rendered_result') }}"
                         widget-id = "{{ ng_var('reportWidget.id') }}"
                 />
+            </div>
+            <div class="stat-preview" style="padding: 20px" ng-if="widgetPreview && !widgetPreview.rendered_result">
+                No results to show. Please, try another graph type and/or another variables values.
             </div>
         </div>
     </div>
