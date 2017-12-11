@@ -338,7 +338,10 @@ class GuideController extends PublishController
 
         $guides = $this->em->getRepository(Guide::class)->findBy(['brand' => $brands[0]->getId()]);
 
-        $topics = $this->em->getRepository(Topic::class)->getInHierarchy(false, $guides[0]);
+        $topics = [];
+        if (count($guides) > 0) {
+            $topics = $this->em->getRepository(Topic::class)->getInHierarchy(false, $guides[0]);
+        }
 
         array_unshift($topics, ['id' => 0, 'title' => '-', 'parent_id' => 0]);
 
