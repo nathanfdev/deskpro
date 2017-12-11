@@ -66,7 +66,7 @@ class TicketLogHandler extends AbstractEntityHandler
      *
      * @param TicketLogEntity $entity
      */
-    protected function createModel($entity, SideloadSerializationContext $context)
+    public function createModel($entity, SideloadSerializationContext $context)
     {
         $messageHtml = $this->twig->render('AgentBundle:Ticket:ticket-log-actiontext.html.twig', [
             'log'    => $entity,

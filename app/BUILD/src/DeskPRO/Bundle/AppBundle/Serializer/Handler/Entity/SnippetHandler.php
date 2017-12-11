@@ -47,7 +47,7 @@ class SnippetHandler extends AbstractEntityHandler
      *
      * @return SnippetModel
      */
-    protected function createModel($entity, SideloadSerializationContext $context)
+    public function createModel($entity, SideloadSerializationContext $context)
     {
         $model = new SnippetModel($entity);
 

@@ -50,22 +50,22 @@ class AdvancedEditsManager
     /**
      * @var EntityManager
      */
-    private $em;
+    private $entityManager;
 
     /**
      * @var DeskproBlobStorage
      */
-    private $bs;
+    private $blobStorage;
 
     /**
      * @var ThemeSet
      */
-    private $theme_set;
+    private $themeSet;
 
     /**
      * @var ThemeSet
      */
-    private $edit_theme_set;
+    private $editThemeSet;
 
     /**
      * @var \Twig_Environment
@@ -87,21 +87,27 @@ class AdvancedEditsManager
     /**
      * Constructor.
      *
-     * @param EntityManager      $em
-     * @param DeskproBlobStorage $bs
+     * @param EntityManager      $entityManager
+     * @param DeskproBlobStorage $blobStorage
      * @param ThemeSet           $themeSet
      * @param ThemeSet           $editThemeSet
      * @param \Twig_Environment  $twig
      * @param string             $mainScssPath
      */
-    public function __construct(EntityManager $em, DeskproBlobStorage $bs, ThemeSet $themeSet, ThemeSet $editThemeSet, \Twig_Environment $twig, $mainScssPath)
-    {
-        $this->em             = $em;
-        $this->bs             = $bs;
-        $this->theme_set      = $themeSet;
-        $this->edit_theme_set = $editThemeSet;
-        $this->twig           = $twig;
-        $this->mainScssPath   = $mainScssPath;
+    public function __construct(
+        EntityManager $entityManager,
+        DeskproBlobStorage $blobStorage,
+        ThemeSet $themeSet,
+        ThemeSet $editThemeSet,
+        \Twig_Environment $twig,
+        $mainScssPath
+    ) {
+        $this->entityManager = $entityManager;
+        $this->blobStorage   = $blobStorage;
+        $this->themeSet      = $themeSet;
+        $this->editThemeSet  = $editThemeSet;
+        $this->twig          = $twig;
+        $this->mainScssPath  = $mainScssPath;
     }
 
     /**
@@ -164,12 +170,12 @@ class AdvancedEditsManager
      */
     public function getMainScss()
     {
-        $blob      = $this->findBlob(self::MAIN_SCSS_ASSET_NAME, $this->edit_theme_set);
+        $blob      = $this->findBlob(self::MAIN_SCSS_ASSET_NAME, $this->editThemeSet);
         $failedStr = '';
 
         if ($blob) {
             try {
-                return $this->bs->copyBlobRecordToString($blob);
+                return $this->blobStorage->copyBlobRecordToString($blob);
             } catch (\Exception $e) {
                 $failedStr = sprintf('/* Failed to load custom CSS from blob %s */', $blob->getId())."\n\n";
             }
@@ -183,11 +189,11 @@ class AdvancedEditsManager
      */
     public function getEditThemeSetScss()
     {
-        $blob = $this->findBlob(self::CUSTOM_SCSS_ASSET_NAME, $this->edit_theme_set);
+        $blob = $this->findBlob(self::CUSTOM_SCSS_ASSET_NAME, $this->editThemeSet);
 
         if ($blob) {
             try {
-                return $this->bs->copyBlobRecordToString($blob);
+                return $this->blobStorage->copyBlobRecordToString($blob);
             } catch (\Exception $e) {
                 return sprintf('/* Failed to load custom CSS from blob %s */', $blob->getId());
             }
@@ -218,10 +224,10 @@ CODE;
      */
     public function getEditThemeSetJs()
     {
-        $blob = $this->findBlob(self::CUSTOM_JS_ASSET_NAME, $this->edit_theme_set);
+        $blob = $this->findBlob(self::CUSTOM_JS_ASSET_NAME, $this->editThemeSet);
 
         try {
-            return $blob ? $this->bs->copyBlobRecordToString($blob) : '';
+            return $blob ? $this->blobStorage->copyBlobRecordToString($blob) : '';
         } catch (\Exception $e) {
             return '// Failed to load custom JS';
         }
@@ -232,10 +238,10 @@ CODE;
      */
     public function getJs()
     {
-        $blob = $this->findBlob(self::CUSTOM_JS_ASSET_NAME, $this->theme_set);
+        $blob = $this->findBlob(self::CUSTOM_JS_ASSET_NAME, $this->themeSet);
 
         try {
-            return $blob ? $this->bs->copyBlobRecordToString($blob) : '';
+            return $blob ? $this->blobStorage->copyBlobRecordToString($blob) : '';
         } catch (\Exception $e) {
             return '// Failed to load custom JS';
         }
@@ -247,16 +253,19 @@ CODE;
      * @param string $mimeType
      * @param string $code
      *
-     * @return ThemeSetAsset
+     * @return Blob
      */
     private function saveThemeSetAsset($name, $tag, $mimeType, $code)
     {
-        $theme_set = $this->edit_theme_set;
+        $themeSet = $this->editThemeSet;
 
         $oldBlob = null;
 
         // Find existing or create a new ThemeSetAsset
-        $asset = $this->em->getRepository(ThemeSetAsset::class)->findOneBy(compact('name', 'theme_set'));
+        $asset = $this->entityManager->getRepository(ThemeSetAsset::class)->findOneBy([
+            'name'      => $name,
+            'theme_set' => $themeSet,
+        ]);
 
         if ($asset) {
             $oldBlob = $asset->getBlob();
@@ -266,7 +275,7 @@ CODE;
 
         if ($oldBlob) {
             try {
-                $oldContent = $this->bs->copyBlobRecordToString($oldBlob);
+                $oldContent = $this->blobStorage->copyBlobRecordToString($oldBlob);
                 if ($oldContent === $code) {
                     // no change
                     return $oldBlob;
@@ -278,17 +287,17 @@ CODE;
         // record it as changed
         $this->changedAssets[$name] = true;
 
-        $blob = $this->bs->createBlobRecordFromString($code, $name, $mimeType, ['tag' => 'brand_asset.'.$tag]);
+        $blob = $this->blobStorage->createBlobRecordFromString($code, $name, $mimeType, ['tag' => 'brand_asset.'.$tag]);
 
         $asset->setName($name);
-        $asset->setThemeSet($theme_set);
+        $asset->setThemeSet($themeSet);
         $asset->setTags([$tag]);
         $asset->setBlob($blob);
-        $this->em->persist($asset);
-        $this->em->flush();
+        $this->entityManager->persist($asset);
+        $this->entityManager->flush();
 
         if ($oldBlob) {
-            $this->bs->deleteBlobRecord($oldBlob);
+            $this->blobStorage->deleteBlobRecord($oldBlob);
         }
 
         return $blob;
@@ -296,14 +305,17 @@ CODE;
 
     /**
      * @param string        $name
-     * @param ThemeSet|null $theme_set
+     * @param ThemeSet|null $themeSet
      *
      * @return Blob|null
      */
-    private function findBlob($name, ThemeSet $theme_set = null)
+    private function findBlob($name, ThemeSet $themeSet = null)
     {
         /** @var ThemeSetAsset $asset */
-        $asset = $this->em->getRepository(ThemeSetAsset::class)->findOneBy(compact('name', 'theme_set'));
+        $asset = $this->entityManager->getRepository(ThemeSetAsset::class)->findOneBy([
+            'name'      => $name,
+            'theme_set' => $themeSet,
+        ]);
 
         return $asset ? $asset->getBlob() : null;
     }

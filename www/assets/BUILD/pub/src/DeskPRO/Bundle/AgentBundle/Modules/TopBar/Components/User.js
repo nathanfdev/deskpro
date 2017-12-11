@@ -55,7 +55,6 @@ class User extends React.Component {
         <PopUp
           positionMy="right top"
           positionAt="right bottom"
-          id={1}
           elementId="user-menu-popup"
           zIndex={99999}
           content={(

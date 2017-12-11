@@ -73,16 +73,27 @@ class ThemeSetAsset
     private $url;
 
     /**
+     * The id of the blob linked to the asset.
+     *
+     * @JMS\Type("string")
+     *
+     * @var string
+     */
+    private $blobId;
+
+    /**
      * ThemeSetAsset constructor.
      *
      * @param ThemeSetAssetEntity $asset
      * @param string              $url
+     * @param $blobAuthId
      */
-    public function __construct(ThemeSetAssetEntity $asset, $url)
+    public function __construct(ThemeSetAssetEntity $asset, $url, $blobAuthId)
     {
         $this->id       = $asset->getId();
         $this->name     = $asset->getName();
         $this->themeSet = $asset->getThemeSet();
         $this->url      = $url;
+        $this->blobId   = $blobAuthId;
     }
 }

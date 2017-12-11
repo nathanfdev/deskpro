@@ -1,0 +1,44 @@
+<dp:subject>{{ phrase('user.email_subjects.tickets_re') }}</dp:subject>
+
+<html>
+<head>
+	{% include 'SendmailBundle:blocks:resources.html.twig' %}
+</head>
+<body>
+{% include 'SendmailBundle:emails_common:email_code_top.html.twig' %}
+
+{% include 'SendmailBundle:blocks:header.html.twig' %}
+
+	<container>
+		{{ phrase('user.emails.greeting', {to_name: recipient.name}) }}
+
+		<br /><br />
+
+		{{ phrase('user.emails.reject_resolved') }}
+
+		<br /><br />
+
+		{% if app.getSetting('user.portal_enabled') %}
+			{{ phrase('user.emails.reject_resolved-new', {
+				email_to: email_to,
+				link: url_full('portal_new_ticket')
+			}, true) }}
+		{% else %}
+			{{ phrase('user.emails.reject_resolved-newemail', {
+				email_to: email_to
+			}, true) }}
+		{% endif %}
+
+		{% if app.isPortalEnabled() %}
+			<br /><br />
+
+			{{ phrase('user.emails.ticket_access_ticket_online') }}
+			<a href="{{ ticket_link }}">{{ ticket_link }}</a>
+		{% endif %}
+	</container>
+
+{% include 'SendmailBundle:blocks:footer.html.twig' %}
+
+{% include 'SendmailBundle:emails_common:email_code_bottom.html.twig' %}
+</body>
+</html>

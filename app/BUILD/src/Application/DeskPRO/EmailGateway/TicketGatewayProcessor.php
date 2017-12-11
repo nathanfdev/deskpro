@@ -48,6 +48,7 @@ use Application\DeskPRO\EmailGateway\TicketGateway\ProcessNew;
 use Application\DeskPRO\EmailGateway\TicketGateway\ProcessReply;
 use Application\DeskPRO\EmailGateway\TicketGateway\TicketIncomingEmail;
 use Application\DeskPRO\Entity\EmailSource;
+use Application\DeskPRO\Entity\Person;
 use Application\DeskPRO\Entity\TmpData;
 use Application\DeskPRO\Settings\EmailAccountsSettings;
 use Orb\Types\NoValue;
@@ -151,7 +152,7 @@ class TicketGatewayProcessor extends AbstractGatewayProcessor
         if ($tacPerson && $tacPerson->is_agent) {
             // Need to look up the From sender manually because we dont know which ticket dector was used above,
             // and the way they find existing people is an implementation detail we dont know here
-            $existPerson = App::getEntityRepository('DeskPRO:Person')->findOneByEmail($this->reader->getFromAddress()->email);
+            $existPerson = $this->container->getEm()->getRepository(Person::class)->findOneByEmail($this->reader->getFromAddress()->email);
 
             if (($existPerson && $tacPerson !== $existPerson) || !$existPerson) {
                 $this->logMessage('Agent email with TAC from unknown email address. Re-running ticket detectors without code detector.');
@@ -204,7 +205,7 @@ class TicketGatewayProcessor extends AbstractGatewayProcessor
                 $isRateReject = true;
                 $this->logMessage('Rate limited -- this is the first message over the threshold');
 
-                $message = App::getMailer()->createMessage();
+                $message = $this->container->getMailer()->createMessage();
                 $message->setTemplate('DeskPRO:emails_user:rate-limit-notice.html.twig', [
                     'ticket'        => $ticket,
                     'subject'       => $this->reader->getSubject()->getSubjectUtf8(),
@@ -218,14 +219,14 @@ class TicketGatewayProcessor extends AbstractGatewayProcessor
 
                 $lang = $person ? $person->getLanguage() : null;
                 if ($lang) {
-                    App::$container->getTranslator()->setTemporaryLanguage($lang, function () use ($message) {
+                    $this->container->getTranslator()->setTemporaryLanguage($lang, function () use ($message) {
                         $message->prepare();
                     });
                 } else {
                     $message->prepare();
                 }
 
-                App::getMailer()->send($message);
+                $this->container->getMailer()->send($message);
             }
 
             if ($isRateReject) {
@@ -278,35 +279,45 @@ class TicketGatewayProcessor extends AbstractGatewayProcessor
         //-------------------------
 
         if ($person && ($person->is_disabled || $person->is_deleted)) {
+            //-------------------------
+            // Reject new replies by disabled users
+            //-------------------------
+
+            if (!$person->is_agent && $person->is_disabled) {
+                // user is disabled so can't create/reply to tickets
+
+                if (!$this->reader->isFromRobot() && !$isBounce) {
+                    if ($this->container->get('deskpro.feature_flags')->hasBeta('email_templates')) {
+                        $viewModel = $this->container->get('email.user_viewmodel_factory')
+                            ->createAgentChangedPasswordModel($person->getPlaintextPassword());
+                        $message = $this->container->get('email.email_sender')
+                            ->prepareMessage($viewModel, ['to' => $this->reader->getFromAddress()->getEmail()]);
+                    } else {
+                        $message = $this->container->getMailer()->createMessage();
+                        $message->setTemplate(
+                            'DeskPRO:emails_user:account-disabled.html.twig',
+                            [
+                                'subject' => $this->reader->getSubject()->getSubjectUtf8(),
+                                'ticket'  => ['subject' => $this->reader->getSubject()->getSubjectUtf8()],
+                                'name'    => $this->reader->getFromAddress()->getName() ?: $this->reader->getFromAddress(
+                                )->getEmail(),
+                            ]
+                        );
+                        $message->setTo($this->reader->getFromAddress()->getEmail());
+                    }
+                    $this->container->getTranslator()->setTemporaryLanguage(
+                        $person->getLanguage(),
+                        function () use ($message) {
+                            $message->prepare();
+                        }
+                    );
+
+                    $this->container->getMailer()->send($message);
+                }
+            }
             $this->logMessage('[TicketGatewayProcessor] User is disabeld, rejecting message');
             $this->error      = 'from_disabled_user';
             $this->error_type = 'rejected';
-
-            return null;
-        }
-
-        //-------------------------
-        // Reject new replies by disabled users
-        //-------------------------
-
-        if ($person && (!$person->is_agent && $person->is_disabled)) {
-            // user is disabled so can't create/reply to tickets
-
-            if (!$this->reader->isFromRobot() && !$isBounce) {
-                $message = App::getMailer()->createMessage();
-                $message->setTemplate('DeskPRO:emails_user:account-disabled.html.twig', [
-                    'subject' => $this->reader->getSubject()->getSubjectUtf8(),
-                    'ticket'  => ['subject' => $this->reader->getSubject()->getSubjectUtf8()],
-                    'name'    => $this->reader->getFromAddress()->getName() ?: $this->reader->getFromAddress()->getEmail(),
-                ]);
-                $message->setTo($this->reader->getFromAddress()->getEmail());
-
-                App::$container->getTranslator()->setTemporaryLanguage($person->getLanguage(), function () use ($message) {
-                    $message->prepare();
-                });
-
-                $this->container->getMailer()->send($message);
-            }
 
             return null;
         }
@@ -337,27 +348,34 @@ class TicketGatewayProcessor extends AbstractGatewayProcessor
 
                 // user is disabled so can't create/reply to tickets
                 if (!$this->reader->isFromRobot() && !$isBounce) {
-                    $message = $this->container->getMailer()->createMessage();
-                    $message->setTemplate('DeskPRO:emails_user:new-reply-reject-resolved.html.twig', [
-                        'subject'  => $this->reader->getSubject()->getSubjectUtf8(),
-                        'name'     => $this->reader->getFromAddress()->getName() ?: $this->reader->getFromAddress()->getEmail(),
-                        'ticket'   => $ticket,
-                        'person'   => $person,
-                        'email_to' => $emailTo,
-                    ]);
-                    $message->setTo($this->reader->getFromAddress()->getEmail());
-                    $message->setFrom($fromAddress);
-                    $message->attach(\Swift_Attachment::newInstance(
-                        $this->reader->getRawSource(),
-                        'message.eml',
-                        'message/rfc822'
-                    ));
+                    if ($this->container->get('deskpro.feature_flags')->hasBeta('email_templates')) {
+                        $viewModel = $this->container->get('email.user_viewmodel_factory')
+                            ->createNewReplyRejectResolvedModel($ticket);
+                        $this->container->get('email.email_sender')
+                            ->send($viewModel, ['to' => $this->reader->getFromAddress()->getEmail()]);
+                    } else {
+                        $message = $this->container->getMailer()->createMessage();
+                        $message->setTemplate('DeskPRO:emails_user:new-reply-reject-resolved.html.twig', [
+                            'subject'  => $this->reader->getSubject()->getSubjectUtf8(),
+                            'name'     => $this->reader->getFromAddress()->getName() ?: $this->reader->getFromAddress()->getEmail(),
+                            'ticket'   => $ticket,
+                            'person'   => $person,
+                            'email_to' => $emailTo,
+                        ]);
+                        $message->setTo($this->reader->getFromAddress()->getEmail());
+                        $message->setFrom($fromAddress);
+                        $message->attach(\Swift_Attachment::newInstance(
+                            $this->reader->getRawSource(),
+                            'message.eml',
+                            'message/rfc822'
+                        ));
 
-                    App::$container->getTranslator()->setTemporaryLanguage($person->getLanguage(), function () use ($message) {
-                        $message->prepare();
-                    });
+                        $this->container->getTranslator()->setTemporaryLanguage($person->getLanguage(), function () use ($message) {
+                            $message->prepare();
+                        });
 
-                    App::getMailer()->send($message);
+                        $this->container->getMailer()->send($message);
+                    }
                 }
 
                 $this->error      = 'obj_closed';
@@ -378,7 +396,7 @@ class TicketGatewayProcessor extends AbstractGatewayProcessor
         if ($person) {
             $checkPerson = $person;
         } elseif ($this->reader->getFromAddress()) {
-            $checkPerson = App::getDataService('Agent')->getByEmail($this->reader->getFromAddress()->getEmail());
+            $checkPerson = $this->container->getSystemService('AgentData')->getByEmail($this->reader->getFromAddress()->getEmail());
         } else {
             $checkPerson = null;
         }
@@ -416,7 +434,7 @@ class TicketGatewayProcessor extends AbstractGatewayProcessor
         // Unset ticket if its an agent fwd
         //-------------------------
 
-        if ($ticket and App::getSetting('core_tickets.process_agent_fwd') and $person['is_agent'] and ForwardCutter::subjectIsForward($this->reader->getSubject()->subject)) {
+        if ($ticket and $this->container->getSetting('core_tickets.process_agent_fwd') and $person['is_agent'] and ForwardCutter::subjectIsForward($this->reader->getSubject()->subject)) {
             $this->logMessage(sprintf('Found a ticket match #%d but this is an agent fwd so unsetting', $ticket->getId()));
             $ticket = null;
         }
@@ -438,7 +456,7 @@ class TicketGatewayProcessor extends AbstractGatewayProcessor
         $ticketEmail->isPublicTac     = $isPtac;
 
         if ($ticket && $person) {
-            App::$container->getTicketManager()->markAsManaged($ticket);
+            $this->container->getTicketManager()->markAsManaged($ticket);
 
             return $this->runReply($ticketEmail);
         } else {
@@ -505,7 +523,7 @@ class TicketGatewayProcessor extends AbstractGatewayProcessor
         }
 
         // todo injection
-        $translator = App::$container->getTranslator();
+        $translator = $this->container->getTranslator();
         $reply_proc = new ProcessReply($ticket, $person, $ticket_email, $translator);
         $reply_proc->setLogger($this->logger);
 
@@ -579,18 +597,25 @@ class TicketGatewayProcessor extends AbstractGatewayProcessor
             $this->error      = EmailSource::ERR_PERM_INSUFFICIENT;
             $this->error_type = 'rejected';
 
-            $account_manager = App::$container->getEmailAccountManager();
+            $account_manager = $this->container->getEmailAccountManager();
             $user_email      = $this->reader->getFromAddress()->getEmail();
 
             if (!$ticket_email->is_bounce && !$this->reader->isFromRobot() && !$account_manager->findAccountForEmailAddress($user_email)) {
-                $message = $this->container->getMailer()->createMessage();
-                $message->setTemplate('DeskPRO:emails_user:new-ticket-reg-closed.html.twig', [
-                    'subject' => $this->reader->getSubject()->getSubjectUtf8(),
-                    'ticket'  => ['subject' => $this->reader->getSubject()->getSubjectUtf8()],
-                    'name'    => $this->reader->getFromAddress()->getName() ?: $this->reader->getFromAddress()->getEmail(),
-                ]);
-                $message->setTo($this->reader->getFromAddress()->getEmail());
-                $this->container->getMailer()->send($message);
+                if ($this->container->get('deskpro.feature_flags')->hasBeta('email_templates')) {
+                    $viewModel = $this->container->get('email.user_viewmodel_factory')
+                        ->createNewTicketRegClosedModel();
+                    $this->container->get('email.email_sender')
+                        ->send($viewModel, ['to' => $this->reader->getFromAddress()->getEmail()]);
+                } else {
+                    $message = $this->container->getMailer()->createMessage();
+                    $message->setTemplate('DeskPRO:emails_user:new-ticket-reg-closed.html.twig', [
+                        'subject' => $this->reader->getSubject()->getSubjectUtf8(),
+                        'ticket'  => ['subject' => $this->reader->getSubject()->getSubjectUtf8()],
+                        'name'    => $this->reader->getFromAddress()->getName() ?: $this->reader->getFromAddress()->getEmail(),
+                    ]);
+                    $message->setTo($this->reader->getFromAddress()->getEmail());
+                    $this->container->getMailer()->send($message);
+                }
             }
 
             return null;
@@ -600,7 +625,7 @@ class TicketGatewayProcessor extends AbstractGatewayProcessor
         // Handle validation
         //-------------------------
 
-        if ($person && !$person->isConfirmed() && App::$container->getSetting('core_tickets.email_require_validation')) {
+        if ($person && !$person->isConfirmed() && $this->container->getSetting('core_tickets.email_require_validation')) {
             $this->logMessage('User is not confirmed, message is rejected');
 
             $email_address = $person->findEmailAddress($this->reader->getFromAddress()->getEmail()) ?: $person->getPrimaryEmail();
@@ -612,11 +637,11 @@ class TicketGatewayProcessor extends AbstractGatewayProcessor
                     'person_email_id' => $email_address->getId(),
                 ]);
 
-                App::$container->getEm()->persist($tmpdata);
-                App::$container->getEm()->flush($tmpdata);
+                $this->container->getEm()->persist($tmpdata);
+                $this->container->getEm()->flush($tmpdata);
 
                 if (!$this->reader->isFromRobot() && !$ticket_email->is_bounce) {
-                    App::$container->get('portal_validation')->sendTicketByEmailVerificationEmail(
+                    $this->container->get('portal_validation')->sendTicketByEmailVerificationEmail(
                         $person,
                         $this->reader,
                         $tmpdata->getCode()
@@ -710,8 +735,7 @@ class TicketGatewayProcessor extends AbstractGatewayProcessor
 
             $ticket_email->force_reply_cutter = $reply_as_new;
 
-            // todo injection
-            $translator = App::$container->getTranslator();
+            $translator = $this->container->getTranslator();
             $new_proc   = new ProcessNew($this->account, $person, $ticket_email, $translator);
             $new_proc->setLogger($this->logger);
 

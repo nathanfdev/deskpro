@@ -39,6 +39,7 @@ class EmailPreProcessor extends AbstractPreProcessor
 {
     /**
      * @param string $source
+     * @param null   $name
      *
      * @return string
      */

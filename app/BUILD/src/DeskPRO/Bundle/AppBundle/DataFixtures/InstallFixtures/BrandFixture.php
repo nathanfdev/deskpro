@@ -55,20 +55,20 @@ class BrandFixture extends DeskProAbstractFixture implements OrderedFixtureInter
     public function load(ObjectManager $manager)
     {
         // Insert themes
-        $std_theme = new ThemeSet();
-        $std_theme->setThemeId('standard');
-        $manager->persist($std_theme);
-        $this->setReference('std_theme', $std_theme);
+        $stdTheme = new ThemeSet();
+        $stdTheme->setThemeId('standard');
+        $manager->persist($stdTheme);
+        $this->setReference('std_theme', $stdTheme);
 
-        $sidebar_theme = new ThemeSet();
-        $sidebar_theme->setThemeId('sidebar');
-        $manager->persist($sidebar_theme);
-        $this->setReference('sidebar_theme', $sidebar_theme);
+        $sidebarTheme = new ThemeSet();
+        $sidebarTheme->setThemeId('sidebar');
+        $manager->persist($sidebarTheme);
+        $this->setReference('sidebar_theme', $sidebarTheme);
 
         // Insert brand
         $brand = new Brand();
         $brand->setName('Default');
-        $brand->setThemeSet($std_theme);
+        $brand->setThemeSet($stdTheme);
         $manager->persist($brand);
         $this->setReference('brand', $brand);
 

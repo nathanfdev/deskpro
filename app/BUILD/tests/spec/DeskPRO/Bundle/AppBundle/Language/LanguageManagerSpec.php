@@ -48,7 +48,7 @@ class LanguageManagerSpec extends ObjectBehavior
         $this->beConstructedWith($translate, $language_stack, $em);
     }
 
-    public function it_knows_if_is_multi_langauge_portal(
+    public function it_knows_if_is_multi_language_portal(
         EntityManager $em,
         LanguageRepo  $language_repo
     ) {
@@ -58,7 +58,7 @@ class LanguageManagerSpec extends ObjectBehavior
         $this->isMultiLanguagePortal()->shouldBe(true);
     }
 
-    public function it_knows_if_NOT_multi_langauge_portal(
+    public function it_knows_if_NOT_multi_language_portal(
         EntityManager $em,
         LanguageRepo  $language_repo
     ) {

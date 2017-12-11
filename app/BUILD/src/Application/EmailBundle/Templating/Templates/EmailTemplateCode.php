@@ -32,6 +32,8 @@
 
 namespace Application\EmailBundle\Templating\Templates;
 
+use Application\DeskPRO\Entity\Blob;
+
 /**
  * Represents special "email" template code.
  *
@@ -56,6 +58,11 @@ class EmailTemplateCode extends TemplateCode
     private $body;
 
     /**
+     * @var Blob[]
+     */
+    private $attachments = [];
+
+    /**
      * @param string $code
      */
     public function __construct($code = null)
@@ -77,7 +84,7 @@ class EmailTemplateCode extends TemplateCode
     }
 
     /**
-     * @param $subject
+     * @param $body
      */
     public function setBody($body)
     {
@@ -126,37 +133,37 @@ class EmailTemplateCode extends TemplateCode
         parent::setCode($code);
         $code = trim($code);
 
-        $subj_start = strpos($code, self::SUBJ_TOKEN_START);
-        $subj_end   = strrpos($code, self::SUBJ_TOKEN_END);
+        $subjStart = strpos($code, self::SUBJ_TOKEN_START);
+        $subjEnd   = strrpos($code, self::SUBJ_TOKEN_END);
 
-        $subj_start_len = strlen(self::SUBJ_TOKEN_START);
-        $subj_end_len   = strlen(self::SUBJ_TOKEN_END);
+        $subjStartLen = strlen(self::SUBJ_TOKEN_START);
+        $subjEndLen   = strlen(self::SUBJ_TOKEN_END);
 
-        if ($subj_start !== false && $subj_end === false) {
+        if ($subjStart !== false && $subjEnd === false) {
             throw new \InvalidArgumentException('Invalid subject tags: Missing end tag');
         }
-        if ($subj_start === false && $subj_end !== false) {
+        if ($subjStart === false && $subjEnd !== false) {
             throw new \InvalidArgumentException('Invalid subject tags: Missing start tag');
         }
 
         // Has a subject
-        if ($subj_start !== false && $subj_end !== false) {
-            if ($subj_start > $subj_end) {
+        if ($subjStart !== false && $subjEnd !== false) {
+            if ($subjStart > $subjEnd) {
                 throw new \InvalidArgumentException('Invalid subject tags: Start tag after end tag');
             }
 
-            $subj_len      = $subj_end - ($subj_start + $subj_start_len);
-            $this->subject = substr($code, $subj_start + $subj_start_len, $subj_len);
+            $subjLen       = $subjEnd - ($subjStart + $subjStartLen);
+            $this->subject = substr($code, $subjStart + $subjStartLen, $subjLen);
 
             // Subject at beginning
-            if ($subj_start === 0) {
-                $this->body = substr($code, $subj_end + $subj_end_len);
+            if ($subjStart === 0) {
+                $this->body = substr($code, $subjEnd + $subjEndLen);
 
             // Subject wrapped somewhere weirdly
             } else {
-                $this->body = trim(substr($code, 0, $subj_start))
+                $this->body = trim(substr($code, 0, $subjStart))
                     ."\n"
-                    .trim(substr($code, $subj_end + $subj_end_len));
+                    .trim(substr($code, $subjEnd + $subjEndLen));
             }
 
         // No Subject
@@ -167,5 +174,37 @@ class EmailTemplateCode extends TemplateCode
 
         $this->subject = trim($this->subject);
         $this->body    = trim($this->body);
+    }
+
+    /**
+     * @return Blob[]
+     */
+    public function getAttachments()
+    {
+        return $this->attachments;
+    }
+
+    /**
+     * @param Blob[] $attachments
+     *
+     * @return EmailTemplateCode
+     */
+    public function setAttachments($attachments)
+    {
+        $this->attachments = $attachments;
+
+        return $this;
+    }
+
+    /**
+     * @param Blob $attachment
+     *
+     * @return $this
+     */
+    public function addAttachment(Blob $attachment)
+    {
+        $this->attachments[$attachment->getId()] = $attachment;
+
+        return $this;
     }
 }

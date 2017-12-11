@@ -20,28 +20,28 @@ class PopUp extends React.Component {
     autoClose:            PropTypes.bool,
     autoOpen:             PropTypes.bool,
     allowCloseOnClickOut: PropTypes.bool,
+    manual:               PropTypes.bool,
+    clickOut:             PropTypes.bool,
     className:            PropTypes.string,
+    style:                PropTypes.object,
     innerClassName:       PropTypes.string,
-    id:                   PropTypes.number.isRequired,         // eslint-disable-line react/no-unused-prop-types
-    classes:              PropTypes.arrayOf(PropTypes.string), // eslint-disable-line react/no-unused-prop-types
-    innerClasses:         PropTypes.arrayOf(PropTypes.string)  // eslint-disable-line react/no-unused-prop-types
   };
 
   static defaultProps = {
-    onOpen() {},
-    className:            '',
-    innerClassName:       '',
-    innerClasses:         [],
-    classes:              [],
+    className:      '',
+    innerClassName: '',
+
     autoClose:            false,
     autoOpen:             false,
-    allowCloseOnClickOut: true
+    allowCloseOnClickOut: true,
+    manual:               false,
+    clickOut:             true,
   };
 
   constructor(props) {
     super(props);
     this.state = {
-      isOpen: !!this.props.opened
+      isOpen: this.props.opened
     };
 
     if (this.props.autoClose) {
@@ -105,25 +105,30 @@ class PopUp extends React.Component {
   renderBody() {
     const { content, positionAt, elementId, innerClassName } = this.props;
 
-    return (
-      <ClickOut onClickOut={this.clickOutClosePopup} additionalNodes={['.ReactModalPortal']}>
-        <div id={elementId} className={classNames('ui', 'popup', positionAt, { visible: this.state.isOpen }, innerClassName)}>
-          {content}
-        </div>
-      </ClickOut>
-    );
+    if (this.props.clickOut) {
+      return (
+        <ClickOut onClickOut={this.clickOutClosePopup} additionalNodes={['.ReactModalPortal']}>
+          <div id={elementId} className={classNames('ui', 'popup', positionAt, { visible: this.state.isOpen }, innerClassName)}>
+            {content}
+          </div>
+        </ClickOut>
+      );
+    }
+    return (<div id={elementId} className={classNames('ui', 'popup', positionAt, { visible: this.state.isOpen }, innerClassName)}>
+      {content}
+    </div>);
   }
 
   render() {
     const { isOpen } = this.state;
-    const { children, className } = this.props;
+    const { children, className, style } = this.props;
 
     return (
       <div
-        style={{ display: 'inline-block' }}
         className={classNames({ active: isOpen }, className)}
+        style={style}
         ref={(c) => { this.button = c; }}
-        onClick={this.openPopup}
+        onClick={!this.props.manual && this.openPopup}
         onMouseEnter={this.onMouseEnter}
         onMouseLeave={this.onMouseLeave}
       >

@@ -35,23 +35,41 @@
                             </div>
                             <div ng-show="ctrl.esc" ng-class="{'is-disabled-builder':!ctrl.esc.is_enabled}">
                                 {% if num == 1 %}
-                                    <dp-option-builder types-def="ctrl.actionsTypeDef"
-                                                       save-target="ctrl.form.actions"
-                                                       options="{tag_first: '', tag_after: 'then', fixedExpanded: ['SendUserEmail'], fixOn: []}"
-                                                       option-types="actionOptionTypes"
-                                            >
-                                        <add-btn-label>Action</add-btn-label>
-                                    </dp-option-builder>
+                                    {% if app.hasBeta('email_templates') %}
+                                        <dp-option-builder types-def="ctrl.actionsTypeDef"
+                                                           save-target="ctrl.form.actions"
+                                                           options="{tag_first: '', tag_after: 'then', fixedExpanded: ['SendUserNewEmail'], fixOn: []}"
+                                                           option-types="actionOptionTypes"
+                                                >
+                                            <add-btn-label>Action</add-btn-label>
+                                        </dp-option-builder>
+                                    {% else %}
+                                        <dp-option-builder types-def="ctrl.actionsTypeDef"
+                                                           save-target="ctrl.form.actions"
+                                                           options="{tag_first: '', tag_after: 'then', fixedExpanded: ['SendUserEmail'], fixOn: []}"
+                                                           option-types="actionOptionTypes"
+                                                >
+                                            <add-btn-label>Action</add-btn-label>
+                                        </dp-option-builder>
+                                    {% endif %}
                                     <span class="help-block">
                     Send the user an email when they have left their ticket open for some time. Typically these are alerts to tell the user to reply to their tickets, but you
                     can also perform other actions.
                   </span>
                                 {% elseif num == 2 %}
-                                    <dp-option-builder types-def="ctrl.actionsTypeDef" save-target="ctrl.form.actions"
-                                                       options="{tag_first: '', tag_after: 'then', fixedExpanded: ['SendUserEmail'], fixOn: []}"
-                                                       option-types="actionOptionTypes">
-                                        <add-btn-label>Action</add-btn-label>
-                                    </dp-option-builder>
+                                    {% if app.hasBeta('email_templates') %}
+                                        <dp-option-builder types-def="ctrl.actionsTypeDef" save-target="ctrl.form.actions"
+                                                           options="{tag_first: '', tag_after: 'then', fixedExpanded: ['SendUserNewEmail'], fixOn: []}"
+                                                           option-types="actionOptionTypes">
+                                            <add-btn-label>Action</add-btn-label>
+                                        </dp-option-builder>
+                                     {% else %}
+                                        <dp-option-builder types-def="ctrl.actionsTypeDef" save-target="ctrl.form.actions"
+                                                           options="{tag_first: '', tag_after: 'then', fixedExpanded: ['SendUserEmail'], fixOn: []}"
+                                                           option-types="actionOptionTypes">
+                                            <add-btn-label>Action</add-btn-label>
+                                        </dp-option-builder>
+                                    {% endif %}
                                     <span class="help-block">
                     If the ticket is still open, send the user a second email alert reminding them of their open ticket.
                   </span>

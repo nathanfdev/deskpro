@@ -215,6 +215,14 @@ class TriggerActions implements \Serializable, ActionInterface, DeskproContainer
     }
 
     /**
+     * @param array $actions
+     */
+    public function setActions($actions)
+    {
+        return $this->actions->setAll($actions);
+    }
+
+    /**
      * @return ActionComposite
      */
     public function getIterator()

@@ -1,0 +1,32 @@
+{{ set_tplvar('agent_notification_footer', 'notify') }}
+<dp:subject>{{ phrase('agent.emails.task_due_today', {title: task.title}) }}</dp:subject>
+
+<html>
+<head>
+	{% include 'SendmailBundle:blocks:resources.html.twig' %}
+</head>
+<body>
+{% include 'SendmailBundle:emails_common:email_code_top.html.twig' %}
+
+{% include 'SendmailBundle:blocks:header.html.twig' %}
+
+    <container>
+        {% if task.person %}
+        {{ phrase('agent.emails.task_assigned_due_today', {title: task.title}) }}
+        <br /><br />
+        <a href="{{ login_link }}#app.tasks,tasks:own:total">{{ phrase('agent.emails.view_your_tasks') }}</a>
+
+        {% elseif task.assigned_agent_team %}
+
+        {{ phrase('agent.emails.task_assigned_team_due_today', {title: task.title}) }}
+        <br /><br />
+        <a href="{{ login_link }}#app.tasks,tasks:team:total">{{ phrase('agent.emails.view_your_teams_tasks') }}</a>
+
+        {% endif %}
+    </container>
+
+{% include 'SendmailBundle:blocks:footer.html.twig' %}
+
+{% include 'SendmailBundle:emails_common:email_code_bottom.html.twig' %}
+</body>
+</html>

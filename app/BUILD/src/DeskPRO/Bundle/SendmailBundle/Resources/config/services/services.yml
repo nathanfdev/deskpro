@@ -1,0 +1,25 @@
+services:
+
+  email.agent_viewmodel_factory:
+    class: DeskPRO\Bundle\SendmailBundle\Factory\AgentViewModelFactory
+    arguments: ["@router", "@object_router", "@service_container"]
+
+  email.user_viewmodel_factory:
+    class: DeskPRO\Bundle\SendmailBundle\Factory\UserViewModelFactory
+    arguments: ["@router", "@object_router", "@service_container"]
+
+  email.custom_viewmodel_factory:
+    class: DeskPRO\Bundle\SendmailBundle\Factory\CustomViewModelFactory
+    arguments: ["@router", "@object_router", "@service_container"]
+
+  email.email_renderer:
+    class: DeskPRO\Bundle\SendmailBundle\Render\EmailRenderer
+    arguments: ["@serializer", "@templating.new_email.twig.engine", "@service_container"]
+
+  email.email_sender:
+    class: DeskPRO\Bundle\SendmailBundle\Sender\EmailSender
+    arguments: ["@email.email_renderer", "@mailer", "@doctrine.orm.entity_manager", "@service_container"]
+
+  email.preview_fake_data_factory:
+    class: DeskPRO\Bundle\SendmailBundle\Factory\PreviewFakeDataFactory
+    arguments: ["@router", "@doctrine.orm.entity_manager"]

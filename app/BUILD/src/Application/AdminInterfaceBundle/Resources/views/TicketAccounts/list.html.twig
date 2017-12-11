@@ -13,8 +13,8 @@
 				{{ phrase('adm.tickets.no_email_accounts') }}
 			</p>
 			<ul class="dp-item-list" ng-if="TicketAccountsList.accounts.length" dp-max-height>
-				<li ng-repeat="acc in TicketAccountsList.accounts" dp-state-mark="tickets.ticket_accounts.edit.{{ ng_var('acc.id') }}" data-id="{{ ng_var('acc.id') }}">
-					<a href="{{ ng_href('tickets.ticket_accounts.edit', '{id: acc.id}') }}">
+				<li ng-repeat="acc in TicketAccountsList.accounts" dp-state-mark="emails.ticket_accounts.edit.{{ ng_var('acc.id') }}" data-id="{{ ng_var('acc.id') }}">
+					<a href="{{ ng_href('emails.ticket_accounts.edit', '{id: acc.id}') }}">
 						<div class="pull-right">
 							<em class="tag tag-warn" ng-show="!acc.is_enabled">Disabled</em>
 						</div>
@@ -28,28 +28,28 @@
 			</ul>
 			{% if not app.getSetting('internal.disable_email_editing.new') %}
 				<div class="dp-add-control">
-					<a class="btn btn-default" href="{{ ng_href('tickets.ticket_accounts.gocreate') }}" ng-class="{'active': isStateActive('.create') }"><i class="fa fa-plus"></i> New Email Account</a>
+					<a class="btn btn-default" href="{{ ng_href('emails.ticket_accounts.gocreate') }}" ng-class="{'active': isStateActive('.create') }"><i class="fa fa-plus"></i> New Email Account</a>
 				</div>
 			{% endif %}
 		</article>
 	</section>
 
 	<section class="dp-paneblock dp-panelink">
-		<a href="{{ ng_href('tickets.ticket_accounts.emailsources') }}">
+		<a href="{{ ng_href('emails.ticket_accounts.emailsources') }}">
 			<em><i class="fa fa-chevron-down"></i></em>
             <h3>{{ phrase('adm.ticket_accounts.incoming_log') }}</h3>
 		</a>
 	</section>
 
 	<section class="dp-paneblock dp-panelink">
-		<a href="{{ ng_href('tickets.ticket_accounts.sendmailqueue') }}">
+		<a href="{{ ng_href('emails.ticket_accounts.sendmailqueue') }}">
 			<em><i class="fa fa-chevron-down"></i></em>
 			<h3>{{ phrase('adm.ticket_accounts.outgoing_log') }}</h3>
 		</a>
 	</section>
 
     <section class="dp-paneblock dp-panelink">
-        <a href="{{ ng_href('tickets.ticket_accounts.advancedsettings') }}">
+        <a href="{{ ng_href('emails.ticket_accounts.advancedsettings') }}">
             <em><i class="fa fa-chevron-down"></i></em>
             <h3>{{ phrase('adm.ticket_accounts.advanced_settings') }}</h3>
         </a>

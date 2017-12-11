@@ -308,6 +308,8 @@ class TicketEmailBuilder
     public function disableUserCc()
     {
         $this->options->set('cc_users', false);
+
+        return $this;
     }
 
     /**
@@ -331,7 +333,7 @@ class TicketEmailBuilder
      */
     public function setIsNotAuto()
     {
-        $this->options->set('is_auto', true);
+        $this->options->set('is_auto', false);
 
         return $this;
     }
@@ -418,7 +420,7 @@ class TicketEmailBuilder
             'messages' => $messages,
         ];
 
-        // If we have a speciifc 'new message', then we need to trim
+        // If we have a specific 'new message', then we need to trim
         // messages array down (which is ALL the latest messages, may be too many if we are re-sending)
         if (isset($vars['new_message'])) {
             $got    = false;

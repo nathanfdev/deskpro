@@ -15,4 +15,3 @@ class LanguageSelect extends React.Component {
 }
 
 export default LanguageSelect;
-

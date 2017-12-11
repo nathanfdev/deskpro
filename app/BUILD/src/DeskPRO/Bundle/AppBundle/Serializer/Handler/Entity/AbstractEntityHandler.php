@@ -82,5 +82,5 @@ abstract class AbstractEntityHandler implements SubscribingHandlerInterface, Ent
      *
      * @return mixed
      */
-    abstract protected function createModel($entity, SideloadSerializationContext $context);
+    abstract public function createModel($entity, SideloadSerializationContext $context);
 }

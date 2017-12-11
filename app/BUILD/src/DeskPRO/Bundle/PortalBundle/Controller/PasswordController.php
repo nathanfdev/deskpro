@@ -67,7 +67,7 @@ class PasswordController extends AbstractController
         $form = $this->createForm(PasswordResetRequestType::class, ['email' => $request->get('email', '')]);
         $form->handleRequest($request);
 
-        $render_error = false;
+        $renderError = false;
         if ($form->isValid()) {
             $this->runAntiAbuseCheck($request);
 
@@ -87,8 +87,8 @@ class PasswordController extends AbstractController
                 // if so, then create a new code and send a new message
                 if ($personData->isPasswordResetReSendExpired($person)) {
                     // set the reset code
-                    $valid_seconds = $this->getBrandSetting('user.password_reset_code_time_limit', 18000);
-                    $reset         = $personData->createPasswordReset($person, $valid_seconds);
+                    $validSeconds = $this->getBrandSetting('user.password_reset_code_time_limit', 18000);
+                    $reset        = $personData->createPasswordReset($person, $validSeconds);
 
                     if ($isResetting) {
                         $this->get('portal_email_sender')->sendPasswordResetLink($person, $reset);
@@ -112,7 +112,7 @@ class PasswordController extends AbstractController
             );
         } elseif ($form->isSubmitted()) {
             $this->runAntiAbuseCheck($request);
-            $render_error = true;
+            $renderError = true;
         }
 
         $tpl = $isResetting ?
@@ -128,7 +128,7 @@ class PasswordController extends AbstractController
             [
                 'auth_manager' => $this->get('dp_authentication_manager.user'),
                 'form'         => $form->createView(),
-                'render_error' => $render_error,
+                'render_error' => $renderError,
                 'breadcrumbs'  => $this->getBreadcrumbGenerator()->buildPasswordReset($isResetting),
                 'page_title'   => $this->createPageTitle()->passwordReset($isResetting),
                 'lockout'      => $check->isLockoutRecommended(),

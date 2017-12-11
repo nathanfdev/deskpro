@@ -32,6 +32,8 @@
 
 namespace Application\LegacyApiBundle\Controller;
 
+use Application\DeskPRO\Entity\ArticleCategory;
+use Application\DeskPRO\Entity\Language;
 use Application\DeskPRO\Entity\Phrase;
 use Application\DeskPRO\Exception\ValidationException;
 use Application\DeskPRO\Languages\LangPackInfo;
@@ -205,12 +207,12 @@ class LanguagesController extends AbstractController implements ProtectedControl
     public function getPhraseAction($phrase_id, $for_lang = -1)
     {
         if ($for_lang != -1) {
-            $lang = $this->em->find('DeskPRO:Language', $for_lang);
+            $lang = $this->em->find(Language::class, $for_lang);
             if (!$lang) {
                 throw ValidationException::create('for_lang.invalid', 'Invalid lanugage specified');
             }
 
-            $phrase = $this->em->getRepository('DeskPRO:Phrase')->getPhraseForLanguage($phrase_id, $lang);
+            $phrase = $this->em->getRepository(Phrase::class)->getPhraseForLanguage($phrase_id, $lang);
 
             if ($phrase) {
                 $data['phrase'] = $phrase->toApiData(false);
@@ -226,7 +228,7 @@ class LanguagesController extends AbstractController implements ProtectedControl
 
             $data['lang_phrases'] = [];
             foreach ($langs as $lang) {
-                $phrase = $this->em->getRepository('DeskPRO:Phrase')->getPhraseForLanguage($phrase_id, $lang);
+                $phrase = $this->em->getRepository(Phrase::class)->getPhraseForLanguage($phrase_id, $lang);
 
                 if ($phrase) {
                     $data['lang_phrases'][] = $phrase->toApiData(true);
@@ -265,7 +267,7 @@ class LanguagesController extends AbstractController implements ProtectedControl
             $this->em->flush();
             $this->db->commit();
 
-            foreach ($this->em->getRepository('DeskPRO:Language')->findAll() as $_lang) {
+            foreach ($this->em->getRepository(Language::class)->findAll() as $_lang) {
                 $this->em->getConnection()->executeQuery(sprintf('
                 insert ignore into object_lang (language_id, ref, ref_type, ref_id, prop_name, value)
                 (
@@ -408,14 +410,14 @@ class LanguagesController extends AbstractController implements ProtectedControl
 
             $lang = $langs[$lang_id];
 
-            $phrase = $this->em->getRepository('DeskPRO:Phrase')->getPhraseForLanguage($phrase_id, $lang);
+            $phrase = $this->em->getRepository(Phrase::class)->getPhraseForLanguage($phrase_id, $lang);
             if (!$phrase_text) {
                 if ($phrase) {
                     $this->em->remove($phrase);
                 }
             } else {
                 if (!$phrase) {
-                    $phrase                  = new \Application\DeskPRO\Entity\Phrase();
+                    $phrase                  = new Phrase();
                     $phrase->language        = $lang;
                     $phrase->name            = $phrase_id;
                     $phrase->original_phrase = '';
@@ -620,7 +622,7 @@ class LanguagesController extends AbstractController implements ProtectedControl
         }
 
         /** @var \Application\DeskPRO\EntityRepository\Phrase $repos */
-        $repos = $this->em->getRepository('DeskPRO:Phrase');
+        $repos = $this->em->getRepository(Phrase::class);
 
         $phrase_data = new PhraseData($repos, DP_ROOT.'/languages');
 
@@ -698,7 +700,7 @@ class LanguagesController extends AbstractController implements ProtectedControl
 
             case 'kb_categories':
                 /** @var \Application\DeskPRO\EntityRepository\ArticleCategory $repos */
-                $repos   = $this->em->getRepository('DeskPRO:ArticleCategory');
+                $repos   = $this->em->getRepository(ArticleCategory::class);
                 $phrases = $phrase_data->getKbCategoryPhrases($repos, $lang);
                 break;
 

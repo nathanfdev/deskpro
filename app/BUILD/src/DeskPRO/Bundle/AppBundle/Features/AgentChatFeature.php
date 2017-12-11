@@ -113,6 +113,7 @@ HTML;
      */
     public function beforeEnable(ContainerInterface $container)
     {
+        /** @var EntityManager $em */
         $em = $container->get('doctrine.orm.default_entity_manager');
         $this->copyIM($em);
         $this->createOnboardings($em);

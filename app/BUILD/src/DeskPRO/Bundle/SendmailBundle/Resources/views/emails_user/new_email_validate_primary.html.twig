@@ -1,0 +1,21 @@
+<dp:subject>{{ phrase('portal.email_subjects.email_primary-confirm') }}</dp:subject>
+
+<html>
+<head>
+	{% include 'SendmailBundle:blocks:resources.html.twig' %}
+</head>
+<body>
+{% include 'SendmailBundle:emails_common:email_code_top.html.twig' %}
+
+{% include 'SendmailBundle:blocks:header.html.twig' %}
+
+    <container>
+        {{ phrase('portal.emails.profile_email-primary-confirm') }}:<br/>
+        <a href="{{ verify_url }}">{{ verify_url }}</a>
+    </container>
+
+{% include 'SendmailBundle:blocks:footer.html.twig' %}
+
+{% include 'SendmailBundle:emails_common:email_code_bottom.html.twig' %}
+</body>
+</html>

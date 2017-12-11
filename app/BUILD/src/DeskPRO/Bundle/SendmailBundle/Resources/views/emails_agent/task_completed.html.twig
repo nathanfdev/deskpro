@@ -1,0 +1,23 @@
+{{ set_tplvar('agent_notification_footer', 'notify') }}
+<dp:subject>{{ phrase('agent.emails.task_completed', {title: task.title}) }}</dp:subject>
+
+<html>
+<head>
+	{% include 'SendmailBundle:blocks:resources.html.twig' %}
+</head>
+<body>
+{% include 'SendmailBundle:emails_common:email_code_top.html.twig' %}
+
+{% include 'SendmailBundle:blocks:header.html.twig' %}
+
+    <container>
+        {{ phrase('agent.emails.agent_completed_task_you_created', {agent: performer.display_contact, title: task.title}) }}
+        <br /><br />
+        <a href="{{ url_full('agent') }}#app.tasks,tasks:delegate:total">{{ phrase('agent.emails.view_delegated_tasks') }}</a>
+    </container>
+
+{% include 'SendmailBundle:blocks:footer.html.twig' %}
+
+{% include 'SendmailBundle:emails_common:email_code_bottom.html.twig' %}
+</body>
+</html>

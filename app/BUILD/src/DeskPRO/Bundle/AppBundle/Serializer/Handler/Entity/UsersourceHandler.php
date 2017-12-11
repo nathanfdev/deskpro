@@ -78,7 +78,7 @@ class UsersourceHandler extends AbstractEntityHandler
      *
      * @param Usersource $entity
      */
-    protected function createModel($entity, SideloadSerializationContext $context)
+    public function createModel($entity, SideloadSerializationContext $context)
     {
         return new UsersourceModel($entity, $this->getDisplayType($entity), $this->getDisplayOptions($entity, $context));
     }

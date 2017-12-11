@@ -56,48 +56,48 @@ abstract class AbstractEmailAction extends AbstractContainerAwareAction implemen
      */
     protected function getFromEmailAccountOption(Ticket $ticket, ExecutorContextInterface $context)
     {
-        $from_account = $this->getActionOption('from_account') ?: null;
-        if ($from_account) {
-            if (Numbers::isInteger($from_account)) {
-                $from_account_id = $from_account;
+        $fromAccount = $this->getActionOption('from_account') ?: null;
+        if ($fromAccount) {
+            if (Numbers::isInteger($fromAccount)) {
+                $fromAccountId = $fromAccount;
                 try {
-                    $from_account = $this->getContainer()->getEmailAccountManager()->getAccount($from_account_id);
+                    $fromAccount = $this->getContainer()->getEmailAccountManager()->getAccount($fromAccountId);
                 } catch (\OutOfBoundsException $e) {
-                    $context->getLogger()->debug("[AbstractEmailAction] Invalid account: $from_account_id");
+                    $context->getLogger()->debug("[AbstractEmailAction] Invalid account: $fromAccountId");
                     throw new \InvalidArgumentException('invalid_account');
                 }
             }
 
-            $context->getLogger()->debug("[AbstractEmailAction] Sending with email account: $from_account");
+            $context->getLogger()->debug("[AbstractEmailAction] Sending with email account: $fromAccount");
 
-            if (!$from_account->is_enabled) {
+            if (!$fromAccount->is_enabled) {
                 $context->getLogger()->warn('[AbstractEmailAction] Email account is not enabled');
                 throw new \InvalidArgumentException('account_disabled');
             }
 
-            if (!$from_account->outgoing_account) {
+            if (!$fromAccount->outgoing_account) {
                 $context->getLogger()->warn('[AbstractEmailAction] Email account is not an outgoing account');
                 throw new \InvalidArgumentException('account_not_outgoing');
             }
         }
 
-        return $from_account;
+        return $fromAccount;
     }
 
     /**
      * @param Ticket                   $ticket
      * @param ExecutorContextInterface $context
-     * @param bool                     $allow_blank
+     * @param bool                     $allowBlank
      *
      * @throws \InvalidArgumentException
      *
      * @return string|null
      */
-    protected function getEmailTemplateOption(Ticket $ticket, ExecutorContextInterface $context, $allow_blank = false)
+    protected function getEmailTemplateOption(Ticket $ticket, ExecutorContextInterface $context, $allowBlank = false)
     {
         $template = $this->getActionOption('template');
         if (!$template) {
-            if ($allow_blank) {
+            if ($allowBlank) {
                 return;
             }
 
@@ -143,33 +143,33 @@ abstract class AbstractEmailAction extends AbstractContainerAwareAction implemen
         // Set reply flags
         //------------------------------
 
-        $new_replies        = $state->getNewReplies();
-        $is_new_ticket      = $state->isNewTicket();
-        $is_new_agent_reply = false;
-        $is_new_agent_note  = false;
-        $is_new_user_reply  = false;
+        $newReplies      = $state->getNewReplies();
+        $isNewTicket     = $state->isNewTicket();
+        $isNewAgentReply = false;
+        $isNewAgentNote  = false;
+        $isNewUserReply  = false;
 
-        foreach ($new_replies as $message) {
+        foreach ($newReplies as $message) {
             if ($message->is_agent_note) {
-                $is_new_agent_note = true;
+                $isNewAgentNote = true;
             } elseif ($message->person->is_agent) {
-                $is_new_agent_reply = true;
+                $isNewAgentReply = true;
             } else {
-                $is_new_user_reply = true;
+                $isNewUserReply = true;
             }
         }
 
         // In user mode, never show notes
         if ($mode == 'user') {
-            $new_replies = array_filter($new_replies, function ($r) {
+            $newReplies = array_filter($newReplies, function ($r) {
                 return !$r->is_agent_note;
             });
-            $ticket_logs = null;
+            $ticketLogs = null;
 
             // Agent mode - include ticket logs
         } else {
-            $ticketlog_generator = new TicketLogGenerator($ticket, $context);
-            $ticket_logs         = $ticketlog_generator->getLogEntries();
+            $ticketLogGenerator = new TicketLogGenerator($ticket, $context);
+            $ticketLogs         = $ticketLogGenerator->getLogEntries();
         }
 
         //------------------------------
@@ -180,15 +180,15 @@ abstract class AbstractEmailAction extends AbstractContainerAwareAction implemen
             'type'               => $type,
             'user_mode'          => $mode,
             'performer_type'     => $context->getEventPerformer(),
-            'is_new_ticket'      => $is_new_ticket,
-            'is_new_agent_reply' => $is_new_agent_reply,
-            'is_new_agent_note'  => $is_new_agent_note,
-            'is_new_user_reply'  => $is_new_user_reply,
+            'is_new_ticket'      => $isNewTicket,
+            'is_new_agent_reply' => $isNewAgentReply,
+            'is_new_agent_note'  => $isNewAgentNote,
+            'is_new_user_reply'  => $isNewUserReply,
             'is_status_change'   => $state->hasChangedField('status'),
             'action_performer'   => $context->getPersonContext(),
-            'new_message'        => Arrays::getFirstItem($new_replies),
-            'new_messages'       => $new_replies,
-            'ticket_logs'        => $ticket_logs,
+            'new_message'        => Arrays::getFirstItem($newReplies),
+            'new_messages'       => $newReplies,
+            'ticket_logs'        => $ticketLogs,
             'user_vars'          => $context->getUserVars(),
         ];
 
@@ -196,24 +196,24 @@ abstract class AbstractEmailAction extends AbstractContainerAwareAction implemen
     }
 
     /**
-     * @param TicketEmail              $ticket_email
+     * @param TicketEmail              $ticketEmail
      * @param Ticket                   $ticket
      * @param ExecutorContextInterface $context
      */
-    protected function recordEmailTicketLog(TicketEmail $ticket_email, Ticket $ticket, ExecutorContextInterface $context)
+    protected function recordEmailTicketLog(TicketEmail $ticketEmail, Ticket $ticket, ExecutorContextInterface $context)
     {
         $state = $ticket->getStateChangeRecorder();
 
         $change = new ChangeEmailLog(
             'ticket_email',
-            $ticket_email->getUserMode(),
-            $ticket_email->getSentToName(),
-            $ticket_email->getSentToEmail(),
-            $ticket_email->getSentWithCcs(),
-            $ticket_email->getFromName(),
-            $ticket_email->getFromEmailAccount()->getUseEmailAddress(),
-            $ticket_email->getTemplateName(),
-            $ticket_email->getSendmailSourceId()
+            $ticketEmail->getUserMode(),
+            $ticketEmail->getSentToName(),
+            $ticketEmail->getSentToEmail(),
+            $ticketEmail->getSentWithCcs(),
+            $ticketEmail->getFromName(),
+            $ticketEmail->getFromEmailAccount()->getUseEmailAddress(),
+            $ticketEmail->getTemplateName(),
+            $ticketEmail->getSendmailSourceId()
         );
 
         $state->recordChange($change);
@@ -281,16 +281,16 @@ abstract class AbstractEmailAction extends AbstractContainerAwareAction implemen
     }
 
     /**
-     * @param array                    $raw_headers
+     * @param array                    $rawHeaders
      * @param Ticket                   $ticket
      * @param ExecutorContextInterface $context
      *
      * @return array
      */
-    protected function processHeaders(array $raw_headers, Ticket $ticket, ExecutorContextInterface $context)
+    protected function processHeaders(array $rawHeaders, Ticket $ticket, ExecutorContextInterface $context)
     {
         $headers = [];
-        foreach ($raw_headers as $h) {
+        foreach ($rawHeaders as $h) {
             if (empty($h['name'])) {
                 continue;
             }

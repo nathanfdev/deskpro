@@ -44,7 +44,7 @@ class ArticleHandler extends AbstractEntityHandler
      *
      * @param Article $entity
      */
-    protected function createModel($entity, SideloadSerializationContext $context)
+    public function createModel($entity, SideloadSerializationContext $context)
     {
         if ($context->getMappedClass(get_class($entity)) === ArticleCsv::class) {
             return new ArticleCsv($entity);

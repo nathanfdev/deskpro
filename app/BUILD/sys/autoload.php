@@ -92,7 +92,6 @@ $loader->addClassMap([
     'GoogleOpenID'                                    => DP_APP_DIR.'/vendor-src/googleopenid/GoogleOpenID.php',
     'POParser'                                        => DP_APP_DIR.'/vendor-src/simplepo/POParser.php',
     'TempPoMsgStore'                                  => DP_APP_DIR.'/vendor-src/simplepo/POParser.php',
-    'Emogrifier'                                      => DP_APP_DIR.'/vendor-src/emogrifier/emogrifier.php',
     'Facebook'                                        => DP_APP_DIR.'/vendor-src/facebook/php-sdk/src/facebook.php',
     'Text_LanguageDetect'                             => DP_APP_DIR.'/vendor-src/Text_LanguageDetect/lib/Text/LanguageDetect.php',
     'Text_LanguageDetect_Exception'                   => DP_APP_DIR.'/vendor-src/Text_LanguageDetect/lib/Text/LanguageDetect/Exception.php',

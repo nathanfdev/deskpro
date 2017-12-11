@@ -1,0 +1,14 @@
+<div class="ng-hide dp-layout-fullpage {% if full_height == 1 %}dp-full-height{% endif %}" ng-hide="state_loading || $parent.state_loading">
+	<div class="dp-pane">
+        {% block fullpane_content %}{% endblock %}
+	</div>
+</div>
+<div class="dp-layout-list">
+	<div class="dp-layout-list-listpane" ng-show="state_loading || $parent.state_loading"><div class="dp-layout-loading"><i></i></div></div>
+	<div class="ng-hide dp-layout-list-listpane" ng-hide="state_loading || $parent.state_loading">
+		<div class="dp-pane">{% block listpane_content %}{% endblock %}</div>
+	</div>
+	<div class="ng-hide dp-layout-list-editpane" ng-hide="state_loading || $parent.state_loading">
+		<div ui-view></div>
+	</div>
+</div>

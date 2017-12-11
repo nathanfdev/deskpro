@@ -6905,6 +6905,12 @@
       "integrity": "sha1-Ge+YdMSuHCl7zweP3mOgm2aoQ2M=",
       "dev": true
     },
+    "foundation-emails": {
+      "version": "2.2.1",
+      "resolved": "https://registry.npmjs.org/foundation-emails/-/foundation-emails-2.2.1.tgz",
+      "integrity": "sha1-HzRCdiOV0GPVpi15B0CyQzqrF0c=",
+      "dev": true
+    },
     "fresh": {
       "version": "0.3.0",
       "resolved": "https://registry.npmjs.org/fresh/-/fresh-0.3.0.tgz",

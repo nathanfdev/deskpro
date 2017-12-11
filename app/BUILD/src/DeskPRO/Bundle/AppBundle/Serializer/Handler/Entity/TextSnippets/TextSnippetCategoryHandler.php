@@ -51,7 +51,7 @@ class TextSnippetCategoryHandler extends AbstractEntityHandler
      *
      * @param TextSnippetCategoryEntity $entity
      */
-    protected function createModel($entity, SideloadSerializationContext $context)
+    public function createModel($entity, SideloadSerializationContext $context)
     {
         $title = $entity->getObjectPropLanguageTranslationValue('title', $context->getUser()->getLanguage());
 

@@ -31,6 +31,7 @@ namespace Application\DeskPRO\Chat;
 use Application\DeskPRO\App;
 use Application\DeskPRO\Entity\ChatConversation;
 use Application\DeskPRO\Entity\Person;
+use Application\DeskPRO\Entity\Session;
 use DeskPRO\Bundle\AppBundle\Notification\Event\LegacySystemEvent;
 
 /**
@@ -42,7 +43,7 @@ class AgentChat
     /** @var \Application\DeskPRO\Entity\Person */
     protected $person;
     /** @var bool */
-    protected $suppress_offline_email = false;
+    protected $suppressOfflineEmail = false;
 
     /**
      * Constructor.
@@ -56,7 +57,7 @@ class AgentChat
 
     public function disableOfflineEmailAlert()
     {
-        $this->suppress_offline_email = true;
+        $this->suppressOfflineEmail = true;
     }
 
     public function sendMessage($message, $conversation)
@@ -65,7 +66,7 @@ class AgentChat
             $conversation = App::findEntity('DeskPRO:ChatConversation', $conversation);
         }
 
-        $chat_message = $conversation->addNewMessage(
+        $chatMessage = $conversation->addNewMessage(
             $message,
             $this->person
         );
@@ -75,9 +76,9 @@ class AgentChat
             $channel = 'agent_chat.new-message';
         }
 
-        $part_ids = [];
-        foreach ($conversation->participants as $part) {
-            $part_ids[] = $part['id'];
+        $partIds = [];
+        foreach ($conversation->getParticipants() as $part) {
+            $partIds[] = $part['id'];
         }
 
         App::getOrm()->transactional(function ($em) use ($conversation) {
@@ -88,11 +89,11 @@ class AgentChat
         $container       = App::getContainer();
         $eventDispatcher = $container->get('event_dispatcher');
 
-        foreach ($conversation->participants as $part) {
+        foreach ($conversation->getParticipants() as $part) {
             if ($part['id'] == $this->person['id']) {
                 continue;
             }
-            $date = clone $chat_message['date_created'];
+            $date = clone $chatMessage['date_created'];
             $date->setTimeZone($part->getDateTimezone());
             $time = $container->getTranslator()->date('g:ia', $date, 'agent.time');
 
@@ -100,47 +101,54 @@ class AgentChat
                 LegacySystemEvent::EVENT_NAME,
                 new LegacySystemEvent($channel, [
                     'conversation_id' => $conversation['id'],
-                    'participant_ids' => $part_ids,
-                    'message_id'      => $chat_message['id'],
-                    'author_id'       => $chat_message->author['id'],
-                    'message'         => $chat_message['content'],
-                    'date_created'    => $chat_message['date_created']->getTimestamp(),
+                    'participant_ids' => $partIds,
+                    'message_id'      => $chatMessage['id'],
+                    'author_id'       => $chatMessage->author['id'],
+                    'message'         => $chatMessage['content'],
+                    'date_created'    => $chatMessage['date_created']->getTimestamp(),
                     'time'            => $time,
                     'target'          => $part->getId(),
                 ]
             ));
         }
 
-        // If any of the targets are not online, we might need to nofigy them of the message via email
-        if (!$this->suppress_offline_email && !$chat_message->is_sys) {
-            foreach ($conversation->participants as $part) {
+        // If any of the targets are not online, we might need to notify them of the message via email
+        if (!$this->suppressOfflineEmail && !$chatMessage->is_sys) {
+            foreach ($conversation->getParticipants() as $part) {
                 if ($part['id'] == $this->person['id']) {
                     continue;
                 }
-                $session = App::getOrm()->getRepository('DeskPRO:Session')->getSessionForPerson($part, 30);
+                $session = App::getOrm()->getRepository(Session::class)->getSessionForPerson($part, 30);
 
                 if (!$session && $part->getPref('agent_notif.chat_message.email')) {
-                    $email_message = App::getMailer()->createMessage();
-                    $email_message->setTemplate('DeskPRO:emails_agent:new-agent-chat-message.html.twig', [
-                        'message' => $chat_message,
-                    ]);
-                    $email_message->setToPerson($part);
-                    App::getMailer()->send($email_message);
+                    if (App::$container->get('deskpro.feature_flags')->hasBeta('email_templates')) {
+                        $viewModel = App::$container->get('email.agent_viewmodel_factory')
+                            ->createAgentNewChatMessageModel($chatMessage);
+                        App::$container->get('email.email_sender')
+                            ->send($viewModel, ['to' => $this->person]);
+                    } else {
+                        $emailMessage = App::getMailer()->createMessage();
+                        $emailMessage->setTemplate('DeskPRO:emails_agent:new-agent-chat-message.html.twig', [
+                            'message' => $chatMessage,
+                        ]);
+                        $emailMessage->setToPerson($part);
+                        App::getMailer()->send($emailMessage);
+                    }
                 }
             }
         }
 
         return [
             'conversation' => $conversation,
-            'new_message'  => $chat_message,
+            'new_message'  => $chatMessage,
         ];
     }
 
-    public function sendAgentMessage($message, array $agent_ids, $convo_id = 0)
+    public function sendAgentMessage($message, array $agentIds, $convo_id = 0)
     {
         $em = App::getOrm();
 
-        $agent_ids = App::getContainer()->getAgentData()->confirmAgentIds($agent_ids);
+        $agentIds = App::getContainer()->getAgentData()->confirmAgentIds($agentIds);
 
         $conversation = null;
         if ($convo_id) {
@@ -154,25 +162,25 @@ class AgentChat
 
         // Try to find an existing convo
         if (!$conversation) {
-            $date_cut = new \DateTime('-5 hours');
+            $dateCut = new \DateTime('-5 hours');
 
-            $find_agent_ids   = $agent_ids;
-            $find_agent_ids[] = $this->person['id'];
+            $findAgentIds   = $agentIds;
+            $findAgentIds[] = $this->person['id'];
 
-            $conversation = App::getEntityRepository('DeskPRO:ChatConversation')->getRecentForPeople($find_agent_ids, $date_cut);
+            $conversation = App::getEntityRepository(ChatConversation::class)->getRecentForPeople($findAgentIds, $dateCut);
         }
 
         if (!$conversation) {
             $conversation             = new ChatConversation();
             $conversation['is_agent'] = true;
             $conversation->addParticipant($this->person);
-            foreach ($agent_ids as $aid) {
+            foreach ($agentIds as $aid) {
                 $conversation->addParticipant($aid);
             }
         }
 
-        if (!$conversation || !count($conversation->participants)) {
-            return;
+        if (!$conversation || !count($conversation->getParticipants())) {
+            return null;
         }
 
         $em->beginTransaction();

@@ -144,7 +144,7 @@ class LanguageManager
     }
 
     /**
-     * @return array
+     * @return Language[]
      */
     public function getEnabledLanguages()
     {

@@ -1,0 +1,81 @@
+<dp:subject>
+	{{ phrase('agent.publish.new_comment_on', {name: object.title}) }}
+</dp:subject>
+{{ set_tplvar('agent_notification_footer', 'notify') }}
+
+<html>
+<head>
+	{% include 'SendmailBundle:blocks:resources.html.twig' %}
+</head>
+<body>
+{% include 'SendmailBundle:emails_common:email_code_top.html.twig' %}
+
+{% include 'SendmailBundle:blocks:header.html.twig' %}
+
+	<container>
+		{{ phrase('agent.publish.new_comment_submitted_by', {name: comment.user_display_contact }) }}
+
+		<br />
+		<br />
+
+		{{ comment.content_html }}
+
+		<br />
+		<br />
+
+		<table class="dp-props-table" border="0" cellspacing="0" cellpadding="0">
+			{% if comment.status == 'validating' %}
+				<td colspan="2">
+					{{ phrase('agent.publish.comment_requires_validation') }}<br />
+					{% if object_type == 'Article' %}
+						<a href="{{ login_link }}#app.publish,validating_comments,a.o:{{ object.id }}">{{ login_link }}#app.publish,validating_comments,a.o={{ object.id }}</a>
+					{% elseif object_type == 'Download' %}
+						<a href="{{ login_link }}#app.publish,validating_comments,d.o:{{ object.id }}">{{ login_link }}#app.publish,validating_comments,d.o={{ object.id }}</a>
+					{% elseif object_type == 'News' %}
+						<a href="{{ login_link }}#app.publish,validating_comments,n.o:{{ object.id }}">{{ login_link }}#app.publish,validating_comments,n.o={{ object.id }}</a>
+                    {% elseif object_type == 'Topic' %}
+						<a href="{{ login_link }}#app.publish,validating_comments,m.o:{{ object.id }}">{{ login_link }}#app.publish,validating_comments,m.o={{ object.id }}</a>
+                    {% elseif object_type == 'Feedback' %}
+						<a href="{{ login_link }}#app.publish,fb_comments,i.o:{{ object.id }}">{{ login_link }}#app.publish,fb_comments,i.o={{ object.id }}</a>
+					{% else %}
+						<a href="{{ login_link }}#app.publish,validating_comments">{{ login_link }}#app.publish,validating_comments</a>
+					{% endif %}
+				</td>
+			{% endif %}
+			<tr>
+				<td class="dp-td-heading">Title:</td>
+				<td>{{ object.title }}</td>
+			</tr>
+			<tr>
+				<td class="dp-td-heading">{{ phrase('agent.general.category') }}:</td>
+				<td>
+					{% if object_type == 'Article' %}
+						{{ object.category_names }}
+					{% else %}
+						{{ object.category.full_title }}
+					{% endif %}
+				</td>
+			</tr>
+			<tr>
+				<td colspan="2">
+					{% if object_type == 'Article' %}
+						{{ phrase('agent.emails.view_online_at') }} <a href="{{ login_link }}#a.o:{{ object.id }}">{{ login_link }}#a.o={{ object.id }}</a>
+					{% elseif object_type == 'Download' %}
+						{{ phrase('agent.emails.view_online_at') }} <a href="{{ login_link }}#d.o:{{ object.id }}">{{ login_link }}#d.o={{ object.id }}</a>
+					{% elseif object_type == 'News' %}
+						{{ phrase('agent.emails.view_online_at') }} <a href="{{ login_link }}#n.o:{{ object.id }}">{{ login_link }}#n.o={{ object.id }}</a>
+					{% elseif object_type == 'Feedback' %}
+						{{ phrase('agent.emails.view_online_at') }} <a href="{{ login_link }}#i.o:{{ object.id }}">{{ login_link }}#i.o={{ object.id }}</a>
+					{% elseif object_type == 'Topic' %}
+						{{ phrase('agent.emails.view_online_at') }} <a href="{{ login_link }}#m.o:{{ object.id }}">{{ login_link }}#m.o={{ object.id }}</a>
+					{% endif %}
+				</td>
+			</tr>
+		</table>
+	</container>
+
+{% include 'SendmailBundle:blocks:footer.html.twig' %}
+
+{% include 'SendmailBundle:emails_common:email_code_bottom.html.twig' %}
+</body>
+</html>

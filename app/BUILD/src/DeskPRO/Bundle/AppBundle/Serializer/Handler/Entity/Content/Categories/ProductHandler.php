@@ -42,7 +42,7 @@ class ProductHandler extends AbstractCategoryHandler
      *
      * @param \Application\DeskPRO\Entity\Product $entity
      */
-    protected function createModel($entity, SideloadSerializationContext $context)
+    public function createModel($entity, SideloadSerializationContext $context)
     {
         $model = new ProductModel($entity);
         $model->setTitleTranslations($this->getTitleTranslations($entity));

@@ -40,6 +40,7 @@ class SearchBox extends React.Component {
   };
 
   clearInput = () => {
+    console.log('clear input');
     this.textInput.value = '';
     this.props.onUserInput(
       this.textInput.value

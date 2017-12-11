@@ -34,9 +34,12 @@
 
 namespace Application\InstallBundle\Data\DefaultData;
 
+use Application\DeskPRO\App;
 use Application\DeskPRO\Entity\TicketTrigger;
 use Application\DeskPRO\Tickets\Actions\SendAgentEmail;
+use Application\DeskPRO\Tickets\Actions\SendAgentNewEmail;
 use Application\DeskPRO\Tickets\Actions\SendUserEmail;
+use Application\DeskPRO\Tickets\Actions\SendUserNewEmail;
 use Application\DeskPRO\Tickets\Actions\SetAgent;
 use Application\DeskPRO\Tickets\Triggers\Terms\CheckAgent;
 use Application\DeskPRO\Tickets\Triggers\Terms\CheckAgentMessage;
@@ -66,6 +69,8 @@ class TriggerData extends AbstractDefaultData
     {
         $ignore = array_fill_keys($ignore, true);
 
+        $newEmailTemplates = App::getContainer()->get('deskpro.feature_flags')->hasBeta('email_templates');
+
         //-----
         // Send agent notifications
         //-----
@@ -74,19 +79,35 @@ class TriggerData extends AbstractDefaultData
             'newticket' => 'DeskPRO:emails_agent:ticket-new.html.twig',
             'newreply' => 'DeskPRO:emails_agent:ticket-reply.html.twig',
             'update' => 'DeskPRO:emails_agent:ticket-update.html.twig',
-        ] as $event_trigger => $template_name) {
+        ] as $eventTrigger => $templateName) {
             $trigger                = new TicketTrigger();
-            $trigger->event_trigger = $event_trigger;
+            $trigger->event_trigger = $eventTrigger;
             $trigger->by_user_mode  = ['api', 'email', 'form', 'portal', 'widget'];
             $trigger->by_agent_mode = ['api', 'email', 'web', 'mobile'];
             $trigger->run_order     = 1000;
-            $trigger->sys_name      = "default_{$event_trigger}_agentemail";
+            $trigger->sys_name      = "default_{$eventTrigger}_agentemail";
             $trigger->title         = 'Send agent notifications';
-            $trigger->actions->addAction(new SendAgentEmail([
-                'template'  => $template_name,
-                'agent_ids' => ['notify_list'],
-                'from_name' => 'performer',
-            ]));
+            if ($newEmailTemplates) {
+                $trigger->actions->addAction(
+                    new SendAgentNewEmail(
+                        [
+                            'template'  => $templateName,
+                            'agent_ids' => ['notify_list'],
+                            'from_name' => 'performer',
+                        ]
+                    )
+                );
+            } else {
+                $trigger->actions->addAction(
+                    new SendAgentEmail(
+                        [
+                            'template'  => $templateName,
+                            'agent_ids' => ['notify_list'],
+                            'from_name' => 'performer',
+                        ]
+                    )
+                );
+            }
 
             if (!isset($ignore[$trigger->sys_name])) {
                 $this->getEm()->persist($trigger);
@@ -111,11 +132,23 @@ class TriggerData extends AbstractDefaultData
         $set->setOperator('AND');
         $trigger->terms->addTerm($set);
 
-        $trigger->actions->addAction(new SendUserEmail([
-            'template'    => 'DeskPRO:emails_user:ticket-new-byagent.html.twig',
-            'do_cc_users' => true,
-            'from_name'   => 'performer',
-        ]));
+        if ($newEmailTemplates) {
+            $trigger->actions->addAction(
+                new SendUserNewEmail(
+                    [
+                        'template'    => 'SendmailBundle:emails_user:ticket_new_by_agent.html.twig',
+                        'do_cc_users' => true,
+                        'from_name'   => 'performer',
+                    ]
+                )
+            );
+        } else {
+            $trigger->actions->addAction(new SendUserEmail([
+                'template'    => 'DeskPRO:emails_user:ticket-new-byagent.html.twig',
+                'do_cc_users' => true,
+                'from_name'   => 'performer',
+            ]));
+        }
 
         if (!isset($ignore[$trigger->sys_name])) {
             $this->getEm()->persist($trigger);
@@ -138,11 +171,23 @@ class TriggerData extends AbstractDefaultData
         $set->setOperator('AND');
         $trigger->terms->addTerm($set);
 
-        $trigger->actions->addAction(new SendUserEmail([
-            'template'    => 'DeskPRO:emails_user:ticket-new-autoreply.html.twig',
-            'do_cc_users' => true,
-            'from_name'   => 'helpdesk_name',
-        ]));
+        if ($newEmailTemplates) {
+            $trigger->actions->addAction(
+                new SendUserNewEmail(
+                    [
+                        'template'    => 'SendmailBundle:emails_user:ticket_new_autoreply.html.twig',
+                        'do_cc_users' => true,
+                        'from_name'   => 'helpdesk_name',
+                    ]
+                )
+            );
+        } else {
+            $trigger->actions->addAction(new SendUserEmail([
+                'template'    => 'DeskPRO:emails_user:ticket-new-autoreply.html.twig',
+                'do_cc_users' => true,
+                'from_name'   => 'helpdesk_name',
+            ]));
+        }
 
         if (!isset($ignore[$trigger->sys_name])) {
             $this->getEm()->persist($trigger);
@@ -165,11 +210,23 @@ class TriggerData extends AbstractDefaultData
         $set->setOperator('AND');
         $trigger->terms->addTerm($set);
 
-        $trigger->actions->addAction(new SendUserEmail([
-            'template'    => 'DeskPRO:emails_user:ticket-reply-autoreply.html.twig',
-            'do_cc_users' => true,
-            'from_name'   => 'helpdesk_name',
-        ]));
+        if ($newEmailTemplates) {
+            $trigger->actions->addAction(
+                new SendUserNewEmail(
+                    [
+                        'template'    => 'SendmailBundle:emails_user:ticket_reply_autoreply.html.twig',
+                        'do_cc_users' => true,
+                        'from_name'   => 'helpdesk_name',
+                    ]
+                )
+            );
+        } else {
+            $trigger->actions->addAction(new SendUserEmail([
+                'template'    => 'DeskPRO:emails_user:ticket-reply-autoreply.html.twig',
+                'do_cc_users' => true,
+                'from_name'   => 'helpdesk_name',
+            ]));
+        }
 
         if (!isset($ignore[$trigger->sys_name])) {
             $this->getEm()->persist($trigger);
@@ -192,11 +249,23 @@ class TriggerData extends AbstractDefaultData
         $set->setOperator('AND');
         $trigger->terms->addTerm($set);
 
-        $trigger->actions->addAction(new SendUserEmail([
-            'template'    => 'DeskPRO:emails_user:ticket-reply-byagent.html.twig',
-            'do_cc_users' => true,
-            'from_name'   => 'performer',
-        ]));
+        if ($newEmailTemplates) {
+            $trigger->actions->addAction(
+                new SendUserNewEmail(
+                    [
+                        'template'    => 'SendmailBundle:emails_user:ticket_reply_by_agent.html.twig',
+                        'do_cc_users' => true,
+                        'from_name'   => 'performer',
+                    ]
+                )
+            );
+        } else {
+            $trigger->actions->addAction(new SendUserEmail([
+                'template'    => 'DeskPRO:emails_user:ticket-reply-byagent.html.twig',
+                'do_cc_users' => true,
+                'from_name'   => 'performer',
+            ]));
+        }
 
         if (!isset($ignore[$trigger->sys_name])) {
             $this->getEm()->persist($trigger);

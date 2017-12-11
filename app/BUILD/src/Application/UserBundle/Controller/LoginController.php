@@ -59,8 +59,8 @@ use Application\DeskPRO\Usersource\UsersourceManager;
 use DeskPRO\Bundle\AppBundle\AntiAbuse\Event\LoginAbuseCheck;
 use DeskPRO\Bundle\AppBundle\AntiAbuse\Event\PasswordResetAbuseCheck;
 use DeskPRO\Bundle\AppBundle\AntiAbuse\Exception\AntiAbuseException;
-use DeskPRO\Bundle\AppBundle\Notification\Event\LegacySystemEvent;
 use DeskPRO\Bundle\AppBundle\Form\Type\Captcha\DpCaptchaType;
+use DeskPRO\Bundle\AppBundle\Notification\Event\LegacySystemEvent;
 use DeskPRO\Bundle\PortalBundle\EventListener\RedirectProtectionListener;
 use DeskPRO\Bundle\PortalBundle\Twig\Environment;
 use Doctrine\DBAL\ConnectionException;
@@ -90,9 +90,9 @@ use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
 class LoginController extends AbstractController
 {
     /** @var string */
-    protected $tpl_prefix = 'UserBundle:Login';
+    protected $tplPrefix = 'UserBundle:Login';
     /** @var string */
-    protected $route_prefix = 'user';
+    protected $routePrefix = 'user';
 
     const USERSOURCE_TEST = 'usersource_test';
 
@@ -133,6 +133,10 @@ class LoginController extends AbstractController
     }
 
     /**
+     * @throws ORMException
+     * @throws OptimisticLockException
+     * @throws TransactionRequiredException
+     *
      * @return bool
      */
     protected function loginViaToken()
@@ -238,6 +242,10 @@ class LoginController extends AbstractController
     /**
      * @param $usersource_id
      *
+     * @throws ORMException
+     * @throws OptimisticLockException
+     * @throws TransactionRequiredException
+     *
      * @return Response
      */
     public function samlSingleLogoutServiceAction($usersource_id)
@@ -259,6 +267,10 @@ class LoginController extends AbstractController
 
     /**
      * @param $usersource_id
+     *
+     * @throws ORMException
+     * @throws OptimisticLockException
+     * @throws TransactionRequiredException
      *
      * @return Response
      */
@@ -297,7 +309,7 @@ class LoginController extends AbstractController
         }
 
         if (!$this->in->getBool('agent_login') && !$this->consumeRequest('user_login')) {
-            return $this->redirectRoute($this->route_prefix.'_login');
+            return $this->redirectRoute($this->routePrefix.'_login');
         }
 
         try {
@@ -305,7 +317,7 @@ class LoginController extends AbstractController
         } catch (HttpException $e) {
             $this->session->setFlash('request_token_expired', true);
 
-            return $this->redirectRoute($this->route_prefix.'_login', ['return' => $return]);
+            return $this->redirectRoute($this->routePrefix.'_login', ['return' => $return]);
         }
 
         // Form wasnt inputted (eg direct url)
@@ -316,7 +328,7 @@ class LoginController extends AbstractController
                 $this->session->save();
             }
 
-            return $this->redirectRoute($this->route_prefix.'_login', ['return' => $return]);
+            return $this->redirectRoute($this->routePrefix.'_login', ['return' => $return]);
         }
 
         $check = new LoginAbuseCheck($inputEmail, $request->getClientIp());
@@ -330,7 +342,7 @@ class LoginController extends AbstractController
             $this->session->set('failed_login_name', $inputEmail);
             $this->session->save();
 
-            return $this->redirectRoute($this->route_prefix.'_login', ['return' => $return]);
+            return $this->redirectRoute($this->routePrefix.'_login', ['return' => $return]);
         }
 
         $captcha = null;
@@ -344,7 +356,7 @@ class LoginController extends AbstractController
                 $this->session->setFlash('captcha_login_error', true);
                 $this->session->save();
 
-                return $this->redirectRoute($this->route_prefix.'_login', ['return' => $return]);
+                return $this->redirectRoute($this->routePrefix.'_login', ['return' => $return]);
             }
         }
 
@@ -372,7 +384,7 @@ class LoginController extends AbstractController
             $this->session->set('failed_to_login', true);
             $this->session->save();
 
-            return $this->redirectRoute($this->route_prefix.'_login', ['return' => $return]);
+            return $this->redirectRoute($this->routePrefix.'_login', ['return' => $return]);
         }
 
         $identity = $result->getIdentity();
@@ -390,7 +402,7 @@ class LoginController extends AbstractController
             $this->session->setFlash('email_banned', true);
             $this->session->save();
 
-            return $this->redirectRoute($this->route_prefix.'_login', ['return' => $return]);
+            return $this->redirectRoute($this->routePrefix.'_login', ['return' => $return]);
         }
 
         if (!isset($GLOBALS['DP_LOGIN_VIA_TOKEN'])) {
@@ -451,7 +463,7 @@ class LoginController extends AbstractController
                     $this->session->save();
                 }
 
-                return $this->redirectRoute($this->route_prefix.'_login', ['return' => $return]);
+                return $this->redirectRoute($this->routePrefix.'_login', ['return' => $return]);
             }
 
             App::getSession()->remove('login_validate_comments');
@@ -470,7 +482,7 @@ class LoginController extends AbstractController
             return $this->redirect($return);
         }
 
-        return $this->redirectRoute($this->route_prefix);
+        return $this->redirectRoute($this->routePrefix);
     }
 
     /**
@@ -514,24 +526,38 @@ class LoginController extends AbstractController
     }
 
     /**
-     * @param Person $person
-     * @param bool   $success
+     * @param Person  $person
+     * @param Request $request
+     * @param bool    $success
+     *
+     * @throws Exception
      */
     protected function sendLoginAlert(Person $person, Request $request, $success = true)
     {
         $prefName = sprintf('agent_notif.login_attempt%s.email', $success ? '' : '_fail');
         if ($person->getPref($prefName) && !$person->isDeleted()) {
-            $message = $this->container->getMailer()->createMessage();
-            $message->setTemplate(
-                'DeskPRO:emails_agent:login-alert.html.twig',
-                [
-                    'success'   => $success,
-                    'firstSeen' => $this->session->getEntity()->getDateCreated(),
-                    'request'   => $request,
-                ]
-            );
-            $message->setTo($person->getPrimaryEmailAddress(), $person->getDisplayName());
-            $this->container->getMailer()->send($message);
+            if ($this->get('deskpro.feature_flags')->hasBeta('email_templates')) {
+                $viewModel = $this->get('email.agent_viewmodel_factory')
+                    ->createAgentLoginAlertModel(
+                        $request,
+                        $this->session->getEntity()->getDateCreated(),
+                        $success
+                    );
+                $this->get('email.email_sender')
+                    ->send($viewModel, ['to' => $person]);
+            } else {
+                $message = $this->container->getMailer()->createMessage();
+                $message->setTemplate(
+                    'DeskPRO:emails_agent:login-alert.html.twig',
+                    [
+                        'success'   => $success,
+                        'firstSeen' => $this->session->getEntity()->getDateCreated(),
+                        'request'   => $request,
+                    ]
+                );
+                $message->setTo($person->getPrimaryEmailAddress(), $person->getDisplayName());
+                $this->container->getMailer()->send($message);
+            }
         }
     }
 
@@ -576,6 +602,8 @@ class LoginController extends AbstractController
 
     /**
      * @param Request $request
+     *
+     * @throws Exception
      */
     protected function handleLoginAttempt(Request $request)
     {
@@ -714,7 +742,7 @@ class LoginController extends AbstractController
 
                     return $this->redirect($return);
                 } else {
-                    return $this->redirectRoute($this->route_prefix);
+                    return $this->redirectRoute($this->routePrefix);
                 }
 
                 // We expect a redirect to be rquired
@@ -750,7 +778,7 @@ class LoginController extends AbstractController
             } else {
                 $this->session->setFlash('login_failed', true);
 
-                return $this->redirectRoute($this->route_prefix.'_login', ['return' => $return]);
+                return $this->redirectRoute($this->routePrefix.'_login', ['return' => $return]);
             }
 
             //------------------------------
@@ -770,14 +798,14 @@ class LoginController extends AbstractController
                 if ($return) {
                     return $this->redirect($return);
                 } else {
-                    return $this->redirectRoute($this->route_prefix);
+                    return $this->redirectRoute($this->routePrefix);
                 }
 
                 // Error, go back to login
             } else {
                 $this->session->setFlash('login_failed', true);
 
-                return $this->redirectRoute($this->route_prefix.'_login', ['return' => $return]);
+                return $this->redirectRoute($this->routePrefix.'_login', ['return' => $return]);
             }
         }
     }
@@ -813,7 +841,7 @@ class LoginController extends AbstractController
         if (!($adapter instanceof CallbackInterface)) {
             $this->session->setFlash('login_failed', true);
 
-            return $this->redirectRoute($this->route_prefix.'_login', ['return' => $return]);
+            return $this->redirectRoute($this->routePrefix.'_login', ['return' => $return]);
         }
 
         $adapter->setCallbackContext($_REQUEST);
@@ -852,7 +880,7 @@ class LoginController extends AbstractController
 
                 return $this->redirect($return);
             } else {
-                return $this->redirectRoute($this->route_prefix);
+                return $this->redirectRoute($this->routePrefix);
             }
 
             // Error, go back to login
@@ -872,7 +900,7 @@ class LoginController extends AbstractController
 
             $this->session->setFlash('login_failed', true);
 
-            return $this->redirectRoute($this->route_prefix.'_login', ['return' => $return]);
+            return $this->redirectRoute($this->routePrefix.'_login', ['return' => $return]);
         }
     }
 
@@ -924,7 +952,7 @@ class LoginController extends AbstractController
             } else {
                 $this->session->setFlash('failed_rate_limit', true);
 
-                return $this->redirectRoute($this->route_prefix.'_login_resetpass', ['return' => LegacyRequestUtils::readReturnParam($request)]);
+                return $this->redirectRoute($this->routePrefix.'_login_resetpass', ['return' => LegacyRequestUtils::readReturnParam($request)]);
             }
         }
 
@@ -936,7 +964,7 @@ class LoginController extends AbstractController
                 } else {
                     $this->session->setFlash('captcha_reset_error', true);
 
-                    return $this->redirectRoute($this->route_prefix.'_login_resetpass', ['return' => LegacyRequestUtils::readReturnParam($request)]);
+                    return $this->redirectRoute($this->routePrefix.'_login_resetpass', ['return' => LegacyRequestUtils::readReturnParam($request)]);
                 }
             }
         }
@@ -955,8 +983,8 @@ class LoginController extends AbstractController
         if (2 <= $rep->getCountByName('reset-password:'.DP_INTERFACE.':'.$person['id'], 30 * 60)) {
             return $_format == 'json'
                 ? $this->createJsonResponse(['success' => 1])
-                : $this->render($this->tpl_prefix.':reset-password-sent.html.twig', [
-                    'route_prefix' => $this->route_prefix,
+                : $this->render($this->tplPrefix.':reset-password-sent.html.twig', [
+                    'route_prefix' => $this->routePrefix,
                     'did_send'     => true,
                 ]);
         }
@@ -993,8 +1021,8 @@ class LoginController extends AbstractController
             }
 
             // Default is to just show standard message to not reveal if account exists
-            return $this->render($this->tpl_prefix.':reset-password-sent.html.twig', [
-                'route_prefix' => $this->route_prefix,
+            return $this->render($this->tplPrefix.':reset-password-sent.html.twig', [
+                'route_prefix' => $this->routePrefix,
             ]);
         }
 
@@ -1031,8 +1059,8 @@ class LoginController extends AbstractController
                     }
 
                     // No other user sources for the user
-                    return $this->render($this->tpl_prefix.':reset-password-sent.html.twig', [
-                        'route_prefix' => $this->route_prefix,
+                    return $this->render($this->tplPrefix.':reset-password-sent.html.twig', [
+                        'route_prefix' => $this->routePrefix,
                         'did_send'     => false,
                     ]);
                 }
@@ -1049,18 +1077,25 @@ class LoginController extends AbstractController
                 ];
 
                 $this->container->getTranslator()->setDefaultPersonContext($person);
-                $message = $this->container->getMailer()->createMessage();
-                $message->setTemplate('DeskPRO:emails_agent:admin-noreset-password.html.twig', $vars);
-                $message->setTo($email, $person->getDisplayName());
-                $this->container->getMailer()->send($message);
+                if ($this->get('deskpro.feature_flags')->hasBeta('email_templates')) {
+                    $viewModel = $this->get('email.agent_viewmodel_factory')
+                        ->createAdminNoResetPasswordModel();
+                    $this->get('email.email_sender')
+                        ->send($viewModel, ['to' => $email]);
+                } else {
+                    $message = $this->container->getMailer()->createMessage();
+                    $message->setTemplate('DeskPRO:emails_agent:admin-noreset-password.html.twig', $vars);
+                    $message->setTo($email, $person->getDisplayName());
+                    $this->container->getMailer()->send($message);
+                }
                 $this->container->getTranslator()->setDefaultPersonContext($person);
 
                 if ($_format == 'json') {
                     return $this->createJsonResponse(['success' => 1]);
                 }
 
-                return $this->render($this->tpl_prefix.':reset-password-sent.html.twig', [
-                    'route_prefix' => $this->route_prefix,
+                return $this->render($this->tplPrefix.':reset-password-sent.html.twig', [
+                    'route_prefix' => $this->routePrefix,
                     'did_send'     => true,
                 ]);
             }
@@ -1072,22 +1107,47 @@ class LoginController extends AbstractController
         $tmpdata = TmpData::create('reset-password', ['person' => $person->id], '+1 day', $name);
         $this->em()->persist($tmpdata);
         $this->em()->flush();
-        $resetUrl = $this->container->get('router')->generate(
-            'user_login_resetpass_newpass',
-            ['code' => $tmpdata->getCode()],
-            UrlGeneratorInterface::ABSOLUTE_URL
-        );
 
-        $vars = ['reset_url' => $resetUrl];
         $this->container->getTranslator()->setDefaultPersonContext($person);
-        $message = $this->container->getMailer()->createMessage();
-        $message->setTemplate('DeskPRO:emails_user:reset-password.html.twig', $vars);
-        $message->setTo($email, $person->getDisplayName());
-        $this->container->getTranslator()->setDefaultPersonContext($person);
-        $this->container->getTranslator()->setTemporaryLanguage($person->getLanguage(), function () use ($message) {
-            $message->prepare();
-        });
-        $this->container->getMailer()->send($message);
+        if ($this->get('deskpro.feature_flags')->hasBeta('email_templates')) {
+            if ($person->isAgent()) {
+                $resetUrl = $this->container->get('router')->generate(
+                    'agent_login',
+                    ['code' => $tmpdata->getCode()],
+                    UrlGeneratorInterface::ABSOLUTE_URL
+                );
+            } else {
+                $resetUrl = $this->container->get('router')->generate(
+                    'user_login_resetpass_newpass',
+                    ['code' => $tmpdata->getCode()],
+                    UrlGeneratorInterface::ABSOLUTE_URL
+                );
+            }
+            $viewModel = $this->get('email.user_viewmodel_factory')
+                ->createResetPasswordModel($resetUrl);
+            $emailSender = $this->get('email.email_sender');
+            $this->container->getTranslator()->setTemporaryLanguage(
+                $person->getLanguage(),
+                function () use ($emailSender, $viewModel, $person) {
+                    $emailSender->send($viewModel, ['to' => $person]);
+                }
+            );
+        } else {
+            $vars = [
+                'code' => $tmpdata->getCode(),
+            ];
+            $message = $this->container->getMailer()->createMessage();
+            $message->setTemplate('DeskPRO:emails_user:reset-password.html.twig', $vars);
+            $message->setTo($email, $person->getDisplayName());
+            $this->container->getTranslator()->setDefaultPersonContext($person);
+            $this->container->getTranslator()->setTemporaryLanguage(
+                $person->getLanguage(),
+                function () use ($message) {
+                    $message->prepare();
+                }
+            );
+            $this->container->getMailer()->send($message);
+        }
 
         if ($_format == 'json') {
             return $this->createJsonResponse(['success' => 1]);
@@ -1096,8 +1156,8 @@ class LoginController extends AbstractController
         $this->session->remove('auth_person_id');
         $this->session->save();
 
-        return $this->render($this->tpl_prefix.':reset-password-sent.html.twig', [
-            'route_prefix' => $this->route_prefix,
+        return $this->render($this->tplPrefix.':reset-password-sent.html.twig', [
+            'route_prefix' => $this->routePrefix,
             'did_send'     => true,
         ]);
     }
@@ -1304,7 +1364,7 @@ class LoginController extends AbstractController
         if ($return) {
             return $this->redirect($return);
         } else {
-            return $this->redirectRoute($this->route_prefix);
+            return $this->redirectRoute($this->routePrefix);
         }
     }
 

@@ -126,7 +126,6 @@ class AddButton extends React.Component {
           <PopUp
             positionMy="center top"
             positionAt="center bottom"
-            id={3}
             elementId="add-menu-popup"
             zIndex={99999}
             content={content}

@@ -1,0 +1,39 @@
+<dp:subject>{{ phrase('user.email_subjects.tickets_re') }}</dp:subject>
+
+<html>
+<head>
+    {% include 'SendmailBundle:blocks:resources.html.twig' %}
+</head>
+<body>
+{% include 'SendmailBundle:emails_common:email_code_top.html.twig' %}
+
+{% include 'SendmailBundle:blocks:header.html.twig' %}
+
+    <container>
+        {{ phrase('user.emails.greeting', {to_name: recipient.name}) }}
+
+        <br/><br/>
+
+        {{ phrase('user.emails.ticket_received') }}
+
+        <br/><br/>
+
+        {% for message in ticket_messages %}
+            {% if not context.message_limit or loop.index0 < context.message_limit %}
+                {% include 'SendmailBundle:emails_common:ticket_message_row.html.twig' with { message: message, ticketdisplay: context.ticketdisplay } %}
+            {% endif %}
+        {% endfor %}
+
+        {% if app.isPortalEnabled() %}
+            <br/><br/>
+
+            {{ phrase('user.emails.ticket_access_ticket_online') }}
+            <a href="{{ ticket_link }}">{{ ticket_link }}</a>
+        {% endif %}
+    </container>
+
+{% include 'SendmailBundle:blocks:footer.html.twig' %}
+
+{% include 'SendmailBundle:emails_common:email_code_bottom.html.twig' %}
+</body>
+</html>

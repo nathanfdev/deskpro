@@ -1,0 +1,38 @@
+{{ set_tplvar('agent_notification_footer', 'notify') }}
+<dp:subject>
+	{% if success %}
+		{{ phrase('agent.emails.alert_successful_login') }}
+	{% else %}
+		{{ phrase('agent.emails.alert_failed_login') }}
+	{% endif %}
+</dp:subject>
+
+<html>
+<head>
+	{% include 'SendmailBundle:blocks:resources.html.twig' %}
+</head>
+<body>
+{% include 'SendmailBundle:emails_common:email_code_top.html.twig' %}
+
+{% include 'SendmailBundle:blocks:header.html.twig' %}
+
+	<container>
+		{% if success %}
+			{{ phrase('agent.emails.notice_account_login') }}<br />
+		{% else %}
+			{{ phrase('agent.emails.notice_login_attempt') }}<br />
+		{% endif %}
+		<ul>
+			<li>{{ phrase('agent.emails.user_ip') }}: {{ client_ip }}</li>
+			<li>{{ phrase('agent.emails.user_agent') }}: {{ client_user_agent }}</li>
+			<li>{{ phrase('agent.emails.landing_page') }}: {{ client_landing_page }}</li>
+			<li>{{ phrase('agent.emails.referring_page') }}: {{ client_referring_page }}</li>
+			<li>{{ phrase('agent.emails.first_seen') }}: {{ first_seen }}</li>
+		</ul>
+	</container>
+
+{% include 'SendmailBundle:blocks:footer.html.twig' %}
+
+{% include 'SendmailBundle:emails_common:email_code_bottom.html.twig' %}
+</body>
+</html>

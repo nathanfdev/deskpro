@@ -34,6 +34,9 @@ use Pagerfanta\Pagerfanta;
 
 /**
  * Class ApiWrapper.
+ *
+ * todo refactor api wrapper model to be able to set implicit way.
+ * todo rename as it's used not only for api.
  */
 class ApiWrapper
 {

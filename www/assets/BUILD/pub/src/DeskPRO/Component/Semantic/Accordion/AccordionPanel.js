@@ -25,10 +25,10 @@ class AccordionPanel extends React.Component {
 
     title = [title];
     if (count) {
-      title.push(<span className="count"> ({count.length})</span>);
+      title.push(<span className="count" key="count"> ({count.length})</span>);
     }
     if (icon) {
-      title.unshift(<i className={icon} />);
+      title.unshift(<i className={icon} key="icon" />);
     }
 
     return title;

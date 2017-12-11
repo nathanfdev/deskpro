@@ -245,6 +245,14 @@ class TicketTrigger extends DomainObject
     }
 
     /**
+     * @param TriggerActions $actions
+     */
+    public function setActions($actions)
+    {
+        $this->setModelField('actions', $actions);
+    }
+
+    /**
      * @param string $flag
      *
      * @return bool

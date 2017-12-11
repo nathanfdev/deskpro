@@ -440,6 +440,14 @@ class TicketMessage extends DomainObject
         return $this;
     }
 
+    /**
+     * @return string
+     */
+    public function getHostname()
+    {
+        return $this->hostname;
+    }
+
     public function setHostname($hostname)
     {
         $this->setModelField('hostname', $hostname);
@@ -1053,6 +1061,14 @@ class TicketMessage extends DomainObject
     public function getPrimaryTranslation()
     {
         return $this->primary_translation;
+    }
+
+    /**
+     * @return EmailSource
+     */
+    public function getEmailSource()
+    {
+        return $this->email_source;
     }
 
     /**

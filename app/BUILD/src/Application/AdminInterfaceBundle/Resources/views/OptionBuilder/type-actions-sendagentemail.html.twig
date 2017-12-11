@@ -2,7 +2,11 @@
 	<div class="dp-ob-standard-row">
 		<table class="display-table">
 			<tr>
-				<td class="nowrap"><label class="row-label">Send Agent Email</label></td>
+				<td class="nowrap">
+					<label class="row-label">
+						Send Agent Email{% if app.hasBeta('email_templates') %} (legacy){% endif %}
+					</label>
+				</td>
 				<td ng-show="rowOpts.rowEnabled" class="row-options">
 					<table class="display-table spaced">
 						<tr>

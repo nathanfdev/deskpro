@@ -58,178 +58,275 @@ class PortalEmailSender
 
     public function sendPasswordResetLink(Person $person, array $reset)
     {
-        $this->sendTo(
-            new EmailTo($person),
-            'DeskPRO:emails_user:reset-password.html.twig',
-            [
-                'person'    => $person,
-                'reset_url' => $this->getRouter()->generate(
-                    'portal_reset_password_process',
-                    [
-                        'code' => $reset['code'],
-                    ],
+        if ($this->container->get('deskpro.feature_flags')->hasBeta('email_templates')) {
+            if ($person->isAgent()) {
+                $resetUrl = $this->getRouter()->generate(
+                    'agent_login',
+                    ['code' => $reset['code']],
                     UrlGeneratorInterface::ABSOLUTE_URL
-                ),
-            ]
-        );
+                );
+            } else {
+                $resetUrl = $this->getRouter()->generate(
+                    'user_login_resetpass_newpass',
+                    ['code' => $reset['code']],
+                    UrlGeneratorInterface::ABSOLUTE_URL
+                );
+            }
+            $viewModel = $this->container->get('email.user_viewmodel_factory')
+                ->createResetPasswordModel($resetUrl);
+            $this->container->get('email.email_sender')
+                ->send($viewModel, ['to' => $person]);
+        } else {
+            $this->sendTo(
+                new EmailTo($person),
+                'DeskPRO:emails_user:reset-password.html.twig',
+                [
+                    'person' => $person,
+                    'code'   => $reset['code'],
+                ]
+            );
+        }
     }
 
     public function sendPasswordSetLink(Person $person, array $reset)
     {
-        $this->sendTo(
-            new EmailTo($person),
-            'DeskPRO:emails_user:set-password.html.twig',
-            [
-                'person'    => $person,
-                'reset_url' => $this->getRouter()->generate(
-                    'portal_set_password_process',
-                    [
-                        'code' => $reset['code'],
-                    ],
-                    UrlGeneratorInterface::ABSOLUTE_URL
-                ),
-            ]
+        $resetUrl = $this->getRouter()->generate(
+            'portal_set_password_process',
+            ['code' => $reset['code']],
+            UrlGeneratorInterface::ABSOLUTE_URL
         );
+
+        if ($this->container->get('deskpro.feature_flags')->hasBeta('email_templates')) {
+            $viewModel = $this->container->get('email.user_viewmodel_factory')
+                ->createSetPasswordModel($resetUrl);
+            $this->container->get('email.email_sender')
+                ->send($viewModel, ['to' => $person]);
+        } else {
+            $this->sendTo(
+                new EmailTo($person),
+                'DeskPRO:emails_user:set-password.html.twig',
+                [
+                    'person'    => $person,
+                    'reset_url' => $resetUrl,
+                ]
+            );
+        }
     }
 
     public function sendWelcomeEmail(Person $person)
     {
         $email = $person->getPrimaryEmail();
 
-        $portalUrl = $this->getRouter()->generate('portal_home', [], UrlGeneratorInterface::ABSOLUTE_URL);
+        if ($this->container->get('deskpro.feature_flags')->hasBeta('email_templates')) {
+            $viewModel = $this->container->get('email.user_viewmodel_factory')
+                ->createRegisterWelcomeModel();
+            $this->container->get('email.email_sender')
+                ->send($viewModel, ['to' => $person]);
+        } else {
+            $portalUrl = $this->getRouter()->generate('portal_home', [], UrlGeneratorInterface::ABSOLUTE_URL);
 
-        $this->sendTo(
-            new EmailTo($person),
-            'DeskPRO:emails_user:register-welcome.html.twig',
-            [
-                'person'     => $person,
-                'email'      => $email,
-                'verify_url' => null, // BC - this may be in old templates and it should always be null
-                'portal_url' => $portalUrl,
-            ]
-        );
+            $this->sendTo(
+                new EmailTo($person),
+                'DeskPRO:emails_user:register-welcome.html.twig',
+                [
+                    'person'     => $person,
+                    'email'      => $email,
+                    'verify_url' => null, // BC - this may be in old templates and it should always be null
+                    'portal_url' => $portalUrl,
+                ]
+            );
+        }
     }
 
     public function sendEmailValidation(EmailTo $emailTo, $verifyUrl)
     {
-        $this->sendTo(
-            $emailTo,
-            'DeskPRO:emails_user:email-validation.html.twig',
-            [
-                'verify_url' => $verifyUrl,
-                'new_email'  => $emailTo->getEmailAddress(),
-            ]
-        );
+        if ($this->container->get('deskpro.feature_flags')->hasBeta('email_templates')) {
+            $viewModel = $this->container->get('email.user_viewmodel_factory')
+                ->createEmailValidationModel($verifyUrl);
+            $this->container->get('email.email_sender')
+                ->send($viewModel, ['to' => $emailTo]);
+        } else {
+            $this->sendTo(
+                $emailTo,
+                'DeskPRO:emails_user:email-validation.html.twig',
+                [
+                    'verify_url' => $verifyUrl,
+                    'new_email'  => $emailTo->getEmailAddress(),
+                ]
+            );
+        }
     }
 
     public function sendNewEmailValidate(EmailTo $emailTo, $verifyUrl, Person $person)
     {
-        $this->sendTo(
-            $emailTo,
-            'DeskPRO:emails_user:new-email-validate.html.twig',
-            [
-                'verify_url' => $verifyUrl,
-                'new_email'  => $emailTo->getEmailAddress(),
-                'orig_email' => $person->getEmailAddress(),
-            ]
-        );
+        if ($this->container->get('deskpro.feature_flags')->hasBeta('email_templates')) {
+            $viewModel = $this->container->get('email.user_viewmodel_factory')
+                ->createNewEmailValidateModel($verifyUrl, $person->getEmailAddress(), $emailTo->getEmailAddress());
+            $this->container->get('email.email_sender')
+                ->send($viewModel, ['to' => $emailTo]);
+        } else {
+            $this->sendTo(
+                $emailTo,
+                'DeskPRO:emails_user:new-email-validate.html.twig',
+                [
+                    'verify_url' => $verifyUrl,
+                    'new_email'  => $emailTo->getEmailAddress(),
+                    'orig_email' => $person->getEmailAddress(),
+                ]
+            );
+        }
     }
 
     public function sendNewTicketValidationEmail(EmailTo $emailTo, $verifyUrl, Ticket $ticket)
     {
-        $this->sendTo(
-            $emailTo,
-            'DeskPRO:emails_user:ticket-new-validate-email.html.twig',
-            [
-                'verify_url' => $verifyUrl,
-                'ticket'     => $ticket,
-            ]
-        );
+        if ($this->container->get('deskpro.feature_flags')->hasBeta('email_templates')) {
+            $viewModel = $this->container->get('email.user_viewmodel_factory')
+                ->createNewTicketValidateEmailModel($ticket, $ticket->getAccessCode());
+            $this->container->get('email.email_sender')
+                ->send($viewModel, ['to' => $emailTo]);
+        } else {
+            $this->sendTo(
+                $emailTo,
+                'DeskPRO:emails_user:ticket-new-validate-email.html.twig',
+                [
+                    'verify_url' => $verifyUrl,
+                    'ticket'     => $ticket,
+                ]
+            );
+        }
     }
 
     public function sendNewFeedbackEmail(Feedback $feedback)
     {
         $person = $feedback->getPerson();
 
-        $this->sendTo(
-            new EmailTo($person),
-            'DeskPRO:emails_user:feedback-new.html.twig',
-            [
-                'person'     => $person,
-                'feedback'   => $feedback,
-                'verify_url' => null,
-                'validating' => false,
-            ]
-        );
+        if ($this->container->get('deskpro.feature_flags')->hasBeta('email_templates')) {
+            $viewModel = $this->container->get('email.user_viewmodel_factory')
+                ->createFeedbackNewModel($feedback);
+            $this->container->get('email.email_sender')
+                ->send($viewModel, ['to' => $person]);
+        } else {
+            $this->sendTo(
+                new EmailTo($person),
+                'DeskPRO:emails_user:feedback-new.html.twig',
+                [
+                    'person'     => $person,
+                    'feedback'   => $feedback,
+                    'verify_url' => null,
+                    'validating' => false,
+                ]
+            );
+        }
     }
 
+    /**
+     * Is that used anywhere?
+     *
+     * @param Ticket $ticket
+     */
     public function sendNewTicketGuestThankYou(Ticket $ticket)
     {
         $person = $ticket->getPerson();
 
-        $this->sendTo(
-            new EmailTo($person),
-            'DeskPRO:emails_user:new-ticket-guest.html.twig',
-            [
-                'ticket_view_url' => $this->getRouter()->generate(
-                    'portal_tickets_guest_view',
-                    [
-                        'auth' => $ticket->auth,
-                    ],
-                    UrlGeneratorInterface::ABSOLUTE_URL
-                ),
-            ]
-        );
+        if ($this->container->get('deskpro.feature_flags')->hasBeta('email_templates')) {
+            $viewModel = $this->container->get('email.user_viewmodel_factory')
+                ->createNewTicketGuestModel($ticket);
+            $this->container->get('email.email_sender')
+                ->send($viewModel, ['to' => $person]);
+        } else {
+            $this->sendTo(
+                new EmailTo($person),
+                'DeskPRO:emails_user:new-ticket-guest.html.twig',
+                [
+                    'ticket_view_url' => $this->getRouter()->generate(
+                        'portal_tickets_guest_view',
+                        [
+                            'auth' => $ticket->auth,
+                        ],
+                        UrlGeneratorInterface::ABSOLUTE_URL
+                    ),
+                ]
+            );
+        }
     }
 
     public function sendCommentThankYouEmail(CommentAbstract $comment)
     {
         $person = $comment->getPerson();
-        /** @var \Application\DeskPRO\Entity\ContentAbstract $content */
-        $content = $comment->getObject();
 
-        $contentUrl   = $this->container->get('object_router')->getPortalUrl($content);
-        $contentTitle = $content->getTitle();
+        if ($this->container->get('deskpro.feature_flags')->hasBeta('email_templates')) {
+            $viewModel = $this->container->get('email.user_viewmodel_factory')
+                ->createCommentNewModel($comment);
+            $this->container->get('email.email_sender')
+                ->send($viewModel, ['to' => $person]);
+        } else {
+            /** @var \Application\DeskPRO\Entity\ContentAbstract $content */
+            $content = $comment->getObject();
 
-        $this->sendTo(
-            new EmailTo($person),
-            'DeskPRO:emails_user:comment-new.html.twig',
-            [
-                'content_url'   => $contentUrl,
-                'content_title' => $contentTitle,
-                'comment'       => $comment, // keep for bc ({{ comment.object.permalink }})
-                'validating'    => false, // keep here for BC
-            ]
-        );
+            $contentUrl   = $this->container->get('object_router')->getPortalUrl($content);
+            $contentTitle = $content->getTitle();
+
+            $this->sendTo(
+                new EmailTo($person),
+                'DeskPRO:emails_user:comment-new.html.twig',
+                [
+                    'content_url'   => $contentUrl,
+                    'content_title' => $contentTitle,
+                    'comment'       => $comment, // keep for bc ({{ comment.object.permalink }})
+                    'validating'    => false, // keep here for BC
+                ]
+            );
+        }
     }
 
     public function sendLoginAlert(Person $person, Request $request, $success)
     {
         $created = new \DateTime('@'.$request->getSession()->getMetadataBag()->getCreated());
-        $this->sendTo(
-            new EmailTo($person),
-            'DeskPRO:emails_user:login-alert.html.twig',
-            [
-                'request'   => $request,
-                'firstSeen' => $created,
-                'success'   => $success,
-            ]
-        );
+        if ($this->container->get('deskpro.feature_flags')->hasBeta('email_templates')) {
+            $viewModel = $this->container->get('email.user_viewmodel_factory')
+                ->createLoginAlertModel(
+                    $request,
+                    $created,
+                    $success
+                );
+            $this->container->get('email.email_sender')
+                ->send($viewModel, ['to' => $person]);
+        } else {
+            $this->sendTo(
+                new EmailTo($person),
+                'DeskPRO:emails_user:login-alert.html.twig',
+                [
+                    'request'   => $request,
+                    'firstSeen' => $created,
+                    'success'   => $success,
+                ]
+            );
+        }
     }
 
     public function sendTicketAddedCC(Person $person, Ticket $ticket)
     {
         $author = $ticket->getPerson();
 
-        $this->sendTo(
-            new EmailTo($person),
-            'DeskPRO:emails_user:ticket-add-cc.html.twig',
-            [
-                'author_email' => $author->getEmailAddress(),
-                'author_name'  => $author->getName(),
-                'ticket'       => $ticket,
-            ]
-        );
+        if ($this->container->get('deskpro.feature_flags')->hasBeta('email_templates')) {
+            $viewModel = $this->container->get('email.user_viewmodel_factory')
+                ->createTicketAddCcModel(
+                    $ticket,
+                    $author
+                );
+            $this->container->get('email.email_sender')
+                ->send($viewModel, ['to' => $person]);
+        } else {
+            $this->sendTo(
+                new EmailTo($person),
+                'DeskPRO:emails_user:ticket-add-cc.html.twig',
+                [
+                    'author_email' => $author->getEmailAddress(),
+                    'author_name'  => $author->getName(),
+                    'ticket'       => $ticket,
+                ]
+            );
+        }
     }
 
     public function sendTo(EmailTo $emailTo, $template, $vars)
@@ -251,26 +348,44 @@ class PortalEmailSender
     public function sendShareArticle(Article $article, Person $author, $emails, $formData)
     {
         foreach ($emails as $email) {
-            if ($email instanceof Person) {
-                $emailTo = new EmailTo($email);
+            if ($this->container->get('deskpro.feature_flags')->hasBeta('email_templates')) {
+                if ($email instanceof Person) {
+                    $to = $email;
+                } else {
+                    $to = $email['address'];
+                }
+                $viewModel = $this->container->get('email.user_viewmodel_factory')
+                    ->createShareArticleModel(
+                        $article,
+                        $author,
+                        $formData['message'],
+                        $formData['email'],
+                        $formData['name']
+                    );
+                $this->container->get('email.email_sender')
+                    ->send($viewModel, ['to' => $to]);
             } else {
-                $emailTo = new EmailTo();
-                $emailTo->setTo($email['address'], $email['name']);
+                if ($email instanceof Person) {
+                    $emailTo = new EmailTo($email);
+                } else {
+                    $emailTo = new EmailTo();
+                    $emailTo->setTo($email['address'], $email['name']);
+                }
+
+                $variables = [
+                    'author_email' => $author->getEmailAddress(),
+                    'author_name'  => $author->getName(),
+                    'article'      => $article,
+                ];
+
+                $variables = array_merge($variables, $formData);
+
+                $this->sendTo(
+                    $emailTo,
+                    'DeskPRO:emails_user:share-article.html.twig',
+                    $variables
+                );
             }
-
-            $variables = [
-                'author_email' => $author->getEmailAddress(),
-                'author_name'  => $author->getName(),
-                'article'      => $article,
-            ];
-
-            $variables = array_merge($variables, $formData);
-
-            $this->sendTo(
-                $emailTo,
-                'DeskPRO:emails_user:share-article.html.twig',
-                $variables
-            );
         }
     }
 

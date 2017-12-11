@@ -289,22 +289,35 @@ class LoginProcessor
     {
         if (!$this->test_mode) {
             if ($this->new_person && $this->person->getPrimaryEmail() && $this->person->is_agent) {
-                $message = App::$container->getMailer()->createMessage();
-                $message->setToPerson($this->person);
-                $message->setTemplate(
-                    'DeskPRO:emails_agent:agent-welcome-usersource.html.twig',
-                    [
-                        'agent'      => $this->person,
-                        'usersource' => $this->usersource,
-                    ]
-                );
                 $attach = \Swift_Attachment::fromPath(
                     DP_ROOT.'/src/Application/AgentBundle/Resources/assets/agent-quickstart/en_US.pdf',
                     'application/pdf'
                 );
                 $attach->setFilename('Getting Started with DeskPRO.pdf');
-                $message->attach($attach);
-                App::$container->getMailer()->send($message);
+                if (App::$container->get('deskpro.feature_flags')->hasBeta('email_templates')) {
+                    $agentPassword = $this->person->getPlaintextPassword();
+                    $viewModel     = App::$container->get('email.agent_viewmodel_factory')
+                        ->createAgentWelcomeUsersourceModel($agentPassword);
+                    App::$container->get('email.email_sender')
+                        ->send($viewModel,
+                            [
+                                'to'          => $this->person,
+                                'attachments' => [$attach],
+                            ]
+                        );
+                } else {
+                    $message = App::$container->getMailer()->createMessage();
+                    $message->setToPerson($this->person);
+                    $message->setTemplate(
+                        'DeskPRO:emails_agent:agent-welcome-usersource.html.twig',
+                        [
+                            'agent'      => $this->person,
+                            'usersource' => $this->usersource,
+                        ]
+                    );
+                    $message->attach($attach);
+                    App::$container->getMailer()->send($message);
+                }
             }
         }
     }

@@ -1,7 +1,7 @@
 {% extends 'AdminInterfaceBundle:Layout:fullpage-pane.html.twig' %}
 {% block fullpane_content %}
 	<section class="dp-paneblock dp-panelink">
-		<a href="{{ ng_href('tickets.ticket_accounts.emailsources') }}">
+		<a href="{{ ng_href('emails.ticket_accounts.emailsources') }}">
 			<em><i class="fa fa-chevron-down"></i></em>
 			<h3>Incoming Email</h3>
 		</a>
@@ -69,7 +69,7 @@
 				<tr>
 					<th>Account</th>
 					<td>
-						<a href="{{ ng_href('tickets.ticket_accounts.edit', '{id: ViewSource.source.email_account.id}') }}">
+						<a href="{{ ng_href('emails.ticket_accounts.edit', '{id: ViewSource.source.email_account.id}') }}">
 							{{ ng_var('ViewSource.source.email_account.address') }}
 						</a>
 					</td>

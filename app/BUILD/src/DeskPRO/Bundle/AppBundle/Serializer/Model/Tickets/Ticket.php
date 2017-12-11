@@ -154,7 +154,7 @@ class Ticket
     private $person;
 
     /**
-     * Person`s email.
+     * Person's email.
      *
      * @JMS\Type("to_string<Application\DeskPRO\Entity\PersonEmail>")
      *
@@ -311,7 +311,7 @@ class Ticket
     private $urgency;
 
     /**
-     * It`s rating based on feedback votes.
+     * It's rating based on feedback votes.
      *
      * @JMS\Type("integer")
      *
@@ -645,8 +645,8 @@ class Ticket
         $this->product    = $ticket->getProduct();
         $this->person     = $ticket->getPerson();
 
-        if ($ticket->getPersonEmail()) {
-            $this->personEmail = $ticket->getPersonEmail();
+        if ($ticket->getTicketPersonEmail()) {
+            $this->personEmail = $ticket->getTicketPersonEmail();
         } elseif ($ticket->getPerson() && $ticket->getPerson()->getPrimaryEmail()) {
             $this->personEmail = $ticket->getPerson()->getPrimaryEmail();
         }

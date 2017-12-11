@@ -500,7 +500,7 @@
     {% if sendmail_source_status[log.details.sendmail_source_id] %}
         {% set status = sendmail_source_status[log.details.sendmail_source_id] %}
         {% if app.user.can_admin %}
-            &mdash; <a href="{{ path('admin') }}#/tickets/ticket_accounts/outgoing-email/{{ status.id }}" target="_blank">Outgoing Email #{{ status.id }}</a>
+            &mdash; <a href="{{ path('admin') }}#/emails/ticket_accounts/outgoing-email/{{ status.id }}" target="_blank">Outgoing Email #{{ status.id }}</a>
         {% else %}
             &mdash; Outgoing Email #{{ status.id }}
         {% endif %}

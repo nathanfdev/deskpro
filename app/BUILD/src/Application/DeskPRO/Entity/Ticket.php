@@ -2177,13 +2177,13 @@ class Ticket extends DomainObject implements HighlightableModelInterface, Labels
     {
         if ($this->person_email) {
             return $this->person_email;
-        } else {
-            return $this->person['primary_email'];
+        } elseif ($this->person) {
+            return $this->person->getPrimaryEmail();
         }
     }
 
     /**
-     * Gets the email address that sholud be used for this ticket.
+     * Gets the email address that should be used for this ticket.
      *
      * @return PersonEmail
      */
@@ -2211,7 +2211,7 @@ class Ticket extends DomainObject implements HighlightableModelInterface, Labels
 
     public function getPersonEmailAddress()
     {
-        $email = $this->getPersonEmail();
+        $email = $this->getTicketPersonEmail();
 
         return $email['email'];
     }

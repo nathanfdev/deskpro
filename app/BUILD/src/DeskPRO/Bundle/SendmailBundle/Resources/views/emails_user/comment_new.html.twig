@@ -1,0 +1,20 @@
+<dp:subject>{{ phrase('portal.email_subjects.comment-confirmation') }}</dp:subject>
+
+<html>
+<head>
+    {% include 'SendmailBundle:blocks:resources.html.twig' %}
+</head>
+<body>
+{% include 'SendmailBundle:emails_common:email_code_top.html.twig' %}
+
+{% include 'SendmailBundle:blocks:header.html.twig' %}
+    <container>
+        {% set phrase_link %}<a href="{{ content_link }}">{{ content.title }}</a>{% endset %}
+        {{ phrase('portal.emails.comment_thank-you', {'link':phrase_link}, true) }}
+    </container>
+
+{% include 'SendmailBundle:blocks:footer.html.twig' %}
+
+{% include 'SendmailBundle:emails_common:email_code_bottom.html.twig' %}
+</body>
+</html>

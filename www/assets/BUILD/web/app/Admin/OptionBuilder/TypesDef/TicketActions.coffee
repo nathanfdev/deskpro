@@ -204,20 +204,36 @@ define [
 
       options = []
 
-      options.push({
-        title: 'Send Email To User',
-        value: 'SendUserEmail'
-      })
+      if (window.DP_HAS_NEW_EMAILS)
+        options.push({
+          title: 'Send Email To User',
+          value: 'SendUserNewEmail'
+        })
 
-      options.push({
-        title: 'Send Email To Agents',
-        value: 'SendAgentEmail'
-      })
+        options.push({
+          title: 'Send Email To Agents',
+          value: 'SendAgentNewEmail'
+        })
 
-      options.push({
-        title: 'Send Email to a specific email address',
-        value: 'SendSpecificUserEmail'
-      })
+        options.push({
+          title: 'Send Email to a specific email address',
+          value: 'SendSpecificUserNewEmail'
+        })
+      else
+        options.push({
+          title: 'Send Email To User',
+          value: 'SendUserEmail'
+        })
+
+        options.push({
+          title: 'Send Email To Agents',
+          value: 'SendAgentEmail'
+        })
+
+        options.push({
+          title: 'Send Email to a specific email address',
+          value: 'SendSpecificUserEmail'
+        })
 
       set_options.push({
         title: 'Send Email',
@@ -509,9 +525,7 @@ define [
 
     loadDataOptions: ->
       if not @loadDataPromise
-        @loadDataPromise = @$q.defer()
-
-        @Api.sendDataGet({
+        apiV1 = @Api.sendDataGet({
           agents:             '/agents'
           agent_teams:        '/agent_teams'
           ticket_brands:      '/ticket_brands'
@@ -534,33 +548,48 @@ define [
           tasks:              '/tasks/settings'
           contextual_fields:  '/custom_fields'
           jira_settings:      '/apps/jira'
-        }).then( (result) =>
-          data = result.data
+        })
+
+        @loadDataPromise = @$q.defer()
+
+        promises = [apiV1]
+
+        if (window.DP_HAS_NEW_EMAILS)
+          apiV2 = @Api2.sendGet('/email_templates/info')
+          promises.push apiV2
+
+        @$q.all(promises).then( (result) =>
+          data = result[0].data
           options_data = {}
-          options_data['agents']           = data.agents.agents
-          options_data['agent_teams']      = data.agent_teams.agent_teams
-          options_data['ticket_brands']    = data.ticket_brands.brands
-          options_data['ticket_deps']      = data.ticket_deps.departments
-          options_data['ticket_cats']      = data.ticket_cats.categories
-          options_data['ticket_pris']      = data.ticket_pris.priorities
-          options_data['ticket_works']     = data.ticket_works.workflows
-          options_data['ticket_prods']     = data.ticket_prods?.products
-          options_data['ticket_fields']    = data.ticket_fields?.custom_fields
-          options_data['org_fields']       = data.org_fields?.custom_fields
-          options_data['user_fields']      = data.user_fields?.custom_fields
-          options_data['ticket_slas']      = data.ticket_slas?.slas
-          options_data['email_accounts']   = data.email_accounts.email_accounts
-          options_data['usergroups']       = data.usergroups.groups
-          options_data['langs']            = data.langs?.languages
-          options_data['custom_email_tpls']= data.email_tpls.list['custom'].groups['custom'].templates
-          options_data['round_robin']      = data.round_robin
-          options_data['round_robins']     = data.round_robins
-          options_data['tasks']            = data.tasks
-          options_data['contextual_fields']= data.contextual_fields
-          options_data['jira_settings']    = data.jira_settings
-          options_data['ticket_labels']    = data.ticket_labels
+          options_data['agents']            = data.agents.agents
+          options_data['agent_teams']       = data.agent_teams.agent_teams
+          options_data['ticket_brands']     = data.ticket_brands.brands
+          options_data['ticket_deps']       = data.ticket_deps.departments
+          options_data['ticket_cats']       = data.ticket_cats.categories
+          options_data['ticket_pris']       = data.ticket_pris.priorities
+          options_data['ticket_works']      = data.ticket_works.workflows
+          options_data['ticket_prods']      = data.ticket_prods?.products
+          options_data['ticket_fields']     = data.ticket_fields?.custom_fields
+          options_data['org_fields']        = data.org_fields?.custom_fields
+          options_data['user_fields']       = data.user_fields?.custom_fields
+          options_data['ticket_slas']       = data.ticket_slas?.slas
+          options_data['email_accounts']    = data.email_accounts.email_accounts
+          options_data['usergroups']        = data.usergroups.groups
+          options_data['langs']             = data.langs?.languages
+          options_data['custom_email_tpls'] = data.email_tpls.list['custom'].groups['custom'].templates
+          options_data['round_robin']       = data.round_robin
+          options_data['round_robins']      = data.round_robins
+          options_data['tasks']             = data.tasks
+          options_data['contextual_fields'] = data.contextual_fields
+          options_data['jira_settings']     = data.jira_settings
+          options_data['ticket_labels']     = data.ticket_labels
 
           options_data['ticket_dep_options'] = @standardOptionsFormatter(options_data['ticket_deps'])
+
+          if (window.DP_HAS_NEW_EMAILS)
+            v2data = result[1].data['data']
+
+            options_data['new_custom_email_tpls'] = v2data.list['custom'].groups['custom'].subGroups['primary'].templates
 
           @options_data = options_data
 
@@ -577,7 +606,7 @@ define [
           @loadDataPromise.resolve(options_data)
         )
 
-      @loadDataPromise.promise
+      return @loadDataPromise.promise
 
 
     getSetAgent: (options = {}) ->
@@ -968,6 +997,114 @@ define [
       def = @getStandardInput(options)
       return def
 
+    getSendUserNewEmail: (options = {}) ->
+      me = @
+      return {
+        getTemplate: ->
+          return me.dpTemplateManager.get('OptionBuilder/type-actions-sendusernewemail.html')
+
+        getData: ->
+          return me.loadDataOptions()
+
+        scopeInit: [ '$scope', '$modal', '$timeout', ($scope, $modal, $timeout) ->
+          $scope.handleTemplateChange = ->
+            if $scope.model.template == 'CREATE'
+              $scope.model.template = null
+              $scope.is_creating = true
+              $modal.open({
+                templateUrl: DP_BASE_ADMIN_URL+'/load-view/Templates/modal-new-email-editor.html',
+                size: 'lg',
+                controller: 'Admin_Templates_Ctrl_NewEmailTemplateEditor',
+                resolve: {
+                  templateName: ->
+                    return null
+                }
+              }).result.then( (info) ->
+                if info.templateName
+                  title = info.templateName.replace(/^.*?:.*?:(.*?)\.html\.twig$/, '$1.html')
+                  tpl = {
+                    name: info.templateName,
+                    title: title
+                  }
+
+                  if me.options_data?.new_custom_email_tpls? and me.options_data.new_custom_email_tpls.indexOf(tpl) == -1
+                    me.options_data.new_custom_email_tpls.push(tpl)
+
+                  $scope.model.template = info.templateName
+                  $timeout(->
+                    $scope.model.template = info.templateName
+                    $scope.is_creating = false
+                  , 100)
+                else
+                  $scope.is_creating = false
+              , ->
+                $scope.is_creating = false
+              )
+
+          $scope.editTemplate = ->
+            $modal.open({
+              templateUrl: DP_BASE_ADMIN_URL+'/load-view/Templates/modal-new-email-editor.html',
+              size: 'lg',
+              controller: 'Admin_Templates_Ctrl_NewEmailTemplateEditor',
+              resolve: {
+                templateName: ->
+                  return $scope.model.template
+              }
+            })
+        ]
+
+        getDataFormatter: ->
+          return {
+            getViewValue: (value = {}, data) ->
+              options = value?.options || {}
+
+              if options.from_name_custom and options.from_name_custom not in ['performer', 'helpdesk_name', 'site_name']
+                from_name = 'custom'
+                from_name_custom = options.from_name_custom
+              else
+                from_name = options.from_name || 'helpdesk_name'
+                from_name_custom = null
+                if from_name not in ['performer', 'helpdesk_name', 'site_name']
+                  from_name = 'custom'
+                  from_name_custom = options.from_name
+
+              view_model = {
+                template: options.template || '',
+                do_cc_users: if options.do_cc_users then "all" else "owner",
+                from_name: from_name,
+                from_name_custom: from_name_custom,
+                from_account: (parseInt(options.from_account || 0) || 0)+''
+                headers: options.headers || []
+                simple_mode: false
+              }
+
+              if view_model.do_cc_users == "owner" and view_model.from_name == 'helpdesk_name' and view_model.from_account == "0" and !view_model.headers.length
+                view_model.simple_mode = true
+
+              return view_model
+
+            getValue: (model = {}, data) ->
+
+              options = {
+                template: model.template || '',
+                do_cc_users: model.do_cc_users && model.do_cc_users == "all",
+                from_name: '',
+                from_account: parseInt(model.from_account || 0)
+                headers: model.headers.filter (header) -> header.name
+              }
+
+              if model.from_name == 'custom'
+                options.from_name = model.from_name_custom || ''
+              else
+                options.from_name = model.from_name || ''
+
+              value = {}
+              value.type = 'SendUserNewEmail'
+              value.options = options
+              return value
+          }
+      }
+
     getSendUserEmail: (options = {}) ->
       me = @
       return {
@@ -1069,6 +1206,129 @@ define [
 
               value = {}
               value.type = 'SendUserEmail'
+              value.options = options
+              return value
+          }
+      }
+
+    getSendAgentNewEmail: (options = {}) ->
+      me = @
+      return {
+        getTemplate: ->
+          return me.dpTemplateManager.get('OptionBuilder/type-actions-sendagentnewemail.html')
+
+        getData: ->
+          return me.loadDataOptions()
+
+        scopeInit: [ '$scope', '$modal', '$timeout', ($scope, $modal, $timeout) ->
+
+          $scope.$watch(
+            () -> $scope.model.agent_ids.all_agents
+            (newVal, oldVal) ->
+              return if !newVal
+              for own k, v of $scope.model.agent_ids
+                continue if 'all_agents' == k
+                $scope.model.agent_ids[k] = false
+          )
+
+          $scope.handleTemplateChange = ->
+            if $scope.model.template == 'CREATE'
+              $scope.model.template = null
+              $scope.is_creating = true
+              $modal.open({
+                templateUrl: DP_BASE_ADMIN_URL+'/load-view/Templates/modal-new-email-editor.html',
+                size: 'lg',
+                controller: 'Admin_Templates_Ctrl_NewEmailTemplateEditor',
+                resolve: {
+                  templateName: ->
+                    return null
+                }
+              }).result.then( (info) ->
+                if info.templateName
+                  title = info.templateName.replace(/^.*?:.*?:(.*?)\.html\.twig$/, '$1.html')
+                  tpl = {
+                    name: info.templateName,
+                    title: title
+                  }
+
+                  if me.options_data?.new_custom_email_tpls? and me.options_data.new_custom_email_tpls.indexOf(tpl) == -1
+                    me.options_data.new_custom_email_tpls.push(tpl)
+
+                  $scope.model.template = info.templateName
+                  $timeout(->
+                    $scope.model.template = info.templateName
+                    $scope.is_creating = false
+                  , 100)
+                else
+                  $scope.is_creating = false
+              , ->
+                $scope.is_creating = false
+              )
+
+          $scope.editTemplate = ->
+            $modal.open({
+              templateUrl: DP_BASE_ADMIN_URL+'/load-view/Templates/modal-new-email-editor.html',
+              size: 'lg',
+              controller: 'Admin_Templates_Ctrl_NewEmailTemplateEditor',
+              resolve: {
+                templateName: ->
+                  return $scope.model.template
+              }
+            })
+        ]
+
+        getDataFormatter: ->
+          return {
+            getViewValue: (value = {}, data) ->
+              options = value?.options || {}
+
+              if options.from_name_custom and options.from_name_custom not in ['performer', 'helpdesk_name', 'site_name']
+                from_name = 'custom'
+                from_name_custom = options.from_name_custom
+              else
+                from_name = options.from_name || 'helpdesk_name'
+                from_name_custom = null
+                if from_name not in ['performer', 'helpdesk_name', 'site_name']
+                  from_name = 'custom'
+                  from_name_custom = options.from_name
+
+              agent_ids = {}
+              if options.agent_ids
+                for aid in options.agent_ids
+                  agent_ids[aid+""] = true
+
+              return {
+                template: options.template || '',
+                agent_ids: agent_ids,
+                from_name: from_name,
+                from_name_custom: from_name_custom,
+                from_account: (parseInt(options.from_account || 0) || 0)+''
+                headers: options.headers || []
+              }
+            getValue: (model = {}, data) ->
+              options = {
+                template: model.template || '',
+                agent_ids: [],
+                from_name: '',
+                from_account: parseInt(model.from_account || 0)
+                headers: model.headers.filter (header) -> header.name
+              }
+
+              if model.from_name == 'custom'
+                options.from_name = model.from_name_custom || ''
+              else
+                options.from_name = model.from_name || ''
+
+              if model.agent_ids
+                for own k, v of model.agent_ids
+                  if v
+                    if Numbers.isNumeric(k)
+                      options.agent_ids.push(parseInt(k))
+                    else
+                      options.agent_ids.push(k)
+
+              value = {}
+              value.type = 'SendAgentNewEmail'
               value.options = options
               return value
           }
@@ -1195,11 +1455,11 @@ define [
           }
       }
 
-    getSendSpecificUserEmail: (options = {}) ->
+    getSendSpecificUserNewEmail: (options = {}) ->
       me = @
       return {
       getTemplate: ->
-        return me.dpTemplateManager.get('OptionBuilder/type-actions-sendemail.html')
+        return me.dpTemplateManager.get('OptionBuilder/type-actions-sendnewemail.html')
 
       getData: ->
         return me.loadDataOptions()
@@ -1210,8 +1470,9 @@ define [
             $scope.model.template = null
             $scope.is_creating = true
             $modal.open({
-              templateUrl: DP_BASE_ADMIN_URL+'/load-view/Templates/modal-email-editor.html',
-              controller: 'Admin_Templates_Ctrl_EmailTemplateEditor',
+              templateUrl: DP_BASE_ADMIN_URL+'/load-view/Templates/modal-new-email-editor.html',
+              size: 'lg',
+              controller: 'Admin_Templates_Ctrl_NewEmailTemplateEditor',
               resolve: {
                 templateName: ->
                   return null
@@ -1224,8 +1485,8 @@ define [
                   title: title
                 }
 
-                if me.options_data?.custom_email_tpls? and me.options_data.custom_email_tpls.indexOf(tpl) == -1
-                  me.options_data.custom_email_tpls.push(tpl)
+                if me.options_data?.new_custom_email_tpls? and me.options_data.new_custom_email_tpls.indexOf(tpl) == -1
+                  me.options_data.new_custom_email_tpls.push(tpl)
 
                 $scope.model.template = info.templateName
                 $timeout(->
@@ -1240,8 +1501,9 @@ define [
 
         $scope.editTemplate = ->
           $modal.open({
-            templateUrl: DP_BASE_ADMIN_URL+'/load-view/Templates/modal-email-editor.html',
-            controller: 'Admin_Templates_Ctrl_EmailTemplateEditor',
+            templateUrl: DP_BASE_ADMIN_URL+'/load-view/Templates/modal-new-email-editor.html',
+            size: 'lg',
+            controller: 'Admin_Templates_Ctrl_NewEmailTemplateEditor',
             resolve: {
               templateName: ->
                 return $scope.model.template
@@ -1288,10 +1550,109 @@ define [
             options.from_name = model.from_name || ''
 
           value = {}
-          value.type = 'SendSpecificUserEmail'
+          value.type = 'SendSpecificUserNewEmail'
           value.options = options
           return value
         }
+      }
+
+    getSendSpecificUserEmail: (options = {}) ->
+      me = @
+      return {
+        getTemplate: ->
+          return me.dpTemplateManager.get('OptionBuilder/type-actions-sendemail.html')
+
+        getData: ->
+          return me.loadDataOptions()
+
+        scopeInit: [ '$scope', '$modal', '$timeout', ($scope, $modal, $timeout) ->
+          $scope.handleTemplateChange = ->
+            if $scope.model.template == 'CREATE'
+              $scope.model.template = null
+              $scope.is_creating = true
+              $modal.open({
+                templateUrl: DP_BASE_ADMIN_URL+'/load-view/Templates/modal-email-editor.html',
+                controller: 'Admin_Templates_Ctrl_EmailTemplateEditor',
+                resolve: {
+                  templateName: ->
+                    return null
+                }
+              }).result.then( (info) ->
+                if info.templateName
+                  title = info.templateName.replace(/^.*?:.*?:(.*?)\.html\.twig$/, '$1.html')
+                  tpl = {
+                    name: info.templateName,
+                    title: title
+                  }
+
+                  if me.options_data?.custom_email_tpls? and me.options_data.custom_email_tpls.indexOf(tpl) == -1
+                    me.options_data.custom_email_tpls.push(tpl)
+
+                  $scope.model.template = info.templateName
+                  $timeout(->
+                    $scope.model.template = info.templateName
+                    $scope.is_creating = false
+                  , 100)
+                else
+                  $scope.is_creating = false
+              , ->
+                $scope.is_creating = false
+              )
+
+          $scope.editTemplate = ->
+            $modal.open({
+              templateUrl: DP_BASE_ADMIN_URL+'/load-view/Templates/modal-email-editor.html',
+              controller: 'Admin_Templates_Ctrl_EmailTemplateEditor',
+              resolve: {
+                templateName: ->
+                  return $scope.model.template
+              }
+            })
+        ]
+
+        getDataFormatter: ->
+          return {
+            getViewValue: (value = {}, data) ->
+              options = value?.options || {}
+
+              emails = options.emails || []
+              if options.from_name_custom and options.from_name_custom not in ['performer', 'helpdesk_name', 'site_name']
+                from_name = 'custom'
+                from_name_custom = options.from_name_custom
+              else
+                from_name = options.from_name || 'helpdesk_name'
+                from_name_custom = null
+                if from_name not in ['performer', 'helpdesk_name', 'site_name']
+                  from_name = 'custom'
+                  from_name_custom = options.from_name
+
+              return {
+                emails: emails
+                template: options.template || ''
+                from_name: from_name
+                from_name_custom: from_name_custom
+                from_account: (parseInt(options.from_account || 0) || 0)+''
+                headers: options.headers || []
+              }
+            getValue: (model = {}, data) ->
+              options = {
+                emails: model.emails
+                template: model.template || '',
+                from_name: '',
+                from_account: parseInt(model.from_account || 0)
+                headers: model.headers.filter (header) -> header.name
+              }
+
+              if model.from_name == 'custom'
+                options.from_name = model.from_name_custom || ''
+              else
+                options.from_name = model.from_name || ''
+
+              value = {}
+              value.type = 'SendSpecificUserEmail'
+              value.options = options
+              return value
+          }
       }
 
     getWebHook: (options = {}) ->

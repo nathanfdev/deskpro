@@ -56,7 +56,6 @@ class QueueRow extends React.Component {
                 <PopUp
                   positionMy="left top"
                   positionAt="left bottom"
-                  id={1}
                   zIndex={99999}
                   autoClose
                   content={(

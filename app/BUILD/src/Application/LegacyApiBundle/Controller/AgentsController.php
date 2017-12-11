@@ -817,13 +817,29 @@ class AgentsController extends AbstractController implements ProtectedController
      */
     protected function sendWelcomeEmail(Person $agent)
     {
-        $message = $this->container->getMailer()->createMessage();
-        $message->setToPerson($agent);
-        $message->setTemplate('DeskPRO:emails_agent:agent-welcome.html.twig', ['agent' => $agent]);
-        $attach = \Swift_Attachment::fromPath(DP_ROOT.'/src/Application/AgentBundle/Resources/assets/agent-quickstart/en_US.pdf', 'application/pdf');
+        $attach = \Swift_Attachment::fromPath(
+            DP_ROOT.'/src/Application/AgentBundle/Resources/assets/agent-quickstart/en_US.pdf',
+            'application/pdf'
+        );
         $attach->setFilename('Getting Started with DeskPRO.pdf');
-        $message->attach($attach);
-        $this->container->getMailer()->send($message);
+        if ($this->get('deskpro.feature_flags')->hasBeta('email_templates')) {
+            $agentPassword = $agent->getPlaintextPassword();
+            $viewModel     = $this->get('email.agent_viewmodel_factory')
+                ->createAgentWelcomeModel($agentPassword);
+            $this->get('email.email_sender')
+                ->send($viewModel,
+                    [
+                        'to'          => $agent,
+                        'attachments' => [$attach],
+                    ]
+                );
+        } else {
+            $message = $this->container->getMailer()->createMessage();
+            $message->setToPerson($agent);
+            $message->setTemplate('DeskPRO:emails_agent:agent-welcome.html.twig', ['agent' => $agent]);
+            $message->attach($attach);
+            $this->container->getMailer()->send($message);
+        }
     }
 
     /**
@@ -1058,14 +1074,21 @@ class AgentsController extends AbstractController implements ProtectedController
         $didEmail = false;
         if (!$this->in->getBool('skip_email')) {
             $didEmail = $agent->getPrimaryEmailAddress();
-            $message  = $this->container->getMailer()->createMessage();
-            $message->setToPerson($agent);
-            $message->setTemplate('DeskPRO:emails_agent:password-reset-alert.html.twig', [
-                'agent'        => $agent,
+            if ($this->get('deskpro.feature_flags')->hasBeta('email_templates')) {
+                $viewModel = $this->get('email.agent_viewmodel_factory')
+                    ->createAgentPasswordResetAlertModel($this->person, $password);
+                $this->get('email.email_sender')->send($viewModel, ['to' => $agent]);
+            } else {
+                $message = $this->container->getMailer()->createMessage();
+                $message->setToPerson($agent);
+                $message->setTemplate('DeskPRO:emails_agent:password-reset-alert.html.twig',
+                ['agent'       => $agent,
                 'performer'    => $this->person,
                 'new_password' => $password,
-            ]);
-            $this->container->getMailer()->send($message);
+            ]
+            );
+                $this->container->getMailer()->send($message);
+            }
         }
 
         return $this->createSuccessResponse([

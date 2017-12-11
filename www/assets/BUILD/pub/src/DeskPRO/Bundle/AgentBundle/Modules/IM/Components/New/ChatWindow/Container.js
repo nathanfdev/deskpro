@@ -172,7 +172,7 @@ class Container extends React.Component {
       this.headerHelper.setProps(props);
     }
 
-    const header = this.headerHelper.getHeaderText();
+    const header = this.headerHelper.getHeaderText(true);
     const tooltipId = `tooltip-for-chat-header-${current.get('id')}`;
 
     return (

@@ -1,7 +1,7 @@
 {% extends 'AdminInterfaceBundle:Layout:fullpage-pane.html.twig' %}
 {% block fullpane_content %}
 	<section class="dp-paneblock dp-panelink">
-		<a href="{{ ng_href('tickets.ticket_accounts') }}">
+		<a href="{{ ng_href('emails.ticket_accounts') }}">
 			<em><i class="fa fa-chevron-down"></i></em>
 			<h3>{{ phrase('adm.ticket_accounts.email_accounts') }}</h3>
 		</a>
@@ -156,7 +156,7 @@
                                     <i class="fa fa-question-circle qmark-icon" tooltip="Example: If a user sends an email with two of your accounts in the To or CC lines (e.g., To: sales@example.com and support@example.com), then two separate email messages will arrive into DeskPRO. Without duplicate detection, this would cause two separate tickets to be created."></i>
 								</span>
                                 <span class="help-block">
-                                    Rejected email is always logged in full to the <a href="{{ ng_href('tickets.ticket_accounts.emailsources') }}">Incoming Email Log</a>.
+                                    Rejected email is always logged in full to the <a href="{{ ng_href('emails.ticket_accounts.emailsources') }}">Incoming Email Log</a>.
                                 </span>
                             </div>
                         </div>

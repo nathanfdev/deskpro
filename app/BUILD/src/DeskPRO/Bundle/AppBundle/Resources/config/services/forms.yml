@@ -391,3 +391,16 @@ services:
       - "@language_manager"
     tags:
       - { name: form.type }
+
+  form.custom_phrases:
+    class: DeskPRO\Bundle\AppBundle\Form\Type\CustomPhraseType
+    arguments: ["@language_manager"]
+    tags:
+      - { name: form.type }
+
+  form.traslation:
+    class: DeskPRO\Bundle\AppBundle\Form\Type\TranslationType
+    arguments:
+      - "@doctrine.orm.default_entity_manager"
+    tags:
+      - { name: form.type }

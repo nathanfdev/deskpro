@@ -29,6 +29,8 @@
 namespace DeskPRO\Bundle\AppBundle\Serializer\Model\Comment;
 
 use Application\DeskPRO\Entity\CommentAbstract as CommentAbstractEntity;
+use Application\DeskPRO\Entity\Person;
+use DateTime;
 use JMS\Serializer\Annotation as JMS;
 
 /**
@@ -52,7 +54,7 @@ abstract class CommentAbstract
      * @JMS\Type("entity<Application\DeskPRO\Entity\Person>")
      * @JMS\Groups({"list", "details"})
      *
-     * @var \Application\DeskPRO\Entity\Person
+     * @var Person
      */
     protected $person = null;
 
@@ -117,6 +119,16 @@ abstract class CommentAbstract
     protected $content;
 
     /**
+     * Comment`s content in HTML.
+     *
+     * @JMS\Type("string")
+     * @JMS\Groups({"details"})
+     *
+     * @var string
+     */
+    protected $contentHtml;
+
+    /**
      * Comment`s status.
      *
      * @JMS\Type("string")
@@ -142,9 +154,19 @@ abstract class CommentAbstract
      * @JMS\Type("DateTime")
      * @JMS\Groups({"list", "details"})
      *
-     * @var \DateTime
+     * @var DateTime
      */
     protected $dateCreated;
+
+    /**
+     * The user contact details.
+     *
+     * @JMS\Type("string")
+     * @JMS\Groups({"list", "details"})
+     *
+     * @var string
+     */
+    protected $userDisplayContact;
 
     /**
      * Constructor.
@@ -153,15 +175,17 @@ abstract class CommentAbstract
      */
     public function __construct($entity)
     {
-        $this->id          = $entity->getId();
-        $this->person      = $entity->getPerson();
-        $this->ipAddress   = $entity->getIpAddress();
-        $this->email       = $entity->getEmail();
-        $this->name        = $entity->getName();
-        $this->website     = $entity->getWebsite();
-        $this->content     = $entity->getContent();
-        $this->status      = $entity->getStatus();
-        $this->isReviewed  = $entity->isReviewed();
-        $this->dateCreated = $entity->getDateCreated();
+        $this->id                 = $entity->getId();
+        $this->person             = $entity->getPerson();
+        $this->ipAddress          = $entity->getIpAddress();
+        $this->email              = $entity->getEmail();
+        $this->name               = $entity->getName();
+        $this->website            = $entity->getWebsite();
+        $this->content            = $entity->getContent();
+        $this->contentHtml        = $entity->getContentHtml();
+        $this->status             = $entity->getStatus();
+        $this->isReviewed         = $entity->isReviewed();
+        $this->dateCreated        = $entity->getDateCreated();
+        $this->userDisplayContact = $entity->getUserDisplayContact();
     }
 }
