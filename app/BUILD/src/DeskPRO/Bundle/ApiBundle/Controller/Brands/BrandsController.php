@@ -37,7 +37,6 @@ use DeskPRO\Bundle\AppBundle\Form\Error\Exception\InvalidFormException;
 use DeskPRO\Bundle\AppBundle\Form\Type\BrandType;
 use DeskPRO\Bundle\AppBundle\Helper\UrlHostChecker;
 use DeskPRO\Bundle\AppBundle\Security\Voter\PermissionGroups\PermissionGroupVoter;
-use DeskPRO\Bundle\PortalBundle\Designer\ThemeSetCopyingService;
 use FOS\RestBundle\Controller\Annotations as Rest;
 use FOS\RestBundle\View\View;
 use Symfony\Component\HttpFoundation\Request;
@@ -206,11 +205,13 @@ class BrandsController extends CrudController
 
         parent::deleteAction($id, $request);
 
-        /** @var ThemeSetCopyingService $themeSetCopyingService */
         $themeSetCopyingService = $this->get('dp.portal.designer.theme_set_copying_service');
-
-        $themeSetCopyingService->drop($themeSet);
-        $themeSetCopyingService->drop($editThemeSet);
+        if ($themeSet) {
+            $themeSetCopyingService->drop($themeSet);
+        }
+        if ($editThemeSet) {
+            $themeSetCopyingService->drop($editThemeSet);
+        }
     }
 
     /**

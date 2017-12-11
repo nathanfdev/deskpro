@@ -30,7 +30,6 @@ namespace DpTest\Application\ImportBundle\Writer\EntityHandler;
 
 use Application\DeskPRO\Entity;
 use Application\ImportBundle\Model;
-use Application\ImportBundle\Writer\Mapper\ImportMapMapper;
 
 /**
  * Class TicketHandlerTest.
@@ -68,7 +67,7 @@ class TicketHandlerTest extends AbstractEntityHandlerTest
 
         $entity    = $this->getBaseEntity();
         $importMap = $this->em()->getRepository(Entity\ImportMap::class)->findOneBy([
-            'typename' => ImportMapMapper::getImportMapKey($model),
+            'typename' => $this->get('dp.importer.writer.mapper.import_map')->getImportMapKey($model),
             'old_id'   => 1,
         ]);
 
@@ -507,6 +506,30 @@ class TicketHandlerTest extends AbstractEntityHandlerTest
         $this->assertEquals('my brand', $entity->getDepartment()->getBrands()->first()->getName());
         $this->assertEquals(1, $entity->getBrand()->getDepartments()->count());
         $this->assertEquals('my department', $entity->getBrand()->getDepartments()->first()->getTitle());
+    }
+
+    public function test_custom_oid_prefix()
+    {
+        $model = $this->createBaseModel();
+        $model->setSubject('My Subject 1');
+        $model->setOidPrefix('my_prefix_1');
+
+        $this->writer->writeData($model);
+        $this->em()->clear();
+
+        $model = $this->createBaseModel();
+        $model->setSubject('My Subject 2');
+        $model->setOidPrefix('my_prefix_2');
+
+        $this->writer->writeData($model);
+        $this->em()->clear();
+
+        $entity1 = $this->getBaseEntity('My Subject 1');
+        $entity2 = $this->getBaseEntity('My Subject 2');
+
+        $this->assertNotNull($entity1);
+        $this->assertNotNull($entity2);
+        $this->assertNotEquals($entity1->getId(), $entity2->getId());
     }
 
     /**

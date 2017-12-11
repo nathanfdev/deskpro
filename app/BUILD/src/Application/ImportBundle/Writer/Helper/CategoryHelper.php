@@ -109,7 +109,7 @@ class CategoryHelper
         if (is_int($categoryPath) || ctype_digit($categoryPath)) {
             $entity = null;
 
-            $typename = ImportMapMapper::getImportMapKey($mapper->getEntityClass());
+            $typename = $this->importMapMapper->getImportMapKey($mapper->getEntityClass());
             /** @var ImportMap $importMap */
             $importMap = $this->importMapMapper->findOneBy([
                 'old_id'   => $categoryPath,

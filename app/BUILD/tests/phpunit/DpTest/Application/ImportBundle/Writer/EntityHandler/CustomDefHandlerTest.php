@@ -30,7 +30,6 @@ namespace DpTest\Application\ImportBundle\Writer\EntityHandler;
 
 use Application\DeskPRO\Entity;
 use Application\ImportBundle\Model;
-use Application\ImportBundle\Writer\Mapper\ImportMapMapper;
 
 /**
  * Class CustomDefTest.
@@ -85,7 +84,7 @@ class CustomDefHandlerTest extends AbstractEntityHandlerTest
             'parent' => null,
         ]);
         $expectedImportMap = $this->em()->getRepository(Entity\ImportMap::class)->findOneBy([
-            'typename' => ImportMapMapper::getImportMapKey($model),
+            'typename' => $this->get('dp.importer.writer.mapper.import_map')->getImportMapKey($model),
             'old_id'   => 1,
         ]);
 

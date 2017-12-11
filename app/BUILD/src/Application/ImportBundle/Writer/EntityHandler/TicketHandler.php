@@ -30,7 +30,6 @@ namespace Application\ImportBundle\Writer\EntityHandler;
 
 use Application\DeskPRO\Entity;
 use Application\ImportBundle\Model;
-use Application\ImportBundle\Writer\Mapper\ImportMapMapper;
 
 /**
  * DeskPRO ticket importer.
@@ -143,7 +142,7 @@ class TicketHandler extends AbstractEntityHandler
             /** @var Entity\ImportMap $personImportMap */
             $personImportMap = $this->mappers->getImportMapMapper()->findOneBy([
                 'new_id'   => $participant->getPerson()->getId(),
-                'typename' => ImportMapMapper::getImportMapKey(Model\Person::class),
+                'typename' => $this->mappers->getImportMapMapper()->getImportMapKey(Model\Person::class),
             ]);
 
             if ($personImportMap) {

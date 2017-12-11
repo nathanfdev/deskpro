@@ -31,6 +31,7 @@ namespace Application\ImportBundle\Writer;
 use Application\DeskPRO\Search\EntityWatcher\EntityWatcher;
 use Application\ImportBundle\Model\PrimaryImportModelInterface;
 use Application\ImportBundle\Writer\EntityHandler\EntityHandlerRegistry;
+use Application\ImportBundle\Writer\Mapper\ImportMapMapper;
 use DeskPRO\Bundle\AppBundle\AppEnv\AppEnvInterface;
 use Doctrine\ORM\EntityManager;
 use JMS\Serializer\Serializer;
@@ -65,9 +66,14 @@ class Writer implements WriterInterface
     private $serializer;
 
     /**
-     * @var
+     * @var AppEnvInterface
      */
     private $appEnv;
+
+    /**
+     * @var ImportMapMapper
+     */
+    private $importMapMapper;
 
     /**
      * @var LoggerInterface
@@ -82,6 +88,7 @@ class Writer implements WriterInterface
      * @param EntityWatcher         $entityWatcher
      * @param Serializer            $serializer
      * @param AppEnvInterface       $appEnv
+     * @param ImportMapMapper       $importMapMapper
      * @param LoggerInterface       $logger
      */
     public function __construct(
@@ -90,14 +97,16 @@ class Writer implements WriterInterface
         EntityWatcher         $entityWatcher,
         Serializer            $serializer,
         AppEnvInterface       $appEnv,
+        ImportMapMapper       $importMapMapper,
         LoggerInterface       $logger
     ) {
-        $this->entityHandlers = $entityHandlers;
-        $this->em             = $em;
-        $this->entityWatcher  = $entityWatcher;
-        $this->serializer     = $serializer;
-        $this->appEnv         = $appEnv;
-        $this->logger         = $logger;
+        $this->entityHandlers  = $entityHandlers;
+        $this->em              = $em;
+        $this->entityWatcher   = $entityWatcher;
+        $this->serializer      = $serializer;
+        $this->appEnv          = $appEnv;
+        $this->importMapMapper = $importMapMapper;
+        $this->logger          = $logger;
     }
 
     /**
@@ -109,6 +118,8 @@ class Writer implements WriterInterface
         $this->appEnv->setRuntimeVar('dp.is_importing', true);
 
         try {
+            $this->importMapMapper->setOidPrefix($model->getOidPrefix());
+
             $handler = $this->entityHandlers->getHandler($model);
             $handler->writeModel($model, $brandName);
 
@@ -137,6 +148,7 @@ class Writer implements WriterInterface
         } finally {
             $this->em->clear();
             $this->appEnv->unsetRuntimeVar('dp.is_importing');
+            $this->importMapMapper->setOidPrefix('');
         }
     }
 }
