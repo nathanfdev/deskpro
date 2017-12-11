@@ -65,7 +65,6 @@ use DeskPRO\Bundle\SendmailBundle\View\Model\NewsSubscription;
 use DeskPRO\Bundle\SendmailBundle\View\Model\NewTicketGuest;
 use DeskPRO\Bundle\SendmailBundle\View\Model\NewTicketRegClosed;
 use DeskPRO\Bundle\SendmailBundle\View\Model\NewTicketValidate;
-use DeskPRO\Bundle\SendmailBundle\View\Model\NewTicketValidateEmail;
 use DeskPRO\Bundle\SendmailBundle\View\Model\RegisterWelcome;
 use DeskPRO\Bundle\SendmailBundle\View\Model\RegisterWelcomeByAgent;
 use DeskPRO\Bundle\SendmailBundle\View\Model\ResetPassword;
@@ -77,6 +76,7 @@ use DeskPRO\Bundle\SendmailBundle\View\Model\TicketAwaitingWarn;
 use DeskPRO\Bundle\SendmailBundle\View\Model\TicketAwaitingWarnFinal;
 use DeskPRO\Bundle\SendmailBundle\View\Model\TicketNewAutoreply;
 use DeskPRO\Bundle\SendmailBundle\View\Model\TicketNewByAgent;
+use DeskPRO\Bundle\SendmailBundle\View\Model\TicketNewValidateEmail;
 use DeskPRO\Bundle\SendmailBundle\View\Model\TicketParticipant;
 use DeskPRO\Bundle\SendmailBundle\View\Model\TicketRate;
 use DeskPRO\Bundle\SendmailBundle\View\Model\TicketReplyAutoreply;
@@ -380,9 +380,9 @@ class UserViewModelFactory extends AbstractViewModelFactory
      * @param Ticket $ticket
      * @param string $accessCode
      *
-     * @return NewTicketValidateEmail
+     * @return TicketNewValidateEmail
      */
-    public function createNewTicketValidateEmailModel(
+    public function createTicketNewValidateEmailModel(
         Ticket $ticket,
         $accessCode
     ) {
@@ -390,7 +390,7 @@ class UserViewModelFactory extends AbstractViewModelFactory
 
         $arguments = array_merge($arguments, [$accessCode]);
 
-        return $this->convertParameters(NewTicketValidateEmail::class, $arguments);
+        return $this->convertParameters(TicketNewValidateEmail::class, $arguments);
     }
 
     /**

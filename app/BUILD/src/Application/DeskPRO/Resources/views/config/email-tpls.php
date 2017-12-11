@@ -275,7 +275,7 @@ return [
         'subGroupId'  => 'validation',
         'name'        => 'DeskPRO:emails_user:ticket-new-validate-email.html.twig',
         'newTemplate' => 'SendmailBundle:emails_user:ticket_new_validate_email.html.twig',
-        'viewModel'   => 'NewTicketValidateEmail',
+        'viewModel'   => 'TicketNewValidateEmail',
     ],
     [
         'typeId'      => 'user',

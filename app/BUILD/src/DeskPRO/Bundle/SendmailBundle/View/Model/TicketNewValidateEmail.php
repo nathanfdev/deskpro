@@ -31,7 +31,7 @@ namespace DeskPRO\Bundle\SendmailBundle\View\Model;
 use DeskPRO\Bundle\AppBundle\Serializer\Model\Tickets\Ticket;
 use JMS\Serializer\Annotation as JMS;
 
-class NewTicketValidateEmail extends TicketEmailType
+class TicketNewValidateEmail extends TicketEmailType
 {
     /**
      * Ticket access code.
@@ -42,7 +42,7 @@ class NewTicketValidateEmail extends TicketEmailType
      */
     protected $accessCode;
 
-    protected $templateFile = 'emails_user:new_ticket_validate.html.twig';
+    protected $templateFile = 'emails_user:ticket_new_validate.html.twig';
 
     public function __construct(Ticket $ticket, $ticketPerson, $ticketAgent, $ticketLink, $ticketMessages, $accessCode)
     {
