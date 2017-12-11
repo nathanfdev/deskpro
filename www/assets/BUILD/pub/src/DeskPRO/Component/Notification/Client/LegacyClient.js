@@ -44,7 +44,8 @@ export default class LegacyClient extends AbstractClient {
       if (last && last.id) {
         that.options.last_alert = last.id > that.options.last_alert ? last.id : that.options.last_alert;
         actionAlerts.map((datum) => {
-          if (datum.target_id === that.options.me) {
+          const targetId = parseInt(datum.target_id, 10);
+          if (targetId === that.options.me || targetId === -100) {
             datum.data = JSON.parse(datum.data);
             that.options.dispatcher('action_alert', datum);
           }
@@ -62,7 +63,8 @@ export default class LegacyClient extends AbstractClient {
       if (last && last.id) {
         that.options.last_notify = last.id > that.options.last_notify ? last.id : that.options.last_notify;
         response.notifications.map((datum) => {
-          if (parseInt(datum.target_id, 10) === that.options.me) {
+          const targetId = parseInt(datum.target_id, 10);
+          if (targetId === -100 || targetId === that.options.me) {
             datum.data = JSON.parse(datum.data);
             that.options.dispatcher('user_notify', datum);
           }

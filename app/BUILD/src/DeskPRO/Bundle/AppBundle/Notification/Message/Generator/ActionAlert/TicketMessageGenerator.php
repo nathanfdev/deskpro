@@ -33,6 +33,7 @@ use DeskPRO\Bundle\AppBundle\Notification\Event\SystemEventInterface;
 use DeskPRO\Bundle\AppBundle\Notification\Event\Ticket\TicketUpdatedEvent;
 use DeskPRO\Bundle\AppBundle\Notification\Message\ActionAlert;
 use DeskPRO\Bundle\AppBundle\Notification\Message\Generator\SystemEventGenerator;
+use DeskPRO\Bundle\AppBundle\Notification\NotificationService;
 
 /**
  * Class TicketMessageGenerator.
@@ -47,8 +48,18 @@ class TicketMessageGenerator extends SystemEventGenerator
         $event->getName();
         /* @var TicketUpdatedEvent $event */
         $messages = [];
-        foreach ($this->getTarget($event) as $target) {
-            $messages[] = new ActionAlert($target, $event->getData(), $event->getName());
+
+        // process broadcast message probably idea to move it to standalone broadcast event is good
+
+        if ($event->getEventType() === 'agent.filter-update' || $event->getEventType() === 'agent.ticket-updated') {
+            $actionAlert = new ActionAlert(NotificationService::TARGET_BROADCAST, $event->getData(), $event->getName());
+            $actionAlert->setBroadcast();
+            $messages[] = $actionAlert;
+        } else {
+            foreach ($this->getTarget($event) as $target) {
+                $actionAlert = new ActionAlert($target, $event->getData(), $event->getName());
+                $messages[]  = $actionAlert;
+            }
         }
 
         return $messages;

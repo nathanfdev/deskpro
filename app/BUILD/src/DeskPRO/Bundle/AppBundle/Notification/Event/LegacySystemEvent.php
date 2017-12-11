@@ -40,7 +40,7 @@ class LegacySystemEvent extends AbstractLegacyEvent
     /**
      * @var array
      */
-    private $data;
+    protected $data;
 
     /**
      * Constructor.

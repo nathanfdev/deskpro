@@ -59,12 +59,14 @@ class DbDeliveryHandlerSpec extends ObjectBehavior
         $actionAlert->getType()->willReturn('test.action.alert.type');
         $actionAlert->getData()->willReturn(['data' => []]);
         $actionAlert->getDate()->willReturn(date('Y-m-d H:i:s'));
+        $actionAlert->isBroadcast()->willReturn(false);
 
         $actionAlert->getId()->shouldBeCalled();
         $actionAlert->getTarget()->shouldBeCalled();
         $actionAlert->getType()->shouldBeCalled();
         $actionAlert->getData()->shouldBeCalled();
         $actionAlert->getDate()->shouldBeCalled();
+        $actionAlert->isBroadcast()->shouldBeCalled();
 
         $this->schedule($actionAlert);
         $this->deliver();

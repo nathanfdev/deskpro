@@ -1164,8 +1164,8 @@ class Ticket extends AbstractEntityRepository
                     TicketUpdatedEvent::EVENT_NAME,
                     new TicketUpdatedEvent(
                         'agent-notification.tickets.locked-status',
-                        $id,
                         [
+                            'ticket_id'      => $id,
                             'is_locked'      => false,
                             'locked_by'      => null,
                             'locked_by_name' => null,

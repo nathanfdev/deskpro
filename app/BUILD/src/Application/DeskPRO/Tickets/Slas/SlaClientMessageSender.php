@@ -92,8 +92,8 @@ class SlaClientMessageSender implements PersonContextInterface
     {
         $this->eventDispatcher->dispatch(TicketUpdatedEvent::EVENT_NAME, new TicketUpdatedEvent(
             self::CHANNEL,
-            $ticket->getId(),
             [
+                'ticket_id'             => $ticket->getId(),
                 'ticket_agent_id'       => $ticket->agent ? $ticket->agent->id : null,
                 'ticket_Agent_team_id'  => $ticket->agent_team ? $ticket->agent_team->id : null,
                 'sla_id'                => $ticket_sla->sla->id,
