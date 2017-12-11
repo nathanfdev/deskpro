@@ -35,9 +35,9 @@
             <i class="spinner-big-circle"></i>
         </div>
         <ul class="stat-list"  ng-show="loaded">
-            <li ng-class="{'active': report.id == widget.widget_id}"
+            <li ng-class="{'active': report.id == widget.widget_id}" ng-click="makeChoice(report)"
                 ng-repeat="report in prefilteredReports | filter:filterBySearchText track by report.id">
-                <span ng-click="makeChoice(report)" class="mark"></span>
+                <span class="mark"></span>
 
                 <h1>
                     <dp-report-variables
