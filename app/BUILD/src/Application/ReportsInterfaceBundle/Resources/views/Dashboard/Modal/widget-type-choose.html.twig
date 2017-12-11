@@ -17,7 +17,6 @@
               ng-click="makeChoice('pie')"
               class="link-pointer stat-preview-bucket"
               ng-class="{'selected' : widget.type == 'pie'}"
-              ng-show="displayTypeAvailable('pie')"
             >
                 <span class="title">Pie Chart</span>
                 <div class="stat-preview stat-preview-pie"></div>
@@ -28,7 +27,6 @@
               ng-click="makeChoice('simple_bars')"
               class="link-pointer stat-preview-bucket"
               ng-class="{'selected' : widget.type == 'simple_bars'}"
-              ng-show="displayTypeAvailable('simple_bars')"
             >
                 <span class="title">Bars</span>
                 <div class="stat-preview stat-preview-bars"></div>
@@ -39,7 +37,6 @@
               ng-click="makeChoice('simple_lines')"
               class="link-pointer stat-preview-bucket"
               ng-class="{'selected' : widget.type == 'simple_lines'}"
-              ng-show="displayTypeAvailable('simple_lines')"
             >
                 <span class="title">Lines</span>
                 <div class="stat-preview stat-preview-line"></div>
@@ -50,7 +47,6 @@
               ng-click="makeChoice('simple_area')"
               class="link-pointer stat-preview-bucket"
               ng-class="{'selected' : widget.type == 'simple_area'}"
-              ng-show="displayTypeAvailable('simple_area')"
             >
                 <span class="title">Area</span>
                 <div class="stat-preview stat-preview-area"></div>
@@ -61,7 +57,6 @@
               ng-click="makeChoice('table')"
               class="link-pointer stat-preview-bucket"
               ng-class="{'selected' : widget.type == 'table'}"
-              ng-show="displayTypeAvailable('table')"
             >
                 <span class="title">Table data</span>
                 <div class="stat-preview stat-preview-multi-group"></div>
