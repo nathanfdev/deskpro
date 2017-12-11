@@ -42,7 +42,7 @@ export default class DpClient extends AbstractClient {
       if (that.options.debug === true) {
         console.log(`DpClient received message with type: ${eventName}`, data);
       }
-      if (parseInt(data.target, 10) === that.options.me || data.target === 'agent_public') {
+      if (data.target === 'agent_public' || parseInt(data.target, 10) === that.options.me) {
         that.options.dispatcher(eventName, data);
       }
     });

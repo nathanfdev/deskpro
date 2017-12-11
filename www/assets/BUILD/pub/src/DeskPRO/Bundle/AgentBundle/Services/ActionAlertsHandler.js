@@ -19,9 +19,6 @@ class ActionAlertsHandler {
     const { data, linked } = payload.data;
     const records = [];
     switch (payload.type) {
-      case 'multiplex_message':
-        this.handleMultiplex(payload);
-        break;
       case 'agents.update_online':
         if (payload.data.online) {
           payload.data.online.forEach((item) => {
