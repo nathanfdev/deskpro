@@ -34,6 +34,7 @@ use Application\DeskPRO\Entity\Feedback;
 use Application\DeskPRO\Entity\Person;
 use Application\DeskPRO\Entity\Task;
 use Application\DeskPRO\Entity\Ticket;
+use Application\DeskPRO\TicketLayout\LayoutDisplay;
 use DateTime;
 use DeskPRO\Bundle\SendmailBundle\View\Model\AdminNoResetPassword;
 use DeskPRO\Bundle\SendmailBundle\View\Model\AgentChangeEmailMergeUser;
@@ -270,8 +271,6 @@ class AgentViewModelFactory extends AbstractViewModelFactory
     {
         $arguments = $this->getTicketArguments($ticket);
 
-        array_push($arguments, $ticket->getParticipants());
-
         return $this->convertParameters(AgentTicketNew::class, $arguments);
     }
 
@@ -284,8 +283,6 @@ class AgentViewModelFactory extends AbstractViewModelFactory
     {
         $arguments = $this->getTicketArguments($ticket);
 
-        array_push($arguments, $ticket->getParticipants());
-
         return $this->convertParameters(AgentTicketUpdate::class, $arguments);
     }
 
@@ -297,8 +294,6 @@ class AgentViewModelFactory extends AbstractViewModelFactory
     public function createAgentTicketReplyModel(Ticket $ticket)
     {
         $arguments = $this->getTicketArguments($ticket);
-
-        array_push($arguments, $ticket->getParticipants());
 
         return $this->convertParameters(AgentTicketReply::class, $arguments);
     }
@@ -320,5 +315,19 @@ class AgentViewModelFactory extends AbstractViewModelFactory
         $arguments = array_merge($arguments, [$agentMessage, $subject]);
 
         return $this->convertParameters(AgentTicketForward::class, $arguments);
+    }
+
+    public function getTicketArguments($ticket)
+    {
+        $arguments = parent::getTicketArguments($ticket);
+
+        $department = $ticket->getDepartment();
+        $layoutId   = $department ? $department->getId() : null;
+        $layout     = $this->container->getTicketLayoutManager()->getAgentLayouts()->getLayout($layoutId);
+        $layout     = LayoutDisplay::createFromLayout($layout, LayoutDisplay::VIEW_TICKET, $ticket);
+
+        array_push($arguments, $ticket->getParticipants(), $layout);
+
+        return $arguments;
     }
 }

@@ -48,33 +48,33 @@
 	{% endif %}
 
 	{% for item in ticket_layout %}
-		{% if item.getFieldType() == 'department' %}
+		{% if item.fieldType == 'department' %}
 			<tr>
 				<td class="dp-td-heading">{{ phrase('agent.general.department') }}</td>
 				<td>{{ticket.department.full_title|default(phrase('agent.general.none'))}}</td>
 			</tr>
-		{% elseif item.getFieldType() == 'category' and ticket.category %}
+		{% elseif item.fieldType == 'category' and ticket.category %}
 			<tr>
 				<td class="dp-td-heading">{{ phrase('agent.general.category') }}</td>
 				<td>{{ticket.category.full_title|default(phrase('agent.general.none'))}}</td>
 			</tr>
-		{% elseif item.getFieldType() == 'product' and ticket.product %}
+		{% elseif item.fieldType == 'product' and ticket.product %}
 			<tr>
 				<td class="dp-td-heading">{{ phrase('agent.general.product') }}</td>
 				<td>{{ticket.product.title|default(phrase('agent.general.none'))}}</td>
 			</tr>
-		{% elseif item.getFieldType() == 'priority' and ticket.priority %}
+		{% elseif item.fieldType == 'priority' and ticket.priority %}
 			<tr>
 				<td class="dp-td-heading">{{ phrase('agent.general.priority') }}</td>
 				<td>{{ticket.priority.title|default(phrase('agent.general.none'))}}</td>
 			</tr>
-		{% elseif item.getFieldType() == 'workflow' and ticket.workflow %}
+		{% elseif item.fieldType == 'workflow' and ticket.workflow %}
 			<tr>
 				<td class="dp-td-heading">{{ phrase('agent.general.workflow') }}</td>
 				<td>{{ticket.workflow.title|default(phrase('agent.general.none'))}}</td>
 			</tr>
 		{% else %}
-				{% if custom_fields and item.getFieldType() == 'ticket_field' %}
+				{% if custom_fields and item.fieldType == 'ticket_field' %}
 					{% for f in custom_fields %}
 						{% if item.getFieldId() == f.id %}
 							{% if ticket.hasCustomField(f.field_def.id) %}
@@ -89,7 +89,7 @@
 					{% endfor %}
 				{% endif %}
 
-				{% if custom_user_fields and item.getFieldType() == 'user_field' %}
+				{% if custom_user_fields and item.fieldType == 'user_field' %}
 					{% for f in custom_user_fields %}
 						{% if item.getFieldId() == f.id %}
 							{% if ticket.person.hasCustomField(f.field_def.id) %}
