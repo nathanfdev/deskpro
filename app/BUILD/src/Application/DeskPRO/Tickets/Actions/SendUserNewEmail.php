@@ -40,6 +40,8 @@ use Application\DeskPRO\Entity\TicketTrigger;
 use Application\DeskPRO\Tickets\ExecutorContextInterface;
 use Application\DeskPRO\Tickets\TicketEmail;
 use Application\DeskPRO\Tickets\TicketEmailBuilder;
+use DeskPRO\Bundle\AppBundle\Templating\EmailTemplatesDesc;
+use DeskPRO\Bundle\SendmailBundle\View\Model\EmailBaseType;
 use Orb\Util\CheckedOptionsArray;
 
 /**
@@ -125,6 +127,9 @@ class SendUserNewEmail extends AbstractEmailAction
             case TicketTrigger::EVENT_TYPE_UPDATE:
                 $viewModel = $factory->createTicketNewAutoreplyModel($ticket);
                 break;
+            case 'system':
+                $viewModel = $this->createViewModelFromTemplate($template, $ticket, $context);
+                break;
             default:
                 $context->getLogger()->info('Unknown event type: '.$context->getEventType());
 
@@ -195,7 +200,7 @@ class SendUserNewEmail extends AbstractEmailAction
         /** @var TicketEmail $ticketEmail */
         $ticketEmail = $emailBuilder->buildTicketEmail();
 
-        $message = $ticketEmail->prepareMailerMessage();
+        $message = $ticketEmail->prepareMailerMessage([], false);
 
         $message = $this->getContainer()->get('email.email_sender')
             ->prepareMessage($viewModel, $messagesArgs, $message);
@@ -243,5 +248,45 @@ class SendUserNewEmail extends AbstractEmailAction
         }
 
         return false;
+    }
+
+    /**
+     * @param $template
+     * @param $ticket
+     * @param $context
+     *
+     * @throws \Exception
+     *
+     * @return bool|EmailBaseType
+     */
+    protected function createViewModelFromTemplate($template, $ticket, $context)
+    {
+        if (strpos($template, 'SendmailBundle:emails_custom:') === 0) {
+            $factory   = $this->getContainer()->get('email.custom_viewmodel_factory');
+            $viewModel = $factory->createCustomTemplateModel($ticket);
+            $viewModel->setTemplateFile($template);
+
+            return $viewModel;
+        }
+        $templatesDesc = new EmailTemplatesDesc();
+        $manifest      = $templatesDesc->getManifest();
+        $key           = array_search($template, array_column($manifest, 'newTemplate'));
+        if ($key && isset($manifest[$key]['viewModel'])) {
+            $viewModel = $manifest[$key]['viewModel'];
+        } else {
+            $context->getLogger()->info('Unknown template: '.$template);
+
+            return false;
+        }
+        $factory = $this->getContainer()->get('email.user_viewmodel_factory');
+        $action  = 'create'.$viewModel.'Model';
+
+        if (!is_callable([$factory, $action])) {
+            $context->getLogger()->info('Missing method '.$action.' in factory');
+
+            return false;
+        }
+
+        return call_user_func_array([$factory, $action], [$ticket]);
     }
 }

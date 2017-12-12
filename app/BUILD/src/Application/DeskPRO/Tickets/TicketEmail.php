@@ -277,10 +277,14 @@ class TicketEmail
 
     /**
      * @param array $vars
+     * @param bool  $doPrepare prevent message from actually rendering in case of use in SendmailBundle
+     *
+     * @throws \Exception
+     * @throws null
      *
      * @return Message
      */
-    public function prepareMailerMessage(array $vars = [])
+    public function prepareMailerMessage(array $vars = [], $doPrepare = true)
     {
         if ($this->toPerson && $this->toPerson->isAgent()) {
             $this->toPerson->loadHelper('Agent');
@@ -340,7 +344,9 @@ class TicketEmail
             }
         }
 
-        $message->setTemplate($this->templateName, $vars);
+        if ($doPrepare) {
+            $message->setTemplate($this->templateName, $vars);
+        }
 
         if ($this->userMode == self::MODE_USER && $this->doCcUsers) {
             foreach ($this->ticket->getUserParticipants() as $p) {
@@ -402,11 +408,13 @@ class TicketEmail
 
         $this->logger->info(sprintf('[TicketEmail] Language: %s', $lang->getSystemName()));
 
-        $start = microtime(true);
-        $this->translate->setTemporaryLanguage($lang, function () use ($message) {
-            $message->prepare();
-        });
-        $this->logger->info(sprintf('[TicketEmail] Prepare took %.3fs', microtime(true) - $start));
+        if ($doPrepare) {
+            $start = microtime(true);
+            $this->translate->setTemporaryLanguage($lang, function () use ($message) {
+                $message->prepare();
+            });
+            $this->logger->info(sprintf('[TicketEmail] Prepare took %.3fs', microtime(true) - $start));
+        }
 
         foreach ($this->headers as $header) {
             $message->getHeaders()->addTextHeader($header['name'], $header['value']);
