@@ -148,6 +148,10 @@ class PreviewFakeDataFactory
                         return 'Here\'s my forwarded ticket';
                     case 'maxSize':
                         return Numbers::filesizeDisplay(20971520);
+                    case 'expireDate':
+                        $now = new DateTime();
+
+                        return $now->add(new \DateInterval('P1M'));
                     default:
                         return '';
                 }

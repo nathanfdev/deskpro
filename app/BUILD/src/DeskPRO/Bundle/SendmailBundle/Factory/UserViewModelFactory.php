@@ -76,6 +76,7 @@ use DeskPRO\Bundle\SendmailBundle\View\Model\TicketAwaitingWarn;
 use DeskPRO\Bundle\SendmailBundle\View\Model\TicketAwaitingWarnFinal;
 use DeskPRO\Bundle\SendmailBundle\View\Model\TicketNewAutoreply;
 use DeskPRO\Bundle\SendmailBundle\View\Model\TicketNewByAgent;
+use DeskPRO\Bundle\SendmailBundle\View\Model\TicketNewReminder;
 use DeskPRO\Bundle\SendmailBundle\View\Model\TicketNewValidateEmail;
 use DeskPRO\Bundle\SendmailBundle\View\Model\TicketParticipant;
 use DeskPRO\Bundle\SendmailBundle\View\Model\TicketRate;
@@ -603,6 +604,21 @@ class UserViewModelFactory extends AbstractViewModelFactory
         $arguments = $this->getTicketArguments($ticket);
 
         return $this->convertParameters(TicketReplyAutoreply::class, $arguments);
+    }
+
+    /**
+     * @param $verifyUrl
+     * @param $expireDate
+     *
+     * @throws \Exception
+     *
+     * @return TicketNewReminder
+     */
+    public function createTicketNewReminderModel($verifyUrl, $expireDate)
+    {
+        $expireDate = $expireDate->format('D, jS M Y g:ia');
+
+        return $this->convertParameters(TicketNewReminder::class, [$verifyUrl, $expireDate]);
     }
 
     /**

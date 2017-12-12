@@ -104,16 +104,23 @@ class TicketReminders extends AbstractJob
             $email_to->setTo($email, $name);
         }
 
-        $message = App::getMailer()->createMessage();
-        if ($person = $email_to->getPerson()) {
-            $message->setToPerson($person);
+        if (App::$container->get('deskpro.feature_flags')->hasBeta('email_templates')) {
+            $viewModel = App::$container->get('email.user_viewmodel_factory')
+                ->createTicketNewReminderModel($validate_url, $saved_form->getDateExpires());
+            App::$container->get('email.email_sender')
+                ->send($viewModel, ['to' => $email_to]);
         } else {
-            $message->setTo($email_to->getEmailAddress(), $email_to->getName());
+            $message = App::getMailer()->createMessage();
+            if ($person = $email_to->getPerson()) {
+                $message->setToPerson($person);
+            } else {
+                $message->setTo($email_to->getEmailAddress(), $email_to->getName());
+            }
+            $message->setTemplate('DeskPRO:emails_user:ticket-new-reminder.html.twig', [
+                'verify_url'  => $validate_url,
+                'expire_date' => $saved_form->getDateExpires(),
+            ]);
         }
-        $message->setTemplate('DeskPRO:emails_user:ticket-new-reminder.html.twig', [
-            'verify_url'  => $validate_url,
-            'expire_date' => $saved_form->getDateExpires(),
-        ]);
 
         App::getMailer()->send($message);
     }
