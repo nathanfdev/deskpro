@@ -158,6 +158,8 @@ abstract class AbstractViewModelFactory
      * @param $class
      * @param array $arguments
      *
+     * @throws \Exception
+     *
      * @return EmailBaseType
      */
     protected function convertParameters($class, $arguments = [])

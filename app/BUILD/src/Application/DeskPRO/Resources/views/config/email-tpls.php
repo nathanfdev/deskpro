@@ -280,6 +280,14 @@ return [
     [
         'typeId'      => 'user',
         'groupId'     => 'tickets',
+        'subGroupId'  => 'validation',
+        'name'        => 'DeskPRO:emails_user:ticket-new-reminder.html.twig',
+        'newTemplate' => 'SendmailBundle:emails_user:ticket_new_reminder.html.twig',
+        'viewModel'   => 'TicketNewReminder',
+    ],
+    [
+        'typeId'      => 'user',
+        'groupId'     => 'tickets',
         'subGroupId'  => 'primary',
         'name'        => 'DeskPRO:emails_user:new-ticket-reg-closed.html.twig',
         'newTemplate' => 'SendmailBundle:emails_user:new_ticket_reg_closed.html.twig',
