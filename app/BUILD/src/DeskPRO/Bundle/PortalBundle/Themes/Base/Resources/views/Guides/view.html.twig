@@ -26,7 +26,7 @@
                 </span>
                 <hr>
                 {% if topic.status != 'published' and topic.status != 'archived' and app.user.is_agent %}
-                  <div class="sub-note">{{ phrase('portal.articles.view-as-agent') }}</div>
+                  <div class="sub-note">{{ phrase('portal.guides.view-as-agent') }}</div>
                 {% endif %}
             </header>
             <div class="topic-content">
