@@ -93,16 +93,22 @@ class RawExchangeTransport implements RawTransportInterface
 
         try {
             $response = $this->ews()->CreateItem($msgRequest);
+            $okay     = false;
 
             if ($response && $response->ResponseMessages && ($response = $response->ResponseMessages->CreateItemResponseMessage)) {
                 if ('Error' === $response->ResponseClass) {
                     $this->logger->error(sprintf('[RawExchangeTransport] %s', $response->MessageText));
-                    $this->logger->debug('last response: '.$this->ews()->getClient()->__getLastResponse());
                     $failed = $tos;
                 } elseif ('Success' === $response->ResponseClass) {
                     $this->logger->info('[RawExchangeTransport] success');
                     ++$sent;
+                    $okay = true;
                 }
+            }
+
+            if (!$okay) {
+                $this->logger->info('[RawExchangeTransport] did not send');
+                $this->logger->debug('last response: '.$this->ews()->getClient()->__getLastResponse());
             }
         } catch (\Exception $e) {
             $this->logger->info(sprintf('[RawExchangeTransport] Exception: <%s> [%s] %s', get_class($e), $e->getCode(), $e->getMessage()));

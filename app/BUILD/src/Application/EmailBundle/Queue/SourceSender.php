@@ -134,7 +134,7 @@ class SourceSender
                 $this->logger->notice(sprintf('NOTICE: Failed recipients: %s', implode(', ', $failed)));
             }
 
-            $this->logger->info(sprintf('Sent %d messages', $sendmail));
+            $this->logger->info(sprintf('Sent %d messages', $sent));
         } catch (RawTransportException $e) {
             $this->logger->error(sprintf('Exception raised: %s [%s]: %s', get_class($e), $e->getCode(), $e->getMessage()));
             @fclose($fp);
