@@ -16,6 +16,8 @@ define -> [
 
     $scope.cancel = -> $modalInstance.dismiss 'cancel'
 
+    $scope.back = -> $modalInstance.close {back: true}
+
     $scope.saveChoice = ->
       DashboardWidgetService.addWidget report, $scope.widget
       $modalInstance.close()

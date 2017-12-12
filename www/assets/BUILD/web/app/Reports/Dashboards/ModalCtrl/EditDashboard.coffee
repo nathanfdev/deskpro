@@ -84,7 +84,7 @@ define ['DeskPRO/Util/Arrays', 'DeskPRO/Util/Util'], (Arrays, Util) -> [
       })
 
     ###
-    # Clones all reports from a particular dashboard
+    # Clones all reports from specified dashboard
     ###
     $scope.cloneDashboard = (db) ->
       $scope.show_clone_menu = false
