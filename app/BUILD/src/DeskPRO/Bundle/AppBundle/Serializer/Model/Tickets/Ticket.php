@@ -100,6 +100,15 @@ class Ticket
     private $language;
 
     /**
+     * Ticket brand.
+     *
+     * @JMS\Type("entity<Application\DeskPRO\Entity\Brand>")
+     *
+     * @var Language
+     */
+    private $brand;
+
+    /**
      * Ticket where this department is processing.
      *
      * @JMS\Type("entity<Application\DeskPRO\Entity\Department>")
@@ -638,6 +647,7 @@ class Ticket
         $this->auth       = $ticket->getAuth();
         $this->parent     = $ticket->getParentTicket();
         $this->language   = $ticket->getLanguage();
+        $this->brand      = $ticket->getBrand();
         $this->department = $ticket->getDepartment();
         $this->category   = $ticket->getCategory();
         $this->priority   = $ticket->getPriority();
