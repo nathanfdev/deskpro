@@ -2166,6 +2166,8 @@ return [
     'agent.tickets.log_update_agent'                           => 'Updated by agent',
     'agent.tickets.log_update_agent_reply'                     => 'Reply by agent',
     'agent.tickets.log_update_escalation'                      => 'Updated by escalation',
+    'agent.tickets.log_newreply_followup'                      => 'Reply by follow up',
+    'agent.tickets.log_update_followup'                        => 'Updated by follow up',
     'agent.tickets.log_update_user'                            => 'Updated by user',
     'agent.tickets.log_update_user_reply'                      => 'Reply by user',
     'agent.tickets.log_written_by'                             => 'Written by {{name}} (ID {{id}})',

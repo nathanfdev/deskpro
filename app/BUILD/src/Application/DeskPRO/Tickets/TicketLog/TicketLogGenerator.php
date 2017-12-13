@@ -46,6 +46,9 @@ use Application\DeskPRO\Tickets\ExecutorContextInterface;
 use DeskPRO\Bundle\AppBundle\Entity\TicketFollowUp;
 use Orb\Util\Util;
 
+/**
+ * Class TicketLogGenerator.
+ */
 class TicketLogGenerator
 {
     /**
@@ -96,6 +99,10 @@ class TicketLogGenerator
         $apiKey = $this->context->getVars()->get('via_api_key');
         if ($apiKey) {
             $details['via_api_key'] = $apiKey;
+        }
+        $followUpId = $this->context->getVars()->get('followup_id');
+        if ($followUpId) {
+            $details['followup_id'] = $followUpId;
         }
 
         $group->setDetails($details);
