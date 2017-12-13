@@ -8,9 +8,6 @@
     </header>
 
     <div class="big-list-of-stats-filters">
-        <div style="margin: 40px; text-align: center;" ng-show="!loaded">
-            <i class="spinner-circle-32"></i>
-        </div>
         <div class="bucket" ng-show="loaded">
             <div class="box">
                 <input type="text" ng-model="searchText" placeholder="Filter stats by name">
@@ -36,7 +33,7 @@
 
     <div class="big-list-of-stats">
         <div style="margin: 40px; text-align: center;" ng-show="!loaded">
-            <i class="spinner-big-circle"></i>
+            <i class="spinner-circle-32"></i>
         </div>
         <ul class="stat-list"  ng-show="loaded">
             <li ng-class="{'active': report.id == widget.widget_id}" ng-click="makeChoice(report)"
