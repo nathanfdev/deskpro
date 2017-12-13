@@ -2,6 +2,7 @@ import PropTypes from 'prop-types';
 import React from 'react';
 import { connect } from 'react-redux';
 import Immutable from 'immutable';
+import { compileParams } from 'DeskPRO/Bundle/AppBundle/DAL/Http/Helpers';
 import LoadingPage from 'DeskPRO/Bundle/AdminBundle/Modules/Common/Components/LoadingPage';
 import AvailableList from './AvailableList';
 import { loadAvailableNumbers, addAvailableNumber, changeAvailableNumbersFilter } from '../../../../Actions/numberActions';
@@ -39,10 +40,19 @@ class AvailableListContainer extends BaseSearchContainer {
     });
 
     const promise = this.props.dispatch(addAvailableNumber(number));
-    promise.success((response) => {
+    promise.success(({ data }) => {
       this.setState({
         loading: false
-      }, () => replaceRoute(`/voice_channel/numbers/${response.data.id}`));
+      }, () => {
+        const params = {
+          sid:          data.sid,
+          account:      data.account,
+          number:       data.number,
+          country_code: data.country_code
+        };
+
+        replaceRoute(`/voice_channel/numbers/new?${compileParams(params)}`);
+      });
     });
     promise.error(() => {
       this.setState({

@@ -1,5 +1,6 @@
 import Accounts from './Accounts/List/AccountListContainer';
 import Numbers from './Numbers/List/NumberListContainer';
+import NewNumber from './Numbers/Form/NewNumberContainer';
 import EditNumber from './Numbers/Form/EditNumberContainer';
 import AvailableNumbers from './Numbers/Search/AvailableNumbers/AvailableListContainer';
 import ExistingNumbers from './Numbers/Search/ExistingNumbers/ExistingListContainer';
@@ -19,6 +20,7 @@ import CallLogView from './CallLogs/View/CallLogViewContainer';
 export {
   Accounts,
   Numbers,
+  NewNumber,
   EditNumber,
   AvailableNumbers,
   ExistingNumbers,

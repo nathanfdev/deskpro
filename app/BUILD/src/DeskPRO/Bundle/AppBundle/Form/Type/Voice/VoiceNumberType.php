@@ -60,7 +60,7 @@ class VoiceNumberType extends AbstractType
                 'property_path' => 'countryCode',
             ])
             ->add('target', VoiceTargetType::class, [
-                'required' => false,
+                'error_bubbling' => false,
             ])
             ->add('outbound_calls_enabled', ApiBooleanType::class, [
                 'property_path' => 'outboundCallsEnabled',
