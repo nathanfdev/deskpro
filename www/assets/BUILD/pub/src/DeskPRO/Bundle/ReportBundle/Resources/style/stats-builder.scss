@@ -297,7 +297,13 @@
   right: 0;
   width: 400px;
 
-  a { margin-bottom: 5px; text-wrap: none; }
+  a {
+    margin-bottom: 5px;
+    text-wrap: none;
+    &.active {
+      color: $dp-sonic-primary;
+    }
+  }
 }
 
 .reports-list {
