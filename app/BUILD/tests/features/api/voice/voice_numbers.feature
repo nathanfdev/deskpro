@@ -39,7 +39,11 @@ Feature: /voice_numbers endpoint
   "sid": "sidcode",
   "nickname": "nickname",
   "number": "12345",
-  "country_code": "gb"
+  "country_code": "gb",
+  "target": {
+    "type": "agent",
+    "target": ~admin~
+  }
 }
     """
     Then the response status code should be 201
@@ -48,9 +52,10 @@ Feature: /voice_numbers endpoint
     And the JSON node "data.nickname" should be equal to the string "nickname"
     And the JSON node "data.number" should be equal to the string "12345"
     And the JSON node "data.country_code" should be equal to the string "gb"
-    And the JSON node "data.target" should be null
+    And the JSON node "data.target.type" should be equal to the string "agent"
+    And the JSON node "data.target.target" should be equal to "{admin}"
 
-  Scenario: Iset target queue
+  Scenario: I set target queue
     Given only the following VoiceNumber records exist:
       | #  | Nickname | Sid  | Number | Country Code |
       | n1 | Number 1 | sid1 | 111111 | gb           |
@@ -142,11 +147,8 @@ Feature: /voice_numbers endpoint
   "target": null
 }
     """
-    Then the response status code should be 204
-
-    When I send a GET request to "/api/v2/voice_numbers/{n1}"
-    Then the response status code should be 200
-    And the JSON node "data.target" should be null
+    Then the response status code should be 400
+    And the JSON node "errors.fields.target.errors[0].code" should be equal to "required"
 
   Scenario: I delete twilio number
     Given only the following VoiceNumber records exist:
