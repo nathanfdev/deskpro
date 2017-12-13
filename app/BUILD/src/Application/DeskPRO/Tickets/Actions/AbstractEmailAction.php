@@ -40,6 +40,7 @@ use Application\DeskPRO\Tickets\ExecutorContextInterface;
 use Application\DeskPRO\Tickets\TicketEmail;
 use Application\DeskPRO\Tickets\TicketLog\TicketLogGenerator;
 use Application\DeskPRO\Twig\Extension\TemplatingExtension;
+use DeskPRO\Bundle\AppBundle\Templating\EmailTemplatesDesc;
 use DeskPRO\Bundle\SendmailBundle\View\Model\EmailBaseType;
 use Orb\Util\Arrays;
 use Orb\Util\Numbers;

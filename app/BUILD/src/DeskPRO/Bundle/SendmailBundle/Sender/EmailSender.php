@@ -28,6 +28,7 @@
 
 namespace DeskPRO\Bundle\SendmailBundle\Sender;
 
+use Application\DeskPRO\Entity\Language;
 use Application\DeskPRO\Entity\Person;
 use Application\DeskPRO\EntityRepository\Person as PersonRepository;
 use Application\EmailBundle\SwiftMailer\Mailer;
@@ -121,7 +122,7 @@ class EmailSender
 
     /**
      * @param EmailBaseType $model
-     * @param $options
+     * @param $args
      * @param Message $message
      *
      * @throws \Exception
@@ -169,7 +170,20 @@ class EmailSender
         }
         $template = isset($options['template']) ? $options['template'] : $model->getTemplate();
 
-        $emailCode = $this->getRenderer()->render($template, $model);
+        $language = $options['language'];
+        if (!$language) {
+            if (!empty($recipient)) {
+                $language = $recipient->getLanguage();
+            }
+        }
+        if ($language instanceof Language) {
+            $emailCode = null;
+            $this->getContainer()->get('deskpro.core.translate')->setTemporaryLanguage($language, function () use ($template, $model, &$emailCode) {
+                $emailCode = $this->getRenderer()->render($template, $model);
+            });
+        } else {
+            $emailCode = $this->getRenderer()->render($template, $model);
+        }
         $message->setBody($emailCode->getBody(), 'text/html');
         $message->setSubject($emailCode->getSubject());
         foreach ($emailCode->getAttachments() as $blob) {
@@ -218,12 +232,15 @@ class EmailSender
             'headers',
             'from_account',
             'Message-ID',
+            'language',
         ]);
         $this->optionsResolver->setDefaults([
             'to'        => null,
             'from_name' => null,
+            'language'  => null,
         ]);
         $this->optionsResolver->setAllowedTypes('attachments', 'array');
         $this->optionsResolver->setAllowedTypes('headers', 'array');
+        $this->optionsResolver->setAllowedTypes('language', [Language::class, 'null']);
     }
 }
