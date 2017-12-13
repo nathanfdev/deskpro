@@ -300,7 +300,7 @@
   a {
     margin-bottom: 5px;
     text-wrap: none;
-    &.active {
+    &.stat-label.active {
       color: $dp-sonic-primary;
     }
   }

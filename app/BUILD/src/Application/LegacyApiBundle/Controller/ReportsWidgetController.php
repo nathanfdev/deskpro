@@ -75,7 +75,7 @@ class ReportsWidgetController extends AbstractController
                 $apiData['labels'][$label] = [
                     'id'    => ++$i,
                     'label' => $translatedLabel,
-                    'value' => ucfirst($label),
+                    'value' => $label,
                 ];
             }
             $datum['labels']      = $translatedLabels;
