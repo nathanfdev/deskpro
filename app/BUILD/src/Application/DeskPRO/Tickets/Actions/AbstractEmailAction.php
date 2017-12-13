@@ -40,6 +40,7 @@ use Application\DeskPRO\Tickets\ExecutorContextInterface;
 use Application\DeskPRO\Tickets\TicketEmail;
 use Application\DeskPRO\Tickets\TicketLog\TicketLogGenerator;
 use Application\DeskPRO\Twig\Extension\TemplatingExtension;
+use DeskPRO\Bundle\SendmailBundle\View\Model\EmailBaseType;
 use Orb\Util\Arrays;
 use Orb\Util\Numbers;
 use Orb\Util\Strings;
@@ -304,5 +305,51 @@ abstract class AbstractEmailAction extends AbstractContainerAwareAction implemen
         }
 
         return $headers;
+    }
+
+    /**
+     * @param $template
+     * @param $arguments
+     * @param $context
+     *
+     * @throws \Exception
+     *
+     * @return bool|EmailBaseType
+     */
+    protected function createViewModelFromTemplate($template, $arguments, $context)
+    {
+        if (strpos($template, 'SendmailBundle:emails_custom:') === 0) {
+            $factory   = $this->getContainer()->get('email.custom_viewmodel_factory');
+            $viewModel = call_user_func_array([$factory, 'createCustomTemplateModel'], $arguments);
+            $viewModel->setTemplateFile($template);
+
+            return $viewModel;
+        }
+        $templatesDesc = new EmailTemplatesDesc();
+        $manifest      = $templatesDesc->getManifest();
+        $viewModel     = false;
+        foreach ($manifest as $t) {
+            if (isset($t['newTemplate']) && $t['newTemplate'] === $template) {
+                if ($t['viewModel']) {
+                    $viewModel = $t['viewModel'];
+                }
+                break;
+            }
+        }
+        if (!$viewModel) {
+            $context->getLogger()->info('Unknown template: '.$template);
+
+            return false;
+        }
+        $factory = $this->getContainer()->get('email.user_viewmodel_factory');
+        $action  = 'create'.$viewModel.'Model';
+
+        if (!is_callable([$factory, $action])) {
+            $context->getLogger()->info('Missing method '.$action.' in factory');
+
+            return false;
+        }
+
+        return call_user_func_array([$factory, $action], $arguments);
     }
 }
