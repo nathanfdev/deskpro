@@ -33,6 +33,7 @@
 namespace DeskPRO\Bundle\AppBundle\Content;
 
 use Application\DeskPRO\Entity\CategoryAbstract;
+use Application\DeskPRO\Entity\Guide;
 use DeskPRO\Component\Util\TypeUtils;
 use Orb\Util\Strings;
 use Symfony\Component\DependencyInjection\ContainerInterface;
@@ -63,14 +64,17 @@ class CategorySlugManager
      * It then ensures that the slug that is set on the object is correct,
      * if it is not correct, it will find something valid AND SET IT on the content.
      *
-     * @param CategoryAbstract $category
+     * @param CategoryAbstract|Guide $category
      *
      * @throws \Exception
      *
      * @return null|void
      */
-    public function ensureValidSlug(CategoryAbstract $category)
+    public function ensureValidSlug($category)
     {
+        if (!$category instanceof CategoryAbstract && !$category instanceof Guide) {
+            throw new \Exception('Category must be CategoryAbstract or Guide');
+        }
         $expectedSlug = $this->slugifyTitle($category->getTitle());
 
         if ($expectedSlug === '') {
