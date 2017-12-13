@@ -60,6 +60,7 @@ class TicketFollowUpType extends AbstractType
             ])
         ;
 
+        $builder->addEventSubscriber(new TicketDisableAutoProcessListener());
         $builder->addEventListener(FormEvents::POST_SUBMIT, [$this, 'onPostSubmit']);
     }
 
@@ -88,9 +89,14 @@ class TicketFollowUpType extends AbstractType
         $data = $event->getData();
         $form = $event->getForm();
 
+        /** @var Person $person */
+        $person = $form->getConfig()->getOption('person');
+        /** @var Ticket $ticket */
+        $ticket = $form->getConfig()->getOption('ticket');
+
         if ($data instanceof TicketFollowUp) {
-            $data->setPerson($form->getConfig()->getOption('person'));
-            $data->setTicket($form->getConfig()->getOption('ticket'));
+            $data->setPerson($person);
+            $ticket->addFollowUp($data);
         }
     }
 }

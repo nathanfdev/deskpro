@@ -36,6 +36,7 @@ use DeskPRO\Bundle\ApiBundle\Traits\Tickets\TicketSaveTrait;
 use DeskPRO\Bundle\AppBundle\Annotation\ActionPermissions\Annotation\ApiModes;
 use DeskPRO\Bundle\AppBundle\Form\Type\Tickets\TicketMessageType;
 use FOS\RestBundle\Controller\Annotations as Rest;
+use FOS\RestBundle\View\View;
 use Symfony\Component\HttpFoundation\Request;
 
 /**
@@ -116,7 +117,7 @@ class TicketMessagesController extends CrudSubController
      *      },
      *      output="array<Application\DeskPRO\Entity\TicketAttachment>"
      * )
-     * 
+     *
      * @Rest\Get("/{id}/attachments")
      *
      * @param Request $request
@@ -127,8 +128,8 @@ class TicketMessagesController extends CrudSubController
     public function getAttachmentsAction(Request $request, $id)
     {
         return TicketAttachmentsController::subRequestSearch($this->getKernel(), $request, [
-            'message' => $this->findEntity($id, $request)->getId(),
-            'parentId' => $request->get(static::$parentParameter)
+            'message'  => $this->findEntity($id, $request)->getId(),
+            'parentId' => $request->get(static::$parentParameter),
         ]);
     }
 }

@@ -28,9 +28,10 @@
 
 namespace DeskPRO\Bundle\ApiBundle\Controller\Tickets;
 
-use Application\DeskPRO\Entity\Ticket;
 use DeskPRO\Bundle\ApiBundle\ApiDoc\Annotation\ApiDoc;
 use DeskPRO\Bundle\ApiBundle\Controller\CrudSubController;
+use DeskPRO\Bundle\ApiBundle\Traits\Tickets\TicketAwarePersistModelTrait;
+use DeskPRO\Bundle\ApiBundle\Traits\Tickets\TicketSaveTrait;
 use DeskPRO\Bundle\AppBundle\Annotation\ActionPermissions\Annotation\ApiModes;
 use DeskPRO\Bundle\AppBundle\Annotation\ActionPermissions\Annotation\Feature;
 use DeskPRO\Bundle\AppBundle\Entity\TicketFollowUp;
@@ -44,7 +45,7 @@ use Symfony\Component\HttpFoundation\Response;
  * Class TicketFollowUpsController.
  *
  * @ApiModes("session")
- * @Rest\Route("/tickets/{ticket}/follow-ups")
+ * @Rest\Route("/tickets/{parentId}/follow-ups")
  * @Feature("follow_up")
  * @ApiDoc(target="all", section="Tickets", output="DeskPRO\Bundle\AppBundle\Entity\TicketFollowUp")
  * @ApiDoc(
@@ -61,10 +62,11 @@ use Symfony\Component\HttpFoundation\Response;
  */
 class TicketFollowUpsController extends CrudSubController
 {
-    public static $entity             = TicketFollowUp::class;
-    public static $type               = TicketFollowUpType::class;
-    public static $parentProperty     = 'ticket';
-    protected static $parentParameter = 'ticket';
+    use TicketSaveTrait, TicketAwarePersistModelTrait;
+
+    public static $entity         = TicketFollowUp::class;
+    public static $type           = TicketFollowUpType::class;
+    public static $parentProperty = 'ticket';
 
     /**
      * @Rest\Post("/{id}/cancel")
@@ -100,5 +102,19 @@ class TicketFollowUpsController extends CrudSubController
         ]);
 
         return parent::handleForm($model, $request, $options);
+    }
+
+    /**
+     * {@inheritdoc}
+     *
+     * @param TicketFollowUp $entity
+     */
+    protected function deleteEntity($entity)
+    {
+        $ticket = $entity->getTicket();
+        $ticket->disableAutoTicketProcess();
+        $ticket->removeFollowUp($entity);
+
+        $this->saveTicket($ticket);
     }
 }
