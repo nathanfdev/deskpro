@@ -161,36 +161,29 @@ define ['Admin/Main/Ctrl/Base', 'DeskPRO/Util/Arrays'], (Admin_Ctrl_Base, Arrays
 
     delete: ->
 
-      @service.checkTriggers(@robin.id).then (data) =>
-        @active_triggers = data.active_triggers
+      title = @getRegisteredMessage 'modal_title'
+      msg = @getRegisteredMessage 'modal_message'
+      state = @$state
 
-        @$timeout(
-          =>
-            title = @getRegisteredMessage 'modal_title'
-            msg = @getRegisteredMessage 'modal_message'
-            state = @$state
+      _del = (modal) =>
+        @service.remove(@robin).then ->
+          modal.dismiss()
+          state.go 'chat.roundrobin'
 
-            _del = (modal) =>
-              @service.remove(@robin).then ->
-                modal.dismiss()
-                state.go 'chat.roundrobin'
+      @$modal.open({
+        templateUrl: @getTemplatePath('Index/modal-confirm.html'),
+        controller: ['$scope', '$modalInstance', ($scope, $modalInstance) ->
 
-            @$modal.open({
-              templateUrl: @getTemplatePath('Index/modal-confirm.html'),
-              controller: ['$scope', '$modalInstance', ($scope, $modalInstance) ->
+          $scope.title = title
+          $scope.message = msg
 
-                $scope.title = title
-                $scope.message = msg
+          $scope.dismiss = ->
+            $modalInstance.dismiss()
 
-                $scope.dismiss = ->
-                  $modalInstance.dismiss()
-
-                $scope.confirm = ->
-                  _del $modalInstance
-              ]
-            })
-          1
-        )
+          $scope.confirm = ->
+            _del $modalInstance
+        ]
+      })
 
 
 
