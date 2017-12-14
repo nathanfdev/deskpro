@@ -36,7 +36,7 @@ storiesOf('Agent Voice', module)
     () => redux(demoState, (
       <VoiceControls
         status="busy"
-        onRedial={action('onRedial')}
+        redial={action('onRedial')}
       />
     ))
   )
@@ -46,7 +46,7 @@ storiesOf('Agent Voice', module)
       <VoiceControls
         status="active"
         onlineAgents={Immutable.fromJS(demoState.RecordsStore.store.Person.records)}
-        onHold={linkTo('Agent Voice', 'Voice controls (hold)')}
+        toggleHold={linkTo('Agent Voice', 'Voice controls (hold)')}
       />
     ))
   )
@@ -56,7 +56,7 @@ storiesOf('Agent Voice', module)
       <VoiceControls
         status="active"
         hold
-        onHold={linkTo('Agent Voice', 'Voice controls (active)')}
+        toggleHold={linkTo('Agent Voice', 'Voice controls (active)')}
       />
     ))
   )

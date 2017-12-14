@@ -670,7 +670,7 @@ $voice-green-border-color: #47BF61;
   }
 }
 
-.voice-ticket-add-list, .voice-ticket-transfer-list {
+.voice-ticket-add-list, .voice-ticket-transfer-list, .voice-ticket-dialpad {
   font-family: 'Open Sans';
   width: 360px;
   background-color: #FFFFFF;
@@ -949,6 +949,12 @@ $voice-green-border-color: #47BF61;
     i {
       margin-right: 10px;
     }
+  }
+}
+
+.voice-ticket-dialpad {
+  .voice-dialpad-grid {
+    margin: 0;
   }
 }
 
