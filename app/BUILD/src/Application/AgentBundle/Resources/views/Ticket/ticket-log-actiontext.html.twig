@@ -267,6 +267,10 @@
 			</div>
 		</div>
 	{% endif %}
+{% elseif log.action_type == 'followup_created' %}
+	<span class="type">{{ phrase('agent.tickets.log_followup_created', {id: log.details.followup_id, date_to_run: log.details.date_to_run|date('fulltime')}) }}</span>
+{% elseif log.action_type == 'followup_removed' %}
+	<span class="type">{{ phrase('agent.tickets.log_followup_removed', {id: log.details.followup_id, date_to_run: log.details.date_to_run|date('fulltime')}) }}</span>
 {% elseif log.action_type == 'changed_priority' %}
 	<span class="type">{{ phrase('agent.general.priority') }}</span> {{ phrase('agent.tickets.changed_from') }}
 	<span class="old-val">{{log.details.old_priority_title|default(phrase('agent.general.none'))}}</span> {{ phrase('agent.tickets.changed_to') }} <span class="new-val">{{log.details.new_priority_title|default(phrase('agent.general.none'))}}</span>

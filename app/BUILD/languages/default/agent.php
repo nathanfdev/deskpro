@@ -2140,6 +2140,8 @@ return [
     'agent.tickets.log_message_deleted'                        => 'Message deleted',
     'agent.tickets.log_message_old_message'                    => 'Old Message',
     'agent.tickets.log_message_updated'                        => 'Message #{{id}} updated',
+    'agent.tickets.log_followup_created'                       => 'New follow up #{{id}} for {{date_to_run}}',
+    'agent.tickets.log_followup_removed'                       => 'Follow up #{{id}} was deleted',
     'agent.tickets.log_new_api_agent'                          => 'New ticket via API (agent context)',
     'agent.tickets.log_new_api_user'                           => 'New ticket via API (user context)',
     'agent.tickets.log_new_email_agent'                        => 'New ticket by agent via forward',

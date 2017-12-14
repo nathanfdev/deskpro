@@ -43,6 +43,7 @@ use Application\DeskPRO\ORM\StateChange\ChangeCollection;
 use Application\DeskPRO\ORM\StateChange\ChangeData;
 use Application\DeskPRO\ORM\StateChange\ChangeInterface;
 use Application\DeskPRO\Tickets\ExecutorContextInterface;
+use DeskPRO\Bundle\AppBundle\Entity\TicketFollowUp;
 use Orb\Util\Util;
 
 class TicketLogGenerator
@@ -379,37 +380,59 @@ class TicketLogGenerator
                 break;
 
             case 'message':
-                $log_set = [];
+                $logSet = [];
 
                 if ($new) {
-                    $m                            = $new;
-                    $log_data                     = [];
-                    $log_data['action_type']      = 'message_created';
-                    $log_data['id_after']         = $m->id;
-                    $log_data['message_id']       = $m->id;
-                    $log_data['creation_system']  = $m->creation_system;
-                    $log_data['is_agent_note']    = $m->is_agent_note;
-                    $log_data['is_agent_message'] = $m->person->is_agent;
-                    $log_data['ip_address']       = $m->ip_address ?: null;
-                    $log_data['email']            = $m->email ?: null;
-                    $log_set[]                    = $log_data;
+                    $m                           = $new;
+                    $logData                     = [];
+                    $logData['action_type']      = 'message_created';
+                    $logData['id_after']         = $m->id;
+                    $logData['message_id']       = $m->id;
+                    $logData['creation_system']  = $m->creation_system;
+                    $logData['is_agent_note']    = $m->is_agent_note;
+                    $logData['is_agent_message'] = $m->person->is_agent;
+                    $logData['ip_address']       = $m->ip_address ?: null;
+                    $logData['email']            = $m->email ?: null;
+                    $logSet[]                    = $logData;
                 }
 
                 if ($old) {
-                    $m                            = $old;
-                    $log_data                     = [];
-                    $log_data['action_type']      = 'message_removed';
-                    $log_data['id_before']        = $m->id;
-                    $log_data['message_id']       = $m->id;
-                    $log_data['person_id']        = $m->person->id;
-                    $log_data['person_name']      = $m->person->display_name;
-                    $log_data['is_agent_note']    = $m->is_agent_note;
-                    $log_data['is_agent_message'] = $m->person->is_agent;
-                    $log_data['old_message']      = $m->getMessageHtml();
-                    $log_set[]                    = $log_data;
+                    $m                           = $old;
+                    $logData                     = [];
+                    $logData['action_type']      = 'message_removed';
+                    $logData['id_before']        = $m->id;
+                    $logData['message_id']       = $m->id;
+                    $logData['person_id']        = $m->person->id;
+                    $logData['person_name']      = $m->person->display_name;
+                    $logData['is_agent_note']    = $m->is_agent_note;
+                    $logData['is_agent_message'] = $m->person->is_agent;
+                    $logData['old_message']      = $m->getMessageHtml();
+                    $logSet[]                    = $logData;
                 }
 
-                return $log_set;
+                return $logSet;
+                break;
+
+            case 'followUp':
+                $logSet = [];
+
+                if ($new instanceof TicketFollowUp) {
+                    $logData['action_type'] = 'followup_created';
+                    $logData['id_after']    = $new->getId();
+                    $logData['followup_id'] = $new->getId();
+                    $logData['date_to_run'] = $new->getDateToRun();
+                    $logSet[]               = $logData;
+                }
+
+                if ($old instanceof TicketFollowUp) {
+                    $logData['action_type'] = 'followup_removed';
+                    $logData['id_before']   = $old->getId();
+                    $logData['followup_id'] = $old->getId();
+                    $logData['date_to_run'] = $old->getDateToRun();
+                    $logSet[]               = $logData;
+                }
+
+                return $logSet;
                 break;
 
             case 'organization':
@@ -647,89 +670,89 @@ class TicketLogGenerator
                 ];
 
             case 'attachments':
-                $log_set = [];
+                $logSet = [];
 
                 if ($new && isset($new->blob) && !$new->is_inline) {
-                    $blob                     = $new->blob;
-                    $log_data                 = [];
-                    $log_data['action_type']  = 'attach_added';
-                    $log_data['id_after']     = $new->id;
-                    $log_data['attach_id']    = $new->id;
-                    $log_data['blob_id']      = $blob->id;
-                    $log_data['filename']     = $blob->filename;
-                    $log_data['filesize']     = $blob->filesize;
-                    $log_data['content_type'] = $blob->content_type;
-                    $log_set[]                = $log_data;
+                    $blob                    = $new->blob;
+                    $logData                 = [];
+                    $logData['action_type']  = 'attach_added';
+                    $logData['id_after']     = $new->id;
+                    $logData['attach_id']    = $new->id;
+                    $logData['blob_id']      = $blob->id;
+                    $logData['filename']     = $blob->filename;
+                    $logData['filesize']     = $blob->filesize;
+                    $logData['content_type'] = $blob->content_type;
+                    $logSet[]                = $logData;
                 }
 
                 if ($old && isset($old->blob) && !$old->is_inline) {
-                    $blob                     = $old->blob;
-                    $log_data                 = [];
-                    $log_data['action_type']  = 'attach_removed';
-                    $log_data['id_before']    = $old->id;
-                    $log_data['attach_id']    = $old->id;
-                    $log_data['blob_id']      = $blob->id;
-                    $log_data['filename']     = $blob->filename;
-                    $log_data['filesize']     = $blob->filesize;
-                    $log_data['content_type'] = $blob->content_type;
-                    $log_set[]                = $log_data;
+                    $blob                    = $old->blob;
+                    $logData                 = [];
+                    $logData['action_type']  = 'attach_removed';
+                    $logData['id_before']    = $old->id;
+                    $logData['attach_id']    = $old->id;
+                    $logData['blob_id']      = $blob->id;
+                    $logData['filename']     = $blob->filename;
+                    $logData['filesize']     = $blob->filesize;
+                    $logData['content_type'] = $blob->content_type;
+                    $logSet[]                = $logData;
                 }
 
-                return $log_set;
+                return $logSet;
 
             case 'feedback_rating':
-                $log_data                = [];
-                $log_data['action_type'] = 'feedback_rating';
-                $log_data['id_before']   = $old;
-                $log_data['id_after']    = $new;
+                $logData                = [];
+                $logData['action_type'] = 'feedback_rating';
+                $logData['id_before']   = $old;
+                $logData['id_after']    = $new;
 
                 switch ($new) {
                     case -1:
-                        $log_data['rating'] = 'negative';
+                        $logData['rating'] = 'negative';
                         break;
                     case 0:
-                        $log_data['rating'] = 'neutral';
+                        $logData['rating'] = 'neutral';
                         break;
                     case 1:
-                        $log_data['rating'] = 'positive';
+                        $logData['rating'] = 'positive';
                         break;
                 }
 
-                return $log_data;
+                return $logData;
 
             case 'person_email':
-                $log_data                = [];
-                $log_data['action_type'] = 'person_email_changed';
-                $log_data['id_before']   = $old ? $old->id : null;
-                $log_data['id_after']    = $new ? $new->id : null;
+                $logData                = [];
+                $logData['action_type'] = 'person_email_changed';
+                $logData['id_before']   = $old ? $old->id : null;
+                $logData['id_after']    = $new ? $new->id : null;
 
                 if ($old) {
-                    $log_data['old_email'] = $old->email;
+                    $logData['old_email'] = $old->email;
                 }
                 if ($new) {
-                    $log_data['new_email'] = $new->email;
+                    $logData['new_email'] = $new->email;
                 }
 
-                return $log_data;
+                return $logData;
 
             case 'ticket_sla_status':
-                $log_data                = [];
-                $log_data['action_type'] = 'ticket_sla_status';
-                $log_data['sla_id']      = $old['sla']->id;
-                $log_data['sla_title']   = $old['sla']->title;
-                $log_data['old_status']  = $old['status'];
-                $log_data['new_status']  = $new['status'];
+                $logData                = [];
+                $logData['action_type'] = 'ticket_sla_status';
+                $logData['sla_id']      = $old['sla']->id;
+                $logData['sla_title']   = $old['sla']->title;
+                $logData['old_status']  = $old['status'];
+                $logData['new_status']  = $new['status'];
 
-                return $log_data;
+                return $logData;
 
             case 'message_note_status':
-                $log_data                   = [];
-                $log_data['action_type']    = 'message_note_status';
-                $log_data['message_id']     = $new['message_id'];
-                $log_data['was_agent_note'] = !$new['is_agent_note'];
-                $log_data['is_agent_note']  = $new['is_agent_note'];
+                $logData                   = [];
+                $logData['action_type']    = 'message_note_status';
+                $logData['message_id']     = $new['message_id'];
+                $logData['was_agent_note'] = !$new['is_agent_note'];
+                $logData['is_agent_note']  = $new['is_agent_note'];
 
-                return $log_data;
+                return $logData;
 
             case 'webhook':
                 $data                = $change instanceof ChangeData ? $change->getData() : [];
@@ -794,16 +817,16 @@ class TicketLogGenerator
                     }
                 }
 
-                $log_data                 = [];
-                $log_data['action_type']  = 'changed_custom_field';
-                $log_data['field_name']   = $field_name;
-                $log_data['field_id']     = $field_id;
-                $log_data['value_before'] = $value_before;
-                $log_data['value_after']  = $value_after;
-                $log_data['is_choice']    = $is_choice;
-                $log_data['type']         = $field->getType();
+                $logData                 = [];
+                $logData['action_type']  = 'changed_custom_field';
+                $logData['field_name']   = $field_name;
+                $logData['field_id']     = $field_id;
+                $logData['value_before'] = $value_before;
+                $logData['value_after']  = $value_after;
+                $logData['is_choice']    = $is_choice;
+                $logData['type']         = $field->getType();
 
-                return $log_data;
+                return $logData;
 
             case 'email_account':
                 return [

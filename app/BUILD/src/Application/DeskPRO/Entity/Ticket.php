@@ -4678,6 +4678,38 @@ class Ticket extends DomainObject implements HighlightableModelInterface, Labels
     }
 
     /**
+     * @param TicketFollowUp $followUp
+     *
+     * @return $this
+     */
+    public function addFollowUp(TicketFollowUp $followUp)
+    {
+        $this->followUps->add($followUp);
+        $followUp->setTicket($this);
+
+        $this->_onPropertyChanged('followUps', null, $this->followUps);
+        $this->getStateChangeRecorder()->record('followUp', null, $followUp);
+
+        return $this;
+    }
+
+    /**
+     * @param TicketFollowUp $followUp
+     *
+     * @return $this
+     */
+    public function removeFollowUp(TicketFollowUp $followUp)
+    {
+        $this->followUps->removeElement($followUp);
+        $followUp->setTicket(null);
+
+        $this->_onPropertyChanged('followUps', null, $this->followUps);
+        $this->getStateChangeRecorder()->record('followUp', $followUp, null);
+
+        return $this;
+    }
+
+    /**
      * @return TicketLog[]|ArrayCollection
      */
     public function getLogs()
