@@ -75,8 +75,6 @@ class TicketMessage
     protected $emailSource;
 
     /**
-     * @JMS\Type("collection<entity<DeskPRO\Bundle\AppBundle\Entity\TicketMessageAttribute>>")
-     *
      * @var TicketMessageAttribute[]
      */
     protected $attributes;
