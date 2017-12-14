@@ -67,7 +67,7 @@ class PortalEmailSender
                 );
             } else {
                 $resetUrl = $this->getRouter()->generate(
-                    'user_login_resetpass_newpass',
+                    'portal_reset_password_process',
                     ['code' => $reset['code']],
                     UrlGeneratorInterface::ABSOLUTE_URL
                 );
