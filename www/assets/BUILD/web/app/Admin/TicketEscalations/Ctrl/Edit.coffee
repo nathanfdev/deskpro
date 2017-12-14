@@ -34,6 +34,12 @@ define [
       for opt in set
         @$scope.actionOptionTypes.push(opt)
 
+      # filter out usergroup 'Everyone'
+      # doesn't make sense to use it in Escalations
+      options_data = @criteriaTypeDef.options_data;
+      if options_data?.usergroups
+        options_data.usergroups = options_data.usergroups.filter((group) -> group.sys_name != 'everyone');
+
     initialLoad: ->
       loadData = null
       promise = @escData.loadEditEscalationData(@$stateParams.id || null).then (data) =>
