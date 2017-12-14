@@ -98,7 +98,7 @@ class SavedFormController extends AbstractController
      */
     public function ticketEmailValidateAction($auth_code)
     {
-        if (!$tmp = $this->getEm()->getRepository('DeskPRO:TmpData')->getByCode($auth_code)) {
+        if (!$tmp = $this->getEm()->getRepository(TmpData::class)->getByCode($auth_code)) {
             throw new NotFoundHttpException();
         }
 

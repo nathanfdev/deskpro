@@ -379,17 +379,17 @@ class UserViewModelFactory extends AbstractViewModelFactory
 
     /**
      * @param Ticket $ticket
-     * @param string $accessCode
+     * @param string $verifyUrl
      *
      * @return TicketNewValidateEmail
      */
     public function createTicketNewValidateEmailModel(
         Ticket $ticket,
-        $accessCode
+        $verifyUrl
     ) {
         $arguments = $this->getTicketArguments($ticket);
 
-        $arguments = array_merge($arguments, [$accessCode]);
+        $arguments = array_merge($arguments, [$verifyUrl]);
 
         return $this->convertParameters(TicketNewValidateEmail::class, $arguments);
     }
