@@ -289,7 +289,7 @@ class TicketGatewayProcessor extends AbstractGatewayProcessor
                 if (!$this->reader->isFromRobot() && !$isBounce) {
                     if ($this->container->get('deskpro.feature_flags')->hasBeta('email_templates')) {
                         $viewModel = $this->container->get('email.user_viewmodel_factory')
-                            ->createAgentChangedPasswordModel($person->getPlaintextPassword());
+                            ->createAccountDisabledModel($ticket);
                         $message = $this->container->get('email.email_sender')
                             ->prepareMessage($viewModel, ['to' => $this->reader->getFromAddress()->getEmail()]);
                     } else {

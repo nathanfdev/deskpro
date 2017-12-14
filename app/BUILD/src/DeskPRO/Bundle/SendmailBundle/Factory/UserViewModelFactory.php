@@ -88,11 +88,15 @@ use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
 class UserViewModelFactory extends AbstractViewModelFactory
 {
     /**
+     * @param Ticket $ticket
+     *
+     * @throws \Exception
+     *
      * @return AccountDisabled
      */
-    public function createAccountDisabledModel()
+    public function createAccountDisabledModel(Ticket $ticket)
     {
-        return new AccountDisabled();
+        return $this->convertParameters(AccountDisabled::class, [$ticket]);
     }
 
     /**
