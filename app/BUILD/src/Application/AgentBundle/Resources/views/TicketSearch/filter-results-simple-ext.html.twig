@@ -74,6 +74,11 @@ pageMeta.orderBy    = '{{ order_by[0] }}';
 pageMeta.orderByDir = '{{ order_by[1] }}';
 
 pageMeta.baseId = '{{ baseId }}';
+
+{% if sla_group_counts %}
+	pageMeta.slaGroupCounts = {{ sla_group_counts|json_encode|raw }};
+{% endif %}
+
 </script>
 <script id="{{ baseId }}_ticket_json" type="application/json">{{ ticket_json|raw }}</script>
 <script id="{{ baseId }}_ticket_ids_json" type="application/json">{{ all_ticket_ids|json_encode|raw }}</script>
