@@ -26,10 +26,6 @@
  * ~ Thanks, Everyone at Team DeskPRO
  */
 
-/**
- * DeskPRO.
- */
-
 namespace Application\AgentBundle\Controller;
 
 use Application\AgentBundle\Controller\Helper\PeopleResults;
@@ -770,8 +766,21 @@ class PeopleSearchController extends AbstractController
         $limit       = $this->in->getUint('limit') ?: 250;
         $with_agents = $this->in->getBool('with_agents');
         $exclude_org = $this->in->getUint('exclude_org');
+        $peopleList  = [];
 
-        if ($this->container->getSetting('elastica.enabled')) {
+        if (StringEmail::isValueValid($q)) {
+            // if the string is an exact email, we can try and find the user in usersources just by email
+            /** @var Person $person */
+            $person = $this->container->getSystemService('UsersourceManager')->findPersonByEmail($q);
+            if ($person && !isset($peopleList[$person->getId()])) {
+                $peopleList[$person->getId()] = [
+                    'id'         => $person->getId(),
+                    'first_name' => $person->getFirstName(),
+                    'last_name'  => $person->getLastName(),
+                    'email'      => $person->getPrimaryEmailAddress(),
+                ];
+            }
+        } elseif ($this->container->getSetting('elastica.enabled')) {
             try {
                 $elasticsearch = $this->container->get('deskpro.search_manager.elasticsearch');
                 $elasticsearch->setPersonContext($this->person);
@@ -809,39 +818,11 @@ class PeopleSearchController extends AbstractController
                 /** @var PersonRepository $rep */
                 $rep        = $this->em->getRepository('DeskPRO:Person');
                 $peopleList = $rep->quickSearch($q, $this->in->getBool('start_with'), $with_agents, $exclude_org, $limit);
-
-                // If the string is an exact email, we can try and find the user in usersources as well
-                if (StringEmail::isValueValid($q)) {
-                    /** @var Person $person */
-                    $person = $this->container->getSystemService('UsersourceManager')->findPersonByEmail($q);
-                    if ($person && !isset($peopleList[$person->getId()])) {
-                        $peopleList[$person->getId()] = [
-                            'id'         => $person->getId(),
-                            'first_name' => $person->first_name,
-                            'last_name'  => $person->last_name,
-                            'email'      => $person->getPrimaryEmailAddress(),
-                        ];
-                    }
-                }
             }
         } else {
             /** @var PersonRepository $rep */
             $rep        = $this->em->getRepository(Person::class);
             $peopleList = $rep->quickSearch($q, $this->in->getBool('start_with'), $with_agents, $exclude_org, $limit);
-
-            // If the string is an exact email, we can try and find the user in usersources as well
-            if (StringEmail::isValueValid($q)) {
-                /** @var Person $person */
-                $person = $this->container->getSystemService('UsersourceManager')->findPersonByEmail($q);
-                if ($person && !isset($peopleList[$person->getId()])) {
-                    $peopleList[$person->getId()] = [
-                        'id'         => $person->getId(),
-                        'first_name' => $person->first_name,
-                        'last_name'  => $person->last_name,
-                        'email'      => $person->getPrimaryEmailAddress(),
-                    ];
-                }
-            }
         }
 
         $format = $this->in->getString('format');

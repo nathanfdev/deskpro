@@ -78,7 +78,7 @@ class FeedbackHandler extends AbstractEntityHandler
      *
      * @param Feedback $entity
      */
-    protected function createModel($entity, SideloadSerializationContext $context)
+    public function createModel($entity, SideloadSerializationContext $context)
     {
         $serializerClass = $context->getMappedClass(Feedback::class);
 

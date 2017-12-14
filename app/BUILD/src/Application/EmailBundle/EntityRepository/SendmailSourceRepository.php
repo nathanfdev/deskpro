@@ -51,9 +51,14 @@ class SendmailSourceRepository extends AbstractEntityRepository
     /**
      * returns the "newest" SendmailSource.
      */
-    public function getLatest()
+    public function getLatest($to = null)
     {
         $query = $this->createQueryBuilder('ss');
+
+        if ($to) {
+            $query->andWhere('ss.to_emails LIKE :to');
+            $query->setParameter('to', $to);
+        }
 
         $query->setMaxResults(1);
 

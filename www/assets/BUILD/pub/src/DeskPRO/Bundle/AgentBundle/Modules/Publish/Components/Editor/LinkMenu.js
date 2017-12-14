@@ -77,15 +77,15 @@ class LinkMenu extends React.Component {
     });
   };
 
-  setUrl = (event) => {
+  setUrl = (url) => {
     this.setState({
-      url: event.target.value
+      url
     });
   };
 
-  setTitle = (event) => {
+  setTitle = (title) => {
     this.setState({
-      title: event.target.value
+      title
     });
   };
 

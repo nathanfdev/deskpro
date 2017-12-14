@@ -175,8 +175,8 @@ class Draft extends AbstractEntityRepository
                         TicketUpdatedEvent::EVENT_NAME,
                         new TicketUpdatedEvent(
                             'agent.ticket-draft-updated',
-                            $content_id,
                             [
+                                'ticket_id'  => $content_id,
                                 'draft_html' => false,
                                 'via_person' => $person->getId(),
                             ]

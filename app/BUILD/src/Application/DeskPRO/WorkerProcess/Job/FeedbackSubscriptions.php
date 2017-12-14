@@ -218,14 +218,24 @@ class FeedbackSubscriptions extends AbstractJob
                 $updatedItems[] = $feedback;
             }
 
-            $message = $this->getContainer()->getMailer()->createMessage();
-            $message->setToPerson($person);
-            $message->setTemplate('DeskPRO:emails_user:feedback-subscription.html.twig', [
-                'person'        => $person,
-                'updated_items' => $updatedItems,
-            ]);
+            if ($this->getContainer()->get('deskpro.feature_flags')->hasBeta('email_templates')) {
+                $viewModel = $this->getContainer()->get('email.user_viewmodel_factory')
+                    ->createFeedbackSubscriptionModel($updatedItems);
+                $this->getContainer()->get('email.email_sender')
+                    ->send($viewModel, ['to' => $person]);
+            } else {
+                $message = $this->getContainer()->getMailer()->createMessage();
+                $message->setToPerson($person);
+                $message->setTemplate(
+                    'DeskPRO:emails_user:feedback-subscription.html.twig',
+                    [
+                        'person'        => $person,
+                        'updated_items' => $updatedItems,
+                    ]
+                );
 
-            $this->getContainer()->getMailer()->send($message);
+                $this->getContainer()->getMailer()->send($message);
+            }
 
             // Saves mem
             $this->getContainer()->getEm()->detach($person);

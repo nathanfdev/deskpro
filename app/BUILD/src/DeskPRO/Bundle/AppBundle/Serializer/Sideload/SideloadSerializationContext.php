@@ -39,10 +39,23 @@ use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorageInt
  */
 class SideloadSerializationContext extends SerializationContext
 {
+    const INCLUDE_STRATEGY_DATA   = 'data';
+    const INCLUDE_STRATEGY_CUSTOM = 'custom';
+
     /**
      * @var SideloadStore
      */
     protected $sideloadStore;
+
+    /**
+     * Sideload types strategy.
+     *
+     * 'custom' - allowed types are get from 'includes'.
+     * 'data'    - all types from data object, 'includes' are skipped.
+     *
+     * @var string
+     */
+    protected $includesStrategy = self::INCLUDE_STRATEGY_CUSTOM;
 
     /**
      * @var array
@@ -73,6 +86,11 @@ class SideloadSerializationContext extends SerializationContext
      * @var bool
      */
     protected $inlineSideloads = false;
+
+    /**
+     * @var bool
+     */
+    protected $disabledSideloads = false;
 
     /**
      * @var Request
@@ -151,7 +169,11 @@ class SideloadSerializationContext extends SerializationContext
      */
     public function getIncludes()
     {
-        return $this->includes;
+        if ($this->includesStrategy === self::INCLUDE_STRATEGY_CUSTOM) {
+            return $this->includes;
+        } else {
+            return $this->sideloadStore->getAvailableTypes();
+        }
     }
 
     /**
@@ -287,6 +309,26 @@ class SideloadSerializationContext extends SerializationContext
     }
 
     /**
+     * @return string
+     */
+    public function getIncludesStrategy()
+    {
+        return $this->includesStrategy;
+    }
+
+    /**
+     * @param string $includesStrategy
+     *
+     * @return $this
+     */
+    public function setIncludesStrategy($includesStrategy)
+    {
+        $this->includesStrategy = $includesStrategy;
+
+        return $this;
+    }
+
+    /**
      * @return bool
      */
     public function isInlineSideloads()
@@ -296,9 +338,33 @@ class SideloadSerializationContext extends SerializationContext
 
     /**
      * @param bool $inlineSideloads
+     *
+     * @return $this
      */
     public function setInlineSideloads($inlineSideloads)
     {
         $this->inlineSideloads = $inlineSideloads;
+
+        return $this;
+    }
+
+    /**
+     * @return bool
+     */
+    public function isDisabledSideloads()
+    {
+        return $this->disabledSideloads;
+    }
+
+    /**
+     * @param bool $disabledSideloads
+     *
+     * @return $this
+     */
+    public function setDisabledSideloads($disabledSideloads)
+    {
+        $this->disabledSideloads = $disabledSideloads;
+
+        return $this;
     }
 }

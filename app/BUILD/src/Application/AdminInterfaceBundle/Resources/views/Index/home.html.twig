@@ -355,12 +355,12 @@
 										</p>
 										<p ng-show="Home.error_status.gateway_error_count > 0">
 											<i class="fa fa-envelope"></i>
-											There have been <a href="{{ ng_href('tickets.ticket_accounts.emailsources') }}">{{ ng_var('Home.error_status.gateway_error_count') }} email errors</a>.
+											There have been <a href="{{ ng_href('emails.ticket_accounts.emailsources') }}">{{ ng_var('Home.error_status.gateway_error_count') }} email errors</a>.
 											These errors may have prevented the successful processing of tickets or ticket replies.
 										</p>
 										<p ng-show="Home.error_status.sendmail_error_count > 0">
 											<i class="fa fa-envelope"></i>
-											There have been <a href="{{ ng_href('tickets.ticket_accounts.sendmailqueue') }}">{{ ng_var('Home.error_status.sendmail_error_count') }} outgoing email errors</a>.
+											There have been <a href="{{ ng_href('emails.ticket_accounts.sendmailqueue') }}">{{ ng_var('Home.error_status.sendmail_error_count') }} outgoing email errors</a>.
 											These errors will have prevented your users from receiving messages from the helpdesk (such as reply notifications).
 										</p>
 										<p ng-show="Home.apc_status.is_problem">
@@ -394,12 +394,12 @@
 									<article>
 										<p ng-show="Home.error_status.gateway_error_count > 0">
 											<i class="fa fa-envelope"></i>
-											There have been <a href="{{ ng_href('tickets.ticket_accounts.emailsources') }}">{{ ng_var('Home.error_status.gateway_error_count') }} email errors</a>.
+											There have been <a href="{{ ng_href('emails.ticket_accounts.emailsources') }}">{{ ng_var('Home.error_status.gateway_error_count') }} email errors</a>.
 											These errors may have prevented the successful processing of tickets or ticket replies.
 										</p>
 										<p ng-show="Home.error_status.sendmail_error_count > 0">
 											<i class="fa fa-envelope"></i>
-											There have been <a href="{{ ng_href('tickets.ticket_accounts.sendmailqueue') }}">{{ ng_var('Home.error_status.sendmail_error_count') }} outgoing email errors</a>.
+											There have been <a href="{{ ng_href('emails.ticket_accounts.sendmailqueue') }}">{{ ng_var('Home.error_status.sendmail_error_count') }} outgoing email errors</a>.
 											These errors will have prevented your users from receiving messages from the helpdesk (such as reply notifications).
 										</p>
 									</article>

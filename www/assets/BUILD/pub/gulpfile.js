@@ -537,3 +537,17 @@ gulp.task('bundle:dev-server:demo', () => {
   reducerRefresh('Demo', path.join(__dirname, 'src/DeskPRO/Bundle/DemoBundle'));
   startWebpackServer(getWebpackConfig('demo', false));
 });
+
+gulp.task('compile-zurb', () => {
+  // Refresh zurb-foundation email
+  console.log('Writing zurb-foundation.css:');
+  const faInPath  = `${__dirname}/src/DeskPRO/Bundle/AppBundle/Resources/style/emails/zurb-foundation.scss`;
+  const faOutPath = `${__dirname}/src/DeskPRO/Bundle/AppBundle/Resources/style/emails/zurb-foundation.css`;
+  const faResult  = sass.renderSync({
+    file:         faInPath,
+    outFile:      faOutPath,
+    includePaths: [bowerDir, nodeModulesDir]
+  });
+  fs.writeFileSync(faOutPath, faResult.css);
+  console.log(`... done writing ${faOutPath}`);
+});

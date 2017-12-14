@@ -33,6 +33,7 @@ use Application\DeskPRO\NewSettings\SettingsResolver;
 use DeskPRO\Bundle\AppBundle\Notification\Message\ActionAlert;
 use DeskPRO\Bundle\AppBundle\Notification\Message\MessageInterface;
 use DeskPRO\Bundle\AppBundle\Notification\Message\Notification;
+use DeskPRO\Bundle\AppBundle\Notification\NotificationService;
 use DpSys\LowError\SystemErrorHandler;
 use Pusher;
 
@@ -96,8 +97,6 @@ class PusherDeliveryHandler extends AbstractDeliveryHandler
 
     /**
      * @param MessageInterface $message
-     *
-     * @return bool
      */
     public function schedule(MessageInterface $message)
     {
@@ -108,7 +107,12 @@ class PusherDeliveryHandler extends AbstractDeliveryHandler
                 'type'   => $message->getType(),
             ] + $message->getData();
 
-        $channelParts = ['private', $message->getTarget()];
+        if ($message instanceof ActionAlert && $message->isBroadcast()) {
+            $channelParts = [NotificationService::TARGET_BROADCAST];
+        } else {
+            $channelParts = ['private', $message->getTarget()];
+        }
+
         if ($this->channelPrefix) {
             array_splice($channelParts, 1, 0, [$this->channelPrefix]);
         }

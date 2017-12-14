@@ -109,6 +109,13 @@ define(function() {
   });
 
   routes.push({
+    id:           'emails',
+    url:          '/emails',
+    templateName: 'Layout/app.html',
+    controller:   'Admin_Main_Ctrl_Nav'
+  });
+
+  routes.push({
     id:           'features',
     url:          '/features',
     templateName: 'Layout/app.html',
@@ -870,23 +877,6 @@ define(function() {
   });
 
   //###
-  //# Email Templates
-  //###
-  routes.push({
-    id: 'tickets.email_templates',
-    url: '/email_templates',
-    templateName: 'Templates/email-groups.html',
-    controller: 'Admin_Templates_Ctrl_EmailGroupList'
-  });
-
-  routes.push({
-    id: 'tickets.email_templates.list',
-    url: '/{groupName:.*?}',
-    templateName: 'Templates/email-listing.html',
-    controller: 'Admin_Templates_Ctrl_EmailList'
-  });
-
-  //###
   //# Settings
   //###
   routes.push({
@@ -1092,96 +1082,6 @@ define(function() {
     url: '/{id:[0-9]+}',
     templateName: 'ChannelFacebook/edit.html',
     controller: 'Admin_ChannelFacebook_Ctrl_Edit'
-  });
-
-
-  //###
-  //# Ticket Accounts
-  //###
-  routes.push({
-    id: 'tickets.ticket_accounts',
-    url: '/ticket_accounts',
-    templateName: 'TicketAccounts/list.html',
-    controller: 'Admin_TicketAccounts_Ctrl_List'
-  });
-
-  routes.push({
-    id: 'tickets.ticket_accounts.gocreate',
-    url: '/go-create',
-    template: '',
-    controller: ['$state', function ($state) { $state.go('tickets.ticket_accounts.create'); }]
-  });
-
-  routes.push({
-    id: 'tickets.ticket_accounts.create',
-    url: '/create',
-    templateName: 'TicketAccounts/edit.html',
-    controller: 'Admin_TicketAccounts_Ctrl_Edit'
-  });
-
-  routes.push({
-    id: 'tickets.ticket_accounts.edit',
-    url: '/{id:[0-9]+}',
-    templateName: 'TicketAccounts/edit.html',
-    controller: 'Admin_TicketAccounts_Ctrl_Edit'
-  });
-
-  routes.push({
-    id: 'tickets.ticket_accounts.goemailsourcesview',
-    url: '/go-incoming-email/{id:[0-9]+}',
-    template: '',
-    controller: ['$state', '$stateParams', function ($state, $stateParams) {
-      $state.go('tickets.ticket_accounts.emailsourcesview', $stateParams);
-    }]
-  });
-
-  routes.push({
-    id: 'tickets.ticket_accounts.emailsourcesview',
-    url: '/incoming-email/{id:[0-9]+}',
-    templateName: 'EmailStatus/emailsource-view.html',
-    controller: 'Admin_EmailStatus_Ctrl_ViewSource',
-    target: "appbody@tickets"
-  });
-
-  routes.push({
-    id: 'tickets.ticket_accounts.gosendmailview',
-    url: '/go-outgoing-email/{id:[0-9]+}',
-    template: '',
-    controller: ['$state', '$stateParams', function ($state, $stateParams) {
-      $state.go('tickets.ticket_accounts.sendmailqueueview', $stateParams);
-    }]
-  });
-
-  routes.push({
-    id: 'tickets.ticket_accounts.sendmailqueueview',
-    url: '/outgoing-email/{id:[0-9]+}',
-    templateName: 'EmailStatus/sendmail-view.html',
-    controller: 'Admin_EmailStatus_Ctrl_ViewSend',
-    target: "appbody@tickets"
-  });
-
-  routes.push({
-    id: 'tickets.ticket_accounts.emailsources',
-    url: '/incoming-email',
-    templateName: 'EmailStatus/emailsource-list.html',
-    controller: 'Admin_EmailStatus_Ctrl_SourceList',
-    target: "appbody@tickets"
-  });
-
-  routes.push({
-    id: 'tickets.ticket_accounts.sendmailqueue',
-    url: '/outgoing-email',
-    templateName: 'EmailStatus/sendmail-list.html',
-    controller: 'Admin_EmailStatus_Ctrl_SendmailList',
-    target: "appbody@tickets"
-  });
-
-  routes.push({
-    id: 'tickets.ticket_accounts.advancedsettings',
-    url: '/advanced-settings',
-    templateName: 'TicketAccounts/advanced-settings.html',
-    controller: 'Admin_TicketAccounts_Ctrl_Settings',
-    target: "appbody@tickets"
   });
 
 
@@ -2152,6 +2052,141 @@ define(function() {
     controller: 'Admin_TwitterAccounts_Ctrl_Edit'
   });
 
+
+  //###
+  //# Email Accounts
+  //###
+  routes.push({
+    id: 'emails.ticket_accounts',
+    url: '/ticket_accounts',
+    templateName: 'TicketAccounts/list.html',
+    controller: 'Admin_TicketAccounts_Ctrl_List'
+  });
+
+  routes.push({
+    id: 'emails.ticket_accounts.gocreate',
+    url: '/go-create',
+    template: '',
+    controller: ['$state', function ($state) { $state.go('emails.ticket_accounts.create'); }]
+  });
+
+  routes.push({
+    id: 'emails.ticket_accounts.create',
+    url: '/create',
+    templateName: 'TicketAccounts/edit.html',
+    controller: 'Admin_TicketAccounts_Ctrl_Edit'
+  });
+
+  routes.push({
+    id: 'emails.ticket_accounts.edit',
+    url: '/{id:[0-9]+}',
+    templateName: 'TicketAccounts/edit.html',
+    controller: 'Admin_TicketAccounts_Ctrl_Edit'
+  });
+
+  routes.push({
+    id: 'emails.ticket_accounts.goemailsourcesview',
+    url: '/go-incoming-email/{id:[0-9]+}',
+    template: '',
+    controller: ['$state', '$stateParams', function ($state, $stateParams) {
+      $state.go('emails.ticket_accounts.emailsourcesview', $stateParams);
+    }]
+  });
+
+  routes.push({
+    id: 'emails.ticket_accounts.emailsourcesview',
+    url: '/incoming-email/{id:[0-9]+}',
+    templateName: 'EmailStatus/emailsource-view.html',
+    controller: 'Admin_EmailStatus_Ctrl_ViewSource',
+    target: "appbody@emails"
+  });
+
+  routes.push({
+    id: 'emails.ticket_accounts.gosendmailview',
+    url: '/go-outgoing-email/{id:[0-9]+}',
+    template: '',
+    controller: ['$state', '$stateParams', function ($state, $stateParams) {
+      $state.go('emails.ticket_accounts.sendmailqueueview', $stateParams);
+    }]
+  });
+
+  routes.push({
+    id: 'emails.ticket_accounts.sendmailqueueview',
+    url: '/outgoing-email/{id:[0-9]+}',
+    templateName: 'EmailStatus/sendmail-view.html',
+    controller: 'Admin_EmailStatus_Ctrl_ViewSend',
+    target: "appbody@emails"
+  });
+
+  routes.push({
+    id: 'emails.ticket_accounts.emailsources',
+    url: '/incoming-email',
+    templateName: 'EmailStatus/emailsource-list.html',
+    controller: 'Admin_EmailStatus_Ctrl_SourceList',
+    target: "appbody@emails"
+  });
+
+  routes.push({
+    id: 'emails.ticket_accounts.sendmailqueue',
+    url: '/outgoing-email',
+    templateName: 'EmailStatus/sendmail-list.html',
+    controller: 'Admin_EmailStatus_Ctrl_SendmailList',
+    target: "appbody@emails"
+  });
+
+  routes.push({
+    id: 'emails.ticket_accounts.advancedsettings',
+    url: '/advanced-settings',
+    templateName: 'TicketAccounts/advanced-settings.html',
+    controller: 'Admin_TicketAccounts_Ctrl_Settings',
+    target: "appbody@emails"
+  });
+
+  //##################################################################################################################
+  // Email templates
+  //##################################################################################################################
+
+  routes.push({
+    id:           'emails.templates_editor',
+    url:          '/templates_editor',
+    templateName: 'ReactRoutes/react_component.html',
+    controller:   'Admin_ReactRoutes_Ctrl_ReactComponent'
+  });
+
+  routes.push({
+    id:           'emails.templates_editor.edit',
+    url:          '/{name}',
+    templateName: 'ReactRoutes/react_component.html',
+    controller:   'Admin_ReactRoutes_Ctrl_ReactComponent'
+  });
+
+  //###
+  //# Email Templates
+  //###
+  routes.push({
+    id: 'emails.email_templates',
+    url: '/email_templates',
+    templateName: 'Templates/email-groups.html',
+    controller: 'Admin_Templates_Ctrl_EmailGroupList'
+  });
+
+  //###
+  //# Temporary Email Templates
+  //###
+  routes.push({
+    id: 'emails.email_templates_legacy',
+    url: '/email_templates_legacy',
+    templateName: 'Templates/email-groups-legacy.html',
+    controller: 'Admin_Templates_Ctrl_EmailGroupListOld'
+  });
+
+  routes.push({
+    id: 'emails.email_templates.list',
+    url: '/{groupName:.*?}',
+    templateName: 'Templates/email-listing.html',
+    controller: 'Admin_Templates_Ctrl_EmailList'
+  });
+
   //##################################################################################################################
   // Voice channel
   //##################################################################################################################
@@ -2159,127 +2194,127 @@ define(function() {
   routes.push({
     id:           'voice-channel.accounts',
     url:          '/accounts',
-    templateName: 'VoiceChannel/react_component.html',
-    controller:   'Admin_VoiceChannel_Ctrl_ReactComponent'
+    templateName: 'ReactRoutes/react_component.html',
+    controller:   'Admin_ReactRoutes_Ctrl_ReactComponent'
   });
 
   routes.push({
     id:           'voice-channel.numbers',
     url:          '/numbers',
-    templateName: 'VoiceChannel/react_component.html',
-    controller:   'Admin_VoiceChannel_Ctrl_ReactComponent'
+    templateName: 'ReactRoutes/react_component.html',
+    controller:   'Admin_ReactRoutes_Ctrl_ReactComponent'
   });
 
   routes.push({
     id:           'voice-channel.numbers_search_available',
     url:          '/numbers/available',
-    templateName: 'VoiceChannel/react_component.html',
-    controller:   'Admin_VoiceChannel_Ctrl_ReactComponent'
+    templateName: 'ReactRoutes/react_component.html',
+    controller:   'Admin_ReactRoutes_Ctrl_ReactComponent'
   });
 
   routes.push({
     id:           'voice-channel.numbers_search_existing',
     url:          '/numbers/existing',
-    templateName: 'VoiceChannel/react_component.html',
-    controller:   'Admin_VoiceChannel_Ctrl_ReactComponent'
+    templateName: 'ReactRoutes/react_component.html',
+    controller:   'Admin_ReactRoutes_Ctrl_ReactComponent'
   });
 
   routes.push({
     id:           'voice-channel.numbers_edit',
     url:          '/numbers/{id:\\d+}',
-    templateName: 'VoiceChannel/react_component.html',
-    controller:   'Admin_VoiceChannel_Ctrl_ReactComponent'
+    templateName: 'ReactRoutes/react_component.html',
+    controller:   'Admin_ReactRoutes_Ctrl_ReactComponent'
   });
 
   routes.push({
     id:           'voice-channel.extensions',
     url:          '/extensions',
-    templateName: 'VoiceChannel/react_component.html',
-    controller:   'Admin_VoiceChannel_Ctrl_ReactComponent'
+    templateName: 'ReactRoutes/react_component.html',
+    controller:   'Admin_ReactRoutes_Ctrl_ReactComponent'
   });
 
   routes.push({
     id:           'voice-channel.extensions_new',
     url:          '/extensions/new',
-    templateName: 'VoiceChannel/react_component.html',
-    controller:   'Admin_VoiceChannel_Ctrl_ReactComponent'
+    templateName: 'ReactRoutes/react_component.html',
+    controller:   'Admin_ReactRoutes_Ctrl_ReactComponent'
   });
 
   routes.push({
     id:           'voice-channel.extensions_edit',
     url:          '/extensions/{id:\\d+}',
-    templateName: 'VoiceChannel/react_component.html',
-    controller:   'Admin_VoiceChannel_Ctrl_ReactComponent'
+    templateName: 'ReactRoutes/react_component.html',
+    controller:   'Admin_ReactRoutes_Ctrl_ReactComponent'
   });
 
   routes.push({
     id:           'voice-channel.queues',
     url:          '/queues',
-    templateName: 'VoiceChannel/react_component.html',
-    controller:   'Admin_VoiceChannel_Ctrl_ReactComponent'
+    templateName: 'ReactRoutes/react_component.html',
+    controller:   'Admin_ReactRoutes_Ctrl_ReactComponent'
   });
 
   routes.push({
     id:           'voice-channel.queues_new',
     url:          '/queues/new',
-    templateName: 'VoiceChannel/react_component.html',
-    controller:   'Admin_VoiceChannel_Ctrl_ReactComponent'
+    templateName: 'ReactRoutes/react_component.html',
+    controller:   'Admin_ReactRoutes_Ctrl_ReactComponent'
   });
 
   routes.push({
     id:           'voice-channel.queues_edit',
     url:          '/queues/{id:\\d+}',
-    templateName: 'VoiceChannel/react_component.html',
-    controller:   'Admin_VoiceChannel_Ctrl_ReactComponent'
+    templateName: 'ReactRoutes/react_component.html',
+    controller:   'Admin_ReactRoutes_Ctrl_ReactComponent'
   });
 
   routes.push({
     id:           'voice-channel.auto_attendants',
     url:          '/auto_attendants',
-    templateName: 'VoiceChannel/react_component.html',
-    controller:   'Admin_VoiceChannel_Ctrl_ReactComponent'
+    templateName: 'ReactRoutes/react_component.html',
+    controller:   'Admin_ReactRoutes_Ctrl_ReactComponent'
   });
 
   routes.push({
     id:           'voice-channel.auto_attendants_new',
     url:          '/auto_attendants/new',
-    templateName: 'VoiceChannel/react_component.html',
-    controller:   'Admin_VoiceChannel_Ctrl_ReactComponent'
+    templateName: 'ReactRoutes/react_component.html',
+    controller:   'Admin_ReactRoutes_Ctrl_ReactComponent'
   });
 
   routes.push({
     id:           'voice-channel.auto_attendants_edit',
     url:          '/auto_attendants/{id:\\d+}',
-    templateName: 'VoiceChannel/react_component.html',
-    controller:   'Admin_VoiceChannel_Ctrl_ReactComponent'
+    templateName: 'ReactRoutes/react_component.html',
+    controller:   'Admin_ReactRoutes_Ctrl_ReactComponent'
   });
 
   routes.push({
     id:           'voice-channel.agents',
     url:          '/agents',
-    templateName: 'VoiceChannel/react_component.html',
-    controller:   'Admin_VoiceChannel_Ctrl_ReactComponent'
+    templateName: 'ReactRoutes/react_component.html',
+    controller:   'Admin_ReactRoutes_Ctrl_ReactComponent'
   });
 
   routes.push({
     id:           'voice-channel.music_and_greetings',
     url:          '/music_and_greetings',
-    templateName: 'VoiceChannel/react_component.html',
-    controller:   'Admin_VoiceChannel_Ctrl_ReactComponent'
+    templateName: 'ReactRoutes/react_component.html',
+    controller:   'Admin_ReactRoutes_Ctrl_ReactComponent'
   });
 
   routes.push({
     id:           'voice-channel.call_logs',
     url:          '/call_logs',
-    templateName: 'VoiceChannel/react_component.html',
-    controller:   'Admin_VoiceChannel_Ctrl_ReactComponent'
+    templateName: 'ReactRoutes/react_component.html',
+    controller:   'Admin_ReactRoutes_Ctrl_ReactComponent'
   });
 
   routes.push({
     id:           'voice-channel.call_logs_view',
     url:          '/call_logs/{id:\\d+}',
-    templateName: 'VoiceChannel/react_component.html',
-    controller:   'Admin_VoiceChannel_Ctrl_ReactComponent'
+    templateName: 'ReactRoutes/react_component.html',
+    controller:   'Admin_ReactRoutes_Ctrl_ReactComponent'
   });
 
   //##################################################################################################################
@@ -2289,8 +2324,8 @@ define(function() {
   routes.push({
     id:           'dev.notifications',
     url:          '/notifications',
-    templateName: 'VoiceChannel/react_component.html',
-    controller:   'Admin_VoiceChannel_Ctrl_ReactComponent'
+    templateName: 'ReactRoutes/react_component.html',
+    controller:   'Admin_ReactRoutes_Ctrl_ReactComponent'
   });
 
   //##################################################################################################################

@@ -61,7 +61,9 @@ define([
   'Admin/Tasks/Ctrl/Edit',
   'Admin/Templates/Ctrl/EmailTemplateEditor',
   'Admin/Templates/Ctrl/EmailGroupList',
+  'Admin/Templates/Ctrl/EmailGroupListOld',
   'Admin/Templates/Ctrl/EmailList',
+  'Admin/Templates/Ctrl/NewEmailTemplateEditor',
   'Admin/Templates/Ctrl/TemplateEditor',
   'Admin/Templates/Ctrl/TemplateGroupList',
   'Admin/Templates/Ctrl/TemplateList',
@@ -189,7 +191,7 @@ define([
   'Admin/AntiAbuse/Ctrl/CaptchaSettings',
   'Admin/AntiAbuse/Ctrl/EmailRateLimiting',
   'Admin/AntiAbuse/Ctrl/PortalRateLimiting',
-  'Admin/VoiceChannel/Ctrl/ReactComponent',
+  'Admin/ReactRoutes/Ctrl/ReactComponent',
   'Admin/Main/Ctrl/Features',
   'Admin/Settings/Ctrl/Notifications/List',
 

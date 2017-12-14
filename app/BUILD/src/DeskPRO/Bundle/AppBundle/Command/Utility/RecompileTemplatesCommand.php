@@ -28,8 +28,9 @@
 
 namespace DeskPRO\Bundle\AppBundle\Command\Utility;
 
-use Application\EmailBundle\Twig\PreProcessor\EmailPreProcessor;
+use Application\EmailBundle\Twig\PreProcessor\EmailPreProcessor as LegacyEmailPreProcessor;
 use DeskPRO\Bundle\InstallBundle\Backup\RecordBackuper;
+use DeskPRO\Bundle\SendmailBundle\Twig\PreProcessor\EmailPreProcessor;
 use DpSys\Kernel\PortalKernel;
 use Symfony\Bundle\FrameworkBundle\Command\ContainerAwareCommand;
 use Symfony\Component\Console\Input\InputArgument;
@@ -47,7 +48,7 @@ class RecompileTemplatesCommand extends ContainerAwareCommand
         $this
             ->setName('dp:utility:recompile-templates')
             ->setDescription('Re-compiles templates in the database')
-            ->addArgument('type', InputArgument::OPTIONAL | InputArgument::IS_ARRAY, 'The type of templates to re-compile. Defaults to all. Types: portal, email', ['portal', 'email'])
+            ->addArgument('type', InputArgument::OPTIONAL | InputArgument::IS_ARRAY, 'The type of templates to re-compile. Defaults to all. Types: portal, email', ['portal', 'email', 'legacy-email'])
         ;
     }
 
@@ -77,6 +78,9 @@ class RecompileTemplatesCommand extends ContainerAwareCommand
                 case 'email':
                     $this->recompileEmailTemplates($input, $output);
                     break;
+                case 'legacy-email':
+                    $this->recompileLegacyEmailTemplates($input, $output);
+                    break;
                 default:
                     $output->writeln("<error>Invalid type: $type</error>");
 
@@ -96,12 +100,12 @@ class RecompileTemplatesCommand extends ContainerAwareCommand
     private function recompileEmailTemplates(InputInterface $input, OutputInterface $output)
     {
         $db   = $this->getContainer()->get('database_connection');
-        $twig = $this->getContainer()->get('templating.email.twig');
+        $twig = $this->getContainer()->get('templating.new_email.twig');
 
         $templates = $db->fetchAll("
             SELECT *
             FROM templates
-            WHERE name LIKE 'DeskPRO:emails%' OR name LIKE 'DeskPRO:custom_emails%'
+            WHERE name LIKE 'SendmailBundle:%'
             ORDER BY id ASC
         ");
 
@@ -113,6 +117,50 @@ class RecompileTemplatesCommand extends ContainerAwareCommand
 
             try {
                 $proc     = new EmailPreProcessor();
+                $code     = $proc->process($tpl['template_code'], $tpl['name']);
+                $compiled = $twig->compileSource($code, $tpl['name']);
+
+                $db->update('templates', ['template_compiled' => $compiled], ['id' => $tpl['id']]);
+
+                $output->writeln('OK');
+            } catch (\Exception $e) {
+                $output->writeln('ERROR: '.$e->getMessage());
+                try {
+                    $db->delete('templates', ['id' => $tpl['id']]);
+                } catch (\Exception $e) {
+                    $output->writeln('Failed to backup template!');
+                    throw $e;
+                }
+            }
+        }
+    }
+
+    /**
+     * @param InputInterface  $input
+     * @param OutputInterface $output
+     *
+     * @throws \Exception
+     */
+    private function recompileLegacyEmailTemplates(InputInterface $input, OutputInterface $output)
+    {
+        $db   = $this->getContainer()->get('database_connection');
+        $twig = $this->getContainer()->get('templating.email.twig');
+
+        $templates = $db->fetchAll("
+            SELECT *
+            FROM templates
+            WHERE name LIKE 'DeskPRO:emails%' OR name LIKE 'DeskPRO:custom_emails%'
+            ORDER BY id ASC
+        ");
+
+        $output->writeln(sprintf('Re-compiling %d legacy email templates...', count($templates)));
+
+        foreach ($templates as $tpl) {
+            $output->write(sprintf('  Compiling %d: %s ... ', $tpl['id'], $tpl['name']));
+            $this->backupTpl($tpl);
+
+            try {
+                $proc     = new LegacyEmailPreProcessor();
                 $code     = $proc->process($tpl['template_code'], $tpl['name']);
                 $compiled = $twig->compileSource($code, $tpl['name']);
 

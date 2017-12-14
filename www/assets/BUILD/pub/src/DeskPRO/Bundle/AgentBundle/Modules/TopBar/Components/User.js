@@ -7,7 +7,8 @@ import UserProfile from './UserProfile';
 class User extends React.Component {
 
   static propTypes = {
-    src: PropTypes.string
+    imageUrl:   PropTypes.string,
+    defaultUrl: PropTypes.string
   };
 
   closePopup = () => {
@@ -48,14 +49,13 @@ class User extends React.Component {
   };
 
   render() {
-    const { src } = this.props;
+    const { imageUrl, defaultUrl } = this.props;
 
     return (
       <div className="user" onClick={this.togglePopup} title={agentPhrases.get('agent.chrome.user_tooltip')}>
         <PopUp
           positionMy="right top"
           positionAt="right bottom"
-          id={1}
           elementId="user-menu-popup"
           zIndex={99999}
           content={(
@@ -69,7 +69,8 @@ class User extends React.Component {
           className="user_popup"
           autoOpen={false}
         >
-          <img className="ui circular image" src={src} alt="agent" />
+          <img className="ui circular image" src={defaultUrl} alt="agent" />
+          {imageUrl && <img className="ui circular image" src={imageUrl} style={{ position: 'absolute', left: 0, top: 3 }} alt="agent" />}
           <i className="dropdown icon" />
         </PopUp>
       </div>

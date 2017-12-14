@@ -112,11 +112,18 @@ class SettingsController extends AbstractController
                     'new_email'    => $edit_profile->email,
                 ];
 
-                // Send validation email
-                $message = $this->container->getMailer()->createMessage();
-                $message->setTemplate('DeskPRO:emails_agent:agent-changeemail-mergeuser.html.twig', $vars);
-                $message->setTo($edit_profile->email, $this->person->getDisplayName());
-                $this->container->getMailer()->send($message);
+                if ($this->get('deskpro.feature_flags')->hasBeta('email_templates')) {
+                    $viewModel = $this->get('email.agent_viewmodel_factory')
+                        ->createAgentChangeEmailMergeUserModel($this->person->getEmailAddress(), $edit_profile->email);
+                    $this->get('email.email_sender')
+                        ->send($viewModel, ['to' => $edit_profile->email]);
+                } else {
+                    // Send validation email
+                    $message = $this->container->getMailer()->createMessage();
+                    $message->setTemplate('DeskPRO:emails_agent:agent-changeemail-mergeuser.html.twig', $vars);
+                    $message->setTo($edit_profile->email, $this->person->getDisplayName());
+                    $this->container->getMailer()->send($message);
+                }
 
                 // Pop the old email address back so it passes the dupe check validation,
                 // we're not actually updating the address yet

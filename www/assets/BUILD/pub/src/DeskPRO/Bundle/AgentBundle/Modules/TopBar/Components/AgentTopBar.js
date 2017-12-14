@@ -7,6 +7,7 @@ import striptags from 'striptags';
 import Notify from 'notifyjs';
 import linkifyHtml from 'linkifyjs/html';
 import $ from 'jquery';
+import { AvatarResolver } from 'DeskPRO/Component/Avatar';
 import agentPhrases from 'DeskPRO/Bundle/AgentBundle/AgentPhrases';
 import { Container } from 'DeskPRO/Bundle/AgentBundle/Modules/IM/Components/New/ChatWindow';
 import * as chatsActions from 'DeskPRO/Bundle/AgentBundle/Modules/IM/Actions/chatsActions';
@@ -460,23 +461,6 @@ export class AgentTopBar extends React.Component {
     this.props.updateVolume(newVal / 10);
   };
 
-  getUserPicture = () => {
-    const { me } = this.props;
-    if (!me) {
-      return '';
-    }
-
-    let img = me.getIn(['avatar', 'default_url_pattern']);
-    if (me.getIn(['avatar', 'url_pattern'])) {
-      img = me.getIn(['avatar', 'url_pattern']);
-    }
-    if (img) {
-      return img.replace(/\{\{IMG_SIZE}}/, 56);
-    }
-
-    return '';
-  };
-
   renderIM() {
     if (!window.DP_HAS_NEW_IM) return null;
 
@@ -581,7 +565,7 @@ export class AgentTopBar extends React.Component {
   }
 
   render() {
-    const { agents, chatDepartments, notificationCount, onlineAgents, userChatEnabled, voiceAvailable } = this.props;
+    const { me, agents, chatDepartments, notificationCount, onlineAgents, userChatEnabled, voiceAvailable } = this.props;
     const { onSearch, onSearchFocus, onSearchBlur, onClearSearchInput, onRecent } = this.props;
     const { toggleViewMode, onNotification, onToggleChat } = this.props;
 
@@ -626,7 +610,9 @@ export class AgentTopBar extends React.Component {
           />
         </TopBarItem>
         <TopBarItem>
-          <User src={this.getUserPicture()} />
+          <AvatarResolver avatar={me && me.get('avatar')} size={56}>
+            <User />
+          </AvatarResolver>
           <Chat
             activeChat={userChatEnabled}
             onlineAgents={onlineAgents}

@@ -26,12 +26,6 @@
  * ~ Thanks, Everyone at Team DeskPRO
  */
 
-/**
- * DeskPRO.
- *
- * @category Entities
- */
-
 namespace Application\DeskPRO\Tickets;
 
 use Application\DeskPRO\App;
@@ -283,10 +277,14 @@ class TicketEmail
 
     /**
      * @param array $vars
+     * @param bool  $doPrepare prevent message from actually rendering in case of use in SendmailBundle
+     *
+     * @throws \Exception
+     * @throws null
      *
      * @return Message
      */
-    public function prepareMailerMessage(array $vars = [])
+    public function prepareMailerMessage(array $vars = [], $doPrepare = true)
     {
         if ($this->toPerson && $this->toPerson->isAgent()) {
             $this->toPerson->loadHelper('Agent');
@@ -303,8 +301,8 @@ class TicketEmail
         if ($this->toPersonEmail && $this->toPerson->hasEmailAddress($this->toPersonEmail)) {
             $toEmail = $this->toPersonEmail;
         } elseif ($this->userMode == self::MODE_USER) {
-            if ($this->ticket->getPersonEmail() && $this->ticket->getPersonEmail()->getPerson() === $this->toPerson) {
-                $toEmail = $this->ticket->getPersonEmail()->getEmail();
+            if ($this->ticket->getTicketPersonEmail() && $this->ticket->getTicketPersonEmail()->getPerson() === $this->toPerson) {
+                $toEmail = $this->ticket->getTicketPersonEmail()->getEmail();
                 $this->logger->info(sprintf('[TicketEmail] to_email(1): %s', $toEmail));
             } elseif ($this->toPerson->getPrimaryEmail()) {
                 $toEmail = $this->toPerson->getPrimaryEmail()->getEmail();
@@ -346,26 +344,28 @@ class TicketEmail
             }
         }
 
-        $message->setTemplate($this->templateName, $vars);
+        if ($doPrepare) {
+            $message->setTemplate($this->templateName, $vars);
+        }
 
         if ($this->userMode == self::MODE_USER && $this->doCcUsers) {
             foreach ($this->ticket->getUserParticipants() as $p) {
                 if ($p->getPrimaryEmailAddress()) {
-                    $cc_email = $p->getPrimaryEmailAddress();
-                    $cc_name  = $p->getDisplayName();
-                    if (!$cc_email) {
+                    $ccEmail = $p->getPrimaryEmailAddress();
+                    $ccName  = $p->getDisplayName();
+                    if (!$ccEmail) {
                         continue;
                     }
 
                     if ($this->isAuto && $p->disable_autoresponses) {
-                        $this->logger->info(sprintf('[TicketEmail] CC skipped because autoresponder: %s -- Name: %s', $cc_email, $cc_name));
+                        $this->logger->info(sprintf('[TicketEmail] CC skipped because autoresponder: %s -- Name: %s', $ccEmail, $ccName));
                         continue;
                     }
 
-                    $this->sentWithCcs[] = $cc_email;
+                    $this->sentWithCcs[] = $ccEmail;
 
-                    $message->addCc($cc_email, $cc_name);
-                    $this->logger->info(sprintf('[TicketEmail] CC: %s -- Name: %s', $cc_email, $cc_name));
+                    $message->addCc($ccEmail, $ccName);
+                    $this->logger->info(sprintf('[TicketEmail] CC: %s -- Name: %s', $ccEmail, $ccName));
                 }
             }
         }
@@ -408,11 +408,13 @@ class TicketEmail
 
         $this->logger->info(sprintf('[TicketEmail] Language: %s', $lang->getSystemName()));
 
-        $start = microtime(true);
-        $this->translate->setTemporaryLanguage($lang, function () use ($message) {
-            $message->prepare();
-        });
-        $this->logger->info(sprintf('[TicketEmail] Prepare took %.3fs', microtime(true) - $start));
+        if ($doPrepare) {
+            $start = microtime(true);
+            $this->translate->setTemporaryLanguage($lang, function () use ($message) {
+                $message->prepare();
+            });
+            $this->logger->info(sprintf('[TicketEmail] Prepare took %.3fs', microtime(true) - $start));
+        }
 
         foreach ($this->headers as $header) {
             $message->getHeaders()->addTextHeader($header['name'], $header['value']);

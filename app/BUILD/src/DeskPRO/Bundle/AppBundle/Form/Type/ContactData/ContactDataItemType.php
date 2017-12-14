@@ -26,10 +26,6 @@
  * ~ Thanks, Everyone at Team DeskPRO
  */
 
-/**
- * DeskPRO.
- */
-
 namespace DeskPRO\Bundle\AppBundle\Form\Type\ContactData;
 
 use Application\DeskPRO\Entity\ContactDataAbstract;
@@ -54,7 +50,9 @@ class ContactDataItemType extends AbstractType
      */
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
-        $builder->add('comment', TextareaType::class);
+        $builder->add('comment', TextareaType::class, [
+            'required' => false,
+        ]);
 
         $builder->addEventListener(FormEvents::PRE_SET_DATA, [$this, 'onCreateDataClass']);
         $builder->addEventListener(FormEvents::SUBMIT, [$this, 'onSetContactType']);

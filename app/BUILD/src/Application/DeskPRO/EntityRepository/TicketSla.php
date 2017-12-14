@@ -37,9 +37,17 @@ namespace Application\DeskPRO\EntityRepository;
 use Application\DeskPRO\App;
 use Application\DeskPRO\Entity;
 use Application\DeskPRO\Searcher\TicketSearch;
+use Doctrine\DBAL\Connection;
 
 class TicketSla extends AbstractEntityRepository
 {
+    /**
+     * @param Entity\Sla[]  $slas
+     * @param mixed         $filter
+     * @param Entity\Person $person_context
+     *
+     * @return array
+     */
     public function getCachedTicketSlaCountsForAgentInterface(array $slas, $filter, Entity\Person $person_context)
     {
         if (!count($slas)) {
@@ -53,20 +61,24 @@ class TicketSla extends AbstractEntityRepository
         /** @var \Application\DeskPRO\DBAL\Connection $db */
         $db = $this->_em->getConnection();
 
-        $values = $db->fetchAllKeyValue("
-            SELECT name, value_array
+        $values = $db->fetchAllKeyed("
+            SELECT name, value_array, date_expire
             FROM people_prefs
             WHERE person_id = ? AND name LIKE 'ticket_sla_counts.%'
-        ", [$person_context->getId()]);
+        ", [$person_context->getId()], 'name');
 
         $results  = [];
         $calcSlas = [];
 
+        $currentTime = new \DateTime();
+
         foreach ($slas as $sla) {
             $cacheId = 'ticket_sla_counts.'.$sla->getId();
+            $value   = isset($values[$cacheId]) ? $values[$cacheId] : null;
+            $expire  = new \DateTime($value['date_expire']);
 
-            if (isset($values[$cacheId])) {
-                $r = @unserialize($values[$cacheId]);
+            if ($value && $currentTime < $expire) {
+                $r = @unserialize($value['value_array']);
             } else {
                 $r = null;
             }
@@ -99,6 +111,21 @@ class TicketSla extends AbstractEntityRepository
                 }
 
                 if ($inserts) {
+                    $prefNames = array_map(function ($insert) {
+                        return $insert['name'];
+                    }, $inserts);
+
+                    $db->executeUpdate(
+                        'DELETE FROM people_prefs WHERE person_id = :person_id AND name IN(:name)',
+                        [
+                            'person_id' => $person_context->getId(),
+                            'name'      => $prefNames,
+                        ],
+                        [
+                            'person_id' => \PDO::PARAM_INT,
+                            'name'      => Connection::PARAM_STR_ARRAY,
+                        ]
+                    );
                     $db->batchInsert('people_prefs', $inserts, true);
                 }
             }

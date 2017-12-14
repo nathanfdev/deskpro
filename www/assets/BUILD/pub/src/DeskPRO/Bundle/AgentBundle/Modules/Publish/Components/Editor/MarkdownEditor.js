@@ -7,10 +7,7 @@ import MarkdownItContainer from 'markdown-it-container';
 import toMarkdown from 'to-markdown';
 import hljs from 'highlight.js';
 import { PopUp } from 'DeskPRO/Component/Semantic/PopUp';
-import 'codemirror/mode/xml/xml';
 import 'codemirror/mode/gfm/gfm';
-import 'codemirror/mode/javascript/javascript';
-import 'codemirror/mode/php/php';
 import 'codemirror/addon/edit/continuelist';
 import LinkMenu from './LinkMenu';
 import MarkdownItTabs from './tabs';
@@ -320,7 +317,6 @@ class MarkdownEditor extends React.Component {
         <PopUp
           positionMy="right top"
           positionAt="right bottom"
-          id={1}
           elementId="markdown-add-link"
           zIndex={99999}
           content={<LinkMenu insertLink={this.insertLink} />}

@@ -33,6 +33,7 @@ use Application\DeskPRO\Entity\ArticleCategory;
 use Application\DeskPRO\Entity\ArticleComment;
 use Application\DeskPRO\Entity\PageViewLog;
 use Application\DeskPRO\Entity\Person;
+use Application\DeskPRO\Notifications\NewCommentNotification;
 use DeskPRO\Bundle\AppBundle\Annotation\AutoPostOnGetRequest;
 use DeskPRO\Bundle\AppBundle\AntiAbuse\Event\ShareContentAbuseCheck;
 use DeskPRO\Bundle\AppBundle\AntiAbuse\Event\SubmitCommentAbuseCheck;
@@ -54,6 +55,11 @@ class ArticlesController extends AbstractController
      * @Route("/kb", name="user_articles_home")
      * @Security("is_granted('USE_ARTICLES')")
      * @PageHttpCache
+     *
+     * @param Request $request
+     * @param $_format
+     *
+     * @return Response
      */
     public function indexAction(Request $request, $_format)
     {
@@ -118,6 +124,12 @@ class ArticlesController extends AbstractController
      * @ParamConverter(name="category", converter="deskpro_slug")
      * @Security("is_granted('USE_ARTICLES') and is_granted('VIEW_ARTICLE_CATEGORY', category)")
      * @PageHttpCache
+     *
+     * @param Request         $request
+     * @param ArticleCategory $category
+     * @param $_format
+     *
+     * @return Response
      */
     public function browseAction(Request $request, ArticleCategory $category, $_format)
     {
@@ -193,6 +205,12 @@ class ArticlesController extends AbstractController
      * @ParamConverter(name="article", converter="deskpro_slug")
      * @Security("is_granted('USE_ARTICLES') and is_granted('VIEW_ARTICLE', article)")
      * @PageHttpCache(content="article")
+     *
+     * @param Request $request
+     * @param Article $article
+     * @param $visitor_id
+     *
+     * @return Response
      */
     public function viewAction(Request $request, Article $article, $visitor_id)
     {
@@ -205,9 +223,13 @@ class ArticlesController extends AbstractController
             $comment->setVisitorId($visitor_id);
             $comment->setIpAddress($request->getClientIp());
             $newCommentForm = $formHandler->createForm($comment, $request);
-            $form_result    = $formHandler->handle($newCommentForm, $request, $article, $comment);
-            if ($form_result instanceof Response) {
-                return $form_result;
+            $formResult     = $formHandler->handle($newCommentForm, $request, $article, $comment);
+            if ($formResult) {
+                $notify = new NewCommentNotification($comment);
+                $notify->send();
+            }
+            if ($formResult instanceof Response) {
+                return $formResult;
             }
         }
 

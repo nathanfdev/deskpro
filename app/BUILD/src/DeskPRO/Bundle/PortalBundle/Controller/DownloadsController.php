@@ -36,6 +36,7 @@ use Application\DeskPRO\Entity\Download;
 use Application\DeskPRO\Entity\DownloadCategory;
 use Application\DeskPRO\Entity\DownloadComment;
 use Application\DeskPRO\Entity\PageViewLog;
+use Application\DeskPRO\Notifications\NewCommentNotification;
 use DeskPRO\Bundle\AppBundle\Annotation\AutoPostOnGetRequest;
 use DeskPRO\Bundle\AppBundle\AntiAbuse\Event\SubmitCommentAbuseCheck;
 use DeskPRO\Bundle\AppBundle\Security\Voter\Portal\ContentCommentVoter;
@@ -221,9 +222,13 @@ class DownloadsController extends AbstractController
             $comment->setVisitorId($visitor_id);
             $comment->setIpAddress($request->getClientIp());
             $newCommentForm = $formHandler->createForm($comment, $request);
-            $form_result    = $formHandler->handle($newCommentForm, $request, $file, $comment);
-            if ($form_result instanceof Response) {
-                return $form_result;
+            $formResult     = $formHandler->handle($newCommentForm, $request, $file, $comment);
+            if ($formResult) {
+                $notify = new NewCommentNotification($comment);
+                $notify->send();
+            }
+            if ($formResult instanceof Response) {
+                return $formResult;
             }
         }
 
@@ -285,6 +290,8 @@ class DownloadsController extends AbstractController
      * @Security("is_granted('USE_DOWNLOADS') and is_granted('DOWNLOAD_DOWNLOAD', file)")
      *
      * @param Download $file
+     *
+     * @throws \Doctrine\ORM\OptimisticLockException
      *
      * @return Response
      */

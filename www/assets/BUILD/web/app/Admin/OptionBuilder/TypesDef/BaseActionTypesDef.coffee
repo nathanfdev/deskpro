@@ -8,7 +8,7 @@ define [
   Arrays,
   BaseTypesDef) ->
   class Admin_OptionBuilder_TypesDef_BaseActionTypesDef extends BaseTypesDef
-    constructor: (@$q, @Api, @dpTemplateManager) ->
+    constructor: (@$q, @Api, @Api2, @dpTemplateManager) ->
       @options_data   = null
       @inputTemplate  = 'OptionBuilder/type-actions-input.html'
       @selectTemplate = 'OptionBuilder/type-actions-select.html'

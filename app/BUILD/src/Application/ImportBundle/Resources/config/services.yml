@@ -55,3 +55,6 @@ services:
       - "@dp.importer.parser"
       - "@mailer"
       - "@deskpro.core.translate"
+      - "@email.user_viewmodel_factory"
+      - "@email.email_sender"
+      - "@deskpro.feature_flags"

@@ -26,12 +26,6 @@
  * ~ Thanks, Everyone at Team DeskPRO
  */
 
-/**
- * DeskPRO.
- *
- * @category Tickets
- */
-
 namespace Application\DeskPRO\Tickets\Actions;
 
 use Application\DeskPRO\Entity\Person;
@@ -76,9 +70,9 @@ class SendAgentEmail extends AbstractEmailAction implements ActionInterface, Noo
     {
         $agents = [];
 
-        $person_context    = $context->getPersonContext();
-        $is_notif_disabled = $this->getContainer()->getSetting('agent.disable_notifications');
-        $changeDetector    = $this->getContainer()->getTicketFilterChangeDetector();
+        $personContext   = $context->getPersonContext();
+        $isNotifDisabled = $this->getContainer()->getSetting('agent.disable_notifications');
+        $changeDetector  = $this->getContainer()->getTicketFilterChangeDetector();
 
         foreach ($agentIds as $aid) {
             if ('all_agents' === $aid) {
@@ -89,7 +83,7 @@ class SendAgentEmail extends AbstractEmailAction implements ActionInterface, Noo
 
             if ($aid == 'notify_list') {
                 $context->getLogger()->debug('[SendAgentEmail] notify_list using notify_list');
-                if ($is_notif_disabled) {
+                if ($isNotifDisabled) {
                     continue;
                 }
 
@@ -97,19 +91,19 @@ class SendAgentEmail extends AbstractEmailAction implements ActionInterface, Noo
                 $subscriptionRepo = $this->getContainer()->getEm()->getRepository(TicketFilterSubscription::class);
                 $forAgentIds      = $subscriptionRepo->getSubscribedActiveAgentIds();
 
-                $change_set   = $changeDetector->getFilterChangeSet($ticket, $context, $forAgentIds);
-                $list_builder = new AgentNotifyListBuilder($ticket, $change_set, $subscriptionRepo);
-                $list_builder->setLogger($context->getLogger());
+                $changeSet   = $changeDetector->getFilterChangeSet($ticket, $context, $forAgentIds);
+                $listBuilder = new AgentNotifyListBuilder($ticket, $changeSet, $subscriptionRepo);
+                $listBuilder->setLogger($context->getLogger());
 
-                $notify = $list_builder->genNotifyList();
+                $notify = $listBuilder->genNotifyList();
 
                 foreach ($notify as $n) {
                     // dont send to self
-                    if ($person_context && $person_context === $n['agent']) {
+                    if ($personContext && $personContext === $n['agent']) {
                         $override = false;
-                        if ($person_context->getPref('agent_notify_override.all.email')) {
+                        if ($personContext->getPref('agent_notify_override.all.email')) {
                             $override = true;
-                        } elseif ($person_context->getPref('agent_notify_override.forward.email') && $context->getEventType() == 'newticket' && $context->getEventMethod() == 'email') {
+                        } elseif ($personContext->getPref('agent_notify_override.forward.email') && $context->getEventType() == 'newticket' && $context->getEventMethod() == 'email') {
                             $override = true;
                         }
 
@@ -125,14 +119,14 @@ class SendAgentEmail extends AbstractEmailAction implements ActionInterface, Noo
                     }
                 }
 
-                $force_list = $context->getVars()->get('agent_force_subscription_list', []);
-                if ($force_list) {
+                $forceList = $context->getVars()->get('agent_force_subscription_list', []);
+                if ($forceList) {
                     $context->getLogger()->debug('[SendAgentEmail] Appending force list');
-                    $agents = array_merge($agents, $force_list);
+                    $agents = array_merge($agents, $forceList);
                 }
             } else {
-                $agent_data = $this->getContainer()->getAgentData();
-                $agents     = array_merge($agents, $agent_data->selectAgents($aid, $person_context, $ticket));
+                $agentData = $this->getContainer()->getAgentData();
+                $agents    = array_merge($agents, $agentData->selectAgents($aid, $personContext, $ticket));
             }
         }
 
@@ -150,20 +144,20 @@ class SendAgentEmail extends AbstractEmailAction implements ActionInterface, Noo
             return [];
         }
 
-        $set_agents = [];
+        $setAgents = [];
         foreach ($agents as $a) {
-            if (!isset($set_agents[$a->getId()]) && $a->isAgent() && !$a->isDeleted() && !$a->isDisabled()) {
+            if (!isset($setAgents[$a->getId()]) && $a->isAgent() && !$a->isDeleted() && !$a->isDisabled()) {
                 $a->loadHelper('Agent');
-                $set_agents[$a->getId()] = $a;
+                $setAgents[$a->getId()] = $a;
             }
         }
 
         $aids = array_map(function ($a) {
             return $a->getId();
-        }, $set_agents);
+        }, $setAgents);
         $context->getLogger()->debug('[SendAgentEmail] notify_list final list: '.implode(', ', $aids));
 
-        return array_values($set_agents);
+        return array_values($setAgents);
     }
 
     /**
@@ -172,7 +166,7 @@ class SendAgentEmail extends AbstractEmailAction implements ActionInterface, Noo
     public function applyAction(Ticket $ticket, ExecutorContextInterface $context)
     {
         $context->getLogger()->debug('[SendAgentEmail] Begin :: agent_ids = '.implode(', ', $this->getActionOption('agent_ids')));
-        $start_time = microtime(true);
+        $startTime = microtime(true);
 
         $agents = $this->resolveAgents($ticket, $this->getActionOption('agent_ids'), $context);
 
@@ -183,7 +177,7 @@ class SendAgentEmail extends AbstractEmailAction implements ActionInterface, Noo
         }
 
         try {
-            $from_account = $this->getFromEmailAccountOption($ticket, $context);
+            $fromAccount = $this->getFromEmailAccountOption($ticket, $context);
         } catch (\InvalidArgumentException $e) {
             $context->getLogger()->warn("[SendAgentEmail] Error {$e->getMessage()}");
 
@@ -208,10 +202,10 @@ class SendAgentEmail extends AbstractEmailAction implements ActionInterface, Noo
         // Send emails
         //-------------------------
 
-        $sent_count = 0;
+        $sentCount = 0;
 
-        $state             = $ticket->getStateChangeRecorder();
-        $fn_check_new_part = function ($agent) use ($state, $ticket) {
+        $state          = $ticket->getStateChangeRecorder();
+        $fnCheckNewPart = function ($agent) use ($state, $ticket) {
             $has = false;
             foreach ($ticket->getParticipants() as $p) {
                 if ($p->getPerson() === $agent) {
@@ -237,16 +231,16 @@ class SendAgentEmail extends AbstractEmailAction implements ActionInterface, Noo
         };
 
         if ($context->getVars()->has('mention_agents')) {
-            $mentioned_agents_map = array_fill_keys(array_keys($context->getVars()->get('mention_agents')), true);
+            $mentionedAgentsMap = array_fill_keys(array_keys($context->getVars()->get('mention_agents')), true);
         } else {
-            $mentioned_agents_map = [];
+            $mentionedAgentsMap = [];
         }
 
         $emailBuilder = TicketEmailBuilder::createFromContainer($this->getContainer());
         $emailBuilder
             ->setTicket($ticket)
             ->setFromName($this->renderFromName($this->getActionOption('from_name'), $ticket, $context, 'agent'))
-            ->setFromEmailAccount($from_account)
+            ->setFromEmailAccount($fromAccount)
             ->setAgentMode()
             ->setTemplateName($template)
             ->setMaxAttachSize($this->getContainer()->getSetting('core.sendemail_attach_maxsize'))
@@ -271,7 +265,7 @@ class SendAgentEmail extends AbstractEmailAction implements ActionInterface, Noo
 
         /** @var Person[] $agents */
         foreach ($agents as $agent) {
-            ++$sent_count;
+            ++$sentCount;
 
             $context->getLogger()->debug(sprintf('[SendAgentEmail] Sending to <Person:%d> %s', $agent->getId(), $agent->getDisplayName()));
             $vars = $defaultVars;
@@ -281,14 +275,14 @@ class SendAgentEmail extends AbstractEmailAction implements ActionInterface, Noo
                 $typeFlag = 'assigned';
             } elseif ($changedAgentTeam && $ticket->getAgentTeam() && $agent->getHelper('Agent')->isTeamMember($ticket->getAgentTeam()->getId())) {
                 $typeFlag = 'assigned_team';
-            } elseif ($changedParticipants && $fn_check_new_part($agent)) {
+            } elseif ($changedParticipants && $fnCheckNewPart($agent)) {
                 $typeFlag = 'added_part';
             } elseif ($changedStatus) {
                 $typeFlag = 'status_changed';
             }
 
             $vars['type_flag'] = $typeFlag;
-            if (isset($mentioned_agents_map[$agent->getId()])) {
+            if (isset($mentionedAgentsMap[$agent->getId()])) {
                 $vars['is_my_mention'] = true;
             }
 
@@ -308,7 +302,7 @@ class SendAgentEmail extends AbstractEmailAction implements ActionInterface, Noo
             }
         }
 
-        $context->getLogger()->info(sprintf('[SendAgentEmail] Send %d messages in %.3fs', $sent_count, microtime(true) - $start_time));
+        $context->getLogger()->info(sprintf('[SendAgentEmail] Send %d messages in %.3fs', $sentCount, microtime(true) - $startTime));
     }
 
     /**
@@ -317,7 +311,7 @@ class SendAgentEmail extends AbstractEmailAction implements ActionInterface, Noo
     public function isNoop(Ticket $ticket, ExecutorContextInterface $context)
     {
         if (!$this->getContainer()->getEmailAccountManager()->countOutgoingAccounts()) {
-            $context->getLogger()->debug('[SendUserEmail] no outgoing email accounts are defined');
+            $context->getLogger()->debug('[SendAgentEmail] no outgoing email accounts are defined');
 
             return true;
         }

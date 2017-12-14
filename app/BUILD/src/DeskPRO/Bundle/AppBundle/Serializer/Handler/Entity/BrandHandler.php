@@ -68,7 +68,7 @@ class BrandHandler extends AbstractEntityHandler
      *
      * @param BrandEntity $entity
      */
-    protected function createModel($entity, SideloadSerializationContext $context)
+    public function createModel($entity, SideloadSerializationContext $context)
     {
         $entityRepository = $this->entityManager->getRepository(ThemeSetAsset::class);
         $themeSetAsset    = $entityRepository->findOneBy([

@@ -3,16 +3,21 @@ import React from 'react';
 
 class Form extends React.Component {
   static propTypes = {
-    onSubmit: PropTypes.func,
-    children: PropTypes.node
+    children: PropTypes.node,
+    onSubmit: PropTypes.func
   };
   static defaultProps = {
     onSubmit() {}
   };
 
+  handleSubmit = (e) => {
+    e.preventDefault();
+    this.props.onSubmit();
+  };
+
   render() {
     return (
-      <form className="ui form" onSubmit={this.props.onSubmit}>
+      <form className="ui form" onSubmit={this.handleSubmit}>
         {this.props.children}
       </form>
     );

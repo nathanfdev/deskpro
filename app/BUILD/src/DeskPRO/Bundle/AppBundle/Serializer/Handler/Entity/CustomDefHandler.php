@@ -94,7 +94,7 @@ class CustomDefHandler extends AbstractEntityHandler
      *
      * @param CustomDefAbstract $entity
      */
-    protected function createModel($entity, SideloadSerializationContext $context)
+    public function createModel($entity, SideloadSerializationContext $context)
     {
         $model        = new CustomDefModel($entity);
         $translations = [];

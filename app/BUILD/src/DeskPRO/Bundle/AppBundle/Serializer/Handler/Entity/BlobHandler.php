@@ -50,7 +50,7 @@ class BlobHandler extends AbstractEntityHandler
      *
      * @param BlobEntity $entity
      */
-    protected function createModel($entity, SideloadSerializationContext $context)
+    public function createModel($entity, SideloadSerializationContext $context)
     {
         return new BlobModel($entity);
     }

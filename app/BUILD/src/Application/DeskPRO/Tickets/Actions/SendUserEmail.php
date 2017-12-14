@@ -26,16 +26,11 @@
  * ~ Thanks, Everyone at Team DeskPRO
  */
 
-/**
- * DeskPRO.
- *
- * @category Tickets
- */
-
 namespace Application\DeskPRO\Tickets\Actions;
 
 use Application\DeskPRO\Entity\Ticket;
 use Application\DeskPRO\Tickets\ExecutorContextInterface;
+use Application\DeskPRO\Tickets\TicketEmail;
 use Application\DeskPRO\Tickets\TicketEmailBuilder;
 use Orb\Util\CheckedOptionsArray;
 
@@ -66,10 +61,10 @@ class SendUserEmail extends AbstractEmailAction
     public function applyAction(Ticket $ticket, ExecutorContextInterface $context)
     {
         $context->getLogger()->debug('[SendUserEmail] Begin');
-        $start_time = microtime(true);
+        $startTime = microtime(true);
 
         try {
-            $from_account = $this->getFromEmailAccountOption($ticket, $context);
+            $fromAccount = $this->getFromEmailAccountOption($ticket, $context);
         } catch (\InvalidArgumentException $e) {
             $context->getLogger()->warn("[SendUserEmail] Error {$e->getMessage()}");
 
@@ -103,7 +98,7 @@ class SendUserEmail extends AbstractEmailAction
             ->setMaxAttachSize($this->getContainer()->getSetting('core.sendemail_attach_maxsize'))
             ->setLogger($context->getLogger())
             ->setHeaders($this->processHeaders($this->getActionOption('headers', []), $ticket, $context))
-            ->setFromEmailAccount($from_account);
+            ->setFromEmailAccount($fromAccount);
 
         if ($this->getActionOption('do_cc_users')) {
             $emailBuilder->enableUserCc();
@@ -115,9 +110,9 @@ class SendUserEmail extends AbstractEmailAction
             $emailBuilder->setIsAuto();
 
             if ($context->getVars()->has('ticket_email')) {
-                /** @var \Application\DeskPRO\EmailGateway\TicketGateway\TicketIncomingEmail $ticket_email */
-                $ticket_email = $context->getVars()->get('ticket_email');
-                if ($ticket_email->is_bounce) {
+                /** @var \Application\DeskPRO\EmailGateway\TicketGateway\TicketIncomingEmail $ticketEmail */
+                $ticketEmail = $context->getVars()->get('ticket_email');
+                if ($ticketEmail->is_bounce) {
                     $context->getLogger()->info('Skipping email because is_bounce = true');
 
                     return;
@@ -141,11 +136,12 @@ class SendUserEmail extends AbstractEmailAction
 
         $defaultVars = array_merge($defaultVars, $emailBuilder->getCommonVars(false));
 
-        $ticket_email = $emailBuilder->buildTicketEmail();
+        /** @var TicketEmail $ticketEmail */
+        $ticketEmail = $emailBuilder->buildTicketEmail();
 
         try {
-            $ticket_email->send($defaultVars);
-            $this->recordEmailTicketLog($ticket_email, $ticket, $context);
+            $ticketEmail->send($defaultVars);
+            $this->recordEmailTicketLog($ticketEmail, $ticket, $context);
         } catch (\Exception $e) {
             $context->getLogger()->error(
                 sprintf('Exception: [%s] %s', $e->getCode(), $e->getMessage()),
@@ -155,7 +151,7 @@ class SendUserEmail extends AbstractEmailAction
             throw $e;
         }
 
-        $context->getLogger()->info(sprintf('[SendUserEmail] Sent message in %.3fs', microtime(true) - $start_time));
+        $context->getLogger()->info(sprintf('[SendUserEmail] Sent message in %.3fs', microtime(true) - $startTime));
     }
 
     /**

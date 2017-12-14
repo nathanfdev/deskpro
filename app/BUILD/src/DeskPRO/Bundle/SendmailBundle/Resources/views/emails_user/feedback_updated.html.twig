@@ -1,0 +1,33 @@
+<dp:subject>{{ phrase('user.email_subjects.feedback_updated') }}</dp:subject>
+
+<html>
+<head>
+    {% include 'SendmailBundle:blocks:resources.html.twig' %}
+</head>
+<body>
+{% include 'SendmailBundle:emails_common:email_code_top.html.twig' %}
+
+{% include 'SendmailBundle:blocks:header.html.twig' %}
+
+	<container>
+		{% if show == 'validated' %}
+			{{ phrase('user.emails.feedback_published', {'title':feedback.title}) }}
+		{% elseif show == 'closed' %}
+			{{ phrase('user.emails.feedback_closed', {'title':feedback.title, 'status':feedback.status_category.title}) }}
+		{% elseif show == 'closed' %}
+			{{ phrase('user.emails.feedback_updated', {'title': feedback.title, 'status':feedback.statuscategory.title}) }}
+		{% endif %}
+
+		<br /><br />
+
+		{{ phrase('user.emails.feedback_votes', {'count': feedback.votes}) }}
+		<a href="{{ feedback_link }}">
+			{{ feedback_link }}
+		</a>
+	</container>
+
+{% include 'SendmailBundle:blocks:footer.html.twig' %}
+
+{% include 'SendmailBundle:emails_common:email_code_bottom.html.twig' %}
+</body>
+</html>

@@ -34,12 +34,15 @@ namespace Application\DeskPRO\CustomFields\Form\Type;
 
 use Application\DeskPRO\CustomFields\Form\Model\DateField;
 use Symfony\Component\Form\FormBuilderInterface;
+use Symfony\Component\Form\FormEvent;
+use Symfony\Component\Form\FormEvents;
+use Symfony\Component\Validator\Constraints\Date;
 
 class DateFieldType extends CustomFieldTypeAbstract
 {
     protected function buildCustomFieldForm(FormBuilderInterface $builder, array $options)
     {
-        $builder->add('default_value', 'text', ['required' => false]);
+        $builder->add('default_value', 'text', ['required' => false, 'constraints' => [new Date()]]);
         $builder->add('default_mode', 'text', ['required' => true]);
         $builder->add('required', 'checkbox', ['required' => false]);
         $builder->add('agent_required', 'checkbox', ['required' => false]);
@@ -60,12 +63,29 @@ class DateFieldType extends CustomFieldTypeAbstract
             'choices'           => ['gregorian', 'hijri'],
             'choices_as_values' => true,
         ]);
+
+        $builder->addEventListener(FormEvents::PRE_SUBMIT, [$this, 'preSubmit']);
+    }
+
+    public function preSubmit(FormEvent $event)
+    {
+        $data = $event->getData();
+        if (isset($data['default_mode']) == 'date' && isset($data['default_value']) && $data['default_value']) {
+            try {
+                new \DateTime($data['default_value']);
+            } catch (\Exception $e) {
+                $data['default_value'] = ''; // reset invalid value
+               $data['default_mode']   = '0'; // set mode to "no default"
+               $event->setData($data);
+            }
+        }
     }
 
     public function getDefaultOptions(array $options)
     {
         return [
-            'data_class' => DateField::class,
+            'allow_extra_fields' => true,
+            'data_class'         => DateField::class,
         ];
     }
 }

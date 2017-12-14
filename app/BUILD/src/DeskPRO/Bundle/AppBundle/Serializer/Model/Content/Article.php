@@ -48,6 +48,15 @@ class Article extends ContentAbstract
     protected $categories;
 
     /**
+     * The article category names.
+     *
+     * @JMS\Type("string")
+     *
+     * @var string
+     */
+    protected $categoryNames;
+
+    /**
      * Article title translations.
      *
      * @JMS\Type("array<Application\DeskPRO\Entity\ObjectLang>")
@@ -73,8 +82,8 @@ class Article extends ContentAbstract
     public function __construct(ArticleEntity $entity)
     {
         parent::__construct($entity);
-
         $this->categories          = $entity->getCategories();
+        $this->categoryNames       = $entity->getCategoryNames();
         $this->titleTranslations   = $entity->getTitleTranslations();
         $this->contentTranslations = $entity->getContentTranslations();
     }

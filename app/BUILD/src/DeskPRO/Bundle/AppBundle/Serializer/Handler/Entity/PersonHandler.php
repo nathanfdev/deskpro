@@ -152,7 +152,7 @@ class PersonHandler extends AbstractEntityHandler
      *
      * @param Person $entity
      */
-    protected function createModel($entity, SideloadSerializationContext $context)
+    public function createModel($entity, SideloadSerializationContext $context)
     {
         $serializerClass = $context->getMappedClass(Person::class);
 

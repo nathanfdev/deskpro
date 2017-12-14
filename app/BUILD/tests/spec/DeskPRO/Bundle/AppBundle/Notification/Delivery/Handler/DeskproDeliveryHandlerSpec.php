@@ -58,12 +58,14 @@ class DeskproDeliveryHandlerSpec extends ObjectBehavior
         $actionAlert->getData()->willReturn([]);
         $actionAlert->getDate()->willReturn($date);
         $actionAlert->getType()->willReturn('test.action.alert');
+        $actionAlert->isBroadcast()->willReturn(false);
 
         $actionAlert->getTarget()->shouldBeCalled();
         $actionAlert->getDate()->shouldBeCalled();
         $actionAlert->getId()->shouldBeCalled();
         $actionAlert->getType()->shouldBeCalled();
         $actionAlert->getData()->shouldBeCalled();
+        $actionAlert->isBroadcast()->shouldBeCalled();
 
         $data = [
             [

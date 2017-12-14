@@ -411,10 +411,10 @@ class Message extends \Orb\Mail\Message
     }
 
     /**
-     * @param array $addresses
-     * @param null  $name
+     * @param array|string $addresses
+     * @param null         $name
      *
-     * @return \Swift_Mime_SimpleMessage|void
+     * @return \Swift_Mime_SimpleMessage
      */
     public function setTo($addresses, $name = null)
     {

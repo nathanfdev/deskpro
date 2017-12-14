@@ -75,11 +75,17 @@ class EmailAccount extends DomainObject
     const TYPE_ARTICLES = 'artices';
 
     /**
+     * @JMS\Expose()
+     * @JMS\Type("integer")
+     *
      * @var int
      */
     protected $id = null;
 
     /**
+     * @JMS\Expose()
+     * @JMS\Type("string")
+     *
      * @var string
      */
     protected $account_type;
@@ -95,11 +101,17 @@ class EmailAccount extends DomainObject
     protected $outgoing_account = null;
 
     /**
+     * @JMS\Expose()
+     * @JMS\Type("boolean")
+     *
      * @var bool
      */
     protected $is_enabled = true;
 
     /**
+     * @JMS\Expose()
+     * @JMS\Type("string")
+     *
      * @var string
      */
     protected $address;
@@ -137,18 +149,18 @@ class EmailAccount extends DomainObject
     protected $is_read_active = false;
 
     /**
-     * @var \Application\DeskPRO\Entity\Blob
-     *
      * @JMS\Expose()
      * @JMS\Type("Application\DeskPRO\Entity\Blob")
+     *
+     * @var \Application\DeskPRO\Entity\Blob
      */
     protected $cert_blob = null;
 
     /**
-     * @var \Application\DeskPRO\Entity\Blob
-     *
      * @JMS\Expose()
      * @JMS\Type("Application\DeskPRO\Entity\Blob")
+     *
+     * @var \Application\DeskPRO\Entity\Blob
      */
     protected $key_blob = null;
 

@@ -33,6 +33,7 @@
 namespace Application\DeskPRO\Twig\PostRenderFilter;
 
 use Orb\Util\Strings;
+use Pelago\Emogrifier;
 
 class EmailPostRenderFilter extends AbstractPostRenderFilter
 {
@@ -69,7 +70,7 @@ class EmailPostRenderFilter extends AbstractPostRenderFilter
         }
 
         $code = Strings::preDomDocument($code);
-        $emog = new \Emogrifier($code, $css);
+        $emog = new Emogrifier($code, $css);
         $code = $emog->emogrify();
         $code = Strings::postDomDocument($code);
 

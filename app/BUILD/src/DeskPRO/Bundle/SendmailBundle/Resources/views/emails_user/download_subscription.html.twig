@@ -1,0 +1,47 @@
+<dp:subject>
+	{% if new_downloads and updated_downloads %}
+		{{ phrase('user.email_subjects.download_sub_new_and_updated') }}
+	{% elseif new_downloads %}
+		{{ phrase('user.email_subjects.download_sub_new') }}
+	{% else %}
+		{{ phrase('user.email_subjects.download_sub_updated') }}
+	{% endif %}
+</dp:subject>
+
+<html>
+<head>
+    {% include 'SendmailBundle:blocks:resources.html.twig' %}
+</head>
+<body>
+{% include 'SendmailBundle:emails_common:email_code_top.html.twig' %}
+
+{% include 'SendmailBundle:blocks:header.html.twig' %}
+
+	<container>
+		{% if new_downloads %}
+			<h1>{{ phrase('user.emails.download-new-downloads', {count: new_downloads|length}) }}</h1>
+			<ul>
+				{% for download in new_downloads %}
+					<li><a href="{{ url_full('portal_downloads_view', {slug: download.slug}) }}">{{ download.title }}</a></li>
+				{% endfor %}
+			</ul>
+		{% endif %}
+
+		{% if updated_downloads %}
+			<h1>{{ phrase('user.emails.download-updated-downloads', {count: updated_downloads|length}) }}</h1>
+			<ul>
+				{% for download in updated_downloads %}
+					<li><a href="{{ url_full('portal_downloads_view', {slug: download.slug}) }}">{{ download.title }}</a></li>
+				{% endfor %}
+			</ul>
+		{% endif %}
+
+		<div class="dp-hr">&nbsp;</div>
+		{{ phrase('user.emails.downloads-explain', {deskpro_url: portal_home }) }}
+	</container>
+
+{% include 'SendmailBundle:blocks:footer.html.twig' %}
+
+{% include 'SendmailBundle:emails_common:email_code_bottom.html.twig' %}
+</body>
+</html>

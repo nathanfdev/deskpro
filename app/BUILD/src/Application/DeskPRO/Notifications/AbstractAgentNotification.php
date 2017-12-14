@@ -34,7 +34,9 @@ namespace Application\DeskPRO\Notifications;
 
 use Application\DeskPRO\App;
 use Application\DeskPRO\Entity\Person;
+use Application\DeskPRO\Entity\Session;
 use DeskPRO\Bundle\AppBundle\Notification\Event\LegacySystemEvent;
+use DeskPRO\Bundle\SendmailBundle\View\Model\EmailBaseType;
 use Symfony\Component\EventDispatcher\EventDispatcherInterface;
 
 abstract class AbstractAgentNotification
@@ -47,7 +49,7 @@ abstract class AbstractAgentNotification
     /**
      * @var array
      */
-    protected $notify_list;
+    protected $notifyList;
 
     /**
      * @var string
@@ -85,38 +87,38 @@ abstract class AbstractAgentNotification
      */
     public function getNotifyList()
     {
-        if ($this->notify_list) {
-            return $this->notify_list;
+        if ($this->notifyList) {
+            return $this->notifyList;
         }
-        $agents = $this->em->getRepository('DeskPRO:Person')->getAgents();
+        $agents = $this->em->getRepository(Person::class)->getAgents();
 
-        $online_ids = $this->em->getRepository('DeskPRO:Session')->getAvailableAgentIds();
+        $onlineIds = $this->em->getRepository(Session::class)->getAvailableAgentIds();
 
-        $send_browser = [];
-        $send_email   = [];
+        $sendBrowser = [];
+        $sendEmail   = [];
 
-        foreach ($online_ids as $aid) {
+        foreach ($onlineIds as $aid) {
             if (!isset($agents[$aid])) {
                 continue;
             }
             $agent = $agents[$aid];
             if ($this->shouldSendBrowserNotification($agent)) {
-                $send_browser[$aid] = $agent;
+                $sendBrowser[$aid] = $agent;
             }
         }
 
         foreach ($agents as $agent) {
             if ($this->shouldSendEmailNotification($agent)) {
-                $send_email[$agent->getId()] = $agent;
+                $sendEmail[$agent->getId()] = $agent;
             }
         }
 
-        $this->notify_list = [
-            'email'   => $send_email,
-            'browser' => $send_browser,
+        $this->notifyList = [
+            'email'   => $sendEmail,
+            'browser' => $sendBrowser,
         ];
 
-        return $this->notify_list;
+        return $this->notifyList;
     }
 
     /**
@@ -127,17 +129,36 @@ abstract class AbstractAgentNotification
      */
     public function sendEmailNotifications($tpl, array $vars)
     {
-        $notify_list = $this->getNotifyList();
+        $notifyList = $this->getNotifyList();
 
-        if (!$notify_list['email']) {
+        if (!$notifyList['email']) {
             return;
         }
 
-        foreach ($notify_list['email'] as $agent) {
+        foreach ($notifyList['email'] as $agent) {
             $message = App::getMailer()->createMessage();
             $message->setTemplate($tpl, $vars);
             $message->setToPerson($agent);
             App::getMailer()->send($message);
+        }
+    }
+
+    /**
+     * Send an email notification to agents from the build list using SendmailBundle.
+     *
+     * @param EmailBaseType $viewModel
+     */
+    public function sendNewEmailNotifications($viewModel)
+    {
+        $notifyList = $this->getNotifyList();
+
+        if (!$notifyList['email']) {
+            return;
+        }
+
+        foreach ($notifyList['email'] as $agent) {
+            App::$container->get('email.email_sender')
+                ->send($viewModel, ['to' => $agent]);
         }
     }
 
@@ -152,17 +173,17 @@ abstract class AbstractAgentNotification
      */
     public function sendBrowserNotifications($tpl, array $vars)
     {
-        $notify_list = $this->getNotifyList();
+        $notifyList = $this->getNotifyList();
 
-        if (!$notify_list['browser']) {
+        if (!$notifyList['browser']) {
             return;
         }
 
-        foreach ($notify_list['browser'] as $agent) {
-            $tpl_line = App::getTemplating()->render($tpl, $vars);
+        foreach ($notifyList['browser'] as $agent) {
+            $tplLine = App::getTemplating()->render($tpl, $vars);
 
             $data           = $vars['notify_data'];
-            $data['row']    = $tpl_line;
+            $data['row']    = $tplLine;
             $data['target'] = $agent->getId();
 
             $this->eventDispatcher->dispatch(

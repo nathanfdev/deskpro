@@ -18,7 +18,7 @@ Feature: submitting new feedback
     Then I should be on "/feedback/view/my-new-feedback-title"
     And the response status code should be 200
     And I should see a "success" flash message with the phrase "portal.flashes.new_feedback_posted"
-    And I should receive an email with the subject "Thank you for submitting your feedback"
+    And I should receive an email on user with the subject "Thank you for submitting your feedback"
 
   Scenario: A logged in user submits invalid feedback
     Given I login with user credentials

@@ -74,7 +74,7 @@ class LanguageHandler extends AbstractEntityHandler
      *
      * @param Language $entity
      */
-    protected function createModel($entity, SideloadSerializationContext $context)
+    public function createModel($entity, SideloadSerializationContext $context)
     {
         $baseUrl   = $helpdeskUrl   = rtrim($this->settingsResolver->getSetting('core.deskpro_url'), '/');
         $flagImage = $baseUrl.$this->assetsHelper->getUrl('images/flags/'.$entity->getFlagImage(), 'legacy_web');

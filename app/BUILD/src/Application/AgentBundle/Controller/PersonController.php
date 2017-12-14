@@ -38,17 +38,26 @@ use Application\DeskPRO\App;
 use Application\DeskPRO\CustomFields\Handler\HandlerAbstract;
 use Application\DeskPRO\CustomFields\PersonFieldManager;
 use Application\DeskPRO\DependencyInjection\SystemServices\LanguageDataService;
+use Application\DeskPRO\Entity\AgentTeam;
+use Application\DeskPRO\Entity\BanEmail;
+use Application\DeskPRO\Entity\Blob;
 use Application\DeskPRO\Entity\ChatConversation;
 use Application\DeskPRO\Entity\LogEvent;
 use Application\DeskPRO\Entity\Organization;
 use Application\DeskPRO\Entity\Person as Person;
+use Application\DeskPRO\Entity\PersonActivity;
 use Application\DeskPRO\Entity\PersonContactData;
+use Application\DeskPRO\Entity\PersonEmail;
 use Application\DeskPRO\Entity\PersonFile;
 use Application\DeskPRO\Entity\PersonNote;
+use Application\DeskPRO\Entity\PersonPref;
+use Application\DeskPRO\Entity\Session;
+use Application\DeskPRO\Entity\Ticket;
+use Application\DeskPRO\Entity\TicketCharge;
 use Application\DeskPRO\Entity\TmpData;
+use Application\DeskPRO\Entity\Usergroup;
 use Application\DeskPRO\EntityRepository\ChatConversation as ChatConversationRepository;
 use Application\DeskPRO\EntityRepository\Person as PersonRepository;
-use Application\DeskPRO\EntityRepository\Ticket;
 use Application\DeskPRO\Form\Type\PhoneNumberType;
 use Application\DeskPRO\HttpFoundation\Cookie;
 use Application\DeskPRO\Log\Event\UserMerged;
@@ -113,9 +122,9 @@ class PersonController extends AbstractController
         // Misc info needed
         //------------------------------
 
-        $notes = $this->em->getRepository('DeskPRO:PersonNote')->getNotesForPerson($person);
+        $notes = $this->em->getRepository(PersonNote::class)->getNotesForPerson($person);
         /** @var Ticket $rep */
-        $rep = $this->em->getRepository('DeskPRO:Ticket');
+        $rep = $this->em->getRepository(Ticket::class);
 
         $permissionsHelper          = $this->getPerson()->getHelper('AgentPermissions');
         $allowedTicketDepartmentIds = $permissionsHelper->getAllowedDepartments('tickets', false, 'full');
@@ -129,7 +138,7 @@ class PersonController extends AbstractController
 
         );
 
-        $person_files       = $this->em->getRepository('DeskPRO:PersonFile')->getFilesForPerson($person);
+        $person_files       = $this->em->getRepository(PersonFile::class)->getFilesForPerson($person);
         $person_files_count = count($person_files);
 
         $max                    = 5;
@@ -164,10 +173,10 @@ class PersonController extends AbstractController
             }
         }
 
-        $person_charges       = $this->em->getRepository('DeskPRO:TicketCharge')->getChargesForPerson($person, 20);
-        $person_charge_totals = $this->em->getRepository('DeskPRO:TicketCharge')->getTotalChargesForPerson($person);
+        $person_charges       = $this->em->getRepository(TicketCharge::class)->getChargesForPerson($person, 20);
+        $person_charge_totals = $this->em->getRepository(TicketCharge::class)->getTotalChargesForPerson($person);
 
-        $activity_stream = $this->em->getRepository('DeskPRO:PersonActivity')->getForPerson($person, 50);
+        $activity_stream = $this->em->getRepository(PersonActivity::class)->getForPerson($person, 50);
 
         $contact_data = [];
         foreach ($person->contact_data as $cd) {
@@ -187,10 +196,10 @@ class PersonController extends AbstractController
             ],
         ])->createView();
 
-        $session = $this->em->getRepository('DeskPRO:Session')->getSessionForPerson($person);
+        $session = $this->em->getRepository(Session::class)->getSessionForPerson($person);
 
         $timezone_options = \DateTimeZone::listIdentifiers();
-        $usergroup_names  = $this->em->getRepository('DeskPRO:Usergroup')->getUsergroupNames();
+        $usergroup_names  = $this->em->getRepository(Usergroup::class)->getUsergroupNames();
         $reg_group        = $this->container->getUserGroups()->getRegisteredGroup();
 
         $person->loadHelper('PermissionsManager');
@@ -201,7 +210,7 @@ class PersonController extends AbstractController
         $org_members_count = null;
         $org_contact_data  = null;
         if ($person->organization) {
-            $org_members_count = $this->em->getRepository('DeskPRO:Organization')->countMembersFor($person->organization);
+            $org_members_count = $this->em->getRepository(Organization::class)->countMembersFor($person->organization);
 
             $org_contact_data = [];
             foreach ($person->organization->contact_data as $cd) {
@@ -320,12 +329,12 @@ class PersonController extends AbstractController
         $banned_emails = [];
         foreach ($person->getEmailAddresses() as $eml) {
             $match = null;
-            if (App::getOrm()->getRepository('DeskPRO:BanEmail')->isEmailBanned($eml, $match)) {
+            if (App::getOrm()->getRepository(BanEmail::class)->isEmailBanned($eml, $match)) {
                 $banned_emails[$eml] = $eml;
             }
         }
 
-        $changelog = $this->em->getRepository('DeskPRO:LogEvent')->findBy(
+        $changelog = $this->em->getRepository(LogEvent::class)->findBy(
             ['subject' => 'Person', 'subject_id' => $person['id'], 'parent' => null],
             ['id' => 'DESC']
         );
@@ -359,7 +368,7 @@ class PersonController extends AbstractController
             'perms'                     => $perms,
             'is_person_editable'        => $is_editable,
             'reg_group'                 => $reg_group,
-            'person_object_counts'      => $this->em->getRepository('DeskPRO:Person')->getPersonObjectCounts($person),
+            'person_object_counts'      => $this->em->getRepository(Person::class)->getPersonObjectCounts($person),
             'changelog'                 => $changelog,
 
             'custom_fields_definitions' => $custom_fields_definitions,
@@ -385,7 +394,7 @@ class PersonController extends AbstractController
 
     public function viewSessionAction($session_id)
     {
-        $session = $this->em->find('DeskPRO:Session', $session_id);
+        $session = $this->em->find(Session::class, $session_id);
 
         if ($session->is_person) {
             return $this->viewAction($session->person->id);
@@ -496,7 +505,7 @@ class PersonController extends AbstractController
 
             case 'set-picture':
                 $person->setDisablePicture(false);
-                $blob = $this->em->find('DeskPRO:Blob', $this->in->getUint('blob_id'));
+                $blob = $this->em->find(Blob::class, $this->in->getUint('blob_id'));
                 if ($blob) {
                     $blobCurr = $person->getPictureBlob();
                     if ($blobCurr && $blobCurr->getId() !== $blob->getId()) {
@@ -519,9 +528,9 @@ class PersonController extends AbstractController
                 $org  = null;
 
                 if ($id) {
-                    $org = $this->em->getRepository('DeskPRO:Organization')->find($id);
+                    $org = $this->em->getRepository(Organization::class)->find($id);
                 } elseif ($name) {
-                    $org = $this->em->getRepository('DeskPRO:Organization')->getByName($name);
+                    $org = $this->em->getRepository(Organization::class)->getByName($name);
 
                     if (!$org) {
                         $org       = new Organization();
@@ -546,7 +555,7 @@ class PersonController extends AbstractController
                     $org_members_count = null;
                     $org_contact_data  = null;
                     if ($person->organization) {
-                        $org_members_count = $this->em->getRepository('DeskPRO:Organization')->countMembersFor($person->organization) + $add;
+                        $org_members_count = $this->em->getRepository(Organization::class)->countMembersFor($person->organization) + $add;
 
                         $org_contact_data = [];
                         foreach ($person->organization->contact_data as $cd) {
@@ -594,7 +603,7 @@ class PersonController extends AbstractController
                 $usergroup_ids = Arrays::removeFalsey($usergroup_ids);
 
                 $usergroups = $usergroup_ids
-                    ? $this->em->getRepository('DeskPRO:Usergroup')->findBy(['id' => $usergroup_ids])
+                    ? $this->em->getRepository(Usergroup::class)->findBy(['id' => $usergroup_ids])
                     : [];
 
                 foreach ($person->usergroups as $personGroup) {
@@ -630,7 +639,7 @@ class PersonController extends AbstractController
                 break;
 
             case 'remove-file':
-                $file = $this->em->find('DeskPRO:PersonFile', $this->in->getUint('file_id'));
+                $file = $this->em->find(PersonFile::class, $this->in->getUint('file_id'));
                 if ($file && $file->person && $file->person->id == $person->id) {
                     $this->em->remove($file);
                     $data['removed_file_id'] = $file['id'];
@@ -650,24 +659,31 @@ class PersonController extends AbstractController
                     $email = $person->getPrimaryEmailAddress();
 
                     if ($email) {
-                        $message = $this->container->getMailer()->createMessage();
-                        $message->setTo($person->getPrimaryEmailAddress(), $person->getDisplayName());
-                        $message->setTemplate('DeskPRO:emails_user:agent-changed-password.html.twig', [
-                            'person' => $person,
-                        ]);
+                        if ($this->get('deskpro.feature_flags')->hasBeta('email_templates')) {
+                            $viewModel = $this->get('email.user_viewmodel_factory')
+                                ->createAgentChangedPasswordModel($person->getPlaintextPassword());
+                            $this->get('email.email_sender')
+                                ->send($viewModel, ['to' => $person]);
+                        } else {
+                            $message = $this->container->getMailer()->createMessage();
+                            $message->setTo($person->getPrimaryEmailAddress(), $person->getDisplayName());
+                            $message->setTemplate('DeskPRO:emails_user:agent-changed-password.html.twig', [
+                                'person' => $person,
+                            ]);
 
-                        $this->container->getTranslator()->setTemporaryLanguage($person->getLanguage(), function () use ($message) {
-                            $message->prepare();
-                        });
+                            $this->container->getTranslator()->setTemporaryLanguage($person->getLanguage(), function () use ($message) {
+                                $message->prepare();
+                            });
 
-                        $this->container->getMailer()->send($message);
+                            $this->container->getMailer()->send($message);
+                        }
                     }
                 }
                 break;
                         case 'upload-vcard':
                                 $blobId = $this->in->getUint('blob_id');
 
-                                $blob = $this->em->getRepository('DeskPRO:Blob')->find($blobId);
+                                $blob = $this->em->getRepository(Blob::class)->find($blobId);
 
                                 $content = $this->container->getBlobStorage()->copyBlobRecordToString($blob);
 
@@ -817,7 +833,7 @@ class PersonController extends AbstractController
         }
 
         $banned_pattern = null;
-        if (App::getOrm()->getRepository('DeskPRO:BanEmail')->isEmailBanned($email->email, $banned_pattern)) {
+        if (App::getOrm()->getRepository(BanEmail::class)->isEmailBanned($email->email, $banned_pattern)) {
             App::getDb()->delete('ban_emails', ['banned_email' => $banned_pattern]);
         }
 
@@ -890,7 +906,7 @@ class PersonController extends AbstractController
                         continue;
                     }
 
-                    $check = $this->em->getRepository('DeskPRO:PersonEmail')->getEmail($email);
+                    $check = $this->em->getRepository(PersonEmail::class)->getEmail($email);
                     if ($check) {
                         if ($check->person->id == $person->id) {
                             // silent discard
@@ -1147,7 +1163,7 @@ class PersonController extends AbstractController
             throw new AccessDeniedException();
         }
 
-        if (!$note = $this->em->find('DeskPRO:PersonNote', $note_id)) {
+        if (!$note = $this->em->find(PersonNote::class, $note_id)) {
             throw new NotFoundHttpException();
         }
 
@@ -1172,9 +1188,9 @@ class PersonController extends AbstractController
         $note_txt = $this->in->getString('note');
 
         if ($this->in->getUint('file_id')) {
-            $file = $this->em->find('DeskPRO:PersonFile', $this->in->getUint('file_id'));
+            $file = $this->em->find(PersonFile::class, $this->in->getUint('file_id'));
         } else {
-            $blob = $this->em->find('DeskPRO:Blob', $this->in->getUint('blob_id'));
+            $blob = $this->em->find(Blob::class, $this->in->getUint('blob_id'));
 
             if (!$blob) {
                 return $this->createJsonResponse([
@@ -1365,7 +1381,7 @@ class PersonController extends AbstractController
 
         foreach (['dpsid'] as $cookie_name) {
             if (!empty($_COOKIE[$cookie_name])) {
-                $sess2 = $this->em->getRepository('DeskPRO:Session')->getSessionFromCode($_COOKIE[$cookie_name]);
+                $sess2 = $this->em->getRepository(Session::class)->getSessionFromCode($_COOKIE[$cookie_name]);
                 if ($sess2) {
                     $this->em->remove($sess2);
                     $this->em->flush();
@@ -1396,7 +1412,7 @@ class PersonController extends AbstractController
             throw new \Symfony\Component\HttpKernel\Exception\NotFoundHttpException();
         }
 
-        $state = $this->em->getRepository('DeskPRO:PersonPref')->getPrefForPersonId('agent.ui.state.newperson', $this->person->id);
+        $state = $this->em->getRepository(PersonPref::class)->getPrefForPersonId('agent.ui.state.newperson', $this->person->id);
 
         //------------------------------
         // Custom fields
@@ -1412,7 +1428,7 @@ class PersonController extends AbstractController
         $custom_fields_definitions = $manager->createDefinitionsFormForContext(new Person());
 
         $timezone_options = \DateTimeZone::listIdentifiers();
-        $usergroup_names  = $this->em->getRepository('DeskPRO:Usergroup')->getUsergroupNames();
+        $usergroup_names  = $this->em->getRepository(Usergroup::class)->getUsergroupNames();
 
         return $this->render('AgentBundle:Person:newperson.html.twig', [
             'state'            => $state,
@@ -1447,7 +1463,7 @@ class PersonController extends AbstractController
                 throw new \Exception('Invalid Blob ID');
             }
 
-            $blob    = $this->em->getRepository('DeskPRO:Blob')->find($blobId);
+            $blob    = $this->em->getRepository(Blob::class)->find($blobId);
             $content = $this->container->getBlobStorage()->copyBlobRecordToString($blob);
 
             $vCardReader = new VCard($this->em);
@@ -1512,17 +1528,24 @@ class PersonController extends AbstractController
             $this->em->flush();
 
             if ($this->in->getString('newperson.send_welcome_email')) {
-                /** @var Mailer $mailer */
-                $mailer  = $this->get('mailer');
-                $message = $mailer->createMessage();
-                $message->setToPerson($person);
-                $message->setTemplate(
-                    'DeskPRO:emails_user:register-welcome-byagent.html.twig',
-                    [
-                        'person' => $person,
-                    ]
-                );
-                $mailer->send($message);
+                if ($this->get('deskpro.feature_flags')->hasBeta('email_templates')) {
+                    $viewModel = $this->get('email.user_viewmodel_factory')
+                        ->createRegisterWelcomeByAgentModel($person->getPlaintextPassword());
+                    $this->get('email.email_sender')
+                        ->send($viewModel, ['to' => $person]);
+                } else {
+                    /** @var Mailer $mailer */
+                    $mailer  = $this->get('mailer');
+                    $message = $mailer->createMessage();
+                    $message->setToPerson($person);
+                    $message->setTemplate(
+                        'DeskPRO:emails_user:register-welcome-byagent.html.twig',
+                        [
+                            'person' => $person,
+                        ]
+                    );
+                    $mailer->send($message);
+                }
             }
 
             return $this->createJsonResponse(
@@ -1596,7 +1619,7 @@ class PersonController extends AbstractController
                 $manager->flush($custom_fields_definitions);
             }
 
-            $this->em->getRepository('DeskPRO:PersonPref')->deletePrefForPersonId('agent.ui.state.newperson', $this->person->id);
+            $this->em->getRepository(PersonPref::class)->deletePrefForPersonId('agent.ui.state.newperson', $this->person->id);
 
             $this->get('event_dispatcher')->dispatch(PersonCreatedEvent::EVENT_NAME, new PersonCreatedEvent($person));
 
@@ -1604,15 +1627,26 @@ class PersonController extends AbstractController
                 $trans = $this->container->getTranslator();
                 $trans->setPersonContext($newperson->getPerson());
 
-                /** @var Mailer $mailer */
-                $mailer  = $this->get('mailer');
-                $message = $mailer->createMessage();
-                $message->setToPerson($person);
-                $message->setTemplate('DeskPRO:emails_user:register-welcome-byagent.html.twig', [
-                    'person' => $person,
-                ]);
+                if ($this->get('deskpro.feature_flags')->hasBeta('email_templates')) {
+                    $viewModel = $this->get('email.user_viewmodel_factory')
+                        ->createRegisterWelcomeByAgentModel($person->getPlaintextPassword());
+                    $this->get('email.email_sender')
+                        ->send($viewModel, ['to' => $person]);
+                } else {
+                    /** @var Mailer $mailer */
+                    $mailer  = $this->get('mailer');
+                    $message = $mailer->createMessage();
+                    $message->setToPerson($person);
+                    $message->setTemplate(
+                        'DeskPRO:emails_user:register-welcome-byagent.html.twig',
+                        [
+                            'person' => $person,
+                        ]
+                    );
 
-                $mailer->send($message);
+                    $mailer->send($message);
+                }
+
                 $trans->setPersonContext($this->person);
             }
 
@@ -1634,7 +1668,7 @@ class PersonController extends AbstractController
         $sort_by = $this->in->getString('sort_by');
 
         /** @var Ticket $rep */
-        $rep = $this->em->getRepository('DeskPRO:Ticket');
+        $rep = $this->em->getRepository(Ticket::class);
 
         $permissionsHelper          = $this->getPerson()->getHelper('AgentPermissions');
         $allowedTicketDepartmentIds = $permissionsHelper->getAllowedDepartments('tickets', false, 'full');
@@ -1711,7 +1745,7 @@ class PersonController extends AbstractController
     public function listTeamsAction()
     {
         /** @var \Application\DeskPRO\EntityRepository\AgentTeam $rep */
-        $rep = $this->em->getRepository('DeskPRO:AgentTeam');
+        $rep = $this->em->getRepository(AgentTeam::class);
         $ret = $rep->getTeamsRaw();
 
         return $this->createJsonResponse($ret);

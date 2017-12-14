@@ -72,7 +72,7 @@ class ChatConversationHandler extends AbstractEntityHandler
      *
      * @param ChatConversation $entity
      */
-    protected function createModel($entity, SideloadSerializationContext $context)
+    public function createModel($entity, SideloadSerializationContext $context)
     {
         $this->chatIds[] = $entity->getId();
         $serializerClass = $context->getMappedClass(ChatConversation::class);

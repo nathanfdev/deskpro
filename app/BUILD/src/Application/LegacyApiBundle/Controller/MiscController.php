@@ -34,7 +34,11 @@ namespace Application\LegacyApiBundle\Controller;
 
 use Application\DeskPRO\App;
 use Application\DeskPRO\Auth\LoginProcessor;
+use Application\DeskPRO\Entity\ApiKey;
 use Application\DeskPRO\Entity\ApiToken;
+use Application\DeskPRO\Entity\Person;
+use Application\DeskPRO\Entity\Session;
+use Application\DeskPRO\Entity\Usersource;
 use Application\DeskPRO\LoginLogs\LoginLogs;
 use DeskPRO\Bundle\AppBundle\Annotation\ActionPermissions\Annotation\ApiModes;
 use DeskPRO\Bundle\AppBundle\AntiAbuse\Event\TokenExchangeAbuseCheck;
@@ -124,7 +128,7 @@ class MiscController extends AbstractController
         $result = $adapter->authenticate();
 
         if ($result->isValid()) {
-            $person = $this->em->getRepository('DeskPRO:Person')->find($result->getIdentity()->getIdentity());
+            $person = $this->em->getRepository(Person::class)->find($result->getIdentity()->getIdentity());
 
             if ($person) {
                 $identity = new \Orb\Auth\Identity($person->id, ['person' => $person]);
@@ -138,7 +142,7 @@ class MiscController extends AbstractController
         // Auth usersources that accept local input
         //------------------------------
 
-        $usersources = $this->em->getRepository('DeskPRO:Usersource')->getLocalInputUsersources();
+        $usersources = $this->em->getRepository(Usersource::class)->getLocalInputUsersources();
         foreach ($usersources as $us) {
 
             /* @var $us \Application\DeskPRO\Entity\Usersource */
@@ -192,26 +196,37 @@ class MiscController extends AbstractController
         if (!$result->isValid()) {
 
             // Send alert
-            $attempt_person = $this->em->getRepository('DeskPRO:Person')->findOneByEmail($this->in->getString('email'));
-            if ($attempt_person && $attempt_person->getPref('agent_notif.login_attempt_fail.email')) {
-                $message = $this->container->getMailer()->createMessage();
+            $attemptPerson = $this->em->getRepository(Person::class)->findOneByEmail($this->in->getString('email'));
+            if ($attemptPerson && $attemptPerson->getPref('agent_notif.login_attempt_fail.email')) {
+                if ($this->get('deskpro.feature_flags')->hasBeta('email_templates')) {
+                    $viewModel = $this->get('email.agent_viewmodel_factory')
+                        ->createLoginAlertModel(
+                            $request,
+                            $this->session->getEntity()->getDateCreated(),
+                            false
+                        );
+                    $this->get('email.email_sender')
+                        ->send($viewModel, ['to' => $attemptPerson]);
+                } else {
+                    $message = $this->container->getMailer()->createMessage();
 
-                $message->setTemplate(
-                    'DeskPRO:emails_agent:login-alert.html.twig',
-                    [
-                        'success'   => false,
-                        'firstSeen' => $this->session->getEntity()->getDateCreated(),
-                        'request'   => $request,
-                    ]
-                );
-                $message->setTo($attempt_person->getPrimaryEmailAddress(), $attempt_person->getDisplayName());
-                $this->container->getMailer()->send($message);
+                    $message->setTemplate(
+                        'DeskPRO:emails_agent:login-alert.html.twig',
+                        [
+                            'success'   => false,
+                            'firstSeen' => $this->session->getEntity()->getDateCreated(),
+                            'request'   => $request,
+                        ]
+                    );
+                    $message->setTo($attemptPerson->getPrimaryEmailAddress(), $attemptPerson->getDisplayName());
+                    $this->container->getMailer()->send($message);
+                }
             }
 
             // Save login log
-            if ($attempt_person) {
+            if ($attemptPerson) {
                 $this->db->insert('login_log', [
-                    'person_id'    => $attempt_person->getId(),
+                    'person_id'    => $attemptPerson->getId(),
                     'area'         => 'api',
                     'is_success'   => 0,
                     'ip_address'   => $request->getClientIp(),
@@ -235,17 +250,28 @@ class MiscController extends AbstractController
         App::setCurrentPerson($person);
 
         if ($person->getPref('agent_notif.login_attempt.email')) {
-            $message = $this->container->getMailer()->createMessage();
-            $message->setTemplate(
-                'DeskPRO:emails_agent:login-alert.html.twig',
-                [
-                    'success'   => true,
-                    'firstSeen' => $this->session->getEntity()->getDateCreated(),
-                    'request'   => $request,
-                ]
-            );
-            $message->setTo($person->getPrimaryEmailAddress(), $person->getDisplayName());
-            $this->container->getMailer()->send($message);
+            if ($this->get('deskpro.feature_flags')->hasBeta('email_templates')) {
+                $viewModel = $this->get('email.agent_viewmodel_factory')
+                    ->createLoginAlertModel(
+                        $request,
+                        $this->session->getEntity()->getDateCreated(),
+                        true
+                    );
+                $this->get('email.email_sender')
+                    ->send($viewModel, ['to' => $person]);
+            } else {
+                $message = $this->container->getMailer()->createMessage();
+                $message->setTemplate(
+                    'DeskPRO:emails_agent:login-alert.html.twig',
+                    [
+                        'success'   => true,
+                        'firstSeen' => $this->session->getEntity()->getDateCreated(),
+                        'request'   => $request,
+                    ]
+                );
+                $message->setTo($person->getPrimaryEmailAddress(), $person->getDisplayName());
+                $this->container->getMailer()->send($message);
+            }
         }
 
         // Login log
@@ -260,7 +286,7 @@ class MiscController extends AbstractController
         ]);
 
         /** @var ApiToken $token */
-        $token = $this->em->getRepository('DeskPRO:ApiToken')->getTokenForPerson($person);
+        $token = $this->em->getRepository(ApiToken::class)->getTokenForPerson($person);
         if (!$token) {
             $token         = new \Application\DeskPRO\Entity\ApiToken();
             $token->scope  = 'client';
@@ -302,7 +328,7 @@ class MiscController extends AbstractController
     {
         $person = $this->person;
 
-        $token = $this->em->getRepository('DeskPRO:ApiToken')->getTokenForPerson($person);
+        $token = $this->em->getRepository(ApiToken::class)->getTokenForPerson($person);
         if (!$token) {
             $token         = new \Application\DeskPRO\Entity\ApiToken();
             $token->person = $person;
@@ -374,7 +400,7 @@ class MiscController extends AbstractController
 
     public function getSessionPersonAction($session_code)
     {
-        $session = $this->em->getRepository('DeskPRO:Session')->getSessionFromCode($session_code);
+        $session = $this->em->getRepository(Session::class)->getSessionFromCode($session_code);
         if (!$session) {
             return $this->createApiErrorResponse('no_session', 'session could not be found or could not be validated');
         }
@@ -395,9 +421,9 @@ class MiscController extends AbstractController
         }
 
         if ($this->apikey) {
-            $this->rate_info = $this->em->getRepository('DeskPRO:ApiKey')->getRateLimitInfo($this->apikey);
+            $this->rate_info = $this->em->getRepository(ApiKey::class)->getRateLimitInfo($this->apikey);
         } else {
-            $this->rate_info = $this->em->getRepository('DeskPRO:ApiToken')->getRateLimitInfo($this->api_token);
+            $this->rate_info = $this->em->getRepository(ApiToken::class)->getRateLimitInfo($this->api_token);
         }
 
         return $this->createApiResponse([

@@ -16211,7 +16211,7 @@ Configuration file to allow overriding of semantic variables and styling
   background: #FFFFFF;
   border: 1px solid rgba(34, 36, 38, 0.15);
   color: #2b2f2f;
-  border-radius: 0.28571429rem;
+  border-radius: 2px;
   transition: box-shadow 0.1s ease, border-color 0.1s ease;
   box-shadow: none;
 }
@@ -16387,7 +16387,7 @@ Configuration file to allow overriding of semantic variables and styling
   height: 100%;
   width: 2.67142857em;
   opacity: 0.5;
-  border-radius: 0em 0.28571429rem 0.28571429rem 0em;
+  border-radius: 0em 2px 2px 0em;
   transition: opacity 0.3s ease;
 }
 .ui.icon.input > i.icon:not(.link) {
@@ -16416,7 +16416,7 @@ Configuration file to allow overriding of semantic variables and styling
 .ui[class*="left icon"].input > i.icon {
   right: auto;
   left: 1px;
-  border-radius: 0.28571429rem 0em 0em 0.28571429rem;
+  border-radius: 2px 0em 0em 2px;
 }
 .ui[class*="left icon"].input > i.circular.icon {
   right: auto;
@@ -16474,7 +16474,7 @@ Configuration file to allow overriding of semantic variables and styling
   top: 1px;
   right: 1px;
   font-size: 0.64285714em;
-  border-radius: 0em 0.28571429rem 0em 0em;
+  border-radius: 0em 2px 0em 0em;
 }
 /* Spacing with corner label */
 .ui[class*="corner labeled"]:not([class*="left corner labeled"]).labeled.input input {
@@ -16534,7 +16534,7 @@ Configuration file to allow overriding of semantic variables and styling
 .ui.action.input:not([class*="left action"]) > .dropdown:last-child,
 .ui.action.input:not([class*="left action"]) > .button:last-child,
 .ui.action.input:not([class*="left action"]) > .buttons:last-child > .button {
-  border-radius: 0px 0.28571429rem 0.28571429rem 0px;
+  border-radius: 0px 2px 2px 0px;
 }
 /* Input Focus */
 .ui.action.input:not([class*="left action"]) input:focus {
@@ -16554,7 +16554,7 @@ Configuration file to allow overriding of semantic variables and styling
 .ui[class*="left action"].input > .dropdown:first-child,
 .ui[class*="left action"].input > .button:first-child,
 .ui[class*="left action"].input > .buttons:first-child > .button {
-  border-radius: 0.28571429rem 0px 0px 0.28571429rem;
+  border-radius: 2px 0px 0px 2px;
 }
 /* Input Focus */
 .ui[class*="left action"].input > input:focus {
@@ -30840,7 +30840,7 @@ Configuration file to allow overriding of semantic variables and styling
 .ui.menu {
   display: flex;
   margin: 1rem 0em;
-  font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
+  font-family: 'Open Sans', Helvetica, Arial, sans-serif;
   background: #FFFFFF;
   font-weight: normal;
   border: 1px solid rgba(34, 36, 38, 0.15);

@@ -33,6 +33,8 @@ use Application\DeskPRO\Entity\FeedbackComment;
 use Application\DeskPRO\Entity\FeedbackStatusCategory;
 use Application\DeskPRO\Entity\PageViewLog;
 use Application\DeskPRO\Entity\Person;
+use Application\DeskPRO\Notifications\NewCommentNotification;
+use Application\DeskPRO\Notifications\NewFeedbackNotification;
 use Application\DeskPRO\People\PersonGuest;
 use DeskPRO\Bundle\AppBundle\Annotation\AutoPostOnGetRequest;
 use DeskPRO\Bundle\AppBundle\AntiAbuse\Event\SubmitCommentAbuseCheck;
@@ -70,6 +72,8 @@ class FeedbackController extends AbstractController
      *
      * @param Request $request
      * @param string  $_format
+     *
+     * @throws \Exception
      *
      * @return Response
      */
@@ -247,6 +251,8 @@ class FeedbackController extends AbstractController
      * @param Person   $person
      * @param Request  $request
      *
+     * @throws \Doctrine\ORM\OptimisticLockException
+     *
      * @return \Symfony\Component\HttpFoundation\RedirectResponse
      */
     protected function acceptNewFeedback(Feedback $newFeedback, Person $person, Request $request)
@@ -262,6 +268,9 @@ class FeedbackController extends AbstractController
             $destination = $this->generateUrl('portal_feedback');
         }
 
+        $notify = new NewFeedbackNotification($newFeedback);
+        $notify->send();
+
         $this->getEmailSender()->sendNewFeedbackEmail($newFeedback);
 
         $redirect = $this->get('portal_validation')->getPasswordRedirectIfRequired($person, $request, $destination);
@@ -275,6 +284,7 @@ class FeedbackController extends AbstractController
     /**
      * @param mixed  $person
      * @param string $ip
+     * @param bool   $withResponse
      *
      * @return SubmitFeedbackAbuseCheck
      */
@@ -296,6 +306,11 @@ class FeedbackController extends AbstractController
      * @Method("GET")
      * @Security("is_granted('USE_FEEDBACK')")
      * @PageHttpCache()
+     *
+     * @param Request $request
+     * @param $filter_uri
+     *
+     * @return Response
      */
     public function browseAction(Request $request, $filter_uri)
     {
@@ -435,6 +450,10 @@ class FeedbackController extends AbstractController
             $comment->setIpAddress($request->getClientIp());
             $newCommentForm = $formHandler->createForm($comment, $request);
             $formResult     = $formHandler->handle($newCommentForm, $request, $item, $comment);
+            if ($formResult) {
+                $notify = new NewCommentNotification($comment);
+                $notify->send();
+            }
             if ($formResult instanceof Response) {
                 return $formResult;
             }

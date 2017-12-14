@@ -1,0 +1,39 @@
+<dp:subject>{{ subject | default('FW: ' ~ ticket.subject) }}</dp:subject>
+{{ set_tplvar('plain_email', true) }}
+
+<html>
+<head>
+	{% include 'SendmailBundle:blocks:resources.html.twig' %}
+</head>
+<body>
+{% include 'SendmailBundle:emails_common:email_code_top.html.twig' %}
+
+{% include 'SendmailBundle:blocks:header.html.twig' %}
+
+	<container>
+        <div>{{ agent_message | raw }}</div>
+
+        <br><br/>
+
+        ---------- {{ phrase('agent.tickets.forwarded_message') }} ----------<br/>
+        {% for message in ticket_messages %}
+        <strong>{{ phrase('agent.general.from') }}:</strong> {{ message.person.display_name }} &lt;{{ message.person.primary_email }}&gt;<br/>
+        <strong>{{ phrase('agent.general.date') }}:</strong> {{ message.date_created|date('full') }}<br/>
+        <strong>{{ phrase('agent.general.subject') }}:</strong> {{ ticket.subject }}<br/>
+
+        <table border="0" cellspacing="0" cellpadding="3">
+            <tr><td>
+                <table border="0" cellspacing="0" cellpadding="0" width="100%"><tr><td>
+                    <div data-dp-type="blockquote" class="dp-quoted-message">{{ message.message|raw }}</div>
+                </td></tr></table>
+            </td></tr>
+        </table>
+        <div class="dp-spacer">&nbsp;</div>
+        {% endfor %}
+    </container>
+
+{% include 'SendmailBundle:blocks:footer.html.twig' %}
+
+{% include 'SendmailBundle:emails_common:email_code_bottom.html.twig' %}
+</body>
+</html>

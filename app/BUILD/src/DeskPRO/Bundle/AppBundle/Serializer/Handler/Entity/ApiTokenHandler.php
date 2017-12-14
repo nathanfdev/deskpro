@@ -66,7 +66,7 @@ class ApiTokenHandler extends AbstractEntityHandler
      *
      * @param ApiToken $entity
      */
-    protected function createModel($entity, SideloadSerializationContext $context)
+    public function createModel($entity, SideloadSerializationContext $context)
     {
         return new ApiTokenModel($entity, $this->settingsResolver->getSettings());
     }

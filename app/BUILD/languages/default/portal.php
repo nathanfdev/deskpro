@@ -670,6 +670,7 @@ return [
     'portal.general.updated'                                 => 'Updated',
     'portal.general.x-search-results'                        => '{{ num }} search results for "{{ query }}"',
     'portal.general.x-search-results-no-query'               => '{{ num }} search results',
+    'portal.guides.view-as-agent'                            => 'You can see this page because you are an agent. Users will not be able to view this page.',
     'portal.news.none'                                       => 'No news yet',
     'portal.news.recent-title'                               => 'Recent News',
     'portal.news.search-title'                               => 'News Articles',

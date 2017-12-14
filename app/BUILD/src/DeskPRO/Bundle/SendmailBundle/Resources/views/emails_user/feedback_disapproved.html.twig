@@ -1,0 +1,30 @@
+<dp:subject>{{ phrase('user.email_subjects.feedback_new-disapproved') }}</dp:subject>
+
+<html>
+<head>
+	{% include 'SendmailBundle:blocks:resources.html.twig' %}
+</head>
+<body>
+{% include 'SendmailBundle:emails_common:email_code_top.html.twig' %}
+
+{% include 'SendmailBundle:blocks:header.html.twig' %}
+
+	<container>
+		{{ phrase('user.emails.feedback_thank-you', {'title':feedback.title}) }}
+
+		<br /><br />
+
+		{% if reason %}
+			{{ phrase('user.emails.feedback_disapproved-reason', {name: agent.display_name_user}) }}
+			<br /><br />
+			{{ reason }}
+		{% else %}
+			{{ phrase('user.emails.feedback_disapproved') }}
+		{% endif %}
+	</container>
+
+{% include 'SendmailBundle:blocks:footer.html.twig' %}
+
+{% include 'SendmailBundle:emails_common:email_code_bottom.html.twig' %}
+</body>
+</html>

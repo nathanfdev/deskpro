@@ -22,6 +22,8 @@
 				<a href="{{ url_full('agent') }}#app.publish,validating_comments,d.o:{{ comment.getObject().getId() }}">{{ url_full('agent') }}#app.publish,validating_comments,d.o={{ comment.getObject().getId() }}</a>
 			{% elseif get_type(comment.getObject()) == 'News' %}
 				<a href="{{ url_full('agent') }}#app.publish,validating_comments,n.o:{{ comment.getObject().getId() }}">{{ url_full('agent') }}#app.publish,validating_comments,n.o={{ comment.getObject().getId() }}</a>
+			{% elseif get_type(comment.getObject()) == 'Topic' %}
+				<a href="{{ url_full('agent') }}#app.publish,validating_comments,m.o:{{ comment.getObject().getId() }}">{{ url_full('agent') }}#app.publish,validating_comments,m.o={{ comment.getObject().getId() }}</a>
 			{% elseif get_type(comment.getObject()) == 'Feedback' %}
 				<a href="{{ url_full('agent') }}#app.publish,fb_comments,i.o:{{ comment.getObject().getId() }}">{{ url_full('agent') }}#app.publish,fb_comments,i.o={{ comment.getObject().getId() }}</a>
 			{% else %}
@@ -53,6 +55,8 @@
 				{{ phrase('agent.emails.view_online_at') }} <a href="{{ url_full('agent') }}#n.o:{{ comment.getObject().getId() }}">{{ url_full('agent') }}#n.o={{ comment.getObject().getId() }}</a>
 			{% elseif get_type(comment.getObject()) == 'Feedback' %}
 				{{ phrase('agent.emails.view_online_at') }} <a href="{{ url_full('agent') }}#i.o:{{ comment.getObject().getId() }}">{{ url_full('agent') }}#i.o={{ comment.getObject().getId() }}</a>
+			{% elseif get_type(comment.getObject()) == 'Topic' %}
+				{{ phrase('agent.emails.view_online_at') }} <a href="{{ url_full('agent') }}#m.o:{{ comment.getObject().getId() }}">{{ url_full('agent') }}#m.o={{ comment.getObject().getId() }}</a>
 			{% endif %}
 		</td>
 	</tr>

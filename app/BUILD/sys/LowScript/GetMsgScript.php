@@ -654,7 +654,7 @@ class GetMsgScript extends LowScriptAbstract
         $tableName = 'notify_'.$type;
         $sql       = <<<SQL
 SELECT * FROM `{$tableName}`
-WHERE `target_id` = :target_id 
+WHERE (`target_id` = :target_id OR `target_id` = -100)
   AND `id` > :last
 ORDER BY `id` ASC
 SQL;

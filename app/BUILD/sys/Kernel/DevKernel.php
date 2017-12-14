@@ -67,6 +67,7 @@ class DevKernel extends BaseKernel
 
             new \Application\DeskPRO\DeskPROBundle(),
             new \Application\EmailBundle\EmailBundle(),
+            new \DeskPRO\Bundle\SendmailBundle\SendmailBundle(),
             new \JMS\SerializerBundle\JMSSerializerBundle(),
             new \Nelmio\ApiDocBundle\NelmioApiDocBundle(),
 

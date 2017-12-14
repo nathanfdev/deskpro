@@ -7,10 +7,12 @@ import { MenuItem } from '../Menu';
 class Select extends React.Component {
   static propTypes = {
     filter:      PropTypes.bool,
+    disabled:    PropTypes.bool,
     onChange:    PropTypes.func,
     name:        PropTypes.string,
     placeholder: PropTypes.string,
     value:       PropTypes.string,
+    className:   PropTypes.string,
     options:     PropTypes.oneOfType([
       PropTypes.array,
       PropTypes.object
@@ -204,12 +206,18 @@ class Select extends React.Component {
   };
 
   selectValue = (value) => {
-    this.props.onChange(value.value);
-    this.setState({
-      value,
-      inputValue: '',
-      isOpen:     false
-    });
+    if (this.props.onChange(value.value) !== false) {
+      this.setState({
+        value,
+        inputValue: '',
+        isOpen:     false
+      });
+    } else {
+      this.setState({
+        inputValue: '',
+        isOpen:     false
+      });
+    }
   };
 
   updateFilter = (event) => {
@@ -241,28 +249,31 @@ class Select extends React.Component {
 
   render() {
     const { value, isOpen, inputValue } = this.state;
-    const { placeholder, filter, name } = this.props;
+    const { placeholder, filter, name, className, disabled } = this.props;
     const text = value ? value.label : placeholder;
     const options = this.visibleOptions = this.filterOptions();
-    return (
-      <ClickOut onClickOut={this.closeSelect}>
-        <div
-          className={classNames('ui selection dropdown', { active: isOpen, visible: isOpen, search: filter })}
-          onClick={this.openSelect}
-          onKeyDown={this.handleKeyDown}
-        >
-          <input ref={(c) => { this.input = c; }} type="hidden" name={name} value={this.props.value} />
-          <i className="dropdown icon" />
-          {this.getInput()}
-          <div className={classNames('text', { default: !value, filtered: inputValue })}>
-            {text}
-          </div>
-          <div className={classNames('menu transition', { visible: isOpen })} ref={(c) => { this.menu = c; }}>
-            {this.renderOptions(options)}
-          </div>
-        </div>
-      </ClickOut>
-    );
+
+    const select = (<div
+      className={classNames('ui selection dropdown', className, { active: isOpen, visible: isOpen, search: filter, disabled })}
+      onClick={this.openSelect}
+      onKeyDown={this.handleKeyDown}
+    >
+      <input ref={(c) => { this.input = c; }} type="hidden" name={name} value={this.props.value} />
+      <i className="dropdown icon" />
+      {this.getInput()}
+      <div className={classNames('text', { default: !value, filtered: inputValue })}>
+        {text}
+      </div>
+      <div className={classNames('menu transition', { visible: isOpen })} ref={(c) => { this.menu = c; }}>
+        {this.renderOptions(options)}
+      </div>
+    </div>);
+    if (isOpen) {
+      return (
+        <ClickOut onClickOut={this.closeSelect}>{select}</ClickOut>
+      );
+    }
+    return select;
   }
 }
 export default Select;

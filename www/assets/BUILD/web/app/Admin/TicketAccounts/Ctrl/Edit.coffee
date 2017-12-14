@@ -162,9 +162,9 @@ define [
           @uploadFiles().then(=>
               @skipDirtyState()
               if is_new
-                @$state.go('tickets.ticket_accounts.gocreate')
+                @$state.go('emails.ticket_accounts.gocreate')
               else
-                @$state.go('tickets.ticket_accounts')
+                @$state.go('emails.ticket_accounts')
             , (err) =>
               @Growl.error(err)
           )
