@@ -346,6 +346,8 @@ class UserViewModelFactory extends AbstractViewModelFactory
     /**
      * @param Ticket $ticket
      *
+     * @throws \Exception
+     *
      * @return NewTicketGuest
      */
     public function createNewTicketGuestModel(
@@ -357,11 +359,15 @@ class UserViewModelFactory extends AbstractViewModelFactory
     }
 
     /**
+     * @param string $subject
+     *
+     * @throws \Exception
+     *
      * @return NewTicketRegClosed
      */
-    public function createNewTicketRegClosedModel()
+    public function createNewTicketRegClosedModel($subject)
     {
-        return new NewTicketRegClosed();
+        return new NewTicketRegClosed($subject);
     }
 
     /**

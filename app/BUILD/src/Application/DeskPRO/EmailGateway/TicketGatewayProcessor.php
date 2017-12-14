@@ -603,7 +603,7 @@ class TicketGatewayProcessor extends AbstractGatewayProcessor
             if (!$ticket_email->is_bounce && !$this->reader->isFromRobot() && !$account_manager->findAccountForEmailAddress($user_email)) {
                 if ($this->container->get('deskpro.feature_flags')->hasBeta('email_templates')) {
                     $viewModel = $this->container->get('email.user_viewmodel_factory')
-                        ->createNewTicketRegClosedModel();
+                        ->createNewTicketRegClosedModel($this->reader->getSubject()->getSubjectUtf8());
                     $this->container->get('email.email_sender')
                         ->send($viewModel, ['to' => $this->reader->getFromAddress()->getEmail()]);
                 } else {
