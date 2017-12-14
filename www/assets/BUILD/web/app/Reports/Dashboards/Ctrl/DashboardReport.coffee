@@ -114,7 +114,7 @@ define ['DeskPRO/Util/Arrays'], (Arrays) -> [
       })
 
       modalInstance.result.then (result) ->
-        if result.back == true
+        if result?.back == true
           $scope.openAddWidget(widget)
 
     $scope.openAddWidget = (widget) ->
