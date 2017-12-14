@@ -35,11 +35,7 @@ namespace Application\LegacyApiBundle\Controller;
 use Application\DeskPRO\Entity\ChatRoundRobin;
 use Application\DeskPRO\Entity\ChatRoundRobinLogEntry;
 use Application\DeskPRO\Entity\Person;
-use Application\DeskPRO\Entity\TicketTrigger;
-use Application\DeskPRO\Tickets\Actions\ActionComposite;
-use Application\DeskPRO\Tickets\Actions\SetRoundRobin;
-use Application\DeskPRO\Tickets\Triggers\TriggerActions;
-use Application\LegacyApiBundle\HttpFoundation\JsonResponse;
+use Application\DeskPRO\EntityRepository\Person as PersonRepository;
 use Application\LegacyApiBundle\PermissionStrategy\UserTypePermission;
 use DeskPRO\Bundle\AppBundle\Annotation\ActionPermissions\Annotation\ApiModes;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
@@ -151,7 +147,6 @@ class ChatRoundRobinController extends AbstractController implements ProtectedCo
             throw $this->createNotFoundException();
         }
 
-        $this->countRoundRobinTriggers(true, $rr['id']);
         $this->em->remove($rr);
         $this->em->flush();
 
@@ -167,76 +162,11 @@ class ChatRoundRobinController extends AbstractController implements ProtectedCo
         if ($this->request->isMethod('PUT')) {
             $enabled = $this->in->getBool('enabled');
             $this->settings->setSetting('core.chat_round_robin.enabled', $enabled);
-
-            if (!$enabled) {
-                $this->countRoundRobinTriggers(true);
-            }
         }
 
         return $this->createApiResponse([
             'enabled' => (bool) $this->settings->get('core.chat_round_robin.enabled', false),
         ]);
-    }
-
-    /**
-     * check triggers using round robin id, or all round robins if id is null.
-     *
-     * @param $id
-     *
-     * @return JsonResponse
-     */
-    public function checkTriggersAction($id)
-    {
-        return $this->createApiResponse(['active_triggers' => $this->countRoundRobinTriggers(false, $id)]);
-    }
-
-    protected function isTriggerActionClear($action, $roundRobinId = null)
-    {
-        if ($action instanceof SetRoundRobin) {
-            if (!$roundRobinId || $action->getActionOption('id') == $roundRobinId) {
-                return false;
-            }
-        } elseif ($action instanceof ActionComposite) {
-            foreach ($action as $subAction) {
-                if (!$this->isTriggerActionClear($subAction)) {
-                    return false;
-                }
-            }
-        }
-
-        return true;
-    }
-
-    protected function countRoundRobinTriggers($disable = false, $roundRobinId = null)
-    {
-        $count    = 0;
-        $triggers = $this->em->getRepository(TicketTrigger::class)->getTriggers();
-        foreach ($triggers as $trigger) {
-            $newActions = new TriggerActions();
-            /** @var TriggerActions $actions */
-            $actions = $trigger->actions;
-            if (!$actions) {
-                continue;
-            }
-
-            foreach ($actions as $action) {
-                if ($this->isTriggerActionClear($action, $roundRobinId)) {
-                    $newActions->addAction($action);
-                }
-            }
-
-            if ($newActions->count() !== $actions->count()) {
-                ++$count;
-
-                if ($disable) {
-                    $trigger->actions      = $newActions;
-                    $trigger['is_enabled'] = false;
-                    $this->em->flush();
-                }
-            }
-        }
-
-        return $count;
     }
 
     /**
