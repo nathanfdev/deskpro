@@ -120,8 +120,8 @@ class TicketReminders extends AbstractJob
                 'verify_url'  => $validate_url,
                 'expire_date' => $saved_form->getDateExpires(),
             ]);
-        }
 
-        App::getMailer()->send($message);
+            App::getMailer()->send($message);
+        }
     }
 }

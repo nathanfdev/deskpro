@@ -99,7 +99,9 @@ class SendUserNewEmail extends AbstractEmailAction
 
         switch ($context->getEventType()) {
             case TicketTrigger::EVENT_TYPE_NEWTICKET:
-                $viewModel = $factory->createTicketNewAutoreplyModel($ticket);
+            case TicketTrigger::EVENT_TYPE_UPDATE:
+            case 'system':
+                $arguments = [$ticket];
                 break;
             case TicketTrigger::EVENT_TYPE_NEWREPLY:
                 /** @var \Application\DeskPRO\EntityRepository\TicketMessage $messageRepo */
@@ -115,21 +117,19 @@ class SendUserNewEmail extends AbstractEmailAction
                 );
                 if ($messages) {
                     $lastMessage = array_shift($messages);
-                    $viewModel   = $factory->createTicketReplyByAgentModel($ticket, $lastMessage);
+                    $arguments   = [$ticket, $lastMessage];
                 } else {
                     $context->getLogger()->info('No reply to send: '.$context->getEventType());
 
                     return;
                 }
                 break;
-            case TicketTrigger::EVENT_TYPE_UPDATE:
-                $viewModel = $factory->createTicketNewAutoreplyModel($ticket);
-                break;
             default:
                 $context->getLogger()->info('Unknown event type: '.$context->getEventType());
 
                 return;
         }
+        $viewModel = $this->createViewModelFromTemplate($template, $arguments, $context);
 
         $mailer = $this->getContainer()->get('mailer');
 
@@ -195,7 +195,7 @@ class SendUserNewEmail extends AbstractEmailAction
         /** @var TicketEmail $ticketEmail */
         $ticketEmail = $emailBuilder->buildTicketEmail();
 
-        $message = $ticketEmail->prepareMailerMessage();
+        $message = $ticketEmail->prepareMailerMessage([], false);
 
         $message = $this->getContainer()->get('email.email_sender')
             ->prepareMessage($viewModel, $messagesArgs, $message);

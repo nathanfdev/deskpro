@@ -367,7 +367,7 @@ CODE
 
     private function replaceTriggers(EntityManager $em, ContainerInterface $container)
     {
-        $emailTriggers = [
+        $emailActions = [
             'SendAgentEmail'         => 'SendAgentNewEmail',
             'SendUserEmail'          => 'SendUserNewEmail',
             'SendSpecificUserEmail'  => 'SendSpecificUserNewEmail',
@@ -378,42 +378,49 @@ CODE
         $templatesDesc = new EmailTemplatesDesc();
         $manifest      = $templatesDesc->getManifest();
 
-        $triggers      = $dbConnection->executeQuery('SELECT `id`,`actions` FROM `ticket_triggers`', []);
         $templatesStmt = $dbConnection->executeQuery('SELECT `name` FROM `templates` WHERE name LIKE ?', ['DeskPRO:emails_%']);
         $templates     = [];
         foreach ($templatesStmt as $template) {
             $templates[] = $template['name'];
         }
 
-        foreach ($triggers as $trigger) {
-            $id      = $trigger['id'];
-            $changed = false;
-            try {
-                $actions = json_decode($trigger['actions'], true);
-            } catch (\Exception $e) {
-                continue;
-            }
-            foreach ($actions['@DATA']['actions'] as $actionId => $action) {
-                if ($action['type'] && isset($emailTriggers[$action['type']])) {
-                    if (!in_array($action['options']['template'], $templates)) {
-                        $manifestKey = array_search($action['options']['template'], array_column($manifest, 'name'), true);
-                        if ($manifestKey) {
-                            $newTemplate = $manifest[$manifestKey]['newTemplate'];
-                        } elseif (isset($this->migratedCustomTemplates[$action['options']['template']])) {
-                            $newTemplate = $this->migratedCustomTemplates[$action['options']['template']];
-                        }
+        $tables = [
+            'ticket_triggers',
+            'ticket_escalations',
+        ];
+        foreach ($tables as $table) {
+            $triggers = $dbConnection->executeQuery('SELECT `id`,`actions` FROM `'.$table.'`', []);
+            foreach ($triggers as $trigger) {
+                $id      = $trigger['id'];
+                $changed = false;
+                try {
+                    $actions = json_decode($trigger['actions'], true);
+                } catch (\Exception $e) {
+                    continue;
+                }
+                foreach ($actions['@DATA']['actions'] as $actionId => $action) {
+                    if ($action['type'] && isset($emailActions[$action['type']])) {
+                        if (!in_array($action['options']['template'], $templates)) {
+                            $manifestKey = array_search($action['options']['template'], array_column($manifest, 'name'), true);
+                            $newTemplate = '';
+                            if ($manifestKey) {
+                                $newTemplate = $manifest[$manifestKey]['newTemplate'];
+                            } elseif (isset($this->migratedCustomTemplates[$action['options']['template']])) {
+                                $newTemplate = $this->migratedCustomTemplates[$action['options']['template']];
+                            }
 
-                        $actions['@DATA']['actions'][$actionId]['type']                = $emailTriggers[$action['type']];
-                        $actions['@DATA']['actions'][$actionId]['options']['template'] = $newTemplate;
-                        $changed                                                       = true;
+                            $actions['@DATA']['actions'][$actionId]['type']                = $emailActions[$action['type']];
+                            $actions['@DATA']['actions'][$actionId]['options']['template'] = $newTemplate;
+                            $changed                                                       = true;
+                        }
                     }
                 }
-            }
-            if ($changed) {
-                $dbConnection->executeQuery(
-                    'UPDATE `ticket_triggers` SET `actions` = ? WHERE `id` = ?',
-                    [json_encode($actions), $id]
-                );
+                if ($changed) {
+                    $dbConnection->executeQuery(
+                        'UPDATE `'.$table.'` SET `actions` = ? WHERE `id` = ?',
+                        [json_encode($actions), $id]
+                    );
+                }
             }
         }
     }
@@ -450,7 +457,7 @@ CODE
 
     private function restoreTriggers(EntityManager $em, ContainerInterface $container)
     {
-        $emailTriggers = [
+        $emailActions = [
             'SendAgentNewEmail'         => 'SendAgentEmail',
             'SendUserNewEmail'          => 'SendUserEmail',
             'SendSpecificUserNewEmail'  => 'SendSpecificUserEmail',
@@ -465,38 +472,48 @@ CODE
             return !empty($entry['newTemplate']);
         }));
 
-        $triggers      = $dbConnection->executeQuery('SELECT `id`,`actions` FROM `ticket_triggers`', []);
         $templatesStmt = $dbConnection->executeQuery('SELECT `name` FROM `templates` WHERE name LIKE ?', ['DeskPRO:emails_%']);
         $templates     = [];
         foreach ($templatesStmt as $template) {
             $templates[] = $template['name'];
         }
 
-        foreach ($triggers as $trigger) {
-            $id      = $trigger['id'];
-            $changed = false;
-            try {
-                $actions = json_decode($trigger['actions'], true);
-            } catch (\Exception $e) {
-                continue;
-            }
-            foreach ($actions['@DATA']['actions'] as $actionId => $action) {
-                if ($action['type'] && isset($emailTriggers[$action['type']])) {
-                    if (!in_array($action['options']['template'], $templates)) {
-                        $manifestKey = array_search($action['options']['template'], array_column($manifest, 'newTemplate'), true);
-                        $info        = $manifest[$manifestKey];
+        $tables = [
+            'ticket_triggers',
+            'ticket_escalations',
+        ];
+        foreach ($tables as $table) {
+            $triggers = $dbConnection->executeQuery('SELECT `id`,`actions` FROM `'.$table.'`', []);
+            foreach ($triggers as $trigger) {
+                $id      = $trigger['id'];
+                $changed = false;
+                try {
+                    $actions = json_decode($trigger['actions'], true);
+                } catch (\Exception $e) {
+                    continue;
+                }
+                foreach ($actions['@DATA']['actions'] as $actionId => $action) {
+                    if ($action['type'] && isset($emailActions[$action['type']])) {
+                        if (!in_array($action['options']['template'], $templates)) {
+                            $manifestKey = array_search(
+                                $action['options']['template'],
+                                array_column($manifest, 'newTemplate'),
+                                true
+                            );
+                            $info = $manifest[$manifestKey];
 
-                        $actions['@DATA']['actions'][$actionId]['type']                = $emailTriggers[$action['type']];
-                        $actions['@DATA']['actions'][$actionId]['options']['template'] = $info['name'];
-                        $changed                                                       = true;
+                            $actions['@DATA']['actions'][$actionId]['type']                = $emailActions[$action['type']];
+                            $actions['@DATA']['actions'][$actionId]['options']['template'] = $info['name'];
+                            $changed                                                       = true;
+                        }
                     }
                 }
-            }
-            if ($changed) {
-                $dbConnection->executeQuery(
-                    'UPDATE `ticket_triggers` SET `actions` = ? WHERE `id` = ?',
-                    [json_encode($actions), $id]
-                );
+                if ($changed) {
+                    $dbConnection->executeQuery(
+                        'UPDATE `'.$table.'` SET `actions` = ? WHERE `id` = ?',
+                        [json_encode($actions), $id]
+                    );
+                }
             }
         }
     }

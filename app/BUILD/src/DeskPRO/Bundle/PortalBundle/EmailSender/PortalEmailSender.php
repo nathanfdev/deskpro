@@ -181,7 +181,7 @@ class PortalEmailSender
     {
         if ($this->container->get('deskpro.feature_flags')->hasBeta('email_templates')) {
             $viewModel = $this->container->get('email.user_viewmodel_factory')
-                ->createNewTicketValidateEmailModel($ticket, $ticket->getAccessCode());
+                ->createTicketNewValidateEmailModel($ticket, $ticket->getAccessCode());
             $this->container->get('email.email_sender')
                 ->send($viewModel, ['to' => $emailTo]);
         } else {

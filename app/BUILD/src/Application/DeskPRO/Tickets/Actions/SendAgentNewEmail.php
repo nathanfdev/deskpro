@@ -242,7 +242,9 @@ class SendAgentNewEmail extends AbstractEmailAction implements ActionInterface, 
 
         switch ($context->getEventType()) {
             case TicketTrigger::EVENT_TYPE_NEWTICKET:
-                $viewModel = $factory->createAgentTicketNewModel($ticket);
+            case TicketTrigger::EVENT_TYPE_UPDATE:
+            case 'system':
+                $arguments = [$ticket];
                 break;
             case TicketTrigger::EVENT_TYPE_NEWREPLY:
                 /** @var \Application\DeskPRO\EntityRepository\TicketMessage $messageRepo */
@@ -257,24 +259,20 @@ class SendAgentNewEmail extends AbstractEmailAction implements ActionInterface, 
                     ]
                 );
                 if ($messages) {
-                    $lastMessage = array_pop($messages);
-                    $viewModel   = $factory->createAgentTicketReplyModel($ticket, $lastMessage);
+                    $lastMessage = array_shift($messages);
+                    $arguments   = [$ticket, $lastMessage];
                 } else {
                     $context->getLogger()->info('No reply to send: '.$context->getEventType());
 
                     return;
                 }
                 break;
-            case TicketTrigger::EVENT_TYPE_UPDATE:
-                /** @var AgentTicketUpdate $viewModel */
-                $viewModel = $factory->createAgentTicketUpdateModel($ticket);
-
-                break;
             default:
                 $context->getLogger()->info('Unknown event type: '.$context->getEventType());
 
                 return;
         }
+        $viewModel = $this->createViewModelFromTemplate($template, $arguments, $context);
 
         $mailer = $this->getContainer()->get('mailer');
 
@@ -325,7 +323,7 @@ class SendAgentNewEmail extends AbstractEmailAction implements ActionInterface, 
             /** @var TicketEmail $ticketEmail */
             $ticketEmail = $emailBuilder->setToPerson($agent)->buildTicketEmail();
 
-            $message = $ticketEmail->prepareMailerMessage();
+            $message = $ticketEmail->prepareMailerMessage([], false);
 
             $message = $this->getContainer()->get('email.email_sender')
                 ->prepareMessage($viewModel, $messagesArgs, $message);
