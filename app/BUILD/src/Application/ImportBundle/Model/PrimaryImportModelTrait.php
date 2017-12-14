@@ -57,6 +57,13 @@ trait PrimaryImportModelTrait
     protected $oid;
 
     /**
+     * @var string
+     *
+     * @JMS\Type("string")
+     */
+    protected $oid_prefix;
+
+    /**
      * {@inheritdoc}
      */
     public function getRawData()
@@ -67,9 +74,9 @@ trait PrimaryImportModelTrait
     /**
      * {@inheritdoc}
      */
-    public function setRawData($raw_data)
+    public function setRawData($rawData)
     {
-        $this->raw_data = $raw_data;
+        $this->raw_data = $rawData;
 
         return $this;
     }
@@ -90,5 +97,23 @@ trait PrimaryImportModelTrait
         $this->oid = $oid;
 
         return $this;
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function setOidPrefix($prefix)
+    {
+        $this->oid_prefix = $prefix;
+
+        return $this;
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function getOidPrefix()
+    {
+        return $this->oid_prefix;
     }
 }

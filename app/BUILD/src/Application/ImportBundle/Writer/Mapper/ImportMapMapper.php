@@ -41,11 +41,36 @@ use Orb\Util\Strings;
 class ImportMapMapper extends AbstractContainerMapper
 {
     /**
+     * @var string
+     */
+    private $oidPrefix;
+
+    /**
      * {@inheritdoc}
      */
     public static function getMapperEntityClass()
     {
         return ImportMap::class;
+    }
+
+    /**
+     * @return string
+     */
+    public function getOidPrefix()
+    {
+        return $this->oidPrefix;
+    }
+
+    /**
+     * @param string $oidPrefix
+     *
+     * @return $this
+     */
+    public function setOidPrefix($oidPrefix)
+    {
+        $this->oidPrefix = $oidPrefix;
+
+        return $this;
     }
 
     /**
@@ -61,7 +86,7 @@ class ImportMapMapper extends AbstractContainerMapper
 
         $criteria = [
             'old_id'   => $model->getOid(),
-            'typename' => self::getImportMapKey($model),
+            'typename' => $this->getImportMapKey($model),
         ];
 
         return $this->findOneBy($criteria);
@@ -95,7 +120,7 @@ class ImportMapMapper extends AbstractContainerMapper
 
         $mapEntity = $this->findOneByModel($model) ?: new ImportMap();
         $mapEntity
-            ->setTypename(self::getImportMapKey($model))
+            ->setTypename($this->getImportMapKey($model))
             ->setOldId($model->getOid())
             ->setNewId($entity->getId())
         ;
@@ -109,7 +134,7 @@ class ImportMapMapper extends AbstractContainerMapper
     /**
      * {@inheritdoc}
      */
-    public static function getImportMapKey($model)
+    public function getImportMapKey($model)
     {
         if ($model instanceof ImportMapKeyAwareInterface) {
             $modelClass = $model::getImportMapKey();
@@ -118,6 +143,13 @@ class ImportMapMapper extends AbstractContainerMapper
             $modelClass = Strings::camelCaseToUnderscore($modelClass);
         }
 
-        return 'importer_'.$modelClass;
+        $key = ['importer'];
+        if ($this->oidPrefix) {
+            $key[] = $this->oidPrefix;
+        }
+
+        $key [] = $modelClass;
+
+        return implode('_', $key);
     }
 }

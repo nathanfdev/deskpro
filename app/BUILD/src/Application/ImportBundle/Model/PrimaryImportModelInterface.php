@@ -57,4 +57,16 @@ interface PrimaryImportModelInterface extends OidAwareModelInterface
      * @return $this
      */
     public function setOid($oid);
+
+    /**
+     * @param string $prefix
+     *
+     * @return $this
+     */
+    public function setOidPrefix($prefix);
+
+    /**
+     * @return string
+     */
+    public function getOidPrefix();
 }

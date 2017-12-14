@@ -26,6 +26,7 @@ services:
       - "@deskpro.search.entity_listener"
       - "@serializer"
       - "@deskpro.app_env"
+      - "@dp.importer.writer.mapper.import_map"
       - "@dp.importer_logger"
 
   dp.importer:
