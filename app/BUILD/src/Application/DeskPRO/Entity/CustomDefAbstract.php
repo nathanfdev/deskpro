@@ -66,15 +66,15 @@ class CustomDefAbstract extends \Application\DeskPRO\Domain\DomainObject impleme
     const HANDLER_CLASS_DATAJSON = Handler\DataJson::class;
     const HANDLER_CLASS_DATALIST = Handler\DataList::class;
 
-    const TYPE_TEXT     = 'text';
-    const TYPE_TEXTAREA = 'textarea';
-    const TYPE_CHOICE   = 'choice';
-    const TYPE_TOGGLE   = 'toggle';
-    const TYPE_DATE     = 'date';
-    const TYPE_DATETIME = 'datetime';
-    const TYPE_DISPLAY  = 'display';
-    const TYPE_HIDDEN   = 'hidden';
-    const TYPE_DATA     = 'data';
+    const TYPE_TEXT      = 'text';
+    const TYPE_TEXTAREA  = 'textarea';
+    const TYPE_CHOICE    = 'choice';
+    const TYPE_TOGGLE    = 'toggle';
+    const TYPE_DATE      = 'date';
+    const TYPE_DATETIME  = 'datetime';
+    const TYPE_DISPLAY   = 'display';
+    const TYPE_HIDDEN    = 'hidden';
+    const TYPE_DATA      = 'data';
     const TYPE_DATA_JSON = 'datajson';
     const TYPE_DATA_LIST = 'datalist';
 
@@ -941,7 +941,11 @@ class CustomDefAbstract extends \Application\DeskPRO\Domain\DomainObject impleme
         if ($this->isDateType()) {
             $mode = $this->getOption('default_mode', false);
             if ('date' == $mode) {
-                $date = new \DateTime($this->default_value);
+                try {
+                    $date = new \DateTime($this->default_value);
+                } catch (\Exception $e) {
+                    return;
+                }
 
                 return $date->format($this->getDateExpectedFormat());
             } elseif ('current' == $mode) {

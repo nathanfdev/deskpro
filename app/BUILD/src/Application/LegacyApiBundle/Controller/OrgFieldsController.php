@@ -114,7 +114,8 @@ class OrgFieldsController extends AbstractController implements ProtectedControl
         }
 
         $container = $this->getContainer();
-        $helper = new Form\FormHelper($container->getEm(), $container->getFormFactory());
+        $helper    = new Form\FormHelper($container->getEm(), $container->getFormFactory());
+
         $helper->saveFormToField($field, $post);
 
         if ($id) {

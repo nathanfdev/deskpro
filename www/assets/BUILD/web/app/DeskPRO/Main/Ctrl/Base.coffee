@@ -342,7 +342,7 @@ define ['angular', 'underscore'], (angular, _) ->
 
     ###*
     * Given an error response from the server, apply it to the view. This is typically
-      * a validation error that we want to show in the form.
+    * a validation error that we want to show in the form.
     ###
     applyErrorResponseToView: (result) ->
 
@@ -368,6 +368,7 @@ define ['angular', 'underscore'], (angular, _) ->
         if form_key.indexOf('form_') != 0 then continue
 
         for own field_title, field of form
+
           if not field.dpServerValidationKeys? then continue
           for code in error_codes
             for check_code in field.dpServerValidationKeys
