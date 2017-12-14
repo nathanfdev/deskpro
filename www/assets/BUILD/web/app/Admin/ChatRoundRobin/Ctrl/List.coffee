@@ -24,45 +24,8 @@ define ['Admin/Main/Ctrl/Base'], (Admin_Ctrl_Base) ->
     save: ($event) ->
       $event.stopImmediatePropagation();
 
-      if !@settings.enabled
-        @settings.enabled = true
-        return @service.saveSettings()
-
-      @service.checkTriggers().then (data) =>
-
-        # need angular timeout to update template message
-        @$timeout(
-          =>
-            @settings.active_triggers = data.active_triggers
-            @$scope.$digest()
-
-            if 0 == @settings.active_triggers
-              @settings.enabled = false
-              return @service.saveSettings()
-
-            service = @service
-            settings = @settings
-            title = @getRegisteredMessage 'modal_title'
-            msg = @getRegisteredMessage 'modal_message'
-
-            @$modal.open({
-              templateUrl: @getTemplatePath('Index/modal-confirm.html'),
-              controller: ['$scope', '$modalInstance', ($scope, $modalInstance) ->
-
-                $scope.title = title
-                $scope.message = msg
-
-                $scope.dismiss = ->
-                  $modalInstance.dismiss()
-
-                $scope.confirm = ->
-                  settings.enabled = !settings.enabled
-                  service.saveSettings()
-                  $modalInstance.dismiss()
-              ]
-            })
-          1
-        )
+      @settings.enabled = !@settings.enabled
+      return @service.saveSettings()
 
 
   Admin_ChatRoundRobin_Ctrl_List.EXPORT_CTRL()
