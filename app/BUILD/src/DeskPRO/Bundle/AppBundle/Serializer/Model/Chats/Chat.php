@@ -29,6 +29,7 @@
 namespace DeskPRO\Bundle\AppBundle\Serializer\Model\Chats;
 
 use Application\DeskPRO\Entity\ChatConversation;
+use DeskPRO\Bundle\AppBundle\Serializer\Deferred\CallbackDeferredProperty;
 use JMS\Serializer\Annotation as JMS;
 
 /**
@@ -102,6 +103,15 @@ class Chat extends AbstractChat
     protected $fields;
 
     /**
+     * String array of labels.
+     *
+     * @JMS\Type("deferred<array<label<Application\DeskPRO\Entity\LabelChatConversation>>>")
+     *
+     * @var bool
+     */
+    private $labels;
+
+    /**
      * {@inheritdoc}
      */
     public function __construct(ChatConversation $chat)
@@ -117,5 +127,17 @@ class Chat extends AbstractChat
         $this->departmentId   = $chat->getDepartment() ? $chat->getDepartment()->getId() : 0;
         $this->departmentName = $chat->getDepartment() ? $chat->getDepartment()->getFullTitle() : '';
         $this->agentId        = $chat->getAgentId();
+    }
+
+    /**
+     * @param CallbackDeferredProperty $labels
+     *
+     * @return $this
+     */
+    public function setLabels($labels = null)
+    {
+        $this->labels = $labels;
+
+        return $this;
     }
 }

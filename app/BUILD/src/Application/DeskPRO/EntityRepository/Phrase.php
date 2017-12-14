@@ -26,15 +26,10 @@
  * ~ Thanks, Everyone at Team DeskPRO
  */
 
-/**
- * DeskPRO.
- *
- * @category Entities
- */
-
 namespace Application\DeskPRO\EntityRepository;
 
-use Application\DeskPRO\App;
+use Application\DeskPRO\Entity\Language as LanguageEntity;
+use Orb\Util\Numbers;
 
 class Phrase extends AbstractEntityRepository
 {
@@ -55,25 +50,42 @@ class Phrase extends AbstractEntityRepository
         }
     }
 
+    /**
+     * @param LanguageEntity|int $language
+     *
+     * @return mixed
+     */
     public function getCustomPhraseNamesInLanguage($language)
     {
-        $names = App::getDb()->fetchColumn('
+        if (Numbers::isInteger($language)) {
+            $languageId = $language;
+        } else {
+            $languageId = $language->getId();
+        }
+
+        $names = $this->getEntityManager()->getConnection()->fetchColumn('
             SELECT name
             FROM phrases
             WHERE language_id = ? AND phrase IS NOT NULL
-        ', [$language['id']]);
+        ', [$languageId]);
 
         return $names;
     }
 
     /**
-     * @param \Application\DeskPRO\Entity\Language $language
-     * @param string                               $group
+     * @param LanguageEntity|int $language
+     * @param string             $group
      *
      * @return array
      */
     public function getPhrasesInGroup($language, $group)
     {
+        if (Numbers::isInteger($language)) {
+            $languageId = $language;
+        } else {
+            $languageId = $language->getId();
+        }
+
         $parts = explode('.', $group);
         if (count($parts) == 2) {
             if ($parts[0] == $parts[1]) {
@@ -84,7 +96,7 @@ class Phrase extends AbstractEntityRepository
             SELECT name, COALESCE(phrase, original_phrase) AS phrase
             FROM phrases
             WHERE language_id = ? AND groupname LIKE ?
-        ', [$language['id'], $group.'%']);
+        ', [$languageId, $group.'%']);
 
         return $phrases;
     }

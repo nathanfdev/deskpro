@@ -1,0 +1,32 @@
+{{ set_tplvar('agent_notification_footer', 'notify') }}
+<dp:subject>
+	{{ phrase('agent.feedback.new_feedback') }}	{{ feedback.title }} {% if feedback.status == 'hidden' and not feedback.is_reviewed %}({{ phrase('agent.general.requires_validation') }}){% endif %}
+</dp:subject>
+
+<html>
+<head>
+	{% include 'SendmailBundle:blocks:resources.html.twig' %}
+</head>
+<body>
+{% include 'SendmailBundle:emails_common:email_code_top.html.twig' %}
+
+{% include 'SendmailBundle:blocks:header.html.twig' %}
+
+	<container>
+		{{ phrase('agent.feedback.user_submitted_new_feedback', {name: person.display_contact }) }}
+		{% if feedback.status == 'hidden' and not feedback.is_reviewed %}({{ phrase('agent.general.requires_validation') }}){% endif %}
+
+		<br /><br />
+
+		{{ phrase('agent.emails.view_online_at') }} <a href="{{ login_link }}#app.feedback,i:{{ feedback.id }}">{{ login_link }}#app.feedback,fb_content,i:{{ feedback.id }}</a>
+
+		<br /><br />
+
+		{{ feedback.content|raw }}
+	</container>
+
+{% include 'SendmailBundle:blocks:footer.html.twig' %}
+
+{% include 'SendmailBundle:emails_common:email_code_bottom.html.twig' %}
+</body>
+</html>

@@ -60,6 +60,7 @@ class PortalKernel extends BaseKernel
 
             new \Application\DeskPRO\DeskPROBundle(),
             new \Application\EmailBundle\EmailBundle(),
+            new \DeskPRO\Bundle\SendmailBundle\SendmailBundle(),
             new \Application\AgentBundle\AgentBundle(),
 
             new \DeskPRO\Bundle\AppBundle\AppBundle(),

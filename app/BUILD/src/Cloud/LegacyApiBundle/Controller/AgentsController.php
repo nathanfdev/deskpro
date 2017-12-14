@@ -32,6 +32,7 @@
 
 namespace Cloud\LegacyApiBundle\Controller;
 
+use Application\DeskPRO\Entity\Person;
 use Application\LegacyApiBundle\Controller\AgentsController as BaseAgentsController;
 use DpSys\License;
 
@@ -58,7 +59,7 @@ class AgentsController extends BaseAgentsController
             $tmpdata->setType('dpc_set_plan');
             $tmpdata->setData('by_person', $this->person->getId());
             $tmpdata->setData('set_plan', $set);
-            $tmpdata->date_expire = new \DateTime('+30 minutes');
+            $tmpdata->setDateExpire(new \DateTime('+30 minutes'));
 
             $this->em->persist($tmpdata);
             $this->em->flush();
@@ -69,7 +70,20 @@ class AgentsController extends BaseAgentsController
                 $client = new \Zend\Http\Client(null, ['timeout' => 15, 'sslverifypeer' => false]);
                 $client->setMethod(\Zend\Http\Request::METHOD_GET);
                 $client->setUri($url);
-                $client->send();
+
+                $response = $client->send();
+                $data     = json_decode($response->getBody(), true);
+
+                if (!isset($data['success']) || !$data['success']) {
+                    $active_agents = $this->em->getRepository(Person::class)->getActiveAgentsCount();
+
+                    return $this->createApiErrorInfoResponse(
+                        'license_exceeded', 'You have used all available agent seats that your license allows', [
+                            'agent_seats'    => $max_agents,
+                            'agents_created' => $active_agents,
+                        ]
+                    );
+                }
             } catch (\Exception $e) {
                 throw $this->createNotFoundException();
             }

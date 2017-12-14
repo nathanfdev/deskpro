@@ -2177,13 +2177,13 @@ class Ticket extends DomainObject implements HighlightableModelInterface, Labels
     {
         if ($this->person_email) {
             return $this->person_email;
-        } else {
-            return $this->person['primary_email'];
+        } elseif ($this->person) {
+            return $this->person->getPrimaryEmail();
         }
     }
 
     /**
-     * Gets the email address that sholud be used for this ticket.
+     * Gets the email address that should be used for this ticket.
      *
      * @return PersonEmail
      */
@@ -2211,7 +2211,7 @@ class Ticket extends DomainObject implements HighlightableModelInterface, Labels
 
     public function getPersonEmailAddress()
     {
-        $email = $this->getPersonEmail();
+        $email = $this->getTicketPersonEmail();
 
         return $email['email'];
     }
@@ -4675,6 +4675,38 @@ class Ticket extends DomainObject implements HighlightableModelInterface, Labels
     public function getFollowUps()
     {
         return $this->followUps;
+    }
+
+    /**
+     * @param TicketFollowUp $followUp
+     *
+     * @return $this
+     */
+    public function addFollowUp(TicketFollowUp $followUp)
+    {
+        $this->followUps->add($followUp);
+        $followUp->setTicket($this);
+
+        $this->_onPropertyChanged('followUps', null, $this->followUps);
+        $this->getStateChangeRecorder()->record('followUp', null, $followUp);
+
+        return $this;
+    }
+
+    /**
+     * @param TicketFollowUp $followUp
+     *
+     * @return $this
+     */
+    public function removeFollowUp(TicketFollowUp $followUp)
+    {
+        $this->followUps->removeElement($followUp);
+        $followUp->setTicket(null);
+
+        $this->_onPropertyChanged('followUps', null, $this->followUps);
+        $this->getStateChangeRecorder()->record('followUp', $followUp, null);
+
+        return $this;
     }
 
     /**

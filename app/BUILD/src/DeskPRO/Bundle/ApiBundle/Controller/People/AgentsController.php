@@ -32,7 +32,6 @@ use Application\DeskPRO\Entity\ChatConversation;
 use Application\DeskPRO\Entity\Person;
 use Application\DeskPRO\Entity\Ticket;
 use DeskPRO\Bundle\ApiBundle\ApiDoc\Annotation\ApiDoc;
-use DeskPRO\Bundle\ApiBundle\Controller\CrudController;
 use DeskPRO\Bundle\ApiBundle\Traits\Tickets\TicketSaveTrait;
 use DeskPRO\Bundle\AppBundle\Annotation\ActionPermissions\Annotation\ApiModes;
 use DeskPRO\Bundle\AppBundle\Form\Error\Exception\InvalidFormException;
@@ -59,14 +58,16 @@ use Symfony\Component\HttpFoundation\Response;
  *     target="listAction",
  *     description="get list of agents",
  *     filters={
- *         {"name"="is_deleted", "pattern"="(1|0|-1)", "description"="deleted filter, defaults to 0", "dataType"="integer"}
+ *         {"name"="is_deleted", "pattern"="(1|0|-1)", "description"="deleted filter, defaults to 0", "dataType"="integer"},
+ *         {"name"="online", "pattern"="(1|0|-1)", "description"="is online filter, defaults to 0", "dataType"="integer"},
+ *         {"name"="online_for_chat", "pattern"="(1|0|-1)", "description"="is online for chat filter, defaults to 0", "dataType"="integer"}
  *     },
  *     statusCodes={
  *         200="OK"
  *     }
  * )
  */
-class AgentsController extends CrudController
+class AgentsController extends AbstractPeopleController
 {
     use TicketSaveTrait;
 
@@ -108,8 +109,11 @@ class AgentsController extends CrudController
     public function getAgentsOnChatsAction()
     {
         $qb = $this->getManager()->createQueryBuilder();
-        $qb->select('person')->from(Person::class, 'person')
-            ->join(ChatConversation::class, 'chat', Expr\Join::WITH, 'chat.agent = person');
+        $qb
+            ->select('person')
+            ->from(Person::class, 'person')
+            ->join(ChatConversation::class, 'chat', Expr\Join::WITH, 'chat.agent = person')
+        ;
 
         return View::create($this->wrap($qb->getQuery()->getResult()));
     }
@@ -185,14 +189,10 @@ class AgentsController extends CrudController
      */
     protected function applyListFilters(QueryBuilder $qb, $alias, Request $request)
     {
+        parent::applyListFilters($qb, $alias, $request);
+
         $qb->andWhere("$alias.is_agent = 1");
         $qb->select("partial $alias.{id,first_name,last_name,name,is_agent}");
-
-        $isDeleted = $request->get('is_deleted', 0);
-        if ($isDeleted != -1) {
-            $qb->andWhere("$alias.is_deleted = :is_deleted");
-            $qb->setParameter('is_deleted', (bool) $isDeleted);
-        }
     }
 
     /**

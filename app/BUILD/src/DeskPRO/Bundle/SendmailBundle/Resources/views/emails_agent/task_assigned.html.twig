@@ -1,0 +1,35 @@
+<dp:subject>
+	{{ phrase('agent.emails.task_assigned_to_you_by', {title: task.title, agent: performer.display_name }) }}
+</dp:subject>
+
+{{ set_tplvar('agent_notification_footer', 'notify') }}
+<html>
+<head>
+	{% include 'SendmailBundle:blocks:resources.html.twig' %}
+</head>
+<body>
+{% include 'SendmailBundle:emails_common:email_code_top.html.twig' %}
+
+{% include 'SendmailBundle:blocks:header.html.twig' %}
+
+	<container>
+		{% if task.person %}
+
+		{{ phrase('agent.emails.task_assigned_to_you_by', {title: task.title, agent: performer.display_name }) }}
+		<br /><br />
+		<a href="{{ login_link }}#app.tasks,tasks:own:total">{{ phrase('agent.emails.view_your_tasks') }}</a>
+
+		{% elseif task.assigned_agent_team %}
+
+		{{ phrase('agent.emails.task_assigned_to_your_team_by', {title: task.title, agent: performer.display_name }) }}
+		<br /><br />
+		<a href="{{ login_link }}#app.tasks,tasks:team:total">{{ phrase('agent.emails.view_your_teams_tasks') }}</a>
+
+		{% endif %}
+	</container>
+
+{% include 'SendmailBundle:blocks:footer.html.twig' %}
+
+{% include 'SendmailBundle:emails_common:email_code_bottom.html.twig' %}
+</body>
+</html>

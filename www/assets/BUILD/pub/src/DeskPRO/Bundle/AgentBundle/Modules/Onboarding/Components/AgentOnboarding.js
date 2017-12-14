@@ -2,7 +2,6 @@ import PropTypes from 'prop-types';
 import React from 'react';
 import { connect } from 'react-redux';
 import Joyride  from 'react-joyride';
-import $ from 'jquery';
 import moment from 'moment';
 import Isvg from 'react-inlinesvg';
 import { collectionSelectorFactory } from 'DeskPRO/Bundle/AppBundle/Modules/RecordsStore';
@@ -179,8 +178,9 @@ export class AgentOnboarding extends React.Component {
       return null;
     }
 
-    const width = $(window).width();
-    const height = $(window).height();
+    const bodyStyle = window.getComputedStyle(document.body);
+    const width = parseInt(bodyStyle.width, 10);
+    const height = parseInt(bodyStyle.height, 10);
     const style = { left: (width / 2) - 280, top: (height / 2) - 320 };
     return (
       <div className="joyride">

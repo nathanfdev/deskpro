@@ -63,7 +63,7 @@ define ['Admin/Main/Ctrl/Base', 'moment'], (Admin_Ctrl_Base, moment) ->
     startDelete: ->
       doDelete = =>
         @delete().then( =>
-          @$state.go('tickets.ticket_accounts.sendmailqueue')
+          @$state.go('emails.ticket_accounts.sendmailqueue')
         )
 
       @$modal.open({
@@ -81,7 +81,7 @@ define ['Admin/Main/Ctrl/Base', 'moment'], (Admin_Ctrl_Base, moment) ->
     startResend: ->
       doResend = =>
         @resend().then( =>
-          @$state.go('tickets.ticket_accounts.gosendmailview', {id: @sendmailId})
+          @$state.go('emails.ticket_accounts.gosendmailview', {id: @sendmailId})
         )
 
       @$modal.open({

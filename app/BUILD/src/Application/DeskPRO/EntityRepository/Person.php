@@ -363,6 +363,7 @@ class Person extends AbstractEntityRepository
      * Find a person by their email address.
      *
      * @param string $email
+     * @param bool   $for_write
      *
      * @return PersonEntity|null
      */

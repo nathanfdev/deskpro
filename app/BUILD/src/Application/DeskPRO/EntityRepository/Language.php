@@ -150,21 +150,29 @@ class Language extends AbstractEntityRepository
 			')->setParameter('title', mb_strtolower(trim($title)))->getOneOrNullResult();
     }
 
-    public function getForLangCode($lang_code)
+    /**
+     * @param $langCode
+     *
+     * @return null|\Application\DeskPRO\Entity\Language
+     */
+    public function getForLangCode($langCode)
     {
-        if (!strlen($lang_code) == 2) {
-            $lang_code = substr($lang_code, 0, 2);
+        if (!$langCode || !is_string($langCode)) {
+            return;
+        }
+        if (!strlen($langCode) == 2) {
+            $langCode = substr($langCode, 0, 2);
         }
 
-        if ($lang_code == 'en') {
-            $lang_code = 'en_US';
+        if ($langCode == 'en') {
+            $langCode = 'en_US';
         }
 
-        if ($lang_code == 'es') {
-            $lang_code = 'ES_es';
+        if ($langCode == 'es') {
+            $langCode = 'ES_es';
         }
 
-        $r = $this->findOneBy(['locale' => $lang_code]);
+        $r = $this->findOneBy(['locale' => $langCode]);
 
         return $r;
     }

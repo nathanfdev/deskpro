@@ -81,22 +81,17 @@ class GuidesController extends AbstractApiController
 
     /**
      * @Route("/portal/api/guides/topics/{slug}", name="portal_api_guides_topics")
+     * @ParamConverter(name="guide", converter="deskpro_slug")
      * @Method({"GET"})
      *
-     * @param $slug
+     * @param Guide $guide
      *
      * @return View|NotFoundHttpException
      */
-    public function getGuideTopicsAction($slug)
+    public function getGuideTopicsAction(Guide $guide)
     {
-        $guideDataService = $this->get('data.guides');
-        $guide            = $guideDataService->getGuideBySlug($slug);
-        if (!$guide) {
-            throw $this->createNotFoundException();
-        }
         $person = $this->getUser();
-
-        $topics = $guideDataService->getGuideChildren(
+        $topics = $this->get('data.guides')->getGuideChildren(
             $guide,
             $person
         );
@@ -117,7 +112,7 @@ class GuidesController extends AbstractApiController
      */
     public function postNewComment(Request $request, Topic $topic, $visitor_id)
     {
-        if (!$this->isGranted(ContentCommentVoter::COMMENT_ARTICLE, $topic)) {
+        if (!$this->isGranted(ContentCommentVoter::COMMENT_TOPIC, $topic)) {
             return $this->createAccessDeniedException();
         }
 

@@ -1,0 +1,47 @@
+<dp:subject>
+	{% if new_articles and updated_articles %}
+		{{ phrase('user.email_subjects.kb_sub_new_and_updated') }}
+	{% elseif new_articles %}
+		{{ phrase('user.email_subjects.kb_sub_new') }}
+	{% else %}
+		{{ phrase('user.email_subjects.kb_sub_updated') }}
+	{% endif %}
+</dp:subject>
+
+<html>
+<head>
+	{% include 'SendmailBundle:blocks:resources.html.twig' %}
+</head>
+<body>
+{% include 'SendmailBundle:emails_common:email_code_top.html.twig' %}
+
+{% include 'SendmailBundle:blocks:header.html.twig' %}
+
+	<container>
+		{% if new_articles %}
+			<h1>{{ phrase('user.emails.kb-new-articles', {count: new_articles|length}) }}</h1>
+			<ul>
+				{% for article in new_articles %}
+					<li><a href="{{ url_full('portal_kb_view', {slug: article.slug}) }}">{{ article.title }}</a></li>
+				{% endfor %}
+			</ul>
+		{% endif %}
+
+		{% if updated_articles %}
+			<h1>{{ phrase('user.emails.kb-updated-articles', {count: updated_articles|length}) }}</h1>
+			<ul>
+				{% for article in updated_articles %}
+					<li><a href="{{ url_full('portal_kb_view', {slug: article.slug}) }}">{{ article.title }}</a></li>
+				{% endfor %}
+			</ul>
+		{% endif %}
+
+		<div class="dp-hr">&nbsp;</div>
+		{{ phrase('user.emails.kb-explain', {deskpro_url: portal_home }) }}
+	</container>
+
+{% include 'SendmailBundle:blocks:footer.html.twig' %}
+
+{% include 'SendmailBundle:emails_common:email_code_bottom.html.twig' %}
+</body>
+</html>

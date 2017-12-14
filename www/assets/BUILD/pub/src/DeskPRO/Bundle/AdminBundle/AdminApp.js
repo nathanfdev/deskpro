@@ -8,6 +8,10 @@ class AdminApp {
   static render(props, node) {
     ReactDOM.render(<AppContainer {...props} />, node);
   }
+
+  static unmount(node) {
+    ReactDOM.unmountComponentAtNode(node);
+  }
 }
 
 export default AdminApp;

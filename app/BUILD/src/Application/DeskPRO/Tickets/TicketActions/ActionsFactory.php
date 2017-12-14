@@ -298,6 +298,15 @@ class ActionsFactory
             case 'set_agent_email_template_newreply_user':
                 $options = ['template' => $value['template_name']];
                 break;
+            case 'create_task':
+                foreach (['use_date_relative', 'assign_to_ticket_agent', 'create_by_ticket_agent'] as $option) {
+                    if (!isset($value[$option])) {
+                        $value[$option] = '';
+                    }
+                }
+
+                $options = $value;
+                break;
 
             default:
                 if (strpos($name, 'set_email_template_') !== false) {

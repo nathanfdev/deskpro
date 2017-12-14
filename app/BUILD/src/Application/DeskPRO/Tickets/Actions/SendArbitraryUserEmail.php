@@ -37,6 +37,7 @@ namespace Application\DeskPRO\Tickets\Actions;
 use Application\DeskPRO\EmailGateway\PersonFromEmailProcessor;
 use Application\DeskPRO\EmailGateway\Reader\Item\EmailAddress;
 use Application\DeskPRO\Entity\Organization;
+use Application\DeskPRO\Entity\Person;
 use Application\DeskPRO\Entity\Ticket;
 use Application\DeskPRO\Tickets\ExecutorContextInterface;
 use Application\DeskPRO\Tickets\TicketEmailBuilder;
@@ -70,10 +71,10 @@ class SendArbitraryUserEmail extends AbstractEmailAction
     public function applyAction(Ticket $ticket, ExecutorContextInterface $context)
     {
         $context->getLogger()->debug('[SendArbitraryUserEmail] Begin');
-        $start_time = microtime(true);
+        $startTime = microtime(true);
 
         try {
-            $from_account = $this->getFromEmailAccountOption($ticket, $context);
+            $fromAccount = $this->getFromEmailAccountOption($ticket, $context);
         } catch (\InvalidArgumentException $e) {
             $context->getLogger()->warn("[SendArbitraryUserEmail] Error {$e->getMessage()}");
 
@@ -92,7 +93,7 @@ class SendArbitraryUserEmail extends AbstractEmailAction
         // Vars
         //-------------------------
 
-        $default_vars = $this->getStandardEmailVars($ticket, $context, 'user');
+        $defaultVars = $this->getStandardEmailVars($ticket, $context, 'user');
 
         //-------------------------
         // Sort out the users to send to
@@ -111,20 +112,20 @@ class SendArbitraryUserEmail extends AbstractEmailAction
             }
         }
 
-        $reg_closed = !$this->getContainer()->getSetting('core.reg_enabled');
+        $regClosed = !$this->getContainer()->getSetting('core.reg_enabled');
         foreach ($this->getActionOption('emails') as $email) {
-            $person = $this->getContainer()->getEm()->getRepository('DeskPRO:Person')->findOneByEmail($email);
+            $person = $this->getContainer()->getEm()->getRepository(Person::class)->findOneByEmail($email);
             if ($person) {
                 $sendPeople[$email] = $person;
             } else {
-                if ($reg_closed) {
+                if ($regClosed) {
                     continue;
                 }
-                $person_processor = new PersonFromEmailProcessor();
+                $personProcessor = new PersonFromEmailProcessor();
 
                 $eml        = new EmailAddress();
                 $eml->email = $email;
-                $person     = $person_processor->createPerson($eml);
+                $person     = $personProcessor->createPerson($eml);
 
                 if ($person) {
                     $sendPeople[$email] = $person;
@@ -153,20 +154,20 @@ class SendArbitraryUserEmail extends AbstractEmailAction
                 ->setMaxAttachSize(0)
                 ->setLogger($context->getLogger())
                 ->setHeaders($this->processHeaders($this->getActionOption('headers', []), $ticket, $context))
-                ->setFromEmailAccount($from_account);
+                ->setFromEmailAccount($fromAccount);
 
-            $ticket_email = $builder->buildTicketEmail();
-            $default_vars = array_merge($default_vars, $builder->getCommonVars($person->isAgent()));
+            $ticketEmail = $builder->buildTicketEmail();
+            $defaultVars = array_merge($defaultVars, $builder->getCommonVars($person->isAgent()));
 
             try {
-                $ticket_email->send($default_vars);
-                $this->recordEmailTicketLog($ticket_email, $ticket, $context);
+                $ticketEmail->send($defaultVars);
+                $this->recordEmailTicketLog($ticketEmail, $ticket, $context);
             } catch (\Exception $e) {
                 $context->getLogger()->error(sprintf('Exception: [%s] %s', $e->getCode(), $e->getMessage()), ['exception' => $e]);
                 throw $e;
             }
 
-            $context->getLogger()->info(sprintf('[SendArbitraryUserEmail] Sent message in %.3fs', microtime(true) - $start_time));
+            $context->getLogger()->info(sprintf('[SendArbitraryUserEmail] Sent message in %.3fs', microtime(true) - $startTime));
         }
     }
 

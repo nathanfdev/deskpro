@@ -32,7 +32,6 @@ use Application\DeskPRO\Entity\CustomDefPerson;
 use Application\DeskPRO\Entity\Person;
 use Application\DeskPRO\Entity\Ticket;
 use DeskPRO\Bundle\ApiBundle\ApiDoc\Annotation\ApiDoc;
-use DeskPRO\Bundle\ApiBundle\Controller\CrudController;
 use DeskPRO\Bundle\ApiBundle\Controller\Tickets\TicketsController;
 use DeskPRO\Bundle\ApiBundle\Doctrine\RequestHelper\CustomDataHelper;
 use DeskPRO\Bundle\ApiBundle\Doctrine\RequestHelper\DateHelper;
@@ -69,7 +68,9 @@ use Symfony\Component\HttpKernel\HttpKernelInterface;
  *          {"name"="primary_email", "description"="primary email filter", "dataType"="\w+"},
  *          {"name"="organization", "description"="Comma separated list of IDs", "dataType"="[\d+,]+"},
  *          {"name"="is_agent", "description"="agents filter", "dataType"="boolean"},
- *          {"name"="is_deleted", "description"="deleted filter", "dataType"="boolean"},
+ *          {"name"="is_deleted", "pattern"="(1|0|-1)", "description"="deleted filter, defaults to 0", "dataType"="integer"},
+ *          {"name"="online", "pattern"="(1|0|-1)", "description"="is online filter, defaults to 0", "dataType"="integer"},
+ *          {"name"="online_for_chat", "pattern"="(1|0|-1)", "description"="is agent and online for chat filter, defaults to 0", "dataType"="integer"},
  *          {"name"="not_me", "description"="exclude yourself filter", "dataType"="boolean"},
  *          {"name"="agent_team", "description"="agent teams filter", "dataType"="array|integer|null", "pattern"="[\d+,]+"},
  *          {"name"="user_group", "description"="usergroups filter", "dataType"="array|integer|null", "pattern"="[\d+,]+"},
@@ -94,7 +95,7 @@ use Symfony\Component\HttpKernel\HttpKernelInterface;
  *     }
  * )
  */
-class PeopleController extends CrudController
+class PeopleController extends AbstractPeopleController
 {
     public static $entity      = Person::class;
     public static $type        = PersonType::class;
@@ -212,6 +213,8 @@ class PeopleController extends CrudController
      *
      * @param         $id
      * @param Request $request
+     *
+     * @return View
      */
     public function clearSessionAction($id, Request $request)
     {
@@ -240,6 +243,8 @@ class PeopleController extends CrudController
      */
     protected function applyListFilters(QueryBuilder $qb, $alias, Request $request)
     {
+        parent::applyListFilters($qb, $alias, $request);
+
         $context = new RequestQueryContext($qb, $alias, $request);
 
         DateHelper::applyDatePeriodFilter($context, 'date_created', 'period_created');
@@ -251,11 +256,6 @@ class PeopleController extends CrudController
         if (null !== $request->get('is_agent')) {
             $qb->andWhere("$alias.is_agent = :is_agent");
             $qb->setParameter('is_agent', (int) $request->get('is_agent'));
-        }
-
-        if (null !== $request->get('is_deleted')) {
-            $qb->andWhere("$alias.is_deleted = :is_deleted");
-            $qb->setParameter('is_deleted', (int) $request->get('is_deleted'));
         }
 
         if ($request->get('not_me')) {

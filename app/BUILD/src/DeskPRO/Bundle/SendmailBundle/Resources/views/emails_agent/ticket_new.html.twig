@@ -1,0 +1,45 @@
+{{ set_tplvar('agent_notification_footer', 'ticket-notify') }}
+{{ set_tplvar('agent_reply_above_line', true) }}
+<dp:subject>
+	{% if ticket.agent.id == person.id %}
+		{{ phrase('agent.emails.subject_new_ticket_assigned') }}
+	{% elseif ticket.agent_team and person.getHelper('AgentTeam').isTeamMember(ticket.agent_team.id) %}
+		{{ phrase('agent.emails.subject_new_ticket_assignedteam') }}
+	{% else %}
+		{{ phrase('agent.emails.subject_new_ticket') }}
+	{% endif %}
+</dp:subject>
+
+<html>
+<head>
+	{% include 'SendmailBundle:blocks:resources.html.twig' %}
+</head>
+<body>
+{% include 'SendmailBundle:emails_common:email_code_top.html.twig' %}
+
+{% include 'SendmailBundle:blocks:header.html.twig' %}
+
+	<container>
+		{% set message = ticket_messages|first %}
+		{% if message.person.is_agent %}
+			{% include 'SendmailBundle:emails_common:ticket_message_agent.html.twig' with {message: message, ticketdisplay: context.ticketdisplay } %}
+		{% else %}
+			{% include 'SendmailBundle:emails_common:ticket_message.html.twig' with {message: message, ticketdisplay: context.ticketdisplay } %}
+		{% endif %}
+
+		<br /><br />
+
+		<h1>{{ phrase('agent.general.ticket') }}</h1>
+
+		{{ phrase('agent.emails.ticket_was_created', {name: ticket_person.display_contact}) }}
+
+		<br /><br />
+
+		{%  include 'SendmailBundle:emails_common:ticket_props_table.html.twig' %}
+	</container>
+
+{% include 'SendmailBundle:blocks:footer.html.twig' %}
+
+{% include 'SendmailBundle:emails_common:email_code_bottom.html.twig' %}
+</body>
+</html>

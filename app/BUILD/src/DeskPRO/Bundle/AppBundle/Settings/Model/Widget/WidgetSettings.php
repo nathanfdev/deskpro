@@ -59,6 +59,16 @@ class WidgetSettings extends AbstractBrandAwareSettings
     private $settings;
 
     /**
+     * Widget settings itself.
+     *
+     * @JMS\Type("DeskPRO\Bundle\AppBundle\Settings\Model\Widget\JwtSettings")
+     * @Assert\Valid()
+     *
+     * @var JwtSettings
+     */
+    private $jwtSettings;
+
+    /**
      * If widget enabled on portal.
      *
      * @JMS\Type("boolean")
@@ -72,8 +82,9 @@ class WidgetSettings extends AbstractBrandAwareSettings
      */
     public function __construct()
     {
-        $this->url      = new WidgetUrlSettings();
-        $this->settings = new WidgetOptions();
+        $this->url         = new WidgetUrlSettings();
+        $this->settings    = new WidgetOptions();
+        $this->jwtSettings = new JwtSettings();
     }
 
     /**
@@ -112,6 +123,26 @@ class WidgetSettings extends AbstractBrandAwareSettings
     public function setSettings(WidgetOptions $settings)
     {
         $this->settings = $settings;
+
+        return $this;
+    }
+
+    /**
+     * @return JwtSettings
+     */
+    public function getJwtSettings()
+    {
+        return $this->jwtSettings;
+    }
+
+    /**
+     * @param JwtSettings $jwtSettings
+     *
+     * @return $this
+     */
+    public function setJwtSettings(JwtSettings $jwtSettings)
+    {
+        $this->jwtSettings = $jwtSettings;
 
         return $this;
     }

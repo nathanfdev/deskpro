@@ -61,6 +61,8 @@
     }
   };
 
+  let hasFiredReadyEvent = false;
+
   addWidgetListener('widgetStatus', (event) => {
     const response = event.detail;
     const updateStyle = (className, attr, value) => {
@@ -84,6 +86,19 @@
     each('dpwidget-open,dp-chat-trigger', (el) => {
       el.onclick = openWidget;
     });
+
+    if (response.loaded && !hasFiredReadyEvent && window.CustomEvent) {
+      hasFiredReadyEvent = true;
+      const ev = new window.CustomEvent('dpwidget.ready', {
+        detail: {
+          DpWidget:      window.DpWidget,
+          options,
+          chatAvailable: !!response.chatAvailable
+        }
+      });
+
+      window.dispatchEvent(ev);
+    }
   });
 
   // Widget app loader

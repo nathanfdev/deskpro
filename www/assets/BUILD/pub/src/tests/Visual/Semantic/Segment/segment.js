@@ -2,7 +2,7 @@ import React from 'react';
 import { storiesOf } from '@kadira/storybook';
 import { SegmentsGroup, Segment } from 'DeskPRO/Component/Semantic/Segment';
 import { List } from 'DeskPRO/Component/Semantic/List';
-import { structure as listStructure } from '../List/list.js';
+import { structure as listStructure } from '../list';
 import { css } from '../../decorators';
 
 const segmentWithHeader = {
@@ -55,7 +55,7 @@ storiesOf('Semantic: segments', module)
             <p>Two stacked</p>
           </Segment>
           <Segment classes={['orange']}>
-            segments with header (don't forget small headers are inline)
+            segments with header (don&apos;t forget small headers are inline)
           </Segment>
         </SegmentsGroup>
         <SegmentsGroup raised>

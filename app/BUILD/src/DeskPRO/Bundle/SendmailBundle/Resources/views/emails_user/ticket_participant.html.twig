@@ -1,0 +1,27 @@
+<dp:subject>{{ phrase('portal.email_subjects.ticket_new-participant') }}</dp:subject>
+
+<html>
+<head>
+	{% include 'SendmailBundle:blocks:resources.html.twig' %}
+</head>
+<body>
+{% include 'SendmailBundle:emails_common:email_code_top.html.twig' %}
+
+{% include 'SendmailBundle:blocks:header.html.twig' %}
+
+	<container>
+		{% if is_first %}
+			{{ phrase('portal.emails.ticket_cc-new', {'name':ticket.person.display_name_user}) }}
+			<br /><br />
+		{% endif %}
+
+		{% for message in ticket_messages %}
+			{{ message.message|raw }}
+		{% endfor %}
+	</container>
+
+{% include 'SendmailBundle:blocks:footer.html.twig' %}
+
+{% include 'SendmailBundle:emails_common:email_code_bottom.html.twig' %}
+</body>
+</html>

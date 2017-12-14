@@ -42,7 +42,7 @@ class FeedbackCategoryHandler extends AbstractCategoryHandler
      *
      * @param \Application\DeskPRO\Entity\FeedbackCategory $entity
      */
-    protected function createModel($entity, SideloadSerializationContext $context)
+    public function createModel($entity, SideloadSerializationContext $context)
     {
         $model = new FeedbackCategoryModel($entity);
         $model->setTitleTranslations($this->getTitleTranslations($entity));

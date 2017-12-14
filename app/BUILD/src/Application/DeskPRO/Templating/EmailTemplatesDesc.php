@@ -29,6 +29,8 @@
 /**
  * DeskPRO.
  *
+ * @deprecated use DeskPRO\Bundle\AppBundle\Templating\EmailTemplatesDesc instead;
+ *
  * @category Templating
  */
 

@@ -1,7 +1,7 @@
 {% extends 'AdminInterfaceBundle:Layout:fullpage-pane.html.twig' %}
 {% block fullpane_content %}
 	<section class="dp-paneblock dp-panelink">
-		<a href="{{ ng_href('tickets.ticket_accounts.sendmailqueue') }}">
+		<a href="{{ ng_href('emails.ticket_accounts.sendmailqueue') }}">
 			<em><i class="fa fa-chevron-down"></i></em>
 			<h3>Outgoing Email Log</h3>
 		</a>
@@ -40,7 +40,7 @@
 						<div ng-if="ViewSource.sendmail.status == 'error' && ViewSource.sendmail.error_code == 'rate_limit'" style="padding: 15px; background: #FFC2B6;">
 							You have exceeded the number of outgoing emails your account can send during the demo period.
 							You can <a href="#/license">enter your billing details</a> to lift the limit, or you can use a
-							<a href="#/tickets/ticket_accounts">custom SMTP account</a> to send your email.
+							<a href="#/emails/ticket_accounts">custom SMTP account</a> to send your email.
 						</div>
 					</td>
 				</tr>
@@ -62,7 +62,7 @@
 					<th>From</th>
 					<td>
 						<div ng-if="ViewSource.sendmail.email_account">
-							<a href="{{ ng_href('tickets.ticket_accounts.edit', '{id: ViewSource.sendmail.email_account.id}') }}">
+							<a href="{{ ng_href('emails.ticket_accounts.edit', '{id: ViewSource.sendmail.email_account.id}') }}">
 								{{ ng_var('ViewSource.sendmail.header_from') }}
 							</a>
 						</div>

@@ -40,6 +40,7 @@ bin/deskpro-importer-tools
 /www/assets/BUILD/pub/src-build
 /www/assets/BUILD/pub/build
 /www/assets/BUILD/pub/slate.tmp
+/www/assets/BUILD/pub/src/DeskPRO/Bundle/AdminBundle/AdminApp_Reducers.js
 /www/assets/BUILD/pub/src/DeskPRO/Bundle/AgentBundle/AgentApp_Reducers.js
 /www/assets/BUILD/pub/src/DeskPRO/Bundle/WidgetBundle/WidgetApp_Reducers.js
 /www/assets/BUILD/pub/src/DeskPRO/Bundle/AdminBundle/AdminApp_Reducers.js
@@ -146,6 +147,7 @@ bin/deskpro-importer-tools
 /pub/src-build
 /pub/build
 /pub/npm-debug.log
+/pub/src/DeskPRO/Bundle/AdminBundle/AdminApp_Reducers.js
 /pub/src/DeskPRO/Bundle/AgentBundle/AgentApp_Reducers.js
 /pub/src/DeskPRO/Bundle/WidgetBundle/WidgetApp_Reducers.js
 /app/BUILD/src/DeskPRO/Bundle/ApiBundle/Resources/views/apidocs/index.html.twig

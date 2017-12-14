@@ -33,6 +33,7 @@ use Application\DeskPRO\NewSettings\SettingsResolver;
 use DeskPRO\Bundle\AppBundle\Notification\Delivery\Handler\DeskproDeliveryHandler;
 use DeskPRO\Bundle\AppBundle\Notification\Message\ActionAlert;
 use DeskPRO\Bundle\AppBundle\Util\HttpClient;
+use Firebase\JWT\JWT;
 use GuzzleHttp\RequestOptions;
 use PhpSpec\ObjectBehavior;
 use Psr\Http\Message\ResponseInterface;
@@ -57,12 +58,14 @@ class DeskproDeliveryHandlerSpec extends ObjectBehavior
         $actionAlert->getData()->willReturn([]);
         $actionAlert->getDate()->willReturn($date);
         $actionAlert->getType()->willReturn('test.action.alert');
+        $actionAlert->isBroadcast()->willReturn(false);
 
         $actionAlert->getTarget()->shouldBeCalled();
         $actionAlert->getDate()->shouldBeCalled();
         $actionAlert->getId()->shouldBeCalled();
         $actionAlert->getType()->shouldBeCalled();
         $actionAlert->getData()->shouldBeCalled();
+        $actionAlert->isBroadcast()->shouldBeCalled();
 
         $data = [
             [
@@ -78,7 +81,7 @@ class DeskproDeliveryHandlerSpec extends ObjectBehavior
         ];
 
         $client
-            ->post('/send', [RequestOptions::JSON => ['jwt' => \JWT::encode($data, 'test')]])
+            ->post('/send', [RequestOptions::JSON => ['jwt' => JWT::encode($data, 'test')]])
             ->willReturn($response);
 
         $this->schedule($actionAlert);

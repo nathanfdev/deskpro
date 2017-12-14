@@ -36,7 +36,7 @@
     "eluceo/ical": "0.1.0",
     "friendsofsymfony/elastica-bundle": "dev-master#6206199",
     "fzaninotto/faker": "~1.5",
-    "firebase/php-jwt": "~2.0",
+    "firebase/php-jwt": "~4.0",
     "league/url": "~3.3",
     "onelogin/php-saml": "dev-master@dev",
     "google/apiclient": "^2.0",
@@ -101,7 +101,8 @@
     "league/oauth2-client": "^2.2",
     "league/oauth1-client": "dev-master",
     "guzzlehttp/oauth-subscriber": "^0.3.0",
-    "friendsofsymfony/oauth-server-bundle": "^1.5"
+    "friendsofsymfony/oauth-server-bundle": "^1.5",
+    "pelago/emogrifier": "^1.2"
   },
   "require-dev": {
     "mockery/mockery": "0.9.3",

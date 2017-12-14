@@ -127,7 +127,9 @@ class HelpdeskAlertGenerator extends AbstractGenerator
     private function createReloadTicketFollowUpAlert(TicketFollowUpUpdatedEvent $event)
     {
         $ticket = $event->getTicket();
-        $agents = $this->em->getRepository(Person::class)->getActiveAgents(true);
+        if (!$ticket) {
+            return [];
+        }
 
         // we always send through Db delivery because its possible
         // the client doesnt have an open connection to any other
@@ -136,6 +138,7 @@ class HelpdeskAlertGenerator extends AbstractGenerator
         $meta = ['targettedHandlers' => [DbDeliveryHandler::TYPE]];
 
         $alerts = [];
+        $agents = $this->em->getRepository(Person::class)->getActiveAgents(true);
         foreach ($agents as $agentId) {
             $alerts[] = new ActionAlert($agentId, [
                 'ticket_id' => $ticket->getId(),

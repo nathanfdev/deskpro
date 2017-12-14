@@ -69,16 +69,18 @@ class SetPersonListener implements EventSubscriberInterface
     public static function getSubscribedEvents()
     {
         return [
-            FormEvents::POST_SUBMIT => 'onSetPerson',
+            FormEvents::POST_SUBMIT => 'onPostSubmit',
         ];
     }
 
     /**
      * Check for existing person and assign to chat.
      *
+     * @internal
+     *
      * @param FormEvent $event
      */
-    public function onSetPerson(FormEvent $event)
+    public function onPostSubmit(FormEvent $event)
     {
         /** @var ChatConversation $conversation */
         $conversation = $event->getData();

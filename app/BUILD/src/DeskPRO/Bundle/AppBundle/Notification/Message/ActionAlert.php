@@ -54,4 +54,14 @@ class ActionAlert extends AbstractMessage
     {
         return $this->metaData;
     }
+
+    public function setBroadcast($broadcast = true)
+    {
+        $this->metaData['broadcast'] = $broadcast;
+    }
+
+    public function isBroadcast()
+    {
+        return isset($this->metaData['broadcast']) && $this->metaData['broadcast'];
+    }
 }

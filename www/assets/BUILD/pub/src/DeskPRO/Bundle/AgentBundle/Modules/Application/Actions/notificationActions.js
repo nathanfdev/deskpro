@@ -10,10 +10,10 @@ export const destroyNotification = createAction('APP_NOTIFICATION_DESTROY');
 
 export const setupActionAlerts = createAction(
   'SETUP_ACTION_ALERTS',
-    (data) => data
+    data => data
 );
 
 export const newActionAlerts = createAction(
   'NEW_ACTION_ALERTS',
-  (data) => data
+  data => data
 );

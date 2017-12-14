@@ -121,6 +121,11 @@ services:
     tags:
       - { name: "jms_serializer.subscribing_handler" }
 
+  api_serializer.handler.article_comment:
+    class: DeskPRO\Bundle\AppBundle\Serializer\Handler\Entity\ArticleCommentHandler
+    tags:
+      - { name: "jms_serializer.subscribing_handler" }
+
   api_serializer.handler.topic:
     class: DeskPRO\Bundle\AppBundle\Serializer\Handler\Entity\Content\TopicHandler
     arguments:
@@ -177,6 +182,13 @@ services:
 
   api_serializer.handler.chat:
     class: DeskPRO\Bundle\AppBundle\Serializer\Handler\Entity\ChatConversationHandler
+    arguments:
+      - "@doctrine.orm.default_entity_manager"
+    tags:
+      - { name: "jms_serializer.subscribing_handler" }
+
+  api_serializer.handler.chat_message:
+    class: DeskPRO\Bundle\AppBundle\Serializer\Handler\Entity\ChatMessageHandler
     tags:
       - { name: "jms_serializer.subscribing_handler" }
 
@@ -220,6 +232,16 @@ services:
     tags:
       - { name: "jms_serializer.subscribing_handler" }
 
+  api_serializer.handler.ticket_message:
+    class: DeskPRO\Bundle\AppBundle\Serializer\Handler\Entity\Tickets\TicketMessageHandler
+    tags:
+      - { name: "jms_serializer.subscribing_handler" }
+
+  api_serializer.handler.layout_field:
+    class: DeskPRO\Bundle\AppBundle\Serializer\Handler\Entity\Tickets\LayoutFieldHandler
+    tags:
+      - { name: "jms_serializer.subscribing_handler" }
+
   api_serializer.handler.agent_alert:
     class: DeskPRO\Bundle\AppBundle\Serializer\Handler\Entity\AgentAlertHandler
     tags:
@@ -253,6 +275,11 @@ services:
 
   api_serializer.handler.snippet:
     class: DeskPRO\Bundle\AppBundle\Serializer\Handler\Entity\SnippetHandler
+    tags:
+      - { name: "jms_serializer.subscribing_handler" }
+
+  api_serializer.handler.task:
+    class: DeskPRO\Bundle\AppBundle\Serializer\Handler\Entity\TaskHandler
     tags:
       - { name: "jms_serializer.subscribing_handler" }
 

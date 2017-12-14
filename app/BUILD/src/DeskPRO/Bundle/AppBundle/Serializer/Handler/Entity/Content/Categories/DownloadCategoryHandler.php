@@ -42,7 +42,7 @@ class DownloadCategoryHandler extends AbstractCategoryHandler
      *
      * @param \Application\DeskPRO\Entity\DownloadCategory $entity
      */
-    protected function createModel($entity, SideloadSerializationContext $context)
+    public function createModel($entity, SideloadSerializationContext $context)
     {
         $model = new DownloadCategoryModel($entity);
         $model->setTitleTranslations($this->getTitleTranslations($entity));

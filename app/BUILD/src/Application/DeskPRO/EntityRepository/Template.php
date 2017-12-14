@@ -35,7 +35,9 @@
 namespace Application\DeskPRO\EntityRepository;
 
 use Application\DeskPRO\Entity\Template as TemplateEntity;
+use Application\DeskPRO\Entity\TicketTrigger as TicketTriggerEntity;
 use DeskPRO\Bundle\AppBundle\Entity\ThemeSet;
+use Doctrine\ORM\Query\Expr\Join;
 
 class Template extends AbstractEntityRepository
 {
@@ -155,5 +157,20 @@ class Template extends AbstractEntityRepository
         }
 
         return $saved;
+    }
+
+    public function getLegacyTemplates()
+    {
+        $qb = $this->getEntityManager()->createQueryBuilder();
+        $qb
+            ->select('t', 'GROUP_CONCAT(tt.event_trigger, \'-\', tt.id)')
+            ->from(TemplateEntity::class, 't')
+            ->where('t.name LIKE :name')
+            ->leftJoin(TicketTriggerEntity::class, 'tt', Join::WITH, 'tt.actions LIKE CONCAT(\'%"template":"\', t.name, \'"%\')')
+            ->groupBy('t.id')
+            ->setParameter('name', 'DeskPRO:emails_%')
+        ;
+
+        return $qb->getQuery()->getResult();
     }
 }

@@ -69,7 +69,7 @@ define ['Admin/Main/Ctrl/Base', 'moment'], (Admin_Ctrl_Base, moment) ->
     startDelete: ->
       doDelete = =>
         @delete().then( =>
-          @$state.go('tickets.ticket_accounts.emailsources')
+          @$state.go('emails.ticket_accounts.emailsources')
         )
 
       @$modal.open({
@@ -87,7 +87,7 @@ define ['Admin/Main/Ctrl/Base', 'moment'], (Admin_Ctrl_Base, moment) ->
     startReprocess: ->
       doReprocess = =>
         @reprocess().then( =>
-          @$state.go('tickets.ticket_accounts.goemailsourcesview', {id: @sourceId})
+          @$state.go('emails.ticket_accounts.goemailsourcesview', {id: @sourceId})
         )
 
       @$modal.open({

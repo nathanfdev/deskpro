@@ -44,7 +44,7 @@ class DownloadHandler extends AbstractEntityHandler
      *
      * @param Download $entity
      */
-    protected function createModel($entity, SideloadSerializationContext $context)
+    public function createModel($entity, SideloadSerializationContext $context)
     {
         if ($context->getMappedClass(get_class($entity)) === ContentCsv::class) {
             return new ContentCsv($entity);

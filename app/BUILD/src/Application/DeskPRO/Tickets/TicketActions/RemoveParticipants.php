@@ -89,10 +89,10 @@ class RemoveParticipants extends AbstractAction
     /**
      * {@inheritdoc}
      */
-    public function merge(ActionInterface $other_action)
+    public function merge(ActionInterface $otherAction)
     {
         $ids = $this->getPersonIds();
-        $ids = array_merge($ids, $other_action->getPersonIds());
+        $ids = array_merge($ids, $otherAction->getPersonIds());
         $ids = array_unique($ids);
 
         return new self($ids);

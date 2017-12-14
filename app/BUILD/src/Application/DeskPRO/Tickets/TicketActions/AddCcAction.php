@@ -146,10 +146,10 @@ class AddCcAction extends AbstractAction
     /**
      * {@inheritdoc}
      */
-    public function merge(ActionInterface $other_action)
+    public function merge(ActionInterface $otherAction)
     {
         $email_addresses = $this->getEmailAddresses();
-        $email_addresses = array_merge($email_addresses, $other_action->getEmailAddresses());
+        $email_addresses = array_merge($email_addresses, $otherAction->getEmailAddresses());
         $email_addresses = array_unique($email_addresses);
 
         $new = new self($email_addresses);

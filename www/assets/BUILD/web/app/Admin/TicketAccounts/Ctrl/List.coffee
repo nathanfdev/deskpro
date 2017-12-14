@@ -11,11 +11,11 @@ define ['Admin/Main/Ctrl/Base'], (Admin_Ctrl_Base) ->
       list_promise = @TicketAccountsData.loadList().then( (recs) =>
         @accounts = recs.values()
 
-        if @$state.current.name == 'tickets.ticket_accounts'
+        if @$state.current.name == 'emails.ticket_accounts'
           if @accounts[0]
-            @$state.go('tickets.ticket_accounts.edit', { id: @accounts[0].id })
+            @$state.go('emails.ticket_accounts.edit', { id: @accounts[0].id })
           else
-            @$state.go('tickets.ticket_accounts.create')
+            @$state.go('emails.ticket_accounts.create')
 
         @addManagedListener(@TicketAccountsData.recs, 'changed', =>
           @TicketAccountsData.recs.reorder()
@@ -60,8 +60,8 @@ define ['Admin/Main/Ctrl/Base'], (Admin_Ctrl_Base) ->
         @ngApply()
 
         # if currently viewing the deleted account, then should need to switch state
-        if @$state.current.name == 'tickets.ticket_accounts.edit' and parseInt(@$state.params.id) == acc.id
-          @$state.go('tickets.ticket_accounts')
+        if @$state.current.name == 'emails.ticket_accounts.edit' and parseInt(@$state.params.id) == acc.id
+          @$state.go('emails.ticket_accounts')
       )
 
   Admin_TicketAccounts_Ctrl_List.EXPORT_CTRL()

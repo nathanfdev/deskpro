@@ -28,7 +28,7 @@ class ActionsBlock extends React.Component {
   addAction = () => {
     const actions = this.props.actions;
     actions.push({
-      type:    this.types[0].value,
+      type:    this.props.types[0].value,
       options: {}
     });
     this.props.onChange(actions);

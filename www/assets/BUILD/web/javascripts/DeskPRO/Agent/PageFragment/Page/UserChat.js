@@ -109,9 +109,10 @@ DeskPRO.Agent.PageFragment.Page.UserChat = new Orb.Class({
 		});
 
     this.addEvent('activate', function() {
+			var messageBox = self.getEl('messages_box');
     	window.setTimeout(function() {
-        self.getEl('messages_box').scrollTop(10000);
-      }, 100);
+    		messageBox.scrollTop(messageBox.prop('scrollHeight'));
+      }, 200);
     });
 
 		this._initMenus();

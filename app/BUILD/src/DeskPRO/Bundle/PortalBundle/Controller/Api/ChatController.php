@@ -173,51 +173,6 @@ class ChatController extends AbstractApiController
         return View::create($this->wrap($conversation));
     }
 
-    private function getAssignFromRr(ChatConversation $conversation)
-    {
-        $em = $this->getDoctrine()->getManager();
-
-        /** @var \Application\DeskPRO\EntityRepository\ChatRoundRobin $repo */
-        $repo = $em->getRepository(ChatRoundRobin::class);
-
-        if ($conversation->getDepartment()) {
-            /** @var ChatRoundRobin $rr */
-            $rr = $repo->findByDepartment($conversation->getDepartment());
-        }
-        if (empty($rr)) {
-            $rr = $repo->findOneBy(['apply_by_default' => true]);
-        }
-        if (!$rr) {
-            return;
-        }
-
-        /** @var \Application\DeskPRO\EntityRepository\Person $personRepository */
-        $personRepository = $em->getRepository(Person::class);
-
-        $entry                = new ChatRoundRobinLogEntry();
-        $entry->rr            = $rr;
-        $entry['chatId']      = $conversation->getId();
-        $entry['chatSubject'] = $conversation->getSubjectLine();
-        $em->persist($entry);
-
-        $agent = $rr->getNextAgent($personRepository, $entry, $conversation->getDepartment());
-        if (!$agent) {
-            return;
-        }
-        $conversation->setAgent($agent);
-        //Register activity to round robins
-        $rras = $em->getRepository(ChatRoundRobinAgent::class)->findBy(['agent' => $agent]);
-        foreach ($rras as $rra) {
-            /* @var $rra ChatRoundRobinAgent */
-            $rra->setLastActivity();
-            $em->persist($rra);
-        }
-        $rr->setLast($agent);
-        $em->persist($rr);
-
-        return $agent;
-    }
-
     /**
      * @Rest\Get("/{id}/polling")
      * @ParamConverter(converter="portal_api_chat")
@@ -505,5 +460,56 @@ class ChatController extends AbstractApiController
         $em = $this->getDoctrine()->getManager();
         $em->persist($conversation);
         $em->flush();
+    }
+
+    /**
+     * @param ChatConversation $conversation
+     *
+     * @return Person|null
+     */
+    private function getAssignFromRr(ChatConversation $conversation)
+    {
+        $em = $this->getDoctrine()->getManager();
+
+        /** @var \Application\DeskPRO\EntityRepository\ChatRoundRobin $repo */
+        $repo = $em->getRepository(ChatRoundRobin::class);
+
+        if ($conversation->getDepartment()) {
+            /** @var ChatRoundRobin $rr */
+            $rr = $repo->findByDepartment($conversation->getDepartment());
+        }
+        if (empty($rr)) {
+            $rr = $repo->findOneBy(['apply_by_default' => true]);
+        }
+        if (!$rr) {
+            return;
+        }
+
+        /** @var \Application\DeskPRO\EntityRepository\Person $personRepository */
+        $personRepository = $em->getRepository(Person::class);
+
+        $entry                = new ChatRoundRobinLogEntry();
+        $entry->rr            = $rr;
+        $entry['chatId']      = $conversation->getId();
+        $entry['chatSubject'] = $conversation->getSubjectLine();
+        $em->persist($entry);
+
+        $agent = $rr->getNextAgent($personRepository, $entry, $conversation->getDepartment());
+        if (!$agent) {
+            return;
+        }
+
+        $conversation->setAgent($agent);
+        //Register activity to round robins
+        $rras = $em->getRepository(ChatRoundRobinAgent::class)->findBy(['agent' => $agent]);
+        foreach ($rras as $rra) {
+            /* @var $rra ChatRoundRobinAgent */
+            $rra->setLastActivity();
+            $em->persist($rra);
+        }
+        $rr->setLast($agent);
+        $em->persist($rr);
+
+        return $agent;
     }
 }

@@ -39,6 +39,7 @@ use DeskPRO\Bundle\AppBundle\Serializer\Model\Notifications\NotificationClient;
 use DeskPRO\Bundle\AppBundle\Serializer\Model\Notifications\NotificationConfiguration;
 use DeskPRO\Component\Util\RandUtils;
 use Doctrine\ORM\EntityManager;
+use Firebase\JWT\JWT;
 use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorageInterface;
 
 /**
@@ -46,6 +47,8 @@ use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorageInt
  */
 class NotificationService
 {
+    const TARGET_BROADCAST = 'agent_public';
+
     /**
      * @var EntityManager
      */
@@ -226,7 +229,7 @@ class NotificationService
     {
         $user = $this->tokenStorage->getToken()->getUser();
 
-        return \JWT::encode(
+        return JWT::encode(
             [
                 'id' => $user instanceof Person ? $user->getId() : 0,
             ],

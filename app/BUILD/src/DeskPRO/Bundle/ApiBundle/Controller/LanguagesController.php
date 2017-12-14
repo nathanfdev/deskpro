@@ -29,10 +29,18 @@
 namespace DeskPRO\Bundle\ApiBundle\Controller;
 
 use Application\DeskPRO\Entity\Language;
+use Application\DeskPRO\Entity\Phrase;
+use Application\DeskPRO\Translate\Translate;
 use DeskPRO\Bundle\ApiBundle\ApiDoc\Annotation\ApiDoc;
 use DeskPRO\Bundle\AppBundle\Annotation\ActionPermissions\Annotation\ApiModes;
+use DeskPRO\Bundle\AppBundle\Annotation\ActionPermissions\Annotation\Feature;
+use DeskPRO\Bundle\AppBundle\Form\Error\Exception\InvalidFormException;
+use DeskPRO\Bundle\AppBundle\Form\Type\CustomPhraseType;
+use DeskPRO\Bundle\AppBundle\Form\Type\TranslationType;
 use DeskPRO\Component\Util\MapUtils;
 use FOS\RestBundle\Controller\Annotations as Rest;
+use FOS\RestBundle\View\View;
+use Symfony\Component\Form\FormError;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 
@@ -329,6 +337,192 @@ class LanguagesController extends CrudController
     }
 
     /**
+     * @ApiDoc(
+     *      section="Languages",
+     *      description="provide agent phrases for frontend",
+     *      statusCodes={
+     *          201="Created",
+     *          400="Bad Request"
+     *      },
+     *     output="array"
+     * )
+     * @Rest\Get("/email_phrases/{group}/{languageId}")
+     * @Feature("email_templates")
+     *
+     * @param $languageId
+     *
+     * @return View
+     */
+    public function emailPhrasesAction($group, $languageId)
+    {
+        /** @var Translate $translate */
+        $translate = $this->container->get('deskpro.core.translate');
+
+        if (is_numeric($languageId)) {
+            $language = $languageId;
+        } else {
+            $language = $this->getManager()->getRepository(Language::class)->findOneBy(['locale' => $languageId]);
+        }
+
+        $phrases = [];
+        switch ($group) {
+            case 'user':
+                $phrases = [
+                    'portal.email_subjects.*',
+                    'user.email_subjects.*',
+                    'portal.emails.*',
+                    'user.emails.*',
+                    'portal.general.*',
+                    'user.general.*',
+                    'portal.error.*',
+                    'user.error.*',
+                    'portal.tickets.*',
+                    'user.tickets.*',
+                    'portal.account.*',
+                    'portal.articles.*',
+                    'portal.chat.*',
+                    'user.chat.*',
+                    'user.defaults.*',
+                    'portal.downloads.*',
+                    'user.downloads.*',
+                    'portal.feedback.*',
+                    'user.feedback.*',
+                    'portal.flashes.*',
+                    'portal.forms.*',
+                    'user.knowledgebase.*',
+                    'user.lang.*',
+                    'portal.news.*',
+                    'user.news.*',
+                    'user.profile.*',
+                    'portal.sidebar.*',
+                    'user.time.*',
+                    'custom.emails.*',
+                ];
+                break;
+            case 'agent':
+                $phrases = [
+                    'agent.email_subjects.*',
+                    'agent.emails.*',
+                    'agent.general.*',
+                    'agent.error.*',
+                    'agent.tickets.*',
+                    'agent.account.*',
+                    'agent.articles.*',
+                    'agent.chat.*',
+                    'agent.chrome.*',
+                    'agent.downloads.*',
+                    'agent.feedback.*',
+                    'agent.flashes.*',
+                    'agent.forms.*',
+                    'agent.news.*',
+                    'agent.sidebar.*',
+                ];
+                break;
+        }
+
+        $phrases = $translate->getArrayPhraseTexts($phrases, $language);
+
+        return new View($phrases);
+    }
+
+    /**
+     * @ApiDoc(
+     *      section="Languages",
+     *      description="provide translation of a phrase",
+     *      statusCodes={
+     *          201="Created",
+     *          400="Bad Request"
+     *      },
+     *     output="array"
+     * )
+     * @Rest\Get("/translations/{phraseName}")
+     * @Feature("email_templates")
+     *
+     * @param $phraseName
+     *
+     * @return View
+     */
+    public function getTranslationsAction($phraseName)
+    {
+        /** @var Translate $translate */
+        $translate = $this->container->get('deskpro.core.translate');
+
+        $languages    = $this->getManager()->getRepository(Language::class)->findAll();
+        $translations = [];
+        foreach ($languages as $language) {
+            $translations[$language->getLocale()] = $translate->getPhraseText($phraseName, $language, true);
+        }
+
+        return new View($translations);
+    }
+
+    /**
+     * @ApiDoc(
+     *      section="Languages",
+     *      description="provide translation of a phrase",
+     *      statusCodes={
+     *          201="Created",
+     *          400="Bad Request"
+     *      },
+     *     input={
+     *      "class"="DeskPRO\Bundle\AppBundle\Form\Type\TranslationType",
+     *     },
+     *     output="array"
+     * )
+     * @Rest\Post("/translations/{phraseName}")
+     * @Feature("email_templates")
+     *
+     * @param Request $request
+     * @param $phraseName
+     *
+     * @return View
+     */
+    public function postTranslationsAction(Request $request, $phraseName)
+    {
+        $form = $this->createForm(TranslationType::class);
+        $form->submit($request->request->all());
+        if (!$form->isValid()) {
+            throw new InvalidFormException($form);
+        }
+
+        $translations = $form->getData()['translations'];
+        /** @var Translate $translate */
+        $translate = $this->container->get('deskpro.core.translate');
+
+        foreach ($translations as $locale => $translation) {
+            $language    = $this->getManager()->getRepository(Language::class)->findOneBy(['locale' => $locale]);
+            $translation = trim($translation);
+            if ($translation != $translate->getPhraseText($phraseName, $language, true)) {
+                $phrase = $this->getManager()->getRepository(Phrase::class)
+                    ->getPhraseForLanguage($phraseName, $language);
+                if (!$translation) {
+                    if ($phrase) {
+                        $this->getManager()->remove($phrase);
+                    }
+                } else {
+                    if (!$phrase) {
+                        $phrase = new Phrase();
+                        $phrase->setLanguage($language);
+                        $phrase->setName($phraseName);
+                        $phrase->setOriginalPhrase('');
+                        $phrase->setOriginalHash(md5(null));
+                    }
+
+                    if (!$phrase->getOriginalPhrase()) {
+                        $phrase->setOriginalPhrase('');
+                        $phrase->setOriginalHash(md5(null));
+                    }
+                    $phrase->setPhrase($translation);
+                    $this->getManager()->persist($phrase);
+                }
+            }
+        }
+        $this->getManager()->flush();
+
+        return new View('OK');
+    }
+
+    /**
      * @param Request $request
      * @param array   $phrases
      *
@@ -360,5 +554,64 @@ class LanguagesController extends CrudController
         // - when langs are updated (need some global uid that changes when admin edits phrase)
 
         return $res;
+    }
+
+    /**
+     * @ApiDoc(
+     *      section="Languages",
+     *      description="Create new custom phrase in several languages",
+     *      statusCodes={
+     *          201="Created",
+     *          400="Bad Request"
+     *      },
+     *     input={
+     *      "class"="DeskPRO\Bundle\AppBundle\Form\Type\CustomPhraseType",
+     *     },
+     *     output="Application\DeskPRO\Entity\Phrase",
+     * )
+     * @Rest\Post("/custom_phrase")
+     *
+     * @param Request $request
+     *
+     * @throws \Exception
+     *
+     * @return JsonResponse
+     */
+    public function postCustomPhraseAction(Request $request)
+    {
+        $form = $this->createForm(CustomPhraseType::class);
+        $form->submit($request->request->all());
+        if (!$form->isValid()) {
+            throw new InvalidFormException($form);
+        }
+
+        $data = $form->getData();
+
+        $phraseName = 'custom.emails.'.$data['name'];
+
+        if ($this->getManager()->getRepository(Phrase::class)->findOneBy(['name' => $phraseName])) {
+            $form->get('name')->addError(new FormError('Duplicate entry.'));
+            throw new InvalidFormException($form);
+        }
+
+        $entityManager = $this->getManager();
+
+        $phrases = [];
+
+        /** @var Language $language */
+        foreach ($this->getContainer()->get('language_manager')->getEnabledLanguages() as $language) {
+            if (!empty($data['phrase_'.$language->getLocale()])) {
+                $phrase = new Phrase();
+                $phrase->setName($phraseName);
+                $phrase->setLanguage($language);
+                $phrase->setPhrase($data['phrase_'.$language->getLocale()]);
+                $phrase->setOriginalHash('');
+                $entityManager->persist($phrase);
+                $phrases[] = $phrase;
+            }
+        }
+        $entityManager->flush();
+
+        return new JsonResponse($phrases);
     }
 }

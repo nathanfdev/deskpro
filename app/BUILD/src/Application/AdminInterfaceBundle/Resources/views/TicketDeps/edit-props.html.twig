@@ -126,9 +126,15 @@
 							When a new ticket is submitted through the portal in this department:
 						</header>
 						<article>
-							<dp-option-builder types-def="EditCtrl.actionsTypeDef" save-target="actions_form" options="{tag_first: '', tag_after: 'then', fixedExpanded: ['SetEmailAccount', 'SendUserEmail'], fixOn: ['SetEmailAccount'] }" option-types="actionOptionTypes">
-								<add-btn-label>Action</add-btn-label>
-							</dp-option-builder>
+							{% if app.hasBeta('email_templates') %}
+								<dp-option-builder types-def="EditCtrl.actionsTypeDef" save-target="actions_form" options="{tag_first: '', tag_after: 'then', fixedExpanded: ['SetEmailAccount', 'SendUserNewEmail'], fixOn: ['SetEmailAccount'] }" option-types="actionOptionTypes">
+									<add-btn-label>Action</add-btn-label>
+								</dp-option-builder>
+							{% else %}
+								<dp-option-builder types-def="EditCtrl.actionsTypeDef" save-target="actions_form" options="{tag_first: '', tag_after: 'then', fixedExpanded: ['SetEmailAccount', 'SendUserEmail'], fixOn: ['SetEmailAccount'] }" option-types="actionOptionTypes">
+									<add-btn-label>Action</add-btn-label>
+								</dp-option-builder>
+							{% endif %}
 						</article>
 					</div>
 				</div>

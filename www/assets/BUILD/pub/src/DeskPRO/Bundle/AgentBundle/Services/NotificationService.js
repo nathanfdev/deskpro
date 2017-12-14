@@ -55,6 +55,7 @@ export class NotificationService {
   startPolling() {
     this.eventEmitter.on('action_alert', data => this.options.actionAlertsHandler.handle(data));
     this.eventEmitter.on('user_notify', data => this.options.notificationsHandler.handle(data));
+    this.clients.map(client => client.bind('agent_public', 'action_alert'));
     this.clients.map(client => client.bind(`private-${this.options.user.get('id')}`, 'action_alert'));
     this.clients.map(client => client.bind(`private-${this.options.user.get('id')}`, 'user_notify'));
   }

@@ -1,0 +1,69 @@
+{{ set_tplvar('agent_notification_footer', 'ticket-notify') }}
+{{ set_tplvar('agent_reply_above_line', true) }}
+<dp:subject>
+	{% if performer_type == 'agent' %}
+		{% if is_my_mention %}
+			{{ phrase('agent.emails.new_mention_ticket_subject') }}
+		{% elseif new_message.is_agent_note %}
+			{{ phrase('agent.emails.new_note_ticket_subject') }}
+		{% else %}
+			{{ phrase('agent.emails.new_agent_reply_ticket_subject') }}
+		{% endif %}
+	{% else %}
+		{{ phrase('agent.emails.new_user_reply_ticket_subject') }}
+	{% endif %}
+</dp:subject>
+
+<html>
+<head>
+	{% include 'SendmailBundle:blocks:resources.html.twig' %}
+</head>
+<body>
+{% include 'SendmailBundle:emails_common:email_code_top.html.twig' %}
+
+{% include 'SendmailBundle:blocks:header.html.twig' %}
+
+	<container>
+		{% set message = ticket_messages|first %}
+		{% if message.person.is_agent %}
+			{% include 'SendmailBundle:emails_common:ticket_message_agent.html.twig' with {message: message, ticketdisplay: context.ticketdisplay } %}
+		{% else %}
+			{% include 'SendmailBundle:emails_common:ticket_message.html.twig' with {message: message, ticketdisplay: context.ticketdisplay } %}
+		{% endif %}
+
+		<br /><br />
+
+		<h1>{{ phrase('agent.general.ticket') }}</h1>
+		{{ phrase('agent.emails.person_replied', {name: new_message.person.display_contact, 'subject':ticket.subject}) }}
+
+		<br /><br />
+
+		{%  include 'SendmailBundle:emails_common:ticket_props_table.html.twig' %}
+
+		<br /><br />
+
+		<h1>{{ phrase('agent.tickets.ticket_changes') }}</h1>
+		{% for log in context.ticket_logs %}
+			{% include 'SendmailBundle:emails_common:ticket_log_actiontext.html.twig' %}
+		{% endfor %}
+
+		<br /><br />
+
+		<h1>{{ phrase('agent.general.message_history') }}</h1>
+		{% if context.is_new_user_reply or context.is_new_agent_reply %}
+			{% set messages = ticket_messages|slice(1) %}
+		{% else %}
+			{% set messages = ticket_messages %}
+		{% endif %}
+		{% for message in messages %}
+			{% if not context.message_limit or loop.index0 < context.message_limit %}
+				{% include 'SendmailBundle:emails_common:ticket_message_row.html.twig' with { message: message, ticketdisplay: context.ticketdisplay, show_author_email: true, is_to_agent: true } %}
+			{% endif %}
+		{% endfor %}
+	</container>
+
+{% include 'SendmailBundle:blocks:footer.html.twig' %}
+
+{% include 'SendmailBundle:emails_common:email_code_bottom.html.twig' %}
+</body>
+</html>

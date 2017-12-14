@@ -26,7 +26,7 @@ class Input extends React.Component {
 
     return (
       <div className={classNames('ui', 'input', iconPosition, { icon: !!icon })}>
-        <input {...this.props} onChange={this.onChange} />
+        <input {...this.props} onChange={this.onChange} ref={(c) => { this.input = c; }} />
         {this.getIcon()}
       </div>
     );

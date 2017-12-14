@@ -26,10 +26,6 @@
  * ~ Thanks, Everyone at Team DeskPRO
  */
 
-/**
- * DeskPRO.
- */
-
 namespace DeskPRO\Bundle\AppBundle\Form\Type\ContactData;
 
 use Application\DeskPRO\Entity\ContactDataAbstract;
@@ -56,30 +52,37 @@ class ContactDataType extends AbstractType
             ->add(ContactDataAbstract::TYPE_PHONE, ContactDataCollectionType::class, [
                 'entry_type' => PhoneType::class,
                 'owner'      => $options['owner'],
+                'required'   => false,
             ])
             ->add(ContactDataAbstract::TYPE_WEBSITE, ContactDataCollectionType::class, [
                 'entry_type' => WebsiteType::class,
                 'owner'      => $options['owner'],
+                'required'   => false,
             ])
             ->add(ContactDataAbstract::TYPE_INSTANT_MESSAGE, ContactDataCollectionType::class, [
                 'entry_type' => InstantMessageType::class,
                 'owner'      => $options['owner'],
+                'required'   => false,
             ])
             ->add(ContactDataAbstract::TYPE_TWITTER, ContactDataCollectionType::class, [
                 'entry_type' => TwitterType::class,
                 'owner'      => $options['owner'],
+                'required'   => false,
             ])
             ->add(ContactDataAbstract::TYPE_LINKED_IN, ContactDataCollectionType::class, [
                 'entry_type' => LinkedInType::class,
                 'owner'      => $options['owner'],
+                'required'   => false,
             ])
             ->add(ContactDataAbstract::TYPE_FACEBOOK, ContactDataCollectionType::class, [
                 'entry_type' => FacebookType::class,
                 'owner'      => $options['owner'],
+                'required'   => false,
             ])
             ->add(ContactDataAbstract::TYPE_ADDRESS, ContactDataCollectionType::class, [
                 'entry_type' => AddressType::class,
                 'owner'      => $options['owner'],
+                'required'   => false,
             ])
         ;
 

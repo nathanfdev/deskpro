@@ -72,42 +72,55 @@ class OrganizationType extends AbstractType
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
         $builder
-            ->add('name', TextType::class)
+            ->add('name', TextType::class, [
+                'required' => true,
+            ])
             ->add('parent', 'entity', [
-                'class' => Organization::class,
+                'class'    => Organization::class,
+                'required' => false,
             ])
             ->add('picture_blob', BlobAuthType::class, [
                 'property_path' => 'picture_blob',
+                'required'      => false,
             ])
-            ->add('summary', TextType::class)
+            ->add('summary', TextType::class, [
+                'required' => false,
+            ])
             ->add('importance', IntegerType::class, [
                 'empty_data' => '0',
+                'required'   => false,
             ])
             ->add('labels', LabelsCollectionType::class, [
                 'labels_class'   => LabelOrganization::class,
                 'labels_owner'   => $builder->getData(),
                 'owner_property' => 'organization',
+                'required'       => false,
             ])
             ->add('user_groups', UsergroupsType::class, [
                 'is_agent_group' => false,
                 'owner'          => $builder->getData(),
+                'required'       => false,
             ])
             ->add('email_domains', OrganizationEmailDomainsType::class, [
                 'owner'          => $builder->getData(),
                 'error_bubbling' => false,
+                'required'       => false,
             ])
             ->add('fields', CombinedType::class, [
                 'forms'          => $this->getCustomDataFields($options),
                 'error_bubbling' => false,
+                'required'       => false,
             ])
             ->add('contact_data', ContactDataType::class, [
                 'owner'          => $builder->getData(),
                 'parent_builder' => $builder,
+                'required'       => false,
             ])
             ->add('members', EntityType::class, [
                 'class'        => Person::class,
                 'multiple'     => true,
                 'by_reference' => false,
+                'required'     => false,
             ])
         ;
 

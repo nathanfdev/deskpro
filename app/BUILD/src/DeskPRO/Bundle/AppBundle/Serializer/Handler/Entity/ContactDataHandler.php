@@ -59,7 +59,7 @@ class ContactDataHandler extends AbstractEntityHandler
      *
      * @param ContactDataAbstract $entity
      */
-    protected function createModel($entity, SideloadSerializationContext $context)
+    public function createModel($entity, SideloadSerializationContext $context)
     {
         $contact_type = $entity->getContactType();
         $class_name   = 'DeskPRO\\Bundle\\AppBundle\\Serializer\\Model\\ContactData\\'.ucfirst(Strings::underscoreToCamelCase($contact_type));

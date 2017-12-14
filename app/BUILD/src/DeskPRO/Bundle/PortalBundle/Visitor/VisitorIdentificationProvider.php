@@ -91,7 +91,7 @@ class VisitorIdentificationProvider
                 $request->cookies->get(static::COOKIE_NAME),
                 $request->attributes->get(static::ATTRIBUTE_NAME),
             ] as $identifier) {
-                if ($identifier && preg_match('#^\d{8,9}\-[A-Z0-9]{8}\-[A-Z0-9]{8}\-[A-Z0-9]{6}\-[A-Z]{3}$#', $identifier)) {
+                if ($identifier && is_string($identifier) && preg_match('#^\d{8,9}\-[A-Z0-9]{8}\-[A-Z0-9]{8}\-[A-Z0-9]{6}\-[A-Z]{3}$#', $identifier)) {
                     $this->logger->info(sprintf('found visitor identifier in request: %s', $identifier));
 
                     return $identifier;

@@ -80,7 +80,7 @@ class VoicePhoneCallHandler extends AbstractEntityHandler
      *
      * @param VoicePhoneCall $entity
      */
-    protected function createModel($entity, SideloadSerializationContext $context)
+    public function createModel($entity, SideloadSerializationContext $context)
     {
         $this->callIds[$entity->getId()] = true;
 

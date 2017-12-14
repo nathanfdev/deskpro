@@ -11,7 +11,8 @@ class Accordion extends React.Component {
       elements: PropTypes.arrayOf(PropTypes.object)
     })),
     fluid:    PropTypes.bool,
-    onChange: PropTypes.func
+    onChange: PropTypes.func,
+    children: PropTypes.node
   };
   static defaultProps = {
     onChange() {
@@ -46,7 +47,9 @@ class Accordion extends React.Component {
     const panels = [];
     const items = this.props.panels;
     const activeKey = this.state.activeKey;
-    const self = this;
+    if (!items) {
+      return [];
+    }
     Object.keys(items).map((i) => {
       const panel = items[i];
       const key = String(i);
@@ -55,7 +58,7 @@ class Accordion extends React.Component {
         key,
         active,
         panel,
-        onItemClick: self.onClickItem(key)
+        onItemClick: this.onClickItem(key)
       };
       panels.push(<AccordionPanel {...props} />);
       return true;
@@ -63,9 +66,24 @@ class Accordion extends React.Component {
     return panels;
   }
 
+  renderChildren = () =>
+    React.Children.map(this.props.children, (child) => {
+      if (child && child.type === AccordionPanel) {
+        const key = child.key;
+        const active = (key === this.state.activeKey[0]);
+        return React.cloneElement(child, {
+          active,
+          onItemClick: this.onClickItem(key)
+        });
+      }
+      return null;
+    });
+
+
   render() {
     return (<div className={classNames('ui', 'list', 'styled', 'accordion', { fluid: this.props.fluid })}>
       {this.getPanels()}
+      {this.renderChildren()}
     </div>);
   }
 }

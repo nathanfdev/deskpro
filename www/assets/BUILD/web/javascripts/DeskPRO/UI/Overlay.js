@@ -374,11 +374,12 @@ DeskPRO.UI.Overlay = new Orb.Class({
 		if (dataEl.length != 1) {
 			var el = $('<div />');
 			el.append(dataEl);
+			el.children().show();
 		} else {
 			var el = dataEl;
+			el.show();
 		}
 
-		el.show();
 		this._setContent(el);
 
 		this.hasInit = true;

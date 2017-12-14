@@ -104,12 +104,12 @@ class RemoveSlaAction extends AbstractAction
     /**
      * {@inheritdoc}
      */
-    public function merge(ActionInterface $other_action)
+    public function merge(ActionInterface $otherAction)
     {
-        if ($other_action->getRemoveAll()) {
+        if ($otherAction->getRemoveAll()) {
             $this->remove_all = true;
         } else {
-            $this->sla_ids = array_merge($this->sla_ids, $other_action->getSlaIds());
+            $this->sla_ids = array_merge($this->sla_ids, $otherAction->getSlaIds());
             $this->sla_ids = array_unique($this->sla_ids);
         }
 

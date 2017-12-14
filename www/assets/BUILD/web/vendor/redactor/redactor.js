@@ -140,7 +140,7 @@ var RLANG = {
 			fixedTop: 0, // pixels
 			fixedBox: false,
 			source: true,
-			shortcuts: true,
+			shortcuts: false,
 
 			mobile: true,
 			air: false, // true or toolbar

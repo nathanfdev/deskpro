@@ -24,6 +24,7 @@ services:
     tags:
       - { name: twig.extension }
       - { name: email.templating.twig.extension }
+      - { name: new_email.templating.twig.extension }
 
   object_router.annotation_config:
     class: DeskPRO\Bundle\AppBundle\ObjectRouter\LinkConfigAnnotationRepo

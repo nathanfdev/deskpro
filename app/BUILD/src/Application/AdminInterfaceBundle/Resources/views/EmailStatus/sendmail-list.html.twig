@@ -1,14 +1,14 @@
 {% extends 'AdminInterfaceBundle:Layout:fullpage-pane.html.twig' %}
 {% block fullpane_content %}
 	<section class="dp-paneblock dp-panelink">
-		<a href="{{ ng_href('tickets.ticket_accounts') }}">
+		<a href="{{ ng_href('emails.ticket_accounts') }}">
 			<em><i class="fa fa-chevron-down"></i></em>
 			<h3>Email Accounts</h3>
 		</a>
 	</section>
 
 	<section class="dp-paneblock dp-panelink">
-		<a href="{{ ng_href('tickets.ticket_accounts.emailsources') }}">
+		<a href="{{ ng_href('emails.ticket_accounts.emailsources') }}">
 			<em><i class="fa fa-chevron-down"></i></em>
 			<h3>Incoming Email</h3>
 		</a>
@@ -121,11 +121,11 @@
 				<tbody>
 					<tr ng-repeat="result in ListCtrl.results" ng-class="{'danger': result.status == 'error'}">
 						<td class=""><input type="checkbox" ng-model="ListCtrl.massActions[result.id]" ng-change="" style="margin: 0;" /></td>
-						<td class="alt dp-id-col"><a href="{{ ng_href('tickets.ticket_accounts.sendmailqueueview', '{id: result.id}') }}"><em class="dp-id">{{ ng_var('result.id') }}</a></td>
+						<td class="alt dp-id-col"><a href="{{ ng_href('emails.ticket_accounts.sendmailqueueview', '{id: result.id}') }}"><em class="dp-id">{{ ng_var('result.id') }}</a></td>
 						<td nowrap><span am-time-ago="result.date_created"></span></td>
 						<td class="overflow-ellipsis">
 							<div ng-if="result.email_account">
-								<a href="{{ ng_href('tickets.ticket_accounts.edit', '{id: result.email_account.id}') }}">
+								<a href="{{ ng_href('emails.ticket_accounts.edit', '{id: result.email_account.id}') }}">
 									{{ ng_var('result.header_from') }}
 								</a>
 							</div>

@@ -40,7 +40,7 @@ class FeedbackCommentHandler extends AbstractEntityHandler
      *
      * @param FeedbackComment $entity
      */
-    protected function createModel($entity, SideloadSerializationContext $context)
+    public function createModel($entity, SideloadSerializationContext $context)
     {
         $serializerClass = $context->getMappedClass(FeedbackComment::class);
 

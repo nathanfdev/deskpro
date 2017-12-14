@@ -8,4 +8,6 @@
 
 <br/>
 
+{% if person.getPlaintextPassword() %}
 {{ phrase('user.emails.register-password', {password: person.getPlaintextPassword()}) }}<br/>
+{% endif %}

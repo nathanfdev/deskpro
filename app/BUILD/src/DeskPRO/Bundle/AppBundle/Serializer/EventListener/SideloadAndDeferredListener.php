@@ -114,6 +114,12 @@ class SideloadAndDeferredListener implements EventSubscriberInterface
         $inlineSideloads = $context->isInlineSideloads();
         $context->setInlineSideloads(false);
 
+        $disabledSideloads = $context->isDisabledSideloads();
+        if ($context->getIncludesStrategy() === SideloadSerializationContext::INCLUDE_STRATEGY_DATA) {
+            // disable sideloading for 'data' strategy to prevent loading lots of sideloads nested related data
+            $context->setDisabledSideloads(true);
+        }
+
         $visitor->setData('linked', []);
         $this->recursiveResolveSideloadsAndDeferred($context);
 
@@ -121,6 +127,8 @@ class SideloadAndDeferredListener implements EventSubscriberInterface
         $context->setExclusionEnabled(true);
         // restore original 'inline_sideloading' option
         $context->setInlineSideloads($inlineSideloads);
+        // restore original 'disabled sideloads' option
+        $context->setDisabledSideloads($disabledSideloads);
     }
 
     /**

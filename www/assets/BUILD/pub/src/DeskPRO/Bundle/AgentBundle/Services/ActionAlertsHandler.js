@@ -1,4 +1,5 @@
 import debounce from 'lodash/debounce';
+import clone from 'lodash/clone';
 import { newActionAlerts } from '../Modules/Application/Actions/notificationActions';
 import { startChat } from '../Modules/IM/Actions/chatsActions';
 import { markMessages } from '../Modules/IM/Actions/messagesActions';
@@ -18,9 +19,6 @@ class ActionAlertsHandler {
     const { data, linked } = payload.data;
     const records = [];
     switch (payload.type) {
-      case 'multiplex_message':
-        this.handleMultiplex(payload);
-        break;
       case 'agents.update_online':
         if (payload.data.online) {
           payload.data.online.forEach((item) => {
@@ -35,7 +33,7 @@ class ActionAlertsHandler {
         this.options.dispatch(updateCollection('Person', records, 'merge'));
         break;
       case 'organization.added':
-        ActionAlertsHandler.handleLegacyClientMessage(payload.data);
+        this.handleLegacyClientMessage(payload.data);
         break;
       case 'helpdesk.agent.refresh_interface': {
         const { who, message, isIgnoreAllowed, reasonCode } = payload.data;
@@ -97,9 +95,17 @@ class ActionAlertsHandler {
       case 'agent.update_status':
         this.options.dispatch(updateAgentStatus(payload.data));
         break;
+      case 'agent.filter-update':
+        payload.data.operations.forEach((datum) => {
+          const newData = clone(datum);
+          newData.eventType = payload.data.eventType;
+          newData.ticket_id = payload.data.ticket_id;
+          this.handleLegacyBroadcastClientMessage(newData, true);
+        });
+        break;
       default:
         if (payload.data && payload.data.eventType) {
-          ActionAlertsHandler.handleLegacyClientMessage(payload.data);
+          this.handleLegacyClientMessage(payload.data);
         } else {
           this.options.dispatch(newActionAlerts(payload));
         }
@@ -129,10 +135,18 @@ class ActionAlertsHandler {
     this.debouncedLoad();
   }
 
-  static handleLegacyClientMessage(payload) {
+  handleLegacyClientMessage(payload, checkTarget = false) {
     if (!payload.eventType) {
       console.error('payload.eventType is not set', payload);
-    } else {
+    } else if (!checkTarget || (checkTarget && payload.target === this.options.me)) {
+      DeskPRO_Window.messageBroker.sendMessage(payload.eventType, payload); // eslint-disable-line no-undef
+    }
+  }
+
+  handleLegacyBroadcastClientMessage(payload, checkTarget = false) {
+    if (!payload.eventType) {
+      console.error('payload.eventType is not set', payload);
+    } else if (!checkTarget || (checkTarget && payload.targets && payload.targets.indexOf(this.options.me) !== -1)) {
       DeskPRO_Window.messageBroker.sendMessage(payload.eventType, payload); // eslint-disable-line no-undef
     }
   }

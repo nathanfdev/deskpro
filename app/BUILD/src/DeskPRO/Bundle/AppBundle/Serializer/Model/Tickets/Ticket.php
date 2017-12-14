@@ -100,6 +100,15 @@ class Ticket
     private $language;
 
     /**
+     * Ticket brand.
+     *
+     * @JMS\Type("entity<Application\DeskPRO\Entity\Brand>")
+     *
+     * @var Language
+     */
+    private $brand;
+
+    /**
      * Ticket where this department is processing.
      *
      * @JMS\Type("entity<Application\DeskPRO\Entity\Department>")
@@ -154,7 +163,7 @@ class Ticket
     private $person;
 
     /**
-     * Person`s email.
+     * Person's email.
      *
      * @JMS\Type("to_string<Application\DeskPRO\Entity\PersonEmail>")
      *
@@ -311,7 +320,7 @@ class Ticket
     private $urgency;
 
     /**
-     * It`s rating based on feedback votes.
+     * It's rating based on feedback votes.
      *
      * @JMS\Type("integer")
      *
@@ -638,6 +647,7 @@ class Ticket
         $this->auth       = $ticket->getAuth();
         $this->parent     = $ticket->getParentTicket();
         $this->language   = $ticket->getLanguage();
+        $this->brand      = $ticket->getBrand();
         $this->department = $ticket->getDepartment();
         $this->category   = $ticket->getCategory();
         $this->priority   = $ticket->getPriority();
@@ -645,8 +655,8 @@ class Ticket
         $this->product    = $ticket->getProduct();
         $this->person     = $ticket->getPerson();
 
-        if ($ticket->getPersonEmail()) {
-            $this->personEmail = $ticket->getPersonEmail();
+        if ($ticket->getTicketPersonEmail()) {
+            $this->personEmail = $ticket->getTicketPersonEmail();
         } elseif ($ticket->getPerson() && $ticket->getPerson()->getPrimaryEmail()) {
             $this->personEmail = $ticket->getPerson()->getPrimaryEmail();
         }

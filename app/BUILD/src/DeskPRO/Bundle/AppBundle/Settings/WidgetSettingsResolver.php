@@ -37,6 +37,7 @@ use DeskPRO\Bundle\AppBundle\Language\LanguageManager;
 use DeskPRO\Bundle\AppBundle\Request\UrlCorrectorFactory;
 use DeskPRO\Bundle\AppBundle\Security\Permissions\Portal\PortalPermissionsManager;
 use DeskPRO\Bundle\AppBundle\Settings\Model\AbstractTranslationModel;
+use DeskPRO\Bundle\AppBundle\Settings\Model\Widget\JwtSettings;
 use DeskPRO\Bundle\AppBundle\Settings\Model\Widget\Options\BrandSettings\ButtonSettings\WidgetBrandButtonTranslation;
 use DeskPRO\Bundle\AppBundle\Settings\Model\Widget\Options\BrandSettings\ChatSettings\WidgetBrandChatCustomField;
 use DeskPRO\Bundle\AppBundle\Settings\Model\Widget\Options\BrandSettings\ChatSettings\WidgetBrandChatPopupTranslation;
@@ -63,6 +64,8 @@ class WidgetSettingsResolver extends AbstractBrandAwareSettingsResolver
     const CHAT_ENABLED      = 'core.apps_chat';
     const ENABLED_ON_PORTAL = 'portal.widget.enabled';
     const ENABLED           = 'widget.enabled';
+    const JWT_SECRET        = 'widget.jwt.secret';
+    const JWT_REQUIRED      = 'widget.jwt.required';
 
     /**
      * @var EntityManager
@@ -168,6 +171,26 @@ class WidgetSettingsResolver extends AbstractBrandAwareSettingsResolver
     /**
      * @param Brand $brand
      *
+     * @return string|null
+     */
+    public function getJwtSecret(Brand $brand = null)
+    {
+        return $this->getSetting(self::JWT_SECRET, $brand);
+    }
+
+    /**
+     * @param Brand $brand
+     *
+     * @return bool
+     */
+    public function isJwtRequired(Brand $brand = null)
+    {
+        return (bool) $this->getSetting(self::JWT_REQUIRED, $brand);
+    }
+
+    /**
+     * @param Brand $brand
+     *
      * @return WidgetSettings
      */
     public function getWidgetSettings(Brand $brand)
@@ -178,6 +201,7 @@ class WidgetSettingsResolver extends AbstractBrandAwareSettingsResolver
             ->setSettings($this->getWidgetOptions($brand))
             ->setEnabledOnPortal($this->isEnabledOnPortal($brand))
             ->setBrand($brand)
+            ->setJwtSettings($this->getJwtSettings($brand))
         ;
 
         return $model;
@@ -398,6 +422,20 @@ class WidgetSettingsResolver extends AbstractBrandAwareSettingsResolver
         }
 
         $chatSettings->setUserGroups($userGroupIds);
+
+        return $model;
+    }
+
+    /**
+     * @param Brand $brand
+     *
+     * @return JwtSettings
+     */
+    public function getJwtSettings(Brand $brand)
+    {
+        $model = new JwtSettings();
+        $model->setSecret($this->getJwtSecret($brand));
+        $model->setRequired($this->isJwtRequired($brand));
 
         return $model;
     }

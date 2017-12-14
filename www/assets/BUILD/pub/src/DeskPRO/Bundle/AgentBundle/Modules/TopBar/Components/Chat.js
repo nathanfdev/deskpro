@@ -172,7 +172,6 @@ class Chat extends React.Component {
         <PopUp
           positionMy="right top"
           positionAt="right bottom"
-          id={2}
           elementId="chat-menu-popup"
           zIndex={99999}
           autoOpen={false}

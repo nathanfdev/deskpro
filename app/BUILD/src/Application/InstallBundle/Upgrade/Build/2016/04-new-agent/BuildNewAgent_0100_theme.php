@@ -119,7 +119,7 @@ class BuildNewAgent_0100_theme extends AbstractBuild
                         foreach ([$brand['theme_set_id'], $brand['edit_theme_set_id']] as $themeSetId) {
                             $logoBlobId = $this->saveBlob($logoDat, $blobRow['filename'], $blobRow['content_type']);
 
-                            $this->out(sprintf('Brand %s, Theme %s, Logo Blob %s', $brand['id'], $themeSetId, $logoBlob['id']));
+                            $this->out(sprintf('Brand %s, Theme %s, Logo Blob %s', $brand['id'], $themeSetId, $logoBlobId));
                             $ins[] = [
                                 'theme_set_id' => $themeSetId,
                                 'blob_id'      => $logoBlobId,

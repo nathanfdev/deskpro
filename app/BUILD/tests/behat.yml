@@ -127,6 +127,7 @@ portal:
                 - DpBehat\Portal\PortalModeContext
                 - DpBehat\Portal\PortalBrandThemeContext
                 - DpBehat\Portal\AuthContext
+                - DpBehat\Portal\EmailContext
                 - DpBehat\Portal\RouterContext
                 - DpBehat\Portal\TicketsContext
                 - DpBehat\Portal\ContentContext

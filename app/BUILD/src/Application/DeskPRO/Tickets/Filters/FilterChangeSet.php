@@ -34,6 +34,7 @@
 
 namespace Application\DeskPRO\Tickets\Filters;
 
+use Application\DeskPRO\Entity\Person;
 use Application\DeskPRO\Entity\Ticket;
 use DeskPRO\Bundle\AppBundle\Notification\Event\Ticket\TicketUpdatedEvent;
 use DeskPRO\Bundle\AppBundle\Notification\NotificationEventManager;
@@ -155,50 +156,58 @@ class FilterChangeSet
      */
     public function getListUpdateClientMessages(array $onlineAgentsIds)
     {
+        $operations = [];
+
         foreach ($this->changed_filters as $filter_change) {
             $filter = $filter_change->getFilter();
 
             $ticketId = $this->ticket->getId();
             $filterId = $filter['id'];
 
-            foreach ($filter_change->getAgentsAdded() as $agent) {
-                if (!in_array($agent->getId(), $onlineAgentsIds)) {
-                    continue;
-                }
+            $addedTargets = array_values(array_map(
+                function (Person $agent) {
+                    return $agent->getId();
+                },
+                $filter_change->getAgentsAdded()
+            ));
 
-                $this->eventDispatcher->dispatch(
-                    TicketUpdatedEvent::EVENT_NAME,
-                    new TicketUpdatedEvent(
-                        'agent.filter-update',
-                        $ticketId,
-                        [
-                            'op'        => 'add',
-                            'filter_id' => $filterId,
-                            'target'    => $agent->getId(),
-                        ]
-                    )
-                );
+            if ($addedTargets) {
+                $operations[] = [
+                    'op'        => 'add',
+                    'filter_id' => $filterId,
+                    'targets'   => $addedTargets,
+                ];
             }
 
-            foreach ($filter_change->getAgentsRemoved() as $agent) {
-                if (!in_array($agent->getId(), $onlineAgentsIds)) {
-                    continue;
-                }
+            $removedTargets = array_values(array_map(
+                function (Person $agent) {
+                    return $agent->getId();
+                },
+                $filter_change->getAgentsRemoved()
+            ));
 
-                $this->eventDispatcher->dispatch(
-                    TicketUpdatedEvent::EVENT_NAME,
-                    new TicketUpdatedEvent(
-                        'agent.filter-update',
-                        $ticketId,
-                        [
-                            'op'        => 'del',
-                            'filter_id' => $filterId,
-                            'target'    => $agent->getId(),
-                        ]
-                    )
-                );
+            if ($removedTargets) {
+                $operations[] = [
+                    'op'        => 'del',
+                    'filter_id' => $filterId,
+                    'targets'   => $removedTargets,
+            ];
             }
         }
+
+        if ($operations) {
+            $this->eventDispatcher->dispatch(
+                TicketUpdatedEvent::EVENT_NAME,
+                new TicketUpdatedEvent(
+                    'agent.filter-update',
+                    [
+                        'ticket_id'  => $ticketId,
+                        'operations' => $operations,
+                    ]
+                )
+            );
+        }
+
         $this->eventManager->deliver(true);
     }
 }

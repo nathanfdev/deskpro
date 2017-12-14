@@ -54,7 +54,7 @@ define [
             department_id: '0'
           }
         },
-        SendUserEmail: {
+        SendUserNewEmail: {
           enabled: false,
           options: {}
         }
@@ -67,16 +67,16 @@ define [
         for act in trigger.actions.actions
           if act.type == 'SetDepartment'
             @form.trigger_actions.SetDepartment.options = act.options
-          else if act.type == 'SendUserEmail'
-            @form.trigger_actions.SendUserEmail.enabled = true
-            @form.trigger_actions.SendUserEmail.options = act.options
+          else if act.type == 'SendUserNewEmail'
+            @form.trigger_actions.SendUserNewEmail.enabled = true
+            @form.trigger_actions.SendUserNewEmail.options = act.options
 
-            if ['helpdesk_name', 'site_name', 'performer'].indexOf(@form.trigger_actions.SendUserEmail.options.from_name) == -1
-              @form.trigger_actions.SendUserEmail.options.from_name_custom = @form.trigger_actions.SendUserEmail.options.from_name
-              @form.trigger_actions.SendUserEmail.options.from_name = 'custom'
+            if ['helpdesk_name', 'site_name', 'performer'].indexOf(@form.trigger_actions.SendUserNewEmail.options.from_name) == -1
+              @form.trigger_actions.SendUserNewEmail.options.from_name_custom = @form.trigger_actions.SendUserNewEmail.options.from_name
+              @form.trigger_actions.SendUserNewEmail.options.from_name = 'custom'
 
-      if not @form.trigger_actions.SendUserEmail.enabled
-        @form.trigger_actions.SendUserEmail.options = {
+      if not @form.trigger_actions.SendUserNewEmail.enabled
+        @form.trigger_actions.SendUserNewEmail.options = {
           template: 'DeskPRO:emails_user:ticket-new-autoreply.html.twig',
           from_name: 'helpdesk_name'
         }
@@ -243,11 +243,11 @@ define [
             department_id: department_id
           }
         })
-      if @form.trigger_actions.SendUserEmail?.enabled
-        options = @form.trigger_actions.SendUserEmail.options
+      if @form.trigger_actions.SendUserNewEmail?.enabled
+        options = @form.trigger_actions.SendUserNewEmail.options
 
         trigger_actions.push({
-          type: 'SendUserEmail',
+          type: 'SendUserNewEmail',
           options: {
             template:  options.template || 'DeskPRO:emails_user:ticket-new-autoreply.html.twig',
             from_name: if options.from_name == 'custom' then (options.from_name_custom || '') else (options.from_name || ''),

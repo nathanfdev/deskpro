@@ -88,8 +88,8 @@ class GroupAddDrawer extends React.Component {
     }
   };
 
-  onChange = (value) => {
-    this.setState({ groupName: value, edited: true });
+  onChange = (groupName) => {
+    this.setState({ groupName, edited: true });
   };
 
   getAgentsHeader() {

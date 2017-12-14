@@ -7,6 +7,7 @@ import { AbstractFileUpload } from './AbstractFileUpload';
 export class UploadButton extends AbstractFileUpload {
 
   static propTypes = {
+    id:              PropTypes.string,
     name:            PropTypes.string,
     className:       PropTypes.string,
     multiple:        PropTypes.bool,
@@ -41,12 +42,13 @@ export class UploadButton extends AbstractFileUpload {
   }
 
   render() {
-    const { name, className, multiple } = this.props;
+    const { name, className, multiple, id } = this.props;
     const inputName = multiple ? `${name}[]` : name;
 
     return (
       <input
         ref={(c) => { this.input = c; }}
+        id={id}
         className={className}
         type="file"
         name={inputName}

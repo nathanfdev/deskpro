@@ -1,0 +1,22 @@
+<!-- Please avoid to edit this template as it may break some functionalities -->
+
+{% if tac %}
+    {{ layout.replycode(tac.access_code) }}
+{% elseif ticket %}
+    {{ layout.replycode(ticket.access_code) }}
+{% endif %}
+
+{% if tplvars.agent_reply_above_line %}
+        <!--{{ app.getSetting('core_tickets.email_reply_as_note') ? 'DP_NEWMSG_AS_NOTE' : 'DP_NEWMSG_AS_REPLY' }}-->
+{% endif %}
+
+{% if not tplvars.agent_reply_above_line %}
+    <!--DP_TOP_MARK--><a
+        class="DP_TOP_MARK dp_marker_link {{ app.getSetting('core_tickets.email_reply_as_note') ? 'DP_NEWMSG_AS_NOTE' : 'DP_NEWMSG_AS_REPLY' }}"
+        id="DP_TOP_MARK {{ app.getSetting('core_tickets.email_reply_as_note') ? 'DP_NEWMSG_AS_NOTE' : 'DP_NEWMSG_AS_REPLY' }}"
+        name="DP_TOP_MARK {{ app.getSetting('core_tickets.email_reply_as_note') ? 'DP_NEWMSG_AS_NOTE' : 'DP_NEWMSG_AS_REPLY' }}">&nbsp;</a>
+{% endif %}
+<!--DP_BOTTOM_MARK-->
+    <a class="DP_BOTTOM_MARK dp_marker_link {{ app.getSetting('core_tickets.email_reply_as_note') ? 'DP_NEWMSG_AS_NOTE' : 'DP_NEWMSG_AS_REPLY' }}"
+       id="DP_BOTTOM_MARK {{ app.getSetting('core_tickets.email_reply_as_note') ? 'DP_NEWMSG_AS_NOTE' : 'DP_NEWMSG_AS_REPLY' }}"
+       name="DP_BOTTOM_MARK {{ app.getSetting('core_tickets.email_reply_as_note') ? 'DP_NEWMSG_AS_NOTE' : 'DP_NEWMSG_AS_REPLY' }}">&nbsp;</a>

@@ -36,12 +36,16 @@ use DeskPRO\Bundle\AppBundle\Form\Type\CombinedType;
 use DeskPRO\Bundle\AppBundle\Form\Type\CustomFields\CustomDataType;
 use DeskPRO\Bundle\AppBundle\Security\Permissions\PermissionsManager;
 use DeskPRO\Bundle\AppBundle\Settings\WidgetSettingsResolver;
-use DeskPRO\Bundle\AppBundle\Validator\Constraints\LeafDepartment;
+use DeskPRO\Bundle\AppBundle\Validator\Constraints as AppAssert;
 use DeskPRO\Bundle\PortalBundle\Brand\BrandStack;
+use Doctrine\ORM\EntityManager;
 use Doctrine\ORM\EntityRepository;
+use Firebase\JWT\JWT;
+use Orb\Util\Arrays;
 use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\EmailType;
+use Symfony\Component\Form\Extension\Core\Type\HiddenType;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\Form\FormEvent;
@@ -54,6 +58,11 @@ use Symfony\Component\Validator\Constraints as Assert;
  */
 class ChatCreateType extends AbstractType
 {
+    /**
+     * @var EntityManager
+     */
+    private $em;
+
     /**
      * @var SetPersonListener
      */
@@ -82,6 +91,7 @@ class ChatCreateType extends AbstractType
     /**
      * Constructor.
      *
+     * @param EntityManager          $em
      * @param SetPersonListener      $personListener
      * @param WidgetSettingsResolver $settingsResolver
      * @param CustomFieldManager     $fieldManager
@@ -89,12 +99,14 @@ class ChatCreateType extends AbstractType
      * @param PermissionsManager     $permissionsManager
      */
     public function __construct(
+        EntityManager          $em,
         SetPersonListener      $personListener,
         WidgetSettingsResolver $settingsResolver,
         CustomFieldManager     $fieldManager,
         BrandStack             $brandStack,
         PermissionsManager     $permissionsManager
     ) {
+        $this->em                 = $em;
         $this->personListener     = $personListener;
         $this->settingsResolver   = $settingsResolver;
         $this->fieldManager       = $fieldManager;
@@ -137,6 +149,16 @@ class ChatCreateType extends AbstractType
                 'forms'          => $this->getCustomDataFields(),
                 'error_bubbling' => false,
             ])
+            ->add('jwt', HiddenType::class, [
+                'mapped'         => false,
+                'error_bubbling' => true,
+                'constraints'    => [
+                    new AppAssert\JwtToken([
+                        'required' => $this->settingsResolver->isJwtRequired($brand),
+                        'secret'   => $this->settingsResolver->getJwtSecret($brand),
+                    ]),
+                ],
+            ])
         ;
 
         $permissionsBag       = $this->permissionsManager->getPortalPermissionsBag($options['person']);
@@ -162,16 +184,15 @@ class ChatCreateType extends AbstractType
             },
             'constraints' => [
                 new Assert\NotNull(),
-                new LeafDepartment(),
+                new AppAssert\LeafDepartment(),
             ],
         ]);
 
         $builder->addEventSubscriber($this->personListener);
         $builder->addEventSubscriber(new AutoSetShouldSentTranscriptListener());
 
-        $builder->addEventListener(FormEvents::PRE_SUBMIT, [$this, 'onSetPersonDataFromSession']);
-        $builder->addEventListener(FormEvents::PRE_SUBMIT, [$this, 'onForceDepartment']);
-        $builder->addEventListener(FormEvents::POST_SUBMIT, [$this, 'onSetVisitorId']);
+        $builder->addEventListener(FormEvents::PRE_SUBMIT, [$this, 'onPreSubmit']);
+        $builder->addEventListener(FormEvents::POST_SUBMIT, [$this, 'onPostSubmit']);
     }
 
     /**
@@ -226,53 +247,100 @@ class ChatCreateType extends AbstractType
     }
 
     /**
-     * Ensure that department field was submitted.
-     *
      * @internal
      *
      * @param FormEvent $event
      */
-    public function onForceDepartment(FormEvent $event)
+    public function onPreSubmit(FormEvent $event)
     {
-        $data = $event->getData();
+        $data   = $event->getData();
+        $form   = $event->getForm();
+        $person = $form->getConfig()->getOption('person');
+
+        // try jwt token
+        if (!isset($data['jwt']) || !is_string($data['jwt'])) {
+            $data['jwt'] = '';
+        }
+        if ($data['jwt']) {
+            $decodedJwt = $this->decodeJwtPayload($data['jwt']);
+
+            // set person email from the jwt token
+            foreach (['email', 'user_email'] as $option) {
+                if (isset($decodedJwt[$option])) {
+                    $data['email'] = $decodedJwt[$option];
+                }
+            }
+
+            // set person name from the jwt token
+            foreach (['name', 'user_name'] as $option) {
+                if (isset($decodedJwt[$option])) {
+                    $data['name'] = $decodedJwt[$option];
+                }
+            }
+
+            // set person info from 'person_id' option of the jwt token
+            if (isset($decodedJwt['person_id'])) {
+                $person = $this->em->find(Person::class, $decodedJwt['person_id']);
+                if ($person) {
+                    $data['email'] = $person->getPrimaryEmailAddress();
+                    $data['name']  = $person->getDisplayName();
+                }
+            }
+        }
+
+        // make sure that department field was submitted
         if (!isset($data['chat_department'])) {
             $data['chat_department'] = null;
+        }
+
+        // if session has person entity we can assign it to the chat
+        // uses if chat settings require user to be logged in
+        if ($person instanceof Person) {
+            $data['email'] = $person->getPrimaryEmailAddress();
+            $data['name']  = $person->getDisplayName();
         }
 
         $event->setData($data);
     }
 
     /**
-     * If session has person entity we can assign it to the chat.
-     * Uses if chat settings require user to be logged in.
-     *
      * @internal
      *
      * @param FormEvent $event
      */
-    public function onSetPersonDataFromSession(FormEvent $event)
+    public function onPostSubmit(FormEvent $event)
     {
-        $form   = $event->getForm();
-        $person = $form->getConfig()->getOption('person');
+        $form = $event->getForm();
 
-        if ($person instanceof Person) {
-            $event->setData(array_merge($event->getData(), [
-                'email' => $person->getPrimaryEmailAddress(),
-                'name'  => $person->getDisplayName(),
-            ]));
-        }
-    }
-
-    /**
-     * @internal
-     *
-     * @param FormEvent $event
-     */
-    public function onSetVisitorId(FormEvent $event)
-    {
         /** @var ChatConversation $conversation */
         $conversation = $event->getData();
-        $conversation->setVisitorId($event->getForm()->getConfig()->getOption('visitor_id'));
+        $conversation->setVisitorId($form->getConfig()->getOption('visitor_id'));
+
+        // if a jwt token was provided, then it means the person is already validated
+        // set session person as well
+        $jwtPayload = $form->get('jwt')->getData();
+        $person     = $conversation->getPerson();
+        $session    = $conversation->getSession();
+
+        if ($person && $session && $decodedJwt = $this->decodeJwtPayload($jwtPayload)) {
+            $matched = false;
+
+            // check payload by person id
+            if (isset($decodedJwt['person_id']) && (int) $decodedJwt['person_id'] === $person->getId()) {
+                $matched = true;
+            }
+
+            // check payload by person email
+            foreach (['email', 'user_email'] as $option) {
+                if (isset($decodedJwt[$option]) && $person->hasEmailAddress($decodedJwt[$option])) {
+                    $matched = true;
+                }
+            }
+
+            if ($matched) {
+                $session->setPerson($person);
+            }
+        }
     }
 
     /**
@@ -297,5 +365,29 @@ class ChatCreateType extends AbstractType
         }
 
         return $fields;
+    }
+
+    /**
+     * @param string $payload
+     *
+     * @return array|null
+     */
+    private function decodeJwtPayload($payload)
+    {
+        if (!$payload) {
+            return;
+        }
+
+        $brand     = $this->brandStack->getActive()->getBrand();
+        $jwtSecret = $this->settingsResolver->getJwtSecret($brand);
+
+        try {
+            $payload = JWT::decode($payload, $jwtSecret, array_keys(JWT::$supported_algs));
+            $payload = Arrays::fromStdClass($payload);
+
+            return $payload;
+        } catch (\Exception $e) {
+            return;
+        }
     }
 }

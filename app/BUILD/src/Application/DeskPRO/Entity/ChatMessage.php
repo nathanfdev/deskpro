@@ -566,6 +566,26 @@ class ChatMessage extends DomainObject
         return $this;
     }
 
+    /**
+     * @return \DateTime
+     */
+    public function getDateReceived()
+    {
+        return $this->date_received;
+    }
+
+    /**
+     * @param \DateTime $date_received
+     *
+     * @return ChatMessage
+     */
+    public function setDateReceived($date_received)
+    {
+        $this->setModelField('date_received', $date_received);
+
+        return $this;
+    }
+
     public function toApiData($primary = true, $deep = true, array $visited = [])
     {
         $data = parent::toApiData($primary, $deep, $visited);

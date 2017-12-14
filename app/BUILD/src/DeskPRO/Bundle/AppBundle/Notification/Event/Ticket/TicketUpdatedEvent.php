@@ -37,21 +37,16 @@ class TicketUpdatedEvent extends LegacySystemEvent
 {
     const EVENT_NAME = 'legacy.ticket.updated';
 
-    /** @var int */
-    protected $ticket_id;
-
     /** @var array */
     protected $data;
 
     /**
      * @param string $type
-     * @param int    $ticket_id
      * @param array  $data
      */
-    public function __construct($type, $ticket_id, array $data)
+    public function __construct($type, array $data)
     {
         parent::__construct($type, $data);
-        $this->ticket_id = $ticket_id;
     }
 
     /**
@@ -59,27 +54,19 @@ class TicketUpdatedEvent extends LegacySystemEvent
      */
     public function getTicketId()
     {
-        return $this->ticket_id;
+        return $this->data['ticket_id'];
     }
 
     /**
-     * @param int $ticket_id
+     * @param int $ticketId
      *
      * @return TicketUpdatedEvent
      */
-    public function setTicketId($ticket_id)
+    public function setTicketId($ticketId)
     {
-        $this->ticket_id = $ticket_id;
+        $this->data['ticket_id'] = $ticketId;
 
         return $this;
-    }
-
-    /**
-     * @return array
-     */
-    public function getData()
-    {
-        return array_merge(parent::getData(), ['ticket_id' => $this->ticket_id]);
     }
 
     /**

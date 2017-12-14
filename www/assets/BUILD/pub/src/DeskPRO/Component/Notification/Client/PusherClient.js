@@ -98,7 +98,7 @@ export default class PusherClient extends AbstractClient {
   handle(eventName, data) {
     if (data.type === 'multiplex_message') {
       this.handleMultiplexMessage(eventName, data);
-    } else if (parseInt(data.target, 10) === this.options.me) {
+    } else if (data.target === 'agent_public' || parseInt(data.target, 10) === this.options.me) {
       this.options.dispatcher(eventName, data);
     }
   }
@@ -116,7 +116,7 @@ export default class PusherClient extends AbstractClient {
       if (Array.isArray(demultiplexData)) {
         demultiplexData.map((message) => {
           message.data = JSON.parse(message.data);
-          if (parseInt(message.data.target, 10) === this.options.me && eventName === message.name) {
+          if (eventName === message.name && (message.data.target === 'agent_public' || parseInt(message.data.target, 10) === this.options.me)) {
             this.options.dispatcher(eventName, message.data);
           }
           return null;
