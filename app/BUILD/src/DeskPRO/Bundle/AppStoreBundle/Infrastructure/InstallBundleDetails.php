@@ -36,15 +36,15 @@ class InstallBundleDetails
 
     const INSTALL_TYPE_UPGRADE = 'upgrade';
 
-    /** @var App  */
+    /** @var App */
     private $app;
 
-    /** @var string  */
+    /** @var string */
     private $installType;
 
     public function __construct($app, $installType)
     {
-        $this->app = $app;
+        $this->app         = $app;
         $this->installType = $installType;
     }
 
@@ -60,6 +60,4 @@ class InstallBundleDetails
     {
         return $this->installType;
     }
-
-
 }

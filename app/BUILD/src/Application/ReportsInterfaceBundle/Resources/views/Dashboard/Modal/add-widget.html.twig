@@ -8,9 +8,6 @@
     </header>
 
     <div class="big-list-of-stats-filters">
-        <div style="margin: 40px; text-align: center;" ng-show="!loaded">
-            <i class="spinner-circle-32"></i>
-        </div>
         <div class="bucket" ng-show="loaded">
             <div class="box">
                 <input type="text" ng-model="searchText" placeholder="Filter stats by name">
@@ -18,7 +15,11 @@
         </div>
 
         <div class="bucket" dp-dropdown="dp-select-label-dropdown" dp-dropdown-opener="dp-select-label-opener">
-            <a id="dp-select-label-opener" class="link-pointer select">Select labels: <i class="fa fa-caret-down"></i></a>
+            <a id="dp-select-label-opener" class="link-pointer select">
+                <span ng-if="selectedLabels == 0">Select labels:</span>
+                <span ng-if="selectedLabels > 0">Selected: {{ ng_var('selectedLabels') }}</span>
+                <i class="fa fa-caret-down"></i>
+            </a>
 
             <!-- Needs to be same width as the .select above -->
             <div id="dp-select-label-dropdown" class="select-label-dropdown">
@@ -32,12 +33,12 @@
 
     <div class="big-list-of-stats">
         <div style="margin: 40px; text-align: center;" ng-show="!loaded">
-            <i class="spinner-big-circle"></i>
+            <i class="spinner-circle-32"></i>
         </div>
         <ul class="stat-list"  ng-show="loaded">
-            <li ng-class="{'active': report.id == widget.widget_id}"
+            <li ng-class="{'active': report.id == widget.widget_id}" ng-click="makeChoice(report)"
                 ng-repeat="report in prefilteredReports | filter:filterBySearchText track by report.id">
-                <span ng-click="makeChoice(report)" class="mark"></span>
+                <span class="mark"></span>
 
                 <h1>
                     <dp-report-variables

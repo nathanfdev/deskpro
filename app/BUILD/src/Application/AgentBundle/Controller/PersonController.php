@@ -508,7 +508,7 @@ class PersonController extends AbstractController
                 $blob = $this->em->find(Blob::class, $this->in->getUint('blob_id'));
                 if ($blob) {
                     $blobCurr = $person->getPictureBlob();
-                    if ( $blobCurr && $blobCurr->getId() !== $blob->getId()) {
+                    if ($blobCurr && $blobCurr->getId() !== $blob->getId()) {
                         $this->container->getBlobStorage()->deleteBlobRecord($blobCurr);
                     }
                     $person->setPictureBlob($blob);

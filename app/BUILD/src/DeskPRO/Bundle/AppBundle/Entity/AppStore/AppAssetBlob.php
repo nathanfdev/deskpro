@@ -152,19 +152,21 @@ class AppAssetBlob implements Domain\ApplicationAsset, EntityInterface, NotifyPr
     {
         if ($this->blob) {
             $blobStorage = self::getBlobStorageService();
-            $blob  = $blobStorage->createBlobRecordFromString(
+            $blob        = $blobStorage->createBlobRecordFromString(
                 $blobStorage->copyBlobRecordToString($this->blob),
                 $newPath,
                 $this->blob->content_type
             );
-            $assetBlob = new AppAssetBlob();
+            $assetBlob = new self();
             $assetBlob->setBlob($blob);
             $assetBlob->setPath($newPath);
+
             return $assetBlob;
         }
 
-        $assetBlob = new AppAssetBlob();
+        $assetBlob = new self();
         $assetBlob->setPath($newPath);
+
         return $assetBlob;
     }
 

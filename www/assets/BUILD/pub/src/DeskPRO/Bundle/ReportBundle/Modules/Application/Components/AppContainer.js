@@ -12,7 +12,7 @@ import { loadReports, loadGroupParams } from '../Actions/reportActions';
 class AppContainer extends React.Component {
 
   static propTypes = {
-    routePath: PropTypes.string
+    routePath: PropTypes.string.isRequired
   };
 
   constructor(props) {

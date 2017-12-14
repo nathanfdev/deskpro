@@ -12,77 +12,78 @@ define ['datatables'], () ->
 
       templateUrl: $sce.trustAsResourceUrl("ReportsInterfaceBundle:Dashboard/Widget:table_dt.html")
 
-      link: (scope, element, attrs) ->
+      link: (scope, element) ->
         el = $(element)
         dt = null
-
         box = el.parent()
         listItem = box.parent()
 
-        width = listItem.width()
         height = listItem.height()
         conf = scope.widgetId || 0;
-        tableData   = JSON.parse(scope.tableData)
+        tableData   = if scope.tableData then JSON.parse(scope.tableData) else []
 
         initTable = (widget) ->
           scope.columns = widget.columns
           dt = el.DataTable {
-            data: widget.data,
-            columns: widget.columns,
-            pagingType: "full_numbers",
-            pageLength: 10,
-            bJQueryUI      : true,
-            iDisplayLength : 5,
-            sDom           : 'T<"clear">lfrtip'
-            lengthMenu: [[10, 25, 50, -1], [10, 25, 50, "All"]]
-            scrollY: 340,
-            deferRender: true,
-            dom: "rtS",
+            data:           widget.data,
+            columns:        widget.columns,
+            pagingType:     "full_numbers",
+            pageLength:     10,
+            bJQueryUI:      true,
+            iDisplayLength: 5,
+            sDom:           'T<"clear">lfrtip'
+            lengthMenu:     [[10, 25, 50, -1], [10, 25, 50, "All"]]
+            scrollY:        listItem.height() - 140,
+            deferRender:    true,
+            dom:            "rtS",
             scrollCollapse: true,
-            autoWidth: true
+            autoWidth:      true
+            fnDrawCallback: (settings) ->
+                console.log settings
+                if settings._iDisplayLength == -1 || settings._iDisplayLength > settings.fnRecordsDisplay()
+                  $(settings.nTableWrapper).find('.dataTables_paginate').hide();
+                else
+                  $(settings.nTableWrapper).find('.dataTables_paginate').show();
           }
           listItem
             .find '.handle-e'
             .remove
           listItem
-            .css "overflow-y", "hidden"
+            .css 'overflow-y', 'hidden'
 
           listItem.scroll () ->
-            t = box.offset().top - 47 - listItem.offset().top;
-
+            topOffset = box.offset().top - 34 - listItem.offset().top;
             resHandlers = listItem.find '.gridster-item-resizable-handler'
-
-            resHandlers.each (index, element) ->
-              h = $(this)
-
-              c = 1 + t
-              h[0].style.bottom = c + "px"
+            resHandlers.each () ->
+              handler = $(this)
+              calculated = 1 + topOffset
+              handler[0].style.bottom = "#{calculated}px"
 
           setTimeout \
             () ->
               tBody = listItem.find '.dataTables_scrollBody'
               h = listItem.height()
-
+              calculated = h - 140
               settings = dt.settings()
-              s = settings[0].oScroll.sY
-              settings[0].oScroll.sY = h - 87
-              tBody.css 'height', h - 87 + 'px'
+              settings[0].oScroll.sY = calculated
+              tBody.css 'height', "#{calculated}px"
+              tBody.css 'max-height', "#{calculated}px"
+              dt.draw()
           , 2000
 
 
           setInterval \
             () ->
-              w = listItem.width();
               h = listItem.height();
               tBody = listItem.find('.dataTables_scrollBody')
               if h != height
                 if dt?
+                  calculated = h - 140
                   settings = dt.settings();
-                  s = settings[0].oScroll.sY;
-                  settings[0].oScroll.sY = h - 87
-                  tBody.css 'height', h - 87 + 'px'
-
-                width = w;
+                  settings[0].oScroll.sY = calculated
+                  tBody.css 'height', "#{calculated}px"
+                  tBody.css 'max-height', "#{calculated}px"
+                  dt.draw()
                 height = h;
           , 200
 

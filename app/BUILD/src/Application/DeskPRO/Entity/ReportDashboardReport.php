@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2016, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2017, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -78,6 +78,11 @@ class ReportDashboardReport extends DomainObject
      */
     protected $dashboard;
 
+    /**
+     * @var array
+     */
+    protected $variables;
+
     public function __construct()
     {
         $this->widgets = new ArrayCollection();
@@ -144,7 +149,7 @@ class ReportDashboardReport extends DomainObject
     }
 
     /**
-     * @return ReportDashboardWidget[]
+     * @return ReportDashboardWidget[]|ArrayCollection
      */
     public function getWidgets()
     {
@@ -199,6 +204,26 @@ class ReportDashboardReport extends DomainObject
     public function setDashboard($dashboard)
     {
         $this->dashboard = $dashboard;
+
+        return $this;
+    }
+
+    /**
+     * @return array
+     */
+    public function getVariables()
+    {
+        return $this->variables;
+    }
+
+    /**
+     * @param array $variables
+     *
+     * @return $this
+     */
+    public function setVariables(array $variables)
+    {
+        $this->variables = $variables;
 
         return $this;
     }
@@ -258,6 +283,17 @@ class ReportDashboardReport extends DomainObject
                 'nullable'   => false,
                 'default'    => 24,
                 'columnName' => 'columns',
+            ]
+        );
+
+        $metadata->mapField(
+            [
+                'fieldName'  => 'variables',
+                'type'       => 'json_array',
+                'precision'  => 0,
+                'scale'      => 0,
+                'nullable'   => true,
+                'columnName' => 'variables',
             ]
         );
 

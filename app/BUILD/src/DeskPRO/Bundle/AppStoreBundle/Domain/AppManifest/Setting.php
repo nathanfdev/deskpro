@@ -58,7 +58,7 @@ abstract class Setting
      * @JMS\Type("boolean")
      * @JMS\SerializedName("isBackendOnly")
      *
-     * @var boolean
+     * @var bool
      */
     private $isBackendOnly;
 
@@ -66,10 +66,9 @@ abstract class Setting
      * @JMS\Type("boolean")
      * @JMS\SerializedName("required")
      *
-     * @var boolean
+     * @var bool
      */
     private $isRequired;
-
 
     /**
      * @return string
@@ -130,7 +129,7 @@ abstract class Setting
     /**
      * @param bool $isRequired
      */
-    public function setRequired( $isRequired)
+    public function setRequired($isRequired)
     {
         $this->isBackendOnly = $isRequired;
     }

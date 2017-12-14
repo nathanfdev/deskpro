@@ -11,7 +11,7 @@ class ReportRepository extends ApiRepository {
   loadAll() {
     return this.api
       .sendGet(
-      'DP_API_OLD/dashboards/widgets/reports/list',
+      'DP_API_OLD/reports/widget',
       {
         headers: {
           'X-DeskPRO-API-Token':     window.DP_API_TOKEN,

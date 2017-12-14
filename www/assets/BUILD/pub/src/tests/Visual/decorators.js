@@ -47,6 +47,15 @@ export function adminCss(jsx) {
   );
 }
 
+export function reportCss(jsx) {
+  return (
+    <div>
+      <link type="text/css" rel="stylesheet" href={`${assetsUrl}/DeskPRO_ReportBundle_style.css`} />
+      {jsx}
+    </div>
+  );
+}
+
 export function redux(state, jsx) {
   const store = createStore(s => s, fakeState(state));
 

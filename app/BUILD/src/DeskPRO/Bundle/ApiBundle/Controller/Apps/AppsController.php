@@ -41,12 +41,11 @@ use FOS\RestBundle\Controller\Annotations as Rest;
 use FOS\RestBundle\View\View;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\ParamConverter;
 use Symfony\Component\HttpFoundation;
-use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
-use Symfony\Component\HttpKernel\Exception\ConflictHttpException;
-use Symfony\Component\HttpKernel\Exception\ServiceUnavailableHttpException;
-use Symfony\Component\HttpKernel\Exception\UnprocessableEntityHttpException;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpKernel\Exception\BadRequestHttpException;
+use Symfony\Component\HttpKernel\Exception\ConflictHttpException;
+use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
+use Symfony\Component\HttpKernel\Exception\UnprocessableEntityHttpException;
 
 /**
  * Class AppsController.
@@ -153,10 +152,10 @@ class AppsController extends BaseController
         return $instance;
     }
 
-    /**
-     * @Rest\Post("/{application}")
-     * @ParamConverter("application", class="AppBundle:Entity\AppStore\App", converter="DeskPRO\Bundle\AppStoreBundle\ParamConverter\AppParamConverter", options={"numericId" = "instanceId"})
-     */
+     /**
+      * @Rest\Post("/{application}")
+      * @ParamConverter("application", class="AppBundle:Entity\AppStore\App", converter="DeskPRO\Bundle\AppStoreBundle\ParamConverter\AppParamConverter", options={"numericId" = "instanceId"})
+      */
      public function createAction(Entity\AppStore\App $application = null)
      {
          if (empty($application)) {
@@ -170,14 +169,15 @@ class AppsController extends BaseController
          if ($isSingle) {
              /** @var AppStoreBundle\Domain\ApplicationInstanceFinder $instanceFinder */
              $instanceFinder = $this->container->get(AppStoreBundle\Domain\ApplicationInstanceFinder::class);
-             $instance = $instanceFinder->findSoleApplicationInstance($application->getName());
+             $instance       = $instanceFinder->findSoleApplicationInstance($application->getName());
 
-             if (! is_null($instance)) {
+             if (!is_null($instance)) {
                  throw new ConflictHttpException('application can only have one instance');
              }
          }
 
-         $instance        = $instanceCreator->createInstance($application);
+         $instance = $instanceCreator->createInstance($application);
+
          return $this->wrap($instance);
      }
 
@@ -186,6 +186,7 @@ class AppsController extends BaseController
      * @ParamConverter("application", class="AppBundle:Entity\AppStore\App", converter="DeskPRO\Bundle\AppStoreBundle\ParamConverter\AppInstanceParamConverter")
      *
      * @param Entity\AppStore\AppInstance $application
+     *
      * @return \DeskPRO\Bundle\AppBundle\Serializer\ApiWrapper
      */
     public function updateAppAction(Entity\AppStore\AppInstance $application = null, Request $request)
@@ -195,17 +196,19 @@ class AppsController extends BaseController
         }
 
         //parse response body
-        $body = $request->getContent();
+        $body           = $request->getContent();
         $representation = json_decode($body, $associative = true);
 
         $properties = [
-            'is_installed' => function(Entity\AppStore\AppInstance $app, $value) {
+            'is_installed' => function (Entity\AppStore\AppInstance $app, $value) {
                 if (is_bool($value)) {
                     $app->setIsInstalled($value);
+
                     return true;
                 }
+
                 return false;
-            }
+            },
         ];
 
         if (!is_array($representation)) {
@@ -219,7 +222,7 @@ class AppsController extends BaseController
             }
         }
 
-        if (! $validRequest)  {
+        if (!$validRequest) {
             throw new BadRequestHttpException('invalid representation');
         }
 
@@ -254,7 +257,7 @@ class AppsController extends BaseController
 
         /** @var AppStoreBundle\Infrastructure\ApplicationManagerService $appManager */
         $appManager = $this->container->get('apps2.application_manager');
-        $strategy = $appManager->getRemoveStrategy($application);
+        $strategy   = $appManager->getRemoveStrategy($application);
         $appManager->remove($application, $strategy);
 
         $this->container
@@ -273,6 +276,7 @@ class AppsController extends BaseController
      * @ParamConverter("application", class="AppBundle:Entity\AppStore\App", converter="DeskPRO\Bundle\AppStoreBundle\ParamConverter\AppInstanceParamConverter")
      *
      * @param Entity\AppStore\AppInstance $application
+     *
      * @return AppManifest
      */
     public function getManifestAction(Entity\AppStore\AppInstance $application = null)
@@ -308,7 +312,7 @@ class AppsController extends BaseController
      * @ParamConverter("application", class="AppBundle:Entity\AppStore\App", converter="DeskPRO\Bundle\AppStoreBundle\ParamConverter\AppInstanceParamConverter")
      * @ParamConverter("searchFilter", class="AppStoreBundle:Domain\AssetFilter", converter="DeskPRO\Bundle\AppStoreBundle\ParamConverter\AssetFilterParamConverter")
      *
-     * @param Entity\AppStore\AppInstance                     $application
+     * @param Entity\AppStore\AppInstance             $application
      * @param AppStoreBundle\Domain\SearchAssetFilter $searchFilter
      */
     public function listAssetsAction(Entity\AppStore\AppInstance $application = null, AppStoreBundle\Domain\SearchAssetFilter $searchFilter)
@@ -343,6 +347,7 @@ class AppsController extends BaseController
         $status = new ApplicationStatus();
         $status->setIsDev($application->getApp()->getIsDev());
         $status->setIsInstalled($application->getIsInstalled());
+
         return $status;
     }
 }

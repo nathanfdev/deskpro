@@ -9,7 +9,7 @@ define ['DeskPRO/Util/Arrays',], (Arrays) ->
       @groupParams = []
       @widgets = {}
 
-      @Api.sendGet('reports/builder/group-params').then (response) =>
+      @Api.sendGet('reports/widget/group-params').then (response) =>
         @groupParams = response.data
 
     getIndexById: (storage, id) ->
@@ -29,7 +29,7 @@ define ['DeskPRO/Util/Arrays',], (Arrays) ->
       deferred = @$q.defer()
       if @storage.reports.length == 0
         @Api
-          .sendGet "/dashboards/widgets/reports/list"
+          .sendGet "/reports/widget"
           .then (result) =>
             @storage.reports = result.data.reports
             @storage.labels = result.data.labels
@@ -103,12 +103,9 @@ define ['DeskPRO/Util/Arrays',], (Arrays) ->
 
     getWidget: (id) ->
       deferred = @$q.defer()
-      if @storage[id]?
-        deferred.resolve(@storage[id])
-      else
-        @Api
-          .sendGet "/dashboards/widgets/#{id}"
-          .then (resp) =>
-            @storage[id] = resp.data.data
-            deferred.resolve(@storage[id])
+
+      @Api
+        .sendGet "/dashboards/widgets/#{id}"
+        .then (resp) =>
+          deferred.resolve(resp.data.data)
       return deferred.promise

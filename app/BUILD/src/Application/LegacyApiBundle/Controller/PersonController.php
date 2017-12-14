@@ -585,7 +585,7 @@ class PersonController extends AbstractController implements ProtectedController
         }
 
         $blobCurr = $person->getPictureBlob();
-        if ( $blobCurr && $blobCurr->getId() !== $blob->getId()) {
+        if ($blobCurr && $blobCurr->getId() !== $blob->getId()) {
             $this->container->getBlobStorage()->deleteBlobRecord($blobCurr);
         }
 

@@ -28,7 +28,8 @@
 
 namespace Application\LegacyApiBundle\Controller;
 
-use Application\DeskPRO\Dpql\Statement\Display;
+use Application\DeskPRO\Entity\ReportWidget;
+use Application\DeskPRO\EntityRepository\ReportWidget as ReportWidgetRepository;
 use Application\DeskPRO\Exception\ValidationException;
 use Application\DeskPRO\Reports\ReportsWidgetService;
 use DeskPRO\Bundle\AppBundle\Annotation\ActionPermissions\Annotation\ApiModes;
@@ -44,63 +45,46 @@ class ReportsWidgetController extends AbstractController
      */
     public function listAction()
     {
-        /* @var ReportsWidgetService */
-        $reportsWidget = $reportsWidget = $this->container->get('reports.widget.service');
+        return $this->createApiResponse($this->getReportsAndLabels());
+    }
 
-        $data = [
-            'reports' => $reportsWidget->getAll(),
+    /**
+     * @return array
+     */
+    protected function getReportsAndLabels()
+    {
+        /** @var ReportWidgetRepository $repository */
+        $repository = $this->em->getRepository(ReportWidget::class);
+        $reports    = $repository->getAllReports();
+        $apiData    = [
+            'reports' => [],
+            'labels'  => [],
         ];
 
         $translator = $this->container->getTranslator();
-        foreach ($data['reports'] as &$report) {
-            foreach ($report['labels'] as &$label) {
-                $phraseName = 'reports.labels.'.strtolower($label);
-                $label      = [
-                    'label' => $translator->hasPhrase($phraseName) ? $translator->phrase($phraseName) : $label,
+        $i          = 0;
+        foreach ($reports as $report) {
+            $datum            = $report->toApiData();
+            $translatedLabels = [];
+            foreach ($datum['labels'] as $label) {
+                $phraseName      = 'reports.labels.'.strtolower($label);
+                $translatedLabel = $translator->hasPhrase($phraseName)
+                    ? $translator->phrase($phraseName)
+                    : ucfirst($label);
+                $translatedLabels[]        = $translatedLabel;
+                $apiData['labels'][$label] = [
+                    'id'    => ++$i,
+                    'label' => $translatedLabel,
                     'value' => $label,
                 ];
             }
+            $datum['labels']      = $translatedLabels;
+            $apiData['reports'][] = $datum;
         }
 
-        return $this->createApiResponse($data);
-    }
+        $apiData['labels'] = array_values($apiData['labels']);
 
-    /**
-     * @return Response
-     */
-    public function listCustomAction()
-    {
-        /* @var ReportsWidgetService */
-        $reportsWidget = $reportsWidget = $this->container->get('reports.widget.service');
-        $customReports = $reportsWidget->getCustomReports();
-        $translator    = $this->container->getTranslator();
-        foreach ($customReports as &$report) {
-            foreach ($report['labels'] as &$label) {
-                $phraseName = 'reports.labels.'.strtolower($label);
-                $label      = $translator->hasPhrase($phraseName) ? $translator->phrase($phraseName) : $label;
-            }
-        }
-
-        return $this->createApiResponse(['reports' => $customReports]);
-    }
-
-    /**
-     * @return Response
-     */
-    public function listBuiltInAction()
-    {
-        /* @var ReportsWidgetService */
-        $reportsWidget  = $reportsWidget  = $this->container->get('reports.widget.service');
-        $builtInReports = $reportsWidget->getBuiltInReports();
-        $translator     = $this->container->getTranslator();
-        foreach ($builtInReports as &$report) {
-            foreach ($report['labels'] as &$label) {
-                $phraseName = 'reports.labels.'.strtolower($label);
-                $label      = $translator->hasPhrase($phraseName) ? $translator->phrase($phraseName) : $label;
-            }
-        }
-
-        return $this->createApiResponse(['reports' => $builtInReports]);
+        return $apiData;
     }
 
     /**
@@ -158,42 +142,63 @@ class ReportsWidgetController extends AbstractController
      */
     public function saveAction($id)
     {
-        /* @var ReportsWidgetService */
-        $reportsWidget = $reportsWidget = $this->container->get('reports.widget.service');
-        $displayOnly   = $this->in->getBool('displayOnly');
+        /* @var $reportsWidget ReportsWidgetService */
+        $reportsWidget = $this->container->get('reports.widget.service');
         if ($id) {
-            $report = $reportsWidget->getById($id);
+            $displayOnly = $this->in->getBool('displayOnly');
+            $report      = $reportsWidget->getById($id);
+
             if (!$report) {
                 throw $this->createNotFoundException();
             }
         } else {
-            $report = $reportsWidget->createNew();
+            $displayOnly = false;
+            $report      = $reportsWidget->createNew();
         }
-        if (!$report->isCustom()) {
-            throw ValidationException::create('you can edit only custom report');
+        if (!$report->isCustom() && !$displayOnly) {
+            throw ValidationException::create('you can edit only custom reports');
         }
-        if ($error = $reportsWidget->getErrors($id, $displayOnly ? false : 'from_request')) {
+        if ($error = $reportsWidget->getErrors($id, !$displayOnly ? 'from_request' : false)) {
             return $this->createApiResponse(['error' => $error]);
         } else {
-            $postData = $this->in->getAll('req');
-            $form     = $this->createForm('form_dashboards_report_widget', $report, ['cascade_validation' => true]);
-            $form->submit($postData['report'], true);
-
-            if ($form->isValid()) {
+            if ($displayOnly) {
+                $report->setDisplayTypes($this->in->getArrayOfStrings('report.display_types'));
                 $this->em->persist($report);
                 $this->em->flush();
             } else {
-                return $this->createApiValidationErrorResponse(
-                    $this->container->getValidator()->validate($report)
-                );
+                $postData = $this->in->getAll('req');
+                $form     = $this->createForm('form_dashboards_report_widget', $report, ['cascade_validation' => true]);
+                $form->submit($postData['report'], true);
+
+                try {
+                    if (@$postData['inputMode'] === 'dpql') {
+                        $parts = $reportsWidget->parseQueryString($postData['parts']['raw']);
+                        $report->setQuery($reportsWidget->getQueryStringFromParts($parts));
+                    } else {
+                        $query = $reportsWidget->getQueryStringFromParts($postData['parts']);
+                        if (!$query) {
+                            throw new \InvalidArgumentException('Empty query');
+                        }
+                        $report->setQuery($query);
+                    }
+                } catch (\Exception $e) {
+                    throw ValidationException::create($e->getMessage());
+                }
+
+                if ($form->isValid()) {
+                    $this->em->persist($report);
+                    $this->em->flush();
+                } else {
+                    throw ValidationException::create($this->getFormValidationErrorsString($form));
+                }
             }
-            if (!$displayOnly) {
-                $reportsWidget->saveQuery($report);
-            }
+
+            $apiData = $this->getReportsAndLabels();
 
             return $this->createApiResponse([
                 'success' => true,
                 'id'      => $report->getId(),
+                'labels'  => $apiData['labels'],
             ]);
         }
     }
@@ -216,16 +221,15 @@ class ReportsWidgetController extends AbstractController
             throw $this->createNotFoundException();
         }
         $newReport = $reportsWidget->createNew();
-        $newReport->setTitle($this->in->getString('title') ?: $report->getTitle());
-        $newReport->setDescription($this->in->getString('description') ?: $report->getDescription());
-        $newReport->setQuery($report->getQuery());
-        $parts = $this->in->getArrayValue('parts');
-        if ($parts) {
-            $query = Display::getQueryStringFromParts($parts);
-            if ($query) {
-                $newReport->setQuery($query);
-            }
-        }
+        $newReport
+            ->setTitle($report->getTitle())
+            ->setDescription($report->getDescription())
+            ->setQuery($report->getQuery())
+            ->setVariables($report->getVariables())
+            ->setDisplayTypes($report->getDisplayTypes())
+            ->setLabels($report->getLabels())
+            ->setIsCustom(true);
+
         $this->em->getConnection()->beginTransaction();
         try {
             $this->em->persist($newReport);
@@ -276,14 +280,17 @@ class ReportsWidgetController extends AbstractController
      */
     public function testAction($id)
     {
-        /* @var ReportsWidgetService */
+        /* @var $reportsWidget ReportsWidgetService */
         $reportsWidget = $reportsWidget = $this->container->get('reports.widget.service');
         $parts         = $this->in->getArrayValue('parts');
         $query         = $parts && isset($parts['from']) && $parts['from'] ? 'from_request' : null;
         if ($error = $reportsWidget->getErrors($id, $query)) {
             return $this->createApiResponse(['error' => $error]);
         } else {
-            $renderedResult            = $reportsWidget->getRenderedResult($id, $query);
+            $renderedResult = $reportsWidget->getRenderedResult($id, $query);
+//            if($renderedResult && $renderedResult[0] === null && count($renderedResult) === 1) {
+//                $renderedResult = [];
+//            }
             $widget                    = $this->getReportWidgetData($id, true);
             $widget['rendered_result'] = $renderedResult;
 
@@ -298,7 +305,7 @@ class ReportsWidgetController extends AbstractController
      */
     public function parseAction()
     {
-        /* @var ReportsWidgetService */
+        /* @var $reportsWidget ReportsWidgetService */
         $reportsWidget = $reportsWidget = $this->container->get('reports.widget.service');
 
         return $this->createApiResponse($reportsWidget->parseInput());

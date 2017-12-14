@@ -97,7 +97,6 @@
   "jquery.calendars.islamic":        "bower_components/kbw-calendars/dist/js/jquery.calendars.islamic",
 
   "angularGridster":                 "bower_components/angular-gridster/src/angular-gridster",
-  "ngTable":                         "bower_components/ng-table/ng-table",
   "datatables":                      "bower_components/datatables/media/js/jquery.dataTables",
   "datatables.scroller":             "bower_components/datatables-scroller/js/dataTables.scroller"
 }

@@ -4,11 +4,19 @@ import { connect } from 'react-redux';
 import Immutable from 'immutable';
 import ListHeader from './List/ListHeader';
 import List from './List/List';
-import Edit from './Edit';
+import { Edit } from './Edit';
 import Run from './Run';
-import { loadReport, saveReport, newReport, runReport, saveAndRun } from '../../Application/Actions/reportActions';
+import {
+  loadReport,
+  saveReport,
+  newReport,
+  runReport,
+  saveAndRun,
+  parseQuery,
+  cloneReport
+} from '../../Application/Actions/reportActions';
 import { allReportsSelector, allReportsLabelsSelector } from '../Selectors/reports';
-import { regex, activateLabel, transformLabels, transformReportData } from './helper';
+import { regex, activateLabel, transformLabels, transformReportData, countActiveLabels } from './helper';
 
 @connect(state => ({
   reports:       allReportsSelector(state),
@@ -20,12 +28,19 @@ import { regex, activateLabel, transformLabels, transformReportData } from './he
 }))
 class Wrapper extends React.Component {
 
+  static defaultProps = {
+    reportsLoaded: false,
+    reportLoading: false,
+    currentReport: null,
+    labels:        null
+  };
+
   static propTypes = {
-    reports:       PropTypes.object,
+    reports:       PropTypes.object.isRequired,
     reportsLoaded: PropTypes.bool,
     reportLoading: PropTypes.bool,
     currentReport: PropTypes.object,
-    groupParams:   PropTypes.object,
+    groupParams:   PropTypes.object.isRequired,
     labels:        PropTypes.object,
     dispatch:      PropTypes.func.isRequired,
   };
@@ -40,7 +55,7 @@ class Wrapper extends React.Component {
 
     this.state = {
       currentReport: Immutable.Map(),
-      reports:       Immutable.List(),
+      reports:       props.reports || Immutable.Map(),
       searchText:    '',
       labels:        newLabels,
       activeLabels:  0,
@@ -48,6 +63,7 @@ class Wrapper extends React.Component {
 
     this.onEditReportClick          = this.onEditReportClick.bind(this);
     this.onRunReportClick           = this.onRunReportClick.bind(this);
+    this.onCloneReportClick         = this.onCloneReportClick.bind(this);
     this.onChangeReportDisplayTypes = this.onChangeReportDisplayTypes.bind(this);
     this.onChangeFilterText         = this.onChangeFilterText.bind(this);
     this.onChangeReportVar          = this.onChangeReportVar.bind(this);
@@ -55,11 +71,18 @@ class Wrapper extends React.Component {
     this.onSubmit                   = this.onSubmit.bind(this);
     this.onAddClick                 = this.onAddClick.bind(this);
     this.filter                     = this.filter.bind(this);
+    this.parseReportQuery           = this.parseReportQuery.bind(this);
   }
 
   componentWillReceiveProps(props) {
-    const { currentReport, reports } = props;
-    this.setState({ currentReport, reports });
+    const { currentReport } = props;
+    let newReports = props.reports;
+    this.state.reports.forEach((report) => { // we have to persist changed var values, to keep run mode work
+      if (report.get('varChanged')) {
+        newReports = newReports.mergeIn([report.get('id')], { variables: report.get('variables'), varChanged: true });
+      }
+    });
+    this.setState({ currentReport, reports: newReports });
     this.setLabels(props);
   }
 
@@ -67,12 +90,11 @@ class Wrapper extends React.Component {
     let changedReport = report;
     changedReport.get('variables').forEach((val, index) => {
       if (val.get('name') === varName) {
-        changedReport = changedReport.setIn(['variables', index, 'value'], value);
+        changedReport = changedReport.setIn(['variables', index, 'value'], value).set('varChanged', true);
       }
     });
-    const data = transformReportData(changedReport);
-    const newReports = this.state.reports.set(report.get('id'), report);
-    this.setState({ currentReport: report, reports: newReports }, () => this.onRunReportClick(report, data));
+    const newReports = this.state.reports.set(report.get('id'), changedReport);
+    this.setState({ currentReport: report, reports: newReports }, () => this.onRunReportClick(changedReport));
   }
 
   onEditReportClick(report) {
@@ -80,9 +102,13 @@ class Wrapper extends React.Component {
     this.setState({ mode: 'edit' });
   }
 
-  onRunReportClick(report, data) {
-    this.props.dispatch(runReport(report.get('id'), data));
+  onRunReportClick(report) {
+    this.props.dispatch(runReport(report.get('id'), transformReportData(report)));
     this.setState({ mode: 'run' });
+  }
+
+  onCloneReportClick(report) {
+    this.props.dispatch(cloneReport(report.toJS()));
   }
 
   onChangeReportDisplayTypes(displayTypes) {
@@ -115,23 +141,23 @@ class Wrapper extends React.Component {
     this.setState(state);
   }
 
-  onAddClick() {
+  onAddClick(cloneReportObj) {
     this.setState({ mode: 'edit' });
-    this.props.dispatch(newReport());
+    this.props.dispatch(newReport(cloneReportObj));
   }
 
   onLabelClick(clickedLabel) {
     const { newLabels, newActiveLabels } = activateLabel(clickedLabel, this.state.labels);
     let newSearchText = this.state.searchText.replace(regex, '');
-    const labels = newLabels.filter(value => value.get('active')).map(value => `[${value.get('label')}]`).toList().toJS();
+
+    const labels = newLabels
+      .filter(value => value.get('active'))
+      .map(value => `[${value.get('label')}]`)
+      .toList().toJS();
+
     newSearchText = `${labels.join('')} ${newSearchText.trim()}`;
 
     this.setState({ labels: newLabels, activeLabels: newActiveLabels, searchText: newSearchText });
-  }
-
-  onRunClick(report) {
-    console.log(report, this.props.currentReport);
-    console.log('open modal window to show report example');
   }
 
   onSubmit(data) {
@@ -139,10 +165,20 @@ class Wrapper extends React.Component {
   }
 
   setLabels(props) {
-    if (props.labels && this.state.labels.size < 1) {
-      const newLabels = transformLabels(props.labels);
-      this.setState({ labels: newLabels, activeLabels: 0 });
+    if (props.labels) {
+      let newLabels = transformLabels(props.labels);
+      this.state.labels.forEach((label) => {
+        const entry = newLabels.findEntry(newLabel => newLabel.get('value') === label.get('value'));
+        if (entry && entry[1] && label.get('active')) {
+          newLabels = newLabels.setIn([entry[0], 'active'], true);
+        }
+      });
+      this.setState({ labels: newLabels, activeLabels: countActiveLabels(newLabels) });
     }
+  }
+
+  parseReportQuery(report, query) {
+    this.props.dispatch(parseQuery(report, query));
   }
 
   filter(value) {
@@ -181,7 +217,7 @@ class Wrapper extends React.Component {
     const filteredBuiltInReports = reports.filter(report => !report.get('is_custom')).filter(this.filter);
 
     return (
-      <span>
+      <div className="stats-app-wrapper">
         <div className="report-list-wrapper">
           <div className="report-list-content">
             <div className="reports-list">
@@ -208,28 +244,34 @@ class Wrapper extends React.Component {
             </div>
           </div>
         </div>
-        { currentReport.get('query_parts') && mode === 'edit'
-          ? <Edit
-            reportLoading={reportLoading}
-            labels={labels}
-            report={currentReport}
-            groupParams={groupParams}
-            onSubmit={this.onSubmit}
-            onRunClick={this.onRunClick}
-          />
-          : null
-        }
-        { currentReport && mode === 'run'
-          ? <Run
-            onChangeReportVar={this.onChangeReportVar}
-            groupParams={groupParams}
-            onChangeReportDisplayTypes={this.onChangeReportDisplayTypes}
-            report={currentReport}
-            reportLoading={reportLoading}
-          />
-          : null
-        }
-      </span>
+        <div className="report-list-pane-wrapper">
+          { currentReport.get('query_parts') && mode === 'edit'
+            ? <Edit
+              parseQuery={this.parseReportQuery}
+              reportLoading={reportLoading}
+              labels={labels}
+              report={currentReport}
+              groupParams={groupParams}
+              onSubmit={this.onSubmit}
+              onRunClick={this.onRunReportClick}
+              onCloneClick={this.onCloneReportClick}
+            />
+            : null
+          }
+          { currentReport && mode === 'run'
+            ? <Run
+              onChangeReportVar={this.onChangeReportVar}
+              groupParams={groupParams}
+              onChangeReportDisplayTypes={this.onChangeReportDisplayTypes}
+              report={currentReport}
+              reportLoading={reportLoading}
+              onEditReportClick={this.onEditReportClick}
+              onRunClick={this.onRunReportClick}
+            />
+            : null
+          }
+        </div>
+      </div>
     );
   }
 }

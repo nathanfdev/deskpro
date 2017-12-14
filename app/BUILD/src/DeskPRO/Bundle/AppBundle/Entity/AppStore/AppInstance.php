@@ -247,12 +247,14 @@ class AppInstance implements Domain\ApplicationInstance, EntityInterface, Notify
     }
 
     /**
-     * @param boolean $isInstalled
+     * @param bool $isInstalled
+     *
      * @return AppInstance
      */
-    public function setIsInstalled( $isInstalled )
+    public function setIsInstalled($isInstalled)
     {
         $this->isInstalled = $isInstalled;
+
         return $this;
     }
 }

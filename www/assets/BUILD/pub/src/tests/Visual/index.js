@@ -24,3 +24,4 @@ import './Semantic/popup';
 import './Semantic/Segment/segment';
 import './Semantic/tab';
 import './Semantic/Tabs/tabs';
+import './ReportBundle/Modules/Stat/edit';

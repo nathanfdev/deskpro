@@ -28,7 +28,6 @@ define [
 
   # global deps
   'angularGridster',
-  'ngTable',
 
   'jquery',
   'moment',
@@ -55,7 +54,6 @@ define [
     'angularMoment',
     'oc.lazyLoad',
     'gridster',
-    'ngTable',
   ])
 
   SetupDeskPROService(InterfaceApp)

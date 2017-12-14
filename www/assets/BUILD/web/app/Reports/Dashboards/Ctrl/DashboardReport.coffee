@@ -21,13 +21,16 @@ define ['DeskPRO/Util/Arrays'], (Arrays) -> [
       dashboard_id: 0
       options:
         columns: 24
+      variables: []
     }
 
     report_id = parseInt($stateParams.report_id)
 
     $scope.gridsterOptions =
       margins: [10, 10],
-      columns: $scope.report.options.columns,
+      width: 10000,
+      columns: 150,
+      colWidth: 50,
       draggable:
         enabled: false
         handle: 'h3'
@@ -42,8 +45,10 @@ define ['DeskPRO/Util/Arrays'], (Arrays) -> [
     DashboardsInfo.getReportDetail(report_id).then((loadedReport) ->
       $scope.report = loadedReport
 
+
       DashboardsInfo.getDashboardList().then((dbs) ->
         $scope.dashboard = Arrays.find(dbs, (x) -> x.id == loadedReport.dashboard_id)
+        $scope.groupParams = DashboardWidgetService.groupParams
         $scope.loaded = true
       )
     )
@@ -99,7 +104,7 @@ define ['DeskPRO/Util/Arrays'], (Arrays) -> [
 
     $scope.openWidgetChoose = (report, widget, reportWidget) ->
       return if $scope.dashboard.is_default
-      $modal.open({
+      modalInstance = $modal.open({
         templateUrl: 'ReportsInterfaceBundle:Dashboard/Modal:widget-type-choose.html',
         controller: 'Reports.Dashboards.Modals.ChooseWidget'
         resolve:
@@ -107,6 +112,10 @@ define ['DeskPRO/Util/Arrays'], (Arrays) -> [
           widget:       -> widget
           reportWidget: -> reportWidget
       })
+
+      modalInstance.result.then (result) ->
+        if result.back == true
+          $scope.openAddWidget(widget)
 
     $scope.openAddWidget = (widget) ->
       modalInstance = $modal.open {
@@ -144,4 +153,12 @@ define ['DeskPRO/Util/Arrays'], (Arrays) -> [
           $scope.report = savedReport
           $state.go('reports.dashboards.view.report', { report_id: savedReport.id})
 
+
+    $scope.changeReportLevelVar = () ->
+      DashboardService.saveReportVars($scope.report).then( () ->
+        $scope.report.widgets = [];
+        DashboardsInfo.getReportDetail($scope.report.id, true).then((loadedReport) ->
+          $scope.report = loadedReport
+        )
+      );
   ]

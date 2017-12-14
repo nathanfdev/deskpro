@@ -1,18 +1,15 @@
 // Stat list
 
+.report-list-content, .report-list-content, .reports-list {
+  height: 100%;
+  overflow: hidden;
+}
+
 .big-list-of-stats-filters {
-  @include clearfix;
-  padding: 10px;
-  padding-bottom: 0;
-
-  .bucket {
-    float: left;
-    width: 50%;
-
-    &:first-child {
-      padding-right: 6px;
-    }
-  }
+  background: #ecedee;
+  padding: 6px;
+  border-bottom: 1px solid $global-border;
+  flex-shrink: 0;
 
   form {
     border: 1px solid rgba(0, 0, 0, 0.1);
@@ -39,53 +36,61 @@
   }
 
   .select {
+    margin-left: 4px;
     border: 1px solid rgba(0, 0, 0, 0.1);
-
-    i {
-      float: right;
-      margin-right: 5px;
-    }
   }
 
 
   input[type="text"], input[type="password"], .select, .button {
     border: 1px solid #bdbdbd;
     border-radius: 2px;
+    color: #333;
     padding: $item-padding;
-    width: 100%;
+    padding-top: 0;
+    padding-bottom: 0;
+    line-height: 32px;
     background: #fff;
     text-decoration: none;
-    display: inline-block;
+    display: block;
     font-size: 1em;
+    width: 100%;
+  }
+  .button {
+    border: none;
   }
 
+  display: flex;
+  flex-direction: row;
 
+  .filter-title {
+    flex-grow: 1;
+  }
+  .filter-label {
+    flex-shrink: 1;
+  }
+  .filter-addbtn {
+    margin-left: 4px;
+    flex-shrink: 1;
+  }
 }
 
 
 .big-list-of-stats {
-  padding: 10px;
-  background: #f5f6f7;
-  max-height: 460px;
+  padding: 0;
+  background: #ffffff;
   overflow-y: auto;
+  flex-grow: 1;
 
   ul.stat-list {
     @extend %flat-list;
-    border: 1px solid #bdbdbd;
-    border-radius: 2px;
-    background: #fff;
+    border: none;
+    border-radius: 0;
 
     > li {
       padding: 10px;
       border-bottom: 1px solid #d9d9d9;
-      padding-left: 30px;
       position: relative;
-
-
-
-      &:hover, &.active {
-        background: $dp-morning-sky;
-      }
+      cursor: pointer;
 
       &.active .mark {
         opacity: 1;
@@ -110,7 +115,7 @@
     }
 
     h1 {
-      font-size: 1.1em;
+      font-size: 1em;
       line-height: 1.7em;
       margin: 0;
       font-weight: 400;
@@ -148,6 +153,7 @@
     }
 
     p {
+      margin-top: 3px;
       font-size: 1em;
       color: #898989;
       line-height: 1.6em;
@@ -209,23 +215,6 @@
 // Stat list on page
 .report-list-wrapper {
   .big-list-of-stats-filters {
-    @include clearfix;
-    padding: 10px 10px 0 10px;
-    position: absolute;
-    height: 40px;
-    width: 575px;
-    top: 0;
-    left: 0;
-
-    .bucket {
-      float: left;
-      width: 50%;
-
-      &:first-child {
-        padding-right: 6px;
-      }
-    }
-
     form {
       border: 1px solid rgba(0, 0, 0, 0.1);
       border-radius: 2px;
@@ -250,73 +239,25 @@
       }
     }
 
-    .select {
-      border: 1px solid rgba(0, 0, 0, 0.1);
-      color: #333;
-
-      i {
-        float: right;
-        margin-right: 5px;
-      }
-    }
-
     .ui.button {
       font-size: 1em;
-      height: 35px;
+      height: 34px;
       width: 75px;
       margin-left: 4px;
-    }
-
-    input[type="text"], input[type="password"], .select {
-      border: 1px solid #bdbdbd;
-      border-radius: 2px;
-      padding: $item-padding;
-      width: 100%;
-      background: #fff;
-      text-decoration: none;
-      display: inline-block;
-      font-size: 1em;
     }
   }
 
 
   .big-list-of-stats {
-    height: 100%;
-    max-height: 100%;
-    padding: 0 0 10px 10px;
-    background: #ffffff;
-
     ul.stat-list {
       @extend %flat-list;
-      border: 1px solid #bdbdbd;
-      border-radius: 2px;
-      background: #fff;
 
       > li {
-        .Select {
-          display: inline-block;
-          height: 20px;
-          width: 90px;
-          > .Select-control {
-            height: 22px;
-            .Select-input, .Select-placeholder, .Select-value {
-              line-height: 20px;
-              height: 20px;
-              padding: 0 5px;
-            }
-            .Select-value {
-              padding: 2px 5px;
-            }
-          }
-          .Select-option {
-            line-height: 20px;
-            padding: 2px 5px;
-          }
-        }
-
         .controls {
           display: none;
-          float: right;
+          position: absolute;
+          top: 10px;
+          right: 10px;
           cursor: pointer;
         }
 
@@ -342,39 +283,60 @@
   font-size: 0.85em;
   margin-left: 3px;
   cursor: pointer;
-
-  &.active, &:hover {
-    color: $dp-sonic-primary;
-  }
 }
 
 
 
 .select-label-dropdown {
-  border: 1px solid rgba(0, 0, 0, 0.1);
+  border: 1px solid $global-border;
   padding: 10px;
   background: #fff;
   z-index: 199;
   margin-top: -2px;
   position: absolute;
+  right: 0;
+  width: 400px;
 
-  a { margin-bottom: 5px; }
+  a {
+    margin-bottom: 5px;
+    text-wrap: none;
+    &.stat-label.active {
+      color: $dp-sonic-primary;
+    }
+  }
 }
 
 .reports-list {
-  height: 100%;
-  padding-top: 35px;
+  display: flex;
+  flex-direction: column;
 }
 
 
 .report-list-content {
-  padding-top: 10px;
-  height: 100%;
+
+}
+
+.stats-app-wrapper {
+  position: absolute;
+  top: 0; right: 0; bottom: 0; left: 0;
+  overflow: hidden;
+  display: flex;
+  flex-direction: row;
+}
+
+.report-list-pane-wrapper {
+  flex-wrap: nowrap;
+  flex-grow: 1;
+  max-height: 100%;
+  overflow: auto;
 }
 
 // Stats in page (not in popup)
 .report-list-wrapper {
-  height: 100%;
+  width: $report-list-width;
+  overflow: auto;
+  border-right: 1px solid $global-border;
+  background: #eceef0;
 
   .big-list-of-stats {
     .stat-list-wrapper {
@@ -390,29 +352,6 @@
       }
     }
 
-  }
-
-  .big-list-of-stats-filters:after {
-    clear: none;
-    display: none;
-  }
-
-  .big-list-of-stats-filters {
-    .bucket {
-      float: none;
-      width: 100%;
-      margin: 0 0 10px;
-      padding: 0;
-      display: inline-block;
-
-      &.filter-title {
-        width: 55%;
-      }
-
-      &.filter-label {
-        width: 29%;
-      }
-    }
   }
 }
 
@@ -532,10 +471,205 @@
   position: relative;
 }
 
-.report-list-wrapper {
+.title-with-vars {
+  display: block;
+
+  @include clearfix();
+
+  > div.text {
+    line-height: 24px;
+  }
+
+  > div {
+    float: left;
+    margin-right: 4px;
+  }
+
+  .dp-select .Select {
+    width: 85px;
+  }
+
+  .dp-select .Select-placeholder, .dp-select .Select--single > .Select-control .Select-value {
+    padding-right: 17px;
+  }
+}
+
+.report-view {
+  .title-bar {
+    background: #ecedee;
+    border-bottom: 1px solid $global-border;
+    padding: 11px;
+    min-height: 47px;
+    font-size: 1.3em;
+
+    display: flex;
+    flex-direction: row;
+
+    > .title {
+      flex-grow: 1;
+    }
+    > .ctrl {
+      flex-shrink: 1;
+      button {
+        margin-left: 4px;
+      }
+    }
+  }
+
+  .display-as-option {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    padding: 10px;
+
+    label {
+      flex-shrink: 1;
+      margin-right: 10px;
+    }
+    .Select {
+      width: 360px;
+    }
+  }
+
+  .no-results {
+    margin: 25px;
+    padding: 25px;
+    background: #efefef;
+  }
+
+  .results-wrap {
+    margin-top: 25px;
+    padding: 25px;
+    border-top: 1px solid $global-border;
+  }
+
+  .form-error-message {
+    margin: 15px;
+    color: red;
+  }
+}
+
+.inline-select {
+  position: relative;
+  display: inline-block;
+
+  .inline-select-label {
+    position: relative;
+    top: 1px;
+    cursor: pointer;
+    border-bottom: 1px dotted #888;
+
+    &:hover {
+      color: $dp-sonic-primary;
+      border-bottom: 1px solid $dp-sonic-primary;
+    }
+  }
+
+  .inline-select-arrow {
+    font-size: 7px;
+    color: #666;
+    margin-left: 2px;
+  }
+}
+
+.inline-select-menu {
   position: absolute;
-  top: 0;
-  left: 0;
-  bottom: 0;
-  width: $report-list-width;
+  background: #fff;
+  border: 1px solid $global-border;
+  max-width: 300px;
+  min-width: 100px;
+  max-height: 400px;
+  min-height: 100px;
+  overflow: auto;
+  z-index: 100;
+  cursor: pointer;
+}
+
+.inline-select-menu-item {
+  &:hover {
+    background: $dp-morning-sky;
+  }
+  &:last-child {
+    border-bottom: none;
+  }
+  padding: 3px 8px;
+  border-bottom: 1px solid $global-border;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+  padding: 3px 8px;
+  cursor: pointer;
+}
+
+.query-builder-input {
+  .dp-tabs {
+    width: 300px;
+
+    .dp-tabs__tab {
+      border-bottom-color: transparent;
+      &.dp-tabs__tab--active {
+        border-bottom-color: #4696dc;
+      }
+    }
+  }
+  .input-wrap {
+    border: 1px solid #d4d7d8;
+
+    .dp-section {
+      padding: 15px;
+    }
+    .dp-textarea textarea {
+      width: 65%;
+      height: 300px;
+      white-space: nowrap;
+      overflow: auto;
+      font-family: Monaco, Consolas, monospace;
+    }
+
+    .field-hidden {
+      display: none;
+    }
+
+    .vars-wrap {
+      border-top: 1px solid #d4d7d8;
+    }
+  }
+}
+
+.varsfield-wrap {
+  .varsfield-list {
+    display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+
+    .varsfield-item {
+      position: relative;
+      width: 185px;
+      padding: 15px;
+      margin-right: 15px;
+      margin-bottom: 15px;
+      border: 1px solid #d4d7d8;
+      flex-shrink: 0;
+
+      .dp-input__label em {
+        font-style: normal;
+        text-transform: none;
+        color: #8f1eb4;
+        font-family: Monaco, Consolas, monospace;
+      }
+
+      .remove-ctrl {
+        position: absolute;
+        top: 5px;
+        right: 7px;
+        cursor: pointer;
+      }
+
+      .dp-form-group:last-child {
+        margin-bottom: 0;
+      }
+      .Select-clear-zone {
+        display: none;
+      }
+    }
+  }
 }

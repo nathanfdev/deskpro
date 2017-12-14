@@ -1,54 +1,15 @@
 .report-widget-edit-n-run-content {
-  position: absolute;
-  top: 0;
-  left: $report-list-width;
-  right: 0;
-  bottom: 0;
-  overflow: auto;
   background: #fff;
-  border-left: 1px solid $global-border;
 
   .ui.form {
     padding: 10px;
-    .ui.header {
+
+    .display-types .multi-select .scrollarea-content > div {
+      display: inline-block;
+      margin-left: 10px;
       &:first-child {
-        margin: calc(2rem - .14285714em) 0 1rem;
+        margin-left: 0;
       }
-      .Select {
-        display: inline-block;
-        height: 26px;
-        width: 120px;
-        > .Select-control {
-          height: 28px;
-          .Select-input, .Select-placeholder, .Select-value {
-            line-height: 26px;
-            height: 26px;
-            padding: 0 6px;
-          }
-          .Select-value {
-            padding: 3px 6px;
-          }
-        }
-        .Select-option {
-          line-height: 26px;
-          padding: 3px 6px;
-        }
-      }
-    }
-  }
-
-  .dp-loader {
-    width: 100%;
-    height: 100%;
-    position: absolute;
-    top: 0;
-    left: 0;
-    text-align: center;
-    background: #fff;
-    display: block;
-
-    > svg {
-      margin: 40%;
     }
   }
 }
@@ -56,10 +17,6 @@
 .reports-editor-panel {
   background: #ffffff;
   padding: 10px;
-
-  position: absolute;
-  top: 0; right: 0; bottom: 0; left: 0;
-  overflow: auto;
 
   .editor-header {
     font-size: 1.1em;
@@ -176,6 +133,9 @@
   .report-description {
     overflow: auto;
   }
+  .report-query {
+    min-height: 200px;
+  }
   .title-input {
     font-family: $font-stack;
   }
@@ -194,6 +154,10 @@
 
     .ui.button.olive {
       box-shadow: 0 2px 0 darken(#b5cc18, 10%);
+    }
+
+    .ui.button.orange {
+      box-shadow: 0 2px 0 darken(#f2711c, 10%);
     }
   }
 }

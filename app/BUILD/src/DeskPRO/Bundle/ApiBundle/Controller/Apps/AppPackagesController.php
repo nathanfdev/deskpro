@@ -26,7 +26,6 @@
  * ~ Thanks, Everyone at Team DeskPRO
  */
 
-
 namespace DeskPRO\Bundle\ApiBundle\Controller\Apps;
 
 use DeskPRO\Bundle\ApiBundle\ApiDoc\Annotation\ApiDoc;
@@ -38,15 +37,13 @@ use DeskPRO\Bundle\AppBundle\Entity\AppStore\AppAssetBlob;
 use DeskPRO\Bundle\AppBundle\Security\Voter\PermissionGroups\PermissionGroupVoter;
 use DeskPRO\Bundle\AppStoreBundle\Domain\AppManifest;
 use DeskPRO\Bundle\AppStoreBundle\Domain\AppManifestChanges\ChangeDetector;
-use DeskPRO\Bundle\AppStoreBundle\Domain\AppManifestChanges\GenericChange;
 use DeskPRO\Bundle\AppStoreBundle\Infrastructure\ApplicationManagerService;
-use DeskPRO\Bundle\AppStoreBundle\Infrastructure\AppManifestReader;
 use FOS\RestBundle\Controller\Annotations as Rest;
 use FOS\RestBundle\View\View;
+use Sensio\Bundle\FrameworkExtraBundle\Configuration\ParamConverter;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
-use Sensio\Bundle\FrameworkExtraBundle\Configuration\ParamConverter;
 use Symfony\Component\HttpKernel\Exception\ServiceUnavailableHttpException;
 
 /**
@@ -61,7 +58,6 @@ class AppPackagesController extends CrudController
 {
     public static $exposeOnly = ['get', 'list', 'count'];
     public static $entity     = App::class;
-
 
     /**
      * @ApiDoc(
@@ -85,18 +81,19 @@ class AppPackagesController extends CrudController
      * @Rest\Get("/{application}", requirements={"application"="^(?=.*[^\d].*)[^/]+$"})
      * @ParamConverter("app", class="AppBundle:Entity\AppStore\App", converter="DeskPRO\Bundle\AppStoreBundle\ParamConverter\AppParamConverter", options={"attribute" = "application"})
      *
-     * @param App $app
+     * @param App     $app
      * @param Request $request
-     * @return View
      *
+     * @return View
      */
-    public function getByNameOrReferenceAction( App $app = null, Request $request)
+    public function getByNameOrReferenceAction(App $app = null, Request $request)
     {
         if (empty($app)) {
             throw new NotFoundHttpException('could not find application');
         }
 
         $this->denyAccessUnlessGranted(PermissionGroupVoter::VIEW, $this->getPermissionGroupEntityContext($app->getId(), $request));
+
         return View::create($this->wrap($app), Response::HTTP_OK);
     }
 
@@ -157,16 +154,15 @@ class AppPackagesController extends CrudController
             $previousManifest = new AppManifest();
         } else {
             /** @var ApplicationManagerService $instanceManager */
-            $instanceManager = $this->container->get('apps2.application_manager');
+            $instanceManager  = $this->container->get('apps2.application_manager');
             $previousManifest = $instanceManager->readManifestFromAssetBlob($previousManifestAsset);
         }
 
         $changeDetector = new ChangeDetector();
-        $changes = [];
-        $changes = array_merge($changes, $changeDetector->customFieldChanges($manifest, $previousManifest));
-        $changes = array_merge($changes, $changeDetector->settingsChanges($manifest, $previousManifest));
+        $changes        = [];
+        $changes        = array_merge($changes, $changeDetector->customFieldChanges($manifest, $previousManifest));
+        $changes        = array_merge($changes, $changeDetector->settingsChanges($manifest, $previousManifest));
 
         return $changes;
     }
-
 }

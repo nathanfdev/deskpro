@@ -41,13 +41,6 @@ use Doctrine\ORM\Mapping\ClassMetadataInfo;
 
 /**
  * ReportDashboardWidget.
- *
- * @property int          $id
- * @property string       $title
- * @property ReportWidget $report
- * @property string       $position simple 1:1 position just explode to own x and y (col & row)
- * @property string       $size     same as previous, explode and you'll have sizeX and sizeY
- * @property string       $hc_data  hardcoded data for default dashboards
  */
 class ReportDashboardWidget extends DomainObject
 {

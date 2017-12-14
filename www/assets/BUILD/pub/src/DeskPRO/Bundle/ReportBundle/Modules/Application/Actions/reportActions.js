@@ -1,6 +1,7 @@
 import { createAction } from 'DeskPRO/Component/Ampliflux';
 import { repository, api } from 'DeskPRO/Bundle/AppBundle/DAL';
 import { setCollection, addToCollection } from 'DeskPRO/Bundle/AppBundle/Modules/RecordsStore';
+import Immutable from 'immutable';
 
 export const reportsLoaded = createAction(
   'REPORTS_LOADED'
@@ -37,9 +38,10 @@ export const loadReport = createAction(
 
 export const runReport = createAction(
   'REPORTS_RUN_REPORT',
-  (reportId, data) => (dispatch) => {
+  (reportId, data, saveVars) => (dispatch) => {
     const dataToSend = {
-      report: {
+      saveVars: !!saveVars,
+      report:   {
         title:         data.title,
         description:   data.desc,
         display_types: data.display_types,
@@ -113,6 +115,33 @@ export const saveAndRun = createAction(
   }
 );
 
+export const parseQuery = createAction(
+  'REPORT_PARSE_QUERY',
+  (report, query) => dispatch => new Promise((resolve) => {
+    const dataToSend = {
+      query:       `DISPLAY TABLE ${query}`,
+      parts:       {},
+      currentType: 'query',
+      newType:     'builder'
+    };
+
+    const config = {
+      headers: {
+        'X-DeskPRO-API-Token':     window.DP_API_TOKEN,
+        'X-DeskPRO-Session-ID':    window.DP_SESSION_ID,
+        'X-DeskPRO-Request-Token': window.DP_REQUEST_TOKEN,
+      }
+    };
+
+    const promise = api.sendPost('DP_API_OLD/reports/widget/parse', dataToSend, config);
+    promise.success((response) => {
+      const newReport = report.set('query_parts', Immutable.fromJS(response.parts));
+      dispatch(addToCollection('Reports', 'all', { [report.get('id')]: newReport }, [report.get('id')]));
+      resolve(newReport);
+    });
+  }
+));
+
 export const loadGroupParams = createAction(
   'REPORTS_LOAD_GROUP_PARAMS',
   () => () => new Promise(resolve => api
@@ -147,9 +176,11 @@ export const saveReport = createAction(
         groupBy: data.groupBy,
         orderBy: data.orderBy,
         limit:   data.limit,
-        offset:  data.offset
+        offset:  data.offset,
+        raw:     data.raw
       },
       displayOnly: data.displayOnly,
+      inputMode:   data.inputMode
     };
 
     const config = {
@@ -167,25 +198,36 @@ export const saveReport = createAction(
       promise = api.sendPut('DP_API_OLD/reports/widget', dataToSend, config);
     }
 
-    return promise.success((response) => { if (response.id) { dispatch(loadReport(response.id)); } });
+    return promise.success((response) => {
+      if (response.id) {
+        dispatch(loadReport(response.id));
+        dispatch(setCollection('ReportsLabels', 'all', response.labels));
+        return response;
+      }
+      return response;
+    });
   }
 );
 
 export const newReport = createAction(
   'REPORTS_NEW_REPORT',
-  () => new Promise((resolve) => {
+  report => new Promise((resolve) => {
+    let toClone = report;
+    if (!report) {
+      toClone = {};
+    }
     const newReportObject = {
       id:            0,
       unique_key:    '',
-      title:         'new report',
+      title:         '',
       description:   '',
       query:         '',
       labels:        [],
       display_order: 10,
       display_types: [],
-      variables:     [],
-      query_parts:   {
-        display:    ['TABLE', 'BAR'],
+      variables:     toClone.variables || {},
+      query_parts:   toClone.query_parts || {
+        display:    ['TABLE'],
         select:     '',
         from:       '',
         where:      '',
@@ -201,4 +243,11 @@ export const newReport = createAction(
     };
     return resolve(newReportObject);
   })
+);
+
+export const cloneReport = createAction(
+  'REPORTS_CLONE_REPORT',
+  report => (dispatch) => {
+    dispatch(newReport(report));
+  }
 );

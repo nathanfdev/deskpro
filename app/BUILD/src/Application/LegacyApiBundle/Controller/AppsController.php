@@ -146,21 +146,21 @@ class AppsController extends AbstractController
         // in case it contains forward slashes, e.g @deskproapps/app-name
         // the actual problem can be solved by just double encoding of '/', / => %2F => %252F
         // but it is simpler on the client to double encode everything
-        $name = urldecode(urldecode($name));
+        $name    = urldecode(urldecode($name));
         $manager = $this->container->getAppManager();
 
         if (!$manager->hasPackage($name)) {
             // app v2 package info
             $appArchive = $this->getAppV2ArchiveBundle($name);
 
-            $app        = $this->em->getRepository(App::class)->findOneBy([
+            $app = $this->em->getRepository(App::class)->findOneBy([
                 'name' => $name,
             ]);
             if ($appArchive) {
                 $manifestReader = new AppManifestReader();
 
-                $manifest       = $manifestReader->readManifestFromJson($appArchive->getManifestAsString());
-                $iconBlob       = $this->container->get('blob.storage')->createBlobRecordFromString(
+                $manifest = $manifestReader->readManifestFromJson($appArchive->getManifestAsString());
+                $iconBlob = $this->container->get('blob.storage')->createBlobRecordFromString(
                     $appArchive->getIcon(),
                     'icon.png',
                     'image/png'
@@ -319,7 +319,7 @@ class AppsController extends AbstractController
         // in case it contains forward slashes, e.g @deskproapps/app-name
         // the actual problem can be solved by just double encoding of '/', / => %2F => %252F
         // but it is simpler on the client to double encode everything
-        $name = urldecode(urldecode($name));
+        $name    = urldecode(urldecode($name));
         $manager = $this->container->getAppManager();
 
         if (!$manager->hasPackage($name)) {
@@ -956,14 +956,12 @@ class AppsController extends AbstractController
         $appBundle       = new AppZipArchiveBundle(new \ZipArchive(), new \SplFileInfo($file));
         $bundleValidator = $this->container->get(AppBundleValidator::class);
         if ($bundleValidator->validateBundle($appBundle)) {
-
-
             $manifestString = SafeFile::fileGetContents($app_dir.'/manifest.json', $app_dir);
             $manifestReader = new AppManifestReader();
             $manifest       = $manifestReader->readManifestFromJson($manifestString);
 
             /** @var ApplicationManagerService $appsManager */
-            $appsManager = $this->container->get('apps2.application_manager');
+            $appsManager    = $this->container->get('apps2.application_manager');
             $installDetails = $appsManager->installBundle($appBundle);
 
             $context = new SideloadSerializationContext();
@@ -975,9 +973,9 @@ class AppsController extends AbstractController
                 array_merge(
                     $serialized,
                     [
-                        'version' => 2,
+                        'version'      => 2,
                         'package_name' => $manifest->getName(),
-                        'install_type' => $installDetails->getInstallType()
+                        'install_type' => $installDetails->getInstallType(),
                     ]
                 ),
                 sprintf('/api/v2/apps/packages/%s', $installDetails->getApp()->getId())
@@ -1048,15 +1046,14 @@ class AppsController extends AbstractController
      */
     private function getAppV2ArchiveBundle($name)
     {
-
         $assetDir = $this->container->get('deskpro.app_env')->getAppWwwAssetDir();
         $blobPath = $assetDir.'/apps/v2/'.$name.'.zip';
 
         // make sure the name is slugified
-        $slug = Strings::slugifyTitle($name);
+        $slug    = Strings::slugifyTitle($name);
         $sysName = 'apps_v2_zip_'.$slug;
 
-        $blob     = $this->em->getRepository(Blob::class)->findOneBy([
+        $blob = $this->em->getRepository(Blob::class)->findOneBy([
             'sys_name' => $sysName,
         ]);
 

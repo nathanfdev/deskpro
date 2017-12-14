@@ -34,10 +34,9 @@ namespace Application\LegacyApiBundle\Controller;
 
 use Application\DeskPRO\Entity\ReportDashboardReport as Tab;
 use Application\DeskPRO\Entity\ReportDashboardWidget as Widget;
-use Application\DeskPRO\Entity\ReportWidget;
-use Application\DeskPRO\EntityRepository\ReportWidget as ReportWidgetRepository;
 use Application\LegacyApiBundle\Service\Dashboard as DashboardService;
 use Application\LegacyApiBundle\Service\DashboardPermissions as DashboardPermissionService;
+use Application\LegacyApiBundle\Service\DashboardWidget;
 use Application\LegacyApiBundle\Service\DashboardWidget as DashboardWidgetService;
 use DeskPRO\Bundle\AppBundle\Annotation\ActionPermissions\Annotation\ApiModes;
 use Symfony\Component\HttpFoundation\Response;
@@ -145,6 +144,11 @@ class DashboardWidgetController extends AbstractController
         return $this->createApiSuccessResponse();
     }
 
+    /**
+     * @param $widget
+     *
+     * @return Response
+     */
     public function getWidgetDataAction($widget)
     {
         $widgetData = $this->_getWidgetData($widget);
@@ -152,11 +156,21 @@ class DashboardWidgetController extends AbstractController
         return $this->createApiResponse($widgetData);
     }
 
+    /**
+     * @param $id
+     *
+     * @return Response
+     */
     public function getWidgetAction($id)
     {
         return $this->createApiResponse($this->_getWidgetData($id));
     }
 
+    /**
+     * @param $widget
+     *
+     * @return array
+     */
     protected function _getWidgetData($widget)
     {
         if (!$widget instanceof Widget && !$widget = $this->em->getRepository(Widget::class)->find((int) $widget)) {
@@ -165,9 +179,17 @@ class DashboardWidgetController extends AbstractController
         if (!$widget->getWidget()) {
             throw $this->createNotFoundException('Widget not found!');
         }
-        $pos  = $widget->getPosition();
-        $size = $widget->getSize();
-
+        $pos             = $widget->getPosition();
+        $size            = $widget->getSize();
+        $reportLevelVars = $widget->getReport()->getVariables();
+        $widgetVars      = $widget->getVariables() ?: [];
+        foreach ($widgetVars as $key => &$var) {
+            if ($var['value'] === DashboardWidget::WIDGET_VALUE_FROM_REPORT
+                 && isset($reportLevelVars[$key]) && $reportLevelVars[$key] && $reportLevelVars[$key]['value']) {
+                $var['value'] = $reportLevelVars[$key]['value'];
+            }
+        }
+        $widget->setVariables($widgetVars);
         $realData = $this->widgetService->renderWidgetQuery($widget);
         if ($realData && $widget->getType() == DashboardWidgetService::WIDGET_TYPE_TABLE) {
             $aoColumns = [];
@@ -192,40 +214,6 @@ class DashboardWidgetController extends AbstractController
         ];
 
         return $data;
-    }
-
-    public function reportsListAction()
-    {
-        /** @var ReportWidgetRepository $repository */
-        $repository = $this->em->getRepository(ReportWidget::class);
-        $reports    = $repository->getAllReports();
-        $apiData    = [
-            'reports' => [],
-            'labels'  => [],
-        ];
-        $translator = $this->container->getTranslator();
-        $i          = 0;
-        foreach ($reports as $report) {
-            $datum            = $report->toApiData();
-            $translatedLabels = [];
-            foreach ($datum['labels'] as $label) {
-                $phraseName      = 'reports.labels.'.strtolower($label);
-                $translatedLabel = $translator->hasPhrase($phraseName)
-                    ? $translator->phrase($phraseName)
-                    : ucfirst($label);
-                $translatedLabels[]        = $translatedLabel;
-                $apiData['labels'][$label] = [
-                    'id'    => ++$i,
-                    'label' => $translatedLabel,
-                    'value' => ucfirst($label),
-                ];
-            }
-            $datum['labels']      = $translatedLabels;
-            $apiData['reports'][] = $datum;
-        }
-        $apiData['labels'] = array_values($apiData['labels']);
-
-        return $this->createApiResponse($apiData);
     }
 
     /**

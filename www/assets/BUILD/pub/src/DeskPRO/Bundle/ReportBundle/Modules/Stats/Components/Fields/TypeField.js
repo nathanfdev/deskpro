@@ -3,8 +3,13 @@ import React from 'react';
 import { Field, Select } from 'DeskPRO/Component/Semantic/ReactForm';
 
 class TypeField extends React.Component {
+
+  static defaultProps = {
+    type: null
+  };
+
   static propTypes = {
-    groupParams: PropTypes.object,
+    groupParams: PropTypes.object.isRequired,
     type:        PropTypes.string
   };
 

@@ -67,6 +67,8 @@ class DashboardWidget
     const WIDGET_TYPE_TABLE = 'table';
     const WIDGET_TYPE_STAT  = 'stat';
 
+    const WIDGET_VALUE_FROM_REPORT = 'from_report_value';
+
     /**
      * @var array
      */

@@ -522,7 +522,7 @@ abstract class AbstractController extends \Application\DeskPRO\Controller\Abstra
 
         if (sizeof($errors) > 0) {
             foreach ($errors as $error) {
-                $result[] = $error->getMessage();
+                $result[] = $error->getPropertyPath() . ' : ' . $error->getMessage();
             }
         }
 

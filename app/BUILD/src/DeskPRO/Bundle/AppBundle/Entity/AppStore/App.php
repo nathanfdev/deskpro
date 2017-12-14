@@ -124,6 +124,7 @@ class App implements Domain\Application, EntityInterface, NotifyPropertyChanged
 
     /**
      * Returns the manifest.
+     *
      * @JMS\Type("DeskPRO\Bundle\AppStoreBundle\Domain\AppManifest")
      *
      * @return Domain\AppManifest
@@ -132,6 +133,7 @@ class App implements Domain\Application, EntityInterface, NotifyPropertyChanged
     {
         if ($this->manifest) {
             $manifestReader = new AppManifestReader();
+
             return $manifestReader->readManifestFromArray($this->manifest);
         }
 
@@ -217,7 +219,7 @@ class App implements Domain\Application, EntityInterface, NotifyPropertyChanged
     public function getIconUrl()
     {
         $asset = $this->getIconAsset();
-        $blob = null;
+        $blob  = null;
         if ($asset) {
             $blob = $asset->getBlob();
         }
@@ -238,7 +240,7 @@ class App implements Domain\Application, EntityInterface, NotifyPropertyChanged
     }
 
     /**
-     * @return boolean
+     * @return bool
      */
     public function getIsDev()
     {
@@ -246,9 +248,9 @@ class App implements Domain\Application, EntityInterface, NotifyPropertyChanged
     }
 
     /**
-     * @param boolean $isDev
+     * @param bool $isDev
      */
-    public function setIsDev( $isDev )
+    public function setIsDev($isDev)
     {
         $this->isDev = $isDev;
     }

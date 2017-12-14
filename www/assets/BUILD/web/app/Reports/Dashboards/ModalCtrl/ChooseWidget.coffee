@@ -16,6 +16,8 @@ define -> [
 
     $scope.cancel = -> $modalInstance.dismiss 'cancel'
 
+    $scope.back = -> $modalInstance.close {back: true}
+
     $scope.saveChoice = ->
       DashboardWidgetService.addWidget report, $scope.widget
       $modalInstance.close()
@@ -36,9 +38,4 @@ define -> [
           $scope.widgetPreview.type            = switch displayType
             when 'pie', 'simple_area', 'simple_bars', 'simple_lines' then 'graph'
             else 'table'
-
-    $scope.displayTypeAvailable = (displayType) ->
-      available = false
-      for reportDisplayType in reportWidget.display_types when reportDisplayType == displayType then available = true
-      return available
 ]

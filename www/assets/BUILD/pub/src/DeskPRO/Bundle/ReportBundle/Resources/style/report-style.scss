@@ -28,17 +28,6 @@ $dp-styles-font-path: '../../../../../../node_modules/@deskpro/react-components/
   }
 }
 
-.Select-input {
-  padding-left: 0;
-
-  input {
-    border: 0 !important;
-  }
-}
-.Select-control {
-  border-radius: 0;
-}
-
 .page {
   padding: 50px;
   background-color: #fff;
@@ -76,12 +65,6 @@ $dp-styles-font-path: '../../../../../../node_modules/@deskpro/react-components/
   .section-header-button {
     margin-top: -8px !important;
     margin-right: 20px !important;
-  }
-
-  .Select {
-    i {
-      margin-right: 10px;
-    }
   }
 
   .multi-select {
@@ -214,16 +197,6 @@ $dp-styles-font-path: '../../../../../../node_modules/@deskpro/react-components/
   align-items: center;
   .field {
     display: inline-flex;
-    &.type .Select {
-      width: 90px;
-    }
-    &.field-type .Select, &.date-field .Select {
-      min-width: 180px;
-    }
-    &.field-type-value .Select {
-      min-width: 240px;
-    }
-
     &.name {
       input {
         width: 120px;

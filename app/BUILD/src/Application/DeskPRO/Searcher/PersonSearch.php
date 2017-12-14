@@ -434,19 +434,19 @@ class PersonSearch extends SearcherAbstract
                             ];
                             if ($org_ids) {
                                 $wheres[] = '('
-                                                . $this->_choiceMatch("$join_name.usergroup_id", $op, $choice)
-                                                . ($op == self::OP_NOT ? ' AND ' : ' OR ')
-                                                . $this->_choiceMatch("$people_table.organization_id", $op, $org_ids)
-                                            . ')';
+                                                .$this->_choiceMatch("$join_name.usergroup_id", $op, $choice)
+                                                .($op == self::OP_NOT ? ' AND ' : ' OR ')
+                                                .$this->_choiceMatch("$people_table.organization_id", $op, $org_ids)
+                                            .')';
                             } else {
                                 $wheres[] = $this->_choiceMatch("$join_name.usergroup_id", $op, $choice);
                             }
                         } else {
                             if ($org_ids) {
                                 $wheres[] = '('
-                                                . $this->_choiceMatch("$people_table.id", $op, $person_ids)
-                                                . ($op == self::OP_NOT ? ' AND ' : ' OR ')
-                                                . $this->_choiceMatch("$people_table.organization_id", $op, $org_ids)
+                                                .$this->_choiceMatch("$people_table.id", $op, $person_ids)
+                                                .($op == self::OP_NOT ? ' AND ' : ' OR ')
+                                                .$this->_choiceMatch("$people_table.organization_id", $op, $org_ids)
                                             .')';
                             } else {
                                 $wheres[] = $this->_choiceMatch("$people_table.id", $op, $person_ids);

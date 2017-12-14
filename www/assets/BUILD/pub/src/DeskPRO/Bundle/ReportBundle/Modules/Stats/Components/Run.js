@@ -1,20 +1,22 @@
 import PropTypes from 'prop-types';
 import React from 'react';
 import AmCharts from '@amcharts/amcharts3-react';
+import Button from '@deskpro/react-components/lib/Components/Buttons/Button';
 import { Loader } from '@deskpro/react-components';
-import { MultiSelect } from 'DeskPRO/Component/Semantic/ReactForm';
+import Select from 'react-select';
 import Immutable from 'immutable';
 import TitleWithVars from './TitleWithVars';
 import { displayTypes } from './helper';
-import Header from '../../../../../Component/Semantic/Common/Header';
 
 class Run extends React.Component {
 
   static propTypes = {
-    report:                     PropTypes.object,
+    report:                     PropTypes.object.isRequired,
     reportLoading:              PropTypes.bool.isRequired,
     onChangeReportDisplayTypes: PropTypes.func.isRequired,
     onChangeReportVar:          PropTypes.func.isRequired,
+    onRunClick:                 PropTypes.func.isRequired,
+    onEditReportClick:          PropTypes.func.isRequired,
     groupParams:                PropTypes.object.isRequired,
   };
 
@@ -42,6 +44,8 @@ class Run extends React.Component {
     };
     this.onChangeReportDisplayTypes = this.onChangeReportDisplayTypes.bind(this);
     this.clickSlice                 = this.clickSlice.bind(this);
+    this.onEditClick                = this.onEditClick.bind(this);
+    this.onRunClick                 = this.onRunClick.bind(this);
   }
 
   componentWillReceiveProps(props) {
@@ -49,7 +53,20 @@ class Run extends React.Component {
   }
 
   onChangeReportDisplayTypes(runDisplayTypes) {
-    this.setState({ displayTypes: runDisplayTypes }, () => this.props.onChangeReportDisplayTypes(runDisplayTypes));
+    const types = runDisplayTypes ? runDisplayTypes.map(v => v.value) : [];
+    this.setState({ displayTypes: types }, () => this.props.onChangeReportDisplayTypes(types));
+  }
+
+  onEditClick(event) {
+    event.preventDefault();
+    event.stopPropagation();
+    this.props.onEditReportClick(this.props.report);
+  }
+
+  onRunClick(event) {
+    event.preventDefault();
+    event.stopPropagation();
+    this.props.onRunClick(this.props.report);
   }
 
   clickSlice(event) {
@@ -92,29 +109,30 @@ class Run extends React.Component {
       groupParams={groupParams}
       report={report}
     />);
-    const content = report.get('rendered_result').filter(value => value).size > 0
-      ? this.renderReport()
-      : <span>No results found. Please try another query (e.g. change vars) to find something</span>;
+    const content = report.get('rendered_result', Immutable.List()).filter(value => value).size > 0
+      ? <div className="results-wrap">{this.renderReport()}</div>
+      : <div className="no-results">No results found.</div>;
 
-    const choices = displayTypes.map((value) => {
-      const newValue = value;
-      newValue.disabled = !report.get('is_custom');
-      return newValue;
-    });
+    const choices = displayTypes;
 
     return (
-      <div className="ui form">
-        <Header content={title} level={3} />
-        <div className="inline fields">
-          <div className="eight wide field">
-            <label htmlFor="runAs">Run this report as</label>
-            <MultiSelect
-              toggleAll={false}
-              choices={choices}
-              value={this.state.displayTypes}
-              onChange={this.onChangeReportDisplayTypes}
-            />
+      <div className="report-view run">
+        <div className="title-bar">
+          <div className="title">{title}</div>
+          <div className="ctrl">
+            <Button size="medium" type="secondary" onClick={this.onRunClick}><i className="fa fa-refresh" /></Button>
+            <Button size="medium" onClick={this.onEditClick}>Edit Report</Button>
           </div>
+        </div>
+        <div className="display-as-option">
+          <label htmlFor="displayTypes">Display</label>
+          <Select
+            multi
+            closeOnSelect={false}
+            options={choices}
+            value={this.state.displayTypes}
+            onChange={this.onChangeReportDisplayTypes}
+          />
         </div>
         { content }
       </div>

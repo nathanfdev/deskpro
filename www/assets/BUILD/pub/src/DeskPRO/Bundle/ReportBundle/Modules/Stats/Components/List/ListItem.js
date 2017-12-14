@@ -1,7 +1,6 @@
 import PropTypes from 'prop-types';
 import React from 'react';
 import classNames from 'classnames';
-import { transformReportData } from '../helper';
 import TitleWithVars from '../TitleWithVars';
 
 class ListItem extends React.Component {
@@ -29,8 +28,7 @@ class ListItem extends React.Component {
       event.stopPropagation();
     }
     const { onRunReportClick, report } = this.props;
-    const data = transformReportData(report);
-    onRunReportClick(report, data);
+    onRunReportClick(report);
   }
 
   onEditClick(event) {
@@ -48,22 +46,27 @@ class ListItem extends React.Component {
     const { isActive, groupParams, onChangeReportVar, report } = this.props;
 
     return (
-      <li className={classNames({ active: isActive })}>
+      <li className={classNames({ active: isActive })} onClick={this.onRunClick}>
         <h1>
-          <TitleWithVars onRunClick={this.onRunClick} onChangeReportVar={onChangeReportVar} groupParams={groupParams} report={report} />
-          <span onClick={this.onEditClick} className="controls"><i className="pencil icon" /></span>
+          <TitleWithVars
+            onRunClick={this.onRunClick}
+            onChangeReportVar={onChangeReportVar}
+            groupParams={groupParams}
+            report={report}
+          />
+          <span onClick={this.onEditClick} className="controls"><i className="fa fa-pencil" /></span>
         </h1>
         { report.get('labels').size > 0 || !report.get('is_custom') ?
           <p>
             {report.get('labels').map(
-              (label, index) =>
+              label =>
                 <span
                   onClick={(event) => {
                     event.preventDefault();
                     event.stopPropagation();
                     this.props.onLabelClick(label);
                   }}
-                  key={index}
+                  key={label}
                   className={classNames('stat-label', { active: this.isLabelActive(label) })}
                 >
                   <i className="fa fa-tag" /> { label }

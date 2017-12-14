@@ -5,6 +5,10 @@ import ListItem from './ListItem';
 
 class List extends React.Component {
 
+  static defaultProps = {
+    currentReport: null
+  };
+
   static propTypes = {
     customReports:     PropTypes.object.isRequired,
     builtInReports:    PropTypes.object.isRequired,
@@ -28,8 +32,9 @@ class List extends React.Component {
   }
 
   showList() {
-    const { labels, currentReport, groupParams, customReports, builtInReports, reportsVars } = this.props;
+    const { labels, currentReport, groupParams, customReports, builtInReports } = this.props;
     const { onLabelClick, onEditReportClick, onRunReportClick, onChangeReportVar } = this.props;
+
     return (
       <div className="stat-list-wrapper">
         <ul className="stat-list">
@@ -46,7 +51,7 @@ class List extends React.Component {
                 labels={labels}
                 groupParams={groupParams}
               />
-          )}
+          ).toArray()}
           {builtInReports.map(
             report =>
               <ListItem
@@ -60,7 +65,7 @@ class List extends React.Component {
                 labels={labels}
                 groupParams={groupParams}
               />
-          )}
+          ).toArray()}
         </ul>
       </div>
     );

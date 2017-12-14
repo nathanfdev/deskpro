@@ -7062,24 +7062,6 @@ $collection->create(
 );
 
 $collection->create(
-    'api_reports_widget_list_custom',
-    [
-        'path'       => '/reports/widget/custom',
-        'controller' => 'LegacyApiBundle:ReportsWidget:listCustom',
-        'methods'    => ['GET'],
-    ]
-);
-
-$collection->create(
-    'api_reports_widget_list_builtIn',
-    [
-        'path'       => '/reports/widget/builtIn',
-        'controller' => 'LegacyApiBundle:ReportsWidget:listBuiltIn',
-        'methods'    => ['GET'],
-    ]
-);
-
-$collection->create(
     'api_reports_widget_get_group_params',
     [
         'path'       => '/reports/widget/group-params',
@@ -7592,19 +7574,12 @@ $collection->create('dashboard_widget_create', [
     'methods'      => ['POST'],
 ]);
 
-$collection->create('dashboard_widget_delete    ', [
+$collection->create('dashboard_widget_delete', [
     'path'         => '/dashboards/widgets/{id}',
     'controller'   => 'LegacyApiBundle:DashboardWidget:deleteWidget',
     'requirements' => ['id' => '\\d+'],
     'defaults'     => ['action' => 'deleteWidget'],
     'methods'      => ['DELETE'],
-]);
-
-$collection->create('dashboard_widget_reports_list', [
-    'path'       => '/dashboards/widgets/reports/list',
-    'controller' => 'LegacyApiBundle:DashboardWidget:reportsList',
-    'defaults'   => ['action' => 'reportsList'],
-    'methods'    => ['GET'],
 ]);
 
 //#######################################################################################################################
@@ -7639,6 +7614,13 @@ $collection->create('dashboard_reports_update', [
     'controller'   => 'LegacyApiBundle:DashboardReport:save',
     'requirements' => ['id' => '\\d+'],
     'defaults'     => ['action' => 'save'],
+    'methods'      => ['POST'],
+]);
+
+$collection->create('dashboard_reports_vars_update', [
+    'path'         => '/dashboards/reports/{id}/vars',
+    'controller'   => 'LegacyApiBundle:DashboardReport:saveReportVars',
+    'requirements' => ['id' => '\\d+'],
     'methods'      => ['POST'],
 ]);
 

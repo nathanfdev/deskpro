@@ -100,6 +100,7 @@ class CmdBuilder implements CmdBuilderInterface
      * https://github.com/symfony/process/blob/v3.3.13/Process.php
      *
      * @param string $argument
+     *
      * @return string
      */
     private function escapeArgument($argument)
@@ -120,12 +121,12 @@ class CmdBuilder implements CmdBuilderInterface
         }
         $argument = preg_replace('/(\\\\+)$/', '$1$1', $argument);
 
-        return '"'.str_replace(array('"', '^', '%', '!', "\n"), array('""', '"^^"', '"^%"', '"^!"', '!LF!'), $argument).'"';
+        return '"'.str_replace(['"', '^', '%', '!', "\n"], ['""', '"^^"', '"^%"', '"^!"', '!LF!'], $argument).'"';
     }
 
     /**
      * Check if run under windows env
-     * Used to avoid hardcoded dependencies in test
+     * Used to avoid hardcoded dependencies in test.
      *
      * @return bool
      */

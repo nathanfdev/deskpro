@@ -32,7 +32,13 @@ use Application\DeskPRO\App;
 use Application\DeskPRO\Dpql\Compiler;
 use Application\DeskPRO\Dpql\Exception as DpqlException;
 use Application\DeskPRO\Dpql\Statement\Display;
+use Application\DeskPRO\Entity\AgentTeam;
+use Application\DeskPRO\Entity\Department;
+use Application\DeskPRO\Entity\Person;
 use Application\DeskPRO\Entity\ReportWidget;
+use Application\DeskPRO\EntityRepository\AgentTeam as AgentTeamRepository;
+use Application\DeskPRO\EntityRepository\Department as DepartmentRepository;
+use Application\DeskPRO\EntityRepository\Person as PersonRepository;
 use Application\DeskPRO\EntityRepository\ReportWidget as ReportWidgetRepository;
 use Application\DeskPRO\Input\Reader;
 use Application\LegacyApiBundle\Service\DashboardWidget;
@@ -107,7 +113,40 @@ class ReportsWidgetService
      */
     public function getGroupParams()
     {
-        return $this->repository->getReportGroupParams();
+        $groupParams = $this->repository->getReportGroupParams();
+
+        $groupParams['values'] = [
+            'agent'      => [],
+            'department' => [],
+            'team'       => [],
+        ];
+
+        /** @var PersonRepository $personRepository */
+        $personRepository = $this->em->getRepository(Person::class);
+        $agents           = $personRepository->getAgents();
+
+        /** @var DepartmentRepository $departmentRepository */
+        $departmentRepository = $this->em->getRepository(Department::class);
+        $departments          = $departmentRepository->getAll();
+
+        /** @var AgentTeamRepository $agentTeamRepository */
+        $agentTeamRepository = $this->em->getRepository(AgentTeam::class);
+        $agentTeams          = $agentTeamRepository->getTeams();
+
+        foreach ($agents as $agent) {
+            $groupParams['values']['agent'][$agent->getId()] = [$agent->getDisplayName()];
+        }
+
+        foreach ($departments as $department) {
+            $postfix                                                   = $department->isTicketsEnabled() ? '' : ' [Chat]';
+            $groupParams['values']['department'][$department->getId()] = [$department->getTitle().$postfix];
+        }
+
+        foreach ($agentTeams as $agentTeam) {
+            $groupParams['values']['team'][$agentTeam->getId()] = [$agentTeam->getName()];
+        }
+
+        return $groupParams;
     }
 
     /**
@@ -145,7 +184,6 @@ class ReportsWidgetService
         $reportData          = $this->in->getArrayValue('report');
         $params['variables'] = $reportData['variables'];
 
-
         $resultsStack = [];
         if ($query == 'from_request') {
             $parts = $this->in->getArrayValue('parts');
@@ -154,11 +192,11 @@ class ReportsWidgetService
             $query = $report->getQuery();
         }
 
-        foreach($reportData['display_types'] as $displayType) {
+        foreach ($reportData['display_types'] as $displayType) {
             $renderFormat = $format;
             if ($displayType === DashboardWidget::WIDGET_RENDER_TYPE_TABLE) {
                 $renderFormat = 'html';
-                if(isset($reportData['jsonTable']) && $reportData['jsonTable'] === true) {
+                if (isset($reportData['jsonTable']) && $reportData['jsonTable'] === true) {
                     $renderFormat = 'json';
                 }
             }
@@ -285,6 +323,31 @@ class ReportsWidgetService
         }
 
         return $results;
+    }
+
+    /**
+     * @param string $query
+     *
+     * @return array
+     */
+    public function parseQueryString($query)
+    {
+        $compiler  = new Compiler();
+        $statement = $compiler->lexAndParse($query);
+
+        return $this->getDpqlPartsForInput($statement);
+    }
+
+    /**
+     * @param array $parts
+     *
+     * @return string
+     */
+    public function getQueryStringFromParts(array $parts)
+    {
+        $query = Display::getQueryStringFromParts($parts);
+
+        return $query;
     }
 
     /**

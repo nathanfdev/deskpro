@@ -392,8 +392,8 @@ class Display
 
             foreach ($results as $rowKey => $row) {
                 if ($previousValue !== null) {
-                    if (($ascending && ($row[$order] + 0) < $previousValue) ||
-                        (!$ascending && ($row[$order] + 0) > $previousValue)
+                    if (($ascending && (int) ($row[$order]) < $previousValue) ||
+                        (!$ascending && (int) ($row[$order]) > $previousValue)
                     ) {
                         if ($rowKey - 1 > $startRow) {
                             $rowSets[] = [
@@ -405,13 +405,13 @@ class Display
                         }
                         $previousValue = null;
                     } else {
-                        $previousValue = $row[$order] + 0;
+                        $previousValue = (int) $row[$order];
                     }
                 }
 
                 if ($previousValue === null) {
-                    $previousValue = (int) $row[$order] + 0;
-                    $startRowValue = (int) $row[$order] + 0;
+                    $previousValue = (int) $row[$order];
+                    $startRowValue = (int) $row[$order];
                     $startRow      = $rowKey;
                 }
             }

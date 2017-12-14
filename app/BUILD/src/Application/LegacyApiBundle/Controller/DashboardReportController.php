@@ -131,6 +131,24 @@ class DashboardReportController extends AbstractController
     }
 
     /**
+     * @param $id
+     *
+     * @return Response
+     */
+    public function saveReportVarsAction($id)
+    {
+        $postVars = $this->in->getArrayValue('variables', 'post');
+        $report   = $this->service->getReport($id);
+        $vars     = [];
+        foreach ($postVars as $postVar) {
+            $vars[$postVar['name']] = $postVar;
+        }
+        $report->setVariables($vars);
+
+        return $this->createApiSuccessResponse($this->service->saveReport($report, true));
+    }
+
+    /**
      * @param $dashboard_id
      *
      * @return Response

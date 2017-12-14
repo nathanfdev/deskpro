@@ -26,34 +26,23 @@
  * ~ Thanks, Everyone at Team DeskPRO
  */
 
-namespace DpTest\DeskPRO\Bundle\AppStoreBundle\Infrastructure;
+namespace Application\InstallBundle\Upgrade\Build;
 
-use DeskPRO\Bundle\AppStoreBundle\Infrastructure\IdentifierParser;
-use DpTest\DeskProTestCase;
-
-class IdentifierParserTest extends DeskProTestCase
+/**
+ * Class Build1513248744.
+ */
+class Build1513248744 extends AbstractBuild implements BlockingBuildInterface
 {
-    public function testParseApplicationRef()
+    public function addNewTables()
     {
-        $parser = new IdentifierParser();
-        $ref    = $parser->parseApplicationRef('app:123');
-
-        $this->assertNotNull($ref);
-        $this->assertEquals('123', $ref->getIdentifier());
-        $this->assertFalse($ref->isName());
-
-        $ref = $parser->parseApplicationRef('123');
-        $this->assertEquals('123', $ref->getIdentifier());
-        $this->assertFalse($ref->isName());
     }
 
-    public function testRecognizeApplicationInstanceId()
+    public function runAlters()
     {
-        $parser = new IdentifierParser();
-        $ref    = $parser->recognizeNumericIdentifier('123');
-        $this->assertTrue($ref);
+        $this->execDbQuery('default', 'ALTER TABLE report_dashboard_report ADD variables LONGTEXT DEFAULT NULL COMMENT \'(DC2Type:json_array)\', CHANGE sort_order sort_order INT DEFAULT 0 NOT NULL, CHANGE columns columns INT DEFAULT 24 NOT NULL');
+    }
 
-        $ref = $parser->recognizeNumericIdentifier('app:123');
-        $this->assertFalse($ref);
+    public function run()
+    {
     }
 }
