@@ -29,9 +29,9 @@
 namespace Application\InstallBundle\Upgrade\Build;
 
 /**
- * Class Build1512490660.
+ * Class Build1513248744.
  */
-class Build1512490660 extends AbstractBuild implements OnlineBuildInterface
+class Build1513248744 extends AbstractBuild implements BlockingBuildInterface
 {
     public function addNewTables()
     {
