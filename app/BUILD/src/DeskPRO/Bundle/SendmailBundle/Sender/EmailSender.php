@@ -30,6 +30,7 @@ namespace DeskPRO\Bundle\SendmailBundle\Sender;
 
 use Application\DeskPRO\Entity\Language;
 use Application\DeskPRO\Entity\Person;
+use Application\DeskPRO\Entity\PersonEmail;
 use Application\DeskPRO\EntityRepository\Person as PersonRepository;
 use Application\EmailBundle\SwiftMailer\Mailer;
 use Application\EmailBundle\SwiftMailer\Message\Message;
@@ -155,9 +156,9 @@ class EmailSender
         } elseif (!$message->getTo()) {
             throw new \Exception('Missing required "to" argument');
         }
+        $serializationContext = new SideloadSerializationContext();
+        $serializationContext->setInlineSideloads(true);
         if (!empty($recipient)) {
-            $serializationContext = new SideloadSerializationContext();
-            $serializationContext->setInlineSideloads(true);
             $person = $this->container->get('api_serializer.handler.person')
                 ->createModel($recipient, $serializationContext);
             $model->setRecipient($person);
@@ -165,6 +166,14 @@ class EmailSender
         } elseif (is_a($options['to'], EmailTo::class)) {
             $emailTo = $options['to'];
             $message->setTo($emailTo->getEmailAddress(), $emailTo->getName());
+            $tempPerson = new Person();
+            $tempPerson->setName($emailTo->getName());
+            $email = new PersonEmail();
+            $email->setEmail($emailTo->getEmailAddress());
+            $tempPerson->setPrimaryEmail($email);
+            $person = $this->container->get('api_serializer.handler.person')
+                ->createModel($tempPerson, $serializationContext);
+            $model->setRecipient($person);
         } elseif ($options['to']) {
             $message->setTo($options['to']);
         }
