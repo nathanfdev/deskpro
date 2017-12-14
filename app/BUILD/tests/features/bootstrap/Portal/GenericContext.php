@@ -142,11 +142,41 @@ class GenericContext extends BasePortalContext
     }
 
     /**
+     * @Then I should receive an email on :who with the subject phrase :subject
+     */
+    public function iShouldReceiveAnEmailOnMyEmailAddressWithTheSubjectPhrase($who, $subject_phrase)
+    {
+        if (strpos($who, '@') === false) {
+            $email = $this->get('user_details')->getEmail($who);
+        } else {
+            $email = $who;
+        }
+
+        $subject = $this->phrase($subject_phrase);
+
+        expect($this->getSubjectOfLastEmail($email))->toBe($subject);
+    }
+
+    /**
      * @Then I should receive an email with the subject :subject
      */
     public function iShouldReceiveAnEmailWithTheSubject($subject)
     {
         expect($this->getSubjectOfLastEmail())->toBe($subject);
+    }
+
+    /**
+     * @Then I should receive an email on :who with the subject :subject
+     */
+    public function iShouldReceiveAnEmailOnMyEmailAddressWithTheSubject($who, $subject)
+    {
+        if (strpos($who, '@') === false) {
+            $email = $this->get('user_details')->getEmail($who);
+        } else {
+            $email = $who;
+        }
+
+        expect($this->getSubjectOfLastEmail($email))->toBe($subject);
     }
 
     /**
@@ -322,12 +352,12 @@ class GenericContext extends BasePortalContext
     /**
      * @return SendmailSource
      */
-    protected function getLastEmail()
+    protected function getLastEmail($email = null)
     {
         /** @var SendmailSourceRepository $ss_repo */
         $ss_repo = $this->repository(SendmailSource::class);
 
-        return $ss_repo->getLatest();
+        return $ss_repo->getLatest($email);
     }
 
     protected function isSubscribedContent(Person $person, ContentAbstract $content)
@@ -352,9 +382,9 @@ class GenericContext extends BasePortalContext
         return $email_data['body'];
     }
 
-    protected function getSubjectOfLastEmail()
+    protected function getSubjectOfLastEmail($email = null)
     {
-        $email_data = $this->getLastEmailData();
+        $email_data = $this->getLastEmailData($email);
 
         return $email_data['subject'];
     }
@@ -376,9 +406,9 @@ class GenericContext extends BasePortalContext
      *
      * @return array
      */
-    protected function getLastEmailData()
+    protected function getLastEmailData($email = null)
     {
-        $last_email = $this->getLastEmail();
+        $last_email = $this->getLastEmail($email);
 
         $blob = $last_email->getBlob();
 

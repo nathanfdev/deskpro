@@ -56,6 +56,7 @@ class ErrorController extends AbstractController
         // in some edge cases we can get exceptions in sub requests (using in http cache)
         // so it causes infinity recursion loops
         $requestStack = $this->get('request_stack');
+        $appEnv       = $this->get('deskpro.app_env');
 
         $reflection = new \ReflectionClass(RequestStack::class);
         $property   = $reflection->getProperty('requests');
@@ -63,7 +64,7 @@ class ErrorController extends AbstractController
 
         $requests = $property->getValue($requestStack);
         if (count($requests) > 2) {
-            return new Response('', $exception->getStatusCode());
+            return new Response($appEnv->isDebug() ? $exception->getMessage() : '', $exception->getStatusCode());
         }
 
         // don't render errors for page fragments
@@ -86,16 +87,15 @@ class ErrorController extends AbstractController
             //  6. ... which tries to render articles again...etc until timeout
             // So the only thing to do really is to return an empty response. The user never sees it because this is
             // just a fragment of a parent page.
-            return new Response('', $exception->getStatusCode());
+            return new Response($appEnv->isDebug() ? $exception->getMessage() : '', $exception->getStatusCode());
         }
 
         // check if the error controller was already called
         // allow rendering error template only for the first exception
-        $appEnv = $this->container->get('deskpro.app_env');
         if ($appEnv->hasRuntimeVar('portal.error_controller_called')) {
-            return new Response('', $exception->getStatusCode());
+            return new Response($appEnv->isDebug() ? $appEnv->getRuntimeVar('portal.error_controller_called').' '.$exception->getMessage() : '', $exception->getStatusCode());
         } else {
-            $appEnv->setRuntimeVar('portal.error_controller_called', true);
+            $appEnv->setRuntimeVar('portal.error_controller_called', $exception->getMessage());
         }
 
         if ($response = $this->delegateApi($exception)) {

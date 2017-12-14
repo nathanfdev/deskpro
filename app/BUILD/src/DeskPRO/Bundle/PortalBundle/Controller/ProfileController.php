@@ -31,6 +31,7 @@ namespace DeskPRO\Bundle\PortalBundle\Controller;
 use Application\DeskPRO\Entity\PasswordHistory;
 use Application\DeskPRO\Entity\Person;
 use Application\DeskPRO\Entity\PersonEmail;
+use Application\DeskPRO\Notifications\NewRegistrationNotification;
 use DeskPRO\Bundle\AppBundle\AntiAbuse\Event\RegistrationAbuseCheck;
 use DeskPRO\Bundle\AppBundle\Entity\SavedForm;
 use DeskPRO\Bundle\AppBundle\Form\Error\FormValidatorChecker;
@@ -144,6 +145,9 @@ class ProfileController extends AbstractController
                     $this->getEmailSender()->sendWelcomeEmail($person);
                     $this->get('person_manipulator')->authenticatePerson($person);
                     $this->addFlash('success', $this->phrase('portal.flashes.user_registered_verified_authenticated'));
+
+                    $notify = new NewRegistrationNotification($person);
+                    $notify->send();
 
                     return $this->redirectToRoute('portal_home');
                 } else {

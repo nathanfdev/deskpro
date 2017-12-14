@@ -29,6 +29,7 @@
 namespace DeskPRO\Bundle\ApiBundle\Controller\Feedback;
 
 use Application\DeskPRO\Entity\Feedback;
+use Application\DeskPRO\Notifications\NewFeedbackNotification;
 use DeskPRO\Bundle\ApiBundle\ApiDoc\Annotation\ApiDoc;
 use DeskPRO\Bundle\AppBundle\Annotation\ActionPermissions\Annotation\ApiModes;
 use DeskPRO\Bundle\AppBundle\Form\Type\Feedback\FeedbackType;
@@ -191,6 +192,12 @@ class FeedbackController extends AbstractFeedbackController
             'person'          => $this->getUser(),
         ]);
 
-        return parent::handleForm($model, $request, $options);
+        $view = parent::handleForm($model, $request, $options);
+
+        // if no exception has been the feedback has been created
+        $notify = new NewFeedbackNotification($model);
+        $notify->send();
+
+        return $view;
     }
 }
