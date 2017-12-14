@@ -28,7 +28,6 @@
 
 namespace DeskPRO\Bundle\SendmailBundle\View\Model;
 
-use DeskPRO\Bundle\AppBundle\Serializer\Model\Person\Person;
 use DeskPRO\Bundle\AppBundle\Serializer\Model\Task;
 use JMS\Serializer\Annotation as JMS;
 
@@ -44,15 +43,6 @@ class AgentTaskDueReminder extends EmailBaseType
     protected $task;
 
     /**
-     * Person that perform the password reset.
-     *
-     * @JMS\Type("DeskPRO\Bundle\AppBundle\Serializer\Model\Person\Person")
-     *
-     * @var Person
-     */
-    protected $performer;
-
-    /**
      * Link to agent interface.
      *
      * @JMS\Type("string")
@@ -66,14 +56,12 @@ class AgentTaskDueReminder extends EmailBaseType
     /**
      * AgentTaskDueReminder constructor.
      *
-     * @param Task   $task
-     * @param Person $performer
+     * @param Task $task
      * @param $loginLink
      */
-    public function __construct(Task $task, Person $performer, $loginLink)
+    public function __construct(Task $task, $loginLink)
     {
         $this->task      = $task;
-        $this->performer = $performer;
         $this->loginLink = $loginLink;
     }
 }
