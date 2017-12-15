@@ -331,7 +331,6 @@ return [
         'subGroupId' => 'rating',
         'name'       => 'DeskPRO:emails_common:ticket-rating-links.html.twig',
         'type'       => 'template',
-        'viewModel'  => 'TicketRatingLinks',
     ],
     [
         'typeId'      => 'user',
