@@ -18,6 +18,16 @@
       float: left;
       width: 50%;
 
+      label.widget-title {
+        display: inline-block;
+        margin-right: 10px;
+      }
+
+      input.widget-title {
+        display: inline-block;
+        width: auto;
+      }
+
       &:first-child {
         padding-right: 6px;
       }
