@@ -236,6 +236,7 @@ return [
         'newTemplate' => 'SendmailBundle:emails_user:new_ticket_guest.html.twig',
         'viewModel'   => 'NewTicketGuest',
     ],
+    /* Not Used */
     [
         'typeId'      => 'user',
         'groupId'     => 'tickets',
