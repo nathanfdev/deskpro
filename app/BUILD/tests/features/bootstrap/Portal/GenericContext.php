@@ -370,9 +370,11 @@ class GenericContext extends BasePortalContext
         $email_data = $this->getLastEmailData();
 
         $regex = '/https?\:\/\/[^\" \s]+/i';
-        preg_match($regex, $email_data['body'], $matches);
+        if (preg_match($regex, $email_data['body'], $matches)) {
+            return $matches[0];
+        }
 
-        return $matches[0];
+        return;
     }
 
     protected function getBodyOfLastEmail()

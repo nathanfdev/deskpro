@@ -113,13 +113,13 @@ Feature: API batch requests
     And the JSON node "responses.counts.data.count" should exist
 
   Scenario: I perform batch requests via GET providing extended array request specs
-    When I send a GET request to "/api/v2/batch?get[stars]=/api/v2/ticket_stars&get[departments][url]=/api/v2/ticket_departments&get[departments][params][count]=1&get[departments][params][page]=2&get[counts]=/api/v2/organizations/counts"
+    When I send a GET request to "/api/v2/batch?get[stars]=/api/v2/ticket_stars&get[organizations][url]=/api/v2/organizations&get[organizations][params][count]=1&get[organizations][params][page]=2&get[counts]=/api/v2/organizations/counts"
     Then the response status code should be 200
     And the JSON node "responses" should have 3 elements
     And the JSON node "responses.stars.data[0].color" should exist
-    And the JSON node "responses.departments.data[0].title" should exist
-    And the JSON node "responses.departments.data" should have 1 element
-    And the JSON node "responses.departments.meta.pagination.current_page" should be equal to 2
+    And the JSON node "responses.organizations.data[0].name" should exist
+    And the JSON node "responses.organizations.data" should have 1 element
+    And the JSON node "responses.organizations.meta.pagination.current_page" should be equal to 2
     And the JSON node "responses.counts.data.count" should exist
 
   Scenario: I perform batch requests with sideloading
