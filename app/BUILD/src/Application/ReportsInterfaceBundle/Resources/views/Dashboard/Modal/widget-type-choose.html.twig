@@ -64,16 +64,18 @@
         </div>
         <!-- needs js to fit verticaly to it's container -->
         <div class="popup-stat-preview">
-            <div class="stat-preview-header">Chart Preview</div>
+            <div class="stat-preview-header box-header">Chart Preview</div>
             <div class="stat-preview" ng-if="widgetPreview && widgetPreview.type=='graph' && widgetPreview.rendered_result">
-                <dashboard-amcharts
-                        my-index="{{ ng_var('$index') }}"
-                        title="{{ ng_var('widgetPreview.title') }}"
-                        widget-id = "{{ ng_var('reportWidget.id') }}"
-                        chart-data = "{{ ng_var('widgetPreview.rendered_result') }}"
-                        render-type = "test"
-                        chtype="graph"
-                />
+                <div>
+                    <dashboard-amcharts
+                            my-index="{{ ng_var('$index') }}"
+                            title="{{ ng_var('widgetPreview.title') }}"
+                            widget-id = "{{ ng_var('reportWidget.id') }}"
+                            chart-data = "{{ ng_var('widgetPreview.rendered_result') }}"
+                            render-type = "test"
+                            chtype="graph"
+                    />
+                </div>
             </div>
             <div class="stat-preview" ng-if="widgetPreview && widgetPreview.type=='table' && widgetPreview.rendered_result">
                 <dashboard-table
