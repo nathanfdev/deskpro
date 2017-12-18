@@ -19,7 +19,7 @@ Feature: Articles commenting
     When I fill in "Email" with "chris@deskpro.com"
     And I press "Save Comment"
     Then I should see a "success" flash message with the phrase "portal.flashes.guest_content_must_verify"
-    And I should receive an email with the subject phrase "portal.email_subjects.validate-email"
+    And I should receive an email on "chris@deskpro.com" with the subject phrase "portal.email_subjects.validate-email"
     When I click the email verification link
     Then I should see a "success" flash message with the phrase "portal.flashes.comment_thank_you"
     And I should be on the set password page
