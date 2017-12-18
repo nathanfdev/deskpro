@@ -34,7 +34,7 @@ Feature: Registration form custom fields
     And I press "Register"
     Then I should not see a form error with the phrase "This value should have"
 
-    When I click the email verification link
+    When I click the email verification link received on "user@deskpro.dev"
     And I go to "/profile"
     Then the "person_profile[{text_field}][data]" field should contain "12345"
 

@@ -23,8 +23,8 @@ Feature: User Profile
     When I fill in "Email" with "new@email.com"
     And I press "Save"
     Then I should see a "success" flash message with the phrase "portal.flashes.user_add_email_verify"
-    And I should receive an email with the subject phrase "portal.email_subjects.validate-email"
-    When I click the email verification link
+    And I should receive an email on "new@email.com" with the subject phrase "portal.email_subjects.validate-email"
+    When I click the email verification link received on "new@email.com"
     Then I should see a "success" flash message with the phrase "portal.flashes.user_add_email_verified"
     And I should be on "/profile/emails"
 
