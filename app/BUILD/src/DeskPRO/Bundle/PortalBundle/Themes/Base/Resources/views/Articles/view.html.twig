@@ -14,9 +14,13 @@
         <div class="header-buttons">
           {% show kb_subscription_link %}
           {% if can_share %}
-            <a href="{{ path('portal_articles_share', {slug: article.slug}) }}" class="share-button"><span>{{ phrase('portal.general.btn-share') }}</span> <i class="fa fa-share"></i></a>
+            <a href="{{ path('portal_articles_share', {slug: article.slug}) }}" class="share-button" rel="noindex, nofollow">
+              <span>{{ phrase('portal.general.btn-share') }}</span> <i class="fa fa-share"></i>
+            </a>
           {%  endif %}
-          <a href="{{ path('portal_articles_pdf', {slug: article.slug}) }}"><span>{{ phrase('portal.general.btn-download-pdf') }}</span> <i class="fa fa-file-pdf-o"></i></a>
+          <a href="{{ path('portal_articles_pdf', {slug: article.slug}) }}">
+            <span>{{ phrase('portal.general.btn-download-pdf') }}</span> <i class="fa fa-file-pdf-o"></i>
+          </a>
         </div>
       </div>
 
