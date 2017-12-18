@@ -246,6 +246,25 @@ class GenericContext extends BasePortalContext
     }
 
     /**
+     * @When I click the email verification link received on :who
+     *
+     * @param $who
+     */
+    public function iClickTheEmailVerificationLinkReceivedOn($who)
+    {
+        if (strpos($who, '@') === false) {
+            $email = $this->get('user_details')->getEmail($who);
+        } else {
+            $email = $who;
+        }
+
+        $link = $this->getFirstLinkInLastEmail($email);
+        $url  = parse_url($link);
+
+        $this->getSession()->visit($url['path']);
+    }
+
+    /**
      * @Given the :type root category ":name" exists
      */
     public function categoryExists($type, $title)
@@ -365,9 +384,9 @@ class GenericContext extends BasePortalContext
         return $this->get('subscriptions_helper')->isSubscribedContent($content, $person);
     }
 
-    protected function getFirstLinkInLastEmail()
+    protected function getFirstLinkInLastEmail($email = null)
     {
-        $email_data = $this->getLastEmailData();
+        $email_data = $this->getLastEmailData($email);
 
         $regex = '/https?\:\/\/[^\" \s]+/i';
         if (preg_match($regex, $email_data['body'], $matches)) {
