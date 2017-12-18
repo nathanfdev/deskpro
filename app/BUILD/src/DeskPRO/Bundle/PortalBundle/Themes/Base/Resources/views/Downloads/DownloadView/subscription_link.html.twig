@@ -1,5 +1,5 @@
 {% if brand_setting('user.downloads_subscriptions') %}
-    <a href="{{ portal_path(file, 'toggle_subscription') }}" class="post-link">
+    <a href="{{ portal_path(file, 'toggle_subscription') }}" class="post-link" rel="noindex, nofollow">
         {% if is_subscribed %}
             {{ phrase('portal.general.btn-unsubscribe') }}
         {% else %}

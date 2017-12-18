@@ -1,5 +1,5 @@
 {% if brand_setting('user.news_subscriptions') %}
-    <a href="{{ path('portal_news_root_category_toggle_subscription') }}" class="post-link">
+    <a href="{{ path('portal_news_root_category_toggle_subscription') }}" class="post-link" rel="noindex, nofollow">
       {% if is_subscribed %}
         {{ phrase('portal.general.btn-unsubscribe') }}
       {% else %}
