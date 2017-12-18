@@ -276,12 +276,12 @@ DeskPRO.Agent.PageFragment.Page.Ticket = new Orb.Class({
         DeskPRO_Window.removePage(this);
       }
     }).bind(this);
-		DeskPRO_Window.getMessageBroker().addMessageListener('tickets.deleted', this.deletedTicketMessageListener, this.pageUid);
+		DeskPRO_Window.getMessageBroker().addMessageListener('tickets.deleted', this.deletedTicketMessageListener, null, [this.OBJ_ID]);
 
 		this.reloadListener = function (info) {
       self.getReplyTextArea().trigger('dp_autosave_trigger');
     };
-		DeskPRO_Window.getMessageBroker().addMessageListener('agent.ui.reload', this.reloadListener);
+		DeskPRO_Window.getMessageBroker().addMessageListener('agent.ui.reload', this.reloadListener, null, [this.OBJ_ID]);
 
 		this.lockedStatusListener = function(info) {
       if (self.meta.ticket_id != info.ticket_id) return;
@@ -3748,7 +3748,7 @@ DeskPRO.Agent.PageFragment.Page.Ticket = new Orb.Class({
           });
         }
       };
-			DeskPRO_Window.getMessageBroker().addMessageListener('agent.ticket-sla-updated', this.slaUpdatedListener, this.pageUid);
+			DeskPRO_Window.getMessageBroker().addMessageListener('agent.ticket-sla-updated', this.slaUpdatedListener, null, [this.OBJ_ID]);
 		}
 	},
 
