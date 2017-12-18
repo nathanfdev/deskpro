@@ -76,6 +76,10 @@ class mPdfRenderer implements PdfRendererInterface
             'margin_footer'     => 10,
             'orientation'       => 'P',
             'tempDir'           => $appEnv->getUserTmpDir(),
+            // set two below options to properly set fonts for CJK languages
+            // https://mpdf.github.io/fonts-languages/choosing-a-configuration-v7-x.html#3-languagesscripts-which-require-special-fonts
+            'autoScriptToLang' => true,
+            'autoLangToFont'   => true,
             ]
         );
 

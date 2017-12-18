@@ -103,6 +103,7 @@ class PortalSupportExtension extends \Twig_Extension
             new \Twig_SimpleFunction('is_impersonating', [$this, 'isImpersonating']),
             new \Twig_SimpleFunction('is_guest', [$this, 'isGuest']),
             new \Twig_SimpleFunction('is_page_*', [$this, 'pageIsCheck']),
+            new \Twig_SimpleFunction('is_pdf_mode', [$this, 'isPdfMode']),
             new \Twig_SimpleFunction('col_count', [$this, 'countTruthy']),
             new \Twig_SimpleFunction('has_permission', [$this, 'hasPermission']),
             new \Twig_SimpleFunction('get_ordered_tabs', [$this, 'getOrderedTabs']),
@@ -479,6 +480,27 @@ class PortalSupportExtension extends \Twig_Extension
         }
 
         return false;
+    }
+
+    /**
+     * Check if downloading PDF.
+     *
+     * @return bool
+     */
+    public function isPdfMode()
+    {
+        try {
+            $r = $this->container->get('request_stack')->getMasterRequest();
+        } catch (\Exception $e) {
+            $r = null;
+        }
+
+        if (!$r || !($route = $r->attributes->get('_route'))) {
+            return false;
+        }
+
+        // route name example portal_articles_pdf:
+        return preg_match('#^portal_.+_pdf$#', $route);
     }
 
     /**
