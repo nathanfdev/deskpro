@@ -20,6 +20,7 @@ Orb.Util.Events = {
 
 	addEvent: function(type, fn, context, tags, beginning){
 
+    tags = tags || [];
 		this.__initEventsObj();
 
 		type = this.normalizeEventName(type);
@@ -44,12 +45,12 @@ Orb.Util.Events = {
 		}
 
 		if (context && context.OBJ_ID) {
-			tags = (tags || []).push(context.OBJ_ID);
+			tags.push(context.OBJ_ID);
 		} else if (fn.OBJ_ID) {
-			tags = (tags || []).push(fn.OBJ_ID);
+			tags.push(fn.OBJ_ID);
 		}
 
-		if (tags) {
+		if (tags && tags.length) {
 			for (var i = 0; i < tags.length; i++) {
 				if (!this.__events_tagged[tags[i]]) {
 					this.__events_tagged[tags[i]] = [];
@@ -130,10 +131,6 @@ Orb.Util.Events = {
 
 		if (hasChange) {
 			this.__events[type] = newFns;
-
-			if (!this.__preventCleanupTagged) {
-				this.__cleanupTaggedEvents();
-			}
 		}
 
 		return this;
@@ -162,28 +159,22 @@ Orb.Util.Events = {
 		});
 
 		this.__preventCleanupTagged = false;
-		this.__cleanupTaggedEvents();
 		return this;
 	},
 
 	removeTaggedEvents: function(tag) {
 		if (!this.__events_tagged[tag]) return;
-
+		
 		this.__preventCleanupTagged = true;
 
 		Array.each(this.__events_tagged[tag], function (x) {
 			this.removeEvent(x[0], x[1], x[2]);
 		}, this);
 
-		this.__preventCleanupTagged = false;
-		this.__cleanupTaggedEvents();
-	},
+    this.__events_tagged[tag] = null;
+    delete this.__events_tagged[tag];
 
-	__cleanupTaggedEvents: function() {
-		Object.each(this.__events_tagged, function(tag_fns, tag) {
-			var newTaggedFns = [];
-      this.__events_tagged[tag] = newTaggedFns;
-		}, this);
+		this.__preventCleanupTagged = false;
 	},
 
 	destroyEvents: function() {

@@ -3246,13 +3246,13 @@ table {
 }
 
 
-      .overflow, a.overflow {
-        @include whitespace;
-      }
+.overflow, a.overflow {
+  @include whitespace;
+}
 
-      &.use-min-width {
-        min-width: 125px;
-      }
+.use-min-width {
+  min-width: 125px;
+}
 
 // Date tag for news list
 .date-tag {
