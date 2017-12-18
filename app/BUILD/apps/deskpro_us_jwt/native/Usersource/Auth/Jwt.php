@@ -32,6 +32,7 @@
 
 namespace deskpro_us_jwt\Usersource\Auth;
 
+use Firebase\JWT\JWT as BaseJWT;
 use League\Url\Url;
 use Orb\Auth\Adapter;
 use Orb\Auth\Adapter\AbstractCallbackAdatper;
@@ -194,11 +195,11 @@ class Jwt extends AbstractCallbackAdatper implements Adapter\SsoCapableInterface
                 throw new \InvalidArgumentException('Missing `jwt` (token) in callback data');
             }
 
-            $jwt           = $callback_data['jwt'];
-            $secret        = $this->options->get('secret');
-            \JWT::$leeway  = 60 * 15; // give 15 minutes of "leeway" around the token expiration
-            $payload       = \JWT::decode($jwt, $secret, [$this->options->get('algo', 'HS256')]);
-            $payload_array = Arrays::fromStdClass($payload);
+            $jwt             = $callback_data['jwt'];
+            $secret          = $this->options->get('secret');
+            BaseJWT::$leeway = 60 * 15; // give 15 minutes of "leeway" around the token expiration
+            $payload         = BaseJWT::decode($jwt, $secret, [$this->options->get('algo', 'HS256')]);
+            $payload_array   = Arrays::fromStdClass($payload);
 
             if (empty($payload_array['email'])) {
                 throw new \InvalidArgumentException('Missing required `email` in payload data');
