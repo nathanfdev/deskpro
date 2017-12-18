@@ -499,7 +499,7 @@ class PortalSupportExtension extends \Twig_Extension
             return false;
         }
 
-        // route name example portal_articles_pdf:
+        // route name example: `portal_articles_pdf`
         return preg_match('#^portal_.+_pdf$#', $route);
     }
 

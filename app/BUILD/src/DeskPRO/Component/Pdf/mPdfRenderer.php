@@ -79,7 +79,7 @@ class mPdfRenderer implements PdfRendererInterface
             // set two below options to properly set fonts for CJK languages
             // https://mpdf.github.io/fonts-languages/choosing-a-configuration-v7-x.html#3-languagesscripts-which-require-special-fonts
             'autoScriptToLang' => true,
-            'autoLangToFont'   => true,
+            'autoLangToFont'   => true
             ]
         );
 
