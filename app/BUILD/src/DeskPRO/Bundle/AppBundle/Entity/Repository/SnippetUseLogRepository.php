@@ -29,10 +29,18 @@
 namespace DeskPRO\Bundle\AppBundle\Entity\Repository;
 
 use Application\DeskPRO\Entity\TicketMessage;
-use Doctrine\ORM\EntityRepository;
+use Application\DeskPRO\EntityRepository\AbstractEntityRepository;
 
-class SnippetUseLogRepository extends EntityRepository
+/**
+ * Class SnippetUseLogRepository.
+ */
+class SnippetUseLogRepository extends AbstractEntityRepository
 {
+    /**
+     * @param TicketMessage $ticketMessage
+     *
+     * @return array
+     */
     public function getLogsByTicketMessage(TicketMessage $ticketMessage)
     {
         $qb = $this->createQueryBuilder('s');

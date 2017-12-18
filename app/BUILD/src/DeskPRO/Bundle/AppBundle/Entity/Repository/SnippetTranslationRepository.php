@@ -29,9 +29,12 @@
 namespace DeskPRO\Bundle\AppBundle\Entity\Repository;
 
 use Application\DeskPRO\Entity\Blob;
-use Doctrine\ORM\EntityRepository;
+use Application\DeskPRO\EntityRepository\AbstractEntityRepository;
 
-class SnippetTranslationRepository extends EntityRepository
+/**
+ * Class SnippetTranslationRepository.
+ */
+class SnippetTranslationRepository extends AbstractEntityRepository
 {
     /**
      * @param Blob $blob
