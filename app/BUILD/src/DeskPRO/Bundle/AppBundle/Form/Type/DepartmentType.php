@@ -67,8 +67,12 @@ class DepartmentType extends AbstractType
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
         $builder
-            ->add('title', TextType::class)
-            ->add('user_title', TextType::class)
+            ->add('title', TextType::class, [
+                'required' => true,
+            ])
+            ->add('user_title', TextType::class, [
+                'required' => false,
+            ])
             ->add('parent', EntityType::class, [
                 'class'         => Department::class,
                 'required'      => false,
@@ -82,15 +86,17 @@ class DepartmentType extends AbstractType
                     ;
                 },
             ])
-            ->add('avatar', BlobAuthType::class)
+            ->add('avatar', BlobAuthType::class, [
+                'required' => false,
+            ])
             ->add('display_order', IntegerType::class, [
                 'empty_data' => '0',
+                'required'   => false,
             ])
-            ->add('is_tickets_enabled', ApiBooleanType::class)
-            ->add('is_chat_enabled', ApiBooleanType::class)
             ->add('brands', EntityType::class, [
                 'class'    => Brand::class,
                 'multiple' => true,
+                'required' => false,
             ])
         ;
 
@@ -123,9 +129,11 @@ class DepartmentType extends AbstractType
         $data = $form->getData();
 
         if ($type === 'tickets') {
-            $data->is_tickets_enabled = true;
+            $data->setIsTicketsEnabled(true);
+            $data->setIsChatEnabled(false);
         } else {
-            $data->is_chat_enabled = true;
+            $data->setIsTicketsEnabled(false);
+            $data->setIsChatEnabled(true);
         }
 
         if (!count($data->getBrands())) {

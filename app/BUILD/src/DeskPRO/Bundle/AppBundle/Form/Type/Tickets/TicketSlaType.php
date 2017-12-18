@@ -51,9 +51,11 @@ class TicketSlaType extends AbstractType
     {
         $builder
             ->add('sla', EntityType::class, [
-                'class' => Sla::class,
+                'class'    => Sla::class,
+                'required' => true,
             ])
             ->add('sla_status', ChoiceType::class, [
+                'required'          => true,
                 'choices_as_values' => true,
                 'choices'           => [
                     TicketSla::STATUS_OK,
@@ -64,7 +66,7 @@ class TicketSlaType extends AbstractType
         ;
 
         $builder->addEventSubscriber(new TicketDisableAutoProcessListener());
-        $builder->addEventListener(FormEvents::PRE_SUBMIT, [$this, 'onSetRelations']);
+        $builder->addEventListener(FormEvents::PRE_SUBMIT, [$this, 'onPreSubmit']);
     }
 
     /**
@@ -82,9 +84,11 @@ class TicketSlaType extends AbstractType
     }
 
     /**
+     * @internal
+     *
      * @param FormEvent $event
      */
-    public function onSetRelations(FormEvent $event)
+    public function onPreSubmit(FormEvent $event)
     {
         $form = $event->getForm();
         $data = $form->getData();

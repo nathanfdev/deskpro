@@ -68,6 +68,7 @@ class OrganizationMemberType extends AbstractType
         $builder
             ->add('person', EntityType::class, [
                 'mapped'      => false,
+                'required'    => true,
                 'class'       => Person::class,
                 'constraints' => [
                     new Assert\NotBlank(),
@@ -79,7 +80,7 @@ class OrganizationMemberType extends AbstractType
             ])
         ;
 
-        $builder->get('person')->addEventListener(FormEvents::PRE_SUBMIT, [$this, 'onSetOrganization']);
+        $builder->get('person')->addEventListener(FormEvents::PRE_SUBMIT, [$this, 'onPreSubmit']);
     }
 
     /**
@@ -99,7 +100,7 @@ class OrganizationMemberType extends AbstractType
     /**
      * @param FormEvent $event
      */
-    public function onSetOrganization(FormEvent $event)
+    public function onPreSubmit(FormEvent $event)
     {
         $parent = $event->getForm()->getParent();
         $config = $parent->getConfig();

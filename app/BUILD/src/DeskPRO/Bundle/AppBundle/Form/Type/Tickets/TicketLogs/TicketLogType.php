@@ -53,7 +53,9 @@ class TicketLogType extends AbstractType
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
         $builder
-            ->add('details', JsonArrayType::class)
+            ->add('details', JsonArrayType::class, [
+                'required' => false,
+            ])
             ->add('message_html', HtmlTextareaType::class, [
                 'mapped'   => false,
                 'required' => false,

@@ -57,11 +57,15 @@ class VoiceQueueType extends AbstractType
     {
         $builder
             ->add('account', EntityType::class, [
-                'class' => VoiceAccount::class,
+                'class'    => VoiceAccount::class,
+                'required' => true,
             ])
-            ->add('name', TextType::class)
+            ->add('name', TextType::class, [
+                'required' => true,
+            ])
             ->add('agents', VoiceQueueAgentCollectionType::class, [
-                'queue' => $builder->getData(),
+                'queue'    => $builder->getData(),
+                'required' => true,
             ])
             ->add('greet_asset', VoiceAssetAuthType::class, [
                 'property_path' => 'greetAsset',
@@ -76,6 +80,7 @@ class VoiceQueueType extends AbstractType
                 'required'      => false,
             ])
             ->add('voicemail_department', EntityType::class, [
+                'required'      => false,
                 'property_path' => 'voicemailDepartment',
                 'class'         => Department::class,
                 'query_builder' => function (EntityRepository $er) {
@@ -83,17 +88,21 @@ class VoiceQueueType extends AbstractType
                 },
             ])
             ->add('voicemail_agent', EntityType::class, [
+                'required'      => false,
                 'property_path' => 'voicemailAgent',
                 'class'         => Person::class,
             ])
             ->add('voicemail_agent_team', EntityType::class, [
+                'required'      => false,
                 'property_path' => 'voicemailAgentTeam',
                 'class'         => AgentTeam::class,
             ])
             ->add('voicemail_timeout', IntegerType::class, [
+                'required'      => false,
                 'property_path' => 'voicemailTimeout',
             ])
             ->add('routing_model', ChoiceType::class, [
+                'required'          => true,
                 'property_path'     => 'routingModel',
                 'choices_as_values' => true,
                 'choices'           => [
@@ -103,6 +112,7 @@ class VoiceQueueType extends AbstractType
                 ],
             ])
             ->add('max_queue_size', IntegerType::class, [
+                'required'      => true,
                 'property_path' => 'maxQueueSize',
             ])
         ;

@@ -39,6 +39,9 @@ use Symfony\Component\Form\FormEvent;
 use Symfony\Component\Form\FormEvents;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 
+/**
+ * Class UpdaterSettingsType.
+ */
 class UpdaterSettingsType extends AbstractType
 {
     /**
@@ -47,10 +50,19 @@ class UpdaterSettingsType extends AbstractType
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
         $builder
-            ->add('is_enabled', ApiBooleanType::class)
-            ->add('interval_days', NumberType::class)
-            ->add('time_of_day', TextType::class)
-            ->add('timezone', TimezoneType::class);
+            ->add('is_enabled', ApiBooleanType::class, [
+                'required' => false,
+            ])
+            ->add('interval_days', NumberType::class, [
+                'required' => false,
+            ])
+            ->add('time_of_day', TextType::class, [
+                'required' => false,
+            ])
+            ->add('timezone', TimezoneType::class, [
+                'required' => false,
+            ])
+        ;
 
         $builder->get('timezone')->addEventListener(FormEvents::PRE_SET_DATA, function (FormEvent $event) {
             $data = $event->getData();

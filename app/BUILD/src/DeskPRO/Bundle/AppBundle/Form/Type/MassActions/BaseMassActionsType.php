@@ -74,6 +74,7 @@ class BaseMassActionsType extends AbstractType
             ->add('ids', EntityType::class, [
                 'class'       => $subType->getConfig()->getOption('data_class'),
                 'multiple'    => true,
+                'required'    => true,
                 'constraints' => [
                     new Assert\Count(['min' => 1]),
                     new AppAssert\Permission([
@@ -82,7 +83,8 @@ class BaseMassActionsType extends AbstractType
                 ],
             ])
             ->add('params', $options['params_class'], [
-                'person' => $options['person'],
+                'required' => true,
+                'person'   => $options['person'],
             ])
         ;
 

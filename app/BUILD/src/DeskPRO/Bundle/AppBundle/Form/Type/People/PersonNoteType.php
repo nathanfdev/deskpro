@@ -47,8 +47,10 @@ class PersonNoteType extends AbstractType
      */
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
-        $builder->add('note', TextType::class);
-        $builder->addEventListener(FormEvents::POST_SUBMIT, [$this, 'onSetRelations'], 100);
+        $builder->add('note', TextType::class, [
+            'required' => true,
+        ]);
+        $builder->addEventListener(FormEvents::POST_SUBMIT, [$this, 'onPostSubmit'], 100);
     }
 
     /**
@@ -71,7 +73,7 @@ class PersonNoteType extends AbstractType
      *
      * @param FormEvent $event
      */
-    public function onSetRelations(FormEvent $event)
+    public function onPostSubmit(FormEvent $event)
     {
         $data   = $event->getData();
         $config = $event->getForm()->getConfig();

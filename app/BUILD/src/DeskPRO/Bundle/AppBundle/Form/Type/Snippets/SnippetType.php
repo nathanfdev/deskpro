@@ -44,6 +44,9 @@ use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 
+/**
+ * Class SnippetType.
+ */
 class SnippetType extends AbstractType
 {
     /**
@@ -53,7 +56,8 @@ class SnippetType extends AbstractType
     {
         $builder
             ->add('person', PersonAssignType::class, [
-                'person' => $options['person'],
+                'person'   => $options['person'],
+                'required' => false,
             ])
             ->add('title', TextType::class, [
                 'required' => true,
@@ -62,8 +66,10 @@ class SnippetType extends AbstractType
                 'labels_class'   => SnippetLabel::class,
                 'labels_owner'   => $builder->getData(),
                 'owner_property' => 'snippet',
+                'required'       => false,
             ])
             ->add('types', ChoiceType::class, [
+                'required'          => true,
                 'multiple'          => true,
                 'choices_as_values' => true,
                 'choices'           => [Snippet::TYPE_CHAT, Snippet::TYPE_TICKET],
@@ -78,12 +84,21 @@ class SnippetType extends AbstractType
                     'snippet'        => $builder->getData(),
                 ],
                 'by_reference' => false,
+                'required'     => false,
             ])
             ->add('shortcut_code', TextType::class)
-            ->add('is_draft', ApiBooleanType::class)
-            ->add('is_split', ApiBooleanType::class)
-            ->add('is_ownership_global', ApiBooleanType::class)
-            ->add('is_visible_global', ApiBooleanType::class)
+            ->add('is_draft', ApiBooleanType::class, [
+                'required' => false,
+            ])
+            ->add('is_split', ApiBooleanType::class, [
+                'required' => false,
+            ])
+            ->add('is_ownership_global', ApiBooleanType::class, [
+                'required' => false,
+            ])
+            ->add('is_visible_global', ApiBooleanType::class, [
+                'required' => false,
+            ])
             ->add('ownership_teams', EntityType::class, [
                 'class'    => AgentTeam::class,
                 'multiple' => true,
@@ -95,6 +110,9 @@ class SnippetType extends AbstractType
         ;
     }
 
+    /**
+     * {@inheritdoc}
+     */
     public function configureOptions(OptionsResolver $resolver)
     {
         $resolver

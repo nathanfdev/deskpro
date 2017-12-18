@@ -50,19 +50,23 @@ class TicketFilterPreferenceType extends AbstractType
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
         $builder
-            ->add('main_grouping', TextType::class, ['required' => false])
-            ->add('result_grouping', TextType::class, ['required' => false])
-            ->add('display_order', IntegerType::class, ['required' => false]);
+            ->add('main_grouping', TextType::class, [
+                'required' => false,
+            ])
+            ->add('result_grouping', TextType::class, [
+                'required' => false,
+            ])
+            ->add('display_order', IntegerType::class, [
+                'required' => false,
+            ])
+        ;
 
-        $builder->addEventListener(
-            FormEvents::PRE_SET_DATA,
-            function (FormEvent $event) {
-                $pref = $event->getData();
-                $config = $event->getForm()->getConfig();
-                $pref->setAgent($config->getOption('agent'));
-                $event->setData($pref);
-            }
-        );
+        $builder->addEventListener(FormEvents::PRE_SET_DATA, function (FormEvent $event) {
+            $pref = $event->getData();
+            $config = $event->getForm()->getConfig();
+            $pref->setAgent($config->getOption('agent'));
+            $event->setData($pref);
+        });
     }
 
     /**

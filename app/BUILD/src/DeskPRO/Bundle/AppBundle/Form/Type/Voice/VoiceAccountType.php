@@ -65,12 +65,15 @@ class VoiceAccountType extends AbstractType
         $builder
             ->add('account_name', TextType::class, [
                 'property_path' => 'accountName',
+                'required'      => true,
             ])
             ->add('account_sid', TextType::class, [
                 'property_path' => 'accountSid',
+                'required'      => true,
             ])
             ->add('auth_token', TextType::class, [
                 'property_path' => 'authToken',
+                'required'      => true,
             ])
         ;
 

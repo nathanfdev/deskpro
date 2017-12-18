@@ -45,7 +45,8 @@ class NewsCategoryType extends AbstractType
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
         $builder->add('parent', EntityType::class, [
-            'class' => NewsCategory::class,
+            'class'    => NewsCategory::class,
+            'required' => false,
         ]);
     }
 

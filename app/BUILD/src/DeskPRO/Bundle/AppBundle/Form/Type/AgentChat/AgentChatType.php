@@ -80,7 +80,8 @@ class AgentChatType extends AbstractType
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
         $builder->add('type', ChoiceType::class, [
-            'choices' => [
+            'required' => true,
+            'choices'  => [
                 AgentChat::TYPE_AGENT,
                 AgentChat::TYPE_TEAM,
                 AgentChat::TYPE_DEPARTMENT,
@@ -136,6 +137,7 @@ class AgentChatType extends AbstractType
                 $multiple = true;
             case AgentChat::TYPE_AGENT:
                 $form->add('participant', EntityType::class, [
+                    'required'    => true,
                     'mapped'      => false,
                     'multiple'    => $multiple,
                     'class'       => Person::class,
@@ -155,6 +157,7 @@ class AgentChatType extends AbstractType
                 break;
             case AgentChat::TYPE_TEAM:
                 $form->add('participant', EntityType::class, [
+                    'required'    => true,
                     'mapped'      => false,
                     'class'       => AgentTeam::class,
                     'choices'     => $person->getTeams(),
@@ -166,6 +169,7 @@ class AgentChatType extends AbstractType
                 break;
             case AgentChat::TYPE_DEPARTMENT:
                 $form->add('participant', EntityType::class, [
+                    'required'    => true,
                     'mapped'      => false,
                     'class'       => Department::class,
                     'choices'     => $this->departmentDataService->getTicketDepartmentsForPerson($person),

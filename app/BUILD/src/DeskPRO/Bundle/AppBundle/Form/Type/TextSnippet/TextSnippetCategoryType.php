@@ -53,8 +53,11 @@ class TextSnippetCategoryType extends AbstractType
                 'mapped'    => false,
                 'prop_name' => 'title',
                 'owner'     => $builder->getData(),
+                'required'  => true,
             ])
-            ->add('is_global', ApiBooleanType::class)
+            ->add('is_global', ApiBooleanType::class, [
+                'required' => false,
+            ])
         ;
 
         $builder->addEventListener(FormEvents::POST_SUBMIT, [$this, 'onSetTypeAndPerson']);

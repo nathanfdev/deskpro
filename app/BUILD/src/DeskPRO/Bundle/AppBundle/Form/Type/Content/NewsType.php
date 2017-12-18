@@ -47,7 +47,8 @@ class NewsType extends AbstractType
     {
         $builder
             ->add('category', EntityType::class, [
-                'class' => NewsCategory::class,
+                'class'    => NewsCategory::class,
+                'required' => false,
             ]);
     }
 
