@@ -28,6 +28,8 @@
 
 namespace Application\LegacyApiBundle\Controller;
 
+use Application\DeskPRO\Entity\ReportDashboardWidget as DashboardWidgetEntity;
+use Application\DeskPRO\Reports\ReportsWidgetService;
 use DeskPRO\Bundle\AppBundle\Annotation\ActionPermissions\Annotation\ApiModes;
 use Symfony\Component\HttpFoundation\Response;
 
@@ -46,6 +48,14 @@ class ReportsWidgetController extends AbstractController
      */
     public function downloadAction($id, $type)
     {
-        return $this->container->get('reports.widget.service')->outputDownloadContent($id, $type);
+        /* @var ReportsWidgetService */
+        $reportsWidget = $reportsWidget = $this->container->get('reports.widget.service');
+
+        $widget = $this->em->getRepository(DashboardWidgetEntity::class)->find($id);
+        if (!$widget) {
+            throw $this->createNotFoundException();
+        }
+
+        return $reportsWidget->outputDownloadContent($widget, $type);
     }
 }

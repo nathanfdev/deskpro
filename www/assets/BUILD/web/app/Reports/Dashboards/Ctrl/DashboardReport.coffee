@@ -3,6 +3,7 @@ define ['DeskPRO/Util/Arrays'], (Arrays) -> [
   '$state',
   '$stateParams',
   '$q',
+  '$http',
   '$modal',
   'DashboardsInfo',
   'DashboardWidgetService',
@@ -11,6 +12,7 @@ define ['DeskPRO/Util/Arrays'], (Arrays) -> [
    $state,
    $stateParams
    $q,
+   $http,
    $modal,
    DashboardsInfo,
    DashboardWidgetService,
@@ -97,6 +99,10 @@ define ['DeskPRO/Util/Arrays'], (Arrays) -> [
         .then () ->
           $scope.dashboard.reports_version_id++
           $scope.report.widgets.splice(index, 1)
+
+    $scope.download = (widget) ->
+      window.open($http.formatApiUrl('/reports/widget/download/' + widget.id + '/csv'))
+      return true
 
     ####################################################################################################################
     # MODAL HANDLERS

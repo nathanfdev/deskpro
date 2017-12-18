@@ -35,6 +35,7 @@ use Application\DeskPRO\Dpql\Statement\Display;
 use Application\DeskPRO\Entity\AgentTeam;
 use Application\DeskPRO\Entity\Department;
 use Application\DeskPRO\Entity\Person;
+use Application\DeskPRO\Entity\ReportDashboardWidget as DashboardWidgetEntity;
 use Application\DeskPRO\Entity\ReportWidget;
 use Application\DeskPRO\EntityRepository\AgentTeam as AgentTeamRepository;
 use Application\DeskPRO\EntityRepository\Department as DepartmentRepository;
@@ -220,16 +221,27 @@ class ReportsWidgetService
     }
 
     /**
-     * @param int    $id
-     * @param string $type
-     * @param mixed  $query
+     * @param DashboardWidgetEntity $widget
+     * @param string                $type
+     * @param mixed                 $query
      *
      * @return Response
      */
-    public function outputDownloadContent($id, $type, $query = null)
+    public function outputDownloadContent(DashboardWidgetEntity $widget, $type, $query = null)
     {
-        $report = $this->repository->find($id);
+        $report = $widget->getWidget();
         $params = $this->getParamsInput('params');
+
+        $widgetVariables = $widget->getVariables();
+        $reportVariables = $report->getVariables();
+
+        foreach ($reportVariables as &$variable) {
+            if (isset($widgetVariables[$variable['name']])) {
+                $variable['value'] = $widgetVariables[$variable['name']]['value'];
+            }
+        }
+
+        $params['variables'] = array_merge($report->getVariables(), $reportVariables);
 
         if ($query == 'from_request') {
             $parts = $this->in->getArrayValue('parts');

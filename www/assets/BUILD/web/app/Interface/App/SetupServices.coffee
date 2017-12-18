@@ -18,6 +18,7 @@ define [
   'Reports/App/Service/DashboardsInfo',
 
   'Reports/Main/Service/SessionPing',
+  'DeskPRO/Util/Util',
 ], (
   StateCollection,
   StateConfig,
@@ -40,6 +41,7 @@ define [
   Reports_App_Service_DashboardsInfo,
 
   Reports_Main_Service_SessionPing,
+  Util
 ) ->
   return (Module) ->
     Module.service('AppConfig', -> return new AppConfig)
@@ -111,6 +113,53 @@ define [
         responseError: (rejection) ->
           return $q.reject(rejection)
       }
+    ])
+
+    Module.config(['$provide', ($provide) ->
+      $provide.decorator('$http', ($delegate) ->
+
+        formatUrlObject = (obj, baseName = false) ->
+          url = ''
+          for own k, v of obj
+            if v == null then continue
+            if baseName
+              k = baseName + '[' + encodeURIComponent(k) + ']'
+            else
+              k = encodeURIComponent(k)
+
+            if Util.isObject(v)
+              url += formatUrlObject(v, k)
+            else
+              v = encodeURIComponent(v)
+              url += "#{k}=#{v}&"
+
+        $delegate.formatApiUrl = (endpoint, params, signed = true) ->
+          endpoint = endpoint.replace(/^\//, '')
+          url = "#{window.DP_BASE_API_URL}/#{endpoint}"
+
+          if params
+            url += if url.indexOf('?') == -1 then '?' else '&'
+            if Util.isArray(params)
+              for itm in params
+                k = encodeURIComponent(itm.name)
+                v = encodeURIComponent(itm.value)
+                url += "#{k}=#{v}&"
+            else
+              url += formatUrlObject(params)
+
+          url = url.replace(/&$/, '')
+
+          if signed then url = this.signUrl(url)
+
+          return url
+
+        $delegate.signUrl = (url) ->
+          url += if url.indexOf('?') == -1 then '?' else '&'
+          url += 'XDEBUG_SESSION_START=PHPSTORM&API-TOKEN=' + window.DP_API_TOKEN + '&SESSION-ID=' + window.DP_SESSION_ID + '&REQUEST-TOKEN=' + window.DP_REQUEST_TOKEN
+          return url
+
+        return $delegate
+      )
     ])
 
     ###
