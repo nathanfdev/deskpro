@@ -155,7 +155,7 @@ class PeopleContext extends BaseContext
     {
         $person = $this->findPersonByEmail($email);
         if ($person) {
-            if (!$person->can_admin) {
+            if (!$person->canAdmin()) {
                 throw new \Exception("Person $email already exists but not admin");
             }
         } else {
