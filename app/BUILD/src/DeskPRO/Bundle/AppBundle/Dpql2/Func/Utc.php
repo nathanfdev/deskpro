@@ -26,41 +26,33 @@
  * ~ Thanks, Everyone at Team DeskPRO
  */
 
-namespace Application\DeskPRO\Command;
+namespace DeskPRO\Bundle\AppBundle\Dpql2\Func;
 
-use Symfony\Bundle\FrameworkBundle\Command\ContainerAwareCommand;
-use Symfony\Component\Console\Input\InputInterface;
-use Symfony\Component\Console\Output\OutputInterface;
+use DeskPRO\Bundle\AppBundle\Dpql2\Exception;
+use DeskPRO\Bundle\AppBundle\Dpql2\ResultHandler;
+use DeskPRO\Bundle\AppBundle\Dpql2\SqlSelect;
+use DeskPRO\Bundle\AppBundle\Dpql2\Statement\SelectPart;
 
 /**
- * Class TestCommand.
+ * Ensures that all date references within this are not adjusted for the
+ * current user's time zone. This can be used to increase performance.
  */
-class TestCommand extends ContainerAwareCommand
+class Utc extends AbstractFunc
 {
     /**
      * {@inheritdoc}
      */
-    protected function configure()
+    public function prepare(array $arguments, SelectPart $statement, $section, array $stack, SqlSelect $select, ResultHandler $result)
     {
-        $this->setName('dp:test');
-    }
+        if (count($arguments) != 1) {
+            throw new Exception('UTC() can only accept 1 argument');
+        }
 
-    /**
-     * @return \Application\DeskPRO\DependencyInjection\DeskproContainer
-     */
-    public function getContainer()
-    {
-        return parent::getContainer();
-    }
+        $arg = reset($arguments);
 
-    /**
-     * {@inheritdoc}
-     */
-    protected function execute(InputInterface $input, OutputInterface $output)
-    {
-        echo __FILE__;
-        echo "\n";
+        $prepared = $arg->prepare($statement, $section, $stack, $select, $result);
+        $prepared->setName('UTC('.$prepared->name().')');
 
-        return 0;
+        return $prepared;
     }
 }

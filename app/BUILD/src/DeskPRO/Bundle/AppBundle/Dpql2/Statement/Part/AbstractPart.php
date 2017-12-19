@@ -26,41 +26,25 @@
  * ~ Thanks, Everyone at Team DeskPRO
  */
 
-namespace Application\DeskPRO\Command;
-
-use Symfony\Bundle\FrameworkBundle\Command\ContainerAwareCommand;
-use Symfony\Component\Console\Input\InputInterface;
-use Symfony\Component\Console\Output\OutputInterface;
+namespace DeskPRO\Bundle\AppBundle\Dpql2\Statement\Part;
 
 /**
- * Class TestCommand.
+ * Abstract base for parts of a DPQL statement.
  */
-class TestCommand extends ContainerAwareCommand
+abstract class AbstractPart implements DpqlStatementPartInterface
 {
     /**
-     * {@inheritdoc}
+     * Gets the part stack to pass to a child part (includes this object).
+     *
+     * @param AbstractPart[] $stack
+     *
+     * @return AbstractPart[]
      */
-    protected function configure()
+    public function getChildStack(array $stack)
     {
-        $this->setName('dp:test');
-    }
+        $childStack = $stack;
+        array_unshift($childStack, $this);
 
-    /**
-     * @return \Application\DeskPRO\DependencyInjection\DeskproContainer
-     */
-    public function getContainer()
-    {
-        return parent::getContainer();
-    }
-
-    /**
-     * {@inheritdoc}
-     */
-    protected function execute(InputInterface $input, OutputInterface $output)
-    {
-        echo __FILE__;
-        echo "\n";
-
-        return 0;
+        return $childStack;
     }
 }

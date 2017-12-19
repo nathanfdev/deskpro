@@ -26,41 +26,49 @@
  * ~ Thanks, Everyone at Team DeskPRO
  */
 
-namespace Application\DeskPRO\Command;
+namespace DeskPRO\Bundle\AppBundle\Dpql2\Func;
 
-use Symfony\Bundle\FrameworkBundle\Command\ContainerAwareCommand;
-use Symfony\Component\Console\Input\InputInterface;
-use Symfony\Component\Console\Output\OutputInterface;
+use DeskPRO\Bundle\AppBundle\Dpql2\Exception as DpqlException;
+use DeskPRO\Bundle\AppBundle\Dpql2\Statement\Part\AbstractPart;
+use DeskPRO\Bundle\AppBundle\Dpql2\Statement\Part\Number;
+use DeskPRO\Bundle\AppBundle\Dpql2\Statement\Part\StringPart;
+use Orb\Util\Strings;
 
 /**
- * Class TestCommand.
+ * Abstract base for all DPQL function calls.
  */
-class TestCommand extends ContainerAwareCommand
+abstract class AbstractFunc implements DpqlFunctionInterface
 {
     /**
      * {@inheritdoc}
      */
-    protected function configure()
+    public static function getName()
     {
-        $this->setName('dp:test');
+        $reflection = new \ReflectionClass(static::class);
+
+        $func = Strings::camelCaseToUnderscore($reflection->getShortName());
+        $func = strtoupper($func);
+
+        return $func;
     }
 
     /**
-     * @return \Application\DeskPRO\DependencyInjection\DeskproContainer
+     * Gets a literal value for the specified part.
+     *
+     * @param AbstractPart $part
+     *
+     * @throws \DeskPRO\Bundle\AppBundle\Dpql2\Exception
+     *
+     * @return mixed
      */
-    public function getContainer()
+    protected function _toLiteral(AbstractPart $part)
     {
-        return parent::getContainer();
-    }
-
-    /**
-     * {@inheritdoc}
-     */
-    protected function execute(InputInterface $input, OutputInterface $output)
-    {
-        echo __FILE__;
-        echo "\n";
-
-        return 0;
+        if ($part instanceof StringPart) {
+            return $part->string;
+        } elseif ($part instanceof Number) {
+            return $part->number;
+        } else {
+            throw new DpqlException('Only literal values may be used for DPQL func parameters.');
+        }
     }
 }

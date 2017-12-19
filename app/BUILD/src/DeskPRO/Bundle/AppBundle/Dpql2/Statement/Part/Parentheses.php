@@ -26,41 +26,48 @@
  * ~ Thanks, Everyone at Team DeskPRO
  */
 
-namespace Application\DeskPRO\Command;
+namespace DeskPRO\Bundle\AppBundle\Dpql2\Statement\Part;
 
-use Symfony\Bundle\FrameworkBundle\Command\ContainerAwareCommand;
-use Symfony\Component\Console\Input\InputInterface;
-use Symfony\Component\Console\Output\OutputInterface;
+use DeskPRO\Bundle\AppBundle\Dpql2\ResultHandler;
+use DeskPRO\Bundle\AppBundle\Dpql2\SqlSelect;
+use DeskPRO\Bundle\AppBundle\Dpql2\Statement\SelectPart;
 
 /**
- * Class TestCommand.
+ * Represents an expression where the user explicitly put in parentheses.
  */
-class TestCommand extends ContainerAwareCommand
+class Parentheses extends AbstractPart
 {
     /**
-     * {@inheritdoc}
+     * @var AbstractPart
      */
-    protected function configure()
+    public $expression;
+
+    /**
+     * Constructor.
+     *
+     * @param AbstractPart $expression
+     */
+    public function __construct(AbstractPart $expression)
     {
-        $this->setName('dp:test');
+        $this->expression = $expression;
     }
 
     /**
-     * @return \Application\DeskPRO\DependencyInjection\DeskproContainer
+     * {@inheritdoc}
      */
-    public function getContainer()
+    public function prepare(SelectPart $statement, $section, array $stack, SqlSelect $select, ResultHandler $result)
     {
-        return parent::getContainer();
+        $prepared = $this->expression->prepare($statement, $section, $stack, $select, $result);
+        $prepared->setName('('.$prepared->name().')');
+
+        return $prepared;
     }
 
     /**
      * {@inheritdoc}
      */
-    protected function execute(InputInterface $input, OutputInterface $output)
+    public function toDpql(SelectPart $statement, $section, array $stack)
     {
-        echo __FILE__;
-        echo "\n";
-
-        return 0;
+        return '('.$this->expression->toDpql($statement, $section, $stack).')';
     }
 }

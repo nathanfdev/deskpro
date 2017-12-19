@@ -26,41 +26,53 @@
  * ~ Thanks, Everyone at Team DeskPRO
  */
 
-namespace Application\DeskPRO\Command;
+namespace DeskPRO\Bundle\AppBundle\Dpql2\Statement\Part;
 
-use Symfony\Bundle\FrameworkBundle\Command\ContainerAwareCommand;
-use Symfony\Component\Console\Input\InputInterface;
-use Symfony\Component\Console\Output\OutputInterface;
+use DeskPRO\Bundle\AppBundle\Dpql2\Exception;
+use DeskPRO\Bundle\AppBundle\Dpql2\ResultHandler;
+use DeskPRO\Bundle\AppBundle\Dpql2\SqlSelect;
+use DeskPRO\Bundle\AppBundle\Dpql2\Statement\SelectPart;
 
 /**
- * Class TestCommand.
+ * Represents an alias (X AS Y) part of a DPQL statement.
  */
-class TestCommand extends ContainerAwareCommand
+class Alias extends AbstractPart
 {
     /**
-     * {@inheritdoc}
+     * @var AbstractPart
      */
-    protected function configure()
+    public $value;
+
+    /**
+     * @var string
+     */
+    public $alias;
+
+    /**
+     * Constructor.
+     *
+     * @param SelectPart|AbstractPart $value
+     * @param string                  $alias
+     */
+    public function __construct($value, $alias)
     {
-        $this->setName('dp:test');
+        $this->value = $value;
+        $this->alias = $alias;
     }
 
     /**
-     * @return \Application\DeskPRO\DependencyInjection\DeskproContainer
+     * {@inheritdoc}
      */
-    public function getContainer()
+    public function prepare(SelectPart $statement, $section, array $stack, SqlSelect $select, ResultHandler $result)
     {
-        return parent::getContainer();
+        throw new Exception('Alias prepare() cannot not be called');
     }
 
     /**
      * {@inheritdoc}
      */
-    protected function execute(InputInterface $input, OutputInterface $output)
+    public function toDpql(SelectPart $statement, $section, array $stack)
     {
-        echo __FILE__;
-        echo "\n";
-
-        return 0;
+        return $this->value->toDpql($statement, $section, $stack).' AS '.$statement->quoteDpqlString($this->alias);
     }
 }

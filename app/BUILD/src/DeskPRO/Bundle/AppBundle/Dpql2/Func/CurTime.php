@@ -26,41 +26,33 @@
  * ~ Thanks, Everyone at Team DeskPRO
  */
 
-namespace Application\DeskPRO\Command;
+namespace DeskPRO\Bundle\AppBundle\Dpql2\Func;
 
-use Symfony\Bundle\FrameworkBundle\Command\ContainerAwareCommand;
-use Symfony\Component\Console\Input\InputInterface;
-use Symfony\Component\Console\Output\OutputInterface;
+use DeskPRO\Bundle\AppBundle\Dpql2\Exception;
+use DeskPRO\Bundle\AppBundle\Dpql2\ResultHandler;
+use DeskPRO\Bundle\AppBundle\Dpql2\SqlSelect;
+use DeskPRO\Bundle\AppBundle\Dpql2\Statement\Part\Prepared;
+use DeskPRO\Bundle\AppBundle\Dpql2\Statement\SelectPart;
 
 /**
- * Class TestCommand.
+ * Gets the current time in HH:MM:SS in the current person's time zone.
  */
-class TestCommand extends ContainerAwareCommand
+class CurTime extends AbstractFunc
 {
     /**
      * {@inheritdoc}
      */
-    protected function configure()
+    public function prepare(array $arguments, SelectPart $statement, $section, array $stack, SqlSelect $select, ResultHandler $result)
     {
-        $this->setName('dp:test');
-    }
+        if (count($arguments)) {
+            throw new Exception('CURTIME() can only accept 0 arguments');
+        }
 
-    /**
-     * @return \Application\DeskPRO\DependencyInjection\DeskproContainer
-     */
-    public function getContainer()
-    {
-        return parent::getContainer();
-    }
+        $tzOffsetSeconds = $statement->getTimezoneOffsetForFunction($stack);
+        $interval        = ($tzOffsetSeconds ? " + INTERVAL $tzOffsetSeconds SECOND" : '');
 
-    /**
-     * {@inheritdoc}
-     */
-    protected function execute(InputInterface $input, OutputInterface $output)
-    {
-        echo __FILE__;
-        echo "\n";
+        $sql = "TIME(UTC_TIMESTAMP()$interval)";
 
-        return 0;
+        return new Prepared($sql, 'CURTIME()', false, 'time');
     }
 }

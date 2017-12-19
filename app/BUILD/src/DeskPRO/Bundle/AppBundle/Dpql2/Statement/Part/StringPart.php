@@ -26,41 +26,46 @@
  * ~ Thanks, Everyone at Team DeskPRO
  */
 
-namespace Application\DeskPRO\Command;
+namespace DeskPRO\Bundle\AppBundle\Dpql2\Statement\Part;
 
-use Symfony\Bundle\FrameworkBundle\Command\ContainerAwareCommand;
-use Symfony\Component\Console\Input\InputInterface;
-use Symfony\Component\Console\Output\OutputInterface;
+use DeskPRO\Bundle\AppBundle\Dpql2\ResultHandler;
+use DeskPRO\Bundle\AppBundle\Dpql2\SqlSelect;
+use DeskPRO\Bundle\AppBundle\Dpql2\Statement\SelectPart;
 
 /**
- * Class TestCommand.
+ * Represents a literal value in DPQL.
  */
-class TestCommand extends ContainerAwareCommand
+class StringPart extends AbstractPart
 {
     /**
-     * {@inheritdoc}
+     * @var string
      */
-    protected function configure()
+    public $string;
+
+    /**
+     * Constructor.
+     *
+     * @param string $string
+     */
+    public function __construct($string)
     {
-        $this->setName('dp:test');
+        $this->string = $string;
     }
 
     /**
-     * @return \Application\DeskPRO\DependencyInjection\DeskproContainer
+     * {@inheritdoc}
      */
-    public function getContainer()
-    {
-        return parent::getContainer();
+    public function prepare(
+        SelectPart $statement, $section, array $stack, SqlSelect $select, ResultHandler $result
+    ) {
+        return new Prepared($select->quoteForSql($this->string), $this->string, false, 'string');
     }
 
     /**
      * {@inheritdoc}
      */
-    protected function execute(InputInterface $input, OutputInterface $output)
+    public function toDpql(SelectPart $statement, $section, array $stack)
     {
-        echo __FILE__;
-        echo "\n";
-
-        return 0;
+        return $statement->quoteDpqlString($this->string);
     }
 }

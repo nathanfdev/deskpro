@@ -26,41 +26,38 @@
  * ~ Thanks, Everyone at Team DeskPRO
  */
 
-namespace Application\DeskPRO\Command;
-
-use Symfony\Bundle\FrameworkBundle\Command\ContainerAwareCommand;
-use Symfony\Component\Console\Input\InputInterface;
-use Symfony\Component\Console\Output\OutputInterface;
+namespace DeskPRO\Bundle\AppBundle\Dpql2\Placeholder;
 
 /**
- * Class TestCommand.
+ * Placeholder for the current week (first to last day), based on the current person's time zone.
  */
-class TestCommand extends ContainerAwareCommand
+class ThisWeek extends AbstractDateRange
 {
     /**
      * {@inheritdoc}
      */
-    protected function configure()
+    protected function getDateRange()
     {
-        $this->setName('dp:test');
-    }
+        $person = $this->getPerson();
+        $date   = $this->dpqlDate->getDate();
 
-    /**
-     * @return \Application\DeskPRO\DependencyInjection\DeskproContainer
-     */
-    public function getContainer()
-    {
-        return parent::getContainer();
-    }
+        // find start of this week
+        $currentDayOfWeek = $date->format('N');
+        $startAdjust      = $currentDayOfWeek - ($person ? $person->getStartOfWeek() : 1);
 
-    /**
-     * {@inheritdoc}
-     */
-    protected function execute(InputInterface $input, OutputInterface $output)
-    {
-        echo __FILE__;
-        echo "\n";
+        if ($startAdjust) {
+            if ($startAdjust > 0) {
+                $date->modify('-'.$startAdjust.' days');
+            } else {
+                $date->modify('-'.(7 + $startAdjust).' days');
+            }
+        }
 
-        return 0;
+        $start = $date->format('Y-m-d');
+
+        $date->modify('+6 days'); // 7 days will take us to the next start of the week
+        $end = $date->format('Y-m-d');
+
+        return ["$start to $end", "$start 00:00:00", "$end 23:59:59"];
     }
 }

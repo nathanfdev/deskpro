@@ -26,41 +26,21 @@
  * ~ Thanks, Everyone at Team DeskPRO
  */
 
-namespace Application\DeskPRO\Command;
-
-use Symfony\Bundle\FrameworkBundle\Command\ContainerAwareCommand;
-use Symfony\Component\Console\Input\InputInterface;
-use Symfony\Component\Console\Output\OutputInterface;
+namespace DeskPRO\Bundle\AppBundle\Dpql2\Placeholder;
 
 /**
- * Class TestCommand.
+ * Place holder for the previous year based on the current person's time zone.
  */
-class TestCommand extends ContainerAwareCommand
+class LastYear extends AbstractDateRange
 {
     /**
      * {@inheritdoc}
      */
-    protected function configure()
+    protected function getDateRange()
     {
-        $this->setName('dp:test');
-    }
+        $date = $this->dpqlDate->getDate();
+        $year = $date->format('Y') - 1;
 
-    /**
-     * @return \Application\DeskPRO\DependencyInjection\DeskproContainer
-     */
-    public function getContainer()
-    {
-        return parent::getContainer();
-    }
-
-    /**
-     * {@inheritdoc}
-     */
-    protected function execute(InputInterface $input, OutputInterface $output)
-    {
-        echo __FILE__;
-        echo "\n";
-
-        return 0;
+        return [$year, "$year-01-01 00:00:00", "$year-12-31 23:59:59"];
     }
 }

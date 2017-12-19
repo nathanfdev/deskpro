@@ -43,6 +43,7 @@ use DeskPRO\Bundle\AppBundle\DependencyInjection\AppExtension;
 use DeskPRO\Bundle\AppBundle\DependencyInjection\Compiler\AppSecretPass;
 use DeskPRO\Bundle\AppBundle\DependencyInjection\Compiler\DbalConnectionPass;
 use DeskPRO\Bundle\AppBundle\DependencyInjection\Compiler\DoctrineCacheClassPass;
+use DeskPRO\Bundle\AppBundle\DependencyInjection\Compiler\DpqlCompilerPass;
 use DeskPRO\Bundle\AppBundle\DependencyInjection\Compiler\FeaturesCompilerPass;
 use DeskPRO\Bundle\AppBundle\DependencyInjection\Compiler\FormOrderExtensionsPass;
 use DeskPRO\Bundle\AppBundle\DependencyInjection\Compiler\LazyWarmersPass;
@@ -55,7 +56,6 @@ use DeskPRO\Bundle\AppBundle\DependencyInjection\Compiler\TermEnginePass;
 use DeskPRO\Bundle\AppBundle\Security\Factory\AgentImpersonateFactory;
 use DeskPRO\Bundle\AppBundle\Security\Factory\DpFormLoginFactory;
 use DeskPRO\Bundle\AppBundle\Security\Factory\TransferSessionAuthFactory;
-use DeskPRO\Bundle\AppBundle\Webhooks;
 use Symfony\Component\Console\Application;
 use Symfony\Component\DependencyInjection\Compiler\PassConfig;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
@@ -90,6 +90,7 @@ class AppBundle extends Bundle
         $container->addCompilerPass(new FeaturesCompilerPass());
         $container->addCompilerPass(new NotificationCompilerPass());
         $container->addCompilerPass(new SerializerPass());
+        $container->addCompilerPass(new DpqlCompilerPass());
 
         $container->addCompilerPass(new Webhooks\DependencyInjection\CompilerPass());
 

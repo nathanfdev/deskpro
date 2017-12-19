@@ -26,41 +26,35 @@
  * ~ Thanks, Everyone at Team DeskPRO
  */
 
-namespace Application\DeskPRO\Command;
+namespace DeskPRO\Bundle\AppBundle\Dpql2\Func;
 
-use Symfony\Bundle\FrameworkBundle\Command\ContainerAwareCommand;
-use Symfony\Component\Console\Input\InputInterface;
-use Symfony\Component\Console\Output\OutputInterface;
+use DeskPRO\Bundle\AppBundle\Dpql2\Exception;
+use DeskPRO\Bundle\AppBundle\Dpql2\ResultHandler;
+use DeskPRO\Bundle\AppBundle\Dpql2\SqlSelect;
+use DeskPRO\Bundle\AppBundle\Dpql2\Statement\Part\Prepared;
+use DeskPRO\Bundle\AppBundle\Dpql2\Statement\SelectPart;
 
 /**
- * Class TestCommand.
+ * Converts the date within this from the person's time zone to UTC by undoing the adjustment.
  */
-class TestCommand extends ContainerAwareCommand
+class ToUtc extends AbstractFunc
 {
     /**
      * {@inheritdoc}
      */
-    protected function configure()
+    public function prepare(array $arguments, SelectPart $statement, $section, array $stack, SqlSelect $select, ResultHandler $result)
     {
-        $this->setName('dp:test');
-    }
+        if (count($arguments) != 1) {
+            throw new Exception('TO_UTC() can only accept 1 argument');
+        }
 
-    /**
-     * @return \Application\DeskPRO\DependencyInjection\DeskproContainer
-     */
-    public function getContainer()
-    {
-        return parent::getContainer();
-    }
+        $arg = reset($arguments);
 
-    /**
-     * {@inheritdoc}
-     */
-    protected function execute(InputInterface $input, OutputInterface $output)
-    {
-        echo __FILE__;
-        echo "\n";
+        $argPrepared = $arg->prepare($statement, $section, $stack, $select, $result);
 
-        return 0;
+        $tzOffsetSeconds = $statement->getTimezoneOffsetForFunction($stack);
+        $interval        = ($tzOffsetSeconds ? " - INTERVAL $tzOffsetSeconds SECOND" : '');
+
+        return new Prepared("({$argPrepared->sql()}$interval)", "TO_UTC({$argPrepared->name()})", false, 'datetime');
     }
 }

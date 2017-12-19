@@ -710,7 +710,7 @@ class DeskproContainer extends Container
     }
 
     /**
-     * @return \Application\DeskPRO\CustomFields\FieldManager
+     * @return \Application\DeskPRO\CustomFields\OrganizationFieldManager
      */
     public function getOrgFieldManager()
     {

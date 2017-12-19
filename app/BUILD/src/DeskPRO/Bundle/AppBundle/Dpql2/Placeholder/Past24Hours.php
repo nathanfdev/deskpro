@@ -26,41 +26,25 @@
  * ~ Thanks, Everyone at Team DeskPRO
  */
 
-namespace Application\DeskPRO\Command;
-
-use Symfony\Bundle\FrameworkBundle\Command\ContainerAwareCommand;
-use Symfony\Component\Console\Input\InputInterface;
-use Symfony\Component\Console\Output\OutputInterface;
+namespace DeskPRO\Bundle\AppBundle\Dpql2\Placeholder;
 
 /**
- * Class TestCommand.
+ * Place holder for the 24 hours, based on the current person's time zone.
  */
-class TestCommand extends ContainerAwareCommand
+class Past24Hours extends AbstractDateRange
 {
     /**
      * {@inheritdoc}
      */
-    protected function configure()
+    protected function getDateRange()
     {
-        $this->setName('dp:test');
-    }
+        $date  = $this->dpqlDate->getDate();
+        $now   = $date->format('Y-m-d H:i:s');
+        $today = $date->format('Y-m-d');
 
-    /**
-     * @return \Application\DeskPRO\DependencyInjection\DeskproContainer
-     */
-    public function getContainer()
-    {
-        return parent::getContainer();
-    }
+        $date->modify('-1 day');
+        $beginning = $date->format('Y-m-d H:i:s');
 
-    /**
-     * {@inheritdoc}
-     */
-    protected function execute(InputInterface $input, OutputInterface $output)
-    {
-        echo __FILE__;
-        echo "\n";
-
-        return 0;
+        return ["$beginning to $today", "$beginning", $now];
     }
 }

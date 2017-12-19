@@ -26,41 +26,26 @@
  * ~ Thanks, Everyone at Team DeskPRO
  */
 
-namespace Application\DeskPRO\Command;
-
-use Symfony\Bundle\FrameworkBundle\Command\ContainerAwareCommand;
-use Symfony\Component\Console\Input\InputInterface;
-use Symfony\Component\Console\Output\OutputInterface;
+namespace DeskPRO\Bundle\AppBundle\Dpql2\Placeholder;
 
 /**
- * Class TestCommand.
+ * Placeholder for the current month (first to last day), based on the current person's time zone.
  */
-class TestCommand extends ContainerAwareCommand
+class ThisMonth extends AbstractDateRange
 {
     /**
      * {@inheritdoc}
      */
-    protected function configure()
+    protected function getDateRange()
     {
-        $this->setName('dp:test');
-    }
+        $date  = $this->dpqlDate->getDate();
+        $start = $date->format('Y-m');
 
-    /**
-     * @return \Application\DeskPRO\DependencyInjection\DeskproContainer
-     */
-    public function getContainer()
-    {
-        return parent::getContainer();
-    }
+        $endDate = new \DateTime("$start-01", $date->getTimezone());
+        $endDate->modify('+1 month')->modify('-1 day');
 
-    /**
-     * {@inheritdoc}
-     */
-    protected function execute(InputInterface $input, OutputInterface $output)
-    {
-        echo __FILE__;
-        echo "\n";
+        $endDateValue = $endDate->format('Y-m-d');
 
-        return 0;
+        return ["$start-01 to $endDateValue", "$start-01 00:00:00", "$endDateValue 23:59:59"];
     }
 }

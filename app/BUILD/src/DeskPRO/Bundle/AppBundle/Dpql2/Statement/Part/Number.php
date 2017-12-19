@@ -26,41 +26,60 @@
  * ~ Thanks, Everyone at Team DeskPRO
  */
 
-namespace Application\DeskPRO\Command;
+namespace DeskPRO\Bundle\AppBundle\Dpql2\Statement\Part;
 
-use Symfony\Bundle\FrameworkBundle\Command\ContainerAwareCommand;
-use Symfony\Component\Console\Input\InputInterface;
-use Symfony\Component\Console\Output\OutputInterface;
+use DeskPRO\Bundle\AppBundle\Dpql2\Exception;
+use DeskPRO\Bundle\AppBundle\Dpql2\ResultHandler;
+use DeskPRO\Bundle\AppBundle\Dpql2\SqlSelect;
+use DeskPRO\Bundle\AppBundle\Dpql2\Statement\SelectPart;
 
 /**
- * Class TestCommand.
+ * Represents a number in DPQL.
  */
-class TestCommand extends ContainerAwareCommand
+class Number extends AbstractPart
 {
     /**
-     * {@inheritdoc}
+     * @var float|int
      */
-    protected function configure()
+    public $number;
+
+    /**
+     * Constructor.
+     *
+     * @param float|int $number
+     */
+    public function __construct($number)
     {
-        $this->setName('dp:test');
+        $this->number = $number;
     }
 
     /**
-     * @return \Application\DeskPRO\DependencyInjection\DeskproContainer
+     * {@inheritdoc}
      */
-    public function getContainer()
+    public function prepare(SelectPart $statement, $section, array $stack, SqlSelect $select, ResultHandler $result)
     {
-        return parent::getContainer();
+        if (!$stack && in_array($section, ['group', 'order'])) {
+            throw new Exception('Numbers may not be referenced directly at the root of the GROUP BY or ORDER BY sections.');
+        }
+
+        $value = strval($this->number + 0);
+
+        return new Prepared($value, $value, false, 'number');
     }
 
     /**
      * {@inheritdoc}
      */
-    protected function execute(InputInterface $input, OutputInterface $output)
+    public function toDpql(SelectPart $statement, $section, array $stack)
     {
-        echo __FILE__;
-        echo "\n";
+        return strval($this->number + 0);
+    }
 
-        return 0;
+    /**
+     * @return float|int
+     */
+    public function getValue()
+    {
+        return $this->number;
     }
 }

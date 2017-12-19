@@ -26,41 +26,55 @@
  * ~ Thanks, Everyone at Team DeskPRO
  */
 
-namespace Application\DeskPRO\Command;
+namespace DeskPRO\Bundle\AppBundle\Dpql2\Statement\Part;
 
-use Symfony\Bundle\FrameworkBundle\Command\ContainerAwareCommand;
-use Symfony\Component\Console\Input\InputInterface;
-use Symfony\Component\Console\Output\OutputInterface;
+use DeskPRO\Bundle\AppBundle\Dpql2\Exception;
+use DeskPRO\Bundle\AppBundle\Dpql2\ResultHandler;
+use DeskPRO\Bundle\AppBundle\Dpql2\SqlSelect;
+use DeskPRO\Bundle\AppBundle\Dpql2\Statement\SelectPart;
 
 /**
- * Class TestCommand.
+ * Represents an order and direction (ASC, DESC).
  */
-class TestCommand extends ContainerAwareCommand
+class OrderDir extends AbstractPart
 {
     /**
-     * {@inheritdoc}
+     * @var AbstractPart
      */
-    protected function configure()
+    public $order;
+
+    /**
+     * ASC or DESC.
+     *
+     * @var string
+     */
+    public $orderDir;
+
+    /**
+     * Constructor.
+     *
+     * @param AbstractPart $order
+     * @param string       $orderDir
+     */
+    public function __construct(AbstractPart $order, $orderDir)
     {
-        $this->setName('dp:test');
+        $this->order    = $order;
+        $this->orderDir = $orderDir;
     }
 
     /**
-     * @return \Application\DeskPRO\DependencyInjection\DeskproContainer
+     * {@inheritdoc}
      */
-    public function getContainer()
+    public function prepare(SelectPart $statement, $section, array $stack, SqlSelect $select, ResultHandler $result)
     {
-        return parent::getContainer();
+        throw new Exception('Order direction prepare() cannot not be called');
     }
 
     /**
      * {@inheritdoc}
      */
-    protected function execute(InputInterface $input, OutputInterface $output)
+    public function toDpql(SelectPart $statement, $section, array $stack)
     {
-        echo __FILE__;
-        echo "\n";
-
-        return 0;
+        return $this->order->toDpql($statement, $section, $stack).' '.$this->orderDir;
     }
 }

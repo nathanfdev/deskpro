@@ -26,41 +26,39 @@
  * ~ Thanks, Everyone at Team DeskPRO
  */
 
-namespace Application\DeskPRO\Command;
+namespace DpTest\DeskPRO\Bundle\AppBundle\Dpql2;
 
-use Symfony\Bundle\FrameworkBundle\Command\ContainerAwareCommand;
-use Symfony\Component\Console\Input\InputInterface;
-use Symfony\Component\Console\Output\OutputInterface;
+use DeskPRO\Bundle\AppBundle\Dpql2\Compiler;
+use DpTest\ApiTestCase;
 
 /**
- * Class TestCommand.
+ * Class AbstractCompilerTest.
  */
-class TestCommand extends ContainerAwareCommand
+abstract class AbstractCompilerTest extends ApiTestCase
 {
     /**
-     * {@inheritdoc}
+     * @var Compiler
      */
-    protected function configure()
-    {
-        $this->setName('dp:test');
-    }
-
-    /**
-     * @return \Application\DeskPRO\DependencyInjection\DeskproContainer
-     */
-    public function getContainer()
-    {
-        return parent::getContainer();
-    }
+    protected $compiler;
 
     /**
      * {@inheritdoc}
      */
-    protected function execute(InputInterface $input, OutputInterface $output)
+    public function setUp()
     {
-        echo __FILE__;
-        echo "\n";
+        $this->compiler = $this->getContainer()->get('dpql.compiler');
+    }
 
-        return 0;
+    /**
+     * @param string $dpql
+     * @param string $sql
+     */
+    protected function assertDpqlQuery($dpql, $sql)
+    {
+        $statement   = $this->compiler->compile($dpql, []);
+        $exceptedSql = preg_replace('/\s+/', ' ', $sql);
+        $actualSql   = preg_replace('/\s+/', ' ', $statement->toSql());
+
+        $this->assertEquals($exceptedSql, $actualSql);
     }
 }

@@ -26,41 +26,58 @@
  * ~ Thanks, Everyone at Team DeskPRO
  */
 
-namespace Application\DeskPRO\Command;
+namespace DeskPRO\Bundle\AppBundle\Dpql2\Statement\Part;
 
-use Symfony\Bundle\FrameworkBundle\Command\ContainerAwareCommand;
-use Symfony\Component\Console\Input\InputInterface;
-use Symfony\Component\Console\Output\OutputInterface;
+use DeskPRO\Bundle\AppBundle\Dpql2\ResultHandler;
+use DeskPRO\Bundle\AppBundle\Dpql2\SqlSelect;
+use DeskPRO\Bundle\AppBundle\Dpql2\Statement\SelectPart;
 
 /**
- * Class TestCommand.
+ * Class Exists.
  */
-class TestCommand extends ContainerAwareCommand
+class Exists extends AbstractPart
 {
     /**
-     * {@inheritdoc}
+     * @var SelectPart
      */
-    protected function configure()
+    public $subselect;
+
+    /**
+     * True = IN, false = NOT IN.
+     *
+     * @var bool
+     */
+    public $positive;
+
+    /**
+     * Constructor.
+     *
+     * @param SelectPart $subselect
+     * @param bool       $positive
+     */
+    public function __construct(SelectPart $subselect, $positive = true)
     {
-        $this->setName('dp:test');
+        $this->subselect = $subselect;
+        $this->positive  = $positive;
     }
 
     /**
-     * @return \Application\DeskPRO\DependencyInjection\DeskproContainer
+     * {@inheritdoc}
      */
-    public function getContainer()
+    public function prepare(SelectPart $statement, $section, array $stack, SqlSelect $select, ResultHandler $result)
     {
-        return parent::getContainer();
+        $this->subselect->prepare();
+
+        $not = ($this->positive ? '' : ' NOT');
+        $sql = "$not EXISTS (".$this->subselect->toSql().')';
+
+        return new Prepared($sql, "$not EXISTS subquery", false, 'boolean');
     }
 
     /**
      * {@inheritdoc}
      */
-    protected function execute(InputInterface $input, OutputInterface $output)
+    public function toDpql(SelectPart $statement, $section, array $stack)
     {
-        echo __FILE__;
-        echo "\n";
-
-        return 0;
     }
 }

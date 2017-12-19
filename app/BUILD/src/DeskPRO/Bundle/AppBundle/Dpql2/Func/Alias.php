@@ -26,41 +26,38 @@
  * ~ Thanks, Everyone at Team DeskPRO
  */
 
-namespace Application\DeskPRO\Command;
+namespace DeskPRO\Bundle\AppBundle\Dpql2\Func;
 
-use Symfony\Bundle\FrameworkBundle\Command\ContainerAwareCommand;
-use Symfony\Component\Console\Input\InputInterface;
-use Symfony\Component\Console\Output\OutputInterface;
+use DeskPRO\Bundle\AppBundle\Dpql2\Exception;
+use DeskPRO\Bundle\AppBundle\Dpql2\ResultHandler;
+use DeskPRO\Bundle\AppBundle\Dpql2\SqlSelect;
+use DeskPRO\Bundle\AppBundle\Dpql2\Statement\SelectPart;
 
 /**
- * Class TestCommand.
+ * This is used in SELECT/GROUP BY clauses to alias a column. This can be used in other clauses
+ * without triggering an error, unlike AS.
  */
-class TestCommand extends ContainerAwareCommand
+class Alias extends AbstractFunc
 {
     /**
      * {@inheritdoc}
      */
-    protected function configure()
+    public function prepare(array $arguments, SelectPart $statement, $section, array $stack, SqlSelect $select, ResultHandler $result)
     {
-        $this->setName('dp:test');
-    }
+        if (count($arguments) != 2) {
+            throw new Exception('ALIAS() can only accept 2 arguments');
+        }
 
-    /**
-     * @return \Application\DeskPRO\DependencyInjection\DeskproContainer
-     */
-    public function getContainer()
-    {
-        return parent::getContainer();
-    }
+        $childStack = $stack;
+        array_shift($childStack); // pop this off the stack - it doesn't exist to the children
 
-    /**
-     * {@inheritdoc}
-     */
-    protected function execute(InputInterface $input, OutputInterface $output)
-    {
-        echo __FILE__;
-        echo "\n";
+        $arg           = reset($arguments);
+        $format        = next($arguments);
+        $formatLiteral = $this->_toLiteral($format);
 
-        return 0;
+        $prepped = $arg->prepare($statement, $section, $childStack, $select, $result);
+        $prepped->setName($formatLiteral);
+
+        return $prepped;
     }
 }

@@ -26,41 +26,64 @@
  * ~ Thanks, Everyone at Team DeskPRO
  */
 
-namespace Application\DeskPRO\Command;
+namespace DeskPRO\Bundle\AppBundle\Dpql2\Renderer;
 
-use Symfony\Bundle\FrameworkBundle\Command\ContainerAwareCommand;
-use Symfony\Component\Console\Input\InputInterface;
-use Symfony\Component\Console\Output\OutputInterface;
+use Application\DeskPRO\App;
 
 /**
- * Class TestCommand.
+ * Renders DPQL results to Pdf.
  */
-class TestCommand extends ContainerAwareCommand
+class Pdf extends Html
 {
     /**
-     * {@inheritdoc}
+     * Gets the MIME content type for this type of output.
+     *
+     * @return string
      */
-    protected function configure()
+    public function getContentType()
     {
-        $this->setName('dp:test');
+        return 'application/pdf';
     }
 
     /**
-     * @return \Application\DeskPRO\DependencyInjection\DeskproContainer
+     * Gets the file extension for this type of output.
+     *
+     * @return string
      */
-    public function getContainer()
+    public function getExtension()
     {
-        return parent::getContainer();
+        return 'pdf';
     }
 
     /**
-     * {@inheritdoc}
+     * Render to the specified format and type.
+     *
+     * @return string
      */
-    protected function execute(InputInterface $input, OutputInterface $output)
+    public function render()
     {
-        echo __FILE__;
-        echo "\n";
+        $html = parent::render();
 
-        return 0;
+        $contentHtml = App::getTemplating()->render('DeskPRO:pdf_agent:report-builder.html.twig', [
+            'html'  => $html,
+            'title' => $this->_title,
+        ]);
+
+        $mpdf = App::$container->get('pdf_renderer');
+
+        return $mpdf->render($contentHtml);
+    }
+
+    /**
+     * Charts not supported in PDF. Returns false.
+     *
+     * @param string $type
+     * @param array  $rows
+     *
+     * @return string|bool
+     */
+    protected function _renderChart($type, array $rows)
+    {
+        return false;
     }
 }

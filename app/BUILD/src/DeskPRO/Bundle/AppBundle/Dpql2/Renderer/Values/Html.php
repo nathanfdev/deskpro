@@ -26,41 +26,48 @@
  * ~ Thanks, Everyone at Team DeskPRO
  */
 
-namespace Application\DeskPRO\Command;
-
-use Symfony\Bundle\FrameworkBundle\Command\ContainerAwareCommand;
-use Symfony\Component\Console\Input\InputInterface;
-use Symfony\Component\Console\Output\OutputInterface;
+namespace DeskPRO\Bundle\AppBundle\Dpql2\Renderer\Values;
 
 /**
- * Class TestCommand.
+ * Value renderer for HTML output.
  */
-class TestCommand extends ContainerAwareCommand
+class Html extends AbstractValues
 {
     /**
-     * {@inheritdoc}
+     * Renders a null value.
+     *
+     * @return string
      */
-    protected function configure()
+    protected function _renderNull()
     {
-        $this->setName('dp:test');
+        return '<span class="null">None</span>';
     }
 
     /**
-     * @return \Application\DeskPRO\DependencyInjection\DeskproContainer
+     * Renders a boolean value.
+     *
+     * @param bool $value
+     *
+     * @return string
      */
-    public function getContainer()
+    protected function _renderBoolean($value)
     {
-        return parent::getContainer();
+        if ($value) {
+            return '<span class="true">Y</span>';
+        } else {
+            return '<span class="false">N</span>';
+        }
     }
 
     /**
-     * {@inheritdoc}
+     * Escapes the value for direct output.
+     *
+     * @param string $value
+     *
+     * @return string
      */
-    protected function execute(InputInterface $input, OutputInterface $output)
+    public function escapeValue($value)
     {
-        echo __FILE__;
-        echo "\n";
-
-        return 0;
+        return htmlspecialchars($value);
     }
 }

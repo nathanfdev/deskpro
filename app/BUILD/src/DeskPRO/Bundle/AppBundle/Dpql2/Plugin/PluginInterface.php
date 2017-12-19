@@ -26,41 +26,43 @@
  * ~ Thanks, Everyone at Team DeskPRO
  */
 
-namespace Application\DeskPRO\Command;
+/**
+ * DeskPRO.
+ */
 
-use Symfony\Bundle\FrameworkBundle\Command\ContainerAwareCommand;
-use Symfony\Component\Console\Input\InputInterface;
-use Symfony\Component\Console\Output\OutputInterface;
+namespace DeskPRO\Bundle\AppBundle\Dpql2\Plugin;
+
+use DeskPRO\Bundle\AppBundle\Dpql2\ResultHandler;
+use DeskPRO\Bundle\AppBundle\Dpql2\SqlSelect;
 
 /**
- * Class TestCommand.
+ * Interface PluginInterface.
+ *
+ * SqlSelectContext plugin allows to hook into the DPQL processing at different points and add or modify various
+ * features.
  */
-class TestCommand extends ContainerAwareCommand
+interface PluginInterface
 {
     /**
-     * {@inheritdoc}
+     * @param SqlSelect $sql
      */
-    protected function configure()
-    {
-        $this->setName('dp:test');
-    }
+    public function provide(SqlSelect $sql);
 
     /**
-     * @return \Application\DeskPRO\DependencyInjection\DeskproContainer
+     * @return mixed
      */
-    public function getContainer()
-    {
-        return parent::getContainer();
-    }
+    public function beforeQuery();
 
     /**
-     * {@inheritdoc}
+     * @param array $results
+     *
+     * @return array Modified results
      */
-    protected function execute(InputInterface $input, OutputInterface $output)
-    {
-        echo __FILE__;
-        echo "\n";
+    public function afterQuery(array $results);
 
-        return 0;
-    }
+    /**
+     * @param ResultHandler $handler
+     * @param array         $results
+     */
+    public function resultHandlerCallback(ResultHandler $handler, array $results);
 }
