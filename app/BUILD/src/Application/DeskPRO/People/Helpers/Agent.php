@@ -217,7 +217,7 @@ class Agent extends \Application\DeskPRO\Domain\DomainObject implements \Orb\Hel
     /**
      * Check if the user is allowed to use a particular department.
      *
-     * @param int|Department $dep
+     * @param int|Entity\Department $dep
      *
      * @return bool
      */
