@@ -60,6 +60,7 @@ class TicketMessagesVoter extends AbstractTicketsVoter
         $ticket = $context->getParent();
 
         switch ($attribute) {
+            case PermissionGroupVoter::VIEW_LIST:
             case PermissionGroupVoter::VIEW:
                 return $this->getTicketChecker($user)->canView($ticket);
             case PermissionGroupVoter::CREATE:
