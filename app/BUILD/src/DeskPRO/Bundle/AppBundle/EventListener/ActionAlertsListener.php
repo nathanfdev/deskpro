@@ -103,7 +103,7 @@ class ActionAlertsListener implements EventSubscriberInterface
 
         $sql = <<<'SQL'
 SELECT * FROM `notify_action_alerts`
-WHERE `target_id` = :target_id 
+WHERE `target_id` = :target_id OR `target_id` = -100
   AND `id` > :last
 ORDER BY `id` ASC
 SQL;
