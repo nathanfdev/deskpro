@@ -1,0 +1,2325 @@
+State 0:
+          start ::= * select_query_part trailing_semicolon
+          start ::= * select_paren select_union trailing_semicolon
+          select_paren ::= * LEFT_PAREN select_query_part RIGHT_PAREN
+          select_query_part ::= * select_clause from_clause where_clause split_clause group_clause with_rollup_clause order_clause limit_clause
+          select_clause ::= * SELECT select_field select_fields_extra
+
+                    LEFT_PAREN shift  12
+                        SELECT shift  2
+                         start accept
+             select_query_part shift  53
+                  select_paren shift  54
+                 select_clause shift  49
+
+State 1:
+          select_subquery_part ::= * LEFT_PAREN select_clause from_clause where_clause order_clause RIGHT_PAREN
+          select_fields_extra ::= select_fields_extra COMMA * select_field
+          select_field ::= * select_subquery_part alias_optional
+          select_field ::= * expression alias_optional
+          select_field ::= * COLUMN_STAR
+          expression ::= * COLUMN OP_IN select_subquery_part
+          expression ::= * COLUMN OP_NOT OP_IN select_subquery_part
+          expression ::= * OP_EXISTS select_subquery_part
+          expression ::= * expression OP_EQ|OP_NE|OP_GT|OP_GTEQ|OP_LT|OP_LTEQ expression
+          expression ::= * expression OP_OR|OP_AND expression
+          expression ::= * expression OP_MINUS|OP_PLUS interval_expression
+          expression ::= * expression OP_MULTIPLY|OP_DIVIDE expression
+          expression ::= * expression OP_LIKE expression
+          expression ::= * expression OP_NOT OP_LIKE expression
+          expression ::= * expression OP_REGEXP expression
+          expression ::= * expression OP_NOT OP_REGEXP expression
+          expression ::= * expression OP_IN LEFT_PAREN expression comma_expressions_opt RIGHT_PAREN
+          expression ::= * expression OP_NOT OP_IN LEFT_PAREN expression comma_expressions_opt RIGHT_PAREN
+          expression ::= * OP_MINUS expression
+          expression ::= * OP_BANG|OP_NOT expression
+          expression ::= * LEFT_PAREN expression RIGHT_PAREN
+          expression ::= * LITERAL LEFT_PAREN func_args RIGHT_PAREN
+          expression ::= * COLUMN
+          expression ::= * LITERAL
+          expression ::= * QUOTED
+          expression ::= * PLACEHOLDER
+          expression ::= * VARIABLE
+          expression ::= * AT LITERAL
+          expression ::= * AT QUOTED
+          expression ::= * NUMBER
+          expression ::= * NULL
+
+                        OP_NOT shift  28
+                      OP_MINUS shift  29
+                       OP_BANG shift  28
+                    LEFT_PAREN shift  3
+                   COLUMN_STAR shift  97
+                       LITERAL shift  94
+                        QUOTED shift  122
+                        NUMBER shift  126
+                        COLUMN shift  72
+                     OP_EXISTS shift  37
+                   PLACEHOLDER shift  123
+                      VARIABLE shift  124
+                            AT shift  71
+                          NULL shift  128
+          select_subquery_part shift  46
+                  select_field shift  138
+                    expression shift  15
+
+State 2:
+          select_subquery_part ::= * LEFT_PAREN select_clause from_clause where_clause order_clause RIGHT_PAREN
+          select_clause ::= SELECT * select_field select_fields_extra
+          select_field ::= * select_subquery_part alias_optional
+          select_field ::= * expression alias_optional
+          select_field ::= * COLUMN_STAR
+          expression ::= * COLUMN OP_IN select_subquery_part
+          expression ::= * COLUMN OP_NOT OP_IN select_subquery_part
+          expression ::= * OP_EXISTS select_subquery_part
+          expression ::= * expression OP_EQ|OP_NE|OP_GT|OP_GTEQ|OP_LT|OP_LTEQ expression
+          expression ::= * expression OP_OR|OP_AND expression
+          expression ::= * expression OP_MINUS|OP_PLUS interval_expression
+          expression ::= * expression OP_MULTIPLY|OP_DIVIDE expression
+          expression ::= * expression OP_LIKE expression
+          expression ::= * expression OP_NOT OP_LIKE expression
+          expression ::= * expression OP_REGEXP expression
+          expression ::= * expression OP_NOT OP_REGEXP expression
+          expression ::= * expression OP_IN LEFT_PAREN expression comma_expressions_opt RIGHT_PAREN
+          expression ::= * expression OP_NOT OP_IN LEFT_PAREN expression comma_expressions_opt RIGHT_PAREN
+          expression ::= * OP_MINUS expression
+          expression ::= * OP_BANG|OP_NOT expression
+          expression ::= * LEFT_PAREN expression RIGHT_PAREN
+          expression ::= * LITERAL LEFT_PAREN func_args RIGHT_PAREN
+          expression ::= * COLUMN
+          expression ::= * LITERAL
+          expression ::= * QUOTED
+          expression ::= * PLACEHOLDER
+          expression ::= * VARIABLE
+          expression ::= * AT LITERAL
+          expression ::= * AT QUOTED
+          expression ::= * NUMBER
+          expression ::= * NULL
+
+                        OP_NOT shift  28
+                      OP_MINUS shift  29
+                       OP_BANG shift  28
+                    LEFT_PAREN shift  3
+                   COLUMN_STAR shift  97
+                       LITERAL shift  94
+                        QUOTED shift  122
+                        NUMBER shift  126
+                        COLUMN shift  72
+                     OP_EXISTS shift  37
+                   PLACEHOLDER shift  123
+                      VARIABLE shift  124
+                            AT shift  71
+                          NULL shift  128
+          select_subquery_part shift  46
+                  select_field shift  55
+                    expression shift  15
+
+State 3:
+          select_subquery_part ::= LEFT_PAREN * select_clause from_clause where_clause order_clause RIGHT_PAREN
+          select_clause ::= * SELECT select_field select_fields_extra
+          expression ::= * COLUMN OP_IN select_subquery_part
+          expression ::= * COLUMN OP_NOT OP_IN select_subquery_part
+          expression ::= * OP_EXISTS select_subquery_part
+          expression ::= * expression OP_EQ|OP_NE|OP_GT|OP_GTEQ|OP_LT|OP_LTEQ expression
+          expression ::= * expression OP_OR|OP_AND expression
+          expression ::= * expression OP_MINUS|OP_PLUS interval_expression
+          expression ::= * expression OP_MULTIPLY|OP_DIVIDE expression
+          expression ::= * expression OP_LIKE expression
+          expression ::= * expression OP_NOT OP_LIKE expression
+          expression ::= * expression OP_REGEXP expression
+          expression ::= * expression OP_NOT OP_REGEXP expression
+          expression ::= * expression OP_IN LEFT_PAREN expression comma_expressions_opt RIGHT_PAREN
+          expression ::= * expression OP_NOT OP_IN LEFT_PAREN expression comma_expressions_opt RIGHT_PAREN
+          expression ::= * OP_MINUS expression
+          expression ::= * OP_BANG|OP_NOT expression
+          expression ::= * LEFT_PAREN expression RIGHT_PAREN
+          expression ::= LEFT_PAREN * expression RIGHT_PAREN
+          expression ::= * LITERAL LEFT_PAREN func_args RIGHT_PAREN
+          expression ::= * COLUMN
+          expression ::= * LITERAL
+          expression ::= * QUOTED
+          expression ::= * PLACEHOLDER
+          expression ::= * VARIABLE
+          expression ::= * AT LITERAL
+          expression ::= * AT QUOTED
+          expression ::= * NUMBER
+          expression ::= * NULL
+
+                        OP_NOT shift  28
+                      OP_MINUS shift  29
+                       OP_BANG shift  28
+                    LEFT_PAREN shift  26
+                        SELECT shift  2
+                       LITERAL shift  94
+                        QUOTED shift  122
+                        NUMBER shift  126
+                        COLUMN shift  72
+                     OP_EXISTS shift  37
+                   PLACEHOLDER shift  123
+                      VARIABLE shift  124
+                            AT shift  71
+                          NULL shift  128
+                 select_clause shift  52
+                    expression shift  59
+
+State 4:
+          expression ::= * COLUMN OP_IN select_subquery_part
+          expression ::= * COLUMN OP_NOT OP_IN select_subquery_part
+          expression ::= * OP_EXISTS select_subquery_part
+          expression ::= * expression OP_EQ|OP_NE|OP_GT|OP_GTEQ|OP_LT|OP_LTEQ expression
+          expression ::= * expression OP_OR|OP_AND expression
+          expression ::= * expression OP_MINUS|OP_PLUS interval_expression
+          expression ::= expression OP_MINUS|OP_PLUS * interval_expression
+          interval_expression ::= * INTERVAL NUMBER LITERAL
+          interval_expression ::= * expression
+          expression ::= * expression OP_MULTIPLY|OP_DIVIDE expression
+          expression ::= * expression OP_LIKE expression
+          expression ::= * expression OP_NOT OP_LIKE expression
+          expression ::= * expression OP_REGEXP expression
+          expression ::= * expression OP_NOT OP_REGEXP expression
+          expression ::= * expression OP_IN LEFT_PAREN expression comma_expressions_opt RIGHT_PAREN
+          expression ::= * expression OP_NOT OP_IN LEFT_PAREN expression comma_expressions_opt RIGHT_PAREN
+          expression ::= * OP_MINUS expression
+          expression ::= * OP_BANG|OP_NOT expression
+          expression ::= * LEFT_PAREN expression RIGHT_PAREN
+          expression ::= * LITERAL LEFT_PAREN func_args RIGHT_PAREN
+          expression ::= * COLUMN
+          expression ::= * LITERAL
+          expression ::= * QUOTED
+          expression ::= * PLACEHOLDER
+          expression ::= * VARIABLE
+          expression ::= * AT LITERAL
+          expression ::= * AT QUOTED
+          expression ::= * NUMBER
+          expression ::= * NULL
+
+                        OP_NOT shift  28
+                      OP_MINUS shift  29
+                       OP_BANG shift  28
+                    LEFT_PAREN shift  26
+                       LITERAL shift  94
+                        QUOTED shift  122
+                        NUMBER shift  126
+                        COLUMN shift  72
+                     OP_EXISTS shift  37
+                      INTERVAL shift  77
+                   PLACEHOLDER shift  123
+                      VARIABLE shift  124
+                            AT shift  71
+                          NULL shift  128
+                    expression shift  63
+           interval_expression shift  132
+
+State 5:
+          expression ::= * COLUMN OP_IN select_subquery_part
+          expression ::= * COLUMN OP_NOT OP_IN select_subquery_part
+          expression ::= * OP_EXISTS select_subquery_part
+          expression ::= * expression OP_EQ|OP_NE|OP_GT|OP_GTEQ|OP_LT|OP_LTEQ expression
+          expression ::= * expression OP_OR|OP_AND expression
+          expression ::= * expression OP_MINUS|OP_PLUS interval_expression
+          expression ::= * expression OP_MULTIPLY|OP_DIVIDE expression
+          expression ::= * expression OP_LIKE expression
+          expression ::= * expression OP_NOT OP_LIKE expression
+          expression ::= * expression OP_REGEXP expression
+          expression ::= * expression OP_NOT OP_REGEXP expression
+          expression ::= * expression OP_IN LEFT_PAREN expression comma_expressions_opt RIGHT_PAREN
+          expression ::= * expression OP_NOT OP_IN LEFT_PAREN expression comma_expressions_opt RIGHT_PAREN
+          expression ::= * OP_MINUS expression
+          expression ::= * OP_BANG|OP_NOT expression
+          expression ::= * LEFT_PAREN expression RIGHT_PAREN
+          expression ::= * LITERAL LEFT_PAREN func_args RIGHT_PAREN
+          expression ::= LITERAL LEFT_PAREN * func_args RIGHT_PAREN
+          expression ::= * COLUMN
+          expression ::= * LITERAL
+          expression ::= * QUOTED
+          expression ::= * PLACEHOLDER
+          expression ::= * VARIABLE
+          expression ::= * AT LITERAL
+          expression ::= * AT QUOTED
+          expression ::= * NUMBER
+          expression ::= * NULL
+          func_args ::= * expression comma_expressions_opt
+     (76) func_args ::= *
+
+                        OP_NOT shift  28
+                      OP_MINUS shift  29
+                       OP_BANG shift  28
+                    LEFT_PAREN shift  26
+                       LITERAL shift  94
+                        QUOTED shift  122
+                        NUMBER shift  126
+                        COLUMN shift  72
+                     OP_EXISTS shift  37
+                   PLACEHOLDER shift  123
+                      VARIABLE shift  124
+                            AT shift  71
+                          NULL shift  128
+                    expression shift  16
+                     func_args shift  92
+                     {default} reduce 76
+
+State 6:
+          split_expressions_extra ::= split_expressions_extra COMMA * split_expression
+          split_expression ::= * expression
+          expression ::= * COLUMN OP_IN select_subquery_part
+          expression ::= * COLUMN OP_NOT OP_IN select_subquery_part
+          expression ::= * OP_EXISTS select_subquery_part
+          expression ::= * expression OP_EQ|OP_NE|OP_GT|OP_GTEQ|OP_LT|OP_LTEQ expression
+          expression ::= * expression OP_OR|OP_AND expression
+          expression ::= * expression OP_MINUS|OP_PLUS interval_expression
+          expression ::= * expression OP_MULTIPLY|OP_DIVIDE expression
+          expression ::= * expression OP_LIKE expression
+          expression ::= * expression OP_NOT OP_LIKE expression
+          expression ::= * expression OP_REGEXP expression
+          expression ::= * expression OP_NOT OP_REGEXP expression
+          expression ::= * expression OP_IN LEFT_PAREN expression comma_expressions_opt RIGHT_PAREN
+          expression ::= * expression OP_NOT OP_IN LEFT_PAREN expression comma_expressions_opt RIGHT_PAREN
+          expression ::= * OP_MINUS expression
+          expression ::= * OP_BANG|OP_NOT expression
+          expression ::= * LEFT_PAREN expression RIGHT_PAREN
+          expression ::= * LITERAL LEFT_PAREN func_args RIGHT_PAREN
+          expression ::= * COLUMN
+          expression ::= * LITERAL
+          expression ::= * QUOTED
+          expression ::= * PLACEHOLDER
+          expression ::= * VARIABLE
+          expression ::= * AT LITERAL
+          expression ::= * AT QUOTED
+          expression ::= * NUMBER
+          expression ::= * NULL
+
+                        OP_NOT shift  28
+                      OP_MINUS shift  29
+                       OP_BANG shift  28
+                    LEFT_PAREN shift  26
+                       LITERAL shift  94
+                        QUOTED shift  122
+                        NUMBER shift  126
+                        COLUMN shift  72
+                     OP_EXISTS shift  37
+                   PLACEHOLDER shift  123
+                      VARIABLE shift  124
+                            AT shift  71
+                          NULL shift  128
+                    expression shift  60
+              split_expression shift  101
+
+State 7:
+          split_clause ::= SPLIT BY * split_expression split_expressions_extra
+          split_expression ::= * expression
+          expression ::= * COLUMN OP_IN select_subquery_part
+          expression ::= * COLUMN OP_NOT OP_IN select_subquery_part
+          expression ::= * OP_EXISTS select_subquery_part
+          expression ::= * expression OP_EQ|OP_NE|OP_GT|OP_GTEQ|OP_LT|OP_LTEQ expression
+          expression ::= * expression OP_OR|OP_AND expression
+          expression ::= * expression OP_MINUS|OP_PLUS interval_expression
+          expression ::= * expression OP_MULTIPLY|OP_DIVIDE expression
+          expression ::= * expression OP_LIKE expression
+          expression ::= * expression OP_NOT OP_LIKE expression
+          expression ::= * expression OP_REGEXP expression
+          expression ::= * expression OP_NOT OP_REGEXP expression
+          expression ::= * expression OP_IN LEFT_PAREN expression comma_expressions_opt RIGHT_PAREN
+          expression ::= * expression OP_NOT OP_IN LEFT_PAREN expression comma_expressions_opt RIGHT_PAREN
+          expression ::= * OP_MINUS expression
+          expression ::= * OP_BANG|OP_NOT expression
+          expression ::= * LEFT_PAREN expression RIGHT_PAREN
+          expression ::= * LITERAL LEFT_PAREN func_args RIGHT_PAREN
+          expression ::= * COLUMN
+          expression ::= * LITERAL
+          expression ::= * QUOTED
+          expression ::= * PLACEHOLDER
+          expression ::= * VARIABLE
+          expression ::= * AT LITERAL
+          expression ::= * AT QUOTED
+          expression ::= * NUMBER
+          expression ::= * NULL
+
+                        OP_NOT shift  28
+                      OP_MINUS shift  29
+                       OP_BANG shift  28
+                    LEFT_PAREN shift  26
+                       LITERAL shift  94
+                        QUOTED shift  122
+                        NUMBER shift  126
+                        COLUMN shift  72
+                     OP_EXISTS shift  37
+                   PLACEHOLDER shift  123
+                      VARIABLE shift  124
+                            AT shift  71
+                          NULL shift  128
+                    expression shift  60
+              split_expression shift  57
+
+State 8:
+          order_expression ::= * expression direction_opt
+          comma_order_expression_opt ::= comma_order_expression_opt COMMA * order_expression
+          expression ::= * COLUMN OP_IN select_subquery_part
+          expression ::= * COLUMN OP_NOT OP_IN select_subquery_part
+          expression ::= * OP_EXISTS select_subquery_part
+          expression ::= * expression OP_EQ|OP_NE|OP_GT|OP_GTEQ|OP_LT|OP_LTEQ expression
+          expression ::= * expression OP_OR|OP_AND expression
+          expression ::= * expression OP_MINUS|OP_PLUS interval_expression
+          expression ::= * expression OP_MULTIPLY|OP_DIVIDE expression
+          expression ::= * expression OP_LIKE expression
+          expression ::= * expression OP_NOT OP_LIKE expression
+          expression ::= * expression OP_REGEXP expression
+          expression ::= * expression OP_NOT OP_REGEXP expression
+          expression ::= * expression OP_IN LEFT_PAREN expression comma_expressions_opt RIGHT_PAREN
+          expression ::= * expression OP_NOT OP_IN LEFT_PAREN expression comma_expressions_opt RIGHT_PAREN
+          expression ::= * OP_MINUS expression
+          expression ::= * OP_BANG|OP_NOT expression
+          expression ::= * LEFT_PAREN expression RIGHT_PAREN
+          expression ::= * LITERAL LEFT_PAREN func_args RIGHT_PAREN
+          expression ::= * COLUMN
+          expression ::= * LITERAL
+          expression ::= * QUOTED
+          expression ::= * PLACEHOLDER
+          expression ::= * VARIABLE
+          expression ::= * AT LITERAL
+          expression ::= * AT QUOTED
+          expression ::= * NUMBER
+          expression ::= * NULL
+
+                        OP_NOT shift  28
+                      OP_MINUS shift  29
+                       OP_BANG shift  28
+                    LEFT_PAREN shift  26
+                       LITERAL shift  94
+                        QUOTED shift  122
+                        NUMBER shift  126
+                        COLUMN shift  72
+                     OP_EXISTS shift  37
+                   PLACEHOLDER shift  123
+                      VARIABLE shift  124
+                            AT shift  71
+                          NULL shift  128
+                    expression shift  13
+              order_expression shift  105
+
+State 9:
+          order_clause ::= ORDER BY * order_expression comma_order_expression_opt
+          order_expression ::= * expression direction_opt
+          expression ::= * COLUMN OP_IN select_subquery_part
+          expression ::= * COLUMN OP_NOT OP_IN select_subquery_part
+          expression ::= * OP_EXISTS select_subquery_part
+          expression ::= * expression OP_EQ|OP_NE|OP_GT|OP_GTEQ|OP_LT|OP_LTEQ expression
+          expression ::= * expression OP_OR|OP_AND expression
+          expression ::= * expression OP_MINUS|OP_PLUS interval_expression
+          expression ::= * expression OP_MULTIPLY|OP_DIVIDE expression
+          expression ::= * expression OP_LIKE expression
+          expression ::= * expression OP_NOT OP_LIKE expression
+          expression ::= * expression OP_REGEXP expression
+          expression ::= * expression OP_NOT OP_REGEXP expression
+          expression ::= * expression OP_IN LEFT_PAREN expression comma_expressions_opt RIGHT_PAREN
+          expression ::= * expression OP_NOT OP_IN LEFT_PAREN expression comma_expressions_opt RIGHT_PAREN
+          expression ::= * OP_MINUS expression
+          expression ::= * OP_BANG|OP_NOT expression
+          expression ::= * LEFT_PAREN expression RIGHT_PAREN
+          expression ::= * LITERAL LEFT_PAREN func_args RIGHT_PAREN
+          expression ::= * COLUMN
+          expression ::= * LITERAL
+          expression ::= * QUOTED
+          expression ::= * PLACEHOLDER
+          expression ::= * VARIABLE
+          expression ::= * AT LITERAL
+          expression ::= * AT QUOTED
+          expression ::= * NUMBER
+          expression ::= * NULL
+
+                        OP_NOT shift  28
+                      OP_MINUS shift  29
+                       OP_BANG shift  28
+                    LEFT_PAREN shift  26
+                       LITERAL shift  94
+                        QUOTED shift  122
+                        NUMBER shift  126
+                        COLUMN shift  72
+                     OP_EXISTS shift  37
+                   PLACEHOLDER shift  123
+                      VARIABLE shift  124
+                            AT shift  71
+                          NULL shift  128
+                    expression shift  13
+              order_expression shift  56
+
+State 10:
+          group_clause ::= GROUP BY * group_expression group_expressions_extra
+          group_expression ::= * expression alias_optional
+          expression ::= * COLUMN OP_IN select_subquery_part
+          expression ::= * COLUMN OP_NOT OP_IN select_subquery_part
+          expression ::= * OP_EXISTS select_subquery_part
+          expression ::= * expression OP_EQ|OP_NE|OP_GT|OP_GTEQ|OP_LT|OP_LTEQ expression
+          expression ::= * expression OP_OR|OP_AND expression
+          expression ::= * expression OP_MINUS|OP_PLUS interval_expression
+          expression ::= * expression OP_MULTIPLY|OP_DIVIDE expression
+          expression ::= * expression OP_LIKE expression
+          expression ::= * expression OP_NOT OP_LIKE expression
+          expression ::= * expression OP_REGEXP expression
+          expression ::= * expression OP_NOT OP_REGEXP expression
+          expression ::= * expression OP_IN LEFT_PAREN expression comma_expressions_opt RIGHT_PAREN
+          expression ::= * expression OP_NOT OP_IN LEFT_PAREN expression comma_expressions_opt RIGHT_PAREN
+          expression ::= * OP_MINUS expression
+          expression ::= * OP_BANG|OP_NOT expression
+          expression ::= * LEFT_PAREN expression RIGHT_PAREN
+          expression ::= * LITERAL LEFT_PAREN func_args RIGHT_PAREN
+          expression ::= * COLUMN
+          expression ::= * LITERAL
+          expression ::= * QUOTED
+          expression ::= * PLACEHOLDER
+          expression ::= * VARIABLE
+          expression ::= * AT LITERAL
+          expression ::= * AT QUOTED
+          expression ::= * NUMBER
+          expression ::= * NULL
+
+                        OP_NOT shift  28
+                      OP_MINUS shift  29
+                       OP_BANG shift  28
+                    LEFT_PAREN shift  26
+                       LITERAL shift  94
+                        QUOTED shift  122
+                        NUMBER shift  126
+                        COLUMN shift  72
+                     OP_EXISTS shift  37
+                   PLACEHOLDER shift  123
+                      VARIABLE shift  124
+                            AT shift  71
+                          NULL shift  128
+                    expression shift  14
+              group_expression shift  58
+
+State 11:
+          group_expressions_extra ::= group_expressions_extra COMMA * group_expression
+          group_expression ::= * expression alias_optional
+          expression ::= * COLUMN OP_IN select_subquery_part
+          expression ::= * COLUMN OP_NOT OP_IN select_subquery_part
+          expression ::= * OP_EXISTS select_subquery_part
+          expression ::= * expression OP_EQ|OP_NE|OP_GT|OP_GTEQ|OP_LT|OP_LTEQ expression
+          expression ::= * expression OP_OR|OP_AND expression
+          expression ::= * expression OP_MINUS|OP_PLUS interval_expression
+          expression ::= * expression OP_MULTIPLY|OP_DIVIDE expression
+          expression ::= * expression OP_LIKE expression
+          expression ::= * expression OP_NOT OP_LIKE expression
+          expression ::= * expression OP_REGEXP expression
+          expression ::= * expression OP_NOT OP_REGEXP expression
+          expression ::= * expression OP_IN LEFT_PAREN expression comma_expressions_opt RIGHT_PAREN
+          expression ::= * expression OP_NOT OP_IN LEFT_PAREN expression comma_expressions_opt RIGHT_PAREN
+          expression ::= * OP_MINUS expression
+          expression ::= * OP_BANG|OP_NOT expression
+          expression ::= * LEFT_PAREN expression RIGHT_PAREN
+          expression ::= * LITERAL LEFT_PAREN func_args RIGHT_PAREN
+          expression ::= * COLUMN
+          expression ::= * LITERAL
+          expression ::= * QUOTED
+          expression ::= * PLACEHOLDER
+          expression ::= * VARIABLE
+          expression ::= * AT LITERAL
+          expression ::= * AT QUOTED
+          expression ::= * NUMBER
+          expression ::= * NULL
+
+                        OP_NOT shift  28
+                      OP_MINUS shift  29
+                       OP_BANG shift  28
+                    LEFT_PAREN shift  26
+                       LITERAL shift  94
+                        QUOTED shift  122
+                        NUMBER shift  126
+                        COLUMN shift  72
+                     OP_EXISTS shift  37
+                   PLACEHOLDER shift  123
+                      VARIABLE shift  124
+                            AT shift  71
+                          NULL shift  128
+                    expression shift  14
+              group_expression shift  110
+
+State 12:
+          select_paren ::= LEFT_PAREN * select_query_part RIGHT_PAREN
+          select_query_part ::= * select_clause from_clause where_clause split_clause group_clause with_rollup_clause order_clause limit_clause
+          select_clause ::= * SELECT select_field select_fields_extra
+
+                        SELECT shift  2
+             select_query_part shift  91
+                 select_clause shift  49
+
+State 13:
+          order_expression ::= expression * direction_opt
+          direction_opt ::= * ASC
+          direction_opt ::= * DESC
+     (40) direction_opt ::= *
+          expression ::= expression * OP_EQ|OP_NE|OP_GT|OP_GTEQ|OP_LT|OP_LTEQ expression
+          expression ::= expression * OP_OR|OP_AND expression
+          expression ::= expression * OP_MINUS|OP_PLUS interval_expression
+          expression ::= expression * OP_MULTIPLY|OP_DIVIDE expression
+          expression ::= expression * OP_LIKE expression
+          expression ::= expression * OP_NOT OP_LIKE expression
+          expression ::= expression * OP_REGEXP expression
+          expression ::= expression * OP_NOT OP_REGEXP expression
+          expression ::= expression * OP_IN LEFT_PAREN expression comma_expressions_opt RIGHT_PAREN
+          expression ::= expression * OP_NOT OP_IN LEFT_PAREN expression comma_expressions_opt RIGHT_PAREN
+
+                         OP_OR shift  19
+                        OP_AND shift  19
+                        OP_NOT shift  70
+                         OP_EQ shift  22
+                         OP_NE shift  22
+                         OP_GT shift  22
+                       OP_GTEQ shift  22
+                         OP_LT shift  22
+                       OP_LTEQ shift  22
+                         OP_IN shift  79
+                       OP_LIKE shift  27
+                     OP_REGEXP shift  32
+                      OP_MINUS shift  4
+                       OP_PLUS shift  4
+                   OP_MULTIPLY shift  25
+                     OP_DIVIDE shift  25
+                           ASC shift  136
+                          DESC shift  135
+                 direction_opt shift  137
+                     {default} reduce 40
+
+State 14:
+          alias_optional ::= * AS LITERAL
+          alias_optional ::= * AS QUOTED
+     (18) alias_optional ::= *
+          group_expression ::= expression * alias_optional
+          expression ::= expression * OP_EQ|OP_NE|OP_GT|OP_GTEQ|OP_LT|OP_LTEQ expression
+          expression ::= expression * OP_OR|OP_AND expression
+          expression ::= expression * OP_MINUS|OP_PLUS interval_expression
+          expression ::= expression * OP_MULTIPLY|OP_DIVIDE expression
+          expression ::= expression * OP_LIKE expression
+          expression ::= expression * OP_NOT OP_LIKE expression
+          expression ::= expression * OP_REGEXP expression
+          expression ::= expression * OP_NOT OP_REGEXP expression
+          expression ::= expression * OP_IN LEFT_PAREN expression comma_expressions_opt RIGHT_PAREN
+          expression ::= expression * OP_NOT OP_IN LEFT_PAREN expression comma_expressions_opt RIGHT_PAREN
+
+                         OP_OR shift  19
+                        OP_AND shift  19
+                        OP_NOT shift  70
+                         OP_EQ shift  22
+                         OP_NE shift  22
+                         OP_GT shift  22
+                       OP_GTEQ shift  22
+                         OP_LT shift  22
+                       OP_LTEQ shift  22
+                         OP_IN shift  79
+                       OP_LIKE shift  27
+                     OP_REGEXP shift  32
+                      OP_MINUS shift  4
+                       OP_PLUS shift  4
+                   OP_MULTIPLY shift  25
+                     OP_DIVIDE shift  25
+                            AS shift  74
+                alias_optional shift  108
+                     {default} reduce 18
+
+State 15:
+          select_field ::= expression * alias_optional
+          alias_optional ::= * AS LITERAL
+          alias_optional ::= * AS QUOTED
+     (18) alias_optional ::= *
+          expression ::= expression * OP_EQ|OP_NE|OP_GT|OP_GTEQ|OP_LT|OP_LTEQ expression
+          expression ::= expression * OP_OR|OP_AND expression
+          expression ::= expression * OP_MINUS|OP_PLUS interval_expression
+          expression ::= expression * OP_MULTIPLY|OP_DIVIDE expression
+          expression ::= expression * OP_LIKE expression
+          expression ::= expression * OP_NOT OP_LIKE expression
+          expression ::= expression * OP_REGEXP expression
+          expression ::= expression * OP_NOT OP_REGEXP expression
+          expression ::= expression * OP_IN LEFT_PAREN expression comma_expressions_opt RIGHT_PAREN
+          expression ::= expression * OP_NOT OP_IN LEFT_PAREN expression comma_expressions_opt RIGHT_PAREN
+
+                         OP_OR shift  19
+                        OP_AND shift  19
+                        OP_NOT shift  70
+                         OP_EQ shift  22
+                         OP_NE shift  22
+                         OP_GT shift  22
+                       OP_GTEQ shift  22
+                         OP_LT shift  22
+                       OP_LTEQ shift  22
+                         OP_IN shift  79
+                       OP_LIKE shift  27
+                     OP_REGEXP shift  32
+                      OP_MINUS shift  4
+                       OP_PLUS shift  4
+                   OP_MULTIPLY shift  25
+                     OP_DIVIDE shift  25
+                            AS shift  74
+                alias_optional shift  111
+                     {default} reduce 18
+
+State 16:
+          expression ::= expression * OP_EQ|OP_NE|OP_GT|OP_GTEQ|OP_LT|OP_LTEQ expression
+          expression ::= expression * OP_OR|OP_AND expression
+          expression ::= expression * OP_MINUS|OP_PLUS interval_expression
+          expression ::= expression * OP_MULTIPLY|OP_DIVIDE expression
+          expression ::= expression * OP_LIKE expression
+          expression ::= expression * OP_NOT OP_LIKE expression
+          expression ::= expression * OP_REGEXP expression
+          expression ::= expression * OP_NOT OP_REGEXP expression
+          expression ::= expression * OP_IN LEFT_PAREN expression comma_expressions_opt RIGHT_PAREN
+          expression ::= expression * OP_NOT OP_IN LEFT_PAREN expression comma_expressions_opt RIGHT_PAREN
+          func_args ::= expression * comma_expressions_opt
+          comma_expressions_opt ::= * comma_expressions_opt COMMA expression
+     (78) comma_expressions_opt ::= *
+
+                         OP_OR shift  19
+                        OP_AND shift  19
+                        OP_NOT shift  70
+                         OP_EQ shift  22
+                         OP_NE shift  22
+                         OP_GT shift  22
+                       OP_GTEQ shift  22
+                         OP_LT shift  22
+                       OP_LTEQ shift  22
+                         OP_IN shift  79
+                       OP_LIKE shift  27
+                     OP_REGEXP shift  32
+                      OP_MINUS shift  4
+                       OP_PLUS shift  4
+                   OP_MULTIPLY shift  25
+                     OP_DIVIDE shift  25
+         comma_expressions_opt shift  88
+                     {default} reduce 78
+
+State 17:
+          expression ::= expression * OP_EQ|OP_NE|OP_GT|OP_GTEQ|OP_LT|OP_LTEQ expression
+          expression ::= expression * OP_OR|OP_AND expression
+          expression ::= expression * OP_MINUS|OP_PLUS interval_expression
+          expression ::= expression * OP_MULTIPLY|OP_DIVIDE expression
+          expression ::= expression * OP_LIKE expression
+          expression ::= expression * OP_NOT OP_LIKE expression
+          expression ::= expression * OP_REGEXP expression
+          expression ::= expression * OP_NOT OP_REGEXP expression
+          expression ::= expression * OP_IN LEFT_PAREN expression comma_expressions_opt RIGHT_PAREN
+          expression ::= expression * OP_NOT OP_IN LEFT_PAREN expression comma_expressions_opt RIGHT_PAREN
+          expression ::= expression OP_NOT OP_IN LEFT_PAREN expression * comma_expressions_opt RIGHT_PAREN
+          comma_expressions_opt ::= * comma_expressions_opt COMMA expression
+     (78) comma_expressions_opt ::= *
+
+                         OP_OR shift  19
+                        OP_AND shift  19
+                        OP_NOT shift  70
+                         OP_EQ shift  22
+                         OP_NE shift  22
+                         OP_GT shift  22
+                       OP_GTEQ shift  22
+                         OP_LT shift  22
+                       OP_LTEQ shift  22
+                         OP_IN shift  79
+                       OP_LIKE shift  27
+                     OP_REGEXP shift  32
+                      OP_MINUS shift  4
+                       OP_PLUS shift  4
+                   OP_MULTIPLY shift  25
+                     OP_DIVIDE shift  25
+         comma_expressions_opt shift  73
+                     {default} reduce 78
+
+State 18:
+          expression ::= expression * OP_EQ|OP_NE|OP_GT|OP_GTEQ|OP_LT|OP_LTEQ expression
+          expression ::= expression * OP_OR|OP_AND expression
+          expression ::= expression * OP_MINUS|OP_PLUS interval_expression
+          expression ::= expression * OP_MULTIPLY|OP_DIVIDE expression
+          expression ::= expression * OP_LIKE expression
+          expression ::= expression * OP_NOT OP_LIKE expression
+          expression ::= expression * OP_REGEXP expression
+          expression ::= expression * OP_NOT OP_REGEXP expression
+          expression ::= expression * OP_IN LEFT_PAREN expression comma_expressions_opt RIGHT_PAREN
+          expression ::= expression OP_IN LEFT_PAREN expression * comma_expressions_opt RIGHT_PAREN
+          expression ::= expression * OP_NOT OP_IN LEFT_PAREN expression comma_expressions_opt RIGHT_PAREN
+          comma_expressions_opt ::= * comma_expressions_opt COMMA expression
+     (78) comma_expressions_opt ::= *
+
+                         OP_OR shift  19
+                        OP_AND shift  19
+                        OP_NOT shift  70
+                         OP_EQ shift  22
+                         OP_NE shift  22
+                         OP_GT shift  22
+                       OP_GTEQ shift  22
+                         OP_LT shift  22
+                       OP_LTEQ shift  22
+                         OP_IN shift  79
+                       OP_LIKE shift  27
+                     OP_REGEXP shift  32
+                      OP_MINUS shift  4
+                       OP_PLUS shift  4
+                   OP_MULTIPLY shift  25
+                     OP_DIVIDE shift  25
+         comma_expressions_opt shift  75
+                     {default} reduce 78
+
+State 19:
+          expression ::= * COLUMN OP_IN select_subquery_part
+          expression ::= * COLUMN OP_NOT OP_IN select_subquery_part
+          expression ::= * OP_EXISTS select_subquery_part
+          expression ::= * expression OP_EQ|OP_NE|OP_GT|OP_GTEQ|OP_LT|OP_LTEQ expression
+          expression ::= * expression OP_OR|OP_AND expression
+          expression ::= expression OP_OR|OP_AND * expression
+          expression ::= * expression OP_MINUS|OP_PLUS interval_expression
+          expression ::= * expression OP_MULTIPLY|OP_DIVIDE expression
+          expression ::= * expression OP_LIKE expression
+          expression ::= * expression OP_NOT OP_LIKE expression
+          expression ::= * expression OP_REGEXP expression
+          expression ::= * expression OP_NOT OP_REGEXP expression
+          expression ::= * expression OP_IN LEFT_PAREN expression comma_expressions_opt RIGHT_PAREN
+          expression ::= * expression OP_NOT OP_IN LEFT_PAREN expression comma_expressions_opt RIGHT_PAREN
+          expression ::= * OP_MINUS expression
+          expression ::= * OP_BANG|OP_NOT expression
+          expression ::= * LEFT_PAREN expression RIGHT_PAREN
+          expression ::= * LITERAL LEFT_PAREN func_args RIGHT_PAREN
+          expression ::= * COLUMN
+          expression ::= * LITERAL
+          expression ::= * QUOTED
+          expression ::= * PLACEHOLDER
+          expression ::= * VARIABLE
+          expression ::= * AT LITERAL
+          expression ::= * AT QUOTED
+          expression ::= * NUMBER
+          expression ::= * NULL
+
+                        OP_NOT shift  28
+                      OP_MINUS shift  29
+                       OP_BANG shift  28
+                    LEFT_PAREN shift  26
+                       LITERAL shift  94
+                        QUOTED shift  122
+                        NUMBER shift  126
+                        COLUMN shift  72
+                     OP_EXISTS shift  37
+                   PLACEHOLDER shift  123
+                      VARIABLE shift  124
+                            AT shift  71
+                          NULL shift  128
+                    expression shift  64
+
+State 20:
+          expression ::= * COLUMN OP_IN select_subquery_part
+          expression ::= * COLUMN OP_NOT OP_IN select_subquery_part
+          expression ::= * OP_EXISTS select_subquery_part
+          expression ::= * expression OP_EQ|OP_NE|OP_GT|OP_GTEQ|OP_LT|OP_LTEQ expression
+          expression ::= * expression OP_OR|OP_AND expression
+          expression ::= * expression OP_MINUS|OP_PLUS interval_expression
+          expression ::= * expression OP_MULTIPLY|OP_DIVIDE expression
+          expression ::= * expression OP_LIKE expression
+          expression ::= * expression OP_NOT OP_LIKE expression
+          expression ::= * expression OP_REGEXP expression
+          expression ::= * expression OP_NOT OP_REGEXP expression
+          expression ::= * expression OP_IN LEFT_PAREN expression comma_expressions_opt RIGHT_PAREN
+          expression ::= * expression OP_NOT OP_IN LEFT_PAREN expression comma_expressions_opt RIGHT_PAREN
+          expression ::= expression OP_NOT OP_IN LEFT_PAREN * expression comma_expressions_opt RIGHT_PAREN
+          expression ::= * OP_MINUS expression
+          expression ::= * OP_BANG|OP_NOT expression
+          expression ::= * LEFT_PAREN expression RIGHT_PAREN
+          expression ::= * LITERAL LEFT_PAREN func_args RIGHT_PAREN
+          expression ::= * COLUMN
+          expression ::= * LITERAL
+          expression ::= * QUOTED
+          expression ::= * PLACEHOLDER
+          expression ::= * VARIABLE
+          expression ::= * AT LITERAL
+          expression ::= * AT QUOTED
+          expression ::= * NUMBER
+          expression ::= * NULL
+
+                        OP_NOT shift  28
+                      OP_MINUS shift  29
+                       OP_BANG shift  28
+                    LEFT_PAREN shift  26
+                       LITERAL shift  94
+                        QUOTED shift  122
+                        NUMBER shift  126
+                        COLUMN shift  72
+                     OP_EXISTS shift  37
+                   PLACEHOLDER shift  123
+                      VARIABLE shift  124
+                            AT shift  71
+                          NULL shift  128
+                    expression shift  17
+
+State 21:
+          where_clause ::= WHERE * expression
+          expression ::= * COLUMN OP_IN select_subquery_part
+          expression ::= * COLUMN OP_NOT OP_IN select_subquery_part
+          expression ::= * OP_EXISTS select_subquery_part
+          expression ::= * expression OP_EQ|OP_NE|OP_GT|OP_GTEQ|OP_LT|OP_LTEQ expression
+          expression ::= * expression OP_OR|OP_AND expression
+          expression ::= * expression OP_MINUS|OP_PLUS interval_expression
+          expression ::= * expression OP_MULTIPLY|OP_DIVIDE expression
+          expression ::= * expression OP_LIKE expression
+          expression ::= * expression OP_NOT OP_LIKE expression
+          expression ::= * expression OP_REGEXP expression
+          expression ::= * expression OP_NOT OP_REGEXP expression
+          expression ::= * expression OP_IN LEFT_PAREN expression comma_expressions_opt RIGHT_PAREN
+          expression ::= * expression OP_NOT OP_IN LEFT_PAREN expression comma_expressions_opt RIGHT_PAREN
+          expression ::= * OP_MINUS expression
+          expression ::= * OP_BANG|OP_NOT expression
+          expression ::= * LEFT_PAREN expression RIGHT_PAREN
+          expression ::= * LITERAL LEFT_PAREN func_args RIGHT_PAREN
+          expression ::= * COLUMN
+          expression ::= * LITERAL
+          expression ::= * QUOTED
+          expression ::= * PLACEHOLDER
+          expression ::= * VARIABLE
+          expression ::= * AT LITERAL
+          expression ::= * AT QUOTED
+          expression ::= * NUMBER
+          expression ::= * NULL
+
+                        OP_NOT shift  28
+                      OP_MINUS shift  29
+                       OP_BANG shift  28
+                    LEFT_PAREN shift  26
+                       LITERAL shift  94
+                        QUOTED shift  122
+                        NUMBER shift  126
+                        COLUMN shift  72
+                     OP_EXISTS shift  37
+                   PLACEHOLDER shift  123
+                      VARIABLE shift  124
+                            AT shift  71
+                          NULL shift  128
+                    expression shift  62
+
+State 22:
+          expression ::= * COLUMN OP_IN select_subquery_part
+          expression ::= * COLUMN OP_NOT OP_IN select_subquery_part
+          expression ::= * OP_EXISTS select_subquery_part
+          expression ::= * expression OP_EQ|OP_NE|OP_GT|OP_GTEQ|OP_LT|OP_LTEQ expression
+          expression ::= expression OP_EQ|OP_NE|OP_GT|OP_GTEQ|OP_LT|OP_LTEQ * expression
+          expression ::= * expression OP_OR|OP_AND expression
+          expression ::= * expression OP_MINUS|OP_PLUS interval_expression
+          expression ::= * expression OP_MULTIPLY|OP_DIVIDE expression
+          expression ::= * expression OP_LIKE expression
+          expression ::= * expression OP_NOT OP_LIKE expression
+          expression ::= * expression OP_REGEXP expression
+          expression ::= * expression OP_NOT OP_REGEXP expression
+          expression ::= * expression OP_IN LEFT_PAREN expression comma_expressions_opt RIGHT_PAREN
+          expression ::= * expression OP_NOT OP_IN LEFT_PAREN expression comma_expressions_opt RIGHT_PAREN
+          expression ::= * OP_MINUS expression
+          expression ::= * OP_BANG|OP_NOT expression
+          expression ::= * LEFT_PAREN expression RIGHT_PAREN
+          expression ::= * LITERAL LEFT_PAREN func_args RIGHT_PAREN
+          expression ::= * COLUMN
+          expression ::= * LITERAL
+          expression ::= * QUOTED
+          expression ::= * PLACEHOLDER
+          expression ::= * VARIABLE
+          expression ::= * AT LITERAL
+          expression ::= * AT QUOTED
+          expression ::= * NUMBER
+          expression ::= * NULL
+
+                        OP_NOT shift  28
+                      OP_MINUS shift  29
+                       OP_BANG shift  28
+                    LEFT_PAREN shift  26
+                       LITERAL shift  94
+                        QUOTED shift  122
+                        NUMBER shift  126
+                        COLUMN shift  72
+                     OP_EXISTS shift  37
+                   PLACEHOLDER shift  123
+                      VARIABLE shift  124
+                            AT shift  71
+                          NULL shift  128
+                    expression shift  67
+
+State 23:
+          expression ::= * COLUMN OP_IN select_subquery_part
+          expression ::= * COLUMN OP_NOT OP_IN select_subquery_part
+          expression ::= * OP_EXISTS select_subquery_part
+          expression ::= * expression OP_EQ|OP_NE|OP_GT|OP_GTEQ|OP_LT|OP_LTEQ expression
+          expression ::= * expression OP_OR|OP_AND expression
+          expression ::= * expression OP_MINUS|OP_PLUS interval_expression
+          expression ::= * expression OP_MULTIPLY|OP_DIVIDE expression
+          expression ::= * expression OP_LIKE expression
+          expression ::= * expression OP_NOT OP_LIKE expression
+          expression ::= * expression OP_REGEXP expression
+          expression ::= * expression OP_NOT OP_REGEXP expression
+          expression ::= expression OP_NOT OP_REGEXP * expression
+          expression ::= * expression OP_IN LEFT_PAREN expression comma_expressions_opt RIGHT_PAREN
+          expression ::= * expression OP_NOT OP_IN LEFT_PAREN expression comma_expressions_opt RIGHT_PAREN
+          expression ::= * OP_MINUS expression
+          expression ::= * OP_BANG|OP_NOT expression
+          expression ::= * LEFT_PAREN expression RIGHT_PAREN
+          expression ::= * LITERAL LEFT_PAREN func_args RIGHT_PAREN
+          expression ::= * COLUMN
+          expression ::= * LITERAL
+          expression ::= * QUOTED
+          expression ::= * PLACEHOLDER
+          expression ::= * VARIABLE
+          expression ::= * AT LITERAL
+          expression ::= * AT QUOTED
+          expression ::= * NUMBER
+          expression ::= * NULL
+
+                        OP_NOT shift  28
+                      OP_MINUS shift  29
+                       OP_BANG shift  28
+                    LEFT_PAREN shift  26
+                       LITERAL shift  94
+                        QUOTED shift  122
+                        NUMBER shift  126
+                        COLUMN shift  72
+                     OP_EXISTS shift  37
+                   PLACEHOLDER shift  123
+                      VARIABLE shift  124
+                            AT shift  71
+                          NULL shift  128
+                    expression shift  66
+
+State 24:
+          expression ::= * COLUMN OP_IN select_subquery_part
+          expression ::= * COLUMN OP_NOT OP_IN select_subquery_part
+          expression ::= * OP_EXISTS select_subquery_part
+          expression ::= * expression OP_EQ|OP_NE|OP_GT|OP_GTEQ|OP_LT|OP_LTEQ expression
+          expression ::= * expression OP_OR|OP_AND expression
+          expression ::= * expression OP_MINUS|OP_PLUS interval_expression
+          expression ::= * expression OP_MULTIPLY|OP_DIVIDE expression
+          expression ::= * expression OP_LIKE expression
+          expression ::= * expression OP_NOT OP_LIKE expression
+          expression ::= * expression OP_REGEXP expression
+          expression ::= * expression OP_NOT OP_REGEXP expression
+          expression ::= * expression OP_IN LEFT_PAREN expression comma_expressions_opt RIGHT_PAREN
+          expression ::= expression OP_IN LEFT_PAREN * expression comma_expressions_opt RIGHT_PAREN
+          expression ::= * expression OP_NOT OP_IN LEFT_PAREN expression comma_expressions_opt RIGHT_PAREN
+          expression ::= * OP_MINUS expression
+          expression ::= * OP_BANG|OP_NOT expression
+          expression ::= * LEFT_PAREN expression RIGHT_PAREN
+          expression ::= * LITERAL LEFT_PAREN func_args RIGHT_PAREN
+          expression ::= * COLUMN
+          expression ::= * LITERAL
+          expression ::= * QUOTED
+          expression ::= * PLACEHOLDER
+          expression ::= * VARIABLE
+          expression ::= * AT LITERAL
+          expression ::= * AT QUOTED
+          expression ::= * NUMBER
+          expression ::= * NULL
+
+                        OP_NOT shift  28
+                      OP_MINUS shift  29
+                       OP_BANG shift  28
+                    LEFT_PAREN shift  26
+                       LITERAL shift  94
+                        QUOTED shift  122
+                        NUMBER shift  126
+                        COLUMN shift  72
+                     OP_EXISTS shift  37
+                   PLACEHOLDER shift  123
+                      VARIABLE shift  124
+                            AT shift  71
+                          NULL shift  128
+                    expression shift  18
+
+State 25:
+          expression ::= * COLUMN OP_IN select_subquery_part
+          expression ::= * COLUMN OP_NOT OP_IN select_subquery_part
+          expression ::= * OP_EXISTS select_subquery_part
+          expression ::= * expression OP_EQ|OP_NE|OP_GT|OP_GTEQ|OP_LT|OP_LTEQ expression
+          expression ::= * expression OP_OR|OP_AND expression
+          expression ::= * expression OP_MINUS|OP_PLUS interval_expression
+          expression ::= * expression OP_MULTIPLY|OP_DIVIDE expression
+          expression ::= expression OP_MULTIPLY|OP_DIVIDE * expression
+          expression ::= * expression OP_LIKE expression
+          expression ::= * expression OP_NOT OP_LIKE expression
+          expression ::= * expression OP_REGEXP expression
+          expression ::= * expression OP_NOT OP_REGEXP expression
+          expression ::= * expression OP_IN LEFT_PAREN expression comma_expressions_opt RIGHT_PAREN
+          expression ::= * expression OP_NOT OP_IN LEFT_PAREN expression comma_expressions_opt RIGHT_PAREN
+          expression ::= * OP_MINUS expression
+          expression ::= * OP_BANG|OP_NOT expression
+          expression ::= * LEFT_PAREN expression RIGHT_PAREN
+          expression ::= * LITERAL LEFT_PAREN func_args RIGHT_PAREN
+          expression ::= * COLUMN
+          expression ::= * LITERAL
+          expression ::= * QUOTED
+          expression ::= * PLACEHOLDER
+          expression ::= * VARIABLE
+          expression ::= * AT LITERAL
+          expression ::= * AT QUOTED
+          expression ::= * NUMBER
+          expression ::= * NULL
+
+                        OP_NOT shift  28
+                      OP_MINUS shift  29
+                       OP_BANG shift  28
+                    LEFT_PAREN shift  26
+                       LITERAL shift  94
+                        QUOTED shift  122
+                        NUMBER shift  126
+                        COLUMN shift  72
+                     OP_EXISTS shift  37
+                   PLACEHOLDER shift  123
+                      VARIABLE shift  124
+                            AT shift  71
+                          NULL shift  128
+                    expression shift  118
+
+State 26:
+          expression ::= * COLUMN OP_IN select_subquery_part
+          expression ::= * COLUMN OP_NOT OP_IN select_subquery_part
+          expression ::= * OP_EXISTS select_subquery_part
+          expression ::= * expression OP_EQ|OP_NE|OP_GT|OP_GTEQ|OP_LT|OP_LTEQ expression
+          expression ::= * expression OP_OR|OP_AND expression
+          expression ::= * expression OP_MINUS|OP_PLUS interval_expression
+          expression ::= * expression OP_MULTIPLY|OP_DIVIDE expression
+          expression ::= * expression OP_LIKE expression
+          expression ::= * expression OP_NOT OP_LIKE expression
+          expression ::= * expression OP_REGEXP expression
+          expression ::= * expression OP_NOT OP_REGEXP expression
+          expression ::= * expression OP_IN LEFT_PAREN expression comma_expressions_opt RIGHT_PAREN
+          expression ::= * expression OP_NOT OP_IN LEFT_PAREN expression comma_expressions_opt RIGHT_PAREN
+          expression ::= * OP_MINUS expression
+          expression ::= * OP_BANG|OP_NOT expression
+          expression ::= * LEFT_PAREN expression RIGHT_PAREN
+          expression ::= LEFT_PAREN * expression RIGHT_PAREN
+          expression ::= * LITERAL LEFT_PAREN func_args RIGHT_PAREN
+          expression ::= * COLUMN
+          expression ::= * LITERAL
+          expression ::= * QUOTED
+          expression ::= * PLACEHOLDER
+          expression ::= * VARIABLE
+          expression ::= * AT LITERAL
+          expression ::= * AT QUOTED
+          expression ::= * NUMBER
+          expression ::= * NULL
+
+                        OP_NOT shift  28
+                      OP_MINUS shift  29
+                       OP_BANG shift  28
+                    LEFT_PAREN shift  26
+                       LITERAL shift  94
+                        QUOTED shift  122
+                        NUMBER shift  126
+                        COLUMN shift  72
+                     OP_EXISTS shift  37
+                   PLACEHOLDER shift  123
+                      VARIABLE shift  124
+                            AT shift  71
+                          NULL shift  128
+                    expression shift  59
+
+State 27:
+          expression ::= * COLUMN OP_IN select_subquery_part
+          expression ::= * COLUMN OP_NOT OP_IN select_subquery_part
+          expression ::= * OP_EXISTS select_subquery_part
+          expression ::= * expression OP_EQ|OP_NE|OP_GT|OP_GTEQ|OP_LT|OP_LTEQ expression
+          expression ::= * expression OP_OR|OP_AND expression
+          expression ::= * expression OP_MINUS|OP_PLUS interval_expression
+          expression ::= * expression OP_MULTIPLY|OP_DIVIDE expression
+          expression ::= * expression OP_LIKE expression
+          expression ::= expression OP_LIKE * expression
+          expression ::= * expression OP_NOT OP_LIKE expression
+          expression ::= * expression OP_REGEXP expression
+          expression ::= * expression OP_NOT OP_REGEXP expression
+          expression ::= * expression OP_IN LEFT_PAREN expression comma_expressions_opt RIGHT_PAREN
+          expression ::= * expression OP_NOT OP_IN LEFT_PAREN expression comma_expressions_opt RIGHT_PAREN
+          expression ::= * OP_MINUS expression
+          expression ::= * OP_BANG|OP_NOT expression
+          expression ::= * LEFT_PAREN expression RIGHT_PAREN
+          expression ::= * LITERAL LEFT_PAREN func_args RIGHT_PAREN
+          expression ::= * COLUMN
+          expression ::= * LITERAL
+          expression ::= * QUOTED
+          expression ::= * PLACEHOLDER
+          expression ::= * VARIABLE
+          expression ::= * AT LITERAL
+          expression ::= * AT QUOTED
+          expression ::= * NUMBER
+          expression ::= * NULL
+
+                        OP_NOT shift  28
+                      OP_MINUS shift  29
+                       OP_BANG shift  28
+                    LEFT_PAREN shift  26
+                       LITERAL shift  94
+                        QUOTED shift  122
+                        NUMBER shift  126
+                        COLUMN shift  72
+                     OP_EXISTS shift  37
+                   PLACEHOLDER shift  123
+                      VARIABLE shift  124
+                            AT shift  71
+                          NULL shift  128
+                    expression shift  69
+
+State 28:
+          expression ::= * COLUMN OP_IN select_subquery_part
+          expression ::= * COLUMN OP_NOT OP_IN select_subquery_part
+          expression ::= * OP_EXISTS select_subquery_part
+          expression ::= * expression OP_EQ|OP_NE|OP_GT|OP_GTEQ|OP_LT|OP_LTEQ expression
+          expression ::= * expression OP_OR|OP_AND expression
+          expression ::= * expression OP_MINUS|OP_PLUS interval_expression
+          expression ::= * expression OP_MULTIPLY|OP_DIVIDE expression
+          expression ::= * expression OP_LIKE expression
+          expression ::= * expression OP_NOT OP_LIKE expression
+          expression ::= * expression OP_REGEXP expression
+          expression ::= * expression OP_NOT OP_REGEXP expression
+          expression ::= * expression OP_IN LEFT_PAREN expression comma_expressions_opt RIGHT_PAREN
+          expression ::= * expression OP_NOT OP_IN LEFT_PAREN expression comma_expressions_opt RIGHT_PAREN
+          expression ::= * OP_MINUS expression
+          expression ::= * OP_BANG|OP_NOT expression
+          expression ::= OP_BANG|OP_NOT * expression
+          expression ::= * LEFT_PAREN expression RIGHT_PAREN
+          expression ::= * LITERAL LEFT_PAREN func_args RIGHT_PAREN
+          expression ::= * COLUMN
+          expression ::= * LITERAL
+          expression ::= * QUOTED
+          expression ::= * PLACEHOLDER
+          expression ::= * VARIABLE
+          expression ::= * AT LITERAL
+          expression ::= * AT QUOTED
+          expression ::= * NUMBER
+          expression ::= * NULL
+
+                        OP_NOT shift  28
+                      OP_MINUS shift  29
+                       OP_BANG shift  28
+                    LEFT_PAREN shift  26
+                       LITERAL shift  94
+                        QUOTED shift  122
+                        NUMBER shift  126
+                        COLUMN shift  72
+                     OP_EXISTS shift  37
+                   PLACEHOLDER shift  123
+                      VARIABLE shift  124
+                            AT shift  71
+                          NULL shift  128
+                    expression shift  117
+
+State 29:
+          expression ::= * COLUMN OP_IN select_subquery_part
+          expression ::= * COLUMN OP_NOT OP_IN select_subquery_part
+          expression ::= * OP_EXISTS select_subquery_part
+          expression ::= * expression OP_EQ|OP_NE|OP_GT|OP_GTEQ|OP_LT|OP_LTEQ expression
+          expression ::= * expression OP_OR|OP_AND expression
+          expression ::= * expression OP_MINUS|OP_PLUS interval_expression
+          expression ::= * expression OP_MULTIPLY|OP_DIVIDE expression
+          expression ::= * expression OP_LIKE expression
+          expression ::= * expression OP_NOT OP_LIKE expression
+          expression ::= * expression OP_REGEXP expression
+          expression ::= * expression OP_NOT OP_REGEXP expression
+          expression ::= * expression OP_IN LEFT_PAREN expression comma_expressions_opt RIGHT_PAREN
+          expression ::= * expression OP_NOT OP_IN LEFT_PAREN expression comma_expressions_opt RIGHT_PAREN
+          expression ::= * OP_MINUS expression
+          expression ::= OP_MINUS * expression
+          expression ::= * OP_BANG|OP_NOT expression
+          expression ::= * LEFT_PAREN expression RIGHT_PAREN
+          expression ::= * LITERAL LEFT_PAREN func_args RIGHT_PAREN
+          expression ::= * COLUMN
+          expression ::= * LITERAL
+          expression ::= * QUOTED
+          expression ::= * PLACEHOLDER
+          expression ::= * VARIABLE
+          expression ::= * AT LITERAL
+          expression ::= * AT QUOTED
+          expression ::= * NUMBER
+          expression ::= * NULL
+
+                        OP_NOT shift  28
+                      OP_MINUS shift  29
+                       OP_BANG shift  28
+                    LEFT_PAREN shift  26
+                       LITERAL shift  94
+                        QUOTED shift  122
+                        NUMBER shift  126
+                        COLUMN shift  72
+                     OP_EXISTS shift  37
+                   PLACEHOLDER shift  123
+                      VARIABLE shift  124
+                            AT shift  71
+                          NULL shift  128
+                    expression shift  116
+
+State 30:
+          expression ::= * COLUMN OP_IN select_subquery_part
+          expression ::= * COLUMN OP_NOT OP_IN select_subquery_part
+          expression ::= * OP_EXISTS select_subquery_part
+          expression ::= * expression OP_EQ|OP_NE|OP_GT|OP_GTEQ|OP_LT|OP_LTEQ expression
+          expression ::= * expression OP_OR|OP_AND expression
+          expression ::= * expression OP_MINUS|OP_PLUS interval_expression
+          expression ::= * expression OP_MULTIPLY|OP_DIVIDE expression
+          expression ::= * expression OP_LIKE expression
+          expression ::= * expression OP_NOT OP_LIKE expression
+          expression ::= expression OP_NOT OP_LIKE * expression
+          expression ::= * expression OP_REGEXP expression
+          expression ::= * expression OP_NOT OP_REGEXP expression
+          expression ::= * expression OP_IN LEFT_PAREN expression comma_expressions_opt RIGHT_PAREN
+          expression ::= * expression OP_NOT OP_IN LEFT_PAREN expression comma_expressions_opt RIGHT_PAREN
+          expression ::= * OP_MINUS expression
+          expression ::= * OP_BANG|OP_NOT expression
+          expression ::= * LEFT_PAREN expression RIGHT_PAREN
+          expression ::= * LITERAL LEFT_PAREN func_args RIGHT_PAREN
+          expression ::= * COLUMN
+          expression ::= * LITERAL
+          expression ::= * QUOTED
+          expression ::= * PLACEHOLDER
+          expression ::= * VARIABLE
+          expression ::= * AT LITERAL
+          expression ::= * AT QUOTED
+          expression ::= * NUMBER
+          expression ::= * NULL
+
+                        OP_NOT shift  28
+                      OP_MINUS shift  29
+                       OP_BANG shift  28
+                    LEFT_PAREN shift  26
+                       LITERAL shift  94
+                        QUOTED shift  122
+                        NUMBER shift  126
+                        COLUMN shift  72
+                     OP_EXISTS shift  37
+                   PLACEHOLDER shift  123
+                      VARIABLE shift  124
+                            AT shift  71
+                          NULL shift  128
+                    expression shift  65
+
+State 31:
+          expression ::= * COLUMN OP_IN select_subquery_part
+          expression ::= * COLUMN OP_NOT OP_IN select_subquery_part
+          expression ::= * OP_EXISTS select_subquery_part
+          expression ::= * expression OP_EQ|OP_NE|OP_GT|OP_GTEQ|OP_LT|OP_LTEQ expression
+          expression ::= * expression OP_OR|OP_AND expression
+          expression ::= * expression OP_MINUS|OP_PLUS interval_expression
+          expression ::= * expression OP_MULTIPLY|OP_DIVIDE expression
+          expression ::= * expression OP_LIKE expression
+          expression ::= * expression OP_NOT OP_LIKE expression
+          expression ::= * expression OP_REGEXP expression
+          expression ::= * expression OP_NOT OP_REGEXP expression
+          expression ::= * expression OP_IN LEFT_PAREN expression comma_expressions_opt RIGHT_PAREN
+          expression ::= * expression OP_NOT OP_IN LEFT_PAREN expression comma_expressions_opt RIGHT_PAREN
+          expression ::= * OP_MINUS expression
+          expression ::= * OP_BANG|OP_NOT expression
+          expression ::= * LEFT_PAREN expression RIGHT_PAREN
+          expression ::= * LITERAL LEFT_PAREN func_args RIGHT_PAREN
+          expression ::= * COLUMN
+          expression ::= * LITERAL
+          expression ::= * QUOTED
+          expression ::= * PLACEHOLDER
+          expression ::= * VARIABLE
+          expression ::= * AT LITERAL
+          expression ::= * AT QUOTED
+          expression ::= * NUMBER
+          expression ::= * NULL
+          comma_expressions_opt ::= comma_expressions_opt COMMA * expression
+
+                        OP_NOT shift  28
+                      OP_MINUS shift  29
+                       OP_BANG shift  28
+                    LEFT_PAREN shift  26
+                       LITERAL shift  94
+                        QUOTED shift  122
+                        NUMBER shift  126
+                        COLUMN shift  72
+                     OP_EXISTS shift  37
+                   PLACEHOLDER shift  123
+                      VARIABLE shift  124
+                            AT shift  71
+                          NULL shift  128
+                    expression shift  61
+
+State 32:
+          expression ::= * COLUMN OP_IN select_subquery_part
+          expression ::= * COLUMN OP_NOT OP_IN select_subquery_part
+          expression ::= * OP_EXISTS select_subquery_part
+          expression ::= * expression OP_EQ|OP_NE|OP_GT|OP_GTEQ|OP_LT|OP_LTEQ expression
+          expression ::= * expression OP_OR|OP_AND expression
+          expression ::= * expression OP_MINUS|OP_PLUS interval_expression
+          expression ::= * expression OP_MULTIPLY|OP_DIVIDE expression
+          expression ::= * expression OP_LIKE expression
+          expression ::= * expression OP_NOT OP_LIKE expression
+          expression ::= * expression OP_REGEXP expression
+          expression ::= expression OP_REGEXP * expression
+          expression ::= * expression OP_NOT OP_REGEXP expression
+          expression ::= * expression OP_IN LEFT_PAREN expression comma_expressions_opt RIGHT_PAREN
+          expression ::= * expression OP_NOT OP_IN LEFT_PAREN expression comma_expressions_opt RIGHT_PAREN
+          expression ::= * OP_MINUS expression
+          expression ::= * OP_BANG|OP_NOT expression
+          expression ::= * LEFT_PAREN expression RIGHT_PAREN
+          expression ::= * LITERAL LEFT_PAREN func_args RIGHT_PAREN
+          expression ::= * COLUMN
+          expression ::= * LITERAL
+          expression ::= * QUOTED
+          expression ::= * PLACEHOLDER
+          expression ::= * VARIABLE
+          expression ::= * AT LITERAL
+          expression ::= * AT QUOTED
+          expression ::= * NUMBER
+          expression ::= * NULL
+
+                        OP_NOT shift  28
+                      OP_MINUS shift  29
+                       OP_BANG shift  28
+                    LEFT_PAREN shift  26
+                       LITERAL shift  94
+                        QUOTED shift  122
+                        NUMBER shift  126
+                        COLUMN shift  72
+                     OP_EXISTS shift  37
+                   PLACEHOLDER shift  123
+                      VARIABLE shift  124
+                            AT shift  71
+                          NULL shift  128
+                    expression shift  68
+
+State 33:
+          select_subquery_part ::= * LEFT_PAREN select_clause from_clause where_clause order_clause RIGHT_PAREN
+          from_clause ::= FROM * LITERAL
+          from_clause ::= FROM * select_subquery_part
+
+                    LEFT_PAREN shift  51
+                       LITERAL shift  134
+          select_subquery_part shift  112
+
+State 34:
+          start ::= select_paren select_union * trailing_semicolon
+          trailing_semicolon ::= * SEMICOLON
+      (3) trailing_semicolon ::= *
+          select_union ::= select_union * OP_UNION select_paren
+          select_union ::= select_union * OP_UNION OP_DISTINCT select_paren
+
+                     SEMICOLON shift  98
+                      OP_UNION shift  35
+            trailing_semicolon shift  96
+                     {default} reduce 3
+
+State 35:
+          select_paren ::= * LEFT_PAREN select_query_part RIGHT_PAREN
+          select_union ::= select_union OP_UNION * select_paren
+          select_union ::= select_union OP_UNION * OP_DISTINCT select_paren
+
+                    LEFT_PAREN shift  12
+                   OP_DISTINCT shift  38
+                  select_paren shift  100
+
+State 36:
+          select_query_part ::= select_clause from_clause where_clause split_clause group_clause with_rollup_clause order_clause * limit_clause
+          limit_clause ::= * LIMIT NUMBER limit_offset_opt
+     (44) limit_clause ::= *
+
+                         LIMIT shift  89
+                  limit_clause shift  109
+                     {default} reduce 44
+
+State 37:
+          select_subquery_part ::= * LEFT_PAREN select_clause from_clause where_clause order_clause RIGHT_PAREN
+          expression ::= OP_EXISTS * select_subquery_part
+
+                    LEFT_PAREN shift  51
+          select_subquery_part shift  129
+
+State 38:
+          select_paren ::= * LEFT_PAREN select_query_part RIGHT_PAREN
+          select_union ::= select_union OP_UNION OP_DISTINCT * select_paren
+
+                    LEFT_PAREN shift  12
+                  select_paren shift  140
+
+State 39:
+          select_subquery_part ::= LEFT_PAREN select_clause from_clause where_clause * order_clause RIGHT_PAREN
+          order_clause ::= * ORDER BY order_expression comma_order_expression_opt
+     (36) order_clause ::= *
+
+                         ORDER shift  93
+                  order_clause shift  82
+                     {default} reduce 36
+
+State 40:
+          limit_clause ::= LIMIT NUMBER * limit_offset_opt
+          limit_offset_opt ::= * OFFSET NUMBER
+     (46) limit_offset_opt ::= *
+
+                        OFFSET shift  76
+              limit_offset_opt shift  103
+                     {default} reduce 46
+
+State 41:
+          select_subquery_part ::= LEFT_PAREN select_clause from_clause * where_clause order_clause RIGHT_PAREN
+          where_clause ::= * WHERE expression
+     (22) where_clause ::= *
+
+                         WHERE shift  21
+                  where_clause shift  39
+                     {default} reduce 22
+
+State 42:
+          select_query_part ::= select_clause from_clause where_clause split_clause group_clause with_rollup_clause * order_clause limit_clause
+          order_clause ::= * ORDER BY order_expression comma_order_expression_opt
+     (36) order_clause ::= *
+
+                         ORDER shift  93
+                  order_clause shift  36
+                     {default} reduce 36
+
+State 43:
+          select_subquery_part ::= * LEFT_PAREN select_clause from_clause where_clause order_clause RIGHT_PAREN
+          expression ::= COLUMN OP_NOT OP_IN * select_subquery_part
+
+                    LEFT_PAREN shift  51
+          select_subquery_part shift  104
+
+State 44:
+          select_query_part ::= select_clause from_clause where_clause split_clause group_clause * with_rollup_clause order_clause limit_clause
+          with_rollup_clause ::= * WITH ROLLUP
+     (34) with_rollup_clause ::= *
+
+                          WITH shift  81
+            with_rollup_clause shift  42
+                     {default} reduce 34
+
+State 45:
+          select_query_part ::= select_clause from_clause where_clause split_clause * group_clause with_rollup_clause order_clause limit_clause
+          group_clause ::= * GROUP BY group_expression group_expressions_extra
+     (29) group_clause ::= *
+
+                         GROUP shift  78
+                  group_clause shift  44
+                     {default} reduce 29
+
+State 46:
+          select_field ::= select_subquery_part * alias_optional
+          alias_optional ::= * AS LITERAL
+          alias_optional ::= * AS QUOTED
+     (18) alias_optional ::= *
+
+                            AS shift  74
+                alias_optional shift  139
+                     {default} reduce 18
+
+State 47:
+          select_query_part ::= select_clause from_clause where_clause * split_clause group_clause with_rollup_clause order_clause limit_clause
+          split_clause ::= * SPLIT BY split_expression split_expressions_extra
+     (24) split_clause ::= *
+
+                         SPLIT shift  90
+                  split_clause shift  45
+                     {default} reduce 24
+
+State 48:
+          select_query_part ::= select_clause from_clause * where_clause split_clause group_clause with_rollup_clause order_clause limit_clause
+          where_clause ::= * WHERE expression
+     (22) where_clause ::= *
+
+                         WHERE shift  21
+                  where_clause shift  47
+                     {default} reduce 22
+
+State 49:
+          select_query_part ::= select_clause * from_clause where_clause split_clause group_clause with_rollup_clause order_clause limit_clause
+          from_clause ::= * FROM LITERAL
+          from_clause ::= * FROM select_subquery_part
+
+                          FROM shift  33
+                   from_clause shift  48
+
+State 50:
+          select_subquery_part ::= * LEFT_PAREN select_clause from_clause where_clause order_clause RIGHT_PAREN
+          expression ::= COLUMN OP_IN * select_subquery_part
+
+                    LEFT_PAREN shift  51
+          select_subquery_part shift  99
+
+State 51:
+          select_subquery_part ::= LEFT_PAREN * select_clause from_clause where_clause order_clause RIGHT_PAREN
+          select_clause ::= * SELECT select_field select_fields_extra
+
+                        SELECT shift  2
+                 select_clause shift  52
+
+State 52:
+          select_subquery_part ::= LEFT_PAREN select_clause * from_clause where_clause order_clause RIGHT_PAREN
+          from_clause ::= * FROM LITERAL
+          from_clause ::= * FROM select_subquery_part
+
+                          FROM shift  33
+                   from_clause shift  41
+
+State 53:
+          start ::= select_query_part * trailing_semicolon
+          trailing_semicolon ::= * SEMICOLON
+      (3) trailing_semicolon ::= *
+
+                     SEMICOLON shift  98
+            trailing_semicolon shift  119
+                     {default} reduce 3
+
+State 54:
+          start ::= select_paren * select_union trailing_semicolon
+          select_union ::= * select_union OP_UNION select_paren
+          select_union ::= * select_union OP_UNION OP_DISTINCT select_paren
+      (7) select_union ::= *
+
+                  select_union shift  34
+                     {default} reduce 7
+
+State 55:
+          select_clause ::= SELECT select_field * select_fields_extra
+          select_fields_extra ::= * select_fields_extra COMMA select_field
+     (12) select_fields_extra ::= *
+
+           select_fields_extra shift  83
+                     {default} reduce 12
+
+State 56:
+          order_clause ::= ORDER BY order_expression * comma_order_expression_opt
+          comma_order_expression_opt ::= * comma_order_expression_opt COMMA order_expression
+     (42) comma_order_expression_opt ::= *
+
+    comma_order_expression_opt shift  85
+                     {default} reduce 42
+
+State 57:
+          split_clause ::= SPLIT BY split_expression * split_expressions_extra
+          split_expressions_extra ::= * split_expressions_extra COMMA split_expression
+     (26) split_expressions_extra ::= *
+
+       split_expressions_extra shift  95
+                     {default} reduce 26
+
+State 58:
+          group_clause ::= GROUP BY group_expression * group_expressions_extra
+          group_expressions_extra ::= * group_expressions_extra COMMA group_expression
+     (31) group_expressions_extra ::= *
+
+       group_expressions_extra shift  87
+                     {default} reduce 31
+
+State 59:
+          expression ::= expression * OP_EQ|OP_NE|OP_GT|OP_GTEQ|OP_LT|OP_LTEQ expression
+          expression ::= expression * OP_OR|OP_AND expression
+          expression ::= expression * OP_MINUS|OP_PLUS interval_expression
+          expression ::= expression * OP_MULTIPLY|OP_DIVIDE expression
+          expression ::= expression * OP_LIKE expression
+          expression ::= expression * OP_NOT OP_LIKE expression
+          expression ::= expression * OP_REGEXP expression
+          expression ::= expression * OP_NOT OP_REGEXP expression
+          expression ::= expression * OP_IN LEFT_PAREN expression comma_expressions_opt RIGHT_PAREN
+          expression ::= expression * OP_NOT OP_IN LEFT_PAREN expression comma_expressions_opt RIGHT_PAREN
+          expression ::= LEFT_PAREN expression * RIGHT_PAREN
+
+                         OP_OR shift  19
+                        OP_AND shift  19
+                        OP_NOT shift  70
+                         OP_EQ shift  22
+                         OP_NE shift  22
+                         OP_GT shift  22
+                       OP_GTEQ shift  22
+                         OP_LT shift  22
+                       OP_LTEQ shift  22
+                         OP_IN shift  79
+                       OP_LIKE shift  27
+                     OP_REGEXP shift  32
+                      OP_MINUS shift  4
+                       OP_PLUS shift  4
+                   OP_MULTIPLY shift  25
+                     OP_DIVIDE shift  25
+                   RIGHT_PAREN shift  120
+
+State 60:
+     (27) split_expression ::= expression *
+          expression ::= expression * OP_EQ|OP_NE|OP_GT|OP_GTEQ|OP_LT|OP_LTEQ expression
+          expression ::= expression * OP_OR|OP_AND expression
+          expression ::= expression * OP_MINUS|OP_PLUS interval_expression
+          expression ::= expression * OP_MULTIPLY|OP_DIVIDE expression
+          expression ::= expression * OP_LIKE expression
+          expression ::= expression * OP_NOT OP_LIKE expression
+          expression ::= expression * OP_REGEXP expression
+          expression ::= expression * OP_NOT OP_REGEXP expression
+          expression ::= expression * OP_IN LEFT_PAREN expression comma_expressions_opt RIGHT_PAREN
+          expression ::= expression * OP_NOT OP_IN LEFT_PAREN expression comma_expressions_opt RIGHT_PAREN
+
+                         OP_OR shift  19
+                        OP_AND shift  19
+                        OP_NOT shift  70
+                         OP_EQ shift  22
+                         OP_NE shift  22
+                         OP_GT shift  22
+                       OP_GTEQ shift  22
+                         OP_LT shift  22
+                       OP_LTEQ shift  22
+                         OP_IN shift  79
+                       OP_LIKE shift  27
+                     OP_REGEXP shift  32
+                      OP_MINUS shift  4
+                       OP_PLUS shift  4
+                   OP_MULTIPLY shift  25
+                     OP_DIVIDE shift  25
+                     {default} reduce 27
+
+State 61:
+          expression ::= expression * OP_EQ|OP_NE|OP_GT|OP_GTEQ|OP_LT|OP_LTEQ expression
+          expression ::= expression * OP_OR|OP_AND expression
+          expression ::= expression * OP_MINUS|OP_PLUS interval_expression
+          expression ::= expression * OP_MULTIPLY|OP_DIVIDE expression
+          expression ::= expression * OP_LIKE expression
+          expression ::= expression * OP_NOT OP_LIKE expression
+          expression ::= expression * OP_REGEXP expression
+          expression ::= expression * OP_NOT OP_REGEXP expression
+          expression ::= expression * OP_IN LEFT_PAREN expression comma_expressions_opt RIGHT_PAREN
+          expression ::= expression * OP_NOT OP_IN LEFT_PAREN expression comma_expressions_opt RIGHT_PAREN
+     (77) comma_expressions_opt ::= comma_expressions_opt COMMA expression *
+
+                         OP_OR shift  19
+                        OP_AND shift  19
+                        OP_NOT shift  70
+                         OP_EQ shift  22
+                         OP_NE shift  22
+                         OP_GT shift  22
+                       OP_GTEQ shift  22
+                         OP_LT shift  22
+                       OP_LTEQ shift  22
+                         OP_IN shift  79
+                       OP_LIKE shift  27
+                     OP_REGEXP shift  32
+                      OP_MINUS shift  4
+                       OP_PLUS shift  4
+                   OP_MULTIPLY shift  25
+                     OP_DIVIDE shift  25
+                     {default} reduce 77
+
+State 62:
+     (21) where_clause ::= WHERE expression *
+          expression ::= expression * OP_EQ|OP_NE|OP_GT|OP_GTEQ|OP_LT|OP_LTEQ expression
+          expression ::= expression * OP_OR|OP_AND expression
+          expression ::= expression * OP_MINUS|OP_PLUS interval_expression
+          expression ::= expression * OP_MULTIPLY|OP_DIVIDE expression
+          expression ::= expression * OP_LIKE expression
+          expression ::= expression * OP_NOT OP_LIKE expression
+          expression ::= expression * OP_REGEXP expression
+          expression ::= expression * OP_NOT OP_REGEXP expression
+          expression ::= expression * OP_IN LEFT_PAREN expression comma_expressions_opt RIGHT_PAREN
+          expression ::= expression * OP_NOT OP_IN LEFT_PAREN expression comma_expressions_opt RIGHT_PAREN
+
+                         OP_OR shift  19
+                        OP_AND shift  19
+                        OP_NOT shift  70
+                         OP_EQ shift  22
+                         OP_NE shift  22
+                         OP_GT shift  22
+                       OP_GTEQ shift  22
+                         OP_LT shift  22
+                       OP_LTEQ shift  22
+                         OP_IN shift  79
+                       OP_LIKE shift  27
+                     OP_REGEXP shift  32
+                      OP_MINUS shift  4
+                       OP_PLUS shift  4
+                   OP_MULTIPLY shift  25
+                     OP_DIVIDE shift  25
+                     {default} reduce 21
+
+State 63:
+          expression ::= expression * OP_EQ|OP_NE|OP_GT|OP_GTEQ|OP_LT|OP_LTEQ expression
+          expression ::= expression * OP_OR|OP_AND expression
+          expression ::= expression * OP_MINUS|OP_PLUS interval_expression
+     (54) interval_expression ::= expression *
+          expression ::= expression * OP_MULTIPLY|OP_DIVIDE expression
+          expression ::= expression * OP_LIKE expression
+          expression ::= expression * OP_NOT OP_LIKE expression
+          expression ::= expression * OP_REGEXP expression
+          expression ::= expression * OP_NOT OP_REGEXP expression
+          expression ::= expression * OP_IN LEFT_PAREN expression comma_expressions_opt RIGHT_PAREN
+          expression ::= expression * OP_NOT OP_IN LEFT_PAREN expression comma_expressions_opt RIGHT_PAREN
+
+                         OP_OR shift  19
+                         OP_OR reduce 54  ** Parsing conflict **
+                        OP_AND shift  19
+                        OP_AND reduce 54  ** Parsing conflict **
+                        OP_NOT shift  70
+                        OP_NOT reduce 54  ** Parsing conflict **
+                         OP_EQ shift  22
+                         OP_EQ reduce 54  ** Parsing conflict **
+                         OP_NE shift  22
+                         OP_NE reduce 54  ** Parsing conflict **
+                         OP_GT shift  22
+                         OP_GT reduce 54  ** Parsing conflict **
+                       OP_GTEQ shift  22
+                       OP_GTEQ reduce 54  ** Parsing conflict **
+                         OP_LT shift  22
+                         OP_LT reduce 54  ** Parsing conflict **
+                       OP_LTEQ shift  22
+                       OP_LTEQ reduce 54  ** Parsing conflict **
+                         OP_IN shift  79
+                         OP_IN reduce 54  ** Parsing conflict **
+                       OP_LIKE shift  27
+                       OP_LIKE reduce 54  ** Parsing conflict **
+                     OP_REGEXP shift  32
+                     OP_REGEXP reduce 54  ** Parsing conflict **
+                      OP_MINUS shift  4
+                      OP_MINUS reduce 54  ** Parsing conflict **
+                       OP_PLUS shift  4
+                       OP_PLUS reduce 54  ** Parsing conflict **
+                   OP_MULTIPLY shift  25
+                   OP_MULTIPLY reduce 54  ** Parsing conflict **
+                     OP_DIVIDE shift  25
+                     OP_DIVIDE reduce 54  ** Parsing conflict **
+                     {default} reduce 54
+
+State 64:
+          expression ::= expression * OP_EQ|OP_NE|OP_GT|OP_GTEQ|OP_LT|OP_LTEQ expression
+          expression ::= expression * OP_OR|OP_AND expression
+     (51) expression ::= expression OP_OR|OP_AND expression *
+          expression ::= expression * OP_MINUS|OP_PLUS interval_expression
+          expression ::= expression * OP_MULTIPLY|OP_DIVIDE expression
+          expression ::= expression * OP_LIKE expression
+          expression ::= expression * OP_NOT OP_LIKE expression
+          expression ::= expression * OP_REGEXP expression
+          expression ::= expression * OP_NOT OP_REGEXP expression
+          expression ::= expression * OP_IN LEFT_PAREN expression comma_expressions_opt RIGHT_PAREN
+          expression ::= expression * OP_NOT OP_IN LEFT_PAREN expression comma_expressions_opt RIGHT_PAREN
+
+                        OP_AND shift  19
+                        OP_NOT shift  70
+                         OP_EQ shift  22
+                         OP_NE shift  22
+                         OP_GT shift  22
+                       OP_GTEQ shift  22
+                         OP_LT shift  22
+                       OP_LTEQ shift  22
+                         OP_IN shift  79
+                       OP_LIKE shift  27
+                     OP_REGEXP shift  32
+                      OP_MINUS shift  4
+                       OP_PLUS shift  4
+                   OP_MULTIPLY shift  25
+                     OP_DIVIDE shift  25
+                     {default} reduce 51
+
+State 65:
+          expression ::= expression * OP_EQ|OP_NE|OP_GT|OP_GTEQ|OP_LT|OP_LTEQ expression
+          expression ::= expression * OP_OR|OP_AND expression
+          expression ::= expression * OP_MINUS|OP_PLUS interval_expression
+          expression ::= expression * OP_MULTIPLY|OP_DIVIDE expression
+          expression ::= expression * OP_LIKE expression
+          expression ::= expression * OP_NOT OP_LIKE expression
+     (57) expression ::= expression OP_NOT OP_LIKE expression *
+          expression ::= expression * OP_REGEXP expression
+          expression ::= expression * OP_NOT OP_REGEXP expression
+          expression ::= expression * OP_IN LEFT_PAREN expression comma_expressions_opt RIGHT_PAREN
+          expression ::= expression * OP_NOT OP_IN LEFT_PAREN expression comma_expressions_opt RIGHT_PAREN
+
+                        OP_NOT shift  70
+                         OP_EQ shift  22
+                         OP_NE shift  22
+                         OP_GT shift  22
+                       OP_GTEQ shift  22
+                         OP_LT shift  22
+                       OP_LTEQ shift  22
+                         OP_IN shift  79
+                       OP_LIKE shift  27
+                     OP_REGEXP shift  32
+                      OP_MINUS shift  4
+                       OP_PLUS shift  4
+                   OP_MULTIPLY shift  25
+                     OP_DIVIDE shift  25
+                     {default} reduce 57
+
+State 66:
+          expression ::= expression * OP_EQ|OP_NE|OP_GT|OP_GTEQ|OP_LT|OP_LTEQ expression
+          expression ::= expression * OP_OR|OP_AND expression
+          expression ::= expression * OP_MINUS|OP_PLUS interval_expression
+          expression ::= expression * OP_MULTIPLY|OP_DIVIDE expression
+          expression ::= expression * OP_LIKE expression
+          expression ::= expression * OP_NOT OP_LIKE expression
+          expression ::= expression * OP_REGEXP expression
+          expression ::= expression * OP_NOT OP_REGEXP expression
+     (59) expression ::= expression OP_NOT OP_REGEXP expression *
+          expression ::= expression * OP_IN LEFT_PAREN expression comma_expressions_opt RIGHT_PAREN
+          expression ::= expression * OP_NOT OP_IN LEFT_PAREN expression comma_expressions_opt RIGHT_PAREN
+
+                        OP_NOT shift  70
+                         OP_EQ shift  22
+                         OP_NE shift  22
+                         OP_GT shift  22
+                       OP_GTEQ shift  22
+                         OP_LT shift  22
+                       OP_LTEQ shift  22
+                         OP_IN shift  79
+                       OP_LIKE shift  27
+                     OP_REGEXP shift  32
+                      OP_MINUS shift  4
+                       OP_PLUS shift  4
+                   OP_MULTIPLY shift  25
+                     OP_DIVIDE shift  25
+                     {default} reduce 59
+
+State 67:
+          expression ::= expression * OP_EQ|OP_NE|OP_GT|OP_GTEQ|OP_LT|OP_LTEQ expression
+     (50) expression ::= expression OP_EQ|OP_NE|OP_GT|OP_GTEQ|OP_LT|OP_LTEQ expression *
+          expression ::= expression * OP_OR|OP_AND expression
+          expression ::= expression * OP_MINUS|OP_PLUS interval_expression
+          expression ::= expression * OP_MULTIPLY|OP_DIVIDE expression
+          expression ::= expression * OP_LIKE expression
+          expression ::= expression * OP_NOT OP_LIKE expression
+          expression ::= expression * OP_REGEXP expression
+          expression ::= expression * OP_NOT OP_REGEXP expression
+          expression ::= expression * OP_IN LEFT_PAREN expression comma_expressions_opt RIGHT_PAREN
+          expression ::= expression * OP_NOT OP_IN LEFT_PAREN expression comma_expressions_opt RIGHT_PAREN
+
+                      OP_MINUS shift  4
+                       OP_PLUS shift  4
+                   OP_MULTIPLY shift  25
+                     OP_DIVIDE shift  25
+                     {default} reduce 50
+
+State 68:
+          expression ::= expression * OP_EQ|OP_NE|OP_GT|OP_GTEQ|OP_LT|OP_LTEQ expression
+          expression ::= expression * OP_OR|OP_AND expression
+          expression ::= expression * OP_MINUS|OP_PLUS interval_expression
+          expression ::= expression * OP_MULTIPLY|OP_DIVIDE expression
+          expression ::= expression * OP_LIKE expression
+          expression ::= expression * OP_NOT OP_LIKE expression
+          expression ::= expression * OP_REGEXP expression
+     (58) expression ::= expression OP_REGEXP expression *
+          expression ::= expression * OP_NOT OP_REGEXP expression
+          expression ::= expression * OP_IN LEFT_PAREN expression comma_expressions_opt RIGHT_PAREN
+          expression ::= expression * OP_NOT OP_IN LEFT_PAREN expression comma_expressions_opt RIGHT_PAREN
+
+                      OP_MINUS shift  4
+                       OP_PLUS shift  4
+                   OP_MULTIPLY shift  25
+                     OP_DIVIDE shift  25
+                     {default} reduce 58
+
+State 69:
+          expression ::= expression * OP_EQ|OP_NE|OP_GT|OP_GTEQ|OP_LT|OP_LTEQ expression
+          expression ::= expression * OP_OR|OP_AND expression
+          expression ::= expression * OP_MINUS|OP_PLUS interval_expression
+          expression ::= expression * OP_MULTIPLY|OP_DIVIDE expression
+          expression ::= expression * OP_LIKE expression
+     (56) expression ::= expression OP_LIKE expression *
+          expression ::= expression * OP_NOT OP_LIKE expression
+          expression ::= expression * OP_REGEXP expression
+          expression ::= expression * OP_NOT OP_REGEXP expression
+          expression ::= expression * OP_IN LEFT_PAREN expression comma_expressions_opt RIGHT_PAREN
+          expression ::= expression * OP_NOT OP_IN LEFT_PAREN expression comma_expressions_opt RIGHT_PAREN
+
+                      OP_MINUS shift  4
+                       OP_PLUS shift  4
+                   OP_MULTIPLY shift  25
+                     OP_DIVIDE shift  25
+                     {default} reduce 56
+
+State 70:
+          expression ::= expression OP_NOT * OP_LIKE expression
+          expression ::= expression OP_NOT * OP_REGEXP expression
+          expression ::= expression OP_NOT * OP_IN LEFT_PAREN expression comma_expressions_opt RIGHT_PAREN
+
+                         OP_IN shift  86
+                       OP_LIKE shift  30
+                     OP_REGEXP shift  23
+
+State 71:
+          expression ::= AT * LITERAL
+          expression ::= AT * QUOTED
+
+                       LITERAL shift  125
+                        QUOTED shift  114
+
+State 72:
+          expression ::= COLUMN * OP_IN select_subquery_part
+          expression ::= COLUMN * OP_NOT OP_IN select_subquery_part
+     (66) expression ::= COLUMN *
+
+                        OP_NOT shift  84
+                        OP_NOT reduce 66  ** Parsing conflict **
+                         OP_IN shift  50
+                         OP_IN reduce 66  ** Parsing conflict **
+                     {default} reduce 66
+
+State 73:
+          expression ::= expression OP_NOT OP_IN LEFT_PAREN expression comma_expressions_opt * RIGHT_PAREN
+          comma_expressions_opt ::= comma_expressions_opt * COMMA expression
+
+                   RIGHT_PAREN shift  131
+                         COMMA shift  31
+
+State 74:
+          alias_optional ::= AS * LITERAL
+          alias_optional ::= AS * QUOTED
+
+                       LITERAL shift  127
+                        QUOTED shift  113
+
+State 75:
+          expression ::= expression OP_IN LEFT_PAREN expression comma_expressions_opt * RIGHT_PAREN
+          comma_expressions_opt ::= comma_expressions_opt * COMMA expression
+
+                   RIGHT_PAREN shift  115
+                         COMMA shift  31
+
+State 76:
+          limit_offset_opt ::= OFFSET * NUMBER
+
+                        NUMBER shift  102
+
+State 77:
+          interval_expression ::= INTERVAL * NUMBER LITERAL
+
+                        NUMBER shift  80
+
+State 78:
+          group_clause ::= GROUP * BY group_expression group_expressions_extra
+
+                            BY shift  10
+
+State 79:
+          expression ::= expression OP_IN * LEFT_PAREN expression comma_expressions_opt RIGHT_PAREN
+
+                    LEFT_PAREN shift  24
+
+State 80:
+          interval_expression ::= INTERVAL NUMBER * LITERAL
+
+                       LITERAL shift  133
+
+State 81:
+          with_rollup_clause ::= WITH * ROLLUP
+
+                        ROLLUP shift  107
+
+State 82:
+          select_subquery_part ::= LEFT_PAREN select_clause from_clause where_clause order_clause * RIGHT_PAREN
+
+                   RIGHT_PAREN shift  130
+
+State 83:
+     (10) select_clause ::= SELECT select_field select_fields_extra *
+          select_fields_extra ::= select_fields_extra * COMMA select_field
+
+                         COMMA shift  1
+                     {default} reduce 10
+
+State 84:
+          expression ::= COLUMN OP_NOT * OP_IN select_subquery_part
+
+                         OP_IN shift  43
+
+State 85:
+     (35) order_clause ::= ORDER BY order_expression comma_order_expression_opt *
+          comma_order_expression_opt ::= comma_order_expression_opt * COMMA order_expression
+
+                         COMMA shift  8
+                     {default} reduce 35
+
+State 86:
+          expression ::= expression OP_NOT OP_IN * LEFT_PAREN expression comma_expressions_opt RIGHT_PAREN
+
+                    LEFT_PAREN shift  20
+
+State 87:
+     (28) group_clause ::= GROUP BY group_expression group_expressions_extra *
+          group_expressions_extra ::= group_expressions_extra * COMMA group_expression
+
+                         COMMA shift  11
+                     {default} reduce 28
+
+State 88:
+     (75) func_args ::= expression comma_expressions_opt *
+          comma_expressions_opt ::= comma_expressions_opt * COMMA expression
+
+                         COMMA shift  31
+                     {default} reduce 75
+
+State 89:
+          limit_clause ::= LIMIT * NUMBER limit_offset_opt
+
+                        NUMBER shift  40
+
+State 90:
+          split_clause ::= SPLIT * BY split_expression split_expressions_extra
+
+                            BY shift  7
+
+State 91:
+          select_paren ::= LEFT_PAREN select_query_part * RIGHT_PAREN
+
+                   RIGHT_PAREN shift  106
+
+State 92:
+          expression ::= LITERAL LEFT_PAREN func_args * RIGHT_PAREN
+
+                   RIGHT_PAREN shift  121
+
+State 93:
+          order_clause ::= ORDER * BY order_expression comma_order_expression_opt
+
+                            BY shift  9
+
+State 94:
+          expression ::= LITERAL * LEFT_PAREN func_args RIGHT_PAREN
+     (67) expression ::= LITERAL *
+
+                    LEFT_PAREN shift  5
+                     {default} reduce 67
+
+State 95:
+     (23) split_clause ::= SPLIT BY split_expression split_expressions_extra *
+          split_expressions_extra ::= split_expressions_extra * COMMA split_expression
+
+                         COMMA shift  6
+                     {default} reduce 23
+
+State 96:
+      (1) start ::= select_paren select_union trailing_semicolon *
+
+                     {default} reduce 1
+
+State 97:
+     (15) select_field ::= COLUMN_STAR *
+
+                     {default} reduce 15
+
+State 98:
+      (2) trailing_semicolon ::= SEMICOLON *
+
+                     {default} reduce 2
+
+State 99:
+     (47) expression ::= COLUMN OP_IN select_subquery_part *
+
+                     {default} reduce 47
+
+State 100:
+      (5) select_union ::= select_union OP_UNION select_paren *
+
+                     {default} reduce 5
+
+State 101:
+     (25) split_expressions_extra ::= split_expressions_extra COMMA split_expression *
+
+                     {default} reduce 25
+
+State 102:
+     (45) limit_offset_opt ::= OFFSET NUMBER *
+
+                     {default} reduce 45
+
+State 103:
+     (43) limit_clause ::= LIMIT NUMBER limit_offset_opt *
+
+                     {default} reduce 43
+
+State 104:
+     (48) expression ::= COLUMN OP_NOT OP_IN select_subquery_part *
+
+                     {default} reduce 48
+
+State 105:
+     (41) comma_order_expression_opt ::= comma_order_expression_opt COMMA order_expression *
+
+                     {default} reduce 41
+
+State 106:
+      (4) select_paren ::= LEFT_PAREN select_query_part RIGHT_PAREN *
+
+                     {default} reduce 4
+
+State 107:
+     (33) with_rollup_clause ::= WITH ROLLUP *
+
+                     {default} reduce 33
+
+State 108:
+     (32) group_expression ::= expression alias_optional *
+
+                     {default} reduce 32
+
+State 109:
+      (8) select_query_part ::= select_clause from_clause where_clause split_clause group_clause with_rollup_clause order_clause limit_clause *
+
+                     {default} reduce 8
+
+State 110:
+     (30) group_expressions_extra ::= group_expressions_extra COMMA group_expression *
+
+                     {default} reduce 30
+
+State 111:
+     (14) select_field ::= expression alias_optional *
+
+                     {default} reduce 14
+
+State 112:
+     (20) from_clause ::= FROM select_subquery_part *
+
+                     {default} reduce 20
+
+State 113:
+     (17) alias_optional ::= AS QUOTED *
+
+                     {default} reduce 17
+
+State 114:
+     (72) expression ::= AT QUOTED *
+
+                     {default} reduce 72
+
+State 115:
+     (60) expression ::= expression OP_IN LEFT_PAREN expression comma_expressions_opt RIGHT_PAREN *
+
+                     {default} reduce 60
+
+State 116:
+          expression ::= expression * OP_EQ|OP_NE|OP_GT|OP_GTEQ|OP_LT|OP_LTEQ expression
+          expression ::= expression * OP_OR|OP_AND expression
+          expression ::= expression * OP_MINUS|OP_PLUS interval_expression
+          expression ::= expression * OP_MULTIPLY|OP_DIVIDE expression
+          expression ::= expression * OP_LIKE expression
+          expression ::= expression * OP_NOT OP_LIKE expression
+          expression ::= expression * OP_REGEXP expression
+          expression ::= expression * OP_NOT OP_REGEXP expression
+          expression ::= expression * OP_IN LEFT_PAREN expression comma_expressions_opt RIGHT_PAREN
+          expression ::= expression * OP_NOT OP_IN LEFT_PAREN expression comma_expressions_opt RIGHT_PAREN
+     (62) expression ::= OP_MINUS expression *
+
+                     {default} reduce 62
+
+State 117:
+          expression ::= expression * OP_EQ|OP_NE|OP_GT|OP_GTEQ|OP_LT|OP_LTEQ expression
+          expression ::= expression * OP_OR|OP_AND expression
+          expression ::= expression * OP_MINUS|OP_PLUS interval_expression
+          expression ::= expression * OP_MULTIPLY|OP_DIVIDE expression
+          expression ::= expression * OP_LIKE expression
+          expression ::= expression * OP_NOT OP_LIKE expression
+          expression ::= expression * OP_REGEXP expression
+          expression ::= expression * OP_NOT OP_REGEXP expression
+          expression ::= expression * OP_IN LEFT_PAREN expression comma_expressions_opt RIGHT_PAREN
+          expression ::= expression * OP_NOT OP_IN LEFT_PAREN expression comma_expressions_opt RIGHT_PAREN
+     (63) expression ::= OP_BANG|OP_NOT expression *
+
+                     {default} reduce 63
+
+State 118:
+          expression ::= expression * OP_EQ|OP_NE|OP_GT|OP_GTEQ|OP_LT|OP_LTEQ expression
+          expression ::= expression * OP_OR|OP_AND expression
+          expression ::= expression * OP_MINUS|OP_PLUS interval_expression
+          expression ::= expression * OP_MULTIPLY|OP_DIVIDE expression
+     (55) expression ::= expression OP_MULTIPLY|OP_DIVIDE expression *
+          expression ::= expression * OP_LIKE expression
+          expression ::= expression * OP_NOT OP_LIKE expression
+          expression ::= expression * OP_REGEXP expression
+          expression ::= expression * OP_NOT OP_REGEXP expression
+          expression ::= expression * OP_IN LEFT_PAREN expression comma_expressions_opt RIGHT_PAREN
+          expression ::= expression * OP_NOT OP_IN LEFT_PAREN expression comma_expressions_opt RIGHT_PAREN
+
+                     {default} reduce 55
+
+State 119:
+      (0) start ::= select_query_part trailing_semicolon *
+
+                     {default} reduce 0
+
+State 120:
+     (64) expression ::= LEFT_PAREN expression RIGHT_PAREN *
+
+                     {default} reduce 64
+
+State 121:
+     (65) expression ::= LITERAL LEFT_PAREN func_args RIGHT_PAREN *
+
+                     {default} reduce 65
+
+State 122:
+     (68) expression ::= QUOTED *
+
+                     {default} reduce 68
+
+State 123:
+     (69) expression ::= PLACEHOLDER *
+
+                     {default} reduce 69
+
+State 124:
+     (70) expression ::= VARIABLE *
+
+                     {default} reduce 70
+
+State 125:
+     (71) expression ::= AT LITERAL *
+
+                     {default} reduce 71
+
+State 126:
+     (73) expression ::= NUMBER *
+
+                     {default} reduce 73
+
+State 127:
+     (16) alias_optional ::= AS LITERAL *
+
+                     {default} reduce 16
+
+State 128:
+     (74) expression ::= NULL *
+
+                     {default} reduce 74
+
+State 129:
+     (49) expression ::= OP_EXISTS select_subquery_part *
+
+                     {default} reduce 49
+
+State 130:
+      (9) select_subquery_part ::= LEFT_PAREN select_clause from_clause where_clause order_clause RIGHT_PAREN *
+
+                     {default} reduce 9
+
+State 131:
+     (61) expression ::= expression OP_NOT OP_IN LEFT_PAREN expression comma_expressions_opt RIGHT_PAREN *
+
+                     {default} reduce 61
+
+State 132:
+     (52) expression ::= expression OP_MINUS|OP_PLUS interval_expression *
+
+                     {default} reduce 52
+
+State 133:
+     (53) interval_expression ::= INTERVAL NUMBER LITERAL *
+
+                     {default} reduce 53
+
+State 134:
+     (19) from_clause ::= FROM LITERAL *
+
+                     {default} reduce 19
+
+State 135:
+     (39) direction_opt ::= DESC *
+
+                     {default} reduce 39
+
+State 136:
+     (38) direction_opt ::= ASC *
+
+                     {default} reduce 38
+
+State 137:
+     (37) order_expression ::= expression direction_opt *
+
+                     {default} reduce 37
+
+State 138:
+     (11) select_fields_extra ::= select_fields_extra COMMA select_field *
+
+                     {default} reduce 11
+
+State 139:
+     (13) select_field ::= select_subquery_part alias_optional *
+
+                     {default} reduce 13
+
+State 140:
+      (6) select_union ::= select_union OP_UNION OP_DISTINCT select_paren *
+
+                     {default} reduce 6
+

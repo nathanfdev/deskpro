@@ -30,50 +30,31 @@
  * DeskPRO.
  */
 
-namespace Application\DeskPRO\Command;
+namespace Application\DeskPRO\Dpql2\Placeholder;
 
-use Symfony\Bundle\FrameworkBundle\Command\ContainerAwareCommand;
-use Symfony\Component\Console\Input\InputInterface;
-use Symfony\Component\Console\Output\OutputInterface;
+use Application\DeskPRO\App;
 
-class TestCommand extends ContainerAwareCommand
+/**
+ * Place holder for the past week (today - 1 week), based on the current person's time zone.
+ */
+class Past7Days extends AbstractDateRange
 {
     /**
-     * {@inheritdoc}
+     * Gets the date range components (printable, start, end).
+     *
+     * @return string[int]
      */
-    protected function configure()
+    protected function _getDateRange()
     {
-        $this->setName('dp:test');
-    }
+        $tz   = App::getCurrentPerson()->getTimezone();
+        $date = new \DateTime('now', new \DateTimeZone($tz));
 
-    /**
-     * @return \Application\DeskPRO\DependencyInjection\DeskproContainer
-     */
-    public function getContainer()
-    {
-        return parent::getContainer();
-    }
+        $now   = $date->format('Y-m-d H:i:s');
+        $today = $date->format('Y-m-d');
 
-    /**
-     * {@inheritdoc}
-     */
-    protected function execute(InputInterface $input, OutputInterface $output)
-    {
-        $dpql = "
-            SELECT tickets.id
-            FROM tickets
-            WHERE tickets.id IN (
-                SELECT tickets.id
-                FROM tickets
-                WHERE tickets.ref LIKE 'AAAA-%'
-            )
-        ";
+        $date->modify('-7 days');
+        $beginning = $date->format('Y-m-d');
 
-        $compiler  = new \Application\DeskPRO\Dpql2\Compiler();
-        $statement = $compiler->compile($dpql, []);
-
-        print_r($statement);
-
-        return 0;
+        return ["$beginning to $today", "$beginning 00:00:00", $now];
     }
 }

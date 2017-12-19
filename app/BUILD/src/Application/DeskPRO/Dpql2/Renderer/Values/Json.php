@@ -30,50 +30,48 @@
  * DeskPRO.
  */
 
-namespace Application\DeskPRO\Command;
+namespace Application\DeskPRO\Dpql2\Renderer\Values;
 
-use Symfony\Bundle\FrameworkBundle\Command\ContainerAwareCommand;
-use Symfony\Component\Console\Input\InputInterface;
-use Symfony\Component\Console\Output\OutputInterface;
-
-class TestCommand extends ContainerAwareCommand
+/**
+ * Value renderer for HTML output.
+ */
+class Json extends AbstractValues
 {
     /**
-     * {@inheritdoc}
+     * Renders a null value.
+     *
+     * @return string
      */
-    protected function configure()
+    protected function _renderNull()
     {
-        $this->setName('dp:test');
+        return '';
     }
 
     /**
-     * @return \Application\DeskPRO\DependencyInjection\DeskproContainer
+     * Renders a boolean value.
+     *
+     * @param bool $value
+     *
+     * @return string
      */
-    public function getContainer()
+    protected function _renderBoolean($value)
     {
-        return parent::getContainer();
+        if ($value) {
+            return true;
+        } else {
+            return false;
+        }
     }
 
     /**
-     * {@inheritdoc}
+     * Escapes the value for direct output.
+     *
+     * @param string $value
+     *
+     * @return string
      */
-    protected function execute(InputInterface $input, OutputInterface $output)
+    public function escapeValue($value)
     {
-        $dpql = "
-            SELECT tickets.id
-            FROM tickets
-            WHERE tickets.id IN (
-                SELECT tickets.id
-                FROM tickets
-                WHERE tickets.ref LIKE 'AAAA-%'
-            )
-        ";
-
-        $compiler  = new \Application\DeskPRO\Dpql2\Compiler();
-        $statement = $compiler->compile($dpql, []);
-
-        print_r($statement);
-
-        return 0;
+        return htmlspecialchars($value);
     }
 }

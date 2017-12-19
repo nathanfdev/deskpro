@@ -30,50 +30,20 @@
  * DeskPRO.
  */
 
-namespace Application\DeskPRO\Command;
+namespace Application\DeskPRO\Dpql2\Placeholder;
 
-use Symfony\Bundle\FrameworkBundle\Command\ContainerAwareCommand;
-use Symfony\Component\Console\Input\InputInterface;
-use Symfony\Component\Console\Output\OutputInterface;
-
-class TestCommand extends ContainerAwareCommand
+/**
+ * Place holder for a non-restricted date.
+ */
+class Ever extends AbstractDateRange
 {
     /**
-     * {@inheritdoc}
+     * Gets the date range components (printable, start, end).
+     *
+     * @return array
      */
-    protected function configure()
+    protected function _getDateRange()
     {
-        $this->setName('dp:test');
-    }
-
-    /**
-     * @return \Application\DeskPRO\DependencyInjection\DeskproContainer
-     */
-    public function getContainer()
-    {
-        return parent::getContainer();
-    }
-
-    /**
-     * {@inheritdoc}
-     */
-    protected function execute(InputInterface $input, OutputInterface $output)
-    {
-        $dpql = "
-            SELECT tickets.id
-            FROM tickets
-            WHERE tickets.id IN (
-                SELECT tickets.id
-                FROM tickets
-                WHERE tickets.ref LIKE 'AAAA-%'
-            )
-        ";
-
-        $compiler  = new \Application\DeskPRO\Dpql2\Compiler();
-        $statement = $compiler->compile($dpql, []);
-
-        print_r($statement);
-
-        return 0;
+        return ['ever'];
     }
 }

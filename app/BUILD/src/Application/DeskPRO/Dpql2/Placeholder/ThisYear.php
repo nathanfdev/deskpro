@@ -30,50 +30,27 @@
  * DeskPRO.
  */
 
-namespace Application\DeskPRO\Command;
+namespace Application\DeskPRO\Dpql2\Placeholder;
 
-use Symfony\Bundle\FrameworkBundle\Command\ContainerAwareCommand;
-use Symfony\Component\Console\Input\InputInterface;
-use Symfony\Component\Console\Output\OutputInterface;
+use Application\DeskPRO\App;
 
-class TestCommand extends ContainerAwareCommand
+/**
+ * Placeholder for the current year (first to last day), based on the current person's time zone.
+ */
+class ThisYear extends AbstractDateRange
 {
     /**
-     * {@inheritdoc}
+     * Gets the date range components (printable, start, end).
+     *
+     * @return string[int]
      */
-    protected function configure()
+    protected function _getDateRange()
     {
-        $this->setName('dp:test');
-    }
+        $tz   = App::getCurrentPerson()->getTimezone();
+        $date = new \DateTime('now', new \DateTimeZone($tz));
 
-    /**
-     * @return \Application\DeskPRO\DependencyInjection\DeskproContainer
-     */
-    public function getContainer()
-    {
-        return parent::getContainer();
-    }
+        $year = $date->format('Y');
 
-    /**
-     * {@inheritdoc}
-     */
-    protected function execute(InputInterface $input, OutputInterface $output)
-    {
-        $dpql = "
-            SELECT tickets.id
-            FROM tickets
-            WHERE tickets.id IN (
-                SELECT tickets.id
-                FROM tickets
-                WHERE tickets.ref LIKE 'AAAA-%'
-            )
-        ";
-
-        $compiler  = new \Application\DeskPRO\Dpql2\Compiler();
-        $statement = $compiler->compile($dpql, []);
-
-        print_r($statement);
-
-        return 0;
+        return [$year, "$year-01-01 00:00:00", "$year-12-31 23:59:59"];
     }
 }

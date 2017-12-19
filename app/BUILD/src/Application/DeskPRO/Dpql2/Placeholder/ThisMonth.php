@@ -30,50 +30,32 @@
  * DeskPRO.
  */
 
-namespace Application\DeskPRO\Command;
+namespace Application\DeskPRO\Dpql2\Placeholder;
 
-use Symfony\Bundle\FrameworkBundle\Command\ContainerAwareCommand;
-use Symfony\Component\Console\Input\InputInterface;
-use Symfony\Component\Console\Output\OutputInterface;
+use Application\DeskPRO\App;
 
-class TestCommand extends ContainerAwareCommand
+/**
+ * Placeholder for the current month (first to last day), based on the current person's time zone.
+ */
+class ThisMonth extends AbstractDateRange
 {
     /**
-     * {@inheritdoc}
+     * Gets the date range components (printable, start, end).
+     *
+     * @return string[int]
      */
-    protected function configure()
+    protected function _getDateRange()
     {
-        $this->setName('dp:test');
-    }
+        $tz   = new \DateTimeZone(App::getCurrentPerson()->getTimezone());
+        $date = new \DateTime('now', $tz);
 
-    /**
-     * @return \Application\DeskPRO\DependencyInjection\DeskproContainer
-     */
-    public function getContainer()
-    {
-        return parent::getContainer();
-    }
+        $start = $date->format('Y-m');
 
-    /**
-     * {@inheritdoc}
-     */
-    protected function execute(InputInterface $input, OutputInterface $output)
-    {
-        $dpql = "
-            SELECT tickets.id
-            FROM tickets
-            WHERE tickets.id IN (
-                SELECT tickets.id
-                FROM tickets
-                WHERE tickets.ref LIKE 'AAAA-%'
-            )
-        ";
+        $endDate = new \DateTime("$start-01", $tz);
+        $endDate->modify('+1 month')->modify('-1 day');
 
-        $compiler  = new \Application\DeskPRO\Dpql2\Compiler();
-        $statement = $compiler->compile($dpql, []);
+        $endDateValue = $endDate->format('Y-m-d');
 
-        print_r($statement);
-
-        return 0;
+        return ["$start-01 to $endDateValue", "$start-01 00:00:00", "$endDateValue 23:59:59"];
     }
 }

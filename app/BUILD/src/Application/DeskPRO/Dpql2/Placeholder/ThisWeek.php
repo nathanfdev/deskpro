@@ -30,50 +30,43 @@
  * DeskPRO.
  */
 
-namespace Application\DeskPRO\Command;
+namespace Application\DeskPRO\Dpql2\Placeholder;
 
-use Symfony\Bundle\FrameworkBundle\Command\ContainerAwareCommand;
-use Symfony\Component\Console\Input\InputInterface;
-use Symfony\Component\Console\Output\OutputInterface;
+use Application\DeskPRO\App;
 
-class TestCommand extends ContainerAwareCommand
+/**
+ * Placeholder for the current week (first to last day), based on the current person's time zone.
+ */
+class ThisWeek extends AbstractDateRange
 {
     /**
-     * {@inheritdoc}
+     * Gets the date range components (printable, start, end).
+     *
+     * @return string[int]
      */
-    protected function configure()
+    protected function _getDateRange()
     {
-        $this->setName('dp:test');
-    }
+        $person = App::getCurrentPerson();
+        $tz     = new \DateTimeZone($person->getTimezone());
+        $date   = new \DateTime('now', $tz);
 
-    /**
-     * @return \Application\DeskPRO\DependencyInjection\DeskproContainer
-     */
-    public function getContainer()
-    {
-        return parent::getContainer();
-    }
+        // find start of this week
+        $currentDayOfWeek = $date->format('N');
+        $startAdjust      = $currentDayOfWeek - $person->getStartOfWeek();
 
-    /**
-     * {@inheritdoc}
-     */
-    protected function execute(InputInterface $input, OutputInterface $output)
-    {
-        $dpql = "
-            SELECT tickets.id
-            FROM tickets
-            WHERE tickets.id IN (
-                SELECT tickets.id
-                FROM tickets
-                WHERE tickets.ref LIKE 'AAAA-%'
-            )
-        ";
+        if ($startAdjust) {
+            if ($startAdjust > 0) {
+                $date->modify('-'.$startAdjust.' days');
+            } else {
+                $date->modify('-'.(7 + $startAdjust).' days');
+            }
+        }
 
-        $compiler  = new \Application\DeskPRO\Dpql2\Compiler();
-        $statement = $compiler->compile($dpql, []);
+        $start = $date->format('Y-m-d');
 
-        print_r($statement);
+        $date->modify('+6 days'); // 7 days will take us to the next start of the week
+        $end = $date->format('Y-m-d');
 
-        return 0;
+        return ["$start to $end", "$start 00:00:00", "$end 23:59:59"];
     }
 }

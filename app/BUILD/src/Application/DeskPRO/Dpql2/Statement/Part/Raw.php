@@ -30,50 +30,43 @@
  * DeskPRO.
  */
 
-namespace Application\DeskPRO\Command;
+namespace Application\DeskPRO\Dpql2\Statement\Part;
 
-use Symfony\Bundle\FrameworkBundle\Command\ContainerAwareCommand;
-use Symfony\Component\Console\Input\InputInterface;
-use Symfony\Component\Console\Output\OutputInterface;
+use Application\DeskPRO\Dpql2;
+use Application\DeskPRO\Dpql2\Statement\SelectPart;
 
-class TestCommand extends ContainerAwareCommand
+/**
+ * Represents a raw SQL part.
+ */
+class Raw extends AbstractPart
 {
     /**
-     * {@inheritdoc}
+     * @var string
      */
-    protected function configure()
-    {
-        $this->setName('dp:test');
-    }
+    private $sql = '';
 
     /**
-     * @return \Application\DeskPRO\DependencyInjection\DeskproContainer
+     * @param string $sql
      */
-    public function getContainer()
+    public function __construct($sql)
     {
-        return parent::getContainer();
+        $this->sql = $sql;
     }
 
     /**
      * {@inheritdoc}
      */
-    protected function execute(InputInterface $input, OutputInterface $output)
+    public function prepare(
+        SelectPart $statement, $section, array $stack, Dpql2\SqlSelect $select, Dpql2\ResultHandler $result
+    ) {
+        return new Prepared($this->sql, $this->sql);
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function toDpql(SelectPart $statement, $section, array $stack)
     {
-        $dpql = "
-            SELECT tickets.id
-            FROM tickets
-            WHERE tickets.id IN (
-                SELECT tickets.id
-                FROM tickets
-                WHERE tickets.ref LIKE 'AAAA-%'
-            )
-        ";
-
-        $compiler  = new \Application\DeskPRO\Dpql2\Compiler();
-        $statement = $compiler->compile($dpql, []);
-
-        print_r($statement);
-
-        return 0;
+        return $this->sql;
     }
 }

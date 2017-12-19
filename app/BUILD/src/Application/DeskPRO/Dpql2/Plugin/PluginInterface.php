@@ -30,50 +30,39 @@
  * DeskPRO.
  */
 
-namespace Application\DeskPRO\Command;
+namespace Application\DeskPRO\Dpql2\Plugin;
 
-use Symfony\Bundle\FrameworkBundle\Command\ContainerAwareCommand;
-use Symfony\Component\Console\Input\InputInterface;
-use Symfony\Component\Console\Output\OutputInterface;
+use Application\DeskPRO\Dpql2\ResultHandler;
+use Application\DeskPRO\Dpql2\SqlSelect;
 
-class TestCommand extends ContainerAwareCommand
+/**
+ * Interface PluginInterface.
+ *
+ * SqlSelectContext plugin allows to hook into the DPQL processing at different points and add or modify various
+ * features.
+ */
+interface PluginInterface
 {
     /**
-     * {@inheritdoc}
+     * @param SqlSelect $sql
      */
-    protected function configure()
-    {
-        $this->setName('dp:test');
-    }
+    public function provide(SqlSelect $sql);
 
     /**
-     * @return \Application\DeskPRO\DependencyInjection\DeskproContainer
+     * @return mixed
      */
-    public function getContainer()
-    {
-        return parent::getContainer();
-    }
+    public function beforeQuery();
 
     /**
-     * {@inheritdoc}
+     * @param array $results
+     *
+     * @return array Modified results
      */
-    protected function execute(InputInterface $input, OutputInterface $output)
-    {
-        $dpql = "
-            SELECT tickets.id
-            FROM tickets
-            WHERE tickets.id IN (
-                SELECT tickets.id
-                FROM tickets
-                WHERE tickets.ref LIKE 'AAAA-%'
-            )
-        ";
+    public function afterQuery(array $results);
 
-        $compiler  = new \Application\DeskPRO\Dpql2\Compiler();
-        $statement = $compiler->compile($dpql, []);
-
-        print_r($statement);
-
-        return 0;
-    }
+    /**
+     * @param ResultHandler $handler
+     * @param array         $results
+     */
+    public function resultHandlerCallback(ResultHandler $handler, array $results);
 }
