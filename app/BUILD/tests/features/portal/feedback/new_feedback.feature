@@ -44,8 +44,8 @@ Feature: submitting new feedback
     And I fill in "new_feedback_email_email" with "guest@deskpro.com"
     And I press "Add your feedback"
     Then I should see a "success" flash message with the phrase "portal.flashes.guest_content_must_verify"
-    And I should receive an email with the subject phrase "portal.email_subjects.validate-email"
-    When I click the email verification link
+    And I should receive an email on "guest@deskpro.com" with the subject phrase "portal.email_subjects.validate-email"
+    When I click the email verification link received on "guest@deskpro.com"
     Then I should see a "success" flash message with the phrase "portal.flashes.new_feedback_posted"
     And I should be on the set password page
 

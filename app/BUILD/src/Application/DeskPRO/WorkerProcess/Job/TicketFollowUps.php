@@ -80,6 +80,8 @@ class TicketFollowUps extends AbstractJob
                 }
 
                 $context = $ticketManager->createAgentExecutorContext($person, $eventType, ExecutorContext::METHOD_WEB);
+                $context->getVars()->set('followup_id', $followUp->getId());
+
                 $ticketManager->saveTicket($ticket, $context);
 
                 // mark the follow up status as done

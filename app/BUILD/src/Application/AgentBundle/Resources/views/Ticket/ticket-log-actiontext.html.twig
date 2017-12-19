@@ -47,9 +47,17 @@
 			{% if log.details.event == 'newticket' %}
 				New ticket by agent
 			{% elseif log.details.event == 'newreply' %}
-				New agent reply
+				{% if log.details.followup_id %}
+					{{ phrase('agent.tickets.log_newreply_followup') }}
+				{% else %}
+					New agent reply
+				{% endif %}
 			{% else %}
-				Updated by agent
+				{% if log.details.followup_id %}
+					{{ phrase('agent.tickets.log_update_followup') }}
+				{% else %}
+					Updated by agent
+				{% endif %}
 			{% endif %}
 		{% elseif log.details.event_performer == 'user' %}
 			{% if log.details.event == 'newticket' %}

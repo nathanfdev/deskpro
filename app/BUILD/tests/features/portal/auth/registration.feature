@@ -24,8 +24,8 @@ Feature: Registration
     And I press "Register"
     Then I should be on "/"
     And I should see a success flash message with the phrase "portal.flashes.user_registered_must_verify"
-    And I should receive an email with the subject phrase "portal.email_subjects.validate-email"
-    When I click the email verification link
+    And I should receive an email on "testuser@deskpro.com" with the subject phrase "portal.email_subjects.validate-email"
+    When I click the email verification link received on "testuser@deskpro.com"
     And I should be on "/"
     And I should see a success flash message with the phrase "portal.flashes.user_registered_verified_authenticated"
 

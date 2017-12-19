@@ -28,8 +28,8 @@ Feature: Guests can submit new tickets
     And I press "Submit"
     Then I should be on "/thank-you/verify-email"
     Then I should see a "success" flash message with the phrase "portal.flashes.guest_new_ticket_must_verify"
-    And I should receive an email with the subject phrase "portal.email_subjects.email_new-confirm"
-    When I click the email verification link
+    And I should receive an email on "some@new.email" with the subject phrase "portal.email_subjects.email_new-confirm"
+    When I click the email verification link received on "some@new.email"
     Then I should be on "/thank-you"
     And I should see a success flash message with the phrase "portal.flashes.ticket_created"
 

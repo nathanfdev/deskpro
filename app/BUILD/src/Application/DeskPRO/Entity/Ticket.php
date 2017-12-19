@@ -52,6 +52,7 @@ use Doctrine\Common\Collections\Collection;
 use Doctrine\Common\Collections\Criteria;
 use Doctrine\ORM\Mapping\ClassMetadata;
 use Doctrine\ORM\Mapping\ClassMetadataInfo;
+use Doctrine\ORM\Proxy\Proxy;
 use DpSys\LowError\SystemErrorHandler;
 use FOS\ElasticaBundle\Transformer\HighlightableModelInterface;
 use Orb\Util\Arrays;
@@ -702,6 +703,11 @@ class Ticket extends DomainObject implements HighlightableModelInterface, Labels
         // e.g. it's called in snippet formatter of reply action
 
         $parentTicket = $this->getParentTicket();
+        if ($parentTicket instanceof Proxy) {
+            // we need to init the proxy to disable auto ticket process properly
+            // otherwise it will be re-enabled on proxy init
+            $parentTicket->__load();
+        }
         if ($parentTicket && $parentTicket->__dp_auto_ticket_process) {
             $parentTicket->disableAutoTicketProcess();
         }
