@@ -326,7 +326,11 @@ class AgentViewModelFactory extends AbstractViewModelFactory
         $layout     = $this->container->getTicketLayoutManager()->getAgentLayouts()->getLayout($layoutId);
         $layout     = LayoutDisplay::createFromLayout($layout, LayoutDisplay::VIEW_TICKET, $ticket);
 
-        array_push($arguments, $ticket->getParticipants(), $layout);
+        $customFields = $this->container->getTicketFieldManager()->getDisplayArrayForObject($ticket);
+
+        $customUserFields = $this->container->getPersonFieldManager()->getDisplayArrayForObject($ticket->getPerson());
+
+        array_push($arguments, $ticket->getParticipants(), $layout, $customFields, $customUserFields);
 
         return $arguments;
     }

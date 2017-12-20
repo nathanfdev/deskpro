@@ -31,6 +31,7 @@ namespace DeskPRO\Bundle\SendmailBundle\Twig\Extension;
 use Application\DeskPRO\App;
 use Application\DeskPRO\Assetic\AsseticManager;
 use Application\DeskPRO\DependencyInjection\DeskproContainer;
+use Application\DeskPRO\Entity\CustomDefTicket;
 use Application\DeskPRO\Entity\Language;
 use Application\DeskPRO\Entity\Person;
 use Application\DeskPRO\Entity\Ticket;
@@ -1460,15 +1461,23 @@ class TemplatingExtension extends \Twig_Extension implements \Twig_Extension_Glo
         if ($displayArray instanceof FormView) {
             return isset($displayArray->vars['rendered_data']) ? $displayArray->vars['rendered_data'] : null;
         }
-
-        $handler = $displayArray['handler'];
-
-        if (is_object($displayArray)) {
-            $displayArray = $displayArray->toArray();
+        if (isset($displayArray['handler_class'])) {
+            $fieldDef                = $this->container->getEm()->getRepository(CustomDefTicket::class)->find($displayArray['id']);
+            $displayArray['handler'] = new $displayArray['handler_class']($fieldDef);
         }
-        $vars = array_merge($displayArray, $vars);
 
-        return $handler->renderHtml($displayArray['value'], $vars);
+        if (isset($displayArray['handler'])) {
+            $handler = $displayArray['handler'];
+
+            if (is_object($displayArray)) {
+                $displayArray = $displayArray->toArray();
+            }
+            $vars = array_merge($displayArray, $vars);
+
+            $return = $handler->renderHtml($displayArray['value'], $vars);
+
+            return $return;
+        }
     }
 
     /**

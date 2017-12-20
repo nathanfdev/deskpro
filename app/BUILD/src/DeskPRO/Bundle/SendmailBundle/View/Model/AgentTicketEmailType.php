@@ -51,6 +51,10 @@ class AgentTicketEmailType extends TicketEmailType
      */
     protected $ticketLayout;
 
+    protected $customFields;
+
+    protected $customUserFields;
+
     /**
      * TicketEmailType constructor.
      *
@@ -61,6 +65,8 @@ class AgentTicketEmailType extends TicketEmailType
      * @param TicketMessage $ticketMessages
      * @param array         $participants
      * @param               $ticketLayout
+     * @param $customFields
+     * @param $customUserFields
      */
     public function __construct(
         Ticket $ticket,
@@ -69,11 +75,15 @@ class AgentTicketEmailType extends TicketEmailType
         $ticketLink,
         $ticketMessages,
         $participants,
-        $ticketLayout
+        $ticketLayout,
+        $customFields,
+        $customUserFields
     ) {
         parent::__construct($ticket, $ticketPerson, $ticketAgent, $ticketLink, $ticketMessages);
 
-        $this->participants = $participants;
-        $this->ticketLayout = $ticketLayout;
+        $this->participants     = $participants;
+        $this->ticketLayout     = $ticketLayout;
+        $this->customFields     = $customFields;
+        $this->customUserFields = $customUserFields;
     }
 }

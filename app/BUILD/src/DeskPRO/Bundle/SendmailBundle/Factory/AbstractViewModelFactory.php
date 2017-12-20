@@ -28,6 +28,7 @@
 
 namespace DeskPRO\Bundle\SendmailBundle\Factory;
 
+use Application\DeskPRO\CustomFields\FieldDisplayArray;
 use Application\DeskPRO\Entity\Article;
 use Application\DeskPRO\Entity\ArticleComment;
 use Application\DeskPRO\Entity\ChatConversation;
@@ -145,6 +146,9 @@ abstract class AbstractViewModelFactory
                 break;
             case TopicComment::class:
                 $handler = $this->container->get('api_serializer.handler.topic_comment');
+                break;
+            case FieldDisplayArray::class:
+                $handler = $this->container->get('api_serializer.handler.field_display_array');
                 break;
             default:
                 throw new \Exception('Unset handler for class '.$className);
