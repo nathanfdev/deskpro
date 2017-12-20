@@ -19,8 +19,8 @@ define -> [
     $scope.back = -> $modalInstance.close {back: true}
 
     $scope.saveChoice = ->
-      DashboardWidgetService.addWidget report, $scope.widget
-      $modalInstance.close()
+      DashboardWidgetService.addWidget(report, $scope.widget).then () ->
+        $modalInstance.close {add: true}
 
     $scope.makeChoice = (displayType) ->
       $scope.widget.type = displayType

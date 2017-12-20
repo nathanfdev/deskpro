@@ -67,11 +67,17 @@ define ['DeskPRO/Util/Arrays'], (Arrays) ->
     addWidget: (report, widget) ->
       url = "/dashboards/#{report.id}/widgets"
       data = widget
+      deferred = @$q.defer()
+
       @Api
       .sendPostJson url, data
       .then (response) =>
         newWidget = response.data
         report.widgets.push newWidget
+        deferred.resolve()
+
+      return deferred.promise
+
 
     testWidget: (reportWidget) ->
       url = "/reports/widget/test/#{reportWidget.id}"
