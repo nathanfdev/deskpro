@@ -16,7 +16,7 @@ export class AvatarResolver extends React.Component {
 
     const urlPattern = avatar && avatar.get('url_pattern');
     const gravatar = avatar && avatar.get('base_gravatar_url');
-    const defaultUrlPattern = avatar.get('default_url_pattern');
+    const defaultUrlPattern = avatar && avatar.get('default_url_pattern');
     const avatarProps = { size, urlPattern, gravatar, defaultUrlPattern };
 
     const childContent = React.cloneElement(children, {

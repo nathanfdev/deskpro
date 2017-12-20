@@ -21,8 +21,8 @@ export default class LegacyClient extends AbstractClient {
   }
 
   bind(channelName, eventName) {
-    this.handleAlert = this.handleUserNotifyPoll.bind(this);
-    this.handleNotify = this.handleActionAlertsPoll.bind(this);
+    this.handleAlert = this.handleActionAlertsPoll.bind(this);
+    this.handleNotify = this.handleUserNotifyPoll.bind(this);
     this.poller.addData({ last_alert: this.options.last_alert }, 'last_alert');
     this.poller.addData({ last_notify: this.options.last_notify }, 'last_notify');
     if (eventName === 'action_alert') {
@@ -81,8 +81,8 @@ export default class LegacyClient extends AbstractClient {
   }
 
   stopPolling() {
-    this.poller.removeEvent('ajaxSuccess', this.handleUserNotifyPoll.bind(this));
-    this.poller.removeEvent('ajaxSuccess', this.handleActionAlertsPoll.bind(this));
+    this.poller.removeEvent('ajaxSuccess', this.handleAlert);
+    this.poller.removeEvent('ajaxSuccess', this.handleNotify);
   }
 
   getLastActionAlert() {
