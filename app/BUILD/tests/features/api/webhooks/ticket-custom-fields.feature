@@ -59,7 +59,7 @@ Feature: /webhooks/tickets/{webhook}/invocation resource
       "type" : "CheckWebhookVar",
       "op": "isset",
       "options" : {
-        "name": "data.webhook.is_enabled"
+        "name": "webhook.data.something.is_enabled"
       }
     }]
   ],
@@ -82,7 +82,7 @@ Feature: /webhooks/tickets/{webhook}/invocation resource
     When I send a POST request to "/api/v2/webhooks/tickets/~webhook_slug~/invocation" with body:
     """
 {
-  "webhook" : {
+  "something" : {
     "is_enabled":true
   },
   "field" : "lemmy"

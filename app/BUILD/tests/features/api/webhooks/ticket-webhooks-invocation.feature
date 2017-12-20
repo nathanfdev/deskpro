@@ -39,7 +39,7 @@ Feature: /webhooks/tickets/{webhook}/invocation resource
       "type" : "CheckWebhookVar",
       "op": "isset",
       "options" : {
-        "name": "data.webhook.is_enabled"
+        "name": "webhook.data.something.is_enabled"
       }
     }]
   ],
@@ -62,7 +62,7 @@ Feature: /webhooks/tickets/{webhook}/invocation resource
     When I send a POST request to "/api/v2/webhooks/tickets/~webhook_slug~/invocation" with body:
     """
 {
-  "webhook" : {
+  "something" : {
     "is_enabled":true
   }
 }
@@ -104,7 +104,7 @@ Feature: /webhooks/tickets/{webhook}/invocation resource
       "type" : "CheckWebhookVar",
       "op": "isset",
       "options" : {
-        "name": "data.webhook.is_enabled"
+        "name": "webhook.data.something.is_enabled"
       }
     }]
   ],
@@ -127,7 +127,7 @@ Feature: /webhooks/tickets/{webhook}/invocation resource
     When I send a POST request to "/api/v2/webhooks/tickets/~webhook_slug~/invocation" with parameters:
       | key                         | value   |
       | person_registration[name][] | cthulhu |
-      | webhook[is_enabled]         | true    |
+      | something[is_enabled]       | true    |
     Then the response status code should be 204
 
     When I send a GET request to "/api/v2/tickets/~ticket_id~"
@@ -157,7 +157,7 @@ Feature: /webhooks/tickets/{webhook}/invocation resource
       {
         "type" : "FilterLabels",
         "options" : {
-          "labels": ["twig:{{data.label}}", "label-2"]
+          "labels": ["twig:{{webhook.data.label}}", "label-2"]
         }
       }
   ],
@@ -166,7 +166,7 @@ Feature: /webhooks/tickets/{webhook}/invocation resource
       "type" : "CheckWebhookVar",
       "op": "isset",
       "options" : {
-        "name": "data.webhook.is_enabled"
+        "name": "webhook.data.something.is_enabled"
       }
     }]
   ],
@@ -189,7 +189,7 @@ Feature: /webhooks/tickets/{webhook}/invocation resource
     When I send a POST request to "/api/v2/webhooks/tickets/~webhook_slug~/invocation" with body:
     """
 {
-  "webhook" : {
+  "something" : {
     "is_enabled":true
   },
   "label" : "webhook-label-2"

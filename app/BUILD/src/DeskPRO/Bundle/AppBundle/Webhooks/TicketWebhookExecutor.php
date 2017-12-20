@@ -113,7 +113,7 @@ class TicketWebhookExecutor implements ContainerAwareInterface
         foreach ($tickets as $ticket) {
             try {
                 $context = $this->createExecutionContext($webhook, $request, $webhookInvocation);
-                if ($triggerTerms->isTriggerMatch($ticket, $context)) {
+                if ($triggerTerms->isTriggerMatch($ticket, $context)) {;
                     $this->executeWebhook($ticket, $webhook, $context);
                 }
             } catch (\Exception $e) {}
@@ -164,7 +164,7 @@ class TicketWebhookExecutor implements ContainerAwareInterface
         $context = $this->ticketManager->createSystemExecutorContext();
         ExecutorContextEnv::setWebhook($context, $webhook);
         ExecutorContextEnv::setWebhookRequest($context, $request);
-        ExecutorContextEnv::setWebhookPayload($context, $payload);
+        ExecutorContextEnv::setWebhookInvocation($context, $payload);
 
         return $context;
     }

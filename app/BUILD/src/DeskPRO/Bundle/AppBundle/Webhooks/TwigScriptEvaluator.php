@@ -70,7 +70,7 @@ class TwigScriptEvaluator implements ScriptEvaluator
             // hold any sandboxing for now
             // $sandbox = new \Twig_Extension_Sandbox($policy, true);
             $context = $invocation->toPropertyMap();
-            return $twig->render('script.html', $context);
+            return $twig->render('script.html', ['webhook' => $context]);
         } catch (\Twig_Error $e) {
             $msg = 'Error evaluating webhook script';
             throw new WebhookException($msg, 0, $e);
