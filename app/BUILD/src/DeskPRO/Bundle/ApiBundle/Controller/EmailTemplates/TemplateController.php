@@ -468,7 +468,7 @@ class TemplateController extends BaseController
     private function renderPreview($request, $code, $tplName, $viewModel, $group, $lang, $templates)
     {
         /** @var Language $language */
-         $language = $this->getManager()->getRepository(Language::class)->findOneBy(['locale' => $lang]);
+        $language = $this->getManager()->getRepository(Language::class)->findOneBy(['locale' => $lang]);
         /** @var AgentViewModelFactory|UserViewModelFactory $factory */
         $factory = $this->get('email.'.$group.'_viewmodel_factory');
         $action  = 'create'.$viewModel.'Model';
