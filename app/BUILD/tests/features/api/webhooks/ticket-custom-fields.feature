@@ -50,7 +50,7 @@ Feature: /webhooks/tickets/{webhook}/invocation resource
         "op": "is",
         "options" : {
           "field_type": "~custom_field_id~",
-           "value": "twig:{{data.field}}"
+           "value": "twig:{{webhook.data.field}}"
         }
       }
   ],
