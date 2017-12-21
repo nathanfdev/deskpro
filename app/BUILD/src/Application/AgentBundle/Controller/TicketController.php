@@ -91,7 +91,6 @@ use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\DBAL\Connection;
 use DpSys\LowError\SystemErrorHandler;
 use Orb\Util\Arrays;
-use Orb\Util\Dates;
 use Orb\Util\DpStrings;
 use Orb\Util\Strings;
 use Orb\Validator\StringEmail;
@@ -3461,19 +3460,11 @@ class TicketController extends AbstractController
                     'core_tickets.hard_delete_time'
                 );
             $hard_delete_time = max(0, $hard_delete_time - time());
-
-            if ($hard_delete_time) {
-                $hard_delete_time = Dates::secsToReadable($hard_delete_time);
-            }
         } elseif ($ticket['hidden_status'] == 'spam') {
             $hard_delete_time = $ticket->date_status->getTimestamp() + $this->container->getSetting(
                     'core_tickets.spam_delete_time'
                 );
             $hard_delete_time = max(0, $hard_delete_time - time());
-
-            if ($hard_delete_time) {
-                $hard_delete_time = Dates::secsToReadable($hard_delete_time);
-            }
         }
 
         return [

@@ -1127,6 +1127,59 @@ class Translate implements PersonContextInterface, TranslatorInterface
     }
 
     /**
+     * Translate result from \Orb\Util\Dates::secsToReadable
+     * Result example: `27 days 23 hours 21 minutes 54 seconds`.
+     *
+     * @param int    $seconds The seconds
+     * @param int    $detail  How much detail to go into, 1-5
+     * @param string $prefix
+     *
+     * @return string
+     */
+    public function secsToReadable($seconds, $detail = 2, $prefix = 'user.time.')
+    {
+        // example: `27 days 23 hours 21 minutes 54 seconds`
+        $readable = \Orb\Util\Dates::secsToReadable($seconds, $detail);
+
+        $tr = $this;
+
+        return preg_replace_callback(
+            '#[0-9]+ [^0-9 ]+#',
+            function ($m) use ($prefix, $tr) {
+                // expect $m[0] to be something like `27 days`
+                $parts = explode(' ', $m[0]);
+                if (count($parts) !== 2) {
+                    return $m[0];
+                }
+
+                switch ($parts[1]) {
+                    case 'years':
+                        $phraseName = $prefix.'time_x_year';
+                        break;
+                    case 'days':
+                        $phraseName = $prefix.'time_x_day';
+                        break;
+                    case 'hours':
+                        $phraseName = $prefix.'time_x_hour';
+                        break;
+                    case 'minutes':
+                        $phraseName = $prefix.'time_x_minute';
+                        break;
+                    case 'seconds':
+                        $phraseName = $prefix.'time_x_second';
+                        break;
+                    default:
+                        // never matches
+                        return 'unkown segment';
+                }
+
+                return $tr->phrase($phraseName, ['count' => (int) $parts[0]]);
+            },
+            $readable
+        );
+    }
+
+    /**
      * Check to see if a phrase exists.
      *
      * @param string $phrase_name
