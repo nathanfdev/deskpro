@@ -162,11 +162,12 @@ class AgentLegacyApp {
     return tabRef;
   }
 
-  renderMessageArchiveAttachment(node, data) {
+  renderMessageArchiveAttachment(node, data, layout) {
     ReactDOM.render(
       <Provider store={this.store}>
         <ArchiveFilesContainer
           authId={data.authId}
+          layout={layout}
         />
       </Provider>,
       node.get(0)

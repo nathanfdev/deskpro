@@ -2,7 +2,6 @@ import PropTypes from 'prop-types';
 import React from 'react';
 import { connect } from 'react-redux';
 import classNames from 'classnames';
-import { pureRender } from 'Ampliflux';
 import { List, ListElement } from 'DeskPRO/Component/Semantic/List';
 import { Detached } from 'DeskPRO/Component/Positioned/Detached';
 import { ClickOut } from 'DeskPRO/Component/ClickOut';
@@ -13,10 +12,10 @@ import { filesSelector } from '../../Selectors/archive';
   files: filesSelector(state)
 }))
 
-@pureRender
-export class ArchiveFilesContainer extends React.Component {
+export class ArchiveFilesContainer extends React.PureComponent {
   static propTypes = {
     authId:   PropTypes.string,
+    layout:   PropTypes.object,
     dispatch: PropTypes.func,
     files:    PropTypes.object.isRequired
   };
@@ -47,6 +46,7 @@ export class ArchiveFilesContainer extends React.Component {
     return (
       <ArchiveFiles
         list={filesList}
+        layout={this.props.layout}
         getLink={this.getLink}
         loadFiles={this.loadFiles}
       />
@@ -57,6 +57,7 @@ export class ArchiveFilesContainer extends React.Component {
 export class ArchiveFiles extends React.Component {
   static propTypes = {
     list:      PropTypes.object,
+    layout:    PropTypes.object,
     getLink:   PropTypes.func,
     loadFiles: PropTypes.func
   };
@@ -110,9 +111,15 @@ export class ArchiveFiles extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
-      tree: ArchiveFiles.unflattenList(this.props.list, 0, 0),
-      open: false
+      tree:       ArchiveFiles.unflattenList(this.props.list, 0, 0),
+      open:       false,
+      positionAt: 'left bottom',
+      positionMy: 'left top',
     };
+  }
+
+  componentDidMount() {
+    this.handleScrollThrottled = () => { window.requestAnimationFrame(() => this.handleScroll()); };
   }
 
   componentWillReceiveProps(nextProps) {
@@ -123,6 +130,10 @@ export class ArchiveFiles extends React.Component {
     }
   }
 
+  componentWillUnmount() {
+    this.props.layout.parentElement.removeEventListener('scroll', this.handleScrollThrottled);
+  }
+
   getFileList = () => {
     if (this.state.tree.length === 0) {
       return <div className="ui loader mini inline active" />;
@@ -130,9 +141,35 @@ export class ArchiveFiles extends React.Component {
     return this.renderTree(this.state.tree);
   };
 
+  handleScroll = () => {
+    if (!this.fileTree) {
+      return;
+    }
+    const { y } = this.container.getBoundingClientRect();
+    const { height } = this.fileTree.getBoundingClientRect();
+    if (window.innerHeight > y + height + 5) {
+      this.setState({
+        positionAt: 'left bottom',
+        positionMy: 'left top',
+      });
+    } else {
+      this.setState({
+        positionAt: 'left top',
+        positionMy: `left bottom-${height}`,
+      });
+    }
+    this.popup.updatePosition();
+  };
+
   toggleFiles = () => {
     if (!this.state.open) {
       this.props.loadFiles();
+      this.props.layout.parentElement.addEventListener('scroll', this.handleScrollThrottled);
+      setTimeout(() => {
+        this.handleScroll();
+      }, 100);
+    } else {
+      this.props.layout.parentElement.removeEventListener('scroll', this.handleScrollThrottled);
     }
     this.setState({
       open: !this.state.open
@@ -179,15 +216,17 @@ export class ArchiveFiles extends React.Component {
         <Detached
           zIndex={99999}
           isOpen={this.state.open}
-          positionAt="left bottom"
+          positionAt={this.state.positionAt}
+          positionMy={this.state.positionMy}
           positionTarget={this.container}
+          ref={(c) => { this.popup = c; }}
         >
           <ClickOut
             onClickOut={() => {
               this.setState({ open: false });
             }}
           >
-            <div className={classNames('files', { hidden: !this.state.open })}>
+            <div className={classNames('files', { hidden: !this.state.open })} ref={(c) => { this.fileTree = c; }}>
               {this.getFileList()}
             </div>
           </ClickOut>
