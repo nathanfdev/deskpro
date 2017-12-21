@@ -32,8 +32,8 @@
 
 namespace DeskPRO\Bundle\PortalBundle\Designer;
 
+use Application\DeskPRO\BlobStorage\DeskproBlobStorage;
 use Application\DeskPRO\Entity\Blob;
-use Application\DeskPRO\Entity\BlobStorage;
 use Application\DeskPRO\Entity\Template;
 use DeskPRO\Bundle\AppBundle\Entity\ThemeSet;
 use DeskPRO\Bundle\AppBundle\Entity\ThemeSetAsset;
@@ -50,18 +50,25 @@ class ThemeSetCopyingService
     private $em;
 
     /**
-     * @param EntityManager $em
+     * @var DeskproBlobStorage
      */
-    public function __construct(EntityManager $em)
+    private $blobStorage;
+
+    /**
+     * @param EntityManager      $em
+     * @param DeskproBlobStorage $blobStorage
+     */
+    public function __construct(EntityManager $em, DeskproBlobStorage $blobStorage)
     {
-        $this->em = $em;
+        $this->em          = $em;
+        $this->blobStorage = $blobStorage;
     }
 
     /**
      * @param ThemeSet $source
      * @param ThemeSet $destination
      *
-     * @return string
+     * @throws \Doctrine\ORM\OptimisticLockException
      */
     public function copy(ThemeSet $source, ThemeSet $destination)
     {
@@ -69,7 +76,6 @@ class ThemeSetCopyingService
         $destination->setOptions($source->getOptions());
         $this->em->persist($destination);
 
-        $this->dropThemeSetAssets($destination);
         $this->cloneThemeSetAssets($source, $destination);
 
         $this->dropTemplates($destination);
@@ -78,6 +84,11 @@ class ThemeSetCopyingService
         $this->em->persist($destination);
     }
 
+    /**
+     * @param ThemeSet $theme
+     *
+     * @throws \Doctrine\ORM\OptimisticLockException
+     */
     public function drop(ThemeSet $theme)
     {
         $this->dropThemeSetAssets($theme);
@@ -89,6 +100,8 @@ class ThemeSetCopyingService
 
     /**
      * @param ThemeSet $theme_set
+     *
+     * @throws \Doctrine\ORM\OptimisticLockException
      */
     private function dropThemeSetAssets(ThemeSet $theme_set)
     {
@@ -102,18 +115,28 @@ class ThemeSetCopyingService
     /**
      * @param ThemeSet $source
      * @param ThemeSet $destination
+     *
+     * @throws \Doctrine\ORM\OptimisticLockException
      */
     private function cloneThemeSetAssets(ThemeSet $source, ThemeSet $destination)
     {
+        $themeSetAssetRepository = $this->em->getRepository(ThemeSetAsset::class);
         /** @var ThemeSetAsset[] $assets */
-        $assets = $this->em->getRepository(ThemeSetAsset::class)->findBy(['theme_set' => $source]);
+        $assets            = $themeSetAssetRepository->findBy(['theme_set' => $source]);
+        $destinationAssets = $themeSetAssetRepository->findBy(['theme_set' => $destination]);
         foreach ($assets as $asset) {
-            $this->cloneThemeSetAsset($asset, $destination);
+            $destAsset = current(array_filter($destinationAssets, function ($a) use ($asset) {
+                /* @var ThemeSetAsset $a */
+                return $a->getName() === $asset->getName();
+            }));
+            $this->cloneThemeSetAsset($asset, $destination, $destAsset);
         }
     }
 
     /**
      * @param ThemeSet $theme_set
+     *
+     * @throws \Doctrine\ORM\OptimisticLockException
      */
     private function dropTemplates(ThemeSet $theme_set)
     {
@@ -127,6 +150,8 @@ class ThemeSetCopyingService
     /**
      * @param ThemeSet $source
      * @param ThemeSet $destination
+     *
+     * @throws \Doctrine\ORM\OptimisticLockException
      */
     private function cloneTemplates(ThemeSet $source, ThemeSet $destination)
     {
@@ -141,16 +166,33 @@ class ThemeSetCopyingService
     }
 
     /**
-     * @param ThemeSetAsset $asset
-     * @param ThemeSet      $theme_set
+     * @param ThemeSetAsset      $asset
+     * @param ThemeSet           $theme_set
+     * @param ThemeSetAsset|null $destAsset
+     *
+     * @throws \Doctrine\ORM\OptimisticLockException
      *
      * @return ThemeSetAsset
      */
-    private function cloneThemeSetAsset(ThemeSetAsset $asset, ThemeSet $theme_set)
+    private function cloneThemeSetAsset(ThemeSetAsset $asset, ThemeSet $theme_set, $destAsset = null)
     {
+        $destClone = null;
+        if ($destAsset) {
+            $destClone = $destAsset->getBlob();
+            $this->em->remove($destAsset);
+        }
+        $this->em->flush();
         $clone = clone $asset;
         if ($blob = $asset->getBlob()) {
-            $clone->setBlob($this->cloneBlob($blob), $clone);
+            if ($destClone && $destClone->getBlobHash() === $blob->getBlobHash()) {
+                $clone->setBlob($destClone);
+            } else {
+                $clone->setBlob($this->cloneBlob($blob));
+                // We set the blob as temp to be clean out by a later job
+                if ($destClone) {
+                    $destClone->setIsTemp(true);
+                }
+            }
         }
         $clone->setThemeSet($theme_set);
         $this->em->persist($clone);
@@ -166,20 +208,8 @@ class ThemeSetCopyingService
      */
     private function cloneBlob(Blob $blob)
     {
-        // Clone blob
-        $clone = clone $blob;
-        $this->em->persist($clone);
-        $this->em->flush();
+        $data = $this->blobStorage->copyBlobRecordToString($blob);
 
-        // Clone storage
-        if ($storage = $this->em->getRepository(BlobStorage::class)->findOneBy(['blob_id' => $blob->getId()])) {
-            /** @var BlobStorage $storage_clone */
-            $storage_clone          = clone $storage;
-            $storage_clone->blob_id = $clone->getId();
-            $this->em->persist($storage_clone);
-        }
-        $this->em->flush();
-
-        return $clone;
+        return $this->blobStorage->createBlobRecordFromString($data, $blob->getFilename(), $blob->getContentType());
     }
 }
