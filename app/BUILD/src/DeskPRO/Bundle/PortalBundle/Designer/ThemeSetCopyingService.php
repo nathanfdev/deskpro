@@ -131,6 +131,10 @@ class ThemeSetCopyingService
             }));
             $this->cloneThemeSetAsset($asset, $destination, $destAsset);
         }
+        foreach ($destinationAssets as $asset) {
+            $this->em->remove($asset);
+        }
+        $this->em->flush();
     }
 
     /**
