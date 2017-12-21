@@ -8,6 +8,8 @@ define ->
         chartData: '@'
         reportLevelVars: '@'
         renderType: '@'
+        options: '@'
+        version: '@'
 
       link: (scope, element, attrs) ->
         template = "<div id=\"ch#{scope.widgetId}\"></div>"
@@ -20,12 +22,24 @@ define ->
         chartParent = chartDiv.parent().parent()
         chartHeader = chartDiv.parent().siblings('.box-header')
         chartData   = if scope.chartData then JSON.parse(scope.chartData) else []
+        options     = scope.options
+        drawn       = false
 
         scope.$watch 'chartData', (n) ->
+          return if !drawn
           chartData = if n then JSON.parse(n) else []
           initChart()
 
+        scope.$watch 'options', (n) ->
+          return if !drawn
+          try
+            options = JSON.parse(n)
+          catch e
+            options = {}
+          initChart()
+
         initChart = () ->
+          drawn = true
           if attrs.chtype != 'graph'
             return
           if chart
@@ -42,9 +56,14 @@ define ->
                   drawWidget(widget)
 
         drawWidget = (widget) ->
+          try
+            options = JSON.parse(scope.options)
+          catch e
+            options = {}
+
           # ugly, but works right now
           chartDiv.height(chartParent.height() - chartHeader.outerHeight())
-          chart = new AmCharts.makeChart("ch#{scope.widgetId}", widget);
+          chart = new AmCharts.makeChart("ch#{scope.widgetId}", Object.assign(widget, options));
           chart.handleResize()
           chart.invalidateSize()
           if widget.multiplePies?
@@ -85,6 +104,8 @@ define ->
                   width = w
                   height = h
             , 500
+
+        initChart()
     }
   ]
 

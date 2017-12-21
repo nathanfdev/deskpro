@@ -54,11 +54,12 @@ define ['DeskPRO/Util/Arrays'], (Arrays) ->
       @Api.sendPost \
         "/dashboards/widgets/#{widget.id}",
         {
-          "size_x": if widget.newSizeX? then widget.newSizeX else widget.sizeX
-          "size_y": if widget.newSizeY? then widget.newSizeY else widget.sizeY
-          "col":   if widget.newCol? then widget.newCol else widget.col
-          "row":   if widget.newRow? then widget.newRow else widget.row
+          "size_x":  if widget.newSizeX? then widget.newSizeX else widget.sizeX
+          "size_y":  if widget.newSizeY? then widget.newSizeY else widget.sizeY
+          "col":     if widget.newCol? then widget.newCol else widget.col
+          "row":     if widget.newRow? then widget.newRow else widget.row
           "title":   widget.title
+          "options": widget.options
         }
 
     setDashboardService: (service) ->

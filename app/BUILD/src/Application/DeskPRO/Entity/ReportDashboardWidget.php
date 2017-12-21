@@ -112,6 +112,11 @@ class ReportDashboardWidget extends DomainObject
     protected $variables;
 
     /**
+     * @var string
+     */
+    protected $options;
+
+    /**
      * @return int
      */
     public function getId()
@@ -334,6 +339,26 @@ class ReportDashboardWidget extends DomainObject
         return $this;
     }
 
+    /**
+     * @return string
+     */
+    public function getOptions()
+    {
+        return $this->options;
+    }
+
+    /**
+     * @param string $options
+     *
+     * @return $this
+     */
+    public function setOptions($options)
+    {
+        $this->options = $options;
+
+        return $this;
+    }
+
     //###########################################################################
     // Doctrine Metadata
     //###########################################################################
@@ -432,6 +457,17 @@ class ReportDashboardWidget extends DomainObject
                 'scale'      => 0,
                 'nullable'   => true,
                 'columnName' => 'variables',
+            ]
+        );
+
+        $metadata->mapField(
+            [
+                'fieldName'  => 'options',
+                'type'       => 'text',
+                'precision'  => 0,
+                'scale'      => 0,
+                'nullable'   => true,
+                'columnName' => 'options',
             ]
         );
 

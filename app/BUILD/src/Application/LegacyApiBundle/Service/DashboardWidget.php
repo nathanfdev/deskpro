@@ -128,6 +128,7 @@ class DashboardWidget
             'sizeY'            => $size[1],
             'widget_id'        => $widget->getReport() ? $widget->getReport()->getId() : 0,
             'widget_variables' => $widget->getVariables(),
+            'options'          => $widget->getOptions(),
             'type'             => $widget->getWidgetType(),
             'data'             => [],
         ];

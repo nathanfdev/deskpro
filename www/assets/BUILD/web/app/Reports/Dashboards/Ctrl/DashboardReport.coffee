@@ -150,6 +150,8 @@ define ['DeskPRO/Util/Arrays'], (Arrays) -> [
             widget
       }
       modalInstance.result.then (result) ->
+        index = DashboardWidgetService.getIndexById $scope.report.widgets, widget.id
+        $scope.report.widgets[index] = result
         DashboardWidgetService.saveWidget(result).then () ->
 
 

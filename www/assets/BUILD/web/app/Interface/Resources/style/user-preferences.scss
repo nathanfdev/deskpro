@@ -98,7 +98,7 @@ $popup-background: #f5f6f7;
   }
 
   // Buttons and stuff
-  input[type="text"], input[type="password"], .select, .button {
+  input[type="text"], input[type="password"], .select, .button, textarea {
     border: 1px solid #bdbdbd;
     border-radius: 2px;
     padding: $item-padding;
@@ -107,6 +107,11 @@ $popup-background: #f5f6f7;
     text-decoration: none;
     display: inline-block;
     font-size: 1em;
+  }
+
+  textarea {
+    resize: none;
+    min-height: 120px;
   }
 
   .button {
