@@ -61,6 +61,9 @@ define ->
           catch e
             options = {}
 
+          if widget.dataProvider? && widget.dataProvider[0]? && (Object.keys(widget.dataProvider[0]).length > 6 || (widget.type == 'pie' && widget.dataProvider.length > 6))
+            widget.legend = false
+
           # ugly, but works right now
           chartDiv.height(chartParent.height() - chartHeader.outerHeight())
           chart = new AmCharts.makeChart("ch#{scope.widgetId}", Object.assign(widget, options));
