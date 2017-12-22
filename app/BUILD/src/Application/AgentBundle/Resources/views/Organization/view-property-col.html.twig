@@ -171,17 +171,17 @@
 
         <ul>
             <li style="padding: 6px 10px;">
-                Parent:
+                {{ phrase('agent.general.parent') }}:
                 {% if org.parent %}
                     <a href="#" data-route="page:{{ path('agent_org_view', {'organization_id': org.parent.id}) }}">
                         {{ org.parent.name }}
                     </a>
                 {% else %}
-                    none
+                    {{ phrase('agent.general.none') }}
                 {% endif %}
             </li>
             <li style="padding: 6px 10px; border-top: 1px solid #CAD0D7" ng-show="children && children.length">
-                Children:
+                {{ phrase('agent.general.children') }}:
                 <ul id="{{ baseId }}_children-list" style="margin-left:10px;">
                     <li ng-repeat="child in children">
                         <i class="fa fa-caret-right" style="font-size: 90%;"></i>
@@ -190,12 +190,12 @@
                             {{ ng_var('child.name') }}
                         </a>
                         <a class="remove-child" ng-click="removeChild(child)" style="color:#999; font-size: 80%"
-                           title="Remove association"><i class="fa fa-times"></i></a>
+                           title="{{ phrase('agent.general.association') }}"><i class="fa fa-times"></i></a>
                     </li>
                 </ul>
             </li>
             <li style="padding: 6px 10px; border-top: 1px solid #CAD0D7">
-                Add child:
+                {{ phrase('agent.general.add_child') }}:
 
                 <div style="position: relative; height: 25px; display: inline-block;">
 
@@ -219,11 +219,10 @@
 										</span>
                                         <div dp-sticky-tip offset-top="24">
                                             <article ng-if="root_id == result.id">
-                                                This organization is a grandparent of {{ org.name }}
+                                                {{ phrase('agent.organizations.already_grandparent', {'name':org.name}) }}
                                             </article>
                                             <article ng-if="result.parent_id">
-                                                This organization is already a child
-                                                of {{ ng_var('result.parent_name') }}
+                                                {{ phrase('agent.organizations.already_child', {'name':ng_var('result.parent_name')}) }}
                                             </article>
                                         </div>
                                     </a>

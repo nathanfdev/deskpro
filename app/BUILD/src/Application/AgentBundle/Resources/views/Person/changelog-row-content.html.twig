@@ -1,14 +1,14 @@
 {%- macro contact_prop(item) -%}
     {%- if item is empty or item.contact_type is not defined -%}
-    {%- elseif 'twitter' == item.contact_type -%}Twitter username
+    {%- elseif 'twitter' == item.contact_type -%}{{ phrase('agent.general.twitter_username') }}
     {%- elseif 'phone' == item.contact_type or 'fax' == item.contact_type or 'mobile' == contact_type -%}
         {{ item.type }}
-    {%- elseif 'address' == item.contact_type -%}address
-    {%- elseif 'facebook' == item.contact_type -%}Facebook account
-    {%- elseif 'instant_message' == item.contact_type -%}{{ item.service }} account
-    {%- elseif 'linked_in' == item.contact_type -%}LinkedIn account
-    {%- elseif 'skype' == item.contact_type -%}Skype account
-    {%- elseif 'website' == item.contact_type -%}website url
+    {%- elseif 'address' == item.contact_type -%}{{ phrase('agent.general.address')|lower }}
+    {%- elseif 'facebook' == item.contact_type -%}{{ phrase('agent.general.facebook') }} {{ phrase('agent.general.account')|lower }}
+    {%- elseif 'instant_message' == item.contact_type -%}{{ item.service }} {{ phrase('agent.general.account')|lower }}
+    {%- elseif 'linked_in' == item.contact_type -%}{{ phrase('agent.general.linkedin') }} {{ phrase('agent.general.account')|lower }}
+    {%- elseif 'skype' == item.contact_type -%}{{ phrase('agent.general.skype') }} {{ phrase('agent.general.account')|lower }}
+    {%- elseif 'website' == item.contact_type -%}{{ phrase('agent.general.website')|lower }} {{ phrase('agent.general.url')|lower }}
     {%- endif -%}
 {%- endmacro -%}
 
@@ -70,25 +70,25 @@
 
             <div class="{{ entry.event }}" style="padding-left: 21px; background: transparent url({{ asset('images/agent/elbow-end.gif') }}) no-repeat;">
                 {% if 'password' == entry.details.property %}
-                    Changed Password
+                    {{ phrase('agent.general.changed') }} {{ phrase('agent.general.password') }}
                 {% elseif 'picture_blob' == entry.details.property %}
-                    Changed Picture
+                    {{ phrase('agent.general.changed') }} Picture
                 {% elseif 'contact_data' == entry.details.property %}
 	                {% if null == entry.details.old %}
-		                Added {{ _self.contact_prop(entry.details.new) }} {{ _self.contact_val(entry.details.new) }}
+		                {{ phrase('agent.general.added') }} {{ _self.contact_prop(entry.details.new) }} {{ _self.contact_val(entry.details.new) }}
 	                {% elseif null == entry.details.new %}
-		                Removed {{ _self.contact_prop(entry.details.old) }} {{ _self.contact_val(entry.details.old) }}
+		                {{ phrase('agent.general.removed') }} {{ _self.contact_prop(entry.details.old) }} {{ _self.contact_val(entry.details.old) }}
 	                {% else %}
-		                Changed {{ _self.contact_prop(entry.details.new) }}
-		                from {{ _self.contact_val(entry.details.old) }}
-		                to {{ _self.contact_val(entry.details.new) }}
+		                {{ phrase('agent.general.changed') }} {{ _self.contact_prop(entry.details.new) }}
+		                {{ phrase('agent.general.from')|lower }} {{ _self.contact_val(entry.details.old) }}
+		                {{ phrase('agent.general.to')|lower }} {{ _self.contact_val(entry.details.new) }}
 	                {% endif %}
                 {% elseif 'is_disabled' == entry.details.property %}
-                    User <span class="new-val">{% if entry.details.new %}disabled{% else %}enabled{% endif %}</span>
+                    {{ phrase('agent.general.user') }} <span class="new-val">{% if entry.details.new %}{{ phrase('agent.general.disabled')|lower }}{% else %}{{ phrase('agent.general.enabled')|lower }}{% endif %}</span>
                 {% elseif 'custom_data' == entry.details.property %}
-                    Set <strong>{{ entry.details.new.title }}</strong> to <span class="new-val">{{ entry.details.new.value }}</span>
+                    {{ phrase('agent.general.set') }} <strong>{{ entry.details.new.title }}</strong> {{ phrase('agent.general.to')|lower }} <span class="new-val">{{ entry.details.new.value }}</span>
                 {% else %}
-                    Set {{ _self.prop(entry.details.property) }} to <span class="new-val">{{ entry.details.new }}</span>
+                    {{ phrase('agent.general.set') }} {{ _self.prop(entry.details.property) }} {{ phrase('agent.general.to')|lower }} <span class="new-val">{{ entry.details.new }}</span>
                 {% endif %}
             </div>
         </div>
@@ -101,7 +101,7 @@
             </div>
 
             <div style="padding-left: 21px; background: transparent url({{ asset('images/agent/elbow-end.gif') }}) no-repeat;">
-                Added
+                {{ phrase('agent.general.added') }}
                 {% if 'contact_data' == entry.details.property %}
                     {{ _self.contact_prop(item) }} <span class="new-val">{{ _self.contact_val(item) }}</span>
                 {% elseif 'custom_data' == entry.details.property %}
@@ -119,7 +119,7 @@
             </div>
 
             <div style="padding-left: 21px; background: transparent url({{ asset('images/agent/elbow-end.gif') }}) no-repeat;">
-                Removed
+                {{ phrase('agent.general.removed') }}
                 {% if 'contact_data' == entry.details.property %}
                     {{ _self.contact_prop(item) }} <span class="new-val">{{ _self.contact_val(item) }}</span>
                 {% elseif 'custom_data' == entry.details.property %}
