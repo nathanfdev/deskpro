@@ -41,12 +41,12 @@ use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 
 /**
- * @Rest\Route("/webhooks/tickets/{webhook}/invocation")
+ * @Rest\Route("/webhooks/{webhook}/invocation")
  * @ApiDoc(target="all", section="Webhooks")
  * @ApiUserContext("open")
  * @ApiModes("all")
  */
-class TicketWebhookInvocationController extends BaseController
+class WebhookInvocationController extends BaseController
 {
     /**
      * @Rest\Post("")

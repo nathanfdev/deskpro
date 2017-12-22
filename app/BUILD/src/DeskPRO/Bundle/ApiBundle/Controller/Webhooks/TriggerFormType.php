@@ -28,50 +28,54 @@
 
 namespace DeskPRO\Bundle\ApiBundle\Controller\Webhooks;
 
-use Application\DeskPRO\Tickets\Triggers\Terms\TriggerTermComposite;
-use Application\DeskPRO\Tickets\Triggers\TriggerTerms;
+use Application\DeskPRO\Entity\TicketTrigger;
 use Symfony\Component\Form\AbstractType;
+use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\FormBuilderInterface;
-use Symfony\Component\Form\FormEvent;
-use Symfony\Component\Form\FormEvents;
+use Symfony\Component\OptionsResolver\OptionsResolver;
 use Symfony\Component\OptionsResolver\OptionsResolverInterface;
 
-class TriggerTermsFormType extends AbstractType
+class TriggerFormType extends AbstractType
 {
     /**
      * {@inheritdoc}
      */
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
-        $builder->addEventListener(FormEvents::SUBMIT, [$this, 'onSubmit']);
+        $builder
+            ->add('title', TextType::class, [
+                'label'    => '',
+                'required' => false,
+                'mapped'   => true,
+            ])
+            ->add('actions', TriggerActionsFormType::class, [
+                'label'    => '',
+                'required' => true,
+                'mapped'   => true,
+            ])
+            ->add('terms', TriggerTermsFormType::class, [
+                'label'    => '',
+                'required' => false,
+                'mapped'   => true,
+            ])
+        ;
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function configureOptions(OptionsResolver $resolver)
+    {
+        $resolver->setDefaults([
+            'data_class' => TicketTrigger::class,
+        ]);
     }
 
     public function setDefaultOptions(OptionsResolverInterface $resolver)
     {
-        $resolver->setDefaults(['allow_extra_fields' => true]);
-    }
-
-    public function onSubmit(FormEvent $event)
-    {
-        $form      = $event->getForm();
-        $extraData = $form->getExtraData();
-
-        $triggerTerms = new TriggerTerms();
-        foreach ($extraData as $conjunction) {
-            if (is_array($conjunction)) {
-                $composite = new TriggerTermComposite([], TriggerTermComposite::OP_AND);
-                foreach ($conjunction as $term) {
-                    if (is_array($term)) {
-                        $termObject = $triggerTerms->getTermFromArray($term);
-                        $composite->add($termObject);
-                    }
-                }
-                if ($composite->count()) {
-                    $triggerTerms->addTerm($composite);
-                }
-            }
-        }
-
-        $event->setData($triggerTerms);
+        $resolver->setDefaults([
+            'allow_extra_fields' => true,
+            'data_class'         => TicketTrigger::class,
+        ]);
     }
 }

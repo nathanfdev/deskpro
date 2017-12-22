@@ -34,6 +34,7 @@ use DeskPRO\Bundle\AppBundle\Webhooks\IDGenerator;
 use FOS\RestBundle\Controller\Annotations as Rest;
 use DeskPRO\Bundle\ApiBundle\ApiDoc\Annotation\ApiDoc;
 use DeskPRO\Bundle\AppBundle\Annotation\ActionPermissions\Annotation\ApiModes;
+use Symfony\Component\Form\FormInterface;
 
 use DeskPRO\Bundle\AppBundle\Form\Error\Exception\InvalidFormException;
 use FOS\RestBundle\View\View;
@@ -56,7 +57,7 @@ use Symfony\Component\HttpFoundation\Request;
  */
 class TicketWebhookController extends CrudController
 {
-    public static $exposeOnly = ['list', 'get', 'post', 'delete'];
+    public static $exposeOnly = ['list', 'get', 'post', 'delete', 'put'];
     public static $entity     = TicketWebhook::class;
     public static $type     = TicketWebhookFormType::class;
 
