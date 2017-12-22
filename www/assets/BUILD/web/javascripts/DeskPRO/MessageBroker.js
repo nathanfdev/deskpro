@@ -39,7 +39,7 @@ DeskPRO.MessageBroker = new Orb.Class({
 	 * Use an asterisk at the end of a namespace and all messages of that namespace
 	 * will be sent through the same callback: example.*
 	 *
-	 * @param {String} name Message name
+	 * @param {String} name Message nameaddMessageListener
 	 * @param {Function} callback Callback to execute with message
 	 */
 	addMessageListener: function(name, callback, context, tags) {
