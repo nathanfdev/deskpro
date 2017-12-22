@@ -83,7 +83,7 @@ Feature: /webhooks/tickets/{webhook}/invocation resource
     And the response status code should be 201
     And I save the JSON node "data.auth_id" as placeholder "webhook_slug"
 
-    When I send a POST request to "/api/v2/webhooks/tickets/~webhook_slug~/invocation" with body:
+    When I send a POST request to "/api/v2/webhooks/~webhook_slug~/invocation" with body:
     """
 {
   "something" : {
