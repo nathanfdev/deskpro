@@ -45,12 +45,11 @@ use Symfony\Component\HttpFoundation\Request;
  * @Rest\Route("/webhooks/tickets")
  * @ApiDoc(target="all", section="Webhooks", output="DeskPRO\Bundle\AppBundle\Entity\Webhooks\TicketWebhook")
  * @ApiDoc(
- *     target="postAction",
+ *     target="postAction, putAction",
  *     input={
  *      "class"="\DeskPRO\Bundle\AppBundle\Entity\Webhooks\TicketWebhook",
  *      "options"={
- *          "data"="DeskPRO\Bundle\AppBundle\Entity\Webhooks\TicketWebhook",
- *          "terms"="Application\DeskPRO\Tickets\Triggers\TriggerTerms"
+ *          "data"="DeskPRO\Bundle\AppBundle\Entity\Webhooks\TicketWebhook"
  *      }
  *     }
  * )
