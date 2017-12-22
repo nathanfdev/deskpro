@@ -34,26 +34,30 @@ Feature: /webhooks/tickets/{webhook}/invocation resource
         }
       }
   ],
-  "terms": [
-    [{
-      "type" : "CheckWebhookVar",
-      "op": "isset",
-      "options" : {
-        "name": "webhook.data.something.is_enabled"
+  "triggers": [
+    {
+      "terms": [
+        [{
+          "type" : "CheckWebhookVar",
+          "op": "isset",
+          "options" : {
+            "name": "webhook.data.something.is_enabled"
+          }
+        }]
+      ],
+      "actions":{
+        "version":1,
+        "actions":[
+          {
+            "type": "SetSubject",
+            "options":{
+              "subject": "<expected_subject>"
+            }
+          }
+        ]
       }
-    }]
-  ],
-  "actions":{
-    "version":1,
-    "actions":[
-      {
-        "type": "SetSubject",
-        "options":{
-          "subject": "<expected_subject>"
-        }
-      }
-    ]
-  }
+    }
+  ]
 }
     """
     And the response status code should be 201
@@ -99,26 +103,30 @@ Feature: /webhooks/tickets/{webhook}/invocation resource
         }
       }
   ],
-  "terms": [
-    [{
-      "type" : "CheckWebhookVar",
-      "op": "isset",
-      "options" : {
-        "name": "webhook.data.something.is_enabled"
+   "triggers": [
+    {
+      "terms": [
+        [{
+          "type" : "CheckWebhookVar",
+          "op": "isset",
+          "options" : {
+            "name": "webhook.data.something.is_enabled"
+          }
+        }]
+      ],
+      "actions":{
+        "version":1,
+        "actions":[
+          {
+            "type": "SetSubject",
+            "options":{
+              "subject": "<expected_subject>"
+            }
+          }
+        ]
       }
-    }]
-  ],
-  "actions":{
-    "version":1,
-    "actions":[
-      {
-        "type": "SetSubject",
-        "options":{
-          "subject": "<expected_subject>"
-        }
-      }
-    ]
-  }
+    }
+  ]
 }
     """
     And the response status code should be 201
@@ -161,26 +169,30 @@ Feature: /webhooks/tickets/{webhook}/invocation resource
         }
       }
   ],
-  "terms": [
-    [{
-      "type" : "CheckWebhookVar",
-      "op": "isset",
-      "options" : {
-        "name": "webhook.data.something.is_enabled"
+  "triggers": [
+    {
+      "terms": [
+        [{
+          "type" : "CheckWebhookVar",
+          "op": "isset",
+          "options" : {
+            "name": "webhook.data.something.is_enabled"
+          }
+        }]
+      ],
+      "actions":{
+        "version":1,
+        "actions":[
+          {
+            "type": "SetSubject",
+            "options":{
+              "subject": "<expected_subject>"
+            }
+          }
+        ]
       }
-    }]
-  ],
-  "actions":{
-    "version":1,
-    "actions":[
-      {
-        "type": "SetSubject",
-        "options":{
-          "subject": "<expected_subject>"
-        }
-      }
-    ]
-  }
+    }
+  ]
 }
     """
     And the response status code should be 201
