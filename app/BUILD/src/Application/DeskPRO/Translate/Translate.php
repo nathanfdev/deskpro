@@ -1154,19 +1154,19 @@ class Translate implements PersonContextInterface, TranslatorInterface
 
                 switch ($parts[1]) {
                     case 'years':
-                        $phraseName = $prefix.'time_x_year';
+                        $phraseName = $prefix.'x_year';
                         break;
                     case 'days':
-                        $phraseName = $prefix.'time_x_day';
+                        $phraseName = $prefix.'x_day';
                         break;
                     case 'hours':
-                        $phraseName = $prefix.'time_x_hour';
+                        $phraseName = $prefix.'x_hour';
                         break;
                     case 'minutes':
-                        $phraseName = $prefix.'time_x_minute';
+                        $phraseName = $prefix.'x_minute';
                         break;
                     case 'seconds':
-                        $phraseName = $prefix.'time_x_second';
+                        $phraseName = $prefix.'x_second';
                         break;
                     default:
                         // never matches

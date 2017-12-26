@@ -1106,6 +1106,13 @@ return [
     'user.time.time_x_second'                                => '1 second|{{count}} seconds',
     'user.time.time_x_week'                                  => '1 week|{{count}} weeks',
     'user.time.time_x_year'                                  => '1 year|{{count}} years',
+    'user.time.time_x_day'                                   => '{0} days',
+    'user.time.time_x_hour'                                  => '{0} hours',
+    'user.time.time_x_minute'                                => '{0} minutes',
+    'user.time.time_x_month'                                 => '{0} months',
+    'user.time.time_x_second'                                => '{0} seconds',
+    'user.time.time_x_week'                                  => '{0} weeks',
+    'user.time.time_x_year'                                  => '{0} years',
 
     'user.emails.news-new-news'                 => '1 New News Article|{{count}} New News Articles',
     'user.emails.news-updated-news'             => '1 Updated News Article|{{count}} Updated News Articles',
