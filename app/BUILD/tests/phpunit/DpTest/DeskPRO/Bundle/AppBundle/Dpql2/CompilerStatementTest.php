@@ -197,7 +197,7 @@ END)
     WHEN LENGTH(tickets_agent.first_name) > 0 THEN tickets_agent.first_name
     ELSE CONCAT('ID-', tickets_agent.id)
 END)
-, `tickets_agent_team`.`name`, `tickets_organization`.`id`, `tickets_organization`.`name`, IF(`tickets_custom_data_11`.`value`, `tickets_custom_data_11_field`.`title`, `tickets_custom_data_11`.`input`), `tickets`.`locked_by_agent`
+, `tickets_agent_team`.`name`, `tickets_organization`.`id`, `tickets_organization`.`name`, `tickets`.`locked_by_agent`
 FROM `tickets`
 LEFT JOIN `tickets` AS `tickets_parent_ticket` ON (`tickets`.`parent_ticket_id` = `tickets_parent_ticket`.`id`)
 LEFT JOIN `languages` AS `tickets_language` ON (`tickets`.`language_id` = `tickets_language`.`id`)
@@ -213,8 +213,6 @@ LEFT JOIN `people` AS `tickets_agent` ON (`tickets`.`agent_id` = `tickets_agent`
 LEFT JOIN `agent_teams` AS `tickets_agent_team` ON (`tickets`.`agent_team_id` = `tickets_agent_team`.`id`)
 LEFT JOIN `organizations` AS `tickets_organization` ON (`tickets`.`organization_id` = `tickets_organization`.`id`)
 LEFT JOIN `chat_conversations` AS `tickets_linked_chat` ON (`tickets`.`linked_chat_id` = `tickets_linked_chat`.`id`)
-LEFT JOIN `custom_data_ticket` AS `tickets_custom_data_11` ON (`tickets_custom_data_11`.`ticket_id` = `tickets`.`id` AND tickets_custom_data_11.root_field_id = '11')
-LEFT JOIN `custom_def_ticket` AS `tickets_custom_data_11_field` ON (`tickets_custom_data_11`.`field_id` = `tickets_custom_data_11_field`.`id`)
 LEFT JOIN `email_accounts` AS `tickets_email_account` ON (`tickets`.`email_account_id` = `tickets_email_account`.`id`)
 LIMIT 2500
 SQL
