@@ -10,7 +10,7 @@
 		{{ log.details.message }}
 	{% endif %}
 {% elseif log.action_type == 'app_message' %}
-	App #{{ log.details.app_id }} {{ log.details.app_title }} &mdash; {{ log.details.message }}
+	{{ phrase('agent.general.app') }} #{{ log.details.app_id }} {{ log.details.app_title }} &mdash; {{ log.details.message }}
 {% elseif log.action_type == 'action_starter' %}
 	{% if log.details.event == 'new.email.user' %}
 		{{ phrase('agent.tickets.log_new_email_user') }}
@@ -45,38 +45,38 @@
 		{# New-style log format #}
 		{% if log.details.event_performer == 'agent' %}
 			{% if log.details.event == 'newticket' %}
-				New ticket by agent
+				{{ phrase('agent.tickets.log_new_ticket_by', {'name': phrase('agent.general.agent')|lower }) }}
 			{% elseif log.details.event == 'newreply' %}
 				{% if log.details.followup_id %}
 					{{ phrase('agent.tickets.log_newreply_followup') }}
 				{% else %}
-					New agent reply
+					{{ phrase('agent.tickets.log_new_reply_by', {'name': phrase('agent.general.agent')|lower }) }}
 				{% endif %}
 			{% else %}
 				{% if log.details.followup_id %}
 					{{ phrase('agent.tickets.log_update_followup') }}
 				{% else %}
-					Updated by agent
+					{{ phrase('agent.tickets.log_update_agent') }}
 				{% endif %}
 			{% endif %}
 		{% elseif log.details.event_performer == 'user' %}
 			{% if log.details.event == 'newticket' %}
-				New ticket by user
+				{{ phrase('agent.tickets.log_new_ticket_by', {'name': phrase('agent.general.user')|lower }) }}
 			{% elseif log.details.event == 'newreply' %}
-				New user reply
+				{{ phrase('agent.tickets.log_new_reply_by', {'name': phrase('agent.general.user')|lower }) }}
 			{% else %}
-				Updated by user
+				{{ phrase('agent.tickets.log_update_user') }}
 			{% endif %}
 		{% else %}
 			{% if log.details.escalation_id %}
-				Updated by escalation
+				{{ phrase('agent.tickets.log_update_escalation') }}
 			{% else %}
-				Updated by system
+				{{ phrase('agent.tickets.log_update_system') }}
 			{% endif %}
 		{% endif %}
 	{% endif %}
 	{% if log.details.via_api_key %}
-		via API key #{{ log.details.via_api_key }}
+		{{ phrase('agent.tickets.log_update_api_key') }} #{{ log.details.via_api_key }}
 	{% endif %}
 {% elseif log.action_type == 'changed_agent' %}
 	<span class="type">{{ phrase('agent.general.assigned_agent') }}</span> {{ phrase('agent.tickets.changed_from') }}
@@ -118,7 +118,7 @@
 	{% else %}
 		{{ phrase('agent.tickets.lc_created') }}
 	{% endif %}
-	&mdash; Ticket <span class="new-val">{{ phrase('agent.general.id') }} {{log.details.ticket_id}}</span>
+	&mdash; {{ phrase('agent.general.ticket') }} <span class="new-val">{{ phrase('agent.general.id') }} {{log.details.ticket_id}}</span>
 	{% if log.details.via_comment %}
 		<div stye="font-size:11px;">
 			&bull;
@@ -140,7 +140,7 @@
 	{% if log.details.old_subject %}
 		{{ phrase('agent.tickets.subject_changed_from') }} <span class="old-val">{{ log.details.old_subject }}</span> {{ phrase('agent.tickets.changed_to') }} <span class="new-val">{{ log.details.new_subject }}</span>
 	{% else %}
-		Subject set to <span class="new-val">{{ log.details.new_subject }}</span>
+		{{ phrase('agent.tickets.log_x_set_to', {'name': phrase('agent.general.subject') }) }} <span class="new-val">{{ log.details.new_subject }}</span>
 	{% endif %}
 {% elseif log.action_type == 'ticket_split' %}
     {{ phrase('agent.tickets.ticket_split_from') }} <span class="old-val">{{ phrase('agent.general.id') }} {{log.id_before}}</span>
@@ -203,14 +203,14 @@
 		<span class="type">{{ phrase('agent.general.brand') }}</span> {{ phrase('agent.tickets.changed_from') }}
 		<span class="old-val">{{log.details.old_brand_name|default(phrase('agent.general.none'))}}</span> {{ phrase('agent.tickets.changed_to') }} <span class="new-val">[#{{log.details.new_brand_id}}] {{log.details.new_brand_name|default(phrase('agent.general.none'))}}</span>
 	{% else %}
-		Brand set to <span class="new-val">[#{{log.details.new_brand_id}}] {{log.details.new_brand_name|default(phrase('agent.general.none'))}}</span>
+		{{ phrase('agent.tickets.log_x_set_to', {'name': phrase('agent.general.brand') }) }} <span class="new-val">[#{{log.details.new_brand_id}}] {{log.details.new_brand_name|default(phrase('agent.general.none'))}}</span>
 	{% endif %}
 {% elseif log.action_type == 'changed_department' %}
 	{% if log.details.old_department_title %}
 		<span class="type">{{ phrase('agent.general.department') }}</span> {{ phrase('agent.tickets.changed_from') }}
 		<span class="old-val">{{log.details.old_department_title|default(phrase('agent.general.none'))}}</span> {{ phrase('agent.tickets.changed_to') }} <span class="new-val">{{log.details.new_department_title|default(phrase('agent.general.none'))}}</span>
 	{% else %}
-		Department set to <span class="new-val">{{log.details.new_department_title|default(phrase('agent.general.none'))}}</span>
+		{{ phrase('agent.tickets.log_x_set_to', {'name': phrase('agent.general.department') }) }} <span class="new-val">{{log.details.new_department_title|default(phrase('agent.general.none'))}}</span>
 	{% endif %}
 {% elseif log.action_type == 'changed_language' %}
 	<span class="type">{{ phrase('agent.general.language') }}</span> {{ phrase('agent.tickets.changed_from') }}
@@ -222,14 +222,14 @@
 	{% if log.details.old_subject %}
 		{{ phrase('agent.tickets.subject_changed_from') }} <span class="old-val">{{ log.details.old_subject }}</span> {{ phrase('agent.tickets.changed_to') }} <span class="new-val">{{ log.details.new_subject }}</span>
 	{% else %}
-		Subject set to <span class="new-val">{{ log.details.new_subject }}</span>
+		{{ phrase('agent.tickets.log_x_set_to', {'name': phrase('agent.general.subject') }) }} <span class="new-val">{{ log.details.new_subject }}</span>
 	{% endif %}
 {% elseif log.action_type == 'changed_person' %}
 	{% if log.details.old_person_id %}
 		<span class="type">{{ phrase('admin.api.user_owner') }}</span> {{ phrase('agent.tickets.changed_from') }}
 		<span class="old-val">{{ phrase('agent.general.id') }} {{log.details.old_person_id}} {{old_person_name}}</span> {{ phrase('agent.tickets.changed_to') }} <span class="new-val">{{ phrase('agent.general.id') }} {{log.details.new_person_id}} {{new_person_name}}</span>
 	{% else %}
-		User Owner set to <span class="new-val">{{ phrase('agent.general.id') }} {{log.details.new_person_id}}</span>
+		{{ phrase('agent.tickets.log_x_set_to', {'name': phrase('agent.general.user_owner') }) }} <span class="new-val">{{ phrase('agent.general.id') }} {{log.details.new_person_id}}</span>
 	{% endif %}
 {% elseif log.action_type == 'executed_triggers' %}
 	<span class="type">{{ phrase('agent.general.ticket_triggers') }}</span> {{ phrase('agent.tickets.applied') }}:
@@ -308,7 +308,7 @@
 		{% set phrase_name = 'agent.tickets.hidden_' ~ log.details.new_status|replace({'.': '_'}) %}
 		{{ phrase('agent.tickets.changed_to') }} <span class="new-val">{% if has_phrase(phrase_name) %}{{ phrase(phrase_name) }}{% else %}{{ log.details.new_status|default("None") }}{% endif %}</span>
 	{% else %}
-		<span class="type">{{ phrase('agent.general.status') }}</span> set to
+		<span class="type">{{ phrase('agent.general.status') }}</span> {{ phrase('agent.general.set')|lower }} {{ phrase('agent.general.to')|lower }}
 		{% set phrase_name = 'agent.tickets.hidden_' ~ log.details.new_status|replace({'.': '_'}) %}
 		{{ phrase('agent.tickets.changed_to') }} <span class="new-val">{% if has_phrase(phrase_name) %}{{ phrase(phrase_name) }}{% else %}{{ log.details.new_status|default("None") }}{% endif %}</span>
 	{% endif %}
@@ -321,7 +321,7 @@
 		{% set phrase_name = 'agent.tickets.status_' ~ log.details.new_status|replace({'.': '_'}) %}
 		{{ phrase('agent.tickets.changed_to') }} <span class="new-val">{% if has_phrase(phrase_name) %}{{ phrase(phrase_name) }}{% else %}{{ log.details.new_status }}{% endif %}</span>
 	{% else %}
-		Status set
+		{{ phrase('agent.general.status') }} {{ phrase('agent.general.set')|lower }}
 		{% set phrase_name = 'agent.tickets.status_' ~ log.details.new_status|replace({'.': '_'}) %}
 		{{ phrase('agent.tickets.changed_to') }} <span class="new-val">{% if has_phrase(phrase_name) %}{{ phrase(phrase_name) }}{% else %}{{ log.details.new_status }}{% endif %}</span>
 	{% endif %}
@@ -369,9 +369,9 @@
 		</div>
 	{% endif %}
 {% elseif log.action_type == 'changed_sla_status' %}
-	SLA <span class="new-val" title="Sla #{{ log.details.sla_id }}">{{ log.details.sla_title }}</span>
-	status changed from <span class="old-val">{{ log.details.old_status }}</span>
-	to <span class="new-val">{{ log.details.new_status }}</span>
+	{{ phrase('agent.general.sla') }} <span class="new-val" title="Sla #{{ log.details.sla_id }}">{{ log.details.sla_title }}</span>
+	{{ phrase('agent.general.sla')|lower }} {{ phrase('agent.tickets.changed_from') }} <span class="old-val">{{ log.details.old_status }}</span>
+	{{ phrase('agent.general.to')|lower }} <span class="new-val">{{ log.details.new_status }}</span>
 {% elseif log.action_type == 'ticket_sla_added' %}
 	{{ phrase('agent.tickets.log_sla_added') }}: <span class="new-val">{{ log.details.title }}</span>
 	{% if log.details.sla_status != 'ok' or log.details.is_completed %}
@@ -390,7 +390,7 @@
 	{% endif %}
 	{% if log.details.is_completed_changed %}
 		<span class="type">{{ phrase('agent.general.requirements') }}</span> {{ phrase('agent.tickets.changed_from') }}
-		<span class="old-val">{{ log.details.original_is_completed ? 'Complete' : 'Incomplete' }}</span> {{ phrase('agent.tickets.changed_to') }} <span class="new-val">{{ log.details.is_completed ? 'Complete' : 'Incomplete'  }}</span>.
+		<span class="old-val">{{ log.details.original_is_completed ? phrase('agent.general.complete') : phrase('agent.general.incomplete') }}</span> {{ phrase('agent.tickets.changed_to') }} <span class="new-val">{{ log.details.is_completed ? phrase('agent.general.complete') : phrase('agent.general.incomplete')  }}</span>.
 	{% endif %}
 {% elseif log.action_type == 'agent_notify' %}
 	<span class="new-val expand">{{ phrase('agent.tickets.count_agents', {'count':log.details.who_emailed|length}) }}</span> {{ phrase('agent.tickets.notified_of') }}
@@ -472,19 +472,19 @@
 		</ul>
 	</div>
 {% elseif log.action_type == 'message_forwarded' %}
-	<span class="new-val expand" data-set=".set-detail">Forwarded message</span> by {{ log.details.agent_name }}: #{{ log.details.message_id }} to {{ log.details.to_string }}
+	<span class="new-val expand" data-set=".set-detail">{{ phrase('agent.tickets.forwarded_message')|capitalize }}</span> {{ phrase('agent.general.by')|lower }} {{ log.details.agent_name }}: #{{ log.details.message_id }} {{ phrase('agent.general.to')|lower }} {{ log.details.to_string }}
 	{% if log.details.cc_string or log.details.bcc_string %}
-		with
-		{% if log.details.cc_string %}{{ log.details.cc_string }} CC'd{% endif %}
-		{% if log.details.cc_string and log.details.bcc_string %}and{% endif %}
-		{% if log.details.bcc_string %}{{ log.details.bcc_string }} BCC'd{% endif %}
+		{{ phrase('agent.general.with') }}
+		{% if log.details.cc_string %}{{ log.details.cc_string }} {{ phrase('agent.tickets.log_mail_cc_d') }}{% endif %}
+		{% if log.details.cc_string and log.details.bcc_string %}{{ phrase('agent.general.and') }}{% endif %}
+		{% if log.details.bcc_string %}{{ log.details.bcc_string }} {{ phrase('agent.tickets.log_mail_bcc_d') }}{% endif %}
 	{% endif %}
-	(from {{ log.details.from_email }})
+	({{ phrase('agent.general.from')|lower }} {{ log.details.from_email }})
 	<div class="expand-set set-detail" style="display: none">
 		{% if log.details.custom_message %}
 			{{ log.details.custom_message|nl2br }}
 		{% else %}
-			{{ log.details.agent_name }} did not enter a custom message.
+			{{ log.details.agent_name }} {{ phrase('agent.tickets.log_without_custom_message') }}
 		{% endif %}
 	</div>
 {% elseif log.action_type == 'message_edit' %}
@@ -495,36 +495,36 @@
 		</div>
 	</div>
 {% elseif log.action_type == 'trigger' %}
-	<span class="type">Trigger</span>
+	<span class="type">{{ phrase('agent.general.trigger') }}</span>
 	<span class="new-val">#{{ log.details.trigger_id }}</span> {{ log.details.trigger_title }}
 {% elseif log.action_type == 'escalation' %}
-	<span class="type">Escalation</span>
+	<span class="type">{{ phrase('agent.general.escalation') }}</span>
 	<span class="new-val">#{{ log.details.escalation_id }}</span> {{ log.details.escalation_title }}
 {% elseif log.action_type == 'ticket_email' %}
 	{% if log.details.user_mode == 'user' %}
-		<span class="new-val expand" data-set=".set-detail">User emailed</span> {{ log.details.to_name }} &lt;{{ log.details.to_email }}&gt;
-		{% if log.details.cc_emails %}(+{{ log.details.cc_emails|length }} cc'ed){% endif %}
+		<span class="new-val expand" data-set=".set-detail">{{ phrase('agent.tickets.log_x_emailed', {'name': phrase('agent.general.user')}) }}</span> {{ log.details.to_name }} &lt;{{ log.details.to_email }}&gt;
+		{% if log.details.cc_emails %}(+{{ log.details.cc_emails|length }} {{ phrase('agent.tickets.log_mail_cc_ed') }}){% endif %}
 	{% else %}
-		<span class="new-val expand" data-set=".set-detail">Agent emailed</span> {{ log.details.to_name }} &lt;{{ log.details.to_email }}&gt;
+		<span class="new-val expand" data-set=".set-detail">{{ phrase('agent.tickets.log_x_emailed', {'name': phrase('agent.general.agent')}) }}</span> {{ log.details.to_name }} &lt;{{ log.details.to_email }}&gt;
 	{% endif %}
 
     {% set status = false %}
     {% if sendmail_source_status[log.details.sendmail_source_id] %}
         {% set status = sendmail_source_status[log.details.sendmail_source_id] %}
         {% if app.user.can_admin %}
-            &mdash; <a href="{{ path('admin') }}#/emails/ticket_accounts/outgoing-email/{{ status.id }}" target="_blank">Outgoing Email #{{ status.id }}</a>
+            &mdash; <a href="{{ path('admin') }}#/emails/ticket_accounts/outgoing-email/{{ status.id }}" target="_blank">{{ phrase('agent.general.outgoing_email') }} #{{ status.id }}</a>
         {% else %}
-            &mdash; Outgoing Email #{{ status.id }}
+            &mdash; {{ phrase('agent.general.outgoing_email') }} #{{ status.id }}
         {% endif %}
         &mdash;
         {% if status.status == 'error' %}
-            <span style="color: #BA0014">ERROR</span>
+            <span style="color: #BA0014">{{ phrase('agent.general.error')|upper }}</span>
         {% elseif status.status == 'aborted' %}
-            <span style="color: #BA0014">ABORTED</span>
+            <span style="color: #BA0014">{{ phrase('agent.general.aborted')|upper }}</span>
         {% elseif status.status == 'retry' %}
-            <span style="color: #000751">PROCESSING</span>
+            <span style="color: #000751">{{ phrase('agent.general.processing')|upper }}</span>
         {% elseif status.status == 'complete' %}
-            <span style="color: #1AA100">COMPLETE</span>
+            <span style="color: #1AA100">{{ phrase('agent.general.complete')|upper }}</span>
         {% else %}
             {{ status.status }}
         {% endif %}
@@ -533,20 +533,20 @@
 	<div class="expand-set set-detail" style="display: none">
         {% if status %}
             {% if status.status == 'error' %}
-                Email was not sent because of an error
+                {{ phrase('agent.tickets.log_email_sent_error') }}
             {% elseif status.status == 'aborted' %}
-                Email was not sent because it was aborted
+                {{ phrase('agent.tickets.log_email_sent_aborted') }}
             {% elseif status.status == 'retry' %}
-                Email is being sent right now
+                {{ phrase('agent.tickets.log_email_sent_retry') }}
             {% elseif status.status == 'complete' %}
-                Email was sent successfully
+                {{ phrase('agent.tickets.log_email_sent_success') }}
             {% endif %}
             <br/>
         {% endif %}
-		From: {{ log.details.from_name }} &lt;{{ log.details.from_email }}&gt;<br/>
-		Template: {{ log.details.template }}<br/>
+		{{ phrase('agent.general.from') }}: {{ log.details.from_name }} &lt;{{ log.details.from_email }}&gt;<br/>
+		{{ phrase('agent.general.template') }}: {{ log.details.template }}<br/>
 		{% if log.details.cc_emails %}
-			CC'd:
+			{{ phrase('agent.tickets.log_mail_cc_d') }}:
 			<ul>
 				{% for eml in log.details.cc_emails %}
 					<li>{{ eml }}</li>
@@ -555,56 +555,56 @@
 		{% endif %}
 	</div>
 {% elseif log.action_type == 'new_billing' %}
-    Added new billing row #{{ log.id_object }}:<br/>
+    {{ phrase('agent.tickets.log_billing_row_added') }} #{{ log.id_object }}:<br/>
     {% if log.details.old_amount or log.details.new_amount %}
-        Charge: <span class="new-val">{{ log.details.new_amount | number_format(2)}}</span><br />
+        {{ phrase('agent.tickets.charge') }}: <span class="new-val">{{ log.details.new_amount | number_format(2)}}</span><br />
     {% endif %}
     {% if log.details.old_time or log.details.new_time %}
-        Charge: <span class="new-val">{{ log.details.new_time | number_format}}</span><br />
+        {{ phrase('agent.tickets.charge') }}: <span class="new-val">{{ log.details.new_time | number_format}}</span><br />
     {% endif %}
     {% for v in log.details.custom_data if v.value_before or v.value_after %}
         {{ v.field_name }}: <span class="new-val">{{ v.value_after }}</span><br />
     {% endfor %}
 {% elseif log.action_type == 'modify_billing' %}
-	Changed billing row #{{ log.id_object }} to:<br/>
+	  {{ phrase('agent.tickets.log_billing_row_changed') }} #{{ log.id_object }} to:<br/>
 
     {% if log.details.old_amount or log.details.new_amount %}
-        Charge: <span class="new-val">{{ log.details.new_amount | number_format(2)}}</span><br />
+        {{ phrase('agent.tickets.charge') }}: <span class="new-val">{{ log.details.new_amount | number_format(2)}}</span><br />
     {% endif %}
     {% if log.details.old_time or log.details.new_time %}
-        Charge: <span class="new-val">{{ log.details.new_time | number_format}}</span><br />
+        {{ phrase('agent.tickets.charge') }}: <span class="new-val">{{ log.details.new_time | number_format}}</span><br />
     {% endif %}
     {% if log.details.old_created or log.details.new_created %}
-        Created: <span class="new-val">{{ log.details.new_created | date('fulltime', app.user.timezone)}}</span><br />
+        {{ phrase('agent.general.created') }}: <span class="new-val">{{ log.details.new_created | date('fulltime', app.user.timezone)}}</span><br />
     {% endif %}
     {% for v in log.details.custom_data if v.value_before or v.value_after %}
         {{ v.field_name }}: <span class="new-val">{{ v.value_after }}</span><br/>
     {% endfor %}
 
-    View old data <span class="new-val expand" data-set=".set-billing-modify">click to expand</span>
+    {{ phrase('agent.tickets.log_view_all_data') }} <span class="new-val expand" data-set=".set-billing-modify">{{ phrase('agent.tickets.log_click_to_expand') }}</span>
         <div class="expand-set set-billing-modify" style="display: none">
             {% if log.details.old_amount or log.details.new_amount %}
-                Charge: <span class="old-val">{{ log.details.old_amount | number_format(2)}}</span><br />
+                {{ phrase('agent.tickets.charge') }}: <span class="old-val">{{ log.details.old_amount | number_format(2)}}</span><br />
             {% endif %}
             {% if log.details.old_time or log.details.new_time %}
-                Charge: <span class="old-val">{{ log.details.old_time | number_format}}</span><br />
+                {{ phrase('agent.tickets.charge') }}: <span class="old-val">{{ log.details.old_time | number_format}}</span><br />
             {% endif %}
             {% for v in log.details.custom_data if v.value_before %}
                 {{ v.field_name }}: <span class="old-val">{{ v.value_before }}</span><br />
             {% endfor %}
         </div>
 {% elseif log.action_type == 'delete_billing' %}
-    Deleted billing row #{{ log.id_object }}:<br/>
-    View old data <span class="new-val expand" data-set=".set-billing-modify">click to expand</span>
+    {{ phrase('agent.tickets.log_billing_row_deleted') }} #{{ log.id_object }}:<br/>
+    {{ phrase('agent.tickets.log_view_all_data') }} <span class="new-val expand" data-set=".set-billing-modify">{{ phrase('agent.tickets.log_click_to_expand') }}</span>
     <div class="expand-set set-billing-modify" style="display: none">
         {% if log.details.old_amount or log.details.new_amount %}
-            Charge: <span class="old-val">{{ log.details.old_amount | number_format(2)}}</span><br />
+            {{ phrase('agent.tickets.charge') }}: <span class="old-val">{{ log.details.old_amount | number_format(2)}}</span><br />
         {% endif %}
         {% if log.details.old_time or log.details.new_time %}
-            Charge: <span class="old-val">{{ log.details.old_time | number_format}}</span><br />
+            {{ phrase('agent.tickets.charge') }}: <span class="old-val">{{ log.details.old_time | number_format}}</span><br />
         {% endif %}
         {% if log.details.old_created or log.details.new_created %}
-            Created: <span class="old-val">{{ log.details.old_created | date('fulltime', app.user.timezone)}}</span><br />
+            {{ phrase('agent.general.created') }}: <span class="old-val">{{ log.details.old_created | date('fulltime', app.user.timezone)}}</span><br />
         {% endif %}
         {% for v in log.details.custom_data if v.value_before or v.value_after %}
             {{ v.field_name }}: <span class="old-val">{{ v.value_before }}</span><br/>
@@ -613,55 +613,55 @@
 {% elseif log.action_type == 'changed_participants' or log.action_type == 'changed_agent_participants' or log.action_type == 'changed_user_participants' %}
 	<span class="new-val expand" data-set=".set-detail">
 		{% if log.action_type == 'changed_agent_participants' %}
-			Changed agent followers
+			{{ phrase('agent.tickets.log_changed_agent_followers') }}
 		{% elseif log.action_type == 'changed_participants' %}
-			Changed user CC's
+			{{ phrase('agent.tickets.log_changed_users_ccs') }}
 		{% else %}
-			Changed participants
+			{{ phrase('agent.tickets.log_changed_participants') }}
 		{% endif %}
-		({% if log.details.added|length %}{{ log.details.added|length }} added{% endif %}{% if log.details.added|length and log.details.removed|length %} &middot; {% endif %}{% if log.details.removed|length %}{{ log.details.removed|length }} removed{% endif %})
+		({% if log.details.added|length %}{{ log.details.added|length }} {{ phrase('agent.general.added')|lower }}{% endif %}{% if log.details.added|length and log.details.removed|length %} &middot; {% endif %}{% if log.details.removed|length %}{{ log.details.removed|length }} {{ phrase('agent.general.removed')|lower }}{% endif %})
 	</span>
 	<div class="expand-set set-detail" style="display: none">
 		<ul>
 			{% for part in log.details.added %}
-				<li>Added: {{ part.name }} &lt;{{ part.email }}&gt;</li>
+				<li>{{ phrase('agent.general.added') }}: {{ part.name }} &lt;{{ part.email }}&gt;</li>
 			{% endfor %}
 			{% for part in log.details.removed %}
-				<li>Removed: {{ part.name }} &lt;{{ part.email }}&gt;</li>
+				<li>{{ phrase('agent.general.removed') }}: {{ part.name }} &lt;{{ part.email }}&gt;</li>
 			{% endfor %}
 		</ul>
 	</div>
 {% elseif log.action_type == 'feedback_rating' %}
-	User set feedback rating to {{ log.details.rating }}
+	{{ phrase('agent.tickets.log_user_set_feedback_rating_to') }} {{ log.details.rating }}
 {% elseif log.action_type == 'person_email_changed' %}
-	User email address preference changed:
+	{{ phrase('agent.tickets.log_user_changed_email_pref') }}:
 	{% if log.details.new %}
-		default (primary email)
+		{{ phrase('agent.tickets.log_default_email') }}
 	{% else %}
 		{{ log.details.new_email }}
 	{% endif %}
 {% elseif log.action_type == 'message_note_status' %}
-	Message #{{ log.details.message_id }}
+	{{ phrase('agent.general.message') }} #{{ log.details.message_id }}
 	<a href="{{ path('agent_ticket_message_window', {ticket_id: ticket.id, message_id: log.details.message_id, _rt: security_token('request_token', 10800)}) }}" onclick="window.open($(this).attr('href'), 'msgwin', 'status=0,toolbar=0,location=0,menubar=0,directories=0,resizable=1,scrollbars=1,height=600,width=780'); return false;">{{ phrase('agent.general.view') }} <i class="icon-external-link" style="font-size: 11px;"></i></a>
-	{% if log.details.is_agent_note %}was converted into a note
-	{% else %}was converted into a reply
+	{% if log.details.is_agent_note %}{{ phrase('agent.tickets.log_message_converted_to_note') }}
+	{% else %}{{ phrase('agent.tickets.log_message_converted_to_reply') }}
 	{% endif %}
 {% elseif log.action_type == 'ticket_sla_status' %}
-	SLA #{{ log.details.sla_id }} {{ log.details.sla_title }} status changed from
+	{{ phrase('agent.general.sla') }} #{{ log.details.sla_id }} {{ log.details.sla_title }} {{ phrase('agent.tickets.log_status_changed_from') }}
 	<span class="old-val">{{ log.details.old_status }}</span>
 	<span class="new-val">{{ log.details.new_status }}</span>
 {% elseif log.action_type == 'ticket_sla_complete' %}
-	SLA #{{ log.details.sla_id }} {{ log.details.sla_title }}
+	{{ phrase('agent.general.sla') }} #{{ log.details.sla_id }} {{ log.details.sla_title }}
 	{% if log.details.complete %}
-		is now <span class="new-val">complete</span>
+		{{ phrase('agent.tickets.log_is_now') }} <span class="new-val">{{ phrase('agent.general.complete') }}</span>
 	{% else %}
-		has been reopened
+		{{ phrase('agent.tickets.log_has_been_reopened') }}
 	{% endif %}
 {% elseif log.action_type == 'webhook' %}
-	WebHook <span class="new-val">{{ log.details.url }}</span>
+	{{ phrase('agent.tickets.log_has_been_reopened') }} <span class="new-val">{{ log.details.url }}</span>
 	<br />
-	Status: {{ log.details.reason }},
-	<span class="new-val expand" data-set=".webhook-details">Details</span>
+	{{ phrase('agent.tickets.log_webhook') }}: {{ log.details.reason }},
+	<span class="new-val expand" data-set=".webhook-details">{{ phrase('agent.general.details') }}</span>
 	<br />
 	<div class="expand-set webhook-details" style="display: none">
 		<div style="width: 95%; max-height: 200px; overflow: auto; font-size: 11px;">
@@ -669,10 +669,10 @@
 		</div>
 	</div>
 {% elseif log.action_type == 'webhook2' %}
-	WebHook (Custom JSON Payload) <span class="new-val">{{ log.details.url }}</span>
+	{{ phrase('agent.tickets.log_webhook_json') }} <span class="new-val">{{ log.details.url }}</span>
 	<br />
-	Status: {{ log.details.reason }},
-	<span class="new-val expand" data-set=".webhook-details">Details</span>
+	{{ phrase('agent.general.status') }}: {{ log.details.reason }},
+	<span class="new-val expand" data-set=".webhook-details">{{ phrase('agent.general.details') }}</span>
 	<br />
 	<div class="expand-set webhook-details" style="display: none">
 		<div style="width: 95%; max-height: 200px; overflow: auto; font-size: 11px;">
@@ -681,13 +681,13 @@
 	</div>
 {% elseif log.action_type == 'deleted_attachments' %}
 	<span class="new-val expand" data-set=".deleted-attachments-details">
-		Deleted {{ log.details.deleted|length }} attachment{% if log.details.deleted|length > 1 %}s{% endif %}:
+		{{ phrase('agent.general.deleted') }} {{ log.details.deleted|length }} {{ phrase('agent.tickets.attachment')|lower }}{% if log.details.deleted|length > 1 %}s{% endif %}:
 	</span>
 	<br />
 	<div class="expand-set deleted-attachments-details" style="display: none">
 		{% for del in log.details.deleted %}
 			<span>
-				{{ del.filename }} ({{ del.filesize }}) from message #{{ del.message }}
+				{{ del.filename }} ({{ del.filesize }}) {{ phrase('agent.tickets.log_from_message') }} #{{ del.message }}
 			</span>
 		{% endfor %}
 	</div>

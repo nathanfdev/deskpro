@@ -136,7 +136,7 @@
 							<div class="to-line">
 								<div class="label">
 									<i class="fa fa-close fwd_removerow" style="cursor: pointer"></i>
-									<span>To:</span>
+									<span>{{ phrase('agent.general.to') }}: </span>
 								</div>
 								<div
 										class="email-address-wrap input"
@@ -173,17 +173,17 @@
 					<div class="header-line" id="{{ replyBaseId }}_fwd_to_container">
 						<div class="fwd-control-panel" style="float: right; display: inline-block;">
 							<div class="label">
-								Add:
+								{{ phrase('agent.general.add') }}:
 							</div>
 							<span data-add="to" class="fwd-control-add" style="cursor: pointer">To</span> |
 							<span data-add="cc" class="fwd-control-add" style="cursor: pointer">CC</span> |
-							<span data-add="cc" data-set-email="{{ ticket.person.getEmailAddress() }}" class="fwd-control-add" title="CC the ticket owner: {{ ticket.person.getDisplayContact() }}" style="cursor: pointer">CC Sender</span> |
+							<span data-add="cc" data-set-email="{{ ticket.person.getEmailAddress() }}" class="fwd-control-add" title="{{ phrase('agent.tickets.forward_cc_ticket_owner') }}: {{ ticket.person.getDisplayContact() }}" style="cursor: pointer">CC {{ phrase('agent.general.sender') }}</span> |
 							<span data-add="bcc" class="fwd-control-add" style="cursor: pointer">BCC</span>
 						</div>
 					</div>
 					<div class="header-line">
 						<div class="label">
-							From:
+							{{ phrase('agent.general.from') }}:
 						</div>
 						<div style="display: inline-block">
 							{% if app.getSetting('core_tickets.fwd_use_agent_address') %}
@@ -199,7 +199,7 @@
 					</div>
 					<div class="header-line">
 						<div class="label">
-							Subject:
+							{{ phrase('agent.general.subject') }}:
 						</div>
 						<div>
 							<input type="text" name="subject" id="{{ replyBaseId }}_fwd_subject" value="FW: {{ ticket.subject }}" style="width: 70%;" />
@@ -472,8 +472,8 @@
                                 class="dpe_select" data-select-nogrouptitle="1" style="min-width: 170px;"
                                 data-invisible-trigger-right="1" data-style-type="icons" data-select-icon-size="22"
                             >
-                            <option value="send_comment" selected="selected">Send comment to JIRA</option>
-                            <option value="create_issue">Send to JIRA as new issue</option>
+                            <option value="send_comment" selected="selected">{{ phrase('agent.tickets.send_jira_comment') }}</option>
+                            <option value="create_issue">{{ phrase('agent.tickets.send_jira_issue') }}</option>
                         </select>
                     </div>
                 </div>
