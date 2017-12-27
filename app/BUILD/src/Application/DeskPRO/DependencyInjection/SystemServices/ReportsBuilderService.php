@@ -39,10 +39,13 @@ use Application\DeskPRO\Reports\Builder;
 
 class ReportsBuilderService
 {
+    /**
+     * @param DeskproContainer $container
+     *
+     * @return Builder
+     */
     public static function create(DeskproContainer $container)
     {
-        $x = new Builder($container->getEm());
-
-        return $x;
+        return new Builder($container->getEm());
     }
 }

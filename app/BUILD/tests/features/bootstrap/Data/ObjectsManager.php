@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2017, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2018, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -78,6 +78,7 @@ use Application\DeskPRO\Entity\PersonUsersourceAssoc;
 use Application\DeskPRO\Entity\Phrase;
 use Application\DeskPRO\Entity\Problem;
 use Application\DeskPRO\Entity\Product;
+use Application\DeskPRO\Entity\ReportWidget;
 use Application\DeskPRO\Entity\Session;
 use Application\DeskPRO\Entity\Sla;
 use Application\DeskPRO\Entity\Task;
@@ -378,6 +379,7 @@ class ObjectsManager
             'EmailAccount'             => [Factory\SimpleFactory::class, 'create', EmailAccount::class],
             'Session'                  => [Factory\SimpleFactory::class, 'create', Session::class],
             'OAuthClient'              => [Factory\SimpleFactory::class, 'create', OAuthClient::class],
+            'ReportWidget'             => [Factory\SimpleFactory::class, 'create', ReportWidget::class],
         ];
     }
 
@@ -491,6 +493,7 @@ class ObjectsManager
             'ActionAlert'              => [$this, 'find', ActionAlert::class],
             'Notification'             => [$this, 'find', Notification::class],
             'OAuthClient'              => [$this, 'find', OAuthClient::class],
+            'ReportWidget'             => [$this, 'find', ReportWidget::class],
         ];
     }
 }

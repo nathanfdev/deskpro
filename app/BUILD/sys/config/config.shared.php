@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2017, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2018, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -151,6 +151,34 @@ $definition->addMethodCall('addSource', ['get', new Reference('deskpro.core.inpu
 $definition->addMethodCall('addSource', ['cookie', new Reference('deskpro.core.input_reader_cookie')]);
 $definition->addMethodCall('setArrayStringSeparator', ['.']);
 $container->setDefinition('deskpro.core.input_reader', $definition);
+
+//###########################################################################
+// Legacy reports services
+//###########################################################################
+
+$definition = new Definition();
+$definition->setClass('Application\\LegacyApiBundle\\Service\\DashboardPermissions');
+$definition->setArguments([new Reference('doctrine.orm.entity_manager')]);
+$container->setDefinition('dashboard.permissions.service', $definition);
+
+$definition = new Definition();
+$definition->setClass('Application\\LegacyApiBundle\\Service\\DashboardWidget');
+$definition->setArguments([new Reference('doctrine.orm.entity_manager')]);
+$container->setDefinition('dashboard.widget.service', $definition);
+
+$definition = new Definition();
+$definition->setClass('Application\\LegacyApiBundle\\Service\\Dashboard');
+$definition->setArguments([
+    new Reference('doctrine.orm.entity_manager'),
+    new Reference('dashboard.widget.service'),
+    new Reference('deskpro.core.translate'),
+]);
+$container->setDefinition('dashboard.service', $definition);
+
+$definition = new Definition();
+$definition->setClass('Application\\DeskPRO\\Reports\\ReportsWidgetService');
+$definition->setArguments([new Reference('doctrine.orm.entity_manager'), new Reference('dashboard.widget.service')]);
+$container->setDefinition('reports.widget.service', $definition);
 
 //###########################################################################
 // Doctrine services

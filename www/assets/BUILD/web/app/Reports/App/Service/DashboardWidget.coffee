@@ -1,15 +1,16 @@
-define ['DeskPRO/Util/Arrays',], (Arrays) ->
+define ['DeskPRO/Util/Arrays'], (Arrays) ->
   class DashboardWidgetService
 
-    constructor: (Api, $q) ->
+    constructor: (Api, Api2, $q) ->
       @Api = Api
+      @Api2 = Api2
       @$q = $q
       @data = {}
       @storage = {reports: [], labels: [], reportsByLabels: {}}
       @groupParams = []
       @widgets = {}
 
-      @Api.sendGet('reports/widget/group-params').then (response) =>
+      @Api2.sendGet('report_widgets/group-params').then (response) =>
         @groupParams = response.data
 
     getIndexById: (storage, id) ->
