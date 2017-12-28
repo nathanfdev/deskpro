@@ -39,6 +39,7 @@ use Application\DeskPRO\Entity\ReportDashboardReport as DashboardReportEntity;
 use Application\DeskPRO\Entity\SavedDashboardReport;
 use Application\DeskPRO\Entity\SavedDashboardWidget;
 use Application\LegacyApiBundle\Service\DashboardWidget;
+use Application\LegacyApiBundle\Service\DashboardWidget as DashboardWidgetService;
 use Doctrine\ORM\EntityManager;
 use Orb\Util\DpStrings;
 use Orb\Util\Strings;
@@ -85,7 +86,19 @@ class ReportSaver
             ->setAuthcode($report->getId().DpStrings::random(10, Strings::CHARS_KEY_ALPHA));
 
         foreach ($report->getWidgets() as $widget) {
-            $widgetData  = $this->widgetService->renderWidgetQuery($widget);
+            $widgetData = $this->widgetService->renderWidgetQuery($widget);
+
+            if ($widgetData && $widget->getType() == DashboardWidgetService::WIDGET_TYPE_TABLE) {
+                $aoColumns = [];
+                $columns   = [];
+                foreach ($widgetData['columns'] as $column) {
+                    $aoColumns[] = null;
+                    $columns[]   = ['title' => $column];
+                }
+                $widgetData['aoColumns'] = $aoColumns;
+                $widgetData['columns']   = $columns;
+            }
+
             $savedWidget = new SavedDashboardWidget();
             $savedWidget
                 ->setVariables($widget->getVariables())

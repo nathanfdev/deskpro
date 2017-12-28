@@ -319,7 +319,7 @@ class SavedDashboardReport extends DomainObject
         $metadata->mapOneToMany([
             'fieldName'    => 'saved_widgets',
             'targetEntity' => SavedDashboardWidget::class,
-            'mappedBy'     => 'savedReport',
+            'mappedBy'     => 'saved_report',
             'inversedBy'   => null,
             'orderBy'      => ['position' => 'ASC'],
             'cascade'      => ['persist', 'remove'],

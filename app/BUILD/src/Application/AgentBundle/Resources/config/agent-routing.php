@@ -2559,6 +2559,13 @@ $collection->create('reports-interface', [
     'defaults'   => ['interface' => 'reports'],
 ]);
 
+$collection->create('reports-interface-headless-view', [
+    'path'         => '/reports-interface/r/{id}/{authcode}',
+    'controller'   => 'ReportsInterfaceBundle:Headless:view',
+    'methods'      => ['GET'],
+    'requirements' => ['id' => '\\d+', 'authcode' => '[a-zA-Z0-9]+'],
+]);
+
 $collection->create('iface_load_views', [
     'path'       => '/viewer/load-views',
     'controller' => 'AgentBundle:Interface:loadViews',
