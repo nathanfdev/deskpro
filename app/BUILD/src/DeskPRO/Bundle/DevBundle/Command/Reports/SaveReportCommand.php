@@ -32,13 +32,14 @@
 
 namespace DeskPRO\Bundle\DevBundle\Command\Reports;
 
+use Application\DeskPRO\App;
 use Application\DeskPRO\Entity\ReportDashboardReport;
 use Symfony\Bundle\FrameworkBundle\Command\ContainerAwareCommand;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
 
-class SaveReport extends ContainerAwareCommand
+class SaveReportCommand extends ContainerAwareCommand
 {
     /**
      * {@inheritdoc}
@@ -55,6 +56,7 @@ class SaveReport extends ContainerAwareCommand
      */
     protected function execute(InputInterface $input, OutputInterface $output)
     {
+        App::setCurrentPerson();
         $em       = $this->getContainer()->get('doctrine.orm.default_entity_manager');
         $reportId = $input->getArgument('reportId');
         /** @var ReportDashboardReport $report */
