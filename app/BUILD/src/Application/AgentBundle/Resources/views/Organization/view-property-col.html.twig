@@ -190,7 +190,7 @@
                             {{ ng_var('child.name') }}
                         </a>
                         <a class="remove-child" ng-click="removeChild(child)" style="color:#999; font-size: 80%"
-                           title="{{ phrase('agent.general.association') }}"><i class="fa fa-times"></i></a>
+                           title="{{ phrase('agent.general.remove_association') }}"><i class="fa fa-times"></i></a>
                     </li>
                 </ul>
             </li>
@@ -200,7 +200,7 @@
                 <div style="position: relative; height: 25px; display: inline-block;">
 
                     <input type="text" ng-model="searchChildTitle"
-                           placeholder="Find{% if app.user.hasPerm('agent_org.create') %}/add{% endif %} an organization" />
+                           placeholder="{{ phrase('agent.general.find') }}{% if app.user.hasPerm('agent_org.create') %}/{{ phrase('agent.general.add')|lower }}{% endif %} {{ phrase('agent.general.organization')|lower }}" />
 
                     <div class="person-search-box org" style="position: absolute; top: 25px; min-width: 155px;"
                          ng-show="searchChildrenResults.length || searchChildTitle">

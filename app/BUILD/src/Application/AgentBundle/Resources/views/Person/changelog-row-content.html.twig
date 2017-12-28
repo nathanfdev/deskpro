@@ -72,7 +72,7 @@
                 {% if 'password' == entry.details.property %}
                     {{ phrase('agent.general.changed') }} {{ phrase('agent.general.password') }}
                 {% elseif 'picture_blob' == entry.details.property %}
-                    {{ phrase('agent.general.changed') }} Picture
+                    {{ phrase('agent.general.changed') }} {{ phrase('agent.general.label_picture') }}
                 {% elseif 'contact_data' == entry.details.property %}
 	                {% if null == entry.details.old %}
 		                {{ phrase('agent.general.added') }} {{ _self.contact_prop(entry.details.new) }} {{ _self.contact_val(entry.details.new) }}
