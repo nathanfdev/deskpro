@@ -133,6 +133,14 @@ $definition->setClass('Application\\DeskPRO\\Settings\\ServiceUrls');
 $definition->addMethodCall('loadPack', ['%kernel.root_dir%/config/service-urls.php']);
 $container->setDefinition('deskpro.service_urls', $definition);
 
+$definition = new Definition();
+$definition->setClass('Application\\DeskPRO\\Reports\\ReportSaver');
+$definition->setArguments([
+    new Reference('doctrine.orm.entity_manager'),
+    new Reference('dashboard.widget.service'),
+]);
+$container->setDefinition('deskpro.reports.saver', $definition);
+
 //###########################################################################
 // Validators and Constraints
 //###########################################################################
