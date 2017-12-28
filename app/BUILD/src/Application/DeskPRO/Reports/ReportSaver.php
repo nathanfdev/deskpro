@@ -72,6 +72,8 @@ class ReportSaver
      * @param DashboardReportEntity $report
      *
      * @throws \Exception
+     *
+     * @return SavedDashboardReport
      */
     public function saveReport(DashboardReportEntity $report)
     {
@@ -98,6 +100,11 @@ class ReportSaver
             ;
 
             $savedReport->addSavedWidget($savedWidget);
+            $this->em->persist($savedWidget);
         }
+        $this->em->persist($savedReport);
+        $this->em->flush();
+
+        return $savedReport;
     }
 }
