@@ -433,7 +433,7 @@ class SavedDashboardWidget extends DomainObject
         $metadata->mapManyToOne(
             [
                 'fieldName'    => 'dashboard_widget',
-                'targetEntity' => ReportWidget::class,
+                'targetEntity' => ReportDashboardWidget::class,
                 'mappedBy'     => null,
                 'inversedBy'   => null,
                 'nullable'     => true,
