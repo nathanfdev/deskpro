@@ -91,6 +91,11 @@ Feature: /tickets endpoint
     And the JSON node "data.subject" should be equal to "First Demo Ticket"
     And the JSON node "linked" should have 0 elements
 
+  Scenario: I retrieve a ticket by ref
+    When I send a GET request to "/api/v2/tickets/{ticket1:ref}"
+    And the response status code should be 200
+    And the JSON node "data.subject" should be equal to "First Demo Ticket"
+
   Scenario: I retrieve list of tickets
     When I send a GET request to "/api/v2/tickets"
     Then the response status code should be 200
