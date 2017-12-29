@@ -12,7 +12,7 @@ define ->
         version: '@'
 
       link: (scope, element, attrs) ->
-        template = "<div id=\"ch#{scope.widgetId}\" style='height: 400px'></div>"
+        template = "<div id=\"ch#{scope.widgetId}\"></div>"
         linkFn = $compile(template)
         content = linkFn(scope)
         element.replaceWith(content)
@@ -33,10 +33,12 @@ define ->
         scope.$watch 'options', (n) ->
           return if !drawn
           try
-            options = JSON.parse(n)
+            newOptions = JSON.parse(n)
           catch e
-            options = {}
-          initChart()
+            newOptions = {}
+          if !angular.equals(newOptions, options)
+            options = angular.copy(newOptions)
+            drawWidget chartData
 
         initChart = () ->
           if attrs.chtype != 'graph'
@@ -54,8 +56,6 @@ define ->
 
         drawWidget = (widget) ->
           drawn = true
-          return if chartParent.height() - chartHeader.outerHeight() < 1
-
           try
             options = JSON.parse(scope.options)
           catch e
@@ -65,12 +65,13 @@ define ->
             widget.legend = false
 
           if chart
-            chart.destroy()
+            chart.dataProvider = widget.dataProvider
+          else
+            chart = new AmCharts.makeChart("ch#{scope.widgetId}", Object.assign(widget, options));
 
-          # ugly, but works right now
           chartDiv.height(chartParent.height() - chartHeader.outerHeight())
-          chart = new AmCharts.makeChart("ch#{scope.widgetId}", Object.assign(widget, options));
           chart.invalidateSize()
+          chart.validateData()
           if widget.multiplePies?
             defaultDataProvider = widget.dataProvider
             chart.addListener "clickSlice", (event) ->
@@ -107,7 +108,7 @@ define ->
 
                   width = w
                   height = h
-            , 500
+            , 1000
 
         initChart()
     }
