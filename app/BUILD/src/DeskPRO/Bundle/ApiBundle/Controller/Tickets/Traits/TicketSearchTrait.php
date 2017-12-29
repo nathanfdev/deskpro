@@ -36,6 +36,7 @@ use Doctrine\ORM\EntityManager;
  *
  * @method object           findOr404()
  * @method EntityManager    getManager()
+ * @method EntityManager    createNotFoundException()
  */
 trait TicketSearchTrait
 {
