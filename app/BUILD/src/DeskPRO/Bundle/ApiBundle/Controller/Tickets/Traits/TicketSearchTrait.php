@@ -30,13 +30,14 @@ namespace DeskPRO\Bundle\ApiBundle\Controller\Tickets\Traits;
 
 use Application\DeskPRO\Entity\Ticket;
 use Doctrine\ORM\EntityManager;
+use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 
 /**
  * Class TicketSearchTrait.
  *
- * @method object           findOr404()
- * @method EntityManager    getManager()
- * @method EntityManager    createNotFoundException()
+ * @method object                findOr404()
+ * @method EntityManager         getManager()
+ * @method NotFoundHttpException createNotFoundException()
  */
 trait TicketSearchTrait
 {
