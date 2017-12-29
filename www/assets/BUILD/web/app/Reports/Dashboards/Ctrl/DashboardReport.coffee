@@ -157,8 +157,8 @@ define ['DeskPRO/Util/Arrays'], (Arrays) -> [
 
     $scope.editReportModal = (report) ->
       modalInstance = $modal.open {
-        templateUrl: "ReportsInterfaceBundle:Dashboard/Modal:add-report.html",
-        controller: 'Reports.Dashboards.Modals.AddReport'
+        templateUrl: "ReportsInterfaceBundle:Dashboard/Modal:edit-report.html",
+        controller: 'Reports.Dashboards.Modals.EditReport'
         resolve:
           report: () ->
             report

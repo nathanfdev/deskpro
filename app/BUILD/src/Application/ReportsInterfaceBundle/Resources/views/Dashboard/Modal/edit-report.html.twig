@@ -1,0 +1,58 @@
+<section class="popup">
+
+    <!-- Popup Header & Title -->
+    <header>
+        <h1>Edit report</h1>
+        <div class="controls"><a ng-click="cancel()"><i class="fa fa-times"></i></a></div>
+    </header>
+
+    <!-- Popup Sidebar -->
+    <div class="popup-sidebar" style="height: 580px;"><!-- Need to calculate the height of popup with js and update the sidebar -->
+        <div class="popup-sidebar-content">
+            <ul>
+                <li ng-class="{'active': activeTab == 'general'}">
+                    <a ng-click="activeTab = 'general'">General</a>
+                </li>
+                <li ng-class="{'active': activeTab == 'schedule'}">
+                    <a ng-click="activeTab = 'schedule'">Schedule report</a>
+                </li>
+            </ul>
+        </div>
+    </div>
+    <!-- End Popup Sidebar -->
+
+    <!-- Popup Content -->
+    <div class="popup-content">
+        <!-- Content Form -->
+        <form ng-show="activeTab == 'general'" class="popup-form-default">
+
+            <!-- Form Row (left label, input & possible side content) -->
+            <div class="bucket">
+                <label class="label">Report Title:</label>
+                <div class="bucket-column"><input type="text" ng-model="report.title" placeholder="Name of your new report"></div>
+            </div>
+
+            <!-- End Form Row -->
+            <hr>
+        </form>
+
+        <form ng-show="activeTab == 'schedule'" class="popup-form-default">
+
+            <!-- Form Row (left label, input & possible side content) -->
+            <div class="bucket">
+                <label class="label">Schedule this report:</label>
+            </div>
+
+            <!-- End Form Row -->
+            <hr>
+        </form>
+    </div>
+
+    <footer>
+        <a ng-click="saveReport()" class="button">{{ ng_var('title') }}</a>
+    </footer>
+    <!-- End Popup Content -->
+
+</section>
+
+<div class="cover"></div><!-- Transparent background to the popup -->

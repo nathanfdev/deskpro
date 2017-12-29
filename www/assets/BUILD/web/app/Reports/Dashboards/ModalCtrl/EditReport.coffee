@@ -7,6 +7,8 @@ define -> [
    report
   ) ->
 
+    $scope.activeTab = 'general'
+
     $scope.report = report;
 
     $scope.cancel = ->
