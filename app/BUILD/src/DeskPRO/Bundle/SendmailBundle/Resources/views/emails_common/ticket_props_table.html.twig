@@ -48,61 +48,61 @@
 	{% endif %}
 
 	{% for item in ticket_layout %}
-		{% if item.fieldType == 'department' %}
+		{% if item.field_type == 'department' %}
 			<tr>
 				<td class="dp-td-heading">{{ phrase('agent.general.department') }}</td>
 				<td>{{ticket.department.full_title|default(phrase('agent.general.none'))}}</td>
 			</tr>
-		{% elseif item.fieldType == 'category' and ticket.category %}
+		{% elseif item.field_type == 'category' and ticket.category %}
 			<tr>
 				<td class="dp-td-heading">{{ phrase('agent.general.category') }}</td>
 				<td>{{ticket.category.full_title|default(phrase('agent.general.none'))}}</td>
 			</tr>
-		{% elseif item.fieldType == 'product' and ticket.product %}
+		{% elseif item.field_type == 'product' and ticket.product %}
 			<tr>
 				<td class="dp-td-heading">{{ phrase('agent.general.product') }}</td>
 				<td>{{ticket.product.title|default(phrase('agent.general.none'))}}</td>
 			</tr>
-		{% elseif item.fieldType == 'priority' and ticket.priority %}
+		{% elseif item.field_type == 'priority' and ticket.priority %}
 			<tr>
 				<td class="dp-td-heading">{{ phrase('agent.general.priority') }}</td>
 				<td>{{ticket.priority.title|default(phrase('agent.general.none'))}}</td>
 			</tr>
-		{% elseif item.fieldType == 'workflow' and ticket.workflow %}
+		{% elseif item.field_type == 'workflow' and ticket.workflow %}
 			<tr>
 				<td class="dp-td-heading">{{ phrase('agent.general.workflow') }}</td>
 				<td>{{ticket.workflow.title|default(phrase('agent.general.none'))}}</td>
 			</tr>
 		{% else %}
-				{% if custom_fields and item.fieldType == 'ticket_field' %}
-					{% for f in custom_fields %}
-						{% if item.getFieldId() == f.id %}
-							{% if ticket.hasCustomField(f.field_def.id) %}
-								<tr>
-									<td class="dp-th-heading">{{ f.title }}</td>
-									<td>
-										{{ render_custom_field(f) }}
-									</td>
-								</tr>
-							{% endif %}
+			{% if custom_fields and item.field_type == 'ticket_field' %}
+				{% for f in custom_fields %}
+					{% if item.field_id == 'ticket_field_' ~ f.id %}
+						{% if ticket.fields[f.id] is defined %}
+							<tr>
+								<td class="dp-th-heading">{{ f.title }}</td>
+								<td>
+									{{ render_custom_field(f) }}
+								</td>
+							</tr>
 						{% endif %}
-					{% endfor %}
-				{% endif %}
+					{% endif %}
+				{% endfor %}
+			{% endif %}
 
-				{% if custom_user_fields and item.fieldType == 'user_field' %}
-					{% for f in custom_user_fields %}
-						{% if item.getFieldId() == f.id %}
-							{% if ticket.person.hasCustomField(f.field_def.id) %}
-								<tr>
-									<td class="dp-th-heading">{{ f.title }}</td>
-									<td>
-										{{ render_custom_field(f) }}
-									</td>
-								</tr>
-							{% endif %}
+			{% if custom_user_fields and item.field_type == 'user_field' %}
+				{% for f in custom_user_fields %}
+					{% if item.field_id == 'ticket_field_' ~ f.id %}
+						{% if ticket.person.fields[f.id] is defined %}
+							<tr>
+								<td class="dp-th-heading">{{ f.title }}</td>
+								<td>
+									{{ render_custom_field(f) }}
+								</td>
+							</tr>
 						{% endif %}
-					{% endfor %}
-				{% endif %}
+					{% endif %}
+				{% endfor %}
+			{% endif %}
 		{% endif %}
 	{% endfor %}
 </table>

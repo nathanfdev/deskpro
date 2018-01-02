@@ -26,48 +26,27 @@
  * ~ Thanks, Everyone at Team DeskPRO
  */
 
-namespace DeskPRO\Bundle\SendmailBundle\View\Model;
+namespace DeskPRO\Bundle\AppBundle\Serializer\Handler\Other;
 
-use JMS\Serializer\Annotation as JMS;
+use Application\DeskPRO\CustomFields\FieldDisplayArray as FieldDisplayArrayObject;
+use DeskPRO\Bundle\AppBundle\Serializer\Handler\Entity\AbstractEntityHandler;
+use DeskPRO\Bundle\AppBundle\Serializer\Model\FieldDisplayArray;
+use DeskPRO\Bundle\AppBundle\Serializer\Sideload\SideloadSerializationContext;
 
-class AgentTicketForward extends AgentTicketEmailType
+class FieldDisplayArrayHandler extends AbstractEntityHandler
 {
-    /**
-     * The agent message.
-     *
-     * @JMS\Type("string")
-     *
-     * @var string
-     */
-    protected $agentMessage;
+    public static function getClassNames()
+    {
+        return FieldDisplayArrayObject::class;
+    }
 
     /**
-     * The message subject.
+     * {@inheritdoc}
      *
-     * @JMS\Type("string")
-     *
-     * @var string
+     * @param FieldDisplayArrayObject $entity
      */
-    protected $subject;
-
-    protected $templateFile = 'emails_agent:ticket_fwd.html.twig';
-
-    public function __construct(
-        $ticket,
-        $ticketPerson,
-        $ticketAgent,
-        $ticketLink,
-        $ticketMessages,
-        $participants,
-        $ticketLayout,
-        $customFields,
-        $customUserFields,
-        $agentMessage,
-        $subject
-    ) {
-        parent::__construct($ticket, $ticketPerson, $ticketAgent, $ticketLink, $ticketMessages, $participants, $ticketLayout, $customFields, $customUserFields);
-
-        $this->agentMessage = $agentMessage;
-        $this->subject      = $subject;
+    public function createModel($entity, SideloadSerializationContext $context)
+    {
+        return new FieldDisplayArray($entity);
     }
 }
