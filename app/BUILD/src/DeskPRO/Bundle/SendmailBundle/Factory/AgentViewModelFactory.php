@@ -82,19 +82,30 @@ class AgentViewModelFactory extends AbstractViewModelFactory
     }
 
     /**
+     * @param $error
+     *
      * @return AgentErrorInvalidForward
      */
-    public function createAgentErrorInvalidForwardModel()
+    public function createAgentErrorInvalidForwardModel($error)
     {
-        return new AgentErrorInvalidForward();
+        return new AgentErrorInvalidForward($error);
     }
 
     /**
+     * @param Ticket $ticket
+     * @param $subject
+     *
+     * @throws \Exception
+     *
      * @return AgentErrorMarkerMissing
      */
-    public function createAgentErrorMarkerMissingModel()
+    public function createAgentErrorMarkerMissingModel(Ticket $ticket, $subject)
     {
-        return new AgentErrorMarkerMissing();
+        $arguments = $this->getTicketArguments($ticket);
+
+        array_push($arguments, $subject);
+
+        return $this->convertParameters(AgentErrorMarkerMissing::class, $arguments);
     }
 
     /**
@@ -312,7 +323,7 @@ class AgentViewModelFactory extends AbstractViewModelFactory
     ) {
         $arguments = $this->getTicketArguments($ticket);
 
-        $arguments = array_merge($arguments, [$agentMessage, $subject]);
+        array_push($arguments, $agentMessage, $subject);
 
         return $this->convertParameters(AgentTicketForward::class, $arguments);
     }

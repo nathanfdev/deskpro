@@ -213,6 +213,7 @@ return [
         'newTemplate' => 'SendmailBundle:emails_agent:error_marker_missing.html.twig',
         'viewModel'   => 'AgentErrorMarkerMissing',
     ],
+    /* Email not used */
     [
         'typeId'      => 'agent',
         'groupId'     => 'alerts',

@@ -147,25 +147,40 @@ class ProcessAgentFwd extends ProcessAbstract
                 $this->setError(EmailSource::ERR_INVALID_FWD);
             }
 
-            $message = App::getMailer()->createMessage();
-            $message->setSuppressAutoreplies(true);
-            $message->setTemplate('DeskPRO:emails_agent:error-invalid-forward.html.twig', [
-                'subject' => $this->reader->getSubject()->getSubjectUtf8(),
-                'name'    => $this->reader->getFromAddress()->getName() ?: $this->reader->getFromAddress()->getEmail(),
-                'error'   => $this->error,
-            ]);
-            $message->setTo($this->reader->getFromAddress()->getEmail());
-            $message->attach(\Swift_Attachment::newInstance(
-                $this->reader->getRawSource(),
-                'message.eml',
-                'message/rfc822'
-            ));
+            if (App::getContainer()->get('deskpro.feature_flags')->hasBeta('email_templates')) {
+                $viewModel = App::getContainer()->get('email.agent_viewmodel_factory')
+                    ->createAgentErrorInvalidForwardModel($this->error);
+                App::getContainer()->get('email.email_sender')->send($viewModel,
+                    [
+                        'to'          => $this->reader->getFromAddress()->getEmail(),
+                        'attachments' => [\Swift_Attachment::newInstance(
+                            $this->reader->getRawSource(),
+                            'message.eml',
+                            'message/rfc822'
+                        )],
+                    ]
+                );
+            } else {
+                $message = App::getMailer()->createMessage();
+                $message->setSuppressAutoreplies(true);
+                $message->setTemplate('DeskPRO:emails_agent:error-invalid-forward.html.twig', [
+                    'subject' => $this->reader->getSubject()->getSubjectUtf8(),
+                    'name'    => $this->reader->getFromAddress()->getName() ?: $this->reader->getFromAddress()->getEmail(),
+                    'error'   => $this->error,
+                ]);
+                $message->setTo($this->reader->getFromAddress()->getEmail());
+                $message->attach(\Swift_Attachment::newInstance(
+                    $this->reader->getRawSource(),
+                    'message.eml',
+                    'message/rfc822'
+                ));
 
-            App::$container->getTranslator()->setTemporaryLanguage($this->person->getLanguage(), function () use ($message) {
-                $message->prepare();
-            });
+                App::$container->getTranslator()->setTemporaryLanguage($this->person->getLanguage(), function () use ($message) {
+                    $message->prepare();
+                });
 
-            App::getMailer()->send($message);
+                App::getMailer()->send($message);
+            }
 
             return;
         }
@@ -461,25 +476,40 @@ class ProcessAgentFwd extends ProcessAbstract
                 $this->setError(EmailSource::ERR_INVALID_FWD);
             }
 
-            $message = App::getMailer()->createMessage();
-            $message->setSuppressAutoreplies(true);
-            $message->setTemplate('DeskPRO:emails_agent:error-invalid-forward.html.twig', [
-                'subject' => $this->reader->getSubject()->getSubjectUtf8(),
-                'name'    => $this->reader->getFromAddress()->getName() ?: $this->reader->getFromAddress()->getEmail(),
-                'error'   => $this->error,
-            ]);
-            $message->setTo($this->reader->getFromAddress()->getEmail());
-            $message->attach(\Swift_Attachment::newInstance(
-                $this->reader->getRawSource(),
-                'message.eml',
-                'message/rfc822'
-            ));
+            if (App::getContainer()->get('deskpro.feature_flags')->hasBeta('email_templates')) {
+                $viewModel = App::getContainer()->get('email.agent_viewmodel_factory')
+                    ->createAgentErrorInvalidForwardModel($this->error);
+                App::getContainer()->get('email.email_sender')->send($viewModel,
+                    [
+                        'to'          => $this->reader->getFromAddress()->getEmail(),
+                        'attachments' => [\Swift_Attachment::newInstance(
+                            $this->reader->getRawSource(),
+                            'message.eml',
+                            'message/rfc822'
+                        )],
+                    ]
+                );
+            } else {
+                $message = App::getMailer()->createMessage();
+                $message->setSuppressAutoreplies(true);
+                $message->setTemplate('DeskPRO:emails_agent:error-invalid-forward.html.twig', [
+                    'subject' => $this->reader->getSubject()->getSubjectUtf8(),
+                    'name'    => $this->reader->getFromAddress()->getName() ?: $this->reader->getFromAddress()->getEmail(),
+                    'error'   => $this->error,
+                ]);
+                $message->setTo($this->reader->getFromAddress()->getEmail());
+                $message->attach(\Swift_Attachment::newInstance(
+                    $this->reader->getRawSource(),
+                    'message.eml',
+                    'message/rfc822'
+                ));
 
-            App::$container->getTranslator()->setTemporaryLanguage($this->person->getLanguage(), function () use ($message) {
-                $message->prepare();
-            });
+                App::$container->getTranslator()->setTemporaryLanguage($this->person->getLanguage(), function () use ($message) {
+                    $message->prepare();
+                });
 
-            App::getMailer()->send($message);
+                App::getMailer()->send($message);
+            }
 
             return;
         }
