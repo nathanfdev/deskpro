@@ -221,7 +221,6 @@ class DbalExecutableQuery
 
         $this->log(Logger::DEBUG, 'selected IDs', ['ids' => $ids]);
         $this->log(Logger::DEBUG, 'row count', ['count' => $stmt->rowCount()]);
-
         $this->log(Logger::DEBUG, 'finished fetchIds()', ['time' => $timer->getElapsedTime()]);
 
         return $ids;

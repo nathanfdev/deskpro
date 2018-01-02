@@ -51,16 +51,19 @@ class ArticleType extends AbstractType
                 'mapped'    => false,
                 'prop_name' => 'title',
                 'owner'     => $builder->getData(),
+                'required'  => false,
             ])
             ->add('content_translations', ObjectLangCollectionType::class, [
                 'mapped'    => false,
                 'prop_name' => 'content',
                 'owner'     => $builder->getData(),
+                'required'  => false,
             ])
             ->add('categories', EntityType::class, [
                 'class'    => ArticleCategory::class,
                 'multiple' => true,
                 'expanded' => true,
+                'required' => false,
             ]);
     }
 

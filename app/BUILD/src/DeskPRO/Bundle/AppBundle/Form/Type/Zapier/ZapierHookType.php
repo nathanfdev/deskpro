@@ -59,7 +59,8 @@ class ZapierHookType extends AbstractType
                 'mapped' => false,
             ])
             ->add('person', PersonAssignType::class, [
-                'person' => $options['person'],
+                'required' => true,
+                'person'   => $options['person'],
             ])
             ->addEventListener(FormEvents::PRE_SUBMIT, function (FormEvent $event) {
                 $hook = $event->getData();

@@ -30,6 +30,7 @@ namespace DeskPRO\Bundle\ApiBundle\Controller\Authentication;
 
 use Application\DeskPRO\Entity\Person;
 use Application\DeskPRO\Entity\Session;
+use DeskPRO\Bundle\ApiBundle\ApiDoc\Annotation\ApiUnstable;
 use DeskPRO\Bundle\ApiBundle\Controller\BaseController;
 use DeskPRO\Bundle\AppBundle\Annotation\ActionPermissions\Annotation\ApiModes;
 use DeskPRO\Bundle\AppBundle\Annotation\ActionPermissions\Annotation\ApiUserContext;
@@ -52,6 +53,7 @@ class SessionController extends BaseController
     /**
      * @Rest\Post("/get_session", name="api_post_get_session")
      *
+     * @ApiUnstable()
      * @ApiUserContext("open")
      *
      * @param Request $request

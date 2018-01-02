@@ -53,10 +53,14 @@ class TicketFollowUpType extends AbstractType
             ->add('date_to_run', DateTimeType::class, [
                 'property_path' => 'dateToRun',
                 'widget'        => 'single_text',
+                'required'      => true,
             ])
-            ->add('actions', TicketMacroActionsType::class)
+            ->add('actions', TicketMacroActionsType::class, [
+                'required' => true,
+            ])
             ->add('cancel_if_user_reply', ApiBooleanType::class, [
                 'property_path' => 'cancelIfUserReply',
+                'required'      => true,
             ])
         ;
 

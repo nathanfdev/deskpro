@@ -57,13 +57,16 @@ class TextSnippetType extends AbstractType
                 'mapped'    => false,
                 'prop_name' => 'title',
                 'owner'     => $builder->getData(),
+                'required'  => true,
             ])
             ->add('snippet', ObjectLangCollectionType::class, [
                 'mapped'    => false,
                 'prop_name' => 'snippet',
                 'owner'     => $builder->getData(),
+                'required'  => true,
             ])
             ->add('category', EntityType::class, [
+                'required'      => true,
                 'class'         => TextSnippetCategory::class,
                 'query_builder' => function (EntityRepository $er) use ($options) {
                     $qb = $er
@@ -81,10 +84,15 @@ class TextSnippetType extends AbstractType
                     return $qb;
                 },
             ])
-            ->add('shortcut_code', TextType::class)
-            ->add('is_draft', ApiBooleanType::class)
+            ->add('shortcut_code', TextType::class, [
+                'required' => true,
+            ])
+            ->add('is_draft', ApiBooleanType::class, [
+                'required' => false,
+            ])
             ->add('is_global', ApiBooleanType::class, [
-                'mapped' => false,
+                'mapped'   => false,
+                'required' => false,
             ])
         ;
 

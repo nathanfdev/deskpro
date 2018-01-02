@@ -45,7 +45,8 @@ class DownloadCategoryType extends AbstractType
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
         $builder->add('parent', EntityType::class, [
-            'class' => DownloadCategory::class,
+            'class'    => DownloadCategory::class,
+            'required' => false,
         ]);
     }
 

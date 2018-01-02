@@ -117,11 +117,13 @@ class TaskType extends AbstractType
             ->add('tickets', EntityType::class, [
                 'class'    => Ticket::class,
                 'multiple' => true,
+                'required' => false,
             ])
             ->add('labels', LabelsCollectionType::class, [
                 'labels_class'   => LabelTask::class,
                 'labels_owner'   => $builder->getData(),
                 'owner_property' => 'task',
+                'required'       => false,
             ])
         ;
 

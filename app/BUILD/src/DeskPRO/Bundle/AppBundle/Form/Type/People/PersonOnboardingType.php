@@ -46,11 +46,16 @@ class PersonOnboardingType extends AbstractType
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
         $builder
-            ->add('status', IntegerType::class)
-            ->add('date_completion', CoreDateTimeType::class, [
-                'widget' => 'single_text',
+            ->add('status', IntegerType::class, [
+                'required' => true,
             ])
-            ->add('current_step', IntegerType::class)
+            ->add('date_completion', CoreDateTimeType::class, [
+                'widget'   => 'single_text',
+                'required' => false,
+            ])
+            ->add('current_step', IntegerType::class, [
+                'required' => false,
+            ])
         ;
     }
 

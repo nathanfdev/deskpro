@@ -41,26 +41,40 @@ use Symfony\Component\Form\FormEvent;
 use Symfony\Component\Form\FormEvents;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 
+/**
+ * Class ChatMessageType.
+ */
 class ChatMessageType extends AbstractType
 {
+    /**
+     * {@inheritdoc}
+     */
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
         $builder
             ->add('content', HtmlTextareaType::class, [
                 'property_path' => 'content',
+                'required'      => true,
             ])
             ->add('author', PersonAssignType::class, [
                 'property_path' => 'author',
                 'person'        => $options['person'],
+                'required'      => false,
             ])
-            ->add('is_user', ApiBooleanType::class)
-            ->add('person_name', TextType::class)
+            ->add('is_user', ApiBooleanType::class, [
+                'required' => false,
+            ])
+            ->add('person_name', TextType::class, [
+                'required' => false,
+            ])
         ;
 
-        $builder->addEventListener(FormEvents::POST_SUBMIT, [$this, 'onSetDefault']);
-        $builder->addEventListener(FormEvents::POST_SUBMIT, [$this, 'onSetRelations']);
+        $builder->addEventListener(FormEvents::POST_SUBMIT, [$this, 'onPostSubmit']);
     }
 
+    /**
+     * {@inheritdoc}
+     */
     public function configureOptions(OptionsResolver $resolver)
     {
         $resolver
@@ -73,9 +87,13 @@ class ChatMessageType extends AbstractType
         ;
     }
 
-    public function onSetDefault(FormEvent $event)
+    /**
+     * @param FormEvent $event
+     */
+    public function onPostSubmit(FormEvent $event)
     {
-        $form = $event->getForm();
+        $form   = $event->getForm();
+        $config = $form->getConfig();
 
         /** @var ChatMessage $message */
         $message = $form->getData();
@@ -84,22 +102,11 @@ class ChatMessageType extends AbstractType
         } else {
             $origin = $message->getIsUser() ? 'user' : 'agent';
         }
+
         $message->setOrigin($origin);
-    }
 
-    /**
-     * @param FormEvent $event
-     */
-    public function onSetRelations(FormEvent $event)
-    {
-        $form   = $event->getForm();
-        $config = $form->getConfig();
-
-        /** @var ChatMessage $message */
-        $message = $form->getData();
         /** @var ChatConversation $conversation */
         $conversation = $config->getOption('conversation');
-
         $conversation->addMessage($message);
     }
 }

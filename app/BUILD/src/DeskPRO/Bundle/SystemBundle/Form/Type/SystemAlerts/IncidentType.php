@@ -43,6 +43,8 @@ class IncidentType extends AbstractType
      */
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
-        $builder->add('dismissed', ApiBooleanType::class);
+        $builder->add('dismissed', ApiBooleanType::class, [
+            'required' => false,
+        ]);
     }
 }
