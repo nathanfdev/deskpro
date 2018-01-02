@@ -44,13 +44,13 @@ class NumberForm extends BaseForm {
   }
 
   render() {
-    const { onReturnBack } = this.props;
+    const { number, onReturnBack } = this.props;
     const { formData, saving } = this.state;
 
     return (
       <div className="page">
         <BackButton onClick={onReturnBack} />
-        <SectionHeader title="Update number" dividing />
+        <SectionHeader title={number.get('id') ? 'Update number' : 'Create number'} dividing />
 
         <div className="twilio-number-form">
           <Form onSubmit={this.onSubmit} formValue={formData}>
@@ -73,7 +73,7 @@ class NumberForm extends BaseForm {
               </Field>
 
               <button className={classNames('ui button', { loading: saving })}>
-                Update
+                {number.get('id') ? 'Update' : 'Create' }
               </button>
               <button
                 className={classNames('ui basic button cancel-button', { disabled: saving })}
@@ -81,9 +81,10 @@ class NumberForm extends BaseForm {
               >
                 Cancel
               </button>
+              {number.get('id') &&
               <span className="voice-delete-button" onClick={this.onDelete}>
                 Delete this number
-              </span>
+              </span>}
             </Fieldset>
           </Form>
         </div>

@@ -1,10 +1,11 @@
 import PropTypes from 'prop-types';
 import React from 'react';
 import Immutable from 'immutable';
+import { compileParams } from 'DeskPRO/Bundle/AppBundle/DAL/Http/Helpers';
 import LoadingPage from 'DeskPRO/Bundle/AdminBundle/Modules/Common/Components/LoadingPage';
 import { connect } from 'react-redux';
 import ExistingList from './ExistingList';
-import { loadExistingNumbers, addExistingNumber, changeExistingNumbersFilter } from '../../../../Actions/numberActions';
+import { loadExistingNumbers, changeExistingNumbersFilter } from '../../../../Actions/numberActions';
 import { isAccountsLoadedSelector, allAccountsSelector } from '../../../../Selectors/account';
 import { isNumbersLoadedSelector, existingNumbersFilterSelector } from '../../../../Selectors/numbers';
 import BaseSearchContainer from '../BaseSearchContainer';
@@ -36,21 +37,14 @@ class ExistingNumbersContainer extends BaseSearchContainer {
   }
 
   onAddNumber = (number) => {
-    this.setState({
-      loading: true
-    });
+    const params = {
+      sid:          number.get('sid'),
+      account:      number.get('account'),
+      number:       number.get('number'),
+      country_code: number.get('country_code')
+    };
 
-    const promise = this.props.dispatch(addExistingNumber(number));
-    promise.success((response) => {
-      this.setState({
-        loading: false
-      }, () => replaceRoute(`/voice_channel/numbers/${response.data.id}`));
-    });
-    promise.error(() => {
-      this.setState({
-        loading: false
-      });
-    });
+    replaceRoute(`/voice_channel/numbers/new?${compileParams(params)}`);
   };
 
   onChangeFilter = (filter) => {

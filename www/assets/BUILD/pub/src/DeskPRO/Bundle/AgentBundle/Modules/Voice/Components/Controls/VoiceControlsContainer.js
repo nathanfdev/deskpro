@@ -111,30 +111,6 @@ class VoiceControlsContainer extends React.Component {
     }
   }
 
-  onToggleMute = () => {
-    const { dispatch } = this.props;
-    const mute = !this.state.mute;
-    const connection = this.getConnection();
-    if (!connection) {
-      return;
-    }
-
-    this.setState({ mute });
-    dispatch(toggleMute(connection, mute));
-  };
-
-  onToggleHold = () => {
-    const { dispatch } = this.props;
-    const hold = !this.state.hold;
-    const connection = this.getConnection();
-    if (!connection) {
-      return;
-    }
-
-    this.setState({ hold });
-    dispatch(toggleHold(connection, hold));
-  };
-
   onExternalSetHold = (event) => {
     const connection = this.getConnection();
     if (!connection) {
@@ -183,17 +159,12 @@ class VoiceControlsContainer extends React.Component {
     this.setState(newState);
   };
 
-  onEndCall = () => {
-    const { dispatch } = this.props;
-    const connection = this.getConnection();
-    if (!connection) {
-      return;
-    }
+  getConnection() {
+    const { connections, ticketId } = this.props;
+    return connections.filter(connection => parseInt(connection.message.TicketId, 10) === ticketId, 10).first();
+  }
 
-    dispatch(hangup(connection));
-  };
-
-  onAddAgent = (target, type) => {
+  addAgent = (target, type) => {
     const { dispatch } = this.props;
     const connection = this.getConnection();
     if (!connection) {
@@ -207,7 +178,53 @@ class VoiceControlsContainer extends React.Component {
     });
   };
 
-  onTransferCall = (target, type) => {
+  cancelInvite = (target, type) => {
+    const { dispatch } = this.props;
+    const connection = this.getConnection();
+
+    dispatch(cancelInvite(connection.message.CallId, target, type));
+  };
+
+  endCall = () => {
+    const { dispatch } = this.props;
+    const connection = this.getConnection();
+    if (!connection) {
+      return;
+    }
+
+    dispatch(hangup(connection));
+  };
+
+  sendDigits = (digit) => {
+    const connection = this.getConnection();
+    connection.sendDigits(`${digit}`);
+  };
+
+  toggleMute = () => {
+    const { dispatch } = this.props;
+    const mute = !this.state.mute;
+    const connection = this.getConnection();
+    if (!connection) {
+      return;
+    }
+
+    this.setState({ mute });
+    dispatch(toggleMute(connection, mute));
+  };
+
+  toggleHold = () => {
+    const { dispatch } = this.props;
+    const hold = !this.state.hold;
+    const connection = this.getConnection();
+    if (!connection) {
+      return;
+    }
+
+    this.setState({ hold });
+    dispatch(toggleHold(connection, hold));
+  };
+
+  transferCall = (target, type) => {
     const { dispatch } = this.props;
     const connection = this.getConnection();
     if (!connection) {
@@ -220,18 +237,6 @@ class VoiceControlsContainer extends React.Component {
       transferTargetType: type
     });
   };
-
-  onCancelInvite = (target, type) => {
-    const { dispatch } = this.props;
-    const connection = this.getConnection();
-
-    dispatch(cancelInvite(connection.message.CallId, target, type));
-  };
-
-  getConnection() {
-    const { connections, ticketId } = this.props;
-    return connections.filter(connection => parseInt(connection.message.TicketId, 10) === ticketId, 10).first();
-  }
 
   isCallActive = () => {
     const connection = this.getConnection();
@@ -257,12 +262,13 @@ class VoiceControlsContainer extends React.Component {
         {...this.state}
         onlineAgents={onlineAgents}
         connection={this.getConnection()}
-        onEndCall={this.onEndCall}
-        onMute={this.onToggleMute}
-        onHold={this.onToggleHold}
-        onAddAgent={this.onAddAgent}
-        onTransferCall={this.onTransferCall}
-        onCancelInvite={this.onCancelInvite}
+        endCall={this.endCall}
+        toggleMute={this.toggleMute}
+        toggleHold={this.toggleHold}
+        sendDigits={this.sendDigits}
+        onAddAgent={this.addAgent}
+        onTransferCall={this.transferCall}
+        onCancelInvite={this.cancelInvite}
       />
     );
   }

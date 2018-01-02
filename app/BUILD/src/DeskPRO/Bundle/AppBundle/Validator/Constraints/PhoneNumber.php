@@ -38,9 +38,11 @@ use Symfony\Component\Validator\Constraint;
  */
 class PhoneNumber extends Constraint
 {
+    const MISSING_COUNTRY_CODE = 'missing_country_code';
     const INVALID_PHONE_NUMBER = 'invalid_phone_number_format';
 
-    public $message = 'Invalid phone number format.';
+    public $missingCountryCodeMessage = 'Country code is missing.';
+    public $invalidFormatMessage      = 'Invalid phone number format.';
 
     /**
      * {@inheritdoc}

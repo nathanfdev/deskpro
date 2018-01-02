@@ -68,6 +68,7 @@ class VoiceNumberType extends AbstractType
                 'required'      => true,
             ])
             ->add('target', VoiceTargetType::class, [
+                'error_bubbling' => false,
                 'required' => true,
             ])
             ->add('outbound_calls_enabled', ApiBooleanType::class, [

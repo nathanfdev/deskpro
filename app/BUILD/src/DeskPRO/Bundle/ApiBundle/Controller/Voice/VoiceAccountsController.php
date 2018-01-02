@@ -33,13 +33,12 @@ use DeskPRO\Bundle\AppBundle\Annotation\ActionPermissions\Annotation\ApiModes;
 use DeskPRO\Bundle\AppBundle\Annotation\ActionPermissions\Annotation\ApiUserContext;
 use DeskPRO\Bundle\AppBundle\Annotation\ActionPermissions\Annotation\Feature;
 use DeskPRO\Bundle\AppBundle\Entity\VoiceAccount;
-use DeskPRO\Bundle\AppBundle\Entity\VoiceNumber;
 use DeskPRO\Bundle\AppBundle\Form\Error\Exception\InvalidFormException;
 use DeskPRO\Bundle\AppBundle\Form\Type\Voice\VoiceAccountType;
 use DeskPRO\Bundle\AppBundle\Form\Type\Voice\VoiceBuyNumberType;
+use DeskPRO\Bundle\AppBundle\Twilio\Model\TwilioExistingNumber;
 use FOS\RestBundle\Controller\Annotations as Rest;
 use FOS\RestBundle\View\View;
-use libphonenumber\PhoneNumberUtil;
 use Orb\Data\Countries;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -223,22 +222,10 @@ class VoiceAccountsController extends AbstractVoiceCrudController
         }
 
         try {
-            $apiNumber   = $this->get('twilio_adapter')->buyNumber($account, $form->getData());
-            $phoneUtil   = PhoneNumberUtil::getInstance();
-            $phoneNumber = $phoneUtil->parse($apiNumber->phoneNumber, null);
+            $apiNumber = $this->get('twilio_adapter')->buyNumber($account, $form->getData());
+            $model     = new TwilioExistingNumber($apiNumber, $account, false);
 
-            $number = new VoiceNumber();
-            $number
-                ->setAccount($account)
-                ->setSid($apiNumber->sid)
-                ->setNumber($apiNumber->phoneNumber)
-                ->setCountryCode(strtolower($phoneUtil->getRegionCodeForNumber($phoneNumber)))
-            ;
-
-            $this->getManager()->persist($number);
-            $this->getManager()->flush();
-
-            return new View($this->wrap($number));
+            return new View($this->wrap($model));
         } catch (TwilioException $e) {
             return $this->getFormErrorResponseFromException('twilio_exception', $e);
         }

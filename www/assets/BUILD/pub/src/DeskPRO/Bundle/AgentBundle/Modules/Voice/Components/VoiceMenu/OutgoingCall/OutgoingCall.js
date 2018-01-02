@@ -1,19 +1,25 @@
 import PropTypes from 'prop-types';
 import React from 'react';
 import Avatar from '../../Common/Avatar';
+import OutgoingCallAudio from './OutgoingCallAudio';
 
 class OutgoingCall extends React.Component {
 
   static propTypes = {
-    me:           PropTypes.object,
-    people:       PropTypes.object,
-    outgoingCall: PropTypes.object,
-    onHangup:     PropTypes.func
+    me:            PropTypes.object,
+    people:        PropTypes.object,
+    outgoingCall:  PropTypes.object,
+    onHangup:      PropTypes.func,
+    ringingVolume: PropTypes.number
   };
 
   static defaultProps = {
     onHangup: () => {}
   };
+
+  componentDidMount() {
+    this.audio.playSound();
+  }
 
   onHangup = (event) => {
     event.preventDefault();
@@ -21,11 +27,16 @@ class OutgoingCall extends React.Component {
   };
 
   render() {
-    const { me, people, outgoingCall } = this.props;
+    const { me, people, outgoingCall, ringingVolume } = this.props;
     const person = people.get(outgoingCall.getIn(['phoneCall', 'person']));
 
     return (
       <div className="outgoing-call">
+        <OutgoingCallAudio
+          ref={(c) => { this.audio = c; }}
+          ringingVolume={ringingVolume}
+          loop
+        />
         <CallFrom
           agent={me}
           number={outgoingCall.get('callFrom')}

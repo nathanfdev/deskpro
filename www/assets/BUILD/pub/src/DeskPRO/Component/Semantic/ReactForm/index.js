@@ -11,6 +11,7 @@ import RecordsChoiceWrapper from './RecordsChoiceWrapper';
 import Toggle from './Toggle';
 import Radio from './Radio';
 import ClipboardInput from './ClipboardInput';
+import PhoneInput from './PhoneInput';
 
 export { Field, SemanticError } from './Field';
 export {
@@ -26,5 +27,6 @@ export {
   RecordsChoiceWrapper,
   Toggle,
   Radio,
-  ClipboardInput
+  ClipboardInput,
+  PhoneInput
 };
