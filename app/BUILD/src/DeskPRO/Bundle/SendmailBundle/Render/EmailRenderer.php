@@ -160,13 +160,17 @@ class EmailRenderer
         foreach ($blobAuthIds as $authId) {
             /** @var Blob $blob */
             $blob = $this->serviceContainer->getEm()->getRepository(Blob::class)->getByAuthId($authId);
-            $templateCode->addAttachment($blob);
+            if ($blob) {
+                $templateCode->addAttachment($blob);
+            }
         }
 
         foreach ($blobSysNames as $sysName) {
             /** @var Blob $blob */
             $blob = $this->serviceContainer->getEm()->getRepository(Blob::class)->getSystemBlob($sysName);
-            $templateCode->addAttachment($blob);
+            if ($blob) {
+                $templateCode->addAttachment($blob);
+            }
         }
 
         return $templateCode;

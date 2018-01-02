@@ -404,6 +404,7 @@ return [
         'newTemplate' => 'SendmailBundle:emails_user:email_validation.html.twig',
         'viewModel'   => 'EmailValidation',
     ],
+    /* Not Used */
     [
         'typeId'      => 'user',
         'groupId'     => 'account',

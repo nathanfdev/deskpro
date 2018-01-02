@@ -40,14 +40,14 @@ class TicketNewValidateEmail extends TicketEmailType
      *
      * @var string
      */
-    protected $accessCode;
+    protected $verifyUrl;
 
     protected $templateFile = 'emails_user:ticket_new_validate.html.twig';
 
-    public function __construct(Ticket $ticket, $ticketPerson, $ticketAgent, $ticketLink, $ticketMessages, $accessCode)
+    public function __construct(Ticket $ticket, $ticketPerson, $ticketAgent, $ticketLink, $ticketMessages, $verifyUrl)
     {
         parent::__construct($ticket, $ticketPerson, $ticketAgent, $ticketLink, $ticketMessages);
 
-        $this->accessCode = $accessCode;
+        $this->verifyUrl = $verifyUrl;
     }
 }

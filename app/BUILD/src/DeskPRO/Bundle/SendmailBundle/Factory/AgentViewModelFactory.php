@@ -214,11 +214,11 @@ class AgentViewModelFactory extends AbstractViewModelFactory
      *
      * @return AgentTaskDueReminder
      */
-    public function createAgentTaskDueReminderModel(Task $task, Person $performer)
+    public function createAgentTaskDueReminderModel(Task $task)
     {
         $loginLink = $this->router->generate('agent', [], UrlGeneratorInterface::ABSOLUTE_URL);
 
-        return $this->convertParameters(AgentTaskDueReminder::class, [$task, $performer, $loginLink]);
+        return $this->convertParameters(AgentTaskDueReminder::class, [$task, $loginLink]);
     }
 
     /**
