@@ -46,8 +46,12 @@ class ProblemType extends AbstractType
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
         $builder
-            ->add('title', TextType::class)
-            ->add('is_open', ApiBooleanType::class)
+            ->add('title', TextType::class, [
+                'required' => true,
+            ])
+            ->add('is_open', ApiBooleanType::class, [
+                'required' => false,
+            ])
         ;
 
         $builder->addEventListener(FormEvents::PRE_SUBMIT, [$this, 'onSetOpenByDefault']);

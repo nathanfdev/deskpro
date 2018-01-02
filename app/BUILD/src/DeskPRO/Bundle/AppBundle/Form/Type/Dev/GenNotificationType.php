@@ -47,6 +47,7 @@ class GenNotificationType extends AbstractType
     {
         $builder->add('agent', EntityType::class, [
             'class'       => Person::class,
+            'required'    => true,
             'constraints' => [
                 new Assert\NotNull(),
                 new AppAssert\Person\PersonType([

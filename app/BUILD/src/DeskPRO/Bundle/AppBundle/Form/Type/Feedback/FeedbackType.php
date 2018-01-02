@@ -77,15 +77,22 @@ class FeedbackType extends AbstractType
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
         $builder
-            ->add('title', TextType::class)
-            ->add('content', TextareaType::class)
+            ->add('title', TextType::class, [
+                'required' => true,
+            ])
+            ->add('content', TextareaType::class, [
+                'required' => true,
+            ])
             ->add('person', PersonAssignType::class, [
-                'person' => $options['person'],
+                'person'   => $options['person'],
+                'required' => false,
             ])
             ->add('category', FeedbackCategoryType::class, [
-                'person' => $options['person'],
+                'person'   => $options['person'],
+                'required' => true,
             ])
             ->add('status', ChoiceType::class, [
+                'required'          => false,
                 'choices_as_values' => true,
                 'choices'           => [
                     Feedback::STATUS_ACTIVE,
@@ -94,15 +101,19 @@ class FeedbackType extends AbstractType
                 ],
             ])
             ->add('labels', LabelsCollectionType::class, [
+                'required'       => false,
                 'labels_class'   => LabelFeedback::class,
                 'labels_owner'   => $builder->getData(),
                 'owner_property' => 'feedback',
             ])
             ->add('fields', CombinedType::class, [
+                'required'       => false,
                 'forms'          => $this->getCustomDataFields($options),
                 'error_bubbling' => false,
             ])
-            ->add('is_reviewed', ApiBooleanType::class)
+            ->add('is_reviewed', ApiBooleanType::class, [
+                'required' => false,
+            ])
         ;
 
         $builder->addEventListener(FormEvents::PRE_SUBMIT, [$this, 'onSetStatus']);
@@ -138,6 +149,7 @@ class FeedbackType extends AbstractType
 
         if (in_array($data['status'], [Feedback::STATUS_ACTIVE, Feedback::STATUS_CLOSED])) {
             $form->add('status_category', EntityType::class, [
+                'required'      => true,
                 'class'         => FeedbackStatusCategory::class,
                 'query_builder' => function (EntityRepository $er) use ($data) {
                     return $er
@@ -157,6 +169,7 @@ class FeedbackType extends AbstractType
             }
         } elseif ($data['status'] === Feedback::STATUS_HIDDEN) {
             $form->add('hidden_status', ChoiceType::class, [
+                'required'          => true,
                 'choices_as_values' => true,
                 'choices'           => [
                     Feedback::STATUS_PUBLISHED,

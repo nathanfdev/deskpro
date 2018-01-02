@@ -47,18 +47,23 @@ class ContentCategoryAbstractType extends AbstractType
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
         $builder
-            ->add('title', TextType::class)
+            ->add('title', TextType::class, [
+                'required' => true,
+            ])
             ->add('title_translations', PhraseCollectionType::class, [
                 'prop_name' => 'title',
                 'owner'     => $builder->getData(),
+                'required'  => false,
             ])
             ->add('brand', EntityType::class, [
-                'class' => Brand::class,
+                'class'    => Brand::class,
+                'required' => false,
             ])
             ->add('usergroups', EntityType::class, [
                 'class'    => Usergroup::class,
                 'multiple' => true,
                 'expanded' => true,
+                'required' => false,
             ])
         ;
     }

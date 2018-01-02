@@ -53,12 +53,23 @@ class TopicType extends AbstractType
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
         $builder
-            ->add('title', TextType::class)
-            ->add('slug', TextType::class)
-            ->add('display_order', TextType::class)
-            ->add('content', TextareaType::class)
-            ->add('content_input', TextareaType::class)
+            ->add('title', TextType::class, [
+                'required' => true,
+            ])
+            ->add('slug', TextType::class, [
+                'required' => false,
+            ])
+            ->add('display_order', TextType::class, [
+                'required' => false,
+            ])
+            ->add('content', TextareaType::class, [
+                'required' => true,
+            ])
+            ->add('content_input', TextareaType::class, [
+                'required' => false,
+            ])
             ->add('content_input_type', ChoiceType::class, [
+                'required'          => false,
                 'choices_as_values' => true,
                 'choices'           => [
                     ContentAbstract::CONTENT_TYPE_RTE,
@@ -66,6 +77,7 @@ class TopicType extends AbstractType
                 ],
             ])
             ->add('status', ChoiceType::class, [
+                'required'          => false,
                 'choices_as_values' => true,
                 'choices'           => [
                     ContentAbstract::STATUS_PUBLISHED,
@@ -74,17 +86,21 @@ class TopicType extends AbstractType
                 ],
             ])
             ->add('guide', EntityType::class, [
-                'class' => Guide::class,
+                'class'    => Guide::class,
+                'required' => true,
             ])
             ->add('parent', EntityType::class, [
-                'class' => Topic::class,
+                'class'    => Topic::class,
+                'required' => false,
             ])
             ->add('author', PersonAssignType::class, [
                 'property_path' => 'person',
                 'person'        => $options['person'],
+                'required'      => false,
             ])
             ->add('language', EntityType::class, [
-                'class' => Language::class,
+                'class'    => Language::class,
+                'required' => false,
             ])
         ;
     }

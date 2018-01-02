@@ -48,12 +48,14 @@ class AuthenticationType extends AbstractType
     {
         $builder
             ->add('email', EmailType::class, [
+                'required'    => true,
                 'constraints' => [
                     new Assert\NotNull(),
                     new Assert\Email(['strict' => true]),
                 ],
             ])
             ->add('password', PasswordType::class, [
+                'required'    => true,
                 'constraints' => [
                     new Assert\NotNull(),
                 ],

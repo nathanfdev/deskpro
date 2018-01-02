@@ -51,19 +51,28 @@ class VoiceNumberType extends AbstractType
     {
         $builder
             ->add('account', EntityType::class, [
-                'class' => VoiceAccount::class,
+                'class'    => VoiceAccount::class,
+                'required' => true,
             ])
-            ->add('sid', TextType::class)
-            ->add('nickname', TextType::class)
-            ->add('number', TextType::class)
+            ->add('sid', TextType::class, [
+                'required' => true,
+            ])
+            ->add('nickname', TextType::class, [
+                'required' => false,
+            ])
+            ->add('number', TextType::class, [
+                'required' => true,
+            ])
             ->add('country_code', TextType::class, [
                 'property_path' => 'countryCode',
+                'required'      => true,
             ])
             ->add('target', VoiceTargetType::class, [
-                'required' => false,
+                'required' => true,
             ])
             ->add('outbound_calls_enabled', ApiBooleanType::class, [
                 'property_path' => 'outboundCallsEnabled',
+                'required'      => false,
             ])
         ;
 

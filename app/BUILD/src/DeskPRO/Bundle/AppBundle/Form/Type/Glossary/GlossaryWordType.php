@@ -47,9 +47,12 @@ class GlossaryWordType extends AbstractType
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
         $builder
-            ->add('word', TextType::class)
+            ->add('word', TextType::class, [
+                'required' => true,
+            ])
             ->add('definition', EntityType::class, [
-                'class' => GlossaryWordDefinition::class,
+                'class'    => GlossaryWordDefinition::class,
+                'required' => true,
             ]);
     }
 

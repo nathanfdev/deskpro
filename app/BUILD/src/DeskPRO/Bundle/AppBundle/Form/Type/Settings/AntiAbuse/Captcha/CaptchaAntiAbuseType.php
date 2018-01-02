@@ -46,14 +46,30 @@ class CaptchaAntiAbuseType extends AbstractType
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
         $builder
-            ->add('use_recaptcha2', ApiBooleanType::class)
-            ->add('recaptcha2_site_key', TextType::class)
-            ->add('recaptcha2_secret_key', TextType::class)
-            ->add('tickets', CaptchaSettingChoiceType::class)
-            ->add('comments', CaptchaSettingChoiceType::class)
-            ->add('feedback', CaptchaSettingChoiceType::class)
-            ->add('register', CaptchaSettingChoiceType::class)
-            ->add('sharing', CaptchaSettingChoiceType::class)
+            ->add('use_recaptcha2', ApiBooleanType::class, [
+                'required' => false,
+            ])
+            ->add('recaptcha2_site_key', TextType::class, [
+                'required' => false,
+            ])
+            ->add('recaptcha2_secret_key', TextType::class, [
+                'required' => false,
+            ])
+            ->add('tickets', CaptchaSettingChoiceType::class, [
+                'required' => false,
+            ])
+            ->add('comments', CaptchaSettingChoiceType::class, [
+                'required' => false,
+            ])
+            ->add('feedback', CaptchaSettingChoiceType::class, [
+                'required' => false,
+            ])
+            ->add('register', CaptchaSettingChoiceType::class, [
+                'required' => false,
+            ])
+            ->add('sharing', CaptchaSettingChoiceType::class, [
+                'required' => false,
+            ])
         ;
     }
 

@@ -469,6 +469,30 @@ class Department extends DomainObject implements HasPhraseName, AvatarOwner, Hie
         return $this->avatar;
     }
 
+    /**
+     * @param bool $isChatEnabled
+     *
+     * @return $this
+     */
+    public function setIsChatEnabled($isChatEnabled)
+    {
+        $this->setModelField('is_chat_enabled', $isChatEnabled);
+
+        return $this;
+    }
+
+    /**
+     * @param bool $isTicketsEnabled
+     *
+     * @return $this
+     */
+    public function setIsTicketsEnabled($isTicketsEnabled)
+    {
+        $this->setModelField('is_tickets_enabled', $isTicketsEnabled);
+
+        return $this;
+    }
+
     public function isChatEnabled()
     {
         return $this->is_chat_enabled;
