@@ -1196,6 +1196,8 @@ class Person extends DomainObject implements
      */
     public function getAllowedDepartments($context = 'tickets', $forceAgentData = false)
     {
+        $this->loadHelper('AgentPermissions');
+
         return $this->_onNotCallable('getalloweddepartments', [$context, $forceAgentData]);
     }
 
@@ -1207,6 +1209,8 @@ class Person extends DomainObject implements
      */
     public function getDisallowedDepartments($context = 'tickets', $forceAgentData = false)
     {
+        $this->loadHelper('AgentPermissions');
+
         return $this->_onNotCallable('getdisalloweddepartments', [$context, $forceAgentData]);
     }
 
