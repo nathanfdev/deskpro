@@ -1693,10 +1693,11 @@ DeskPRO.Agent.PageFragment.Page.Ticket = new Orb.Class({
 		});
 		messageEl.find('.view-archive-files').each(function() {
 			var $rElement = $(this);
+			var layout = self.getEl('layout_content')[0];
 			var data = {
 				authId: $(this).closest('li').find('a').first().data('blob-authid')
 			};
-			window.AgentLegacyBundle.renderMessageArchiveAttachment($rElement, data);
+			window.AgentLegacyBundle.renderMessageArchiveAttachment($rElement, data, layout);
 		});
 
 		// open links in new window
