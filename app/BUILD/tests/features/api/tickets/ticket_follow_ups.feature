@@ -45,7 +45,7 @@ Feature: /ticket_follow_ups endpoint
     And the JSON node "data[1].id" should be equal to "{f2}"
 
   Scenario: I retrieve a list of ticket follow ups by ticket ref
-    When I send a GET request to "/api/v2/tickets/{t1:ref}/follow-ups?order_by=id&order_dir=asc"
+    When I send a GET request to "/api/v2/tickets/ref:{t1:ref}/follow-ups?order_by=id&order_dir=asc"
     Then the JSON node "data" should have 2 elements
     And the JSON node "data[0].id" should be equal to "{f1}"
     And the JSON node "data[1].id" should be equal to "{f2}"

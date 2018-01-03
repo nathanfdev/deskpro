@@ -95,7 +95,7 @@ class TicketsController extends AbstractTicketsController
      *      requirements={
      *          {
      *              "name"="id",
-     *              "requirement"="[A-Z0-9-]+",
+     *              "requirement"="ref:[\w\-\.]+|\d+",
      *              "description"="The id|ref of the resource",
      *              "dataType"="integer|string"
      *          }
@@ -105,7 +105,7 @@ class TicketsController extends AbstractTicketsController
      *          404="Not Found error will returned in case we can't find entity with specified ID"
      *      }
      * )
-     * @Rest\Get("/{id}", requirements={"id"="[A-Z0-9-]+"})
+     * @Rest\Get("/{id}", requirements={"id"="ref:[\w\-\.]+|\d+"})
      *
      * @param Request $request
      * @param int     $id
@@ -291,7 +291,7 @@ class TicketsController extends AbstractTicketsController
      *      requirements={
      *          {
      *              "name"="id",
-     *              "requirement"="[A-Z0-9-]+",
+     *              "requirement"="ref:[\w\-\.]+|\d+",
      *              "description"="The id|ref of the resource",
      *              "dataType"="integer|string"
      *          }
@@ -301,7 +301,7 @@ class TicketsController extends AbstractTicketsController
      *          400="We will return this in case your request was malformed",
      *      }
      * )
-     * @Rest\Put("/{id}", requirements={"id"="[A-Z0-9-]+"})
+     * @Rest\Put("/{id}", requirements={"id"="ref:[\w\-\.]+|\d+"})
      *
      * @param int     $id
      * @param Request $request
@@ -321,7 +321,7 @@ class TicketsController extends AbstractTicketsController
      *      requirements={
      *          {
      *              "name"="id",
-     *              "requirement"="[A-Z0-9-]+",
+     *              "requirement"="ref:[\w\-\.]+|\d+",
      *              "description"="The id|ref of the resource",
      *              "dataType"="integer|string"
      *          }
@@ -331,7 +331,7 @@ class TicketsController extends AbstractTicketsController
      *          404="Well, looks like either resource already deleted either it doesn't exists at all"
      *      }
      * )
-     * @Rest\Delete("/{id}", requirements={"id"="[A-Z0-9-]+"})
+     * @Rest\Delete("/{id}", requirements={"id"="ref:[\w\-\.]+|\d+"})
      *
      * @param int|string $id
      * @param Request    $request

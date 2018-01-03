@@ -80,14 +80,14 @@ Feature: /tickets endpoint
     And the JSON node "data.cc" should have 2 elements
 
   Scenario: I modify and retrieve a ticket by ref
-    Given I send a PUT request to "/api/v2/tickets/{ticket1:ref}" with body:
+    Given I send a PUT request to "/api/v2/tickets/ref:{ticket1:ref}" with body:
     """
 {
   "subject": "Modified 5"
 }
     """
     And the response status code should be 204
-    When I send a GET request to "/api/v2/tickets/{ticket1:ref}"
+    When I send a GET request to "/api/v2/tickets/ref:{ticket1:ref}"
     Then the response status code should be 200
     And the JSON node "data.subject" should be equal to "Modified 5"
 
@@ -99,8 +99,8 @@ Feature: /tickets endpoint
 
   Scenario: I delete a ticket by ref then verify it's properly soft-deleted
     Given I have a Ticket record referenced as ticket_for_del
-    When I send a DELETE request to "/api/v2/tickets/{ticket_for_del:ref}"
-    Then I send a GET request to "/api/v2/tickets/{ticket_for_del:ref}"
+    When I send a DELETE request to "/api/v2/tickets/ref:{ticket_for_del:ref}"
+    Then I send a GET request to "/api/v2/tickets/ref:{ticket_for_del:ref}"
     Then the response status code should be 200
     And the JSON node "data.status" should be equal to "hidden.deleted"
 
@@ -111,7 +111,7 @@ Feature: /tickets endpoint
     And the JSON node "linked" should have 0 elements
 
   Scenario: I retrieve a ticket by ref
-    When I send a GET request to "/api/v2/tickets/{ticket1:ref}"
+    When I send a GET request to "/api/v2/tickets/ref:{ticket1:ref}"
     And the response status code should be 200
     And the JSON node "data.subject" should be equal to "First Demo Ticket"
 

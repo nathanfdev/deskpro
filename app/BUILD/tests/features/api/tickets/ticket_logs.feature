@@ -111,5 +111,5 @@ Feature: /tickets/{ticket_id}/logs endpoint
     And the JSON node "errors.fields.details.errors[0].code" should be equal to "invalid_data_type"
 
   Scenario: I get list of ticket logs by ticket ref
-    When I send a GET request to "/api/v2/tickets/{t1:ref}/logs"
+    When I send a GET request to "/api/v2/tickets/ref:{t1:ref}/logs"
     Then the response status code should be 200

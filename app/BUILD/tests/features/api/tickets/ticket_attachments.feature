@@ -37,7 +37,7 @@ Feature: /tickets/{id}/attachments endpoint
     And only the following TicketAttachment records exist:
       | Ticket | Person  | Message | Blob                      |
       | {t1}   | {admin} | {m1}    | {blob_AAAAAAAAAAAAAAAAAA} |
-    When I send a GET request to "/api/v2/tickets/{t1:ref}/attachments"
+    When I send a GET request to "/api/v2/tickets/ref:{t1:ref}/attachments"
     Then the response status code should be 200
     And the JSON node "data" should have 1 elements
     And the JSON node "data[0].blob.blob_auth" should contain "AAAAAAAAAAAAAAAAAA"
