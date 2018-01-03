@@ -50,7 +50,6 @@ Feature: /tickets/{id}/ticket_slas endpoint
     And the JSON node "linked.sla" should exist
 
   Scenario: I get ticket SLA by ticket ref
-    Given I have a Ticket record referenced as ticket
     When I send a GET request to "/api/v2/tickets/{ticket:ref}/ticket_slas"
     And the response status code should be 200
 
