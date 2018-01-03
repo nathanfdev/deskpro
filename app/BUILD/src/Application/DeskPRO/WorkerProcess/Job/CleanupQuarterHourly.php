@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2017, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2018, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -57,14 +57,14 @@ class CleanupQuarterHourly extends AbstractJob
         //------------------------------
 
         $counts                               = [];
-        $counts['tickets']                    = App::getDb()->fetchColumn('SELECT COUNT(*) FROM `tickets`');
-        $counts['tickets.resolved']           = App::getDb()->fetchColumn("SELECT COUNT(*) FROM `tickets_search_active` WHERE `status` = 'resolved'");
-        $counts['tickets.awaiting_user']      = App::getDb()->fetchColumn("SELECT COUNT(*) FROM `tickets_search_active` WHERE `status` = 'awaiting_user'");
-        $counts['tickets.archive_validating'] = App::getDb()->fetchColumn("SELECT COUNT(*) FROM `tickets` WHERE `status` = 'hidden' AND `hidden_status` = 'validating'");
-        $counts['tickets.archive_spam']       = App::getDb()->fetchColumn("SELECT COUNT(*) FROM `tickets` WHERE `status` = 'hidden' AND `hidden_status` = 'spam'");
-        $counts['tickets.archive_deleted']    = App::getDb()->fetchColumn("SELECT COUNT(*) FROM `tickets` WHERE `status` = 'hidden' AND `hidden_status` = 'deleted'");
-        $counts['tickets.archive_archived']   = App::getDb()->fetchColumn("SELECT COUNT(*) FROM `tickets` WHERE `status` = 'archived'");
-        $counts['people']                     = App::getDb()->fetchColumn('SELECT COUNT(*) FROM `people`');
+        $counts['tickets']                    = App::getDbRead('search.filter.tickets')->fetchColumn('SELECT COUNT(*) FROM `tickets`');
+        $counts['tickets.resolved']           = App::getDbRead('search.filter.tickets')->fetchColumn("SELECT COUNT(*) FROM `tickets_search_active` WHERE `status` = 'resolved'");
+        $counts['tickets.awaiting_user']      = App::getDbRead('search.filter.tickets')->fetchColumn("SELECT COUNT(*) FROM `tickets_search_active` WHERE `status` = 'awaiting_user'");
+        $counts['tickets.archive_validating'] = App::getDbRead('search.filter.tickets')->fetchColumn("SELECT COUNT(*) FROM `tickets` WHERE `status` = 'hidden' AND `hidden_status` = 'validating'");
+        $counts['tickets.archive_spam']       = App::getDbRead('search.filter.tickets')->fetchColumn("SELECT COUNT(*) FROM `tickets` WHERE `status` = 'hidden' AND `hidden_status` = 'spam'");
+        $counts['tickets.archive_deleted']    = App::getDbRead('search.filter.tickets')->fetchColumn("SELECT COUNT(*) FROM `tickets` WHERE `status` = 'hidden' AND `hidden_status` = 'deleted'");
+        $counts['tickets.archive_archived']   = App::getDbRead('search.filter.tickets')->fetchColumn("SELECT COUNT(*) FROM `tickets` WHERE `status` = 'archived'");
+        $counts['people']                     = App::getDbRead('search.filter.tickets')->fetchColumn('SELECT COUNT(*) FROM `people`');
 
         foreach ($counts as $k => $v) {
             App::getDb()->replace('settings', [
@@ -139,8 +139,8 @@ class CleanupQuarterHourly extends AbstractJob
         //------------------------------
 
         if (!$this->getContainer()->getSetting('enable_cached_sla_counts')) {
-            $incompleteSlas     = App::getDb()->fetchColumn('SELECT COUNT(*) FROM ticket_slas WHERE is_completed = 0');
-            $awaitingAgentcount = App::getDb()->fetchColumn("SELECT COUNT(*) FROM `tickets_search_active` WHERE `status` = 'awaiting_agent'");
+            $incompleteSlas     = App::getDbRead('search.filter.tickets')->fetchColumn('SELECT COUNT(*) FROM ticket_slas WHERE is_completed = 0');
+            $awaitingAgentcount = App::getDbRead('search.filter.tickets')->fetchColumn("SELECT COUNT(*) FROM `tickets_search_active` WHERE `status` = 'awaiting_agent'");
             if ($incompleteSlas >= 10000 || ($counts['tickets.awaiting_user'] + $awaitingAgentcount) >= 10000) {
                 $this->getContainer()->getDb()->replace('settings', [
                     'name'  => 'enable_cached_sla_counts',
