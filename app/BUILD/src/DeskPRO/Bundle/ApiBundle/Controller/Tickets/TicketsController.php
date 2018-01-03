@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2017, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2018, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -95,7 +95,7 @@ class TicketsController extends AbstractTicketsController
      *      requirements={
      *          {
      *              "name"="id",
-     *              "requirement"="[\w-]+",
+     *              "requirement"="[A-Z0-9-]+",
      *              "description"="The id|ref of the resource",
      *              "dataType"="integer|string"
      *          }
@@ -105,7 +105,7 @@ class TicketsController extends AbstractTicketsController
      *          404="Not Found error will returned in case we can't find entity with specified ID"
      *      }
      * )
-     * @Rest\Get("/{id}", requirements={"id"="[\w-]+"})
+     * @Rest\Get("/{id}", requirements={"id"="[A-Z0-9-]+"})
      *
      * @param Request $request
      * @param int     $id
@@ -291,7 +291,7 @@ class TicketsController extends AbstractTicketsController
      *      requirements={
      *          {
      *              "name"="id",
-     *              "requirement"="[\w-]+",
+     *              "requirement"="[A-Z0-9-]+",
      *              "description"="The id|ref of the resource",
      *              "dataType"="integer|string"
      *          }
@@ -301,7 +301,7 @@ class TicketsController extends AbstractTicketsController
      *          400="We will return this in case your request was malformed",
      *      }
      * )
-     * @Rest\Put("/{id}", requirements={"id"="[\w-]+"})
+     * @Rest\Put("/{id}", requirements={"id"="[A-Z0-9-]+"})
      *
      * @param int     $id
      * @param Request $request
@@ -321,7 +321,7 @@ class TicketsController extends AbstractTicketsController
      *      requirements={
      *          {
      *              "name"="id",
-     *              "requirement"="[\w-]+",
+     *              "requirement"="[A-Z0-9-]+",
      *              "description"="The id|ref of the resource",
      *              "dataType"="integer|string"
      *          }
@@ -331,7 +331,7 @@ class TicketsController extends AbstractTicketsController
      *          404="Well, looks like either resource already deleted either it doesn't exists at all"
      *      }
      * )
-     * @Rest\Delete("/{id}", requirements={"id"="[\w-]+"})
+     * @Rest\Delete("/{id}", requirements={"id"="[A-Z0-9-]+"})
      *
      * @param int|string $id
      * @param Request    $request
