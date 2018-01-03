@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2017, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2018, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -338,7 +338,7 @@ class CloudApiController extends BaseController
                     $resetUrl = $this->get('router')->generate('agent_login', ['reset_code' => $resetCode], UrlGeneratorInterface::ABSOLUTE_URL);
                 }
             } else {
-                $resetUrl = $this->get('router')->generate('user_login_resetpass_newpass', ['code' => $resetCode], UrlGeneratorInterface::ABSOLUTE_URL);
+                $resetUrl = $this->get('router')->generate('portal_reset_password_process', ['code' => $resetCode], UrlGeneratorInterface::ABSOLUTE_URL);
             }
             $viewModel = $this->get('email.user_viewmodel_factory')
                 ->createResetPasswordModel($resetUrl);
