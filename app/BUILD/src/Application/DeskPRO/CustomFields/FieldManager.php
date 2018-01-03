@@ -33,6 +33,7 @@ use Application\DeskPRO\Entity\CustomDataAbstract;
 use Application\DeskPRO\Entity\CustomDefAbstract;
 use Application\DeskPRO\Entity\Person;
 use Doctrine\ORM\EntityManager;
+use Doctrine\ORM\PersistentCollection;
 
 /**
  * The custom field manager handles fetching custom fields, rendering them
@@ -232,7 +233,7 @@ class FieldManager
     /**
      * Get all defined fields, even ones that are not enabled for the current interface.
      *
-     * @return array
+     * @return \Application\DeskPRO\Entity\CustomDefAbstract[]
      */
     public function getDefinedFields()
     {
@@ -730,6 +731,46 @@ class FieldManager
             if ($v->field->getId() == $field_def->getId() || ($v->field->parent && $v->field->parent->getId() == $field_def->getId())) {
                 $object->custom_data->removeElement($v);
             }
+        }
+    }
+
+    /**
+     * Removes only a subset of the values of a field and flushes entity manager changes.
+     *
+     * Mainly exists because it's not clear when the entity manager is flushed.
+     *
+     * @todo investigate if can be removed
+     * @param                                               $object
+     * @param \Application\DeskPRO\Entity\CustomDefAbstract $fieldDefinition
+     * @param \Closure                                      $customDataFilter
+     */
+    public function removeSomeCustomDataOnObjectAndFlushChanges($object, CustomDefAbstract $fieldDefinition, \Closure $customDataFilter)
+    {
+        $this->removeSomeCustomDataOnObject($object, $fieldDefinition, $customDataFilter);
+        // BC: $em should be flushed outside this method
+        $this->em->flush();
+    }
+
+    /**
+     * Removes only a subset of the values of a field. Mostly used for DataList fields
+     *
+     * @param                                               $object
+     * @param \Application\DeskPRO\Entity\CustomDefAbstract $fieldDefinition
+     * @param \Closure                                      $customDataFilter
+     */
+    public function removeSomeCustomDataOnObject($object, CustomDefAbstract $fieldDefinition, \Closure $customDataFilter)
+    {
+        /** @var PersistentCollection $customData */
+        $customData = $object->getCustomData();
+        $unsetCustomDataList = array_filter(
+            $customData->toArray(),
+            function (CustomDataAbstract $customData) use ($customDataFilter) {
+                return $customDataFilter($customData);
+            }
+        );
+
+        foreach ($unsetCustomDataList as $unsetCustomData) {
+            $customData->removeElement($unsetCustomData);
         }
     }
 

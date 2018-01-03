@@ -7,6 +7,17 @@ use DeskPRO\Bundle\AppBundle\Webhooks\TicketWebhookVars;
 
 class ActionVars
 {
+
+    static public function getContextVars(ExecutorContextInterface $context)
+    {
+        return array_merge(
+            TicketWebhookVars\ExecutorContextEnv::getTriggerVars($context),
+            [
+                'user_vars', $context->getUserVars()
+            ]
+        );
+    }
+
     /**
      * Makes the required context vars available as formatter vars
      *
@@ -16,10 +27,8 @@ class ActionVars
      */
     static public function configureFormatter(SnippetFormatter $formatter, ExecutorContextInterface $context)
     {
-        $formatter->addVar('user_vars', $context->getUserVars());
-
-        $webhookVars = TicketWebhookVars\ExecutorContextEnv::getTriggerVars($context);
-        foreach ($webhookVars as $name => $value) {
+        $vars = ActionVars::getContextVars($context);
+        foreach ($vars as $name => $value) {
             $formatter->addVar($name, $value);
         }
     }

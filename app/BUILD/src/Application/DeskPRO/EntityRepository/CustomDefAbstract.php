@@ -92,6 +92,9 @@ class CustomDefAbstract extends AbstractEntityRepository
         return $res;
     }
 
+    /**
+     * @return \Application\DeskPRO\Entity\CustomDefAbstract[]
+     */
     public function getEnabledFields()
     {
         $q = $this->_em->createQuery("
