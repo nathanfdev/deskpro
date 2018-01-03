@@ -49,8 +49,11 @@ class OAuthClientType extends AbstractType
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
         $builder
-            ->add('name', TextType::class)
+            ->add('name', TextType::class, [
+                'required' => true,
+            ])
             ->add('context', ChoiceType::class, [
+                'required'          => true,
                 'choices_as_values' => true,
                 'choices'           => [
                     OAuthClient::CONTEXT_USER,
@@ -69,8 +72,10 @@ class OAuthClientType extends AbstractType
                 'allow_add'      => true,
                 'allow_delete'   => true,
                 'error_bubbling' => false,
+                'required'       => true,
             ])
             ->add('is_enabled', ApiBooleanType::class, [
+                'required'      => false,
                 'property_path' => 'isEnabled',
             ])
         ;

@@ -102,7 +102,7 @@ class ArticleGatewayProcessor extends AbstractGatewayProcessor
             ", [$this->reader->getProperty('email_source')->uid, $this->account->getId()]);
 
             if ($has_processed) {
-                $this->error = \Application\DeskPRO\Entity\EmailSource::ERR_DUPE;
+                $this->error = Entity\EmailSource::ERR_DUPE;
                 $this->logMessage(sprintf('[ArticleGatewayProcessor] Detected duplicate for source %d', $this->reader->getProperty('email_source')->uid));
 
                 return;
@@ -117,7 +117,7 @@ class ArticleGatewayProcessor extends AbstractGatewayProcessor
 
         $person = null;
 
-        $bounce_detector = new \Application\DeskPRO\EmailGateway\BounceDetector($this->reader, App::getOrm());
+        $bounce_detector = new BounceDetector($this->reader, App::getOrm());
         $bounce_detector->setLogger($this->logger);
 
         if ($bounce_detector->isBounced()) {
@@ -130,7 +130,7 @@ class ArticleGatewayProcessor extends AbstractGatewayProcessor
         $person = $person_processor->findPerson($this->reader->getFromAddress());
         if (!$person || !$person->is_agent || $person->is_deleted) {
             $this->logMessage('[ArticleGatewayProcessor] No person or not an agent for email: '.$this->reader->getFromAddress()->getEmail());
-            $this->error = \Application\DeskPRO\Entity\EmailSource::ERR_PERM_INSUFFICIENT;
+            $this->error = Entity\EmailSource::ERR_PERM_INSUFFICIENT;
 
             if ($this->account) {
                 $cutoff_date = gmdate('Y-m-d H:i:s', time() - 86400);
@@ -238,7 +238,7 @@ class ArticleGatewayProcessor extends AbstractGatewayProcessor
         // Create the article
         //------------------------------
 
-        $article          = new \Application\DeskPRO\Entity\Article();
+        $article          = new Entity\Article();
         $article->title   = $email_info['subject'];
         $article->content = $email_info['body'];
         $article->setStatusCode('hidden.draft');
@@ -300,21 +300,42 @@ class ArticleGatewayProcessor extends AbstractGatewayProcessor
 
         if (!$fwd_cutter->isValid()) {
             $this->logMessage('[ArticleGatewayProcessor] Invalid forward');
-            $this->error = \Application\DeskPRO\Entity\EmailSource::ERR_INVALID_FWD;
+            $this->error = Entity\EmailSource::ERR_INVALID_FWD;
 
-            $message = App::getMailer()->createMessage();
-            $message->setTemplate('DeskPRO:emails_agent:error-invalid-forward.html.twig', [
-                'subject' => $this->reader->getSubject()->getSubjectUtf8(),
-                'name'    => $this->reader->getFromAddress()->getName() ?: $this->reader->getFromAddress()->getEmail(),
-            ]);
-            $message->setTo($this->reader->getFromAddress()->getEmail());
-            $message->attach(\Swift_Attachment::newInstance(
-                $this->reader->getRawSource(),
-                'message.eml',
-                'message/rfc822'
-            ));
+            if (App::getContainer()->get('deskpro.feature_flags')->hasBeta('email_templates')) {
+                $viewModel = App::getContainer()->get('email.agent_viewmodel_factory')
+                    ->createAgentErrorInvalidForwardModel($this->error);
+                App::getContainer()->get('email.email_sender')->send($viewModel,
+                    [
+                        'to'          => $this->reader->getFromAddress()->getEmail(),
+                        'attachments' => [\Swift_Attachment::newInstance(
+                            $this->reader->getRawSource(),
+                            'message.eml',
+                            'message/rfc822'
+                        )],
+                    ]
+                );
+            } else {
+                $message = App::getMailer()->createMessage();
+                $message->setTemplate(
+                    'DeskPRO:emails_agent:error-invalid-forward.html.twig',
+                    [
+                        'subject' => $this->reader->getSubject()->getSubjectUtf8(),
+                        'name'    => $this->reader->getFromAddress()->getName() ?: $this->reader->getFromAddress(
+                        )->getEmail(),
+                    ]
+                );
+                $message->setTo($this->reader->getFromAddress()->getEmail());
+                $message->attach(
+                    \Swift_Attachment::newInstance(
+                        $this->reader->getRawSource(),
+                        'message.eml',
+                        'message/rfc822'
+                    )
+                );
 
-            App::getMailer()->send($message);
+                App::getMailer()->send($message);
+            }
 
             return;
         }
@@ -325,7 +346,7 @@ class ArticleGatewayProcessor extends AbstractGatewayProcessor
         // Create article
         //------------------------------
 
-        $article          = new \Application\DeskPRO\Entity\Article();
+        $article          = new Entity\Article();
         $article->title   = $email_info['subject'];
         $article->content = $email_info['body'];
         $article->setStatusCode('hidden.draft');

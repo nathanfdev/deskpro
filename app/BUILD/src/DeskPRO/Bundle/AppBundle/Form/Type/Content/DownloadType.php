@@ -49,9 +49,11 @@ class DownloadType extends AbstractType
         $builder
             ->add('blob', BlobAuthType::class, [
                 'property_path' => 'blob',
+                'required'      => false,
             ])
             ->add('category', EntityType::class, [
-                'class' => DownloadCategory::class,
+                'class'    => DownloadCategory::class,
+                'required' => false,
             ])
         ;
     }

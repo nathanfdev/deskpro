@@ -7,6 +7,7 @@ import { Detached } from 'DeskPRO/Component/Positioned/Detached';
 import { ClickOut } from 'DeskPRO/Component/ClickOut';
 import TransferList from './TransferList/TransferList';
 import AddList from './AddList/AddList';
+import DialGrid from '../Common/DialGrid';
 
 class VoiceControls extends React.Component {
 
@@ -15,10 +16,11 @@ class VoiceControls extends React.Component {
   };
 
   static defaultProps = {
-    onRedial:  () => {},
-    onHold:    () => {},
-    onMute:    () => {},
-    onEndCall: () => {}
+    redial:     () => {},
+    toggleHold: () => {},
+    toggleMute: () => {},
+    endCall:    () => {},
+    sendDigits: () => {}
   };
 
   render() {
@@ -72,12 +74,12 @@ class Connecting extends React.Component {
 class Busy extends React.Component {
 
   static propTypes = {
-    onRedial: PropTypes.func
+    redial: PropTypes.func
   };
 
-  onRedial = (event) => {
+  redial = (event) => {
     event.preventDefault();
-    this.props.onRedial();
+    this.props.redial();
   };
 
   render() {
@@ -86,7 +88,7 @@ class Busy extends React.Component {
         <Title>
           Busy
         </Title>
-        <Button className="green redial-button" onClick={this.onRedial}>
+        <Button className="green redial-button" onClick={this.redial}>
           <i className="call icon" />
           Redial
         </Button>
@@ -102,63 +104,78 @@ class Active extends React.Component {
     hold:         PropTypes.bool,
     ended:        PropTypes.bool,
     onlineAgents: PropTypes.object,
-    onHold:       PropTypes.func,
-    onMute:       PropTypes.func,
-    onEndCall:    PropTypes.func
+    toggleHold:   PropTypes.func,
+    toggleMute:   PropTypes.func,
+    endCall:      PropTypes.func,
+    sendDigits:   PropTypes.func
   };
 
   constructor(props) {
     super(props);
     this.state = {
       transferMenuOpened: false,
-      addMenuOpened:      false
+      addMenuOpened:      false,
+      dialpadOpened:      false
     };
   }
 
-  onHold = (event) => {
+  toggleHold = (event) => {
     event.preventDefault();
-    this.props.onHold();
+    this.props.toggleHold();
   };
 
-  onMute = (event) => {
+  toggleMute = (event) => {
     event.preventDefault();
-    this.props.onMute();
+    this.props.toggleMute();
   };
 
-  onClickTransfer = (event) => {
+  openTransferMenu = (event) => {
     event.preventDefault();
     this.setState({
       transferMenuOpened: true
     });
   };
 
-  onClickAdd = (event) => {
+  openAddMenu = (event) => {
     event.preventDefault();
     this.setState({
       addMenuOpened: true
     });
   };
 
-  onEndCall = (event) => {
+  endCall = (event) => {
     event.preventDefault();
-    this.props.onEndCall();
+    this.props.endCall();
   };
 
-  onCloseTransferMenu = () => {
+  closeTransferMenu = () => {
     this.setState({
       transferMenuOpened: false
     });
   };
 
-  onCloseAddMenu = () => {
+  closeAddMenu = () => {
     this.setState({
       addMenuOpened: false
     });
   };
 
+  openDialpad = (event) => {
+    event.preventDefault();
+    this.setState({
+      dialpadOpened: true
+    });
+  };
+
+  closeDialpad = () => {
+    this.setState({
+      dialpadOpened: false
+    });
+  };
+
   render() {
-    const { hold, mute, ended, onlineAgents } = this.props;
-    const { transferMenuOpened, addMenuOpened } = this.state;
+    const { hold, mute, ended, onlineAgents, sendDigits } = this.props;
+    const { transferMenuOpened, addMenuOpened, dialpadOpened } = this.state;
     const noAgents = !onlineAgents || !onlineAgents.size;
 
     return (
@@ -173,15 +190,23 @@ class Active extends React.Component {
         </span>
 
         <Button
+          ref={(c) => { this.dialpadButton = c; }}
+          className={classNames('basic', { active: dialpadOpened, disabled: ended })}
+          onClick={this.openDialpad}
+        >
+          <i className="grid layout icon" />
+          Dialpad
+        </Button>
+        <Button
           className={classNames('basic', { active: hold, disabled: ended })}
-          onClick={this.onHold}
+          onClick={this.toggleHold}
         >
           <i className="pause icon" />
           Hold
         </Button>
         <Button
           className={classNames('basic', { active: mute, disabled: hold || ended })}
-          onClick={this.onMute}
+          onClick={this.toggleMute}
         >
           <i className={classNames(mute ? 'mute' : 'unmute', 'icon')} />
           Mute
@@ -189,7 +214,7 @@ class Active extends React.Component {
         <Button
           ref={(c) => { this.transferButton = c; }}
           className={classNames('basic caret-button', { active: transferMenuOpened, disabled: ended || noAgents })}
-          onClick={this.onClickTransfer}
+          onClick={this.openTransferMenu}
         >
           <i className="share icon" />
           Transfer
@@ -197,14 +222,14 @@ class Active extends React.Component {
         <Button
           ref={(c) => { this.addButton = c; }}
           className={classNames('basic', { active: addMenuOpened, disabled: ended || noAgents })}
-          onClick={this.onClickAdd}
+          onClick={this.openAddMenu}
         >
           <i className="add icon" />
           Add
         </Button>
         <Button
           className={classNames('red', { disabled: ended })}
-          onClick={this.onEndCall}
+          onClick={this.endCall}
         >
           End call
         </Button>
@@ -216,7 +241,7 @@ class Active extends React.Component {
           positionTarget={this.transferButton}
           zIndex={1000}
         >
-          <ClickOut onClickOut={this.onCloseTransferMenu}>
+          <ClickOut onClickOut={this.closeTransferMenu}>
             <TransferList {...this.props} />
           </ClickOut>
         </Detached>
@@ -227,8 +252,21 @@ class Active extends React.Component {
           positionTarget={this.addButton}
           zIndex={1000}
         >
-          <ClickOut onClickOut={this.onCloseAddMenu}>
+          <ClickOut onClickOut={this.closeAddMenu}>
             <AddList {...this.props} />
+          </ClickOut>
+        </Detached>
+        <Detached
+          positionMy="right top"
+          positionAt="right bottom"
+          isOpen={dialpadOpened}
+          positionTarget={this.dialpadButton}
+          zIndex={1000}
+        >
+          <ClickOut onClickOut={this.closeDialpad}>
+            <div className="voice-ticket-dialpad">
+              <DialGrid onClick={sendDigits} />
+            </div>
           </ClickOut>
         </Detached>
       </div>

@@ -161,19 +161,25 @@ class ProcessReply extends ProcessAbstract
             $this->logMessage('doNewRelpy agent reply missing marker');
             $this->setError('missing_marker');
 
-            $message = App::getMailer()->createMessage();
-            $message->setTemplate('DeskPRO:emails_agent:error-marker-missing.html.twig', [
-                'ticket'  => $this->ticket,
-                'subject' => $this->reader->getSubject()->getSubjectUtf8(),
-                'name'    => $this->reader->getFromAddress()->getName() ?: $this->reader->getFromAddress()->getEmail(),
-            ]);
-            $message->setTo($this->reader->getFromAddress()->getEmail());
+            if (App::getContainer()->get('deskpro.feature_flags')->hasBeta('email_templates')) {
+                $viewModel = App::getContainer()->get('email.agent_viewmodel_factory')
+                    ->createAgentErrorMarkerMissingModel($this->ticket, $this->reader->getSubject()->getSubjectUtf8());
+                App::getContainer()->get('email.email_sender')->send($viewModel, ['to' => $this->reader->getFromAddress()->getEmail()]);
+            } else {
+                $message = App::getMailer()->createMessage();
+                $message->setTemplate('DeskPRO:emails_agent:error-marker-missing.html.twig', [
+                    'ticket'  => $this->ticket,
+                    'subject' => $this->reader->getSubject()->getSubjectUtf8(),
+                    'name'    => $this->reader->getFromAddress()->getName() ?: $this->reader->getFromAddress()->getEmail(),
+                ]);
+                $message->setTo($this->reader->getFromAddress()->getEmail());
 
-            App::$container->getTranslator()->setTemporaryLanguage($this->person->getLanguage(), function () use ($message) {
-                $message->prepare();
-            });
+                App::$container->getTranslator()->setTemporaryLanguage($this->person->getLanguage(), function () use ($message) {
+                    $message->prepare();
+                });
 
-            App::getMailer()->send($message);
+                App::getMailer()->send($message);
+            }
 
             return;
         }

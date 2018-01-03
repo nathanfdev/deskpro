@@ -140,15 +140,15 @@ class PermissionsManager implements \Orb\Helper\ShortCallableInterface
             ', [$this->person->getId()]);
         }
 
-        $everyone_ug = App::$container->getUserGroups()->getEveryoneGroup();
+        $everyone_ug = App::$container->getUserGroups()->getEveryoneGroup(false);
         if ($everyone_ug && $everyone_ug->isEnabled()) {
             $this->usergroup_ids[] = $everyone_ug->getId();
         } else {
             $this->usergroup_ids[] = 0;
         }
 
-        $reg_ug = App::$container->getUserGroups()->getRegisteredGroup();
-        if ($personId && $reg_ug->isEnabled()) {
+        $reg_ug = App::$container->getUserGroups()->getRegisteredGroup(false);
+        if ($personId && $reg_ug && $reg_ug->isEnabled()) {
             $this->usergroup_ids[] = $reg_ug->getId();
         }
 

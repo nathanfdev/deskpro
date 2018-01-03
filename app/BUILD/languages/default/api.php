@@ -58,6 +58,7 @@ return [
     'api.error_codes.invalid_json_body'              => 'The request JSON body is not valid JSON.',
     'api.error_codes.invalid_jsonp_callback'         => 'The JSONP callback parameter is invalid. Please use a JSONP callback is is not a Javascript reserved word.',
     'api.error_codes.invalid_phone_number_format'    => 'Invalid phone number format.',
+    'api.error_codes.missing_country_code'           => 'Country code is missing.',
     'api.error_codes.invalid_session_id'             => 'Invalid session ID.',
     'api.error_codes.invalid_url'                    => 'This value is not a valid URL.',
     'api.error_codes.invalid_jwt_token'              => 'This value is not a valid JWT token.',

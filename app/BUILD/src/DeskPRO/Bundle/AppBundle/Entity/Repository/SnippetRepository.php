@@ -29,11 +29,14 @@
 namespace DeskPRO\Bundle\AppBundle\Entity\Repository;
 
 use Application\DeskPRO\Entity\Person;
+use Application\DeskPRO\EntityRepository\AbstractEntityRepository;
 use DeskPRO\Bundle\AppBundle\Entity\Snippet;
-use Doctrine\ORM\EntityRepository;
 use Doctrine\ORM\QueryBuilder;
 
-class SnippetRepository extends EntityRepository
+/**
+ * Class SnippetRepository.
+ */
+class SnippetRepository extends AbstractEntityRepository
 {
     /**
      * Get snippets for agent grouped.

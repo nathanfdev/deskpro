@@ -29,6 +29,8 @@
 namespace DeskPRO\Bundle\AppBundle\Validator\Constraints;
 
 use Application\DeskPRO\Entity;
+use libphonenumber\NumberParseException;
+use libphonenumber\PhoneNumberUtil;
 use Orb\Util\PhoneNumbers;
 use Symfony\Component\Validator\Constraint;
 use Symfony\Component\Validator\ConstraintValidator;
@@ -59,11 +61,52 @@ class PhoneNumberValidator extends ConstraintValidator
             throw new UnexpectedTypeException($value, implode(', ', ['string', PhoneNumber::class]));
         }
 
-        if (!PhoneNumbers::isValid($checkValue)) {
-            /** @var \Symfony\Component\Validator\Context\ExecutionContext $context */
-            $context = $this->context;
+        /** @var \Symfony\Component\Validator\Context\ExecutionContext $context */
+        $context = $this->context;
+
+        if (PhoneNumbers::looksEmpty($checkValue)) {
             $context
-                ->buildViolation($constraint->message)
+                ->buildViolation($constraint->invalidFormatMessage)
+                ->setCode(PhoneNumber::INVALID_PHONE_NUMBER)
+                ->addViolation()
+            ;
+
+            return;
+        }
+
+        try {
+            $number = PhoneNumberUtil::getInstance()->parse($checkValue, null);
+            if (!PhoneNumberUtil::getInstance()->isValidNumber($number)) {
+                $context
+                    ->buildViolation($constraint->invalidFormatMessage)
+                    ->setCode(PhoneNumber::INVALID_PHONE_NUMBER)
+                    ->addViolation()
+                ;
+            }
+        } catch (NumberParseException $e) {
+            switch ($e->getErrorType()) {
+                case NumberParseException::INVALID_COUNTRY_CODE:
+                    $context
+                        ->buildViolation($constraint->missingCountryCodeMessage)
+                        ->setCode(PhoneNumber::MISSING_COUNTRY_CODE)
+                        ->addViolation()
+                    ;
+                    break;
+                case NumberParseException::NOT_A_NUMBER:
+                case NumberParseException::TOO_SHORT_AFTER_IDD:
+                case NumberParseException::TOO_SHORT_NSN:
+                case NumberParseException::TOO_LONG:
+                default:
+                    $context
+                        ->buildViolation($constraint->invalidFormatMessage)
+                        ->setCode(PhoneNumber::INVALID_PHONE_NUMBER)
+                        ->addViolation()
+                    ;
+                    break;
+            }
+        } catch (\Exception $e) {
+            $context
+                ->buildViolation($constraint->invalidFormatMessage)
                 ->setCode(PhoneNumber::INVALID_PHONE_NUMBER)
                 ->addViolation()
             ;

@@ -13,6 +13,13 @@ export const loadNumbers = createAction(
   () => dispatch => dispatch(loadAll('VoiceNumber'))
 );
 
+export const createNumber = createAction(
+  'VOICE_EDIT_NUMBER',
+  data => dispatch => repository('VoiceNumber').create(data).success((response) => {
+    dispatch(addToCollection('VoiceNumber', 'all', Immutable.List([Immutable.fromJS(response.data)])));
+  })
+);
+
 export const editNumber = createAction(
   'VOICE_EDIT_NUMBER',
   (id, data) => dispatch => repository('VoiceNumber').update(data, id).success(() => {
@@ -33,26 +40,6 @@ export const loadExistingNumbers = createAction(
   (accountId, page = 0) => api.sendGet(`DP_API/voice_accounts/${accountId}/existing_numbers?page=${page}`)
 );
 
-export const addExistingNumber = createAction(
-  'VOICE_ADD_EXISTING_NUMBER',
-  number => (dispatch) => {
-    const data = {
-      sid:          number.get('sid'),
-      account:      number.get('account'),
-      number:       number.get('number'),
-      country_code: number.get('country_code')
-    };
-
-    return repository('VoiceNumber').create(data).success((response) => {
-      dispatch(addToCollection('VoiceNumber', 'all', Immutable.List([Immutable.fromJS(response.data)])));
-    }).error((response) => {
-      if (response.errors && response.errors.errors && response.errors.errors[0]) {
-        toastr.error(response.errors.errors[0].message);
-      }
-    });
-  }
-);
-
 export const loadAvailableNumbers = createAction(
   'VOICE_LOAD_AVAILABLE_NUMBERS',
   (accountId, params) => api.sendGet(`DP_API/voice_accounts/${accountId}/available_numbers?${compileParams(params)}`)
@@ -60,10 +47,8 @@ export const loadAvailableNumbers = createAction(
 
 export const addAvailableNumber = createAction(
   'VOICE_ADD_AVAILABLE_NUMBER',
-  number => dispatch => api.sendPost(`DP_API/voice_accounts/${number.get('account')}/buy_number`, {
+  number => api.sendPost(`DP_API/voice_accounts/${number.get('account')}/buy_number`, {
     number: number.get('number')
-  }).success((response) => {
-    dispatch(addToCollection('VoiceNumber', 'all', Immutable.List([Immutable.fromJS(response.data)])));
   }).error((response) => {
     if (response.errors && response.errors.errors && response.errors.errors[0]) {
       toastr.error(response.errors.errors[0].message);

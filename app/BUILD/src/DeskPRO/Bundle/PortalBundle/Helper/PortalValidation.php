@@ -112,7 +112,7 @@ class PortalValidation
         $this->mailer->sendNewTicketValidationEmail($emailTo, $verifyUrl, $ticket);
     }
 
-    public function sendTicketByEmailVerificationEmail(Person $person, AbstractReader $reader, $authcode)
+    public function sendTicketByEmailVerificationEmail(Person $person, AbstractReader $reader, $authCode)
     {
         $ticket          = new Ticket();
         $ticket->subject = $reader->getSubject()->getSubjectUtf8();
@@ -120,7 +120,7 @@ class PortalValidation
 
         $emailTo = new EmailTo($person);
 
-        $verifyUrl = $this->urlGenerator->generate('user_validate_ticketemail', ['auth_code' => $authcode], UrlGeneratorInterface::ABSOLUTE_URL);
+        $verifyUrl = $this->urlGenerator->generate('user_validate_ticketemail', ['auth_code' => $authCode], UrlGeneratorInterface::ABSOLUTE_URL);
 
         $this->mailer->sendNewTicketValidationEmail($emailTo, $verifyUrl, $ticket);
     }

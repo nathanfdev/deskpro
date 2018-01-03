@@ -57,7 +57,9 @@ class AgentTeamType extends AbstractType
                 'class'        => Person::class,
                 'choice_label' => 'id',
                 'multiple'     => true,
-            ]);
+                'required'     => false,
+            ])
+        ;
     }
 
     /**

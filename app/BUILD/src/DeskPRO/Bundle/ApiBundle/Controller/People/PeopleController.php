@@ -280,6 +280,14 @@ class PeopleController extends AbstractPeopleController
             $qb->andWhere('primary_email.email = :email');
             $qb->setParameter('email', $email);
         }
+
+        $emails = $request->get('emails');
+        if (null !== $emails) {
+            $emails = (array) $emails;
+            $qb->leftJoin("$alias.emails", 'emails');
+            $qb->andWhere('emails.email IN (:emails)');
+            $qb->setParameter('emails', $emails);
+        }
     }
 
     /**

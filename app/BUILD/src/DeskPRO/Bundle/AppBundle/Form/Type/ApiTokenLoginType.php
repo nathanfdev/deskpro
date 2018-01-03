@@ -47,11 +47,13 @@ class ApiTokenLoginType extends AbstractType
     {
         $builder
             ->add('email', TextType::class, [
+                'required'    => true,
                 'constraints' => [
                     new Assert\NotBlank(),
                 ],
             ])
             ->add('password', PasswordType::class, [
+                'required'    => true,
                 'constraints' => [
                     new Assert\NotBlank(),
                 ],

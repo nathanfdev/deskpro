@@ -72,7 +72,7 @@ class GuideType extends AbstractType
             ])
         ;
 
-        $builder->addEventListener(FormEvents::POST_SUBMIT, [$this, 'onSetDefault']);
+        $builder->addEventListener(FormEvents::POST_SUBMIT, [$this, 'onPostSubmit']);
     }
 
     /**
@@ -80,19 +80,19 @@ class GuideType extends AbstractType
      */
     public function configureOptions(OptionsResolver $resolver)
     {
-        $resolver
-            ->setDefaults([
-                'data_class' => Guide::class,
-            ])
-        ;
+        $resolver->setDefaults([
+            'data_class' => Guide::class,
+        ]);
     }
 
     /**
      * Assign manual to the current brand.
      *
+     * @internal
+     *
      * @param FormEvent $event
      */
-    public function onSetDefault(FormEvent $event)
+    public function onPostSubmit(FormEvent $event)
     {
         $form = $event->getForm();
 

@@ -325,6 +325,11 @@ services:
     tags:
       - { name: "jms_serializer.subscribing_handler" }
 
+  api_serializer.handler.field_display_array:
+    class: DeskPRO\Bundle\AppBundle\Serializer\Handler\Other\FieldDisplayArrayHandler
+    tags:
+      - { name: "jms_serializer.subscribing_handler" }
+
   # listeners and subscribers
   api_serializer.sideload_listener:
     class: DeskPRO\Bundle\AppBundle\Serializer\EventListener\SideloadAndDeferredListener

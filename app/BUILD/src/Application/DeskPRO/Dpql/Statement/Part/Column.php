@@ -37,6 +37,7 @@ use Application\DeskPRO\Dpql\Renderer\Values\AbstractValues;
 use Application\DeskPRO\Dpql\Statement\Display;
 use Application\DeskPRO\EntityRepository\AbstractEntityRepository;
 use Doctrine\ORM\Mapping\ClassMetadataInfo;
+use Orb\Util\Strings;
 
 /**
  * Represents a reference to a column or association.
@@ -192,7 +193,7 @@ END)
 
             // are we referencing a field?
             foreach ($repository->getFieldMappings() as $key => $field) {
-                if (strtolower($key) == $part) {
+                if (strtolower(Strings::camelCaseToUnderscore($key)) == $part) {
                     if (isset($field['dpqlAccess']) && !$field['dpqlAccess']) {
                         throw new Exception("$partsString cannot be accessed via DPQL.");
                     }

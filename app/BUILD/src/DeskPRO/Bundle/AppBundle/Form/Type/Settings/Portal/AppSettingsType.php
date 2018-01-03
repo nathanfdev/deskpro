@@ -43,9 +43,15 @@ class AppSettingsType extends AbstractType
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
         $builder
-            ->add('enabled', ApiBooleanType::class)
-            ->add('tab_enabled', ApiBooleanType::class)
-            ->add('subscriptions', ApiBooleanType::class)
+            ->add('enabled', ApiBooleanType::class, [
+                'required' => false,
+            ])
+            ->add('tab_enabled', ApiBooleanType::class, [
+                'required' => false,
+            ])
+            ->add('subscriptions', ApiBooleanType::class, [
+                'required' => false,
+            ])
         ;
     }
 }

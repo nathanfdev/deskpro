@@ -829,8 +829,7 @@ class AgentsController extends AbstractController implements ProtectedController
             $this->get('email.email_sender')
                 ->send($viewModel,
                     [
-                        'to'          => $agent,
-                        'attachments' => [$attach],
+                        'to' => $agent,
                     ]
                 );
         } else {

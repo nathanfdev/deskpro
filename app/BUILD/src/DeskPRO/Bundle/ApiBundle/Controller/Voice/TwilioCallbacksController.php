@@ -1267,6 +1267,7 @@ class TwilioCallbacksController extends BaseController
             // create and join a new conference
             $dial = $twiml->dial(['callerId' => $query->get('From')]);
             $dial->conference($this->getConferenceName($phoneCall), [
+                'waitUrl'                       => '',
                 'statusCallback'                => $this->getConferenceStatusCallbackUrl($account),
                 'statusCallbackMethod'          => 'POST',
                 'statusCallbackEvent'           => 'join leave start end mute hold',

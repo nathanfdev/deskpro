@@ -1,9 +1,8 @@
-@new
 Feature: Api endpoints providing sideloading features
 
   Background:
     Given I'm authenticated as admin
-    And only the following Usergroup records exist:
+    And the following Usergroup records exist:
       | #   | sys_name | Title   |
       | ug1 | group_1  | Group 1 |
       | ug2 | group_2  | Group 2 |

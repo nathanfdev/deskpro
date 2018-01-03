@@ -1,7 +1,7 @@
 import PropTypes from 'prop-types';
 import React from 'react';
 import { Fieldset, createValue } from '@deskpro/react-forms';
-import { Form, Field } from 'DeskPRO/Component/Semantic/ReactForm';
+import { Form, Field, PhoneInput } from 'DeskPRO/Component/Semantic/ReactForm';
 import { ClickOut } from 'DeskPRO/Component/ClickOut';
 import $ from 'jquery';
 import Immutable from 'immutable';
@@ -124,7 +124,7 @@ class Dialpad extends React.Component {
   };
 
   onClickNumber = (number) => {
-    const $input = $(this.callToInput.input);
+    const $input = $(this.phoneInput.input);
     const { formData } = this.state;
     const currentValue = formData.value.call_to || '';
 
@@ -170,7 +170,7 @@ class Dialpad extends React.Component {
               <NumberSelect numbers={numbers} />
             </Field>
             <Field select="call_to">
-              <SearchInput ref={(c) => { this.callToInput = c; }} />
+              <PhoneInput ref={(c) => { this.phoneInput = c; }} />
             </Field>
 
             {searchResults.size > 0 &&
@@ -190,31 +190,6 @@ class Dialpad extends React.Component {
             </button>
           </Fieldset>
         </Form>
-      </div>
-    );
-  }
-}
-
-class SearchInput extends React.Component {
-
-  static propTypes = {
-    value:    PropTypes.string,
-    onChange: PropTypes.func
-  };
-
-  render() {
-    const { value, onChange } = this.props;
-
-    return (
-      <div className="ui icon input">
-        <i className="search icon" />
-        <input
-          type="text"
-          className="voice-dialpad-input"
-          ref={(c) => { this.input = c; }}
-          value={value}
-          onChange={onChange}
-        />
       </div>
     );
   }

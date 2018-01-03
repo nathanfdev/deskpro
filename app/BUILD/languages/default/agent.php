@@ -194,7 +194,7 @@ return [
     'agent.emails.deskpro_test_email_body'                     => 'This is a test of the DeskPRO email system.<br /><br />If you received this, your email settings are correct.',
     'agent.emails.detected_as_forward'                         => 'We have detected the email you just sent as a forwarded message.',
     'agent.emails.email_change_merge'                          => 'This email is to confirm you want to merge your two existing helpdesk accounts: {{old_email}} and {{new_email}}. If you do not want to merge these accounts, or did not request this, then you can ignore this email. To confirm the merger, click on the following link:',
-    'agent.emails.error_missing_marker_explain'                => 'This reply marker is required for proper processing of your replies. Please re-send your reply, but this time leave the reply line marker in tact.',
+    'agent.emails.error_missing_marker_explain'                => 'This reply marker is required for proper processing of your replies. Please re-send your reply, but this time leave the reply line marker intact.',
     'agent.emails.error_no_reply_perm'                         => 'Your message was not accepted because you do not have permission to reply to the ticket. Your reply has NOT been saved and no other emails or notifications have been sent.',
     'agent.emails.error_reply_to_ticket_missing_marker'        => 'Your email reply to ticket #{{ticket_id}} was missing a marker line that looks like this:',
     'agent.emails.error_unknown_email'                         => 'Your message was not accepted because you are sending from an unknown email address. Please send messages from the email address you have set in your agent profile on the helpdesk.',

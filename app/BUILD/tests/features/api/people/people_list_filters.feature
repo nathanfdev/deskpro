@@ -17,6 +17,18 @@ Feature: /people endpoint
     Then the JSON node "data" should have 1 element
     And the JSON node "data[0].id" should be equal to "{u2}"
 
+  Scenario: I filter by 'emails'
+    Given the following User records exist:
+      | #  | Name   | Email             |
+      | u1 | User 1 | user1@example.com |
+      | u2 | User 2 | user2@example.com |
+      | u3 | User 3 | user3@example.com |
+
+    When I send a GET request to "/api/v2/people?emails[]=user2@example.com&emails[]=user3@example.com&order_dir=asc"
+    Then the JSON node "data" should have 2 elements
+    And the JSON node "data[0].id" should be equal to "{u2}"
+    And the JSON node "data[1].id" should be equal to "{u3}"
+
   Scenario: I filter by 'organization'
     Given only the following Organization records exist:
       | #  | Name  |

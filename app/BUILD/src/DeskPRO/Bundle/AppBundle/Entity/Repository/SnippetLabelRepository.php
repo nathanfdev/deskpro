@@ -28,8 +28,11 @@
 
 namespace DeskPRO\Bundle\AppBundle\Entity\Repository;
 
-use Doctrine\ORM\EntityRepository;
+use Application\DeskPRO\EntityRepository\AbstractEntityRepository;
 
-class SnippetLabelRepository extends EntityRepository
+/**
+ * Class SnippetLabelRepository.
+ */
+class SnippetLabelRepository extends AbstractEntityRepository
 {
 }

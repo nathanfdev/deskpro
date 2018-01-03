@@ -2220,6 +2220,13 @@ define(function() {
   });
 
   routes.push({
+    id:           'voice-channel.numbers_add',
+    url:          '/numbers/new',
+    templateName: 'ReactRoutes/react_component.html',
+    controller:   'Admin_ReactRoutes_Ctrl_ReactComponent'
+  });
+
+  routes.push({
     id:           'voice-channel.numbers_edit',
     url:          '/numbers/{id:\\d+}',
     templateName: 'ReactRoutes/react_component.html',

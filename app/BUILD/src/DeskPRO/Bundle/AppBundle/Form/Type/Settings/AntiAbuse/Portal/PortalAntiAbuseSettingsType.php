@@ -46,15 +46,19 @@ class PortalAntiAbuseSettingsType extends AbstractType
         $builder
             ->add('account_rate_limit', PortalAccountRateLimitType::class, [
                 'property_path' => 'accountRateLimit',
+                'required'      => false,
             ])
             ->add('agent_rate_limit', PortalAgentRateLimitType::class, [
                 'property_path' => 'agentRateLimit',
+                'required'      => false,
             ])
             ->add('user_rate_limit', PortalUserRateLimitType::class, [
                 'property_path' => 'userRateLimit',
+                'required'      => false,
             ])
             ->add('guest_rate_limit', PortalUserRateLimitType::class, [
                 'property_path' => 'guestRateLimit',
+                'required'      => false,
             ])
         ;
     }

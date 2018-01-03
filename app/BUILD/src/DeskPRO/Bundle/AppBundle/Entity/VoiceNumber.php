@@ -134,6 +134,7 @@ class VoiceNumber implements EntityInterface, NotifyPropertyChanged
      * @JMS\Expose()
      *
      * @Assert\Valid()
+     * @Assert\NotNull()
      *
      * @var AbstractVoiceTarget
      */

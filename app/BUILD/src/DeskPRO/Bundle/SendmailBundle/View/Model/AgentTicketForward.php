@@ -30,7 +30,7 @@ namespace DeskPRO\Bundle\SendmailBundle\View\Model;
 
 use JMS\Serializer\Annotation as JMS;
 
-class AgentTicketForward extends TicketEmailType
+class AgentTicketForward extends AgentTicketEmailType
 {
     /**
      * The agent message.
@@ -58,10 +58,14 @@ class AgentTicketForward extends TicketEmailType
         $ticketAgent,
         $ticketLink,
         $ticketMessages,
+        $participants,
+        $ticketLayout,
+        $customFields,
+        $customUserFields,
         $agentMessage,
         $subject
     ) {
-        parent::__construct($ticket, $ticketPerson, $ticketAgent, $ticketLink, $ticketMessages);
+        parent::__construct($ticket, $ticketPerson, $ticketAgent, $ticketLink, $ticketMessages, $participants, $ticketLayout, $customFields, $customUserFields);
 
         $this->agentMessage = $agentMessage;
         $this->subject      = $subject;

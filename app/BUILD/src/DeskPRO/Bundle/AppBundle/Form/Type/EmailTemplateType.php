@@ -44,9 +44,16 @@ class EmailTemplateType extends AbstractType
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
         $builder
-            ->add('subject', TextareaType::class)
-            ->add('body', TextareaType::class, ['filter_clean' => false])
-            ->add('create_new', HiddenType::class, ['required' => false])
+            ->add('subject', TextareaType::class, [
+                'required' => true,
+            ])
+            ->add('body', TextareaType::class, [
+                'filter_clean' => false,
+                'required'     => true,
+            ])
+            ->add('create_new', HiddenType::class, [
+                'required' => false,
+            ])
         ;
     }
 }

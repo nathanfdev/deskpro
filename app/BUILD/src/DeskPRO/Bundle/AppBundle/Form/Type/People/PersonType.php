@@ -77,48 +77,73 @@ class PersonType extends AbstractType
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
         $builder
-            ->add('password', TextType::class)
-            ->add('title_prefix', TextType::class)
-            ->add('first_name', TextType::class)
-            ->add('last_name', TextType::class)
-            ->add('override_display_name', TextType::class)
-            ->add('summary', TextType::class)
-            ->add('timezone', TextType::class)
-            ->add('organization', EntityType::class, [
-                'class' => Organization::class,
+            ->add('password', TextType::class, [
+                'required' => false,
             ])
-            ->add('organization_position', TextType::class)
+            ->add('title_prefix', TextType::class, [
+                'required' => false,
+            ])
+            ->add('first_name', TextType::class, [
+                'required' => false,
+            ])
+            ->add('last_name', TextType::class, [
+                'required' => false,
+            ])
+            ->add('override_display_name', TextType::class, [
+                'required' => false,
+            ])
+            ->add('summary', TextType::class, [
+                'required' => false,
+            ])
+            ->add('timezone', TextType::class, [
+                'required' => false,
+            ])
+            ->add('organization', EntityType::class, [
+                'class'    => Organization::class,
+                'required' => false,
+            ])
+            ->add('organization_position', TextType::class, [
+                'required' => false,
+            ])
             ->add('language', EntityType::class, [
-                'class' => Language::class,
+                'class'    => Language::class,
+                'required' => false,
             ])
             ->add('labels', LabelsCollectionType::class, [
                 'labels_class'   => LabelPerson::class,
                 'labels_owner'   => $builder->getData(),
                 'owner_property' => 'person',
+                'required'       => false,
             ])
             ->add('user_groups', UsergroupsType::class, [
                 'is_agent_group' => false,
                 'owner'          => $builder->getData(),
+                'required'       => false,
             ])
             ->add('agent_groups', UsergroupsType::class, [
                 'is_agent_group' => true,
                 'owner'          => $builder->getData(),
+                'required'       => false,
             ])
             ->add('fields', CombinedType::class, [
                 'forms'          => $this->getCustomDataFields($options),
                 'error_bubbling' => false,
+                'required'       => false,
             ])
             ->add('contact_data', ContactDataType::class, [
                 'owner'          => $builder->getData(),
                 'parent_builder' => $builder,
+                'required'       => false,
             ])
             ->add('teams', EntityType::class, [
                 'class'        => AgentTeam::class,
                 'multiple'     => true,
                 'by_reference' => false,
+                'required'     => false,
             ])
             ->add('primary_team', EntityType::class, [
-                'class' => AgentTeam::class,
+                'class'    => AgentTeam::class,
+                'required' => false,
             ])
             ->add('agent_data', PersonAgentDataType::class, [
                 'property_path' => 'agentData',
@@ -126,6 +151,7 @@ class PersonType extends AbstractType
                 'person'        => $builder->getData(),
             ])
             ->add('phone_numbers', CollectionType::class, [
+                'required'      => false,
                 'allow_add'     => true,
                 'allow_delete'  => true,
                 'entry_type'    => PhoneNumberType::class,

@@ -82,19 +82,30 @@ class AgentViewModelFactory extends AbstractViewModelFactory
     }
 
     /**
+     * @param $error
+     *
      * @return AgentErrorInvalidForward
      */
-    public function createAgentErrorInvalidForwardModel()
+    public function createAgentErrorInvalidForwardModel($error)
     {
-        return new AgentErrorInvalidForward();
+        return new AgentErrorInvalidForward($error);
     }
 
     /**
+     * @param Ticket $ticket
+     * @param $subject
+     *
+     * @throws \Exception
+     *
      * @return AgentErrorMarkerMissing
      */
-    public function createAgentErrorMarkerMissingModel()
+    public function createAgentErrorMarkerMissingModel(Ticket $ticket, $subject)
     {
-        return new AgentErrorMarkerMissing();
+        $arguments = $this->getTicketArguments($ticket);
+
+        array_push($arguments, $subject);
+
+        return $this->convertParameters(AgentErrorMarkerMissing::class, $arguments);
     }
 
     /**
@@ -203,11 +214,11 @@ class AgentViewModelFactory extends AbstractViewModelFactory
      *
      * @return AgentTaskDueReminder
      */
-    public function createAgentTaskDueReminderModel(Task $task, Person $performer)
+    public function createAgentTaskDueReminderModel(Task $task)
     {
         $loginLink = $this->router->generate('agent', [], UrlGeneratorInterface::ABSOLUTE_URL);
 
-        return $this->convertParameters(AgentTaskDueReminder::class, [$task, $performer, $loginLink]);
+        return $this->convertParameters(AgentTaskDueReminder::class, [$task, $loginLink]);
     }
 
     /**
@@ -312,7 +323,7 @@ class AgentViewModelFactory extends AbstractViewModelFactory
     ) {
         $arguments = $this->getTicketArguments($ticket);
 
-        $arguments = array_merge($arguments, [$agentMessage, $subject]);
+        array_push($arguments, $agentMessage, $subject);
 
         return $this->convertParameters(AgentTicketForward::class, $arguments);
     }
@@ -326,7 +337,11 @@ class AgentViewModelFactory extends AbstractViewModelFactory
         $layout     = $this->container->getTicketLayoutManager()->getAgentLayouts()->getLayout($layoutId);
         $layout     = LayoutDisplay::createFromLayout($layout, LayoutDisplay::VIEW_TICKET, $ticket);
 
-        array_push($arguments, $ticket->getParticipants(), $layout);
+        $customFields = $this->container->getTicketFieldManager()->getDisplayArrayForObject($ticket);
+
+        $customUserFields = $this->container->getPersonFieldManager()->getDisplayArrayForObject($ticket->getPerson());
+
+        array_push($arguments, $ticket->getParticipants(), $layout, $customFields, $customUserFields);
 
         return $arguments;
     }

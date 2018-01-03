@@ -71,35 +71,45 @@ class ChatConversationType extends AbstractType
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
         $builder
-            ->add('subject', TextType::class)
-            ->add('person', PersonAssignType::class)
-            ->add('person_email', EmailType::class)
-            ->add('agent', PersonAssignType::class)
-            ->add('email_validated', ApiBooleanType::class)
+            ->add('subject', TextType::class, [
+                'required' => false,
+            ])
+            ->add('person', PersonAssignType::class, [
+                'required' => false,
+            ])
+            ->add('person_email', EmailType::class, [
+                'required' => false,
+            ])
+            ->add('agent', PersonAssignType::class, [
+                'required' => false,
+            ])
+            ->add('email_validated', ApiBooleanType::class, [
+                'required' => false,
+            ])
             ->add('fields', CombinedType::class, [
                 'forms'          => $this->getCustomDataFields(),
                 'error_bubbling' => false,
+                'required'       => false,
+            ])
+            ->add('chat_department', EntityType::class, [
+                'class'         => Department::class,
+                'property_path' => 'department',
+                'required'      => true,
+                'query_builder' => function (EntityRepository $er) {
+                    $qb = $er
+                        ->createQueryBuilder('d')
+                        ->join('d.brands', 'b')
+                        ->where(
+                            'd.is_chat_enabled = true'
+                        )
+                    ;
+
+                    return $qb;
+                },
             ])
         ;
 
-        $builder->add('chat_department', EntityType::class, [
-            'class'         => Department::class,
-            'property_path' => 'department',
-            'required'      => true,
-            'query_builder' => function (EntityRepository $er) {
-                $qb = $er
-                    ->createQueryBuilder('d')
-                    ->join('d.brands', 'b')
-                    ->where(
-                        'd.is_chat_enabled = true'
-                    )
-                ;
-
-                return $qb;
-            },
-        ]);
-
-        $builder->addEventListener(FormEvents::POST_SUBMIT, [$this, 'onSetRelations']);
+        $builder->addEventListener(FormEvents::POST_SUBMIT, [$this, 'onPostSubmit']);
     }
 
     /**
@@ -107,17 +117,17 @@ class ChatConversationType extends AbstractType
      */
     public function configureOptions(OptionsResolver $resolver)
     {
-        $resolver
-            ->setDefaults([
-                'data_class' => ChatConversation::class,
-            ])
-        ;
+        $resolver->setDefaults([
+            'data_class' => ChatConversation::class,
+        ]);
     }
 
     /**
+     * @internal
+     *
      * @param FormEvent $event
      */
-    public function onSetRelations(FormEvent $event)
+    public function onPostSubmit(FormEvent $event)
     {
         $form = $event->getForm();
 

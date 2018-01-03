@@ -88,11 +88,15 @@ use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
 class UserViewModelFactory extends AbstractViewModelFactory
 {
     /**
+     * @param Ticket $ticket
+     *
+     * @throws \Exception
+     *
      * @return AccountDisabled
      */
-    public function createAccountDisabledModel()
+    public function createAccountDisabledModel(Ticket $ticket)
     {
-        return new AccountDisabled();
+        return $this->convertParameters(AccountDisabled::class, [$ticket]);
     }
 
     /**
@@ -342,6 +346,8 @@ class UserViewModelFactory extends AbstractViewModelFactory
     /**
      * @param Ticket $ticket
      *
+     * @throws \Exception
+     *
      * @return NewTicketGuest
      */
     public function createNewTicketGuestModel(
@@ -353,11 +359,15 @@ class UserViewModelFactory extends AbstractViewModelFactory
     }
 
     /**
+     * @param string $subject
+     *
+     * @throws \Exception
+     *
      * @return NewTicketRegClosed
      */
-    public function createNewTicketRegClosedModel()
+    public function createNewTicketRegClosedModel($subject)
     {
-        return new NewTicketRegClosed();
+        return new NewTicketRegClosed($subject);
     }
 
     /**
@@ -379,17 +389,17 @@ class UserViewModelFactory extends AbstractViewModelFactory
 
     /**
      * @param Ticket $ticket
-     * @param string $accessCode
+     * @param string $verifyUrl
      *
      * @return TicketNewValidateEmail
      */
     public function createTicketNewValidateEmailModel(
         Ticket $ticket,
-        $accessCode
+        $verifyUrl
     ) {
         $arguments = $this->getTicketArguments($ticket);
 
-        $arguments = array_merge($arguments, [$accessCode]);
+        $arguments = array_merge($arguments, [$verifyUrl]);
 
         return $this->convertParameters(TicketNewValidateEmail::class, $arguments);
     }

@@ -80,7 +80,9 @@ abstract class AbstractLoader implements \Serializable
     public function __construct(array $usergroup_ids, Person $person = null)
     {
         $this->usergroup_ids = $usergroup_ids;
-        if (App::$container->getUserGroups()->getEveryoneGroup()->is_enabled) {
+
+        $everyoneGroup = App::$container->getUserGroups()->getEveryoneGroup(false);
+        if ($everyoneGroup && $everyoneGroup->isEnabled()) {
             $this->usergroup_ids[] = 1;
         } else {
             $this->usergroup_ids[] = 0;

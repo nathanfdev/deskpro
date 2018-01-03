@@ -89,6 +89,7 @@ class VoiceMenu extends React.Component {
           me={me}
           outgoingCall={outgoingCall}
           onHangup={onHangup}
+          ringingVolume={ringingVolume}
         />
       );
     }
