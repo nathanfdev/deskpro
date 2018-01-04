@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2017, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2018, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -121,7 +121,7 @@ $CONFIG['agent_vendors'] = [
         'vendor/twig/twig.js',
         'bower_components/moment/min/moment-with-locales.min.js',
         'bower_components/moment-timezone/builds/moment-timezone-with-data.min.js',
-        'bower_components/notify.js/notify.js',
+        'bower_components/notify.js/dist/notify.js',
         'bower_components/intl-tel-input/build/js/intlTelInput.min.js',
         'bower_components/jquery-qrcode/dist/jquery.qrcode.js',
         'vendor/eonasdan-bootstrap-datetimepicker/build/js/bootstrap-datetimepicker.min.js',
