@@ -133,6 +133,7 @@ DeskPRO.Agent.PageFragment.SettingsPage.Profile = new Orb.Class({
 			});
 		});
 
+    var Notify = window.Notify.default;
 		var notification = new Notify('DeskPRO', { body: "This is a test notification." });
 		if (Notify.isSupported) {
 			var notificationsRow = el.find('.dp-desktop-notifications');
