@@ -37,10 +37,28 @@ namespace Application\DeskPRO\CustomFields\Handler;
  */
 class DataJson extends HandlerAbstract
 {
+    /**
+     * @param array $form_data
+     * @param null $default
+     * @return mixed|null
+     */
+    private function findValue(array $form_data, $default = null)
+    {
+        $names = $this->getAllFormFieldNames();
+        foreach ($names as $name) {
+            if (isset($formData[$name])) {
+                return $form_data[$name];
+            }
+        }
+        return $default;
+    }
+
     public function getDataFromForm(array $form_data)
     {
-        if (isset($form_data[$this->getFormFieldName()])) {
-            $value = $form_data[$this->getFormFieldName()];
+        $valueIfNotPresent = new \stdClass();
+        $value = $this->findValue($form_data, $valueIfNotPresent);
+
+        if ($value !== $valueIfNotPresent) {
             $decodedValue = null;
 
             try {

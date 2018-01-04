@@ -35,6 +35,8 @@ namespace Application\DeskPRO\CustomFields\Handler;
 use Application\DeskPRO\App;
 use Application\DeskPRO\Entity;
 use Orb\Util\Util;
+use DeskPRO\Bundle\AppBundle\ObjectAlias;
+
 
 /**
  * A custom field handler knows how to render an HTML form field as well as
@@ -146,6 +148,19 @@ abstract class HandlerAbstract
     public function getFormFieldName()
     {
         return 'field_'.$this->field_def['id'];
+    }
+
+    /**
+     * Returns a list of possible names, ordered from the most specific to the least
+     *
+     * @return array|string[]
+     */
+    public function getAllFormFieldNames()
+    {
+        $list = ObjectAlias\Converters::toMergedList($this->field_def->getAliases());
+        array_unshift($list, $this->getFormFieldName());
+
+        return $list;
     }
 
     /**

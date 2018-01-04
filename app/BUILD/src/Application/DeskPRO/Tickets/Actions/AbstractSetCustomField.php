@@ -49,6 +49,7 @@ abstract class AbstractSetCustomField extends AbstractContainerAwareAction imple
         $options = new CheckedOptionsArray();
         $options->addRequiredNames('field_id', 'value');
         $options->addValidNames(['op', 'with_formatter']);
+        $options->setAliases('field_id', ['field']);
 
         return $options;
     }
@@ -127,6 +128,10 @@ abstract class AbstractSetCustomField extends AbstractContainerAwareAction imple
         $obj = $this->getApplicableObject($ticket, $context);
 
         $fieldId = $this->getActionOption('field_id');
+        if (empty($fieldId)) {
+            $fieldId = $this->getActionOption('field');
+        }
+
         $fieldDef = $fm->getFieldFromId($fieldId);
         if (empty($fieldDef)) {
             throw new \RuntimeException(sprintf('could not find field with id: %s', $fieldId));

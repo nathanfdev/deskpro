@@ -1,4 +1,4 @@
-@new @webhooks
+@new @webhooks @webhook-actions
 Feature: /webhooks/tickets/{webhook}/invocation resource
   I can delete a value from a DataList field by invoking a webhook
   As a developer
@@ -49,7 +49,7 @@ Feature: /webhooks/tickets/{webhook}/invocation resource
       "type" : "FilterTicketField",
       "op": "contains",
       "options" : {
-        "field_id": "~field_id~",
+        "field": "<field_alias>",
         "value": "twig:{{webhook.data.id}}"
       }
     }
@@ -74,7 +74,7 @@ Feature: /webhooks/tickets/{webhook}/invocation resource
             "options":{
               "op": "unset-list",
               "with_formatter": true,
-              "field_id": "~field_id~",
+              "field": "<field_alias>",
               "value": "{{webhook.data.id}}"
             }
           }

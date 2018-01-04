@@ -39,14 +39,25 @@ use Orb\Util\Strings;
  */
 class Text extends HandlerAbstract
 {
+    /**
+     * @param array $form_data
+     * @param null $default
+     * @return mixed|null
+     */
+    private function findValue(array $form_data, $default = null)
+    {
+        $names = $this->getAllFormFieldNames();
+        foreach ($names as $name) {
+            if (!empty($form_data[$name]) || (isset($form_data[$name]) && $form_data[$name] === '0')) {
+                return $form_data[$name];
+            }
+        }
+        return $default;
+    }
+
     public function getDataFromForm(array $form_data)
     {
-        $name = $this->getFormFieldName();
-
-        $value = null;
-        if (!empty($form_data[$name]) || (isset($form_data[$name]) && $form_data[$name] === '0')) {
-            $value = $form_data[$name];
-        }
+        $value = $this->findValue($form_data);
         if (is_array($value)) {
             $value = implode(' ', $value);
         }
@@ -58,7 +69,11 @@ class Text extends HandlerAbstract
 
     public function validateFormData(array $form_data, $context = self::CONTEXT_USER, $context_data = null)
     {
-        $data = isset($form_data[$this->getFormFieldName()]) ? $form_data[$this->getFormFieldName()] : '';
+        $valueIfNotPresent = new \stdClass();
+        $data = $this->findValue($form_data, $valueIfNotPresent);
+        if ($data === $valueIfNotPresent) {
+            $data = '';
+        }
 
         if (!is_scalar($data)) {
             return $this->makeErrorArray(['invalid_input']);
