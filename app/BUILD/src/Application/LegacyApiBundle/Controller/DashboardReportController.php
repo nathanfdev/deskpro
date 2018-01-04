@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2017, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2018, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -37,6 +37,7 @@ use Application\LegacyApiBundle\Service\Dashboard as DashboardService;
 use Application\LegacyApiBundle\Service\DashboardPermissions as DashboardPermissionService;
 use Application\LegacyApiBundle\Service\DashboardWidget as DashboardWidgetService;
 use DeskPRO\Bundle\AppBundle\Annotation\ActionPermissions\Annotation\ApiModes;
+use DeskPRO\Bundle\AppBundle\Entity\Report\ScheduledReport;
 use Symfony\Component\HttpFoundation\Response;
 
 /**
@@ -201,5 +202,24 @@ class DashboardReportController extends AbstractController
         $data['loaded'] = true;
 
         return $this->createApiResponse($data);
+    }
+
+    /**
+     * @param $id
+     *
+     * @throws \Doctrine\ORM\OptimisticLockException
+     */
+    public function scheduleReport($id)
+    {
+        $report          = $this->service->getReport($id);
+        $scheduledReport = new ScheduledReport();
+        $scheduledReport
+            ->setReport($report)
+            ->setFrequency($this->in->getString('frequency'))
+            ->setPerson($this->person)
+            ->setWhen($this->in->getArrayValue('when'))
+            ->setWhenTz($this->person->getTimezone());
+        $this->em->persist($scheduledReport);
+        $this->em->flush();
     }
 }

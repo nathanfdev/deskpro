@@ -36,20 +36,27 @@
             <hr>
         </form>
 
-        <form ng-show="activeTab == 'schedule'" class="popup-form-default">
-
+        <form ng-show="activeTab == 'schedule'" class="popup-form-default schedule-form">
             <!-- Form Row (left label, input & possible side content) -->
             <div class="bucket">
-                <label class="label">Schedule this report:</label>
+                <div class="bucket-column">
+                    <input type="radio" name="enabled" ng-model="enabled" value="0" />
+                    <label class="label">Do not schedule report</label>
+                </div>
             </div>
-
+            <div class="bucket">
+                <div class="bucket-column">
+                    <input type="radio" name="enabled" ng-model="enabled" value="1" />
+                    <label class="label">Schedule this report</label>
+                </div>
+            </div>
             <!-- End Form Row -->
             <hr>
         </form>
     </div>
 
     <footer>
-        <a ng-click="saveReport()" class="button">{{ ng_var('title') }}</a>
+        <a ng-click="saveReport()" class="button">Edit</a>
     </footer>
     <!-- End Popup Content -->
 
