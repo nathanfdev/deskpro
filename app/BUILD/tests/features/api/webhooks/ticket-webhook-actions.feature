@@ -1,4 +1,4 @@
-@new @webhook-actions
+@new @webhooks
 Feature: /webhooks/tickets/{webhook}/invocation resource
   I can delete a value from a DataList field by invoking a webhook
   As a developer
@@ -98,7 +98,7 @@ Feature: /webhooks/tickets/{webhook}/invocation resource
     Then the response status code should be 204
 
     When I send a GET request to "/api/v2/tickets/~ticket_id~"
-    Then the JSON list node "data.fields.~ticket_id~.value" should not contain "JIR-5"
+    Then the JSON list node "data.fields.~field_id~.value" should not contain "JIR-5"
     Examples:
       | webhook_title | ticket_subject | field_alias | field_title  |
       | my title      | Sample Ticket  |  jira       | Jira Tickets |
