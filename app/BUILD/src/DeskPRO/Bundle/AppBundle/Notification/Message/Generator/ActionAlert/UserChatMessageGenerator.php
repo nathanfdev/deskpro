@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2017, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2018, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -34,6 +34,7 @@ use Application\DeskPRO\Entity\Ticket;
 use DeskPRO\Bundle\AppBundle\DataService\AgentDataService;
 use DeskPRO\Bundle\AppBundle\EventListener\ClientMessage\ClientMessageEvent;
 use DeskPRO\Bundle\AppBundle\Language\LanguageManager;
+use DeskPRO\Bundle\AppBundle\Notification\Event\LegacySystemEvent;
 use DeskPRO\Bundle\AppBundle\Notification\Event\SystemEventInterface;
 use DeskPRO\Bundle\AppBundle\Notification\Event\UserChat\UserChatEvent;
 use DeskPRO\Bundle\AppBundle\Notification\Message\ActionAlert;
@@ -57,6 +58,11 @@ class UserChatMessageGenerator extends SystemEventGenerator
      * @var LanguageManager
      */
     private $languageManager;
+
+    /**
+     * @var ChatConversation
+     */
+    private $conversation;
 
     /**
      * Constructor.
@@ -99,6 +105,51 @@ class UserChatMessageGenerator extends SystemEventGenerator
     }
 
     /**
+     * @param LegacySystemEvent $event
+     *
+     * @throws \Doctrine\ORM\ORMException
+     * @throws \Doctrine\ORM\OptimisticLockException
+     * @throws \Doctrine\ORM\TransactionRequiredException
+     *
+     * @return array|int[]
+     */
+    protected function getTarget(LegacySystemEvent $event)
+    {
+        if ($event instanceof UserChatEvent) {
+            $convo           = $this->getConversation($event);
+            $agentId         = $convo->getAgentId();
+            $participantsIds = $convo->getParticipantIds();
+
+            return array_merge($participantsIds, [$agentId]);
+        }
+
+        return parent::getTarget($event);
+    }
+
+    /**
+     * @param UserChatEvent $event
+     *
+     * @throws \Doctrine\ORM\ORMException
+     * @throws \Doctrine\ORM\OptimisticLockException
+     * @throws \Doctrine\ORM\TransactionRequiredException
+     *
+     * @return ChatConversation|null|object
+     */
+    protected function getConversation(UserChatEvent $event)
+    {
+        if (!$this->conversation) {
+            $data  = $event->getData();
+            $convo = $this->em->find(ChatConversation::class, $data['conversation_id']);
+            if (!$convo) {
+                throw new NotFoundHttpException();
+            }
+            $this->conversation = $convo;
+        }
+
+        return $this->conversation;
+    }
+
+    /**
      * {@inheritdoc}
      */
     public function canCreateMessage(SystemEventInterface $event)
@@ -116,10 +167,7 @@ class UserChatMessageGenerator extends SystemEventGenerator
     {
         $data = $event->getData();
         if ($event->getEventType() === ClientMessageEvent::CHANNEL_CHAT_NEW) {
-            $convo = $this->em->find(ChatConversation::class, $data['conversation_id']);
-            if (!$convo) {
-                throw new NotFoundHttpException();
-            }
+            $convo = $this->getConversation($event);
 
             if ($convo->getPerson()) {
                 /** @var \Application\DeskPRO\EntityRepository\Ticket $ticketRepo */
