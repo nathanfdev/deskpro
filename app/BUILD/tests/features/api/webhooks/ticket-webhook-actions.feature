@@ -49,7 +49,7 @@ Feature: /webhooks/tickets/{webhook}/invocation resource
       "type" : "FilterTicketField",
       "op": "contains",
       "options" : {
-        "field_id": "~ticket_id~",
+        "field_id": "~field_id~",
         "value": "twig:{{webhook.data.id}}"
       }
     }
@@ -74,7 +74,7 @@ Feature: /webhooks/tickets/{webhook}/invocation resource
             "options":{
               "op": "unset-list",
               "with_formatter": true,
-              "field_id": "~ticket_id~",
+              "field_id": "~field_id~",
               "value": "{{webhook.data.id}}"
             }
           }
