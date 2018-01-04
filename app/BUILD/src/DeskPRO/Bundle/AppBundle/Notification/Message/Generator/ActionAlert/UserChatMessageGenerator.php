@@ -60,11 +60,6 @@ class UserChatMessageGenerator extends SystemEventGenerator
     private $languageManager;
 
     /**
-     * @var ChatConversation
-     */
-    private $conversation;
-
-    /**
      * Constructor.
      *
      * @param EntityManager         $em
@@ -115,7 +110,8 @@ class UserChatMessageGenerator extends SystemEventGenerator
      */
     protected function getTarget(LegacySystemEvent $event)
     {
-        if ($event instanceof UserChatEvent) {
+        // new chat event should go to all online agents
+        if ($event instanceof UserChatEvent && $event->getEventType() !== ClientMessageEvent::CHANNEL_CHAT_NEW) {
             $convo           = $this->getConversation($event);
             $agentId         = $convo->getAgentId();
             $participantsIds = $convo->getParticipantIds();
@@ -137,16 +133,17 @@ class UserChatMessageGenerator extends SystemEventGenerator
      */
     protected function getConversation(UserChatEvent $event)
     {
-        if (!$this->conversation) {
-            $data  = $event->getData();
+        $data = $event->getData();
+        if (isset($data['conversation_id'])) {
             $convo = $this->em->find(ChatConversation::class, $data['conversation_id']);
             if (!$convo) {
                 throw new NotFoundHttpException();
             }
-            $this->conversation = $convo;
+
+            return $convo;
         }
 
-        return $this->conversation;
+        return null;
     }
 
     /**
