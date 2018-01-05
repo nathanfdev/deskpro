@@ -1336,7 +1336,8 @@ DeskPRO.Agent.PageFragment.Page.UserChat = new Orb.Class({
 		DeskPRO_Window.util.fileupload(this.el, {
 			uploadTemplate: $('.template-upload', this.el),
 			downloadTemplate: $('.template-download', this.el),
-			dropZone: this.getEl('replybox').find('nav')
+			dropZone: this.getEl('replybox').find('nav'),
+			forceSend: true
 		});
 		this.el.bind('fileuploaddone', function(ev, data) {
 			if (data.result && data.result.length) {
