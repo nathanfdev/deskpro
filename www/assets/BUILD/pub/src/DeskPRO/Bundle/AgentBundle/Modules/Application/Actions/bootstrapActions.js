@@ -175,7 +175,11 @@ export const preloadData    = createAction(
 
           window.notifyAgentMap[agent.id] = {
             name:        agent.name,
-            picture_url: (agent.avatar.url_pattern || agent.avatar.default_url_pattern).replace(/\{\{IMG_SIZE}}/, '20')
+            picture_url: (
+              agent.avatar.url_pattern
+              || (agent.avatar.base_gravatar_url ? `${agent.avatar.base_gravatar_url}?d=mm&s=20` : '')
+              || agent.avatar.default_url_pattern).replace(/\{\{IMG_SIZE}}/, '20'
+            )
           };
         });
 
