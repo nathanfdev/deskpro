@@ -134,6 +134,30 @@ class JsonContext extends \Behatch\Context\JsonContext
     }
 
     /**
+     * Checks, that given JSON list does not contain given value
+     *
+     * @Then the JSON list node :node should not contain :text
+     */
+    public function theJsonListNodeShouldNotContain($node, $text)
+    {
+        $node = DataContext::replace($node);
+        $text = DataContext::replace($text);
+
+
+        $json = $this->getJson();
+        $actual = $this->inspector->evaluate($json, $node);
+
+        foreach ($actual as $item) {
+
+            if ($text === (string) $item) {
+                throw new \Exception(
+                    sprintf('The node `%s` contains: %s', json_encode($actual), $text)
+                );
+            }
+        }
+    }
+
+    /**
      * @override
      */
     public function theJsonNodeShouldNotContain($node, $text)

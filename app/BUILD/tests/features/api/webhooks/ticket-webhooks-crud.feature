@@ -15,40 +15,42 @@ Feature: /webhooks/tickets resource
   "title":"<title>",
   "payload_decoder":"json",
   "is_enabled":true,
-  "terms": [
-    [
-      {
-        "type" : "CheckTicketField",
-        "op": "is",
-        "options" : {
-          "field_id": "field6",
-          "value": "zorba"
-        }
-      }
-    ]
-  ],
   "search_terms": [
-      {
-        "type" : "FilterLabels",
-        "options" : {
-          "labels": [
-            "gina",
-            "lina"
-          ]
-        }
+    {
+      "type" : "FilterLabels",
+      "options" : {
+        "labels": [
+          "gina",
+          "lina"
+        ]
       }
+    }
   ],
-  "actions":{
-    "version":1,
-    "actions":[
-      {
-        "type": "SetHold",
-        "options":{
-          "is_hold": true
+  "triggers": [{
+    "terms": [
+      [
+        {
+          "type" : "CheckTicketField",
+          "op": "is",
+          "options" : {
+            "field_id": "field6",
+            "value": "zorba"
+          }
         }
-      }
-    ]
-  }
+      ]
+    ],
+    "actions":{
+      "version":1,
+      "actions":[
+        {
+          "type": "SetHold",
+          "options":{
+            "is_hold": true
+          }
+        }
+      ]
+    }
+  }]
 }
     """
     Then the response status code should be 201
@@ -69,7 +71,7 @@ Feature: /webhooks/tickets resource
     ]
     """
 
-    And the JSON node "data.terms" should be equal to node:
+    And the JSON node "data.triggers[0].terms" should be equal to node:
     """
         {
           "version": 1,
@@ -90,7 +92,7 @@ Feature: /webhooks/tickets resource
         }
     """
 
-    And the JSON node "data.actions" should be equal to node:
+    And the JSON node "data.triggers[0].actions" should be equal to node:
     """
       {
         "version" : 1,

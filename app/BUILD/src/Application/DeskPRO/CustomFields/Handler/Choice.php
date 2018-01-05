@@ -313,18 +313,28 @@ class Choice extends HandlerAbstract
     }
 
     /**
+     * @param array $form_data
+     * @return mixed|null
+     */
+    private function findValue(array $form_data)
+    {
+        $names = $this->getAllFormFieldNames();
+        foreach ($names as $name) {
+            if (!empty($formData[$name])) {
+                return $form_data[$name];
+            }
+        }
+        return null;
+    }
+
+    /**
      * @param array $formData
      *
      * @return array
      */
     public function getDataFromForm(array $formData)
     {
-        $name = $this->getFormFieldName();
-
-        $value = null;
-        if (!empty($formData[$name])) {
-            $value = $formData[$name];
-        }
+        $value = $this->findValue($formData);
 
         if ($value) {
             if (is_array($value)) {

@@ -83,9 +83,22 @@ class ExecutorContextEnv
         return $request;
     }
 
-    public static function setWebhookPayload(ExecutorContextInterface $context, WebhookInvocation $payload)
+    public static function setWebhookInvocation( ExecutorContextInterface $context, WebhookInvocation $payload)
     {
-        $context->getVars()->set('webhook_payload', $payload);
+        $context->getVars()->set('webhook_invocation', $payload);
+    }
+
+    /**
+     * Returns a list of all the webhook vars which are available as trigger vars
+     *
+     * @param ExecutorContextInterface $context
+     * @return array
+     */
+    public static function getTriggerVars( ExecutorContextInterface $context)
+    {
+        return [
+            'webhook' => ExecutorContextEnv::getWebhookInvocation($context)
+        ];
     }
 
     /**
@@ -93,9 +106,9 @@ class ExecutorContextEnv
      *
      * @return WebhookInvocation
      */
-    public static function getWebhookPayload(ExecutorContextInterface $context)
+    public static function getWebhookInvocation( ExecutorContextInterface $context)
     {
-        $varName = 'webhook_payload';
+        $varName = 'webhook_invocation';
         $request = $context->getVars()->get($varName);
         if (!is_null($request) && !$request instanceof WebhookInvocation) {
             $msg = sprintf('unexpected type for webhook variable named: %s', $varName);

@@ -50,39 +50,43 @@ Feature: /webhooks/tickets/{webhook}/invocation resource
         "op": "is",
         "options" : {
           "field_type": "~custom_field_id~",
-           "value": "twig:{{data.field}}"
+           "value": "twig:{{webhook.data.field}}"
         }
       }
   ],
-  "terms": [
-    [{
-      "type" : "CheckWebhookVar",
-      "op": "isset",
-      "options" : {
-        "name": "data.webhook.is_enabled"
+  "triggers": [
+    {
+      "terms": [
+        [{
+          "type" : "CheckWebhookVar",
+          "op": "isset",
+          "options" : {
+            "name": "webhook.data.something.is_enabled"
+          }
+        }]
+      ],
+      "actions":{
+        "version":1,
+        "actions":[
+          {
+            "type": "SetSubject",
+            "options":{
+              "subject": "<expected_subject>"
+            }
+          }
+        ]
       }
-    }]
-  ],
-  "actions":{
-    "version":1,
-    "actions":[
-      {
-        "type": "SetSubject",
-        "options":{
-          "subject": "<expected_subject>"
-        }
-      }
-    ]
-  }
+    }
+  ]
 }
     """
     And the response status code should be 201
     And I save the JSON node "data.auth_id" as placeholder "webhook_slug"
 
-    When I send a POST request to "/api/v2/webhooks/tickets/~webhook_slug~/invocation" with body:
+    When I send a POST request to "/api/v2/webhooks/~webhook_slug~/invocation" with body:
     """
 {
-  "webhook" : {
+  "something" : {
     "is_enabled":true
   },
   "field" : "lemmy"
