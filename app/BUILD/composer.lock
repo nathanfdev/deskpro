@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file",
         "This file is @generated automatically"
     ],
-    "content-hash": "943b638854ac8525f79040f9b01b270b",
+    "content-hash": "aa826f59cec799834f68ac336fbaa8bb",
     "packages": [
         {
             "name": "alchemy/zippy",
@@ -253,6 +253,50 @@
                 "orm"
             ],
             "time": "2017-01-11T07:22:12+00:00"
+        },
+        {
+            "name": "brick/math",
+            "version": "0.5.4",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/brick/math.git",
+                "reference": "b44a78b01cb79aa4bf17de46a45db968b6958bda"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/brick/math/zipball/b44a78b01cb79aa4bf17de46a45db968b6958bda",
+                "reference": "b44a78b01cb79aa4bf17de46a45db968b6958bda",
+                "shasum": ""
+            },
+            "require": {
+                "php": ">=5.6"
+            },
+            "require-dev": {
+                "phpunit/phpunit": "*",
+                "satooshi/php-coveralls": "dev-master"
+            },
+            "type": "library",
+            "autoload": {
+                "psr-4": {
+                    "Brick\\Math\\": "src/",
+                    "Brick\\Math\\Tests\\": "tests/"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "description": "Arbitrary-precision arithmetic library",
+            "keywords": [
+                "Arbitrary-precision",
+                "BigInteger",
+                "BigRational",
+                "arithmetic",
+                "bigdecimal",
+                "brick",
+                "math"
+            ],
+            "time": "2016-10-17T22:08:04+00:00"
         },
         {
             "name": "bugsnag/bugsnag",
@@ -3430,6 +3474,49 @@
                 "sql"
             ],
             "time": "2014-01-12T16:20:24+00:00"
+        },
+        {
+            "name": "jkuchar/bigfiletools",
+            "version": "v2.0.0",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/jkuchar/BigFileTools.git",
+                "reference": "cea157a4239c55263faf09acd6d0c0e75a531316"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/jkuchar/BigFileTools/zipball/cea157a4239c55263faf09acd6d0c0e75a531316",
+                "reference": "cea157a4239c55263faf09acd6d0c0e75a531316",
+                "shasum": ""
+            },
+            "require": {
+                "brick/math": "~0.5.2",
+                "php": ">= 5.6.0"
+            },
+            "require-dev": {
+                "nette/tester": "^1.6"
+            },
+            "type": "library",
+            "autoload": {
+                "classmap": [
+                    "src/BigFileTools-nonamespace.php"
+                ],
+                "psr-4": {
+                    "BigFileTools\\": "src/"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "New BSD"
+            ],
+            "authors": [
+                {
+                    "name": "Jan Kuchař",
+                    "homepage": "http://www.jankuchar.cz"
+                }
+            ],
+            "description": "Tools that allows you to manipulate files over 2GB in PHP.",
+            "time": "2016-03-17T16:18:05+00:00"
         },
         {
             "name": "jms/metadata",
