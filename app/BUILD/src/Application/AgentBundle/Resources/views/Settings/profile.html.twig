@@ -166,7 +166,7 @@ pageMeta.fragmentClass = 'DeskPRO.Agent.PageFragment.SettingsPage.Profile';
 				<button class="clean-white enable-desktop-notifications">{{ phrase('agent.settings.desktop_notifs_enable') }}</button>
 				<div class="dp-desktop-notifications-enabled">
 					<div>{{ phrase('agent.settings.desktop_notifs_are_enabled') }}</div>
-					<div>{{ phrase('agent.settings.desktop_notifs_autohide') }} {{ form_widget(form.auto_dismiss_notifications) }}</div>
+					<div>{{ phrase('agent.settings.desktop_notifs_autohide') }} {{ form_widget(form.auto_dismiss_notifications) }} <span class="small-light-icon tipped" data-tipped-options="maxWidth: 250" title="{{ phrase('agent.settings.desktop_notifs_tip') }}"></span></div>
 					<div><button class="clean-white generate-test-notification">{{ phrase('agent.settings.desktop_notifs_test') }}</button></div>
 				</div>
 				<div class="dp-desktop-notifications-disabled" style="display:none">
