@@ -61,7 +61,7 @@ class Converters
      * @param ObjectAliasInterface[] $mappings
      * @return array|string[]
      */
-    public static function toMergedList( $mappings)
+    public static function toMergedList($mappings)
     {
         $nameList = [];
 
@@ -77,7 +77,7 @@ class Converters
      * @param \DeskPRO\Bundle\AppBundle\ObjectAlias\ObjectAliasInterface $mapping
      * @return array|string[]
      */
-    public static function toList( ObjectAliasInterface $mapping)
+    public static function toList(ObjectAliasInterface $mapping)
     {
         $aliases = [];
         foreach ($mapping->getQualifiers() as $qualifier) {
