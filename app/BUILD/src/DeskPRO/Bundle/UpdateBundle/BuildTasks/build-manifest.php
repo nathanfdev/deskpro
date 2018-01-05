@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2017, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2018, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -774,6 +774,12 @@ return [
     1513248744 => [
         'file'          => '/src/Application/InstallBundle/Upgrade/Build/2017/12/Build1513248744.php',
         'classname'     => 'Application\InstallBundle\Upgrade\Build\Build1513248744',
+        'skipPostBuild' => false,
+        'isOnlineBuild' => false,
+    ],
+    1515162975 => [
+        'file'          => '/src/Application/InstallBundle/Upgrade/Build/2018/01/Build1515162975.php',
+        'classname'     => 'Application\InstallBundle\Upgrade\Build\Build1515162975',
         'skipPostBuild' => false,
         'isOnlineBuild' => false,
     ],
