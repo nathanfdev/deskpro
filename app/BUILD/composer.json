@@ -109,6 +109,7 @@
     "pelago/emogrifier": "^2.0",
     "jkuchar/bigfiletools": "^2.0",
     "brick/math": "dev-php-5.5-compatible as 0.5.2",
+    "webonyx/graphql-php": "^0.11.5",
     "html2text/html2text": "^4.1"
   },
   "require-dev": {

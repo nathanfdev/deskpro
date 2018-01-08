@@ -1,0 +1,65 @@
+<!DOCTYPE>
+<html>
+    <head>
+        <title>Deskpro</title>
+        <meta charset="utf-8">
+        <meta name="viewport" content="width=device-width">
+
+        <style>
+            body {
+                padding: 0;
+                margin: 0;
+            }
+        </style>
+        <link href="https://cdnjs.cloudflare.com/ajax/libs/graphiql/0.11.11/graphiql.css" rel="stylesheet" type="text/css" />
+    </head>
+    <body>
+        <div id="mount"></div>
+
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/react/16.2.0/umd/react.production.min.js"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/react-dom/16.2.0/umd/react-dom.production.min.js"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/graphiql/0.11.11/graphiql.js"></script>
+        <script>
+            (function() {
+                var getParameter = function(name, defaultValue) {
+                    var url = window.location.href;
+                    name = name.replace(/[\[\]]/g, "\\$&");
+                    var regex = new RegExp("[?&]" + name + "(=([^&#]*)|&|#|$)"),
+                        results = regex.exec(url);
+                    if (!results) return defaultValue;
+                    if (!results[2]) return defaultValue;
+
+                    return decodeURIComponent(results[2].replace(/\+/g, " "));
+                };
+
+                var fetcher = function(graphQLParams) {
+                    return fetch(window.location.origin + '{{ url }}', {
+                        method: 'post',
+                        headers: {
+                            'Content-Type': 'application/json'
+                        },
+                        body: JSON.stringify(graphQLParams)
+                    }).then(function(resp) {
+                        return resp.json();
+                    });
+                };
+
+                var defaultQuery = "{\n" +
+                    "  content_get_articles(id: 100) {\n" +
+                    "    title\n" +
+                    "    content\n" +
+                    "  }\n" +
+                    "}";
+
+                ReactDOM.render(
+                    React.createElement(GraphiQL, {
+                        fetcher: fetcher,
+                        query: getParameter('query'),
+                        defaultQuery: defaultQuery
+                    }),
+                    document.getElementById('mount')
+                );
+            })();
+        </script>
+    </body>
+</html>
