@@ -29,6 +29,8 @@
 namespace DeskPRO\Bundle\ReportBundle\Dpql2\Statement;
 
 use Application\DeskPRO\Entity\Person;
+use Application\DeskPRO\Entity\Problem;
+use DeskPRO\Bundle\AppBundle\Entity\SnippetUseLog;
 use DeskPRO\Bundle\ReportBundle\Dpql2\DpqlException;
 use DeskPRO\Bundle\ReportBundle\Dpql2\Plugin\Hierarchy\HierarchyPlugin;
 use DeskPRO\Bundle\ReportBundle\Dpql2\Plugin\Hierarchy\HierarchySorting;
@@ -301,6 +303,8 @@ class SelectPart
         'user_rules'                  => 'DeskPRO:UserRule',
         'usergroups'                  => 'DeskPRO:Usergroup',
         'usersources'                 => 'DeskPRO:Usersource',
+        'snippet_use_log'             => SnippetUseLog::class,
+        'problems'                    => Problem::class,
     ];
 
     /**
