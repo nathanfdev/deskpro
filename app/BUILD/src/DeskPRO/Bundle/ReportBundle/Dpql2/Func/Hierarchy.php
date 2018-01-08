@@ -42,7 +42,7 @@ class Hierarchy extends AbstractFunc
     /**
      * {@inheritdoc}
      */
-    public function prepare(array $arguments, SelectPart $statement, $section, array $stack, SqlSelect $select, ResultMetadata $result)
+    public function prepare(array $arguments, SelectPart $statement, $section, array $stack, SqlSelect $select, ResultMetadata $metadata)
     {
         if ($section != 'group') {
             throw new DpqlException('HIERARCHY() may only be used in GROUP BY.');
@@ -52,7 +52,7 @@ class Hierarchy extends AbstractFunc
         }
 
         $expression = reset($arguments);
-        $prepared   = $expression->prepare($statement, $section, $stack, $select, $result);
+        $prepared   = $expression->prepare($statement, $section, $stack, $select, $metadata);
 
         $minDepth = null;
         if (array_key_exists(1, $arguments)) {

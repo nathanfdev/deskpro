@@ -204,7 +204,7 @@ class SqlPass extends AbstractFunc
     /**
      * {@inheritdoc}
      */
-    public function prepare(array $arguments, SelectPart $statement, $section, array $stack, SqlSelect $select, ResultMetadata $result)
+    public function prepare(array $arguments, SelectPart $statement, $section, array $stack, SqlSelect $select, ResultMetadata $metadata)
     {
         $name       = $this->name;
         $lookupName = strtoupper($name);
@@ -233,7 +233,7 @@ class SqlPass extends AbstractFunc
         $valuesSql   = [];
         $valuesNames = [];
         foreach ($arguments as $arg) {
-            $prepped       = $arg->prepare($statement, $section, $stack, $select, $result);
+            $prepped       = $arg->prepare($statement, $section, $stack, $select, $metadata);
             $valuesSql[]   = $prepped->sql();
             $valuesNames[] = $prepped->name();
         }

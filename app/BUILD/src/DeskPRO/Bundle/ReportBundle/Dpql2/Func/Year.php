@@ -42,14 +42,14 @@ class Year extends AbstractFunc
     /**
      * {@inheritdoc}
      */
-    public function prepare(array $arguments, SelectPart $statement, $section, array $stack, SqlSelect $select, ResultMetadata $result)
+    public function prepare(array $arguments, SelectPart $statement, $section, array $stack, SqlSelect $select, ResultMetadata $metadata)
     {
         if (count($arguments) != 1) {
             throw new DpqlException('YEAR() can only accept 1 argument.');
         }
 
         $expression = reset($arguments);
-        $prepped    = $expression->prepare($statement, $section, $stack, $select, $result);
+        $prepped    = $expression->prepare($statement, $section, $stack, $select, $metadata);
 
         $sql = 'YEAR('.$prepped->sql().')';
         $res = new Prepared($sql, 'YEAR('.$prepped->name().')', false, 'numberraw');

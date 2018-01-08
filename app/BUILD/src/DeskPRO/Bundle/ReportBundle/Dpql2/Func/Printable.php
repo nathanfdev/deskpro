@@ -52,7 +52,7 @@ class Printable extends AbstractFunc
     /**
      * {@inheritdoc}
      */
-    public function prepare(array $arguments, SelectPart $statement, $section, array $stack, SqlSelect $select, ResultMetadata $result)
+    public function prepare(array $arguments, SelectPart $statement, $section, array $stack, SqlSelect $select, ResultMetadata $metadata)
     {
         if (!in_array($section, ['split', 'group'])) {
             throw new DpqlException('PRINT() may only be used in SPLIT BY and GROUP BY sections.');
@@ -70,8 +70,8 @@ class Printable extends AbstractFunc
         $sql   = reset($arguments);
         $print = next($arguments);
 
-        $printPrepped = $print->prepare($statement, $section, $childStack, $select, $result);
-        $sqlPrepped   = $sql->prepare($statement, $section, $childStack, $select, $result);
+        $printPrepped = $print->prepare($statement, $section, $childStack, $select, $metadata);
+        $sqlPrepped   = $sql->prepare($statement, $section, $childStack, $select, $metadata);
 
         return new Prepared(
             $sqlPrepped->sql(), $printPrepped->name(), $printPrepped->printed(), $printPrepped->renderer()

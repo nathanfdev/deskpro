@@ -203,6 +203,11 @@ services:
     tags:
       - { name: dpql.func }
 
+  dpql.func.json_extract:
+    class: DeskPRO\Bundle\ReportBundle\Dpql2\Func\JsonExtract
+    tags:
+      - { name: dpql.func }
+
   # DPQL placeholders
   dpql.placeholder.ever:
     class: DeskPRO\Bundle\ReportBundle\Dpql2\Placeholder\Ever

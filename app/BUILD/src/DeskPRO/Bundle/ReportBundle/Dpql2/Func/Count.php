@@ -44,7 +44,7 @@ class Count extends AbstractFunc
     /**
      * {@inheritdoc}
      */
-    public function prepare(array $arguments, SelectPart $statement, $section, array $stack, SqlSelect $select, ResultMetadata $result)
+    public function prepare(array $arguments, SelectPart $statement, $section, array $stack, SqlSelect $select, ResultMetadata $metadata)
     {
         if (!in_array($section, ['select', 'split', 'group', 'order'])) {
             throw new DpqlException('COUNT() may only be used in SELECT, SPLIT BY, GROUP BY, and ORDER BY sections.');
@@ -58,7 +58,7 @@ class Count extends AbstractFunc
             }
 
             $condition = reset($arguments);
-            $prepped   = $condition->prepare($statement, $section, $stack, $select, $result);
+            $prepped   = $condition->prepare($statement, $section, $stack, $select, $metadata);
 
             $sql = 'SUM(IF('.$prepped->sql().', 1, 0))';
             $res = new Prepared($sql, 'COUNT('.$prepped->name().')', false, 'number');

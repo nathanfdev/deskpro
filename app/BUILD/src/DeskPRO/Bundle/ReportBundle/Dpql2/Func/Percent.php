@@ -43,7 +43,7 @@ class Percent extends AbstractFunc
     /**
      * {@inheritdoc}
      */
-    public function prepare(array $arguments, SelectPart $statement, $section, array $stack, SqlSelect $select, ResultMetadata $result)
+    public function prepare(array $arguments, SelectPart $statement, $section, array $stack, SqlSelect $select, ResultMetadata $metadata)
     {
         if (!in_array($section, ['select', 'split', 'group', 'order'])) {
             throw new DpqlException('PERCENT() may only be used in SELECT, SPLIT BY, GROUP BY, and ORDER BY sections.');
@@ -54,7 +54,7 @@ class Percent extends AbstractFunc
         }
 
         $condition = reset($arguments);
-        $prepped   = $condition->prepare($statement, $section, $stack, $select, $result);
+        $prepped   = $condition->prepare($statement, $section, $stack, $select, $metadata);
 
         $sql = 'IF(COUNT(*) > 0, (SUM(IF('.$prepped->sql().', 1, 0)) / COUNT(*)) * 100, 0)';
 

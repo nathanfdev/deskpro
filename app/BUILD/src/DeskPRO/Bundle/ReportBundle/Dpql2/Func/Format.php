@@ -61,7 +61,7 @@ class Format extends AbstractFunc
     /**
      * {@inheritdoc}
      */
-    public function prepare(array $arguments, SelectPart $statement, $section, array $stack, SqlSelect $select, ResultMetadata $result)
+    public function prepare(array $arguments, SelectPart $statement, $section, array $stack, SqlSelect $select, ResultMetadata $metadata)
     {
         if (count($arguments) < 2) {
             throw new DpqlException('FORMAT() requires at least 2 arguments.');
@@ -74,13 +74,13 @@ class Format extends AbstractFunc
         $argNames    = [];
         $argLiterals = [];
         foreach ($arguments as $argument) {
-            $prepped       = $argument->prepare($statement, $section, $stack, $select, $result);
+            $prepped       = $argument->prepare($statement, $section, $stack, $select, $metadata);
             $argNames[]    = $prepped->name();
             $argLiterals[] = $this->_toLiteral($argument);
         }
 
-        $preppedValue = $value->prepare($statement, $section, $stack, $select, $result);
-        $preppedType  = $type->prepare($statement, $section, $stack, $select, $result);
+        $preppedValue = $value->prepare($statement, $section, $stack, $select, $metadata);
+        $preppedType  = $type->prepare($statement, $section, $stack, $select, $metadata);
 
         if ($argNames) {
             $argNameOutput = ', '.implode(', ', $argNames);

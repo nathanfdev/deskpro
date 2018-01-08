@@ -61,7 +61,7 @@ class Link extends AbstractFunc
     /**
      * {@inheritdoc}
      */
-    public function prepare(array $arguments, SelectPart $statement, $section, array $stack, SqlSelect $select, ResultMetadata $result)
+    public function prepare(array $arguments, SelectPart $statement, $section, array $stack, SqlSelect $select, ResultMetadata $metadata)
     {
         if (count($arguments) < 2) {
             throw new DpqlException('LINK() requires at least 2 arguments.');
@@ -74,12 +74,12 @@ class Link extends AbstractFunc
         $argNames  = [];
         $argSelect = [];
         foreach ($arguments as $argument) {
-            $prepped     = $argument->prepare($statement, $section, $stack, $select, $result);
+            $prepped     = $argument->prepare($statement, $section, $stack, $select, $metadata);
             $argNames[]  = $prepped->name();
             $argSelect[] = $select->addSelectField($prepped->printed());
         }
 
-        $preppedPrint = $print->prepare($statement, $section, $stack, $select, $result);
+        $preppedPrint = $print->prepare($statement, $section, $stack, $select, $metadata);
 
         $renderer = function (AbstractValueRenderer $valueRenderer, $value, array $row, AbstractRenderer $renderer) use ($formatLiteral, $argSelect) {
             return $this->formatLink($value, $formatLiteral, $argSelect, $row, $valueRenderer, $renderer);

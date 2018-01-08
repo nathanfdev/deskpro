@@ -74,10 +74,10 @@ class ObjLang extends AbstractFunc
     /**
      * {@inheritdoc}
      */
-    public function prepare(array $arguments, SelectPart $statement, $section, array $stack, SqlSelect $select, ResultMetadata $result)
+    public function prepare(array $arguments, SelectPart $statement, $section, array $stack, SqlSelect $select, ResultMetadata $metadata)
     {
         $expression = reset($arguments);
-        $prepped    = $expression->prepare($statement, $section, $stack, $select, $result);
+        $prepped    = $expression->prepare($statement, $section, $stack, $select, $metadata);
 
         if (count($arguments) < 2) {
             throw new DpqlException('OBJ_LANG() Must have at least a field (arg1) and a type (arg2).');

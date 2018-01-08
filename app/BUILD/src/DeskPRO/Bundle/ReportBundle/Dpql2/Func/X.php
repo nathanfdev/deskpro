@@ -44,7 +44,7 @@ class X extends AbstractFunc
     /**
      * {@inheritdoc}
      */
-    public function prepare(array $arguments, SelectPart $statement, $section, array $stack, SqlSelect $select, ResultMetadata $result)
+    public function prepare(array $arguments, SelectPart $statement, $section, array $stack, SqlSelect $select, ResultMetadata $metadata)
     {
         if ($section != 'group') {
             throw new DpqlException('X() may only be used in GROUP BY.');
@@ -62,7 +62,7 @@ class X extends AbstractFunc
                 continue;
             }
 
-            $groupBy = $arg->prepare($statement, $section, $childStack, $select, $result);
+            $groupBy = $arg->prepare($statement, $section, $childStack, $select, $metadata);
             if ($groupBy->hasValue()) {
                 $printId = $select->addSelectField($groupBy->printed());
                 $select->addGroupBy($groupBy->sql());
@@ -84,7 +84,7 @@ class X extends AbstractFunc
                     $statement->addGroupFill($groupBy->groupFill(), $printId, $groupId, $orderId);
                 }
 
-                $result->addGroupXColumn($groupBy->name(), $groupId, $printId, $groupBy->renderer());
+                $metadata->addGroupXColumn($groupBy->name(), $groupId, $printId, $groupBy->renderer());
             }
         }
 

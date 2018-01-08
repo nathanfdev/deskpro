@@ -42,7 +42,7 @@ class CountDistinct extends AbstractFunc
     /**
      * {@inheritdoc}
      */
-    public function prepare(array $arguments, SelectPart $statement, $section, array $stack, SqlSelect $select, ResultMetadata $result)
+    public function prepare(array $arguments, SelectPart $statement, $section, array $stack, SqlSelect $select, ResultMetadata $metadata)
     {
         if (!in_array($section, ['select', 'split', 'group', 'order'])) {
             throw new DpqlException('COUNT_DISTINCT() may only be used in SELECT, SPLIT BY, GROUP BY, and ORDER BY sections.');
@@ -53,7 +53,7 @@ class CountDistinct extends AbstractFunc
         }
 
         $expression = reset($arguments);
-        $prepped    = $expression->prepare($statement, $section, $stack, $select, $result);
+        $prepped    = $expression->prepare($statement, $section, $stack, $select, $metadata);
 
         $sql = 'COUNT(DISTINCT '.$prepped->sql().')';
         $res = new Prepared($sql, 'COUNT_DISTINCT('.$prepped->name().')', false, 'number');

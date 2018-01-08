@@ -42,7 +42,7 @@ class ToUtc extends AbstractFunc
     /**
      * {@inheritdoc}
      */
-    public function prepare(array $arguments, SelectPart $statement, $section, array $stack, SqlSelect $select, ResultMetadata $result)
+    public function prepare(array $arguments, SelectPart $statement, $section, array $stack, SqlSelect $select, ResultMetadata $metadata)
     {
         if (count($arguments) != 1) {
             throw new DpqlException('TO_UTC() can only accept 1 argument');
@@ -50,7 +50,7 @@ class ToUtc extends AbstractFunc
 
         $arg = reset($arguments);
 
-        $argPrepared = $arg->prepare($statement, $section, $stack, $select, $result);
+        $argPrepared = $arg->prepare($statement, $section, $stack, $select, $metadata);
 
         $tzOffsetSeconds = $statement->getTimezoneOffsetForFunction($stack);
         $interval        = ($tzOffsetSeconds ? " - INTERVAL $tzOffsetSeconds SECOND" : '');

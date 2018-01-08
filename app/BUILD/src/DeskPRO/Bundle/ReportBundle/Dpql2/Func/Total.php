@@ -41,7 +41,7 @@ class Total extends AbstractFunc
     /**
      * {@inheritdoc}
      */
-    public function prepare(array $arguments, SelectPart $statement, $section, array $stack, SqlSelect $select, ResultMetadata $result)
+    public function prepare(array $arguments, SelectPart $statement, $section, array $stack, SqlSelect $select, ResultMetadata $metadata)
     {
         if ($section != 'select') {
             throw new DpqlException('TOTAL() may only be used in SELECT.');
@@ -58,7 +58,7 @@ class Total extends AbstractFunc
         array_shift($childStack); // pop this off the stack - it doesn't exist to the children
 
         $expression = reset($arguments);
-        $prepped    = $expression->prepare($statement, $section, $stack, $select, $result);
+        $prepped    = $expression->prepare($statement, $section, $stack, $select, $metadata);
         $prepped->setTotal(true);
 
         return $prepped;

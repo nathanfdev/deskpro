@@ -42,7 +42,7 @@ class Alias extends AbstractFunc
     /**
      * {@inheritdoc}
      */
-    public function prepare(array $arguments, SelectPart $statement, $section, array $stack, SqlSelect $select, ResultMetadata $result)
+    public function prepare(array $arguments, SelectPart $statement, $section, array $stack, SqlSelect $select, ResultMetadata $metadata)
     {
         if (count($arguments) != 2) {
             throw new DpqlException('ALIAS() can only accept 2 arguments');
@@ -55,7 +55,7 @@ class Alias extends AbstractFunc
         $format        = next($arguments);
         $formatLiteral = $this->_toLiteral($format);
 
-        $prepped = $arg->prepare($statement, $section, $childStack, $select, $result);
+        $prepped = $arg->prepare($statement, $section, $childStack, $select, $metadata);
         $prepped->setName($formatLiteral);
 
         return $prepped;

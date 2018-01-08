@@ -58,7 +58,7 @@ class HierarchyDescendsFrom extends AbstractFunc
     /**
      * {@inheritdoc}
      */
-    public function prepare(array $arguments, SelectPart $statement, $section, array $stack, SqlSelect $select, ResultMetadata $result)
+    public function prepare(array $arguments, SelectPart $statement, $section, array $stack, SqlSelect $select, ResultMetadata $metadata)
     {
         if ($section != 'where') {
             throw new DpqlException('HIERARCHY_DESCENDS_FROM() may only be used in WHERE.');
@@ -71,7 +71,7 @@ class HierarchyDescendsFrom extends AbstractFunc
         }
 
         $expression    = $arguments[0];
-        $expressionSql = $expression->prepare($statement, $section, $stack, $select, $result)->sql();
+        $expressionSql = $expression->prepare($statement, $section, $stack, $select, $metadata)->sql();
 
         if (!preg_match('/`(.+)`\.`.+`/isU', $expressionSql, $matches)) {
             throw new DpqlException('HIERARCHY_DESCENDS_FROM cannot resolve the target table alias');
@@ -101,9 +101,9 @@ class HierarchyDescendsFrom extends AbstractFunc
             $this->statementFactory->createRaw("`$targetTableAlias`.`id`"),
             $ids
         );
-        $prepared = $condition->prepare($statement, $section, $stack, $select, $result);
+        $prepared = $condition->prepare($statement, $section, $stack, $select, $metadata);
 
-        $result->addFlag(ResultMetadata::FLAG_HIERARCHY_DESCENDS_FROM);
+        $metadata->addFlag(ResultMetadata::FLAG_HIERARCHY_DESCENDS_FROM);
 
         return $prepared;
     }

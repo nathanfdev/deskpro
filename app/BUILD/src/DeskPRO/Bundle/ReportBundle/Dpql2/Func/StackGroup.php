@@ -43,7 +43,7 @@ class StackGroup extends AbstractFunc
     /**
      * {@inheritdoc}
      */
-    public function prepare(array $arguments, SelectPart $statement, $section, array $stack, SqlSelect $select, ResultMetadata $result)
+    public function prepare(array $arguments, SelectPart $statement, $section, array $stack, SqlSelect $select, ResultMetadata $metadata)
     {
         if (count($arguments) != 2) {
             throw new DpqlException('STACK_GROUP() can only accept 2 arguments.');
@@ -54,12 +54,12 @@ class StackGroup extends AbstractFunc
 
         /** @var AbstractPart $expression */
         $expression = reset($arguments);
-        $prepped    = $expression->prepare($statement, $section, $childStack, $select, $result);
+        $prepped    = $expression->prepare($statement, $section, $childStack, $select, $metadata);
 
         if ($section == 'group' && !$childStack) {
             /** @var AbstractPart $grouper */
             $grouper      = next($arguments);
-            $preppedGroup = $grouper->prepare($statement, $section, $childStack, $select, $result);
+            $preppedGroup = $grouper->prepare($statement, $section, $childStack, $select, $metadata);
 
             if ($preppedGroup->hasValue()) {
                 $printId = $statement->addSqlSelectField($preppedGroup->printed());
@@ -70,7 +70,7 @@ class StackGroup extends AbstractFunc
                     $groupId = $statement->addSqlSelectField($preppedGroup->sql());
                 }
 
-                $result->addGroupStackColumn($groupId, $printId);
+                $metadata->addGroupStackColumn($groupId, $printId);
             }
 
             $sql = $prepped->sql();

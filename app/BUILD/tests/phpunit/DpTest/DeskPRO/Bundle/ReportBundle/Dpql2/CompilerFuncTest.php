@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2017, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2018, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -548,6 +548,22 @@ DPQL
             ,
             <<<'SQL'
 SELECT YEAR('2017-12-22 12:56:00')
+FROM `tickets`
+LIMIT 2500
+SQL
+        );
+    }
+
+    public function test_json_extract()
+    {
+        $this->assertDpqlQuery(
+            <<<'DPQL'
+SELECT JSON_EXTRACT(tickets.id, '$.id')
+FROM tickets
+DPQL
+            ,
+            <<<'SQL'
+SELECT `tickets`.`id`
 FROM `tickets`
 LIMIT 2500
 SQL

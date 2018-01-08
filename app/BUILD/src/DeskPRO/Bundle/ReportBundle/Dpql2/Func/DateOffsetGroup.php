@@ -44,7 +44,7 @@ class DateOffsetGroup extends AbstractFunc
     /**
      * {@inheritdoc}
      */
-    public function prepare(array $arguments, SelectPart $statement, $section, array $stack, SqlSelect $select, ResultMetadata $result)
+    public function prepare(array $arguments, SelectPart $statement, $section, array $stack, SqlSelect $select, ResultMetadata $metadata)
     {
         $argCount = count($arguments);
 
@@ -54,7 +54,7 @@ class DateOffsetGroup extends AbstractFunc
 
         if ($argCount == 1) {
             $value   = reset($arguments);
-            $prepped = $value->prepare($statement, $section, $stack, $select, $result);
+            $prepped = $value->prepare($statement, $section, $stack, $select, $metadata);
 
             $name  = 'DATE_OFFSET_GROUP('.$prepped->name().')';
             $ifSql = $prepped->sql();
@@ -62,8 +62,8 @@ class DateOffsetGroup extends AbstractFunc
             $valueTo   = reset($arguments);
             $valueFrom = next($arguments);
 
-            $toPrepped   = $valueTo->prepare($statement, $section, $stack, $select, $result);
-            $fromPrepped = $valueFrom->prepare($statement, $section, $stack, $select, $result);
+            $toPrepped   = $valueTo->prepare($statement, $section, $stack, $select, $metadata);
+            $fromPrepped = $valueFrom->prepare($statement, $section, $stack, $select, $metadata);
 
             $name  = 'DATE_OFFSET_GROUP('.$toPrepped->name().', '.$fromPrepped->name().')';
             $ifSql = 'UNIX_TIMESTAMP('.$toPrepped->sql().') - UNIX_TIMESTAMP('.$fromPrepped->sql().')';

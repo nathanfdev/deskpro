@@ -42,7 +42,7 @@ class Utc extends AbstractFunc
     /**
      * {@inheritdoc}
      */
-    public function prepare(array $arguments, SelectPart $statement, $section, array $stack, SqlSelect $select, ResultMetadata $result)
+    public function prepare(array $arguments, SelectPart $statement, $section, array $stack, SqlSelect $select, ResultMetadata $metadata)
     {
         if (count($arguments) != 1) {
             throw new DpqlException('UTC() can only accept 1 argument');
@@ -50,7 +50,7 @@ class Utc extends AbstractFunc
 
         $arg = reset($arguments);
 
-        $prepared = $arg->prepare($statement, $section, $stack, $select, $result);
+        $prepared = $arg->prepare($statement, $section, $stack, $select, $metadata);
         $prepared->setName('UTC('.$prepared->name().')');
 
         return $prepared;
