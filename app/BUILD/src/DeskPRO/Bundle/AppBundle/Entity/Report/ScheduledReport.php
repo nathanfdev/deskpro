@@ -86,11 +86,12 @@ class ScheduledReport implements EntityInterface, NotifyPropertyChanged
     protected $report;
 
     /**
-     * @ORM\Column(type="json_array")
+     * @ORM\Column(type="json_array", name="when_setting")
+     * It is called whenSetting becasue Doctrine not trying to avoid using reserved keywords like 'when'
      *
      * @var array
      */
-    protected $when;
+    protected $whenSetting;
 
     /**
      * @ORM\Column(type="string", length=32, name="when_tz")
@@ -107,7 +108,7 @@ class ScheduledReport implements EntityInterface, NotifyPropertyChanged
     protected $frequency;
 
     /**
-     * @ORM\Column(name="next_send_date", type="datetime", nullable=false)
+     * @ORM\Column(name="next_send_date", type="datetime", nullable=true)
      *
      * @var \DateTime
      */
@@ -164,19 +165,19 @@ class ScheduledReport implements EntityInterface, NotifyPropertyChanged
     /**
      * @return array
      */
-    public function getWhen()
+    public function getWhenSetting()
     {
-        return $this->when;
+        return $this->whenSetting;
     }
 
     /**
-     * @param array $when
+     * @param array $whenSetting
      *
      * @return $this
      */
-    public function setWhen(array $when)
+    public function setWhenSetting(array $whenSetting)
     {
-        $this->setModelField('when', $when);
+        $this->setModelField('whenSetting', $whenSetting);
 
         return $this;
     }

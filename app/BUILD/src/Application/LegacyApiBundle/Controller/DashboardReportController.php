@@ -209,15 +209,16 @@ class DashboardReportController extends AbstractController
      *
      * @throws \Doctrine\ORM\OptimisticLockException
      */
-    public function scheduleReport($id)
+    public function scheduleAction($id)
     {
         $report          = $this->service->getReport($id);
         $scheduledReport = new ScheduledReport();
+        $this->in->getAll('post');
         $scheduledReport
             ->setReport($report)
             ->setFrequency($this->in->getString('frequency'))
             ->setPerson($this->person)
-            ->setWhen($this->in->getArrayValue('when'))
+            ->setWhenSetting($this->in->getArrayValue('when'))
             ->setWhenTz($this->person->getTimezone());
         $this->em->persist($scheduledReport);
         $this->em->flush();

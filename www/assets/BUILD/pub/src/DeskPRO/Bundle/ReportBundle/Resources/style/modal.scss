@@ -61,12 +61,14 @@
   }
 }
 
-.popup .popup-content .form-schedule {
+.popup .popup-content .schedule-form {
   .bucket {
-    .bucket-column {
+    .bucket-column, &.run-options {
       label {
         display: inline-block;
-        margin: 0 0 5px 0;
+        margin: 0 5px 5px 5px;
+        float: none;
+        width: auto;
       }
     }
   }

@@ -795,4 +795,10 @@ return [
         'skipPostBuild' => false,
         'isOnlineBuild' => true,
     ],
+    1515430238 => [
+        'file'          => '/src/Application/InstallBundle/Upgrade/Build/2018/01/Build1515430238.php',
+        'classname'     => 'Application\InstallBundle\Upgrade\Build\Build1515430238',
+        'skipPostBuild' => false,
+        'isOnlineBuild' => false,
+    ],
 ];

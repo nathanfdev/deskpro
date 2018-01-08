@@ -32,6 +32,7 @@ define [
   'jquery',
   'moment',
   'momentTimezone',
+  'DeskPRO/Directive/DpDateTimePicker'
 ], (
   angular,
 
@@ -74,6 +75,10 @@ define [
       $urlRouterProvider.when(w[0], w[1])
     for r in reportStates.routes
       r.applyToStateProvider($stateProvider)
+  ])
+
+  InterfaceApp.run(['uiSelect2Config', (uiSelect2Config) ->
+    uiSelect2Config.dropdownAutoWidth = true
   ])
 
   return InterfaceApp

@@ -274,3 +274,12 @@ define ['DeskPRO/Util/Arrays'], (Arrays) ->
       deferred.promise
 
 
+    scheduleReport: (report, data) ->
+      deferred = @$q.defer()
+      url = "/dashboards/reports/#{report.id}/schedule"
+      @Api.sendPostJson url, data
+      .then () =>
+        deferred.resolve()
+      deferred.promise
+
+

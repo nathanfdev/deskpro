@@ -7553,6 +7553,15 @@ $collection->create('dashboards_reports_delete    ', [
     'methods'      => ['DELETE'],
 ]);
 
+$collection->create(
+    'api_reports_schedule',
+    [
+        'path'       => '/dashboards/reports/{id}/schedule',
+        'controller' => 'LegacyApiBundle:DashboardReport:schedule',
+        'methods'    => ['POST'],
+    ]
+);
+
 //#######################################################################################################################
 // Report Dashboards Permissions
 //#######################################################################################################################
