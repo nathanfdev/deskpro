@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2017, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2018, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -26,13 +26,6 @@
  * ~ Thanks, Everyone at Team DeskPRO
  */
 
-/**
- * Created by PhpStorm.
- * User: Den
- * Date: 16.01.2015
- * Time: 3:24.
- */
-
 namespace Application\LegacyApiBundle\Service;
 
 use Application\DeskPRO\Dpql\Statement\Display;
@@ -40,6 +33,9 @@ use Application\DeskPRO\Entity\ReportDashboardReport as DashboardReportEntity;
 use Application\DeskPRO\Entity\ReportDashboardWidget as DashboardWidgetEntity;
 use Doctrine\ORM\EntityManager;
 
+/**
+ * Class DashboardWidget.
+ */
 class DashboardWidget
 {
     const OUTER_TYPE_OVERVIEW            = 'overview';
@@ -63,10 +59,6 @@ class DashboardWidget
     const LEGACY_RENDER_TYPE_PIE   = 'PIE';
     const LEGACY_RENDER_TYPE_TABLE = 'TABLE';
 
-    const WIDGET_TYPE_GRAPH = 'graph';
-    const WIDGET_TYPE_TABLE = 'table';
-    const WIDGET_TYPE_STAT  = 'stat';
-
     const WIDGET_VALUE_FROM_REPORT = 'from_report_value';
 
     /**
@@ -84,21 +76,6 @@ class DashboardWidget
     ];
 
     /**
-     * @var array
-     */
-    protected $widgetTypesMapping = [
-        'simple_bars'  => self::WIDGET_TYPE_GRAPH,
-        'bars'         => self::WIDGET_TYPE_GRAPH,
-        'simple_lines' => self::WIDGET_TYPE_GRAPH,
-        'lines'        => self::WIDGET_TYPE_GRAPH,
-        'area'         => self::WIDGET_TYPE_GRAPH,
-        'simple_area'  => self::WIDGET_TYPE_GRAPH,
-        'pie'          => self::WIDGET_TYPE_GRAPH,
-        'table'        => self::WIDGET_TYPE_TABLE,
-        'simple_stat'  => self::WIDGET_TYPE_STAT,
-    ];
-
-    /**
      * DashboardWidget constructor.
      *
      * @param EntityManager $em
@@ -106,16 +83,6 @@ class DashboardWidget
     public function __construct(EntityManager $em)
     {
         $this->em = $em;
-    }
-
-    /**
-     * @param $widgetType
-     *
-     * @return mixed|string
-     */
-    public function getWidgetType($widgetType)
-    {
-        return isset($this->widgetTypesMapping[$widgetType]) ? $this->widgetTypesMapping[$widgetType] : self::WIDGET_TYPE_TABLE;
     }
 
     /**
@@ -161,7 +128,7 @@ class DashboardWidget
             'sizeY'            => $size[1],
             'widget_id'        => $widget->getReport() ? $widget->getReport()->getId() : 0,
             'widget_variables' => $widget->getVariables(),
-            'type'             => $this->getWidgetType($widget->getType()),
+            'type'             => $widget->getWidgetType(),
             'data'             => [],
         ];
         if ($hc_data = $widget->getHcData()) {

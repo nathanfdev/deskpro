@@ -134,8 +134,8 @@ define [
     Module.service('DashboardService', ['Api', '$q', (Api, $q) ->
       return new Reports_App_Service_Dashboard(Api, $q)
     ])
-    Module.service('DashboardWidgetService', ['Api', '$q', (Api, $q) ->
-      return new Reports_App_Service_DashboardWidget(Api, $q)
+    Module.service('DashboardWidgetService', ['Api', 'Api2', '$q', (Api, Api2, $q) ->
+      return new Reports_App_Service_DashboardWidget(Api, Api2, $q)
     ])
     Module.service('DashboardPermissionsService', ['Api', '$q', (Api, $q) ->
       return new Reports_App_Service_DashboardPermissions(Api, $q)

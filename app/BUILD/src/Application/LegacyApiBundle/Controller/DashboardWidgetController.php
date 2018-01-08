@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2017, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2018, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -145,18 +145,6 @@ class DashboardWidgetController extends AbstractController
     }
 
     /**
-     * @param $widget
-     *
-     * @return Response
-     */
-    public function getWidgetDataAction($widget)
-    {
-        $widgetData = $this->_getWidgetData($widget);
-
-        return $this->createApiResponse($widgetData);
-    }
-
-    /**
      * @param $id
      *
      * @return Response
@@ -191,7 +179,7 @@ class DashboardWidgetController extends AbstractController
         }
         $widget->setVariables($widgetVars);
         $realData = $this->widgetService->renderWidgetQuery($widget);
-        if ($realData && $widget->getType() == DashboardWidgetService::WIDGET_TYPE_TABLE) {
+        if ($realData && $widget->getType() == Widget::WIDGET_TYPE_TABLE) {
             $aoColumns = [];
             $columns   = [];
             foreach ($realData['columns'] as $column) {
@@ -209,7 +197,7 @@ class DashboardWidgetController extends AbstractController
             'col'   => $pos[1],
             'sizeX' => $size[0],
             'sizeY' => $size[1],
-            'type'  => $this->widgetService->getWidgetType($widget->getType()),
+            'type'  => $widget->getWidgetType(),
             'data'  => $realData ?: [],
         ];
 

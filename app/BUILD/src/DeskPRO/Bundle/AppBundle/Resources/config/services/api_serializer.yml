@@ -330,6 +330,23 @@ services:
     tags:
       - { name: "jms_serializer.subscribing_handler" }
 
+  api_serializer.handler.report_dashboard_widget:
+    class: DeskPRO\Bundle\AppBundle\Serializer\Handler\Entity\Reports\ReportDashboardWidgetHandler
+    arguments:
+      - "@dpql.compiler"
+      - "@reports.renderer_registry"
+    tags:
+      - { name: "jms_serializer.subscribing_handler" }
+
+  api_serializer.handler.report_widget:
+    class: DeskPRO\Bundle\AppBundle\Serializer\Handler\Entity\Reports\ReportWidgetHandler
+    arguments:
+      - "@dpql.compiler"
+      - "@reports.renderer_registry"
+      - "@deskpro.core.translate"
+    tags:
+      - { name: "jms_serializer.subscribing_handler" }
+
   # listeners and subscribers
   api_serializer.sideload_listener:
     class: DeskPRO\Bundle\AppBundle\Serializer\EventListener\SideloadAndDeferredListener

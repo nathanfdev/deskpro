@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2017, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2018, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -44,13 +44,27 @@ use Doctrine\ORM\Mapping\ClassMetadataInfo;
  */
 class ReportDashboardWidget extends DomainObject
 {
+    const WIDGET_TYPE_GRAPH     = 'graph';
+    const WIDGET_TYPE_STAT      = 'stat';
     const WIDGET_TYPE_HARDCODED = 'hardcoded';
+    const WIDGET_TYPE_BAR       = 'bar';
+    const WIDGET_TYPE_PIE       = 'pie';
+    const WIDGET_TYPE_TABLE     = 'table';
 
-    const WIDGET_TYPE_BAR = 'bar';
-
-    const WIDGET_TYPE_PIE = 'pie';
-
-    const WIDGET_TYPE_TABLE = 'table';
+    /**
+     * @var array
+     */
+    protected $widgetTypesMapping = [
+        'simple_bars'  => self::WIDGET_TYPE_GRAPH,
+        'bars'         => self::WIDGET_TYPE_GRAPH,
+        'simple_lines' => self::WIDGET_TYPE_GRAPH,
+        'lines'        => self::WIDGET_TYPE_GRAPH,
+        'area'         => self::WIDGET_TYPE_GRAPH,
+        'simple_area'  => self::WIDGET_TYPE_GRAPH,
+        'pie'          => self::WIDGET_TYPE_GRAPH,
+        'table'        => self::WIDGET_TYPE_TABLE,
+        'simple_stat'  => self::WIDGET_TYPE_STAT,
+    ];
 
     /**
      * @var int
@@ -290,6 +304,14 @@ class ReportDashboardWidget extends DomainObject
     public function getType()
     {
         return $this->type;
+    }
+
+    /**
+     * @return string
+     */
+    public function getWidgetType()
+    {
+        return isset($this->widgetTypesMapping[$this->type]) ? $this->widgetTypesMapping[$this->type] : self::WIDGET_TYPE_TABLE;
     }
 
     /**

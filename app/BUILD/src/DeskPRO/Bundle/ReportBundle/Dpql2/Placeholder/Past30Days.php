@@ -26,38 +26,25 @@
  * ~ Thanks, Everyone at Team DeskPRO
  */
 
-/**
- * DeskPRO.
- */
-
-namespace Application\DeskPRO\Reports\Form\Type;
-
-use Symfony\Component\Form\AbstractType;
-use Symfony\Component\Form\Extension\Core\Type\TextType;
-use Symfony\Component\Form\FormBuilderInterface;
+namespace DeskPRO\Bundle\ReportBundle\Dpql2\Placeholder;
 
 /**
- * Class ReportWidgetVariableType.
+ * Place holder for the past 30 days.
  */
-class ReportWidgetVariableType extends AbstractType
+class Past30Days extends AbstractDateRange
 {
     /**
-     * @param FormBuilderInterface $builder
-     * @param array                $options
+     * {@inheritdoc}
      */
-    public function buildForm(FormBuilderInterface $builder, array $options)
+    protected function getDateRange()
     {
-        $builder
-            ->add('type', TextType::class, ['required' => true])
-            ->add('name', TextType::class, ['required' => true])
-            ->add('default', TextType::class, ['required' => false])
-            ->add('field_type', TextType::class, ['required' => false])
-            ->add('table', TextType::class, ['required' => false])
-        ;
-    }
+        $date  = $this->dpqlDate->getDate();
+        $now   = $date->format('Y-m-d H:i:s');
+        $today = $date->format('Y-m-d');
 
-    public function getName()
-    {
-        return 'form_dashboards_report_widget_variable';
+        $date->modify('-30 days');
+        $beginning = $date->format('Y-m-d');
+
+        return ["$beginning to $today", "$beginning 00:00:00", $now];
     }
 }

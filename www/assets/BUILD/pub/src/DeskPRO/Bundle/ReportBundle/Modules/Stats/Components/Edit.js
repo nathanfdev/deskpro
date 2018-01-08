@@ -28,10 +28,10 @@ class EditContainer extends React.Component {
       }
     };
 
-    return api.sendPost('DP_API_OLD/reports/widget/parse', {
-      query:       `DISPLAY TABLE ${query}`,
-      currentType: 'query',
-      newType:     'builder'
+    return api.sendPost('DP_API/report_widgets/parse', {
+      query,
+      current_type: 'query',
+      new_type:     'builder'
     }, config).then(res => res.data.parts);
   }
 
@@ -117,7 +117,7 @@ class EditContainer extends React.Component {
     const EditStatForm = reduxForm({
       form:          'editStat',
       initialValues: this.state.initialFormValue,
-      onSubmit:      this.onSubmit
+      onSubmit:      this.onSubmit,
     })(EditForm);
 
     const saveBtn = (<button
@@ -141,7 +141,7 @@ class EditContainer extends React.Component {
     );
 
     return (<div>
-      <EditStatForm groupParams={groupParams.toJS()} dpqlParser={this.dpqlParser} />
+      <EditStatForm groupParams={groupParams.toJS()} dpqlParser={EditContainer.dpqlParser} />
       {controls}
     </div>);
   }

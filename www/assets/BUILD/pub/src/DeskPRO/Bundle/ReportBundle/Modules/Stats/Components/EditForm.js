@@ -156,7 +156,7 @@ export class EditFormComponent extends React.PureComponent {
     change:       PropTypes.func,
     queryValues:  PropTypes.object,
     handleSubmit: PropTypes.func,
-    error:        PropTypes.string,
+    error:        PropTypes.string
   };
 
   static toDpql(fields) {

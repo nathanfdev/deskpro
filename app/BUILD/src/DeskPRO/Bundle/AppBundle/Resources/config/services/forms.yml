@@ -404,3 +404,17 @@ services:
       - "@doctrine.orm.default_entity_manager"
     tags:
       - { name: form.type }
+
+  form.report_widget:
+    class: DeskPRO\Bundle\AppBundle\Form\Type\Reports\ReportWidgetType
+    arguments:
+      - "@dashboard.service"
+    tags:
+      - { name: form.type }
+
+  form.dpql_parts:
+    class: DeskPRO\Bundle\AppBundle\Form\Type\Reports\DpqlPartsType
+    arguments:
+      - "@dpql.compiler"
+    tags:
+      - { name: form.type }

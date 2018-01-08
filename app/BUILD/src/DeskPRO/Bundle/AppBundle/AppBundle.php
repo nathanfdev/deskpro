@@ -26,10 +26,6 @@
  * ~ Thanks, Everyone at Team DeskPRO
  */
 
-/**
- * DeskPRO.
- */
-
 namespace DeskPRO\Bundle\AppBundle;
 
 use DeskPRO\Bundle\AppBundle\Command\Configure\ConfigElasticCommand;
@@ -55,12 +51,14 @@ use DeskPRO\Bundle\AppBundle\DependencyInjection\Compiler\TermEnginePass;
 use DeskPRO\Bundle\AppBundle\Security\Factory\AgentImpersonateFactory;
 use DeskPRO\Bundle\AppBundle\Security\Factory\DpFormLoginFactory;
 use DeskPRO\Bundle\AppBundle\Security\Factory\TransferSessionAuthFactory;
-use DeskPRO\Bundle\AppBundle\Webhooks;
 use Symfony\Component\Console\Application;
 use Symfony\Component\DependencyInjection\Compiler\PassConfig;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
 use Symfony\Component\HttpKernel\Bundle\Bundle;
 
+/**
+ * Class AppBundle.
+ */
 class AppBundle extends Bundle
 {
     /**

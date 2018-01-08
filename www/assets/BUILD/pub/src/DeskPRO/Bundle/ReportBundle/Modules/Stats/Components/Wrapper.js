@@ -15,7 +15,8 @@ import {
   parseQuery,
   cloneReport
 } from '../../Application/Actions/reportActions';
-import { allReportsSelector, allReportsLabelsSelector } from '../Selectors/reports';
+import { allReportsSelector } from '../Selectors/reports';
+import { allReportLabelsSelector } from '../../Application/Selectors/reports';
 import { regex, activateLabel, transformLabels, transformReportData, countActiveLabels } from './helper';
 
 @connect(state => ({
@@ -24,7 +25,7 @@ import { regex, activateLabel, transformLabels, transformReportData, countActive
   reportLoading: state.Application.reports.get('reportLoading'),
   currentReport: state.Application.reports.get('currentReport'),
   groupParams:   state.Application.reports.get('groupParams'),
-  labels:        allReportsLabelsSelector(state),
+  labels:        allReportLabelsSelector(state)
 }))
 class Wrapper extends React.Component {
 
