@@ -34,6 +34,7 @@ define -> [
         .testWidget widgetToTest, $scope.widget
         .then (response) ->
           $scope.widgetPreview                 = response.data.data
+          $scope.widgetPreview.rendered_result = $scope.widgetPreview.rendered_result[0]
           $scope.widgetPreview.type            = switch displayType
             when 'pie', 'simple_area', 'simple_bars', 'simple_lines' then 'graph'
             else 'table'
