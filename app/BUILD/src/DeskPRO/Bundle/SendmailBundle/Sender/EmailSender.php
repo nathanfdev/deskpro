@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2017, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2018, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -193,6 +193,7 @@ class EmailSender
         } else {
             $emailCode = $this->getRenderer()->render($template, $model);
         }
+        $message->setEncoder(\Swift_Encoding::getQpEncoding());
         $message->setBody($emailCode->getBody(), 'text/html');
         $message->setSubject($emailCode->getSubject());
         foreach ($emailCode->getAttachments() as $blob) {
