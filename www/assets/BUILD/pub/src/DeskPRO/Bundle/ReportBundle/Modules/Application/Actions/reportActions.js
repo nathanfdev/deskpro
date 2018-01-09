@@ -45,9 +45,9 @@ export const runReport = createAction(
         select:   report.select,
         from:     report.from,
         where:    report.where,
-        split_by: report.splitBy,
-        group_by: report.groupBy,
-        order_by: report.orderBy,
+        split_by: report.split_by,
+        group_by: report.group_by,
+        order_by: report.order_by,
         limit:    report.limit,
         offset:   report.offset
       }
@@ -86,9 +86,9 @@ export const saveReport = createAction(
           select:   report.select,
           from:     report.from,
           where:    report.where,
-          split_by: report.splitBy,
-          group_by: report.groupBy,
-          order_by: report.orderBy,
+          split_by: report.split_by,
+          group_by: report.group_by,
+          order_by: report.order_by,
           limit:    report.limit,
           offset:   report.offset
         };
@@ -140,9 +140,9 @@ export const newReport = createAction(
         select:     '',
         from:       '',
         where:      '',
-        splitBy:    '',
-        groupBy:    '',
-        orderBy:    '',
+        split_by:   '',
+        group_by:   '',
+        order_by:   '',
         withRollup: false,
         limit:      '',
         offset:     ''
