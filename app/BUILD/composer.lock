@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file",
         "This file is @generated automatically"
     ],
-    "content-hash": "aa826f59cec799834f68ac336fbaa8bb",
+    "content-hash": "8e751945f737597659c60568650e1f73",
     "packages": [
         {
             "name": "alchemy/zippy",
@@ -256,16 +256,16 @@
         },
         {
             "name": "brick/math",
-            "version": "0.5.4",
+            "version": "dev-php-5.5-compatible",
             "source": {
                 "type": "git",
-                "url": "https://github.com/brick/math.git",
-                "reference": "b44a78b01cb79aa4bf17de46a45db968b6958bda"
+                "url": "https://github.com/deskpro/math.git",
+                "reference": "5187a848d60bea6f1d5f9fa962d40a00d4e7dedc"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/brick/math/zipball/b44a78b01cb79aa4bf17de46a45db968b6958bda",
-                "reference": "b44a78b01cb79aa4bf17de46a45db968b6958bda",
+                "url": "https://api.github.com/repos/deskpro/math/zipball/5187a848d60bea6f1d5f9fa962d40a00d4e7dedc",
+                "reference": "5187a848d60bea6f1d5f9fa962d40a00d4e7dedc",
                 "shasum": ""
             },
             "require": {
@@ -282,21 +282,22 @@
                     "Brick\\Math\\Tests\\": "tests/"
                 }
             },
-            "notification-url": "https://packagist.org/downloads/",
             "license": [
                 "MIT"
             ],
             "description": "Arbitrary-precision arithmetic library",
             "keywords": [
                 "Arbitrary-precision",
+                "Arithmetic",
+                "BigDecimal",
                 "BigInteger",
-                "BigRational",
-                "arithmetic",
-                "bigdecimal",
-                "brick",
-                "math"
+                "Brick",
+                "Math"
             ],
-            "time": "2016-10-17T22:08:04+00:00"
+            "support": {
+                "source": "https://github.com/deskpro/math/tree/php-5.5-compatible"
+            },
+            "time": "2018-01-09T13:57:27+00:00"
         },
         {
             "name": "bugsnag/bugsnag",
@@ -5280,12 +5281,12 @@
             "version": "V1.2.0",
             "source": {
                 "type": "git",
-                "url": "https://github.com/jjriv/emogrifier.git",
+                "url": "https://github.com/MyIntervals/emogrifier.git",
                 "reference": "a1db453bb504597d821efcc04b21c79a6021e00c"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/jjriv/emogrifier/zipball/a1db453bb504597d821efcc04b21c79a6021e00c",
+                "url": "https://api.github.com/repos/MyIntervals/emogrifier/zipball/a1db453bb504597d821efcc04b21c79a6021e00c",
                 "reference": "a1db453bb504597d821efcc04b21c79a6021e00c",
                 "shasum": ""
             },
@@ -13286,7 +13287,14 @@
             "time": "2015-04-25T08:05:39+00:00"
         }
     ],
-    "aliases": [],
+    "aliases": [
+        {
+            "alias": "0.5.2",
+            "alias_normalized": "0.5.2.0",
+            "version": "dev-php-5.5-compatible",
+            "package": "brick/math"
+        }
+    ],
     "minimum-stability": "stable",
     "stability-flags": {
         "doctrine/migrations": 20,
@@ -13301,6 +13309,7 @@
         "mongofill/mongofill": 20,
         "mpdf/mpdf": 20,
         "league/oauth1-client": 20,
+        "brick/math": 20,
         "satooshi/php-coveralls": 20,
         "behatch/contexts": 20,
         "behat/mink-extension": 20,
