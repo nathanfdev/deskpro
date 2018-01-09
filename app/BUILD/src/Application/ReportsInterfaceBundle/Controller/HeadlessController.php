@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2017, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2018, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -33,6 +33,7 @@
 namespace Application\ReportsInterfaceBundle\Controller;
 
 use Application\DeskPRO\Entity\SavedDashboardReport;
+use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 
 class HeadlessController extends \Application\DeskPRO\Controller\AbstractController
 {
@@ -40,7 +41,11 @@ class HeadlessController extends \Application\DeskPRO\Controller\AbstractControl
     {
         $entityRepository = $this->em->getRepository(SavedDashboardReport::class);
         /** @var SavedDashboardReport $report */
-        $report        = $entityRepository->findOneBy(['id' => $id, 'authcode' => $authcode]);
+        $report = $entityRepository->findOneBy(['id' => $id, 'authcode' => $authcode]);
+
+        if (!$report) {
+            throw new NotFoundHttpException();
+        }
         $widgetService = $this->get('dashboard.widget.service');
         $widgets       = [];
         foreach ($report->getSavedWidgets() as $savedWidget) {
