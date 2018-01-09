@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2017, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2018, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -36,10 +36,10 @@
 namespace Application\DeskPRO\Reports;
 
 use Application\DeskPRO\Entity\ReportDashboardReport as DashboardReportEntity;
+use Application\DeskPRO\Entity\ReportDashboardWidget;
 use Application\DeskPRO\Entity\SavedDashboardReport;
 use Application\DeskPRO\Entity\SavedDashboardWidget;
 use Application\LegacyApiBundle\Service\DashboardWidget;
-use Application\LegacyApiBundle\Service\DashboardWidget as DashboardWidgetService;
 use Doctrine\ORM\EntityManager;
 use Orb\Util\DpStrings;
 use Orb\Util\Strings;
@@ -86,9 +86,18 @@ class ReportSaver
             ->setAuthcode($report->getId().DpStrings::random(10, Strings::CHARS_KEY_ALPHA));
 
         foreach ($report->getWidgets() as $widget) {
+            $reportLevelVars = $report->getVariables();
+            $widgetVars      = $widget->getVariables() ?: [];
+            foreach ($widgetVars as $key => &$var) {
+                if ($var['value'] === DashboardWidget::WIDGET_VALUE_FROM_REPORT
+                    && isset($reportLevelVars[$key]) && $reportLevelVars[$key] && $reportLevelVars[$key]['value']) {
+                    $var['value'] = $reportLevelVars[$key]['value'];
+                }
+            }
+            $widget->setVariables($widgetVars);
             $widgetData = $this->widgetService->renderWidgetQuery($widget);
 
-            if ($widgetData && $widget->getType() == DashboardWidgetService::WIDGET_TYPE_TABLE) {
+            if ($widgetData && $widget->getType() == ReportDashboardWidget::WIDGET_TYPE_TABLE) {
                 $aoColumns = [];
                 $columns   = [];
                 foreach ($widgetData['columns'] as $column) {
