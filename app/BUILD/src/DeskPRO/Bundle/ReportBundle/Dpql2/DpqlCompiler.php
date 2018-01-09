@@ -29,6 +29,7 @@
 namespace DeskPRO\Bundle\ReportBundle\Dpql2;
 
 use Application\DeskPRO\Entity\ReportWidget;
+use Application\DeskPRO\EntityRepository\ReportWidget as ReportWidgetRepository;
 use Application\LegacyApiBundle\Service\DashboardWidget;
 use DeskPRO\Bundle\ReportBundle\Dpql2\Statement\SelectPart;
 use Doctrine\ORM\EntityManager;
@@ -73,6 +74,8 @@ class DpqlCompiler
      * @param string $input
      * @param array  $placeholders
      *
+     * @throws DpqlException
+     *
      * @return SelectPart
      */
     public function compile($input, array $placeholders = [])
@@ -115,8 +118,8 @@ class DpqlCompiler
      */
     public function replacePlaceholders($input, array $placeholders = [])
     {
-        $repository = $this->em->getRepository(ReportWidget::class);
-
+        /** @var ReportWidgetRepository $repository */
+        $repository  = $this->em->getRepository(ReportWidget::class);
         $groupParams = $repository->getReportGroupParams();
 
         $input = preg_replace_callback(
@@ -227,6 +230,7 @@ class DpqlCompiler
             $variables[$var['name']] = $var;
         }
 
+        /** @var ReportWidgetRepository $repository */
         $repository  = $this->em->getRepository(ReportWidget::class);
         $groupParams = $repository->getReportGroupParams();
         $that        = $this;
@@ -264,6 +268,7 @@ class DpqlCompiler
      */
     protected function replaceDate($var, $varName, $variables)
     {
+        /** @var ReportWidgetRepository $repository */
         $repository  = $this->em->getRepository(ReportWidget::class);
         $groupParams = $repository->getReportGroupParams();
 
@@ -291,6 +296,7 @@ class DpqlCompiler
      */
     protected function replaceGroup($var, $variables, $groupType)
     {
+        /** @var ReportWidgetRepository $repository */
         $repository  = $this->em->getRepository(ReportWidget::class);
         $groupParams = $repository->getReportGroupParams();
 
