@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2017, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2018, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -26,10 +26,6 @@
  * ~ Thanks, Everyone at Team DeskPRO
  */
 
-/**
- * DeskPRO.
- */
-
 namespace DeskPRO\Bundle\AppBundle\DataFixtures;
 
 use Application\DeskPRO\DBAL\Connection;
@@ -40,7 +36,10 @@ use Orb\Util\Strings;
 use Symfony\Component\DependencyInjection\ContainerAwareInterface;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 
-abstract class DeskProAbstractFixture extends AbstractFixture implements ContainerAwareInterface
+/**
+ * Class AbstractDpFixture.
+ */
+abstract class AbstractDpFixture extends AbstractFixture implements ContainerAwareInterface
 {
     const TABLE_AGENT_TEAMS                = 'agent_teams';
     const TABLE_ARTICLES                   = 'articles';
