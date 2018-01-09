@@ -85,28 +85,14 @@ define ['DeskPRO/Util/Arrays'], (Arrays) ->
 
 
     testWidget: (reportWidget) ->
-      url = "/reports/widget/test/#{reportWidget.id}"
+      url = "/report_widgets/test/#{reportWidget.id}?include=rendered_result&inline_sideloads=1"
       dataToSend =
-        report:
-          title:         reportWidget.title,
-          description:   reportWidget.desc,
-          display_types: reportWidget.display_types,
-          variables:     reportWidget.variables,
-          labels:        reportWidget.labels,
-        parts:
-          select:  reportWidget.select,
-          from:    reportWidget.from,
-          where:   reportWidget.where,
-          splitBy: reportWidget.splitBy,
-          groupBy: reportWidget.groupBy,
-          orderBy: reportWidget.orderBy,
-          limit:   reportWidget.limit,
-          offset:  reportWidget.offset
+        display_types: reportWidget.display_types,
+        variables:     reportWidget.variables,
+        input_mode:    'form',
+        query_parts:   reportWidget.query_parts
 
-      if (reportWidget.jsonTable?)
-        dataToSend.report.jsonTable = reportWidget.jsonTable
-
-      @Api
+      @Api2
         .sendPostJson url, dataToSend
 
 
