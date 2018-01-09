@@ -26,10 +26,6 @@
  * ~ Thanks, Everyone at Team DeskPRO
  */
 
-/**
- * DeskPRO.
- */
-
 namespace Application\DeskPRO\Dpql\Statement;
 
 use Application\DeskPRO\App;
@@ -37,6 +33,7 @@ use Application\DeskPRO\Dpql;
 use Application\DeskPRO\Dpql\Exception;
 use Application\DeskPRO\Dpql\Results;
 use Application\DeskPRO\Dpql\Statement\Part\AbstractPart;
+use Application\DeskPRO\Entity\Problem;
 use DeskPRO\Bundle\AppBundle\Entity\SnippetUseLog;
 
 /**
@@ -273,6 +270,7 @@ class Display
         'usergroups'                  => 'DeskPRO:Usergroup',
         'usersources'                 => 'DeskPRO:Usersource',
         'snippet_use_log'             => SnippetUseLog::class,
+        'problems'                    => Problem::class,
     ];
 
     /**
