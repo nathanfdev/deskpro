@@ -169,7 +169,7 @@ class Wrapper extends React.Component {
     if (props.labels) {
       let newLabels = transformLabels(props.labels);
       this.state.labels.forEach((label) => {
-        const entry = newLabels.findEntry(newLabel => newLabel.get('value') === label.get('value'));
+        const entry = newLabels.findEntry(newLabel => newLabel.get('label') === label.get('label'));
         if (entry && entry[1] && label.get('active')) {
           newLabels = newLabels.setIn([entry[0], 'active'], true);
         }
