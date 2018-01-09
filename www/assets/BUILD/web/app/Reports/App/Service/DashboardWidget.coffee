@@ -33,10 +33,11 @@ define ['DeskPRO/Util/Arrays'], (Arrays) ->
           .sendGet "/report_widgets"
           .then (result) =>
             @storage.reports = result.data.data
+            @storage.labels = []
             for report in result.data.data
               for label in report.labels
-                if @storage.labels.indexOf label == -1
-                  @storage.labels.push label
+                if @storage.labels.indexOf(label) == -1
+                  @storage.labels.push(label)
             deferred.resolve @storage
             return deferred.promise
       else
