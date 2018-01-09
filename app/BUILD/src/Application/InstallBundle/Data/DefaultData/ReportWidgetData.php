@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2017, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2018, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -634,10 +634,10 @@ GROUP BY tickets.labels',
                 'display_types' => 'table',
                 'display_order' => 160,
                 'query'         => 'DISPLAY TABLE
-SELECT COUNT_DISTINCT(tickets_log.ticket_id) AS \'Tickets Resolved\'
-FROM tickets_log
-WHERE tickets_log.action_type = \'changed_status\' AND tickets_log.id_after = 200 AND tickets_log.ticket.status IN (\'resolved\', \'archived\') AND tickets_log.date_created = ${date}
-GROUP BY ALIAS(IF(tickets_log.person.is_agent, tickets_log.person, \'Non-Agent\'), \'Person\')
+SELECT COUNT_DISTINCT(tickets_logs.ticket_id) AS \'Tickets Resolved\'
+FROM tickets_logs
+WHERE tickets_logs.action_type = \'changed_status\' AND tickets_logs.id_after = 200 AND tickets_logs.ticket.status IN (\'resolved\', \'archived\') AND tickets_logs.date_created = ${date}
+GROUP BY ALIAS(IF(tickets_logs.person.is_agent, tickets_logs.person, \'Non-Agent\'), \'Person\')
 ORDER BY @\'Tickets Resolved\' DESC
 LIMIT 100',
                 'variables' => '[{"name":"date","type":"dates"}]',

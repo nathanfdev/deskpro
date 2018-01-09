@@ -60,10 +60,11 @@ use Symfony\Component\HttpFoundation\Request;
  */
 class ReportWidgetsController extends CrudController
 {
-    public static $entity    = ReportWidget::class;
-    public static $type      = ReportWidgetType::class;
-    public static $listOrder = 'asc';
-    public static $listSort  = 'display_order';
+    public static $entity       = ReportWidget::class;
+    public static $type         = ReportWidgetType::class;
+    public static $listOrder    = 'asc';
+    public static $listSort     = 'display_order';
+    public static $listPaginate = false;
 
     /**
      * todo temporary copied from the legacy api
