@@ -3,6 +3,7 @@ define ['DeskPRO/Util/Arrays'], (Arrays) -> [
   '$state',
   '$stateParams',
   '$q',
+  '$http',
   '$modal',
   'DashboardsInfo',
   'DashboardWidgetService',
@@ -11,6 +12,7 @@ define ['DeskPRO/Util/Arrays'], (Arrays) -> [
    $state,
    $stateParams
    $q,
+   $http,
    $modal,
    DashboardsInfo,
    DashboardWidgetService,
@@ -95,8 +97,14 @@ define ['DeskPRO/Util/Arrays'], (Arrays) -> [
         DashboardWidgetService
         .removeWidget(widget)
         .then () ->
-          $scope.dashboard.reports_version_id++
           $scope.report.widgets.splice(index, 1)
+          DashboardsInfo.getReportDetail($scope.report.id, true).then((loadedReport) ->
+            $scope.report.variables = loadedReport.variables
+          )
+
+    $scope.download = (widget) ->
+      window.open($http.formatApiUrl('/reports/widget/download/' + widget.id + '/csv'))
+      return true
 
     ####################################################################################################################
     # MODAL HANDLERS
@@ -114,8 +122,12 @@ define ['DeskPRO/Util/Arrays'], (Arrays) -> [
       })
 
       modalInstance.result.then (result) ->
-        if result.back == true
+        if result?.back == true
           $scope.openAddWidget(widget)
+        if result?.add == true
+          DashboardsInfo.getReportDetail($scope.report.id, true).then((loadedReport) ->
+            $scope.report.variables = loadedReport.variables
+          )
 
     $scope.openAddWidget = (widget) ->
       modalInstance = $modal.open {
@@ -138,12 +150,15 @@ define ['DeskPRO/Util/Arrays'], (Arrays) -> [
             widget
       }
       modalInstance.result.then (result) ->
-        DashboardWidgetService.saveWidget result
+        index = DashboardWidgetService.getIndexById $scope.report.widgets, widget.id
+        $scope.report.widgets[index] = result
+        DashboardWidgetService.saveWidget(result).then () ->
+
 
     $scope.editReportModal = (report) ->
       modalInstance = $modal.open {
-        templateUrl: "ReportsInterfaceBundle:Dashboard/Modal:add-report.html",
-        controller: 'Reports.Dashboards.Modals.AddReport'
+        templateUrl: "ReportsInterfaceBundle:Dashboard/Modal:edit-report.html",
+        controller: 'Reports.Dashboards.Modals.EditReport'
         resolve:
           report: () ->
             report

@@ -1,6 +1,7 @@
 define [
   # Controllers
   'Reports/Main/Ctrl/New/Nav',
+  'Reports/Main/Ctrl/New/Headless',
 
   'Reports/Dashboards/Ctrl/DashboardReport',
   'Reports/Dashboards/Ctrl/DashboardView',
@@ -11,6 +12,7 @@ define [
   'Reports/Dashboards/ModalCtrl/AddWidget',
   'Reports/Dashboards/ModalCtrl/EditWidget',
   'Reports/Dashboards/ModalCtrl/AddReport',
+  'Reports/Dashboards/ModalCtrl/EditReport',
 
   # Stats controllers
   'Reports/Stats/Ctrl/StatsMain',
@@ -18,6 +20,7 @@ define [
   'Reports/Stats/Ctrl/WidgetView',
 ], (
   Reports_Main_New_Nav,
+  Reports_Main_Ctrl_Headless,
 
   # Controllers
   Reports_Dashboards_Ctrl_DashboardReport,
@@ -29,6 +32,7 @@ define [
   Reports_Dashboards_ModalCtrl_AddWidget,
   Reports_Dashboards_ModalCtrl_EditWidget,
   Reports_Dashboards_ModalCtrl_AddReport,
+  Reports_Dashboards_ModalCtrl_EditReport,
 
   # Stats controller
   Reports_Stats_Ctrl_StatsMain,
@@ -37,6 +41,7 @@ define [
 ) ->
   return (Module) ->
     Module.controller('Reports.App.New.Nav',         Reports_Main_New_Nav)
+    Module.controller('Reports.App.New.Headless',    Reports_Main_Ctrl_Headless)
 
     Module.controller('Reports.App.DashboardReport', Reports_Dashboards_Ctrl_DashboardReport)
     Module.controller('Reports.App.DashboardView',   Reports_Dashboards_Ctrl_DashboardView)
@@ -46,6 +51,7 @@ define [
     Module.controller('Reports.Dashboards.Modals.AddWidget',     Reports_Dashboards_ModalCtrl_AddWidget)
     Module.controller('Reports.Dashboards.Modals.EditWidget',    Reports_Dashboards_ModalCtrl_EditWidget)
     Module.controller('Reports.Dashboards.Modals.AddReport',     Reports_Dashboards_ModalCtrl_AddReport)
+    Module.controller('Reports.Dashboards.Modals.EditReport',    Reports_Dashboards_ModalCtrl_EditReport)
 
     Module.controller('Reports.TicketSatisfaction', () -> )
     Module.controller('Reports.AgentActivity',      () -> )

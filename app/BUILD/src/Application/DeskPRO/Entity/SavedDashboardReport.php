@@ -40,13 +40,12 @@ use Doctrine\ORM\Mapping\ClassMetadata;
 use Doctrine\ORM\Mapping\ClassMetadataInfo;
 
 /**
- * This is just a tab, that holds a collection of widgets
- * Yes it has columns, and widgets and report with which it appears in given dashboard.
+ * This is just a tab, that holds a collection of widgets.
  *
  * @property int    $id
  * @property string $title
  */
-class ReportDashboardReport extends DomainObject
+class SavedDashboardReport extends DomainObject
 {
     /**
      * @var int
@@ -66,26 +65,27 @@ class ReportDashboardReport extends DomainObject
     /**
      * @var ArrayCollection
      */
-    protected $widgets;
-
-    /**
-     * @var int
-     */
-    protected $sort_order;
-
-    /**
-     * @var ReportDashboard
-     */
-    protected $dashboard;
+    protected $saved_widgets;
 
     /**
      * @var array
      */
     protected $variables;
 
+    /**
+     * @var string
+     */
+    protected $authcode;
+
+    /**
+     * @var \DateTime
+     */
+    protected $date_created;
+
     public function __construct()
     {
-        $this->widgets = new ArrayCollection();
+        $this->saved_widgets = new ArrayCollection();
+        $this->date_created  = new \DateTime();
     }
 
     /**
@@ -99,8 +99,6 @@ class ReportDashboardReport extends DomainObject
     /**
      * @param int $id
      *
-
-
      * @return $this
      */
     public function setId($id)
@@ -151,61 +149,21 @@ class ReportDashboardReport extends DomainObject
     }
 
     /**
-     * @return ReportDashboardWidget[]|ArrayCollection
+     * @return SavedDashboardWidget[]|ArrayCollection
      */
-    public function getWidgets()
+    public function getSavedWidgets()
     {
-        return $this->widgets;
+        return $this->saved_widgets;
     }
 
     /**
-     * @param ReportDashboardWidget $widget
+     * @param SavedDashboardWidget $savedWidget
      *
      * @return $this
      */
-    public function addWidget(ReportDashboardWidget $widget)
+    public function addSavedWidget(SavedDashboardWidget $savedWidget)
     {
-        $this->widgets->add($widget);
-
-        return $this;
-    }
-
-    /**
-     * @return int
-     */
-    public function getSortOrder()
-    {
-        return $this->sort_order;
-    }
-
-    /**
-     * @param int $sort_order
-     *
-     * @return $this
-     */
-    public function setSortOrder($sort_order)
-    {
-        $this->sort_order = $sort_order;
-
-        return $this;
-    }
-
-    /**
-     * @return ReportDashboard
-     */
-    public function getDashboard()
-    {
-        return $this->dashboard;
-    }
-
-    /**
-     * @param ReportDashboard $dashboard
-     *
-     * @return $this
-     */
-    public function setDashboard($dashboard)
-    {
-        $this->dashboard = $dashboard;
+        $this->saved_widgets->add($savedWidget);
 
         return $this;
     }
@@ -230,16 +188,61 @@ class ReportDashboardReport extends DomainObject
         return $this;
     }
 
+    /**
+     * @return string
+     */
+    public function getAuthcode()
+    {
+        return $this->authcode;
+    }
+
+    /**
+     * @param string $authcode
+     *
+     * @return $this
+     */
+    public function setAuthcode($authcode)
+    {
+        $this->authcode = $authcode;
+
+        return $this;
+    }
+
+    /**
+     * @return \DateTime
+     */
+    public function getDateCreated()
+    {
+        return $this->date_created;
+    }
+
+    /**
+     * @param \DateTime $dateCreated
+     *
+     * @return $this
+     */
+    public function setDateCreated(\DateTime $dateCreated)
+    {
+        $this->date_created = $dateCreated;
+
+        return $this;
+    }
+
     //###########################################################################
     // Doctrine Metadata
     //###########################################################################
 
+    /**
+     * @param ClassMetadata $metadata
+     *
+     * @throws \Doctrine\ORM\Mapping\MappingException
+     */
     public static function loadMetadata(ClassMetadata $metadata)
     {
         $metadata->setInheritanceType(ClassMetadataInfo::INHERITANCE_TYPE_NONE);
         $metadata->setPrimaryTable(
             [
-                'name' => 'report_dashboard_report',
+                'name' => 'saved_dashboard_report',
             ]
         );
         $metadata->setChangeTrackingPolicy(ClassMetadataInfo::CHANGETRACKING_DEFERRED_IMPLICIT);
@@ -254,6 +257,7 @@ class ReportDashboardReport extends DomainObject
                 'id'         => true,
             ]
         );
+
         $metadata->mapField(
             [
                 'fieldName'  => 'title',
@@ -265,17 +269,7 @@ class ReportDashboardReport extends DomainObject
                 'columnName' => 'title',
             ]
         );
-        $metadata->mapField(
-            [
-                'fieldName'  => 'sort_order',
-                'type'       => 'integer',
-                'precision'  => 0,
-                'scale'      => 0,
-                'default'    => 0,
-                'nullable'   => false,
-                'columnName' => 'sort_order',
-            ]
-        );
+
         $metadata->mapField(
             [
                 'fieldName'  => 'columns',
@@ -299,32 +293,37 @@ class ReportDashboardReport extends DomainObject
             ]
         );
 
+        $metadata->mapField(
+            [
+                'fieldName'  => 'date_created',
+                'type'       => 'datetime',
+                'precision'  => 0,
+                'scale'      => 0,
+                'nullable'   => true,
+                'columnName' => 'date_created',
+            ]
+        );
+
+        $metadata->mapField(
+            [
+                'fieldName'  => 'authcode',
+                'type'       => 'string',
+                'precision'  => 0,
+                'scale'      => 0,
+                'length'     => 100,
+                'nullable'   => true,
+                'columnName' => 'authcode',
+            ]
+        );
+
         $metadata->mapOneToMany([
-            'fieldName'    => 'widgets',
-            'targetEntity' => ReportDashboardWidget::class,
-            'mappedBy'     => 'report',
+            'fieldName'    => 'saved_widgets',
+            'targetEntity' => SavedDashboardWidget::class,
+            'mappedBy'     => 'saved_report',
             'inversedBy'   => null,
             'orderBy'      => ['position' => 'ASC'],
             'cascade'      => ['persist', 'remove'],
         ]);
-
-        $metadata->mapManyToOne(
-            [
-                'fieldName'    => 'dashboard',
-                'targetEntity' => ReportDashboard::class,
-                'mappedBy'     => null,
-                'inversedBy'   => 'reports',
-                'joinColumns'  => [
-                    0 => [
-                        'name'                 => 'dashboard_id',
-                        'referencedColumnName' => 'id',
-                        'nullable'             => false,
-                        'onDelete'             => 'cascade',
-                        'columnDefinition'     => null,
-                    ],
-                ],
-            ]
-        );
 
         $metadata->setIdGeneratorType(ClassMetadataInfo::GENERATOR_TYPE_IDENTITY);
     }

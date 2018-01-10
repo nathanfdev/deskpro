@@ -1,0 +1,189 @@
+<!DOCTYPE html>
+<html lang="en" class="person-{{ app.user.id }} {% for ug in app.user.usergroups %}person-ug-{{ ug.id }}{% endfor %}">
+<head>
+    <meta http-equiv="X-UA-Compatible" content="IE=Edge,chrome=1" />
+    <meta charset="utf-8" />
+    <meta name="robots" content="noindex,nofollow" />
+    <meta name="viewport" content="width=device-width, height=device-height, user-scalable=yes, initial-scale=1.0" id="dp_meta_viewport" />
+    <meta name="google" content="notranslate" />
+    <script type="text/javascript">
+      (function() {
+        var h = 'device-height';
+        var w = 'device-width';
+        var d = false;
+
+        if (window.innerWidth < 1000) {
+          w = '1000';
+          d = true;
+        }
+        if (window.innerHeight < 750) {
+          h = 700;
+          d = true;
+        }
+
+        if (d) {
+          var vp = document.getElementById('dp_meta_viewport');
+          if (vp) {
+            vp.setAttribute('content','height='+h+', width='+w+', user-scalable=yes, initial-scale=1.0');
+          }
+        }
+      })();
+    </script>
+
+    <style type="text/css">
+        body,html {
+            -ms-touch-action: none;
+        }
+    </style>
+
+    <script type="text/javascript">var DP_IS_DOMDUMP_VIEW = false;</script>
+    <script type="text/javascript">
+        {% if app.isDebug() %}
+        DP_DEBUG = true;
+        {% else %}
+        DP_DEBUG = false;
+        {% endif %}
+
+        {% if app.isCloud() %}
+        DPC_IS_CLOUD = true;
+        {% else %}
+        DPC_IS_CLOUD = false;
+        {% endif %}
+
+        window.IS_BILLING_ERROR = {% if is_billing_error %}true{% else %}false{% endif %};
+
+        window.DP_LOADED_TIME = (new Date()).getTime() / 1000;
+
+        if (!window.console) window.console = {};
+        if (!window.console.error) window.console.error = function(){};
+        if (!window.console.log)   window.console.log   = function(){};
+        if (!window.console.warn)  window.console.warn  = function(){};
+        if (!window.console.info)  window.console.info  = function(){};
+        if (!window.console.debug) window.console.debug = function(){};
+        if (!window.console.trace) window.console.trace = function(){};
+    </script>
+
+    {% if app.getSetting('core.favicon_blob_id') %}
+        <link rel="shortcut icon" id="favicon" href="{{ path('favicon', {}, true) }}" />
+    {% else %}
+        <link rel="icon" type="image/png" sizes="16x16" href="{{ asset('DeskPRO/Bundle/AppBundle/Resources/img/favicon-16x16.png', 'appsrc_assets') }}" />
+        <link rel="icon" type="image/png" sizes="24x24" href="{{ asset('DeskPRO/Bundle/AppBundle/Resources/img/favicon-24x24.png', 'appsrc_assets') }}" />
+        <link rel="icon" type="image/png" sizes="32x32" href="{{ asset('DeskPRO/Bundle/AppBundle/Resources/img/favicon-32x32.png', 'appsrc_assets') }}" />
+        <link rel="icon" type="image/png" sizes="32x32" href="{{ asset('DeskPRO/Bundle/AppBundle/Resources/img/favicon-64x64.png', 'appsrc_assets') }}" />
+        <link rel="icon" type="image/png" sizes="96x96" href="{{ asset('DeskPRO/Bundle/AppBundle/Resources/img/favicon-96x96.png', 'appsrc_assets') }}" />
+    {% endif %}
+
+    <title>{{ phrase('agent.interface.deskpro_agent_interface') }}</title>
+    <style type="text/css">
+        body {
+            overflow: hidden;
+            background: #fff !important;
+        }
+        #agent_chats_wrapper, #agent_chat_panel {
+            display: none;
+        }
+
+        #dp_loading {
+            position: absolute;
+            top: 0;
+            right: 0;
+            bottom: 0;
+            left: 0;
+            z-index: 1000000000;
+
+            background: #91ada1 url('{{ asset('images') }}/login/background.jpg') repeat center top fixed;
+            -webkit-background-size: cover;
+            -moz-background-size: cover;
+            -o-background-size: cover;
+            background-size: cover;
+            text-align: center;
+        }
+
+        #dp_loading .msg-outer {
+            width: 250px;
+
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            margin-top: -120px;
+            margin-left: -125px;
+        }
+
+        #dp_loading .msg {
+            -webkit-border-radius: 3px;
+            -moz-border-radius: 3px;
+            border-radius: 3px;
+            background: #ffffff;
+
+            box-shadow: 0 3px 5px rgba(0, 0, 0, 0.4);
+            -moz-box-shadow: 0 3px 5px rgba(0, 0, 0, 0.4);
+            -webkit-box-shadow: 0 3px 5px rgba(0, 0, 0, 0.4);
+
+            padding:  25px;
+            text-align: center;
+        }
+
+        #dp_loading h1 {
+            font-family: "Helvetica Neue", Helvetica, arial, sans-serif;
+            font-size: 15px;
+            color: #000;
+            width: 100%;
+            display: inline-block;
+            text-align: center;
+
+            background: url({{ asset('images/spinners/logo-loading.gif') }}) no-repeat 50% 0;
+
+            margin: 0;
+            padding: 0;
+            padding-top: 108px;
+        }
+
+        {# Agent links that are us dont appear clickable #}
+        .agent-link[data-agent-id="{{ app.user.id }}"]:hover, .agent-link[data-agent-id="0"]:hover {
+            text-decoration: none;
+            cursor: text;
+        }
+    </style>
+    <script type="text/javascript" src="{{ asset('vendor/html5shiv.min.js') }}"></script>
+</head>
+<body>
+
+<div id="dp_loading"><div class="msg-outer"><div class="msg"><h1>{{ phrase('agent.general.loading_interface') }}</h1></div></div></div>
+<div id="dp_win" ng-init='report = {{ report|json_encode()|raw|replace({"'":"\\'"}) }}' ui-view></div>
+
+<script>
+  (function() {
+    var link = document.createElement('link');
+    link.rel = "stylesheet";
+      {% if not app.isCloud() %}
+    link.href = "{{ asset('fonts/OpenSans.css') }}";
+      {%  else %}
+    link.href = "//fonts.googleapis.com/css?family=Open Sans:300,400,600,700,400italic,700italic&subset=latin";
+      {%  endif %}
+    document.querySelector("head").appendChild(link);
+  })();
+</script>
+<link href='http://fonts.googleapis.com/css?family=Lato:400,700,900,100,300' rel='stylesheet' type='text/css'>
+<link rel="stylesheet" href="{{ asset('app-build/Interface/Resources/style/interface-style.css') }}"/>
+<link rel="stylesheet" href="{{ asset('app-build/Admin/Resources/style/icons-style.css') }}"/>
+<link type="text/css" rel="stylesheet" href="{{ asset('DeskPRO_ReportBundle_style.css', 'app_assets') }}" />
+<script type="text/javascript">
+  window.DP_ASSET_URL          = '{{ asset('') }}';
+  window.DP_BASE_URL           = '/{{ path('user')|ltrim('/') }}';
+  window.DP_BASE_API_URL       = '/{{ path('user')|ltrim('/') }}api';
+  window.DP_BASE_REPORTS_URL   = '/{{ path('reports')|trim('/') }}';
+  window.DP_API_TOKEN          = '{{ api_token.getKeyString() }}';
+  window.DP_IS_DEBUG           = {% if app.isDebug() %}true{% else %}false{% endif %};
+  window.DP_IS_TESTING         = {% if app.isTesting() %}true{% else %}false{% endif %};
+  window.DP_USE_RJS_BUILD      = {% if (not app.isDebug() or app.getSetting('core.dev_use_rjs_build') and not app.getSetting('core.disable_rjs_build')) %}true{% else %}false{% endif %};
+  window.DP_BUILD_TIME         = {{ app.getBuildTime() }};
+  window.DP_REPORT_BUNDLE_PATH = '{{ asset('DeskPRO_ReportBundle.js', 'app_assets') }}';
+</script>
+{{ js_error_tracking('reports_interface') }}
+<script	type="text/javascript" src="{{ asset('app/DeskPRO/preboot.js') }}"></script>
+<script type="text/javascript">
+  window.DP_INTERFACE_LOADER = 'HeadlessInterfaceLoad';
+</script>
+<script	type="text/javascript" data-main="{{ asset('loader-build/requirejs-config.js') }}?v={{ app.getBuildTime() }}" src="{{ asset('bower_components/requirejs/require.js') }}"></script>
+</body>
+</html>

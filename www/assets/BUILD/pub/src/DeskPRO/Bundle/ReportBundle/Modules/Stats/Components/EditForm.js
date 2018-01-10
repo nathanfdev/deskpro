@@ -166,11 +166,14 @@ export class EditFormComponent extends React.PureComponent {
     if (fields.where) {
       parts.push(`WHERE ${fields.where}`);
     }
-    if (fields.splitBy) {
-      parts.push(`SPLIT BY ${fields.splitBy}`);
+    if (fields.split_by) {
+      parts.push(`SPLIT BY ${fields.split_by}`);
     }
-    if (fields.groupBy) {
-      parts.push(`GROUP BY ${fields.groupBy}`);
+    if (fields.order_by) {
+      parts.push(`ORDER BY ${fields.order_by}`);
+    }
+    if (fields.group_by) {
+      parts.push(`GROUP BY ${fields.group_by}`);
       if (fields.with_rollup) {
         parts.push('WITH ROLLUP');
       }
@@ -268,8 +271,8 @@ export class EditFormComponent extends React.PureComponent {
                   <Input label="SELECT" name="select" />
                   <Input label="FROM" name="from" />
                   <Input label="WHERE" name="where" />
-                  <Input label="SPLIT BY" name="splitBy" />
-                  <Input label="GROUP BY" name="groupBy" />
+                  <Input label="SPLIT BY" name="split_by" />
+                  <Input label="GROUP BY" name="group_by" />
                   <div
                     className={classNames({
                       'field-hidden': !(select && select.match(/count\s*\(.*?\)/i) && groupBy.length)

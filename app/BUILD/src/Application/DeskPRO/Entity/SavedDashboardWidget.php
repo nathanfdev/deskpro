@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2018, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2017, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -35,51 +35,28 @@
 namespace Application\DeskPRO\Entity;
 
 use Application\DeskPRO\Domain\DomainObject;
-use Application\DeskPRO\Entity;
 use Doctrine\ORM\Mapping\ClassMetadata;
 use Doctrine\ORM\Mapping\ClassMetadataInfo;
 
 /**
- * ReportDashboardWidget.
+ * SavedDashboardWidget.
  */
-class ReportDashboardWidget extends DomainObject
+class SavedDashboardWidget extends DomainObject
 {
-    const WIDGET_TYPE_GRAPH     = 'graph';
-    const WIDGET_TYPE_STAT      = 'stat';
-    const WIDGET_TYPE_HARDCODED = 'hardcoded';
-    const WIDGET_TYPE_BAR       = 'bar';
-    const WIDGET_TYPE_PIE       = 'pie';
-    const WIDGET_TYPE_TABLE     = 'table';
-
-    /**
-     * @var array
-     */
-    protected $widgetTypesMapping = [
-        'simple_bars'  => self::WIDGET_TYPE_GRAPH,
-        'bars'         => self::WIDGET_TYPE_GRAPH,
-        'simple_lines' => self::WIDGET_TYPE_GRAPH,
-        'lines'        => self::WIDGET_TYPE_GRAPH,
-        'area'         => self::WIDGET_TYPE_GRAPH,
-        'simple_area'  => self::WIDGET_TYPE_GRAPH,
-        'pie'          => self::WIDGET_TYPE_GRAPH,
-        'table'        => self::WIDGET_TYPE_TABLE,
-        'simple_stat'  => self::WIDGET_TYPE_STAT,
-    ];
-
     /**
      * @var int
      */
     protected $id = null;
 
     /**
-     * @var ReportDashboardReport
+     * @var null
      */
-    protected $report = null;
+    protected $dashboard_widget = null;
 
     /**
-     * @var ReportWidget it's a reference to ReportWidget Entity that holds DPQL
+     * @var SavedDashboardReport
      */
-    protected $widget = null;
+    protected $saved_report = null;
 
     /**
      * @var string
@@ -99,11 +76,6 @@ class ReportDashboardWidget extends DomainObject
     /**
      * @var string
      */
-    protected $hc_data = null;
-
-    /**
-     * @var string
-     */
     protected $type;
 
     /**
@@ -115,6 +87,11 @@ class ReportDashboardWidget extends DomainObject
      * @var string
      */
     protected $options;
+
+    /**
+     * @var array already rendered in json data
+     */
+    protected $data;
 
     /**
      * @return int
@@ -191,21 +168,21 @@ class ReportDashboardWidget extends DomainObject
     }
 
     /**
-     * @return ReportDashboardReport
+     * @return SavedDashboardReport
      */
-    public function getReport()
+    public function getSavedReport()
     {
-        return $this->report;
+        return $this->saved_report;
     }
 
     /**
-     * @param ReportDashboardReport $report
+     * @param SavedDashboardReport $saved_report
      *
      * @return $this
      */
-    public function setReport(ReportDashboardReport $report)
+    public function setSavedReport(SavedDashboardReport $saved_report)
     {
-        $this->report = $report;
+        $this->saved_report = $saved_report;
 
         return $this;
     }
@@ -244,49 +221,21 @@ class ReportDashboardWidget extends DomainObject
     }
 
     /**
-     * @return ReportWidget
+     * @return ReportDashboardWidget
      */
-    public function getWidget()
+    public function getDashboardWidget()
     {
-        return $this->widget;
+        return $this->dashboard_widget;
     }
 
     /**
-     * @param ReportWidget $report
+     * @param ReportDashboardWidget $dashboard_widget
      *
      * @return $this
      */
-    public function setWidget(ReportWidget $report = null)
+    public function setDashboardWidget(ReportDashboardWidget $dashboard_widget = null)
     {
-        $this->widget = $report;
-
-        return $this;
-    }
-
-    /**
-     * @return array
-     */
-    public function getHcData()
-    {
-        if (!is_null($this->hc_data) && !is_array($this->hc_data)) {
-            $temp          = explode(':', $this->hc_data);
-            $this->hc_data = [
-                'inner_type' => $temp[1],
-                'outer_type' => $temp[0],
-            ];
-        }
-
-        return $this->hc_data;
-    }
-
-    /**
-     * @param string $data
-     *
-     * @return $this
-     */
-    public function setHcData($data)
-    {
-        $this->hc_data = $data;
+        $this->dashboard_widget = $dashboard_widget;
 
         return $this;
     }
@@ -309,14 +258,6 @@ class ReportDashboardWidget extends DomainObject
     public function getType()
     {
         return $this->type;
-    }
-
-    /**
-     * @return string
-     */
-    public function getWidgetType()
-    {
-        return isset($this->widgetTypesMapping[$this->type]) ? $this->widgetTypesMapping[$this->type] : self::WIDGET_TYPE_TABLE;
     }
 
     /**
@@ -359,23 +300,41 @@ class ReportDashboardWidget extends DomainObject
         return $this;
     }
 
+    /**
+     * @return array
+     */
+    public function getData()
+    {
+        return $this->data;
+    }
+
+    /**
+     * @param array $data
+     *
+     * @return $this
+     */
+    public function setData($data)
+    {
+        $this->data = $data;
+
+        return $this;
+    }
+
     //###########################################################################
     // Doctrine Metadata
     //###########################################################################
 
     /**
      * @param ClassMetadata $metadata
+     *
+     * @throws \Doctrine\ORM\Mapping\MappingException
      */
     public static function loadMetadata(ClassMetadata $metadata)
     {
         $metadata->setInheritanceType(ClassMetadataInfo::INHERITANCE_TYPE_NONE);
         $metadata->setPrimaryTable(
             [
-                'name'    => 'report_dashboard_widget',
-                'indexes' => [
-                    'report_id_idx' => ['columns' => ['report_id']],
-                    'widget_id_idx' => ['columns' => ['widget_id']],
-                ],
+                'name' => 'saved_dashboard_widget',
             ]
         );
         $metadata->setChangeTrackingPolicy(ClassMetadataInfo::CHANGETRACKING_DEFERRED_IMPLICIT);
@@ -426,18 +385,6 @@ class ReportDashboardWidget extends DomainObject
         );
         $metadata->mapField(
             [
-                'fieldName'  => 'hc_data',
-                'type'       => 'string',
-                'length'     => 50,
-                'precision'  => 0,
-                'scale'      => 0,
-                'nullable'   => true,
-                'columnName' => 'hc_data',
-            ]
-        );
-
-        $metadata->mapField(
-            [
                 'fieldName'  => 'type',
                 'type'       => 'string',
                 'length'     => 50,
@@ -452,7 +399,6 @@ class ReportDashboardWidget extends DomainObject
             [
                 'fieldName'  => 'variables',
                 'type'       => 'json_array',
-                'length'     => 250,
                 'precision'  => 0,
                 'scale'      => 0,
                 'nullable'   => true,
@@ -471,21 +417,32 @@ class ReportDashboardWidget extends DomainObject
             ]
         );
 
+        $metadata->mapField(
+            [
+                'fieldName'  => 'data',
+                'type'       => 'json_array',
+                'precision'  => 0,
+                'scale'      => 0,
+                'nullable'   => true,
+                'columnName' => 'data',
+            ]
+        );
+
         $metadata->setIdGeneratorType(ClassMetadataInfo::GENERATOR_TYPE_IDENTITY);
 
         $metadata->mapManyToOne(
             [
-                'fieldName'    => 'widget',
-                'targetEntity' => 'Application\\DeskPRO\\Entity\\ReportWidget',
+                'fieldName'    => 'dashboard_widget',
+                'targetEntity' => ReportDashboardWidget::class,
                 'mappedBy'     => null,
                 'inversedBy'   => null,
                 'nullable'     => true,
                 'joinColumns'  => [
                     0 => [
-                        'name'                 => 'widget_id',
+                        'name'                 => 'dashboard_widget_id',
                         'referencedColumnName' => 'id',
                         'nullable'             => true,
-                        'onDelete'             => 'cascade',
+                        'onDelete'             => 'set null',
                         'columnDefinition'     => null,
                     ],
                 ],
@@ -494,13 +451,13 @@ class ReportDashboardWidget extends DomainObject
 
         $metadata->mapManyToOne(
             [
-                'fieldName'    => 'report',
-                'targetEntity' => 'Application\\DeskPRO\\Entity\\ReportDashboardReport',
+                'fieldName'    => 'saved_report',
+                'targetEntity' => SavedDashboardReport::class,
                 'mappedBy'     => null,
-                'inversedBy'   => 'widgets',
+                'inversedBy'   => 'saved_widgets',
                 'joinColumns'  => [
                     0 => [
-                        'name'                 => 'report_id',
+                        'name'                 => 'saved_report_id',
                         'referencedColumnName' => 'id',
                         'nullable'             => false,
                         'onDelete'             => 'cascade',

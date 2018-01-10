@@ -2,11 +2,13 @@ define -> [
   '$scope',
   '$modalInstance',
   'widget',
-  ($scope,
-   $modalInstance,
-   widget) ->
+  (
+    $scope,
+    $modalInstance,
+    widget
+  ) ->
 
-    $scope.widget = widget
+    $scope.widget = angular.copy(widget)
 
     $scope.cancel = ->
       $modalInstance.dismiss('cancel')

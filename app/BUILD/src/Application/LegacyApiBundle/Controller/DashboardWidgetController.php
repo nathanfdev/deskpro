@@ -137,6 +137,7 @@ class DashboardWidgetController extends AbstractController
         if ($this->permissionsService->isEditableDashboard($widget->getReport()->getDashboard())) {
             $title = $this->in->getCleanValue('title', 'string');
             $widget->setTitle($title);
+            $widget->setOptions($this->in->getValue('options'));
         }
         $this->em->persist($widget);
         $this->em->flush();

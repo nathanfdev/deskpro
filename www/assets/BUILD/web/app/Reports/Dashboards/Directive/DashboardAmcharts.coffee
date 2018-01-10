@@ -8,6 +8,8 @@ define ->
         chartData: '@'
         reportLevelVars: '@'
         renderType: '@'
+        options: '@'
+        version: '@'
 
       link: (scope, element, attrs) ->
         template = "<div id=\"ch#{scope.widgetId}\"></div>"
@@ -20,16 +22,27 @@ define ->
         chartParent = chartDiv.parent().parent()
         chartHeader = chartDiv.parent().siblings('.box-header')
         chartData   = if scope.chartData then JSON.parse(scope.chartData) else []
+        options     = scope.options
+        drawn       = false
 
         scope.$watch 'chartData', (n) ->
+          return if !drawn
           chartData = if n then JSON.parse(n) else []
           initChart()
+
+        scope.$watch 'options', (n) ->
+          return if !drawn
+          try
+            newOptions = JSON.parse(n)
+          catch e
+            newOptions = {}
+          if !angular.equals(newOptions, options)
+            options = angular.copy(newOptions)
+            drawWidget chartData
 
         initChart = () ->
           if attrs.chtype != 'graph'
             return
-          if chart
-            chart.destroy()
           if chartData and chartData.dataProvider?
             chartData.noRedraw = true
             drawWidget chartData
@@ -42,11 +55,23 @@ define ->
                   drawWidget(widget)
 
         drawWidget = (widget) ->
-          # ugly, but works right now
+          drawn = true
+          try
+            options = JSON.parse(scope.options)
+          catch e
+            options = {}
+
+          if widget.dataProvider? && widget.dataProvider[0]? && (Object.keys(widget.dataProvider[0]).length > 6 || (widget.type == 'pie' && widget.dataProvider.length > 6))
+            widget.legend = false
+
+          if chart
+            chart.dataProvider = widget.dataProvider
+          else
+            chart = new AmCharts.makeChart("ch#{scope.widgetId}", Object.assign(widget, options));
+
           chartDiv.height(chartParent.height() - chartHeader.outerHeight())
-          chart = new AmCharts.makeChart("ch#{scope.widgetId}", widget);
-          chart.handleResize()
           chart.invalidateSize()
+          chart.validateData()
           if widget.multiplePies?
             defaultDataProvider = widget.dataProvider
             chart.addListener "clickSlice", (event) ->
@@ -59,7 +84,7 @@ define ->
                 angular.forEach defaultDataProvider, (element, index) ->
                   if index == selected
                     angular.forEach widget.pies[selected].dataProvider, (pie) ->
-                      pie.color = '#'+Math.floor(Math.random()*16777215).toString(16);
+                      pie.color = '#'+Math.floor(Math.random()*16777215).toString(16)
                       data.push pie
                   else
                     data.push element
@@ -69,8 +94,8 @@ define ->
               chart.validateData()
 
           if (!widget.noRedraw)
-            width = chartParent.height();
-            height = chartParent.width();
+            width = chartParent.height()
+            height = chartParent.width()
 
             setInterval \
               () ->
@@ -78,13 +103,14 @@ define ->
                 h = chartParent.height()
 
                 if h != height or width != w
-    # ugly, but works right now
                   chartDiv.height(chartParent.height() - chartHeader.outerHeight())
-                  chart.handleResize();
+                  chart.invalidateSize()
 
                   width = w
                   height = h
-            , 500
+            , 1000
+
+        initChart()
     }
   ]
 

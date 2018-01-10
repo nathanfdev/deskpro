@@ -1,0 +1,108 @@
+<section class="popup">
+
+    <!-- Popup Header & Title -->
+    <header>
+        <h1>Edit report</h1>
+        <div class="controls"><a ng-click="cancel()"><i class="fa fa-times"></i></a></div>
+    </header>
+
+    <!-- Popup Sidebar -->
+    <div class="popup-sidebar" style="height: 580px;"><!-- Need to calculate the height of popup with js and update the sidebar -->
+        <div class="popup-sidebar-content">
+            <ul>
+                <li ng-class="{'active': activeTab == 'general'}">
+                    <a ng-click="activeTab = 'general'">General</a>
+                </li>
+                <li ng-class="{'active': activeTab == 'schedule'}">
+                    <a ng-click="activeTab = 'schedule'">Schedule report</a>
+                </li>
+            </ul>
+        </div>
+    </div>
+    <!-- End Popup Sidebar -->
+
+    <!-- Popup Content -->
+    <div class="popup-content">
+        <!-- Content Form -->
+        <form ng-show="activeTab == 'general'" class="popup-form-default">
+
+            <!-- Form Row (left label, input & possible side content) -->
+            <div class="bucket">
+                <label class="label">Report Title:</label>
+                <div class="bucket-column"><input type="text" ng-model="report.title" placeholder="Name of your new report"></div>
+            </div>
+
+            <!-- End Form Row -->
+            <hr>
+        </form>
+
+        <form ng-show="activeTab == 'schedule'" class="popup-form-default schedule-form">
+            <!-- Form Row (left label, input & possible side content) -->
+            <div class="bucket">
+                <div class="bucket-column">
+                    <input type="radio" name="enabled" ng-model="enabled" value="0" />
+                    <label class="label">Do not schedule report</label>
+                    <br />
+                    <input type="radio" name="enabled" ng-model="enabled" value="1" />
+                    <label class="label">Schedule this report</label>
+                </div>
+            </div>
+            <div class="bucket run-options" ng-if="enabled">
+                <label>Run this report</label>
+
+                <select ui-select2 ng-model="schedule.frequency">
+                    <option value="daily">every day</option>
+                    <option value="weekly">every week</option>
+                    <option value="monthly">every month</option>
+                    <option value="bimonthly">twice a month</option>
+                </select>
+
+                <span ng-if="schedule.frequency == 'weekly'">
+                    <label>on</label>
+                    <select ui-select2 style="width: 150px" ng-if="schedule.frequency == 'weekly'" ng-model="schedule.when.weekday">
+                        <option value="monday">Monday</option>
+                        <option value="tuesday">Tuesday</option>
+                        <option value="wednesday">Wednesday</option>
+                        <option value="thursday">Thursday</option>
+                        <option value="friday">Friday</option>
+                        <option value="saturday">Saturday</option>
+                        <option value="sunday">Sunday</option>
+                    </select>
+                </span>
+
+                <span ng-if="schedule.frequency == 'monthly' || schedule.frequency == 'bimonthly'">
+                    <label>on the</label>
+                    <select ui-select2 ng-model="schedule.when.monthday">
+                        <option ng-repeat="day in month" ng-value="day.value">{{ ng_var('day.name') }}</option>
+                    </select>
+                </span>
+
+                <span ng-if="schedule.frequency == 'bimonthly'">
+                    <label>and</label>
+                    <select ui-select2 ng-model="schedule.when.monthday2">
+                        <option ng-repeat="day in month" ng-value="day.value">{{ ng_var('day.name') }}</option>
+                    </select>
+                </span>
+
+                <label>at</label><input style="width: 75px;" type="text" ng-model="schedule.when.time" />
+            </div>
+            <div class="bucket" ng-if="enabled">
+                <div class="bucket-column">
+                    <label>Send this report to</label>
+                    <textarea ng-model="schedule.sendTo"></textarea>
+                </div>
+            </div>
+            <!-- End Form Row -->
+            <hr>
+        </form>
+    </div>
+
+    <footer>
+        <a ng-click="saveReport()" class="button" ng-if="activeTab == 'general'">Edit</a>
+        <a ng-click="scheduleReport()" ng-if="activeTab == 'schedule'" class="button">Schedule</a>
+    </footer>
+    <!-- End Popup Content -->
+
+</section>
+
+<div class="cover"></div><!-- Transparent background to the popup -->
