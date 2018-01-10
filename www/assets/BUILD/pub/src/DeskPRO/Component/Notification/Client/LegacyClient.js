@@ -1,6 +1,7 @@
 /**
  * wrapper for pusher-app client
  */
+import $ from 'jquery';
 import { AbstractClient } from './AbstractClient';
 
 export default class LegacyClient extends AbstractClient {
@@ -46,7 +47,10 @@ export default class LegacyClient extends AbstractClient {
         actionAlerts.map((datum) => {
           const targetId = parseInt(datum.target_id, 10);
           if (targetId === that.options.me || targetId === -100) {
-            datum.data = JSON.parse(datum.data);
+            if ($.type(datum.data) === 'string') {
+              datum.data = JSON.parse(datum.data);
+            }
+
             that.options.dispatcher('action_alert', datum);
           }
           return null;
@@ -65,7 +69,10 @@ export default class LegacyClient extends AbstractClient {
         response.notifications.map((datum) => {
           const targetId = parseInt(datum.target_id, 10);
           if (targetId === -100 || targetId === that.options.me) {
-            datum.data = JSON.parse(datum.data);
+            if ($.type(datum.data) === 'string') {
+              datum.data = JSON.parse(datum.data);
+            }
+
             that.options.dispatcher('user_notify', datum);
           }
           return null;
