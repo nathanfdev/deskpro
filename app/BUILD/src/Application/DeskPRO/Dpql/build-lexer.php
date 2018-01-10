@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2017, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2018, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -33,6 +33,11 @@ if (php_sapi_name() !== 'cli') {
 ini_set('display_errors', true);
 
 chdir(__DIR__);
+
+if (!file_exists('PHP/LexerGenerator.php')) {
+    echo 'LexerGenerator is not installed';
+    exit;
+}
 
 require_once 'PHP/LexerGenerator.php';
 $a = new PHP_LexerGenerator('Lexer.plex');
