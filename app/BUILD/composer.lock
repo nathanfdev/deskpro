@@ -260,20 +260,19 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/deskpro/math.git",
-                "reference": "5187a848d60bea6f1d5f9fa962d40a00d4e7dedc"
+                "reference": "80dfe7db95265462687e86138c95789fedd3d775"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/deskpro/math/zipball/5187a848d60bea6f1d5f9fa962d40a00d4e7dedc",
-                "reference": "5187a848d60bea6f1d5f9fa962d40a00d4e7dedc",
+                "url": "https://api.github.com/repos/deskpro/math/zipball/80dfe7db95265462687e86138c95789fedd3d775",
+                "reference": "80dfe7db95265462687e86138c95789fedd3d775",
                 "shasum": ""
             },
             "require": {
                 "php": ">=5.6"
             },
             "require-dev": {
-                "phpunit/phpunit": "*",
-                "satooshi/php-coveralls": "dev-master"
+                "phpunit/phpunit": "^5.7"
             },
             "type": "library",
             "autoload": {
@@ -297,7 +296,7 @@
             "support": {
                 "source": "https://github.com/deskpro/math/tree/php-5.5-compatible"
             },
-            "time": "2018-01-09T13:57:27+00:00"
+            "time": "2018-01-10T10:27:46+00:00"
         },
         {
             "name": "bugsnag/bugsnag",
