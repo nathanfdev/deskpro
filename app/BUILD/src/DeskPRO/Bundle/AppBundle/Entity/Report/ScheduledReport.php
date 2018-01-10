@@ -115,6 +115,13 @@ class ScheduledReport implements EntityInterface, NotifyPropertyChanged
     protected $nextSendDate;
 
     /**
+     * @ORM\Column(name="send_to", type="json_array", nullable=true)
+     *
+     * @var array
+     */
+    protected $sendTo;
+
+    /**
      * @return int
      */
     public function getId()
@@ -238,6 +245,26 @@ class ScheduledReport implements EntityInterface, NotifyPropertyChanged
     public function setNextSendDate(\DateTime $nextSendDate)
     {
         $this->setModelField('nextSendDate', $nextSendDate);
+
+        return $this;
+    }
+
+    /**
+     * @return array
+     */
+    public function getSendTo()
+    {
+        return $this->sendTo;
+    }
+
+    /**
+     * @param array $sendTo
+     *
+     * @return $this
+     */
+    public function setSendTo(array $sendTo)
+    {
+        $this->setModelField('sendTo', $sendTo);
 
         return $this;
     }

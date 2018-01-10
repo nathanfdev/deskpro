@@ -165,6 +165,7 @@ class DashboardWidgetController extends AbstractController
         if (!$widget instanceof Widget && !$widget = $this->em->getRepository(Widget::class)->find((int) $widget)) {
             throw $this->createNotFoundException('Widget not found!');
         }
+
         if (!$widget->getWidget()) {
             throw $this->createNotFoundException('Widget not found!');
         }

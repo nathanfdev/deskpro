@@ -19,9 +19,19 @@ define -> [
         weekday: 'monday'
         monthday: 1
         monthday2: 15
-      sendTo: ''
+      sendTo:
+        emails: ''
+      id: 0
     }
     $scope.month = []
+
+    DashboardService.getScheduledReport(report).then (data) =>
+      schedule = angular.copy data
+      schedule = angular.copy data
+      schedule.sendTo = {emails: ''}
+      $scope.schedule.sendTo.emails = if data.sendTo.emails?.length? then data.sendTo.emails.join(',') else ''
+      $scope.enabled = 1
+      console.log($scope.schedule)
 
     for num in [1..31] by 1
       suffix = if num in [11, 12, 13] then 'th' else switch (num % 10)
@@ -32,8 +42,6 @@ define -> [
       $scope.month.push({name: "#{num}#{suffix}", value: num})
     $scope.month.push({name: 'last day of month', value: 'last'})
 
-    console.log $scope.month
-
     $scope.cancel = ->
       $modalInstance.dismiss('cancel')
 
@@ -42,5 +50,6 @@ define -> [
 
     $scope.scheduleReport= ->
       DashboardService.scheduleReport(report, $scope.schedule)
-      $modalInstance.close($scope.report)
+      .then () ->
+        $modalInstance.dismiss('scheduled')
 ]

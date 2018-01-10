@@ -39,6 +39,7 @@ use Application\LegacyApiBundle\Service\DashboardWidget as DashboardWidgetServic
 use DeskPRO\Bundle\AppBundle\Annotation\ActionPermissions\Annotation\ApiModes;
 use DeskPRO\Bundle\AppBundle\Entity\Report\ScheduledReport;
 use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 
 /**
  * @ApiModes("all")
@@ -176,6 +177,8 @@ class DashboardReportController extends AbstractController
     /**
      * @param $id
      *
+     * @throws \Doctrine\ORM\OptimisticLockException
+     *
      * @return Response
      */
     public function deleteAction($id)
@@ -208,19 +211,57 @@ class DashboardReportController extends AbstractController
      * @param $id
      *
      * @throws \Doctrine\ORM\OptimisticLockException
+     *
+     * @return Response
      */
     public function scheduleAction($id)
     {
-        $report          = $this->service->getReport($id);
-        $scheduledReport = new ScheduledReport();
+        $report = $this->service->getReport($id);
+
+        $scheduledReport = $this->em
+            ->getRepository(ScheduledReport::class)
+            ->findOneBy([
+                'person' => $this->person,
+                'report' => $id,
+            ]);
+        if (!$scheduledReport) {
+            $scheduledReport = new ScheduledReport();
+        }
+
         $this->in->getAll('post');
         $scheduledReport
             ->setReport($report)
             ->setFrequency($this->in->getString('frequency'))
             ->setPerson($this->person)
             ->setWhenSetting($this->in->getArrayValue('when'))
-            ->setWhenTz($this->person->getTimezone());
+            ->setWhenTz($this->person->getTimezone())
+            ->setSendTo($this->in->getArrayValue('sendTo'));
         $this->em->persist($scheduledReport);
         $this->em->flush();
+
+        return $this->createApiSuccessResponse();
+    }
+
+    public function getScheduledReportAction($id)
+    {
+        $scheduledReport = $this->em
+            ->getRepository(ScheduledReport::class)
+            ->findOneBy([
+                'person' => $this->person,
+                'report' => $id,
+            ]);
+        if (!$scheduledReport) {
+            throw new NotFoundHttpException();
+        }
+
+        // just a stub until it goes to apiv2
+        $data = [
+            'id'        => $scheduledReport->getId(),
+            'when'      => $scheduledReport->getWhenSetting(),
+            'frequency' => $scheduledReport->getFrequency(),
+            'sendTo'    => $scheduledReport->getSendTo(),
+        ];
+
+        return $this->createApiResponse($data);
     }
 }
