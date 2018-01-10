@@ -161,7 +161,7 @@ export class EditFormComponent extends React.PureComponent {
 
   static toDpql(fields) {
     const parts = [];
-    parts.push(`SELECT ${fields.select || 'COUNT(*)'}`);
+    parts.push(`SELECT ${fields.select || 'COUNT()'}`);
     parts.push(`FROM ${fields.from || '???'}`);
     if (fields.where) {
       parts.push(`WHERE ${fields.where}`);
@@ -215,6 +215,8 @@ export class EditFormComponent extends React.PureComponent {
   }
 
   queryModeChange = (to) => {
+    this.props.change('query_input_mode', to);
+
     if (to === 'dpql') {
       const dpql = EditFormComponent.toDpql(this.props.queryValues || {});
       this.setState({ queryInputMode: to, queryModeChanging: false, origDpql: dpql });

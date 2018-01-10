@@ -136,17 +136,17 @@ export const newReport = createAction(
       labels:        [],
       display_order: 10,
       display_types: [],
-      variables:     toClone.variables || {},
+      variables:     toClone.variables || [],
       query_parts:   toClone.query_parts || {
-        select:     '',
-        from:       '',
-        where:      '',
-        split_by:   '',
-        group_by:   '',
-        order_by:   '',
-        withRollup: false,
-        limit:      '',
-        offset:     ''
+        select:      '',
+        from:        '',
+        where:       '',
+        split_by:    '',
+        group_by:    '',
+        order_by:    '',
+        with_rollup: false,
+        limit:       '',
+        offset:      ''
       },
       is_custom: true,
       is_new:    true

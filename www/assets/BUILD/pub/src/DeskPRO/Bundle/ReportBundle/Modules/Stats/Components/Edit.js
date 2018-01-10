@@ -16,23 +16,17 @@ class EditContainer extends React.Component {
     groupParams:  PropTypes.object.isRequired,
     onCloneClick: PropTypes.func.isRequired,
     onRunClick:   PropTypes.func.isRequired,
-    dispatch:     PropTypes.func.isRequired,
+    dispatch:     PropTypes.func.isRequired
   };
 
   static dpqlParser(query) {
-    const config = {
-      headers: {
-        'X-DeskPRO-API-Token':     window.DP_API_TOKEN,
-        'X-DeskPRO-Session-ID':    window.DP_SESSION_ID,
-        'X-DeskPRO-Request-Token': window.DP_REQUEST_TOKEN,
-      }
-    };
-
-    return api.sendPost('DP_API/report_widgets/parse', {
+    const data = {
       query,
       current_type: 'query',
       new_type:     'builder'
-    }, config).then(res => res.data.parts);
+    };
+
+    return api.sendPost('DP_API/report_widgets/parse', data).then(res => res.data.parts);
   }
 
   static getStateFromReport(report) {
@@ -48,9 +42,9 @@ class EditContainer extends React.Component {
         group_by: queryParts.get('group_by', ''),
         order_by: queryParts.get('order_by', ''),
         offset:   queryParts.get('offset', ''),
-        limit:    queryParts.get('limit', ''),
+        limit:    queryParts.get('limit', '')
       },
-      vars: report.get('variables', Immutable.Map()).toJS(),
+      vars: report.get('variables', Immutable.Map()).toJS()
     };
 
     return { initialFormValue };
