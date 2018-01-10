@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2017, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2018, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -1808,6 +1808,7 @@ return [
     'agent.settings.desktop_notifs_autohide'                   => 'Automatically hide notifications after:',
     'agent.settings.desktop_notifs_enable'                     => 'Enable Desktop Notifications',
     'agent.settings.desktop_notifs_explicit_disabled'          => 'Desktop notifications have been explicitly disabled. They must be enabled for this domain via the browser itself.',
+    'agent.settings.desktop_notifs_secure_disabled'            => '<b>Note</b>: Modern browsers sometimes require HTTPS for notifications to work. You are NOT using HTTPS right now so you may not receive notifications. Ask your administrator to enable HTTPS for the helpdesk.',
     'agent.settings.desktop_notifs_test'                       => 'Generate Test Notification',
     'agent.settings.done_start_using'                          => 'Done, start using DeskPRO',
     'agent.settings.drop_here_insert_signature'                => 'Drop your <strong>image</strong> here to insert it into your signature',

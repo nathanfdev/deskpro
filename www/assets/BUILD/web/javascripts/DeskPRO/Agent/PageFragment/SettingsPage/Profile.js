@@ -246,6 +246,11 @@ DeskPRO.Agent.PageFragment.SettingsPage.Profile = new Orb.Class({
 		el.find('.dp-refresh-device-token').on('click', function(){
 			that.getDeviceToken(el);
 		});
+
+		var isSecure = window.location.protocol === 'https:' || window.location.hostname === 'localhost';
+		if (!isSecure) {
+			$('.dp-desktop-notifications-secure-disabled').show();
+		}
 	},
 
 	getDeviceToken: function(el) {
