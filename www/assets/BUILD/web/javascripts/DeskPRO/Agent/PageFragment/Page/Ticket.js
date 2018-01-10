@@ -1482,7 +1482,7 @@ DeskPRO.Agent.PageFragment.Page.Ticket = new Orb.Class({
 			DeskPRO_Window.getMessageChanneler().handleMessageAjax(data.client_messages);
 		}
 
-		if (data.active_drafts) {
+		if (this.wrapper && data.active_drafts) {
 			this.wrapper.find('.agent-draft-message').remove();
 			if (data.active_drafts.length) {
 				var insertPos = this.wrapper.find('.ticket-messages .messages-wrap');
