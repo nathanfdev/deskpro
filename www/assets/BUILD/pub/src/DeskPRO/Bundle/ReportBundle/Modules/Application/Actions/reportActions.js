@@ -41,6 +41,7 @@ export const runReport = createAction(
       display_types: report.display_types,
       variables:     report.vars,
       input_mode:    'form',
+      title:         report.title,
       query_parts:   {
         select:   report.select,
         from:     report.from,
