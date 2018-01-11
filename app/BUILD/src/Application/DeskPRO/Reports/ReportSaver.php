@@ -81,7 +81,6 @@ class ReportSaver
     {
         $savedReport = new SavedDashboardReport();
         $savedReport
-            ->setColumns($report->getColumns())
             ->setTitle($report->getTitle())
             ->setVariables($report->getVariables())
             ->setAuthcode($report->getId().DpStrings::random(10, Strings::CHARS_KEY_ALPHA));

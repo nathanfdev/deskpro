@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2017, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2018, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -96,12 +96,9 @@ class SavedReportController extends AbstractController
             throw $this->createNotFoundException();
         }
 
-        $title   = $postData['title'];
-        $columns = $postData['options']['columns'];
+        $title = $postData['title'];
 
-        $report
-            ->setTitle($title)
-            ->setColumns($columns);
+        $report->setTitle($title);
         foreach ($postData['widgets'] as $widget) {
             $widgetEntity = $this->em->getRepository('DeskPRO:ReportDashboardWidget')->find((int) $widget['id']);
             $widgetEntity->setTitle($widget['title']);

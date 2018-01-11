@@ -39,20 +39,6 @@ use Doctrine\ORM\EntityManager;
  */
 class DashboardWidget
 {
-    const OUTER_TYPE_OVERVIEW = 'overview';
-
-    const OUTER_TYPE_PERFORMANCE = 'performance';
-
-    const OUTER_TYPE_TICKET_SATISFACTION = 'ticket_satisfaction';
-
-    const WIDGET_TYPE_HARDCODED_OVERVIEW = 'reports_overview';
-
-    const WIDGET_TYPE_HARDCODED_PERFORMANCE = 'agent_performance';
-
-    const WIDGET_TYPE_HARDCODED_TICKET_SATISFACTION = 'ticket_satisfaction';
-
-    const WIDGET_TYPE_HARDCODED_UNDEFINED = 'hardcoded';
-
     const WIDGET_RENDER_TYPE_BAR = 'simple_bars';
 
     const WIDGET_RENDER_TYPE_LINE = 'simple_lines';

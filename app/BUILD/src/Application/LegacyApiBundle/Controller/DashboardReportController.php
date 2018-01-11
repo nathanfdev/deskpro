@@ -80,8 +80,10 @@ class DashboardReportController extends AbstractController
     }
 
     /**
-     * @param $id
-     * @param $dashboard_id
+     * @param int $id
+     * @param int $dashboard_id
+     *
+     * @throws \Exception
      *
      * @return Response
      */
@@ -95,10 +97,9 @@ class DashboardReportController extends AbstractController
         $report = new DashboardReport();
         $report
             ->setTitle($prototype->getTitle().'_clone')
-            ->setColumns($prototype->getColumns())
             ->setDashboard($dashboard)
             ->setSortOrder($this->service->getLastSortOrder($dashboard));
-        $this->service->copyWidgetLinks($report, $prototype);
+        $this->widgetService->copyWidgetLinks($report, $prototype);
 
         return $this->createApiSuccessResponse($this->service->saveReport($report, true));
     }
@@ -117,12 +118,9 @@ class DashboardReportController extends AbstractController
             throw $this->createNotFoundException();
         }
 
-        $title   = $postData['title'];
-        $columns = $postData['options']['columns'];
+        $title = $postData['title'];
 
-        $report
-            ->setTitle($title)
-            ->setColumns($columns);
+        $report->setTitle($title);
         foreach ($postData['widgets'] as $widget) {
             $widgetEntity = $this->em->getRepository('DeskPRO:ReportDashboardWidget')->find((int) $widget['id']);
             $widgetEntity->setTitle($widget['title']);
@@ -161,15 +159,13 @@ class DashboardReportController extends AbstractController
         if (!$this->permissionsService->isEditableDashboard($dashboard)) {
             throw $this->createNotFoundException();
         }
-        $report  = new DashboardReport();
-        $title   = $this->in->getCleanValue('title', 'string');
-        $columns = $this->in->getCleanValue('columns', 'string');
+        $report = new DashboardReport();
+        $title  = $this->in->getCleanValue('title', 'string');
 
         $report
             ->setTitle($title)
             ->setDashboard($dashboard)
-            ->setSortOrder($this->service->getLastSortOrder($dashboard))
-            ->setColumns($columns);
+            ->setSortOrder($this->service->getLastSortOrder($dashboard));
 
         return $this->createApiSuccessResponse($this->service->saveReport($report, true));
     }

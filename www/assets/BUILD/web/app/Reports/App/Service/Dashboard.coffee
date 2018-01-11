@@ -206,7 +206,6 @@ define ['DeskPRO/Util/Arrays'], (Arrays) ->
 
       newReport =
         title: report.title
-        columns: if report.columns? then report.columns else 0
         loaded: false
         deleted: false
         widgets: []
@@ -256,7 +255,6 @@ define ['DeskPRO/Util/Arrays'], (Arrays) ->
       url = "/dashboards/reports/clone/#{report.id}/#{dashboard_id}"
       newReport =
         title: report.title
-        columns: if report.columns? then report.columns else 0
         loaded: false
         widgets: []
 
