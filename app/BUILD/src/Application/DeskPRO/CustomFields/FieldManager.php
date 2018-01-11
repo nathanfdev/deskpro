@@ -613,9 +613,7 @@ class FieldManager
         foreach ($fieldDefs as $def) {
             foreach (ObjectAlias\Converters::toMergedList($def->getAliases()) as $name) {
                 $counter = array_key_exists($name, $refs) ? $refs[$name] : 0;
-                if (array_key_exists($name, $form)) {
-                    $refs[$name] = $counter + 1;
-                }
+                $refs[$name] = $counter + 1;
             }
         }
 
