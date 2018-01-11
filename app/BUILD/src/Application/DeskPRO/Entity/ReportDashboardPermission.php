@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2016, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2018, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -35,11 +35,15 @@
 namespace Application\DeskPRO\Entity;
 
 use Application\DeskPRO\Domain\DomainObject;
+use DeskPRO\Bundle\AppBundle\Validator\Constraints as AppAssert;
 use Doctrine\ORM\Mapping\ClassMetadata;
 use Doctrine\ORM\Mapping\ClassMetadataInfo;
+use JMS\Serializer\Annotation as JMS;
 
 /**
  * Stores who has access to departments.
+ *
+ * @JMS\ExclusionPolicy("ALL")
  */
 class ReportDashboardPermission extends DomainObject
 {
@@ -61,15 +65,25 @@ class ReportDashboardPermission extends DomainObject
     protected $id;
 
     /**
+     * @JMS\Expose()
+     * @JMS\Type("entity<Application\DeskPRO\Entity\Person>")
+     *
+     * @AppAssert\Person\PersonType(type="agent")
+     *
      * @var \Application\DeskPRO\Entity\Person
      */
     protected $person = null;
 
-    /** @var \Application\DeskPRO\Entity\ReportDashboard */
+    /**
+     * @var \Application\DeskPRO\Entity\ReportDashboard
+     */
     protected $dashboard = null;
 
     /**
      * The name of the permission.
+     *
+     * @JMS\Expose()
+     * @JMS\Type("string")
      *
      * @var string
      */
@@ -96,14 +110,14 @@ class ReportDashboardPermission extends DomainObject
     }
 
     /**
-     * @param Person $p
+     * @param Person $person
      *
      * @return $this
      */
-    public function setPerson(Person $p)
+    public function setPerson(Person $person = null)
     {
-        if ($p->getIsAgent()) {
-            $this->setModelField('person', $p);
+        if ($person->isAgent()) {
+            $this->setModelField('person', $person);
         } else {
             //possibly we gonna throw an Exception here, cause it's wrong trying to add just a person here
         }
@@ -111,6 +125,9 @@ class ReportDashboardPermission extends DomainObject
         return $this;
     }
 
+    /**
+     * @return Person
+     */
     public function getPerson()
     {
         return $this->person;

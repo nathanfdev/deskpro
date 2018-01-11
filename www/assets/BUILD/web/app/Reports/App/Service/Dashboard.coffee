@@ -1,7 +1,8 @@
 define ['DeskPRO/Util/Arrays'], (Arrays) ->
   class DashboardService
-    constructor: (Api, $q) ->
+    constructor: (Api, Api2, $q) ->
       @Api = Api
+      @Api2 = Api2
       @$q = $q
       @data = {}
       @storage = { dbs: [], reports: [] }
@@ -30,29 +31,26 @@ define ['DeskPRO/Util/Arrays'], (Arrays) ->
     ###
     saveDashboard: (dashboard) ->
       deferred = @$q.defer()
-      url = '/dashboards'
-      oldOne = false
-      if dashboard.id
-        oldOne = true
-        url += "/#{dashboard.id}"
-
       data =
         title: dashboard.title
         reports: dashboard.reports
         permissions: dashboard.permissions
 
-      @Api
-        .sendPostJson url, data
-        .then (response) =>
-          if(response)
-            dashboard.id = response.data.id
-            dashboard.reports = response.data.reports
-            dashboard.permissions = response.data.permissions
-            if !oldOne
+      if dashboard.id
+        @Api2.sendPutJson "/dashboards/#{dashboard.id}", data
+      else
+        @Api2
+          .sendPostJson '/dashboards', data
+          .then (response) =>
+            if(response)
+              dashboard.id = response.data.id
+              dashboard.reports = response.data.reports
+              dashboard.permissions = response.data.permissions
               @storage.dbs.push(dashboard)
-            deferred.resolve dashboard
-        , () ->
-          console.error 'something goes wrong!'
+              deferred.resolve dashboard
+          , () ->
+            console.error 'something goes wrong!'
+
       deferred.promise
 
     fillReportData: (report, data) ->
@@ -65,12 +63,12 @@ define ['DeskPRO/Util/Arrays'], (Arrays) ->
 
     cloneDashboard: (dashboard) ->
       deferred = @$q.defer()
-      url = "/dashboards/clone/#{dashboard.id}"
-      @Api
+      url = "/dashboards#{dashboard.id}/clone"
+      @Api2
         .sendPost url
         .then (response) =>
           if(response)
-            clonedOne = response.data
+            clonedOne = response.data.data
             @storage.dbs.push clonedOne
             deferred.resolve clonedOne
         , () ->
@@ -119,18 +117,18 @@ define ['DeskPRO/Util/Arrays'], (Arrays) ->
       dashboardIndex = Arrays.findIndex @storage.dbs
       , (v, i) ->
         if v.id is dashboard.id then true else false
-      @Api
+      @Api2
         .sendGet "/dashboards/#{dashboard.id}"
         .then (resp) =>
-          @storage.dbs[dashboardIndex] = resp.data
-          deferred.resolve(resp.data)
+          @storage.dbs[dashboardIndex] = resp.data.data
+          deferred.resolve(resp.data.data)
       return deferred.promise
 
     getDashboardsData: () ->
-      @Api.sendGet('/dashboards')
+      @Api2.sendGet('/dashboards')
 
     deleteDashboard: (dashboard) ->
-      promise = @Api.sendDelete("/dashboards/#{dashboard.id}")
+      promise = @Api2.sendDelete("/dashboards/#{dashboard.id}")
       promise.then () =>
         Arrays.removeValue @storage.dbs, dashboard, 1
         return promise
@@ -160,10 +158,10 @@ define ['DeskPRO/Util/Arrays'], (Arrays) ->
       , (v, i) ->
         if v.id is report.id then true else false
       if(!report.loaded)
-        @Api
-          .sendGet("/dashboards/reports/#{report.id}")
+        @Api2
+          .sendGet("/reports/#{report.id}")
           .then (resp) =>
-            @storage.reports[reportIndex] = resp.data
+            @storage.reports[reportIndex] = resp.data.data
             deferred.resolve @storage.reports[reportIndex]
             return deferred.promise
       else
@@ -172,7 +170,7 @@ define ['DeskPRO/Util/Arrays'], (Arrays) ->
 
 
     getReportsData: () ->
-      @Api.sendGet('/dashboards/reports')
+      @Api2.sendGet('/dashboard_reports')
 
     getReports: () ->
       deferred = @$q.defer()
@@ -188,8 +186,8 @@ define ['DeskPRO/Util/Arrays'], (Arrays) ->
 
     removeReport: (report) ->
       deferred = @$q.defer()
-      url = "/dashboards/reports/#{report.id}"
-      @Api
+      url = "/dashboard_reports/#{report.id}"
+      @Api2
       .sendDelete url
       .then (response) =>
         if(response)
@@ -202,34 +200,34 @@ define ['DeskPRO/Util/Arrays'], (Arrays) ->
 
     createReport: (report) ->
       deferred = @$q.defer()
-      url = "/dashboards/reports/#{report.dashboard_id}"
+      url = "/dashboard_reports"
 
       newReport =
+        dashboard: report.dashboard_id
         title: report.title
-        loaded: false
-        deleted: false
-        widgets: []
 
-      @Api
+      @Api2
       .sendPost url, newReport
       .then (response) =>
         if(response)
-          @storage.reports.push response.data
-          deferred.resolve response.data
+          @storage.reports.push response.data.data
+          deferred.resolve response.data.data
       , () ->
         console.error 'something goes wrong!'
       deferred.promise
 
     saveReport: (report) ->
       deferred = @$q.defer()
-      url = "/dashboards/reports/#{report.id}/save"
-      @Api
-      .sendPostJson url, report
-      .then (response) =>
-        if(response)
-          index = @findReportIndex(report, @storage.reports)
-          @storage.reports[index] = response.data
-          deferred.resolve response.data
+      url = "/dashboard_reports/#{report.id}"
+      data = {
+        title: report.title
+        variables: report.variables
+      }
+
+      @Api2
+      .sendPutJson url, data
+      .then () ->
+        return
       , () ->
         console.error 'something goes wrong!'
       deferred.promise
@@ -238,8 +236,8 @@ define ['DeskPRO/Util/Arrays'], (Arrays) ->
     saveReportVars: (report) ->
       d = @$q.defer()
 
-      @Api.sendPostJson \
-        "/dashboards/reports/#{report.id}/vars",
+      @Api2.sendPutJson \
+        "/dashboard_reports/#{report.id}",
         {
           variables: report.variables
         }
@@ -252,17 +250,17 @@ define ['DeskPRO/Util/Arrays'], (Arrays) ->
 
     cloneReport: (report, dashboard_id) ->
       deferred = @$q.defer()
-      url = "/dashboards/reports/clone/#{report.id}/#{dashboard_id}"
+      url = "/dashboard_reports/{report.id}/clone"
       newReport =
         title: report.title
         loaded: false
         widgets: []
 
-      @Api
+      @Api2
       .sendPost url, newReport
       .then (response) =>
         if(response)
-          clonedOne = response.data
+          clonedOne = response.data.data
           clonedOne.dashboard_id = dashboard_id
           clonedOne.cloned = true
           @storage.reports.push clonedOne
@@ -271,22 +269,33 @@ define ['DeskPRO/Util/Arrays'], (Arrays) ->
         console.error 'something goes wrong!'
       deferred.promise
 
-
-    scheduleReport: (report, data) ->
+    scheduleReport: (report, schedule, enabled) ->
       deferred = @$q.defer()
-      dataToSend = angular.copy data
-      dataToSend.sendTo.emails = dataToSend.sendTo.emails.split(',')
-      url = "/dashboards/reports/#{report.id}/schedule"
-      @Api.sendPostJson url, dataToSend
+      if enabled == '1'
+        data = {
+          schedule: {
+            frequency: schedule.frequency
+            send_to: schedule.send_to.split(',')
+            when: {
+              time: schedule.when.time
+            }
+          }
+        }
+
+        if schedule.frequency == 'weekly'
+          data.schedule.when.weekday = schedule.when.weekday
+        else if schedule.frequency == 'monthly'
+          data.schedule.when.monthday = schedule.when.monthday
+        else if schedule.frequency == 'bimonthly'
+          data.schedule.when.monthday = schedule.when.monthday
+          data.schedule.when.monthday2 = schedule.when.monthday2
+      else
+        data = {
+          schedule: null
+        }
+
+      url = "/dashboard_reports/#{report.id}"
+      @Api2.sendPutJson url, data
       .then () ->
         deferred.resolve()
-      deferred.promise
-
-    getScheduledReport: (report) ->
-      deferred = @$q.defer()
-      url = "/dashboards/reports/#{report.id}/schedule"
-      @Api.sendGet url
-      .then (response) ->
-        deferred.resolve(response.data)
-        deferred.promise
       deferred.promise

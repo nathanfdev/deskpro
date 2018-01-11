@@ -26,13 +26,6 @@
  * ~ Thanks, Everyone at Team DeskPRO
  */
 
-/**
- * Created by PhpStorm.
- * User: Den
- * Date: 16.12.2014
- * Time: 2:30.
- */
-
 namespace Application\DeskPRO\Reports;
 
 use Application\DeskPRO\Entity\ReportDashboardReport as DashboardReportEntity;

@@ -85,7 +85,7 @@ class DashboardData extends AbstractDefaultData
         $agents = $personRepository->findBy(['is_agent' => 1]);
         foreach ($this->dashboards as $dashboard) {
             $dashboardEntity = new Dashboard();
-            $dashboardEntity->setTitle($dashboard['title'])->setDefault(true);
+            $dashboardEntity->setTitle($dashboard['title'])->setIsDefault(true);
             foreach ($dashboard['reports'] as $report) {
                 $tab = new Tab();
                 $tab

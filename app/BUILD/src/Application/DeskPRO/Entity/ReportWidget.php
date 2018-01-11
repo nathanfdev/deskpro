@@ -121,7 +121,7 @@ class ReportWidget extends DomainObject
     /**
      * @var array
      */
-    protected $widgetGraphTypesMapping = [
+    protected static $widgetGraphTypesMapping = [
         'simple_bars'  => self::LEGACY_RENDER_TYPE_BAR,
         'bars'         => self::LEGACY_RENDER_TYPE_BAR,
         'simple_lines' => self::LEGACY_RENDER_TYPE_LINE,
@@ -527,12 +527,22 @@ class ReportWidget extends DomainObject
     {
         $graphTypes = [];
         foreach ($this->display_types as $displayType) {
-            $graphTypes[] = isset($this->widgetGraphTypesMapping[$displayType])
-                ? $this->widgetGraphTypesMapping[$displayType]
-                : self::LEGACY_RENDER_TYPE_TABLE;
+            $graphTypes[] = self::getGraphType($displayType);
         }
 
         return $graphTypes;
+    }
+
+    /**
+     * @param $displayType
+     *
+     * @return string
+     */
+    public static function getGraphType($displayType)
+    {
+        return isset(self::$widgetGraphTypesMapping[$displayType])
+            ? self::$widgetGraphTypesMapping[$displayType]
+            : self::LEGACY_RENDER_TYPE_TABLE;
     }
 
     /**

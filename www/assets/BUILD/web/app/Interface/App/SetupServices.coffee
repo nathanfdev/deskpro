@@ -14,7 +14,6 @@ define [
   'Reports/App/Service/DataServiceManager',
   'Reports/App/Service/Dashboard',
   'Reports/App/Service/DashboardWidget',
-  'Reports/App/Service/DashboardPermissions',
   'Reports/App/Service/DashboardsInfo',
 
   'Reports/Main/Service/SessionPing',
@@ -37,7 +36,6 @@ define [
   Reports_App_Service_DataServiceManager,
   Reports_App_Service_Dashboard,
   Reports_App_Service_DashboardWidget,
-  Reports_App_Service_DashboardPermissions,
   Reports_App_Service_DashboardsInfo,
 
   Reports_Main_Service_SessionPing,
@@ -180,17 +178,14 @@ define [
       return new Reports_App_Service_DataServiceManager($injector)
     ])
   
-    Module.service('DashboardService', ['Api', '$q', (Api, $q) ->
-      return new Reports_App_Service_Dashboard(Api, $q)
+    Module.service('DashboardService', ['Api', 'Api2', '$q', (Api, Api2, $q) ->
+      return new Reports_App_Service_Dashboard(Api, Api2, $q)
     ])
     Module.service('DashboardWidgetService', ['Api', 'Api2', '$q', (Api, Api2, $q) ->
       return new Reports_App_Service_DashboardWidget(Api, Api2, $q)
     ])
-    Module.service('DashboardPermissionsService', ['Api', '$q', (Api, $q) ->
-      return new Reports_App_Service_DashboardPermissions(Api, $q)
-    ])
-    Module.service('DashboardsInfo', ['Api', '$q', (Api, $q) ->
-      return new Reports_App_Service_DashboardsInfo(Api, $q)
+    Module.service('DashboardsInfo', ['Api', 'Api2', '$q', (Api, Api2, $q) ->
+      return new Reports_App_Service_DashboardsInfo(Api, Api2, $q)
     ])
     Module.service('ReportsOverviewService', ['Api', '$q', (Api, $q) ->
       return new ReportsOverview(Api, $q)

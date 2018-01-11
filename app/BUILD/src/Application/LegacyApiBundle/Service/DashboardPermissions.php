@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2017, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2018, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -78,20 +78,6 @@ class DashboardPermissions
         $person->loadHelper('DashboardPermissions');
 
         return $person->getHelper('DashboardPermissions')->isAllowedToView($dashboard);
-    }
-
-    /**
-     * @param DashboardEntity $dashboard
-     */
-    public function getPermissions(DashboardEntity $dashboard)
-    {
-        $this->em
-            ->getRepository(Permission::class)
-            ->findBy(
-                [
-                    'dashboard' => $dashboard->getId(),
-                ]
-            );
     }
 
     /**
@@ -208,27 +194,6 @@ class DashboardPermissions
         $personRepository = $this->em->getRepository(Person::class);
 
         return $personRepository->getAgent($agent_id);
-    }
-
-    /**
-     * @return array
-     */
-    public function getNewDashboardPermissions()
-    {
-        $agents = $this->getAllAgents();
-        $data   = [];
-        foreach ($agents as $agent) {
-            /* @var Person $agent */
-            $data[$agent->getId()] = [
-                'permissions' => self::PERMISSION_NONE,
-                'id'          => $agent->getId(),
-            ];
-            $data[$agent->getId()]['name']   = $agent->getDisplayName();
-            $data[$agent->getId()]['avatar'] = $agent->getPictureUrl();
-        }
-        $data = array_values($data);
-
-        return $data;
     }
 
     /**

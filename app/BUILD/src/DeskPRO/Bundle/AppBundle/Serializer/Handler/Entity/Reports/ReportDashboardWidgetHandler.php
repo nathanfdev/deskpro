@@ -29,6 +29,7 @@
 namespace DeskPRO\Bundle\AppBundle\Serializer\Handler\Entity\Reports;
 
 use Application\DeskPRO\Entity\ReportDashboardWidget as ReportDashboardWidgetEntity;
+use Application\DeskPRO\Entity\ReportWidget;
 use DeskPRO\Bundle\AppBundle\Serializer\Deferred\CallbackDeferredProperty;
 use DeskPRO\Bundle\AppBundle\Serializer\Handler\Entity\AbstractEntityHandler;
 use DeskPRO\Bundle\AppBundle\Serializer\Model\Reports\ReportDashboardWidget as ReportDashboardWidgetModel;
@@ -102,19 +103,22 @@ class ReportDashboardWidgetHandler extends AbstractEntityHandler
         $query  = $report->getQuery();
 
         $variables       = [];
-        $reportVariables = $report->getVariables();
+        $reportVariables = $entity->getReport()->getVariables();
         $widgetVariables = $entity->getVariables();
 
-        foreach ($reportVariables as $variable) {
-            $variables[$variable['name']] = $variable;
-            if (isset($widgetVariables[$variable['name']]) && isset($widgetVariables[$variable['name']]['value'])) {
-                $variables[$variable['name']]['value'] = $widgetVariables[$variable['name']]['value'];
+        foreach ($widgetVariables as $widgetVariable) {
+            foreach ($reportVariables as $reportVariable) {
+                if ($reportVariable['name'] === $widgetVariable['name']) {
+                    $widgetVariable['value'] = $reportVariable['value'];
+                }
             }
+
+            $variables[] = $widgetVariable;
         }
 
         $query    = $this->compiler->compile($query, ['variables' => $variables]);
         $results  = $query->getResults();
-        $renderer = $this->reportsRendererRegistry->getRenderer($entity->getType(), 'json');
+        $renderer = $this->reportsRendererRegistry->getRenderer(ReportWidget::getGraphType($entity->getType()), 'json');
 
         $data = $renderer->render($results);
         if ($data && $entity->getType() == ReportDashboardWidgetEntity::WIDGET_TYPE_TABLE) {

@@ -121,16 +121,16 @@
                     <td>Edit</td>
                     </thead>
 
-                    <tr ng-repeat="agent in dashboard.permissions track by agent.id">
+                    <tr ng-repeat="agent in agents track by agent.id">
                         <td class="agent-name">
-                            <span class="avatar" style="background-image: url({{ ng_var('agent.avatar') }})"></span>
+                            <span class="avatar" style="background-image: url({{ ng_var('agent.avatar.url') }})"></span>
                             {{ ng_var('agent.name') }}
                         </td>
                         <td>
-                            <input ng-click='agent.permissions = (agent.permissions == 0 ? 1 : Math.max(1, agent.permissions))' ng-checked="agent.permissions == 1 || agent.permissions == 2" type="checkbox">
+                            <input ng-click='toggleAgentViewDashboard(agent.id)' ng-checked="canAgentViewDashboard(agent.id)" type="checkbox">
                         </td>
                         <td>
-                            <input ng-click='agent.permissions = (agent.permissions == 0 ? 2 : 2)' ng-checked="agent.permissions == 2" type="checkbox">
+                            <input ng-click='toggleAgentEditDashboard(agent.id)' ng-checked="canAgentEditDashboard(agent.id)" type="checkbox">
                         </td>
                     </tr>
                 </table>

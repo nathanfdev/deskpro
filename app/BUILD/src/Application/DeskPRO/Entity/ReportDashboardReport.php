@@ -35,9 +35,12 @@
 namespace Application\DeskPRO\Entity;
 
 use Application\DeskPRO\Domain\DomainObject;
+use DeskPRO\Bundle\AppBundle\Entity\Report\ScheduledReport;
 use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Criteria;
 use Doctrine\ORM\Mapping\ClassMetadata;
 use Doctrine\ORM\Mapping\ClassMetadataInfo;
+use Symfony\Component\Validator\Constraints as Assert;
 
 /**
  * This is just a tab, that holds a collection of widgets
@@ -54,21 +57,27 @@ class ReportDashboardReport extends DomainObject
     protected $id = null;
 
     /**
-     * @var string it is a tab title
+     * Tab title.
+     *
+     * @Assert\NotBlank()
+     *
+     * @var string
      */
     protected $title = '';
 
     /**
-     * @var ArrayCollection
+     * @var ArrayCollection|ReportWidget[]
      */
     protected $widgets;
 
     /**
      * @var int
      */
-    protected $sort_order;
+    protected $sort_order = 0;
 
     /**
+     * @Assert\NotNull()
+     *
      * @var ReportDashboard
      */
     protected $dashboard;
@@ -78,9 +87,18 @@ class ReportDashboardReport extends DomainObject
      */
     protected $variables;
 
+    /**
+     * @var ArrayCollection|ScheduledReport[]
+     */
+    protected $schedules;
+
+    /**
+     * Constructor.
+     */
     public function __construct()
     {
-        $this->widgets = new ArrayCollection();
+        $this->widgets   = new ArrayCollection();
+        $this->schedules = new ArrayCollection();
     }
 
     /**
@@ -94,8 +112,6 @@ class ReportDashboardReport extends DomainObject
     /**
      * @param int $id
      *
-
-
      * @return $this
      */
     public function setId($id)
@@ -120,7 +136,7 @@ class ReportDashboardReport extends DomainObject
      */
     public function setTitle($title)
     {
-        $this->title = $title;
+        $this->setModelField('title', $title);
 
         return $this;
     }
@@ -180,7 +196,7 @@ class ReportDashboardReport extends DomainObject
      */
     public function setDashboard($dashboard)
     {
-        $this->dashboard = $dashboard;
+        $this->setModelField('dashboard', $dashboard);
 
         return $this;
     }
@@ -201,6 +217,73 @@ class ReportDashboardReport extends DomainObject
     public function setVariables(array $variables)
     {
         $this->variables = $variables;
+
+        return $this;
+    }
+
+    /**
+     * @return \DeskPRO\Bundle\AppBundle\Entity\Report\ScheduledReport[]|ArrayCollection
+     */
+    public function getSchedules()
+    {
+        return $this->schedules;
+    }
+
+    /**
+     * @param ScheduledReport $schedule
+     *
+     * @return $this
+     */
+    public function addSchedule(ScheduledReport $schedule)
+    {
+        if ($schedule->getPerson()) {
+            $this->removePersonSchedule($schedule->getPerson());
+
+            $this->schedules->add($schedule);
+            $schedule->setReport($this);
+        }
+
+        return $this;
+    }
+
+    /**
+     * @param ScheduledReport $schedule
+     *
+     * @return $this
+     */
+    public function removeSchedule(ScheduledReport $schedule)
+    {
+        $this->schedules->removeElement($schedule);
+        $schedule->setReport(null);
+
+        return $this;
+    }
+
+    /**
+     * @param Person $person
+     *
+     * @return ScheduledReport
+     */
+    public function getPersonSchedule(Person $person)
+    {
+        $schedule = $this->schedules
+            ->matching(new Criteria(Criteria::expr()->eq('person', $person)))
+            ->first();
+
+        return $schedule ?: null;
+    }
+
+    /**
+     * @param Person $person
+     *
+     * @return $this
+     */
+    public function removePersonSchedule(Person $person)
+    {
+        $oldSchedule = $this->getPersonSchedule($person);
+        if ($oldSchedule) {
+            $this->removeSchedule($oldSchedule);
+        }
 
         return $this;
     }
@@ -271,6 +354,17 @@ class ReportDashboardReport extends DomainObject
             'orderBy'      => ['position' => 'ASC'],
             'cascade'      => ['persist', 'remove'],
         ]);
+
+        $metadata->mapOneToMany(
+            [
+                'fieldName'     => 'schedules',
+                'targetEntity'  => ScheduledReport::class,
+                'cascade'       => ['remove', 'persist', 'merge'],
+                'mappedBy'      => 'report',
+                'fetch'         => ClassMetadataInfo::FETCH_EXTRA_LAZY,
+                'orphanRemoval' => true,
+            ]
+        );
 
         $metadata->mapManyToOne(
             [

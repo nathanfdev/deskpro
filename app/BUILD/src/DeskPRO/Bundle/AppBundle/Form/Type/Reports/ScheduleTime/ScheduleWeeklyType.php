@@ -26,33 +26,46 @@
  * ~ Thanks, Everyone at Team DeskPRO
  */
 
-namespace DeskPRO\Bundle\ApiBundle\Controller\Reports;
+namespace DeskPRO\Bundle\AppBundle\Form\Type\Reports\ScheduleTime;
 
-use Application\DeskPRO\Entity\ReportDashboard;
-use DeskPRO\Bundle\ApiBundle\ApiDoc\Annotation\ApiDoc;
-use DeskPRO\Bundle\ApiBundle\ApiDoc\Annotation\ApiUnstable;
-use DeskPRO\Bundle\ApiBundle\Controller\CrudController;
-use DeskPRO\Bundle\AppBundle\Annotation\ActionPermissions\Annotation\ApiModes;
-use DeskPRO\Bundle\AppBundle\Annotation\ActionPermissions\Annotation\ApiUserContext;
-use DeskPRO\Bundle\AppBundle\Annotation\ActionPermissions\Annotation\Feature;
-use FOS\RestBundle\Controller\Annotations as Rest;
+use Symfony\Component\Form\AbstractType;
+use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
+use Symfony\Component\Form\FormBuilderInterface;
+use Symfony\Component\Validator\Constraints as Assert;
 
 /**
- * Class ReportDashboardsController.
- *
- * todo implement
- * todo just admin access for now
- *
- * @ApiUnstable()
- * @ApiUserContext("admin")
- *
- * @ApiModes("all")
- * @Rest\Route("/report_dashboards")
- * @ApiDoc(target="all", section="Reports", output="Application\DeskPRO\Entity\ReportDashboard")
- * @Feature("new_reports")
+ * Class ScheduleWeeklyType.
  */
-class ReportDashboardsController extends CrudController
+class ScheduleWeeklyType extends AbstractType
 {
-    public static $entity     = ReportDashboard::class;
-    public static $exposeOnly = ['get', 'list', 'count'];
+    /**
+     * {@inheritdoc}
+     */
+    public function buildForm(FormBuilderInterface $builder, array $options)
+    {
+        $builder->add('weekday', ChoiceType::class, [
+            'required'          => true,
+            'choices_as_values' => true,
+            'choices'           => [
+                'monday',
+                'tuesday',
+                'wednesday',
+                'thursday',
+                'friday',
+                'saturday',
+                'sunday',
+            ],
+            'constraints' => [
+                new Assert\NotBlank(),
+            ],
+        ]);
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function getParent()
+    {
+        return ScheduleWhenType::class;
+    }
 }
