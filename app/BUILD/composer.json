@@ -7,6 +7,10 @@
     {
       "type": "vcs",
       "url": "https://github.com/deskpro/oauth1-client.git"
+    },
+    {
+      "type": "vcs",
+      "url": "https://github.com/deskpro/math.git"
     }
   ],
 
@@ -102,7 +106,9 @@
     "league/oauth1-client": "dev-master",
     "guzzlehttp/oauth-subscriber": "^0.3.0",
     "friendsofsymfony/oauth-server-bundle": "^1.5",
-    "pelago/emogrifier": "^1.2"
+    "pelago/emogrifier": "^1.2",
+    "jkuchar/bigfiletools": "^2.0",
+    "brick/math": "dev-php-5.5-compatible as 0.5.2"
   },
   "require-dev": {
     "mockery/mockery": "0.9.3",
