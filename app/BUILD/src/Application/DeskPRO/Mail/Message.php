@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2017, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2018, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -202,6 +202,7 @@ class Message extends \Orb\Mail\Message
             if ($this->body_filter) {
                 $body = call_user_func($this->body_filter, $body, $this, $this->template_vars, 'text/html');
             }
+            $this->setEncoder(\Swift_Encoding::getQpEncoding());
             $this->setBody($body, 'text/html');
 
             if (

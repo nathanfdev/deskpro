@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2017, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2018, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -109,9 +109,13 @@ class RawMessageUtil
             $text_body = '';
         }
 
+        $message->setEncoder(\Swift_Encoding::getQpEncoding());
         if ($text_body !== null && $html_body !== null) {
             $message->setBody($text_body, 'text/plain');
-            $message->addPart($html_body, 'text/html');
+            $part = \Swift_MimePart::newInstance();
+            $part->setEncoder($message->getEncoder());
+            $part->setBody($html_body, 'text/html');
+            $message->attach($part);
         } else {
             if ($text_body !== null) {
                 $message->setBody($text_body, 'text/plain');
