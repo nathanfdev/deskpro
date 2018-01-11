@@ -31,7 +31,6 @@ define -> [
       schedule.sendTo = {emails: ''}
       $scope.schedule.sendTo.emails = if data.sendTo.emails?.length? then data.sendTo.emails.join(',') else ''
       $scope.enabled = 1
-      console.log($scope.schedule)
 
     for num in [1..31] by 1
       suffix = if num in [11, 12, 13] then 'th' else switch (num % 10)
