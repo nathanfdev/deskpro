@@ -639,7 +639,7 @@ class FieldManager
 
         $this->_orig_display = $this->getDisplayArrayForObject($object);
 
-        $ambiguousRefs = $this->findAmbiguousFieldReferences($fields, $form);
+        $ambiguousRefs = $this->findAmbiguousFieldReferences($form, $fields);
         if (count($ambiguousRefs)) {
             throw new \DomainException('some field names can resolve to multiple custom fields');
         }
