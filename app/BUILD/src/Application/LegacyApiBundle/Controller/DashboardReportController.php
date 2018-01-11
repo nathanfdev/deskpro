@@ -211,6 +211,7 @@ class DashboardReportController extends AbstractController
      * @param $id
      *
      * @throws \Doctrine\ORM\OptimisticLockException
+     * @throws \Exception
      *
      * @return Response
      */
@@ -229,12 +230,18 @@ class DashboardReportController extends AbstractController
         }
 
         $this->in->getAll('post');
+        $whenTz      = $this->person->getTimezone();
+        $whenSetting = $this->in->getArrayValue('when');
+        $frequency   = $this->in->getString('frequency');
+        $reportSaver = $this->getContainer()->get('deskpro.reports.saver');
+        $date        = $reportSaver->calculateNextSendDate($whenSetting, $whenTz, $frequency);
         $scheduledReport
             ->setReport($report)
-            ->setFrequency($this->in->getString('frequency'))
+            ->setFrequency($frequency)
             ->setPerson($this->person)
-            ->setWhenSetting($this->in->getArrayValue('when'))
-            ->setWhenTz($this->person->getTimezone())
+            ->setWhenSetting($whenSetting)
+            ->setWhenTz($whenTz)
+            ->setNextSendDate($date)
             ->setSendTo($this->in->getArrayValue('sendTo'));
         $this->em->persist($scheduledReport);
         $this->em->flush();
@@ -242,6 +249,11 @@ class DashboardReportController extends AbstractController
         return $this->createApiSuccessResponse();
     }
 
+    /**
+     * @param $id
+     *
+     * @return Response
+     */
     public function getScheduledReportAction($id)
     {
         $scheduledReport = $this->em
