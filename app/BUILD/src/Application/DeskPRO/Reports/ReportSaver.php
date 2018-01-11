@@ -131,6 +131,14 @@ class ReportSaver
         return $savedReport;
     }
 
+    /**
+     * @param        $whenSetting
+     * @param        $whenTz
+     * @param        $frequency
+     * @param string $startDate
+     *
+     * @return \DateTime
+     */
     public function calculateNextSendDate($whenSetting, $whenTz, $frequency, $startDate = 'now')
     {
         $timezone = new \DateTimeZone($whenTz);
@@ -193,8 +201,10 @@ class ReportSaver
         }
 
         // should not be set early than it is now
-        return $nextDate > new \DateTime('now', $timezone)
+        $nextDate = $nextDate > new \DateTime('now', $timezone)
             ? $nextDate
             : $this->calculateNextSendDate($whenSetting, $whenTz, $frequency, 'tomorrow');
+
+        return $nextDate->setTimezone(new \DateTimeZone('UTC'));
     }
 }

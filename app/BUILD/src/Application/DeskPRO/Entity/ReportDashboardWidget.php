@@ -219,7 +219,7 @@ class ReportDashboardWidget extends DomainObject
     }
 
     /**
-     * @param string $size
+     * @param string|array $size
      *
      * @throws \Exception
      *
