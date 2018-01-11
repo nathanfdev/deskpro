@@ -30,6 +30,7 @@ namespace Application\LegacyApiBundle\Service;
 
 use Application\DeskPRO\Entity\ReportDashboardReport as DashboardReportEntity;
 use Application\DeskPRO\Entity\ReportDashboardWidget as DashboardWidgetEntity;
+use Application\DeskPRO\Entity\SavedDashboardWidget;
 use DeskPRO\Bundle\ReportBundle\Dpql2\DpqlCompiler;
 use DeskPRO\Bundle\ReportBundle\Reports\Renderer\ReportsRendererRegistry;
 use Doctrine\ORM\EntityManager;
@@ -39,24 +40,16 @@ use Doctrine\ORM\EntityManager;
  */
 class DashboardWidget
 {
-    const WIDGET_RENDER_TYPE_BAR = 'simple_bars';
-
-    const WIDGET_RENDER_TYPE_LINE = 'simple_lines';
-
-    const WIDGET_RENDER_TYPE_AREA = 'simple_area';
-
-    const WIDGET_RENDER_TYPE_PIE = 'pie';
-
+    const WIDGET_RENDER_TYPE_BAR   = 'simple_bars';
+    const WIDGET_RENDER_TYPE_LINE  = 'simple_lines';
+    const WIDGET_RENDER_TYPE_AREA  = 'simple_area';
+    const WIDGET_RENDER_TYPE_PIE   = 'pie';
     const WIDGET_RENDER_TYPE_TABLE = 'table';
 
-    const LEGACY_RENDER_TYPE_BAR = 'BAR';
-
-    const LEGACY_RENDER_TYPE_LINE = 'LINE';
-
-    const LEGACY_RENDER_TYPE_AREA = 'AREA';
-
-    const LEGACY_RENDER_TYPE_PIE = 'PIE';
-
+    const LEGACY_RENDER_TYPE_BAR   = 'BAR';
+    const LEGACY_RENDER_TYPE_LINE  = 'LINE';
+    const LEGACY_RENDER_TYPE_AREA  = 'AREA';
+    const LEGACY_RENDER_TYPE_PIE   = 'PIE';
     const LEGACY_RENDER_TYPE_TABLE = 'TABLE';
 
     const WIDGET_VALUE_FROM_REPORT = 'from_report_value';
@@ -121,9 +114,20 @@ class DashboardWidget
      */
     public function getWidgetData($widget)
     {
-        if (!($widget instanceof DashboardWidgetEntity)) {
+        if (!$widget instanceof DashboardWidgetEntity && !$widget instanceof SavedDashboardWidget) {
             $widget = $this->em->getRepository(DashboardWidgetEntity::class)->find((int) $widget);
         }
+
+        $type = '';
+        if ($widget instanceof DashboardWidgetEntity) {
+            $report = $widget->getReport();
+            $type   = $widget->getWidgetType();
+        } elseif ($widget instanceof SavedDashboardWidget) {
+            $report = $widget->getSavedReport();
+        } else {
+            $report = null;
+        }
+
         $pos  = $widget->getPosition();
         $size = $widget->getSize();
         $data = [
@@ -133,10 +137,10 @@ class DashboardWidget
             'col'              => $pos[1],
             'sizeX'            => $size[0],
             'sizeY'            => $size[1],
-            'widget_id'        => $widget->getReport() ? $widget->getReport()->getId() : 0,
+            'widget_id'        => $report ? $report->getId() : 0,
             'widget_variables' => $widget->getVariables(),
             'options'          => $widget->getOptions(),
-            'type'             => $widget->getWidgetType(),
+            'type'             => $type,
             'data'             => [],
         ];
 
