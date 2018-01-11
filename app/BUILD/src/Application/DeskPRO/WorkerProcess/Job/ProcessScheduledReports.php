@@ -34,6 +34,7 @@ namespace Application\DeskPRO\WorkerProcess\Job;
 
 use Application\DeskPRO\Entity\SavedDashboardReport;
 use DeskPRO\Bundle\AppBundle\Entity\Report\ScheduledReport;
+use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
 
 /**
  * Run reports and creates SavedReport entities, so people can just view already created report.
@@ -92,5 +93,25 @@ class ProcessScheduledReports extends AbstractJob
 
     protected function sendProcessedReport(ScheduledReport $scheduledReport, SavedDashboardReport $savedReport)
     {
+        $message = $this->getContainer()->getMailer()->createMessage();
+        $message->setToPerson($scheduledReport->getPerson());
+        $message->setTemplate(
+            'DeskPRO:emails_agent:scheduled-report.html.twig',
+            [
+                'person'      => $scheduledReport->getPerson(),
+                'frequency'   => $scheduledReport->getFrequency(),
+                'reportTitle' => $scheduledReport->getReport()->getTitle(),
+                'link'        => $this->getContainer()->get('router')->generate(
+                    'reports-interface-headless-view',
+                    [
+                        'id'       => $savedReport->getId(),
+                        'authcode' => $savedReport->getAuthcode(),
+                    ],
+                    UrlGeneratorInterface::ABSOLUTE_URL
+                ),
+            ]
+        );
+
+        $this->getContainer()->getMailer()->send($message);
     }
 }
