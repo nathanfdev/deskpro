@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2017, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2018, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -39,7 +39,7 @@ use DpSys\LowError\SystemErrorHandler;
 /**
  * Fetches mail from a pop3 server.
  */
-class Pop3 extends AbstractFetcher
+class Pop3 extends AbstractFetcher implements BatchFetcher
 {
     /**
      * @var int
@@ -81,6 +81,13 @@ class Pop3 extends AbstractFetcher
      * @var array
      */
     protected $backupFile = [];
+
+    /**
+     * @see canUniqueId()
+     *
+     * @var bool|null
+     */
+    protected $isUniqueIdCapable;
 
     public function init()
     {
@@ -183,16 +190,15 @@ class Pop3 extends AbstractFetcher
      */
     protected function canUniqueId()
     {
-        static $can = null;
-
-        if ($can === null) {
+        if ($this->isUniqueIdCapable === null) {
             try {
-                $can = $this->getStorage()->canUniqueId();
+                $this->isUniqueIdCapable = $this->getStorage()->canUniqueId();
             } catch (\Exception $e) {
+                $this->isUniqueIdCapable = false;
             }
         }
 
-        return $can;
+        return $this->isUniqueIdCapable;
     }
 
     /**
@@ -321,6 +327,22 @@ class Pop3 extends AbstractFetcher
             }
         }
 
+        // If we have a uid and this server has unique ids,
+        // then detect an edge case where we've already ready the id
+        // but it wasnt properly deleted
+        if ($messageId && $this->canUniqueId()) {
+            $count = App::getDb()->fetchColumn('
+                SELECT COUNT(*)
+                FROM email_uids
+                WHERE id = ? AND email_account_id = ?
+            ', [$messageId, $this->account->getId()]);
+            if ($count) {
+                $this->_doneRead($messageNum);
+
+                return $this->_readNext();
+            }
+        }
+
         $startTime = microtime(true);
 
         $this->logger->log("Fetching message #$messageNum", 'debug');
@@ -443,5 +465,26 @@ class Pop3 extends AbstractFetcher
         }
 
         return $x;
+    }
+
+    /**
+     * @param string $object_type
+     * @param int    $limit
+     *
+     * @return \Application\DeskPRO\Entity\EmailSource[]
+     */
+    public function readBatch($object_type = 'ticket', $limit = 10)
+    {
+        $sources = [];
+
+        while ($limit-- > 0) {
+            $s         = $this->readNext($object_type);
+            $sources[] = $s;
+        }
+
+        // closes conn to commit any dele's
+        $this->close();
+
+        return $sources;
     }
 }
