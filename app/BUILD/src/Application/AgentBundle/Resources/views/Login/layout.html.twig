@@ -7,7 +7,12 @@
 	<meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
 	<title>{{ phrase('agent.general.log_in') }}</title>
 	<script type="text/javascript">
-		if (typeof pageMeta !== 'undefined') pageMeta.goToLogin = true;
+		if (typeof pageMeta !== 'undefined') {
+		  pageMeta.goToLogin = true;
+        } else {
+		  window.pageMeta = {};
+          window.pageMeta.goToLogin = true;
+		}
 	</script>
 	<link href="{{ asset('DeskPRO_PortalBundle_vendors_style.css', 'app_assets') }}" media="all" rel="stylesheet" type="text/css" />
 	{% if app.returnUrl %}<script>window.DP_RETURN_TO = {{ app.returnUrl | json_encode | raw }};</script>{% endif %}
