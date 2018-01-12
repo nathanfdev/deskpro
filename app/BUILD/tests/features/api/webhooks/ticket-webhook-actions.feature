@@ -163,7 +163,7 @@ Feature: /webhooks/tickets/{webhook}/invocation resource
               "op": "set",
               "with_formatter": <with_formatter>,
               "field": "<field_alias>",
-              "value": "<john>"
+              "value": "<field_value_expected>"
             }
           }
         ]
