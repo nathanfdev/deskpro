@@ -290,5 +290,3 @@ define ['DeskPRO/Util/Arrays'], (Arrays) ->
         deferred.resolve(response.data)
         deferred.promise
       deferred.promise
-
-
