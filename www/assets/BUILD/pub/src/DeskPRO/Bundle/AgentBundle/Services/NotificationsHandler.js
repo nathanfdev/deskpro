@@ -4,6 +4,7 @@ import $ from 'jquery';
 import emojione from 'emojione';
 import Message from 'DeskPRO/Bundle/AgentBundle/Modules/IM/Components/New/ChatWindow/Message';
 import { startChat } from '../Modules/IM/Actions/chatsActions';
+import { AllHtmlEntities } from 'html-entities';
 
 class NotificationsHandler {
   constructor(props) {
@@ -22,6 +23,10 @@ class NotificationsHandler {
         case 'notification.agent_chat.new_message':
           title = data.title;
           summary = striptags(emojione.shortnameToUnicode(Message.formatMessage(data.summary)));
+          // Froala Editor encode html entities and return encoded message
+          // Decode message to have plain message in Web Notification
+          // For ex.: `don&#39;t` => `don't`
+          summary = AllHtmlEntities.decode(summary);
           icon = data.icon;
           notifyClick = () => {
             this.options.dispatch(startChat(null, data.chat));
