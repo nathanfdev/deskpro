@@ -1847,7 +1847,13 @@ DeskPRO.Agent.PageFragment.Page.NewTicket = new Orb.Class({
 				var selectDepartment = self.getEl('dep');
 				selectDepartment.children().remove();
 				$(res).children().appendTo(selectDepartment);
-				selectDepartment.select2('val', '');
+				var val = '';
+				var options = $(res).find('option');
+				// An empty option is always offered
+				if (options.length === 2) {
+					val = options[1].value;
+				}
+				selectDepartment.select2('val', val);
 			});
 		});
 	},
