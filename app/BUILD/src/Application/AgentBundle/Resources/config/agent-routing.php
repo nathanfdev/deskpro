@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2017, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2018, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -1245,6 +1245,7 @@ $collection->create('agent_ticket_unlink', [
 
 $collection->create('agent_ticket_departments_by_brand', [
     'path'       => '/tickets/new/get-departments/{brandId}',
+    'defaults'   => ['brandId' => null],
     'controller' => 'AgentBundle:Ticket:ajaxGetDepartments',
     'methods'    => ['GET'],
 ]);

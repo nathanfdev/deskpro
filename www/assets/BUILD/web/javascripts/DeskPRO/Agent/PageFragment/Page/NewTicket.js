@@ -1846,7 +1846,7 @@ DeskPRO.Agent.PageFragment.Page.NewTicket = new Orb.Class({
 			$.get('/agent/tickets/new/get-departments/' + this.value, function(res) {
 				var selectDepartment = self.getEl('dep');
 				selectDepartment.children().remove();
-				$(res).find('option').appendTo(selectDepartment);
+				$(res).children().appendTo(selectDepartment);
 				selectDepartment.select2('val', '');
 			});
 		});
