@@ -1,10 +1,10 @@
 import Notify from 'notifyjs';
 import striptags from 'striptags';
+import { AllHtmlEntities } from 'html-entities';
 import $ from 'jquery';
 import emojione from 'emojione';
 import Message from 'DeskPRO/Bundle/AgentBundle/Modules/IM/Components/New/ChatWindow/Message';
 import { startChat } from '../Modules/IM/Actions/chatsActions';
-import { AllHtmlEntities } from 'html-entities';
 
 class NotificationsHandler {
   constructor(props) {
