@@ -187,9 +187,9 @@ Feature: /ticket_filters_counts endpoint
     And I have a Ticket record referenced as ticket_3
     And I have a Ticket record referenced as ticket_4
 
-    And the object "ticket_1" has "single_choice_field" custom data with "{single_choice_v1_field},{single_choice_v2_field}"
-    And the object "ticket_2" has "single_choice_field" custom data with "{single_choice_v2_field}"
-    And the object "ticket_3" has "single_choice_field" custom data with "{single_choice_v3_field}"
+    And the object "ticket_1" has "single_choice_field" custom data set to "{single_choice_v1_field},{single_choice_v2_field}"
+    And the object "ticket_2" has "single_choice_field" custom data set to "{single_choice_v2_field}"
+    And the object "ticket_3" has "single_choice_field" custom data set to "{single_choice_v3_field}"
     And I re-fill ticket search table
 
     When I send a GET request to "/api/v2/ticket_filters_counts?group_by[{f3}]=ticket_field.~single_choice_field~"
