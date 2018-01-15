@@ -163,7 +163,11 @@ $container->setDefinition('dashboard.permissions.service', $definition);
 
 $definition = new Definition();
 $definition->setClass('Application\\LegacyApiBundle\\Service\\DashboardWidget');
-$definition->setArguments([new Reference('doctrine.orm.entity_manager')]);
+$definition->setArguments([
+    new Reference('doctrine.orm.entity_manager'),
+    new Reference('dpql.compiler'),
+    new Reference('reports.renderer_registry'),
+]);
 $container->setDefinition('dashboard.widget.service', $definition);
 
 $definition = new Definition();
@@ -179,6 +183,14 @@ $definition = new Definition();
 $definition->setClass('Application\\DeskPRO\\Reports\\ReportsWidgetService');
 $definition->setArguments([new Reference('doctrine.orm.entity_manager'), new Reference('dashboard.widget.service')]);
 $container->setDefinition('reports.widget.service', $definition);
+
+$definition = new Definition();
+$definition->setClass('Application\\DeskPRO\\Reports\\ReportSaver');
+$definition->setArguments([
+    new Reference('doctrine.orm.entity_manager'),
+    new Reference('dashboard.widget.service'),
+]);
+$container->setDefinition('deskpro.reports.saver', $definition);
 
 //###########################################################################
 // Doctrine services

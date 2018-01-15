@@ -99,11 +99,6 @@ class ReportDashboardWidget extends DomainObject
     /**
      * @var string
      */
-    protected $hc_data = null;
-
-    /**
-     * @var string
-     */
     protected $type;
 
     /**
@@ -219,7 +214,7 @@ class ReportDashboardWidget extends DomainObject
     }
 
     /**
-     * @param string $size
+     * @param string|array $size
      *
      * @throws \Exception
      *
@@ -259,34 +254,6 @@ class ReportDashboardWidget extends DomainObject
     public function setWidget(ReportWidget $report = null)
     {
         $this->widget = $report;
-
-        return $this;
-    }
-
-    /**
-     * @return array
-     */
-    public function getHcData()
-    {
-        if (!is_null($this->hc_data) && !is_array($this->hc_data)) {
-            $temp          = explode(':', $this->hc_data);
-            $this->hc_data = [
-                'inner_type' => $temp[1],
-                'outer_type' => $temp[0],
-            ];
-        }
-
-        return $this->hc_data;
-    }
-
-    /**
-     * @param string $data
-     *
-     * @return $this
-     */
-    public function setHcData($data)
-    {
-        $this->hc_data = $data;
 
         return $this;
     }
@@ -422,17 +389,6 @@ class ReportDashboardWidget extends DomainObject
                 'scale'      => 0,
                 'nullable'   => false,
                 'columnName' => 'size',
-            ]
-        );
-        $metadata->mapField(
-            [
-                'fieldName'  => 'hc_data',
-                'type'       => 'string',
-                'length'     => 50,
-                'precision'  => 0,
-                'scale'      => 0,
-                'nullable'   => true,
-                'columnName' => 'hc_data',
             ]
         );
 

@@ -21,8 +21,7 @@ define ['DeskPRO/Util/Arrays'], (Arrays) -> [
     $scope.loaded = false
     $scope.report = {
       dashboard_id: 0
-      options:
-        columns: 24
+      options: {}
       variables: []
     }
 

@@ -89,7 +89,7 @@
             <div class="bucket" ng-if="enabled">
                 <div class="bucket-column">
                     <label>Send this report to</label>
-                    <textarea ng-model="schedule.sendTo"></textarea>
+                    <textarea ng-model="schedule.sendTo.emails" />
                 </div>
             </div>
             <!-- End Form Row -->
@@ -98,8 +98,8 @@
     </div>
 
     <footer>
-        <a ng-click="saveReport()" class="button" ng-if="activeTab == 'general'">Edit</a>
-        <a ng-click="scheduleReport()" ng-if="activeTab == 'schedule'" class="button">Schedule</a>
+        <a ng-click="saveReport()" class="button" ng-show="activeTab == 'general'">Edit</a>
+        <a ng-click="scheduleReport()" ng-show="activeTab == 'schedule'" class="button">Schedule</a>
     </footer>
     <!-- End Popup Content -->
 

@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2017, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2018, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -2672,4 +2672,7 @@ return [
     'agent.voice.call_agent_hangup'                         => 'Agent {{person_name}} {{person_email}} hung up',
     'agent.voice.call_started'                              => 'Call started',
     'agent.voice.call_ended'                                => 'Call ended',
+    'agent.email_subjects.scheduled_report_ready'           => 'View your report: {{report_title}}',
+    'agent.scheduled_report.accost'                         => 'Dear {{person_title}}',
+    'agent.scheduled_report.acknowledgment'                 => 'Your {{frequency}} report is ready to view:',
 ];

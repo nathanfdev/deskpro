@@ -7562,6 +7562,15 @@ $collection->create(
     ]
 );
 
+$collection->create(
+    'api_reports_get_schedule',
+    [
+        'path'       => '/dashboards/reports/{id}/schedule',
+        'controller' => 'LegacyApiBundle:DashboardReport:getScheduledReport',
+        'methods'    => ['GET'],
+    ]
+);
+
 //#######################################################################################################################
 // Report Dashboards Permissions
 //#######################################################################################################################

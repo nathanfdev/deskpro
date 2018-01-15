@@ -112,6 +112,9 @@ class ReportWidgetHandler extends AbstractEntityHandler
     /**
      * @param ReportWidgetEntity $entity
      *
+     * @throws \DeskPRO\Bundle\ReportBundle\Dpql2\DpqlException
+     * @throws \Exception
+     *
      * @return array
      */
     public function getRenderedResult(ReportWidgetEntity $entity)

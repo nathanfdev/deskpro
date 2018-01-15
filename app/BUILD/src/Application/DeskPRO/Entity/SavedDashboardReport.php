@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2017, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2018, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -56,11 +56,6 @@ class SavedDashboardReport extends DomainObject
      * @var string it is a tab title
      */
     protected $title = '';
-
-    /**
-     * @var int
-     */
-    protected $columns;
 
     /**
      * @var ArrayCollection
@@ -124,26 +119,6 @@ class SavedDashboardReport extends DomainObject
     public function setTitle($title)
     {
         $this->title = $title;
-
-        return $this;
-    }
-
-    /**
-     * @return int
-     */
-    public function getColumns()
-    {
-        return $this->columns;
-    }
-
-    /**
-     * @param int $columns
-     *
-     * @return $this
-     */
-    public function setColumns($columns)
-    {
-        $this->columns = (int) $columns;
 
         return $this;
     }
@@ -267,18 +242,6 @@ class SavedDashboardReport extends DomainObject
                 'scale'      => 0,
                 'nullable'   => false,
                 'columnName' => 'title',
-            ]
-        );
-
-        $metadata->mapField(
-            [
-                'fieldName'  => 'columns',
-                'type'       => 'integer',
-                'precision'  => 0,
-                'scale'      => 0,
-                'nullable'   => false,
-                'default'    => 24,
-                'columnName' => 'columns',
             ]
         );
 

@@ -147,11 +147,14 @@ export class SideBarContainer extends SeparateComponent {
   changeSection = () => {
     const { dispatch } = this.props;
     const reportsFrame = window.DP_FRAME_OVERLAYS && window.DP_FRAME_OVERLAYS.reports;
+    const reports2Frame = window.DP_FRAME_OVERLAYS && window.DP_FRAME_OVERLAYS.reports2;
     const adminFrame = window.DP_FRAME_OVERLAYS && window.DP_FRAME_OVERLAYS.admin;
 
     try {
       if (reportsFrame && reportsFrame.opened) {
         dispatch(actions.changeSection({ section: 'menu_reports' }));
+      } else if (reports2Frame && reports2Frame.opened) {
+        dispatch(actions.changeSection({ section: 'menu_reports2' }));
       } else if (adminFrame && adminFrame.opened) {
         if (adminFrame.getFrameWindow().location.hash === '#/license') {
           dispatch(actions.changeSection({ section: 'menu_billing' }));

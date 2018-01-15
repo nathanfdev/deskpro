@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2017, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2018, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -371,6 +371,15 @@ class WorkerJobsData extends AbstractDefaultData
             'description'  => 'Sync twilio account',
             'job_class'    => Job\TwilioSync::class,
             'run_interval' => Job\TwilioSync::DEFAULT_INTERVAL,
+        ];
+
+        $jobs[] = [
+            'id'           => 'process_scheduled_reports',
+            'worker_group' => 'scheduled_reports',
+            'title'        => 'Process scheduled reports',
+            'description'  => 'Process scheduled reports, then save results and send email with permalink',
+            'job_class'    => Job\ProcessScheduledReports::class,
+            'run_interval' => Job\ProcessScheduledReports::DEFAULT_INTERVAL,
         ];
 
         //------------------------------
