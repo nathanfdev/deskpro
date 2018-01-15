@@ -531,6 +531,9 @@ DeskPRO.Agent.PageFragment.Page.NewTicket = new Orb.Class({
 			emailCheckboxState = $input.prop('checked');
 
     $toggle.children('li').on('click', function(){
+    	if ($(this).hasClass('on')) {
+    		return;
+			}
       $toggle.children('li').removeClass('on');
       $(this).addClass('on');
 
