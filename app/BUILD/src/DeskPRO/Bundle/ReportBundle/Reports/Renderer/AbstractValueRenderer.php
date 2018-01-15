@@ -28,6 +28,7 @@
 
 namespace DeskPRO\Bundle\ReportBundle\Reports\Renderer;
 
+use Application\DeskPRO\Entity\Person;
 use Application\DeskPRO\NewSettings\SettingsResolver;
 use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorage;
 
@@ -141,7 +142,7 @@ abstract class AbstractValueRenderer
 
                 $token  = $this->tokenStorage->getToken();
                 $person = $token ? $token->getUser() : null;
-                $tz     = $person ? $person->getTimezone() : 'UTC';
+                $tz     = $person instanceof Person ? $person->getTimezone() : 'UTC';
 
                 try {
                     if ($value instanceof \DateTime) {
