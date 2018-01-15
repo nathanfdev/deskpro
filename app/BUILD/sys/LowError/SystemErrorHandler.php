@@ -777,6 +777,11 @@ class SystemErrorHandler
         }
 
         foreach ($logFiles as $errorLogFile) {
+            // create log file if not exists
+            if (!is_file($errorLogFile && !is_dir($errorLogFile))) {
+                @touch($errorLogFile);
+            }
+
             if (
                 $errorLogFile
                 && is_file($errorLogFile)
