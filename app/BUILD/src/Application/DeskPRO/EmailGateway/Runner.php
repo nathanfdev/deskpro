@@ -760,7 +760,8 @@ BODY;
         $processedSourceIds = [];
 
         // array of messages up next (used with fetchers that return a batch)
-        $nextUp = [];
+        $nextUp           = [];
+        $doCheckNextBatch = true;
 
         while (true) {
             // Make sure any records are flusehd
@@ -798,9 +799,26 @@ BODY;
                 try {
                     $ts = microtime(true);
                     if ($fetcher instanceof BatchFetcher) {
-                        $this->logger->logDebug('BatchFetcher -- reading batch');
-                        $nextUp = $fetcher->readBatch();
-                        $source = array_shift($nextUp);
+                        if ($doCheckNextBatch) {
+                            $batchLimit = 10;
+                            $this->logger->logDebug('BatchFetcher -- reading batch of '.$batchLimit);
+                            $nextUp     = $fetcher->readBatch('ticket', $batchLimit);
+                            $batchCount = count($nextUp);
+
+                            $this->logger->logDebug('BatchFetcher -- read batch of '.$batchCount);
+
+                            $source = array_shift($nextUp);
+
+                            if ($batchCount >= $batchLimit) {
+                                // only try another batch if we got a full batch last time
+                                $doCheckNextBatch = true;
+                            } else {
+                                $doCheckNextBatch = false;
+                            }
+                        } else {
+                            $nextUp = [];
+                            $source = null;
+                        }
                     } else {
                         $source = $fetcher->readNext();
                     }

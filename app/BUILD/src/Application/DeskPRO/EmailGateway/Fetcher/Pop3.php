@@ -478,7 +478,11 @@ class Pop3 extends AbstractFetcher implements BatchFetcher
         $sources = [];
 
         while ($limit-- > 0) {
-            $s         = $this->readNext($object_type);
+            $s = $this->readNext($object_type);
+            if (!$s) {
+                break;
+            }
+
             $sources[] = $s;
         }
 
