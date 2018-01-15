@@ -81,7 +81,7 @@ DeskPRO.MessageChanneler.PusherappChanneler = new Orb.Class({
 					var channel = this.socket.subscribe(channel_name);
 					var self = this;
 					channel.bind_all(function (event_name, data) {
-						var event_name = this.puserappToChannel(channel + '-' + event_name);
+						var event_name = this.pusherappToChannel(channel + '-' + event_name);
 						self.handleMessage(event_name, data);
 					});
 				});

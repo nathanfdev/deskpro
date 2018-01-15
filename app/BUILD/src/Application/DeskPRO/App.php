@@ -374,15 +374,16 @@ class App
     /**
      * Get the value of a setting.
      *
-     * @param string $name The name of the setting to get
+     * @param string $name    The name of the setting to get
+     * @param null   $default
      *
      * @return string
      */
-    public static function getSetting($name)
+    public static function getSetting($name, $default = null)
     {
         $settings = self::$container->getSettingsHandler();
 
-        return $settings->get($name);
+        return $settings->get($name, $default);
     }
 
     /**
