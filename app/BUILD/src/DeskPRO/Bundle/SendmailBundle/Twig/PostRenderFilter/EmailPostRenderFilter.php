@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2017, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2018, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -74,7 +74,10 @@ class EmailPostRenderFilter extends AbstractPostRenderFilter
         $code = Strings::postDomDocument($code);
 
         foreach ($saveBlocks as $id => $block) {
-            $code = str_replace($id, $block, $code);
+            // Replace <p> with <br /> in messages
+            $block = preg_replace('/<p[^>]*?>/', '', $block);
+            $block = str_replace('</p>', '<br />', $block);
+            $code  = str_replace($id, $block, $code);
         }
 
         if (!$code) {
