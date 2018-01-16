@@ -10,6 +10,7 @@ define ['Admin/Main/Ctrl/Base', 'DeskPRO/Util/Util'], (Admin_Ctrl_Base, Util) ->
       @$scope.setPresaveCallback = (callback) => @presaveCallback = callback
       @$scope.enableCustomFooter = => @$scope.has_own_footer = true
       @presaveCallback = null
+      @devUrl = '#'
       return
 
     initialLoad: ->
@@ -18,6 +19,7 @@ define ['Admin/Main/Ctrl/Base', 'DeskPRO/Util/Util'], (Admin_Ctrl_Base, Util) ->
       @Api2.sendGet('/apps/' + @instanceId + '?include=app&inline_sideloads=true').then( (result) =>
         @app = result.data.data
         @$scope.appId = @app.id
+        @devUrl = "/agent?appstore.environment=development&appstore.instanceId=#{@instanceId}&appstore.applicationId=#{@app.application_id}"
 
         try
           @showChangeSettings = 0 < @app.app.manifest.settings.length
@@ -33,6 +35,7 @@ define ['Admin/Main/Ctrl/Base', 'DeskPRO/Util/Util'], (Admin_Ctrl_Base, Util) ->
       )
 
       return d.promise
+
 
     ###
     # Shows readme modal window
