@@ -8,8 +8,10 @@
 						<div style="float: left;">
 							<img ng-src="{{ ng_var('Ctrl.pack.icon_48') }}" alt="Icon" />
 						</div>
-						<div style="float:right">
+						<div style="float:right" class="btn-group--vertical">
 							<a class="btn btn-default" href="{{ ng_href('apps.apps.package', '{name: Ctrl.pack.name}') }}"><i class="fa fa-dropbox"></i> View App</a>
+
+							<a class="btn btn-default" ng-href="{{ ng_var('Ctrl.devUrl') }}" target="_blank"><i class="fa fa-dropbox"></i> Dev Mode</a>
 						</div>
 						<div style="margin-left: 52px;">
 							<input type="text" class="form-control camo-input" ng-model="Ctrl.app.name" style="font-size: 22px; width: 75%; max-width: 350px; height: auto;" />
