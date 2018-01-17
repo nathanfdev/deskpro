@@ -37,6 +37,8 @@ namespace Application\DeskPRO\EmailGateway\TicketGateway;
 use Application\DeskPRO\App;
 use Application\DeskPRO\EmailGateway\InlineImageTokens;
 use Application\DeskPRO\EmailGateway\PersonFromEmailProcessor;
+use DeskPRO\Bundle\AppBundle\Util\HttpClient;
+use GuzzleHttp;
 use Orb\Log\Logger;
 use Orb\Util\Strings;
 use Orb\Validator\StringEmail;
@@ -354,5 +356,79 @@ abstract class ProcessAbstract
         }
 
         return $body;
+    }
+
+    protected function importReplaceLinkedImages($body)
+    {
+        static $cache;
+        $m      = null;
+        $tmpDir = App::$container->get('deskpro.app_env')->getUserTmpDir();
+        $client = new HttpClient([
+            GuzzleHttp\RequestOptions::ALLOW_REDIRECTS => true,
+            GuzzleHttp\RequestOptions::CONNECT_TIMEOUT => 4,
+            GuzzleHttp\RequestOptions::TIMEOUT         => 10,
+        ]);
+
+        if (preg_match_all('#(<|&lt;)img[^>]*/?(>|&gt;)((<|&lt;)/img(>|&gt;))?#iu', $body, $m, \PREG_SET_ORDER)) {
+            foreach ($m as $match) {
+                // Check if it is even an inline image
+                $src = Strings::extractRegexMatch('#src=("|\')((https?:)?//.*?)(\1)#iu', $match[0], 2);
+                if ($src) {
+                    if (isset($cache[$src])) {
+                        $body = str_replace($match[0], $cache[$src], $body);
+                    } else {
+                        $tmpFile  = $tmpDir.'/email-image-'.mt_rand(1000, 9999);
+                        $resource = fopen($tmpFile, 'w');
+                        try {
+                            $client->request('GET', $src, ['sink' => $resource]);
+                        } catch (\Exception $e) {
+                            $this->logger->logError(sprintf('Download file failed: [%s:%s] %s', get_class($e), $e->getCode(), substr($e->getMessage(), 0, 1000)));
+
+                            continue;
+                        } finally {
+                            @fclose($resource);
+                        }
+                        if (!file_exists($tmpFile)) {
+                            continue;
+                        }
+                        if (!$type = exif_imagetype($tmpFile)) {
+                            // The downloaded file is not an image
+                            unlink($tmpFile);
+                            continue;
+                        }
+                        $name = $this->generateNameFromType($type);
+                        $blob = App::getContainer()->getBlobStorage()->createBlobRecordFromFile(
+                            $tmpFile,
+                            $name[0],
+                            $name[1]
+                        );
+                        unlink($tmpFile);
+                        $tag         = '[attach:image:'.$blob->getAuthcode().':'.$name[0].']';
+                        $body        = str_replace($match[0], $tag, $body);
+                        $cache[$src] = $tag;
+                    }
+                }
+            }
+        }
+
+        return $body;
+    }
+
+    protected function generateNameFromType($type)
+    {
+        $name = 'image'.mt_rand(1000, 9999);
+        switch ($type) {
+            case IMAGETYPE_GIF:
+                return [$name.'.gif', 'image/gif'];
+            case IMAGETYPE_JPEG:
+                return [$name.'.jpg', 'image/jpeg'];
+            case IMAGETYPE_PNG:
+                return [$name.'.png', 'image/png'];
+            case IMAGETYPE_BMP:
+                return [$name.'.bmp', 'image/bmp'];
+            case IMAGETYPE_TIFF_II:
+            case IMAGETYPE_TIFF_MM:
+                return [$name.'.tiff', 'image/tiff'];
+        }
     }
 }
