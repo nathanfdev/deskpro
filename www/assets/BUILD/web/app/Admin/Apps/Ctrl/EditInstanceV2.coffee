@@ -19,7 +19,15 @@ define ['Admin/Main/Ctrl/Base', 'DeskPRO/Util/Util'], (Admin_Ctrl_Base, Util) ->
       @Api2.sendGet('/apps/' + @instanceId + '?include=app&inline_sideloads=true').then( (result) =>
         @app = result.data.data
         @$scope.appId = @app.id
-        @devUrl = "/agent?appstore.environment=development&appstore.instanceId=#{@instanceId}&appstore.applicationId=#{@app.application_id}"
+
+        # todo import the url building logic from the apps module
+        devUrlQueryParams = [
+          'appstore.environment=development',
+          "appstore.instanceId=#{@instanceId}",
+          "appstore.applicationId=#{@app.application_id}",
+          "appstore.storageadapter=fetch"
+        ]
+        @devUrl = "/agent" + '?' + devUrlQueryParams.join('&')
 
         try
           @showChangeSettings = 0 < @app.app.manifest.settings.length
