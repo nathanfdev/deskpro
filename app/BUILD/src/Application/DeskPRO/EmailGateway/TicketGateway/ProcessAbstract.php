@@ -391,11 +391,21 @@ abstract class ProcessAbstract
                         if (!file_exists($tmpFile)) {
                             continue;
                         }
-                        if (!$type = exif_imagetype($tmpFile)) {
-                            // The downloaded file is not an image
-                            unlink($tmpFile);
-                            continue;
+                        if (function_exists('exif_imagetype')) {
+                            if (!$type = exif_imagetype($tmpFile)) {
+                                // The downloaded file is not an image
+                                unlink($tmpFile);
+                                continue;
+                            }
+                        } else {
+                            if (!$size = getimagesize($tmpFile)) {
+                                // The downloaded file is not an image
+                                unlink($tmpFile);
+                                continue;
+                            }
+                            $type = $size[2];
                         }
+
                         $name = $this->generateNameFromType($type);
                         $blob = App::getContainer()->getBlobStorage()->createBlobRecordFromFile(
                             $tmpFile,
