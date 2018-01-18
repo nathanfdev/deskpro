@@ -26,9 +26,7 @@ export class Http {
   /*
    * Called during constructor. Meant as a hook point for sub-classes.
    */
-  init() {
-    // add stuff
-  }
+  init() { } // eslint-disable-line class-methods-use-this
 
   /*
    * Set a default header on all request.
@@ -128,12 +126,12 @@ export class Http {
   /*
    * Send a request.
    *
-   * @param {Object} config
+   * @param {Object} requestConfig
    * @returns {Promise}
    */
-  send(config) {
-    const sendReq = (config) => {
-      config = this.applyDefaultConfig(config);
+  send(requestConfig) {
+    const sendReq = (initialConfig) => {
+      let config = this.applyDefaultConfig(initialConfig);
 
       if (config.method === 'POST' || config.method === 'PUT' || config.method === 'PATCH') {
         if (config.jsonPayload) {
@@ -159,18 +157,35 @@ export class Http {
 
           ajaxResolve(response);
         }).fail((jqXHR, textStatus) => {
-          let response = new HttpResponse(jqXHR, textStatus, config, jqXHR.responseJSON);
+          const expectedJsonPayload = config.dataType === 'json' || ['application/json', 'text/javascript'].indexOf(jqXHR.getResponseHeader('Content-Type')) !== -1;
+          const isEmptyString = jqXHR.responseText === '' || `${jqXHR.getResponseHeader('Content-Length')}` === '0';
+
+          const isParseEmptyJsonStringError = textStatus === 'parsererror'
+            && expectedJsonPayload
+            && isEmptyString
+          ;
+
+          let response = new HttpResponse(
+            jqXHR,
+            isParseEmptyJsonStringError ? 'success' : textStatus,
+            config,
+            isParseEmptyJsonStringError ? null : jqXHR.responseJSON);
+
           if (config.transformResponse) {
             response = config.transformResponse(response);
           }
 
-          ajaxReject(response);
+          if (isParseEmptyJsonStringError) {
+            ajaxResolve(response);
+          } else {
+            ajaxReject(response);
+          }
         });
       });
     };
 
     const chain = [sendReq, null];
-    let promise = new Promise(resolve => resolve(config));
+    let promise = new Promise(resolve => resolve(requestConfig));
 
     this.interceptors.forEach((i) => {
       if (i.request || i.requestError) {
@@ -212,7 +227,7 @@ export class Http {
     return promise;
   }
 
-  getBoundInterceptor(i, s) {
+  getBoundInterceptor(i, s) { // eslint-disable-line class-methods-use-this
     if (!i) {
       return null;
     } else if (isPlainObject(s)) {
