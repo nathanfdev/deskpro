@@ -130,6 +130,8 @@
                     {{ nav.list_subitem('New Reply triggers', ng_href('tickets.triggers', {type: "newreply"}), 'type:tickets.triggers.newreply', 'fa-group') }}
                     {{ nav.list_subitem('Ticket Update triggers', ng_href('tickets.triggers', {type: "update"}), 'type:tickets.triggers.update', 'fa-group') }}
 
+                    {{ nav.list_subitem('Webhooks', ng_href('tickets.webhooks', {type: "list"}), 'type:tickets.webhooks.list', 'fa-cloud') }}
+
                     {{ nav.list_subitem('Macros', ng_href('tickets.macros'), 'tickets.macros', 'fa-keyboard-o') }}
                     {{ nav.list_subitem('Filters', ng_href('tickets.ticket_filters'), 'tickets.ticket_filters', 'fa-filter') }}
                     {{ nav.list_subitem('Satisfaction', ng_href('tickets.satisfaction'), 'tickets.satisfaction', 'fa-smile-o') }}

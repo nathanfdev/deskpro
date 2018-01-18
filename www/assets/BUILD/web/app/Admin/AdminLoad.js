@@ -108,6 +108,9 @@ define([
   'Admin/TicketTriggers/Ctrl/EditSatisfactionTrigger',
   'Admin/TicketTriggers/Ctrl/Edit',
   'Admin/TicketTriggers/Ctrl/List',
+  'Admin/TicketWebhooks/Ctrl/List',
+  'Admin/TicketWebhooks/Ctrl/TriggerEdit',
+
   'Admin/TicketUrgencies/Ctrl/List',
   'Admin/TicketProblems/Ctrl/Settings',
   'Admin/FeedbackStatuses/Ctrl/List',

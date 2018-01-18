@@ -30,6 +30,7 @@ namespace DeskPRO\Bundle\ApiBundle\Controller\Webhooks;
 
 use Application\DeskPRO\Entity\TicketTrigger;
 use DeskPRO\Bundle\AppBundle\Entity\Webhooks\TicketWebhook;
+use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\CheckboxType;
 use Symfony\Component\Form\Extension\Core\Type\CollectionType;
@@ -66,14 +67,14 @@ class TicketWebhookFormType extends AbstractType
                 'required' => true,
                 'mapped'   => true,
             ])
-           ->add('triggers', CollectionType::class, [
-               'mapped'        => true,
-               'allow_add'    => true,
-               'allow_delete' => true,
-               'entry_type'    => TriggerFormType::class,
-               'entry_options' => [],
-           ])
-          ->addEventListener(FormEvents::POST_SUBMIT, [$this, 'onPostSubmit'])
+           ->add('triggers', EntityType::class, [
+                'class' => TicketTrigger::class,
+                'multiple' => true
+           ]);
+
+          $builder->addEventListener(FormEvents::POST_SUBMIT, function(FormEvent $event) use ($options) {
+            $this->onPostSubmit($event, $options);
+          })
         ;
     }
 
@@ -82,7 +83,7 @@ class TicketWebhookFormType extends AbstractType
      *
      * @param FormEvent $event
      */
-    public function onPostSubmit(FormEvent $event)
+    public function onPostSubmit(FormEvent $event, array $options)
     {
         $form = $event->getForm();
         /** @var TicketWebhook $data */
@@ -90,26 +91,18 @@ class TicketWebhookFormType extends AbstractType
 
         /** @var TicketTrigger $trigger */
         foreach ($webhook->getTriggers() as $trigger) {
-            $this->setRequiredTriggerProperties($webhook, $trigger);
+            $this->setRequiredTriggerProperties($webhook, $trigger, $options);
         }
     }
 
     /**
      * @param TicketWebhook $webhook
      * @param TicketTrigger $trigger
+     * @param $options
      */
-    private function setRequiredTriggerProperties( TicketWebhook $webhook, TicketTrigger $trigger)
+    private function setRequiredTriggerProperties( TicketWebhook $webhook, TicketTrigger $trigger, $options = [])
     {
-        $trigger->event_trigger = TicketTrigger::EVENT_TYPE_WEBHOOK;
-        $trigger->has_stop_triggers_action = false;
-        $trigger->has_delete_ticket_action = false;
-        $trigger->email_account = null;
-        $trigger->by_agent_mode = null;
-        $trigger->by_user_mode = null;
-        $trigger->by_app_mode = null;
-
         $trigger->is_enabled = $webhook->isIsEnabled();
-
         if (! $trigger->title) {
             $trigger->title = sprintf('Trigger for webhook %s', $webhook->getAuthId());
         }

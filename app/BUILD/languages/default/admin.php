@@ -678,6 +678,12 @@ return [
     'adm.ticket_triggers.copy_trigger'                                                     => 'Copy another trigger',
     'adm.ticket_triggers.copy_trigger_modal_title'                                         => 'Copy Trigger',
     'adm.ticket_triggers.do_copy'                                                          => 'Apply Trigger settings to form',
+
+    'adm.ticket_webhooks.count_webhooks'                                                   => '{{count}} Webhook|{{count}} Webhooks',
+    'adm.ticket_webhooks.no_webhooks'                                                      => 'You have not added any webhooks here yet.',
+
+
+
     'adm.tickets.account_details'                                                          => 'Account Details',
     'adm.tickets.delete_account'                                                           => 'Delete Ticket Account',
     'adm.tickets.delete_account_confirm'                                                   => 'Are you sure you want to delete this email account? DeskPRO will stop processing emails from this account.',
