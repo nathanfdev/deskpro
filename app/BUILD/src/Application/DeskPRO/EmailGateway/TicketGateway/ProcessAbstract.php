@@ -369,6 +369,7 @@ abstract class ProcessAbstract
             GuzzleHttp\RequestOptions::TIMEOUT         => 10,
         ]);
 
+        $totalImageSize = 0;
         if (preg_match_all('#(<|&lt;)img[^>]*/?(>|&gt;)((<|&lt;)/img(>|&gt;))?#iu', $body, $m, \PREG_SET_ORDER)) {
             foreach ($m as $match) {
                 // Check if it is even an inline image
@@ -383,6 +384,8 @@ abstract class ProcessAbstract
                             $client->request('GET', $src, ['sink' => $resource]);
                         } catch (\Exception $e) {
                             $this->logger->logError(sprintf('Download file failed: [%s:%s] %s', get_class($e), $e->getCode(), substr($e->getMessage(), 0, 1000)));
+                            $tag  = "<a href=\"$src\" target=\"_blank\">$src</a>";
+                            $body = str_replace($match[0], $tag, $body);
 
                             continue;
                         } finally {
@@ -391,6 +394,15 @@ abstract class ProcessAbstract
                         if (!file_exists($tmpFile)) {
                             continue;
                         }
+                        $imageSize = filesize($tmpFile);
+                        // We don't import images over 10 MB and more than 25MB of images in total
+                        if ($imageSize > 10 * 1024 * 1024 || $totalImageSize + $imageSize > 25 * 1024 * 1024) {
+                            unlink($tmpFile);
+                            $tag  = "<a href=\"$src\" target=\"_blank\">$src</a>";
+                            $body = str_replace($match[0], $tag, $body);
+                            continue;
+                        }
+                        $totalImageSize += $imageSize;
                         if (function_exists('exif_imagetype')) {
                             if (!$type = exif_imagetype($tmpFile)) {
                                 // The downloaded file is not an image
