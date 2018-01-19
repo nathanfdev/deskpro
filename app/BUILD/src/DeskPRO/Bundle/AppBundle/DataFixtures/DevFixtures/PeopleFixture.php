@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2017, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2018, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -34,7 +34,7 @@ use Application\DeskPRO\Entity\Organization;
 use Application\DeskPRO\Entity\OrganizationNote;
 use Application\DeskPRO\Entity\Person;
 use Application\DeskPRO\Entity\Usergroup;
-use DeskPRO\Bundle\AppBundle\DataFixtures\DeskProAbstractFixture;
+use DeskPRO\Bundle\AppBundle\DataFixtures\AbstractDpFixture;
 use DeskPRO\Bundle\AppBundle\DataFixtures\Tools\RandomFileFromDir;
 use DeskPRO\Bundle\AppBundle\Entity\PersonOnboarding;
 use Doctrine\Common\Collections\Criteria;
@@ -43,7 +43,7 @@ use Doctrine\Common\Persistence\ObjectManager;
 use Orb\Data\ContentTypes;
 use Orb\Util\Strings;
 
-class PeopleFixture extends DeskProAbstractFixture implements OrderedFixtureInterface
+class PeopleFixture extends AbstractDpFixture implements OrderedFixtureInterface
 {
     private $numPeople = 500;
     private $numAgents = 10;

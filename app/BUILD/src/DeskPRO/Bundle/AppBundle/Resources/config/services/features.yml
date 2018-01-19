@@ -9,6 +9,14 @@ services:
     class: DeskPRO\Bundle\AppBundle\Features\FeaturesCollection
     arguments: ["@deskpro.features_access_checker"]
 
+  deskpro.toggle_feature_manager:
+    class: DeskPRO\Bundle\AppBundle\Features\ToggleFeatureManager
+    arguments:
+      - "@deskpro.features_collection"
+      - "@doctrine.orm.default_entity_manager"
+      - "@event_dispatcher"
+      - "@service_container"
+
   deskpro.features.agent_chat:
     class: DeskPRO\Bundle\AppBundle\Features\AgentChatFeature
     arguments:

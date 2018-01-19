@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2017, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2018, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -28,13 +28,8 @@
 
 namespace Application\DeskPRO\JobQueue\Processor;
 
-use Application\DeskPRO\Entity\Setting;
-use Application\DeskPRO\Entity\TmpData;
-use Application\DeskPRO\EntityRepository\Setting as SettingRepository;
-use DeskPRO\Bundle\AppBundle\Features\BetaFeatureInterface;
-use DeskPRO\Bundle\AppBundle\Notification\Event\LegacySystemEvent;
+use DeskPRO\Bundle\AppBundle\Features\ToggleFeatureManager;
 use Doctrine\DBAL\Connection;
-use Symfony\Component\DependencyInjection\ContainerInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 
 /**
@@ -45,22 +40,20 @@ class FeatureProcessor extends AbstractJobProcessor
     const JOB_TYPE = 'feature_switch';
 
     /**
-     * @var ContainerInterface
+     * @var ToggleFeatureManager
      */
-    private $container;
+    private $toggleFeatureManager;
 
     /**
      * Constructor.
      *
-     * @param Connection         $connection
-     * @param ContainerInterface $container
+     * @param Connection           $connection
+     * @param ToggleFeatureManager $toggleFeatureManager
      */
-    public function __construct(
-        Connection $connection,
-        ContainerInterface $container
-    ) {
+    public function __construct(Connection $connection, ToggleFeatureManager $toggleFeatureManager)
+    {
         parent::__construct($connection);
-        $this->container = $container;
+        $this->toggleFeatureManager = $toggleFeatureManager;
     }
 
     /**
@@ -78,56 +71,11 @@ class FeatureProcessor extends AbstractJobProcessor
      */
     public function process(array $data, array $job)
     {
-        $featureId = $data['feature_id'];
-        $action    = $data['action'];
-
-        $collection = $this->container->get('deskpro.features_collection');
-        $feature    = $collection->getFeature($featureId);
-
-        if (!$feature) {
-            throw new \LogicException(sprintf('Feature with id %s not found in collection!'), $featureId);
-        }
-
         try {
-            if ($action === 'enable') {
-                if ($feature->isEnabled()) {
-                    throw new \LogicException(sprintf('Feature %s already enabled', $feature->getTitle()), 400);
-                }
-                $feature->beforeEnable($this->container);
-            } elseif ($action === 'disable') {
-                if (!$feature->isEnabled()) {
-                    throw new \LogicException(sprintf('Feature %s already disabled', $feature->getTitle()), 400);
-                }
-                $feature->beforeDisable($this->container);
-            }
-
-            $em  = $this->container->get('doctrine.orm.default_entity_manager');
-            $key = sprintf('%s.%s', BetaFeatureInterface::BETA_FEATURES_KEY, $feature->getId());
-
-            // enable or disable feature in global settings
-            /** @var SettingRepository $settingsRepository */
-            $settingsRepository = $em->getRepository(Setting::class);
-            $settingsRepository->updateSetting($key, $action === 'enable');
-
-            // remove status indicators
-            $tmpData = $em->getRepository(TmpData::class)->findBy(['name' => $key]);
-            foreach ($tmpData as $tmpDatum) {
-                if ($tmpDatum->getType() === 'feature_'.$action) {
-                    $em->remove($tmpDatum);
-                }
-            }
-
-            $em->flush();
-
-            // broadcast a refresh event to all agents
-            if ($feature->needAgentReload()) {
-                $this->container
-                    ->get('event_dispatcher')
-                    ->dispatch(LegacySystemEvent::EVENT_NAME, new LegacySystemEvent('agent.ui.reload', [
-                        'type'        => 'admin',
-                        'person_id'   => 0,
-                        'person_name' => 'System',
-                    ]));
+            if ($data['action'] === 'enable') {
+                $this->toggleFeatureManager->enableFeature($data['feature_id']);
+            } else {
+                $this->toggleFeatureManager->disableFeature($data['feature_id']);
             }
 
             $this->runSuccessHandler($job);
