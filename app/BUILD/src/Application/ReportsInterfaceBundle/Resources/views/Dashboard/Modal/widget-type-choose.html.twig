@@ -69,6 +69,12 @@
                 <span class="title">Table data</span>
                 <div class="stat-preview stat-preview-multi-group"></div>
             </a>
+            <a name='simple_stat' ng-click="makeChoice('simple_stat')" class="link-pointer stat-preview-bucket"
+               ng-class="{'selected' : widget.type == 'simple_stat'}">
+                <span class="title">Simple Stat</span>
+
+                <div class="stat-preview stat-preview-simple-stat"></div>
+            </a>
         </div>
         <!-- needs js to fit verticaly to it's container -->
         <div class="popup-stat-preview">
@@ -92,6 +98,18 @@
                             my-index="{{ ng_var('$index') }}"
                             title="{{ ng_var('widgetPreview.title') }}"
                             table-data="{{ ng_var('widgetPreview.rendered_result') }}"
+                            widget-id = "{{ ng_var('reportWidget.id') }}"
+                    />
+                </div>
+            </div>
+            <div class="stat-preview" ng-if="widgetPreview && widgetPreview.type=='simple_stat' && widgetPreview.rendered_result">
+                <div>
+                    <dashboard-stat
+                            render-type = "test"
+                            my-index="{{ ng_var('$index') }}"
+                            title="{{ ng_var('widgetPreview.title') }}"
+                            value="{{ ng_var('widgetPreview.rendered_result.value') }}"
+                            description="{{ ng_var('widgetPreview.rendered_result.description') }}"
                             widget-id = "{{ ng_var('reportWidget.id') }}"
                     />
                 </div>

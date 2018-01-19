@@ -52,6 +52,7 @@ class ReportWidget extends DomainObject
     const LEGACY_RENDER_TYPE_AREA  = 'area';
     const LEGACY_RENDER_TYPE_PIE   = 'pie';
     const LEGACY_RENDER_TYPE_TABLE = 'table';
+    const LEGACY_RENDER_TYPE_STAT  = 'stat';
 
     /**
      * @var int
@@ -130,6 +131,7 @@ class ReportWidget extends DomainObject
         'simple_area'  => self::LEGACY_RENDER_TYPE_AREA,
         'pie'          => self::LEGACY_RENDER_TYPE_PIE,
         'table'        => self::LEGACY_RENDER_TYPE_TABLE,
+        'simple_stat'  => self::LEGACY_RENDER_TYPE_STAT,
     ];
 
     /**

@@ -44,12 +44,14 @@ class DashboardWidget
     const WIDGET_RENDER_TYPE_AREA  = 'simple_area';
     const WIDGET_RENDER_TYPE_PIE   = 'pie';
     const WIDGET_RENDER_TYPE_TABLE = 'table';
+    const WIDGET_RENDER_TYPE_STAT  = 'simple_stat';
 
     const LEGACY_RENDER_TYPE_BAR   = 'BAR';
     const LEGACY_RENDER_TYPE_LINE  = 'LINE';
     const LEGACY_RENDER_TYPE_AREA  = 'AREA';
     const LEGACY_RENDER_TYPE_PIE   = 'PIE';
     const LEGACY_RENDER_TYPE_TABLE = 'TABLE';
+    const LEGACY_RENDER_TYPE_STAT  = 'STAT';
 
     const WIDGET_VALUE_FROM_REPORT = 'from_report_value';
 
@@ -80,6 +82,7 @@ class DashboardWidget
         'simple_area'  => self::LEGACY_RENDER_TYPE_AREA,
         'pie'          => self::LEGACY_RENDER_TYPE_PIE,
         'table'        => self::LEGACY_RENDER_TYPE_TABLE,
+        'simple_stat'  => self::LEGACY_RENDER_TYPE_STAT,
     ];
 
     /**

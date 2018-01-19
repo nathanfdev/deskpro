@@ -5,28 +5,30 @@ define ->
     replace: true,
     template: """
       <div class="stat">
-          <div id="stat-title"></div>
-          <div id="stat-value"></div>
+          <div class="stat-value"></div>
+          <div class="stat-description"></div>
       </div>
     """
     link: (scope, element, attrs) ->
-      title = attrs.title
-      value = attrs.value
+      value       = attrs.value
+      description = attrs.description
 
       el = $(element)
-      t = el.find('#stat-title')
-      el.find('#stat-title').html(title)
-      el.find('#stat-value').html(value)
+      v = el.find('.stat-value')
+      el.find('.stat-value').html(value)
+      if description
+        el.find('.stat-description').html(description)
+      else
+        el.find('.stat-description').remove()
 
-
-#      // dynamic handler position
+      # dynamic handler position
       el = $(element)
       box = el.parent()
       listItem = box.parent()
 
       listItem.scroll () ->
 
-        t = box.offset().top - 47 - listItem.offset().top
+        v = box.offset().top - 47 - listItem.offset().top
 
         resHandlers = listItem.find('.gridster-item-resizable-handler')
 
