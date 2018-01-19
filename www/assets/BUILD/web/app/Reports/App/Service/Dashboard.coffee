@@ -37,7 +37,10 @@ define ['DeskPRO/Util/Arrays'], (Arrays) ->
         permissions: dashboard.permissions
 
       if dashboard.id
-        @Api2.sendPutJson "/dashboards/#{dashboard.id}", data
+        @Api2
+          .sendPutJson "/dashboards/#{dashboard.id}", data
+          .then (response) =>
+            deferred.resolve response
       else
         @Api2
           .sendPostJson '/dashboards', data
