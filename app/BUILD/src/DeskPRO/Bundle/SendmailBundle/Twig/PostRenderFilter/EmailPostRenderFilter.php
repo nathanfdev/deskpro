@@ -74,9 +74,9 @@ class EmailPostRenderFilter extends AbstractPostRenderFilter
         $code = Strings::postDomDocument($code);
 
         foreach ($saveBlocks as $id => $block) {
-            // Replace <p> with <br /> in messages
-            $block = preg_replace('/<p[^>]*?>/', '', $block);
-            $block = str_replace('</p>', '<br />', $block);
+            // Replace <p> with <div /> in messages
+            $block = preg_replace('/<p([^>]*)>/', '<div$1>', $block);
+            $block = str_replace('</p>', '</div>', $block);
             $code  = str_replace($id, $block, $code);
         }
 
