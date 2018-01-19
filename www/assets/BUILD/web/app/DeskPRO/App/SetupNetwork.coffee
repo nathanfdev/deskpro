@@ -111,6 +111,24 @@ define ['DeskPRO/Util/Util'], (Util) ->
 
           return url
 
+        $delegate.formatApi2Url = (endpoint, params) ->
+          endpoint = endpoint.replace(/^\//, '')
+          url = "#{window.DP_BASE_API_URL}/v2/#{endpoint}"
+
+          if params
+            url += if url.indexOf('?') == -1 then '?' else '&'
+            if Util.isArray(params)
+              for itm in params
+                k = encodeURIComponent(itm.name)
+                v = encodeURIComponent(itm.value)
+                url += "#{k}=#{v}&"
+            else
+              url += formatUrlObject(params)
+
+          url = url.replace(/&$/, '')
+
+          return url
+
         $delegate.signUrl = (url) ->
           url += if url.indexOf('?') == -1 then '?' else '&'
           url += 'API-TOKEN=' + window.DP_API_TOKEN + '&SESSION-ID=' + window.DP_SESSION_ID + '&REQUEST-TOKEN=' + window.DP_REQUEST_TOKEN

@@ -107,7 +107,7 @@ define ['DeskPRO/Util/Arrays'], (Arrays) -> [
           )
 
     $scope.download = (widget) ->
-      window.open($http.formatApiUrl('/reports/widget/download/' + widget.id + '/csv'))
+      window.open($http.formatApi2Url('/dashboard_report_widgets/' + widget.id + '/download/csv'))
       return true
 
     ####################################################################################################################

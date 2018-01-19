@@ -28,7 +28,6 @@
 
 namespace Application\LegacyApiBundle\Service;
 
-use Application\DeskPRO\Entity\ReportDashboardReport as DashboardReportEntity;
 use Application\DeskPRO\Entity\ReportDashboardWidget as DashboardWidgetEntity;
 use Application\DeskPRO\Entity\SavedDashboardWidget;
 use DeskPRO\Bundle\ReportBundle\Dpql2\DpqlCompiler;
@@ -194,28 +193,5 @@ class DashboardWidget
         $renderer = $this->rendererRegistry->getRenderer($mapped, $format);
 
         return $renderer->render($query->getResults());
-    }
-
-    /**
-     * @param DashboardReportEntity $report
-     * @param DashboardReportEntity $reportPrototype
-     *
-     * @throws \Exception
-     */
-    public function copyWidgetLinks(DashboardReportEntity $report, DashboardReportEntity $reportPrototype)
-    {
-        foreach ($reportPrototype->getWidgets() as $widget_prototype) {
-            $widget = new DashboardWidgetEntity();
-            $widget
-                ->setTitle($widget_prototype->getTitle())
-                ->setPosition($widget_prototype->getPosition())
-                ->setSize($widget_prototype->getSize())
-                ->setType($widget_prototype->getType())
-                ->setVariables($widget_prototype->getVariables())
-                ->setReport($report)
-                ->setWidget($widget_prototype->getWidget());
-            $this->em->persist($widget);
-            $report->addWidget($widget);
-        }
     }
 }

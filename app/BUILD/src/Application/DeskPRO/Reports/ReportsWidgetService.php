@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2017, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2018, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -35,7 +35,6 @@ use Application\DeskPRO\Dpql\Statement\Display;
 use Application\DeskPRO\Entity\AgentTeam;
 use Application\DeskPRO\Entity\Department;
 use Application\DeskPRO\Entity\Person;
-use Application\DeskPRO\Entity\ReportDashboardWidget as DashboardWidgetEntity;
 use Application\DeskPRO\Entity\ReportWidget;
 use Application\DeskPRO\EntityRepository\AgentTeam as AgentTeamRepository;
 use Application\DeskPRO\EntityRepository\Department as DepartmentRepository;
@@ -44,7 +43,6 @@ use Application\DeskPRO\EntityRepository\ReportWidget as ReportWidgetRepository;
 use Application\DeskPRO\Input\Reader;
 use Application\LegacyApiBundle\Service\DashboardWidget;
 use Doctrine\ORM\EntityManager;
-use Symfony\Component\HttpFoundation\Response;
 
 class ReportsWidgetService
 {
@@ -218,39 +216,6 @@ class ReportsWidgetService
         }
 
         return $resultsStack;
-    }
-
-    /**
-     * @param DashboardWidgetEntity $widget
-     * @param string                $type
-     * @param mixed                 $query
-     *
-     * @return Response
-     */
-    public function outputDownloadContent(DashboardWidgetEntity $widget, $type, $query = null)
-    {
-        $report = $widget->getWidget();
-        $params = $this->getParamsInput('params');
-
-        $widgetVariables = $widget->getVariables();
-        $reportVariables = $report->getVariables();
-
-        foreach ($reportVariables as &$variable) {
-            if (isset($widgetVariables[$variable['name']])) {
-                $variable['value'] = $widgetVariables[$variable['name']]['value'];
-            }
-        }
-
-        $params['variables'] = array_merge($report->getVariables(), $reportVariables);
-
-        if ($query == 'from_request') {
-            $parts = $this->in->getArrayValue('parts');
-            $query = Display::getQueryStringFromParts($parts);
-        } else {
-            $query = $report->getQuery();
-        }
-
-        return $this->getReportResponseForType($type, $query, $report->getTitle('printable', $params), $params);
     }
 
     /**
@@ -489,34 +454,6 @@ class ReportsWidgetService
             'limit'      => $parts['LIMIT'] ?: '',
             'offset'     => $parts['OFFSET'] ?: '',
         ];
-    }
-
-    /**
-     * @param string $type
-     * @param string $query
-     * @param string $title
-     * @param array  $params
-     *
-     * @return Response
-     */
-    protected function getReportResponseForType($type, $query, $title, array $params = [])
-    {
-        @set_time_limit(0);
-
-        $compiler  = new Compiler();
-        $statement = $compiler->compile($query, $params);
-        $statement->setImplicitLimit(0);
-
-        $renderer = $statement->getRenderer($type);
-        $renderer->setTitle($title);
-        $output = $renderer->render();
-
-        $response = App::getResponse();
-        $response->headers->set('Content-Type', $renderer->getContentType());
-        $response->headers->set('Content-Disposition', 'inline; filename='.$renderer->getFileName($title));
-        $response->setContent($output);
-
-        return $response;
     }
 
     /**

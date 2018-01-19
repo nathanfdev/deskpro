@@ -34,6 +34,7 @@ use DeskPRO\Bundle\ApiBundle\Controller\CrudController;
 use DeskPRO\Bundle\AppBundle\Annotation\ActionPermissions\Annotation\ApiModes;
 use DeskPRO\Bundle\AppBundle\Annotation\ActionPermissions\Annotation\Feature;
 use DeskPRO\Bundle\AppBundle\Form\Type\Reports\ReportDashboardWidgetType;
+use DeskPRO\Bundle\AppBundle\Security\Voter\PermissionGroups\PermissionGroupVoter;
 use Doctrine\ORM\QueryBuilder;
 use FOS\RestBundle\Controller\Annotations as Rest;
 use Symfony\Component\HttpFoundation\Request;
@@ -63,6 +64,48 @@ class DashboardReportWidgetsController extends CrudController
     public static $entity       = ReportDashboardWidget::class;
     public static $type         = ReportDashboardWidgetType::class;
     public static $listPaginate = false;
+
+    /**
+     * @Rest\Get("/{dashboardWidget}/download/{type}")
+     *
+     * @param ReportDashboardWidget $dashboardWidget
+     * @param string                $type
+     * @param Request               $request
+     *
+     * @return Response
+     */
+    public function downloadAction(ReportDashboardWidget $dashboardWidget, $type, Request $request)
+    {
+        $this->denyAccessUnlessGranted(PermissionGroupVoter::VIEW, $this->getPermissionGroupEntityContext($dashboardWidget->getId(), $request));
+
+        $widget = $dashboardWidget->getWidget();
+        $query  = $widget->getQuery();
+
+        $variables       = [];
+        $reportVariables = $dashboardWidget->getReport()->getVariables();
+        $widgetVariables = $dashboardWidget->getVariables();
+
+        foreach ($widgetVariables as $widgetVariable) {
+            foreach ($reportVariables as $reportVariable) {
+                if ($reportVariable['name'] === $widgetVariable['name']) {
+                    $widgetVariable['value'] = $reportVariable['value'];
+                }
+            }
+
+            $variables[] = $widgetVariable;
+        }
+
+        $query    = $this->get('dpql.compiler')->compile($query, ['variables' => $variables]);
+        $results  = $query->getResults();
+        $renderer = $this->get('reports.renderer_registry')->getRenderer(ReportDashboardWidget::TYPE_TABLE, $type);
+
+        $response = new Response();
+        $response->headers->set('Content-Type', $renderer->getContentType());
+        $response->headers->set('Content-Disposition', 'inline; filename='.$widget->getTitle().'.'.$renderer->getExtension());
+        $response->setContent($renderer->render($results));
+
+        return $response;
+    }
 
     /**
      * @param HttpKernelInterface $kernel
