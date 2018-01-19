@@ -53,6 +53,13 @@ services:
     tags:
       - { name: reports.renderer }
 
+  reports.renderer.json_stat:
+    class: DeskPRO\Bundle\ReportBundle\Reports\Renderer\Json\JsonStatRenderer
+    arguments:
+      - "@reports.values_renderer.json"
+    tags:
+      - { name: reports.renderer }
+
   # CSV renderers
   reports.renderer.csv_table:
     class: DeskPRO\Bundle\ReportBundle\Reports\Renderer\CsvTableRenderer

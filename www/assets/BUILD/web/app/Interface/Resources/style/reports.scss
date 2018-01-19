@@ -1210,6 +1210,18 @@ $gridster-box-header-height: 32px;
       right: 0;
       height: auto;
       overflow: auto;
+      .stat-value {
+        text-align: center;
+        font-size: 42px;
+        font-weight: 600;
+        margin-top: 20px;
+      }
+      .stat-description {
+        text-align: center;
+        font-size: 36px;
+        margin-top: 20px;
+        word-wrap: break-word;
+      }
     }
     .box > div {
       height: 100%;
