@@ -169,10 +169,10 @@ abstract class AbstractJsonChartRenderer extends AbstractJsonRenderer
                     foreach ($groupYColumns as $column) {
                         ++$i;
                         if ($i == 1) {
-                            $grouper = $this->renderCellValue($row, $column);
+                            $grouper = $this->renderCellValue($row, $column, $metadata);
                             continue;
                         } else {
-                            $categories[] = $this->renderCellValue($row, $column);
+                            $categories[] = $this->renderCellValue($row, $column, $metadata);
                         }
                     }
                     $category = implode(' / ', $categories);
@@ -219,9 +219,9 @@ abstract class AbstractJsonChartRenderer extends AbstractJsonRenderer
                 $rowGroups = [];
                 foreach ($rows as $row) {
                     $categories = [];
-                    $grouper    = $this->valueRenderer->renderValue($this->getColumnValue($row, $stackColumns[0]['printId']), 'string');
+                    $grouper    = $this->valueRenderer->renderValue($this->getColumnValue($row, $stackColumns[0]['printId']), 'string', $metadata);
                     foreach ($groupYColumns as $column) {
-                        $categories[] = $this->renderCellValue($row, $column);
+                        $categories[] = $this->renderCellValue($row, $column, $metadata);
                     }
                     $category = implode(' / ', $categories);
 
@@ -267,7 +267,7 @@ abstract class AbstractJsonChartRenderer extends AbstractJsonRenderer
                 foreach ($rows as $row) {
                     $categories = [];
                     foreach ($groupYColumns as $column) {
-                        $categories[] = $this->renderCellValue($row, $column);
+                        $categories[] = $this->renderCellValue($row, $column, $metadata);
                     }
                     $category = implode(' / ', $categories);
 

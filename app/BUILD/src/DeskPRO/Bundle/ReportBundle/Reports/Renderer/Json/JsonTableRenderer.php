@@ -199,15 +199,15 @@ class JsonTableRenderer extends AbstractJsonRenderer
     /**
      * Renders the body of a "simple" table.
      *
-     * @param ResultMetadata $resultHandler
+     * @param ResultMetadata $metadata
      * @param array          $rows
      *
      * @return string
      */
-    protected function renderBody(ResultMetadata $resultHandler, array $rows)
+    protected function renderBody(ResultMetadata $metadata, array $rows)
     {
-        $groupColumns  = $resultHandler->getGroupYColumns();
-        $selectColumns = $resultHandler->getSelectColumns();
+        $groupColumns  = $metadata->getGroupYColumns();
+        $selectColumns = $metadata->getSelectColumns();
         $rows          = array_values($rows); // need continuous keys
 
         $rowsRendered = [];
@@ -272,14 +272,14 @@ class JsonTableRenderer extends AbstractJsonRenderer
                         ? ' rowspan="'.($groupSkipCount[$groupId] + 1).'"'
                         : ''
                     );
-                    $rendered = $this->renderCellValue($row, $groupColumn);
+                    $rendered = $this->renderCellValue($row, $groupColumn, $metadata);
 
                     $cells[] = "<th$rowSpan>$rendered</th>";
                 }
             }
 
             foreach ($selectColumns as $column) {
-                $cells[] = $this->renderCellValue($row, $column);
+                $cells[] = $this->renderCellValue($row, $column, $metadata);
             }
 
             ++$rowCount;

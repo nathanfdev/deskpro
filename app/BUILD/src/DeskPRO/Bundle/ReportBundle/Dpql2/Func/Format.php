@@ -90,9 +90,9 @@ class Format extends AbstractFunc
 
         $name = 'FORMAT('.$preppedValue->name().', '.$preppedType->name().$argNameOutput.')';
 
-        $renderer = function (AbstractValueRenderer $valueRenderer, $value, array $row, AbstractRenderer $renderer) use ($typeLiteral, $argLiterals) {
+        $renderer = function (AbstractValueRenderer $valueRenderer, $value, array $row, AbstractRenderer $renderer, ResultMetadata $metadata) use ($typeLiteral, $argLiterals) {
             if ($value === null) {
-                return $valueRenderer->renderValue(null, 'string');
+                return $valueRenderer->renderValue(null, 'string', $metadata);
             }
 
             switch (strtolower($typeLiteral)) {
@@ -124,7 +124,7 @@ class Format extends AbstractFunc
                     return $valueRenderer->escapeValue(number_format($value * 100, $decimals).'%');
             }
 
-            return $valueRenderer->renderValue($value, $typeLiteral);
+            return $valueRenderer->renderValue($value, $typeLiteral, $metadata);
         };
 
         return new Prepared($preppedValue->sql(), $name, false, $renderer);

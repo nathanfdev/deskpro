@@ -164,7 +164,7 @@ class SelectPart
     /**
      * @var ResultMetadata
      */
-    private $resultHandler;
+    private $resultMetadata;
 
     /**
      * Maps aliases (keys) to select field IDs (in the SQL).
@@ -338,9 +338,12 @@ class SelectPart
         $this->setSelect($select);
         $this->setFrom($from);
 
+        $token  = $this->tokenStorage->getToken();
+        $person = $token && $token->getUser() instanceof Person ? $token->getUser() : null;
+
         $this->sql              = new SqlSelect($this->em->getConnection());
-        $this->resultHandler    = new ResultMetadata();
-        $this->sqlSelectContext = new SqlSelectContext($this->reportsConnection, $this->resultHandler, [
+        $this->resultMetadata   = new ResultMetadata($person);
+        $this->sqlSelectContext = new SqlSelectContext($this->reportsConnection, $this->resultMetadata, [
             new HierarchyPlugin(
                 $this->reportsConnection,
                 new HierarchySorting($this->reportsConnection),
@@ -405,7 +408,7 @@ class SelectPart
     public function getResults()
     {
         $results = new Results();
-        $results->setMetadata($this->resultHandler);
+        $results->setMetadata($this->resultMetadata);
         $this->reportsConnection->query("SET time_zone = '+0:00'");
 
         try {
@@ -589,13 +592,13 @@ class SelectPart
     /**
      * @return \DeskPRO\Bundle\ReportBundle\Reports\ResultMetadata
      */
-    public function getResultHandler()
+    public function getResultMetadata()
     {
         if (!$this->prepared) {
             $this->prepare();
         }
 
-        return $this->resultHandler;
+        return $this->resultMetadata;
     }
 
     /**
@@ -690,7 +693,7 @@ class SelectPart
         $this->prepared = true;
 
         if ($this->from instanceof Alias) {
-            $prepared = $this->from->prepare($this, 'from', [], $this->sql, $this->resultHandler);
+            $prepared = $this->from->prepare($this, 'from', [], $this->sql, $this->resultMetadata);
             $this->sql->setTable([$prepared->sql(), $this->from->alias]);
         } else {
             $repository = $this->getFromEntityRepository();
@@ -743,7 +746,7 @@ class SelectPart
                 $field = $this->statementFactory->createSubSelect($field->toSql());
             }
 
-            $select = $field->prepare($this, 'select', [], $sql, $this->resultHandler);
+            $select = $field->prepare($this, 'select', [], $sql, $this->resultMetadata);
             $this->addPreparedSelectField($select, $alias);
         }
     }
@@ -758,10 +761,10 @@ class SelectPart
             $id = $this->addSqlSelectField($select->printed(), $alias);
 
             $resultTitle = ($alias !== false ? $alias : $select->name());
-            $this->resultHandler->addSelectColumn($resultTitle, $id, $select->renderer());
+            $this->resultMetadata->addSelectColumn($resultTitle, $id, $select->renderer());
 
             if ($select->total()) {
-                $this->resultHandler->addTotalColumn($id);
+                $this->resultMetadata->addTotalColumn($id);
             }
         }
     }
@@ -772,7 +775,7 @@ class SelectPart
     protected function prepareWhere()
     {
         if ($this->where) {
-            $where = $this->where->prepare($this, 'where', [], $this->sql, $this->resultHandler);
+            $where = $this->where->prepare($this, 'where', [], $this->sql, $this->resultMetadata);
             if ($where->hasValue()) {
                 $this->sql->addCondition($where->sql());
             }
@@ -795,14 +798,14 @@ class SelectPart
         $this->splitSql = $splitSql;
 
         foreach ($this->splitBy as $group) {
-            $groupBy = $group->prepare($this, 'split', [], $this->sql, $this->resultHandler);
+            $groupBy = $group->prepare($this, 'split', [], $this->sql, $this->resultMetadata);
             if ($groupBy->hasValue()) {
                 $splitSql->addGroupBy($groupBy->sql());
 
                 $this->splitColumnMap[$groupBy->sql()] = $splitSql->addSelectField($groupBy->sql());
 
                 $id = $splitSql->addSelectField($groupBy->printed());
-                $this->resultHandler->addSplitColumn($id, $groupBy->renderer());
+                $this->resultMetadata->addSplitColumn($id, $groupBy->renderer());
             }
         }
 
@@ -834,7 +837,7 @@ class SelectPart
                 $alias = false;
             }
 
-            $groupBy = $group->prepare($this, 'group', [], $sql, $this->resultHandler);
+            $groupBy = $group->prepare($this, 'group', [], $sql, $this->resultMetadata);
             if ($groupBy->hasValue()) {
                 $printId = $this->addSqlSelectField($groupBy->printed(), $alias);
                 $sql->addGroupBy($groupBy->sql());
@@ -860,7 +863,7 @@ class SelectPart
                 $renderer    = $groupBy->renderer() ?: function ($valueRenderer, $value, $row) {
                     return array_key_exists('hierarchy_title', $row) ? $row['hierarchy_title'] : $value;
                 };
-                $this->resultHandler->addGroupYColumn($resultTitle, $groupId, $printId, $renderer);
+                $this->resultMetadata->addGroupYColumn($resultTitle, $groupId, $printId, $renderer);
             }
         }
     }
@@ -898,7 +901,7 @@ class SelectPart
                 $direction = false;
             }
 
-            $orderSql = $order->prepare($this, 'order', [], $sql, $this->resultHandler);
+            $orderSql = $order->prepare($this, 'order', [], $sql, $this->resultMetadata);
             if ($orderSql->hasValue()) {
                 $sql->addOrderBy($orderSql->ordered().$direction);
             }
@@ -1271,7 +1274,7 @@ class SelectPart
     {
         $this->withRollup = $withRollup;
         if ($this->withRollup) {
-            $this->resultHandler->addFlag(ResultMetadata::FLAG_WITH_ROLLUP);
+            $this->resultMetadata->addFlag(ResultMetadata::FLAG_WITH_ROLLUP);
         }
     }
 

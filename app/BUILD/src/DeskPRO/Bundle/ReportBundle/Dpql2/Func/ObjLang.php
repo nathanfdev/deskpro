@@ -91,12 +91,12 @@ class ObjLang extends AbstractFunc
         $refProp = !empty($arguments[2]) ? $this->_toLiteral($arguments[2]) : 'title';
         $langId  = $person instanceof Person ? $person->getLanguage() : 0;
 
-        $renderer = function (AbstractValueRenderer $valueRenderer, $value, array $row, AbstractRenderer $renderer) use ($refType, $refProp, $langId) {
+        $renderer = function (AbstractValueRenderer $valueRenderer, $value, array $row, AbstractRenderer $renderer, ResultMetadata $metadata) use ($refType, $refProp, $langId) {
             if ($value === null) {
-                return $valueRenderer->renderValue(null, 'string');
+                return $valueRenderer->renderValue(null, 'string', $metadata);
             }
 
-            $value = $valueRenderer->renderValue($value, 'id');
+            $value = $valueRenderer->renderValue($value, 'id', $metadata);
             $text  = $this->connection->fetchColumn('
                 SELECT value
                 FROM object_lang

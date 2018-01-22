@@ -331,8 +331,8 @@ END)
                             $argSelect = [$select->addSelectField($sql)];
                         }
 
-                        $renderer = function (AbstractValueRenderer $valueRenderer, $value, array $row, AbstractRenderer $renderer) use ($lookup, $argSelect) {
-                            return $this->dpqlFuncRegistry->getLinkFunction()->formatLink($value, $lookup[0], $argSelect, $row, $valueRenderer, $renderer);
+                        $renderer = function (AbstractValueRenderer $valueRenderer, $value, array $row, AbstractRenderer $renderer, ResultMetadata $metadata) use ($lookup, $argSelect) {
+                            return $this->dpqlFuncRegistry->getLinkFunction()->formatLink($value, $lookup[0], $argSelect, $row, $valueRenderer, $renderer, $metadata);
                         };
                     }
 
@@ -527,10 +527,10 @@ END)
                     $call    = $this->statementFactory->createColumn(array_merge($this->parts, ['value']));
                     $prepped = $call->prepare($statement, $section, $stack, $select, $result);
 
-                    $renderer = function (AbstractValueRenderer $valueRenderer, $value) use ($type) {
+                    $renderer = function (AbstractValueRenderer $valueRenderer, $value, array $row, AbstractRenderer $renderer, ResultMetadata $metadata) use ($type) {
                         $date = $value ? new \DateTime('@'.$value) : null;
 
-                        return $valueRenderer->renderValue($date ?: null, $type);
+                        return $valueRenderer->renderValue($date ?: null, $type, $metadata);
                     };
                 } else {
                     $call = $this->statementFactory->createFunctionCall('if', [
@@ -576,8 +576,8 @@ END)
                         $argSelect = [$select->addSelectField("`$sqlTable`.`$resolver[0]`")];
                     }
 
-                    $renderer = function (AbstractValueRenderer $valueRenderer, $value, array $row, AbstractRenderer $renderer) use ($resolver, $argSelect) {
-                        return $this->dpqlFuncRegistry->getLinkFunction()->formatLink($value, $resolver[2], $argSelect, $row, $valueRenderer, $renderer);
+                    $renderer = function (AbstractValueRenderer $valueRenderer, $value, array $row, AbstractRenderer $renderer, ResultMetadata $metadata) use ($resolver, $argSelect) {
+                        return $this->dpqlFuncRegistry->getLinkFunction()->formatLink($value, $resolver[2], $argSelect, $row, $valueRenderer, $renderer, $metadata);
                     };
                 }
             } else {

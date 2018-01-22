@@ -98,13 +98,13 @@ class DateOffsetGroup extends AbstractFunc
         }
         $sql = "IF($ifSql IS NULL, 0, $sql)";
 
-        $renderer = function (AbstractValueRenderer $valueRenderer, $value, array $row, AbstractRenderer $renderer) use ($groups, $maxSentinel) {
+        $renderer = function (AbstractValueRenderer $valueRenderer, $value, array $row, AbstractRenderer $renderer, ResultMetadata $metadata) use ($groups, $maxSentinel) {
             if ($value == $maxSentinel) {
                 return '2+ years';
             } elseif (isset($groups[$value])) {
                 return $groups[$value];
             } else {
-                return $valueRenderer->renderValue(null, 'string');
+                return $valueRenderer->renderValue(null, 'string', $metadata);
             }
         };
 

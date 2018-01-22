@@ -80,7 +80,7 @@ class JsonStatRenderer extends AbstractJsonRenderer
     {
         foreach ($metadata->getSelectColumns() as $column) {
             if ($column['title'] === 'stat_value') {
-                return $this->valueRenderer->renderValue($rows[0][$column['resultId'] - 1], 'number');
+                return $this->valueRenderer->renderValue($rows[0][$column['resultId'] - 1], 'number', $metadata);
             }
         }
 
@@ -97,7 +97,7 @@ class JsonStatRenderer extends AbstractJsonRenderer
     {
         foreach ($metadata->getSelectColumns() as $column) {
             if ($column['title'] === 'stat_description') {
-                return $this->valueRenderer->renderValue($rows[0][$column['resultId'] - 1], 'string');
+                return $this->valueRenderer->renderValue($rows[0][$column['resultId'] - 1], 'string', $metadata);
             }
         }
 

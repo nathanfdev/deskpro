@@ -8,14 +8,12 @@ services:
   reports.values_renderer.text:
     class: DeskPRO\Bundle\ReportBundle\Reports\Renderer\TextValueRenderer
     arguments:
-      - "@security.token_storage"
       - "@settings_resolver"
 
   # JSON renderers
   reports.values_renderer.json:
     class: DeskPRO\Bundle\ReportBundle\Reports\Renderer\Json\JsonValueRenderer
     arguments:
-      - "@security.token_storage"
       - "@settings_resolver"
 
   reports.renderer.json_line:
@@ -72,7 +70,6 @@ services:
   reports.values_renderer.html:
     class: DeskPRO\Bundle\ReportBundle\Reports\Renderer\Html\HtmlValueRenderer
     arguments:
-      - "@security.token_storage"
       - "@settings_resolver"
 
   reports.renderer.html_table:
