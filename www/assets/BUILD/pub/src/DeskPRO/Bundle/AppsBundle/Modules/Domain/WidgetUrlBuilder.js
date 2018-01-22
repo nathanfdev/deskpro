@@ -66,6 +66,8 @@ export class WidgetUrlBuilder {
       acc[key] = params[key];
       return acc;
     }, url.query);
+    // always use local mode with widget url
+    query.local = true;
     url.set('query', query);
 
     return url.toString();
