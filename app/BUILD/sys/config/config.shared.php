@@ -176,7 +176,7 @@ $container->setDefinition('dashboard.service', $definition);
 
 $definition = new Definition();
 $definition->setClass('Application\\DeskPRO\\Reports\\ReportsWidgetService');
-$definition->setArguments([new Reference('doctrine.orm.entity_manager'), new Reference('dashboard.widget.service')]);
+$definition->setArguments([new Reference('doctrine.orm.entity_manager')]);
 $container->setDefinition('reports.widget.service', $definition);
 
 $definition = new Definition();

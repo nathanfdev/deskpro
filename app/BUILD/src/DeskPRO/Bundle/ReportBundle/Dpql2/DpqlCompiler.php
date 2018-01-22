@@ -97,7 +97,7 @@ class DpqlCompiler
      *
      * @return SelectPart
      */
-    public function lexAndParse($input)
+    protected function lexAndParse($input)
     {
         $this->lexer->setInput($input);
 
@@ -116,7 +116,7 @@ class DpqlCompiler
      *
      * @return mixed
      */
-    public function replacePlaceholders($input, array $placeholders = [])
+    protected function replacePlaceholders($input, array $placeholders = [])
     {
         /** @var ReportWidgetRepository $repository */
         $repository  = $this->em->getRepository(ReportWidget::class);
@@ -220,7 +220,7 @@ class DpqlCompiler
      *
      * @return mixed
      */
-    public function replaceVariables($input, $placeholders = [])
+    protected function replaceVariables($input, $placeholders = [])
     {
         if (!isset($placeholders['variables'])) {
             return $input;

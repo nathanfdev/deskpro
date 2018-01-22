@@ -28,7 +28,6 @@
 
 namespace DeskPRO\Bundle\ReportBundle\Reports\Renderer;
 
-use Application\DeskPRO\Entity\Person;
 use Application\DeskPRO\NewSettings\SettingsResolver;
 use DeskPRO\Bundle\ReportBundle\Reports\ResultMetadata;
 
