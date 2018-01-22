@@ -74,6 +74,7 @@ return [
     'adm.agents.perm_publish_delete'                                                       => 'Can delete content',
     'adm.agents.perm_publish_downloads_create_labels'                                      => 'Can create new download labels',
     'adm.agents.perm_publish_edit'                                                         => 'Can edit content',
+    'adm.agents.perm_publish_use'                                                          => 'Can use the publish system',
     'adm.agents.perm_publish_feedback_create_labels'                                       => 'Can create new feedback labels',
     'adm.agents.perm_publish_news_create_labels'                                           => 'Can create new news labels',
     'adm.agents.perm_publish_validate'                                                     => 'Can validate content and comments (including own)',

@@ -203,6 +203,7 @@
 {# PUBLISH PERMISSIONS #}
 <table class="table table-hover" dp-tab-body="main.perms.publish">
     <tbody>
+    {{ macro.perm_row('publish', 'use') }}
     {{ macro.perm_row('publish', 'create') }}
     {{ macro.perm_row('publish', 'delete', {destructive: true}) }}
     {{ macro.perm_row('publish', 'edit') }}

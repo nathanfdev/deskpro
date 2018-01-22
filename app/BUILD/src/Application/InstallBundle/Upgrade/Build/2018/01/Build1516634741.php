@@ -26,44 +26,34 @@
  * ~ Thanks, Everyone at Team DeskPRO
  */
 
-/**
- * DeskPRO.
- *
- * @category People
- */
+namespace Application\InstallBundle\Upgrade\Build;
 
-namespace Application\DeskPRO\People\AgentPermissions\Value;
+// NOTE: I used the BlockingBuildInterface interface because
+//       it looks like your schema changes are NOT backwards compatible with the previous version.
+//       You should double-check this yourself though. If they are backwards compatible, use OnlineBuildInterface instead.
 
-class PublishPermissions implements PermissionValueInterface
+// NOTE: I have added the SkipPostBuildInterface interface because
+//       it looks like you do not have any changes that require PostBuild to run.
+//       You should double-check this yourself though. Remove the SkipPostBuildInterface interface if necessary.
+
+// Please remove these NOTE comments after you have checked the code.
+
+class Build1516634741 extends AbstractBuild implements BlockingBuildInterface, SkipPostBuildInterface
 {
-    /** @var bool */
-    public $use = false;
-    /** @var bool */
-    public $create = false;
-    /** @var bool */
-    public $delete = false;
-    /** @var bool */
-    public $edit = false;
-    /** @var bool */
-    public $validate = false;
-    /** @var bool */
-    public $articles_create_labels = false;
-    /** @var bool */
-    public $downloads_create_labels = false;
-    /** @var bool */
-    public $news_create_labels = false;
-    /** @var bool */
-    public $feedback_create_labels = false;
-    /** @var bool */
-    public $can_insert_html = false;
-
-    public function getNames()
+    public function addNewTables()
     {
-        return ['use', 'create', 'delete', 'edit', 'validate', 'articles_create_labels', 'downloads_create_labels', 'news_create_labels', 'feedback_create_labels', 'can_insert_html'];
     }
 
-    public function getDestructiveNames()
+    public function runAlters()
     {
-        return ['delete', 'can_insert_html'];
+    }
+
+    public function run()
+    {
+        $this->execDbQuery('default', "
+            INSERT IGNORE INTO permissions SELECT NULL, usergroup_id, person_id, 'agent_publish.use', 1, 1
+            FROM permissions
+            GROUP BY usergroup_id, person_id
+        ");
     }
 }
