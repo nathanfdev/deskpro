@@ -305,6 +305,22 @@ SQL
         );
     }
 
+    public function test_select_func_subquery()
+    {
+        $this->assertDpqlQuery(
+            <<<'DPQL'
+SELECT CONCAT(COUNT() * 100 / (SELECT people.id FROM people WHERE people.id = tickets.person_id), '%')
+FROM tickets
+DPQL
+            ,
+            <<<'SQL'
+SELECT CONCAT(((COUNT(*) * 100) / (SELECT `people`.`id` FROM `people` WHERE (`people`.`id` = `tickets`.`person_id`) LIMIT 2500)), '%')
+FROM `tickets`
+LIMIT 2500
+SQL
+        );
+    }
+
     public function test_from_subquery()
     {
         $this->assertDpqlQuery(
