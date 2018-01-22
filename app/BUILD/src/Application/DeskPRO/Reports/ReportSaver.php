@@ -28,6 +28,7 @@
 
 namespace Application\DeskPRO\Reports;
 
+use Application\DeskPRO\Entity\Person;
 use Application\DeskPRO\Entity\ReportDashboardReport as DashboardReportEntity;
 use Application\DeskPRO\Entity\ReportDashboardWidget;
 use Application\DeskPRO\Entity\SavedDashboardReport;
@@ -65,12 +66,13 @@ class ReportSaver
 
     /**
      * @param DashboardReportEntity $report
+     * @param Person                $person
      *
      * @throws \Exception
      *
      * @return SavedDashboardReport
      */
-    public function saveReport(DashboardReportEntity $report)
+    public function saveReport(DashboardReportEntity $report, Person $person = null)
     {
         $savedReport = new SavedDashboardReport();
         $savedReport
@@ -88,7 +90,7 @@ class ReportSaver
                 }
             }
             $widget->setVariables($widgetVars);
-            $widgetData = $this->widgetService->renderWidgetQuery($widget);
+            $widgetData = $this->widgetService->renderWidgetQuery($widget, $person);
 
             if ($widgetData && $widget->getType() == ReportDashboardWidget::WIDGET_TYPE_TABLE) {
                 $aoColumns = [];

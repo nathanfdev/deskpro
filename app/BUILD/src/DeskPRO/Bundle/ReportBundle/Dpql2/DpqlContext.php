@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2017, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2018, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -29,17 +29,16 @@
 namespace DeskPRO\Bundle\ReportBundle\Dpql2;
 
 use Application\DeskPRO\Entity\Person;
-use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorage;
 
 /**
  * Keep current datetime to make relative date intervals consistent in dpql placeholders.
  */
-class DpqlDate
+class DpqlContext
 {
     /**
-     * @var TokenStorage
+     * @var Person
      */
-    private $tokenStorage;
+    private $person;
 
     /**
      * @var \DateTime
@@ -49,12 +48,12 @@ class DpqlDate
     /**
      * Constructor.
      *
-     * @param TokenStorage $tokenStorage
+     * @param Person|null $person
      */
-    public function __construct(TokenStorage $tokenStorage)
+    public function __construct(Person $person = null)
     {
-        $this->tokenStorage = $tokenStorage;
-        $this->date         = new \DateTime('now', $this->getTimezone());
+        $this->person = $person;
+        $this->date   = new \DateTime('now', $this->getTimezone());
     }
 
     /**
@@ -66,6 +65,14 @@ class DpqlDate
     }
 
     /**
+     * @return Person|null
+     */
+    public function getPerson()
+    {
+        return $this->person;
+    }
+
+    /**
      * @param \DateTime $date
      */
     public function setDate(\DateTime $date)
@@ -74,29 +81,11 @@ class DpqlDate
     }
 
     /**
-     * @return Person|null
-     */
-    protected function getPerson()
-    {
-        $token = $this->tokenStorage->getToken();
-        if (!$token) {
-            return;
-        }
-
-        $person = $token->getUser();
-        if (!$person instanceof Person) {
-            return;
-        }
-
-        return $person;
-    }
-
-    /**
      * @return \DateTimeZone
      */
-    protected function getTimezone()
+    public function getTimezone()
     {
-        $person = $this->getPerson();
+        $person = $this->person;
         if ($person) {
             return new \DateTimeZone($person->getTimezone());
         }

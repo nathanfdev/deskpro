@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2017, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2018, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -28,6 +28,8 @@
 
 namespace DpTest\DeskPRO\Bundle\ReportBundle\Dpql2;
 
+use DeskPRO\Bundle\ReportBundle\Dpql2\DpqlContext;
+
 /**
  * Class CompilerPlaceholderTest.
  */
@@ -40,8 +42,8 @@ class CompilerPlaceholderTest extends AbstractCompilerTest
     {
         parent::setUp();
 
-        $dpqlDate = $this->getContainer()->get('dpql.date');
-        $dpqlDate->setDate(new \DateTime('2017-12-26 12:00:00'));
+        $this->context = new DpqlContext();
+        $this->context->setDate(new \DateTime('2017-12-26 12:00:00'));
     }
 
     public function test_ever()

@@ -29,6 +29,7 @@
 namespace DeskPRO\Bundle\ReportBundle\Dpql2\Func;
 
 use Application\DeskPRO\Entity\Person;
+use DeskPRO\Bundle\ReportBundle\Dpql2\DpqlContextStorage;
 use DeskPRO\Bundle\ReportBundle\Dpql2\DpqlException;
 use DeskPRO\Bundle\ReportBundle\Dpql2\SqlSelect;
 use DeskPRO\Bundle\ReportBundle\Dpql2\Statement\Part\Prepared;
@@ -37,7 +38,6 @@ use DeskPRO\Bundle\ReportBundle\Reports\Renderer\AbstractRenderer;
 use DeskPRO\Bundle\ReportBundle\Reports\Renderer\AbstractValueRenderer;
 use DeskPRO\Bundle\ReportBundle\Reports\ResultMetadata;
 use Doctrine\DBAL\Connection;
-use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorage;
 
 /**
  * Handler for OBJ_LANG function.
@@ -55,20 +55,20 @@ class ObjLang extends AbstractFunc
     private $connection;
 
     /**
-     * @var TokenStorage
+     * @var DpqlContextStorage
      */
-    private $tokenStorage;
+    private $contextStorage;
 
     /**
      * Constructor.
      *
-     * @param Connection   $connection
-     * @param TokenStorage $tokenStorage
+     * @param Connection         $connection
+     * @param DpqlContextStorage $contextStorage
      */
-    public function __construct(Connection $connection, TokenStorage $tokenStorage)
+    public function __construct(Connection $connection, DpqlContextStorage $contextStorage)
     {
-        $this->connection   = $connection;
-        $this->tokenStorage = $tokenStorage;
+        $this->connection     = $connection;
+        $this->contextStorage = $contextStorage;
     }
 
     /**
@@ -85,8 +85,8 @@ class ObjLang extends AbstractFunc
 
         $sql = $prepped->sql();
 
-        $token   = $this->tokenStorage->getToken();
-        $person  = $token ? $token->getUser() : null;
+        $context = $this->contextStorage->getContext();
+        $person  = $context ? $context->getPerson() : null;
         $refType = $this->_toLiteral($arguments[1]);
         $refProp = !empty($arguments[2]) ? $this->_toLiteral($arguments[2]) : 'title';
         $langId  = $person instanceof Person ? $person->getLanguage() : 0;

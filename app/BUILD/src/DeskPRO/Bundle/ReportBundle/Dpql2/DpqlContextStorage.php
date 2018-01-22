@@ -26,27 +26,31 @@
  * ~ Thanks, Everyone at Team DeskPRO
  */
 
-namespace DeskPRO\Bundle\ReportBundle\Dpql2\Placeholder;
+namespace DeskPRO\Bundle\ReportBundle\Dpql2;
 
 /**
- * Place holder for the previous month based on the current person's time zone.
+ * Class DpqlContextStorage.
  */
-class LastMonth extends AbstractDateRange
+class DpqlContextStorage
 {
     /**
-     * {@inheritdoc}
+     * @var DpqlContext
      */
-    protected function getDateRange()
+    private $context;
+
+    /**
+     * @return DpqlContext
+     */
+    public function getContext()
     {
-        $date      = $this->getDate();
-        $thisMonth = $date->format('Y-m');
+        return $this->context;
+    }
 
-        $endDate = new \DateTime("$thisMonth-01", $date->getTimezone());
-        $endDate->modify('-1 day');
-
-        $endDateValue   = $endDate->format('Y-m-d');
-        $startDateValue = $endDate->format('Y-m').'-01';
-
-        return ["$startDateValue to $endDateValue", "$startDateValue 00:00:00", "$endDateValue 23:59:59"];
+    /**
+     * @param DpqlContext $context
+     */
+    public function setContext(DpqlContext $context)
+    {
+        $this->context = $context;
     }
 }

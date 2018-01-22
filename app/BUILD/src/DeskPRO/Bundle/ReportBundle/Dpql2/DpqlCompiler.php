@@ -28,11 +28,13 @@
 
 namespace DeskPRO\Bundle\ReportBundle\Dpql2;
 
+use Application\DeskPRO\Entity\Person;
 use Application\DeskPRO\Entity\ReportWidget;
 use Application\DeskPRO\EntityRepository\ReportWidget as ReportWidgetRepository;
 use Application\LegacyApiBundle\Service\DashboardWidget;
 use DeskPRO\Bundle\ReportBundle\Dpql2\Statement\SelectPart;
 use Doctrine\ORM\EntityManager;
+use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorage;
 
 /**
  * Compiles a DPQL string statement into a statement object.
@@ -55,31 +57,57 @@ class DpqlCompiler
     protected $parser;
 
     /**
+     * @var DpqlContextStorage
+     */
+    protected $contextStorage;
+
+    /**
+     * @var TokenStorage
+     */
+    protected $tokenStorage;
+
+    /**
      * Constructor.
      *
-     * @param EntityManager $em
-     * @param Lexer         $lexer
-     * @param Parser        $parser
+     * @param EntityManager      $em
+     * @param Lexer              $lexer
+     * @param Parser             $parser
+     * @param DpqlContextStorage $contextStorage
+     * @param TokenStorage       $tokenStorage
      */
-    public function __construct(EntityManager $em, Lexer $lexer, Parser $parser)
-    {
-        $this->em     = $em;
-        $this->lexer  = $lexer;
-        $this->parser = $parser;
+    public function __construct(
+        EntityManager      $em,
+        Lexer              $lexer,
+        Parser             $parser,
+        DpqlContextStorage $contextStorage,
+        TokenStorage       $tokenStorage
+    ) {
+        $this->em             = $em;
+        $this->lexer          = $lexer;
+        $this->parser         = $parser;
+        $this->contextStorage = $contextStorage;
+        $this->tokenStorage   = $tokenStorage;
     }
 
     /**
      * Compiles the given DPQL string to a statement object.
      *
-     * @param string $input
-     * @param array  $placeholders
-     *
-     * @throws DpqlException
+     * @param string      $input
+     * @param array       $placeholders
+     * @param DpqlContext $context
      *
      * @return SelectPart
      */
-    public function compile($input, array $placeholders = [])
+    public function compile($input, array $placeholders = [], DpqlContext $context = null)
     {
+        if (!$context) {
+            $token   = $this->tokenStorage->getToken();
+            $person  = $token && $token->getUser() instanceof Person ? $token->getUser() : null;
+            $context = new DpqlContext($person);
+        }
+
+        $this->contextStorage->setContext($context);
+
         $input = preg_replace('/DISPLAY [^\n]+\n/', '', $input);
         $input = $this->replacePlaceholders($input, $placeholders);
         $input = $this->replaceVariables($input, $placeholders);

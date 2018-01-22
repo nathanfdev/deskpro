@@ -28,9 +28,11 @@
 
 namespace Application\LegacyApiBundle\Service;
 
+use Application\DeskPRO\Entity\Person;
 use Application\DeskPRO\Entity\ReportDashboardWidget as DashboardWidgetEntity;
 use Application\DeskPRO\Entity\SavedDashboardWidget;
 use DeskPRO\Bundle\ReportBundle\Dpql2\DpqlCompiler;
+use DeskPRO\Bundle\ReportBundle\Dpql2\DpqlContext;
 use DeskPRO\Bundle\ReportBundle\Reports\Renderer\ReportsRendererRegistry;
 use Doctrine\ORM\EntityManager;
 
@@ -151,13 +153,11 @@ class DashboardWidget
 
     /**
      * @param DashboardWidgetEntity $widget
-     *
-     * @throws \DeskPRO\Bundle\ReportBundle\Dpql2\DpqlException
-     * @throws \Exception
+     * @param Person|null           $person
      *
      * @return array|bool|string
      */
-    public function renderWidgetQuery(DashboardWidgetEntity $widget)
+    public function renderWidgetQuery(DashboardWidgetEntity $widget, Person $person = null)
     {
         $report = $widget->getWidget();
         $query  = $report->getQuery();
@@ -173,7 +173,7 @@ class DashboardWidget
             }
         }
 
-        return $this->renderQuery($query, ['variables' => $variables], $widget->getType(), 'json');
+        return $this->renderQuery($query, ['variables' => $variables], $widget->getType(), 'json', $person);
     }
 
     /**
@@ -181,18 +181,14 @@ class DashboardWidget
      * @param array  $params
      * @param string $displayType
      * @param string $format
-     *
-     * @throws \DeskPRO\Bundle\ReportBundle\Dpql2\DpqlException
-     * @throws \Exception
+     * @param Person $person
      *
      * @return array|bool|string
      */
-    public function renderQuery($query, $params, $displayType, $format = 'json')
+    public function renderQuery($query, $params, $displayType, $format = 'json', Person $person = null)
     {
-        $mapped = $this->getWidgetGraphType($displayType);
-        $query  = preg_replace("#^DISPLAY.*?\n#", "DISPLAY {$mapped}\n", $query);
-
-        $query    = $this->compiler->compile($query, $params);
+        $mapped   = $this->getWidgetGraphType($displayType);
+        $query    = $this->compiler->compile($query, $params, new DpqlContext($person));
         $renderer = $this->rendererRegistry->getRenderer($mapped, $format);
 
         return $renderer->render($query->getResults());

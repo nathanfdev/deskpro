@@ -31,6 +31,7 @@ namespace DeskPRO\Bundle\ReportBundle\Dpql2\Statement;
 use Application\DeskPRO\Entity\Person;
 use Application\DeskPRO\Entity\Problem;
 use DeskPRO\Bundle\AppBundle\Entity\SnippetUseLog;
+use DeskPRO\Bundle\ReportBundle\Dpql2\DpqlContextStorage;
 use DeskPRO\Bundle\ReportBundle\Dpql2\DpqlException;
 use DeskPRO\Bundle\ReportBundle\Dpql2\Plugin\Hierarchy\HierarchyPlugin;
 use DeskPRO\Bundle\ReportBundle\Dpql2\Plugin\Hierarchy\HierarchySorting;
@@ -45,7 +46,6 @@ use DeskPRO\Bundle\ReportBundle\Reports\Results;
 use Doctrine\DBAL\Connection;
 use Doctrine\ORM\EntityManager;
 use Orb\Util\Strings;
-use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorage;
 
 /**
  * Object for a select statement in DPQL.
@@ -63,9 +63,9 @@ class SelectPart
     private $reportsConnection;
 
     /**
-     * @var TokenStorage
+     * @var DpqlContextStorage
      */
-    private $tokenStorage;
+    private $contextStorage;
 
     /**
      * @var DpqlStatementFactory
@@ -317,7 +317,7 @@ class SelectPart
      *
      * @param EntityManager        $em
      * @param Connection           $reportsConnection
-     * @param TokenStorage         $tokenStorage
+     * @param DpqlContextStorage   $contextStorage
      * @param DpqlStatementFactory $statementFactory
      * @param array                $select            Fields to select
      * @param string               $from              Table to select from
@@ -325,21 +325,21 @@ class SelectPart
     public function __construct(
         EntityManager        $em,
         Connection           $reportsConnection,
-        TokenStorage         $tokenStorage,
+        DpqlContextStorage   $contextStorage,
         DpqlStatementFactory $statementFactory,
         array                $select,
         $from
     ) {
         $this->em                = $em;
         $this->reportsConnection = $reportsConnection;
-        $this->tokenStorage      = $tokenStorage;
+        $this->contextStorage    = $contextStorage;
         $this->statementFactory  = $statementFactory;
 
         $this->setSelect($select);
         $this->setFrom($from);
 
-        $token  = $this->tokenStorage->getToken();
-        $person = $token && $token->getUser() instanceof Person ? $token->getUser() : null;
+        $context = $this->contextStorage->getContext();
+        $person  = $context && $context->getPerson() instanceof Person ? $context->getPerson() : null;
 
         $this->sql              = new SqlSelect($this->em->getConnection());
         $this->resultMetadata   = new ResultMetadata($person);
@@ -1049,12 +1049,12 @@ class SelectPart
             return 0;
         }
 
-        $token = $this->tokenStorage->getToken();
-        if (!$token) {
+        $context = $this->contextStorage->getContext();
+        if (!$context) {
             return 0;
         }
 
-        $user = $token->getUser();
+        $user = $context->getPerson();
         if (!$user instanceof Person) {
             return 0;
         }
