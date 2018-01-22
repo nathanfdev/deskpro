@@ -25,7 +25,7 @@ define -> [
           weekday: 'monday'
           monthday: 1
           monthday2: 15
-        send_to: []
+        send_to: ''
       }
 
     $scope.month = []

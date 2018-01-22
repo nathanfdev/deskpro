@@ -278,7 +278,7 @@ define ['DeskPRO/Util/Arrays'], (Arrays) ->
         data = {
           schedule: {
             frequency: schedule.frequency
-            send_to: schedule.send_to.split(',')
+            send_to: (schedule.send_to || '').split(',')
             when: {
               time: schedule.when.time
             }
