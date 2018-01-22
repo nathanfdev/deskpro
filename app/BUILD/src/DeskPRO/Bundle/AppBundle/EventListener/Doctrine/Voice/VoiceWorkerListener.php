@@ -130,7 +130,7 @@ class VoiceWorkerListener
                 $activity = TwilioAdapter::getActivityStatus($agentData);
                 $this->twilioAdapter->updateAgentWorker($account, $agentData->getPerson(), $activity);
             }
-        } elseif ($args->hasChangedField('outboundCallsEnabled')) {
+        } elseif ($args->hasChangedField('outboundCallsEnabled') || $args->hasChangedField('canUseForwarding')) {
             // force reload agent's interface to show/hide outbound dialpad
             $this->dispatcher->dispatch(LegacySystemEvent::EVENT_NAME, new LegacySystemEvent('agent.ui.reload', [
                 'type'        => 'admin',

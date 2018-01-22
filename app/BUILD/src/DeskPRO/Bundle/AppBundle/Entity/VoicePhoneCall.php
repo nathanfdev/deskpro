@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2017, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2018, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -92,6 +92,13 @@ class VoicePhoneCall implements EntityInterface, NotifyPropertyChanged
      * @var string
      */
     private $conferenceSid;
+
+    /**
+     * @ORM\Column(name="forwarding_sids", type="json_array")
+     *
+     * @var string[]
+     */
+    private $forwardingSids = [];
 
     /**
      * @ORM\ManyToOne(targetEntity="DeskPRO\Bundle\AppBundle\Entity\VoiceNumber")
@@ -646,5 +653,38 @@ class VoicePhoneCall implements EntityInterface, NotifyPropertyChanged
         }
 
         return $this;
+    }
+
+    /**
+     * @return \string[]
+     */
+    public function getForwardingSids()
+    {
+        return $this->forwardingSids;
+    }
+
+    /**
+     * @param \string[] $forwardingSids
+     *
+     * @return $this
+     */
+    public function setForwardingSids(array $forwardingSids)
+    {
+        $this->setModelField('forwardingSids', $forwardingSids);
+
+        return $this;
+    }
+
+    /**
+     * @param string $forwardingSid
+     *
+     * @return $this
+     */
+    public function addForwardingSid($forwardingSid)
+    {
+        $forwardingSids   = $this->forwardingSids;
+        $forwardingSids[] = $forwardingSid;
+
+        return $this->setForwardingSids($forwardingSids);
     }
 }

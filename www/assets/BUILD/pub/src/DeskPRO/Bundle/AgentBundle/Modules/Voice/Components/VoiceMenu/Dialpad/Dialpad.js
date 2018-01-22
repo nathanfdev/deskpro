@@ -130,11 +130,14 @@ class Dialpad extends React.Component {
 
     this.setState({
       formData: createValue({
-        value:     { ...formData.value, call_to: `${currentValue}${number}` },
+        value:     formData.value,
         errorList: {},
         onChange:  this.onChange
       })
-    }, () => $input.focus());
+    }, () => {
+      this.phoneInput.setNumber(`${currentValue}${number}`);
+      $input.focus();
+    });
   };
 
   onSelectSearchResult = (number) => {

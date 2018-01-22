@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2017, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2018, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -30,13 +30,11 @@ namespace DeskPRO\Bundle\ApiBundle\Controller\Voice;
 
 use Application\DeskPRO\Entity\Person;
 use DeskPRO\Bundle\ApiBundle\ApiDoc\Annotation\ApiDoc;
-use DeskPRO\Bundle\ApiBundle\Controller\BaseController;
 use DeskPRO\Bundle\AppBundle\Annotation\ActionPermissions\Annotation\ApiModes;
 use DeskPRO\Bundle\AppBundle\Annotation\ActionPermissions\Annotation\Feature;
 use DeskPRO\Bundle\AppBundle\Entity\Repository\VoiceAccountRepository;
 use DeskPRO\Bundle\AppBundle\Entity\VoiceAccount;
 use DeskPRO\Bundle\AppBundle\Entity\VoicePhoneCall;
-use DeskPRO\Bundle\AppBundle\Entity\VoicePhoneCallLog;
 use DeskPRO\Bundle\AppBundle\Form\Error\Exception\InvalidFormException;
 use DeskPRO\Bundle\AppBundle\Form\Type\Voice\VoiceOutboundCallType;
 use DeskPRO\Bundle\AppBundle\Twilio\Model\TwilioActivities;
@@ -48,14 +46,14 @@ use Symfony\Component\HttpFoundation\Response;
 use Twilio\Exceptions\RestException;
 
 /**
- * Class VoiceTokenController.
+ * Handles client actions.
  *
  * @ApiModes("all")
  * @Rest\Route("/voice_client")
  * @Feature("voice")
  * @ApiDoc(target="all", section="Voice Channel")
  */
-class VoiceClientController extends BaseController
+class VoiceClientController extends AbstractVoiceController
 {
     /**
      * @ApiDoc(
@@ -132,27 +130,13 @@ class VoiceClientController extends BaseController
      */
     public function rejectCallAction($taskSid)
     {
-        // reject task worker
-        $adapter = $this->get('twilio_adapter');
-        $account = $this->getVoiceAccount();
-
-        $adapter->rejectTaskWorker($account, $taskSid, $this->getUser());
-
-        // log that agent rejected the incoming call
-        $em        = $this->getManager();
-        $phoneCall = $em->getRepository(VoicePhoneCall::class)->findOneBy([
+        $phoneCall = $this->getManager()->getRepository(VoicePhoneCall::class)->findOneBy([
             'taskSid' => $taskSid,
         ]);
 
         if ($phoneCall) {
-            // add action log
-            $log = new VoicePhoneCallLog();
-            $log->setPerson($this->getUser());
-            $log->setActionType(VoicePhoneCallLog::ACTION_REJECTED);
-            $log->setPhoneCall($phoneCall);
-
-            $em->persist($log);
-            $em->flush();
+            $this->rejectIncomingPhoneCall($phoneCall, $this->getUser());
+            $this->cancelForwardingCalls($phoneCall, $this->getUser());
         }
 
         return new View(null, Response::HTTP_NO_CONTENT);

@@ -573,6 +573,28 @@ class TwilioAdapter
     /**
      * @param VoiceAccount $account
      * @param Person       $person
+     */
+    public function rejectAgentWorkerReservations(VoiceAccount $account, Person $person)
+    {
+        $workerSid    = $this->getWorkerSid($person);
+        $workspace    = $this->getWorkspace($account);
+        $reservations = $workspace->workers($workerSid)->reservations->read([
+            'reservationStatus' => 'pending',
+        ]);
+
+        foreach ($reservations as $reservation) {
+            try {
+                $workspace->workers($workerSid)->reservations($reservation->sid)->update([
+                    'reservationStatus' => 'rejected',
+                ]);
+            } catch (\Exception $e) {
+            }
+        }
+    }
+
+    /**
+     * @param VoiceAccount $account
+     * @param Person       $person
      *
      * @return \Twilio\Rest\Taskrouter\V1\Workspace\TaskQueueInstance
      */
@@ -891,6 +913,53 @@ class TwilioAdapter
                 ),
             ])),
         ]);
+    }
+
+    /**
+     * @param VoiceAccount $account
+     * @param Person       $person
+     */
+    public function cancelForwardingCall(VoiceAccount $account, Person $person)
+    {
+        $agentData = $person->getAgentData();
+        if (!$agentData || !$agentData->getForwardingNumber()) {
+            return;
+        }
+
+        $forwardingCalls = $this->getClient($account)->calls->read([
+            'to'     => $agentData->getForwardingNumber(),
+            'status' => 'ringing',
+        ]);
+
+        foreach ($forwardingCalls as $forwardingCall) {
+            try {
+                $forwardingCall->update([
+                    'status' => 'canceled',
+                ]);
+            } catch (\Exception $e) {
+            }
+        }
+    }
+
+    /**
+     * @param VoicePhoneCall $phoneCall
+     */
+    public function cancelForwardingCalls(VoicePhoneCall $phoneCall)
+    {
+        $account = $phoneCall->getNumber()->getAccount();
+        $client  = $this->getClient($account);
+
+        foreach ($phoneCall->getForwardingSids() as $forwardingSid) {
+            try {
+                $forwardingCall = $client->calls($forwardingSid)->fetch();
+                if ($forwardingCall->status === 'ringing') {
+                    $forwardingCall->update([
+                        'status' => 'canceled',
+                    ]);
+                }
+            } catch (\Exception $e) {
+            }
+        }
     }
 
     /**

@@ -6,7 +6,7 @@ import { storageAvailable } from 'DeskPRO/Component/Util/storageAvailable';
 import { loadBatch, addToCollection, updateCollection } from 'DeskPRO/Bundle/AppBundle/Modules/RecordsStore';
 import { meSelector } from 'DeskPRO/Bundle/AppBundle/Modules/RecordsStore/Shortcuts/me';
 import { agentsSelector } from 'DeskPRO/Bundle/AppBundle/Modules/RecordsStore/Shortcuts/agents';
-import { callsEnabledSelector } from '../Selectors/agents';
+import { callsEnabledSelector, callsForwardingEnabledSelector } from '../Selectors/agents';
 import { phoneTokenSelector, workerTokenSelector, idleActivitySidSelector, busyActivitySidSelector, offlineActivitySidSelector, connectionsSelector } from '../Selectors/client';
 import { allPhoneCallsSelector } from '../Selectors/phoneCalls';
 import { allNumbersSelector } from '../Selectors/numbers';
@@ -63,7 +63,7 @@ export const voiceBootstrap = createAction(
         dispatch(setMicEnabled(true));
 
         // init twilio worker
-        worker = new window.Twilio.TaskRouter.Worker(workerToken, true, connectSid, offlineSid);
+        worker = new window.Twilio.TaskRouter.Worker(workerToken, true, connectSid);
         worker.on('ready', () => {
           console.log('worker ready');
         });
@@ -128,6 +128,14 @@ export const voiceBootstrap = createAction(
         worker.on('error', (data) => {
           console.log('worker error');
           console.log(data);
+        });
+        window.addEventListener('unload', () => {
+          const state             = getState();
+          const forwardingEnabled = callsForwardingEnabledSelector(state);
+          const voiceEnabled      = callsEnabledSelector(state);
+          const disconnectSid     = voiceEnabled && forwardingEnabled ? idleSid : offlineSid;
+
+          worker.update('ActivitySid', disconnectSid);
         });
 
         try {
@@ -254,7 +262,9 @@ export const voiceBootstrap = createAction(
           }
         });
       })
-      .catch(() => {
+      .catch((e) => {
+        console.log(e);
+
         // catch mic disabled exception
         // nothing to do
       });
