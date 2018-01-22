@@ -14,7 +14,7 @@ export const createDispatchResponse = ({
   widgetMessage,
   outgoingEventDispatcher
 }) => (err, data) => {
-  const widgetResponse = err ? createErrorResponse(widgetMessage, err) : createSuccessResponse(widgetMessage, data);
+  const widgetResponse = err ? createErrorResponse(widgetMessage, err, data) : createSuccessResponse(widgetMessage, data);
   // send a notification to dispatch the message to the widget
   outgoingEventDispatcher.emit(widget.id, widget.configuration, eventName, widgetResponse);
 };

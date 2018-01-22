@@ -24,13 +24,24 @@ class GuideSelector extends React.Component {
   };
 
   render() {
+    const activeGuide = this.state.guides.filter(g => g.slug === this.props.guideSlug)[0];
+
     if (this.state.guides.length === 1) {
       return (
-        <div className="guide">{this.state.guides[0].title}</div>
+        <div className="current-guide">
+          {this.state.guides[0].title}
+          { activeGuide.guide_pdf ?
+            <div>
+              <a className="guide-pdf" href={activeGuide.guide_pdf} target="_blank" rel="noopener noreferrer">
+                <span>Download PDF</span>
+                <i className="fa fa-file-pdf-o" />
+              </a>
+            </div> :
+            ''
+          }
+        </div>
       );
     }
-
-    const activeGuide = this.state.guides.filter(g => g.slug === this.props.guideSlug)[0];
 
     return (
       <div className="current-guide">

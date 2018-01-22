@@ -81,6 +81,16 @@ class AppsConfig extends PropertyBag {
    * @type {string}
    */
   get endpoint() { return this.props.endpoint; }
+
+  /**
+   * @type {string}
+   */
+  get instanceId() { return this.props.instanceId; }
+
+  /**
+   * @type {string}
+   */
+  get applicationId() { return this.props.applicationId; }
 }
 
 export { AppsConfig };

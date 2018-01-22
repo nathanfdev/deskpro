@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2017, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2018, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -35,6 +35,7 @@ namespace Application\DeskPRO\EmailGateway;
 use Application\DeskPRO\App;
 use Application\DeskPRO\Email\EmailAccount\IncomingAccount\GmailConfig;
 use Application\DeskPRO\EmailGateway\Exception\ProcessingException;
+use Application\DeskPRO\EmailGateway\Fetcher\BatchFetcher;
 use Application\DeskPRO\EmailGateway\Reader\AbstractReader;
 use Application\DeskPRO\EmailGateway\Reader\EzcReader;
 use Application\DeskPRO\Entity\EmailAccount;
@@ -758,6 +759,10 @@ BODY;
 
         $processedSourceIds = [];
 
+        // array of messages up next (used with fetchers that return a batch)
+        $nextUp           = [];
+        $doCheckNextBatch = true;
+
         while (true) {
             // Make sure any records are flusehd
             App::getOrm()->flush();
@@ -787,10 +792,36 @@ BODY;
             if ($nextInsertedId = array_shift($insertedSourceIds)) {
                 $this->logger->logDebug(sprintf('Processing next inserted message: %d', $nextInsertedId));
                 $source = App::getOrm()->find('DeskPRO:EmailSource', $nextInsertedId);
+            } elseif ($nextUp && ($nextReady = array_shift($nextUp))) {
+                $this->logger->logDebug(sprintf('Processing next inserted message'));
+                $source = $nextReady;
             } else {
                 try {
-                    $ts     = microtime(true);
-                    $source = $fetcher->readNext();
+                    $ts = microtime(true);
+                    if ($fetcher instanceof BatchFetcher) {
+                        if ($doCheckNextBatch) {
+                            $batchLimit = 10;
+                            $this->logger->logDebug('BatchFetcher -- reading batch of '.$batchLimit);
+                            $nextUp     = $fetcher->readBatch('ticket', $batchLimit);
+                            $batchCount = count($nextUp);
+
+                            $this->logger->logDebug('BatchFetcher -- read batch of '.$batchCount);
+
+                            $source = array_shift($nextUp);
+
+                            if ($batchCount >= $batchLimit) {
+                                // only try another batch if we got a full batch last time
+                                $doCheckNextBatch = true;
+                            } else {
+                                $doCheckNextBatch = false;
+                            }
+                        } else {
+                            $nextUp = [];
+                            $source = null;
+                        }
+                    } else {
+                        $source = $fetcher->readNext();
+                    }
                     $this->logger->logDebug(sprintf('Read took %.3fs', microtime(true) - $ts));
                     if (!$source) {
                         $this->logger->logDebug('No more messages in inbox');

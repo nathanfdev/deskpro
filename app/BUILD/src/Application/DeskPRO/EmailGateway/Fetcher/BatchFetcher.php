@@ -26,28 +26,15 @@
  * ~ Thanks, Everyone at Team DeskPRO
  */
 
-namespace DeskPRO\Bundle\AppBundle\DataFixtures\DevFixtures;
+namespace Application\DeskPRO\EmailGateway\Fetcher;
 
-use Application\DeskPRO\Entity\Ticket;
-use DeskPRO\Bundle\AppBundle\DataFixtures\AbstractDpFixture;
-use Doctrine\Common\DataFixtures\OrderedFixtureInterface;
-use Doctrine\Common\Persistence\ObjectManager;
-
-class DevFinishFixture extends AbstractDpFixture implements OrderedFixtureInterface
+interface BatchFetcher
 {
     /**
-     * {@inheritdoc}
+     * @param string $object_type
+     * @param int    $limit
+     *
+     * @return \Application\DeskPRO\Entity\EmailSource[]
      */
-    public function getOrder()
-    {
-        return 99999;
-    }
-
-    /**
-     * {@inheritdoc}
-     */
-    public function load(ObjectManager $manager)
-    {
-        $manager->getRepository(Ticket::class)->fillSearchTable();
-    }
+    public function readBatch($object_type = 'ticket', $limit = 10);
 }

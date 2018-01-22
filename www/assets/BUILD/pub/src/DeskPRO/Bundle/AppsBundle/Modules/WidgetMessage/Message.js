@@ -64,14 +64,20 @@ export class WidgetResponse {
 
 /**
  * @param {WidgetRequest} widgetRequest
- * @param error
- *
+ * @param {Error|String} error
+ * @param {Object} data additional error data
  * @return WidgetResponse
  */
-export const createErrorResponse = (widgetRequest, error) => {
+export const createErrorResponse = (widgetRequest, error, data) => {
   const id = incrementMessageId();
   const { widgetId, correlationId } = widgetRequest;
-  const body = error instanceof Error ? JSON.stringify(serializeError(error)) : JSON.stringify(error);
+  let body = null;
+  if (error instanceof Error || typeof error === 'object') {
+    body = JSON.parse(JSON.stringify(serializeError(error)));
+    body = JSON.stringify({ ...body, errorData: data });
+  } else {
+    body = JSON.stringify({ message: error, errorData: data });
+  }
 
   return new WidgetResponse({ id, widgetId, correlationId, body, status: 'error' });
 };
