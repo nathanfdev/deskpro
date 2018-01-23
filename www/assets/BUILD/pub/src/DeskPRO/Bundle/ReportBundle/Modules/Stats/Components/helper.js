@@ -35,58 +35,58 @@ export function transformReportData(report) {
     select:        queryParts.get('select', ''),
     from:          queryParts.get('from', ''),
     where:         queryParts.get('where', ''),
-    splitBy:       queryParts.get('splitBy', ''),
-    groupBy:       queryParts.get('groupBy', ''),
-    orderBy:       queryParts.get('orderBy', ''),
+    split_by:      queryParts.get('split_by', ''),
+    group_by:      queryParts.get('group_by', ''),
+    order_by:      queryParts.get('order_by', ''),
     offset:        queryParts.get('offset', ''),
     limit:         queryParts.get('limit', ''),
     vars:          report.get('variables', Immutable.List()).toJS(),
-    id:            report.get('id', 0),
+    id:            report.get('id', 0)
   };
 }
 
 export const displayTypes = [
   {
     label: 'Bars',
-    value: 'simple_bars',
+    value: 'simple_bars'
   },
   {
     label: 'Lines',
-    value: 'simple_lines',
+    value: 'simple_lines'
   },
   {
     label: 'Area',
-    value: 'simple_area',
+    value: 'simple_area'
   },
   {
     label: 'Pie',
-    value: 'pie',
+    value: 'pie'
   },
   {
     label: 'Table',
-    value: 'table',
-  },
+    value: 'table'
+  }
 ];
 
 export const varTypes = [
   {
     label: 'Date',
-    value: 'dates',
+    value: 'dates'
   },
   {
     label: 'Status',
-    value: 'statuses',
+    value: 'statuses'
   },
   {
     label: 'Grouping fields',
-    value: 'fields',
+    value: 'fields'
   },
   {
     label: 'Ordering fields',
-    value: 'orders',
+    value: 'orders'
   },
   {
     label: 'Value',
-    value: 'values',
-  },
+    value: 'values'
+  }
 ];

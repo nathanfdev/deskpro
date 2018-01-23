@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2017, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2018, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -44,13 +44,27 @@ use Doctrine\ORM\Mapping\ClassMetadataInfo;
  */
 class ReportDashboardWidget extends DomainObject
 {
+    const WIDGET_TYPE_GRAPH     = 'graph';
+    const WIDGET_TYPE_STAT      = 'stat';
     const WIDGET_TYPE_HARDCODED = 'hardcoded';
+    const WIDGET_TYPE_BAR       = 'bar';
+    const WIDGET_TYPE_PIE       = 'pie';
+    const WIDGET_TYPE_TABLE     = 'table';
 
-    const WIDGET_TYPE_BAR = 'bar';
-
-    const WIDGET_TYPE_PIE = 'pie';
-
-    const WIDGET_TYPE_TABLE = 'table';
+    /**
+     * @var array
+     */
+    protected $widgetTypesMapping = [
+        'simple_bars'  => self::WIDGET_TYPE_GRAPH,
+        'bars'         => self::WIDGET_TYPE_GRAPH,
+        'simple_lines' => self::WIDGET_TYPE_GRAPH,
+        'lines'        => self::WIDGET_TYPE_GRAPH,
+        'area'         => self::WIDGET_TYPE_GRAPH,
+        'simple_area'  => self::WIDGET_TYPE_GRAPH,
+        'pie'          => self::WIDGET_TYPE_GRAPH,
+        'table'        => self::WIDGET_TYPE_TABLE,
+        'simple_stat'  => self::WIDGET_TYPE_STAT,
+    ];
 
     /**
      * @var int
@@ -85,17 +99,17 @@ class ReportDashboardWidget extends DomainObject
     /**
      * @var string
      */
-    protected $hc_data = null;
-
-    /**
-     * @var string
-     */
     protected $type;
 
     /**
      * @var array
      */
     protected $variables;
+
+    /**
+     * @var string
+     */
+    protected $options;
 
     /**
      * @return int
@@ -200,7 +214,7 @@ class ReportDashboardWidget extends DomainObject
     }
 
     /**
-     * @param string $size
+     * @param string|array $size
      *
      * @throws \Exception
      *
@@ -245,34 +259,6 @@ class ReportDashboardWidget extends DomainObject
     }
 
     /**
-     * @return array
-     */
-    public function getHcData()
-    {
-        if (!is_null($this->hc_data) && !is_array($this->hc_data)) {
-            $temp          = explode(':', $this->hc_data);
-            $this->hc_data = [
-                'inner_type' => $temp[1],
-                'outer_type' => $temp[0],
-            ];
-        }
-
-        return $this->hc_data;
-    }
-
-    /**
-     * @param string $data
-     *
-     * @return $this
-     */
-    public function setHcData($data)
-    {
-        $this->hc_data = $data;
-
-        return $this;
-    }
-
-    /**
      * @param $type
      *
      * @return $this
@@ -293,6 +279,14 @@ class ReportDashboardWidget extends DomainObject
     }
 
     /**
+     * @return string
+     */
+    public function getWidgetType()
+    {
+        return isset($this->widgetTypesMapping[$this->type]) ? $this->widgetTypesMapping[$this->type] : self::WIDGET_TYPE_TABLE;
+    }
+
+    /**
      * @return array
      */
     public function getVariables()
@@ -308,6 +302,26 @@ class ReportDashboardWidget extends DomainObject
     public function setVariables(array $variables)
     {
         $this->variables = $variables;
+
+        return $this;
+    }
+
+    /**
+     * @return string
+     */
+    public function getOptions()
+    {
+        return $this->options;
+    }
+
+    /**
+     * @param string $options
+     *
+     * @return $this
+     */
+    public function setOptions($options)
+    {
+        $this->options = $options;
 
         return $this;
     }
@@ -377,17 +391,6 @@ class ReportDashboardWidget extends DomainObject
                 'columnName' => 'size',
             ]
         );
-        $metadata->mapField(
-            [
-                'fieldName'  => 'hc_data',
-                'type'       => 'string',
-                'length'     => 50,
-                'precision'  => 0,
-                'scale'      => 0,
-                'nullable'   => true,
-                'columnName' => 'hc_data',
-            ]
-        );
 
         $metadata->mapField(
             [
@@ -410,6 +413,17 @@ class ReportDashboardWidget extends DomainObject
                 'scale'      => 0,
                 'nullable'   => true,
                 'columnName' => 'variables',
+            ]
+        );
+
+        $metadata->mapField(
+            [
+                'fieldName'  => 'options',
+                'type'       => 'text',
+                'precision'  => 0,
+                'scale'      => 0,
+                'nullable'   => true,
+                'columnName' => 'options',
             ]
         );
 

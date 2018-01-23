@@ -114,7 +114,7 @@ Feature: /ticket_forms
       | user_field_{f1} |
     And "user_1@deskpro.dev" user exists
     And "user_2@deskpro.dev" user exists
-    And the object "user_1@deskpro.dev" has "f1" custom data with "some text"
+    And the object "user_1@deskpro.dev" has "f1" custom data set to "some text"
     And the "{t1}" record "person" prop is equal to "{user_1@deskpro.dev}"
 
     When I send a PUT request to "/api/v2/ticket_forms/agent/{t1}" with body:

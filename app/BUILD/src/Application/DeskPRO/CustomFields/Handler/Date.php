@@ -121,17 +121,27 @@ class Date extends HandlerAbstract
     }
 
     /**
+     * @param array $form_data
+     * @param null $default
+     * @return mixed|null
+     */
+    private function findValue(array $form_data, $default = null)
+    {
+        $names = $this->getAllFormFieldNames();
+        foreach ($names as $name) {
+            if (!empty($form_data[$name])) {
+                return $form_data[$name];
+            }
+        }
+        return $default;
+    }
+
+    /**
      * {@inheritdoc}
      */
     public function getDataFromForm(array $form_data)
     {
-        $name = $this->getFormFieldName();
-
-        $value = null;
-        if (!empty($form_data[$name])) {
-            $value = $form_data[$name];
-        }
-
+        $value = $this->findValue($form_data);
         if (!$value) {
             return [];
         }
@@ -245,7 +255,11 @@ class Date extends HandlerAbstract
      */
     public function validateFormData(array $form_data, $context = self::CONTEXT_USER, $context_data = null)
     {
-        $data = isset($form_data[$this->getFormFieldName()]) ? $form_data[$this->getFormFieldName()] : '';
+        $valueIfNotPresent = new \stdClass();
+        $data = $this->findValue($form_data, $valueIfNotPresent);
+        if ($data === $valueIfNotPresent) {
+            $data = '';
+        }
 
         if ($data && !is_scalar($data)) {
             return $this->makeErrorArray(['date_invalid']);

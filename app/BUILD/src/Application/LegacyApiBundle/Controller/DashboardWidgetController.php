@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2017, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2018, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -137,23 +137,12 @@ class DashboardWidgetController extends AbstractController
         if ($this->permissionsService->isEditableDashboard($widget->getReport()->getDashboard())) {
             $title = $this->in->getCleanValue('title', 'string');
             $widget->setTitle($title);
+            $widget->setOptions($this->in->getValue('options'));
         }
         $this->em->persist($widget);
         $this->em->flush();
 
         return $this->createApiSuccessResponse();
-    }
-
-    /**
-     * @param $widget
-     *
-     * @return Response
-     */
-    public function getWidgetDataAction($widget)
-    {
-        $widgetData = $this->_getWidgetData($widget);
-
-        return $this->createApiResponse($widgetData);
     }
 
     /**
@@ -176,6 +165,7 @@ class DashboardWidgetController extends AbstractController
         if (!$widget instanceof Widget && !$widget = $this->em->getRepository(Widget::class)->find((int) $widget)) {
             throw $this->createNotFoundException('Widget not found!');
         }
+
         if (!$widget->getWidget()) {
             throw $this->createNotFoundException('Widget not found!');
         }
@@ -191,7 +181,7 @@ class DashboardWidgetController extends AbstractController
         }
         $widget->setVariables($widgetVars);
         $realData = $this->widgetService->renderWidgetQuery($widget);
-        if ($realData && $widget->getType() == DashboardWidgetService::WIDGET_TYPE_TABLE) {
+        if ($realData && $widget->getType() == Widget::WIDGET_TYPE_TABLE) {
             $aoColumns = [];
             $columns   = [];
             foreach ($realData['columns'] as $column) {
@@ -209,7 +199,7 @@ class DashboardWidgetController extends AbstractController
             'col'   => $pos[1],
             'sizeX' => $size[0],
             'sizeY' => $size[1],
-            'type'  => $this->widgetService->getWidgetType($widget->getType()),
+            'type'  => $widget->getWidgetType(),
             'data'  => $realData ?: [],
         ];
 

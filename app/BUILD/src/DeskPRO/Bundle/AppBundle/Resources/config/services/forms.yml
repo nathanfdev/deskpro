@@ -286,6 +286,13 @@ services:
     tags:
       - { name: form.type }
 
+  form.ticket_charge:
+    class: DeskPRO\Bundle\AppBundle\Form\Type\Tickets\TicketChargeType
+    arguments:
+      - "@doctrine.orm.default_entity_manager"
+    tags:
+      - { name: form.type }
+
   form.widget_brand_chat_settings:
     class: DeskPRO\Bundle\AppBundle\Form\Type\Settings\Widget\BrandSettings\Chat\WidgetBrandChatSettingsType
     arguments:
@@ -402,5 +409,19 @@ services:
     class: DeskPRO\Bundle\AppBundle\Form\Type\TranslationType
     arguments:
       - "@doctrine.orm.default_entity_manager"
+    tags:
+      - { name: form.type }
+
+  form.report_widget:
+    class: DeskPRO\Bundle\AppBundle\Form\Type\Reports\ReportWidgetType
+    arguments:
+      - "@dashboard.service"
+    tags:
+      - { name: form.type }
+
+  form.dpql_parts:
+    class: DeskPRO\Bundle\AppBundle\Form\Type\Reports\DpqlPartsType
+    arguments:
+      - "@dpql.compiler"
     tags:
       - { name: form.type }

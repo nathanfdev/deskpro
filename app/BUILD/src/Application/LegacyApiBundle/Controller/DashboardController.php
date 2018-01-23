@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2016, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2018, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -128,8 +128,7 @@ class DashboardController extends AbstractController
                  $report['isAdded'] === true
                 ) {
                     $reportEntity = new Tab();
-                    $reportEntity->setColumns(10)
-                                 ->setDashboard($dashboard);
+                    $reportEntity->setDashboard($dashboard);
                     $dashboard->addReport($reportEntity);
                     if (isset($report['cloneId']) && (int) $report['cloneId'] > 0) {
                         $report_prototype = $this->service->getReport($report['cloneId']);
@@ -151,7 +150,7 @@ class DashboardController extends AbstractController
                 }
             }
             /**
-             * @var 
+             * @var
              * @var Tab $apiReport
              */
             foreach ($apiReports as $index => $apiReport) {
@@ -180,7 +179,9 @@ class DashboardController extends AbstractController
     /**
      * @param $id
      *
-     * @return array
+     * @throws \Exception
+     *
+     * @return Response
      */
     public function cloneAction($id)
     {
@@ -195,7 +196,6 @@ class DashboardController extends AbstractController
             $report = new Tab();
             $report
                 ->setTitle($report_prototype->getTitle().'_clone')
-                ->setColumns($report_prototype->getColumns())
                 ->setSortOrder($report_prototype->getSortOrder());
             $dashboard->addReport($report);
             $this->widgetService->copyWidgetLinks($report, $report_prototype);

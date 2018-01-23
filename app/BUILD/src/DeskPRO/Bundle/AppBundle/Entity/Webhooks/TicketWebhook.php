@@ -28,9 +28,11 @@
 
 namespace DeskPRO\Bundle\AppBundle\Entity\Webhooks;
 
+use Application\DeskPRO\Entity\TicketTrigger;
 use Application\DeskPRO\Tickets\Filters\FilterTerms;
 use Application\DeskPRO\Tickets\Filters\LegacyTermsTransformer;
 use Application\DeskPRO\Tickets\Triggers\TriggerTerms;
+use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\Mapping as ORM;
 use JMS\Serializer\Annotation as JMS;
 use Application\DeskPRO\EntityRepository\AppInstance;
@@ -98,20 +100,16 @@ class TicketWebhook
     private $searchTerms;
 
     /**
-     * @ORM\Column(name="terms", type="dp_json_obj", nullable=true)
+     * @ORM\ManyToMany(targetEntity="Application\DeskPRO\Entity\TicketTrigger", cascade={"persist"})
+     * @ORM\JoinTable(name="ticket_webhook_triggers",
+     *      joinColumns={@ORM\JoinColumn(name="webhook_id", referencedColumnName="id", onDelete="CASCADE")},
+     *      inverseJoinColumns={@ORM\JoinColumn(name="trigger_id", referencedColumnName="id", unique=true)}
+     *      )
      * @JMS\Expose()
-     * @JMS\Type("Application\DeskPRO\Tickets\Triggers\TriggerTerms")
-     * @var \Application\DeskPRO\Tickets\Triggers\TriggerTerms
+     * @JMS\Type("array<Application\DeskPRO\Entity\TicketTrigger>")
+     * @var TicketTrigger[]
      */
-    private $terms;
-
-    /**
-     * @ORM\Column(name="actions", type="dp_json_obj", nullable=false)
-     * @JMS\Expose()
-     * @JMS\Type("Application\DeskPRO\Tickets\Triggers\TriggerActions")
-     * @var \Application\DeskPRO\Tickets\Triggers\TriggerActions
-     */
-    private $actions;
+    private $triggers;
 
     /**
      * @ORM\ManyToOne(targetEntity="DeskPRO\Bundle\AppBundle\Entity\AppStore\AppInstance")
@@ -147,22 +145,6 @@ class TicketWebhook
     }
 
     /**
-     * @return \Application\DeskPRO\Tickets\Triggers\TriggerActions
-     */
-    public function getActions()
-    {
-        return $this->actions;
-    }
-
-    /**
-     * @param \Application\DeskPRO\Tickets\Triggers\TriggerActions $actions
-     */
-    public function setActions( $actions )
-    {
-        $this->actions = $actions;
-    }
-
-    /**
      * @return \Application\DeskPRO\Tickets\Filters\FilterTerms
      */
     public function getSearchTerms()
@@ -189,22 +171,19 @@ class TicketWebhook
     }
 
     /**
-     * @return TriggerTerms
+     * @return TicketTrigger[]|ArrayCollection
      */
-    public function getTerms()
+    public function getTriggers()
     {
-        if (! $this->terms) {
-            return new TriggerTerms();
-        }
-        return $this->terms;
+        return $this->triggers;
     }
 
     /**
-     * @param $terms
+     * @param ArrayCollection $triggers
      */
-    public function setTerms(TriggerTerms $terms)
+    public function setTriggers($triggers)
     {
-        $this->terms = $terms;
+        $this->triggers = $triggers;
     }
 
     /**

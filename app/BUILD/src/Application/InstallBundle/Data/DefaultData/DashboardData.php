@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2017, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2018, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -70,6 +70,10 @@ class DashboardData extends AbstractDefaultData
         ],
     ];
 
+    /**
+     * @throws \Doctrine\ORM\OptimisticLockException
+     * @throws \Exception
+     */
     public function runInstall()
     {
         /** @var PersonRepository $personRepository */
@@ -86,7 +90,6 @@ class DashboardData extends AbstractDefaultData
                 $tab = new Tab();
                 $tab
                     ->setTitle($report['title'])
-                    ->setColumns($report['columns'])
                     ->setDashboard($dashboardEntity)
                     ->setSortOrder($report['sort_order']);
                 $this->getEm()->persist($tab);
@@ -98,10 +101,7 @@ class DashboardData extends AbstractDefaultData
                             ->setSize($widget['size'])
                             ->setPosition($widget['position'])
                             ->setReport($tab);
-                        if (isset($widget['hc_data'])) {
-                            $widgetEntity->setHcData($widget['hc_data']);
-                            $widgetEntity->setType(Widget::WIDGET_TYPE_HARDCODED);
-                        } elseif (isset($widget['widget_id'])) {
+                        if (isset($widget['widget_id'])) {
                             /** @var WidgetPrototype $widgetPrototype */
                             $widgetPrototype = $this->getEm()->getRepository(ReportWidget::class)->find($widget['widget_id']);
                             $widgetEntity->setWidget($widgetPrototype);
@@ -135,6 +135,9 @@ class DashboardData extends AbstractDefaultData
         }
     }
 
+    /**
+     * @throws \Doctrine\ORM\OptimisticLockException
+     */
     public function runReset()
     {
         $dashboards = $this->getEm()->getRepository(Dashboard::class)->findBy(['is_default' => 1]);
@@ -144,6 +147,10 @@ class DashboardData extends AbstractDefaultData
         $this->getEm()->flush();
     }
 
+    /**
+     * @throws \Doctrine\ORM\OptimisticLockException
+     * @throws \Exception
+     */
     public function runSync()
     {
         $dashboards = $this->getEm()->getRepository(Dashboard::class)->findBy(['is_default' => 1]);

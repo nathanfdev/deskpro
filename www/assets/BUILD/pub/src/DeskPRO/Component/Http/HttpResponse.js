@@ -1,3 +1,18 @@
+const parseHeadersRegex = /^(.*?):[ \t]*([^\r\n]*)$/mg;
+
+function parseHeaders(headersString) {
+  const responseHeaders = {};
+  let match = null;
+  do {
+    match = parseHeadersRegex.exec(headersString);
+    if (match) {
+      responseHeaders[match[1].toLowerCase()] = match[2];
+    }
+  } while (match);
+
+  return responseHeaders;
+}
+
 export class HttpResponse {
 
   /**
@@ -59,6 +74,14 @@ export class HttpResponse {
    */
   getData() {
     return this.data;
+  }
+
+  /**
+   * @return {{}}
+   */
+  getAllHeadersMap() {
+    const headerString = this.xhr.getAllResponseHeaders();
+    return parseHeaders(headerString);
   }
 
   /**

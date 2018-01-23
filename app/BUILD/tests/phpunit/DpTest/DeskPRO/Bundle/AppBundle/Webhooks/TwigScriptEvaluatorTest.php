@@ -85,7 +85,7 @@ class TwigScriptEvaluatorTest extends DeskProTestCase
     public function testEvaluateReturnsExpectedResult()
     {
         $values = [
-            ["twig:{{data.twig}}", "yes", new WebhookInvocation([], "", [], "", ['twig' => 'yes'])]
+            ["twig:{{webhook.data.twig}}", "yes", new WebhookInvocation([], "", [], "", ['twig' => 'yes'])]
         ];
         $evaluator = new TwigScriptEvaluator();
         foreach ($values as $trial) {

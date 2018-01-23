@@ -76,7 +76,8 @@ class DevKernel extends BaseKernel
             new \DeskPRO\Bundle\DevBundle\DevBundle(),
             new \DeskPRO\Bundle\SystemBundle\SystemBundle(),
             new \DeskPRO\Bundle\AuditBundle\AuditBundle(),
-            new \DeskPRO\Bundle\AppStoreBundle\AppStoreBundle()
+            new \DeskPRO\Bundle\AppStoreBundle\AppStoreBundle(),
+            new \DeskPRO\Bundle\ReportBundle\ReportBundle(),
         ];
 
         return $bundles;

@@ -32,7 +32,9 @@ use Application\DeskPRO\CustomFields\Handler\HandlerAbstract;
 use Application\DeskPRO\Entity\CustomDataAbstract;
 use Application\DeskPRO\Entity\CustomDefAbstract;
 use Application\DeskPRO\Entity\Person;
+use DeskPRO\Bundle\AppBundle\ObjectAlias;
 use Doctrine\ORM\EntityManager;
+use Doctrine\ORM\PersistentCollection;
 
 /**
  * The custom field manager handles fetching custom fields, rendering them
@@ -194,9 +196,11 @@ class FieldManager
                 return $this->fields;
             }
 
+            /** @var \Application\DeskPRO\Entity\CustomDefAbstract[] $all_fields */
             $all_fields = $this->em->getRepository($this->options->get('entity_name'))->getEnabledFields();
 
             foreach ($all_fields as $f) {
+
                 $this->real_all_fields[$f->getId()] = $f;
 
                 if (!$f->getParentId()) {
@@ -232,7 +236,7 @@ class FieldManager
     /**
      * Get all defined fields, even ones that are not enabled for the current interface.
      *
-     * @return array
+     * @return \Application\DeskPRO\Entity\CustomDefAbstract[]
      */
     public function getDefinedFields()
     {
@@ -285,7 +289,27 @@ class FieldManager
     {
         $this->getFields();
 
-        return isset($this->fields[$field_id]) ? $this->fields[$field_id] : null;
+
+        if (isset($this->fields[$field_id])) {
+            return $this->fields[$field_id];
+        }
+
+        $foundField = null;
+        foreach ($this->fields as $field) {
+            foreach (ObjectAlias\Converters::toMergedList($field->getAliases()) as $name) {
+                if ($name === $field_id) {
+                    // it is possible to have two fields with the same unqualified alias, in this case
+                    // we can not resolve this ambiguity and we return null
+                    // TODO exception would be better
+                    if ($foundField) {
+                        return null;
+                    }
+                    $foundField = $field;
+                }
+            }
+        }
+
+        return $foundField;
     }
 
     /**
@@ -554,6 +578,50 @@ class FieldManager
         }
     }
 
+    /**
+     * @param array $form
+     * @param CustomDefAbstract $fieldDef
+     * @return bool
+     */
+    private function fieldIsPresent( array $form, CustomDefAbstract $fieldDef)
+    {
+        if (array_key_exists('field_'.$fieldDef->getId(), $form)) {
+            return true;
+        }
+
+        foreach (ObjectAlias\Converters::toMergedList($fieldDef->getAliases()) as $name) {
+            if (array_key_exists($name, $form)) {
+                return true;
+            }
+        }
+
+        return false;
+    }
+
+
+    /**
+     * Returns a list of the field names which can resolve to more than one field
+     *
+     * @param array $form
+     * @param CustomDefAbstract[] $fieldDefs
+     * @return array|int[]
+     */
+    private function findAmbiguousFieldReferences( array $form, $fieldDefs)
+    {
+        $refs = [];
+
+        foreach ($fieldDefs as $def) {
+            foreach (ObjectAlias\Converters::toMergedList($def->getAliases()) as $name) {
+                $counter = array_key_exists($name, $refs) ? $refs[$name] : 0;
+                $refs[$name] = $counter + 1;
+            }
+        }
+
+        return array_filter($refs, function ($value) {
+            return $value > 1;
+        });
+    }
+
     public function setFormToObject(array $form, $object, $only_set = false)
     {
         $fields = $this->getFields();
@@ -569,9 +637,15 @@ class FieldManager
 
         $this->_orig_display = $this->getDisplayArrayForObject($object);
 
+        $ambiguousRefs = $this->findAmbiguousFieldReferences($form, $fields);
+        if (count($ambiguousRefs)) {
+            throw new \DomainException('some field names can resolve to multiple custom fields');
+        }
+
         /** @var CustomDefAbstract $field_def */
         foreach ($fields as $field_def) {
-            if ($only_set && !array_key_exists('field_'.$field_def->getId(), $form)) {
+            if ($only_set && !$this->fieldIsPresent($form, $field_def)
+            ) {
                 continue;
             }
 
@@ -730,6 +804,46 @@ class FieldManager
             if ($v->field->getId() == $field_def->getId() || ($v->field->parent && $v->field->parent->getId() == $field_def->getId())) {
                 $object->custom_data->removeElement($v);
             }
+        }
+    }
+
+    /**
+     * Removes only a subset of the values of a field and flushes entity manager changes.
+     *
+     * Mainly exists because it's not clear when the entity manager is flushed.
+     *
+     * @todo investigate if can be removed
+     * @param                                               $object
+     * @param \Application\DeskPRO\Entity\CustomDefAbstract $fieldDefinition
+     * @param \Closure                                      $customDataFilter
+     */
+    public function removeSomeCustomDataOnObjectAndFlushChanges($object, CustomDefAbstract $fieldDefinition, \Closure $customDataFilter)
+    {
+        $this->removeSomeCustomDataOnObject($object, $fieldDefinition, $customDataFilter);
+        // BC: $em should be flushed outside this method
+        $this->em->flush();
+    }
+
+    /**
+     * Removes only a subset of the values of a field. Mostly used for DataList fields
+     *
+     * @param                                               $object
+     * @param \Application\DeskPRO\Entity\CustomDefAbstract $fieldDefinition
+     * @param \Closure                                      $customDataFilter
+     */
+    public function removeSomeCustomDataOnObject($object, CustomDefAbstract $fieldDefinition, \Closure $customDataFilter)
+    {
+        /** @var PersistentCollection $customData */
+        $customData = $object->getCustomData();
+        $unsetCustomDataList = array_filter(
+            $customData->toArray(),
+            function (CustomDataAbstract $customData) use ($customDataFilter) {
+                return $customDataFilter($customData);
+            }
+        );
+
+        foreach ($unsetCustomDataList as $unsetCustomData) {
+            $customData->removeElement($unsetCustomData);
         }
     }
 

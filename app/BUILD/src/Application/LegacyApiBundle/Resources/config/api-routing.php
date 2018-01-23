@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2017, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2018, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -7053,93 +7053,6 @@ $collection->create(
 //#######################################################################################################################
 
 $collection->create(
-    'api_reports_widget_list',
-    [
-        'path'       => '/reports/widget',
-        'controller' => 'LegacyApiBundle:ReportsWidget:list',
-        'methods'    => ['GET'],
-    ]
-);
-
-$collection->create(
-    'api_reports_widget_get_group_params',
-    [
-        'path'       => '/reports/widget/group-params',
-        'controller' => 'LegacyApiBundle:ReportsWidget:getGroupParams',
-        'methods'    => ['GET'],
-    ]
-);
-
-$collection->create(
-    'api_reports_widget_get',
-    [
-        'path'         => '/reports/widget/{id}',
-        'controller'   => 'LegacyApiBundle:ReportsWidget:get',
-        'requirements' => ['id' => '\\d+'],
-        'methods'      => ['GET'],
-    ]
-);
-
-$collection->create(
-    'api_reports_widget_delete',
-    [
-        'path'         => '/reports/widget/{id}',
-        'controller'   => 'LegacyApiBundle:ReportsWidget:delete',
-        'requirements' => ['id' => '\\d+'],
-        'methods'      => ['DELETE'],
-    ]
-);
-
-$collection->create(
-    'api_reports_widget_create',
-    [
-        'path'       => '/reports/widget',
-        'controller' => 'LegacyApiBundle:ReportsWidget:save',
-        'defaults'   => ['id' => '0'],
-        'methods'    => ['PUT'],
-    ]
-);
-
-$collection->create(
-    'api_reports_widget_save',
-    [
-        'path'         => '/reports/widget/{id}',
-        'controller'   => 'LegacyApiBundle:ReportsWidget:save',
-        'requirements' => ['id' => '\\d+'],
-        'methods'      => ['POST'],
-    ]
-);
-
-$collection->create(
-    'api_reports_widget_clone',
-    [
-        'path'         => '/reports/widget/clone/{id}',
-        'controller'   => 'LegacyApiBundle:ReportsWidget:clone',
-        'requirements' => ['id' => '\\d+'],
-        'methods'      => ['POST'],
-    ]
-);
-
-$collection->create(
-    'api_reports_widget_test',
-    [
-        'path'         => '/reports/widget/test/{id}',
-        'controller'   => 'LegacyApiBundle:ReportsWidget:test',
-        'requirements' => ['id' => '\\d+'],
-        'methods'      => ['POST'],
-    ]
-);
-
-$collection->create(
-    'api_reports_widget_parse',
-    [
-        'path'       => '/reports/widget/parse',
-        'controller' => 'LegacyApiBundle:ReportsWidget:parse',
-        'methods'    => ['POST'],
-    ]
-);
-
-$collection->create(
     'api_reports_widget_download',
     [
         'path'       => '/reports/widget/download/{id}/{type}',
@@ -7639,6 +7552,24 @@ $collection->create('dashboards_reports_delete    ', [
     'defaults'     => ['action' => 'delete'],
     'methods'      => ['DELETE'],
 ]);
+
+$collection->create(
+    'api_reports_schedule',
+    [
+        'path'       => '/dashboards/reports/{id}/schedule',
+        'controller' => 'LegacyApiBundle:DashboardReport:schedule',
+        'methods'    => ['POST'],
+    ]
+);
+
+$collection->create(
+    'api_reports_get_schedule',
+    [
+        'path'       => '/dashboards/reports/{id}/schedule',
+        'controller' => 'LegacyApiBundle:DashboardReport:getScheduledReport',
+        'methods'    => ['GET'],
+    ]
+);
 
 //#######################################################################################################################
 // Report Dashboards Permissions

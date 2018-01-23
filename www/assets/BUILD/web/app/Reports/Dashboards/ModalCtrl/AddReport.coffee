@@ -8,7 +8,6 @@ define -> [
   ) ->
 
     $scope.report = report;
-    $scope.title = if report.id then 'Edit report' else 'Add report'
 
     $scope.cancel = ->
       $modalInstance.dismiss('cancel')

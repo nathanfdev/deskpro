@@ -88,7 +88,8 @@ abstract class AbstractSmsAction extends AbstractContainerAwareAction implements
         //##########################################################################
         $action_message_template = $this->getActionOption('message');
         $formatter               = new SnippetFormatter($this->getContainer()->getTwig());
-        $formatter->addVar('user_vars', $context->getUserVars());
+        ActionVars::configureFormatter($formatter, $context);
+
         $message = $formatter->formatText($action_message_template, $ticket);
 
         //##########################################################################

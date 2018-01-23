@@ -1,0 +1,346 @@
+services:
+
+  dpql.statement_factory:
+    class: DeskPRO\Bundle\ReportBundle\Dpql2\Statement\DpqlStatementFactory
+    arguments:
+      - "@service_container"
+
+  dpql.func_registry:
+    class: DeskPRO\Bundle\ReportBundle\Dpql2\Func\DpqlFuncRegistry
+    arguments:
+      - "@service_container"
+
+  dpql.placeholder_registry:
+    class: DeskPRO\Bundle\ReportBundle\Dpql2\Placeholder\DpqlPlaceholderRegistry
+    arguments:
+      - "@service_container"
+
+  dpql.lexer:
+    class: DeskPRO\Bundle\ReportBundle\Dpql2\Lexer
+    shared: false
+
+  dpql.parser:
+    class: DeskPRO\Bundle\ReportBundle\Dpql2\Parser
+    arguments:
+      - "@dpql.statement_factory"
+    shared: false
+
+  dpql.compiler:
+    class: DeskPRO\Bundle\ReportBundle\Dpql2\DpqlCompiler
+    arguments:
+      - "@doctrine.orm.default_entity_manager"
+      - "@dpql.lexer"
+      - "@dpql.parser"
+    shared: false
+
+  dpql.date:
+    class: DeskPRO\Bundle\ReportBundle\Dpql2\DpqlDate
+    arguments:
+      - "@security.token_storage"
+
+  # DPQL functions
+  dpql.func.alias:
+    class: DeskPRO\Bundle\ReportBundle\Dpql2\Func\Alias
+    tags:
+      - { name: dpql.func }
+
+  dpql.func.count:
+    class: DeskPRO\Bundle\ReportBundle\Dpql2\Func\Count
+    tags:
+      - { name: dpql.func }
+
+  dpql.func.count_distinct:
+    class: DeskPRO\Bundle\ReportBundle\Dpql2\Func\CountDistinct
+    tags:
+      - { name: dpql.func }
+
+  dpql.func.cur_date:
+    class: DeskPRO\Bundle\ReportBundle\Dpql2\Func\CurDate
+    tags:
+      - { name: dpql.func }
+
+  dpql.func.cur_time:
+    class: DeskPRO\Bundle\ReportBundle\Dpql2\Func\CurTime
+    tags:
+      - { name: dpql.func }
+
+  dpql.func.date:
+    class: DeskPRO\Bundle\ReportBundle\Dpql2\Func\Date
+    tags:
+      - { name: dpql.func }
+
+  dpql.func.date_offset_group:
+    class: DeskPRO\Bundle\ReportBundle\Dpql2\Func\DateOffsetGroup
+    tags:
+      - { name: dpql.func }
+
+  dpql.func.day_name:
+    class: DeskPRO\Bundle\ReportBundle\Dpql2\Func\DayName
+    tags:
+      - { name: dpql.func }
+
+  dpql.func.day_of_month:
+    class: DeskPRO\Bundle\ReportBundle\Dpql2\Func\DayOfMonth
+    tags:
+      - { name: dpql.func }
+
+  dpql.func.day_of_week:
+    class: DeskPRO\Bundle\ReportBundle\Dpql2\Func\DayOfWeek
+    tags:
+      - { name: dpql.func }
+
+  dpql.func.format:
+    class: DeskPRO\Bundle\ReportBundle\Dpql2\Func\Format
+    arguments:
+      - "@security.token_storage"
+    tags:
+      - { name: dpql.func }
+
+  dpql.func.hierarchy:
+    class: DeskPRO\Bundle\ReportBundle\Dpql2\Func\Hierarchy
+    tags:
+      - { name: dpql.func }
+
+  dpql.func.hierarchy_descends_from:
+    class: DeskPRO\Bundle\ReportBundle\Dpql2\Func\HierarchyDescendsFrom
+    arguments:
+      - "@dpql.statement_factory"
+    tags:
+      - { name: dpql.func }
+
+  dpql.func.hour:
+    class: DeskPRO\Bundle\ReportBundle\Dpql2\Func\Hour
+    tags:
+      - { name: dpql.func }
+
+  dpql.func.link:
+    class: DeskPRO\Bundle\ReportBundle\Dpql2\Func\Link
+    arguments:
+      - "@router"
+    tags:
+      - { name: dpql.func }
+
+  dpql.func.matrix:
+    class: DeskPRO\Bundle\ReportBundle\Dpql2\Func\Matrix
+    tags:
+      - { name: dpql.func }
+
+  dpql.func.minute:
+    class: DeskPRO\Bundle\ReportBundle\Dpql2\Func\Minute
+    tags:
+      - { name: dpql.func }
+
+  dpql.func.month:
+    class: DeskPRO\Bundle\ReportBundle\Dpql2\Func\Month
+    tags:
+      - { name: dpql.func }
+
+  dpql.func.month_name:
+    class: DeskPRO\Bundle\ReportBundle\Dpql2\Func\MonthName
+    tags:
+      - { name: dpql.func }
+
+  dpql.func.now:
+    class: DeskPRO\Bundle\ReportBundle\Dpql2\Func\Now
+    tags:
+      - { name: dpql.func }
+
+  dpql.func.obj_lang:
+    class: DeskPRO\Bundle\ReportBundle\Dpql2\Func\ObjLang
+    arguments:
+      - "@doctrine.dbal.default_connection"
+      - "@security.token_storage"
+    tags:
+      - { name: dpql.func }
+
+  dpql.func.percent:
+    class: DeskPRO\Bundle\ReportBundle\Dpql2\Func\Percent
+    tags:
+      - { name: dpql.func }
+
+  dpql.func.printable:
+    class: DeskPRO\Bundle\ReportBundle\Dpql2\Func\Printable
+    tags:
+      - { name: dpql.func }
+
+  dpql.func.stack_group:
+    class: DeskPRO\Bundle\ReportBundle\Dpql2\Func\StackGroup
+    tags:
+      - { name: dpql.func }
+
+  dpql.func.time_length:
+    class: DeskPRO\Bundle\ReportBundle\Dpql2\Func\TimeLength
+    tags:
+      - { name: dpql.func }
+
+  dpql.func.total:
+    class: DeskPRO\Bundle\ReportBundle\Dpql2\Func\Total
+    tags:
+      - { name: dpql.func }
+
+  dpql.func.to_utc:
+    class: DeskPRO\Bundle\ReportBundle\Dpql2\Func\ToUtc
+    tags:
+      - { name: dpql.func }
+
+  dpql.func.utc:
+    class: DeskPRO\Bundle\ReportBundle\Dpql2\Func\Utc
+    tags:
+      - { name: dpql.func }
+
+  dpql.func.x:
+    class: DeskPRO\Bundle\ReportBundle\Dpql2\Func\X
+    tags:
+      - { name: dpql.func }
+
+  dpql.func.y:
+    class: DeskPRO\Bundle\ReportBundle\Dpql2\Func\Y
+    tags:
+      - { name: dpql.func }
+
+  dpql.func.year:
+    class: DeskPRO\Bundle\ReportBundle\Dpql2\Func\Year
+    tags:
+      - { name: dpql.func }
+
+  dpql.func.json_extract:
+    class: DeskPRO\Bundle\ReportBundle\Dpql2\Func\JsonExtract
+    tags:
+      - { name: dpql.func }
+
+  # DPQL placeholders
+  dpql.placeholder.ever:
+    class: DeskPRO\Bundle\ReportBundle\Dpql2\Placeholder\Ever
+    arguments:
+      - "@security.token_storage"
+      - "@dpql.date"
+    tags:
+      - { name: dpql.placeholder }
+
+  dpql.placeholder.last_month:
+    class: DeskPRO\Bundle\ReportBundle\Dpql2\Placeholder\LastMonth
+    arguments:
+      - "@security.token_storage"
+      - "@dpql.date"
+    tags:
+      - { name: dpql.placeholder }
+
+  dpql.placeholder.last_week:
+    class: DeskPRO\Bundle\ReportBundle\Dpql2\Placeholder\LastWeek
+    arguments:
+      - "@security.token_storage"
+      - "@dpql.date"
+    tags:
+      - { name: dpql.placeholder }
+
+  dpql.placeholder.last_year:
+    class: DeskPRO\Bundle\ReportBundle\Dpql2\Placeholder\LastYear
+    arguments:
+      - "@security.token_storage"
+      - "@dpql.date"
+    tags:
+      - { name: dpql.placeholder }
+
+  dpql.placeholder.past_6_month:
+    class: DeskPRO\Bundle\ReportBundle\Dpql2\Placeholder\Past6Months
+    arguments:
+      - "@security.token_storage"
+      - "@dpql.date"
+    tags:
+      - { name: dpql.placeholder }
+
+  dpql.placeholder.past_7_days:
+    class: DeskPRO\Bundle\ReportBundle\Dpql2\Placeholder\Past7Days
+    arguments:
+      - "@security.token_storage"
+      - "@dpql.date"
+    tags:
+      - { name: dpql.placeholder }
+
+  dpql.placeholder.past_12_hours:
+    class: DeskPRO\Bundle\ReportBundle\Dpql2\Placeholder\Past12Hours
+    arguments:
+      - "@security.token_storage"
+      - "@dpql.date"
+    tags:
+      - { name: dpql.placeholder }
+
+  dpql.placeholder.past_12_months:
+    class: DeskPRO\Bundle\ReportBundle\Dpql2\Placeholder\Past12Months
+    arguments:
+      - "@security.token_storage"
+      - "@dpql.date"
+    tags:
+      - { name: dpql.placeholder }
+
+  dpql.placeholder.past_24_hours:
+    class: DeskPRO\Bundle\ReportBundle\Dpql2\Placeholder\Past24Hours
+    arguments:
+      - "@security.token_storage"
+      - "@dpql.date"
+    tags:
+      - { name: dpql.placeholder }
+
+  dpql.placeholder.past_30_days:
+    class: DeskPRO\Bundle\ReportBundle\Dpql2\Placeholder\Past30Days
+    arguments:
+      - "@security.token_storage"
+      - "@dpql.date"
+    tags:
+      - { name: dpql.placeholder }
+
+  dpql.placeholder.past_hour:
+    class: DeskPRO\Bundle\ReportBundle\Dpql2\Placeholder\PastHour
+    arguments:
+      - "@security.token_storage"
+      - "@dpql.date"
+    tags:
+      - { name: dpql.placeholder }
+
+  dpql.placeholder.this_month:
+    class: DeskPRO\Bundle\ReportBundle\Dpql2\Placeholder\ThisMonth
+    arguments:
+      - "@security.token_storage"
+      - "@dpql.date"
+    tags:
+      - { name: dpql.placeholder }
+
+  dpql.placeholder.this_week:
+    class: DeskPRO\Bundle\ReportBundle\Dpql2\Placeholder\ThisWeek
+    arguments:
+      - "@security.token_storage"
+      - "@dpql.date"
+    tags:
+      - { name: dpql.placeholder }
+
+  dpql.placeholder.this_year:
+    class: DeskPRO\Bundle\ReportBundle\Dpql2\Placeholder\ThisYear
+    arguments:
+      - "@security.token_storage"
+      - "@dpql.date"
+    tags:
+      - { name: dpql.placeholder }
+
+  dpql.placeholder.today:
+    class: DeskPRO\Bundle\ReportBundle\Dpql2\Placeholder\Today
+    arguments:
+      - "@security.token_storage"
+      - "@dpql.date"
+    tags:
+      - { name: dpql.placeholder }
+
+  dpql.placeholder.tomorrow:
+    class: DeskPRO\Bundle\ReportBundle\Dpql2\Placeholder\Tomorrow
+    arguments:
+      - "@security.token_storage"
+      - "@dpql.date"
+    tags:
+      - { name: dpql.placeholder }
+
+  dpql.placeholder.yersterday:
+    class: DeskPRO\Bundle\ReportBundle\Dpql2\Placeholder\Yesterday
+    arguments:
+      - "@security.token_storage"
+      - "@dpql.date"
+    tags:
+      - { name: dpql.placeholder }

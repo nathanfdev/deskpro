@@ -21,8 +21,11 @@ define ['datatables'], () ->
         height = listItem.height()
         conf = scope.widgetId || 0;
         tableData   = if scope.tableData then JSON.parse(scope.tableData) else []
+        interval = 0;
 
         initTable = (widget) ->
+          if interval?
+            clearInterval(interval)
           scope.columns = widget.columns
           dt = el.DataTable {
             data:           widget.data,
@@ -39,17 +42,17 @@ define ['datatables'], () ->
             scrollCollapse: true,
             autoWidth:      true
             fnDrawCallback: (settings) ->
-                console.log settings
                 if settings._iDisplayLength == -1 || settings._iDisplayLength > settings.fnRecordsDisplay()
                   $(settings.nTableWrapper).find('.dataTables_paginate').hide();
                 else
                   $(settings.nTableWrapper).find('.dataTables_paginate').show();
           }
-          listItem
-            .find '.handle-e'
-            .remove
-          listItem
-            .css 'overflow-y', 'hidden'
+          if !widget.noRedraw
+            listItem
+              .find '.handle-e'
+              .remove
+            listItem
+              .css 'overflow-y', 'hidden'
 
           listItem.scroll () ->
             topOffset = box.offset().top - 34 - listItem.offset().top;
@@ -72,8 +75,9 @@ define ['datatables'], () ->
           , 2000
 
 
-          setInterval \
+          interval = setInterval \
             () ->
+              return if widget.noRedraw
               h = listItem.height();
               tBody = listItem.find('.dataTables_scrollBody')
               if h != height

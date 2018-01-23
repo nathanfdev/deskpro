@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2017, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2018, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -39,6 +39,7 @@ use Application\DeskPRO\Entity\BrandSetting;
 use Application\DeskPRO\Entity\ChatConversation;
 use Application\DeskPRO\Entity\ChatMessage;
 use Application\DeskPRO\Entity\CustomDataFeedback;
+use Application\DeskPRO\Entity\CustomDefBilling;
 use Application\DeskPRO\Entity\CustomDefChat;
 use Application\DeskPRO\Entity\CustomDefFeedback;
 use Application\DeskPRO\Entity\CustomDefOrganization;
@@ -78,6 +79,7 @@ use Application\DeskPRO\Entity\PersonUsersourceAssoc;
 use Application\DeskPRO\Entity\Phrase;
 use Application\DeskPRO\Entity\Problem;
 use Application\DeskPRO\Entity\Product;
+use Application\DeskPRO\Entity\ReportWidget;
 use Application\DeskPRO\Entity\Session;
 use Application\DeskPRO\Entity\Sla;
 use Application\DeskPRO\Entity\Task;
@@ -87,6 +89,7 @@ use Application\DeskPRO\Entity\TextSnippetCategory;
 use Application\DeskPRO\Entity\Ticket;
 use Application\DeskPRO\Entity\TicketAttachment;
 use Application\DeskPRO\Entity\TicketCategory;
+use Application\DeskPRO\Entity\TicketCharge;
 use Application\DeskPRO\Entity\TicketFlagged;
 use Application\DeskPRO\Entity\TicketLayout;
 use Application\DeskPRO\Entity\TicketLog;
@@ -298,6 +301,7 @@ class ObjectsManager
             'CustomDefPerson'          => [Factory\CommonFactories::class, 'customDef', 'person'],
             'CustomDefChat'            => [Factory\CommonFactories::class, 'customDef', 'conversation'],
             'CustomDefFeedback'        => [Factory\CommonFactories::class, 'customDef', 'feedback'],
+            'CustomDefBilling'         => [Factory\CommonFactories::class, 'customDef', 'billing'],
             'CustomDataFeedback'       => [Factory\SimpleFactory::class, 'create', CustomDataFeedback::class],
             'CustomFieldDefinition'    => [Factory\SimpleFactory::class, 'create', CustomFieldDefinition::class],
             'CustomPerUserDef'         => [Factory\CommonFactories::class, 'customPerDef', Person::class],
@@ -330,6 +334,7 @@ class ObjectsManager
             'TicketSla'                => [Factory\SimpleFactory::class, 'create', TicketSla::class],
             'TicketLog'                => [Factory\SimpleFactory::class, 'create', TicketLog::class],
             'TicketFollowUp'           => [Factory\SimpleFactory::class, 'create', TicketFollowUp::class],
+            'TicketCharge'             => [Factory\SimpleFactory::class, 'create', TicketCharge::class],
             'Sla'                      => [Factory\CommonFactories::class, 'sla'],
             'SLA'                      => [Factory\CommonFactories::class, 'sla'],
             'Usergroup'                => [Factory\SimpleFactory::class, 'create', Usergroup::class],
@@ -378,6 +383,7 @@ class ObjectsManager
             'EmailAccount'             => [Factory\SimpleFactory::class, 'create', EmailAccount::class],
             'Session'                  => [Factory\SimpleFactory::class, 'create', Session::class],
             'OAuthClient'              => [Factory\SimpleFactory::class, 'create', OAuthClient::class],
+            'ReportWidget'             => [Factory\SimpleFactory::class, 'create', ReportWidget::class],
         ];
     }
 
@@ -414,6 +420,7 @@ class ObjectsManager
             'TicketSla'                => [$this, 'find', TicketSla::class],
             'TicketLog'                => [$this, 'find', TicketLog::class],
             'TicketFollowUp'           => [$this, 'find', TicketFollowUp::class],
+            'TicketCharge'             => [$this, 'find', TicketCharge::class],
             'SLA'                      => [$this, 'find', Sla::class],
             'Organization'             => [$this, 'find', Organization::class],
             'OrganizationNote'         => [$this, 'find', OrganizationNote::class],
@@ -426,6 +433,7 @@ class ObjectsManager
             'CustomDefPerson'          => [$this, 'find', CustomDefPerson::class],
             'CustomDefChat'            => [$this, 'find', CustomDefChat::class],
             'CustomDefFeedback'        => [$this, 'find', CustomDefFeedback::class],
+            'CustomDefBilling'         => [$this, 'find', CustomDefBilling::class],
             'CustomDataFeedback'       => [$this, 'find', CustomDataFeedback::class],
             'CustomFieldDefinition'    => [$this, 'find', CustomFieldDefinition::class],
             'CustomPerUserDef'         => [$this, 'find', CustomFieldDefinition::class, ['context_class' => Person::class]],
@@ -491,6 +499,7 @@ class ObjectsManager
             'ActionAlert'              => [$this, 'find', ActionAlert::class],
             'Notification'             => [$this, 'find', Notification::class],
             'OAuthClient'              => [$this, 'find', OAuthClient::class],
+            'ReportWidget'             => [$this, 'find', ReportWidget::class],
         ];
     }
 }

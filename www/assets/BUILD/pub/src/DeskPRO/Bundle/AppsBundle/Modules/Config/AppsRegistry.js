@@ -13,8 +13,8 @@ export class AppsRegistry {
     let props;
     if (config.environment === 'development') {
       props = {
-        id:             1,
-        application_id: 1,
+        id:             config.instanceId,
+        application_id: config.applicationId,
         baseUrl:        config.endpoint,
         ...manifest
       };

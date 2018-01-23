@@ -43,7 +43,7 @@ class ListHeader extends React.Component {
       type:        'text',
       placeholder: 'Filter stats by name',
       onChange:    this.onChange,
-      value:       searchText,
+      value:       searchText
     };
 
     return (

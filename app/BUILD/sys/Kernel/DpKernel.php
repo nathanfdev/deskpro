@@ -131,6 +131,7 @@ class DpKernel extends BaseKernel
             new \Application\EmailBundle\EmailBundle(),
             new \DeskPRO\Bundle\SendmailBundle\SendmailBundle(),
             new \DeskPRO\Bundle\AppBundle\AppBundle(),
+            new \DeskPRO\Bundle\ReportBundle\ReportBundle(),
             new \DeskPRO\Bundle\AppStoreBundle\AppStoreBundle(),
             new \DeskPRO\Bundle\SystemBundle\SystemBundle(),
             new \DeskPRO\Bundle\AuditBundle\AuditBundle(),
@@ -141,7 +142,7 @@ class DpKernel extends BaseKernel
             new \Application\ReportsInterfaceBundle\ReportsInterfaceBundle(),
             new \Application\UserBundle\UserBundle(),
             new \Application\LegacyApiBundle\LegacyApiBundle(),
-            new \DeskPRO\Bundle\UpdateBundle\UpdateBundle()
+            new \DeskPRO\Bundle\UpdateBundle\UpdateBundle(),
         ];
 
         if (defined('DPC_IS_CLOUD')) {

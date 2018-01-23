@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2017, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2018, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -26,10 +26,6 @@
  * ~ Thanks, Everyone at Team DeskPRO
  */
 
-/**
- * DeskPRO.
- */
-
 namespace Application\DeskPRO\Dpql\Statement;
 
 use Application\DeskPRO\App;
@@ -37,6 +33,7 @@ use Application\DeskPRO\Dpql;
 use Application\DeskPRO\Dpql\Exception;
 use Application\DeskPRO\Dpql\Results;
 use Application\DeskPRO\Dpql\Statement\Part\AbstractPart;
+use Application\DeskPRO\Entity\Problem;
 use DeskPRO\Bundle\AppBundle\Entity\SnippetUseLog;
 
 /**
@@ -273,6 +270,7 @@ class Display
         'usergroups'                  => 'DeskPRO:Usergroup',
         'usersources'                 => 'DeskPRO:Usersource',
         'snippet_use_log'             => SnippetUseLog::class,
+        'problems'                    => Problem::class,
     ];
 
     /**
@@ -1115,23 +1113,51 @@ class Display
     }
 
     /**
-     * @param string $renderer Output type (html, csv, etc)
-     * @param string $query    DPQL query
-     * @param array  $params   Parameters for the query (if applicable)
-     * @param mixed  $error    If an error occurs, the error message
+     * @param string $outputFormat Output type (html, csv, etc)
+     * @param string $query        DPQL query
+     * @param array  $params       Parameters for the query (if applicable)
+     * @param mixed  $error        If an error occurs, the error message
      *
      * @return bool|string|array
      */
-    public static function renderQuery($renderer, $query, array $params = [], &$error = false)
+    public static function renderQuery($outputFormat, $query, array $params = [], &$error = false)
     {
         @set_time_limit(0);
 
-        $error = false;
-        try {
-            $compiler  = new \Application\DeskPRO\Dpql\Compiler();
-            $statement = $compiler->compile($query, $params);
+        $error  = false;
+        $legacy = true;
 
-            return $statement->getRenderer($renderer)->render();
+        try {
+            if ($legacy) {
+                $compiler  = new \Application\DeskPRO\Dpql\Compiler();
+                $statement = $compiler->compile($query, $params);
+
+                return $statement->getRenderer($outputFormat)->render();
+            } else {
+                preg_match('/DISPLAY ([^\n]+)\n/', $query, $matches);
+                $types    = explode(',', $matches[1]);
+                $rendered = null;
+                foreach ($types as $type) {
+                    $type = trim($type);
+
+                    $statement = App::$container->get('dpql.compiler')->compile($query, $params);
+                    $results   = $statement->getResults();
+                    $renderer  = App::$container->get('reports.renderer_registry')->getRenderer($type, $outputFormat);
+
+                    $renderedResults = $renderer->render($results);
+                    if (is_array($renderedResults)) {
+                        $rendered = $renderedResults;
+                    } elseif (is_string($renderedResults)) {
+                        if (!$rendered) {
+                            $rendered = '';
+                        }
+
+                        $rendered .= $renderedResults;
+                    }
+                }
+
+                return $rendered;
+            }
         } catch (Exception $e) {
             $error = $e->getMessage();
 

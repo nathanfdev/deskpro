@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2017, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2018, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -37,7 +37,9 @@ use Application\LegacyApiBundle\Service\Dashboard as DashboardService;
 use Application\LegacyApiBundle\Service\DashboardPermissions as DashboardPermissionService;
 use Application\LegacyApiBundle\Service\DashboardWidget as DashboardWidgetService;
 use DeskPRO\Bundle\AppBundle\Annotation\ActionPermissions\Annotation\ApiModes;
+use DeskPRO\Bundle\AppBundle\Entity\Report\ScheduledReport;
 use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 
 /**
  * @ApiModes("all")
@@ -78,8 +80,10 @@ class DashboardReportController extends AbstractController
     }
 
     /**
-     * @param $id
-     * @param $dashboard_id
+     * @param int $id
+     * @param int $dashboard_id
+     *
+     * @throws \Exception
      *
      * @return Response
      */
@@ -93,10 +97,9 @@ class DashboardReportController extends AbstractController
         $report = new DashboardReport();
         $report
             ->setTitle($prototype->getTitle().'_clone')
-            ->setColumns($prototype->getColumns())
             ->setDashboard($dashboard)
             ->setSortOrder($this->service->getLastSortOrder($dashboard));
-        $this->service->copyWidgetLinks($report, $prototype);
+        $this->widgetService->copyWidgetLinks($report, $prototype);
 
         return $this->createApiSuccessResponse($this->service->saveReport($report, true));
     }
@@ -115,12 +118,9 @@ class DashboardReportController extends AbstractController
             throw $this->createNotFoundException();
         }
 
-        $title   = $postData['title'];
-        $columns = $postData['options']['columns'];
+        $title = $postData['title'];
 
-        $report
-            ->setTitle($title)
-            ->setColumns($columns);
+        $report->setTitle($title);
         foreach ($postData['widgets'] as $widget) {
             $widgetEntity = $this->em->getRepository('DeskPRO:ReportDashboardWidget')->find((int) $widget['id']);
             $widgetEntity->setTitle($widget['title']);
@@ -159,21 +159,21 @@ class DashboardReportController extends AbstractController
         if (!$this->permissionsService->isEditableDashboard($dashboard)) {
             throw $this->createNotFoundException();
         }
-        $report  = new DashboardReport();
-        $title   = $this->in->getCleanValue('title', 'string');
-        $columns = $this->in->getCleanValue('columns', 'string');
+        $report = new DashboardReport();
+        $title  = $this->in->getCleanValue('title', 'string');
 
         $report
             ->setTitle($title)
             ->setDashboard($dashboard)
-            ->setSortOrder($this->service->getLastSortOrder($dashboard))
-            ->setColumns($columns);
+            ->setSortOrder($this->service->getLastSortOrder($dashboard));
 
         return $this->createApiSuccessResponse($this->service->saveReport($report, true));
     }
 
     /**
      * @param $id
+     *
+     * @throws \Doctrine\ORM\OptimisticLockException
      *
      * @return Response
      */
@@ -199,6 +199,76 @@ class DashboardReportController extends AbstractController
         $report         = $this->service->getReport($id);
         $data           = $this->service->getReportData($report);
         $data['loaded'] = true;
+
+        return $this->createApiResponse($data);
+    }
+
+    /**
+     * @param $id
+     *
+     * @throws \Doctrine\ORM\OptimisticLockException
+     * @throws \Exception
+     *
+     * @return Response
+     */
+    public function scheduleAction($id)
+    {
+        $report = $this->service->getReport($id);
+
+        $scheduledReport = $this->em
+            ->getRepository(ScheduledReport::class)
+            ->findOneBy([
+                'person' => $this->person,
+                'report' => $id,
+            ]);
+        if (!$scheduledReport) {
+            $scheduledReport = new ScheduledReport();
+        }
+
+        $this->in->getAll('post');
+        $whenTz      = $this->person->getTimezone();
+        $whenSetting = $this->in->getArrayValue('when');
+        $frequency   = $this->in->getString('frequency');
+        $reportSaver = $this->getContainer()->get('deskpro.reports.saver');
+        $date        = $reportSaver->calculateNextSendDate($whenSetting, $whenTz, $frequency);
+        $scheduledReport
+            ->setReport($report)
+            ->setFrequency($frequency)
+            ->setPerson($this->person)
+            ->setWhenSetting($whenSetting)
+            ->setWhenTz($whenTz)
+            ->setNextSendDate($date)
+            ->setSendTo($this->in->getArrayValue('sendTo'));
+        $this->em->persist($scheduledReport);
+        $this->em->flush();
+
+        return $this->createApiSuccessResponse();
+    }
+
+    /**
+     * @param $id
+     *
+     * @return Response
+     */
+    public function getScheduledReportAction($id)
+    {
+        $scheduledReport = $this->em
+            ->getRepository(ScheduledReport::class)
+            ->findOneBy([
+                'person' => $this->person,
+                'report' => $id,
+            ]);
+        if (!$scheduledReport) {
+            throw new NotFoundHttpException();
+        }
+
+        // just a stub until it goes to apiv2
+        $data = [
+            'id'        => $scheduledReport->getId(),
+            'when'      => $scheduledReport->getWhenSetting(),
+            'frequency' => $scheduledReport->getFrequency(),
+            'sendTo'    => $scheduledReport->getSendTo(),
+        ];
 
         return $this->createApiResponse($data);
     }

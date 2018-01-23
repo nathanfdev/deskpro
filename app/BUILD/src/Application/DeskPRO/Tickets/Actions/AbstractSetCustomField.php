@@ -32,6 +32,7 @@
 
 namespace Application\DeskPRO\Tickets\Actions;
 
+use Application\DeskPRO\Entity\CustomDataAbstract;
 use Application\DeskPRO\Entity\Person;
 use Application\DeskPRO\Entity\Ticket;
 use Application\DeskPRO\Tickets\ExecutorContextInterface;
@@ -48,6 +49,7 @@ abstract class AbstractSetCustomField extends AbstractContainerAwareAction imple
         $options = new CheckedOptionsArray();
         $options->addRequiredNames('field_id', 'value');
         $options->addValidNames(['op', 'with_formatter']);
+        $options->setAliases('field_id', ['field']);
 
         return $options;
     }
@@ -69,6 +71,21 @@ abstract class AbstractSetCustomField extends AbstractContainerAwareAction imple
     abstract public function getApplicableObject(Ticket $ticket, ExecutorContextInterface $context);
 
     /**
+     * Parse the action options and return the field id
+     *
+     * @return string
+     */
+    public function resolveFieldId()
+    {
+        $fieldId = $this->getActionOption('field_id');
+        if (empty($fieldId)) {
+            return $this->getActionOption('field');
+        }
+
+        return "field_{$fieldId}";
+    }
+
+    /**
      * {@inheritdoc}
      */
     public function applyAction(Ticket $ticket, ExecutorContextInterface $context)
@@ -80,21 +97,79 @@ abstract class AbstractSetCustomField extends AbstractContainerAwareAction imple
             return;
         }
 
-        $fieldId = $this->getActionOption('field_id');
+        $operator = $this->getActionOption('op');
+
+        switch ($operator) {
+            case 'unset':
+                $this->applyUnsetOperator($ticket, $context);
+                break;
+            case 'unset-list':
+                $this->applyUnsetListOperator($ticket, $context);
+                break;
+            default:
+                $this->applySetOperator($ticket, $context);
+        }
+    }
+
+    private function applyUnsetOperator(Ticket $ticket, ExecutorContextInterface $context)
+    {
+        $fm  = $this->getFieldManager($ticket, $context);
+        $obj = $this->getApplicableObject($ticket, $context);
+
+        $fieldId = $this->resolveFieldId();
+
+        $form_array = [$fieldId => null];
+        $fm->saveFormToObject($form_array, $obj, true);
+    }
+
+    private function applySetOperator(Ticket $ticket, ExecutorContextInterface $context)
+    {
+        $fm  = $this->getFieldManager($ticket, $context);
+        $obj = $this->getApplicableObject($ticket, $context);
         $value   = $this->getActionOption('value');
 
-        if ('unset' === $this->getActionOption('op')) {
-            $value = null;
+        if (is_string($value) && $this->getActionOption('with_formatter')) {
+            $extraVars = ActionVars::getContextVars($context);
+            $renderer = $this->getContainer()->get('twig_template_renderer');
+            $value    = $renderer->renderTicketTemplate($value, $ticket, $context, $extraVars);
+        }
+
+        $fieldId = $this->resolveFieldId();
+        $form_array = [$fieldId => $value];
+
+        $fm->saveFormToObject($form_array, $obj, true);
+    }
+
+    private function applyUnsetListOperator(Ticket $ticket, ExecutorContextInterface $context)
+    {
+        $fm  = $this->getFieldManager($ticket, $context);
+        $obj = $this->getApplicableObject($ticket, $context);
+
+        $fieldId = $this->resolveFieldId();
+        $fieldDef = $fm->getFieldFromId($fieldId);
+        if (empty($fieldDef)) {
+            throw new \RuntimeException(sprintf('could not find field with id: %s', $fieldId));
+        }
+
+        $value   = $this->getActionOption('value');
+        if (!is_numeric($value) && empty($value)) {
+            throw new \DomainException('the value option must be set');
         }
 
         if (is_string($value) && $this->getActionOption('with_formatter')) {
+            $extraVars = ActionVars::getContextVars($context);
             $renderer = $this->getContainer()->get('twig_template_renderer');
-            $value    = $renderer->renderTicketTemplate($value, $ticket, $context);
+
+            $value    = $renderer->renderTicketTemplate($value, $ticket, $context, $extraVars);
         }
 
-        $form_array = ["field_{$fieldId}" => $value];
-
-        $fm->saveFormToObject($form_array, $obj, true);
+        $fm->removeSomeCustomDataOnObjectAndFlushChanges(
+            $obj,
+            $fieldDef,
+            function( CustomDataAbstract $customData) use ($value) {
+                return $customData->getData() === $value;
+            }
+        );
     }
 
     /**

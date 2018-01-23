@@ -16,23 +16,17 @@ class EditContainer extends React.Component {
     groupParams:  PropTypes.object.isRequired,
     onCloneClick: PropTypes.func.isRequired,
     onRunClick:   PropTypes.func.isRequired,
-    dispatch:     PropTypes.func.isRequired,
+    dispatch:     PropTypes.func.isRequired
   };
 
   static dpqlParser(query) {
-    const config = {
-      headers: {
-        'X-DeskPRO-API-Token':     window.DP_API_TOKEN,
-        'X-DeskPRO-Session-ID':    window.DP_SESSION_ID,
-        'X-DeskPRO-Request-Token': window.DP_REQUEST_TOKEN,
-      }
+    const data = {
+      query,
+      current_type: 'query',
+      new_type:     'builder'
     };
 
-    return api.sendPost('DP_API_OLD/reports/widget/parse', {
-      query:       `DISPLAY TABLE ${query}`,
-      currentType: 'query',
-      newType:     'builder'
-    }, config).then(res => res.data.parts);
+    return api.sendPost('DP_API/report_widgets/parse', data).then(res => res.data.parts);
   }
 
   static getStateFromReport(report) {
@@ -41,16 +35,16 @@ class EditContainer extends React.Component {
       title:  report.get('title'),
       labels: report.get('labels', Immutable.List()).toArray().join(', '),
       query:  {
-        select:  queryParts.get('select', ''),
-        from:    queryParts.get('from', ''),
-        where:   queryParts.get('where', ''),
-        splitBy: queryParts.get('splitBy', ''),
-        groupBy: queryParts.get('groupBy', ''),
-        orderBy: queryParts.get('orderBy', ''),
-        offset:  queryParts.get('offset', ''),
-        limit:   queryParts.get('limit', ''),
+        select:   queryParts.get('select', ''),
+        from:     queryParts.get('from', ''),
+        where:    queryParts.get('where', ''),
+        split_by: queryParts.get('split_by', ''),
+        group_by: queryParts.get('group_by', ''),
+        order_by: queryParts.get('order_by', ''),
+        offset:   queryParts.get('offset', ''),
+        limit:    queryParts.get('limit', '')
       },
-      vars: report.get('variables', Immutable.Map()).toJS(),
+      vars: report.get('variables', Immutable.Map()).toJS()
     };
 
     return { initialFormValue };
@@ -117,7 +111,7 @@ class EditContainer extends React.Component {
     const EditStatForm = reduxForm({
       form:          'editStat',
       initialValues: this.state.initialFormValue,
-      onSubmit:      this.onSubmit
+      onSubmit:      this.onSubmit,
     })(EditForm);
 
     const saveBtn = (<button
@@ -141,7 +135,7 @@ class EditContainer extends React.Component {
     );
 
     return (<div>
-      <EditStatForm groupParams={groupParams.toJS()} dpqlParser={this.dpqlParser} />
+      <EditStatForm groupParams={groupParams.toJS()} dpqlParser={EditContainer.dpqlParser} />
       {controls}
     </div>);
   }

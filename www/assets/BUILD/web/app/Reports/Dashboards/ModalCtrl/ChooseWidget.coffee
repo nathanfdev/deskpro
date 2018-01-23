@@ -19,8 +19,8 @@ define -> [
     $scope.back = -> $modalInstance.close {back: true}
 
     $scope.saveChoice = ->
-      DashboardWidgetService.addWidget report, $scope.widget
-      $modalInstance.close()
+      DashboardWidgetService.addWidget(report, $scope.widget).then () ->
+        $modalInstance.close {add: true}
 
     $scope.makeChoice = (displayType) ->
       $scope.widget.type = displayType
@@ -33,7 +33,7 @@ define -> [
       DashboardWidgetService
         .testWidget widgetToTest, $scope.widget
         .then (response) ->
-          $scope.widgetPreview                 = response.data
+          $scope.widgetPreview                 = response.data.data
           $scope.widgetPreview.rendered_result = $scope.widgetPreview.rendered_result[0]
           $scope.widgetPreview.type            = switch displayType
             when 'pie', 'simple_area', 'simple_bars', 'simple_lines' then 'graph'

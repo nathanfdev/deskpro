@@ -28,8 +28,11 @@
 
 namespace DeskPRO\Bundle\ApiBundle\Controller\Webhooks;
 
+use Application\DeskPRO\Entity\TicketTrigger;
+use DeskPRO\Bundle\AppBundle\Entity\Webhooks\TicketWebhook;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\CheckboxType;
+use Symfony\Component\Form\Extension\Core\Type\CollectionType;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\Form\FormEvent;
@@ -37,6 +40,7 @@ use Symfony\Component\Form\FormEvents;
 
 class TicketWebhookFormType extends AbstractType
 {
+
     /**
      * {@inheritdoc}
      */
@@ -48,30 +52,66 @@ class TicketWebhookFormType extends AbstractType
                 'mapped'   => true,
             ])
             ->add('payload_decoder', TextType::class, [
-//                'label'    => $options['label_name'],
+                'label'    => '',
                 'required' => true,
                 'mapped'   => true,
             ])
             ->add('is_enabled', CheckboxType::class, [
-//                'label'    => $options['label_email'],
+                'label'    => '',
                 'required' => true,
                 'mapped'   => true,
             ])
             ->add('search_terms', FilterTermsFormType::class, [
-//                'label'    => $options['label_email'],
+                'label'    => '',
                 'required' => true,
                 'mapped'   => true,
             ])
-            ->add('actions', TriggerActionsFormType::class, [
-//                'label'    => $options['label_email'],
-                'required' => true,
-                'mapped'   => true,
-            ])
-            ->add('terms', TriggerTermsFormType::class, [
-//                'label'    => $options['label_email'],
-                'required' => false,
-                'mapped'   => true,
-            ])
+           ->add('triggers', CollectionType::class, [
+               'mapped'        => true,
+               'allow_add'    => true,
+               'allow_delete' => true,
+               'entry_type'    => TriggerFormType::class,
+               'entry_options' => [],
+           ])
+          ->addEventListener(FormEvents::POST_SUBMIT, [$this, 'onPostSubmit'])
         ;
+    }
+
+    /**
+     * @internal
+     *
+     * @param FormEvent $event
+     */
+    public function onPostSubmit(FormEvent $event)
+    {
+        $form = $event->getForm();
+        /** @var TicketWebhook $data */
+        $webhook = $form->getData();
+
+        /** @var TicketTrigger $trigger */
+        foreach ($webhook->getTriggers() as $trigger) {
+            $this->setRequiredTriggerProperties($webhook, $trigger);
+        }
+    }
+
+    /**
+     * @param TicketWebhook $webhook
+     * @param TicketTrigger $trigger
+     */
+    private function setRequiredTriggerProperties( TicketWebhook $webhook, TicketTrigger $trigger)
+    {
+        $trigger->event_trigger = TicketTrigger::EVENT_TYPE_WEBHOOK;
+        $trigger->has_stop_triggers_action = false;
+        $trigger->has_delete_ticket_action = false;
+        $trigger->email_account = null;
+        $trigger->by_agent_mode = null;
+        $trigger->by_user_mode = null;
+        $trigger->by_app_mode = null;
+
+        $trigger->is_enabled = $webhook->isIsEnabled();
+
+        if (! $trigger->title) {
+            $trigger->title = sprintf('Trigger for webhook %s', $webhook->getAuthId());
+        }
     }
 }

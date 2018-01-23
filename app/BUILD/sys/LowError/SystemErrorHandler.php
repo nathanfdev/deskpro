@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2017, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2018, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -777,6 +777,11 @@ class SystemErrorHandler
         }
 
         foreach ($logFiles as $errorLogFile) {
+            // create log file if not exists
+            if (!is_file($errorLogFile) && !is_dir($errorLogFile)) {
+                @touch($errorLogFile);
+            }
+
             if (
                 $errorLogFile
                 && is_file($errorLogFile)

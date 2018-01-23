@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2017, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2018, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -26,19 +26,17 @@
  * ~ Thanks, Everyone at Team DeskPRO
  */
 
-/**
- * DeskPRO.
- */
-
 namespace Application\DeskPRO\Reports;
 
 use Application\DeskPRO\App;
-use Application\DeskPRO\Dpql\Compiler;
 use Application\DeskPRO\Dpql\Exception as DpqlException;
 use Application\DeskPRO\Dpql\Statement\Display;
 use Application\DeskPRO\Entity\ReportBuilder;
 use Doctrine\ORM\EntityManager;
 
+/**
+ * Class Builder.
+ */
 class Builder
 {
     /**
@@ -51,6 +49,11 @@ class Builder
      */
     protected $repository;
 
+    /**
+     * Constructor.
+     *
+     * @param EntityManager $em
+     */
     public function __construct(EntityManager $em)
     {
         $this->em         = $em;
@@ -225,7 +228,7 @@ class Builder
                 $results = ['parts' => $this->getDpqlPartsForInput()];
             } else {
                 try {
-                    $compiler  = new Compiler();
+                    $compiler  = new \Application\DeskPRO\Dpql\Compiler();
                     $statement = $compiler->lexAndParse($query);
                     $results   = ['parts' => $this->getDpqlPartsForInput($statement)];
                 } catch (DpqlException $e) {
@@ -272,7 +275,7 @@ class Builder
         $query  = $report->getQuery();
 
         try {
-            $compiler = new Compiler();
+            $compiler = new \Application\DeskPRO\Dpql\Compiler();
             if ($with_params) {
                 $input = $compiler->replacePlaceholders($query, $this->getParamsInput('params'));
             } else {
@@ -364,7 +367,7 @@ class Builder
     {
         @set_time_limit(0);
 
-        $compiler  = new Compiler();
+        $compiler  = new \Application\DeskPRO\Dpql\Compiler();
         $statement = $compiler->compile($query, $params);
         $statement->setImplicitLimit(0);
 

@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2017, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2018, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -28,7 +28,7 @@
 
 namespace DeskPRO\Bundle\UpdateBundle\DbBackup;
 
-use DeskPRO\Component\Filesystem\BigFile;
+use BigFileTools\BigFileTools;
 use DeskPRO\Component\Util\Timer;
 use Psr\Log\LoggerAwareInterface;
 use Psr\Log\LoggerInterface;
@@ -81,8 +81,9 @@ class DbVerify implements DbVerifyInterface, LoggerAwareInterface
         $this->logger->debug('Verify: File does exist');
 
         try {
-            $size = BigFile::getFileSize($filename);
-        } catch (DbBackupException $e) {
+            /* @var $size \Brick\Math\BigInteger */
+            $size = BigFileTools::createDefault()->getFile($filename)->getSize();
+        } catch (\Exception $e) {
             $this->logger->critical($e->getMessage());
             throw $e;
         }
@@ -92,8 +93,8 @@ class DbVerify implements DbVerifyInterface, LoggerAwareInterface
             throw new DbBackupException('Database dump too small to be successful', DbBackupException::DUMP_ERROR_READ_FAILED);
         }
 
-        if ($size < self::MIN_SIZE) {
-            $this->logger->critical(sprintf('Database dump filesize is too small, path: %s. Got: %d, expected at least: %d.', $filename, $size, self::MIN_SIZE));
+        if ($size->compareTo(self::MIN_SIZE) === -1) {
+            $this->logger->critical(sprintf('Database dump filesize is too small, path: %s. Got: %d, expected at least: %d.', $filename, (string) $size, self::MIN_SIZE));
             throw new DbBackupException('Database dump too small to be successful', DbBackupException::DUMP_ERROR_TOOSMALL);
         }
 

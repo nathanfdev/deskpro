@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2017, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2018, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -774,6 +774,42 @@ return [
     1513248744 => [
         'file'          => '/src/Application/InstallBundle/Upgrade/Build/2017/12/Build1513248744.php',
         'classname'     => 'Application\InstallBundle\Upgrade\Build\Build1513248744',
+        'skipPostBuild' => false,
+        'isOnlineBuild' => false,
+    ],
+    1513853390 => [
+        'file'          => '/src/Application/InstallBundle/Upgrade/Build/2017/12/Build1513853390.php',
+        'classname'     => 'Application\InstallBundle\Upgrade\Build\Build1513853390',
+        'skipPostBuild' => true,
+        'isOnlineBuild' => true,
+    ],
+    1514463068 => [
+        'file'          => '/src/Application/InstallBundle/Upgrade/Build/2017/12/Build1514463068.php',
+        'classname'     => 'Application\InstallBundle\Upgrade\Build\Build1514463068',
+        'skipPostBuild' => false,
+        'isOnlineBuild' => true,
+    ],
+    1515153646 => [
+        'file'          => '/src/Application/InstallBundle/Upgrade/Build/2018/01/Build1515153646.php',
+        'classname'     => 'Application\InstallBundle\Upgrade\Build\Build1515153646',
+        'skipPostBuild' => true,
+        'isOnlineBuild' => true,
+    ],
+    1515430238 => [
+        'file'          => '/src/Application/InstallBundle/Upgrade/Build/2018/01/Build1515430238.php',
+        'classname'     => 'Application\InstallBundle\Upgrade\Build\Build1515430238',
+        'skipPostBuild' => true,
+        'isOnlineBuild' => true,
+    ],
+    1515606061 => [
+        'file'          => '/src/Application/InstallBundle/Upgrade/Build/2018/01/Build1515606061.php',
+        'classname'     => 'Application\InstallBundle\Upgrade\Build\Build1515606061',
+        'skipPostBuild' => true,
+        'isOnlineBuild' => false,
+    ],
+    1515694240 => [
+        'file'          => '/src/Application/InstallBundle/Upgrade/Build/2018/01/Build1515694240.php',
+        'classname'     => 'Application\InstallBundle\Upgrade\Build\Build1515694240',
         'skipPostBuild' => false,
         'isOnlineBuild' => false,
     ],
