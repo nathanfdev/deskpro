@@ -58,35 +58,35 @@ class FilterData extends AbstractDefaultData
         $f = new TicketFilter();
         $f->setTitle('Assigned To Me');
         $f->setDisplayOrder(10);
-        $f->setQuery('ticket.status = \'Awaiting Agent\' AND ticket.agent = $me');
+        $f->setQuery('ticket.status = \'awaiting_agent\' AND ticket.agent = $me');
         $set->addFilter($f);
         $em->persist($f);
 
         $f = new TicketFilter();
         $f->setTitle('Tickets I Follow');
         $f->setDisplayOrder(10);
-        $f->setQuery('ticket.status = \'Awaiting Agent\' AND ticket.followers HAS $me');
+        $f->setQuery('ticket.status = \'awaiting_agent\' AND ticket.followers HAS $me');
         $set->addFilter($f);
         $em->persist($f);
 
         $f = new TicketFilter();
         $f->setTitle('Assigned To Team');
         $f->setDisplayOrder(10);
-        $f->setQuery('ticket.status = \'Awaiting Agent\' AND ticket.agent_team IN $my_teams');
+        $f->setQuery('ticket.status = \'awaiting_agent\' AND ticket.agent_team IN $my_teams');
         $set->addFilter($f);
         $em->persist($f);
 
         $f = new TicketFilter();
         $f->setTitle('Unassigned');
         $f->setDisplayOrder(10);
-        $f->setQuery('ticket.status = \'Awaiting Agent\' AND ticket.agent IS NULL');
+        $f->setQuery('ticket.status = \'awaiting_agent\' AND ticket.agent IS EMPTY');
         $set->addFilter($f);
         $em->persist($f);
 
         $f = new TicketFilter();
         $f->setTitle('All Awaiting Agent');
         $f->setDisplayOrder(10);
-        $f->setQuery('ticket.status = \'Awaiting Agent\'');
+        $f->setQuery('ticket.status = \'awaiting_agent\'');
         $set->addFilter($f);
         $em->persist($f);
 

@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2017, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2018, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -99,7 +99,7 @@ class TicketSqlMatcher extends AbstractMatcher
         $rootPart = $query->root;
 
         if ($rootPart instanceof TermGroup) {
-            $condGroup = $this->doesTermGroupMatch($rootPart, $context);
+            $condGroup = $this->buildTermGroup($rootPart, $context);
             $qb->addQueryConditionGroup($condGroup);
         } else {
             $cond = $this->buildTerm($rootPart, $context);
@@ -124,7 +124,7 @@ class TicketSqlMatcher extends AbstractMatcher
         $condGroup = new SqlConditionGroup($termGroup->operator->getOperator());
 
         foreach ($termGroup->terms as $term) {
-            if ($termGroup instanceof TermGroup) {
+            if ($term instanceof TermGroup) {
                 $condGroup->add($this->buildTermGroup($term, $context));
             } else {
                 $condGroup->add($this->buildTerm($term, $context));

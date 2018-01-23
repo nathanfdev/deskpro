@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2017, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2018, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -119,13 +119,13 @@ class TicketBasicTermsHandler extends AbstractTermsHandler
                 $cond = new SqlCondition();
                 $cond->addUniqueJoin('tickets', 'tickets_participants', 'part', '{part}.ticket_id = {tickets}.id');
 
-                return $this->checkValueQueryCondition('{part}.person_id', $operator, $operator, $context);
+                return $this->checkValueQueryCondition('{part}.person_id', $operator, $options, $cond);
 
             case Terms::TICKET_LABELS:
                 $cond = new SqlCondition();
                 $cond->addUniqueJoin('tickets', 'labels_tickets', 'label', '{label}.ticket_id = {tickets}.id');
 
-                return $this->checkValueQueryCondition('{label}.label', $operator, $operator, $context);
+                return $this->checkValueQueryCondition('{label}.label', $operator, $options, $cond);
         }
 
         throw new \InvalidArgumentException('Unknown field');

@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2017, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2018, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -149,18 +149,18 @@ class SqlBuilder extends \Doctrine\DBAL\Query\QueryBuilder
                     case 'LEFT':  $this->leftJoin($fromAlias, $j['table'], $joinRenames[$j['localAlias']], $on); break;
                     case 'RIGHT': $this->rightJoin($fromAlias, $j['table'], $joinRenames[$j['localAlias']], $on); break;
                     case 'INNER': $this->innerJoin($fromAlias, $j['table'], $joinRenames[$j['localAlias']], $on); break;
+                    default: throw new \InvalidArgumentException('Unknown join type');
                 }
             }
         }
         foreach ($cond->getUniqueJoins() as $j) {
-            if (!in_array($j['table'], $joinNames)) {
-                $fromAlias = $this->replaceLocalNames('{'.$j['fromAlias'].'}', null, $joinRenames);
-                $on        = $this->replaceLocalNames($j['on'], $varRenames, $joinRenames);
-                switch ($j['type']) {
-                    case 'LEFT':  $this->leftJoin($fromAlias, $j['table'], $joinRenames[$j['localAlias']], $on); break;
-                    case 'RIGHT': $this->rightJoin($fromAlias, $j['table'], $joinRenames[$j['localAlias']], $on); break;
-                    case 'INNER': $this->innerJoin($fromAlias, $j['table'], $joinRenames[$j['localAlias']], $on); break;
-                }
+            $fromAlias = $this->replaceLocalNames('{'.$j['fromAlias'].'}', null, $joinRenames);
+            $on        = $this->replaceLocalNames($j['on'], $varRenames, $joinRenames);
+            switch ($j['type']) {
+                case 'LEFT':  $this->leftJoin($fromAlias, $j['table'], $joinRenames[$j['localAlias']], $on); break;
+                case 'RIGHT': $this->rightJoin($fromAlias, $j['table'], $joinRenames[$j['localAlias']], $on); break;
+                case 'INNER': $this->innerJoin($fromAlias, $j['table'], $joinRenames[$j['localAlias']], $on); break;
+                default: throw new \InvalidArgumentException('Unknown join type');
             }
         }
 

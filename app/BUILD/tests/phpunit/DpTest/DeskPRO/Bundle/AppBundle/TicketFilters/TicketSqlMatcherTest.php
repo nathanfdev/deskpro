@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2017, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2018, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -30,27 +30,14 @@ namespace DpTest\Bundle\AppBundle\TicketFilters;
 
 use DeskPRO\Bundle\AppBundle\TicketFilters\Context;
 use DeskPRO\Bundle\AppBundle\TicketFilters\Model\Agent;
-use DeskPRO\Bundle\AppBundle\TicketFilters\Model\Entity\TicketModel;
 use DeskPRO\Bundle\AppBundle\TicketFilters\Terms\TicketBasicTermsHandler;
-use DeskPRO\Bundle\AppBundle\TicketFilters\Terms\TicketDateTermsHandler;
-use DeskPRO\Bundle\AppBundle\TicketFilters\Terms\TicketSlaTermsHandler;
 use DeskPRO\Bundle\AppBundle\TicketFilters\TicketSqlMatcher;
 use DeskPRO\Bundle\AppBundle\TicketFilters\ValueResolver;
 use DeskPRO\Component\FilterQueryLanguage\Parser;
-use DpTest\ApiTestCase;
+use DpTestSrc\TestBundle\Mock\Dbal\ConnectionMock;
 
-class TicketSqlMatcherTest extends ApiTestCase
+class TicketSqlMatcherTest extends \PHPUnit_Framework_TestCase
 {
-    /**
-     * @var TicketModel
-     */
-    private $ticket1;
-
-    /**
-     * @var TicketModel
-     */
-    private $ticket2;
-
     /**
      * @var Agen
      */
@@ -80,32 +67,119 @@ class TicketSqlMatcherTest extends ApiTestCase
 
         $this->matcher = new TicketSqlMatcher($resolver, [
             new TicketBasicTermsHandler(),
-//            new TicketSlaTermsHandler(),
-//            new TicketDateTermsHandler(),
-        ], $this->getContainer()->get('database_connection'));
+        ], ConnectionMock::create());
     }
 
     public function test_id_match()
     {
-        $this->assertEquals(
-            'SELECT COUNT(*) FROM tickets tickets WHERE tickets.id = :c0_ticketsid',
-            $this->sqlForQuery('ticket.id = 1')
+        $this->assertEqualQuery(
+            'ticket.id = 1',
+            'SELECT COUNT(*) FROM tickets tickets WHERE tickets.id = :c0',
+            ['c0' => 1]
         );
     }
 
-    private function sqlForQuery($fql)
+    public function test_builtin_assigned_to_me()
+    {
+        $this->assertEqualQuery(
+            'ticket.status = \'awaiting_agent\' AND ticket.agent = $me',
+            'SELECT COUNT(*) FROM tickets tickets WHERE (tickets.status = :c0) AND (tickets.agent_id = :c1)',
+            ['c0' => 'awaiting_agent', 'c1' => 1]
+        );
+    }
+
+    public function test_builtin_follow()
+    {
+        $this->assertEqualQuery(
+            'ticket.status = \'awaiting_agent\' AND ticket.followers HAS $me',
+            'SELECT
+               COUNT(*) FROM tickets tickets
+               LEFT JOIN tickets_participants c1_part ON c1_part.ticket_id = tickets.id
+               WHERE (tickets.status = :c0) AND (c1_part.person_id IN (:c1))',
+            ['c0' => 'awaiting_agent', 'c1' => [1]]
+        );
+    }
+
+    public function test_builtin_assigned_to_team()
+    {
+        $this->assertEqualQuery(
+            'ticket.status = \'awaiting_agent\' AND ticket.agent_team IN $my_teams',
+            'SELECT COUNT(*) FROM tickets tickets WHERE (tickets.status = :c0) AND (tickets.agent_team_id IN (:c1))',
+            ['c0' => 'awaiting_agent', 'c1' => [1, 2, 3]]
+        );
+    }
+
+    public function test_builtin_unassigned()
+    {
+        $this->assertEqualQuery(
+            'ticket.status = \'awaiting_agent\' AND ticket.agent IS EMPTY',
+            'SELECT COUNT(*) FROM tickets tickets WHERE (tickets.status = :c0) AND (tickets.agent_id IS NULL)',
+            ['c0' => 'awaiting_agent']
+        );
+    }
+
+    public function test_builtin_awaiting_Agent()
+    {
+        $this->assertEqualQuery(
+            'ticket.status = \'awaiting_agent\'',
+            'SELECT COUNT(*) FROM tickets tickets WHERE tickets.status = :c0',
+            ['c0' => 'awaiting_agent']
+        );
+    }
+
+    /**
+     * @param string $fql
+     * @param string $expectedSql
+     * @param array  $expectedParams
+     */
+    private function assertEqualQuery($fql, $expectedSql, $expectedParams = [])
+    {
+        $qb = $this->queryFromFql($fql);
+
+        // the sql compiler gives placeholders descriptive names like :c12_fieldname
+        // this can help debugging queries manually, but is a bit of a pain
+        // when comparing them here.
+
+        // noramlizing them here just strips off the descriptive bit and just
+        // leaves the positioning id like :c12
+
+        $expectedSql = $this->normalizeForCmp($expectedSql);
+        $realSql     = $this->normalizeForCmp($qb->getSQL());
+
+        $realParams = [];
+        foreach ($qb->getParameters() as $name => $val) {
+            $name              = preg_replace('#_.*?$#', '', $name);
+            $realParams[$name] = $val;
+        }
+
+        $this->assertEquals($expectedSql, $realSql);
+        $this->assertEquals($expectedParams, $realParams);
+    }
+
+    /**
+     * @param string $fql
+     *
+     * @return \DeskPRO\Bundle\AppBundle\TicketFilters\SqlBuilder\SqlBuilder
+     */
+    private function queryFromFql($fql)
     {
         $qb = $this->matcher->getCountQueryBuilder(
             $this->parseFql($fql),
             $this->matcherContext
         );
 
-        return $this->normalizeForCmp($qb->getSQL());
+        return $qb;
     }
 
+    /**
+     * @param string $sql
+     *
+     * @return string
+     */
     private function normalizeForCmp($sql)
     {
         $sql = preg_replace('/\s+/', ' ', $sql);
+        $sql = preg_replace('#(:c\d+)_.*?\b#', '$1', $sql);
 
         return trim($sql);
     }
@@ -118,7 +192,8 @@ class TicketSqlMatcherTest extends ApiTestCase
     private function parseFql($fql)
     {
         $parser = new Parser();
+        $q      = $parser->parseQuery($fql);
 
-        return $parser->parseQuery($fql);
+        return $q;
     }
 }
