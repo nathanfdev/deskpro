@@ -83,7 +83,7 @@ class TicketFilter implements EntityInterface, NotifyPropertyChanged
     /**
      * FQL query.
      *
-     * @ORM\Column(name="term", type="string")
+     * @ORM\Column(name="query", type="string")
      *
      * @Assert\NotNull()
      * @Assert\Valid()

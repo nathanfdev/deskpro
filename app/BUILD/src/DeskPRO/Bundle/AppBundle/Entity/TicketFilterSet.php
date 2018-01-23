@@ -51,6 +51,10 @@ class TicketFilterSet implements EntityInterface, NotifyPropertyChanged
 {
     use NotifyPropertyChangedTrait;
 
+    const SHARE_GLOBAL = 'global';
+    const SHARE_AGENTS = 'agents';
+    const SHARE_TEAMS  = 'teams';
+
     /**
      * The unique set id.
      *
@@ -107,6 +111,16 @@ class TicketFilterSet implements EntityInterface, NotifyPropertyChanged
      * @var TicketFilter[]|ArrayCollection
      */
     protected $filters;
+
+    /**
+     * @ORM\Column(name="share_mode", type="string", length=50)
+     *
+     * @JMS\Expose()
+     * @JMS\Type("string"))
+     *
+     * @var string
+     */
+    protected $shareMode = self::SHARE_GLOBAL;
 
     /**
      * Specific teams to share this with.
@@ -228,6 +242,66 @@ class TicketFilterSet implements EntityInterface, NotifyPropertyChanged
     }
 
     /**
+     * @return bool
+     */
+    public function isGlobal()
+    {
+        return $this->shareMode === self::SHARE_GLOBAL;
+    }
+
+    /**
+     * @return bool
+     */
+    public function isSharedWithAgents()
+    {
+        return $this->shareMode === self::SHARE_AGENTS;
+    }
+
+    /**
+     * @return bool
+     */
+    public function isSharedWithTeams()
+    {
+        return $this->shareMode === self::SHARE_TEAMS;
+    }
+
+    /**
+     * Switch the share mode to global. This will clear all shared agents/teams.
+     *
+     * @return $this
+     */
+    public function enableGlobalSharing()
+    {
+        $this->setModelField('shareMode', self::SHARE_GLOBAL);
+        $this->clearSharedAgents();
+        $this->clearSharedTeams();
+
+        return $this;
+    }
+
+    /**
+     * Enable agent sharing.
+     *
+     * @return $this
+     */
+    public function enableAgentSharing()
+    {
+        $this->setModelField('shareMode', self::SHARE_AGENTS);
+        $this->clearSharedTeams();
+    }
+
+    /**
+     * Enable agent sharing.
+     *
+     * @return $this
+     */
+    public function enableTeamSharing()
+    {
+        $this->setModelField('shareMode', self::SHARE_TEAMS);
+        $this->clearSharedAgents();
+    }
+
+    /**
      * @return AgentTeam[]|ArrayCollection
      */
     public function getSharedTeams()
@@ -242,7 +316,34 @@ class TicketFilterSet implements EntityInterface, NotifyPropertyChanged
      */
     public function addSharedTeam(AgentTeam $team)
     {
+        if ($this->shareMode !== self::SHARE_TEAMS) {
+            throw new \BadMethodCallException('Cannot add a shared team to a non-team shared set. Did you want to switch the share mode with enableTeamSharing()?');
+        }
         $this->sharedTeams->add($team);
+        $this->setModelField('sharedTeams', $this->sharedTeams);
+
+        return $this;
+    }
+
+    /**
+     * @param AgentTeam $team
+     *
+     * @return $this
+     */
+    public function removeSharedTeam(AgentTeam $team)
+    {
+        $this->sharedTeams->removeElement($team);
+        $this->setModelField('sharedTeams', $this->sharedTeams);
+
+        return $this;
+    }
+
+    /**
+     * @return $this
+     */
+    public function clearSharedTeams()
+    {
+        $this->sharedTeams->clear();
         $this->setModelField('sharedTeams', $this->sharedTeams);
 
         return $this;
@@ -263,7 +364,34 @@ class TicketFilterSet implements EntityInterface, NotifyPropertyChanged
      */
     public function addSharedAgent(Person $agent)
     {
+        if ($this->shareMode !== self::SHARE_AGENTS) {
+            throw new \BadMethodCallException('Cannot add a shared agent to a non-agent shared set. Did you want to switch the share mode with enableAgentSharing()?');
+        }
         $this->sharedAgents->add($agent);
+        $this->setModelField('sharedAgents', $this->sharedAgents);
+
+        return $this;
+    }
+
+    /**
+     * @param Person $agent
+     *
+     * @return $this
+     */
+    public function removeSharedAgent(Person $agent)
+    {
+        $this->sharedAgents->removeElement($agent);
+        $this->setModelField('sharedAgents', $this->sharedAgents);
+
+        return $this;
+    }
+
+    /**
+     * @return $this
+     */
+    public function clearSharedAgents()
+    {
+        $this->sharedAgents->clear();
         $this->setModelField('sharedAgents', $this->sharedAgents);
 
         return $this;
