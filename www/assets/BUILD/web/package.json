@@ -10,6 +10,7 @@
     "cssnano": "^3.7.7",
     "custom-event-polyfill": "^0.3.0",
     "fbjs": "^0.8.3",
+    "froala-editor": "^2.7.3",
     "gulp-smartsprites": "^1.0.9",
     "jquery": "^3.1.0",
     "jquery-ui": "^1.12.0",

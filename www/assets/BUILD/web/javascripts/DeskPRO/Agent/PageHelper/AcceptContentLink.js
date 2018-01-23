@@ -41,13 +41,23 @@ DeskPRO.Agent.PageHelper.AcceptContentLink = new Orb.Class({
 
 	sendLink: function(linkTitle, url) {
 		var tiny = this.options.rte.tinymce();
+		if (tiny) {
+			var title = tiny.selection.getContent({ format: 'text' });
+			if (title) title = title.trim();
+			if (!title.length) {
+				title = linkTitle;
+			}
 
-		var title = tiny.selection.getContent({ format: 'text' });
-		if (title) title = title.trim();
-		if (!title.length) {
-			title = linkTitle;
+			tiny.selection.setContent('<a href="' + url + '">' + Orb.escapeHtml(title) + '</a>');
+		} else {
+      var title = this.options.rte.froalaEditor('selection.text');
+
+      if (!title.length) {
+        title = linkTitle;
+      }
+
+      this.options.rte.froalaEditor('html.insert', '<a href="' + url + '">' + Orb.escapeHtml(title) + '</a>', true);
 		}
 
-		tiny.selection.setContent('<a href="' + url + '">' + Orb.escapeHtml(title) + '</a>');
 	}
 });

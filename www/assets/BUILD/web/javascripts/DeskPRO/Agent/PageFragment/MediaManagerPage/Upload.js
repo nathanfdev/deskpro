@@ -34,11 +34,19 @@ DeskPRO.Agent.PageFragment.MediaManagerPage.Upload = new Orb.Class({
 						return;
 					}
 
-					if (btn.data('is-image') == '1') {
-						MEDIA_MANAGER_WINDOW.boundEditor.selection.setContent('<img src="' + btn.data('download-url') + '" />');
-					} else {
-						MEDIA_MANAGER_WINDOW.boundEditor.selection.setContent('<a href="' + btn.data('download-url') + '">' + btn.data('file-name') + '</a>');
-					}
+          if (MEDIA_MANAGER_WINDOW.boundEditor.html) {
+            if (btn.data('is-image') == '1') {
+              MEDIA_MANAGER_WINDOW.boundEditor.html.insert('<img src="' + btn.data('download-url') + '" />');
+            } else {
+              MEDIA_MANAGER_WINDOW.boundEditor.html.insert('<a href="' + btn.data('download-url') + '">' + btn.data('file-name') + '</a>');
+            }
+          } else {
+            if (btn.data('is-image') == '1') {
+              MEDIA_MANAGER_WINDOW.boundEditor.selection.setContent('<img src="' + btn.data('download-url') + '" />');
+            } else {
+              MEDIA_MANAGER_WINDOW.boundEditor.selection.setContent('<a href="' + btn.data('download-url') + '">' + btn.data('file-name') + '</a>');
+            }
+          }
 
 					MEDIA_MANAGER_WINDOW.close();
 				});
