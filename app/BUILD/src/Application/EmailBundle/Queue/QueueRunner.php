@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2017, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2018, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -357,7 +357,6 @@ class QueueRunner
               AND id NOT IN (?)
             ORDER BY status ASC, id ASC
             LIMIT {$this->per_batch}
-            FOR UPDATE
         ", [date('Y-m-d H:i:s', time() + 5 /* +4 sec to account for time drift */), $this->done_ids], [\PDO::PARAM_STR, \Doctrine\DBAL\Connection::PARAM_INT_ARRAY]);
 
         if ($batch) {

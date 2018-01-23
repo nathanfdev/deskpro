@@ -28,6 +28,7 @@
 
 namespace DeskPRO\Bundle\AppBundle\TicketFilters;
 
+use DeskPRO\Bundle\AppBundle\TicketFilters\Model\Agent;
 use DeskPRO\Bundle\AppBundle\TicketFilters\SqlBuilder\SqlBuilder;
 use DeskPRO\Bundle\AppBundle\TicketFilters\SqlBuilder\SqlCondition;
 use DeskPRO\Bundle\AppBundle\TicketFilters\SqlBuilder\SqlConditionGroup;
@@ -38,6 +39,14 @@ use Doctrine\DBAL\Connection;
 
 class TicketSqlMatcher extends AbstractMatcher
 {
+    const ACTIVE = 'active';
+    const ALL    = 'all';
+
+    /**
+     * @var string
+     */
+    private $mode;
+
     /**
      * @var Connection
      */
@@ -49,11 +58,26 @@ class TicketSqlMatcher extends AbstractMatcher
      * @param ValueResolver $valueResolver
      * @param array         $handlers
      * @param Connection    $db
+     * @param string        $mode          TicketSqlMatcher::ACTIVE for active tickets, or TicketSqlMatcher::ALL for all tickets (slower)
      */
-    public function __construct(ValueResolver $valueResolver, array $handlers, Connection $db)
+    public function __construct(ValueResolver $valueResolver, array $handlers, Connection $db, $mode)
     {
         parent::__construct($valueResolver, $handlers);
         $this->db = $db;
+
+        if ($mode !== self::ACTIVE && $mode !== self::ALL) {
+            throw new \InvalidArgumentException('Invalid mode');
+        }
+
+        $this->mode = $mode;
+    }
+
+    /**
+     * @return string
+     */
+    public function getMode()
+    {
+        return $this->mode;
     }
 
     /**
@@ -93,7 +117,11 @@ class TicketSqlMatcher extends AbstractMatcher
     public function buildQueryBuilder(Query $query, Context $context)
     {
         $qb = new SqlBuilder($this->db);
-        $qb->from('tickets', 'tickets');
+        if ($this->mode === self::ACTIVE) {
+            $qb->from('tickets_search_active', 'tickets');
+        } else {
+            $qb->from('tickets', 'tickets');
+        }
         $qb->setMainTableAlias('tickets');
 
         $rootPart = $query->root;
@@ -212,5 +240,15 @@ class TicketSqlMatcher extends AbstractMatcher
         }
 
         return $group;
+    }
+
+    public static function buildPermissionConditionForAgent(Agent $agent)
+    {
+        // can view everything, no perms to apply
+        if ($agent->view_all) {
+            return null;
+        }
+
+        $condGroup = new SqlConditionGroup($termGroup->operator->getOperator());
     }
 }
