@@ -263,9 +263,16 @@ class DashboardData extends AbstractDefaultData
                             'title'      => 'New Tickets by Channel',
                             'position'   => '9:14',
                             'size'       => '6:6',
-                            'widget_key' => 'incomplete-sla',
+                            'widget_key' => 'tickets-by-channel-created-x-date',
                             'type'       => 'pie',
-                            'variables'  => [],
+                            'variables'  => [
+                                [
+                                    'name'  => 'date',
+                                    'type'  => 'dates',
+                                    'value' => 'today',
+                                ],
+                            ],
+                            'options' => '{"legend":false,"labelsEnabled":false}',
                         ],
                         [
                             'title'      => 'New Tickets by Department',
@@ -298,11 +305,12 @@ class DashboardData extends AbstractDefaultData
                                     'value'   => 'today',
                                 ],
                             ],
+                            'options' => '{"legend":false,"labelsEnabled":false}',
                         ],
                         // 4th row
                         [
                             'title'      => 'Time to first reply',
-                            'position'   => '15:14',
+                            'position'   => '15:7',
                             'size'       => '6:6',
                             'widget_key' => 'tickets-replied-x-date-grouped-by-first-reply',
                             'type'       => 'pie',
@@ -314,13 +322,69 @@ class DashboardData extends AbstractDefaultData
                                     'value'   => 'today',
                                 ],
                             ],
+                            'options' => '{"legend":false,"labelsEnabled":false}',
                         ],
                         // 5th row
                         [
-                            'title'      => 'KB searches',
+                            'title'      => 'KB views',
                             'position'   => '21:0',
                             'size'       => '6:6',
+                            'widget_key' => 'kb-views-x-date',
+                            'type'       => 'table',
+                            'variables'  => [
+                                [
+                                    'name'    => 'date',
+                                    'type'    => 'dates',
+                                    'default' => 'today',
+                                    'value'   => 'today',
+                                ],
+                            ],
+                            'options' => '{"legend":false,"labelsEnabled":false}',
+                        ],
+                        [
+                            'title'      => 'Top KB searches',
+                            'position'   => '21:7',
+                            'size'       => '6:6',
                             'widget_key' => 'kb-searches-x-date',
+                            'type'       => 'table',
+                            'variables'  => [
+                                [
+                                    'name'    => 'date',
+                                    'type'    => 'dates',
+                                    'default' => 'today',
+                                    'value'   => 'today',
+                                ],
+                            ],
+                        ],
+                        [
+                            'title'      => 'Chats by agent',
+                            'position'   => '21:14',
+                            'size'       => '6:6',
+                            'widget_key' => 'number-chats-created-date-grouped-by-x',
+                            'type'       => 'simple_bars',
+                            'variables'  => [
+                                [
+                                    'name'    => 'date',
+                                    'type'    => 'dates',
+                                    'default' => 'today',
+                                    'value'   => 'today',
+                                ],
+                                [
+                                    'name'       => 'chat',
+                                    'type'       => 'fields',
+                                    'field_type' => 'chats',
+                                    'table'      => 'chat_conversations',
+                                    'default'    => 'agent',
+                                    'value'      => 'agent',
+                                ],
+                            ],
+                            'options' => '{"legend": false}',
+                        ],
+                        [
+                            'title'      => 'Top snippets',
+                            'position'   => '21:20',
+                            'size'       => '6:6',
+                            'widget_key' => 'top-snippets-x-date',
                             'type'       => 'table',
                             'variables'  => [
                                 [

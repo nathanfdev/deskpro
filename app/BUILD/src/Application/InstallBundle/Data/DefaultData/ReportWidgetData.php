@@ -187,20 +187,35 @@ GROUP BY DATE_OFFSET_GROUP(tickets.total_to_first_reply)',
             'description'   => '',
             'display_types' => 'pie',
             'display_order' => 40,
-            'query'         => ' SELECT tickets.date_created FROM (
-(SELECT \'Portal\' AS channel, COUNT() FROM tickets WHERE tickets.date_created = ${date} AND tickets.creation_system IN (\'web.person\', \'web.person.portal\'))
-UNION
-(SELECT \'Website Widget\' AS channel, COUNT() FROM tickets WHERE tickets.date_created = ${date} AND tickets.creation_system  (\'web.person.widget\'))
-UNION
-(SELECT \'Embedded Form\' AS channel, COUNT() FROM tickets WHERE tickets.date_created = ${date} AND tickets.creation_system  (\'web.person.embed\'))
-UNION
-(SELECT \'Email\' AS channel, COUNT() FROM tickets WHERE tickets.date_created = ${date} AND tickets.creation_system IN (\'gateway.person\', \'gateway.agent\'))
-UNION
-(SELECT \'API\' AS channel, COUNT() FROM tickets WHERE tickets.date_created = ${date} AND tickets.creation_system IN (\'web.api\', \'web.api.person\', \'web.api.agent\'))
-) as dat
-',
+//            'query'         => ' SELECT tickets.date_created FROM (
+//(SELECT \'Portal\' AS channel, COUNT() FROM tickets WHERE tickets.date_created = ${date} AND tickets.creation_system IN (\'web.person\', \'web.person.portal\'))
+//UNION
+//(SELECT \'Website Widget\' AS channel, COUNT() FROM tickets WHERE tickets.date_created = ${date} AND tickets.creation_system  (\'web.person.widget\'))
+//UNION
+//(SELECT \'Embedded Form\' AS channel, COUNT() FROM tickets WHERE tickets.date_created = ${date} AND tickets.creation_system  (\'web.person.embed\'))
+//UNION
+//(SELECT \'Email\' AS channel, COUNT() FROM tickets WHERE tickets.date_created = ${date} AND tickets.creation_system IN (\'gateway.person\', \'gateway.agent\'))
+//UNION
+//(SELECT \'API\' AS channel, COUNT() FROM tickets WHERE tickets.date_created = ${date} AND tickets.creation_system IN (\'web.api\', \'web.api.person\', \'web.api.agent\'))
+//) as dat
+//',
+            'query'     => 'SELECT COUNT(), tickets.creation_system FROM tickets WHERE tickets.date_created = ${date} GROUP BY tickets.creation_system',
             'variables' => '[{"name":"date","type":"dates","default":"today"}]',
 
+        ],
+        'kb-views-x-date' => [
+            'title'         => 'Knowledgebase views by ${date}',
+            'labels'        => 'kb',
+            'description'   => '',
+            'display_types' => 'table',
+            'display_order' => 40,
+            'query'         => 'SELECT JSON_EXTRACT(hit_record.meta, \'$.pageTitle\') AS \'Title\', COUNT() AS \'count\'
+FROM hit_record
+WHERE hit_record.date_created = ${date}
+  AND hit_record.page_type = \'deskpro.kb_view\'
+GROUP BY hit_record.page_id
+ORDER BY COUNT()',
+            'variables' => '[{"name":"date","type":"dates","default":"today"}]',
         ],
         'kb-searches-x-date' => [
             'title'         => 'KB searches made ${date} ordered by search term',
@@ -214,6 +229,18 @@ WHERE searchlog.date_created = ${date}
 GROUP BY searchlog.query
 ORDER BY searchlog.query DESC
 ',
+            'variables' => '[{"name":"date","type":"dates","default":"today"}]',
+        ],
+        'top-snippets-x-date' => [
+            'title'         => 'Count of snippets uses ${date}',
+            'labels'        => 'agents',
+            'description'   => '',
+            'display_types' => 'table',
+            'display_order' => 40,
+            'query'         => 'SELECT COUNT() AS \'count\', snippet_use_log.snippet.title
+FROM snippet_use_log
+WHERE snippet_use_log.date_created = ${date}
+GROUP BY snippet_use_log.snippet.id',
             'variables' => '[{"name":"date","type":"dates","default":"today"}]',
         ],
         'article-views-date-x-grouped-date' => [
@@ -533,13 +560,24 @@ GROUP BY ALIAS(DATE(tickets.date_created), \'Date Created\'), ${ticket}',
                 'description'   => '',
                 'display_types' => 'table,simple_bars,pie,simple_area,simple_lines',
                 'display_order' => 10,
-                'query'         => 'DISPLAY TABLE, BAR
-SELECT COUNT() AS \'Total Tickets\'
+                'query'         => 'SELECT COUNT() AS \'Total Tickets\'
 FROM tickets
 WHERE tickets.date_created = ${date}
 GROUP BY MATRIX(${ticket}, ${ticket_2})',
                 'variables' => '[{"name":"ticket","type":"fields","field_type":"tickets","table":"tickets","default":"department"},{"name":"ticket_2","type":"fields","field_type":"tickets","table":"tickets","default":"agent"},{"name":"date","type":"dates"}]',
             ],
+        'tickets-created-x-date-grouped-by-department' => [
+            'title'         => 'Number of tickets created ${date} grouped by ${ticket}',
+            'labels'        => 'tickets',
+            'description'   => '',
+            'display_types' => 'simple_bars,pie,simple_area,simple_lines',
+            'display_order' => 10,
+            'query'         => 'SELECT COUNT() AS \'Total Tickets\', tickets.department.title AS \'Department title\'
+FROM tickets
+WHERE tickets.date_created = ${date}
+GROUP BY tickets.department.title',
+            'variables' => '[{"name":"date","type":"dates"}]',
+        ],
         'number-tickets-created-date-grouped-first-agent-x' => [
                 'title'         => 'Number of tickets created ${date} grouped by first agent response time & ${ticket}',
                 'labels'        => 'tickets',

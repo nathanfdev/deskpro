@@ -31,6 +31,7 @@ namespace DeskPRO\Bundle\ReportBundle\Dpql2\Statement;
 use Application\DeskPRO\Entity\Person;
 use Application\DeskPRO\Entity\Problem;
 use Application\DeskPRO\Entity\Session;
+use DeskPRO\Bundle\AppBundle\Entity\HitRecord;
 use DeskPRO\Bundle\AppBundle\Entity\SnippetUseLog;
 use DeskPRO\Bundle\ReportBundle\Dpql2\DpqlContextStorage;
 use DeskPRO\Bundle\ReportBundle\Dpql2\DpqlException;
@@ -307,6 +308,7 @@ class SelectPart
         'snippet_use_log'             => SnippetUseLog::class,
         'problems'                    => Problem::class,
         'sessions'                    => Session::class,
+        'hit_record'                  => HitRecord::class,
     ];
 
     /**
