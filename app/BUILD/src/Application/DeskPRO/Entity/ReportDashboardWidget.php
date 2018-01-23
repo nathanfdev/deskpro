@@ -245,7 +245,7 @@ class ReportDashboardWidget extends DomainObject
         } else {
             throw new \Exception('Wrong point given!');
         }
-        $this->position = implode(':', [(int) $x + 1, (int) $y]);
+        $this->position = implode(':', [(int) $x, (int) $y]);
 
         return $this;
     }

@@ -148,8 +148,7 @@ ORDER BY COUNT() DESC
             'description'   => '',
             'display_types' => 'simple_bars',
             'display_order' => 40,
-            'query'         => '
-SELECT SUM(count_open), SUM(count_resolve), hr
+            'query'         => 'SELECT SUM(count_open), SUM(count_resolve), hr
 FROM (
 	(SELECT COUNT() AS count_open, 0 AS count_resolve, HOUR(tickets.date_created) AS hr FROM tickets WHERE tickets.date_created = ${date} GROUP BY HOUR(tickets.date_created))
 	UNION
@@ -164,8 +163,7 @@ GROUP BY hr',
             'description'   => '',
             'display_types' => 'pie',
             'display_order' => 40,
-            'query'         => '
-SELECT COUNT() AS \'count\', ticket_slas.sla_status
+            'query'         => 'SELECT COUNT() AS \'count\', ticket_slas.sla_status
 FROM ticket_slas
 WHERE ticket_slas.is_completed = 0
 GROUP BY ticket_slas.sla_status',
@@ -177,10 +175,9 @@ GROUP BY ticket_slas.sla_status',
             'description'   => '',
             'display_types' => 'pie',
             'display_order' => 40,
-            'query'         => '
-SELECT COUNT(*) AS count, DATE_OFFSET_GROUP(tickets.total_to_first_reply) AS TimeToReply
+            'query'         => 'SELECT COUNT() AS \'count\', DATE_OFFSET_GROUP(tickets.total_to_first_reply) AS TimeToReply
 FROM tickets
-WHERE tickets.date_created = ${date} AND tickets.date_first_reply <> NULL
+WHERE tickets.date_created = ${date} AND tickets.date_first_agent_reply <> NULL
 GROUP BY DATE_OFFSET_GROUP(tickets.total_to_first_reply)',
             'variables' => '[]',
         ],
@@ -190,19 +187,34 @@ GROUP BY DATE_OFFSET_GROUP(tickets.total_to_first_reply)',
             'description'   => '',
             'display_types' => 'pie',
             'display_order' => 40,
-            'query'         => '
-(SELECT \'Portal\' AS channel, COUNT(*) FROM tickets WHERE tickets.date_created = ${date} AND tickets.creation_system IN (\'web.person\', \'web.person.portal\'))
+            'query'         => ' SELECT tickets.date_created FROM (
+(SELECT \'Portal\' AS channel, COUNT() FROM tickets WHERE tickets.date_created = ${date} AND tickets.creation_system IN (\'web.person\', \'web.person.portal\'))
 UNION
-(SELECT \'Website Widget\' AS channel, COUNT(*) FROM tickets WHERE tickets.date_created = ${date} AND tickets.creation_system  (\'web.person.widget\'))
+(SELECT \'Website Widget\' AS channel, COUNT() FROM tickets WHERE tickets.date_created = ${date} AND tickets.creation_system  (\'web.person.widget\'))
 UNION
-(SELECT \'Embedded Form\' AS channel, COUNT(*) FROM tickets WHERE tickets.date_created = ${date} AND tickets.creation_system  (\'web.person.embed\'))
+(SELECT \'Embedded Form\' AS channel, COUNT() FROM tickets WHERE tickets.date_created = ${date} AND tickets.creation_system  (\'web.person.embed\'))
 UNION
-(SELECT \'Email\' AS channel, COUNT(*) FROM tickets WHERE tickets.date_created = ${date} AND tickets.creation_system IN (\'gateway.person\', \'gateway.agent\'))
+(SELECT \'Email\' AS channel, COUNT() FROM tickets WHERE tickets.date_created = ${date} AND tickets.creation_system IN (\'gateway.person\', \'gateway.agent\'))
 UNION
-(SELECT \'API\' AS channel, COUNT(*) FROM tickets WHERE tickets.date_created = ${date} AND tickets.creation_system IN (\'web.api\', \'web.api.person\', \'web.api.agent\'))
+(SELECT \'API\' AS channel, COUNT() FROM tickets WHERE tickets.date_created = ${date} AND tickets.creation_system IN (\'web.api\', \'web.api.person\', \'web.api.agent\'))
+) as dat
 ',
             'variables' => '[{"name":"date","type":"dates","default":"today"}]',
 
+        ],
+        'kb-searches-x-date' => [
+            'title'         => 'KB searches made ${date} ordered by search term',
+            'labels'        => 'kb',
+            'description'   => '',
+            'display_types' => 'table',
+            'display_order' => 40,
+            'query'         => 'SELECT COUNT() AS \'count\', searchlog.query
+FROM searchlog
+WHERE searchlog.date_created = ${date}
+GROUP BY searchlog.query
+ORDER BY searchlog.query DESC
+',
+            'variables' => '[{"name":"date","type":"dates","default":"today"}]',
         ],
         'article-views-date-x-grouped-date' => [
             'title'         => 'Number of article views ${date} grouped by date',
