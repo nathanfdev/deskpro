@@ -71,7 +71,7 @@ class DashboardData extends AbstractDefaultData
                         ],
                         [
                             'title'      => 'New tickets today',
-                            'position'   => '0:7',
+                            'position'   => '0:6',
                             'size'       => '3:3',
                             'widget_key' => 'tickets-created-x-date',
                             'type'       => 'simple_stat',
@@ -85,7 +85,7 @@ class DashboardData extends AbstractDefaultData
                         ],
                         [
                             'title'      => 'New chats today',
-                            'position'   => '0:10',
+                            'position'   => '0:9',
                             'size'       => '3:3',
                             'widget_key' => 'chats-created-x-date',
                             'type'       => 'simple_stat',
@@ -99,7 +99,7 @@ class DashboardData extends AbstractDefaultData
                         ],
                         [
                             'title'      => 'Avg response time',
-                            'position'   => '0:14',
+                            'position'   => '0:12',
                             'size'       => '3:3',
                             'widget_key' => 'avg-response-time-x-date',
                             'type'       => 'simple_stat',
@@ -113,7 +113,7 @@ class DashboardData extends AbstractDefaultData
                         ],
                         [
                             'title'      => 'Satisfaction today',
-                            'position'   => '0:17',
+                            'position'   => '0:15',
                             'size'       => '3:3',
                             'widget_key' => 'satisfaction-x-date',
                             'type'       => 'simple_stat',
@@ -127,7 +127,7 @@ class DashboardData extends AbstractDefaultData
                         ],
                         [
                             'title'      => 'Replies today',
-                            'position'   => '0:20',
+                            'position'   => '0:18',
                             'size'       => '3:3',
                             'widget_key' => 'replies-created-x-date',
                             'type'       => 'simple_stat',
@@ -141,7 +141,7 @@ class DashboardData extends AbstractDefaultData
                         ],
                         [
                             'title'      => 'Resolved today',
-                            'position'   => '0:23',
+                            'position'   => '0:21',
                             'size'       => '3:3',
                             'widget_key' => 'tickets-resolved-x-date',
                             'type'       => 'simple_stat',
@@ -189,7 +189,7 @@ class DashboardData extends AbstractDefaultData
                         ],
                         [
                             'title'      => 'Backlog by Team',
-                            'position'   => '3:7',
+                            'position'   => '3:6',
                             'size'       => '6:6',
                             'widget_key' => 'number-tickets-status-grouped-by-x-y',
                             'type'       => 'simple_bars',
@@ -224,7 +224,7 @@ class DashboardData extends AbstractDefaultData
                         ],
                         [
                             'title'      => 'Daily activity',
-                            'position'   => '3:14',
+                            'position'   => '3:12',
                             'size'       => '12:6',
                             'widget_key' => 'daily-activity',
                             'type'       => 'simple_bars',
@@ -254,7 +254,7 @@ class DashboardData extends AbstractDefaultData
                         ],
                         [
                             'title'      => 'SLA Status',
-                            'position'   => '9:7',
+                            'position'   => '9:6',
                             'size'       => '6:6',
                             'widget_key' => 'incomplete-sla',
                             'type'       => 'pie',
@@ -263,7 +263,7 @@ class DashboardData extends AbstractDefaultData
                         ],
                         [
                             'title'      => 'New Tickets by Channel',
-                            'position'   => '9:14',
+                            'position'   => '9:12',
                             'size'       => '6:6',
                             'widget_key' => 'tickets-by-channel-created-x-date',
                             'type'       => 'pie',
@@ -278,7 +278,7 @@ class DashboardData extends AbstractDefaultData
                         ],
                         [
                             'title'      => 'New Tickets by Department',
-                            'position'   => '9:20',
+                            'position'   => '9:18',
                             'size'       => '6:6',
                             'widget_key' => 'number-tickets-created-date-grouped-by-x-y',
                             'type'       => 'pie',
@@ -312,7 +312,7 @@ class DashboardData extends AbstractDefaultData
                         // 4th row
                         [
                             'title'      => 'Time to first reply',
-                            'position'   => '15:7',
+                            'position'   => '15:6',
                             'size'       => '6:6',
                             'widget_key' => 'tickets-replied-x-date-grouped-by-first-reply',
                             'type'       => 'pie',
@@ -328,7 +328,7 @@ class DashboardData extends AbstractDefaultData
                         ],
                         [
                             'title'      => 'Tickets opened in last 24 hours by hour',
-                            'position'   => '15:14',
+                            'position'   => '15:12',
                             'size'       => '12:6',
                             'widget_key' => 'tickets-opened-within-x-date-grouped-by-hour',
                             'type'       => 'simple_lines',
@@ -361,7 +361,7 @@ class DashboardData extends AbstractDefaultData
                         ],
                         [
                             'title'      => 'Top KB searches',
-                            'position'   => '21:7',
+                            'position'   => '21:6',
                             'size'       => '6:6',
                             'widget_key' => 'kb-searches-x-date',
                             'type'       => 'table',
@@ -376,7 +376,7 @@ class DashboardData extends AbstractDefaultData
                         ],
                         [
                             'title'      => 'Chats by agent',
-                            'position'   => '21:14',
+                            'position'   => '21:12',
                             'size'       => '6:6',
                             'widget_key' => 'number-chats-created-date-grouped-by-x',
                             'type'       => 'simple_bars',
@@ -400,7 +400,7 @@ class DashboardData extends AbstractDefaultData
                         ],
                         [
                             'title'      => 'Top snippets',
-                            'position'   => '21:20',
+                            'position'   => '21:18',
                             'size'       => '6:6',
                             'widget_key' => 'top-snippets-x-date',
                             'type'       => 'table',
