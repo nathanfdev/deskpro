@@ -45,7 +45,8 @@ use Application\DeskPRO\EntityRepository\Person as PersonRepository;
 
 class DashboardData extends AbstractDefaultData
 {
-    const PRIORITY = 20000;
+    const PRIORITY  = 20000;
+    const UNIT_SIZE = 4; // 1 unit = 2 blocks. ie 2:2 is the same as 6:6
 
     protected $dashboards = [
         [
@@ -58,21 +59,21 @@ class DashboardData extends AbstractDefaultData
                         [
                             'title'      => 'Backlog',
                             'position'   => '0:0',
-                            'size'       => '3:3',
+                            'size'       => '1:1',
                             'widget_key' => 'tickets-awaiting-agent',
                             'type'       => 'simple_stat',
                         ],
                         [
                             'title'      => 'Online agents',
-                            'position'   => '0:3',
-                            'size'       => '3:3',
+                            'position'   => '0:1',
+                            'size'       => '1:1',
                             'widget_key' => 'agents-online',
                             'type'       => 'simple_stat',
                         ],
                         [
                             'title'      => 'New tickets today',
-                            'position'   => '0:6',
-                            'size'       => '3:3',
+                            'position'   => '0:2',
+                            'size'       => '1:1',
                             'widget_key' => 'tickets-created-x-date',
                             'type'       => 'simple_stat',
                             'variables'  => [
@@ -85,8 +86,8 @@ class DashboardData extends AbstractDefaultData
                         ],
                         [
                             'title'      => 'New chats today',
-                            'position'   => '0:9',
-                            'size'       => '3:3',
+                            'position'   => '0:3',
+                            'size'       => '1:1',
                             'widget_key' => 'chats-created-x-date',
                             'type'       => 'simple_stat',
                             'variables'  => [
@@ -99,8 +100,8 @@ class DashboardData extends AbstractDefaultData
                         ],
                         [
                             'title'      => 'Avg response time',
-                            'position'   => '0:12',
-                            'size'       => '3:3',
+                            'position'   => '0:4',
+                            'size'       => '1:1',
                             'widget_key' => 'avg-response-time-x-date',
                             'type'       => 'simple_stat',
                             'variables'  => [
@@ -113,8 +114,8 @@ class DashboardData extends AbstractDefaultData
                         ],
                         [
                             'title'      => 'Satisfaction today',
-                            'position'   => '0:15',
-                            'size'       => '3:3',
+                            'position'   => '0:5',
+                            'size'       => '1:1',
                             'widget_key' => 'satisfaction-x-date',
                             'type'       => 'simple_stat',
                             'variables'  => [
@@ -127,8 +128,8 @@ class DashboardData extends AbstractDefaultData
                         ],
                         [
                             'title'      => 'Replies today',
-                            'position'   => '0:18',
-                            'size'       => '3:3',
+                            'position'   => '0:6',
+                            'size'       => '1:1',
                             'widget_key' => 'replies-created-x-date',
                             'type'       => 'simple_stat',
                             'variables'  => [
@@ -141,8 +142,8 @@ class DashboardData extends AbstractDefaultData
                         ],
                         [
                             'title'      => 'Resolved today',
-                            'position'   => '0:21',
-                            'size'       => '3:3',
+                            'position'   => '0:7',
+                            'size'       => '1:1',
                             'widget_key' => 'tickets-resolved-x-date',
                             'type'       => 'simple_stat',
                             'variables'  => [
@@ -156,8 +157,8 @@ class DashboardData extends AbstractDefaultData
                         // 2-nd row
                         [
                             'title'      => 'Backlog by Department',
-                            'position'   => '3:0',
-                            'size'       => '6:6',
+                            'position'   => '1:0',
+                            'size'       => '2:2',
                             'widget_key' => 'number-tickets-status-grouped-by-x-y',
                             'type'       => 'simple_bars',
                             'variables'  => [
@@ -189,8 +190,8 @@ class DashboardData extends AbstractDefaultData
                         ],
                         [
                             'title'      => 'Backlog by Team',
-                            'position'   => '3:6',
-                            'size'       => '6:6',
+                            'position'   => '1:2',
+                            'size'       => '2:2',
                             'widget_key' => 'number-tickets-status-grouped-by-x-y',
                             'type'       => 'simple_bars',
                             'options'    => '{"legend": false}',
@@ -224,8 +225,8 @@ class DashboardData extends AbstractDefaultData
                         ],
                         [
                             'title'      => 'Daily activity',
-                            'position'   => '3:12',
-                            'size'       => '12:6',
+                            'position'   => '1:4',
+                            'size'       => '4:2',
                             'widget_key' => 'daily-activity',
                             'type'       => 'simple_bars',
                             'variables'  => [
@@ -240,8 +241,8 @@ class DashboardData extends AbstractDefaultData
                         // 3rd row
                         [
                             'title'      => 'Top agents',
-                            'position'   => '9:0',
-                            'size'       => '6:12',
+                            'position'   => '3:0',
+                            'size'       => '2:4',
                             'widget_key' => 'number-of-replies-created-x-date-grouped-by-agent',
                             'type'       => 'table',
                             'variables'  => [
@@ -254,8 +255,8 @@ class DashboardData extends AbstractDefaultData
                         ],
                         [
                             'title'      => 'SLA Status',
-                            'position'   => '9:6',
-                            'size'       => '6:6',
+                            'position'   => '3:2',
+                            'size'       => '2:2',
                             'widget_key' => 'incomplete-sla',
                             'type'       => 'pie',
                             'variables'  => [],
@@ -263,8 +264,8 @@ class DashboardData extends AbstractDefaultData
                         ],
                         [
                             'title'      => 'New Tickets by Channel',
-                            'position'   => '9:12',
-                            'size'       => '6:6',
+                            'position'   => '3:4',
+                            'size'       => '2:2',
                             'widget_key' => 'tickets-by-channel-created-x-date',
                             'type'       => 'pie',
                             'variables'  => [
@@ -278,8 +279,8 @@ class DashboardData extends AbstractDefaultData
                         ],
                         [
                             'title'      => 'New Tickets by Department',
-                            'position'   => '9:18',
-                            'size'       => '6:6',
+                            'position'   => '3:6',
+                            'size'       => '2:2',
                             'widget_key' => 'number-tickets-created-date-grouped-by-x-y',
                             'type'       => 'pie',
                             'variables'  => [
@@ -312,8 +313,8 @@ class DashboardData extends AbstractDefaultData
                         // 4th row
                         [
                             'title'      => 'Time to first reply',
-                            'position'   => '15:6',
-                            'size'       => '6:6',
+                            'position'   => '5:2',
+                            'size'       => '2:2',
                             'widget_key' => 'tickets-replied-x-date-grouped-by-first-reply',
                             'type'       => 'pie',
                             'variables'  => [
@@ -328,8 +329,8 @@ class DashboardData extends AbstractDefaultData
                         ],
                         [
                             'title'      => 'Tickets opened in last 24 hours by hour',
-                            'position'   => '15:12',
-                            'size'       => '12:6',
+                            'position'   => '5:4',
+                            'size'       => '4:2',
                             'widget_key' => 'tickets-opened-within-x-date-grouped-by-hour',
                             'type'       => 'simple_lines',
                             'variables'  => [
@@ -345,8 +346,8 @@ class DashboardData extends AbstractDefaultData
                         // 5th row
                         [
                             'title'      => 'KB views',
-                            'position'   => '21:0',
-                            'size'       => '6:6',
+                            'position'   => '7:0',
+                            'size'       => '2:2',
                             'widget_key' => 'kb-views-x-date',
                             'type'       => 'table',
                             'variables'  => [
@@ -361,8 +362,8 @@ class DashboardData extends AbstractDefaultData
                         ],
                         [
                             'title'      => 'Top KB searches',
-                            'position'   => '21:6',
-                            'size'       => '6:6',
+                            'position'   => '7:2',
+                            'size'       => '2:2',
                             'widget_key' => 'kb-searches-x-date',
                             'type'       => 'table',
                             'variables'  => [
@@ -376,8 +377,8 @@ class DashboardData extends AbstractDefaultData
                         ],
                         [
                             'title'      => 'Chats by agent',
-                            'position'   => '21:12',
-                            'size'       => '6:6',
+                            'position'   => '7:4',
+                            'size'       => '2:2',
                             'widget_key' => 'number-chats-created-date-grouped-by-x',
                             'type'       => 'simple_bars',
                             'variables'  => [
@@ -400,8 +401,8 @@ class DashboardData extends AbstractDefaultData
                         ],
                         [
                             'title'      => 'Top snippets',
-                            'position'   => '21:18',
-                            'size'       => '6:6',
+                            'position'   => '7:6',
+                            'size'       => '2:2',
                             'widget_key' => 'top-snippets-x-date',
                             'type'       => 'table',
                             'variables'  => [
@@ -503,11 +504,18 @@ class DashboardData extends AbstractDefaultData
             $this->getEm()->persist($tab);
             if (isset($report['widgets'])) {
                 foreach ($report['widgets'] as $widget) {
+                    $size = implode(':', array_map(function ($v) {
+                        return DashboardData::UNIT_SIZE * $v;
+                    }, explode(':', $widget['size'])));
+                    $position = implode(':', array_map(function ($v) {
+                        return DashboardData::UNIT_SIZE * $v;
+                    }, explode(':', $widget['position'])));
+
                     $widgetEntity = new Widget();
                     $widgetEntity
                         ->setTitle($widget['title'])
-                        ->setSize($widget['size'])
-                        ->setPosition($widget['position'])
+                        ->setSize($size)
+                        ->setPosition($position)
                         ->setReport($tab);
                     if (isset($widget['widget_id'])) {
                         /** @var WidgetPrototype $widgetPrototype */
