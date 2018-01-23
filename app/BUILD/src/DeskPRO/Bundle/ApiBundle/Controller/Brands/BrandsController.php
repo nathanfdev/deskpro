@@ -139,7 +139,7 @@ class BrandsController extends CrudController
         $helpdeskUrl = $this->get('settings_resolver')->getGlobalSettings()->get('core.deskpro_url');
         $helpdeskUrl = $urlHostChecker->simplifyUrl($helpdeskUrl);
 
-        if (false !== strpos($url, $helpdeskUrl)) {
+        if ($url === $helpdeskUrl) {
             throw new BadRequestHttpException(
                 'Your brand URL must be a completely separate URL, it cannot be a sub-directory of any of your existing brands.'
             );
@@ -229,7 +229,7 @@ class BrandsController extends CrudController
         $helpdeskUrl = $this->get('url_host_checker')->simplifyUrl($helpdeskUrl);
         $response    = ['free' => !$brand];
 
-        if (false !== strpos($url, $helpdeskUrl)) {
+        if ($url === $helpdeskUrl) {
             $response['free']   = false;
             $response['reason'] = 'Your brand URL must be a completely separate URL, it cannot be a sub-directory of any of your existing brands.';
         }
