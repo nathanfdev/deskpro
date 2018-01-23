@@ -139,7 +139,12 @@ DeskPRO.Agent.WindowElement.TabBar = new Orb.Class({
 		this.$scope.tabClick = function($event, tab){ self._tabStripClick($event, tab); };
 		this.$scope.tabHistory = [];
 
-		this.$scope.context = function(tab) {
+		this.$scope.context = function(event) {
+			var tab = null;
+			if (event.target.tagName === 'A') {
+				var li = event.target.parentElement;
+				tab = self._tabs.find(function (a) { return a.id === li.dataset.tabId});
+			}
 			self._filterTabHistory();
 			self.$scope.contextTab = tab;
 		};

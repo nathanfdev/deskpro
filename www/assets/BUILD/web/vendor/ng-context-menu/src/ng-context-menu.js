@@ -1,5 +1,6 @@
 /**
- * ng-context-menu - v0.1.6 - An AngularJS directive to display a context menu when a right-click event is triggered
+ * ng-context-menu - v1.0.1 - An AngularJS directive to display a context menu
+ * when a right-click event is triggered
  *
  * @author Ian Kennington Walter (http://ianvonwalter.com)
  */
@@ -11,12 +12,16 @@ angular
       menuElement: null
     };
   })
-  .directive('contextMenu', ['$document', 'ContextMenuService', function($document, ContextMenuService) {
+  .directive('contextMenu', [
+    '$document',
+    'ContextMenuService',
+    function($document, ContextMenuService) {
     return {
       restrict: 'A',
       scope: {
         'callback': '&contextMenu',
-        'disabled': '&contextMenuDisabled'
+        'disabled': '&contextMenuDisabled',
+        'closeCallback': '&contextMenuClose'
       },
       link: function($scope, $element, $attrs) {
         var opened = false;
@@ -51,6 +56,11 @@ angular
 
         function close(menuElement) {
           menuElement.removeClass('open');
+
+          if (opened) {
+            $scope.closeCallback();
+          }
+
           opened = false;
         }
 
@@ -94,8 +104,8 @@ angular
         }
 
         $document.bind('keyup', handleKeyUpEvent);
-        // Firefox treats a right-click as a click and a contextmenu event while other browsers
-        // just treat it as a contextmenu event
+        // Firefox treats a right-click as a click and a contextmenu event
+        // while other browsers just treat it as a contextmenu event
         $document.bind('click', handleClickEvent);
         $document.bind('contextmenu', handleClickEvent);
 
