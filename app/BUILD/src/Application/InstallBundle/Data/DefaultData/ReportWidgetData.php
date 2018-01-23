@@ -158,6 +158,39 @@ FROM (
 GROUP BY hr',
             'variables' => '[{"name":"date","type":"dates","default":"today"}]',
         ],
+        'incomplete-sla' => [
+            'title'         => 'SLA status of non completed SLAs',
+            'labels'        => 'sla',
+            'description'   => '',
+            'display_types' => 'pie',
+            'display_order' => 40,
+            'query'         => '
+SELECT COUNT() AS \'count\', ticket_slas.sla_status
+FROM ticket_slas
+WHERE ticket_slas.is_completed = 0
+GROUP BY ticket_slas.sla_status',
+            'variables' => '[]',
+        ],
+        'tickets-by-channel-created-x-date' => [
+            'title'         => 'Tickets created ${date} grouped by channel',
+            'labels'        => 'tickets',
+            'description'   => '',
+            'display_types' => 'pie',
+            'display_order' => 40,
+            'query'         => '
+(SELECT \'Portal\' AS channel, COUNT(*) FROM tickets WHERE tickets.date_created = ${date} AND tickets.creation_system IN (\'web.person\', \'web.person.portal\'))
+UNION
+(SELECT \'Website Widget\' AS channel, COUNT(*) FROM tickets WHERE tickets.date_created = ${date} AND tickets.creation_system  (\'web.person.widget\'))
+UNION
+(SELECT \'Embedded Form\' AS channel, COUNT(*) FROM tickets WHERE tickets.date_created = ${date} AND tickets.creation_system  (\'web.person.embed\'))
+UNION
+(SELECT \'Email\' AS channel, COUNT(*) FROM tickets WHERE tickets.date_created = ${date} AND tickets.creation_system IN (\'gateway.person\', \'gateway.agent\'))
+UNION
+(SELECT \'API\' AS channel, COUNT(*) FROM tickets WHERE tickets.date_created = ${date} AND tickets.creation_system IN (\'web.api\', \'web.api.person\', \'web.api.agent\'))
+',
+            'variables' => '[{"name":"date","type":"dates","default":"today"}]',
+
+        ],
         'article-views-date-x-grouped-date' => [
             'title'         => 'Number of article views ${date} grouped by date',
             'labels'        => 'kb',
@@ -169,7 +202,7 @@ SELECT COUNT() AS \'Views\'
 FROM articles
 WHERE articles.views.date_created = ${date}
 GROUP BY ALIAS(DATE(articles.views.date_created), \'Date\')',
-                'variables' => '[{"name":"date","type":"dates"}]',
+            'variables' => '[{"name":"date","type":"dates"}]',
             ],
         'average-chat-length-chats-created-group-x' => [
                 'title'         => 'Average chat length for chats created ${date} grouped by ${chat}',
