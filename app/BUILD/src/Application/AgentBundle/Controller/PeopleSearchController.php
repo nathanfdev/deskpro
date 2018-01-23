@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2017, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2018, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -763,10 +763,10 @@ class PeopleSearchController extends AbstractController
             $q = $this->in->getString('term');
         }
 
-        $limit       = $this->in->getUint('limit') ?: 250;
-        $with_agents = $this->in->getBool('with_agents');
-        $exclude_org = $this->in->getUint('exclude_org');
-        $peopleList  = [];
+        $limit      = $this->in->getUint('limit') ?: 250;
+        $withAgents = $this->in->getBool('with_agents');
+        $excludeOrg = $this->in->getUint('exclude_org');
+        $peopleList = [];
 
         if (StringEmail::isValueValid($q)) {
             // if the string is an exact email, we can try and find the user in usersources just by email
@@ -780,49 +780,53 @@ class PeopleSearchController extends AbstractController
                     'email'      => $person->getPrimaryEmailAddress(),
                 ];
             }
-        } elseif ($this->container->getSetting('elastica.enabled')) {
-            try {
-                $elasticsearch = $this->container->get('deskpro.search_manager.elasticsearch');
-                $elasticsearch->setPersonContext($this->person);
+        }
+        if (!count($peopleList)) {
+            if ($this->container->getSetting('elastica.enabled')) {
+                try {
+                    $elasticSearch = $this->container->get('deskpro.search_manager.elasticsearch');
+                    $elasticSearch->setPersonContext($this->person);
 
-                list($results, $result_meta, $people_top) = $elasticsearch->quickSearch($q, 'date_active', ['person']);
+                    list($results, $resultMeta, $peopleTop) = $elasticSearch->quickSearch($q, 'date_active', ['person']);
 
-                if (isset($results['person'])) {
-                    $results = $results['person'];
-                } else {
-                    $results = [];
-                }
-
-                $results = array_slice($results, 0, $limit);
-
-                $output = [];
-                foreach ($results as $p) {
-                    if (!$with_agents && $p->is_agent) {
-                        continue;
-                    }
-                    if ($exclude_org && $p->organization && $p->organization->id == $exclude_org) {
-                        continue;
+                    if (isset($results['person'])) {
+                        $results = $results['person'];
+                    } else {
+                        $results = [];
                     }
 
-                    $output[] = [
-                        'id'         => $p->id,
-                        'first_name' => $p->first_name,
-                        'last_name'  => $p->last_name,
-                        'email'      => $p->getPrimaryEmailAddress(),
-                    ];
-                }
+                    $results = array_slice($results, 0, $limit);
 
-                $peopleList = $output;
-            } catch (\Exception $e) {
-                SystemErrorHandler::logException($e);
+                    $output = [];
+                    foreach ($results as $p) {
+                        /** @var Person $p */
+                        if (!$withAgents && $p->is_agent) {
+                            continue;
+                        }
+                        if ($excludeOrg && $p->organization && $p->organization->id == $excludeOrg) {
+                            continue;
+                        }
+
+                        $output[] = [
+                            'id'         => $p->id,
+                            'first_name' => $p->first_name,
+                            'last_name'  => $p->last_name,
+                            'email'      => $p->getPrimaryEmailAddress(),
+                        ];
+                    }
+
+                    $peopleList = $output;
+                } catch (\Exception $e) {
+                    SystemErrorHandler::logException($e);
+                    /** @var PersonRepository $rep */
+                    $rep        = $this->em->getRepository(Person::class);
+                    $peopleList = $rep->quickSearch($q, $this->in->getBool('start_with'), $withAgents, $excludeOrg, $limit);
+                }
+            } else {
                 /** @var PersonRepository $rep */
-                $rep        = $this->em->getRepository('DeskPRO:Person');
-                $peopleList = $rep->quickSearch($q, $this->in->getBool('start_with'), $with_agents, $exclude_org, $limit);
+                $rep        = $this->em->getRepository(Person::class);
+                $peopleList = $rep->quickSearch($q, $this->in->getBool('start_with'), $withAgents, $excludeOrg, $limit);
             }
-        } else {
-            /** @var PersonRepository $rep */
-            $rep        = $this->em->getRepository(Person::class);
-            $peopleList = $rep->quickSearch($q, $this->in->getBool('start_with'), $with_agents, $exclude_org, $limit);
         }
 
         $format = $this->in->getString('format');
