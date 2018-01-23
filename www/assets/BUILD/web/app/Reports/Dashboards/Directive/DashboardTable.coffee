@@ -30,19 +30,20 @@ define ['datatables'], () ->
           dt = el.DataTable {
             data:           widget.data,
             columns:        widget.columns,
-            pagingType:     "full_numbers",
-            pageLength:     10,
+            pagingType:     "first_last_numbers",
+            searching:      false,
+            pageLength:     5,
             bJQueryUI:      true,
             iDisplayLength: 5,
             sDom:           'T<"clear">lfrtip'
-            lengthMenu:     [[10, 25, 50, -1], [10, 25, 50, "All"]]
-            scrollY:        listItem.height() - 140,
+            lengthMenu:     [[5, 10, 25, 50, -1], [5, 10, 25, 50, "All"]]
+            scrollY:        listItem.height() - 190,
             deferRender:    true,
             dom:            "rtS",
             scrollCollapse: true,
             autoWidth:      true
             fnDrawCallback: (settings) ->
-                if settings._iDisplayLength == -1 || settings._iDisplayLength > settings.fnRecordsDisplay()
+                if settings._iDisplayLength == -1 || settings._iDisplayLength >= settings.fnRecordsDisplay()
                   $(settings.nTableWrapper).find('.dataTables_paginate').hide();
                 else
                   $(settings.nTableWrapper).find('.dataTables_paginate').show();
@@ -66,7 +67,7 @@ define ['datatables'], () ->
             () ->
               tBody = listItem.find '.dataTables_scrollBody'
               h = listItem.height()
-              calculated = h - 140
+              calculated = h - 190
               settings = dt.settings()
               settings[0].oScroll.sY = calculated
               tBody.css 'height', "#{calculated}px"
@@ -82,7 +83,7 @@ define ['datatables'], () ->
               tBody = listItem.find('.dataTables_scrollBody')
               if h != height
                 if dt?
-                  calculated = h - 140
+                  calculated = h - 190
                   settings = dt.settings();
                   settings[0].oScroll.sY = calculated
                   tBody.css 'height', "#{calculated}px"

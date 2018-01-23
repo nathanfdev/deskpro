@@ -142,20 +142,38 @@ ORDER BY COUNT() DESC
 ',
             'variables' => '[{"name":"date","type":"dates","default":"today"}]',
         ],
+        'tickets-opened-within-x-date-grouped-by-hour' => [
+            'title'         => 'Tickets opened ${date}',
+            'labels'        => 'tickets',
+            'description'   => '',
+            'display_types' => 'simple_bars',
+            'display_order' => 40,
+            'query'         => 'SELECT COUNT() AS \'Tickets\', HOUR(tickets.date_created) as \'Created Hour\' 
+            FROM  tickets 
+            WHERE tickets.date_created = ${date}
+            GROUP BY HOUR(tickets.date_created)
+            ORDER BY HOUR(tickets.date_created)',
+            'variables' => '[{"name":"date","type":"dates","default":"past_24_hours"}]',
+        ],
         'daily-activity' => [
             'title'         => 'Daily activity ${date}',
             'labels'        => 'agents,tickets',
             'description'   => '',
             'display_types' => 'simple_bars',
             'display_order' => 40,
-            'query'         => 'SELECT SUM(count_open), SUM(count_resolve), hr
-FROM (
-	(SELECT COUNT() AS count_open, 0 AS count_resolve, HOUR(tickets.date_created) AS hr FROM tickets WHERE tickets.date_created = ${date} GROUP BY HOUR(tickets.date_created))
-	UNION
-	(SELECT 0 AS count_open, COUNT()*-1 AS count_resolve, HOUR(tickets.date_resolved) AS hr FROM tickets WHERE tickets.date_resolved = ${date} GROUP BY HOUR(tickets.date_resolved))
-) AS dat
-GROUP BY hr',
-            'variables' => '[{"name":"date","type":"dates","default":"today"}]',
+//            'query'         => 'SELECT SUM(count_open), SUM(count_resolve), hr
+//FROM (
+//	(SELECT COUNT() AS count_open, 0 AS count_resolve, HOUR(tickets.date_created) AS hr FROM tickets WHERE tickets.date_created = ${date} GROUP BY HOUR(tickets.date_created))
+//	UNION
+//	(SELECT 0 AS count_open, COUNT()*-1 AS count_resolve, HOUR(tickets.date_resolved) AS hr FROM tickets WHERE tickets.date_resolved = ${date} GROUP BY HOUR(tickets.date_resolved))
+//) AS dat
+//GROUP BY hr',
+            'query' => 'SELECT COUNT() AS \'Replies\', HOUR(tickets_messages.date_created) as \'Reply Hour\' 
+            FROM  tickets_messages 
+            WHERE tickets_messages.date_created = ${date}
+            GROUP BY HOUR(tickets_messages.date_created)
+            ORDER BY HOUR(tickets_messages.date_created)',
+            'variables' => '[{"name":"date","type":"dates","default":"yesterday"}]',
         ],
         'incomplete-sla' => [
             'title'         => 'SLA status of non completed SLAs',

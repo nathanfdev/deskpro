@@ -232,9 +232,10 @@ class DashboardData extends AbstractDefaultData
                                 [
                                     'name'  => 'date',
                                     'type'  => 'dates',
-                                    'value' => 'today',
+                                    'value' => 'yesterday',
                                 ],
                             ],
+                            'options' => '{"legend":false}',
                         ],
                         // 3rd row
                         [
@@ -258,6 +259,7 @@ class DashboardData extends AbstractDefaultData
                             'widget_key' => 'incomplete-sla',
                             'type'       => 'pie',
                             'variables'  => [],
+                            'options'    => '{"legend":false,"labelsEnabled":false}',
                         ],
                         [
                             'title'      => 'New Tickets by Channel',
@@ -323,6 +325,22 @@ class DashboardData extends AbstractDefaultData
                                 ],
                             ],
                             'options' => '{"legend":false,"labelsEnabled":false}',
+                        ],
+                        [
+                            'title'      => 'Tickets opened in last 24 hours by hour',
+                            'position'   => '15:14',
+                            'size'       => '12:6',
+                            'widget_key' => 'tickets-opened-within-x-date-grouped-by-hour',
+                            'type'       => 'simple_lines',
+                            'variables'  => [
+                                [
+                                    'name'    => 'date',
+                                    'type'    => 'dates',
+                                    'default' => 'past_24_hours',
+                                    'value'   => 'past_24_hours',
+                                ],
+                            ],
+                            'options' => '{"legend":false}',
                         ],
                         // 5th row
                         [

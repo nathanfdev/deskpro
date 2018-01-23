@@ -38,7 +38,7 @@ define ['DeskPRO/Util/Arrays'], (Arrays) -> [
       swapping: true,
       draggable:
         enabled: false
-        handle: 'h3'
+        handle: '.box-header'
         stop: (event, $element, $widget) ->
           DashboardWidgetService.saveWidget($widget)
       resizable:
