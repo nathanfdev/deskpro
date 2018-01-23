@@ -299,6 +299,22 @@ class DashboardData extends AbstractDefaultData
                                 ],
                             ],
                         ],
+                        // 4th row
+                        [
+                            'title'      => 'New Tickets by Department',
+                            'position'   => '11:14',
+                            'size'       => '6:6',
+                            'widget_key' => 'tickets-replied-x-date-grouped-by-first-reply',
+                            'type'       => 'pie',
+                            'variables'  => [
+                                [
+                                    'name'    => 'date',
+                                    'type'    => 'dates',
+                                    'default' => 'today',
+                                    'value'   => 'today',
+                                ],
+                            ],
+                        ],
                     ],
                 ],
             ],

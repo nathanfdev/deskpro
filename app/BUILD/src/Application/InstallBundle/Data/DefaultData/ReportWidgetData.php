@@ -171,6 +171,19 @@ WHERE ticket_slas.is_completed = 0
 GROUP BY ticket_slas.sla_status',
             'variables' => '[]',
         ],
+        'tickets-replied-x-date-grouped-by-first-reply' => [
+            'title'         => 'Count of tickets replied ${date} grouped by time to first reply',
+            'labels'        => 'tickets',
+            'description'   => '',
+            'display_types' => 'pie',
+            'display_order' => 40,
+            'query'         => '
+SELECT COUNT(*) AS count, DATE_OFFSET_GROUP(tickets.total_to_first_reply) AS TimeToReply
+FROM tickets
+WHERE tickets.date_created = ${date} AND tickets.date_first_reply <> NULL
+GROUP BY DATE_OFFSET_GROUP(tickets.total_to_first_reply)',
+            'variables' => '[]',
+        ],
         'tickets-by-channel-created-x-date' => [
             'title'         => 'Tickets created ${date} grouped by channel',
             'labels'        => 'tickets',
