@@ -48,7 +48,19 @@ class TicketsFixture extends AbstractDpFixture implements OrderedFixtureInterfac
     private $numLabels         = 100;
     private $ticketMaxMessages = 10;
 
-    private $numTickets = 250;
+    private $ticketChannels = [
+        'web.person',
+        'web.person.portal',
+        'web.person.widget',
+        'web.person.embed',
+        'gateway.person',
+        'gateway.agent',
+        'web.api',
+        'web.api.person',
+        'web.api.agent',
+    ];
+
+    private $numTickets = 500;
 
     /**
      * @var int[]
@@ -282,7 +294,8 @@ class TicketsFixture extends AbstractDpFixture implements OrderedFixtureInterfac
                 }
             }
 
-            $subj    = $this->faker->sentence(4);
+            $subj = $this->faker->sentence(4);
+
             $batch[] = [
                 'brand_id'      => $this->getReference('brand')->getId(),
                 'department_id' => $this->faker->randomElement($this->departmentIds),
@@ -302,16 +315,17 @@ class TicketsFixture extends AbstractDpFixture implements OrderedFixtureInterfac
                 'subject'                 => $subj,
                 'original_subject'        => $subj,
                 'feedback_rating'         => $ticketRating,
-                'date_created'            => $this->faker->dateTimeThisYear->format('Y-m-d H:i:s'),
-                'date_resolved'           => $this->faker->dateTimeThisYear->format('Y-m-d H:i:s'),
-                'date_archived'           => $this->faker->dateTimeThisYear->format('Y-m-d H:i:s'),
-                'date_first_agent_assign' => $this->faker->dateTimeThisYear->format('Y-m-d H:i:s'),
-                'date_first_agent_reply'  => $this->faker->dateTimeThisYear->format('Y-m-d H:i:s'),
-                'date_last_agent_reply'   => $this->faker->dateTimeThisYear->format('Y-m-d H:i:s'),
-                'date_last_user_reply'    => $this->faker->dateTimeThisYear->format('Y-m-d H:i:s'),
-                'date_agent_waiting'      => $this->faker->dateTimeThisYear->format('Y-m-d H:i:s'),
-                'date_user_waiting'       => $this->faker->dateTimeThisYear->format('Y-m-d H:i:s'),
-                'date_status'             => $this->faker->dateTimeThisYear->format('Y-m-d H:i:s'),
+                'creation_system'         => $this->faker->randomElement($this->ticketChannels),
+                'date_created'            => $this->faker->boolean(15) ? $this->faker->dateTimeBetween('-2 days')->format('Y-m-d H:i:s') : $this->faker->dateTimeThisYear->format('Y-m-d H:i:s'),
+                'date_resolved'           => $this->faker->boolean(15) ? $this->faker->dateTimeBetween('-2 days')->format('Y-m-d H:i:s') : $this->faker->dateTimeThisYear->format('Y-m-d H:i:s'),
+                'date_archived'           => $this->faker->boolean(15) ? $this->faker->dateTimeBetween('-2 days')->format('Y-m-d H:i:s') : $this->faker->dateTimeThisYear->format('Y-m-d H:i:s'),
+                'date_first_agent_assign' => $this->faker->boolean(15) ? $this->faker->dateTimeBetween('-2 days')->format('Y-m-d H:i:s') : $this->faker->dateTimeThisYear->format('Y-m-d H:i:s'),
+                'date_first_agent_reply'  => $this->faker->boolean(15) ? $this->faker->dateTimeBetween('-2 days')->format('Y-m-d H:i:s') : $this->faker->dateTimeThisYear->format('Y-m-d H:i:s'),
+                'date_last_agent_reply'   => $this->faker->boolean(15) ? $this->faker->dateTimeBetween('-2 days')->format('Y-m-d H:i:s') : $this->faker->dateTimeThisYear->format('Y-m-d H:i:s'),
+                'date_last_user_reply'    => $this->faker->boolean(15) ? $this->faker->dateTimeBetween('-2 days')->format('Y-m-d H:i:s') : $this->faker->dateTimeThisYear->format('Y-m-d H:i:s'),
+                'date_agent_waiting'      => $this->faker->boolean(15) ? $this->faker->dateTimeBetween('-2 days')->format('Y-m-d H:i:s') : $this->faker->dateTimeThisYear->format('Y-m-d H:i:s'),
+                'date_user_waiting'       => $this->faker->boolean(15) ? $this->faker->dateTimeBetween('-2 days')->format('Y-m-d H:i:s') : $this->faker->dateTimeThisYear->format('Y-m-d H:i:s'),
+                'date_status'             => $this->faker->boolean(15) ? $this->faker->dateTimeBetween('-2 days')->format('Y-m-d H:i:s') : $this->faker->dateTimeThisYear->format('Y-m-d H:i:s'),
             ];
         }
 
