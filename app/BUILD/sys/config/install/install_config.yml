@@ -26,7 +26,6 @@ services:
 doctrine:
   dbal:
     types:
-      term_engine_term: DeskPRO\Bundle\AppBundle\Doctrine\Type\TermEngineTermType
       dpblob:           Application\\DeskPRO\\DBAL\\Types\\DpBlobType
       dpblob_file:      Application\\DeskPRO\\DBAL\\Types\\DpBlobFileType
       dp_json_obj:      Application\\DeskPRO\\DBAL\\Types\\DpJsonObject

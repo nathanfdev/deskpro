@@ -200,7 +200,6 @@ echo "Build summary"
 echo "-----------------------------------------------------------------------------------------------------------------"
 
 phpunit=$(tail -n 2 "$LOGS_DIR/phpunit.txt" | tr '\n' ' ')
-phpunit_term_engine=$(tail -n 2 "$LOGS_DIR/phpunit-term-engine.txt" | tr '\n' ' ')
 phpunit_portal=$(tail -n 2 "$LOGS_DIR/phpunit-portal.txt" | tr '\n' ' ')
 phpspec=$(tail -n 3 "$LOGS_DIR/phpspec.txt" | tr '\n' ' ')
 jest=$(tail -n 3 "$LOGS_DIR/jest.txt" | tr '\n' ' ')
@@ -223,7 +222,6 @@ echo "
 (1) PHPUnit:
 
  - DeskPRO: $phpunit
- - DeskPRO-TermEngine: $phpunit_term_engine
  - DeskPRO-Portal: $phpunit_portal
 
 (2) PHPSpec: $phpspec
@@ -285,11 +283,6 @@ if [[ ${phpunit} =~ "FAILURES" ]] || [[ ! ${phpunit} =~ "OK (" ]] ; then
     phpunit_failed=1
     mv "$LOGS_DIR/phpunit.txt" "$LOGS_DIR/FAILED-phpunit.txt"
     echo "- PHPUnit failed"
-fi
-if [[ ${phpunit_term_engine} =~ "FAILURES" ]] || [[ ! ${phpunit_term_engine} =~ "OK (" ]] ; then
-    phpunit_failed=1
-    mv "$LOGS_DIR/phpunit-term-engine.txt" "$LOGS_DIR/FAILED-phpunit-term-engine.txt"
-    echo "- PHPUnit Term Engine failed"
 fi
 if [[ ${phpunit_portal} =~ "FAILURES" ]] || [[ ! ${phpunit_portal} =~ "OK (" ]] ; then
     phpunit_failed=1

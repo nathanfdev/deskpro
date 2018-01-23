@@ -38,8 +38,6 @@ use DeskPRO\Bundle\AppBundle\Annotation\ActionPermissions\Annotation\ApiModes;
 use DeskPRO\Bundle\AppBundle\Form\Type\Tickets\TicketType;
 use DeskPRO\Bundle\AppBundle\Security\Voter\PermissionGroups\PermissionGroupVoter;
 use DeskPRO\Bundle\AppBundle\Serializer\Annotation\SerializerView;
-use DeskPRO\Bundle\AppBundle\TermEngine\Engine\Dbal\DbalTermEngine;
-use DeskPRO\Bundle\AppBundle\TermEngine\Engine\TermEngineContext;
 use FOS\RestBundle\Controller\Annotations as Rest;
 use FOS\RestBundle\View\View;
 use Symfony\Component\HttpFoundation\Request;

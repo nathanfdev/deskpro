@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2017, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2018, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -32,8 +32,6 @@
 
 namespace DeskPRO\Bundle\AppBundle\Entity;
 
-use DeskPRO\Bundle\AppBundle\TermEngine\TermInterface;
-use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\NotifyPropertyChanged;
 use Doctrine\ORM\Mapping as ORM;
 use JMS\Serializer\Annotation as JMS;
@@ -45,12 +43,12 @@ use Symfony\Component\Validator\Constraints as Assert;
  * Describes a criterion or set of criteria that make up a ticket filter.
  *
  * @ORM\Entity(repositoryClass="DeskPRO\Bundle\AppBundle\Entity\Repository\TicketFilterRepository")
- * @ORM\Table(name="custom_ticket_filters")
+ * @ORM\Table(name="ticket_filters2")
  *
  * @JMS\ExclusionPolicy("ALL")
  * @ORM\ChangeTrackingPolicy("NOTIFY")
  */
-class TicketFilter implements FilterInterface, EntityInterface, NotifyPropertyChanged
+class TicketFilter implements EntityInterface, NotifyPropertyChanged
 {
     use NotifyPropertyChangedTrait;
 
@@ -83,19 +81,19 @@ class TicketFilter implements FilterInterface, EntityInterface, NotifyPropertyCh
     protected $title;
 
     /**
-     *  Term object including whole spectre of operations to filter tickets.
+     * FQL query.
      *
-     * @ORM\Column(name="term", type="term_engine_term")
+     * @ORM\Column(name="term", type="string")
      *
      * @Assert\NotNull()
      * @Assert\Valid()
      *
      * @JMS\Expose()
-     * @JMS\Type("DeskPRO\Bundle\AppBundle\TermEngine\Term\AbstractTerm")
+     * @JMS\Type("string")
      *
-     * @var TermInterface
+     * @var string
      */
-    protected $term;
+    protected $query;
 
     /**
      * Filter`s display order.
@@ -107,7 +105,7 @@ class TicketFilter implements FilterInterface, EntityInterface, NotifyPropertyCh
      * @JMS\Expose()
      * @JMS\Type("integer")
      */
-    protected $display_order = 0;
+    protected $displayOrder = 0;
 
     /**
      * Filter set this filter belongs to.
@@ -121,65 +119,13 @@ class TicketFilter implements FilterInterface, EntityInterface, NotifyPropertyCh
      *
      * @var TicketFilterSet
      */
-    protected $filter_set;
-
-    /**
-     * Views attached this filter.
-     *
-     * @ORM\OneToMany(targetEntity="DeskPRO\Bundle\AppBundle\Entity\TicketFilterView", mappedBy="filter", cascade={"remove"})
-     *
-     * @JMS\Expose()
-     * @JMS\Type("collection<entity<DeskPRO\Bundle\AppBundle\Entity\TicketFilterView>>")
-     *
-     * @var TicketFilterView[]|ArrayCollection
-     */
-    protected $filter_views;
-
-    /**
-     * Preferences associated with this filter.
-     *
-     * @ORM\OneToMany(targetEntity="DeskPRO\Bundle\AppBundle\Entity\TicketFilterPreference", mappedBy="filter")
-     *
-     * @JMS\Expose()
-     * @JMS\Type("collection<entity<DeskPRO\Bundle\AppBundle\Entity\TicketFilterPreference>>")
-     *
-     * @var TicketFilterPreference[]|ArrayCollection
-     */
-    protected $filter_preferences;
-
-    /**
-     * Date when this filter was created.
-     *
-     * @ORM\Column(name="date_created", type="datetime")
-     *
-     * @JMS\Expose()
-     * @JMS\Type("DateTime")
-     *
-     * @var \DateTime
-     */
-    protected $date_created;
-
-    /**
-     * Date when this filter was updated.
-     *
-     * @ORM\Column(name="date_updated", type="datetime")
-     *
-     * @JMS\Expose()
-     * @JMS\Type("DateTime")
-     *
-     * @var \DateTime
-     */
-    protected $date_updated;
+    protected $filterSet;
 
     /**
      * Constructor.
      */
     public function __construct()
     {
-        $this->setModelField('filter_views', new ArrayCollection());
-        $this->setModelField('filter_preferences', new ArrayCollection());
-        $this->setModelField('date_created', new \DateTime());
-        $this->setModelField('date_updated', new \DateTime());
     }
 
     /**
@@ -215,17 +161,17 @@ class TicketFilter implements FilterInterface, EntityInterface, NotifyPropertyCh
      */
     public function getDisplayOrder()
     {
-        return $this->display_order;
+        return $this->displayOrder;
     }
 
     /**
-     * @param int $display_order
+     * @param int $displayOrder
      *
      * @return $this
      */
-    public function setDisplayOrder($display_order)
+    public function setDisplayOrder($displayOrder)
     {
-        $this->setModelField('display_order', (int) $display_order);
+        $this->setModelField('displayOrder', (int) $displayOrder);
 
         return $this;
     }
@@ -235,125 +181,36 @@ class TicketFilter implements FilterInterface, EntityInterface, NotifyPropertyCh
      */
     public function getFilterSet()
     {
-        return $this->filter_set;
+        return $this->filterSet;
     }
 
     /**
-     * @param TicketFilterSet $filter_set
+     * @param TicketFilterSet $filterSet
      *
      * @return $this
      */
-    public function setFilterSet(TicketFilterSet $filter_set)
+    public function setFilterSet(TicketFilterSet $filterSet)
     {
-        $this->setModelField('filter_set', $filter_set);
+        $this->setModelField('filterSeet', $filterSet);
 
         return $this;
     }
 
     /**
-     * @return ArrayCollection|TicketFilterView[]
+     * @return string
      */
-    public function getFilterViews()
+    public function getQuery()
     {
-        return $this->filter_views;
+        return $this->query;
     }
 
     /**
-     * @return ArrayCollection|TicketFilterPreference[]
+     * @param string $query
      */
-    public function getFilterPreferences()
+    public function setQuery($query)
     {
-        return $this->filter_preferences;
-    }
-
-    /**
-     * @param TicketFilterPreference $filter_preference
-     *
-     * @return $this
-     */
-    public function addFilterPreference(TicketFilterPreference $filter_preference)
-    {
-        $this->filter_preferences->add($filter_preference);
-        $this->setModelField('filter_preferences', $this->filter_preferences);
+        $this->setModelField('query', $query);
 
         return $this;
-    }
-
-    /**
-     * @param TicketFilterView $view
-     *
-     * @return $this
-     */
-    public function addFilterView(TicketFilterView $view)
-    {
-        $this->filter_views->add($view);
-        $this->setModelField('filter_views', $this->filter_views);
-
-        return $this;
-    }
-
-    /**
-     * @return TermInterface
-     */
-    public function getTerm()
-    {
-        return $this->term;
-    }
-
-    /**
-     * @param TermInterface $term
-     *
-     * @return $this
-     */
-    public function setTerm(TermInterface $term)
-    {
-        $this->setModelField('term', $term);
-
-        return $this;
-    }
-
-    /**
-     * @return \DateTime
-     */
-    public function getDateCreated()
-    {
-        return $this->date_created;
-    }
-
-    /**
-     * @param \DateTime $date_created
-     *
-     * @return $this
-     */
-    public function setDateCreated(\DateTime $date_created)
-    {
-        $this->setModelField('date_created', $date_created);
-
-        return $this;
-    }
-
-    /**
-     * @return \DateTime
-     */
-    public function getDateUpdated()
-    {
-        return $this->date_updated;
-    }
-
-    /**
-     * @param \DateTime $date_updated
-     *
-     * @return $this
-     */
-    public function setDateUpdated(\DateTime $date_updated)
-    {
-        $this->setModelField('date_updated', $date_updated);
-
-        return $this;
-    }
-
-    public function __toString()
-    {
-        return (string) $this->getId();
     }
 }

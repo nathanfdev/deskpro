@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2017, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2018, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -32,6 +32,7 @@
 
 namespace DeskPRO\Bundle\AppBundle\Entity;
 
+use Application\DeskPRO\Entity\AgentTeam;
 use Application\DeskPRO\Entity\Person;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\NotifyPropertyChanged;
@@ -41,7 +42,7 @@ use Symfony\Component\Validator\Constraints as Assert;
 
 /**
  * @ORM\Entity(repositoryClass="DeskPRO\Bundle\AppBundle\Entity\Repository\TicketFilterSetRepository")
- * @ORM\Table(name="ticket_filter_sets")
+ * @ORM\Table(name="ticket_filters2_sets")
  *
  * @JMS\ExclusionPolicy("all")
  * @ORM\ChangeTrackingPolicy("NOTIFY")
@@ -88,14 +89,14 @@ class TicketFilterSet implements EntityInterface, NotifyPropertyChanged
      *
      * @var int
      */
-    protected $display_order;
+    protected $displayOrder;
 
     /**
      * An array of filter object identities.
      *
      * @ORM\OneToMany(
      *     targetEntity="DeskPRO\Bundle\AppBundle\Entity\TicketFilter",
-     *     mappedBy="filter_set",
+     *     mappedBy="filterSet",
      *     cascade={"remove"}
      * )
      * @ORM\OrderBy({"display_order" = "ASC"})
@@ -108,36 +109,32 @@ class TicketFilterSet implements EntityInterface, NotifyPropertyChanged
     protected $filters;
 
     /**
-     * True if filter is default.
+     * Specific teams to share this with.
      *
-     * @ORM\Column(name="is_default", type="boolean")
-     *
-     * @JMS\Expose()
-     * @JMS\Type("boolean")
-     *
-     * @var bool
-     */
-    protected $is_default = false;
-
-    /**
-     * Person id if this stuff belongs to somebody privately.
-     *
-     * @ORM\ManyToOne(targetEntity="Application\DeskPRO\Entity\Person", cascade={"remove"})
-     * @ORM\JoinColumn(name="person_id", onDelete="CASCADE")
+     * @ORM\ManyToMany(targetEntity="Application\DeskPRO\Entity\AgentTeam")
+     * @ORM\JoinTable(
+     *      name="ticket_filters2_set_teams",
+     *      joinColumns={
+     *          @ORM\JoinColumn(name="filter_set_id", referencedColumnName="id", onDelete="CASCADE")
+     *      },
+     *      inverseJoinColumns={
+     *          @ORM\JoinColumn(name="agent_id", referencedColumnName="id", onDelete="CASCADE")
+     *      }
+     * )
      *
      * @JMS\Expose()
-     * @JMS\Type("entity<Application\DeskPRO\Entity\Person>")
+     * @JMS\Type("collection<entity<Application\DeskPRO\Entity\AgentTeam>>")
      *
-     * @var Person
+     * @var AgentTeam[]|ArrayCollection
      */
-    protected $private_agent;
+    protected $sharedTeams;
 
     /**
-     * Ids of agent shares this filter set.
+     * Specific agents to share this with.
      *
      * @ORM\ManyToMany(targetEntity="Application\DeskPRO\Entity\Person")
      * @ORM\JoinTable(
-     *      name="filter_set_agents",
+     *      name="ticket_filters2_set_agents",
      *      joinColumns={
      *          @ORM\JoinColumn(name="filter_set_id", referencedColumnName="id", onDelete="CASCADE")
      *      },
@@ -151,16 +148,14 @@ class TicketFilterSet implements EntityInterface, NotifyPropertyChanged
      *
      * @var Person[]|ArrayCollection
      */
-    protected $shared_agents;
+    protected $sharedAgents;
 
-    /**
-     * Constructor.
-     */
     public function __construct()
     {
         $this->setModelField('filters', new ArrayCollection());
-        $this->setModelField('shared_agents', new ArrayCollection());
-        $this->setModelField('display_order', 0);
+        $this->setModelField('sharedAgents', new ArrayCollection());
+        $this->setModelField('sharedTeams', new ArrayCollection());
+        $this->setModelField('displayOrder', 0);
     }
 
     /**
@@ -217,57 +212,38 @@ class TicketFilterSet implements EntityInterface, NotifyPropertyChanged
      */
     public function getDisplayOrder()
     {
-        return $this->display_order;
+        return $this->displayOrder;
     }
 
     /**
-     * @param int $display_order
+     * @param int $displayOrder
      *
      * @return $this
      */
-    public function setDisplayOrder($display_order)
+    public function setDisplayOrder($displayOrder)
     {
-        $this->setModelField('display_order', (int) $display_order);
+        $this->setModelField('displayOrder', (int) $displayOrder);
 
         return $this;
     }
 
     /**
-     * @return bool
+     * @return AgentTeam[]|ArrayCollection
      */
-    public function getIsDefault()
+    public function getSharedTeams()
     {
-        return $this->is_default === true;
+        return $this->sharedTeams;
     }
 
     /**
-     * @param bool $default
+     * @param Person $agent
      *
      * @return $this
      */
-    public function setIsDefault($default)
+    public function addSharedTeam(AgentTeam $team)
     {
-        $this->setModelField('is_default', (bool) $default);
-
-        return $this;
-    }
-
-    /**
-     * @return Person
-     */
-    public function getPrivateAgent()
-    {
-        return $this->private_agent;
-    }
-
-    /**
-     * @param Person $private_agent
-     *
-     * @return $this
-     */
-    public function setPrivateAgent(Person $private_agent)
-    {
-        $this->setModelField('private_agent', $private_agent);
+        $this->sharedTeams->add($team);
+        $this->setModelField('sharedTeams', $this->sharedTeams);
 
         return $this;
     }
@@ -277,7 +253,7 @@ class TicketFilterSet implements EntityInterface, NotifyPropertyChanged
      */
     public function getSharedAgents()
     {
-        return $this->shared_agents;
+        return $this->sharedAgents;
     }
 
     /**
@@ -287,17 +263,9 @@ class TicketFilterSet implements EntityInterface, NotifyPropertyChanged
      */
     public function addSharedAgent(Person $agent)
     {
-        $this->shared_agents->add($agent);
-        $this->setModelField('shared_agents', $this->shared_agents);
+        $this->sharedAgents->add($agent);
+        $this->setModelField('sharedAgents', $this->sharedAgents);
 
         return $this;
-    }
-
-    /**
-     * @return bool
-     */
-    public function isPrivate()
-    {
-        return null !== $this->private_agent;
     }
 }
