@@ -1201,6 +1201,7 @@ $gridster-box-header-height: 32px;
       h3 {
         margin: 0;
         line-height: $gridster-box-header-height;
+        font-size: 12px;
       }
     }
     .box {
@@ -1212,14 +1213,14 @@ $gridster-box-header-height: 32px;
       overflow: auto;
       .stat-value {
         text-align: center;
-        font-size: 42px;
+        font-size: 28px;
         font-weight: 600;
-        margin-top: 20px;
+        margin-top: 5px;
       }
       .stat-description {
         text-align: center;
-        font-size: 36px;
-        margin-top: 20px;
+        font-size: 20px;
+        margin-top: 5px;
         word-wrap: break-word;
       }
     }

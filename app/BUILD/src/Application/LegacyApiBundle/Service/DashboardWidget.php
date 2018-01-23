@@ -137,7 +137,7 @@ class DashboardWidget
         $data = [
             'id'               => $widget->getId(),
             'title'            => $widget->getTitle(),
-            'row'              => $pos[0],
+            'row'              => $pos[0] + 1,
             'col'              => $pos[1],
             'sizeX'            => $size[0],
             'sizeY'            => $size[1],

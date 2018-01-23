@@ -80,11 +80,13 @@ class JsonStatRenderer extends AbstractJsonRenderer
     {
         foreach ($metadata->getSelectColumns() as $column) {
             if ($column['title'] === 'stat_value') {
-                return $this->valueRenderer->renderValue($rows[0][$column['resultId'] - 1], 'number', $metadata);
+                $value = $rows[0][$column['resultId'] - 1] ?: '0';
+
+                return $this->valueRenderer->renderValue($value, 'string', $metadata);
             }
         }
 
-        return 0;
+        return '0';
     }
 
     /**

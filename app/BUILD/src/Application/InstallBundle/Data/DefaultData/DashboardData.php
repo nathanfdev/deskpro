@@ -53,8 +53,205 @@ class DashboardData extends AbstractDefaultData
             'reports' => [
                 [
                     'title'      => 'Overview',
-                    'columns'    => 24,
                     'sort_order' => 1,
+                    'widgets'    => [
+                        [
+                            'title'      => 'Backlog',
+                            'position'   => '1:0',
+                            'size'       => '3:3',
+                            'widget_key' => 'tickets-awaiting-agent',
+                            'type'       => 'simple_stat',
+                        ],
+                        [
+                            'title'      => 'Online agents',
+                            'position'   => '1:3',
+                            'size'       => '3:3',
+                            'widget_key' => 'agents-online',
+                            'type'       => 'simple_stat',
+                        ],
+                        [
+                            'title'      => 'New tickets today',
+                            'position'   => '1:7',
+                            'size'       => '3:3',
+                            'widget_key' => 'tickets-created-x-date',
+                            'type'       => 'simple_stat',
+                            'variables'  => [
+                                [
+                                    'name'  => 'date',
+                                    'type'  => 'dates',
+                                    'value' => 'today',
+                                ],
+                            ],
+                        ],
+                        [
+                            'title'      => 'New chats today',
+                            'position'   => '1:10',
+                            'size'       => '3:3',
+                            'widget_key' => 'chats-created-x-date',
+                            'type'       => 'simple_stat',
+                            'variables'  => [
+                                [
+                                    'name'  => 'date',
+                                    'type'  => 'dates',
+                                    'value' => 'today',
+                                ],
+                            ],
+                        ],
+                        [
+                            'title'      => 'Avg response time',
+                            'position'   => '1:14',
+                            'size'       => '3:3',
+                            'widget_key' => 'avg-response-time-x-date',
+                            'type'       => 'simple_stat',
+                            'variables'  => [
+                                [
+                                    'name'  => 'date',
+                                    'type'  => 'dates',
+                                    'value' => 'today',
+                                ],
+                            ],
+                        ],
+                        [
+                            'title'      => 'Satisfaction today',
+                            'position'   => '1:17',
+                            'size'       => '3:3',
+                            'widget_key' => 'satisfaction-x-date',
+                            'type'       => 'simple_stat',
+                            'variables'  => [
+                                [
+                                    'name'  => 'date',
+                                    'type'  => 'dates',
+                                    'value' => 'today',
+                                ],
+                            ],
+                        ],
+                        [
+                            'title'      => 'Replies today',
+                            'position'   => '1:20',
+                            'size'       => '3:3',
+                            'widget_key' => 'replies-created-x-date',
+                            'type'       => 'simple_stat',
+                            'variables'  => [
+                                [
+                                    'name'  => 'date',
+                                    'type'  => 'dates',
+                                    'value' => 'today',
+                                ],
+                            ],
+                        ],
+                        [
+                            'title'      => 'Resolved today',
+                            'position'   => '1:23',
+                            'size'       => '3:3',
+                            'widget_key' => 'tickets-resolved-x-date',
+                            'type'       => 'simple_stat',
+                            'variables'  => [
+                                [
+                                    'name'  => 'date',
+                                    'type'  => 'dates',
+                                    'value' => 'today',
+                                ],
+                            ],
+                        ],
+                        // 2-nd row
+                        [
+                            'title'      => 'Backlog by Department',
+                            'position'   => '4:0',
+                            'size'       => '6:6',
+                            'widget_key' => 'number-tickets-status-grouped-by-x-y',
+                            'type'       => 'simple_bars',
+                            'variables'  => [
+                                0 => [
+                                        'name'       => 'ticket',
+                                        'type'       => 'fields',
+                                        'field_type' => 'tickets',
+                                        'table'      => 'tickets',
+                                        'default'    => 'department',
+                                        'value'      => 'department',
+                                    ],
+                                1 => [
+                                        'name'       => 'ticket_2',
+                                        'type'       => 'fields',
+                                        'field_type' => 'tickets',
+                                        'table'      => 'tickets',
+                                        'default'    => 'agent',
+                                        'value'      => 'none',
+                                    ],
+                                2 => [
+                                        'name'       => 'status',
+                                        'type'       => 'statuses',
+                                        'field_type' => 'tickets',
+                                        'table'      => 'tickets',
+                                        'default'    => 'awaiting_agent',
+                                        'value'      => 'awaiting_agent',
+                                    ],
+                            ],
+                        ],
+                        [
+                            'title'      => 'Backlog by Team',
+                            'position'   => '4:7',
+                            'size'       => '6:6',
+                            'widget_key' => 'number-tickets-status-grouped-by-x-y',
+                            'type'       => 'simple_bars',
+                            'options'    => '{"legend": false}',
+                            'variables'  => [
+
+                                [
+                                    'name'       => 'ticket',
+                                    'type'       => 'fields',
+                                    'field_type' => 'tickets',
+                                    'table'      => 'tickets',
+                                    'default'    => 'department',
+                                    'value'      => 'agent_team',
+                                ],
+                                [
+                                    'name'       => 'ticket_2',
+                                    'type'       => 'fields',
+                                    'field_type' => 'tickets',
+                                    'table'      => 'tickets',
+                                    'default'    => 'agent',
+                                    'value'      => 'none',
+                                ],
+                                [
+                                    'name'       => 'status',
+                                    'type'       => 'statuses',
+                                    'field_type' => 'tickets',
+                                    'table'      => 'tickets',
+                                    'default'    => 'awaiting_agent',
+                                    'value'      => 'awaiting_agent',
+                                ],
+                            ],
+                        ],
+                        [
+                            'title'      => 'Daily activity',
+                            'position'   => '4:14',
+                            'size'       => '12:6',
+                            'widget_key' => 'daily-activity',
+                            'type'       => 'simple_bars',
+                            'variables'  => [
+                                [
+                                    'name'  => 'date',
+                                    'type'  => 'dates',
+                                    'value' => 'today',
+                                ],
+                            ],
+                        ],
+                        // 3rd row
+                        [
+                            'title'      => 'Top agents',
+                            'position'   => '7:0',
+                            'size'       => '6:12',
+                            'widget_key' => 'number-of-replies-created-x-date-grouped-by-agent',
+                            'type'       => 'table',
+                            'variables'  => [
+                                [
+                                    'name'  => 'date',
+                                    'type'  => 'dates',
+                                    'value' => 'today',
+                                ],
+                            ],
+                        ],
+                    ],
                 ],
             ],
         ],
@@ -63,7 +260,6 @@ class DashboardData extends AbstractDefaultData
             'reports' => [
                 [
                     'title'      => 'Overview',
-                    'columns'    => 24,
                     'sort_order' => 1,
                 ],
             ],
@@ -83,38 +279,11 @@ class DashboardData extends AbstractDefaultData
         $admins = $personRepository->findBy(['can_admin' => 1]);
         /** @var Person[] $agents */
         $agents = $personRepository->findBy(['is_agent' => 1]);
+
         foreach ($this->dashboards as $dashboard) {
             $dashboardEntity = new Dashboard();
             $dashboardEntity->setTitle($dashboard['title'])->setIsDefault(true);
-            foreach ($dashboard['reports'] as $report) {
-                $tab = new Tab();
-                $tab
-                    ->setTitle($report['title'])
-                    ->setDashboard($dashboardEntity)
-                    ->setSortOrder($report['sort_order']);
-                $this->getEm()->persist($tab);
-                if (isset($report['widgets'])) {
-                    foreach ($report['widgets'] as $widget) {
-                        $widgetEntity = new Widget();
-                        $widgetEntity
-                            ->setTitle($widget['title'])
-                            ->setSize($widget['size'])
-                            ->setPosition($widget['position'])
-                            ->setReport($tab);
-                        if (isset($widget['widget_id'])) {
-                            /** @var WidgetPrototype $widgetPrototype */
-                            $widgetPrototype = $this->getEm()->getRepository(ReportWidget::class)->find($widget['widget_id']);
-                            $widgetEntity->setWidget($widgetPrototype);
-                            $widgetEntity->setType($widget['type']);
-                        }
-                        if (isset($widget['variables'])) {
-                            $widgetEntity->setVariables($widget['variables']);
-                        }
-
-                        $this->getEm()->persist($widgetEntity);
-                    }
-                }
-            }
+            $this->syncDashboard($dashboardEntity, $dashboard);
             $this->getEm()->persist($dashboardEntity);
             foreach ($admins as $admin) {
                 $permissions = new Permission();
@@ -148,15 +317,74 @@ class DashboardData extends AbstractDefaultData
     }
 
     /**
+     * @param Dashboard $dashboardEntity
+     * @param array     $dashboard
+     *
+     * @throws \Doctrine\ORM\OptimisticLockException
+     * @throws \Exception
+     */
+    protected function syncDashboard(Dashboard $dashboardEntity, array $dashboard)
+    {
+        if ($dashboardEntity->getId() > 0) {
+            foreach ($dashboardEntity->getReports() as $report) {
+                $this->getEm()->remove($report);
+            }
+            $this->getEm()->flush();
+        }
+        $widgetRepository = $this->getEm()->getRepository(ReportWidget::class);
+        foreach ($dashboard['reports'] as $report) {
+            $tab = new Tab();
+            $tab
+                ->setTitle($report['title'])
+                ->setDashboard($dashboardEntity)
+                ->setSortOrder($report['sort_order']);
+            $this->getEm()->persist($tab);
+            if (isset($report['widgets'])) {
+                foreach ($report['widgets'] as $widget) {
+                    $widgetEntity = new Widget();
+                    $widgetEntity
+                        ->setTitle($widget['title'])
+                        ->setSize($widget['size'])
+                        ->setPosition($widget['position'])
+                        ->setReport($tab);
+                    if (isset($widget['widget_id'])) {
+                        /** @var WidgetPrototype $widgetPrototype */
+                        $widgetPrototype = $widgetRepository->find($widget['widget_id']);
+                        $widgetEntity->setWidget($widgetPrototype);
+                    }
+                    if (isset($widget['widget_key'])) {
+                        $widgetPrototype = $widgetRepository->findOneBy(['unique_key' => $widget['widget_key']]);
+                        $widgetEntity->setWidget($widgetPrototype);
+                    }
+                    $widgetEntity->setType($widget['type']);
+                    if (isset($widget['variables'])) {
+                        $widgetEntity->setVariables($widget['variables']);
+                    }
+                    if (isset($widget['options'])) {
+                        $widgetEntity->setOptions($widget['options']);
+                    }
+
+                    $this->getEm()->persist($widgetEntity);
+                }
+            }
+        }
+    }
+
+    /**
      * @throws \Doctrine\ORM\OptimisticLockException
      * @throws \Exception
      */
     public function runSync()
     {
         $dashboards = $this->getEm()->getRepository(Dashboard::class)->findBy(['is_default' => 1]);
-        if (count($dashboards) < count($this->dashboards)) {
-            $this->runReset();
-            $this->runInstall();
+        foreach ($dashboards as $dashboard) {
+            foreach ($this->dashboards as $dashboardData) {
+                if ($dashboard->getTitle() === $dashboardData['title']) {
+                    $this->syncDashboard($dashboard, $dashboardData);
+                    $this->getEm()->persist($dashboard);
+                }
+            }
         }
+        $this->getEm()->flush();
     }
 }

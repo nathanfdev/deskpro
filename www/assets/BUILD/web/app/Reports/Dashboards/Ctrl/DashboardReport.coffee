@@ -87,9 +87,10 @@ define ['DeskPRO/Util/Arrays'], (Arrays) -> [
     ####################################################################################################################
 
     $scope.toggleLayoutEdit = () ->
-      $scope.gridsterOptions.draggable.enabled = !$scope.gridsterOptions.draggable.enabled
-      $scope.gridsterOptions.resizable.enabled = !$scope.gridsterOptions.resizable.enabled
       $scope.layoutEditing = !$scope.layoutEditing
+      $scope.gridsterOptions.draggable.enabled = $scope.layoutEditing
+      $scope.gridsterOptions.resizable.enabled = $scope.layoutEditing
+
 
     ###
     # Staff for removing widget from dashboard. Works if and only if the dashboard.layoutEditing is switched on

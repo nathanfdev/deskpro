@@ -34,13 +34,137 @@ use Application\DeskPRO\EntityRepository\ReportWidget as ReportWidgetRepository;
 class ReportWidgetData extends AbstractDefaultData
 {
     private $data = [
+        'tickets-awaiting-agent' => [
+            'title'         => 'Count of tickets currently awaiting agent',
+            'labels'        => 'tickets',
+            'description'   => 'Tickets awaiting agent',
+            'display_types' => 'simple_stat',
+            'display_order' => 40,
+            'query'         => 'SELECT COUNT() as \'stat_value\', \'Tickets awaiting agent\' as \'stat_description\'
+            FROM tickets WHERE tickets.status = \'awaiting_agent\'',
+            'variables' => '[]',
+        ],
+        'agents-online' => [
+            'title'         => 'Count of agents online right now',
+            'labels'        => 'agents',
+            'description'   => 'Agents are online',
+            'display_types' => 'simple_stat',
+            'display_order' => 40,
+            'query'         => 'SELECT COUNT() as \'stat_value\', \'Agents are online\' as \'stat_description\' 
+FROM sessions WHERE sessions.person.is_agent = 1',
+            'variables' => '[]',
+        ],
+        'tickets-created-x-date' => [
+            'title'         => 'Count of tickets created ${date}',
+            'labels'        => 'tickets',
+            'description'   => 'Count of tickets created by date',
+            'display_types' => 'simple_stat',
+            'display_order' => 40,
+            'query'         => 'SELECT COUNT() as \'stat_value\', \'Tickets created\' as \'stat_description\' 
+FROM tickets WHERE tickets.date_created = ${date}',
+            'variables' => '[{"name":"date","type":"dates","default":"today"}]',
+        ],
+        'chats-created-x-date' => [
+            'title'         => 'Count of chats created ${date}',
+            'labels'        => 'tickets',
+            'description'   => 'Count of chats created by date',
+            'display_types' => 'simple_stat',
+            'display_order' => 40,
+            'query'         => 'SELECT COUNT() as \'stat_value\', \'Chats created\' as \'stat_description\' 
+FROM chat_conversations WHERE chat_conversations.date_created = ${date}',
+            'variables' => '[{"name":"date","type":"dates","default":"today"}]',
+        ],
+        'avg-response-time-x-date' => [
+            'title'         => 'Average response time of tickets created ${date}',
+            'labels'        => 'tickets',
+            'description'   => 'Average response time of tickets created by date',
+            'display_types' => 'simple_stat',
+            'display_order' => 40,
+            'query'         => 'SELECT FORMAT(AVG(tickets.total_to_first_reply), \'number\') as \'stat_value\', \'Time to first reply\' as \'stat_description\' 
+FROM tickets WHERE tickets.date_created = ${date} AND tickets.date_last_agent_reply <> NULL',
+            'variables' => '[{"name":"date","type":"dates","default":"today"}]',
+        ],
+        'satisfaction-x-date' => [
+            'title'         => 'Percent of positive ratings ${date}',
+            'labels'        => 'tickets',
+            'description'   => 'Percent of positive ratings today by date',
+            'display_types' => 'simple_stat',
+            'display_order' => 40,
+            // all today created positive feedback / all today created feedback * 100 gives you today positive %
+            'query' => 'SELECT CONCAT(FORMAT((
+    (SELECT COUNT() FROM ticket_feedback WHERE ticket_feedback.rating = 1 AND ticket_feedback.date_created = ${date})
+    / 
+    COUNT()) * 100, \'number\'),
+    \'%\'
+) AS \'stat_value\',
+\'Positive ratings\' as \'stat_description\'
+FROM ticket_feedback
+WHERE ticket_feedback.date_created = ${date}',
+            'variables' => '[{"name":"date","type":"dates","default":"today"}]',
+        ],
+        'replies-created-x-date' => [
+            'title'         => 'Replies created ${date}',
+            'labels'        => 'tickets',
+            'description'   => 'Count of replies sent by date',
+            'display_types' => 'simple_stat',
+            'display_order' => 40,
+            'query'         => 'SELECT COUNT() AS \'stat_value\', \'Replies created\' as \'stat_description\'
+FROM tickets_messages
+WHERE tickets_messages.date_created = ${date}
+  AND tickets_messages.is_agent_note = 0
+  AND tickets_messages.person.is_agent = 1',
+            'variables' => '[{"name":"date","type":"dates","default":"today"}]',
+        ],
+        'tickets-resolved-x-date' => [
+            'title'         => 'Count of tickets resolved ${date}',
+            'labels'        => 'tickets',
+            'description'   => 'Count of tickets resolved by date',
+            'display_types' => 'simple_stat',
+            'display_order' => 40,
+            'query'         => 'SELECT COUNT() AS \'stat_value\', \'Tickets resolved\' as \'stat_description\'
+FROM tickets
+WHERE tickets.status = \'resolved\'
+  AND tickets.date_resolved = ${date}',
+            'variables' => '[{"name":"date","type":"dates","default":"today"}]',
+        ],
+        'number-of-replies-created-x-date-grouped-by-agent' => [
+            'title'         => 'Agents with the number of replies ${date}',
+            'labels'        => 'agents,tickets',
+            'description'   => 'Agents with the number of replies by date',
+            'display_types' => 'table',
+            'display_order' => 40,
+            'query'         => 'SELECT tickets_messages.person AS \'Agent\', COUNT() AS \'Replies\'
+FROM tickets_messages
+WHERE tickets_messages.date_created = ${date}
+  AND tickets_messages.person.is_agent = 1
+GROUP BY tickets_messages.person
+ORDER BY COUNT() DESC
+',
+            'variables' => '[{"name":"date","type":"dates","default":"today"}]',
+        ],
+        'daily-activity' => [
+            'title'         => 'Daily activity ${date}',
+            'labels'        => 'agents,tickets',
+            'description'   => '',
+            'display_types' => 'simple_bars',
+            'display_order' => 40,
+            'query'         => '
+SELECT SUM(count_open), SUM(count_resolve), hr
+FROM (
+	(SELECT COUNT() AS count_open, 0 AS count_resolve, HOUR(tickets.date_created) AS hr FROM tickets WHERE tickets.date_created = ${date} GROUP BY HOUR(tickets.date_created))
+	UNION
+	(SELECT 0 AS count_open, COUNT()*-1 AS count_resolve, HOUR(tickets.date_resolved) AS hr FROM tickets WHERE tickets.date_resolved = ${date} GROUP BY HOUR(tickets.date_resolved))
+) AS dat
+GROUP BY hr',
+            'variables' => '[{"name":"date","type":"dates","default":"today"}]',
+        ],
         'article-views-date-x-grouped-date' => [
-                'title'         => 'Number of article views ${date} grouped by date',
-                'labels'        => 'kb',
-                'description'   => '',
-                'display_types' => 'table,simple_lines',
-                'display_order' => 40,
-                'query'         => 'DISPLAY TABLE, LINE
+            'title'         => 'Number of article views ${date} grouped by date',
+            'labels'        => 'kb',
+            'description'   => '',
+            'display_types' => 'table,simple_lines',
+            'display_order' => 40,
+            'query'         => 'DISPLAY TABLE, LINE
 SELECT COUNT() AS \'Views\'
 FROM articles
 WHERE articles.views.date_created = ${date}
@@ -118,7 +242,7 @@ GROUP BY ALIAS(DATE(feedback.views.date_created), \'Date\')',
                 'description'   => '',
                 'display_types' => 'table',
                 'display_order' => 210,
-                'query'         => 'DISPLAY TABLE
+                'query'         => '
 SELECT tickets_messages.ticket.subject, COUNT() AS \'Messages\', tickets_messages.ticket.person, tickets_messages.ticket.department, tickets_messages.ticket.date_created, tickets_messages.ticket.agent
 FROM tickets_messages
 WHERE ${status} AND tickets_messages.ticket.date_created = ${date}
@@ -416,7 +540,7 @@ GROUP BY MATRIX(${ticket}, ${ticket_2})',
                 'description'   => '',
                 'display_types' => 'table,simple_bars,pie,simple_area,simple_lines',
                 'display_order' => 20,
-                'query'         => 'DISPLAY TABLE, BAR
+                'query'         => '
 SELECT COUNT() AS \'Total Tickets\'
 FROM tickets
 WHERE ${status}
@@ -605,7 +729,7 @@ GROUP BY tickets.ticket_slas.sla_status',
                 'description'   => '',
                 'display_types' => 'table',
                 'display_order' => 40,
-                'query'         => 'DISPLAY TABLE
+                'query'         => '
 SELECT tickets.id, tickets.subject, tickets.person, tickets.department, tickets.date_created, tickets.agent
 FROM tickets
 WHERE tickets.status = \'awaiting_agent\'
