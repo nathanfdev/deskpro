@@ -125,7 +125,7 @@ class ReportWidgetHandler extends AbstractEntityHandler
             $renderer = $this->rendererRegistry->getRenderer($graphType, 'json');
 
             $data = $renderer->render($query->getResults());
-            if ($data && $graphType == DashboardWidget::WIDGET_RENDER_TYPE_TABLE) {
+            if ($data && $graphType == DashboardWidget::WIDGET_RENDER_TYPE_TABLE && isset($data['columns'])) {
                 $aoColumns = [];
                 $columns   = [];
                 foreach ($data['columns'] as $column) {

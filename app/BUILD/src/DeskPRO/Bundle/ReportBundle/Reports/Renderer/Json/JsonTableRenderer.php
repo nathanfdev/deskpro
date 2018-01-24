@@ -292,4 +292,26 @@ class JsonTableRenderer extends AbstractJsonRenderer
             return [];
         }
     }
+
+    /**
+     * {@inheritdoc}
+     */
+    protected function implodeSplitOutput(array $output)
+    {
+        $return = ['data' => []];
+        foreach ($output as $outputItem) {
+            $return['columns'] = $outputItem['columns'];
+            $return['data']    = array_merge($return['data'], $outputItem['data']);
+        }
+
+        return $return;
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function renderSplitOutputWithHeader($header, $body)
+    {
+        return $body;
+    }
 }
