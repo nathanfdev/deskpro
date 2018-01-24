@@ -58,7 +58,7 @@
         </div>
     </div>
 
-    <div class="list-group">
+    <div class="list-group" ng-class="{'is-editing': layoutEditing}">
         <div gridster="gridsterOptions" class="dashboard">
             <div class="dp-gridster-wrap">
                 <div ng-if="!widget.deleted" gridster-item="widget" ng-repeat="widget in widgets" class="dp-gridster-item">
@@ -88,7 +88,7 @@
                             wtype="{{ ng_var('widget.widget_type') }}"
                         />
                     </div>
-                    <div class="box" ng-if="widget.type=='simple_stat'">
+                    <div class="box stat-box" ng-if="widget.type=='simple_stat'">
                         <dashboard-stat
                             render-type = "test"
                             my-index="{{ ng_var('$index') }}"

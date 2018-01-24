@@ -61,6 +61,8 @@ define ->
           catch e
             options = {}
 
+          options.theme = 'light'
+
           if widget.dataProvider? && widget.dataProvider[0]? && (Object.keys(widget.dataProvider[0]).length > 6 || (widget.type == 'pie' && widget.dataProvider.length > 6))
             widget.legend = false
 

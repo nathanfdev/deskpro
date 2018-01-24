@@ -5,7 +5,6 @@ import '../../../../vendor/amcharts3/amcharts';
 import '../../../../vendor/amcharts3/serial';
 import '../../../../vendor/amcharts3/pie';
 import '../../../../vendor/amcharts3/themes/light';
-import '../../../../vendor/amcharts3/themes/dark';
 import AppContainer from './Modules/Application/Components/AppContainer';
 
 class ReportApp {

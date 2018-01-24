@@ -40,7 +40,7 @@ class ReportWidgetData extends AbstractDefaultData
             'description'   => 'Tickets awaiting agent',
             'display_types' => 'simple_stat',
             'display_order' => 40,
-            'query'         => 'SELECT COUNT() as \'stat_value\', \'Tickets awaiting agent\' as \'stat_description\'
+            'query'         => 'SELECT COUNT() as \'stat_value\', \'tickets waiting\' as \'stat_description\'
             FROM tickets WHERE tickets.status = \'awaiting_agent\'',
             'variables' => '[]',
         ],
@@ -50,7 +50,7 @@ class ReportWidgetData extends AbstractDefaultData
             'description'   => 'Agents are online',
             'display_types' => 'simple_stat',
             'display_order' => 40,
-            'query'         => 'SELECT COUNT() as \'stat_value\', \'Agents are online\' as \'stat_description\' 
+            'query'         => 'SELECT COUNT() as \'stat_value\', \'online agents\' as \'stat_description\' 
 FROM sessions WHERE sessions.person.is_agent = 1',
             'variables' => '[]',
         ],
@@ -60,7 +60,7 @@ FROM sessions WHERE sessions.person.is_agent = 1',
             'description'   => 'Count of tickets created by date',
             'display_types' => 'simple_stat',
             'display_order' => 40,
-            'query'         => 'SELECT COUNT() as \'stat_value\', \'Tickets created\' as \'stat_description\' 
+            'query'         => 'SELECT COUNT() as \'stat_value\', \'tickets created\' as \'stat_description\' 
 FROM tickets WHERE tickets.date_created = ${date}',
             'variables' => '[{"name":"date","type":"dates","default":"today"}]',
         ],
@@ -70,7 +70,7 @@ FROM tickets WHERE tickets.date_created = ${date}',
             'description'   => 'Count of chats created by date',
             'display_types' => 'simple_stat',
             'display_order' => 40,
-            'query'         => 'SELECT COUNT() as \'stat_value\', \'Chats created\' as \'stat_description\' 
+            'query'         => 'SELECT COUNT() as \'stat_value\', \'chats created\' as \'stat_description\' 
 FROM chat_conversations WHERE chat_conversations.date_created = ${date}',
             'variables' => '[{"name":"date","type":"dates","default":"today"}]',
         ],
@@ -80,7 +80,7 @@ FROM chat_conversations WHERE chat_conversations.date_created = ${date}',
             'description'   => 'Average response time of tickets created by date',
             'display_types' => 'simple_stat',
             'display_order' => 40,
-            'query'         => 'SELECT FORMAT(AVG(tickets.total_to_first_reply), \'number\') as \'stat_value\', \'Time to first reply\' as \'stat_description\' 
+            'query'         => 'SELECT FORMAT(AVG(tickets.total_to_first_reply), \'number\', 0) as \'stat_value\', \'minutes to reply\' as \'stat_description\' 
 FROM tickets WHERE tickets.date_created = ${date} AND tickets.date_last_agent_reply <> NULL',
             'variables' => '[{"name":"date","type":"dates","default":"today"}]',
         ],
@@ -97,7 +97,7 @@ FROM tickets WHERE tickets.date_created = ${date} AND tickets.date_last_agent_re
     COUNT()) * 100, \'number\'),
     \'%\'
 ) AS \'stat_value\',
-\'Positive ratings\' as \'stat_description\'
+\'satisfied users\' as \'stat_description\'
 FROM ticket_feedback
 WHERE ticket_feedback.date_created = ${date}',
             'variables' => '[{"name":"date","type":"dates","default":"today"}]',
@@ -108,7 +108,7 @@ WHERE ticket_feedback.date_created = ${date}',
             'description'   => 'Count of replies sent by date',
             'display_types' => 'simple_stat',
             'display_order' => 40,
-            'query'         => 'SELECT COUNT() AS \'stat_value\', \'Replies created\' as \'stat_description\'
+            'query'         => 'SELECT COUNT() AS \'stat_value\', \'replies sent\' as \'stat_description\'
 FROM tickets_messages
 WHERE tickets_messages.date_created = ${date}
   AND tickets_messages.is_agent_note = 0
@@ -121,7 +121,7 @@ WHERE tickets_messages.date_created = ${date}
             'description'   => 'Count of tickets resolved by date',
             'display_types' => 'simple_stat',
             'display_order' => 40,
-            'query'         => 'SELECT COUNT() AS \'stat_value\', \'Tickets resolved\' as \'stat_description\'
+            'query'         => 'SELECT COUNT() AS \'stat_value\', \'tickets resolved\' as \'stat_description\'
 FROM tickets
 WHERE tickets.status = \'resolved\'
   AND tickets.date_resolved = ${date}',

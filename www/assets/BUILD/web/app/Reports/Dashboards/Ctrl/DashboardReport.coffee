@@ -29,7 +29,7 @@ define ['DeskPRO/Util/Arrays'], (Arrays) -> [
     report_id = parseInt($stateParams.report_id)
 
     $scope.gridsterOptions =
-      margins: [10, 10],
+      margins: [13, 13],
       width: 10000,
       columns: 150,
       colWidth: 50,

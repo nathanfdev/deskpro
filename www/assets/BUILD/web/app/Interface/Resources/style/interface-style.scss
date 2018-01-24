@@ -66,12 +66,14 @@ $sidebar-width: 220px;
 $report-list-width: 555px;
 $content-width: $app-nav-width + $sidebar-width;
 
+
 .app-nav-wrapper {
   position: absolute;
   top: 0;
   bottom: 0;
   left: 0;
   width: $app-nav-width;
+
   background: #f4f5f5;
   border-right: 1px solid #d4d7d8;
 }
