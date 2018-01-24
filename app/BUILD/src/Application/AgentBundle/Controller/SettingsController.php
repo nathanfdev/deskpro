@@ -532,8 +532,15 @@ class SettingsController extends AbstractController
             $is_new          = true;
         }
 
-        $macro['title']     = $this->in->getString('macro.title');
-        $macro['is_global'] = $this->in->getBool('macro.is_global');
+        $macro['title'] = $this->in->getString('macro.title');
+
+        // only do changes to permissions if Department permission was not set in Admin interface
+        if (!$macro['department']) {
+            $macro['is_global'] = $this->in->getBool('macro.is_global');
+            if (!$macro['is_global']) {
+                $macro['person'] = $this->person;
+            }
+        }
 
         $action_rules = RuleBuilder::newActionsBuilder();
         $actions      = $action_rules->readForm($this->in->getCleanValueArray('actions', 'raw', 'str_simple'));

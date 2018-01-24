@@ -1820,6 +1820,7 @@ return [
     'agent.settings.first_login_set_pic'                       => 'This is your first time logging in, would you like to upload a profile picture?',
     'agent.settings.hidden_filters_info'                       => 'Hidden filters will not be listed in the main interface. You can come back and unhide filters at any time.',
     'agent.settings.leave_password_blank'                      => 'Leave this field blank to keep your password the same',
+    'agent.settings.macro_belongs_to_department'               => 'This macro belongs to a specific department: {{department}}. This permission could be changed only from administration area.',
     'agent.settings.macro_who_can_use'                         => 'Who can use this macro?',
     'agent.settings.new_macro'                                 => 'New Macro',
     'agent.settings.no_filters'                                => 'You have not defined any filters.',
