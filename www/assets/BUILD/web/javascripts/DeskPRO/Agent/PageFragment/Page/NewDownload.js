@@ -245,25 +245,21 @@ DeskPRO.Agent.PageFragment.Page.NewDownload = new Orb.Class({
 
 		var self = this;
 
-		this.getEl('content').css({
-			width: this.wrapper.width() - 80
+		var txt = this.getEl('content');
+
+		DP.rteTextarea(txt, {
+			height: 250
 		});
 
-		this.getEl('content').css('height', 250);
+    txt.on('froalaEditor.keypress', function () {
+      if (self.stateSaver) {
+        self.stateSaver.triggerChange();
+      }
+    });
 
-		DP.rteTextarea(this.getEl('content'), {
-			setup: function(ed) {
-				ed.onClick.add(function() {
-					self.getEl('content_section').addClass('done');
-				});
-
-				ed.onKeyPress.add(function() {
-					if (self.stateSaver) {
-						self.stateSaver.triggerChange();
-					}
-				});
-			}
-		});
+    txt.on('froalaEditor.click', function () {
+      self.getEl('content_section').addClass('done');
+    });
 	},
 
 	//#########################################################################

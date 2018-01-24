@@ -860,62 +860,6 @@ DeskPRO.Agent.PageFragment.Page.KbViewArticle = new Orb.Class({
 	},
 
   showEditor: function() {
-    $('body').addClass('content-link-control-on');
-
-    var self = this;
-
-    $('.article-content-wrap', this.getEl('content_ed')).hide();
-    var edWrap = $('.article-editor-wrap', this.getEl('content_ed')).show();
-
-    if (!this._hasInitEd) {
-      this._hasInitEd = true;
-
-      var txt = $('.edit-content-field', this.getEl('content_ed'));
-
-      $.FroalaEditor.DefineIcon('dp_media', {NAME: 'picture-o'});
-      $.FroalaEditor.RegisterCommand('dp_media', {
-        title: 'Upload Image',
-        focus: false,
-        undo: true,
-        refreshAfterCallback: true,
-        callback: function () {
-        	MEDIA_MANAGER_WINDOW.bindToEditor(this);
-          MEDIA_MANAGER_WINDOW.open();
-        }
-      });
-
-      const froalaConfig = {
-        toolbarButtons: [
-        	'bold', 'italic', 'underline', '|', 'align', 'color', '|', 'paragraphFormat', 'fontFamily', 'fontSize', 'formatUL', 'formatOL',
-					'|', 'indent', 'outdent', '|', 'insertLink', 'dp_media', 'insertTable', '|', 'html', 'clearFormatting', 'fullscreen'],
-        key:            'qENARBFSTb1G1QJg1RA=='
-      };
-
-      txt.froalaEditor(froalaConfig);
-      txt.on('froalaEditor.focus', function () {
-        window.DeskPRO_Window.keyboardShortcuts.isPaused = true;
-      });
-      txt.on('froalaEditor.blur', function () {
-        window.DeskPRO_Window.keyboardShortcuts.isPaused = false;
-      });
-
-      var saveBtn = this.getEl('save_btn');
-      this.acceptContentLink = new DeskPRO.Agent.PageHelper.AcceptContentLink({
-        page: this,
-        rte: txt,
-        isReadyCallback: function() {
-          return saveBtn.is(':visible');
-        }
-      });
-    }
-
-    this.getEl('edit_btn').hide();
-    this.getEl('save_btn').show();
-    this.getEl('cancel_btn').show();
-    this.updateUi();
-  },
-
-	showEditorOld: function() {
 
 		$('body').addClass('content-link-control-on');
 
@@ -935,24 +879,20 @@ DeskPRO.Agent.PageFragment.Page.KbViewArticle = new Orb.Class({
 			this._hasInitEd = true;
 
 			var txt = $('.edit-content-field', this.getEl('content_ed'));
-			var w = $(txt.closest('.content-tab-item')).width() - 30;
 
-			// Means the whole thign is visible at once, lets try and max out the viewport
+			var h = 425;
+			// Means the whole thing is visible at once, lets try and max out the viewport
 			if (this.wrapper.find('> .layout-content > .scrollbar.disabled')) {
-				var h = $(window).height() - 90 - txt.offset().top;
-			} else {
-				h = 425;
+				h = $(window).height() - 170 - txt.offset().top;
 			}
 
-			txt.css({ width: w, height: h });
-
 			this.rte = DP.rteTextarea(txt, {
-				setup: function(ed) {
-					ed.onKeyPress.add(function() {
-						self.editStateSaver.triggerChange();
-					});
-				}
+				height: h
 			});
+
+      txt.on('froalaEditor.keypress', function () {
+        self.editStateSaver.triggerChange();
+      });
 
 			var saveBtn = this.getEl('save_btn');
 			this.acceptContentLink = new DeskPRO.Agent.PageHelper.AcceptContentLink({
@@ -1086,7 +1026,7 @@ DeskPRO.Agent.PageFragment.Page.KbViewArticle = new Orb.Class({
 			var defaultContentInput = self.wrapper.find('.article-editor-wrap').find('.edit-content-field-default');
 
 			titleInput.val(defaultTitleInput.val());
-			contentInput.tinymce().setContent(defaultContentInput.val());
+			contentInput.froalaEditor().setContent(defaultContentInput.val());
 		});
 
 		transGroup.find('.save-trigger').on('click', function() {

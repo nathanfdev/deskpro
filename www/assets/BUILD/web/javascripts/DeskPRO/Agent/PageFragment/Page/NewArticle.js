@@ -210,27 +210,25 @@ DeskPRO.Agent.PageFragment.Page.NewArticle = new Orb.Class({
 	_initContentSection: function() {
 
 		var self = this;
-		this.getEl('content').css({
-			width: this.wrapper.width() - 80
-		});
 
 		// Make the size of the message box based off of the height of the window
 		var h = $(window).height();
-		this.getEl('content').css('height', Math.max(h - 500, 200));
 
-		DP.rteTextarea(this.getEl('content'), {
-			setup: function(ed) {
-				ed.onKeyPress.add(function() {
-					if (self.stateSaver) {
-						self.stateSaver.triggerChange();
-					}
-				});
-			}
+		var txt = this.getEl('content');
+
+		DP.rteTextarea(txt, {
+			height: Math.max(h - 500, 200)
 		});
+
+    txt.on('froalaEditor.keypress', function () {
+			if (self.stateSaver) {
+				self.stateSaver.triggerChange();
+			}
+    });
 
 		this.acceptContentLink = new DeskPRO.Agent.PageHelper.AcceptContentLink({
 			page: this,
-			rte: this.getEl('content')
+			rte: txt
 		});
 	},
 

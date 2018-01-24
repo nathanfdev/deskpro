@@ -23,7 +23,42 @@ var DP = {
 		delete DP.init;
 	},
 
-	rteTextarea: function(field, options) {
+  rteTextarea: function(field, options) {
+    options = options || {};
+
+    $.FroalaEditor.DefineIcon('dp_media', {NAME: 'picture-o'});
+    $.FroalaEditor.RegisterCommand('dp_media', {
+      title: 'Upload Image',
+      focus: false,
+      undo: true,
+      refreshAfterCallback: true,
+      callback: function () {
+        MEDIA_MANAGER_WINDOW.bindToEditor(this);
+        MEDIA_MANAGER_WINDOW.open();
+      }
+    });
+
+    var defaultOptions = {
+      toolbarButtons: [
+        'bold', 'italic', 'underline', '|', 'align', 'color', '|', 'paragraphFormat', 'fontFamily', 'fontSize', 'formatUL', 'formatOL',
+        '|', 'indent', 'outdent', '|', 'insertLink', 'dp_media', 'insertTable', '|', 'html', 'clearFormatting', 'fullscreen'],
+      key: 'qENARBFSTb1G1QJg1RA==',
+    };
+
+    options = Object.merge(defaultOptions, options || {});
+
+    var rte = field.froalaEditor(options);
+    field.on('froalaEditor.focus', function () {
+      window.DeskPRO_Window.keyboardShortcuts.isPaused = true;
+    });
+    field.on('froalaEditor.blur', function () {
+      window.DeskPRO_Window.keyboardShortcuts.isPaused = false;
+    });
+
+    return rte;
+  },
+
+	rteTextareaOld: function(field, options) {
 
 		options = options || {};
 		options.extended_valid_elements =

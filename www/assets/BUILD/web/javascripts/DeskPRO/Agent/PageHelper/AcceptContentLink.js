@@ -15,7 +15,7 @@ DeskPRO.Agent.PageHelper.AcceptContentLink = new Orb.Class({
 			page: null,
 
 			/**
-			 * The TinyMCE editor to add link to
+			 * The Froala editor to add link to
 			 */
 			rte: null,
 
@@ -40,24 +40,12 @@ DeskPRO.Agent.PageHelper.AcceptContentLink = new Orb.Class({
 	},
 
 	sendLink: function(linkTitle, url) {
-		var tiny = this.options.rte.tinymce();
-		if (tiny) {
-			var title = tiny.selection.getContent({ format: 'text' });
-			if (title) title = title.trim();
-			if (!title.length) {
-				title = linkTitle;
-			}
+		var title = this.options.rte.froalaEditor('selection.text');
 
-			tiny.selection.setContent('<a href="' + url + '">' + Orb.escapeHtml(title) + '</a>');
-		} else {
-      var title = this.options.rte.froalaEditor('selection.text');
-
-      if (!title.length) {
-        title = linkTitle;
-      }
-
-      this.options.rte.froalaEditor('html.insert', '<a href="' + url + '">' + Orb.escapeHtml(title) + '</a>', true);
+		if (!title.length) {
+			title = linkTitle;
 		}
 
+		this.options.rte.froalaEditor('html.insert', '<a href="' + url + '">' + Orb.escapeHtml(title) + '</a>', true);
 	}
 });

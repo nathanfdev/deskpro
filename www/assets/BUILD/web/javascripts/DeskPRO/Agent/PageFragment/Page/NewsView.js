@@ -632,24 +632,20 @@ DeskPRO.Agent.PageFragment.Page.NewsView = new Orb.Class({
 			this._hasInitEd = true;
 
 			var txt = $('.edit-content-field', this.getEl('content_ed'));
-			var w = $(txt.closest('.content-tab-item')).width() - 30;
 
+			var h = 425;
 			// Means the whole thign is visible at once, lets try and max out the viewport
 			if (this.wrapper.find('> .layout-content > .scrollbar.disabled')) {
-				var h = $(window).height() - 90 - txt.offset().top;
-			} else {
-				h = 425;
+				h = $(window).height() - 90 - txt.offset().top;
 			}
 
-			txt.css({ width: w, height: h });
-
-			DP.rteTextarea($('.edit-content-field', this.getEl('content_ed')), {
-				setup: function(ed) {
-					ed.onKeyPress.add(function() {
-						self.editStateSaver.triggerChange();
-					});
-				}
+			DP.rteTextarea(txt, {
+				height: h
 			});
+
+      txt.on('froalaEditor.keypress', function () {
+        self.editStateSaver.triggerChange();
+      });
 		}
 
 		this.getEl('edit_btn').hide();
