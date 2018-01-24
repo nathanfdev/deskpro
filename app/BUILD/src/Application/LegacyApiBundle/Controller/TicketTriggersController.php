@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2017, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2018, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -211,7 +211,8 @@ class TicketTriggersController extends AbstractController implements ProtectedCo
                         throw $this->createNotFoundException();
                     }
 
-                    $event   = $special_type == 'departments' ? TicketTrigger::EVENT_TYPE_NEWTICKET : TicketTrigger::EVENT_TYPE_UPDATE;
+                    $event = $special_type == 'departments' ? TicketTrigger::EVENT_TYPE_NEWTICKET : TicketTrigger::EVENT_TYPE_UPDATE;
+                    /** @var TicketTrigger $trigger */
                     $trigger = $ticketTriggerRepository->findOneBy(['department' => $dep, 'event_trigger' => $event]);
                     if (!$trigger) {
                         $trigger             = new TicketTrigger();
@@ -370,8 +371,8 @@ class TicketTriggersController extends AbstractController implements ProtectedCo
             return $this->createApiErrorInfoResponse('invalid', 'One or more criteria or actions are invalid', $ret['errors']);
         }
 
-        $trigger->terms   = $terms;
-        $trigger->actions = $actions;
+        $trigger->terms = $terms;
+        $trigger->setActions($actions);
 
         if ($trigger->department) {
             $event = $special_type == 'departments' ? TicketTrigger::EVENT_TYPE_NEWTICKET : TicketTrigger::EVENT_TYPE_UPDATE;
