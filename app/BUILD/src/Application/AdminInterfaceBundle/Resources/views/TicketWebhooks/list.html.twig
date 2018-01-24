@@ -1,5 +1,6 @@
 {% extends 'AdminInterfaceBundle:Layout:list.html.twig' %}
 {% block listpane_content %}
+
 	<section class="dp-paneblock dp-listpane">
 		<header>
 			<nav>
@@ -70,7 +71,7 @@
 
 			</ul>
 			<div class="dp-add-control">
-				<a class="btn btn-default" href="{{ ng_href('tickets.triggers.gocreate', '{type: List.eventType}') }}" ng-class="{'active': isStateActive('.create') }"><i class="fa fa-plus"></i> {{ phrase('agent.general.add') }}</a>
+				<a class="btn btn-default" href="{{ ng_href('tickets.webhooks.create') }}" ng-class="{'active': isStateActive('.create') }"><i class="fa fa-plus"></i> {{ phrase('agent.general.add') }}</a>
 			</div>
 		</article>
 

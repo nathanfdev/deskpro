@@ -12,7 +12,7 @@ define [
 
     init: ->
       @webhooks        = []
-      @dpWebhooks = @DataService.get('WebhookTriggers')
+      @dpWebhooks = @DataService.get('Webhooks')
       @dpTriggers = @DataService.get('TriggersNew')
 
     ###
@@ -22,6 +22,11 @@ define [
       @dpWebhooks.loadList().then( (list) => @webhooks = list)
       return
 
+    onWebhookAdded: (webhook) ->
+      @dpWebhooks.mergeDataModel(webhook).then(
+        (list) =>
+          @webhooks = [].concat(list)
+      )
 
     ###
       # Sorts triggers into display groups
@@ -42,7 +47,7 @@ define [
       return
 
     changeEnabledStatus: (webhook) ->
-      console.log('hassan')
+      console.log('todo ')
       return
 
     ###
@@ -72,9 +77,36 @@ define [
           @dpWebhooks.loadList().then(
             (list) =>
               @webhooks = [].concat(list)
-              @$state.go('tickets.webhooks', {type: @$stateParams.type})
+              @$state.go('tickets.webhooks')
           )
         )
       )
+
+    startDelete: (webhookId) ->
+      inst = @$modal.open({
+        templateUrl: @getTemplatePath('TicketWebhooks/delete-modal.html'),
+        controller: ['$scope', '$modalInstance', ($scope, $modalInstance) ->
+          $scope.confirm = ->
+            $modalInstance.close();
+
+          $scope.dismiss = ->
+            $modalInstance.dismiss();
+        ]
+      });
+
+      inst.result.then( =>
+        model = @dpWebhooks.removeListModelById(webhookId)
+        @dpWebhooks.remove(model).then(=>
+          @dpWebhooks.loadList().then(
+            (list) =>
+              @webhooks = [].concat(list)
+              @$state.go('tickets.webhooks')
+          ).catch((err) =>
+            console.log('err ', err)
+          )
+        )
+      )
+
+
 
   Admin_TicketWebhooks_Ctrl_List.EXPORT_CTRL()

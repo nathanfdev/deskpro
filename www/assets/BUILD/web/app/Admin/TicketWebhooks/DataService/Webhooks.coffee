@@ -1,25 +1,27 @@
 define [
   'Admin/Main/DataService/BaseListEdit'
 ], (
-  BaseListEdit,
+  BaseListEdit
 )  ->
-  class Admin_TicketWebhooks_DataService_WebhookTriggers extends BaseListEdit
+  class Admin_TicketWebhooks_DataService_Webhooks extends BaseListEdit
     @$inject = ['Api', '$q', 'Api2']
 
     init: ->
       @type = 'webhook'
 
+    url: ->
+      return '/webhooks/tickets'
+
     _doLoadList: ->
       deferred = @$q.defer()
-      @Api2
-        .sendGet('/webhooks/tickets')
-        .success(
-          (response) =>
-            webhooks = response.data
-            deferred.resolve(webhooks)
-         ,
-          (data, status, headers, config) -> deferred.reject()
-        );
+
+      @Api2.sendGet('/webhooks/tickets').success(
+        (response) =>
+          webhooks = response.data
+          deferred.resolve(webhooks)
+      ,
+        (data, status, headers, config) -> deferred.reject()
+      );
 
       return deferred.promise
 
@@ -44,11 +46,24 @@ define [
             (t) => return t[@idProp] != triggerId
           )
           deferred.resolve(trigger)
-        ,
+      ,
         (data, status, headers, config) -> deferred.reject()
       )
 
       return deferred.promise
 
+    _doRemove: (model) ->
+      deferred = @$q.defer()
+
+      id = model[@idProp] || 0
+      @Api2.sendDelete(@url() + "/#{id}").success(
+        () => deferred.resolve()
+        ,
+        (data, status, headers, config) -> deferred.reject(
+          {info: data.error_message, status: status}
+        )
+
+      )
+      deferred.promise
 
 

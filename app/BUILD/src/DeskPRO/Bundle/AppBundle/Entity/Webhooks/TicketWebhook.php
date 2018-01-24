@@ -94,6 +94,7 @@ class TicketWebhook
     /**
      * @ORM\Column(name="search_terms", type="json_array", nullable=true)
      * @JMS\Expose()
+     * @JMS\Accessor(getter="getSearchTermsForSerialization",setter="setSearchTermsFromSerialized")
      * @var array
      *
      */
@@ -145,6 +146,19 @@ class TicketWebhook
     }
 
     /**
+     * @return array
+     */
+    public function getSearchTermsForSerialization()
+    {
+        if ($this->searchTerms) {
+            $trans             = new LegacyTermsTransformer();
+            $filterTerms =  $trans->toFilterTerms($this->searchTerms);
+            $filterTermsArray = $filterTerms->exportToArray();
+            return array_key_exists('terms', $filterTermsArray) ? $filterTermsArray['terms'] : [];
+        }
+    }
+
+    /**
      * @return \Application\DeskPRO\Tickets\Filters\FilterTerms
      */
     public function getSearchTerms()
@@ -156,6 +170,18 @@ class TicketWebhook
     }
 
     /**
+     * @param array $searchTerms
+     */
+    public function setSearchTermsFromSerialized($searchTerms)
+    {
+        $filterTerms = new FilterTerms();
+        $filterTerms->importFromArray($searchTerms);
+
+        $trans             = new LegacyTermsTransformer();
+        $this->searchTerms = $trans->toLegacyTerms($filterTerms);
+    }
+
+    /**
      * @param \Application\DeskPRO\Tickets\Filters\FilterTerms|array $searchTerms
      */
     public function setSearchTerms( $searchTerms )
@@ -163,9 +189,11 @@ class TicketWebhook
         if ($searchTerms instanceof FilterTerms) {
             $trans             = new LegacyTermsTransformer();
             $this->searchTerms = $trans->toLegacyTerms($searchTerms);
-        } else if (is_array($searchTerms)) {
+        }
+/*        else if (is_array($searchTerms)) {
             $this->searchTerms = $searchTerms;
-        } else {
+        } */
+        else {
             throw new \BadMethodCallException('invalid parameter type');
         }
     }

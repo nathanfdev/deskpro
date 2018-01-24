@@ -16,7 +16,7 @@ define [
   'Admin/TicketTriggers/DataService/TriggersReply',
   'Admin/TicketTriggers/DataService/TriggersUpdate',
 
-  'Admin/TicketWebhooks/DataService/WebhookTriggers',
+  'Admin/TicketWebhooks/DataService/Webhooks',
 
   'Admin/TicketProblems/DataService/Problems'
   'Admin/TwitterAccounts/DataService/TwitterAccounts',
@@ -52,7 +52,9 @@ define [
   DataService_TriggersNew,
   DataService_TriggersReply,
   DataService_TriggersUpdate,
-  DataService_WebhookTriggers,
+
+  DataService_Webhooks,
+
   DataService_Problems
   DataService_TwitterAccounts,
   DataService_ApiKeys,

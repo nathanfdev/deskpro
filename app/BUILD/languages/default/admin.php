@@ -681,6 +681,9 @@ return [
 
     'adm.ticket_webhooks.count_webhooks'                                                   => '{{count}} Webhook|{{count}} Webhooks',
     'adm.ticket_webhooks.no_webhooks'                                                      => 'You have not added any webhooks here yet.',
+    'adm.ticket_webhooks.title_explain'                                                    => 'This title will be used throughout the admin interface to refer to this webhook.',
+    'adm.ticket_webhooks.delete_confirm'                                                   => 'Are you sure you want to delete this webhook?',
+
 
 
 
