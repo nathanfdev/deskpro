@@ -63,12 +63,12 @@ class JsonTableRenderer extends AbstractJsonRenderer
         }
 
         if ($metadata->getGroupXColumns()) {
-            return $this->renderMatrixTable($metadata, $rows);
+            return $this->renderMatrixTable($metadata, $rows, $options);
         }
 
         return [
-            'columns' => $this->renderHeader($metadata),
-            'data'    => $this->renderBody($metadata, $rows),
+            'columns' => $this->renderHeader($metadata, $options),
+            'data'    => $this->renderBody($metadata, $rows, $options),
         ];
     }
 
@@ -80,9 +80,8 @@ class JsonTableRenderer extends AbstractJsonRenderer
      *
      * @return string
      */
-    protected function renderMatrixTable(ResultMetadata $resultHandler, array $rows)
+    protected function renderMatrixTable(ResultMetadata $resultHandler, array $rows, array $options = [])
     {
-
         // matrix table - X() values translate to bottom axis, each row (from Y()) is a new line/stack.
         $prepared = $this->prepareMatrixTable($resultHandler, $rows);
         $lookup   = $prepared['lookup'];
@@ -183,11 +182,13 @@ class JsonTableRenderer extends AbstractJsonRenderer
      *
      * @return string
      */
-    protected function renderHeader(ResultMetadata $resultHandler)
+    protected function renderHeader(ResultMetadata $resultHandler, array $options = [])
     {
         $columns = [];
-        foreach ($resultHandler->getGroupYColumns() as $column) {
-            $columns[] = $this->valueRenderer->escapeValue($column['title']);
+        if (empty($options['noGroupingColumn'])) {
+            foreach ($resultHandler->getGroupYColumns() as $column) {
+                $columns[] = $this->valueRenderer->escapeValue($column['title']);
+            }
         }
         foreach ($resultHandler->getSelectColumns() as $column) {
             $columns[] = $this->valueRenderer->escapeValue($column['title']);
@@ -204,9 +205,14 @@ class JsonTableRenderer extends AbstractJsonRenderer
      *
      * @return string
      */
-    protected function renderBody(ResultMetadata $metadata, array $rows)
+    protected function renderBody(ResultMetadata $metadata, array $rows, array $options = [])
     {
-        $groupColumns  = $metadata->getGroupYColumns();
+        if (empty($options['noGroupingColumn'])) {
+            $groupColumns = $metadata->getGroupYColumns();
+        } else {
+            $groupColumns = [];
+        }
+
         $selectColumns = $metadata->getSelectColumns();
         $rows          = array_values($rows); // need continuous keys
 

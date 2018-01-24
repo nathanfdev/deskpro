@@ -120,7 +120,12 @@ class ReportDashboardWidgetHandler extends AbstractEntityHandler
         $results  = $query->getResults();
         $renderer = $this->reportsRendererRegistry->getRenderer(ReportWidget::getGraphType($entity->getType()), 'json');
 
-        $data = $renderer->render($results);
+        if ($entity->getOptions()) {
+            $options = @json_decode($entity->getOptions(), true) ?: [];
+        } else {
+            $options = [];
+        }
+        $data = $renderer->render($results, $options);
         if ($data && $entity->getType() == ReportDashboardWidgetEntity::WIDGET_TYPE_TABLE) {
             $aoColumns = [];
             $columns   = [];

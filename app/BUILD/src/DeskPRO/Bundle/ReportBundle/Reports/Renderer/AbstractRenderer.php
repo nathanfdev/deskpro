@@ -52,7 +52,7 @@ abstract class AbstractRenderer implements ReportsRendererInterface
         if ($splitColumns) {
             $output = [];
             foreach ($results->getSplitResults() as $splitResult) {
-                $result = $this->doRender($splitResult[0], $results->getMetadata());
+                $result = $this->doRender($splitResult[0], $results->getMetadata(), $options);
                 if ($result) {
                     $splitPrint = [];
                     foreach ($metadata->getSplitColumns() as $splitColumn) {
@@ -65,7 +65,7 @@ abstract class AbstractRenderer implements ReportsRendererInterface
 
             return $this->implodeSplitOutput($output);
         } else {
-            return $this->doRender($results->getResults(), $results->getMetadata());
+            return $this->doRender($results->getResults(), $results->getMetadata(), $options);
         }
     }
 
