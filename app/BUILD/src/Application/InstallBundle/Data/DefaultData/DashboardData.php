@@ -360,7 +360,7 @@ class DashboardData extends AbstractDefaultData
                                     'value'   => 'today',
                                 ],
                             ],
-                            'options' => '{"legend":false,"labelsEnabled":false}',
+                            'options' => '{"noGroupingColumn":true,"pageLength": 30}',
                         ],
                         [
                             'title'      => 'Top KB Searches',
@@ -368,6 +368,7 @@ class DashboardData extends AbstractDefaultData
                             'size'       => '2:2',
                             'widget_key' => 'kb-searches-x-date',
                             'type'       => 'table',
+                            'options'    => '{"noGroupingColumn":true,"pageLength": 30}',
                             'variables'  => [
                                 [
                                     'name'    => 'date',
