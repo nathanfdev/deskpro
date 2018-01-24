@@ -7,6 +7,7 @@ define ['datatables'], () ->
         tableData: '@',
         myIndex: '@',
         widgetId: '@'
+        options: '@'
         row: '@',
         col: '@'
 
@@ -27,16 +28,22 @@ define ['datatables'], () ->
           if interval?
             clearInterval(interval)
           scope.columns = widget.columns
+
+          try
+            options = JSON.parse(scope.options)
+          catch e
+            options = {}
+
           dt = el.DataTable {
             data:           widget.data,
             columns:        widget.columns,
             pagingType:     "first_last_numbers",
             searching:      false,
-            pageLength:     5,
             bJQueryUI:      true,
-            iDisplayLength: 5,
+            pageLength:     if options.pageLength then options.pageLength else 50,
+            lengthChange:   if options.pageLength then false else true,
             sDom:           'T<"clear">lfrtip'
-            lengthMenu:     [[5, 10, 25, 50, -1], [5, 10, 25, 50, "All"]]
+            lengthMenu:     [[5, 10, 15, 20, 25, 30, 35, 40, 45, 50, -1], [5, 10, 15, 20, 25, 30, 35, 40, 45, 50, "All"]]
             scrollY:        listItem.height() - 190,
             deferRender:    true,
             dom:            "rtS",

@@ -246,7 +246,7 @@ class DashboardData extends AbstractDefaultData
                             'size'       => '2:4',
                             'widget_key' => 'number-of-replies-created-x-date-grouped-by-agent',
                             'type'       => 'table',
-                            'options'    => '{"noGroupingColumn":true}',
+                            'options'    => '{"noGroupingColumn":true,"pageLength": 30}',
                             'variables'  => [
                                 [
                                     'name'  => 'date',

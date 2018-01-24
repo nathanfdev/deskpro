@@ -66,7 +66,6 @@ $sidebar-width: 220px;
 $report-list-width: 555px;
 $content-width: $app-nav-width + $sidebar-width;
 
-
 .app-nav-wrapper {
   position: absolute;
   top: 0;
@@ -95,7 +94,6 @@ $content-width: $app-nav-width + $sidebar-width;
     font-size: 1.5em;
     color: #cecece;
     padding: 15px 0;
-
     &:hover {
       color: #fff;
     }
@@ -104,7 +102,6 @@ $content-width: $app-nav-width + $sidebar-width;
       background: #0B0E10;
     }
   }
-
 }
 
 // Main sidebar
