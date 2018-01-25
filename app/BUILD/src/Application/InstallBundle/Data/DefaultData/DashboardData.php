@@ -177,7 +177,7 @@ class DashboardData extends AbstractDefaultData
                                         'field_type' => 'tickets',
                                         'table'      => 'tickets',
                                         'default'    => 'agent',
-                                        'value'      => 'none',
+                                        'value'      => 'department',
                                     ],
                                 [
                                         'name'       => 'status',
@@ -301,7 +301,7 @@ class DashboardData extends AbstractDefaultData
                                     'field_type' => 'tickets',
                                     'table'      => 'tickets',
                                     'default'    => 'agent',
-                                    'value'      => 'none',
+                                    'value'      => 'department',
                                 ],
                                 [
                                     'name'    => 'date',
