@@ -40,7 +40,7 @@ class Run extends React.Component {
   }
 
   static doRenderChart(options, index) {
-    switch (options.get('type')) {
+    switch (options.get('chartType')) {
       case 'pie':
       case 'bar':
       case 'line':
