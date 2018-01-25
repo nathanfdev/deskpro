@@ -693,4 +693,20 @@ FROM (
 DPQL
             , []);
     }
+
+    public function test_came_case_props()
+    {
+        $this->assertDpqlQuery(
+            <<<'DPQL'
+SELECT COUNT(), snippets.id FROM snippets WHERE snippets.date_created > '2018-01-25'
+DPQL
+            ,
+            <<<'SQL'
+SELECT COUNT(*), `snippets`.`id`
+FROM `snippets`
+WHERE (`snippets`.`date_created` > '2018-01-25')
+LIMIT 2500
+SQL
+        );
+    }
 }
