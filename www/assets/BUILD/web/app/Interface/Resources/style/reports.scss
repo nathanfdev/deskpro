@@ -1218,6 +1218,7 @@ $gridster-box-header-height: 40px;
       overflow: auto;
       .stat {
         margin-top: -6px;
+        height: auto;
       }
 
     }
@@ -1276,6 +1277,12 @@ $gridster-box-header-height: 40px;
 
 .reports .list-group {
   background: #ecf0f3;
+}
+
+.stat-preview {
+  .stat-box {
+    height: 100%;
+  }
 }
 
 .gridster-item, .stat-preview {
