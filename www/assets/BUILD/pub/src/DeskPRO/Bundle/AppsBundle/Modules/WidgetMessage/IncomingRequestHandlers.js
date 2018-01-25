@@ -114,14 +114,23 @@ export const EVENT_WEBAPI_REQUEST_FETCH = (response, widget, widgetMessage, serv
   fetchClient.fetch(url, init)
     .then((httpResponse) => {
       const headers = httpResponse.getAllHeadersMap();
-      const data = { status: httpResponse.status, body: httpResponse.data, headers };
+      const data = {
+        status:     httpResponse.status,
+        body:       httpResponse.data,
+        headers,
+        statusCode: httpResponse.getResponseCode()
+      };
       response(null, data);
-
       return httpResponse;
     })
     .catch((httpResponse) => {
       const headers = httpResponse.getAllHeadersMap();
-      const data = httpResponse instanceof Error ? null : { status: httpResponse.status, body: httpResponse.data, headers };
+      const data = httpResponse instanceof Error ? null : {
+        status:     httpResponse.status,
+        body:       httpResponse.data,
+        headers,
+        statusCode: httpResponse.getResponseCode()
+      };
       const requestError = httpResponse instanceof Error ? httpResponse : new Error('[API] Failed to execute request');
       response(requestError, data);
 
