@@ -872,9 +872,14 @@ class TwilioAdapter
      */
     public function rejectTaskWorker(VoiceAccount $account, $taskSid, Person $person)
     {
-        $task = $this->getWorkspace($account)->tasks($taskSid)->fetch();
-        if (!$task) {
-            throw new TwilioException('Task not found');
+        try {
+            $task = $this->getWorkspace($account)->tasks($taskSid)->fetch();
+        } catch (RestException $e) {
+            if ($e->getStatusCode() === Response::HTTP_NOT_FOUND) {
+                return;
+            }
+
+            throw $e;
         }
 
         $attributes = json_decode($task->attributes, true);
@@ -896,9 +901,14 @@ class TwilioAdapter
      */
     public function endTask(VoiceAccount $account, $taskSid)
     {
-        $task = $this->getWorkspace($account)->tasks($taskSid)->fetch();
-        if (!$task) {
-            throw new TwilioException('Task not found');
+        try {
+            $task = $this->getWorkspace($account)->tasks($taskSid)->fetch();
+        } catch (RestException $e) {
+            if ($e->getStatusCode() === Response::HTTP_NOT_FOUND) {
+                return;
+            }
+
+            throw $e;
         }
 
         $task->delete();
