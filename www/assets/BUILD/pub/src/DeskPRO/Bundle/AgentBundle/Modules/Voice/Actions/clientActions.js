@@ -256,12 +256,6 @@ export const makeOutboundCall = createAction(
     const agentId = me.get('id');
     const busySid = busyActivitySidSelector(state);
     const numbers = allNumbersSelector(state);
-
-    const number = numbers.get(callFrom);
-    if (!number) {
-      return null;
-    }
-
     const promise = api.sendPost('DP_API/voice_client/prepare_outbound_call?include=person', {
       call_from: callFrom,
       call_to:   callTo
@@ -271,6 +265,7 @@ export const makeOutboundCall = createAction(
         dispatch(addToCollection('VoicePhoneCall', 'all', Object.values(linked.person)));
       }
 
+      const number = numbers.get(callFrom);
       dispatch(setOutgoingCall({ callFrom: number, callTo, phoneCall: data }));
       worker.update('ActivitySid', busySid);
       window.Twilio.Device.connect({
