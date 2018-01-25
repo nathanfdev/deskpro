@@ -178,6 +178,10 @@ export const voiceBootstrap = createAction(
             return;
           }
 
+          if (!agent.get('agent_data')) {
+            agent = agent.set('agent_data', Immutable.fromJS({}));
+          }
+
           agent = agent.setIn(['agent_data', 'agent_calls_enabled'], !!data.agent_calls_enabled);
           dispatch(updateCollection('Person', Immutable.List([agent]), 'replace'));
         });
