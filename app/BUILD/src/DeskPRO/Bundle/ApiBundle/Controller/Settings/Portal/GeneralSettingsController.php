@@ -133,21 +133,21 @@ class GeneralSettingsController extends AbstractBrandAwareSettingsController
 
         /** @var UrlHostChecker $urlHostChecker */
         $urlHostChecker = $this->get('url_host_checker');
-        $url            = $model->getDeskproUrl();
+        $url            = $urlHostChecker->simplifyUrl($model->getDeskproUrl());
 
         $em = $this->getManager();
         if ($brand->getId() != $this->get('settings_resolver')->getGlobalSettings()->get('portal.default_brand')) {
             $helpdeskUrl = $this->get('settings_resolver')->getGlobalSettings()->get('core.deskpro_url');
             $helpdeskUrl = $urlHostChecker->simplifyUrl($helpdeskUrl);
 
-            if (false !== strpos($url, $helpdeskUrl)) {
+            if ($url === $helpdeskUrl) {
                 throw new BadRequestHttpException(
                     'Your brand URL must be a completely separate URL, it cannot be a sub-directory of any of your existing brands.'
                 );
             }
         }
 
-        $brand->setUrl($urlHostChecker->simplifyUrl($url));
+        $brand->setUrl($url);
 
         $brand->setName($model->getBrandName());
         $em->persist($brand);

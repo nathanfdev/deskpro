@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2017, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2018, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -2172,6 +2172,11 @@ $collection->create('agent_topic_ajax_get_topics', [
     'path'         => '/guides/topics/{guide_id}',
     'controller'   => 'AgentBundle:Guide:ajaxGetTopicsByGuide',
     'requirements' => ['guide_id' => '\\d+'],
+]);
+
+$collection->create('agent_guides_comparerevs', [
+    'path'       => '/guides/compare-revs/{rev_old_id}/{rev_new_id}',
+    'controller' => 'AgentBundle:Guide:compareRevisions',
 ]);
 
 $collection->create('agent_agentchat_getonlineagents', [
