@@ -1,9 +1,7 @@
 import $ from 'jquery';
-import DataTables from 'datatables.net';
+
 import PropTypes from 'prop-types';
 import React from 'react';
-
-$.DataTable = DataTables;
 
 class DataTable extends React.Component {
 

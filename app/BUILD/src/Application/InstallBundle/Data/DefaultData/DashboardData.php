@@ -246,7 +246,7 @@ class DashboardData extends AbstractDefaultData
                             'size'       => '2:4',
                             'widget_key' => 'number-of-replies-created-x-date-grouped-by-agent',
                             'type'       => 'table',
-                            'options'    => '{"noGroupingColumn":true,"pageLength": 30}',
+                            'options'    => '{"noGroupingColumn":true}',
                             'variables'  => [
                                 [
                                     'name'  => 'date',
@@ -360,7 +360,7 @@ class DashboardData extends AbstractDefaultData
                                     'value'   => 'today',
                                 ],
                             ],
-                            'options' => '{"noGroupingColumn":true,"pageLength": 30}',
+                            'options' => '{"noGroupingColumn":true}',
                         ],
                         [
                             'title'      => 'Top KB Searches',
@@ -368,7 +368,7 @@ class DashboardData extends AbstractDefaultData
                             'size'       => '2:2',
                             'widget_key' => 'kb-searches-x-date',
                             'type'       => 'table',
-                            'options'    => '{"noGroupingColumn":true,"pageLength": 30}',
+                            'options'    => '{"noGroupingColumn":true}',
                             'variables'  => [
                                 [
                                     'name'    => 'date',

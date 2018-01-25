@@ -1,4 +1,4 @@
-define ['datatables'], () ->
+define ['datatables', "datatables.pageResize"], () ->
   Reports_Directive_DashboardTable = ['$sce', 'DashboardWidgetService', ($sce, DashboardWidgetService) ->
     return {
       restrict: 'E'
@@ -17,11 +17,10 @@ define ['datatables'], () ->
         el = $(element)
         dt = null
         box = el.parent()
-        listItem = box.parent()
+        tableData = if scope.tableData then JSON.parse(scope.tableData) else {}
 
-        height = listItem.height()
+        listItem = box.parent()
         conf = scope.widgetId || 0;
-        tableData   = if scope.tableData then JSON.parse(scope.tableData) else []
         interval = 0;
 
         initTable = (widget) ->
@@ -34,70 +33,34 @@ define ['datatables'], () ->
           catch e
             options = {}
 
-          dt = el.DataTable {
+          defaultOptions = {
             data:           widget.data,
             columns:        widget.columns,
             pagingType:     "first_last_numbers",
+            pageResize:     true,
             searching:      false,
             bJQueryUI:      true,
-            pageLength:     if options.pageLength then options.pageLength else 50,
-            lengthChange:   if options.pageLength then false else true,
+            lengthChange:   true,
             sDom:           'T<"clear">lfrtip'
-            lengthMenu:     [[5, 10, 15, 20, 25, 30, 35, 40, 45, 50, -1], [5, 10, 15, 20, 25, 30, 35, 40, 45, 50, "All"]]
-            scrollY:        listItem.height() - 190,
             deferRender:    true,
             dom:            "rtS",
             scrollCollapse: true,
             autoWidth:      true
             fnDrawCallback: (settings) ->
-                if settings._iDisplayLength == -1 || settings._iDisplayLength >= settings.fnRecordsDisplay()
-                  $(settings.nTableWrapper).find('.dataTables_paginate').hide();
-                else
-                  $(settings.nTableWrapper).find('.dataTables_paginate').show();
+              if settings._iDisplayLength == -1 || settings._iDisplayLength >= settings.fnRecordsDisplay()
+                $(settings.nTableWrapper).find('.dataTables_paginate').hide();
+              else
+                $(settings.nTableWrapper).find('.dataTables_paginate').show();
           }
+
+          dt = el.find('table').DataTable Object.assign(defaultOptions, options)
+
           if !widget.noRedraw
             listItem
               .find '.handle-e'
               .remove
             listItem
               .css 'overflow-y', 'hidden'
-
-          listItem.scroll () ->
-            topOffset = box.offset().top - 34 - listItem.offset().top;
-            resHandlers = listItem.find '.gridster-item-resizable-handler'
-            resHandlers.each () ->
-              handler = $(this)
-              calculated = 1 + topOffset
-              handler[0].style.bottom = "#{calculated}px"
-
-          setTimeout \
-            () ->
-              tBody = listItem.find '.dataTables_scrollBody'
-              h = listItem.height()
-              calculated = h - 190
-              settings = dt.settings()
-              settings[0].oScroll.sY = calculated
-              tBody.css 'height', "#{calculated}px"
-              tBody.css 'max-height', "#{calculated}px"
-              dt.draw()
-          , 2000
-
-
-          interval = setInterval \
-            () ->
-              return if widget.noRedraw
-              h = listItem.height();
-              tBody = listItem.find('.dataTables_scrollBody')
-              if h != height
-                if dt?
-                  calculated = h - 190
-                  settings = dt.settings();
-                  settings[0].oScroll.sY = calculated
-                  tBody.css 'height', "#{calculated}px"
-                  tBody.css 'max-height', "#{calculated}px"
-                  dt.draw()
-                height = h;
-          , 200
 
         if tableData and tableData.data?
           tableData.noRedraw = true

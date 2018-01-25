@@ -1207,11 +1207,18 @@ $gridster-box-header-height: 40px;
         color: #999;
       }
     }
-    .box {
-      display: flex;
-      justify-content: center;
-      align-items: center;
 
+    .box {
+      position: absolute;
+      top: $gridster-box-header-height;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      height: auto;
+      overflow: auto;
+      .stat {
+        margin-top: -6px;
+      }
       .stat-value {
         text-align: center;
         font-size: 26px;
@@ -1224,11 +1231,15 @@ $gridster-box-header-height: 40px;
         word-wrap: break-word;
       }
     }
+    .box > div {
+      height: 100%;
+    }
 
     .stat-box {
       display: flex;
-      flex-direction: row;
+      justify-content: center;
       align-items: center;
+
       > div {
         height: auto;
 
@@ -1265,9 +1276,18 @@ $gridster-box-header-height: 40px;
 }
 
 .gridster-item {
+  div.dataTable_parent {
+    height: 100%;
+    padding-bottom: 20px;
+  }
+
   .dataTables_wrapper {
     border: none !important;
     padding-top: 8px;
+
+    div.dataTables_length {
+      display: none;
+    }
 
     table.dataTable.display tbody tr.even > td, table.dataTable.display tbody tr.odd > td {
       background-color: #fff !important;

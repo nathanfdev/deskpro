@@ -1,11 +1,18 @@
 import 'babel-polyfill';
 import React from 'react';
 import ReactDOM from 'react-dom';
+import $ from 'jquery';
+import DataTables from 'datatables.net';
+import '../../../../vendor/datatables/plugins/pageResize';
+
 import '../../../../vendor/amcharts3/amcharts';
 import '../../../../vendor/amcharts3/serial';
 import '../../../../vendor/amcharts3/pie';
 import '../../../../vendor/amcharts3/themes/light';
+
 import AppContainer from './Modules/Application/Components/AppContainer';
+
+$.DataTable = DataTables;
 
 class ReportApp {
 
