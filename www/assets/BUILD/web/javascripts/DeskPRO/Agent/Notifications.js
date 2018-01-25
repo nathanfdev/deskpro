@@ -260,7 +260,7 @@ DeskPRO.Agent.Notifications = new Orb.Class({
           var title = $.trim(row.find('big').first().text().replace(/[\n]/g, ' ').replace(/\s+/g, ' ')).replace(/^#\d+\s*/, '');
           var body = $.trim(row.find('small').first().text().replace(/[\n]/g, ' ').replace(/\s+/g, ' '));
 
-          var Notify = window.Notify.default;
+          var Notify = window.Notify['default'];
           var notification = new Notify(title || 'DeskPRO', {
             body: body,
             icon: icon,
