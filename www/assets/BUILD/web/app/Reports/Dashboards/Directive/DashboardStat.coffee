@@ -14,8 +14,8 @@ define ->
       description = attrs.description
 
       el = $(element)
-      v = el.find('.stat-value')
-      el.find('.stat-value').html(value)
+      valueElement = el.find('.stat-value')
+      valueElement.html(value)
       if description
         el.find('.stat-description').html(description)
       else
@@ -28,13 +28,13 @@ define ->
 
       listItem.scroll () ->
 
-        v = box.offset().top - 47 - listItem.offset().top
+        valueElementTop = box.offset().top - 47 - listItem.offset().top
 
         resHandlers = listItem.find('.gridster-item-resizable-handler')
 
         resHandlers.each (index, element) ->
           h = $(this)
-          c = 1 + t
+          c = 1 + valueElementTop
           h[0].style.bottom = "#{c}px"
     }
   ]

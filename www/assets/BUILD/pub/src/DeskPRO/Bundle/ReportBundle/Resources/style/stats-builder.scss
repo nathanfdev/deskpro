@@ -541,6 +541,33 @@
     margin-top: 25px;
     padding: 25px;
     border-top: 1px solid $global-border;
+
+    .dataTables_wrapper {
+      width: 500px;
+    }
+
+    .box {
+      border: 1px solid grey;
+      height: 200px;
+      width: 200px;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+
+      .stat {
+        .stat-value {
+          text-align: center;
+          font-size: 26px;
+          font-weight: 600;
+        }
+        .stat-description {
+          text-align: center;
+          font-size: 15px;
+          margin-top: 5px;
+          word-wrap: break-word;
+        }
+      }
+    }
   }
 
   .form-error-message {
@@ -596,7 +623,6 @@
   border-bottom: 1px solid $global-border;
   white-space: nowrap;
   text-overflow: ellipsis;
-  padding: 3px 8px;
   cursor: pointer;
 }
 

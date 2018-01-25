@@ -8,6 +8,7 @@ import Immutable from 'immutable';
 import TitleWithVars from './TitleWithVars';
 import { displayTypes } from './helper';
 import DataTable from './DataTables';
+import SimpleStat from './SimpleStat';
 
 class Run extends React.Component {
 
@@ -47,6 +48,8 @@ class Run extends React.Component {
         return <AmCharts.React key={index} style={{ width: '100%', height: '500px' }} options={options.toJS()} />;
       case 'table':
         return <DataTable key={index} style={{ width: '100%', height: '500px' }} data={options.get('data').toJS()} columns={options.get('columns').toJS()} />;
+      case 'stat':
+        return <SimpleStat value={options.get('value')} description={options.get('description')} />;
       default:
         return null;
     }

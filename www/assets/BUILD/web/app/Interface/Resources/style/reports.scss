@@ -1208,16 +1208,10 @@ $gridster-box-header-height: 40px;
       }
     }
     .box {
-      position: absolute;
-      top: $gridster-box-header-height;
-      left: 0;
-      right: 0;
-      bottom: 0;
-      height: auto;
-      overflow: auto;
-      .stat {
-        margin-top: -6px;
-      }
+      display: flex;
+      justify-content: center;
+      align-items: center;
+
       .stat-value {
         text-align: center;
         font-size: 26px;
@@ -1229,9 +1223,6 @@ $gridster-box-header-height: 40px;
         margin-top: 5px;
         word-wrap: break-word;
       }
-    }
-    .box > div {
-      height: 100%;
     }
 
     .stat-box {
