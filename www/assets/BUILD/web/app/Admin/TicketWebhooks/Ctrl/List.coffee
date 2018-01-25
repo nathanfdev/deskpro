@@ -43,7 +43,7 @@ define [
       @dpWebhooks.loadList(true).then(
         (list) =>
           @webhooks = [].concat(list)
-          @$state.go('tickets.webhooks.trigger-edit', {webhookId: webhookId,  id: trigger.id})
+          @$state.go('tickets.webhooks.trigger-edit', {webhookId: webhookId, id: trigger.data.id})
       )
       return
 
