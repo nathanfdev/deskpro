@@ -23,7 +23,8 @@ define [
       return
 
     onWebhookAdded: (webhook) ->
-      @dpWebhooks.mergeDataModel(webhook).then(
+      @dpWebhooks.mergeDataModel(webhook)
+      @dpWebhooks.loadList().then(
         (list) =>
           @webhooks = [].concat(list)
       )

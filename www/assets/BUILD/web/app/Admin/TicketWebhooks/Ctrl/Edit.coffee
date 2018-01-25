@@ -47,6 +47,7 @@ define [
     getFormFromModel: (model) ->
       form = {}
       form.title = model.title || ''
+      form.payload_decoder = model.payload_decoder
 
       form.terms_set = {}
       if model.search_terms?.length

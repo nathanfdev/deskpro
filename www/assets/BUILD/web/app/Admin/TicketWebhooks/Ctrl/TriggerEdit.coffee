@@ -19,7 +19,7 @@ define [
       @webhookId   = @$stateParams.webhookId
       @enableEventsSection = false
       @enableCopyFromAnotherTrigger = false
-      @dpWebhookTriggers = @DataService.get('WebhookTriggers')
+      @dpWebhookTriggers = @DataService.get('Webhooks')
 
     getPostData: ->
       legacyPostData = super()
