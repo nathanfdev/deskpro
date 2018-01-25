@@ -55,12 +55,10 @@ define ['datatables', "datatables.pageResize"], () ->
 
           dt = el.find('table').DataTable Object.assign(defaultOptions, options)
 
-          if !widget.noRedraw
-            listItem
-              .find '.handle-e'
-              .remove
-            listItem
-              .css 'overflow-y', 'hidden'
+          listItem
+            .find '.handle-e'
+            .remove
+
 
         if tableData and tableData.data?
           tableData.noRedraw = true

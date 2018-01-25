@@ -92,7 +92,7 @@
                 </div>
             </div>
             <div class="stat-preview" ng-if="widgetPreview && widgetPreview.type=='table' && widgetPreview.rendered_result">
-                <div>
+                <div style="height: 100%; overflow: hidden;">
                     <dashboard-table
                             render-type = "test"
                             my-index="{{ ng_var('$index') }}"
@@ -103,7 +103,7 @@
                 </div>
             </div>
             <div class="stat-preview" ng-if="widgetPreview && widgetPreview.type=='simple_stat' && widgetPreview.rendered_result">
-                <div>
+                <div class="stat-box">
                     <dashboard-stat
                             render-type = "test"
                             my-index="{{ ng_var('$index') }}"

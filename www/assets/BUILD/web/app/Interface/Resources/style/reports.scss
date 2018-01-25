@@ -1219,32 +1219,35 @@ $gridster-box-header-height: 40px;
       .stat {
         margin-top: -6px;
       }
-      .stat-value {
-        text-align: center;
-        font-size: 26px;
-        font-weight: 600;
-      }
-      .stat-description {
-        text-align: center;
-        font-size: 15px;
-        margin-top: 5px;
-        word-wrap: break-word;
-      }
+
     }
     .box > div {
       height: 100%;
     }
 
-    .stat-box {
-      display: flex;
-      justify-content: center;
-      align-items: center;
 
-      > div {
-        height: auto;
+  }
+}
+.stat-box {
+  display: flex;
+  justify-content: center;
+  align-items: center;
 
-      }
-    }
+  > div {
+    height: auto;
+  }
+
+  .stat-value {
+    text-align: center;
+    font-size: 26px;
+    font-weight: 600;
+  }
+
+  .stat-description {
+    text-align: center;
+    font-size: 15px;
+    margin-top: 5px;
+    word-wrap: break-word;
   }
 }
 
@@ -1275,7 +1278,7 @@ $gridster-box-header-height: 40px;
   background: #ecf0f3;
 }
 
-.gridster-item {
+.gridster-item, .stat-preview {
   div.dataTable_parent {
     height: 100%;
     padding-bottom: 20px;
@@ -1320,5 +1323,11 @@ $gridster-box-header-height: 40px;
         color: #000 !important;
       }
     }
+  }
+}
+
+.stat-preview {
+  div.dataTable_parent {
+    padding: initial;
   }
 }
