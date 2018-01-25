@@ -135,8 +135,8 @@ class ReportWidgetHandler extends AbstractEntityHandler
                 $data['aoColumns'] = $aoColumns;
                 $data['columns']   = $columns;
             }
-
-            $result[] = $data;
+            $data['type'] = $graphType;
+            $result[]     = $data;
         }
 
         return $result;

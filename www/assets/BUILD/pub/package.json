@@ -20,6 +20,7 @@
     "cors": "2.7.1",
     "countries-list": "^1.2.0",
     "cropper": "1.0.0",
+    "datatables.net": "^1.10.16",
     "diff2html": "^2.3.0",
     "difflib": "^0.2.4",
     "dropzone": "4.2.0",

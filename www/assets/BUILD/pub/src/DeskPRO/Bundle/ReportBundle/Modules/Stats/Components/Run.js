@@ -7,6 +7,7 @@ import Select from 'react-select';
 import Immutable from 'immutable';
 import TitleWithVars from './TitleWithVars';
 import { displayTypes } from './helper';
+import DataTable from './DataTables';
 
 class Run extends React.Component {
 
@@ -33,8 +34,22 @@ class Run extends React.Component {
     }
 
     return typeof options === 'object'
-      ? <AmCharts.React key={index} style={{ width: '100%', height: '500px' }} options={options.toJS()} />
+      ? Run.doRenderChart(options, index)
       : <span dangerouslySetInnerHTML={{ __html: options }} />;
+  }
+
+  static doRenderChart(options, index) {
+    switch (options.get('type')) {
+      case 'pie':
+      case 'bar':
+      case 'line':
+      case 'area':
+        return <AmCharts.React key={index} style={{ width: '100%', height: '500px' }} options={options.toJS()} />;
+      case 'table':
+        return <DataTable key={index} style={{ width: '100%', height: '500px' }} data={options.get('data').toJS()} columns={options.get('columns').toJS()} />;
+      default:
+        return null;
+    }
   }
 
   constructor(props) {
