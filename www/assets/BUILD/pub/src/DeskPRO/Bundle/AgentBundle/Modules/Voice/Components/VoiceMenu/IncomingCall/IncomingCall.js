@@ -39,7 +39,9 @@ class IncomingCall extends React.Component {
 
   componentWillReceiveProps(newProps) {
     if (isAssigned(newProps.incomingCall)) {
-      this.audio.stopSound();
+      if (this.audio) {
+        this.audio.stopSound();
+      }
     }
   }
 
