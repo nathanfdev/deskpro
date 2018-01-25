@@ -94,7 +94,7 @@ class TicketWebhook
     /**
      * @ORM\Column(name="search_terms", type="json_array", nullable=true)
      * @JMS\Expose()
-     * @JMS\Accessor(getter="getSearchTermsForSerialization",setter="setSearchTermsFromSerialized")
+     * @JMS\Accessor(getter="getSearchTermsForSerialization")
      * @var array
      *
      */
@@ -106,8 +106,8 @@ class TicketWebhook
      *      joinColumns={@ORM\JoinColumn(name="webhook_id", referencedColumnName="id", onDelete="CASCADE")},
      *      inverseJoinColumns={@ORM\JoinColumn(name="trigger_id", referencedColumnName="id", unique=true)}
      *      )
+     * @JMS\Type("array<entity<Application\DeskPRO\Entity\TicketTrigger>>")
      * @JMS\Expose()
-     * @JMS\Type("array<Application\DeskPRO\Entity\TicketTrigger>")
      * @var TicketTrigger[]
      */
     private $triggers;
@@ -115,7 +115,6 @@ class TicketWebhook
     /**
      * @ORM\ManyToOne(targetEntity="DeskPRO\Bundle\AppBundle\Entity\AppStore\AppInstance")
      * @ORM\JoinColumn(name="app_instance_id", referencedColumnName="id", onDelete="CASCADE", nullable=true)
-     * @JMS\Expose()
      *
      * @var AppInstance
      */
@@ -170,18 +169,6 @@ class TicketWebhook
     }
 
     /**
-     * @param array $searchTerms
-     */
-    public function setSearchTermsFromSerialized($searchTerms)
-    {
-        $filterTerms = new FilterTerms();
-        $filterTerms->importFromArray($searchTerms);
-
-        $trans             = new LegacyTermsTransformer();
-        $this->searchTerms = $trans->toLegacyTerms($filterTerms);
-    }
-
-    /**
      * @param \Application\DeskPRO\Tickets\Filters\FilterTerms|array $searchTerms
      */
     public function setSearchTerms( $searchTerms )
@@ -190,9 +177,6 @@ class TicketWebhook
             $trans             = new LegacyTermsTransformer();
             $this->searchTerms = $trans->toLegacyTerms($searchTerms);
         }
-/*        else if (is_array($searchTerms)) {
-            $this->searchTerms = $searchTerms;
-        } */
         else {
             throw new \BadMethodCallException('invalid parameter type');
         }

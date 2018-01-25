@@ -47,13 +47,21 @@ define [
       return
 
     changeEnabledStatus: (webhook) ->
-      console.log('todo ')
+      webhook.is_enabled = webhook.is_enabled ? false : true
+
+      @dpWebhooks.set(webhook).then(
+        (wh) =>
+          @dpWebhooks.loadList().then(
+            (list) =>
+              @webhooks = [].concat(list)
+          )
+      )
       return
 
     ###
     # Update the enabled state of a trigger
     ###
-    updateTriggerEnabledState: (trigger) ->
+    changeEnabledStatusTrigger: (trigger) ->
       return @dpTriggers.saveEnabledStateById(trigger.id, trigger.is_enabled)
 
     ###

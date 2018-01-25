@@ -15,12 +15,12 @@ define [
     _doLoadList: ->
       deferred = @$q.defer()
 
-      @Api2.sendGet('/webhooks/tickets').success(
+      @Api2.sendGet('/webhooks/tickets?include=ticket_trigger&inline_sideloads=1').then(
         (response) =>
-          webhooks = response.data
+          webhooks = response.data.data
           deferred.resolve(webhooks)
-      ,
-        (data, status, headers, config) -> deferred.reject()
+      ).catch((res) =>
+        deferred.reject()
       );
 
       return deferred.promise
@@ -64,6 +64,26 @@ define [
         )
 
       )
+      deferred.promise
+
+    _doSave: (model) ->
+      deferred = @$q.defer()
+
+      method = 'sendPostJson' # is new
+      method = 'sendPutJson' if model[@idProp]? and model[@idProp]
+
+      id = model[@idProp] || 0
+      @Api2[method](@url() + "/#{id}", model).then(
+        (response) =>
+          console.log('after save ', response)
+          deferred.resolve(response.data.data)
+      ).catch((res) =>
+        # data, status, headers, config
+        deferred.reject()
+      );
+
+
+
       deferred.promise
 
 

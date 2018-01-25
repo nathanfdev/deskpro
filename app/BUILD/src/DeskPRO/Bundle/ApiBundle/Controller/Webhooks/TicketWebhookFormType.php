@@ -38,6 +38,7 @@ use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\Form\FormEvent;
 use Symfony\Component\Form\FormEvents;
+use Symfony\Component\OptionsResolver\OptionsResolverInterface;
 
 class TicketWebhookFormType extends AbstractType
 {
@@ -67,44 +68,46 @@ class TicketWebhookFormType extends AbstractType
                 'required' => true,
                 'mapped'   => true,
             ])
-           ->add('triggers', EntityType::class, [
-                'class' => TicketTrigger::class,
-                'multiple' => true
-           ]);
+        ;
 
-          $builder->addEventListener(FormEvents::POST_SUBMIT, function(FormEvent $event) use ($options) {
-            $this->onPostSubmit($event, $options);
-          })
+//          $builder->addEventListener(FormEvents::POST_SUBMIT, function(FormEvent $event) use ($options) {
+//            $this->onPostSubmit($event, $options);
+//          })
         ;
     }
 
-    /**
-     * @internal
-     *
-     * @param FormEvent $event
-     */
-    public function onPostSubmit(FormEvent $event, array $options)
+    public function setDefaultOptions(OptionsResolverInterface $resolver)
     {
-        $form = $event->getForm();
-        /** @var TicketWebhook $data */
-        $webhook = $form->getData();
-
-        /** @var TicketTrigger $trigger */
-        foreach ($webhook->getTriggers() as $trigger) {
-            $this->setRequiredTriggerProperties($webhook, $trigger, $options);
-        }
+        $resolver->setDefaults(['allow_extra_fields' => true]);
     }
 
-    /**
-     * @param TicketWebhook $webhook
-     * @param TicketTrigger $trigger
-     * @param $options
-     */
-    private function setRequiredTriggerProperties( TicketWebhook $webhook, TicketTrigger $trigger, $options = [])
-    {
-        $trigger->is_enabled = $webhook->isIsEnabled();
-        if (! $trigger->title) {
-            $trigger->title = sprintf('Trigger for webhook %s', $webhook->getAuthId());
-        }
-    }
+//    /**
+//     * @internal
+//     *
+//     * @param FormEvent $event
+//     */
+//    public function onPostSubmit(FormEvent $event, array $options)
+//    {
+//        $form = $event->getForm();
+//        /** @var TicketWebhook $data */
+//        $webhook = $form->getData();
+//
+//        /** @var TicketTrigger $trigger */
+//        foreach ($webhook->getTriggers() as $trigger) {
+//            $this->setRequiredTriggerProperties($webhook, $trigger, $options);
+//        }
+//    }
+//
+//    /**
+//     * @param TicketWebhook $webhook
+//     * @param TicketTrigger $trigger
+//     * @param $options
+//     */
+//    private function setRequiredTriggerProperties( TicketWebhook $webhook, TicketTrigger $trigger, $options = [])
+//    {
+//        $trigger->is_enabled = $webhook->isIsEnabled();
+//        if (! $trigger->title) {
+//            $trigger->title = sprintf('Trigger for webhook %s', $webhook->getAuthId());
+//        }
+//    }
 }
