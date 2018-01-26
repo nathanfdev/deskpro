@@ -911,7 +911,9 @@ class TwilioAdapter
             throw $e;
         }
 
-        $task->delete();
+        if ($task->sid) {
+            $task->delete();
+        }
     }
 
     /**
