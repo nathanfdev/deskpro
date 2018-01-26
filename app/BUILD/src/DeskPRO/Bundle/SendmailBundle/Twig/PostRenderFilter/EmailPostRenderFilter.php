@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2017, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2018, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -70,7 +70,14 @@ class EmailPostRenderFilter extends AbstractPostRenderFilter
 
         $code = Strings::preDomDocument($code);
         $emog = new Emogrifier($code, $css);
-        $code = $emog->emogrify();
+        try {
+            $code = $emog->emogrify();
+        } catch (\Exception $e) {
+            // In case of error with css with failover on default css
+            $css  = file_get_contents(DP_WEB_ROOT.'/pub/src/DeskPRO/Bundle/AppBundle/Resources/style/emails/zurb-foundation.css');
+            $emog = new Emogrifier($code, $css);
+            $code = $emog->emogrify();
+        }
         $code = Strings::postDomDocument($code);
 
         foreach ($saveBlocks as $id => $block) {
