@@ -243,6 +243,16 @@ export const voiceBootstrap = createAction(
             window.DeskPRO_Window.runPageRoute(`ticket:/agent/tickets/${data.ticket.id}`);
           }
         });
+        messageBroker.addMessageListener('agent.voice.outgoing-call-declined', (data) => {
+          const state       = getState();
+          const connections = connectionsSelector(state);
+          const connection  = connections.filter(c => c.parameters.CallSid === data.CallSid).first();
+
+          dispatch(resetOutgoingCall());
+          if (connection) {
+            connection.disconnect();
+          }
+        });
       })
       .catch(() => {
         // catch mic disabled exception

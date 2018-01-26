@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2017, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2018, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -143,17 +143,22 @@ class TwilioCallbacksController extends BaseController
             throw $this->createAccessDeniedException();
         }
 
-        $adapter    = $this->get('twilio_adapter');
+        $em      = $this->getManager();
+        $adapter = $this->get('twilio_adapter');
+
         $callSid    = $request->request->get('CallSid');
         $callStatus = $request->request->get('CallStatus');
 
-        if ($callSid && $callStatus === 'completed') {
+        if (!$callSid) {
+            return;
+        }
+
+        if ($callStatus === 'completed') {
             // log call participants
             $participant = $this->getRepository(AbstractVoicePhoneCallParticipant::class)->findOneBy([
                 'callSid' => $callSid,
             ]);
 
-            $em = $this->getManager();
             if ($participant) {
                 // set participant leave event time
                 $participant->setDateLeft(new \DateTime());
@@ -228,6 +233,59 @@ class TwilioCallbacksController extends BaseController
                 $voicemailWorker = $this->get('twilio_adapter')->getVoicemailWorker($account);
                 if ($voicemailWorker->activityName === 'Busy') {
                     $adapter->updateVoicemailWorkerActivity($account, 'Idle');
+                }
+            }
+        } elseif ($callStatus === 'busy') {
+            // user declined outgoing call
+            $participant = $this->getRepository(AbstractVoicePhoneCallParticipant::class)->findOneBy([
+                'callSid' => $callSid,
+            ]);
+
+            if ($participant) {
+                // set participant leave event time
+                $participant->setDateLeft(new \DateTime());
+                $em->persist($participant);
+                $em->flush();
+
+                $phoneCall = $participant->getPhoneCall();
+
+                if ($participant instanceof VoicePhoneCallParticipantUser) {
+                    // log end-user ends the call
+                    $log = new VoicePhoneCallLog();
+                    $log
+                        ->setDetails($request->request->all())
+                        ->setPerson($participant->getPerson())
+                        ->setPhoneCall($participant->getPhoneCall())
+                        ->setActionType(VoicePhoneCallLog::ACTION_USER_DISCONNECTED);
+
+                    $em->persist($log);
+                    $em->flush();
+
+                    // ensure that we completed the end-user task if the phone call was not established
+                    // to avoid new reservation creations
+                    $adapter->endTask($account, $phoneCall->getTaskSid());
+
+                    // mark the phone call as finished
+                    $phoneCall->setDateEnded(new \DateTime());
+                    $phoneCall->setStatus(VoicePhoneCall::STATUS_ENDED);
+
+                    // log call end event
+                    // for now if a end-user finishes the call then it means the conference is ended
+                    $log = new VoicePhoneCallLog();
+                    $log->setActionType(VoicePhoneCallLog::ACTION_ENDED);
+                    $log->setDetails($request->request->all());
+                    $log->setPhoneCall($phoneCall);
+
+                    $em->persist($log);
+                    $em->persist($phoneCall);
+                    $em->flush();
+
+                    $this->get('event_dispatcher')->dispatch(
+                        LegacySystemEvent::EVENT_NAME,
+                        new LegacySystemEvent('agent.voice.outgoing-call-declined', [
+                            'CallSid' => $phoneCall->getCallSid(),
+                        ])
+                    );
                 }
             }
         }
@@ -1250,8 +1308,10 @@ class TwilioCallbacksController extends BaseController
         try {
             // make an outbound call
             $call = $this->get('twilio_adapter')->callNumber($phoneCall->getNumber(), $phoneCall->getExternalNumber(), [
-                'url'    => $this->getOutboundCallbackUrl($account, $phoneCall),
-                'method' => 'POST',
+                'url'                  => $this->getOutboundCallbackUrl($account, $phoneCall),
+                'method'               => 'POST',
+                'statusCallback'       => $this->getPhoneNumberStatusCallbackUrl($account),
+                'statusCallbackMethod' => 'POST',
             ]);
 
             // create user participant
@@ -1536,6 +1596,19 @@ class TwilioCallbacksController extends BaseController
             'account'     => $account->getId(),
             'accountAuth' => $account->getAccountAuth(),
             'callId'      => $phoneCall->getId(),
+        ], UrlGeneratorInterface::ABSOLUTE_URL);
+    }
+
+    /**
+     * @param VoiceAccount $account
+     *
+     * @return string
+     */
+    private function getPhoneNumberStatusCallbackUrl(VoiceAccount $account)
+    {
+        return $this->get('router')->generate('twilio_phone_number_status_callback', [
+            'account'     => $account->getId(),
+            'accountAuth' => $account->getAccountAuth(),
         ], UrlGeneratorInterface::ABSOLUTE_URL);
     }
 
