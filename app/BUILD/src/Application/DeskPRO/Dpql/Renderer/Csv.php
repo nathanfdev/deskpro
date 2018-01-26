@@ -160,7 +160,7 @@ class Csv extends AbstractRenderer
                     if (!isset($columnTotals[$id])) {
                         $columnTotals[$id] = 0;
                     }
-                    $columnTotals[$id] += (int) $this->getColumnValue($row, $id);
+                    $columnTotals[$id] += (float) $this->getColumnValue($row, $id);
                 }
             }
 
@@ -265,11 +265,11 @@ class Csv extends AbstractRenderer
                 $columns[] = $this->wrapCell($value);
 
                 if ($totalType) {
-                    $rowTotal += (int) str_replace(',', '', $value);
+                    $rowTotal += (float) str_replace(',', '', $value);
                     if (!isset($columnTotals[$xPath])) {
                         $columnTotals[$xPath] = 0;
                     }
-                    $columnTotals[$xPath] += (int) str_replace(',', '', $value);
+                    $columnTotals[$xPath] += (float) str_replace(',', '', $value);
                 }
             }
 
