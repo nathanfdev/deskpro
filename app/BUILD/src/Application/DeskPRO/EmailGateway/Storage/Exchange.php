@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2017, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2018, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -217,6 +217,8 @@ class Exchange
     /**
      * @param string $message_id
      *
+     * @throws \EWS_Exception
+     *
      * @return string
      */
     public function getRawMessage($message_id)
@@ -260,25 +262,46 @@ class Exchange
     }
 
     /**
-     * @param string $message_id
+     * @param \EWSType_MessageType $message
      *
      * @return string
      */
-    public function getRawHeaders($message_id)
+    public function getRawHeaders($message)
     {
-        $source = $this->getRawMessage($message_id);
-
-        $pos = strpos($source, "\r\n\r\n");
-        if ($pos === false) {
-            $pos = strpos($source, "\n\n");
+        $headers = '';
+        foreach ($message->InternetMessageHeaders->InternetMessageHeader as $header) {
+            $headers .= $header->HeaderName.':'.$header->_."\n";
         }
-        if ($pos === false) {
-            return '';
+        if (isset($message->From)) {
+            $headers .= 'From: '.$this->getRecipients($message->From->Mailbox)."\n";
+        }
+        if (isset($message->CcRecipients)) {
+            $headers .= 'Cc: '.$this->getRecipients($message->CcRecipients->Mailbox)."\n";
+        }
+        if (isset($message->ToRecipients)) {
+            $headers .= 'To: '.$this->getRecipients($message->ToRecipients->Mailbox)."\n";
         }
 
-        $rawHeader = substr($source, 0, $pos);
+        return $headers;
+    }
 
-        return $rawHeader;
+    private function getRecipients($mailbox)
+    {
+        $recipients = '';
+        if (is_array($mailbox)) {
+            $first = true;
+            foreach ($mailbox as $recipient) {
+                if (!$first) {
+                    $recipients .= ",\n ";
+                }
+                $first = false;
+                $recipients .= $recipient->Name.' <'.$recipient->EmailAddress.'>';
+            }
+        } else {
+            $recipients .= $mailbox->EmailAddress;
+        }
+
+        return $recipients;
     }
 
     /**
