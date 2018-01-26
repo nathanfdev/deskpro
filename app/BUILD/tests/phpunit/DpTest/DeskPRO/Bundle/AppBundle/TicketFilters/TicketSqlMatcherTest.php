@@ -39,7 +39,7 @@ use DpTestSrc\TestBundle\Mock\Dbal\ConnectionMock;
 class TicketSqlMatcherTest extends \PHPUnit_Framework_TestCase
 {
     /**
-     * @var Agen
+     * @var Agent
      */
     private $agent;
 

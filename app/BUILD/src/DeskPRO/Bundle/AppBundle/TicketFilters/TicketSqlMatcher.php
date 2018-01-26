@@ -242,6 +242,15 @@ class TicketSqlMatcher extends AbstractMatcher
         return $group;
     }
 
+    /**
+     * Get a SqlConditionGroup that will apply the provided agents permissions on to
+     * a ticket filter query. If the agent can see everything, this will return null
+     * (i.e. no additional conditions required for the agent).
+     *
+     * @param Agent $agent
+     *
+     * @return SqlConditionGroup|null
+     */
     public static function buildPermissionConditionForAgent(Agent $agent)
     {
         // can view everything, no perms to apply
@@ -249,6 +258,51 @@ class TicketSqlMatcher extends AbstractMatcher
             return null;
         }
 
-        $condGroup = new SqlConditionGroup($termGroup->operator->getOperator());
+        // Agent can view IF....
+        $condGroup = new SqlConditionGroup(SqlConditionGroup::OP_OR);
+
+        // the ticket IS ASSIGNED to the agent or their teams
+        $assignedPerms = new SqlConditionGroup(SqlConditionGroup::OP_OR);
+        $assignedPerms->addCondition(SqlCondition::create()
+            ->setWhere('{tickets}.agent_id = :agent_id')
+            ->setParam('agent_id', $agent->id, \PDO::PARAM_INT)
+        );
+        if (!empty($agent->teams)) {
+            $assignedPerms->addCondition(SqlCondition::create()
+                ->setWhere('{tickets}.agent_team_id IN (:team_ids)')
+                ->setParam('team_ids', $agent->teams, Connection::PARAM_INT_ARRAY)
+            );
+        }
+
+        $condGroup->add($assignedPerms);
+
+        // OR the ticket is in a dep i can see (and its a state that i can see)
+        $allowedDeps = $agent->allowed_departments;
+        if (!empty($allowedDeps)) {
+            // deps i can see
+            $depCond = new SqlConditionGroup(SqlConditionGroup::OP_AND);
+            $depCond->addCondition(SqlCondition::create()
+                ->setWhere('{tickets}.department_id IN (:allowed_dep_ids)')
+                ->setParam('allowed_dep_ids', $allowedDeps, Connection::PARAM_INT_ARRAY)
+            );
+
+            if (!$agent->view_unassigned) {
+                // but only if its not unassigned
+                $depCond->addCondition(SqlCondition::create()
+                    ->setWhere('({tickets}.agent_id IS NOT NULL OR {tickets}.agent_team_id IS NOT NULL)')
+                );
+            }
+
+            if (!$agent->view_assigned) {
+                // but only if its not assigned
+                $depCond->addCondition(SqlCondition::create()
+                    ->setWhere('({tickets}.agent_id IS NULL OR {tickets}.agent_team_id IS NULL)')
+                );
+            }
+
+            $condGroup->add($depCond);
+        }
+
+        return $condGroup;
     }
 }
