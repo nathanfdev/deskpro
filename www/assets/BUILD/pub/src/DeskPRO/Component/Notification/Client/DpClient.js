@@ -9,7 +9,7 @@ export default class DpClient extends AbstractClient {
   constructor(props) {
     super(props);
     const that = this;
-    this.client = io(`${that.options.host}:${that.options.port}`);
+    this.client = io(`http${that.options.secure ? 's' : ''}://${that.options.host}:${that.options.port}`);
     this.client.on(
       'connect',
       () => {
