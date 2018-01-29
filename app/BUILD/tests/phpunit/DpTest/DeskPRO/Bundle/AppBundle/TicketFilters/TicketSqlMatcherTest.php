@@ -83,7 +83,7 @@ class TicketSqlMatcherTest extends \PHPUnit_Framework_TestCase
     {
         $this->assertEqualQuery(
             'ticket.status = \'awaiting_agent\' AND ticket.agent = $me',
-            'SELECT COUNT(*) FROM tickets_search_active tickets WHERE (tickets.status = :c0) AND (tickets.agent_id = :c1)',
+            'SELECT COUNT(*) FROM tickets_search_active tickets WHERE tickets.status = :c0 AND tickets.agent_id = :c1',
             ['c0' => 'awaiting_agent', 'c1' => 1]
         );
     }
@@ -95,7 +95,7 @@ class TicketSqlMatcherTest extends \PHPUnit_Framework_TestCase
             'SELECT
                COUNT(*) FROM tickets_search_active tickets
                LEFT JOIN tickets_participants c1_part ON c1_part.ticket_id = tickets.id
-               WHERE (tickets.status = :c0) AND (c1_part.person_id IN (:c1))',
+               WHERE tickets.status = :c0 AND c1_part.person_id IN (:c1)',
             ['c0' => 'awaiting_agent', 'c1' => [1]]
         );
     }
@@ -104,7 +104,7 @@ class TicketSqlMatcherTest extends \PHPUnit_Framework_TestCase
     {
         $this->assertEqualQuery(
             'ticket.status = \'awaiting_agent\' AND ticket.agent_team IN $my_teams',
-            'SELECT COUNT(*) FROM tickets_search_active tickets WHERE (tickets.status = :c0) AND (tickets.agent_team_id IN (:c1))',
+            'SELECT COUNT(*) FROM tickets_search_active tickets WHERE tickets.status = :c0 AND tickets.agent_team_id IN (:c1)',
             ['c0' => 'awaiting_agent', 'c1' => [1, 2, 3]]
         );
     }
@@ -113,7 +113,7 @@ class TicketSqlMatcherTest extends \PHPUnit_Framework_TestCase
     {
         $this->assertEqualQuery(
             'ticket.status = \'awaiting_agent\' AND ticket.agent IS EMPTY',
-            'SELECT COUNT(*) FROM tickets_search_active tickets WHERE (tickets.status = :c0) AND (tickets.agent_id IS NULL)',
+            'SELECT COUNT(*) FROM tickets_search_active tickets WHERE tickets.status = :c0 AND tickets.agent_id IS NULL',
             ['c0' => 'awaiting_agent']
         );
     }
@@ -178,6 +178,7 @@ class TicketSqlMatcherTest extends \PHPUnit_Framework_TestCase
      */
     private function normalizeForCmp($sql)
     {
+        $sql = str_replace(['(', ')'], [' ( ', ' ) '], $sql);
         $sql = preg_replace('/\s+/', ' ', $sql);
         $sql = preg_replace('#(:c\d+)_.*?\b#', '$1', $sql);
 

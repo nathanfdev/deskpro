@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2017, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2018, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -115,9 +115,11 @@ class NotifyListBuilderTest extends \PHPUnit_Framework_TestCase
         $agent                      = new Agent();
         $agent->id                  = $id;
         $agent->allowed_departments = $depids;
-        $agent->view_all            = $all;
-        $agent->view_assigned       = $other;
-        $agent->view_unassigned     = $unassigned;
+        if ($all) {
+            $agent->all_departments_allowed = true;
+        }
+        $agent->view_assigned   = $other;
+        $agent->view_unassigned = $unassigned;
 
         return $agent;
     }

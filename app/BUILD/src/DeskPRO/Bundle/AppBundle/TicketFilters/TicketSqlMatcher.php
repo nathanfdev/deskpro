@@ -254,7 +254,7 @@ class TicketSqlMatcher extends AbstractMatcher
     public static function buildPermissionConditionForAgent(Agent $agent)
     {
         // can view everything, no perms to apply
-        if ($agent->view_all) {
+        if ($agent->canViewAll()) {
             return null;
         }
 
@@ -276,15 +276,19 @@ class TicketSqlMatcher extends AbstractMatcher
 
         $condGroup->add($assignedPerms);
 
-        // OR the ticket is in a dep i can see (and its a state that i can see)
         $allowedDeps = $agent->allowed_departments;
-        if (!empty($allowedDeps)) {
-            // deps i can see
+
+        // OR the ticket is in a dep i can see (and its a state that i can see)
+        if (!empty($allowedDeps) || $agent->all_departments_allowed) {
             $depCond = new SqlConditionGroup(SqlConditionGroup::OP_AND);
-            $depCond->addCondition(SqlCondition::create()
-                ->setWhere('{tickets}.department_id IN (:allowed_dep_ids)')
-                ->setParam('allowed_dep_ids', $allowedDeps, Connection::PARAM_INT_ARRAY)
-            );
+
+            // if we need to be explicit, then we need to check specific ids
+            if (!$agent->all_departments_allowed) {
+                $depCond->addCondition(SqlCondition::create()
+                    ->setWhere('{tickets}.department_id IN (:allowed_dep_ids)')
+                    ->setParam('allowed_dep_ids', $allowedDeps, Connection::PARAM_INT_ARRAY)
+                );
+            }
 
             if (!$agent->view_unassigned) {
                 // but only if its not unassigned
@@ -300,7 +304,9 @@ class TicketSqlMatcher extends AbstractMatcher
                 );
             }
 
-            $condGroup->add($depCond);
+            if (!$depCond->isEmpty()) {
+                $condGroup->add($depCond);
+            }
         }
 
         return $condGroup;

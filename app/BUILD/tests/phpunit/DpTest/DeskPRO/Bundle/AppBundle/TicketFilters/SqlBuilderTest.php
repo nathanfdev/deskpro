@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2017, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2018, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -47,7 +47,7 @@ class SqlBuilderTest extends ApiTestCase
         $sql = $qb->getSQL();
 
         $this->assertEquals(
-            $this->normalizeForCmp('SELECT COUNT(*) FROM tickets t WHERE t.foo = :c0_foo'),
+            $this->normalizeForCmp('SELECT COUNT(*) FROM tickets t WHERE t.foo = :c0'),
             $this->normalizeForCmp($sql)
         );
     }
@@ -67,7 +67,7 @@ class SqlBuilderTest extends ApiTestCase
         $sql = $qb->getSQL();
 
         $this->assertEquals(
-            $this->normalizeForCmp('SELECT COUNT(*) FROM tickets t LEFT JOIN tickets_messages c0_m ON c0_m.ticket_id = t.id WHERE t.foo = :c0_foo'),
+            $this->normalizeForCmp('SELECT COUNT(*) FROM tickets t LEFT JOIN tickets_messages c0_m ON c0_m.ticket_id = t.id WHERE t.foo = :c0'),
             $this->normalizeForCmp($sql)
         );
     }
@@ -108,7 +108,9 @@ class SqlBuilderTest extends ApiTestCase
 
     private function normalizeForCmp($sql)
     {
+        $sql = str_replace(['(', ')'], [' ( ', ' ) '], $sql);
         $sql = preg_replace('/\s+/', ' ', $sql);
+        $sql = preg_replace('#(:c\d+)_.*?\b#', '$1', $sql);
 
         return trim($sql);
     }

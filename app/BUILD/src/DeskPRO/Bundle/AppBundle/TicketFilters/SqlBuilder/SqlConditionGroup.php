@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2017, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2018, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -60,7 +60,33 @@ class SqlConditionGroup
     }
 
     /**
+     * @return SqlConditionGroup
+     */
+    public static function createAndGroup()
+    {
+        return new self(self::OP_AND);
+    }
+
+    /**
+     * @return SqlConditionGroup
+     */
+    public static function createOrGroup()
+    {
+        return new self(self::OP_OR);
+    }
+
+    /**
+     * @return SqlConditionGroup
+     */
+    public static function createNotGroup()
+    {
+        return new self(self::OP_NOT);
+    }
+
+    /**
      * @param $part
+     *
+     * @return $this
      */
     public function add($part)
     {
@@ -76,22 +102,32 @@ class SqlConditionGroup
             default:
                 throw new \InvalidArgumentException();
         }
+
+        return $this;
     }
 
     /**
      * @param SqlConditionGroup $g
+     *
+     * @return $this
      */
     public function addSubGroup(SqlConditionGroup $g)
     {
         $this->subGroups[] = $g;
+
+        return $this;
     }
 
     /**
      * @param SqlCondition $c
+     *
+     * @return $this
      */
     public function addCondition(SqlCondition $c)
     {
         $this->conds[] = $c;
+
+        return $this;
     }
 
     /**
@@ -116,5 +152,29 @@ class SqlConditionGroup
     public function getOperator()
     {
         return $this->op;
+    }
+
+    /**
+     * @return int
+     */
+    public function countSubGroups()
+    {
+        return count($this->subGroups);
+    }
+
+    /**
+     * @return int
+     */
+    public function countConditions()
+    {
+        return count($this->conds);
+    }
+
+    /**
+     * @return bool
+     */
+    public function isEmpty()
+    {
+        return empty($this->subGroups) && empty($this->conds);
     }
 }

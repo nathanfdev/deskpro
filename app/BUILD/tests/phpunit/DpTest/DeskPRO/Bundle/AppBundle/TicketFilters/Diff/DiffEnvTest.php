@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2017, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2018, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -55,8 +55,8 @@ class DiffEnvTest extends \PHPUnit_Framework_TestCase
 
         $agentContexts = [
             $this->makeAgent(1, [1, 2, 3], true, true, true),
-            $this->makeAgent(2, [1, 2, 3], false, true, true),
-            $this->makeAgent(3, [6], false, true, true),
+            $this->makeAgent(2, [1, 2], false, true, true),
+            $this->makeAgent(3, [3], false, true, true),
         ];
 
         $filters = FilterData::getFilters();
@@ -64,6 +64,30 @@ class DiffEnvTest extends \PHPUnit_Framework_TestCase
         $env = new DiffEnv($matcher, $agentContexts, $filters);
 
         return $env;
+    }
+
+    public function testAgentPermCheck()
+    {
+        $env    = $this->makeEnv();
+        $agents = $env->getAgents();
+
+        $ticketA             = new TicketModel();
+        $ticketA->id         = 1;
+        $ticketA->status     = 'awaiting_user';
+        $ticketA->department = 1;
+
+        $ticketB             = new TicketModel();
+        $ticketB->id         = 1;
+        $ticketB->status     = 'awaiting_agent';
+        $ticketB->department = 3;
+
+        $this->assertTrue($agents[0]->canViewTicket($ticketA));
+        $this->assertTrue($agents[1]->canViewTicket($ticketA));
+        $this->assertFalse($agents[2]->canViewTicket($ticketA));
+
+        $this->assertTrue($agents[0]->canViewTicket($ticketB));
+        $this->assertFalse($agents[1]->canViewTicket($ticketB));
+        $this->assertTrue($agents[2]->canViewTicket($ticketB));
     }
 
     public function testFiltersWithField()
@@ -139,9 +163,11 @@ class DiffEnvTest extends \PHPUnit_Framework_TestCase
         $agent                      = new Agent();
         $agent->id                  = $id;
         $agent->allowed_departments = $depids;
-        $agent->view_all            = $all;
-        $agent->view_assigned       = $other;
-        $agent->view_unassigned     = $unassigned;
+        if ($all) {
+            $agent->all_departments_allowed = true;
+        }
+        $agent->view_assigned   = $other;
+        $agent->view_unassigned = $unassigned;
 
         return $agent;
     }

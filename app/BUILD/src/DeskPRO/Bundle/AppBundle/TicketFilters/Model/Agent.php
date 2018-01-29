@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2017, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2018, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -48,16 +48,17 @@ class Agent
     public $teams = [];
 
     /**
-     * Shortcut to remove perm checks from filter queries.
-     *
-     * @var bool
-     */
-    public $view_all = false;
-
-    /**
      * @var int[]
      */
     public $allowed_departments = [];
+
+    /**
+     * A hint that says that allowed_departments is all departments.
+     * This enables some optimisations because we can skip dep checks.
+     *
+     * @var bool
+     */
+    public $all_departments_allowed = false;
 
     /**
      * @var bool
@@ -70,13 +71,23 @@ class Agent
     public $view_assigned = false;
 
     /**
+     * Does the agent have perms to view everything?
+     *
+     * @return bool
+     */
+    public function canViewAll()
+    {
+        return $this->all_departments_allowed && $this->view_assigned && $this->view_unassigned;
+    }
+
+    /**
      * @param TicketModel $ticketModel
      *
      * @return bool
      */
     public function canViewTicket(TicketModel $ticketModel)
     {
-        if ($this->view_all) {
+        if ($this->canViewAll()) {
             return true;
         }
 
@@ -88,7 +99,7 @@ class Agent
             return true;
         }
 
-        if (in_array($ticketModel->department, $this->allowed_departments)) {
+        if ($this->all_departments_allowed || in_array($ticketModel->department, $this->allowed_departments)) {
             if ($this->view_assigned && $ticketModel->agent !== 0) {
                 return true;
             }

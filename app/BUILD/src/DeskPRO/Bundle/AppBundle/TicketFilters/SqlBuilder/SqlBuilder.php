@@ -68,22 +68,39 @@ class SqlBuilder extends \Doctrine\DBAL\Query\QueryBuilder
 
     /**
      * @param SqlConditionGroup $group
+     * @param int               $level Level of nesting
      *
      * @return string
      */
-    private function initQueryCondGroup(SqlConditionGroup $group)
+    private function initQueryCondGroup(SqlConditionGroup $group, $level = 0)
     {
+        // this happens if someone is needlessly wrapping conditions
+        // it prevents extra parenthesis in the generated sql, just clenas stuff up a bit
+        if (!$group->countConditions() && $group->countSubGroups() === 1) {
+            $subGroups = $group->getSubGroups();
+
+            return $this->initQueryCondGroup($subGroups[0]);
+        }
+
         $wheres = [];
         foreach ($group->getConditions() as $cond) {
-            $wheres[] = '('.$this->initQueryCond($cond).')';
+            $wheres[] = $this->initQueryCond($cond);
         }
+
         foreach ($group->getSubGroups() as $subGroup) {
-            $wheres[] = '('.$this->initQueryCondGroup($subGroup).')';
+            $wheres[] = $this->initQueryCondGroup($subGroup, $level + 1);
         }
 
         $op = $group->getOperator();
 
-        return implode(" $op ", $wheres);
+        if (count($wheres) === 1 || $level === 0) {
+            // we dont need to wrap with parens if
+            // we're on the first level deep (doctrine builder already wraps it for us)
+            // or if theres only one expression
+            return implode(" $op ", $wheres);
+        } else {
+            return '('.implode(" $op ", $wheres).')';
+        }
     }
 
     /**
