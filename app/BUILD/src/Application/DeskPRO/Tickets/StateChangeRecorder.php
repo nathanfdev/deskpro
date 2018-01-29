@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2017, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2018, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -34,8 +34,14 @@
 
 namespace Application\DeskPRO\Tickets;
 
+use Application\DeskPRO\Entity\LabelTicket;
+use Application\DeskPRO\Entity\Person;
 use Application\DeskPRO\Entity\Ticket;
+use Application\DeskPRO\Entity\TicketSla;
 use Application\DeskPRO\ORM\StateChange\StateChangeRecorder as BaseStateChangeRecorder;
+use DeskPRO\Bundle\AppBundle\TicketFilters\Model\Entity\CustomData;
+use DeskPRO\Bundle\AppBundle\TicketFilters\Model\Entity\TicketModel;
+use DeskPRO\Bundle\AppBundle\TicketFilters\Model\Entity\TicketSlaModel;
 
 class StateChangeRecorder extends BaseStateChangeRecorder
 {
@@ -71,6 +77,11 @@ class StateChangeRecorder extends BaseStateChangeRecorder
     private $ticket;
 
     /**
+     * @var TicketModel
+     */
+    private $before_ticket_model;
+
+    /**
      * @var bool
      */
     private $no_id = false;
@@ -100,6 +111,83 @@ class StateChangeRecorder extends BaseStateChangeRecorder
         if (!$ticket->id) {
             $this->no_id = true;
         }
+
+        $this->before_ticket_model = $this->getSimpleTicketModel();
+    }
+
+    /**
+     * Get an array of [before, after] simple ticket models. 0th is old, 1st is new.
+     *
+     * @return TicketModel[]
+     */
+    public function getBeforeAfterModels()
+    {
+        return [$this->before_ticket_model, $this->getSimpleTicketModel()];
+    }
+
+    /**
+     * @return TicketModel
+     */
+    public function getSimpleTicketModel()
+    {
+        $cur             = new TicketModel();
+        $cur->agent      = $this->ticket->agent ? $this->ticket->agent->getId() : 0;
+        $cur->agent_team = $this->ticket->agent_team ? $this->ticket->agent_team->getId() : 0;
+        $cur->department = $this->ticket->department ? $this->ticket->department->getId() : 0;
+        $cur->urgency    = $this->ticket->status === Ticket::STATUS_AWAITING_AGENT ? $this->ticket->urgency : 0;
+        $cur->status     = $this->ticket->getStatusCode();
+        $cur->is_hold    = $this->ticket->is_hold;
+        $cur->person     = $this->ticket->person ? $this->ticket->person->getId() : 0;
+        $cur->labels     = array_map(function (LabelTicket $l) {
+            return $l->getLabel();
+        }, $this->ticket->labels);
+        $cur->language              = $this->ticket->language ? $this->ticket->language->getId() : 0;
+        $cur->workflow              = $this->ticket->workflow ? $this->ticket->workflow->getId() : 0;
+        $cur->priority              = $this->ticket->priority ? $this->ticket->priority->getId() : 0;
+        $cur->category              = $this->ticket->category ? $this->ticket->category->getId() : 0;
+        $cur->product               = $this->ticket->product ? $this->ticket->product->getId() : 0;
+        $cur->organization          = $this->ticket->organization ? $this->ticket->organization->getId() : 0;
+        $cur->email_account         = $this->ticket->email_account ? $this->ticket->email_account->getId() : 0;
+        $cur->date_user_waiting     = $this->ticket->date_user_waiting;
+        $cur->date_agent_waiting    = $this->ticket->date_agent_waiting;
+        $cur->date_last_user_reply  = $this->ticket->date_last_user_reply;
+        $cur->date_last_agent_reply = $this->ticket->date_last_agent_reply;
+        $cur->date_created          = $this->ticket->date_created;
+        $cur->followers             = array_map(function (Person $a) {
+            return $a->getId();
+        }, $this->ticket->getAgentParticipants());
+        $cur->slas = array_map(function (TicketSla $sla) {
+            $slaM = new TicketSlaModel();
+            $slaM->sla_id = $sla->sla->getId();
+            $slaM->status = $sla->sla_status;
+            $slaM->fail_date = $sla->fail_date;
+            $slaM->warn_date = $sla->warn_date;
+            $slaM->is_completed = $sla->is_completed;
+
+            return $slaM;
+        }, $this->ticket->ticket_slas);
+
+        $models = [];
+        foreach ($this->ticket->custom_data as $d) {
+            $fid = $d->getFieldId();
+            if (isset($models[$fid])) {
+                $m = $models[$fid];
+            } else {
+                $m        = new CustomData();
+                $m->field = $fid;
+            }
+            if ($d->getField()->isMulti()) {
+                $m->data[] = $d->getData();
+            } else {
+                $m->data = $d->getData();
+            }
+
+            $models[$fid] = $m;
+        }
+
+        $cur->custom_fields = $models;
+
+        return $cur;
     }
 
     /**
