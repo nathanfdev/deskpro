@@ -118,7 +118,7 @@
                     <thead>
                     <td class="agent-name"></td>
                     <td>View</td>
-                    <td>Edit</td>
+                    <td ng-if="!dashboard.is_default">Edit</td>
                     </thead>
 
                     <tr ng-repeat="agent in agents track by agent.id">
@@ -129,7 +129,7 @@
                         <td>
                             <input ng-click='toggleAgentViewDashboard(agent.id)' ng-checked="canAgentViewDashboard(agent.id)" type="checkbox">
                         </td>
-                        <td>
+                        <td ng-if="!dashboard.is_default">
                             <input ng-click='toggleAgentEditDashboard(agent.id)' ng-checked="canAgentEditDashboard(agent.id)" type="checkbox">
                         </td>
                     </tr>

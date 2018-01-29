@@ -49,6 +49,14 @@ class ReportDashboardPermissionType extends AbstractType
      */
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
+        /** @var ReportDashboard $dashboard */
+        $dashboard = $options['dashboard'];
+        $choices   = [ReportDashboardPermission::VIEW];
+
+        if (!$dashboard->isDefault()) {
+            $choices[] = ReportDashboardPermission::FULL;
+        }
+
         $builder
             ->add('person', EntityType::class, [
                 'class'    => Person::class,
@@ -57,10 +65,7 @@ class ReportDashboardPermissionType extends AbstractType
             ->add('name', ChoiceType::class, [
                 'required'          => true,
                 'choices_as_values' => true,
-                'choices'           => [
-                    ReportDashboardPermission::VIEW,
-                    ReportDashboardPermission::FULL,
-                ],
+                'choices'           => $choices,
             ])
         ;
 

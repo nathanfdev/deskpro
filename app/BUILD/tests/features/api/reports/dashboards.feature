@@ -149,7 +149,7 @@ Feature: /dashboards endpoint
   "title": "Updated Dashboard",
   "permissions": [
     {
-      "name": "full",
+      "name": "view",
       "person": ~agent_2@deskpro.dev~
     },
     {
@@ -166,7 +166,7 @@ Feature: /dashboards endpoint
     And the JSON node "data.is_default" should be equal to 1
     And the JSON node "data.permissions" should have 2 elements
     And the JSON node "data.permissions[0].person" should be equal to "{agent_2@deskpro.dev}"
-    And the JSON node "data.permissions[0].name" should be equal to "full"
+    And the JSON node "data.permissions[0].name" should be equal to "view"
     And the JSON node "data.permissions[1].person" should be equal to "{agent}"
     And the JSON node "data.permissions[1].name" should be equal to "view"
 

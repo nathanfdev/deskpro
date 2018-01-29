@@ -71,6 +71,7 @@ class ReportDashboardType extends AbstractType
                 'required'  => false,
                 'dashboard' => $report,
                 'person'    => $options['person'],
+                'mapped'    => !$report->isDefault(),
             ])
         ;
 
