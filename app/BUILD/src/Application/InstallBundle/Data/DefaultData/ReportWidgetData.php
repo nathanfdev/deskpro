@@ -151,8 +151,8 @@ ORDER BY COUNT() DESC
             'query'         => 'SELECT COUNT() AS \'Tickets\', HOUR(tickets.date_created) as \'Created Hour\' 
             FROM  tickets 
             WHERE tickets.date_created = ${date}
-            GROUP BY HOUR(tickets.date_created)
-            ORDER BY HOUR(tickets.date_created)',
+            GROUP BY @\'Created Hour\'
+            ORDER BY @\'Created Hour\'',
             'variables' => '[{"name":"date","type":"dates","default":"past_24_hours"}]',
         ],
         'daily-activity' => [
@@ -171,8 +171,8 @@ ORDER BY COUNT() DESC
             'query' => 'SELECT COUNT() AS \'Replies\', HOUR(tickets_messages.date_created) as \'Reply Hour\' 
             FROM  tickets_messages 
             WHERE tickets_messages.date_created = ${date}
-            GROUP BY HOUR(tickets_messages.date_created)
-            ORDER BY HOUR(tickets_messages.date_created)',
+            GROUP BY @\'Reply Hour\'
+            ORDER BY @\'Reply Hour\'',
             'variables' => '[{"name":"date","type":"dates","default":"yesterday"}]',
         ],
         'incomplete-sla' => [
