@@ -49,6 +49,7 @@ class CheckUserField extends \Application\DeskPRO\Tickets\Triggers\Terms\CheckUs
     {
         $options = new CheckedOptionsArray();
         $options->addRequiredNames('field_id', 'value', 'type_name');
+        $options->setAliases('field_id', ['field']);
 
         return $options;
     }

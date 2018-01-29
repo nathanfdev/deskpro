@@ -283,12 +283,11 @@ class FieldManager
      *
      * @param $field_id
      *
-     * @return \Application\DeskPRO\Entity\CustomDefAbstract
+     * @return \Application\DeskPRO\Entity\CustomDefAbstract|null
      */
     public function getFieldFromId($field_id)
     {
         $this->getFields();
-
 
         if (isset($this->fields[$field_id])) {
             return $this->fields[$field_id];

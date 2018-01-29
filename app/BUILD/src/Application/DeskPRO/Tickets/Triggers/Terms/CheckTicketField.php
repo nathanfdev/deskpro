@@ -53,6 +53,7 @@ class CheckTicketField extends AbstractCheckCustomField
     {
         $options = new CheckedOptionsArray();
         $options->addRequiredNames('field_id', 'value');
+        $options->setAliases('field_id', ['field']);
 
         return $options;
     }

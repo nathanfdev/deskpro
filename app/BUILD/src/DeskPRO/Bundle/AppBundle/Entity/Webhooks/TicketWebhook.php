@@ -103,7 +103,7 @@ class TicketWebhook
     /**
      * @ORM\ManyToMany(targetEntity="Application\DeskPRO\Entity\TicketTrigger", cascade={"persist", "remove"})
      * @ORM\JoinTable(name="ticket_webhook_triggers",
-     *      joinColumns={@ORM\JoinColumn(name="webhook_id", referencedColumnName="id")},
+     *      joinColumns={@ORM\JoinColumn(name="webhook_id", referencedColumnName="id", onDelete="CASCADE")},
      *      inverseJoinColumns={@ORM\JoinColumn(name="trigger_id", referencedColumnName="id", unique=true, onDelete="CASCADE")}
      *      )
      * @JMS\Type("array<entity<Application\DeskPRO\Entity\TicketTrigger>>")
