@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2017, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2018, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -74,6 +74,7 @@ class SettingsProfile extends AbstractType
         $builder->add('default_team_id', 'hidden', ['required' => false]);
 
         $builder->add('new_picture_blob_id', 'hidden', ['required' => false]);
+        $builder->add('remove_picture', 'checkbox', ['required' => false]);
 
         $builder->add('auto_dismiss_notifications', 'choice', [
             'choices' => [

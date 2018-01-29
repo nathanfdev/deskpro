@@ -129,6 +129,9 @@ pageMeta.fragmentClass = 'DeskPRO.Agent.PageFragment.SettingsPage.Profile';
 					<td style="padding-right: 15px;">
 						<img src="{{ app.user.getPictureUrl(80) }}" />
 						<em class="desc" style="display: block;">{{ phrase('agent.settings.your_current_picture') }}</em>
+            {% if app.user.hasPicture() and app.user.getPictureBlob() %}
+              <label>{{ form_widget(form.remove_picture) }} {{ phrase('agent.general.remove') }} {{ phrase('agent.general.label_picture') }}</label>
+            {% endif %}
 					</td>
 				<td>
 					<input type="file" name="file-upload" />
