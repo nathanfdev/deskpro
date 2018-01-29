@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2017, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2018, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -1425,7 +1425,6 @@ class TicketController extends AbstractController
                     }
                 }
             }
-            $this->em->flush();
         }
 
         if ($macro) {
@@ -1433,7 +1432,9 @@ class TicketController extends AbstractController
             $this->em->persist($macroLog);
         }
 
-        if ($dupeMessage = $this->em->getRepository(TicketMessage::class)->checkDupeMessage(
+        /** @var \Application\DeskPRO\EntityRepository\TicketMessage $messageRepo */
+        $messageRepo = $this->em->getRepository(TicketMessage::class);
+        if ($dupeMessage = $messageRepo->checkDupeMessage(
             $message,
             $ticket,
             5 * 60
