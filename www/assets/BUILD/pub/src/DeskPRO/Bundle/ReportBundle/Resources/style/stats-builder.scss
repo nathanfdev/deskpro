@@ -560,6 +560,10 @@
           font-size: 26px;
           font-weight: 600;
         }
+        .stat-value.no-data {
+          color: #bbb;
+          font-size: 20px;
+        }
         .stat-description {
           text-align: center;
           font-size: 15px;

@@ -1244,6 +1244,10 @@ $gridster-box-header-height: 40px;
     font-weight: 600;
   }
 
+  .stat-value.no-data {
+    color: #999;
+  }
+
   .stat-description {
     text-align: center;
     font-size: 15px;

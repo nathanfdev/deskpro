@@ -138,6 +138,9 @@ class ReportDashboardWidgetHandler extends AbstractEntityHandler
             $data['aoColumns'] = $aoColumns;
             $data['columns']   = $columns;
         }
+        if (empty($data) || $data === '') {
+            $data = null;
+        }
 
         return $data;
     }

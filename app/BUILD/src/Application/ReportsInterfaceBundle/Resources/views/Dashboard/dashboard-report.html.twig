@@ -70,7 +70,12 @@
                         </div>
                         <h3 class="ng-binding">{{ ng_var('widget.title') }}</h3>
                     </div>
-                    <div class="box" ng-if="widget.widget_type=='graph'">
+                    <div class="box stat-box" ng-if="widget.rendered_result === null">
+                        <div class="stat">
+                            <div class="stat-value no-data">no data</div>
+                        </div>
+                    </div>
+                    <div class="box" ng-if="widget.rendered_result !== null && widget.widget_type=='graph'">
                         <dashboard-amcharts
                             report-level-vars={{ ng_var('report.variables') }}
                             title="{{ ng_var('widget.title') }}"
@@ -80,7 +85,7 @@
                             options="{{ ng_var('widget.options') }}"
                         />
                     </div>
-                    <div class="box" ng-if="widget.type=='table'">
+                    <div class="box" ng-if="widget.rendered_result !== null && widget.type=='table'">
                         <dashboard-table
                             title="{{ ng_var('widget.title') }}"
                             table-data="{{ ng_var('widget.rendered_result') }}"
@@ -89,7 +94,7 @@
                             options="{{ ng_var('widget.options') }}"
                         />
                     </div>
-                    <div class="box stat-box" ng-if="widget.type=='simple_stat'">
+                    <div class="box stat-box" ng-if="widget.rendered_result !== null && widget.type=='simple_stat'">
                         <dashboard-stat
                             render-type = "test"
                             my-index="{{ ng_var('$index') }}"

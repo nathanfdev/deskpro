@@ -57,7 +57,7 @@ abstract class AbstractJsonChartRenderer extends AbstractJsonRenderer
     protected function doRender(array $rows, ResultMetadata $metadata, array $options = [])
     {
         if (!$rows) {
-            return '';
+            return null;
         }
 
         //initial output array
