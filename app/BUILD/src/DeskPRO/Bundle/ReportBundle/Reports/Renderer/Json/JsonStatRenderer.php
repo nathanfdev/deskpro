@@ -80,9 +80,7 @@ class JsonStatRenderer extends AbstractJsonRenderer
     {
         foreach ($metadata->getSelectColumns() as $column) {
             if ($column['title'] === 'stat_value') {
-                $value = $rows[0][$column['resultId'] - 1] ?: '0';
-
-                return $this->valueRenderer->renderValue($value, 'string', $metadata);
+                return $this->renderCellValue($rows[0], $column, $metadata);
             }
         }
 
@@ -99,10 +97,33 @@ class JsonStatRenderer extends AbstractJsonRenderer
     {
         foreach ($metadata->getSelectColumns() as $column) {
             if ($column['title'] === 'stat_description') {
-                return $this->valueRenderer->renderValue($rows[0][$column['resultId'] - 1], 'string', $metadata);
+                return $this->renderCellValue($rows[0], $column, $metadata);
             }
         }
 
         return '';
+    }
+
+    /**
+     * Renders the value for a specific cell.
+     *
+     * @param mixed [int]    $row
+     * @param mixed          $column
+     * @param ResultMetadata $metadata
+     *
+     * @return string
+     */
+    protected function renderCellValue(array $row, $column, ResultMetadata $metadata)
+    {
+        $value = $column['resultId'] ? $row[$column['resultId'] - 1] : '';
+
+        $renderer = is_array($column) && array_key_exists('renderer', $column) ? $column['renderer'] : 'string';
+        if ($renderer instanceof \Closure) {
+            /* @var $renderer \Closure */
+
+            return $renderer($this->valueRenderer, $value, $row, $this, $metadata);
+        }
+
+        return $this->valueRenderer->renderValue($value, $renderer, $metadata);
     }
 }
