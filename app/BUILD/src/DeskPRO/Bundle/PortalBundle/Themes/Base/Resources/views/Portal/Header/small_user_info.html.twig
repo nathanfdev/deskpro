@@ -16,6 +16,64 @@
         <div class="dropdown-group">
           <a href="{{ path('portal_login') }}" id="top-login-btn" class="button-small button-marked clickaway-dropdown" data-clickaway-target="top-login-dropdown">{{ phrase('portal.account.login-btn') }} <i
                     class="fa fa-caret-down"></i></a>
+          <div class="dp-react-widget">
+            <div class="active-button-dropdown language-dropdown" id="top-login-dropdown" style="min-width: 300px">
+              <div class="small-form">
+                <div>
+                  {% if has_login_form() %}
+                    <form method="post" id="login-sidebar">
+                      <input type="hidden" name="_failure_path" value="{{ path('portal_login', {retry:'auth'}) }}" />
+                      <label for="login-form-username">
+                        <span>{{ phrase('portal.account.login-email') }}</span>
+                        <input
+                          type="text"
+                          placeholder="email@example.com"
+                          name="username"
+                          id="login-form-username"
+                          tabIndex="21"
+                        />
+                      </label>
+
+                      <label for="login-form-password">
+                        <div id="login-form-failed-reason"></div>
+                        <span>{{ phrase('portal.account.login-password') }}</span>
+                        <input
+                          type="password"
+                          placeholder="{{ phrase('portal.account.login-password') }}"
+                          name="password"
+                          id="login-form-password"
+                          tabIndex="22"
+                        />
+                      </label>
+
+                      <div class="permanent-login">
+                        <label for="login-form-remember-me">
+                          <input
+                            type="checkbox"
+                            name="remember_me"
+                            id="login-form-remember-me"
+                            tabIndex="23"
+                          />
+                          {{ phrase('portal.account.login-stay-logged-in') }}
+                        </label>
+                      </div>
+
+                      <button type="submit" tabIndex="24">{{ phrase('portal.account.login-btn') }}</button>
+
+                      {% if has_login_form() %}
+                        <div class="secondary-action">
+                          <a href="{{ path('portal_reset_password') }}" id="login-form-reset-password" tabIndex="25">
+                            {{ phrase('portal.account.login-password-reminder') }}
+                          </a>
+                        </div>
+                      {% endif %}
+                    </form>
+                  {% endif %}
+                  <div id="login-form-usersources"></div>
+                </div>
+              </div>
+            </div>
+          </div>
         </div>
       </li>
     {% endif %}
