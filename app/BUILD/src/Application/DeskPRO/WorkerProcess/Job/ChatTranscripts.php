@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2017, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2018, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -100,13 +100,22 @@ class ChatTranscripts extends AbstractJob
                     }
                 }
 
+                $brandStack = App::$container->get('brand_stack');
+                $brand      = $chat->getBrand();
+                if (!$brand) {
+                    $brand = $brandStack->getActive()->getBrand();
+                }
+                $account = App::$container->getEmailAccountManager()->getDefaultOutAccountWithFallback($brand)->getUseEmailAddress();
+
+                $brandStack->push($brand);
+
                 if (!$noAgentAnswer) {
                     $container = App::getContainer();
                     if ($container->get('deskpro.feature_flags')->hasBeta('email_templates')) {
                         $viewModel = $container->get('email.user_viewmodel_factory')
                             ->createChatTranscriptModel($chat, $chatMessages);
                         $container->get('email.email_sender')
-                            ->send($viewModel, ['to' => $person]);
+                            ->send($viewModel, ['to' => $person, 'from' => $account]);
                     } else {
                         $vars = [
                             'convo'          => $chat,
@@ -115,6 +124,7 @@ class ChatTranscripts extends AbstractJob
 
                         $message = App::getMailer()->createMessage();
                         $message->setTo($email, $name);
+                        $message->setFrom($account);
                         $message->setTemplate('DeskPRO:emails_user:chat-transcript.html.twig', $vars);
                         $message->setSuppressAutoreplies(true);
                         App::getMailer()->send($message);
@@ -130,6 +140,8 @@ class ChatTranscripts extends AbstractJob
                         'date_created'    => date('Y-m-d H:i:s'),
                     ]);
                 }
+
+                $brandStack->pop();
             }
 
             App::getOrm()->detach($chat);
