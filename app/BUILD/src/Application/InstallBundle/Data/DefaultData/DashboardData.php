@@ -161,7 +161,7 @@ class DashboardData extends AbstractDefaultData
                             'size'       => '2:2',
                             'widget_key' => 'number-tickets-status-grouped-by-x-y',
                             'type'       => 'simple_bars',
-                            'options'    => '{"legend":false,"labelsEnabled":false}',
+                            'options'    => '{"legend":false,"categoryAxis":{"title":null},"valueAxes":[{"stackType": "regular", "title": null}]}',
                             'variables'  => [
                                 [
                                         'name'       => 'ticket',
@@ -195,7 +195,7 @@ class DashboardData extends AbstractDefaultData
                             'size'       => '2:2',
                             'widget_key' => 'number-tickets-status-grouped-by-x-y',
                             'type'       => 'simple_bars',
-                            'options'    => '{"legend":false,"labelsEnabled":false}',
+                            'options'    => '{"legend":false,"valueAxes":[{"stackType": "regular", "title": null}],"categoryAxis":{"title":null}}',
                             'variables'  => [
 
                                 [

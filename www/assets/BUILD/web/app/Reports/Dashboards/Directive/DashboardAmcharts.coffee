@@ -60,6 +60,8 @@ define ->
             options = JSON.parse(scope.options)
           catch e
             options = {}
+            console.warn("invalid options")
+            console.log(e)
 
           options.theme = 'light'
 
