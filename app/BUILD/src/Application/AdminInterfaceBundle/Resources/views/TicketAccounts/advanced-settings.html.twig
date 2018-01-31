@@ -301,6 +301,51 @@
                 </div>
             </div>
 
+            <div class="row">
+                <div class="col-lg-10">
+                    <div class="panel panel-innertable">
+                        <div class="panel-heading">
+                            <h3>
+                                <span>{{ phrase('adm.ticket_accounts.download_hotlinked_images') }}</span>
+                            </h3>
+                        </div>
+                        <div class="inner-group">
+                            <span class="help-block">{{ phrase('adm.ticket_accounts.download_hotlinked_images_help') }}</span>
+                            <label>
+                                <h4>
+                                    <label>
+                                        <input type="checkbox" ng-model="settings['download_hotlinked_images.enabled']">
+                                        {{ phrase('adm.ticket_accounts.download_hotlinked_images_enabled') }}
+                                </h4>
+                            </label>
+                        </div>
+
+                        <div style="margin-left: 45px;" ng-show="settings['download_hotlinked_images.enabled']">
+                          <div class="inner-group">
+                              <label>
+                                  <h4>
+                                      {{ phrase('adm.ticket_accounts.download_hotlinked_images_image_maxsize') }}
+                                  </h4>
+                              </label>
+                              <div>
+                                  <dp-filesize-with-unit ng-model="settings['download_hotlinked_images.image_maxsize']"></dp-filesize-with-unit>
+                              </div>
+                          </div>
+                          <div class="inner-group">
+                              <label>
+                                  <h4>
+                                      {{ phrase('adm.ticket_accounts.download_hotlinked_images_total_maxsize') }}
+                                  </h4>
+                              </label>
+                              <div>
+                                  <dp-filesize-with-unit ng-model="settings['download_hotlinked_images.total_maxsize']"></dp-filesize-with-unit>
+                              </div>
+                          </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
         </article>
 
         <footer>
