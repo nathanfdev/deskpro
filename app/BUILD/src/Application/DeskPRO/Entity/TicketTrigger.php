@@ -253,14 +253,6 @@ class TicketTrigger extends DomainObject
     }
 
     /**
-     * @param TriggerTerms $terms
-     */
-    public function setTerms($terms)
-    {
-        $this->setModelField('terms', $terms);
-    }
-
-    /**
      * @param TriggerActions $actions
      */
     public function setActions($actions)
