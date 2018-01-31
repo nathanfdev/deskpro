@@ -76,7 +76,11 @@ class TicketMessage extends React.Component {
             </span>
             <span className="voice-ticket-message-title">
               <i className="icon call" />
-              {agentPhrases.get('agent.voice.incoming_call_title')}
+              {agentPhrases.get(
+                phoneCall.get('type') === 'outbound'
+                  ? 'agent.voice.outgoing_call_title'
+                  : 'agent.voice.incoming_call_title'
+              )}
             </span>
             <span className="voice-ticket-message-date">
               <time
