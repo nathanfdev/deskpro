@@ -73,6 +73,11 @@ class ReportDashboard extends DomainObject
     protected $permissions;
 
     /**
+     * @var string
+     */
+    protected $system_name;
+
+    /**
      * Constructor.
      */
     public function __construct()
@@ -184,6 +189,26 @@ class ReportDashboard extends DomainObject
         return $this->permissions;
     }
 
+    /**
+     * @return string
+     */
+    public function getSystemName()
+    {
+        return $this->system_name;
+    }
+
+    /**
+     * @param string $system_name
+     *
+     * @return $this
+     */
+    public function setSystemName($system_name)
+    {
+        $this->system_name = $system_name;
+
+        return $this;
+    }
+
     //###########################################################################
     // Doctrine Metadata
     //###########################################################################
@@ -212,6 +237,15 @@ class ReportDashboard extends DomainObject
             'scale'      => 0,
             'nullable'   => false,
             'columnName' => 'title',
+        ]);
+        $metadata->mapField([
+            'fieldName'  => 'system_name',
+            'type'       => 'string',
+            'length'     => 255,
+            'precision'  => 0,
+            'scale'      => 0,
+            'nullable'   => true,
+            'columnName' => 'system_name',
         ]);
 
         $metadata->mapField([

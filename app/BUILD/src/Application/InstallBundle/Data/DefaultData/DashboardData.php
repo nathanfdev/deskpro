@@ -50,8 +50,9 @@ class DashboardData extends AbstractDefaultData
 
     protected $dashboards = [
         [
-            'title'   => 'Ticket Insights',
-            'reports' => [
+            'title'       => 'Ticket Insights',
+            'system_name' => 'ticket_insights',
+            'reports'     => [
                 [
                     'title'      => 'Overview',
                     'sort_order' => 1,
@@ -161,7 +162,7 @@ class DashboardData extends AbstractDefaultData
                             'size'       => '2:2',
                             'widget_key' => 'number-tickets-status-grouped-by-x-y',
                             'type'       => 'simple_bars',
-                            'options'    => '{"legend":false,"categoryAxis":{"title":null},"valueAxes":[{"stackType": "regular", "title": null}]}',
+                            'options'    => '{"legend":false,"categoryAxis":{"title":null},"valueAxes":[{"stackType": "regular", "title": null}],"categoryAxis":{"labelRotation": 45}}',
                             'variables'  => [
                                 [
                                         'name'       => 'ticket',
@@ -422,8 +423,9 @@ class DashboardData extends AbstractDefaultData
             ],
         ],
         [
-            'title'   => 'Chat Insights',
-            'reports' => [
+            'title'       => 'Chat Insights',
+            'system_name' => 'chat_insights',
+            'reports'     => [
                 [
                     'title'      => 'Overview',
                     'sort_order' => 2,
@@ -552,7 +554,7 @@ class DashboardData extends AbstractDefaultData
         $dashboards = $this->getEm()->getRepository(Dashboard::class)->findBy(['is_default' => 1]);
         foreach ($dashboards as $dashboard) {
             foreach ($this->dashboards as $dashboardData) {
-                if ($dashboard->getTitle() === $dashboardData['title']) {
+                if ($dashboard->getSystemName() === $dashboardData['system_name']) {
                     $this->syncDashboard($dashboard, $dashboardData);
                     $this->getEm()->persist($dashboard);
                 }
