@@ -145,15 +145,31 @@ class TwilioAdapter
         $numbers = [];
 
         try {
-            $result  = $this->getClient($account)->availablePhoneNumbers($countryCode)->$type->page($options);
+            $client  = $this->getClient($account);
+            $result  = $client->availablePhoneNumbers($countryCode)->$type->page($options);
             $exclude = $this->getAccountNumbersList($account);
+            $prices  = $client->pricing->phoneNumbers->countries($countryCode)->fetch();
+
+            $priceTypeMap = [
+                'local'     => 'local',
+                'national'  => 'local',
+                'mobile'    => 'mobile',
+                'toll free' => 'tollFree',
+            ];
+
+            $pricesMap = [];
+            foreach ($prices->phoneNumberPrices as $price) {
+                $pricesMap[$priceTypeMap[$price['number_type']]] = $price['current_price'];
+            }
 
             foreach ($result as $apiNumber) {
                 $numbers[] = new TwilioAvailableNumber(
                     $apiNumber,
                     $account,
                     isset($exclude[$apiNumber->phoneNumber]),
-                    $type
+                    $type,
+                    $pricesMap[$type],
+                    $prices->priceUnit
                 );
             }
         } catch (\Exception $e) {
