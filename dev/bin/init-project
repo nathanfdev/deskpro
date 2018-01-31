@@ -25,6 +25,8 @@ npm install
 echo ".. done"
 echo
 
+rm -rf $DIR_ROOT/www/assets/BUILD/pub/node_modules/@deskpro/react-components/node_modules/react
+
 echo ">> Building web assets"
 cd $DIR_ROOT/www/assets/BUILD/web
 npm run build:prod

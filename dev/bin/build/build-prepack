@@ -36,6 +36,7 @@ mv $DP_DIR/app/BUILD/tmp-Node.php $DP_DIR/app/BUILD/vendor/zendframework/zend-ld
 cd $DP_DIR/www/assets/BUILD/pub
 rm -rf node_modules/
 npm install --production
+rm -rf $DP_DIR/www/assets/BUILD/pub/node_modules/@deskpro/react-components/node_modules/react
 
 ########################################################################################################################
 # Cleanup for distro
