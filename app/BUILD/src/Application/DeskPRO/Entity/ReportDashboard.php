@@ -65,7 +65,12 @@ class ReportDashboard extends DomainObject
      *
      * @see ReportDashboard::isDefault()
      */
-    protected $is_default;
+    protected $is_default = false;
+
+    /**
+     * @var bool
+     */
+    protected $isAgent = false;
 
     /**
      * @var ArrayCollection|ReportDashboardPermission[]
@@ -82,7 +87,6 @@ class ReportDashboard extends DomainObject
      */
     public function __construct()
     {
-        $this->is_default  = false;
         $this->reports     = new ArrayCollection();
         $this->permissions = new ArrayCollection();
     }
@@ -182,6 +186,26 @@ class ReportDashboard extends DomainObject
     }
 
     /**
+     * @return bool
+     */
+    public function isAgent()
+    {
+        return $this->isAgent;
+    }
+
+    /**
+     * @param bool $isAgent
+     *
+     * @return $this
+     */
+    public function setIsAgent($isAgent)
+    {
+        $this->setModelField('isAgent', $isAgent);
+
+        return $this;
+    }
+
+    /**
      * @return ReportDashboardPermission[]|ArrayCollection
      */
     public function getPermissions()
@@ -256,6 +280,15 @@ class ReportDashboard extends DomainObject
             'scale'      => 0,
             'nullable'   => false,
             'columnName' => 'is_default',
+        ]);
+        $metadata->mapField([
+            'fieldName'  => 'isAgent',
+            'default'    => false,
+            'type'       => 'boolean',
+            'precision'  => 0,
+            'scale'      => 0,
+            'nullable'   => false,
+            'columnName' => 'is_agent',
         ]);
 
         $metadata->mapOneToMany([

@@ -137,3 +137,11 @@ define ['DeskPRO/Util/Arrays', 'DeskPRO/Util/Util'], (Arrays, Util) ->
       )
 
       return d.promise
+
+    getMe: () ->
+      d = @$q.defer()
+      @Api2.sendGet('/me').then( (res) ->
+        d.resolve res.data.data
+      )
+
+      return d.promise

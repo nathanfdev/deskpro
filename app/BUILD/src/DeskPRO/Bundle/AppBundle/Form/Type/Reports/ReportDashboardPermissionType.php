@@ -31,6 +31,7 @@ namespace DeskPRO\Bundle\AppBundle\Form\Type\Reports;
 use Application\DeskPRO\Entity\Person;
 use Application\DeskPRO\Entity\ReportDashboard;
 use Application\DeskPRO\Entity\ReportDashboardPermission;
+use DeskPRO\Bundle\AppBundle\Form\Type\ApiBooleanType;
 use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
@@ -66,6 +67,10 @@ class ReportDashboardPermissionType extends AbstractType
                 'required'          => true,
                 'choices_as_values' => true,
                 'choices'           => $choices,
+            ])
+            ->add('view_all', ApiBooleanType::class, [
+                'property_path' => 'viewAll',
+                'required'      => false,
             ])
         ;
 

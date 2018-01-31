@@ -31,6 +31,7 @@ namespace DeskPRO\Bundle\AppBundle\Form\Type\Reports;
 use Application\DeskPRO\Entity\Person;
 use Application\DeskPRO\Entity\ReportDashboard;
 use Application\DeskPRO\Entity\ReportDashboardPermission;
+use DeskPRO\Bundle\AppBundle\Form\Type\ApiBooleanType;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\CollectionType;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
@@ -73,6 +74,10 @@ class ReportDashboardType extends AbstractType
                 'person'    => $options['person'],
                 'mapped'    => !$report->isDefault(),
             ])
+            ->add('is_agent', ApiBooleanType::class, [
+                'required'      => false,
+                'property_path' => 'isAgent',
+            ])
         ;
 
         $builder->addEventListener(FormEvents::POST_SUBMIT, [$this, 'onPostSubmit']);
@@ -99,26 +104,31 @@ class ReportDashboardType extends AbstractType
      */
     public function onPostSubmit(FormEvent $event)
     {
-        $form   = $event->getForm();
-        $data   = $event->getData();
+        $form = $event->getForm();
+        $data = $event->getData();
+
+        /** @var Person $person */
         $person = $form->getConfig()->getOption('person');
 
-        if ($data instanceof ReportDashboard && !$data->getId()) {
-            // all created dashboards are custom ones
-            $data->setIsDefault(false);
+        if ($data instanceof ReportDashboard) {
+            // handle new dashboards
+            if (!$data->getId()) {
+                // all created dashboards are custom ones
+                $data->setIsDefault(false);
 
-            // add access to yourself if not present for new dashboards
-            $ownPermission = $data->getPermissions()->filter(function (ReportDashboardPermission $permission) use ($person) {
-                return $permission->getPerson() === $person;
-            })->first();
+                // add access to yourself if not present for new dashboards
+                $ownPermission = $data->getPermissions()->filter(function (ReportDashboardPermission $permission) use ($person) {
+                    return $permission->getPerson() === $person;
+                })->first();
 
-            if (!$ownPermission) {
-                $ownPermission = new ReportDashboardPermission();
-                $ownPermission->setDashboard($data);
-                $ownPermission->setName(ReportDashboardPermission::FULL);
-                $ownPermission->setPerson($person);
+                if (!$ownPermission) {
+                    $ownPermission = new ReportDashboardPermission();
+                    $ownPermission->setDashboard($data);
+                    $ownPermission->setName(ReportDashboardPermission::FULL);
+                    $ownPermission->setPerson($person);
 
-                $data->getPermissions()->add($ownPermission);
+                    $data->getPermissions()->add($ownPermission);
+                }
             }
         }
     }

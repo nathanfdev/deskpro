@@ -3,18 +3,22 @@ Feature: /dashboard_reports endpoint
 
   Background:
     Given I'm authenticated as agent
+    And "agent_2@deskpro.dev" agent exists
     And the setting "beta_features.new_reports" is set to 1
+    And the following "AgentTeam" records exist:
+      | #  | Name   | Members   |
+      | t1 | Team 1 | [{agent}] |
     And only the following ReportDashboard records exist:
-      | #  | Title       | Is Default |
-      | d1 | Dashboard 1 | 1          |
-      | d2 | Dashboard 2 | 0          |
-      | d3 | Dashboard 3 | 0          |
-      | d4 | Dashboard 4 | 1          |
+      | #  | Title       | Is Default | Is Agent |
+      | d1 | Dashboard 1 | 1          | 0        |
+      | d2 | Dashboard 2 | 0          | 1        |
+      | d3 | Dashboard 3 | 0          | 0        |
+      | d4 | Dashboard 4 | 1          | 0        |
     And only the following ReportDashboardPermission records exist:
-      | #  | Dashboard | Person  | Name |
-      | p1 | {d1}      | {agent} | view |
-      | p2 | {d2}      | {agent} | full |
-      | p3 | {d4}      | {agent} | full |
+      | #  | Dashboard | Person  | Name | View All |
+      | p1 | {d1}      | {agent} | view | 0        |
+      | p2 | {d2}      | {agent} | full | 1        |
+      | p3 | {d4}      | {agent} | full | 1        |
     And only the following ReportDashboardReport records exist:
       | #  | Title    | Dashboard | Variables                                             |
       | r1 | Report 1 | {d1}      | [{"name":"date","type":"dates","value":"last_month"}] |

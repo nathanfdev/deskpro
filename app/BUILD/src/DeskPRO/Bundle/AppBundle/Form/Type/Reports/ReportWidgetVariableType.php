@@ -58,6 +58,9 @@ class ReportWidgetVariableType extends AbstractType
             ->add('field_type', TextType::class, [
                 'required' => false,
             ])
+            ->add('field_value', TextType::class, [
+                'required' => false,
+            ])
             ->add('table', TextType::class, [
                 'required' => false,
             ])

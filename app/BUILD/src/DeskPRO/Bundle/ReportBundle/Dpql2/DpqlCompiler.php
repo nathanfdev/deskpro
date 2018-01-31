@@ -276,6 +276,8 @@ class DpqlCompiler
                         case 'orders':
                         case 'statuses':
                             return $that->replaceGroup($variable, $variables, $variable['type']);
+                        case 'values':
+                            return $variable['field_value'];
                     }
                 }
 

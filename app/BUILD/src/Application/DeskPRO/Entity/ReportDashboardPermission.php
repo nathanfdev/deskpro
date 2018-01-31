@@ -90,6 +90,14 @@ class ReportDashboardPermission extends DomainObject
     protected $name = null;
 
     /**
+     * @JMS\Expose()
+     * @JMS\Type("boolean")
+     *
+     * @var bool
+     */
+    protected $viewAll = false;
+
+    /**
      * @return int
      */
     public function getId()
@@ -181,6 +189,26 @@ class ReportDashboardPermission extends DomainObject
         return $this->name;
     }
 
+    /**
+     * @return bool
+     */
+    public function isViewAll()
+    {
+        return $this->viewAll;
+    }
+
+    /**
+     * @param bool $viewAll
+     *
+     * @return $this
+     */
+    public function setViewAll($viewAll)
+    {
+        $this->setModelField('viewAll', $viewAll);
+
+        return $this;
+    }
+
     //###########################################################################
     // Doctrine Metadata
     //###########################################################################
@@ -190,21 +218,29 @@ class ReportDashboardPermission extends DomainObject
         $metadata->setInheritanceType(ClassMetadataInfo::INHERITANCE_TYPE_NONE);
         $metadata->setPrimaryTable(['name' => 'report_dashboard_permission']);
         $metadata->setChangeTrackingPolicy(ClassMetadataInfo::CHANGETRACKING_DEFERRED_IMPLICIT);
-        $metadata->mapField(['fieldName'  => 'id',
-                             'type'       => 'integer',
-                             'precision'  => 0,
-                             'scale'      => 0,
-                             'nullable'   => false,
-                             'columnName' => 'id',
-                             'id'         => true,
+        $metadata->mapField([
+            'fieldName'  => 'id',
+            'type'       => 'integer',
+            'precision'  => 0,
+            'scale'      => 0,
+            'nullable'   => false,
+            'columnName' => 'id',
+            'id'         => true,
         ]);
-        $metadata->mapField(['fieldName'  => 'name',
-                             'type'       => 'string',
-                             'length'     => 50,
-                             'precision'  => 0,
-                             'scale'      => 0,
-                             'nullable'   => false,
-                             'columnName' => 'name',
+        $metadata->mapField([
+            'fieldName'  => 'name',
+            'type'       => 'string',
+            'length'     => 50,
+            'precision'  => 0,
+            'scale'      => 0,
+            'nullable'   => false,
+            'columnName' => 'name',
+        ]);
+        $metadata->mapField([
+            'fieldName'  => 'viewAll',
+            'columnName' => 'view_all',
+            'type'       => 'boolean',
+            'nullable'   => false,
         ]);
 
         $metadata->setIdGeneratorType(ClassMetadataInfo::GENERATOR_TYPE_IDENTITY);

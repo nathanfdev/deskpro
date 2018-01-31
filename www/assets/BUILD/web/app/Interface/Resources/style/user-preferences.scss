@@ -437,15 +437,14 @@ $right-bucket: 200px;
     .agent-name {
       text-align: left;
       color: #707070;
-      width: 70%;
-      border-left: 0px;
+      width: 60%;
+      border-left: 0;
 
       .avatar {
         display: inline-block;
         width: 26px;
         height: 26px;
         border-radius: 4px;
-        margin-right: 5px;
         background-size: cover;
         background-repeat: no-repeat;
         vertical-align: middle;

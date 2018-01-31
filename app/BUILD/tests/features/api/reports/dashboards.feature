@@ -279,3 +279,15 @@ Feature: /dashboards endpoint
     """
     Then the response status code should be 400
     And the JSON node "errors.fields.reports.fields.reports_0.fields.clone_id.errors[0].code" should be equal to "bad_choice"
+
+  Scenario: I set agent dashboard
+    When I send a PUT request to "/api/v2/dashboards/{d2}" with body:
+    """
+{
+  "is_agent": true
+}
+    """
+    Then the response status code should be 204
+
+    When I send a GET request to "/api/v2/dashboards/{d2}"
+    And the JSON node "data.is_agent" should be equal to 1

@@ -40,6 +40,7 @@ define ['DeskPRO/Util/Arrays', 'DeskPRO/Util/Util'], (Arrays, Util) -> [
           title: ''
         }],
         is_default: false,
+        is_agent: false,
         permissions: []
 
     $q.all(load_promises).then(-> $scope.loaded = true)
@@ -137,12 +138,20 @@ define ['DeskPRO/Util/Arrays', 'DeskPRO/Util/Util'], (Arrays, Util) -> [
     $scope.canAgentEditDashboard = (agentId) ->
       return ($scope.dashboard.permissions || []).filter((permission) => permission.person == agentId and permission.name == 'full').length > 0
 
+    $scope.canViewAllAgents = (agentId) ->
+      permission = ($scope.dashboard.permissions || []).filter((permission) => permission.person == agentId)[0]
+      if !permission
+        return false
+
+      return permission.view_all
+
     $scope.toggleAgentViewDashboard = (agentId) ->
       permission = $scope.dashboard.permissions.filter((permission) => permission.person == agentId)[0]
       if !permission
         $scope.dashboard.permissions.push({
           name: 'view'
           person: agentId
+          view_all: false
         })
       else
         $scope.dashboard.permissions.splice($scope.dashboard.permissions.indexOf(permission), 1)
@@ -153,9 +162,22 @@ define ['DeskPRO/Util/Arrays', 'DeskPRO/Util/Util'], (Arrays, Util) -> [
         $scope.dashboard.permissions.push({
           name: 'full'
           person: agentId
+          view_all: false
         })
       else if permission.name == 'view'
         permission.name = 'full'
+
+    $scope.toggleViewAllAgents = (agentId) ->
+      permission = $scope.dashboard.permissions.filter((permission) => permission.person == agentId)[0]
+      if !permission
+        $scope.dashboard.permissions.push({
+          name: 'view'
+          person: agentId
+          view_all: true
+        })
+      else
+        permission.view_all = !permission.view_all
+
 
     ####################################################################################################################
     # SAVE
