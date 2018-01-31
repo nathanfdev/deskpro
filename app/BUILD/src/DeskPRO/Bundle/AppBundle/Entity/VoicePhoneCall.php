@@ -39,7 +39,7 @@ use Symfony\Component\Validator\Constraints as Assert;
 /**
  * Class VoicePhoneCall.
  *
- * @ORM\Entity()
+ * @ORM\Entity(repositoryClass="DeskPRO\Bundle\AppBundle\Entity\Repository\VoicePhoneCallRepository")
  * @ORM\Table(name="voice_phone_calls", uniqueConstraints={
  *   @ORM\UniqueConstraint(name="call_sid", columns={"call_sid"}),
  *   @ORM\UniqueConstraint(name="conference_sid", columns={"conference_sid"})

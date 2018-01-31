@@ -31,6 +31,9 @@ namespace DeskPRO\Bundle\ReportBundle\Dpql2\Statement;
 use Application\DeskPRO\Entity\Person;
 use Application\DeskPRO\Entity\Problem;
 use DeskPRO\Bundle\AppBundle\Entity\SnippetUseLog;
+use DeskPRO\Bundle\AppBundle\Entity\VoiceNumber;
+use DeskPRO\Bundle\AppBundle\Entity\VoicePhoneCall;
+use DeskPRO\Bundle\AppBundle\Entity\VoicePhoneCallLog;
 use DeskPRO\Bundle\ReportBundle\Dpql2\DpqlException;
 use DeskPRO\Bundle\ReportBundle\Dpql2\Plugin\Hierarchy\HierarchyPlugin;
 use DeskPRO\Bundle\ReportBundle\Dpql2\Plugin\Hierarchy\HierarchySorting;
@@ -305,6 +308,9 @@ class SelectPart
         'usersources'                 => 'DeskPRO:Usersource',
         'snippet_use_log'             => SnippetUseLog::class,
         'problems'                    => Problem::class,
+        'voice_numbers'               => VoiceNumber::class,
+        'voice_phone_calls'           => VoicePhoneCall::class,
+        'voice_phone_call_logs'       => VoicePhoneCallLog::class,
     ];
 
     /**
