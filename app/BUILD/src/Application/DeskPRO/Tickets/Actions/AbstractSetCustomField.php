@@ -73,16 +73,20 @@ abstract class AbstractSetCustomField extends AbstractContainerAwareAction imple
     /**
      * Parse the action options and return the field id
      *
+     * @throw \RuntimeException
      * @return string
      */
     public function resolveFieldId()
     {
         $fieldId = $this->getActionOption('field_id');
         if (empty($fieldId)) {
-            return $this->getActionOption('field');
+            $fieldId =  $this->getActionOption('field');
         }
 
-        return "field_{$fieldId}";
+        if (empty($fieldId)) {
+            throw new \RuntimeException(sprintf('could not resolve the field id from options'));
+        }
+        return $fieldId;
     }
 
     /**
@@ -118,7 +122,7 @@ abstract class AbstractSetCustomField extends AbstractContainerAwareAction imple
 
         $fieldId = $this->resolveFieldId();
 
-        $form_array = [$fieldId => null];
+        $form_array = ["field_{$fieldId}" => null];
         $fm->saveFormToObject($form_array, $obj, true);
     }
 
@@ -135,8 +139,8 @@ abstract class AbstractSetCustomField extends AbstractContainerAwareAction imple
         }
 
         $fieldId = $this->resolveFieldId();
-        $form_array = [$fieldId => $value];
 
+        $form_array = ["field_{$fieldId}" => $value];
         $fm->saveFormToObject($form_array, $obj, true);
     }
 
@@ -162,7 +166,6 @@ abstract class AbstractSetCustomField extends AbstractContainerAwareAction imple
 
             $value    = $renderer->renderTicketTemplate($value, $ticket, $context, $extraVars);
         }
-
         $fm->removeSomeCustomDataOnObjectAndFlushChanges(
             $obj,
             $fieldDef,

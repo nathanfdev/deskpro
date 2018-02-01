@@ -834,8 +834,16 @@ class FieldManager
     {
         /** @var PersistentCollection $customData */
         $customData = $object->getCustomData();
-        $unsetCustomDataList = array_filter(
+        // filter only the custom data belonging to that field
+        $fieldCustomData = array_filter(
             $customData->toArray(),
+            function (CustomDataAbstract $customData) use ($fieldDefinition) {
+                return $customData->getFieldId() === $fieldDefinition->getId();
+            }
+        );
+
+        $unsetCustomDataList = array_filter(
+            $fieldCustomData,
             function (CustomDataAbstract $customData) use ($customDataFilter) {
                 return $customDataFilter($customData);
             }
