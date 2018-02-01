@@ -51,7 +51,7 @@ class ReportWidgetData extends AbstractDefaultData
             'display_types' => 'simple_stat',
             'display_order' => 40,
             'query'         => 'SELECT COUNT() as \'stat_value\', \'online agents\' as \'stat_description\' 
-FROM sessions WHERE sessions.person.is_agent = 1',
+FROM sessions WHERE sessions.person.is_agent = 1 AND sessions.date_last > NOW() - INTERVAL 6 MINUTE GROUP BY sessions.person',
             'variables' => '[]',
         ],
         'tickets-created-x-date' => [
