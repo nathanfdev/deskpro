@@ -143,11 +143,14 @@ class DashboardReportWidgetsController extends CrudController
      */
     protected function applyListFilters(QueryBuilder $qb, $alias, Request $request)
     {
-        $qb->join("$alias.report", 'r');
-        $qb->join('r.dashboard', 'd');
-        $qb->join('d.permissions', 'p');
-        $qb->andWhere('p.person IN (:person)');
-        $qb->setParameter('person', $this->getUser());
+        $qb
+            ->join("$alias.report", 'r')
+            ->join('r.dashboard', 'd')
+            ->leftJoin('d.permissions', 'p')
+            ->andWhere('p.person IN (:person) OR p.team IN (:teams) OR d.person IN (:person)')
+            ->setParameter('person', $this->getUser())
+            ->setParameter('teams', $this->getUser()->getTeams())
+        ;
 
         if ($request->get('report')) {
             $qb->andWhere("$alias.report = :report");
