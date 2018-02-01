@@ -75,6 +75,22 @@ class ReportDashboardPermission extends DomainObject
     protected $person = null;
 
     /**
+     * @JMS\Expose()
+     * @JMS\Type("entity<Application\DeskPRO\Entity\AgentTeam>")
+     *
+     * @var \Application\DeskPRO\Entity\AgentTeam
+     */
+    protected $team = null;
+
+    /**
+     * @JMS\Expose()
+     * @JMS\Type("entity<Application\DeskPRO\Entity\Department>")
+     *
+     * @var \Application\DeskPRO\Entity\Department
+     */
+    protected $department = null;
+
+    /**
      * @var \Application\DeskPRO\Entity\ReportDashboard
      */
     protected $dashboard = null;
@@ -124,10 +140,12 @@ class ReportDashboardPermission extends DomainObject
      */
     public function setPerson(Person $person = null)
     {
-        if ($person->isAgent()) {
-            $this->setModelField('person', $person);
-        } else {
-            //possibly we gonna throw an Exception here, cause it's wrong trying to add just a person here
+        if ($person) {
+            if ($person->isAgent()) {
+                $this->setModelField('person', $person);
+            } else {
+                //possibly we gonna throw an Exception here, cause it's wrong trying to add just a person here
+            }
         }
 
         return $this;
@@ -139,6 +157,46 @@ class ReportDashboardPermission extends DomainObject
     public function getPerson()
     {
         return $this->person;
+    }
+
+    /**
+     * @param AgentTeam $team
+     *
+     * @return $this
+     */
+    public function setTeam(AgentTeam $team = null)
+    {
+        $this->team = $team;
+
+        return $this;
+    }
+
+    /**
+     * @return AgentTeam
+     */
+    public function getTeam()
+    {
+        return $this->team;
+    }
+
+    /**
+     * @param Department $department
+     *
+     * @return $this
+     */
+    public function setDepartment(Department $department = null)
+    {
+        $this->department = $department;
+
+        return $this;
+    }
+
+    /**
+     * @return Department
+     */
+    public function getDepartment()
+    {
+        return $this->department;
     }
 
     /**
@@ -268,7 +326,37 @@ class ReportDashboardPermission extends DomainObject
                 0 => [
                     'name'                 => 'person_id',
                     'referencedColumnName' => 'id',
-                    'nullable'             => false,
+                    'nullable'             => true,
+                    'onDelete'             => 'cascade',
+                ],
+            ],
+        ]);
+
+        $metadata->mapManyToOne([
+            'fieldName'    => 'team',
+            'targetEntity' => AgentTeam::class,
+            'mappedBy'     => null,
+            'inversedBy'   => 'report_dashboard_permissions',
+            'joinColumns'  => [
+                0 => [
+                    'name'                 => 'team_id',
+                    'referencedColumnName' => 'id',
+                    'nullable'             => true,
+                    'onDelete'             => 'cascade',
+                ],
+            ],
+        ]);
+
+        $metadata->mapManyToOne([
+            'fieldName'    => 'department',
+            'targetEntity' => Department::class,
+            'mappedBy'     => null,
+            'inversedBy'   => 'report_dashboard_permissions',
+            'joinColumns'  => [
+                0 => [
+                    'name'                 => 'department_id',
+                    'referencedColumnName' => 'id',
+                    'nullable'             => true,
                     'onDelete'             => 'cascade',
                 ],
             ],

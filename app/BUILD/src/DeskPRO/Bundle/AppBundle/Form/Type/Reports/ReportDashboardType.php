@@ -115,7 +115,7 @@ class ReportDashboardType extends AbstractType
             if (!$data->getId()) {
                 // all created dashboards are custom ones
                 $data->setIsDefault(false);
-
+                $data->setPerson($person);
                 // add access to yourself if not present for new dashboards
                 $ownPermission = $data->getPermissions()->filter(function (ReportDashboardPermission $permission) use ($person) {
                     return $permission->getPerson() === $person;

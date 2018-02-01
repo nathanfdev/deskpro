@@ -456,6 +456,9 @@ class DashboardData extends AbstractDefaultData
             foreach ($admins as $admin) {
                 $permissions = new Permission();
                 $permissions->setDashboard($dashboardEntity)->setPerson($admin)->setName(Permission::FULL);
+                if (!$dashboardEntity->getPerson()) {
+                    $dashboardEntity->setPerson($admin);
+                }
                 $this->getEm()->persist($permissions);
             }
             foreach ($agents as $agent) {
@@ -474,6 +477,7 @@ class DashboardData extends AbstractDefaultData
 
     /**
      * @throws \Doctrine\ORM\OptimisticLockException
+     * @throws \Exception
      */
     public function runReset()
     {
@@ -482,6 +486,7 @@ class DashboardData extends AbstractDefaultData
             $this->getEm()->remove($dashboard);
         }
         $this->getEm()->flush();
+        $this->runInstall();
     }
 
     /**

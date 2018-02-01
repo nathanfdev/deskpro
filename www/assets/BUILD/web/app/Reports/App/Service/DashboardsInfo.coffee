@@ -10,6 +10,9 @@ define ['DeskPRO/Util/Arrays', 'DeskPRO/Util/Util'], (Arrays, Util) ->
       @dashboardListPromise = null
       @lastDashboardDetail  = null
       @lastReportDetail     = null
+      @agents               = null
+      @teams                = null
+      @departments          = null
 
     resetData: ->
       @version_id += 1
@@ -125,16 +128,49 @@ define ['DeskPRO/Util/Arrays', 'DeskPRO/Util/Util'], (Arrays, Util) ->
 
       return d.promise
 
-    getAgents: () ->
+    getAgents: () =>
       d = @$q.defer()
-      @Api2.sendGet('/agents').then( (res) ->
-        agents = res.data.data
-        agents.map((agent) ->
-          agent.avatar.url = (agent.avatar.url_pattern || agent.avatar.default_url_pattern).replace('{{IMG_SIZE}}', 20)
+
+      if(@agents)
+        d.resolve(@agents)
+      else
+        @Api2.sendGet('/agents').then( (res) ->
+          agents = res.data.data
+          agents.map((agent) ->
+            agent.avatar.url = (agent.avatar.url_pattern || agent.avatar.default_url_pattern).replace('{{IMG_SIZE}}', 20)
+          )
+          @agents = agents
+
+          d.resolve(@agents)
         )
 
-        d.resolve(agents)
-      )
+      return d.promise
+
+    getAgentTeams: () =>
+      d = @$q.defer()
+      if(@teams)
+        d.resolve(@teams)
+      else
+        @Api2.sendGet('/agent_teams').then( (res) ->
+          teams = res.data.data
+          teams.map((team) ->
+            team.avatar.url = (team.avatar.url_pattern || team.avatar.default_url_pattern).replace('{{IMG_SIZE}}', 20)
+          )
+          @teams = teams
+          d.resolve(@teams)
+        )
+
+      return d.promise
+
+    getDepartments: () =>
+      d = @$q.defer()
+      if(@departments)
+        d.resolve(@departments)
+      else
+        @Api2.sendGet('/ticket_departments').then( (res) ->
+          @departments = res.data.data
+          d.resolve(@departments)
+        )
 
       return d.promise
 

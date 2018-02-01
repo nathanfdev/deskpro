@@ -83,6 +83,11 @@ class ReportDashboard extends DomainObject
     protected $system_name;
 
     /**
+     * @var Person - an owner for this dashboard
+     */
+    protected $person;
+
+    /**
      * Constructor.
      */
     public function __construct()
@@ -233,6 +238,26 @@ class ReportDashboard extends DomainObject
         return $this;
     }
 
+    /**
+     * @return Person
+     */
+    public function getPerson()
+    {
+        return $this->person;
+    }
+
+    /**
+     * @param Person $person
+     *
+     * @return $this
+     */
+    public function setPerson($person)
+    {
+        $this->person = $person;
+
+        return $this;
+    }
+
     //###########################################################################
     // Doctrine Metadata
     //###########################################################################
@@ -308,6 +333,25 @@ class ReportDashboard extends DomainObject
             'cascade'       => ['persist', 'remove'],
             'orphanRemoval' => true,
         ]);
+
+        $metadata->mapManyToOne(
+            [
+                'fieldName'    => 'person',
+                'targetEntity' => Person::class,
+                'mappedBy'     => null,
+                'inversedBy'   => null,
+                'nullable'     => true,
+                'joinColumns'  => [
+                    0 => [
+                        'name'                 => 'person_id',
+                        'referencedColumnName' => 'id',
+                        'nullable'             => true,
+                        'onDelete'             => 'set null',
+                        'columnDefinition'     => null,
+                    ],
+                ],
+            ]
+        );
 
         $metadata->setIdGeneratorType(ClassMetadataInfo::GENERATOR_TYPE_IDENTITY);
     }

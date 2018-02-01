@@ -28,6 +28,8 @@
 
 namespace DeskPRO\Bundle\AppBundle\Form\Type\Reports;
 
+use Application\DeskPRO\Entity\AgentTeam;
+use Application\DeskPRO\Entity\Department;
 use Application\DeskPRO\Entity\Person;
 use Application\DeskPRO\Entity\ReportDashboard;
 use Application\DeskPRO\Entity\ReportDashboardPermission;
@@ -61,7 +63,15 @@ class ReportDashboardPermissionType extends AbstractType
         $builder
             ->add('person', EntityType::class, [
                 'class'    => Person::class,
-                'required' => true,
+                'required' => false,
+            ])
+            ->add('team', EntityType::class, [
+                'class'    => AgentTeam::class,
+                'required' => false,
+            ])
+            ->add('department', EntityType::class, [
+                'class'    => Department::class,
+                'required' => false,
             ])
             ->add('name', ChoiceType::class, [
                 'required'          => true,
