@@ -60,6 +60,13 @@ class ReportDashboard
     private $isDefault;
 
     /**
+     * @JMS\Type("boolean")
+     *
+     * @var bool
+     */
+    private $isAgent;
+
+    /**
      * @JMS\Type("collection<Application\DeskPRO\Entity\ReportDashboardPermission>")
      *
      * @var ReportDashboardPermission[]|ArrayCollection
@@ -76,6 +83,7 @@ class ReportDashboard
         $this->id          = $entity->getId();
         $this->title       = $entity->getTitle();
         $this->isDefault   = $entity->isDefault();
+        $this->isAgent     = $entity->isAgent();
         $this->permissions = $entity->getPermissions();
     }
 }

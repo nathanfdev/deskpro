@@ -35,6 +35,7 @@ define ['DeskPRO/Util/Arrays'], (Arrays) ->
         title: dashboard.title
         reports: dashboard.reports
         permissions: dashboard.permissions
+        is_agent: dashboard.is_agent
 
       if dashboard.id
         @Api2

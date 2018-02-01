@@ -101,6 +101,22 @@
                         </div>
                     </div>
                 </div>
+
+                <hr>
+
+                <div class="bucket">
+                    <div class="inner-group">
+                        <label>
+                            <label>
+                                <input ng-model="dashboard.is_agent" type="checkbox">
+                                <span>Make this an agent dashboard</span>
+                            </label>
+                        </label>
+                        <span class="help-block">
+                            This allows you to restrict the agent and team selections on reports to only the currently logged-in agent.
+                        </span>
+                    </div>
+                </div>
             </div>
         </form>
 
@@ -117,6 +133,7 @@
                 <table>
                     <thead>
                     <td class="agent-name"></td>
+                    <td ng-if="dashboard.is_agent">View All Agents/teams</td>
                     <td>View</td>
                     <td ng-if="!dashboard.is_default">Edit</td>
                     </thead>
@@ -125,6 +142,9 @@
                         <td class="agent-name">
                             <span class="avatar" style="background-image: url({{ ng_var('agent.avatar.url') }})"></span>
                             {{ ng_var('agent.name') }}
+                        </td>
+                        <td ng-if="dashboard.is_agent">
+                            <input ng-click='toggleViewAllAgents(agent.id)' ng-checked="canViewAllAgents(agent.id)" type="checkbox">
                         </td>
                         <td>
                             <input ng-click='toggleAgentViewDashboard(agent.id)' ng-checked="canAgentViewDashboard(agent.id)" type="checkbox">

@@ -28,6 +28,8 @@
 
 namespace DeskPRO\Bundle\AppBundle\Serializer\Handler\Entity\Reports;
 
+use Application\DeskPRO\Entity\Person;
+use Application\DeskPRO\Entity\ReportDashboardPermission;
 use Application\DeskPRO\Entity\ReportDashboardWidget as ReportDashboardWidgetEntity;
 use Application\DeskPRO\Entity\ReportWidget;
 use DeskPRO\Bundle\AppBundle\Serializer\Deferred\CallbackDeferredProperty;
@@ -85,7 +87,7 @@ class ReportDashboardWidgetHandler extends AbstractEntityHandler
         $sideloads->addCustomSideload(
             'rendered_result',
             $entity->getId(),
-            new CallbackDeferredProperty([$this, 'getRenderedResult'], [$entity]),
+            new CallbackDeferredProperty([$this, 'getRenderedResult'], [$entity, $context->getUser()]),
             $model
         );
 
@@ -94,16 +96,19 @@ class ReportDashboardWidgetHandler extends AbstractEntityHandler
 
     /**
      * @param ReportDashboardWidgetEntity $entity
+     * @param Person                      $person
      *
      * @return string
      */
-    public function getRenderedResult(ReportDashboardWidgetEntity $entity)
+    public function getRenderedResult(ReportDashboardWidgetEntity $entity, Person $person = null)
     {
-        $report = $entity->getWidget();
-        $query  = $report->getQuery();
+        $report    = $entity->getReport();
+        $dashboard = $report->getDashboard();
+        $widget    = $entity->getWidget();
+        $query     = $widget->getQuery();
 
         $variables       = [];
-        $reportVariables = $entity->getReport()->getVariables();
+        $reportVariables = $report->getVariables();
         $widgetVariables = $entity->getVariables();
 
         foreach ($widgetVariables as $widgetVariable) {
@@ -114,6 +119,24 @@ class ReportDashboardWidgetHandler extends AbstractEntityHandler
             }
 
             $variables[] = $widgetVariable;
+        }
+
+        if ($person && $dashboard->isAgent()) {
+            /** @var ReportDashboardPermission $ownPermission */
+            $ownPermission = $dashboard->getPermissions()->filter(function (ReportDashboardPermission $permission) use ($person) {
+                return $permission->getPerson() === $person;
+            })->first();
+
+            if (!$ownPermission || !$ownPermission->isViewAll()) {
+                foreach ($variables as &$variable) {
+                    if ($variable['name'] === 'agent') {
+                        $variable['field_value'] = $person->getId();
+                    }
+                    if ($variable['name'] === 'agent_team') {
+                        $variable['field_value'] = $person->getPrimaryTeam() ? $person->getPrimaryTeam()->getId() : null;
+                    }
+                }
+            }
         }
 
         $query    = $this->compiler->compile($query, ['variables' => $variables]);
