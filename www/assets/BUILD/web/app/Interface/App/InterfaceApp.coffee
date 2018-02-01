@@ -77,8 +77,22 @@ define [
       r.applyToStateProvider($stateProvider)
   ])
 
+  # IE/Edge Hack http://stackoverflow.com/questions/1481251/what-does-document-domain-document-domain-do
+  document.domain = document.domain;
+
   InterfaceApp.run(['uiSelect2Config', (uiSelect2Config) ->
     uiSelect2Config.dropdownAutoWidth = true
   ])
+
+  try
+    if window.parent?.DP_FRAME_OVERLAYS?['reports-interface']
+      InterfaceApp.run(['$rootScope', ($rootScope) ->
+        $rootScope.$on('$locationChangeSuccess', ->
+          if window.parent.DP_FRAME_OVERLAYS['reports-interface'].opened
+            window.parent.DP_FRAME_OVERLAYS['reports-interface'].setHash(window.location.hash)
+        )
+      ])
+  catch e
+    console.log e
 
   return InterfaceApp
