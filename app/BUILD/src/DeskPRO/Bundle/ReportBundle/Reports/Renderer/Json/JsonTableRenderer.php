@@ -117,11 +117,11 @@ class JsonTableRenderer extends AbstractJsonRenderer
                 }
                 $rowData[] = $value;
                 if ($totalType) {
-                    $rowTotal += (int) str_replace(',', '', $value);
+                    $rowTotal += (float) str_replace(',', '', $value);
                     if (!isset($totalRow[$xPath])) {
                         $totalRow[$xPath] = 0;
                     }
-                    $totalRow[$xPath] += (int) str_replace(',', '', $value);
+                    $totalRow[$xPath] += (float) str_replace(',', '', $value);
                 }
             }
             if ($totalType) {
