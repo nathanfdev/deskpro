@@ -183,7 +183,7 @@ define ['DeskPRO/Util/Arrays', 'DeskPRO/Util/Util'], (Arrays, Util) -> [
       return (($scope.dashboard.permissions.agent || []).filter((permission) => permission.person == agentId and permission.name == 'full').length > 0) || $scope.dashboard.permissions.all == 'full'
 
     $scope.canViewAllAgents = (agentId) ->
-      permission = ($scope.dashboard.permissions || []).filter((permission) => permission.person == agentId)[0]
+      permission = ($scope.dashboard.permissions.agent || []).filter((permission) => permission.person == agentId)[0]
       if !permission
         return false
 
