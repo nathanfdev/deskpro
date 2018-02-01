@@ -594,7 +594,7 @@ GROUP BY MATRIX(${ticket}, ${ticket_2})',
 FROM tickets
 WHERE tickets.date_created = ${date}
 GROUP BY tickets.department.title',
-            'variables' => '[{"name":"date","type":"dates"}]',
+            'variables' => '[{"name":"date","type":"dates"},{"name":"ticket","type":"fields","field_type":"tickets","table":"tickets","default":"department"}]',
         ],
         'number-tickets-created-date-grouped-first-agent-x' => [
                 'title'         => 'Number of tickets created ${date} grouped by first agent response time & ${ticket}',
