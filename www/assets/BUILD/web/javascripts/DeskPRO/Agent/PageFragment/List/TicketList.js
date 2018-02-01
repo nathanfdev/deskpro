@@ -239,6 +239,11 @@ DeskPRO.Agent.PageFragment.List.TicketList = new Orb.Class({
 
         if (oldSlaCount !== newSlaCount) {
           cachedSlaCount.html(newSlaCount);
+          if (newSlaCount > 0) {
+            cachedSlaCount.addClass('not-empty');
+          } else {
+            cachedSlaCount.removeClass('not-empty');
+          }
         }
       } else {
         ['ok', 'warning', 'fail'].forEach(function(slaStatus) {
@@ -248,6 +253,11 @@ DeskPRO.Agent.PageFragment.List.TicketList = new Orb.Class({
 
           if (oldSlaCount !== newSlaCount) {
             cachedSlaCount.html(newSlaCount);
+            if (newSlaCount > 0) {
+              cachedSlaCount.addClass('not-empty');
+            } else {
+              cachedSlaCount.removeClass('not-empty');
+            }
           }
         });
       }

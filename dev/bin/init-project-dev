@@ -29,6 +29,8 @@ cd $DIR_ROOT/www/assets/BUILD/pub
 npm install
 echo ".. done"
 
+rm -rf $DIR_ROOT/www/assets/BUILD/pub/node_modules/@deskpro/react-components/node_modules/react
+
 echo ">> Building web assets"
 cd $DIR_ROOT/www/assets/BUILD/web
 npm run gulp

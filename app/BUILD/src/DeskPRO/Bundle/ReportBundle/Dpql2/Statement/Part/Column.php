@@ -254,6 +254,8 @@ END)
         $extraConditionValue = false;
 
         foreach ($parts as $partKey => $part) {
+            $part = Strings::camelCaseToUnderscore($part);
+
             $partsSoFar[] = $part;
             $partsString  = implode('.', $partsSoFar);
 

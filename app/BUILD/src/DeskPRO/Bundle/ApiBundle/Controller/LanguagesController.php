@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2017, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2018, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -253,6 +253,7 @@ class LanguagesController extends CrudController
             'agent.tickets.status_resolved',
             'agent.tickets.unhold_btn',
             'agent.voice.incoming_call_title',
+            'agent.voice.outgoing_call_title',
             'agent.voice.call_new_incoming',
             'agent.voice.call_new_outgoing',
             'agent.voice.call_auto_attendant_press_key',

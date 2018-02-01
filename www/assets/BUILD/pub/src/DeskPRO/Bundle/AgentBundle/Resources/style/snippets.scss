@@ -693,6 +693,9 @@
     right: -5px;
     top: 5px;
     z-index: 1;
+    .Select-option.is-disabled {
+      font-style: italic;
+    }
   }
   .ownership-field,
   .visibility-field {

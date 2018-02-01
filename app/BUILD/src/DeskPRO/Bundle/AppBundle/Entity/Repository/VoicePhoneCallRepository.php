@@ -26,10 +26,13 @@
  * ~ Thanks, Everyone at Team DeskPRO
  */
 
-namespace Application\EmailBundle\Mail\RawMessage\Mail;
+namespace DeskPRO\Bundle\AppBundle\Entity\Repository;
 
-use Zend\Mail\Headers as BaseHeaders;
+use Application\DeskPRO\EntityRepository\AbstractEntityRepository;
 
-class Headers extends BaseHeaders
+/**
+ * Class VoicePhoneCallRepository.
+ */
+class VoicePhoneCallRepository extends AbstractEntityRepository
 {
 }

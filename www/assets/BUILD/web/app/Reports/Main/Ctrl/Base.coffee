@@ -14,4 +14,4 @@ define [
     * @return {String}
     ###
     getTemplatePath: (path) ->
-      return DP_BASE_AGENTS_URL + '/load-view/' + path
+      return DP_BASE_REPORTS_URL + '/load-view/' + path

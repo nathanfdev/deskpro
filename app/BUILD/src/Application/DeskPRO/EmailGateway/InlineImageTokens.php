@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2017, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2018, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -33,6 +33,8 @@
 namespace Application\DeskPRO\EmailGateway;
 
 use Application\DeskPRO\EmailGateway\Reader\AbstractReader;
+use Orb\Util\Strings;
+use Orb\Util\Util;
 
 /**
  * This goes through an email body and creates unique tokens for every place there are inline images.
@@ -58,18 +60,20 @@ class InlineImageTokens
      * Adds tokens to $body where inline tags.
      *
      * @param string $body
+     *
+     * @return mixed|string
      */
     public function processTokens($body)
     {
-        $have_cids = [];
+        $haveCids = [];
         foreach ($this->reader->getAttachments() as $attach) {
             $cid = $attach->getContentId();
             if ($cid) {
-                $have_cids[$cid] = true;
+                $haveCids[$cid] = true;
             }
         }
 
-        if (!$have_cids) {
+        if (!$haveCids) {
             return $body;
         }
 
@@ -81,8 +85,8 @@ class InlineImageTokens
         if (preg_match_all('#<img[^>]*/?>(</img>)?#iu', $body, $m, \PREG_SET_ORDER)) {
             foreach ($m as $match) {
                 // Check if it is even an inline image
-                $cid = \Orb\Util\Strings::extractRegexMatch('#src=("|\')cid:(.*?)(\1)#iu', $match[0], 2);
-                if (!$cid || !isset($have_cids[$cid])) {
+                $cid = Strings::extractRegexMatch('#src=("|\')cid:(.*?)(\1)#iu', $match[0], 2);
+                if (!$cid || !isset($haveCids[$cid])) {
                     continue;
                 }
 
@@ -111,7 +115,7 @@ class InlineImageTokens
             foreach ($m as $match) {
                 // Check if it is even an inline image
                 $cid = $match[1];
-                if (!$cid || !isset($have_cids[$cid])) {
+                if (!$cid || !isset($haveCids[$cid])) {
                     continue;
                 }
 
@@ -133,6 +137,8 @@ class InlineImageTokens
      * Check if a content ID has a corresponding token.
      *
      * @param string $cid
+     *
+     * @return bool
      */
     public function hasToken($cid)
     {
@@ -143,6 +149,7 @@ class InlineImageTokens
      * Get the token for a content id.
      *
      * @param string $cid
+     * @param bool   $first
      *
      * @return string|null
      */
@@ -211,6 +218,6 @@ class InlineImageTokens
      */
     public function generateToken()
     {
-        return '__dp_'.mt_rand(1000, 9999).'_a'.count($this->tokens).'_'.\Orb\Util\Util::requestUniqueId().'__';
+        return '__dp_'.mt_rand(1000, 9999).'_a'.count($this->tokens).'_'.Util::requestUniqueId().'__';
     }
 }

@@ -427,6 +427,34 @@ DeskPRO.Agent.PageFragment.List.Helper.TicketMassActions = new Orb.Class({
         }
       }
 
+      // process labels array
+      // labels should be send to server as array, so we add to appendArray each value separately
+      // appendArray  example:
+      // [
+      //    [
+      //      name: 'actions_set[orb_uuid_249][labels][]',
+      //      value: 'label1'
+      //    ],
+      //    [
+      //      name: 'actions_set[orb_uuid_249][labels][]',
+      //      value: 'label2'
+      //    ]
+      // ]
+      if (
+          $(this).is('select')
+          && name.indexOf('[labels]') !== -1
+          && Array.isArray(val)
+      ) {
+        val.forEach(function(v, index) {
+          appendArray.push({
+            name:  name,
+            value: v
+          });
+        });
+
+        return;
+      }
+
       appendArray.push({
         name:  name,
         value: val
