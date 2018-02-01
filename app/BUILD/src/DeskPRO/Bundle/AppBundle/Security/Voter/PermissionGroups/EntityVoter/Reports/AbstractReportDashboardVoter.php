@@ -62,11 +62,7 @@ abstract class AbstractReportDashboardVoter implements PermissionGroupEntityVote
      */
     protected function canViewDashboard(ReportDashboard $entity, Person $user)
     {
-        $dashboard = $this->em->getRepository(ReportDashboard::class)->findOneBy([
-            'dashboard' => $entity,
-        ]);
-
-        return $this->checkPermission($dashboard, $user);
+        return $this->checkViewPermission($entity, $user);
     }
 
     /**
@@ -77,15 +73,26 @@ abstract class AbstractReportDashboardVoter implements PermissionGroupEntityVote
      */
     protected function canEditDashboard(ReportDashboard $entity, Person $user)
     {
-        $dashboard = $this->em->getRepository(ReportDashboard::class)->findOneBy([
-            'dashboard' => $entity,
-            'name'      => ReportDashboardPermission::FULL,
-        ]);
+        if (!$this->checkViewPermission($entity, $user)) {
+            return false;
+        }
 
-        return $this->checkPermission($dashboard, $user);
+        foreach ($entity->getPermissions() as $permission) {
+            if ($permission->getPerson() === $user && $permission->getName() === ReportDashboardPermission::FULL) {
+                return true;
+            }
+        }
+
+        return false;
     }
 
-    protected function checkPermission(ReportDashboard $dashboard, Person $user)
+    /**
+     * @param ReportDashboard $dashboard
+     * @param Person          $user
+     *
+     * @return bool
+     */
+    protected function checkViewPermission(ReportDashboard $dashboard, Person $user)
     {
         $result = false;
 
