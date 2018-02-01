@@ -44,20 +44,18 @@ define ->
           if attrs.chtype != 'graph'
             return
           if chartData and chartData.dataProvider?
-            chartData.noRedraw = true
             drawWidget chartData
           else if (scope.renderType != 'test')
             DashboardWidgetService
               .getWidget(scope.widgetId || 0)
               .then (widget) =>
                 if widget? and widget and widget.dataProvider
-                  widget.noRedraw = false
                   drawWidget(widget)
 
         drawWidget = (widget) ->
           drawn = true
           try
-            options = JSON.parse(scope.options)
+            options = if scope.options then JSON.parse(scope.options) else {}
           catch e
             options = {}
             console.warn("invalid options")
@@ -97,22 +95,23 @@ define ->
                 chart.dataProvider = defaultDataProvider
               chart.validateData()
 
-          if (!widget.noRedraw)
-            width = chartParent.height()
-            height = chartParent.width()
 
-            setInterval \
-              () ->
-                w = chartParent.width()
-                h = chartParent.height()
 
-                if h != height or width != w
-                  chartDiv.height(chartParent.height() - chartHeader.outerHeight())
-                  chart.invalidateSize()
+          width = chartParent.height()
+          height = chartParent.width()
 
-                  width = w
-                  height = h
-            , 1000
+          setInterval \
+            () ->
+              w = chartParent.width()
+              h = chartParent.height()
+
+              if h != height or width != w
+                chartDiv.height(chartParent.height() - chartHeader.outerHeight())
+                chart.invalidateSize()
+
+                width = w
+                height = h
+          , 200
 
         initChart()
     }

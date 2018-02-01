@@ -110,12 +110,13 @@ class ReportDashboardWidgetType extends AbstractType
                     return $er
                         ->createQueryBuilder('r')
                         ->join('r.dashboard', 'd')
-                        ->join('d.permissions', 'p')
+                        ->leftJoin('d.permissions', 'p')
                         ->where(
                             'd.is_default = 0',
-                            'p.person IN (:person)'
+                            'p.person IN (:person) OR p.team IN (:teams) OR d.person IN (:person)'
                         )
                         ->setParameter('person', $options['person'])
+                        ->setParameter('teams', $options['person']->getTeams())
                     ;
                 },
             ]);
