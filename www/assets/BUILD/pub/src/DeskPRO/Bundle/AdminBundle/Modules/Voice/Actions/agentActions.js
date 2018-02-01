@@ -47,6 +47,22 @@ export const toggleOutboundCallsEnabled = createAction(
   }
 );
 
+export const toggleUseForwarding = createAction(
+  'VOICE_TOGGLE_AGENT_USE_FORWARDING',
+  agent => (dispatch) => {
+    const canUseForwarding = !agent.getIn(['agent_data', 'can_use_forwarding']);
+    const agentData = agent.get('agent_data') ? agent.get('agent_data').toJS() : {};
+    const data = {
+      agent_data: {
+        ...agentData,
+        can_use_forwarding: canUseForwarding
+      }
+    };
+
+    return dispatch(editAgent(agent.get('id'), data));
+  }
+);
+
 export const toggleAll = createAction(
   'VOICE_AGENT_TOGGLE_ALL',
   () => (dispatch, getState) => {

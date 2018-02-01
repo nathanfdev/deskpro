@@ -44,6 +44,7 @@ use DeskPRO\Bundle\ReportBundle\Reports\ResultMetadata;
 use Doctrine\DBAL\Connection;
 use Doctrine\ORM\EntityManager;
 use Doctrine\ORM\Mapping\ClassMetadataInfo;
+use Orb\Util\Strings;
 
 /**
  * Represents a reference to a column or association.
@@ -253,6 +254,8 @@ END)
         $extraConditionValue = false;
 
         foreach ($parts as $partKey => $part) {
+            $part = Strings::camelCaseToUnderscore($part);
+
             $partsSoFar[] = $part;
             $partsString  = implode('.', $partsSoFar);
 
@@ -265,7 +268,7 @@ END)
 
             // are we referencing a field?
             foreach ($repository->getFieldMappings() as $key => $field) {
-                if (strtolower($key) == $part) {
+                if (strtolower(Strings::camelCaseToUnderscore($key)) == $part) {
                     if (isset($field['dpqlAccess']) && !$field['dpqlAccess']) {
                         throw new DpqlException("$partsString cannot be accessed via DPQL.");
                     }

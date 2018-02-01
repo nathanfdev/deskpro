@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2017, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2018, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -456,7 +456,7 @@ return [
     'adm.general.apps_agents'                                                              => 'Agents',
     'adm.general.apps_brands'                                                              => 'Brands',
     'adm.general.apps_chat'                                                                => 'Chat',
-    'adm.general.voice_channel'                                                            => 'Voice Channel',
+    'adm.general.voice_channel'                                                            => 'Voice',
     'adm.general.apps_crm'                                                                 => 'CRM',
     'adm.general.apps_emails'                                                              => 'Emails',
     'adm.general.apps_portal'                                                              => 'Portal',

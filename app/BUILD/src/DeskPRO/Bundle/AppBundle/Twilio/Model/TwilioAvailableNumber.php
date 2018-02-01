@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2017, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2018, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -58,14 +58,31 @@ class TwilioAvailableNumber extends AbstractTwilioNumber
     protected $type;
 
     /**
+     * @var string
+     *
+     * @JMS\Type("string")
+     */
+    protected $price;
+
+    /**
+     * @var string
+     *
+     * @JMS\Type("string")
+     */
+    protected $priceUnit;
+
+    /**
      * Constructor.
      *
      * @param object       $apiNumber
      * @param VoiceAccount $account
      * @param bool         $added
      * @param string       $type
+     * @param string       $price
+     * @param string       $priceUnit
+     * @param string       $priceUnit
      */
-    public function __construct($apiNumber, VoiceAccount $account, $added, $type)
+    public function __construct($apiNumber, VoiceAccount $account, $added, $type, $price, $priceUnit)
     {
         parent::__construct($apiNumber, $account, $added);
 
@@ -73,5 +90,7 @@ class TwilioAvailableNumber extends AbstractTwilioNumber
         $this->region      = $apiNumber->region;
         $this->rateCenter  = $apiNumber->rateCenter;
         $this->type        = $type;
+        $this->price       = $price;
+        $this->priceUnit   = $priceUnit;
     }
 }

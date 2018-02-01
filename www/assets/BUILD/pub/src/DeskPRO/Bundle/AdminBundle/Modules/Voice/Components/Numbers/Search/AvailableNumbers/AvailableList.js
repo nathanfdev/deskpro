@@ -72,6 +72,7 @@ class NumberRow extends BaseNumberRow {
           {location && <span className="location">{location}</span>}
         </td>
         <td>{numberTypes[number.get('type')]}</td>
+        <td>{number.get('price')} {number.get('price_unit')}</td>
         {this.renderAddButton()}
       </tr>
     );

@@ -15,8 +15,17 @@ export const voiceParticipantsSelector = createSelector(
   (agents, me) => agents.filter(agent => agent !== me)
 );
 
+export const callsForwardingEnabledSelector = createSelector(
+  meSelector,
+  me => me.getIn(['agent_data', 'is_voice_enabled'])
+  && me.getIn(['agent_data', 'agent_can_use_forwarding'])
+  && me.getIn(['agent_data', 'can_use_forwarding'])
+  && me.getIn(['agent_data', 'forwarding_number'])
+);
+
 export const callsEnabledSelector = createSelector(
   meSelector,
+  callsForwardingEnabledSelector,
   me => me.getIn(['agent_data', 'is_voice_enabled']) && me.getIn(['agent_data', 'agent_calls_enabled'])
 );
 
