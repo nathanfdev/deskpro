@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2017, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2018, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -67,7 +67,20 @@ trait TicketSaveTrait
             $eventMethod = ExecutorContext::METHOD_MOBILE;
         }
 
-        $context = $manager->createAgentExecutorContext($this->getUser(), $event, $eventMethod);
+        if (
+            $changes->hasTouchedField('person')
+            && $ticket->getPerson()
+            && !$ticket->getPerson()->isAgent()
+            && in_array($event, [
+                ExecutorContext::EVENT_NEW,
+                ExecutorContext::EVENT_REPLY,
+                ExecutorContext::EVENT_UPDATE, ])
+        ) {
+            $context = $manager->createUserExecutorContext($ticket->getPerson(), $event, $eventMethod);
+        } else {
+            $context = $manager->createAgentExecutorContext($this->getUser(), $event, $eventMethod);
+        }
+
         if (isset($options['suppress_user_notify']) && $options['suppress_user_notify']) {
             $context->getVars()->set('mute_user_emails', true);
         }
