@@ -124,8 +124,8 @@ nelmio_api_doc:
       enabled:  true
       accept_type: application/json
       body_format:
-        formats: [ json ]
-        default_format: json
+        formats: [ form ]
+        default_format: form
       request_format:
         formats:
           json: application/json
