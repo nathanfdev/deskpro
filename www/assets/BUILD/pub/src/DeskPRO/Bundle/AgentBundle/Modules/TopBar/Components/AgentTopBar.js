@@ -146,6 +146,8 @@ export class AgentTopBarContainer extends SeparateComponent {
       angularOmnibox.searchQuery = searchQuery;
       angularOmnibox.touchSearch();
       window.$('.dp-omnibox-results').show();
+      const event = new Event('dpPopupOpen', { detail: { mode: 'search' } });
+      window.document.dispatchEvent(event);
     }
   }
 
@@ -236,7 +238,7 @@ export class AgentTopBarContainer extends SeparateComponent {
     const angularOmnibox = window.angular.element('.dp-omnibox').scope();
     if (angularOmnibox) {
       angularOmnibox.toggleMode('recent');
-      const event = new Event('dpPopupOpen');
+      const event = new Event('dpPopupOpen', { detail: { mode: 'recent' } });
       window.document.dispatchEvent(event);
     }
   }
@@ -245,7 +247,7 @@ export class AgentTopBarContainer extends SeparateComponent {
     const angularOmnibox = window.angular.element('.dp-omnibox').scope();
     if (angularOmnibox) {
       angularOmnibox.toggleMode('notif');
-      const event = new Event('dpPopupOpen');
+      const event = new Event('dpPopupOpen', { detail: { mode: 'notif' } });
       window.document.dispatchEvent(event);
     }
   }

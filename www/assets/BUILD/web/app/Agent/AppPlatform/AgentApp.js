@@ -770,23 +770,47 @@ define([
 						scope.isActive = false;
 						scope.mode = 'search';
 						updateMode();
-					})
+					});
 				};
 
 				$('#dp_header_notify_wrap, #recent_tabs_menu, #dp_omnibox').on('dpClose', function() {
 					closeAll();
 				});
 
-				$('body').on('mousedown mouseup click', function(ev) {
-					if (!ev.target ||
-						!($(ev.target).closest('.dp-omnibox-wrap')[0] || $(ev.target).closest('.legacy-omnibox')[0])) {
-						closeAll();
+				var getContext = function() {
+					var context = [document];
+					$('iframe').each((i, iframe) => {
+						try {
+							context.push(iframe.contentWindow.document);
+						} catch (e) {
+							// cross origin frame
+						}
+					});
+					return context;
+				};
+
+				window.document.addEventListener('dpPopupOpen', function () {
+					var events = $.data(getContext(), 'events');
+					if (events) {
+						events.click = events.click || [];
+						events.click.sort((a, b) => b.guid - a.guid);
+
+						$.data(getContext(), 'events', events);
 					}
+
+					$(getContext()).on('click touchend', function closePopup(ev) {
+						if (!ev.target ||
+							!($(ev.target).closest('.dp-omnibox-wrap')[0] || $(ev.target).closest('.legacy-omnibox')[0])) {
+							closeAll();
+						}
+						$(getContext()).off('click touchend', closePopup);
+					});
+
+					$backdrop.on('click', function() {
+						closeAll();
+					});
 				});
 
-				$backdrop.on('click', function() {
-					closeAll();
-				});
 
 				scope.$watch('isActive', function(isActive) {
 					if (isActive) {
