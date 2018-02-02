@@ -178,7 +178,15 @@
       };
 
       $el.addClass('dp-two-select');
-      $el.on('change', render);
+
+      // re-render for multi select only
+      // simple selectbox uses save element, just modifies its options
+      // otherwise it causes infinite recursion
+      if ($el.data('max-depth') > 2) {
+        $el.on('change', function() {
+          setTimeout(render, 1);
+        });
+      }
 
       render();
     });
