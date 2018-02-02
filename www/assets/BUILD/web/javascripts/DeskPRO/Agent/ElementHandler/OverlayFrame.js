@@ -113,6 +113,11 @@ DeskPRO.Agent.ElementHandler.OverlayFrame = new Orb.Class({
       path = this.url.substr(this.url.indexOf('#') + 1);
     }
 
+    window.document.addEventListener('dpIframeLoaded', function loadHash() {
+      frameWindow.location.hash = path;
+      window.document.removeEventListener('dpIframeLoaded', loadHash);
+    });
+
     this.setHash(path);
     this.frameWrap.show();
 

@@ -84,6 +84,10 @@ define [
     uiSelect2Config.dropdownAutoWidth = true
   ])
 
+  if window.parent
+    event = new CustomEvent('dpIframeLoaded', { 'detail': { id: 'reports-interface' } });
+    window.parent.document.dispatchEvent event
+
   try
     if window.parent?.DP_FRAME_OVERLAYS?['reports-interface']
       InterfaceApp.run(['$rootScope', ($rootScope) ->
