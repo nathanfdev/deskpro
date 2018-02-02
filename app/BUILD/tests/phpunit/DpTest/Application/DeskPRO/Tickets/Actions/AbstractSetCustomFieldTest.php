@@ -3,6 +3,8 @@ namespace DpTest\DeskPRO\Application\Tickets\Actions;
 
 
 use Application\DeskPRO\CustomFields\FieldManager;
+use Application\DeskPRO\Entity\CustomDefAbstract;
+use Application\DeskPRO\Entity\CustomDefTicket;
 use Application\DeskPRO\Entity\Ticket;
 use Application\DeskPRO\Tickets\Actions\AbstractSetCustomField;
 
@@ -20,13 +22,13 @@ class AbstractSetCustomFieldTest extends DeskProTestCase
         $idFields = ['field_id', 'field'];
 
         foreach ($operators as $operator) {
-            foreach ($idFields as $idField) {
+            foreach ($idFields as $idFieldKey) {
 
                 $expectedValue = $operator === 'set' ? 'test' : null;
-                $expectedKey = $idField === 'field_id' ? 'field_1' : 'fieldAlias';
+                $expectedKey = $idFieldKey === 'field_id' ? 'field_1' : 'fieldAlias';
 
                 $actionOptions = [
-                    $idField => $idField === 'field_id' ? '1' : 'fieldAlias',
+                    $idFieldKey => $idFieldKey === 'field_id' ? '1' : 'fieldAlias',
                     'value' => $expectedValue,
                     'op' => $operator
                 ];
@@ -51,6 +53,43 @@ class AbstractSetCustomFieldTest extends DeskProTestCase
             }
         }
 
+        $operators = ['unset-list'];
+        $idFields = ['field_id', 'field'];
+
+        foreach ($operators as $operator) {
+            foreach ($idFields as $idFieldKey) {
+
+                $expectedFieldIdValue = $idFieldKey === 'field_id' ? '1' : 'fieldAlias';
+                $actualCustomDef = new CustomDefTicket();
+
+                $actionOptions = [
+                    $idFieldKey => $expectedFieldIdValue,
+                    'value' => '200',
+                    'op' => $operator
+                ];
+
+                $manager = $this->getMockBuilder(FieldManager::class)
+                    ->disableOriginalConstructor()
+                    ->setMethods(['getFieldFromId', 'removeSomeCustomDataOnObjectAndFlushChanges'])
+                    ->getMock()
+                ;
+                $manager->method('getFieldFromId')->with($this->equalTo($expectedFieldIdValue))->willReturn($actualCustomDef);
+                $manager->method('removeSomeCustomDataOnObjectAndFlushChanges')->with(
+                    $this->equalTo($ticket),
+                    $this->equalTo($actualCustomDef)
+                );
+
+                $action = $this->getMockBuilder(AbstractSetCustomField::class)
+                    ->setConstructorArgs([$actionOptions])
+                    ->setMethods(['getFieldManager', 'getApplicableObject'])
+                    ->getMockForAbstractClass()
+                ;
+                $action->method('getFieldManager')->willReturn($manager);
+                $action->method('getApplicableObject')->willReturn($ticket);
+
+                $action->applyAction($ticket, $context);
+            }
+        }
     }
 }
 

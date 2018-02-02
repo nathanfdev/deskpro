@@ -74,15 +74,19 @@ abstract class AbstractSetCustomField extends AbstractContainerAwareAction imple
      * Parse the action options and return the field id
      *
      * @throw \RuntimeException
+     * @param bool $formFieldFormat
      * @return string
      */
-    public function resolveFieldId()
+    public function resolveFieldId($formFieldFormat = true)
     {
+        // is field referenced by id ?
         $fieldId = $this->getActionOption('field_id');
-        if (empty($fieldId)) {
-            $fieldId =  $this->getActionOption('field');
+        if (!empty($fieldId)) {
+            return $formFieldFormat ? "field_{$fieldId}" : $fieldId;
         }
 
+        // is field referenced by alias ?
+        $fieldId =  $this->getActionOption('field');
         if (empty($fieldId)) {
             throw new \RuntimeException(sprintf('could not resolve the field id from options'));
         }
@@ -121,8 +125,7 @@ abstract class AbstractSetCustomField extends AbstractContainerAwareAction imple
         $obj = $this->getApplicableObject($ticket, $context);
 
         $fieldId = $this->resolveFieldId();
-
-        $form_array = ["field_{$fieldId}" => null];
+        $form_array = [$fieldId => null];
         $fm->saveFormToObject($form_array, $obj, true);
     }
 
@@ -139,8 +142,7 @@ abstract class AbstractSetCustomField extends AbstractContainerAwareAction imple
         }
 
         $fieldId = $this->resolveFieldId();
-
-        $form_array = ["field_{$fieldId}" => $value];
+        $form_array = [$fieldId => $value];
         $fm->saveFormToObject($form_array, $obj, true);
     }
 
@@ -149,7 +151,7 @@ abstract class AbstractSetCustomField extends AbstractContainerAwareAction imple
         $fm  = $this->getFieldManager($ticket, $context);
         $obj = $this->getApplicableObject($ticket, $context);
 
-        $fieldId = $this->resolveFieldId();
+        $fieldId = $this->resolveFieldId(false);
         $fieldDef = $fm->getFieldFromId($fieldId);
         if (empty($fieldDef)) {
             throw new \RuntimeException(sprintf('could not find field with id: %s', $fieldId));
