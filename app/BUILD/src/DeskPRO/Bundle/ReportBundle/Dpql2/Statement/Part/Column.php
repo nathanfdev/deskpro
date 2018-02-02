@@ -535,6 +535,9 @@ END)
 
                         return $valueRenderer->renderValue($date ?: null, $type, $metadata);
                     };
+                } elseif ($field && $section !== 'select' && $field->isChoiceType()) {
+                    $call    = $this->statementFactory->createColumn(array_merge($this->parts, ['field', 'id']));
+                    $prepped = $call->prepare($statement, $section, $stack, $select, $result);
                 } else {
                     $call = $this->statementFactory->createFunctionCall('if', [
                         $this->statementFactory->createColumn(array_merge($this->parts, ['value'])),
