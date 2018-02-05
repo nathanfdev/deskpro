@@ -3,6 +3,7 @@ import React from 'react';
 import Isvg from 'react-inlinesvg';
 import { connect } from 'react-redux';
 import classNames from 'classnames';
+import agentPhrases from 'DeskPRO/Bundle/AgentBundle/AgentPhrases';
 import { MenuItem } from 'DeskPRO/Component/Semantic/Menu';
 import { SeparateComponent } from '../../Common/Components/SeparateComponent';
 import * as actions from '../Actions/sideBarActions';
@@ -244,7 +245,7 @@ export class SideBar extends React.PureComponent {
     if (this.props.canUseTicket()) {
       menus.push({
         className: 'tickets',
-        label:     'Tickets',
+        label:     agentPhrases.get('agent.general.tickets'),
         link:      '/agent/#app.tickets',
         icon:      `${window.DESKPRO_APP_ASSETS_URL}/DeskPRO/Bundle/AgentBundle/Resources/img/sidebar/tickets.svg`,
         callback:  () => {
@@ -256,7 +257,7 @@ export class SideBar extends React.PureComponent {
     if (this.props.canUseChat()) {
       menus.push({
         className: 'chat',
-        label:     'Chats',
+        label:     agentPhrases.get('agent.general.chats'),
         link:      '/agent/#app.userchat',
         icon:      `${window.DESKPRO_APP_ASSETS_URL}/DeskPRO/Bundle/AgentBundle/Resources/img/sidebar/chat.svg`,
         callback:  () => {
@@ -268,7 +269,7 @@ export class SideBar extends React.PureComponent {
     if (this.props.canUsePeople()) {
       menus.push({
         className: 'people',
-        label:     'CRM',
+        label:     agentPhrases.get('agent.general.crm'),
         link:      '/agent/#app.people',
         icon:      `${window.DESKPRO_APP_ASSETS_URL}/DeskPRO/Bundle/AgentBundle/Resources/img/sidebar/crm.svg`,
         callback:  () => {
@@ -280,7 +281,7 @@ export class SideBar extends React.PureComponent {
     if (this.props.canUseFeedback()) {
       menus.push({
         className: 'feedback',
-        label:     'Feedback',
+        label:     agentPhrases.get('agent.general.feedback'),
         link:      '/agent/#app.feedback',
         icon:      `${window.DESKPRO_APP_ASSETS_URL}/DeskPRO/Bundle/AgentBundle/Resources/img/sidebar/feedback.svg`,
         callback:  () => {
@@ -292,7 +293,7 @@ export class SideBar extends React.PureComponent {
     if (this.props.canUsePublish()) {
       menus.push({
         className: 'publish',
-        label:     'Publish',
+        label:     agentPhrases.get('agent.general.publish'),
         link:      '/agent/#app.publish',
         icon:      `${window.DESKPRO_APP_ASSETS_URL}/DeskPRO/Bundle/AgentBundle/Resources/img/sidebar/publishing.svg`,
         callback:  () => {
@@ -304,7 +305,7 @@ export class SideBar extends React.PureComponent {
     if (this.props.canUseTasks()) {
       menus.push({
         className: 'tasks',
-        label:     'Tasks',
+        label:     agentPhrases.get('agent.general.tasks'),
         link:      '/agent/#app.tasks',
         icon:      `${window.DESKPRO_APP_ASSETS_URL}/DeskPRO/Bundle/AgentBundle/Resources/img/sidebar/tasks.svg`,
         callback:  () => {
@@ -316,7 +317,7 @@ export class SideBar extends React.PureComponent {
     if (this.props.canUseReports()) {
       menus.push({
         className: 'reports',
-        label:     'Reports',
+        label:     agentPhrases.get('agent.general.reports'),
         link:      '/agent/#reports:/',
         icon:      `${window.DESKPRO_APP_ASSETS_URL}/DeskPRO/Bundle/AgentBundle/Resources/img/sidebar/reports.svg`,
         callback:  () => {
@@ -326,7 +327,7 @@ export class SideBar extends React.PureComponent {
       if (window.DP_HAS_NEW_REPORTS) {
         menus.push({
           className: 'reports2',
-          label:     'New Reports',
+          label:     `${agentPhrases.get('agent.general.new')} ${agentPhrases.get('agent.general.reports')}`,
           link:      '/agent/#r:/',
           icon:      `${window.DESKPRO_APP_ASSETS_URL}/DeskPRO/Bundle/AgentBundle/Resources/img/sidebar/reports.svg`,
           callback:  () => {
@@ -338,7 +339,7 @@ export class SideBar extends React.PureComponent {
     if (this.props.canUseAdmin()) {
       menus.push({
         className: 'admin',
-        label:     'Admin',
+        label:     agentPhrases.get('agent.general.admin'),
         link:      '/agent/#admin:/',
         icon:      `${window.DESKPRO_APP_ASSETS_URL}/DeskPRO/Bundle/AgentBundle/Resources/img/sidebar/settings.svg`,
         callback:  () => {
@@ -349,7 +350,7 @@ export class SideBar extends React.PureComponent {
     if (this.props.canUseBilling()) {
       menus.push({
         className: 'billing',
-        label:     'Billing',
+        label:     agentPhrases.get('agent.general.billing'),
         link:      '/agent/#admin:/license',
         icon:      `${window.DESKPRO_APP_ASSETS_URL}/DeskPRO/Bundle/AgentBundle/Resources/img/sidebar/billing.svg`,
         callback:  () => {
@@ -360,7 +361,7 @@ export class SideBar extends React.PureComponent {
     if (this.props.canUsePortal()) {
       menus.push({
         className: 'portal',
-        label:     <span>Portal <i className="icon external" /></span>,
+        label:     <span>{agentPhrases.get('agent.general.portal')} <i className="icon external" /></span>,
         icon:      `${window.DESKPRO_APP_ASSETS_URL}/DeskPRO/Bundle/AgentBundle/Resources/img/sidebar/portal.svg`,
         href:      window.DESKPRO_PORTAL_HOME,
         link:      window.DESKPRO_PORTAL_HOME

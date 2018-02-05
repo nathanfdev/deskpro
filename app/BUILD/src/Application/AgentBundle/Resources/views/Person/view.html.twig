@@ -181,15 +181,15 @@
             <script id="merge-menu-{{ baseId }}" type="text/html">
                 <div>
                     <section>
-                        <header><strong>Search People</strong></header>
+                        <header><strong>{{ phrase('agent.general.search') }} {{ phrase('agent.general.people') }}</strong></header>
                         <article style="padding: 6px;">
-                            <button class="trigger-search dp-btn dp-btn-small" ng-click="merge()">Find</button>
+                            <button class="trigger-search dp-btn dp-btn-small" ng-click="merge()">{{ phrase('agent.general.find') }}</button>
                         </article>
                     </section>
                 </div>
                 <div ng-if="mergeItems.open.length">
                     <section>
-                        <header><strong>Open People</strong></header>
+                        <header><strong>{{ phrase('agent.general.open') }} {{ phrase('agent.general.people') }}</strong></header>
                         <article>
                             <ul>
                                 <li ng-repeat="item in mergeItems.open" style="width:100%;float:none;"
@@ -207,7 +207,7 @@
                 </div>
                 <div ng-if="mergeItems.filter.length">
                     <section>
-                        <header><strong>Filter Results</strong></header>
+                        <header><strong>{{ phrase('agent.general.filter_results') }}</strong></header>
                         <article>
                             <ul>
                                 <li ng-repeat="item in mergeItems.filter" style="width:100%;float:none;"
