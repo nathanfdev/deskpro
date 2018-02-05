@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2017, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2018, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -31,6 +31,7 @@ namespace DeskPRO\Bundle\ApiBundle\Traits\Tickets;
 use Application\DeskPRO\DependencyInjection\DeskproContainer;
 use Application\DeskPRO\Entity\Person;
 use Application\DeskPRO\Entity\Ticket;
+use Application\DeskPRO\Entity\TicketMessage;
 use Application\DeskPRO\Tickets\ExecutorContext;
 
 /**
@@ -67,11 +68,52 @@ trait TicketSaveTrait
             $eventMethod = ExecutorContext::METHOD_MOBILE;
         }
 
-        $context = $manager->createAgentExecutorContext($this->getUser(), $event, $eventMethod);
+        $person = $this->getPersonForExecutorContext($ticket, $options);
+
+        if ($person->isAgent()) {
+            $context = $manager->createAgentExecutorContext($person, $event, $eventMethod);
+        } else {
+            $context = $manager->createUserExecutorContext($person, $event, $eventMethod);
+        }
+
         if (isset($options['suppress_user_notify']) && $options['suppress_user_notify']) {
             $context->getVars()->set('mute_user_emails', true);
         }
 
         $manager->saveTicket($ticket, $context);
+    }
+
+    /**
+     * @param Ticket $ticket
+     * @param array  $options
+     *
+     * @return Person
+     */
+    protected function getPersonForExecutorContext(Ticket $ticket, $options)
+    {
+        $changes = $ticket->getStateChangeRecorder();
+
+        if (
+            $changes->hasTouchedField('person')
+            && $ticket->getPerson()
+            && !$ticket->getPerson()->isAgent()
+        ) {
+            return $ticket->getPerson();
+        }
+
+        if (isset($options['ticketAwareEntity']) && $options['ticketAwareEntity'] instanceof TicketMessage) {
+            $message        = $options['ticketAwareEntity'];
+            $messageChanges = $message->getStateChangeRecorder();
+
+            if (
+                $messageChanges->hasTouchedField('person')
+                && $message->getPerson()
+                && !$message->getPerson()->isAgent()
+            ) {
+                return $message->getPerson();
+            }
+        }
+
+        return $this->getUser();
     }
 }
