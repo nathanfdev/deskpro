@@ -174,7 +174,7 @@ DeskPRO.Agent.ElementHandler.OverlayFrame = new Orb.Class({
     }
 
     DeskPRO_Window.enableHashPath();
-    DeskPRO_Window.updateWindowUrlFragment();202020202
+    DeskPRO_Window.updateWindowUrlFragment();
     var event = new CustomEvent('dpCloseOverlayFrame', { 'detail': { id: this.frameId } });
     window.document.dispatchEvent(event);
   },
