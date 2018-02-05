@@ -6,6 +6,12 @@ define ['DeskPRO/Util/Util'], (Util) ->
       @api_url   = api_url.replace(/\/$/, '')
 
     ###
+    * Builds an endpoint URL.
+    ###
+    buildEndpointAPIUrl: (endpoint) -> "#{window.location.protocol}//#{window.location.host}#{@_getEndpointUrl(endpoint)}"
+
+
+    ###
     * Retrieve the full endpoint URL.
     ###
     _getEndpointUrl: (endpoint) ->

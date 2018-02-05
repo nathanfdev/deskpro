@@ -18,6 +18,7 @@ define [
       @filter_criteria = {}
       @criteriaTypeDef = @dpObTypesDefTicketFilter
       @criteriaOptionTypes = @criteriaTypeDef.getOptionsForTypes()
+      @webhookUrl = null
 
       return
 
@@ -30,6 +31,8 @@ define [
         promise = @Api2.sendGet("/webhooks/tickets/#{@webhookId}").then(
           (result) =>
             @webhook = result.data.data
+            @webhookUrl = @Api2.buildEndpointAPIUrl("webhooks/#{@webhook.auth_id}/invocation")
+
             @form = @getFormFromModel(result.data.data)
             @filter_criteria = {}
             if @webhook.search_terms?.length
@@ -43,6 +46,9 @@ define [
       )
       promises = [promise, promise2]
       return @$q.all(promises)
+
+    copyWebhookUrl: () ->
+      ev.preventDefault();
 
     getFormFromModel: (model) ->
       form = {}
