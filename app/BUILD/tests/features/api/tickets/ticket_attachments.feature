@@ -31,3 +31,13 @@ Feature: /tickets/{id}/attachments endpoint
     And the JSON node "data" should have 2 elements
     And the JSON node "data[0].blob.blob_auth" should contain "AAAAAAAAAAAAAAAAAA"
     And the JSON node "data[1].blob.blob_auth" should contain "BBBBBBBBBBBBBBBBBB"
+
+  Scenario: I retrieve a ticket attachments list by ticket ref
+    Given I create blob with auth code "AAAAAAAAAAAAAAAAAA"
+    And only the following TicketAttachment records exist:
+      | Ticket | Person  | Message | Blob                      |
+      | {t1}   | {admin} | {m1}    | {blob_AAAAAAAAAAAAAAAAAA} |
+    When I send a GET request to "/api/v2/tickets/ref:{t1:ref}/attachments"
+    Then the response status code should be 200
+    And the JSON node "data" should have 1 elements
+    And the JSON node "data[0].blob.blob_auth" should contain "AAAAAAAAAAAAAAAAAA"
