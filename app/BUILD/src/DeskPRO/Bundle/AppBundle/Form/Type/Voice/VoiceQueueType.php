@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2017, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2018, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -62,6 +62,14 @@ class VoiceQueueType extends AbstractType
             ])
             ->add('name', TextType::class, [
                 'required' => true,
+            ])
+            ->add('department', EntityType::class, [
+                'required'      => false,
+                'property_path' => 'department',
+                'class'         => Department::class,
+                'query_builder' => function (EntityRepository $er) {
+                    return $er->createQueryBuilder('u')->where('u.is_tickets_enabled = 1');
+                },
             ])
             ->add('agents', VoiceQueueAgentCollectionType::class, [
                 'queue'    => $builder->getData(),

@@ -106,6 +106,7 @@ return [
     'api.error_codes.accept_server_error'            => 'There was a problem uploading this file. Please try again.',
     'api.error_codes.accept_size'                    => 'Sorry but this file is too large. Maximum allowed size is {{ detail }}.',
     'api.error_codes.invalid_dpql_query'             => 'Unable to parse this DPQL query.',
+    'api.error_codes.voice_no_department_permission' => 'Agent {{agent}} has no permission for department {{department}}.',
     'api.oauth.login_title'                          => 'Sign in with your {{ name }} account',
     'api.oauth.authorize_title'                      => 'Grant access to {{ name }}',
     'api.oauth.authorize_accept'                     => 'Access',
