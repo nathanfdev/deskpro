@@ -43,8 +43,8 @@ Feature: Guests can submit new tickets
 
     And I press "Submit"
     Then I should be on "/login"
-    When I fill in "Your email" with "user@deskpro.dev"
-    And I fill in "Your password" with "12345"
-    And I press "Login"
+    When I fill in "login_username" with "user@deskpro.dev"
+    And I fill in "login_password" with "12345"
+    And I press "login_button"
     Then the url should match "/thank-you/[a-zA-Z0-9\-]+"
     And I should see a success flash message with the phrase "portal.flashes.ticket_created"

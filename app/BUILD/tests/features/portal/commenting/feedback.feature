@@ -31,9 +31,9 @@ Feature: Feedback commenting
     When I fill in "Email" with "user@deskpro.dev"
     And I press "Save Comment"
     Then I should be on "/login"
-    When I fill in "Your email" with "user@deskpro.dev"
-    And I fill in "Your password" with "12345"
-    And I press "Login"
+    When I fill in "login_username" with "user@deskpro.dev"
+    And I fill in "login_password" with "12345"
+    And I press "login_button"
     Then I should be on "/feedback/view/example-feedback"
     And I should see a "success" flash message with the phrase "portal.flashes.comment_thank_you"
 
