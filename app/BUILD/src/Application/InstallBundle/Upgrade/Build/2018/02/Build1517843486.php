@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2017, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2018, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -28,25 +28,15 @@
 
 namespace Application\InstallBundle\Upgrade\Build;
 
-// NOTE: I used the OnlineBuildInterface interface because
-//       it looks like your schema changes ARE backwards compatible with the previous version.
-//       You should double-check this yourself though. If there are breaking changes, use BlockingBuildInterface instead.
-
-// NOTE: I have added the SkipPostBuildInterface interface because
-//       it looks like you do not have any changes that require PostBuild to run.
-//       You should double-check this yourself though. Remove the SkipPostBuildInterface interface if necessary.
-
-// Please remove these NOTE comments after you have checked the code.
-
-class Build1513853390 extends AbstractBuild implements OnlineBuildInterface, SkipPostBuildInterface
+class Build1517843486 extends AbstractBuild implements OnlineBuildInterface, SkipPostBuildInterface
 {
     public function addNewTables()
     {
+        $this->execDbQuery('default', 'ALTER TABLE scheduled_reports ADD send_to LONGTEXT DEFAULT NULL COMMENT \'(DC2Type:json_array)\'');
     }
 
     public function runAlters()
     {
-        $this->execDbQuery('default', 'ALTER TABLE report_dashboard_widget ADD options LONGTEXT DEFAULT NULL');
     }
 
     public function run()
