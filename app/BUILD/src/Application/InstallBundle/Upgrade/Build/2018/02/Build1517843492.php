@@ -28,7 +28,7 @@
 
 namespace Application\InstallBundle\Upgrade\Build;
 
-class Build1515606061 extends AbstractBuild implements BlockingBuildInterface, SkipPostBuildInterface
+class Build1517843492 extends AbstractBuild implements BlockingBuildInterface
 {
     public function addNewTables()
     {
@@ -36,7 +36,7 @@ class Build1515606061 extends AbstractBuild implements BlockingBuildInterface, S
 
     public function runAlters()
     {
-        $this->execDbQuery('default', 'ALTER TABLE scheduled_reports ADD send_to LONGTEXT DEFAULT NULL COMMENT \'(DC2Type:json_array)\'');
+        $this->execDbQuery('default', 'ALTER TABLE report_dashboard ADD system_name VARCHAR(255) DEFAULT NULL');
     }
 
     public function run()
