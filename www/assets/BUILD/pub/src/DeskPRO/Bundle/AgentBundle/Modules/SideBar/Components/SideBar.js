@@ -55,6 +55,8 @@ export class SideBarContainer extends SeparateComponent {
     window.document.addEventListener('dpOpenOverlayFrame', (e) => {
       if (e.detail.id === 'reports') {
         this.changeSection('menu_reports');
+      } else if (e.detail.id === 'reports-interface') {
+        this.changeSection('menu_reports2');
       } else if (e.detail.id === 'admin') {
         if (e.detail.path === '/license') {
           this.changeSection('menu_billing');
@@ -136,7 +138,7 @@ export class SideBarContainer extends SeparateComponent {
 
   openReports2 = () => {
     closeIframes();
-    window.DP_FRAME_OVERLAYS.reports2.open();
+    window.DP_FRAME_OVERLAYS['reports-interface'].open();
   };
 
   openBilling = () => {
@@ -147,7 +149,7 @@ export class SideBarContainer extends SeparateComponent {
   changeSection = () => {
     const { dispatch } = this.props;
     const reportsFrame = window.DP_FRAME_OVERLAYS && window.DP_FRAME_OVERLAYS.reports;
-    const reports2Frame = window.DP_FRAME_OVERLAYS && window.DP_FRAME_OVERLAYS.reports2;
+    const reports2Frame = window.DP_FRAME_OVERLAYS && window.DP_FRAME_OVERLAYS['reports-interface'];
     const adminFrame = window.DP_FRAME_OVERLAYS && window.DP_FRAME_OVERLAYS.admin;
 
     try {
