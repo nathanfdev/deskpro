@@ -25,6 +25,7 @@ if [ "$1" = "sequential-build" ] ; then
 
     cd $ROOT_DIR/www/assets/BUILD/pub
     npm install
+    rm -rf $ROOT_DIR/www/assets/BUILD/pub/node_modules/@deskpro/react-components/node_modules/react
     npm run-script gulp-prod
     npm run-script gulp-refresh-reducers
 

@@ -28,15 +28,21 @@
 
 namespace DeskPRO\Bundle\ApiBundle\Controller\Webhooks;
 
+use Application\DeskPRO\Entity\TicketTrigger;
+use DeskPRO\Bundle\AppBundle\Entity\Webhooks\TicketWebhook;
+use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\CheckboxType;
+use Symfony\Component\Form\Extension\Core\Type\CollectionType;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\Form\FormEvent;
 use Symfony\Component\Form\FormEvents;
+use Symfony\Component\OptionsResolver\OptionsResolverInterface;
 
 class TicketWebhookFormType extends AbstractType
 {
+
     /**
      * {@inheritdoc}
      */
@@ -48,30 +54,60 @@ class TicketWebhookFormType extends AbstractType
                 'mapped'   => true,
             ])
             ->add('payload_decoder', TextType::class, [
-//                'label'    => $options['label_name'],
+                'label'    => '',
                 'required' => true,
                 'mapped'   => true,
             ])
             ->add('is_enabled', CheckboxType::class, [
-//                'label'    => $options['label_email'],
+                'label'    => '',
                 'required' => true,
                 'mapped'   => true,
             ])
             ->add('search_terms', FilterTermsFormType::class, [
-//                'label'    => $options['label_email'],
+                'label'    => '',
                 'required' => true,
-                'mapped'   => true,
-            ])
-            ->add('actions', TriggerActionsFormType::class, [
-//                'label'    => $options['label_email'],
-                'required' => true,
-                'mapped'   => true,
-            ])
-            ->add('terms', TriggerTermsFormType::class, [
-//                'label'    => $options['label_email'],
-                'required' => false,
                 'mapped'   => true,
             ])
         ;
+
+//          $builder->addEventListener(FormEvents::POST_SUBMIT, function(FormEvent $event) use ($options) {
+//            $this->onPostSubmit($event, $options);
+//          })
+        ;
     }
+
+    public function setDefaultOptions(OptionsResolverInterface $resolver)
+    {
+        $resolver->setDefaults(['allow_extra_fields' => true]);
+    }
+
+//    /**
+//     * @internal
+//     *
+//     * @param FormEvent $event
+//     */
+//    public function onPostSubmit(FormEvent $event, array $options)
+//    {
+//        $form = $event->getForm();
+//        /** @var TicketWebhook $data */
+//        $webhook = $form->getData();
+//
+//        /** @var TicketTrigger $trigger */
+//        foreach ($webhook->getTriggers() as $trigger) {
+//            $this->setRequiredTriggerProperties($webhook, $trigger, $options);
+//        }
+//    }
+//
+//    /**
+//     * @param TicketWebhook $webhook
+//     * @param TicketTrigger $trigger
+//     * @param $options
+//     */
+//    private function setRequiredTriggerProperties( TicketWebhook $webhook, TicketTrigger $trigger, $options = [])
+//    {
+//        $trigger->is_enabled = $webhook->isIsEnabled();
+//        if (! $trigger->title) {
+//            $trigger->title = sprintf('Trigger for webhook %s', $webhook->getAuthId());
+//        }
+//    }
 }

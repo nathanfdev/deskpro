@@ -15,7 +15,8 @@ import {
   parseQuery,
   cloneReport
 } from '../../Application/Actions/reportActions';
-import { allReportsSelector, allReportsLabelsSelector } from '../Selectors/reports';
+import { allReportsSelector } from '../Selectors/reports';
+import { allReportLabelsSelector } from '../../Application/Selectors/reports';
 import { regex, activateLabel, transformLabels, transformReportData, countActiveLabels } from './helper';
 
 @connect(state => ({
@@ -24,7 +25,7 @@ import { regex, activateLabel, transformLabels, transformReportData, countActive
   reportLoading: state.Application.reports.get('reportLoading'),
   currentReport: state.Application.reports.get('currentReport'),
   groupParams:   state.Application.reports.get('groupParams'),
-  labels:        allReportsLabelsSelector(state),
+  labels:        allReportLabelsSelector(state)
 }))
 class Wrapper extends React.Component {
 
@@ -168,7 +169,7 @@ class Wrapper extends React.Component {
     if (props.labels) {
       let newLabels = transformLabels(props.labels);
       this.state.labels.forEach((label) => {
-        const entry = newLabels.findEntry(newLabel => newLabel.get('value') === label.get('value'));
+        const entry = newLabels.findEntry(newLabel => newLabel.get('label') === label.get('label'));
         if (entry && entry[1] && label.get('active')) {
           newLabels = newLabels.setIn([entry[0], 'active'], true);
         }

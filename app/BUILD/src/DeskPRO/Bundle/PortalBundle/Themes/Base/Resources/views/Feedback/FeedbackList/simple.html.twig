@@ -3,7 +3,7 @@
         <ul>
             {% for item in pager %}
                 <li>
-                    <a href="{{ portal_path(item, 'vote_up') }}" class="post-link thumbs">
+                    <a href="{{ portal_path(item, 'vote_up') }}" class="post-link thumbs" rel="noindex, nofollow">
                         <span><i class="fa fa-thumbs-up"></i> {{ item.total_rating }}</span>
                     </a>
                     <span class="text-tag">{{ item.status_category ? object_phrase(item.status_category) : item.status }}</span>

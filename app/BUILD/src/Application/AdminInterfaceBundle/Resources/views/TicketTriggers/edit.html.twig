@@ -19,7 +19,7 @@
 								</div>
 							</div>
 							<div class="col-lg-2">
-								<nav class="dp-blocktabs responsive">
+								<nav class="dp-blocktabs responsive" ng-if="TicketTriggersEdit.enableCopyFromAnotherTrigger">
 									<menu dropdown>
 										<button class="btn btn-default" type="button" dropdown-toggle><span><i class="fa fa-cog"></i></span> <i class="fa fa-caret-down"></i></button>
 										<ul class="dropdown-menu pull-right">
@@ -29,7 +29,7 @@
 								</nav>
 							</div>
 						</div>
-						<div class="form-group">
+						<div class="form-group" ng-if="TicketTriggersEdit.enableEventsSection">
 							<div class="col-lg-2">
 								<h3>Event</h3>
 							</div>
@@ -122,7 +122,7 @@
 								</div>
 							</div>
 						</div>
-						<div class="form-group" style="margin-bottom: 15px;" ng-if="triggerType == 'update' && (form.typeForm.by_user || form.typeForm.by_agent)">
+						<div class="form-group" style="margin-bottom: 15px;" ng-if="TicketTriggersEdit.showEventsSection && triggerType == 'update' && (form.typeForm.by_user || form.typeForm.by_agent)">
 							<div class="col-lg-2">
 								<h3>Options</h3>
 							</div>

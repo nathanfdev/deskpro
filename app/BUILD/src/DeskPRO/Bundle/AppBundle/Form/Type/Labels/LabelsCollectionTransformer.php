@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2017, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2018, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -81,16 +81,16 @@ class LabelsCollectionTransformer implements DataTransformerInterface
     /**
      * {@inheritdoc}
      *
-     * @param Label[] $labels
+     * @param Label[] $value
      */
-    public function transform($labels)
+    public function transform($value)
     {
-        if (!is_array($labels) && !$labels instanceof \Traversable) {
+        if (!is_array($value) && !$value instanceof \Traversable) {
             return [];
         }
 
         $result = [];
-        foreach ($labels as $label) {
+        foreach ($value as $label) {
             $result[] = $label ? $label->getLabel() : '';
         }
 

@@ -1,0 +1,76 @@
+<?php
+
+/*
+ * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
+ * a British company located in London, England.
+ *
+ * All source code and content Copyright (c) 2018, DeskPRO Ltd.
+ *
+ * The license agreement under which this software is released
+ * can be found at https://www.deskpro.com/eula/
+ *
+ * By using this software, you acknowledge having read the license
+ * and agree to be bound thereby.
+ *
+ * Please note that DeskPRO is not free software. We release the full
+ * source code for our software because we trust our users to pay us for
+ * the huge investment in time and energy that has gone into both creating
+ * this software and supporting our customers. By providing the source code
+ * we preserve our customers' ability to modify, audit and learn from our
+ * work. We have been developing DeskPRO since 2001, please help us make it
+ * another decade.
+ *
+ * Like the work you see? Think you could make it better? We are always
+ * looking for great developers to join us: http://www.deskpro.com/jobs/
+ *
+ * ~ Thanks, Everyone at Team DeskPRO
+ */
+
+namespace DpTest\DeskPRO\Bundle\ReportBundle\Dpql2;
+
+use DeskPRO\Bundle\ReportBundle\Dpql2\DpqlCompiler;
+use DeskPRO\Bundle\ReportBundle\Dpql2\DpqlContext;
+use DpTest\ApiTestCase;
+
+/**
+ * Class AbstractCompilerTest.
+ */
+abstract class AbstractCompilerTest extends ApiTestCase
+{
+    /**
+     * @var DpqlCompiler
+     */
+    protected $compiler;
+
+    /**
+     * @var DpqlContext
+     */
+    protected $context;
+
+    /**
+     * {@inheritdoc}
+     */
+    public function setUp()
+    {
+        $connection = $this->getEntityManager()->getConnection();
+        $connection->executeQuery('DELETE FROM custom_def_ticket');
+        $connection->executeQuery('DELETE FROM custom_def_people');
+        $connection->executeQuery('DELETE FROM custom_def_organizations');
+
+        $this->compiler = $this->getContainer()->get('dpql.compiler');
+        $this->context  = null;
+    }
+
+    /**
+     * @param string $dpql
+     * @param string $sql
+     */
+    protected function assertDpqlQuery($dpql, $sql)
+    {
+        $statement   = $this->compiler->compile($dpql, [], $this->context);
+        $exceptedSql = preg_replace('/\s+/', ' ', $sql);
+        $actualSql   = preg_replace('/\s+/', ' ', $statement->toSql());
+
+        $this->assertEquals($exceptedSql, $actualSql);
+    }
+}

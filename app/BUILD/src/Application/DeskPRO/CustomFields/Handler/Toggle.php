@@ -53,11 +53,26 @@ class Toggle extends HandlerAbstract
         return parent::getFormField($data);
     }
 
+    /**
+     * @param array $form_data
+     * @param null $default
+     * @return mixed|null
+     */
+    private function findValue(array $form_data, $default = null)
+    {
+        $names = $this->getAllFormFieldNames();
+        foreach ($names as $name) {
+            if (!empty($form_data[$name])) {
+                return $form_data[$name];
+            }
+        }
+        return $default;
+    }
+
     public function getDataFromForm(array $form_data)
     {
-        $name = $this->getFormFieldName();
-
-        if (!empty($form_data[$name])) {
+        $value = $this->findValue($form_data);
+        if (!empty($value)) {
             return [
                 [$this->field_def['id'], 'value', 1],
             ];
@@ -68,7 +83,11 @@ class Toggle extends HandlerAbstract
 
     public function validateFormData(array $form_data, $context = self::CONTEXT_USER, $context_data = null)
     {
-        $data = isset($form_data[$this->getFormFieldName()]) ? $form_data[$this->getFormFieldName()] : '';
+        $valueIfNotPresent = new \stdClass();
+        $data = $this->findValue($form_data, $valueIfNotPresent);
+        if ($data === $valueIfNotPresent) {
+            $data = '';
+        }
 
         if (!is_scalar($data)) {
             return $this->makeErrorArray(['invalid_input']);

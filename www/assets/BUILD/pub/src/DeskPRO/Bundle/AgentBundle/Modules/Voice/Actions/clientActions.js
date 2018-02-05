@@ -6,7 +6,7 @@ import { storageAvailable } from 'DeskPRO/Component/Util/storageAvailable';
 import { loadBatch, addToCollection, updateCollection } from 'DeskPRO/Bundle/AppBundle/Modules/RecordsStore';
 import { meSelector } from 'DeskPRO/Bundle/AppBundle/Modules/RecordsStore/Shortcuts/me';
 import { agentsSelector } from 'DeskPRO/Bundle/AppBundle/Modules/RecordsStore/Shortcuts/agents';
-import { callsEnabledSelector } from '../Selectors/agents';
+import { callsEnabledSelector, callsForwardingEnabledSelector } from '../Selectors/agents';
 import { phoneTokenSelector, workerTokenSelector, idleActivitySidSelector, busyActivitySidSelector, offlineActivitySidSelector, connectionsSelector } from '../Selectors/client';
 import { allPhoneCallsSelector } from '../Selectors/phoneCalls';
 import { allNumbersSelector } from '../Selectors/numbers';
@@ -63,7 +63,7 @@ export const voiceBootstrap = createAction(
         dispatch(setMicEnabled(true));
 
         // init twilio worker
-        worker = new window.Twilio.TaskRouter.Worker(workerToken, true, connectSid, offlineSid);
+        worker = new window.Twilio.TaskRouter.Worker(workerToken, true, connectSid);
         worker.on('ready', () => {
           console.log('worker ready');
         });
@@ -129,6 +129,14 @@ export const voiceBootstrap = createAction(
           console.log('worker error');
           console.log(data);
         });
+        window.addEventListener('unload', () => {
+          const state             = getState();
+          const forwardingEnabled = callsForwardingEnabledSelector(state);
+          const voiceEnabled      = callsEnabledSelector(state);
+          const disconnectSid     = voiceEnabled && forwardingEnabled ? idleSid : offlineSid;
+
+          worker.update('ActivitySid', disconnectSid);
+        });
 
         try {
           window.Twilio.Device.setup(phoneToken, { debug: true });
@@ -176,6 +184,10 @@ export const voiceBootstrap = createAction(
           let agent  = agents.get(data.person_id);
           if (!agent) {
             return;
+          }
+
+          if (!agent.get('agent_data')) {
+            agent = agent.set('agent_data', Immutable.fromJS({}));
           }
 
           agent = agent.setIn(['agent_data', 'agent_calls_enabled'], !!data.agent_calls_enabled);
@@ -239,8 +251,20 @@ export const voiceBootstrap = createAction(
             window.DeskPRO_Window.runPageRoute(`ticket:/agent/tickets/${data.ticket.id}`);
           }
         });
+        messageBroker.addMessageListener('agent.voice.outgoing-call-declined', (data) => {
+          const state       = getState();
+          const connections = connectionsSelector(state);
+          const connection  = connections.filter(c => c.parameters.CallSid === data.CallSid).first();
+
+          dispatch(resetOutgoingCall());
+          if (connection) {
+            connection.disconnect();
+          }
+        });
       })
-      .catch(() => {
+      .catch((e) => {
+        console.log(e);
+
         // catch mic disabled exception
         // nothing to do
       });
@@ -256,12 +280,6 @@ export const makeOutboundCall = createAction(
     const agentId = me.get('id');
     const busySid = busyActivitySidSelector(state);
     const numbers = allNumbersSelector(state);
-
-    const number = numbers.get(callFrom);
-    if (!number) {
-      return null;
-    }
-
     const promise = api.sendPost('DP_API/voice_client/prepare_outbound_call?include=person', {
       call_from: callFrom,
       call_to:   callTo
@@ -271,6 +289,7 @@ export const makeOutboundCall = createAction(
         dispatch(addToCollection('VoicePhoneCall', 'all', Object.values(linked.person)));
       }
 
+      const number = numbers.get(callFrom);
       dispatch(setOutgoingCall({ callFrom: number, callTo, phoneCall: data }));
       worker.update('ActivitySid', busySid);
       window.Twilio.Device.connect({

@@ -58,10 +58,10 @@ class ExecutorContextVarsTest extends DeskProTestCase
         $actualRequest = ExecutorContextEnv::getWebhookRequest($context);
         $this->assertTrue($actualRequest === $request);
 
-        $actualPayload = ExecutorContextEnv::getWebhookPayload($context);
+        $actualPayload = ExecutorContextEnv::getWebhookInvocation($context);
         $this->assertNull($actualPayload);
-        ExecutorContextEnv::setWebhookPayload($context, $invocation);
-        $actualPayload = ExecutorContextEnv::getWebhookPayload($context);
+        ExecutorContextEnv::setWebhookInvocation($context, $invocation);
+        $actualPayload = ExecutorContextEnv::getWebhookInvocation($context);
         $this->assertTrue($actualPayload === $invocation);
     }
 
@@ -96,11 +96,11 @@ class ExecutorContextVarsTest extends DeskProTestCase
     public function testGetWebhookPayloadThrowsErrorWhenUnexpectedTypeRetrieved()
     {
         $context = new ExecutorContext();
-        $context->getVars()->set('webhook_payload', new \stdClass());
+        $context->getVars()->set('webhook_invocation', new \stdClass());
 
         $exception = null;
         try {
-            ExecutorContextEnv::getWebhookPayload($context);
+            ExecutorContextEnv::getWebhookInvocation($context);
         } catch (\DomainException $e) {
             $exception = $e;
         }

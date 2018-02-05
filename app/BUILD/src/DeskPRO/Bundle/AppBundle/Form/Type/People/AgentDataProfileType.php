@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2017, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2018, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -33,6 +33,7 @@ use DeskPRO\Bundle\AppBundle\Form\Type\ApiBooleanType;
 use DeskPRO\Bundle\AppBundle\Form\Type\Voice\VoiceAssetAuthType;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
+use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\Form\FormEvent;
 use Symfony\Component\Form\FormEvents;
@@ -51,6 +52,7 @@ class AgentDataProfileType extends AbstractType
         $builder
             ->add('available_status', ChoiceType::class, [
                 'property_path'     => 'availableStatus',
+                'required'          => false,
                 'choices_as_values' => true,
                 'choices'           => [
                     AgentData::AVAILABLE_STATUS_IDLE,
@@ -62,14 +64,23 @@ class AgentDataProfileType extends AbstractType
             ])
             ->add('agent_calls_enabled', ApiBooleanType::class, [
                 'property_path' => 'agentCallsEnabled',
+                'required'      => false,
+            ])
+            ->add('agent_can_use_forwarding', ApiBooleanType::class, [
+                'property_path' => 'agentCanUseForwarding',
+                'required'      => false,
             ])
             ->add('voicemail_asset', VoiceAssetAuthType::class, [
                 'property_path' => 'voicemailAsset',
                 'required'      => false,
             ])
+            ->add('forwarding_number', TextType::class, [
+                'property_path' => 'forwardingNumber',
+                'required'      => false,
+            ])
         ;
 
-        $builder->addEventListener(FormEvents::PRE_SUBMIT, [$this, 'onChangeAvailableStatus']);
+        $builder->addEventListener(FormEvents::PRE_SUBMIT, [$this, 'onPreSubmit']);
     }
 
     /**
@@ -87,7 +98,7 @@ class AgentDataProfileType extends AbstractType
      *
      * @param FormEvent $event
      */
-    public function onChangeAvailableStatus(FormEvent $event)
+    public function onPreSubmit(FormEvent $event)
     {
         $data = $event->getData();
         if (isset($data['available_status']) && $data['available_status'] === AgentData::AVAILABLE_STATUS_OFFLINE) {

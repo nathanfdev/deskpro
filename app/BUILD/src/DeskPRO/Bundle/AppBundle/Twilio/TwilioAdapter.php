@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2017, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2018, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -145,15 +145,31 @@ class TwilioAdapter
         $numbers = [];
 
         try {
-            $result  = $this->getClient($account)->availablePhoneNumbers($countryCode)->$type->page($options);
+            $client  = $this->getClient($account);
+            $result  = $client->availablePhoneNumbers($countryCode)->$type->page($options);
             $exclude = $this->getAccountNumbersList($account);
+            $prices  = $client->pricing->phoneNumbers->countries($countryCode)->fetch();
+
+            $priceTypeMap = [
+                'local'     => 'local',
+                'national'  => 'local',
+                'mobile'    => 'mobile',
+                'toll free' => 'tollFree',
+            ];
+
+            $pricesMap = [];
+            foreach ($prices->phoneNumberPrices as $price) {
+                $pricesMap[$priceTypeMap[$price['number_type']]] = $price['current_price'];
+            }
 
             foreach ($result as $apiNumber) {
                 $numbers[] = new TwilioAvailableNumber(
                     $apiNumber,
                     $account,
                     isset($exclude[$apiNumber->phoneNumber]),
-                    $type
+                    $type,
+                    $pricesMap[$type],
+                    $prices->priceUnit
                 );
             }
         } catch (\Exception $e) {
@@ -259,7 +275,7 @@ class TwilioAdapter
         ]);
 
         // add additional activity
-        $taskRouter->workspaces($workspace->sid)->activities->create('IdleDisabled', 'false');
+        $taskRouter->workspaces($workspace->sid)->activities->create('IdleDisabled', ['available' => false]);
 
         return $workspace;
     }
@@ -573,6 +589,28 @@ class TwilioAdapter
     /**
      * @param VoiceAccount $account
      * @param Person       $person
+     */
+    public function rejectAgentWorkerReservations(VoiceAccount $account, Person $person)
+    {
+        $workerSid    = $this->getWorkerSid($person);
+        $workspace    = $this->getWorkspace($account);
+        $reservations = $workspace->workers($workerSid)->reservations->read([
+            'reservationStatus' => 'pending',
+        ]);
+
+        foreach ($reservations as $reservation) {
+            try {
+                $workspace->workers($workerSid)->reservations($reservation->sid)->update([
+                    'reservationStatus' => 'rejected',
+                ]);
+            } catch (\Exception $e) {
+            }
+        }
+    }
+
+    /**
+     * @param VoiceAccount $account
+     * @param Person       $person
      *
      * @return \Twilio\Rest\Taskrouter\V1\Workspace\TaskQueueInstance
      */
@@ -872,9 +910,14 @@ class TwilioAdapter
      */
     public function rejectTaskWorker(VoiceAccount $account, $taskSid, Person $person)
     {
-        $task = $this->getWorkspace($account)->tasks($taskSid)->fetch();
-        if (!$task) {
-            throw new TwilioException('Task not found');
+        try {
+            $task = $this->getWorkspace($account)->tasks($taskSid)->fetch();
+        } catch (RestException $e) {
+            if ($e->getStatusCode() === Response::HTTP_NOT_FOUND) {
+                return;
+            }
+
+            throw $e;
         }
 
         $attributes = json_decode($task->attributes, true);
@@ -890,18 +933,72 @@ class TwilioAdapter
 
     /**
      * @param VoiceAccount $account
+     * @param Person       $person
+     */
+    public function cancelForwardingCall(VoiceAccount $account, Person $person)
+    {
+        $agentData = $person->getAgentData();
+        if (!$agentData || !$agentData->getForwardingNumber()) {
+            return;
+        }
+
+        $forwardingCalls = $this->getClient($account)->calls->read([
+            'to'     => $agentData->getForwardingNumber(),
+            'status' => 'ringing',
+        ]);
+
+        foreach ($forwardingCalls as $forwardingCall) {
+            try {
+                $forwardingCall->update([
+                    'status' => 'canceled',
+                ]);
+            } catch (\Exception $e) {
+            }
+        }
+    }
+
+    /**
+     * @param VoicePhoneCall $phoneCall
+     */
+    public function cancelForwardingCalls(VoicePhoneCall $phoneCall)
+    {
+        $account = $phoneCall->getNumber()->getAccount();
+        $client  = $this->getClient($account);
+
+        foreach ($phoneCall->getForwardingSids() as $forwardingSid) {
+            try {
+                $forwardingCall = $client->calls($forwardingSid)->fetch();
+                if ($forwardingCall->status === 'ringing') {
+                    $forwardingCall->update([
+                        'status' => 'canceled',
+                    ]);
+                }
+            } catch (\Exception $e) {
+            }
+        }
+    }
+
+    /**
+     * @param VoiceAccount $account
      * @param string       $taskSid
      *
      * @throws TwilioException
      */
     public function endTask(VoiceAccount $account, $taskSid)
     {
-        $task = $this->getWorkspace($account)->tasks($taskSid)->fetch();
-        if (!$task) {
-            throw new TwilioException('Task not found');
+        try {
+            $task = $this->getWorkspace($account)->tasks($taskSid)->fetch();
+        } catch (RestException $e) {
+            if ($e->getStatusCode() === Response::HTTP_NOT_FOUND) {
+                return;
+            }
+
+            throw $e;
         }
 
-        $task->delete();
+        if ($task->sid) {
+            $task->delete();
+        }
     }
 
     /**

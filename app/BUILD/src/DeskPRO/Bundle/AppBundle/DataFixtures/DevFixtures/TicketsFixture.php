@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2017, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2018, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -33,14 +33,14 @@ use Application\DeskPRO\Entity\LabelDef;
 use Application\DeskPRO\Entity\Sla;
 use Application\DeskPRO\Entity\Ticket;
 use Application\DeskPRO\Entity\TicketSla;
-use DeskPRO\Bundle\AppBundle\DataFixtures\DeskProAbstractFixture;
+use DeskPRO\Bundle\AppBundle\DataFixtures\AbstractDpFixture;
 use DeskPRO\Bundle\AppBundle\DataFixtures\DevFixtures\CustomFields\CustomDataGenerator;
 use Doctrine\Common\DataFixtures\OrderedFixtureInterface;
 use Doctrine\Common\Persistence\ObjectManager;
 use Orb\Util\DpStrings;
 use Orb\Util\Strings;
 
-class TicketsFixture extends DeskProAbstractFixture implements OrderedFixtureInterface
+class TicketsFixture extends AbstractDpFixture implements OrderedFixtureInterface
 {
     private $numCategories     = 5;
     private $numWorkflows      = 5;
@@ -48,7 +48,19 @@ class TicketsFixture extends DeskProAbstractFixture implements OrderedFixtureInt
     private $numLabels         = 100;
     private $ticketMaxMessages = 10;
 
-    private $numTickets = 250;
+    private $ticketChannels = [
+        'web.person',
+        'web.person.portal',
+        'web.person.widget',
+        'web.person.embed',
+        'gateway.person',
+        'gateway.agent',
+        'web.api',
+        'web.api.person',
+        'web.api.agent',
+    ];
+
+    private $numTickets = 300;
 
     /**
      * @var int[]
@@ -282,7 +294,8 @@ class TicketsFixture extends DeskProAbstractFixture implements OrderedFixtureInt
                 }
             }
 
-            $subj    = $this->faker->sentence(4);
+            $subj = $this->faker->sentence(4);
+
             $batch[] = [
                 'brand_id'      => $this->getReference('brand')->getId(),
                 'department_id' => $this->faker->randomElement($this->departmentIds),
@@ -302,16 +315,17 @@ class TicketsFixture extends DeskProAbstractFixture implements OrderedFixtureInt
                 'subject'                 => $subj,
                 'original_subject'        => $subj,
                 'feedback_rating'         => $ticketRating,
-                'date_created'            => $this->faker->dateTimeThisYear->format('Y-m-d H:i:s'),
-                'date_resolved'           => $this->faker->dateTimeThisYear->format('Y-m-d H:i:s'),
-                'date_archived'           => $this->faker->dateTimeThisYear->format('Y-m-d H:i:s'),
-                'date_first_agent_assign' => $this->faker->dateTimeThisYear->format('Y-m-d H:i:s'),
-                'date_first_agent_reply'  => $this->faker->dateTimeThisYear->format('Y-m-d H:i:s'),
-                'date_last_agent_reply'   => $this->faker->dateTimeThisYear->format('Y-m-d H:i:s'),
-                'date_last_user_reply'    => $this->faker->dateTimeThisYear->format('Y-m-d H:i:s'),
-                'date_agent_waiting'      => $this->faker->dateTimeThisYear->format('Y-m-d H:i:s'),
-                'date_user_waiting'       => $this->faker->dateTimeThisYear->format('Y-m-d H:i:s'),
-                'date_status'             => $this->faker->dateTimeThisYear->format('Y-m-d H:i:s'),
+                'creation_system'         => $this->faker->randomElement($this->ticketChannels),
+                'date_created'            => $this->faker->boolean(15) ? $this->faker->dateTimeBetween('-2 days')->format('Y-m-d H:i:s') : $this->faker->dateTimeThisYear->format('Y-m-d H:i:s'),
+                'date_resolved'           => $this->faker->boolean(15) ? $this->faker->dateTimeBetween('-2 days')->format('Y-m-d H:i:s') : $this->faker->dateTimeThisYear->format('Y-m-d H:i:s'),
+                'date_archived'           => $this->faker->boolean(15) ? $this->faker->dateTimeBetween('-2 days')->format('Y-m-d H:i:s') : $this->faker->dateTimeThisYear->format('Y-m-d H:i:s'),
+                'date_first_agent_assign' => $this->faker->boolean(15) ? $this->faker->dateTimeBetween('-2 days')->format('Y-m-d H:i:s') : $this->faker->dateTimeThisYear->format('Y-m-d H:i:s'),
+                'date_first_agent_reply'  => $this->faker->boolean(15) ? $this->faker->dateTimeBetween('-2 days')->format('Y-m-d H:i:s') : $this->faker->dateTimeThisYear->format('Y-m-d H:i:s'),
+                'date_last_agent_reply'   => $this->faker->boolean(15) ? $this->faker->dateTimeBetween('-2 days')->format('Y-m-d H:i:s') : $this->faker->dateTimeThisYear->format('Y-m-d H:i:s'),
+                'date_last_user_reply'    => $this->faker->boolean(15) ? $this->faker->dateTimeBetween('-2 days')->format('Y-m-d H:i:s') : $this->faker->dateTimeThisYear->format('Y-m-d H:i:s'),
+                'date_agent_waiting'      => $this->faker->boolean(15) ? $this->faker->dateTimeBetween('-2 days')->format('Y-m-d H:i:s') : $this->faker->dateTimeThisYear->format('Y-m-d H:i:s'),
+                'date_user_waiting'       => $this->faker->boolean(15) ? $this->faker->dateTimeBetween('-2 days')->format('Y-m-d H:i:s') : $this->faker->dateTimeThisYear->format('Y-m-d H:i:s'),
+                'date_status'             => $this->faker->boolean(15) ? $this->faker->dateTimeBetween('-2 days')->format('Y-m-d H:i:s') : $this->faker->dateTimeThisYear->format('Y-m-d H:i:s'),
             ];
         }
 
@@ -349,16 +363,17 @@ class TicketsFixture extends DeskProAbstractFixture implements OrderedFixtureInt
                 'urgency'                 => $this->faker->numberBetween(1, 10),
                 'subject'                 => $subj,
                 'original_subject'        => $subj,
-                'date_created'            => $this->faker->dateTimeThisYear->format('Y-m-d H:i:s'),
-                'date_resolved'           => $this->faker->dateTimeThisYear->format('Y-m-d H:i:s'),
-                'date_archived'           => $this->faker->dateTimeThisYear->format('Y-m-d H:i:s'),
-                'date_first_agent_assign' => $this->faker->dateTimeThisYear->format('Y-m-d H:i:s'),
-                'date_first_agent_reply'  => $this->faker->dateTimeThisYear->format('Y-m-d H:i:s'),
-                'date_last_agent_reply'   => $this->faker->dateTimeThisYear->format('Y-m-d H:i:s'),
-                'date_last_user_reply'    => $this->faker->dateTimeThisYear->format('Y-m-d H:i:s'),
-                'date_agent_waiting'      => $this->faker->dateTimeThisYear->format('Y-m-d H:i:s'),
-                'date_user_waiting'       => $this->faker->dateTimeThisYear->format('Y-m-d H:i:s'),
-                'date_status'             => $this->faker->dateTimeThisYear->format('Y-m-d H:i:s'),
+                'creation_system'         => $this->faker->randomElement($this->ticketChannels),
+                'date_created'            => $this->faker->boolean(15) ? $this->faker->dateTimeBetween('-2 days')->format('Y-m-d H:i:s') : $this->faker->dateTimeThisYear->format('Y-m-d H:i:s'),
+                'date_resolved'           => $this->faker->boolean(15) ? $this->faker->dateTimeBetween('-2 days')->format('Y-m-d H:i:s') : $this->faker->dateTimeThisYear->format('Y-m-d H:i:s'),
+                'date_archived'           => $this->faker->boolean(15) ? $this->faker->dateTimeBetween('-2 days')->format('Y-m-d H:i:s') : $this->faker->dateTimeThisYear->format('Y-m-d H:i:s'),
+                'date_first_agent_assign' => $this->faker->boolean(15) ? $this->faker->dateTimeBetween('-2 days')->format('Y-m-d H:i:s') : $this->faker->dateTimeThisYear->format('Y-m-d H:i:s'),
+                'date_first_agent_reply'  => $this->faker->boolean(15) ? $this->faker->dateTimeBetween('-2 days')->format('Y-m-d H:i:s') : $this->faker->dateTimeThisYear->format('Y-m-d H:i:s'),
+                'date_last_agent_reply'   => $this->faker->boolean(15) ? $this->faker->dateTimeBetween('-2 days')->format('Y-m-d H:i:s') : $this->faker->dateTimeThisYear->format('Y-m-d H:i:s'),
+                'date_last_user_reply'    => $this->faker->boolean(15) ? $this->faker->dateTimeBetween('-2 days')->format('Y-m-d H:i:s') : $this->faker->dateTimeThisYear->format('Y-m-d H:i:s'),
+                'date_agent_waiting'      => $this->faker->boolean(15) ? $this->faker->dateTimeBetween('-2 days')->format('Y-m-d H:i:s') : $this->faker->dateTimeThisYear->format('Y-m-d H:i:s'),
+                'date_user_waiting'       => $this->faker->boolean(15) ? $this->faker->dateTimeBetween('-2 days')->format('Y-m-d H:i:s') : $this->faker->dateTimeThisYear->format('Y-m-d H:i:s'),
+                'date_status'             => $this->faker->boolean(15) ? $this->faker->dateTimeBetween('-2 days')->format('Y-m-d H:i:s') : $this->faker->dateTimeThisYear->format('Y-m-d H:i:s'),
                 'organization_id'         => $this->joeManagerOrgId,
             ];
         }
@@ -398,16 +413,17 @@ class TicketsFixture extends DeskProAbstractFixture implements OrderedFixtureInt
                 'urgency'                 => $this->faker->numberBetween(1, 10),
                 'subject'                 => $subj,
                 'original_subject'        => $subj,
-                'date_created'            => $this->faker->dateTimeThisYear->format('Y-m-d H:i:s'),
-                'date_resolved'           => $this->faker->dateTimeThisYear->format('Y-m-d H:i:s'),
-                'date_archived'           => $this->faker->dateTimeThisYear->format('Y-m-d H:i:s'),
-                'date_first_agent_assign' => $this->faker->dateTimeThisYear->format('Y-m-d H:i:s'),
-                'date_first_agent_reply'  => $this->faker->dateTimeThisYear->format('Y-m-d H:i:s'),
-                'date_last_agent_reply'   => $this->faker->dateTimeThisYear->format('Y-m-d H:i:s'),
-                'date_last_user_reply'    => $this->faker->dateTimeThisYear->format('Y-m-d H:i:s'),
-                'date_agent_waiting'      => $this->faker->dateTimeThisYear->format('Y-m-d H:i:s'),
-                'date_user_waiting'       => $this->faker->dateTimeThisYear->format('Y-m-d H:i:s'),
-                'date_status'             => $this->faker->dateTimeThisYear->format('Y-m-d H:i:s'),
+                'creation_system'         => $this->faker->randomElement($this->ticketChannels),
+                'date_created'            => $this->faker->boolean(15) ? $this->faker->dateTimeBetween('-2 days')->format('Y-m-d H:i:s') : $this->faker->dateTimeThisYear->format('Y-m-d H:i:s'),
+                'date_resolved'           => $this->faker->boolean(15) ? $this->faker->dateTimeBetween('-2 days')->format('Y-m-d H:i:s') : $this->faker->dateTimeThisYear->format('Y-m-d H:i:s'),
+                'date_archived'           => $this->faker->boolean(15) ? $this->faker->dateTimeBetween('-2 days')->format('Y-m-d H:i:s') : $this->faker->dateTimeThisYear->format('Y-m-d H:i:s'),
+                'date_first_agent_assign' => $this->faker->boolean(15) ? $this->faker->dateTimeBetween('-2 days')->format('Y-m-d H:i:s') : $this->faker->dateTimeThisYear->format('Y-m-d H:i:s'),
+                'date_first_agent_reply'  => $this->faker->boolean(15) ? $this->faker->dateTimeBetween('-2 days')->format('Y-m-d H:i:s') : $this->faker->dateTimeThisYear->format('Y-m-d H:i:s'),
+                'date_last_agent_reply'   => $this->faker->boolean(15) ? $this->faker->dateTimeBetween('-2 days')->format('Y-m-d H:i:s') : $this->faker->dateTimeThisYear->format('Y-m-d H:i:s'),
+                'date_last_user_reply'    => $this->faker->boolean(15) ? $this->faker->dateTimeBetween('-2 days')->format('Y-m-d H:i:s') : $this->faker->dateTimeThisYear->format('Y-m-d H:i:s'),
+                'date_agent_waiting'      => $this->faker->boolean(15) ? $this->faker->dateTimeBetween('-2 days')->format('Y-m-d H:i:s') : $this->faker->dateTimeThisYear->format('Y-m-d H:i:s'),
+                'date_user_waiting'       => $this->faker->boolean(15) ? $this->faker->dateTimeBetween('-2 days')->format('Y-m-d H:i:s') : $this->faker->dateTimeThisYear->format('Y-m-d H:i:s'),
+                'date_status'             => $this->faker->boolean(15) ? $this->faker->dateTimeBetween('-2 days')->format('Y-m-d H:i:s') : $this->faker->dateTimeThisYear->format('Y-m-d H:i:s'),
             ];
         }
 
@@ -422,7 +438,7 @@ class TicketsFixture extends DeskProAbstractFixture implements OrderedFixtureInt
 
         foreach ($this->ticketIds as $ticketId) {
             $num  = (int) $ticketId === 100 ? 1500 : $this->faker->numberBetween(1, $this->ticketMaxMessages);
-            $date = $this->faker->dateTimeBetween('-2 months', '-2days');
+            $date = $this->faker->dateTimeBetween('-2 months');
             for ($i = 0; $i < $num; ++$i) {
                 $as_agent = $this->faker->boolean(50);
 
@@ -551,7 +567,7 @@ class TicketsFixture extends DeskProAbstractFixture implements OrderedFixtureInt
                     $this->faker->dateTimeBetween('-14 days', '-10 days')->format('Y-m-d H:i:s') : null,
                 'fail_date' => $status === TicketSla::STATUS_FAIL ?
                     $this->faker->dateTimeBetween('-14 days', '-10 days')->format('Y-m-d H:i:s') : null,
-                'is_completed'         => 1,
+                'is_completed'         => (int) $this->faker->boolean(70),
                 'completed_time_taken' => $this->faker->numberBetween(60 * 60 * 24, 60 * 60 * 24 * 10),
             ];
         }

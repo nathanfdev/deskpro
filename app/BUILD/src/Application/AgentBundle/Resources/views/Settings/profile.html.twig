@@ -68,8 +68,8 @@ pageMeta.fragmentClass = 'DeskPRO.Agent.PageFragment.SettingsPage.Profile';
 				</ul>
 			</div>
 			<div class="more_emails">
-				{{ form_widget(form.enable_plaintext_email) }} Send email notifications with plaintext parts
-				<span class="small-light-icon tipped" data-tipped-options="maxWidth: 250" title="When enabled, DeskPRO will send emails with both rich-text (HTML) and plain-text parts. This is useful if you use email software which prefers plain-text email."></span>
+				{{ form_widget(form.enable_plaintext_email) }} {{ phrase('agent.settings.enable_plaintext_email') }}
+				<span class="small-light-icon tipped" data-tipped-options="maxWidth: 250" title="{{ phrase('agent.settings.enable_plaintext_email_tip') }}"></span>
 			</div>
 		</div>
 
@@ -129,6 +129,9 @@ pageMeta.fragmentClass = 'DeskPRO.Agent.PageFragment.SettingsPage.Profile';
 					<td style="padding-right: 15px;">
 						<img src="{{ app.user.getPictureUrl(80) }}" />
 						<em class="desc" style="display: block;">{{ phrase('agent.settings.your_current_picture') }}</em>
+            {% if app.user.hasPicture() and app.user.getPictureBlob() %}
+              <label>{{ form_widget(form.remove_picture) }} {{ phrase('agent.general.remove') }} {{ phrase('agent.general.label_picture') }}</label>
+            {% endif %}
 					</td>
 				<td>
 					<input type="file" name="file-upload" />

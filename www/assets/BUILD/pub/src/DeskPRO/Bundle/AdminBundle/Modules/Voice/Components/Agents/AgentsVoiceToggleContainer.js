@@ -8,7 +8,7 @@ import { loadAgents } from '../../../Application/Actions/peopleActions';
 import { replaceRoute } from '../../../../Services/history';
 import { loadAccounts } from '../../Actions/accountActions';
 import { isAccountsLoadedSelector, allAccountsSelector } from '../../Selectors/account';
-import { toggleVoiceEnabled, toggleOutboundCallsEnabled, toggleAll } from '../../Actions/agentActions';
+import { toggleVoiceEnabled, toggleOutboundCallsEnabled, toggleUseForwarding, toggleAll } from '../../Actions/agentActions';
 import { settingsSelector, settingsLoadedSelector } from '../../Selectors/settings';
 import { loadSettings, updateSettings } from '../../Actions/settingActions';
 
@@ -37,12 +37,12 @@ class AgentsVoiceToggleContainer extends React.Component {
     dispatch(loadSettings());
   }
 
-  onToggleEnabled = agent => this.props.dispatch(toggleVoiceEnabled(agent));
-  onToggleOutboundCalls = agent => this.props.dispatch(toggleOutboundCallsEnabled(agent));
-  onToggleAll = () => this.props.dispatch(toggleAll());
-  onSaveSettings = data => this.props.dispatch(updateSettings(data));
-
-  onGoToAccounts = () => {
+  toggleEnabled = agent => this.props.dispatch(toggleVoiceEnabled(agent));
+  toggleOutboundCalls = agent => this.props.dispatch(toggleOutboundCallsEnabled(agent));
+  toggleUseForwarding = agent => this.props.dispatch(toggleUseForwarding(agent));
+  toggleAll = () => this.props.dispatch(toggleAll());
+  saveSettings = data => this.props.dispatch(updateSettings(data));
+  goToAccounts = () => {
     replaceRoute('/voice_channel/accounts');
   };
 
@@ -56,11 +56,12 @@ class AgentsVoiceToggleContainer extends React.Component {
     return (
       <AgentsVoiceToggle
         {...this.props}
-        onToggleAll={this.onToggleAll}
-        onToggleEnabled={this.onToggleEnabled}
-        onToggleOutboundCalls={this.onToggleOutboundCalls}
-        onGoToAccounts={this.onGoToAccounts}
-        onSaveSettings={this.onSaveSettings}
+        toggleAll={this.toggleAll}
+        toggleEnabled={this.toggleEnabled}
+        toggleOutboundCalls={this.toggleOutboundCalls}
+        toggleUseForwarding={this.toggleUseForwarding}
+        goToAccounts={this.goToAccounts}
+        saveSettings={this.saveSettings}
       />
     );
   }

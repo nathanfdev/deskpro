@@ -54,7 +54,6 @@ class TriggerTermsFormType extends AbstractType
     public function onSubmit(FormEvent $event)
     {
         $form      = $event->getForm();
-        $config    = $form->getConfig();
         $extraData = $form->getExtraData();
 
         $triggerTerms = new TriggerTerms();

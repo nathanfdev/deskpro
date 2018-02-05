@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2017, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2018, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -92,6 +92,11 @@ class AgentTeam extends DomainObject implements PersonList, AvatarOwner
     protected $avatar;
 
     /**
+     * @var ReportDashboardPermission
+     */
+    protected $report_dashboard_permissions;
+
+    /**
      * @return int
      */
     public function getId()
@@ -120,6 +125,9 @@ class AgentTeam extends DomainObject implements PersonList, AvatarOwner
         return $this->members;
     }
 
+    /**
+     * @param Person $person
+     */
     public function addPerson(Entity\Person $person)
     {
         if ($this->members->contains($person)) {
@@ -129,17 +137,28 @@ class AgentTeam extends DomainObject implements PersonList, AvatarOwner
         $this->_onPropertyChanged('members', $this->members, $this->members);
     }
 
+    /**
+     * @param Person $person
+     */
     public function removePerson(Entity\Person $person)
     {
         $this->members->removeElement($person);
         $this->_onPropertyChanged('members', $this->members, $this->members);
     }
 
+    /**
+     * @return bool
+     */
     public function hasAvatar()
     {
         return $this->avatar && $this->avatar->isImage();
     }
 
+    /**
+     * @param int $size
+     *
+     * @return string
+     */
     public function getAvatarUrl($size = 50)
     {
         if (!$this->hasAvatar()) {
@@ -229,6 +248,7 @@ class AgentTeam extends DomainObject implements PersonList, AvatarOwner
         );
 
         $metadata->setIdGeneratorType(ClassMetadataInfo::GENERATOR_TYPE_IDENTITY);
+
         $metadata->mapManyToMany([
             'fieldName'    => 'members',
             'inversedBy'   => 'teams',
@@ -240,6 +260,7 @@ class AgentTeam extends DomainObject implements PersonList, AvatarOwner
             ],
             'orderBy' => ['name' => 'ASC'],
         ]);
+
         $metadata->mapManyToOne([
             'fieldName'    => 'avatar',
             'targetEntity' => 'Application\\DeskPRO\\Entity\\Blob',

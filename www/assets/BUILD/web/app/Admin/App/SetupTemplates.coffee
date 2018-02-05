@@ -36,6 +36,7 @@ define [
 				'Index/app-nav-twitter.html',
 				'Index/modal-alert.html',
 				'Index/modal-confirm-leavetab.html',
+				'Index/modal-confirm.html',
 				'Languages/modal-translate-phrase.html',
 				'Index/blank.html',
 				'Index/home.html',

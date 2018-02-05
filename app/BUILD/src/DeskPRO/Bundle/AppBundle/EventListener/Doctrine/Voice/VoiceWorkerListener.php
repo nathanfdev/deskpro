@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2017, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2018, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -130,7 +130,7 @@ class VoiceWorkerListener
                 $activity = TwilioAdapter::getActivityStatus($agentData);
                 $this->twilioAdapter->updateAgentWorker($account, $agentData->getPerson(), $activity);
             }
-        } elseif ($args->hasChangedField('outboundCallsEnabled')) {
+        } elseif ($args->hasChangedField('outboundCallsEnabled') || $args->hasChangedField('canUseForwarding')) {
             // force reload agent's interface to show/hide outbound dialpad
             $this->dispatcher->dispatch(LegacySystemEvent::EVENT_NAME, new LegacySystemEvent('agent.ui.reload', [
                 'type'        => 'admin',
@@ -164,7 +164,7 @@ class VoiceWorkerListener
         $agentData->setExtensionNumber(null);
 
         // remove agent from queues
-        $this->em->getConnection()->executeQuery('DELETE FROM voice_queue_agents WHERE person_id = :person_id', [
+        $this->em->getConnection()->executeQuery('DELETE FROM voice_queue_agents WHERE agent_id = :person_id', [
             'person_id' => $agentData->getPerson()->getId(),
         ]);
 

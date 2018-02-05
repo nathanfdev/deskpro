@@ -8,6 +8,14 @@
             <a class="link-pointer" ng-click="cancel()"><i class="fa fa-times"></i></a>
         </div>
     </header>
+    <div class="big-list-of-stats-filters">
+        <div class="bucket">
+            <div class="box">
+                <label class="widget-title" for="widget-name">Enter widget name</label>
+                <input class="widget-title" type="text" ng-model="widget.title" placeholder="Enter widget name" />
+            </div>
+        </div>
+    </div>
 
     <!-- Popup Content -->
     <div class="popup-content">
@@ -61,28 +69,50 @@
                 <span class="title">Table data</span>
                 <div class="stat-preview stat-preview-multi-group"></div>
             </a>
+            <a name='simple_stat' ng-click="makeChoice('simple_stat')" class="link-pointer stat-preview-bucket"
+               ng-class="{'selected' : widget.type == 'simple_stat'}">
+                <span class="title">Simple Stat</span>
+
+                <div class="stat-preview stat-preview-simple-stat"></div>
+            </a>
         </div>
         <!-- needs js to fit verticaly to it's container -->
         <div class="popup-stat-preview">
             <div class="stat-preview-header">Chart Preview</div>
             <div class="stat-preview" ng-if="widgetPreview && widgetPreview.type=='graph' && widgetPreview.rendered_result">
-                <dashboard-amcharts
-                        my-index="{{ ng_var('$index') }}"
-                        title="{{ ng_var('widgetPreview.title') }}"
-                        widget-id = "{{ ng_var('reportWidget.id') }}"
-                        chart-data = "{{ ng_var('widgetPreview.rendered_result') }}"
-                        render-type = "test"
-                        chtype="graph"
-                />
+                <div>
+                    <dashboard-amcharts
+                            my-index="{{ ng_var('$index') }}"
+                            title="{{ ng_var('widgetPreview.title') }}"
+                            widget-id = "{{ ng_var('reportWidget.id') }}"
+                            chart-data = "{{ ng_var('widgetPreview.rendered_result') }}"
+                            render-type = "test"
+                            chtype="graph"
+                    />
+                </div>
             </div>
             <div class="stat-preview" ng-if="widgetPreview && widgetPreview.type=='table' && widgetPreview.rendered_result">
-                <dashboard-table
-                        render-type = "test"
-                        my-index="{{ ng_var('$index') }}"
-                        title="{{ ng_var('widgetPreview.title') }}"
-                        table-data="{{ ng_var('widgetPreview.rendered_result') }}"
-                        widget-id = "{{ ng_var('reportWidget.id') }}"
-                />
+                <div style="height: 100%; overflow: hidden;">
+                    <dashboard-table
+                            render-type = "test"
+                            my-index="{{ ng_var('$index') }}"
+                            title="{{ ng_var('widgetPreview.title') }}"
+                            table-data="{{ ng_var('widgetPreview.rendered_result') }}"
+                            widget-id = "{{ ng_var('reportWidget.id') }}"
+                    />
+                </div>
+            </div>
+            <div class="stat-preview" ng-if="widgetPreview && widgetPreview.type=='simple_stat' && widgetPreview.rendered_result">
+                <div class="stat-box">
+                    <dashboard-stat
+                            render-type = "test"
+                            my-index="{{ ng_var('$index') }}"
+                            title="{{ ng_var('widgetPreview.title') }}"
+                            value="{{ ng_var('widgetPreview.rendered_result.value') }}"
+                            description="{{ ng_var('widgetPreview.rendered_result.description') }}"
+                            widget-id = "{{ ng_var('reportWidget.id') }}"
+                    />
+                </div>
             </div>
             <div class="stat-preview" style="padding: 20px" ng-if="widgetPreview && !widgetPreview.rendered_result">
                 No results to show. Please, try another graph type and/or another variables values.

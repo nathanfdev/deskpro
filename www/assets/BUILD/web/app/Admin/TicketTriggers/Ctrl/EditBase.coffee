@@ -22,6 +22,11 @@ define [
       @appTriggerEvents = []
       @allTriggers = [];
 
+      # by default we want to enable the trigger events section
+      @enableEventsSection = true;
+      # by default we want to allow copying from another trigger
+      @enableCopyFromAnotherTrigger = true;
+
       @$scope.form = @editFormMapper.getFormFromModel({})
 
       @$scope.triggerType = @$stateParams.type
@@ -142,12 +147,23 @@ define [
         , true)
       )
 
-    ###
-    # Save the trigger
-    ###
-    saveTrigger: ->
-      return if @$scope.form_props.$invalid
+    getPostActionsDetails: ->
 
+      has_stop_triggers_action = false
+      has_delete_ticket_action = false
+      if @$scope.form.actions
+        for own _x, act of @$scope.form.actions
+          if act.type == 'ModStopTriggers'
+            has_stop_triggers_action = true
+          if act.type == 'SetDeleted'
+            has_delete_ticket_action = true
+
+      return {
+        has_stop_triggers_action: false,
+        has_delete_ticket_action: false,
+      }
+
+    getPostData: ->
       @resetErrors()
 
       postData = {
@@ -182,16 +198,24 @@ define [
         if set.length
           postData.criteria_sets.push(set)
 
-      has_stop_triggers_action = false
-      has_delete_ticket_action = false
       if @$scope.form.actions
         for own _x, act of @$scope.form.actions
           if act.type
             postData.actions.push(act)
-            if act.type == 'ModStopTriggers'
-              has_stop_triggers_action = true
-            if act.type == 'SetDeleted'
-              has_delete_ticket_action = true
+
+      postData
+
+
+    ###
+    # Save the trigger
+    ###
+    saveTrigger: ->
+      return if @$scope.form_props.$invalid
+
+      @resetErrors()
+
+      postData = @getPostData()
+      { has_stop_triggers_action, has_delete_ticket_action } = @getPostActionsDetails()
 
       @startSpinner('saving')
       if @trigger.id

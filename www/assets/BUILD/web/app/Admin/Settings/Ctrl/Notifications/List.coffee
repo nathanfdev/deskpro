@@ -30,6 +30,7 @@ define ['Admin/Main/Ctrl/Base'], (Admin_Ctrl_Base) ->
           @$scope.deskpro.secret         = clients.deskpro.secret
           @$scope.deskpro.host           = clients.deskpro.host
           @$scope.deskpro.port           = clients.deskpro.port
+          @$scope.deskpro.secure         = clients.deskpro.secure
       )
 
     getPusherParams: ->
@@ -46,6 +47,7 @@ define ['Admin/Main/Ctrl/Base'], (Admin_Ctrl_Base) ->
         port:   @$scope.deskpro.port
         host:   @$scope.deskpro.host
         secret: @$scope.deskpro.secret
+        secure: @$scope.deskpro.secure
       }
       return params
 

@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file",
         "This file is @generated automatically"
     ],
-    "content-hash": "943b638854ac8525f79040f9b01b270b",
+    "content-hash": "656063acd915af49d063b791f0b858d0",
     "packages": [
         {
             "name": "alchemy/zippy",
@@ -253,6 +253,50 @@
                 "orm"
             ],
             "time": "2017-01-11T07:22:12+00:00"
+        },
+        {
+            "name": "brick/math",
+            "version": "dev-php-5.5-compatible",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/deskpro/math.git",
+                "reference": "80dfe7db95265462687e86138c95789fedd3d775"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/deskpro/math/zipball/80dfe7db95265462687e86138c95789fedd3d775",
+                "reference": "80dfe7db95265462687e86138c95789fedd3d775",
+                "shasum": ""
+            },
+            "require": {
+                "php": ">=5.6"
+            },
+            "require-dev": {
+                "phpunit/phpunit": "^5.7"
+            },
+            "type": "library",
+            "autoload": {
+                "psr-4": {
+                    "Brick\\Math\\": "src/",
+                    "Brick\\Math\\Tests\\": "tests/"
+                }
+            },
+            "license": [
+                "MIT"
+            ],
+            "description": "Arbitrary-precision arithmetic library",
+            "keywords": [
+                "Arbitrary-precision",
+                "Arithmetic",
+                "BigDecimal",
+                "BigInteger",
+                "Brick",
+                "Math"
+            ],
+            "support": {
+                "source": "https://github.com/deskpro/math/tree/php-5.5-compatible"
+            },
+            "time": "2018-01-10T10:27:46+00:00"
         },
         {
             "name": "bugsnag/bugsnag",
@@ -3432,6 +3476,49 @@
             "time": "2014-01-12T16:20:24+00:00"
         },
         {
+            "name": "jkuchar/bigfiletools",
+            "version": "v2.0.0",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/jkuchar/BigFileTools.git",
+                "reference": "cea157a4239c55263faf09acd6d0c0e75a531316"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/jkuchar/BigFileTools/zipball/cea157a4239c55263faf09acd6d0c0e75a531316",
+                "reference": "cea157a4239c55263faf09acd6d0c0e75a531316",
+                "shasum": ""
+            },
+            "require": {
+                "brick/math": "~0.5.2",
+                "php": ">= 5.6.0"
+            },
+            "require-dev": {
+                "nette/tester": "^1.6"
+            },
+            "type": "library",
+            "autoload": {
+                "classmap": [
+                    "src/BigFileTools-nonamespace.php"
+                ],
+                "psr-4": {
+                    "BigFileTools\\": "src/"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "New BSD"
+            ],
+            "authors": [
+                {
+                    "name": "Jan Kuchař",
+                    "homepage": "http://www.jankuchar.cz"
+                }
+            ],
+            "description": "Tools that allows you to manipulate files over 2GB in PHP.",
+            "time": "2016-03-17T16:18:05+00:00"
+        },
+        {
             "name": "jms/metadata",
             "version": "1.6.0",
             "source": {
@@ -5190,29 +5277,29 @@
         },
         {
             "name": "pelago/emogrifier",
-            "version": "V1.2.0",
+            "version": "v2.0.0",
             "source": {
                 "type": "git",
-                "url": "https://github.com/jjriv/emogrifier.git",
-                "reference": "a1db453bb504597d821efcc04b21c79a6021e00c"
+                "url": "https://github.com/MyIntervals/emogrifier.git",
+                "reference": "8babf8ddbf348f26b29674e2f84db66ff7e3d95e"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/jjriv/emogrifier/zipball/a1db453bb504597d821efcc04b21c79a6021e00c",
-                "reference": "a1db453bb504597d821efcc04b21c79a6021e00c",
+                "url": "https://api.github.com/repos/MyIntervals/emogrifier/zipball/8babf8ddbf348f26b29674e2f84db66ff7e3d95e",
+                "reference": "8babf8ddbf348f26b29674e2f84db66ff7e3d95e",
                 "shasum": ""
             },
             "require": {
-                "php": ">=5.4.0,<=7.1.99"
+                "php": "^5.5.0 || ~7.0.0 || ~7.1.0 || ~7.2.0"
             },
             "require-dev": {
-                "phpunit/phpunit": "4.8.27",
-                "squizlabs/php_codesniffer": "2.6.0"
+                "phpunit/phpunit": "^4.8.0",
+                "squizlabs/php_codesniffer": "^3.1.0"
             },
             "type": "library",
             "extra": {
                 "branch-alias": {
-                    "dev-master": "1.3.x-dev"
+                    "dev-master": "2.1.x-dev"
                 }
             },
             "autoload": {
@@ -5236,17 +5323,26 @@
                     "name": "Jaime Prado"
                 },
                 {
-                    "name": "Oliver Klee",
-                    "email": "typo3-coding@oliverklee.de"
-                },
-                {
                     "name": "Roman Ožana",
                     "email": "ozana@omdesign.cz"
+                },
+                {
+                    "name": "Oliver Klee",
+                    "email": "github@oliverklee.de"
+                },
+                {
+                    "name": "Zoli Szabó",
+                    "email": "zoli.szabo+github@gmail.com"
                 }
             ],
             "description": "Converts CSS styles into inline style attributes in your HTML code",
-            "homepage": "http://www.pelagodesign.com/sidecar/emogrifier/",
-            "time": "2017-03-02T12:51:48+00:00"
+            "homepage": "https://www.myintervals.com/emogrifier.php",
+            "keywords": [
+                "css",
+                "email",
+                "pre-processing"
+            ],
+            "time": "2018-01-05T23:30:21+00:00"
         },
         {
             "name": "phpcollection/phpcollection",
@@ -8217,16 +8313,16 @@
         },
         {
             "name": "twilio/sdk",
-            "version": "5.4.2",
+            "version": "5.16.3",
             "source": {
                 "type": "git",
                 "url": "https://github.com/twilio/twilio-php.git",
-                "reference": "354b5859cc7386642b8842a8b9e3dee01e957235"
+                "reference": "4d4d146365f584f2204e0de28e620fd717889834"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/twilio/twilio-php/zipball/354b5859cc7386642b8842a8b9e3dee01e957235",
-                "reference": "354b5859cc7386642b8842a8b9e3dee01e957235",
+                "url": "https://api.github.com/repos/twilio/twilio-php/zipball/4d4d146365f584f2204e0de28e620fd717889834",
+                "reference": "4d4d146365f584f2204e0de28e620fd717889834",
                 "shasum": ""
             },
             "require": {
@@ -8259,7 +8355,7 @@
                 "sms",
                 "twilio"
             ],
-            "time": "2016-10-12T17:28:31+00:00"
+            "time": "2018-01-20T02:33:56+00:00"
         },
         {
             "name": "vaites/php-apache-tika",
@@ -13199,7 +13295,14 @@
             "time": "2015-04-25T08:05:39+00:00"
         }
     ],
-    "aliases": [],
+    "aliases": [
+        {
+            "alias": "0.5.2",
+            "alias_normalized": "0.5.2.0",
+            "version": "dev-php-5.5-compatible",
+            "package": "brick/math"
+        }
+    ],
     "minimum-stability": "stable",
     "stability-flags": {
         "doctrine/migrations": 20,
@@ -13214,6 +13317,7 @@
         "mongofill/mongofill": 20,
         "mpdf/mpdf": 20,
         "league/oauth1-client": 20,
+        "brick/math": 20,
         "satooshi/php-coveralls": 20,
         "behatch/contexts": 20,
         "behat/mink-extension": 20,

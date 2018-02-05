@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2017, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2018, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -132,37 +132,6 @@ $definition = new Definition();
 $definition->setClass('Application\\DeskPRO\\Settings\\ServiceUrls');
 $definition->addMethodCall('loadPack', ['%kernel.root_dir%/config/service-urls.php']);
 $container->setDefinition('deskpro.service_urls', $definition);
-
-$definition = new Definition();
-$definition->setClass('Application\\LegacyApiBundle\\Service\\DashboardPermissions');
-$definition->setArguments([new Reference('doctrine.orm.entity_manager')]);
-$container->setDefinition('dashboard.permissions.service', $definition);
-
-$definition = new Definition();
-$definition->setClass('Application\\LegacyApiBundle\\Service\\DashboardWidget');
-$definition->setArguments([new Reference('doctrine.orm.entity_manager')]);
-$container->setDefinition('dashboard.widget.service', $definition);
-
-$definition = new Definition();
-$definition
-    ->setClass('Application\\DeskPRO\\Reports\\Form\\Type\\ReportWidgetType')
-    ->setArguments([new Reference('dashboard.service')])
-    ->addTag('form.type');
-$container->setDefinition('form_dashboards_report_widget', $definition);
-
-$definition = new Definition();
-$definition->setClass('Application\\LegacyApiBundle\\Service\\Dashboard');
-$definition->setArguments([
-    new Reference('doctrine.orm.entity_manager'),
-    new Reference('dashboard.widget.service'),
-    new Reference('deskpro.core.translate'),
-]);
-$container->setDefinition('dashboard.service', $definition);
-
-$definition = new Definition();
-$definition->setClass('Application\\DeskPRO\\Reports\\ReportsWidgetService');
-$definition->setArguments([new Reference('doctrine.orm.entity_manager'), new Reference('dashboard.widget.service')]);
-$container->setDefinition('reports.widget.service', $definition);
 
 //###########################################################################
 // Validators and Constraints

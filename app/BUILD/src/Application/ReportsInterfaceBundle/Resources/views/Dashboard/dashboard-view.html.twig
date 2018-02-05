@@ -3,10 +3,10 @@
         <div class="report-access-avatars">
             <span class="title">On this dashboard:</span>
             <a
-                ng-repeat='agent in (filteredPermissions = (dashboard.permissions | filter:permissionsFilter) | limitTo:6) track by $index '
+                ng-repeat='permission in (filteredPermissions = dashboard.permissions | limitTo:6) track by $index '
                 class="avatar"
-                title="{{ ng_var('agent.name') }}"
-                style="background-image: url({{ ng_var('agent.avatar') }});">
+                title="{{ ng_var('agents[permission.person].name') }}"
+                style="background-image: url({{ ng_var('agents[permission.person].avatar.url') }});">
             </a>
             <a ng-if="filteredPermissions.length > 6" class="avatar avatar-blank"><span>+{{ ng_var('filteredPermissions.length - 6') }}</span></a>
             <a ng-click="openEdit('permissions')" class="avatar edit-access-link"><span>Edit Agent Access <i class="fa fa-user"></i></span></a>
@@ -21,7 +21,6 @@
                 <li ng-show="!dashboard.is_default"><a class='link-pointer' ng-click="deleteDashboard(dashboard)"><i class="fa fa-times"></i> Delete Dashboard</a></li>
             </ul>
         </nav>
-        <hr>
     </div>
 </header>
 
@@ -31,7 +30,7 @@
             <a ng-click="openCreateReport()" class='link-pointer'><i class="fa fa-plus"></i></a>
         </li>
 
-        <li ng-if="!report.deleted" ng-repeat="report in dashboard.reports track by $index" ui-sref-active="active-tab">
+        <li ng-if="!report.deleted" ng-repeat="report in reports track by $index" ui-sref-active="active-tab">
             <a class='link-pointer' ui-sref="reports.dashboards.view.report({ report_id: report.id })">{{ ng_var('report.title') }}</a>
         </li>
     </ul>

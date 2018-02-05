@@ -36,8 +36,8 @@ namespace Application\DeskPRO\EntityRepository;
 
 use Application\DeskPRO\App;
 use Application\DeskPRO\Entity\CustomDefOrganization as CustomDefOrganizationEntity;
-use Application\DeskPRO\Entity\CustomDefPerson;
-use Application\DeskPRO\Entity\CustomDefTicket;
+use Application\DeskPRO\Entity\CustomDefPerson as CustomDefPersonEntity;
+use Application\DeskPRO\Entity\CustomDefTicket as CustomDefTicketEntity;
 use Application\DeskPRO\Entity\ReportWidget as ReportWidgetEntity;
 use Application\DeskPRO\EntityRepository\CustomDefOrganization as CustomDefOrganizationRepository;
 use Application\DeskPRO\EntityRepository\CustomDefPerson as CustomDefPersonRepository;
@@ -314,7 +314,7 @@ class ReportWidget extends AbstractEntityRepository
         ];
 
         /** @var CustomDefTicketRepository $customDefTicketRepository */
-        $customDefTicketRepository = $this->getEntityManager()->getRepository(CustomDefTicket::class);
+        $customDefTicketRepository = $this->getEntityManager()->getRepository(CustomDefTicketEntity::class);
         $fields                    = $customDefTicketRepository->getTopFields();
         foreach ($fields as $field) {
             $escaped                                               = addslashes($field->title);
@@ -324,7 +324,7 @@ class ReportWidget extends AbstractEntityRepository
         }
 
         /** @var CustomDefPersonRepository $customDefPersonRepository */
-        $customDefPersonRepository = $this->getEntityManager()->getRepository(CustomDefPerson::class);
+        $customDefPersonRepository = $this->getEntityManager()->getRepository(CustomDefPersonEntity::class);
         $fields                    = $customDefPersonRepository->getTopFields();
         foreach ($fields as $field) {
             $escaped                                               = addslashes($field->title);

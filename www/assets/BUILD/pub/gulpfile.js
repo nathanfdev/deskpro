@@ -176,7 +176,8 @@ function getWebpackConfig(mode, isProd) {
         'jquery.ui':            'jquery-ui',
         'jquery.ui.widget':     'jquery.ui.widget/jquery.ui.widget',
         'jquery.serializejson': 'jquery-serializejson/jquery.serializejson',
-        'mark.js':              'mark.js/dist/jquery.mark.min'
+        'mark.js':              'mark.js/dist/jquery.mark.min',
+        react:                  path.join(__dirname, 'node_modules', 'react')
       }
     },
 

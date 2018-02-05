@@ -76,6 +76,7 @@
   "AdminUpdateWatcherLoad":          "app/AdminUpdateWatcher/AdminUpdateWatcherLoad",
   "AdminStartLoad":                  "app/AdminStart/AdminStartLoad",
   "InterfaceLoad":                   "app/Interface/InterfaceLoad",
+  "HeadlessInterfaceLoad":           "app/Interface/HeadlessInterfaceLoad",
   "ReportsLoad":                     "app/Reports/ReportsLoad",
 
   "DeskPRO":                         "app-build/DeskPRO",
@@ -98,5 +99,6 @@
 
   "angularGridster":                 "bower_components/angular-gridster/src/angular-gridster",
   "datatables":                      "bower_components/datatables/media/js/jquery.dataTables",
-  "datatables.scroller":             "bower_components/datatables-scroller/js/dataTables.scroller"
+  "datatables.scroller":             "bower_components/datatables-scroller/js/dataTables.scroller",
+  "datatables.pageResize":           "../pub/vendor/datatables/plugins/pageResize"
 }

@@ -1,7 +1,7 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import { Button, Container, Tabs, TabLink, Section } from '@deskpro/react-components';
-import { Input, Checkbox, Textarea, Select, validators } from '@deskpro/react-components/lib/bindings/redux-form';
+import { Input, Checkbox, Textarea, Select, TagSet, validators } from '@deskpro/react-components/lib/bindings/redux-form';
 import { formValues, Field, FieldArray, FormSection } from 'redux-form';
 import classNames from 'classnames';
 import { varTypes } from './helper';
@@ -134,7 +134,32 @@ class VarsFieldComponent extends React.PureComponent {
   }
 }
 
+class LabelsFieldComponent extends React.PureComponent {
+  static defaultProps = {
+    labels: []
+  };
+
+  static propTypes = {
+    fields:  PropTypes.object.isRequired,
+    options: PropTypes.array.isRequired,
+  };
+
+  render() {
+    const { fields, options } = this.props;
+
+    const newOptions = options.map(label => label.label);
+
+    return (<TagSet
+      name="labels"
+      label="Labels"
+      tags={fields.getAll()}
+      options={newOptions}
+    />);
+  }
+}
+
 const VarsField = formValues('vars')(VarsFieldComponent);
+const LabelsField = formValues('labels')(LabelsFieldComponent);
 
 export class EditFormComponent extends React.PureComponent {
 
@@ -145,32 +170,37 @@ export class EditFormComponent extends React.PureComponent {
     change:       null,
     queryValues:  {},
     handleSubmit: null,
-    error:        null
+    error:        null,
+    labels:       []
   };
 
   static propTypes = {
     groupParams:  PropTypes.object.isRequired,
+    labels:       PropTypes.array.isRequired,
     select:       PropTypes.string,
     groupBy:      PropTypes.string,
     dpqlParser:   PropTypes.func,
     change:       PropTypes.func,
     queryValues:  PropTypes.object,
     handleSubmit: PropTypes.func,
-    error:        PropTypes.string,
+    error:        PropTypes.string
   };
 
   static toDpql(fields) {
     const parts = [];
-    parts.push(`SELECT ${fields.select || 'COUNT(*)'}`);
+    parts.push(`SELECT ${fields.select || 'COUNT()'}`);
     parts.push(`FROM ${fields.from || '???'}`);
     if (fields.where) {
       parts.push(`WHERE ${fields.where}`);
     }
-    if (fields.splitBy) {
-      parts.push(`SPLIT BY ${fields.splitBy}`);
+    if (fields.split_by) {
+      parts.push(`SPLIT BY ${fields.split_by}`);
     }
-    if (fields.groupBy) {
-      parts.push(`GROUP BY ${fields.groupBy}`);
+    if (fields.order_by) {
+      parts.push(`ORDER BY ${fields.order_by}`);
+    }
+    if (fields.group_by) {
+      parts.push(`GROUP BY ${fields.group_by}`);
       if (fields.with_rollup) {
         parts.push('WITH ROLLUP');
       }
@@ -212,6 +242,8 @@ export class EditFormComponent extends React.PureComponent {
   }
 
   queryModeChange = (to) => {
+    this.props.change('query_input_mode', to);
+
     if (to === 'dpql') {
       const dpql = EditFormComponent.toDpql(this.props.queryValues || {});
       this.setState({ queryInputMode: to, queryModeChanging: false, origDpql: dpql });
@@ -237,10 +269,11 @@ export class EditFormComponent extends React.PureComponent {
   };
 
   render() {
-    const select  = this.props.select;
     const groupBy = this.props.groupBy || '';
+    const { select, groupParams, labels } = this.props;
 
-    const renderVars = field => <VarsField fields={field.fields} groupParams={this.props.groupParams || {}} />;
+    const renderVars = field => <VarsField fields={field.fields} groupParams={groupParams || {}} />;
+    const renderLabels = field => <LabelsField fields={field.fields} options={labels} />;
 
     return (
       <form onSubmit={this.props.handleSubmit}>
@@ -251,11 +284,7 @@ export class EditFormComponent extends React.PureComponent {
             name="title"
             validate={validators.required}
           />
-          <Input
-            label="Labels"
-            id="labels"
-            name="labels"
-          />
+          <FieldArray name="labels" component={renderLabels} />
           <Field component="input" type="hidden" name="query_input_mode" />
           <div className="query-builder-input">
             <Tabs active={this.state.queryInputMode} onChange={this.queryModeChange}>
@@ -268,8 +297,8 @@ export class EditFormComponent extends React.PureComponent {
                   <Input label="SELECT" name="select" />
                   <Input label="FROM" name="from" />
                   <Input label="WHERE" name="where" />
-                  <Input label="SPLIT BY" name="splitBy" />
-                  <Input label="GROUP BY" name="groupBy" />
+                  <Input label="SPLIT BY" name="split_by" />
+                  <Input label="GROUP BY" name="group_by" />
                   <div
                     className={classNames({
                       'field-hidden': !(select && select.match(/count\s*\(.*?\)/i) && groupBy.length)

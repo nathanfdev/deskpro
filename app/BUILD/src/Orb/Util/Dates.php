@@ -355,29 +355,23 @@ class Dates
         }
 
         if ($limit < $detail) {
-            if ($limit) {
-                ++$limit;
-            }
             if ($parts['days']) {
                 $str_parts[] = sprintf($lang['days'], $parts['days']);
+                ++$limit;
             }
         }
 
         if ($limit < $detail) {
-            if ($limit) {
-                ++$limit;
-            }
             if ($parts['hours']) {
                 $str_parts[] = sprintf($lang['hours'], $parts['hours']);
+                ++$limit;
             }
         }
 
         if ($limit < $detail) {
-            if ($limit) {
-                ++$limit;
-            }
             if ($parts['minutes']) {
                 $str_parts[] = sprintf($lang['minutes'], $parts['minutes']);
+                ++$limit;
             }
         }
 

@@ -18,6 +18,16 @@
       float: left;
       width: 50%;
 
+      label.widget-title {
+        display: inline-block;
+        margin-right: 10px;
+      }
+
+      input.widget-title {
+        display: inline-block;
+        width: auto;
+      }
+
       &:first-child {
         padding-right: 6px;
       }
@@ -46,6 +56,19 @@
         border-bottom: 1px solid #d9d9d9;
         padding-left: 30px;
         position: relative;
+      }
+    }
+  }
+}
+
+.popup .popup-content .schedule-form {
+  .bucket {
+    .bucket-column, &.run-options {
+      label {
+        display: inline-block;
+        margin: 0 5px 5px 5px;
+        float: none;
+        width: auto;
       }
     }
   }

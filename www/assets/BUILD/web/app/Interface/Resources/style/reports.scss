@@ -11,7 +11,7 @@
 // Header
 // Contains: The current dashboard, edit/create dashboard links and user access
 .reports-header {
-  background: #ecf0f3;
+  background: #fff;
   padding: 20px;
   height: 85px;
 
@@ -25,7 +25,6 @@
     }
 
     .reports-control {
-      background: #ecf0f3;
       position: relative;
       z-index: 92;
     }
@@ -37,7 +36,6 @@
     text-align: right;
 
     .report-access-avatars {
-      background: #ecf0f3;
       position: relative;
       z-index: 92;
     }
@@ -260,7 +258,6 @@ ul.nav-link-list li.type-heading {
 
   li {
     display: inline-block;
-    border-right: 1px solid rgba(0, 0, 0, 0.1);
     padding: 2px 2px;
 
     &.dashboard-title { font-size: 16px; padding: 0 4px; margin-top: -2px; }
@@ -290,7 +287,6 @@ ul.nav-link-list li.type-heading {
 
 
 .report-tabs {
-  background: #ecf0f3;
   line-height: 16px;
   border-bottom: 1px solid $global-border;
 
@@ -367,6 +363,7 @@ ul.nav-link-list li.type-heading {
     display: inline-block;
     font-size: 1.3em;
     vertical-align: middle;
+    margin: 0;
 
     span { color: $grey; }
   }
@@ -751,8 +748,6 @@ ul.nav-link-list li.type-heading {
   // Delete the .reports-control .reports-dropdown above and uncomment these when done with needing the dropdowns at the bottom of the page
   // position: absolute;
   // top: -5px;
-
-  border: 1px solid #4681b2;
 
   li {
     display: block;
@@ -1165,20 +1160,19 @@ ul.nav-link-list li.type-heading {
   }
 }
 
-$gridster-box-header-height: 32px;
+$gridster-box-header-height: 40px;
+
+.is-editing .dp-gridster-wrap .box-header {
+  cursor: move;
+}
 
 .dp-gridster-wrap {
   .dp-gridster-item {
     background: #fff;
     position: relative;
     overflow: visible;
-//    border: none;
-    border: 1px solid #BFC4C9;
+    border: none;
     border-radius: 2px;
-
-    &:hover {
-      border: 1px solid darken(#BFC4C9, 10%);
-    }
 
     .box-header {
       position: absolute;
@@ -1186,34 +1180,79 @@ $gridster-box-header-height: 32px;
       left: 0;
       right: 0;
       height: $gridster-box-header-height;
-      background-color: #F3F6F7;
+      cursor: default;
+      background-color: #f9f9f9;
+      border: none;
 
       .box-header-btns {
         top: 8px;
+        display: none;
         a {
           margin-left: 8px;
           color: #bbb;
+        }
+      }
 
-          &:hover { color: #444; }
+      &:hover {
+        .box-header-btns {
+          display: block;
         }
       }
 
       h3 {
         margin: 0;
         line-height: $gridster-box-header-height;
+        font-size: 16px;
+        font-weight: normal;
+        color: #999;
       }
     }
+
     .box {
       position: absolute;
       top: $gridster-box-header-height;
       left: 0;
       right: 0;
+      bottom: 0;
       height: auto;
       overflow: auto;
+      .stat {
+        margin-top: -6px;
+        height: auto;
+      }
+
     }
     .box > div {
       height: 100%;
     }
+
+
+  }
+}
+.stat-box {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+
+  > div {
+    height: auto;
+  }
+
+  .stat-value {
+    text-align: center;
+    font-size: 26px;
+    font-weight: 600;
+  }
+
+  .stat-value.no-data {
+    color: #999;
+  }
+
+  .stat-description {
+    text-align: center;
+    font-size: 15px;
+    margin-top: 5px;
+    word-wrap: break-word;
   }
 }
 
@@ -1237,5 +1276,69 @@ $gridster-box-header-height: 32px;
       color: #bbb;
       padding: 2px 0 0 19px;
     }
+  }
+}
+
+.reports .list-group {
+  background: #ecf0f3;
+}
+
+.stat-preview {
+  .stat-box {
+    height: 100%;
+  }
+}
+
+.gridster-item, .stat-preview {
+  div.dataTable_parent {
+    height: 100%;
+    padding-bottom: 20px;
+  }
+
+  .dataTables_wrapper {
+    border: none !important;
+    padding-top: 8px;
+
+    div.dataTables_length {
+      display: none;
+    }
+
+    table.dataTable.display tbody tr.even > td, table.dataTable.display tbody tr.odd > td {
+      background-color: #fff !important;
+      border: none !important;
+    }
+    table.dataTable thead th {
+      font-weight: bold;
+      text-align: left;
+    }
+
+    .dataTables_info {
+      font-size: 11px;
+      color: #888;
+    }
+    .dataTables_paginate {
+      font-size: 11px;
+      .paginate_button.disabled {
+        display: none;
+      }
+      .paginate_button, .paginate_button.current, .paginate_button:hover {
+        border: none !important;
+        background: transparent !important;
+        min-width: auto;
+        width: auto;
+        color: #888 !important;
+        margin: 0;
+        padding: 0.5em;
+      }
+      .paginate_button.current, .paginate_button:hover {
+        color: #000 !important;
+      }
+    }
+  }
+}
+
+.stat-preview {
+  div.dataTable_parent {
+    padding: initial;
   }
 }

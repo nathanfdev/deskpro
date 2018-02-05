@@ -43,6 +43,7 @@ use DeskPRO\Bundle\AppBundle\Entity\ObjectAlias\TicketTriggerAlias;
 use Doctrine\ORM\Mapping\ClassMetadata;
 use Doctrine\ORM\Mapping\ClassMetadataInfo;
 use Orb\Util\Arrays;
+use JMS\Serializer\Annotation as JMS;
 
 /**
  * @property int $id
@@ -64,6 +65,7 @@ class TicketTrigger extends DomainObject
     const EVENT_TYPE_NEWTICKET = 'newticket';
     const EVENT_TYPE_NEWREPLY  = 'newreply';
     const EVENT_TYPE_UPDATE    = 'update';
+    const EVENT_TYPE_WEBHOOK   = 'webhook';
 
     /**
      * Flag used on 'update' triggers which specifies if they
@@ -80,7 +82,11 @@ class TicketTrigger extends DomainObject
     const MODE_MOBILE = 'mobile';
 
     /**
+     * The unique ID.
+     *
      * @var int
+     * @JMS\Expose()
+     * @JMS\Type("integer")
      */
     protected $id = null;
 
@@ -96,6 +102,8 @@ class TicketTrigger extends DomainObject
 
     /**
      * @var string
+     * @JMS\Expose()
+     * @JMS\Type("string")
      */
     protected $title = '';
 

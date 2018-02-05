@@ -64,6 +64,13 @@ class CheckedOptionsArray extends OptionsArray
     private $required_names = [];
 
     /**
+     * An array of required names.
+     *
+     * @var array
+     */
+    private $alias_names = [];
+
+    /**
      * Add required names. If you are also using valid names, required names are automatically
      * considered valid names.
      *
@@ -81,6 +88,31 @@ class CheckedOptionsArray extends OptionsArray
             } else {
                 $this->required_names[$a] = true;
             }
+        }
+    }
+
+    /**
+     * @param $name
+     * @return array|string[]
+     */
+    public function getAliases($name)
+    {
+        if (array_key_exists($name, $this->alias_names)) {
+            return $this->alias_names[$name];
+        }
+
+        return [];
+    }
+
+    /**
+     * @param string $name
+     * @param array|string[] $aliases
+     */
+    public function setAliases($name, array $aliases)
+    {
+        $this->alias_names[$name] = $aliases;
+        foreach ($aliases as $alias) {
+            $this->addValidNames($alias);
         }
     }
 
@@ -114,7 +146,13 @@ class CheckedOptionsArray extends OptionsArray
         $required_names = array_keys($this->required_names);
         $diff           = array_diff($required_names, array_keys($this->options));
         if ($diff) {
-            throw new CheckedOptionsException('Missing required options: '.implode(', ', $diff), ['required'], ['names' => $diff]);
+            // check aliases
+            foreach ($diff as $required) {
+                $requiredAliases = array_intersect(array_keys($this->options), $this->getAliases($required));
+                if (empty($requiredAliases)) {
+                    throw new CheckedOptionsException('Missing required options: '.implode(', ', $diff), ['required'], ['names' => $diff]);
+                }
+            }
         }
     }
 

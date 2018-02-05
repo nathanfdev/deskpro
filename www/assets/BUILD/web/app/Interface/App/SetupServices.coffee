@@ -14,10 +14,10 @@ define [
   'Reports/App/Service/DataServiceManager',
   'Reports/App/Service/Dashboard',
   'Reports/App/Service/DashboardWidget',
-  'Reports/App/Service/DashboardPermissions',
   'Reports/App/Service/DashboardsInfo',
 
   'Reports/Main/Service/SessionPing',
+  'DeskPRO/Util/Util',
 ], (
   StateCollection,
   StateConfig,
@@ -36,10 +36,10 @@ define [
   Reports_App_Service_DataServiceManager,
   Reports_App_Service_Dashboard,
   Reports_App_Service_DashboardWidget,
-  Reports_App_Service_DashboardPermissions,
   Reports_App_Service_DashboardsInfo,
 
   Reports_Main_Service_SessionPing,
+  Util
 ) ->
   return (Module) ->
     Module.service('AppConfig', -> return new AppConfig)
@@ -113,6 +113,71 @@ define [
       }
     ])
 
+    Module.config(['$provide', ($provide) ->
+      $provide.decorator('$http', ($delegate) ->
+
+        formatUrlObject = (obj, baseName = false) ->
+          url = ''
+          for own k, v of obj
+            if v == null then continue
+            if baseName
+              k = baseName + '[' + encodeURIComponent(k) + ']'
+            else
+              k = encodeURIComponent(k)
+
+            if Util.isObject(v)
+              url += formatUrlObject(v, k)
+            else
+              v = encodeURIComponent(v)
+              url += "#{k}=#{v}&"
+
+        $delegate.formatApiUrl = (endpoint, params, signed = true) ->
+          endpoint = endpoint.replace(/^\//, '')
+          url = "#{window.DP_BASE_API_URL}/#{endpoint}"
+
+          if params
+            url += if url.indexOf('?') == -1 then '?' else '&'
+            if Util.isArray(params)
+              for itm in params
+                k = encodeURIComponent(itm.name)
+                v = encodeURIComponent(itm.value)
+                url += "#{k}=#{v}&"
+            else
+              url += formatUrlObject(params)
+
+          url = url.replace(/&$/, '')
+
+          if signed then url = this.signUrl(url)
+
+          return url
+
+        $delegate.formatApi2Url = (endpoint, params) ->
+          endpoint = endpoint.replace(/^\//, '')
+          url = "#{window.DP_BASE_API_URL}/v2/#{endpoint}"
+
+          if params
+            url += if url.indexOf('?') == -1 then '?' else '&'
+            if Util.isArray(params)
+              for itm in params
+                k = encodeURIComponent(itm.name)
+                v = encodeURIComponent(itm.value)
+                url += "#{k}=#{v}&"
+            else
+              url += formatUrlObject(params)
+
+          url = url.replace(/&$/, '')
+
+          return url
+
+        $delegate.signUrl = (url) ->
+          url += if url.indexOf('?') == -1 then '?' else '&'
+          url += 'XDEBUG_SESSION_START=PHPSTORM&API-TOKEN=' + window.DP_API_TOKEN + '&SESSION-ID=' + window.DP_SESSION_ID + '&REQUEST-TOKEN=' + window.DP_REQUEST_TOKEN
+          return url
+
+        return $delegate
+      )
+    ])
+
     ###
     # Config section
     ###
@@ -131,17 +196,14 @@ define [
       return new Reports_App_Service_DataServiceManager($injector)
     ])
   
-    Module.service('DashboardService', ['Api', '$q', (Api, $q) ->
-      return new Reports_App_Service_Dashboard(Api, $q)
+    Module.service('DashboardService', ['Api', 'Api2', '$q', (Api, Api2, $q) ->
+      return new Reports_App_Service_Dashboard(Api, Api2, $q)
     ])
-    Module.service('DashboardWidgetService', ['Api', '$q', (Api, $q) ->
-      return new Reports_App_Service_DashboardWidget(Api, $q)
+    Module.service('DashboardWidgetService', ['Api', 'Api2', '$q', (Api, Api2, $q) ->
+      return new Reports_App_Service_DashboardWidget(Api, Api2, $q)
     ])
-    Module.service('DashboardPermissionsService', ['Api', '$q', (Api, $q) ->
-      return new Reports_App_Service_DashboardPermissions(Api, $q)
-    ])
-    Module.service('DashboardsInfo', ['Api', '$q', (Api, $q) ->
-      return new Reports_App_Service_DashboardsInfo(Api, $q)
+    Module.service('DashboardsInfo', ['Api', 'Api2', '$q', (Api, Api2, $q) ->
+      return new Reports_App_Service_DashboardsInfo(Api, Api2, $q)
     ])
     Module.service('ReportsOverviewService', ['Api', '$q', (Api, $q) ->
       return new ReportsOverview(Api, $q)

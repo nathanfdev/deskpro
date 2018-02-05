@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2017, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2018, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -33,11 +33,11 @@ use Application\DeskPRO\Entity\CommentAbstract;
 use Application\DeskPRO\Entity\ContentAbstract;
 use Application\DeskPRO\Entity\Download;
 use Application\DeskPRO\Entity\News;
-use DeskPRO\Bundle\AppBundle\DataFixtures\DeskProAbstractFixture;
+use DeskPRO\Bundle\AppBundle\DataFixtures\AbstractDpFixture;
 use Doctrine\Common\DataFixtures\OrderedFixtureInterface;
 use Doctrine\Common\Persistence\ObjectManager;
 
-class PublishFixture extends DeskProAbstractFixture implements OrderedFixtureInterface
+class PublishFixture extends AbstractDpFixture implements OrderedFixtureInterface
 {
     const NUM_PUBLISH    = 100;
     const NUM_CATEGORIES = 10;
@@ -159,6 +159,8 @@ class PublishFixture extends DeskProAbstractFixture implements OrderedFixtureInt
             $this->loadComments($content);
         }
         $this->linkArticlesWithCategories();
+
+        $this->loadKbStats();
     }
 
     private function loadExampleArticle()
@@ -420,5 +422,49 @@ class PublishFixture extends DeskProAbstractFixture implements OrderedFixtureInt
             $batch[] = $values;
         }
         $this->db->batchInsert(self::TABLE_ARTICLE_PENDING_CREATE, $batch, true);
+    }
+
+    private function loadKbStats()
+    {
+        // views
+        $batch = [];
+        foreach ($this->content[self::TABLE_ARTICLES]['ids'] as $id) {
+            $max = mt_rand(2, 200);
+            for ($i = 0; $i < $max; ++$i) {
+                $batch[] = [
+                    'visitor_id'   => uniqid(),
+                    'ip_address'   => '127.198.1.1',
+                    'page_type'    => 'deskpro.kb_view',
+                    'page_id'      => $id,
+                    'url'          => 'http://example.com/kb/articles/'.$id,
+                    'referrer'     => '',
+                    'user_agent'   => 'Dev Fixture',
+                    'geo_country'  => 'GB',
+                    'meta'         => json_encode(['title' => $this->faker->words(3)]),
+                    'date_created' => date('Y-m-d H:i:s'),
+                ];
+            }
+        }
+
+        $this->db->batchInsert('hit_record', $batch);
+
+        // Searches
+        $batch = [];
+        foreach ([$this->faker->words(3), $this->faker->words(3), $this->faker->words(3), $this->faker->words(3)] as $words) {
+            $words = implode(' ', $words);
+            $max   = mt_rand(2, 200);
+            for ($i = 0; $i < $max; ++$i) {
+                $batch[] = [
+                    'person_id'    => null,
+                    'visitor_id'   => uniqid(),
+                    'ip_address'   => '127.198.1.1',
+                    'query'        => $words,
+                    'num_results'  => mt_rand(0, 20),
+                    'date_created' => date('Y-m-d H:i:s'),
+                ];
+            }
+        }
+
+        $this->db->batchInsert('searchlog', $batch);
     }
 }

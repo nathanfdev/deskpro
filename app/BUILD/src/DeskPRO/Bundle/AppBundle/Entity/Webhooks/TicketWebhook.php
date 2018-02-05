@@ -28,9 +28,11 @@
 
 namespace DeskPRO\Bundle\AppBundle\Entity\Webhooks;
 
+use Application\DeskPRO\Entity\TicketTrigger;
 use Application\DeskPRO\Tickets\Filters\FilterTerms;
 use Application\DeskPRO\Tickets\Filters\LegacyTermsTransformer;
 use Application\DeskPRO\Tickets\Triggers\TriggerTerms;
+use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\Mapping as ORM;
 use JMS\Serializer\Annotation as JMS;
 use Application\DeskPRO\EntityRepository\AppInstance;
@@ -92,31 +94,27 @@ class TicketWebhook
     /**
      * @ORM\Column(name="search_terms", type="json_array", nullable=true)
      * @JMS\Expose()
+     * @JMS\Accessor(getter="getSearchTermsForSerialization")
      * @var array
      *
      */
     private $searchTerms;
 
     /**
-     * @ORM\Column(name="terms", type="dp_json_obj", nullable=true)
+     * @ORM\ManyToMany(targetEntity="Application\DeskPRO\Entity\TicketTrigger", cascade={"persist", "remove"})
+     * @ORM\JoinTable(name="ticket_webhook_triggers",
+     *      joinColumns={@ORM\JoinColumn(name="webhook_id", referencedColumnName="id", onDelete="CASCADE")},
+     *      inverseJoinColumns={@ORM\JoinColumn(name="trigger_id", referencedColumnName="id", unique=true, onDelete="CASCADE")}
+     *      )
+     * @JMS\Type("array<entity<Application\DeskPRO\Entity\TicketTrigger>>")
      * @JMS\Expose()
-     * @JMS\Type("Application\DeskPRO\Tickets\Triggers\TriggerTerms")
-     * @var \Application\DeskPRO\Tickets\Triggers\TriggerTerms
+     * @var TicketTrigger[]
      */
-    private $terms;
-
-    /**
-     * @ORM\Column(name="actions", type="dp_json_obj", nullable=false)
-     * @JMS\Expose()
-     * @JMS\Type("Application\DeskPRO\Tickets\Triggers\TriggerActions")
-     * @var \Application\DeskPRO\Tickets\Triggers\TriggerActions
-     */
-    private $actions;
+    private $triggers;
 
     /**
      * @ORM\ManyToOne(targetEntity="DeskPRO\Bundle\AppBundle\Entity\AppStore\AppInstance")
      * @ORM\JoinColumn(name="app_instance_id", referencedColumnName="id", onDelete="CASCADE", nullable=true)
-     * @JMS\Expose()
      *
      * @var AppInstance
      */
@@ -147,19 +145,16 @@ class TicketWebhook
     }
 
     /**
-     * @return \Application\DeskPRO\Tickets\Triggers\TriggerActions
+     * @return array
      */
-    public function getActions()
+    public function getSearchTermsForSerialization()
     {
-        return $this->actions;
-    }
-
-    /**
-     * @param \Application\DeskPRO\Tickets\Triggers\TriggerActions $actions
-     */
-    public function setActions( $actions )
-    {
-        $this->actions = $actions;
+        if ($this->searchTerms) {
+            $trans             = new LegacyTermsTransformer();
+            $filterTerms =  $trans->toFilterTerms($this->searchTerms);
+            $filterTermsArray = $filterTerms->exportToArray();
+            return array_key_exists('terms', $filterTermsArray) ? $filterTermsArray['terms'] : [];
+        }
     }
 
     /**
@@ -181,30 +176,26 @@ class TicketWebhook
         if ($searchTerms instanceof FilterTerms) {
             $trans             = new LegacyTermsTransformer();
             $this->searchTerms = $trans->toLegacyTerms($searchTerms);
-        } else if (is_array($searchTerms)) {
-            $this->searchTerms = $searchTerms;
-        } else {
+        }
+        else {
             throw new \BadMethodCallException('invalid parameter type');
         }
     }
 
     /**
-     * @return TriggerTerms
+     * @return TicketTrigger[]|ArrayCollection
      */
-    public function getTerms()
+    public function getTriggers()
     {
-        if (! $this->terms) {
-            return new TriggerTerms();
-        }
-        return $this->terms;
+        return $this->triggers;
     }
 
     /**
-     * @param $terms
+     * @param ArrayCollection $triggers
      */
-    public function setTerms(TriggerTerms $terms)
+    public function setTriggers($triggers)
     {
-        $this->terms = $terms;
+        $this->triggers = $triggers;
     }
 
     /**

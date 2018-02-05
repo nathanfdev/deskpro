@@ -1,15 +1,16 @@
-define ['DeskPRO/Util/Arrays',], (Arrays) ->
+define ['DeskPRO/Util/Arrays'], (Arrays) ->
   class DashboardWidgetService
 
-    constructor: (Api, $q) ->
+    constructor: (Api, Api2, $q) ->
       @Api = Api
+      @Api2 = Api2
       @$q = $q
       @data = {}
       @storage = {reports: [], labels: [], reportsByLabels: {}}
       @groupParams = []
       @widgets = {}
 
-      @Api.sendGet('reports/widget/group-params').then (response) =>
+      @Api2.sendGet('report_widgets/group-params').then (response) =>
         @groupParams = response.data
 
     getIndexById: (storage, id) ->
@@ -22,17 +23,21 @@ define ['DeskPRO/Util/Arrays',], (Arrays) ->
 
     updateWidgetsSize: (widgets, cols) ->
       ws = []
-      ws.push widget for widget, i in widgets when widget != 'last' and widget.sizeX > cols
+      ws.push widget for widget, i in widgets when widget != 'last' and widget.size_x > cols
       return ws
 
     getReports: () ->
       deferred = @$q.defer()
       if @storage.reports.length == 0
-        @Api
-          .sendGet "/reports/widget"
+        @Api2
+          .sendGet "/report_widgets"
           .then (result) =>
-            @storage.reports = result.data.reports
-            @storage.labels = result.data.labels
+            @storage.reports = result.data.data
+            @storage.labels = []
+            for report in result.data.data
+              for label in report.labels
+                if @storage.labels.indexOf(label) == -1
+                  @storage.labels.push(label)
             deferred.resolve @storage
             return deferred.promise
       else
@@ -50,62 +55,87 @@ define ['DeskPRO/Util/Arrays',], (Arrays) ->
         return false
 
     saveWidget: (widget) ->
-      @Api.sendPost \
-        "/dashboards/widgets/#{widget.id}",
+      @Api2.sendPutJson \
+        "/dashboard_report_widgets/#{widget.id}",
         {
-          "size_x": if widget.newSizeX? then widget.newSizeX else widget.sizeX
-          "size_y": if widget.newSizeY? then widget.newSizeY else widget.sizeY
-          "col":   if widget.newCol? then widget.newCol else widget.col
-          "row":   if widget.newRow? then widget.newRow else widget.row
+          "size_x":  if widget.newSizeX? then widget.newSizeX else widget.size_x
+          "size_y":  if widget.newSizeY? then widget.newSizeY else widget.size_y
+          "col":     if widget.newCol? then widget.newCol else widget.col
+          "row":     if widget.newRow? then widget.newRow else widget.row
           "title":   widget.title
+          "options": widget.options
         }
 
     setDashboardService: (service) ->
       @dashboardService = service
 
     addWidget: (report, widget) ->
-      url = "/dashboards/#{report.id}/widgets"
-      data = widget
-      @Api
+      widgetVars = []
+      for name,variable of widget.variables
+        variable.name = name
+        widgetVars.push(variable)
+
+      url = "/dashboard_report_widgets"
+      data = {
+        title: widget.title
+        type: widget.type
+        col: widget.col
+        row: widget.row
+        size_x: widget.sizeX
+        size_y: widget.sizeY
+        report: report.id
+        widget: widget.widget_id
+        widget_variables: widgetVars
+      }
+      deferred = @$q.defer()
+
+      @Api2
       .sendPostJson url, data
       .then (response) =>
-        newWidget = response.data
-        report.widgets.push newWidget
+        deferred.resolve(response.data.data)
+
+      return deferred.promise
+
 
     testWidget: (reportWidget) ->
-      url = "/reports/widget/test/#{reportWidget.id}"
+      url = "/report_widgets/test/#{reportWidget.id}?include=rendered_result&inline_sideloads=1"
       dataToSend =
-        report:
-          title:         reportWidget.title,
-          description:   reportWidget.desc,
-          display_types: reportWidget.display_types,
-          variables:     reportWidget.variables,
-          labels:        reportWidget.labels,
-        parts:
-          select:  reportWidget.select,
-          from:    reportWidget.from,
-          where:   reportWidget.where,
-          splitBy: reportWidget.splitBy,
-          groupBy: reportWidget.groupBy,
-          orderBy: reportWidget.orderBy,
-          limit:   reportWidget.limit,
-          offset:  reportWidget.offset
+        display_types: reportWidget.display_types,
+        variables:     reportWidget.variables,
+        input_mode:    'form',
+        query_parts:   reportWidget.query_parts
 
-      if (reportWidget.jsonTable?)
-        dataToSend.report.jsonTable = reportWidget.jsonTable
-
-      @Api
+      @Api2
         .sendPostJson url, dataToSend
 
 
     removeWidget: (widget) ->
-      @Api.sendDelete "/dashboards/widgets/#{widget.id}"
+      @Api2.sendDelete "/dashboard_report_widgets/#{widget.id}"
+
+    getWidgets: (reportId) ->
+      deferred = @$q.defer()
+
+      @Api2
+      .sendGet "/dashboard_reports/#{reportId}/widgets?include=rendered_result&inline_sideloads=1"
+      .then (resp) =>
+        widgets = resp.data.data;
+        widgets.map((widget) =>
+          widget.sizeX = widget.size_x
+          widget.sizeY = widget.size_y
+        )
+
+        deferred.resolve(widgets)
+      return deferred.promise
 
     getWidget: (id) ->
       deferred = @$q.defer()
 
-      @Api
-        .sendGet "/dashboards/widgets/#{id}"
+      @Api2
+        .sendGet "/dashboard_report_widgets/#{id}?include=rendered_result&inline_sideloads=1"
         .then (resp) =>
-          deferred.resolve(resp.data.data)
+          widget = resp.data.data;
+          widget.sizeX = widget.size_x
+          widget.sizeY = widget.size_y
+
+          deferred.resolve(widget)
       return deferred.promise

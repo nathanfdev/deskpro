@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2017, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2018, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -26,10 +26,6 @@
  * ~ Thanks, Everyone at Team DeskPRO
  */
 
-/**
- * DeskPRO.
- */
-
 namespace DeskPRO\Bundle\AppBundle\DataFixtures\DevFixtures;
 
 use Application\DeskPRO\Entity\CustomDefTicket;
@@ -38,7 +34,7 @@ use Application\DeskPRO\Entity\Person;
 use Application\DeskPRO\Entity\Ticket;
 use Application\DeskPRO\TicketLayout\Layout;
 use Application\DeskPRO\TicketLayout\LayoutField;
-use DeskPRO\Bundle\AppBundle\DataFixtures\DeskProAbstractFixture;
+use DeskPRO\Bundle\AppBundle\DataFixtures\AbstractDpFixture;
 use DeskPRO\Bundle\AppBundle\DataFixtures\DevFixtures\CustomFields\CustomDataGenerator;
 use DeskPRO\Bundle\AppBundle\DataFixtures\DevFixtures\CustomFields\TicketFieldsFixture;
 use DeskPRO\Bundle\AppBundle\DataFixtures\Tools\RandomFileFromDir;
@@ -62,7 +58,7 @@ use Orb\Types\JsonObjectSerializer;
  * - 3 orgs (5 users per org, 1 of them is a manager)
  * - 6 tickets per user
  */
-class TicketProfileFixture extends DeskProAbstractFixture implements OrderedFixtureInterface
+class TicketProfileFixture extends AbstractDpFixture implements OrderedFixtureInterface
 {
     private static $refCnt = 1;
 

@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2017, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2018, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -38,19 +38,44 @@ use Application\DeskPRO\Domain\DomainObject;
 use Application\DeskPRO\Entity;
 use Doctrine\ORM\Mapping\ClassMetadata;
 use Doctrine\ORM\Mapping\ClassMetadataInfo;
+use Symfony\Component\Validator\Constraints as Assert;
 
 /**
  * ReportDashboardWidget.
  */
 class ReportDashboardWidget extends DomainObject
 {
+    const TYPE_SIMPLE_BARS  = 'simple_bars';
+    const TYPE_BARS         = 'bars';
+    const TYPE_SIMPLE_LINES = 'simple_lines';
+    const TYPE_LINES        = 'lines';
+    const TYPE_AREA         = 'area';
+    const TYPE_SIMPLE_AREA  = 'simple_area';
+    const TYPE_PIE          = 'pie';
+    const TYPE_TABLE        = 'table';
+    const TYPE_SIMPLE_STAT  = 'simple_stat';
+
+    const WIDGET_TYPE_GRAPH     = 'graph';
+    const WIDGET_TYPE_STAT      = 'stat';
     const WIDGET_TYPE_HARDCODED = 'hardcoded';
+    const WIDGET_TYPE_BAR       = 'bar';
+    const WIDGET_TYPE_PIE       = 'pie';
+    const WIDGET_TYPE_TABLE     = 'table';
 
-    const WIDGET_TYPE_BAR = 'bar';
-
-    const WIDGET_TYPE_PIE = 'pie';
-
-    const WIDGET_TYPE_TABLE = 'table';
+    /**
+     * @var array
+     */
+    protected $widgetTypesMapping = [
+        self::TYPE_SIMPLE_BARS  => self::WIDGET_TYPE_GRAPH,
+        self::TYPE_BARS         => self::WIDGET_TYPE_GRAPH,
+        self::TYPE_SIMPLE_LINES => self::WIDGET_TYPE_GRAPH,
+        self::TYPE_LINES        => self::WIDGET_TYPE_GRAPH,
+        self::TYPE_AREA         => self::WIDGET_TYPE_GRAPH,
+        self::TYPE_SIMPLE_AREA  => self::WIDGET_TYPE_GRAPH,
+        self::TYPE_PIE          => self::WIDGET_TYPE_GRAPH,
+        self::TYPE_TABLE        => self::WIDGET_TYPE_TABLE,
+        self::TYPE_SIMPLE_STAT  => self::WIDGET_TYPE_STAT,
+    ];
 
     /**
      * @var int
@@ -58,16 +83,24 @@ class ReportDashboardWidget extends DomainObject
     protected $id = null;
 
     /**
+     * @Assert\NotBlank()
+     *
      * @var ReportDashboardReport
      */
     protected $report = null;
 
     /**
-     * @var ReportWidget it's a reference to ReportWidget Entity that holds DPQL
+     * It's a reference to ReportWidget Entity that holds DPQL.
+     *
+     * @Assert\NotNull()
+     *
+     * @var ReportWidget
      */
     protected $widget = null;
 
     /**
+     * @Assert\NotBlank()
+     *
      * @var string
      */
     protected $title = '';
@@ -83,11 +116,8 @@ class ReportDashboardWidget extends DomainObject
     protected $size = '8:5';
 
     /**
-     * @var string
-     */
-    protected $hc_data = null;
-
-    /**
+     * @Assert\NotBlank()
+     *
      * @var string
      */
     protected $type;
@@ -95,7 +125,12 @@ class ReportDashboardWidget extends DomainObject
     /**
      * @var array
      */
-    protected $variables;
+    protected $variables = [];
+
+    /**
+     * @var string
+     */
+    protected $options;
 
     /**
      * @return int
@@ -146,6 +181,50 @@ class ReportDashboardWidget extends DomainObject
     }
 
     /**
+     * @return int
+     */
+    public function getCol()
+    {
+        $position = $this->getPosition();
+
+        return isset($position[1]) ? $position[1] : 0;
+    }
+
+    /**
+     * @param int $col
+     *
+     * @return $this
+     */
+    public function setCol($col)
+    {
+        $this->setPosition([$this->getRow(), $col]);
+
+        return $this;
+    }
+
+    /**
+     * @return int
+     */
+    public function getRow()
+    {
+        $position = $this->getPosition();
+
+        return isset($position[0]) ? $position[0] : 0;
+    }
+
+    /**
+     * @param int $row
+     *
+     * @return $this
+     */
+    public function setRow($row)
+    {
+        $this->setPosition([$row, $this->getCol()]);
+
+        return $this;
+    }
+
+    /**
      * @param string|array $position
      *
      * @throws \Exception
@@ -184,9 +263,53 @@ class ReportDashboardWidget extends DomainObject
      *
      * @return $this
      */
-    public function setReport(ReportDashboardReport $report)
+    public function setReport(ReportDashboardReport $report = null)
     {
-        $this->report = $report;
+        $this->setModelField('report', $report);
+
+        return $this;
+    }
+
+    /**
+     * @return int
+     */
+    public function getSizeX()
+    {
+        $size = $this->getSize();
+
+        return isset($size[0]) ? $size[0] : 0;
+    }
+
+    /**
+     * @param int $sizeX
+     *
+     * @return $this
+     */
+    public function setSizeX($sizeX)
+    {
+        $this->setSize([$sizeX, $this->getSizeY()]);
+
+        return $this;
+    }
+
+    /**
+     * @return int
+     */
+    public function getSizeY()
+    {
+        $size = $this->getSize();
+
+        return isset($size[1]) ? $size[1] : 0;
+    }
+
+    /**
+     * @param int $sizeY
+     *
+     * @return $this
+     */
+    public function setSizeY($sizeY)
+    {
+        $this->setSize([$this->getSizeX(), $sizeY]);
 
         return $this;
     }
@@ -200,7 +323,7 @@ class ReportDashboardWidget extends DomainObject
     }
 
     /**
-     * @param string $size
+     * @param string|array $size
      *
      * @throws \Exception
      *
@@ -245,34 +368,6 @@ class ReportDashboardWidget extends DomainObject
     }
 
     /**
-     * @return array
-     */
-    public function getHcData()
-    {
-        if (!is_null($this->hc_data) && !is_array($this->hc_data)) {
-            $temp          = explode(':', $this->hc_data);
-            $this->hc_data = [
-                'inner_type' => $temp[1],
-                'outer_type' => $temp[0],
-            ];
-        }
-
-        return $this->hc_data;
-    }
-
-    /**
-     * @param string $data
-     *
-     * @return $this
-     */
-    public function setHcData($data)
-    {
-        $this->hc_data = $data;
-
-        return $this;
-    }
-
-    /**
      * @param $type
      *
      * @return $this
@@ -293,6 +388,14 @@ class ReportDashboardWidget extends DomainObject
     }
 
     /**
+     * @return string
+     */
+    public function getWidgetType()
+    {
+        return isset($this->widgetTypesMapping[$this->type]) ? $this->widgetTypesMapping[$this->type] : self::WIDGET_TYPE_TABLE;
+    }
+
+    /**
      * @return array
      */
     public function getVariables()
@@ -308,6 +411,26 @@ class ReportDashboardWidget extends DomainObject
     public function setVariables(array $variables)
     {
         $this->variables = $variables;
+
+        return $this;
+    }
+
+    /**
+     * @return string
+     */
+    public function getOptions()
+    {
+        return $this->options;
+    }
+
+    /**
+     * @param string $options
+     *
+     * @return $this
+     */
+    public function setOptions($options)
+    {
+        $this->options = $options;
 
         return $this;
     }
@@ -359,7 +482,7 @@ class ReportDashboardWidget extends DomainObject
             [
                 'fieldName'  => 'position',
                 'type'       => 'string',
-                'length'     => 5,
+                'length'     => 255,
                 'precision'  => 0,
                 'scale'      => 0,
                 'nullable'   => false,
@@ -370,22 +493,11 @@ class ReportDashboardWidget extends DomainObject
             [
                 'fieldName'  => 'size',
                 'type'       => 'string',
-                'length'     => 5,
+                'length'     => 255,
                 'precision'  => 0,
                 'scale'      => 0,
                 'nullable'   => false,
                 'columnName' => 'size',
-            ]
-        );
-        $metadata->mapField(
-            [
-                'fieldName'  => 'hc_data',
-                'type'       => 'string',
-                'length'     => 50,
-                'precision'  => 0,
-                'scale'      => 0,
-                'nullable'   => true,
-                'columnName' => 'hc_data',
             ]
         );
 
@@ -405,11 +517,21 @@ class ReportDashboardWidget extends DomainObject
             [
                 'fieldName'  => 'variables',
                 'type'       => 'json_array',
-                'length'     => 250,
                 'precision'  => 0,
                 'scale'      => 0,
                 'nullable'   => true,
                 'columnName' => 'variables',
+            ]
+        );
+
+        $metadata->mapField(
+            [
+                'fieldName'  => 'options',
+                'type'       => 'text',
+                'precision'  => 0,
+                'scale'      => 0,
+                'nullable'   => true,
+                'columnName' => 'options',
             ]
         );
 

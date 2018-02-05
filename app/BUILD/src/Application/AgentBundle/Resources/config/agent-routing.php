@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2017, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2018, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -2174,6 +2174,11 @@ $collection->create('agent_topic_ajax_get_topics', [
     'requirements' => ['guide_id' => '\\d+'],
 ]);
 
+$collection->create('agent_guides_comparerevs', [
+    'path'       => '/guides/compare-revs/{rev_old_id}/{rev_new_id}',
+    'controller' => 'AgentBundle:Guide:compareRevisions',
+]);
+
 $collection->create('agent_agentchat_getonlineagents', [
     'path'       => '/agent-chat/get-online-agents.json',
     'controller' => 'AgentBundle:AgentChat:getOnlineAgents',
@@ -2557,6 +2562,13 @@ $collection->create('reports-interface', [
     'path'       => '/reports-interface',
     'controller' => 'AgentBundle:Interface:interface',
     'defaults'   => ['interface' => 'reports'],
+]);
+
+$collection->create('reports-interface-headless-view', [
+    'path'         => '/reports-interface/r/{id}/{authcode}',
+    'controller'   => 'ReportsInterfaceBundle:Headless:view',
+    'methods'      => ['GET'],
+    'requirements' => ['id' => '\\d+', 'authcode' => '[a-zA-Z0-9]+'],
 ]);
 
 $collection->create('iface_load_views', [

@@ -30,12 +30,14 @@ namespace DeskPRO\Bundle\AppBundle\Webhooks;
 
 use Application\DeskPRO\DependencyInjection\DeskproContainer;
 use Application\DeskPRO\Entity\Ticket;
+use Application\DeskPRO\Entity\TicketTrigger;
 use Application\DeskPRO\Searcher\OrganizationSearch;
 use Application\DeskPRO\Searcher\PersonSearch;
 use Application\DeskPRO\Searcher\TicketSearch;
 use Application\DeskPRO\Tickets\ExecutorContextInterface;
 use Application\DeskPRO\Tickets\Filters\LegacyTermsTransformer;
 use Application\DeskPRO\Tickets\TicketManager;
+use Application\DeskPRO\Tickets\Triggers\TriggerActions;
 use DeskPRO\Bundle\AppBundle\Entity\Webhooks\TicketWebhook;
 use DeskPRO\Bundle\AppBundle\Webhooks\TicketWebhookVars\ExecutorContextEnv;
 use DeskPRO\Bundle\AppBundle\Webhooks\TicketWebhookVars\SearchTermVars;
@@ -109,14 +111,13 @@ class TicketWebhookExecutor implements ContainerAwareInterface
         // log difference between matches and tickets
         // perhaps should check again if tickets match the search criteria -> concurrency issues ?
 
-        $triggerTerms = $webhook->getTerms();
         foreach ($tickets as $ticket) {
-            try {
+            foreach ($webhook->getTriggers() as $trigger) {
                 $context = $this->createExecutionContext($webhook, $request, $webhookInvocation);
-                if ($triggerTerms->isTriggerMatch($ticket, $context)) {
-                    $this->executeWebhook($ticket, $webhook, $context);
+                if ($trigger->terms->isTriggerMatch($ticket, $context)) {
+                    $this->executeTrigger($trigger->actions, $ticket, $context);
                 }
-            } catch (\Exception $e) {}
+            }
         }
     }
 
@@ -137,10 +138,9 @@ class TicketWebhookExecutor implements ContainerAwareInterface
         return WebhookInvocation::fromRequestAndData($request, $payload);
     }
 
-    private function executeWebhook(Ticket $ticket, TicketWebhook $webhook, ExecutorContextInterface $context)
+    private function executeTrigger(TriggerActions $actions, Ticket $ticket, ExecutorContextInterface $context)
     {
         $this->ticketManager->markAsManaged($ticket);
-        $actions = $webhook->getActions();
 
         /** @var DeskproContainer $actionContainer */
         $actionContainer = $this->container && $this->container instanceof DeskproContainer ? $this->container : null;
@@ -164,7 +164,7 @@ class TicketWebhookExecutor implements ContainerAwareInterface
         $context = $this->ticketManager->createSystemExecutorContext();
         ExecutorContextEnv::setWebhook($context, $webhook);
         ExecutorContextEnv::setWebhookRequest($context, $request);
-        ExecutorContextEnv::setWebhookPayload($context, $payload);
+        ExecutorContextEnv::setWebhookInvocation($context, $payload);
 
         return $context;
     }

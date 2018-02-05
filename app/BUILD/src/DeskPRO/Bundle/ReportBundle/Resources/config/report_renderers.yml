@@ -1,0 +1,118 @@
+services:
+
+  reports.renderer_registry:
+    class: DeskPRO\Bundle\ReportBundle\Reports\Renderer\ReportsRendererRegistry
+    arguments:
+      - "@service_container"
+
+  reports.values_renderer.text:
+    class: DeskPRO\Bundle\ReportBundle\Reports\Renderer\TextValueRenderer
+    arguments:
+      - "@settings_resolver"
+
+  # JSON renderers
+  reports.values_renderer.json:
+    class: DeskPRO\Bundle\ReportBundle\Reports\Renderer\Json\JsonValueRenderer
+    arguments:
+      - "@settings_resolver"
+
+  reports.renderer.json_line:
+    class: DeskPRO\Bundle\ReportBundle\Reports\Renderer\Json\JsonLineRenderer
+    arguments:
+      - "@reports.values_renderer.text"
+    tags:
+      - { name: reports.renderer }
+
+  reports.renderer.json_pie:
+    class: DeskPRO\Bundle\ReportBundle\Reports\Renderer\Json\JsonPieRenderer
+    arguments:
+      - "@reports.values_renderer.text"
+    tags:
+      - { name: reports.renderer }
+
+  reports.renderer.json_area:
+    class: DeskPRO\Bundle\ReportBundle\Reports\Renderer\Json\JsonAreaRenderer
+    arguments:
+      - "@reports.values_renderer.text"
+    tags:
+      - { name: reports.renderer }
+
+  reports.renderer.json_bar:
+    class: DeskPRO\Bundle\ReportBundle\Reports\Renderer\Json\JsonBarRenderer
+    arguments:
+      - "@reports.values_renderer.text"
+    tags:
+      - { name: reports.renderer }
+
+  reports.renderer.json_table:
+    class: DeskPRO\Bundle\ReportBundle\Reports\Renderer\Json\JsonTableRenderer
+    arguments:
+      - "@reports.values_renderer.json"
+    tags:
+      - { name: reports.renderer }
+
+  reports.renderer.json_stat:
+    class: DeskPRO\Bundle\ReportBundle\Reports\Renderer\Json\JsonStatRenderer
+    arguments:
+      - "@reports.values_renderer.json"
+    tags:
+      - { name: reports.renderer }
+
+  # CSV renderers
+  reports.renderer.csv_table:
+    class: DeskPRO\Bundle\ReportBundle\Reports\Renderer\CsvTableRenderer
+    arguments:
+      - "@reports.values_renderer.text"
+    tags:
+      - { name: reports.renderer }
+
+  # HTML renderers
+  reports.values_renderer.html:
+    class: DeskPRO\Bundle\ReportBundle\Reports\Renderer\Html\HtmlValueRenderer
+    arguments:
+      - "@settings_resolver"
+
+  reports.renderer.html_table:
+    class: DeskPRO\Bundle\ReportBundle\Reports\Renderer\Html\HtmlTableRenderer
+    arguments:
+      - "@reports.values_renderer.html"
+    tags:
+      - { name: reports.renderer }
+
+  reports.renderer.html_line:
+    class: DeskPRO\Bundle\ReportBundle\Reports\Renderer\Html\HtmlLineRenderer
+    arguments:
+      - "@reports.values_renderer.text"
+    tags:
+      - { name: reports.renderer }
+
+  reports.renderer.html_pie:
+    class: DeskPRO\Bundle\ReportBundle\Reports\Renderer\Html\HtmlPieRenderer
+    arguments:
+      - "@reports.values_renderer.text"
+    tags:
+      - { name: reports.renderer }
+
+  reports.renderer.html_area:
+    class: DeskPRO\Bundle\ReportBundle\Reports\Renderer\Html\HtmlAreaRenderer
+    arguments:
+      - "@reports.values_renderer.text"
+    tags:
+      - { name: reports.renderer }
+
+  reports.renderer.html_bar:
+    class: DeskPRO\Bundle\ReportBundle\Reports\Renderer\Html\HtmlBarRenderer
+    arguments:
+      - "@reports.values_renderer.text"
+    tags:
+      - { name: reports.renderer }
+
+  # PDF renderers
+  reports.renderer.pdf:
+    class: DeskPRO\Bundle\ReportBundle\Reports\Renderer\PdfTableRenderer
+    arguments:
+      - "@reports.renderer.html_table"
+      - "@pdf_renderer"
+      - "@templating"
+    tags:
+      - { name: reports.renderer }

@@ -37,9 +37,9 @@ define ['DeskPRO/Util/Arrays',], (Arrays) -> [
 
     load_promises.push DashboardWidgetService.getReports().then (result) ->
       $scope.reports = result.reports
-      $scope.labels.push {title: label.label, active: false, value: label.value} for label in result.labels
+      $scope.labels.push {title: label, active: false } for label in result.labels
 
-      $scope.toggleLabel('tickets')
+      $scope.toggleLabel('Tickets')
 
     $q.all(load_promises).then(-> $scope.loaded = true)
 
@@ -54,7 +54,7 @@ define ['DeskPRO/Util/Arrays',], (Arrays) -> [
       index = -1
       index = Arrays.findIndex $scope.labels,
         (v) ->
-          return true if (v.title == label || v.value == label) and v.active == true
+          return true if v.title == label and v.active == true
       if index >= 0
         return true
       else
@@ -70,7 +70,7 @@ define ['DeskPRO/Util/Arrays',], (Arrays) -> [
         index = -1
         index = Arrays.findIndex $scope.labels,
           (v) ->
-            return true if v.title == label || v.value == label
+            return true if v.title == label
         if index >= 0
           label = $scope.labels[index]
       if label?

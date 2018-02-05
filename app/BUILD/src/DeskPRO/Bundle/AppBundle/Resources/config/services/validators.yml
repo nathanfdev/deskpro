@@ -128,10 +128,16 @@ services:
     tags:
       - { name: validator.constraint_validator }
 
-
   validator.custom_field_datetime:
     class: DeskPRO\Bundle\AppBundle\Validator\Constraints\CustomField\DateTimeValidator
     arguments:
       - "@security.token_storage"
+    tags:
+      - { name: validator.constraint_validator }
+
+  validator.dpql_query:
+    class: DeskPRO\Bundle\AppBundle\Validator\Constraints\Reports\DpqlQueryValidator
+    arguments:
+      - "@dpql.compiler"
     tags:
       - { name: validator.constraint_validator }

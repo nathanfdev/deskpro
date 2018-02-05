@@ -29,6 +29,7 @@
 namespace Application\AgentBundle\Controller;
 
 use Application\DeskPRO\Entity\ApiToken;
+use Symfony\Component\HttpFoundation\Request;
 
 class InterfaceController extends AbstractController
 {
@@ -60,9 +61,15 @@ class InterfaceController extends AbstractController
         }
     }
 
-    //###################################################################################################################
-    // multi-load-view
-    //###################################################################################################################
+    public function preActionHandler(Request $request, $action, $arguments = null)
+    {
+        // just pass loadViews, nothing criminal here
+        if ($action === 'loadViewsAction') {
+            return;
+        }
+
+        return parent::preActionHandler($request, $action, $arguments);
+    }
 
     public function loadViewsAction()
     {

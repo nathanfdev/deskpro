@@ -69,9 +69,14 @@ class TriggerActionsFormType extends AbstractType implements ContainerAwareInter
         $data = $form->getData();
 
         $extraData = $form->getExtraData();
-        $actionList = $extraData['actions'];
-
         $actions = new TriggerActions();
+
+        if (! array_key_exists('actions', $extraData)) {
+            $event->setData($actions);
+            return;
+        }
+
+        $actionList = $extraData['actions'];
         foreach ($actionList as $act) {
             if ($act) {
                 $type = $act['type'];

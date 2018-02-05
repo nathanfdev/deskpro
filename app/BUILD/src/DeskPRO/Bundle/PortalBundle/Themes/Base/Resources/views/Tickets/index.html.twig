@@ -54,7 +54,7 @@
                         </li>
 
                         <li class="tab-solo">
-                            <form class="form-filter" method="GET"  id="ticket_list_search_form" action="{{ path('portal_tickets', { type: type }) }}" novalidate>
+                            <form class="form-filter" method="GET"  id="ticket_list_search_form" action="{{ path(resolved_only ? 'portal_tickets_resolved' : 'portal_tickets', { type: type }) }}" novalidate>
                                 <div class="bucket">
                                     <span>{{ phrase('portal.tickets.list_search') }}</span>
                                     <input title="{{ phrase('portal.tickets.list_search') }}" name="q" value="{{ search_query }}" type="text" />
@@ -160,7 +160,7 @@
                         {% if ticket_exceprpt %}
                             <img src="{{ avatar_url(ticket_exceprpt.person) }}" class="avatar">
                             <span class="person">{{ ticket_exceprpt.person.display_name_user }}</span>
-                            <span class="date">{{ ticket.last_activity_date|date("m/d/Y, g:i a") }}</span>
+                            <span class="date">{{ ticket.last_activity_date|date }}</span>
                         {% endif %}
                     {% elseif col.id == 'date_created' %}
                         <span class="date">{{ ticket.date_created|date }}</span>

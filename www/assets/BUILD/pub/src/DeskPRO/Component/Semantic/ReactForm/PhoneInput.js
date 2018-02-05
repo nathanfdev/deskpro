@@ -30,10 +30,12 @@ class PhoneInput extends React.Component {
     $input.intlTelInput('setNumber', `${value}`);
   }
 
-  componentWillReceiveProps(newProps) {
-    if (newProps.value) {
-      $(this.input).intlTelInput('setNumber', `${newProps.value}`);
-    }
+  setNumber(number) {
+    const $input = $(this.input);
+    const { onChange } = this.props;
+
+    $input.intlTelInput('setNumber', `${number}`);
+    onChange($input.intlTelInput('getNumber') || `${number}`);
   }
 
   render() {

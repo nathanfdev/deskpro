@@ -56,19 +56,42 @@ class Converters
     }
 
     /**
+     * Flattens the list of object aliases into a list of strings which includes all possible named derivations of an alias
+     *
+     * @param ObjectAliasInterface[] $mappings
+     * @return array|string[]
+     */
+    public static function toMergedList($mappings)
+    {
+        $nameList = [];
+
+        foreach ($mappings as $alias) {
+            $nameList = array_merge($nameList, Converters::toList($alias));
+        }
+        return $nameList;
+    }
+
+    /**
+     * Returns a list of aliases ordered from most specific to least specific
+     *
      * @param \DeskPRO\Bundle\AppBundle\ObjectAlias\ObjectAliasInterface $mapping
      * @return array|string[]
      */
-    public static function toList( ObjectAliasInterface $mapping)
+    public static function toList(ObjectAliasInterface $mapping)
     {
-        $aliases = [
-            $mapping->getObjectId(),
-            $mapping->getAlias()
-        ];
-
+        $aliases = [];
         foreach ($mapping->getQualifiers() as $qualifier) {
-            $aliases[] = implode(':', $qualifier) . ':' . $mapping->getAlias();
+            $alias = implode(':', $qualifier) . ':' . $mapping->getAlias();
+            $aliases[$alias] = count($qualifier);
         }
+        asort($aliases, SORT_NUMERIC);
+
+
+        $aliases = array_merge(
+            [ $mapping->getObjectId() ],
+            array_keys($aliases),
+            [$mapping->getAlias()]
+        );
 
         return array_values(array_filter($aliases, 'is_string'));
     }

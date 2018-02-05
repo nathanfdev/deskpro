@@ -96,6 +96,27 @@ file_put_contents($f, $newContent);
 unset($f, $content, $newContent);
 echo ".. Done\n";
 
+// cloud platform is a little odd in that we use php7 on web servers
+// but php5.6 on task servers
+// so we end up in a sitch where templates combiled on web break
+// on task servers due to ?? null coalescing operator operator
+// this hack disables ?? use
+echo "Patching twig null coalescing operator use";
+
+$files = [
+    $DP_DIR.'/app/BUILD/vendor/twig/twig/lib/Twig/Node/Expression/Name.php',
+    $DP_DIR.'/app/BUILD/vendor/twig/twig/lib/Twig/Node/Expression/NullCoalesce.php',
+];
+
+foreach ($files as $f) {
+    $content = file_get_contents($f);
+    $newContent = str_replace('PHP_VERSION_ID >= 70000', 'false', $content);
+    file_put_contents($f, $newContent);
+}
+
+unset($f, $content, $newContent);
+echo ".. Done\n";
+
 ########################################################################################################################
 # Cache warmup
 ########################################################################################################################

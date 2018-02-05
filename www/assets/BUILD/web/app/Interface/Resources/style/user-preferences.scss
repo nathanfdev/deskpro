@@ -98,7 +98,7 @@ $popup-background: #f5f6f7;
   }
 
   // Buttons and stuff
-  input[type="text"], input[type="password"], .select, .button {
+  input[type="text"], input[type="password"], .select, .button, textarea {
     border: 1px solid #bdbdbd;
     border-radius: 2px;
     padding: $item-padding;
@@ -107,6 +107,11 @@ $popup-background: #f5f6f7;
     text-decoration: none;
     display: inline-block;
     font-size: 1em;
+  }
+
+  textarea {
+    resize: none;
+    min-height: 120px;
   }
 
   .button {
@@ -401,8 +406,6 @@ $right-bucket: 200px;
 
 .popup {
   .agent-list {
-    max-height: 360px;
-    overflow-y: scroll;
 
     table {
       width: 100%;
@@ -432,15 +435,14 @@ $right-bucket: 200px;
     .agent-name {
       text-align: left;
       color: #707070;
-      width: 70%;
-      border-left: 0px;
+      width: 60%;
+      border-left: 0;
 
       .avatar {
         display: inline-block;
         width: 26px;
         height: 26px;
         border-radius: 4px;
-        margin-right: 5px;
         background-size: cover;
         background-repeat: no-repeat;
         vertical-align: middle;

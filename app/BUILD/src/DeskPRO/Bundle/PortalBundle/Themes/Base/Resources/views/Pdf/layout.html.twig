@@ -12,6 +12,16 @@
         }
     </style>
     <link href="{{ asset('DeskPRO_PortalBundle_style.css', 'app_assets') }}" media="all" rel="stylesheet" type="text/css" />
+    <style type="text/css">
+      /*
+        mPdf doesn't support `numeric` value for font-weight that appear in production assets
+        https://mpdf.github.io/css-stylesheets/supported-css.html#common-text-styles
+        has to overwrite such styles using aliases as value
+      */
+      strong {
+        font-weight: bold;
+      }
+    </style>
 </head>
 <body>
     <div class="brand {% if portal_custom_logo() %}with-logo{% endif %}">
