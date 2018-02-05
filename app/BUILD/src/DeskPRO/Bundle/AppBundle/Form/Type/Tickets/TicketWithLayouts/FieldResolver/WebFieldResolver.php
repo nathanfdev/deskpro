@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2017, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2018, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -266,9 +266,11 @@ class WebFieldResolver extends AbstractFieldResolver
         $person = $context->getPerson();
         if ($person->isUser()) {
             $options = [
-                'property_path' => 'ticket_person_email',
-                'label'         => $this->phrase('portal.forms.label_email'),
                 'person'        => $person,
+                'property_path' => 'ticket_person_email',
+                'label'         => $context->isWidgetType()
+                    ? $this->phrase('portal.widget.label_email')
+                    : $this->phrase('portal.forms.label_email'),
             ];
 
             if ($context->isFullLayout()) {
