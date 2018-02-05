@@ -554,7 +554,7 @@ define(function() {
   //###
   routes.push({
     id: 'tickets.triggers',
-    url: '/triggers/{type:(?:newticket|newreply|update)}',
+    url: '/triggers/{type:(?:newticket|newreply|update|webhook)}',
     templateName: 'TicketTriggers/list.html',
     controller: 'Admin_TicketTriggers_Ctrl_List'
   });
@@ -611,6 +611,57 @@ define(function() {
     templateName: 'TicketTriggers/edit.html',
     controller: 'Admin_TicketTriggers_Ctrl_Edit',
     data: { stateMarkId: "tickets.triggers" }
+  });
+
+  //###
+  //# Webhooks
+  //###
+
+  routes.push({
+    id: 'tickets.webhooks',
+    url: '/webhooks',
+    templateName: 'TicketWebhooks/list.html',
+    controller: 'Admin_TicketWebhooks_Ctrl_List'
+  });
+
+  routes.push({
+    id: 'tickets.webhooks.edit',
+    url: '/{id:[0-9]+}',
+    templateName: 'TicketWebhooks/edit.html',
+    controller: 'Admin_TicketWebhooks_Ctrl_Edit',
+    data: { stateMarkId: "tickets.webhooks" }
+  });
+
+  routes.push({
+    id: 'tickets.webhooks.create',
+    url: '/',
+    templateName: 'TicketWebhooks/edit.html',
+    controller: 'Admin_TicketWebhooks_Ctrl_Edit'
+  });
+
+  routes.push({
+    id: 'tickets.webhooks.trigger-edit',
+    url: '/{webhookId:[0-9]+}/trigger/{id:[0-9]+}',
+    templateName: 'TicketTriggers/edit.html',
+    controller: 'Admin_TicketWebhooks_Ctrl_TriggerEdit',
+    data: { stateMarkId: "tickets.triggers" }
+  });
+
+  routes.push({
+    id: 'tickets.webhooks.trigger-edit-redirect',
+    url: '/trigger-create',
+    template: '',
+    controller: ['$state', '$stateParams', function ($state, $stateParams) {
+      alert('sdadasdas')
+      $state.go('tickets.webhooks.trigger-edit', $stateParams);
+    }]
+  });
+
+  routes.push({
+    id: 'tickets.webhooks.trigger-create',
+    url: '{webhookId:[0-9]+}/trigger',
+    templateName: 'TicketTriggers/edit.html',
+    controller: 'Admin_TicketWebhooks_Ctrl_TriggerEdit'
   });
 
 

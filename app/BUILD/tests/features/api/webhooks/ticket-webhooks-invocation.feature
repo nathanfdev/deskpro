@@ -10,31 +10,36 @@ Feature: /webhooks/tickets/{webhook}/invocation resource
     And there are no "Ticket" records
     Given I'm authenticated as admin
 
-  Scenario Outline: I create and invoke a webhook with a json payload
+  Scenario Outline: I create a webhook with a CheckWebhookVar trigger and invoke it  with a json payload
     Given I send a POST request to "/api/v2/tickets" with body:
     """
-{
-  "subject": "<actual_subject>",
-  "person": ~admin~,
-  "labels": ["webhook-label-1", "label-2"]
-}
+    {
+      "subject": "<actual_subject>",
+      "person": ~admin~,
+      "labels": ["webhook-label-1", "label-2"]
+    }
     """
     And I save the JSON node "data.id" as placeholder "ticket_id"
     And I send a POST request to "/api/v2/webhooks/tickets" with body:
     """
-{
-  "title":"<webhook_title>",
-  "payload_decoder":"json",
-  "is_enabled":true,
-  "search_terms": [
-      {
-        "type" : "FilterLabels",
-        "options" : {
-          "labels": ["webhook-label-1", "webhook-label-2"]
-        }
-      }
-  ],
-  "triggers": [
+    {
+      "title":"<webhook_title>",
+      "payload_decoder":"json",
+      "is_enabled":true,
+      "search_terms": [
+          {
+            "type" : "FilterLabels",
+            "options" : {
+              "labels": ["webhook-label-1", "webhook-label-2"]
+            }
+          }
+      ]
+    }
+    """
+    And I save the JSON node "data.id" as placeholder "webhook_id"
+    And I save the JSON node "data.auth_id" as placeholder "webhook_slug"
+    And I send a POST request to "/api/v2/webhooks/~webhook_id~/triggers" with body:
+    """
     {
       "terms": [
         [{
@@ -57,19 +62,14 @@ Feature: /webhooks/tickets/{webhook}/invocation resource
         ]
       }
     }
-  ]
-}
     """
-    And the response status code should be 201
-    And I save the JSON node "data.auth_id" as placeholder "webhook_slug"
-
     When I send a POST request to "/api/v2/webhooks/~webhook_slug~/invocation" with body:
     """
-{
-  "something" : {
-    "is_enabled":true
-  }
-}
+    {
+      "something" : {
+        "is_enabled":true
+      }
+    }
     """
     Then the response status code should be 204
 
@@ -102,8 +102,13 @@ Feature: /webhooks/tickets/{webhook}/invocation resource
           "labels": ["webhook-label-2", "label-2"]
         }
       }
-  ],
-   "triggers": [
+  ]
+}
+    """
+    And I save the JSON node "data.id" as placeholder "webhook_id"
+    And I save the JSON node "data.auth_id" as placeholder "webhook_slug"
+    And I send a POST request to "/api/v2/webhooks/~webhook_id~/triggers" with body:
+    """
     {
       "terms": [
         [{
@@ -126,12 +131,7 @@ Feature: /webhooks/tickets/{webhook}/invocation resource
         ]
       }
     }
-  ]
-}
     """
-    And the response status code should be 201
-    And I save the JSON node "data.auth_id" as placeholder "webhook_slug"
-
     When I send a POST request to "/api/v2/webhooks/~webhook_slug~/invocation" with parameters:
       | key                         | value   |
       | person_registration[name][] | cthulhu |
@@ -148,28 +148,34 @@ Feature: /webhooks/tickets/{webhook}/invocation resource
   Scenario Outline: I create and invoke a webhook with search term variables
     Given I send a POST request to "/api/v2/tickets" with body:
     """
-{
-  "subject": "<actual_subject>",
-  "person": ~admin~,
-  "labels": ["webhook-label-2", "label-2"]
-}
+    {
+      "subject": "<actual_subject>",
+      "person": ~admin~,
+      "labels": ["webhook-label-2", "label-2"]
+    }
     """
     And I save the JSON node "data.id" as placeholder "ticket_id"
     And I send a POST request to "/api/v2/webhooks/tickets" with body:
     """
-{
-  "title":"<webhook_title>",
-  "payload_decoder":"json",
-  "is_enabled":true,
-  "search_terms": [
-      {
-        "type" : "FilterLabels",
-        "options" : {
-          "labels": ["twig:{{webhook.data.label}}", "label-2"]
-        }
-      }
-  ],
-  "triggers": [
+    {
+      "title":"<webhook_title>",
+      "payload_decoder":"json",
+      "is_enabled":true,
+      "search_terms": [
+          {
+            "type" : "FilterLabels",
+            "options" : {
+              "labels": ["twig:{{webhook.data.label}}", "label-2"]
+            }
+          }
+      ]
+    }
+    """
+    And the response status code should be 201
+    And I save the JSON node "data.id" as placeholder "webhook_id"
+    And I save the JSON node "data.auth_id" as placeholder "webhook_slug"
+    And I send a POST request to "/api/v2/webhooks/~webhook_id~/triggers" with body:
+    """
     {
       "terms": [
         [{
@@ -192,20 +198,16 @@ Feature: /webhooks/tickets/{webhook}/invocation resource
         ]
       }
     }
-  ]
-}
     """
-    And the response status code should be 201
-    And I save the JSON node "data.auth_id" as placeholder "webhook_slug"
 
     When I send a POST request to "/api/v2/webhooks/~webhook_slug~/invocation" with body:
     """
-{
-  "something" : {
-    "is_enabled":true
-  },
-  "label" : "webhook-label-2"
-}
+    {
+      "something" : {
+        "is_enabled":true
+      },
+      "label" : "webhook-label-2"
+    }
     """
     Then the response status code should be 204
 

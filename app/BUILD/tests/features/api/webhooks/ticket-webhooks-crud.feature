@@ -18,6 +18,7 @@ Feature: /webhooks/tickets resource
   "search_terms": [
     {
       "type" : "FilterLabels",
+      "op": "is",
       "options" : {
         "labels": [
           "gina",
@@ -25,23 +26,104 @@ Feature: /webhooks/tickets resource
         ]
       }
     }
-  ],
-  "triggers": [{
+  ]
+}
+    """
+    Then the response status code should be 201
+    And I save the JSON node "data.id" as placeholder "webhook_id"
+    And the JSON node "data.auth_id" should not be null
+    And the JSON node "data.search_terms" should be equal to node:
+    """
+    [
+      {
+        "type" : "FilterLabels",
+        "op" : "is",
+        "options" : {
+          "labels": [
+            "gina",
+            "lina"
+          ]
+        }
+      }
+    ]
+    """
+    And the JSON node "data.is_enabled" should be true
+    And the JSON node "data.payload_decoder" should be equal to "json"
+    And the JSON node "data.title" should be equal to "<title>"
+
+    Examples:
+    | title |
+    | my title |
+
+
+  Scenario: I delete a webhook
+    When I send a POST request to "/api/v2/webhooks/tickets" with body:
+    """
+{
+  "title":"<title>",
+  "payload_decoder":"json",
+  "is_enabled":true,
+  "search_terms": [
+    {
+      "type" : "FilterLabels",
+      "op": "is",
+      "options" : {
+        "labels": [
+          "gina",
+          "lina"
+        ]
+      }
+    }
+  ]
+}
+    """
+    And I save the JSON node "data.id" as placeholder "webhook_id"
+    And I send a GET request to "/api/v2/webhooks/tickets/~webhook_id~"
+    And the response status code should be 200
+    When I send a DELETE request to "/api/v2/webhooks/tickets/~webhook_id~"
+    And the response status code should be 200
+    And I send a GET request to "/api/v2/webhooks/tickets/~webhook_id~"
+    Then the response status code should be 404
+
+  Scenario: I delete a webhook after adding a trigger
+    When I send a POST request to "/api/v2/webhooks/tickets" with body:
+    """
+{
+  "title":"<title>",
+  "payload_decoder":"json",
+  "is_enabled":true,
+  "search_terms": [
+    {
+      "type" : "FilterLabels",
+      "op": "is",
+      "options" : {
+        "labels": [
+          "gina",
+          "lina"
+        ]
+      }
+    }
+  ]
+}
+    """
+    And I save the JSON node "data.id" as placeholder "webhook_id"
+    And I send a POST request to "/api/v2/webhooks/~webhook_id~/triggers" with body:
+    """
+  {
     "terms": [
       [
         {
-          "type" : "CheckTicketField",
-          "op": "is",
+          "type" : "CheckWebhookVar",
+          "op": "isset",
           "options" : {
-            "field_id": "field6",
-            "value": "zorba"
+            "name": "webhook.data.something.is_enabled"
           }
         }
       ]
     ],
-    "actions":{
+    "actions": {
       "version":1,
-      "actions":[
+      "actions": [
         {
           "type": "SetHold",
           "options":{
@@ -50,66 +132,15 @@ Feature: /webhooks/tickets resource
         }
       ]
     }
-  }]
-}
+  }
     """
-    Then the response status code should be 201
-    And the JSON node "data.auth_id" should not be null
-    And the JSON node "data.search_terms" should be equal to node:
-    """
-    [
-      {
-        "type" : "label",
-        "op": "is",
-        "options" : {
-          "label": [
-            "gina",
-            "lina"
-          ]
-        }
-      }
-    ]
-    """
-
-    And the JSON node "data.triggers[0].terms" should be equal to node:
-    """
-        {
-          "version": 1,
-          "terms": [
-            {
-              "set_terms": [
-                {
-                  "type": "CheckTicketFieldfield6",
-                  "op": "is",
-                  "options": {
-                    "field_id": "field6",
-                    "value": "zorba"
-                  }
-                }
-              ]
-            }
-          ]
-        }
-    """
-
-    And the JSON node "data.triggers[0].actions" should be equal to node:
-    """
-      {
-        "version" : 1,
-        "actions" : [
-          {
-            "type": "SetHold",
-            "options": { "is_hold": "1" }
-          }
-        ]
-      }
-    """
-
-
-    And the JSON node "data.is_enabled" should be true
-    And the JSON node "data.payload_decoder" should be equal to "json"
-    And the JSON node "data.title" should be equal to "<title>"
-
-    Examples:
-    | title |
-    | my title |
+    And I save the JSON node "data.id" as placeholder "webhook_trigger_id"
+    And I send a GET request to "/api/v2/webhooks/tickets/~webhook_id~"
+    And the response status code should be 200
+    And I send a GET request to "/api/v2/webhooks/~webhook_id~/triggers/~webhook_trigger_id~"
+    And the response status code should be 200
+    When I send a DELETE request to "/api/v2/webhooks/tickets/~webhook_id~"
+    And I send a GET request to "/api/v2/webhooks/tickets/~webhook_id~"
+    Then the response status code should be 404
+    And I send a GET request to "/api/v2/webhooks/~webhook_id~/triggers/~webhook_trigger_id~"
+    Then the response status code should be 404

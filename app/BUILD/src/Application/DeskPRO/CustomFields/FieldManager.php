@@ -283,12 +283,11 @@ class FieldManager
      *
      * @param $field_id
      *
-     * @return \Application\DeskPRO\Entity\CustomDefAbstract
+     * @return \Application\DeskPRO\Entity\CustomDefAbstract|null
      */
     public function getFieldFromId($field_id)
     {
         $this->getFields();
-
 
         if (isset($this->fields[$field_id])) {
             return $this->fields[$field_id];
@@ -835,8 +834,16 @@ class FieldManager
     {
         /** @var PersistentCollection $customData */
         $customData = $object->getCustomData();
-        $unsetCustomDataList = array_filter(
+        // filter only the custom data belonging to that field
+        $fieldCustomData = array_filter(
             $customData->toArray(),
+            function (CustomDataAbstract $customData) use ($fieldDefinition) {
+                return $customData->getFieldId() === $fieldDefinition->getId();
+            }
+        );
+
+        $unsetCustomDataList = array_filter(
+            $fieldCustomData,
             function (CustomDataAbstract $customData) use ($customDataFilter) {
                 return $customDataFilter($customData);
             }

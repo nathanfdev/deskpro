@@ -53,8 +53,14 @@ Feature: /webhooks/tickets/{webhook}/invocation resource
         "value": "twig:{{webhook.data.id}}"
       }
     }
-  ],
-  "triggers": [
+  ]
+}
+    """
+    And the response status code should be 201
+    And I save the JSON node "data.auth_id" as placeholder "webhook_slug"
+    And I save the JSON node "data.id" as placeholder "webhook_id"
+    And I send a POST request to "/api/v2/webhooks/~webhook_id~/triggers" with body:
+    """
     {
       "terms": [
         [{
@@ -81,11 +87,7 @@ Feature: /webhooks/tickets/{webhook}/invocation resource
         ]
       }
     }
-  ]
-}
     """
-    And the response status code should be 201
-    And I save the JSON node "data.auth_id" as placeholder "webhook_slug"
 
     When I send a POST request to "/api/v2/webhooks/~webhook_slug~/invocation" with body:
     """
@@ -140,8 +142,13 @@ Feature: /webhooks/tickets/{webhook}/invocation resource
         "value": "<field_value_default>"
       }
     }
-  ],
-  "triggers": [
+  ]
+}
+    """
+    And I save the JSON node "data.auth_id" as placeholder "webhook_slug"
+    And I save the JSON node "data.id" as placeholder "webhook_id"
+    And I send a POST request to "/api/v2/webhooks/~webhook_id~/triggers" with body:
+    """
     {
       "terms": [
         [{
@@ -168,19 +175,15 @@ Feature: /webhooks/tickets/{webhook}/invocation resource
         ]
       }
     }
-  ]
-}
     """
-    And the response status code should be 201
-    And I save the JSON node "data.auth_id" as placeholder "webhook_slug"
 
     When I send a POST request to "/api/v2/webhooks/~webhook_slug~/invocation" with body:
     """
-{
-  "id": "JIR-5",
-  "timestamp": "2009-09-09T00:08:36.796-0500",
-  "webhookEvent": "jira:issue_deleted"
-}
+    {
+      "id": "JIR-5",
+      "timestamp": "2009-09-09T00:08:36.796-0500",
+      "webhookEvent": "jira:issue_deleted"
+    }
     """
     Then the response status code should be 204
 
@@ -195,12 +198,12 @@ Feature: /webhooks/tickets/{webhook}/invocation resource
   Scenario Outline: I can unset a custom field field by invoking a webhook
     Given I send a POST request to "/api/v2/ticket_custom_fields" with a json body:
     """
-{
-  "title":"<field_title>",
-  "is_enabled":true,
-  "alias": "<field_alias>",
-  "handler_class":"Application\\DeskPRO\\CustomFields\\Handler\\Text"
-}
+  {
+    "title":"<field_title>",
+    "is_enabled":true,
+    "alias": "<field_alias>",
+    "handler_class":"Application\\DeskPRO\\CustomFields\\Handler\\Text"
+  }
     """
     And I save the JSON node "data.id" as placeholder "field_id"
     And I send a POST request to "/api/v2/tickets" with body:
@@ -229,8 +232,13 @@ Feature: /webhooks/tickets/{webhook}/invocation resource
         "value": "<field_value_default>"
       }
     }
-  ],
-  "triggers": [
+  ]
+}
+    """
+    And I save the JSON node "data.auth_id" as placeholder "webhook_slug"
+    And I save the JSON node "data.id" as placeholder "webhook_id"
+    And I send a POST request to "/api/v2/webhooks/~webhook_id~/triggers" with body:
+    """
     {
       "terms": [
         [{
@@ -256,11 +264,8 @@ Feature: /webhooks/tickets/{webhook}/invocation resource
         ]
       }
     }
-  ]
-}
     """
-    And the response status code should be 201
-    And I save the JSON node "data.auth_id" as placeholder "webhook_slug"
+
     And I send a GET request to "/api/v2/tickets/~ticket_id~"
     And the JSON node "data.fields.~field_id~.value" should be equal to "<field_value_default>"
 

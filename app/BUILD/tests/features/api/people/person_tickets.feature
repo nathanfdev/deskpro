@@ -1,4 +1,3 @@
-@new
 Feature: /people/{id}/tickets endpoint
 
   Background:

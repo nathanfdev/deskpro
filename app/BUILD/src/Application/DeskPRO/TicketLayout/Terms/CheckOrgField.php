@@ -49,6 +49,7 @@ class CheckOrgField extends \Application\DeskPRO\Tickets\Triggers\Terms\CheckOrg
     {
         $options = new CheckedOptionsArray();
         $options->addRequiredNames('field_id', 'value', 'type_name');
+        $options->setAliases('field_id', ['field']);
 
         return $options;
     }

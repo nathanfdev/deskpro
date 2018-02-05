@@ -94,19 +94,20 @@ class TicketWebhook
     /**
      * @ORM\Column(name="search_terms", type="json_array", nullable=true)
      * @JMS\Expose()
+     * @JMS\Accessor(getter="getSearchTermsForSerialization")
      * @var array
      *
      */
     private $searchTerms;
 
     /**
-     * @ORM\ManyToMany(targetEntity="Application\DeskPRO\Entity\TicketTrigger", cascade={"persist"})
+     * @ORM\ManyToMany(targetEntity="Application\DeskPRO\Entity\TicketTrigger", cascade={"persist", "remove"})
      * @ORM\JoinTable(name="ticket_webhook_triggers",
      *      joinColumns={@ORM\JoinColumn(name="webhook_id", referencedColumnName="id", onDelete="CASCADE")},
-     *      inverseJoinColumns={@ORM\JoinColumn(name="trigger_id", referencedColumnName="id", unique=true)}
+     *      inverseJoinColumns={@ORM\JoinColumn(name="trigger_id", referencedColumnName="id", unique=true, onDelete="CASCADE")}
      *      )
+     * @JMS\Type("array<entity<Application\DeskPRO\Entity\TicketTrigger>>")
      * @JMS\Expose()
-     * @JMS\Type("array<Application\DeskPRO\Entity\TicketTrigger>")
      * @var TicketTrigger[]
      */
     private $triggers;
@@ -114,7 +115,6 @@ class TicketWebhook
     /**
      * @ORM\ManyToOne(targetEntity="DeskPRO\Bundle\AppBundle\Entity\AppStore\AppInstance")
      * @ORM\JoinColumn(name="app_instance_id", referencedColumnName="id", onDelete="CASCADE", nullable=true)
-     * @JMS\Expose()
      *
      * @var AppInstance
      */
@@ -145,6 +145,19 @@ class TicketWebhook
     }
 
     /**
+     * @return array
+     */
+    public function getSearchTermsForSerialization()
+    {
+        if ($this->searchTerms) {
+            $trans             = new LegacyTermsTransformer();
+            $filterTerms =  $trans->toFilterTerms($this->searchTerms);
+            $filterTermsArray = $filterTerms->exportToArray();
+            return array_key_exists('terms', $filterTermsArray) ? $filterTermsArray['terms'] : [];
+        }
+    }
+
+    /**
      * @return \Application\DeskPRO\Tickets\Filters\FilterTerms
      */
     public function getSearchTerms()
@@ -163,9 +176,8 @@ class TicketWebhook
         if ($searchTerms instanceof FilterTerms) {
             $trans             = new LegacyTermsTransformer();
             $this->searchTerms = $trans->toLegacyTerms($searchTerms);
-        } else if (is_array($searchTerms)) {
-            $this->searchTerms = $searchTerms;
-        } else {
+        }
+        else {
             throw new \BadMethodCallException('invalid parameter type');
         }
     }
