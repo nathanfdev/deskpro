@@ -2533,6 +2533,11 @@ DeskPRO.Agent.PageFragment.Page.Ticket = new Orb.Class({
 				self.deleteOverlay.closeOverlay();
 				self.getEl('remove_menu_trigger').hide();
 
+				if (self.deleteOverlay.doBan) {
+					DeskPRO_Window.removePage(self);
+					return;
+				}
+
 				if (data.hidden_html) {
 					self.getEl('page_header').before($(data.hidden_html));
 				} else {

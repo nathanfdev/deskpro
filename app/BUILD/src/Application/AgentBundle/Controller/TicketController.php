@@ -3324,37 +3324,30 @@ class TicketController extends AbstractController
             throw new NotFoundHttpException();
         }
 
-        $ticket_person = $ticket->person;
-
         $this->db->replace(
             'tickets_deleted',
             [
-                'ticket_id'     => $ticket->id,
-                'by_person_id'  => $this->person->id,
+                'ticket_id'     => $ticket->getId(),
+                'by_person_id'  => $this->person->getId(),
                 'new_ticket_id' => 0,
                 'reason'        => $this->in->getString('reason'),
                 'date_created'  => date('Y-m-d H:i:s'),
             ]
         );
 
-        $this->em->getConnection()->beginTransaction();
-
-        if ($this->in->getBool('ban') && !$ticket_person->is_agent) {
-            $ticket->getTicketLogger()->recordExtra('is_physical_delete', true);
-        }
-
         try {
+            $this->em->getConnection()->beginTransaction();
             $ticket->setStatus('hidden.deleted');
             $this->em->flush();
             $this->em->getConnection()->commit();
         } catch (\Exception $e) {
-            $this->em->getConnection()->rollback();
+            $this->em->getConnection()->rollBack();
             throw $e;
         }
 
-        if ($this->in->getBool('ban') && !$ticket_person->is_agent) {
-            foreach ($ticket->person->emails as $email) {
-                $email_addy = strtolower($email->email);
+        if ($this->in->getBool('ban') && !$ticket->getPerson()->isAgent()) {
+            foreach ($ticket->getPerson()->getEmails() as $email) {
+                $email_addy = strtolower($email->getEmail());
                 App::getDb()->replace(
                     'ban_emails',
                     [
@@ -3364,7 +3357,7 @@ class TicketController extends AbstractController
                 );
             }
 
-            $person       = $ticket->person;
+            $person       = $ticket->getPerson();
             $edit_manager = $this->container->getSystemService('person_edit_manager');
             $edit_manager->setPersonContext($this->person);
             $edit_manager->deleteUser($person);
