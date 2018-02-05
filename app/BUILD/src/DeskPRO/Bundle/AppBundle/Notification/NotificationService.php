@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2017, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2018, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -215,10 +215,11 @@ class NotificationService
                 ]);
             case 'deskpro':
                 return new NotificationClient('deskpro', [
-                    'token' => $this->getJwtToken(),
-                    'debug' => $this->settings->get('notification.settings.deskpro_client.debug'),
-                    'host'  => $this->settings->get('notification.settings.deskpro_client.host'),
-                    'port'  => $this->settings->get('notification.settings.deskpro_client.port'),
+                    'token'  => $this->getJwtToken(),
+                    'debug'  => $this->settings->get('notification.settings.deskpro_client.debug'),
+                    'host'   => $this->settings->get('notification.settings.deskpro_client.host'),
+                    'port'   => $this->settings->get('notification.settings.deskpro_client.port'),
+                    'secure' => $this->settings->get('notification.settings.deskpro_client.secure', false),
                 ]);
             default:
                 throw new \RuntimeException(sprintf('We can\'t find settings for [ %s ] client', $handler));

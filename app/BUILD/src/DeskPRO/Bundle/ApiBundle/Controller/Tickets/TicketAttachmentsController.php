@@ -30,13 +30,12 @@ namespace DeskPRO\Bundle\ApiBundle\Controller\Tickets;
 
 use Application\DeskPRO\Entity\TicketAttachment;
 use DeskPRO\Bundle\ApiBundle\ApiDoc\Annotation\ApiDoc;
-use DeskPRO\Bundle\ApiBundle\Controller\CrudSubController;
 use DeskPRO\Bundle\AppBundle\Annotation\ActionPermissions\Annotation\ApiModes;
+use Doctrine\ORM\QueryBuilder;
 use FOS\RestBundle\Controller\Annotations as Rest;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpKernel\HttpKernelInterface;
-use Doctrine\ORM\QueryBuilder;
 
 /**
  * Class TicketAttachmentsController.
@@ -45,7 +44,7 @@ use Doctrine\ORM\QueryBuilder;
  * @Rest\Route("/tickets/{parentId}/attachments")
  * @ApiDoc(target="all", section="Tickets", output="Application\DeskPRO\Entity\TicketAttachment")
  */
-class TicketAttachmentsController extends CrudSubController
+class TicketAttachmentsController extends AbstractTicketsCrudSubController
 {
     public static $entity         = TicketAttachment::class;
     public static $parentProperty = 'ticket';

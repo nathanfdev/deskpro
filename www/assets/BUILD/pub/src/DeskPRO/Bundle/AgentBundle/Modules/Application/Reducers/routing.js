@@ -1,6 +1,6 @@
-import * as actions from '../Actions/routingActions';
 import { createReducer } from 'Ampliflux';
 import Immutable from 'immutable';
+import * as actions from '../Actions/routingActions';
 import { stateToString, stateFromString } from '../Service/routing';
 
 const initialState = {

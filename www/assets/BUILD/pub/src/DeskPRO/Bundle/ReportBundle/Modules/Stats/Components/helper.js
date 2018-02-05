@@ -65,6 +65,10 @@ export const displayTypes = [
   {
     label: 'Table',
     value: 'table'
+  },
+  {
+    label: 'Stat',
+    value: 'simple_stat'
   }
 ];
 

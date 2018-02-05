@@ -33,6 +33,7 @@ define [
     Module.run(['dpTemplateManager', (dpTemplateManager) ->
       templates = [
         'Index/modal-alert.html',
+        'Index/modal-confirm.html',
         'Index/modal-confirm-leavetab.html',
         'Index/blank.html',
       ]

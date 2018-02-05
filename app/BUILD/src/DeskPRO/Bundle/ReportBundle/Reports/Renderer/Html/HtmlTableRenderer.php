@@ -141,15 +141,15 @@ class HtmlTableRenderer extends AbstractHtmlRenderer
     /**
      * Renders the body of a "simple" table.
      *
-     * @param ResultMetadata $resultHandler
+     * @param ResultMetadata $metadata
      * @param array          $rows
      *
      * @return string
      */
-    protected function renderBody(ResultMetadata $resultHandler, array $rows)
+    protected function renderBody(ResultMetadata $metadata, array $rows)
     {
-        $groupColumns  = $resultHandler->getGroupYColumns();
-        $selectColumns = $resultHandler->getSelectColumns();
+        $groupColumns  = $metadata->getGroupYColumns();
+        $selectColumns = $metadata->getSelectColumns();
         $rows          = array_values($rows); // need continuous keys
 
         $rowsHtml = [];
@@ -215,23 +215,23 @@ class HtmlTableRenderer extends AbstractHtmlRenderer
                         : ''
                     );
 
-                    $padding = ($resultHandler->hasFlag(ResultMetadata::FLAG_HIERARCHICAL) && empty($cells))
+                    $padding = ($metadata->hasFlag(ResultMetadata::FLAG_HIERARCHICAL) && empty($cells))
                         ? $this->getRowPadding($row)
                         : '';
-                    $rendered = $padding.$this->renderCellValue($row, $groupColumn);
+                    $rendered = $padding.$this->renderCellValue($row, $groupColumn, $metadata);
                     $cells[]  = "<th$rowSpan>{$rendered}</th>";
                 }
             }
 
             foreach ($selectColumns as $column) {
-                $padding = ($resultHandler->hasFlag(ResultMetadata::FLAG_HIERARCHICAL) && empty($cells))
+                $padding = ($metadata->hasFlag(ResultMetadata::FLAG_HIERARCHICAL) && empty($cells))
                     ? $this->getRowPadding($row)
                     : '';
-                $rendered = $padding.$this->renderCellValue($row, $column);
+                $rendered = $padding.$this->renderCellValue($row, $column, $metadata);
                 $cells[]  = '<td>'.$rendered.'</td>';
             }
-            if ($this->withRollup($resultHandler)) {
-                $cells[] = '<td>'.$this->renderCellValue($row, 'hierarchy_rollup_count').'</td>';
+            if ($this->withRollup($metadata)) {
+                $cells[] = '<td>'.$this->renderCellValue($row, 'hierarchy_rollup_count', $metadata).'</td>';
             }
 
             ++$rowCount;
@@ -320,21 +320,21 @@ class HtmlTableRenderer extends AbstractHtmlRenderer
     }
 
     /**
-     * @param ResultMetadata $resultHandler
+     * @param ResultMetadata $metadata
      * @param array          $rows
      *
      * @return string
      */
-    protected function renderFooter(ResultMetadata $resultHandler, array $rows)
+    protected function renderFooter(ResultMetadata $metadata, array $rows)
     {
-        $totalColumns = $resultHandler->getTotalColumns();
+        $totalColumns = $metadata->getTotalColumns();
         if (count($rows) < 2 || !$totalColumns) {
             return '';
         }
 
         $cells         = [];
-        $groupYColumns = $resultHandler->getGroupYColumns();
-        $selectColumns = $resultHandler->getSelectColumns();
+        $groupYColumns = $metadata->getGroupYColumns();
+        $selectColumns = $metadata->getSelectColumns();
 
         if ($groupYColumns) {
             $cells[] = '<th colspan="'.count($groupYColumns).'">Total</th>';
@@ -362,7 +362,7 @@ class HtmlTableRenderer extends AbstractHtmlRenderer
 
         foreach ($selectColumns as $column) {
             if (isset($columnTotals[$column['resultId']])) {
-                $cells[] = '<td>'.$this->renderCellValue($fakeRow, $column).'</td>';
+                $cells[] = '<td>'.$this->renderCellValue($fakeRow, $column, $metadata).'</td>';
             } else {
                 $cells[] = '<td>&nbsp;</td>';
             }
@@ -374,13 +374,13 @@ class HtmlTableRenderer extends AbstractHtmlRenderer
     /**
      * Renders the body of a matrix table.
      *
-     * @param ResultMetadata $resultHandler
-     * @param array          $prepared      Prepared matrix data
-     * @param bool|string    $totalType     If non empty, shows a total for each row/column
+     * @param ResultMetadata $metadata
+     * @param array          $prepared  Prepared matrix data
+     * @param bool|string    $totalType If non empty, shows a total for each row/column
      *
      * @return string
      */
-    protected function renderMatrixBody(ResultMetadata $resultHandler, array $prepared, $totalType = false)
+    protected function renderMatrixBody(ResultMetadata $metadata, array $prepared, $totalType = false)
     {
         if (!$prepared['yDistinct']) {
             // no Y grouping - that means we can have one row so fake it
@@ -417,7 +417,7 @@ class HtmlTableRenderer extends AbstractHtmlRenderer
             }
 
             if ($totalType) {
-                $cells[] = '<td class="column-total">'.$this->valueRenderer->renderValue($rowTotal, $totalType).'</td>';
+                $cells[] = '<td class="column-total">'.$this->valueRenderer->renderValue($rowTotal, $totalType, $metadata).'</td>';
             }
 
             ++$rowCount;
@@ -426,13 +426,13 @@ class HtmlTableRenderer extends AbstractHtmlRenderer
             $rows[] = '<tr class="row-body '.$class.'">'.$html.implode('', $cells).'</tr>';
         }
 
-        if ($totalType && $resultHandler->getGroupYColumns()) {
+        if ($totalType && $metadata->getGroupYColumns()) {
             $cells   = [];
-            $cells[] = '<th colspan="'.count($resultHandler->getGroupYColumns()).'">Total</th>';
+            $cells[] = '<th colspan="'.count($metadata->getGroupYColumns()).'">Total</th>';
             foreach ($columnTotals as $value) {
-                $cells[] = '<td>'.$this->valueRenderer->renderValue($value, $totalType).'</td>';
+                $cells[] = '<td>'.$this->valueRenderer->renderValue($value, $totalType, $metadata).'</td>';
             }
-            $cells[] = '<td class="column-total">'.$this->valueRenderer->renderValue(array_sum($columnTotals), $totalType).'</td>';
+            $cells[] = '<td class="column-total">'.$this->valueRenderer->renderValue(array_sum($columnTotals), $totalType, $metadata).'</td>';
 
             ++$rowCount;
             $class = ($rowCount % 2 ? 'odd' : 'even');

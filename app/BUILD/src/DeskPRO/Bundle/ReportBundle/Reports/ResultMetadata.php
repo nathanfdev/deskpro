@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2017, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2018, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -27,6 +27,8 @@
  */
 
 namespace DeskPRO\Bundle\ReportBundle\Reports;
+
+use Application\DeskPRO\Entity\Person;
 
 /**
  * Handler for defining how DPQL results should be formatted, including
@@ -51,7 +53,7 @@ class ResultMetadata
      *
      * @var array[int]
      */
-    protected $columns = [];
+    private $columns = [];
 
     /**
      * List of columns that will be grouped on in the X direction.
@@ -62,7 +64,7 @@ class ResultMetadata
      *
      * @var array[int]
      */
-    protected $groupXColumns = [];
+    private $groupXColumns = [];
 
     /**
      * List of columns that will be grouped on in the Y direction.
@@ -72,12 +74,12 @@ class ResultMetadata
      *
      * @var array[int]
      */
-    protected $groupYColumns = [];
+    private $groupYColumns = [];
 
     /**
      * @var array
      */
-    protected $groupStackColumns = [];
+    private $groupStackColumns = [];
 
     /**
      * List of columns that will be used to split the results into
@@ -87,19 +89,34 @@ class ResultMetadata
      *
      * @var array[int]
      */
-    protected $splitColumns = [];
+    private $splitColumns = [];
 
     /**
      * List of select column IDs that should be totaled.
      *
      * @var array
      */
-    protected $totalColumns = [];
+    private $totalColumns = [];
 
     /**
      * @var array
      */
-    protected $flags = [];
+    private $flags = [];
+
+    /**
+     * @var Person
+     */
+    private $person;
+
+    /**
+     * Constructor.
+     *
+     * @param Person|null $person
+     */
+    public function __construct(Person $person = null)
+    {
+        $this->person = $person;
+    }
 
     /**
      * Adds a column that will be selected/output into the results.
@@ -268,5 +285,13 @@ class ResultMetadata
     public function hasFlag($flag)
     {
         return in_array($flag, $this->flags);
+    }
+
+    /**
+     * @return Person|null
+     */
+    public function getPerson()
+    {
+        return $this->person;
     }
 }

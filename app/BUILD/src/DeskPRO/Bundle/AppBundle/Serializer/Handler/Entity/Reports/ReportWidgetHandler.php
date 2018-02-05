@@ -121,16 +121,11 @@ class ReportWidgetHandler extends AbstractEntityHandler
     {
         $result = [];
         foreach ($entity->getGraphTypes() as $graphType) {
-            $outputFormat = 'json';
-            if ($graphType === DashboardWidget::WIDGET_RENDER_TYPE_TABLE) {
-                $outputFormat = 'html';
-            }
-
             $query    = $this->compiler->compile($entity->getQuery(), ['variables' => $entity->getVariables()]);
-            $renderer = $this->rendererRegistry->getRenderer($graphType, $outputFormat);
+            $renderer = $this->rendererRegistry->getRenderer($graphType, 'json');
 
             $data = $renderer->render($query->getResults());
-            if ($data && $graphType == DashboardWidget::WIDGET_RENDER_TYPE_TABLE && $outputFormat === 'json') {
+            if ($data && $graphType == DashboardWidget::WIDGET_RENDER_TYPE_TABLE && isset($data['columns'])) {
                 $aoColumns = [];
                 $columns   = [];
                 foreach ($data['columns'] as $column) {
@@ -140,8 +135,8 @@ class ReportWidgetHandler extends AbstractEntityHandler
                 $data['aoColumns'] = $aoColumns;
                 $data['columns']   = $columns;
             }
-
-            $result[] = $data;
+            $data['chartType'] = $graphType;
+            $result[]          = $data;
         }
 
         return $result;

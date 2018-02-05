@@ -1,6 +1,6 @@
 define ['DeskPRO/Util/Arrays', 'DeskPRO/Util/Util'], (Arrays, Util) ->
   class DashboardsInfo
-    constructor: (@Api, @$q) ->
+    constructor: (@Api, @Api2, @$q) ->
       # this is just a cheap way that controllers
       # can listen on to refresh their state if we change
       # something
@@ -10,6 +10,9 @@ define ['DeskPRO/Util/Arrays', 'DeskPRO/Util/Util'], (Arrays, Util) ->
       @dashboardListPromise = null
       @lastDashboardDetail  = null
       @lastReportDetail     = null
+      @agents               = null
+      @teams                = null
+      @departments          = null
 
     resetData: ->
       @version_id += 1
@@ -34,10 +37,10 @@ define ['DeskPRO/Util/Arrays', 'DeskPRO/Util/Util'], (Arrays, Util) ->
     #
     # @return {promise}
     ###
-    getDashboardList: ->
+    getDashboardList: (includeReports = false) ->
       d = @$q.defer()
 
-      if @dashboardListPromise
+      if !includeReports and @dashboardListPromise
         @dashboardListPromise.then( (l) ->
           d.resolve(l)
         , ->
@@ -47,12 +50,19 @@ define ['DeskPRO/Util/Arrays', 'DeskPRO/Util/Util'], (Arrays, Util) ->
 
       @dashboardListPromise = d.promise
 
-      @Api.sendGet('/dashboards').then((res) =>
-        @dashboardList = Arrays.replaceArray(@dashboardList, res.data)
+      url = '/dashboards'
+      if includeReports
+        url += '?include=reports'
+
+      @Api2.sendGet(url).then((res) =>
+        @dashboardList = Arrays.replaceArray(@dashboardList, res.data.data)
         for db in @dashboardList
           db.version_id = @version_id
           db.reports_version_id = @version_id
-        d.resolve(@dashboardList)
+          if includeReports
+            db.reports = res.data.linked.reports[db.id]
+
+          d.resolve(@dashboardList)
       , =>
         d.reject()
         @dashboardListPromise = null
@@ -75,8 +85,8 @@ define ['DeskPRO/Util/Arrays', 'DeskPRO/Util/Util'], (Arrays, Util) ->
         d.resolve(@lastDashboardDetail)
         return d.promise
 
-      @Api.sendGet("/dashboards/#{dashboard_id}").then( (resp) =>
-        @lastDashboardDetail = resp.data
+      @Api2.sendGet("/dashboards/#{dashboard_id}").then( (resp) =>
+        @lastDashboardDetail = resp.data.data
         @lastDashboardDetail.version_id = @version_id
         @lastDashboardDetail.reports_version_id = @version_id
         d.resolve(@lastDashboardDetail)
@@ -99,9 +109,9 @@ define ['DeskPRO/Util/Arrays', 'DeskPRO/Util/Util'], (Arrays, Util) ->
         d.resolve(@lastReportDetail)
         return d.promise
 
-      @Api.sendGet("/dashboards/reports/#{report_id}").then( (resp) =>
-        @lastReportDetail = resp.data
-        d.resolve(resp.data)
+      @Api2.sendGet("/dashboard_reports/#{report_id}").then( (resp) =>
+        @lastReportDetail = resp.data.data
+        d.resolve(resp.data.data)
         return d.promise
       )
 
@@ -114,17 +124,60 @@ define ['DeskPRO/Util/Arrays', 'DeskPRO/Util/Util'], (Arrays, Util) ->
     ###
     getReportsList: (dashboard_id) ->
       d = @$q.defer()
+      @Api2.sendGet('/dashboards/'+dashboard_id+'/reports').then( (resp) => d.resolve(resp.data.data))
 
-      dashboard_id = parseInt(dashboard_id)
+      return d.promise
 
-      @getDashboardList().then((dbs) ->
-        db = Arrays.find(dbs, (x) -> x.id == dashboard_id)
+    getAgents: () =>
+      d = @$q.defer()
 
-        if not db
-          d.resolve([])
-          return
+      if(@agents)
+        d.resolve(@agents)
+      else
+        @Api2.sendGet('/agents').then( (res) ->
+          agents = res.data.data
+          agents.map((agent) ->
+            agent.avatar.url = (agent.avatar.url_pattern || agent.avatar.default_url_pattern).replace('{{IMG_SIZE}}', 20)
+          )
+          @agents = agents
 
-        d.resolve(db.reports)
-      , -> d.reject())
+          d.resolve(@agents)
+        )
+
+      return d.promise
+
+    getAgentTeams: () =>
+      d = @$q.defer()
+      if(@teams)
+        d.resolve(@teams)
+      else
+        @Api2.sendGet('/agent_teams').then( (res) ->
+          teams = res.data.data
+          teams.map((team) ->
+            team.avatar.url = (team.avatar.url_pattern || team.avatar.default_url_pattern).replace('{{IMG_SIZE}}', 20)
+          )
+          @teams = teams
+          d.resolve(@teams)
+        )
+
+      return d.promise
+
+    getDepartments: () =>
+      d = @$q.defer()
+      if(@departments)
+        d.resolve(@departments)
+      else
+        @Api2.sendGet('/ticket_departments').then( (res) ->
+          @departments = res.data.data
+          d.resolve(@departments)
+        )
+
+      return d.promise
+
+    getMe: () ->
+      d = @$q.defer()
+      @Api2.sendGet('/me').then( (res) ->
+        d.resolve res.data.data
+      )
 
       return d.promise

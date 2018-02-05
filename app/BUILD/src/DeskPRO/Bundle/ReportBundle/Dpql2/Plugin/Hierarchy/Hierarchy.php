@@ -57,8 +57,8 @@ class Hierarchy
 
         if ($isSimpleGrouping && (
                 in_array($groupingTargetTable, self::$hierarchicalTables)
-                || strpos($groupingTargetTable, 'custom_data_') === 0
-                || strpos($groupingTargetTable, 'custom_def_') === 0
+                || (is_string($groupingTargetTable) && strpos($groupingTargetTable, 'custom_data_') === 0)
+                || (is_string($groupingTargetTable) && strpos($groupingTargetTable, 'custom_def_') === 0)
             )) {
             return true;
         }

@@ -196,11 +196,7 @@ class HierarchySorting
                 $selectedFields[$i] = "'-'";
             }
 
-            $selectTableAlias = $hierarchicalTargetTableAlias;
-            if (strpos($selectTableAlias, 'custom_data_')) {
-                $selectTableAlias .= '_field';
-            }
-
+            $selectTableAlias  = $hierarchicalTargetTableAlias;
             $selectedFieldsSql = implode(', ', $selectedFields);
             $sql               = "
                 SELECT

@@ -141,14 +141,20 @@ class Dialpad extends React.Component {
   };
 
   onSelectSearchResult = (number) => {
+    const $input = $(this.phoneInput.input);
+    const { formData } = this.state;
+
     setTimeout(() => {
       this.setState({
         formData: createValue({
-          value:     { ...this.state.formData.value, call_to: number },
+          value:     formData.value,
           errorList: {},
           onChange:  this.onChange
         }),
         searchResults: Immutable.fromJS([])
+      }, () => {
+        this.phoneInput.setNumber(number);
+        $input.focus();
       });
     }, 1);
   };
@@ -235,7 +241,7 @@ class SearchResults extends React.Component {
           <div
             key={index}
             className="dialpad-search-result-item"
-            onClick={() => onSelect(getNumber(item))}
+            onClick={() => { onSelect(getNumber(item)); }}
           >
             {item.get('name')} {getNumber(item)}
           </div>

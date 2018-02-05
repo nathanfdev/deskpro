@@ -28,9 +28,8 @@
 
 namespace DeskPRO\Bundle\ReportBundle\Reports\Renderer;
 
-use Application\DeskPRO\Entity\Person;
 use Application\DeskPRO\NewSettings\SettingsResolver;
-use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorage;
+use DeskPRO\Bundle\ReportBundle\Reports\ResultMetadata;
 
 /**
  * Handlers formatting values to a specific type (text, html, etc) for the
@@ -40,11 +39,6 @@ use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorage;
 abstract class AbstractValueRenderer
 {
     /**
-     * @var TokenStorage
-     */
-    private $tokenStorage;
-
-    /**
      * @var SettingsResolver
      */
     private $settingsResolver;
@@ -52,12 +46,10 @@ abstract class AbstractValueRenderer
     /**
      * Constructor.
      *
-     * @param TokenStorage     $tokenStorage
      * @param SettingsResolver $settingsResolver
      */
-    public function __construct(TokenStorage $tokenStorage, SettingsResolver $settingsResolver)
+    public function __construct(SettingsResolver $settingsResolver)
     {
-        $this->tokenStorage     = $tokenStorage;
         $this->settingsResolver = $settingsResolver;
     }
 
@@ -92,10 +84,11 @@ abstract class AbstractValueRenderer
      *
      * @param string          $value
      * @param string|\Closure $format
+     * @param ResultMetadata  $metadata
      *
      * @return string
      */
-    public function renderValue($value, $format)
+    public function renderValue($value, $format, ResultMetadata $metadata)
     {
         if ($value === null) {
             return $this->renderNull();
@@ -140,9 +133,7 @@ abstract class AbstractValueRenderer
                     'time'     => 'core.date_time',
                 ];
 
-                $token  = $this->tokenStorage->getToken();
-                $person = $token ? $token->getUser() : null;
-                $tz     = $person instanceof Person ? $person->getTimezone() : 'UTC';
+                $tz = $metadata->getPerson() ? $metadata->getPerson()->getTimezone() : 'UTC';
 
                 try {
                     if ($value instanceof \DateTime) {

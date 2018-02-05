@@ -85,7 +85,7 @@ class ReportsRendererRegistry
         if (isset($this->renderers[$type][$outputFormat])) {
             return $this->container->get($this->renderers[$type][$outputFormat]);
         } else {
-            throw new \Exception("Unknown report renderer $type $outputFormat specified.");
+            throw new \Exception("Unknown $outputFormat report renderer of $type type specified.");
         }
     }
 }

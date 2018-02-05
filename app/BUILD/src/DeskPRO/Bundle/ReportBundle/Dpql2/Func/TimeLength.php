@@ -54,9 +54,9 @@ class TimeLength extends AbstractFunc
         $prepped    = $expression->prepare($statement, $section, $stack, $select, $metadata);
 
         $sql      = $prepped->sql();
-        $renderer = function (AbstractValueRenderer $valueRenderer, $value, array $row, AbstractRenderer $renderer) {
+        $renderer = function (AbstractValueRenderer $valueRenderer, $value, array $row, AbstractRenderer $renderer, ResultMetadata $metadata) {
             if ($value === null) {
-                return $valueRenderer->renderValue(null, 'string');
+                return $valueRenderer->renderValue(null, 'string', $metadata);
             }
 
             return \Application\DeskPRO\Util::getPrintableTimeLength($value);
