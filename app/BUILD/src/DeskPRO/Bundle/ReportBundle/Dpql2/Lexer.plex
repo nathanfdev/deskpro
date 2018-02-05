@@ -3,7 +3,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2017, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2018, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -33,6 +33,8 @@
  */
 
 namespace DeskPRO\Bundle\ReportBundle\Dpql2;
+
+use DeskPRO\Bundle\ReportBundle\Dpql2\DpqlException as Exception;
 
 /**
  * Lexer for DPQL. To be used in conjunction with the parser.

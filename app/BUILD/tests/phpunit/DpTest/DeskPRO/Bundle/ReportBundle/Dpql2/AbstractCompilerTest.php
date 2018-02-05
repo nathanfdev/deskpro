@@ -29,6 +29,7 @@
 namespace DpTest\DeskPRO\Bundle\ReportBundle\Dpql2;
 
 use DeskPRO\Bundle\ReportBundle\Dpql2\DpqlCompiler;
+use DeskPRO\Bundle\ReportBundle\Dpql2\DpqlContext;
 use DpTest\ApiTestCase;
 
 /**
@@ -42,6 +43,11 @@ abstract class AbstractCompilerTest extends ApiTestCase
     protected $compiler;
 
     /**
+     * @var DpqlContext
+     */
+    protected $context;
+
+    /**
      * {@inheritdoc}
      */
     public function setUp()
@@ -52,6 +58,7 @@ abstract class AbstractCompilerTest extends ApiTestCase
         $connection->executeQuery('DELETE FROM custom_def_organizations');
 
         $this->compiler = $this->getContainer()->get('dpql.compiler');
+        $this->context  = null;
     }
 
     /**
@@ -60,7 +67,7 @@ abstract class AbstractCompilerTest extends ApiTestCase
      */
     protected function assertDpqlQuery($dpql, $sql)
     {
-        $statement   = $this->compiler->compile($dpql, []);
+        $statement   = $this->compiler->compile($dpql, [], $this->context);
         $exceptedSql = preg_replace('/\s+/', ' ', $sql);
         $actualSql   = preg_replace('/\s+/', ' ', $statement->toSql());
 

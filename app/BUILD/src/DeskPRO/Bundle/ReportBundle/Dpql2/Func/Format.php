@@ -28,7 +28,7 @@
 
 namespace DeskPRO\Bundle\ReportBundle\Dpql2\Func;
 
-use Application\DeskPRO\Entity\Person;
+use DeskPRO\Bundle\ReportBundle\Dpql2\DpqlContextStorage;
 use DeskPRO\Bundle\ReportBundle\Dpql2\DpqlException;
 use DeskPRO\Bundle\ReportBundle\Dpql2\SqlSelect;
 use DeskPRO\Bundle\ReportBundle\Dpql2\Statement\Part\Prepared;
@@ -36,7 +36,6 @@ use DeskPRO\Bundle\ReportBundle\Dpql2\Statement\SelectPart;
 use DeskPRO\Bundle\ReportBundle\Reports\Renderer\AbstractRenderer;
 use DeskPRO\Bundle\ReportBundle\Reports\Renderer\AbstractValueRenderer;
 use DeskPRO\Bundle\ReportBundle\Reports\ResultMetadata;
-use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorage;
 
 /**
  * Formats output using the given type and options.
@@ -44,18 +43,18 @@ use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorage;
 class Format extends AbstractFunc
 {
     /**
-     * @var TokenStorage
+     * @var DpqlContextStorage
      */
-    private $tokenStorage;
+    private $contextStorage;
 
     /**
      * Constructor.
      *
-     * @param TokenStorage $tokenStorage
+     * @param DpqlContextStorage $contextStorage
      */
-    public function __construct(TokenStorage $tokenStorage)
+    public function __construct(DpqlContextStorage $contextStorage)
     {
-        $this->tokenStorage = $tokenStorage;
+        $this->contextStorage = $contextStorage;
     }
 
     /**
@@ -90,9 +89,9 @@ class Format extends AbstractFunc
 
         $name = 'FORMAT('.$preppedValue->name().', '.$preppedType->name().$argNameOutput.')';
 
-        $renderer = function (AbstractValueRenderer $valueRenderer, $value, array $row, AbstractRenderer $renderer) use ($typeLiteral, $argLiterals) {
+        $renderer = function (AbstractValueRenderer $valueRenderer, $value, array $row, AbstractRenderer $renderer, ResultMetadata $metadata) use ($typeLiteral, $argLiterals) {
             if ($value === null) {
-                return $valueRenderer->renderValue(null, 'string');
+                return $valueRenderer->renderValue(null, 'string', $metadata);
             }
 
             switch (strtolower($typeLiteral)) {
@@ -104,9 +103,8 @@ class Format extends AbstractFunc
 
                 case 'date':
                     if ($argLiterals) {
-                        $token  = $this->tokenStorage->getToken();
-                        $person = $token ? $token->getUser() : null;
-                        $tz     = $person instanceof Person ? $person->getTimezone() : 'UTC';
+                        $context = $this->contextStorage->getContext();
+                        $tz      = $context ? $context->getTimezone() : 'UTC';
 
                         try {
                             $date = new \DateTime($value, new \DateTimeZone($tz));
@@ -124,7 +122,7 @@ class Format extends AbstractFunc
                     return $valueRenderer->escapeValue(number_format($value * 100, $decimals).'%');
             }
 
-            return $valueRenderer->renderValue($value, $typeLiteral);
+            return $valueRenderer->renderValue($value, $typeLiteral, $metadata);
         };
 
         return new Prepared($preppedValue->sql(), $name, false, $renderer);

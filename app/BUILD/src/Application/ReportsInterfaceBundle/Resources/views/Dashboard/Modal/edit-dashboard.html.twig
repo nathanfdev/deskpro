@@ -101,6 +101,22 @@
                         </div>
                     </div>
                 </div>
+
+                <hr>
+
+                <div class="bucket">
+                    <div class="inner-group">
+                        <label>
+                            <label>
+                                <input ng-model="dashboard.is_agent" type="checkbox">
+                                <span>Make this an agent dashboard</span>
+                            </label>
+                        </label>
+                        <span class="help-block">
+                            This allows you to restrict the agent and team selections on reports to only the currently logged-in agent.
+                        </span>
+                    </div>
+                </div>
             </div>
         </form>
 
@@ -112,25 +128,103 @@
             <div class="popup-blurb">
                 <h2>Choose agents that can see this dashboard</h2>
             </div>
+            <div class="agent-list">
+                <table>
+                    <thead>
+                    <td class="agent-name"></td>
+                    <td>View</td>
+                    <td ng-if="!dashboard.is_default">Edit</td>
+                    </thead>
+
+                    <tr>
+                        <td class="agent-name" style="height: 36px">
+                            All agents
+                        </td>
+                        <td>
+                            <input ng-click='toggleAllAgentsViewDashboard()' ng-checked="canAllAgentsViewDashboard()" type="checkbox">
+                        </td>
+                        <td ng-if="!dashboard.is_default">
+                            <input ng-click='toggleAllAgentsEditDashboard()' ng-checked="canAllAgentsEditDashboard()" type="checkbox">
+                        </td>
+                    </tr>
+                </table>
+            </div>
+
+            <div class="popup-blurb">
+                <h2>Choose agent teams that can see this dashboard</h2>
+            </div>
 
             <div class="agent-list">
                 <table>
                     <thead>
                     <td class="agent-name"></td>
                     <td>View</td>
-                    <td>Edit</td>
+                    <td ng-if="!dashboard.is_default">Edit</td>
                     </thead>
 
-                    <tr ng-repeat="agent in dashboard.permissions track by agent.id">
+                    <tr ng-repeat="team in teams track by team.id">
                         <td class="agent-name">
-                            <span class="avatar" style="background-image: url({{ ng_var('agent.avatar') }})"></span>
+                            <span class="avatar" style="background-image: url({{ ng_var('team.avatar.url') }})"></span>
+                            {{ ng_var('team.name') }}
+                        </td>
+                        <td>
+                            <input
+                                    ng-title="Toogle view permission for {{ ng_var('team.name') }}"
+                                    ng-click='toggleTeamViewDashboard(team.id)'
+                                    ng-checked="canTeamViewDashboard(team.id)"
+                                    type="checkbox"
+                            />
+                        </td>
+                        <td ng-if="!dashboard.is_default">
+                            <input
+                                    ng-title="Toogle edit permission for {{ ng_var('team.name') }}"
+                                    ng-click='toggleTeamEditDashboard(team.id)'
+                                    ng-checked="canTeamEditDashboard(team.id)"
+                                    type="checkbox"
+                            />
+                        </td>
+                    </tr>
+                </table>
+            </div>
+
+            <div class="popup-blurb">
+                <h2>Choose agents that can see this dashboard</h2>
+            </div>
+
+            <div class="agent-list">
+                <table>
+                    <thead>
+                    <td class="agent-name"></td>
+                    <td ng-if="dashboard.is_agent">View All Agents/teams</td>
+                    <td>View</td>
+                    <td ng-if="!dashboard.is_default">Edit</td>
+                    </thead>
+
+                    <tr ng-repeat="agent in agents track by agent.id">
+                        <td class="agent-name">
+                            <span class="avatar" style="background-image: url({{ ng_var('agent.avatar.url') }})"></span>
                             {{ ng_var('agent.name') }}
                         </td>
-                        <td>
-                            <input ng-click='agent.permissions = (agent.permissions == 0 ? 1 : Math.max(1, agent.permissions))' ng-checked="agent.permissions == 1 || agent.permissions == 2" type="checkbox">
+                        <td ng-if="dashboard.is_agent">
+                            <input ng-click='toggleViewAllAgents(agent.id)' ng-checked="canViewAllAgents(agent.id)" type="checkbox">
                         </td>
                         <td>
-                            <input ng-click='agent.permissions = (agent.permissions == 0 ? 2 : 2)' ng-checked="agent.permissions == 2" type="checkbox">
+                            <input
+                                ng-title="Toogle view permission for {{ ng_var('agent.name') }}"
+                                ng-click='toggleAgentViewDashboard(agent.id)'
+                                ng-checked="canAgentViewDashboard(agent.id)"
+                                ng-disabled="dashboard.permissions.all == 'view' || dashboard.permissions.all == 'full'"
+                                type="checkbox"
+                            />
+                        </td>
+                        <td ng-if="!dashboard.is_default">
+                            <input
+                                ng-title="Toogle edit permission for {{ ng_var('agent.name') }}"
+                                ng-click='toggleAgentEditDashboard(agent.id)'
+                                ng-checked="canAgentEditDashboard(agent.id)"
+                                ng-disabled="dashboard.permissions.all == 'full'"
+                                type="checkbox"
+                            />
                         </td>
                     </tr>
                 </table>

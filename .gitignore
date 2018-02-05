@@ -265,3 +265,4 @@ www/assets/BUILD/pub/nightwatch.conf.js
 /app/BUILD/sys/config/build-num.txt
 /app/BUILD/sys/config/commit-id.txt
 /app/run/build-num.txt
+/app/BUILD/src/DeskPRO/Bundle/ReportBundle/Dpql2/PHP/

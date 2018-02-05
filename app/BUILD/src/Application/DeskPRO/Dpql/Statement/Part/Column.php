@@ -458,6 +458,9 @@ END)
 
                         return $valueRenderer->renderValue($date ?: null, $type);
                     };
+                } elseif ($field && $section !== 'select' && $field->isChoiceType()) {
+                    $call    = new self(array_merge($this->parts, ['field', 'id']));
+                    $prepped = $call->prepare($statement, $section, $stack, $select, $result);
                 } else {
                     $call = new FunctionCall('if', [
                         new self(array_merge($this->parts, ['value'])),

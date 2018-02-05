@@ -98,7 +98,7 @@ class DpqlStatementFactory
         return new SelectPart(
             $this->container->get('doctrine.orm.default_entity_manager'),
             $this->container->getDbRead('reports'),
-            $this->container->get('security.token_storage'),
+            $this->container->get('dpql.context_storage'),
             $this,
             $select,
             $from
@@ -210,6 +210,8 @@ class DpqlStatementFactory
     }
 
     /**
+     * @param SelectPart $subselect
+     *
      * @return Exists
      */
     public function createExists(SelectPart $subselect)

@@ -1,0 +1,4 @@
+services:
+
+  reports.dashboard_manager:
+    class: DeskPRO\Bundle\ReportBundle\Dashboard\DashboardManager

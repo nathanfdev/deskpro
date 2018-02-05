@@ -28,7 +28,10 @@
 
 namespace DeskPRO\Bundle\AppBundle\Serializer\Handler\Entity\Reports;
 
+use Application\DeskPRO\Entity\Person;
+use Application\DeskPRO\Entity\ReportDashboardPermission;
 use Application\DeskPRO\Entity\ReportDashboardWidget as ReportDashboardWidgetEntity;
+use Application\DeskPRO\Entity\ReportWidget;
 use DeskPRO\Bundle\AppBundle\Serializer\Deferred\CallbackDeferredProperty;
 use DeskPRO\Bundle\AppBundle\Serializer\Handler\Entity\AbstractEntityHandler;
 use DeskPRO\Bundle\AppBundle\Serializer\Model\Reports\ReportDashboardWidget as ReportDashboardWidgetModel;
@@ -84,7 +87,7 @@ class ReportDashboardWidgetHandler extends AbstractEntityHandler
         $sideloads->addCustomSideload(
             'rendered_result',
             $entity->getId(),
-            new CallbackDeferredProperty([$this, 'getRenderedResult'], [$entity]),
+            new CallbackDeferredProperty([$this, 'getRenderedResult'], [$entity, $context->getUser()]),
             $model
         );
 
@@ -93,30 +96,59 @@ class ReportDashboardWidgetHandler extends AbstractEntityHandler
 
     /**
      * @param ReportDashboardWidgetEntity $entity
+     * @param Person                      $person
      *
      * @return string
      */
-    public function getRenderedResult(ReportDashboardWidgetEntity $entity)
+    public function getRenderedResult(ReportDashboardWidgetEntity $entity, Person $person = null)
     {
-        $report = $entity->getWidget();
-        $query  = $report->getQuery();
+        $report    = $entity->getReport();
+        $dashboard = $report->getDashboard();
+        $widget    = $entity->getWidget();
+        $query     = $widget->getQuery();
 
         $variables       = [];
         $reportVariables = $report->getVariables();
         $widgetVariables = $entity->getVariables();
 
-        foreach ($reportVariables as $variable) {
-            $variables[$variable['name']] = $variable;
-            if (isset($widgetVariables[$variable['name']]) && isset($widgetVariables[$variable['name']]['value'])) {
-                $variables[$variable['name']]['value'] = $widgetVariables[$variable['name']]['value'];
+        foreach ($widgetVariables as $widgetVariable) {
+            foreach ($reportVariables as $reportVariable) {
+                if ($reportVariable['name'] === $widgetVariable['name']) {
+                    $widgetVariable['value'] = $reportVariable['value'];
+                }
+            }
+
+            $variables[] = $widgetVariable;
+        }
+
+        if ($person && $dashboard->isAgent()) {
+            /** @var ReportDashboardPermission $ownPermission */
+            $ownPermission = $dashboard->getPermissions()->filter(function (ReportDashboardPermission $permission) use ($person) {
+                return $permission->getPerson() === $person;
+            })->first();
+
+            if (!$ownPermission || !$ownPermission->isViewAll()) {
+                foreach ($variables as &$variable) {
+                    if ($variable['name'] === 'agent') {
+                        $variable['field_value'] = $person->getId();
+                    }
+                    if ($variable['name'] === 'agent_team') {
+                        $variable['field_value'] = $person->getPrimaryTeam() ? $person->getPrimaryTeam()->getId() : null;
+                    }
+                }
             }
         }
 
         $query    = $this->compiler->compile($query, ['variables' => $variables]);
         $results  = $query->getResults();
-        $renderer = $this->reportsRendererRegistry->getRenderer($entity->getType(), 'json');
+        $renderer = $this->reportsRendererRegistry->getRenderer(ReportWidget::getGraphType($entity->getType()), 'json');
 
-        $data = $renderer->render($results);
+        if ($entity->getOptions()) {
+            $options = @json_decode($entity->getOptions(), true) ?: [];
+        } else {
+            $options = [];
+        }
+        $data = $renderer->render($results, $options);
         if ($data && $entity->getType() == ReportDashboardWidgetEntity::WIDGET_TYPE_TABLE) {
             $aoColumns = [];
             $columns   = [];
@@ -128,6 +160,9 @@ class ReportDashboardWidgetHandler extends AbstractEntityHandler
 
             $data['aoColumns'] = $aoColumns;
             $data['columns']   = $columns;
+        }
+        if (empty($data) || $data === '') {
+            $data = null;
         }
 
         return $data;

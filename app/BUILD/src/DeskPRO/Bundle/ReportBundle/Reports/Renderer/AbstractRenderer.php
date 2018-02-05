@@ -52,11 +52,11 @@ abstract class AbstractRenderer implements ReportsRendererInterface
         if ($splitColumns) {
             $output = [];
             foreach ($results->getSplitResults() as $splitResult) {
-                $result = $this->doRender($splitResult[0], $results->getMetadata());
+                $result = $this->doRender($splitResult[0], $results->getMetadata(), $options);
                 if ($result) {
                     $splitPrint = [];
                     foreach ($metadata->getSplitColumns() as $splitColumn) {
-                        $splitPrint[] = $this->renderCellValue($splitResult[1], $splitColumn);
+                        $splitPrint[] = $this->renderCellValue($splitResult[1], $splitColumn, $results->getMetadata());
                     }
 
                     $output[] = $this->renderSplitOutputWithHeader(implode(' / ', $splitPrint), $result);
@@ -65,7 +65,7 @@ abstract class AbstractRenderer implements ReportsRendererInterface
 
             return $this->implodeSplitOutput($output);
         } else {
-            return $this->doRender($results->getResults(), $results->getMetadata());
+            return $this->doRender($results->getResults(), $results->getMetadata(), $options);
         }
     }
 
@@ -93,12 +93,13 @@ abstract class AbstractRenderer implements ReportsRendererInterface
     /**
      * Renders the value for a specific cell.
      *
-     * @param mixed [int] $row
-     * @param mixed       $column
+     * @param mixed [int]    $row
+     * @param mixed          $column
+     * @param ResultMetadata $metadata
      *
      * @return string
      */
-    protected function renderCellValue(array $row, $column)
+    protected function renderCellValue(array $row, $column, ResultMetadata $metadata)
     {
         if (is_string($column)) {
             $value = array_key_exists($column, $row) ? $row[$column] : '';
@@ -110,10 +111,10 @@ abstract class AbstractRenderer implements ReportsRendererInterface
         if ($renderer instanceof \Closure) {
             /* @var $renderer \Closure */
 
-            return $renderer($this->valueRenderer, $value, $row, $this);
+            return $renderer($this->valueRenderer, $value, $row, $this, $metadata);
         }
 
-        return $this->valueRenderer->renderValue($value, $renderer);
+        return $this->valueRenderer->renderValue($value, $renderer, $metadata);
     }
 
     /**
@@ -174,16 +175,16 @@ abstract class AbstractRenderer implements ReportsRendererInterface
      *  - yDistinct[pathString][renderedValue] = true -- used to find distinct values over Y grouping
      *  - lookup[yPath][xPath] = cell value -- value for cell at the y/x position specified
      *
-     * @param ResultMetadata $resultHandler
+     * @param ResultMetadata $metadata
      * @param array          $rows
      *
      * @return array
      */
-    protected function prepareMatrixTable(ResultMetadata $resultHandler, array $rows)
+    protected function prepareMatrixTable(ResultMetadata $metadata, array $rows)
     {
-        $groupXColumns = $resultHandler->getGroupXColumns();
-        $groupYColumns = $resultHandler->getGroupYColumns();
-        $selectColumns = $resultHandler->getSelectColumns();
+        $groupXColumns = $metadata->getGroupXColumns();
+        $groupYColumns = $metadata->getGroupYColumns();
+        $selectColumns = $metadata->getSelectColumns();
 
         $distinctXValues = [];
         $distinctXSort   = [];
@@ -196,7 +197,7 @@ abstract class AbstractRenderer implements ReportsRendererInterface
             foreach ($groupXColumns as $column) {
                 $pathString = $this->getGroupPathKey($xPath);
                 $groupValue = $this->getColumnValue($row, $column['groupResultId']);
-                $rendered   = $this->renderCellValue($row, $column);
+                $rendered   = $this->renderCellValue($row, $column, $metadata);
 
                 $distinctXValues[$pathString][$groupValue] = $rendered;
                 $distinctXSort[$pathString][$groupValue]   = $groupValue === null ? null : $this->getColumnValue($row, $column);
@@ -208,7 +209,7 @@ abstract class AbstractRenderer implements ReportsRendererInterface
             foreach ($groupYColumns as $column) {
                 $pathString = $this->getGroupPathKey($yPath);
                 $groupValue = $this->getColumnValue($row, $column['groupResultId']);
-                $rendered   = $this->renderCellValue($row, $column);
+                $rendered   = $this->renderCellValue($row, $column, $metadata);
 
                 $distinctYValues[$pathString][$groupValue] = $rendered;
                 $distinctYSort[$pathString][$groupValue]   = $groupValue === null ? null : $this->getColumnValue($row, $column);
@@ -217,7 +218,7 @@ abstract class AbstractRenderer implements ReportsRendererInterface
             }
 
             $lookup[$this->getGroupPathKey($yPath)][$this->getGroupPathKey($xPath)] =
-                $this->renderMatrixCell($row, $selectColumns);
+                $this->renderMatrixCell($row, $selectColumns, $metadata);
         }
 
         foreach ($distinctXSort as $path => $sortValues) {
@@ -249,16 +250,17 @@ abstract class AbstractRenderer implements ReportsRendererInterface
     /**
      * Renders a matrix cell.
      *
-     * @param array $row
-     * @param array $selectColumns
+     * @param array          $row
+     * @param array          $selectColumns
+     * @param ResultMetadata $metadata
      *
      * @return string
      */
-    protected function renderMatrixCell(array $row, array $selectColumns)
+    protected function renderMatrixCell(array $row, array $selectColumns, ResultMetadata $metadata)
     {
         $values = [];
         foreach ($selectColumns as $column) {
-            $values[] = $this->renderCellValue($row, $column);
+            $values[] = $this->renderCellValue($row, $column, $metadata);
         }
 
         return implode(' / ', $values);
