@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2017, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2018, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -174,7 +174,8 @@ class NotificationController extends BaseController
                     ->setDeskproClientEnabled($deskproEnabled)
                     ->setSecret($bag->get('notification.settings.deskpro_client.secret', ''))
                     ->setHost($bag->get('notification.settings.deskpro_client.host', ''))
-                    ->setPort($bag->get('notification.settings.deskpro_client.port', '')),
+                    ->setPort($bag->get('notification.settings.deskpro_client.port', ''))
+                    ->setSecure($bag->getBool('notification.settings.deskpro_client.secure', false)),
             ]
         ));
     }
@@ -242,6 +243,7 @@ class NotificationController extends BaseController
                     $settingRepo->updateSetting('notification.settings.deskpro_client.host', $deskproClientModel->getHost());
                     $settingRepo->updateSetting('notification.settings.deskpro_client.secret', $deskproClientModel->getSecret());
                     $settingRepo->updateSetting('notification.settings.deskpro_client.port', $deskproClientModel->getPort());
+                    $settingRepo->updateSetting('notification.settings.deskpro_client.secure', $deskproClientModel->isSecure());
                 } else {
                     throw new InvalidFormException($form);
                 }
@@ -333,7 +335,8 @@ class NotificationController extends BaseController
 
         $client = new HttpClient(
             [
-                'base_uri' => sprintf('%s:%d',
+                'base_uri' => sprintf('http%s://%s:%d',
+                    $deskproClientModel->isSecure() ? 's' : '',
                     $deskproClientModel->getHost(),
                     $deskproClientModel->getPort()),
             ]
