@@ -96,6 +96,14 @@ HTML;
     /**
      * {@inheritdoc}
      */
+    public function isEnabledOnInstall()
+    {
+        return true;
+    }
+
+    /**
+     * {@inheritdoc}
+     */
     public function needAgentReload()
     {
         return true;
