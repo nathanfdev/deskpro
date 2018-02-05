@@ -28,6 +28,7 @@
 
 namespace DeskPRO\Bundle\ApiBundle\Controller\Voice;
 
+use Application\DeskPRO\Entity\Department;
 use Application\DeskPRO\Entity\Person;
 use Application\DeskPRO\Entity\Ticket;
 use Application\DeskPRO\Entity\TicketMessage;
@@ -75,6 +76,31 @@ abstract class AbstractVoiceController extends BaseController
             $ticket->setPerson($phoneCall->getPerson());
             $ticket->setAgent($agent);
             $ticket->addMessage($ticketMessage);
+
+            // set ticket department
+            $permissionsHelper          = $agent->getHelper('AgentPermissions');
+            $allowedTicketDepartmentIds = $permissionsHelper->getAllowedDepartments('tickets', false, 'full');
+
+            $voiceQueue = $phoneCall->getQueue();
+            if ($voiceQueue) {
+                // set ticket department from the queue
+                // make sure the agent has permissions to this department
+                $queueDepartment = $voiceQueue->getDepartment();
+                if ($queueDepartment && in_array($queueDepartment->getId(), $allowedTicketDepartmentIds)) {
+                    $ticket->setDepartment($queueDepartment);
+                }
+            }
+
+            // set department from the agent
+            if (!$ticket->getDepartment()) {
+                $departmentId = reset($allowedTicketDepartmentIds);
+                if ($departmentId) {
+                    $agentDepartment = $this->getRepository(Department::class)->find($departmentId);
+                    if ($agentDepartment) {
+                        $ticket->setDepartment($agentDepartment);
+                    }
+                }
+            }
 
             $this->saveTicket($ticket);
 

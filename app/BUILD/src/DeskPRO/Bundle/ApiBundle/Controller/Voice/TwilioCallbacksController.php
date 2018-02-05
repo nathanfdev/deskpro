@@ -350,20 +350,21 @@ class TwilioCallbacksController extends AbstractVoiceController
             throw $this->createBadRequestException('Unable to get task attributes');
         }
 
+        $workerSid = $request->request->get('WorkerSid');
+        $queueId   = isset($task['deskpro_queue_id']) ? $task['deskpro_queue_id'] : null;
+        $agentId   = isset($task['agent_id']) ? $task['agent_id'] : null;
+        $queue     = $queueId ? $this->getRepository(VoiceQueue::class)->find($queueId) : null;
         $phoneCall = $this->getRepository(VoicePhoneCall::class)->find($task['deskpro_call_id']);
         if (!$phoneCall) {
             throw $this->createBadRequestException('Phone call not found');
         }
 
         $phoneCall->setTaskSid($request->request->get('TaskSid'));
+        $phoneCall->setQueue($queue);
 
         $em = $this->getManager();
         $em->persist($phoneCall);
         $em->flush();
-
-        $workerSid = $request->request->get('WorkerSid');
-        $queueId   = isset($task['deskpro_queue_id']) ? $task['deskpro_queue_id'] : null;
-        $agentId   = isset($task['agent_id']) ? $task['agent_id'] : null;
 
         if ($account->getVoicemailWorkerSid() === $workerSid) {
             // mark the phone call as completed (redirected to voicemail)
@@ -373,41 +374,38 @@ class TwilioCallbacksController extends AbstractVoiceController
 
             // return redirect response
             $voicemailAsset = null;
-            if ($queueId) {
-                $queue = $this->getRepository(VoiceQueue::class)->find($queueId);
-                if ($queue) {
-                    // get custom queue voicemail asset
-                    $voicemailAsset = $queue->getVoicemailAsset();
+            if ($queue) {
+                // get custom queue voicemail asset
+                $voicemailAsset = $queue->getVoicemailAsset();
 
-                    // create voicemail queue ticket
-                    $ticketMessageCall = new TicketMessageVoicePhoneCall();
-                    $ticketMessageCall->setPhoneCall($phoneCall);
+                // create voicemail queue ticket
+                $ticketMessageCall = new TicketMessageVoicePhoneCall();
+                $ticketMessageCall->setPhoneCall($phoneCall);
 
-                    $ticketMessage = new TicketMessage();
-                    $ticketMessage->setPerson($phoneCall->getPerson());
-                    $ticketMessage->addAttribute($ticketMessageCall);
-                    $ticketMessage->setMessage('Call from '.$phoneCall->getExternalNumber());
-                    $ticketMessage->setAsAgentNote(true);
+                $ticketMessage = new TicketMessage();
+                $ticketMessage->setPerson($phoneCall->getPerson());
+                $ticketMessage->addAttribute($ticketMessageCall);
+                $ticketMessage->setMessage('Call from '.$phoneCall->getExternalNumber());
+                $ticketMessage->setAsAgentNote(true);
 
-                    $ticket = new Ticket();
-                    $ticket->disableAutoTicketProcess();
-                    $ticket->setSubject('Voicemail from '.$phoneCall->getExternalNumber());
-                    $ticket->setPerson($phoneCall->getPerson());
-                    $ticket->addMessage($ticketMessage);
+                $ticket = new Ticket();
+                $ticket->disableAutoTicketProcess();
+                $ticket->setSubject('Voicemail from '.$phoneCall->getExternalNumber());
+                $ticket->setPerson($phoneCall->getPerson());
+                $ticket->addMessage($ticketMessage);
 
-                    // set asset properties
-                    if ($queue->getVoicemailAgent()) {
-                        $ticket->setAgent($queue->getVoicemailAgent());
-                    }
-                    if ($queue->getVoicemailAgentTeam()) {
-                        $ticket->setAgentTeam($queue->getVoicemailAgentTeam());
-                    }
-                    if ($queue->getVoicemailDepartment()) {
-                        $ticket->setDepartment($queue->getVoicemailDepartment());
-                    }
-
-                    $this->saveTicket($ticket);
+                // set asset properties
+                if ($queue->getVoicemailAgent()) {
+                    $ticket->setAgent($queue->getVoicemailAgent());
                 }
+                if ($queue->getVoicemailAgentTeam()) {
+                    $ticket->setAgentTeam($queue->getVoicemailAgentTeam());
+                }
+                if ($queue->getVoicemailDepartment()) {
+                    $ticket->setDepartment($queue->getVoicemailDepartment());
+                }
+
+                $this->saveTicket($ticket);
             } elseif ($agentId) {
                 $agent     = $this->getAgent($agentId);
                 $agentData = $agent->getAgentData();
@@ -452,11 +450,8 @@ class TwilioCallbacksController extends AbstractVoiceController
             }
 
             $loopAsset = null;
-            if ($queueId) {
-                $queue = $this->getRepository(VoiceQueue::class)->find($queueId);
-                if ($queue) {
-                    $loopAsset = $queue->getLoopAsset();
-                }
+            if ($queue) {
+                $loopAsset = $queue->getLoopAsset();
             }
 
             $response = [

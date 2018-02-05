@@ -101,6 +101,14 @@ class VoicePhoneCall implements EntityInterface, NotifyPropertyChanged
     private $forwardingSids = [];
 
     /**
+     * @ORM\ManyToOne(targetEntity="DeskPRO\Bundle\AppBundle\Entity\VoiceQueue")
+     * @ORM\JoinColumn(name="voice_queue_id", referencedColumnName="id", onDelete="SET NULL", nullable=true)
+     *
+     * @var VoiceQueue
+     */
+    private $queue;
+
+    /**
      * @ORM\ManyToOne(targetEntity="DeskPRO\Bundle\AppBundle\Entity\VoiceNumber")
      * @ORM\JoinColumn(name="number_id", referencedColumnName="id", onDelete="CASCADE")
      *
@@ -686,5 +694,25 @@ class VoicePhoneCall implements EntityInterface, NotifyPropertyChanged
         $forwardingSids[] = $forwardingSid;
 
         return $this->setForwardingSids($forwardingSids);
+    }
+
+    /**
+     * @return VoiceQueue
+     */
+    public function getQueue()
+    {
+        return $this->queue;
+    }
+
+    /**
+     * @param VoiceQueue $queue
+     *
+     * @return $this
+     */
+    public function setQueue(VoiceQueue $queue = null)
+    {
+        $this->setModelField('queue', $queue);
+
+        return $this;
     }
 }
