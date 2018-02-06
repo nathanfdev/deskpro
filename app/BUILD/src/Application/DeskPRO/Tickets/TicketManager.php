@@ -95,14 +95,13 @@ class TicketManager
     private $blob_storage;
 
     /**
-     * @var array
-     */
-    private $auto_vars = [];
-
-    /**
      * @var NotificationEventManager
      */
     private $notificationEventManager;
+
+
+    /** @var ExecutorContextVars */
+    private $autoVars;
 
     /**
      * Constructor.
@@ -167,7 +166,9 @@ class TicketManager
         $this->post_save_actions[] = new TicketSaveActions\ZapierWebHook($this->em, $container->get('serializer'));
         $this->post_save_actions[] = new TicketSaveActions\CancelFollowUpOnUserReply($this->em);
 
-        $this->setAutoContextVar('custom_field_manager', $container->getCustomFieldManager());
+        $this->autoVars = new ExecutorContextVars();
+        $this->autoVars->setCustomFieldManager($container->getCustomFieldManager());
+        $this->autoVars->setTicketFieldManager($container->getTicketFieldManager());
     }
 
     /**
@@ -175,7 +176,7 @@ class TicketManager
      */
     public function clearAutoContextVars()
     {
-        $this->auto_vars = [];
+        $this->autoVars = new ExecutorContextVars();
     }
 
     /**
@@ -185,7 +186,7 @@ class TicketManager
      */
     public function addAutoContextVars(array $vars)
     {
-        $this->auto_vars = array_merge($this->auto_vars, $vars);
+        $this->autoVars->setAll($vars);
     }
 
     /**
@@ -195,7 +196,7 @@ class TicketManager
      */
     public function getAutoContextVars()
     {
-        return $this->auto_vars;
+        return $this->autoVars->toArray();
     }
 
     /**
@@ -206,7 +207,7 @@ class TicketManager
      */
     public function setAutoContextVar($k, $v)
     {
-        $this->auto_vars[$k] = $v;
+        $this->autoVars->set($k, $v);
     }
 
     /**
@@ -216,7 +217,7 @@ class TicketManager
      */
     public function unsetAutoContextVar($k)
     {
-        unset($this->auto_vars[$k]);
+        $this->autoVars->unsetVar($k);
     }
 
     /**
@@ -424,7 +425,7 @@ class TicketManager
 
         $this->em->persist($ticket);
         $this->em->flush();
-        $this->auto_vars['custom_field_manager']->flush();
+        $this->autoVars->getCustomFieldManager()->flush();
 
         foreach ($this->post_save_actions as $action) {
             $context->getLogger()->info(sprintf('[TicketManager:postsaveaction] %s', OrbUtil::getBaseClassname($action)));
@@ -569,7 +570,8 @@ class TicketManager
     public function createSystemExecutorContext($event_type = 'system', $event_method = 'system', array $event_method_options = [])
     {
         $context = new ExecutorContext($this->createNewLogger());
-        $context->getVars()->setArray($this->auto_vars);
+        $this->autoVars->configureContext($context);
+
         $context->setEventType($event_type);
         $context->setEventMethod($event_method, $event_method_options);
 
@@ -586,7 +588,8 @@ class TicketManager
     public function createAppExecutorContext(AppInstance $app, $event_method = 'general', array $event_method_options = [])
     {
         $context = new ExecutorContext($this->createNewLogger());
-        $context->getVars()->setArray($this->auto_vars);
+        $this->autoVars->configureContext($context);
+
         $context->setEventType('update');
         $context->setEventMethod($app->package->name.'.'.$app->id.'.'.$event_method, $event_method_options);
 
@@ -631,7 +634,7 @@ class TicketManager
     private function createPersonContext($eventPerformer, Person $person = null, $eventType, $eventMethod, array $eventMethodOptions = [])
     {
         $context = new ExecutorContext($this->createNewLogger());
-        $context->getVars()->setArray($this->auto_vars);
+        $this->autoVars->configureContext($context);
 
         if ($person) {
             $context->setPersonContext($person);

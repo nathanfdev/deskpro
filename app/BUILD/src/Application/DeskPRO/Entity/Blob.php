@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2017, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2018, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -40,6 +40,7 @@ use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\Mapping\ClassMetadata;
 use Doctrine\ORM\Mapping\ClassMetadataInfo;
 use DpSys\LowError\SystemErrorHandler;
+use Orb\Data\ContentTypes;
 use Orb\Util\DpStrings;
 use Orb\Util\Numbers;
 use Orb\Util\Strings;
@@ -227,7 +228,7 @@ class Blob extends \Application\DeskPRO\Domain\DomainObject
     {
         $this->date_created = new \DateTime();
         $this->authcode     = DpStrings::random(20, Strings::CHARS_KEY_ALPHA);
-        $this->labels       = new \Doctrine\Common\Collections\ArrayCollection();
+        $this->labels       = new ArrayCollection();
     }
 
     public static function hasZipArchiveClass()
@@ -251,18 +252,29 @@ class Blob extends \Application\DeskPRO\Domain\DomainObject
     public function setFilename($filename)
     {
         if ($filename[0] == '.') {
-            $filename = '_'.substr($filename, 1);
+            $filename = '_.'.substr($filename, 1);
         }
 
         $filename = mb_ereg_replace("([^\w\s\d\-_~,;\[\]\(\).])", '_', $filename);
 
+        // trim filename down to max length of 255 chars
+        $pos = strrpos($filename, '.');
+        if ($pos !== false) {
+            $name      = substr($filename, 0, $pos);
+            $extension = substr($filename, $pos + 1);
+
+            $name = substr($name, 0, 255 - strlen($extension) - 1);
+
+            $filename = $name.'.'.$extension;
+        }
+
         $this->setModelField('filename', $filename);
 
-        // Try to guess content typ based off of filename exts
+        // Try to guess content type based off of filename exts
         if (!$this->content_type) {
-            $ct = \Orb\Data\ContentTypes::getContentTypeFromFilename($this->filename);
+            $ct = ContentTypes::getContentTypeFromFilename($this->filename);
             if ($ct) {
-                $this['content_type'] = $ct;
+                $this->setContentType($ct);
             }
         }
 

@@ -81,8 +81,8 @@ class Link extends AbstractFunc
 
         $preppedPrint = $print->prepare($statement, $section, $stack, $select, $metadata);
 
-        $renderer = function (AbstractValueRenderer $valueRenderer, $value, array $row, AbstractRenderer $renderer) use ($formatLiteral, $argSelect) {
-            return $this->formatLink($value, $formatLiteral, $argSelect, $row, $valueRenderer, $renderer);
+        $renderer = function (AbstractValueRenderer $valueRenderer, $value, array $row, AbstractRenderer $renderer, ResultMetadata $metadata) use ($formatLiteral, $argSelect) {
+            return $this->formatLink($value, $formatLiteral, $argSelect, $row, $valueRenderer, $renderer, $metadata);
         };
 
         return new Prepared($preppedPrint->sql(), $preppedPrint->name(), false, $renderer);
@@ -95,15 +95,16 @@ class Link extends AbstractFunc
      * @param array                 $row
      * @param AbstractValueRenderer $valueRenderer
      * @param AbstractRenderer      $renderer
+     * @param ResultMetadata        $metadata
      *
      * @return string
      */
-    public function formatLink($print, $format, array $argSelect, array $row, AbstractValueRenderer $valueRenderer, AbstractRenderer $renderer)
+    public function formatLink($print, $format, array $argSelect, array $row, AbstractValueRenderer $valueRenderer, AbstractRenderer $renderer, ResultMetadata $metadata)
     {
         $breakEarly = $print === null || !($valueRenderer instanceof HtmlValueRenderer);
         $print      = array_key_exists('hierarchy_title', $row)
                ? $row['hierarchy_title']
-               : $valueRenderer->renderValue($print, 'string');
+               : $valueRenderer->renderValue($print, 'string', $metadata);
 
         if ($breakEarly) {
             return $print;

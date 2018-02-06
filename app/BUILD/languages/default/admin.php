@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2017, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2018, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -452,11 +452,12 @@ return [
     'adm.general.agent_perms'                                                              => 'Agent Permissions',
     'adm.general.api_keys'                                                                 => 'API Keys',
     'adm.general.oauth'                                                                    => 'OAuth',
+    'adm.general.importer'                                                                 => 'Importer',
     'adm.general.apps'                                                                     => 'Apps',
     'adm.general.apps_agents'                                                              => 'Agents',
     'adm.general.apps_brands'                                                              => 'Brands',
     'adm.general.apps_chat'                                                                => 'Chat',
-    'adm.general.voice_channel'                                                            => 'Voice Channel',
+    'adm.general.voice_channel'                                                            => 'Voice',
     'adm.general.apps_crm'                                                                 => 'CRM',
     'adm.general.apps_emails'                                                              => 'Emails',
     'adm.general.apps_portal'                                                              => 'Portal',
@@ -678,6 +679,16 @@ return [
     'adm.ticket_triggers.copy_trigger'                                                     => 'Copy another trigger',
     'adm.ticket_triggers.copy_trigger_modal_title'                                         => 'Copy Trigger',
     'adm.ticket_triggers.do_copy'                                                          => 'Apply Trigger settings to form',
+
+    'adm.ticket_webhooks.count_webhooks'                                                   => '{{count}} Webhook|{{count}} Webhooks',
+    'adm.ticket_webhooks.no_webhooks'                                                      => 'You have not added any webhooks here yet.',
+    'adm.ticket_webhooks.title_explain'                                                    => 'This title will be used throughout the admin interface to refer to this webhook.',
+    'adm.ticket_webhooks.delete_confirm'                                                   => 'Are you sure you want to delete this webhook?',
+    'adm.ticket_webhooks.webhookUrl'                                                       => 'This the url that will invoke the webhook',
+
+
+
+
     'adm.tickets.account_details'                                                          => 'Account Details',
     'adm.tickets.delete_account'                                                           => 'Delete Ticket Account',
     'adm.tickets.delete_account_confirm'                                                   => 'Are you sure you want to delete this email account? DeskPRO will stop processing emails from this account.',

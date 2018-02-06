@@ -101,10 +101,10 @@ class CsvTableRenderer extends AbstractRenderer
             $columns = [];
 
             foreach ($groupYColumns as $column) {
-                $columns[] = $this->wrapCell($this->renderCellValue($row, $column));
+                $columns[] = $this->wrapCell($this->renderCellValue($row, $column, $metadata));
             }
             foreach ($selectColumns as $column) {
-                $columns[] = $this->wrapCell($this->renderCellValue($row, $column));
+                $columns[] = $this->wrapCell($this->renderCellValue($row, $column, $metadata));
             }
 
             $output[] = implode(',', $columns);
@@ -134,7 +134,7 @@ class CsvTableRenderer extends AbstractRenderer
                     if (!isset($columnTotals[$id])) {
                         $columnTotals[$id] = 0;
                     }
-                    $columnTotals[$id] += (int) $this->getColumnValue($row, $id);
+                    $columnTotals[$id] += (float) $this->getColumnValue($row, $id);
                 }
             }
 
@@ -146,7 +146,7 @@ class CsvTableRenderer extends AbstractRenderer
 
             foreach ($selectColumns as $column) {
                 if (isset($columnTotals[$column['resultId']])) {
-                    $cells[] = $this->wrapCell($this->renderCellValue($fakeRow, $column));
+                    $cells[] = $this->wrapCell($this->renderCellValue($fakeRow, $column, $metadata));
                 } else {
                     $cells[] = $this->wrapCell('');
                 }
@@ -160,14 +160,14 @@ class CsvTableRenderer extends AbstractRenderer
     /**
      * Renders a matrix table (with X and Y grouping).
      *
-     * @param ResultMetadata $resultHandler
+     * @param ResultMetadata $metadata
      * @param array          $rows
      *
      * @return string
      */
-    protected function renderMatrixTable(ResultMetadata $resultHandler, array $rows)
+    protected function renderMatrixTable(ResultMetadata $metadata, array $rows)
     {
-        $prepared = $this->prepareMatrixTable($resultHandler, $rows);
+        $prepared = $this->prepareMatrixTable($metadata, $rows);
         $lookup   = $prepared['lookup'];
 
         $rows = [];
@@ -175,7 +175,7 @@ class CsvTableRenderer extends AbstractRenderer
         $rowGroups  = $this->getFinalMatrixPathsWithPrintable(['root'], $prepared['yDistinct']);
         $headerCols = $this->getFinalMatrixPathsWithPrintable(['root'], $prepared['xDistinct']);
 
-        $select = $resultHandler->getSelectColumns();
+        $select = $metadata->getSelectColumns();
         $first  = reset($select);
         if (count($select) == 1 && in_array($first['renderer'], ['number', 'numberraw'], true)) {
             $totalType = $first['renderer'];
@@ -184,11 +184,11 @@ class CsvTableRenderer extends AbstractRenderer
         }
 
         $headerRow = [];
-        foreach ($resultHandler->getGroupYColumns() as $column) {
+        foreach ($metadata->getGroupYColumns() as $column) {
             $headerRow[] = $this->wrapCell('');
         }
         $parts = [];
-        foreach ($resultHandler->getGroupXColumns() as $column) {
+        foreach ($metadata->getGroupXColumns() as $column) {
             $parts[] = $column['title'];
         }
         $headerRow[] = $this->wrapCell(implode(' / ', $parts));
@@ -203,7 +203,7 @@ class CsvTableRenderer extends AbstractRenderer
         $rows[] = implode(',', $headerRow);
 
         $headerRow = [];
-        foreach ($resultHandler->getGroupYColumns() as $column) {
+        foreach ($metadata->getGroupYColumns() as $column) {
             $headerRow[] = $this->wrapCell($column['title']);
         }
         foreach ($headerCols as $headerCol) {
@@ -240,32 +240,32 @@ class CsvTableRenderer extends AbstractRenderer
                 $columns[] = $this->wrapCell($value);
 
                 if ($totalType) {
-                    $rowTotal += (int) str_replace(',', '', $value);
+                    $rowTotal += (float) str_replace(',', '', $value);
                     if (!isset($columnTotals[$xPath])) {
                         $columnTotals[$xPath] = 0;
                     }
-                    $columnTotals[$xPath] += (int) str_replace(',', '', $value);
+                    $columnTotals[$xPath] += (float) str_replace(',', '', $value);
                 }
             }
 
             if ($totalType) {
-                $columns[] = $this->wrapCell($this->valueRenderer->renderValue($rowTotal, $totalType));
+                $columns[] = $this->wrapCell($this->valueRenderer->renderValue($rowTotal, $totalType, $metadata));
             }
 
             $rows[] = implode(',', $columns);
         }
 
-        if ($totalType && $resultHandler->getGroupYColumns()) {
+        if ($totalType && $metadata->getGroupYColumns()) {
             $columns = [];
-            foreach ($resultHandler->getGroupYColumns() as $rowGroupSkip) {
+            foreach ($metadata->getGroupYColumns() as $rowGroupSkip) {
                 $columns[] = $this->wrapCell('');
             }
             array_pop($columns);
             $columns[] = $this->wrapCell('Total');
             foreach ($columnTotals as $value) {
-                $columns[] = $this->wrapCell($this->valueRenderer->renderValue($value, $totalType));
+                $columns[] = $this->wrapCell($this->valueRenderer->renderValue($value, $totalType, $metadata));
             }
-            $columns[] = $this->wrapCell($this->valueRenderer->renderValue(array_sum($columnTotals), $totalType));
+            $columns[] = $this->wrapCell($this->valueRenderer->renderValue(array_sum($columnTotals), $totalType, $metadata));
 
             $rows[] = implode(',', $columns);
         }

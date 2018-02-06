@@ -25,6 +25,10 @@ define ['angular', 'moment'], (angular, moment) ->
           return '' if !val
           moment(val).format($scope.format || defaults.format)
 
+        # warning: this parser is not called when user select date in DatePicker
+        #          because we change the value programmatically (through the DatePicker)
+        #          and $parsers are not called when the bound ngModel expression changes programmatically
+        #          this parser called only if user manually type date in input
         ngModelCtrl.$parsers.push (val) ->
           return null if !val
           moment(val).toDate()

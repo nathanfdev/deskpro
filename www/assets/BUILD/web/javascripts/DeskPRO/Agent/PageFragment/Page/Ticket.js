@@ -1197,6 +1197,15 @@ DeskPRO.Agent.PageFragment.Page.Ticket = new Orb.Class({
 			hitRun = true;
 			DeskPRO_Window.getMessageChanneler().poller.unpause();
 
+      var result = ajaxHit;
+
+      if (result.dupe_message) {
+        DeskPRO_Window.showAlert("You have already sent that message.");
+        self.loadMessagePage(0, true);
+        self.getEl('replybox_wrap').find('.ticket-sending-overlay').hide();
+        return;
+      }
+
 			if (!keepOpen) {
 				self.closeSelf();
 
@@ -1206,8 +1215,6 @@ DeskPRO.Agent.PageFragment.Page.Ticket = new Orb.Class({
 
 				return;
 			}
-
-			var result = ajaxHit;
 
 			// If the agent cant see the ticket anymore, they dont have permission to
 			// view it anymore.
@@ -1226,12 +1233,6 @@ DeskPRO.Agent.PageFragment.Page.Ticket = new Orb.Class({
 
 			if (result.error && result.error == 'no_message') {
 				DeskPRO_Window.showAlert("Please enter a message");
-				return;
-			}
-
-			if (result.dupe_message) {
-				DeskPRO_Window.showAlert("You have already sent that message.");
-				self.loadMessagePage(0, true);
 				return;
 			}
 
@@ -1610,6 +1611,7 @@ DeskPRO.Agent.PageFragment.Page.Ticket = new Orb.Class({
 			prop.setIncomingValue(val, data);
 		}, this);
 
+		console.log(data);
 		if (data.dupe_message) {
 			// If its a dupe then it'd already be added ot the message list,
 			// we can just clear out the message box
@@ -2531,6 +2533,11 @@ DeskPRO.Agent.PageFragment.Page.Ticket = new Orb.Class({
 				self.deleteOverlay.closeOverlay();
 				self.getEl('remove_menu_trigger').hide();
 
+				if (self.deleteOverlay.doBan) {
+					DeskPRO_Window.removePage(self);
+					return;
+				}
+
 				if (data.hidden_html) {
 					self.getEl('page_header').before($(data.hidden_html));
 				} else {
@@ -3431,13 +3438,15 @@ DeskPRO.Agent.PageFragment.Page.Ticket = new Orb.Class({
 
 						$('button', buttonPane).remove();
 
-						var btn = $('<button class="ui-datepicker-current ui-state-default ui-priority-secondary ui-corner-all" type="button">Clear</button>');
+						var btn = $('<button class="ui-datepicker-current ui-state-default ui-priority-secondary ui-corner-all" type="button">'
+                      + DeskPRO_Window.getTranslate().phrase('agent.general.clear')
+                      + '</button>');
 						btn.unbind("click").bind("click", function () {
 							$.datepicker._clearDate( input );
 							field2.val('');
 							timeLi.hide();
-							label2.text('No specific time');
-							label.text('No due date');
+							label2.text(DeskPRO_Window.getTranslate().phrase('agent.tasks.no_due_time'));
+							label.text(DeskPRO_Window.getTranslate().phrase('agent.tasks.no_due_date'));
 						});
 						btn.appendTo( buttonPane );
 

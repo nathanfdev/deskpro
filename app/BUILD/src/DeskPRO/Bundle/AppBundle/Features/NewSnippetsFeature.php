@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2017, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2018, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -96,6 +96,14 @@ HTML;
     /**
      * {@inheritdoc}
      */
+    public function isEnabledOnInstall()
+    {
+        return true;
+    }
+
+    /**
+     * {@inheritdoc}
+     */
     public function needAgentReload()
     {
         return true;
@@ -154,7 +162,7 @@ HTML;
         try {
             $connection->query(
                 "INSERT INTO snippets
-                      (id, person_id, shortcut_code, title, types, is_draft, ownership_global, visible_global, is_split, date_created) 
+                      (id, person_id, shortcut_code, title, types, is_draft, ownership_global, visible_global, usage_count, positive_ratings, neutral_ratings, negative_ratings, is_split, date_created) 
                       SELECT
                           ts.id,
                           IFNULL(ts.person_id, tcs.person_id) as person_id,
@@ -164,10 +172,14 @@ HTML;
                           ts.is_draft,
                           tcs.is_global as ownership_global,
                           1 as visible_global,
+                          0 as usage_count,
+                          0 as positive_ratings,
+                          0 as neutral_ratings,
+                          0 as negative_ratings,
                           0 as is_split,
                           NOW()
                     FROM text_snippets ts
-                    LEFT JOIN object_lang ol_title ON ol_title.ref = CONCAT('text_snippets.', ts.id) AND ol_title.prop_name = 'title' AND language_id = $langId
+                    LEFT JOIN object_lang ol_title ON ol_title.ref = CONCAT('text_snippets.', ts.id) AND ol_title.prop_name = 'title'
                     LEFT JOIN object_lang ol_content ON ol_content.ref = CONCAT('text_snippets.', ts.id) AND ol_content.prop_name = 'snippet'
                     LEFT JOIN text_snippet_categories tcs ON ts.category_id = tcs.id
                     WHERE ol_content.id IS NOT NULL

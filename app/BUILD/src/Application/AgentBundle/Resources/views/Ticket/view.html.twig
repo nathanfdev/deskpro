@@ -668,8 +668,8 @@
                                     <tr>
                                         <td colspan="2" style="text-align: center; background: #eee;">
 								<span ng-hide="is_saving">
-									<button class="save clean-white" ng-click="saveFields()">Save</button>
-									<button class="cancel clean-white" ng-click="cancelEdit()">Cancel</button>
+									<button class="save clean-white" ng-click="saveFields()">{{ phrase('agent.general.save') }}</button>
+									<button class="cancel clean-white" ng-click="cancelEdit()">{{ phrase('agent.general.cancel') }}</button>
 								</span>
                                             <i ng-show="is_saving" class="spinner-flat"></i>
                                         </td>

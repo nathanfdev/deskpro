@@ -122,6 +122,7 @@ foreach ([
     'DpScripts\\Agent\\' => DP_DIR.'/app/scripts/agent',
     'DpScripts\\User\\' => DP_DIR.'/app/scripts/user',
     'DeskPRO\\Services\\' => DP_APP_DIR.'/bin/tools/services/src',
+    'DeskPRO\\ImporterTools\\' => DP_APP_DIR.'/modules/importer-tools/inc',
 ] as $prefix => $path) {
     $loader->addPsr4($prefix, $path);
 }

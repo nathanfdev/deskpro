@@ -459,6 +459,11 @@ define [
       })
 
       options.push({
+        title: 'Check Webhook Variable',
+        value: 'CheckWebhookVar'
+      })
+
+      options.push({
         title: 'Check Current Agent',
         value: 'CheckPerformer'
       })
@@ -1250,6 +1255,38 @@ define [
                   set_name: model.set_name || 'default'
                   working_hours: model.working_hours
               }
+          }
+      }
+
+    getCheckWebhookVar: (options = {}) ->
+      me = @
+      return {
+        getTemplate: ->
+          return me.dpTemplateManager.get('OptionBuilder/type-criteria-var.html')
+
+        getData: ->
+          return {
+            label : 'Check Webhook Var'
+          }
+
+        getDataFormatter: ->
+          return {
+            getViewValue: (value = {}, data) ->
+              options = value?.options || {}
+              return {
+                op: value.op || 'isset',
+                name: options.name || '',
+                value: options.value || ''
+              }
+            getValue: (model = {}, data) ->
+              value = {}
+              value.type = 'CheckWebhookVar'
+              value.op = model.op || 'isset'
+              value.options = {
+                name: model.name || '',
+                value: model.value || ''
+              }
+              return value
           }
       }
 

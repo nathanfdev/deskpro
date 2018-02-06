@@ -54,7 +54,7 @@
 	</div>
 
 	<div class="mainDeskproTabList deskproTabList" style="vertical-align: bottom;">
-		<div class="deskproTabListInner" context-menu="context(null)" context-menu-disabled="!tabHistory.length && !tabs.length" data-target="tabContextMenu">
+		<div class="deskproTabListInner" context-menu="context($event)" context-menu-disabled="!tabHistory.length && !tabs.length" data-target="tabContextMenu">
 			<ul class="dp-tab-list">
 
 				<li class="list-btn with-list" ng-class="{'activeTabList': paneVis.list}" ng-show="(!paneVis.list || !paneVis.tabs)" ng-click="showList()">
@@ -73,8 +73,6 @@
 					data-tab-id="{{ ng_var('tab.id') }}"
 					ng-class="{'activeTabList': tab.isActive && paneVis.tabs, 'is-alerting': tab.isAlerting}"
 					class="{{ ng_var('tab.classId') }}"
-                    context-menu="context(tab)"
-                    data-target="tabContextMenu"
 					>
 					<div class="item-hover-over-indicator"></div>
 					<a>

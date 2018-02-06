@@ -57,6 +57,7 @@ class QueueForm extends BaseForm {
     return {
       account,
       name:                 queue ? queue.get('name') : '',
+      department:           queue ? queue.get('department') : null,
       agents:               queue ? queue.get('agents').toArray().map(voiceAgent => voiceAgent.toJS()) : [],
       routing_model:        queue ? queue.get('routing_model') : 'automatic',
       max_queue_size:       queue ? queue.get('max_queue_size') : 0,
@@ -86,6 +87,11 @@ class QueueForm extends BaseForm {
               </Field>}
             <Field select="name" label="Queue Name *">
               <Input type="text" />
+            </Field>
+            <Field select="department" label="Department">
+              <RecordsChoiceWrapper records={ticketDepartments} labelProp="title">
+                <Select {...this.props} clearable={false} />
+              </RecordsChoiceWrapper>
             </Field>
             {agents && agents.size > 0 &&
               <Field select="agents" label="Agents">
@@ -223,7 +229,7 @@ class VoicemailDepartmentProperty extends React.Component {
     const defaultValue = ticketDepartments && ticketDepartments.size ? ticketDepartments.first().get('id') : null;
 
     return (
-      <VoicemailProperty{...this.props} label="Set Department" defaultValue={defaultValue}>
+      <VoicemailProperty {...this.props} label="Set Department" defaultValue={defaultValue}>
         <RecordsChoiceWrapper records={ticketDepartments} labelProp="title">
           <Select {...this.props} clearable={false} />
         </RecordsChoiceWrapper>
@@ -243,7 +249,7 @@ class VoicemailAgentProperty extends React.Component {
     const defaultValue = agents && agents.size ? agents.first().get('id') : null;
 
     return (
-      <VoicemailProperty{...this.props} label="Assign Agent" defaultValue={defaultValue}>
+      <VoicemailProperty {...this.props} label="Assign Agent" defaultValue={defaultValue}>
         <AgentsSelectContainer />
       </VoicemailProperty>
     );
@@ -261,7 +267,7 @@ class VoicemailAgentTeamProperty extends React.Component {
     const defaultValue = agentTeams && agentTeams.size ? agentTeams.first().get('id') : null;
 
     return (
-      <VoicemailProperty{...this.props} label="Assign Team" defaultValue={defaultValue}>
+      <VoicemailProperty {...this.props} label="Assign Team" defaultValue={defaultValue}>
         <RecordsChoiceWrapper records={agentTeams}>
           <Select {...this.props} clearable={false} />
         </RecordsChoiceWrapper>

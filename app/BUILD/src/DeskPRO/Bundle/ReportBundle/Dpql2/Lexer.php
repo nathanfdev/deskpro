@@ -32,6 +32,8 @@
 
 namespace DeskPRO\Bundle\ReportBundle\Dpql2;
 
+use DeskPRO\Bundle\ReportBundle\Dpql2\DpqlException as Exception;
+
 /**
  * Lexer for DPQL. To be used in conjunction with the parser.
  */

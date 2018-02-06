@@ -17,8 +17,11 @@ class Queues extends React.Component {
 
   render() {
     const { agents, me, queues = Immutable.fromJS({}), saving, onChange } = this.props;
+    const myQueues = queues.filter(queue =>
+      queue.get('agents').filter(agent => agent.get('agent') === me.get('id')).first()
+    );
 
-    if (!queues.size) {
+    if (!myQueues.size) {
       return (
         <div className="voice-queue-list">
           <div className="empty-message">
@@ -30,7 +33,7 @@ class Queues extends React.Component {
 
     return (
       <ScrollArea className="voice-queue-list">
-        {queues.map((queue, index) => {
+        {myQueues.map((queue, index) => {
           const voiceAgent = queue.get('agents').filter(agent => agent.get('agent') === me.get('id')).first();
 
           return (

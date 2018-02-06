@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2017, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2018, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -932,7 +932,7 @@ class AgentsController extends AbstractController implements ProtectedController
 
         $data = [];
         if ($this->in->checkIsset('signature_html')) {
-            $data['signature_html'] = $this->in->getString('signature_html');
+            $data['signature_html'] = $this->in->getStringRaw('signature_html');
         }
         if ($this->in->checkIsset('timezone')) {
             $data['timezone'] = $this->in->getString('timezone');

@@ -79,7 +79,7 @@ class JsonExtract extends AbstractFunc
             return $extracted;
         };
 
-        return new Prepared($prepped->sql(), 'JSON_EXTRACT('.$prepped->name().')', false, $renderer);
+        return new Prepared($prepped->sql(), 'JSON_EXTRACT('.$prepped->sql().')', false, $renderer);
     }
 
     /**

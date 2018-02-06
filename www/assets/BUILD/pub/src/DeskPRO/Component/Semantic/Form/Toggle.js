@@ -17,15 +17,9 @@ class Toggle extends React.Component {
   static defaultProps = {
     onChange: () => {},
     checkbox: false
-    
   };
 
-  constructor(props) {
-    super(props);
-    this.onClick = this.onClick.bind(this);
-  }
-
-  onClick() {
+  onClick = () => {
     const { active, disabled, onChange } = this.props;
     if (disabled) {
       return;

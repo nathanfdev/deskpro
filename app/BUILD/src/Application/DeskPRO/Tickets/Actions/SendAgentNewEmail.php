@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2017, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2018, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -272,9 +272,9 @@ class SendAgentNewEmail extends AbstractEmailAction implements ActionInterface, 
 
                 return;
         }
-        $viewModel = $this->createViewModelFromTemplate($template, $arguments, $context);
 
-        $mailer = $this->getContainer()->get('mailer');
+        $viewModel = $this->createViewModelFromTemplate($template, $arguments, $context);
+        $mailer    = $this->getContainer()->get('mailer');
 
         $emailBuilder = TicketEmailBuilder::createFromContainer($this->getContainer())
             ->setTicket($ticket)
@@ -295,12 +295,9 @@ class SendAgentNewEmail extends AbstractEmailAction implements ActionInterface, 
         /** @var Person[] $agents */
         foreach ($agents as $agent) {
             ++$sentCount;
-
-            $tac = TicketUtil::getTacForPerson($ticket, $agent);
-
-            $viewModel->setTac($tac);
-
             if ($viewModel instanceof AgentTicketUpdate) {
+                $tac = TicketUtil::getTacForPerson($ticket, $agent);
+                $viewModel->setTac($tac);
                 $typeFlag = null;
                 if ($changedAgent && $ticket->getAgent() && $ticket->getAgent() === $agent) {
                     $typeFlag = 'assigned';
@@ -324,7 +321,6 @@ class SendAgentNewEmail extends AbstractEmailAction implements ActionInterface, 
             $ticketEmail = $emailBuilder->setToPerson($agent)->buildTicketEmail();
 
             $message = $ticketEmail->prepareMailerMessage([], false);
-
             $message = $this->getContainer()->get('email.email_sender')
                 ->prepareMessage($viewModel, $messagesArgs, $message);
 

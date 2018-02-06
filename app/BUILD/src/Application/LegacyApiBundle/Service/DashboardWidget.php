@@ -28,10 +28,11 @@
 
 namespace Application\LegacyApiBundle\Service;
 
-use Application\DeskPRO\Entity\ReportDashboardReport as DashboardReportEntity;
+use Application\DeskPRO\Entity\Person;
 use Application\DeskPRO\Entity\ReportDashboardWidget as DashboardWidgetEntity;
 use Application\DeskPRO\Entity\SavedDashboardWidget;
 use DeskPRO\Bundle\ReportBundle\Dpql2\DpqlCompiler;
+use DeskPRO\Bundle\ReportBundle\Dpql2\DpqlContext;
 use DeskPRO\Bundle\ReportBundle\Reports\Renderer\ReportsRendererRegistry;
 use Doctrine\ORM\EntityManager;
 
@@ -45,12 +46,14 @@ class DashboardWidget
     const WIDGET_RENDER_TYPE_AREA  = 'simple_area';
     const WIDGET_RENDER_TYPE_PIE   = 'pie';
     const WIDGET_RENDER_TYPE_TABLE = 'table';
+    const WIDGET_RENDER_TYPE_STAT  = 'simple_stat';
 
     const LEGACY_RENDER_TYPE_BAR   = 'BAR';
     const LEGACY_RENDER_TYPE_LINE  = 'LINE';
     const LEGACY_RENDER_TYPE_AREA  = 'AREA';
     const LEGACY_RENDER_TYPE_PIE   = 'PIE';
     const LEGACY_RENDER_TYPE_TABLE = 'TABLE';
+    const LEGACY_RENDER_TYPE_STAT  = 'STAT';
 
     const WIDGET_VALUE_FROM_REPORT = 'from_report_value';
 
@@ -81,6 +84,7 @@ class DashboardWidget
         'simple_area'  => self::LEGACY_RENDER_TYPE_AREA,
         'pie'          => self::LEGACY_RENDER_TYPE_PIE,
         'table'        => self::LEGACY_RENDER_TYPE_TABLE,
+        'simple_stat'  => self::LEGACY_RENDER_TYPE_STAT,
     ];
 
     /**
@@ -133,7 +137,7 @@ class DashboardWidget
         $data = [
             'id'               => $widget->getId(),
             'title'            => $widget->getTitle(),
-            'row'              => $pos[0],
+            'row'              => $pos[0] + 1,
             'col'              => $pos[1],
             'sizeX'            => $size[0],
             'sizeY'            => $size[1],
@@ -149,13 +153,11 @@ class DashboardWidget
 
     /**
      * @param DashboardWidgetEntity $widget
-     *
-     * @throws \DeskPRO\Bundle\ReportBundle\Dpql2\DpqlException
-     * @throws \Exception
+     * @param Person|null           $person
      *
      * @return array|bool|string
      */
-    public function renderWidgetQuery(DashboardWidgetEntity $widget)
+    public function renderWidgetQuery(DashboardWidgetEntity $widget, Person $person = null)
     {
         $report = $widget->getWidget();
         $query  = $report->getQuery();
@@ -171,7 +173,7 @@ class DashboardWidget
             }
         }
 
-        return $this->renderQuery($query, ['variables' => $variables], $widget->getType(), 'json');
+        return $this->renderQuery($query, ['variables' => $variables], $widget->getType(), 'json', $person);
     }
 
     /**
@@ -179,43 +181,16 @@ class DashboardWidget
      * @param array  $params
      * @param string $displayType
      * @param string $format
-     *
-     * @throws \DeskPRO\Bundle\ReportBundle\Dpql2\DpqlException
-     * @throws \Exception
+     * @param Person $person
      *
      * @return array|bool|string
      */
-    public function renderQuery($query, $params, $displayType, $format = 'json')
+    public function renderQuery($query, $params, $displayType, $format = 'json', Person $person = null)
     {
-        $mapped = $this->getWidgetGraphType($displayType);
-        $query  = preg_replace("#^DISPLAY.*?\n#", "DISPLAY {$mapped}\n", $query);
-
-        $query    = $this->compiler->compile($query, $params);
+        $mapped   = $this->getWidgetGraphType($displayType);
+        $query    = $this->compiler->compile($query, $params, new DpqlContext($person));
         $renderer = $this->rendererRegistry->getRenderer($mapped, $format);
 
         return $renderer->render($query->getResults());
-    }
-
-    /**
-     * @param DashboardReportEntity $report
-     * @param DashboardReportEntity $reportPrototype
-     *
-     * @throws \Exception
-     */
-    public function copyWidgetLinks(DashboardReportEntity $report, DashboardReportEntity $reportPrototype)
-    {
-        foreach ($reportPrototype->getWidgets() as $widget_prototype) {
-            $widget = new DashboardWidgetEntity();
-            $widget
-                ->setTitle($widget_prototype->getTitle())
-                ->setPosition($widget_prototype->getPosition())
-                ->setSize($widget_prototype->getSize())
-                ->setType($widget_prototype->getType())
-                ->setVariables($widget_prototype->getVariables())
-                ->setReport($report)
-                ->setWidget($widget_prototype->getWidget());
-            $this->em->persist($widget);
-            $report->addWidget($widget);
-        }
     }
 }

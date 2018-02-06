@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2017, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2018, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -181,6 +181,8 @@ END)
         $extraConditionValue = false;
 
         foreach ($parts as $partKey => $part) {
+            $part = Strings::camelCaseToUnderscore($part);
+
             $partsSoFar[] = $part;
             $partsString  = implode('.', $partsSoFar);
 
@@ -456,6 +458,9 @@ END)
 
                         return $valueRenderer->renderValue($date ?: null, $type);
                     };
+                } elseif ($field && $section !== 'select' && $field->isChoiceType()) {
+                    $call    = new self(array_merge($this->parts, ['field', 'id']));
+                    $prepped = $call->prepare($statement, $section, $stack, $select, $result);
                 } else {
                     $call = new FunctionCall('if', [
                         new self(array_merge($this->parts, ['value'])),

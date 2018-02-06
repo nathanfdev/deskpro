@@ -3,7 +3,9 @@
 		<table class="display-table" width="100%">
 			<tr>
 				<td width="80" class="nowrap" style="padding-right: 8px;">
-					<label class="row-label">Check Trigger Variable</label>
+					<label class="row-label" ng-if="!label">Check Trigger Variable</label>
+					<label class="row-label" ng-if="label">{{ng_var('label')}}</label>
+
 				</td>
 				<td width="100" style="padding-right: 3px;">
 					<input type="text" class="form-control" ng-model="model.name" style="width: 120px;" placeholder="Variable Name" />

@@ -39,6 +39,13 @@ use DeskPRO\Component\Util\RegexUtils;
 /**
  * String utility functions.
  *
+ * @method static string utf8_is_ascii(string $str) see vendor-src/php-utf8/utils/ascii.php
+ * @method static string utf8_is_ascii_ctrl(string $str) see vendor-src/php-utf8/utils/ascii.php
+ * @method static string utf8_strip_non_ascii(string $str) see vendor-src/php-utf8/utils/ascii.php
+ * @method static string utf8_strip_ascii_ctrl(string $str) see vendor-src/php-utf8/utils/ascii.php
+ * @method static string utf8_strip_non_ascii_ctrl(string $str) see vendor-src/php-utf8/utils/ascii.php
+ * @method static string utf8_accents_to_ascii(string $str, int $case = 0) see vendor-src/php-utf8/utils/ascii.php
+ *
  * @static
  */
 class Strings

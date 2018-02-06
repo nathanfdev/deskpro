@@ -31,12 +31,12 @@ services:
       - "@doctrine.orm.default_entity_manager"
       - "@dpql.lexer"
       - "@dpql.parser"
+      - "@dpql.context_storage"
+      - "@security.token_storage"
     shared: false
 
-  dpql.date:
-    class: DeskPRO\Bundle\ReportBundle\Dpql2\DpqlDate
-    arguments:
-      - "@security.token_storage"
+  dpql.context_storage:
+    class: DeskPRO\Bundle\ReportBundle\Dpql2\DpqlContextStorage
 
   # DPQL functions
   dpql.func.alias:
@@ -92,7 +92,7 @@ services:
   dpql.func.format:
     class: DeskPRO\Bundle\ReportBundle\Dpql2\Func\Format
     arguments:
-      - "@security.token_storage"
+      - "@dpql.context_storage"
     tags:
       - { name: dpql.func }
 
@@ -149,7 +149,7 @@ services:
     class: DeskPRO\Bundle\ReportBundle\Dpql2\Func\ObjLang
     arguments:
       - "@doctrine.dbal.default_connection"
-      - "@security.token_storage"
+      - "@dpql.context_storage"
     tags:
       - { name: dpql.func }
 
@@ -212,135 +212,118 @@ services:
   dpql.placeholder.ever:
     class: DeskPRO\Bundle\ReportBundle\Dpql2\Placeholder\Ever
     arguments:
-      - "@security.token_storage"
-      - "@dpql.date"
+      - "@dpql.context_storage"
     tags:
       - { name: dpql.placeholder }
 
   dpql.placeholder.last_month:
     class: DeskPRO\Bundle\ReportBundle\Dpql2\Placeholder\LastMonth
     arguments:
-      - "@security.token_storage"
-      - "@dpql.date"
+      - "@dpql.context_storage"
     tags:
       - { name: dpql.placeholder }
 
   dpql.placeholder.last_week:
     class: DeskPRO\Bundle\ReportBundle\Dpql2\Placeholder\LastWeek
     arguments:
-      - "@security.token_storage"
-      - "@dpql.date"
+      - "@dpql.context_storage"
     tags:
       - { name: dpql.placeholder }
 
   dpql.placeholder.last_year:
     class: DeskPRO\Bundle\ReportBundle\Dpql2\Placeholder\LastYear
     arguments:
-      - "@security.token_storage"
-      - "@dpql.date"
+      - "@dpql.context_storage"
     tags:
       - { name: dpql.placeholder }
 
   dpql.placeholder.past_6_month:
     class: DeskPRO\Bundle\ReportBundle\Dpql2\Placeholder\Past6Months
     arguments:
-      - "@security.token_storage"
-      - "@dpql.date"
+      - "@dpql.context_storage"
     tags:
       - { name: dpql.placeholder }
 
   dpql.placeholder.past_7_days:
     class: DeskPRO\Bundle\ReportBundle\Dpql2\Placeholder\Past7Days
     arguments:
-      - "@security.token_storage"
-      - "@dpql.date"
+      - "@dpql.context_storage"
     tags:
       - { name: dpql.placeholder }
 
   dpql.placeholder.past_12_hours:
     class: DeskPRO\Bundle\ReportBundle\Dpql2\Placeholder\Past12Hours
     arguments:
-      - "@security.token_storage"
-      - "@dpql.date"
+      - "@dpql.context_storage"
     tags:
       - { name: dpql.placeholder }
 
   dpql.placeholder.past_12_months:
     class: DeskPRO\Bundle\ReportBundle\Dpql2\Placeholder\Past12Months
     arguments:
-      - "@security.token_storage"
-      - "@dpql.date"
+      - "@dpql.context_storage"
     tags:
       - { name: dpql.placeholder }
 
   dpql.placeholder.past_24_hours:
     class: DeskPRO\Bundle\ReportBundle\Dpql2\Placeholder\Past24Hours
     arguments:
-      - "@security.token_storage"
-      - "@dpql.date"
+      - "@dpql.context_storage"
     tags:
       - { name: dpql.placeholder }
 
   dpql.placeholder.past_30_days:
     class: DeskPRO\Bundle\ReportBundle\Dpql2\Placeholder\Past30Days
     arguments:
-      - "@security.token_storage"
-      - "@dpql.date"
+      - "@dpql.context_storage"
     tags:
       - { name: dpql.placeholder }
 
   dpql.placeholder.past_hour:
     class: DeskPRO\Bundle\ReportBundle\Dpql2\Placeholder\PastHour
     arguments:
-      - "@security.token_storage"
-      - "@dpql.date"
+      - "@dpql.context_storage"
     tags:
       - { name: dpql.placeholder }
 
   dpql.placeholder.this_month:
     class: DeskPRO\Bundle\ReportBundle\Dpql2\Placeholder\ThisMonth
     arguments:
-      - "@security.token_storage"
-      - "@dpql.date"
+      - "@dpql.context_storage"
     tags:
       - { name: dpql.placeholder }
 
   dpql.placeholder.this_week:
     class: DeskPRO\Bundle\ReportBundle\Dpql2\Placeholder\ThisWeek
     arguments:
-      - "@security.token_storage"
-      - "@dpql.date"
+      - "@dpql.context_storage"
     tags:
       - { name: dpql.placeholder }
 
   dpql.placeholder.this_year:
     class: DeskPRO\Bundle\ReportBundle\Dpql2\Placeholder\ThisYear
     arguments:
-      - "@security.token_storage"
-      - "@dpql.date"
+      - "@dpql.context_storage"
     tags:
       - { name: dpql.placeholder }
 
   dpql.placeholder.today:
     class: DeskPRO\Bundle\ReportBundle\Dpql2\Placeholder\Today
     arguments:
-      - "@security.token_storage"
-      - "@dpql.date"
+      - "@dpql.context_storage"
     tags:
       - { name: dpql.placeholder }
 
   dpql.placeholder.tomorrow:
     class: DeskPRO\Bundle\ReportBundle\Dpql2\Placeholder\Tomorrow
     arguments:
-      - "@security.token_storage"
-      - "@dpql.date"
+      - "@dpql.context_storage"
     tags:
       - { name: dpql.placeholder }
 
   dpql.placeholder.yersterday:
     class: DeskPRO\Bundle\ReportBundle\Dpql2\Placeholder\Yesterday
     arguments:
-      - "@security.token_storage"
-      - "@dpql.date"
+      - "@dpql.context_storage"
     tags:
       - { name: dpql.placeholder }

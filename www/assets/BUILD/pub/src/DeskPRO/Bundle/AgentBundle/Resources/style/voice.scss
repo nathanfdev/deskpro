@@ -229,6 +229,20 @@ $voice-green-border-color: #47BF61;
                 font-size: 14px;
                 color: $dp-greyscale-850;
               }
+
+              .intl-tel-input {
+                width: 100%;
+
+                .selected-flag {
+                  position: absolute;
+                  left: 3px;
+                }
+
+                input {
+                  padding-left: 50px;
+                  width: 100%;
+                }
+              }
             }
           }
         }
@@ -481,6 +495,11 @@ $voice-green-border-color: #47BF61;
           margin-left: 10px;
           cursor: pointer;
         }
+      }
+
+      .voice-forward-help {
+        margin: 20px;
+        font-size: 14px;
       }
 
       .voice-online-agents {

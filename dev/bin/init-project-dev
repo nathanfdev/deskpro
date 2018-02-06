@@ -12,6 +12,13 @@ chmod -R 0777 $DIR_ROOT/var
 echo ".. done"
 echo
 
+echo ">> Update modules"
+cd $DIR_ROOT
+git submodule init
+git submodule update
+echo ".. done"
+echo
+
 echo ">> Installing vendors with composer"
 cd $DIR_ROOT/app/BUILD
 composer install --ignore-platform-reqs -o
@@ -28,6 +35,8 @@ echo ">> Installing new web dependencies (dev)"
 cd $DIR_ROOT/www/assets/BUILD/pub
 npm install
 echo ".. done"
+
+rm -rf $DIR_ROOT/www/assets/BUILD/pub/node_modules/@deskpro/react-components/node_modules/react
 
 echo ">> Building web assets"
 cd $DIR_ROOT/www/assets/BUILD/web

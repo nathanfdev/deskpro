@@ -147,3 +147,8 @@ services:
   request_matcher:
     class: DeskPRO\Bundle\AppBundle\Routing\RequestMatcher
     arguments: ["@dp.dynamic_context_router"]
+
+  amazon_s3_client:
+    class: Aws\S3\S3Client
+    factory: ['DeskPRO\Bundle\AppBundle\BlobStorage\AmazonS3ClientFactory', create]
+    arguments: ["@settings_resolver"]

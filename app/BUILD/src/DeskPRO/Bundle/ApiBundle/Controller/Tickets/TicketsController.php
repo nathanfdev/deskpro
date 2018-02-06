@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2017, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2018, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -30,6 +30,7 @@ namespace DeskPRO\Bundle\ApiBundle\Controller\Tickets;
 
 use Application\DeskPRO\Entity\Ticket;
 use DeskPRO\Bundle\ApiBundle\ApiDoc\Annotation\ApiDoc;
+use DeskPRO\Bundle\ApiBundle\Controller\Tickets\Traits\TicketSearchTrait;
 use DeskPRO\Bundle\ApiBundle\EventListener\JsonHeadersResponseListener;
 use DeskPRO\Bundle\ApiBundle\Traits\Tickets\TicketSaveTrait;
 use DeskPRO\Bundle\ApiBundle\Traits\Tickets\TicketsPagerTrait;
@@ -64,7 +65,7 @@ use Symfony\Component\HttpKernel\HttpKernelInterface;
  */
 class TicketsController extends AbstractTicketsController
 {
-    use TicketsPagerTrait, TicketSaveTrait;
+    use TicketsPagerTrait, TicketSaveTrait, TicketSearchTrait;
 
     public static $type = TicketType::class;
 
@@ -85,6 +86,35 @@ class TicketsController extends AbstractTicketsController
         $request->query->add($params);
 
         return $kernel->handle($request, HttpKernelInterface::SUB_REQUEST);
+    }
+
+    /**
+     * @ApiDoc(
+     *      description="Get a resource",
+     *      tags={"CRUD"="#ffa500"},
+     *      requirements={
+     *          {
+     *              "name"="id",
+     *              "requirement"="ref:[\w\-\.]+|\d+",
+     *              "description"="The id|ref of the resource",
+     *              "dataType"="integer|string"
+     *          }
+     *      },
+     *      statusCodes={
+     *          200="We will return such status in case we found your entity",
+     *          404="Not Found error will returned in case we can't find entity with specified ID"
+     *      }
+     * )
+     * @Rest\Get("/{id}", requirements={"id"="ref:[\w\-\.]+|\d+"})
+     *
+     * @param Request $request
+     * @param int     $id
+     *
+     * @return View
+     */
+    public function getAction(Request $request, $id)
+    {
+        return parent::getAction($request, $id);
     }
 
     /**
@@ -252,6 +282,65 @@ class TicketsController extends AbstractTicketsController
     public function csvAction(Request $request)
     {
         return $this->listAction($request);
+    }
+
+    /**
+     * @ApiDoc(
+     *      description="Update an existing resource",
+     *      tags={"CRUD"="#ffa500"},
+     *      requirements={
+     *          {
+     *              "name"="id",
+     *              "requirement"="ref:[\w\-\.]+|\d+",
+     *              "description"="The id|ref of the resource",
+     *              "dataType"="integer|string"
+     *          }
+     *      },
+     *      statusCodes={
+     *          204="Returned in case of successful resource modify",
+     *          400="We will return this in case your request was malformed",
+     *      }
+     * )
+     * @Rest\Put("/{id}", requirements={"id"="ref:[\w\-\.]+|\d+"})
+     *
+     * @param int     $id
+     * @param Request $request
+     * @SerializerView(serializeNull=true)
+     *
+     * @return View
+     */
+    public function putAction($id, Request $request)
+    {
+        return parent::putAction($id, $request);
+    }
+
+    /**
+     * @ApiDoc(
+     *      description="Delete a resource",
+     *      tags={"CRUD"="#ffa500"},
+     *      requirements={
+     *          {
+     *              "name"="id",
+     *              "requirement"="ref:[\w\-\.]+|\d+",
+     *              "description"="The id|ref of the resource",
+     *              "dataType"="integer|string"
+     *          }
+     *      },
+     *      statusCodes={
+     *          200="Returned if everything is ok and there is no such resource anymore",
+     *          404="Well, looks like either resource already deleted either it doesn't exists at all"
+     *      }
+     * )
+     * @Rest\Delete("/{id}", requirements={"id"="ref:[\w\-\.]+|\d+"})
+     *
+     * @param int|string $id
+     * @param Request    $request
+     *
+     * @return View
+     */
+    public function deleteAction($id, Request $request)
+    {
+        return parent::deleteAction($id, $request);
     }
 
     /**

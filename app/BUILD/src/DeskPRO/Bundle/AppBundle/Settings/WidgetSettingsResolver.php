@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2017, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2018, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -61,11 +61,13 @@ use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorageInt
  */
 class WidgetSettingsResolver extends AbstractBrandAwareSettingsResolver
 {
-    const CHAT_ENABLED      = 'core.apps_chat';
-    const ENABLED_ON_PORTAL = 'portal.widget.enabled';
-    const ENABLED           = 'widget.enabled';
-    const JWT_SECRET        = 'widget.jwt.secret';
-    const JWT_REQUIRED      = 'widget.jwt.required';
+    const CHAT_ENABLED          = 'core.apps_chat';
+    const ENABLED_ON_PORTAL     = 'portal.widget.enabled';
+    const ENABLED               = 'widget.enabled';
+    const JWT_SECRET            = 'widget.jwt.secret';
+    const JWT_REQUIRED          = 'widget.jwt.required';
+    const CHAT_REQUIRE_LOGIN    = 'portal.chat.require_login';
+    const CHAT_EMAIL_VALIDATION = 'portal.chat.email_validation';
 
     /**
      * @var EntityManager
@@ -186,6 +188,16 @@ class WidgetSettingsResolver extends AbstractBrandAwareSettingsResolver
     public function isJwtRequired(Brand $brand = null)
     {
         return (bool) $this->getSetting(self::JWT_REQUIRED, $brand);
+    }
+
+    public function isChatRequireLogin()
+    {
+        return (bool) $this->getSetting(self::CHAT_REQUIRE_LOGIN);
+    }
+
+    public function isChatEmailValidation()
+    {
+        return (bool) $this->getSetting(self::CHAT_EMAIL_VALIDATION);
     }
 
     /**

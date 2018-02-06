@@ -26,15 +26,10 @@
  * ~ Thanks, Everyone at Team DeskPRO
  */
 
-/**
- * DeskPRO.
- */
-
 namespace Application\LegacyApiBundle\Controller;
 
 use Application\DeskPRO\Entity\SavedDashboardWidget;
 use Application\LegacyApiBundle\Service\Dashboard as DashboardService;
-use Application\LegacyApiBundle\Service\DashboardPermissions as DashboardPermissionService;
 use Application\LegacyApiBundle\Service\DashboardWidget as DashboardWidgetService;
 use DeskPRO\Bundle\AppBundle\Annotation\ActionPermissions\Annotation\ApiModes;
 use Symfony\Component\HttpFoundation\Request;
@@ -48,9 +43,6 @@ class SavedReportController extends AbstractController
     /** @var DashboardService */
     protected $service;
 
-    /** @var DashboardPermissionService */
-    protected $permissionsService;
-
     /** @var DashboardWidgetService */
     protected $widgetService;
 
@@ -59,10 +51,9 @@ class SavedReportController extends AbstractController
     public function init()
     {
         parent::init();
-        $this->service            = $this->get('dashboard.service');
-        $this->reportSaver        = $this->get('deskpro.reports.saver');
-        $this->permissionsService = $this->get('dashboard.permissions.service');
-        $this->widgetService      = $this->get('dashboard.widget.service');
+        $this->service       = $this->get('dashboard.service');
+        $this->reportSaver   = $this->get('deskpro.reports.saver');
+        $this->widgetService = $this->get('dashboard.widget.service');
     }
 
     public function preActionHandler(Request $request, $action, $arguments = null)
@@ -92,7 +83,7 @@ class SavedReportController extends AbstractController
         $postData = $this->in->getAll('post');
 
         $report = $this->service->getReport($id);
-        if (!$this->permissionsService->isEditableDashboard($report->getDashboard())) {
+        if ($report->getDashboard()->isDefault()) {
             throw $this->createNotFoundException();
         }
 

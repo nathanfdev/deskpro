@@ -52,7 +52,7 @@ class SettingsController extends AbstractController
     {
         $defaultCountryCode = $this->getContainer()->get('deskpro.core.settings')->get('core.default_country_code');
         $edit_profile       = new SettingsProfileModel($this->person, $defaultCountryCode);
-        $edit_form          = new SettingsProfile();
+        $edit_form          = new SettingsProfile($this->get('language_manager')->getTranslator());
         $form               = $this->get('form.factory')->create($edit_form, $edit_profile);
 
         /** @var \Application\DeskPRO\People\PasswordPolicyValidator $password_validator */
@@ -73,7 +73,7 @@ class SettingsController extends AbstractController
     public function profileSaveAction(Request $request)
     {
         $edit_profile = new SettingsProfileModel($this->person);
-        $edit_form    = new SettingsProfile();
+        $edit_form    = new SettingsProfile($this->get('language_manager')->getTranslator());
         $form         = $this->get('form.factory')->create($edit_form, $edit_profile);
 
         $form->handleRequest($request);

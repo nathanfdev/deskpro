@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2017, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2018, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -28,14 +28,10 @@
 
 namespace DeskPRO\Bundle\PortalBundle\Form\Form\Type\Api\Chat;
 
-use DeskPRO\Bundle\AppBundle\Settings\WidgetSettingsResolver;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\EmailType;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\FormBuilderInterface;
-use Symfony\Component\Form\FormError;
-use Symfony\Component\Form\FormEvent;
-use Symfony\Component\Form\FormEvents;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 use Symfony\Component\Validator\Constraints as Assert;
 
@@ -50,20 +46,13 @@ class ChatTranscriptInfoType extends AbstractType
     private $personListener;
 
     /**
-     * @var WidgetSettingsResolver
-     */
-    private $chatSettings;
-
-    /**
      * Constructor.
      *
-     * @param SetPersonListener      $personListener
-     * @param WidgetSettingsResolver $chatSettings
+     * @param SetPersonListener $personListener
      */
-    public function __construct(SetPersonListener $personListener, WidgetSettingsResolver $chatSettings)
+    public function __construct(SetPersonListener $personListener)
     {
         $this->personListener = $personListener;
-        $this->chatSettings   = $chatSettings;
     }
 
     /**
@@ -85,8 +74,6 @@ class ChatTranscriptInfoType extends AbstractType
             ])
         ;
 
-        $builder->get('email')->addEventListener(FormEvents::PRE_SUBMIT, [$this, 'onCheckEmailValidation']);
-
         $builder->addEventSubscriber($this->personListener);
         $builder->addEventSubscriber(new AutoSetShouldSentTranscriptListener());
     }
@@ -100,29 +87,5 @@ class ChatTranscriptInfoType extends AbstractType
             'csrf_protection'               => false,
             'csrf_double_submit_protection' => false,
         ]);
-    }
-
-    /**
-     * Check that email was not changed if email validation is enabled.
-     *
-     * @param FormEvent $event
-     */
-    public function onCheckEmailValidation(FormEvent $event)
-    {
-        $data = $event->getData();
-        $form = $event->getForm();
-
-        // Skip check to show just one not blank validation error because it's required field
-        if (!$data) {
-            return;
-        }
-
-        if ($data !== $form->getData()) {
-            if ($this->chatSettings->isChatRequireLogin()) {
-                $form->addError(new FormError('Unable to change email, chat require email is enabled.'));
-            } elseif ($this->chatSettings->isChatEmailValidation()) {
-                $form->addError(new FormError('Unable to change email, chat email validation is enabled.'));
-            }
-        }
     }
 }

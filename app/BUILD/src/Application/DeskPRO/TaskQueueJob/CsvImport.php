@@ -40,7 +40,7 @@ use Application\DeskPRO\Entity\DataStore;
 use Application\DeskPRO\Entity\Person;
 use Application\DeskPRO\Entity\PersonEmail;
 use Application\DeskPRO\Entity\TaskQueue;
-use Application\ImportBundle\CsvImport\CsvImporter;
+use DeskPRO\Bundle\ImportBundle\CsvImport\CsvImporter;
 use Monolog\Logger;
 use Orb\Logger\Handler\ArrayHandler;
 

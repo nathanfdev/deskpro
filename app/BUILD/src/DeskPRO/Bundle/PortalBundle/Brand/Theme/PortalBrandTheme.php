@@ -123,7 +123,12 @@ class PortalBrandTheme
      */
     public function resolveTemplatePath($name)
     {
-        return $this->themeResolver->templatePath($this->getActiveTheme(), $name);
+        $activeTheme = $this->getActiveTheme();
+        if (!$activeTheme) {
+            return;
+        }
+
+        return $this->themeResolver->templatePath($activeTheme, $name);
     }
 
     /**

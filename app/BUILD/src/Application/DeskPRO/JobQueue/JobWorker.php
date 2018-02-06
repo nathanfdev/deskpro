@@ -145,6 +145,7 @@ class JobWorker
             WHERE status = :waiting_status
             AND date_next_try <= :date_now
             AND worker_id IS NULL
+            AND type != :importer_type
             ORDER BY priority DESC,
                      date_next_try ASC
             LIMIT 1
@@ -154,12 +155,14 @@ class JobWorker
                 'reserved_status' => Job::STATUS_RESERVED,
                 'waiting_status'  => Job::STATUS_WAITING,
                 'date_now'        => new \DateTime(),
+                'importer_type'   => 'importer',
             ],
             [
                 'this_worker_id'  => 'string',
                 'reserved_status' => 'string',
                 'waiting_status'  => 'string',
                 'date_now'        => 'datetime',
+                'importer_type'   => 'string',
             ]
         );
 

@@ -1,0 +1,82 @@
+.admin-importer {
+  &-list {
+    margin-bottom: 30px;
+
+    &-item {
+      clear: both;
+
+      &-input {
+        float: left;
+        padding: 10px;
+      }
+
+      &-title {
+        padding: 10px;
+      }
+    }
+  }
+
+  &-form {
+    width: 500px;
+
+    .field {
+      .dp-datepicker {
+        padding: 0;
+
+        .dp-input, input {
+          width: 500px;
+          height: 43px;
+        }
+      }
+
+      .field-info {
+        position: absolute;
+        padding: 10px;
+        width: 400px;
+      }
+    }
+  }
+
+  &-status {
+    .progress {
+      height: 1.75em;
+      overflow: visible;
+    }
+
+    &-container {
+      margin-top: 50px;
+      display: flex;
+      flex-direction: row;
+      justify-content: flex-start;
+    }
+
+    &-list {
+      width: 500px;
+      &-group {
+        clear: both;
+
+        &-step {
+          margin-left: 50px;
+          clear: both;
+
+          &-count {
+            font-size: 12px;
+            color: green;
+            margin-left: 10px;
+          }
+        }
+      }
+    }
+
+    &-log {
+      margin-top: 10px;
+      border: 1px solid #aab0b1;
+      padding: 10px;
+      min-width: 1000px;
+
+      &-scrollarea {
+        height: 700px;
+      }
+    }
+  }
+}

@@ -412,6 +412,14 @@ services:
     tags:
       - { name: form.type }
 
+  form.report_dashboard_report_collection:
+    class: DeskPRO\Bundle\AppBundle\Form\Type\Reports\ReportDashboardReportCollectionType
+    arguments:
+      - "@doctrine.orm.default_entity_manager"
+      - "@reports.dashboard_manager"
+    tags:
+      - { name: form.type }
+
   form.report_widget:
     class: DeskPRO\Bundle\AppBundle\Form\Type\Reports\ReportWidgetType
     arguments:
@@ -423,5 +431,12 @@ services:
     class: DeskPRO\Bundle\AppBundle\Form\Type\Reports\DpqlPartsType
     arguments:
       - "@dpql.compiler"
+    tags:
+      - { name: form.type }
+
+  form.scheduled_report:
+    class: DeskPRO\Bundle\AppBundle\Form\Type\Reports\ScheduledReportType
+    arguments:
+      - "@deskpro.reports.saver"
     tags:
       - { name: form.type }

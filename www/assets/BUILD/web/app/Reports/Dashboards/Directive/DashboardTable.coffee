@@ -1,4 +1,4 @@
-define ['datatables'], () ->
+define ['datatables', "datatables.pageResize"], () ->
   Reports_Directive_DashboardTable = ['$sce', 'DashboardWidgetService', ($sce, DashboardWidgetService) ->
     return {
       restrict: 'E'
@@ -7,6 +7,7 @@ define ['datatables'], () ->
         tableData: '@',
         myIndex: '@',
         widgetId: '@'
+        options: '@'
         row: '@',
         col: '@'
 
@@ -16,80 +17,48 @@ define ['datatables'], () ->
         el = $(element)
         dt = null
         box = el.parent()
-        listItem = box.parent()
+        tableData = if scope.tableData then JSON.parse(scope.tableData) else {}
 
-        height = listItem.height()
+        listItem = box.parent()
         conf = scope.widgetId || 0;
-        tableData   = if scope.tableData then JSON.parse(scope.tableData) else []
         interval = 0;
 
         initTable = (widget) ->
           if interval?
             clearInterval(interval)
           scope.columns = widget.columns
-          dt = el.DataTable {
+
+          try
+            options = JSON.parse(scope.options)
+          catch e
+            options = {}
+
+          defaultOptions = {
             data:           widget.data,
             columns:        widget.columns,
-            pagingType:     "full_numbers",
-            pageLength:     10,
+            pagingType:     "first_last_numbers",
+            pageResize:     true,
+            searching:      false,
             bJQueryUI:      true,
-            iDisplayLength: 5,
+            lengthChange:   true,
             sDom:           'T<"clear">lfrtip'
-            lengthMenu:     [[10, 25, 50, -1], [10, 25, 50, "All"]]
-            scrollY:        listItem.height() - 140,
             deferRender:    true,
             dom:            "rtS",
             scrollCollapse: true,
             autoWidth:      true
             fnDrawCallback: (settings) ->
-                if settings._iDisplayLength == -1 || settings._iDisplayLength > settings.fnRecordsDisplay()
-                  $(settings.nTableWrapper).find('.dataTables_paginate').hide();
-                else
-                  $(settings.nTableWrapper).find('.dataTables_paginate').show();
+              if settings._iDisplayLength == -1 || settings._iDisplayLength >= settings.fnRecordsDisplay()
+                $(settings.nTableWrapper).find('.dataTables_paginate').hide();
+              else
+                $(settings.nTableWrapper).find('.dataTables_paginate').show();
           }
-          if !widget.noRedraw
-            listItem
-              .find '.handle-e'
-              .remove
-            listItem
-              .css 'overflow-y', 'hidden'
 
-          listItem.scroll () ->
-            topOffset = box.offset().top - 34 - listItem.offset().top;
-            resHandlers = listItem.find '.gridster-item-resizable-handler'
-            resHandlers.each () ->
-              handler = $(this)
-              calculated = 1 + topOffset
-              handler[0].style.bottom = "#{calculated}px"
+          dt = el.find('table').DataTable Object.assign(defaultOptions, options)
 
-          setTimeout \
-            () ->
-              tBody = listItem.find '.dataTables_scrollBody'
-              h = listItem.height()
-              calculated = h - 140
-              settings = dt.settings()
-              settings[0].oScroll.sY = calculated
-              tBody.css 'height', "#{calculated}px"
-              tBody.css 'max-height', "#{calculated}px"
-              dt.draw()
-          , 2000
+          listItem
+            .find '.handle-e'
+            .remove
 
-
-          interval = setInterval \
-            () ->
-              return if widget.noRedraw
-              h = listItem.height();
-              tBody = listItem.find('.dataTables_scrollBody')
-              if h != height
-                if dt?
-                  calculated = h - 140
-                  settings = dt.settings();
-                  settings[0].oScroll.sY = calculated
-                  tBody.css 'height', "#{calculated}px"
-                  tBody.css 'max-height', "#{calculated}px"
-                  dt.draw()
-                height = h;
-          , 200
 
         if tableData and tableData.data?
           tableData.noRedraw = true

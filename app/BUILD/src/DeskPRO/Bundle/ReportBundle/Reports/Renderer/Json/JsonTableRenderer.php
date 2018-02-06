@@ -63,12 +63,12 @@ class JsonTableRenderer extends AbstractJsonRenderer
         }
 
         if ($metadata->getGroupXColumns()) {
-            return $this->renderMatrixTable($metadata, $rows);
+            return $this->renderMatrixTable($metadata, $rows, $options);
         }
 
         return [
-            'columns' => $this->renderHeader($metadata),
-            'data'    => $this->renderBody($metadata, $rows),
+            'columns' => $this->renderHeader($metadata, $options),
+            'data'    => $this->renderBody($metadata, $rows, $options),
         ];
     }
 
@@ -80,9 +80,8 @@ class JsonTableRenderer extends AbstractJsonRenderer
      *
      * @return string
      */
-    protected function renderMatrixTable(ResultMetadata $resultHandler, array $rows)
+    protected function renderMatrixTable(ResultMetadata $resultHandler, array $rows, array $options = [])
     {
-
         // matrix table - X() values translate to bottom axis, each row (from Y()) is a new line/stack.
         $prepared = $this->prepareMatrixTable($resultHandler, $rows);
         $lookup   = $prepared['lookup'];
@@ -117,11 +116,11 @@ class JsonTableRenderer extends AbstractJsonRenderer
                 }
                 $rowData[] = $value;
                 if ($totalType) {
-                    $rowTotal += (int) str_replace(',', '', $value);
+                    $rowTotal += (float) str_replace(',', '', $value);
                     if (!isset($totalRow[$xPath])) {
                         $totalRow[$xPath] = 0;
                     }
-                    $totalRow[$xPath] += (int) str_replace(',', '', $value);
+                    $totalRow[$xPath] += (float) str_replace(',', '', $value);
                 }
             }
             if ($totalType) {
@@ -183,11 +182,13 @@ class JsonTableRenderer extends AbstractJsonRenderer
      *
      * @return string
      */
-    protected function renderHeader(ResultMetadata $resultHandler)
+    protected function renderHeader(ResultMetadata $resultHandler, array $options = [])
     {
         $columns = [];
-        foreach ($resultHandler->getGroupYColumns() as $column) {
-            $columns[] = $this->valueRenderer->escapeValue($column['title']);
+        if (empty($options['noGroupingColumn'])) {
+            foreach ($resultHandler->getGroupYColumns() as $column) {
+                $columns[] = $this->valueRenderer->escapeValue($column['title']);
+            }
         }
         foreach ($resultHandler->getSelectColumns() as $column) {
             $columns[] = $this->valueRenderer->escapeValue($column['title']);
@@ -199,15 +200,20 @@ class JsonTableRenderer extends AbstractJsonRenderer
     /**
      * Renders the body of a "simple" table.
      *
-     * @param ResultMetadata $resultHandler
+     * @param ResultMetadata $metadata
      * @param array          $rows
      *
      * @return string
      */
-    protected function renderBody(ResultMetadata $resultHandler, array $rows)
+    protected function renderBody(ResultMetadata $metadata, array $rows, array $options = [])
     {
-        $groupColumns  = $resultHandler->getGroupYColumns();
-        $selectColumns = $resultHandler->getSelectColumns();
+        if (empty($options['noGroupingColumn'])) {
+            $groupColumns = $metadata->getGroupYColumns();
+        } else {
+            $groupColumns = [];
+        }
+
+        $selectColumns = $metadata->getSelectColumns();
         $rows          = array_values($rows); // need continuous keys
 
         $rowsRendered = [];
@@ -272,14 +278,14 @@ class JsonTableRenderer extends AbstractJsonRenderer
                         ? ' rowspan="'.($groupSkipCount[$groupId] + 1).'"'
                         : ''
                     );
-                    $rendered = $this->renderCellValue($row, $groupColumn);
+                    $rendered = $this->renderCellValue($row, $groupColumn, $metadata);
 
                     $cells[] = "<th$rowSpan>$rendered</th>";
                 }
             }
 
             foreach ($selectColumns as $column) {
-                $cells[] = $this->renderCellValue($row, $column);
+                $cells[] = $this->renderCellValue($row, $column, $metadata);
             }
 
             ++$rowCount;
@@ -291,5 +297,27 @@ class JsonTableRenderer extends AbstractJsonRenderer
         } else {
             return [];
         }
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    protected function implodeSplitOutput(array $output)
+    {
+        $return = ['data' => []];
+        foreach ($output as $outputItem) {
+            $return['columns'] = $outputItem['columns'];
+            $return['data']    = array_merge($return['data'], $outputItem['data']);
+        }
+
+        return $return;
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function renderSplitOutputWithHeader($header, $body)
+    {
+        return $body;
     }
 }

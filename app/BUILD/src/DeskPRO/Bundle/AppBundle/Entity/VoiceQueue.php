@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2017, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2018, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -55,6 +55,8 @@ use Symfony\Component\Validator\Constraints as Assert;
  *
  * @UniqueEntity("taskQueueSid")
  * @UniqueEntity("name")
+ *
+ * @AppAssert\Voice\VoiceQueueAgentPermissions()
  */
 class VoiceQueue implements EntityInterface, NotifyPropertyChanged
 {
@@ -109,6 +111,20 @@ class VoiceQueue implements EntityInterface, NotifyPropertyChanged
      * @var string
      */
     private $taskQueueSid;
+
+    /**
+     * @ORM\JoinColumn(name="department_id")
+     * @ORM\ManyToOne(targetEntity="Application\DeskPRO\Entity\Department")
+     *
+     * @JMS\Expose()
+     * @JMS\Type("entity<Application\DeskPRO\Entity\Department>")
+     *
+     * @Assert\NotNull()
+     * @AppAssert\LeafDepartment()
+     *
+     * @var Department
+     */
+    private $department;
 
     /**
      * @ORM\OneToMany(targetEntity="DeskPRO\Bundle\AppBundle\Entity\VoiceQueueAgent", mappedBy="queue", cascade={"persist", "remove"}, fetch="EXTRA_LAZY", orphanRemoval=true)
@@ -299,6 +315,26 @@ class VoiceQueue implements EntityInterface, NotifyPropertyChanged
     public function setTaskQueueSid($taskQueueSid)
     {
         $this->setModelField('taskQueueSid', $taskQueueSid);
+
+        return $this;
+    }
+
+    /**
+     * @return Department
+     */
+    public function getDepartment()
+    {
+        return $this->department;
+    }
+
+    /**
+     * @param Department $department
+     *
+     * @return $this
+     */
+    public function setDepartment(Department $department = null)
+    {
+        $this->setModelField('department', $department);
 
         return $this;
     }

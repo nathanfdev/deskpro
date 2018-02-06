@@ -36,5 +36,5 @@ Feature: User Profile
     And I am on "/login"
     When I fill in "username" with "user@deskpro.dev"
     And I fill in "password" with "MYNEWPASSWORD"
-    And I press "Login"
+    And I press "login_button"
     Then I should be authenticated as user

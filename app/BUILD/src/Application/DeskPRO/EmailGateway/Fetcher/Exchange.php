@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2017, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2018, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -244,7 +244,9 @@ class Exchange extends AbstractFetcher
         if ($this->maxSize && $rawMessage->size && $rawMessage->size > $this->maxSize) {
             // If we are here, it means that message is larger than the max size
             // So, we won't store the whole message, only the headers.
-            $rawMessage->content = $this->storage->getRawHeaders($messageId);
+            $rawMessage->content = $this->storage->getRawHeaders($message);
+            $rawMessage->too_big = true;
+            $this->logger->log('Setting too_big flag', 'debug');
         } else {
             // Otherwise store the whole message
             $rawMessage->content = $this->storage->getRawMessage($messageId);

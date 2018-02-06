@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2017, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2018, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -74,7 +74,7 @@ class SnippetUseLog implements EntityInterface, NotifyPropertyChanged
      *
      * @var DateTime
      */
-    protected $dateCreated;
+    protected $date_created;
 
     /**
      * Ticket Message where the snippet was used.
@@ -216,17 +216,17 @@ class SnippetUseLog implements EntityInterface, NotifyPropertyChanged
      */
     public function getDateCreated()
     {
-        return $this->dateCreated;
+        return $this->date_created;
     }
 
     /**
-     * @param DateTime $dateCreated
+     * @param DateTime $date_created
      *
      * @return SnippetUseLog
      */
-    public function setDateCreated($dateCreated)
+    public function setDateCreated($date_created)
     {
-        $this->setModelField('dateCreated', $dateCreated);
+        $this->setModelField('date_created', $date_created);
 
         return $this;
     }

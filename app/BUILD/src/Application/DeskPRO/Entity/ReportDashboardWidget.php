@@ -38,12 +38,23 @@ use Application\DeskPRO\Domain\DomainObject;
 use Application\DeskPRO\Entity;
 use Doctrine\ORM\Mapping\ClassMetadata;
 use Doctrine\ORM\Mapping\ClassMetadataInfo;
+use Symfony\Component\Validator\Constraints as Assert;
 
 /**
  * ReportDashboardWidget.
  */
 class ReportDashboardWidget extends DomainObject
 {
+    const TYPE_SIMPLE_BARS  = 'simple_bars';
+    const TYPE_BARS         = 'bars';
+    const TYPE_SIMPLE_LINES = 'simple_lines';
+    const TYPE_LINES        = 'lines';
+    const TYPE_AREA         = 'area';
+    const TYPE_SIMPLE_AREA  = 'simple_area';
+    const TYPE_PIE          = 'pie';
+    const TYPE_TABLE        = 'table';
+    const TYPE_SIMPLE_STAT  = 'simple_stat';
+
     const WIDGET_TYPE_GRAPH     = 'graph';
     const WIDGET_TYPE_STAT      = 'stat';
     const WIDGET_TYPE_HARDCODED = 'hardcoded';
@@ -55,15 +66,15 @@ class ReportDashboardWidget extends DomainObject
      * @var array
      */
     protected $widgetTypesMapping = [
-        'simple_bars'  => self::WIDGET_TYPE_GRAPH,
-        'bars'         => self::WIDGET_TYPE_GRAPH,
-        'simple_lines' => self::WIDGET_TYPE_GRAPH,
-        'lines'        => self::WIDGET_TYPE_GRAPH,
-        'area'         => self::WIDGET_TYPE_GRAPH,
-        'simple_area'  => self::WIDGET_TYPE_GRAPH,
-        'pie'          => self::WIDGET_TYPE_GRAPH,
-        'table'        => self::WIDGET_TYPE_TABLE,
-        'simple_stat'  => self::WIDGET_TYPE_STAT,
+        self::TYPE_SIMPLE_BARS  => self::WIDGET_TYPE_GRAPH,
+        self::TYPE_BARS         => self::WIDGET_TYPE_GRAPH,
+        self::TYPE_SIMPLE_LINES => self::WIDGET_TYPE_GRAPH,
+        self::TYPE_LINES        => self::WIDGET_TYPE_GRAPH,
+        self::TYPE_AREA         => self::WIDGET_TYPE_GRAPH,
+        self::TYPE_SIMPLE_AREA  => self::WIDGET_TYPE_GRAPH,
+        self::TYPE_PIE          => self::WIDGET_TYPE_GRAPH,
+        self::TYPE_TABLE        => self::WIDGET_TYPE_TABLE,
+        self::TYPE_SIMPLE_STAT  => self::WIDGET_TYPE_STAT,
     ];
 
     /**
@@ -72,16 +83,24 @@ class ReportDashboardWidget extends DomainObject
     protected $id = null;
 
     /**
+     * @Assert\NotBlank()
+     *
      * @var ReportDashboardReport
      */
     protected $report = null;
 
     /**
-     * @var ReportWidget it's a reference to ReportWidget Entity that holds DPQL
+     * It's a reference to ReportWidget Entity that holds DPQL.
+     *
+     * @Assert\NotNull()
+     *
+     * @var ReportWidget
      */
     protected $widget = null;
 
     /**
+     * @Assert\NotBlank()
+     *
      * @var string
      */
     protected $title = '';
@@ -97,6 +116,8 @@ class ReportDashboardWidget extends DomainObject
     protected $size = '8:5';
 
     /**
+     * @Assert\NotBlank()
+     *
      * @var string
      */
     protected $type;
@@ -104,7 +125,7 @@ class ReportDashboardWidget extends DomainObject
     /**
      * @var array
      */
-    protected $variables;
+    protected $variables = [];
 
     /**
      * @var string
@@ -160,6 +181,50 @@ class ReportDashboardWidget extends DomainObject
     }
 
     /**
+     * @return int
+     */
+    public function getCol()
+    {
+        $position = $this->getPosition();
+
+        return isset($position[1]) ? $position[1] : 0;
+    }
+
+    /**
+     * @param int $col
+     *
+     * @return $this
+     */
+    public function setCol($col)
+    {
+        $this->setPosition([$this->getRow(), $col]);
+
+        return $this;
+    }
+
+    /**
+     * @return int
+     */
+    public function getRow()
+    {
+        $position = $this->getPosition();
+
+        return isset($position[0]) ? $position[0] : 0;
+    }
+
+    /**
+     * @param int $row
+     *
+     * @return $this
+     */
+    public function setRow($row)
+    {
+        $this->setPosition([$row, $this->getCol()]);
+
+        return $this;
+    }
+
+    /**
      * @param string|array $position
      *
      * @throws \Exception
@@ -198,9 +263,53 @@ class ReportDashboardWidget extends DomainObject
      *
      * @return $this
      */
-    public function setReport(ReportDashboardReport $report)
+    public function setReport(ReportDashboardReport $report = null)
     {
-        $this->report = $report;
+        $this->setModelField('report', $report);
+
+        return $this;
+    }
+
+    /**
+     * @return int
+     */
+    public function getSizeX()
+    {
+        $size = $this->getSize();
+
+        return isset($size[0]) ? $size[0] : 0;
+    }
+
+    /**
+     * @param int $sizeX
+     *
+     * @return $this
+     */
+    public function setSizeX($sizeX)
+    {
+        $this->setSize([$sizeX, $this->getSizeY()]);
+
+        return $this;
+    }
+
+    /**
+     * @return int
+     */
+    public function getSizeY()
+    {
+        $size = $this->getSize();
+
+        return isset($size[1]) ? $size[1] : 0;
+    }
+
+    /**
+     * @param int $sizeY
+     *
+     * @return $this
+     */
+    public function setSizeY($sizeY)
+    {
+        $this->setSize([$this->getSizeX(), $sizeY]);
 
         return $this;
     }
@@ -373,7 +482,7 @@ class ReportDashboardWidget extends DomainObject
             [
                 'fieldName'  => 'position',
                 'type'       => 'string',
-                'length'     => 5,
+                'length'     => 255,
                 'precision'  => 0,
                 'scale'      => 0,
                 'nullable'   => false,
@@ -384,7 +493,7 @@ class ReportDashboardWidget extends DomainObject
             [
                 'fieldName'  => 'size',
                 'type'       => 'string',
-                'length'     => 5,
+                'length'     => 255,
                 'precision'  => 0,
                 'scale'      => 0,
                 'nullable'   => false,
@@ -408,7 +517,6 @@ class ReportDashboardWidget extends DomainObject
             [
                 'fieldName'  => 'variables',
                 'type'       => 'json_array',
-                'length'     => 250,
                 'precision'  => 0,
                 'scale'      => 0,
                 'nullable'   => true,

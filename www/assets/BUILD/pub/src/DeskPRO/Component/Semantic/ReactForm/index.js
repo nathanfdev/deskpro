@@ -12,6 +12,7 @@ import Toggle from './Toggle';
 import Radio from './Radio';
 import ClipboardInput from './ClipboardInput';
 import PhoneInput from './PhoneInput';
+import DatePicker from './DatePicker';
 
 export { Field, SemanticError } from './Field';
 export {
@@ -28,5 +29,6 @@ export {
   Toggle,
   Radio,
   ClipboardInput,
+  DatePicker,
   PhoneInput
 };

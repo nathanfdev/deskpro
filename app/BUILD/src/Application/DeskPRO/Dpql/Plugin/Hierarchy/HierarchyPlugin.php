@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2017, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2018, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -110,11 +110,11 @@ class HierarchyPlugin implements PluginInterface
         list($id, $title)        = Column::resolveTable($groupingTableName);
 
         if (strpos($groupingTableName, 'custom_def') === 0) {
-            $this->sql->addSelectField("`{$hierarchicalTargetTable}_field`.`$id` as 'hierarchy_id'");
-            $this->sql->addSelectField("`{$hierarchicalTargetTable}_field`.`options` as 'hierarchy_parent_options'");
-            $this->sql->addSelectField("`{$hierarchicalTargetTable}_field`.`$title` as 'hierarchy_title'");
+            $this->sql->addSelectField("`{$hierarchicalTargetTable}`.`$id` as 'hierarchy_id'");
+            $this->sql->addSelectField("`{$hierarchicalTargetTable}`.`options` as 'hierarchy_parent_options'");
+            $this->sql->addSelectField("`{$hierarchicalTargetTable}`.`$title` as 'hierarchy_title'");
 
-            $this->titleFieldSql = "`{$hierarchicalTargetTable}_field`.`$title`";
+            $this->titleFieldSql = "`{$hierarchicalTargetTable}`.`$title`";
         } else {
             $this->sql->addSelectField("`$hierarchicalTargetTable`.`$id` as 'hierarchy_id'");
             $this->sql->addSelectField("`$hierarchicalTargetTable`.`parent_id` as 'hierarchy_parent_id'");

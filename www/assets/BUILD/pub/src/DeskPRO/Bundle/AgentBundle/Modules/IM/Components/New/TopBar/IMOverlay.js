@@ -3,6 +3,7 @@ import React from 'react';
 import Loader from 'react-loader';
 import classNames from 'classnames';
 import debounce from 'lodash/debounce';
+import agentPhrases from 'DeskPRO/Bundle/AgentBundle/AgentPhrases';
 import { ClickOut } from 'DeskPRO/Component/ClickOut';
 import { Detached } from 'DeskPRO/Component/Positioned/Detached';
 import { Tabs } from 'DeskPRO/Component/Semantic/Tabs';
@@ -121,7 +122,7 @@ export default class IMOverlay extends React.Component {
 
     return  {
       id:        'recent',
-      title:     <span><i className="fa fa-clock-o dp-im-tab-menu-icon" />{this.getHeader('Recent', chats)}</span>,
+      title:     <span><i className="fa fa-clock-o dp-im-tab-menu-icon" />{this.getHeader(agentPhrases.get('agent.chrome.btn_recent'), chats)}</span>,
       className: 'native-bars',
       content
     };
@@ -144,7 +145,7 @@ export default class IMOverlay extends React.Component {
 
     return  {
       id:        'agents',
-      title:     <span><i className="fa fa-user dp-im-tab-menu-icon" />{this.getHeader('Agents', filteredAgents)}</span>,
+      title:     <span><i className="fa fa-user dp-im-tab-menu-icon" />{this.getHeader(agentPhrases.get('agent.general.agents'), filteredAgents)}</span>,
       className: 'native-bars',
       content
     };
@@ -208,7 +209,7 @@ export default class IMOverlay extends React.Component {
       </Loader>
     );
 
-    let header = 'Groups';
+    let header = agentPhrases.get('agent.general.groups');
     if (this.state.filter) {
       header = `${header} (${filteredGroups.size + filteredDepartments.size + filteredTeams.size})`;
     }
@@ -242,7 +243,7 @@ export default class IMOverlay extends React.Component {
 
     return (
       <div>
-        <div className="im header">Agent IM</div>
+        <div className="im header">{agentPhrases.get('agent.chrome.nav_agentchat')}</div>
         <SegmentsGroup className="im">
           <Segment className="search-wrapper">
             <SearchBox
@@ -251,7 +252,7 @@ export default class IMOverlay extends React.Component {
               onFocus={onFocus}
               onBlur={onBlur}
               onUserInput={this.onListFilter}
-              placeholder="Search ..."
+              placeholder={agentPhrases.get('agent.general.search')}
             />
           </Segment>
           <Segment className="im-tabs">{this.getTabs()}</Segment>

@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2017, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2018, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -435,6 +435,8 @@ class ProcessAgentFwd extends ProcessAbstract
             $this->logMessage('[TicketGatewayProcessor] (Agent) Reading html');
             $agentReply = $this->reader->getBodyHtml()->body_utf8;
 
+            $agentReply = $this->importReplaceLinkedImages($agentReply);
+
             $agentReply = $this->cleaner->clean($agentReply, 'html_email_preclean');
             $agentReply = $this->cleaner->clean($agentReply, 'html_email_basicclean');
             $agentReply = $this->cleaner->clean($agentReply, 'html_email');
@@ -556,6 +558,8 @@ class ProcessAgentFwd extends ProcessAbstract
         if ($userReader->getBodyHtml() && $userReader->getBodyHtml()->body_utf8) {
             $this->logMessage('[TicketGatewayProcessor] (User) Reading html');
             $body = $userReader->getBodyHtml()->body_utf8;
+
+            $body = $this->importReplaceLinkedImages($body);
 
             $body = $this->cleaner->clean($body, 'html_email_preclean');
             $body = $this->cleaner->clean($body, 'html_email_basicclean');

@@ -57,6 +57,7 @@ class LanguagePhrases
         $groupToReal = [
             'adm'     => 'admin',
             'admin'   => 'admin',
+            'reports' => 'admin',
             'api'     => 'api',
             'agent'   => 'agent',
             'general' => 'general',

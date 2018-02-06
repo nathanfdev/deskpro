@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2017, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2018, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -39,7 +39,7 @@ use Symfony\Component\Validator\Constraints as Assert;
 /**
  * Class VoiceNumber.
  *
- * @ORM\Entity()
+ * @ORM\Entity(repositoryClass="DeskPRO\Bundle\AppBundle\Entity\Repository\VoiceNumberRepository")
  * @ORM\Table(name="voice_numbers", uniqueConstraints={
  *   @ORM\UniqueConstraint(name="number_sid", columns={"sid"})
  * })

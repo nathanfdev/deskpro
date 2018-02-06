@@ -30,7 +30,14 @@ namespace DeskPRO\Bundle\ReportBundle\Dpql2\Statement;
 
 use Application\DeskPRO\Entity\Person;
 use Application\DeskPRO\Entity\Problem;
+use Application\DeskPRO\Entity\Session;
+use DeskPRO\Bundle\AppBundle\Entity\HitRecord;
+use DeskPRO\Bundle\AppBundle\Entity\Snippet;
 use DeskPRO\Bundle\AppBundle\Entity\SnippetUseLog;
+use DeskPRO\Bundle\AppBundle\Entity\VoiceNumber;
+use DeskPRO\Bundle\AppBundle\Entity\VoicePhoneCall;
+use DeskPRO\Bundle\AppBundle\Entity\VoicePhoneCallLog;
+use DeskPRO\Bundle\ReportBundle\Dpql2\DpqlContextStorage;
 use DeskPRO\Bundle\ReportBundle\Dpql2\DpqlException;
 use DeskPRO\Bundle\ReportBundle\Dpql2\Plugin\Hierarchy\HierarchyPlugin;
 use DeskPRO\Bundle\ReportBundle\Dpql2\Plugin\Hierarchy\HierarchySorting;
@@ -45,7 +52,6 @@ use DeskPRO\Bundle\ReportBundle\Reports\Results;
 use Doctrine\DBAL\Connection;
 use Doctrine\ORM\EntityManager;
 use Orb\Util\Strings;
-use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorage;
 
 /**
  * Object for a select statement in DPQL.
@@ -63,9 +69,9 @@ class SelectPart
     private $reportsConnection;
 
     /**
-     * @var TokenStorage
+     * @var DpqlContextStorage
      */
-    private $tokenStorage;
+    private $contextStorage;
 
     /**
      * @var DpqlStatementFactory
@@ -164,7 +170,7 @@ class SelectPart
     /**
      * @var ResultMetadata
      */
-    private $resultHandler;
+    private $resultMetadata;
 
     /**
      * Maps aliases (keys) to select field IDs (in the SQL).
@@ -303,8 +309,14 @@ class SelectPart
         'user_rules'                  => 'DeskPRO:UserRule',
         'usergroups'                  => 'DeskPRO:Usergroup',
         'usersources'                 => 'DeskPRO:Usersource',
+        'snippets'                    => Snippet::class,
         'snippet_use_log'             => SnippetUseLog::class,
         'problems'                    => Problem::class,
+        'sessions'                    => Session::class,
+        'hit_record'                  => HitRecord::class,
+        'voice_numbers'               => VoiceNumber::class,
+        'voice_phone_calls'           => VoicePhoneCall::class,
+        'voice_phone_call_logs'       => VoicePhoneCallLog::class,
     ];
 
     /**
@@ -317,7 +329,7 @@ class SelectPart
      *
      * @param EntityManager        $em
      * @param Connection           $reportsConnection
-     * @param TokenStorage         $tokenStorage
+     * @param DpqlContextStorage   $contextStorage
      * @param DpqlStatementFactory $statementFactory
      * @param array                $select            Fields to select
      * @param string               $from              Table to select from
@@ -325,22 +337,25 @@ class SelectPart
     public function __construct(
         EntityManager        $em,
         Connection           $reportsConnection,
-        TokenStorage         $tokenStorage,
+        DpqlContextStorage   $contextStorage,
         DpqlStatementFactory $statementFactory,
         array                $select,
         $from
     ) {
         $this->em                = $em;
         $this->reportsConnection = $reportsConnection;
-        $this->tokenStorage      = $tokenStorage;
+        $this->contextStorage    = $contextStorage;
         $this->statementFactory  = $statementFactory;
 
         $this->setSelect($select);
         $this->setFrom($from);
 
+        $context = $this->contextStorage->getContext();
+        $person  = $context && $context->getPerson() instanceof Person ? $context->getPerson() : null;
+
         $this->sql              = new SqlSelect($this->em->getConnection());
-        $this->resultHandler    = new ResultMetadata();
-        $this->sqlSelectContext = new SqlSelectContext($this->reportsConnection, $this->resultHandler, [
+        $this->resultMetadata   = new ResultMetadata($person);
+        $this->sqlSelectContext = new SqlSelectContext($this->reportsConnection, $this->resultMetadata, [
             new HierarchyPlugin(
                 $this->reportsConnection,
                 new HierarchySorting($this->reportsConnection),
@@ -405,7 +420,7 @@ class SelectPart
     public function getResults()
     {
         $results = new Results();
-        $results->setMetadata($this->resultHandler);
+        $results->setMetadata($this->resultMetadata);
         $this->reportsConnection->query("SET time_zone = '+0:00'");
 
         try {
@@ -589,13 +604,13 @@ class SelectPart
     /**
      * @return \DeskPRO\Bundle\ReportBundle\Reports\ResultMetadata
      */
-    public function getResultHandler()
+    public function getResultMetadata()
     {
         if (!$this->prepared) {
             $this->prepare();
         }
 
-        return $this->resultHandler;
+        return $this->resultMetadata;
     }
 
     /**
@@ -690,7 +705,7 @@ class SelectPart
         $this->prepared = true;
 
         if ($this->from instanceof Alias) {
-            $prepared = $this->from->prepare($this, 'from', [], $this->sql, $this->resultHandler);
+            $prepared = $this->from->prepare($this, 'from', [], $this->sql, $this->resultMetadata);
             $this->sql->setTable([$prepared->sql(), $this->from->alias]);
         } else {
             $repository = $this->getFromEntityRepository();
@@ -743,7 +758,7 @@ class SelectPart
                 $field = $this->statementFactory->createSubSelect($field->toSql());
             }
 
-            $select = $field->prepare($this, 'select', [], $sql, $this->resultHandler);
+            $select = $field->prepare($this, 'select', [], $sql, $this->resultMetadata);
             $this->addPreparedSelectField($select, $alias);
         }
     }
@@ -758,10 +773,10 @@ class SelectPart
             $id = $this->addSqlSelectField($select->printed(), $alias);
 
             $resultTitle = ($alias !== false ? $alias : $select->name());
-            $this->resultHandler->addSelectColumn($resultTitle, $id, $select->renderer());
+            $this->resultMetadata->addSelectColumn($resultTitle, $id, $select->renderer());
 
             if ($select->total()) {
-                $this->resultHandler->addTotalColumn($id);
+                $this->resultMetadata->addTotalColumn($id);
             }
         }
     }
@@ -772,7 +787,7 @@ class SelectPart
     protected function prepareWhere()
     {
         if ($this->where) {
-            $where = $this->where->prepare($this, 'where', [], $this->sql, $this->resultHandler);
+            $where = $this->where->prepare($this, 'where', [], $this->sql, $this->resultMetadata);
             if ($where->hasValue()) {
                 $this->sql->addCondition($where->sql());
             }
@@ -795,14 +810,14 @@ class SelectPart
         $this->splitSql = $splitSql;
 
         foreach ($this->splitBy as $group) {
-            $groupBy = $group->prepare($this, 'split', [], $this->sql, $this->resultHandler);
+            $groupBy = $group->prepare($this, 'split', [], $this->sql, $this->resultMetadata);
             if ($groupBy->hasValue()) {
                 $splitSql->addGroupBy($groupBy->sql());
 
                 $this->splitColumnMap[$groupBy->sql()] = $splitSql->addSelectField($groupBy->sql());
 
                 $id = $splitSql->addSelectField($groupBy->printed());
-                $this->resultHandler->addSplitColumn($id, $groupBy->renderer());
+                $this->resultMetadata->addSplitColumn($id, $groupBy->renderer());
             }
         }
 
@@ -834,7 +849,7 @@ class SelectPart
                 $alias = false;
             }
 
-            $groupBy = $group->prepare($this, 'group', [], $sql, $this->resultHandler);
+            $groupBy = $group->prepare($this, 'group', [], $sql, $this->resultMetadata);
             if ($groupBy->hasValue()) {
                 $printId = $this->addSqlSelectField($groupBy->printed(), $alias);
                 $sql->addGroupBy($groupBy->sql());
@@ -860,7 +875,7 @@ class SelectPart
                 $renderer    = $groupBy->renderer() ?: function ($valueRenderer, $value, $row) {
                     return array_key_exists('hierarchy_title', $row) ? $row['hierarchy_title'] : $value;
                 };
-                $this->resultHandler->addGroupYColumn($resultTitle, $groupId, $printId, $renderer);
+                $this->resultMetadata->addGroupYColumn($resultTitle, $groupId, $printId, $renderer);
             }
         }
     }
@@ -898,7 +913,7 @@ class SelectPart
                 $direction = false;
             }
 
-            $orderSql = $order->prepare($this, 'order', [], $sql, $this->resultHandler);
+            $orderSql = $order->prepare($this, 'order', [], $sql, $this->resultMetadata);
             if ($orderSql->hasValue()) {
                 $sql->addOrderBy($orderSql->ordered().$direction);
             }
@@ -1046,12 +1061,12 @@ class SelectPart
             return 0;
         }
 
-        $token = $this->tokenStorage->getToken();
-        if (!$token) {
+        $context = $this->contextStorage->getContext();
+        if (!$context) {
             return 0;
         }
 
-        $user = $token->getUser();
+        $user = $context->getPerson();
         if (!$user instanceof Person) {
             return 0;
         }
@@ -1271,7 +1286,7 @@ class SelectPart
     {
         $this->withRollup = $withRollup;
         if ($this->withRollup) {
-            $this->resultHandler->addFlag(ResultMetadata::FLAG_WITH_ROLLUP);
+            $this->resultMetadata->addFlag(ResultMetadata::FLAG_WITH_ROLLUP);
         }
     }
 

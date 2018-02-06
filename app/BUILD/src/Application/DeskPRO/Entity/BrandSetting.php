@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2017, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2018, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -42,18 +42,12 @@ use Orb\Doctrine\ORM\Mapping\Builder\ClassMetadataBuilder;
 /**
  * Settings used by the system.
  *
- * @property int $id
  * @property string $name
  * @property string $value
  * @property \Application\DeskPRO\Entity\Brand $brand
  */
 class BrandSetting extends \Application\DeskPRO\Domain\DomainObject
 {
-    /**
-     * @var int
-     */
-    protected $id;
-
     /**
      * The name of the setting.
      *
@@ -74,14 +68,6 @@ class BrandSetting extends \Application\DeskPRO\Domain\DomainObject
      * @var \Application\DeskPRO\Entity\Brand
      */
     protected $brand;
-
-    /**
-     * @return int
-     */
-    public function getId()
-    {
-        return $this->id;
-    }
 
     /**
      * @return string
@@ -150,7 +136,6 @@ class BrandSetting extends \Application\DeskPRO\Domain\DomainObject
     public static function loadMetadata(ClassMetadata $metadata)
     {
         $builder = new ClassMetadataBuilder($metadata);
-        $builder->mapId();
         $builder->setTable('settings_brand');
         $builder->setCustomRepositoryClass(BrandSettingRepository::class);
         $builder->addUniqueConstraint([
@@ -169,6 +154,7 @@ class BrandSetting extends \Application\DeskPRO\Domain\DomainObject
                 'scale'      => 0,
                 'nullable'   => false,
                 'columnName' => 'name',
+                'id'         => true,
             ]
         );
         $metadata->mapField(
@@ -188,6 +174,7 @@ class BrandSetting extends \Application\DeskPRO\Domain\DomainObject
                 'targetEntity' => 'Application\\DeskPRO\\Entity\\Brand',
                 'mappedBy'     => null,
                 'inversedBy'   => null,
+                'id'           => true,
                 'joinColumns'  => [
                     0 => [
                         'name'                 => 'brand_id',
