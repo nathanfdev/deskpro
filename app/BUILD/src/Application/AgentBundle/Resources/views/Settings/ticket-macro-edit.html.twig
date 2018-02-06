@@ -36,10 +36,14 @@ pageMeta.baseId = '{{ baseId }}';
 		<div class="dp-form-row">
 			<div class="dp-form-label"><label>{{ phrase('agent.settings.macro_who_can_use') }}</label></div>
 			<div class="dp-form-input">
-				<select name="macro[is_global]">
-					<option value="0" {% if not macro.is_global %}selected="selected"{% endif %}>{{ phrase('agent.general.just_me') }}</option>
-					<option value="1" {% if macro.is_global %}selected="selected"{% endif %}>{{ phrase('agent.general.everyone') }}</option>
-				</select>
+        {% if macro.department%}
+          {{ phrase('agent.settings.macro_belongs_to_department', {'department': macro.department.title}) }}
+        {% else %}
+          <select name="macro[is_global]">
+            <option value="0" {% if not macro.is_global %}selected="selected"{% endif %}>{{ phrase('agent.general.just_me') }}</option>
+            <option value="1" {% if macro.is_global %}selected="selected"{% endif %}>{{ phrase('agent.general.everyone') }}</option>
+          </select>
+        {% endif %}
 			</div>
 		</div>
 
