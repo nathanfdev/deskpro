@@ -1,0 +1,213 @@
+services:
+
+  # source helpers
+  dp.importer.source.helper.progress:
+    class: DeskPRO\ImporterTools\Helpers\ProgressHelper
+    arguments:
+      - "@dp.importer.event_dispatcher"
+      - "@dp.importer.writer.entity_handler_registry"
+      - "@dp.importer_logger"
+    tags:
+      - { name: dp.importer.source.helper }
+
+  dp.importer.source.helper.output:
+    class: DeskPRO\ImporterTools\Helpers\OutputHelper
+    arguments:
+      - "@dp.importer_logger"
+    tags:
+      - { name: dp.importer.source.helper }
+
+  dp.importer.source.helper.formatter:
+    class: DeskPRO\ImporterTools\Helpers\FormatHelper
+    arguments:
+      - "@validator"
+      - "@dp.importer_logger"
+    tags:
+      - { name: dp.importer.source.helper }
+
+  dp.importer.source.helper.writer:
+    class: DeskPRO\ImporterTools\Helpers\WriteHelper
+    arguments:
+      - "@serializer"
+      - "@dp.importer.storage"
+      - "@dp.importer.event_dispatcher"
+      - "@dp.importer.writer.entity_handler_registry"
+      - "@dp.importer_logger"
+    tags:
+      - { name: dp.importer.source.helper }
+
+  dp.importer.source.helper.attachments:
+    class: DeskPRO\ImporterTools\Helpers\AttachmentHelper
+    tags:
+      - { name: dp.importer.source.helper }
+
+  dp.importer.source.helper.db:
+    class: DeskPRO\ImporterTools\Helpers\DbHelper
+    arguments:
+      - "@dp.importer_logger"
+    tags:
+      - { name: dp.importer.source.helper }
+
+  dp.importer.source.helper.csv:
+    class: DeskPRO\ImporterTools\Helpers\CsvHelper
+    arguments:
+      - "@dp.importer_logger"
+    tags:
+      - { name: dp.importer.source.helper }
+
+  # writer helpers
+  dp.importer.writer.helper_registry:
+    class: DeskPRO\Bundle\ImportBundle\Writer\Helper\HelperRegistry
+    arguments: ["@service_container"]
+
+  dp.importer.writer.helper.blob_adapter:
+    class: DeskPRO\Bundle\ImportBundle\Writer\Helper\BlobAdapter
+    arguments: ["@blob.storage"]
+    tags:
+      - { name: dp.importer.writer.helper }
+
+  dp.importer.writer.helper.attachment:
+    class: DeskPRO\Bundle\ImportBundle\Writer\Helper\AttachmentHelper
+    arguments:
+      - "@dp.importer.writer.helper.create_entity"
+      - "@dp.importer.writer.helper.person"
+      - "@dp.importer.writer.helper.blob_adapter"
+      - "@dp.importer.entity_persister"
+      - "@dp.importer_logger"
+    tags:
+      - { name: dp.importer.writer.helper }
+
+  dp.importer.writer.helper.create_entity:
+    class: DeskPRO\Bundle\ImportBundle\Writer\Helper\CreateEntityHelper
+    arguments: ["@dp.importer.writer.mapper.import_map", "@dp.importer_logger"]
+    tags:
+      - { name: dp.importer.writer.helper }
+
+  dp.importer.writer.helper.category:
+    class: DeskPRO\Bundle\ImportBundle\Writer\Helper\CategoryHelper
+    arguments:
+      - "@dp.importer.writer.mapper.import_map"
+      - "@dp.importer.writer.helper.brand"
+      - "@dp.importer.writer.helper.user_group"
+      - "@dp.importer.entity_persister"
+      - "@dp.importer_logger"
+    tags:
+      - { name: dp.importer.writer.helper }
+
+  dp.importer.writer.helper.brand:
+    class: DeskPRO\Bundle\ImportBundle\Writer\Helper\BrandHelper
+    arguments:
+      - "@dp.importer.writer.mapper.import_map"
+      - "@dp.importer.writer.mapper.brand"
+      - "@dp.importer.entity_persister"
+      - "@dp.importer_logger"
+    tags:
+      - { name: dp.importer.writer.helper }
+
+  dp.importer.writer.helper.department:
+    class: DeskPRO\Bundle\ImportBundle\Writer\Helper\DepartmentHelper
+    arguments:
+      - "@dp.importer.writer.mapper.import_map"
+      - "@dp.importer.writer.helper.brand"
+      - "@dp.importer.writer.mapper.department"
+      - "@dp.importer.entity_persister"
+      - "@dp.importer_logger"
+    tags:
+      - { name: dp.importer.writer.helper }
+
+  dp.importer.writer.helper.custom_data:
+    class: DeskPRO\Bundle\ImportBundle\Writer\Helper\CustomDataHelper
+    arguments: ["@dp.importer.writer.mapper.import_map", "@dp.importer.entity_persister", "@dp.importer_logger"]
+    tags:
+      - { name: dp.importer.writer.helper }
+
+  dp.importer.writer.helper.person_contact_data:
+    class: DeskPRO\Bundle\ImportBundle\Writer\Helper\PersonContactDataHelper
+    arguments:
+      - "@dp.importer.writer.mapper.phone_number"
+      - "@dp.importer.writer.mapper.person_contact_data"
+      - "@dp.importer.writer.helper.create_entity"
+      - "@dp.importer.entity_persister"
+      - "@dp.importer_logger"
+    tags:
+      - { name: dp.importer.writer.helper }
+
+  dp.importer.writer.helper.organization_contact_data:
+    class: DeskPRO\Bundle\ImportBundle\Writer\Helper\OrganizationContactDataHelper
+    arguments:
+      - "@dp.importer.writer.mapper.organization_contact_data"
+      - "@dp.importer.writer.helper.create_entity"
+      - "@dp.importer.entity_persister"
+      - "@dp.importer_logger"
+    tags:
+      - { name: dp.importer.writer.helper }
+
+  dp.importer.writer.helper.comment:
+    class: DeskPRO\Bundle\ImportBundle\Writer\Helper\CommentHelper
+    arguments:
+      - "@dp.importer.writer.helper.create_entity"
+      - "@dp.importer.writer.helper.person"
+      - "@dp.importer.entity_persister"
+      - "@dp.importer_logger"
+    tags:
+      - { name: dp.importer.writer.helper }
+
+  dp.importer.writer.helper.label:
+    class: DeskPRO\Bundle\ImportBundle\Writer\Helper\LabelHelper
+    arguments: ["@dp.importer_logger"]
+    tags:
+      - { name: dp.importer.writer.helper }
+
+  dp.importer.writer.helper.language:
+    class: DeskPRO\Bundle\ImportBundle\Writer\Helper\LanguageHelper
+    arguments: ["@dp.importer.writer.mapper.language", "@dp.importer.entity_persister", "@dp.importer_logger"]
+    tags:
+      - { name: dp.importer.writer.helper }
+
+  dp.importer.writer.helper.translation:
+    class: DeskPRO\Bundle\ImportBundle\Writer\Helper\TranslationHelper
+    arguments: ["@dp.importer.writer.helper.language", "@dp.importer_logger"]
+    tags:
+      - { name: dp.importer.writer.helper }
+
+  dp.importer.writer.helper.user_group:
+    class: DeskPRO\Bundle\ImportBundle\Writer\Helper\UserGroupHelper
+    arguments:
+      - "@dp.importer.writer.mapper.usergroup"
+      - "@dp.importer.entity_persister"
+      - "@dp.importer_logger"
+    tags:
+      - { name: dp.importer.writer.helper }
+
+  dp.importer.writer.helper.person:
+    class: DeskPRO\Bundle\ImportBundle\Writer\Helper\PersonHelper
+    arguments:
+      - "@dp.importer.writer.mapper.person"
+      - "@dp.importer.writer.mapper.import_map"
+      - "@dp.importer_validator"
+      - "@dp.importer.entity_persister"
+      - "@dp.importer_logger"
+    tags:
+      - { name: dp.importer.writer.helper }
+
+  dp.importer.writer.helper.organization:
+    class: DeskPRO\Bundle\ImportBundle\Writer\Helper\OrganizationHelper
+    arguments:
+      - "@dp.importer.writer.mapper.organization"
+      - "@dp.importer.writer.mapper.import_map"
+      - "@dp.importer.entity_persister"
+      - "@dp.importer_logger"
+    tags:
+      - { name: dp.importer.writer.helper }
+
+  dp.importer.writer.helper.text_snippet_category:
+    class: DeskPRO\Bundle\ImportBundle\Writer\Helper\TextSnippetCategoryHelper
+    arguments:
+      - "@dp.importer.writer.mapper.text_snippet_category"
+      - "@dp.importer.writer.mapper.language"
+      - "@dp.importer.writer.mapper.import_map"
+      - "@dp.importer.writer.helper.language"
+      - "@dp.importer.entity_persister"
+      - "@dp.importer_logger"
+    tags:
+      - { name: dp.importer.writer.helper }

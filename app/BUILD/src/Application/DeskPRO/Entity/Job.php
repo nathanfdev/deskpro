@@ -285,6 +285,12 @@ class Job extends DomainObject
      */
     protected $worker_id;
 
+    /**
+     * Constructor.
+     *
+     * @param string $type
+     * @param array  $data
+     */
     public function __construct($type, array $data = [])
     {
         $this->date_created  = new \DateTime();
@@ -295,6 +301,111 @@ class Job extends DomainObject
         $this->num_tries     = 0;
         $this->type          = $type;
         $this->data          = $data;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getStatus()
+    {
+        return $this->status;
+    }
+
+    /**
+     * @param string $status
+     *
+     * @return $this
+     */
+    public function setStatus($status)
+    {
+        $this->setModelField('status', $status);
+
+        return $this;
+    }
+
+    /**
+     * @return array
+     */
+    public function getData()
+    {
+        return $this->data;
+    }
+
+    /**
+     * @param array $data
+     *
+     * @return $this
+     */
+    public function setData(array $data)
+    {
+        $this->setModelField('data', $data);
+
+        return $this;
+    }
+
+    /**
+     * @param string $key
+     * @param mixed  $default
+     *
+     * @return mixed
+     */
+    public function getDataKey($key, $default = null)
+    {
+        return isset($this->data[$key]) ? $this->data[$key] : $default;
+    }
+
+    /**
+     * @param string $key
+     * @param mixed  $value
+     *
+     * @return $this
+     */
+    public function setDataKey($key, $value)
+    {
+        $this->data[$key] = $value;
+        $this->setModelField('data', $this->data);
+
+        return $this;
+    }
+
+    /**
+     * @return string
+     */
+    public function getLog()
+    {
+        return $this->log;
+    }
+
+    /**
+     * @param string $log
+     *
+     * @return $this
+     */
+    public function setLog($log)
+    {
+        $this->setModelField('log', $log);
+
+        return $this;
+    }
+
+    /**
+     * @param \DateTime $dateCreated
+     *
+     * @return $this
+     */
+    public function setDateCreated(\DateTime $dateCreated = null)
+    {
+        $this->setModelField('date_created', $dateCreated);
+
+        return $this;
+    }
+
+    /**
+     * @return \DateTime
+     */
+    public function getDateCreated()
+    {
+        return $this->date_created;
     }
 
     //###########################################################################

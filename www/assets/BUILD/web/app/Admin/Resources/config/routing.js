@@ -2544,22 +2544,47 @@ define(function() {
   routes.push({
     id:           'apps.oauth_clients',
     url:          '/oauth_clients',
-    templateName: 'VoiceChannel/react_component.html',
-    controller:   'Admin_VoiceChannel_Ctrl_ReactComponent'
+    templateName: 'ReactRoutes/react_component.html',
+    controller:   'Admin_ReactRoutes_Ctrl_ReactComponent'
   });
 
   routes.push({
     id:           'apps.oauth_client_new',
     url:          '/oauth_clients/new',
-    templateName: 'VoiceChannel/react_component.html',
-    controller:   'Admin_VoiceChannel_Ctrl_ReactComponent'
+    templateName: 'ReactRoutes/react_component.html',
+    controller:   'Admin_ReactRoutes_Ctrl_ReactComponent'
   });
 
   routes.push({
     id:           'apps.oauth_client_edit',
     url:          '/oauth_clients/{id:[0-9]+}',
-    templateName: 'VoiceChannel/react_component.html',
-    controller:   'Admin_VoiceChannel_Ctrl_ReactComponent'
+    templateName: 'ReactRoutes/react_component.html',
+    controller:   'Admin_ReactRoutes_Ctrl_ReactComponent'
+  });
+
+  //###
+  //# Importer
+  //###
+
+  routes.push({
+    id:           'apps.importer',
+    url:          '/importer',
+    templateName: 'ReactRoutes/react_component.html',
+    controller:   'Admin_ReactRoutes_Ctrl_ReactComponent'
+  });
+
+  routes.push({
+    id:           'apps.importer_source',
+    url:          '/importer/source/{id:[a-zA-Z0-9\\._\\-]+}',
+    templateName: 'ReactRoutes/react_component.html',
+    controller:   'Admin_ReactRoutes_Ctrl_ReactComponent'
+  });
+
+  routes.push({
+    id:           'apps.importer_status',
+    url:          '/importer/status',
+    templateName: 'ReactRoutes/react_component.html',
+    controller:   'Admin_ReactRoutes_Ctrl_ReactComponent'
   });
 
   //##################################################################################################################
@@ -2662,23 +2687,6 @@ define(function() {
     url: '/file_uploads',
     templateName: 'Server/server-file-uploads.html',
     controller: 'Admin_ServerFileUploads_Ctrl_ServerFileUploads'
-  });
-
-  //###
-  //# Imports
-  //###
-  routes.push({
-    id:           'apps.importers',
-    url:          '/importers',
-    templateName: 'Apps/importers-list.html',
-    controller:   'Admin_Apps_Ctrl_ImportersList'
-  });
-
-  routes.push({
-    id:           'apps.importers.view',
-    url:          '/{id}',
-    templateName: 'Apps/importers-view.html',
-    controller:   'Admin_Apps_Ctrl_ImportersView'
   });
 
   //###

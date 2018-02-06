@@ -106,6 +106,7 @@ bin/deskpro-importer-tools
 /config/advanced/*
 !/config/.gitkeep
 !/config/advanced/.gitkeep
+!/config/importer/.gitkeep
 
 
 

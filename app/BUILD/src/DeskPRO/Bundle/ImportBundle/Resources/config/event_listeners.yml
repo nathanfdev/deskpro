@@ -1,0 +1,12 @@
+services:
+
+  dp.importer.event_dispatcher:
+    class: Symfony\Component\EventDispatcher\EventDispatcher
+
+  dp.import.listener.job_progress:
+    class: DeskPRO\Bundle\ImportBundle\EventListener\JobProgressEventListener
+    arguments:
+      - "@doctrine.orm.entity_manager"
+      - "@dp.importer.writer.entity_handler_registry"
+    tags:
+      - { name: dp.importer.event_subscriber }

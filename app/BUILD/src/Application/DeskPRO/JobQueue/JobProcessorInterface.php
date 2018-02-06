@@ -26,12 +26,11 @@
  * ~ Thanks, Everyone at Team DeskPRO
  */
 
-/**
- * DeskPRO.
- */
-
 namespace Application\DeskPRO\JobQueue;
 
+/**
+ * Interface JobProcessorInterface.
+ */
 interface JobProcessorInterface
 {
     /**

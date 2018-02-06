@@ -1,0 +1,26 @@
+services:
+
+  dp.importer_logger:
+    class: Monolog\Logger
+    arguments:
+      - "importer"
+
+  dp.importer.formatter:
+    class: Monolog\Formatter\LineFormatter
+    calls:
+      - [ignoreEmptyContextAndExtra, [true]]
+      - [allowInlineLineBreaks, [true]]
+
+  dp.importer.logger.job_progress:
+    class: DeskPRO\Bundle\ImportBundle\Monolog\Handler\JobProgressHandler
+    arguments:
+      - "@doctrine.orm.entity_manager"
+    calls:
+      - [setFormatter, ["@dp.importer.formatter"]]
+
+  dp.importer.logger.storage_handler:
+    class: DeskPRO\Bundle\ImportBundle\Monolog\Handler\StorageHandler
+    arguments:
+      - "@dp.importer.storage"
+    calls:
+      - [setFormatter, ["@dp.importer.formatter"]]

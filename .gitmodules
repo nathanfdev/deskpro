@@ -1,0 +1,3 @@
+[submodule "app/BUILD/modules/importer-tools"]
+	path = app/BUILD/modules/importer-tools
+	url = git@github.com:deskpro/deskpro-importer-tools.git

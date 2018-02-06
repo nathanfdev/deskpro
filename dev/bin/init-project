@@ -7,6 +7,13 @@ $DIR_ROOT/dev/bin/clean-project
 echo ".. done"
 echo
 
+echo ">> Update modules"
+cd $DIR_ROOT
+git submodule init
+git submodule update
+echo ".. done"
+echo
+
 echo ">> Installing vendors with composer"
 cd $DIR_ROOT/app/BUILD
 composer install --ignore-platform-reqs --prefer-dist

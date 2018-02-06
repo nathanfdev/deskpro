@@ -9,8 +9,6 @@ define([
   'Admin/Apps/Ctrl/InstallProgress',
   'Admin/Apps/Ctrl/PackageInfo',
   'Admin/Apps/Ctrl/PackageInstall',
-  'Admin/Apps/Ctrl/ImportersList',
-  'Admin/Apps/Ctrl/ImportersView',
   'Admin/Apps/Ctrl/InstallAppV2',
   'Admin/Apps/Ctrl/UpdateAppV2',
   'Admin/Apps/Ctrl/Resync',
