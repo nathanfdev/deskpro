@@ -255,7 +255,6 @@ define ['Admin/Main/Ctrl/Base', 'angular'], (Admin_Ctrl_Base, angular) ->
       @selected_template_info_loaded = false
 
     openCssEditor: (type) =>
-      console.info 'test'
       @css_template_selected = true
       @$http.get(@$scope.baseUrl+'/portal/api/style/edit-theme-set/advanced-edits').success((data) =>
         @css_template_info = {

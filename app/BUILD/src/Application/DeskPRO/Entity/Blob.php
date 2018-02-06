@@ -228,7 +228,7 @@ class Blob extends \Application\DeskPRO\Domain\DomainObject
     {
         $this->date_created = new \DateTime();
         $this->authcode     = DpStrings::random(20, Strings::CHARS_KEY_ALPHA);
-        $this->labels       = new \Doctrine\Common\Collections\ArrayCollection();
+        $this->labels       = new ArrayCollection();
     }
 
     public static function hasZipArchiveClass()
