@@ -360,6 +360,13 @@ abstract class ProcessAbstract
 
     protected function importReplaceLinkedImages($body)
     {
+        if (!App::getContainer()->getSetting('core.emails.download_hotlinked_images.enabled')) {
+            $this->logMessage('Skipping `importReplaceLinkedImages` because settings '
+                              .'`core.emails.download_hotlinked_images.enabled` disabled');
+
+            return $body;
+        }
+
         static $cache;
         $m      = null;
         $tmpDir = App::$container->get('deskpro.app_env')->getUserTmpDir();
@@ -368,6 +375,8 @@ abstract class ProcessAbstract
             GuzzleHttp\RequestOptions::CONNECT_TIMEOUT => 4,
             GuzzleHttp\RequestOptions::TIMEOUT         => 10,
         ]);
+        $maxImageSize = (int) App::getContainer()->getSetting('core.emails.download_hotlinked_images.image_maxsize');
+        $maxTotalSize = (int) App::getContainer()->getSetting('core.emails.download_hotlinked_images.total_maxsize');
 
         $totalImageSize = 0;
         if (preg_match_all('#(<|&lt;)img[^>]*/?(>|&gt;)((<|&lt;)/img(>|&gt;))?#iu', $body, $m, \PREG_SET_ORDER)) {
@@ -396,7 +405,7 @@ abstract class ProcessAbstract
                         }
                         $imageSize = filesize($tmpFile);
                         // We don't import images over 10 MB and more than 25MB of images in total
-                        if ($imageSize > 10 * 1024 * 1024 || $totalImageSize + $imageSize > 25 * 1024 * 1024) {
+                        if ($imageSize > $maxImageSize || $totalImageSize + $imageSize > $maxTotalSize) {
                             unlink($tmpFile);
                             $tag  = "<a href=\"$src\" target=\"_blank\">$src</a>";
                             $body = str_replace($match[0], $tag, $body);
