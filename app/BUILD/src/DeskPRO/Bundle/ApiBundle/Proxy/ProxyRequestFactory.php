@@ -40,10 +40,11 @@ use Symfony\Component\HttpFoundation\Request;
  */
 class ProxyRequestFactory
 {
+
     /**
-     * @var EntityManager
+     * @var AppStateRepository
      */
-    private $em;
+    private $appStateRepository;
 
     /**
      * @var string[]
@@ -56,13 +57,22 @@ class ProxyRequestFactory
     private $privateStateVars = [];
 
     /**
-     * Constructor.
-     *
      * @param EntityManager $em
+     * @return ProxyRequestFactory
      */
-    public function __construct(EntityManager $em)
+    public static function create(EntityManager $em)
     {
-        $this->em = $em;
+        /** @var AppStateRepository $appStateRepo */
+        $appStateRepo = $em->getRepository(AppState::class);
+        return new ProxyRequestFactory($appStateRepo);
+    }
+
+    /**
+     * @param AppStateRepository $appStateRepository
+     */
+    public function __construct(AppStateRepository $appStateRepository)
+    {
+        $this->appStateRepository = $appStateRepository;
     }
 
     /**
@@ -129,12 +139,19 @@ class ProxyRequestFactory
 
     private function getRequestSigningStrategy(ProxySignWithHeader $header)
     {
-        $credentialName = $header->getCredentialName();
-        if (array_key_exists($credentialName, $this->privateStateVars)) {
-            return new RequestSigningStrategy($header->getAlgorithm(), $this->privateStateVars[$credentialName]);
+        $strategyName = $header->getSignWithStrategy();
+        if ($strategyName === RequestSigningStrategy::STRATEGY_OAUTH1) {
+            $credentialNames = $header->getCredentialNames();
+            $credentials = array_intersect_key($this->privateStateVars, array_flip($credentialNames));
+
+            if (count($credentialNames) !== count($credentials)) {
+                throw new \RuntimeException('unknown credentials');
+            }
+
+            return new RequestSigningStrategyOauth1($credentials);
         }
 
-        return null;
+        throw new \RuntimeException('unknown sign with strategy');
     }
 
     /**
@@ -149,15 +166,15 @@ class ProxyRequestFactory
             return null;
         }
 
-        $parts = explode(' ', $value);
-        if (
-            count($parts) === 2
-            && is_string($parts[0]) && !empty($parts[0])
-            && is_string($parts[1]) && !empty($parts[1])
-        ) {
-            return new ProxySignWithHeader($parts[0], $parts[1]);
+        $parts = explode(' ', trim($value));
+        $nonEmptyParts = array_filter($parts, function($part) { return !empty($part); });
+
+        if ($parts[0] !== $nonEmptyParts[0] || count($nonEmptyParts) < 2) {
+            return null;
         }
-        return null;
+
+        $strategy  = array_shift($nonEmptyParts);
+        return new ProxySignWithHeader($strategy, $nonEmptyParts);
     }
 
     /**
@@ -289,10 +306,7 @@ class ProxyRequestFactory
         $this->privateStateVars = [];
 
         $names = $this->getAppStateNamesFromValue($nameProviders);
-
-        /** @var AppStateRepository $appStateRepo */
-        $appStateRepo = $this->em->getRepository(AppState::class);
-        $appStates    = $appStateRepo->findReadableByName($instance, $person, $names);
+        $appStates = $this->appStateRepository->findReadableByName($instance, $person, $names);
 
         if ($appStates) {
             foreach ($appStates as $appState) {
@@ -310,7 +324,7 @@ class ProxyRequestFactory
     {
         $names = [];
         if ($value instanceof ProxySignWithHeader) {
-            $names[] = $value->getCredentialName();
+            $names[] = $value->getCredentialNames();
         } if (is_string($value)) {
             if (preg_match_all('#{{privateState\.(.*?)}}#', $value, $m)) {
                 $names = $m[1];
