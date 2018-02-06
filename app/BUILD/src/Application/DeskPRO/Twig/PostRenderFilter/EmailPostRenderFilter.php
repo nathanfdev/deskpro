@@ -71,7 +71,14 @@ class EmailPostRenderFilter extends AbstractPostRenderFilter
 
         $code = Strings::preDomDocument($code);
         $emog = new Emogrifier($code, $css);
-        $code = $emog->emogrify();
+        try {
+            $code = $emog->emogrify();
+        } catch (\Exception $e) {
+            // In case of error with css with failover on default css
+            $css  = file_get_contents(DP_ROOT.'/src/Application/DeskPRO/Resources/views/emails_common/email-css.css.twig');
+            $emog = new Emogrifier($code, $css);
+            $code = $emog->emogrify();
+        }
         $code = Strings::postDomDocument($code);
 
         foreach ($save_blocks as $id => $block) {

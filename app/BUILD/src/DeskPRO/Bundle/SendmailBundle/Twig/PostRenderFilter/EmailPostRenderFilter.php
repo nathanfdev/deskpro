@@ -70,7 +70,14 @@ class EmailPostRenderFilter extends AbstractPostRenderFilter
 
         $code = Strings::preDomDocument($code);
         $emog = new Emogrifier($code, $css);
-        $code = $emog->emogrify();
+        try {
+            $code = $emog->emogrify();
+        } catch (\Exception $e) {
+            // In case of error with css with failover on default css
+            $css  = file_get_contents(DP_WEB_ROOT.'/pub/src/DeskPRO/Bundle/AppBundle/Resources/style/emails/zurb-foundation.css');
+            $emog = new Emogrifier($code, $css);
+            $code = $emog->emogrify();
+        }
         $code = Strings::postDomDocument($code);
 
         foreach ($saveBlocks as $id => $block) {
