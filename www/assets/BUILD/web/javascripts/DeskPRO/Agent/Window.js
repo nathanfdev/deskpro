@@ -2089,6 +2089,14 @@ DeskPRO.Agent.Window = new Orb.Class({
 					DeskPRO_Window.TabBar.activateTabById(existTab.id);
 				} else {
 					if (DeskPRO_Window.TabBar.currentTabId == existTab.id) {
+						if (existTab.page && existTab.page.fireEvent) {
+							event.deskpro = {cancelClose: false};
+							existTab.page.fireEvent('closeTab', [event, existTab]);
+
+							if (event.deskpro.cancelClose) {
+								return;
+							}
+						}
 						DeskPRO_Window.TabBar.removeTabById(existTab.id);
 						if (routeData.routeTriggerEl && routeData.toggleOpenClass) {
 							routeData.routeTriggerEl.removeClass(routeData.toggleOpenClass);
