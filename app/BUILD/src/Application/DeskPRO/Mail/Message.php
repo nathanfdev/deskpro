@@ -233,7 +233,7 @@ class Message extends \Orb\Mail\Message
                                 $plaintext
                             );
                         $converter = new \Html2Text\Html2Text($plaintext, ['width' => 0]);
-                        $plaintext = $htmlConv->getText();
+                        $plaintext = $converter->getText();
                     } catch (\Exception $e) {
                         $plaintext = null;
                     }
