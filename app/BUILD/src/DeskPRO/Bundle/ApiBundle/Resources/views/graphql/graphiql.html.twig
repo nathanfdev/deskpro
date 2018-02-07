@@ -10,10 +10,20 @@
                 padding: 0;
                 margin: 0;
             }
+
+            #deskpro_auth_input {
+                position: absolute;
+                top: 16px;
+                left: 350px;
+                font-family: Helvetica, Arial, Geneva, sans-serif;
+            }
         </style>
         <link href="https://cdnjs.cloudflare.com/ajax/libs/graphiql/0.11.11/graphiql.css" rel="stylesheet" type="text/css" />
     </head>
     <body>
+        <div id="deskpro_auth_input">
+            API Key: <input type="text" id="deskpro_api_key" placeholder="Eg: 1:ABCDEFG">
+        </div>
         <div id="mount"></div>
 
         <script src="https://cdnjs.cloudflare.com/ajax/libs/react/16.2.0/umd/react.production.min.js"></script>
@@ -33,23 +43,31 @@
                 };
 
                 var fetcher = function(graphQLParams) {
+                    var headers = {
+                      'Content-Type': 'application/json'
+                    };
+
+                    var apikey = document.getElementById('deskpro_api_key').value || null;
+                    if (apikey && apikey !== "") {
+                      headers['Authorization'] = 'key ' + apikey;
+                    }
+
                     return fetch(window.location.origin + '{{ url }}', {
                         method: 'post',
-                        headers: {
-                            'Content-Type': 'application/json'
-                        },
+                        headers: headers,
                         body: JSON.stringify(graphQLParams)
                     }).then(function(resp) {
                         return resp.json();
                     });
                 };
 
-                var defaultQuery = "{\n" +
-                    "  content_get_articles(id: 100) {\n" +
-                    "    title\n" +
-                    "    content\n" +
-                    "  }\n" +
-                    "}";
+                var defaultQuery = " {\n" +
+                  "   helpdesk_get_helpdesk_discover {\n" +
+                  " 	is_deskpro\n" +
+                  " 	helpdesk_url\n" +
+                  " 	build\n" +
+                  "   }\n" +
+                  " }\n";
 
                 ReactDOM.render(
                     React.createElement(GraphiQL, {

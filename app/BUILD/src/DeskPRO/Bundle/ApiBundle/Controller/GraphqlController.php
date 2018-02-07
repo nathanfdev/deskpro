@@ -30,23 +30,27 @@ namespace DeskPRO\Bundle\ApiBundle\Controller;
 
 use DeskPRO\Bundle\ApiBundle\ApiDoc\Annotation\ApiDoc;
 use DeskPRO\Bundle\ApiBundle\ApiDoc\GraphQL\Exception\NotFoundException;
+use DeskPRO\Bundle\AppBundle\Annotation\ActionPermissions\Annotation\ApiModes;
+use DeskPRO\Bundle\AppBundle\Annotation\ActionPermissions\Annotation\ApiUserContext;
+use Exception;
+use GraphQL\Error\Debug;
+use GraphQL\GraphQL;
+use GraphQL\Type\Definition\ListOfType;
+use GraphQL\Type\Definition\NonNull;
+use GraphQL\Type\Definition\ObjectType;
+use GraphQL\Type\Definition\ResolveInfo;
+use GraphQL\Type\Schema;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 use Symfony\Component\HttpKernel\HttpKernelInterface;
 use Symfony\Component\Routing\Annotation\Route;
-use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
-use GraphQL\Type\Definition\ObjectType;
-use GraphQL\Type\Definition\ListOfType;
-use GraphQL\Type\Definition\NonNull;
-use GraphQL\Type\Definition\ResolveInfo;
-use GraphQL\Type\Schema;
-use GraphQL\Error\Debug;
-use GraphQL\GraphQL;
-use Exception;
 
 /**
  * Handles GraphQL schema requests and queries.
+ *
+ * @ApiModes("all")
  */
 class GraphqlController extends BaseController
 {
@@ -79,13 +83,14 @@ class GraphqlController extends BaseController
         'tickets_get_ticket_custom_fields',
         'tickets_get_tickets',
         'chats_get_user_chat_custom_fields',
-        'widget_sample_online_agents_get_widget_live_demo_sample_state'
+        'widget_sample_online_agents_get_widget_live_demo_sample_state',
     ];
 
     /**
-     * Handles GraphQL schema requests and queries
+     * Handles GraphQL schema requests and queries.
      *
      * @Route("/graphql", name="api_v2_graphql")
+     * @ApiUserContext("open")
      *
      * @param Request $request
      *
@@ -111,17 +116,17 @@ class GraphqlController extends BaseController
                 'errors' => [
                     [
                         'message' => 'Not Found',
-                        'field'   => $e->getResolveInfo()->fieldName
-                    ]
-                ]
+                        'field'   => $e->getResolveInfo()->fieldName,
+                    ],
+                ],
             ];
         } catch (Exception $e) {
             $output = [
                 'errors' => [
                     [
-                        'message' => $e->getMessage()
-                    ]
-                ]
+                        'message' => $e->getMessage(),
+                    ],
+                ],
             ];
         }
 
@@ -129,23 +134,25 @@ class GraphqlController extends BaseController
     }
 
     /**
-     * Handles GraphiQL requests
+     * Handles GraphiQL requests.
      *
      * @Route("/graphiql", name="api_v2_graphiql")
+     * @ApiUserContext("open")
      *
      * @return Response
      */
     public function graphiqlAction()
     {
         return $this->renderHtml('ApiBundle:graphql:graphiql.html.twig', [
-            'url' => $this->generateUrl('api_v2_graphql')
+            'url' => $this->generateUrl('api_v2_graphql'),
         ]);
     }
 
     /**
-     * Handles request for GraphQL operations docs
+     * Handles request for GraphQL operations docs.
      *
      * @Route("/graphql/doc")
+     * @ApiUserContext("open")
      *
      * @return Response
      */
@@ -160,12 +167,12 @@ class GraphqlController extends BaseController
         return $this->renderHtml('ApiBundle:graphql:doc.html.twig', [
             'query'    => $query,
             'mutation' => $mutation,
-            'types'    => $types
+            'types'    => $types,
         ]);
     }
 
     /**
-     * The resolver function which bridges the REST endpoints and GraphQL
+     * The resolver function which bridges the REST endpoints and GraphQL.
      *
      * The GraphQL schema generator converted REST endpoints into GraphQL operations.
      * This resolver converts an operation back into REST path, and makes
@@ -177,9 +184,9 @@ class GraphqlController extends BaseController
      * @param ApiDoc      $annotation Annotation related to the request
      * @param array       $args       Operation arguments
      *
-     * @return mixed
-     *
      * @throws Exception
+     *
+     * @return mixed
      */
     public function resolve(Request $request, ResolveInfo $info, ApiDoc $annotation, array $args)
     {
@@ -193,12 +200,12 @@ class GraphqlController extends BaseController
         // into GraphQL operations like "content_article (id: ID)". The operation
         // arguments must be converted back into REST paths so that a sub-request
         // can be made.
-        //
+
         // Some of the operation arguments do not come from the REST path. For
         // example form values. They will be saved, JSON encoded, and passed along
         // as the body of the sub-request.
         foreach ($args as $name => $value) {
-            $regex = '/{' . preg_quote($name) . '}/i';
+            $regex = '/{'.preg_quote($name).'}/i';
             if (is_scalar($value) && preg_match($regex, $path, $matches)) {
                 $path = str_replace($matches[0], $value, $path);
                 unset($args[$name]);
@@ -219,7 +226,10 @@ class GraphqlController extends BaseController
         try {
             $response = $this->getKernel()->handle(
                 $subRequest,
-                HttpKernelInterface::SUB_REQUEST,
+                // TODO master request because Security ony runs on master, but this /graphql needs to be open
+                // so no auth is enabled for this url (in api_config.yml)
+                // ideally we need to fix @ApiUserContext("open") annote so open apis dont require us to completely disable security in api_config
+                HttpKernelInterface::MASTER_REQUEST,
                 false
             );
         } catch (NotFoundHttpException $e) {
@@ -228,8 +238,8 @@ class GraphqlController extends BaseController
 
         // Most of the REST endpoints return an ApiWrapper. We must extract
         // the value from "data" array it creates.
-        $body  = json_decode($response->getContent(), true);
-        $body  = (is_array($body) && isset($body['data'])) ? $body['data'] : $body;
+        $body = json_decode($response->getContent(), true);
+        $body = (is_array($body) && isset($body['data'])) ? $body['data'] : $body;
 
         // The PUT/POST/DELETE endpoints may return null, which isn't a
         // valid GraphQL data type. Return a boolean instead.
@@ -241,7 +251,7 @@ class GraphqlController extends BaseController
     }
 
     /**
-     * For debugging, spits out the GraphQL query operations JSON string
+     * For debugging, spits out the GraphQL query operations JSON string.
      *
      * @Route("/graphql/doc/queries.json")
      *
@@ -249,14 +259,14 @@ class GraphqlController extends BaseController
      */
     public function queriesJsonAction()
     {
-        $schema   = $this->getSchema();
-        $query    = $schema->getQueryType();
+        $schema = $this->getSchema();
+        $query  = $schema->getQueryType();
 
         return new JsonResponse($this->buildQueryArray($query));
     }
 
     /**
-     * For debugging, spits out the GraphQL mutation operations JSON string
+     * For debugging, spits out the GraphQL mutation operations JSON string.
      *
      * @Route("/graphql/doc/mutations.json")
      *
@@ -272,18 +282,19 @@ class GraphqlController extends BaseController
 
     /**
      * Used by queriesJsonAction() and mutationsJsonAction() to convert GraphQL
-     * objects into an array
+     * objects into an array.
      *
      * @param ObjectType $query
+     *
      * @return array
      */
     protected function buildQueryArray(ObjectType $query)
     {
         $arr = [];
-        foreach($query->getFields() as $fields) {
+        foreach ($query->getFields() as $fields) {
             $args = [];
-            foreach($fields->args as $arg) {
-                $args[$arg->name] = (string)$arg->getType();
+            foreach ($fields->args as $arg) {
+                $args[$arg->name] = (string) $arg->getType();
             }
 
             $type = $fields->getType();
@@ -293,11 +304,11 @@ class GraphqlController extends BaseController
 
             $props = [];
             if (method_exists($type, 'getFields')) {
-                foreach($type->getFields() as $prop) {
-                    $props[$prop->name] = (string)$prop->getType();
+                foreach ($type->getFields() as $prop) {
+                    $props[$prop->name] = (string) $prop->getType();
                 }
-            } else if (!empty($type->name)) {
-                $props[$type->name] = (string)$type;
+            } elseif (!empty($type->name)) {
+                $props[$type->name] = (string) $type;
             }
 
             $arr[$fields->name] = ['args' => $args, 'fields' => $props];
@@ -307,7 +318,7 @@ class GraphqlController extends BaseController
     }
 
     /**
-     * Creates and returns a GraphQL schema from the @ApiDoc annotations
+     * Creates and returns a GraphQL schema from the @ApiDoc annotations.
      *
      * @return Schema
      */
@@ -318,22 +329,21 @@ class GraphqlController extends BaseController
             ->setIgnoredOperations($this->ignoredOperations);
 
         $resolverFunc = [$this, 'resolve'];
-        $annotations  = array_map(function($doc) {
+        $annotations  = array_map(function ($doc) {
             return $doc['annotation'];
         }, $this->get('nelmio_api_doc.extractor.api_doc_extractor')->all());
-
 
         return $creator->createSchema($annotations, $resolverFunc);
     }
 
     /**
-     * Renders a standard text/html response
+     * Renders a standard text/html response.
      *
      * Required because this code is in the ApiBundle, which wants to
      * send all responses as application/json by default.
      *
      * @param string $template
-     * @param array $parameters
+     * @param array  $parameters
      *
      * @return Response
      */
