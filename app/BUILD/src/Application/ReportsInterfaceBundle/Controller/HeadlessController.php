@@ -49,11 +49,12 @@ class HeadlessController extends \Application\DeskPRO\Controller\AbstractControl
         $widgetService = $this->get('dashboard.widget.service');
         $widgets       = [];
         foreach ($report->getSavedWidgets() as $savedWidget) {
-            $wdata         = $widgetService->getWidgetData($savedWidget);
-            $wdata['id']   = $savedWidget->getDashboardWidget()->getId();
-            $wdata['type'] = $widgetService->getWidgetType($savedWidget->getType());
-            $wdata['data'] = $savedWidget->getData();
-            $widgets[]     = $wdata;
+            $wdata                = $widgetService->getWidgetData($savedWidget);
+            $wdata['id']          = $savedWidget->getDashboardWidget()->getId();
+            $wdata['widget_type'] = $widgetService->getWidgetType($savedWidget->getType());
+            $wdata['type']        = $savedWidget->getType();
+            $wdata['data']        = $savedWidget->getData() ?: null;
+            $widgets[]            = $wdata;
         }
 
         return $this->render('ReportsInterfaceBundle:Headless:headless.html.twig', [
