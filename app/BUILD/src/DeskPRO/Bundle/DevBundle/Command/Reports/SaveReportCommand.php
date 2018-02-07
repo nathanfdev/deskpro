@@ -36,7 +36,7 @@ class SaveReportCommand extends ContainerAwareCommand
         $reportId = $input->getArgument('reportId');
         /** @var ReportDashboardReport $report */
         $report      = $em->getRepository(ReportDashboardReport::class)->find($reportId);
-        $reportSaver = $this->getContainer()->get('deskpro.reports.saver');
+        $reportSaver = $this->getContainer()->get('reports.report_saver');
         $savedReport = $reportSaver->saveReport($report);
         $url         = $this
             ->getContainer()

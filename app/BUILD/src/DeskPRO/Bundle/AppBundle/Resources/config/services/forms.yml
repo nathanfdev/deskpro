@@ -439,7 +439,7 @@ services:
   form.scheduled_report:
     class: DeskPRO\Bundle\AppBundle\Form\Type\Reports\ScheduledReportType
     arguments:
-      - "@deskpro.reports.saver"
+      - "@reports.report_saver"
     tags:
       - { name: form.type }
 

@@ -9,3 +9,9 @@ services:
       - "@doctrine.orm.entity_manager"
       - "@dpql.compiler"
       - "@reports.renderer_registry"
+
+  reports.report_saver:
+    class: DeskPRO\Bundle\ReportBundle\Service\ReportSaver
+    arguments:
+      - "@doctrine.orm.default_entity_manager"
+      - "@reports.dashboard_widget.service:"
