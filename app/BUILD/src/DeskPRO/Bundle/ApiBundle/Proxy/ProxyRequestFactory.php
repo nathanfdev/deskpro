@@ -324,7 +324,7 @@ class ProxyRequestFactory
     {
         $names = [];
         if ($value instanceof ProxySignWithHeader) {
-            $names[] = $value->getCredentialNames();
+            $names = $value->getCredentialNames();
         } if (is_string($value)) {
             if (preg_match_all('#{{privateState\.(.*?)}}#', $value, $m)) {
                 $names = $m[1];

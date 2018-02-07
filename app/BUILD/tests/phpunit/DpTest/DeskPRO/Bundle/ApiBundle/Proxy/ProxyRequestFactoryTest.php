@@ -44,45 +44,64 @@ class ProxyRequestFactoryTest extends DeskProTestCase
 {
     public function testCreateFromAppRequestBuildsSignWithHeaderWithASingleCredential()
     {
-        /** @var \PHPUnit_Framework_MockObject_MockObject | AppStateRepository $repository */
-        $repository = $this->getMockBuilder(AppStateRepository::class)
-            ->disableOriginalConstructor()
-            ->setMethods(['findReadableByName'])
-            ->getMock()
-        ;
+        $instance = new AppInstance();
+        /** @var \PHPUnit_Framework_MockObject_MockObject | Person $person */
+        $person = $this->getMockBuilder(Person::class)->disableOriginalConstructor()->getMock();
 
+        $stateVars = [];
         $firstVariable = new AppState();
+        $stateVars[] = $firstVariable;
         $firstVariable->setName('oauth:jira');
         $firstVariable->setValue('first-value');
 
         $secondVariable = new AppState();
+        $stateVars[] = $secondVariable;
         $secondVariable->setName('oauth:jira:token');
         $firstVariable->setValue('second-value');
 
-        $repository->method('findReadableByName')->willReturn([
-            $firstVariable, $secondVariable
-        ]);
+        $trials = [
+            'one-var' => ['oauth:jira'],
+            'more-vars' => ['oauth:jira', 'oauth:jira:token']
+        ];
 
-        $instance = new AppInstance();
+        /** @var array $vars */
+        foreach ($trials as $vars) {
+            $trialStateVars = array_filter(
+                $stateVars,
+                function (AppState $state) use ($vars) {
+                    return in_array($state->getName(), $vars);
+                }
+            );
 
-        /** @var \PHPUnit_Framework_MockObject_MockObject | Person $person */
-        $person = $this->getMockBuilder(Person::class)
-            ->disableOriginalConstructor()
-            ->getMock()
-        ;
+            /** @var \PHPUnit_Framework_MockObject_MockObject | AppStateRepository $repository */
+            $repository = $this->getMockBuilder(AppStateRepository::class)
+                ->disableOriginalConstructor()->setMethods(['findReadableByName'])
+                ->getMock()
+            ;
 
-        $request = new Request();
-        $request->headers->set('X-Proxy-Method', 'GET');
-        $request->headers->set('X-Proxy-Url', 'http://deskpro.com');
-        $request->headers->set(ProxySignWithHeader::NAME, 'oauth1 oauth:jira');
+            $repository->method('findReadableByName')
+                ->with(
+                    $this->anything(),
+                    $this->anything(),
+                    $this->equalTo($vars)
+                )
+                ->willReturn($trialStateVars)
+            ;
 
-        $actualProxyRequest = null;
-        $factory = new ProxyRequestFactory($repository);
-        $actualProxyRequest = $factory->createFromAppRequest($instance, $request, $person);
+            $request = new Request();
+            $request->headers->set('X-Proxy-Method', 'GET');
+            $request->headers->set('X-Proxy-Url', 'http://deskpro.com');
+            $request->headers->set(ProxySignWithHeader::NAME, 'oauth1 '. implode(' ', $vars));
 
-        $this->assertInstanceOf(ApplicationProxyRequest::class, $actualProxyRequest);
-        $signInStrategy = $actualProxyRequest->getSigningStrategy();
-        $this->assertInstanceOf(RequestSigningStrategyOauth1::class, $signInStrategy);
+            $actualProxyRequest = null;
+            $factory = new ProxyRequestFactory($repository);
+            $actualProxyRequest = $factory->createFromAppRequest($instance, $request, $person);
+
+            $this->assertInstanceOf(ApplicationProxyRequest::class, $actualProxyRequest);
+            $signInStrategy = $actualProxyRequest->getSigningStrategy();
+            $this->assertInstanceOf(RequestSigningStrategyOauth1::class, $signInStrategy);
+
+        }
     }
 
     public function testCreateFromAppRequestBuildsSignWithHeader()
