@@ -105,6 +105,12 @@ services:
     tags:
       - { name: doctrine.entity_listener }
 
+  event_listener.brand_listener:
+    class: DeskPRO\Bundle\AppBundle\EventListener\Doctrine\BrandListener
+    arguments: ["@default_brand_finder", "@doctrine.orm.default_entity_manager"]
+    tags:
+      - { name: doctrine.entity_listener }
+
   event_listener.listener.client_message_listener:
     class: DeskPRO\Bundle\AppBundle\EventListener\ClientMessage\ClientMessageListener
     arguments:

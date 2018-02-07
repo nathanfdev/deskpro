@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2017, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2018, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -28,6 +28,7 @@
 
 namespace DeskPRO\Bundle\AppBundle\Serializer\Model\Chats;
 
+use Application\DeskPRO\Entity\Brand;
 use Application\DeskPRO\Entity\ChatConversation;
 use JMS\Serializer\Annotation as JMS;
 
@@ -89,6 +90,15 @@ abstract class AbstractChat
      * @var string
      */
     protected $status = 'open';
+
+    /**
+     * Ticket brand.
+     *
+     * @JMS\Type("entity<Application\DeskPRO\Entity\Brand>")
+     *
+     * @var Brand
+     */
+    protected $brand;
 
     /**
      * Department which chat was assigned.
@@ -175,6 +185,7 @@ abstract class AbstractChat
         $this->personEmail          = $chat->getPersonEmail();
         $this->agent                = $chat->getAgent();
         $this->status               = $chat->getStatus();
+        $this->brand                = $chat->getBrand();
         $this->department           = $chat->getDepartment();
         $this->dateCreated          = $chat->getDateCreated();
         $this->dateAgentTyping      = $chat->getDateAgentTyping();
