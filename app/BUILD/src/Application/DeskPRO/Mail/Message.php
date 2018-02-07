@@ -32,7 +32,6 @@ use Application\DeskPRO\App;
 use Application\DeskPRO\Entity\Blob;
 use Application\DeskPRO\Entity\Person;
 use DpSys\LowError\SystemErrorHandler;
-use Orb\Html\Html2Text;
 use Orb\Util\Strings;
 use Symfony\Bundle\FrameworkBundle\Templating\EngineInterface;
 
@@ -228,16 +227,13 @@ class Message extends \Orb\Mail\Message
             if (strlen($body) < 512000) {
                 try {
                     try {
-                        $h2t = new Html2Text();
-                        $h2t->addElementProcessor('a', function ($node) {
-                            $classname = $node->getAttribute('class');
-                            if (strpos($classname, 'dp-reply-help-link') === false) {
-                                return;
-                            }
-
-                            return 'https://deskpro.com/go/reply';
-                        });
-                        $plaintext = $h2t->convert($plaintext);
+                        $plaintext = preg_replace(
+                                '#<a[^>]+dp-reply-help-link[^>]+>[^<]+</a>#',
+                                'https://deskpro.com/go/reply',
+                                $plaintext
+                            );
+                        $converter = new \Html2Text\Html2Text($plaintext, ['width' => 0]);
+                        $plaintext = $converter->getText();
                     } catch (\Exception $e) {
                         $plaintext = null;
                     }

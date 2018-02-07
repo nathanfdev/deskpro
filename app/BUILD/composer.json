@@ -108,7 +108,8 @@
     "friendsofsymfony/oauth-server-bundle": "^1.5",
     "pelago/emogrifier": "^2.0",
     "jkuchar/bigfiletools": "^2.0",
-    "brick/math": "dev-php-5.5-compatible as 0.5.2"
+    "brick/math": "dev-php-5.5-compatible as 0.5.2",
+    "html2text/html2text": "^4.1"
   },
   "require-dev": {
     "mockery/mockery": "0.9.3",
