@@ -63,6 +63,7 @@
 		'agent_people.create': {% if app.user.hasPerm('agent_people.create') %}true{% else %}false{% endif %},
 		'agent_people.use': {% if app.user.hasPerm('agent_people.use') %}true{% else %}false{% endif %},
 		'agent_org.create': {% if app.user.hasPerm('agent_org.create') %}true{% else %}false{% endif %},
+		'agent_publish.use': {% if app.user.hasPerm('agent_publish.use') %}true{% else %}false{% endif %},
 		'agent_publish.create': {% if app.user.hasPerm('agent_publish.create') %}true{% else %}false{% endif %},
 		'agent_tasks.use': {% if app.user.hasPerm('agent_tasks.use') %}true{% else %}false{% endif %},
 		'agent_reports.use': {% if app.user.can_reports %}true{% else %}false{% endif %},

@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2017, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2018, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -40,6 +40,13 @@ class PublishPermissionSettings
      *
      * @var bool
      */
+    private $use;
+
+    /**
+     * @JMS\Type("boolean")
+     *
+     * @var bool
+     */
     private $create;
 
     /**
@@ -69,6 +76,26 @@ class PublishPermissionSettings
      * @var bool
      */
     private $validate;
+
+    /**
+     * @return bool
+     */
+    public function isUse()
+    {
+        return $this->use;
+    }
+
+    /**
+     * @param bool $use
+     *
+     * @return $this
+     */
+    public function setUse($use)
+    {
+        $this->use = $use;
+
+        return $this;
+    }
 
     /**
      * @return mixed

@@ -26,44 +26,24 @@
  * ~ Thanks, Everyone at Team DeskPRO
  */
 
-/**
- * DeskPRO.
- *
- * @category People
- */
+namespace Application\InstallBundle\Upgrade\Build;
 
-namespace Application\DeskPRO\People\AgentPermissions\Value;
-
-class PublishPermissions implements PermissionValueInterface
+class Build1518022975 extends AbstractBuild implements OnlineBuildInterface
 {
-    /** @var bool */
-    public $use = false;
-    /** @var bool */
-    public $create = false;
-    /** @var bool */
-    public $delete = false;
-    /** @var bool */
-    public $edit = false;
-    /** @var bool */
-    public $validate = false;
-    /** @var bool */
-    public $articles_create_labels = false;
-    /** @var bool */
-    public $downloads_create_labels = false;
-    /** @var bool */
-    public $news_create_labels = false;
-    /** @var bool */
-    public $feedback_create_labels = false;
-    /** @var bool */
-    public $can_insert_html = false;
-
-    public function getNames()
+    public function addNewTables()
     {
-        return ['use', 'create', 'delete', 'edit', 'validate', 'articles_create_labels', 'downloads_create_labels', 'news_create_labels', 'feedback_create_labels', 'can_insert_html'];
     }
 
-    public function getDestructiveNames()
+    public function runAlters()
     {
-        return ['delete', 'can_insert_html'];
+    }
+
+    public function run()
+    {
+        $this->execDbQuery('default', "
+            INSERT IGNORE INTO permissions SELECT NULL, usergroup_id, person_id, 'agent_publish.use', 1, 1
+            FROM permissions
+            GROUP BY usergroup_id, person_id
+        ");
     }
 }
