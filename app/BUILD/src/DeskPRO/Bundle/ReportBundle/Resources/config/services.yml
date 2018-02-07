@@ -15,3 +15,9 @@ services:
     arguments:
       - "@doctrine.orm.default_entity_manager"
       - "@reports.dashboard_widget.service:"
+
+  reports.report_pdf_generator:
+    class: DeskPRO\Bundle\ReportBundle\Service\ReportPdfGenerator
+    arguments:
+      - "@deskpro.app_env"
+      - "@settings_resolver"

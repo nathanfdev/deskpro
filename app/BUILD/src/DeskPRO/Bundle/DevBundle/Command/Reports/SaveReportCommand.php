@@ -50,5 +50,8 @@ class SaveReportCommand extends ContainerAwareCommand
                 UrlGeneratorInterface::ABSOLUTE_URL
             );
         $output->writeln($url);
+
+        $generator = $this->getContainer()->get('reports.report_pdf_generator');
+        $generator->savePdf($url, 'test.pdf');
     }
 }
