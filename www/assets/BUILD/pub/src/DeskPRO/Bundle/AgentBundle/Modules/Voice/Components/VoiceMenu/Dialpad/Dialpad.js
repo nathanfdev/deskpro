@@ -41,19 +41,20 @@ class Dialpad extends React.Component {
   }
 
   componentWillReceiveProps(newProps) {
+    const $input = $(this.phoneInput.input);
     const { formData } = this.state;
 
     if (newProps.outboundNumber) {
       this.setState({
         formData: createValue({
-          value: {
-            ...formData.value,
-            call_to: newProps.outboundNumber
-          },
+          value:     formData.value,
           errorList: {},
           onChange:  this.onChange
         }),
         searchResults: Immutable.fromJS([])
+      }, () => {
+        this.phoneInput.setNumber(`${newProps.outboundNumber}`);
+        $input.focus();
       });
     }
   }

@@ -53,7 +53,7 @@
 		{# phone.number will be blank is it failed form validation #}
 		{% for phone in person.phone_numbers if phone.number|trim|length > 0 %}
 			<li class="{{ 1 == phone.guessed_type ? 'mobile' : 'phone' }}{% if phone.label %} tipped{% endif %}"{% if phone.label %} title="{{ phone.label }}"{% endif %}>
-				<a href="tel:{{ phone.getNumberFormatted()|replace({' ': '', '-': ''}) }}">
+				<a href="tel:{{ phone.getNumberFormatted()|replace({' ': '', '-': ''}) }}" class="phone-number" data-phone-number="{{ phone.getNumberFormatted()|replace({' ': '', '-': ''}) }}">
 				<span class="number">{{ phone.getNumberFormatted() }}</span>
 				{% if phone.ext %}
 				<span class="ext">ext. {{ phone.ext }}</span>
