@@ -4,6 +4,12 @@ Feature: /voice_queues endpoint
   Background:
     Given I'm authenticated as admin
     And the setting "beta_features.voice" is set to 1
+    And I have only default brand
+    And no VoiceQueue records exist
+    And only the following Department records exist:
+      | #  | Title               | Brands           | Is Tickets Enabled | Is Chat Enabled |
+      | d1 | Ticket Department 1 | [{defaultBrand}] | 1                  | 0               |
+      | d2 | Ticket Department 2 | [{defaultBrand}] | 1                  | 0               |
     And only the following VoiceAccount records exist:
       | #  | AccountName | AccountSid | AuthToken |
       | a1 | Account 1   | Sid1       | Token1    |
@@ -28,32 +34,32 @@ Feature: /voice_queues endpoint
     Then the response status code should be 200
 
   Scenario: I create a new twilio queue
-    Given only the following User records exist:
-      | #  | Name     |
-      | p1 | Person 1 |
-      | p2 | Person 2 |
-      | p3 | Person 3 |
+    Given "agent_1@example.com" admin exists
+    And "agent_2@example.com" admin exists
+    And "agent_3@example.com" admin exists
     When I send a POST request to "/api/v2/voice_queues" with body:
     """
 {
   "account": ~a1~,
+  "department": ~d1~,
   "name": "My Queue",
   "routing_model": "least_utilized",
   "max_queue_size": 10,
-  "agents": [{"agent": ~p1~, "is_enabled": true}, {"agent": ~p2~}, {"agent": ~p3~}],
+  "agents": [{"agent": ~agent_1@example.com~, "is_enabled": true}, {"agent": ~agent_2@example.com~}, {"agent": ~agent_3@example.com~}],
   "voicemail_timeout": 30
 }
     """
     Then the response status code should be 201
     And the JSON node "data.name" should be equal to the string "My Queue"
     And the JSON node "data.routing_model" should be equal to the string "least_utilized"
+    And the JSON node "data.department" should be equal to "{d1}"
     And the JSON node "data.max_queue_size" should be equal to 10
     And the JSON node "data.agents" should have 3 elements
-    And the JSON node "data.agents[0].agent" should be equal to "{p1}"
+    And the JSON node "data.agents[0].agent" should be equal to "{agent_1@example.com}"
     And the JSON node "data.agents[0].is_enabled" should be equal to 1
-    And the JSON node "data.agents[1].agent" should be equal to "{p2}"
+    And the JSON node "data.agents[1].agent" should be equal to "{agent_2@example.com}"
     And the JSON node "data.agents[1].is_enabled" should be equal to 0
-    And the JSON node "data.agents[2].agent" should be equal to "{p3}"
+    And the JSON node "data.agents[2].agent" should be equal to "{agent_3@example.com}"
     And the JSON node "data.agents[2].is_enabled" should be equal to 0
 
   Scenario: I update twilio queue

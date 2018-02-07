@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2017, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2018, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -29,10 +29,18 @@
 namespace DeskPRO\Bundle\InstallBundle\Installer\InstallStep;
 
 use DeskPRO\Bundle\InstallBundle\InstallSession\InstallSession;
+use Orb\Util\DpStrings;
+use Orb\Util\Strings;
 use Symfony\Component\Process\ProcessBuilder;
 
+/**
+ * Class InstallFixturesStep.
+ */
 class InstallFixturesStep extends AbstractStep
 {
+    /**
+     * {@inheritdoc}
+     */
     public function run()
     {
         ini_set('memory_limit', '512M');
@@ -113,6 +121,9 @@ class InstallFixturesStep extends AbstractStep
         $this->getSession()->enableFlag('install_fixtures_ok');
     }
 
+    /**
+     * {@inheritdoc}
+     */
     public function isComplete()
     {
         return $this->getSession()->hasFlag('install_fixtures_ok');
@@ -201,16 +212,17 @@ class InstallFixturesStep extends AbstractStep
     private function checkAutoIncrementValue()
     {
         $db = $this->getContext()->getMainContainer()->get('database_connection');
-
-        $db->insert('settings', [
-            'name'  => 'test 1',
-            'value' => 'test 1',
+        $db->insert('datastore', [
+            'name' => 'test 1',
+            'auth' => DpStrings::random(15, Strings::CHARS_KEY),
+            'data' => 'test 1',
         ]);
         $firstId = (int) $db->lastInsertId();
 
-        $db->insert('settings', [
-            'name'  => 'test 2',
-            'value' => 'test 2',
+        $db->insert('datastore', [
+            'name' => 'test 2',
+            'auth' => DpStrings::random(15, Strings::CHARS_KEY),
+            'data' => 'test 2',
         ]);
         $secondId = (int) $db->lastInsertId();
 
@@ -224,8 +236,8 @@ class InstallFixturesStep extends AbstractStep
         }
 
         // Cleanup test operations
-        $db->delete('settings', ['id' => $firstId]);
-        $db->delete('settings', ['id' => $secondId]);
-        $db->executeQuery('ALTER TABLE settings AUTO_INCREMENT='.$firstId);
+        $db->delete('datastore', ['id' => $firstId]);
+        $db->delete('datastore', ['id' => $secondId]);
+        $db->executeQuery('ALTER TABLE datastore AUTO_INCREMENT='.$firstId);
     }
 }
