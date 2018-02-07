@@ -512,16 +512,20 @@ class Exchange
 
         $response = $this->service->GetItem($request);
 
-        $reason = 'unknown';
-        if (!empty($response->ResponseMessages->GetItemResponseMessage->ResponseCode)) {
-            $reason = $response->ResponseMessages->GetItemResponseMessage->ResponseCode.': ';
+        $reason       = 'unknown';
+        $responseCode = isset($response->ResponseMessages->GetItemResponseMessage->ResponseCode)
+            ? $response->ResponseMessages->GetItemResponseMessage->ResponseCode : null;
+        $responseClass = isset($response->ResponseMessages->GetItemResponseMessage->ResponseClass)
+            ? $response->ResponseMessages->GetItemResponseMessage->ResponseClass : null;
+
+        if (!empty($responseCode)) {
+            $reason = $responseCode.': ';
         }
         if (!empty($response->ResponseMessages->GetItemResponseMessage->MessageText)) {
             $reason .= $response->ResponseMessages->GetItemResponseMessage->MessageText;
         }
 
-        if ($response->ResponseMessages->GetItemResponseMessage->ResponseCode == 'NoError' &&
-            $response->ResponseMessages->GetItemResponseMessage->ResponseClass == 'Success') {
+        if ($responseCode === 'NoError' && $responseClass === 'Success') {
             if ($this->logger) {
                 $this->logger->logDebug("Success: $reason");
             }
