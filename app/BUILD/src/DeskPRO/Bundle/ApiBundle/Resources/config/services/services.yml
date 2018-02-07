@@ -70,6 +70,7 @@ services:
 
   api_proxy_request_factory:
     class: DeskPRO\Bundle\ApiBundle\Proxy\ProxyRequestFactory
+    factory: [DeskPRO\Bundle\ApiBundle\Proxy\ProxyRequestFactory, create]
     arguments:
       - "@doctrine.orm.entity_manager"
 

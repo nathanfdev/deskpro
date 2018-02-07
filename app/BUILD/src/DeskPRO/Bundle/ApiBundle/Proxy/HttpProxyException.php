@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2017, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2018, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -28,35 +28,6 @@
 
 namespace DeskPRO\Bundle\ApiBundle\Proxy;
 
-class ProxySignWithHeader
+class HttpProxyException extends \Exception
 {
-    /** @var string */
-    private $strategy;
-
-    /** @var array|string[] */
-    private $credentials;
-
-    const NAME = 'X-Proxy-SignWith';
-
-    public function __construct($algorithm, array $credentials)
-    {
-        $this->strategy   = $algorithm;
-        $this->credentials = $credentials;
-    }
-
-    /**
-     * @return string
-     */
-    public function getSignWithStrategy()
-    {
-        return $this->strategy;
-    }
-
-    /**
-     * @return array|string[]
-     */
-    public function getCredentialNames()
-    {
-        return $this->credentials;
-    }
 }

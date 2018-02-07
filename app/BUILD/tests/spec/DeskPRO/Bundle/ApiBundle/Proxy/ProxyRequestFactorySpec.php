@@ -52,8 +52,7 @@ class ProxyRequestFactorySpec extends ObjectBehavior
         Request            $request,
         ParameterBag       $headers
     ) {
-        $this->beConstructedWith($em);
-        $em->getRepository(AppState::class)->willReturn($appStateRepository);
+        $this->beConstructedWith($appStateRepository);
         $request->headers = $headers;
 
         $headers->get('X-Proxy-SignWith', null)->willReturn(null);
