@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2017, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2018, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -26,10 +26,6 @@
  * ~ Thanks, Everyone at Team DeskPRO
  */
 
-/**
- * DeskPRO.
- */
-
 namespace Application\DeskPRO\Reports;
 
 use Application\DeskPRO\App;
@@ -41,6 +37,8 @@ use Application\DeskPRO\Entity\FeedbackRevision;
 use Application\DeskPRO\Entity\NewsRevision;
 use Application\DeskPRO\Entity\Person;
 use Application\DeskPRO\Entity\TicketLog;
+use Application\DeskPRO\EntityRepository\TicketLog as TicketLogRepository;
+use DeskPRO\Bundle\AppBundle\Entity\TicketMessageVoicePhoneCall;
 use Doctrine\ORM\EntityManager;
 
 class AgentActivity
@@ -261,18 +259,48 @@ class AgentActivity
     }
 
     /**
-     * @param string $agent
+     * @param Person $agent
      * @param        $date
      *
      * @return array
      */
-    private function getTicketLogForAgent($agent, $date)
+    private function getTicketLogForAgent(Person $agent, $date)
     {
         $counts_hourly = [];
-        $logs          = $this->em->getRepository(TicketLog::class)->getLogsForAgent(
+        /** @var TicketLogRepository $ticketLogsRepo */
+        $ticketLogsRepo = $this->em->getRepository(TicketLog::class);
+        $logs           = $ticketLogsRepo->getLogsForAgent(
             $agent,
             ['date_range' => $this->createMysqlDateRangeForUser($date), 'types' => self::$ticket_log_types]
         );
+
+        // collect voice tickets
+        // to define ticket type
+        $ticketIds = [];
+        foreach ($logs as $log) {
+            $ticketId             = $log->getTicket()->getId();
+            $ticketIds[$ticketId] = $ticketId;
+        }
+
+        $qb = $this->em->createQueryBuilder();
+        $qb
+            ->select('a, m, t')
+            ->from(TicketMessageVoicePhoneCall::class, 'a')
+            ->join('a.message', 'm')
+            ->join('m.ticket', 't')
+            ->where('t.id IN (:ticket_ids)')
+            ->setParameter('ticket_ids', $ticketIds)
+        ;
+
+        /** @var TicketMessageVoicePhoneCall[] $result */
+        $voiceTicketIds = [];
+        $result         = $qb->getQuery()->getResult();
+        foreach ($result as $attribute) {
+            $ticketId                  = $attribute->getMessage()->getTicket()->getId();
+            $voiceTicketIds[$ticketId] = $ticketId;
+        }
+
+        $voiceTicketIds = array_values($voiceTicketIds);
 
         foreach ($logs as $log) {
             $date   = $this->mysqlDateToPhpDate($log['date_created']->format('Y-m-d H:i:s'));
@@ -287,7 +315,11 @@ class AgentActivity
                 $counts_hourly['_'.$hour]['_'.$minute] = [];
             }
 
-            $counts_hourly['_'.$hour]['_'.$minute][] = ['type' => 'ticket', 'data' => $log];
+            $counts_hourly['_'.$hour]['_'.$minute][] = [
+                'type'    => 'ticket',
+                'data'    => $log,
+                'is_call' => in_array($log->getTicket()->getId(), $voiceTicketIds),
+            ];
         }
 
         return $counts_hourly;
