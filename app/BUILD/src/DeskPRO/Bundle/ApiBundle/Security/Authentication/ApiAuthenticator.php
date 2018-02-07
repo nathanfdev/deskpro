@@ -79,7 +79,7 @@ class ApiAuthenticator implements SimplePreAuthenticatorInterface
 
             // check that session still exists
             $session = $sessionRepo->getSessionFromCode($sessionId);
-            if (!$session || !$session->getPersonId()) {
+            if (!$session) {
                 continue;
             }
 
@@ -167,7 +167,7 @@ class ApiAuthenticator implements SimplePreAuthenticatorInterface
             || $token instanceof ApiKeySecurityToken
             || $token instanceof ApiTokenSecurityToken
             || $token instanceof LegacyRememberMeSecurityToken
-        ;
+            ;
     }
 
     protected function authenticateApiKey(

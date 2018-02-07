@@ -26,3 +26,14 @@ services:
       - "@jms_serializer.metadata_factory"
       - "@jms_serializer.naming_strategy"
       - "@nelmio_api_doc.doc_comment_extractor"
+
+  dp_api_doc.graphql.schema_creator:
+    class: DeskPRO\Bundle\ApiBundle\ApiDoc\GraphQL\SchemaCreator
+    arguments:
+      - "@dp_api_doc.graphql.schema_config"
+
+  dp_api_doc.graphql.schema_config:
+    class: DeskPRO\Bundle\ApiBundle\ApiDoc\GraphQL\SchemaConfig
+    calls:
+      - [setBasePath, ["/api/v2"]]
+      - [setTriggersErrors, [false]]
