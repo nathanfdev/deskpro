@@ -51,7 +51,7 @@ class HeadlessController extends \Application\DeskPRO\Controller\AbstractControl
         foreach ($report->getSavedWidgets() as $savedWidget) {
             $wdata         = $widgetService->getWidgetData($savedWidget);
             $wdata['id']   = $savedWidget->getDashboardWidget()->getId();
-            $wdata['type'] = $savedWidget->getDashboardWidget()->getWidgetType();
+            $wdata['type'] = $widgetService->getWidgetType($savedWidget->getType());
             $wdata['data'] = $savedWidget->getData();
             $widgets[]     = $wdata;
         }

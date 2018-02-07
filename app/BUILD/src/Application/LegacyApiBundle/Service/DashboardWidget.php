@@ -55,6 +55,28 @@ class DashboardWidget
     const LEGACY_RENDER_TYPE_TABLE = 'TABLE';
     const LEGACY_RENDER_TYPE_STAT  = 'STAT';
 
+    const WIDGET_TYPE_GRAPH     = 'graph';
+    const WIDGET_TYPE_STAT      = 'stat';
+    const WIDGET_TYPE_HARDCODED = 'hardcoded';
+    const WIDGET_TYPE_BAR       = 'bar';
+    const WIDGET_TYPE_PIE       = 'pie';
+    const WIDGET_TYPE_TABLE     = 'table';
+
+    /**
+     * @var array
+     */
+    protected $widgetTypesMapping = [
+        'simple_bars'  => self::WIDGET_TYPE_GRAPH,
+        'bars'         => self::WIDGET_TYPE_GRAPH,
+        'simple_lines' => self::WIDGET_TYPE_GRAPH,
+        'lines'        => self::WIDGET_TYPE_GRAPH,
+        'area'         => self::WIDGET_TYPE_GRAPH,
+        'simple_area'  => self::WIDGET_TYPE_GRAPH,
+        'pie'          => self::WIDGET_TYPE_GRAPH,
+        'table'        => self::WIDGET_TYPE_TABLE,
+        'simple_stat'  => self::WIDGET_TYPE_STAT,
+    ];
+
     const WIDGET_VALUE_FROM_REPORT = 'from_report_value';
 
     /**
@@ -109,6 +131,14 @@ class DashboardWidget
     public function getWidgetGraphType($widgetType)
     {
         return isset($this->widgetGraphTypesMapping[$widgetType]) ? $this->widgetGraphTypesMapping[$widgetType] : self::WIDGET_RENDER_TYPE_TABLE;
+    }
+
+    /**
+     * @return string
+     */
+    public function getWidgetType($widgetType)
+    {
+        return isset($this->widgetTypesMapping[$widgetType]) ? $this->widgetTypesMapping[$widgetType] : self::WIDGET_TYPE_TABLE;
     }
 
     /**
