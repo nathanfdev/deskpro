@@ -1245,6 +1245,7 @@ $collection->create('agent_ticket_unlink', [
 
 $collection->create('agent_ticket_departments_by_brand', [
     'path'       => '/tickets/new/get-departments/{brandId}',
+    'defaults'   => ['brandId' => null],
     'controller' => 'AgentBundle:Ticket:ajaxGetDepartments',
     'methods'    => ['GET'],
 ]);

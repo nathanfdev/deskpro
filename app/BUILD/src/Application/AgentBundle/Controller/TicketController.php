@@ -4583,6 +4583,7 @@ class TicketController extends AbstractController
                 'custom_person_fields' => $customPersonFields,
                 'custom_org_fields'    => $customOrgFields,
                 'brands'               => $brands,
+                'default_brand'        => $this->get('brand_stack')->getDefaultBrand()->getId(),
             ]
         );
     }
