@@ -60,7 +60,7 @@ var DP = {
       imageUploadMethod: 'POST',
       imageUploadParams: { _rt: window.DP_REQUEST_TOKEN, json: true },
       imageUploadURL:    BASE_URL + 'agent/misc/accept-redactor-image-upload', // eslint-disable-line no-undef
-      imageDefaultWidth: 0,
+      imageDefaultWidth: 0
     };
 
     options = Object.merge(defaultOptions, options || {});
