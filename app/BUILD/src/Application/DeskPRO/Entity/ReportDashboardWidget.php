@@ -55,12 +55,11 @@ class ReportDashboardWidget extends DomainObject
     const TYPE_TABLE        = 'table';
     const TYPE_SIMPLE_STAT  = 'simple_stat';
 
-    const WIDGET_TYPE_GRAPH     = 'graph';
-    const WIDGET_TYPE_STAT      = 'stat';
-    const WIDGET_TYPE_HARDCODED = 'hardcoded';
-    const WIDGET_TYPE_BAR       = 'bar';
-    const WIDGET_TYPE_PIE       = 'pie';
-    const WIDGET_TYPE_TABLE     = 'table';
+    const WIDGET_TYPE_GRAPH = 'graph';
+    const WIDGET_TYPE_STAT  = 'stat';
+    const WIDGET_TYPE_BAR   = 'bar';
+    const WIDGET_TYPE_PIE   = 'pie';
+    const WIDGET_TYPE_TABLE = 'table';
 
     /**
      * @var array
