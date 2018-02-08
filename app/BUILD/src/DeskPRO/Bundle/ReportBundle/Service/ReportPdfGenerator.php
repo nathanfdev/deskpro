@@ -28,6 +28,7 @@
 
 namespace DeskPRO\Bundle\ReportBundle\Service;
 
+use Application\DeskPRO\Entity\SavedDashboardReport;
 use Application\DeskPRO\NewSettings\SettingsResolver;
 use DeskPRO\Bundle\AppBundle\AppEnv\AppEnvInterface;
 use Symfony\Component\Process\Exception\ProcessFailedException;
@@ -76,14 +77,62 @@ class ReportPdfGenerator
     }
 
     /**
-     * @param $url
-     * @param $name
+     * @param SavedDashboardReport $report
+     *
+     * @return array
+     */
+    public function calculatePrintConfig(SavedDashboardReport $report)
+    {
+        $maxX = 0;
+        $maxY = 0;
+
+        $blockToMmWidthRation  = 13.25; // got experimentaly
+        $blockToMmHeightRation = 16.654; // got experimentaly
+        $a4PaperRatio          = 1.4143; // 297/210
+
+        $config = [
+            'width'  => 0,
+            'height' => 0,
+        ];
+        foreach ($report->getSavedWidgets() as $savedWidget) {
+            $maxX = max($maxX, $savedWidget->getCol() + $savedWidget->getSizeX());
+            $maxY = max($maxY, $savedWidget->getRow() + $savedWidget->getSizeY());
+        }
+        if ($maxX > $maxY) {
+            $config['width']  = sprintf('%dmm', ceil($maxX * $blockToMmWidthRation) + 1);
+            $config['height'] = sprintf('%dmm', ceil((int) $config['width'] / $a4PaperRatio) + 1);
+        } else {
+            $config['height'] = sprintf('%dmm', ceil($maxY * $blockToMmHeightRation) + 1);
+            $config['width']  = sprintf('%dmm', ceil((int) $config['height'] / $a4PaperRatio) + 1);
+        }
+
+        return $config;
+    }
+
+    protected function getPdfName(SavedDashboardReport $report)
+    {
+        $name = sprintf('%s-%s.pdf', $report->getDateCreated()->format('Y-m-d_h:i:s'), $report->getTitle());
+
+        return $this->pdfDir.DIRECTORY_SEPARATOR.$name;
+    }
+
+    /**
+     * @param SavedDashboardReport $report
+     * @param string               $url
+     * @param string|null          $name
      *
      * @return string
      */
-    public function savePdf($url, $name)
+    public function savePdf(SavedDashboardReport $report, $url, $name = null)
     {
+        if (!$name) {
+            $name = $this->getPdfName($report);
+        }
+
         $command = $this->createPdfCommand($url, $name);
+
+        $printConfig        = $this->calculatePrintConfig($report);
+        $command['options'] = array_merge($command['options'], $printConfig);
 
         $setIncludePathCommand = "PATH={$this->includePath}";
         $nodeBinary            = 'node';
@@ -106,26 +155,23 @@ class ReportPdfGenerator
             throw new ProcessFailedException($process);
         }
 
-        return $process->getOutput();
+        return $name;
     }
 
     /**
-     * @param $url
-     * @param $name
+     * @param string $url
+     * @param string $name
      *
      * @return array
      */
     private function createPdfCommand($url, $name)
     {
         $options = [
-            'path'            => $this->pdfDir.DIRECTORY_SEPARATOR.$name,
+            'path'            => $name,
             'printBackground' => true,
             'waitUntil'       => 'networkidle2',
-            'landscape'       => true,
-            'width'           => '297mm',
-            'height'          => '210mm',
+            'landscape'       => false,
             'emulateMedia'    => 'screen',
-            'viewport'        => ['height' => 1080, 'width' => 1920, 'isLandscape' => true, 'deviceScaleFactor' => 2],
         ];
 
         $command = [
