@@ -779,7 +779,7 @@ define([
 
 				var getContext = function() {
 					var context = [document];
-					$('iframe').each((i, iframe) => {
+					$('iframe').each(function(i, iframe) {
 						try {
 							context.push(iframe.contentWindow.document);
 						} catch (e) {
@@ -793,7 +793,9 @@ define([
 					var events = $.data(getContext(), 'events');
 					if (events) {
 						events.click = events.click || [];
-						events.click.sort((a, b) => b.guid - a.guid);
+						events.click.sort(function(a, b) {
+							return b.guid - a.guid;
+						});
 
 						$.data(getContext(), 'events', events);
 					}
