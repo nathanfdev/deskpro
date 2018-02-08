@@ -1,5 +1,6 @@
 /* eslint-disable class-methods-use-this */
 import Twig from 'twig';
+import $ from 'jquery';
 
 class LegacySnippetInserter {
   getTranslation(translations, langId, isSplit, type) {
@@ -93,7 +94,7 @@ class LegacySnippetInserter {
       }
 
       el.after(div);
-      cursorPos.append(cursor);
+      $(cursorPos).append(cursor);
       el.remove();
 
       const next = div.nextElementSibling;
