@@ -86,44 +86,6 @@ class ApplicationManagerService
     }
 
     /**
-     * @param AppInstance $instance
-     * @param string      $strategy
-     */
-    public function remove(AppInstance $instance, $strategy)
-    {
-        $entity = null;
-        /** @var DeskPRO\Entity\Blob $entities */
-        $entities = [];
-        $blobs    = [];
-        if ($strategy === 'instance') {
-            $entities[] = $instance;
-        } elseif ($strategy === 'last-instance') {
-            $entities[] = $instance;
-
-            $app = $instance->getApp();
-            foreach ($app->getAssets() as $asset) {
-                if ($asset->getPath() === '.deskpro/versions/manifest.json.prev') {
-                    $entities[] = $asset;
-                    $blobs[]    = $asset->getBlob();
-                }
-            }
-        } else {
-            $msg = sprintf('Could not handle remove strategy: %s', $strategy);
-            throw new \DomainException($msg);
-        }
-
-        foreach ($entities as $entity) {
-            $this->em->remove($entity);
-        }
-        $this->em->flush();
-
-        // delete the blobs, one by one :(
-        foreach ($blobs as $blob) {
-            $this->blobStorage->deleteBlobRecord($blob);
-        }
-    }
-
-    /**
      * Returns the name of the strategy that must be applied when removing $instance.
      *
      * When this instance is the last one we want to also remove the app itself

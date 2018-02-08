@@ -11,6 +11,10 @@ services:
     class: DeskPRO\Bundle\AppStoreBundle\Infrastructure\ApplicationManagerService
     arguments: ["@doctrine.orm.default_entity_manager", "@blob.storage"]
 
+  DeskPRO\Bundle\AppStoreBundle\Infrastructure\ApplicationRemovalService:
+    class: DeskPRO\Bundle\AppStoreBundle\Infrastructure\ApplicationRemovalService
+    arguments: ["@doctrine.orm.default_entity_manager", "@blob.storage"]
+
   DeskPRO\Bundle\AppStoreBundle\Infrastructure\AppStorage\AccessService:
     class: DeskPRO\Bundle\AppStoreBundle\Infrastructure\AppStorage\AccessService
     factory: [DeskPRO\Bundle\AppStoreBundle\Infrastructure\Services, createAppStorageAccessService]
