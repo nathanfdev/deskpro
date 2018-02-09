@@ -29,6 +29,7 @@
 namespace DeskPRO\Bundle\AppStoreBundle\Infrastructure;
 
 use Application\DeskPRO\BlobStorage\DeskproBlobStorage;
+use Application\DeskPRO\Entity\Blob;
 use Application\DeskPRO\Entity\CustomDefOrganization;
 use Application\DeskPRO\Entity\CustomDefPerson;
 use Application\DeskPRO\Entity\CustomDefTicket;
@@ -63,7 +64,7 @@ class ApplicationRemovalService
     public function remove(AppInstance $instance, $strategy)
     {
         $entity = null;
-        /** @var DeskPRO\Entity\Blob $entities */
+        /** @var Blob $entities */
         $entities = [];
         if ($strategy === 'instance') {
             $entities[] = $instance;
@@ -86,10 +87,8 @@ class ApplicationRemovalService
 
         // this is not a critical section so we should treat exceptions thrown here a bit different
         foreach ($renameFieldsQueries as $query) {
-            echo $query->getSQL();
             $query->execute();
         }
-
     }
 
     /**
@@ -112,7 +111,6 @@ class ApplicationRemovalService
             $aliasedObjectsIds = $repository->getAliasedObjectIdsByAppInstance($instance->getId());
 
             if (count($aliasedObjectsIds)) {
-                print_r($aliasedObjectsIds);
                 $queries[] = $this->em
                     ->createQuery(sprintf('UPDATE %s f SET f.title = CONCAT(f.title, :marker) WHERE f.id IN (:ids)', $fieldType))
                     ->setParameter('marker', ' (app removed)')
