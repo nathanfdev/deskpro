@@ -47,13 +47,6 @@ use Symfony\Component\Validator\Constraints as Assert;
  */
 class ReportWidget extends DomainObject
 {
-    const LEGACY_RENDER_TYPE_BAR   = 'bar';
-    const LEGACY_RENDER_TYPE_LINE  = 'line';
-    const LEGACY_RENDER_TYPE_AREA  = 'area';
-    const LEGACY_RENDER_TYPE_PIE   = 'pie';
-    const LEGACY_RENDER_TYPE_TABLE = 'table';
-    const LEGACY_RENDER_TYPE_STAT  = 'stat';
-
     /**
      * @var int
      */
@@ -118,21 +111,6 @@ class ReportWidget extends DomainObject
      * @var ArrayCollection
      */
     protected $favorited_by;
-
-    /**
-     * @var array
-     */
-    protected static $widgetGraphTypesMapping = [
-        'simple_bars'  => self::LEGACY_RENDER_TYPE_BAR,
-        'bars'         => self::LEGACY_RENDER_TYPE_BAR,
-        'simple_lines' => self::LEGACY_RENDER_TYPE_LINE,
-        'lines'        => self::LEGACY_RENDER_TYPE_LINE,
-        'area'         => self::LEGACY_RENDER_TYPE_AREA,
-        'simple_area'  => self::LEGACY_RENDER_TYPE_AREA,
-        'pie'          => self::LEGACY_RENDER_TYPE_PIE,
-        'table'        => self::LEGACY_RENDER_TYPE_TABLE,
-        'simple_stat'  => self::LEGACY_RENDER_TYPE_STAT,
-    ];
 
     /**
      * Constructor.
@@ -520,31 +498,6 @@ class ReportWidget extends DomainObject
     public function getDisplayTypes()
     {
         return $this->display_types;
-    }
-
-    /**
-     * @return string[]
-     */
-    public function getGraphTypes()
-    {
-        $graphTypes = [];
-        foreach ($this->display_types as $displayType) {
-            $graphTypes[] = self::getGraphType($displayType);
-        }
-
-        return $graphTypes;
-    }
-
-    /**
-     * @param $displayType
-     *
-     * @return string
-     */
-    public static function getGraphType($displayType)
-    {
-        return isset(self::$widgetGraphTypesMapping[$displayType])
-            ? self::$widgetGraphTypesMapping[$displayType]
-            : self::LEGACY_RENDER_TYPE_TABLE;
     }
 
     /**
