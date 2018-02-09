@@ -5,16 +5,17 @@ Feature: install v2 apps
 
   Background:
     Given I'm authenticated as admin
+    And there are no "App" records
 
   Scenario: I install an application via the api
-    Given there are no "App" records
     Given I package the app from folder "resources/apps/state-tests"
     When I send a POST request to "/api/v2/apps" with content type "application/zip" and file "{lastPackagedApp}" as body
     Then the response status code should be 200
+    And I save the JSON node "id" as placeholder "instance"
+    When I send a DELETE request to "/api/v2/apps/~instance~"
+    Then the response status code should be 204
 
   Scenario: After uninstall, the custom fields are renamed
-    Given there are no "App" records
-    And there are no "CustomDefTicket" records
     And I package the app from folder "resources/apps/state-tests"
     And I send a POST request to "/api/v2/apps" with content type "application/zip" and file "{lastPackagedApp}" as body
     And I save the JSON node "id" as placeholder "instance"
