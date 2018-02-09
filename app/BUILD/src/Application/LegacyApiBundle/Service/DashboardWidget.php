@@ -112,7 +112,7 @@ class DashboardWidget
     }
 
     /**
-     * @param $widgetType
+     * @param string $widgetType
      *
      * @return mixed|string
      */
@@ -122,6 +122,8 @@ class DashboardWidget
     }
 
     /**
+     * @param string $widgetType
+     *
      * @return string
      */
     public function getWidgetType($widgetType)
@@ -183,18 +185,27 @@ class DashboardWidget
         $variables = $this->transformVariables($widget);
         $variables = $this->applyPermissionsToVariables($variables, $widget, $person);
 
-        $data = $this->doRenderWidget($widget, ['variables' => $variables], $widget->getType(), 'json', $person);
+        $data = $this->doRender(
+            $widget->getWidget()->getQuery(),
+            ['variables' => $variables],
+            $this->getWidgetGraphType($widget->getType()),
+            'json',
+            $person,
+            $widget->getOptions()
+        );
 
-        return $this->formatData($data, $widget);
+        return $this->formatData($data, $widget->getType());
     }
 
     /**
-     * @param mixed                 $data
-     * @param DashboardWidgetEntity $widget
+     * @param mixed  $data
+     * @param string $widgetType
+     *
+     * @return mixed
      */
-    protected function formatData($data, DashboardWidgetEntity $widget)
+    public function formatData($data, $widgetType)
     {
-        if ($data && $widget->getType() == self::WIDGET_TYPE_TABLE) {
+        if ($data && $widgetType == self::WIDGET_TYPE_TABLE) {
             $aoColumns = [];
             $columns   = [];
 
@@ -275,30 +286,31 @@ class DashboardWidget
     }
 
     /**
-     * @param DashboardWidgetEntity $widget
-     * @param array                 $params
-     * @param string                $displayType
-     * @param string                $format
-     * @param Person                $person
+     * @param string $query,
+     * @param array  $params
+     * @param string $graphType
+     * @param string $format
+     * @param Person $person
+     * @param string $options
      *
      * @throws \DeskPRO\Bundle\ReportBundle\Dpql2\DpqlException
      * @throws \Exception
      *
      * @return array|bool|string
      */
-    protected function doRenderWidget(
-        DashboardWidgetEntity $widget,
+    public function doRender(
+        $query,
         $params,
-        $displayType,
+        $graphType,
         $format = 'json',
-        Person $person = null
+        Person $person = null,
+        $options = ''
     ) {
-        $mapped   = $this->getWidgetGraphType($displayType);
-        $query    = $this->compiler->compile($widget->getWidget()->getQuery(), $params, new DpqlContext($person));
-        $renderer = $this->rendererRegistry->getRenderer($mapped, $format);
+        $query    = $this->compiler->compile($query, $params, new DpqlContext($person));
+        $renderer = $this->rendererRegistry->getRenderer($graphType, $format);
 
-        if ($widget->getOptions()) {
-            $options = @json_decode($widget->getOptions(), true) ?: [];
+        if ($options) {
+            $options = @json_decode($options, true) ?: [];
         } else {
             $options = [];
         }

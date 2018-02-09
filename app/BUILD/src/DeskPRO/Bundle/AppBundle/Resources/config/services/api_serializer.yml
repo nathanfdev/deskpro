@@ -362,6 +362,7 @@ services:
       - "@dpql.compiler"
       - "@reports.renderer_registry"
       - "@deskpro.core.translate"
+      - "@dashboard.widget.service"
     tags:
       - { name: "jms_serializer.subscribing_handler" }
 

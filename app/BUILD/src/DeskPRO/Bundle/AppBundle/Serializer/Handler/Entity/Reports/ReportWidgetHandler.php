@@ -59,17 +59,28 @@ class ReportWidgetHandler extends AbstractEntityHandler
     private $translate;
 
     /**
+     * @var DashboardWidget
+     */
+    private $dashboardWidgetService;
+
+    /**
      * Constructor.
      *
      * @param DpqlCompiler            $compiler
      * @param ReportsRendererRegistry $rendererRegistry
      * @param Translate               $translate
+     * @param DashboardWidget         $dashboardWidgetService
      */
-    public function __construct(DpqlCompiler $compiler, ReportsRendererRegistry $rendererRegistry, Translate $translate)
-    {
-        $this->compiler         = $compiler;
-        $this->rendererRegistry = $rendererRegistry;
-        $this->translate        = $translate;
+    public function __construct(
+        DpqlCompiler $compiler,
+        ReportsRendererRegistry $rendererRegistry,
+        Translate $translate,
+        DashboardWidget $dashboardWidgetService
+    ) {
+        $this->compiler               = $compiler;
+        $this->rendererRegistry       = $rendererRegistry;
+        $this->translate              = $translate;
+        $this->dashboardWidgetService = $dashboardWidgetService;
     }
 
     /**
@@ -120,21 +131,15 @@ class ReportWidgetHandler extends AbstractEntityHandler
     public function getRenderedResult(ReportWidgetEntity $entity)
     {
         $result = [];
-        foreach ($entity->getGraphTypes() as $graphType) {
-            $query    = $this->compiler->compile($entity->getQuery(), ['variables' => $entity->getVariables()]);
-            $renderer = $this->rendererRegistry->getRenderer($graphType, 'json');
+        foreach ($entity->getDisplayTypes() as $displayType) {
+            $graphType = $this->dashboardWidgetService->getWidgetGraphType($displayType);
+            $data      = $this->dashboardWidgetService->doRender(
+                $entity->getQuery(),
+                ['variables' => $entity->getVariables()],
+                $graphType
+            );
 
-            $data = $renderer->render($query->getResults());
-            if ($data && $graphType == DashboardWidget::WIDGET_RENDER_TYPE_TABLE && isset($data['columns'])) {
-                $aoColumns = [];
-                $columns   = [];
-                foreach ($data['columns'] as $column) {
-                    $aoColumns[] = null;
-                    $columns[]   = ['title' => $column];
-                }
-                $data['aoColumns'] = $aoColumns;
-                $data['columns']   = $columns;
-            }
+            $data              = $this->dashboardWidgetService->formatData($data, $displayType);
             $data['chartType'] = $graphType;
             $result[]          = $data;
         }
