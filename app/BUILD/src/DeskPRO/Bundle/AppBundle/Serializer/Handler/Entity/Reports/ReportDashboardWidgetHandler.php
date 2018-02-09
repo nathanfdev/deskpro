@@ -33,7 +33,7 @@ use DeskPRO\Bundle\AppBundle\Serializer\Deferred\CallbackDeferredProperty;
 use DeskPRO\Bundle\AppBundle\Serializer\Handler\Entity\AbstractEntityHandler;
 use DeskPRO\Bundle\AppBundle\Serializer\Model\Reports\ReportDashboardWidget as ReportDashboardWidgetModel;
 use DeskPRO\Bundle\AppBundle\Serializer\Sideload\SideloadSerializationContext;
-use DeskPRO\Bundle\ReportBundle\Service\DashboardWidget;
+use DeskPRO\Bundle\ReportBundle\Dashboard\DashboardWidgetManager;
 
 /**
  * Class ReportDashboardWidgetHandler.
@@ -41,16 +41,16 @@ use DeskPRO\Bundle\ReportBundle\Service\DashboardWidget;
 class ReportDashboardWidgetHandler extends AbstractEntityHandler
 {
     /**
-     * @var DashboardWidget
+     * @var DashboardWidgetManager
      */
     private $dashboardWidgetService;
 
     /**
      * Constructor.
      *
-     * @param DashboardWidget $dashboardWidgetService
+     * @param DashboardWidgetManager $dashboardWidgetService
      */
-    public function __construct(DashboardWidget $dashboardWidgetService)
+    public function __construct(DashboardWidgetManager $dashboardWidgetService)
     {
         $this->dashboardWidgetService = $dashboardWidgetService;
     }

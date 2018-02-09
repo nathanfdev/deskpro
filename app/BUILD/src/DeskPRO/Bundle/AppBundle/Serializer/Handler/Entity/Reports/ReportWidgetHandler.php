@@ -34,9 +34,9 @@ use DeskPRO\Bundle\AppBundle\Serializer\Deferred\CallbackDeferredProperty;
 use DeskPRO\Bundle\AppBundle\Serializer\Handler\Entity\AbstractEntityHandler;
 use DeskPRO\Bundle\AppBundle\Serializer\Model\Reports\ReportWidget as ReportWidgetModel;
 use DeskPRO\Bundle\AppBundle\Serializer\Sideload\SideloadSerializationContext;
+use DeskPRO\Bundle\ReportBundle\Dashboard\DashboardWidgetManager;
 use DeskPRO\Bundle\ReportBundle\Dpql2\DpqlCompiler;
 use DeskPRO\Bundle\ReportBundle\Reports\Renderer\ReportsRendererRegistry;
-use DeskPRO\Bundle\ReportBundle\Service\DashboardWidget;
 
 /**
  * Class ReportWidgetHandler.
@@ -59,7 +59,7 @@ class ReportWidgetHandler extends AbstractEntityHandler
     private $translate;
 
     /**
-     * @var DashboardWidget
+     * @var DashboardWidgetManager
      */
     private $dashboardWidgetService;
 
@@ -69,13 +69,13 @@ class ReportWidgetHandler extends AbstractEntityHandler
      * @param DpqlCompiler            $compiler
      * @param ReportsRendererRegistry $rendererRegistry
      * @param Translate               $translate
-     * @param DashboardWidget         $dashboardWidgetService
+     * @param DashboardWidgetManager  $dashboardWidgetService
      */
     public function __construct(
         DpqlCompiler $compiler,
         ReportsRendererRegistry $rendererRegistry,
         Translate $translate,
-        DashboardWidget $dashboardWidgetService
+        DashboardWidgetManager $dashboardWidgetService
     ) {
         $this->compiler               = $compiler;
         $this->rendererRegistry       = $rendererRegistry;

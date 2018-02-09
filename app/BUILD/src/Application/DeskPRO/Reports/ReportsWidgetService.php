@@ -36,7 +36,7 @@ use Application\DeskPRO\EntityRepository\AgentTeam as AgentTeamRepository;
 use Application\DeskPRO\EntityRepository\Department as DepartmentRepository;
 use Application\DeskPRO\EntityRepository\Person as PersonRepository;
 use Application\DeskPRO\EntityRepository\ReportWidget as ReportWidgetRepository;
-use DeskPRO\Bundle\ReportBundle\Service\DashboardWidget;
+use DeskPRO\Bundle\ReportBundle\Dashboard\DashboardWidgetManager;
 use Doctrine\ORM\EntityManager;
 
 class ReportsWidgetService
@@ -87,18 +87,18 @@ class ReportsWidgetService
         $agentTeamRepository = $this->em->getRepository(AgentTeam::class);
         $agentTeams          = $agentTeamRepository->getTeams();
 
-        $groupParams['values']['agent'][DashboardWidget::WIDGET_VALUE_FROM_REPORT] = ['value from report'];
+        $groupParams['values']['agent'][DashboardWidgetManager::WIDGET_VALUE_FROM_REPORT] = ['value from report'];
         foreach ($agents as $agent) {
             $groupParams['values']['agent'][$agent->getId()] = [$agent->getDisplayName()];
         }
 
-        $groupParams['values']['department'][DashboardWidget::WIDGET_VALUE_FROM_REPORT] = ['value from report'];
+        $groupParams['values']['department'][DashboardWidgetManager::WIDGET_VALUE_FROM_REPORT] = ['value from report'];
         foreach ($departments as $department) {
             $postfix                                                   = $department->isTicketsEnabled() ? '' : ' [Chat]';
             $groupParams['values']['department'][$department->getId()] = [$department->getTitle().$postfix];
         }
 
-        $groupParams['values']['team'][DashboardWidget::WIDGET_VALUE_FROM_REPORT] = ['value from report'];
+        $groupParams['values']['team'][DashboardWidgetManager::WIDGET_VALUE_FROM_REPORT] = ['value from report'];
         foreach ($agentTeams as $agentTeam) {
             $groupParams['values']['team'][$agentTeam->getId()] = [$agentTeam->getName()];
         }

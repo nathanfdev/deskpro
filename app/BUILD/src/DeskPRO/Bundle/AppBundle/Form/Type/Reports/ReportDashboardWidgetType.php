@@ -32,7 +32,7 @@ use Application\DeskPRO\Entity\Person;
 use Application\DeskPRO\Entity\ReportDashboardReport;
 use Application\DeskPRO\Entity\ReportDashboardWidget;
 use Application\DeskPRO\Entity\ReportWidget;
-use DeskPRO\Bundle\ReportBundle\Service\DashboardWidget;
+use DeskPRO\Bundle\ReportBundle\Dashboard\DashboardWidgetManager;
 use Doctrine\ORM\EntityRepository;
 use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 use Symfony\Component\Form\AbstractType;
@@ -63,13 +63,13 @@ class ReportDashboardWidgetType extends AbstractType
                 'required'          => true,
                 'choices_as_values' => true,
                 'choices'           => [
-                    DashboardWidget::WIDGET_RENDER_TYPE_BAR,
-                    DashboardWidget::WIDGET_RENDER_TYPE_LINE,
-                    DashboardWidget::WIDGET_RENDER_TYPE_AREA,
-                    DashboardWidget::WIDGET_RENDER_TYPE_PIE,
-                    DashboardWidget::WIDGET_RENDER_TYPE_GAUGE,
-                    DashboardWidget::WIDGET_RENDER_TYPE_STAT,
-                    DashboardWidget::WIDGET_RENDER_TYPE_TABLE,
+                    DashboardWidgetManager::WIDGET_RENDER_TYPE_BAR,
+                    DashboardWidgetManager::WIDGET_RENDER_TYPE_LINE,
+                    DashboardWidgetManager::WIDGET_RENDER_TYPE_AREA,
+                    DashboardWidgetManager::WIDGET_RENDER_TYPE_PIE,
+                    DashboardWidgetManager::WIDGET_RENDER_TYPE_GAUGE,
+                    DashboardWidgetManager::WIDGET_RENDER_TYPE_STAT,
+                    DashboardWidgetManager::WIDGET_RENDER_TYPE_TABLE,
                 ],
             ])
             ->add('widget', EntityType::class, [
@@ -98,6 +98,10 @@ class ReportDashboardWidgetType extends AbstractType
             ])
             ->add('options', TextType::class, [
                 'required' => false,
+            ])
+            ->add('js_code', TextType::class, [
+                'property_path' => 'jsCode',
+                'required'      => false,
             ])
         ;
 

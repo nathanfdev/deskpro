@@ -26,7 +26,7 @@
  * ~ Thanks, Everyone at Team DeskPRO
  */
 
-namespace DeskPRO\Bundle\ReportBundle\Service;
+namespace DeskPRO\Bundle\ReportBundle\Dashboard;
 
 use Application\DeskPRO\Entity\Person;
 use Application\DeskPRO\Entity\ReportDashboardPermission;
@@ -41,7 +41,7 @@ use Doctrine\ORM\EntityManager;
 /**
  * Class DashboardWidget.
  */
-class DashboardWidget
+class DashboardWidgetManager
 {
     // These are different renderers
     const WIDGET_RENDER_TYPE_BAR    = 'simple_bars';
@@ -188,6 +188,12 @@ class DashboardWidget
      */
     public function renderWidget(DashboardWidgetEntity $widget, Person $person = null)
     {
+        // it might have no widget but js code
+        // so skip it and render client side
+        if (!$widget->getWidget()) {
+            return;
+        }
+
         $variables = $this->transformVariables($widget);
         $variables = $this->applyPermissionsToVariables($variables, $widget, $person);
 
