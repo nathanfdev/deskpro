@@ -157,19 +157,10 @@ $container->setDefinition('deskpro.core.input_reader', $definition);
 //###########################################################################
 
 $definition = new Definition();
-$definition->setClass('Application\\LegacyApiBundle\\Service\\DashboardWidget');
-$definition->setArguments([
-    new Reference('doctrine.orm.entity_manager'),
-    new Reference('dpql.compiler'),
-    new Reference('reports.renderer_registry'),
-]);
-$container->setDefinition('dashboard.widget.service', $definition);
-
-$definition = new Definition();
 $definition->setClass('Application\\LegacyApiBundle\\Service\\Dashboard');
 $definition->setArguments([
     new Reference('doctrine.orm.entity_manager'),
-    new Reference('dashboard.widget.service'),
+    new Reference('reports.dashboard_widget.service'),
     new Reference('deskpro.core.translate'),
 ]);
 $container->setDefinition('dashboard.service', $definition);
@@ -183,7 +174,7 @@ $definition = new Definition();
 $definition->setClass('Application\\DeskPRO\\Reports\\ReportSaver');
 $definition->setArguments([
     new Reference('doctrine.orm.entity_manager'),
-    new Reference('dashboard.widget.service'),
+    new Reference('reports.dashboard_widget.service'),
 ]);
 $container->setDefinition('deskpro.reports.saver', $definition);
 

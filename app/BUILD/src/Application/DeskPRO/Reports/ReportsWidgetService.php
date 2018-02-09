@@ -36,7 +36,7 @@ use Application\DeskPRO\EntityRepository\AgentTeam as AgentTeamRepository;
 use Application\DeskPRO\EntityRepository\Department as DepartmentRepository;
 use Application\DeskPRO\EntityRepository\Person as PersonRepository;
 use Application\DeskPRO\EntityRepository\ReportWidget as ReportWidgetRepository;
-use Application\LegacyApiBundle\Service\DashboardWidget;
+use DeskPRO\Bundle\ReportBundle\Service\DashboardWidget;
 use Doctrine\ORM\EntityManager;
 
 class ReportsWidgetService

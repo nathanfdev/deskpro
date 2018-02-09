@@ -26,7 +26,7 @@
  * ~ Thanks, Everyone at Team DeskPRO
  */
 
-namespace Application\LegacyApiBundle\Service;
+namespace DeskPRO\Bundle\ReportBundle\Service;
 
 use Application\DeskPRO\Entity\Person;
 use Application\DeskPRO\Entity\ReportDashboardPermission;

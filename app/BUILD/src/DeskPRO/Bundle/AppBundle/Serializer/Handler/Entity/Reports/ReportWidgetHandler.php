@@ -30,13 +30,13 @@ namespace DeskPRO\Bundle\AppBundle\Serializer\Handler\Entity\Reports;
 
 use Application\DeskPRO\Entity\ReportWidget as ReportWidgetEntity;
 use Application\DeskPRO\Translate\Translate;
-use Application\LegacyApiBundle\Service\DashboardWidget;
 use DeskPRO\Bundle\AppBundle\Serializer\Deferred\CallbackDeferredProperty;
 use DeskPRO\Bundle\AppBundle\Serializer\Handler\Entity\AbstractEntityHandler;
 use DeskPRO\Bundle\AppBundle\Serializer\Model\Reports\ReportWidget as ReportWidgetModel;
 use DeskPRO\Bundle\AppBundle\Serializer\Sideload\SideloadSerializationContext;
 use DeskPRO\Bundle\ReportBundle\Dpql2\DpqlCompiler;
 use DeskPRO\Bundle\ReportBundle\Reports\Renderer\ReportsRendererRegistry;
+use DeskPRO\Bundle\ReportBundle\Service\DashboardWidget;
 
 /**
  * Class ReportWidgetHandler.

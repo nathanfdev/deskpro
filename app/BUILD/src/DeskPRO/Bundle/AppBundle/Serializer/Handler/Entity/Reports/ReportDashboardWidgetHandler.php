@@ -29,11 +29,11 @@
 namespace DeskPRO\Bundle\AppBundle\Serializer\Handler\Entity\Reports;
 
 use Application\DeskPRO\Entity\ReportDashboardWidget as ReportDashboardWidgetEntity;
-use Application\LegacyApiBundle\Service\DashboardWidget;
 use DeskPRO\Bundle\AppBundle\Serializer\Deferred\CallbackDeferredProperty;
 use DeskPRO\Bundle\AppBundle\Serializer\Handler\Entity\AbstractEntityHandler;
 use DeskPRO\Bundle\AppBundle\Serializer\Model\Reports\ReportDashboardWidget as ReportDashboardWidgetModel;
 use DeskPRO\Bundle\AppBundle\Serializer\Sideload\SideloadSerializationContext;
+use DeskPRO\Bundle\ReportBundle\Service\DashboardWidget;
 
 /**
  * Class ReportDashboardWidgetHandler.
