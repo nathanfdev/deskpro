@@ -13,40 +13,22 @@
   "scope":"agent",
   "storage":[
     {
-      "name":"oauth:jira",
-      "isBackendOnly":true,
-      "permRead":"EVERYBODY",
-      "permWrite":"OWNER"
+      "name": "user-only",
+      "isBackendOnly": false,
+      "permRead": "OWNER",
+      "permWrite": "OWNER"
     },
     {
-      "name":"oauth:jira:tokens",
-      "isBackendOnly":true,
-      "permRead":"OWNER",
-      "permWrite":"OWNER"
+      "name": "user-writable",
+      "isBackendOnly": false,
+      "permRead": "EVERYBODY",
+      "permWrite": "OWNER"
     },
     {
-      "name":"rsaPrivateKey",
-      "isBackendOnly":false,
-      "permRead":"EVERYBODY",
-      "permWrite":"OWNER"
-    },
-    {
-      "name":"rsaPublicKey",
-      "isBackendOnly":false,
-      "permRead":"EVERYBODY",
-      "permWrite":"OWNER"
-    },
-    {
-      "name":"jiraInstanceUrl",
-      "isBackendOnly":false,
-      "permRead":"EVERYBODY",
-      "permWrite":"OWNER"
-    },
-    {
-      "name":"jiraClientId",
-      "isBackendOnly":false,
-      "permRead":"EVERYBODY",
-      "permWrite":"OWNER"
+      "name": "world-accessible",
+      "isBackendOnly": false,
+      "permRead": "EVERYBODY",
+      "permWrite": "EVERYBODY"
     }
   ],
   "targets":[
