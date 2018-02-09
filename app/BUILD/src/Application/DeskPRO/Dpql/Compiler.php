@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2017, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2018, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -33,7 +33,7 @@
 namespace Application\DeskPRO\Dpql;
 
 use Application\DeskPRO\Entity\ReportWidget;
-use Application\LegacyApiBundle\Service\DashboardWidget;
+use DeskPRO\Bundle\ReportBundle\Service\DashboardWidget;
 
 /**
  * Compiles a DPQL string statement into a statement object.

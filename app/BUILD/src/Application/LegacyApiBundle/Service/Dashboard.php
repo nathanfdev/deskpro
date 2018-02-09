@@ -32,6 +32,7 @@ use Application\DeskPRO\Entity\ReportDashboardReport as DashboardReportEntity;
 use Application\DeskPRO\Entity\ReportDashboardWidget;
 use Application\DeskPRO\Entity\ReportWidget;
 use Application\DeskPRO\Translate\Translate;
+use DeskPRO\Bundle\ReportBundle\Service\DashboardWidget;
 use Doctrine\ORM\EntityManager;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 

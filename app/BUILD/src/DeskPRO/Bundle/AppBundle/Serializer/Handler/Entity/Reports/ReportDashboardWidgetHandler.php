@@ -28,16 +28,12 @@
 
 namespace DeskPRO\Bundle\AppBundle\Serializer\Handler\Entity\Reports;
 
-use Application\DeskPRO\Entity\Person;
-use Application\DeskPRO\Entity\ReportDashboardPermission;
 use Application\DeskPRO\Entity\ReportDashboardWidget as ReportDashboardWidgetEntity;
-use Application\DeskPRO\Entity\ReportWidget;
 use DeskPRO\Bundle\AppBundle\Serializer\Deferred\CallbackDeferredProperty;
 use DeskPRO\Bundle\AppBundle\Serializer\Handler\Entity\AbstractEntityHandler;
 use DeskPRO\Bundle\AppBundle\Serializer\Model\Reports\ReportDashboardWidget as ReportDashboardWidgetModel;
 use DeskPRO\Bundle\AppBundle\Serializer\Sideload\SideloadSerializationContext;
-use DeskPRO\Bundle\ReportBundle\Dpql2\DpqlCompiler;
-use DeskPRO\Bundle\ReportBundle\Reports\Renderer\ReportsRendererRegistry;
+use DeskPRO\Bundle\ReportBundle\Service\DashboardWidget;
 
 /**
  * Class ReportDashboardWidgetHandler.
@@ -45,25 +41,18 @@ use DeskPRO\Bundle\ReportBundle\Reports\Renderer\ReportsRendererRegistry;
 class ReportDashboardWidgetHandler extends AbstractEntityHandler
 {
     /**
-     * @var DpqlCompiler
+     * @var DashboardWidget
      */
-    private $compiler;
-
-    /**
-     * @var ReportsRendererRegistry
-     */
-    private $reportsRendererRegistry;
+    private $dashboardWidgetService;
 
     /**
      * Constructor.
      *
-     * @param DpqlCompiler            $compiler
-     * @param ReportsRendererRegistry $reportsRendererRegistry
+     * @param DashboardWidget $dashboardWidgetService
      */
-    public function __construct(DpqlCompiler $compiler, ReportsRendererRegistry $reportsRendererRegistry)
+    public function __construct(DashboardWidget $dashboardWidgetService)
     {
-        $this->compiler                = $compiler;
-        $this->reportsRendererRegistry = $reportsRendererRegistry;
+        $this->dashboardWidgetService = $dashboardWidgetService;
     }
 
     /**
@@ -87,84 +76,10 @@ class ReportDashboardWidgetHandler extends AbstractEntityHandler
         $sideloads->addCustomSideload(
             'rendered_result',
             $entity->getId(),
-            new CallbackDeferredProperty([$this, 'getRenderedResult'], [$entity, $context->getUser()]),
+            new CallbackDeferredProperty([$this->dashboardWidgetService, 'renderWidget'], [$entity, $context->getUser()]),
             $model
         );
 
         return $model;
-    }
-
-    /**
-     * @param ReportDashboardWidgetEntity $entity
-     * @param Person                      $person
-     *
-     * @return string
-     */
-    public function getRenderedResult(ReportDashboardWidgetEntity $entity, Person $person = null)
-    {
-        $report    = $entity->getReport();
-        $dashboard = $report->getDashboard();
-        $widget    = $entity->getWidget();
-        $query     = $widget->getQuery();
-
-        $variables       = [];
-        $reportVariables = $report->getVariables();
-        $widgetVariables = $entity->getVariables();
-
-        foreach ($widgetVariables as $widgetVariable) {
-            foreach ($reportVariables as $reportVariable) {
-                if ($reportVariable['name'] === $widgetVariable['name']) {
-                    $widgetVariable['value'] = $reportVariable['value'];
-                }
-            }
-
-            $variables[] = $widgetVariable;
-        }
-
-        if ($person && $dashboard->isAgent()) {
-            /** @var ReportDashboardPermission $ownPermission */
-            $ownPermission = $dashboard->getPermissions()->filter(function (ReportDashboardPermission $permission) use ($person) {
-                return $permission->getPerson() === $person;
-            })->first();
-
-            if (!$ownPermission || !$ownPermission->isViewAll()) {
-                foreach ($variables as &$variable) {
-                    if ($variable['name'] === 'agent') {
-                        $variable['field_value'] = $person->getId();
-                    }
-                    if ($variable['name'] === 'agent_team') {
-                        $variable['field_value'] = $person->getPrimaryTeam() ? $person->getPrimaryTeam()->getId() : null;
-                    }
-                }
-            }
-        }
-
-        $query    = $this->compiler->compile($query, ['variables' => $variables]);
-        $results  = $query->getResults();
-        $renderer = $this->reportsRendererRegistry->getRenderer(ReportWidget::getGraphType($entity->getType()), 'json');
-
-        if ($entity->getOptions()) {
-            $options = @json_decode($entity->getOptions(), true) ?: [];
-        } else {
-            $options = [];
-        }
-        $data = $renderer->render($results, $options);
-        if ($data && $entity->getType() == ReportDashboardWidgetEntity::WIDGET_TYPE_TABLE) {
-            $aoColumns = [];
-            $columns   = [];
-
-            foreach ($data['columns'] as $column) {
-                $aoColumns[] = null;
-                $columns[]   = ['title' => $column];
-            }
-
-            $data['aoColumns'] = $aoColumns;
-            $data['columns']   = $columns;
-        }
-        if (empty($data) || $data === '') {
-            $data = null;
-        }
-
-        return $data;
     }
 }

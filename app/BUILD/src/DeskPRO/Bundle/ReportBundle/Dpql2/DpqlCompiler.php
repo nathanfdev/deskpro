@@ -31,8 +31,8 @@ namespace DeskPRO\Bundle\ReportBundle\Dpql2;
 use Application\DeskPRO\Entity\Person;
 use Application\DeskPRO\Entity\ReportWidget;
 use Application\DeskPRO\EntityRepository\ReportWidget as ReportWidgetRepository;
-use Application\LegacyApiBundle\Service\DashboardWidget;
 use DeskPRO\Bundle\ReportBundle\Dpql2\Statement\SelectPart;
+use DeskPRO\Bundle\ReportBundle\Service\DashboardWidget;
 use Doctrine\ORM\EntityManager;
 use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorage;
 

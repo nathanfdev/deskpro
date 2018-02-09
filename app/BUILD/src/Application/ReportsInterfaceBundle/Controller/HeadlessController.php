@@ -46,7 +46,7 @@ class HeadlessController extends \Application\DeskPRO\Controller\AbstractControl
         if (!$report) {
             throw new NotFoundHttpException();
         }
-        $widgetService = $this->get('dashboard.widget.service');
+        $widgetService = $this->get('reports.dashboard_widget.service');
         $widgets       = [];
         foreach ($report->getSavedWidgets() as $savedWidget) {
             $wdata                = $widgetService->getWidgetData($savedWidget);

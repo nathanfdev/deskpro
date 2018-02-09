@@ -30,7 +30,7 @@ namespace DeskPRO\Bundle\AppBundle\Form\Type\Reports;
 
 use Application\DeskPRO\Entity\ReportWidget;
 use Application\LegacyApiBundle\Service\Dashboard;
-use Application\LegacyApiBundle\Service\DashboardWidget;
+use DeskPRO\Bundle\ReportBundle\Service\DashboardWidget;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
 use Symfony\Component\Form\Extension\Core\Type\CollectionType;

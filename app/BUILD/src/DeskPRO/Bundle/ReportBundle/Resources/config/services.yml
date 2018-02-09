@@ -2,3 +2,10 @@ services:
 
   reports.dashboard_manager:
     class: DeskPRO\Bundle\ReportBundle\Dashboard\DashboardManager
+
+  reports.dashboard_widget.service:
+    class: DeskPRO\Bundle\ReportBundle\Service\DashboardWidget
+    arguments:
+      - "@doctrine.orm.entity_manager"
+      - "@dpql.compiler"
+      - "@reports.renderer_registry"

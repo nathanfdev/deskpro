@@ -30,8 +30,8 @@ namespace Application\LegacyApiBundle\Controller;
 
 use Application\DeskPRO\Entity\SavedDashboardWidget;
 use Application\LegacyApiBundle\Service\Dashboard as DashboardService;
-use Application\LegacyApiBundle\Service\DashboardWidget as DashboardWidgetService;
 use DeskPRO\Bundle\AppBundle\Annotation\ActionPermissions\Annotation\ApiModes;
+use DeskPRO\Bundle\ReportBundle\Service\DashboardWidget as DashboardWidgetService;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 
@@ -53,7 +53,7 @@ class SavedReportController extends AbstractController
         parent::init();
         $this->service       = $this->get('dashboard.service');
         $this->reportSaver   = $this->get('deskpro.reports.saver');
-        $this->widgetService = $this->get('dashboard.widget.service');
+        $this->widgetService = $this->get('reports.dashboard_widget.service');
     }
 
     public function preActionHandler(Request $request, $action, $arguments = null)
