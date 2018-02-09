@@ -29,10 +29,12 @@
 namespace Application\LegacyApiBundle\Service;
 
 use Application\DeskPRO\Entity\Person;
+use Application\DeskPRO\Entity\ReportDashboardPermission;
 use Application\DeskPRO\Entity\ReportDashboardWidget as DashboardWidgetEntity;
 use Application\DeskPRO\Entity\SavedDashboardWidget;
 use DeskPRO\Bundle\ReportBundle\Dpql2\DpqlCompiler;
 use DeskPRO\Bundle\ReportBundle\Dpql2\DpqlContext;
+use DeskPRO\Bundle\ReportBundle\Reports\Renderer\ReportsRendererInterface;
 use DeskPRO\Bundle\ReportBundle\Reports\Renderer\ReportsRendererRegistry;
 use Doctrine\ORM\EntityManager;
 
@@ -41,6 +43,7 @@ use Doctrine\ORM\EntityManager;
  */
 class DashboardWidget
 {
+    // These are different renderers
     const WIDGET_RENDER_TYPE_BAR   = 'simple_bars';
     const WIDGET_RENDER_TYPE_LINE  = 'simple_lines';
     const WIDGET_RENDER_TYPE_AREA  = 'simple_area';
@@ -48,36 +51,36 @@ class DashboardWidget
     const WIDGET_RENDER_TYPE_TABLE = 'table';
     const WIDGET_RENDER_TYPE_STAT  = 'simple_stat';
 
-    const LEGACY_RENDER_TYPE_BAR   = 'BAR';
-    const LEGACY_RENDER_TYPE_LINE  = 'LINE';
-    const LEGACY_RENDER_TYPE_AREA  = 'AREA';
-    const LEGACY_RENDER_TYPE_PIE   = 'PIE';
-    const LEGACY_RENDER_TYPE_TABLE = 'TABLE';
-    const LEGACY_RENDER_TYPE_STAT  = 'STAT';
+    // These are different types
+    const WIDGET_TYPE_GRAPH = 'graph';
+    const WIDGET_TYPE_STAT  = 'stat';
+    const WIDGET_TYPE_TABLE = 'table';
 
-    const WIDGET_TYPE_GRAPH     = 'graph';
-    const WIDGET_TYPE_STAT      = 'stat';
-    const WIDGET_TYPE_HARDCODED = 'hardcoded';
-    const WIDGET_TYPE_BAR       = 'bar';
-    const WIDGET_TYPE_PIE       = 'pie';
-    const WIDGET_TYPE_TABLE     = 'table';
+    const WIDGET_VALUE_FROM_REPORT = 'from_report_value';
 
     /**
      * @var array
      */
     protected $widgetTypesMapping = [
-        'simple_bars'  => self::WIDGET_TYPE_GRAPH,
-        'bars'         => self::WIDGET_TYPE_GRAPH,
-        'simple_lines' => self::WIDGET_TYPE_GRAPH,
-        'lines'        => self::WIDGET_TYPE_GRAPH,
-        'area'         => self::WIDGET_TYPE_GRAPH,
-        'simple_area'  => self::WIDGET_TYPE_GRAPH,
-        'pie'          => self::WIDGET_TYPE_GRAPH,
-        'table'        => self::WIDGET_TYPE_TABLE,
-        'simple_stat'  => self::WIDGET_TYPE_STAT,
+        self::WIDGET_RENDER_TYPE_BAR   => self::WIDGET_TYPE_GRAPH,
+        self::WIDGET_RENDER_TYPE_LINE  => self::WIDGET_TYPE_GRAPH,
+        self::WIDGET_RENDER_TYPE_AREA  => self::WIDGET_TYPE_GRAPH,
+        self::WIDGET_RENDER_TYPE_PIE   => self::WIDGET_TYPE_GRAPH,
+        self::WIDGET_RENDER_TYPE_STAT  => self::WIDGET_TYPE_STAT,
+        self::WIDGET_RENDER_TYPE_TABLE => self::WIDGET_TYPE_TABLE,
     ];
 
-    const WIDGET_VALUE_FROM_REPORT = 'from_report_value';
+    /**
+     * @var array
+     */
+    protected $widgetGraphTypesMapping = [
+        self::WIDGET_RENDER_TYPE_BAR   => ReportsRendererInterface::TYPE_BAR,
+        self::WIDGET_RENDER_TYPE_LINE  => ReportsRendererInterface::TYPE_LINE,
+        self::WIDGET_RENDER_TYPE_AREA  => ReportsRendererInterface::TYPE_AREA,
+        self::WIDGET_RENDER_TYPE_PIE   => ReportsRendererInterface::TYPE_PIE,
+        self::WIDGET_RENDER_TYPE_STAT  => ReportsRendererInterface::TYPE_STAT,
+        self::WIDGET_RENDER_TYPE_TABLE => ReportsRendererInterface::TYPE_TABLE,
+    ];
 
     /**
      * @var EntityManager
@@ -93,21 +96,6 @@ class DashboardWidget
      * @var ReportsRendererRegistry
      */
     private $rendererRegistry;
-
-    /**
-     * @var array
-     */
-    protected $widgetGraphTypesMapping = [
-        'simple_bars'  => self::LEGACY_RENDER_TYPE_BAR,
-        'bars'         => self::LEGACY_RENDER_TYPE_BAR,
-        'simple_lines' => self::LEGACY_RENDER_TYPE_LINE,
-        'lines'        => self::LEGACY_RENDER_TYPE_LINE,
-        'area'         => self::LEGACY_RENDER_TYPE_AREA,
-        'simple_area'  => self::LEGACY_RENDER_TYPE_AREA,
-        'pie'          => self::LEGACY_RENDER_TYPE_PIE,
-        'table'        => self::LEGACY_RENDER_TYPE_TABLE,
-        'simple_stat'  => self::LEGACY_RENDER_TYPE_STAT,
-    ];
 
     /**
      * DashboardWidget constructor.
@@ -185,42 +173,136 @@ class DashboardWidget
      * @param DashboardWidgetEntity $widget
      * @param Person|null           $person
      *
+     * @throws \DeskPRO\Bundle\ReportBundle\Dpql2\DpqlException
+     * @throws \Exception
+     *
      * @return array|bool|string
      */
-    public function renderWidgetQuery(DashboardWidgetEntity $widget, Person $person = null)
+    public function renderWidget(DashboardWidgetEntity $widget, Person $person = null)
     {
-        $report = $widget->getWidget();
-        $query  = $report->getQuery();
+        $variables = $this->transformVariables($widget);
+        $variables = $this->applyPermissionsToVariables($variables, $widget, $person);
 
+        $data = $this->doRenderWidget($widget, ['variables' => $variables], $widget->getType(), 'json', $person);
+
+        return $this->formatData($data, $widget);
+    }
+
+    /**
+     * @param mixed                 $data
+     * @param DashboardWidgetEntity $widget
+     */
+    protected function formatData($data, DashboardWidgetEntity $widget)
+    {
+        if ($data && $widget->getType() == self::WIDGET_TYPE_TABLE) {
+            $aoColumns = [];
+            $columns   = [];
+
+            foreach ($data['columns'] as $column) {
+                $aoColumns[] = null;
+                $columns[]   = ['title' => $column];
+            }
+
+            $data['aoColumns'] = $aoColumns;
+            $data['columns']   = $columns;
+        }
+
+        if (empty($data) || $data === '') {
+            $data = null;
+        }
+
+        return $data;
+    }
+
+    /**
+     * @param array                 $variables
+     * @param DashboardWidgetEntity $widget
+     * @param Person|null           $person
+     *
+     * @return array
+     */
+    protected function applyPermissionsToVariables(
+        array $variables,
+        DashboardWidgetEntity $widget,
+        Person $person = null
+    ) {
+        $dashboard = $widget->getReport()->getDashboard();
+
+        if ($person && $dashboard->isAgent()) {
+            /** @var ReportDashboardPermission $ownPermission */
+            $ownPermission = $dashboard->getPermissions()->filter(function (ReportDashboardPermission $permission) use ($person) {
+                return $permission->getPerson() === $person;
+            })->first();
+
+            if (!$ownPermission || !$ownPermission->isViewAll()) {
+                foreach ($variables as &$variable) {
+                    if ($variable['name'] === 'agent') {
+                        $variable['field_value'] = $person->getId();
+                    }
+                    if ($variable['name'] === 'agent_team') {
+                        $variable['field_value'] = $person->getPrimaryTeam() ? $person->getPrimaryTeam()->getId() : null;
+                    }
+                }
+            }
+        }
+
+        return $variables;
+    }
+
+    /**
+     * @param DashboardWidgetEntity $widget
+     *
+     * @return array
+     */
+    protected function transformVariables(DashboardWidgetEntity $widget)
+    {
+        $report          = $widget->getReport();
         $variables       = [];
         $reportVariables = $report->getVariables();
         $widgetVariables = $widget->getVariables();
 
-        foreach ($reportVariables as $variable) {
-            $variables[$variable['name']] = $variable;
-            if (isset($widgetVariables[$variable['name']]) && isset($widgetVariables[$variable['name']]['value'])) {
-                $variables[$variable['name']]['value'] = $widgetVariables[$variable['name']]['value'];
+        foreach ($widgetVariables as $widgetVariable) {
+            foreach ($reportVariables as $reportVariable) {
+                if ($reportVariable['name'] === $widgetVariable['name']) {
+                    $widgetVariable['value'] = $reportVariable['value'];
+                }
             }
+
+            $variables[] = $widgetVariable;
         }
 
-        return $this->renderQuery($query, ['variables' => $variables], $widget->getType(), 'json', $person);
+        return $variables;
     }
 
     /**
-     * @param string $query
-     * @param array  $params
-     * @param string $displayType
-     * @param string $format
-     * @param Person $person
+     * @param DashboardWidgetEntity $widget
+     * @param array                 $params
+     * @param string                $displayType
+     * @param string                $format
+     * @param Person                $person
+     *
+     * @throws \DeskPRO\Bundle\ReportBundle\Dpql2\DpqlException
+     * @throws \Exception
      *
      * @return array|bool|string
      */
-    public function renderQuery($query, $params, $displayType, $format = 'json', Person $person = null)
-    {
+    protected function doRenderWidget(
+        DashboardWidgetEntity $widget,
+        $params,
+        $displayType,
+        $format = 'json',
+        Person $person = null
+    ) {
         $mapped   = $this->getWidgetGraphType($displayType);
-        $query    = $this->compiler->compile($query, $params, new DpqlContext($person));
+        $query    = $this->compiler->compile($widget->getWidget()->getQuery(), $params, new DpqlContext($person));
         $renderer = $this->rendererRegistry->getRenderer($mapped, $format);
 
-        return $renderer->render($query->getResults());
+        if ($widget->getOptions()) {
+            $options = @json_decode($widget->getOptions(), true) ?: [];
+        } else {
+            $options = [];
+        }
+
+        return $renderer->render($query->getResults(), $options);
     }
 }

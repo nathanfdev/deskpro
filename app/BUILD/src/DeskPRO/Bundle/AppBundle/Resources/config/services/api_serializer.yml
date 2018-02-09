@@ -352,8 +352,7 @@ services:
   api_serializer.handler.report_dashboard_widget:
     class: DeskPRO\Bundle\AppBundle\Serializer\Handler\Entity\Reports\ReportDashboardWidgetHandler
     arguments:
-      - "@dpql.compiler"
-      - "@reports.renderer_registry"
+      - "@dashboard.widget.service"
     tags:
       - { name: "jms_serializer.subscribing_handler" }
 

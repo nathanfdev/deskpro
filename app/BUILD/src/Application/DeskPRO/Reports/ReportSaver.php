@@ -90,7 +90,7 @@ class ReportSaver
                 }
             }
             $widget->setVariables($widgetVars);
-            $widgetData = $this->widgetService->renderWidgetQuery($widget, $person);
+            $widgetData = $this->widgetService->renderWidget($widget, $person);
 
             if ($widgetData && $widget->getType() == ReportDashboardWidget::WIDGET_TYPE_TABLE) {
                 $aoColumns = [];
