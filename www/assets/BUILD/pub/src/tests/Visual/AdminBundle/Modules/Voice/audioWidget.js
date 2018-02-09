@@ -1,6 +1,6 @@
 import React from 'react';
 import AudioWidget from 'DeskPRO/Component/AudioWidget/AudioWidget';
-import { storiesOf } from '@kadira/storybook';
+import { storiesOf } from '@storybook/react';
 import { adminCss, redux } from '../../../decorators';
 
 const onSubmit = (data) => {

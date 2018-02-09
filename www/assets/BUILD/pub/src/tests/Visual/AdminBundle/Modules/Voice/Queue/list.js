@@ -1,7 +1,7 @@
 import React from 'react';
 import Immutable from 'immutable';
 import QueueList from 'DeskPRO/Bundle/AdminBundle/Modules/Voice/Components/Queues/List/QueueList';
-import { storiesOf } from '@kadira/storybook';
+import { storiesOf } from '@storybook/react';
 import { adminCss, redux } from '../../../../decorators';
 
 const queues = Immutable.fromJS([

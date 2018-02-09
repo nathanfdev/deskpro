@@ -1,5 +1,5 @@
 import React from 'react';
-import { storiesOf, action } from '@kadira/storybook';
+import { storiesOf, action } from '@storybook/react';
 import { SectionsPane, Section, NestedList }
   from 'DeskPRO/Bundle/AgentBundle/Modules/Common/Components/NavFrame';
 import { css } from '../../../../../decorators';

@@ -1,5 +1,5 @@
 import React from 'react';
-import { storiesOf, action, linkTo } from '@kadira/storybook';
+import { storiesOf, action, linkTo } from '@storybook/react';
 import { Toggle, Range, Select } from 'DeskPRO/Component/Semantic/Form';
 import { css } from 'Visual/decorators';
 import { Button, ButtonGroup } from 'DeskPRO/Component/Semantic/Button';

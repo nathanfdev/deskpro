@@ -1,6 +1,6 @@
 import React from 'react';
 import Isvg from 'react-inlinesvg';
-import { storiesOf, action } from '@kadira/storybook'; // eslint-disable-line import/no-extraneous-dependencies
+import { storiesOf, action } from '@storybook/react'; // eslint-disable-line import/no-extraneous-dependencies
 import { css } from 'Visual/decorators';
 import { TopBar, TopBarItem } from 'DeskPRO/Component/Semantic/TopBar';
 import SearchBox from 'DeskPRO/Component/Semantic/SearchBox';
