@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2017, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2018, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -64,18 +64,23 @@ class GenBuildScriptCommand extends ContainerAwareCommand
             ->setName('dp:update:dev:gen-build-script')->setAliases(['dpdev:gen-build-class'])
             ->addOption('output', null, InputOption::VALUE_NONE, 'Output to stdout instead of writing it')
             ->addOption('blocking', null, InputOption::VALUE_NONE, 'Force use of BlockingBuildInterface')
+            ->addOption('blank', null, InputOption::VALUE_NONE, 'Do not auto-detect schema changes')
             ->addOption('skip-manifest', null, InputOption::VALUE_NONE, 'Do not update manifest (always skipped if --out is being used)')
         ;
     }
 
     protected function execute(InputInterface $input, OutputInterface $output)
     {
+        global $DP_ENV;
+
         if (!$input->getOption('output')) {
             echo "Generating new migration script\n";
         }
 
         $this->buildTime = time();
         $this->toStdout  = $input->getOption('output');
+
+        $isBlank = $input->getOption('blank');
 
         $this->appendBuffer($this->getFileHeader());
         $skipPostBuild = false;
@@ -86,8 +91,7 @@ class GenBuildScriptCommand extends ContainerAwareCommand
         }
 
         // Use list-changed-files to determine if we've modified any PostBuild type files
-        if (!EnvUtils::isWindows()) {
-            global $DP_ENV;
+        if (!$isBlank && !EnvUtils::isWindows()) {
             $script = $DP_ENV->getDpRoot().'/dev/bin/list-changed-files';
             if (is_file($script) && is_executable($script)) {
                 $output = $return = null;
@@ -131,46 +135,48 @@ class GenBuildScriptCommand extends ContainerAwareCommand
         $bcAlterQueries  = [];
         $alterQueries    = [];
 
-        foreach ([
-            'default' => $this->getContainer()->get('doctrine.orm.default_entity_manager'),
-            'sys' => $this->getContainer()->get('doctrine.orm.system_entity_manager'),
-            'audit' => $this->getContainer()->get('doctrine.orm.audit_entity_manager'),
-        ] as $dbId => $em) {
-            $metadata = $em->getMetadataFactory()->getAllMetadata();
-            $tool     = new SchemaTool($em);
-            $platform = $tool->getPlatform();
+        if (!$isBlank) {
+            foreach ([
+                'default' => $this->getContainer()->get('doctrine.orm.default_entity_manager'),
+                'sys' => $this->getContainer()->get('doctrine.orm.system_entity_manager'),
+                'audit' => $this->getContainer()->get('doctrine.orm.audit_entity_manager'),
+            ] as $dbId => $em) {
+                $metadata = $em->getMetadataFactory()->getAllMetadata();
+                $tool     = new SchemaTool($em);
+                $platform = $tool->getPlatform();
 
-            $diff = $tool->getSchemaDiff($metadata);
+                $diff = $tool->getSchemaDiff($metadata);
 
-            if (!empty($diff->newTables)) {
-                $newFksLines = [];
-                foreach ($diff->newTables as $t) {
-                    $sqls = $platform->getCreateTableSQL($t, AbstractPlatform::CREATE_INDEXES);
-                    foreach ($sqls as $sql) {
-                        $newTableQueries[] = [$dbId, $sql];
+                if (!empty($diff->newTables)) {
+                    $newFksLines = [];
+                    foreach ($diff->newTables as $t) {
+                        $sqls = $platform->getCreateTableSQL($t, AbstractPlatform::CREATE_INDEXES);
+                        foreach ($sqls as $sql) {
+                            $newTableQueries[] = [$dbId, $sql];
+                        }
+
+                        foreach ($t->getForeignKeys() as $fk) {
+                            $sql           = $platform->getCreateForeignKeySQL($fk, $t);
+                            $newFksLines[] = [$dbId, $sql];
+                        }
                     }
 
-                    foreach ($t->getForeignKeys() as $fk) {
-                        $sql           = $platform->getCreateForeignKeySQL($fk, $t);
-                        $newFksLines[] = [$dbId, $sql];
+                    if ($newFksLines) {
+                        $newTableQueries = array_merge($newTableQueries, $newFksLines);
                     }
                 }
 
-                if ($newFksLines) {
-                    $newTableQueries = array_merge($newTableQueries, $newFksLines);
-                }
-            }
-
-            if (!empty($diff->changedTables)) {
-                foreach ($diff->changedTables as $tableDiff) {
-                    $parts = $platform->getAlterTableSQL($tableDiff);
-                    $parts = array_map(function ($p) use ($dbId) {
-                        return [$dbId, $p];
-                    }, $parts);
-                    if ($tool->isTableDiffBackwardsCompatible($tableDiff)) {
-                        $bcAlterQueries = array_merge($bcAlterQueries, $parts);
-                    } else {
-                        $alterQueries = array_merge($alterQueries, $parts);
+                if (!empty($diff->changedTables)) {
+                    foreach ($diff->changedTables as $tableDiff) {
+                        $parts = $platform->getAlterTableSQL($tableDiff);
+                        $parts = array_map(function ($p) use ($dbId) {
+                            return [$dbId, $p];
+                        }, $parts);
+                        if ($tool->isTableDiffBackwardsCompatible($tableDiff)) {
+                            $bcAlterQueries = array_merge($bcAlterQueries, $parts);
+                        } else {
+                            $alterQueries = array_merge($alterQueries, $parts);
+                        }
                     }
                 }
             }
