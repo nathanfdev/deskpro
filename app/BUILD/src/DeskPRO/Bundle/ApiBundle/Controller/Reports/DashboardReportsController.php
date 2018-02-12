@@ -66,6 +66,15 @@ class DashboardReportsController extends CrudController
     public static $type         = ReportDashboardReportType::class;
     public static $listPaginate = false;
 
+    public static $sortOptions = [
+        'id'         => 'id',
+        'sort_order' => 'sort_order',
+        'title'      => 'title',
+    ];
+
+    public static $listSort  = 'sort_order';
+    public static $listOrder = 'asc';
+
     /**
      * @param HttpKernelInterface $kernel
      * @param Request             $masterRequest
@@ -138,6 +147,15 @@ class DashboardReportsController extends CrudController
             $qb->andWhere("$alias.dashboard = :dashboard");
             $qb->setParameter('dashboard', $request->get('dashboard'));
         }
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    protected function applySorting(QueryBuilder $qb, $alias, Request $request)
+    {
+        parent::applySorting($qb, $alias, $request);
+        $qb->addOrderBy($alias.'.title', 'asc');
     }
 
     /**

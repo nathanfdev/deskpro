@@ -68,6 +68,11 @@ class ReportDashboard extends DomainObject
     protected $is_default = false;
 
     /**
+     * @var int
+     */
+    protected $display_order = 0;
+
+    /**
      * @var bool
      */
     protected $isAgent = false;
@@ -191,6 +196,22 @@ class ReportDashboard extends DomainObject
     }
 
     /**
+     * @return int
+     */
+    public function getDisplayOrder()
+    {
+        return $this->display_order;
+    }
+
+    /**
+     * @param int $display_order
+     */
+    public function setDisplayOrder($display_order)
+    {
+        $this->display_order = $display_order;
+    }
+
+    /**
      * @return bool
      */
     public function isAgent()
@@ -306,6 +327,18 @@ class ReportDashboard extends DomainObject
             'nullable'   => false,
             'columnName' => 'is_default',
         ]);
+
+        $metadata->mapField(
+            [
+                'fieldName'  => 'display_order',
+                'type'       => 'integer',
+                'precision'  => 0,
+                'scale'      => 0,
+                'default'    => 0,
+                'nullable'   => false,
+                'columnName' => 'display_order',
+            ]
+        );
         $metadata->mapField([
             'fieldName'  => 'isAgent',
             'default'    => false,
