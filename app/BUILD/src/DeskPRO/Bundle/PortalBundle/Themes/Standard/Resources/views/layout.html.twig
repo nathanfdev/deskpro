@@ -8,7 +8,7 @@
     {% include 'Theme:Internal:head-include.html.twig' %}
     <link href="{{ portal_css_url() }}" media="all" rel="stylesheet" type="text/css" />
 </head>
-<body class="{% if (is_agent() or is_admin() or is_impersonating()) and portal_mode() != 'preview' %}with-agent-bar{% endif %} portal-mode-{{ portal_mode() }}">
+<body class="{% if (is_agent() or is_admin() or is_impersonating()) and portal_mode() != 'preview' and portal_mode() != 'focus-window' %}with-agent-bar{% endif %} portal-mode-{{ portal_mode() }}">
 {% include 'Theme:Internal:custom-header.html.twig' %}
 {% include 'Theme:Internal:body-include.html.twig' %}
 {% block doc_begin %}{% endblock %}
