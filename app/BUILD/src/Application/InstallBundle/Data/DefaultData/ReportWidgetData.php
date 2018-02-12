@@ -91,15 +91,21 @@ FROM tickets WHERE tickets.date_created = ${date} AND tickets.date_last_agent_re
             'display_types' => 'simple_stat',
             'display_order' => 40,
             // all today created positive feedback / all today created feedback * 100 gives you today positive %
-            'query' => 'SELECT CONCAT(FORMAT((
-    (SELECT COUNT() FROM ticket_feedback WHERE ticket_feedback.rating = 1 AND ticket_feedback.date_created = ${date})
-    / 
-    COUNT()) * 100, \'number\'),
+            'query' => '
+            SELECT CONCAT(
+	FORMAT(
+		(
+    		(SELECT COUNT() FROM ticket_feedback WHERE ticket_feedback.rating = 1 AND ticket_feedback.date_created = ${date})
+    		/ 
+    		(SELECT COUNT() FROM ticket_feedback WHERE ticket_feedback.date_created = ${date})
+    	) * 100,
+    \'number\'),
     \'%\'
 ) AS \'stat_value\',
 \'satisfied users\' as \'stat_description\'
 FROM ticket_feedback
-WHERE ticket_feedback.date_created = ${date}',
+WHERE ticket_feedback.date_created = ${date}
+            ',
             'variables' => '[{"name":"date","type":"dates","default":"today"}]',
         ],
         'replies-created-x-date' => [
