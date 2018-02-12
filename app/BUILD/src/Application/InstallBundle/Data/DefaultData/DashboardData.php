@@ -42,6 +42,7 @@ use Application\DeskPRO\Entity\ReportDashboardWidget as Widget;
 use Application\DeskPRO\Entity\ReportWidget;
 use Application\DeskPRO\Entity\ReportWidget as WidgetPrototype;
 use Application\DeskPRO\EntityRepository\Person as PersonRepository;
+use DeskPRO\Component\Util\MapUtils;
 
 class DashboardData extends AbstractDefaultData
 {
@@ -448,9 +449,21 @@ class DashboardData extends AbstractDefaultData
         /** @var Person[] $agents */
         $agents = $personRepository->findBy(['is_agent' => 1]);
 
+        $dashboardEnts = $this->getEm()->getRepository(Dashboard::class)->findBy(['is_default' => 1]);
+        $dashboardEnts = MapUtils::rekeyByGetter($dashboardEnts, 'getSystemName');
+
         foreach ($this->dashboards as $dashboard) {
-            $dashboardEntity = new Dashboard();
-            $dashboardEntity->setTitle($dashboard['title'])->setIsDefault(true);
+            if (isset($dashboardEnts[$dashboard['system_name']])) {
+                $dashboardEntity = $dashboardEnts[$dashboard['system_name']];
+            } else {
+                $dashboardEntity = new Dashboard();
+            }
+
+            $dashboardEntity
+                ->setTitle($dashboard['title'])
+                ->setIsDefault(true)
+                ->setSystemName($dashboard['system_name'])
+            ;
             $this->syncDashboard($dashboardEntity, $dashboard);
             $this->getEm()->persist($dashboardEntity);
             foreach ($admins as $admin) {
@@ -505,6 +518,9 @@ class DashboardData extends AbstractDefaultData
             $this->getEm()->flush();
         }
         $widgetRepository = $this->getEm()->getRepository(ReportWidget::class);
+        if (!empty($dashboard['system_name'])) {
+            $dashboardEntity->setSystemName($dashboard['system_name']);
+        }
         foreach ($dashboard['reports'] as $report) {
             $tab = new Tab();
             $tab
@@ -556,15 +572,6 @@ class DashboardData extends AbstractDefaultData
      */
     public function runSync()
     {
-        $dashboards = $this->getEm()->getRepository(Dashboard::class)->findBy(['is_default' => 1]);
-        foreach ($dashboards as $dashboard) {
-            foreach ($this->dashboards as $dashboardData) {
-                if ($dashboard->getSystemName() === $dashboardData['system_name']) {
-                    $this->syncDashboard($dashboard, $dashboardData);
-                    $this->getEm()->persist($dashboard);
-                }
-            }
-        }
-        $this->getEm()->flush();
+        $this->runInstall();
     }
 }

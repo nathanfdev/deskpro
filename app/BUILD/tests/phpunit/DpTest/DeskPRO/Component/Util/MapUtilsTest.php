@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2017, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2018, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -121,6 +121,17 @@ class MapUtilsTest extends DeskProTestCase
         );
     }
 
+    public function testRekeyByGetter()
+    {
+        $a = new POJOExample('a', 'foo');
+        $b = new POJOExample('b', 'bar');
+
+        $in  = [$a, $b];
+        $out = ['a' => $a, 'b' => $b];
+
+        $this->assertEquals($out, MapUtils::rekeyByGetter($in, 'getId'));
+    }
+
     public function testGetInStr()
     {
         $this->assertEquals(
@@ -168,5 +179,63 @@ class MapUtilsTest extends DeskProTestCase
             ['foo' => 'bar', 'baz' => ['z' => 'zz']],
             MapUtils::recursiveDiff($arr1, $arr2)
         );
+    }
+}
+
+class POJOExample
+{
+    private $id;
+    private $val;
+
+    /**
+     * POJOExample constructor.
+     *
+     * @param $id
+     * @param $val
+     */
+    public function __construct($id, $val)
+    {
+        $this->id  = $id;
+        $this->val = $val;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getId()
+    {
+        return $this->id;
+    }
+
+    /**
+     * @param mixed $id
+     */
+    public function setId($id)
+    {
+        $this->id = $id;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getVal()
+    {
+        return $this->val;
+    }
+
+    /**
+     * @param mixed $val
+     */
+    public function setVal($val)
+    {
+        $this->val = $val;
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function __toString()
+    {
+        return "{$this->id}:{$this->val}";
     }
 }
