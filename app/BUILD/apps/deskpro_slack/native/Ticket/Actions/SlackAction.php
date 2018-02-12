@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2017, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2018, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -36,7 +36,6 @@ namespace deskpro_slack\Ticket\Actions;
 
 use Application\DeskPRO\Entity\AppInstance;
 use Application\DeskPRO\Entity\Ticket;
-use Application\DeskPRO\Entity\TicketMessage;
 use Application\DeskPRO\Tickets\Actions\AbstractContainerAwareAction;
 use Application\DeskPRO\Tickets\Actions\ActionInterface;
 use Application\DeskPRO\Tickets\Actions\AppActionInterface;
@@ -45,6 +44,9 @@ use DeskPRO\Bundle\AppBundle\Util\HttpClient;
 use Orb\Util\Strings;
 use Orb\Util\Util;
 
+/**
+ * Class SlackAction.
+ */
 class SlackAction extends AbstractContainerAwareAction implements ActionInterface, AppActionInterface
 {
     /**
@@ -114,28 +116,36 @@ class SlackAction extends AbstractContainerAwareAction implements ActionInterfac
      */
     public function renderMessage(Ticket $ticket, ExecutorContextInterface $context)
     {
-        $statechange = $ticket->getStateChangeRecorder();
+        $stateChange = $ticket->getStateChangeRecorder();
 
-        $fallback = '#'.$ticket->id.' ';
-        $fallback .= '<'.$this->getContainer()->getBrandSetting('core.deskpro_url').'agent/#app.tickets,t:'.$ticket->id.'|'.htmlspecialchars($ticket->subject).'> ';
+        $fallback = '#'.$ticket->getId().' ';
+        $fallback .= '<'.$this->getContainer()->getBrandSetting('core.deskpro_url').'agent/#app.tickets,t:'.$ticket->getId().'|'.htmlspecialchars($ticket->getSubject()).'> ';
 
-        /* @var TicketMessage $message */
-        $messages = $ticket->getDisplayableMessages();
+        $messages = $stateChange->getNewUserReplies();
         $message  = array_pop($messages);
+        if (!$message) {
+            $message = $ticket->getLastReply();
+        }
+
+        if ($message) {
+            $text = $message->getMessagePreviewText(160);
+        } else {
+            $text = $ticket->getSubject();
+        }
 
         $attachment = [
             'color'      => '#1D7AB2',
-            'text'       => htmlspecialchars($message->getMessagePreviewText(160)),
-            'title'      => '#'.$ticket->id.' '.htmlspecialchars($ticket->subject),
-            'title_link' => $this->getContainer()->getBrandSetting('core.deskpro_url').'agent/#app.tickets,t:'.$ticket->id,
+            'text'       => htmlspecialchars($text),
+            'title'      => '#'.$ticket->getId().' '.htmlspecialchars($ticket->getSubject()),
+            'title_link' => $this->getContainer()->getBrandSetting('core.deskpro_url').'agent/#app.tickets,t:'.$ticket->getId(),
         ];
 
         if ($context->getEventType() == 'newticket') {
             $pretext = 'New ticket';
         } elseif ($context->getEventType() == 'newreply') {
-            if ($statechange->hasNewAgentNote()) {
+            if ($stateChange->hasNewAgentNote()) {
                 $pretext = 'New agent note';
-            } elseif ($statechange->hasNewAgentReply()) {
+            } elseif ($stateChange->hasNewAgentReply()) {
                 $pretext = 'New agent reply';
             } else {
                 $pretext = 'New user reply';

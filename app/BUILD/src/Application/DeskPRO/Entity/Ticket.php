@@ -1627,7 +1627,7 @@ class Ticket extends DomainObject implements HighlightableModelInterface, Labels
     /**
      * @param bool $includeNote
      *
-     * @return ArrayCollection|Collection
+     * @return TicketMessage
      */
     public function getLastReply($includeNote = false)
     {
@@ -1636,7 +1636,7 @@ class Ticket extends DomainObject implements HighlightableModelInterface, Labels
         $criteria->orderBy(['id' => 'desc']);
 
         if (!$includeNote) {
-            $criteria->andWhere($criteria->expr()->eq('is_agent_note', 0));
+            $criteria->andWhere($criteria->expr()->eq('is_agent_note', false));
         }
 
         return $this->messages->matching($criteria)->first();
