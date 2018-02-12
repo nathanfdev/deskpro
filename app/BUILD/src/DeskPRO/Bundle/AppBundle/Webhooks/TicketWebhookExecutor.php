@@ -130,11 +130,21 @@ class TicketWebhookExecutor implements ContainerAwareInterface
     private function createWebhookInvocation(TicketWebhook $webhook, WebhookRequest $request)
     {
         $converterName = $webhook->getPayloadDecoder();
-        $converter     = $this->convertersRegistry->lookupDecoderByName($converterName);
-        if (empty($converter)) {
-            throw new WebhookException('could not find a suitable decoder');
+        if (empty ($converterName) && !is_null($request->getContent())) {
+            $e = WebhookException::payloadForbidden($webhook->getAuthId());
+            throw $e;
         }
-        $payload = $converter->decode($request);
+
+        $payload = null;
+        if (! empty($converterName)) {
+            $converter     = $this->convertersRegistry->lookupDecoderByName($converterName);
+            if (empty($converter)) {
+                $e = WebhookException::decoderNotFound($webhook->getAuthId(), $converterName);
+                throw $e;
+            }
+            $payload = $converter->decode($request);
+        }
+
         return WebhookInvocation::fromRequestAndData($request, $payload);
     }
 
