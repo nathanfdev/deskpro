@@ -74,6 +74,7 @@ class ReportWidgetType extends AbstractType
                 DashboardWidget::WIDGET_RENDER_TYPE_PIE,
                 DashboardWidget::WIDGET_RENDER_TYPE_TABLE,
                 DashboardWidget::WIDGET_RENDER_TYPE_STAT,
+                DashboardWidget::WIDGET_RENDER_TYPE_GAUGE,
             ],
             'multiple'          => true,
             'choices_as_values' => true,

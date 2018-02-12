@@ -86,6 +86,10 @@ class JsonGaugeRenderer extends AbstractJsonChartRenderer
         $statValue = $this->getValue($rows, $metadata);
         $statTotal = $this->getTotalValue($rows, $metadata);
 
+        if ($statValue > $statTotal || (!$statTotal && $statValue > 100)) {
+            $statTotal = ceil($statValue % 100) * 100;
+        }
+
         //initial output array
         $output = [
             'type'  => 'gauge',
@@ -96,7 +100,7 @@ class JsonGaugeRenderer extends AbstractJsonChartRenderer
                     'topTextYOffset'   => 70,
                     'axisColor'        => $this->randomColor(),
                     'axisThickness'    => 1,
-                    'endValue'         => 100,
+                    'endValue'         => $statTotal,
                     'gridInside'       => true,
                     'inside'           => true,
                     'radius'           => '50%',
@@ -104,7 +108,7 @@ class JsonGaugeRenderer extends AbstractJsonChartRenderer
                     'tickColor'        => $this->randomColor(),
                     'startAngle'       => -90,
                     'endAngle'         => 90,
-                    'unit'             => $statTotal ?: '%',
+                    'unit'             => $statTotal ? '' : '%',
                     'bandOutlineAlpha' => 0,
                     'bands'            => [
                         [
