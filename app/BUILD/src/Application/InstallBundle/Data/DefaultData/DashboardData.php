@@ -505,6 +505,9 @@ class DashboardData extends AbstractDefaultData
             $this->getEm()->flush();
         }
         $widgetRepository = $this->getEm()->getRepository(ReportWidget::class);
+        if (!empty($dashboard['system_name'])) {
+            $dashboardEntity->setSystemName($dashboard['system_name']);
+        }
         foreach ($dashboard['reports'] as $report) {
             $tab = new Tab();
             $tab
