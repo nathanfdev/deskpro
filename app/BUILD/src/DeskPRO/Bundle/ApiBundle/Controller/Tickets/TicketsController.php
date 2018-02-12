@@ -166,6 +166,10 @@ class TicketsController extends AbstractTicketsController
     {
         $this->denyAccessUnlessGranted(PermissionGroupVoter::VIEW_LIST, $this->getPermissionGroupContext($request));
 
+        $offset      = $request->query->getInt('offset');
+        $currentPage = !$offset ? $request->query->getInt('page', 1) : null;
+        $maxPerPage  = $request->query->getInt('count', self::$listPerPage);
+
         // if the "ids" param is provided, then just use it to select tickets
         $ids = $request->query->get('ids');
         if ($ids) {
@@ -236,24 +240,10 @@ class TicketsController extends AbstractTicketsController
                 $params['status'] = ['awaiting_user', 'awaiting_agent', 'resolved', 'archived'];
             }
 
-            $term = $this->get('dp.app.term_engine.tickets_select_criteria')->createTerm($params);
+            // TODO term engine was removed
 
-            /** @var DbalTermEngine $engine */
-            $engine      = $this->get('term_engine.dbal.engine');
-            $context     = new TermEngineContext($this->getUser());
-            $offset      = $request->query->getInt('offset');
-            $currentPage = !$offset ? $request->query->getInt('page', 1) : null;
-            $maxPerPage  = $request->query->getInt('count', self::$listPerPage);
-
-            /** @var \DeskPRO\Bundle\AppBundle\TermEngine\Engine\Dbal\Query\DbalExecutableQuery $ticketsQuery */
-            $ticketsQuery = $engine->evaluate($term, $context);
-            $total        = $ticketsQuery->fetchCount();
-            $ticketsQuery->setCount($maxPerPage);
-            $ticketsQuery->setPage($currentPage);
-            $ticketsQuery->setOffset($offset);
-            $ticketsQuery->addOrderBy($orderBy, $orderDir);
-
-            $ids = $ticketsQuery->fetchIds();
+            $total = 0;
+            $ids   = [];
         }
 
         if ($offset) {

@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2017, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2018, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -41,8 +41,6 @@ use DeskPRO\Bundle\AppBundle\CountBadge\Count;
 use DeskPRO\Bundle\AppBundle\Entity\TicketFilter;
 use DeskPRO\Bundle\AppBundle\Entity\TicketFilterSet;
 use DeskPRO\Bundle\AppBundle\Model\TicketGrouping;
-use DeskPRO\Bundle\AppBundle\TermEngine\Engine\Dbal\TicketFilter\DbalTicketFilterEngine;
-use DeskPRO\Bundle\AppBundle\TermEngine\Engine\TermEngineContext;
 use Doctrine\ORM\EntityManager;
 use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorageInterface;
 
@@ -121,60 +119,16 @@ class TicketCountsDataService
      */
     public function getFilterCount(TicketFilter $filter, $groupBy = null)
     {
-        $context = new TermEngineContext($this->getUser());
-        if ($groupBy) {
-            $context->addGroupByFromString($groupBy);
-        }
+        // TODO this needs rewriting for fql
 
-        /** @var \DeskPRO\Bundle\AppBundle\TermEngine\Engine\Dbal\Query\DbalExecutableQuery $tickets_query */
-        $tickets_query = $this->engine->evaluate($filter, $context);
-
-        if ($groupBy) {
-            $filter_count = Count::create(0, $filter->getId(), 'filter', $filter->getTitle());
-
-            // If grouping by a custom field, then additionally query for total count (w/o grouping)
-            // to determine count of tickets where no value set on the custom field
-            $total     = 0;
-            $is_custom = TicketGrouping::isCustom($groupBy);
-            if ($is_custom) {
-                $total = $this->engine->evaluate($filter, new TermEngineContext($this->getUser()))->fetchCount();
-            }
-
-            $filter_counts = $tickets_query->fetchGroupedCount();
-            foreach ($filter_counts as $nested_count) {
-                $value = $nested_count['count'];
-                unset($nested_count['count']);
-                $group = array_pop($nested_count);
-                $group = ctype_digit($group) ? (int) $group : $group;
-
-                $filter_count->addNestedInstance(
-                    Count::create($value, $group, $groupBy, $this->getTitle($group, $groupBy), null, []),
-                    true
-                );
-
-                if ($is_custom) {
-                    $total -= $value;
-                }
-            }
-
-            if ($is_custom) {
-                $filter_count->addNestedInstance(
-                    Count::create($total, null, $groupBy, null, null, []),
-                    true
-                );
-            }
-
-            return $filter_count;
-        } else {
-            return Count::create(
-                $tickets_query->fetchCount(),
-                $filter->getId(),
-                'filter',
-                $filter->getTitle(),
-                null,
-                []
-            );
-        }
+        return Count::create(
+            0,
+            $filter->getId(),
+            'filter',
+            $filter->getTitle(),
+            null,
+            []
+        );
     }
 
     /**

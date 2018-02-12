@@ -42,6 +42,7 @@ use Application\DeskPRO\ORM\StateChange\StateChangeRecorder as BaseStateChangeRe
 use DeskPRO\Bundle\AppBundle\TicketFilters\Model\Entity\CustomData;
 use DeskPRO\Bundle\AppBundle\TicketFilters\Model\Entity\TicketModel;
 use DeskPRO\Bundle\AppBundle\TicketFilters\Model\Entity\TicketSlaModel;
+use DeskPRO\Component\Util\ListUtils;
 
 class StateChangeRecorder extends BaseStateChangeRecorder
 {
@@ -138,9 +139,9 @@ class StateChangeRecorder extends BaseStateChangeRecorder
         $cur->status     = $this->ticket->getStatusCode();
         $cur->is_hold    = $this->ticket->is_hold;
         $cur->person     = $this->ticket->person ? $this->ticket->person->getId() : 0;
-        $cur->labels     = array_map(function (LabelTicket $l) {
+        $cur->labels     = ListUtils::map($this->ticket->labels, function (LabelTicket $l) {
             return $l->getLabel();
-        }, $this->ticket->labels);
+        });
         $cur->language              = $this->ticket->language ? $this->ticket->language->getId() : 0;
         $cur->workflow              = $this->ticket->workflow ? $this->ticket->workflow->getId() : 0;
         $cur->priority              = $this->ticket->priority ? $this->ticket->priority->getId() : 0;
@@ -153,10 +154,10 @@ class StateChangeRecorder extends BaseStateChangeRecorder
         $cur->date_last_user_reply  = $this->ticket->date_last_user_reply;
         $cur->date_last_agent_reply = $this->ticket->date_last_agent_reply;
         $cur->date_created          = $this->ticket->date_created;
-        $cur->followers             = array_map(function (Person $a) {
+        $cur->followers             = ListUtils::map($this->ticket->getAgentParticipants(), function (Person $a) {
             return $a->getId();
-        }, $this->ticket->getAgentParticipants());
-        $cur->slas = array_map(function (TicketSla $sla) {
+        });
+        $cur->slas = ListUtils::map($this->ticket->ticket_slas, function (TicketSla $sla) {
             $slaM = new TicketSlaModel();
             $slaM->sla_id = $sla->sla->getId();
             $slaM->status = $sla->sla_status;
@@ -165,7 +166,7 @@ class StateChangeRecorder extends BaseStateChangeRecorder
             $slaM->is_completed = $sla->is_completed;
 
             return $slaM;
-        }, $this->ticket->ticket_slas);
+        });
 
         $models = [];
         foreach ($this->ticket->custom_data as $d) {

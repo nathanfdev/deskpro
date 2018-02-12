@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2017, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2018, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -34,7 +34,6 @@ namespace DeskPRO\Bundle\AppBundle\Settings;
 
 use Application\DeskPRO\Entity\Person;
 use Application\DeskPRO\Entity\PersonPref;
-use DeskPRO\Bundle\AppBundle\Entity\TicketFilterPreference;
 use DeskPRO\Bundle\AppBundle\Settings\Model\AgentSettings;
 use DeskPRO\Bundle\AppBundle\Settings\Model\IMSettings;
 use DeskPRO\Bundle\AppBundle\Settings\Model\Tickets\TicketsSettings;
@@ -84,18 +83,8 @@ class SettingsManager
     private function getTicketsSettings()
     {
         $settings = new TicketsSettings();
-        $prefs    = $this->em->getRepository(TicketFilterPreference::class)
-            ->findBy(['agent' => $this->user]);
 
         $grouping = [];
-        /** @var TicketFilterPreference $pref */
-        foreach ($prefs as $pref) {
-            $grouping[$pref->getFilter()->getId()] = [
-                'id'            => $pref->getId(),
-                'main_grouping' => $pref->getMainGrouping(),
-            ];
-        }
-
         $settings->setFilterGroupings($grouping);
 
         return $settings;

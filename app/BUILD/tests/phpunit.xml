@@ -2,11 +2,7 @@
     <testsuites>
         <testsuite name="DeskPRO">
             <directory>phpunit</directory>
-            <exclude>phpunit/DpTest/DeskPRO/Bundle/AppBundle/TermEngine</exclude>
             <exclude>phpunit/DpTest/DeskPRO/Bundle/PortalBundle</exclude>
-        </testsuite>
-        <testsuite name="DeskPRO-TermEngine">
-            <directory>phpunit/DpTest/DeskPRO/Bundle/AppBundle/TermEngine</directory>
         </testsuite>
         <testsuite name="DeskPRO-Portal">
             <directory>phpunit/DpTest/DeskPRO/Bundle/PortalBundle</directory>
