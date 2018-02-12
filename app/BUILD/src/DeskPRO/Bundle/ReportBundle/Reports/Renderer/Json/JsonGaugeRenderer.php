@@ -100,7 +100,7 @@ class JsonGaugeRenderer extends AbstractJsonChartRenderer
                     'topTextYOffset'   => 70,
                     'axisColor'        => $this->randomColor(),
                     'axisThickness'    => 1,
-                    'endValue'         => $statTotal,
+                    'endValue'         => $statTotal ?: 100,
                     'gridInside'       => true,
                     'inside'           => true,
                     'radius'           => '50%',
