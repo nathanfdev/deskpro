@@ -1,6 +1,6 @@
 import PropTypes from 'prop-types';
 import React from 'react';
-import TimeAgo from 'react-timeago';
+import TimeAgo from '@deskpro/react-timeago';
 import { connect } from 'react-redux';
 import { Checkbox, Modal, Icon } from '@deskpro/react-components';
 import AgentAvatar from 'DeskPRO/Component/Avatar/AgentAvatar';

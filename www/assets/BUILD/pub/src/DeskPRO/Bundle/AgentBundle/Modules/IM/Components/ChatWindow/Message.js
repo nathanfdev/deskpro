@@ -1,6 +1,6 @@
 import PropTypes from 'prop-types';
 import React from 'react';
-import TimeAgo from 'react-timeago';
+import TimeAgo from '@deskpro/react-timeago';
 import { PersonAvatar } from 'DeskPRO/Bundle/AgentBundle/Modules/Common/Components/Avatar';
 import moment from 'moment';
 import { replaceSmileCodes } from 'DeskPRO/Component/Rte/Emotions';
@@ -16,11 +16,9 @@ export class Message extends React.Component {
     previousMessage: PropTypes.object.isRequired
   };
 
-  getMessage = () => {
-    return {
-      __html: replaceSmileCodes(this.props.message.message)
-    };
-  };
+  getMessage = () => ({
+    __html: replaceSmileCodes(this.props.message.message)
+  });
 
   dateSep() {
     const date = moment(this.props.message.date_created);
@@ -41,7 +39,7 @@ export class Message extends React.Component {
     }
     return (
       <li className="chat-divider">
-        <span>{fromNow + ' ' + date.format('MMM. D')}</span>
+        <span>{`${fromNow} ${date.format('MMM. D')}`}</span>
         <hr />
       </li>
     );
@@ -62,7 +60,7 @@ export class Message extends React.Component {
           <TimeAgo date={this.props.message.date_created} />
           <i className="fa fa-clock-o" />
         </span>
-        <div className="message-content" dangerouslySetInnerHTML={this.getMessage()}></div>
+        <div className="message-content" dangerouslySetInnerHTML={this.getMessage()} />
       </li>
     );
   };
@@ -82,7 +80,7 @@ export class Message extends React.Component {
           <TimeAgo date={this.props.message.date_created} />
           <i className="fa fa-clock-o" />
         </span>
-        <div className="message-content" dangerouslySetInnerHTML={this.getMessage()}></div>
+        <div className="message-content" dangerouslySetInnerHTML={this.getMessage()} />
       </li>
     );
   };
