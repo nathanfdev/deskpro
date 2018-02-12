@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2017, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2018, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -195,6 +195,25 @@ class MapUtils
             if (isset($v->$key)) {
                 $new[$v->$key] = $v;
             }
+        }
+
+        return $new;
+    }
+
+    /**
+     * Create a new array and key it by using the specified getter method in the input array.
+     *
+     * @param \Traversable|array $array
+     * @param string             $getter
+     *
+     * @return array
+     */
+    public static function rekeyByGetter($array, $getter)
+    {
+        $new = [];
+
+        foreach ($array as $v) {
+            $new[$v->$getter()] = $v;
         }
 
         return $new;
