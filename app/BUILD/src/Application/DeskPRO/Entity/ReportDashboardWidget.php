@@ -35,7 +35,6 @@
 namespace Application\DeskPRO\Entity;
 
 use Application\DeskPRO\Domain\DomainObject;
-use Application\DeskPRO\Entity;
 use Doctrine\ORM\Mapping\ClassMetadata;
 use Doctrine\ORM\Mapping\ClassMetadataInfo;
 use Symfony\Component\Validator\Constraints as Assert;
@@ -45,37 +44,6 @@ use Symfony\Component\Validator\Constraints as Assert;
  */
 class ReportDashboardWidget extends DomainObject
 {
-    const TYPE_SIMPLE_BARS  = 'simple_bars';
-    const TYPE_BARS         = 'bars';
-    const TYPE_SIMPLE_LINES = 'simple_lines';
-    const TYPE_LINES        = 'lines';
-    const TYPE_AREA         = 'area';
-    const TYPE_SIMPLE_AREA  = 'simple_area';
-    const TYPE_PIE          = 'pie';
-    const TYPE_TABLE        = 'table';
-    const TYPE_SIMPLE_STAT  = 'simple_stat';
-
-    const WIDGET_TYPE_GRAPH = 'graph';
-    const WIDGET_TYPE_STAT  = 'stat';
-    const WIDGET_TYPE_BAR   = 'bar';
-    const WIDGET_TYPE_PIE   = 'pie';
-    const WIDGET_TYPE_TABLE = 'table';
-
-    /**
-     * @var array
-     */
-    protected $widgetTypesMapping = [
-        self::TYPE_SIMPLE_BARS  => self::WIDGET_TYPE_GRAPH,
-        self::TYPE_BARS         => self::WIDGET_TYPE_GRAPH,
-        self::TYPE_SIMPLE_LINES => self::WIDGET_TYPE_GRAPH,
-        self::TYPE_LINES        => self::WIDGET_TYPE_GRAPH,
-        self::TYPE_AREA         => self::WIDGET_TYPE_GRAPH,
-        self::TYPE_SIMPLE_AREA  => self::WIDGET_TYPE_GRAPH,
-        self::TYPE_PIE          => self::WIDGET_TYPE_GRAPH,
-        self::TYPE_TABLE        => self::WIDGET_TYPE_TABLE,
-        self::TYPE_SIMPLE_STAT  => self::WIDGET_TYPE_STAT,
-    ];
-
     /**
      * @var int
      */
@@ -192,6 +160,8 @@ class ReportDashboardWidget extends DomainObject
     /**
      * @param int $col
      *
+     * @throws \Exception
+     *
      * @return $this
      */
     public function setCol($col)
@@ -213,6 +183,8 @@ class ReportDashboardWidget extends DomainObject
 
     /**
      * @param int $row
+     *
+     * @throws \Exception
      *
      * @return $this
      */
@@ -282,6 +254,8 @@ class ReportDashboardWidget extends DomainObject
     /**
      * @param int $sizeX
      *
+     * @throws \Exception
+     *
      * @return $this
      */
     public function setSizeX($sizeX)
@@ -303,6 +277,8 @@ class ReportDashboardWidget extends DomainObject
 
     /**
      * @param int $sizeY
+     *
+     * @throws \Exception
      *
      * @return $this
      */
@@ -387,14 +363,6 @@ class ReportDashboardWidget extends DomainObject
     }
 
     /**
-     * @return string
-     */
-    public function getWidgetType()
-    {
-        return isset($this->widgetTypesMapping[$this->type]) ? $this->widgetTypesMapping[$this->type] : self::WIDGET_TYPE_TABLE;
-    }
-
-    /**
      * @return array
      */
     public function getVariables()
@@ -440,6 +408,8 @@ class ReportDashboardWidget extends DomainObject
 
     /**
      * @param ClassMetadata $metadata
+     *
+     * @throws \Doctrine\ORM\Mapping\MappingException
      */
     public static function loadMetadata(ClassMetadata $metadata)
     {

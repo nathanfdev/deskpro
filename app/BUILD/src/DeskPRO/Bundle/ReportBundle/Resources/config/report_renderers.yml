@@ -58,6 +58,13 @@ services:
     tags:
       - { name: reports.renderer }
 
+  reports.renderer.json_gauge:
+    class: DeskPRO\Bundle\ReportBundle\Reports\Renderer\Json\JsonGaugeRenderer
+    arguments:
+      - "@reports.values_renderer.json"
+    tags:
+      - { name: reports.renderer }
+
   # CSV renderers
   reports.renderer.csv_table:
     class: DeskPRO\Bundle\ReportBundle\Reports\Renderer\CsvTableRenderer

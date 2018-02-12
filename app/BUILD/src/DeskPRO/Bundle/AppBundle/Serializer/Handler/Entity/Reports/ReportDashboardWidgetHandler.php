@@ -71,6 +71,7 @@ class ReportDashboardWidgetHandler extends AbstractEntityHandler
     public function createModel($entity, SideloadSerializationContext $context)
     {
         $model = new ReportDashboardWidgetModel($entity);
+        $model->setWidgetType($this->dashboardWidgetService->getWidgetType($entity->getType()));
 
         $sideloads = $context->getSideloadStore();
         $sideloads->addCustomSideload(

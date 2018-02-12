@@ -8,6 +8,11 @@ import '../../../../vendor/datatables/plugins/pageResize';
 import '../../../../vendor/amcharts3/amcharts';
 import '../../../../vendor/amcharts3/serial';
 import '../../../../vendor/amcharts3/pie';
+import '../../../../vendor/amcharts3/gauge';
+import '../../../../vendor/amcharts3/gantt';
+import '../../../../vendor/amcharts3/funnel';
+import '../../../../vendor/amcharts3/radar';
+import '../../../../vendor/amcharts3/xy';
 import '../../../../vendor/amcharts3/themes/light';
 
 import AppContainer from './Modules/Application/Components/AppContainer';
