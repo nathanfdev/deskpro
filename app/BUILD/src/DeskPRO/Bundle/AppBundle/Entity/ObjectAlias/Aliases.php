@@ -34,6 +34,18 @@ use Doctrine\ORM;
 class Aliases
 {
     /**
+     * Returns the list of entity types representing aliases
+     *
+     * @param ORM\EntityManager $entityManager
+     * @return array|string[]
+     */
+    public static function getAliasTypes(ORM\EntityManager $entityManager)
+    {
+        $metadata = $entityManager->getClassMetadata(AbstractAlias::class);
+        return $metadata->subClasses;
+    }
+
+    /**
      * @param string $objectType
      * @param ORM\EntityManager $entityManager
      * @return bool

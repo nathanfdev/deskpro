@@ -37,6 +37,7 @@ use DeskPRO\Bundle\AppBundle\Notification\Event\LegacySystemEvent;
 use DeskPRO\Bundle\AppStoreBundle;
 use DeskPRO\Bundle\AppStoreBundle\Domain\AppManifest;
 use DeskPRO\Bundle\AppStoreBundle\Infrastructure\ApplicationManagerService;
+use DeskPRO\Bundle\AppStoreBundle\Infrastructure\ApplicationRemovalService;
 use FOS\RestBundle\Controller\Annotations as Rest;
 use FOS\RestBundle\View\View;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\ParamConverter;
@@ -258,7 +259,10 @@ class AppsController extends BaseController
         /** @var AppStoreBundle\Infrastructure\ApplicationManagerService $appManager */
         $appManager = $this->container->get('apps2.application_manager');
         $strategy   = $appManager->getRemoveStrategy($application);
-        $appManager->remove($application, $strategy);
+
+        /** @var ApplicationRemovalService $removalManager */
+        $removalManager = $this->container->get(ApplicationRemovalService::class);
+        $removalManager->remove($application, $strategy);
 
         $this->container
             ->get('event_dispatcher')
