@@ -1027,6 +1027,11 @@ $voice-green-border-color: #47BF61;
       border-radius: 10px;
       background-color: #FFFFFF;
       overflow: hidden;
+      opacity: 0.2;
+
+      &.active {
+        opacity: 1;
+      }
 
       i {
         margin-top: 10px;
