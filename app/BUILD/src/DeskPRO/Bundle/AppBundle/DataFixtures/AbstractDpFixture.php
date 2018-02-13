@@ -76,7 +76,7 @@ abstract class AbstractDpFixture extends AbstractFixture implements ContainerAwa
     const TABLE_TICKETS                    = 'tickets';
     const TABLE_TICKET_CATEGORIES          = 'ticket_categories';
     const TABLE_TICKET_WORKFLOWS           = 'ticket_workflows';
-    const TABLE_TICKETS_TO_FEEDBACKS       = 'tickets_to_feedbacks';
+    const TABLE_TICKETS_TO_FEEDBACK        = 'tickets_to_feedback';
     const TABLE_USERGROUPS                 = 'usergroups';
 
     /**

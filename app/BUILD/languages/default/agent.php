@@ -2212,6 +2212,7 @@ return [
     'agent.tickets.lc_update'                                  => 'update',
     'agent.tickets.link_existing_ticket'                       => 'Link Existing Ticket',
     'agent.tickets.link_existing_ticket_make_below'            => 'Make the ticket selected below the parent ticket',
+    'agent.tickets.linked_feedback'                            => 'Linked Feedback',
     'agent.tickets.linked_tickets'                             => 'Linked Tickets',
     'agent.tickets.linking_with_chat'                          => 'Linking with chat:',
     'agent.tickets.linking_with_ticket'                        => 'Linking with ticket:',

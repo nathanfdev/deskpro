@@ -1,0 +1,25 @@
+<table cellspacing="0" cellpadding="0" width="100%" class="field-holders-table th-la sla-table linked-feedback-table">
+	<tbody>
+    <tr class="linked-title">
+      <th colspan="7" style="background: #eee;">{{ phrase('agent.tickets.linked_feedback') }}</th>
+    </tr>
+    <tr class="linked-head-title">
+      <th style="font-size: 11px; padding: 1px 4px;">{{ phrase('agent.general.id') }}</th>
+      <th style="font-size: 11px; padding: 1px 4px;">{{ phrase('agent.general.title') }}</th>
+      <th style="font-size: 11px; padding: 1px 4px;">{{ phrase('agent.general.type') }}</th>
+      <th style="font-size: 11px; padding: 1px 4px;">{{ phrase('agent.general.status') }}</th>
+      <th width="10">&nbsp;</th>
+    </tr>
+    {% for ttf in ticket_to_feedback %}
+      <tr class="linked-feedback">
+        <td nowrap="nowrap" style="overflow:hidden; text-overflow: ellipsis;"><a data-route="page:{{ path('agent_feedback_view', {feedback_id: ttf.feedback.id}) }}">{{ ttf.feedback.id }}</a></td>
+        <td width="100%" style="overflow:hidden; text-overflow: ellipsis;"><a data-route="page:{{ path('agent_feedback_view', {feedback_id: ttf.feedback.id}) }}">{{ ttf.feedback.title }}</a></td>
+        <td nowrap="nowrap" style="overflow:hidden; text-overflow: ellipsis;">{{ ttf.feedback.category ? ttf.feedback.category.title : '' }}</td>
+        <td nowrap="nowrap" style="overflow:hidden; text-overflow: ellipsis;">{{ ttf.feedback.status_category ? ttf.feedback.status_category.title : '' }}</td>
+        <td width="10" style="text-align: right;">
+          <img src="{{ asset('images/agent/icons/cross.png') }}" style="cursor: pointer;" class="unlink-feedback" data-from-id="{{ ttf.feedback.id }}" />
+        </td>
+      </tr>
+    {% endfor %}
+	</tbody>
+</table>

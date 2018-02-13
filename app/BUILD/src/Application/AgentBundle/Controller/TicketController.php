@@ -84,6 +84,7 @@ use Application\DeskPRO\Tickets\TicketSplit;
 use Application\EmailBundle\SwiftMailer\Message\MessageOptionsInterface;
 use DeskPRO\Bundle\AppBundle\Entity\SnippetTranslation;
 use DeskPRO\Bundle\AppBundle\Entity\SnippetUseLog;
+use DeskPRO\Bundle\AppBundle\Entity\TicketToFeedback;
 use DeskPRO\Bundle\AppBundle\Serializer\Sideload\SideloadSerializationContext;
 use DeskPRO\Component\Pdf\PdfRendererInterface;
 use DeskPRO\Component\Util\ListUtils;
@@ -423,6 +424,12 @@ class TicketController extends AbstractController
         );
 
         //------------------------------
+        // Linked Feedback
+        //------------------------------
+        $feedbackRepo     = $this->em->getRepository(TicketToFeedback::class);
+        $ticketToFeedback = $feedbackRepo->findByTicket($ticket);
+
+        //------------------------------
         // Pre-load person and org
         //------------------------------
 
@@ -487,6 +494,7 @@ class TicketController extends AbstractController
 
             'show_related_content' => $show_related_content,
             'linked_tickets'       => $linked_tickets,
+            'ticket_to_feedback'   => $ticketToFeedback,
 
             'ticket_messages_block' => $ticket_messages_block,
             'logs_block'            => $logs_block_info['rendered'],

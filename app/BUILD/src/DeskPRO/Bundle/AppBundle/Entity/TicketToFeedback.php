@@ -41,11 +41,11 @@ use JMS\Serializer\Annotation as JMS;
 use Symfony\Component\Validator\Constraints as Assert;
 
 /**
- * Table that implements Many2Many connection between Tickets and Feedbacks.
+ * Table that implements Many2Many connection between Tickets and Feedback.
  *
  *
  * @ORM\Entity(repositoryClass="DeskPRO\Bundle\AppBundle\Entity\Repository\TicketToFeedbackRepository")
- * @ORM\Table(name="tickets_to_feedbacks", uniqueConstraints={
+ * @ORM\Table(name="tickets_to_feedback", uniqueConstraints={
  *     @ORM\UniqueConstraint(name="ticket_to_feedback_unique", columns={"ticket_id", "feedback_id"})
  * })
  *
@@ -68,7 +68,7 @@ class TicketToFeedback implements EntityInterface, NotifyPropertyChanged
     protected $id;
 
     /**
-     * @ORM\ManyToOne(targetEntity="Application\DeskPRO\Entity\Ticket", inversedBy="ticketToFeedback")
+     * @ORM\ManyToOne(targetEntity="Application\DeskPRO\Entity\Ticket")
      * @ORM\JoinColumn(name="ticket_id", referencedColumnName="id", onDelete="CASCADE", nullable=false)
      *
      * @Assert\NotNull()
@@ -78,7 +78,7 @@ class TicketToFeedback implements EntityInterface, NotifyPropertyChanged
     protected $ticket;
 
     /**
-     * @ORM\ManyToOne(targetEntity="Application\DeskPRO\Entity\Feedback", inversedBy="ticketToFeedback")
+     * @ORM\ManyToOne(targetEntity="Application\DeskPRO\Entity\Feedback")
      * @ORM\JoinColumn(name="feedback_id", referencedColumnName="id", onDelete="CASCADE", nullable=false)
      *
      * @Assert\NotNull()
@@ -88,7 +88,7 @@ class TicketToFeedback implements EntityInterface, NotifyPropertyChanged
     protected $feedback;
 
     /**
-     * @ORM\ManyToOne(targetEntity="Application\DeskPRO\Entity\Person", inversedBy="ticketToFeedback")
+     * @ORM\ManyToOne(targetEntity="Application\DeskPRO\Entity\Person")
      * @ORM\JoinColumn(name="person_id", referencedColumnName="id", onDelete="SET NULL", nullable=true)
      *
      * @var Person

@@ -34,8 +34,8 @@ use Doctrine\Common\Persistence\ObjectManager;
 
 class TicketsToFeedbacksFixture extends AbstractDpFixture implements OrderedFixtureInterface
 {
-    const FEEDBACKS_PER_TICKET_MIN = 0;
-    const FEEDBACKS_PER_TICKET_MAX = 5;
+    const FEEDBACK_PER_TICKET_MIN = 0;
+    const FEEDBACK_PER_TICKET_MAX = 5;
 
     /**
      * @var int[]
@@ -68,7 +68,7 @@ class TicketsToFeedbacksFixture extends AbstractDpFixture implements OrderedFixt
         $this->manager = $manager;
 
         $this->initIds();
-        $this->loadTicketsToFeedbacks();
+        $this->loadTicketToFeedback();
     }
 
     private function initIds()
@@ -78,15 +78,15 @@ class TicketsToFeedbacksFixture extends AbstractDpFixture implements OrderedFixt
         $this->feedbackIds = $this->fetchIds(self::TABLE_FEEDBACK);
     }
 
-    private function loadTicketsToFeedbacks()
+    private function loadTicketToFeedback()
     {
         $batch = [];
 
         shuffle($this->ticketIds);
 
         foreach ($this->ticketIds as $ticketId) {
-            $feedbacksPerTicket = $this->faker->numberBetween(self::FEEDBACKS_PER_TICKET_MIN, self::FEEDBACKS_PER_TICKET_MAX);
-            $feedbackIds        = $this->faker->randomElements($this->feedbackIds, $feedbacksPerTicket);
+            $feedbackPerTicket = $this->faker->numberBetween(self::FEEDBACK_PER_TICKET_MIN, self::FEEDBACK_PER_TICKET_MAX);
+            $feedbackIds       = $this->faker->randomElements($this->feedbackIds, $feedbackPerTicket);
 
             foreach ($feedbackIds as $feedbackId) {
                 $batch[] = [
@@ -98,6 +98,6 @@ class TicketsToFeedbacksFixture extends AbstractDpFixture implements OrderedFixt
             }
         }
 
-        $this->db->batchInsert(self::TABLE_TICKETS_TO_FEEDBACKS, $batch);
+        $this->db->batchInsert(self::TABLE_TICKETS_TO_FEEDBACK, $batch);
     }
 }
