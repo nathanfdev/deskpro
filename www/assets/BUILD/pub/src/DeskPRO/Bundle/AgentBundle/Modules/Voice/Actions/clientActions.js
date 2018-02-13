@@ -243,6 +243,15 @@ export const voiceBootstrap = createAction(
           }
         });
         messageBroker.addMessageListener('agent.voice.incoming-call-answered', (data) => {
+          const state = getState();
+          const me    = meSelector(state);
+
+          // don't remove incoming call notification for other agents
+          // just stop it ringing in other browser tabs
+          if (parseInt(me.get('id'), 10) !== parseInt(data.agent_id, 10)) {
+            return;
+          }
+
           dispatch(removeIncomingCall(data));
         });
         messageBroker.addMessageListener('agent.voice.outgoing-call-answered', (data) => {

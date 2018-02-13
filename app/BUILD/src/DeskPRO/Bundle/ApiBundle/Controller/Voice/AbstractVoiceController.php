@@ -109,6 +109,7 @@ abstract class AbstractVoiceController extends BaseController
                 'agent.voice.incoming-call-answered',
                 [
                     'deskpro_call_id' => $phoneCall->getId(),
+                    'agent_id'        => $agent->getId(),
                 ]
             ));
         } else {
