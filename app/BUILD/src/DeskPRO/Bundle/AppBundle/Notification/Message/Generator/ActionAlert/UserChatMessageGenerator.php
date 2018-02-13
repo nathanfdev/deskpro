@@ -116,7 +116,7 @@ class UserChatMessageGenerator extends SystemEventGenerator
             $agentId         = $convo->getAgentId();
             $participantsIds = $convo->getParticipantIds();
 
-            return array_merge($participantsIds, [$agentId]);
+            return array_unique(array_merge($participantsIds, [$agentId]));
         }
 
         return parent::getTarget($event);
