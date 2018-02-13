@@ -28,12 +28,6 @@
 
 namespace Application\InstallBundle\Upgrade\Build;
 
-// NOTE: I used the BlockingBuildInterface interface because
-//       it looks like your schema changes are NOT backwards compatible with the previous version.
-//       You should double-check this yourself though. If they are backwards compatible, use OnlineBuildInterface instead.
-
-// Please remove these NOTE comments after you have checked the code.
-
 class Build1518452652 extends AbstractBuild implements BlockingBuildInterface
 {
     public function addNewTables()
