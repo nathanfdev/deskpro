@@ -1212,6 +1212,7 @@ class ServeFileScript extends LowScriptAbstract
         $blobInfo = $pdoStatement->fetch(\PDO::FETCH_ASSOC);
         if (!empty($blobInfo)) {
             $this->alwaysForceDownloadOfHtmlFiles = false;
+            $this->local_mode = true;
             $this->showBlob($blobInfo['blob_id'], null, $blobInfo['blob_authcode']);
         } else {
             if ($this->errorMode == 'exception') {
