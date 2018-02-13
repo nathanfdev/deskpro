@@ -179,8 +179,9 @@ class JsonTableRenderer extends AbstractJsonRenderer
      * Renders the header row (for a simple table).
      *
      * @param ResultMetadata $resultHandler
+     * @param array          $options
      *
-     * @return string
+     * @return array
      */
     protected function renderHeader(ResultMetadata $resultHandler, array $options = [])
     {
@@ -202,8 +203,9 @@ class JsonTableRenderer extends AbstractJsonRenderer
      *
      * @param ResultMetadata $metadata
      * @param array          $rows
+     * @param array          $options
      *
-     * @return string
+     * @return array
      */
     protected function renderBody(ResultMetadata $metadata, array $rows, array $options = [])
     {

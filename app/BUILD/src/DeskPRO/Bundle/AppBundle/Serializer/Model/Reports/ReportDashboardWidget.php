@@ -150,7 +150,6 @@ class ReportDashboardWidget
         $this->id              = $entity->getId();
         $this->report          = $entity->getReport();
         $this->type            = $entity->getType();
-        $this->widgetType      = $entity->getWidgetType();
         $this->widget          = $entity->getWidget();
         $this->title           = $entity->getTitle();
         $this->row             = $entity->getRow();
@@ -159,6 +158,14 @@ class ReportDashboardWidget
         $this->sizeY           = $entity->getSizeY();
         $this->widgetVariables = $entity->getVariables() ?: [];
         $this->options         = $entity->getOptions();
+    }
+
+    /**
+     * @param string $widgetType
+     */
+    public function setWidgetType($widgetType)
+    {
+        $this->widgetType = $widgetType;
     }
 
     /**

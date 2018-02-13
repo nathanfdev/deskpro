@@ -50,6 +50,7 @@ class DashboardWidget
     const WIDGET_RENDER_TYPE_PIE   = 'pie';
     const WIDGET_RENDER_TYPE_TABLE = 'table';
     const WIDGET_RENDER_TYPE_STAT  = 'simple_stat';
+    const WIDGET_RENDER_TYPE_GAUGE = 'gauge';
 
     // These are different types
     const WIDGET_TYPE_GRAPH = 'graph';
@@ -66,6 +67,7 @@ class DashboardWidget
         self::WIDGET_RENDER_TYPE_LINE  => self::WIDGET_TYPE_GRAPH,
         self::WIDGET_RENDER_TYPE_AREA  => self::WIDGET_TYPE_GRAPH,
         self::WIDGET_RENDER_TYPE_PIE   => self::WIDGET_TYPE_GRAPH,
+        self::WIDGET_RENDER_TYPE_GAUGE => self::WIDGET_TYPE_GRAPH,
         self::WIDGET_RENDER_TYPE_STAT  => self::WIDGET_TYPE_STAT,
         self::WIDGET_RENDER_TYPE_TABLE => self::WIDGET_TYPE_TABLE,
     ];
@@ -78,6 +80,7 @@ class DashboardWidget
         self::WIDGET_RENDER_TYPE_LINE  => ReportsRendererInterface::TYPE_LINE,
         self::WIDGET_RENDER_TYPE_AREA  => ReportsRendererInterface::TYPE_AREA,
         self::WIDGET_RENDER_TYPE_PIE   => ReportsRendererInterface::TYPE_PIE,
+        self::WIDGET_RENDER_TYPE_GAUGE => ReportsRendererInterface::TYPE_GAUGE,
         self::WIDGET_RENDER_TYPE_STAT  => ReportsRendererInterface::TYPE_STAT,
         self::WIDGET_RENDER_TYPE_TABLE => ReportsRendererInterface::TYPE_TABLE,
     ];
@@ -145,7 +148,7 @@ class DashboardWidget
         $type = '';
         if ($widget instanceof DashboardWidgetEntity) {
             $report = $widget->getReport();
-            $type   = $widget->getWidgetType();
+            $type   = $this->getWidgetGraphType($widget->getType());
         } elseif ($widget instanceof SavedDashboardWidget) {
             $report = $widget->getSavedReport();
         } else {

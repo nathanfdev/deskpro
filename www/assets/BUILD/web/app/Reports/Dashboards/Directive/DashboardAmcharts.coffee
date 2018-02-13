@@ -10,8 +10,10 @@ define ->
         renderType: '@'
         options: '@'
         version: '@'
+        widgetType: '@'
+        chartType: '@'
 
-      link: (scope, element, attrs) ->
+      link: (scope, element) ->
         template = "<div id=\"ch#{scope.widgetId}\"></div>"
         linkFn = $compile(template)
         content = linkFn(scope)
@@ -41,15 +43,17 @@ define ->
             drawWidget chartData
 
         initChart = () ->
-          if attrs.chtype != 'graph'
+          if scope.widgetType != 'graph'
             return
-          if chartData and chartData.dataProvider?
+
+          # this is valid for serial and pie charts, gauge has not dataProvider
+          if (chartData and chartData.dataProvider?) || (scope.chartType == 'gauge' && chartData.axes?[0]?.bands?)
             drawWidget chartData
-          else if (scope.renderType != 'test')
+          else
             DashboardWidgetService
               .getWidget(scope.widgetId || 0)
               .then (widget) =>
-                if widget? and widget and widget.dataProvider
+                if widget? && widget && (widget.dataProvider || widget.axes?[0]?.bands?)
                   drawWidget(widget)
 
         drawWidget = (widget) ->
@@ -66,7 +70,7 @@ define ->
           if widget.dataProvider? && widget.dataProvider[0]? && (Object.keys(widget.dataProvider[0]).length > 6 || (widget.type == 'pie' && widget.dataProvider.length > 6))
             widget.legend = false
 
-          if chart
+          if chart and widget.dataProvider
             chart.dataProvider = widget.dataProvider
           else
             chart = new AmCharts.makeChart("ch#{scope.widgetId}", Object.assign(widget, options));

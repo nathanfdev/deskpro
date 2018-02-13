@@ -44,6 +44,7 @@ class Run extends React.Component {
       case 'pie':
       case 'bar':
       case 'line':
+      case 'gauge':
       case 'area':
         return <AmCharts.React key={index} style={{ width: '100%', height: '500px' }} options={options.toJS()} />;
       case 'table':
