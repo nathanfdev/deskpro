@@ -69,7 +69,7 @@ class DeskproDeliveryHandlerSpec extends ObjectBehavior
 
         $data = [
             [
-                'channel' => 1,
+                'channel' => 'private-1',
                 'name'    => 'action_alert',
                 'data'    => [
                         'target' => 1,
