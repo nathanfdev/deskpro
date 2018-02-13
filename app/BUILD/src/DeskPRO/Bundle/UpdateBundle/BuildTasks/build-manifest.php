@@ -885,30 +885,21 @@ return [
         'skipPostBuild' => false,
         'isOnlineBuild' => true,
     ],
-<<<<<<< HEAD
     1518434839 => [
         'file'          => '/src/Application/InstallBundle/Upgrade/Build/2018/02/Build1518434839.php',
         'classname'     => 'Application\InstallBundle\Upgrade\Build\Build1518434839',
         'skipPostBuild' => false,
         'isOnlineBuild' => true,
-<<<<<<< HEAD
     ],
     1519215169 => [
         'file'          => '/src/Application/InstallBundle/Upgrade/Build/2018/02/Build1519215169.php',
         'classname'     => 'Application\InstallBundle\Upgrade\Build\Build1519215169',
         'skipPostBuild' => false,
         'isOnlineBuild' => true,
-=======
->>>>>>> Move up build script
     ],
     1519218919 => [
         'file'          => '/src/Application/InstallBundle/Upgrade/Build/2018/02/Build1519218919.php',
         'classname'     => 'Application\InstallBundle\Upgrade\Build\Build1519218919',
-=======
-    1518452652 => [
-        'file'          => '/src/Application/InstallBundle/Upgrade/Build/2018/02/Build1518452652.php',
-        'classname'     => 'Application\InstallBundle\Upgrade\Build\Build1518452652',
->>>>>>> DP-981  allow webhook invocation through get requests
         'skipPostBuild' => false,
         'isOnlineBuild' => false,
     ],
