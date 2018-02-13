@@ -1,7 +1,7 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import QRCode from 'qrcode.react';
-import Loader from 'react-loader';
+import Loader from '@deskpro/react-loader';
 
 export class Content extends React.Component {
   static propTypes = {

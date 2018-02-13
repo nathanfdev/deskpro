@@ -1,6 +1,6 @@
 import PropTypes from 'prop-types';
 import React from 'react';
-import Loader from 'react-loader';
+import Loader from '@deskpro/react-loader';
 import { connect } from 'react-redux';
 // agents
 import { agentsSelector } from 'DeskPRO/Bundle/AppBundle/Modules/RecordsStore/Shortcuts/agents';
@@ -41,7 +41,7 @@ export class Header extends React.Component {
     return null;
   };
 
-  wrapHeaderText = (text) => <h1>Your IM with <span>{text}</span> {this.renderOnline()}</h1>;
+  wrapHeaderText = text => <h1>Your IM with <span>{text}</span> {this.renderOnline()}</h1>;
 
   renderHeader() {
     const { current, teams, departments } = this.props;
@@ -73,7 +73,7 @@ export class Header extends React.Component {
 
   renderOnline() {
     if (this.props.current.chat_type === 'agent') {
-      return this.props.online ? <b className="user-status online"></b> : <b className="user-status offline"></b>;
+      return this.props.online ? <b className="user-status online" /> : <b className="user-status offline" />;
     }
 
     return null;
@@ -83,10 +83,10 @@ export class Header extends React.Component {
     return (
       <header>
         <div className="header-controls">
-          <a href="#" onClick={this.props.toggleSearch}><i className="fa fa-search"></i> Search IM</a>
-            <span className="close">
-              <a href="#" onClick={this.props.onClose}><i className="fa fa-times"></i></a>
-            </span>
+          <a href="#" onClick={this.props.toggleSearch}><i className="fa fa-search" /> Search IM</a>
+          <span className="close">
+            <a href="#" onClick={this.props.onClose}><i className="fa fa-times" /></a>
+          </span>
         </div>
         {this.renderHeader()}
       </header>

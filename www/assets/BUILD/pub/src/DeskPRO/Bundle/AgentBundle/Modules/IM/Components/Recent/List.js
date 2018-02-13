@@ -1,14 +1,14 @@
 import PropTypes from 'prop-types';
 import React from 'react';
 import { connect } from 'react-redux';
-import Loader from 'react-loader';
-import { Item } from './Item';
-import * as actions from '../../Actions/chatsActions';
-import * as messagesActions from '../../Actions/messagesActions';
+import Loader from '@deskpro/react-loader';
 import { agentsSelector } from 'DeskPRO/Bundle/AppBundle/Modules/RecordsStore/Shortcuts/agents';
 import { meSelector } from 'DeskPRO/Bundle/AppBundle/Modules/RecordsStore/Shortcuts/me';
 import { myTicketsDepartmentsSelector, myAgentTeamsSelector, addToCollection, loadFromApi, isLoadedCollectionSelectorFactory,
   collectionSelectorFactory } from 'DeskPRO/Bundle/AppBundle/Modules/RecordsStore';
+import { Item } from './Item';
+import * as actions from '../../Actions/chatsActions';
+import * as messagesActions from '../../Actions/messagesActions';
 
 @connect(state => ({
   me:            meSelector(state),
@@ -77,7 +77,7 @@ export class List extends React.Component {
 
     return (
       <Loader loaded={loaded} opacity={0} width={3} scale={0.5} left="125%" color="#fff" component="span">
-        {sortedChats.toList().map((chat) =>
+        {sortedChats.toList().map(chat =>
           <Item
             current={current}
             chating={chating}

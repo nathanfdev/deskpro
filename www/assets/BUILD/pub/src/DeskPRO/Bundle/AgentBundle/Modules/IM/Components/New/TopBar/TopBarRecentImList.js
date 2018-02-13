@@ -1,7 +1,7 @@
 import PropTypes from 'prop-types';
 import React from 'react';
 import ReactTooltip from 'react-tooltip';
-import Loader from 'react-loader';
+import Loader from '@deskpro/react-loader';
 import Immutable from 'immutable';
 import {
   DepartmentAvatar,

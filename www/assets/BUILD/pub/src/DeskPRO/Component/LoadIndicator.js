@@ -1,6 +1,6 @@
 import PropTypes from 'prop-types';
 import React, { Component } from 'react';
-import Loader from 'react-loader';
+import Loader from '@deskpro/react-loader';
 import { connect } from 'react-redux';
 import { constants } from 'DeskPRO/Bundle/AgentBundle/Constants/Constants';
 

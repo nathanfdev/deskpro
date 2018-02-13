@@ -1,6 +1,6 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import Loader from 'react-loader';
+import Loader from '@deskpro/react-loader';
 import { SingleForm } from './Form/SingleForm';
 
 export class Content extends React.Component {

@@ -1,6 +1,6 @@
 import PropTypes from 'prop-types';
 import React from 'react';
-import Loader from 'react-loader';
+import Loader from '@deskpro/react-loader';
 import classNames from 'classnames';
 import debounce from 'lodash/debounce';
 import agentPhrases from 'DeskPRO/Bundle/AgentBundle/AgentPhrases';

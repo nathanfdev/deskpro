@@ -1,6 +1,6 @@
 import PropTypes from 'prop-types';
 import React from 'react';
-import Loader from 'react-loader';
+import Loader from '@deskpro/react-loader';
 import { updateMyProfile } from 'DeskPRO/Bundle/AppBundle/Modules/RecordsStore/Shortcuts/profile';
 import { Field } from './Fields/Field';
 import { Avatar } from './Fields/Avatar';

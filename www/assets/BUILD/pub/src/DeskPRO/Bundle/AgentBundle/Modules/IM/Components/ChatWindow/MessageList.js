@@ -2,11 +2,11 @@ import PropTypes from 'prop-types';
 import React from 'react';
 import ReactDOM from 'react-dom';
 import { connect } from 'react-redux';
-import { Message } from './Message';
-import { loadMessages, markMessages } from '../../Actions/messagesActions';
 import { agentsSelector } from 'DeskPRO/Bundle/AppBundle/Modules/RecordsStore/Shortcuts/agents';
 import { meSelector } from 'DeskPRO/Bundle/AppBundle/Modules/RecordsStore/Shortcuts/me';
-import Loader from 'react-loader';
+import Loader from '@deskpro/react-loader';
+import { Message } from './Message';
+import { loadMessages, markMessages } from '../../Actions/messagesActions';
 
 @connect(state => ({
   me:               meSelector(state),
@@ -43,7 +43,7 @@ export class MessageList extends React.Component {
   }
 
   componentWillUpdate = () => {
-    const node = ReactDOM.findDOMNode(this.refs.list);
+    const node = ReactDOM.findDOMNode(this.list);
     this.shouldScrollBottom = node && (node.scrollTop + node.offsetHeight === node.scrollHeight);
     if (this.firstScroll === true && node) {
       this.firstScroll = false;
@@ -68,7 +68,7 @@ export class MessageList extends React.Component {
   };
 
   scroll = () => {
-    const node = ReactDOM.findDOMNode(this.refs.list);
+    const node = ReactDOM.findDOMNode(this.list);
     if (this.shouldScrollBottom && node) {
       node.scrollTop = node.scrollHeight;
     }
@@ -120,7 +120,7 @@ export class MessageList extends React.Component {
   renderList(msg) {
     let previous = false;
     return (
-      <ul ref="list" className="chat-message-list">
+      <ul ref={(c) => { this.list = c; }} className="chat-message-list">
         {this.controls()}
         {
           msg.map((message, index) => {
@@ -143,26 +143,22 @@ export class MessageList extends React.Component {
     );
   }
 
-  renderEmpty = () => {
-    return (
-      <ul ref="list" className="chat-message-list">
-        <li className="chat-controls">
-          <a>Sorry, nothing found here</a>
-        </li>
-      </ul>
+  renderEmpty = () => (
+    <ul ref={(c) => { this.list = c; }} className="chat-message-list">
+      <li className="chat-controls">
+        <a>Sorry, nothing found here</a>
+      </li>
+    </ul>
     );
-  };
 
   render() {
     const { messages } = this.props;
     let msg = messages.hasIn(this.getPath()) ? messages.getIn(this.getPath()).messages : [];
-    msg = msg.sort((first, second) => {
-      return first.timestamp - second.timestamp;
-    });
+    msg = msg.sort((first, second) => first.timestamp - second.timestamp);
     const loaded = !this.props.loadingMessages || msg.size > 0;
     return (
-       <Loader loaded={loaded}>
-         {msg.size > 0 ? this.renderList(msg) : this.renderEmpty()}
+      <Loader loaded={loaded}>
+        {msg.size > 0 ? this.renderList(msg) : this.renderEmpty()}
       </Loader>
     );
   }
