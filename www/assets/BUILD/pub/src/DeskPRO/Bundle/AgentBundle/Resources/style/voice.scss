@@ -475,6 +475,10 @@ $voice-green-border-color: #47BF61;
         .incoming-call-another-agent-message {
           margin-top: 50px;
         }
+
+        .incoming-call-avatar-loader {
+          margin-top: 20px;
+        }
       }
 
       .voice-voicemail {
@@ -1027,6 +1031,11 @@ $voice-green-border-color: #47BF61;
       border-radius: 10px;
       background-color: #FFFFFF;
       overflow: hidden;
+      opacity: 0.2;
+
+      &.active {
+        opacity: 1;
+      }
 
       i {
         margin-top: 10px;

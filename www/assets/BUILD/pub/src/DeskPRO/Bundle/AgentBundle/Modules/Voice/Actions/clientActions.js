@@ -55,6 +55,13 @@ export const voiceBootstrap = createAction(
       return;
     }
 
+    const resetActivitySid = () => {
+      const state   = getState();
+      const canCall = callsEnabledSelector(state);
+
+      worker.update('ActivitySid', canCall ? idleSid : offlineSid);
+    };
+
     // check if mic is enabled
     if (navigator.mediaDevices && navigator.mediaDevices.getUserMedia) {
       navigator.mediaDevices.getUserMedia({ audio: true }).then((stream) => {
@@ -82,16 +89,16 @@ export const voiceBootstrap = createAction(
         worker.on('reservation.canceled', (reservation) => {
           console.log('reservation.canceled');
           dispatch(removeIncomingCall(reservation));
-          worker.update('ActivitySid', idleSid);
+          resetActivitySid();
         });
         worker.on('reservation.timeout', (reservation) => {
           console.log('reservation.timeout');
           dispatch(removeIncomingCall(reservation));
-          worker.update('ActivitySid', idleSid);
+          resetActivitySid();
         });
         worker.on('reservation.rescinded', (reservation) => {
           console.log('reservation.rescinded');
-          worker.update('ActivitySid', idleSid);
+          resetActivitySid();
 
           // another agent have already accepted the call
           if (reservation.task.assignmentStatus === 'assigned') {
@@ -169,7 +176,7 @@ export const voiceBootstrap = createAction(
               dispatch(removeConnection(connection));
               dispatch(resetOutgoingCall());
 
-              worker.update('ActivitySid', idleSid);
+              resetActivitySid();
             });
           });
         } catch (e) {
@@ -220,7 +227,7 @@ export const voiceBootstrap = createAction(
           // change worker status to idle on conference end
           if (eventName === 'conference-end') {
             dispatch(removeConferenceIncomingCalls(event.ConferenceSid));
-            worker.update('ActivitySid', idleSid);
+            resetActivitySid();
           }
         });
         messageBroker.addMessageListener('agent.voice.voicemail.new-message', (event) => {
@@ -236,6 +243,15 @@ export const voiceBootstrap = createAction(
           }
         });
         messageBroker.addMessageListener('agent.voice.incoming-call-answered', (data) => {
+          const state = getState();
+          const me    = meSelector(state);
+
+          // don't remove incoming call notification for other agents
+          // just stop it ringing in other browser tabs
+          if (parseInt(me.get('id'), 10) !== parseInt(data.agent_id, 10)) {
+            return;
+          }
+
           dispatch(removeIncomingCall(data));
         });
         messageBroker.addMessageListener('agent.voice.outgoing-call-answered', (data) => {
