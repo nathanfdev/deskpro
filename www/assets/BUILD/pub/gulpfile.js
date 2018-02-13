@@ -162,6 +162,7 @@ function getWebpackConfig(mode, isProd) {
 
     resolve: {
       modules: [
+        path.join(__dirname, 'node_modules'),
         path.join(__dirname, 'src'),
         path.join(__dirname, 'src/DeskPRO/Component'),
         path.join(__dirname, 'src/DeskPRO/Dev'),
@@ -203,8 +204,7 @@ function getWebpackConfig(mode, isProd) {
             {
               loader:  'babel-loader',
               options: {
-                cacheDirectory: true,
-                presets:        ['@babel/preset-env']
+                cacheDirectory: true
               }
             }
           ],
@@ -285,7 +285,10 @@ function getWebpackConfig(mode, isProd) {
           test: require.resolve('react'),
           use:  [
             {
-              loader: 'expose-loader?React'
+              loader:  'expose-loader',
+              options: {
+                React: true
+              }
             }
           ],
         },
@@ -293,7 +296,10 @@ function getWebpackConfig(mode, isProd) {
           test: require.resolve('react-dom'),
           use:  [
             {
-              loader: 'expose-loader?ReactDOM'
+              loader:  'expose-loader',
+              options: {
+                ReactDom: true
+              }
             }
           ],
         },
@@ -426,6 +432,10 @@ function getWebpackConfig(mode, isProd) {
       config.entry.DeskPRO_WidgetBundle.unshift('webpack-hot-middleware/client?path=http://localhost:9666/__webpack_hmr');
     }
   }
+
+  console.log('########################');
+  console.log(config);
+  console.log('########################');
 
   return config;
 }

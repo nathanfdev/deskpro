@@ -5,7 +5,8 @@
     "babel-preset-stage-0"
   ],
   "plugins": [
-    ["babel-plugin-transform-decorators-legacy", "babel-plugin-transform-flow-strip-types"],
+    "babel-plugin-transform-decorators-legacy",
+    "babel-plugin-transform-flow-strip-types",
     ["babel-plugin-react-intl", {"messagesDir": "./build/messages/"}],
     ["babel-plugin-namespace", {
       "namespaces": {
