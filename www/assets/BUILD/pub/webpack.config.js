@@ -20,7 +20,7 @@ const config = {
     DeskPRO_PortalBundle_ie9style : './src/DeskPRO/Bundle/PortalBundle/Resources/style/ie9-overrides.scss',
     // DeskPRO_AgentBundle: './src/DeskPRO/Bundle/AgentBundle/DeskPRO_AgentBundle',
     // DeskPRO_AgentBundle_style: './src/DeskPRO/Bundle/AgentBundle/Resources/style/agent-style.scss',
-    // DeskPRO_AgentLegacyBundle: './src/DeskPRO/Bundle/AgentBundle/DeskPRO_AgentLegacyBundle',
+    DeskPRO_AgentLegacyBundle: './src/DeskPRO/Bundle/AgentBundle/DeskPRO_AgentLegacyBundle',
     DeskPRO_AgentLegacyBundle_style: './src/DeskPRO/Bundle/AgentBundle/Resources/style/legacy-agent.scss'
   },
 
@@ -61,22 +61,8 @@ const config = {
         test: /\.(png|gif|jpg|jpeg|woff|woff2|ttf|eot|svg|mp3|ogg|wav)(\?|$)/,
         use:  [
           {
-            loader:  'file-loader',
-            options: {
-              context: 'src',
-              name:    '[path][name].[ext]'
-            }
+            loader: 'file-loader'
           }
-        ],
-        include: [
-          resolve(__dirname, 'src/DeskPRO'),
-          resolve(__dirname, 'node_modules/@deskpro'),
-          resolve(__dirname, 'node_modules/bourbon'),
-          resolve(__dirname, 'node_modules/bourbon-neat'),
-          resolve(__dirname, 'node_modules/font-awesome'),
-          resolve(__dirname, 'node_modules/intl-tel-input'),
-          resolve(__dirname, 'node_modules/flag-icon-css'),
-          resolve(__dirname, 'node_modules/cropper')
         ]
       },
       {

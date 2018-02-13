@@ -5,8 +5,7 @@ import htmlToText from 'html-to-text';
 import Highlighter from 'react-highlight-words';
 import agentPhrases from 'DeskPRO/Bundle/AgentBundle/AgentPhrases';
 import { List } from 'react-virtualized';
-import { Checkbox, Tag } from '@deskpro/react-components/lib/Components/Forms';
-import Icon from '@deskpro/react-components/lib/Components/Icon';
+import { Checkbox, Tag, Icon } from '@deskpro/react-components';
 
 export class SnippetsListElement extends React.PureComponent {
   static propTypes = {

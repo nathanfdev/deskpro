@@ -1,8 +1,7 @@
 import PropTypes from 'prop-types';
 import React from 'react';
 import htmlToText from 'html-to-text';
-import { CustomSelect } from '@deskpro/react-components/lib/Components/Forms';
-import { List, ListElement } from '@deskpro/react-components/lib/Components/Common';
+import { CustomSelect, List, ListElement } from '@deskpro/react-components';
 
 export class ModalLanguageSelect extends React.PureComponent {
   static propTypes = {

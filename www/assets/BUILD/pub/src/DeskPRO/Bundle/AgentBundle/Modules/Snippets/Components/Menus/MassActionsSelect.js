@@ -1,8 +1,6 @@
 import PropTypes from 'prop-types';
 import React from 'react';
-import { CustomSelect } from '@deskpro/react-components/lib/Components/Forms';
-import { List, ListElement } from '@deskpro/react-components/lib/Components/Common';
-import Icon from '@deskpro/react-components/lib/Components/Icon';
+import { Icon, CustomSelect, List, ListElement } from '@deskpro/react-components';
 import agentPhrases from 'DeskPRO/Bundle/AgentBundle/AgentPhrases';
 
 export class MassActionsSelect extends React.PureComponent {

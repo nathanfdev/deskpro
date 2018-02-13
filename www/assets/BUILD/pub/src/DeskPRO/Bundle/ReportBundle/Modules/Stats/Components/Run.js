@@ -1,8 +1,7 @@
 import PropTypes from 'prop-types';
 import React from 'react';
 import AmCharts from '@amcharts/amcharts3-react';
-import Button from '@deskpro/react-components/lib/Components/Buttons/Button';
-import { Loader } from '@deskpro/react-components';
+import { Button, Loader } from '@deskpro/react-components';
 import Select from 'react-select';
 import Immutable from 'immutable';
 import TitleWithVars from './TitleWithVars';
