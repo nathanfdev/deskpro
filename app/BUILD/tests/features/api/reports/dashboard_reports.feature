@@ -30,9 +30,9 @@ Feature: /dashboard_reports endpoint
       | #  | Display Types | Title           | Query                          | Is Custom |
       | w1 | ["table"]     | Built-in report | SELECT tickets.id FROM tickets | 0         |
     And only the following ReportDashboardWidget records exist:
-      | #   | Title    | Type  | Report | Widget | Size X | Size Y | Row | Col |
-      | dw1 | Widget 1 | table | {r3}   | {w1}   | 10     | 15     | 1   | 11  |
-      | dw2 | Widget 2 | bars  | {r3}   | {w1}   | 20     | 25     | 2   | 12  |
+      | #   | Title    | Type        | Report | Widget | Size X | Size Y | Row | Col |
+      | dw1 | Widget 1 | table       | {r3}   | {w1}   | 10     | 15     | 1   | 11  |
+      | dw2 | Widget 2 | simple_bars | {r3}   | {w1}   | 20     | 25     | 2   | 12  |
 
   Scenario: I try to retrieve a list of non-permitted dashboard
     When I send a GET request to "/api/v2/dashboards/{d3}/reports"
@@ -169,7 +169,7 @@ Feature: /dashboard_reports endpoint
     And the JSON node "data[0].col" should be equal to 11
     And the JSON node "data[0].row" should be equal to 1
     And the JSON node "data[1].title" should be equal to "Widget 2"
-    And the JSON node "data[1].type" should be equal to "bars"
+    And the JSON node "data[1].type" should be equal to "simple_bars"
 
   Scenario: I schedule everyday report
     When I send a POST request to "/api/v2/dashboard_reports" with body:
