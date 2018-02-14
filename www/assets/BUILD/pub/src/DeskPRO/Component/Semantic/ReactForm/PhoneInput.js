@@ -23,7 +23,7 @@ class PhoneInput extends React.Component {
 
   componentWillMount() {
     const { value } = this.props;
-    if (/^sip: /.test(value)) {
+    if (/^sip:/.test(value)) {
       this.setState({ isSip: true });
     }
   }
@@ -38,8 +38,8 @@ class PhoneInput extends React.Component {
     const { isSip } = this.state;
 
     if (isSip) {
-      $input.val(`${number}`.replace(/^sip: /, ''));
-      onChange(`sip: ${$input.val()}`);
+      $input.val(`${number}`.replace(/^sip:/, ''));
+      onChange(`sip:${$input.val()}`);
     } else {
       $input.intlTelInput('setNumber', `${number}`);
       onChange($input.intlTelInput('getNumber') || `${number}`);
@@ -53,9 +53,9 @@ class PhoneInput extends React.Component {
 
     if (isSip) {
       $input.bind('change keyup', () => {
-        onChange(`sip: ${$input.val()}`);
+        onChange(`sip:${$input.val()}`);
       });
-      $input.val(`${value}`.replace(/^sip: /, ''));
+      $input.val(`${value}`.replace(/^sip:/, ''));
     } else {
       $input.intlTelInput({
         autoPlaceholder: true,

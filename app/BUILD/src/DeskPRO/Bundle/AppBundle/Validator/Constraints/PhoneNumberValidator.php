@@ -65,6 +65,14 @@ class PhoneNumberValidator extends ConstraintValidator
         $context = $this->context;
 
         if (preg_match('/^sip:/', $checkValue)) {
+            if (preg_match('/\s/', $checkValue)) {
+                $context
+                    ->buildViolation($constraint->invalidFormatMessage)
+                    ->setCode(PhoneNumber::INVALID_PHONE_NUMBER)
+                    ->addViolation()
+                ;
+            }
+
             return;
         }
 
