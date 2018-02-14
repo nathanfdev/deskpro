@@ -146,8 +146,6 @@ export class AgentTopBarContainer extends SeparateComponent {
       angularOmnibox.searchQuery = searchQuery;
       angularOmnibox.touchSearch();
       window.$('.dp-omnibox-results').show();
-      const event = new Event('dpPopupOpen', { detail: { mode: 'search' } });
-      window.document.dispatchEvent(event);
     }
   }
 
