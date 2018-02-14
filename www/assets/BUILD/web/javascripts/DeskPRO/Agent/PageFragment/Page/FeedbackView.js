@@ -211,6 +211,38 @@ DeskPRO.Agent.PageFragment.Page.FeedbackView = new Orb.Class({
 			self.deleteHelper.handleUndelete();
 		});
 		this.ownObject(this.deleteHelper);
+
+    var decTabCount = function(id) {
+      var countEl = self.getEl(id);
+      var count = countEl.data('count');
+      count = count > 0 ? count - 1 : 0;
+      countEl.data('count', count).html(count);
+    };
+
+		this.wrapper.find('.unlink-ticket').on('click', function(ev) {
+			Orb.cancelEvent(ev);
+
+			if (!confirm("Are you sure you want to unlink the selected ticket?")) {
+				return;
+			}
+
+			var ticketToFeedbackId = $(this).data('id');
+      var ticketId = $(this).data('ticket-id');
+
+			$(this).closest('tr').hide();
+			$.ajax({
+				url: DP_BASE_API_URL + "/v2/tickets/" + ticketId + "/feedback_links/" + ticketToFeedbackId,
+				type: 'DELETE',
+        withActionAlerts: true,
+				error: function() {
+					$(this).closest('tr').show();
+				},
+				success: function() {
+					$(this).closest('tr').remove();
+          decTabCount('linked_tickets_count');
+				}
+			});
+		});
 	},
 
 	destroyPage: function() {

@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2017, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2018, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -59,6 +59,7 @@ use Application\DeskPRO\Labels\LabelLister;
 use Application\DeskPRO\People\PermissionChecker\PublishChecker;
 use Application\DeskPRO\Publish\Feedback\GroupingCounter;
 use Application\DeskPRO\Publish\RelatedContentUpdate;
+use DeskPRO\Bundle\AppBundle\Entity\TicketToFeedback;
 use Doctrine\ORM\EntityManager;
 use Orb\Util\Arrays;
 use Orb\Util\Numbers;
@@ -233,6 +234,9 @@ class FeedbackController extends AbstractController
         $activeStatusCategories = $feedbackStatusCategoryRepository->getActiveCategories();
         $closedStatusCategories = $feedbackStatusCategoryRepository->getClosedCategories();
 
+        $feedbackRepo     = $this->em->getRepository(TicketToFeedback::class);
+        $ticketToFeedback = $feedbackRepo->findByFeedback($feedback);
+
         $perms = [
             'can_edit'   => $publishChecker->canEdit($feedback),
             'can_delete' => $publishChecker->canDelete($feedback),
@@ -254,6 +258,7 @@ class FeedbackController extends AbstractController
                 'feedback_categories' => $feedbackCategories,
                 'active_status_cats'  => $activeStatusCategories,
                 'closed_status_cats'  => $closedStatusCategories,
+                'ticket_to_feedback'  => $ticketToFeedback,
                 'perms'               => $perms,
             ]
         );

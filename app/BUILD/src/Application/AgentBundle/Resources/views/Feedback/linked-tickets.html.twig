@@ -1,0 +1,37 @@
+<table cellspacing="0" cellpadding="0" width="100%" class="field-holders-table th-la sla-table linked-tickets-table">
+	<tbody>
+    {% for ttf in ticket_to_feedback %}
+      <tr class="ticket_row">
+        <td>
+          <div class="fade-container">
+            <div class="line">
+              <a data-route="ticket:{{ path('agent_ticket_view', {'ticket_id': ttf.ticket.id}) }}" data-route-title="@text">
+                <span class="id-number">#{{ ttf.ticket.id }}</span>
+                {{ttf.ticket.subject}}
+              </a>
+            </div>
+            <div class="bound-fade"></div>
+          </div>
+        </td>
+        <td {% if not ttf.ticket.agent %}colspan="2"{% endif %}>
+          <div class="status-pill status urgency-{{ ttf.ticket.urgency }} {{ ttf.ticket.status_code|replace({'.': '_'}) }}" style="float: right; position: relative; top: 0px;">
+            <label>{{ phrase('agent.tickets.status_' ~ ttf.ticket.status_code|replace({'.': '_'})) }}</label>
+            {% if ttf.ticket.status == 'awaiting_agent' %}<i class="ticket-urgency" data-urgency="{{ ttf.ticket.urgency }}">{{ ttf.ticket.urgency }}</i>{% endif %}
+          </div>
+        </td>
+        {% if ttf.ticket.agent %}
+          <td width="16" style="width: 16px; padding:0; padding-right: 4px;">
+            <span
+              class="tipped"
+              title="{{ ttf.ticket.agent.display_name }}"
+              style="background: url('{{ ttf.ticket.agent.getPictureUrl(16) }}') no-repeat 0 50%; height: 16px; width: 16px; overflow: hidden; display: block;"
+              ></span>
+          </td>
+        {% endif %}
+        <td width="10" style="text-align: right;">
+          <img src="{{ asset('images/agent/icons/cross.png') }}" style="cursor: pointer;" class="unlink-ticket" data-ticket-id="{{ ttf.ticket.id }}" data-id="{{ ttf.id }}" />
+        </td>
+      </tr>
+    {% endfor %}
+	</tbody>
+</table>

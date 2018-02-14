@@ -612,6 +612,13 @@ DeskPRO.Agent.PageFragment.Page.Ticket = new Orb.Class({
 			})();
 		}
 
+    var decTabCount = function(id) {
+      var countEl = self.getEl(id);
+      var count = countEl.data('count');
+      count = count > 0 ? count - 1 : 0;
+      countEl.data('count', count).html(count);
+    };
+
 		this.linkExistingTicket = new DeskPRO.Agent.PageFragment.Page.TicketHelper.LinkTicket(this, {
 			loadUrl: BASE_URL + "agent/tickets/" + this.meta.ticket_id + "/link-overlay",
 			saveUrl: BASE_URL + "agent/tickets/" + this.meta.ticket_id + "/link",
@@ -645,6 +652,7 @@ DeskPRO.Agent.PageFragment.Page.Ticket = new Orb.Class({
 				},
 				success: function() {
 					$(this).closest('tr').remove();
+          decTabCount('linked_count');
 				}
 			});
 		});
@@ -668,6 +676,7 @@ DeskPRO.Agent.PageFragment.Page.Ticket = new Orb.Class({
 				},
 				success: function() {
 					$(this).closest('tr').remove();
+          decTabCount('linked_feedback_count');
 				}
 			});
 		});
