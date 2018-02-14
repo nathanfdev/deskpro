@@ -34,63 +34,11 @@
 
 namespace Application\InstallBundle\Data\DefaultData;
 
-use DeskPRO\Bundle\AppBundle\Entity\TicketFilter;
-use DeskPRO\Bundle\AppBundle\Entity\TicketFilterSet;
-
 class FilterData extends AbstractDefaultData
 {
     public function runInstall()
     {
         $this->oldFilterInstall();
-        $this->newFilterInstall();
-    }
-
-    private function newFilterInstall()
-    {
-        $em = $this->getEm();
-
-        $set = new TicketFilterSet();
-        $set->setTitle('Inbox');
-        $set->setDisplayOrder(0);
-        $set->enableGlobalSharing();
-        $em->persist($set);
-
-        $f = new TicketFilter();
-        $f->setTitle('Assigned To Me');
-        $f->setDisplayOrder(10);
-        $f->setQuery('ticket.status = \'awaiting_agent\' AND ticket.agent = $me');
-        $set->addFilter($f);
-        $em->persist($f);
-
-        $f = new TicketFilter();
-        $f->setTitle('Tickets I Follow');
-        $f->setDisplayOrder(10);
-        $f->setQuery('ticket.status = \'awaiting_agent\' AND ticket.followers HAS $me');
-        $set->addFilter($f);
-        $em->persist($f);
-
-        $f = new TicketFilter();
-        $f->setTitle('Assigned To Team');
-        $f->setDisplayOrder(10);
-        $f->setQuery('ticket.status = \'awaiting_agent\' AND ticket.agent_team IN $my_teams');
-        $set->addFilter($f);
-        $em->persist($f);
-
-        $f = new TicketFilter();
-        $f->setTitle('Unassigned');
-        $f->setDisplayOrder(10);
-        $f->setQuery('ticket.status = \'awaiting_agent\' AND ticket.agent IS EMPTY');
-        $set->addFilter($f);
-        $em->persist($f);
-
-        $f = new TicketFilter();
-        $f->setTitle('All Awaiting Agent');
-        $f->setDisplayOrder(10);
-        $f->setQuery('ticket.status = \'awaiting_agent\'');
-        $set->addFilter($f);
-        $em->persist($f);
-
-        $em->flush();
     }
 
     private function oldFilterInstall()
@@ -287,8 +235,6 @@ class FilterData extends AbstractDefaultData
         $this->getDb()->exec('DELETE FROM ticket_filters2');
         $this->getDb()->exec('DELETE FROM ticket_filters2_sets');
         $this->oldFilterInstall();
-
-        $this->newFilterInstall();
     }
 
     public function runSync()
