@@ -18,14 +18,14 @@ class CallForward extends BaseForm {
     const $checkbox = $('.toggle', this.node);
     const $phone = $('input[type=text]', this.node);
 
-    $checkbox.on('click', this.onSubmit);
-    $phone.on('blur', this.onSubmit);
+    $checkbox.on('click', () => setTimeout(this.onSubmit, 1));
+    $phone.on('blur', () => setTimeout(this.onSubmit, 1));
     $phone.on('keydown', (event) => {
       const code = event.keyCode || event.which;
 
       if (code === 13) {
         event.preventDefault();
-        this.onSubmit();
+        setTimeout(this.onSubmit, 1);
       }
     });
   }
