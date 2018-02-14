@@ -17,7 +17,7 @@
         <td nowrap="nowrap" style="overflow:hidden; text-overflow: ellipsis;">{{ ttf.feedback.category ? ttf.feedback.category.title : '' }}</td>
         <td nowrap="nowrap" style="overflow:hidden; text-overflow: ellipsis;">{{ ttf.feedback.status_category ? ttf.feedback.status_category.title : '' }}</td>
         <td width="10" style="text-align: right;">
-          <img src="{{ asset('images/agent/icons/cross.png') }}" style="cursor: pointer;" class="unlink-feedback" data-from-id="{{ ttf.feedback.id }}" />
+          <img src="{{ asset('images/agent/icons/cross.png') }}" style="cursor: pointer;" class="unlink-feedback" data-id="{{ ttf.id }}" />
         </td>
       </tr>
     {% endfor %}

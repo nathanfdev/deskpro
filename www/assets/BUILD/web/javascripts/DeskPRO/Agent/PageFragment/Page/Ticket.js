@@ -649,6 +649,29 @@ DeskPRO.Agent.PageFragment.Page.Ticket = new Orb.Class({
 			});
 		});
 
+		this.wrapper.find('.unlink-feedback').on('click', function(ev) {
+			Orb.cancelEvent(ev);
+
+			if (!confirm("Are you sure you want to unlink the selected feedback?")) {
+				return;
+			}
+
+			var ticketToFeedbackId = $(this).data('id');
+
+			$(this).closest('tr').hide();
+			$.ajax({
+				url: DP_BASE_API_URL + "/v2/tickets/" + self.meta.ticket_id + "/feedback_links/" + ticketToFeedbackId,
+				type: 'DELETE',
+        withActionAlerts: true,
+				error: function() {
+					$(this).closest('tr').show();
+				},
+				success: function() {
+					$(this).closest('tr').remove();
+				}
+			});
+		});
+
 		this.addEvent('deactivate', function() {
 			if (self.ticketReplyBox && self.ticketReplyBox.textarea) {
 				self.ticketReplyBox.textarea.trigger('dp_autosave_trigger');

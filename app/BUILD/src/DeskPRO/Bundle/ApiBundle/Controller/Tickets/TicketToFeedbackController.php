@@ -48,7 +48,6 @@ use Symfony\Component\HttpFoundation\Request;
  *      "options"={
  *          "data"="DeskPRO\Bundle\AppBundle\Entity\TicketToFeedback",
  *          "ticket"="Application\DeskPRO\Entity\Ticket",
- *          "feedback"="Application\DeskPRO\Entity\Feedback",
  *          "person"="Application\DeskPRO\Entity\Person"
  *      }
  *     }
