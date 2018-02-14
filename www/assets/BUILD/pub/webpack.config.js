@@ -1,4 +1,4 @@
-const { resolve } = require('path');
+const { resolve, join } = require('path');
 const ExtractTextPlugin     = require('extract-text-webpack-plugin');
 
 const bowerDir       = resolve(__dirname, './bower_components');
@@ -6,22 +6,56 @@ const nodeModulesDir = resolve(__dirname, './node_modules');
 const webpack = require('webpack');
 const config = {
   entry: {
-    DeskPRO_PortalBundle: './src/DeskPRO/Bundle/PortalBundle/DeskPRO_PortalBundle',
-
-    DeskPRO_PortalBundle_style     : './src/DeskPRO/Bundle/PortalBundle/Resources/style/portal-ltr-style.scss',
-    DeskPRO_PortalBundle_rtl_style : './src/DeskPRO/Bundle/PortalBundle/Resources/style/portal-rtl-style.scss',
-
-    DeskPRO_PortalBundle_vendors_style : './src/DeskPRO/Bundle/PortalBundle/Resources/style/vendors-style.scss',
-
-    DeskPRO_PortalBundle_GuidePdf_style : './src/DeskPRO/Bundle/PortalBundle/Resources/style/guide_pdf.scss',
-
-    DeskPRO_PortalBundle_iestyle  : './src/DeskPRO/Bundle/PortalBundle/Resources/style/ie-overrides.scss',
-    DeskPRO_PortalBundle_ie8style : './src/DeskPRO/Bundle/PortalBundle/Resources/style/ie8-overrides.scss',
-    DeskPRO_PortalBundle_ie9style : './src/DeskPRO/Bundle/PortalBundle/Resources/style/ie9-overrides.scss',
-    // DeskPRO_AgentBundle: './src/DeskPRO/Bundle/AgentBundle/DeskPRO_AgentBundle',
-    // DeskPRO_AgentBundle_style: './src/DeskPRO/Bundle/AgentBundle/Resources/style/agent-style.scss',
+    // Portal
+    // widget_loader:               join(__dirname, 'build/widget_loader.js'),
+    // 'widget_loader.min':         join(__dirname, 'build/widget_loader.min.js'),
+    // embed_loader:                join(__dirname, 'build/embed_loader.js'),
+    // 'embed_loader.min':          join(__dirname, 'build/embed_loader.min.js'),
+    // hit_recorder:                join(__dirname, 'build/hit_recorder.js'),
+    // 'hit_recorder.min':          join(__dirname, 'build/hit_recorder.min.js'),
+    // iframeResizer_contentWindow: './node_modules/iframe-resizer/js/iframeResizer.contentWindow.js',
+    //
+    // DeskPRO_PortalBundle: './src/DeskPRO/Bundle/PortalBundle/DeskPRO_PortalBundle',
+    //
+    // DeskPRO_PortalBundle_style:     './src/DeskPRO/Bundle/PortalBundle/Resources/style/portal-ltr-style.scss',
+    // DeskPRO_PortalBundle_rtl_style: './src/DeskPRO/Bundle/PortalBundle/Resources/style/portal-rtl-style.scss',
+    //
+    // DeskPRO_PortalBundle_vendors_style: './src/DeskPRO/Bundle/PortalBundle/Resources/style/vendors-style.scss',
+    //
+    // DeskPRO_PortalBundle_GuidePdf_style: './src/DeskPRO/Bundle/PortalBundle/Resources/style/guide_pdf.scss',
+    //
+    // DeskPRO_PortalBundle_iestyle:  './src/DeskPRO/Bundle/PortalBundle/Resources/style/ie-overrides.scss',
+    // DeskPRO_PortalBundle_ie8style: './src/DeskPRO/Bundle/PortalBundle/Resources/style/ie8-overrides.scss',
+    // DeskPRO_PortalBundle_ie9style: './src/DeskPRO/Bundle/PortalBundle/Resources/style/ie9-overrides.scss',
+    //
+    // api_message_style: './src/DeskPRO/Bundle/AppBundle/Resources/style/api/message.scss',
+    //
+    // DeskPRO_PortalBundle_print_style: './src/DeskPRO/Bundle/PortalBundle/Resources/style/print-style.scss',
+    //
+    // // Widget
+    // DeskPRO_WidgetBundle:        './src/DeskPRO/Bundle/WidgetBundle/DeskPRO_WidgetBundle',
+    // DeskPRO_WidgetBundle_style:  './src/DeskPRO/Bundle/WidgetBundle/Resources/style/widget-style.scss',
+    // DeskPRO_EmbedFormBundle:     './src/DeskPRO/Bundle/WidgetBundle/DeskPRO_EmbedFormBundle',
+    // DeskPRO_EmbedHelpdeskBundle: './src/DeskPRO/Bundle/WidgetBundle/DeskPRO_EmbedHelpdeskBundle',
+    //
+    // // Agent
+    // phonenumber_utils: './node_modules/intl-tel-input/lib/libphonenumber/build/utils',
+    // // DeskPRO_AgentBundle: './src/DeskPRO/Bundle/AgentBundle/DeskPRO_AgentBundle',
+    // // DeskPRO_AgentBundle_style: './src/DeskPRO/Bundle/AgentBundle/Resources/style/agent-style.scss',
     DeskPRO_AgentLegacyBundle: './src/DeskPRO/Bundle/AgentBundle/DeskPRO_AgentLegacyBundle',
-    DeskPRO_AgentLegacyBundle_style: './src/DeskPRO/Bundle/AgentBundle/Resources/style/legacy-agent.scss'
+    // DeskPRO_AgentLegacyBundle_style: './src/DeskPRO/Bundle/AgentBundle/Resources/style/legacy-agent.scss',
+    //
+    // // Admin
+    // DeskPRO_AdminBundle:       './src/DeskPRO/Bundle/AdminBundle/DeskPRO_AdminBundle',
+    // DeskPRO_AdminBundle_style: './src/DeskPRO/Bundle/AdminBundle/Resources/style/admin-style.scss',
+    //
+    // // Report
+    // // DeskPRO_ReportBundle:       './src/DeskPRO/Bundle/ReportBundle/DeskPRO_ReportBundle',
+    // DeskPRO_ReportBundle_style: './src/DeskPRO/Bundle/ReportBundle/Resources/style/report-style.scss',
+    //
+    // // Demo
+    // DeskPRO_DemoBundle:       './src/DeskPRO/Bundle/DemoBundle/DeskPRO_DemoBundle',
+    // DeskPRO_DemoBundle_style: './src/DeskPRO/Bundle/DemoBundle/Resources/style/demo-style.scss'
   },
 
   output: {
