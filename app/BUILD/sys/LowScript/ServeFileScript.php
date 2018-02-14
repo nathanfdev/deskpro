@@ -711,9 +711,9 @@ class ServeFileScript extends LowScriptAbstract
     protected function showBlob($blob, $size = null, $blobAuth = null)
     {
         if ($this->userDoesAcceptGzip() && isset($_GET['g'])) {
-            $blobAuth = $_GET['g'];
-            if (preg_match('#^([0-9]+)([A-Z]+0)$#', $blobAuth, $m)) {
-                $blob = $m[1];
+            if (preg_match('#^([0-9]+)([A-Z]+0)$#', $_GET['g'], $m)) {
+                $blobAuth = $_GET['g'];
+                $blob     = $m[1];
             }
         }
 
@@ -862,7 +862,7 @@ class ServeFileScript extends LowScriptAbstract
             }
         }
 
-        if (!isset($_GET['g'])) {
+        if (!isset($_GET['g']) && !empty($blob['storage_loc']) && $blob['storage_loc'] === 'db') {
             if ($isText) {
                 $gzBlob = $this->findGzipBlob($blob);
                 if (!$gzBlob) {
@@ -1212,7 +1212,7 @@ class ServeFileScript extends LowScriptAbstract
         $blobInfo = $pdoStatement->fetch(\PDO::FETCH_ASSOC);
         if (!empty($blobInfo)) {
             $this->alwaysForceDownloadOfHtmlFiles = false;
-            $this->local_mode = true;
+            $this->local_mode                     = true;
             $this->showBlob($blobInfo['blob_id'], null, $blobInfo['blob_authcode']);
         } else {
             if ($this->errorMode == 'exception') {
