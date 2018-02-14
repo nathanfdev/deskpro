@@ -32,7 +32,10 @@ use DeskPRO\Bundle\AppBundle\TicketFilters\Context;
 use DeskPRO\Bundle\AppBundle\TicketFilters\Model\Agent;
 use DeskPRO\Component\Util\ListUtils;
 
-class Differ
+/**
+ * Helps compute a diff of changes to filters given a TicketChange. Use this to deliver +1/-1 type messages to the end user.
+ */
+class FilterDiffer
 {
     /**
      * @var DiffEnv
@@ -233,8 +236,8 @@ class Differ
         }
         if (!empty($agentSetsByPerm['seeAfterOnly'])) {
             $agentSets[] = [
-                'viewBefore'    => true,
-                'viewAfter'     => false,
+                'viewBefore'    => false,
+                'viewAfter'     => true,
                 'agentContexts' => ListUtils::map(ListUtils::flatten($agentSetsByPerm['seeAfterOnly']), [Context::class, 'createContext']),
             ];
         }

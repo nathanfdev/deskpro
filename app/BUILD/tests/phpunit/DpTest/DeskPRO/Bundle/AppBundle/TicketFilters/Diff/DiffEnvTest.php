@@ -29,9 +29,6 @@
 namespace DpTest\Bundle\AppBundle\TicketFilters\Diff;
 
 use DeskPRO\Bundle\AppBundle\TicketFilters\Diff\DiffEnv;
-use DeskPRO\Bundle\AppBundle\TicketFilters\Diff\Differ;
-use DeskPRO\Bundle\AppBundle\TicketFilters\Diff\FilterOp;
-use DeskPRO\Bundle\AppBundle\TicketFilters\Diff\TicketChange;
 use DeskPRO\Bundle\AppBundle\TicketFilters\Model\Agent;
 use DeskPRO\Bundle\AppBundle\TicketFilters\Model\Entity\TicketModel;
 use DeskPRO\Bundle\AppBundle\TicketFilters\Terms\TicketBasicTermsHandler;
@@ -53,13 +50,8 @@ class DiffEnvTest extends \PHPUnit_Framework_TestCase
             new TicketBasicTermsHandler(),
         ]);
 
-        $agentContexts = [
-            $this->makeAgent(1, [1, 2, 3], true, true, true),
-            $this->makeAgent(2, [1, 2], false, true, true),
-            $this->makeAgent(3, [3], false, true, true),
-        ];
-
-        $filters = FilterData::getFilters();
+        $agentContexts = FilterData::getAgents();
+        $filters       = FilterData::getFilters();
 
         $env = new DiffEnv($matcher, $agentContexts, $filters);
 
@@ -113,62 +105,5 @@ class DiffEnvTest extends \PHPUnit_Framework_TestCase
         $this->assertTrue($env->isFilterContextUnique(3));
         $this->assertFalse($env->isFilterContextUnique(4));
         $this->assertFalse($env->isFilterContextUnique(5));
-    }
-
-    public function testDiffer()
-    {
-        $differ = new Differ($this->makeEnv());
-
-        $ticketA             = new TicketModel();
-        $ticketA->id         = 1;
-        $ticketA->status     = 'awaiting_user';
-        $ticketA->department = 1;
-
-        $ticketB             = new TicketModel();
-        $ticketB->id         = 1;
-        $ticketB->status     = 'awaiting_agent';
-        $ticketB->department = 1;
-
-        $ops = $this->getPlainOpsArray(
-            $differ->getFilterChangeOperations(new TicketChange($ticketA, $ticketB))
-        );
-
-        $this->assertEquals(
-            [
-                4 => ['add' => [1, 2], 'del' => []],
-                5 => ['add' => [1, 2], 'del' => []],
-            ],
-            $ops
-        );
-    }
-
-    /**
-     * @param FilterOp[] $ops
-     */
-    private function getPlainOpsArray(array $ops)
-    {
-        $plain = [];
-        foreach ($ops as $op) {
-            $plain[$op->getFilterId()] = [
-                'add' => $op->getAddAgentIds(),
-                'del' => $op->getDelAgentIds(),
-            ];
-        }
-
-        return $plain;
-    }
-
-    private function makeAgent($id, $depids, $all, $other, $unassigned)
-    {
-        $agent                      = new Agent();
-        $agent->id                  = $id;
-        $agent->allowed_departments = $depids;
-        if ($all) {
-            $agent->all_departments_allowed = true;
-        }
-        $agent->view_assigned   = $other;
-        $agent->view_unassigned = $unassigned;
-
-        return $agent;
     }
 }
