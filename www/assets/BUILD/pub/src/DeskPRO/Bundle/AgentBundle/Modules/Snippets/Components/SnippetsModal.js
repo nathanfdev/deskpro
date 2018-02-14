@@ -851,7 +851,6 @@ export class SnippetsModal extends React.Component {
                 onChange={changeLabels}
                 options={labelsSource}
                 inputProps={{ placeholder: agentPhrases.get('agent.general.add_a_label') }}
-                editable
               />
             </div>
             {this.props.isSplit ?
