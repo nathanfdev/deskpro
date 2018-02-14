@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2017, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2018, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -63,6 +63,10 @@ class PhoneNumberValidator extends ConstraintValidator
 
         /** @var \Symfony\Component\Validator\Context\ExecutionContext $context */
         $context = $this->context;
+
+        if (preg_match('/^sip:/', $checkValue)) {
+            return;
+        }
 
         if (PhoneNumbers::looksEmpty($checkValue)) {
             $context

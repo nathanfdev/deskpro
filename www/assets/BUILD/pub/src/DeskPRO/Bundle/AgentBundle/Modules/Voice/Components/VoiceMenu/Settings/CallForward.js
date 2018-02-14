@@ -73,7 +73,7 @@ class CallForwardField extends React.Component {
           </Toggle>
         </Field>
         <Field select="forwarding_number" label="Forwarding number">
-          <PhoneInput type="text" />
+          <PhoneInput supportSip type="text" />
         </Field>
       </div>
     );
