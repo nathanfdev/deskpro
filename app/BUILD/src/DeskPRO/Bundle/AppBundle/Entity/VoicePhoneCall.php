@@ -45,7 +45,7 @@ use Symfony\Component\Validator\Constraints as Assert;
  *   @ORM\UniqueConstraint(name="conference_sid", columns={"conference_sid"})
  * })
  *
- * @UniqueEntity("sid")
+ * @UniqueEntity("callSid")
  * @UniqueEntity("conferenceSid")
  */
 class VoicePhoneCall implements EntityInterface, NotifyPropertyChanged
