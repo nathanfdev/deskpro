@@ -139,9 +139,11 @@ class ReportWidgetHandler extends AbstractEntityHandler
                 $graphType
             );
 
-            $data              = $this->dashboardWidgetService->formatData($data, $displayType);
-            $data['chartType'] = $graphType;
-            $result[]          = $data;
+            $data = $this->dashboardWidgetService->formatData($data, $displayType);
+            if ($data) {
+                $data['chartType'] = $graphType;
+            }
+            $result[] = $data;
         }
 
         return $result;
