@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2017, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2018, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -28,12 +28,17 @@
 
 namespace DeskPRO\Bundle\AppBundle\Form\Type\Voice;
 
+use Application\DeskPRO\EntityRepository\Person as PersonRepository;
 use DeskPRO\Bundle\AppBundle\Entity\VoiceNumber;
+use DeskPRO\Bundle\AppBundle\Entity\VoicePhoneCall;
 use DeskPRO\Bundle\AppBundle\Validator\Constraints as AppAssert;
 use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\FormBuilderInterface;
+use Symfony\Component\Form\FormEvent;
+use Symfony\Component\Form\FormEvents;
+use Symfony\Component\OptionsResolver\OptionsResolver;
 use Symfony\Component\Validator\Constraints as Assert;
 
 /**
@@ -42,23 +47,73 @@ use Symfony\Component\Validator\Constraints as Assert;
 class VoiceOutboundCallType extends AbstractType
 {
     /**
+     * @var PersonRepository
+     */
+    private $personRepo;
+
+    /**
+     * Constructor.
+     *
+     * @param PersonRepository $personRepo
+     */
+    public function __construct(PersonRepository $personRepo)
+    {
+        $this->personRepo = $personRepo;
+    }
+
+    /**
      * {@inheritdoc}
      */
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
         $builder
             ->add('call_from', EntityType::class, [
-                'class'       => VoiceNumber::class,
-                'constraints' => [
+                'property_path' => 'number',
+                'class'         => VoiceNumber::class,
+                'constraints'   => [
                     new Assert\NotNull(),
                 ],
             ])
             ->add('call_to', TextType::class, [
-                'constraints' => [
+                'property_path' => 'externalNumber',
+                'constraints'   => [
                     new Assert\NotBlank(),
                     new AppAssert\PhoneNumber(),
                 ],
             ])
         ;
+
+        $builder->addEventListener(FormEvents::POST_SUBMIT, [$this, 'onPostSubmit']);
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function configureOptions(OptionsResolver $resolver)
+    {
+        $resolver->setDefaults([
+            'data_class' => VoicePhoneCall::class,
+        ]);
+    }
+
+    /**
+     * @internal
+     *
+     * @param FormEvent $event
+     */
+    public function onPostSubmit(FormEvent $event)
+    {
+        $data = $event->getData();
+        if (!$data instanceof VoicePhoneCall) {
+            return;
+        }
+
+        $data->setType(VoicePhoneCall::DIRECTION_OUTBOUND);
+        $data->setData([]);
+
+        if ($data->getExternalNumber()) {
+            $person = $this->personRepo->getOrCreateUserByPhoneNumber($data->getExternalNumber());
+            $data->setPerson($person);
+        }
     }
 }

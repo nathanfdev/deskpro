@@ -28,7 +28,6 @@
 
 namespace DeskPRO\Bundle\ApiBundle\Controller\Voice;
 
-use Application\DeskPRO\Entity\Person;
 use DeskPRO\Bundle\ApiBundle\ApiDoc\Annotation\ApiDoc;
 use DeskPRO\Bundle\AppBundle\Annotation\ActionPermissions\Annotation\ApiModes;
 use DeskPRO\Bundle\AppBundle\Annotation\ActionPermissions\Annotation\Feature;
@@ -168,23 +167,7 @@ class VoiceClientController extends AbstractVoiceController
             throw new InvalidFormException($form);
         }
 
-        $number   = $form->get('call_from')->getData();
-        $toNumber = $form->get('call_to')->getData();
-
-        // get the caller person
-        /** @var \Application\DeskPRO\EntityRepository\Person $personRepo */
-        $personRepo = $this->getRepository(Person::class);
-        $person     = $personRepo->getOrCreateUserByPhoneNumber($toNumber);
-
-        // create phone call
-        $phoneCall = new VoicePhoneCall();
-        $phoneCall
-            ->setNumber($number)
-            ->setExternalNumber($toNumber)
-            ->setPerson($person)
-            ->setType(VoicePhoneCall::DIRECTION_OUTBOUND)
-            ->setData([])
-        ;
+        $phoneCall = $form->getData();
 
         $em = $this->getManager();
         $em->persist($phoneCall);
