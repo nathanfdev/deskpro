@@ -83,7 +83,7 @@ class DeskproDeliveryHandler extends AbstractDeliveryHandler
             return;
         }
 
-        $channel = $message->getTarget();
+        $channel = 'private-'.$message->getTarget();
         if ($message instanceof ActionAlert && $message->isBroadcast()) {
             $channel = 'agent_public';
         }
