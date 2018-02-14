@@ -38,6 +38,7 @@ use Application\DeskPRO\Entity\Ticket;
 use Doctrine\Common\NotifyPropertyChanged;
 use Doctrine\ORM\Mapping as ORM;
 use JMS\Serializer\Annotation as JMS;
+use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
 use Symfony\Component\Validator\Constraints as Assert;
 
 /**
@@ -49,8 +50,11 @@ use Symfony\Component\Validator\Constraints as Assert;
  *     @ORM\UniqueConstraint(name="ticket_to_feedback_unique", columns={"ticket_id", "feedback_id"})
  * })
  *
- * @JMS\ExclusionPolicy("ALL")
  * @ORM\ChangeTrackingPolicy("NOTIFY")
+ *
+ * @JMS\ExclusionPolicy("ALL")
+ *
+ * @UniqueEntity(fields={"ticket", "feedback"}, errorPath="feedback")
  */
 class TicketToFeedback implements EntityInterface, NotifyPropertyChanged
 {
@@ -63,6 +67,9 @@ class TicketToFeedback implements EntityInterface, NotifyPropertyChanged
      * @ORM\Column(type="integer")
      * @ORM\GeneratedValue()
      *
+     * @JMS\Expose()
+     * @JMS\Type("integer")
+     *
      * @var int
      */
     protected $id;
@@ -72,6 +79,9 @@ class TicketToFeedback implements EntityInterface, NotifyPropertyChanged
      * @ORM\JoinColumn(name="ticket_id", referencedColumnName="id", onDelete="CASCADE", nullable=false)
      *
      * @Assert\NotNull()
+     *
+     * @JMS\Expose()
+     * @JMS\Type("entity<Application\DeskPRO\Entity\Ticket>")
      *
      * @var Ticket
      */
@@ -83,6 +93,9 @@ class TicketToFeedback implements EntityInterface, NotifyPropertyChanged
      *
      * @Assert\NotNull()
      *
+     * @JMS\Expose()
+     * @JMS\Type("entity<Application\DeskPRO\Entity\Feedback>")
+     *
      * @var Feedback
      */
     protected $feedback;
@@ -91,12 +104,18 @@ class TicketToFeedback implements EntityInterface, NotifyPropertyChanged
      * @ORM\ManyToOne(targetEntity="Application\DeskPRO\Entity\Person")
      * @ORM\JoinColumn(name="person_id", referencedColumnName="id", onDelete="SET NULL", nullable=true)
      *
+     * @JMS\Expose()
+     * @JMS\Type("entity<Application\DeskPRO\Entity\Person>")
+     *
      * @var Person
      */
     protected $person;
 
     /**
      * @ORM\Column(name="date_created", type="datetime")
+     *
+     * @JMS\Expose()
+     * @JMS\Type("DateTime")
      *
      * @var \DateTime
      */
