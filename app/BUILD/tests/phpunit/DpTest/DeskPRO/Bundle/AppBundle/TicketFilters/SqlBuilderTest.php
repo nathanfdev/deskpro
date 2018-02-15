@@ -106,6 +106,34 @@ class SqlBuilderTest extends ApiTestCase
         );
     }
 
+    public function test_with_rollup()
+    {
+        $qb = new SqlBuilder($this->getContainer()->get('database_connection'));
+        $qb->from('tickets', 't');
+        $qb->select('COUNT(*)');
+        $part = new SqlCondition();
+        $part->setParam('foo', 'bar');
+        $part->setWhere('{from}.foo = :foo');
+
+        $qb->addQueryCondition($part);
+        $qb->addGroupBy('t.agent_id');
+        $qb->addGroupBy('t.department_id');
+        $qb->enableWithRollup();
+        $qb->setMaxResults(10);
+        $sql = $qb->getSQL();
+
+        $this->assertEquals(
+            $this->normalizeForCmp('
+                SELECT COUNT(*)
+                FROM tickets t
+                WHERE t.foo = :c0
+                GROUP BY t.agent_id, t.department_id WITH ROLLUP
+                LIMIT 10
+             '),
+            $this->normalizeForCmp($sql)
+        );
+    }
+
     private function normalizeForCmp($sql)
     {
         $sql = str_replace(['(', ')'], [' ( ', ' ) '], $sql);
