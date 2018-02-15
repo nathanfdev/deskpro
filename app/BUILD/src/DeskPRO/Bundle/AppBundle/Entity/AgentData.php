@@ -195,6 +195,16 @@ class AgentData implements EntityInterface, NotifyPropertyChanged
     private $forwardingNumber;
 
     /**
+     * @ORM\Column(name="forwarding_number_type", type="string", length=50, nullable=true)
+     *
+     * @JMS\Expose()
+     * @JMS\Type("string")
+     *
+     * @var string
+     */
+    private $forwardingNumberType;
+
+    /**
      * @return int
      */
     public function getId()
@@ -440,8 +450,26 @@ class AgentData implements EntityInterface, NotifyPropertyChanged
      */
     public function setForwardingNumber($forwardingNumber)
     {
+        if ($forwardingNumber) {
+            if (preg_match('/^sip:/', $forwardingNumber)) {
+                $this->setModelField('forwardingNumberType', VoicePhoneCall::EXTERNAL_NUMBER_TYPE_SIP);
+            } else {
+                $this->setModelField('forwardingNumberType', VoicePhoneCall::EXTERNAL_NUMBER_TYPE_PHONE);
+            }
+        } else {
+            $this->setModelField('forwardingNumberType', '');
+        }
+
         $this->setModelField('forwardingNumber', $forwardingNumber);
 
         return $this;
+    }
+
+    /**
+     * @return string
+     */
+    public function getForwardingNumberType()
+    {
+        return $this->forwardingNumberType;
     }
 }

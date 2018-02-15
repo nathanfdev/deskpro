@@ -53,6 +53,9 @@ class VoicePhoneCall implements EntityInterface, NotifyPropertyChanged
 {
     use NotifyPropertyChangedTrait;
 
+    const EXTERNAL_NUMBER_TYPE_PHONE = 'phone';
+    const EXTERNAL_NUMBER_TYPE_SIP   = 'sip';
+
     const STATUS_PENDING       = 'pending';
     const STATUS_COLD_TRANSFER = 'cold_transfer';
     const STATUS_ACTIVE        = 'active';
@@ -128,6 +131,15 @@ class VoicePhoneCall implements EntityInterface, NotifyPropertyChanged
      * @var string
      */
     private $externalNumber;
+
+    /**
+     * @ORM\Column(name="external_number_type", type="string", length=50, nullable=false)
+     *
+     * @Assert\NotBlank()
+     *
+     * @var string
+     */
+    private $externalNumberType;
 
     /**
      * @ORM\ManyToOne(targetEntity="Application\DeskPRO\Entity\Person")
@@ -321,15 +333,29 @@ class VoicePhoneCall implements EntityInterface, NotifyPropertyChanged
     }
 
     /**
-     * @param string $from
+     * @param string $number
      *
      * @return $this
      */
-    public function setExternalNumber($from)
+    public function setExternalNumber($number)
     {
-        $this->setModelField('externalNumber', $from);
+        if (preg_match('/^sip:/', $number)) {
+            $this->setModelField('externalNumberType', self::EXTERNAL_NUMBER_TYPE_SIP);
+        } else {
+            $this->setModelField('externalNumberType', self::EXTERNAL_NUMBER_TYPE_PHONE);
+        }
+
+        $this->setModelField('externalNumber', $number);
 
         return $this;
+    }
+
+    /**
+     * @return string
+     */
+    public function getExternalNumberType()
+    {
+        return $this->externalNumberType;
     }
 
     /**

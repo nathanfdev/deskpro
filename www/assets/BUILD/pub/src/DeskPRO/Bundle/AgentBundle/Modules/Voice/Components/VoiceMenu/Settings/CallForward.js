@@ -16,18 +16,27 @@ class CallForward extends BaseForm {
     super.componentDidMount();
 
     const $checkbox = $('.toggle', this.node);
-    const $phone = $('input[type=text]', this.node);
-
     $checkbox.on('click', () => setTimeout(this.onSubmit, 1));
-    $phone.on('blur', () => setTimeout(this.onSubmit, 1));
-    $phone.on('keydown', (event) => {
-      const code = event.keyCode || event.which;
 
-      if (code === 13) {
-        event.preventDefault();
-        setTimeout(this.onSubmit, 1);
-      }
-    });
+    const initPhoneCallbacks = () => {
+      setTimeout(() => {
+        const $phone = $('input[type=text]', this.node);
+        $phone.on('blur', () => setTimeout(this.onSubmit, 1));
+        $phone.on('keydown', (event) => {
+          const code = event.keyCode || event.which;
+
+          if (code === 13) {
+            event.preventDefault();
+            setTimeout(this.onSubmit, 1);
+          }
+        });
+      }, 1);
+    };
+
+    const $sipCheckbox = $('.voice-sip-number-mode', this.node);
+    $sipCheckbox.on('click', initPhoneCallbacks);
+
+    initPhoneCallbacks();
   }
 
   getDefaultState() {
