@@ -29,6 +29,8 @@
 namespace DeskPRO\Bundle\ApiBundle\Controller\Tickets;
 
 use DeskPRO\Bundle\ApiBundle\ApiDoc\Annotation\ApiDoc;
+use DeskPRO\Bundle\ApiBundle\Traits\Tickets\TicketAwarePersistModelTrait;
+use DeskPRO\Bundle\ApiBundle\Traits\Tickets\TicketSaveTrait;
 use DeskPRO\Bundle\AppBundle\Annotation\ActionPermissions\Annotation\ApiModes;
 use DeskPRO\Bundle\AppBundle\Entity\TicketToFeedback;
 use DeskPRO\Bundle\AppBundle\Form\Type\Tickets\TicketToFeedbackType;
@@ -55,11 +57,14 @@ use Symfony\Component\HttpFoundation\Request;
  */
 class TicketToFeedbackController extends AbstractTicketsCrudSubController
 {
+    use TicketSaveTrait, TicketAwarePersistModelTrait;
+
     public static $entity         = TicketToFeedback::class;
     public static $type           = TicketToFeedbackType::class;
     public static $parentProperty = 'ticket';
     public static $listSort       = 'id';
     public static $listOrder      = 'asc';
+    public static $exposeOnly     = ['get', 'list', 'post', 'csv', 'count', 'delete'];
     public static $sortOptions    = [
         'date_created' => 'date_created',
         'date'         => 'date_created', // alias
@@ -76,5 +81,19 @@ class TicketToFeedbackController extends AbstractTicketsCrudSubController
         ]);
 
         return parent::handleForm($model, $request, $options);
+    }
+
+    /**
+     * {@inheritdoc}
+     *
+     * @param TicketToFeedback $entity
+     */
+    protected function deleteEntity($entity)
+    {
+        $ticket = $entity->getTicket();
+        $ticket->disableAutoTicketProcess();
+        $ticket->removeFeedbackLink($entity);
+
+        $this->saveTicket($ticket);
     }
 }

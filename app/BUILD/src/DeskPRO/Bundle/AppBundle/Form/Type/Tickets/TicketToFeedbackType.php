@@ -54,7 +54,8 @@ class TicketToFeedbackType extends AbstractType
             'required' => true,
         ]);
 
-        $builder->addEventListener(FormEvents::POST_SUBMIT, [$this, 'onPostSubmit']);
+        $builder->addEventListener(FormEvents::POST_SUBMIT, [$this, 'onSetRelations'], 50);
+        $builder->addEventListener(FormEvents::POST_SUBMIT, [$this, 'onPostSubmit'], 100);
     }
 
     /**
@@ -89,5 +90,21 @@ class TicketToFeedbackType extends AbstractType
 
         $data->setTicket($form->getConfig()->getOption('ticket'));
         $data->setPerson($form->getConfig()->getOption('person'));
+    }
+
+    /**
+     * @internal
+     *
+     * @param FormEvent $event
+     */
+    public function onSetRelations(FormEvent $event)
+    {
+        $form   = $event->getForm();
+        $data   = $event->getData();
+        $config = $form->getConfig();
+
+        /** @var Ticket $ticket */
+        $ticket = $config->getOption('ticket');
+        $ticket->addFeedbackLink($data);
     }
 }
