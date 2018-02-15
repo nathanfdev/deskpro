@@ -156,3 +156,21 @@ services:
     class: Aws\S3\S3Client
     factory: ['DeskPRO\Bundle\AppBundle\BlobStorage\AmazonS3ClientFactory', create]
     arguments: ["@settings_resolver"]
+
+  ticketfilters.matcher_factory:
+    class: DeskPRO\Bundle\AppBundle\TicketFilters\MatcherFactory
+    arguments: ["@service_container"]
+
+  ticketfilter.ticket_matcher:
+    class: DeskPRO\Bundle\AppBundle\TicketFilters\TicketMatcher
+    factory: "ticketfilters.matcher_factory:createMatcher"
+
+  ticketfilters.queryparser:
+    class: DeskPRO\Component\FilterQueryLanguage\Parser
+
+  ticketfilters.loader:
+    class: DeskPRO\Bundle\AppBundle\TicketFilters\Loader
+    arguments:
+      - "=@service('doctrine.orm.entity_manager').getRepository('DeskPRO\\Bundle\\AppBundle\\Entity\\TicketFilterSet')"
+      - "=@service('doctrine.orm.entity_manager').getRepository('Application\\DeskPRO\\EntityRepository\\Person')"
+      - "@ticketfilters.queryparser"

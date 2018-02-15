@@ -53,10 +53,10 @@ class FilterDifferTest extends \PHPUnit_Framework_TestCase
             new TicketBasicTermsHandler(),
         ]);
 
-        $agentContexts = FilterData::getAgents();
-        $filters       = FilterData::getFilters();
+        $agents  = FilterData::getAgents();
+        $filters = FilterData::getFilters();
 
-        $env = new DiffEnv($matcher, $agentContexts, $filters);
+        $env = new DiffEnv($matcher, $agents, $filters);
 
         return $env;
     }

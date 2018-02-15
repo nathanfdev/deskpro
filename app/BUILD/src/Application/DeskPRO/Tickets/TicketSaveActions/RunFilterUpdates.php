@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2017, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2018, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -38,6 +38,10 @@ use Application\DeskPRO\DependencyInjection\DeskproContainer;
 use Application\DeskPRO\Entity\Person;
 use Application\DeskPRO\Entity\Ticket;
 use Application\DeskPRO\Tickets\ExecutorContextInterface;
+use DeskPRO\Bundle\AppBundle\TicketFilters\Diff\DiffEnv;
+use DeskPRO\Bundle\AppBundle\TicketFilters\Diff\FilterDiffer;
+use DeskPRO\Bundle\AppBundle\TicketFilters\Diff\TicketChange;
+use DeskPRO\Bundle\AppBundle\TicketFilters\Loader;
 use Doctrine\ORM\EntityManager;
 
 /**
@@ -56,12 +60,18 @@ class RunFilterUpdates implements TicketSaveActionInterface, ErrorCheckedInterfa
     private $em;
 
     /**
+     * @var \DeskPRO\Bundle\AppBundle\Notification\NotificationEventManager
+     */
+    private $eventManager;
+
+    /**
      * @param DeskproContainer $container
      */
     public function __construct(DeskproContainer $container)
     {
-        $this->container = $container;
-        $this->em        = $this->container->get('doctrine.orm.default_entity_manager');
+        $this->container    = $container;
+        $this->em           = $this->container->get('doctrine.orm.default_entity_manager');
+        $this->eventManager = $container->get('deskpro.notification.event_manager');
     }
 
     /**
@@ -76,11 +86,67 @@ class RunFilterUpdates implements TicketSaveActionInterface, ErrorCheckedInterfa
             return;
         }
 
+        if ($this->container->get('deskpro.feature_flags')->hasBeta('new_filters')) {
+            $this->processTicketNewFilters($ticket, $context);
+
+            return;
+        }
+
         /** @var \Application\DeskPRO\EntityRepository\Person $personRepo */
         $personRepo     = $this->em->getRepository(Person::class);
         $onlineAgentIds = $personRepo->getActiveAgents(true);
 
         $detector = $this->container->getTicketFilterChangeDetector();
         $detector->getFilterChangeSet($ticket, $context, $onlineAgentIds)->getListUpdateClientMessages($onlineAgentIds);
+    }
+
+    private function processTicketNewFilters(Ticket $ticket, ExecutorContextInterface $context)
+    {
+        $loader  = $this->container->get('ticketfilters.loader');
+        $matcher = $this->container->get('ticketfilters.ticket_matcher');
+        $diffEnv = new DiffEnv($matcher, $loader->getAgents(), $loader->getFilters());
+        $differ  = new FilterDiffer($diffEnv);
+
+        list($ticketA, $ticketB) = $ticket->getStateChangeRecorder()->getBeforeAfterModels();
+
+        $ticketChange = new TicketChange($ticketA, $ticketB);
+        $filterOps    = $differ->getFilterChangeOperations($ticketChange);
+
+        $eventOps = [];
+        foreach ($filterOps as $op) {
+            $add = $op->getAddAgentIds();
+            $del = $op->getDelAgentIds();
+
+            if ($add) {
+                $eventOps[] = [
+                    'op'        => 'add',
+                    'filter_id' => $op->getFilterId(),
+                    'targets'   => $add,
+                    'version'   => '2',
+                ];
+            }
+            if ($del) {
+                $eventOps[] = [
+                    'op'        => 'add',
+                    'filter_id' => $op->getFilterId(),
+                    'targets'   => $add,
+                    'version'   => '2',
+                ];
+            }
+        }
+
+        if ($eventOps) {
+            $this->eventDispatcher->dispatch(
+                TicketUpdatedEvent::EVENT_NAME,
+                new TicketUpdatedEvent(
+                    'agent.filter-update',
+                    [
+                        'ticket_id'  => $ticket->getId(),
+                        'operations' => $eventOps,
+                    ]
+                )
+            );
+            $this->eventManager->deliver(true);
+        }
     }
 }

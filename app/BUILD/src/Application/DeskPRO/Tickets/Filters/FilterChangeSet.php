@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2017, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2018, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -156,12 +156,12 @@ class FilterChangeSet
      */
     public function getListUpdateClientMessages(array $onlineAgentsIds)
     {
+        $ticketId   = $this->ticket->getId();
         $operations = [];
 
         foreach ($this->changed_filters as $filter_change) {
             $filter = $filter_change->getFilter();
 
-            $ticketId = $this->ticket->getId();
             $filterId = $filter['id'];
 
             $addedTargets = array_values(array_map(
@@ -191,7 +191,7 @@ class FilterChangeSet
                     'op'        => 'del',
                     'filter_id' => $filterId,
                     'targets'   => $removedTargets,
-            ];
+                ];
             }
         }
 
