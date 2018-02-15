@@ -31,6 +31,7 @@ namespace DpTest\Bundle\AppBundle\TicketFilters;
 use DeskPRO\Bundle\AppBundle\TicketFilters\Context;
 use DeskPRO\Bundle\AppBundle\TicketFilters\Model\Agent;
 use DeskPRO\Bundle\AppBundle\TicketFilters\Terms\TicketBasicTermsHandler;
+use DeskPRO\Bundle\AppBundle\TicketFilters\TicketSearchParams;
 use DeskPRO\Bundle\AppBundle\TicketFilters\TicketSqlMatcher;
 use DeskPRO\Bundle\AppBundle\TicketFilters\ValueResolver;
 use DeskPRO\Component\FilterQueryLanguage\Parser;
@@ -118,7 +119,7 @@ class TicketSqlMatcherTest extends \PHPUnit_Framework_TestCase
         );
     }
 
-    public function test_builtin_awaiting_Agent()
+    public function test_builtin_awaiting_agent()
     {
         $this->assertEqualQuery(
             'ticket.status = \'awaiting_agent\'',
@@ -127,14 +128,97 @@ class TicketSqlMatcherTest extends \PHPUnit_Framework_TestCase
         );
     }
 
-    /**
-     * @param string $fql
-     * @param string $expectedSql
-     * @param array  $expectedParams
-     */
-    private function assertEqualQuery($fql, $expectedSql, $expectedParams = [])
+    public function test_group_by()
     {
-        $qb = $this->queryFromFql($fql);
+        $params = new TicketSearchParams();
+        $params->groupBy(TicketSearchParams::GROUP_AGENT);
+        $this->assertEqualQuery(
+            'ticket.status = \'awaiting_agent\'',
+            'SELECT COUNT(*) FROM tickets_search_active tickets WHERE tickets.status = :c0 GROUP BY tickets.agent_id',
+            ['c0' => 'awaiting_agent'],
+            $params
+        );
+    }
+
+    public function test_group_by_two()
+    {
+        $params = new TicketSearchParams();
+        $params->groupBy(TicketSearchParams::GROUP_SLA_SEVERITY);
+        $params->groupBy(TicketSearchParams::GROUP_AGENT);
+        $this->assertEqualQuery(
+            'ticket.status = \'awaiting_agent\'',
+            'SELECT 
+                MAX (FIELD(grouping0.sla_status, \'ok\', \'warning\', \'fail\' ) ) AS group_field0
+            FROM tickets_search_active tickets
+            LEFT JOIN ticket_slas grouping0 ON grouping0.ticket_id = tickets.id
+            WHERE tickets.status = :c0
+            GROUP BY group_field, tickets.agent_id',
+            ['c0' => 'awaiting_agent'],
+            $params
+        );
+    }
+
+    public function test_order_by()
+    {
+        $params = new TicketSearchParams();
+        $params->orderBy(TicketSearchParams::ORDER_DATE_CREATED);
+        $this->assertEqualIdQuery(
+            'ticket.status = \'awaiting_agent\'',
+            'SELECT tickets.id FROM tickets_search_active tickets WHERE tickets.status = :c0 ORDER BY tickets.date_created ASC',
+            ['c0' => 'awaiting_agent'],
+            $params
+        );
+    }
+
+    public function test_order_by_two()
+    {
+        $params = new TicketSearchParams();
+        $params->orderBy(TicketSearchParams::ORDER_URGENCY, 'DESC');
+        $params->orderBy(TicketSearchParams::ORDER_DATE_CREATED, 'ASC');
+        $this->assertEqualIdQuery(
+            'ticket.status = \'awaiting_agent\'',
+            'SELECT tickets.id FROM tickets_search_active tickets WHERE tickets.status = :c0 ORDER BY tickets.urgency DESC, tickets.date_created ASC',
+            ['c0' => 'awaiting_agent'],
+            $params
+        );
+    }
+
+    public function test_subfilter_by()
+    {
+        $params = new TicketSearchParams();
+        $params->subFilterBy(TicketSearchParams::GROUP_AGENT, 5);
+        $this->assertEqualQuery(
+            'ticket.status = \'awaiting_agent\'',
+            'SELECT COUNT(*) FROM tickets_search_active tickets
+            WHERE (tickets.status = :c0) AND (tickets.agent_id = :subfilterval0)',
+            ['c0' => 'awaiting_agent', 'subfilterval0' => 5],
+            $params
+        );
+    }
+
+    public function test_subfilter_by_two()
+    {
+        $params = new TicketSearchParams();
+        $params->subFilterBy(TicketSearchParams::GROUP_AGENT, 5);
+        $params->subFilterBy(TicketSearchParams::GROUP_DEPARTMENT, 6);
+        $this->assertEqualQuery(
+            'ticket.status = \'awaiting_agent\'',
+            'SELECT COUNT(*) FROM tickets_search_active tickets
+            WHERE (tickets.status = :c0) AND (tickets.agent_id = :subfilterval0) AND (tickets.department_id = :subfilterval1)',
+            ['c0' => 'awaiting_agent', 'subfilterval0' => 5, 'subfilterval1' => 6],
+            $params
+        );
+    }
+
+    /**
+     * @param string             $fql
+     * @param string             $expectedSql
+     * @param array              $expectedParams
+     * @param TicketSearchParams $params
+     */
+    private function assertEqualQuery($fql, $expectedSql, $expectedParams = [], TicketSearchParams $params = null)
+    {
+        $qb = $this->queryFromFql($fql, $params);
 
         // the sql compiler gives placeholders descriptive names like :c12_fieldname
         // this can help debugging queries manually, but is a bit of a pain
@@ -157,15 +241,57 @@ class TicketSqlMatcherTest extends \PHPUnit_Framework_TestCase
     }
 
     /**
-     * @param string $fql
+     * @param string             $fql
+     * @param TicketSearchParams $params
      *
      * @return \DeskPRO\Bundle\AppBundle\TicketFilters\SqlBuilder\SqlBuilder
      */
-    private function queryFromFql($fql)
+    private function queryFromFql($fql, TicketSearchParams $params = null)
     {
         $qb = $this->matcher->getCountQueryBuilder(
             $this->parseFql($fql),
-            $this->matcherContext
+            $this->matcherContext,
+            $params
+        );
+
+        return $qb;
+    }
+
+    /**
+     * @param string             $fql
+     * @param string             $expectedSql
+     * @param array              $expectedParams
+     * @param TicketSearchParams $params
+     */
+    private function assertEqualIdQuery($fql, $expectedSql, $expectedParams = [], TicketSearchParams $params = null)
+    {
+        $qb = $this->idsQueryFromFql($fql, $params);
+
+        $expectedSql = $this->normalizeForCmp($expectedSql);
+        $realSql     = $this->normalizeForCmp($qb->getSQL());
+
+        $realParams = [];
+        foreach ($qb->getParameters() as $name => $val) {
+            $name              = preg_replace('#_.*?$#', '', $name);
+            $realParams[$name] = $val;
+        }
+
+        $this->assertEquals($expectedSql, $realSql);
+        $this->assertEquals($expectedParams, $realParams);
+    }
+
+    /**
+     * @param string             $fql
+     * @param TicketSearchParams $params
+     *
+     * @return \DeskPRO\Bundle\AppBundle\TicketFilters\SqlBuilder\SqlBuilder
+     */
+    private function idsQueryFromFql($fql, TicketSearchParams $params = null)
+    {
+        $qb = $this->matcher->getIdsQueryBuilder(
+            $this->parseFql($fql),
+            $this->matcherContext,
+            $params
         );
 
         return $qb;

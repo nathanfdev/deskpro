@@ -81,29 +81,45 @@ class TicketSqlMatcher extends AbstractMatcher
     }
 
     /**
-     * @param Query   $query
-     * @param Context $context
+     * @param Query              $query
+     * @param Context            $context
+     * @param TicketSearchParams $params
      *
      * @return SqlBuilder
      */
-    public function getCountQueryBuilder(Query $query, Context $context)
+    public function getCountQueryBuilder(Query $query, Context $context, TicketSearchParams $params = null)
     {
         $qb = $this->buildQueryBuilder($query, $context);
         $qb->select('COUNT(*)');
+
+        if ($params) {
+            $this->addGroupBy($qb, $params->getGroupFields());
+            $this->addSubFilterBy($qb, $params->getSubFilterFields());
+        }
 
         return $qb;
     }
 
     /**
-     * @param Query   $query
-     * @param Context $context
+     * @param Query              $query
+     * @param Context            $context
+     * @param TicketSearchParams $params
      *
      * @return SqlBuilder
      */
-    public function getIdsQueryBuilder(Query $query, Context $context)
+    public function getIdsQueryBuilder(Query $query, Context $context, TicketSearchParams $params = null)
     {
         $qb = $this->buildQueryBuilder($query, $context);
         $qb->select('tickets.id');
+
+        if ($params) {
+            $this->addOrderBy($qb, $params->getOrderFields());
+            $this->addSubFilterBy($qb, $params->getSubFilterFields());
+        }
+
+        if (!$params || !$params->hasOrderFields()) {
+            $qb->orderBy('tickets.id', 'DESC');
+        }
 
         return $qb;
     }
@@ -139,6 +155,170 @@ class TicketSqlMatcher extends AbstractMatcher
         }
 
         return $qb;
+    }
+
+    /**
+     * @param SqlBuilder $qb
+     * @param array      $groupFields
+     */
+    private function addGroupBy(SqlBuilder $qb, array $groupFields)
+    {
+        if (empty($groupFields)) {
+            return;
+        }
+
+        foreach ($groupFields as $idx => $fieldId) {
+            $joinId = 'grouping'.$idx;
+
+            switch ($fieldId) {
+                case TicketSearchParams::GROUP_SLA_SEVERITY:
+                    $qb->select("MAX(FIELD($joinId.sla_status, 'ok', 'warning', 'fail')) AS group_field$idx");
+                    $qb->leftJoin('tickets', 'ticket_slas', $joinId, "$joinId.ticket_id = tickets.id");
+                    $qb->addGroupBy('group_field');
+                    break;
+
+                case TicketSearchParams::GROUP_AGENT:
+                    $qb->addGroupBy('tickets.agent_id');
+                    break;
+
+                case TicketSearchParams::GROUP_AGENT_TEAM:
+                    $qb->addGroupBy('tickets.agent_team_id');
+                    break;
+
+                case TicketSearchParams::GROUP_DEPARTMENT:
+                    $qb->addGroupBy('tickets.department_id');
+                    break;
+
+                case TicketSearchParams::GROUP_WORKFLOW:
+                    $qb->addGroupBy('tickets.workflow_id');
+                    break;
+
+                case TicketSearchParams::GROUP_PRIORITY:
+                    $qb->addGroupBy('tickets.priority_id');
+                    break;
+
+                case TicketSearchParams::GROUP_CATEGORY:
+                    $qb->addGroupBy('tickets.category_id');
+                    break;
+
+                case TicketSearchParams::GROUP_PRODUCT:
+                    $qb->addGroupBy('tickets.product_id');
+                    break;
+
+                case TicketSearchParams::GROUP_LANGUAGE:
+                    $qb->addGroupBy('tickets.language_id');
+                    break;
+
+                default:
+                    throw new \InvalidArgumentException();
+            }
+        }
+    }
+
+    /**
+     * @param SqlBuilder $qb
+     * @param array      $groupFields
+     */
+    private function addSubFilterBy(SqlBuilder $qb, array $subFilterFields)
+    {
+        if (empty($subFilterFields)) {
+            return;
+        }
+
+        foreach ($subFilterFields as $idx => $subFilterInfo) {
+            list($fieldId, $value) = $subFilterInfo;
+
+            $joinId  = 'subfilter'.$idx;
+            $placeId = 'subfilterval'.$idx;
+
+            switch ($fieldId) {
+                case TicketSearchParams::GROUP_SLA_SEVERITY:
+                    $qb->leftJoin('tickets', 'ticket_slas', $joinId, "$joinId.ticket_id = tickets.id");
+                    $qb->andWhere("$joinId.sla_status = :$placeId")->setParameter($placeId, $value);
+                    break;
+
+                case TicketSearchParams::GROUP_AGENT:
+                    $qb->andWhere("tickets.agent_id = :$placeId")->setParameter($placeId, $value);
+                    break;
+
+                case TicketSearchParams::GROUP_AGENT_TEAM:
+                    $qb->andWhere("tickets.agent_team_id = :$placeId")->setParameter($placeId, $value);
+                    break;
+
+                case TicketSearchParams::GROUP_DEPARTMENT:
+                    $qb->andWhere("tickets.department_id = :$placeId")->setParameter($placeId, $value);
+                    break;
+
+                case TicketSearchParams::GROUP_WORKFLOW:
+                    $qb->andWhere("tickets.workflow_id = :$placeId")->setParameter($placeId, $value);
+                    break;
+
+                case TicketSearchParams::GROUP_PRIORITY:
+                    $qb->andWhere("tickets.priority_id = :$placeId")->setParameter($placeId, $value);
+                    break;
+
+                case TicketSearchParams::GROUP_CATEGORY:
+                    $qb->andWhere("tickets.category_id = :$placeId")->setParameter($placeId, $value);
+                    break;
+
+                case TicketSearchParams::GROUP_PRODUCT:
+                    $qb->andWhere("tickets.product_id = :$placeId")->setParameter($placeId, $value);
+                    break;
+
+                case TicketSearchParams::GROUP_LANGUAGE:
+                    $qb->andWhere("tickets.language_id = :$placeId")->setParameter($placeId, $value);
+                    break;
+
+                default:
+                    throw new \InvalidArgumentException();
+            }
+        }
+    }
+
+    private function addOrderBy(SqlBuilder $qb, array $orderFields)
+    {
+        if (empty($orderFields)) {
+            return;
+        }
+
+        foreach ($orderFields as $orderInfo) {
+            list($fieldId, $order) = $orderInfo;
+
+            switch ($fieldId) {
+                case TicketSearchParams::ORDER_ID:
+                    $qb->addOrderBy('tickets.id', $order);
+                    break;
+                case TicketSearchParams::ORDER_URGENCY:
+                    $qb->addOrderBy('tickets.urgency', $order);
+                    break;
+                case TicketSearchParams::ORDER_PRIORITY:
+                    $qb->addOrderBy('tickets.priority', $order);
+                    break;
+                case TicketSearchParams::ORDER_DATE_CREATED:
+                    $qb->addOrderBy('tickets.date_created', $order);
+                    break;
+                case TicketSearchParams::ORDER_DATE_RESOLVED:
+                    $qb->addOrderBy('tickets.date_resolved', $order);
+                    break;
+                case TicketSearchParams::ORDER_DATE_ARCHIVED:
+                    $qb->addOrderBy('tickets.date_archived', $order);
+                    break;
+                case TicketSearchParams::ORDER_DATE_LAST_USER_REPLY:
+                    $qb->addOrderBy('tickets.date_last_user_reply', $order);
+                    break;
+                case TicketSearchParams::ORDER_DATE_LAST_AGENT_REPLY:
+                    $qb->addOrderBy('tickets.date_last_agent_reply', $order);
+                    break;
+                case TicketSearchParams::ORDER_DATE_LAST_REPLY:
+                    $qb->addOrderBy('tickets.date_last_reply', $order);
+                    break;
+                case TicketSearchParams::ORDER_DATE_USER_WAITING:
+                    $qb->addOrderBy('tickets.date_user_waiting', $order);
+                    break;
+                default:
+                    throw new \InvalidArgumentException();
+            }
+        }
     }
 
     /**

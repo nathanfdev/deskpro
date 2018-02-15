@@ -35,6 +35,7 @@ use DeskPRO\Bundle\AppBundle\Annotation\ActionPermissions\Annotation\ApiModes;
 use DeskPRO\Bundle\AppBundle\CountBadge\Count;
 use DeskPRO\Bundle\AppBundle\Entity\TicketFilter;
 use DeskPRO\Bundle\AppBundle\TicketFilters\Context;
+use DeskPRO\Bundle\AppBundle\TicketFilters\TicketSearchParams;
 use FOS\RestBundle\Controller\Annotations as Rest;
 use FOS\RestBundle\View\View;
 use Symfony\Component\HttpFoundation\Request;
@@ -60,14 +61,14 @@ class TicketFiltersController extends CrudController
     /**
      * @ApiDoc(
      *     description="Get filter's tickets. See /tickets endpoint docs for the parameter details.",
-     *     filters={
+     *     requirements={
      *         {
-     *             "name"="sort",
-     *             "description"="tickets list sort",
-     *             "pattern"="id|urgency|date_created|date_last_agent_reply|date_last_user_reply|date_last_reply|date_user_waiting|total_user_waiting",
+     *             "name"="order_by",
+     *             "requirement"=".+",
+     *             "description"="Specify a field to order by, and optionally direction. Example: ticket.date_created:desc",
      *             "dataType"="string",
-     *         },
-     *         {"name"="order", "description"="tickets list sort order", "dataType"="string", "pattern"="asc|desc"}
+     *             "required"=false
+     *         }
      *     },
      *     statusCodes={
      *         200="Success"
@@ -85,8 +86,12 @@ class TicketFiltersController extends CrudController
     public function getFilterTicketsAction(Request $request, TicketFilter $ticketFilter)
     {
         // ordering
-        $orderDir = $request->get('order_dir') === 'asc' ? 'ASC' : 'DESC';
-        $orderBy  = $request->get('order_by') ? 'tickets.'.$request->get('order_by') : 'tickets.id';
+        $orderBy  = $request->get('order_by') ? $request->get('order_by') : null;
+        $orderDir = 'ASC';
+
+        if ($orderBy && strpos($orderBy, ':') !== false) {
+            list($orderBy, $orderDir) = explode(':', $orderBy);
+        }
 
         $offset     = $request->query->getInt('offset');
         $maxPerPage = $request->query->getInt('count', self::$listPerPage);
@@ -100,6 +105,11 @@ class TicketFiltersController extends CrudController
         $filter  = $loader->getFilterById($ticketFilter->getId());
         if (!$filter) {
             throw $this->createNotFoundException('failed to get filter model');
+        }
+
+        $searchParams = new TicketSearchParams();
+        if ($orderBy) {
+            $searchParams->orderBy($orderBy, $orderDir);
         }
 
         $searcher = $this->container->get('ticketfilter.ticket_sql_searcher');
@@ -133,7 +143,7 @@ class TicketFiltersController extends CrudController
      *         {
      *             "name"="group_by",
      *             "requirement"=".+",
-     *             "description"="the grouping order you want",
+     *             "description"="the grouping you want",
      *             "dataType"="string",
      *             "required"=false
      *         },
@@ -166,9 +176,14 @@ class TicketFiltersController extends CrudController
             throw $this->createNotFoundException('failed to get filter model');
         }
 
+        $searchParams = new TicketSearchParams();
+        if ($groupBy) {
+            $searchParams->groupBy($groupBy);
+        }
+
         $searcher = $this->container->get('ticketfilter.ticket_sql_searcher');
         $countInt = $searcher
-            ->getCountQueryBuilder($filter->query, $context)
+            ->getCountQueryBuilder($filter->query, $context, $searchParams)
             ->execute()
             ->fetchColumn();
 
