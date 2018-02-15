@@ -29,6 +29,7 @@
 namespace DeskPRO\Bundle\AppBundle\Validator\Constraints;
 
 use Application\DeskPRO\Entity;
+use Egulias\EmailValidator\EmailValidator;
 use libphonenumber\NumberParseException;
 use libphonenumber\PhoneNumberUtil;
 use Orb\Util\PhoneNumbers;
@@ -66,6 +67,27 @@ class PhoneNumberValidator extends ConstraintValidator
 
         if (preg_match('/^sip:/', $checkValue)) {
             if (preg_match('/\s/', $checkValue)) {
+                $context
+                    ->buildViolation($constraint->invalidFormatMessage)
+                    ->setCode(PhoneNumber::INVALID_PHONE_NUMBER)
+                    ->addViolation()
+                ;
+            }
+
+            /** @var \Symfony\Component\Validator\Context\ExecutionContext $context */
+            $context = $this->context;
+            $email   = preg_replace('/^sip:/', '', $checkValue);
+
+            if (!$email) {
+                $context
+                    ->buildViolation($constraint->invalidFormatMessage)
+                    ->setCode(PhoneNumber::INVALID_PHONE_NUMBER)
+                    ->addViolation()
+                ;
+            }
+
+            $strictValidator = new EmailValidator();
+            if (!preg_match('/^.+\@\S+\.\S+$/', $email) || !$strictValidator->isValid($email, false, true)) {
                 $context
                     ->buildViolation($constraint->invalidFormatMessage)
                     ->setCode(PhoneNumber::INVALID_PHONE_NUMBER)
