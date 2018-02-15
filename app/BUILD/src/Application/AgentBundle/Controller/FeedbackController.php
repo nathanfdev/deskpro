@@ -234,6 +234,7 @@ class FeedbackController extends AbstractController
         $activeStatusCategories = $feedbackStatusCategoryRepository->getActiveCategories();
         $closedStatusCategories = $feedbackStatusCategoryRepository->getClosedCategories();
 
+        //@TODO: related entities fetching optimization
         $feedbackRepo     = $this->em->getRepository(TicketToFeedback::class);
         $ticketToFeedback = $feedbackRepo->findByFeedback($feedback);
 
