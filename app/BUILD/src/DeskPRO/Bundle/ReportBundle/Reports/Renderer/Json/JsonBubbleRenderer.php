@@ -62,13 +62,7 @@ class JsonBubbleRenderer extends AbstractJsonChartRenderer
         //initial output array
         $arrayOutput = [
             'dataProvider' => [],
-            'categoryAxis' => [
-                'gridPosition' => 'start',
-                'axisAlpha'    => 0,
-                'gridAlpha'    => 0,
-                'position'     => 'left',
-            ],
-            'valueAxes' => [
+            'valueAxes'    => [
                 [
                     'id'            => 'valueAxis-1',
                     'axisFrequency' => 1,
@@ -85,27 +79,23 @@ class JsonBubbleRenderer extends AbstractJsonChartRenderer
             'reflow'        => true,
             'autoMargins'   => true,
             'pullOutRadius' => 0,
-            'legend'        => [
-                'horizontalGap'    => 10,
-                'maxColumns'       => 1,
-                'position'         => 'right',
-                'useGraphSettings' => true,
-                'markerSize'       => 10,
-            ],
-            'categoryField' => 'category',
+            'legend'        => false,
             'exportConfig'  => false,
         ];
 
         $selectColumns = $metadata->getSelectColumns();
 
-        // this gonna be y axis
+        $groupYColumnTitleId = $groupXColumnTitleId = $groupYColumnId = $groupXColumnId = 0;
+        $columnYConfig       = $columnXConfig       = [];
+
+        // this gonna be y-axis
         $groupYColumns = $metadata->getGroupYColumns();
 
         if ($groupYColumns && $groupYColumns[0]) {
-            $columnConfig        = $groupYColumns[0];
-            $groupYColumnId      = $columnConfig['groupResultId'] - 1;
-            $groupYColumnTitleId = $columnConfig['resultId'] - 1;
-            $yAxis['title']      = $columnConfig['title'];
+            $columnYConfig       = $groupYColumns[0];
+            $groupYColumnId      = $columnYConfig['groupResultId'] ? $columnYConfig['groupResultId'] - 1 : $columnYConfig['resultId'];
+            $groupYColumnTitleId = $columnYConfig['resultId'] - 1;
+            $yAxis['title']      = $columnYConfig['title'];
             // collection unique values
             $hash = [];
             foreach ($rows as $row) {
@@ -118,10 +108,10 @@ class JsonBubbleRenderer extends AbstractJsonChartRenderer
         // this gonna be x-axis values
         $groupXColumns = $metadata->getGroupXColumns();
         if ($groupXColumns && $groupXColumns[0]) {
-            $columnConfig        = $groupXColumns[0];
-            $groupXColumnId      = $columnConfig['groupResultId'] - 1;
-            $groupXColumnTitleId = $columnConfig['resultId'] - 1;
-            $xAxis['title']      = $columnConfig['title'];
+            $columnXConfig       = $groupXColumns[0];
+            $groupXColumnId      = $columnXConfig['groupResultId'] ? $columnXConfig['groupResultId'] - 1 : $columnXConfig['resultId'];
+            $groupXColumnTitleId = $columnXConfig['resultId'] - 1;
+            $xAxis['title']      = $columnXConfig['title'];
             // collection unique values
             $hash = [];
             $min  = $max  = 0;
@@ -138,26 +128,40 @@ class JsonBubbleRenderer extends AbstractJsonChartRenderer
 
         $chartData = []; // actual data
         foreach ($rows as $row) {
-            $chartData[] = [
-                'value'  => $row[0],
-                'y'      => $row[4],
-                'x'      => $row[2],
-                'yTitle' => $row[$groupYColumnTitleId],
-                'xTitle' => $row[$groupXColumnTitleId],
-            ];
+            $dataPiece = [];
+            $values    = [];
+            foreach ($selectColumns as $i => $column) {
+                $values['value'.$i] = $this->getColumnValue($row, $column);
+            }
+            $dataPiece = array_merge($dataPiece, $values);
+
+            if ($groupYColumnId) {
+                $dataPiece['y'] = $row[$groupYColumnId];
+            }
+            if ($groupXColumnId) {
+                $dataPiece['x'] = $row[$groupXColumnId];
+            }
+
+            if ($groupXColumnTitleId) {
+                $dataPiece['xTitle'] = $row[$groupXColumnTitleId];
+            }
+            if ($groupYColumnTitleId) {
+                $dataPiece['yTitle'] = $row[$groupYColumnTitleId];
+            }
+            $chartData[] = $dataPiece;
         }
 
-        $balloonText = "<div style='margin:5px;'>%s:<b>[[xTitle]]</b><br>%s:<b>[[yTitle]]</b><br>%s:<b>[[value]]</b></div>";
+        $balloonText = "<div style='margin:5px;'>X:<b>[[xTitle]]</b><br>Y:<b>[[yTitle]]</b><br>%s:<b>[[value]]</b></div>";
         // bubbles config
         $graphs = [
             [
-                'balloonText' => sprintf($balloonText, 'X', 'Y', $selectColumns[0]['title']),
+                'balloonText' => sprintf($balloonText, $selectColumns[0]['title']),
                 'bullet'      => 'circle',
-                'id'          => 'AmGraph-1',
+                'id'          => 'BubbleGraph',
                 'lineAlpha'   => 0,
                 'lineColor'   => $this->randomColor(),
                 'fillAlphas'  => 0,
-                'valueField'  => 'value',
+                'valueField'  => 'value0',
                 'xField'      => 'x',
                 'yField'      => 'y',
             ],
