@@ -29,18 +29,13 @@
 namespace DeskPRO\Bundle\AppBundle\Validator\Constraints;
 
 use Application\DeskPRO\Entity;
-use Egulias\EmailValidator\EmailValidator;
-use libphonenumber\NumberParseException;
-use libphonenumber\PhoneNumberUtil;
-use Orb\Util\PhoneNumbers;
 use Symfony\Component\Validator\Constraint;
-use Symfony\Component\Validator\ConstraintValidator;
 use Symfony\Component\Validator\Exception\UnexpectedTypeException;
 
 /**
  * Class PhoneNumberValidator.
  */
-class PhoneNumberValidator extends ConstraintValidator
+class PhoneNumberValidator extends AbstractNumberValidator
 {
     /**
      * {@inheritdoc}
@@ -62,88 +57,6 @@ class PhoneNumberValidator extends ConstraintValidator
             throw new UnexpectedTypeException($value, implode(', ', ['string', PhoneNumber::class]));
         }
 
-        /** @var \Symfony\Component\Validator\Context\ExecutionContext $context */
-        $context = $this->context;
-
-        if (preg_match('/^sip:/', $checkValue)) {
-            if (preg_match('/\s/', $checkValue)) {
-                $context
-                    ->buildViolation($constraint->invalidFormatMessage)
-                    ->setCode(PhoneNumber::INVALID_PHONE_NUMBER)
-                    ->addViolation()
-                ;
-            }
-
-            /** @var \Symfony\Component\Validator\Context\ExecutionContext $context */
-            $context = $this->context;
-            $email   = preg_replace('/^sip:/', '', $checkValue);
-
-            if (!$email) {
-                $context
-                    ->buildViolation($constraint->invalidFormatMessage)
-                    ->setCode(PhoneNumber::INVALID_PHONE_NUMBER)
-                    ->addViolation()
-                ;
-            }
-
-            $strictValidator = new EmailValidator();
-            if (!preg_match('/^.+\@\S+\.\S+$/', $email) || !$strictValidator->isValid($email, false, true)) {
-                $context
-                    ->buildViolation($constraint->invalidFormatMessage)
-                    ->setCode(PhoneNumber::INVALID_PHONE_NUMBER)
-                    ->addViolation()
-                ;
-            }
-
-            return;
-        }
-
-        if (PhoneNumbers::looksEmpty($checkValue)) {
-            $context
-                ->buildViolation($constraint->invalidFormatMessage)
-                ->setCode(PhoneNumber::INVALID_PHONE_NUMBER)
-                ->addViolation()
-            ;
-
-            return;
-        }
-
-        try {
-            $number = PhoneNumberUtil::getInstance()->parse($checkValue, null);
-            if (!PhoneNumberUtil::getInstance()->isValidNumber($number)) {
-                $context
-                    ->buildViolation($constraint->invalidFormatMessage)
-                    ->setCode(PhoneNumber::INVALID_PHONE_NUMBER)
-                    ->addViolation()
-                ;
-            }
-        } catch (NumberParseException $e) {
-            switch ($e->getErrorType()) {
-                case NumberParseException::INVALID_COUNTRY_CODE:
-                    $context
-                        ->buildViolation($constraint->missingCountryCodeMessage)
-                        ->setCode(PhoneNumber::MISSING_COUNTRY_CODE)
-                        ->addViolation()
-                    ;
-                    break;
-                case NumberParseException::NOT_A_NUMBER:
-                case NumberParseException::TOO_SHORT_AFTER_IDD:
-                case NumberParseException::TOO_SHORT_NSN:
-                case NumberParseException::TOO_LONG:
-                default:
-                    $context
-                        ->buildViolation($constraint->invalidFormatMessage)
-                        ->setCode(PhoneNumber::INVALID_PHONE_NUMBER)
-                        ->addViolation()
-                    ;
-                    break;
-            }
-        } catch (\Exception $e) {
-            $context
-                ->buildViolation($constraint->invalidFormatMessage)
-                ->setCode(PhoneNumber::INVALID_PHONE_NUMBER)
-                ->addViolation()
-            ;
-        }
+        $this->validatePhoneNumber($checkValue, $constraint);
     }
 }

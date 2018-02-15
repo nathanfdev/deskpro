@@ -30,6 +30,7 @@ namespace DeskPRO\Bundle\AppBundle\Entity;
 
 use Application\DeskPRO\Entity\Blob;
 use Application\DeskPRO\Entity\Person;
+use DeskPRO\Bundle\AppBundle\Validator\Constraints as AppAssert;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\NotifyPropertyChanged;
 use Doctrine\ORM\Mapping as ORM;
@@ -120,6 +121,9 @@ class VoicePhoneCall implements EntityInterface, NotifyPropertyChanged
 
     /**
      * @ORM\Column(name="external_number", type="string", length=50)
+     *
+     * @Assert\NotBlank()
+     * @AppAssert\CallNumber()
      *
      * @var string
      */

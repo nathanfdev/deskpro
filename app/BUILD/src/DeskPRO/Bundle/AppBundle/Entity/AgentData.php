@@ -188,7 +188,7 @@ class AgentData implements EntityInterface, NotifyPropertyChanged
      * @JMS\Expose()
      * @JMS\Type("string")
      *
-     * @AppAssert\PhoneNumber()
+     * @AppAssert\CallNumber()
      *
      * @var string
      */

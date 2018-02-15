@@ -31,7 +31,6 @@ namespace DeskPRO\Bundle\AppBundle\Form\Type\Voice;
 use Application\DeskPRO\EntityRepository\Person as PersonRepository;
 use DeskPRO\Bundle\AppBundle\Entity\VoiceNumber;
 use DeskPRO\Bundle\AppBundle\Entity\VoicePhoneCall;
-use DeskPRO\Bundle\AppBundle\Validator\Constraints as AppAssert;
 use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
@@ -39,7 +38,6 @@ use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\Form\FormEvent;
 use Symfony\Component\Form\FormEvents;
 use Symfony\Component\OptionsResolver\OptionsResolver;
-use Symfony\Component\Validator\Constraints as Assert;
 
 /**
  * Class VoiceOutboundCallType.
@@ -70,16 +68,11 @@ class VoiceOutboundCallType extends AbstractType
             ->add('call_from', EntityType::class, [
                 'property_path' => 'number',
                 'class'         => VoiceNumber::class,
-                'constraints'   => [
-                    new Assert\NotNull(),
-                ],
+                'required'      => true,
             ])
             ->add('call_to', TextType::class, [
                 'property_path' => 'externalNumber',
-                'constraints'   => [
-                    new Assert\NotBlank(),
-                    new AppAssert\PhoneNumber(),
-                ],
+                'required'      => true,
             ])
         ;
 
