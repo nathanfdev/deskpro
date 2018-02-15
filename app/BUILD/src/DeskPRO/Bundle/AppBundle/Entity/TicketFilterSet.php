@@ -101,9 +101,9 @@ class TicketFilterSet implements EntityInterface, NotifyPropertyChanged
      * @ORM\OneToMany(
      *     targetEntity="DeskPRO\Bundle\AppBundle\Entity\TicketFilter",
      *     mappedBy="filterSet",
-     *     cascade={"remove"}
+     *     cascade={"persist", "remove"}
      * )
-     * @ORM\OrderBy({"display_order" = "ASC"})
+     * @ORM\OrderBy({"displayOrder" = "ASC"})
      *
      * @JMS\Expose()
      * @JMS\Type("collection<entity<DeskPRO\Bundle\AppBundle\Entity\TicketFilter>>")
@@ -196,6 +196,7 @@ class TicketFilterSet implements EntityInterface, NotifyPropertyChanged
     public function addFilter(TicketFilter $filter)
     {
         $this->filters->add($filter);
+        $this->setModelField('filters', $this->filters);
         $filter->setFilterSet($this);
 
         return $this;

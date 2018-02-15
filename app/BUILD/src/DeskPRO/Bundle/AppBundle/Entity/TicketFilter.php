@@ -191,7 +191,7 @@ class TicketFilter implements EntityInterface, NotifyPropertyChanged
      */
     public function setFilterSet(TicketFilterSet $filterSet)
     {
-        $this->setModelField('filterSeet', $filterSet);
+        $this->setModelField('filterSet', $filterSet);
 
         return $this;
     }

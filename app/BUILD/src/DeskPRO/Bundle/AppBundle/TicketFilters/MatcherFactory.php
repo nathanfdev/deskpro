@@ -31,7 +31,6 @@ namespace DeskPRO\Bundle\AppBundle\TicketFilters;
 use DeskPRO\Bundle\AppBundle\TicketFilters\Terms\TicketBasicTermsHandler;
 use DeskPRO\Bundle\AppBundle\TicketFilters\Terms\TicketDateTermsHandler;
 use DeskPRO\Bundle\AppBundle\TicketFilters\Terms\TicketSlaTermsHandler;
-use DpTest\Bundle\AppBundle\TicketFilters\TestValueResolver;
 use Symfony\Component\DependencyInjection\Container;
 
 class MatcherFactory
@@ -56,13 +55,31 @@ class MatcherFactory
      */
     public function createMatcher()
     {
-        $resolver = new TestValueResolver();
+        $resolver = new ValueResolver();
 
         $matcher = new TicketMatcher($resolver, [
             new TicketBasicTermsHandler(),
             new TicketSlaTermsHandler(),
             new TicketDateTermsHandler(),
         ]);
+
+        return $matcher;
+    }
+
+    /**
+     * @throws \Exception
+     *
+     * @return TicketSqlMatcher
+     */
+    public function createSqlMatcher()
+    {
+        $resolver = new ValueResolver();
+
+        $matcher = new TicketSqlMatcher($resolver, [
+            new TicketBasicTermsHandler(),
+            new TicketSlaTermsHandler(),
+            new TicketDateTermsHandler(),
+        ], $this->container->get('doctrine.dbal.read_search_connection'), TicketSqlMatcher::ACTIVE);
 
         return $matcher;
     }

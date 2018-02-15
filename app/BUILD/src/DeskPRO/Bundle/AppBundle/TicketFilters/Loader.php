@@ -120,6 +120,18 @@ class Loader
     }
 
     /**
+     * @param int $id
+     *
+     * @return null|Filter
+     */
+    public function getFilterById($id)
+    {
+        return ListUtils::first($this->getFilters(), function ($f) use ($id) {
+            return $f->id == $id;
+        });
+    }
+
+    /**
      * @return Agent[]
      */
     public function getAgents()
@@ -146,9 +158,9 @@ class Loader
 
             $agent->view_unassigned     = $agentEnt->hasPerm('agent_tickets.view_unassigned');
             $agent->view_assigned       = $agentEnt->hasPerm('agent_tickets.view_others');
-            $agent->allowed_departments = $agentEnt->getHelperManager('AgentPermissions')->getAllowedDepartments('tickets');
+            $agent->allowed_departments = $agentEnt->getHelper('AgentPermissions')->getAllowedDepartments('tickets');
 
-            if (empty($agentEnt->getHelperManager('AgentPermissions')->getDisallowedDepartments('tickets'))) {
+            if (empty($agentEnt->getHelper('AgentPermissions')->getDisallowedDepartments('tickets'))) {
                 $agent->all_departments_allowed = true;
             }
 
@@ -156,5 +168,17 @@ class Loader
         }
 
         return $this->agents;
+    }
+
+    /**
+     * @param int $id
+     *
+     * @return null|Agent
+     */
+    public function getAgentById($id)
+    {
+        return ListUtils::first($this->getAgents(), function ($a) use ($id) {
+            return $a->id == $id;
+        });
     }
 }

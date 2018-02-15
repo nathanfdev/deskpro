@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2017, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2018, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -37,6 +37,7 @@ use Application\DeskPRO\Entity\ApiKey;
 use DeskPRO\Bundle\AppBundle\Entity\ApiKeyAction;
 use DeskPRO\Bundle\AppBundle\Util\HttpClient;
 use GuzzleHttp\Exception\ClientException;
+use GuzzleHttp\Exception\RequestException;
 use GuzzleHttp\RequestOptions;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
@@ -247,6 +248,8 @@ class DevTestApiCommand extends \Symfony\Bundle\FrameworkBundle\Command\Containe
                 default:
                     return 1;
             }
+        } catch (RequestException $e) {
+            $response = $e->getResponse();
         } catch (ClientException $e) {
             $response = $e->getResponse();
         }

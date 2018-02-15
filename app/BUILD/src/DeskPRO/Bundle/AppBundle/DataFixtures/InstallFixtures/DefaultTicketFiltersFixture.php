@@ -60,28 +60,28 @@ class DefaultTicketFiltersFixture extends AbstractDpFixture
 
         $f = new TicketFilter();
         $f->setTitle('Tickets I Follow');
-        $f->setDisplayOrder(10);
+        $f->setDisplayOrder(20);
         $f->setQuery('ticket.status = \'awaiting_agent\' AND ticket.followers HAS $me');
         $set->addFilter($f);
         $manager->persist($f);
 
         $f = new TicketFilter();
         $f->setTitle('Assigned To Team');
-        $f->setDisplayOrder(10);
+        $f->setDisplayOrder(30);
         $f->setQuery('ticket.status = \'awaiting_agent\' AND ticket.agent_team IN $my_teams');
         $set->addFilter($f);
         $manager->persist($f);
 
         $f = new TicketFilter();
         $f->setTitle('Unassigned');
-        $f->setDisplayOrder(10);
+        $f->setDisplayOrder(40);
         $f->setQuery('ticket.status = \'awaiting_agent\' AND ticket.agent IS EMPTY');
         $set->addFilter($f);
         $manager->persist($f);
 
         $f = new TicketFilter();
         $f->setTitle('All Awaiting Agent');
-        $f->setDisplayOrder(10);
+        $f->setDisplayOrder(50);
         $f->setQuery('ticket.status = \'awaiting_agent\'');
         $set->addFilter($f);
         $manager->persist($f);
