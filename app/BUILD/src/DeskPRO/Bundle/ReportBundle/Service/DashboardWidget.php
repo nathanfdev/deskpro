@@ -44,13 +44,14 @@ use Doctrine\ORM\EntityManager;
 class DashboardWidget
 {
     // These are different renderers
-    const WIDGET_RENDER_TYPE_BAR   = 'simple_bars';
-    const WIDGET_RENDER_TYPE_LINE  = 'simple_lines';
-    const WIDGET_RENDER_TYPE_AREA  = 'simple_area';
-    const WIDGET_RENDER_TYPE_PIE   = 'pie';
-    const WIDGET_RENDER_TYPE_TABLE = 'table';
-    const WIDGET_RENDER_TYPE_STAT  = 'simple_stat';
-    const WIDGET_RENDER_TYPE_GAUGE = 'gauge';
+    const WIDGET_RENDER_TYPE_BAR    = 'simple_bars';
+    const WIDGET_RENDER_TYPE_LINE   = 'simple_lines';
+    const WIDGET_RENDER_TYPE_AREA   = 'simple_area';
+    const WIDGET_RENDER_TYPE_PIE    = 'pie';
+    const WIDGET_RENDER_TYPE_TABLE  = 'table';
+    const WIDGET_RENDER_TYPE_STAT   = 'simple_stat';
+    const WIDGET_RENDER_TYPE_GAUGE  = 'gauge';
+    const WIDGET_RENDER_TYPE_BUBBLE = 'bubble';
 
     // These are different types
     const WIDGET_TYPE_GRAPH = 'graph';
@@ -63,26 +64,28 @@ class DashboardWidget
      * @var array
      */
     protected $widgetTypesMapping = [
-        self::WIDGET_RENDER_TYPE_BAR   => self::WIDGET_TYPE_GRAPH,
-        self::WIDGET_RENDER_TYPE_LINE  => self::WIDGET_TYPE_GRAPH,
-        self::WIDGET_RENDER_TYPE_AREA  => self::WIDGET_TYPE_GRAPH,
-        self::WIDGET_RENDER_TYPE_PIE   => self::WIDGET_TYPE_GRAPH,
-        self::WIDGET_RENDER_TYPE_GAUGE => self::WIDGET_TYPE_GRAPH,
-        self::WIDGET_RENDER_TYPE_STAT  => self::WIDGET_TYPE_STAT,
-        self::WIDGET_RENDER_TYPE_TABLE => self::WIDGET_TYPE_TABLE,
+        self::WIDGET_RENDER_TYPE_BAR    => self::WIDGET_TYPE_GRAPH,
+        self::WIDGET_RENDER_TYPE_LINE   => self::WIDGET_TYPE_GRAPH,
+        self::WIDGET_RENDER_TYPE_AREA   => self::WIDGET_TYPE_GRAPH,
+        self::WIDGET_RENDER_TYPE_PIE    => self::WIDGET_TYPE_GRAPH,
+        self::WIDGET_RENDER_TYPE_GAUGE  => self::WIDGET_TYPE_GRAPH,
+        self::WIDGET_RENDER_TYPE_BUBBLE => self::WIDGET_TYPE_GRAPH,
+        self::WIDGET_RENDER_TYPE_STAT   => self::WIDGET_TYPE_STAT,
+        self::WIDGET_RENDER_TYPE_TABLE  => self::WIDGET_TYPE_TABLE,
     ];
 
     /**
      * @var array
      */
     protected $widgetGraphTypesMapping = [
-        self::WIDGET_RENDER_TYPE_BAR   => ReportsRendererInterface::TYPE_BAR,
-        self::WIDGET_RENDER_TYPE_LINE  => ReportsRendererInterface::TYPE_LINE,
-        self::WIDGET_RENDER_TYPE_AREA  => ReportsRendererInterface::TYPE_AREA,
-        self::WIDGET_RENDER_TYPE_PIE   => ReportsRendererInterface::TYPE_PIE,
-        self::WIDGET_RENDER_TYPE_GAUGE => ReportsRendererInterface::TYPE_GAUGE,
-        self::WIDGET_RENDER_TYPE_STAT  => ReportsRendererInterface::TYPE_STAT,
-        self::WIDGET_RENDER_TYPE_TABLE => ReportsRendererInterface::TYPE_TABLE,
+        self::WIDGET_RENDER_TYPE_BAR    => ReportsRendererInterface::TYPE_BAR,
+        self::WIDGET_RENDER_TYPE_LINE   => ReportsRendererInterface::TYPE_LINE,
+        self::WIDGET_RENDER_TYPE_AREA   => ReportsRendererInterface::TYPE_AREA,
+        self::WIDGET_RENDER_TYPE_PIE    => ReportsRendererInterface::TYPE_PIE,
+        self::WIDGET_RENDER_TYPE_GAUGE  => ReportsRendererInterface::TYPE_GAUGE,
+        self::WIDGET_RENDER_TYPE_BUBBLE => ReportsRendererInterface::TYPE_BUBBLE,
+        self::WIDGET_RENDER_TYPE_STAT   => ReportsRendererInterface::TYPE_STAT,
+        self::WIDGET_RENDER_TYPE_TABLE  => ReportsRendererInterface::TYPE_TABLE,
     ];
 
     /**

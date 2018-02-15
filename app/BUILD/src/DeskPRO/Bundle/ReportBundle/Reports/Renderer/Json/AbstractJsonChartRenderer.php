@@ -87,16 +87,7 @@ abstract class AbstractJsonChartRenderer extends AbstractJsonRenderer
                 'markerSize'       => 10,
             ],
             'categoryField' => 'category',
-            'exportConfig'  => [
-                'menuTop'   => '20px',
-                'menuRight' => '20px',
-                'menuItems' => [
-                    [
-                        'icon'   => '/lib/3/images/export.png',
-                        'format' => 'png',
-                    ],
-                ],
-            ],
+            'exportConfig'  => false,
         ];
 
         $selectColumns = $metadata->getSelectColumns();
