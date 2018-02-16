@@ -90,11 +90,15 @@ class TicketSqlMatcher extends AbstractMatcher
     public function getCountQueryBuilder(Query $query, Context $context, TicketSearchParams $params = null)
     {
         $qb = $this->buildQueryBuilder($query, $context);
-        $qb->select('COUNT(*)');
+        $qb->select('COUNT(*) AS count');
 
         if ($params) {
             $this->addGroupBy($qb, $params->getGroupFields());
             $this->addSubFilterBy($qb, $params->getSubFilterFields());
+
+            if ($params->hasGroupFields()) {
+                $qb->enableWithRollup();
+            }
         }
 
         return $qb;
@@ -168,44 +172,53 @@ class TicketSqlMatcher extends AbstractMatcher
         }
 
         foreach ($groupFields as $idx => $fieldId) {
-            $joinId = 'grouping'.$idx;
+            $selectId = "group_field{$idx}";
+            $joinId   = 'grouping'.$idx;
 
             switch ($fieldId) {
                 case TicketSearchParams::GROUP_SLA_SEVERITY:
-                    $qb->select("MAX(FIELD($joinId.sla_status, 'ok', 'warning', 'fail')) AS group_field$idx");
+                    $qb->addSelect("MAX(FIELD($joinId.sla_status, 'ok', 'warning', 'fail')) AS $selectId");
                     $qb->leftJoin('tickets', 'ticket_slas', $joinId, "$joinId.ticket_id = tickets.id");
                     $qb->addGroupBy('group_field');
                     break;
 
                 case TicketSearchParams::GROUP_AGENT:
+                    $qb->addSelect("tickets.agent_id AS $selectId");
                     $qb->addGroupBy('tickets.agent_id');
                     break;
 
                 case TicketSearchParams::GROUP_AGENT_TEAM:
+                    $qb->addSelect("tickets.agent_team_id AS $selectId");
                     $qb->addGroupBy('tickets.agent_team_id');
                     break;
 
                 case TicketSearchParams::GROUP_DEPARTMENT:
+                    $qb->addSelect("tickets.department_id AS $selectId");
                     $qb->addGroupBy('tickets.department_id');
                     break;
 
                 case TicketSearchParams::GROUP_WORKFLOW:
+                    $qb->addSelect("tickets.workflow_id AS $selectId");
                     $qb->addGroupBy('tickets.workflow_id');
                     break;
 
                 case TicketSearchParams::GROUP_PRIORITY:
+                    $qb->addSelect("tickets.priority_id AS $selectId");
                     $qb->addGroupBy('tickets.priority_id');
                     break;
 
                 case TicketSearchParams::GROUP_CATEGORY:
+                    $qb->addSelect("tickets.category_id AS $selectId");
                     $qb->addGroupBy('tickets.category_id');
                     break;
 
                 case TicketSearchParams::GROUP_PRODUCT:
+                    $qb->addSelect("tickets.product_id AS $selectId");
                     $qb->addGroupBy('tickets.product_id');
                     break;
 
                 case TicketSearchParams::GROUP_LANGUAGE:
+                    $qb->addSelect("tickets.language_id AS $selectId");
                     $qb->addGroupBy('tickets.language_id');
                     break;
 

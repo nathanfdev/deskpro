@@ -33,9 +33,12 @@ use DeskPRO\Bundle\ApiBundle\ApiDoc\Annotation\ApiDoc;
 use DeskPRO\Bundle\ApiBundle\Controller\CrudController;
 use DeskPRO\Bundle\AppBundle\Annotation\ActionPermissions\Annotation\ApiModes;
 use DeskPRO\Bundle\AppBundle\CountBadge\Count;
+use DeskPRO\Bundle\AppBundle\CountBadge\CountBuilder;
 use DeskPRO\Bundle\AppBundle\Entity\TicketFilter;
 use DeskPRO\Bundle\AppBundle\TicketFilters\Context;
+use DeskPRO\Bundle\AppBundle\TicketFilters\TicketCountTitleResolver;
 use DeskPRO\Bundle\AppBundle\TicketFilters\TicketSearchParams;
+use DeskPRO\Component\Util\ListUtils;
 use FOS\RestBundle\Controller\Annotations as Rest;
 use FOS\RestBundle\View\View;
 use Symfony\Component\HttpFoundation\Request;
@@ -178,21 +181,48 @@ class TicketFiltersController extends CrudController
 
         $searchParams = new TicketSearchParams();
         if ($groupBy) {
-            $searchParams->groupBy($groupBy);
+            $groupBy = explode(',', $groupBy);
+            foreach ($groupBy as $g) {
+                $searchParams->groupBy($g);
+            }
         }
 
         $searcher = $this->container->get('ticketfilter.ticket_sql_searcher');
-        $countInt = $searcher
-            ->getCountQueryBuilder($filter->query, $context, $searchParams)
-            ->execute()
-            ->fetchColumn();
 
-        $count = Count::create(
-            $countInt,
-            $filter->id,
-            'filter',
-            $ticketFilter->getTitle()
-        );
+        if (!$searchParams->hasGroupFields()) {
+            $countInt = $searcher
+                ->getCountQueryBuilder($filter->query, $context, $searchParams)
+                ->execute()
+                ->fetchColumn();
+
+            $count = Count::create(
+                $countInt,
+                $filter->id,
+                'filter',
+                $ticketFilter->getTitle()
+            );
+        } else {
+            $countInts = $searcher
+                ->getCountQueryBuilder($filter->query, $context, $searchParams)
+                ->execute()
+                ->fetchAll(\PDO::FETCH_ASSOC);
+
+            $groupFields = $searchParams->getGroupFields();
+
+            // CountBuilder expects key names to be the name of the grouping field
+            $countRekeyed = ListUtils::map($countInts, function (array $count) use ($groupFields) {
+                $newCount = ['count' => $count['count']];
+                foreach ($groupFields as $idx => $fieldId) {
+                    $key = 'group_field'.$idx;
+                    $newCount[$fieldId] = $count[$key];
+                }
+
+                return $newCount;
+            });
+
+            $b     = new CountBuilder(new TicketCountTitleResolver($this->container));
+            $count = $b->buildFromArray($countRekeyed, $searchParams->getGroupFields());
+        }
 
         return View::create($this->wrap($count));
     }

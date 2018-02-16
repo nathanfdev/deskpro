@@ -75,7 +75,7 @@ class TicketSqlMatcherTest extends \PHPUnit_Framework_TestCase
     {
         $this->assertEqualQuery(
             'ticket.id = 1',
-            'SELECT COUNT(*) FROM tickets_search_active tickets WHERE tickets.id = :c0',
+            'SELECT COUNT(*) AS count FROM tickets_search_active tickets WHERE tickets.id = :c0',
             ['c0' => 1]
         );
     }
@@ -84,7 +84,7 @@ class TicketSqlMatcherTest extends \PHPUnit_Framework_TestCase
     {
         $this->assertEqualQuery(
             'ticket.status = \'awaiting_agent\' AND ticket.agent = $me',
-            'SELECT COUNT(*) FROM tickets_search_active tickets WHERE tickets.status = :c0 AND tickets.agent_id = :c1',
+            'SELECT COUNT(*) AS count FROM tickets_search_active tickets WHERE tickets.status = :c0 AND tickets.agent_id = :c1',
             ['c0' => 'awaiting_agent', 'c1' => 1]
         );
     }
@@ -94,7 +94,7 @@ class TicketSqlMatcherTest extends \PHPUnit_Framework_TestCase
         $this->assertEqualQuery(
             'ticket.status = \'awaiting_agent\' AND ticket.followers HAS $me',
             'SELECT
-               COUNT(*) FROM tickets_search_active tickets
+               COUNT(*) AS count FROM tickets_search_active tickets
                LEFT JOIN tickets_participants c1_part ON c1_part.ticket_id = tickets.id
                WHERE tickets.status = :c0 AND c1_part.person_id IN (:c1)',
             ['c0' => 'awaiting_agent', 'c1' => [1]]
@@ -105,7 +105,7 @@ class TicketSqlMatcherTest extends \PHPUnit_Framework_TestCase
     {
         $this->assertEqualQuery(
             'ticket.status = \'awaiting_agent\' AND ticket.agent_team IN $my_teams',
-            'SELECT COUNT(*) FROM tickets_search_active tickets WHERE tickets.status = :c0 AND tickets.agent_team_id IN (:c1)',
+            'SELECT COUNT(*) AS count FROM tickets_search_active tickets WHERE tickets.status = :c0 AND tickets.agent_team_id IN (:c1)',
             ['c0' => 'awaiting_agent', 'c1' => [1, 2, 3]]
         );
     }
@@ -114,7 +114,7 @@ class TicketSqlMatcherTest extends \PHPUnit_Framework_TestCase
     {
         $this->assertEqualQuery(
             'ticket.status = \'awaiting_agent\' AND ticket.agent IS EMPTY',
-            'SELECT COUNT(*) FROM tickets_search_active tickets WHERE tickets.status = :c0 AND tickets.agent_id IS NULL',
+            'SELECT COUNT(*) AS count FROM tickets_search_active tickets WHERE tickets.status = :c0 AND tickets.agent_id IS NULL',
             ['c0' => 'awaiting_agent']
         );
     }
@@ -123,7 +123,7 @@ class TicketSqlMatcherTest extends \PHPUnit_Framework_TestCase
     {
         $this->assertEqualQuery(
             'ticket.status = \'awaiting_agent\'',
-            'SELECT COUNT(*) FROM tickets_search_active tickets WHERE tickets.status = :c0',
+            'SELECT COUNT(*) AS count FROM tickets_search_active tickets WHERE tickets.status = :c0',
             ['c0' => 'awaiting_agent']
         );
     }
@@ -134,7 +134,7 @@ class TicketSqlMatcherTest extends \PHPUnit_Framework_TestCase
         $params->groupBy(TicketSearchParams::GROUP_AGENT);
         $this->assertEqualQuery(
             'ticket.status = \'awaiting_agent\'',
-            'SELECT COUNT(*) FROM tickets_search_active tickets WHERE tickets.status = :c0 GROUP BY tickets.agent_id',
+            'SELECT COUNT(*) AS count, tickets.agent_id AS group_field0 FROM tickets_search_active tickets WHERE tickets.status = :c0 GROUP BY tickets.agent_id WITH ROLLUP',
             ['c0' => 'awaiting_agent'],
             $params
         );
@@ -147,12 +147,13 @@ class TicketSqlMatcherTest extends \PHPUnit_Framework_TestCase
         $params->groupBy(TicketSearchParams::GROUP_AGENT);
         $this->assertEqualQuery(
             'ticket.status = \'awaiting_agent\'',
-            'SELECT 
-                MAX (FIELD(grouping0.sla_status, \'ok\', \'warning\', \'fail\' ) ) AS group_field0
+            'SELECT COUNT(*) AS count,
+                MAX (FIELD(grouping0.sla_status, \'ok\', \'warning\', \'fail\' ) ) AS group_field0,
+                tickets.agent_id AS group_field1
             FROM tickets_search_active tickets
             LEFT JOIN ticket_slas grouping0 ON grouping0.ticket_id = tickets.id
             WHERE tickets.status = :c0
-            GROUP BY group_field, tickets.agent_id',
+            GROUP BY group_field, tickets.agent_id WITH ROLLUP',
             ['c0' => 'awaiting_agent'],
             $params
         );
@@ -189,7 +190,7 @@ class TicketSqlMatcherTest extends \PHPUnit_Framework_TestCase
         $params->subFilterBy(TicketSearchParams::GROUP_AGENT, 5);
         $this->assertEqualQuery(
             'ticket.status = \'awaiting_agent\'',
-            'SELECT COUNT(*) FROM tickets_search_active tickets
+            'SELECT COUNT(*) AS count FROM tickets_search_active tickets
             WHERE (tickets.status = :c0) AND (tickets.agent_id = :subfilterval0)',
             ['c0' => 'awaiting_agent', 'subfilterval0' => 5],
             $params
@@ -203,7 +204,7 @@ class TicketSqlMatcherTest extends \PHPUnit_Framework_TestCase
         $params->subFilterBy(TicketSearchParams::GROUP_DEPARTMENT, 6);
         $this->assertEqualQuery(
             'ticket.status = \'awaiting_agent\'',
-            'SELECT COUNT(*) FROM tickets_search_active tickets
+            'SELECT COUNT(*) AS count FROM tickets_search_active tickets
             WHERE (tickets.status = :c0) AND (tickets.agent_id = :subfilterval0) AND (tickets.department_id = :subfilterval1)',
             ['c0' => 'awaiting_agent', 'subfilterval0' => 5, 'subfilterval1' => 6],
             $params
