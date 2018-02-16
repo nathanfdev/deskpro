@@ -4,6 +4,7 @@
             <span class="title">On this dashboard:</span>
             <a
                 ng-repeat='permission in (filteredPermissions = dashboard.permissions | limitTo:6) track by $index '
+                ng-if="permission.person"
                 class="avatar"
                 title="{{ ng_var('agents[permission.person].name') }}"
                 style="background-image: url({{ ng_var('agents[permission.person].avatar.url') }});">
