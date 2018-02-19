@@ -35,7 +35,10 @@ const config = {
     DeskPRO_PortalBundle_print_style: './src/DeskPRO/Bundle/PortalBundle/Resources/style/print-style.scss',
 
     // Widget
-    // DeskPRO_WidgetBundle:        './src/DeskPRO/Bundle/WidgetBundle/DeskPRO_WidgetBundle',
+    // DeskPRO_WidgetBundle:        [
+    //   'webpack-hot-middleware/client?path=http://localhost:9666/__webpack_hmr',
+    //   './src/DeskPRO/Bundle/WidgetBundle/DeskPRO_WidgetBundle',
+    // ],
     DeskPRO_WidgetBundle_style:  './src/DeskPRO/Bundle/WidgetBundle/Resources/style/widget-style.scss',
     DeskPRO_EmbedFormBundle:     './src/DeskPRO/Bundle/WidgetBundle/DeskPRO_EmbedFormBundle',
     DeskPRO_EmbedHelpdeskBundle: './src/DeskPRO/Bundle/WidgetBundle/DeskPRO_EmbedHelpdeskBundle',
@@ -44,19 +47,31 @@ const config = {
     phonenumber_utils: './node_modules/intl-tel-input/lib/libphonenumber/build/utils',
     // // DeskPRO_AgentBundle: './src/DeskPRO/Bundle/AgentBundle/DeskPRO_AgentBundle',
     // // DeskPRO_AgentBundle_style: './src/DeskPRO/Bundle/AgentBundle/Resources/style/agent-style.scss',
-    DeskPRO_AgentLegacyBundle: './src/DeskPRO/Bundle/AgentBundle/DeskPRO_AgentLegacyBundle',
+    DeskPRO_AgentLegacyBundle: [
+      'webpack-hot-middleware/client?path=http://localhost:9666/__webpack_hmr',
+      './src/DeskPRO/Bundle/AgentBundle/DeskPRO_AgentLegacyBundle'
+    ],
     DeskPRO_AgentLegacyBundle_style: './src/DeskPRO/Bundle/AgentBundle/Resources/style/legacy-agent.scss',
     //
     // Admin
-    DeskPRO_AdminBundle:       './src/DeskPRO/Bundle/AdminBundle/DeskPRO_AdminBundle',
+    DeskPRO_AdminBundle:       [
+      'webpack-hot-middleware/client?path=http://localhost:9666/__webpack_hmr',
+      './src/DeskPRO/Bundle/AdminBundle/DeskPRO_AdminBundle'
+    ],
     DeskPRO_AdminBundle_style: './src/DeskPRO/Bundle/AdminBundle/Resources/style/admin-style.scss',
     //
     // Report
-    DeskPRO_ReportBundle:       './src/DeskPRO/Bundle/ReportBundle/DeskPRO_ReportBundle',
+    DeskPRO_ReportBundle:       [
+      'webpack-hot-middleware/client?path=http://localhost:9666/__webpack_hmr',
+      './src/DeskPRO/Bundle/ReportBundle/DeskPRO_ReportBundle',
+    ],
     DeskPRO_ReportBundle_style: './src/DeskPRO/Bundle/ReportBundle/Resources/style/report-style.scss',
     //
     // Demo
-    DeskPRO_DemoBundle:       './src/DeskPRO/Bundle/DemoBundle/DeskPRO_DemoBundle',
+    DeskPRO_DemoBundle:       [
+      'webpack-hot-middleware/client?path=http://localhost:9666/__webpack_hmr',
+      './src/DeskPRO/Bundle/DemoBundle/DeskPRO_DemoBundle',
+    ],
     DeskPRO_DemoBundle_style: './src/DeskPRO/Bundle/DemoBundle/Resources/style/demo-style.scss'
   },
 
