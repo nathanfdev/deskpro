@@ -60,7 +60,7 @@ class VoiceControlsContainer extends React.Component {
 
     tabRef({
       isCallActive: this.isCallActive,
-      endCall:      this.onEndCall
+      endCall:      this.endCall
     });
 
     const connection = this.getConnection();
