@@ -161,7 +161,7 @@ class VoiceControlsContainer extends React.Component {
 
   getConnection() {
     const { connections, ticketId } = this.props;
-    return connections.filter(connection => parseInt(connection.message.TicketId, 10) === ticketId, 10).first();
+    return connections.filter(connection => parseInt(connection.message.TicketId, 10) === parseInt(ticketId, 10)).first();
   }
 
   addAgent = (target, type) => {
