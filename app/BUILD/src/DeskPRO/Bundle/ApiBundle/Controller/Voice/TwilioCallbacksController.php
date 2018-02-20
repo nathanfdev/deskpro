@@ -1172,6 +1172,16 @@ class TwilioCallbacksController extends AbstractVoiceController
             throw $this->createBadRequestException('Agent not found');
         }
 
+        if (!$this->get('twilio_adapter')->acceptTaskInForwardingCall($phoneCall, $agent)) {
+            $twiml = new Twiml();
+            $twiml->hangup();
+
+            $response = new Response($twiml);
+            $response->headers->set('Content-Type', 'text/xml');
+
+            return $response;
+        }
+
         $this->createOrJoinTicketForIncomingCall($phoneCall, $agent);
 
         return $this->phoneNumberAgentIncomingCallback($account, $phoneCall, $agent, $request);
@@ -1221,10 +1231,19 @@ class TwilioCallbacksController extends AbstractVoiceController
 
             // log answering event
             $log = new VoicePhoneCallLog();
-            $log->setActionType(VoicePhoneCallLog::ACTION_ANSWERED);
             $log->setPerson($agent);
-            $log->setDetails($request->query->all());
             $log->setPhoneCall($phoneCall);
+
+            $details = $request->query->all();
+            if ($request->get('To')) {
+                $log->setActionType(VoicePhoneCallLog::ACTION_FORWARD_ANSWERED);
+                $log->setDetails(array_merge($details, [
+                    'forwarded_number' => $request->get('To'),
+                ]));
+            } else {
+                $log->setActionType(VoicePhoneCallLog::ACTION_ANSWERED);
+                $log->setDetails($details);
+            }
 
             $em->persist($log);
             $em->flush();

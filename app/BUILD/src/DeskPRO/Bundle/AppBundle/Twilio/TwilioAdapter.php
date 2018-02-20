@@ -979,6 +979,36 @@ class TwilioAdapter
     }
 
     /**
+     * @param VoicePhoneCall $phoneCall
+     * @param Person         $agent
+     *
+     * @return bool
+     */
+    public function acceptTaskInForwardingCall(VoicePhoneCall $phoneCall, Person $agent)
+    {
+        $account = $phoneCall->getNumber()->getAccount();
+
+        try {
+            $reservations = $this->getWorkspace($account)->tasks($phoneCall->getTaskSid())->reservations->read();
+            foreach ($reservations as $reservation) {
+                if ($agent->getAgentData()->getVoiceWorkerSid() === $reservation->workerSid) {
+                    $reservation->update([
+                        'reservationStatus' => 'accepted',
+                    ]);
+                } else {
+                    $reservation->update([
+                        'reservationStatus' => 'rejected',
+                    ]);
+                }
+            }
+        } catch (\Exception $e) {
+            return false;
+        }
+
+        return true;
+    }
+
+    /**
      * @param VoiceAccount $account
      * @param string       $taskSid
      *
