@@ -31,7 +31,7 @@ namespace DeskPRO\Bundle\AppBundle\Form\Type\Tickets;
 use Application\DeskPRO\Entity\Feedback;
 use Application\DeskPRO\Entity\Person;
 use Application\DeskPRO\Entity\Ticket;
-use DeskPRO\Bundle\AppBundle\Entity\TicketToFeedback;
+use DeskPRO\Bundle\AppBundle\Entity\TicketFeedbackLink;
 use DeskPRO\Bundle\AppBundle\Form\Type\ApiBooleanType;
 use DeskPRO\Bundle\AppBundle\Settings\BrandAwareSettingsResolver;
 use Symfony\Bridge\Doctrine\Form\Type\EntityType;
@@ -44,9 +44,9 @@ use Symfony\Component\Validator\Constraints as Assert;
 use Symfony\Component\Validator\Context\ExecutionContextInterface;
 
 /**
- * Class TicketToFeedbackType.
+ * Class TicketFeedbackLinkType.
  */
-class TicketToFeedbackType extends AbstractType
+class TicketFeedbackLinkType extends AbstractType
 {
     /**
      * @var BrandAwareSettingsResolver
@@ -99,7 +99,7 @@ class TicketToFeedbackType extends AbstractType
     {
         $resolver
             ->setDefaults([
-                'data_class' => TicketToFeedback::class,
+                'data_class' => TicketFeedbackLink::class,
                 'ticket'     => null,
                 'person'     => null,
             ])

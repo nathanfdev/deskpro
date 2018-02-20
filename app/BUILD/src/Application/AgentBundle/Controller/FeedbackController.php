@@ -59,7 +59,7 @@ use Application\DeskPRO\Labels\LabelLister;
 use Application\DeskPRO\People\PermissionChecker\PublishChecker;
 use Application\DeskPRO\Publish\Feedback\GroupingCounter;
 use Application\DeskPRO\Publish\RelatedContentUpdate;
-use DeskPRO\Bundle\AppBundle\Entity\TicketToFeedback;
+use DeskPRO\Bundle\AppBundle\Entity\TicketFeedbackLink;
 use Doctrine\ORM\EntityManager;
 use Orb\Util\Arrays;
 use Orb\Util\Numbers;
@@ -235,8 +235,8 @@ class FeedbackController extends AbstractController
         $closedStatusCategories = $feedbackStatusCategoryRepository->getClosedCategories();
 
         //@TODO: related entities fetching optimization
-        $feedbackRepo     = $this->em->getRepository(TicketToFeedback::class);
-        $ticketToFeedback = $feedbackRepo->findByFeedback($feedback);
+        $feedbackRepo        = $this->em->getRepository(TicketFeedbackLink::class);
+        $ticketFeedbackLinks = $feedbackRepo->findByFeedback($feedback);
 
         $perms = [
             'can_edit'   => $publishChecker->canEdit($feedback),
@@ -246,21 +246,21 @@ class FeedbackController extends AbstractController
         return $this->render(
             'AgentBundle:Feedback:view.html.twig',
             [
-                'feedback'            => $feedback,
-                'feedback_comments'   => $feedbackComments,
-                'feedback_revisions'  => $feedbackRevisions,
-                'state'               => $state,
-                'category'            => $category,
-                'category_path'       => $categoryPath,
-                'custom_fields'       => $customFields,
-                'rated_searches'      => $ratedSearches,
-                'related_content'     => $relatedContent,
-                'sticky_search_words' => $stickySearchWords,
-                'feedback_categories' => $feedbackCategories,
-                'active_status_cats'  => $activeStatusCategories,
-                'closed_status_cats'  => $closedStatusCategories,
-                'ticket_to_feedback'  => $ticketToFeedback,
-                'perms'               => $perms,
+                'feedback'              => $feedback,
+                'feedback_comments'     => $feedbackComments,
+                'feedback_revisions'    => $feedbackRevisions,
+                'state'                 => $state,
+                'category'              => $category,
+                'category_path'         => $categoryPath,
+                'custom_fields'         => $customFields,
+                'rated_searches'        => $ratedSearches,
+                'related_content'       => $relatedContent,
+                'sticky_search_words'   => $stickySearchWords,
+                'feedback_categories'   => $feedbackCategories,
+                'active_status_cats'    => $activeStatusCategories,
+                'closed_status_cats'    => $closedStatusCategories,
+                'ticket_feedback_links' => $ticketFeedbackLinks,
+                'perms'                 => $perms,
             ]
         );
     }

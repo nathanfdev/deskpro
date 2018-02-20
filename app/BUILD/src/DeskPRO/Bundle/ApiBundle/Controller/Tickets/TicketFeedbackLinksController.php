@@ -33,8 +33,8 @@ use DeskPRO\Bundle\ApiBundle\ApiDoc\Annotation\ApiDoc;
 use DeskPRO\Bundle\ApiBundle\Traits\Tickets\TicketAwarePersistModelTrait;
 use DeskPRO\Bundle\ApiBundle\Traits\Tickets\TicketSaveTrait;
 use DeskPRO\Bundle\AppBundle\Annotation\ActionPermissions\Annotation\ApiModes;
-use DeskPRO\Bundle\AppBundle\Entity\TicketToFeedback;
-use DeskPRO\Bundle\AppBundle\Form\Type\Tickets\TicketToFeedbackType;
+use DeskPRO\Bundle\AppBundle\Entity\TicketFeedbackLink;
+use DeskPRO\Bundle\AppBundle\Form\Type\Tickets\TicketFeedbackLinkType;
 use FOS\RestBundle\Controller\Annotations as Rest;
 use Symfony\Component\Form\FormInterface;
 use Symfony\Component\HttpFoundation\Request;
@@ -44,26 +44,26 @@ use Symfony\Component\HttpFoundation\Request;
  *
  * @ApiModes("all")
  * @Rest\Route("/tickets/{parentId}/feedback_links")
- * @ApiDoc(target="all", section="Tickets", output="DeskPRO\Bundle\AppBundle\Entity\TicketToFeedback")
+ * @ApiDoc(target="all", section="Tickets", output="DeskPRO\Bundle\AppBundle\Entity\TicketFeedbackLink")
  * @ApiDoc(
  *     target="postAction,putAction",
  *     input={
- *      "class"="DeskPRO\Bundle\AppBundle\Form\Type\Tickets\TicketToFeedbackType",
+ *      "class"="DeskPRO\Bundle\AppBundle\Form\Type\Tickets\TicketFeedbackLinkType",
  *      "options"={
- *          "data"="DeskPRO\Bundle\AppBundle\Entity\TicketToFeedback",
+ *          "data"="DeskPRO\Bundle\AppBundle\Entity\TicketFeedbackLink",
  *          "ticket"="Application\DeskPRO\Entity\Ticket",
  *          "person"="Application\DeskPRO\Entity\Person"
  *      }
  *     }
  * )
  */
-class TicketToFeedbackController extends AbstractTicketsCrudSubController
+class TicketFeedbackLinksController extends AbstractTicketsCrudSubController
 {
     use TicketSaveTrait;
     use TicketAwarePersistModelTrait { persistModel as protected traitPersistModel; }
 
-    public static $entity         = TicketToFeedback::class;
-    public static $type           = TicketToFeedbackType::class;
+    public static $entity         = TicketFeedbackLink::class;
+    public static $type           = TicketFeedbackLinkType::class;
     public static $parentProperty = 'ticket';
     public static $listSort       = 'id';
     public static $listOrder      = 'asc';
@@ -103,28 +103,28 @@ class TicketToFeedbackController extends AbstractTicketsCrudSubController
     }
 
     /**
-     * @param TicketToFeedback $ticketToFeedback
-     * @param bool             $isSubscribeTicketOwner
-     * @param bool             $isSubscribeTicketParticipants
+     * @param TicketFeedbackLink $ticketFeedbackLink
+     * @param bool               $isSubscribeTicketOwner
+     * @param bool               $isSubscribeTicketParticipants
      */
     protected function processSubscriptions(
-        TicketToFeedback $ticketToFeedback,
+        TicketFeedbackLink $ticketFeedbackLink,
         bool $isSubscribeTicketOwner,
         bool $isSubscribeTicketParticipants)
     {
         // collect persons to subscribe
         $subscribePersons = [];
         if ($isSubscribeTicketOwner) {
-            $subscribePersons[] = $ticketToFeedback->getTicket()->getPerson();
+            $subscribePersons[] = $ticketFeedbackLink->getTicket()->getPerson();
         }
         if ($isSubscribeTicketParticipants) {
-            foreach ($ticketToFeedback->getTicket()->getParticipants() as $ticketParticipant) {
+            foreach ($ticketFeedbackLink->getTicket()->getParticipants() as $ticketParticipant) {
                 $subscribePersons[] = $ticketParticipant->getTicket()->getPerson();
             }
         }
 
         // subscribe persons
-        $feedback                = $ticketToFeedback->getFeedback();
+        $feedback                = $ticketFeedbackLink->getFeedback();
         $portalPermissionManager = $this->get('portal_permissions_manager');
         $subscribedIds           = $this->getRepository(FeedbackSubscription::class)->getSubscribedPersonIds($feedback);
 
@@ -152,7 +152,7 @@ class TicketToFeedbackController extends AbstractTicketsCrudSubController
     /**
      * {@inheritdoc}
      *
-     * @param TicketToFeedback $entity
+     * @param TicketFeedbackLink $entity
      */
     protected function deleteEntity($entity)
     {

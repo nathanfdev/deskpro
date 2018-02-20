@@ -10,14 +10,14 @@
       <th style="font-size: 11px; padding: 1px 4px;">{{ phrase('agent.general.status') }}</th>
       <th width="10">&nbsp;</th>
     </tr>
-    {% for ttf in ticket_to_feedback %}
+    {% for tfl in ticket_feedback_links %}
       <tr class="linked-feedback">
-        <td nowrap="nowrap" style="overflow:hidden; text-overflow: ellipsis;"><a data-route="page:{{ path('agent_feedback_view', {feedback_id: ttf.feedback.id}) }}">{{ ttf.feedback.id }}</a></td>
-        <td width="100%" style="overflow:hidden; text-overflow: ellipsis;"><a data-route="page:{{ path('agent_feedback_view', {feedback_id: ttf.feedback.id}) }}">{{ ttf.feedback.title }}</a></td>
-        <td nowrap="nowrap" style="overflow:hidden; text-overflow: ellipsis;">{{ ttf.feedback.category ? ttf.feedback.category.title : '' }}</td>
-        <td nowrap="nowrap" style="overflow:hidden; text-overflow: ellipsis;">{{ ttf.feedback.status_category ? ttf.feedback.status_category.title : '' }}</td>
+        <td nowrap="nowrap" style="overflow:hidden; text-overflow: ellipsis;"><a data-route="page:{{ path('agent_feedback_view', {feedback_id: tfl.feedback.id}) }}">{{ tfl.feedback.id }}</a></td>
+        <td width="100%" style="overflow:hidden; text-overflow: ellipsis;"><a data-route="page:{{ path('agent_feedback_view', {feedback_id: tfl.feedback.id}) }}">{{ tfl.feedback.title }}</a></td>
+        <td nowrap="nowrap" style="overflow:hidden; text-overflow: ellipsis;">{{ tfl.feedback.category ? tfl.feedback.category.title : '' }}</td>
+        <td nowrap="nowrap" style="overflow:hidden; text-overflow: ellipsis;">{{ tfl.feedback.status_category ? tfl.feedback.status_category.title : '' }}</td>
         <td width="10" style="text-align: right;">
-          <img src="{{ asset('images/agent/icons/cross.png') }}" style="cursor: pointer;" class="unlink-feedback" data-id="{{ ttf.id }}" />
+          <img src="{{ asset('images/agent/icons/cross.png') }}" style="cursor: pointer;" class="unlink-feedback" data-id="{{ tfl.id }}" />
         </td>
       </tr>
     {% endfor %}

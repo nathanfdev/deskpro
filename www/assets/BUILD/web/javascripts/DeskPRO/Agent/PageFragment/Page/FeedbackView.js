@@ -226,12 +226,12 @@ DeskPRO.Agent.PageFragment.Page.FeedbackView = new Orb.Class({
 				return;
 			}
 
-			var ticketToFeedbackId = $(this).data('id');
+			var ticketFeedbackLinkId = $(this).data('id');
       var ticketId = $(this).data('ticket-id');
 
 			$(this).closest('tr').hide();
 			$.ajax({
-				url: DP_BASE_API_URL + "/v2/tickets/" + ticketId + "/feedback_links/" + ticketToFeedbackId,
+				url: DP_BASE_API_URL + "/v2/tickets/" + ticketId + "/feedback_links/" + ticketFeedbackLinkId,
 				type: 'DELETE',
         withActionAlerts: true,
 				error: function() {

@@ -121,9 +121,9 @@ use DeskPRO\Bundle\AppBundle\Entity\OAuthClient;
 use DeskPRO\Bundle\AppBundle\Entity\Report\ScheduledReport;
 use DeskPRO\Bundle\AppBundle\Entity\Snippet;
 use DeskPRO\Bundle\AppBundle\Entity\SnippetTranslation;
+use DeskPRO\Bundle\AppBundle\Entity\TicketFeedbackLink;
 use DeskPRO\Bundle\AppBundle\Entity\TicketFilter;
 use DeskPRO\Bundle\AppBundle\Entity\TicketFollowUp;
-use DeskPRO\Bundle\AppBundle\Entity\TicketToFeedback;
 use DeskPRO\Bundle\AppBundle\Entity\VoiceAccount;
 use DeskPRO\Bundle\AppBundle\Entity\VoiceAsset\AbstractVoiceAsset;
 use DeskPRO\Bundle\AppBundle\Entity\VoiceAsset\VoiceRecordAsset;
@@ -340,7 +340,7 @@ class ObjectsManager
             'TicketFlagged'             => [Factory\SimpleFactory::class, 'create', TicketFlagged::class],
             'TicketMacro'               => [Factory\SimpleFactory::class, 'create', TicketMacro::class],
             'TicketMessage'             => [Factory\SimpleFactory::class, 'create', TicketMessage::class],
-            'TicketToFeedback'          => [Factory\SimpleFactory::class, 'create', TicketToFeedback::class],
+            'TicketFeedbackLink'        => [Factory\SimpleFactory::class, 'create', TicketFeedbackLink::class],
             'TicketSla'                 => [Factory\SimpleFactory::class, 'create', TicketSla::class],
             'TicketLog'                 => [Factory\SimpleFactory::class, 'create', TicketLog::class],
             'TicketFollowUp'            => [Factory\SimpleFactory::class, 'create', TicketFollowUp::class],
@@ -425,7 +425,7 @@ class ObjectsManager
             'Ticket'                    => [$this, 'find', Ticket::class],
             'TicketLayout'              => [$this, 'find', TicketLayout::class],
             'TicketMessage'             => [$this, 'find', TicketMessage::class],
-            'TicketToFeedback'          => [$this, 'find', TicketToFeedback::class],
+            'TicketFeedbackLink'        => [$this, 'find', TicketFeedbackLink::class],
             'TicketPriority'            => [$this, 'find', TicketPriority::class],
             'TicketWorkflow'            => [$this, 'find', TicketWorkflow::class],
             'TicketCategory'            => [$this, 'find', TicketCategory::class],

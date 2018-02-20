@@ -7,7 +7,7 @@ Feature: /tickets/{id}/feedback_links endpoint
   Background:
     Given I'm authenticated as admin
     And the setting "user.feedback_subscriptions" is set to 1
-    And no TicketToFeedback records exist
+    And no TicketFeedbackLink records exist
     And no FeedbackSubscription records exist
     And I set permission "feedback.use" = 1 for "registered" usergroup
     And only the following Ticket records exist:
@@ -47,7 +47,7 @@ Feature: /tickets/{id}/feedback_links endpoint
     And the "{t1}" ticket should have "feedback_link_added" log
 
   Scenario: I retrieve ticket feedback links by ticket id and by ticket ref
-    Given only the following TicketToFeedback records exist:
+    Given only the following TicketFeedbackLink records exist:
       | #   | Person  | Ticket | Feedback |
       | ttf | {admin} | {t1}   | {f1}     |
 
@@ -62,7 +62,7 @@ Feature: /tickets/{id}/feedback_links endpoint
     And the JSON node "data[0].id" should be equal to "{ttf}"
 
   Scenario: I delete ticket feedback link
-    Given only the following TicketToFeedback records exist:
+    Given only the following TicketFeedbackLink records exist:
       | #   | Person  | Ticket | Feedback |
       | ttf | {admin} | {t1}   | {f1}     |
 

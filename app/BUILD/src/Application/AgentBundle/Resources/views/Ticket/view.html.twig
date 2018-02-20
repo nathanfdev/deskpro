@@ -431,11 +431,11 @@
                                       id="{{ baseId }}_linked_count"
                                       data-count="{{ linked_tickets.count }}">{{ linked_tickets.count }}</span>)
                                 </li>{% endif %}
-                            {% if ticket_to_feedback|length %}
+                            {% if ticket_feedback_links|length %}
                                 <li data-tab-for="#{{ baseId }}_linked_feedback_wrap"><i
                                       class="icon-link"></i> {{ phrase('agent.tickets.linked_feedback') }} (<span
                                       id="{{ baseId }}_linked_feedback_count"
-                                      data-count="{{ ticket_to_feedback|length }}">{{ ticket_to_feedback|length }}</span>)
+                                      data-count="{{ ticket_feedback_links|length }}">{{ ticket_feedback_links|length }}</span>)
                                 </li>
                             {% endif %}
                             {% if app.getSetting('core.apps_tasks') and app.user.hasPerm('agent_tasks.use') %}

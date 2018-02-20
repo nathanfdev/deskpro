@@ -30,6 +30,6 @@ namespace DeskPRO\Bundle\AppBundle\Entity\Repository;
 
 use Doctrine\ORM\EntityRepository;
 
-class TicketToFeedbackRepository extends EntityRepository
+class TicketFeedbackLinkRepository extends EntityRepository
 {
 }

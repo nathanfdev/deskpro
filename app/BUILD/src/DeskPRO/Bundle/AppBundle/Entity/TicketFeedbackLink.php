@@ -45,9 +45,9 @@ use Symfony\Component\Validator\Constraints as Assert;
  * Table that implements Many2Many connection between Tickets and Feedback.
  *
  *
- * @ORM\Entity(repositoryClass="DeskPRO\Bundle\AppBundle\Entity\Repository\TicketToFeedbackRepository")
- * @ORM\Table(name="tickets_to_feedback", uniqueConstraints={
- *     @ORM\UniqueConstraint(name="ticket_to_feedback_unique", columns={"ticket_id", "feedback_id"})
+ * @ORM\Entity(repositoryClass="DeskPRO\Bundle\AppBundle\Entity\Repository\TicketFeedbackLinkRepository")
+ * @ORM\Table(name="ticket_feedback_links", uniqueConstraints={
+ *     @ORM\UniqueConstraint(name="ticket_feedback_links_unique", columns={"ticket_id", "feedback_id"})
  * })
  *
  * @ORM\ChangeTrackingPolicy("NOTIFY")
@@ -56,7 +56,7 @@ use Symfony\Component\Validator\Constraints as Assert;
  *
  * @UniqueEntity(fields={"ticket", "feedback"}, errorPath="feedback")
  */
-class TicketToFeedback implements EntityInterface, NotifyPropertyChanged
+class TicketFeedbackLink implements EntityInterface, NotifyPropertyChanged
 {
     use NotifyPropertyChangedTrait;
 

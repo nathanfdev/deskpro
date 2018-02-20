@@ -42,8 +42,8 @@ use Application\DeskPRO\Tickets\ExecutorContext;
 use Application\DeskPRO\Tickets\TicketChangeTracker;
 use DeskPRO\Bundle\AppBundle\Entity\CustomPerDataOwnerInterface;
 use DeskPRO\Bundle\AppBundle\Entity\CustomPerDataTrait;
+use DeskPRO\Bundle\AppBundle\Entity\TicketFeedbackLink;
 use DeskPRO\Bundle\AppBundle\Entity\TicketFollowUp;
-use DeskPRO\Bundle\AppBundle\Entity\TicketToFeedback;
 use DeskPRO\Bundle\AppBundle\ObjectRouter\Configuration\PortalLinkCustom;
 use DeskPRO\Bundle\AppBundle\ObjectRouter\Configuration\PortalLinkRoute;
 use DeskPRO\Bundle\AppBundle\Validator\Constraints as AppAssert;
@@ -88,7 +88,7 @@ use Symfony\Component\Validator\Constraints as Assert;
  * @property TicketAccessCode[]|ArrayCollection  $access_codes
  * @property TicketMessage[]|ArrayCollection     $messages
  * @property TicketSms[]                         $sms_messages
- * @property TicketToFeedback[]|ArrayCollection  $feedback_links
+ * @property TicketFeedbackLink[]|ArrayCollection  $feedback_links
  * @property CustomDataTicket[]|ArrayCollection  $custom_data
  * @property LabelTicket[]                       $labels
  * @property string                              $sent_to_address
@@ -318,7 +318,7 @@ class Ticket extends DomainObject implements HighlightableModelInterface, Labels
     protected $sms_messages;
 
     /**
-     * @var TicketToFeedback[]|ArrayCollection
+     * @var TicketFeedbackLink[]|ArrayCollection
      */
     protected $feedback_links;
 
@@ -1751,7 +1751,7 @@ class Ticket extends DomainObject implements HighlightableModelInterface, Labels
     }
 
     /**
-     * @return TicketToFeedback[]|ArrayCollection
+     * @return TicketFeedbackLink[]|ArrayCollection
      */
     public function getFeedbackLinks()
     {
@@ -1759,11 +1759,11 @@ class Ticket extends DomainObject implements HighlightableModelInterface, Labels
     }
 
     /**
-     * Add a TicketToFeedback to this ticket.
+     * Add a TicketFeedbackLink to this ticket.
      *
-     * @param TicketToFeedback $feedbackLink
+     * @param TicketFeedbackLink $feedbackLink
      */
-    public function addFeedbackLink(TicketToFeedback $feedbackLink)
+    public function addFeedbackLink(TicketFeedbackLink $feedbackLink)
     {
         if ($this->feedback_links->contains($feedbackLink)) {
             return;
@@ -1787,11 +1787,11 @@ class Ticket extends DomainObject implements HighlightableModelInterface, Labels
     }
 
     /**
-     * @param TicketToFeedback $feedbackLink
+     * @param TicketFeedbackLink $feedbackLink
      *
      * @return $this
      */
-    public function removeFeedbackLink(TicketToFeedback $feedbackLink)
+    public function removeFeedbackLink(TicketFeedbackLink $feedbackLink)
     {
         $this->feedback_links->removeElement($feedbackLink);
         $this->_onPropertyChanged('feedback_links', null, $this->feedback_links);
@@ -5409,7 +5409,7 @@ class Ticket extends DomainObject implements HighlightableModelInterface, Labels
         $metadata->mapOneToMany(
             [
                 'fieldName'     => 'feedback_links',
-                'targetEntity'  => 'DeskPRO\\Bundle\\AppBundle\\Entity\\TicketToFeedback',
+                'targetEntity'  => 'DeskPRO\\Bundle\\AppBundle\\Entity\\TicketFeedbackLink',
                 'cascade'       => ['remove', 'persist', 'merge'],
                 'mappedBy'      => 'ticket',
                 'fetch'         => ClassMetadataInfo::FETCH_EXTRA_LAZY,

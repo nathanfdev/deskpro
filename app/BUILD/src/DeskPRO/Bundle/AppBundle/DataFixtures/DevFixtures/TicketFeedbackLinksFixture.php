@@ -32,7 +32,7 @@ use DeskPRO\Bundle\AppBundle\DataFixtures\AbstractDpFixture;
 use Doctrine\Common\DataFixtures\OrderedFixtureInterface;
 use Doctrine\Common\Persistence\ObjectManager;
 
-class TicketsToFeedbacksFixture extends AbstractDpFixture implements OrderedFixtureInterface
+class TicketFeedbackLinksFixture extends AbstractDpFixture implements OrderedFixtureInterface
 {
     const FEEDBACK_PER_TICKET_MIN = 0;
     const FEEDBACK_PER_TICKET_MAX = 5;
@@ -68,7 +68,7 @@ class TicketsToFeedbacksFixture extends AbstractDpFixture implements OrderedFixt
         $this->manager = $manager;
 
         $this->initIds();
-        $this->loadTicketToFeedback();
+        $this->loadTicketFeedbackLink();
     }
 
     private function initIds()
@@ -78,7 +78,7 @@ class TicketsToFeedbacksFixture extends AbstractDpFixture implements OrderedFixt
         $this->feedbackIds = $this->fetchIds(self::TABLE_FEEDBACK);
     }
 
-    private function loadTicketToFeedback()
+    private function loadTicketFeedbackLink()
     {
         $batch = [];
 
@@ -98,6 +98,6 @@ class TicketsToFeedbacksFixture extends AbstractDpFixture implements OrderedFixt
             }
         }
 
-        $this->db->batchInsert(self::TABLE_TICKETS_TO_FEEDBACK, $batch);
+        $this->db->batchInsert(self::TABLE_TICKET_FEEDBACK_LINKS, $batch);
     }
 }

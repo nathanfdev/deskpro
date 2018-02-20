@@ -82,11 +82,11 @@ pageMeta.baseId = '{{ baseId }}';
         <nav data-element-handler="DeskPRO.ElementHandler.SimpleTabs">
             <ul>
                 <li data-tab-for="#{{ baseId }}_fields_display_main_wrap">{{ phrase('agent.general.properties') }}</li>
-                {% if ticket_to_feedback|length %}
+                {% if ticket_feedback_links|length %}
                     <li data-tab-for="#{{ baseId }}_linked_tickets_wrap"><i
                           class="icon-link"></i> {{ phrase('agent.tickets.linked_tickets') }} (<span
                           id="{{ baseId }}_linked_tickets_count"
-                          data-count="{{ ticket_to_feedback|length }}">{{ ticket_to_feedback|length }}</span>)
+                          data-count="{{ ticket_feedback_links|length }}">{{ ticket_feedback_links|length }}</span>)
                     </li>
                 {% endif %}
             </ul>
