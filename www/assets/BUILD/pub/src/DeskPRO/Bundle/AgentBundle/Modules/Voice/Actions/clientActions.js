@@ -96,6 +96,11 @@ export const voiceBootstrap = createAction(
           dispatch(removeIncomingCall(reservation));
           resetActivitySid();
         });
+        worker.on('reservation.rejected', (reservation) => {
+          console.log('reservation.rejected');
+          dispatch(removeIncomingCall(reservation));
+          resetActivitySid();
+        });
         worker.on('reservation.rescinded', (reservation) => {
           console.log('reservation.rescinded');
           resetActivitySid();

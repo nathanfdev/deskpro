@@ -1172,6 +1172,16 @@ class TwilioCallbacksController extends AbstractVoiceController
             throw $this->createBadRequestException('Agent not found');
         }
 
+        if (!$this->get('twilio_adapter')->acceptTaskInForwardingCall($phoneCall, $agent)) {
+            $twiml = new Twiml();
+            $twiml->hangup();
+
+            $response = new Response($twiml);
+            $response->headers->set('Content-Type', 'text/xml');
+
+            return $response;
+        }
+
         $this->createOrJoinTicketForIncomingCall($phoneCall, $agent);
 
         return $this->phoneNumberAgentIncomingCallback($account, $phoneCall, $agent, $request);
