@@ -55,6 +55,7 @@ use Application\DeskPRO\Entity\Feedback;
 use Application\DeskPRO\Entity\FeedbackCategory;
 use Application\DeskPRO\Entity\FeedbackComment;
 use Application\DeskPRO\Entity\FeedbackStatusCategory;
+use Application\DeskPRO\Entity\FeedbackSubscription;
 use Application\DeskPRO\Entity\GlossaryWord;
 use Application\DeskPRO\Entity\GlossaryWordDefinition;
 use Application\DeskPRO\Entity\Job;
@@ -317,6 +318,7 @@ class ObjectsManager
             'Download'                  => [Factory\SimpleFactory::class, 'create', Download::class],
             'DownloadCategory'          => [Factory\SimpleFactory::class, 'create', DownloadCategory::class],
             'Feedback'                  => [Factory\CommonFactories::class, 'feedback'],
+            'FeedbackSubscription'      => [Factory\CommonFactories::class, 'create', FeedbackSubscription::class],
             'FeedbackCategory'          => [Factory\SimpleFactory::class, 'create', FeedbackCategory::class],
             'FeedbackStatusCategory'    => [Factory\SimpleFactory::class, 'create', FeedbackStatusCategory::class],
             'FeedbackComment'           => [Factory\SimpleFactory::class, 'create', FeedbackComment::class],
@@ -471,6 +473,7 @@ class ObjectsManager
             'AgentChatParticipant'      => [$this, 'find', AgentChatParticipant::class],
             'AgentChatMessage'          => [$this, 'find', AgentChatMessage::class],
             'Feedback'                  => [$this, 'find', Feedback::class],
+            'FeedbackSubscription'      => [$this, 'find', FeedbackSubscription::class],
             'FeedbackStatusCategory'    => [$this, 'find', FeedbackStatusCategory::class],
             'FeedbackCategory'          => [$this, 'find', FeedbackCategory::class],
             'FeedbackComment'           => [$this, 'find', FeedbackComment::class],

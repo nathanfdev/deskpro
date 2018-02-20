@@ -657,6 +657,14 @@ DeskPRO.Agent.PageFragment.Page.Ticket = new Orb.Class({
 			});
 		});
 
+		this.linkExistingFeedback = new DeskPRO.Agent.PageFragment.Page.TicketHelper.LinkFeedback(this, {
+			loadUrl: BASE_URL + "agent/tickets/" + this.meta.ticket_id + "/link-feedback-overlay",
+			saveUrl: DP_BASE_API_URL + "/v2/tickets/" + this.meta.ticket_id + "/feedback_links",
+      reloadPageUrl: BASE_URL + 'agent/tickets/' + this.meta.ticket_id
+		});
+
+		this.ownObject(this.linkExistingFeedback);
+
 		this.wrapper.find('.unlink-feedback').on('click', function(ev) {
 			Orb.cancelEvent(ev);
 
@@ -1440,6 +1448,10 @@ DeskPRO.Agent.PageFragment.Page.Ticket = new Orb.Class({
 		if (this.linkExistingTicket) {
       this.linkExistingTicket.destroy();
       this.linkExistingTicket = null;
+		}
+		if (this.linkExistingFeedback) {
+      this.linkExistingFeedback.destroy();
+      this.linkExistingFeedback = null;
 		}
 		if (this.labelsInput) {
       this.labelsInput.destroy();
@@ -2268,6 +2280,10 @@ DeskPRO.Agent.PageFragment.Page.Ticket = new Orb.Class({
 
           case 'link_existing_ticket':
 						self.linkExistingTicket.open();
+            break;
+
+          case 'link_existing_feedback':
+						self.linkExistingFeedback.open();
             break;
 
 					case 'kb-pending':

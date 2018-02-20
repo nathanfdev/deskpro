@@ -77,6 +77,7 @@ return [
     'api.error_codes.not_assignable_choice'          => 'Unable to select parent choice.',
     'api.error_codes.not_checked'                    => 'The field is not checked.',
     'api.error_codes.not_found'                      => 'The requested resource was not found.',
+    'api.error_codes.option_depends_from_setting'    => 'Setting "{{ setting }}" must be enabled to use this option.',
     'api.error_codes.not_unique_collection'          => 'One or more of the given values is not unique.',
     'api.error_codes.numeric'                        => 'Please enter a number, with no other characters.',
     'api.error_codes.only_one_value'                 => 'You should set exactly only one of {{ values }}',

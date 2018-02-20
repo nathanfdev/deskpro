@@ -6,10 +6,13 @@ Feature: /tickets/{id}/feedback_links endpoint
 
   Background:
     Given I'm authenticated as admin
+    And the setting "user.feedback_subscriptions" is set to 1
     And no TicketToFeedback records exist
+    And no FeedbackSubscription records exist
+    And I set permission "feedback.use" = 1 for "registered" usergroup
     And only the following Ticket records exist:
-      | #  | Subject  | Status         |
-      | t1 | Ticket 1 | awaiting_agent |
+      | #  | Subject  | Status         | Person   |
+      | t1 | Ticket 1 | awaiting_agent | {admin}  |
     And only the following Feedback records exist:
       | #  | Title      |
       | f1 | Feedback 1 |
@@ -32,7 +35,9 @@ Feature: /tickets/{id}/feedback_links endpoint
     When I send a POST request to "/api/v2/tickets/{t1}/feedback_links" with body:
     """
 {
-  "feedback": ~f1~
+  "feedback": ~f1~,
+  "is_subscribe_ticket_owner": 1,
+  "is_subscribe_ticket_participants": 1
 }
     """
     Then the response status code should be 201

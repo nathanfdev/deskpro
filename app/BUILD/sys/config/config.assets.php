@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2017, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2018, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -259,6 +259,7 @@ $CONFIG['agent_pages'] = [
         'javascripts/DeskPRO/Agent/PageFragment/Page/Ticket/TicketLocked.js',
         'javascripts/DeskPRO/Agent/PageFragment/Page/Ticket/TicketActions.js',
         'javascripts/DeskPRO/Agent/PageFragment/Page/TicketHelper/LinkTicket.js',
+        'javascripts/DeskPRO/Agent/PageFragment/Page/TicketHelper/LinkFeedback.js',
         'javascripts/DeskPRO/Agent/PageFragment/Page/UserChat.js',
         'javascripts/DeskPRO/Agent/PageFragment/Page/Visitor.js',
         'javascripts/DeskPRO/Agent/PageFragment/Page/Test.js',
@@ -276,6 +277,7 @@ $CONFIG['agent_element_handlers'] = [
         'javascripts/DeskPRO/Agent/ElementHandler/PersonSearchBox.js',
         'javascripts/DeskPRO/Agent/ElementHandler/OrgSearchBox.js',
         'javascripts/DeskPRO/Agent/ElementHandler/TicketSearchBox.js',
+        'javascripts/DeskPRO/Agent/ElementHandler/FeedbackSearchBox.js',
         'javascripts/DeskPRO/Agent/ElementHandler/PhoneCountryCode.js',
         'javascripts/DeskPRO/Agent/ElementHandler/PasswordPrompt.js',
         'javascripts/DeskPRO/Agent/ElementHandler/OverlayFrame.js',

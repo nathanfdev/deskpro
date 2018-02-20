@@ -5687,6 +5687,30 @@ CSS;
         return $this->render('AgentBundle:Ticket:link.html.twig');
     }
 
+    public function linkExistingFeedbackOverlayAction($ticket_id)
+    {
+        try {
+            $ticket = $this->getTicketOr404($ticket_id);
+        } catch (NotFoundHttpException $e) {
+            // try to find a delete log
+            $delete_log = $this->em->getRepository(TicketDeleted::class)->findOneBy(['ticket_id' => $ticket_id]);
+            if ($delete_log) {
+                return $this->render('AgentBundle:Ticket:deleted.html.twig', ['delete_log' => $delete_log]);
+            } else {
+                throw $e;
+            }
+        }
+
+        $exludeIds = $ticket->getFeedbackLinks()->map(function ($e) {
+            return $e->getFeedback()->getId();
+        })->toArray();
+
+        return $this->render('AgentBundle:Ticket:link-feedback.html.twig', [
+            'ticket'    => $ticket,
+            'exludeIds' => $exludeIds,
+        ]);
+    }
+
     public function unlinkTicketAction($ticket_id)
     {
         $ticket = $this->getTicketOr404($ticket_id);

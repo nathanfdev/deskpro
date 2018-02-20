@@ -1243,6 +1243,12 @@ $collection->create('agent_ticket_unlink', [
     'methods'    => ['POST'],
 ]);
 
+$collection->create('agent_ticket_link_existing_feedback_overlay', [
+    'path'         => '/tickets/{ticket_id}/link-feedback-overlay',
+    'controller'   => 'AgentBundle:Ticket:linkExistingFeedbackOverlay',
+    'requirements' => ['ticket_id' => '\\d+'],
+]);
+
 $collection->create('agent_ticket_departments_by_brand', [
     'path'       => '/tickets/new/get-departments/{brandId}',
     'defaults'   => ['brandId' => null],
@@ -1631,6 +1637,11 @@ $collection->create(
         'requirements' => ['feedbackId' => '\\d+'],
     ]
 );
+
+$collection->create('agent_feedbacksearch_quicksearch', [
+    'path'       => '/feedback-search/quick-search',
+    'controller' => 'AgentBundle:FeedbackSearch:quickSearch',
+]);
 
 $collection->create('agent_publish_listcomments', [
     'path'       => '/publish/comments/list/{brandId}/{type}',

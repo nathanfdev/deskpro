@@ -155,6 +155,13 @@ services:
     tags:
       - { name: form.type }
 
+  form.ticket_to_feedback:
+    class: DeskPRO\Bundle\AppBundle\Form\Type\Tickets\TicketToFeedbackType
+    arguments: ["@brand_aware_settings_resolver"]
+    tags:
+      - { name: form.type }
+
+
   form.organization:
     class: DeskPRO\Bundle\AppBundle\Form\Type\Organizations\OrganizationType
     arguments: ["@custom_field_manager"]

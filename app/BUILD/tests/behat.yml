@@ -32,6 +32,7 @@ api:
                 - DpBehat\Api\NotificationsContext
                 - DpBehat\Portal\GenericContext
                 - DpBehat\System\Alerts\IncidentsContext
+                - DpBehat\FeedbackSubscriptionContext
                 - DpBehat\TicketLogsContext
                 - DpBehat\Data\DataContext
                 - DpBehat\Data\PeopleContext

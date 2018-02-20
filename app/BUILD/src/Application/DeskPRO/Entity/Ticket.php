@@ -1753,7 +1753,7 @@ class Ticket extends DomainObject implements HighlightableModelInterface, Labels
     /**
      * @return TicketToFeedback[]|ArrayCollection
      */
-    public function getFeedbackLink()
+    public function getFeedbackLinks()
     {
         return $this->feedback_links;
     }

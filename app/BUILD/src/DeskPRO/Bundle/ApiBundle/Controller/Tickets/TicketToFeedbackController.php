@@ -28,6 +28,7 @@
 
 namespace DeskPRO\Bundle\ApiBundle\Controller\Tickets;
 
+use Application\DeskPRO\Entity\FeedbackSubscription;
 use DeskPRO\Bundle\ApiBundle\ApiDoc\Annotation\ApiDoc;
 use DeskPRO\Bundle\ApiBundle\Traits\Tickets\TicketAwarePersistModelTrait;
 use DeskPRO\Bundle\ApiBundle\Traits\Tickets\TicketSaveTrait;
@@ -35,6 +36,7 @@ use DeskPRO\Bundle\AppBundle\Annotation\ActionPermissions\Annotation\ApiModes;
 use DeskPRO\Bundle\AppBundle\Entity\TicketToFeedback;
 use DeskPRO\Bundle\AppBundle\Form\Type\Tickets\TicketToFeedbackType;
 use FOS\RestBundle\Controller\Annotations as Rest;
+use Symfony\Component\Form\FormInterface;
 use Symfony\Component\HttpFoundation\Request;
 
 /**
@@ -57,7 +59,8 @@ use Symfony\Component\HttpFoundation\Request;
  */
 class TicketToFeedbackController extends AbstractTicketsCrudSubController
 {
-    use TicketSaveTrait, TicketAwarePersistModelTrait;
+    use TicketSaveTrait;
+    use TicketAwarePersistModelTrait { persistModel as protected traitPersistModel; }
 
     public static $entity         = TicketToFeedback::class;
     public static $type           = TicketToFeedbackType::class;
@@ -81,6 +84,69 @@ class TicketToFeedbackController extends AbstractTicketsCrudSubController
         ]);
 
         return parent::handleForm($model, $request, $options);
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    protected function persistModel($entity, FormInterface $form = null)
+    {
+        $this->traitPersistModel($entity, $form);
+
+        $this->processSubscriptions(
+            $entity,
+            $form->get('is_subscribe_ticket_owner')->getData(),
+            $form->get('is_subscribe_ticket_participants')->getData()
+        );
+
+        return $entity;
+    }
+
+    /**
+     * @param TicketToFeedback $ticketToFeedback
+     * @param bool             $isSubscribeTicketOwner
+     * @param bool             $isSubscribeTicketParticipants
+     */
+    protected function processSubscriptions(
+        TicketToFeedback $ticketToFeedback,
+        bool $isSubscribeTicketOwner,
+        bool $isSubscribeTicketParticipants)
+    {
+        // collect persons to subscribe
+        $subscribePersons = [];
+        if ($isSubscribeTicketOwner) {
+            $subscribePersons[] = $ticketToFeedback->getTicket()->getPerson();
+        }
+        if ($isSubscribeTicketParticipants) {
+            foreach ($ticketToFeedback->getTicket()->getParticipants() as $ticketParticipant) {
+                $subscribePersons[] = $ticketParticipant->getTicket()->getPerson();
+            }
+        }
+
+        // subscribe persons
+        $feedback                = $ticketToFeedback->getFeedback();
+        $portalPermissionManager = $this->get('portal_permissions_manager');
+        $subscribedIds           = $this->getRepository(FeedbackSubscription::class)->getSubscribedPersonIds($feedback);
+
+        foreach ($subscribePersons as $person) {
+            if (in_array($person->getId(), $subscribedIds)) {
+                continue;
+            }
+
+            $subscribedIds[] = $person->getId();
+
+            // @TODO: optimize permission check for each user
+            if ($portalPermissionManager
+                    ->getPermissionsBagForPerson($person)
+                    ->hasContentCategoryAccess($feedback)) {
+                $feedbackSubscription = new FeedbackSubscription();
+                $feedbackSubscription->setFeedback($feedback);
+                $feedbackSubscription->setPerson($person);
+                $this->getManager()->persist($feedbackSubscription);
+            }
+        }
+
+        $this->getManager()->flush();
     }
 
     /**
