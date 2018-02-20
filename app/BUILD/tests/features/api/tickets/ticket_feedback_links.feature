@@ -1,4 +1,3 @@
-@new
 Feature: /tickets/{id}/feedback_links endpoint
   To CRUD DeskPRO ticket feedback links
   As an API user
