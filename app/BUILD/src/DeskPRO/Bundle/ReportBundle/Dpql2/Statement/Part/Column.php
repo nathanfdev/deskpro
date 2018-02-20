@@ -525,7 +525,8 @@ END)
                     $field = $manager->getFieldFromId($extraConditionValue);
                 }
 
-                $renderer = null;
+                $renderer     = null;
+                $preppedPrint = null;
                 if ($field && (array_search($type = $field->getTypeName(), ['date', 'datetime']) !== false)) {
                     $call    = $this->statementFactory->createColumn(array_merge($this->parts, ['value']));
                     $prepped = $call->prepare($statement, $section, $stack, $select, $result);
@@ -538,6 +539,13 @@ END)
                 } elseif ($field && $section !== 'select' && $field->isChoiceType()) {
                     $call    = $this->statementFactory->createColumn(array_merge($this->parts, ['field', 'id']));
                     $prepped = $call->prepare($statement, $section, $stack, $select, $result);
+
+                    $callPrint = $this->statementFactory->createFunctionCall('if', [
+                        $this->statementFactory->createColumn(array_merge($this->parts, ['value'])),
+                        $this->statementFactory->createColumn(array_merge($this->parts, ['field', 'title'])),
+                        $this->statementFactory->createColumn(array_merge($this->parts, ['input'])),
+                    ]);
+                    $preppedPrint = $callPrint->prepare($statement, $section, $stack, $select, $result);
                 } else {
                     $call = $this->statementFactory->createFunctionCall('if', [
                         $this->statementFactory->createColumn(array_merge($this->parts, ['value'])),
@@ -547,7 +555,7 @@ END)
                     $prepped = $call->prepare($statement, $section, $stack, $select, $result);
                 }
 
-                return new Prepared($prepped->sql(), $this->_prettifyColumnName($field ? $field->getTitle() : $name), false, $renderer);
+                return new Prepared($prepped->sql(), $this->_prettifyColumnName($field ? $field->getTitle() : $name), $preppedPrint ? $preppedPrint->sql() : false, $renderer);
             } elseif (preg_match('/^custom_def_/', $assocTable)) {
                 $call = $this->statementFactory->createFunctionCall('if', [
                     $this->statementFactory->createColumn(array_merge($this->parts, ['parent', 'id'])),

@@ -448,7 +448,8 @@ END)
                     $field = $manager->getFieldFromId($extraConditionValue);
                 }
 
-                $renderer = null;
+                $renderer     = null;
+                $preppedPrint = null;
                 if ($field && (array_search($type = $field->getTypeName(), ['date', 'datetime']) !== false)) {
                     $call    = new self(array_merge($this->parts, ['value']));
                     $prepped = $call->prepare($statement, $section, $stack, $select, $result);
@@ -461,6 +462,13 @@ END)
                 } elseif ($field && $section !== 'select' && $field->isChoiceType()) {
                     $call    = new self(array_merge($this->parts, ['field', 'id']));
                     $prepped = $call->prepare($statement, $section, $stack, $select, $result);
+
+                    $callPrint = new FunctionCall('if', [
+                        new self(array_merge($this->parts, ['value'])),
+                        new self(array_merge($this->parts, ['field', 'title'])),
+                        new self(array_merge($this->parts, ['input'])),
+                    ]);
+                    $preppedPrint = $callPrint->prepare($statement, $section, $stack, $select, $result);
                 } else {
                     $call = new FunctionCall('if', [
                         new self(array_merge($this->parts, ['value'])),
@@ -470,7 +478,7 @@ END)
                     $prepped = $call->prepare($statement, $section, $stack, $select, $result);
                 }
 
-                return new Prepared($prepped->sql(), $this->_prettifyColumnName($field ? $field->getTitle() : $name), false, $renderer);
+                return new Prepared($prepped->sql(), $this->_prettifyColumnName($field ? $field->getTitle() : $name), $preppedPrint ? $preppedPrint->sql() : false, $renderer);
             } elseif (preg_match('/^custom_def_/', $assocTable)) {
                 $call = new FunctionCall('if', [
                     new self(array_merge($this->parts, ['parent', 'id'])),
