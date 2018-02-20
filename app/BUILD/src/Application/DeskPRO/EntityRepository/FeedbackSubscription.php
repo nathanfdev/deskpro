@@ -34,18 +34,18 @@
 
 namespace Application\DeskPRO\EntityRepository;
 
-use Application\DeskPRO\Entity\Feedback;
+use Application\DeskPRO\Entity\Feedback as FeedbackEntity;
 
 class FeedbackSubscription extends AbstractEntityRepository
 {
     /**
-     * @param Feedback|int $feedback
+     * @param FeedbackEntity|int $feedback
      *
      * @return array
      */
     public function getSubscribedPersonIds($feedback)
     {
-        if ($feedback instanceof Feedback) {
+        if ($feedback instanceof FeedbackEntity) {
             $feedback = $feedback->id;
         }
 
