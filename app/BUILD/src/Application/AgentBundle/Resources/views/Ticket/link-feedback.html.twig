@@ -24,14 +24,19 @@
           </a></li>
         </script>
         <div class="input-wrapper">
-          <div style="display: block;">
-            <input type="checkbox" id="is_subscribe_owner" name="is_subscribe_owner" checked="checked">
-            <label for="is_subscribe_owner">{{ phrase('agent.tickets.link_existing_feedback_subscr_owner', {'name': ticket.person.display_name, 'email': ticket.person.email_address}) }}</label>
-          </div>
-          <div style="display: block;">
-            <input type="checkbox" id="is_subscribe_participants" name="is_subscribe_participants">
-            <label for="is_subscribe_participants">{{ phrase('agent.tickets.link_existing_feedback_subscr_part', {'count': ticket.participants.count}) }}</label>
-          </div>
+          {% if brand_setting('user.feedback_subscriptions') %}
+            <div style="display: block;">
+              <input type="checkbox" id="is_subscribe_owner" name="is_subscribe_owner" checked="checked">
+              <label for="is_subscribe_owner">{{ phrase('agent.tickets.link_existing_feedback_subscr_owner', {'name': ticket.person.display_name, 'email': ticket.person.email_address}) }}</label>
+            </div>
+            <div style="display: block;">
+              <input type="checkbox" id="is_subscribe_participants" name="is_subscribe_participants">
+              <label for="is_subscribe_participants">{{ phrase('agent.tickets.link_existing_feedback_subscr_part', {'count': ticket.participants.count}) }}</label>
+            </div>
+          {% else %}
+            <input type="hidden" id="is_subscribe_owner" name="is_subscribe_owner">
+            <input type="hidden" id="is_subscribe_participants" name="is_subscribe_participants">
+          {% endif %}
           <input type="text" style="width: 78%" class="term" placeholder="{{ phrase('agent.tickets.find_feedback') }}" class="user-input" />
         </div>
         <input type="hidden" name="feedback_id" class="feedback-id" value="" />

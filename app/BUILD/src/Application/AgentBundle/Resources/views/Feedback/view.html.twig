@@ -82,7 +82,7 @@ pageMeta.baseId = '{{ baseId }}';
         <nav data-element-handler="DeskPRO.ElementHandler.SimpleTabs">
             <ul>
                 <li data-tab-for="#{{ baseId }}_fields_display_main_wrap">{{ phrase('agent.general.properties') }}</li>
-                {% if ticket_feedback_links|length %}
+                {% if ticket_feedback_links|length and app.user.hasPerm('agent_tickets.use') %}
                     <li data-tab-for="#{{ baseId }}_linked_tickets_wrap"><i
                           class="icon-link"></i> {{ phrase('agent.tickets.linked_tickets') }} (<span
                           id="{{ baseId }}_linked_tickets_count"
@@ -157,9 +157,11 @@ pageMeta.baseId = '{{ baseId }}';
           <li class="elm no-choice">{{ phrase('agent.feedback.merge_howto') }}</li>
         </ul>
       </article>
-      <article id="{{ baseId }}_linked_tickets_wrap">
-          {% include 'AgentBundle:Feedback:linked-tickets.html.twig' %}
-      </article>
+      {% if ticket_feedback_links|length and app.user.hasPerm('agent_tickets.use') %}
+        <article id="{{ baseId }}_linked_tickets_wrap">
+            {% include 'AgentBundle:Feedback:linked-tickets.html.twig' %}
+        </article>
+      {% endif %}
     </section>
   </div>
 </div>
