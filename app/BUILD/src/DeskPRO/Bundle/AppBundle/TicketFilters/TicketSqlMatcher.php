@@ -146,6 +146,10 @@ class TicketSqlMatcher extends AbstractMatcher
 
         $rootPart = $query->root;
 
+        if ($rootPart === null) {
+            return $qb;
+        }
+
         if ($rootPart instanceof TermGroup) {
             $condGroup = $this->buildTermGroup($rootPart, $context);
             $qb->addQueryConditionGroup($condGroup);
@@ -294,10 +298,16 @@ class TicketSqlMatcher extends AbstractMatcher
             return;
         }
 
-        foreach ($orderFields as $orderInfo) {
+        foreach ($orderFields as $idx => $orderInfo) {
             list($fieldId, $order) = $orderInfo;
 
+            $joinId = 'order'.$idx;
+
             switch ($fieldId) {
+                case TicketSearchParams::ORDER_SLA_SEVERITY:
+                    $qb->leftJoin('tickets', 'ticket_slas', $joinId, "$joinId.ticket_id = tickets.id");
+                    $qb->addOrderBy("MAX(FIELD($joinId.sla_status, 'ok', 'warning', 'fail'))");
+                    break;
                 case TicketSearchParams::ORDER_ID:
                     $qb->addOrderBy('tickets.id', $order);
                     break;

@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2017, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2018, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -36,6 +36,7 @@ use DeskPRO\Component\FilterQueryLanguage;
 use Symfony\Bundle\FrameworkBundle\Command\ContainerAwareCommand;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
+use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
 
 class ParseFqlCommand extends ContainerAwareCommand
@@ -46,6 +47,7 @@ class ParseFqlCommand extends ContainerAwareCommand
     protected function configure()
     {
         $this->setName('dpdev:fql:parse');
+        $this->addOption('format', 'm', InputOption::VALUE_REQUIRED, 'Format: json (default), debug', 'json');
         $this->addArgument('fqlQuery', InputArgument::REQUIRED, 'The FQL query to parse');
     }
 
@@ -59,12 +61,17 @@ class ParseFqlCommand extends ContainerAwareCommand
         $fqlQuery = $input->getArgument('fqlQuery');
         $query    = $parser->parseQuery($fqlQuery);
 
-        $format = 'json';
+        $format = $input->getOption('format');
 
         switch ($format) {
             case 'json':
                 echo json_encode($query->toArray(), \JSON_PRETTY_PRINT);
                 echo "\n";
+                break;
+
+            case 'debug':
+                echo "QUERY: {$fqlQuery}\n\n";
+                print_r($query);
                 break;
 
             default:

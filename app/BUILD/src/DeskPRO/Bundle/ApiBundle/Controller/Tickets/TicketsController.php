@@ -38,6 +38,11 @@ use DeskPRO\Bundle\AppBundle\Annotation\ActionPermissions\Annotation\ApiModes;
 use DeskPRO\Bundle\AppBundle\Form\Type\Tickets\TicketType;
 use DeskPRO\Bundle\AppBundle\Security\Voter\PermissionGroups\PermissionGroupVoter;
 use DeskPRO\Bundle\AppBundle\Serializer\Annotation\SerializerView;
+use DeskPRO\Bundle\AppBundle\TicketFilters\Context;
+use DeskPRO\Bundle\AppBundle\TicketFilters\Terms\Terms;
+use DeskPRO\Bundle\AppBundle\TicketFilters\TicketSearchParams;
+use DeskPRO\Component\FilterQueryLanguage\QueryUtil;
+use DeskPRO\Component\Util\ListUtils;
 use FOS\RestBundle\Controller\Annotations as Rest;
 use FOS\RestBundle\View\View;
 use Symfony\Component\HttpFoundation\Request;
@@ -169,6 +174,7 @@ class TicketsController extends AbstractTicketsController
         $offset      = $request->query->getInt('offset');
         $currentPage = !$offset ? $request->query->getInt('page', 1) : null;
         $maxPerPage  = $request->query->getInt('count', self::$listPerPage);
+        $meta        = [];
 
         // if the "ids" param is provided, then just use it to select tickets
         $ids = $request->query->get('ids');
@@ -180,7 +186,9 @@ class TicketsController extends AbstractTicketsController
             $total       = count($ids);
         } // otherwise search for IDs using term engine and return Pagerfanta instance
         else {
-            // todo refactor
+            $searchParams     = new TicketSearchParams();
+            $searchQueryParts = [];
+
             $params = $request->query->all();
             $reset  = [
                 'include',
@@ -198,52 +206,170 @@ class TicketsController extends AbstractTicketsController
                 }
             }
 
-            // sort and order params
-            if (array_key_exists('order_by', $params)) {
-                $allowed = [
-                    'id',
-                    'urgency',
-                    'date_created',
-                    'date_last_agent_reply',
-                    'date_last_user_reply',
-                    'date_last_reply',
-                    'date_user_waiting',
-                    'total_user_waiting',
-                    'subject',
-                    'status',
-                    'not_status',
-                    'sla',
-                    'sla_status',
-                ];
-                $orderBy = $params['order_by'];
-                if (!in_array($orderBy, $allowed)) {
-                    throw $this->createBadRequestException("Unknown order by option value: $orderBy");
-                }
-
-                if ($orderBy === 'date_last_reply') {
-                    $orderBy = 'IF(date_last_agent_reply > date_last_user_reply, date_last_agent_reply, date_last_user_reply)';
-                }
-
-                unset($params['order_by']);
-            } else {
-                $orderBy = 'id';
-            }
             if (array_key_exists('order_dir', $params)) {
-                $orderDir = $params['order_dir'];
+                $orderDir = strtoupper($params['order_dir']);
                 unset($params['order_dir']);
+
+                if ($orderDir !== 'ASC' && $orderDir !== 'DESC') {
+                    throw $this->createBadRequestException("Unknown order dir: $orderDir");
+                }
             } else {
                 $orderDir = 'asc';
             }
 
-            // Ticket status filter
-            if (!array_key_exists('status', $params)) {
-                $params['status'] = ['awaiting_user', 'awaiting_agent', 'resolved', 'archived'];
+            // sort and order params
+            if (array_key_exists('order_by', $params)) {
+                $orderByOpt = $params['order_by'];
+                unset($params['order_by']);
+
+                switch ($orderByOpt) {
+                    case 'id':
+                        $orderBy = TicketSearchParams::ORDER_ID;
+                        break;
+                    case 'urgency':
+                        $orderBy = TicketSearchParams::ORDER_URGENCY;
+                        break;
+                    case 'date_created':
+                        $orderBy = TicketSearchParams::ORDER_DATE_CREATED;
+                        break;
+                    case 'date_last_agent_reply':
+                        $orderBy = TicketSearchParams::ORDER_DATE_LAST_AGENT_REPLY;
+                        break;
+                    case 'date_last_user_reply':
+                        $orderBy = TicketSearchParams::ORDER_DATE_LAST_USER_REPLY;
+                        break;
+                    case 'date_last_reply':
+                        $orderBy = TicketSearchParams::ORDER_ID; // todo -- DP-1065
+                        break;
+                    case 'date_user_waiting':
+                        $orderBy = TicketSearchParams::ORDER_DATE_USER_WAITING;
+                        break;
+                    case 'total_user_waiting':
+                        $orderBy = TicketSearchParams::ORDER_DATE_USER_WAITING;
+                        break;
+                    case 'subject':
+                        $orderBy = TicketSearchParams::ORDER_ID; // removed, doesnt make sense?
+                        break;
+                    case 'status':
+                        $orderBy = TicketSearchParams::ORDER_ID; // removed, doesnt make sense?
+                        break;
+                    case 'not_status':
+                        $orderBy = TicketSearchParams::ORDER_ID; // removed, doesnt make sense?
+                        break;
+                    case 'sla':
+                        $orderBy = TicketSearchParams::ORDER_SLA_SEVERITY;
+                        break;
+                    case 'sla_status':
+                        $orderBy = TicketSearchParams::ORDER_SLA_SEVERITY;
+                        break;
+                    default:
+                        throw $this->createBadRequestException("Unknown order by option value: $orderByOpt");
+                }
+            } else {
+                $orderBy = TicketSearchParams::ORDER_ID;
             }
 
-            // TODO term engine was removed
+            foreach ($params as $field => $value) {
+                if (is_array($value)) {
+                    $valueQuoted = ListUtils::map($value, function ($v) {
+                        return QueryUtil::quoteValue($v);
+                    });
+                    $valueQuoted = '("'.implode('","', $valueQuoted).'")';
+                } else {
+                    $valueQuoted = QueryUtil::quoteValue($value);
+                }
 
-            $total = 0;
-            $ids   = [];
+                $op = '=';
+
+                switch ($field) {
+                    case 'labels':
+                        $op          = 'IN';
+                        $searchField = Terms::TICKET_LABELS;
+                        break;
+                    case 'star':
+                        // TODO
+                        throw $this->createBadRequestException("Unknown filter termvalue: $field");
+                    case 'status':
+                        $searchField = Terms::TICKET_STATUS;
+                        break;
+                    case 'not_status':
+                        $op          = '!=';
+                        $searchField = Terms::TICKET_STATUS;
+                        break;
+                    case 'agent':
+                        $searchField = Terms::TICKET_AGENT;
+                        break;
+                    case 'person':
+                        // TODO
+                        throw $this->createBadRequestException("Unknown filter termvalue: $field");
+                    case 'language':
+                        $searchField = Terms::TICKET_LANGUAGE;
+                        break;
+                    case 'organization':
+                        // TODO
+                        throw $this->createBadRequestException("Unknown filter termvalue: $field");
+                    case 'problem':
+                        // TODO
+                        throw $this->createBadRequestException("Unknown filter termvalue: $field");
+                    case 'department':
+                        $searchField = Terms::TICKET_DEPARTMENT;
+                        break;
+                    case 'sla':
+                        $op          = 'HAS';
+                        $searchField = Terms::TICKET_SLAS;
+                        break;
+                    case 'sla_status':
+                        $op = 'HAS';
+                        switch ($value) {
+                            case 'ok':
+                                $valueQuoted = 'passingSlas()';
+                                break;
+                            case 'fail':
+                            case 'failing':
+                            case 'failed':
+                                $valueQuoted = 'failedSlas()';
+                                break;
+                            case 'warn':
+                            case 'warning':
+                            case 'warned':
+                                $valueQuoted = 'warningSlas()';
+                                break;
+                            default:
+                                throw $this->createBadRequestException("Unknown sla_status value: $value");
+                        }
+                        $searchField = Terms::TICKET_SLAS;
+                        break;
+                    default:
+                        throw $this->createBadRequestException("Unknown filter termvalue: $field");
+                }
+
+                $searchQueryParts[] = "{$searchField} {$op} {$valueQuoted}";
+            }
+
+            $searchParams->orderBy($orderBy, $orderDir);
+
+            if (!empty($searchQueryParts)) {
+                $searchQuery = implode('AND ', $searchQueryParts);
+            } else {
+                $searchQuery = '';
+            }
+
+            $loader  = $this->container->get('ticketfilters.loader');
+            $meAgent = $loader->getAgentById($this->getUser()->getId());
+            if (!$meAgent) {
+                throw $this->createNotFoundException('failed to get agent model');
+            }
+            $context = new Context($meAgent);
+
+            $searcher = $this->container->get('ticketfilter.ticket_sql_searcher');
+            $parser   = $this->container->get('ticketfilters.queryparser');
+            $qb       = $searcher
+                ->getIdsQueryBuilder($parser->parseQuery($searchQuery), $context)
+                ->setMaxResults(1000);
+
+            $ids         = $qb->execute()->fetchAll(\PDO::FETCH_COLUMN);
+            $total       = count($ids);
+            $meta['fql'] = $searchQuery;
         }
 
         if ($offset) {
@@ -252,7 +378,7 @@ class TicketsController extends AbstractTicketsController
             $result = $this->getTicketsPager($total, $ids, $currentPage, $maxPerPage);
         }
 
-        return View::create($this->wrap($result));
+        return View::create($this->wrap($result, $meta));
     }
 
     /**

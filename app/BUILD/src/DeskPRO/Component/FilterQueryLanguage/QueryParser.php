@@ -70,6 +70,10 @@ class QueryParser
      */
     public function parse()
     {
+        if (trim($this->fqlQuery) === '') {
+            return new Query\Query(null, $this->fqlQuery);
+        }
+
         // Parse & build AST
         $this->lexer->moveNext();
 
