@@ -36,7 +36,7 @@ const config = {
     DeskPRO_PortalBundle_print_style: './src/DeskPRO/Bundle/PortalBundle/Resources/style/print-style.scss',
 
     // Widget
-    // DeskPRO_WidgetBundle:        './src/DeskPRO/Bundle/WidgetBundle/DeskPRO_WidgetBundle',
+    DeskPRO_WidgetBundle:        './src/DeskPRO/Bundle/WidgetBundle/DeskPRO_WidgetBundle',
     DeskPRO_WidgetBundle_style:  './src/DeskPRO/Bundle/WidgetBundle/Resources/style/widget-style.scss',
     DeskPRO_EmbedFormBundle:     './src/DeskPRO/Bundle/WidgetBundle/DeskPRO_EmbedFormBundle',
     DeskPRO_EmbedHelpdeskBundle: './src/DeskPRO/Bundle/WidgetBundle/DeskPRO_EmbedHelpdeskBundle',

@@ -168,7 +168,6 @@ function getWebpackConfig(mode, isProd) {
         path.join(__dirname, 'src/DeskPRO/Dev'),
         path.join(__dirname, 'built-tools'),
         path.join(__dirname, 'vendor'),
-        //path.join(__dirname, 'node_modules')
       ],
 
       alias: {
