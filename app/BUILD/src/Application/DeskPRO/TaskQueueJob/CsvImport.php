@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2017, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2018, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -41,8 +41,10 @@ use Application\DeskPRO\Entity\Person;
 use Application\DeskPRO\Entity\PersonEmail;
 use Application\DeskPRO\Entity\TaskQueue;
 use DeskPRO\Bundle\ImportBundle\CsvImport\CsvImporter;
+use DeskPRO\Component\Util\MapUtils;
 use Monolog\Logger;
 use Orb\Logger\Handler\ArrayHandler;
+use Orb\Util\Strings;
 
 /**
  * Class CsvImport.
@@ -308,8 +310,12 @@ class CsvImport extends AbstractJob
 
         $result = false;
         try {
+            $row = MapUtils::mapValues($row, function ($k, $v) {
+                return Strings::utf8_bad_strip($v);
+            });
             $result = $importer->importPerson($this->data['field_maps'], $row, $this->data['ref'], $this->data['welcome_email']);
         } catch (\Exception $e) {
+            $this->getLogger()->logDebug('Skipped row due to error: '.$e->getMessage());
             $this->log(['Skipped row due to error: '.$e->getMessage()]);
         }
 

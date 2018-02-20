@@ -7,7 +7,7 @@ import { setAgentSettings } from 'DeskPRO/Bundle/AgentBundle/Modules/Agent/Actio
 import { setupActionAlerts } from 'DeskPRO/Bundle/AgentBundle/Modules/Application/Actions/notificationActions';
 import { setImMe, loadDrafts } from 'DeskPRO/Bundle/AgentBundle/Modules/IM/Actions/messagesActions';
 import { agentsSelector } from 'DeskPRO/Bundle/AppBundle/Modules/RecordsStore/Shortcuts/agents';
-import { updateAgentStatus } from 'DeskPRO/Bundle/AgentBundle/Modules/Agent/Actions/agentActions';
+import { updateAgentStatus, setOnlineAgents } from 'DeskPRO/Bundle/AgentBundle/Modules/Agent/Actions/agentActions';
 import agentPhrases from 'DeskPRO/Bundle/AgentBundle/AgentPhrases';
 import DeskproAppStore from 'DeskPRO/Bundle/AgentBundle/Modules/DeskproApps/DeskproAppStore';
 import { setVoiceTokens, setVoiceActivities, setVoiceSettings } from '../../Voice/Actions/clientActions';
@@ -100,6 +100,7 @@ export const preloadData    = createAction(
         dispatch(setCollection('TicketCustomFields', 'all', data.ticket_custom_fields));
         dispatch(setupActionAlerts(data.alerts));
         dispatch(updateAgentStatus({ agent_ids: data.agents.filter(a => a.online_for_chat).map(a => a.id) }));
+        dispatch(setOnlineAgents(data.agents.filter(a => a.online).map(a => a.id)));
 
         if (data.onboardings) {
           dispatch(setCollection('Onboarding', 'pending', [data.onboardings]));

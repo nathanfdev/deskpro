@@ -69,6 +69,10 @@ export const displayTypes = [
   {
     label: 'Stat',
     value: 'simple_stat'
+  },
+  {
+    label: 'Gauge',
+    value: 'gauge'
   }
 ];
 

@@ -51,9 +51,10 @@ class DashboardData extends AbstractDefaultData
 
     protected $dashboards = [
         [
-            'title'       => 'Ticket Insights',
-            'system_name' => 'ticket_insights',
-            'reports'     => [
+            'title'         => 'Ticket Insights',
+            'system_name'   => 'ticket_insights',
+            'display_order' => -1000,
+            'reports'       => [
                 [
                     'title'      => 'Overview',
                     'sort_order' => 1,
@@ -424,9 +425,10 @@ class DashboardData extends AbstractDefaultData
             ],
         ],
         [
-            'title'       => 'Chat Insights',
-            'system_name' => 'chat_insights',
-            'reports'     => [
+            'title'         => 'Chat Insights',
+            'system_name'   => 'chat_insights',
+            'display_order' => -900,
+            'reports'       => [
                 [
                     'title'      => 'Overview',
                     'sort_order' => 2,
@@ -520,6 +522,9 @@ class DashboardData extends AbstractDefaultData
         $widgetRepository = $this->getEm()->getRepository(ReportWidget::class);
         if (!empty($dashboard['system_name'])) {
             $dashboardEntity->setSystemName($dashboard['system_name']);
+        }
+        if (!empty($dashboard['display_order'])) {
+            $dashboardEntity->setDisplayOrder($dashboard['display_order']);
         }
         foreach ($dashboard['reports'] as $report) {
             $tab = new Tab();

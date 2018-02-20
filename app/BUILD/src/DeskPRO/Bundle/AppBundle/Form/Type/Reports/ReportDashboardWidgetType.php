@@ -32,6 +32,7 @@ use Application\DeskPRO\Entity\Person;
 use Application\DeskPRO\Entity\ReportDashboardReport;
 use Application\DeskPRO\Entity\ReportDashboardWidget;
 use Application\DeskPRO\Entity\ReportWidget;
+use DeskPRO\Bundle\ReportBundle\Service\DashboardWidget;
 use Doctrine\ORM\EntityRepository;
 use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 use Symfony\Component\Form\AbstractType;
@@ -62,15 +63,13 @@ class ReportDashboardWidgetType extends AbstractType
                 'required'          => true,
                 'choices_as_values' => true,
                 'choices'           => [
-                    ReportDashboardWidget::TYPE_SIMPLE_BARS,
-                    ReportDashboardWidget::TYPE_BARS,
-                    ReportDashboardWidget::TYPE_SIMPLE_LINES,
-                    ReportDashboardWidget::TYPE_LINES,
-                    ReportDashboardWidget::TYPE_AREA,
-                    ReportDashboardWidget::TYPE_SIMPLE_AREA,
-                    ReportDashboardWidget::TYPE_PIE,
-                    ReportDashboardWidget::TYPE_TABLE,
-                    ReportDashboardWidget::TYPE_SIMPLE_STAT,
+                    DashboardWidget::WIDGET_RENDER_TYPE_BAR,
+                    DashboardWidget::WIDGET_RENDER_TYPE_LINE,
+                    DashboardWidget::WIDGET_RENDER_TYPE_AREA,
+                    DashboardWidget::WIDGET_RENDER_TYPE_PIE,
+                    DashboardWidget::WIDGET_RENDER_TYPE_GAUGE,
+                    DashboardWidget::WIDGET_RENDER_TYPE_STAT,
+                    DashboardWidget::WIDGET_RENDER_TYPE_TABLE,
                 ],
             ])
             ->add('widget', EntityType::class, [

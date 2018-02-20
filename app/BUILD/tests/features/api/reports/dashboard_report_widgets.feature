@@ -90,7 +90,7 @@ Feature: /dashboard_report_widgets endpoint
 {
   "title": "My widget",
   "report": ~r3~,
-  "type": "bars",
+  "type": "simple_bars",
   "widget": ~w1~,
   "size_x": 100,
   "size_y": 200,
@@ -106,7 +106,7 @@ Feature: /dashboard_report_widgets endpoint
     """
     Then the response status code should be 201
     And the JSON node "data.title" should be equal to "My widget"
-    And the JSON node "data.type" should be equal to "bars"
+    And the JSON node "data.type" should be equal to "simple_bars"
     And the JSON node "data.widget_type" should be equal to "graph"
     And the JSON node "data.widget" should be equal to "{w1}"
     And the JSON node "data.size_x" should be equal to 100
@@ -132,7 +132,7 @@ Feature: /dashboard_report_widgets endpoint
 {
   "title": "Edited widget",
   "report": ~r3~,
-  "type": "bars",
+  "type": "simple_bars",
   "widget": ~w1~,
   "size_x": 100,
   "size_y": 200,
@@ -151,7 +151,7 @@ Feature: /dashboard_report_widgets endpoint
     When I send a GET request to "/api/v2/dashboard_report_widgets/{dw4}"
     Then the JSON node "data.title" should be equal to "Edited widget"
     And the JSON node "data.report" should be equal to "{r3}"
-    And the JSON node "data.type" should be equal to "bars"
+    And the JSON node "data.type" should be equal to "simple_bars"
     And the JSON node "data.widget_type" should be equal to "graph"
     And the JSON node "data.widget" should be equal to "{w1}"
     And the JSON node "data.size_x" should be equal to 100

@@ -29,7 +29,9 @@ class IncomingCall extends React.Component {
   };
 
   componentDidMount() {
-    this.audio.playSound();
+    if (this.audio) {
+      this.audio.playSound();
+    }
 
     const { onDecline, agentVoicemailTimeout } = this.props;
     if (agentVoicemailTimeout) {
@@ -136,7 +138,10 @@ class IncomingCall extends React.Component {
           Call was accepted by another agent
         </div>
 
-        {agent && <CallTarget target={{ type: 'agent', agent }} />}
+        {agent
+          ? <CallTarget target={{ type: 'agent', agent }} />
+          : <div className="ui active centered inline loader incoming-call-avatar-loader" />
+        }
 
         <div className="buttons">
           <a
@@ -145,7 +150,7 @@ class IncomingCall extends React.Component {
             onClick={this.onDecline}
           >
             <i className="icon remove" />
-            Ignore
+            Dismiss
           </a>
         </div>
       </div>

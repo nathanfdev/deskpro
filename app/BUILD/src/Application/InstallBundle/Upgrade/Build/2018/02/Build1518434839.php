@@ -26,49 +26,20 @@
  * ~ Thanks, Everyone at Team DeskPRO
  */
 
-namespace DeskPRO\Bundle\ReportBundle\Reports\Renderer;
+namespace Application\InstallBundle\Upgrade\Build;
 
-use DeskPRO\Bundle\ReportBundle\Reports\Results;
-
-/**
- * Interface ReportsRendererInterface.
- */
-interface ReportsRendererInterface
+class Build1518434839 extends AbstractBuild implements OnlineBuildInterface
 {
-    const TYPE_TABLE = 'table';
-    const TYPE_LINE  = 'line';
-    const TYPE_PIE   = 'pie';
-    const TYPE_BAR   = 'bar';
-    const TYPE_AREA  = 'area';
-    const TYPE_GAUGE = 'gauge';
-    const TYPE_STAT  = 'stat';
+    public function addNewTables()
+    {
+    }
 
-    /**
-     * @return string
-     */
-    public static function getOutputFormat();
+    public function runAlters()
+    {
+        $this->execDbQuery('default', 'ALTER TABLE report_dashboard ADD display_order INT DEFAULT 0 NOT NULL');
+    }
 
-    /**
-     * Gets the MIME content type for this type of output.
-     *
-     * @return string
-     */
-    public static function getContentType();
-
-    /**
-     * Gets the file extension for this type of output.
-     *
-     * @return string
-     */
-    public static function getExtension();
-
-    /**
-     * Render to the specified format and type.
-     *
-     * @param Results $results
-     * @param array   $options
-     *
-     * @return string|array
-     */
-    public function render(Results $results, array $options = []);
+    public function run()
+    {
+    }
 }

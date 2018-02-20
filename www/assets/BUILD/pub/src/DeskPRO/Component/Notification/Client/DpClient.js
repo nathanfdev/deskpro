@@ -38,11 +38,11 @@ export default class DpClient extends AbstractClient {
 
   bind(channelName, eventName) {
     const that = this;
-    this.client.on(eventName, (data) => {
+    this.client.on(`${channelName}-${eventName}`, (data) => {
       if (that.options.debug === true) {
         console.log(`DpClient received message with type: ${eventName}`, data);
       }
-      if (data.target === 'agent_public' || parseInt(data.target, 10) === that.options.me) {
+      if (data.target === 'agent_public' || (parseInt(data.target, 10) === that.options.me)) {
         that.options.dispatcher(eventName, data);
       }
     });

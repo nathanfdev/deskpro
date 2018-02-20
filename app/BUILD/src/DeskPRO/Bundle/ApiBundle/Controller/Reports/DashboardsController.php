@@ -64,6 +64,15 @@ class DashboardsController extends CrudController
     public static $type         = ReportDashboardType::class;
     public static $listPaginate = false;
 
+    public static $sortOptions = [
+        'id'            => 'id',
+        'display_order' => 'display_order',
+        'title'         => 'title',
+    ];
+
+    public static $listSort  = 'display_order';
+    public static $listOrder = 'asc';
+
     /**
      * @Rest\Get("/{id}/reports")
      *
@@ -124,5 +133,14 @@ class DashboardsController extends CrudController
             ->setParameter('person', $this->getUser())
             ->setParameter('teams', $this->getUser()->getTeams())
         ;
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    protected function applySorting(QueryBuilder $qb, $alias, Request $request)
+    {
+        parent::applySorting($qb, $alias, $request);
+        $qb->addOrderBy($alias.'.title', 'asc');
     }
 }

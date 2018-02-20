@@ -22,6 +22,12 @@ export default class LegacyClient extends AbstractClient {
   }
 
   bind(channelName, eventName) {
+    if (channelName === 'agent_public') {
+      // concept of channels doesnt exist on poller because the backend resolves it all
+      // for us. so we ignore this other channel to make sure we dont double-bind
+      return;
+    }
+
     const oldAlertHandler = this.handleAlert;
     const oldNotifyHandler = this.handleNotify;
 
