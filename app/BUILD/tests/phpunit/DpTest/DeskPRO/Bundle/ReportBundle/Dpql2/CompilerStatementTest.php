@@ -73,7 +73,7 @@ SQL
     {
         $this->assertDpqlQuery(
             <<<'DPQL'
-SELECT COUNT() AS 'Tickets'
+SELECT DPQL_COUNT() AS 'Tickets'
 FROM tickets
 GROUP BY tickets.agent
 ORDER BY @'Tickets' DESC
@@ -309,7 +309,7 @@ SQL
     {
         $this->assertDpqlQuery(
             <<<'DPQL'
-SELECT CONCAT(COUNT() * 100 / (SELECT people.id FROM people WHERE people.id = tickets.person_id), '%')
+SELECT CONCAT(DPQL_COUNT() * 100 / (SELECT people.id FROM people WHERE people.id = tickets.person_id), '%')
 FROM tickets
 DPQL
             ,
@@ -698,7 +698,7 @@ DPQL
     {
         $this->assertDpqlQuery(
             <<<'DPQL'
-SELECT COUNT(), snippets.id FROM snippets WHERE snippets.date_created > '2018-01-25'
+SELECT DPQL_COUNT(), snippets.id FROM snippets WHERE snippets.date_created > '2018-01-25'
 DPQL
             ,
             <<<'SQL'

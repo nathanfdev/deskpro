@@ -1,0 +1,129 @@
+<?php
+
+/*
+ * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
+ * a British company located in London, England.
+ *
+ * All source code and content Copyright (c) 2018, DeskPRO Ltd.
+ *
+ * The license agreement under which this software is released
+ * can be found at https://www.deskpro.com/eula/
+ *
+ * By using this software, you acknowledge having read the license
+ * and agree to be bound thereby.
+ *
+ * Please note that DeskPRO is not free software. We release the full
+ * source code for our software because we trust our users to pay us for
+ * the huge investment in time and energy that has gone into both creating
+ * this software and supporting our customers. By providing the source code
+ * we preserve our customers' ability to modify, audit and learn from our
+ * work. We have been developing DeskPRO since 2001, please help us make it
+ * another decade.
+ *
+ * Like the work you see? Think you could make it better? We are always
+ * looking for great developers to join us: http://www.deskpro.com/jobs/
+ *
+ * ~ Thanks, Everyone at Team DeskPRO
+ */
+
+namespace DeskPRO\Bundle\ReportBundle\Dpql2\Func;
+
+use DeskPRO\Bundle\ReportBundle\Dpql2\DpqlException;
+use DeskPRO\Bundle\ReportBundle\Dpql2\SqlSelect;
+use DeskPRO\Bundle\ReportBundle\Dpql2\Statement\Part\Prepared;
+use DeskPRO\Bundle\ReportBundle\Dpql2\Statement\SelectPart;
+use DeskPRO\Bundle\ReportBundle\Reports\Renderer\AbstractRenderer;
+use DeskPRO\Bundle\ReportBundle\Reports\Renderer\AbstractValueRenderer;
+use DeskPRO\Bundle\ReportBundle\Reports\ResultMetadata;
+
+/**
+ * Gets a human readable value for a date offset grouping (0-15 mins, 15-30 mins, etc).
+ */
+class DpqlDateOffsetGroup extends AbstractDpqlFunc
+{
+    /**
+     * {@inheritdoc}
+     */
+    public function prepare(array $arguments, SelectPart $statement, $section, array $stack, SqlSelect $select, ResultMetadata $metadata)
+    {
+        $argCount = count($arguments);
+
+        if ($argCount != 1 && $argCount != 2) {
+            throw new DpqlException('DPQL_DATE_OFFSET_GROUP() can only accept 1 or 2 arguments');
+        }
+
+        if ($argCount == 1) {
+            $value   = reset($arguments);
+            $prepped = $value->prepare($statement, $section, $stack, $select, $metadata);
+
+            $name  = 'DPQL_DATE_OFFSET_GROUP('.$prepped->name().')';
+            $ifSql = $prepped->sql();
+        } else {
+            $valueTo   = reset($arguments);
+            $valueFrom = next($arguments);
+
+            $toPrepped   = $valueTo->prepare($statement, $section, $stack, $select, $metadata);
+            $fromPrepped = $valueFrom->prepare($statement, $section, $stack, $select, $metadata);
+
+            $name  = 'DPQL_DATE_OFFSET_GROUP('.$toPrepped->name().', '.$fromPrepped->name().')';
+            $ifSql = 'UNIX_TIMESTAMP('.$toPrepped->sql().') - UNIX_TIMESTAMP('.$fromPrepped->sql().')';
+        }
+
+        $groups = [
+            900      => '0-15 minutes',
+            1800     => '15-30 minutes',
+            3600     => '30-60 minutes',
+            7200     => '1-2 hours',
+            14400    => '2-4 hours',
+            43200    => '4-12 hours',
+            86400    => '12-24 hours',
+            172800   => '1-2 days',
+            345600   => '2-4 days',
+            604800   => '4-7 days',
+            1209600  => '1-2 weeks',
+            2419200  => '2-4 weeks',
+            5270400  => '1-2 months', // actually 61 days
+            7862400  => '2-3 months', // 91 days
+            15724800 => '3-6 months', // 181 days
+            31536000 => '6-12 months', // 365 days
+            63072000 => '1-2 years', // 365*2 days
+        ];
+        krsort($groups);
+
+        $maxSentinel = 630720000;
+
+        $sql = $maxSentinel; // this value must be higher than all the group values
+        foreach ($groups as $max => $value) {
+            $sql = "IF($ifSql < $max, $max, $sql)";
+        }
+        $sql = "IF($ifSql IS NULL, 0, $sql)";
+
+        $renderer = function (AbstractValueRenderer $valueRenderer, $value, array $row, AbstractRenderer $renderer, ResultMetadata $metadata) use ($groups, $maxSentinel) {
+            if ($value == $maxSentinel) {
+                return '2+ years';
+            } elseif (isset($groups[$value])) {
+                return $groups[$value];
+            } else {
+                return $valueRenderer->renderValue(null, 'string', $metadata);
+            }
+        };
+
+        $return = new Prepared($sql, $name, false, $renderer);
+
+        $return->setGroupFill(function ($min, $max) use ($groups, $maxSentinel) {
+            $fills = [];
+            if ($max >= $maxSentinel) {
+                $fills[] = [$maxSentinel, $maxSentinel, $maxSentinel];
+            }
+            foreach ($groups as $groupMax => $null) {
+                if ($groupMax <= $max) {
+                    $fills[] = [$groupMax, $groupMax, $groupMax];
+                }
+            }
+
+            return array_reverse($fills);
+        });
+
+        return $return;
+    }
+}
