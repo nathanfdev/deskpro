@@ -109,8 +109,8 @@ class TicketFeedbackLinksController extends AbstractTicketsCrudSubController
      */
     protected function processSubscriptions(
         TicketFeedbackLink $ticketFeedbackLink,
-        bool $isSubscribeTicketOwner,
-        bool $isSubscribeTicketParticipants)
+        $isSubscribeTicketOwner,
+        $isSubscribeTicketParticipants)
     {
         // collect persons to subscribe
         $subscribePersons = [];
