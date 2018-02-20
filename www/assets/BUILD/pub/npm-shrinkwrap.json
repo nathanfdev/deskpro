@@ -8,9 +8,9 @@
       "resolved": "https://registry.npmjs.org/@amcharts/amcharts3-react/-/amcharts3-react-3.0.4.tgz"
     },
     "@deskpro/react-components": {
-      "version": "1.2.18",
-      "from": "@deskpro/react-components@1.2.18",
-      "resolved": "https://registry.npmjs.org/@deskpro/react-components/-/react-components-1.2.18.tgz",
+      "version": "1.2.20",
+      "from": "@deskpro/react-components@1.2.20",
+      "resolved": "https://registry.npmjs.org/@deskpro/react-components/-/react-components-1.2.20.tgz",
       "dependencies": {
         "add-px-to-style": {
           "version": "1.0.0",
