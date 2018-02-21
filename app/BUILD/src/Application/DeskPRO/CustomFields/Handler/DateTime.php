@@ -107,12 +107,7 @@ class DateTime extends Date
             }
 
             if ($date) {
-                try {
-                    $adminTz = new \DateTimeZone($this->field_def->getOption('date_valid_timezone'));
-                } catch (\Exception $e) {
-                    $adminTz = App::getCurrentPerson()->getDateTimezone();
-                }
-
+                $adminTz = App::getCurrentPerson()->getDateTimezone();
                 $date->setTimezone($adminTz);
             } else {
                 return $this->makeErrorArray(['date_invalid']);
