@@ -160,17 +160,28 @@ Feature: /report_widgets endpoint
     Then the response status code should be 400
     And the JSON node "errors.errors[0].code" should be equal to "extra_fields"
 
-  Scenario: I change 'display types' of a built-in report
+  Scenario Outline: I change 'display types' of a built-in report
     When I send a PUT request to "/api/v2/report_widgets/{r1}" with body:
     """
 {
-  "display_types": ["pie"]
+  "display_types": ["<type>"]
 }
     """
     Then the response status code should be 204
 
     When I send a GET request to "/api/v2/report_widgets/{r1}"
-    And the JSON node "data.display_types[0]" should be equal to "pie"
+    And the JSON node "data.display_types[0]" should be equal to "<type>"
+
+    Examples:
+      | type         |
+      | pie          |
+      | table        |
+      | simple_bars  |
+      | simple_stat |
+      | simple_area  |
+      | simple_lines |
+      | gauge        |
+      | bubble       |
 
   Scenario: I try to delete a built-in report
     When I send a DELETE request to "/api/v2/report_widgets/{r1}"
