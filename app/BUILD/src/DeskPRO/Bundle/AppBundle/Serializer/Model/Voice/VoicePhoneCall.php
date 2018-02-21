@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2017, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2018, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -86,6 +86,13 @@ class VoicePhoneCall
      * @var string
      */
     private $externalNumber;
+
+    /**
+     * @JMS\Type("string")
+     *
+     * @var string
+     */
+    private $externalNumberType;
 
     /**
      * @JMS\Type("entity<Application\DeskPRO\Entity\Person>")
@@ -176,23 +183,24 @@ class VoicePhoneCall
      */
     public function __construct(VoicePhoneCallEntity $phoneCall)
     {
-        $this->id             = $phoneCall->getId();
-        $this->taskSid        = $phoneCall->getTaskSid();
-        $this->callSid        = $phoneCall->getCallSid();
-        $this->conferenceSid  = $phoneCall->getConferenceSid();
-        $this->number         = $phoneCall->getNumber();
-        $this->externalNumber = $phoneCall->getExternalNumber();
-        $this->person         = $phoneCall->getPerson();
-        $this->type           = $phoneCall->getType();
-        $this->status         = $phoneCall->getStatus();
-        $this->data           = $phoneCall->getData();
-        $this->participants   = $phoneCall->getParticipants();
-        $this->phoneCallLogs  = $phoneCall->getPhoneCallLogs();
-        $this->dateCreated    = $phoneCall->getDateCreated();
-        $this->dateStarted    = $phoneCall->getDateStarted();
-        $this->dateEnded      = $phoneCall->getDateEnded();
-        $this->recording      = $phoneCall->getRecording();
-        $this->duration       = $phoneCall->getDuration();
+        $this->id                 = $phoneCall->getId();
+        $this->taskSid            = $phoneCall->getTaskSid();
+        $this->callSid            = $phoneCall->getCallSid();
+        $this->conferenceSid      = $phoneCall->getConferenceSid();
+        $this->number             = $phoneCall->getNumber();
+        $this->externalNumber     = $phoneCall->getExternalNumber();
+        $this->externalNumberType = $phoneCall->getExternalNumberType();
+        $this->person             = $phoneCall->getPerson();
+        $this->type               = $phoneCall->getType();
+        $this->status             = $phoneCall->getStatus();
+        $this->data               = $phoneCall->getData();
+        $this->participants       = $phoneCall->getParticipants();
+        $this->phoneCallLogs      = $phoneCall->getPhoneCallLogs();
+        $this->dateCreated        = $phoneCall->getDateCreated();
+        $this->dateStarted        = $phoneCall->getDateStarted();
+        $this->dateEnded          = $phoneCall->getDateEnded();
+        $this->recording          = $phoneCall->getRecording();
+        $this->duration           = $phoneCall->getDuration();
     }
 
     /**
