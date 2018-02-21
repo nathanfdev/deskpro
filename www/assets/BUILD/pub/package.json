@@ -5,7 +5,7 @@
   "author": "DeskPRO <support@deskpro.com>",
   "dependencies": {
     "@amcharts/amcharts3-react": "^3.0.3",
-    "@deskpro/react-components": "^1.3.4",
+    "@deskpro/react-components": "^1.3.5",
     "@deskpro/react-forms": "^2.0.0-beta36",
     "@deskpro/react-scrollbar": "^0.5.1",
     "anytime": "1.3.0",
@@ -37,7 +37,6 @@
     "font-awesome": "4.4.0",
     "history": "^3.3.0",
     "html-to-text": "^3.3.0",
-    "html5-history-api": "4.2.2",
     "html5shiv": "3.7.3",
     "iframe-resizer": "^3.5.3",
     "immutable": "3.8.1",
@@ -116,7 +115,8 @@
     "to-markdown": "^3.0.3",
     "toastr": "^2.1.2",
     "twig": "^1.10.5",
-    "uuid": "^3.1.0"
+    "uuid": "^3.1.0",
+    "warning": "^3.0.0"
   },
   "devDependencies": {
     "@kadira/storybook": "^2.3.0",
@@ -174,7 +174,6 @@
     "uglify-js": "2.6.1",
     "uglify-loader": "1.3.0",
     "url-parse": "1.1.9",
-    "warning": "2.1.0",
     "webpack": "^2.7.0",
     "webpack-dev-middleware": "^2.0.3",
     "webpack-hot-middleware": "^2.21.0",
@@ -224,8 +223,8 @@
     "eslint-pre-commit": "eslint",
     "eslint-fix": "eslint --fix",
     "resources:copy": "cpx \"src/**/Resources/**/*.{gif,png,jpg,svg,mp3,ogg,wav}\" build",
-    "gulp-dev-all": "npm run-script resources:copy && node bin/dev-server",
-    "dev": "npm run-script resources:copy && node bin/dev-server",
+    "gulp-dev-all": "npm run-script resources:copy && node bin/refresh-widget-loader && node bin/dev-server",
+    "dev": "npm run-script resources:copy && node bin/refresh-widget-loader && node bin/dev-server",
     "prod": "npm run-script webpack && npm run-script resources:copy",
     "gulp-prod": "npm run-script webpack && npm run-script resources:copy",
     "build:prod": "npm run-script webpack && npm run-script resources:copy",
@@ -236,6 +235,6 @@
     "test:e2e": "nightwatch",
     "test:e2e:setup": "node selenium-download.js",
     "flow": "flow; test $? -eq 0 -o $? -eq 2",
-    "webpack": "rm -rf ./build && webpack --config webpack.prod.config.js --progress --profile --colors --display-error-details"
+    "webpack": "rm -rf ./build && npm run-script gulp-refresh-reducers && node bin/refresh-widget-loader && webpack --config webpack.prod.config.js --progress --profile --colors --display-error-details"
   }
 }

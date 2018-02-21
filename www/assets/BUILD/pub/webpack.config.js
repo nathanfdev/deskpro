@@ -9,12 +9,12 @@ const config = {
   devtool: 'eval',
   entry: {
     // Portal
-    // widget_loader:               join(__dirname, 'build/widget_loader.js'),
-    // 'widget_loader.min':         join(__dirname, 'build/widget_loader.min.js'),
-    // embed_loader:                join(__dirname, 'build/embed_loader.js'),
-    // 'embed_loader.min':          join(__dirname, 'build/embed_loader.min.js'),
-    // hit_recorder:                join(__dirname, 'build/hit_recorder.js'),
-    // 'hit_recorder.min':          join(__dirname, 'build/hit_recorder.min.js'),
+    widget_loader:               join(__dirname, 'build/widget_loader.js'),
+    'widget_loader.min':         join(__dirname, 'build/widget_loader.min.js'),
+    embed_loader:                join(__dirname, 'build/embed_loader.js'),
+    'embed_loader.min':          join(__dirname, 'build/embed_loader.min.js'),
+    hit_recorder:                join(__dirname, 'build/hit_recorder.js'),
+    'hit_recorder.min':          join(__dirname, 'build/hit_recorder.min.js'),
     iframeResizer_contentWindow: './node_modules/iframe-resizer/js/iframeResizer.contentWindow.js',
 
     DeskPRO_PortalBundle: './src/DeskPRO/Bundle/PortalBundle/DeskPRO_PortalBundle',
