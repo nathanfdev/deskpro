@@ -71,7 +71,10 @@ Feature: /webhooks/tickets/{webhook}/invocation resource
       }
     }
     """
-    Then the response status code should be 204
+
+    Then the JSON node "data.count" should be equal to "1"
+    And the JSON node "data.ticketIds" should not be null
+    And the response status code should be 200
 
     When I send a GET request to "/api/v2/tickets/~ticket_id~"
     Then the JSON node "data.subject" should be equal to "<expected_subject>"
@@ -136,7 +139,10 @@ Feature: /webhooks/tickets/{webhook}/invocation resource
       | key                         | value   |
       | person_registration[name][] | cthulhu |
       | something[is_enabled]       | true    |
-    Then the response status code should be 204
+
+    Then the JSON node "data.count" should be equal to "1"
+    And the JSON node "data.ticketIds" should not be null
+    And the response status code should be 200
 
     When I send a GET request to "/api/v2/tickets/~ticket_id~"
     Then the JSON node "data.subject" should be equal to "<expected_subject>"
@@ -209,7 +215,10 @@ Feature: /webhooks/tickets/{webhook}/invocation resource
       "label" : "webhook-label-2"
     }
     """
-    Then the response status code should be 204
+
+    Then the JSON node "data.count" should be equal to "1"
+    And the JSON node "data.ticketIds" should not be null
+    And the response status code should be 200
 
     When I send a GET request to "/api/v2/tickets/~ticket_id~"
     Then the JSON node "data.subject" should be equal to "<expected_subject>"
@@ -217,7 +226,6 @@ Feature: /webhooks/tickets/{webhook}/invocation resource
       | webhook_title | expected_subject                  | actual_subject |
       | my title      | Modified By Webhook w/ Form       | Sample Ticket  |
 
-  @vava
   Scenario Outline: I create a webhook with a CheckWebhookVar trigger and without payload
     Given I send a POST request to "/api/v2/tickets" with body:
     """
@@ -271,7 +279,10 @@ Feature: /webhooks/tickets/{webhook}/invocation resource
     }
     """
     When I send a GET request to "/api/v2/webhooks/~webhook_slug~/invocation?something=true"
-    Then the response status code should be 204
+
+    Then the JSON node "data.count" should be equal to "1"
+    And the JSON node "data.ticketIds" should not be null
+    And the response status code should be 200
 
     When I send a GET request to "/api/v2/tickets/~ticket_id~"
     Then the JSON node "data.subject" should be equal to "<expected_subject>"

@@ -71,8 +71,13 @@ class WebhookInvocationController extends BaseController
         $container = $this->getContainer();
         /** @var \DeskPRO\Bundle\AppBundle\Webhooks\TicketWebhookExecutor $executor */
         $executor = $container->get(\DeskPRO\Bundle\AppBundle\Webhooks\TicketWebhookExecutor::class);
-        $executor->execute($webhookEntity, $webhookRequest);
+        $stats = $executor->execute($webhookEntity, $webhookRequest);
 
-        return View::create([], Response::HTTP_NO_CONTENT);
+        return View::create([
+            "data" => [
+                "count" => count($stats->getMatchedByTriggers()),
+                "tickedIds" => $stats->getMatchedByTriggers()
+            ]
+        ], Response::HTTP_OK);
     }
 }
