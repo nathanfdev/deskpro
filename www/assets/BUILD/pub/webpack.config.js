@@ -99,9 +99,6 @@ const config = {
         test: /\.js$/,
         use:  [
           {
-            loader: 'react-hot-loader'
-          },
-          {
             loader:  'babel-loader',
             options: {
               cacheDirectory: true
@@ -170,6 +167,7 @@ const config = {
     new webpack.LoaderOptionsPlugin({
       debug: true
     }),
+    new webpack.NamedModulesPlugin(),
     new webpack.HotModuleReplacementPlugin(),
     new webpack.NoEmitOnErrorsPlugin(),
   ],

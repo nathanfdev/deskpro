@@ -1,10 +1,11 @@
 import 'babel-polyfill';
 import React from 'react';
 import ReactDOM from 'react-dom';
+import { AppContainer } from 'react-hot-loader';
 import $ from 'jquery';
 import PortalPage from './PageWidget/PortalPage';
 import { portalPhrases } from './PortalPhrases';
-import AppContainer from './Modules/Application/Components/AppContainer';
+import App from './Modules/Application/Components/AppContainer';
 
 class PortalApp {
   constructor() {
@@ -28,8 +29,12 @@ class PortalApp {
   }
 
   render(props, node) {
-    ReactDOM.render(<AppContainer {...props} />, node);
+    ReactDOM.render(<AppContainer><App {...props} /></AppContainer>, node);
   }
+}
+
+if (module.hot) {
+  module.hot.accept();
 }
 
 export const portalApp = new PortalApp();

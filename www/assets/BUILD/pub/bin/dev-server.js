@@ -11,6 +11,7 @@ app.use(webpackDevMiddleware(compiler, {
   publicPath:         config.output.publicPath,
   hot:                true,
   historyApiFallback: true,
+  headers: { "Access-Control-Allow-Origin": "*" },
   stats:              {
     colors:       true,
     chunks:       true,

@@ -84,9 +84,6 @@ const config = {
         test: /\.js$/,
         use:  [
           {
-            loader: 'react-hot-loader'
-          },
-          {
             loader:  'babel-loader',
             options: {
               cacheDirectory: true

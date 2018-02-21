@@ -3,6 +3,7 @@ import React from 'react';
 import ReactDOM from 'react-dom';
 import { createStore, applyMiddleware, compose } from 'redux';
 import { Provider } from 'react-redux';
+import { AppContainer } from 'react-hot-loader';
 import { combineReducerHierarchy } from 'Ampliflux';
 import * as ampMiddleware from 'Ampliflux/middleware';
 import { IntlProvider } from 'react-intl';
@@ -31,13 +32,13 @@ class DemoApp {
     const store = DemoApp.createStore();
     store.dispatch(bootstrapDemo()).then(() => {
       ReactDOM.render(
-        <div>
+        <AppContainer>
           <Provider store={store}>
             <IntlProvider locale={window.DP_LOCALE} messages={window.DP_LANG}>
               <DpAppContainer />
             </IntlProvider>
           </Provider>
-        </div>,
+        </AppContainer>,
         document.getElementById('app')
       );
     });
