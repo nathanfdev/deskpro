@@ -45,6 +45,8 @@ use Application\DeskPRO\Entity\FeedbackStatusCategory;
 use Application\DeskPRO\Entity\PersonPref;
 use Application\DeskPRO\Entity\SearchLog;
 use Application\DeskPRO\Entity\SearchStickyResult;
+use Application\DeskPRO\Entity\Ticket;
+use Application\DeskPRO\Entity\TicketMessage;
 use Application\DeskPRO\EntityRepository\Feedback as FeedbackRepository;
 use Application\DeskPRO\EntityRepository\FeedbackCategory as FeedbackCategoryRepository;
 use Application\DeskPRO\EntityRepository\FeedbackComment as FeedbackCommentRepository;
@@ -1153,6 +1155,48 @@ class FeedbackController extends AbstractController
      */
     public function newFeedbackAction()
     {
+        $ticket      = null;
+        $message     = null;
+        $attachments = [];
+
+        if ($this->in->getUInt('ticket_id')) {
+            $ticket = $this->getTicket($this->in->getUInt('ticket_id'));
+
+            /** @var \Application\DeskPRO\EntityRepository\TicketMessage $ticketMessageRepo */
+            $ticketMessageRepo = $this->em->getRepository(TicketMessage::class);
+
+            if ($this->in->getUInt('message_id')) {
+                $message = $ticketMessageRepo->find($this->in->getUInt('message_id'));
+            }
+            if (!$message || $message->ticket != $ticket) {
+                $message = $ticketMessageRepo->getFirstTicketMessage($ticket);
+            }
+        }
+
+        if ($message && count($message->attachments)) {
+            $storage = $this->container->getBlobStorage();
+            foreach ($message->attachments as $attach) {
+                try {
+                    $newBlob = $storage->createBlobRecordFromString(
+                        $storage->copyBlobRecordToString($attach->blob),
+                        $attach->blob['filename'],
+                        $attach->blob['content_type']
+                    );
+                } catch (\Exception $ex) {
+                    // $ex should be looged internally in services
+                    // no need to additional log here
+                    continue;
+                }
+                $this->em->persist($newBlob);
+
+                $attachData                      = [];
+                $attachData['blob']              = $newBlob->toArray();
+                $attachData['url']               = $newBlob->getDownloadUrl(true);
+                $attachData['filesize_readable'] = $newBlob->getReadableFilesize();
+                $attachments[]                   = $attachData;
+            }
+        }
+
         /** @var PersonPrefRepository $personPrefRepository */
          /* @var FeedbackCategoryRepository       $feedbackCategoryRepository */
          /* @var FeedbackStatusCategoryRepository $feedbackStatusCategoryRepository */
@@ -1169,6 +1213,9 @@ class FeedbackController extends AbstractController
         return $this->render(
             'AgentBundle:Feedback:newfeedback.html.twig',
             [
+                'ticket'              => $ticket,
+                'message'             => $message,
+                'attachments'         => $attachments,
                 'feedback_categories' => $feedbackCategories,
                 'active_status_cats'  => $activeStatusCategories,
                 'closed_status_cats'  => $closedStatusCategories,
@@ -1184,7 +1231,12 @@ class FeedbackController extends AbstractController
      */
     public function newFeedbackSaveAction(Request $request)
     {
-        $newfeedback = new NewFeedback($this->person);
+        $newfeedback = new NewFeedback(
+            $this->getDoctrine()->getManager(),
+            $this->person,
+            $this->get('ticket_manager'),
+            $this->get('feedback_subscription_helper')
+        );
 
         $formType = new NewFeedbackTypeOld();
         $form     = $this->get('form.factory')->create($formType, $newfeedback);
@@ -1249,6 +1301,24 @@ class FeedbackController extends AbstractController
         }
 
         return $feedback;
+    }
+
+    /**
+     * @param $ticketId
+     *
+     * @throws \Doctrine\ORM\ORMException
+     * @throws \Doctrine\ORM\OptimisticLockException
+     * @throws \Doctrine\ORM\TransactionRequiredException
+     *
+     * @return Ticket
+     */
+    private function getTicket($ticketId)
+    {
+        if (!$ticket = $this->em->find(Ticket::class, $ticketId)) {
+            throw $this->createNotFoundException(sprintf('There is no ticket with ID %s', $ticketId));
+        }
+
+        return $ticket;
     }
 
     /**

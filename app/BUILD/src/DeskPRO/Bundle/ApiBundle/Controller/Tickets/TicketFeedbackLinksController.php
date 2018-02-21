@@ -28,7 +28,6 @@
 
 namespace DeskPRO\Bundle\ApiBundle\Controller\Tickets;
 
-use Application\DeskPRO\Entity\FeedbackSubscription;
 use DeskPRO\Bundle\ApiBundle\ApiDoc\Annotation\ApiDoc;
 use DeskPRO\Bundle\ApiBundle\Traits\Tickets\TicketAwarePersistModelTrait;
 use DeskPRO\Bundle\ApiBundle\Traits\Tickets\TicketSaveTrait;
@@ -93,60 +92,15 @@ class TicketFeedbackLinksController extends AbstractTicketsCrudSubController
     {
         $this->traitPersistModel($entity, $form);
 
-        $this->processSubscriptions(
-            $entity,
+        // @TODO: do we need transaction here (don't create link if subscription fail)?
+        $this->get('feedback_subscription_helper')->subscribeTicketPersons(
+            $entity->getFeedback(),
+            $entity->getTicket(),
             $form->get('is_subscribe_ticket_owner')->getData(),
             $form->get('is_subscribe_ticket_participants')->getData()
         );
 
         return $entity;
-    }
-
-    /**
-     * @param TicketFeedbackLink $ticketFeedbackLink
-     * @param bool               $isSubscribeTicketOwner
-     * @param bool               $isSubscribeTicketParticipants
-     */
-    protected function processSubscriptions(
-        TicketFeedbackLink $ticketFeedbackLink,
-        $isSubscribeTicketOwner,
-        $isSubscribeTicketParticipants)
-    {
-        // collect persons to subscribe
-        $subscribePersons = [];
-        if ($isSubscribeTicketOwner) {
-            $subscribePersons[] = $ticketFeedbackLink->getTicket()->getPerson();
-        }
-        if ($isSubscribeTicketParticipants) {
-            foreach ($ticketFeedbackLink->getTicket()->getParticipants() as $ticketParticipant) {
-                $subscribePersons[] = $ticketParticipant->getTicket()->getPerson();
-            }
-        }
-
-        // subscribe persons
-        $feedback                = $ticketFeedbackLink->getFeedback();
-        $portalPermissionManager = $this->get('portal_permissions_manager');
-        $subscribedIds           = $this->getRepository(FeedbackSubscription::class)->getSubscribedPersonIds($feedback);
-
-        foreach ($subscribePersons as $person) {
-            if (in_array($person->getId(), $subscribedIds)) {
-                continue;
-            }
-
-            $subscribedIds[] = $person->getId();
-
-            // @TODO: optimize permission check for each user
-            if ($portalPermissionManager
-                    ->getPermissionsBagForPerson($person)
-                    ->hasContentCategoryAccess($feedback)) {
-                $feedbackSubscription = new FeedbackSubscription();
-                $feedbackSubscription->setFeedback($feedback);
-                $feedbackSubscription->setPerson($person);
-                $this->getManager()->persist($feedbackSubscription);
-            }
-        }
-
-        $this->getManager()->flush();
     }
 
     /**

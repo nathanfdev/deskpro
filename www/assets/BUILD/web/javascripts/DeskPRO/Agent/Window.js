@@ -2856,6 +2856,13 @@ DeskPRO.Agent.Window = new Orb.Class({
 				tabRoute: 'page:' + BASE_URL + 'agent/feedback/new',
 				autostart: autostart
 			});
+			this.newFeedbackLoader.newLinkedFeedback = function(ticket_id, message_id) {
+				self.newFeedbackLoader.nextParams = {
+					ticket_id: ticket_id,
+					message_id: message_id || 0
+				};
+				self.newFeedbackLoader.open();
+			};
       this.newTopicLoader = new DeskPRO.Agent.Widget.BackgroundPopout({
         loadUrl: BASE_URL + 'agent/guides/new',
         tabRoute: 'page:' + BASE_URL + 'agent/guides/new',

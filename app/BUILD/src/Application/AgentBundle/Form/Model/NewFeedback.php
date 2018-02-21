@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2017, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2018, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -35,11 +35,17 @@ namespace Application\AgentBundle\Form\Model;
 use Application\DeskPRO\App;
 use Application\DeskPRO\Entity\Feedback;
 use Application\DeskPRO\Entity\Person;
+use Application\DeskPRO\Entity\Ticket;
+use Application\DeskPRO\Tickets\ExecutorContext;
+use Application\DeskPRO\Tickets\TicketManager;
+use DeskPRO\Bundle\AppBundle\Content\FeedbackSubscriptionHelper;
+use DeskPRO\Bundle\AppBundle\Entity\TicketFeedbackLink;
+use Doctrine\ORM\EntityManager;
 
 class NewFeedback
 {
     /**
-     * @var \Doctrine\ORM\EntityManager
+     * @var EntityManager
      */
     protected $em;
 
@@ -58,15 +64,37 @@ class NewFeedback
     public $labels = [];
     /** @var array */
     public $attach_ids;
+    /** @var Ticket */
+    public $linked_ticket;
+    /** @var bool */
+    public $is_subscribe_ticket_owner = false;
+    /** @var bool */
+    public $is_subscribe_ticket_participants = false;
 
     /** @var Feedback */
     protected $_feedback;
 
-    public function __construct(Person $person_context)
+    /**
+     * @var TicketManager
+     */
+    protected $ticket_manager;
+
+    /**
+     * @var FeedbackSubscriptionHelper
+     */
+    protected $subscriptionHelper;
+
+    public function __construct(
+        EntityManager $em,
+        Person $person_context,
+        TicketManager $ticket_manager,
+        FeedbackSubscriptionHelper $subscriptionHelper)
     {
         $this->_person_context = $person_context;
 
-        $this->em = App::getOrm();
+        $this->em                 = $em;
+        $this->ticket_manager     = $ticket_manager;
+        $this->subscriptionHelper = $subscriptionHelper;
     }
 
     public function save()
@@ -108,9 +136,43 @@ class NewFeedback
             $this->em->flush();
         }
 
-        $this->em->commit();
-
         $this->_feedback = $feedback;
+
+        try {
+            $this->processLinkedTicket();
+        } catch (\Exception $ex) {
+            $this->em->rollback();
+            throw new $ex();
+        }
+
+        $this->em->commit();
+    }
+
+    protected function processLinkedTicket()
+    {
+        if (!$this->linked_ticket) {
+            return;
+        }
+
+        $link = new TicketFeedbackLink();
+        $link->setPerson($this->_person_context);
+        $link->setFeedback($this->_feedback);
+        $this->linked_ticket->addFeedbackLink($link);
+
+        $context = $this->ticket_manager->createAgentExecutorContext(
+            $this->_person_context,
+            ExecutorContext::EVENT_UPDATE,
+            ExecutorContext::METHOD_WEB
+        );
+
+        $this->ticket_manager->saveTicket($this->linked_ticket, $context);
+
+        $this->subscriptionHelper->subscribeTicketPersons(
+            $this->_feedback,
+            $this->linked_ticket,
+            $this->is_subscribe_ticket_owner,
+            $this->is_subscribe_ticket_participants
+        );
     }
 
     public function getFeedback()

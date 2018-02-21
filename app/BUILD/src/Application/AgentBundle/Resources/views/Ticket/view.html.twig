@@ -789,6 +789,7 @@
                 <li data-action="link_existing_ticket">{{ phrase('agent.tickets.link_existing_ticket') }}</li>
             {% endif %}
             {% if app.user.hasPerm('agent_publish.use') and app.user.hasPerm('agent_publish.validate') %}
+              <li data-action="link_new_feedback">{{ phrase('agent.tickets.create_linked_feedback') }}</li>
               <li data-action="link_existing_feedback">{{ phrase('agent.tickets.link_existing_feedback') }}</li>
             {% endif %}
             <li data-action="kb-pending">{{ phrase('agent.tickets.create_new_pending_article') }}</li>

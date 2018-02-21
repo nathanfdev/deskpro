@@ -2286,6 +2286,10 @@ DeskPRO.Agent.PageFragment.Page.Ticket = new Orb.Class({
 						self.linkExistingFeedback.open();
             break;
 
+					case 'link_new_feedback':
+						DeskPRO_Window.newFeedbackLoader.newLinkedFeedback(self.meta.ticket_id);
+						break;
+
 					case 'kb-pending':
 						if (!self.pendingKbOverlay) {
 							var el = self.getEl('pending_add');

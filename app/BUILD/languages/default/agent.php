@@ -2105,6 +2105,7 @@ return [
     'agent.tickets.count_agents'                               => '1 agent|{{count}} agents',
     'agent.tickets.count_charges'                              => '1 charge|{{count}} charges',
     'agent.tickets.count_users'                                => '1 user|{{count}} users',
+    'agent.tickets.create_linked_feedback'                     => 'Create Linked Feedback',
     'agent.tickets.create_linked_ticket'                       => 'Create Linked Ticket',
     'agent.tickets.create_new_pending_article'                 => 'Create New Pending Article',
     'agent.tickets.creating_a_ticket_for'                      => 'Creating ticket for',
