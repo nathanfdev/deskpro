@@ -179,3 +179,19 @@ Feature: /report_widgets endpoint
   Scenario: I delete a custom report
     When I send a DELETE request to "/api/v2/report_widgets/{r2}"
     Then the response status code should be 200
+
+  Scenario: I update a report widget
+    When I send a PUT request to "/api/v2/report_widgets/{r2}" with body:
+    """
+{
+  "labels": ["label 1", "Label 2", "Person", "Feedback"]
+}
+    """
+    Then the response status code should be 204
+
+    When I send a GET request to "/api/v2/report_widgets/{r2}"
+    And the JSON node "data.labels" should have 4 elements
+    And the JSON node "data.labels[0]" should be equal to "Label 1"
+    And the JSON node "data.labels[1]" should be equal to "Label 2"
+    And the JSON node "data.labels[2]" should be equal to "Person"
+    And the JSON node "data.labels[3]" should be equal to "Feedback"
