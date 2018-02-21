@@ -28,68 +28,47 @@
 
 namespace DeskPRO\Bundle\ReportBundle\Dpql2\Func;
 
-use Symfony\Component\DependencyInjection\ContainerInterface;
+use DeskPRO\Bundle\ReportBundle\Dpql2\DpqlException as DpqlException;
+use DeskPRO\Bundle\ReportBundle\Dpql2\Statement\Part\AbstractPart;
+use DeskPRO\Bundle\ReportBundle\Dpql2\Statement\Part\Number;
+use DeskPRO\Bundle\ReportBundle\Dpql2\Statement\Part\StringPart;
+use Orb\Util\Strings;
 
 /**
- * Class DpqlFuncFactory.
+ * Abstract base for all DPQL function calls.
  */
-class DpqlFuncRegistry
+abstract class AbstractDpqlFunc implements DpqlFunctionInterface
 {
     /**
-     * @var ContainerInterface
+     * {@inheritdoc}
      */
-    private $container;
-
-    /**
-     * @var DpqlFunctionInterface[]
-     */
-    private $functions = [];
-
-    /**
-     * Constructor.
-     *
-     * @param ContainerInterface $container
-     */
-    public function __construct(ContainerInterface $container)
+    public static function getName()
     {
-        $this->container = $container;
+        $reflection = new \ReflectionClass(static::class);
+
+        $func = Strings::camelCaseToUnderscore($reflection->getShortName());
+        $func = strtoupper($func);
+
+        return $func;
     }
 
     /**
-     * @param string $name
-     * @param string $id
+     * Gets a literal value for the specified part.
      *
-     * @return $this
+     * @param AbstractPart $part
+     *
+     * @throws \DeskPRO\Bundle\ReportBundle\Dpql2\DpqlException
+     *
+     * @return mixed
      */
-    public function addFunction($name, $id)
+    protected function _toLiteral(AbstractPart $part)
     {
-        $this->functions[$name] = $id;
-
-        return $this;
-    }
-
-    /**
-     * Returns the correct function handler object.
-     *
-     * @param string $name
-     *
-     * @return DpqlFunctionInterface
-     */
-    public function getFunction($name)
-    {
-        $name = strtoupper($name);
-        if (isset($this->functions[$name])) {
-            return $this->container->get($this->functions[$name]);
+        if ($part instanceof StringPart) {
+            return $part->string;
+        } elseif ($part instanceof Number) {
+            return $part->number;
         } else {
-            return new DpqlSqlPass($name);
+            throw new DpqlException('Only literal values may be used for DPQL func parameters.');
         }
-    }
-
-    /**
-     * @return DpqlLink
-     */
-    public function getLinkFunction()
-    {
-        return $this->getFunction('dpql_link');
     }
 }

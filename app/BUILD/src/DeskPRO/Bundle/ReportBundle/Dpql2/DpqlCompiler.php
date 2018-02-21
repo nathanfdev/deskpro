@@ -261,21 +261,20 @@ class DpqlCompiler
         /** @var ReportWidgetRepository $repository */
         $repository  = $this->em->getRepository(ReportWidget::class);
         $groupParams = $repository->getReportGroupParams();
-        $that        = $this;
 
         $input = preg_replace_callback(
             '#(\$\{([a-zA-Z0-9_]+)\})#',
-            function ($match) use ($input, $variables, $placeholders, $groupParams, $that) {
+            function ($match) use ($input, $variables, $placeholders, $groupParams) {
                 $varName = $match[2];
                 if (isset($variables[$varName])) {
                     $variable = $variables[$varName];
                     switch ($variable['type']) {
                         case 'dates':
-                            return $that->replaceDate($variable, $varName, $variables);
+                            return $this->replaceDate($variable, $varName, $variables);
                         case 'fields':
                         case 'orders':
                         case 'statuses':
-                            return $that->replaceGroup($variable, $variables, $variable['type']);
+                            return $this->replaceGroup($variable, $variables, $variable['type']);
                         case 'values':
                             return $variable['field_value'];
                     }
