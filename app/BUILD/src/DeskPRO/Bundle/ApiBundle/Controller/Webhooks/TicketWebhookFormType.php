@@ -55,8 +55,9 @@ class TicketWebhookFormType extends AbstractType
             ])
             ->add('payload_decoder', TextType::class, [
                 'label'    => '',
-                'required' => true,
+                'required' => false,
                 'mapped'   => true,
+                'empty_data' => ''
             ])
             ->add('is_enabled', CheckboxType::class, [
                 'label'    => '',
@@ -70,10 +71,6 @@ class TicketWebhookFormType extends AbstractType
             ])
         ;
 
-//          $builder->addEventListener(FormEvents::POST_SUBMIT, function(FormEvent $event) use ($options) {
-//            $this->onPostSubmit($event, $options);
-//          })
-        ;
     }
 
     public function setDefaultOptions(OptionsResolverInterface $resolver)
@@ -81,33 +78,4 @@ class TicketWebhookFormType extends AbstractType
         $resolver->setDefaults(['allow_extra_fields' => true]);
     }
 
-//    /**
-//     * @internal
-//     *
-//     * @param FormEvent $event
-//     */
-//    public function onPostSubmit(FormEvent $event, array $options)
-//    {
-//        $form = $event->getForm();
-//        /** @var TicketWebhook $data */
-//        $webhook = $form->getData();
-//
-//        /** @var TicketTrigger $trigger */
-//        foreach ($webhook->getTriggers() as $trigger) {
-//            $this->setRequiredTriggerProperties($webhook, $trigger, $options);
-//        }
-//    }
-//
-//    /**
-//     * @param TicketWebhook $webhook
-//     * @param TicketTrigger $trigger
-//     * @param $options
-//     */
-//    private function setRequiredTriggerProperties( TicketWebhook $webhook, TicketTrigger $trigger, $options = [])
-//    {
-//        $trigger->is_enabled = $webhook->isIsEnabled();
-//        if (! $trigger->title) {
-//            $trigger->title = sprintf('Trigger for webhook %s', $webhook->getAuthId());
-//        }
-//    }
 }

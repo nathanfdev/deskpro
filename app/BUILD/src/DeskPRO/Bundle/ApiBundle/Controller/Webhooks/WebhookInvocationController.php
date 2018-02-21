@@ -50,13 +50,14 @@ class WebhookInvocationController extends BaseController
 {
     /**
      * @Rest\Post("")
+     * @Rest\Get("")
      *
      * @param $webhook
      * @param Request $request
      *
      * @return View
      */
-    public function postAction($webhook, Request $request)
+    public function invokekAction($webhook, Request $request)
     {
         /** @var Webhooks\Repository $repository */
         $repository    = $this->getDoctrine()->getRepository(Webhooks\TicketWebhook::class);

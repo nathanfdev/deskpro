@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2017, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2018, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -26,36 +26,20 @@
  * ~ Thanks, Everyone at Team DeskPRO
  */
 
-namespace DeskPRO\Bundle\AppBundle\Webhooks;
+namespace Application\InstallBundle\Upgrade\Build;
 
-class WebhookException extends \Exception
+class Build1519218919 extends AbstractBuild implements BlockingBuildInterface
 {
-    const CODE_PAYLOAD_FORBIDDEN = 101;
-
-    const CODE_DECODER_NOT_FOUND = 102;
-
-    /**
-     * @param string $webhook
-     * @param \Exception $prev
-     * @return WebhookException
-     */
-    public static function payloadForbidden($webhook, \Exception $prev = null)
+    public function addNewTables()
     {
-        $msg = sprintf('webhook: %s does not accept a payload', $webhook);
-        return new WebhookException($msg, WebhookException::CODE_PAYLOAD_FORBIDDEN, $prev);
     }
 
-    /**
-     * @param string $webhook
-     * @param string $decoder
-     * @param \Exception $prev
-     * @return WebhookException
-     */
-    public static function decoderNotFound($webhook, $decoder, \Exception $prev = null)
+    public function runAlters()
     {
-        $msg = sprintf('payload decoder with name: %s not found', $decoder);
-        return new WebhookException($msg, WebhookException::CODE_DECODER_NOT_FOUND, $prev);
+        $this->execDbQuery('default', 'ALTER TABLE ticket_webhooks CHANGE payload_decoder payload_decoder VARCHAR(255) DEFAULT NULL');
     }
 
-
+    public function run()
+    {
+    }
 }

@@ -216,3 +216,65 @@ Feature: /webhooks/tickets/{webhook}/invocation resource
     Examples:
       | webhook_title | expected_subject                  | actual_subject |
       | my title      | Modified By Webhook w/ Form       | Sample Ticket  |
+
+  @vava
+  Scenario Outline: I create a webhook with a CheckWebhookVar trigger and without payload
+    Given I send a POST request to "/api/v2/tickets" with body:
+    """
+    {
+      "subject": "<actual_subject>",
+      "person": ~admin~,
+      "labels": ["webhook-label-1", "label-2"]
+    }
+    """
+    And I save the JSON node "data.id" as placeholder "ticket_id"
+    And I send a POST request to "/api/v2/webhooks/tickets" with body:
+    """
+    {
+      "title":"<webhook_title>",
+      "is_enabled":true,
+      "search_terms": [
+          {
+            "type" : "FilterLabels",
+            "options" : {
+              "labels": ["webhook-label-1", "webhook-label-2"]
+            }
+          }
+      ]
+    }
+    """
+    And I save the JSON node "data.id" as placeholder "webhook_id"
+    And I save the JSON node "data.auth_id" as placeholder "webhook_slug"
+    And I send a POST request to "/api/v2/webhooks/~webhook_id~/triggers" with body:
+    """
+    {
+      "terms": [
+        [{
+          "type" : "CheckWebhookVar",
+          "op": "isset",
+          "options" : {
+            "name": "webhook.query[something]"
+          }
+        }]
+      ],
+      "actions":{
+        "version":1,
+        "actions":[
+          {
+            "type": "SetSubject",
+            "options":{
+              "subject": "<expected_subject>"
+            }
+          }
+        ]
+      }
+    }
+    """
+    When I send a GET request to "/api/v2/webhooks/~webhook_slug~/invocation?something=true"
+    Then the response status code should be 204
+
+    When I send a GET request to "/api/v2/tickets/~ticket_id~"
+    Then the JSON node "data.subject" should be equal to "<expected_subject>"
+    Examples:
+      | webhook_title | expected_subject                  | actual_subject |
+      | my title      | Sample Ticket Modified By Webhook | Sample Ticket  |
