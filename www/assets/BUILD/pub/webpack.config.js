@@ -1,20 +1,20 @@
-const { resolve, join } = require('path');
-const ExtractTextPlugin     = require('extract-text-webpack-plugin');
+const path              = require('path');
+const ExtractTextPlugin = require('extract-text-webpack-plugin');
 
-const bowerDir       = resolve(__dirname, './bower_components');
-const nodeModulesDir = resolve(__dirname, './node_modules');
+const bowerDir       = path.resolve(__dirname, './bower_components');
+const nodeModulesDir = path.resolve(__dirname, './node_modules');
 const webpack = require('webpack');
 const config = {
   cache: true,
   devtool: 'eval',
   entry: {
     // Portal
-    widget_loader:               join(__dirname, 'build/widget_loader.js'),
-    'widget_loader.min':         join(__dirname, 'build/widget_loader.min.js'),
-    embed_loader:                join(__dirname, 'build/embed_loader.js'),
-    'embed_loader.min':          join(__dirname, 'build/embed_loader.min.js'),
-    hit_recorder:                join(__dirname, 'build/hit_recorder.js'),
-    'hit_recorder.min':          join(__dirname, 'build/hit_recorder.min.js'),
+    widget_loader:               path.join(__dirname, 'build/widget_loader.js'),
+    'widget_loader.min':         path.join(__dirname, 'build/widget_loader.min.js'),
+    embed_loader:                path.join(__dirname, 'build/embed_loader.js'),
+    'embed_loader.min':          path.join(__dirname, 'build/embed_loader.min.js'),
+    hit_recorder:                path.join(__dirname, 'build/hit_recorder.js'),
+    'hit_recorder.min':          path.join(__dirname, 'build/hit_recorder.min.js'),
     iframeResizer_contentWindow: './node_modules/iframe-resizer/js/iframeResizer.contentWindow.js',
 
     DeskPRO_PortalBundle: './src/DeskPRO/Bundle/PortalBundle/DeskPRO_PortalBundle',
@@ -76,7 +76,7 @@ const config = {
   },
 
   output: {
-    path:              resolve(__dirname, 'build/'),
+    path:              path.resolve(__dirname, 'build/'),
     pathinfo:          true,
     publicPath:        'http://localhost:9666/pub/build/',
     filename:          '[name].js',
@@ -85,8 +85,8 @@ const config = {
 
   resolve: {
     modules: [
-      resolve(__dirname, 'node_modules'),
-      resolve(__dirname, 'src')
+      path.resolve(__dirname, 'node_modules'),
+      path.resolve(__dirname, 'src')
     ],
     alias: {
       'jquery.ui.widget': 'jquery.ui.widget/jquery.ui.widget'
@@ -106,7 +106,7 @@ const config = {
           }
         ],
         include: [
-          resolve(__dirname, 'src/DeskPRO')
+          path.resolve(__dirname, 'src/DeskPRO')
         ]
       },
       {
@@ -120,13 +120,13 @@ const config = {
       {
         test:    /\.scss$/,
         include: [
-          resolve(__dirname, 'src/DeskPRO/Bundle/AdminBundle/Resources/style'),
-          resolve(__dirname, 'src/DeskPRO/Bundle/ReportBundle/Resources/style'),
-          resolve(__dirname, 'src/DeskPRO/Bundle/AgentBundle/Resources/style'),
-          resolve(__dirname, 'src/DeskPRO/Bundle/PortalBundle/Resources/style'),
-          resolve(__dirname, 'src/DeskPRO/Bundle/AppBundle/Resources/style'),
-          resolve(__dirname, 'src/DeskPRO/Bundle/DemoBundle/Resources/style'),
-          resolve(__dirname, 'src/DeskPRO/Bundle/WidgetBundle')
+          path.resolve(__dirname, 'src/DeskPRO/Bundle/AdminBundle/Resources/style'),
+          path.resolve(__dirname, 'src/DeskPRO/Bundle/ReportBundle/Resources/style'),
+          path.resolve(__dirname, 'src/DeskPRO/Bundle/AgentBundle/Resources/style'),
+          path.resolve(__dirname, 'src/DeskPRO/Bundle/PortalBundle/Resources/style'),
+          path.resolve(__dirname, 'src/DeskPRO/Bundle/AppBundle/Resources/style'),
+          path.resolve(__dirname, 'src/DeskPRO/Bundle/DemoBundle/Resources/style'),
+          path.resolve(__dirname, 'src/DeskPRO/Bundle/WidgetBundle')
         ],
 
         use: ExtractTextPlugin.extract({

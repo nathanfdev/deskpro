@@ -1,19 +1,19 @@
-const { join, resolve } = require('path');
-const uglify            = require('uglify-js');
-const sass              = require('node-sass');
-const babel             = require('babel-core');
-const fs                = require('fs');
+const path    = require('path');
+const uglify  = require('uglify-js');
+const sass    = require('node-sass');
+const babel   = require('babel-core');
+const fs      = require('fs');
 
-const pubDir         = join(__dirname, '..');
-const bowerDir       = resolve(pubDir, './bower_components');
-const nodeModulesDir = resolve(pubDir, './node_modules');
+const pubDir         = path.join(__dirname, '..');
+const bowerDir       = path.resolve(pubDir, './bower_components');
+const nodeModulesDir = path.resolve(pubDir, './node_modules');
 
 function refreshWidgetLoader(loaderFilename) {
   const loaderFilePath    = `/${loaderFilename}.js`;
   const minLoaderFilePath = `/${loaderFilename}.min.js`;
-  const widgetBundlePath  = join(pubDir, 'src/DeskPRO/Bundle/WidgetBundle');
+  const widgetBundlePath  = path.join(pubDir, 'src/DeskPRO/Bundle/WidgetBundle');
   const utilCode          = fs.readFileSync(`${widgetBundlePath}/deskpro_loader_util.js`).toString();
-  const buildDir          = join(pubDir, 'build');
+  const buildDir          = path.join(pubDir, 'build');
 
   if (!fs.existsSync(buildDir)) {
     fs.mkdirSync(buildDir);
@@ -31,7 +31,7 @@ function refreshWidgetLoader(loaderFilename) {
 
   try {
     const loaderCodemin = uglify.minify(transformedLoaderCode, { fromString: true }).code;
-    fs.writeFileSync(join(pubDir, 'build') + minLoaderFilePath, loaderCodemin);
+    fs.writeFileSync(path.join(pubDir, 'build') + minLoaderFilePath, loaderCodemin);
   } catch (e) {
     console.log('Trying to minify:\n');
     console.log(transformedLoaderCode);

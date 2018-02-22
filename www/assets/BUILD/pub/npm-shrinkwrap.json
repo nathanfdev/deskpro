@@ -1917,11 +1917,6 @@
         }
       }
     },
-    "react-dropzone-component": {
-      "version": "1.0.4",
-      "from": "react-dropzone-component@1.0.4",
-      "resolved": "https://registry.npmjs.org/react-dropzone-component/-/react-dropzone-component-1.0.4.tgz"
-    },
     "react-emojione": {
       "version": "5.0.0",
       "from": "react-emojione@>=5.0.0 <6.0.0",
