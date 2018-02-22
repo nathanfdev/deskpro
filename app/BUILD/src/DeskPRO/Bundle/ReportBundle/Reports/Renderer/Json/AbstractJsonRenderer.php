@@ -115,9 +115,9 @@ abstract class AbstractJsonRenderer extends AbstractRenderer
                 // should be less than 0.8, idk why but > 0.8 won't work
                 $graph['columnWidth'] = 0.8 - 0.1 * ($resultIndex + 1);
             }
-            $mainResults['graphs']       = array_merge($mainResults['graphs'], $result['graphs']);
-            $mainResults['dataProvider'] = array_values($mainResults['dataProvider']);
+            $mainResults['graphs'] = array_merge($mainResults['graphs'], $result['graphs']);
         }
+        $mainResults['dataProvider'] = array_values($mainResults['dataProvider']);
 
         return $mainResults;
     }
