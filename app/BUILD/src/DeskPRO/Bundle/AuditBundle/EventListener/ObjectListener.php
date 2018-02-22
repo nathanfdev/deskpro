@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2017, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2018, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -28,12 +28,8 @@
 
 namespace DeskPRO\Bundle\AuditBundle\EventListener;
 
-use Application\DeskPRO\Domain\DomainObject;
-use DeskPRO\Bundle\AppBundle\Entity\EntityInterface;
-use DeskPRO\Bundle\AuditBundle\Configuration\AuditContext;
 use DeskPRO\Bundle\AuditBundle\Configuration\ConfigurationSet;
 use DeskPRO\Bundle\AuditBundle\Event\LogEvent;
-use DeskPRO\Bundle\AuditBundle\Log\AuditLog;
 use DeskPRO\Component\Util\TypeUtils;
 
 /**
@@ -46,6 +42,11 @@ class ObjectListener
      */
     protected $configurationSet;
 
+    /**
+     * Constructor.
+     *
+     * @param ConfigurationSet $configurationSet
+     */
     public function __construct(ConfigurationSet $configurationSet)
     {
         $this->configurationSet = $configurationSet;
@@ -59,18 +60,13 @@ class ObjectListener
         $log     = $event->getLog();
         $context = $event->getContext();
         $entity  = $context->getEntity();
-        $log->setObjectId($entity->getId())->setObjectType(TypeUtils::getBaseTypeName($entity));
-        $this->writeObjectName($log, $context, $entity);
-    }
 
-    /**
-     * @param AuditLog                     $log
-     * @param DomainObject|EntityInterface $entity
-     * @param AuditContext                 $context
-     */
-    private function writeObjectName(AuditLog $log, AuditContext $context, $entity)
-    {
         $configuration = $this->configurationSet->getConfigurationFor($context);
+        $log->setObjectType(TypeUtils::getBaseTypeName($entity));
         $log->setObjectName($configuration->getNamingStrategy()->getName($entity, $log));
+
+        if (method_exists($entity, 'getId')) {
+            $log->setObjectId($entity->getId());
+        }
     }
 }
