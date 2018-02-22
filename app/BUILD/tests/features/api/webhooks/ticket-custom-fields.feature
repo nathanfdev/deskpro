@@ -94,7 +94,7 @@ Feature: /webhooks/tickets/{webhook}/invocation resource
   "field" : "lemmy"
 }
     """
-    Then the response status code should be 204
+    Then the response status code should be 200
 
     When I send a GET request to "/api/v2/tickets/~ticket_id~"
     Then the JSON node "data.subject" should be equal to "<expected_subject>"
