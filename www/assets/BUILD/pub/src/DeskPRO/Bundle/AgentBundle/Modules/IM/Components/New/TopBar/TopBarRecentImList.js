@@ -150,7 +150,7 @@ export default class TopBarRecentImList extends RecentList {
   }
 
   getItems(remained = false) {
-    return this.calculateChats(remained).map(chat => this.getItem(chat, !remained));
+    return this.calculateChats(remained).toArray().map(chat => this.getItem(chat, !remained));
   }
 
   calculateChats(remained = false) {
