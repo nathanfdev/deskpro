@@ -429,7 +429,8 @@ services:
   form.report_widget:
     class: DeskPRO\Bundle\AppBundle\Form\Type\Reports\ReportWidgetType
     arguments:
-      - "@dashboard.service"
+      - "@deskpro.core.translate_loader"
+      - "@language_manager"
     tags:
       - { name: form.type }
 

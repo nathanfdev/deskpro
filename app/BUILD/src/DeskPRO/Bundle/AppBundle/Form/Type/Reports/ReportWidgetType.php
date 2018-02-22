@@ -29,7 +29,8 @@
 namespace DeskPRO\Bundle\AppBundle\Form\Type\Reports;
 
 use Application\DeskPRO\Entity\ReportWidget;
-use Application\LegacyApiBundle\Service\Dashboard;
+use Application\DeskPRO\Translate\Loader\DeskproLoader;
+use DeskPRO\Bundle\AppBundle\Language\LanguageManager;
 use DeskPRO\Bundle\ReportBundle\Service\DashboardWidget;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
@@ -47,18 +48,25 @@ use Symfony\Component\OptionsResolver\OptionsResolver;
 class ReportWidgetType extends AbstractType
 {
     /**
-     * @var Dashboard
+     * @var DeskproLoader
      */
-    private $dashboard;
+    private $phraseLoader;
+
+    /**
+     * @var LanguageManager
+     */
+    private $languageManager;
 
     /**
      * Constructor.
      *
-     * @param Dashboard $dashboard
+     * @param DeskproLoader   $phraseLoader
+     * @param LanguageManager $languageManager
      */
-    public function __construct(Dashboard $dashboard)
+    public function __construct(DeskproLoader $phraseLoader, LanguageManager $languageManager)
     {
-        $this->dashboard = $dashboard;
+        $this->phraseLoader    = $phraseLoader;
+        $this->languageManager = $languageManager;
     }
 
     /**
@@ -128,8 +136,21 @@ class ReportWidgetType extends AbstractType
         $data = $event->getData();
 
         if (isset($data['labels']) && is_array($data['labels'])) {
+            $language = $this->languageManager->getLanguageStack()->getActive();
+            if (!$language) {
+                $language = $this->languageManager->getLanguageStack()->getDefaultLanguage();
+            }
+
+            $labelPhrases = $this->phraseLoader->load(['reports.labels'], $language);
+            $phrasesMap   = [];
+            foreach ($labelPhrases as $key => $phrase) {
+                $phrasesMap[$phrase] = $key;
+            }
+
             foreach ($data['labels'] as &$label) {
-                $label = $this->dashboard->mapLabelToSystemName($label);
+                if (isset($phrasesMap[$label])) {
+                    $label = preg_replace('/\.(.*?)$/', '$1', strtolower($label));
+                }
             }
         }
 
