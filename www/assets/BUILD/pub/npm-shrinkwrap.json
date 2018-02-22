@@ -243,23 +243,6 @@
       "from": "@deskpro/react-loader@>=2.4.2 <3.0.0",
       "resolved": "https://registry.npmjs.org/@deskpro/react-loader/-/react-loader-2.4.2.tgz"
     },
-    "@deskpro/react-scrollbar": {
-      "version": "0.5.1",
-      "from": "@deskpro/react-scrollbar@>=0.5.1 <0.6.0",
-      "resolved": "https://registry.npmjs.org/@deskpro/react-scrollbar/-/react-scrollbar-0.5.1.tgz",
-      "dependencies": {
-        "fbjs": {
-          "version": "0.8.16",
-          "from": "fbjs@>=0.8.9 <0.9.0",
-          "resolved": "https://registry.npmjs.org/fbjs/-/fbjs-0.8.16.tgz"
-        },
-        "react": {
-          "version": "15.6.2",
-          "from": "react@>=15.4.1 <16.0.0",
-          "resolved": "https://registry.npmjs.org/react/-/react-15.6.2.tgz"
-        }
-      }
-    },
     "@deskpro/react-stylesheet": {
       "version": "1.0.3",
       "from": "@deskpro/react-stylesheet@>=1.0.3 <2.0.0",
@@ -2054,6 +2037,11 @@
       "version": "1.7.7",
       "from": "react-scroll@>=1.6.4 <2.0.0",
       "resolved": "https://registry.npmjs.org/react-scroll/-/react-scroll-1.7.7.tgz"
+    },
+    "react-scrollbar": {
+      "version": "0.5.4",
+      "from": "react-scrollbar@0.5.4",
+      "resolved": "https://registry.npmjs.org/react-scrollbar/-/react-scrollbar-0.5.4.tgz"
     },
     "react-select": {
       "version": "1.2.1",

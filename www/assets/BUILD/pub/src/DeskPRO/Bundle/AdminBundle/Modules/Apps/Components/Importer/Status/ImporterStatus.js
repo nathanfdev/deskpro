@@ -1,6 +1,6 @@
 import React, { PropTypes } from 'react';
 import classNames from 'classnames';
-import ScrollArea from '@deskpro/react-scrollbar';
+import ScrollArea from 'react-scrollbar';
 import { Checkbox } from 'DeskPRO/Component/Semantic/ReactForm';
 import SectionHeader from '../../../../Common/Components/SectionHeader';
 

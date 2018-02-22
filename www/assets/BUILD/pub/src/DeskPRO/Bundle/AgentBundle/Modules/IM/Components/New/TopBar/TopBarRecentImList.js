@@ -11,7 +11,7 @@ import {
 import classNames from 'classnames';
 import { Detached } from 'DeskPRO/Component/Positioned/Detached';
 import { ClickOut } from 'DeskPRO/Component/ClickOut';
-import ScrollArea from '@deskpro/react-scrollbar';
+import ScrollArea from 'react-scrollbar';
 import { chooseColor, darkerColor } from 'DeskPRO/Bundle/AgentBundle/Modules/Common/Components/Avatar/colors';
 import { RecentList } from 'DeskPRO/Bundle/AgentBundle/Modules/IM/Components/New/IMTabs';
 import TopBarRecentImListItem from './TopBarRecentImListItem';
