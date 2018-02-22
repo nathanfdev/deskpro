@@ -3,7 +3,6 @@ import React from 'react';
 import Loader from '@deskpro/react-loader';
 import { updateMyProfile } from 'DeskPRO/Bundle/AppBundle/Modules/RecordsStore/Shortcuts/profile';
 import { Field } from './Fields/Field';
-import { Avatar } from './Fields/Avatar';
 import { Name } from './Fields/Name';
 import { DisplayName } from './Fields/DisplayName';
 import { Email } from './Fields/Email';
@@ -57,16 +56,6 @@ export class ProfileForm extends React.Component {
       submit: false
     };
   }
-
-  onChangeAvatar = (value) => {
-    this.updateData(
-      {
-        avatar: {
-          url:          value ? this.state.data.avatar.url : null,
-          blob_auth_id: value
-        }
-      });
-  };
 
   onChangeName = (value) => {
     this.updateData({ name: value });
@@ -137,11 +126,6 @@ export class ProfileForm extends React.Component {
   renderNameField() {
     return (
       <Field label="Your name" name="name" errors={this.state.errors}>
-        <Avatar
-          personName={this.state.data.name}
-          value={this.state.data.avatar.url}
-          onChange={this.onChangeAvatar}
-        />
         <Name value={this.state.data.name} onChange={this.onChangeName} />
       </Field>
     );
