@@ -39,6 +39,7 @@ class ResultMetadata
     const FLAG_HIERARCHICAL            = 1;
     const FLAG_WITH_ROLLUP             = 2;
     const FLAG_HIERARCHY_DESCENDS_FROM = 3;
+    const FLAG_LAYERED                 = 4;
 
     /**
      * List of columns that should be selected.

@@ -36,6 +36,7 @@ use DeskPRO\Bundle\ReportBundle\Dpql2\DpqlCompiler;
 use DeskPRO\Bundle\ReportBundle\Dpql2\DpqlContext;
 use DeskPRO\Bundle\ReportBundle\Reports\Renderer\ReportsRendererInterface;
 use DeskPRO\Bundle\ReportBundle\Reports\Renderer\ReportsRendererRegistry;
+use DeskPRO\Bundle\ReportBundle\Reports\ResultMetadata;
 use Doctrine\ORM\EntityManager;
 
 /**
@@ -321,10 +322,18 @@ class DashboardWidgetManager
         $queries  = preg_split('#LAYER WITH#', $query);
         $renderer = $this->rendererRegistry->getRenderer($graphType, $format);
 
-        $results = [];
+        $results    = [];
+        $multiLayer = false;
+        if (count($queries) > 1) {
+            $multiLayer = true;
+        }
         foreach ($queries as $layeredQuery) {
-            $query     = $this->compiler->compile($layeredQuery, $params, new DpqlContext($person));
-            $results[] = $query->getResults();
+            $query       = $this->compiler->compile($layeredQuery, $params, new DpqlContext($person));
+            $queryResult = $query->getResults();
+            if ($multiLayer) {
+                $queryResult->getMetadata()->addFlag(ResultMetadata::FLAG_LAYERED);
+            }
+            $results[] = $queryResult;
         }
 
         if ($options) {
@@ -333,6 +342,17 @@ class DashboardWidgetManager
             $options = [];
         }
 
-        return $renderer->render($results[0], $options);
+        $renderedResults = [];
+        foreach ($results as $queryResult) {
+            $renderedResults[] = $renderer->render($queryResult, $options);
+        }
+        $renderedResults = array_filter($renderedResults, function ($item) {
+            return $item;
+        });
+        if (count($renderedResults) > 1) {
+            return $renderer->mergeResults($renderedResults);
+        }
+
+        return reset($renderedResults);
     }
 }

@@ -82,4 +82,43 @@ abstract class AbstractJsonRenderer extends AbstractRenderer
     {
         return [];
     }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function mergeResults(array $results)
+    {
+        $mainResults = array_pop($results);
+
+        $assocKeyedDataProvider = [];
+        foreach ($mainResults['dataProvider'] as $dataProviderItem) {
+            $assocKeyedDataProvider[$dataProviderItem['category']] = $dataProviderItem;
+        }
+        $mainResults['dataProvider'] = $assocKeyedDataProvider;
+
+        foreach ($results as $resultIndex => $result) {
+            foreach ($result['dataProvider'] as $dataProviderItem) {
+                if (isset($mainResults['dataProvider'][$dataProviderItem['category']])) {
+                    foreach ($dataProviderItem as $itemKey => $value) {
+                        if (strpos($itemKey, 'value') !== false) {
+                            $newKey                                                              = $resultIndex.'_'.$itemKey;
+                            $mainResults['dataProvider'][$dataProviderItem['category']][$newKey] = $value;
+                        }
+                    }
+                }
+            }
+
+            foreach ($result['graphs'] as &$graph) {
+                $graph['valueField'] = $resultIndex.'_'.$graph['valueField'];
+                $graph['id']         = $resultIndex.'_'.$graph['id'];
+                $graph['clustered']  = false;
+                // should be less than 0.8, idk why but > 0.8 won't work
+                $graph['columnWidth'] = 0.8 - 0.1 * ($resultIndex + 1);
+            }
+            $mainResults['graphs']       = array_merge($mainResults['graphs'], $result['graphs']);
+            $mainResults['dataProvider'] = array_values($mainResults['dataProvider']);
+        }
+
+        return $mainResults;
+    }
 }

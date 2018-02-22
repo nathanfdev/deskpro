@@ -68,7 +68,7 @@ class JsonBarRenderer extends AbstractJsonChartRenderer
         $chartData   = $graphs   = [];
 
         // we have stacked results here
-        if ($groupXColumns && $metadata->hasFlag(ResultMetadata::FLAG_HIERARCHICAL)) {
+        if ($groupXColumns && $metadata->hasFlag(ResultMetadata::FLAG_HIERARCHICAL) && !$metadata->hasFlag(ResultMetadata::FLAG_LAYERED)) {
             $arrayOutput['valueAxes'][0]['stackType'] = 'regular';
             $arrayOutput['valueAxes'][0]['title']     = $selectColumns[0]['title'];
             $arrayOutput['categoryAxis']['title']     = $groupYColumns[0]['title'];
@@ -79,13 +79,12 @@ class JsonBarRenderer extends AbstractJsonChartRenderer
             foreach ($stacks as $i => $stack) {
                 $chartData[$i] = [];
                 foreach ($stack as $j => $values) {
-                    $chartData[$i]['category']        = isset($hierarchyParents[$i]) ? $hierarchyParents[$i]['hierarchy_root_title'] : $values['hierarchy_root_title'];
-                    $chartData[$i]["value$i$j"]       = $values[$selectColumns[0]['resultId'] - 1];
-                    $chartData[$i]["title_value$i$j"] = $values['hierarchy_title'];
-                    $graphs[]                         = [
+                    $chartData[$i]['category']  = isset($hierarchyParents[$i]) ? $hierarchyParents[$i]['hierarchy_root_title'] : $values['hierarchy_root_title'];
+                    $chartData[$i]["value$i$j"] = $values[$selectColumns[0]['resultId'] - 1];
+                    $graphs[]                   = [
                         'id'          => "graph-$i-$j",
                         'type'        => 'column',
-                        'fillAlphas'  => true,
+                        'fillAlphas'  => '0.9',
                         'valueField'  => "value$i$j",
                         'title'       => $values['hierarchy_title'],
                         'balloonText' => '[[title]]:[[value]]',
@@ -154,11 +153,11 @@ class JsonBarRenderer extends AbstractJsonChartRenderer
         foreach ($rows as $index => $row) {
             $parentId = $row['hierarchy_parent_id'];
             if (array_key_exists($parentId, $hierarchyParents)) {
+                unset($rows[$index]);
                 if (!isset($stacks[$parentId]) || !is_array($stacks[$parentId])) {
                     $stacks[$parentId] = [];
                 }
                 $stacks[$parentId][] = $row;
-                unset($rows[$index]);
             } else {
                 $stacks[$row['hierarchy_id']] = [$row];
             }

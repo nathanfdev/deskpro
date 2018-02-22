@@ -144,6 +144,7 @@ abstract class AbstractJsonChartRenderer extends AbstractJsonRenderer
             $i = 0;
             foreach ($rowGroups as $printable) {
                 $graphs[$i] = [
+                    'id'    => 'graph-'.$i,
                     'title' => implode(' / ', $printable),
                     'value' => "value$i",
                 ];
@@ -203,6 +204,7 @@ abstract class AbstractJsonChartRenderer extends AbstractJsonRenderer
 
                 foreach ($uniqueGraphs as $categoryName => $null) {
                     $graphs[] = [
+                        'id'    => "graph-$categoryName",
                         'title' => "$categoryName",
                         'value' => "$categoryName-value0",
                     ];
@@ -251,6 +253,7 @@ abstract class AbstractJsonChartRenderer extends AbstractJsonRenderer
 
                 foreach ($uniqueGraphs as $categoryName => $null) {
                     $graphs[] = [
+                        'id'    => "graph-$categoryName",
                         'title' => "$categoryName",
                         'value' => "$categoryName-value0",
                     ];
@@ -280,6 +283,7 @@ abstract class AbstractJsonChartRenderer extends AbstractJsonRenderer
                 }
 
                 $graphs[] = [
+                    'id'    => 'graph-'.$sel['title'],
                     'title' => $sel['title'],
                     'value' => 'value',
                 ];
@@ -390,6 +394,7 @@ abstract class AbstractJsonChartRenderer extends AbstractJsonRenderer
             foreach ($graphs as $graph) {
                 $graphArray[] = array_merge($this->options, [
                     'valueField'  => $graph['value'],
+                    'id'          => $graph['id'],
                     'title'       => $graph['title'],
                     'balloonText' => $balloonText,
                 ]);
