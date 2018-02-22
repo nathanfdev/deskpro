@@ -30,27 +30,27 @@ namespace DeskPRO\Bundle\AppBundle\Entity\ObjectAlias;
 
 use DeskPRO\Bundle\AppBundle\ObjectAlias;
 
-class AppQualifier
+class FullyQualifiedAppName
 {
     /**
-     * @param AppQualifier $qualifier
+     * @param FullyQualifiedAppName $qualifier
      * @return array
      */
-    public static function toArray(AppQualifier $qualifier)
+    public static function toArray( FullyQualifiedAppName $qualifier)
     {
         return ['app', $qualifier->getId()];
     }
 
     /**
      * @param array $qualifier
-     * @return AppQualifier|null
+     * @return FullyQualifiedAppName|null
      */
-    public static function fromArray(array $qualifier)
+    public static function parseArray( array $qualifier)
     {
-        if (count($qualifier) === 2 && $qualifier[0] === 'app') {
+        if (count($qualifier) === 3 && $qualifier[0] === 'app') {
             $id = (integer) $qualifier[1];
-            if ($qualifier[1] === (string) $id) {
-                return new AppQualifier($qualifier[1]);
+            if ($qualifier[1] === (string) $id && is_string($qualifier[2]) && !empty($qualifier[2]) ) {
+                return new FullyQualifiedAppName($qualifier[1], $qualifier[2]);
             }
         }
 
@@ -58,13 +58,13 @@ class AppQualifier
     }
 
     /**
-     * @param ObjectAlias\Name $name
-     * @return AppQualifier|null
+     * @param ObjectAlias\QualifiedName $qualifiedName
+     * @return FullyQualifiedAppName|null
      */
-    public static function fromName(ObjectAlias\Name $name)
+    public static function parseName( ObjectAlias\QualifiedName $qualifiedName)
     {
-        if ($name->isQualified()) {
-            return AppQualifier::fromArray($name->getQualifiers());
+        if ($qualifiedName->hasQualifiers()) {
+            return FullyQualifiedAppName::parseArray($qualifiedName->getQualifiers());
         }
 
         return null;
@@ -72,10 +72,12 @@ class AppQualifier
 
     /**
      * @param string $id
+     * @param string $localName
      */
-    public function __construct($id)
+    public function __construct($id, $localName)
     {
         $this->id = $id;
+        $this->localName = $localName;
     }
 
     /**
@@ -83,5 +85,13 @@ class AppQualifier
      */
     public function getId() {
         return $this->id;
+    }
+
+    /**
+     * @return string
+     */
+    public function getLocalName()
+    {
+        return $this->localName;
     }
 }

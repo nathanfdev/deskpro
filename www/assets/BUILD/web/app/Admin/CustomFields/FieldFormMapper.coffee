@@ -14,6 +14,7 @@ define ['moment', 'DeskPRO/Util/Util'], (moment, Util) ->
       # Default structure
       form = {
         title: '',
+        alias: '',
         description: '',
         is_enabled: true,
         text: {
@@ -93,7 +94,9 @@ define ['moment', 'DeskPRO/Util/Util'], (moment, Util) ->
       }
 
       if fieldModel
+        console.log('arpagic ', fieldModel)
         form.title = fieldModel.title
+        form.alias = fieldModel.alias
         form.description = fieldModel.description
 
         if fieldModel.type_name == 'textarea'
@@ -219,6 +222,8 @@ define ['moment', 'DeskPRO/Util/Util'], (moment, Util) ->
       if fieldModel.options.agent_validation_resolve
         formTypeOpts.agent_validation_resolve = true
 
+      console.log('belzebut ', form)
+
       return form
 
 
@@ -233,6 +238,7 @@ define ['moment', 'DeskPRO/Util/Util'], (moment, Util) ->
     getPostDataFromForm: (fieldType, formModel) ->
       postData = {
         title: formModel.title,
+        alias: formModel.alias,
         description: formModel.description,
         is_agent_field: formModel.is_agent_field,
         is_enabled: formModel.is_enabled

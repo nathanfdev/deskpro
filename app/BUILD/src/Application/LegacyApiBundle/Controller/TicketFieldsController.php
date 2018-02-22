@@ -149,24 +149,43 @@ class TicketFieldsController extends AbstractController implements ProtectedCont
             throw $this->createNotFoundException();
         }
 
-        $referencedBy = [];
+        $appAliases = [];
+        $adminAliases = [];
         foreach ($field->getAliases() as $alias) {
             $appInstance = $alias->getAppInstance();
             if ($appInstance) {
-                $referencedBy[] = [
+                $appAliases[] = [
                     'entity' => 'app',
                     'appId' => $appInstance->getApp()->getId(),
                     'appName' => $appInstance->getApp()->getManifest()->getTitle(),
                 ];
+            } else {
+                $adminAliases[] = $alias->getQualifiedName();
             }
         }
 
-        $data          = [
-            'field' => $field->toApiData(),
-            'referencedBy' => $referencedBy
-        ];
+        // a custom field can have at most one admin alias.
+        // if however we discover more than one (something broke) then we should throw
+        $data = null;
+        $nrAdminAliases = count($adminAliases);
+        if ($nrAdminAliases === 1) {
+            $data          = [
+                'field' => array_merge($field->toApiData(), ['alias' => $adminAliases[0]]) ,
+                'referencedBy' => $appAliases
+            ];
+        } else if ($nrAdminAliases === 0) {
+            $data          = [
+                'field' => $field->toApiData(),
+                'referencedBy' => $appAliases
+            ];
+        }
 
-        return $this->createApiResponse($data);
+        if (is_array($data)) {
+            return $this->createApiResponse($data);
+        }
+
+        $msg = sprintf('Found more than one admin aliases for field id: %s: %s', $id, implode(', ', $adminAliases));
+        throw new \RuntimeException($msg);
     }
 
     //###################################################################################################################
@@ -229,6 +248,8 @@ class TicketFieldsController extends AbstractController implements ProtectedCont
         if (empty($post['title'])) {
             return $this->createApiErrorResponse('validation_error', 'Empty title');
         }
+
+
 
         $container = $this->getContainer();
         $helper = new Form\FormHelper($container->getEm(), $container->getFormFactory());
