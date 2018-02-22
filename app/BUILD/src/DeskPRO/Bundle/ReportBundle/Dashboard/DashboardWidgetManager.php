@@ -318,8 +318,14 @@ class DashboardWidgetManager
         Person $person = null,
         $options = ''
     ) {
-        $query    = $this->compiler->compile($query, $params, new DpqlContext($person));
+        $queries  = preg_split('#LAYER WITH#', $query);
         $renderer = $this->rendererRegistry->getRenderer($graphType, $format);
+
+        $results = [];
+        foreach ($queries as $layeredQuery) {
+            $query     = $this->compiler->compile($layeredQuery, $params, new DpqlContext($person));
+            $results[] = $query->getResults();
+        }
 
         if ($options) {
             $options = @json_decode($options, true) ?: [];
@@ -327,6 +333,6 @@ class DashboardWidgetManager
             $options = [];
         }
 
-        return $renderer->render($query->getResults(), $options);
+        return $renderer->render($results[0], $options);
     }
 }

@@ -52,16 +52,11 @@ abstract class AbstractJsonChartRenderer extends AbstractJsonRenderer
     }
 
     /**
-     * {@inheritdoc}
+     * @return array
      */
-    protected function doRender(array $rows, ResultMetadata $metadata, array $options = [])
+    protected function getDefaultOutputArray()
     {
-        if (!$rows) {
-            return null;
-        }
-
-        //initial output array
-        $arrayOutput = [
+        return [
             'dataProvider' => [],
             'categoryAxis' => [
                 'gridPosition' => 'start',
@@ -89,7 +84,18 @@ abstract class AbstractJsonChartRenderer extends AbstractJsonRenderer
             'categoryField' => 'category',
             'exportConfig'  => false,
         ];
+    }
 
+    /**
+     * {@inheritdoc}
+     */
+    protected function doRender(array $rows, ResultMetadata $metadata, array $options = [])
+    {
+        if (!$rows) {
+            return null;
+        }
+
+        $arrayOutput   = $this->getDefaultOutputArray();
         $selectColumns = $metadata->getSelectColumns();
         $groupYColumns = $metadata->getGroupYColumns();
         $groupXColumns = $metadata->getGroupXColumns();
@@ -102,7 +108,7 @@ abstract class AbstractJsonChartRenderer extends AbstractJsonRenderer
         $firstSel       = reset($selectColumns);
         $valueAxisTitle = $firstSel['title'];
 
-        if ($groupXColumns) {
+        if ($groupXColumns && !$metadata->hasFlag(ResultMetadata::FLAG_HIERARCHICAL)) {
             // matrix table - X() values translate to bottom axis, each row (from Y()) is a new line/stack.
             $prepared = $this->prepareMatrixTable($metadata, $rows);
             $lookup   = $prepared['lookup'];
@@ -115,7 +121,9 @@ abstract class AbstractJsonChartRenderer extends AbstractJsonRenderer
             $headerCols = $this->getFinalMatrixPathsWithPrintable(['root'], $prepared['xDistinct']);
 
             foreach ($headerCols as $xPath => $printable) {
-                $category          = implode(' / ', $printable);
+                $category = $metadata->hasFlag(ResultMetadata::FLAG_HIERARCHICAL)
+                    ? str_replace('root|', '', $xPath)
+                    : implode(' / ', $printable);
                 $maxCategoryLength = max($maxCategoryLength, strlen($category));
 
                 $rowData = ['category' => $category];
@@ -297,7 +305,6 @@ abstract class AbstractJsonChartRenderer extends AbstractJsonRenderer
                             $data[] = [
                                 'category' => $graph['title'],
                                 'value'    => $info[$graph['value']],
-                                'pulled'   => true,
                             ];
                         }
                     }
