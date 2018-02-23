@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2017, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2018, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -29,9 +29,9 @@
 /**
  * DeskPRO.
  */
-
 namespace Application\LegacyApiBundle\Controller;
 
+use Application\DeskPRO\CustomFields\Form\AliasListHelper;
 use Application\DeskPRO\Entity\CustomDefTicket;
 use Application\DeskPRO\Entity\Product;
 use Application\DeskPRO\Entity\TicketCategory;
@@ -149,43 +149,27 @@ class TicketFieldsController extends AbstractController implements ProtectedCont
             throw $this->createNotFoundException();
         }
 
-        $appAliases = [];
-        $adminAliases = [];
+        $referencedBy = [];
         foreach ($field->getAliases() as $alias) {
             $appInstance = $alias->getAppInstance();
             if ($appInstance) {
-                $appAliases[] = [
+                $referencedBy[] = [
                     'entity' => 'app',
                     'appId' => $appInstance->getApp()->getId(),
                     'appName' => $appInstance->getApp()->getManifest()->getTitle(),
                 ];
-            } else {
-                $adminAliases[] = $alias->getQualifiedName();
             }
         }
 
-        // a custom field can have at most one admin alias.
-        // if however we discover more than one (something broke) then we should throw
-        $data = null;
-        $nrAdminAliases = count($adminAliases);
-        if ($nrAdminAliases === 1) {
-            $data          = [
-                'field' => array_merge($field->toApiData(), ['alias' => $adminAliases[0]]) ,
-                'referencedBy' => $appAliases
-            ];
-        } else if ($nrAdminAliases === 0) {
-            $data          = [
-                'field' => $field->toApiData(),
-                'referencedBy' => $appAliases
-            ];
-        }
+        $aliasListHelper = new AliasListHelper();
+        $alias = $aliasListHelper->findAdminAlias($field);
 
-        if (is_array($data)) {
-            return $this->createApiResponse($data);
-        }
+        $data          = [
+            'field' => array_merge($field->toApiData(), ['alias' => (string) $alias]),
+            'referencedBy' => $referencedBy
+        ];
 
-        $msg = sprintf('Found more than one admin aliases for field id: %s: %s', $id, implode(', ', $adminAliases));
-        throw new \RuntimeException($msg);
+        return $this->createApiResponse($data);
     }
 
     //###################################################################################################################
@@ -252,35 +236,11 @@ class TicketFieldsController extends AbstractController implements ProtectedCont
         // there is no separate api to change a single alias, must change all aliases
         // so we either add or remove the new alias to/from the list of existing aliases
         if ($id && array_key_exists('alias', $post)) {
-            $newAdminAlias = trim($post['alias']); //normalize the alias
-            $existingAdminAlias = null;
-            $existingAliases = [];
-
-            /** @var CustomDefTicket $field */
-            foreach ($field->getAliases() as $aliasObject) {
-                $appInstance = $aliasObject->getAppInstance();
-                $alias = $aliasObject->getQualifiedName();
-
-                if (! $appInstance) {
-                    if (is_null($existingAdminAlias)) {
-                        $existingAdminAlias = $alias;
-                    } else {
-                        $msg = sprintf(
-                            'Found more than one admin aliases for field id: %s: %s',
-                            $id, implode(', ', [$existingAdminAlias, $alias])
-                        );
-                        throw new \RuntimeException($msg);
-                    }
-                } else {
-                    $existingAliases[] = $alias;
-                }
-            }
-
-            $post['alias'] = empty($newAdminAlias) ? $existingAliases : array_merge([$newAdminAlias], $existingAliases);
+            $aliasListHelper = new AliasListHelper();
+            $post['alias'] = $aliasListHelper->changeAdminAlias($field, $post['alias']);
         }
 
-        $container = $this->getContainer();
-        $helper = new Form\FormHelper($container->getEm(), $container->getFormFactory());
+        $helper = $this->get(Form\FormHelper::class);
         $helper->saveFormToField($field, $post);
 
         if ($id) {

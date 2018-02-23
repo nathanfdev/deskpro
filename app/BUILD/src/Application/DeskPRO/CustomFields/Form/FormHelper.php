@@ -35,6 +35,7 @@
 namespace Application\DeskPRO\CustomFields\Form;
 
 use Application\DeskPRO\Entity\CustomDefAbstract;
+use DeskPRO\Bundle\AppBundle\Entity\ObjectAlias\AbstractAlias;
 use Doctrine\ORM\EntityManager;
 use Orb\Util\Util;
 use Symfony\Component\Form\FormFactoryInterface;
