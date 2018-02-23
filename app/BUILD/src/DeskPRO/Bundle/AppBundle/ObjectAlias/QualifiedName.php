@@ -51,9 +51,8 @@ class QualifiedName
             $name->getQualifiers()
         );
 
-
-        $valid = false;
-        for ($i =0; $i < count($names), $valid === true; $i++ ) {
+        $valid = true;
+        for ($i =0; $i < count($names) && $valid === true; $i++ ) {
             $valid = 1 === preg_match($pattern, $names[$i]);
         }
 

@@ -249,7 +249,35 @@ class TicketFieldsController extends AbstractController implements ProtectedCont
             return $this->createApiErrorResponse('validation_error', 'Empty title');
         }
 
+        // there is no separate api to change a single alias, must change all aliases
+        // so we either add or remove the new alias to/from the list of existing aliases
+        if ($id && array_key_exists('alias', $post)) {
+            $newAdminAlias = trim($post['alias']); //normalize the alias
+            $existingAdminAlias = null;
+            $existingAliases = [];
 
+            /** @var CustomDefTicket $field */
+            foreach ($field->getAliases() as $aliasObject) {
+                $appInstance = $aliasObject->getAppInstance();
+                $alias = $aliasObject->getQualifiedName();
+
+                if (! $appInstance) {
+                    if (is_null($existingAdminAlias)) {
+                        $existingAdminAlias = $alias;
+                    } else {
+                        $msg = sprintf(
+                            'Found more than one admin aliases for field id: %s: %s',
+                            $id, implode(', ', [$existingAdminAlias, $alias])
+                        );
+                        throw new \RuntimeException($msg);
+                    }
+                } else {
+                    $existingAliases[] = $alias;
+                }
+            }
+
+            $post['alias'] = empty($newAdminAlias) ? $existingAliases : array_merge([$newAdminAlias], $existingAliases);
+        }
 
         $container = $this->getContainer();
         $helper = new Form\FormHelper($container->getEm(), $container->getFormFactory());

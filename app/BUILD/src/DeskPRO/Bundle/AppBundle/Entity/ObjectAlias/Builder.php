@@ -136,7 +136,7 @@ class Builder
      */
     public function canBuild()
     {
-        return !empty($this->name) && !empty($this->aliasType) && !empty($this->object);
+        return !empty($this->alias) && !empty($this->aliasType) && !empty($this->object);
     }
 
     /**
