@@ -264,7 +264,7 @@ abstract class AbstractJsonChartRenderer extends AbstractJsonRenderer
             } else {
                 $sel = reset($selectColumns);
 
-                if ($metadata->hasFlag(ResultMetadata::FLAG_LAYERED)) {
+                if ($metadata->hasFlag(ResultMetadata::FLAG_LAYERED) && $metadata->hasFlag(ResultMetadata::FLAG_HIERARCHICAL)) {
                     $this->collectHierarchyParents($rows); // this gonna remove hierarchy from results
                 }
 
