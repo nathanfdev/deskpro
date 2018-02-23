@@ -2,7 +2,7 @@ import React from 'react';
 import Immutable from 'immutable';
 import ExistingList from 'DeskPRO/Bundle/AdminBundle/Modules/Voice/Components/Numbers/Search/ExistingNumbers/ExistingList';
 import AvailableList from 'DeskPRO/Bundle/AdminBundle/Modules/Voice/Components/Numbers/Search/AvailableNumbers/AvailableList';
-import { storiesOf } from '@kadira/storybook';
+import { storiesOf } from '@storybook/react';
 import { adminCss } from '../../../../decorators';
 
 const numbers = Immutable.fromJS([

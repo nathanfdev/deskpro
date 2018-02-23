@@ -1,21 +1,18 @@
 import React from 'react';
 import Isvg from 'react-inlinesvg';
 import Immutable from 'immutable';
-import { storiesOf, action } from '@kadira/storybook';
+import { storiesOf, action } from '@storybook/react';
 import User from 'DeskPRO/Bundle/AgentBundle/Modules/TopBar/Components/User';
 import AddButton from 'DeskPRO/Bundle/AgentBundle/Modules/TopBar/Components/AddButton';
 import Chat from 'DeskPRO/Bundle/AgentBundle/Modules/TopBar/Components/Chat';
 import { TopBar, TopBarItem, TopBarRightMenu, TopBarNotificationIcon } from 'DeskPRO/Component/Semantic/TopBar';
 import SearchBox from 'DeskPRO/Component/Semantic/SearchBox';
-import recentSvg from 'DeskPRO/Bundle/AgentBundle/Resources/img/topbar/recent.svg';
-import viewsSvg from 'DeskPRO/Bundle/AgentBundle/Resources/img/topbar/views.svg';
-import notificationsSvg from 'DeskPRO/Bundle/AgentBundle/Resources/img/topbar/notifications.svg';
 import { agents } from 'DemoState/AgentBundle/Modules/Application/topbar';
 import teleOperator from '../../../Resources/teleoperator.jpg';
 import { css } from '../../../decorators';
 
 const newAgents = [];
-agents.map((agent) => newAgents.push(Immutable.Map(agent)));
+agents.map(agent => newAgents.push(Immutable.Map(agent)));
 
 storiesOf('App: top bar', module)
   .addDecorator(story => css(story()))

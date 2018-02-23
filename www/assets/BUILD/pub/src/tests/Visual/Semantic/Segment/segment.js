@@ -1,5 +1,5 @@
 import React from 'react';
-import { storiesOf } from '@kadira/storybook';
+import { storiesOf } from '@storybook/react';
 import { SegmentsGroup, Segment } from 'DeskPRO/Component/Semantic/Segment';
 import { List } from 'DeskPRO/Component/Semantic/List';
 import { structure as listStructure } from '../list';

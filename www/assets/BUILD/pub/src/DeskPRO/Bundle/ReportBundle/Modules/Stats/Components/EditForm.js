@@ -1,7 +1,7 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import { Button, Container, Tabs, TabLink, Section } from '@deskpro/react-components';
-import { Input, Checkbox, Textarea, Select, TagSet, validators } from '@deskpro/react-components/lib/bindings/redux-form';
+import { ReduxForm } from '@deskpro/react-components/dist/bindings';
 import { formValues, Field, FieldArray, FormSection } from 'redux-form';
 import classNames from 'classnames';
 import { varTypes } from './helper';
@@ -38,7 +38,7 @@ class VarsFieldComponent extends React.PureComponent {
       return choice;
     });
 
-    return (<Select key={name} name={name} options={choices} />);
+    return (<ReduxForm.Select key={name} name={name} options={choices} />);
   }
 
   static renderTypeField(name, values) {
@@ -51,7 +51,7 @@ class VarsFieldComponent extends React.PureComponent {
       return choice;
     });
 
-    return (<Select label="Record Type" key={name} name={name} options={choices} />);
+    return (<ReduxForm.Select label="Record Type" key={name} name={name} options={choices} />);
   }
 
   static renderTypeValueField(name, values) {
@@ -64,7 +64,7 @@ class VarsFieldComponent extends React.PureComponent {
       return choice;
     });
 
-    return (<Select label="Default Value" key={name} name={name} options={choices} />);
+    return (<ReduxForm.Select label="Default Value" key={name} name={name} options={choices} />);
   }
 
   onAddButtonClick = (event) => {
@@ -106,12 +106,12 @@ class VarsFieldComponent extends React.PureComponent {
 
             return (<div className="varsfield-item" key={key}>
               <div className="remove-ctrl" onClick={() => fields.remove(index)}><i className="fa fa-trash" /></div>
-              <Input
+              <ReduxForm.Input
                 label={hint}
                 name={`${varName}.name`}
                 validate={[VarsFieldComponent.validateVarName]}
               />
-              <Select
+              <ReduxForm.Select
                 label="Type"
                 options={varTypes}
                 name={`${varName}.type`}
@@ -149,7 +149,7 @@ class LabelsFieldComponent extends React.PureComponent {
 
     const newOptions = options.map(label => label.label);
 
-    return (<TagSet
+    return (<ReduxForm.TagSet
       name="labels"
       label="Labels"
       tags={fields.getAll()}
@@ -278,11 +278,11 @@ export class EditFormComponent extends React.PureComponent {
     return (
       <form onSubmit={this.props.handleSubmit}>
         <Container>
-          <Input
+          <ReduxForm.Input
             label="Title"
             id="title"
             name="title"
-            validate={validators.required}
+            validate={ReduxForm.validators.required}
           />
           <FieldArray name="labels" component={renderLabels} />
           <Field component="input" type="hidden" name="query_input_mode" />
@@ -294,28 +294,28 @@ export class EditFormComponent extends React.PureComponent {
             <div className="input-wrap">
               <FormSection name="query">
                 <Section hidden={this.state.queryInputMode !== 'form'}>
-                  <Input label="SELECT" name="select" />
-                  <Input label="FROM" name="from" />
-                  <Input label="WHERE" name="where" />
-                  <Input label="SPLIT BY" name="split_by" />
-                  <Input label="GROUP BY" name="group_by" />
+                  <ReduxForm.Input label="SELECT" name="select" />
+                  <ReduxForm.Input label="FROM" name="from" />
+                  <ReduxForm.Input label="WHERE" name="where" />
+                  <ReduxForm.Input label="SPLIT BY" name="split_by" />
+                  <ReduxForm.Input label="GROUP BY" name="group_by" />
                   <div
                     className={classNames({
                       'field-hidden': !(select && select.match(/count\s*\(.*?\)/i) && groupBy.length)
                     })}
                   >
-                    <Checkbox
+                    <ReduxForm.Checkbox
                       label="WITH ROLLUP - Adds a Total column to grouped COUNT queries made against hierarchies"
                       name="with_rollup"
                     />
                   </div>
                   <div style={{ width: '150px' }}>
-                    <Input label="LIMIT" name="limit" />
-                    <Input label="OFFSET" name="offset" />
+                    <ReduxForm.Input label="LIMIT" name="limit" />
+                    <ReduxForm.Input label="OFFSET" name="offset" />
                   </div>
                 </Section>
                 <Section hidden={this.state.queryInputMode !== 'dpql'}>
-                  <Textarea name="raw" />
+                  <ReduxForm.Textarea name="raw" />
                 </Section>
               </FormSection>
               <div className="vars-wrap">

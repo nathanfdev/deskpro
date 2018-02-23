@@ -3,7 +3,7 @@ import { createStore, combineReducers } from 'redux';
 import { Provider } from 'react-redux';
 import { reduxForm, reducer as formReducer } from 'redux-form';
 import { EditForm } from 'DeskPRO/Bundle/ReportBundle/Modules/Stats/Components/EditForm';
-import { storiesOf } from '@kadira/storybook';
+import { storiesOf } from '@storybook/react';
 import { reportCss } from '../../../decorators';
 import { groupParams } from './sampleGroupParams';
 
@@ -13,7 +13,7 @@ const store = createStore(combineReducers({
 
 storiesOf('Reports: Stat', module)
   .addDecorator(story => reportCss(story()))
-  .addDecorator((story) => (<Provider store={store}>{story()}</Provider>))
+  .addDecorator(story => (<Provider store={store}>{story()}</Provider>))
   .add(
     'Edit form',
     () => {

@@ -1,7 +1,7 @@
 import PropTypes from 'prop-types';
 import React from 'react';
 import ReactTooltip from 'react-tooltip';
-import Loader from 'react-loader';
+import Loader from '@deskpro/react-loader';
 import Immutable from 'immutable';
 import {
   DepartmentAvatar,
@@ -11,7 +11,7 @@ import {
 import classNames from 'classnames';
 import { Detached } from 'DeskPRO/Component/Positioned/Detached';
 import { ClickOut } from 'DeskPRO/Component/ClickOut';
-import ScrollArea from '@deskpro/react-scrollbar';
+import ScrollArea from 'react-scrollbar';
 import { chooseColor, darkerColor } from 'DeskPRO/Bundle/AgentBundle/Modules/Common/Components/Avatar/colors';
 import { RecentList } from 'DeskPRO/Bundle/AgentBundle/Modules/IM/Components/New/IMTabs';
 import TopBarRecentImListItem from './TopBarRecentImListItem';
@@ -150,7 +150,7 @@ export default class TopBarRecentImList extends RecentList {
   }
 
   getItems(remained = false) {
-    return this.calculateChats(remained).map(chat => this.getItem(chat, !remained));
+    return this.calculateChats(remained).toArray().map(chat => this.getItem(chat, !remained));
   }
 
   calculateChats(remained = false) {

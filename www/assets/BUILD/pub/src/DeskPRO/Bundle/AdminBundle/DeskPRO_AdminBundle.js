@@ -1,3 +1,4 @@
+import 'react-hot-loader/patch';
 import AdminApp from './AdminApp';
 import { DeskproAppsMain } from './Modules/DeskproApps/DeskproAppsMain';
 

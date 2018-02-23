@@ -1,6 +1,6 @@
 import PropTypes from 'prop-types';
 import React from 'react';
-import { ListElement } from '@deskpro/react-components/lib/Components/Common';
+import { ListElement } from '@deskpro/react-components';
 import { DragSource, DropTarget } from 'react-dnd';
 
 const ItemTypes = {

@@ -1,5 +1,5 @@
 import React from 'react';
-import Loader from 'react-loader';
+import Loader from '@deskpro/react-loader';
 
 export class ListItemLabelSpinner extends React.Component {
 
@@ -7,7 +7,8 @@ export class ListItemLabelSpinner extends React.Component {
     return (
       <span>
         &nbsp;
-        <Loader scale={0.35}
+        <Loader
+          scale={0.35}
           left="22px"
           top="12px"
           color="green"

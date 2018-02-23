@@ -1,4 +1,5 @@
-import React, { PropTypes } from 'react';
+import React from 'react';
+import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import LoadingPage from 'DeskPRO/Bundle/AdminBundle/Modules/Common/Components/LoadingPage';
 import { getImportStatus } from '../../Actions/importerActions';
@@ -20,18 +21,18 @@ export const importerSources = {
     steps:       ['article_category', 'article', 'person', 'ticket', 'organization']
   },
   // todo disabled for now
-  //osticket: {
+  // osticket: {
   //  title:       'osTicket',
   //  description: 'Import from your on-premise osTicket helpdesk.',
   //  component:   Sources.ImporterSourceOsTicket,
   //  steps:       ['article_category', 'article', 'news', 'person', 'ticket', 'organization', 'setting']
-  //},
-  //advanced: {
+  // },
+  // advanced: {
   //  title:       'Advanced',
   //  description: 'Import data from standard format JSON files.',
   //  component:   Sources.ImporterSourceAdvanced,
   //  steps:       ['article_category', 'article', 'news', 'person', 'ticket', 'organization', 'setting']
-  //}
+  // }
 };
 
 @connect()

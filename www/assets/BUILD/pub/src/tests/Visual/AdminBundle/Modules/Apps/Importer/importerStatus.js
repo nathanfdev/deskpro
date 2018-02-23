@@ -1,6 +1,6 @@
 import React from 'react';
 import ImporterStatus from 'DeskPRO/Bundle/AdminBundle/Modules/Apps/Components/Importer/Status/ImporterStatus';
-import { storiesOf } from '@kadira/storybook';
+import { storiesOf } from '@storybook/react';
 import { adminCss } from '../../../../decorators';
 
 storiesOf('Admin: Importer', module)
