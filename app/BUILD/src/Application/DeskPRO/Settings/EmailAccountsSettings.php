@@ -61,8 +61,8 @@ class EmailAccountsSettings
         'rate_locktime' => self::DEFAULT_RATE_LOCK_TIME,
 
         'download_hotlinked_images.enabled'       => true,
-        'download_hotlinked_images.image_maxsize' => 10 * 1024 * 1024,
-        'download_hotlinked_images.total_maxsize' => 25 * 1024 * 1024,
+        'download_hotlinked_images.image_maxsize' => 10485760,
+        'download_hotlinked_images.total_maxsize' => 26214400,
     ];
 
     /**
