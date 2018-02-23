@@ -297,7 +297,7 @@ class FieldManager
         /** @var CustomDefAbstract $field */
         foreach ($this->fields as $field) {
             foreach ($field->getAliases() as $alias) {
-                if ($alias->getAlias() === $field_id) {
+                if ($alias->getQualifiedName() === $field_id) {
                     return $field;
                 }
             }

@@ -28,13 +28,10 @@
 
 namespace DeskPRO\Bundle\ReportBundle\Dpql2\Statement\Part;
 
-use Application\DeskPRO\CustomFields\BillingFieldManager;
-use Application\DeskPRO\CustomFields\OrganizationFieldManager;
-use Application\DeskPRO\CustomFields\PersonFieldManager;
-use Application\DeskPRO\CustomFields\TicketFieldManager;
 use Application\DeskPRO\EntityRepository\AbstractEntityRepository;
 use DeskPRO\Bundle\ReportBundle\Dpql2\DpqlException;
 use DeskPRO\Bundle\ReportBundle\Dpql2\Func\DpqlFuncRegistry;
+use DeskPRO\Bundle\ReportBundle\Dpql2\Helper\CustomDataHelper;
 use DeskPRO\Bundle\ReportBundle\Dpql2\SqlSelect;
 use DeskPRO\Bundle\ReportBundle\Dpql2\Statement\DpqlStatementFactory;
 use DeskPRO\Bundle\ReportBundle\Dpql2\Statement\SelectPart;
@@ -72,24 +69,9 @@ class Column extends AbstractPart
     private $connection;
 
     /**
-     * @var TicketFieldManager
+     * @var CustomDataHelper
      */
-    private $ticketFieldManager;
-
-    /**
-     * @var BillingFieldManager
-     */
-    private $billingFieldManager;
-
-    /**
-     * @var PersonFieldManager
-     */
-    private $personFieldManager;
-
-    /**
-     * @var OrganizationFieldManager
-     */
-    private $orgFieldManager;
+    private $customDataHelper;
 
     /**
      * List of parts in the reference.
@@ -164,36 +146,27 @@ END)
     /**
      * Constructor.
      *
-     * @param DpqlStatementFactory     $statementFactory
-     * @param DpqlFuncRegistry         $dpqlFuncRegistry
-     * @param EntityManager            $em
-     * @param Connection               $connection
-     * @param TicketFieldManager       $ticketFieldManager
-     * @param BillingFieldManager      $billingFieldManager
-     * @param PersonFieldManager       $personFieldManager
-     * @param OrganizationFieldManager $orgFieldManager
-     * @param array                    $parts
+     * @param DpqlStatementFactory $statementFactory
+     * @param DpqlFuncRegistry     $dpqlFuncRegistry
+     * @param EntityManager        $em
+     * @param Connection           $connection
+     * @param CustomDataHelper     $customDataHelper
+     * @param array                $parts
      */
     public function __construct(
         DpqlStatementFactory     $statementFactory,
         DpqlFuncRegistry         $dpqlFuncRegistry,
         EntityManager            $em,
         Connection               $connection,
-        TicketFieldManager       $ticketFieldManager,
-        BillingFieldManager      $billingFieldManager,
-        PersonFieldManager       $personFieldManager,
-        OrganizationFieldManager $orgFieldManager,
+        CustomDataHelper         $customDataHelper,
         array                    $parts
     ) {
-        $this->statementFactory    = $statementFactory;
-        $this->dpqlFuncRegistry    = $dpqlFuncRegistry;
-        $this->em                  = $em;
-        $this->connection          = $connection;
-        $this->ticketFieldManager  = $ticketFieldManager;
-        $this->billingFieldManager = $billingFieldManager;
-        $this->personFieldManager  = $personFieldManager;
-        $this->orgFieldManager     = $orgFieldManager;
-        $this->parts               = $parts;
+        $this->statementFactory = $statementFactory;
+        $this->dpqlFuncRegistry = $dpqlFuncRegistry;
+        $this->em               = $em;
+        $this->connection       = $connection;
+        $this->customDataHelper = $customDataHelper;
+        $this->parts            = $parts;
     }
 
     /**
@@ -459,8 +432,16 @@ END)
                     }
 
                     if ($extraConditionValue !== false) {
+                        $joinValue = $extraConditionValue;
+                        if (strpos($childSqlTable, 'custom_data_') === 0 && !is_numeric($extraConditionValue)) {
+                            $field = $this->customDataHelper->getCustomField($childSqlTable, $extraConditionValue);
+                            if ($field) {
+                                $joinValue = $field->getId();
+                            }
+                        }
+
                         $joinConditions[] = sprintf(
-                            self::$_conditionResolver[$childSqlTable], $joinAlias, $this->connection->quote($extraConditionValue)
+                            self::$_conditionResolver[$childSqlTable], $joinAlias, $this->connection->quote($joinValue)
                         );
                     }
 
@@ -501,30 +482,7 @@ END)
 
                 return new Prepared($prepped->sql(), $this->_prettifyColumnName($name), false, $renderer);
             } elseif (preg_match('/^custom_data_/', $assocTable)) {
-                $custom_def_table = str_replace('_data_', '_def_', $assocTable);
-                switch ($custom_def_table) {
-                    case 'custom_def_ticket':
-                        $manager = $this->ticketFieldManager;
-                        break;
-                    case 'custom_def_billing':
-                        $manager = $this->billingFieldManager;
-                        break;
-                    case 'custom_def_people':
-                        $manager = $this->personFieldManager;
-                        break;
-                    case 'custom_def_organizations':
-                        $manager = $this->orgFieldManager;
-                        break;
-                    default:
-                        $manager = null;
-                        break;
-                }
-
-                $field = null;
-                if ($manager) {
-                    $field = $manager->getFieldFromId($extraConditionValue);
-                }
-
+                $field        = $this->customDataHelper->getCustomField($assocTable, $extraConditionValue);
                 $renderer     = null;
                 $preppedPrint = null;
                 if ($field && (array_search($type = $field->getTypeName(), ['date', 'datetime']) !== false)) {
