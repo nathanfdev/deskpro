@@ -103,46 +103,6 @@ class JsonBarRenderer extends AbstractJsonChartRenderer
 
     /**
      * @param array $rows
-     *
-     * @return array
-     */
-    protected function collectHierarchyParents(array &$rows)
-    {
-        $hierarchyParents = [];
-        foreach ($rows as $row) {
-            if ($row['hierarchy_parent_id']) {
-                $parent = $this->findHierarchyParent($rows, $row['hierarchy_parent_id']);
-                if ($parent) {
-                    list($index, $parent) = $parent;
-                    // collect all hierarchy parents, so we gonna stack results under them
-                    $hierarchyParents[$parent['hierarchy_id']] = $parent;
-                    unset($rows[$index]);
-                }
-            }
-        }
-
-        return $hierarchyParents;
-    }
-
-    /**
-     * @param array $rows
-     * @param int   $parentId
-     *
-     * @return array|bool
-     */
-    protected function findHierarchyParent($rows, $parentId)
-    {
-        foreach ($rows as $i => $row) {
-            if ($row['hierarchy_id'] === $parentId) {
-                return [$i, $row];
-            }
-        }
-
-        return false;
-    }
-
-    /**
-     * @param array $rows
      * @param array $hierarchyParents
      *
      * @return array

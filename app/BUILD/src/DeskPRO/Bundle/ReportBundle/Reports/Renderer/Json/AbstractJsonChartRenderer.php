@@ -121,9 +121,7 @@ abstract class AbstractJsonChartRenderer extends AbstractJsonRenderer
             $headerCols = $this->getFinalMatrixPathsWithPrintable(['root'], $prepared['xDistinct']);
 
             foreach ($headerCols as $xPath => $printable) {
-                $category = $metadata->hasFlag(ResultMetadata::FLAG_HIERARCHICAL)
-                    ? str_replace('root|', '', $xPath)
-                    : implode(' / ', $printable);
+                $category          = implode(' / ', $printable);
                 $maxCategoryLength = max($maxCategoryLength, strlen($category));
 
                 $rowData = ['category' => $category];
@@ -265,6 +263,10 @@ abstract class AbstractJsonChartRenderer extends AbstractJsonRenderer
                 $categoryAxisTitle = $firstY['title'];
             } else {
                 $sel = reset($selectColumns);
+
+                if ($metadata->hasFlag(ResultMetadata::FLAG_LAYERED)) {
+                    $this->collectHierarchyParents($rows); // this gonna remove hierarchy from results
+                }
 
                 foreach ($rows as $row) {
                     $categories = [];
