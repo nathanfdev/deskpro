@@ -1158,6 +1158,7 @@ class FeedbackController extends AbstractController
         $ticket      = null;
         $message     = null;
         $attachments = [];
+        $feedback_person = $this->person;
 
         if ($this->in->getUInt('ticket_id')) {
             $ticket = $this->getTicket($this->in->getUInt('ticket_id'));
@@ -1171,6 +1172,8 @@ class FeedbackController extends AbstractController
             if (!$message || $message->ticket != $ticket) {
                 $message = $ticketMessageRepo->getFirstTicketMessage($ticket);
             }
+
+            $feedback_person = $ticket->getPerson();
         }
 
         if ($message && count($message->attachments)) {
@@ -1215,6 +1218,7 @@ class FeedbackController extends AbstractController
             [
                 'ticket'              => $ticket,
                 'message'             => $message,
+                'feedback_person'     => $feedback_person,
                 'attachments'         => $attachments,
                 'feedback_categories' => $feedbackCategories,
                 'active_status_cats'  => $activeStatusCategories,
@@ -1270,10 +1274,15 @@ class FeedbackController extends AbstractController
                 $this->person->id
             );
 
+            if ($feedback->getPerson()->getId() !== $this->person->getId()) {
+                $this->_sendAgentCreatedFeedbackForUserNotification($feedback);
+            }
+
             return $this->createJsonResponse(
                 [
                     'success'     => true,
                     'feedback_id' => $feedback['id'],
+                    'feedback_url' => $this->get('object_router')->getPortalUrl($feedback)
                 ]
             );
         } else {
@@ -1282,6 +1291,26 @@ class FeedbackController extends AbstractController
                     'success' => false,
                 ]
             );
+        }
+    }
+
+    protected function _sendAgentCreatedFeedbackForUserNotification(Feedback $feedback)
+    {
+        if ($this->get('deskpro.feature_flags')->hasBeta('email_templates')) {
+            $viewModel = $this->get('email.user_viewmodel_factory')
+                ->createAgentCreatedNewFeedbackForUserModel($feedback);
+            $this->get('email.email_sender')
+                ->send($viewModel, ['to' => $feedback->getPerson()->getEmail()]);
+        } else {
+            $message = $this->container->getMailer()->createMessage();
+            $message->setTo(
+                $feedback->getPerson()->getEmail(),
+                $feedback->getPerson()->getDisplayName()
+            );
+            $message->setTemplate('DeskPRO:emails_user:new-feedback-created-for-user.html.twig', [
+                    'feedback' => $feedback,
+            ]);
+            $this->container->getMailer()->send($message);
         }
     }
 

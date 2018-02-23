@@ -69,6 +69,61 @@ pageMeta.baseId = '{{ baseId }}';
 	</div>
 </div>
 
+<div class="section user-section" id="{{baseId}}_user_section">
+	<div class="content">
+		<h4>{{ phrase('agent.general.user') }}</h4>
+    <div id="{{baseId}}_choose_user" style="display: none">
+      <div
+        id="{{baseId}}_user_searchbox"
+        data-element-handler="DeskPRO.Agent.ElementHandler.PersonSearchBox"
+        data-search-url="{{ path('agent_peoplesearch_performquick', {'format': 'json', 'limit': 10, 'start_with': 'a', 'with_agents': 1}) }}"
+        data-highlight-term="1"
+        data-touch-focus="1"
+        data-search-param="term"
+        data-position-bound="#{{baseId}}_userselect"
+      >
+        <input type="text" name="person_input_choice" id="{{baseId}}_userselect" class="select-user term" placeholder="{{ phrase('agent.general.choose_person_for_feedback') }}" style="width: 80%;" />
+        <input type="hidden" name="newfeedback[person][id]" value="{{ feedback_person.id }}" class="person-id" id="{{baseId}}_person_id" />
+
+        <script type="text/x-deskpro-tmpl" class="user-row-tpl">
+          <li>
+            <a>
+            <span class="user-name"></span>
+            <address>&lt;<span class="user-email"></span>&gt;</address>
+            <div class="bound-fade"></div>
+          </a></li>
+        </script>
+        <script type="text/x-deskpro-tmpl" class="user-selected-tpl">
+          <a class="as-popover dp-btn dp-btn-small" data-route="">
+            <span class="text">
+              <span class="user-name"></span>
+              (<span class="user-email"></span>)
+            </span>
+          </a>
+        </script>
+        <div class="person-search-box" style="display: none">
+          <section>
+            <ul class="results-list">
+
+            </ul>
+          </section>
+        </div>
+      </div>
+    </div>
+    <div>
+      <span id="{{baseId}}_user_choice">
+          <a class="as-popover dp-btn dp-btn-small" data-route="person:{{ path('agent_people_view', {'person_id': feedback_person.id}) }}">
+            <span class="text">
+              <span class="user-name">{{feedback_person.display_name}}</span>
+              (<span class="user-email">{{feedback_person.email}}</span>)
+            </span>
+          </a>
+      </span>
+      <a id="{{baseId}}_switch_user"><i class="fa fa-edit"></i></a>
+    </div>
+	</div>
+</div>
+
 <div class="section title-section" id="{{baseId}}_title_section">
 	<div class="content">
 		<h4>{{ phrase('agent.general.title') }}</h4>

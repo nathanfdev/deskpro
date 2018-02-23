@@ -65,6 +65,8 @@ class NewFeedback
     /** @var array */
     public $attach_ids;
     /** @var Ticket */
+    public $person;
+    /** @var Ticket */
     public $linked_ticket;
     /** @var bool */
     public $is_subscribe_ticket_owner = false;
@@ -90,10 +92,9 @@ class NewFeedback
         TicketManager $ticket_manager,
         FeedbackSubscriptionHelper $subscriptionHelper)
     {
-        $this->_person_context = $person_context;
-
         $this->em                 = $em;
         $this->ticket_manager     = $ticket_manager;
+        $this->_person_context    = $person_context;
         $this->subscriptionHelper = $subscriptionHelper;
     }
 
@@ -102,7 +103,7 @@ class NewFeedback
         $this->em->beginTransaction();
 
         $feedback         = new Feedback();
-        $feedback->person = $this->_person_context;
+        $feedback->person = $this->getPersonForFeedback();
         $feedback->setStatusCode($this->status_code);
         $feedback->title = $this->title;
 
@@ -173,6 +174,15 @@ class NewFeedback
             $this->is_subscribe_ticket_owner,
             $this->is_subscribe_ticket_participants
         );
+    }
+
+    /**
+     *
+     * @return Person
+     */
+    protected function getPersonForFeedback()
+    {
+        return $this->person ?: $this->_person_context;
     }
 
     public function getFeedback()

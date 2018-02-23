@@ -33,6 +33,7 @@
 namespace Application\AgentBundle\Form\Type;
 
 use Application\DeskPRO\Entity\Ticket;
+use DeskPRO\Bundle\AppBundle\Form\Type\PersonAssignType;
 use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\CheckboxType;
@@ -75,6 +76,9 @@ class NewFeedback extends AbstractType
         ]);
         $builder->add('is_subscribe_ticket_participants', CheckboxType::class, [
             'required' => false,
+        ]);
+        $builder->add('person', PersonAssignType::class, [
+            'required' => false
         ]);
     }
 

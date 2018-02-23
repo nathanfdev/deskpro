@@ -2849,6 +2849,10 @@ DeskPRO.Agent.PageFragment.Page.Ticket = new Orb.Class({
 				DeskPRO_Window.newTicketLoader.newLinkedTicket(this.meta.ticket_id, messageId);
 				break;
 
+			case 'link_new_feedback':
+        DeskPRO_Window.newFeedbackLoader.newLinkedFeedback(this.meta.ticket_id, messageId);
+				break;
+
 			case 'fwd_legacy':
 				this.showFwdOverlay(messageId);
 				break;
