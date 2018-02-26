@@ -1,10 +1,10 @@
 <?php
 
 /*
- * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
+ * Deskpro (r) has been developed by Deskpro Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2017, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2018, Deskpro Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -12,18 +12,18 @@
  * By using this software, you acknowledge having read the license
  * and agree to be bound thereby.
  *
- * Please note that DeskPRO is not free software. We release the full
+ * Please note that Deskpro is not free software. We release the full
  * source code for our software because we trust our users to pay us for
  * the huge investment in time and energy that has gone into both creating
  * this software and supporting our customers. By providing the source code
  * we preserve our customers' ability to modify, audit and learn from our
- * work. We have been developing DeskPRO since 2001, please help us make it
+ * work. We have been developing Deskpro since 2001, please help us make it
  * another decade.
  *
  * Like the work you see? Think you could make it better? We are always
  * looking for great developers to join us: http://www.deskpro.com/jobs/
  *
- * ~ Thanks, Everyone at Team DeskPRO
+ * ~ Thanks, Everyone at Team Deskpro
  */
 
 return [
@@ -115,7 +115,7 @@ return [
     'agent.chrome.help-contact-us'                             => 'Skontaktuj się z nami',
     'agent.chrome.help-contact-us-explain'                     => 'Skontaktuj się z naszym wsparciem na <a href="https://support.deskpro.com/" target="_blank">support.deskpro.com</a> lub bezpośrednio przez pocztę email <a href="mailto:support@deskpro.com">support@deskpro.com</a>.',
     'agent.chrome.help-manuals'                                => 'Instrukcje',
-    'agent.chrome.help-quickstart-guide-link'                  => 'Jeśli nie znasz jeszcze DeskPRO, <a href="{{link}}">kliknij tutaj aby pobrać szybką instrukcję DeskPRO</a>.',
+    'agent.chrome.help-quickstart-guide-link'                  => 'Jeśli nie znasz jeszcze Deskpro, <a href="{{link}}">kliknij tutaj aby pobrać szybką instrukcję Deskpro</a>.',
     'agent.chrome.kbd-change-status-agent'                     => 'Zmień status na Oczekuje na Agenta',
     'agent.chrome.kbd-change-status-resolved'                  => 'Zmień status na Zakończone',
     'agent.chrome.kbd-change-status-user'                      => 'Zmień status na Oczekuje na Użytkownika',
@@ -182,8 +182,8 @@ return [
     'agent.emails.alert_failed_login'                          => 'Alarm o próbie błędnego logowania',
     'agent.emails.alert_successful_login'                      => 'Alarm o udanym logowaniu',
     'agent.emails.change_password_instructions'                => 'Aby ustawić swoje nowe hasło,  zaloguj się do interfejsu agenta, następnie kliknij link "Preferencje" w górnym lewym rogu ekranu.',
-    'agent.emails.deskpro_test_email'                          => 'Email testowy DeskPRO',
-    'agent.emails.deskpro_test_email_body'                     => 'To jest test systemu email DeskPRO.<br /><br />Jeśli otrzymałeś tą wiadomość email, Twoje ustawienia są poprawne.',
+    'agent.emails.deskpro_test_email'                          => 'Email testowy Deskpro',
+    'agent.emails.deskpro_test_email_body'                     => 'To jest test systemu email Deskpro.<br /><br />Jeśli otrzymałeś tą wiadomość email, Twoje ustawienia są poprawne.',
     'agent.emails.detected_as_forward'                         => 'Wykryto, iż wiadomość email, którą wysłałeś jest jest wiadomością przekazaną.',
     'agent.emails.email_change_merge'                          => 'Ta wiadomość email potwierdza, iż chcesz połączyć twoje dwa istniejące konta wsparcia: {{old_email}} oraz {{new_email}}.Jeśli nie chcesz scalić tych kont, lub jeśli tego nie zażądałeś, możesz zignorować tą wiadomość email. Aby potwierdzić scalanie kont, kliknij następujący link:',
     'agent.emails.error_missing_marker_explain'                => 'Ten znacznik odpowiedzi jest wymagany, aby prawidłowo przetwarzać twoje odpowiedzi. Wyślij ponownie twoją odpowiedź, ale tym razem nie zmieniaj linii znacznika.',
@@ -192,12 +192,12 @@ return [
     'agent.emails.error_unknown_email'                         => 'Twoja wiadomość została odrzucona, ponieważ została wysłana z nieznanego adresu email. Wysyłaj wiadomości email z adresu zarejestrowanego w swoim profilu agenta w dziale wsparcia.',
     'agent.emails.first_seen'                                  => 'Widziane po raz pierwszy',
     'agent.emails.fwd_dupe'                                    => 'Twoja przesłana wiadomość została odrzucona ponieważ system wykrył istniejące zgłoszenie dla wiadomości którą próbujesz przesłać. Na przykład; ktoś inny utworzył już zgłoszenie dla tej samej wiadomości. Istniejące zgłoszenie to #{{old_ticket_id}}:',
-    'agent.emails.fwd_error_more_info'                         => 'Aby uzyskać więcej informacji na temat tego błędu, zajrzyj do strony wsparcia DeskPRO:<br/><a href="http://support.deskpro.com/kb/articles/106">http://support.deskpro.com/kb/articles/106</a>',
+    'agent.emails.fwd_error_more_info'                         => 'Aby uzyskać więcej informacji na temat tego błędu, zajrzyj do strony wsparcia Deskpro:<br/><a href="http://support.deskpro.com/kb/articles/106">http://support.deskpro.com/kb/articles/106</a>',
     'agent.emails.fwd_not_processed'                           => 'Z powodu tego błędu, twoja wiadomość email została odrzucona. Nie utworzono nowego Zgłoszenia oraz nie utworzono żadnych powiadomień oraz innych akcji. Jeśli musisz utworzyć nowe Zgłoszenie dla użytkownika, użyj interfejsu WWW agenta pod adresem <a href="{{url}}">{{url}}</a>',
     'agent.emails.fwd_resend_without_fwd'                      => 'Jeśli NIE chcesz utworzyć nowego zgłoszenia w imieniu użytkownika, możesz spróbować ponownie wysłać tą wiadomość email bez znaków "DW:", "FW:" lub "FWD:" w temacie wiadomości. Ta czynność utworzy nowe zgłoszenie w twoim imieniu:',
     'agent.emails.invalid_fwd_email_address'                   => 'Jakkolwiek nie mogliśmy <b>zweryfikować adresu email</b> użytkownika oryginalnej wiadomości. Sprawdź, czy twoja aplikacja do obsługi poczty email dodała adres klienta. Niektóre aplikacje do obsługi poczty email pokazują tylko nazwę lub imię, w takim przypadku możesz wpisać adres email ręcznie.',
     'agent.emails.invalid_fwd_email_parse'                     => 'Jakkolwiek, nie mogliśmy <b>przetworzyć oryginalnej wiadomości</b>, więc nie utworzono nowego zgłosznia.',
-    'agent.emails.invalid_fwd_try_attach'                      => 'Jeśli twoja aplikacja do obsługi wiadomości email obsługuje przesyłanie wiadomości dalej jako załącznik zamiast przesyłania w treści, możesz spróbować to zrobić. Ta metoda przesyłania działa lepiej z DeskPRO.',
+    'agent.emails.invalid_fwd_try_attach'                      => 'Jeśli twoja aplikacja do obsługi wiadomości email obsługuje przesyłanie wiadomości dalej jako załącznik zamiast przesyłania w treści, możesz spróbować to zrobić. Ta metoda przesyłania działa lepiej z Deskpro.',
     'agent.emails.login_url'                                   => 'Adres URL logowania',
     'agent.emails.message-is-note'                             => 'Następująca wiadomość jest wewnętrzną notatką agenta.',
     'agent.emails.name_reset_your_password'                    => '{{name}} zresetował hasło do twojego konta agenta',
@@ -206,18 +206,18 @@ return [
     'agent.emails.new_mention_ticket_subject'                  => '[#{{ticket.id}} WSPOMNIANO] Odp: {{ticket.subject}}',
     'agent.emails.new_note_ticket_subject'                     => '[#{{ticket.id}} NOTATKA] Odp: {{ticket.subject}}',
     'agent.emails.new_user_reply_ticket_subject'               => '[#{{ticket.id}} ODP. UŻYTKOWNIKA] Odp: {{ticket.subject}}',
-    'agent.emails.newagent-about'                              => 'DeskPRO jest oprogramowaniem służącym do wsparcia, którego używa twoja organizacja.',
-    'agent.emails.newagent-about-cloud'                        => 'DeskPRO jest oprogramowaniem pracującym w chmurze, służącym do wsparcia, którego używa twoja organizacja.',
-    'agent.emails.newagent-about-cloud-demo'                   => 'DeskPRO jest oprogramowaniem pracującym w chmurze, służącym do wsparcia, które testuje twoja organizacja.',
-    'agent.emails.newagent-about-demo'                         => 'DeskPRO jest oprogramowaniem służącym do wsparcia, które testuje twoja organizacja.',
-    'agent.emails.newagent-about-pdf'                          => 'Napisaliśmy szybki przewodnik do najważniejszych rzeczy jakie będziesz musiał wiedzieć jako Agent. Załączyliśmy go, "Getting Started with DeskPRO.pdf".',
-    'agent.emails.newagent-created-account'                    => 'Twój kolega {{admin_name}} ({{admin_email}}) utworzył konto DeskPRO dla ciebie na <a href="{{helpdesk_url}}">{{helpdesk_url}}</a>.',
-    'agent.emails.newagent-help'                               => 'Jeśli potrzebujesz pomocy lub masz jakieś pytania, sprawdź stronę wsparcia DeskPRO <a href="https://support.deskpro.com/">https://support.deskpro.com/</a> lub skontaktuj się bezpośrednio pod adresem <a href="mailto:support@deskpro.com">support@deskpro.com</a>.',
+    'agent.emails.newagent-about'                              => 'Deskpro jest oprogramowaniem służącym do wsparcia, którego używa twoja organizacja.',
+    'agent.emails.newagent-about-cloud'                        => 'Deskpro jest oprogramowaniem pracującym w chmurze, służącym do wsparcia, którego używa twoja organizacja.',
+    'agent.emails.newagent-about-cloud-demo'                   => 'Deskpro jest oprogramowaniem pracującym w chmurze, służącym do wsparcia, które testuje twoja organizacja.',
+    'agent.emails.newagent-about-demo'                         => 'Deskpro jest oprogramowaniem służącym do wsparcia, które testuje twoja organizacja.',
+    'agent.emails.newagent-about-pdf'                          => 'Napisaliśmy szybki przewodnik do najważniejszych rzeczy jakie będziesz musiał wiedzieć jako Agent. Załączyliśmy go, "Getting Started with Deskpro.pdf".',
+    'agent.emails.newagent-created-account'                    => 'Twój kolega {{admin_name}} ({{admin_email}}) utworzył konto Deskpro dla ciebie na <a href="{{helpdesk_url}}">{{helpdesk_url}}</a>.',
+    'agent.emails.newagent-help'                               => 'Jeśli potrzebujesz pomocy lub masz jakieś pytania, sprawdź stronę wsparcia Deskpro <a href="https://support.deskpro.com/">https://support.deskpro.com/</a> lub skontaktuj się bezpośrednio pod adresem <a href="mailto:support@deskpro.com">support@deskpro.com</a>.',
     'agent.emails.newagent-login-initial-password'             => 'Twoje hasło początkowe: {{password}}',
     'agent.emails.newagent-login-link'                         => 'Możesz zalogować się tutaj: <a href="{{link}}">{{link}}</a>',
     'agent.emails.newagent-login-your-email'                   => 'Twój adres email: {{email}}',
     'agent.emails.newagent-login-your-password'                => 'Notka: Już masz konto użytkownika na tej stronie wsparcia. Możesz zalogować się jako Agent, używając hasła ustawionego poprzednio.',
-    'agent.emails.newagent-welcome-to-deskpro'                 => 'Witamy w DeskPRO!',
+    'agent.emails.newagent-welcome-to-deskpro'                 => 'Witamy w Deskpro!',
     'agent.emails.notice.first_seen'                           => 'Po raz pierwszy widziany',
     'agent.emails.notice.landing_page'                         => 'Strona początkowa',
     'agent.emails.notice.referer_page'                         => 'Strona referer',
@@ -236,7 +236,7 @@ return [
     'agent.emails.subject_error_forwarded_email_dupe'          => 'Duplikuj przekazaną wiadomość email: {{ subject }}',
     'agent.emails.subject_error_with_message'                  => 'Błąd w wiadomości: {{ subject }}',
     'agent.emails.subject_error_with_reply'                    => 'Błąd w twojej odpowiedzi do: {{ subject }}',
-    'agent.emails.subject_new_agent'                           => 'Twoje nowe konto agenta wsparcia w DeskPRO',
+    'agent.emails.subject_new_agent'                           => 'Twoje nowe konto agenta wsparcia w Deskpro',
     'agent.emails.subject_new_ticket'                          => '[#{{ticket.id}} NOWE ZGŁOSZENIE] {{ticket.subject}}',
     'agent.emails.subject_new_ticket_assigned'                 => '[#{{ticket.id}} NOWE ZGŁOSZENIE + PRZYDZIAŁ] {{ticket.subject}}',
     'agent.emails.subject_new_ticket_assignedteam'             => '[#{{ticket.id}} NOWE ZGŁOSZENIE + PRZYDZIELONY ZESPÓŁ] {{ticket.subject}}',
@@ -504,7 +504,7 @@ return [
     'agent.general.department'                                 => 'Oddział',
     'agent.general.departments'                                => 'Oddziały',
     'agent.general.description'                                => 'Opis',
-    'agent.general.deskpro'                                    => 'DeskPRO',
+    'agent.general.deskpro'                                    => 'Deskpro',
     'agent.general.detail'                                     => 'Szczegół',
     'agent.general.details'                                    => 'Szczegóły',
     'agent.general.dev_validating'                             => 'DEV: Potwierdzanie',
@@ -528,7 +528,7 @@ return [
     'agent.general.download_pdf'                               => 'Pobierz PDF',
     'agent.general.download_url'                               => 'Adres URL pobierania',
     'agent.general.downloads'                                  => 'Pobrania',
-    'agent.general.dp_updates'                                 => 'Aktualizacje DeskPRO',
+    'agent.general.dp_updates'                                 => 'Aktualizacje Deskpro',
     'agent.general.drop_here_to_attach'                        => 'Upuść plik tutaj aby dodać go do odpowiedzi',
     'agent.general.drop_here_to_insert_image'                  => 'Upuść twój <strong>obraz</strong> tutaj aby dodać go do twojej odpowiedzi',
     'agent.general.drop_here_to_upload'                        => 'Upuść twój plik tutaj aby dodać nowy obraz',
@@ -1084,7 +1084,7 @@ return [
     'agent.interface.close_current_tab'                        => 'Zamknij obecną zakładkę',
     'agent.interface.create_ticket_person'                     => 'Utwórz zgłoszenie dla osoby',
     'agent.interface.creation'                                 => 'Tworzenie',
-    'agent.interface.deskpro_agent_interface'                  => 'Interfejs Agenta DeskPRO',
+    'agent.interface.deskpro_agent_interface'                  => 'Interfejs Agenta Deskpro',
     'agent.interface.deskpro_website_host'                     => 'www.deskpro.com',
     'agent.interface.error_report_disclaimer'                  => 'Zaznaczamy, iż nie odpowiadamy na wszystkie zgłoszenia błędów. Jeśli masz pytanie lub oczekujesz kontaktu w sprawie tego błędu, skontaktuj się z nami poprzez pocztę email: {{email}}',
     'agent.interface.error_report_submitting'                  => 'Wysyłanie raportu o błędzie',
@@ -1136,7 +1136,7 @@ return [
     'agent.interface.open_new_ticket_form'                     => 'Otwórz formularz nowego zgłoszenia',
     'agent.interface.powered_by'                               => 'Wspierany przez',
     'agent.interface.quick-search-placeholder'                 => 'Szukaj',
-    'agent.interface.report_this_error_to_deskpro'             => 'Wyślij ten raport o błędzie do DeskPRO',
+    'agent.interface.report_this_error_to_deskpro'             => 'Wyślij ten raport o błędzie do Deskpro',
     'agent.interface.search_for_text_or_a_phrase'              => 'Szukaj tekstu lub frazy',
     'agent.interface.search_in_types'                          => 'Szukaj w typach',
     'agent.interface.set_ticket_resolved'                      => 'Ustaw zgłoszenie jako zakończone',
@@ -1162,7 +1162,7 @@ return [
     'agent.jira.labels.priority'                               => 'Priorytet',
     'agent.jira.labels.project'                                => 'Projekt',
     'agent.jira.labels.reset'                                  => 'Resetuj do domyślnych',
-    'agent.jira.labels.smarttags'                              => 'Możesz również użyć następujących "mądrych etykiet" aby dodać ważne informacje DeskPRO do tej sprawy.',
+    'agent.jira.labels.smarttags'                              => 'Możesz również użyć następujących "mądrych etykiet" aby dodać ważne informacje Deskpro do tej sprawy.',
     'agent.jira.labels.title'                                  => 'Tytuł kwestii',
     'agent.jira.labels.type'                                   => 'Typ',
     'agent.jira.labels.unlink'                                 => 'Odlinkuj',
@@ -1185,16 +1185,16 @@ return [
     'agent.login.forgot_password'                              => 'Zapomniałeś swojego hasła?',
     'agent.login.google_chrome'                                => 'Google Chrome',
     'agent.login.has_logged_out'                               => 'Zostałeś wylogowany poprawnie.',
-    'agent.login.ie_compat_mode_explain'                       => 'Niektóre wersje Internet Explorer mają funkcję, nazywaną Widok Zgodności, zaprojektowaną, aby starsze strony WWW działały poprawnie z nową wersją przeglądarki. Czasami ta opcja może zostać niepotrzebnie włączona. Jeśli używasz Internet Explorer w wersji 8 lub 9 i nadal wyświetla się informacja o wymaganych przeglądarkach, możliwe, że funkcja Widok Zgodności została włączona. Aby używać DeskPRO, musisz  wyłączyć tą funkcję:',
+    'agent.login.ie_compat_mode_explain'                       => 'Niektóre wersje Internet Explorer mają funkcję, nazywaną Widok Zgodności, zaprojektowaną, aby starsze strony WWW działały poprawnie z nową wersją przeglądarki. Czasami ta opcja może zostać niepotrzebnie włączona. Jeśli używasz Internet Explorer w wersji 8 lub 9 i nadal wyświetla się informacja o wymaganych przeglądarkach, możliwe, że funkcja Widok Zgodności została włączona. Aby używać Deskpro, musisz  wyłączyć tą funkcję:',
     'agent.login.ie_compat_mode_step1'                         => 'Jeżeli opcja Narzędzia nie jest widoczna, naciśnij klawisz Alt na klawiaturze, aby wyświetlić menu główne',
     'agent.login.ie_compat_mode_step2'                         => 'Z menu Narzędzia wybierz Ustawienia widoku zgodności',
-    'agent.login.ie_compat_mode_step3'                         => 'Upewnij się, że adres URL twojej pomocy technicznej nie jest na liście. Jeśli jest na liście, kliknij go, a następnie kliknij przycisk Usuń. Upewnij się także, że opcja "Wyświetl wszystkie strony WWW w trybie zgodności" jest wyłączona (ta opcja może być niedostępna). Jeśli używasz DeskPRO w sieci wewnętrznej intranet, musisz także odznaczyć kolejną opcje "Wyświetlaj witryny intranetu w widoku zgodności."',
+    'agent.login.ie_compat_mode_step3'                         => 'Upewnij się, że adres URL twojej pomocy technicznej nie jest na liście. Jeśli jest na liście, kliknij go, a następnie kliknij przycisk Usuń. Upewnij się także, że opcja "Wyświetl wszystkie strony WWW w trybie zgodności" jest wyłączona (ta opcja może być niedostępna). Jeśli używasz Deskpro w sieci wewnętrznej intranet, musisz także odznaczyć kolejną opcje "Wyświetlaj witryny intranetu w widoku zgodności."',
     'agent.login.ie_compat_mode_step4'                         => 'Zamknij to okno i odśwież stronę (np. naciskając jeden raz klawisz F5 na klawiaturze)',
     'agent.login.ie_compat_mode_title'                         => 'Czy już używasz Internet Explorer 8 lub nowszego? <a href="{{url}}">Upewnij się, że tryb Widoku Zgodności jest nie jest właczony</a>',
     'agent.login.ie_use_chrome_frame'                          => 'Alternatywnie, możesz zainstalować <a href="http://www.google.com/chromeframe">Google Chrome Frame</a>',
     'agent.login.login_failed'                                 => 'Nieprawidłowy login. Spróbuj ponownie.',
     'agent.login.mozilla_firefox'                              => 'Mozilla Firefox',
-    'agent.login.notice_outdated_browser'                      => 'Administrator oraz jego interfejsy wymagają nowoczesnej przeglądarki WWW. Wykryliśmy, że twoja przeglądarka WWW nie jest nieaktualna, by używać DeskPRO. Zaktualizuj swoją przeglądarkę lub użyj innej przeglądarki.',
+    'agent.login.notice_outdated_browser'                      => 'Administrator oraz jego interfejsy wymagają nowoczesnej przeglądarki WWW. Wykryliśmy, że twoja przeglądarka WWW nie jest nieaktualna, by używać Deskpro. Zaktualizuj swoją przeglądarkę lub użyj innej przeglądarki.',
     'agent.login.opera'                                        => 'Opera',
     'agent.login.password_was_reset'                           => 'Twoje hasło zostało poprawnie zresetowane.',
     'agent.login.remember_me'                                  => 'Pamiętaj mnie',
@@ -1691,7 +1691,7 @@ return [
     'agent.settings.desktop_notifs_enable'                     => 'Włącz powiadomienia na Pulpicie',
     'agent.settings.desktop_notifs_explicit_disabled'          => 'Powiadomienia na Pulpicie zostały celowo zablokowane. Muszą zostać aktywowane dla tej domeny w przeglądarce WWW.',
     'agent.settings.desktop_notifs_test'                       => 'Generuj Powiadomienie testowe',
-    'agent.settings.done_start_using'                          => 'Gotowe. Zacznij używać DeskPRO',
+    'agent.settings.done_start_using'                          => 'Gotowe. Zacznij używać Deskpro',
     'agent.settings.drop_here_insert_signature'                => 'Upuść swój <strong>obrazek</strong> tutaj aby stawić go do swojej sygnatury',
     'agent.settings.edit_filter'                               => 'Edytuj Filtr',
     'agent.settings.edit_macro'                                => 'Edytuj Makro',
@@ -1765,8 +1765,8 @@ return [
     'agent.settings.title_ticket_notifs'                       => 'Powiadomienia o Zgłoszeniach',
     'agent.settings.twitter_signature'                         => 'Podpis Twitter',
     'agent.settings.twitter_signature_desc'                    => 'Jakiekolwiek tweety jaki napiszesz zostaną tym podpisane. Niech będą krótkie.',
-    'agent.settings.welcome_to_deskpro'                        => 'Witamy w DeskPRO',
-    'agent.settings.welcome_to_deskpro_name'                   => 'Witamy w DeskPRO, {{name}}',
+    'agent.settings.welcome_to_deskpro'                        => 'Witamy w Deskpro',
+    'agent.settings.welcome_to_deskpro_name'                   => 'Witamy w Deskpro, {{name}}',
     'agent.settings.your_current_picture'                      => 'Twój obecny obrazek',
     'agent.snippets.add_snippet'                               => 'Dodaj Szybką Odp.',
     'agent.snippets.all_snippets'                              => 'Wszystkie Szybkie odp.',
@@ -1887,7 +1887,7 @@ return [
     'agent.tickets.date_last_user_reply'                       => 'Data ostatniej odpowiedzi Użytkownika',
     'agent.tickets.debug_file'                                 => 'Plik Debugowania',
     'agent.tickets.debug_file_download'                        => 'Pobierz Plik Debugowania',
-    'agent.tickets.debug_file_explain'                         => 'Agent wsparcia DeskPRO może poprosić cię o dostarczenie tego pliku, aby móc zdiagnozować problemy.',
+    'agent.tickets.debug_file_explain'                         => 'Agent wsparcia Deskpro może poprosić cię o dostarczenie tego pliku, aby móc zdiagnozować problemy.',
     'agent.tickets.decrease_urgency_action'                    => 'Zmniejsz stopień pilności o {{amount}}',
     'agent.tickets.delete_attach'                              => 'Usuń Załączniki',
     'agent.tickets.delete_attach_confirm'                      => 'Czy na pewno chcesz usunąć ten załącznik?',
