@@ -41,9 +41,9 @@ Feature: Custom fields
 
     Examples:
       | Endpoint                            | Title               | Alias          |
-      | /api/v2/ticket_custom_fields        | Text field          | james_vagabond |
-      | /api/v2/person_custom_fields        | Text field          | james_vagabond |
-      | /api/v2/organization_custom_fields  | Text field          | james_vagabond |
+      | /api/v2/ticket_custom_fields        | Text field          | james_vagabond10 |
+      | /api/v2/person_custom_fields        | Text field          | james_vagabond11 |
+      | /api/v2/organization_custom_fields  | Text field          | james_vagabond12 |
 
 
 ## TEXTAREA FIELD
@@ -81,9 +81,9 @@ Feature: Custom fields
 
     Examples:
       | Endpoint                            | Title               | Alias          |
-      | /api/v2/ticket_custom_fields        | Textarea field      | james_vagabond |
-      | /api/v2/person_custom_fields        | Textarea field      | james_vagabond |
-      | /api/v2/organization_custom_fields  | Textarea field      | james_vagabond |
+      | /api/v2/ticket_custom_fields        | Textarea field      | james_vagabond21 |
+      | /api/v2/person_custom_fields        | Textarea field      | james_vagabond22 |
+      | /api/v2/organization_custom_fields  | Textarea field      | james_vagabond23 |
 
 
 ## DATE FIELD
@@ -121,9 +121,9 @@ Feature: Custom fields
 
     Examples:
       | Endpoint                            | Title               | Alias          |
-      | /api/v2/ticket_custom_fields        | Date field          | james_vagabond |
-      | /api/v2/person_custom_fields        | Date field          | james_vagabond |
-      | /api/v2/organization_custom_fields  | Date field          | james_vagabond |
+      | /api/v2/ticket_custom_fields        | Date field          | james_vagabond31 |
+      | /api/v2/person_custom_fields        | Date field          | james_vagabond32 |
+      | /api/v2/organization_custom_fields  | Date field          | james_vagabond33 |
 
 ## DATETIME FIELD
 
@@ -160,9 +160,9 @@ Feature: Custom fields
 
     Examples:
       | Endpoint                            | Title               | Alias          |
-      | /api/v2/ticket_custom_fields        | Datetime field      | james_vagabond |
-      | /api/v2/person_custom_fields        | Datetime field      | james_vagabond |
-      | /api/v2/organization_custom_fields  | Datetime field      | james_vagabond |
+      | /api/v2/ticket_custom_fields        | Datetime field      | james_vagabond41 |
+      | /api/v2/person_custom_fields        | Datetime field      | james_vagabond42 |
+      | /api/v2/organization_custom_fields  | Datetime field      | james_vagabond43 |
 
 ## DATA LIST FIELD
 
@@ -199,9 +199,9 @@ Feature: Custom fields
 
     Examples:
       | Endpoint                             | Title          | Alias          |
-      | /api/v2/ticket_custom_fields        | Data list       | james_vagabond |
-      | /api/v2/person_custom_fields        | Data list       | james_vagabond |
-      | /api/v2/organization_custom_fields  | Data list       | james_vagabond |
+      | /api/v2/ticket_custom_fields        | Data list       | james_vagabond51 |
+      | /api/v2/person_custom_fields        | Data list       | james_vagabond52 |
+      | /api/v2/organization_custom_fields  | Data list       | james_vagabond53 |
 
 
 ## DATA JSON FIELD
@@ -239,9 +239,9 @@ Feature: Custom fields
 
     Examples:
       | Endpoint                             | Title     | Alias          |
-      | /api/v2/ticket_custom_fields        | Data json  | james_vagabond |
-      | /api/v2/person_custom_fields        | Data json  | james_vagabond |
-      | /api/v2/organization_custom_fields  | Data json  | james_vagabond |
+      | /api/v2/ticket_custom_fields        | Data json  | james_vagabond61 |
+      | /api/v2/person_custom_fields        | Data json  | james_vagabond62 |
+      | /api/v2/organization_custom_fields  | Data json  | james_vagabond63 |
 
 ## PREDEFINED CHOICE FIELDs
 
@@ -302,8 +302,8 @@ Feature: Custom fields
 
     Examples:
       | Field Type    | Title                   | Alias          |
-      | multi_select  | Multiple Choice field   | james_vagabond |
-      | select        | select                  | james_vagabond |
-      | radio         | radio                   | james_vagabond |
-      | checkbox      | checkbox                | james_vagabond |
+      | multi_select  | Multiple Choice field   | james_vagabond71 |
+      | select        | select                  | james_vagabond72 |
+      | radio         | radio                   | james_vagabond73 |
+      | checkbox      | checkbox                | james_vagabond73 |
 
