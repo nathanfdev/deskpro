@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2017, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2018, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -28,42 +28,51 @@
 
 namespace DeskPRO\Bundle\AppBundle\ObjectAlias;
 
-class Name
+class QualifiedName
 {
     /** @var string */
-    private $value;
+    private $localName;
 
     /** @var array  */
     private $qualifiers;
 
+    const QUALIFIER_SEPARATOR = ':';
+
     /**
-     * @param string|Name $name
+     * @param QualifiedName $name
      * @return bool
      */
-    public static function isValidIdentifier($name)
+    public static function isValidIdentifier(QualifiedName $name)
     {
-        $identifier = $name instanceof Name ? $name->getIdentifier() : $name;
+        $patternHead = '#^[a-zA-Z_\x7f-\xff][a-zA-Z0-9_\x7f-\xff]*#';
+        $patternTail = '#[a-zA-Z0-9_\x7f-\xff]+#';
 
-        $pattern = '#^[a-zA-Z_\x7f-\xff][a-zA-Z0-9_\x7f-\xff]*#';
-        return 1 === preg_match($pattern, $identifier);
+        $names = $name->toList();
+        $valid = 1 === preg_match($patternHead, $names[0]);
+
+        for ($i = 1; $i < count($names) && $valid === true; $i++ ) {
+            $valid = 1 === preg_match($patternTail, $names[$i]);
+        }
+
+        return $valid;
     }
 
     /**
-     * @param string $value
-     * @param array $qualifiers
+     * @param string $localName
+     * @param array|string[] $qualifiers
      */
-    public function __construct($value, array $qualifiers)
+    public function __construct($localName, array $qualifiers)
     {
-        $this->value = $value;
+        $this->localName = $localName;
         $this->qualifiers = $qualifiers;
     }
 
     /**
      * @return string
      */
-    public function getIdentifier()
+    public function getLocalName()
     {
-        return $this->value;
+        return $this->localName;
     }
 
     /**
@@ -71,12 +80,20 @@ class Name
      */
     public function getQualifiers()
     {
-        return array_merge([], $this->qualifiers);
+        return $this->qualifiers;
     }
 
-    public function isQualified()
+    public function hasQualifiers()
     {
         return !empty($this->qualifiers);
+    }
+
+    /**
+     * @return array|string[]
+     */
+    public function toList()
+    {
+        return array_merge( $this->qualifiers, [$this->localName]);
     }
 }
 

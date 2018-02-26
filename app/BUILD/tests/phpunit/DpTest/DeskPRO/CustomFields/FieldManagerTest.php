@@ -31,7 +31,6 @@ namespace DpTest\DeskPRO\CustomFields;
 use Application\DeskPRO\CustomFields\FieldManager;
 use Application\DeskPRO\Entity\CustomDefAbstract;
 use Application\DeskPRO\Entity\Ticket;
-use DeskPRO\Bundle\AppBundle\Entity\ObjectAlias\CustomTicketFieldDefinitionAlias;
 use DeskPRO\Bundle\AppBundle\ObjectAlias\ObjectAliasInterface;
 use DpTest\DeskProTestCase;
 
@@ -43,6 +42,7 @@ class FieldManagerTest extends DeskProTestCase
         $alias->method('getAlias')->willReturn('alias');
         $alias->method('getObjectId')->willReturn(1);
         $alias->method('getQualifiers')->willReturn([]);
+        $alias->method('getQualifiedName')->willReturn('alias');
 
         $customFields = [
             $this->getMockBuilder(CustomDefAbstract::class)

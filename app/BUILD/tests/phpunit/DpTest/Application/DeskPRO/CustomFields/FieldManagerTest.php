@@ -30,7 +30,7 @@
  * DeskPRO.
  */
 
-namespace DpTest\DeskPRO\Application\CustomFields;
+namespace DpTest\Application\DeskPRO\CustomFields;
 
 use Application\DeskPRO\Cache\ConvenientCache;
 use Application\DeskPRO\CustomFields\FieldManager;

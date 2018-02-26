@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2017, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2018, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -29,10 +29,10 @@
 /**
  * DeskPRO.
  */
-
 namespace Application\LegacyApiBundle\Controller;
 
 use Application\DeskPRO\CustomFields\Form;
+use Application\DeskPRO\CustomFields\Form\AliasListHelper;
 use Application\LegacyApiBundle\PermissionStrategy\AdminManagePermission;
 use Application\LegacyApiBundle\PermissionStrategy\MultiPermissions;
 use Application\LegacyApiBundle\PermissionStrategy\PassPermission;
@@ -83,8 +83,11 @@ class UserFieldsController extends AbstractController implements ProtectedContro
             throw $this->createNotFoundException();
         }
 
+        $aliasListHelper = new AliasListHelper();
+        $alias = $aliasListHelper->findAdminAlias($field);
+
         $data          = [];
-        $data['field'] = $field->toApiData();
+        $data['field'] = array_merge($field->toApiData(), ['alias' => (string) $alias]);
 
         return $this->createApiResponse($data);
     }
@@ -113,8 +116,14 @@ class UserFieldsController extends AbstractController implements ProtectedContro
             return $this->createApiErrorResponse('validation_error', 'Empty title');
         }
 
-        $container = $this->getContainer();
-        $helper = new Form\FormHelper($container->getEm(), $container->getFormFactory());
+        // there is no separate api to change a single alias, must change all aliases
+        // so we either add or remove the new alias to/from the list of existing aliases
+        if ($id && array_key_exists('alias', $post)) {
+            $aliasListHelper = new AliasListHelper();
+            $post['alias'] = $aliasListHelper->changeAdminAlias($field, $post['alias']);
+        }
+
+        $helper = $this->get(Form\FormHelper::class);
         $helper->saveFormToField($field, $post);
 
         if ($id) {

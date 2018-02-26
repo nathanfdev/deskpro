@@ -35,7 +35,7 @@ use Symfony\Component\Form\FormEvent;
 use Symfony\Component\Form\FormEvents;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 
-class StringObjectType extends AbstractType implements EventSubscriberInterface
+class AliasType extends AbstractType implements EventSubscriberInterface
 {
     private $nullHandlingStrategy = 'string';
 
@@ -64,6 +64,10 @@ class StringObjectType extends AbstractType implements EventSubscriberInterface
     {
         $alias = $event->getData();
         if ($this->nullHandlingStrategy === 'null' && is_null($alias)) {
+            return;
+        }
+
+        if (is_array($alias)) {
             return;
         }
 
