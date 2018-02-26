@@ -224,7 +224,7 @@ export class LanguageSelect extends React.PureComponent {
     type:        PropTypes.string,
   };
 
-  inputRenderer = () => <span><Icon name="globe" />&nbsp;{agentPhrases.get('agent.general.languages')}</span>;
+  inputRenderer = () => <span key="label"><Icon name="globe" />&nbsp;{agentPhrases.get('agent.general.languages')}</span>;
 
   render() {
     const { languages, langContext, langPref, onChange, type } = this.props;

@@ -48,7 +48,7 @@ export class MassActionsSelect extends React.PureComponent {
     this.select.toggleOpened();
   };
 
-  inputRenderer = () => <span>{agentPhrases.get('agent.general.mass_actions')}</span>;
+  inputRenderer = () => <span key="label">{agentPhrases.get('agent.general.mass_actions')}</span>;
 
   render() {
     return (
