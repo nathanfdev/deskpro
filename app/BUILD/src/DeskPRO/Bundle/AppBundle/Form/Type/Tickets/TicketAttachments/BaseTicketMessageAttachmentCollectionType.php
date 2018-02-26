@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2016, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2018, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -49,8 +49,8 @@ class BaseTicketMessageAttachmentCollectionType extends AbstractType
      */
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
-        $builder->addEventListener(FormEvents::PRE_SET_DATA, [$this, 'onLoadData'], 100);
-        $builder->addEventListener(FormEvents::POST_SUBMIT, [$this, 'onSaveData']);
+        $builder->addEventListener(FormEvents::PRE_SET_DATA, [$this, 'onPreSetData'], 100);
+        $builder->addEventListener(FormEvents::POST_SUBMIT, [$this, 'onPostSubmit']);
     }
 
     /**
@@ -85,8 +85,10 @@ class BaseTicketMessageAttachmentCollectionType extends AbstractType
      * @internal
      *
      * @param FormEvent $event
+     *
+     * @throws \Exception
      */
-    public function onLoadData(FormEvent $event)
+    public function onPreSetData(FormEvent $event)
     {
         $message    = $this->getTicketMessage($event);
         $collection = new ArrayCollection();
@@ -104,8 +106,10 @@ class BaseTicketMessageAttachmentCollectionType extends AbstractType
      * @internal
      *
      * @param FormEvent $event
+     *
+     * @throws \Exception
      */
-    public function onSaveData(FormEvent $event)
+    public function onPostSubmit(FormEvent $event)
     {
         /** @var ArrayCollection $data */
         $data    = $event->getData();
@@ -142,9 +146,9 @@ class BaseTicketMessageAttachmentCollectionType extends AbstractType
      * @param FormEvent        $event
      * @param TicketAttachment $attachment
      *
-     * @return bool
-     *
      * @throws \Exception
+     *
+     * @return bool
      */
     public function isMatchingCriteria(FormEvent $event, TicketAttachment $attachment)
     {

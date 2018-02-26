@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2017, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2018, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -517,6 +517,7 @@ return [
     'portal.forms.error_not_assignable_choice'               => 'Unable to select parent choice.',
     'portal.forms.error_bad_choice'                          => 'One or more of the given values is invalid.',
     'portal.forms.error_system_email'                        => 'Email "{{ email }}" is already being used as email account.',
+    'portal.forms.error_not_unique_collection'               => 'One or more of the given values is not unique.',
     'portal.forms.label_add_attachment'                      => 'Add Another Attachment',
     'portal.forms.label_captcha'                             => 'To prove you are a human, please tell us the text you see in the CAPTCHA image',
     'portal.forms.label_category'                            => 'Category',
