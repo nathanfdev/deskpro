@@ -50,15 +50,17 @@ class AliasListHelper
                 $isAdminAlias = empty($appInstance);
             }
 
-            if (!$isAdminAlias && !is_null($adminAlias)) {
-                $msg = sprintf(
-                    'Found more than one admin aliases for field id: %s: %s',
-                    $from->getId(), implode(', ', [$adminAlias, $alias->getQualifiedName()])
-                );
-                throw new \RuntimeException($msg);
+            if ($isAdminAlias) {
+                if (is_null($adminAlias)) {
+                    $adminAlias = $alias->getQualifiedName();
+                } else {
+                    $msg = sprintf(
+                        'Found more than one admin alias for field id: %s: %s',
+                        $from->getId(), implode(', ', [$adminAlias, $alias->getQualifiedName()])
+                    );
+                    throw new \RuntimeException($msg);
+                }
             }
-
-            $adminAlias = $alias->getQualifiedName();
         }
 
         return $adminAlias;

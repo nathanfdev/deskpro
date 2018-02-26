@@ -128,7 +128,7 @@ abstract class CustomFieldAbstract
 
         $saveAlias  = !is_null($this->alias) && ObjectAlias\Aliases::canHaveAlias($this->_field, $this->_em);
         $alias = null;
-        if ($saveAlias && is_string($this->alias) && '' !== (string) $this->alias) {
+        if ($saveAlias && ( is_string($this->alias) || $this->alias instanceof  StringObject ) && '' !== (string) $this->alias) {
             $aliasBuilder = new ObjectAlias\Builder($this->_em);
             $alias = ObjectAlias\Aliases::createAlias((string) $this->alias, $this->_field, $aliasBuilder);
         } else if ($saveAlias && is_array($this->alias)) {
@@ -188,7 +188,6 @@ abstract class CustomFieldAbstract
      */
     protected function saveAliasList(array $aliasList) {
         if (empty($aliasList)) {
-            print_($aliasList);die();
             $this->saveAlias();
         }
 
