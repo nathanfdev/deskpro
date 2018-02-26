@@ -1930,26 +1930,9 @@
       "resolved": "https://registry.npmjs.org/react-froala-wysiwyg/-/react-froala-wysiwyg-2.7.5.tgz"
     },
     "react-highlight": {
-      "version": "0.9.0",
-      "from": "react-highlight@>=0.9.0 <0.10.0",
-      "resolved": "https://registry.npmjs.org/react-highlight/-/react-highlight-0.9.0.tgz",
-      "dependencies": {
-        "fbjs": {
-          "version": "0.8.16",
-          "from": "fbjs@>=0.8.9 <0.9.0",
-          "resolved": "https://registry.npmjs.org/fbjs/-/fbjs-0.8.16.tgz"
-        },
-        "react": {
-          "version": "15.6.2",
-          "from": "react@>=0.14.0 <0.15.0||>=15.0.0 <16.0.0",
-          "resolved": "https://registry.npmjs.org/react/-/react-15.6.2.tgz"
-        },
-        "react-dom": {
-          "version": "15.6.2",
-          "from": "react-dom@>=0.14.0 <0.15.0||>=15.0.0 <16.0.0",
-          "resolved": "https://registry.npmjs.org/react-dom/-/react-dom-15.6.2.tgz"
-        }
-      }
+      "version": "0.10.0",
+      "from": "git+https://github.com/briancappello/react-highlight.git#react-v16-compiled",
+      "resolved": "git+https://github.com/briancappello/react-highlight.git#ecf53ae1bb03deddb897515e7ed65b9e9f7af65b"
     },
     "react-highlight-words": {
       "version": "0.8.1",
