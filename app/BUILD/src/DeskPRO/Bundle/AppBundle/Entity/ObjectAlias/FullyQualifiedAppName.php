@@ -63,11 +63,7 @@ class FullyQualifiedAppName
      */
     public static function parseName( ObjectAlias\QualifiedName $qualifiedName)
     {
-        if ($qualifiedName->hasQualifiers()) {
-            return FullyQualifiedAppName::parseArray($qualifiedName->getQualifiers());
-        }
-
-        return null;
+        return FullyQualifiedAppName::parseArray($qualifiedName->toList());
     }
 
     /**

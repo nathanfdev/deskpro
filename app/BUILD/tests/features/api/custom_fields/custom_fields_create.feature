@@ -305,5 +305,5 @@ Feature: Custom fields
       | multi_select  | Multiple Choice field   | james_vagabond71 |
       | select        | select                  | james_vagabond72 |
       | radio         | radio                   | james_vagabond73 |
-      | checkbox      | checkbox                | james_vagabond73 |
+      | checkbox      | checkbox                | james_vagabond74 |
 
