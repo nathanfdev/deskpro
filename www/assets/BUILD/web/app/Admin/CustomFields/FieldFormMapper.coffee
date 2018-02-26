@@ -94,7 +94,6 @@ define ['moment', 'DeskPRO/Util/Util'], (moment, Util) ->
       }
 
       if fieldModel
-        console.log('arpagic ', fieldModel)
         form.title = fieldModel.title
         form.alias = fieldModel.alias
         form.description = fieldModel.description
