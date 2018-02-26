@@ -31,6 +31,7 @@ namespace Application\AgentBundle\Controller;
 use Application\DeskPRO\App;
 use Application\DeskPRO\Entity\Feedback;
 use Application\DeskPRO\Searcher\FeedbackSearch;
+use DeskPRO\Component\Util\ListUtils;
 use Orb\Util\Arrays;
 
 /**
@@ -68,17 +69,31 @@ class FeedbackSearchController extends AbstractController
         $results = array_slice($results, 0, $limit);
 
         $output = [];
+
+        if (ctype_digit($q)) {
+            $feedbackById = App::getEntityRepository(Feedback::class)->find($q);
+            if ($feedbackById) {
+                $results = ListUtils::filterOutValues($results, [$feedbackById->getId()]);
+                array_unshift($output, $this->formatFeedbackResultRow($feedbackById));
+            }
+        }
+
         foreach (App::getEntityRepository(Feedback::class)->getByIds($results, true) as $feedback) {
             //@TODO: prefetch Feedback Categories and StatusCategories
-            $output[] = [
-                'id'    => $feedback->id,
-                'value' => $feedback->id,
-                'title' => $feedback->title,
-                'type'  => $feedback->category ? $feedback->category->title : '',
-                //'status'  => $feedback->status_category ? $feedback->status_category->title : ''
-            ];
+            $output[] = $this->formatFeedbackResultRow($feedback);
         }
 
         return $this->createJsonResponse($output);
+    }
+
+    private function formatFeedbackResultRow(Feedback $feedback)
+    {
+        return [
+            'id'    => $feedback->id,
+            'value' => $feedback->id,
+            'title' => $feedback->title,
+            'type'  => $feedback->category ? $feedback->category->title : '',
+            //'status'  => $feedback->status_category ? $feedback->status_category->title : ''
+        ];
     }
 }
