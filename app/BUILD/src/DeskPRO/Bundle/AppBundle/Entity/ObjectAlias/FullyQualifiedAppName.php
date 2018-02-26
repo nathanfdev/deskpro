@@ -90,4 +90,16 @@ class FullyQualifiedAppName
     {
         return $this->localName;
     }
+
+    /**
+     * @param $other
+     * @return bool
+     */
+    public function equals($other)
+    {
+        return $other instanceof FullyQualifiedAppName
+            && $other->getId()  === $this->getId()
+            && $other->getLocalName() === $this->getLocalName()
+        ;
+    }
 }
