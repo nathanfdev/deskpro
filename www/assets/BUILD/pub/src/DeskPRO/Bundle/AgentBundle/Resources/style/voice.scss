@@ -305,6 +305,14 @@ $voice-green-border-color: #47BF61;
           }
         }
 
+        .voice-sip-number-mode {
+          margin-top: 10px;
+
+          label {
+            font-weight: normal;
+          }
+        }
+
         .voice-dialpad-grid {
           td {
             margin: 0;
@@ -1266,5 +1274,19 @@ $voice-green-border-color: #47BF61;
         }
       }
     }
+  }
+}
+
+.voice-sip-number {
+  position: relative;
+
+  .sip-label {
+    position: absolute;
+    top: 10px;
+    left: 10px;
+  }
+
+  input {
+    padding-left: 50px !important;
   }
 }

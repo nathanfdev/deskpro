@@ -1,7 +1,7 @@
 import React from 'react';
 import Immutable from 'immutable';
 import moment from 'moment';
-import { storiesOf, action } from '@kadira/storybook'; // eslint-disable-line import/no-extraneous-dependencies
+import { storiesOf, action } from '@storybook/react'; // eslint-disable-line import/no-extraneous-dependencies
 import { ArchiveFiles } from 'DeskPRO/Bundle/AgentBundle/Modules/Tickets/Components/Archive/ArchiveFiles';
 import { FollowUp } from 'DeskPRO/Bundle/AgentBundle/Modules/Tickets/Components/FollowUp/FollowUp';
 import { list } from 'DemoState/AgentBundle/Modules/Tickets/tickets';

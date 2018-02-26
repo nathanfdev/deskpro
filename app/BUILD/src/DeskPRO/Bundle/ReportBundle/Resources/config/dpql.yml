@@ -40,113 +40,113 @@ services:
 
   # DPQL functions
   dpql.func.alias:
-    class: DeskPRO\Bundle\ReportBundle\Dpql2\Func\Alias
+    class: DeskPRO\Bundle\ReportBundle\Dpql2\Func\DpqlAlias
     tags:
       - { name: dpql.func }
 
   dpql.func.count:
-    class: DeskPRO\Bundle\ReportBundle\Dpql2\Func\Count
+    class: DeskPRO\Bundle\ReportBundle\Dpql2\Func\DpqlCount
     tags:
       - { name: dpql.func }
 
   dpql.func.count_distinct:
-    class: DeskPRO\Bundle\ReportBundle\Dpql2\Func\CountDistinct
+    class: DeskPRO\Bundle\ReportBundle\Dpql2\Func\DpqlCountDistinct
     tags:
       - { name: dpql.func }
 
   dpql.func.cur_date:
-    class: DeskPRO\Bundle\ReportBundle\Dpql2\Func\CurDate
+    class: DeskPRO\Bundle\ReportBundle\Dpql2\Func\DpqlCurDate
     tags:
       - { name: dpql.func }
 
   dpql.func.cur_time:
-    class: DeskPRO\Bundle\ReportBundle\Dpql2\Func\CurTime
+    class: DeskPRO\Bundle\ReportBundle\Dpql2\Func\DpqlCurTime
     tags:
       - { name: dpql.func }
 
   dpql.func.date:
-    class: DeskPRO\Bundle\ReportBundle\Dpql2\Func\Date
+    class: DeskPRO\Bundle\ReportBundle\Dpql2\Func\DpqlDate
     tags:
       - { name: dpql.func }
 
   dpql.func.date_offset_group:
-    class: DeskPRO\Bundle\ReportBundle\Dpql2\Func\DateOffsetGroup
+    class: DeskPRO\Bundle\ReportBundle\Dpql2\Func\DpqlDateOffsetGroup
     tags:
       - { name: dpql.func }
 
   dpql.func.day_name:
-    class: DeskPRO\Bundle\ReportBundle\Dpql2\Func\DayName
+    class: DeskPRO\Bundle\ReportBundle\Dpql2\Func\DpqlDayName
     tags:
       - { name: dpql.func }
 
   dpql.func.day_of_month:
-    class: DeskPRO\Bundle\ReportBundle\Dpql2\Func\DayOfMonth
+    class: DeskPRO\Bundle\ReportBundle\Dpql2\Func\DpqlDayOfMonth
     tags:
       - { name: dpql.func }
 
   dpql.func.day_of_week:
-    class: DeskPRO\Bundle\ReportBundle\Dpql2\Func\DayOfWeek
+    class: DeskPRO\Bundle\ReportBundle\Dpql2\Func\DpqlDayOfWeek
     tags:
       - { name: dpql.func }
 
   dpql.func.format:
-    class: DeskPRO\Bundle\ReportBundle\Dpql2\Func\Format
+    class: DeskPRO\Bundle\ReportBundle\Dpql2\Func\DpqlFormat
     arguments:
       - "@dpql.context_storage"
     tags:
       - { name: dpql.func }
 
   dpql.func.hierarchy:
-    class: DeskPRO\Bundle\ReportBundle\Dpql2\Func\Hierarchy
+    class: DeskPRO\Bundle\ReportBundle\Dpql2\Func\DpqlHierarchy
     tags:
       - { name: dpql.func }
 
   dpql.func.hierarchy_descends_from:
-    class: DeskPRO\Bundle\ReportBundle\Dpql2\Func\HierarchyDescendsFrom
+    class: DeskPRO\Bundle\ReportBundle\Dpql2\Func\DpqlHierarchyDescendsFrom
     arguments:
       - "@dpql.statement_factory"
     tags:
       - { name: dpql.func }
 
   dpql.func.hour:
-    class: DeskPRO\Bundle\ReportBundle\Dpql2\Func\Hour
+    class: DeskPRO\Bundle\ReportBundle\Dpql2\Func\DpqlHour
     tags:
       - { name: dpql.func }
 
   dpql.func.link:
-    class: DeskPRO\Bundle\ReportBundle\Dpql2\Func\Link
+    class: DeskPRO\Bundle\ReportBundle\Dpql2\Func\DpqlLink
     arguments:
       - "@router"
     tags:
       - { name: dpql.func }
 
   dpql.func.matrix:
-    class: DeskPRO\Bundle\ReportBundle\Dpql2\Func\Matrix
+    class: DeskPRO\Bundle\ReportBundle\Dpql2\Func\DpqlMatrix
     tags:
       - { name: dpql.func }
 
   dpql.func.minute:
-    class: DeskPRO\Bundle\ReportBundle\Dpql2\Func\Minute
+    class: DeskPRO\Bundle\ReportBundle\Dpql2\Func\DpqlMinute
     tags:
       - { name: dpql.func }
 
   dpql.func.month:
-    class: DeskPRO\Bundle\ReportBundle\Dpql2\Func\Month
+    class: DeskPRO\Bundle\ReportBundle\Dpql2\Func\DpqlMonth
     tags:
       - { name: dpql.func }
 
   dpql.func.month_name:
-    class: DeskPRO\Bundle\ReportBundle\Dpql2\Func\MonthName
+    class: DeskPRO\Bundle\ReportBundle\Dpql2\Func\DpqlMonthName
     tags:
       - { name: dpql.func }
 
   dpql.func.now:
-    class: DeskPRO\Bundle\ReportBundle\Dpql2\Func\Now
+    class: DeskPRO\Bundle\ReportBundle\Dpql2\Func\DpqlNow
     tags:
       - { name: dpql.func }
 
   dpql.func.obj_lang:
-    class: DeskPRO\Bundle\ReportBundle\Dpql2\Func\ObjLang
+    class: DeskPRO\Bundle\ReportBundle\Dpql2\Func\DpqlObjLang
     arguments:
       - "@doctrine.dbal.default_connection"
       - "@dpql.context_storage"
@@ -154,57 +154,57 @@ services:
       - { name: dpql.func }
 
   dpql.func.percent:
-    class: DeskPRO\Bundle\ReportBundle\Dpql2\Func\Percent
+    class: DeskPRO\Bundle\ReportBundle\Dpql2\Func\DpqlPercent
     tags:
       - { name: dpql.func }
 
   dpql.func.printable:
-    class: DeskPRO\Bundle\ReportBundle\Dpql2\Func\Printable
+    class: DeskPRO\Bundle\ReportBundle\Dpql2\Func\DpqlPrintable
     tags:
       - { name: dpql.func }
 
   dpql.func.stack_group:
-    class: DeskPRO\Bundle\ReportBundle\Dpql2\Func\StackGroup
+    class: DeskPRO\Bundle\ReportBundle\Dpql2\Func\DpqlStackGroup
     tags:
       - { name: dpql.func }
 
   dpql.func.time_length:
-    class: DeskPRO\Bundle\ReportBundle\Dpql2\Func\TimeLength
+    class: DeskPRO\Bundle\ReportBundle\Dpql2\Func\DpqlTimeLength
     tags:
       - { name: dpql.func }
 
   dpql.func.total:
-    class: DeskPRO\Bundle\ReportBundle\Dpql2\Func\Total
+    class: DeskPRO\Bundle\ReportBundle\Dpql2\Func\DpqlTotal
     tags:
       - { name: dpql.func }
 
   dpql.func.to_utc:
-    class: DeskPRO\Bundle\ReportBundle\Dpql2\Func\ToUtc
+    class: DeskPRO\Bundle\ReportBundle\Dpql2\Func\DpqlToUtc
     tags:
       - { name: dpql.func }
 
   dpql.func.utc:
-    class: DeskPRO\Bundle\ReportBundle\Dpql2\Func\Utc
+    class: DeskPRO\Bundle\ReportBundle\Dpql2\Func\DpqlUtc
     tags:
       - { name: dpql.func }
 
   dpql.func.x:
-    class: DeskPRO\Bundle\ReportBundle\Dpql2\Func\X
+    class: DeskPRO\Bundle\ReportBundle\Dpql2\Func\DpqlX
     tags:
       - { name: dpql.func }
 
   dpql.func.y:
-    class: DeskPRO\Bundle\ReportBundle\Dpql2\Func\Y
+    class: DeskPRO\Bundle\ReportBundle\Dpql2\Func\DpqlY
     tags:
       - { name: dpql.func }
 
   dpql.func.year:
-    class: DeskPRO\Bundle\ReportBundle\Dpql2\Func\Year
+    class: DeskPRO\Bundle\ReportBundle\Dpql2\Func\DpqlYear
     tags:
       - { name: dpql.func }
 
   dpql.func.json_extract:
-    class: DeskPRO\Bundle\ReportBundle\Dpql2\Func\JsonExtract
+    class: DeskPRO\Bundle\ReportBundle\Dpql2\Func\DpqlJsonExtract
     tags:
       - { name: dpql.func }
 

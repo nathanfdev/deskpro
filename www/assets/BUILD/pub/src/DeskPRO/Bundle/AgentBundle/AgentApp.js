@@ -11,7 +11,6 @@ import { api, setApi, loadRepositoriesConfig } from 'DeskPRO/Bundle/AppBundle/DA
 import { repositoriesConfig } from 'DeskPRO/Bundle/AgentBundle/DAL/config';
 import AgentReducers from './AgentApp_Reducers';
 import AppReducers from '../AppBundle/AppApp_Reducers';
-import { DpAppContainer } from './Modules/Application/Components/DpAppContainer';
 
 window.Immutable = Immutable;
 /**
@@ -26,11 +25,11 @@ window.DP_LANG = {
 // ---------------------------------------------------------------------------------------------------------------------
 
 export class AgentApp {
-  run() {
-    document.addEventListener('DOMContentLoaded', () => this.start());
+  static run() {
+    document.addEventListener('DOMContentLoaded', () => AgentApp.start());
   }
 
-  start() {
+  static start() {
     /* global __DEV__ */
     window.DP_DEV_MODE = __DEV__;
     const store = AgentApp.createStore();
@@ -39,7 +38,7 @@ export class AgentApp {
       <div>
         <Provider store={store}>
           <IntlProvider locale={window.DP_LOCALE} messages={window.DP_LANG}>
-            <DpAppContainer />
+            <div />
           </IntlProvider>
         </Provider>
       </div>,

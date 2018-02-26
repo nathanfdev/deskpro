@@ -35,13 +35,14 @@ use DeskPRO\Bundle\ReportBundle\Reports\Results;
  */
 interface ReportsRendererInterface
 {
-    const TYPE_TABLE = 'table';
-    const TYPE_LINE  = 'line';
-    const TYPE_PIE   = 'pie';
-    const TYPE_BAR   = 'bar';
-    const TYPE_AREA  = 'area';
-    const TYPE_GAUGE = 'gauge';
-    const TYPE_STAT  = 'stat';
+    const TYPE_TABLE  = 'table';
+    const TYPE_LINE   = 'line';
+    const TYPE_PIE    = 'pie';
+    const TYPE_BAR    = 'bar';
+    const TYPE_AREA   = 'area';
+    const TYPE_GAUGE  = 'gauge';
+    const TYPE_BUBBLE = 'bubble';
+    const TYPE_STAT   = 'stat';
 
     /**
      * @return string

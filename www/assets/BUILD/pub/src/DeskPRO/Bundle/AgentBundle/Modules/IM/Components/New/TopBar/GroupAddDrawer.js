@@ -204,7 +204,7 @@ class GroupAddDrawer extends React.Component {
                 <Header level={4} className="group list" content={this.getAgentsHeader()} />
                 <List className="im middle aligned selection agent">
                   <Scrollable vertical>
-                    {agents.map(agent => this.renderAgent(agent))}
+                    {agents.toArray().map(agent => this.renderAgent(agent))}
                   </Scrollable>
                 </List>
               </Segment>

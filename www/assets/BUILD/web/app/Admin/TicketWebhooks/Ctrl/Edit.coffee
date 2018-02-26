@@ -53,7 +53,7 @@ define [
     getFormFromModel: (model) ->
       form = {}
       form.title = model.title || ''
-      form.payload_decoder = model.payload_decoder
+      form.payload_decoder = model.payload_decoder || ''
 
       form.terms_set = {}
       if model.search_terms?.length
@@ -71,9 +71,11 @@ define [
 
       data = {
         title: @form.title,
-        payload_decoder: @form.payload_decoder,
         search_terms: Object.keys(@filter_criteria).map (key) => @filter_criteria[key]
       }
+
+      if @form.payload_decoder?.length
+        data.payload_decoder = @form.payload_decoder
 
       p = null
       if @webhookId

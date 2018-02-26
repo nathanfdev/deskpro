@@ -1,11 +1,9 @@
 import PropTypes from 'prop-types';
 import React from 'react';
-import TimeAgo from 'react-timeago';
+import TimeAgo from '@deskpro/react-timeago';
 import { connect } from 'react-redux';
 import classNames from 'classnames';
-import { Select } from '@deskpro/react-components/lib/Components/Forms';
-import Modal from '@deskpro/react-components/lib/Components/Modal';
-import Icon from '@deskpro/react-components/lib/Components/Icon';
+import { Select, Modal, Icon } from '@deskpro/react-components';
 import agentPhrases from 'DeskPRO/Bundle/AgentBundle/AgentPhrases';
 import AgentAvatar from 'DeskPRO/Component/Avatar/AgentAvatar';
 import * as actions from '../Actions/snippetsActions';

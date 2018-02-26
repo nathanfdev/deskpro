@@ -378,6 +378,12 @@ services:
     tags:
       - { name: form.type }
 
+  form.voice_outbound_call_type:
+    class: DeskPRO\Bundle\AppBundle\Form\Type\Voice\VoiceOutboundCallType
+    arguments: ["@person_repository"]
+    tags:
+      - { name: form.type }
+
   form.manual:
     class: DeskPRO\Bundle\AppBundle\Form\Type\Content\GuideType
     arguments:
@@ -430,7 +436,8 @@ services:
   form.report_widget:
     class: DeskPRO\Bundle\AppBundle\Form\Type\Reports\ReportWidgetType
     arguments:
-      - "@dashboard.service"
+      - "@deskpro.core.translate_loader"
+      - "@language_manager"
     tags:
       - { name: form.type }
 

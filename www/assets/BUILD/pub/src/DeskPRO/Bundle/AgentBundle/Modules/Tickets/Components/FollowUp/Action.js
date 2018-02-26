@@ -2,7 +2,7 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import { Select, Label, Radio } from '@deskpro/react-components';
-import newid from '@deskpro/react-components/lib/utils/newid';
+import { newid } from '@deskpro/react-components/dist/utils';
 import agentPhrases from 'DeskPRO/Bundle/AgentBundle/AgentPhrases';
 import { meSelector } from 'DeskPRO/Bundle/AppBundle/Modules/RecordsStore/Shortcuts/me';
 import Editor from './Editor';

@@ -76,11 +76,11 @@ class TicketWebhook
     /**
      * Payload decoding strategy
      *
-     * @ORM\Column(name="payload_decoder", type="string", nullable=false)
+     * @ORM\Column(name="payload_decoder", type="string", nullable=true)
      * @JMS\Expose()
-     * @var string
+     * @var string|null
      */
-    private $payloadDecoder;
+    private $payloadDecoder = null;
 
     /**
      *  True for the webhook is enabled or not
@@ -223,11 +223,12 @@ class TicketWebhook
     }
 
     /**
-     * @param string $payloadDecoder
+     * @param string|null $payloadDecoder
      */
     public function setPayloadDecoder( $payloadDecoder )
     {
-        $this->payloadDecoder = $payloadDecoder;
+
+        $this->payloadDecoder = $payloadDecoder === '' ? null : $payloadDecoder;
     }
 
     /**

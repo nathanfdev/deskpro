@@ -1,7 +1,7 @@
 import React from 'react';
 import Immutable from 'immutable';
 import QueueForm from 'DeskPRO/Bundle/AdminBundle/Modules/Voice/Components/Queues/Form/QueueForm';
-import { storiesOf } from '@kadira/storybook';
+import { storiesOf } from '@storybook/react';
 import { adminCss } from '../../../../decorators';
 
 const agents = Immutable.fromJS([

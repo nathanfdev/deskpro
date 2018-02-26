@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { storiesOf } from '@kadira/storybook';
+import { storiesOf } from '@storybook/react';
 import { ListGroupingModal, ListGroupingForm } from 'DeskPRO/Bundle/AgentBundle/Modules/Common/Components/NavFrame';
 import { formDemoProps, modalDemoProps } from '../../../../../DemoState/AgentBundle/Modules/Common/NavFrame/grouping-control';
 import { css } from '../../../../decorators';

@@ -1,5 +1,5 @@
 import React from 'react';
-import { storiesOf, linkTo, action } from '@kadira/storybook';
+import { storiesOf, linkTo, action } from '@storybook/react';
 import Immutable from 'immutable';
 import VoiceControls from 'DeskPRO/Bundle/AgentBundle/Modules/Voice/Components/Controls/VoiceControls';
 import { css, redux } from '../../../decorators';

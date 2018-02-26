@@ -1,7 +1,6 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import Progress from '@deskpro/react-components/lib/Components/Progress';
-import ProgressBar from '@deskpro/react-components/lib/Components/ProgressBar';
+import { Progress, ProgressBar } from '@deskpro/react-components';
 import { api } from 'DeskPRO/Bundle/AppBundle/DAL';
 import { AppInfo } from './AppInfo';
 

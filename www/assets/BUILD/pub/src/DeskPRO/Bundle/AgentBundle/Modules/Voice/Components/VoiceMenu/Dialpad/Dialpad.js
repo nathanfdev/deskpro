@@ -180,7 +180,7 @@ class Dialpad extends React.Component {
               <NumberSelect numbers={numbers} />
             </Field>
             <Field select="call_to">
-              <PhoneInput ref={(c) => { this.phoneInput = c; }} />
+              <PhoneInput supportSip ref={(c) => { this.phoneInput = c; }} />
             </Field>
 
             {searchResults.size > 0 &&

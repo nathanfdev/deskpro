@@ -73,6 +73,10 @@ export const displayTypes = [
   {
     label: 'Gauge',
     value: 'gauge'
+  },
+  {
+    label: 'Bubble',
+    value: 'bubble'
   }
 ];
 

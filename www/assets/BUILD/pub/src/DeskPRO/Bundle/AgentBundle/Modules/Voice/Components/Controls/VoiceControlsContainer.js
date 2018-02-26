@@ -60,7 +60,7 @@ class VoiceControlsContainer extends React.Component {
 
     tabRef({
       isCallActive: this.isCallActive,
-      endCall:      this.onEndCall
+      endCall:      this.endCall
     });
 
     const connection = this.getConnection();
@@ -74,11 +74,11 @@ class VoiceControlsContainer extends React.Component {
       const { status, participants } = this.state;
 
       if (connectionStatus === 'open') {
-        if (participants.contains(me.get('id')) || connection.message.Outbound) {
+        if (status !== 'active' && (participants.contains(me.get('id')) || connection.message.Outbound)) {
           this.setState({
             status: 'active'
           });
-        } else {
+        } else if (status !== 'connected' && status !== 'active') {
           this.setState({
             status: 'connected'
           });
@@ -161,7 +161,7 @@ class VoiceControlsContainer extends React.Component {
 
   getConnection() {
     const { connections, ticketId } = this.props;
-    return connections.filter(connection => parseInt(connection.message.TicketId, 10) === ticketId, 10).first();
+    return connections.filter(connection => parseInt(connection.message.TicketId, 10) === parseInt(ticketId, 10)).first();
   }
 
   addAgent = (target, type) => {
@@ -261,7 +261,7 @@ class VoiceControlsContainer extends React.Component {
         {...this.props}
         {...this.state}
         onlineAgents={onlineAgents}
-        connection={this.getConnection()}
+        connection={connection}
         endCall={this.endCall}
         toggleMute={this.toggleMute}
         toggleHold={this.toggleHold}
