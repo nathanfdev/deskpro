@@ -83,7 +83,7 @@ use Symfony\Component\Validator\Constraints as Assert;
  * @property AgentTeam                           $agent_team
  * @property Organization                        $organization
  * @property ChatConversation                    $linked_chat
- * @property TicketAttachment[]                  $attachments
+ * @property TicketAttachment[]|ArrayCollection  $attachments
  * @property TicketAccessCode[]|ArrayCollection  $access_codes
  * @property TicketMessage[]|ArrayCollection     $messages
  * @property TicketSms[]                         $sms_messages
@@ -1757,7 +1757,7 @@ class Ticket extends DomainObject implements HighlightableModelInterface, Labels
      */
     public function addAttachment(TicketAttachment $attach)
     {
-        $attach->ticket = $this;
+        $attach->setTicket($this);
         $this->attachments->add($attach);
 
         $this->_onPropertyChanged('attachments', null, $this->attachments);
@@ -1769,8 +1769,12 @@ class Ticket extends DomainObject implements HighlightableModelInterface, Labels
      */
     public function removeAttachment(TicketAttachment $attach)
     {
+        $attach->setTicket(null);
+
         $this->attachments->removeElement($attach);
-        $attach->message->removeAttachment($attach);
+        if ($attach->getMessage()) {
+            $attach->getMessage()->removeAttachment($attach);
+        }
 
         $this->_onPropertyChanged('attachments', null, $this->attachments);
         $this->getStateChangeRecorder()->record('attachments', $attach, null);
@@ -4600,7 +4604,7 @@ class Ticket extends DomainObject implements HighlightableModelInterface, Labels
     /**
      * @return bool
      */
-    public function isHasAttachments()
+    public function hasAttachments()
     {
         return $this->has_attachments;
     }

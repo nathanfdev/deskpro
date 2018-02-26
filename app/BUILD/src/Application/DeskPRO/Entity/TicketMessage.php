@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2017, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2018, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -715,6 +715,9 @@ class TicketMessage extends DomainObject
         }
 
         $attach->setMessage($this);
+        if ($this->ticket) {
+            $this->ticket->addAttachment($attach);
+        }
 
         return $this;
     }
@@ -800,6 +803,11 @@ class TicketMessage extends DomainObject
     public function removeAttachment(TicketAttachment $attachment)
     {
         $this->attachments->removeElement($attachment);
+        $attachment->setMessage(null);
+
+        if ($this->ticket) {
+            $this->ticket->removeAttachment($attachment);
+        }
     }
 
     /**
