@@ -44,16 +44,14 @@ class QualifiedName
      */
     public static function isValidIdentifier(QualifiedName $name)
     {
-        $pattern = '#^[a-zA-Z_\x7f-\xff][a-zA-Z0-9_\x7f-\xff]*#';
+        $patternHead = '#^[a-zA-Z_\x7f-\xff][a-zA-Z0-9_\x7f-\xff]*#';
+        $patternTail = '#[a-zA-Z0-9_\x7f-\xff]+#';
 
-        $names = array_merge(
-            [ $name->getLocalName() ],
-            $name->getQualifiers()
-        );
+        $names = $name->toList();
+        $valid = 1 === preg_match($patternHead, $names[0]);
 
-        $valid = true;
-        for ($i =0; $i < count($names) && $valid === true; $i++ ) {
-            $valid = 1 === preg_match($pattern, $names[$i]);
+        for ($i = 1; $i < count($names) && $valid === true; $i++ ) {
+            $valid = 1 === preg_match($patternTail, $names[$i]);
         }
 
         return $valid;
