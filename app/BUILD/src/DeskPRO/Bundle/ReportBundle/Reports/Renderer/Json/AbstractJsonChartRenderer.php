@@ -273,6 +273,9 @@ abstract class AbstractJsonChartRenderer extends AbstractJsonRenderer
                     foreach ($groupYColumns as $column) {
                         $categories[] = $this->renderCellValue($row, $column, $metadata);
                     }
+                    if ($metadata->hasFlag(ResultMetadata::FLAG_HIERARCHICAL) && $row['hierarchy_parent_id']) {
+                        array_unshift($categories, $row['hierarchy_root_title']);
+                    }
                     $category = implode(' / ', $categories);
 
                     $maxCategoryLength = max($maxCategoryLength, strlen($category));
