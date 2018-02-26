@@ -220,7 +220,7 @@
     "eslint-fix": "eslint --fix",
     "resources:copy": "cpx \"src/**/Resources/**/*.{gif,png,jpg,svg,mp3,ogg,wav}\" build",
     "gulp-dev-all": "npm run-script resources:copy && node bin/refresh-widget-loader && npm run-script gulp-refresh-reducers && node bin/dev-server",
-    "dev": "npm run-script resources:copy && node bin/refresh-widget-loader && && npm run-script gulp-refresh-reducers node bin/dev-server",
+    "dev": "npm run-script resources:copy && node bin/refresh-widget-loader && npm run-script gulp-refresh-reducers && node bin/dev-server",
     "prod": "npm run-script webpack && npm run-script resources:copy",
     "gulp-prod": "npm run-script webpack && npm run-script resources:copy",
     "build:prod": "npm run-script webpack && npm run-script resources:copy",
