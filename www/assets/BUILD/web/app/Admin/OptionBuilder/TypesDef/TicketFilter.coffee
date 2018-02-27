@@ -18,6 +18,14 @@ define [
 
       options = []
 
+      options.push
+        title: 'Ticket ID'
+        value: 'FilterRangeId'
+
+      options.push
+        title: 'Ticket Ref'
+        value: 'FilterRef'
+
       options.push({
         title: 'Status',
         value: 'FilterStatus'
@@ -208,6 +216,11 @@ define [
       #------------------------------
 
       options = []
+
+      options.push({
+        title: 'Person ID',
+        value: 'FilterUserRangeId'
+      })
 
       options.push({
         title: 'Name',
@@ -511,6 +524,26 @@ define [
                 sla_id:     model.sla_id || 0
             }
       }
+
+    getFilterRangeId: (options = {}) ->
+      options.propName = 'id'
+      options.operators = ['is', 'not', 'gt', 'gte', 'lt', 'lte']
+      def = (options)
+      def = @getStandardInput(options)
+      return def
+
+    getFilterRef: (options = {}) ->
+      options.propName = 'ref'
+      def = (options)
+      def = @getStandardInput(options)
+      return def
+
+    getFilterUserRangeId: (options = {}) ->
+      options.propName = 'person_id'
+      options.operators = ['is', 'not', 'gt', 'gte', 'lt', 'lte']
+      def = (options)
+      def = @getStandardInput(options)
+      return def
 
     getFilterUserWaiting: (options = {}) ->
       options.propName = 'time'
