@@ -1919,6 +1919,15 @@ DeskPRO.Agent.Window = new Orb.Class({
 			extraData.preloadId = el.data('route-preload-id');
 		}
 
+    if (!isShiftClick) {
+      // this should be handled only when click event occurs
+      if (0 === el.data('route').indexOf('listpane:')) {
+        this.$scope.showList();
+      } else {
+        this.$scope.showTabs();
+      }
+    }
+
 		if (!this.paneVis.tabs) {
 			extraData.noToggle = true;
 			extraData.focus = true;
@@ -1941,16 +1950,6 @@ DeskPRO.Agent.Window = new Orb.Class({
 
 			if (isShiftClick) {
 				extraData.noToggle = true;
-			}
-		}
-
-
-		if (!isShiftClick) {
-			// this should be handled only when click event occurs
-			if (0 === el.data('route').indexOf('listpane:')) {
-				this.$scope.showList();
-			} else {
-				this.$scope.showTabs();
 			}
 		}
 
