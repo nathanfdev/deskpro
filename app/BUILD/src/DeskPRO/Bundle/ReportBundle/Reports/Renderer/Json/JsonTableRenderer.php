@@ -322,4 +322,9 @@ class JsonTableRenderer extends AbstractJsonRenderer
     {
         return $body;
     }
+
+    public function mergeResults(array $results)
+    {
+        return reset($results);
+    }
 }
