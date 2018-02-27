@@ -444,7 +444,7 @@ END)
 
                         return $valueRenderer->renderValue($date ?: null, $type);
                     };
-                } elseif ($field && $section !== 'select' && $field->isChoiceType()) {
+                } elseif ($field && $section === 'group' && $field->isChoiceType()) {
                     $call    = new self(array_merge($this->parts, ['field', 'id']));
                     $prepped = $call->prepare($statement, $section, $stack, $select, $result);
 
