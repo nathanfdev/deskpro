@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2017, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2018, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -80,6 +80,11 @@ class PersonFieldManager extends FieldManager
             }
 
             $field_name = $field->getOption('field_name');
+
+            if (!$field_name) {
+                continue;
+            }
+
             if ($raw_data instanceof Identity) {
                 $raw_data = $raw_data->getRawData();
             }
@@ -87,6 +92,7 @@ class PersonFieldManager extends FieldManager
             // Reads the value and does some common input error correction:
             // - Arrays are separated by a slash or a dot: telephonenumber.0 or telephonenumber/0
             // - If the key isnt found as-is, we'll also try converting to lowercase and trying again (keys are typically lowercase)
+            $val = null;
             foreach (['/', '.'] as $sep) {
                 $val = Arrays::keyAsPath($raw_data, $field_name, $sep, null);
 
