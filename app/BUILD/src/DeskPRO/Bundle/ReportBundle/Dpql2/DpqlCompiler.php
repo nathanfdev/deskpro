@@ -96,10 +96,18 @@ class DpqlCompiler
      * @param array       $placeholders
      * @param DpqlContext $context
      *
+     * @throws DpqlException
+     *
      * @return SelectPart
      */
     public function compile($input, array $placeholders = [], DpqlContext $context = null)
     {
+        if (strpos($input, 'LAYER WITH') !== false) {
+            throw new DpqlException(
+                DpqlException::getMessageByCode(DpqlException::CODE_LAYERED_DIRECT_COMPILE_ERROR),
+                DpqlException::CODE_LAYERED_DIRECT_COMPILE_ERROR
+            );
+        }
         if (!$context) {
             $token   = $this->tokenStorage->getToken();
             $person  = $token && $token->getUser() instanceof Person ? $token->getUser() : null;
