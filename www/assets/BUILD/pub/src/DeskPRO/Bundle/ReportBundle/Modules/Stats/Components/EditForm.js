@@ -220,7 +220,6 @@ export class EditFormComponent extends React.PureComponent {
   constructor(props) {
     super(props);
     this.state = {
-      extendedQuery:     props.extendedQuery,
       queryInputMode:    props.extendedQuery ? 'dpql' : 'form',
       queryModeChanging: true
     };
@@ -245,7 +244,8 @@ export class EditFormComponent extends React.PureComponent {
   }
 
   queryModeChange = (to) => {
-    if (this.state.get('extendedQuery')) {
+    const extendedQuery = this.props.queryValues.raw.indexOf('LAYER WITH') !== -1;
+    if (extendedQuery) {
       console.info('Cant change mode to form, you\'re using extended query syntax');
       return;
     }
