@@ -36,6 +36,7 @@ class EditContainer extends React.Component {
       title:  report.get('title'),
       labels: report.get('labels', Immutable.List()).toArray(),
       query:  {
+        raw:      report.get('query'),
         select:   queryParts.get('select', ''),
         from:     queryParts.get('from', ''),
         where:    queryParts.get('where', ''),
@@ -45,7 +46,7 @@ class EditContainer extends React.Component {
         offset:   queryParts.get('offset', ''),
         limit:    queryParts.get('limit', '')
       },
-      vars: report.get('variables', Immutable.Map()).toJS()
+      vars: report.get('variables', Immutable.Map()).toJS(),
     };
 
     return { initialFormValue };
@@ -136,7 +137,12 @@ class EditContainer extends React.Component {
     );
 
     return (<div>
-      <EditStatForm labels={labels.toJS()} groupParams={groupParams.toJS()} dpqlParser={EditContainer.dpqlParser} />
+      <EditStatForm
+        labels={labels.toJS()}
+        groupParams={groupParams.toJS()}
+        extendedQuery={report.get('extended_query', false)}
+        dpqlParser={EditContainer.dpqlParser}
+      />
       {controls}
     </div>);
   }

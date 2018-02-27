@@ -164,26 +164,28 @@ const LabelsField = formValues('labels')(LabelsFieldComponent);
 export class EditFormComponent extends React.PureComponent {
 
   static defaultProps = {
-    select:       '',
-    groupBy:      '',
-    dpqlParser:   null,
-    change:       null,
-    queryValues:  {},
-    handleSubmit: null,
-    error:        null,
-    labels:       []
+    select:        '',
+    groupBy:       '',
+    dpqlParser:    null,
+    change:        null,
+    queryValues:   {},
+    handleSubmit:  null,
+    error:         null,
+    labels:        [],
+    extendedQuery: false
   };
 
   static propTypes = {
-    groupParams:  PropTypes.object.isRequired,
-    labels:       PropTypes.array.isRequired,
-    select:       PropTypes.string,
-    groupBy:      PropTypes.string,
-    dpqlParser:   PropTypes.func,
-    change:       PropTypes.func,
-    queryValues:  PropTypes.object,
-    handleSubmit: PropTypes.func,
-    error:        PropTypes.string
+    groupParams:   PropTypes.object.isRequired,
+    labels:        PropTypes.array.isRequired,
+    select:        PropTypes.string,
+    groupBy:       PropTypes.string,
+    dpqlParser:    PropTypes.func,
+    change:        PropTypes.func,
+    queryValues:   PropTypes.object,
+    handleSubmit:  PropTypes.func,
+    error:         PropTypes.string,
+    extendedQuery: PropTypes.bool,
   };
 
   static toDpql(fields) {
@@ -218,7 +220,8 @@ export class EditFormComponent extends React.PureComponent {
   constructor(props) {
     super(props);
     this.state = {
-      queryInputMode:    'form',
+      extendedQuery:     props.extendedQuery,
+      queryInputMode:    props.extendedQuery ? 'dpql' : 'form',
       queryModeChanging: true
     };
   }
@@ -242,6 +245,11 @@ export class EditFormComponent extends React.PureComponent {
   }
 
   queryModeChange = (to) => {
+    if (this.state.get('extendedQuery')) {
+      console.info('Cant change mode to form, you\'re using extended query syntax');
+      return;
+    }
+
     this.props.change('query_input_mode', to);
 
     if (to === 'dpql') {
