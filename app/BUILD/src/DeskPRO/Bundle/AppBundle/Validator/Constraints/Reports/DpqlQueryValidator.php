@@ -28,7 +28,7 @@
 
 namespace DeskPRO\Bundle\AppBundle\Validator\Constraints\Reports;
 
-use DeskPRO\Bundle\ReportBundle\Dpql2\DpqlCompiler;
+use DeskPRO\Bundle\ReportBundle\Service\DashboardWidget;
 use Symfony\Component\Validator\Constraint;
 use Symfony\Component\Validator\ConstraintValidator;
 use Symfony\Component\Validator\Exception\UnexpectedTypeException;
@@ -39,18 +39,18 @@ use Symfony\Component\Validator\Exception\UnexpectedTypeException;
 class DpqlQueryValidator extends ConstraintValidator
 {
     /**
-     * @var DpqlCompiler
+     * @var DashboardWidget
      */
-    private $compiler;
+    private $dashboardWidget;
 
     /**
      * Constructor.
      *
-     * @param DpqlCompiler $compiler
+     * @param DashboardWidget $dashboardWidget
      */
-    public function __construct(DpqlCompiler $compiler)
+    public function __construct(DashboardWidget $dashboardWidget)
     {
-        $this->compiler = $compiler;
+        $this->dashboardWidget = $dashboardWidget;
     }
 
     /**
@@ -66,7 +66,7 @@ class DpqlQueryValidator extends ConstraintValidator
         }
 
         try {
-            $this->compiler->compile($value);
+            $this->dashboardWidget->getCompiledQueries($value);
         } catch (\Exception $e) {
             /** @var \Symfony\Component\Validator\Context\ExecutionContext $context */
             $context = $this->context;

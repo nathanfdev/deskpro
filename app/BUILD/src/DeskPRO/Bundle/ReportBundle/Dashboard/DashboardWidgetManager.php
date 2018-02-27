@@ -34,6 +34,7 @@ use Application\DeskPRO\Entity\ReportDashboardWidget as DashboardWidgetEntity;
 use Application\DeskPRO\Entity\SavedDashboardWidget;
 use DeskPRO\Bundle\ReportBundle\Dpql2\DpqlCompiler;
 use DeskPRO\Bundle\ReportBundle\Dpql2\DpqlContext;
+use DeskPRO\Bundle\ReportBundle\Dpql2\Statement\SelectPart;
 use DeskPRO\Bundle\ReportBundle\Reports\Renderer\ReportsRendererInterface;
 use DeskPRO\Bundle\ReportBundle\Reports\Renderer\ReportsRendererRegistry;
 use DeskPRO\Bundle\ReportBundle\Reports\ResultMetadata;
@@ -299,6 +300,26 @@ class DashboardWidgetManager
     }
 
     /**
+     * @param string $query
+     * @param array  $params
+     * @param Person $person
+     *
+     * @throws \DeskPRO\Bundle\ReportBundle\Dpql2\DpqlException
+     *
+     * @return SelectPart[]
+     */
+    public function getCompiledQueries($query, array $params = [], Person $person = null)
+    {
+        $queries         = preg_split('#LAYER WITH#', $query);
+        $compiledQueries = [];
+        foreach ($queries as $layeredQuery) {
+            $compiledQueries[] = $this->compiler->compile($layeredQuery, $params, new DpqlContext($person));
+        }
+
+        return $compiledQueries;
+    }
+
+    /**
      * @param string $query,
      * @param array  $params
      * @param string $graphType
@@ -319,17 +340,14 @@ class DashboardWidgetManager
         Person $person = null,
         $options = ''
     ) {
-        $queries  = preg_split('#LAYER WITH#', $query);
         $renderer = $this->rendererRegistry->getRenderer($graphType, $format);
 
-        $results    = [];
-        $multiLayer = false;
-        if (count($queries) > 1) {
-            $multiLayer = true;
-        }
-        foreach ($queries as $layeredQuery) {
-            $query       = $this->compiler->compile($layeredQuery, $params, new DpqlContext($person));
-            $queryResult = $query->getResults();
+        $results         = [];
+        $compiledQueries = $this->getCompiledQueries($query, $params, $person);
+        $multiLayer      = count($compiledQueries) > 1;
+
+        foreach ($compiledQueries as $compiledQuery) {
+            $queryResult = $compiledQuery->getResults();
             if ($multiLayer) {
                 $queryResult->getMetadata()->addFlag(ResultMetadata::FLAG_LAYERED);
             }
