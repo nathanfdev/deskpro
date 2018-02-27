@@ -36,6 +36,7 @@ use DeskPRO\Bundle\AppBundle\Serializer\Model\Reports\ReportWidget as ReportWidg
 use DeskPRO\Bundle\AppBundle\Serializer\Sideload\SideloadSerializationContext;
 use DeskPRO\Bundle\ReportBundle\Dashboard\DashboardWidgetManager;
 use DeskPRO\Bundle\ReportBundle\Dpql2\DpqlCompiler;
+use DeskPRO\Bundle\ReportBundle\Dpql2\DpqlException;
 use DeskPRO\Bundle\ReportBundle\Reports\Renderer\ReportsRendererRegistry;
 
 /**
@@ -104,10 +105,20 @@ class ReportWidgetHandler extends AbstractEntityHandler
             $translated[] = $this->translate->hasPhrase($phraseName) ? $this->translate->phrase($phraseName) : ucfirst($label);
         }
 
-        $statement  = $this->compiler->compile($entity->getQuery());
-        $queryParts = $statement->getDpqlPartsForInput();
+        $extendedQuery = false;
+        try {
+            $statement  = $this->compiler->compile($entity->getQuery());
+            $queryParts = $statement->getDpqlPartsForInput();
+        } catch (DpqlException $e) {
+            if ($e->getCode() === DpqlException::CODE_LAYERED_DIRECT_COMPILE_ERROR) {
+                $extendedQuery = true;
+                $queryParts    = [];
+            } else {
+                throw $e;
+            }
+        }
 
-        $model = new ReportWidgetModel($entity, $queryParts, $translated);
+        $model = new ReportWidgetModel($entity, $queryParts, $translated, $extendedQuery);
 
         $sideloads = $context->getSideloadStore();
         $sideloads->addCustomSideload(
