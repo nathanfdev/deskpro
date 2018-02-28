@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2017, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2018, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -101,8 +101,14 @@ class ContentSlugManager
         }
 
         // check if the expected slug is a valid one, in both content repo and in slug history repo
-        $newSlug = $expectedSlug;
-        $i       = 1;
+        $changed = $this->getEm()->getUnitOfWork()->getEntityChangeSet($content);
+        if (isset($changed['title']) || !$existingSlug) {
+            $newSlug = $expectedSlug;
+        } else {
+            $newSlug = $existingSlug;
+        }
+
+        $i = 1;
         while (!$this->isValidSlug($newSlug, $content)) {
             // if expected slug is not valid, keep incrementing a value at the end until we get something valid
             $newSlug = sprintf('%s-%d', $this->slugifyTitle($content->getTitle()) ?: strtolower(TypeUtils::getBaseTypeName($content)), ++$i);
