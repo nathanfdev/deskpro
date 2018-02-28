@@ -6,7 +6,6 @@ import { portalUrlCorrector } from '../../Http/PortalUrlCorrector';
 import { FilterModel } from './FilterModel';
 import { FilterOptions } from './FilterOptions';
 import { ResultsPartial } from './ResultsPartial';
-import history from 'html5-history-api';
 
 export class FeedbackFilter extends React.Component {
 
@@ -29,9 +28,9 @@ export class FeedbackFilter extends React.Component {
   }
 
   componentDidMount() {
-    history.replaceState(this.state, null, window.history.location || window.location);
+    window.history.replaceState(this.state, null, window.history.location || window.location);
     this.onUpdateFilter(this.state.filter, true);
-    window.addEventListener('popstate', event => {
+    window.addEventListener('popstate', (event) => {
       if (event.state === null || event.state.partial.length === 0) {
         return;
       }
@@ -59,7 +58,7 @@ export class FeedbackFilter extends React.Component {
         portalUrlCorrector.request(config);
         url = config.url;
 
-        portalHttp.sendGet(url).then(r => {
+        portalHttp.sendGet(url).then((r) => {
           const state = {
             filter:  filterModel,
             partial: r.getData(),
@@ -67,9 +66,9 @@ export class FeedbackFilter extends React.Component {
           };
 
           if (initial) {
-            history.replaceState(state, null, url);
+            window.history.replaceState(state, null, url);
           } else {
-            history.pushState(state, null, url);
+            window.history.pushState(state, null, url);
           }
 
           this.setState(state);

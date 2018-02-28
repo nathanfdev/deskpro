@@ -61,6 +61,26 @@
             </a>
 
             <a
+                    name='gauge'
+                    ng-click="makeChoice('gauge')"
+                    class="link-pointer stat-preview-bucket"
+                    ng-class="{'selected' : widget.type == 'gauge'}"
+            >
+                <span class="title">Gauge</span>
+                <div class="stat-preview stat-preview-gauge"></div>
+            </a>
+
+            <a
+                    name='bubble'
+                    ng-click="makeChoice('bubble')"
+                    class="link-pointer stat-preview-bucket"
+                    ng-class="{'selected' : widget.type == 'bubble'}"
+            >
+                <span class="title">Bubble</span>
+                <div class="stat-preview stat-preview-bubble"></div>
+            </a>
+
+            <a
               name='table_data'
               ng-click="makeChoice('table')"
               class="link-pointer stat-preview-bucket"
@@ -87,7 +107,8 @@
                             widget-id = "{{ ng_var('reportWidget.id') }}"
                             chart-data = "{{ ng_var('widgetPreview.rendered_result') }}"
                             render-type = "test"
-                            chtype="graph"
+                            widget-type="{{ ng_var('widgetPreview.type') }}"
+                            chart-type="{{ ng_var('widgetPreview.rendered_result.chartType') }}"
                     />
                 </div>
             </div>

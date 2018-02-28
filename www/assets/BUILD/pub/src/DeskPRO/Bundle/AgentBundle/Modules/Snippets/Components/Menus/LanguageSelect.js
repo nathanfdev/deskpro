@@ -3,9 +3,7 @@ import React from 'react';
 import { DragDropContext } from 'react-dnd';
 import HTML5Backend from 'react-dnd-html5-backend';
 import agentPhrases from 'DeskPRO/Bundle/AgentBundle/AgentPhrases';
-import Icon from '@deskpro/react-components/lib/Components/Icon';
-import { CustomSelect, Checkbox } from '@deskpro/react-components/lib/Components/Forms';
-import { List, ListElement } from '@deskpro/react-components/lib/Components/Common';
+import { Icon, List, ListElement, CustomSelect, Checkbox } from '@deskpro/react-components';
 import { sortByAttribute } from 'DeskPRO/Component/Util/Map';
 import LanguageItem from './LanguageItem';
 
@@ -226,7 +224,7 @@ export class LanguageSelect extends React.PureComponent {
     type:        PropTypes.string,
   };
 
-  inputRenderer = () => <span><Icon name="globe" />&nbsp;{agentPhrases.get('agent.general.languages')}</span>;
+  inputRenderer = () => <span key="label"><Icon name="globe" />&nbsp;{agentPhrases.get('agent.general.languages')}</span>;
 
   render() {
     const { languages, langContext, langPref, onChange, type } = this.props;

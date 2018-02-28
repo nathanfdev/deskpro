@@ -1,8 +1,7 @@
 import PropTypes from 'prop-types';
 import React from 'react';
 import AmCharts from '@amcharts/amcharts3-react';
-import Button from '@deskpro/react-components/lib/Components/Buttons/Button';
-import { Loader } from '@deskpro/react-components';
+import { Button, Loader } from '@deskpro/react-components';
 import Select from 'react-select';
 import Immutable from 'immutable';
 import TitleWithVars from './TitleWithVars';
@@ -40,13 +39,31 @@ class Run extends React.Component {
   }
 
   static doRenderChart(options, index) {
-    switch (options.get('chartType')) {
+    const newOptions = options.toJS();
+
+    if (newOptions.chartType === 'bubble') {
+      if (newOptions.valueAxes[0].hash) {
+        newOptions.valueAxes[0].labelFunction = (value) => {
+          const hash = newOptions.valueAxes[0].hash;
+          return hash[value] ? hash[value] : '';
+        };
+      }
+      if (newOptions.valueAxes[1].hash) {
+        newOptions.valueAxes[1].labelFunction = (value) => {
+          const hash = newOptions.valueAxes[1].hash;
+          return hash[value] ? hash[value] : '';
+        };
+      }
+    }
+
+    switch (newOptions.chartType) {
       case 'pie':
       case 'bar':
       case 'line':
       case 'gauge':
       case 'area':
-        return <AmCharts.React key={index} style={{ width: '100%', height: '500px' }} options={options.toJS()} />;
+      case 'bubble':
+        return <AmCharts.React key={index} style={{ width: '100%', height: '500px' }} options={newOptions} />;
       case 'table':
         return <DataTable key={index} style={{ width: '100%', height: '500px' }} data={options.get('data').toJS()} columns={options.get('columns').toJS()} />;
       case 'stat':

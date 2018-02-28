@@ -3,7 +3,7 @@ import React from 'react';
 import moment from 'moment';
 import classNames from 'classnames';
 import EventEmitter from 'eventemitter2';
-import ScrollArea from '@deskpro/react-scrollbar';
+import ScrollArea from 'react-scrollbar';
 import { WaitingFormat } from 'DeskPRO/Component/Timer';
 
 const emitter = new EventEmitter();

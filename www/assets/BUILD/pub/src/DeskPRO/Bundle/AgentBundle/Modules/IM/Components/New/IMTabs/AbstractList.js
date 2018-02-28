@@ -2,7 +2,7 @@ import PropTypes from 'prop-types';
 import React from 'react';
 import classNames from 'classnames';
 import { List, ListElement } from 'DeskPRO/Component/Semantic/List';
-import TimeAgo from 'react-timeago';
+import TimeAgo from '@deskpro/react-timeago';
 import moment from 'moment';
 import AvatarHelper from './AvatarHelper';
 

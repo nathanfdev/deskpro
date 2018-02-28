@@ -13,27 +13,26 @@ define ['DeskPRO/Util/Arrays'], (Arrays) -> [
     # LOADING
     ####################################################################################################################
 
-    DashboardsInfo.getDashboardList().then((dbs) ->
+    load_promises = []
+    load_promises.push DashboardsInfo.getDashboardList().then((dbs) ->
       $scope.dashboards = dbs
       dashboard = Arrays.find(dbs, (x) -> x.id == dashboard_id)
 
       $state.go('reports.dashboards.view.empty')
-      $scope.loaded = true
-
       if not $scope.dashboard
         $scope.dashboard = dashboard
     )
 
     # fetches perm info
-    DashboardsInfo.getDashboardDetail($stateParams.dashboard_id).then( (db) ->
+    load_promises.push DashboardsInfo.getDashboardDetail($stateParams.dashboard_id).then( (db) ->
       $scope.dashboard = db
     )
-    DashboardsInfo.getReportsList(dashboard_id).then( (reports) ->
+    load_promises.push DashboardsInfo.getReportsList(dashboard_id).then( (reports) ->
       $scope.reports = reports
       if reports.length > 0
         $state.go('reports.dashboards.view.report', { report_id: reports[0].id} )
     )
-    DashboardsInfo.getAgents().then( (agents) ->
+    load_promises.push DashboardsInfo.getAgents().then( (agents) ->
       agents.map((agent) => $scope.agents[agent.id] = agent)
     )
 
@@ -51,6 +50,8 @@ define ['DeskPRO/Util/Arrays'], (Arrays) -> [
         $scope.reports = reports
       )
     )
+
+    $q.all(load_promises).then(-> $scope.loaded = true)
 
     ####################################################################################################################
     # MODAL HANDLERS

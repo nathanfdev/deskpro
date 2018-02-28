@@ -2,6 +2,7 @@ import 'babel-polyfill';
 import React from 'react';
 import ReactDOM from 'react-dom';
 import { Provider } from 'react-redux';
+import { AppContainer } from 'react-hot-loader';
 import { DragDropContextProvider } from 'react-dnd';
 import HTML5Backend from 'react-dnd-html5-backend';
 import { api } from 'DeskPRO/Bundle/AppBundle/DAL';
@@ -109,11 +110,13 @@ class AgentLegacyApp {
       clearTimeout(this.renderWaits[piecePlace]);
       if (piecePlace === 'AgentTopBar') {
         ReactDOM.render(
-          <Provider store={this.store}>
-            <DragDropContextProvider backend={HTML5Backend} window={node}>
-              {element}
-            </DragDropContextProvider>
-          </Provider>, node);
+          <AppContainer>
+            <Provider store={this.store}>
+              <DragDropContextProvider backend={HTML5Backend} window={node}>
+                {element}
+              </DragDropContextProvider>
+            </Provider>
+          </AppContainer>, node);
       } else {
         ReactDOM.render(<Provider store={this.store}>{element}</Provider>, node);
       }
@@ -131,13 +134,15 @@ class AgentLegacyApp {
     let tabRef;
 
     ReactDOM.render(
-      <Provider store={this.store}>
-        <VoiceControlsContainer
-          tabRef={(c) => { tabRef = c; }}
-          ticketId={ticketId}
-          onEndCall={onEndCall}
-        />
-      </Provider>,
+      <AppContainer>
+        <Provider store={this.store}>
+          <VoiceControlsContainer
+            tabRef={(c) => { tabRef = c; }}
+            ticketId={ticketId}
+            onEndCall={onEndCall}
+          />
+        </Provider>
+      </AppContainer>,
       node
     );
 
@@ -163,12 +168,14 @@ class AgentLegacyApp {
     let tabRef;
 
     ReactDOM.render(
-      <Provider store={this.store}>
-        <VoiceTicketMessageContainer
-          tabRef={(c) => { tabRef = c; }}
-          data={data}
-        />
-      </Provider>,
+      <AppContainer>
+        <Provider store={this.store}>
+          <VoiceTicketMessageContainer
+            tabRef={(c) => { tabRef = c; }}
+            data={data}
+          />
+        </Provider>
+      </AppContainer>,
       node
     );
 
@@ -177,23 +184,27 @@ class AgentLegacyApp {
 
   renderMessageArchiveAttachment(node, data, layout) {
     ReactDOM.render(
-      <Provider store={this.store}>
-        <ArchiveFilesContainer
-          authId={data.authId}
-          layout={layout}
-        />
-      </Provider>,
+      <AppContainer>
+        <Provider store={this.store}>
+          <ArchiveFilesContainer
+            authId={data.authId}
+            layout={layout}
+          />
+        </Provider>
+      </AppContainer>,
       node.get(0)
     );
   }
 
   renderFollowUpTab(node, data) {
     ReactDOM.render(
-      <Provider store={this.store}>
-        <FollowUpContainer
-          {...data}
-        />
-      </Provider>,
+      <AppContainer>
+        <Provider store={this.store}>
+          <FollowUpContainer
+            {...data}
+          />
+        </Provider>
+      </AppContainer>,
       node
     );
   }
@@ -206,30 +217,39 @@ class AgentLegacyApp {
     updateSource
   ) {
     ReactDOM.render(
-      <Provider store={this.store}>
-        <EditorContainer
-          value={value}
-          inputType={inputType}
-          save={save}
-          updateSource={updateSource}
-        />
-      </Provider>,
+      <AppContainer>
+        <Provider store={this.store}>
+          <EditorContainer
+            value={value}
+            inputType={inputType}
+            save={save}
+            updateSource={updateSource}
+          />
+        </Provider>
+      </AppContainer>,
       node
     );
   }
 
   renderTopicsTree(node, guideId, height, openTopic, displayStatuses) {
     ReactDOM.render(
-      <Provider store={this.store}>
-        <GuideTreeContainer
-          guideId={guideId}
-          height={height}
-          openTopic={openTopic}
-          displayStatuses={displayStatuses}
-        />
-      </Provider>,
+      <AppContainer>
+        <Provider store={this.store}>
+          <GuideTreeContainer
+            guideId={guideId}
+            height={height}
+            openTopic={openTopic}
+            displayStatuses={displayStatuses}
+          />
+        </Provider>
+      </AppContainer>,
       node
     );
   }
 }
+
+if (module.hot) {
+  module.hot.accept();
+}
+
 export default AgentLegacyApp;

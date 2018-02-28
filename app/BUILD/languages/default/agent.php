@@ -2803,6 +2803,7 @@ return [
     'agent.voice.call_auto_attendant_extension'             => 'Entered "{{key}}" extension number',
     'agent.voice.call_target'                               => 'Called {{to_number}} for "{{target_name}}"',
     'agent.voice.call_rejected'                             => 'Call rejected by agent {{person_name}} {{person_email}}',
+    'agent.voice.call_forward_answered'                     => 'Forwarded call to {{forwarded_number}} answered by agent {{person_name}} {{person_email}}',
     'agent.voice.call_answered'                             => 'Call answered by agent {{person_name}} {{person_email}}',
     'agent.voice.call_participant_muted'                    => 'Call muted',
     'agent.voice.call_participant_unmuted'                  => 'Call unmuted',

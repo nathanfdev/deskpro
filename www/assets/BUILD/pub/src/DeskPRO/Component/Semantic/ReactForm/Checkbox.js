@@ -5,10 +5,11 @@ import classNames from 'classnames';
 class Checkbox extends React.Component {
 
   static propTypes = {
-    disabled: PropTypes.bool,
-    value:    PropTypes.bool,
-    label:    PropTypes.string,
-    onChange: PropTypes.func
+    className: PropTypes.string,
+    disabled:  PropTypes.bool,
+    value:     PropTypes.bool,
+    label:     PropTypes.string,
+    onChange:  PropTypes.func
   };
 
   onClick = () => {
@@ -17,11 +18,11 @@ class Checkbox extends React.Component {
   };
 
   render() {
-    const { value, label, disabled } = this.props;
+    const { className, value, label, disabled } = this.props;
 
     return (
       <div
-        className={classNames('ui', { value }, 'checkbox')}
+        className={classNames('ui', className, { value }, 'checkbox')}
         onClick={this.onClick}
       >
         <input

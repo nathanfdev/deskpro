@@ -97,7 +97,7 @@ Feature: /webhooks/tickets/{webhook}/invocation resource
   "webhookEvent": "jira:issue_deleted"
 }
     """
-    Then the response status code should be 204
+    Then the response status code should be 200
 
     When I send a GET request to "/api/v2/tickets/~ticket_id~"
     Then the JSON list node "data.fields.~field_id~.value" should not contain "JIR-5"
@@ -185,10 +185,9 @@ Feature: /webhooks/tickets/{webhook}/invocation resource
       "webhookEvent": "jira:issue_deleted"
     }
     """
-    Then the response status code should be 204
+    Then the response status code should be 200
 
     When I send a GET request to "/api/v2/tickets/~ticket_id~"
-    And print last response body
     Then the JSON node "data.fields.~field_id~.value" should be equal to "<field_value_expected>"
     Examples:
       | webhook_title | ticket_subject | field_alias | field_title  | field_value_expected | with_formatter | field_value_default |
@@ -277,7 +276,7 @@ Feature: /webhooks/tickets/{webhook}/invocation resource
   "webhookEvent": "jira:issue_deleted"
 }
     """
-    Then the response status code should be 204
+    Then the response status code should be 200
 
     When I send a GET request to "/api/v2/tickets/~ticket_id~"
     And print last response body

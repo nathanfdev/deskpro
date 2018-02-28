@@ -44,15 +44,13 @@ class Converters
         if ($from->isMethod('POST')) {
             if (0 === strpos($contentType, 'application/x-www-form-urlencoded') || 0 === strpos($contentType, 'multipart/form-data')) {
                 $params = $from->request->all();
-                $content = http_build_query($params, '', '&', PHP_QUERY_RFC1738);
+                return http_build_query($params, '', '&', PHP_QUERY_RFC1738);
             }
+
+            return (string) $from->getContent();
         }
 
-        if (is_null($content)) {
-            $content = $from->getContent();
-        }
-
-        return $content;
+        return null;
     }
 
     /**

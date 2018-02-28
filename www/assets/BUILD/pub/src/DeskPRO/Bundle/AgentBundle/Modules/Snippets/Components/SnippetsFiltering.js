@@ -3,8 +3,7 @@ import React from 'react';
 import classNames from 'classnames';
 import Immutable from 'immutable';
 import Isvg from 'react-inlinesvg';
-import { Input, Checkbox, Radio } from '@deskpro/react-components/lib/Components/Forms';
-import { List, ListElement } from '@deskpro/react-components/lib/Components/Common';
+import { Input, Checkbox, Radio, List, ListElement } from '@deskpro/react-components';
 import agentPhrases from 'DeskPRO/Bundle/AgentBundle/AgentPhrases';
 
 class SnippetsFiltering extends React.Component {

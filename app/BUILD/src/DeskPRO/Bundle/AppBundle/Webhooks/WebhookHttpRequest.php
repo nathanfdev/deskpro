@@ -36,7 +36,7 @@ class WebhookHttpRequest implements WebhookRequest
     /** @var array|string[] */
     private $query;
 
-    /** @var string */
+    /** @var string|null */
     private $content;
 
     /** @var array|string[] */
@@ -44,8 +44,9 @@ class WebhookHttpRequest implements WebhookRequest
 
     /**
      * WebhookHttpRequest constructor.
+     * @param $queryString
      * @param array|string[] $query
-     * @param string $content
+     * @param string|null $content
      * @param array|string[] $headers
      */
     public function __construct($queryString, array $query, $content, array $headers)
@@ -73,7 +74,7 @@ class WebhookHttpRequest implements WebhookRequest
     }
 
     /**
-     * @return string
+     * @return string|null
      */
     public function getContent()
     {

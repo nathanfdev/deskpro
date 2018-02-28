@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2017, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2018, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -28,22 +28,14 @@
 
 namespace DeskPRO\Bundle\AppBundle\Validator\Constraints;
 
-use Symfony\Component\Validator\Constraint;
-
 /**
  * Class PhoneNumber.
  *
  * @Annotation
  * @Target({"CLASS", "PROPERTY", "METHOD", "ANNOTATION"})
  */
-class PhoneNumber extends Constraint
+class PhoneNumber extends AbstractNumber
 {
-    const MISSING_COUNTRY_CODE = 'missing_country_code';
-    const INVALID_PHONE_NUMBER = 'invalid_phone_number_format';
-
-    public $missingCountryCodeMessage = 'Country code is missing.';
-    public $invalidFormatMessage      = 'Invalid phone number format.';
-
     /**
      * {@inheritdoc}
      */

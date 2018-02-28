@@ -1,7 +1,7 @@
 import PropTypes from 'prop-types';
 import React from 'react';
 import classNames from 'classnames';
-import { objectKeyFilter } from '@deskpro/react-components/lib/utils/objects';
+import { objects } from '@deskpro/react-components/dist/utils';
 import { isDescendant } from 'react-sortable-tree';
 
 const propTypes = {
@@ -86,7 +86,7 @@ const NodeRendererDefault = ({
   return (
     <div
       style={{ height: '100%' }}
-      {...objectKeyFilter(otherProps, propTypes)}
+      {...objects.objectKeyFilter(otherProps, propTypes)}
     >
       {toggleChildrenVisibility && node.children && node.children.length > 0 && (
         <div>

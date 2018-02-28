@@ -3,27 +3,35 @@ const webpack = require('webpack');
 
 const config = {
   module: {
-    loaders: [
+    rules: [
       {
         test: /\.css?$/,
-        loaders: ['style', 'raw'],
+        use: [
+          {
+            loader: 'style-loader',
+          },
+          {
+            loader: 'raw-loader',
+          }
+        ],
         include: path.resolve(__dirname, '../../')
       },
       {
         test: /\.(svg|png|jpg|mp3|wav|ogg)$/,
-        loader:  'url'
-      },
-      {
-        test: /\.json$/,
-        loader: 'json-loader'
+        use: [
+          {
+            loader:  'url-loader'
+          }
+        ]
       }
     ]
   },
   resolve: {
-    root: [
+    modules: [
       path.resolve('./src'),
       path.resolve('./src/DeskPRO/Component'),
-      path.resolve('./src/tests')
+      path.resolve('./src/tests'),
+      'node_modules'
     ],
     alias: {
       'jquery.ui':        'jquery-ui',

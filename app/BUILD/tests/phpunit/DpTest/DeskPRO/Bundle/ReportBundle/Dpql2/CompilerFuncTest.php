@@ -37,7 +37,7 @@ class CompilerFuncTest extends AbstractCompilerTest
     {
         $this->assertDpqlQuery(
             <<<'DPQL'
-SELECT ALIAS(tickets.subject, 'Ticket Subject')
+SELECT DPQL_ALIAS(tickets.subject, 'Ticket Subject')
 FROM tickets
 DPQL
             ,
@@ -53,7 +53,7 @@ SQL
     {
         $this->assertDpqlQuery(
             <<<'DPQL'
-SELECT COUNT()
+SELECT DPQL_COUNT()
 FROM tickets
 DPQL
             ,
@@ -69,7 +69,7 @@ SQL
     {
         $this->assertDpqlQuery(
             <<<'DPQL'
-SELECT COUNT_DISTINCT(tickets.subject)
+SELECT DPQL_COUNT_DISTINCT(tickets.subject)
 FROM tickets
 DPQL
             ,
@@ -85,7 +85,7 @@ SQL
     {
         $this->assertDpqlQuery(
             <<<'DPQL'
-SELECT CURDATE()
+SELECT DPQL_CURDATE()
 FROM tickets
 DPQL
             ,
@@ -101,7 +101,7 @@ SQL
     {
         $this->assertDpqlQuery(
             <<<'DPQL'
-SELECT CURTIME()
+SELECT DPQL_CURTIME()
 FROM tickets
 DPQL
             ,
@@ -117,7 +117,7 @@ SQL
     {
         $this->assertDpqlQuery(
             <<<'DPQL'
-SELECT DATE('2017-12-22 12:56:00')
+SELECT DPQL_DATE('2017-12-22 12:56:00')
 FROM tickets
 DPQL
             ,
@@ -133,7 +133,7 @@ SQL
     {
         $this->assertDpqlQuery(
             <<<'DPQL'
-SELECT DATE_OFFSET_GROUP(tickets.date_created, tickets.date_created)
+SELECT DPQL_DATE_OFFSET_GROUP(tickets.date_created, tickets.date_created)
 FROM tickets
 DPQL
             ,
@@ -167,7 +167,7 @@ SQL
     {
         $this->assertDpqlQuery(
             <<<'DPQL'
-SELECT DAYOFWEEK('2017-12-22 12:56:00')
+SELECT DPQL_DAYOFWEEK('2017-12-22 12:56:00')
 FROM tickets
 DPQL
             ,
@@ -183,7 +183,7 @@ SQL
     {
         $this->assertDpqlQuery(
             <<<'DPQL'
-SELECT DAYOFMONTH('2017-12-22 12:56:00')
+SELECT DPQL_DAYOFMONTH('2017-12-22 12:56:00')
 FROM tickets
 DPQL
             ,
@@ -199,7 +199,7 @@ SQL
     {
         $this->assertDpqlQuery(
             <<<'DPQL'
-SELECT DAYOFWEEK('2017-12-22 12:56:00')
+SELECT DPQL_DAYOFWEEK('2017-12-22 12:56:00')
 FROM tickets
 DPQL
             ,
@@ -215,7 +215,7 @@ SQL
     {
         $this->assertDpqlQuery(
             <<<'DPQL'
-SELECT FORMAT(tickets.date_created, 'date')
+SELECT DPQL_FORMAT(tickets.date_created, 'date')
 FROM tickets
 DPQL
             ,
@@ -231,7 +231,7 @@ SQL
     {
         $this->assertDpqlQuery(
             <<<'DPQL'
-SELECT COUNT() AS 'Total Tickets'
+SELECT DPQL_COUNT() AS 'Total Tickets'
 FROM tickets
 GROUP BY tickets.urgency
 WITH ROLLUP
@@ -251,7 +251,7 @@ SQL
     {
         $this->assertDpqlQuery(
             <<<'DPQL'
-SELECT HOUR('2017-12-22 12:56:00')
+SELECT DPQL_HOUR('2017-12-22 12:56:00')
 FROM tickets
 DPQL
             ,
@@ -267,7 +267,7 @@ SQL
     {
         $this->assertDpqlQuery(
             <<<'DPQL'
-SELECT LINK(tickets.id, 'ticket')
+SELECT DPQL_LINK(tickets.id, 'ticket')
 FROM tickets
 DPQL
             ,
@@ -283,11 +283,11 @@ SQL
     {
         $this->assertDpqlQuery(
             <<<'DPQL'
-SELECT COUNT() AS 'Total Tickets'
+SELECT DPQL_COUNT() AS 'Total Tickets'
 FROM tickets
 GROUP BY
-MATRIX(ALIAS(DAYOFMONTH(tickets.date_created), 'Day of Month Created'),
-ALIAS(STACK_GROUP(tickets.department,COALESCE(tickets.department.parent.title,
+DPQL_MATRIX(DPQL_ALIAS(DPQL_DAYOFMONTH(tickets.date_created), 'Day of Month Created'),
+DPQL_ALIAS(DPQL_STACK_GROUP(tickets.department,COALESCE(tickets.department.parent.title,
  tickets.department.title)),'Department'))
 DPQL
             ,
@@ -307,7 +307,7 @@ SQL
     {
         $this->assertDpqlQuery(
             <<<'DPQL'
-SELECT MINUTE('2017-12-22 12:56:00')
+SELECT DPQL_MINUTE('2017-12-22 12:56:00')
 FROM tickets
 DPQL
             ,
@@ -323,7 +323,7 @@ SQL
     {
         $this->assertDpqlQuery(
             <<<'DPQL'
-SELECT MONTH('2017-12-22 12:56:00')
+SELECT DPQL_MONTH('2017-12-22 12:56:00')
 FROM tickets
 DPQL
             ,
@@ -339,7 +339,7 @@ SQL
     {
         $this->assertDpqlQuery(
             <<<'DPQL'
-SELECT MONTH('2017-12-22 12:56:00')
+SELECT DPQL_MONTH('2017-12-22 12:56:00')
 FROM tickets
 DPQL
             ,
@@ -355,7 +355,7 @@ SQL
     {
         $this->assertDpqlQuery(
             <<<'DPQL'
-SELECT NOW()
+SELECT DPQL_NOW()
 FROM tickets
 DPQL
             ,
@@ -371,7 +371,7 @@ SQL
     {
         $this->assertDpqlQuery(
             <<<'DPQL'
-SELECT OBJ_LANG(ticket_object_use_logs.snippet.category.id, 'text_snippet_categories') AS 'Snippet Category'
+SELECT DPQL_OBJ_LANG(ticket_object_use_logs.snippet.category.id, 'text_snippet_categories') AS 'Snippet Category'
 FROM ticket_object_use_logs
 DPQL
         ,
@@ -389,7 +389,7 @@ SQL
     {
         $this->assertDpqlQuery(
                 <<<'DPQL'
-SELECT PERCENT(tickets.total_to_first_reply)
+SELECT DPQL_PERCENT(tickets.total_to_first_reply)
 FROM tickets
 DPQL
                 ,
@@ -406,7 +406,7 @@ SQL
             <<<'DPQL'
 SELECT tickets.ref
 FROM tickets
-GROUP BY PRINT(tickets.subject, tickets.id)
+GROUP BY DPQL_PRINT(tickets.subject, tickets.id)
 DPQL
             ,
             <<<'SQL'
@@ -422,7 +422,7 @@ SQL
     {
         $this->assertDpqlQuery(
             <<<'DPQL'
-SELECT FROM_UNIXTIME(NOW())
+SELECT FROM_UNIXTIME(DPQL_NOW())
 FROM tickets
 DPQL
             ,
@@ -438,9 +438,9 @@ SQL
     {
         $this->assertDpqlQuery(
             <<<'DPQL'
-SELECT COUNT() AS 'Total Tickets'
+SELECT DPQL_COUNT() AS 'Total Tickets'
 FROM tickets
-GROUP BY STACK_GROUP(tickets.department, COALESCE(tickets.department.parent.title, tickets.department.title))
+GROUP BY DPQL_STACK_GROUP(tickets.department, COALESCE(tickets.department.parent.title, tickets.department.title))
 DPQL
             ,
             <<<'SQL'
@@ -459,7 +459,7 @@ SQL
     {
         $this->assertDpqlQuery(
             <<<'DPQL'
-SELECT TOTAL(TIME_LENGTH(ticket_charges.charge_time)) AS 'Time'
+SELECT DPQL_TOTAL(DPQL_TIME_LENGTH(ticket_charges.charge_time)) AS 'Time'
 FROM ticket_charges
 DPQL
             ,
@@ -475,7 +475,7 @@ SQL
     {
         $this->assertDpqlQuery(
             <<<'DPQL'
-SELECT TOTAL(tickets.id)
+SELECT DPQL_TOTAL(tickets.id)
 FROM tickets
 DPQL
             ,
@@ -491,7 +491,7 @@ SQL
     {
         $this->assertDpqlQuery(
             <<<'DPQL'
-SELECT TO_UTC(tickets.date_created)
+SELECT DPQL_TO_UTC(tickets.date_created)
 FROM tickets
 DPQL
             ,
@@ -507,7 +507,7 @@ SQL
     {
         $this->assertDpqlQuery(
             <<<'DPQL'
-SELECT UTC(tickets.date_created)
+SELECT DPQL_UTC(tickets.date_created)
 FROM tickets
 DPQL
             ,
@@ -525,7 +525,7 @@ SQL
             <<<'DPQL'
 SELECT tickets.ref
 FROM tickets
-GROUP BY X(tickets.person_id), Y(tickets.agent_id)
+GROUP BY DPQL_X(tickets.person_id), DPQL_Y(tickets.agent_id)
 DPQL
             ,
             <<<'SQL'
@@ -542,7 +542,7 @@ SQL
     {
         $this->assertDpqlQuery(
             <<<'DPQL'
-SELECT YEAR('2017-12-22 12:56:00')
+SELECT DPQL_YEAR('2017-12-22 12:56:00')
 FROM tickets
 DPQL
             ,
@@ -558,7 +558,7 @@ SQL
     {
         $this->assertDpqlQuery(
             <<<'DPQL'
-SELECT JSON_EXTRACT(tickets.id, '$.id')
+SELECT DPQL_JSON_EXTRACT(tickets.id, '$.id')
 FROM tickets
 DPQL
             ,
