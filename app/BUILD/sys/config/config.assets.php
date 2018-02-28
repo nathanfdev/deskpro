@@ -379,6 +379,7 @@ $CONFIG['agent_misc'] = [
         'javascripts/DeskPRO/Agent/RuleBuilder/DateTerm.js',
         'javascripts/DeskPRO/Agent/RuleBuilder/DateTimeTerm.js',
         'javascripts/DeskPRO/Agent/RuleBuilder/LabelsTerm.js',
+        'javascripts/DeskPRO/Agent/RuleBuilder/TicketFeedbackLinksTerm.js',
         'javascripts/DeskPRO/Agent/RuleBuilder/SelectNewOption.js',
         'javascripts/DeskPRO/Agent/Ticket/ChangeManager.js',
         'javascripts/DeskPRO/Agent/Ticket/Property/Abstract.js',

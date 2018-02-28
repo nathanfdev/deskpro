@@ -1,0 +1,23 @@
+<div class="pane-row with-search-builder add-to-search feedback-links-term-wrap" style="margin-bottom:20px">
+	<table class="layout-table v-middle" width="100%">
+		<tr>
+			<td nowrap="nowrap" width="100" style="width: 100px;"><span class="row-label">{{ phrase('agent.general.linked_feedback_items') }}</span></td>
+			<td style="padding: 0 5px;" width="155">
+        <div class="criteria_list">
+          <div class="builder-type-choice">
+            {# We need 2 upper div to add choice values to summery div in Search panel #}
+            <select name="terms_expanded[feedback_links][op]" class="op with-select2">
+              <option value=""></option>
+              <option value="isset">{{ phrase('agent.general.exists')|capitalize }}</option>
+              <option value="not_isset">{{ phrase('agent.general.not_exists')|capitalize }}</option>
+              <option value="is">{{ phrase('agent.general.is')|capitalize }}</option>
+            </select>
+          </div>
+        </div>
+			</td>
+			<td>
+        <input class="feedback_links_values search-string full-width" type="text" name="terms_expanded[feedback_links][options][feedback_links]" value="" style="display: none;"/>
+			</td>
+		</tr>
+	</table>
+</div>
