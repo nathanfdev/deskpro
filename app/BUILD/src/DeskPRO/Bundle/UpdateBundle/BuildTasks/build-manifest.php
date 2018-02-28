@@ -914,5 +914,5 @@ return [
         'classname'     => 'Application\InstallBundle\Upgrade\Build\Build1519818656',
         'skipPostBuild' => true,
         'isOnlineBuild' => true,
-    ]
+    ],
 ];
