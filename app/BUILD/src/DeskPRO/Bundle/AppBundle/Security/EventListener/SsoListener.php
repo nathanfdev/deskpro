@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2017, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2018, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -39,6 +39,7 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpKernel\Event\GetResponseEvent;
 use Symfony\Component\HttpKernel\KernelEvents;
 use Symfony\Component\Security\Core\Authorization\AuthorizationCheckerInterface;
+use Symfony\Component\Security\Core\Exception\AuthenticationException;
 
 /**
  * Class SsoListener.
@@ -93,8 +94,11 @@ class SsoListener implements EventSubscriberInterface
             return;
         }
 
-        if ($this->authorizationChecker->isGranted('ROLE_USER')) {
-            return;
+        try {
+            if ($this->authorizationChecker->isGranted('ROLE_USER')) {
+                return;
+            }
+        } catch (AuthenticationException $e) {
         }
 
         $pathInfo = $event->getRequest()->getPathInfo();
