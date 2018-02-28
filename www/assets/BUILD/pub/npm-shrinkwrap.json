@@ -8,9 +8,9 @@
       "resolved": "https://registry.npmjs.org/@amcharts/amcharts3-react/-/amcharts3-react-3.0.4.tgz"
     },
     "@deskpro/react-components": {
-      "version": "1.3.5",
-      "from": "@deskpro/react-components@>=1.3.5 <2.0.0",
-      "resolved": "https://registry.npmjs.org/@deskpro/react-components/-/react-components-1.3.5.tgz",
+      "version": "1.3.9",
+      "from": "@deskpro/react-components@1.3.9",
+      "resolved": "https://registry.npmjs.org/@deskpro/react-components/-/react-components-1.3.9.tgz",
       "dependencies": {
         "add-px-to-style": {
           "version": "1.0.0",
@@ -150,19 +150,19 @@
           "resolved": "https://registry.npmjs.org/react-custom-scrollbars/-/react-custom-scrollbars-4.2.1.tgz"
         },
         "react-input-autosize": {
-          "version": "2.1.2",
-          "from": "react-input-autosize@https://registry.npmjs.org/react-input-autosize/-/react-input-autosize-2.1.2.tgz",
-          "resolved": "https://registry.npmjs.org/react-input-autosize/-/react-input-autosize-2.1.2.tgz"
+          "version": "2.2.1",
+          "from": "react-input-autosize@>=2.1.2 <3.0.0",
+          "resolved": "https://registry.npmjs.org/react-input-autosize/-/react-input-autosize-2.2.1.tgz"
         },
         "react-onclickoutside": {
-          "version": "6.7.0",
-          "from": "react-onclickoutside@https://registry.npmjs.org/react-onclickoutside/-/react-onclickoutside-6.7.0.tgz",
-          "resolved": "https://registry.npmjs.org/react-onclickoutside/-/react-onclickoutside-6.7.0.tgz"
+          "version": "6.7.1",
+          "from": "react-onclickoutside@6.7.1",
+          "resolved": "https://registry.npmjs.org/react-onclickoutside/-/react-onclickoutside-6.7.1.tgz"
         },
         "react-select": {
-          "version": "1.1.0",
-          "from": "react-select@https://registry.npmjs.org/react-select/-/react-select-1.1.0.tgz",
-          "resolved": "https://registry.npmjs.org/react-select/-/react-select-1.1.0.tgz"
+          "version": "1.2.1",
+          "from": "react-select@1.2.1",
+          "resolved": "https://registry.npmjs.org/react-select/-/react-select-1.2.1.tgz"
         },
         "react-svg-inline": {
           "version": "2.0.1",

@@ -26,34 +26,22 @@
  * ~ Thanks, Everyone at Team DeskPRO
  */
 
-namespace DeskPRO\Bundle\AppBundle\ObjectAlias;
+namespace Application\InstallBundle\Upgrade\Build;
 
-class DefaultIdResolvingStrategy implements AliasResolvingStrategy
+class Build1519315182 extends AbstractBuild implements BlockingBuildInterface
 {
-    /**
-     * @var ObjectIdResolver
-     */
-    private $objectIdResolver;
-
-    /**
-     * @param ObjectIdResolver $finder
-     */
-    public function __construct(ObjectIdResolver $finder)
+    public function addNewTables()
     {
-        $this->objectIdResolver = $finder;
     }
 
-    /**
-     * @param string|$alias
-     * @return string|null
-     */
-    public function resolve($alias)
+    public function runAlters()
     {
-        $name = Converters::toNameFromString($alias);
-        if (empty($name) || !QualifiedName::isValidIdentifier($name)) {
-            return null;
-        }
+        $this->execDbQuery('default', 'DROP INDEX unique_alias ON object_aliases');
+        $this->execDbQuery('default', 'CREATE UNIQUE INDEX unique_alias ON object_aliases (alias)');
+    }
 
-        return $this->objectIdResolver->resolveAlias($name);
+    public function run()
+    {
+        $this->execDbQuery('default', "UPDATE object_aliases SET alias = CONCAT_WS(':', 'app', app_instance_id, alias) WHERE app_instance_id IS NOT NULL ");
     }
 }

@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2017, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2018, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -32,9 +32,11 @@
 
 namespace Application\LegacyApiBundle;
 
+use Application\DeskPRO\CustomFields\Form\FormHelper;
 use Application\LegacyApiBundle\DependencyInjection\AccessDecisionPass;
 use Symfony\Component\Console\Application;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
+use Symfony\Component\DependencyInjection\Reference;
 
 class LegacyApiBundle extends \Symfony\Component\HttpKernel\Bundle\Bundle
 {
@@ -45,6 +47,11 @@ class LegacyApiBundle extends \Symfony\Component\HttpKernel\Bundle\Bundle
     public function build(ContainerBuilder $container)
     {
         parent::build($container);
+
+        $container->register(FormHelper::class, FormHelper::class)
+            ->addArgument(new Reference('doctrine.orm.entity_manager'))
+            ->addArgument(new Reference('form.factory'))
+        ;
 
         $container->registerExtension(new \Application\LegacyApiBundle\DependencyInjection\CoreExtension());
         $container->addCompilerPass(new AccessDecisionPass());

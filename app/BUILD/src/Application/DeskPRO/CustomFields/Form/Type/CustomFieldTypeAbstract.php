@@ -33,7 +33,7 @@
 namespace Application\DeskPRO\CustomFields\Form\Type;
 
 use Application\DeskPRO\CustomFields\Form\StringObject;
-use Application\DeskPRO\CustomFields\Form\StringObjectType;
+use Application\DeskPRO\CustomFields\Form\AliasType;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormBuilderInterface;
 
@@ -48,7 +48,7 @@ abstract class CustomFieldTypeAbstract extends AbstractType
         $builder->add('title', 'text', ['required' => true]);
         // use own string type instead of symfony's text type to avoid automatic conversion of empty string or null to null
         // this means we get to treat the cases where alias is not set and is set to empty { alias: "" }
-        $builder->add('alias', StringObjectType::class, [
+        $builder->add('alias', AliasType::class, [
             'required' => false,
             'data_class' => StringObject::class,
             'null_handling_strategy' => 'null'
