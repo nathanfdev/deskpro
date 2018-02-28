@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2017, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2018, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -283,15 +283,17 @@ abstract class AbstractController extends \Application\DeskPRO\HttpKernel\Contro
     /**
      * Returns a RedirectResponse if SSO says it needs to redirect.
      *
-     * @param bool                  $has_just_logged_out
+     * @param bool                  $hasJustLoggedOut
      * @param AuthInterfaceSettings $authInterfaceSettings
      *
      * @return \Symfony\Component\HttpFoundation\RedirectResponse
      */
-    protected function checkAuthSystemForResponse(
-        AuthInterfaceSettings $authInterfaceSettings, $has_just_logged_out = false
-    ) {
-        if ($has_just_logged_out) {
+    protected function checkAuthSystemForResponse(AuthInterfaceSettings $authInterfaceSettings, $hasJustLoggedOut = false)
+    {
+        if ($this->request->get('disable_sso')) {
+            return;
+        }
+        if ($hasJustLoggedOut) {
             if ($url = $authInterfaceSettings->getLogoutRedirectUrl()) {
                 return $this->redirect($url);
             }
