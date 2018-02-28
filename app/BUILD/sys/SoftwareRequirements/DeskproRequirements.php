@@ -28,6 +28,8 @@
 
 namespace DpSys\SoftwareRequirements;
 
+use function foo\func;
+
 class DeskproRequirements extends RequirementCollection
 {
     const REQUIRED_PHP_VERSION = '5.5.0';
@@ -377,6 +379,12 @@ class DeskproRequirements extends RequirementCollection
                 );
             }
         }
+
+        $this->addRecommendation(
+            function_exists('mcrypt_create_iv') || function_exists('openssl_cipher_iv_length'),
+            'it is recommended to install openssl or mcrypt extension',
+            'Install and enable the <strong>mcrypt</strong> or <strong>openssl</strong> extension.'
+        );
 
         $check_fn = [
             'escapeshellarg',
