@@ -233,6 +233,6 @@
     "test:e2e:setup": "node selenium-download.js",
     "flow": "flow; test $? -eq 0 -o $? -eq 2",
     "webpack": "rm -rf ./build && npm run-script gulp-refresh-reducers && node bin/refresh-widget-loader && webpack --config webpack.prod.config.js --progress --profile --colors --display-error-details",
-    "license-checker": "license-checker --json"
+    "license-checker": "license-checker --production --json"
   }
 }

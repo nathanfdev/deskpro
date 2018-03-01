@@ -19,3 +19,12 @@ npm run --silent license-checker \
     | sed 's/Apache\*/MIT/' \
     > $TARGET_DIR/npm-lic-info.json
 echo ".. done"
+
+echo "Generating license list from legacy npm"
+cd $DIR_ROOT/www/assets/BUILD/web
+npm run --silent license-checker \
+    | sed 's/"\/.*\/www\/assets\//"\/www\/assets\//' \
+    | sed 's/MIT\*/MIT/' \
+    | sed 's/Apache\*/MIT/' \
+    > $TARGET_DIR/legacy-npm-lic-info.json
+echo ".. done"

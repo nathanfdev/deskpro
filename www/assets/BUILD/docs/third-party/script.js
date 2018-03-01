@@ -6,13 +6,15 @@ function run() {
     $.getJSON("bower-lic-info.json"),
     $.getJSON("composer-lic-info.json"),
     $.getJSON("custom-lic-info.json"),
-    $.getJSON("npm-lic-info.json")
-  ).done(function(bowerInfoRes, composerInfoRes, customInfoRes, npmInfoRes) {
+    $.getJSON("npm-lic-info.json"),
+    $.getJSON("legacy-npm-lic-info.json")
+  ).done(function(bowerInfoRes, composerInfoRes, customInfoRes, npmInfoRes, legacyNpmInfoRes) {
 
     var bowerInfo = bowerInfoRes[0],
       composerInfo = composerInfoRes[0],
       customInfo = customInfoRes[0],
-      npmInfo = npmInfoRes[0];
+      npmInfo = npmInfoRes[0]
+      legacyNpmInfo = legacyNpmInfoRes[0];
 
     customInfo.php.forEach(function(item) {
       if (typeof item.license === 'string') {
@@ -105,6 +107,47 @@ function run() {
         link: item.link || null,
         license: item.license,
         managedVia: "npm"
+      });
+    });
+
+    Object.keys(legacyNpmInfo).forEach(function(rawName) {
+      var item = legacyNpmInfo[rawName];
+
+      if (item.private) {
+        return;
+      }
+
+      var name = rawName.split('@');
+      name.pop();
+      name = name.join('@');
+      item.name = name;
+
+      if (item.url) {
+        item.link = item.url;
+      } else if (item.repository) {
+        item.link = item.repository;
+      } else {
+        item.link = 'https://www.npmjs.com/package/' + name;
+      }
+
+      item.license = item.licenses || [];
+      if (typeof item.license === 'string') {
+        item.license = [item.license];
+      }
+
+      item.license = item.license.map(function(l) {
+        if (l.indexOf('Custom: ') !== -1) {
+          return 'Custom';
+        } else {
+          return l;
+        }
+      });
+
+      licData.push({
+        name: item.name,
+        link: item.link || null,
+        license: item.license,
+        managedVia: "npm-legacy"
       });
     });
 
