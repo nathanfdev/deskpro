@@ -209,6 +209,18 @@
       "description": "icons"
     },
     {
+      "name": "font-lato",
+      "link": "https://fonts.google.com/specimen/Lato",
+      "license": "OFL",
+      "description": "font"
+    },
+    {
+      "name": "font-opensans",
+      "link": "https://fonts.google.com/specimen/Open+Sans",
+      "license": "Apache 2.0",
+      "description": "font"
+    },
+    {
       "name": "jqTree",
       "link": "https://mbraak.github.io/jqTree/",
       "license": "Apache 2.0",
