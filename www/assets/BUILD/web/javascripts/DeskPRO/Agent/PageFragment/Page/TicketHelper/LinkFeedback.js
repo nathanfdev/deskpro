@@ -55,7 +55,6 @@ DeskPRO.Agent.PageFragment.Page.TicketHelper.LinkFeedback = new Orb.Class({
 
 		wrapper.on('click', '.save-trigger', this._doSave.bind(this));
     wrapper.find('.feedback-finder').bind('feedbacksearchboxclick', function(ev, feedbackId, title, sb) {
-		//$('.feedback-search-box').on('click', 'ul.results-list li', function(){
 			var footerEl = self.overlay.getWrapper().find('.overlay-footer').addClass('loading');
 
 			var isSubscribeOwner = wrapper.find("#is_subscribe_owner").is(":checked");
@@ -76,14 +75,6 @@ DeskPRO.Agent.PageFragment.Page.TicketHelper.LinkFeedback = new Orb.Class({
 					},
 					success: function(data) {
 						self.overlay.close();
-            // remove old tabs, theyre outdated
-            Array.each(DeskPRO_Window.getTabWatcher().findTabType(self.options.tabType), function(tab) {
-              var id = tab.page.getMetaData(self.options.metaIdName);
-              if (id == data.old_id || id == data.id) {
-                DeskPRO_Window.TabBar.removeTabById(tab.id);
-              }
-            });
-
             DeskPRO_Window.loadPage(self.options.reloadPageUrl, {ignoreExist:true});
             self.page.closeSelf();
 					},

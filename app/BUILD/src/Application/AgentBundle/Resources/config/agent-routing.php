@@ -2083,8 +2083,22 @@ $collection->create('agent_feedback_save', [
     'requirements' => ['news_id' => '\\d+'],
 ]);
 
+$collection->create('agent_feedback_subscribe_person', [
+    'path'         => '/feedback/{feedback_id}/ajax-subscribe-person',
+    'controller'   => 'AgentBundle:Feedback:ajaxSubscribePerson',
+    'requirements' => ['feedback_id' => '\\d+'],
+    'methods'      => ['POST'],
+]);
+
+$collection->create('agent_feedback_unsubscribe_person', [
+    'path'         => '/feedback/{feedback_id}/ajax-unsubscribe-person',
+    'controller'   => 'AgentBundle:Feedback:ajaxUnsubscribePerson',
+    'requirements' => ['feedback_id' => '\\d+'],
+    'methods'      => ['POST'],
+]);
+
 $collection->create('agent_feedback_ajax_labels_save', [
-    'path'         => '/feedback/view/{feedback_id}/ajax-save-labels',
+    'path'         => '/feedback/{feedback_id}/ajax-save-labels',
     'controller'   => 'AgentBundle:Feedback:ajaxSaveLabels',
     'requirements' => ['news_id' => '\\d+'],
 ]);

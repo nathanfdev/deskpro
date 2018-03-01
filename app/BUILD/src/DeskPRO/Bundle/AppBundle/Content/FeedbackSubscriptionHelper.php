@@ -130,4 +130,23 @@ class FeedbackSubscriptionHelper
 
         $this->em->flush();
     }
+
+    /**
+     * @param Feedback $feedback
+     * @param Person   $person
+     */
+    public function unsubscribePerson(Feedback $feedback, Person $person)
+    {
+        $subscriptions = $this->em->getRepository(FeedbackSubscription::class)
+            ->findBy([
+                'feedback' => $feedback,
+                'person'   => $person,
+            ]);
+
+        foreach ($subscriptions as $subscription) {
+            $this->em->remove($subscription);
+        }
+
+        $this->em->flush();
+    }
 }

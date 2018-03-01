@@ -42,6 +42,7 @@ use Application\DeskPRO\Entity\Feedback;
 use Application\DeskPRO\Entity\FeedbackCategory;
 use Application\DeskPRO\Entity\FeedbackComment;
 use Application\DeskPRO\Entity\FeedbackStatusCategory;
+use Application\DeskPRO\Entity\Person;
 use Application\DeskPRO\Entity\PersonPref;
 use Application\DeskPRO\Entity\SearchLog;
 use Application\DeskPRO\Entity\SearchStickyResult;
@@ -240,6 +241,12 @@ class FeedbackController extends AbstractController
         $feedbackRepo        = $this->em->getRepository(TicketFeedbackLink::class);
         $ticketFeedbackLinks = $feedbackRepo->findByFeedback($feedback);
 
+        //@TODO: select only needed data to display persons
+        $subscribedIds = $this->em->getRepository('DeskPRO:FeedbackSubscription')->getSubscribedPersonIds($feedback);
+        // limit to 250
+        $subscribedIds     = array_slice($subscribedIds, 0, 250);
+        $subscribedPersons = $this->em->getRepository('DeskPRO:Person')->findById($subscribedIds);
+
         $perms = [
             'can_edit'   => $publishChecker->canEdit($feedback),
             'can_delete' => $publishChecker->canDelete($feedback),
@@ -262,6 +269,7 @@ class FeedbackController extends AbstractController
                 'active_status_cats'    => $activeStatusCategories,
                 'closed_status_cats'    => $closedStatusCategories,
                 'ticket_feedback_links' => $ticketFeedbackLinks,
+                'subscribed_persons'    => $subscribedPersons,
                 'perms'                 => $perms,
             ]
         );
@@ -632,6 +640,48 @@ class FeedbackController extends AbstractController
         }
 
         return $this->createJsonResponse($data);
+    }
+
+    /**
+     * @param $feedback_id
+     *
+     * @return Response
+     */
+    public function ajaxSubscribePersonAction($feedback_id)
+    {
+        $feedback = $this->getFeedback($feedback_id);
+
+        if (!$person = $this->em->find(Person::class, $this->in->getUInt('person_id'))) {
+            throw $this->createNotFoundException(sprintf(
+                'There is no person with ID %s',
+                $this->in->getUInt('person_id')
+            ));
+        }
+
+        $this->get('feedback_subscription_helper')->subscribePersons($feedback, [$person]);
+
+        return $this->createJsonResponse(['success' => 1]);
+    }
+
+    /**
+     * @param $feedback_id
+     *
+     * @return Response
+     */
+    public function ajaxUnsubscribePersonAction($feedback_id)
+    {
+        $feedback = $this->getFeedback($feedback_id);
+
+        if (!$person = $this->em->find(Person::class, $this->in->getUInt('person_id'))) {
+            throw $this->createNotFoundException(sprintf(
+                'There is no person with ID %s',
+                $this->in->getUInt('person_id')
+            ));
+        }
+
+        $this->get('feedback_subscription_helper')->unsubscribePerson($feedback, $person);
+
+        return $this->createJsonResponse(['success' => 1]);
     }
 
     //###########################################################################
@@ -1155,9 +1205,9 @@ class FeedbackController extends AbstractController
      */
     public function newFeedbackAction()
     {
-        $ticket      = null;
-        $message     = null;
-        $attachments = [];
+        $ticket          = null;
+        $message         = null;
+        $attachments     = [];
         $feedback_person = $this->person;
 
         if ($this->in->getUInt('ticket_id')) {
@@ -1280,9 +1330,9 @@ class FeedbackController extends AbstractController
 
             return $this->createJsonResponse(
                 [
-                    'success'     => true,
-                    'feedback_id' => $feedback['id'],
-                    'feedback_url' => $this->get('object_router')->getPortalUrl($feedback)
+                    'success'      => true,
+                    'feedback_id'  => $feedback['id'],
+                    'feedback_url' => $this->get('object_router')->getPortalUrl($feedback),
                 ]
             );
         } else {

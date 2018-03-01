@@ -89,6 +89,13 @@ pageMeta.baseId = '{{ baseId }}';
                           data-count="{{ ticket_feedback_links|length }}">{{ ticket_feedback_links|length }}</span>)
                     </li>
                 {% endif %}
+                  <li data-tab-for="#{{ baseId }}_subscribed_persons_wrap"><i
+                        class="icon-link"></i> {{ phrase('agent.feedback.subscribed_users') }}
+                        {% if subscribed_persons|length %}
+                          (<span id="{{ baseId }}_subscribed_persons_count"
+                                 data-count="{{ subscribed_persons|length }}">{{ subscribed_persons|length }}</span>)
+                        {% endif %}
+                  </li>
             </ul>
         </nav>
     </header>
@@ -162,6 +169,9 @@ pageMeta.baseId = '{{ baseId }}';
             {% include 'AgentBundle:Feedback:linked-tickets.html.twig' %}
         </article>
       {% endif %}
+      <article id="{{ baseId }}_subscribed_persons_wrap">
+          {% include 'AgentBundle:Feedback:view-subscribed-persons.html.twig' %}
+      </article>
     </section>
   </div>
 </div>
