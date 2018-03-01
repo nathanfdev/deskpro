@@ -28,8 +28,6 @@
 
 namespace DpSys\SoftwareRequirements;
 
-use function foo\func;
-
 class DeskproRequirements extends RequirementCollection
 {
     const REQUIRED_PHP_VERSION = '5.5.0';
