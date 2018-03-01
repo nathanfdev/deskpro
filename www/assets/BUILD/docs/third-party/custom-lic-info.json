@@ -167,7 +167,7 @@
     {
       "name": "amcharts",
       "link": "https://www.amcharts.com/",
-      "license": "OEM",
+      "license": "Commercial",
       "licenseLink": "http://www.amcharts.com/licenses/javascript-charts/20130924/oem/",
       "description": "JS compressor"
     },
@@ -204,7 +204,7 @@
     {
       "name": "flaticon",
       "link": "https://www.flaticon.com/",
-      "license": "OEM",
+      "license": "Commercial",
       "licenseLink": "https://profile.flaticon.com/license/premium",
       "description": "icons"
     },
@@ -215,10 +215,11 @@
       "description": "font"
     },
     {
-      "name": "font-opensans",
+      "name": "froala-editor",
       "link": "https://fonts.google.com/specimen/Open+Sans",
-      "license": "Apache 2.0",
-      "description": "font"
+      "license": "Commercial",
+      "licenseLink": "https://www.froala.com/wysiwyg-editor/terms",
+      "description": "rich text editor"
     },
     {
       "name": "jqTree",
@@ -271,7 +272,7 @@
     {
       "name": "redactor",
       "link": "https://imperavi.com/redactor/",
-      "license": "OEM",
+      "license": "Commercial",
       "licenseLink": "https://imperavi.com/redactor/license/",
       "description": "redactor"
     },
