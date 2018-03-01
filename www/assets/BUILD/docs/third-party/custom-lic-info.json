@@ -196,9 +196,15 @@
       "description": "eonasdan-bootstrap-datetimepicker"
     },
     {
-      "name": "html5shiv.min.js",
+      "name": "error-stack-parser",
+      "link": "https://github.com/stacktracejs/error-stack-parser",
+      "license": "MIT",
+      "description": ""
+    },
+    {
+      "name": "html5shiv",
       "link": "https://github.com/aFarkas/html5shiv",
-      "license": ["MIT", "GPL2"],
+      "license": ["MIT"],
       "description": "html5shiv.min.js"
     },
     {
@@ -216,7 +222,7 @@
     },
     {
       "name": "froala-editor",
-      "link": "https://fonts.google.com/specimen/Open+Sans",
+      "link": "https://www.froala.com/",
       "license": "Commercial",
       "licenseLink": "https://www.froala.com/wysiwyg-editor/terms",
       "description": "rich text editor"
@@ -275,6 +281,18 @@
       "license": "Commercial",
       "licenseLink": "https://imperavi.com/redactor/license/",
       "description": "redactor"
+    },
+    {
+      "name": "ripemd160",
+      "link": "https://github.com/crypto-browserify/ripemd160",
+      "license": "MIT",
+      "description": ""
+    },
+    {
+      "name": "scriptjs",
+      "link": "https://github.com/ded/script.js",
+      "license": "NONE",
+      "description": ""
     },
     {
       "name": "select2",

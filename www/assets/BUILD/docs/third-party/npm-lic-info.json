@@ -1,11 +1,11 @@
 {
   "@amcharts/amcharts3-react@3.0.4": {
-    "licenses": "MIT",
+    "licenses": "Apache",
     "repository": "https://github.com/amcharts/amcharts3-react",
     "path": "/www/assets/BUILD/pub/node_modules/@amcharts/amcharts3-react",
     "licenseFile": "/www/assets/BUILD/pub/node_modules/@amcharts/amcharts3-react/LICENSE"
   },
-  "@deskpro/react-components@1.3.9": {
+  "@deskpro/react-components@1.3.10": {
     "licenses": "BSD-3-Clause",
     "repository": "https://github.com/deskpro/react-components",
     "publisher": "DeskPRO",
@@ -767,7 +767,7 @@
     "licenseFile": "/www/assets/BUILD/pub/node_modules/delegate/readme.md"
   },
   "derivable@1.0.0-beta11": {
-    "licenses": "MIT",
+    "licenses": "Apache",
     "repository": "https://github.com/ds300/derivablejs",
     "publisher": "David Sheldrick",
     "path": "/www/assets/BUILD/pub/node_modules/derivable",
@@ -852,7 +852,7 @@
     "licenseFile": "/www/assets/BUILD/pub/node_modules/domain-browser/LICENSE.md"
   },
   "domelementtype@1.1.3": {
-    "licenses": "BSD*",
+    "licenses": "MIT",
     "repository": "https://github.com/FB55/domelementtype",
     "publisher": "Felix Boehm",
     "email": "me@feedic.com",
@@ -860,7 +860,7 @@
     "licenseFile": "/www/assets/BUILD/pub/node_modules/dom-serializer/node_modules/domelementtype/LICENSE"
   },
   "domelementtype@1.3.0": {
-    "licenses": "BSD*",
+    "licenses": "MIT",
     "repository": "https://github.com/FB55/domelementtype",
     "publisher": "Felix Boehm",
     "email": "me@feedic.com",
@@ -934,7 +934,7 @@
     "licenseFile": "/www/assets/BUILD/pub/node_modules/engine.io-parser/LICENSE"
   },
   "entities@1.1.1": {
-    "licenses": "BSD*",
+    "licenses": "MIT",
     "repository": "https://github.com/fb55/node-entities",
     "publisher": "Felix Boehm",
     "email": "me@feedic.com",
@@ -1212,7 +1212,7 @@
     "licenseFile": "/www/assets/BUILD/pub/node_modules/@deskpro/react-components/node_modules/font-awesome/README.md"
   },
   "foreachasync@3.0.0": {
-    "licenses": "MIT",
+    "licenses": "Apache",
     "repository": "https://github.com/FuturesJS/forEachAsync",
     "publisher": "AJ ONeal",
     "email": "coolaj86@gmail.com",
@@ -2597,8 +2597,8 @@
   "react-dom@16.2.0": {
     "licenses": "MIT",
     "repository": "https://github.com/facebook/react",
-    "path": "/www/assets/BUILD/pub/node_modules/react-dom",
-    "licenseFile": "/www/assets/BUILD/pub/node_modules/react-dom/LICENSE"
+    "path": "/www/assets/BUILD/pub/node_modules/@deskpro/react-components/node_modules/react-dom",
+    "licenseFile": "/www/assets/BUILD/pub/node_modules/@deskpro/react-components/node_modules/react-dom/LICENSE"
   },
   "react-emojione@5.0.0": {
     "licenses": "MIT",
@@ -2811,8 +2811,8 @@
   "react@16.2.0": {
     "licenses": "MIT",
     "repository": "https://github.com/facebook/react",
-    "path": "/www/assets/BUILD/pub/node_modules/react",
-    "licenseFile": "/www/assets/BUILD/pub/node_modules/react/LICENSE"
+    "path": "/www/assets/BUILD/pub/node_modules/@deskpro/react-components/node_modules/react",
+    "licenseFile": "/www/assets/BUILD/pub/node_modules/@deskpro/react-components/node_modules/react/LICENSE"
   },
   "readable-stream@1.1.14": {
     "licenses": "MIT",

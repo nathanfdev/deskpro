@@ -151,10 +151,6 @@ function run() {
       });
     });
 
-    licData.sort(function(a, b) {
-      return a.name.replace(/^@/, '').localeCompare(b.name.replace(/^@/, ''));
-    });
-
     var haveNames = [];
     licData = licData.filter(function(i) {
       if (haveNames.indexOf(i.name) !== -1) {
@@ -162,6 +158,10 @@ function run() {
       }
       haveNames.push(i.name);
       return true;
+    });
+
+    licData.sort(function(a, b) {
+      return a.name.replace(/^@/, '').localeCompare(b.name.replace(/^@/, ''));
     });
 
     var source   = document.getElementById('licListTpl').innerHTML;

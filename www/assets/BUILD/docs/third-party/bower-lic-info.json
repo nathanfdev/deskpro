@@ -105,8 +105,8 @@
     {
       "name": "animate.css",
       "link": "https://github.com/daneden/animate.css",
-      "license": "",
-      "description": "MIT"
+      "license": "MIT",
+      "description": ""
     },
     {
       "name": "jquery",
