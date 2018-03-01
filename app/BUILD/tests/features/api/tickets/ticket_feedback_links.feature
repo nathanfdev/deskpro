@@ -1,14 +1,9 @@
+@new
 Feature: /tickets/{id}/feedback_links endpoint
   To CRUD DeskPRO ticket feedback links
-  As an API user
-  I want an API endpoint
 
   Background:
     Given I'm authenticated as admin
-    And the setting "user.feedback_subscriptions" is set to 1
-    And no TicketFeedbackLink records exist
-    And no FeedbackSubscription records exist
-    And I set permission "feedback.use" = 1 for "registered" usergroup
     And only the following Ticket records exist:
       | #  | Subject  | Status         | Person   |
       | t1 | Ticket 1 | awaiting_agent | {admin}  |

@@ -318,7 +318,7 @@ class ObjectsManager
             'Download'                  => [Factory\SimpleFactory::class, 'create', Download::class],
             'DownloadCategory'          => [Factory\SimpleFactory::class, 'create', DownloadCategory::class],
             'Feedback'                  => [Factory\CommonFactories::class, 'feedback'],
-            'FeedbackSubscription'      => [Factory\CommonFactories::class, 'create', FeedbackSubscription::class],
+            'FeedbackSubscription'      => [Factory\SimpleFactory::class, 'create', FeedbackSubscription::class],
             'FeedbackCategory'          => [Factory\SimpleFactory::class, 'create', FeedbackCategory::class],
             'FeedbackStatusCategory'    => [Factory\SimpleFactory::class, 'create', FeedbackStatusCategory::class],
             'FeedbackComment'           => [Factory\SimpleFactory::class, 'create', FeedbackComment::class],
