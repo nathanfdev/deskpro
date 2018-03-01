@@ -17,9 +17,13 @@ export class LoginDropdownWidget extends PageWidget {
 
   init = () => {
     this.username = window.document.getElementById('login-form-username');
-    this.usernameLabel = this.username.parentElement;
+    if (this.username) {
+      this.usernameLabel = this.username.parentElement;
+    }
     this.password = window.document.getElementById('login-form-password');
-    this.passwordLabel = this.password.parentElement;
+    if (this.password) {
+      this.passwordLabel = this.password.parentElement;
+    }
     this.rememberMe = window.document.getElementById('login-form-remember-me');
     this.failedReason = window.document.getElementById('login-form-failed-reason');
     this.resetPassword = window.document.getElementById('login-form-reset-password');
@@ -82,7 +86,6 @@ export class LoginDropdownWidget extends PageWidget {
     // we will have some input from the response on the usersources
     const usersources = window.DESKPRO_USERSOURCES;
 
-    console.log(usersources);
     this.usersources.innerHtml = '';
     if (usersources.length > 0) {
       map(usersources, (us) => {
@@ -100,9 +103,16 @@ export class LoginDropdownWidget extends PageWidget {
     }
 
 
-    window.document.getElementById('login-sidebar').addEventListener('submit', this.onSubmit);
-    this.username.addEventListener('blur', this.onEmailBlur);
-    this.username.addEventListener('change', this.onResetFailed);
-    this.password.addEventListener('change', this.onResetFailed);
+    const loginSiderbar = window.document.getElementById('login-sidebar');
+    if (loginSiderbar) {
+      loginSiderbar.addEventListener('submit', this.onSubmit);
+    }
+    if (this.username) {
+      this.username.addEventListener('blur', this.onEmailBlur);
+      this.username.addEventListener('change', this.onResetFailed);
+    }
+    if (this.password) {
+      this.password.addEventListener('change', this.onResetFailed);
+    }
   }
 }
