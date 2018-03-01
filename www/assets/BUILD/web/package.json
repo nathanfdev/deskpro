@@ -2,6 +2,7 @@
   "name": "DeskPRO",
   "description": "Client-side scripts for DeskPRO",
   "version": "1.0.0",
+  "private": true,
   "dependencies": {
     "Select2": "^3.5.7",
     "angular-ui-select2": "0.0.5",
