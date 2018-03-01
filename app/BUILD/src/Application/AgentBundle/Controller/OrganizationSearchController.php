@@ -316,9 +316,11 @@ class OrganizationSearchController extends AbstractController
             $name = $org->getName();
             if ($org->getParent()) {
                 $parent = $org->getParent();
-                while ($parent) {
+                $i      = 0;
+                while ($parent && $i < 3) {
                     $name   = $parent->getName().' > '.$name;
                     $parent = $parent->getParent();
+                    ++$i;
                 }
             }
             $json['results'][] = [
