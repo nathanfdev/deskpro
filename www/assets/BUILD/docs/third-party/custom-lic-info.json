@@ -1,4 +1,30 @@
 {
+  "overrides": {
+    "@amcharts/amcharts3-react": { "license": ["Apache-2.0"] },
+    "arcturial/clickatell": { "license": ["MIT"] },
+    "Base64": { "license": ["Apache-2.0"] },
+    "derivable": { "license": ["Apache-2.0"] },
+    "deskpro/deskpro-api-php": { "license": ["Apache-2.0"] },
+    "domelementtype": { "license": ["BSD-2-Clause"] },
+    "entities": { "license": ["BSD-2-Clause"] },
+    "foreachasync": { "license": ["Apache-2.0"] },
+    "duplexer2": { "license": ["BSD-3-Clause"] },
+    "esrecurse": { "license": ["BSD-2-Clause"] },
+    "estraverse": { "license": ["BSD-2-Clause"] },
+    "esutils": { "license": ["BSD-2-Clause"] },
+    "hoist-non-react-statics": { "license": ["BSD-3-Clause"] },
+    "jkuchar/bigfiletools": { "license": ["BSD-3-Clause"] },
+    "js-base64": { "license": ["BSD-3-Clause"] },
+    "jquery-resize": { "license": ["MIT", "GPL-2.0-only"] },
+    "json-schema": { "license": ["BSD-3-Clause"] },
+    "languages": { "license": ["GPL-2.0-or-later"] },
+    "phpmd/phpmd": { "license": ["BSD-3-Clause"] },
+    "ng-table": { "license": ["BSD-3-Clause"] },
+    "requirejs": { "license": ["MIT"] },
+    "Select2": { "license": ["MIT"] },
+    "ua-parser-js": { "license": ["MIT"] },
+    "webonyx/graphql-php": { "license": ["MIT"] }
+  },
   "php": [
     {
       "name": "cssmin",
@@ -9,79 +35,79 @@
     {
       "name": "ezcomponents",
       "link": "http://ezcomponents.org/",
-      "license": "BSD",
+      "license": "BSD-3-Clause",
       "description": "Email decoding"
     },
     {
       "name": "facebook/php-sdk",
       "link": "https://github.com/facebookarchive/facebook-php-sdk",
-      "license": "Apache 2.0",
+      "license": "Apache-2.0",
       "description": "Facebook auth"
     },
     {
       "name": "geoip-api",
       "link": "https://github.com/maxmind/geoip-api-php",
-      "license": "GPL 2.1",
+      "license": "LGPL-2.1-only",
       "description": "IP geolocation API"
     },
     {
       "name": "geoip-db",
       "link": "https://dev.maxmind.com/geoip/geoip2/geolite2/",
-      "license": "CC BY-SA 4.0",
+      "license": "CC-BY-SA-4.0",
       "description": "IP geolocation database"
     },
     {
       "name": "htmlpurifier",
       "link": "http://htmlpurifier.org/",
-      "license": "LGPL 2.0",
+      "license": "LGPL-2.1-or-later",
       "description": "HTML sanitizer"
     },
     {
       "name": "libphonenumber",
       "link": "https://github.com/giggsey/libphonenumber-for-php",
-      "license": "Apache 2.0",
+      "license": "Apache-2.0",
       "description": "i18n phone number validation and parsing"
     },
     {
       "name": "metadata",
       "link": "",
-      "license": "Apache 2.0",
+      "license": "Apache-2.0",
       "description": ""
     },
     {
       "name": "pclzip",
       "link": "http://www.phpconcept.net/pclzip/",
-      "license": "LGPL 2.1",
+      "license": "LGPL-2.1-only",
       "description": "PHP implementation of PKZIP"
     },
     {
       "name": "pear",
       "link": "http://pear.php.net/package/PEAR",
-      "license": "BSD",
+      "license": "BSD-2-Clause",
       "description": "Base PEAR package required for other PEAR packages"
     },
     {
       "name": "pear/Archive_Tar",
       "link": "http://pear.php.net/package/Archive_Tar",
-      "license": "BSD",
+      "license": "BSD-2-Clause",
       "description": "For working with Tar archived"
     },
     {
       "name": "pear/Console_Getopt",
       "link": "http://pear.php.net/package/Console_Getopt",
-      "license": "PHP 3.0",
+      "license": "PHP-3.0",
       "description": "For working with CLI options"
     },
     {
       "name": "pear/File_IMC",
       "link": "http://pear.php.net/package/File_IMC",
-      "license": "BSD",
+      "license": "BSD-2-Clause",
       "description": "For working with the vCard file format"
     },
     {
       "name": "pear/XML_Util",
       "link": "http://pear.php.net/package/XML_Util",
-      "license": "BSD",
+      "license": "BSD-2-Clause",
       "description": "For working with XML"
     },
     {
@@ -99,7 +125,7 @@
     {
       "name": "php-utf8",
       "link": "http://phputf8.cvs.sourceforge.net/",
-      "license": "LGPL 2.1",
+      "license": "LGPL-2.1-only",
       "description": "UTF8 string utils"
     },
     {
@@ -111,19 +137,19 @@
     {
       "name": "phpthumb",
       "link": "http://www.openwall.com/phpass/",
-      "license": "MPL 2.0",
+      "license": "MPL-2.0",
       "description": "ICO utils"
     },
     {
       "name": "pt-online-schema-change",
       "link": "https://www.percona.com/doc/percona-toolkit/LATEST/pt-online-schema-change.html",
-      "license": "GPL 2.0",
+      "license": "GPL-2.0-only",
       "description": "Mysql online schema change"
     },
     {
       "name": "querypath",
       "link": "http://querypath.org",
-      "license": "LGPL 2.1",
+      "license": "MIT",
       "description": "HTML parsing and traversal"
     },
     {
@@ -135,31 +161,25 @@
     {
       "name": "Text_LanguageDetect",
       "link": "http://pear.php.net/package/Text_LanguageDetect/",
-      "license": "BSD",
+      "license": "BSD-3-Clause",
       "description": "Language detection"
     },
     {
       "name": "tnef-decoder",
       "link": "http://www.horde.org/",
-      "license": "LGPL",
-      "description": "TNEF decoding (MS Outlook attachment format)"
-    },
-    {
-      "name": "tnef-decoder",
-      "link": "http://www.horde.org/",
-      "license": "LGPL",
+      "license": "LGPL-2.0-only",
       "description": "TNEF decoding (MS Outlook attachment format)"
     },
     {
       "name": "twitter-async",
       "link": "http://wiki.github.com/jmathai/twitter-async",
-      "license": "BSD",
+      "license": "BSD-3-Clause",
       "description": "Twitter API"
     },
     {
       "name": "yuicompressor",
       "link": "http://yui.github.io/yuicompressor/",
-      "license": "BSD",
+      "license": "BSD-2-Clause",
       "description": "JS compressor"
     }
   ],
@@ -167,7 +187,7 @@
     {
       "name": "amcharts",
       "link": "https://www.amcharts.com/",
-      "license": "Commercial",
+      "license": "Commercial-amcharts",
       "licenseLink": "http://www.amcharts.com/licenses/javascript-charts/20130924/oem/",
       "description": "JS compressor"
     },
@@ -180,7 +200,7 @@
     {
       "name": "colorpicker",
       "link": "http://www.eyecon.ro/",
-      "license": "MIT, GPL",
+      "license": "MIT",
       "description": "colorpicker"
     },
     {
@@ -210,27 +230,27 @@
     {
       "name": "flaticon",
       "link": "https://www.flaticon.com/",
-      "license": "Commercial",
+      "license": "Commercial-flaticon",
       "licenseLink": "https://profile.flaticon.com/license/premium",
       "description": "icons"
     },
     {
       "name": "font-lato",
       "link": "https://fonts.google.com/specimen/Lato",
-      "license": "OFL",
+      "license": "OFL-1.1",
       "description": "font"
     },
     {
       "name": "froala-editor",
       "link": "https://www.froala.com/",
-      "license": "Commercial",
+      "license": "Commercial-froala",
       "licenseLink": "https://www.froala.com/wysiwyg-editor/terms",
       "description": "rich text editor"
     },
     {
       "name": "jqTree",
       "link": "https://mbraak.github.io/jqTree/",
-      "license": "Apache 2.0",
+      "license": "Apache-2.0",
       "description": "jqTree"
     },
     {
@@ -242,7 +262,7 @@
     {
       "name": "less",
       "link": "http://lesscss.org/",
-      "license": "Apache 2.0",
+      "license": "Apache-2.0",
       "description": "less"
     },
     {
@@ -278,7 +298,7 @@
     {
       "name": "redactor",
       "link": "https://imperavi.com/redactor/",
-      "license": "Commercial",
+      "license": "Commercial-redactor",
       "licenseLink": "https://imperavi.com/redactor/license/",
       "description": "redactor"
     },
@@ -291,7 +311,7 @@
     {
       "name": "scriptjs",
       "link": "https://github.com/ded/script.js",
-      "license": "NONE",
+      "license": "MIT",
       "description": ""
     },
     {
@@ -303,7 +323,7 @@
     {
       "name": "tiny_mce",
       "link": "https://www.tinymce.com/",
-      "license": "LGPL 2.1",
+      "license": "LGPL-2.1-only",
       "description": "tiny_mce"
     },
     {

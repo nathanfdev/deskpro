@@ -43,7 +43,9 @@
                 {{/if}}
             </td>
             <td>
-                {{join license ", "}}
+                {{#each license}}
+                    <a href="./licenses/{{.}}.txt" target="_blank">{{.}}</a>{{#unless @last}}, {{/unless}}
+                {{/each}}
             </td>
             <td style="width: 100px">
                 {{managedVia}}
@@ -52,8 +54,21 @@
     {{/each}}
 </script>
 
+<script id="licIdsTpl" type="text/x-handlebars-template">
+    {{#each licIds}}
+        <a href="./licenses/{{.}}.txt" target="_blank">{{.}}</a>{{#unless @last}}, {{/unless}}
+    {{/each}}
+</script>
+
 <main role="main" class="container">
     <br><br>
+
+    <div class="jumbotron">
+        <p class="lead">This page lists all third-party software and libraries used in Deskpro.</p>
+        <hr class="my-4">
+        <p id="licIds"></p>
+    </div>
+
     <table class="table" width="100%">
         <thead class="thead-dark">
             <tr>

@@ -1,6 +1,6 @@
 {
   "@amcharts/amcharts3-react@3.0.4": {
-    "licenses": "Apache",
+    "licenses": "Apache*",
     "repository": "https://github.com/amcharts/amcharts3-react",
     "path": "/www/assets/BUILD/pub/node_modules/@amcharts/amcharts3-react",
     "licenseFile": "/www/assets/BUILD/pub/node_modules/@amcharts/amcharts3-react/LICENSE"
@@ -643,13 +643,13 @@
     "licenseFile": "/www/assets/BUILD/pub/node_modules/cropper/LICENSE.md"
   },
   "cross-domain-safe-weakmap@1.0.19": {
-    "licenses": "Apache 2.0",
+    "licenses": "Apache-2.0",
     "repository": "https://github.com/krakenjs/grumbler",
     "path": "/www/assets/BUILD/pub/node_modules/cross-domain-safe-weakmap",
     "licenseFile": "/www/assets/BUILD/pub/node_modules/cross-domain-safe-weakmap/LICENSE.txt"
   },
   "cross-domain-utils@2.0.3": {
-    "licenses": "Apache 2.0",
+    "licenses": "Apache-2.0",
     "repository": "https://github.com/krakenjs/cross-domain-utils",
     "path": "/www/assets/BUILD/pub/node_modules/cross-domain-utils",
     "licenseFile": "/www/assets/BUILD/pub/node_modules/cross-domain-utils/LICENSE.txt"
@@ -767,7 +767,7 @@
     "licenseFile": "/www/assets/BUILD/pub/node_modules/delegate/readme.md"
   },
   "derivable@1.0.0-beta11": {
-    "licenses": "Apache",
+    "licenses": "Apache*",
     "repository": "https://github.com/ds300/derivablejs",
     "publisher": "David Sheldrick",
     "path": "/www/assets/BUILD/pub/node_modules/derivable",
@@ -852,7 +852,7 @@
     "licenseFile": "/www/assets/BUILD/pub/node_modules/domain-browser/LICENSE.md"
   },
   "domelementtype@1.1.3": {
-    "licenses": "MIT",
+    "licenses": "BSD*",
     "repository": "https://github.com/FB55/domelementtype",
     "publisher": "Felix Boehm",
     "email": "me@feedic.com",
@@ -860,7 +860,7 @@
     "licenseFile": "/www/assets/BUILD/pub/node_modules/dom-serializer/node_modules/domelementtype/LICENSE"
   },
   "domelementtype@1.3.0": {
-    "licenses": "MIT",
+    "licenses": "BSD*",
     "repository": "https://github.com/FB55/domelementtype",
     "publisher": "Felix Boehm",
     "email": "me@feedic.com",
@@ -934,7 +934,7 @@
     "licenseFile": "/www/assets/BUILD/pub/node_modules/engine.io-parser/LICENSE"
   },
   "entities@1.1.1": {
-    "licenses": "MIT",
+    "licenses": "BSD*",
     "repository": "https://github.com/fb55/node-entities",
     "publisher": "Felix Boehm",
     "email": "me@feedic.com",
@@ -1212,7 +1212,7 @@
     "licenseFile": "/www/assets/BUILD/pub/node_modules/@deskpro/react-components/node_modules/font-awesome/README.md"
   },
   "foreachasync@3.0.0": {
-    "licenses": "Apache",
+    "licenses": "Apache*",
     "repository": "https://github.com/FuturesJS/forEachAsync",
     "publisher": "AJ ONeal",
     "email": "coolaj86@gmail.com",
@@ -2379,7 +2379,7 @@
     "licenseFile": "/www/assets/BUILD/pub/node_modules/@deskpro/react-components/node_modules/popper.js/README.md"
   },
   "post-robot@7.0.18": {
-    "licenses": "Apache 2.0",
+    "licenses": "Apache-2.0",
     "repository": "https://github.com/krakenjs/post-robot",
     "path": "/www/assets/BUILD/pub/node_modules/post-robot",
     "licenseFile": "/www/assets/BUILD/pub/node_modules/post-robot/LICENSE.txt"
@@ -3362,7 +3362,7 @@
   "walk@2.3.9": {
     "licenses": [
       "MIT",
-      "Apache2"
+      "Apache-2.0"
     ],
     "repository": "https://github.com/coolaj86/node-walk",
     "publisher": "AJ ONeal",
@@ -3510,7 +3510,7 @@
     "licenseFile": "/www/assets/BUILD/pub/node_modules/yeast/LICENSE"
   },
   "zalgo-promise@1.0.24": {
-    "licenses": "Apache 2.0",
+    "licenses": "Apache-2.0",
     "repository": "https://github.com/krakenjs/zalgo-promise",
     "path": "/www/assets/BUILD/pub/node_modules/zalgo-promise",
     "licenseFile": "/www/assets/BUILD/pub/node_modules/zalgo-promise/LICENSE.txt"

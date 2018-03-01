@@ -1,5 +1,6 @@
 function run() {
   var licData = [];
+  var licIds = [];
 
   $.ajaxSetup({ cache: false });
   $.when(
@@ -16,37 +17,61 @@ function run() {
       npmInfo = npmInfoRes[0]
       legacyNpmInfo = legacyNpmInfoRes[0];
 
-    customInfo.php.forEach(function(item) {
+    function getLicInfo(item) {
+      if (customInfo.overrides[item.name]) {
+        item = Object.assign({}, item, customInfo.overrides[item.name]);
+      }
+
       if (typeof item.license === 'string') {
         item.license = [item.license];
       }
 
+      item.license = item.license.map(function(l) {
+        switch (l) {
+          case 'LGPL-2.1': return 'LGPL-2.1-only';
+          case 'LGPL-2.1+': return 'LGPL-2.1-or-later';
+          case 'LGPL-3.0': return 'LGPL-3.0-only';
+          case 'GPL-3.0+': return 'GPL-3.0-or-later';
+          case 'GPL-2.0': return 'GPL-2.0-only';
+          case 'GPLv2': return 'GPL-2.0-only';
+          case 'Public Domain': return 'Public-Domain';
+          case 'PSF': return 'Python-2.0';
+        }
+        return l;
+      });
+
+      if (!item.link || item.link === "") {
+        item.link = null;
+      }
+
+      return item;
+    }
+
+    customInfo.php.forEach(function(item) {
+      item = getLicInfo(item);
+
       licData.push({
         name: item.name,
-        link: item.link || null,
+        link: item.link,
         license: item.license,
         managedVia: "manual"
       });
     });
     customInfo.javascript.forEach(function(item) {
-      if (typeof item.license === 'string') {
-        item.license = [item.license];
-      }
+      item = getLicInfo(item);
       licData.push({
         name: item.name,
-        link: item.link || null,
+        link: item.link,
         license: item.license,
         managedVia: "manual"
       });
     });
 
     bowerInfo.bower.forEach(function(item) {
-      if (typeof item.license === 'string') {
-        item.license = [item.license];
-      }
+      item = getLicInfo(item);
       licData.push({
         name: item.name,
-        link: item.link || null,
+        link: item.link,
         license: item.license,
         managedVia: "bower"
       });
@@ -57,13 +82,12 @@ function run() {
       item.name = name;
       item.link = 'https://packagist.org/packages/' + name;
       item.license = item.license || [];
-      if (typeof item.license === 'string') {
-        item.license = [item.license];
-      }
+
+      item = getLicInfo(item);
 
       licData.push({
         name: item.name,
-        link: item.link || null,
+        link: item.link,
         license: item.license,
         managedVia: "composer"
       });
@@ -81,22 +105,15 @@ function run() {
       name = name.join('@');
       item.name = name;
 
-      if (item.url) {
-        item.link = item.url;
-      } else if (item.repository) {
-        item.link = item.repository;
-      } else {
-        item.link = 'https://www.npmjs.com/package/' + name;
-      }
+      item.link = 'https://www.npmjs.com/package/' + name;
 
-      item.license = item.licenses || [];
-      if (typeof item.license === 'string') {
-        item.license = [item.license];
-      }
+      item.license = item.licenses || ['NONE'];
+
+      item = getLicInfo(item);
 
       item.license = item.license.map(function(l) {
         if (l.indexOf('Custom: ') !== -1) {
-          return 'Custom';
+          return 'NONE';
         } else {
           return l;
         }
@@ -104,7 +121,7 @@ function run() {
 
       licData.push({
         name: item.name,
-        link: item.link || null,
+        link: item.link,
         license: item.license,
         managedVia: "npm"
       });
@@ -122,13 +139,7 @@ function run() {
       name = name.join('@');
       item.name = name;
 
-      if (item.url) {
-        item.link = item.url;
-      } else if (item.repository) {
-        item.link = item.repository;
-      } else {
-        item.link = 'https://www.npmjs.com/package/' + name;
-      }
+      item.link = 'https://www.npmjs.com/package/' + name;
 
       item.license = item.licenses || [];
       if (typeof item.license === 'string') {
@@ -137,15 +148,17 @@ function run() {
 
       item.license = item.license.map(function(l) {
         if (l.indexOf('Custom: ') !== -1) {
-          return 'Custom';
+          return 'NONE';
         } else {
           return l;
         }
       });
 
+      item = getLicInfo(item);
+
       licData.push({
         name: item.name,
-        link: item.link || null,
+        link: item.link,
         license: item.license,
         managedVia: "npm-legacy"
       });
@@ -157,18 +170,24 @@ function run() {
         return false;
       }
       haveNames.push(i.name);
+      i.license.forEach(function(lid) {
+        if (licIds.indexOf(lid) === -1) {
+          licIds.push(lid);
+        }
+      });
       return true;
     });
 
+    licIds.sort();
     licData.sort(function(a, b) {
       return a.name.replace(/^@/, '').localeCompare(b.name.replace(/^@/, ''));
     });
 
-    var source   = document.getElementById('licListTpl').innerHTML;
-    var template = Handlebars.compile(source);
-    var html     = template({ licData: licData });
-
+    var html = Handlebars.compile(document.getElementById('licListTpl').innerHTML)({ licData: licData });
     $('#licList').html(html);
+
+    var html = Handlebars.compile(document.getElementById('licIdsTpl').innerHTML)({ licIds: licIds });
+    $('#licIds').html(html);
 
     $('#downloadJson').on('click', function(ev) {
       ev.preventDefault();
