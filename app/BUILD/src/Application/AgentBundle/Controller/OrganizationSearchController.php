@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2017, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2018, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -312,11 +312,20 @@ class OrganizationSearchController extends AbstractController
         $json = ['results' => [], 'exact' => false];
 
         foreach ($orgs_list as $org) {
+            /** @var $org Entity\Organization */
+            $name = $org->getName();
+            if ($org->getParent()) {
+                $parent = $org->getParent();
+                while ($parent) {
+                    $name   = $parent->getName().' > '.$name;
+                    $parent = $parent->getParent();
+                }
+            }
             $json['results'][] = [
-                'id'    => $org['id'],
-                'name'  => $org['name'],
-                'value' => $org['name'],
-                'label' => $org['name'],
+                'id'    => $org->getId(),
+                'name'  => $name,
+                'value' => $name,
+                'label' => $name,
             ];
         }
 
