@@ -62,11 +62,9 @@ class PackageRequestHandler implements ApiPackageRequestHandlerInterface
     {
         $fulfilled = function_exists('mcrypt_create_iv') || function_exists('openssl_cipher_iv_length');
 
-        $result_data = [
-            'success' => false,
+        return $context->createJsonResponse([
+            'success' => $fulfilled,
             'error'   => 'This application mandatory requires to install openssl or mcrypt extension',
-        ];
-
-        return $context->createJsonResponse($result_data);
+        ]);
     }
 }
