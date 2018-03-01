@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2017, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2018, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -38,6 +38,7 @@ use FOS\RestBundle\Controller\FOSRestController;
 use FOS\RestBundle\View\View;
 use Symfony\Component\EventDispatcher\Event;
 use Symfony\Component\Form\Form;
+use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 
 /**
@@ -101,18 +102,19 @@ abstract class AbstractApiController extends FOSRestController
     }
 
     /**
-     * @param string $key
+     * @param Person|mixed $person
+     * @param string       $key
      *
      * @return mixed
      */
-    protected function getWidgetOption($key)
+    protected function getWidgetOption($person, $key)
     {
-        if (!$this->getUser() instanceof Person || !$this->getUser()->getId()) {
+        if (!$person instanceof Person || !$person->getId()) {
             return;
         }
 
         $dataStore = $this->getDoctrine()->getRepository(DataStore::class)->findOneBy([
-            'name' => 'dpWidgetOptions.'.$this->getUser()->getId(),
+            'name' => 'dpWidgetOptions.'.$person->getId(),
         ]);
 
         return $dataStore ? $dataStore->getData($key) : null;
@@ -143,11 +145,19 @@ abstract class AbstractApiController extends FOSRestController
     }
 
     /**
+     * @param Request $request
+     *
      * @return ChatConversation
      */
-    protected function getLastChat()
+    protected function getLastChat(Request $request)
     {
-        $storedChatId = $this->getWidgetOption('chat_id');
+        if ($jwtPayload = $request->get('jwt')) {
+            $person = $this->get('widget_jwt_decoder')->getPersonFromJwtPayload($jwtPayload);
+        } else {
+            $person = $this->getUser();
+        }
+
+        $storedChatId = $this->getWidgetOption($person, 'chat_id');
         if ($storedChatId) {
             list($storedChatId) = explode(':', $storedChatId);
 

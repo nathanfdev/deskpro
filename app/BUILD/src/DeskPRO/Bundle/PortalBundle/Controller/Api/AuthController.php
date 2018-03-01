@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2017, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2018, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -69,7 +69,7 @@ class AuthController extends AbstractApiController
         $visitorId = $this->get('visitor_identification_provider')->getVisitorIdentifier(true);
         $request->attributes->set(VisitorIdentificationProvider::ATTRIBUTE_NAME, $visitorId);
 
-        $lastChat     = $this->getLastChat();
+        $lastChat     = $this->getLastChat($request);
         $trackVisitor = $request->request->get('trackVisitor');
 
         if ($trackVisitor) {

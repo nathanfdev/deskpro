@@ -6,7 +6,7 @@ import { widgetApi } from 'DeskPRO/Bundle/WidgetBundle/Services/DpApi';
 import { ajaxOptions } from './bootstrapActions';
 import { onlineAgentsSelector } from '../Selectors/peopleSelectors';
 import { dispatchOnlineAgents } from '../../../Services/WindowApi';
-import { chatFormDefaultValuesSelector } from '../Selectors/dpWindow';
+import { chatFormDefaultValuesSelector, jwtTokenSelector } from '../Selectors/dpWindow';
 
 export const loadOnlineAgents = createAction(
   'WIDGET_LOAD_ONLINE_AGENTS',
@@ -32,12 +32,14 @@ export const loadOnlineAgents = createAction(
     // background request data
     const state = getState();
     const chatDefaultValues = chatFormDefaultValuesSelector(state);
+    const jwtToken = jwtTokenSelector(state);
+
     let defaultDepartment = chatDefaultValues && chatDefaultValues.get('department');
     if (!defaultDepartment) {
       defaultDepartment = '';
     }
 
-    widgetApi.sendGet(`DP_API/people/online_agents?default_department=${defaultDepartment}`, { ...ajaxOptions })
+    widgetApi.sendGet(`DP_API/people/online_agents?default_department=${defaultDepartment}&jwt=${jwtToken}`, { ...ajaxOptions })
       .success((response) => {
         updateAgents(response.data);
         lscache.set('dpWidget.onlineAgents', response.data, 15);
