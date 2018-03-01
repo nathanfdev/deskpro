@@ -156,6 +156,7 @@
     "invariant": "2.2.1",
     "jest-cli": "12.1.1",
     "json-loader": "0.5.4",
+    "license-checker": "^16.0.0",
     "mkdirp": "0.5.1",
     "nightwatch": "^0.9.4",
     "node-notifier": "4.3.1",
@@ -231,6 +232,7 @@
     "test:e2e": "nightwatch",
     "test:e2e:setup": "node selenium-download.js",
     "flow": "flow; test $? -eq 0 -o $? -eq 2",
-    "webpack": "rm -rf ./build && npm run-script gulp-refresh-reducers && node bin/refresh-widget-loader && webpack --config webpack.prod.config.js --progress --profile --colors --display-error-details"
+    "webpack": "rm -rf ./build && npm run-script gulp-refresh-reducers && node bin/refresh-widget-loader && webpack --config webpack.prod.config.js --progress --profile --colors --display-error-details",
+    "license-checker": "license-checker --json"
   }
 }

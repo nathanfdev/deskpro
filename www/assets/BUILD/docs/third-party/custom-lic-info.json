@@ -1,0 +1,285 @@
+{
+  "php": [
+    {
+      "name": "cssmin",
+      "link": "http://code.google.com/p/cssmin/",
+      "license": "MIT",
+      "description": "Simple CSS minification"
+    },
+    {
+      "name": "ezcomponents",
+      "link": "http://ezcomponents.org/",
+      "license": "BSD",
+      "description": "Email decoding"
+    },
+    {
+      "name": "facebook/php-sdk",
+      "link": "https://github.com/facebookarchive/facebook-php-sdk",
+      "license": "Apache 2.0",
+      "description": "Facebook auth"
+    },
+    {
+      "name": "geoip-api",
+      "link": "https://github.com/maxmind/geoip-api-php",
+      "license": "GPL 2.1",
+      "description": "IP geolocation API"
+    },
+    {
+      "name": "geoip-db",
+      "link": "https://dev.maxmind.com/geoip/geoip2/geolite2/",
+      "license": "CC BY-SA 4.0",
+      "description": "IP geolocation database"
+    },
+    {
+      "name": "htmlpurifier",
+      "link": "http://htmlpurifier.org/",
+      "license": "LGPL 2.0",
+      "description": "HTML sanitizer"
+    },
+    {
+      "name": "libphonenumber",
+      "link": "https://github.com/giggsey/libphonenumber-for-php",
+      "license": "Apache 2.0",
+      "description": "i18n phone number validation and parsing"
+    },
+    {
+      "name": "metadata",
+      "link": "",
+      "license": "Apache 2.0",
+      "description": ""
+    },
+    {
+      "name": "pclzip",
+      "link": "http://www.phpconcept.net/pclzip/",
+      "license": "LGPL 2.1",
+      "description": "PHP implementation of PKZIP"
+    },
+    {
+      "name": "pear",
+      "link": "http://pear.php.net/package/PEAR",
+      "license": "BSD",
+      "description": "Base PEAR package required for other PEAR packages"
+    },
+    {
+      "name": "pear/Archive_Tar",
+      "link": "http://pear.php.net/package/Archive_Tar",
+      "license": "BSD",
+      "description": "For working with Tar archived"
+    },
+    {
+      "name": "pear/Console_Getopt",
+      "link": "http://pear.php.net/package/Console_Getopt",
+      "license": "PHP 3.0",
+      "description": "For working with CLI options"
+    },
+    {
+      "name": "pear/File_IMC",
+      "link": "http://pear.php.net/package/File_IMC",
+      "license": "BSD",
+      "description": "For working with the vCard file format"
+    },
+    {
+      "name": "pear/XML_Util",
+      "link": "http://pear.php.net/package/XML_Util",
+      "license": "BSD",
+      "description": "For working with XML"
+    },
+    {
+      "name": "php-ews",
+      "link": "https://github.com/jamesiarmes/php-ews",
+      "license": "MIT",
+      "description": "Exchange Web Services"
+    },
+    {
+      "name": "php-markdown",
+      "link": "https://github.com/michelf/php-markdown",
+      "license": "BSD-3-Clause",
+      "description": "Markdown to HTML"
+    },
+    {
+      "name": "php-utf8",
+      "link": "http://phputf8.cvs.sourceforge.net/",
+      "license": "LGPL 2.1",
+      "description": "UTF8 string utils"
+    },
+    {
+      "name": "phpass",
+      "link": "http://www.openwall.com/phpass/",
+      "license": "Public Domain",
+      "description": "Password hashing utils"
+    },
+    {
+      "name": "phpthumb",
+      "link": "http://www.openwall.com/phpass/",
+      "license": "MPL 2.0",
+      "description": "ICO utils"
+    },
+    {
+      "name": "pt-online-schema-change",
+      "link": "https://www.percona.com/doc/percona-toolkit/LATEST/pt-online-schema-change.html",
+      "license": "GPL 2.0",
+      "description": "Mysql online schema change"
+    },
+    {
+      "name": "querypath",
+      "link": "http://querypath.org",
+      "license": "LGPL 2.1",
+      "description": "HTML parsing and traversal"
+    },
+    {
+      "name": "salesforce",
+      "link": "https://developer.salesforce.com/page/PHP",
+      "license": "BSD-3-Clause",
+      "description": "SF API client"
+    },
+    {
+      "name": "Text_LanguageDetect",
+      "link": "http://pear.php.net/package/Text_LanguageDetect/",
+      "license": "BSD",
+      "description": "Language detection"
+    },
+    {
+      "name": "tnef-decoder",
+      "link": "http://www.horde.org/",
+      "license": "LGPL",
+      "description": "TNEF decoding (MS Outlook attachment format)"
+    },
+    {
+      "name": "tnef-decoder",
+      "link": "http://www.horde.org/",
+      "license": "LGPL",
+      "description": "TNEF decoding (MS Outlook attachment format)"
+    },
+    {
+      "name": "twitter-async",
+      "link": "http://wiki.github.com/jmathai/twitter-async",
+      "license": "BSD",
+      "description": "Twitter API"
+    },
+    {
+      "name": "yuicompressor",
+      "link": "http://yui.github.io/yuicompressor/",
+      "license": "BSD",
+      "description": "JS compressor"
+    }
+  ],
+  "javascript": [
+    {
+      "name": "amcharts",
+      "link": "https://www.amcharts.com/",
+      "license": "OEM",
+      "licenseLink": "http://www.amcharts.com/licenses/javascript-charts/20130924/oem/",
+      "description": "JS compressor"
+    },
+    {
+      "name": "bootstrap",
+      "link": "https://getbootstrap.com/",
+      "license": "MIT",
+      "description": "bootstrap"
+    },
+    {
+      "name": "colorpicker",
+      "link": "http://www.eyecon.ro/",
+      "license": "MIT, GPL",
+      "description": "colorpicker"
+    },
+    {
+      "name": "detect_timezone.js",
+      "link": "http://pellepim.bitbucket.org/jstz/",
+      "license": "MIT",
+      "description": "detect_timezone.js"
+    },
+    {
+      "name": "eonasdan-bootstrap-datetimepicker",
+      "link": "http://eonasdan.github.io/bootstrap-datetimepicker/",
+      "license": "MIT",
+      "description": "eonasdan-bootstrap-datetimepicker"
+    },
+    {
+      "name": "html5shiv.min.js",
+      "link": "https://github.com/aFarkas/html5shiv",
+      "license": ["MIT", "GPL2"],
+      "description": "html5shiv.min.js"
+    },
+    {
+      "name": "flaticon",
+      "link": "https://www.flaticon.com/",
+      "license": "OEM",
+      "licenseLink": "https://profile.flaticon.com/license/premium",
+      "description": "icons"
+    },
+    {
+      "name": "jqTree",
+      "link": "https://mbraak.github.io/jqTree/",
+      "license": "Apache 2.0",
+      "description": "jqTree"
+    },
+    {
+      "name": "jquery",
+      "link": "http://jquery.com/",
+      "license": "MIT",
+      "description": "jquery"
+    },
+    {
+      "name": "less",
+      "link": "http://lesscss.org/",
+      "license": "Apache 2.0",
+      "description": "less"
+    },
+    {
+      "name": "modernizr.min.js",
+      "link": "https://modernizr.com/",
+      "license": "MIT",
+      "description": "modernizr.min.js"
+    },
+    {
+      "name": "moment-timezone.js",
+      "link": "https://momentjs.com/timezone/",
+      "license": "MIT",
+      "description": "moment-timezone.js"
+    },
+    {
+      "name": "momentjs",
+      "link": "https://momentjs.com/",
+      "license": "MIT",
+      "description": "momentjs"
+    },
+    {
+      "name": "mootools",
+      "link": "http://mootools.net",
+      "license": "MIT",
+      "description": "mootools"
+    },
+    {
+      "name": "ng-context-menu",
+      "link": "https://github.com/Wildhoney/ngContextMenu",
+      "license": "MIT",
+      "description": "ng-context-menu"
+    },
+    {
+      "name": "redactor",
+      "link": "https://imperavi.com/redactor/",
+      "license": "OEM",
+      "licenseLink": "https://imperavi.com/redactor/license/",
+      "description": "redactor"
+    },
+    {
+      "name": "select2",
+      "link": "https://select2.org/",
+      "license": "MIT",
+      "description": "select2"
+    },
+    {
+      "name": "tiny_mce",
+      "link": "https://www.tinymce.com/",
+      "license": "LGPL 2.1",
+      "description": "tiny_mce"
+    },
+    {
+      "name": "ui-datetime.js",
+      "link": "https://github.com/Gillardo/bootstrap-ui-datetime-picker",
+      "license": "MIT",
+      "description": "ui-datetime.js"
+    }
+  ]
+}
