@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2017, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2018, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -125,26 +125,26 @@ class PortalValidation
         $this->mailer->sendNewTicketValidationEmail($emailTo, $verifyUrl, $ticket);
     }
 
-    public function sendVerificationEmail($type, SavedForm $saved_form, $prefer_person_email = true)
+    public function sendVerificationEmail($type, SavedForm $savedForm, $prefer_person_email = true)
     {
         $this->verifyType($type);
 
         // find out who we are emailing to
-        if ($prefer_person_email && $person = $saved_form->getPerson()) {
+        if ($prefer_person_email && $person = $savedForm->getPerson()) {
             $emailTo = new EmailTo($person);
         } else {
-            if (!$email = $saved_form->getMetaDataValue('email')) {
+            if (!$email = $savedForm->getMetaDataValue('email')) {
                 throw new \InvalidArgumentException(
                     'trying to send a verification email, but no email provided. saved form must have a Person, or its metadata must have an "email" key.'
                 );
             }
-            $name    = $saved_form->getMetaDataValue('name');
+            $name    = $savedForm->getMetaDataValue('name');
             $emailTo = new EmailTo();
             $emailTo->setTo($email, $name);
         }
 
         // get the verify URL
-        $verifyUrl = $this->makeValidationUrl($type, $saved_form);
+        $verifyUrl = $this->makeValidationUrl($type, $savedForm, $email);
 
         switch ($type) {
             case self::REGISTRATION:
@@ -153,7 +153,7 @@ class PortalValidation
                 $this->mailer->sendEmailValidation($emailTo, $verifyUrl);
                 break;
             case self::ADD_EMAIL:
-                $this->mailer->sendNewEmailValidate($emailTo, $verifyUrl, $saved_form->getPerson());
+                $this->mailer->sendNewEmailValidate($emailTo, $verifyUrl, $savedForm->getPerson());
                 break;
             case self::NEW_TICKET:
                 throw new \Exception('use sendTicketVerificationEmail instead of sendVerificationEmail for a ticket.');
@@ -200,13 +200,21 @@ class PortalValidation
         return false;
     }
 
-    protected function makeValidationUrl($type, SavedForm $saved_form)
+    /**
+     * @param string    $type
+     * @param SavedForm $savedForm
+     * @param string    $email
+     *
+     * @return string
+     */
+    protected function makeValidationUrl($type, SavedForm $savedForm, $email = null)
     {
         return $this->urlGenerator->generate(
             'portal_validation',
             [
                 'type'      => $type,
-                'auth_code' => $saved_form->getAuthCode(),
+                'auth_code' => $savedForm->getAuthCode(),
+                'email'     => $email,
             ],
             UrlGeneratorInterface::ABSOLUTE_URL
         );
