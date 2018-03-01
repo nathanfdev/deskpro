@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2017, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2018, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -203,6 +203,14 @@ class EmailAccountsController extends AbstractController implements ProtectedCon
         $account = $this->container->getEmailAccountManager()->getAccount($id);
         if (!$account) {
             throw $this->createNotFoundException();
+        }
+
+        $accounts = $this->container->getEmailAccountManager()->getAllAccounts();
+        if (count($accounts) === 1) {
+            return $this->createApiErrorResponse(
+                'last_account',
+                "You can't delete the last email account. At least one email account is required."
+            );
         }
 
         $old_id = $account->id;
