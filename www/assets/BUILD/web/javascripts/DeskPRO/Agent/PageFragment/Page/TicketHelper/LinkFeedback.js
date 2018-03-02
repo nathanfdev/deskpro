@@ -61,6 +61,13 @@ DeskPRO.Agent.PageFragment.Page.TicketHelper.LinkFeedback = new Orb.Class({
       var isSubscribeParticipants = wrapper.find("#is_subscribe_participants").is(":checked");
 
 			if (confirm("Are you sure you want to link the current ticket to this feedback?")) {
+
+        wrapper.find('.loading-on').show();
+        sb.close();
+        wrapper.find("#is_subscribe_owner").prop('disabled', true);
+        wrapper.find("#is_subscribe_participants").prop('disabled', true);
+        wrapper.find('.term').prop('disabled', true);
+
 				$.ajax({
           url: self.options.saveUrl,
 					data: {
@@ -74,6 +81,14 @@ DeskPRO.Agent.PageFragment.Page.TicketHelper.LinkFeedback = new Orb.Class({
 						footerEl.removeClass('loading');
 					},
 					success: function(data) {
+
+            // remove tabs with linked feedback, they are outdated
+            Array.each(DeskPRO_Window.getTabWatcher().findTabType('feedback'), function(tab) {
+              if (feedbackId == tab.page.getMetaData('feedback_id')) {
+                DeskPRO_Window.TabBar.removeTabById(tab.id);
+              }
+            });
+
 						self.overlay.close();
             DeskPRO_Window.loadPage(self.options.reloadPageUrl, {ignoreExist:true});
             self.page.closeSelf();
