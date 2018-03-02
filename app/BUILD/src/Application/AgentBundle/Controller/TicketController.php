@@ -426,9 +426,8 @@ class TicketController extends AbstractController
         //------------------------------
         // Linked Feedback
         //------------------------------
-        $feedbackRepo = $this->em->getRepository(TicketFeedbackLink::class);
-        //@TODO: related entities fetching optimization
-        $ticketFeedbackLinks = $feedbackRepo->findByTicket($ticket);
+        $feedbackRepo        = $this->em->getRepository(TicketFeedbackLink::class);
+        $ticketFeedbackLinks = $feedbackRepo->findByTicketAndJoinFeedbackData($ticket);
 
         //------------------------------
         // Pre-load person and org
