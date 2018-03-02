@@ -203,6 +203,7 @@ export class DpxDateWidget extends PageWidget {
         calendar:      $.calendars.instance('islamic', 'ar'),
         ownerDocument: this.options.ownerDocument || document,
         contentWindow: this.options.contentWindow || window,
+        firstDay:      0,
 
         onSelect(dates) {
           const date = dates[0];
