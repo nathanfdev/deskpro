@@ -2259,6 +2259,8 @@ return [
     'agent.tickets.log_message_updated'                        => 'Message #{{id}} updated',
     'agent.tickets.log_followup_created'                       => 'New follow up #{{id}} for {{date_to_run}}',
     'agent.tickets.log_followup_removed'                       => 'Follow up #{{id}} was deleted',
+    'agent.tickets.log_feedback_link_added'                    => 'Feedback link added',
+    'agent.tickets.log_feedback_link_removed'                  => 'Feedback link removed',
     'agent.tickets.log_from_message'                           => 'from message',
     'agent.tickets.log_mail_bcc_d'                             => 'BCC\'d',
     'agent.tickets.log_mail_cc_ed'                             => 'cc\'ed',
