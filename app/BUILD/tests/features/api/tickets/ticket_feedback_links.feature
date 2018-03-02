@@ -3,13 +3,19 @@ Feature: /tickets/{id}/feedback_links endpoint
 
   Background:
     Given I'm authenticated as admin
+    And no TicketFeedbackLink records exist
+    And no Feedback records exist
     And only the following Ticket records exist:
       | #  | Subject  | Status         | Person   |
       | t1 | Ticket 1 | awaiting_agent | {admin}  |
+    And only the following "FeedbackCategory" records exist:
+      | #   | title      | slug       |
+      | fc1 | Feature    | feature    |
     And only the following Feedback records exist:
-      | #  | Title      |
-      | f1 | Feedback 1 |
+      | #  | Title      | category  |
+      | f1 | Feedback 1 | {fc1}     |
     And I reset ticket logs
+    And I grant the "{fc1}" feedback category permission for usergroup everyone
 
   Scenario: I retrieve an empty ticket feedback links
     When I send a GET request to "/api/v2/tickets/{t1}/feedback_links"
@@ -25,6 +31,12 @@ Feature: /tickets/{id}/feedback_links endpoint
     And the JSON node "errors.fields.feedback.errors[0].code" should be equal to "required"
 
   Scenario: I add ticket feedback link
+    Given "user_1@deskpro.dev" user exists
+    And "user_2@deskpro.dev" user exists
+    And only the following TicketParticipant records exist:
+      | Ticket | Person                |
+      | {t1}   | ~user_1@deskpro.dev~  |
+      | {t1}   | ~user_2@deskpro.dev~  |
     When I send a POST request to "/api/v2/tickets/{t1}/feedback_links" with body:
     """
 {
@@ -38,6 +50,7 @@ Feature: /tickets/{id}/feedback_links endpoint
     And the JSON node "data.feedback" should be equal to "{f1}"
     And the JSON node "data.ticket" should be equal to "{t1}"
     And the "{t1}" ticket should have "feedback_link_added" log
+    And the "{f1}" feedback should have subscribed persons "{admin},{~user_1@deskpro.dev~},{~user_2@deskpro.dev~}"
 
   Scenario: I retrieve ticket feedback links by ticket id and by ticket ref
     Given only the following TicketFeedbackLink records exist:
