@@ -122,11 +122,16 @@ class HierarchyPlugin implements PluginInterface
         list($id, $title)        = Column::resolveTable($groupingTableName);
 
         if (strpos($groupingTableName, 'custom_def') === 0) {
-            $this->sql->addSelectField("`{$hierarchicalTargetTable}`.`$id` as 'hierarchy_id'");
-            $this->sql->addSelectField("`{$hierarchicalTargetTable}`.`options` as 'hierarchy_parent_options'");
-            $this->sql->addSelectField("`{$hierarchicalTargetTable}`.`$title` as 'hierarchy_title'");
+            $selectHierarchicalTargetTable = $hierarchicalTargetTable;
+            if (!preg_match('/_field$/', $selectHierarchicalTargetTable)) {
+                $selectHierarchicalTargetTable .= '_field';
+            }
 
-            $this->titleFieldSql = "`{$hierarchicalTargetTable}`.`$title`";
+            $this->sql->addSelectField("`{$selectHierarchicalTargetTable}`.`$id` as 'hierarchy_id'");
+            $this->sql->addSelectField("`{$selectHierarchicalTargetTable}`.`options` as 'hierarchy_parent_options'");
+            $this->sql->addSelectField("`{$selectHierarchicalTargetTable}`.`$title` as 'hierarchy_title'");
+
+            $this->titleFieldSql = "`{$selectHierarchicalTargetTable}`.`$title`";
         } else {
             $this->sql->addSelectField("`$hierarchicalTargetTable`.`$id` as 'hierarchy_id'");
             $this->sql->addSelectField("`$hierarchicalTargetTable`.`parent_id` as 'hierarchy_parent_id'");

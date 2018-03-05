@@ -327,3 +327,12 @@ services:
       - "@dpql.context_storage"
     tags:
       - { name: dpql.placeholder }
+
+  # Helpers
+  dpql.helper.custom_data:
+    class: DeskPRO\Bundle\ReportBundle\Dpql2\Helper\CustomDataHelper
+    arguments:
+      - "@=service('service_container').getSystemService('ticket_fields_manager')"
+      - "@=service('service_container').getSystemService('billing_fields_manager')"
+      - "@=service('service_container').getSystemService('person_fields_manager')"
+      - "@=service('service_container').getSystemService('org_fields_manager')"
