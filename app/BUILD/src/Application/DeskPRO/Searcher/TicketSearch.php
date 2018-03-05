@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2017, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2018, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -87,6 +87,7 @@ class TicketSearch extends SearcherAbstract
     const TERM_SENT_TO_ADDRESS       = 'sent_to_address';
     const TERM_DAY_CREATED           = 'day_created';
     const TERM_FEEDBACK_RATING       = 'feedback_rating';
+    const TERM_FEEDBACK_LINKS        = 'feedback_links';
     const TERM_SLA                   = 'sla';
     const TERM_SLA_STATUS            = 'sla_status';
     const TERM_SLA_COMPLETED         = 'sla_completed';
@@ -1623,6 +1624,29 @@ class TicketSearch extends SearcherAbstract
                             } else {
                                 $wheres[] = "($tickets_table.feedback_rating IS NULL OR $check)";
                             }
+                        }
+
+                        break;
+                    case self::TERM_FEEDBACK_LINKS:
+
+                        $joins[] = [
+                            'ticket_feedback_links',
+                            "LEFT JOIN ticket_feedback_links AS $join_name ON ($join_name.ticket_id = tickets.id)",
+                        ];
+
+                        switch ($op) {
+                            case 'not_isset':
+                                $wheres[] = "$join_name.id IS NULL";
+                                break;
+                            case 'isset':
+                                $wheres[] = "$join_name.id IS NOT NULL";
+                                break;
+                            case self::OP_IS:
+                                if (!is_array($choice)) {
+                                    $choice = explode(',', $choice);
+                                }
+                                $wheres[] = $this->_choiceMatch("$join_name.feedback_id", $op, $choice, true);
+                                break;
                         }
 
                         break;

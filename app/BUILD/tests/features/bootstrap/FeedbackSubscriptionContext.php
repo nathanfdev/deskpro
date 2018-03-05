@@ -26,34 +26,34 @@
  * ~ Thanks, Everyone at Team DeskPRO
  */
 
+namespace DpBehat;
+
+use Application\DeskPRO\Entity\FeedbackSubscription;
+use DpBehat\Data\DataContext;
+
 /**
- * DeskPRO.
- *
- * @category Entities
+ * Class FeedbackSubscriptionContext.
  */
-
-namespace Application\DeskPRO\EntityRepository;
-
-use Application\DeskPRO\Entity\Feedback as FeedbackEntity;
-
-class FeedbackSubscription extends AbstractEntityRepository
+class FeedbackSubscriptionContext extends BaseContext
 {
     /**
-     * @param FeedbackEntity|int $feedback
+     * @Then the :feedbackId feedback should have subscribed persons :personIds
      *
-     * @return array
+     * @param int    feedbackId
+     * @param string personIds
+     *
+     * @throws \Exception
      */
-    public function getSubscribedPersonIds($feedback)
+    public function feedbackHasSubscribedPersons($feedbackId, $personIds)
     {
-        if ($feedback instanceof FeedbackEntity) {
-            $feedback = $feedback->id;
+        $feedbackId = DataContext::replace($feedbackId);
+        $personIds  = explode(',', DataContext::replace($personIds));
+
+        $subscribedIds = $this->em()->getRepository(FeedbackSubscription::class)->getSubscribedPersonIds($feedbackId);
+        $diff          = array_diff($personIds, $subscribedIds);
+
+        if ($diff) {
+            throw new \Exception(sprintf("Can't find feedback subscriptions for persons: [%s]", implode(',', $diff)));
         }
-
-        $query = $this->getEntityManager()->createQuery(
-            'SELECT DISTINCT IDENTITY(fs.person) FROM DeskPRO:FeedbackSubscription fs WHERE fs.feedback = :feedback'
-        );
-        $query->setParameter('feedback', $feedback);
-
-        return array_map('current', $query->getResult());
     }
 }

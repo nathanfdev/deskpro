@@ -32,28 +32,37 @@
  * @category Entities
  */
 
-namespace Application\DeskPRO\EntityRepository;
+namespace Application\DeskPRO\Tickets\Filters\Terms;
 
-use Application\DeskPRO\Entity\Feedback as FeedbackEntity;
+use Application\DeskPRO\Exception\NotImplementedException;
+use Application\DeskPRO\Tickets\ExecutorContextInterface;
+use Orb\Util\CheckedOptionsArray;
 
-class FeedbackSubscription extends AbstractEntityRepository
+/**
+ * Filters based on ticket feedback links.
+ *
+ * @option string name
+ */
+class FilterFeedbackLinks extends AbstractFilterTerm
 {
     /**
-     * @param FeedbackEntity|int $feedback
-     *
-     * @return array
+     * {@inheritdoc}
      */
-    public function getSubscribedPersonIds($feedback)
+    protected function getOptionsDef()
     {
-        if ($feedback instanceof FeedbackEntity) {
-            $feedback = $feedback->id;
-        }
-
-        $query = $this->getEntityManager()->createQuery(
-            'SELECT DISTINCT IDENTITY(fs.person) FROM DeskPRO:FeedbackSubscription fs WHERE fs.feedback = :feedback'
+        $options = new CheckedOptionsArray();
+        $options->addValidNames(
+            'feedback_links'
         );
-        $query->setParameter('feedback', $feedback);
 
-        return array_map('current', $query->getResult());
+        return $options;
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function getFilterQuery(ExecutorContextInterface $context = null)
+    {
+        throw new NotImplementedException();
     }
 }

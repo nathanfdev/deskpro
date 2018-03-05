@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2018, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2017, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -26,34 +26,25 @@
  * ~ Thanks, Everyone at Team DeskPRO
  */
 
-/**
- * DeskPRO.
- *
- * @category Entities
- */
+namespace DeskPRO\Bundle\SendmailBundle\View\Model;
 
-namespace Application\DeskPRO\EntityRepository;
+use DeskPRO\Bundle\AppBundle\Serializer\Model\Feedback\Feedback;
+use JMS\Serializer\Annotation as JMS;
 
-use Application\DeskPRO\Entity\Feedback as FeedbackEntity;
-
-class FeedbackSubscription extends AbstractEntityRepository
+class FeedbackCreatedForUser extends EmailBaseType
 {
     /**
-     * @param FeedbackEntity|int $feedback
      *
-     * @return array
+     * @JMS\Type("DeskPRO\Bundle\AppBundle\Serializer\Model\Feedback\Feedback")
+     *
+     * @var Feedback
      */
-    public function getSubscribedPersonIds($feedback)
+    protected $feedback;
+
+    protected $templateFile = 'emails_user:new-feedback-created-for-user.html.twig';
+
+    public function __construct(Feedback $feedback)
     {
-        if ($feedback instanceof FeedbackEntity) {
-            $feedback = $feedback->id;
-        }
-
-        $query = $this->getEntityManager()->createQuery(
-            'SELECT DISTINCT IDENTITY(fs.person) FROM DeskPRO:FeedbackSubscription fs WHERE fs.feedback = :feedback'
-        );
-        $query->setParameter('feedback', $feedback);
-
-        return array_map('current', $query->getResult());
+        $this->feedback     = $feedback;
     }
 }

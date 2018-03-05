@@ -26,6 +26,7 @@ import DeskproAppStore from 'DeskPRO/Bundle/AgentBundle/Modules/DeskproApps/Desk
 import LegacyStoreProvider from 'DeskPRO/Bundle/AgentBundle/Services/LegacyStoreProvider';
 import LegacySnippetInserter from 'DeskPRO/Bundle/AgentBundle/Modules/Snippets/Services/LegacySnippetInserter';
 import store from 'DeskPRO/Bundle/AgentBundle/Services/store';
+import { copyTextToClipboard as copyTextToClipboardUtil } from 'DeskPRO/Component/Util/ClipBoard';
 import { FollowUpContainer } from './Modules/Tickets/Components/FollowUp/FollowUp';
 
 
@@ -89,6 +90,10 @@ class AgentLegacyApp {
      // let the app store know we finished the start sequence so
       DeskproAppStore.onAgentLegacyAppReady(this.store, window, api, messageBroker);
     }
+  }
+
+  copyTextToClipboard(text) {
+    return copyTextToClipboardUtil(text);
   }
 
   renderPiece(piece, piecePlace) {

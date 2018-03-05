@@ -28,6 +28,7 @@ DeskPRO.Agent.PageFragment.Page.NewFeedback = new Orb.Class({
 		$('button.submit-trigger', this.wrapper).on('click', this.submit.bind(this));
 
 		this._initCategorySection();
+    this._initUserSection();
 		this._initTitleSection();
 		this._initContentSection();
 		this._initOtherSection();
@@ -134,6 +135,54 @@ DeskPRO.Agent.PageFragment.Page.NewFeedback = new Orb.Class({
 			} else {
 				self.getEl('cat_section').removeClass('done');
 			}
+		});
+	},
+
+	//#################################################################
+	//# User section
+	//#################################################################
+
+	_initUserSection: function() {
+		var self = this;
+		var searchbox = this.getEl('user_searchbox');
+		var userfields = this.getEl('user_choice');
+		var rechooseBtn = this.getEl('switch_user');
+
+		rechooseBtn.on('click', function(ev) {
+			ev.preventDefault(); // default would be submitting the ticket form
+			showUserChoice();
+		});
+
+		var showUserChoice = function() {
+			userfields.empty();
+			userfields.hide();
+			searchbox.show();
+			self.getEl('choose_user').show();
+			rechooseBtn.hide();
+		};
+
+		var placeUserRow = function(personId, name, email) {
+
+      var tplHtml = DeskPRO_Window.util.getPlainTpl($('.user-selected-tpl', self.getEl('choose_user')));
+      var row = $(tplHtml);
+      $('.user-name', row).text(name);
+      $('.user-email', row).text(email);
+      row.data('route', 'person:/agent/people/'+personId);
+
+      userfields.empty();
+      userfields.html(row);
+
+      self.getEl('choose_user').hide();
+      rechooseBtn.show();
+      searchbox.data('handler').close();
+      userfields.show();
+    };
+
+		searchbox.bind('personsearchboxclick', function(ev, personId, name, email, sb) {
+      $('input.person-id', searchbox).val(personId);
+      placeUserRow(personId, name, email);
+			sb.close();
+			sb.reset();
 		});
 	},
 

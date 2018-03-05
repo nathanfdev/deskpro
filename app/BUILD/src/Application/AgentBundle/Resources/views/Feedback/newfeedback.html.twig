@@ -19,7 +19,35 @@ pageMeta.baseId = '{{ baseId }}';
 
 <form id="{{baseId}}_newfeedback" class="keybound-submit">
 
-<div class="first section cat-section" id="{{baseId}}_cat_section">
+<input type="hidden" name="newfeedback[linked_ticket]" id="{{baseId}}_linked_ticket" value="{% if ticket %}{{ ticket.id }}{% endif %}" />
+
+{% if ticket %}
+  <div class="pending-info" id="{{baseId}}_linked_ticket_section">
+    <div class="content">
+      <div class="col">
+        <h4>{{ phrase('agent.tickets.linking_with_ticket') }} {{ ticket.subject }}</h4>
+
+        {% if brand_setting('user.feedback_subscriptions') %}
+          <br class="clear" />
+          <div style="display: block;">
+            <input type="checkbox" id="{{baseId}}_is_subscribe_owner" name="newfeedback[is_subscribe_ticket_owner]" checked="checked">
+            <label for="{{baseId}}_is_subscribe_owner">{{ phrase('agent.tickets.link_existing_feedback_subscr_owner', {'name': ticket.person.display_name, 'email': ticket.person.email_address}) }}</label>
+          </div>
+          <div style="display: block;">
+            <input type="checkbox" id="{{baseId}}_is_subscribe_participants" name="newfeedback[is_subscribe_ticket_participants]">
+            <label for="{{baseId}}_is_subscribe_participants">{{ phrase('agent.tickets.link_existing_feedback_subscr_part', {'count': ticket.participants.count}) }}</label>
+          </div>
+        {% else %}
+          <input type="hidden" id="{{baseId}}_is_subscribe_owner" name="newfeedback[is_subscribe_ticket_owner]">
+          <input type="hidden" id="{{baseId}}_is_subscribe_participants" name="newfeedback[is_subscribe_ticket_participants]">
+        {% endif %}
+      </div>
+      <br class="clear" />
+    </div>
+  </div>
+{% endif %}
+
+<div class="{% if not ticket %}first{% endif %} section cat-section" id="{{baseId}}_cat_section">
 	<div class="content">
 		<div class="col">
 			<h4>{{ phrase('agent.general.type') }}</h4>
@@ -41,10 +69,65 @@ pageMeta.baseId = '{{ baseId }}';
 	</div>
 </div>
 
+<div class="section user-section" id="{{baseId}}_user_section">
+	<div class="content">
+		<h4>{{ phrase('agent.general.user') }}</h4>
+    <div id="{{baseId}}_choose_user" style="display: none">
+      <div
+        id="{{baseId}}_user_searchbox"
+        data-element-handler="DeskPRO.Agent.ElementHandler.PersonSearchBox"
+        data-search-url="{{ path('agent_peoplesearch_performquick', {'format': 'json', 'limit': 10, 'start_with': 'a', 'with_agents': 1}) }}"
+        data-highlight-term="1"
+        data-touch-focus="1"
+        data-search-param="term"
+        data-position-bound="#{{baseId}}_userselect"
+      >
+        <input type="text" name="person_input_choice" id="{{baseId}}_userselect" class="select-user term" placeholder="{{ phrase('agent.general.choose_person_for_feedback') }}" style="width: 80%;" />
+        <input type="hidden" name="newfeedback[person][id]" value="{{ feedback_person.id }}" class="person-id" id="{{baseId}}_person_id" />
+
+        <script type="text/x-deskpro-tmpl" class="user-row-tpl">
+          <li>
+            <a>
+            <span class="user-name"></span>
+            <address>&lt;<span class="user-email"></span>&gt;</address>
+            <div class="bound-fade"></div>
+          </a></li>
+        </script>
+        <script type="text/x-deskpro-tmpl" class="user-selected-tpl">
+          <a class="as-popover dp-btn dp-btn-small" data-route="">
+            <span class="text">
+              <span class="user-name"></span>
+              (<span class="user-email"></span>)
+            </span>
+          </a>
+        </script>
+        <div class="person-search-box" style="display: none">
+          <section>
+            <ul class="results-list">
+
+            </ul>
+          </section>
+        </div>
+      </div>
+    </div>
+    <div>
+      <span id="{{baseId}}_user_choice">
+          <a class="as-popover dp-btn dp-btn-small" data-route="person:{{ path('agent_people_view', {'person_id': feedback_person.id}) }}">
+            <span class="text">
+              <span class="user-name">{{feedback_person.display_name}}</span>
+              (<span class="user-email">{{feedback_person.email}}</span>)
+            </span>
+          </a>
+      </span>
+      <a id="{{baseId}}_switch_user"><i class="fa fa-edit"></i></a>
+    </div>
+	</div>
+</div>
+
 <div class="section title-section" id="{{baseId}}_title_section">
 	<div class="content">
 		<h4>{{ phrase('agent.general.title') }}</h4>
-		<input type="text" name="newfeedback[title]" id="{{baseId}}_title" value="{{ state.newfeedback.title }}" style="width: 80%;" />
+		<input type="text" name="newfeedback[title]" id="{{baseId}}_title" value="{% if ticket %}{{ ticket.subject }}{% else %}{{ state.newfeedback.title }}{% endif %}" style="width: 80%;" />
 		<div class="error-message title">{{ phrase('agent.general.enter_a_title') }}</div>
 	</div>
 </div>
@@ -52,7 +135,7 @@ pageMeta.baseId = '{{ baseId }}';
 <div class="section article-section" id="{{baseId}}_content_section">
 	<div class="content" style="padding-right: 10px;">
 		<h4>{{ phrase('agent.general.description') }}</h4>
-		<textarea type="text" name="newfeedback[content]" id="{{baseId}}_content">{{ state.newfeedback.content }}</textarea>
+		<textarea type="text" name="newfeedback[content]" id="{{baseId}}_content">{% if message %}{{message.getMessageHtml()}}{% else %}{{ state.newfeedback.content }}{% endif %}</textarea>
 	</div>
 </div>
 
@@ -61,13 +144,13 @@ pageMeta.baseId = '{{ baseId }}';
 	<div class="content">
 		{# Tab Container #}
 		<div class="tab-container">
-			<nav id="{{baseId}}_other_props_tabs_wrap">
+			<nav id="{{baseId}}_other_props_tabs_wrap" {% if attachments|length %}class="on"{% endif %}>
 				<ul id="{{baseId}}_other_props_tabs">
 					<li data-tab-for="> .tab-properties">{{ phrase('agent.general.properties') }}</li>
-					<li data-tab-for="> .tab-attach">{{ phrase('agent.general.attachments') }}</li>
+					<li data-tab-for="> .tab-attach" {% if attachments|length %}class="on"{% endif %}>{{ phrase('agent.general.attachments') }}</li>
 				</ul>
 			</nav>
-			<div class="content-wrapper" id="{{baseId}}_other_props_tabs_content" style="display: none">
+			<div class="content-wrapper" id="{{baseId}}_other_props_tabs_content" {% if not attachments|length %}style="display: none"{% endif %}>
 				{# Tab Properties #}
 				<div class="tab-properties" style="display: none">
 					<dl>
@@ -82,13 +165,21 @@ pageMeta.baseId = '{{ baseId }}';
 				{# /Tab Properties #}
 
 				{# Tab Attach #}
-				<div class="tab-attach" style="display: none">
+				<div class="tab-attach" {% if not attachments|length %}style="display: none"{% endif %}>
 					{% include 'AgentBundle:Common:attach-row-tmpl.html.twig' with {formname: 'newfeedback[attach_ids][]'} %}
 					<h6>{{ phrase('agent.general.attachments') }}</h6>
 					<div class="file-input">
 						<input type="file" name="file-upload" multiple="multiple" />
 					</div>
-					<ul class="files file-list"></ul>
+          <ul class="files file-list">
+            {% for attachment in attachments %}
+              <li class="in" style="height: 18px;">
+                <input type="hidden" name="newfeedback[attach_ids][]" value="{{ attachment.blob.id }}">
+                <em class="remove-attach-trigger"></em>
+                <label><a href="{{ attachment.url }}" target="_blank">{{ attachment.blob.filename }}</a><span>&nbsp;{{ attachment.filesize_readable }}</span></label>
+              </li>
+            {% endfor %}
+          </ul>
 				</div>
 				{# /Tab Attach #}
 			</div>

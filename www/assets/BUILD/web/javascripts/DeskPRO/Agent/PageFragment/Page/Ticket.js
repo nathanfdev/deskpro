@@ -612,6 +612,13 @@ DeskPRO.Agent.PageFragment.Page.Ticket = new Orb.Class({
 			})();
 		}
 
+    var decTabCount = function(id) {
+      var countEl = self.getEl(id);
+      var count = countEl.data('count');
+      count = count > 0 ? count - 1 : 0;
+      countEl.data('count', count).html(count);
+    };
+
 		this.linkExistingTicket = new DeskPRO.Agent.PageFragment.Page.TicketHelper.LinkTicket(this, {
 			loadUrl: BASE_URL + "agent/tickets/" + this.meta.ticket_id + "/link-overlay",
 			saveUrl: BASE_URL + "agent/tickets/" + this.meta.ticket_id + "/link",
@@ -645,6 +652,39 @@ DeskPRO.Agent.PageFragment.Page.Ticket = new Orb.Class({
 				},
 				success: function() {
 					$(this).closest('tr').remove();
+          decTabCount('linked_count');
+				}
+			});
+		});
+
+		this.linkExistingFeedback = new DeskPRO.Agent.PageFragment.Page.TicketHelper.LinkFeedback(this, {
+			loadUrl: BASE_URL + "agent/tickets/" + this.meta.ticket_id + "/link-feedback-overlay",
+			saveUrl: DP_BASE_API_URL + "/v2/tickets/" + this.meta.ticket_id + "/feedback_links",
+      reloadPageUrl: BASE_URL + 'agent/tickets/' + this.meta.ticket_id
+		});
+
+		this.ownObject(this.linkExistingFeedback);
+
+		this.wrapper.find('.unlink-feedback').on('click', function(ev) {
+			Orb.cancelEvent(ev);
+
+			if (!confirm("Are you sure you want to unlink the selected feedback?")) {
+				return;
+			}
+
+			var ticketFeedbackLinkId = $(this).data('id');
+
+			$(this).closest('tr').hide();
+			$.ajax({
+				url: DP_BASE_API_URL + "/v2/tickets/" + self.meta.ticket_id + "/feedback_links/" + ticketFeedbackLinkId,
+				type: 'DELETE',
+        withActionAlerts: true,
+				error: function() {
+					$(this).closest('tr').show();
+				},
+				success: function() {
+					$(this).closest('tr').remove();
+          decTabCount('linked_feedback_count');
 				}
 			});
 		});
@@ -1408,6 +1448,10 @@ DeskPRO.Agent.PageFragment.Page.Ticket = new Orb.Class({
 		if (this.linkExistingTicket) {
       this.linkExistingTicket.destroy();
       this.linkExistingTicket = null;
+		}
+		if (this.linkExistingFeedback) {
+      this.linkExistingFeedback.destroy();
+      this.linkExistingFeedback = null;
 		}
 		if (this.labelsInput) {
       this.labelsInput.destroy();
@@ -2238,6 +2282,14 @@ DeskPRO.Agent.PageFragment.Page.Ticket = new Orb.Class({
 						self.linkExistingTicket.open();
             break;
 
+          case 'link_existing_feedback':
+						self.linkExistingFeedback.open();
+            break;
+
+					case 'link_new_feedback':
+						DeskPRO_Window.newFeedbackLoader.newLinkedFeedback(self.meta.ticket_id);
+						break;
+
 					case 'kb-pending':
 						if (!self.pendingKbOverlay) {
 							var el = self.getEl('pending_add');
@@ -2795,6 +2847,10 @@ DeskPRO.Agent.PageFragment.Page.Ticket = new Orb.Class({
 
 			case 'linked_ticket':
 				DeskPRO_Window.newTicketLoader.newLinkedTicket(this.meta.ticket_id, messageId);
+				break;
+
+			case 'link_new_feedback':
+        DeskPRO_Window.newFeedbackLoader.newLinkedFeedback(this.meta.ticket_id, messageId);
 				break;
 
 			case 'fwd_legacy':

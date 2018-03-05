@@ -55,6 +55,7 @@ use Application\DeskPRO\Entity\Feedback;
 use Application\DeskPRO\Entity\FeedbackCategory;
 use Application\DeskPRO\Entity\FeedbackComment;
 use Application\DeskPRO\Entity\FeedbackStatusCategory;
+use Application\DeskPRO\Entity\FeedbackSubscription;
 use Application\DeskPRO\Entity\GlossaryWord;
 use Application\DeskPRO\Entity\GlossaryWordDefinition;
 use Application\DeskPRO\Entity\Job;
@@ -120,6 +121,7 @@ use DeskPRO\Bundle\AppBundle\Entity\OAuthClient;
 use DeskPRO\Bundle\AppBundle\Entity\Report\ScheduledReport;
 use DeskPRO\Bundle\AppBundle\Entity\Snippet;
 use DeskPRO\Bundle\AppBundle\Entity\SnippetTranslation;
+use DeskPRO\Bundle\AppBundle\Entity\TicketFeedbackLink;
 use DeskPRO\Bundle\AppBundle\Entity\TicketFilter;
 use DeskPRO\Bundle\AppBundle\Entity\TicketFollowUp;
 use DeskPRO\Bundle\AppBundle\Entity\VoiceAccount;
@@ -316,6 +318,7 @@ class ObjectsManager
             'Download'                  => [Factory\SimpleFactory::class, 'create', Download::class],
             'DownloadCategory'          => [Factory\SimpleFactory::class, 'create', DownloadCategory::class],
             'Feedback'                  => [Factory\CommonFactories::class, 'feedback'],
+            'FeedbackSubscription'      => [Factory\SimpleFactory::class, 'create', FeedbackSubscription::class],
             'FeedbackCategory'          => [Factory\SimpleFactory::class, 'create', FeedbackCategory::class],
             'FeedbackStatusCategory'    => [Factory\SimpleFactory::class, 'create', FeedbackStatusCategory::class],
             'FeedbackComment'           => [Factory\SimpleFactory::class, 'create', FeedbackComment::class],
@@ -337,6 +340,7 @@ class ObjectsManager
             'TicketFlagged'             => [Factory\SimpleFactory::class, 'create', TicketFlagged::class],
             'TicketMacro'               => [Factory\SimpleFactory::class, 'create', TicketMacro::class],
             'TicketMessage'             => [Factory\SimpleFactory::class, 'create', TicketMessage::class],
+            'TicketFeedbackLink'        => [Factory\SimpleFactory::class, 'create', TicketFeedbackLink::class],
             'TicketSla'                 => [Factory\SimpleFactory::class, 'create', TicketSla::class],
             'TicketLog'                 => [Factory\SimpleFactory::class, 'create', TicketLog::class],
             'TicketFollowUp'            => [Factory\SimpleFactory::class, 'create', TicketFollowUp::class],
@@ -421,6 +425,7 @@ class ObjectsManager
             'Ticket'                    => [$this, 'find', Ticket::class],
             'TicketLayout'              => [$this, 'find', TicketLayout::class],
             'TicketMessage'             => [$this, 'find', TicketMessage::class],
+            'TicketFeedbackLink'        => [$this, 'find', TicketFeedbackLink::class],
             'TicketPriority'            => [$this, 'find', TicketPriority::class],
             'TicketWorkflow'            => [$this, 'find', TicketWorkflow::class],
             'TicketCategory'            => [$this, 'find', TicketCategory::class],
@@ -468,6 +473,7 @@ class ObjectsManager
             'AgentChatParticipant'      => [$this, 'find', AgentChatParticipant::class],
             'AgentChatMessage'          => [$this, 'find', AgentChatMessage::class],
             'Feedback'                  => [$this, 'find', Feedback::class],
+            'FeedbackSubscription'      => [$this, 'find', FeedbackSubscription::class],
             'FeedbackStatusCategory'    => [$this, 'find', FeedbackStatusCategory::class],
             'FeedbackCategory'          => [$this, 'find', FeedbackCategory::class],
             'FeedbackComment'           => [$this, 'find', FeedbackComment::class],

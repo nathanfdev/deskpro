@@ -26,34 +26,25 @@
  * ~ Thanks, Everyone at Team DeskPRO
  */
 
-/**
- * DeskPRO.
- *
- * @category Entities
- */
+namespace DeskPRO\Bundle\AppBundle\Entity\Repository;
 
-namespace Application\DeskPRO\EntityRepository;
+use Application\DeskPRO\Entity\Ticket;
+use Doctrine\ORM\EntityRepository;
 
-use Application\DeskPRO\Entity\Feedback as FeedbackEntity;
-
-class FeedbackSubscription extends AbstractEntityRepository
+class TicketFeedbackLinkRepository extends EntityRepository
 {
-    /**
-     * @param FeedbackEntity|int $feedback
-     *
-     * @return array
-     */
-    public function getSubscribedPersonIds($feedback)
+    public function findByTicketAndJoinFeedbackData(Ticket $ticket)
     {
-        if ($feedback instanceof FeedbackEntity) {
-            $feedback = $feedback->id;
-        }
+        $qb = $this->createQueryBuilder('tfl');
+        $qb
+            ->select('tfl', 'feedback', 'category', 'status_category')
+            ->leftJoin('tfl.feedback', 'feedback')
+            ->leftJoin('feedback.category', 'category')
+            ->leftJoin('feedback.status_category', 'status_category')
+            ->where('tfl.ticket = :ticket')
+            ->setParameter('ticket', $ticket)
+        ;
 
-        $query = $this->getEntityManager()->createQuery(
-            'SELECT DISTINCT IDENTITY(fs.person) FROM DeskPRO:FeedbackSubscription fs WHERE fs.feedback = :feedback'
-        );
-        $query->setParameter('feedback', $feedback);
-
-        return array_map('current', $query->getResult());
+        return $qb->getQuery()->getResult();
     }
 }
