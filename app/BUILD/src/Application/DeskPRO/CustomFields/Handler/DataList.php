@@ -26,10 +26,6 @@
  * ~ Thanks, Everyone at Team DeskPRO
  */
 
-/**
- * DeskPRO.
- */
-
 namespace Application\DeskPRO\CustomFields\Handler;
 
 /**
@@ -55,6 +51,9 @@ class DataList extends HandlerAbstract
         return $default;
     }
 
+    /**
+     * {@inheritdoc}
+     */
     public function getDataFromForm(array $form_data)
     {
         $valueIfNotPresent = new \stdClass();
@@ -80,16 +79,25 @@ class DataList extends HandlerAbstract
         return [];
     }
 
+    /**
+     * {@inheritdoc}
+     */
     public function getSearchCapabilities()
     {
         return ['is', 'not', 'contains', 'notcontains'];
     }
 
+    /**
+     * {@inheritdoc}
+     */
     public function getFilterCapabilities()
     {
-        return ['is', 'not'];
+        return ['is', 'not', 'empty', 'notempty'];
     }
 
+    /**
+     * {@inheritdoc}
+     */
     public function getSearchType()
     {
         return 'input';

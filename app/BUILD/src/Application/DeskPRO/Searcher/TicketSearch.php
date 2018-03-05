@@ -2285,11 +2285,17 @@ class TicketSearch extends SearcherAbstract
                                             }
                                         }
                                         break;
-                                    case 'not_isset':
+                                    case self::OP_NOT_ISSET:
                                         $wheres[] = "$field IS NULL";
                                         break;
-                                    case 'isset':
+                                    case self::OP_ISSET:
                                         $wheres[] = "$field IS NOT NULL";
+                                        break;
+                                    case self::OP_EMPTY:
+                                        $wheres[] = "$field IS NULL OR $field = ''";
+                                        break;
+                                    case self::OP_NOT_EMPTY:
+                                        $wheres[] = "$field != ''";
                                         break;
                                 }
 
@@ -2394,14 +2400,14 @@ class TicketSearch extends SearcherAbstract
                                             $wheres[] = "custom_data_ticket_$join_id.id IS NULL";
                                         }
                                         break;
-                                    case 'not_isset':
+                                    case self::OP_NOT_ISSET:
                                         $joins[] = [
                                             'custom_data_ticket',
                                             "LEFT JOIN custom_data_ticket AS custom_data_ticket_$join_id ON (custom_data_ticket_$join_id.ticket_id = tickets.id AND custom_data_ticket_$join_id.root_field_id = {$field_def->id})",
                                         ];
                                         $wheres[] = "custom_data_ticket_$join_id.id IS NULL";
                                         break;
-                                    case 'isset':
+                                    case self::OP_ISSET:
                                         $joins[] = [
                                             'custom_data_ticket',
                                             "LEFT JOIN custom_data_ticket AS custom_data_ticket_$join_id ON (custom_data_ticket_$join_id.ticket_id = tickets.id AND custom_data_ticket_$join_id.root_field_id = {$field_def->id})",

@@ -582,6 +582,8 @@ return [
     'agent.general.display_name'                               => 'Display name',
     'agent.general.display_options'                            => 'Display Options',
     'agent.general.do_not_refresh'                             => 'Do Not Refresh',
+    'agent.general.empty'                                      => 'is empty',
+    'agent.general.not_empty'                                  => 'is not empty',
     'agent.general.does_not_contain'                           => 'does not contain',
     'agent.general.does_not_include'                           => 'does not include',
     'agent.general.does_not_include_label'                     => 'does not include label',
