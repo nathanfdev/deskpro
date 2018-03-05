@@ -4,11 +4,12 @@ define ['datatables', "datatables.pageResize"], () ->
       restrict: 'E'
       replace: true
       scope:
-        tableData: '@',
-        myIndex: '@',
+        tableData: '@'
+        jsCode: '@'
+        myIndex: '@'
         widgetId: '@'
         options: '@'
-        row: '@',
+        row: '@'
         col: '@'
 
       templateUrl: $sce.trustAsResourceUrl("ReportsInterfaceBundle:Dashboard/Widget:table_dt.html")
@@ -63,6 +64,16 @@ define ['datatables', "datatables.pageResize"], () ->
         if tableData and tableData.data?
           tableData.noRedraw = true
           initTable tableData
+        else if scope.jsCode
+          try
+            eval(scope.jsCode)
+          catch e
+            console.log(e)
+
+          if promise and promise.then
+            promise.then (response) ->
+              if response and response.data
+                initTable response
         else
           DashboardWidgetService
             .getWidget(conf).then (widget) =>

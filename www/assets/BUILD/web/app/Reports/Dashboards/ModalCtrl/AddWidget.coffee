@@ -20,6 +20,7 @@ define ['DeskPRO/Util/Arrays',], (Arrays) -> [
       type: null
       widget_id: 0
       widget_variables: null
+      js_code: "// your custom code should return promise object,\n// e.g.:\nvar promise = $.get('http://');"
 
     $scope.state = 'stats'
     $scope.searchText = ''
@@ -112,8 +113,11 @@ define ['DeskPRO/Util/Arrays',], (Arrays) -> [
     ####################################################################################################################
 
     $scope.makeChoice = (report) ->
-      $scope.reportWidget     = report
-      $scope.widget.widget_id = report.id
+      if report == 'advanced'
+        $scope.widget.widget_id = 'advanced'
+      else
+        $scope.reportWidget     = report
+        $scope.widget.widget_id = report.id
 
     $scope.chooseType = () ->
       $modalInstance.close({reportWidget: $scope.reportWidget, report: $scope.report, widget: $scope.widget})

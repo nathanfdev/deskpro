@@ -42,7 +42,7 @@ use Application\DeskPRO\Entity\ReportWidget as ReportWidgetEntity;
 use Application\DeskPRO\EntityRepository\CustomDefOrganization as CustomDefOrganizationRepository;
 use Application\DeskPRO\EntityRepository\CustomDefPerson as CustomDefPersonRepository;
 use Application\DeskPRO\EntityRepository\CustomDefTicket as CustomDefTicketRepository;
-use DeskPRO\Bundle\ReportBundle\Service\DashboardWidget;
+use DeskPRO\Bundle\ReportBundle\Dashboard\DashboardWidgetManager;
 
 class ReportWidget extends AbstractEntityRepository
 {
@@ -207,7 +207,7 @@ class ReportWidget extends AbstractEntityRepository
                     'month_resolved'                          => ['month resolved', 'DPQL_ALIAS(DPQL_MONTHNAME(%s.date_resolved), \'Month Resolved\')'],
                     'year_resolved'                           => ['year resolved', 'DPQL_ALIAS(DPQL_YEAR(%s.date_resolved), \'Year Resolved\')'],
                     'date_resolved'                           => ['date resolved', 'DPQL_ALIAS(DPQL_DATE(%s.date_resolved), \'Date Resolved\')'],
-                    DashboardWidget::WIDGET_VALUE_FROM_REPORT => ['value from report', DashboardWidget::WIDGET_VALUE_FROM_REPORT],
+                    DashboardWidgetManager::WIDGET_VALUE_FROM_REPORT => ['value from report', DashboardWidgetManager::WIDGET_VALUE_FROM_REPORT],
                 ],
                 'chats' => [
                     'department'                              => ['department', '%s.department'],
@@ -221,7 +221,7 @@ class ReportWidget extends AbstractEntityRepository
                     'year_created'                            => ['year created', 'DPQL_ALIAS(DPQL_YEAR(%s.date_created), \'Year Created\')'],
                     'date_created'                            => ['date created', 'DPQL_ALIAS(DPQL_DATE(%s.date_created), \'Date Created\')'],
                     'none'                                    => ['nothing', 'NULL'],
-                    DashboardWidget::WIDGET_VALUE_FROM_REPORT => ['value from report', DashboardWidget::WIDGET_VALUE_FROM_REPORT],
+                    DashboardWidgetManager::WIDGET_VALUE_FROM_REPORT => ['value from report', DashboardWidgetManager::WIDGET_VALUE_FROM_REPORT],
                 ],
                 'articles' => [
                     'person'                                  => ['person', '%s.person'],
@@ -232,7 +232,7 @@ class ReportWidget extends AbstractEntityRepository
                     'year_created'                            => ['year created', 'DPQL_ALIAS(DPQL_YEAR(%s.date_created), \'Year Created\')'],
                     'date_created'                            => ['date created', 'DPQL_ALIAS(DPQL_DATE(%s.date_created), \'Date Created\')'],
                     'none'                                    => ['nothing', 'NULL'],
-                    DashboardWidget::WIDGET_VALUE_FROM_REPORT => ['value from report', DashboardWidget::WIDGET_VALUE_FROM_REPORT],
+                    DashboardWidgetManager::WIDGET_VALUE_FROM_REPORT => ['value from report', DashboardWidgetManager::WIDGET_VALUE_FROM_REPORT],
                 ],
                 'article_comments' => [
                     'hour_created'                            => ['hour created', 'DPQL_ALIAS(DPQL_HOUR(%s.date_created), \'Hour Created\')'],
@@ -242,7 +242,7 @@ class ReportWidget extends AbstractEntityRepository
                     'year_created'                            => ['year created', 'DPQL_ALIAS(DPQL_YEAR(%s.date_created), \'Year Created\')'],
                     'date_created'                            => ['date created', 'DPQL_ALIAS(DPQL_DATE(%s.date_created), \'Date Created\')'],
                     'none'                                    => ['nothing', 'NULL'],
-                    DashboardWidget::WIDGET_VALUE_FROM_REPORT => ['value from report', DashboardWidget::WIDGET_VALUE_FROM_REPORT],
+                    DashboardWidgetManager::WIDGET_VALUE_FROM_REPORT => ['value from report', DashboardWidgetManager::WIDGET_VALUE_FROM_REPORT],
                 ],
                 'feedback' => [
                     'type'                                    => ['type', 'DPQL_ALIAS(%s.category, \'Type\')'],
@@ -256,7 +256,7 @@ class ReportWidget extends AbstractEntityRepository
                     'year_created'                            => ['year created', 'DPQL_ALIAS(DPQL_YEAR(%s.date_created), \'Year Created\')'],
                     'date_created'                            => ['date created', 'DPQL_ALIAS(DPQL_DATE(%s.date_created), \'Date Created\')'],
                     'none'                                    => ['nothing', 'NULL'],
-                    DashboardWidget::WIDGET_VALUE_FROM_REPORT => ['value from report', DashboardWidget::WIDGET_VALUE_FROM_REPORT],
+                    DashboardWidgetManager::WIDGET_VALUE_FROM_REPORT => ['value from report', DashboardWidgetManager::WIDGET_VALUE_FROM_REPORT],
                 ],
                 'feedback_comments' => [
                     'hour_created'                            => ['hour created', 'DPQL_ALIAS(DPQL_HOUR(%s.date_created), \'Hour Created\')'],
@@ -266,7 +266,7 @@ class ReportWidget extends AbstractEntityRepository
                     'year_created'                            => ['year created', 'DPQL_ALIAS(DPQL_YEAR(%s.date_created), \'Year Created\')'],
                     'date_created'                            => ['date created', 'DPQL_ALIAS(DPQL_DATE(%s.date_created), \'Date Created\')'],
                     'none'                                    => ['nothing', 'NULL'],
-                    DashboardWidget::WIDGET_VALUE_FROM_REPORT => ['value from report', DashboardWidget::WIDGET_VALUE_FROM_REPORT],
+                    DashboardWidgetManager::WIDGET_VALUE_FROM_REPORT => ['value from report', DashboardWidgetManager::WIDGET_VALUE_FROM_REPORT],
                 ],
             ],
             'dates' => [
@@ -284,31 +284,31 @@ class ReportWidget extends AbstractEntityRepository
                 'past_7_days'                             => ['in the past 7 days', '%PAST_7_DAYS%'],
                 'past_30_days'                            => ['in the past 30 days', '%PAST_30_DAYS%'],
                 'ever'                                    => ['any time', '%EVER%'],
-                DashboardWidget::WIDGET_VALUE_FROM_REPORT => ['value from report', DashboardWidget::WIDGET_VALUE_FROM_REPORT],
+                DashboardWidgetManager::WIDGET_VALUE_FROM_REPORT => ['value from report', DashboardWidgetManager::WIDGET_VALUE_FROM_REPORT],
             ],
             'statuses' => [
                 'tickets' => [
-                    'awaiting_user'                           => ['awaiting user', '%s.status = \'awaiting_user\''],
-                    'awaiting_agent'                          => ['awaiting agent', '%s.status = \'awaiting_agent\''],
-                    'unresolved'                              => ['unresolved', '%s.status IN (\'awaiting_user\', \'awaiting_agent\')'],
-                    'resolved'                                => ['resolved', '%s.status IN (\'resolved\', \'archived\')'],
-                    'hidden'                                  => ['hidden', '%s.status = \'hidden\''],
-                    'any'                                     => ['with any status', '1'],
-                    DashboardWidget::WIDGET_VALUE_FROM_REPORT => ['value from report', DashboardWidget::WIDGET_VALUE_FROM_REPORT],
+                    'awaiting_user'                                  => ['awaiting user', '%s.status = \'awaiting_user\''],
+                    'awaiting_agent'                                 => ['awaiting agent', '%s.status = \'awaiting_agent\''],
+                    'unresolved'                                     => ['unresolved', '%s.status IN (\'awaiting_user\', \'awaiting_agent\')'],
+                    'resolved'                                       => ['resolved', '%s.status IN (\'resolved\', \'archived\')'],
+                    'hidden'                                         => ['hidden', '%s.status = \'hidden\''],
+                    'any'                                            => ['with any status', '1'],
+                    DashboardWidgetManager::WIDGET_VALUE_FROM_REPORT => ['value from report', DashboardWidgetManager::WIDGET_VALUE_FROM_REPORT],
                 ],
             ],
             'orders' => [
                 'tickets' => [
                     // todo: number of messages
-                    'date_created_asc'                        => ['date created (ascending)', '%s.date_created ASC'],
-                    'date_created_desc'                       => ['date created (descending)', '%s.date_created DESC'],
-                    'last_agent_reply_asc'                    => ['last agent reply (ascending)', '%s.date_last_agent_reply ASC'],
-                    'last_agent_reply_desc'                   => ['last agent reply (descending)', '%s.date_last_agent_reply DESC'],
-                    'last_user_reply_asc'                     => ['last user reply (ascending)', '%s.date_last_user_reply ASC'],
-                    'last_user_reply_desc'                    => ['last user reply (descending)', '%s.date_last_user_reply DESC'],
-                    'total_waiting_asc'                       => ['total waiting time (ascending)', '%s.total_user_waiting ASC'],
-                    'total_waiting_desc'                      => ['total waiting time (descending)', '%s.total_user_waiting DESC'],
-                    DashboardWidget::WIDGET_VALUE_FROM_REPORT => ['value from report', DashboardWidget::WIDGET_VALUE_FROM_REPORT],
+                    'date_created_asc'                               => ['date created (ascending)', '%s.date_created ASC'],
+                    'date_created_desc'                              => ['date created (descending)', '%s.date_created DESC'],
+                    'last_agent_reply_asc'                           => ['last agent reply (ascending)', '%s.date_last_agent_reply ASC'],
+                    'last_agent_reply_desc'                          => ['last agent reply (descending)', '%s.date_last_agent_reply DESC'],
+                    'last_user_reply_asc'                            => ['last user reply (ascending)', '%s.date_last_user_reply ASC'],
+                    'last_user_reply_desc'                           => ['last user reply (descending)', '%s.date_last_user_reply DESC'],
+                    'total_waiting_asc'                              => ['total waiting time (ascending)', '%s.total_user_waiting ASC'],
+                    'total_waiting_desc'                             => ['total waiting time (descending)', '%s.total_user_waiting DESC'],
+                    DashboardWidgetManager::WIDGET_VALUE_FROM_REPORT => ['value from report', DashboardWidgetManager::WIDGET_VALUE_FROM_REPORT],
                 ],
             ],
         ];

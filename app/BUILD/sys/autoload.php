@@ -71,7 +71,6 @@ foreach ([
     'File_' => DP_APP_DIR.'/vendor-src/pear/lib',
     'PEAR_' => DP_APP_DIR.'/vendor-src/pear/lib',
     'EWSType_' => DP_APP_DIR.'/vendor-src/php-ews',
-    'Services_Twilio' => DP_APP_DIR.'/vendor-src/twilio-php',
 ] as $prefix => $dir) {
     $loader->add($prefix, $dir);
 }
@@ -82,10 +81,6 @@ $loader->addClassMap([
     'Akismet'                                         => DP_APP_DIR.'/vendor-src/php5-akismet/src/main/php/net/achingbrain/Akismet.class.php',
     'Browser'                                         => DP_APP_DIR.'/vendor-src/Browser/Browser.php',
     'CssMin'                                          => DP_APP_DIR.'/vendor-src/cssmin/cssmin.php',
-    'MimeMailParser'                                  => DP_APP_DIR.'/vendor-src/php-mime-mail-parser/MimeMailParser.php',
-    'MimeMailParser_attachment'                       => DP_APP_DIR.'/vendor-src/php-mime-mail-parser/attachment.class.php',
-    'Phirehose'                                       => DP_APP_DIR.'/vendor-src/phirehose/Phirehose.php',
-    'UserstreamPhirehose'                             => DP_APP_DIR.'/vendor-src/phirehose/UserstreamPhirehose.php',
     'HipChatApi'                                      => DP_APP_DIR.'/vendor-src/hipchat/HipChatApi.php',
     'Markdown_Parser'                                 => DP_APP_DIR.'/vendor-src/php-markdown/markdown.php',
     'FineDiff'                                        => DP_APP_DIR.'/vendor-src/PHP-FineDiff/finediff.php',
