@@ -111,9 +111,10 @@ class EditContainer extends React.Component {
     const { groupParams, report, labels } = this.props;
 
     const EditStatForm = reduxForm({
-      form:          'editStat',
-      initialValues: this.state.initialFormValue,
-      onSubmit:      this.onSubmit,
+      form:               'editStat',
+      initialValues:      this.state.initialFormValue,
+      onSubmit:           this.onSubmit,
+      enableReinitialize: true
     })(EditForm);
 
     const saveBtn = (<button

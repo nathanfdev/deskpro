@@ -182,7 +182,9 @@ export class EditFormComponent extends React.Component {
     groupBy:       PropTypes.string,
     dpqlParser:    PropTypes.func,
     change:        PropTypes.func,
+    initialize:    PropTypes.func,
     queryValues:   PropTypes.object,
+    initialValues: PropTypes.object,
     handleSubmit:  PropTypes.func,
     error:         PropTypes.string,
     extendedQuery: PropTypes.bool,
@@ -226,6 +228,7 @@ export class EditFormComponent extends React.Component {
   }
 
   componentDidMount() {
+    this.props.initialize(this.props.initialValues);
     this.props.change('query_input_mode', this.state.queryInputMode);
   }
 

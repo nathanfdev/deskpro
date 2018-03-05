@@ -102,7 +102,7 @@
     "redbox-react": "1.1.1",
     "redux": "3.5.x",
     "redux-actions": "0.9.1",
-    "redux-form": "^7.1.2",
+    "redux-form": "^7.2.3",
     "reselect": "2.0.1",
     "socket.io-client": "^2.0.3",
     "spin.js": "2.3.2",
