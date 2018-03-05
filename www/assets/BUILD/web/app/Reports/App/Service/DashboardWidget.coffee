@@ -84,9 +84,14 @@ define ['DeskPRO/Util/Arrays'], (Arrays) ->
         size_x: widget.sizeX
         size_y: widget.sizeY
         report: report.id
-        widget: widget.widget_id
         widget_variables: widgetVars
       }
+
+      if widget.widget_id == 'advanced'
+        data.js_code = widget.js_code
+      else
+        data.widget = widget.widget_id
+
       deferred = @$q.defer()
 
       @Api2

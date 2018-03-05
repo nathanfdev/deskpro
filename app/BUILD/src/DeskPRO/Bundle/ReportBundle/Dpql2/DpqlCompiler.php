@@ -31,8 +31,8 @@ namespace DeskPRO\Bundle\ReportBundle\Dpql2;
 use Application\DeskPRO\Entity\Person;
 use Application\DeskPRO\Entity\ReportWidget;
 use Application\DeskPRO\EntityRepository\ReportWidget as ReportWidgetRepository;
+use DeskPRO\Bundle\ReportBundle\Dashboard\DashboardWidgetManager;
 use DeskPRO\Bundle\ReportBundle\Dpql2\Statement\SelectPart;
-use DeskPRO\Bundle\ReportBundle\Service\DashboardWidget;
 use Doctrine\ORM\EntityManager;
 use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorage;
 
@@ -306,7 +306,7 @@ class DpqlCompiler
         if (isset($variables[$varName])) {
             $valueExists = isset($variables[$varName]['value']) && $variables[$varName]['value'];
             $value       = $valueExists ? strval($variables[$varName]['value']) : $default;
-            if ($value != DashboardWidget::WIDGET_VALUE_FROM_REPORT && isset($groupParams['dates'][$value])) {
+            if ($value != DashboardWidgetManager::WIDGET_VALUE_FROM_REPORT && isset($groupParams['dates'][$value])) {
                 return $groupParams['dates'][$value][1];
             }
         }
