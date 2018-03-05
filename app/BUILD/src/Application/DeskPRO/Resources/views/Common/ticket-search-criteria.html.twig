@@ -814,7 +814,8 @@
 				'lt': phrase('agent.general.is_less_than'),
 				'before': phrase('agent.general.before'),
 				'after': phrase('agent.general.after'),
-				'between': phrase('agent.general.between')
+				'empty': phrase('agent.general.empty'),
+				'notempty': phrase('agent.general.not_empty')
 			}
 		%}
 		{% for field in app.getTicketFieldManager().getDisplayArray() %}
