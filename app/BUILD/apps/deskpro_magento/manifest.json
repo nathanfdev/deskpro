@@ -9,7 +9,7 @@
 	"version_name": "1.0.0",
 	"is_single": false,
 	"author": {
-		"name": "DeskPRO",
+		"name": "Deskpro",
 		"email": "support@deskpro.com",
 		"link": "https://www.deskpro.com/"
 	},
@@ -55,14 +55,14 @@
 			"name": "enable_usersource",
 			"type": "checkbox",
 			"label": "Enable User Source",
-			"description": "Allow users to log in to DeskPRO using their Magento credentials?",
+			"description": "Allow users to log in to Deskpro using their Magento credentials?",
 			"native_only": true
 		},
 		{
 			"name": "enable_sso",
 			"type": "checkbox",
 			"label": "Enable Background SSO",
-			"description": "When SSO is enabled, users will be automatically logged-in if they visit DeskPRO while they have an active Magento session.",
+			"description": "When SSO is enabled, users will be automatically logged-in if they visit Deskpro while they have an active Magento session.",
 			"native_only": true
 		},
 		{

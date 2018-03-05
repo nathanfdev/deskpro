@@ -9,7 +9,7 @@
 	"version_name": "1.0.0",
 	"is_single": false,
 	"author": {
-		"name": "DeskPRO",
+		"name": "Deskpro",
 		"email": "support@deskpro.com",
 		"link": "https://www.deskpro.com/"
 	},
@@ -26,14 +26,14 @@
 			"name": "external_key",
 			"type": "text",
 			"label": "External Key",
-			"description": "This is provided by Okta. Login to Okta and view the DeskPRO instructions in your Admin area.",
+			"description": "This is provided by Okta. Login to Okta and view the Deskpro instructions in your Admin area.",
 			"native_only": true
 		},
 		{
 			"name": "sso_url",
 			"type": "text",
 			"label": "Redirect Login URL",
-			"description": "This is provided by Okta. Login to Okta and view the DeskPRO instructions in your Admin area.",
+			"description": "This is provided by Okta. Login to Okta and view the Deskpro instructions in your Admin area.",
 			"native_only": true,
 			"is_required": true
 		},
@@ -41,7 +41,7 @@
 			"name": "issuer_id",
 			"type": "text",
 			"label": "IDP Metadata Public Link",
-			"description": "This is provided by Okta. Login to Okta and view the DeskPRO instructions in your Admin area.",
+			"description": "This is provided by Okta. Login to Okta and view the Deskpro instructions in your Admin area.",
 			"native_only": true
 		},
 		{
@@ -69,7 +69,7 @@
 			"name": "sso_type",
 			"type": "choice",
 			"label": "SSO Method",
-			"description": "When SSO is enabled, users will be automatically logged-in when they visit DeskPRO.",
+			"description": "When SSO is enabled, users will be automatically logged-in when they visit Deskpro.",
 			"native_only": true,
 			"default_value": "none",
 			"options": [
