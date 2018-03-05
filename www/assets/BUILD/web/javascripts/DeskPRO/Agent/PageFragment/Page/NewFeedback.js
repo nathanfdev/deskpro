@@ -108,7 +108,6 @@ DeskPRO.Agent.PageFragment.Page.NewFeedback = new Orb.Class({
 				}
 
 				if (data.success) {
-          window.AgentLegacyBundle.copyTextToClipboard(data.feedback_url);
 					DeskPRO_Window.runPageRoute('page:' + BASE_URL + 'agent/feedback/view/' + data.feedback_id);
 					this.markForReload();
 					this.closeSelf();
