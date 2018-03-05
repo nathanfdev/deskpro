@@ -937,6 +937,26 @@ class Ticket extends DomainObject implements HighlightableModelInterface, Labels
     }
 
     /**
+     * @return TicketParticipant[]|ArrayCollection
+     */
+    public function getCcs()
+    {
+        return $this->participants->filter(function (TicketParticipant $participant) {
+            return $participant->getPerson() && !$participant->getPerson()->isAgent();
+        });
+    }
+
+    /**
+     * @return TicketParticipant[]|ArrayCollection
+     */
+    public function getFollowers()
+    {
+        return $this->participants->filter(function (TicketParticipant $participant) {
+            return $participant->getPerson() && $participant->getPerson()->isAgent();
+        });
+    }
+
+    /**
      * @return Ticket
      */
     public function getParentTicket()
