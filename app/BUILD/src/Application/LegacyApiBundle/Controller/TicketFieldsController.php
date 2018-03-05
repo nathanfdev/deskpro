@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2017, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2018, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -29,9 +29,9 @@
 /**
  * DeskPRO.
  */
-
 namespace Application\LegacyApiBundle\Controller;
 
+use Application\DeskPRO\CustomFields\Form\AliasListHelper;
 use Application\DeskPRO\Entity\CustomDefTicket;
 use Application\DeskPRO\Entity\Product;
 use Application\DeskPRO\Entity\TicketCategory;
@@ -161,8 +161,11 @@ class TicketFieldsController extends AbstractController implements ProtectedCont
             }
         }
 
+        $aliasListHelper = new AliasListHelper();
+        $alias = $aliasListHelper->findAdminAlias($field);
+
         $data          = [
-            'field' => $field->toApiData(),
+            'field' => array_merge($field->toApiData(), ['alias' => (string) $alias]),
             'referencedBy' => $referencedBy
         ];
 
@@ -230,8 +233,14 @@ class TicketFieldsController extends AbstractController implements ProtectedCont
             return $this->createApiErrorResponse('validation_error', 'Empty title');
         }
 
-        $container = $this->getContainer();
-        $helper = new Form\FormHelper($container->getEm(), $container->getFormFactory());
+        // there is no separate api to change a single alias, must change all aliases
+        // so we either add or remove the new alias to/from the list of existing aliases
+        if ($id && array_key_exists('alias', $post)) {
+            $aliasListHelper = new AliasListHelper();
+            $post['alias'] = $aliasListHelper->changeAdminAlias($field, $post['alias']);
+        }
+
+        $helper = $this->get(Form\FormHelper::class);
         $helper->saveFormToField($field, $post);
 
         if ($id) {

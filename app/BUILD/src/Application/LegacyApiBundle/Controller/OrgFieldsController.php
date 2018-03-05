@@ -33,6 +33,7 @@
 namespace Application\LegacyApiBundle\Controller;
 
 use Application\DeskPRO\CustomFields\Form;
+use Application\DeskPRO\CustomFields\Form\AliasListHelper;
 use Application\LegacyApiBundle\PermissionStrategy\AdminManagePermission;
 use Application\LegacyApiBundle\PermissionStrategy\MultiPermissions;
 use Application\LegacyApiBundle\PermissionStrategy\PassPermission;
@@ -83,8 +84,11 @@ class OrgFieldsController extends AbstractController implements ProtectedControl
             throw $this->createNotFoundException();
         }
 
+        $aliasListHelper = new AliasListHelper();
+        $alias = $aliasListHelper->findAdminAlias($field);
+
         $data          = [];
-        $data['field'] = $field->toApiData();
+        $data['field'] = array_merge($field->toApiData(), ['alias' => (string) $alias]);
 
         return $this->createApiResponse($data);
     }
@@ -113,9 +117,14 @@ class OrgFieldsController extends AbstractController implements ProtectedControl
             return $this->createApiErrorResponse('validation_error', 'Empty title');
         }
 
-        $container = $this->getContainer();
-        $helper    = new Form\FormHelper($container->getEm(), $container->getFormFactory());
+        // there is no separate api to change a single alias, must change all aliases
+        // so we either add or remove the new alias to/from the list of existing aliases
+        if ($id && array_key_exists('alias', $post)) {
+            $aliasListHelper = new AliasListHelper();
+            $post['alias'] = $aliasListHelper->changeAdminAlias($field, $post['alias']);
+        }
 
+        $helper = $this->get(Form\FormHelper::class);
         $helper->saveFormToField($field, $post);
 
         if ($id) {

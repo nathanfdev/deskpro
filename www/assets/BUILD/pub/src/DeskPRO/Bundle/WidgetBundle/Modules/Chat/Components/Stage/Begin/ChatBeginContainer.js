@@ -219,7 +219,7 @@ export class ChatBeginContainer extends React.Component {
       } else if (chatDepartments.size > 0) {
         formData.chat_department = chatDepartments.first().get('id');
       }
-    } else if (children && children.type === ChatBeginSimple && chatDepartments.size > 1) {
+    } else if (children && children.type.name === ChatBeginSimple.name && chatDepartments.size > 1) {
       formData.chat_department = chatDepartments.first().get('id');
     } else if (chatDepartments.size > 1) {
       formData.chat_department = '';

@@ -1,6 +1,6 @@
 import React from 'react';
 import SectionHeader from 'DeskPRO/Bundle/AdminBundle/Modules/Common/Components/SectionHeader';
-import { storiesOf } from '@kadira/storybook';
+import { storiesOf } from '@storybook/react';
 import { adminCss } from '../../../decorators';
 
 storiesOf('Admin: Common', module)

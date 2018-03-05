@@ -1,5 +1,5 @@
 import React from 'react';
-import { storiesOf, action, linkTo } from '@kadira/storybook';
+import { storiesOf, action, linkTo } from '@storybook/react';
 import Isvg from 'react-inlinesvg';
 import logoSvg from 'DeskPRO/Bundle/DemoBundle/Resources/img/logo.svg';
 import { Login } from 'DeskPRO/Bundle/DemoBundle/Modules/Login/Components/Login';

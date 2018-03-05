@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2017, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2018, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -28,12 +28,21 @@
 
 namespace DeskPRO\Bundle\AppBundle\ObjectAlias;
 
-
 class Converters
 {
     /**
+     * @param QualifiedName $name
+     * @return string
+     */
+    public static function toStringFromName( QualifiedName $name)
+    {
+        return implode(QualifiedName::QUALIFIER_SEPARATOR, $name->toList());
+    }
+
+    /**
      * @param string $alias
-     * @return Name
+     *
+     * @return QualifiedName
      */
     public static function toNameFromString($alias)
     {
@@ -42,23 +51,24 @@ class Converters
             return null;
         }
 
-        return new Name(array_pop($parts), $parts);
+        return new QualifiedName(array_pop($parts), $parts);
     }
-
 
     /**
      * @param $alias
+     *
      * @return array
      */
     public static function toNamePartsFromString( $alias)
     {
-        return explode(":", $alias);
+        return explode(QualifiedName::QUALIFIER_SEPARATOR, $alias);
     }
 
     /**
      * Flattens the list of object aliases into a list of strings which includes all possible named derivations of an alias
      *
      * @param ObjectAliasInterface[] $mappings
+     *
      * @return array|string[]
      */
     public static function toMergedList($mappings)
@@ -75,25 +85,12 @@ class Converters
      * Returns a list of aliases ordered from most specific to least specific
      *
      * @param \DeskPRO\Bundle\AppBundle\ObjectAlias\ObjectAliasInterface $mapping
+     *
      * @return array|string[]
      */
     public static function toList(ObjectAliasInterface $mapping)
     {
-        $aliases = [];
-        foreach ($mapping->getQualifiers() as $qualifier) {
-            $alias = implode(':', $qualifier) . ':' . $mapping->getAlias();
-            $aliases[$alias] = count($qualifier);
-        }
-        asort($aliases, SORT_NUMERIC);
-
-
-        $aliases = array_merge(
-            [ $mapping->getObjectId() ],
-            array_keys($aliases),
-            [$mapping->getAlias()]
-        );
-
+        $aliases = [ $mapping->getObjectId(), $mapping->getQualifiedName() ];
         return array_values(array_filter($aliases, 'is_string'));
     }
-
 }

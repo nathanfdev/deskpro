@@ -128,9 +128,17 @@ abstract class CustomFieldAbstract
 
         $saveAlias  = !is_null($this->alias) && ObjectAlias\Aliases::canHaveAlias($this->_field, $this->_em);
         $alias = null;
-        if ($saveAlias && '' !== (string) $this->alias) {
+        if ($saveAlias && ( is_string($this->alias) || $this->alias instanceof  StringObject ) && '' !== (string) $this->alias) {
             $aliasBuilder = new ObjectAlias\Builder($this->_em);
             $alias = ObjectAlias\Aliases::createAlias((string) $this->alias, $this->_field, $aliasBuilder);
+        } else if ($saveAlias && is_array($this->alias)) {
+            $alias = array_filter($this->alias, function ($x) {
+               return !empty(trim($x));
+            });
+            $alias = array_map(function ($x) {
+                $aliasBuilder = new ObjectAlias\Builder($this->_em);
+                return ObjectAlias\Aliases::createAlias((string) $x, $this->_field, $aliasBuilder);
+            }, $alias);
         }
 
         $field->title          = $this->title;
@@ -157,7 +165,12 @@ abstract class CustomFieldAbstract
             $this->_em->flush();
 
             if ($saveAlias) {
-                $this->saveAlias($alias);
+                if (is_array($alias)) {
+                    $this->saveAliasList($alias);
+                } else {
+                    $this->saveAlias($alias);
+                }
+
             }
 
             $this->saveAdditional();
@@ -167,6 +180,47 @@ abstract class CustomFieldAbstract
         } catch (\Exception $e) {
             $this->_em->rollback();
             throw $e;
+        }
+    }
+
+    /**
+     * @param array|ObjectAlias\AbstractAlias[] $aliasList
+     */
+    protected function saveAliasList(array $aliasList) {
+        if (empty($aliasList)) {
+            $this->saveAlias();
+        }
+
+        $existingAliasList = $this->_field->getAliases();
+        /** @var array|ObjectAlias\AbstractAlias[] $removals */
+        $removals = [];
+        /** @var array|ObjectAlias\AbstractAlias[] $additions */
+        $additions = null;
+
+        if (!$existingAliasList || empty($existingAliasList)) {
+            $additions = $aliasList;
+        } else {
+            $additions = $aliasList;
+            foreach($existingAliasList as $existingAlias) {
+                $keep = false;
+                for($i = 0; $i < count($additions), $keep === false; $i++) {
+                    $keep = Comparators::equal($aliasList[$i], $existingAlias);
+                }
+
+                if ($keep) {
+                    array_splice($additions, $i-1, 1);
+                } else {
+                    $removals[] = $existingAlias;
+                }
+            }
+        }
+
+        foreach ($removals as $alias) {
+            $this->_em->remove($alias);
+        }
+
+        foreach ($additions as $alias) {
+            $this->_em->persist($alias);
         }
     }
 

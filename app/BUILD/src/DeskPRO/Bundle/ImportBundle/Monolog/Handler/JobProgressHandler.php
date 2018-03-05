@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2017, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2018, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -86,6 +86,10 @@ class JobProgressHandler extends AbstractProcessingHandler
      */
     public function flushLog()
     {
+        if (!$this->jobId) {
+            return;
+        }
+
         $this->em->clear(Job::class);
         $job = $this->em->find(Job::class, $this->jobId);
         if (!$job) {
