@@ -191,16 +191,6 @@ class TicketEmailBuilder
     }
 
     /**
-     * @param Person[] $people
-     *
-     * @return $this
-     */
-    public function setToPeople(array $people)
-    {
-        throw new \RuntimeException();
-    }
-
-    /**
      * What type of user the email is intended for. This is a safety feature.
      * For examlpe, if it's an agent email but the user isn't an agent, we can catch
      * an error.

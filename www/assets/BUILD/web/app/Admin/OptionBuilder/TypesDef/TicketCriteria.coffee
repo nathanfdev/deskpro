@@ -82,6 +82,11 @@ define [
         })
 
         options.push({
+          title: 'CC(s) were added',
+          value: 'CheckEmailCcAdded'
+        })
+
+        options.push({
           title: 'Email Header',
           value: 'CheckEmailHeader'
         })
@@ -734,6 +739,11 @@ define [
       options.propName = 'email'
       options.operators = ['is', 'not', 'contains', 'notcontains', 'is_regex', 'not_regex']
       def = @getStandardInput(options)
+      return def
+
+    getCheckEmailCcAdded: (options = {}) ->
+      options.propName = 'ccs_added'
+      def = @getStandardIs(options)
       return def
 
     getCheckEmailCcName: (options = {}) ->

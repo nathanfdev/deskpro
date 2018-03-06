@@ -3,6 +3,8 @@
 namespace DeskPRO\Bundle\AppBundle\Twig;
 
 use Application\DeskPRO\Entity\Ticket;
+use Application\DeskPRO\Entity\TicketParticipant;
+use Application\DeskPRO\ORM\StateChange\ChangeCollection;
 use Application\DeskPRO\Tickets\ExecutorContextInterface;
 use DeskPRO\Bundle\AppBundle\Settings\BrandAwareSettingsResolver;
 
@@ -91,6 +93,7 @@ class TwigTemplateRenderer
             'helpdesk_name' => $this->settingsResolver->getSetting('core.deskpro_name'),
             'site_name'     => $this->settingsResolver->getSetting('core.site_name'),
             'user_vars'     => $context->getUserVars(),
+            'new_cc_emails' => $this->getNewCcs($ticket),
         ];
 
         if ($extraVars) {
@@ -108,5 +111,29 @@ class TwigTemplateRenderer
         }
 
         return $rendered;
+    }
+
+    /**
+     * @param Ticket $ticket
+     *
+     * @return array
+     */
+    private function getNewCcs(Ticket $ticket)
+    {
+        $changes   = $ticket->getStateChangeRecorder();
+        $ccChanges = $changes->getChangesForField('participants');
+        $emails    = [];
+
+        /** @var ChangeCollection $ccChange */
+        foreach ($ccChanges as $ccChange) {
+            /** @var TicketParticipant $participant */
+            foreach ($ccChange->getAddedElements() as $participant) {
+                if ($participant->getPerson() && !$participant->getPerson()->isAgent()) {
+                    $emails[] = $participant->getPerson()->getPrimaryEmailAddress();
+                }
+            }
+        }
+
+        return implode(', ', $emails);
     }
 }
