@@ -1,10 +1,10 @@
 <?php
 
 /*
- * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
+ * Deskpro (r) has been developed by Deskpro Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2018, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2018, Deskpro Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -12,18 +12,18 @@
  * By using this software, you acknowledge having read the license
  * and agree to be bound thereby.
  *
- * Please note that DeskPRO is not free software. We release the full
+ * Please note that Deskpro is not free software. We release the full
  * source code for our software because we trust our users to pay us for
  * the huge investment in time and energy that has gone into both creating
  * this software and supporting our customers. By providing the source code
  * we preserve our customers' ability to modify, audit and learn from our
- * work. We have been developing DeskPRO since 2001, please help us make it
+ * work. We have been developing Deskpro since 2001, please help us make it
  * another decade.
  *
  * Like the work you see? Think you could make it better? We are always
  * looking for great developers to join us: http://www.deskpro.com/jobs/
  *
- * ~ Thanks, Everyone at Team DeskPRO
+ * ~ Thanks, Everyone at Team Deskpro
  */
 
 return [
@@ -891,33 +891,34 @@ return [
         'skipPostBuild' => false,
         'isOnlineBuild' => true,
     ],
-    1519215169 => [
-        'file'          => '/src/Application/InstallBundle/Upgrade/Build/2018/02/Build1519215169.php',
-        'classname'     => 'Application\InstallBundle\Upgrade\Build\Build1519215169',
+    1520331566 => [
+        'file'          => '/src/Application/InstallBundle/Upgrade/Build/2018/03/Build1520331566.php',
+        'classname'     => 'Application\InstallBundle\Upgrade\Build\Build1520331566',
         'skipPostBuild' => false,
         'isOnlineBuild' => true,
     ],
-    1519218919 => [
-        'file'          => '/src/Application/InstallBundle/Upgrade/Build/2018/02/Build1519218919.php',
-        'classname'     => 'Application\InstallBundle\Upgrade\Build\Build1519218919',
+    1520331567 => [
+        'file'          => '/src/Application/InstallBundle/Upgrade/Build/2018/03/Build1520331567.php',
+        'classname'     => 'Application\InstallBundle\Upgrade\Build\Build1520331567',
         'skipPostBuild' => false,
         'isOnlineBuild' => false,
     ],
-    1519315182 => [
-        'file'          => '/src/Application/InstallBundle/Upgrade/Build/2018/02/Build1519315182.php',
-        'classname'     => 'Application\InstallBundle\Upgrade\Build\Build1519315182',
+    1520331568 => [
+        'file'          => '/src/Application/InstallBundle/Upgrade/Build/2018/03/Build1520331568.php',
+        'classname'     => 'Application\InstallBundle\Upgrade\Build\Build1520331568',
         'skipPostBuild' => false,
         'isOnlineBuild' => false,
     ],
-    1519317889 => [
-        'file'          => '/src/Application/InstallBundle/Upgrade/Build/2018/02/Build1519317889.php',
-        'classname'     => 'Application\InstallBundle\Upgrade\Build\Build1519317889',
+    1520331569 => [
+        'file'          => '/src/Application/InstallBundle/Upgrade/Build/2018/03/Build1520331569.php',
+        'classname'     => 'Application\InstallBundle\Upgrade\Build\Build1520331569',
         'skipPostBuild' => false,
         'isOnlineBuild' => true,
     ],
-    1519818656 => [
-        'file'          => '/src/Application/InstallBundle/Upgrade/Build/2018/02/Build1519818656.php',
-        'classname'     => 'Application\InstallBundle\Upgrade\Build\Build1519818656',
+    1520331570 => [
+        'file'          => '/src/Application/InstallBundle/Upgrade/Build/2018/03/Build1520331570.php',
+        'classname'     => 'Application\InstallBundle\Upgrade\Build\Build1520331570',
         'skipPostBuild' => true,
+        'isOnlineBuild' => true,
     ],
 ];
