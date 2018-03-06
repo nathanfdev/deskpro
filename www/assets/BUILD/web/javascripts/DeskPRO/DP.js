@@ -26,8 +26,8 @@ var DP = {
   rteTextarea: function(field, options) {
     options = options || {};
 
-    $.FroalaEditor.DefineIcon('dp_media', {NAME: 'picture-o'});
-    $.FroalaEditor.RegisterCommand('dp_media', {
+    jQuery.FroalaEditor.DefineIcon('dp_media', {NAME: 'picture-o'});
+    jQuery.FroalaEditor.RegisterCommand('dp_media', {
       title: 'Upload Image',
       focus: false,
       undo: true,
