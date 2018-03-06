@@ -143,4 +143,9 @@ class JsonGaugeRenderer extends AbstractJsonChartRenderer
 
         return $output;
     }
+
+    public function mergeResults(array $results)
+    {
+        return reset($results);
+    }
 }
