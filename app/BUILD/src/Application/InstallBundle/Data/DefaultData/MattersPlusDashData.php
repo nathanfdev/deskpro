@@ -40,7 +40,7 @@ use Application\DeskPRO\Entity\ReportDashboardReport;
 use Application\DeskPRO\Entity\ReportDashboardWidget;
 use Application\DeskPRO\Entity\ReportWidget;
 
-class MattersPlusData extends AbstractDefaultData
+class MattersPlusDashData extends AbstractDefaultData
 {
     /**
      * {@inheritdoc}

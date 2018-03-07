@@ -32,138 +32,31 @@ $DASHBOARD = [
     'displayOrder' => 1,
     'reports'      => [
         'dashboard' => [
-            'id'    => 1,
-            'title' => 'Dashboard',
+            'id'      => 1,
+            'title'   => 'Dashboard',
+            'reports' => require(__DIR__.'/1-report-1-dashboard.php'),
         ],
         'clients' => [
-            'id'    => 2,
-            'title' => 'Clients',
+            'id'      => 2,
+            'title'   => 'Clients',
+            'reports' => [],
         ],
         'firms' => [
-            'id'    => 2,
-            'title' => 'Law Firms',
+            'id'      => 2,
+            'title'   => 'Law Firms',
+            'reports' => [],
         ],
         'lawyers' => [
-            'id'    => 3,
-            'title' => 'Lawyers',
+            'id'      => 3,
+            'title'   => 'Lawyers',
+            'reports' => [],
         ],
         'budget' => [
-            'id'    => 4,
-            'title' => 'Budget',
+            'id'      => 4,
+            'title'   => 'Budget',
+            'reports' => [],
         ],
     ],
 ];
 
-//----------------------------------------------------------------------------------------------------------------------
-// ROW 1 -- stats row
-//----------------------------------------------------------------------------------------------------------------------
-
-$w              = [];
-$w['title']     = 'New Matters';
-$w['statTitle'] = 'Simple count of matters created this month';
-$w['id']        = 'mp_new_matters_x';
-$w['size']      = '1:1';
-$w['pos']       = '0:0';
-$w['type']      = 'simple_stat';
-$w['query']     = <<<'QUERY'
-    SELECT DPQL_COUNT() as 'stat_value', 'matters created this month' as 'stat_description' 
-    FROM tickets WHERE tickets.date_created = %THIS_MONTH%
-QUERY;
-
-$DASHBOARD['reports']['dashboard'][] = $w;
-
-//----------
-
-$w              = [];
-$w['title']     = 'Matters Due';
-$w['statTitle'] = 'Simple count of matters due within 7 days';
-$w['id']        = 'mp_due_matters_7d';
-$w['size']      = '1:1';
-$w['pos']       = '0:0';
-$w['type']      = 'simple_stat';
-$w['query']     = <<<'QUERY'
-    SELECT DPQL_COUNT() as 'stat_value', 'due within 7 days' as 'stat_description' 
-    FROM tickets WHERE tickets.date_created = %THIS_YEAR%
-QUERY;
-
-$DASHBOARD['reports']['dashboard'][] = $w;
-
-//----------
-
-$w              = [];
-$w['title']     = 'Matters Overdue';
-$w['statTitle'] = 'Simple count of matters due within 7 days';
-$w['id']        = 'mp_overdue_matters';
-$w['size']      = '1:1';
-$w['pos']       = '0:0';
-$w['type']      = 'simple_stat';
-$w['vars']      = [
-    ['name' => 'date', 'type' => 'dates', 'value' => 'this_month'],
-];
-$w['query'] = <<<'QUERY'
-    SELECT DPQL_COUNT() as 'stat_value', 'overdue' as 'stat_description' 
-    FROM tickets WHERE tickets.date_created = %THIS_YEAR%
-QUERY;
-
-$DASHBOARD['reports']['dashboard'][] = $w;
-
-//----------
-
-$w              = [];
-$w['title']     = 'Contracts Expiring';
-$w['statTitle'] = 'Simple count of contracts expiring due within 12 months';
-$w['id']        = 'mp_contracts_expiring_12m';
-$w['size']      = '1:1';
-$w['pos']       = '0:0';
-$w['type']      = 'simple_stat';
-$w['vars']      = [
-    ['name' => 'date', 'type' => 'dates', 'value' => 'this_month'],
-];
-$w['query'] = <<<'QUERY'
-    SELECT DPQL_COUNT() as 'stat_value', 'expiring within 12 months' as 'stat_description' 
-    FROM tickets WHERE tickets.date_created = %THIS_YEAR%
-QUERY;
-
-$DASHBOARD['reports']['dashboard'][] = $w;
-
-//----------
-
-$w              = [];
-$w['title']     = 'Committed Spend';
-$w['statTitle'] = 'Simple count of contracts expiring due within 12 months';
-$w['id']        = 'mp_due_matters_7d';
-$w['size']      = '1:1';
-$w['pos']       = '0:0';
-$w['type']      = 'simple_stat';
-$w['vars']      = [
-    ['name' => 'date', 'type' => 'dates', 'value' => 'this_month'],
-];
-$w['query'] = <<<'QUERY'
-    SELECT DPQL_COUNT() as 'stat_value', 'spend YTD' as 'stat_description' 
-    FROM tickets WHERE tickets.date_created = %THIS_YEAR%
-QUERY;
-
-$DASHBOARD['reports']['dashboard'][] = $w;
-
-//----------
-
-$w              = [];
-$w['title']     = 'Committed Spend';
-$w['statTitle'] = 'Simple count of contracts expiring due within 12 months';
-$w['id']        = 'mp_due_matters_7d';
-$w['size']      = '1:1';
-$w['pos']       = '0:0';
-$w['type']      = 'simple_stat';
-$w['vars']      = [
-    ['name' => 'date', 'type' => 'dates', 'value' => 'this_month'],
-];
-$w['query'] = <<<'QUERY'
-    SELECT DPQL_COUNT() as 'stat_value', 'spend YTD' as 'stat_description' 
-    FROM tickets WHERE tickets.date_created = %THIS_YEAR%
-QUERY;
-
-$DASHBOARD['reports']['dashboard'][] = $w;
-
-//----------------------------------------------------------------------------------------------------------------------
-// ROW 1 -- stats row
-//----------------------------------------------------------------------------------------------------------------------
+return $DASHBOARD;

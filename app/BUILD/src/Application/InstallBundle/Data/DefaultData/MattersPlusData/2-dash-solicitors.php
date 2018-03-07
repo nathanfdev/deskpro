@@ -32,3 +32,5 @@ $DASHBOARD = [
     'displayOrder' => 2,
     'reports'      => [],
 ];
+
+return $DASHBOARD;
