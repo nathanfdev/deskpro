@@ -35,12 +35,12 @@ $WIDGETS = [];
 $w              = [];
 $w['title']     = 'New Matters';
 $w['statTitle'] = 'Simple count of matters created this month';
-$w['id']        = 'mp_new_matters_x';
+$w['id']        = 'mp_new_matters_month';
 $w['size']      = '1:1';
 $w['pos']       = '0:0';
 $w['type']      = 'simple_stat';
 $w['query']     = <<<'QUERY'
-    SELECT DPQL_COUNT() as 'stat_value', 'matters created this month' as 'stat_description' 
+    SELECT DPQL_COUNT() as 'stat_value', 'created this month' as 'stat_description' 
     FROM tickets WHERE tickets.date_created = %THIS_MONTH%
 QUERY;
 

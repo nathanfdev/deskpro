@@ -28,4 +28,86 @@
 
 $WIDGETS = [];
 
+//----------------------------------------------------------------------------------------------------------------------
+// ROW 1
+//----------------------------------------------------------------------------------------------------------------------
+
+$w              = [];
+$w['title']     = 'New Matters';
+$w['statTitle'] = 'Simple count of matters created this month';
+$w['id']        = 'mp_agent_new_matters_month';
+$w['size']      = '1:1';
+$w['pos']       = '0:0';
+$w['type']      = 'simple_stat';
+$w['query']     = <<<'QUERY'
+    SELECT DPQL_COUNT() as 'stat_value', 'created this month' as 'stat_description' 
+    FROM tickets WHERE tickets.date_created = %THIS_MONTH%
+QUERY;
+
+$WIDGETS[] = $w;
+
+//----------
+
+$w              = [];
+$w['title']     = 'Matters Due (7d)';
+$w['statTitle'] = 'Simple count of matters due within 7 days';
+$w['id']        = 'mp_agent_due_matters_7d';
+$w['size']      = '2:1';
+$w['pos']       = '0:1';
+$w['type']      = 'simple_stat';
+$w['query']     = <<<'QUERY'
+    SELECT DPQL_COUNT() as 'stat_value', 'due within 7 days' as 'stat_description' 
+    FROM tickets WHERE tickets.date_created = %THIS_YEAR%
+QUERY;
+
+$WIDGETS[] = $w;
+
+//----------
+
+$w              = [];
+$w['title']     = 'Matters Due (30d)';
+$w['statTitle'] = 'Simple count of matters due within 30 days';
+$w['id']        = 'mp_agent_due_matters_30d';
+$w['size']      = '2:1';
+$w['pos']       = '0:3';
+$w['type']      = 'simple_stat';
+$w['query']     = <<<'QUERY'
+    SELECT DPQL_COUNT() as 'stat_value', 'due within 30 days' as 'stat_description' 
+    FROM tickets WHERE tickets.date_created = %THIS_YEAR%
+QUERY;
+
+$WIDGETS[] = $w;
+
+//----------
+
+$w              = [];
+$w['title']     = 'Overdue Matters';
+$w['statTitle'] = 'Simple count of overdue matters';
+$w['id']        = 'mp_agent_overdue_matters';
+$w['size']      = '1:1';
+$w['pos']       = '0:5';
+$w['type']      = 'simple_stat';
+$w['query']     = <<<'QUERY'
+    SELECT DPQL_COUNT() as 'stat_value', 'overdue' as 'stat_description' 
+    FROM tickets WHERE tickets.date_created = %THIS_YEAR%
+QUERY;
+
+$WIDGETS[] = $w;
+
+//----------
+
+$w              = [];
+$w['title']     = 'Expiring Contracts';
+$w['statTitle'] = 'Simple count of contracts expiring due within 12 months';
+$w['id']        = 'mp_agent_contracts_expiring_12m';
+$w['size']      = '2:1';
+$w['pos']       = '0:6';
+$w['type']      = 'simple_stat';
+$w['query']     = <<<'QUERY'
+    SELECT DPQL_COUNT() as 'stat_value', 'expiring within 12 months' as 'stat_description' 
+    FROM tickets WHERE tickets.date_created = %THIS_YEAR%
+QUERY;
+
+$WIDGETS[] = $w;
+
 return $WIDGETS;
