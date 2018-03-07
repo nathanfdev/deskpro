@@ -138,23 +138,10 @@
         padding-top: 15px;
         padding-bottom: 15px;
 
-        .dial-number-popup {
-          display: inline-block;
-        }
-
         .dial-number {
-          display: inline-block;
-          background-color: #fff;
-          border: 1px solid #E3E3E3;
-          margin: 0 5px;
           padding: 5px;
-          width: 35px;
-          text-align: center;
           cursor: pointer;
-
-          &:first-child {
-            margin-left: 0;
-          }
+          text-decoration: underline;
         }
       }
     }
@@ -178,6 +165,8 @@
       border: 1px solid #F2F2F2;
 
       .column {
+        float: left;
+
         &.location {
           background-color: #fff;
           border-right: 1px solid #F2F2F2;
