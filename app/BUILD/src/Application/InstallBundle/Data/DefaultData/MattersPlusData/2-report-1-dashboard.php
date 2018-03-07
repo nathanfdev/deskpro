@@ -26,32 +26,6 @@
  * ~ Thanks, Everyone at Team Deskpro
  */
 
-$DASHBOARD = [
-    'title'        => 'General Council',
-    'systemName'   => 'mp_gc',
-    'displayOrder' => 1,
-    'reports'      => [
-        'dashboard' => [
-            'title'   => 'Dashboard',
-            'widgets' => require(__DIR__.'/1-report-1-dashboard.php'),
-        ],
-        'clients' => [
-            'title'   => 'Clients',
-            'widgets' => [],
-        ],
-        'firms' => [
-            'title'   => 'Law Firms',
-            'widgets' => [],
-        ],
-        'lawyers' => [
-            'title'   => 'Lawyers',
-            'widgets' => [],
-        ],
-        'budget' => [
-            'title'   => 'Budget',
-            'widgets' => [],
-        ],
-    ],
-];
+$WIDGETS = [];
 
-return $DASHBOARD;
+return $WIDGETS;

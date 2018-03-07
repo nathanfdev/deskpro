@@ -27,10 +27,15 @@
  */
 
 $DASHBOARD = [
-    'title'        => 'Solicitors',
-    'systemName'   => 'mp_solicitors',
+    'title'        => 'Soliciters',
+    'systemName'   => 'mp_soliciters',
     'displayOrder' => 2,
-    'reports'      => [],
+    'reports'      => [
+        'dashboard' => [
+            'title'   => 'Dashboard',
+            'widgets' => require(__DIR__.'/2-report-1-dashboard.php'),
+        ],
+    ],
 ];
 
 return $DASHBOARD;

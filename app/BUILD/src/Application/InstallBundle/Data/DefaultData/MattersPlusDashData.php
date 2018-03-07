@@ -47,6 +47,47 @@ class MattersPlusDashData extends AbstractDefaultData
      */
     public function runInstall()
     {
+        $files = [
+            __DIR__.'/MattersPlusData/1-dash-gc.php',
+            __DIR__.'/MattersPlusData/2-dash-solicitors.php',
+        ];
+
+        foreach ($files as $f) {
+            $dashData = require $f;
+            $this->makeDashboardFromData($dashData);
+        }
+    }
+
+    public function runSync()
+    {
+        $this->runInstall();
+    }
+
+    private function makeDashboardFromData(array $data)
+    {
+        $dash = $this->makeDashboard($data['title'], $data['systemName'], $data['displayOrder']);
+
+        $x = 0;
+        foreach ($data['reports'] as $reportData) {
+            $x += 10;
+            $report = $this->makeReport($dash, $reportData['title'], $x);
+
+            foreach ($reportData['widgets'] as $widget) {
+                $this->makeWidget(
+                    $report,
+                    $widget['title'],
+                    $widget['pos'],
+                    $widget['size'],
+                    $widget['type'],
+                    $widget['id'],
+                    $widget['statTitle'],
+                    $widget['query'],
+                    @$widget['queryVars'] ?: [],
+                    @$widget['widgetVars'] ?: [],
+                    @$widget['widgetOptions'] ?: []
+                );
+            }
+        }
     }
 
     private function makeWidget(ReportDashboardReport $report, $title, $pos, $size, $type, $statId, $statTitle, $query, $queryVars = [], $widgetVars = [], $widgetOptions = [])
@@ -57,18 +98,19 @@ class MattersPlusDashData extends AbstractDefaultData
             $widget = new ReportWidget();
         }
 
-        $widget->setTitle($title);
+        $widget->setTitle($statTitle);
         $widget->setUniqueKey($statId);
         $widget->setDescription('');
         $widget->setIsCustom(false);
         $widget->setVariables($queryVars);
         $widget->setQuery($query);
+        $widget->setDisplayTypes([$type]);
 
         $this->getEm()->persist($widget);
         $this->getEm()->flush();
 
-        $reportWidget = $report->getWidgets()->filter(function (ReportDashboardWidget $w) use ($statId) {
-            return $w->getWidget()->getUniqueKey() === $statId;
+        $reportWidget = $report->getWidgets()->filter(function (ReportDashboardWidget $w) use ($title, $pos, $size) {
+            return $w->getTitle() === $title || ($w->getPosition() === $pos);
         })->first();
 
         if (!$reportWidget) {
@@ -83,8 +125,10 @@ class MattersPlusDashData extends AbstractDefaultData
         $reportWidget->setType($type);
         $reportWidget->setVariables($widgetVars);
         $reportWidget->setOptions(json_encode($widgetOptions ?: []));
+        $reportWidget->setWidget($widget);
 
         $this->getEm()->persist($reportWidget);
+        $this->getEm()->persist($report);
         $this->getEm()->flush();
     }
 
@@ -104,14 +148,16 @@ class MattersPlusDashData extends AbstractDefaultData
 
     /**
      * @param ReportDashboard $dash
-     * @param int             $id    This is the ordinal, but we re-use it as an 'id' of sorts for updates
      * @param string          $title
+     * @param int             $order
      *
      * @return ReportDashboardReport
      */
-    private function makeReport(ReportDashboard $dash, $id, $title)
+    private function makeReport(ReportDashboard $dash, $title, $order)
     {
-        $report = $dash->getReports()->get($id);
+        $report = $dash->getReports()->filter(function ($r) use ($title) {
+            return $r->getTitle() === $title;
+        })->first();
 
         if (!$report) {
             $report = new ReportDashboardReport();
@@ -120,10 +166,12 @@ class MattersPlusDashData extends AbstractDefaultData
         }
 
         $report->setDashboard($dash);
-        $report->setSortOrder($id);
+        $report->setSortOrder($order);
         $report->setTitle($title);
 
         $this->getEm()->persist($report);
+        $this->getEm()->persist($dash);
+        $this->getEm()->flush();
 
         return $report;
     }
@@ -164,14 +212,9 @@ class MattersPlusDashData extends AbstractDefaultData
         $this->getEm()->persist($dash);
         $this->getEm()->flush();
 
-        return $dash;
-    }
+        // TODO this is a hack until 'all' perm is fixed
+        $this->getDb()->replace('report_dashboard_permission', ['dashboard_id' => $dash->getId(), 'person_id' => 1, 'name' => 'full']);
 
-    /**
-     * {@inheritdoc}
-     */
-    public function runSync()
-    {
-        $this->runInstall();
+        return $dash;
     }
 }
