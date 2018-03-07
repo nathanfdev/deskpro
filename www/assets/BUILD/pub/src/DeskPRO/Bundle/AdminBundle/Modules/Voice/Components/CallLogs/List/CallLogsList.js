@@ -59,7 +59,7 @@ class CallLogsList extends React.Component {
             </tr>
           </thead>
           <tbody>
-            {calls.map((call, index) => {
+            {calls.toArray().map((call, index) => {
               const ticketId = call.get('ticket');
               const fromNumber = call.getIn(['data', 'From']);
               const toNumber = call.getIn(['data', 'To']);
@@ -84,7 +84,7 @@ class CallLogsList extends React.Component {
                     <PersonName id={call.get('person')} />
                   </td>
                   <td className="overflow-ellipsis">
-                    {call.get('participants').map((participant, pindex) =>
+                    {call.get('participants').toArray().map((participant, pindex) =>
                       <PersonName id={participant.get('person')} className="list-item" key={pindex} />
                     )}
                   </td>

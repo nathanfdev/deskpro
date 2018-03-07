@@ -56,7 +56,7 @@ class AutoAttendantList extends React.Component {
             <div className="column name">Name</div>
             <div className="column auto-attendant-dial-numbers">Active dialpad targets</div>
           </div>
-          {autoAttendants.map((autoAttendant, index) =>
+          {autoAttendants.toArray().map((autoAttendant, index) =>
             <AutoAttendantRow
               key={index}
               autoAttendant={autoAttendant}
@@ -97,7 +97,7 @@ class AutoAttendantRow extends React.Component {
         <div className="info">
           <div className="column name">{autoAttendant.get('name')}</div>
           <div className="column auto-attendant-dial-numbers">
-            {autoAttendant.get('targets').map((target, dialNumber) =>
+            {autoAttendant.get('targets').toArray().map((target, dialNumber) =>
               <VoiceTargetNameContainer key={dialNumber} target={target}>
                 <AutoAttendantDialNumber dialNumber={dialNumber} />
               </VoiceTargetNameContainer>
@@ -157,6 +157,7 @@ class AutoAttendantDialNumber extends React.Component {
 
     return (
       <PopUp
+        className="dial-number-popup"
         positionMy="left top"
         positionAt="left bottom"
         zIndex={99999}

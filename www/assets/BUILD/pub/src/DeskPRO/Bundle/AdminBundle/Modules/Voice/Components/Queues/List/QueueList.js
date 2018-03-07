@@ -46,7 +46,7 @@ class QueueRow extends React.Component {
         <div className="info">
           <div className="column queue-name">{queue.get('name')}</div>
           <div className="column agents">
-            {displayQueueAgents.map((agent, index) =>
+            {displayQueueAgents.toArray().map((agent, index) =>
               <div className="avatar">
                 <PersonAvatar key={index} person={agent} size={24} />
               </div>
@@ -60,7 +60,7 @@ class QueueRow extends React.Component {
                   autoClose
                   content={(
                     <div className="voice-popup-avatars">
-                      {popupQueueAgents.map((agent, index) =>
+                      {popupQueueAgents.toArray().map((agent, index) =>
                         <div className="avatar">
                           <PersonAvatar key={index} person={agent} size={24} />
                         </div>
@@ -144,7 +144,7 @@ class QueueList extends React.Component {
             <div className="column queue-name">Name</div>
             <div className="column agents">Agents</div>
           </div>
-          {queues.map(queue =>
+          {queues.toArray().map(queue =>
             <QueueRow
               queue={queue}
               agents={agents}
