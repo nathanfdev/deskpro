@@ -141,4 +141,19 @@ class CodePluginManager
 
         return implode("\n", $html);
     }
+
+    /**
+     * @param array  $fixtures
+     * @param string $installSource
+     *
+     * @return array
+     */
+    public function filterInstallFixtures(array $fixtures, $installSource)
+    {
+        foreach ($this->plugins as $plugin) {
+            $fixtures = $plugin->filterInstallFixtures($fixtures, $installSource);
+        }
+
+        return $fixtures;
+    }
 }

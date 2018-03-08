@@ -99,4 +99,19 @@ class CodePlugin
     {
         return null;
     }
+
+    /**
+     * Lets you filter install fixtures, or add new ones. Note if you add new ones, the default
+     * order for fixtures is within 0-500. If you want your fixtures to run last,
+     * best start with an order at 1000.
+     *
+     * @param array  $fixtures
+     * @param string $installSource e.g. InstallSession::SOURCE_DEV or InstallSession::SOURCE_BUILDSERVER
+     *
+     * @return array
+     */
+    public function filterInstallFixtures(array $fixtures, $installSource)
+    {
+        return $fixtures;
+    }
 }
