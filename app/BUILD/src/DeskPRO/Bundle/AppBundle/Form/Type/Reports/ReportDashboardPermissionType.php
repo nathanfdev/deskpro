@@ -53,9 +53,6 @@ class ReportDashboardPermissionType extends AbstractType
      */
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
-        // default dashboards are still editable for admins (they can change permissions)
-        $choices = [ReportDashboardPermission::VIEW, ReportDashboardPermission::FULL];
-
         $builder
             ->add('person', EntityType::class, [
                 'class'    => Person::class,
@@ -72,7 +69,7 @@ class ReportDashboardPermissionType extends AbstractType
             ->add('name', ChoiceType::class, [
                 'required'          => true,
                 'choices_as_values' => true,
-                'choices'           => $choices,
+                'choices'           => [ReportDashboardPermission::VIEW, ReportDashboardPermission::FULL],
             ])
             ->add('view_all', ApiBooleanType::class, [
                 'property_path' => 'viewAll',
