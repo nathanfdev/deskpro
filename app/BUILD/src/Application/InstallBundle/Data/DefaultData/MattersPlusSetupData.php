@@ -43,6 +43,7 @@ class MattersPlusSetupData extends AbstractDefaultData
      */
     public function runInstall()
     {
+        $this->installLang();
         $this->installFields();
         $this->installLayout();
     }
@@ -53,6 +54,63 @@ class MattersPlusSetupData extends AbstractDefaultData
     public function runSync()
     {
         $this->runInstall();
+    }
+
+    private function installLang()
+    {
+        $langFile = require __DIR__.'/../../../../../languages/default/agent.php';
+
+        $replacements = [
+            'Awaiting Agent' => 'Open',
+            'Awaiting User'  => 'Open',
+            'Resolved'       => 'Closed',
+            'awaiting agent' => 'open',
+            'awaiting user'  => 'open',
+            'resolved'       => 'closed',
+            'Ticket'         => 'Matter',
+            'ticket'         => 'matter',
+            'Department'     => 'DEP',
+            'Organization'   => 'Department',
+            'organization'   => 'department',
+            'Agent'          => 'Solicitor',
+            'agent'          => 'solicitor',
+        ];
+
+        $find = array_keys($replacements);
+        $repl = array_values($replacements);
+
+        $updateLang = [];
+        $clearIds   = [];
+
+        foreach ($langFile as $phraseId => $phrase) {
+            $m         = 0;
+            $varTokens = [];
+            if (preg_match_all('#\{\{.*?\}\}#', $phrase, $m)) {
+                foreach ($m[0] as $varName) {
+                    $t             = '%'.uniqid('tok', true).'%';
+                    $varTokens[$t] = $varName;
+                    $phrase        = str_replace($varName, $t, $phrase);
+                }
+            }
+
+            $now = date('Y-m-d H:i:s');
+
+            $newPhrase = str_replace($find, $repl, $phrase);
+            if ($newPhrase !== $phrase) {
+                if ($varTokens) {
+                    $newPhrase = str_replace(array_keys($varTokens), array_values($varTokens), $newPhrase);
+                }
+
+                $clearIds[] = $phraseId;
+                $groupName  = explode('.', $phraseId);
+                array_pop($groupName);
+                $groupName    = implode('.', $groupName);
+                $updateLang[] = ['language_id' => 1, 'name' => $phraseId, 'phrase' => $newPhrase, 'groupname' => $groupName, 'created_at' => $now, 'updated_at' => $now];
+            }
+        }
+
+        $this->getDb()->deleteIn('phrases', $clearIds, 'name', false, 'language_id = 1');
+        $this->getDb()->batchInsert('phrases', $updateLang);
     }
 
     private function installLayout()
