@@ -1,12 +1,27 @@
+import $ from 'jquery';
+
 require('froala-editor');
+require('froala-editor/js/plugins/align.min');
+require('froala-editor/js/plugins/code_beautifier.min');
+require('froala-editor/js/plugins/code_view.min');
+require('froala-editor/js/plugins/colors.min');
+require('froala-editor/js/plugins/font_family.min');
+require('froala-editor/js/plugins/font_size.min');
+require('froala-editor/js/plugins/fullscreen.min');
+require('froala-editor/js/plugins/image.min');
+require('froala-editor/js/plugins/link.min');
+require('froala-editor/js/plugins/lists.min');
+require('froala-editor/js/plugins/paragraph_format.min');
+require('froala-editor/js/plugins/table.min');
+require('froala-editor/js/plugins/word_paste.min');
 
 class RteTextarea {
   // eslint-disable-next-line class-methods-use-this
   init(field, options) {
     let localOptions = options || {};
 
-    window.$.FroalaEditor.DefineIcon('dpMedia', { NAME: 'picture-o' });
-    window.$.FroalaEditor.RegisterCommand('dpMedia', {
+    $.FroalaEditor.DefineIcon('dpMedia', { NAME: 'picture-o' });
+    $.FroalaEditor.RegisterCommand('dpMedia', {
       title:                'Upload Image',
       focus:                false,
       undo:                 true,
@@ -45,7 +60,7 @@ class RteTextarea {
 
     localOptions = Object.merge(defaultOptions, localOptions || {});
 
-    const rte = window.$(field).froalaEditor(localOptions);
+    const rte = $(field).froalaEditor(localOptions);
     field.on('froalaEditor.focus', () => {
       window.DeskPRO_Window.keyboardShortcuts.isPaused = true;
     });
