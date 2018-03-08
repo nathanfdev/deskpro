@@ -28,10 +28,12 @@
 
 namespace DpSys\CodePlugin;
 
-use Application\DeskPRO\Entity\Language;
+use Symfony\Component\DependencyInjection\Container;
 
 class CodePlugin
 {
+    const CUSTOM_HTML_AGENT_RES = 'agent_res';
+
     /**
      * In specific cases where the system is looking up classnames
      * plugins can re-write the class name here to change the behaviour.
@@ -72,5 +74,29 @@ class CodePlugin
     public function loadLanguageFile($file)
     {
         return [];
+    }
+
+    /**
+     * Given a file path requested through file.php/dp-asset/{{file}}, return the path to the file to serve.
+     * This can be used to serve assets that live outside of the default Deskpro tree.
+     *
+     * @param string $file
+     *
+     * @return string|null
+     */
+    public function getServeAssetPath($file)
+    {
+        return null;
+    }
+
+    /**
+     * @param string    $id        The locaiton ID
+     * @param Container $container
+     *
+     * @return null|string
+     */
+    public function getCustomHtml($id, Container $container)
+    {
+        return null;
     }
 }

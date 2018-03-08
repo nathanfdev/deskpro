@@ -28,6 +28,8 @@
 
 namespace DpSys\CodePlugin;
 
+use Symfony\Component\DependencyInjection\Container;
+
 class CodePluginManager
 {
     /**
@@ -102,5 +104,41 @@ class CodePluginManager
         }
 
         return $extra;
+    }
+
+    /**
+     * @param string $file
+     *
+     * @return null|string
+     */
+    public function getServeAssetFilePath($file)
+    {
+        foreach ($this->plugins as $plugin) {
+            $f = $plugin->getServeAssetPath($file);
+            if ($f) {
+                return $f;
+            }
+        }
+
+        return null;
+    }
+
+    /**
+     * @param string    $id
+     * @param Container $container
+     *
+     * @return string
+     */
+    public function getCustomHtml($id, Container $container)
+    {
+        $html = [];
+        foreach ($this->plugins as $plugin) {
+            $h = $plugin->getCustomHtml($id, $container);
+            if ($h) {
+                $html[] = $h;
+            }
+        }
+
+        return implode("\n", $html);
     }
 }
