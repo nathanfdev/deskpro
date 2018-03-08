@@ -4,7 +4,6 @@ const webpack               = require('webpack');
 const express               = require('express');
 const cors                  = require('cors');
 const del                   = require('del');
-const runSeq                = require('run-sequence');
 const path                  = require('path');
 const ExtractTextPlugin     = require('extract-text-webpack-plugin');
 const WebpackNotifierPlugin = require('webpack-notifier');
@@ -29,52 +28,6 @@ gulp.task('clean', (cb) => {
   del(['./build']).then(() => {
     cb();
   });
-});
-
-gulp.task('default', ['clean'], (cb) => {
-  runSeq(['bundle'], cb);
-});
-
-// used in init-project-dev, builds to filesystem but without any optimisations
-// so its quicker during a new project checkout
-gulp.task('default-dev', ['clean'], (cb) => {
-  runSeq(['bundle:dev'], cb);
-});
-
-gulp.task('prod', ['clean', 'priv:start-prod'], (cb) => {
-  runSeq(['bundle'], cb);
-});
-
-gulp.task('dev', (cb) => {
-  // prefer to use one at a time, build speed is faster
-  // and you can still just open up two terminal winodws if you need both
-  console.log('Use:');
-  console.log('\tdev:agent    -  For the agent interface');
-  console.log('\tdev:portal   -  For the portal');
-  console.log('\tdev:widget   -  For the widget');
-  console.log('\tdev:demo     -  For the demo');
-  console.log('\tdev:all      -  For all');
-  cb();
-});
-
-gulp.task('dev:agent', (cb) => {
-  runSeq(['bundle:dev-server:agent'], cb);
-});
-
-gulp.task('dev:portal', (cb) => {
-  runSeq(['bundle:dev-server:portal'], cb);
-});
-
-gulp.task('dev:widget', (cb) => {
-  runSeq(['bundle:dev-server:widget'], cb);
-});
-
-gulp.task('dev:demo', (cb) => {
-  runSeq(['bundle:dev-server:demo'], cb);
-});
-
-gulp.task('dev:all', (cb) => {
-  runSeq(['bundle:dev-server'], cb);
 });
 
 // ######################################################################################################################
@@ -176,7 +129,6 @@ function getWebpackConfig(mode, isProd) {
         'jquery.ui':            'jquery-ui',
         'jquery.ui.widget':     'jquery.ui.widget/jquery.ui.widget',
         'jquery.serializejson': 'jquery-serializejson/jquery.serializejson',
-        'mark.js':              'mark.js/dist/jquery.mark.min',
         react:                  path.join(__dirname, 'node_modules', 'react')
       }
     },
