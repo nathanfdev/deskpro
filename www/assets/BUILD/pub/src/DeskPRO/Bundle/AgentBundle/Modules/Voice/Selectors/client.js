@@ -118,3 +118,8 @@ export const ringingVolumeSelector = createSelector(
   stateSelector,
   state => state.get('ringingVolume')
 );
+
+export const connectionStatesSelector = createSelector(
+  stateSelector,
+  state => state.get('connectionStates')
+);
