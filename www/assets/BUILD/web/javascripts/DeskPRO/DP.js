@@ -24,56 +24,7 @@ var DP = {
 	},
 
   rteTextarea: function(field, options) {
-    options = options || {};
-
-    jQuery.FroalaEditor.DefineIcon('dp_media', {NAME: 'picture-o'});
-    jQuery.FroalaEditor.RegisterCommand('dp_media', {
-      title: 'Upload Image',
-      focus: false,
-      undo: true,
-      refreshAfterCallback: true,
-      callback: function () {
-        MEDIA_MANAGER_WINDOW.bindToEditor(this);
-        MEDIA_MANAGER_WINDOW.open();
-      }
-    });
-
-    var defaultOptions = {
-      htmlAllowedAttrs: [
-      	'class', 'frameborder', 'height', 'id', 'longdesc', 'marginheight', 'marginwidth',
-				'name', 'scrolling', 'src', 'style', 'title', 'width', 'webkitallowfullscreen',
-				'mozallowfullscreen', 'allowfullscreen'
-			],
-      toolbarButtons: [
-        'bold', 'italic', 'underline', '|', 'align', 'color', '|', 'paragraphFormat', 'fontFamily', 'fontSize', 'formatUL', 'formatOL',
-        '|', 'indent', 'outdent', '|', 'insertLink', 'dp_media', 'insertTable', '|', 'html', 'clearFormatting', 'fullscreen'],
-      key: 'qENARBFSTb1G1QJg1RA==',
-      paragraphFormat: {
-        N:  'Paragraph',
-        H2: 'Heading 1',
-        H3: 'Heading 2',
-				H4: 'Heading 3',
-				H5: 'Heading 4',
-				BLOCKQUOTE: 'Quote',
-				CODE: 'Code Box'
-      },
-      imageUploadMethod: 'POST',
-      imageUploadParams: { _rt: window.DP_REQUEST_TOKEN, json: true },
-      imageUploadURL:    BASE_URL + 'agent/misc/accept-redactor-image-upload', // eslint-disable-line no-undef
-      imageDefaultWidth: 0
-    };
-
-    options = Object.merge(defaultOptions, options || {});
-
-    var rte = field.froalaEditor(options);
-    field.on('froalaEditor.focus', function () {
-      window.DeskPRO_Window.keyboardShortcuts.isPaused = true;
-    });
-    field.on('froalaEditor.blur', function () {
-      window.DeskPRO_Window.keyboardShortcuts.isPaused = false;
-    });
-
-    return rte;
+    console.warn('Function deprecated, please use window.LegacyRteTextarea.init()');
   },
 
 	convertTextToWysiwygHtml: function(text, pOneLine) {

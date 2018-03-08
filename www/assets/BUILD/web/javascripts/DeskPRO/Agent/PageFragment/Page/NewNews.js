@@ -204,7 +204,7 @@ DeskPRO.Agent.PageFragment.Page.NewNews = new Orb.Class({
 		// Make the size of the message box based off of the height of the window
 		var h = $(window).height();
 
-		DP.rteTextarea(txt, {
+    window.LegacyRteTextarea.init(txt, {
 			height: Math.max(h - 500, 200)
 		});
 

@@ -886,7 +886,7 @@ DeskPRO.Agent.PageFragment.Page.KbViewArticle = new Orb.Class({
 				h = $(window).height() - 170 - txt.offset().top;
 			}
 
-			this.rte = DP.rteTextarea(txt, {
+			this.rte = window.LegacyRteTextarea.init(txt, {
 				height: h
 			});
 
@@ -1013,7 +1013,7 @@ DeskPRO.Agent.PageFragment.Page.KbViewArticle = new Orb.Class({
 		});
 
 		transGroup.find('textarea').each(function() {
-			var rte = DP.rteTextarea($(this));
+			var rte = window.LegacyRteTextarea.init($(this));
 			$(this).data('rte', rte);
 		});
 

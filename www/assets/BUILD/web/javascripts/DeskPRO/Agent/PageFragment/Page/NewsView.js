@@ -639,7 +639,7 @@ DeskPRO.Agent.PageFragment.Page.NewsView = new Orb.Class({
 				h = $(window).height() - 90 - txt.offset().top;
 			}
 
-			DP.rteTextarea(txt, {
+      window.LegacyRteTextarea.init(txt, {
 				height: h
 			});
 

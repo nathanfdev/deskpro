@@ -247,7 +247,7 @@ DeskPRO.Agent.PageFragment.Page.NewDownload = new Orb.Class({
 
 		var txt = this.getEl('content');
 
-		DP.rteTextarea(txt, {
+    window.LegacyRteTextarea.init(txt, {
 			height: 250
 		});
 

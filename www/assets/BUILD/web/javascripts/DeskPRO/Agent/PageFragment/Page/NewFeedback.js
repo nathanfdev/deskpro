@@ -223,7 +223,7 @@ DeskPRO.Agent.PageFragment.Page.NewFeedback = new Orb.Class({
 
 		var txt = this.getEl('content');
 
-		DP.rteTextarea(txt, {
+    window.LegacyRteTextarea.init(txt, {
 			height: Math.max(h - 500, 200)
 		});
 

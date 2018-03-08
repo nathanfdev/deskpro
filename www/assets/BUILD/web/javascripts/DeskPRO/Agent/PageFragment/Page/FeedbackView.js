@@ -620,7 +620,7 @@ DeskPRO.Agent.PageFragment.Page.FeedbackView = new Orb.Class({
 			}
 
 
-			DP.rteTextarea($('.edit-content-field', this.getEl('content_ed')), {
+      window.LegacyRteTextarea.init($('.edit-content-field', this.getEl('content_ed')), {
         height: h
 			});
 
