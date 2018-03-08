@@ -26,16 +26,30 @@
  * ~ Thanks, Everyone at Team Deskpro
  */
 
-$DASHBOARD = [
-    'title'        => 'Soliciters',
-    'systemName'   => 'mp_soliciters',
-    'displayOrder' => 2,
-    'reports'      => [
-        'dashboard' => [
-            'title'   => 'Dashboard',
-            'widgets' => require(__DIR__.'/2-report-1-dashboard.php'),
-        ],
-    ],
-];
+namespace Application\InstallBundle\Data\DefaultData;
 
-return $DASHBOARD;
+/**
+ * Special no-op class.
+ */
+class NoOpData extends AbstractDefaultData
+{
+    public function runInstall()
+    {
+        $this->getLogger()->info('NoOpData');
+    }
+
+    public function runInstallViaUpgrade()
+    {
+        $this->getLogger()->info('NoOpData');
+    }
+
+    public function runSync()
+    {
+        $this->getLogger()->info('NoOpData');
+    }
+
+    public function runReset()
+    {
+        $this->getLogger()->info('NoOpData');
+    }
+}

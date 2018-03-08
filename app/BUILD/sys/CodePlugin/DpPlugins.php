@@ -26,32 +26,29 @@
  * ~ Thanks, Everyone at Team Deskpro
  */
 
-$DASHBOARD = [
-    'title'        => 'General Council',
-    'systemName'   => 'mp_gc',
-    'displayOrder' => 1,
-    'reports'      => [
-        'dashboard' => [
-            'title'   => 'Dashboard',
-            'widgets' => require(__DIR__.'/1-report-1-dashboard.php'),
-        ],
-        'clients' => [
-            'title'   => 'Clients',
-            'widgets' => [],
-        ],
-        'firms' => [
-            'title'   => 'Law Firms',
-            'widgets' => [],
-        ],
-        'lawyers' => [
-            'title'   => 'Lawyers',
-            'widgets' => [],
-        ],
-        'budget' => [
-            'title'   => 'Budget',
-            'widgets' => [],
-        ],
-    ],
-];
+namespace DpSys\CodePlugin;
 
-return $DASHBOARD;
+class DpPlugins
+{
+    private function __construct()
+    {
+        // static class
+    }
+
+    /**
+     * @var CodePluginManager
+     */
+    private static $inst;
+
+    /**
+     * @return CodePluginManager
+     */
+    public static function getManager()
+    {
+        if (!self::$inst) {
+            self::$inst = new CodePluginManager();
+        }
+
+        return self::$inst;
+    }
+}
