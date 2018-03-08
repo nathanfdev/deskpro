@@ -44,6 +44,7 @@ use JMS\Serializer\Annotation as JMS;
  * Stores who has access to departments.
  *
  * @JMS\ExclusionPolicy("ALL")
+ * @AppAssert\Reports\DashboardPermission()
  */
 class ReportDashboardPermission extends DomainObject
 {

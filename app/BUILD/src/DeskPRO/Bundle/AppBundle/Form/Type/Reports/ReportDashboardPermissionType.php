@@ -38,7 +38,6 @@ use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
 use Symfony\Component\Form\FormBuilderInterface;
-use Symfony\Component\Form\FormError;
 use Symfony\Component\Form\FormEvent;
 use Symfony\Component\Form\FormEvents;
 use Symfony\Component\OptionsResolver\OptionsResolver;
@@ -106,18 +105,6 @@ class ReportDashboardPermissionType extends AbstractType
 
         if ($data instanceof ReportDashboardPermission) {
             $data->setDashboard($form->getConfig()->getOption('dashboard'));
-            if (
-                // default dashboard may be edited by admins only, no full access for teams, departments or for all
-                $data->getDashboard()->isDefault() &&
-                (
-                    ($data->getPerson() && !$data->getPerson()->isAdmin()) ||
-                    $data->getTeam() || $data->getDepartment() || $data->isGlobalPrivilege()
-
-                ) &&
-                $data->getName() === ReportDashboardPermission::FULL
-             ) {
-                $form->get('name')->addError(new FormError('can\'t grant edit permission for agent to default dashboard)'));
-            }
         }
     }
 }
