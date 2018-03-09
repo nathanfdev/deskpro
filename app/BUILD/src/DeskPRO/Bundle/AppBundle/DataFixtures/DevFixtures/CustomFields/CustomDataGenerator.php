@@ -64,6 +64,8 @@ class CustomDataGenerator
             case CustomDefAbstract::TYPE_TEXT:
                 if ($customDef->getOption('input_type') === 'currency') {
                     $input = $this->faker->numberBetween(100, 20000);
+                } elseif ($customDef->getOption('input_type') === 'numeric') {
+                    $input = $this->faker->numberBetween($customDef->getOption('min', 1), $customDef->getOption('max', 5));
                 } else {
                     $input = $this->faker->realText($this->faker->numberBetween(10, 80));
                 }
