@@ -53,6 +53,9 @@ define ['DeskPRO/Util/Arrays'], (Arrays) -> [
 
     $q.all(load_promises).then(-> $scope.loaded = true)
 
+    $scope.filterPermissions = (permission) ->
+      permission.person || permission.team || permission.department
+
     ####################################################################################################################
     # MODAL HANDLERS
     ####################################################################################################################
