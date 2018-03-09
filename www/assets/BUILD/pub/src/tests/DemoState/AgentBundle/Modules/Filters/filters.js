@@ -74,3 +74,34 @@ export const stars = [
     color: '#f9d6a4'
   }
 ];
+
+export const labels = [
+  'Android Mobile App',
+  'Bogus',
+  'Bug fixed',
+  'Cannot Reproduce',
+  'Case Study',
+  'Churn',
+  'Beta tester',
+  'Click Jacking',
+  'cloud-ips',
+  'Consultation Session',
+  'Custom fields',
+  'Capterra',
+  'Did it Work',
+  'dog house',
+  'Converted',
+  'Custom work',
+  'label',
+  'Demo',
+  'Integrations',
+  'HTML',
+  'Cloud',
+  'Email',
+  'Editor',
+  'Enumeration',
+  'Games',
+  'iPad',
+  'Fixed',
+  'Mobile'
+];

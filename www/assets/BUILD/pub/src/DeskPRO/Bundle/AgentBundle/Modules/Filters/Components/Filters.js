@@ -8,18 +8,22 @@ import {
 } from '@deskpro/react-components';
 import FiltersSet from './FiltersSet';
 import Stars from './Stars';
+import Labels from './Labels';
 
 export default class AgentFilters extends React.Component {
   static propTypes = {
-    filterSets: PropTypes.array,
-    filters:    PropTypes.object,
-    stars:      PropTypes.array,
+    filterSets:   PropTypes.array,
+    filters:      PropTypes.object,
+    stars:        PropTypes.array,
+    labels:       PropTypes.array,
+    onSelectMode: PropTypes.func,
   };
 
   static defaultProps = {
     filterSets: [],
     filters:    [],
     stars:      [],
+    labels:     [],
   };
 
   constructor(props) {
@@ -29,10 +33,16 @@ export default class AgentFilters extends React.Component {
       currentDrawer = `filterSet${props.filterSets[0].id}`;
     }
     this.state = {
-      currentDrawer
+      currentDrawer,
+      mode: null
     };
     this.drawers = {};
   }
+
+  onSelectMode = (mode) => {
+    this.setState({ mode });
+    this.props.onSelectMode(mode);
+  };
 
   setDrawer = (drawer) => {
     if (drawer.isOpen()) {
@@ -52,10 +62,14 @@ export default class AgentFilters extends React.Component {
       filterSets,
       filters,
       stars,
+      labels,
     } = this.props;
+    const {
+      mode
+    } = this.state;
 
     return (
-      <Column style={{ width: '220px' }}>
+      <Column style={{ width: '220px' }} classname="agent-filters">
         <Heading>
           <Icon name="envelope-o" />
           Tickets
@@ -80,6 +94,16 @@ export default class AgentFilters extends React.Component {
             stars={stars}
             opened={false}
             onChange={this.setDrawer}
+            onSelectMode={this.onSelectMode}
+            mode={mode}
+          />
+          <Labels
+            ref={(c) => { this.drawers.labels = c; }}
+            labels={labels}
+            opened={false}
+            onChange={this.setDrawer}
+            onSelectMode={this.onSelectMode}
+            mode={mode}
           />
         </DrawerList>
       </Column>

@@ -1,8 +1,9 @@
 import React from 'react';
 import { storiesOf } from '@storybook/react';
+import { action } from '@storybook/addon-actions';
 import { css } from 'Visual/decorators';
 import AgentFilters from 'DeskPRO/Bundle/AgentBundle/Modules/Filters/Components/Filters';
-import { filterSets, filters, stars } from 'DemoState/AgentBundle/Modules/Filters/filters';
+import { filterSets, filters, stars, labels } from 'DemoState/AgentBundle/Modules/Filters/filters';
 
 storiesOf('Agent: Filters', module)
   .addDecorator(story => css(story()))
@@ -14,6 +15,8 @@ storiesOf('Agent: Filters', module)
           filterSets={filterSets}
           filters={filters}
           stars={stars}
+          labels={labels}
+          onSelectMode={action('Select Mode')}
         />
       </div>
   )

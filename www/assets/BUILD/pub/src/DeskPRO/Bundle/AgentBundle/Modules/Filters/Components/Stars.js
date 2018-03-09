@@ -11,10 +11,18 @@ import PropTypes from 'prop-types';
 
 export default class Stars extends React.Component {
   static propTypes = {
-    stars:    PropTypes.array,
-    onChange: PropTypes.func,
-    opened:   PropTypes.bool,
+    stars:        PropTypes.array,
+    onChange:     PropTypes.func,
+    onSelectMode: PropTypes.func,
+    opened:       PropTypes.bool,
+    mode:         PropTypes.object,
   };
+
+  onSelect(selected, star) {
+    if (selected) {
+      this.props.onSelectMode({ type: 'star', star: star.id });
+    }
+  }
 
   close() {
     this.drawer.close();
@@ -25,6 +33,7 @@ export default class Stars extends React.Component {
       stars,
       onChange,
       opened,
+      mode,
     } = this.props;
     return (
       <Drawer
@@ -40,6 +49,8 @@ export default class Stars extends React.Component {
           {stars.map(star => (
             <Item
               key={star.id}
+              selected={mode && mode.type === 'star' && mode.star === star.id}
+              onSelect={selected => this.onSelect(selected, star)}
             >
               <Icon name="star" style={{ color: star.color }} />
               {star.title}
