@@ -25,7 +25,7 @@ define -> [
     $scope.makeChoice = (displayType) ->
       $scope.widget.type = displayType
       type = switch displayType
-        when 'pie', 'simple_area', 'simple_bars', 'simple_lines', 'bubble' then 'graph'
+        when 'pie', 'simple_area', 'simple_bars', 'simple_lines', 'bubble', 'gauge' then 'graph'
         when 'simple_stat' then 'simple_stat'
         else 'table'
 
