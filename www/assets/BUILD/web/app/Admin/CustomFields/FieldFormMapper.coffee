@@ -162,6 +162,10 @@ define ['moment', 'DeskPRO/Util/Util'], (moment, Util) ->
 
             if fieldModel.choices and fieldModel.choices.length
               formTypeOpts.options = fieldModel.choices
+            if formTypeOpts.field_type == 'radio'
+              formTypeOpts.none_choice = !!fieldModel.options.none_choice
+              if fieldModel.options.none_choice
+                formTypeOpts.none_choice_title = fieldModel.options.none_choice_title
 
             formTypeOpts.default_value = fieldModel.default_value
 
@@ -288,6 +292,11 @@ define ['moment', 'DeskPRO/Util/Util'], (moment, Util) ->
           if formTypeOpts.agent_validation == 'required'
             postData.agent_validation_type = 'required'
             postData.agent_min_length = 1
+
+          if formTypeOpts.field_type == 'radio'
+            postData.none_choice = formTypeOpts.none_choice
+            if formTypeOpts.none_choice
+              postData.none_choice_title = formTypeOpts.none_choice_title
 
         when "toggle"
           postData.handler_class = 'Application\\DeskPRO\\CustomFields\\Handler\\Toggle'
