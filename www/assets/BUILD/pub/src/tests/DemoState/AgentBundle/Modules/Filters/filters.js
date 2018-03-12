@@ -66,6 +66,121 @@ const filtersArray = [
     display_order:     50,
     ticket_filter_set: 1,
     filterable:        true,
+    count:             301,
+    value:             null,
+    type:              null,
+    grouped_by:        'ticket.agent',
+    nested:            [
+      {
+        count:      20,
+        id:         1,
+        value:      null,
+        type:       'ticket.agent',
+        title:      'Julien Ducro',
+        grouped_by: null,
+        nested:     []
+      },
+      {
+        count:      32,
+        id:         2,
+        value:      null,
+        type:       'ticket.agent',
+        title:      'Hillard Bins',
+        grouped_by: null,
+        nested:     []
+      },
+      {
+        count:      18,
+        id:         3,
+        value:      null,
+        type:       'ticket.agent',
+        title:      'Colin Greenfelder',
+        grouped_by: null,
+        nested:     []
+      },
+      {
+        count:      27,
+        id:         4,
+        value:      null,
+        type:       'ticket.agent',
+        title:      'Conor Emmerich',
+        grouped_by: null,
+        nested:     []
+      },
+      {
+        count:      34,
+        id:         5,
+        value:      null,
+        type:       'ticket.agent',
+        title:      'Maurice Witting',
+        grouped_by: null,
+        nested:     []
+      },
+      {
+        count:      24,
+        id:         6,
+        value:      null,
+        type:       'ticket.agent',
+        title:      'Nickolas Pfeffer',
+        grouped_by: null,
+        nested:     []
+      },
+      {
+        count:      24,
+        id:         7,
+        value:      null,
+        type:       'ticket.agent',
+        title:      'Corine Dietrich',
+        grouped_by: null,
+        nested:     []
+      },
+      {
+        count:      23,
+        id:         8,
+        value:      null,
+        type:       'ticket.agent',
+        title:      'Annette Predovic',
+        grouped_by: null,
+        nested:     []
+      },
+      {
+        count:      21,
+        id:         9,
+        value:      null,
+        type:       'ticket.agent',
+        title:      'Clark Altenwerth',
+        grouped_by: null,
+        nested:     []
+      },
+      {
+        count:      17,
+        id:         10,
+        value:      null,
+        type:       'ticket.agent',
+        title:      "Jordon D'Amore",
+        grouped_by: null,
+        nested:     []
+      },
+      {
+        count:      22,
+        id:         11,
+        value:      null,
+        type:       'ticket.agent',
+        title:      'Camryn Kerluke',
+        grouped_by: null,
+        nested:     []
+      },
+      {
+        count:      12,
+        id:         512,
+        value:      null,
+        type:       'ticket.agent',
+        title:      'Corporate Content',
+        grouped_by: null,
+        nested:     []
+      },
+      null
+    ]
   },
   {
     id:                6,
