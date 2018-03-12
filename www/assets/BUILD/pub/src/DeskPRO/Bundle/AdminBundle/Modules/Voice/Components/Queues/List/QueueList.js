@@ -78,6 +78,7 @@ class QueueRow extends React.Component {
               <i className="fa fa-gear" />
             </a>
           </div>
+          <div style={{ clear: 'both' }} />
         </div>
       </div>
     );
