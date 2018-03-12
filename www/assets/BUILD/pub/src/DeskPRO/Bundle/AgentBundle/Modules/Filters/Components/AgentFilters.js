@@ -69,7 +69,7 @@ export default class AgentFilters extends React.Component {
     } = this.state;
 
     return (
-      <Column style={{ width: '220px' }} classname="agent-filters">
+      <Column style={{ width: '220px' }} className="agent-filters">
         <Heading>
           <Icon name="envelope-o" />
           Tickets

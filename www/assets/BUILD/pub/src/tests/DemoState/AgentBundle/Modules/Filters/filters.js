@@ -15,6 +15,18 @@ export const filterSets = [
     share_mode:    'global',
     shared_teams:  [],
     shared_agents: []
+  },
+  {
+    id:            2,
+    title:         'Filters',
+    display_order: 0,
+    filters:       [
+      6,
+      7,
+    ],
+    share_mode:    'global',
+    shared_teams:  [],
+    shared_agents: []
   }
 ];
 
@@ -52,8 +64,23 @@ const filtersArray = [
     title:             'All Awaiting Agent',
     query:             "ticket.status = 'awaiting_agent'",
     display_order:     50,
+    ticket_filter_set: 1,
+    filterable:        true,
+  },
+  {
+    id:                6,
+    title:             'Demo',
+    query:             "ticket.status = 'awaiting_agent'",
+    display_order:     10,
     ticket_filter_set: 1
-  }
+  },
+  {
+    id:                7,
+    title:             'Pricing',
+    query:             "ticket.status = 'awaiting_agent'",
+    display_order:     20,
+    ticket_filter_set: 1,
+  },
 ];
 export const filters = fromJS(filtersArray);
 

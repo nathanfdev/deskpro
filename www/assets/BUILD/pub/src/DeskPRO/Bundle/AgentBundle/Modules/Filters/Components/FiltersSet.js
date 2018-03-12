@@ -1,12 +1,11 @@
 import React from 'react';
+import PropTypes from 'prop-types';
 import {
   Drawer,
   Heading,
   ItemList,
-  Item,
-  Count,
 } from '@deskpro/react-components';
-import PropTypes from 'prop-types';
+import Filter from './Filter';
 
 export default class FiltersSet extends React.Component {
   static propTypes = {
@@ -27,6 +26,18 @@ export default class FiltersSet extends React.Component {
       onChange,
       opened,
     } = this.props;
+    const items = [];
+    filterSet.filters.forEach((key) => {
+      const filter = filters.find(item => item.get('id') === key);
+      if (filter) {
+        items.push(
+          <Filter
+            key={filter.get('id')}
+            filter={filter}
+          />
+        );
+      }
+    });
     return (
       <Drawer
         onChange={onChange}
@@ -38,17 +49,7 @@ export default class FiltersSet extends React.Component {
           {filterSet.title}
         </Heading>
         <ItemList>
-          {filterSet.filters.map((key) => {
-            const filter = filters.find(item => item.get('id') === key);
-            return (
-              <Item
-                key={filter.get('id')}
-              >
-                {filter.get('title')}
-                <Count>0</Count>
-              </Item>
-            );
-          })}
+          {items}
         </ItemList>
       </Drawer>
     );
