@@ -26,41 +26,11 @@
  * ~ Thanks, Everyone at Team Deskpro
  */
 
-namespace Application\DeskPRO\CustomFields\Form\Type;
-
-use Application\DeskPRO\CustomFields\Form\Model\DisplayField;
-use Symfony\Component\Form\AbstractType;
-use Symfony\Component\Form\FormBuilderInterface;
-use Symfony\Component\OptionsResolver\OptionsResolver;
+namespace DeskPRO\Bundle\AppBundle\Validator\Constraints\CustomField;
 
 /**
- * Class DisplayFieldType.
+ * Class Url.
  */
-class DisplayFieldType extends AbstractType
+class Url extends AbstractCustomDefConstraint
 {
-    /**
-     * {@inheritdoc}
-     */
-    public function buildForm(FormBuilderInterface $builder, array $options)
-    {
-        $builder->add('html', 'textarea', ['required' => true]);
-    }
-
-    /**
-     * {@inheritdoc}
-     */
-    public function getParent()
-    {
-        return CustomFieldTypeAbstract::class;
-    }
-
-    /**
-     * {@inheritdoc}
-     */
-    public function configureOptions(OptionsResolver $resolver)
-    {
-        $resolver->setDefaults([
-            'data_class' => DisplayField::class,
-        ]);
-    }
 }

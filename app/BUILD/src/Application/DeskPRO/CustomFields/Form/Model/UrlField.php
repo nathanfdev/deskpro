@@ -26,41 +26,37 @@
  * ~ Thanks, Everyone at Team Deskpro
  */
 
-namespace Application\DeskPRO\CustomFields\Form\Type;
-
-use Application\DeskPRO\CustomFields\Form\Model\DisplayField;
-use Symfony\Component\Form\AbstractType;
-use Symfony\Component\Form\FormBuilderInterface;
-use Symfony\Component\OptionsResolver\OptionsResolver;
+namespace Application\DeskPRO\CustomFields\Form\Model;
 
 /**
- * Class DisplayFieldType.
+ * Class UrlField.
  */
-class DisplayFieldType extends AbstractType
+class UrlField extends CustomFieldAbstract
 {
     /**
+     * @var bool
+     */
+    public $allowFile = false;
+
+    /**
      * {@inheritdoc}
      */
-    public function buildForm(FormBuilderInterface $builder, array $options)
+    public function init()
     {
-        $builder->add('html', 'textarea', ['required' => true]);
+        $this->required                 = (bool) $this->_field->getOption('required');
+        $this->agent_required           = (bool) $this->_field->getOption('agent_required');
+        $this->agent_validation_resolve = (bool) $this->_field->getOption('agent_validation_resolve');
+        $this->allowFile                = (bool) $this->_field->getOption('allow_file');
     }
 
     /**
      * {@inheritdoc}
      */
-    public function getParent()
+    protected function setFieldProperties()
     {
-        return CustomFieldTypeAbstract::class;
-    }
-
-    /**
-     * {@inheritdoc}
-     */
-    public function configureOptions(OptionsResolver $resolver)
-    {
-        $resolver->setDefaults([
-            'data_class' => DisplayField::class,
-        ]);
+        $this->_field->setOption('required', $this->required);
+        $this->_field->setOption('agent_required', $this->agent_required);
+        $this->_field->setOption('agent_validation_resolve', $this->agent_validation_resolve);
+        $this->_field->setOption('allow_file', $this->allowFile);
     }
 }

@@ -129,6 +129,7 @@ class TicketViewDataService extends AbstractDataService
                 case FormFields::DEPARTMENT:
                     $view->addProperty(
                         $field_id,
+                        CustomDefAbstract::TYPE_CHOICE,
                         $this->translate->phrase('user.tickets.fields_department'),
                         $ticket->getDepartment() ? $ticket->getDepartment()->getUserTitle() : '',
                         $layout_field->isVisibleOnViewAlways()
@@ -138,6 +139,7 @@ class TicketViewDataService extends AbstractDataService
                     if ($this->hasSetting('core.use_ticket_category')) {
                         $view->addProperty(
                             $field_id,
+                            CustomDefAbstract::TYPE_CHOICE,
                             $this->translate->phrase('user.tickets.fields_category'),
                             $ticket->getCategory(),
                             $layout_field->isVisibleOnViewAlways()
@@ -148,6 +150,7 @@ class TicketViewDataService extends AbstractDataService
                     if ($this->hasSetting('core.use_product')) {
                         $view->addProperty(
                             $field_id,
+                            CustomDefAbstract::TYPE_CHOICE,
                             $this->translate->phrase('user.tickets.fields_product'),
                             $ticket->getProduct(),
                             $layout_field->isVisibleOnViewAlways()
@@ -158,6 +161,7 @@ class TicketViewDataService extends AbstractDataService
                     if ($this->hasSetting('core.use_ticket_priority')) {
                         $view->addProperty(
                             $field_id,
+                            CustomDefAbstract::TYPE_CHOICE,
                             $this->translate->phrase('user.tickets.fields_priority'),
                             $ticket->getPriority(),
                             $layout_field->isVisibleOnViewAlways()
@@ -230,6 +234,7 @@ class TicketViewDataService extends AbstractDataService
 
                         $view->addProperty(
                             $field_id,
+                            CustomDefAbstract::TYPE_CHOICE,
                             $fieldDef->getTitle(),
                             $value,
                             $layout_field->isVisibleOnViewAlways()
@@ -267,6 +272,7 @@ class TicketViewDataService extends AbstractDataService
 
         $view->addProperty(
             $fieldId,
+            $def->getWidgetType(),
             $def->getTitle(),
             (string) $value,
             $isAlwaysVisible,

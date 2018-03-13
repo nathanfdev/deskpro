@@ -28,29 +28,20 @@
 
 namespace Application\DeskPRO\CustomFields\Handler;
 
-use Orb\Util\Strings;
+use Application\DeskPRO\App;
+use DeskPRO\Bundle\AppBundle\Validator\Constraints as AppAssert;
 
 /**
- * Handles the text field.
+ * Class Url.
  */
-class Text extends HandlerAbstract
+class Url extends HandlerAbstract
 {
     /**
-     * @param array $form_data
-     * @param null  $default
-     *
-     * @return mixed|null
+     * {@inheritdoc}
      */
-    private function findValue(array $form_data, $default = null)
+    public function getWidgetName()
     {
-        $names = $this->getAllFormFieldNames();
-        foreach ($names as $name) {
-            if (!empty($form_data[$name]) || (isset($form_data[$name]) && $form_data[$name] === '0')) {
-                return $form_data[$name];
-            }
-        }
-
-        return $default;
+        return 'text';
     }
 
     /**
@@ -73,9 +64,8 @@ class Text extends HandlerAbstract
      */
     public function validateFormData(array $form_data, $context = self::CONTEXT_USER, $context_data = null)
     {
-        $valueIfNotPresent = new \stdClass();
-        $data              = $this->findValue($form_data, $valueIfNotPresent);
-        if ($data === $valueIfNotPresent) {
+        $data = $this->findValue($form_data);
+        if (!$data) {
             $data = '';
         }
 
@@ -83,47 +73,30 @@ class Text extends HandlerAbstract
             return $this->makeErrorArray(['invalid_input']);
         }
 
-        //------------------------------
-        // Validate options
-        //------------------------------
-
-        $opt_prefix = '';
+        $optPrefix = '';
         if ($context == self::CONTEXT_AGENT) {
-            $opt_prefix = 'agent_';
+            $optPrefix = 'agent_';
         }
 
         $options = [];
-        foreach (['required', 'min_length', 'max_length', 'regex', 'regex_required'] as $k) {
-            $options[$k] = $this->field_def->getOption($opt_prefix.$k);
+        foreach (['required'] as $k) {
+            $options[$k] = $this->field_def->getOption($optPrefix.$k);
         }
 
         if ($options['required']) {
-            $len = Strings::utf8_strlen($data);
-
-            if ($options['min_length'] && $len < $options['min_length']) {
-                if ($options['min_length'] == 1 || $len === 0) {
-                    return $this->makeErrorArray(['required']);
-                } else {
-                    return $this->makeErrorArray(['min_length']);
-                }
-            }
-
-            if ($options['max_length'] && $len > $options['max_length']) {
-                return $this->makeErrorArray(['max_length']);
+            if (!$data) {
+                return $this->makeErrorArray(['required']);
             }
         }
 
-        if ($options['regex']) {
-            if ($options['regex_required']) {
-                if (!Strings::utf8_strlen($data)) {
-                    return $this->makeErrorArray(['required']);
-                }
-            }
+        $errors = App::$container->get('validator')->validate($data, [
+            new AppAssert\Url([
+                'allowFile' => $this->field_def->getOption('allow_file'),
+            ]),
+        ]);
 
-            $regex = Strings::getInputRegexPattern($options['regex']);
-            if ($regex && $data && !preg_match($regex, $data)) {
-                return $this->makeErrorArray(['regex_fail']);
-            }
+        if ($errors->count() > 0) {
+            return $this->makeErrorArray(['invalid_input']);
         }
 
         return [];
@@ -151,5 +124,23 @@ class Text extends HandlerAbstract
     public function getSearchType()
     {
         return 'input';
+    }
+
+    /**
+     * @param array $form_data
+     * @param null  $default
+     *
+     * @return mixed|null
+     */
+    private function findValue(array $form_data, $default = null)
+    {
+        $names = $this->getAllFormFieldNames();
+        foreach ($names as $name) {
+            if (!empty($form_data[$name]) || (isset($form_data[$name]) && $form_data[$name] === '0')) {
+                return $form_data[$name];
+            }
+        }
+
+        return $default;
     }
 }

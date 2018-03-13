@@ -28,22 +28,28 @@
 
 namespace Application\DeskPRO\CustomFields\Form\Type;
 
-use Application\DeskPRO\CustomFields\Form\Model\DisplayField;
+use Application\DeskPRO\CustomFields\Form\Model\UrlField;
+use DeskPRO\Bundle\AppBundle\Form\Type\ApiBooleanType;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 
 /**
- * Class DisplayFieldType.
+ * Class UrlFieldType.
  */
-class DisplayFieldType extends AbstractType
+class UrlFieldType extends AbstractType
 {
     /**
      * {@inheritdoc}
      */
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
-        $builder->add('html', 'textarea', ['required' => true]);
+        $builder
+            ->add('allow_file', ApiBooleanType::class, [
+                'property_path' => 'allowFile',
+                'required'      => false,
+            ])
+        ;
     }
 
     /**
@@ -60,7 +66,7 @@ class DisplayFieldType extends AbstractType
     public function configureOptions(OptionsResolver $resolver)
     {
         $resolver->setDefaults([
-            'data_class' => DisplayField::class,
+            'data_class' => UrlField::class,
         ]);
     }
 }

@@ -519,6 +519,7 @@ return [
     'portal.forms.error_bad_choice'                          => 'One or more of the given values is invalid.',
     'portal.forms.error_system_email'                        => 'Email "{{ email }}" is already being used as email account.',
     'portal.forms.error_not_unique_collection'               => 'One or more of the given values is not unique.',
+    'portal.forms.error_invalid_url'                         => 'This value is not a valid URL.',
     'portal.forms.label_add_attachment'                      => 'Add Another Attachment',
     'portal.forms.label_captcha'                             => 'To prove you are a human, please tell us the text you see in the CAPTCHA image',
     'portal.forms.label_category'                            => 'Category',

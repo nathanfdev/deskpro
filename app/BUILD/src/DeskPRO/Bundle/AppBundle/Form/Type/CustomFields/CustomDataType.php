@@ -39,6 +39,7 @@ use DeskPRO\Bundle\AppBundle\Form\Type\DateTimeType;
 use DeskPRO\Bundle\AppBundle\Form\Type\DisplayHtmlType;
 use DeskPRO\Bundle\AppBundle\Form\Type\DpDateType;
 use DeskPRO\Bundle\AppBundle\Form\Type\DpHiddenType;
+use DeskPRO\Bundle\AppBundle\Form\Type\DpUrlType;
 use DeskPRO\Bundle\AppBundle\Validator\Constraints as AppAssert;
 use DeskPRO\Bundle\PortalBundle\Form\Form\Type\SingleCheckboxType;
 use Doctrine\Common\Collections\ArrayCollection;
@@ -585,6 +586,11 @@ class CustomDataType extends AbstractType
                 ];
 
                 return new FormField(DpHiddenType::class, $options);
+
+            case CustomDefAbstract::TYPE_URL:
+                return new FormField(DpUrlType::class, [
+                    'help' => $def->getRealDescription(),
+                ]);
 
             default:
                 throw new \InvalidArgumentException("Invalid field #{$def->getId()}. Cannot find handler for type \"{$def->getType()}\".");

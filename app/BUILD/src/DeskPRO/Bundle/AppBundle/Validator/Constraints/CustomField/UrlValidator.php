@@ -26,41 +26,33 @@
  * ~ Thanks, Everyone at Team Deskpro
  */
 
-namespace Application\DeskPRO\CustomFields\Form\Type;
+namespace DeskPRO\Bundle\AppBundle\Validator\Constraints\CustomField;
 
-use Application\DeskPRO\CustomFields\Form\Model\DisplayField;
-use Symfony\Component\Form\AbstractType;
-use Symfony\Component\Form\FormBuilderInterface;
-use Symfony\Component\OptionsResolver\OptionsResolver;
+use DeskPRO\Bundle\AppBundle\Validator\Constraints as AppAssert;
+use Symfony\Component\Validator\Constraints as Assert;
 
 /**
- * Class DisplayFieldType.
+ * Class UrlValidator.
  */
-class DisplayFieldType extends AbstractType
+class UrlValidator extends AbstractSingleValueValidator
 {
     /**
      * {@inheritdoc}
      */
-    public function buildForm(FormBuilderInterface $builder, array $options)
+    protected function getValidators($data, AbstractCustomDefConstraint $constraint)
     {
-        $builder->add('html', 'textarea', ['required' => true]);
-    }
+        $validators = [];
 
-    /**
-     * {@inheritdoc}
-     */
-    public function getParent()
-    {
-        return CustomFieldTypeAbstract::class;
-    }
+        // Required validator
+        if ($constraint->getCustomDefOption('required', true)) {
+            $validators[] = new Assert\NotBlank();
+        }
 
-    /**
-     * {@inheritdoc}
-     */
-    public function configureOptions(OptionsResolver $resolver)
-    {
-        $resolver->setDefaults([
-            'data_class' => DisplayField::class,
+        // Url validator
+        $validators[] = new AppAssert\Url([
+            'allowFile' => $constraint->custom_def->getOption('allow_file'),
         ]);
+
+        return $validators;
     }
 }

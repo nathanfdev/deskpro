@@ -31,13 +31,21 @@ namespace Application\DeskPRO\CustomFields\Form\Type;
 use Application\DeskPRO\CustomFields\Form\Model\ChoiceField;
 use Symfony\Component\Form\Extension\Core\Type\CheckboxType;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
+use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\Form\FormEvent;
 use Symfony\Component\Form\FormEvents;
+use Symfony\Component\OptionsResolver\OptionsResolver;
 
-class ChoiceFieldType extends CustomFieldTypeAbstract
+/**
+ * Class ChoiceFieldType.
+ */
+class ChoiceFieldType extends AbstractType
 {
-    protected function buildCustomFieldForm(FormBuilderInterface $builder, array $options)
+    /**
+     * {@inheritdoc}
+     */
+    public function buildForm(FormBuilderInterface $builder, array $options)
     {
         $builder->add('field_type', 'choice', ['choices' => [
             'select'       => 'Select box (single selection)',
@@ -63,10 +71,21 @@ class ChoiceFieldType extends CustomFieldTypeAbstract
         });
     }
 
-    public function getDefaultOptions(array $options)
+    /**
+     * {@inheritdoc}
+     */
+    public function getParent()
     {
-        return [
+        return CustomFieldTypeAbstract::class;
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function configureOptions(OptionsResolver $resolver)
+    {
+        $resolver->setDefaults([
             'data_class' => ChoiceField::class,
-        ];
+        ]);
     }
 }

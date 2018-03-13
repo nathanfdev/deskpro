@@ -26,10 +26,6 @@
  * ~ Thanks, Everyone at Team Deskpro
  */
 
-/**
- * DeskPRO.
- */
-
 namespace Application\DeskPRO\CustomFields\Form\Model;
 
 use Orb\Util\Arrays;

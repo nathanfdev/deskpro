@@ -90,6 +90,12 @@ define ['moment', 'DeskPRO/Util/Util'], (moment, Util) ->
         datalist: {
           usersource_id: '0',
           field_name: ''
+        },
+        url: {
+          allow_file:               false
+          user_validation:          '0'
+          agent_validation:         '0'
+          agent_validation_resolve: false
         }
       }
 
@@ -221,6 +227,16 @@ define ['moment', 'DeskPRO/Util/Util'], (moment, Util) ->
           when "data", "datajson", "datalist"
             formTypeOpts.usersource_id = (parseInt(fieldModel.options.usersource_id || '0') || 0) + ""
             formTypeOpts.field_name    = fieldModel.options.field_name || ''
+
+          when "url"
+            formTypeOpts.allow_file = !!fieldModel.options.allow_file
+
+            if fieldModel.options.required
+              formTypeOpts.user_validation = 'required'
+            if fieldModel.options.agent_required
+              formTypeOpts.agent_validation = 'required'
+              if fieldModel.options.agent_validation_resolve
+                formTypeOpts.agent_validation_resolve = true
 
       if fieldModel.options.agent_validation_resolve
         formTypeOpts.agent_validation_resolve = true
@@ -362,6 +378,15 @@ define ['moment', 'DeskPRO/Util/Util'], (moment, Util) ->
           postData.handler_class = 'Application\\DeskPRO\\CustomFields\\Handler\\Data'
           postData.usersource_id = parseInt(formTypeOpts.usersource_id) || 0
           postData.field_name    = formTypeOpts.field_name
+
+        when "url"
+          postData.handler_class = 'Application\\DeskPRO\\CustomFields\\Handler\\Url'
+          postData.allow_file    = formTypeOpts.allow_file
+
+          if formTypeOpts.user_validation == 'required'
+            postData.required = true
+          if formTypeOpts.agent_validation == 'required'
+            postData.agent_required = true
 
       if formTypeOpts.agent_validation_resolve
         postData.agent_validation_resolve = true

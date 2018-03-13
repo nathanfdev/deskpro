@@ -26,41 +26,40 @@
  * ~ Thanks, Everyone at Team Deskpro
  */
 
-namespace Application\DeskPRO\CustomFields\Form\Type;
+namespace DeskPRO\Bundle\AppBundle\Validator\Constraints;
 
-use Application\DeskPRO\CustomFields\Form\Model\DisplayField;
-use Symfony\Component\Form\AbstractType;
-use Symfony\Component\Form\FormBuilderInterface;
-use Symfony\Component\OptionsResolver\OptionsResolver;
+use Symfony\Component\Validator\Constraint;
+use Symfony\Component\Validator\Exception\UnexpectedTypeException;
 
 /**
- * Class DisplayFieldType.
+ * Class UrlValidator.
  */
-class DisplayFieldType extends AbstractType
+class UrlValidator extends \Symfony\Component\Validator\Constraints\UrlValidator
 {
     /**
      * {@inheritdoc}
      */
-    public function buildForm(FormBuilderInterface $builder, array $options)
+    public function validate($value, Constraint $constraint)
     {
-        $builder->add('html', 'textarea', ['required' => true]);
-    }
+        if (!$constraint instanceof Url) {
+            throw new UnexpectedTypeException($constraint, Url::class);
+        }
+        if (!$value) {
+            return;
+        }
+        if (!is_string($value)) {
+            throw new UnexpectedTypeException($value, 'string');
+        }
 
-    /**
-     * {@inheritdoc}
-     */
-    public function getParent()
-    {
-        return CustomFieldTypeAbstract::class;
-    }
+        if ($constraint->allowFile) {
+            if (preg_match('#^\\\\[\w\d-_\\\]+$#', $value)) {
+                // shared folder
+                return;
+            }
 
-    /**
-     * {@inheritdoc}
-     */
-    public function configureOptions(OptionsResolver $resolver)
-    {
-        $resolver->setDefaults([
-            'data_class' => DisplayField::class,
-        ]);
+            $constraint->protocols = ['\w+'];
+        }
+
+        parent::validate($value, $constraint);
     }
 }
