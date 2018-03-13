@@ -131,7 +131,9 @@ class TicketsForm extends React.Component {
 
 export default class Filter extends React.Component {
   static propTypes = {
-    filter: PropTypes.object
+    filter:   PropTypes.object,
+    selected: PropTypes.bool,
+    onSelect: PropTypes.func
   };
 
   constructor(props) {
@@ -211,23 +213,29 @@ export default class Filter extends React.Component {
   };
 
   render() {
-    const { filter } = this.props;
-    const render = [<Item key="item">
-      {filter.get('title')}
-      <Count>0</Count>
-      {
-        filter.get('filterable') ?
-          <ItemFilter ref={(ref) => { this.filter = ref; }}>
-            <TicketsForm
-              onChange={this.handleTicketsChange}
-              onSlaChange={this.handleSlaChange}
-              filter={filter}
-              slaValue={this.state.slaValue}
-            />
-          </ItemFilter>
-          : ''
-      }
-    </Item>];
+    const { filter, selected, onSelect } = this.props;
+    const render = [
+      <Item
+        key="item"
+        selected={selected}
+        onClick={onSelect}
+      >
+        {filter.get('title')}
+        <Count>0</Count>
+        {
+          filter.get('filterable') ?
+            <ItemFilter ref={(ref) => { this.filter = ref; }}>
+              <TicketsForm
+                onChange={this.handleTicketsChange}
+                onSlaChange={this.handleSlaChange}
+                filter={filter}
+                slaValue={this.state.slaValue}
+              />
+            </ItemFilter>
+            : ''
+        }
+      </Item>
+    ];
     const subFilters = this.getSubFilters();
     if (subFilters) {
       render.push(subFilters);

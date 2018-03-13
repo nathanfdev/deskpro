@@ -6,6 +6,7 @@ use Application\DeskPRO\Entity\Ticket;
 use DeskPRO\Bundle\ApiBundle\ApiDoc\Annotation\ApiDoc;
 use DeskPRO\Bundle\ApiBundle\Controller\CrudController;
 use DeskPRO\Bundle\AppBundle\Annotation\ActionPermissions\Annotation\ApiModes;
+use DeskPRO\Bundle\AppBundle\Annotation\ActionPermissions\Annotation\Feature;
 use DeskPRO\Bundle\AppBundle\CountBadge\Count;
 use DeskPRO\Bundle\AppBundle\CountBadge\CountBuilder;
 use DeskPRO\Bundle\AppBundle\Entity\TicketFilter;
@@ -22,6 +23,7 @@ use Symfony\Component\HttpFoundation\Request;
  *
  * @ApiModes("all")
  * @Rest\Route("/ticket_filters2")
+ * @Feature("new_filters")
  * @ApiDoc(
  *     target="all",
  *     section="Ticket filters (new)",

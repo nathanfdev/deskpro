@@ -19,9 +19,7 @@ export default class Stars extends React.Component {
   };
 
   onSelect(selected, star) {
-    if (selected) {
-      this.props.onSelectMode({ type: 'star', star: star.id });
-    }
+    this.props.onSelectMode({ type: 'star', star: star.id });
   }
 
   close() {

@@ -24,17 +24,23 @@ export default class AgentFilters extends React.Component {
     filters:    [],
     stars:      [],
     labels:     [],
+    onSelectMode() {},
   };
 
   constructor(props) {
     super(props);
     let currentDrawer = '';
+    let mode = null;
     if (props.filterSets.length) {
       currentDrawer = `filterSet${props.filterSets[0].id}`;
+      mode = {
+        type:   'filter',
+        filter: props.filterSets[0].filters[0],
+      };
     }
     this.state = {
       currentDrawer,
-      mode: null
+      mode,
     };
     this.drawers = {};
   }
@@ -69,7 +75,7 @@ export default class AgentFilters extends React.Component {
     } = this.state;
 
     return (
-      <Column style={{ width: '220px' }} className="agent-filters">
+      <Column style={{ width: '213px' }} className="agent-filters">
         <Heading>
           <Icon name="envelope-o" />
           Tickets
@@ -83,8 +89,10 @@ export default class AgentFilters extends React.Component {
                 ref={(c) => { this.drawers[`filterSet${filterSet.id}`] = c; }}
                 opened={opened}
                 onChange={this.setDrawer}
+                onSelectMode={this.onSelectMode}
                 filterSet={filterSet}
                 filters={filters}
+                mode={mode}
               />
             );
           }

@@ -6,10 +6,10 @@ export const filterSets = [
     title:         'Inbox',
     display_order: 0,
     filters:       [
-      1,
-      2,
+      101,
+      103,
       3,
-      4,
+      104,
       5
     ],
     share_mode:    'global',
@@ -32,14 +32,14 @@ export const filterSets = [
 
 const filtersArray = [
   {
-    id:                1,
+    id:                101,
     title:             'Assigned To Me',
     query:             "ticket.status = 'awaiting_agent' AND ticket.agent = $me",
     display_order:     10,
     ticket_filter_set: 1
   },
   {
-    id:                2,
+    id:                103,
     title:             'Tickets I Follow',
     query:             "ticket.status = 'awaiting_agent' AND ticket.followers HAS $me",
     display_order:     20,
@@ -53,7 +53,7 @@ const filtersArray = [
     ticket_filter_set: 1
   },
   {
-    id:                4,
+    id:                104,
     title:             'Unassigned',
     query:             "ticket.status = 'awaiting_agent' AND ticket.agent IS EMPTY",
     display_order:     40,

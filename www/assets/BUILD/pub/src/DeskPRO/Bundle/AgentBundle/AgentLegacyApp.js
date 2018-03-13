@@ -29,6 +29,7 @@ import LegacySnippetInserter from 'DeskPRO/Bundle/AgentBundle/Modules/Snippets/S
 import RteTextArea from 'DeskPRO/Bundle/AgentBundle/Modules/Publish/Services/RteTextarea';
 import store from 'DeskPRO/Bundle/AgentBundle/Services/store';
 import { FollowUpContainer } from './Modules/Tickets/Components/FollowUp/FollowUp';
+import AgentFiltersContainer from './Modules/Filters/Components/AgentFiltersContainer';
 
 class AgentLegacyApp {
 
@@ -70,6 +71,9 @@ class AgentLegacyApp {
       this.renderPiece(LeftDrawerContainer, LeftDrawerContainer.getType());
       this.renderPiece(AgentOnboardingContainer, AgentOnboardingContainer.getType());
       this.renderPiece(NotificationServiceContainer, NotificationServiceContainer.getType());
+      if (window.DP_HAS_NEW_FILTERS) {
+        this.renderPiece(AgentFiltersContainer, AgentFiltersContainer.getType());
+      }
       window.$('#dp_loading').remove();
 
       window.LegacyStoreProvider = new LegacyStoreProvider();
