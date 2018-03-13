@@ -1,4 +1,4 @@
-import ScrollArea from '@deskpro/react-scrollbar';
+import ScrollArea from 'react-scrollbar';
 
 class Scrollarea extends ScrollArea {
 

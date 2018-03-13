@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2017, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2018, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -64,11 +64,14 @@ class RedisDeliveryHandler extends AbstractDeliveryHandler
 
     /**
      * @param MessageInterface $message
-     *
-     * @return bool
      */
     public function schedule(MessageInterface $message)
     {
+        //this is particular message should be sent only throught db client
+        if ($message->getType() === 'read.notifications.alert') {
+            return;
+        }
+
         $data = json_encode(
             [
                 'target' => $message->getTarget(),

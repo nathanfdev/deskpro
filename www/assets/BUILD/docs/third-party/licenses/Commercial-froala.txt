@@ -1,0 +1,270 @@
+Froala Editor License Agreement
+
+Last modified date: January 10, 2018
+
+
+This agreement (hereinafter referred to as "Agreement") is made between Froala Labs SRL (hereinafter referred to as "Froala", "Licensor", "we", "us" or "our") and Licensee (hereinafter referred to as "Licensee", "you" or "your"). By downloading, installing, copying, accessing and/or using the Froala WYSIWYG HTML Editor, or purchasing a license for it, you agree to be bound by the terms and conditions of this license.
+
+If you do not agree to these terms:
+
+Do not download, install, copy, access and/or use the Software and/or
+Stop using the Software and destroy any copies of the Software in your possession or control and/or
+Promptly return the software with the sale receipt to the party from whom you acquired the Software.
+Froala reserves the right to alter this agreement at any time, for any reason and without notice.
+
+WHEREAS, Froala is the owner of software product developed by Froala Labs
+
+WHEREAS, Licensee is a company, person or organization that wishes to utilize this software product bundled or integrated with their own software products.
+
+NOW THEREFORE, in consideration of the mutual covenants herein, Froala and Licensee hereby agree to be legally bound as follows:
+
+
+1 Definitions
+Activation Key shall mean a unique license key, which allows Licensee to activate the Software on a Domain;
+
+Agreement shall mean the standard terms and conditions in this document;
+
+Affiliates shall mean any party company that is involved in the process of making the Licensee's product available to end users;
+
+Bug shall mean a behavior in the Software's functionality that we do not consider intended;
+
+Confidential Information shall mean any and all confidential written, verbal or demonstrated information provided by a Disclosing Party in connection with this Agreement;
+
+Confidential information includes, without limitation, information relating to inventions, trade secrets, know-how, methods, processes, creations, conceptions, technologies, algorithms, other intellectual property, products, improvements, product formulae, services, finances, business plans, marketing plans, legal affairs, supplier lists, customers, customer lists and related data, potential customers, business prospects, business opportunities and the like, which relate in any manner to a Party's actual or anticipated business, its Affiliates, subsidiaries, or divisions, or to it's actual or anticipated areas of research and development;
+
+Developer shall mean a person who is working directly or indirectly on a project that includes the Software, including front-end developers and designers as well as backend developers working on the business logic related to integrating the Software, but not developers working on completely different modules of your project;
+
+Disclosing Party shall mean a Party that discloses information to a Receiving Party;
+
+Domain Name (or Domain) shall mean a unique name or address by which a Website is reachable. (For example, if a Website is reachable by the address "http://www.example.com", the Domain is "example.com");
+
+Froala shall mean Froala Labs SRL, a Romanian company with VAT number RO 33504454;
+
+Froala's Website shall mean https://www.froala.com/;
+
+Froala Freelancer or Froala Freelancers shall mean the freelancers displayed on the Froala Website at https://www.froala.com/wysiwyg-editor/freelancers;
+
+The Froala Freelancers are not part of the Froala company and do not work for or at Froala. The Froala Freelancers are developers that we previously interacted with for technical support while they were integrating the Froala Editor in different projects.
+
+Intranet shall mean a private network accessible only to Licensee's staff;
+
+License shall mean the license granted by Froala according to this Agreement;
+
+Licensed Product shall mean the software product owned and licensed by Licensee to its respective customers;
+
+Licensee shall mean the company, person or organization holding a license and contracting party to this Agreement;
+
+License Fee shall mean the fee payable to Froala for utilization of the Software in accordance with the License;
+
+Marketplace shall mean a software component that connects two or more parties to conclude a transaction and benefit from the network;
+
+Minified Source Code shall mean source code with unnecessary characters removed and with minimized readability.
+
+Party shall mean Licensee or Froala individually;
+
+Parties shall mean Licensee and Froala jointly;
+
+Receiving Party shall mean a Party that receives information from a Disclosing Party;
+
+Open Source shall mean computer software with its source code made available and licensed with a license in which the copyright holder provides the rights to study, change and distribute the software to anyone and for any purpose;
+
+SaaS shall mean a software licensing and delivery model in which software is licensed on a subscription basis and is centrally hosted;
+
+SaaS Marketplace shall mean a Marketplace that either (i) offers features to one or more of the parties or (ii) uses a software component to monetize the tranzaction through a tranzaction fee or a subscription;
+
+Software shall mean the Froala WYSIWYG HTML text editor marketed by Froala on https://www.froala.com/wysiwyg-editor;
+
+Software's API shall mean the Software's Programming Interface which consists of options, methods and events that can be used to interact with the it;
+
+Subscription shall mean a business model which gives customer the right to use a product or service for a given period of time;
+
+Territory shall mean the territory where the Software can be utilized, respectively any country;
+
+Third Party or Third Parties shall mean any other party than the Parties and Affiliates;
+
+Website shall mean a collection of web pages that all have the same Domain Name (organizational level) and that serve and are operated by one single entity or Licensee;
+
+Wildcard Activation Key shall mean an Activation Key provided to the Licensee only under the Business License, which allows Software activation for any Domain and in any application;
+
+Working Days shall mean any day on which legal business can be conducted, other than Saturday, Sunday or legal holiday;
+
+Unminified Source Code shall mean source code in human readable format.
+
+
+2 Copyright
+Licensor owns all the intellectual Property Rights over the Software. Nothing in this Agreement shall operate to assign or transfer any Intellectual Property Rights from the Licensor to you, or from you to the Licensor.
+
+The structure, organization and code of the Software are valuable trade secrets and confidential information of the Licensor. The Software, including the Software`s logos and trademarks, are proprietary to the Licensor and protected by law, including without limitation the copyright laws of Romania and other countries, and by international treaty provisions.
+
+You shall respect the Licensor`s Intellectual Property Rights, as stipulated under this Agreement and the applicable laws.
+
+
+3 Grant of License
+The Software is licensed, not sold, only in accordance with these terms.
+Subject to this Agreement, Licensee is granted a perpetual, non-exclusive and non-transferable License to utilize the Software in the Territory.
+Licensee may grant any of its rights or delegate any of its obligations under this Agreement to Affiliates, provided that (i) the Software is bundled or integrated with the software products owned by Licensee, (ii) Licensee shall ensure that Affiliates comply with all the terms of this Agreement as if they were party to this Agreement, and (iii) Licensee will be liable for the activities of Affiliates as if such activities were performed by Licensee.
+Licensee and its Affiliates may produce copies of the Software necessary for lawful backup and archival purposes. Any copy of the Software made by Licensee or its Affiliates in accordance with the License shall contain all the proprietary notices contained in the original copy.
+Licensee and its Affiliates may not transfer, rent, lease, lend, sell, copy, redistribute or sublicense the Software to Third Parties. Any attempt to do so is considered a substantial breach of this Agreement. Any works developed or derived from the Software, to Third Parties as a consultant job or as a SaaS, Subscription, Intranet or Web Applications are allowed.
+Redistribution of the Software to Third Parties through software products or any other way, except Open Source project, is allowed only under the Business License.
+Redistribution of the Software to Third Parties through Open Source projects is not allowed under any of the Licenses.
+Redistribution of the unminified source code to Third Parties is not allowed under any of the Licenses.
+Licensee may download the source code from Froala's Website, make own edits and keep its own private repositories with the modified source code.
+Froala has the right to keep some of the source code minified, no matter what license the Licensee has bought.
+Licensee undertakes not to declare or give the impression that the Software in any way endorses Licensee's own work, and not to use any titles, trademarks, labels, or logos found in the Software in Licensee's own titles, products names, service names, or domain names.
+Froala reserves all rights not expressly granted to Licensee in this Agreement. Without limiting the generality of the foregoing, Licensee acknowledges and agrees that: (i) except as specifically set forth in this Agreement, Froala retains all rights, title and interest in and to the Software and Licensee does not acquire any right, title, or interest to the Software except as set forth herein; (ii) any configuration or deployment of the Software shall not affect or diminish Froala's rights, title, and interest in and to the Software. Nothing in this Agreement shall limit in any way Froala's right to develop, use, license, create derivative works of, or otherwise exploit the Software, or to permit Third Parties to do so.
+
+4 Restrictions
+During the term of this Agreement and after termination, you agree that you will not yourself, or through any parent, subsidiary, affiliate, agent or other Third Party:
+
+sell the Software as is or with superficial modifications;
+remove the unlicensed banner from the Software in any other way than the one provided by us;
+remove the Froala copyright notice from the source code of the Software;
+use the Software in Open Source projects;
+use the License in projects that are not owned by Licensee;
+redistribute the unminified source code to Third Parties;
+redistribute or sell Software plugins that are only meant to ease the integration of the Software in development frameworks;
+reverse engineer, decompile, disassemble, or otherwise attempt to discover the source code of the Software on the unminified source code;
+use the Software or parts of the Software in any way that would compete with the Software;
+use parts of the Software's source code in other projects;
+use the Software for any illegal activity. In this respect, you shall respect any applicable law, rule or regulation in connection with your access and/or use of the Software;
+use the Software in order to create a product, service or software that is, directly or indirectly, competitive with or in any way a substitute for the Software offered by the Licensor;
+take any action that might diminish or cancel any Licensor rights over the Software;
+allow and/or request any Third Party to take any action stipulated above
+
+5 Marketing
+Licensee may use Licensee's own descriptions of the functionality provided by the Software for the purposes of marketing Licensee Product(s) insofar the descriptions are not misleading.
+
+Licensee shall not do anything that might misrepresent the ownership of the Software.
+
+
+6 License Types
+Licensee may opt between the following types of licenses:
+
+6.1 Hobby License
+A Hobby License allows Licensee to use the Software freely within the frames of a single Domain. The Hobby License does not allow Licensee to use the Software in SaaS or Subscription products or Intranets. It does not include the unminified source code or support. Licensee is allowed to generate only one Activation Key for the Domain where the Software is used.
+
+6.2 Professional License
+A Professional License allows Licensee to use and further develop the Software freely within the frames of 10 (ten) Domains. The Professional License does not allow Licensee to use the Software in SaaS or Subscription products or Intranets. Licensee can use the Software freely on his own server. The Professional License includes the unminified source code and twelve (12) months of technical support starting with the purchase date. Licensee has to generate manually separate Activation Keys for each Domain where the Software is used.
+
+6.3 Business License
+An Business License allows Licensee to use the Software in SaaS and Subscription products, SaaS Marketplaces, Intranets, mobile applications and redistribute the Software in his software products. Licensee is not allowed to use the Software in Open Source projects. The Business License includes the unminified source code and twelve (12) months of premium support starting with the purchase date. Licensee receives a Wildcard Activation Key that can be used on any Domain and in any application. The Business License allows Licensee to contact the Froala Freelancers.
+
+
+7 License Fee
+The License Fee is one time payment and it shall be calculated based on Froala's then current price list. The fees listed on the Froala's Website do not include taxes. If Froala is required to pay any sales, use, property, excise, value added, gross receipts, withholding or other taxes levied on the Software under this Agreement or on Licensee's use thereof, then such taxes shall be billed to and paid by Licensee. This Section does not apply to taxes based on Froala’s net income, franchise taxes or Froala’s employer contributions and taxes.
+
+Therefore, you understand that for customers within EU, additional VAT charges may apply during the checkout process to the listed price. You must pay any applicable taxes, and any applicable third-party fees (including, for example data plan charges, credit card fees or foreign exchange fees). We are not responsible for these fees.
+
+You understand that Froala is using third-party payment processors and until payments are verified by the payment processor, BraintreePayments, and received by Us, this License Agreement is not valid.
+
+Licensee may opt to upgrade the license he owns by paying the difference between the License Fee already paid by Licensee and the License Fee for the new License Type. If the License Fee for the License Type owned by Licensee has changed, the upgrade will be calculated using the License Fee paid by Licensee, and not using the new License Fee. The support period start date will not be affected by the license upgrade, and it will remain the same with the first purchase date.
+
+The collaboration and work of the Froala Freelancers is under no circumstance related to the License Fee. You understand that the payment for the work of the Froala Freelancers is entirely your responsibility toward the Froala Freelancers. Froala does not get involved in any way in the collaboration between Licensee and the Froala Freelancers.
+
+
+8 Refund
+The License Fee is refundable only under the following conditions:
+
+The refund request is made within thirty (30) days from the purchase date;
+Licensee has not generated any Activation Keys;
+Licensee has not requested support.
+In order to ask for a refund, Licensee shall Contact Us via our website. As soon as the request is received, We will evaluate it and if you are eligible for a refund we will initiate a full refund of the purchase within 15 working days. The refund is being made through our payment processor, BraintreePayments, and you understand that it might take some time until the money get back to your bank account.
+
+Once we initiate the refund you will get a confirmation email and this agreement is terminated. You shall remove, delete or otherwise destroy any material that you have received, copied or otherwise obtained.
+
+
+9 Activation
+Froala requires you to take certain steps to activate your Software. Failure to activate the Software or a determination by us of fraudulent or unauthorized use of the Software may result in reduced functionality, inoperability of the Software, or a termination of this Agreement.
+
+Upon a valid License purchase, Licensee will be able to generate one or multiple Activation Keys for each Domain where the Software is used or Licensee will receive a Wildcard Activation Key. The Activation Key is subject to the restrictions seth forth in this Agreement and may not be disclosed or distributed in any way. The disclosure or distribution of the Activation Key is considered a substantial breach of this Agreement, the effect of which shall be the termination of this Agreement.
+
+Activations Keys may not be deleted and they are non-transferable. Activation Keys cannot be transfered to another Domain.
+
+
+10 Purchase
+Before purchasing a License you will be asked to supply (i) billing address, (ii) email address, (iii) credit card number and (iv) the expiration date of your credit card.
+
+You represent and warrant that the information supplied to us is true, correct and complete, and that you have the legal right to use any credit card(s) or other payment method(s) in connection with the purchase.
+
+Froala will invoice Licensee and create him an account on Froala's Website as soon as the transaction is completed. The invoice will be available for download in Licensee's account. Licensee shall contact Froala if he did not receive an email from Froala with information about the new account within 24h.
+
+
+11 End User License Agreement
+The Licensed Product that Licensee licenses to its customers shall be licensed for customers’ use, for internal purposes only, including for the making of backup copies, for disaster recovery purposes, but not for further distribution. Licensee further agrees to ensure that its customers keep all copyright, trademark and other proprietary notices contained in any copy of the Licensed Product it licenses to customers. Any end user license agreement between Licensee and its respective customers covering the Licensed Product must be consistent with the terms of this Agreement and contain provisions stating that the end user license agreement cannot be assigned, sublicensed, or otherwise transferred by the customer without prior written consent of the Licensee, except in the event of sale of all or substantially all of the customer’s assets, or any merger or other business consolidation to which the customer is a party.
+
+
+12 Term and Termination
+The term of the License is perpetual.
+
+Without prejudice to your payment obligations, you may terminate your license at any time by uninstalling the Software.
+
+Licensor may terminate this Agreement immediately by giving you written notice of termination if:
+
+you commit any material breach of the Agreement, and the breach is not remediable or the breach is remediable, but you fail to remedy the breach within the period of 10 (ten) days following the giving of a written notice requiring the breach to be remedied; or
+you persistently materially breach the Agreement.
+The license granted to you shall terminate upon the termination of this Agreement and, accordingly, you must immediately cease to use the Software upon the termination of this Agreement.
+
+Within 10 (ten) days following the termination of this Agreement, you must:
+
+return to the Licensor or dispose of as the Licensor may instruct all media in its possession or control containing the Software and
+irrevocably delete from all computer systems in its possession or control all copies of the Software.
+
+13 Delivery
+The Software is made available for download via Froala's Website.
+
+Froala may stop improving the Software and even shut down Froala's Website at any time, for any reason and without notice.
+
+
+14 Maintenance and Support
+During the term of this Agreement, Licensee has full access to Software updates for a period of twelve (12) months starting with the purchase date.
+
+Licensee who uses a license with technical support included has full access to Froala's online support services via email, which means that Licensee will get answers to technical questions within one (1) week. If Licensee benefits of Premium Support then he will get answers within three (3) business days and issues reported by him will have higher priority.
+
+Support shall refer only to Software's source code, integration questions related to the Software's API and documentation clarification. Support does not include questions related to other programming languages or frameworks.
+
+Under no circumstances is Froala compelled to fix Software's bugs, to perform custom development or to write code for the Licensee.
+
+When Licensee's support and update period is about to end, Licensee may opt to extend the support and update period either by (i) renewing the license (purchasing the same type of license) one (1) month prior to the expiration date, in which case Licensee receives a 25% discount, or by (ii) purchasing a new license that includes support and / or updates, in which case the discount is not applicable.
+
+
+15 Eligibility
+You may only use the Software if you are (a) over 13 years old and (b) allowed by law to enter into a binding contract.
+
+We reserve the right to refuse any purchase without giving reason. Upon cancellation of a purchase we will make all reasonable attempts to contact you using the details provided. All received money will be refunded using the method received.
+
+
+16 Warranty
+THIS SOFTWARE IS PROVIDED BY FROALA ''AS IS'' AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL FROALA BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+
+Froala does not warrant that (i) the Software will meet your specific requirements, (ii) the Software will be uninterrupted, timely, secure, or error-free, (iii) the results that may be obtained from the use of the Software will be accurate or reliable, (iv) any errors in the Software will be corrected and (v) Licensee will find a Froala Freelancer to work with.
+
+Froala does not warrant for any Froala Freelancer that he/she will (i) have enough time to work on a new project, (ii) meet your expectations, (iii) be able to handle your project, (iv) use the best configuration for the Software and (v) deliver.
+
+
+17 Limitation of Liability
+In no event regardless of any negligence shall Froala be liable for any incidental, indirect, special, consequential or exemplary damages, including but not limited to any lost revenue, profits, investments, data, use or lost savings or other intangible losses (even if Froala has been advised of the possibility of such potential loss or damages) arising out of (i) the use or inability to use the Software; (ii) the cost of procurement of substitute goods and services resulting from any goods, data, information or services purchased or obtained or messages received or transactions entered into through or from the Software; (iii) unauthorized access to or alteration of your transmissions or data; (iv) statements or conduct of any Third Party on the Software; (v) the interaction with a freelancer, including the Froala Freelancers; (vi) or any other matter relating to the Software.
+
+Any liability for damages for any cause whatsoever related to this Agreement shall in no event exceed the amount received by Froala from Licensee under this Agreement, since its commencement. This limit shall apply to any and all claims regardless of the legal theory on which they are based.
+
+
+18 Intellectual Property Infringement
+Froala agrees, at its own expense, to defend, indemnify and hold Licensee and Affiliates harmless against any claim or action stating that the Software, as used within the scope of this Agreement, infringes or violates any Third Party intellectual property provided that:
+
+The Licensee promptly notifies Froala of the claim;
+A hardcopy of the notices of copyright infringement is sent to: Froala Labs SRL, str. Octavian Goga, nr. 12, bl. M23, sc. 1, ap. 18, Bucharest, Romania;
+An electronic copyright infringement is sent at the following website address: https://www.froala.com/contact;
+Notwithstanding the above Froala shall have sole control of the defense and all related settlement negotiations;
+The Licensee provides Froala with all available assistance, information and authority to perform the above.
+If the Software becomes, or in the opinion of Froala is likely to become, the subject of an infringement claim or action, Froala will at its sole option: (i) obtain the right for Licensee to continue to use the Software consistent with this Agreement; (ii) replace or modify the Software so that it is non-infringing; or solely in the event that (i) and (ii) are not feasible, (iii) refund any and all invoiced amounts to Licensee and all of Froala's obligations under this Agreement shall terminate upon written notice.
+
+Froala will have no liability under the Intellectual Property Infringement section for any claim or action where: (i) such claim or action would have been avoided but for modifications of the Software made after the delivery to Licensee; (ii) such claim or action would have been avoided but for the use or combination of the Software with other products not supplied or specified in writing by Froala; (iii) Licensee continues allegedly infringing activity after being notified or informed of modifications that would have avoided the alleged infringement; (iv) Licensee’s and Affiliates' use of the Software is not strictly in accordance with the terms of this Agreement. Licensee will be liable for all damages, costs, expenses and settlements related to any claim of infringement arising as a result of the above stated conditions. Froala shall have no other indemnification obligations of any kind under or in connection with this Agreement.
+
+If you are a copyright owner, authorized to act on behalf of one, or authorized to act under any exclusive right under copyright, and you believe in good faith your work has been copied in a way that constitutes copyright infringement, or that your intellectual property rights have been otherwise violated, please contact us.
+
+
+19 Applicable Law and Legal Venue
+This Agreement shall be governed by and construed in accordance with the laws of Romania. Any dispute, controversy or claim arising out of or relating to this Agreement, or the breach, termination or invalidity thereof, the Parties shall seek to solve amicably through negotiations. If the Parties do not reach an amicable solution within two (2) weeks, the courts of Bucharest, Romania shall have exclusive jurisdiction to adjudicate any dispute arising under or in connection with this Agreement.
+
+
+20 Privacy
+The Privacy Policy at https://www.froala.com/privacy governs any personal information you provide to us. By using the Software you agree to the terms of the Privacy Policy.

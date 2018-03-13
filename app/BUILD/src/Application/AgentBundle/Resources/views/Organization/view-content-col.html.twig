@@ -298,7 +298,7 @@
             <ul>
                 <li data-tab-for="#{{ baseId }}_files_tab" class="on">{{ phrase('agent.general.files') }} <span
                           class="count">{{ org_files_count }}</span></li>
-                <li data-tab-for="#{{ baseId }}_add_file_tab" class="off">Add File</li>
+                <li data-tab-for="#{{ baseId }}_add_file_tab" class="off">{{ phrase('agent.general.add') }} {{ phrase('agent.general.file') }}</li>
             </ul>
         </nav>
     </header>
@@ -310,7 +310,7 @@
                     {% for file in org_files %}
                         {% include 'AgentBundle:Person:file-row.html.twig' with { 'file' : file } %}
                     {% else %}
-                        <li class="note profile-file-row empty-notice"><p style="padding:10px;">No files.</p></li>
+                        <li class="note profile-file-row empty-notice"><p style="padding:10px;">{{ phrase('agent.general.no') }} {{ phrase('agent.general.files') }}</p></li>
                     {% endfor %}
                 </ul>
             </div>

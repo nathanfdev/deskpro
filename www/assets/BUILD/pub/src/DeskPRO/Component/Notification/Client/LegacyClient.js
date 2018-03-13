@@ -22,13 +22,30 @@ export default class LegacyClient extends AbstractClient {
   }
 
   bind(channelName, eventName) {
+    if (channelName === 'agent_public') {
+      // concept of channels doesnt exist on poller because the backend resolves it all
+      // for us. so we ignore this other channel to make sure we dont double-bind
+      return;
+    }
+
+    const oldAlertHandler = this.handleAlert;
+    const oldNotifyHandler = this.handleNotify;
+
     this.handleAlert = this.handleActionAlertsPoll.bind(this);
     this.handleNotify = this.handleUserNotifyPoll.bind(this);
     this.poller.addData({ last_alert: this.options.last_alert }, 'last_alert');
     this.poller.addData({ last_notify: this.options.last_notify }, 'last_notify');
     if (eventName === 'action_alert') {
+      if (oldAlertHandler) {
+        this.poller.removeEvent('ajaxSuccess', oldAlertHandler);
+      }
+
       this.poller.addEvent('ajaxSuccess', this.handleAlert);
     } else if (eventName === 'user_notify') {
+      if (oldNotifyHandler) {
+        this.poller.removeEvent('ajaxSuccess', oldNotifyHandler);
+      }
+
       this.poller.addEvent('ajaxSuccess', this.handleNotify);
     }
   }

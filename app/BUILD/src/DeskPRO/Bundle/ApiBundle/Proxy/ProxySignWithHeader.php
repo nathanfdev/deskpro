@@ -31,31 +31,31 @@ namespace DeskPRO\Bundle\ApiBundle\Proxy;
 class ProxySignWithHeader
 {
     /** @var string */
-    private $algorithm;
+    private $strategy;
 
-    /** @var string */
+    /** @var array|string[] */
     private $credentials;
 
     const NAME = 'X-Proxy-SignWith';
 
-    public function __construct($algorithm, $credentials)
+    public function __construct($algorithm, array $credentials)
     {
-        $this->algorithm   = $algorithm;
+        $this->strategy   = $algorithm;
         $this->credentials = $credentials;
     }
 
     /**
      * @return string
      */
-    public function getAlgorithm()
+    public function getSignWithStrategy()
     {
-        return $this->algorithm;
+        return $this->strategy;
     }
 
     /**
-     * @return string
+     * @return array|string[]
      */
-    public function getCredentialName()
+    public function getCredentialNames()
     {
         return $this->credentials;
     }

@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2017, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2018, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -305,6 +305,13 @@ return [
     'core.emails.attach_user_maxsize'    => '26214400',
     'core.emails.attach_user_must_exts'  => null,
     'core.emails.attach_user_not_exts'   => null,
+
+    /*
+     * Download Hotlinked Images in incoming emails and replace them  by blob attachment
+     */
+    'core.emails.download_hotlinked_images.enabled'       => true,
+    'core.emails.download_hotlinked_images.image_maxsize' => 10 * 1024 * 1024,
+    'core.emails.download_hotlinked_images.total_maxsize' => 25 * 1024 * 1024,
 
     /*
      * True to have the DeskPRO local user source enabled

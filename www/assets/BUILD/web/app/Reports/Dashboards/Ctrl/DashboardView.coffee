@@ -6,29 +6,34 @@ define ['DeskPRO/Util/Arrays'], (Arrays) -> [
 
     $scope.loaded = false
     $scope.dashboard = null
+    $scope.reports = []
+    $scope.agents = {}
 
     ####################################################################################################################
     # LOADING
     ####################################################################################################################
 
-    DashboardsInfo.getDashboardList().then((dbs) ->
+    load_promises = []
+    load_promises.push DashboardsInfo.getDashboardList().then((dbs) ->
       $scope.dashboards = dbs
       dashboard = Arrays.find(dbs, (x) -> x.id == dashboard_id)
 
-      if dashboard.reports[0]?
-        $state.go('reports.dashboards.view.report', { report_id: dashboard.reports[0].id})
-      else
-        $state.go('reports.dashboards.view.empty')
-
-      $scope.loaded = true
-
+      $state.go('reports.dashboards.view.empty')
       if not $scope.dashboard
         $scope.dashboard = dashboard
     )
 
     # fetches perm info
-    DashboardsInfo.getDashboardDetail($stateParams.dashboard_id).then( (db) ->
+    load_promises.push DashboardsInfo.getDashboardDetail($stateParams.dashboard_id).then( (db) ->
       $scope.dashboard = db
+    )
+    load_promises.push DashboardsInfo.getReportsList(dashboard_id).then( (reports) ->
+      $scope.reports = reports
+      if reports.length > 0
+        $state.go('reports.dashboards.view.report', { report_id: reports[0].id} )
+    )
+    load_promises.push DashboardsInfo.getAgents().then( (agents) ->
+      agents.map((agent) => $scope.agents[agent.id] = agent)
     )
 
     # just reload info when its been changed
@@ -41,17 +46,12 @@ define ['DeskPRO/Util/Arrays'], (Arrays) -> [
       DashboardsInfo.getDashboardDetail($stateParams.dashboard_id).then( (db) ->
         $scope.dashboard = db
       )
+      DashboardsInfo.getReportsList(dashboard_id).then( (reports) ->
+        $scope.reports = reports
+      )
     )
 
-    ####################################################################################################################
-    # FILTERS
-    ####################################################################################################################
-
-    $scope.permissionsFilter = (value) ->
-      if value.permissions > 0
-        return true
-      else
-        return false
+    $q.all(load_promises).then(-> $scope.loaded = true)
 
     ####################################################################################################################
     # MODAL HANDLERS
@@ -88,4 +88,28 @@ define ['DeskPRO/Util/Arrays'], (Arrays) -> [
             $scope.dashboard = db
             $state.go('reports.dashboards.view.report', { report_id: report.id})
           )
+          DashboardsInfo.getReportsList(dashboard_id).then( (reports) ->
+            $scope.reports = reports
+          )
+
+    $scope.deleteDashboard = () ->
+      if $scope.dashboard.is_default then return
+      modalInstance = $modal.open {
+        templateUrl: "ReportsInterfaceBundle:Index:modal-confirm.html",
+        controller: ['$scope', '$modalInstance', ($scope, $modalInstance) ->
+          $scope.title   = 'Confirm discard'
+          $scope.message = 'Are you sure you want to delete this dashboard?'
+
+          $scope.dismiss = ->
+            $modalInstance.dismiss()
+
+          $scope.confirm = ->
+            $modalInstance.close()
+        ]
+      }
+      modalInstance.result.then(
+        () =>
+          DashboardService.deleteDashboard($scope.dashboard)
+          $state.go('reports.dashboards.view.empty')
+      )
   ]

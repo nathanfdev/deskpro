@@ -36,7 +36,7 @@ use Doctrine\Common\Persistence\ObjectManager;
 
 class ChatsFixture extends AbstractDpFixture implements OrderedFixtureInterface
 {
-    const NUM_CHAT_CONVERSATIONS = 3;
+    const NUM_CHAT_CONVERSATIONS = 20;
 
     /** @var \Application\DeskPRO\Entity\Person $person */
     private $agent;
@@ -49,6 +49,17 @@ class ChatsFixture extends AbstractDpFixture implements OrderedFixtureInterface
 
     /** @var \DateTime $startDate */
     private $startDate;
+
+    private $subjects = [
+        'Hi there, how can I help you? | Hi | Do you have a problem? | File: Screen Shot 2015-11-27 at 11.02.12 AM.png (493.95 KB) | Yes look at this file | ok ill have a look',
+        'hey would ya help me? | I need some help here | Sure, what seems to be the problem? | I cant figure this out at all.... | Well let me help you with that!',
+        'oh, well hello there | this is admin can I help you | yes, help me | you should see my custom data',
+    ];
+
+    private $departments = [
+        'chat_department.support',
+        'chat_department.sales',
+    ];
 
     /**
      * {@inheritdoc}
@@ -99,16 +110,11 @@ SQL;
                 ->setPersonEmail($this->person->getEmail() ?: '')
                 ->setEndedBy(ChatConversation::ENDED_AGENT)
                 ->setAgent($this->agent)
-                ->setDateCreated($this->faker->dateTimeBetween('-2 months', '-10 days'));
+                ->setDateCreated($this->faker->dateTimeBetween('-1 month', '-6 hours'))
+                ->setSubject($this->faker->randomElement($this->subjects))
+                ->setDepartment($this->getReference($this->faker->randomElement($this->departments)));
             $conversations[] = $cc;
         }
-
-        $conversations[0]->subject    = 'Hi there, how can I help you? | Hi | Do you have a problem? | File: Screen Shot 2015-11-27 at 11.02.12 AM.png (493.95 KB) | Yes look at this file | ok ill have a look';
-        $conversations[0]->department = $this->getReference('chat_department.support');
-        $conversations[1]->subject    = 'hey would ya help me? | I need some help here | Sure, what seems to be the problem? | I cant figure this out at all.... | Well let me help you with that!';
-        $conversations[1]->department = $this->getReference('chat_department.sales');
-        $conversations[2]->subject    = 'oh, well hello there | this is admin can I help you | yes, help me | you should see my custom data';
-        $conversations[2]->department = $this->getReference('chat_department.sales');
 
         foreach ($conversations as $conversation) {
             $this->manager->persist($conversation);

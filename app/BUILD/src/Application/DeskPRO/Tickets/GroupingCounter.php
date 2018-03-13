@@ -497,16 +497,16 @@ class GroupingCounter
             $groupStructure = App::getDataService('Department')->getInHierarchy();
         } elseif ($field === TicketSearch::TERM_CATEGORY) {
             $groupStructure      = App::getDataService('TicketCategory')->getInHierarchy();
-            $groupStructure['0'] = ['id' => 0, 'title' => App::getTranslator()->phrase('agent.general.none')];
+            $groupStructure['0'] = ['id' => 0, 'title' => self::getTranslator()->phrase('agent.general.none')];
         } elseif ($field === TicketSearch::TERM_PRODUCT) {
             $groupStructure      = App::getDataService('Product')->getInHierarchy();
-            $groupStructure['0'] = ['id' => 0, 'title' => App::getTranslator()->phrase('agent.general.none')];
+            $groupStructure['0'] = ['id' => 0, 'title' => self::getTranslator()->phrase('agent.general.none')];
         } elseif (preg_match('/ticket_field_(\d+)/', $field, $matches)) {
             $fieldId = (int) $matches[1];
             $field   = App::$container->getEm()->getRepository(CustomDefTicket::class)->find($fieldId);
 
             if ($field && $field->isChoiceType()) {
-                $groupStructure['0'] = ['id' => 0, 'title' => App::getTranslator()->phrase('agent.general.none')];
+                $groupStructure['0'] = ['id' => 0, 'title' => self::getTranslator()->phrase('agent.general.none')];
 
                 $iterator = function (&$groupStructure, $parentId = 0) use ($field, &$iterator) {
                     foreach ($field->getChildren() as $choice) {
@@ -559,26 +559,26 @@ class GroupingCounter
      */
     public function getFieldTitles($field, array $ids)
     {
-        $tr     = App::getTranslator();
+        $tr     = self::getTranslator();
         $titles = null;
 
         switch ($field) {
             case TicketSearch::TERM_DEPARTMENT:
                 $this->grouping_summary = $tr->phrase('agent.general.department');
                 $titles                 = App::getDataService('Department')->getNames();
-                Arrays::unshiftAssoc($titles, 0, App::getTranslator()->phrase('agent.general.none'));
+                Arrays::unshiftAssoc($titles, 0, self::getTranslator()->phrase('agent.general.none'));
                 break;
 
             case TicketSearch::TERM_AGENT:
                 $this->grouping_summary = $tr->phrase('agent.general.agent');
                 $titles                 = App::getDataService('Person')->getAgentNames();
-                Arrays::unshiftAssoc($titles, 0, App::getTranslator()->phrase('agent.general.unassigned'));
+                Arrays::unshiftAssoc($titles, 0, self::getTranslator()->phrase('agent.general.unassigned'));
                 break;
 
             case TicketSearch::TERM_AGENT_TEAM:
                 $this->grouping_summary = $tr->phrase('agent.general.agent_team');
                 $titles                 = App::getDataService('AgentTeam')->getTeamNames();
-                Arrays::unshiftAssoc($titles, 0, App::getTranslator()->phrase('agent.general.unassigned'));
+                Arrays::unshiftAssoc($titles, 0, self::getTranslator()->phrase('agent.general.unassigned'));
                 break;
 
             case TicketSearch::TERM_PERSON:
@@ -632,31 +632,31 @@ class GroupingCounter
             case TicketSearch::TERM_CATEGORY:
                 $this->grouping_summary = $tr->phrase('agent.general.category');
                 $titles                 = App::getDataService('TicketCategory')->getNames();
-                Arrays::unshiftAssoc($titles, 0, App::getTranslator()->phrase('agent.general.none'));
+                Arrays::unshiftAssoc($titles, 0, self::getTranslator()->phrase('agent.general.none'));
                 break;
 
             case TicketSearch::TERM_PRIORITY:
                 $this->grouping_summary = $tr->phrase('agent.general.priority');
                 $titles                 = App::getDataService('TicketPriority')->getNames();
-                Arrays::unshiftAssoc($titles, 0, App::getTranslator()->phrase('agent.general.none'));
+                Arrays::unshiftAssoc($titles, 0, self::getTranslator()->phrase('agent.general.none'));
                 break;
 
             case TicketSearch::TERM_PRODUCT:
                 $this->grouping_summary = $tr->phrase('agent.general.product');
                 $titles                 = App::getDataService('Product')->getNames();
-                Arrays::unshiftAssoc($titles, 0, App::getTranslator()->phrase('agent.general.none'));
+                Arrays::unshiftAssoc($titles, 0, self::getTranslator()->phrase('agent.general.none'));
                 break;
 
             case TicketSearch::TERM_WORKFLOW:
                 $this->grouping_summary = $tr->phrase('agent.general.workflow');
                 $titles                 = App::getDataService('TicketWorkflow')->getNames();
-                Arrays::unshiftAssoc($titles, 0, App::getTranslator()->phrase('agent.general.none'));
+                Arrays::unshiftAssoc($titles, 0, self::getTranslator()->phrase('agent.general.none'));
                 break;
 
             case TicketSearch::TERM_ORGANIZATION:
                 $this->grouping_summary = $tr->phrase('agent.general.organization');
                 $titles                 = App::getDataService('Organization')->getOrganizationNames($ids);
-                Arrays::unshiftAssoc($titles, 0, App::getTranslator()->phrase('agent.general.none'));
+                Arrays::unshiftAssoc($titles, 0, self::getTranslator()->phrase('agent.general.none'));
                 break;
 
             case TicketSearch::TERM_LANGUAGE:
@@ -692,7 +692,7 @@ class GroupingCounter
                     /* @var Brand $value */
                     return [$value->getId(), $value->getName()];
                 });
-                Arrays::unshiftAssoc($titles, 0, App::getTranslator()->phrase('agent.general.none'));
+                Arrays::unshiftAssoc($titles, 0, self::getTranslator()->phrase('agent.general.none'));
 
                 break;
 
@@ -784,7 +784,7 @@ class GroupingCounter
         ];
 
         foreach ($times as &$phrase) {
-            $phrase = App::getTranslator()->phrase($phrase);
+            $phrase = self::getTranslator()->phrase($phrase);
         }
 
         return $times;
@@ -925,5 +925,17 @@ class GroupingCounter
 
                 return ['type' => $groupvar, 'op' => 'is', 'options' => [$groupchoice]];
         }
+    }
+
+    /**
+     * Get a DeskPRO Translate object ready to be used with the currently active Lang.
+     *
+     * @param Language|string|null $lang
+     *
+     * @return \Application\DeskPRO\Translate\Translate
+     */
+    protected static function getTranslator($lang = null)
+    {
+        return App::get('language_manager')->getTranslator($lang);
     }
 }

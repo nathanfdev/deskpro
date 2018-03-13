@@ -1,0 +1,20 @@
+<section class="popup">
+
+	<!-- Popup Header & Title -->
+	<header>
+		<h1>{{ ng_var('title') }}</h1>
+		<div class="controls"><a ng-click="dismiss()"><i class="fa fa-times"></i></a></div>
+	</header>
+
+	<!-- Popup Content -->
+	<div class="popup-content">
+		{{ ng_var('message') }}
+	</div>
+
+	<footer>
+		<button class="btn btn-default" ng-click="dismiss()">{{ phrase('agent.general.cancel') }}</button>
+		<button class="btn btn-primary" ng-click="confirm()">{{ phrase('agent.general.okay') }}</button>
+	</footer>
+</section>
+
+<div class="cover"></div><!-- Transparent background to the popup -->

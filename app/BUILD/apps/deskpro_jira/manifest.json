@@ -2,14 +2,14 @@
   "package_name": "deskpro_jira",
   "is_native": true,
   "title": "JIRA",
-  "description": "Enables agents to link DeskPRO tickets to Jira tickets.",
+  "description": "Enables agents to link Deskpro tickets to Jira tickets.",
   "tags": ["jira", "profiles"],
   "api_version": 1,
   "version": 1,
   "version_name": "1.0.0",
   "is_single": true,
   "author": {
-    "name": "DeskPRO",
+    "name": "Deskpro",
     "email": "support@deskpro.com",
     "link": "https://www.deskpro.com/"
   },

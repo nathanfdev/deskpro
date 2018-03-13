@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2017, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2018, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -38,7 +38,7 @@ class ThisYear extends AbstractDateRange
      */
     protected function getDateRange()
     {
-        $year = $this->dpqlDate->getDate()->format('Y');
+        $year = $this->getDate()->format('Y');
 
         return [$year, "$year-01-01 00:00:00", "$year-12-31 23:59:59"];
     }

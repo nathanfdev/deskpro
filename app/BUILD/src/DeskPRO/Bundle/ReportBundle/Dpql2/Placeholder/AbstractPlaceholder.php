@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2017, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2018, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -29,12 +29,12 @@
 namespace DeskPRO\Bundle\ReportBundle\Dpql2\Placeholder;
 
 use Application\DeskPRO\Entity\Person;
+use DeskPRO\Bundle\ReportBundle\Dpql2\DpqlContextStorage;
 use DeskPRO\Bundle\ReportBundle\Dpql2\SqlSelect;
 use DeskPRO\Bundle\ReportBundle\Dpql2\Statement\Part\AbstractPart;
 use DeskPRO\Bundle\ReportBundle\Dpql2\Statement\SelectPart;
 use DeskPRO\Bundle\ReportBundle\Reports\ResultMetadata;
 use Orb\Util\Strings;
-use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorage;
 
 /**
  * Abstract base for all placeholder (%NAME%) references.
@@ -42,18 +42,18 @@ use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorage;
 abstract class AbstractPlaceholder implements DpqlPlaceholderInterface
 {
     /**
-     * @var TokenStorage
+     * @var DpqlContextStorage
      */
-    private $tokenStorage;
+    protected $dpqlContextStorage;
 
     /**
      * Constructor.
      *
-     * @param TokenStorage $tokenStorage
+     * @param DpqlContextStorage $dpqlContextStorage
      */
-    public function __construct(TokenStorage $tokenStorage)
+    public function __construct(DpqlContextStorage $dpqlContextStorage)
     {
-        $this->tokenStorage = $tokenStorage;
+        $this->dpqlContextStorage = $dpqlContextStorage;
     }
 
     /**
@@ -108,16 +108,11 @@ abstract class AbstractPlaceholder implements DpqlPlaceholderInterface
      */
     protected function getPerson()
     {
-        $token = $this->tokenStorage->getToken();
-        if (!$token) {
+        $context = $this->dpqlContextStorage->getContext();
+        if (!$context) {
             return;
         }
 
-        $person = $token->getUser();
-        if (!$person instanceof Person) {
-            return;
-        }
-
-        return $person;
+        return $context->getPerson();
     }
 }

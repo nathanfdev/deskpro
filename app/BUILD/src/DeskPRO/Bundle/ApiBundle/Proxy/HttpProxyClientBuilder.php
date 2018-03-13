@@ -36,9 +36,8 @@ class HttpProxyClientBuilder
 {
     private $config = [];
 
-    private function useOauth1SigningStrategy($serializedConnection)
+    public function useOauth1SigningStrategy( SerializedOauth1Connection $connection)
     {
-        $connection = SerializedOauth1Connection::fromJSON($serializedConnection);
         $config     = [
             'token'           => $connection->getToken(),
             'token_secret'    => $connection->getTokenSecret(),
@@ -58,17 +57,8 @@ class HttpProxyClientBuilder
 
             return $stack;
         };
+
         $this->config['auth'] = 'oauth';
-    }
-
-    public function setSigningStrategy(RequestSigningStrategy $strategy)
-    {
-        $algorithm = $strategy->getAlgorithm();
-        if (strtolower($algorithm) === 'oauth1') {
-            $this->useOauth1SigningStrategy($strategy->getCredentials());
-        }
-
-        return $this;
     }
 
     public function setTimeout($timeout)

@@ -1,10 +1,10 @@
 <?php
 
 /*
- * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
+ * Deskpro (r) has been developed by Deskpro Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2017, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2018, Deskpro Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -12,18 +12,18 @@
  * By using this software, you acknowledge having read the license
  * and agree to be bound thereby.
  *
- * Please note that DeskPRO is not free software. We release the full
+ * Please note that Deskpro is not free software. We release the full
  * source code for our software because we trust our users to pay us for
  * the huge investment in time and energy that has gone into both creating
  * this software and supporting our customers. By providing the source code
  * we preserve our customers' ability to modify, audit and learn from our
- * work. We have been developing DeskPRO since 2001, please help us make it
+ * work. We have been developing Deskpro since 2001, please help us make it
  * another decade.
  *
  * Like the work you see? Think you could make it better? We are always
  * looking for great developers to join us: http://www.deskpro.com/jobs/
  *
- * ~ Thanks, Everyone at Team DeskPRO
+ * ~ Thanks, Everyone at Team Deskpro
  */
 
 return [
@@ -112,7 +112,7 @@ return [
     'agent.chrome.help-contact-us'                            => 'Kapcsolat',
     'agent.chrome.help-contact-us-explain'                    => 'Lépjen velünk kapcsolatba <a href="https://support.deskpro.com/" target="_blank">support.deskpro.com</a> vagy közvetlenül emailen keresztül <a href="mailto:support@deskpro.com">support@deskpro.com</a>',
     'agent.chrome.help-manuals'                               => 'Felhasználási útmutató',
-    'agent.chrome.help-quickstart-guide-link'                 => 'Amennyiben az Ön számára ismeretlen a DeskPRO alkalmazás, <a href="{{link}}">kattintson a linkre a DeskPRO rövid útmutatójának letöltéséhez</a>',
+    'agent.chrome.help-quickstart-guide-link'                 => 'Amennyiben az Ön számára ismeretlen a Deskpro alkalmazás, <a href="{{link}}">kattintson a linkre a Deskpro rövid útmutatójának letöltéséhez</a>',
     'agent.chrome.kbd-change-status-agent'                    => 'Státusz megváltoztatása: ügyintézőre vár',
     'agent.chrome.kbd-change-status-resolved'                 => 'Státusz megváltoztatása: teljesített',
     'agent.chrome.kbd-change-status-user'                     => 'Státusz megváltoztatása: ügyfélre vár',
@@ -174,8 +174,8 @@ return [
     'agent.emails.alert_failed_login'                         => 'Meghiúsult belépési kísérlet figyelmeztetés',
     'agent.emails.alert_successful_login'                     => 'Sikeres belépés figyelmeztetés',
     'agent.emails.change_password_instructions'               => 'Az új jelszó beállításához, lépjen be az ügyintézői felületre és kattintson a "Tulajdonságok" linkre a képernyő bal felső sarkában.',
-    'agent.emails.deskpro_test_email'                         => 'DeskPRO teszt email',
-    'agent.emails.deskpro_test_email_body'                    => 'Ez a DeskPRO email rendszer tesztje.<br /><br />Ha Ön ezt megkapta, az email beállításai helyesek.',
+    'agent.emails.deskpro_test_email'                         => 'Deskpro teszt email',
+    'agent.emails.deskpro_test_email_body'                    => 'Ez a Deskpro email rendszer tesztje.<br /><br />Ha Ön ezt megkapta, az email beállításai helyesek.',
     'agent.emails.detected_as_forward'                        => 'Az Ön által küldött emailt továbbított levélnek tekintjük.',
     'agent.emails.email_change_merge'                         => 'Ez az email megerősítésként szolgál, hogy össze akarja vonni a két meglévő helpdesk fiókját: {{old_email}} és {{new_email}}. Ha nem akarja összevonni a két fiókot vagy nem Ön kérte az összevonást, hagyja figyelmen kívül ezt az emailt. Az összevonás megerősítéséhez kattintson az alábbi linkre:',
     'agent.emails.error_missing_marker_explain'               => 'Ez a válasz jelölő (reply marker) a válasz email-ek precíz feldolgozásához szükséges. Kérem, küldje el újra a válasz emailt, de ezúttal hagyja érintetlenül a válasz jelölőt.',
@@ -184,12 +184,12 @@ return [
     'agent.emails.error_unknown_email'                        => 'Az Ön által küldött emailt nem fogadtuk, mert ismeretlen címről küldte. Kérjük küldje újra az emailt olyan címről, melyet az helpdesk ügyintézői profiljában beállított.',
     'agent.emails.first_seen'                                 => 'Először látta',
     'agent.emails.fwd_dupe'                                   => 'A továbbított üzenetet nem fogadtuk el, mert a rendszerben már található egy létező jegy ugyanerre az üzenetre. Ön vagy valaki más már valószínűleg létrehozott egy jegyet ugyanerre az üzenetre. A már létező jegy száma az alábbi #{{old_ticket_id}}:',
-    'agent.emails.fwd_error_more_info'                        => 'Erről a hibáról bővebb információt a DeskPRO oldalán talál:<br/><a href="http://support.deskpro.com/kb/articles/106">http://support.deskpro.com/kb/articles/106</a>',
+    'agent.emails.fwd_error_more_info'                        => 'Erről a hibáról bővebb információt a Deskpro oldalán talál:<br/><a href="http://support.deskpro.com/kb/articles/106">http://support.deskpro.com/kb/articles/106</a>',
     'agent.emails.fwd_not_processed'                          => 'Emiatt a hiba miatt az Ön email-jét töröltük. Nem jött létre új jegy és értesítést sem küldtünk, semmilyen más műveletet sem hajtottunk végre. Amennyiben egy felhasználó számára új jegyet szeretne létrehozni, kérjük használja az ügyintézői felület az alábbi helyen: <a href="{{url}}">{{url}}</a>',
     'agent.emails.fwd_resend_without_fwd'                     => 'Ha Ön NEM a felhasználó kérésére akart egy új jegyet létrehozni, akkor küldje újra az emailt a \'FW:\' vagy a \'FWD:\' előtag nélkül a tárgy mezőben. Ezzel Ön a saját szándékából fog létrehozni egy új jegyet.',
     'agent.emails.invalid_fwd_email_address'                  => '<b>nem tudtuk azonosítani az email címet</b> a felhasználó részéről az eredeti üzenetben. Kérjük ellenőrizze, hogy az email címet hozzáadták-e az üzenethez. Néhány esetben a levelező kliensek csak a nevet tüntetik fel, ezt a hibát Ön kijavíthatja, ha manuálisan viszi be az email címet.',
     'agent.emails.invalid_fwd_email_parse'                    => '<b>nem tudtuk elemezni az eredeti üzenetet</b> ezért nem tudtuk jeggyé alakítani a továbbított üzenetet.',
-    'agent.emails.invalid_fwd_try_attach'                     => 'Amennyiben az Ön levelező kliense támogatja az eredeti üzenet csatolmányként történő továbbítását, kérjük próbálja meg így elküldeni az üzenetet a közvetlen továbbítás helyett. A jegyek ilyen módon történő továbbítását jobban tudja kezelni a DeskPRO.',
+    'agent.emails.invalid_fwd_try_attach'                     => 'Amennyiben az Ön levelező kliense támogatja az eredeti üzenet csatolmányként történő továbbítását, kérjük próbálja meg így elküldeni az üzenetet a közvetlen továbbítás helyett. A jegyek ilyen módon történő továbbítását jobban tudja kezelni a Deskpro.',
     'agent.emails.login_url'                                  => 'Belépési URL',
     'agent.emails.message-is-note'                            => 'A következő üzenet egy belső ügyintézői megjegyzés.',
     'agent.emails.name_reset_your_password'                   => '{{name}} visszaállította az Ön ügyintézői fiókjának jelszavát',
@@ -198,18 +198,18 @@ return [
     'agent.emails.new_mention_ticket_subject'                 => '[#{{ticket.id}} MEGEMLÍTVE] Re: {{ticket.subject}}',
     'agent.emails.new_note_ticket_subject'                    => '[#{{ticket.id}} MEGEJGYZÉS] Re: {{ticket.subject}}',
     'agent.emails.new_user_reply_ticket_subject'              => '[#{{ticket.id}} FELHASZNÁLÓ VÁLASZ] Re: {{ticket.subject}}',
-    'agent.emails.newagent-about'                             => 'A DeskPRO egy felhő alapú helpdesk szoftver, amit az Ön cége használ.',
-    'agent.emails.newagent-about-cloud'                       => 'A DeskPRO egy felhő alapú helpdesk szoftver, amit az Ön cége használ.',
-    'agent.emails.newagent-about-cloud-demo'                  => 'A DeskPRO egy felhő alapú helpdesk szoftver, amit az Ön cége éppen kipróbál.',
-    'agent.emails.newagent-about-demo'                        => 'A DeskPRO egy felhő alapú helpdesk szoftver, amit az Ön cége éppen kipróbál.',
-    'agent.emails.newagent-about-pdf'                         => 'Írtunk Önnek egy segédletet a legfontosabb dolgokról, amit ügyintézőként tudnia kell. A csatolmányban megtalálja, "Getting Started with DeskPRO.pdf".',
-    'agent.emails.newagent-created-account'                   => 'Az Ön kollégája {{admin_name}} ({{admin_email}}) létrehozott egy  DeskPRO fiókot az Ön számára <a href="{{helpdesk_url}}">{{helpdesk_url}}</a>.',
-    'agent.emails.newagent-help'                              => 'Amennyiben Önnek segítségre van szüksége, vagy kérdése van, kérjük látogasson el a DeskPRO támogatói oldalára az alábbi címen <a href="https://support.deskpro.com/">https://support.deskpro.com/</a> vagy keressen meg bennünket közvetlenül az alábbi címen <a href="mailto:support@deskpro.com">support@deskpro.com</a>.',
+    'agent.emails.newagent-about'                             => 'A Deskpro egy felhő alapú helpdesk szoftver, amit az Ön cége használ.',
+    'agent.emails.newagent-about-cloud'                       => 'A Deskpro egy felhő alapú helpdesk szoftver, amit az Ön cége használ.',
+    'agent.emails.newagent-about-cloud-demo'                  => 'A Deskpro egy felhő alapú helpdesk szoftver, amit az Ön cége éppen kipróbál.',
+    'agent.emails.newagent-about-demo'                        => 'A Deskpro egy felhő alapú helpdesk szoftver, amit az Ön cége éppen kipróbál.',
+    'agent.emails.newagent-about-pdf'                         => 'Írtunk Önnek egy segédletet a legfontosabb dolgokról, amit ügyintézőként tudnia kell. A csatolmányban megtalálja, "Getting Started with Deskpro.pdf".',
+    'agent.emails.newagent-created-account'                   => 'Az Ön kollégája {{admin_name}} ({{admin_email}}) létrehozott egy  Deskpro fiókot az Ön számára <a href="{{helpdesk_url}}">{{helpdesk_url}}</a>.',
+    'agent.emails.newagent-help'                              => 'Amennyiben Önnek segítségre van szüksége, vagy kérdése van, kérjük látogasson el a Deskpro támogatói oldalára az alábbi címen <a href="https://support.deskpro.com/">https://support.deskpro.com/</a> vagy keressen meg bennünket közvetlenül az alábbi címen <a href="mailto:support@deskpro.com">support@deskpro.com</a>.',
     'agent.emails.newagent-login-initial-password'            => 'Az Ön kezdeti jelszava: {{password}}',
     'agent.emails.newagent-login-link'                        => 'Itt léphet be: <a href="{{link}}">{{link}}</a>',
     'agent.emails.newagent-login-your-email'                  => 'Az Ön email címe: {{email}}',
     'agent.emails.newagent-login-your-password'               => 'Megjegyzés: Önnek már van egy felhasználói fiókja ezen a helpdesken. Beléphet ügyintézőként a korábban beállított jelszóval.',
-    'agent.emails.newagent-welcome-to-deskpro'                => 'Üdvözöljük a DeskPRO-nál!',
+    'agent.emails.newagent-welcome-to-deskpro'                => 'Üdvözöljük a Deskpro-nál!',
     'agent.emails.notice_account_login'                       => 'Az Ön fiókjával sikeres belépés történt.',
     'agent.emails.notice_login_attempt'                       => 'Valaki megpróbált belépni az Ön fiókjával.',
     'agent.emails.person_replied'                             => '{{name}} válaszolt az alábbi üzenetre "{{subject}}"',
@@ -223,7 +223,7 @@ return [
     'agent.emails.subject_error_forwarded_email_dupe'         => 'Kétszeresen továbbított email: {{ subject }}',
     'agent.emails.subject_error_with_message'                 => 'Hiba az Ön üzenetével: {{ subject }}',
     'agent.emails.subject_error_with_reply'                   => 'Hiba az Ön alábbi tárgyra küldött válaszával: {{ subject }}',
-    'agent.emails.subject_new_agent'                          => 'Az Ön új DeskPRO helpdesk ügyintézői fiókja',
+    'agent.emails.subject_new_agent'                          => 'Az Ön új Deskpro helpdesk ügyintézői fiókja',
     'agent.emails.subject_new_ticket'                         => '[#{{ticket.id}} ÚJ JEGY] {{ticket.subject}}',
     'agent.emails.subject_new_ticket_assigned'                => '[#{{ticket.id}} ÚJ JEGY + KINEVEZETT CSOPORT] {{ticket.subject}}',
     'agent.emails.subject_new_ticket_assignedteam'            => '[#{{ticket.id}} ÚJ JEGY + KINEVEZETT CSOPORT] {{ticket.subject}}',
@@ -504,7 +504,7 @@ return [
     'agent.general.download_pdf'                              => 'PDF letöltése',
     'agent.general.download_url'                              => 'URL letöltése',
     'agent.general.downloads'                                 => 'Letöltések',
-    'agent.general.dp_updates'                                => 'DeskPRO Frissítések',
+    'agent.general.dp_updates'                                => 'Deskpro Frissítések',
     'agent.general.drop_here_to_attach'                       => 'Fájl áthúzása ide a válaszhoz történő csatoláshoz',
     'agent.general.drop_here_to_insert_image'                 => '<strong>image</strong> áthúzása ide a válaszba történő belillesztéshez',
     'agent.general.drop_here_to_upload'                       => 'Fájl áthúzása ide új kép feltöltéséhez',
@@ -1020,7 +1020,7 @@ return [
     'agent.interface.close_current_tab'                       => 'Jelenlegi fül bezárása',
     'agent.interface.create_ticket_person'                    => 'Jegy létrehozása ennek a személynek',
     'agent.interface.creation'                                => 'Létrehozás',
-    'agent.interface.deskpro_agent_interface'                 => 'DeskPRO ügyintéző felület',
+    'agent.interface.deskpro_agent_interface'                 => 'Deskpro ügyintéző felület',
     'agent.interface.error_report_disclaimer'                 => 'Figyelem! Nem válaszolunk minden hibaüzenetre. Amennyiben kérdése van vagy szeretne kapcsolatba lépni velünk ezzel a hibával kapcsolat, kérem, keressen minket ezen az email címen {{email}}',
     'agent.interface.error_report_submitting'                 => 'Hibajelentés beküldése ...',
     'agent.interface.error_report_thank_you'                  => 'Köszönjük, hogy beküldte a hibajelentést.',
@@ -1056,7 +1056,7 @@ return [
     'agent.interface.open_new_ticket_form'                    => 'Új jegy űrlap megnyitása',
     'agent.interface.powered_by'                              => 'Szolgáltatja',
     'agent.interface.quick-search-placeholder'                => 'Keresés',
-    'agent.interface.report_this_error_to_deskpro'            => 'Jelentse ezt a hibát a DeskPRO-nak',
+    'agent.interface.report_this_error_to_deskpro'            => 'Jelentse ezt a hibát a Deskpro-nak',
     'agent.interface.search_for_text_or_a_phrase'             => 'Szöveg vagy kifejezés keresése',
     'agent.interface.search_in_types'                         => 'Keresés a típusokban',
     'agent.interface.set_ticket_resolved'                     => 'Jegy teljesítve beállítása',
@@ -1077,15 +1077,15 @@ return [
     'agent.login.enter_password'                              => 'Adja meg a jelszavát',
     'agent.login.forgot_password'                             => 'Elfelejtette a jelszavát?',
     'agent.login.has_logged_out'                              => 'Sikeresen kijelentkezett.',
-    'agent.login.ie_compat_mode_explain'                      => 'Az Internet Explorer egyes verzióiban található egy ún. "Kompatibilátás Nézet", melynek segítségével a régi weboldalak is működtethetők a legújabb technológiával. Előfordulhat, hogy ez a funkció tévesen kapcsolódik be. Ha Ön IE 8-at vagy IE9-et használ és még mindig a böngésző követelményeivel kapcsolatos képernyőt látja, akkor valószínű, hogy a fenti funkció be van kapcsolva. A DeskPRO használatához ki kell kapcsolnia ezt a funkciót:',
+    'agent.login.ie_compat_mode_explain'                      => 'Az Internet Explorer egyes verzióiban található egy ún. "Kompatibilátás Nézet", melynek segítségével a régi weboldalak is működtethetők a legújabb technológiával. Előfordulhat, hogy ez a funkció tévesen kapcsolódik be. Ha Ön IE 8-at vagy IE9-et használ és még mindig a böngésző követelményeivel kapcsolatos képernyőt látja, akkor valószínű, hogy a fenti funkció be van kapcsolva. A Deskpro használatához ki kell kapcsolnia ezt a funkciót:',
     'agent.login.ie_compat_mode_step1'                        => 'Az Eszközök menüben válassza a Kompatibilátás Nézet beállításait',
     'agent.login.ie_compat_mode_step2'                        => 'Az Eszközök menüben válassza a Kompatibilátás Nézet beállításait',
-    'agent.login.ie_compat_mode_step3'                        => 'Győződjön meg róla, hogy a helpdesk URL nincs a listában. Amennyiben ott van, kattintson rá, majd kattintson az Eltávolítás gombra. Szintén győződjön meg arról, hogy a "minden weboldalt Kompatibilátás Nézet-ben jelenítsen meg" ki van kapcsolva. Amennyiben a DeskPRO-t intraneten használja, szintén ki kell kapcsolnia az "intranet oldalak megtekintése Kompatibilátás Nézet-ben." funkciót',
+    'agent.login.ie_compat_mode_step3'                        => 'Győződjön meg róla, hogy a helpdesk URL nincs a listában. Amennyiben ott van, kattintson rá, majd kattintson az Eltávolítás gombra. Szintén győződjön meg arról, hogy a "minden weboldalt Kompatibilátás Nézet-ben jelenítsen meg" ki van kapcsolva. Amennyiben a Deskpro-t intraneten használja, szintén ki kell kapcsolnia az "intranet oldalak megtekintése Kompatibilátás Nézet-ben." funkciót',
     'agent.login.ie_compat_mode_step4'                        => 'Zárja be ezt az ablakot és frissítse az oldalt',
     'agent.login.ie_compat_mode_title'                        => 'IE8-at vagy későbbi verziót használ? <a href="{{url}}">Győződjön meg róla, hogy a Kompatibilátás Nézet nincs engedélyezve</a>',
     'agent.login.ie_use_chrome_frame'                         => 'Másik megoldásként, telepítheti a <a href="http://www.google.com/chromeframe">Google Chrome Frame</a>',
     'agent.login.login_failed'                                => 'Érvénytelen belépés. Próbálja újra.',
-    'agent.login.notice_outdated_browser'                     => 'Az adminisztrátori és az ügyintézői felület modern böngészőt kíván. Úgy látjuk, hogy az Ön böngészője túl régi a DeskPRO használatához. Frissítse böngészőjét a legújabb verzióra vagy telepítsen egy másik böngészőt.',
+    'agent.login.notice_outdated_browser'                     => 'Az adminisztrátori és az ügyintézői felület modern böngészőt kíván. Úgy látjuk, hogy az Ön böngészője túl régi a Deskpro használatához. Frissítse böngészőjét a legújabb verzióra vagy telepítsen egy másik böngészőt.',
     'agent.login.password_was_reset'                          => 'Az Ön jelszavát sikeresen visszaállítottunk.',
     'agent.login.remember_me'                                 => 'Emlékeztessen',
     'agent.login.reset-password-info'                         => 'Adja meg az email címét, hogy a jelszó visszaállításával kapcsolatos információkat elküldhessük:',
@@ -1386,7 +1386,7 @@ return [
     'agent.settings.desktop_notifs_enable'                    => 'Tálca értesítések elérhetővé tétele',
     'agent.settings.desktop_notifs_explicit_disabled'         => 'A tálca értesítések le lettek tiltva. Ezen domain számára a böngészőben kell bekapcsolni őket.',
     'agent.settings.desktop_notifs_test'                      => 'Teszt értesítések generálása',
-    'agent.settings.done_start_using'                         => 'Kész, DeskPRO használatának elkezdése',
+    'agent.settings.done_start_using'                         => 'Kész, Deskpro használatának elkezdése',
     'agent.settings.drop_here_insert_signature'               => 'Húzza át a következő elemt <strong>image</strong> ide az Ön aláírásába történő beillesztéshez',
     'agent.settings.edit_filter'                              => 'Szűrő szerkesztése',
     'agent.settings.edit_macro'                               => 'Makró szerkesztése',
@@ -1460,8 +1460,8 @@ return [
     'agent.settings.title_ticket_notifs'                      => 'Jegy értesítések',
     'agent.settings.twitter_signature'                        => 'Twitter aláírás',
     'agent.settings.twitter_signature_desc'                   => 'Minden tweet ezzel lesz befejezve. Legyen rövid!',
-    'agent.settings.welcome_to_deskpro'                       => 'Üdvözöljük a DeskPRO-nál',
-    'agent.settings.welcome_to_deskpro_name'                  => '{{name}}, üdvözöljük a DeskPRO-nál',
+    'agent.settings.welcome_to_deskpro'                       => 'Üdvözöljük a Deskpro-nál',
+    'agent.settings.welcome_to_deskpro_name'                  => '{{name}}, üdvözöljük a Deskpro-nál',
     'agent.settings.your_current_picture'                     => 'Az Ön jelenlegi képe',
     'agent.snippets.add_snippet'                              => 'Sablon hozzáadása',
     'agent.snippets.all_snippets'                             => 'Minden sablon',
@@ -1575,7 +1575,7 @@ return [
     'agent.tickets.date_last_user_reply'                      => 'Utolsó felhasználói válasz dátuma',
     'agent.tickets.debug_file'                                => 'Javító fájl',
     'agent.tickets.debug_file_download'                       => 'Javító fájl letöltése',
-    'agent.tickets.debug_file_explain'                        => 'Egy DeskPRO ügyintéző kérheti ezt a fájlt a probléma felderítése céljából.',
+    'agent.tickets.debug_file_explain'                        => 'Egy Deskpro ügyintéző kérheti ezt a fájlt a probléma felderítése céljából.',
     'agent.tickets.decrease_urgency_action'                   => 'Sürgősségi szint csökkentése a következő mértékben {{amount}}',
     'agent.tickets.delete_attach'                             => 'Csatolmányok törlése',
     'agent.tickets.delete_attach_confirm'                     => 'Biztosan törli ezt a csatolmányt?',

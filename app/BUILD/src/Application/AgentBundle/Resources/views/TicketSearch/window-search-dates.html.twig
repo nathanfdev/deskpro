@@ -25,7 +25,7 @@
 		</div>
 		<div class="builder-type-choice" title="{{ phrase('agent.general.choose_criteria') }}" data-rule-type=""></div>
 
-		<div class="builder-type" title="User Waiting Time" data-rule-type="user_waiting">
+		<div class="builder-type" title="{{ phrase('agent.general.user_waiting_time') }}" data-rule-type="user_waiting">
 			<div class="builder-op">
 				<select name="op" class="op">
 					<option value="gte">{{ phrase('agent.general.is_greater_than') }}</option>
@@ -35,14 +35,14 @@
 			<div class="builder-options">
 				<input type="text" name="waiting_time" value="" style="width:50px" />
 				<select name="waiting_time_unit">
-					{% for scale,label in {'minutes': phrase('admin.tickets.minutes'), 'hours': phrase('admin.tickets.hours'), 'days': phrase('admin.tickets.days'), 'weeks': phrase('admin.tickets.weeks'), 'months': phrase('admin.tickets.months')} %}
+					{% for scale,label in {'minutes': phrase('agent.general.minutes')|capitalize, 'hours': phrase('agent.general.hours')|capitalize, 'days': phrase('agent.general.days')|capitalize, 'weeks': phrase('agent.general.weeks')|capitalize, 'months': phrase('agent.general.months')|capitalize} %}
 						<option value="{{ scale }}">{{ label }}</option>
 					{% endfor %}
 				</select>
 			</div>
 		</div>
 
-		<div class="builder-type" title="User Total Waiting Time" data-rule-type="total_user_waiting">
+		<div class="builder-type" title="{{ phrase('agent.tickets.total_user_waiting_time') }}" data-rule-type="total_user_waiting">
 			<div class="builder-op">
 				<select name="op" class="op">
 					<option value="lte">{{ phrase('agent.general.is_less_than') }}</option>
@@ -52,7 +52,7 @@
 			<div class="builder-options">
 				<input type="text" name="waiting_time" value="" style="width:50px" />
 				<select name="waiting_time_unit">
-					{% for scale,label in {'minutes': phrase('admin.tickets.minutes'), 'hours': phrase('admin.tickets.hours'), 'days': phrase('admin.tickets.days'), 'weeks': phrase('admin.tickets.weeks'), 'months': phrase('admin.tickets.months')} %}
+					{% for scale,label in {'minutes': phrase('agent.general.minutes')|capitalize, 'hours': phrase('agent.general.hours')|capitalize, 'days': phrase('agent.general.days')|capitalize, 'weeks': phrase('agent.general.weeks')|capitalize, 'months': phrase('agent.general.months')|capitalize} %}
 						<option value="{{ scale }}">{{ label }}</option>
 					{% endfor %}
 				</select>

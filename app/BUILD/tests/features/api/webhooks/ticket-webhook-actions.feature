@@ -53,8 +53,14 @@ Feature: /webhooks/tickets/{webhook}/invocation resource
         "value": "twig:{{webhook.data.id}}"
       }
     }
-  ],
-  "triggers": [
+  ]
+}
+    """
+    And the response status code should be 201
+    And I save the JSON node "data.auth_id" as placeholder "webhook_slug"
+    And I save the JSON node "data.id" as placeholder "webhook_id"
+    And I send a POST request to "/api/v2/webhooks/~webhook_id~/triggers" with body:
+    """
     {
       "terms": [
         [{
@@ -81,11 +87,7 @@ Feature: /webhooks/tickets/{webhook}/invocation resource
         ]
       }
     }
-  ]
-}
     """
-    And the response status code should be 201
-    And I save the JSON node "data.auth_id" as placeholder "webhook_slug"
 
     When I send a POST request to "/api/v2/webhooks/~webhook_slug~/invocation" with body:
     """
@@ -95,7 +97,7 @@ Feature: /webhooks/tickets/{webhook}/invocation resource
   "webhookEvent": "jira:issue_deleted"
 }
     """
-    Then the response status code should be 204
+    Then the response status code should be 200
 
     When I send a GET request to "/api/v2/tickets/~ticket_id~"
     Then the JSON list node "data.fields.~field_id~.value" should not contain "JIR-5"
@@ -140,8 +142,13 @@ Feature: /webhooks/tickets/{webhook}/invocation resource
         "value": "<field_value_default>"
       }
     }
-  ],
-  "triggers": [
+  ]
+}
+    """
+    And I save the JSON node "data.auth_id" as placeholder "webhook_slug"
+    And I save the JSON node "data.id" as placeholder "webhook_id"
+    And I send a POST request to "/api/v2/webhooks/~webhook_id~/triggers" with body:
+    """
     {
       "terms": [
         [{
@@ -168,24 +175,19 @@ Feature: /webhooks/tickets/{webhook}/invocation resource
         ]
       }
     }
-  ]
-}
     """
-    And the response status code should be 201
-    And I save the JSON node "data.auth_id" as placeholder "webhook_slug"
 
     When I send a POST request to "/api/v2/webhooks/~webhook_slug~/invocation" with body:
     """
-{
-  "id": "JIR-5",
-  "timestamp": "2009-09-09T00:08:36.796-0500",
-  "webhookEvent": "jira:issue_deleted"
-}
+    {
+      "id": "JIR-5",
+      "timestamp": "2009-09-09T00:08:36.796-0500",
+      "webhookEvent": "jira:issue_deleted"
+    }
     """
-    Then the response status code should be 204
+    Then the response status code should be 200
 
     When I send a GET request to "/api/v2/tickets/~ticket_id~"
-    And print last response body
     Then the JSON node "data.fields.~field_id~.value" should be equal to "<field_value_expected>"
     Examples:
       | webhook_title | ticket_subject | field_alias | field_title  | field_value_expected | with_formatter | field_value_default |
@@ -195,12 +197,12 @@ Feature: /webhooks/tickets/{webhook}/invocation resource
   Scenario Outline: I can unset a custom field field by invoking a webhook
     Given I send a POST request to "/api/v2/ticket_custom_fields" with a json body:
     """
-{
-  "title":"<field_title>",
-  "is_enabled":true,
-  "alias": "<field_alias>",
-  "handler_class":"Application\\DeskPRO\\CustomFields\\Handler\\Text"
-}
+  {
+    "title":"<field_title>",
+    "is_enabled":true,
+    "alias": "<field_alias>",
+    "handler_class":"Application\\DeskPRO\\CustomFields\\Handler\\Text"
+  }
     """
     And I save the JSON node "data.id" as placeholder "field_id"
     And I send a POST request to "/api/v2/tickets" with body:
@@ -229,8 +231,13 @@ Feature: /webhooks/tickets/{webhook}/invocation resource
         "value": "<field_value_default>"
       }
     }
-  ],
-  "triggers": [
+  ]
+}
+    """
+    And I save the JSON node "data.auth_id" as placeholder "webhook_slug"
+    And I save the JSON node "data.id" as placeholder "webhook_id"
+    And I send a POST request to "/api/v2/webhooks/~webhook_id~/triggers" with body:
+    """
     {
       "terms": [
         [{
@@ -256,11 +263,8 @@ Feature: /webhooks/tickets/{webhook}/invocation resource
         ]
       }
     }
-  ]
-}
     """
-    And the response status code should be 201
-    And I save the JSON node "data.auth_id" as placeholder "webhook_slug"
+
     And I send a GET request to "/api/v2/tickets/~ticket_id~"
     And the JSON node "data.fields.~field_id~.value" should be equal to "<field_value_default>"
 
@@ -272,7 +276,7 @@ Feature: /webhooks/tickets/{webhook}/invocation resource
   "webhookEvent": "jira:issue_deleted"
 }
     """
-    Then the response status code should be 204
+    Then the response status code should be 200
 
     When I send a GET request to "/api/v2/tickets/~ticket_id~"
     And print last response body

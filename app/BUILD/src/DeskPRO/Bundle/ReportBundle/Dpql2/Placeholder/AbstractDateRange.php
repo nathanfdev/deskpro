@@ -28,7 +28,6 @@
 
 namespace DeskPRO\Bundle\ReportBundle\Dpql2\Placeholder;
 
-use DeskPRO\Bundle\ReportBundle\Dpql2\DpqlDate;
 use DeskPRO\Bundle\ReportBundle\Dpql2\DpqlException;
 use DeskPRO\Bundle\ReportBundle\Dpql2\Parser;
 use DeskPRO\Bundle\ReportBundle\Dpql2\SqlSelect;
@@ -37,30 +36,12 @@ use DeskPRO\Bundle\ReportBundle\Dpql2\Statement\Part\BinaryInterval;
 use DeskPRO\Bundle\ReportBundle\Dpql2\Statement\Part\Prepared;
 use DeskPRO\Bundle\ReportBundle\Dpql2\Statement\SelectPart;
 use DeskPRO\Bundle\ReportBundle\Reports\ResultMetadata;
-use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorage;
 
 /**
  * Abstract base for a date range placeholder (such as %TODAY% or %THIS_YEAR%).
  */
 abstract class AbstractDateRange extends AbstractPlaceholder
 {
-    /**
-     * @var \DateTime
-     */
-    protected $dpqlDate;
-
-    /**
-     * Constructor.
-     *
-     * @param TokenStorage $tokenStorage
-     * @param DpqlDate     $dpqlDate
-     */
-    public function __construct(TokenStorage $tokenStorage, DpqlDate $dpqlDate)
-    {
-        parent::__construct($tokenStorage);
-        $this->dpqlDate = $dpqlDate;
-    }
-
     /**
      * Gets the date range that this covers. It must have 3 parts:
      *  - 0: printable version of range
@@ -206,5 +187,18 @@ abstract class AbstractDateRange extends AbstractPlaceholder
         }
 
         return $dt->format($format);
+    }
+
+    /**
+     * @return \DateTime
+     */
+    protected function getDate()
+    {
+        $context = $this->dpqlContextStorage->getContext();
+        if (!$context) {
+            return;
+        }
+
+        return $context->getDate();
     }
 }

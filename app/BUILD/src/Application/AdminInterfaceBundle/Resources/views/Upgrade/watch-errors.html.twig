@@ -4,8 +4,8 @@
 		<strong>Update Error: Write Permissions Failed</strong>
 	</div>
 	<p>
-		The upgrade utility requires write permission to the root DeskPRO directory, and all sub-directories and files.
-		This means the user running the scheduled task needs permission to write and delete DeskPRO files. Typically
+		The upgrade utility requires write permission to the root Deskpro directory, and all sub-directories and files.
+		This means the user running the scheduled task needs permission to write and delete Deskpro files. Typically
 		this is done by making sure your scheduled task user is the same user who owns the files.
 	</p>
 	<p>
@@ -70,7 +70,7 @@
 	</div>
 	<p>
 		The upgrade utility is run by the same user who executes scheduled tasks, and this user must
-		be able to write and delete DeskPRO files. We detected that some files were not writable
+		be able to write and delete Deskpro files. We detected that some files were not writable
 		which means you need to update file permissions.
 	</p>
 	<p>
@@ -95,7 +95,7 @@
 		To use the automatic upgrader, you will need to edit your php.ini and remove the disabled_functions directive.
 	</p>
 	<p>
-		You can still upgrade DeskPRO manually if you cannot change php.ini. Refer to our online manual:<br/>
+		You can still upgrade Deskpro manually if you cannot change php.ini. Refer to our online manual:<br/>
 		<a href="https://support.deskpro.com/guides/topic/188" target="_blank">Manually installing updates</a>
 	</p>
 </section>
@@ -116,7 +116,7 @@
 		You will have to install the extension into php.ini located at: {{ ng_var('error_message') }}
 	</p>
 	<p>
-		Note: If you want to manage backups manually, deselect the "Backup the current DeskPRO source files" option when scheduling the upgrade.
+		Note: If you want to manage backups manually, deselect the "Backup the current Deskpro source files" option when scheduling the upgrade.
 		The file backup step will be skipped and this requirement will no longer be necessary.
 	</p>
 </section>
@@ -165,7 +165,7 @@
 		<strong>Update Error: Download errror</strong>
 	</div>
 	<p>
-		There was a problem communicating with the DeskPRO servers. This could
+		There was a problem communicating with the Deskpro servers. This could
 		be due to a firewall or other network problem. The upgrade was aborted.
 	</p>
 	<p>
@@ -182,7 +182,7 @@
 	</div>
 	<p>
 		The upgrade utility encountered an error while trying to install the updated
-		files from the newest version of DeskPRO.
+		files from the newest version of Deskpro.
 	</p>
 	<p>
 		{{ ng_var('error_message') }}
@@ -235,7 +235,7 @@
   </p>
   <p>
     The easiest way for you to upgrade will be to use the command-line upgrader described here:
-    <a href="https://support.deskpro.com/guides/topic/188>Updating DeskPRO to the latest build</a>.
+    <a href="https://support.deskpro.com/guides/topic/188>Updating Deskpro to the latest build</a>.
 	</p>
 	<p>
 		{{ ng_var('error_message') }}
@@ -247,10 +247,10 @@
 <section class="running-section on" ng-show="is_error && error.remoterequester">
 	<div class="title">
 		<em><i class="fa fa-warning"></i></em>
-		<strong>Update Error: PHP cannot communicate with DeskPRO servers</strong>
+		<strong>Update Error: PHP cannot communicate with Deskpro servers</strong>
 	</div>
 	<p>
-		The upgrade utility needs to communicate with the DeskPRO servers to get latest version information, and to download files.
+		The upgrade utility needs to communicate with the Deskpro servers to get latest version information, and to download files.
 		You need to either enable the <a href="http://php.net/manual/en/book.curl.php">cURL extension</a>
 		or enable the <a href="http://www.php.net/manual/en/filesystem.configuration.php#ini.allow-url-fopen">allow_url_fopen</a>
 		configuration option in your php.ini file.

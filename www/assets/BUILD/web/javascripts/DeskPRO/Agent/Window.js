@@ -667,6 +667,11 @@ DeskPRO.Agent.Window = new Orb.Class({
 			loadReports = loadReports[1];
 		}
 
+		var loadReportsInterface;
+		if (loadReportsInterface = window.location.hash.match(/#reports-interface:(.*?)$/)) {
+			loadReportsInterface = loadReportsInterface[1];
+		}
+
 		if (this.util.inIframe()) {
 			console.log('Sending iframe message');
 			data = {
@@ -714,7 +719,7 @@ DeskPRO.Agent.Window = new Orb.Class({
 			$('body').addClass('dp-is-retina');
 		}
 
-		if (!loadAdmin && !loadReports) {
+		if (!loadAdmin && !loadReports && !loadReportsInterface) {
 			$('#page_loading').remove();
 			$('#loading_css').remove();
 		}
@@ -841,6 +846,16 @@ DeskPRO.Agent.Window = new Orb.Class({
 				if ($('#reports_interface_trigger').data('handler')) {
 					console.log("Loading reports: " + loadReports);
 					$('#reports_interface_trigger').data('handler').open(loadReports, function () {
+						$('#page_loading').remove();
+						$('#loading_css').remove();
+					});
+				}
+			} else if (loadReportsInterface) {
+				this.disableHashPath(function () {
+				});
+				if ($('#reports2_interface_trigger').data('handler')) {
+					console.log("Loading reports: " + loadReportsInterface);
+					$('#reports2_interface_trigger').data('handler').open(loadReportsInterface, function () {
 						$('#page_loading').remove();
 						$('#loading_css').remove();
 					});
@@ -2074,6 +2089,14 @@ DeskPRO.Agent.Window = new Orb.Class({
 					DeskPRO_Window.TabBar.activateTabById(existTab.id);
 				} else {
 					if (DeskPRO_Window.TabBar.currentTabId == existTab.id) {
+						if (existTab.page && existTab.page.fireEvent) {
+							event.deskpro = {cancelClose: false};
+							existTab.page.fireEvent('closeTab', [event, existTab]);
+
+							if (event.deskpro.cancelClose) {
+								return;
+							}
+						}
 						DeskPRO_Window.TabBar.removeTabById(existTab.id);
 						if (routeData.routeTriggerEl && routeData.toggleOpenClass) {
 							routeData.routeTriggerEl.removeClass(routeData.toggleOpenClass);
@@ -2833,6 +2856,13 @@ DeskPRO.Agent.Window = new Orb.Class({
 				tabRoute: 'page:' + BASE_URL + 'agent/feedback/new',
 				autostart: autostart
 			});
+			this.newFeedbackLoader.newLinkedFeedback = function(ticket_id, message_id) {
+				self.newFeedbackLoader.nextParams = {
+					ticket_id: ticket_id,
+					message_id: message_id || 0
+				};
+				self.newFeedbackLoader.open();
+			};
       this.newTopicLoader = new DeskPRO.Agent.Widget.BackgroundPopout({
         loadUrl: BASE_URL + 'agent/guides/new',
         tabRoute: 'page:' + BASE_URL + 'agent/guides/new',

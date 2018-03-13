@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2017, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2018, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -81,6 +81,18 @@ class FeedbackSubscription extends \Application\DeskPRO\Domain\DomainObject
     public function setRootCategory($root_category)
     {
         $this->setModelField('root_category', $root_category);
+    }
+
+    /**
+     * @param \Application\DeskPRO\Entity\Person $person
+     *
+     * @return $this
+     */
+    public function setPerson(Person $person)
+    {
+        $this->person = $person;
+
+        return $this;
     }
 
     //###########################################################################

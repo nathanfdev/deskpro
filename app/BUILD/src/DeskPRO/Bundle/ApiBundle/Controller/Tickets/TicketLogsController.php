@@ -30,7 +30,6 @@ namespace DeskPRO\Bundle\ApiBundle\Controller\Tickets;
 
 use Application\DeskPRO\Entity\TicketLog;
 use DeskPRO\Bundle\ApiBundle\ApiDoc\Annotation\ApiDoc;
-use DeskPRO\Bundle\ApiBundle\Controller\CrudSubController;
 use DeskPRO\Bundle\AppBundle\Annotation\ActionPermissions\Annotation\ApiModes;
 use DeskPRO\Bundle\AppBundle\Form\Type\Tickets\TicketLogs\TicketLogType;
 use FOS\RestBundle\Controller\Annotations as Rest;
@@ -54,7 +53,7 @@ use Symfony\Component\HttpFoundation\Request;
  *     }
  * )
  */
-class TicketLogsController extends CrudSubController
+class TicketLogsController extends AbstractTicketsCrudSubController
 {
     public static $entity         = TicketLog::class;
     public static $type           = TicketLogType::class;

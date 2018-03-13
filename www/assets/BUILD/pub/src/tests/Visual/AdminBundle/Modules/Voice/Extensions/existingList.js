@@ -1,5 +1,5 @@
 import React from 'react';
-import { storiesOf } from '@kadira/storybook';
+import { storiesOf } from '@storybook/react';
 import ExistingExtensionList from 'DeskPRO/Bundle/AdminBundle/Modules/Voice/Components/Extensions/ExistingList/ExistingExtensionList';
 import Immutable from 'immutable';
 import { adminCss, redux } from '../../../../decorators';

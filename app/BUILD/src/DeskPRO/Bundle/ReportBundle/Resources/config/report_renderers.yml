@@ -8,14 +8,12 @@ services:
   reports.values_renderer.text:
     class: DeskPRO\Bundle\ReportBundle\Reports\Renderer\TextValueRenderer
     arguments:
-      - "@security.token_storage"
       - "@settings_resolver"
 
   # JSON renderers
   reports.values_renderer.json:
     class: DeskPRO\Bundle\ReportBundle\Reports\Renderer\Json\JsonValueRenderer
     arguments:
-      - "@security.token_storage"
       - "@settings_resolver"
 
   reports.renderer.json_line:
@@ -53,6 +51,27 @@ services:
     tags:
       - { name: reports.renderer }
 
+  reports.renderer.json_stat:
+    class: DeskPRO\Bundle\ReportBundle\Reports\Renderer\Json\JsonStatRenderer
+    arguments:
+      - "@reports.values_renderer.json"
+    tags:
+      - { name: reports.renderer }
+
+  reports.renderer.json_gauge:
+    class: DeskPRO\Bundle\ReportBundle\Reports\Renderer\Json\JsonGaugeRenderer
+    arguments:
+      - "@reports.values_renderer.json"
+    tags:
+      - { name: reports.renderer }
+
+  reports.renderer.json_bubble:
+    class: DeskPRO\Bundle\ReportBundle\Reports\Renderer\Json\JsonBubbleRenderer
+    arguments:
+      - "@reports.values_renderer.json"
+    tags:
+      - { name: reports.renderer }
+
   # CSV renderers
   reports.renderer.csv_table:
     class: DeskPRO\Bundle\ReportBundle\Reports\Renderer\CsvTableRenderer
@@ -65,7 +84,6 @@ services:
   reports.values_renderer.html:
     class: DeskPRO\Bundle\ReportBundle\Reports\Renderer\Html\HtmlValueRenderer
     arguments:
-      - "@security.token_storage"
       - "@settings_resolver"
 
   reports.renderer.html_table:

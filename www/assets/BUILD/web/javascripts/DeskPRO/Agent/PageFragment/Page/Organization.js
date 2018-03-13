@@ -529,7 +529,7 @@ DeskPRO.Agent.PageFragment.Page.Organization = new Orb.Class({
 		});
 
 		if (!this.meta.perms.edit) {
-			var contactBox = $('.profile-box-container.contact', this.el);
+			var contactBox = $('.profile-box-container.contact', this.wrapper);
 			if (!contactBox.find('> section > .table-content > *')[0]) {
 				contactBox.hide();
 			}
@@ -540,7 +540,7 @@ DeskPRO.Agent.PageFragment.Page.Organization = new Orb.Class({
 
 	refreshPropBox: function() {
 
-		var contactBox = $('.profile-box-container.contact', this.el);
+		var contactBox = $('.profile-box-container.contact', this.wrapper);
 
 		var has = false;
 		if ($('.contact-data-list > li', contactBox).length) {
@@ -560,6 +560,18 @@ DeskPRO.Agent.PageFragment.Page.Organization = new Orb.Class({
 		} else {
 			contactBox.removeClass('no-section');
 		}
+
+		$('.phone-number', this.wrapper).on('click', function (event) {
+			if (window.AgentLegacyBundle.canOpenDialpad()) {
+				event.preventDefault();
+
+				var $el = $(this);
+				window.AgentLegacyBundle.openVoiceDialpad($el.data('phoneNumber'));
+				return false;
+			}
+
+			return true;
+		});
 	},
 
 	//#########################################################################

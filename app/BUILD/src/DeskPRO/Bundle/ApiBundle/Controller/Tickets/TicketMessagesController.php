@@ -30,7 +30,6 @@ namespace DeskPRO\Bundle\ApiBundle\Controller\Tickets;
 
 use Application\DeskPRO\Entity\TicketMessage;
 use DeskPRO\Bundle\ApiBundle\ApiDoc\Annotation\ApiDoc;
-use DeskPRO\Bundle\ApiBundle\Controller\CrudSubController;
 use DeskPRO\Bundle\ApiBundle\Traits\Tickets\TicketAwarePersistModelTrait;
 use DeskPRO\Bundle\ApiBundle\Traits\Tickets\TicketSaveTrait;
 use DeskPRO\Bundle\AppBundle\Annotation\ActionPermissions\Annotation\ApiModes;
@@ -57,7 +56,7 @@ use Symfony\Component\HttpFoundation\Request;
  *     }
  * )
  */
-class TicketMessagesController extends CrudSubController
+class TicketMessagesController extends AbstractTicketsCrudSubController
 {
     use TicketSaveTrait, TicketAwarePersistModelTrait;
 

@@ -27,7 +27,7 @@
                                     {% include 'ReportsInterfaceBundle:AgentActivity:ticket-log-actiontext.html.twig' %}
                                     {% endset %}
                                     {% if action_text|trim() is not empty %}
-                                    <div class="activity activity_type_{{ type }}"><div class="type_icon"></div>
+                                    <div class="activity activity_type_{{ row.is_call ? 'phone' : 'ticket' }}"><div class="type_icon"></div>
                                     ({{ minute_display }}) {{ action_text }} in
                                     <a href="{{ app.request.getBaseUrl() }}/agent/#app.tickets,t:{{log.ticket.id}}">{{ log.ticket.subject }}</a>
                                     </div>

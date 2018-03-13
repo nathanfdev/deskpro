@@ -1,0 +1,212 @@
+AMCHARTS SOFTWARE OEM/SAAS LICENSE AGREEMENT
+PLEASE READ CAREFULLY BEFORE USING THIS PRODUCT: This license agreement (hereinafter, the “License”) is a binding legal agreement between (a) you (either in your capacity as an individual or as a single entity) and (b) Antanas Marcelionis (hereinafter, “amCharts”) that governs your use of the amCharts JavaScript Charts software, together with any electronic documentation that may be provided therewith (collectively, “the Software”) through the Software. Other software provided by third parties and used with the Software may be subject to a separate license agreement.
+
+
+
+BY INSTALLING OR OTHERWISE USING THE SOFTWARE YOU AGREE TO BE BOUND BY THE TERMS OF THIS LICENSE. IF YOU DO NOT ACCEPT THESE LICENSE TERMS, YOUR SOLE REMEDY IS TO REQUEST A REFUND AS SPECIFIED ON THE AMCHARTS WEBSITE, LOCATED ON THE INTERNET AT http://www.amcharts.com.
+
+
+YOU HEREBY AGREE, BOTH ON YOUR OWN BEHALF AND AS AN AUTHORIZED REPRESENTATIVE OF ANY ORGANIZATION FOR WHICH YOU ARE USING THE SOFTWARE (hereinafter, the “EMPLOYER”), THAT YOU AND THE EMPLOYER WILL USE THE SOFTWARE ONLY IN ACCORDANCE WITH AND SUBJECT TO THE FOLLOWING TERMS:
+
+
+
+1. GRANT OF LICENSE
+
+amCharts grants you the following non-exclusive rights provided you agree to and comply with all terms and conditions of this License and upon your full payment of the applicable fees: a personal, nonexclusive, nontransferable license to install and use the Software at an unlimited number of websites and redistribute as a part of other software applications that you have the right to alter and distribute. This License is effective until terminated as provided herein. You may terminate this License by destroying the Software and any copies of the Software in your possession. This License will terminate automatically upon any violation of its terms by you or by the Employer, as determined by amCharts in its sole discretion.
+
+
+2. UPGRADES AND SUPPORT
+The rights granted to you in this License may entitle you to certain upgraded versions of the Software, as amCharts continues to develop and improve the Software. Subject to any further agreements between you and amCharts, this License shall entitle you to minor version upgrades of the Software for the length of your subscription. For the purpose of this License, “Minor Version Upgrades” shall mean any change to the Software that causes the version number to change in a minor way. (For example, 3.33 to 3.34.) Whether an upgrade is a Minor Version Upgrade or another kind of upgrade shall be determined by amCharts in its sole discretion.
+
+
+
+The rights granted to you in this License shall entitle you to complimentary technical support of the Software for six months from the date of purchase. This technical support shall not include support related to hardware of any kind, including without limitation servers that you use to deploy the Software or clients that users use to access your implementation of the software.
+
+
+
+3. ADDITIONAL SOFTWARE
+
+This License applies only to the Software and updates or supplements to the Software provided by amCharts. Depending on how you choose to deploy the Software, you may need to acquire licenses to other, third-party software. amCharts shall not be liable or otherwise responsible for your failure to obtain such licenses.
+
+
+
+4. TRANSFER
+
+The Software may only be transferred to another party in the event that you are entering into this agreement on behalf of the Employer, and the Employer or the Employer’s parent entity is acquired. Any transfer must include all component parts, media, printed materials and this License. You may not rent, lease or lend the Software or use the Software for “timeshare” use. You may not sublicense, assign or transfer the license or Software except as expressly provided in this License.
+
+
+
+5. PROPRIETARY RIGHTS
+
+All intellectual property rights in the Software are owned by amCharts or its suppliers, as applicable, and are protected by law, including but not limited to Lithuanian copyright, trade secret, and trademark law, as well as other applicable laws and international treaty provisions. The structure, organization and code of the Software are valuable trade secrets and confidential information of amCharts and its suppliers. You shall not remove any product identification, copyright notices or proprietary restrictions from the Software.
+
+
+
+6. LICENSE RESTRICTIONS
+
+You agree that you may not and shall not and that if applicable, the Employer may not and shall not (a) modify or create derivative works based upon the Software; (b) decompile, disassemble, or reverse engineer the Software in whole or in part; (c) defeat, disable, or circumvent any protection mechanism related to the Software; (d) use the Software or any parts of it to develop a product directly competing with the Software.
+
+
+
+Nothing contained herein shall be construed, expressly or implicitly, as transferring any right, license or title to you other than those explicitly granted under this License. Unauthorized copying of the Software or failure to comply with the restrictions herein, as determined by amCharts in its sole discretion will result in automatic termination of this License and will constitute immediate, irreparable harm to amCharts for which monetary damages would be an inadequate remedy, in which case injunctive relief will be an appropriate remedy for such breach.
+
+
+
+7. TERM
+
+This License is effective unless terminated or rejected. This License will also terminate upon conditions set forth elsewhere in this License or if you fail to comply with any term or condition of this License, as determined by amCharts in its sole discretion.
+
+
+
+8. CONSENT TO USE OF DATA
+
+You agree that amCharts and its affiliates or suppliers may collect and use technical information you provide in relation to support services related to the Software. amCharts and its suppliers agree not to use this information in a form that personally identifies you except to the extent necessary to provide such services.
+
+
+
+9. DISCLAIMER OF WARRANTIES
+
+You acknowledge that the Software is offered on an “AS-IS,” “AS-AVAILABLE” basis and amCharts does not warrant that the functions contained in the Software will meet your requirements or that the operation of the Software will be uninterrupted or error free. Computer software is inherently subject to bugs and potential incompatibility with other computer software and hardware exists and cannot reasonably be eliminated. You should not use the Software for any applications in which failure could cause any significant damage or injury to persons or tangible or intangible property.
+
+
+
+TO THE MAXIMUM EXTENT PERMITTED BY APPLICABLE LAW, AMCHARTS AND ITS SUPPLIERS PROVIDE THE SOFTWARE PRODUCT “AS IS” AND WITH ALL FAULTS, AND HEREBY DISCLAIM ALL OTHER WARRANTIES AND CONDITIONS, EITHER EXPRESS, IMPLIED, OR STATUTORY, INCLUDING, BUT NOT LIMITED TO, WARRANTIES OF TITLE AND NON-INFRINGEMENT, ANY IMPLIED WARRANTIES, DUTIES OR CONDITIONS OF MERCHANTABILITY, OF FITNESS FOR A PARTICULAR PURPOSE, AND OF LACK OF VIRUSES ALL WITH REGARD TO THE SOFTWARE PRODUCT. NO ORAL OR WRITTEN INFORMATION OR ADVICE GIVEN BY AMCHARTS OR AN AMCHARTS AUTHORIZED REPRESENTATIVE SHALL CREATE A WARRANTY.
+
+
+
+Some jurisdictions do not allow exclusion of implied warranties or limitations on the duration of implied warranties, so the above disclaimer may not apply to you in its entirety. IN NO EVENT DOES AMCHARTS PROVIDE ANY WARRANTY OR REPRESENTATIONS WITH RESPECT TO ANY THIRD PARTY HARDWARE OR SOFTWARE WITH WHICH THE SOFTWARE IS DESIGNED TO BE USED, AND AMCHARTS DISCLAIMS ALL LIABILITY WITH RESPECT TO ANY FAILURES THEREOF.
+
+
+
+10. LIMITATION OF LIABILITY
+
+Notwithstanding any damages that you might incur, the entire liability of amCharts and any of its suppliers under any provision of this License and your exclusive remedy for all of the foregoing shall be limited to the greater of the amount actually paid by you for the Software or US$100.00. TO THE MAXIMUM EXTENT PERMITTED BY APPLICABLE LAW, IN NO EVENT SHALL AMCHARTS OR ITS SUPPLIERS BE LIABLE FOR ANY SPECIAL, INCIDENTAL, INDIRECT, OR CONSEQUENTIAL DAMAGES WHATSOEVER (INCLUDING, BUT NOT LIMITED TO, DAMAGES FOR LOSS OF PROFITS, FOR LOSS OF DATA OR OTHER INFORMATION, FOR BUSINESS INTERRUPTION, FOR PERSONAL INJURY, FOR LOSS OF PRIVACY ARISING OUT OF OR IN ANY WAY RELATED TO THE USE OF OR INABILITY TO USE THE SOFTWARE PRODUCT, OR OTHERWISE IN CONNECTION WITH ANY PROVISION OF THIS LICENSE), EVEN IF AMCHARTS OR ANY SUPPLIER HAS BEEN ADVISED OF THE POSSIBILITY OF SUCH DAMAGES AND EVEN IF THE REMEDY FAILS OF ITS ESSENTIAL PURPOSE. Some jurisdictions do not allow the exclusion or limitation of incidental or consequential damages, so the above limitation or exclusion may not apply to you.
+
+
+
+11. CAPACITY AND AUTHORITY TO CONTRACT
+
+You represent that you are of the legal age of majority in your jurisdiction of residence and, if applicable, you are duly authorized by the Employer to enter into this contract.
+
+
+
+12. APPLICABLE LAW AND SEVERABILITY
+
+This License shall be governed by the laws of the Republic of Lithuania without regard to the provisions regarding conflicts of law. You agree that this License shall not be governed by the United Nations Convention on Contracts for the International Sale of Goods, the application of which is expressly excluded. You irrevocably submit to the jurisdiction of the state courts sitting in, and any action or proceeding arising out of this License will be heard and determined in such court. If for any reason a court of competent jurisdiction finds any provision, or portion thereof, to be unenforceable, such provision will be interpreted in order to give effect to such provision to the maximum extent permitted by law, and the remainder of this License will continue in full force and effect.
+
+
+
+13. ENTIRE AGREEMENT
+
+This License (including any addendum or amendment to this License or as included with the Software) contains the entire agreement between you and amCharts relating to the Software, and the License supersedes all prior or contemporaneous oral or written communications, proposals and representations with respect to the Software or any other subject matter covered by this License. To the extent the terms of any amCharts policies or programs for support services conflict with the terms of this License, the terms of this License shall control.
+
+
+
+
+
+AMCHARTS SOURCE CODE LICENSE AGREEMENT
+
+This Source Code License Agreement (hereinafter, the “Agreement”) is made and entered into by and between you (hereinafter, the “Licensee”) and Antanas Marcelionis, (hereinafter, “amCharts”). (Hereinafter, each a “party,” and collectively as one, the “parties.”)
+In exchange for good and valuable consideration, the receipt and sufficiency of which are hereby acknowledged, the Licensee and amCharts hereto hereby agree as follows:
+
+
+
+1. DEFINITIONS
+
+1.1. For purposes of this Agreement, the following definitions shall apply:
+
+1.1.1. “Software” shall mean the particular Software product purchased by Licensee from amCharts.
+
+1.1.2. “Source Code” means computer programming code or any computer instructions necessary to compile the Software.
+
+1.1.3. “Derivative Works” means any software programs which are developed by Licensee and which incorporate or contain modifications of any part of Source Code, and including any revision, modification, translation (including compilation or recapitulation by computer), abridgment, condensation, expansion or any other form in which Source Code, may be recast, transformed or adapted.
+
+1.1.4. “Purpose” means the creation of bug-fixes, corrections, enhancements, revisions, modifications and adaptations of Source Code and addition of new user interfaces, features and functionality to the Software.
+
+
+
+2. LICENSEE RIGHTS AND RESTRICTIONS
+
+2.1. Grant of License.
+
+
+
+2.1.1. Subject to Licensee’s strict compliance with the terms and conditions of this Agreement, amCharts hereby grants to Licensee a non-exclusive, non-transferable, limited license under amCharts copyrights in the Source Code to internally reproduce the Source Code and create derivative works based upon the Source Code for the Purpose.
+
+2.2. Restrictions and Requirements of Use.
+
+
+
+2.2.1. Except as expressly provided in Section 2.1, no other license or right in the Source Code is granted to Licensee under this Agreement directly or by implication or otherwise. Without limiting the generality of the foregoing and notwithstanding anything to the contrary in this Agreement, Licensee may not:
+
+2.2.1.1. Remove any copyright notice, proprietary information notices, or other notice (collectively, “Copyright Notice”) provided by amCharts, including, without limitation, any Copyright Notice contained in the Source Code provided by amCharts;
+
+2.2.1.2. Assign, sublicense, lease, or in any other way transfer or disclose the Source Code to any third party, including, without limitation, (i) to any clients or (ii) to independent contractors or developers.
+
+2.2.1.3. Utilize the Source Code in a manner to prepare, draft, or assist third parties in preparing or computer software that is similar to the Software subject to this License that is intended for sale, license, or distribution to others (whether that distribution be for profit or free) in a manner that would compete directly or indirectly with amCharts products; or
+
+2.2.1.4. Reproduce or use any part of the Source Code or use the Software except as provided in this Agreement; or
+
+2.2.1.5. Reproduce, modify, decompile, reverse engineer, disassemble, or otherwise reduce the Software to a human-readable form.
+
+2.2.2. The restrictions set forth in Section 2.2.1 shall apply equally to attempts to perform the restricted activities, regardless of whether or not any such attempt is successful.
+
+2.3. Indemnification. Licensee hereby agrees to indemnify, defend and hold harmless amCharts and its directors, officers, shareholders, partners, affiliates, employees, representatives and agents from and against any loss, fines, fees, settlements, judgments, costs, expenses (including, without limitation, reasonable attorneys’ fees, court costs, and administrative fees), and any other liability arising out of or related to any claim, demand, or cause of action asserted by any third party arising out of or related to Licensee’s use of the Software and Source Code.
+
+
+
+3. INTELLECTUAL PROPERTY
+
+3.1. Existing Intellectual Property. As between the parties, amCharts is and shall be the exclusive owner of all right, title and interest in and to (i) the Software and the Source Code, and (ii) all patent, copyright, trademark, trade secret, and any and all other protectable intellectual property and proprietary rights both now and in the future, whether or not registered or perfected (but to the extent existing, all registrations, applications, renewals, extensions, continuations, divisions or reissues hereof now or hereafter in force), and whether arising by operation of law, contract, or otherwise (collectively, “Intellectual Property Rights”) in and to the foregoing (the “Existing Intellectual Property”). The Software and Source Code are protected by copyright and other applicable laws, international treaty provisions and applicable laws in the country in which it is being used. Licensee may not copy or use the Software or Source Code except as permitted herein. Licensee agrees not to modify, adapt or translate the Software or Source Code except as permitted herein. Any information or documentation supplied by amCharts or otherwise obtained by Licensee in connection with or as a result of this Agreement may only be used by Licensee for the Purpose described herein and may not be disclosed to any third party (except as permitted herein) or used to create any software which is substantially similar to the Software.
+
+3.2. New Intellectual Property. As between the Parties, any right, title and interest to any enhancements, updates, and modifications shall be owned by the Party who created them; with respect to enhancements, updates, and modifications, that are jointly created, they shall be owned by amCharts and Licensee shall be granted a license to use those jointly created enhancements, updates, and modifications in accordance with this Agreement. In no event shall any rights in the amCharts Source Code vest or otherwise transfer to Licensee and Licensee acknowledges that any ownership of enhancements, updates, and modifications shall be limited to the enhancements, updates, and modifications and not the underlying amCharts Source Code.
+
+3.3. Cooperation. The Parties agree to mutually cooperate with one another in attempts to obtain, perfect, or register any New Intellectual Property owned by one another as outlined in Section 3.2. In connection with the foregoing, the Parties agree to execute any documents of assignment, registration, and recordation as may be necessary to perfect, or protect, the rights assigned to each Party hereunder in each country in which the assignee Party desires, and ensure that the Parties respective employees and permitted contractors, are bound by and abide by the terms and conditions of this provision and have executed all agreements necessary to obtain, perfect, or register the New Intellectual Property.
+
+
+
+4. WARRANTY, WARRANTY DISCLAIMER, AND LIMITATION OF LIABILITY
+
+4.1. Mutual Representations. Each party represents and warrants (i) that such party is duly organized, validly existing and in good standing under the laws of its jurisdiction of incorporation; (ii) that such party has the legal right and authority to enter into and perform its obligations under this Agreement; (iii) that, to the best of its knowledge, the execution and performance of this Agreement will not conflict with or violate any provision of any law having applicability to such party; and (iv) that this Agreement, when executed and delivered, will constitute a valid and binding obligation of such party and will be enforceable against such party in accordance with its terms.
+
+4.2. Warranty Disclaimer. Except as specifically set forth in Section 4.1 above, no further warranty of any kind is being provided by amCharts, including, without limitation, any warranty that the Software and Source Code shall be free from defects in design, material or workmanship. LICENSEE ASSUMES TOTAL RESPONSIBILITY FOR THE USE OF THE SOFTWARE AND SOURCE CODE, AND THE SOFTWARE AND SOURCE CODE ARE PROVIDED ON AN “AS-IS” BASIS. TO THE MAXIMUM EXTENT PERMITTED BY LAW AND EXCEPT AS SPECIFICALLY SET FORTH IN SECTION 4.1, THE SOFTWARE AND SOURCE CODE ARE PROVIDED WITHOUT WARRANTIES OF ANY KIND, EITHER EXPRESS OR IMPLIED, AND WHETHER ARISING UNDER LAW OR FROM COURSE OF PERFORMANCE, COURSE OF DEALING, OR USAGE OF TRADE (COLLECTIVELY, “DISCLAIMED WARRANTIES”), INCLUDING, WITHOUT LIMITATION, ANY WARRANTIES OF NON-INFRINGEMENT, MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. ALL SUCH WARRANTIES ARE HEREBY EXPRESSLY EXCLUDED BY AMCHARTS AND FOREVER WAIVED BY LICENSEE. NO ADVICE OR INFORMATION GIVEN BY AMCHARTS, ITS AFFILIATES OR ITS CONTRACTORS OR THEIR RESPECTIVE EMPLOYEES SHALL CREATE A WARRANTY OR OBLIGATION OF AMCHARTS. In the event that any of the Disclaimed Warranties cannot be disclaimed or waived under applicable law, Licensee’s sole and exclusive remedy for breach of such Disclaimed Warranty will be, at amCharts’ sole discretion, either (i) the replacement of the Source Code, at no additional cost to Licensee, or (ii) the refund of any License Fees actually paid by Licensee under this Agreement.
+
+4.3. Limitation of Liability. TO THE MAXIMUM EXTENT PERMITTED UNDER APPLICABLE LAW, AMCHARTS SHALL NOT BE LIABLE TO LICENSEE, AND LICENSEE COVENANTS THAT IT WILL NOT ASSERT A CLAIM AGAINST AMCHARTS, UNDER ANY LEGAL THEORY, WHETHER IN AN ACTION BASED ON A CONTRACT, NEGLIGENCE, TORT, STRICT LIABILITY, OR OTHERWISE PROVIDED BY STATUTE OR LAW, (i) FOR ANY INCIDENTAL, SPECIAL, EXEMPLARY, CONSEQUENTIAL, OR STATUTORY DAMAGES, OR ANY DAMAGES RESULTING FROM LOST PROFITS, INTERRUPTION OF BUSINESS, OR LOSS OF GOODWILL, EVEN IF AMCHARTS HAD BEEN ADVISED OF THE POSSIBILITY OF SUCH DAMAGES, OR (ii) FOR DAMAGES RELATED TO OR ARISING OUT OF THIS AGREEMENT IN AN AMOUNT THAT EXCEEDS THE LICENSE FEES ACTUALLY PAID BY LICENSEE UNDER THIS AGREEMENT. LICENSEE HEREBY WAIVES ANY CLAIM THAT THESE EXCLUSIONS DEPRIVE IT OF AN ADEQUATE REMEDY OR CAUSE THIS AGREEMENT TO FAIL OF ITS ESSENTIAL PURPOSE.
+
+4.4. Basis of Bargain. The parties hereby acknowledge and agree that the warranty disclaimers and limitation of liability provisions set forth above have been negotiated and are fundamental elements of the basis of this Agreement, and amCharts would not be able to provide the licenses granted herein at the price and on the other terms and conditions currently offered without such limitations. The parties further agree that such provisions will inure to the benefit of the other party’s successors and permitted assigns.
+
+
+
+5. TERM AND TERMINATION
+
+5.1. Term. The term of this Agreement and the licenses granted herein shall begin on the effective date of this Agreement and shall continue as long as Licensee is using amCharts software or until the earlier termination of this Agreement pursuant to the provisions set forth herein.
+
+5.2. Event of Default. Each of the following shall constitute an event of default (“Event of Default”) under this Agreement: (a) Licensee fails to pay any amount due under this Agreement within thirty (30) days of the date such amount is due; (b) an uncured material breach by either party of this Agreement, provided that the non-breaching party has notified the breaching party of the Event of Default and afforded the breaching party at least thirty (30) days to cure such breach; and (c) Licensee is acquired by or merges with, or begins discussions to become acquired by or merged with, a competitor to amCharts. A competitor is defined as any company selling products defined in the online charts and/or mapping space to customers, as standalone products, or as integrated offering with a service or other product.
+
+5.3. Termination upon Event of Default. If an Event of Default occurs, the non-breaching party (or amCharts in the event of an Event of Default pursuant to Sections 5.2(a) or (c)) may, in its sole discretion, terminate this Agreement. In such event, the non-terminating party shall pay to the terminating party all costs and expenses (including reasonable legal fees and costs and fees of collection agencies, if any) incurred by the terminating party in connection with such termination.
+
+5.4. Effect of Termination. Upon termination or expiration of this Agreement for any reason whatsoever, Licensee shall immediately: (i) cease all use of the Source Code; and (ii) within ten (10) days, return or destroy (and have an authorized officer certify such destruction) the Source Code, including without limitation, removing all copies of Source Code from Licensee computers and storage media. In addition to the foregoing, Licensee agrees that it shall not, following termination or expiration of this Agreement, act in any way to damage the reputation or goodwill of amCharts, the Software, any enhancement, or any other product or software offered by amCharts.
+
+
+
+6. MISCELLANEOUS
+
+6.1. Assignment. Licensee may not assign this Agreement or any of its rights or obligations hereunder without the prior written consent of amCharts, such consent to be given at its sole discretion. Any attempted assignment without such prior written consent shall be void. amCharts may assign all or part of this Agreement immediately, without the prior written consent of Licensee (i) to any successor in interest to amcharts who assumes responsibility for amCharts obligations hereunder; or (ii) if necessary to satisfy the rules, regulations and/or orders of any federal, state or local governmental agency or body.
+
+6.2. Governing Law. This Agreement shall be governed by and construed under the laws of the Republic of Lithuania.
+
+6.3. Severability. In the event that any portion of this Agreement is held to be unenforceable, the unenforceable portion shall be amended to reflect, to the greatest extent permitted under applicable law, the original intent of the parties, and the remainder of the provisions shall remain in full force and effect.
+
+6.4. Waiver. Either party’s failure to insist upon strict performance of any provision of this Agreement shall not be construed as a waiver of that or any other of its rights hereunder at any later date or time.
+
+6.5. Force Majeure. With the exception of any payment obligations, neither party shall be liable for failing to perform its obligations hereunder (other than payment obligations) where delayed or hindered by war, riots, embargoes, strikes or acts of its vendors or suppliers, accidents, acts of God, or any other event beyond its reasonable control.
+
+6.6. Notices. All notices including notices of address changes contemplated hereunder shall be deemed received on the third day after mailing if sent by mail, or immediately if sent by facsimile. Notices shall be sent to the addresses on the signature page hereof.
+
+6.7. Survival. All terms and provisions of this Agreement that should by their nature survive the termination shall so survive.
+
+6.8. Counterparts. This Agreement may be executed in separate counterparts including facsimile copies, each of which shall be deemed an original, and all of which shall be deemed one and the same instrument and legally binding upon the parties.
+
+6.9. Entire Agreement. Each Exhibit is hereby incorporated by reference into this Agreement as if fully rewritten herein. This Agreement, including any Exhibits attached hereto and made part hereof, constitutes the entire agreement between Licensee and amCharts with respect to the subject matter hereof. To the extent that it conflicts with any prior agreements between the parties, this Agreement supersedes any prior agreements, representations, or dealings between the parties.
+
+6.10. Amendment. amCharts reserves the right at any time to modify this Agreement without notice and to impose new or additional terms or conditions on your use of your use of the Software. Such modifications and additional terms and conditions will be effective immediately and incorporated into this Agreement. Your continued use of the Software will be deemed acceptance thereof.

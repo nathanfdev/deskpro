@@ -159,6 +159,8 @@ class PublishFixture extends AbstractDpFixture implements OrderedFixtureInterfac
             $this->loadComments($content);
         }
         $this->linkArticlesWithCategories();
+
+        $this->loadKbStats();
     }
 
     private function loadExampleArticle()
@@ -420,5 +422,49 @@ class PublishFixture extends AbstractDpFixture implements OrderedFixtureInterfac
             $batch[] = $values;
         }
         $this->db->batchInsert(self::TABLE_ARTICLE_PENDING_CREATE, $batch, true);
+    }
+
+    private function loadKbStats()
+    {
+        // views
+        $batch = [];
+        foreach ($this->content[self::TABLE_ARTICLES]['ids'] as $id) {
+            $max = mt_rand(2, 200);
+            for ($i = 0; $i < $max; ++$i) {
+                $batch[] = [
+                    'visitor_id'   => uniqid(),
+                    'ip_address'   => '127.198.1.1',
+                    'page_type'    => 'deskpro.kb_view',
+                    'page_id'      => $id,
+                    'url'          => 'http://example.com/kb/articles/'.$id,
+                    'referrer'     => '',
+                    'user_agent'   => 'Dev Fixture',
+                    'geo_country'  => 'GB',
+                    'meta'         => json_encode(['title' => $this->faker->words(3)]),
+                    'date_created' => date('Y-m-d H:i:s'),
+                ];
+            }
+        }
+
+        $this->db->batchInsert('hit_record', $batch);
+
+        // Searches
+        $batch = [];
+        foreach ([$this->faker->words(3), $this->faker->words(3), $this->faker->words(3), $this->faker->words(3)] as $words) {
+            $words = implode(' ', $words);
+            $max   = mt_rand(2, 200);
+            for ($i = 0; $i < $max; ++$i) {
+                $batch[] = [
+                    'person_id'    => null,
+                    'visitor_id'   => uniqid(),
+                    'ip_address'   => '127.198.1.1',
+                    'query'        => $words,
+                    'num_results'  => mt_rand(0, 20),
+                    'date_created' => date('Y-m-d H:i:s'),
+                ];
+            }
+        }
+
+        $this->db->batchInsert('searchlog', $batch);
     }
 }

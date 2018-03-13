@@ -1,10 +1,10 @@
 <?php
 
 /*
- * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
+ * Deskpro (r) has been developed by Deskpro Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2017, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2018, Deskpro Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -12,18 +12,18 @@
  * By using this software, you acknowledge having read the license
  * and agree to be bound thereby.
  *
- * Please note that DeskPRO is not free software. We release the full
+ * Please note that Deskpro is not free software. We release the full
  * source code for our software because we trust our users to pay us for
  * the huge investment in time and energy that has gone into both creating
  * this software and supporting our customers. By providing the source code
  * we preserve our customers' ability to modify, audit and learn from our
- * work. We have been developing DeskPRO since 2001, please help us make it
+ * work. We have been developing Deskpro since 2001, please help us make it
  * another decade.
  *
  * Like the work you see? Think you could make it better? We are always
  * looking for great developers to join us: http://www.deskpro.com/jobs/
  *
- * ~ Thanks, Everyone at Team DeskPRO
+ * ~ Thanks, Everyone at Team Deskpro
  */
 
 return [
@@ -114,7 +114,7 @@ return [
     'agent.chrome.help-contact-us'                            => 'Kontaktujte nás',
     'agent.chrome.help-contact-us-explain'                    => 'Kontaktujte nás na našom helpdesku na <a href="https://support.deskpro.com/" target="_blank">support.deskpro.com</a> alebo priamo cez e-mail na <a href="mailto:support@deskpro.com">support@deskpro.com</a>.',
     'agent.chrome.help-manuals'                               => 'Manuály',
-    'agent.chrome.help-quickstart-guide-link'                 => 'Ak ste na DeskPRO nový, <a href="{{link}}">kliknite sem pre úvod do DeskPRO systému</a>.',
+    'agent.chrome.help-quickstart-guide-link'                 => 'Ak ste na Deskpro nový, <a href="{{link}}">kliknite sem pre úvod do Deskpro systému</a>.',
     'agent.chrome.kbd-change-status-agent'                    => 'Zmeniť status na očakávanie operátora',
     'agent.chrome.kbd-change-status-resolved'                 => 'Zmeniť status na vyriešené',
     'agent.chrome.kbd-change-status-user'                     => 'Zmeniť status na očakávanie užívateľa',
@@ -178,7 +178,7 @@ return [
     'agent.emails.alert_failed_login'                         => 'Upozornenie neúspešného prihlásenia',
     'agent.emails.alert_successful_login'                     => 'Upozornenie úspešného prihlásenia',
     'agent.emails.change_password_instructions'               => 'Pre nastavenie nového hesla, prihláste sa do operátorského rozhrania a kliknite na odkaz "Vlastnosti" vľavo hore na obrazovke.',
-    'agent.emails.deskpro_test_email'                         => 'DeskPRO testovací e-mail',
+    'agent.emails.deskpro_test_email'                         => 'Deskpro testovací e-mail',
     'agent.emails.deskpro_test_email_body'                    => 'Totot je test DeskPRP e-mailového systému.<br /><br />Ak ste toto obdržali, Vaše nastavenia e-mailu sú správne.',
     'agent.emails.detected_as_forward'                        => 'Zistili sme, že e-mail, ktorý ste práve poslal je preposlaná správa.',
     'agent.emails.email_change_merge'                         => 'Tento e-mail je pre potvrdenie, že chcete spojiť dve existujúce účty helpdesku:{{old_email}} a {{new_email}}. Ak nechcete spojiť tieto účty, alebo ste o to nepožiadali, tak ignorujte tento e-mail. Pre potvrdenie spojenia kliknite na nasledujúci odkaz:',
@@ -186,12 +186,12 @@ return [
     'agent.emails.error_reply_to_ticket_missing_marker'       => 'Vašej e-mailovej odpovedi pre tiket #{{ticket_id}} chýbal značkový riadok, ktorý vyzerá takto:',
     'agent.emails.error_unknown_email'                        => 'Vaša správa nebola prijatá, pretože ste ju zaslali z neznámej e-mailovej adresy. Prosím zasielajte správy z e-mailovej adresy, ktorú ste si nastavili v profile operátora na helpdesku.',
     'agent.emails.first_seen'                                 => 'Prvá obrazovka',
-    'agent.emails.fwd_error_more_info'                        => 'Pre viac informácií o tejto chybe sa môžte obrátiť na stránku podpory DeskPRO:<br/><a href="http://support.deskpro.com/kb/articles/106">http://suppor.deskpro.com/kb/articles/106</a>',
+    'agent.emails.fwd_error_more_info'                        => 'Pre viac informácií o tejto chybe sa môžte obrátiť na stránku podpory Deskpro:<br/><a href="http://support.deskpro.com/kb/articles/106">http://suppor.deskpro.com/kb/articles/106</a>',
     'agent.emails.fwd_not_processed'                          => 'Kvôli tejto chybe bola Vaš e-mail odmiednutý. Žiadny nový tiket nebol vytvorený a žiadne upozornenia alebo iné akcie neboli vykonané. Ak chcete začať nový tiket pre užívateľa, prosím použite webové rozhranie operátora na <a href="{{url}}">{{url}}</a>',
     'agent.emails.fwd_resend_without_fwd'                     => 'Ak ste nechceli vytvoriť nový tiket pre užívateľa, viete znova poslať e-mail bez \'FW:\' alebo \'FWD:\' v predmete Toto vytvorí nový tiket pre vás namiesto neho.',
     'agent.emails.invalid_fwd_email_address'                  => '<b>Nepodarilo sa nám overiť e-mailoví adresu</b> užívateľa v originálnej správe. Preverte si, či Váš e-mailový klient pridal e-mailovú adresu do správy. Niektorí klienti zadajú iba meno, v tom prípade viete upraviť túto chybu manuálnym zadaním e-mailovej adresy.',
     'agent.emails.invalid_fwd_email_parse'                    => '<b>Nepodarilo sa nám analyzovať originálnu správu</b> a tým pádom sme neboli schopní problematiku presunúť do tiketu.',
-    'agent.emails.invalid_fwd_try_attach'                     => 'Ak váš e-mailový klient podporuje preposielanie originálnej správy ako prílohu, môžte to vyskúsať namiesto preposielania správy in-line. Táto metóda preposielania e-mailov spolupracuje lepšie s DeskPRO',
+    'agent.emails.invalid_fwd_try_attach'                     => 'Ak váš e-mailový klient podporuje preposielanie originálnej správy ako prílohu, môžte to vyskúsať namiesto preposielania správy in-line. Táto metóda preposielania e-mailov spolupracuje lepšie s Deskpro',
     'agent.emails.login_url'                                  => 'Prihlasovacia URL',
     'agent.emails.name_reset_your_password'                   => '{{name}} resetol Vaše heslo operátorského účtu',
     'agent.emails.new_agent_reply_ticket_subject'             => '[#{{ticket.id}} odpoveď operátora] Re: {{ticket.subject}}',
@@ -199,17 +199,17 @@ return [
     'agent.emails.new_mention_ticket_subject'                 => '[#{{ticket.id}} SPOMENUTÉ] Re: {{ticket.subject}}',
     'agent.emails.new_note_ticket_subject'                    => '[#{{ticket.id}} POZNÁMKA] Re: {{ticket.subject}}',
     'agent.emails.new_user_reply_ticket_subject'              => '[#{{ticket.id}} odpoveď užívateľa] Re: {{ticket.subject}}',
-    'agent.emails.newagent-about'                             => 'DeskPRO je helpdeskový softvér, ktorý Vaša organizácia používa.',
-    'agent.emails.newagent-about-cloud'                       => 'DeskPRO je hosťovaný v cloude helpdeskového softvéru, ktorý Vaša organizácia používa.',
-    'agent.emails.newagent-about-cloud-demo'                  => 'DeskPRO je hosťovaný v cloude helpdeskového softvéru, z ktorého sa Vaša organizácia snaží dostať.',
-    'agent.emails.newagent-about-demo'                        => 'DeskPRO je  helpdeskový softvér, ktorý Vaša organizácia skúša.',
-    'agent.emails.newagent-about-pdf'                         => 'Napísali sme rýchly návod pre najdôležitejšie veci, ktoré budete potrebovať ako operátor. Nájdete ich pripojené ako "Getting Started with DeskPRO.pdf".',
-    'agent.emails.newagent-created-account'                   => 'Váš kolega {{admin_name}}({{admin_email}}) vytvoril DeskPRO účet pre Vás na <a href="{{helpdesk_url}}">{{helpdesk_url}}</a>',
-    'agent.emails.newagent-help'                              => 'Ak potrebujete nejakú pomoc alebo máte nejaké otázky, prosím prezrite si stránku pomoci DeskPRO na <a href="https://support.deskpro.com/">https://support.deskpro.com/</a> alebo nás kontaktujte priamo na <a href="mailto:support@deskpro.com">support@deskpro.com</a>.',
+    'agent.emails.newagent-about'                             => 'Deskpro je helpdeskový softvér, ktorý Vaša organizácia používa.',
+    'agent.emails.newagent-about-cloud'                       => 'Deskpro je hosťovaný v cloude helpdeskového softvéru, ktorý Vaša organizácia používa.',
+    'agent.emails.newagent-about-cloud-demo'                  => 'Deskpro je hosťovaný v cloude helpdeskového softvéru, z ktorého sa Vaša organizácia snaží dostať.',
+    'agent.emails.newagent-about-demo'                        => 'Deskpro je  helpdeskový softvér, ktorý Vaša organizácia skúša.',
+    'agent.emails.newagent-about-pdf'                         => 'Napísali sme rýchly návod pre najdôležitejšie veci, ktoré budete potrebovať ako operátor. Nájdete ich pripojené ako "Getting Started with Deskpro.pdf".',
+    'agent.emails.newagent-created-account'                   => 'Váš kolega {{admin_name}}({{admin_email}}) vytvoril Deskpro účet pre Vás na <a href="{{helpdesk_url}}">{{helpdesk_url}}</a>',
+    'agent.emails.newagent-help'                              => 'Ak potrebujete nejakú pomoc alebo máte nejaké otázky, prosím prezrite si stránku pomoci Deskpro na <a href="https://support.deskpro.com/">https://support.deskpro.com/</a> alebo nás kontaktujte priamo na <a href="mailto:support@deskpro.com">support@deskpro.com</a>.',
     'agent.emails.newagent-login-initial-password'            => 'Vaše počiatočné heslo: {{password}}',
     'agent.emails.newagent-login-link'                        => 'Viete sa prihlásiť tu: <a href="{{link}}">{{link}}</a>',
     'agent.emails.newagent-login-your-email'                  => 'Vaša e-mailová adresa: {{email}}',
-    'agent.emails.newagent-welcome-to-deskpro'                => 'Vitajte na DeskPRO!',
+    'agent.emails.newagent-welcome-to-deskpro'                => 'Vitajte na Deskpro!',
     'agent.emails.notice_account_login'                       => 'Váš účet bol použitý pre úspešné prihlásenie.',
     'agent.emails.notice_login_attempt'                       => 'Niekto sa snažil prihlásiť na Váš účet',
     'agent.emails.person_replied'                             => '{{name}} odpovedal na "{{subject}}"',
@@ -219,7 +219,7 @@ return [
     'agent.emails.subject_error_forwarded_email'              => 'Chyba s Vaším preposlaným e-mailom: {{ subject }}',
     'agent.emails.subject_error_with_message'                 => 'Chyba s Vasou správou: {{ subject }}',
     'agent.emails.subject_error_with_reply'                   => 'Chyba s Vašou odpoveďou na: {{ subject }}',
-    'agent.emails.subject_new_agent'                          => 'Váš nový operátorský účet DeskPRO',
+    'agent.emails.subject_new_agent'                          => 'Váš nový operátorský účet Deskpro',
     'agent.emails.subject_new_ticket'                         => '[#{{ticket.id}} NOVÝ TIKET] {{ticket.subject}}',
     'agent.emails.subject_new_ticket_assigned'                => '[#{{ticket.id}} NOVÝ TIKET + PRIDELENÝ] {{ticket.subject}}',
     'agent.emails.subject_new_ticket_assignedteam'            => '[#{{ticket.id}} NNOVÝ TIKET + PRIDELENÝ TEAM] {{ticket.subject}}',
@@ -994,7 +994,7 @@ return [
     'agent.interface.close_current_tab'                       => 'Zatvoriť aktuálne okno',
     'agent.interface.create_ticket_person'                    => 'Vytvoriť tiket pre osobu',
     'agent.interface.creation'                                => 'Vytvorenie',
-    'agent.interface.deskpro_agent_interface'                 => 'DeskPRO operátorské rozhranie',
+    'agent.interface.deskpro_agent_interface'                 => 'Deskpro operátorské rozhranie',
     'agent.interface.error_report_disclaimer'                 => 'Prosím berte na vedomie, že neodpovedáme na všetky chybové hlášky. Ak máte otázku alebo potrebujeje odpoveď ohľadom týchto chýb, kontaktujte nás na {{email}}',
     'agent.interface.error_report_submitting'                 => 'Podanie chybovej hlášky...',
     'agent.interface.error_report_thank_you'                  => 'Ďakujeme za podanie Vašej chybovej hlásky.',
@@ -1031,7 +1031,7 @@ return [
     'agent.interface.open_new_ticket_form'                    => 'Otvoriť formulár nového tiketu',
     'agent.interface.powered_by'                              => 'Poháňané s',
     'agent.interface.quick-search-placeholder'                => 'Hľadať',
-    'agent.interface.report_this_error_to_deskpro'            => 'Nahlásiť túto chybu ku DeskPRO',
+    'agent.interface.report_this_error_to_deskpro'            => 'Nahlásiť túto chybu ku Deskpro',
     'agent.interface.search_for_text_or_a_phrase'             => 'Vyhľadať text alebo frázu',
     'agent.interface.search_in_types'                         => 'Vyhľadať v typoch',
     'agent.interface.set_ticket_resolved'                     => 'Nastaviť tiket ako vyriešený',
@@ -1052,7 +1052,7 @@ return [
     'agent.login.ie_compat_mode_explain'                      => 'Niektoré verzie IE majú vlastnosť zvanú kompatibilný mód, vďaka ktorému staršie stránky spolupracujú s najnovšou prehľadávacou technológiou. Niekedy táto vlastnosť vie byť chybne vypnutá. Ak používate IE8 alebo IE9 a stále vídite stránku s požiadavkami prehľadávača, pravdepodobne je kompatibilný mód zapnutý. Pre používanie DeskPro musíte túto vlastnosť vypnúť.',
     'agent.login.ie_compat_mode_step1'                        => 'Ak menu nástrojov nieje viditeľné, stlačnte klávesu ALT pre zobrazenie',
     'agent.login.ie_compat_mode_step2'                        => 'Z menu nástrojov vyberte zobrazenie kompatibility',
-    'agent.login.ie_compat_mode_step3'                        => 'Uistite sa, že Vaša URL helpdesku nie je na zozname, kliknite na ňu a následne ju odstráňte. Takisto sa uistite, že "Zobrazenie všetkých stránok v kompatibilnom móde" je vypnuté. Ak používate DeskPRO v intranete, musíte odznačiť aj možnosť "Zobrazovať stránky intranetu v kompatibilnom režime."',
+    'agent.login.ie_compat_mode_step3'                        => 'Uistite sa, že Vaša URL helpdesku nie je na zozname, kliknite na ňu a následne ju odstráňte. Takisto sa uistite, že "Zobrazenie všetkých stránok v kompatibilnom móde" je vypnuté. Ak používate Deskpro v intranete, musíte odznačiť aj možnosť "Zobrazovať stránky intranetu v kompatibilnom režime."',
     'agent.login.ie_compat_mode_step4'                        => 'Zatvoriť toto okno a obnoviť stránku',
     'agent.login.ie_compat_mode_title'                        => 'Používate IE8 alebo starší? <a href="{{url}}">Uistite sa, že kompatibilný mód je vypnutý</a>',
     'agent.login.ie_use_chrome_frame'                         => 'Alternatívne si môžete nainštalovať <a href="http://www.google.com/chromeframe">Google Chrome</a>',
@@ -1533,7 +1533,7 @@ return [
     'agent.tickets.date_last_user_reply'                      => 'Dátum poslednej odpovede užívateľa',
     'agent.tickets.debug_file'                                => 'Ladiaci súbor',
     'agent.tickets.debug_file_download'                       => 'Stiahni Ladiaci súbor',
-    'agent.tickets.debug_file_explain'                        => 'DeskPRO operátor Vás môže požiadať o sprostredkovanie tohto súboru pre lepšiu diagnózu problémov.',
+    'agent.tickets.debug_file_explain'                        => 'Deskpro operátor Vás môže požiadať o sprostredkovanie tohto súboru pre lepšiu diagnózu problémov.',
     'agent.tickets.decrease_urgency_action'                   => 'Ponížiť urgenciuť o {{amount}}',
     'agent.tickets.delete_attach'                             => 'Zmazať Prílohy',
     'agent.tickets.delete_attach_confirm'                     => 'Ste si istý, že chcete zmazať túto prílohu?',

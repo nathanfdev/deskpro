@@ -21,6 +21,11 @@ Feature: /tickets/{id}/messages endpoint
     When I send a GET request to "/api/v2/tickets/{t1}/messages/0"
     Then the response status code should be 404
 
+  Scenario: I retrieve a ticket messages by ticket ref
+    When I send a GET request to "/api/v2/tickets/ref:{t1:ref}/messages"
+    Then the response status code should be 200
+    And the JSON node "data" should have 0 element
+
   Scenario: I fail form validation
     When I send a POST request to "/api/v2/tickets/{t1}/messages"
     Then the response status code should be 400

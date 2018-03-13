@@ -59,7 +59,6 @@ use Orb\Auth\Adapter\JsSsoInterface;
 use Orb\Auth\Adapter\SsoLoginActionInterface;
 use Orb\Data\Countries;
 use Orb\Util\Arrays;
-use Orb\Util\Dates;
 use Orb\Util\Strings;
 use Orb\Util\Util;
 use Symfony\Bundle\FrameworkBundle\Routing\Router;
@@ -410,7 +409,12 @@ class TemplatingExtension extends \Twig_Extension
 
     public function relativeTime($secs, $detail = 2)
     {
-        return Dates::secsToReadable($secs, $detail);
+        $prefix = 'user.time.';
+        if (DP_INTERFACE == 'admin' || DP_INTERFACE == 'agent') {
+            $prefix = 'agent.time.';
+        }
+
+        return $this->container->get('deskpro.core.translate')->secsToReadable($secs, $detail, $prefix);
     }
 
     public function strTruncate($str, $width = 80, $dots = true)

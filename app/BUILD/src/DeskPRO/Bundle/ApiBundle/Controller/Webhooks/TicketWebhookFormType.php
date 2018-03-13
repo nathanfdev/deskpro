@@ -30,6 +30,7 @@ namespace DeskPRO\Bundle\ApiBundle\Controller\Webhooks;
 
 use Application\DeskPRO\Entity\TicketTrigger;
 use DeskPRO\Bundle\AppBundle\Entity\Webhooks\TicketWebhook;
+use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\CheckboxType;
 use Symfony\Component\Form\Extension\Core\Type\CollectionType;
@@ -37,6 +38,7 @@ use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\Form\FormEvent;
 use Symfony\Component\Form\FormEvents;
+use Symfony\Component\OptionsResolver\OptionsResolverInterface;
 
 class TicketWebhookFormType extends AbstractType
 {
@@ -53,8 +55,9 @@ class TicketWebhookFormType extends AbstractType
             ])
             ->add('payload_decoder', TextType::class, [
                 'label'    => '',
-                'required' => true,
+                'required' => false,
                 'mapped'   => true,
+                'empty_data' => ''
             ])
             ->add('is_enabled', CheckboxType::class, [
                 'label'    => '',
@@ -66,52 +69,13 @@ class TicketWebhookFormType extends AbstractType
                 'required' => true,
                 'mapped'   => true,
             ])
-           ->add('triggers', CollectionType::class, [
-               'mapped'        => true,
-               'allow_add'    => true,
-               'allow_delete' => true,
-               'entry_type'    => TriggerFormType::class,
-               'entry_options' => [],
-           ])
-          ->addEventListener(FormEvents::POST_SUBMIT, [$this, 'onPostSubmit'])
         ;
+
     }
 
-    /**
-     * @internal
-     *
-     * @param FormEvent $event
-     */
-    public function onPostSubmit(FormEvent $event)
+    public function setDefaultOptions(OptionsResolverInterface $resolver)
     {
-        $form = $event->getForm();
-        /** @var TicketWebhook $data */
-        $webhook = $form->getData();
-
-        /** @var TicketTrigger $trigger */
-        foreach ($webhook->getTriggers() as $trigger) {
-            $this->setRequiredTriggerProperties($webhook, $trigger);
-        }
+        $resolver->setDefaults(['allow_extra_fields' => true]);
     }
 
-    /**
-     * @param TicketWebhook $webhook
-     * @param TicketTrigger $trigger
-     */
-    private function setRequiredTriggerProperties( TicketWebhook $webhook, TicketTrigger $trigger)
-    {
-        $trigger->event_trigger = TicketTrigger::EVENT_TYPE_WEBHOOK;
-        $trigger->has_stop_triggers_action = false;
-        $trigger->has_delete_ticket_action = false;
-        $trigger->email_account = null;
-        $trigger->by_agent_mode = null;
-        $trigger->by_user_mode = null;
-        $trigger->by_app_mode = null;
-
-        $trigger->is_enabled = $webhook->isIsEnabled();
-
-        if (! $trigger->title) {
-            $trigger->title = sprintf('Trigger for webhook %s', $webhook->getAuthId());
-        }
-    }
 }

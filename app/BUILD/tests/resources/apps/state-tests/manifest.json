@@ -1,17 +1,17 @@
 {
-  "appVersion": "0.1.0",
-  "author": {
-    "name": "DeskPRO Ltd.",
-    "email": "apps@deskpro.com",
-    "url": "https://deskpro.com"
+  "appVersion":"0.1.0",
+  "author":{
+    "name":"Deskpro Ltd.",
+    "email":"apps@deskpro.com",
+    "url":"https://deskpro.com"
   },
-  "description": "Testing State Api",
-  "name": "@deskproapps/state-tests",
-  "version": "2.1.0",
-  "title": "State Tests App",
-  "isSingle": true,
-  "scope": "agent",
-  "state": [
+  "description":"Enables agents to link Deskpro tickets and Jira issues. Allows creating, searching and listing Jira issues from within Deskpro.",
+  "name":"@deskproapps/jira",
+  "version":"2.3.0",
+  "title":"Jira BETA",
+  "isSingle":true,
+  "scope":"agent",
+  "storage":[
     {
       "name": "user-only",
       "isBackendOnly": false,
@@ -31,15 +31,58 @@
       "permWrite": "EVERYBODY"
     }
   ],
-  "targets": [
+  "targets":[
     {
-      "target": "background",
-      "url": "html/index.html"
+      "target":"ticket-sidebar",
+      "url":"html/index.html"
+    },
+    {
+      "target":"install",
+      "url":"html/install.html"
     }
   ],
-  "settings": [],
-  "deskproApiTags": [
+  "settings":[
+    {
+      "name":"rsaPrivateKey",
+      "defaultValue":"",
+      "title":"Your private key",
+      "required":true,
+      "type":"textarea"
+    },
+    {
+      "name":"rsaPublicKey",
+      "defaultValue":"",
+      "title":"Your public key",
+      "required":true,
+      "type":"textarea"
+    },
+    {
+      "name":"jiraInstanceUrl",
+      "defaultValue":"",
+      "title":"The Jira instance you want to connect to",
+      "required":true,
+      "type":"text"
+    },
+    {
+      "name":"jiraClientId",
+      "defaultValue":"",
+      "title":"The consumer key",
+      "required":true,
+      "type":"text"
+    }
+  ],
+  "customFields":[
+    {
+      "type":"dataList",
+      "attachedTo":"ticket",
+      "alias":"jiraCards",
+      "title":"Jira linked issues"
+    }
+  ],
+  "deskproApiTags":[
     "tickets.*"
   ],
-  "externalApis": []
+  "externalApis":[
+    "/^https?://([^.]+\\.)*atlassian.net/?.*$/"
+  ]
 }

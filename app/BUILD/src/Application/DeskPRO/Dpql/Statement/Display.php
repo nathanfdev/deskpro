@@ -35,6 +35,9 @@ use Application\DeskPRO\Dpql\Results;
 use Application\DeskPRO\Dpql\Statement\Part\AbstractPart;
 use Application\DeskPRO\Entity\Problem;
 use DeskPRO\Bundle\AppBundle\Entity\SnippetUseLog;
+use DeskPRO\Bundle\AppBundle\Entity\VoiceNumber;
+use DeskPRO\Bundle\AppBundle\Entity\VoicePhoneCall;
+use DeskPRO\Bundle\AppBundle\Entity\VoicePhoneCallLog;
 
 /**
  * Object for a DISPLAY statement in DPQL.
@@ -271,6 +274,9 @@ class Display
         'usersources'                 => 'DeskPRO:Usersource',
         'snippet_use_log'             => SnippetUseLog::class,
         'problems'                    => Problem::class,
+        'voice_numbers'               => VoiceNumber::class,
+        'voice_phone_calls'           => VoicePhoneCall::class,
+        'voice_phone_call_logs'       => VoicePhoneCallLog::class,
     ];
 
     /**

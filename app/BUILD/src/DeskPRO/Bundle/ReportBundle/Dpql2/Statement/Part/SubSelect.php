@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2017, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2018, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -57,7 +57,12 @@ class SubSelect extends AbstractPart
      */
     public function prepare(SelectPart $statement, $section, array $stack, SqlSelect $select, ResultMetadata $result)
     {
-        return new Prepared("($this->sql)", $this->sql);
+        $sql = $this->sql;
+        if ($sql instanceof SelectPart) {
+            $sql = $sql->toSql();
+        }
+
+        return new Prepared("($sql)", $sql);
     }
 
     /**
@@ -65,6 +70,10 @@ class SubSelect extends AbstractPart
      */
     public function toDpql(SelectPart $statement, $section, array $stack)
     {
+        if ($this->sql instanceof SelectPart) {
+            return $this->sql->toDpql();
+        }
+
         return $this->sql;
     }
 }

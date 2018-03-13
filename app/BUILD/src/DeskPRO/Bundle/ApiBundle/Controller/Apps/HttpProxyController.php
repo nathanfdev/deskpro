@@ -108,9 +108,10 @@ class HttpProxyController extends BaseController
             $httpClientBuilder = new HttpProxyClientBuilder();
 
             if ($proxyRequest instanceof ApplicationProxyRequest) {
+                /** @var RequestSigningStrategy $requestSigningStrategy */
                 $requestSigningStrategy = $proxyRequest->getSigningStrategy();
                 if ($requestSigningStrategy) {
-                    $httpClientBuilder->setSigningStrategy($requestSigningStrategy);
+                    $requestSigningStrategy->configureProxyClient($httpClientBuilder);
                 }
             }
 

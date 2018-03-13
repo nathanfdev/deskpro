@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2017, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2018, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -97,7 +97,11 @@ class SsoListener implements EventSubscriberInterface
             return;
         }
 
-        $pathInfo = $event->getRequest()->getPathInfo();
+        $request  = $event->getRequest();
+        $pathInfo = $request->getPathInfo();
+        if ($request->get('disable_sso')) {
+            return;
+        }
         if (preg_match('#^/api/#i', $pathInfo) || preg_match('#^/portal/api/#i', $pathInfo)) {
             return;
         }

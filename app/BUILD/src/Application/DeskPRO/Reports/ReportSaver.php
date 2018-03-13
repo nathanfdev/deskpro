@@ -26,21 +26,15 @@
  * ~ Thanks, Everyone at Team DeskPRO
  */
 
-/**
- * Created by PhpStorm.
- * User: Den
- * Date: 16.12.2014
- * Time: 2:30.
- */
-
 namespace Application\DeskPRO\Reports;
 
+use Application\DeskPRO\Entity\Person;
 use Application\DeskPRO\Entity\ReportDashboardReport as DashboardReportEntity;
 use Application\DeskPRO\Entity\ReportDashboardWidget;
 use Application\DeskPRO\Entity\SavedDashboardReport;
 use Application\DeskPRO\Entity\SavedDashboardWidget;
-use Application\LegacyApiBundle\Service\DashboardWidget;
 use DeskPRO\Bundle\AppBundle\Entity\Report\ScheduledReport;
+use DeskPRO\Bundle\ReportBundle\Dashboard\DashboardWidgetManager;
 use Doctrine\ORM\EntityManager;
 use Orb\Util\DpStrings;
 use Orb\Util\Strings;
@@ -56,15 +50,15 @@ class ReportSaver
     private $em;
 
     /**
-     * @var DashboardWidget
+     * @var DashboardWidgetManager
      */
     private $widgetService;
 
     /**
-     * @param EntityManager   $em
-     * @param DashboardWidget $widgetService
+     * @param EntityManager          $em
+     * @param DashboardWidgetManager $widgetService
      */
-    public function __construct(EntityManager $em, DashboardWidget $widgetService)
+    public function __construct(EntityManager $em, DashboardWidgetManager $widgetService)
     {
         $this->em            = $em;
         $this->widgetService = $widgetService;
@@ -72,12 +66,13 @@ class ReportSaver
 
     /**
      * @param DashboardReportEntity $report
+     * @param Person                $person
      *
      * @throws \Exception
      *
      * @return SavedDashboardReport
      */
-    public function saveReport(DashboardReportEntity $report)
+    public function saveReport(DashboardReportEntity $report, Person $person = null)
     {
         $savedReport = new SavedDashboardReport();
         $savedReport
@@ -89,13 +84,13 @@ class ReportSaver
             $reportLevelVars = $report->getVariables();
             $widgetVars      = $widget->getVariables() ?: [];
             foreach ($widgetVars as $key => &$var) {
-                if ($var['value'] === DashboardWidget::WIDGET_VALUE_FROM_REPORT
+                if ($var['value'] === DashboardWidgetManager::WIDGET_VALUE_FROM_REPORT
                     && isset($reportLevelVars[$key]) && $reportLevelVars[$key] && $reportLevelVars[$key]['value']) {
                     $var['value'] = $reportLevelVars[$key]['value'];
                 }
             }
             $widget->setVariables($widgetVars);
-            $widgetData = $this->widgetService->renderWidgetQuery($widget);
+            $widgetData = $this->widgetService->renderWidget($widget, $person);
 
             if ($widgetData && $widget->getType() == ReportDashboardWidget::WIDGET_TYPE_TABLE) {
                 $aoColumns = [];

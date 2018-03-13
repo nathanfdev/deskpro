@@ -28,13 +28,10 @@
 
 namespace DeskPRO\Bundle\ReportBundle\Dpql2\Statement\Part;
 
-use Application\DeskPRO\CustomFields\BillingFieldManager;
-use Application\DeskPRO\CustomFields\OrganizationFieldManager;
-use Application\DeskPRO\CustomFields\PersonFieldManager;
-use Application\DeskPRO\CustomFields\TicketFieldManager;
 use Application\DeskPRO\EntityRepository\AbstractEntityRepository;
 use DeskPRO\Bundle\ReportBundle\Dpql2\DpqlException;
 use DeskPRO\Bundle\ReportBundle\Dpql2\Func\DpqlFuncRegistry;
+use DeskPRO\Bundle\ReportBundle\Dpql2\Helper\CustomDataHelper;
 use DeskPRO\Bundle\ReportBundle\Dpql2\SqlSelect;
 use DeskPRO\Bundle\ReportBundle\Dpql2\Statement\DpqlStatementFactory;
 use DeskPRO\Bundle\ReportBundle\Dpql2\Statement\SelectPart;
@@ -44,6 +41,7 @@ use DeskPRO\Bundle\ReportBundle\Reports\ResultMetadata;
 use Doctrine\DBAL\Connection;
 use Doctrine\ORM\EntityManager;
 use Doctrine\ORM\Mapping\ClassMetadataInfo;
+use Orb\Util\Strings;
 
 /**
  * Represents a reference to a column or association.
@@ -71,24 +69,9 @@ class Column extends AbstractPart
     private $connection;
 
     /**
-     * @var TicketFieldManager
+     * @var CustomDataHelper
      */
-    private $ticketFieldManager;
-
-    /**
-     * @var BillingFieldManager
-     */
-    private $billingFieldManager;
-
-    /**
-     * @var PersonFieldManager
-     */
-    private $personFieldManager;
-
-    /**
-     * @var OrganizationFieldManager
-     */
-    private $orgFieldManager;
+    private $customDataHelper;
 
     /**
      * List of parts in the reference.
@@ -163,36 +146,27 @@ END)
     /**
      * Constructor.
      *
-     * @param DpqlStatementFactory     $statementFactory
-     * @param DpqlFuncRegistry         $dpqlFuncRegistry
-     * @param EntityManager            $em
-     * @param Connection               $connection
-     * @param TicketFieldManager       $ticketFieldManager
-     * @param BillingFieldManager      $billingFieldManager
-     * @param PersonFieldManager       $personFieldManager
-     * @param OrganizationFieldManager $orgFieldManager
-     * @param array                    $parts
+     * @param DpqlStatementFactory $statementFactory
+     * @param DpqlFuncRegistry     $dpqlFuncRegistry
+     * @param EntityManager        $em
+     * @param Connection           $connection
+     * @param CustomDataHelper     $customDataHelper
+     * @param array                $parts
      */
     public function __construct(
         DpqlStatementFactory     $statementFactory,
         DpqlFuncRegistry         $dpqlFuncRegistry,
         EntityManager            $em,
         Connection               $connection,
-        TicketFieldManager       $ticketFieldManager,
-        BillingFieldManager      $billingFieldManager,
-        PersonFieldManager       $personFieldManager,
-        OrganizationFieldManager $orgFieldManager,
+        CustomDataHelper         $customDataHelper,
         array                    $parts
     ) {
-        $this->statementFactory    = $statementFactory;
-        $this->dpqlFuncRegistry    = $dpqlFuncRegistry;
-        $this->em                  = $em;
-        $this->connection          = $connection;
-        $this->ticketFieldManager  = $ticketFieldManager;
-        $this->billingFieldManager = $billingFieldManager;
-        $this->personFieldManager  = $personFieldManager;
-        $this->orgFieldManager     = $orgFieldManager;
-        $this->parts               = $parts;
+        $this->statementFactory = $statementFactory;
+        $this->dpqlFuncRegistry = $dpqlFuncRegistry;
+        $this->em               = $em;
+        $this->connection       = $connection;
+        $this->customDataHelper = $customDataHelper;
+        $this->parts            = $parts;
     }
 
     /**
@@ -253,6 +227,8 @@ END)
         $extraConditionValue = false;
 
         foreach ($parts as $partKey => $part) {
+            $part = Strings::camelCaseToUnderscore($part);
+
             $partsSoFar[] = $part;
             $partsString  = implode('.', $partsSoFar);
 
@@ -265,7 +241,7 @@ END)
 
             // are we referencing a field?
             foreach ($repository->getFieldMappings() as $key => $field) {
-                if (strtolower($key) == $part) {
+                if (strtolower(Strings::camelCaseToUnderscore($key)) == $part) {
                     if (isset($field['dpqlAccess']) && !$field['dpqlAccess']) {
                         throw new DpqlException("$partsString cannot be accessed via DPQL.");
                     }
@@ -331,8 +307,8 @@ END)
                             $argSelect = [$select->addSelectField($sql)];
                         }
 
-                        $renderer = function (AbstractValueRenderer $valueRenderer, $value, array $row, AbstractRenderer $renderer) use ($lookup, $argSelect) {
-                            return $this->dpqlFuncRegistry->getLinkFunction()->formatLink($value, $lookup[0], $argSelect, $row, $valueRenderer, $renderer);
+                        $renderer = function (AbstractValueRenderer $valueRenderer, $value, array $row, AbstractRenderer $renderer, ResultMetadata $metadata) use ($lookup, $argSelect) {
+                            return $this->dpqlFuncRegistry->getLinkFunction()->formatLink($value, $lookup[0], $argSelect, $row, $valueRenderer, $renderer, $metadata);
                         };
                     }
 
@@ -456,8 +432,16 @@ END)
                     }
 
                     if ($extraConditionValue !== false) {
+                        $joinValue = $extraConditionValue;
+                        if (strpos($childSqlTable, 'custom_data_') === 0 && !is_numeric($extraConditionValue)) {
+                            $field = $this->customDataHelper->getCustomField($childSqlTable, $extraConditionValue);
+                            if ($field) {
+                                $joinValue = $field->getId();
+                            }
+                        }
+
                         $joinConditions[] = sprintf(
-                            self::$_conditionResolver[$childSqlTable], $joinAlias, $this->connection->quote($extraConditionValue)
+                            self::$_conditionResolver[$childSqlTable], $joinAlias, $this->connection->quote($joinValue)
                         );
                     }
 
@@ -498,40 +482,28 @@ END)
 
                 return new Prepared($prepped->sql(), $this->_prettifyColumnName($name), false, $renderer);
             } elseif (preg_match('/^custom_data_/', $assocTable)) {
-                $custom_def_table = str_replace('_data_', '_def_', $assocTable);
-                switch ($custom_def_table) {
-                    case 'custom_def_ticket':
-                        $manager = $this->ticketFieldManager;
-                        break;
-                    case 'custom_def_billing':
-                        $manager = $this->billingFieldManager;
-                        break;
-                    case 'custom_def_people':
-                        $manager = $this->personFieldManager;
-                        break;
-                    case 'custom_def_organizations':
-                        $manager = $this->orgFieldManager;
-                        break;
-                    default:
-                        $manager = null;
-                        break;
-                }
-
-                $field = null;
-                if ($manager) {
-                    $field = $manager->getFieldFromId($extraConditionValue);
-                }
-
-                $renderer = null;
+                $field        = $this->customDataHelper->getCustomField($assocTable, $extraConditionValue);
+                $renderer     = null;
+                $preppedPrint = null;
                 if ($field && (array_search($type = $field->getTypeName(), ['date', 'datetime']) !== false)) {
                     $call    = $this->statementFactory->createColumn(array_merge($this->parts, ['value']));
                     $prepped = $call->prepare($statement, $section, $stack, $select, $result);
 
-                    $renderer = function (AbstractValueRenderer $valueRenderer, $value) use ($type) {
+                    $renderer = function (AbstractValueRenderer $valueRenderer, $value, array $row, AbstractRenderer $renderer, ResultMetadata $metadata) use ($type) {
                         $date = $value ? new \DateTime('@'.$value) : null;
 
-                        return $valueRenderer->renderValue($date ?: null, $type);
+                        return $valueRenderer->renderValue($date ?: null, $type, $metadata);
                     };
+                } elseif ($field && $section === 'group' && $field->isChoiceType()) {
+                    $call    = $this->statementFactory->createColumn(array_merge($this->parts, ['field', 'id']));
+                    $prepped = $call->prepare($statement, $section, $stack, $select, $result);
+
+                    $callPrint = $this->statementFactory->createFunctionCall('if', [
+                        $this->statementFactory->createColumn(array_merge($this->parts, ['value'])),
+                        $this->statementFactory->createColumn(array_merge($this->parts, ['field', 'title'])),
+                        $this->statementFactory->createColumn(array_merge($this->parts, ['input'])),
+                    ]);
+                    $preppedPrint = $callPrint->prepare($statement, $section, $stack, $select, $result);
                 } else {
                     $call = $this->statementFactory->createFunctionCall('if', [
                         $this->statementFactory->createColumn(array_merge($this->parts, ['value'])),
@@ -541,7 +513,7 @@ END)
                     $prepped = $call->prepare($statement, $section, $stack, $select, $result);
                 }
 
-                return new Prepared($prepped->sql(), $this->_prettifyColumnName($field ? $field->getTitle() : $name), false, $renderer);
+                return new Prepared($prepped->sql(), $this->_prettifyColumnName($field ? $field->getTitle() : $name), $preppedPrint ? $preppedPrint->sql() : false, $renderer);
             } elseif (preg_match('/^custom_def_/', $assocTable)) {
                 $call = $this->statementFactory->createFunctionCall('if', [
                     $this->statementFactory->createColumn(array_merge($this->parts, ['parent', 'id'])),
@@ -576,8 +548,8 @@ END)
                         $argSelect = [$select->addSelectField("`$sqlTable`.`$resolver[0]`")];
                     }
 
-                    $renderer = function (AbstractValueRenderer $valueRenderer, $value, array $row, AbstractRenderer $renderer) use ($resolver, $argSelect) {
-                        return $this->dpqlFuncRegistry->getLinkFunction()->formatLink($value, $resolver[2], $argSelect, $row, $valueRenderer, $renderer);
+                    $renderer = function (AbstractValueRenderer $valueRenderer, $value, array $row, AbstractRenderer $renderer, ResultMetadata $metadata) use ($resolver, $argSelect) {
+                        return $this->dpqlFuncRegistry->getLinkFunction()->formatLink($value, $resolver[2], $argSelect, $row, $valueRenderer, $renderer, $metadata);
                     };
                 }
             } else {

@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2017, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2018, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -83,7 +83,7 @@ CONTENTS
         $page = $this->getSession()->getPage();
         $page->fillField('login_username', $users->getEmail($who));
         $page->fillField('login_password', $users->getPass($who));
-        $page->pressButton('Login');
+        $page->pressButton('login_button');
         echo 'URL after login: ', $this->getSession()->getCurrentUrl();
 
         // Can't access API right after login w/o visiting this page

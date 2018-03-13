@@ -1,11 +1,11 @@
 # Installation Instructions
 
-This plugin requires a companion plugin installed on your Joomla website. Follow these simple steps to install the Joomla DeskPRO plugin:
+This plugin requires a companion plugin installed on your Joomla website. Follow these simple steps to install the Joomla Deskpro plugin:
 
-1. Download the Joomla plugin from the DeskPRO website: [https://www.deskpro.com/members/download-plugins/deskpro-joomla.zip](https://www.deskpro.com/members/download-plugins/deskpro-joomla.zip)
+1. Download the Joomla plugin from the Deskpro website: [https://www.deskpro.com/members/download-plugins/deskpro-joomla.zip](https://www.deskpro.com/members/download-plugins/deskpro-joomla.zip)
 2. From your Joomla Administration interface click Extensions -> Extension Manager
 3. Click the button to browse your hard-drive for the deskpro-joomla.zip file you just downloaded, then click "Upload & Install"
-4. Go to Extensions -> Plugin Manager and enter "DeskPRO" into the search box at the top. Click the title of the DeskPRO plugin to edit it.
+4. Go to Extensions -> Plugin Manager and enter "Deskpro" into the search box at the top. Click the title of the Deskpro plugin to edit it.
 5. Change the status to "Enabled" then click the Basic Options tab.
-6. Enter the URL to your DeskPRO intallation in the first box, then copy the "Joomla Secret Key" displayed on this page into the "Secret Key" field in Joomla.
+6. Enter the URL to your Deskpro intallation in the first box, then copy the "Joomla Secret Key" displayed on this page into the "Secret Key" field in Joomla.
 7. Click the "Save & Close" button to save your changes.

@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2017, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2018, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -82,6 +82,13 @@ class ChatConversation extends DomainObject implements LabelsOwner
      * @var \Application\DeskPRO\Entity\Department
      */
     protected $department = null;
+
+    /**
+     * Department which chat was assigned.
+     *
+     * @var \Application\DeskPRO\Entity\Brand
+     */
+    protected $brand = null;
 
     /**
      * @var \Doctrine\Common\Collections\ArrayCollection|LabelChatConversation[]
@@ -840,6 +847,26 @@ class ChatConversation extends DomainObject implements LabelsOwner
         }
 
         return 0;
+    }
+
+    /**
+     * @return Brand
+     */
+    public function getBrand()
+    {
+        return $this->brand;
+    }
+
+    /**
+     * @param Brand $brand
+     *
+     * @return ChatConversation
+     */
+    public function setBrand($brand)
+    {
+        $this->setModelField('brand', $brand);
+
+        return $this;
     }
 
     /**
@@ -1718,7 +1745,7 @@ class ChatConversation extends DomainObject implements LabelsOwner
         $metadata->mapManyToOne(
             [
                 'fieldName'    => 'department',
-                'targetEntity' => 'Application\\DeskPRO\\Entity\\Department',
+                'targetEntity' => Department::class,
                 'mappedBy'     => null,
                 'inversedBy'   => null,
                 'joinColumns'  => [
@@ -1735,8 +1762,26 @@ class ChatConversation extends DomainObject implements LabelsOwner
         );
         $metadata->mapManyToOne(
             [
+                'fieldName'    => 'brand',
+                'targetEntity' => Brand::class,
+                'mappedBy'     => null,
+                'inversedBy'   => null,
+                'joinColumns'  => [
+                    0 => [
+                        'name'                 => 'brand_id',
+                        'referencedColumnName' => 'id',
+                        'nullable'             => true,
+                        'onDelete'             => 'set null',
+                        'columnDefinition'     => null,
+                    ],
+                ],
+                'dpApi' => true,
+            ]
+        );
+        $metadata->mapManyToOne(
+            [
                 'fieldName'    => 'agent',
-                'targetEntity' => 'Application\\DeskPRO\\Entity\\Person',
+                'targetEntity' => Person::class,
                 'mappedBy'     => null,
                 'inversedBy'   => null,
                 'joinColumns'  => [
@@ -1754,7 +1799,7 @@ class ChatConversation extends DomainObject implements LabelsOwner
         $metadata->mapManyToOne(
             [
                 'fieldName'    => 'agent_team',
-                'targetEntity' => 'Application\\DeskPRO\\Entity\\AgentTeam',
+                'targetEntity' => AgentTeam::class,
                 'mappedBy'     => null,
                 'inversedBy'   => null,
                 'joinColumns'  => [
@@ -1772,7 +1817,7 @@ class ChatConversation extends DomainObject implements LabelsOwner
         $metadata->mapManyToOne(
             [
                 'fieldName'    => 'person',
-                'targetEntity' => 'Application\\DeskPRO\\Entity\\Person',
+                'targetEntity' => Person::class,
                 'cascade'      => ['persist'],
                 'mappedBy'     => null,
                 'inversedBy'   => null,
@@ -1791,7 +1836,7 @@ class ChatConversation extends DomainObject implements LabelsOwner
         $metadata->mapManyToOne(
             [
                 'fieldName'    => 'session',
-                'targetEntity' => 'Application\\DeskPRO\\Entity\\Session',
+                'targetEntity' => Session::class,
                 'mappedBy'     => null,
                 'inversedBy'   => null,
                 'joinColumns'  => [
@@ -1808,7 +1853,7 @@ class ChatConversation extends DomainObject implements LabelsOwner
         $metadata->mapManyToMany(
             [
                 'fieldName'    => 'participants',
-                'targetEntity' => 'Application\\DeskPRO\\Entity\\Person',
+                'targetEntity' => Person::class,
                 'inversedBy'   => 'chats',
                 'joinTable'    => [
                     'name'        => 'chat_conversation_to_person',
@@ -1839,7 +1884,7 @@ class ChatConversation extends DomainObject implements LabelsOwner
         $metadata->mapOneToMany(
             [
                 'fieldName'    => 'messages',
-                'targetEntity' => 'Application\\DeskPRO\\Entity\\ChatMessage',
+                'targetEntity' => ChatMessage::class,
                 'cascade'      => [0 => 'remove', 1 => 'persist', 3 => 'merge'],
                 'mappedBy'     => 'conversation',
             ]
@@ -1847,7 +1892,7 @@ class ChatConversation extends DomainObject implements LabelsOwner
         $metadata->mapOneToMany(
             [
                 'fieldName'     => 'custom_data',
-                'targetEntity'  => 'Application\\DeskPRO\\Entity\\CustomDataChat',
+                'targetEntity'  => CustomDataChat::class,
                 'cascade'       => [0 => 'remove', 1 => 'persist', 3 => 'merge'],
                 'mappedBy'      => 'conversation',
                 'orphanRemoval' => true,
@@ -1857,7 +1902,7 @@ class ChatConversation extends DomainObject implements LabelsOwner
         $metadata->mapOneToMany(
             [
                 'fieldName'     => 'labels',
-                'targetEntity'  => 'Application\\DeskPRO\\Entity\\LabelChatConversation',
+                'targetEntity'  => LabelChatConversation::class,
                 'cascade'       => [0 => 'remove', 1 => 'persist', 3 => 'merge'],
                 'mappedBy'      => 'chat',
                 'orphanRemoval' => true,

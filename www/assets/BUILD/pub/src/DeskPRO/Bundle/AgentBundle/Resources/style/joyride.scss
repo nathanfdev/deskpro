@@ -62,6 +62,8 @@ $joyride-tooltip-arrow-height: 10px;
   }
   &-tooltip {
     border: 1px solid $dp-sonic-primary;
+    opacity: 1;
+
     &__header {
       padding: 20px 20px 15px;
       font-weight: 600;

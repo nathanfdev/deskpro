@@ -251,10 +251,12 @@ DeskPRO.Agent.PageHelper.TaskListControl = new Orb.Class({
 					setTimeout(function () {
 						var buttonPane = $(input).datepicker("widget").find(".ui-datepicker-buttonpane");
 
-						var btn = $('<button class="ui-datepicker-current ui-state-default ui-priority-secondary ui-corner-all" type="button">Clear</button>');
+						var btn = $('<button class="ui-datepicker-current ui-state-default ui-priority-secondary ui-corner-all" type="button">' 
+                      + DeskPRO_Window.getTranslate().phrase('agent.general.clear')
+                      + '</button>');
 						btn.unbind("click").bind("click", function () {
 							$.datepicker._clearDate(input);
-							label.text('No due date');
+							label.text(DeskPRO_Window.getTranslate().phrase('agent.tasks.no_due_date'));
 						});
 						btn.appendTo(buttonPane);
 

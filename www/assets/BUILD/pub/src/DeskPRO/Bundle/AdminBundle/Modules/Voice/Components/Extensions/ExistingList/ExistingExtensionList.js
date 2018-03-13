@@ -50,7 +50,7 @@ class ExistingExtensionList extends React.Component {
             <div className="column extension">Extension</div>
             <div className="column targets">Queues</div>
           </div>
-          {existingAgents.map((agent, index) =>
+          {existingAgents.toArray().map((agent, index) =>
             <ExistingExtensionRow
               key={index}
               agent={agent}

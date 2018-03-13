@@ -28,6 +28,7 @@
 
 namespace DpSys\LowError;
 
+use DpRun\LowUtil;
 use Psr\Log\LoggerInterface;
 use Psr\Log\LogLevel;
 use Symfony\Component\HttpFoundation\Request;
@@ -747,6 +748,9 @@ class SystemErrorHandler
         if ($pos !== false) {
             $str = substr_replace($str, '<DP_LOG.BEGIN:', $pos, strlen('<DP_LOG:'));
         }
+
+        $dbInfo = LowUtil::getMysqlInfoFromConfigArray(self::getDpEnv()->getConfig('database'));
+        $str    = str_replace($dbInfo['password'], '***', $str);
 
         // Always write error line to standard error log
         if (defined('DPC_IS_CLOUD') && defined('DPC_SITE_DOMAIN')) {

@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2017, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2018, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -30,6 +30,7 @@ namespace DeskPRO\Bundle\AppBundle\Entity;
 
 use Application\DeskPRO\Entity\Blob;
 use Application\DeskPRO\Entity\Person;
+use DeskPRO\Bundle\AppBundle\Validator\Constraints as AppAssert;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\NotifyPropertyChanged;
 use Doctrine\ORM\Mapping as ORM;
@@ -39,18 +40,21 @@ use Symfony\Component\Validator\Constraints as Assert;
 /**
  * Class VoicePhoneCall.
  *
- * @ORM\Entity()
+ * @ORM\Entity(repositoryClass="DeskPRO\Bundle\AppBundle\Entity\Repository\VoicePhoneCallRepository")
  * @ORM\Table(name="voice_phone_calls", uniqueConstraints={
  *   @ORM\UniqueConstraint(name="call_sid", columns={"call_sid"}),
  *   @ORM\UniqueConstraint(name="conference_sid", columns={"conference_sid"})
  * })
  *
- * @UniqueEntity("sid")
+ * @UniqueEntity("callSid")
  * @UniqueEntity("conferenceSid")
  */
 class VoicePhoneCall implements EntityInterface, NotifyPropertyChanged
 {
     use NotifyPropertyChangedTrait;
+
+    const EXTERNAL_NUMBER_TYPE_PHONE = 'phone';
+    const EXTERNAL_NUMBER_TYPE_SIP   = 'sip';
 
     const STATUS_PENDING       = 'pending';
     const STATUS_COLD_TRANSFER = 'cold_transfer';
@@ -94,6 +98,21 @@ class VoicePhoneCall implements EntityInterface, NotifyPropertyChanged
     private $conferenceSid;
 
     /**
+     * @ORM\Column(name="forwarding_sids", type="json_array")
+     *
+     * @var string[]
+     */
+    private $forwardingSids = [];
+
+    /**
+     * @ORM\ManyToOne(targetEntity="DeskPRO\Bundle\AppBundle\Entity\VoiceQueue")
+     * @ORM\JoinColumn(name="voice_queue_id", referencedColumnName="id", onDelete="SET NULL", nullable=true)
+     *
+     * @var VoiceQueue
+     */
+    private $queue;
+
+    /**
      * @ORM\ManyToOne(targetEntity="DeskPRO\Bundle\AppBundle\Entity\VoiceNumber")
      * @ORM\JoinColumn(name="number_id", referencedColumnName="id", onDelete="CASCADE")
      *
@@ -106,9 +125,21 @@ class VoicePhoneCall implements EntityInterface, NotifyPropertyChanged
     /**
      * @ORM\Column(name="external_number", type="string", length=50)
      *
+     * @Assert\NotBlank()
+     * @AppAssert\CallNumber()
+     *
      * @var string
      */
     private $externalNumber;
+
+    /**
+     * @ORM\Column(name="external_number_type", type="string", length=50, nullable=false)
+     *
+     * @Assert\NotBlank()
+     *
+     * @var string
+     */
+    private $externalNumberType;
 
     /**
      * @ORM\ManyToOne(targetEntity="Application\DeskPRO\Entity\Person")
@@ -302,15 +333,29 @@ class VoicePhoneCall implements EntityInterface, NotifyPropertyChanged
     }
 
     /**
-     * @param string $from
+     * @param string $number
      *
      * @return $this
      */
-    public function setExternalNumber($from)
+    public function setExternalNumber($number)
     {
-        $this->setModelField('externalNumber', $from);
+        if (preg_match('/^sip:/', $number)) {
+            $this->setModelField('externalNumberType', self::EXTERNAL_NUMBER_TYPE_SIP);
+        } else {
+            $this->setModelField('externalNumberType', self::EXTERNAL_NUMBER_TYPE_PHONE);
+        }
+
+        $this->setModelField('externalNumber', $number);
 
         return $this;
+    }
+
+    /**
+     * @return string
+     */
+    public function getExternalNumberType()
+    {
+        return $this->externalNumberType;
     }
 
     /**
@@ -644,6 +689,59 @@ class VoicePhoneCall implements EntityInterface, NotifyPropertyChanged
         if ($voicemailRecord) {
             $voicemailRecord->setPhoneCall($this);
         }
+
+        return $this;
+    }
+
+    /**
+     * @return \string[]
+     */
+    public function getForwardingSids()
+    {
+        return $this->forwardingSids;
+    }
+
+    /**
+     * @param \string[] $forwardingSids
+     *
+     * @return $this
+     */
+    public function setForwardingSids(array $forwardingSids)
+    {
+        $this->setModelField('forwardingSids', $forwardingSids);
+
+        return $this;
+    }
+
+    /**
+     * @param string $forwardingSid
+     *
+     * @return $this
+     */
+    public function addForwardingSid($forwardingSid)
+    {
+        $forwardingSids   = $this->forwardingSids;
+        $forwardingSids[] = $forwardingSid;
+
+        return $this->setForwardingSids($forwardingSids);
+    }
+
+    /**
+     * @return VoiceQueue
+     */
+    public function getQueue()
+    {
+        return $this->queue;
+    }
+
+    /**
+     * @param VoiceQueue $queue
+     *
+     * @return $this
+     */
+    public function setQueue(VoiceQueue $queue = null)
+    {
+        $this->setModelField('queue', $queue);
 
         return $this;
     }

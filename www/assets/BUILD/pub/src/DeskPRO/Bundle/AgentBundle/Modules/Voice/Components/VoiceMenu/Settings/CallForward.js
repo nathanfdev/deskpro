@@ -1,43 +1,89 @@
+import PropTypes from 'prop-types';
 import React from 'react';
-import { Fieldset, createValue } from '@deskpro/react-forms';
-import { Form, Field, Toggle, BlurInput } from 'DeskPRO/Component/Semantic/ReactForm';
+import { Fieldset } from '@deskpro/react-forms';
+import { Form, Field, Toggle, PhoneInput } from 'DeskPRO/Component/Semantic/ReactForm';
+import BaseForm from 'DeskPRO/Component/Form/BaseForm';
+import $ from 'jquery';
 
-class CallForward extends React.Component {
+class CallForward extends BaseForm {
 
-  constructor(props) {
-    super(props);
-    this.state = {
-      formData: createValue({
-        value: {
-          enable_forward: false,
-          number:         ''
-        },
-        onChange: this.onChange
-      })
+  static propTypes = {
+    me:       PropTypes.object,
+    onSubmit: PropTypes.func
+  };
+
+  componentDidMount() {
+    super.componentDidMount();
+
+    const $checkbox = $('.toggle', this.node);
+    $checkbox.on('click', () => setTimeout(this.onSubmit, 1));
+
+    const initPhoneCallbacks = () => {
+      setTimeout(() => {
+        const $phone = $('input[type=text]', this.node);
+        $phone.on('blur', () => setTimeout(this.onSubmit, 1));
+        $phone.on('keydown', (event) => {
+          const code = event.keyCode || event.which;
+
+          if (code === 13) {
+            event.preventDefault();
+            setTimeout(this.onSubmit, 1);
+          }
+        });
+      }, 1);
     };
+
+    const $sipCheckbox = $('.voice-sip-number-mode', this.node);
+    $sipCheckbox.on('click', initPhoneCallbacks);
+
+    initPhoneCallbacks();
   }
 
-  onChange = (formData) => {
-    this.setState({ formData });
-  };
+  getDefaultState() {
+    const { me } = this.props;
+
+    return {
+      agent_data: {
+        agent_can_use_forwarding: me ? me.getIn(['agent_data', 'agent_can_use_forwarding']) : false,
+        forwarding_number:        me ? me.getIn(['agent_data', 'forwarding_number']) : ''
+      }
+    };
+  }
 
   render() {
     const { formData } = this.state;
 
     return (
-      <div className="call-forward">
+      <div className="call-forward" ref={(c) => { this.node = c; }}>
         <Form formValue={formData}>
           <Fieldset>
-            <Field select="enable_forward">
-              <Toggle className="small">
-                Enable call forwarding
-              </Toggle>
-            </Field>
-            <Field select="number" label="Forwarding number">
-              <BlurInput type="text" />
+            <Field select="agent_data">
+              <CallForwardField />
             </Field>
           </Fieldset>
         </Form>
+        <div className="voice-forward-help">
+          Forward incoming calls to this number. Any time a call rings you in Deskpro, it will also ring this phone.
+          You will be able to answer the call either in Deskpro or on your phone.
+        </div>
+      </div>
+    );
+  }
+}
+
+class CallForwardField extends React.Component {
+
+  render() {
+    return (
+      <div>
+        <Field select="agent_can_use_forwarding">
+          <Toggle className="small">
+            Enable call forwarding
+          </Toggle>
+        </Field>
+        <Field select="forwarding_number" label="Forwarding number">
+          <PhoneInput supportSip type="text" />
+        </Field>
       </div>
     );
   }

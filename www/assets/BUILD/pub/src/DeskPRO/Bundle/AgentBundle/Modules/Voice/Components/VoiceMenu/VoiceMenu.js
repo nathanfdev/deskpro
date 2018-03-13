@@ -1,7 +1,7 @@
 import PropTypes from 'prop-types';
 import React from 'react';
 import { TabButton, Tab } from 'DeskPRO/Component/Tab/Tab';
-import Settings from './Settings/Settings';
+import SettingsContainer from './Settings/SettingsContainer';
 import DialpadContainer from './Dialpad/DialpadContainer';
 import IncomingCall from './IncomingCall/IncomingCall';
 import OutgoingCallContainer from './OutgoingCall/OutgoingCallContainer';
@@ -142,7 +142,7 @@ class VoiceMenu extends React.Component {
           <VoicemailListContainer />
         </Tab>
         <Tab active={tabName === 'settings'}>
-          <Settings />
+          <SettingsContainer />
         </Tab>
         {hasPhoneTab &&
         <Tab active={tabName === 'phone'}>

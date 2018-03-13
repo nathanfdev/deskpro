@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2017, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2018, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -29,12 +29,7 @@
 namespace DeskPRO\Bundle\ApiBundle\Controller\Voice;
 
 use Application\DeskPRO\Entity\Person;
-use Application\DeskPRO\Entity\Ticket;
-use Application\DeskPRO\Entity\TicketMessage;
-use Application\DeskPRO\Entity\TicketParticipant;
 use DeskPRO\Bundle\ApiBundle\ApiDoc\Annotation\ApiDoc;
-use DeskPRO\Bundle\ApiBundle\Controller\BaseController;
-use DeskPRO\Bundle\ApiBundle\Traits\Tickets\TicketSaveTrait;
 use DeskPRO\Bundle\AppBundle\Annotation\ActionPermissions\Annotation\ApiModes;
 use DeskPRO\Bundle\AppBundle\Annotation\ActionPermissions\Annotation\Feature;
 use DeskPRO\Bundle\AppBundle\Entity\TicketMessageVoicePhoneCall;
@@ -47,17 +42,15 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 
 /**
- * Class VoiceClientPhoneCallController.
+ * Handles active phone call controls panel.
  *
  * @ApiModes("all")
  * @Rest\Route("/voice_client/phone_call/{phoneCall}")
  * @Feature("voice")
  * @ApiDoc(target="all", section="Voice Channel")
  */
-class VoiceClientPhoneCallController extends BaseController
+class VoiceClientPhoneCallController extends AbstractVoiceController
 {
-    use TicketSaveTrait;
-
     /**
      * Force agent assign to a ticket to open the created voice ticket asap.
      * It works slowly via twilio callbacks.
@@ -86,47 +79,8 @@ class VoiceClientPhoneCallController extends BaseController
             throw $this->createBadRequestException('Phone call is already ended');
         }
 
-        // create a new ticket for the call
-        $messageAttribute = $this->getRepository(TicketMessageVoicePhoneCall::class)->findOneBy([
-            'phoneCall' => $phoneCall,
-        ]);
-        if (!$messageAttribute) {
-            // no ticket is created for the call yet, create and assign agent
-            $ticketMessageCall = new TicketMessageVoicePhoneCall();
-            $ticketMessageCall->setPhoneCall($phoneCall);
-
-            $ticketMessage = new TicketMessage();
-            $ticketMessage->setPerson($phoneCall->getPerson());
-            $ticketMessage->addAttribute($ticketMessageCall);
-            $ticketMessage->setMessage('Call from '.$phoneCall->getExternalNumber());
-            $ticketMessage->setAsAgentNote(true);
-
-            $ticket = new Ticket();
-            $ticket->disableAutoTicketProcess();
-            $ticket->setSubject('Call from '.$phoneCall->getExternalNumber());
-            $ticket->setPerson($phoneCall->getPerson());
-            $ticket->setAgent($agent);
-            $ticket->addMessage($ticketMessage);
-
-            $this->saveTicket($ticket);
-
-            // send notification that phone call was answered
-            $this->get('event_dispatcher')->dispatch(LegacySystemEvent::EVENT_NAME, new LegacySystemEvent(
-                'agent.voice.incoming-call-answered',
-                [
-                    'deskpro_call_id' => $phoneCall->getId(),
-                ]
-            ));
-        } else {
-            // ticket is already created, that means we are joining the existing conference
-            $ticket = $messageAttribute->getMessage()->getTicket();
-
-            $participant = new TicketParticipant();
-            $participant->setPerson($agent);
-
-            $ticket->addParticipant($participant);
-            $this->saveTicket($ticket);
-        }
+        $this->cancelForwardingCalls($phoneCall, $this->getUser());
+        $ticket = $this->createOrJoinTicketForIncomingCall($phoneCall, $agent);
 
         return new View($this->wrap($ticket));
     }

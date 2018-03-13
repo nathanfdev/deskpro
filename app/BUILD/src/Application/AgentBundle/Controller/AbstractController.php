@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2017, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2018, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -88,7 +88,8 @@ abstract class AbstractController extends \Application\DeskPRO\Controller\Abstra
                 }
 
                 return $this->render('AgentBundle:Login:redirect-login.html.twig', [
-                    'return' => $return,
+                    'return'      => $return,
+                    'disable_sso' => $request->get('disable_sso'),
                 ]);
             }
         }
@@ -107,7 +108,8 @@ abstract class AbstractController extends \Application\DeskPRO\Controller\Abstra
                 return $this->createJsonResponse($data, 403);
             } else {
                 return $this->render('AgentBundle:Login:redirect-login.html.twig', [
-                    'return' => $this->get('router')->generate('agent'),
+                    'return'      => $this->get('router')->generate('agent'),
+                    'disable_sso' => $request->get('disable_sso'),
                 ]);
             }
         }

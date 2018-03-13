@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2017, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2018, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -37,6 +37,8 @@ namespace Application\DeskPRO\People\AgentPermissions\Value;
 class PublishPermissions implements PermissionValueInterface
 {
     /** @var bool */
+    public $use = false;
+    /** @var bool */
     public $create = false;
     /** @var bool */
     public $delete = false;
@@ -57,7 +59,7 @@ class PublishPermissions implements PermissionValueInterface
 
     public function getNames()
     {
-        return ['create', 'delete', 'edit', 'validate', 'articles_create_labels', 'downloads_create_labels', 'news_create_labels', 'feedback_create_labels', 'can_insert_html'];
+        return ['use', 'create', 'delete', 'edit', 'validate', 'articles_create_labels', 'downloads_create_labels', 'news_create_labels', 'feedback_create_labels', 'can_insert_html'];
     }
 
     public function getDestructiveNames()

@@ -342,29 +342,31 @@ class TaskController extends AbstractController
             $month->setTime(23, 59, 59);
             $month = Dates::convertToUtcDateTime($month);
 
+            $translator = $this->get('language_manager')->getTranslator();
+
             $tasksGrouped = [
                 'overdue' => [
-                    'title' => 'Overdue',
+                    'title' => $translator->phrase('agent.tasks.overdue'),
                     'tasks' => [],
                 ],
                 'overdue_today' => [
-                    'title' => 'Today (Overdue)',
+                    'title' => $translator->phrase('agent.tasks.overdue_today'),
                     'tasks' => [],
                 ],
                 'today' => [
-                    'title' => 'Today',
+                    'title' => $translator->phrase('agent.time.today'),
                     'tasks' => [],
                 ],
                 'week' => [
-                    'title' => 'This Week',
+                    'title' => $translator->phrase('agent.time.this_week'),
                     'tasks' => [],
                 ],
                 'month' => [
-                    'title' => 'This Month',
+                    'title' => $translator->phrase('agent.time.this_month'),
                     'tasks' => [],
                 ],
                 'future' => [
-                    'title' => 'Future',
+                    'title' => $translator->phrase('agent.time.future'),
                     'tasks' => [],
                 ],
             ];

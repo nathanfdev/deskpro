@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2017, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2018, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -35,6 +35,7 @@
 namespace Application\DeskPRO\Entity;
 
 use DeskPRO\Bundle\AppBundle\Entity\ObjectAlias\CustomPeopleFieldDefinitionAlias;
+use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\Mapping\ClassMetadata;
 use Doctrine\ORM\Mapping\ClassMetadataInfo;
 
@@ -60,7 +61,16 @@ class CustomDefPerson extends CustomDefAbstract
      *
      * @var \Doctrine\Common\Collections\ArrayCollection
      */
-    protected $aliases = null;
+    protected $aliases;
+
+    /**
+     * {@inheritdoc}
+     */
+    public function __construct()
+    {
+        parent::__construct();
+        $this->aliases = new ArrayCollection();
+    }
 
     /**
      * Set parent.
@@ -77,11 +87,37 @@ class CustomDefPerson extends CustomDefAbstract
     }
 
     /**
-     * @return \Doctrine\Common\Collections\ArrayCollection|CustomOrganizationFieldDefinitionAlias[]|null
+     * @return \Doctrine\Common\Collections\ArrayCollection|CustomPeopleFieldDefinitionAlias[]|null
      */
     public function getAliases()
     {
         return $this->aliases;
+    }
+
+    /**
+     * @param CustomPeopleFieldDefinitionAlias $alias
+     *
+     * @return $this
+     */
+    public function addAlias(CustomPeopleFieldDefinitionAlias $alias)
+    {
+        $alias->setObject($this);
+        $this->aliases->add($alias);
+
+        return $this;
+    }
+
+    /**
+     * @param CustomPeopleFieldDefinitionAlias $alias
+     *
+     * @return $this
+     */
+    public function removeAlias(CustomPeopleFieldDefinitionAlias $alias)
+    {
+        $alias->setObject(null);
+        $this->aliases->removeElement($alias);
+
+        return $this;
     }
 
     //###########################################################################

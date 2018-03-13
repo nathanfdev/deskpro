@@ -26,10 +26,6 @@
  * ~ Thanks, Everyone at Team DeskPRO
  */
 
-/**
- * DeskPRO.
- */
-
 namespace DeskPRO\Bundle\AppBundle\Entity\Report;
 
 use Application\Deskpro\Entity\Person;
@@ -39,6 +35,7 @@ use DeskPRO\Bundle\AppBundle\Entity\NotifyPropertyChangedTrait;
 use Doctrine\Common\NotifyPropertyChanged;
 use Doctrine\ORM\Mapping as ORM;
 use JMS\Serializer\Annotation as JMS;
+use Symfony\Component\Validator\Constraints as Assert;
 
 /**
  * Class Event.
@@ -56,12 +53,9 @@ class ScheduledReport implements EntityInterface, NotifyPropertyChanged
 {
     use NotifyPropertyChangedTrait;
 
-    const FREQUENCY_DAILY = 'daily';
-
-    const FREQUENCY_WEEKLY = 'weekly';
-
-    const FREQUENCY_MONTHLY = 'monthly';
-
+    const FREQUENCY_DAILY     = 'daily';
+    const FREQUENCY_WEEKLY    = 'weekly';
+    const FREQUENCY_MONTHLY   = 'monthly';
     const FREQUENCY_BIMONTHLY = 'bimonthly';
 
     /**
@@ -97,6 +91,10 @@ class ScheduledReport implements EntityInterface, NotifyPropertyChanged
      * @ORM\Column(type="json_array", name="when_setting")
      * It is called whenSetting becasue Doctrine not trying to avoid using reserved keywords like 'when'
      *
+     * @JMS\Expose()
+     * @JMS\Type("array")
+     * @JMS\SerializedName("when")
+     *
      * @var array
      */
     protected $whenSetting;
@@ -111,6 +109,9 @@ class ScheduledReport implements EntityInterface, NotifyPropertyChanged
     /**
      * @ORM\Column(type="string", length=64)
      *
+     * @JMS\Expose()
+     * @JMS\Type("string")
+     *
      * @var string
      */
     protected $frequency;
@@ -124,6 +125,13 @@ class ScheduledReport implements EntityInterface, NotifyPropertyChanged
 
     /**
      * @ORM\Column(name="send_to", type="json_array", nullable=true)
+     *
+     * @JMS\Expose()
+     * @JMS\Type("array")
+     *
+     * @Assert\All(constraints={
+     *   @Assert\Email(strict="true")
+     * })
      *
      * @var array
      */

@@ -6,12 +6,15 @@ define ->
       scope:
         widgetId: '@'
         chartData: '@'
+        jsCode: '@'
         reportLevelVars: '@'
         renderType: '@'
         options: '@'
         version: '@'
+        widgetType: '@'
+        chartType: '@'
 
-      link: (scope, element, attrs) ->
+      link: (scope, element) ->
         template = "<div id=\"ch#{scope.widgetId}\"></div>"
         linkFn = $compile(template)
         content = linkFn(scope)
@@ -41,30 +44,43 @@ define ->
             drawWidget chartData
 
         initChart = () ->
-          if attrs.chtype != 'graph'
+          if scope.widgetType != 'graph'
             return
-          if chartData and chartData.dataProvider?
-            chartData.noRedraw = true
+
+          # this is valid for serial and pie charts, gauge has not dataProvider
+          if (chartData and chartData.dataProvider?) || (scope.chartType == 'gauge' && chartData.axes?[0]?.bands?)
             drawWidget chartData
-          else if (scope.renderType != 'test')
+          else if scope.jsCode
+            try
+              eval(scope.jsCode)
+            catch e
+              console.log(e)
+
+            if promise and promise.then
+              promise.then (response) ->
+                drawWidget response
+          else
             DashboardWidgetService
               .getWidget(scope.widgetId || 0)
               .then (widget) =>
-                if widget? and widget and widget.dataProvider
-                  widget.noRedraw = false
+                if widget? && widget && (widget.dataProvider || widget.axes?[0]?.bands?)
                   drawWidget(widget)
 
         drawWidget = (widget) ->
           drawn = true
           try
-            options = JSON.parse(scope.options)
+            options = if scope.options then JSON.parse(scope.options) else {}
           catch e
             options = {}
+            console.warn("invalid options")
+            console.log(e)
+
+          options.theme = 'light'
 
           if widget.dataProvider? && widget.dataProvider[0]? && (Object.keys(widget.dataProvider[0]).length > 6 || (widget.type == 'pie' && widget.dataProvider.length > 6))
             widget.legend = false
 
-          if chart
+          if chart and widget.dataProvider
             chart.dataProvider = widget.dataProvider
           else
             chart = new AmCharts.makeChart("ch#{scope.widgetId}", Object.assign(widget, options));
@@ -93,22 +109,23 @@ define ->
                 chart.dataProvider = defaultDataProvider
               chart.validateData()
 
-          if (!widget.noRedraw)
-            width = chartParent.height()
-            height = chartParent.width()
 
-            setInterval \
-              () ->
-                w = chartParent.width()
-                h = chartParent.height()
 
-                if h != height or width != w
-                  chartDiv.height(chartParent.height() - chartHeader.outerHeight())
-                  chart.invalidateSize()
+          width = chartParent.height()
+          height = chartParent.width()
 
-                  width = w
-                  height = h
-            , 1000
+          setInterval \
+            () ->
+              w = chartParent.width()
+              h = chartParent.height()
+
+              if h != height or width != w
+                chartDiv.height(chartParent.height() - chartHeader.outerHeight())
+                chart.invalidateSize()
+
+                width = w
+                height = h
+          , 200
 
         initChart()
     }

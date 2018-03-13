@@ -52,16 +52,11 @@ abstract class AbstractJsonChartRenderer extends AbstractJsonRenderer
     }
 
     /**
-     * {@inheritdoc}
+     * @return array
      */
-    protected function doRender(array $rows, ResultMetadata $metadata, array $options = [])
+    protected function getDefaultOutputArray()
     {
-        if (!$rows) {
-            return '';
-        }
-
-        //initial output array
-        $arrayOutput = [
+        return [
             'dataProvider' => [],
             'categoryAxis' => [
                 'gridPosition' => 'start',
@@ -87,18 +82,20 @@ abstract class AbstractJsonChartRenderer extends AbstractJsonRenderer
                 'markerSize'       => 10,
             ],
             'categoryField' => 'category',
-            'exportConfig'  => [
-                'menuTop'   => '20px',
-                'menuRight' => '20px',
-                'menuItems' => [
-                    [
-                        'icon'   => '/lib/3/images/export.png',
-                        'format' => 'png',
-                    ],
-                ],
-            ],
+            'exportConfig'  => false,
         ];
+    }
 
+    /**
+     * {@inheritdoc}
+     */
+    protected function doRender(array $rows, ResultMetadata $metadata, array $options = [])
+    {
+        if (!$rows) {
+            return null;
+        }
+
+        $arrayOutput   = $this->getDefaultOutputArray();
         $selectColumns = $metadata->getSelectColumns();
         $groupYColumns = $metadata->getGroupYColumns();
         $groupXColumns = $metadata->getGroupXColumns();
@@ -111,7 +108,7 @@ abstract class AbstractJsonChartRenderer extends AbstractJsonRenderer
         $firstSel       = reset($selectColumns);
         $valueAxisTitle = $firstSel['title'];
 
-        if ($groupXColumns) {
+        if ($groupXColumns && !$metadata->hasFlag(ResultMetadata::FLAG_HIERARCHICAL)) {
             // matrix table - X() values translate to bottom axis, each row (from Y()) is a new line/stack.
             $prepared = $this->prepareMatrixTable($metadata, $rows);
             $lookup   = $prepared['lookup'];
@@ -145,6 +142,7 @@ abstract class AbstractJsonChartRenderer extends AbstractJsonRenderer
             $i = 0;
             foreach ($rowGroups as $printable) {
                 $graphs[$i] = [
+                    'id'    => 'graph-'.$i,
                     'title' => implode(' / ', $printable),
                     'value' => "value$i",
                 ];
@@ -169,10 +167,10 @@ abstract class AbstractJsonChartRenderer extends AbstractJsonRenderer
                     foreach ($groupYColumns as $column) {
                         ++$i;
                         if ($i == 1) {
-                            $grouper = $this->renderCellValue($row, $column);
+                            $grouper = $this->renderCellValue($row, $column, $metadata);
                             continue;
                         } else {
-                            $categories[] = $this->renderCellValue($row, $column);
+                            $categories[] = $this->renderCellValue($row, $column, $metadata);
                         }
                     }
                     $category = implode(' / ', $categories);
@@ -204,6 +202,7 @@ abstract class AbstractJsonChartRenderer extends AbstractJsonRenderer
 
                 foreach ($uniqueGraphs as $categoryName => $null) {
                     $graphs[] = [
+                        'id'    => "graph-$categoryName",
                         'title' => "$categoryName",
                         'value' => "$categoryName-value0",
                     ];
@@ -219,9 +218,9 @@ abstract class AbstractJsonChartRenderer extends AbstractJsonRenderer
                 $rowGroups = [];
                 foreach ($rows as $row) {
                     $categories = [];
-                    $grouper    = $this->valueRenderer->renderValue($this->getColumnValue($row, $stackColumns[0]['printId']), 'string');
+                    $grouper    = $this->valueRenderer->renderValue($this->getColumnValue($row, $stackColumns[0]['printId']), 'string', $metadata);
                     foreach ($groupYColumns as $column) {
-                        $categories[] = $this->renderCellValue($row, $column);
+                        $categories[] = $this->renderCellValue($row, $column, $metadata);
                     }
                     $category = implode(' / ', $categories);
 
@@ -252,6 +251,7 @@ abstract class AbstractJsonChartRenderer extends AbstractJsonRenderer
 
                 foreach ($uniqueGraphs as $categoryName => $null) {
                     $graphs[] = [
+                        'id'    => "graph-$categoryName",
                         'title' => "$categoryName",
                         'value' => "$categoryName-value0",
                     ];
@@ -264,10 +264,17 @@ abstract class AbstractJsonChartRenderer extends AbstractJsonRenderer
             } else {
                 $sel = reset($selectColumns);
 
+                if ($metadata->hasFlag(ResultMetadata::FLAG_LAYERED) && $metadata->hasFlag(ResultMetadata::FLAG_HIERARCHICAL)) {
+                    $this->collectHierarchyParents($rows); // this gonna remove hierarchy from results
+                }
+
                 foreach ($rows as $row) {
                     $categories = [];
                     foreach ($groupYColumns as $column) {
-                        $categories[] = $this->renderCellValue($row, $column);
+                        $categories[] = $this->renderCellValue($row, $column, $metadata);
+                    }
+                    if ($metadata->hasFlag(ResultMetadata::FLAG_HIERARCHICAL) && $row['hierarchy_parent_id']) {
+                        array_unshift($categories, $row['hierarchy_root_title']);
                     }
                     $category = implode(' / ', $categories);
 
@@ -281,6 +288,7 @@ abstract class AbstractJsonChartRenderer extends AbstractJsonRenderer
                 }
 
                 $graphs[] = [
+                    'id'    => 'graph-'.$sel['title'],
                     'title' => $sel['title'],
                     'value' => 'value',
                 ];
@@ -306,7 +314,6 @@ abstract class AbstractJsonChartRenderer extends AbstractJsonRenderer
                             $data[] = [
                                 'category' => $graph['title'],
                                 'value'    => $info[$graph['value']],
-                                'pulled'   => true,
                             ];
                         }
                     }
@@ -392,6 +399,7 @@ abstract class AbstractJsonChartRenderer extends AbstractJsonRenderer
             foreach ($graphs as $graph) {
                 $graphArray[] = array_merge($this->options, [
                     'valueField'  => $graph['value'],
+                    'id'          => $graph['id'],
                     'title'       => $graph['title'],
                     'balloonText' => $balloonText,
                 ]);

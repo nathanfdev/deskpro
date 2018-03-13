@@ -1,30 +1,33 @@
 import PropTypes from 'prop-types';
 import React from 'react';
 import { connect } from 'react-redux';
+import Immutable from 'immutable';
 import { meSelector } from 'DeskPRO/Bundle/AppBundle/Modules/RecordsStore/Shortcuts/me';
 import { voiceParticipantsSelector } from '../../Selectors/agents';
 import VoiceControls from './VoiceControls';
 import { hangup, toggleMute, toggleHold, addAgent, transferCall, cancelInvite } from '../../Actions/clientActions';
-import { connectionsSelector } from '../../Selectors/client';
+import { connectionsSelector, connectionStatesSelector } from '../../Selectors/client';
 import { onlineAgentsSelector } from '../../../Agent/Selectors/agents';
 
 @connect(state => ({
-  me:             meSelector(state),
-  agents:         voiceParticipantsSelector(state),
-  connections:    connectionsSelector(state),
-  onlineAgentIds: onlineAgentsSelector(state)
+  me:               meSelector(state),
+  agents:           voiceParticipantsSelector(state),
+  connections:      connectionsSelector(state),
+  onlineAgentIds:   onlineAgentsSelector(state),
+  connectionStates: connectionStatesSelector(state)
 }))
 class VoiceControlsContainer extends React.Component {
 
   static propTypes = {
-    dispatch:       PropTypes.func,
-    me:             PropTypes.object,
-    agents:         PropTypes.object,
-    onlineAgentIds: PropTypes.object,
-    connections:    PropTypes.object,
-    ticketId:       PropTypes.number,
-    tabRef:         PropTypes.func,
-    onEndCall:      PropTypes.func
+    dispatch:         PropTypes.func,
+    me:               PropTypes.object,
+    agents:           PropTypes.object,
+    onlineAgentIds:   PropTypes.object,
+    connections:      PropTypes.object,
+    ticketId:         PropTypes.number,
+    tabRef:           PropTypes.func,
+    onEndCall:        PropTypes.func,
+    connectionStates: PropTypes.object,
   };
 
   static defaultProps = {
@@ -35,9 +38,7 @@ class VoiceControlsContainer extends React.Component {
     super(props);
     this.state = {
       mute:               false,
-      hold:               false,
       status:             null,
-      participants:       [],
       addTarget:          null,
       addTargetType:      null,
       transferTarget:     null,
@@ -60,7 +61,7 @@ class VoiceControlsContainer extends React.Component {
 
     tabRef({
       isCallActive: this.isCallActive,
-      endCall:      this.onEndCall
+      endCall:      this.endCall
     });
 
     const connection = this.getConnection();
@@ -70,15 +71,18 @@ class VoiceControlsContainer extends React.Component {
 
     this.interval = setInterval(() => {
       const connectionStatus = connection.status();
+      const connectionState = this.getConnectionState();
       const { me } = this.props;
-      const { status, participants } = this.state;
+      const { status } = this.state;
 
       if (connectionStatus === 'open') {
-        if (participants.contains(me.get('id')) || connection.message.Outbound) {
+        if (status !== 'active'
+          && (connectionState.participants.contains(me.get('id')) || connection.message.Outbound)
+        ) {
           this.setState({
             status: 'active'
           });
-        } else {
+        } else if (status !== 'connected' && status !== 'active') {
           this.setState({
             status: 'connected'
           });
@@ -90,78 +94,62 @@ class VoiceControlsContainer extends React.Component {
         });
       }
     }, 1000);
+  }
 
-    if (window.DeskPRO_Window) {
-      const messageBroker = window.DeskPRO_Window.getMessageBroker();
+  componentWillUpdate() {
+    const { addTarget, transferTarget } = this.state;
+    const connectionState = this.getConnectionState();
+    const participants = connectionState.participants;
+    const newState = {};
 
-      messageBroker.addMessageListener('agent.voice.conference.hold', this.onExternalSetHold);
-      messageBroker.addMessageListener('agent.voice.conference.status', this.onConferenceStatus);
+    // update participant list
+    let update = false;
+    if (addTarget && participants.contains(addTarget.get('id'))) {
+      newState.addTarget     = null;
+      newState.addTargetType = null;
+
+      update = true;
+    }
+    if (transferTarget && participants.contains(transferTarget.get('id'))) {
+      newState.transferTarget     = null;
+      newState.transferTargetType = null;
+
+      update = true;
+    }
+
+    if (update) {
+      this.setState(newState);
     }
   }
 
   componentWillUnmount() {
     this.props.tabRef(null);
     clearInterval(this.interval);
-
-    if (window.DeskPRO_Window) {
-      const messageBroker = window.DeskPRO_Window.getMessageBroker();
-
-      messageBroker.removeMessageListener('agent.voice.conference.hold', this.onExternalSetHold);
-      messageBroker.removeMessageListener('agent.voice.conference.status', this.onConferenceStatus);
-    }
   }
-
-  onExternalSetHold = (event) => {
-    const connection = this.getConnection();
-    if (!connection) {
-      return;
-    }
-
-    if (connection.message.CallId !== parseInt(event.call_id, 10)) {
-      return;
-    }
-
-    this.setState({
-      hold: !!event.hold
-    });
-  };
-
-  onConferenceStatus = (event) => {
-    const { me } = this.props;
-    const eventName = event.StatusCallbackEvent;
-    const newState  = {};
-
-    // change current call status
-    if (event.agent_id === me.get('id') && eventName === 'participant-leave') {
-      newState.status = 'closed';
-    }
-
-    // update participant list
-    if (event.agent_participants) {
-      const { addTarget, transferTarget } = this.state;
-
-      newState.participants = event.agent_participants;
-      if (addTarget && newState.participants.contains(addTarget.get('id'))) {
-        newState.addTarget     = null;
-        newState.addTargetType = null;
-      }
-      if (transferTarget && newState.participants.contains(transferTarget.get('id'))) {
-        newState.transferTarget     = null;
-        newState.transferTargetType = null;
-      }
-    }
-
-    // update hold status on join conference
-    if (event.hold) {
-      newState.hold = event.hold;
-    }
-
-    this.setState(newState);
-  };
 
   getConnection() {
     const { connections, ticketId } = this.props;
-    return connections.filter(connection => parseInt(connection.message.TicketId, 10) === ticketId, 10).first();
+    return connections
+      .filter(connection => parseInt(connection.message.TicketId, 10) === parseInt(ticketId, 10))
+      .first();
+  }
+
+  getConnectionState() {
+    const { connectionStates } = this.props;
+    const connection = this.getConnection();
+
+    let connectionState;
+    if (connection) {
+      connectionState = connectionStates.get(connection.message.CallId);
+    }
+    if (!connectionState) {
+      connectionState = Immutable.fromJS({
+        hold:         false,
+        participants: []
+      });
+    }
+
+    return connectionState.toJS();
   }
 
   addAgent = (target, type) => {
@@ -214,14 +202,13 @@ class VoiceControlsContainer extends React.Component {
 
   toggleHold = () => {
     const { dispatch } = this.props;
-    const hold = !this.state.hold;
     const connection = this.getConnection();
+    const connectionState = this.getConnectionState();
     if (!connection) {
       return;
     }
 
-    this.setState({ hold });
-    dispatch(toggleHold(connection, hold));
+    dispatch(toggleHold(connection, !connectionState.hold));
   };
 
   transferCall = (target, type) => {
@@ -251,6 +238,7 @@ class VoiceControlsContainer extends React.Component {
     const { agents, onlineAgentIds } = this.props;
     const onlineAgents = agents.filter(agent => onlineAgentIds.contains(agent.get('id')));
     const connection = this.getConnection();
+    const connectionState = this.getConnectionState();
 
     if (!connection) {
       return null;
@@ -260,8 +248,9 @@ class VoiceControlsContainer extends React.Component {
       <VoiceControls
         {...this.props}
         {...this.state}
+        {...connectionState}
         onlineAgents={onlineAgents}
-        connection={this.getConnection()}
+        connection={connection}
         endCall={this.endCall}
         toggleMute={this.toggleMute}
         toggleHold={this.toggleHold}

@@ -73,7 +73,7 @@ SQL
     {
         $this->assertDpqlQuery(
             <<<'DPQL'
-SELECT COUNT() AS 'Tickets'
+SELECT DPQL_COUNT() AS 'Tickets'
 FROM tickets
 GROUP BY tickets.agent
 ORDER BY @'Tickets' DESC
@@ -299,6 +299,22 @@ DPQL
             ,
             <<<'SQL'
 SELECT (SELECT `people`.`name` FROM `people` WHERE (`people`.`id` = `tickets`.`person_id`) LIMIT 2500)
+FROM `tickets`
+LIMIT 2500
+SQL
+        );
+    }
+
+    public function test_select_func_subquery()
+    {
+        $this->assertDpqlQuery(
+            <<<'DPQL'
+SELECT CONCAT(DPQL_COUNT() * 100 / (SELECT people.id FROM people WHERE people.id = tickets.person_id), '%')
+FROM tickets
+DPQL
+            ,
+            <<<'SQL'
+SELECT CONCAT(((COUNT(*) * 100) / (SELECT `people`.`id` FROM `people` WHERE (`people`.`id` = `tickets`.`person_id`) LIMIT 2500)), '%')
 FROM `tickets`
 LIMIT 2500
 SQL
@@ -676,5 +692,21 @@ FROM (
 ) as tickets
 DPQL
             , []);
+    }
+
+    public function test_came_case_props()
+    {
+        $this->assertDpqlQuery(
+            <<<'DPQL'
+SELECT DPQL_COUNT(), snippets.id FROM snippets WHERE snippets.date_created > '2018-01-25'
+DPQL
+            ,
+            <<<'SQL'
+SELECT COUNT(*), `snippets`.`id`
+FROM `snippets`
+WHERE (`snippets`.`date_created` > '2018-01-25')
+LIMIT 2500
+SQL
+        );
     }
 }

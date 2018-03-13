@@ -11,6 +11,7 @@ services:
     class: DeskPRO\Bundle\PortalBundle\Designer\ThemeSetCopyingService
     arguments:
       - "@doctrine.orm.default_entity_manager"
+      - "@deskpro.blob_storage"
 
   dp.portal.designer.portal_styles_compiler:
     class: DeskPRO\Bundle\PortalBundle\Designer\PortalStylesCompiler

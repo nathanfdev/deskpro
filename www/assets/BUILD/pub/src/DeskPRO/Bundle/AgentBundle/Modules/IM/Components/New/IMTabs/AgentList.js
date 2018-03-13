@@ -37,7 +37,7 @@ class AgentList extends AbstractList {
   }
 
   getItems() {
-    return this.props.agents.map(agent => this.getItem(agent));
+    return this.props.agents.toArray().map(agent => this.getItem(agent));
   }
 
   render() {

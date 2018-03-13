@@ -81,6 +81,9 @@ class AppContainer extends React.Component {
             <Route path="oauth_clients" component={Apps.OAuthClientList} />
             <Route path="oauth_clients/new" component={Apps.NewOAuthClientForm} />
             <Route path="oauth_clients/:clientId" component={Apps.EditOAuthClientForm} />
+            <Route path="importer" component={Apps.ImporterContainer} />
+            <Route path="importer/status" component={Apps.ImporterStatusContainer} />
+            <Route path="importer/source/:type" component={Apps.ImporterSourceContainer} />
           </Route>
           <Route
             path="app-install/:installType/:app"

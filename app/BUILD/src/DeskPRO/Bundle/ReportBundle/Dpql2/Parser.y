@@ -442,6 +442,11 @@ limit_offset_opt(res) ::= OFFSET NUMBER(A) .
 }
 limit_offset_opt ::= .
 
+expression(res) ::= select_subquery_part(B) .
+{
+    res = $this->statementFactory->createSubSelect(B);
+}
+
 expression(res) ::= OP_EXISTS select_subquery_part(B) .
 {
     res = $this->statementFactory->createExists(B);

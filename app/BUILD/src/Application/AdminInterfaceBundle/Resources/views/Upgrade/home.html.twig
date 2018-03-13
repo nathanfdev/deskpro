@@ -7,7 +7,7 @@
 	</article>
 	<article ng-show="card_loaded && !latest_version">
 		<p>
-			We could not connect to the DeskPRO servers to fetch information about the latest version.
+			We could not connect to the Deskpro servers to fetch information about the latest version.
 		</p>
 		<p>
 			Try refreshing the page to try again. If you continue to receive this message, you can install
@@ -17,10 +17,10 @@
 	<article ng-show="card_loaded && latest_version">
 		<section>
 			<p>
-				You are currently running DeskPRO version #{{ ng_var('version_info.build_name') }}. The newest version available is #{{ ng_var('latest_version.build_num_base') }}.
+				You are currently running Deskpro version #{{ ng_var('version_info.build_name') }}. The newest version available is #{{ ng_var('latest_version.build_num_base') }}.
 			</p>
 			<p>
-				The automatic updater will install the newest version of DeskPRO for you by just clicking the button below.
+				The automatic updater will install the newest version of Deskpro for you by just clicking the button below.
 			</p>
 		</section>
 		<section>
@@ -34,7 +34,7 @@
 			</label>
 			<br/>
 			<label>
-				<input type="checkbox" ng-model="opt.file_backup" /> Back up the current DeskPRO source files before installing the upgrade
+				<input type="checkbox" ng-model="opt.file_backup" /> Back up the current Deskpro source files before installing the upgrade
 			</label>
 		</section>
 		<section>
@@ -72,12 +72,12 @@
 </section>
 <div class="alert alert-info" style="margin-top: 25px;">
 	<p>
-		The preferred way to update DeskPRO is by using the automatic update tool above. But in some server environments,
+		The preferred way to update Deskpro is by using the automatic update tool above. But in some server environments,
 		using this tool is not possible. For example, strict file permissions may prevent the automatic updater from working.
 	</p>
 	<p>
 		If you cannot use the automatic update tool, you can use the CLI update tool instead which will
-		install the updates with a single command on the command-line. Refer to the DeskPRO knowledgebase for more information:
+		install the updates with a single command on the command-line. Refer to the Deskpro knowledgebase for more information:
 	</p>
 	<p>
 		<i class="fa fa-globe"></i> <a href="https://support.deskpro.com/guides/topic/188">Command-line updater</a><br/>

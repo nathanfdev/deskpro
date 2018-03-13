@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2017, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2018, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -39,6 +39,9 @@ use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\Mapping\ClassMetadata;
 use Doctrine\ORM\Mapping\ClassMetadataInfo;
 
+/**
+ * Class ReportDashboard.
+ */
 class ReportDashboard extends DomainObject
 {
     /**
@@ -52,7 +55,7 @@ class ReportDashboard extends DomainObject
     protected $title = '';
 
     /**
-     * @var ArrayCollection
+     * @var ArrayCollection|ReportDashboardReport[]
      */
     protected $reports;
 
@@ -62,12 +65,40 @@ class ReportDashboard extends DomainObject
      *
      * @see ReportDashboard::isDefault()
      */
-    protected $is_default;
+    protected $is_default = false;
 
+    /**
+     * @var int
+     */
+    protected $display_order = 0;
+
+    /**
+     * @var bool
+     */
+    protected $isAgent = false;
+
+    /**
+     * @var ArrayCollection|ReportDashboardPermission[]
+     */
+    protected $permissions;
+
+    /**
+     * @var string
+     */
+    protected $system_name;
+
+    /**
+     * @var Person - an owner for this dashboard
+     */
+    protected $person;
+
+    /**
+     * Constructor.
+     */
     public function __construct()
     {
-        $this->is_default = false;
-        $this->reports    = new ArrayCollection();
+        $this->reports     = new ArrayCollection();
+        $this->permissions = new ArrayCollection();
     }
 
     /**
@@ -139,6 +170,7 @@ class ReportDashboard extends DomainObject
     public function removeReport(ReportDashboardReport $report)
     {
         $this->reports->removeElement($report);
+        $report->setDashboard(null);
 
         return $this;
     }
@@ -151,9 +183,98 @@ class ReportDashboard extends DomainObject
         return (bool) $this->is_default;
     }
 
-    public function setDefault($default)
+    /**
+     * @param bool $default
+     *
+     * @return $this
+     */
+    public function setIsDefault($default)
     {
         $this->is_default = (bool) $default;
+
+        return $this;
+    }
+
+    /**
+     * @return int
+     */
+    public function getDisplayOrder()
+    {
+        return $this->display_order;
+    }
+
+    /**
+     * @param int $display_order
+     */
+    public function setDisplayOrder($display_order)
+    {
+        $this->display_order = $display_order;
+    }
+
+    /**
+     * @return bool
+     */
+    public function isAgent()
+    {
+        return $this->isAgent;
+    }
+
+    /**
+     * @param bool $isAgent
+     *
+     * @return $this
+     */
+    public function setIsAgent($isAgent)
+    {
+        $this->setModelField('isAgent', $isAgent);
+
+        return $this;
+    }
+
+    /**
+     * @return ReportDashboardPermission[]|ArrayCollection
+     */
+    public function getPermissions()
+    {
+        return $this->permissions;
+    }
+
+    /**
+     * @return string
+     */
+    public function getSystemName()
+    {
+        return $this->system_name;
+    }
+
+    /**
+     * @param string $system_name
+     *
+     * @return $this
+     */
+    public function setSystemName($system_name)
+    {
+        $this->system_name = $system_name;
+
+        return $this;
+    }
+
+    /**
+     * @return Person
+     */
+    public function getPerson()
+    {
+        return $this->person;
+    }
+
+    /**
+     * @param Person $person
+     *
+     * @return $this
+     */
+    public function setPerson($person)
+    {
+        $this->person = $person;
 
         return $this;
     }
@@ -165,56 +286,105 @@ class ReportDashboard extends DomainObject
     public static function loadMetadata(ClassMetadata $metadata)
     {
         $metadata->setInheritanceType(ClassMetadataInfo::INHERITANCE_TYPE_NONE);
-        $metadata->setPrimaryTable(
-            [
-                'name' => 'report_dashboard',
-            ]
-        );
+        $metadata->setPrimaryTable([
+            'name' => 'report_dashboard',
+        ]);
         $metadata->setChangeTrackingPolicy(ClassMetadataInfo::CHANGETRACKING_DEFERRED_IMPLICIT);
+        $metadata->mapField([
+            'fieldName'  => 'id',
+            'type'       => 'integer',
+            'precision'  => 0,
+            'scale'      => 0,
+            'nullable'   => false,
+            'columnName' => 'id',
+            'id'         => true,
+        ]);
+        $metadata->mapField([
+            'fieldName'  => 'title',
+            'type'       => 'string',
+            'length'     => 255,
+            'precision'  => 0,
+            'scale'      => 0,
+            'nullable'   => false,
+            'columnName' => 'title',
+        ]);
+        $metadata->mapField([
+            'fieldName'  => 'system_name',
+            'type'       => 'string',
+            'length'     => 255,
+            'precision'  => 0,
+            'scale'      => 0,
+            'nullable'   => true,
+            'columnName' => 'system_name',
+        ]);
+
+        $metadata->mapField([
+            'fieldName'  => 'is_default',
+            'default'    => false,
+            'type'       => 'boolean',
+            'precision'  => 0,
+            'scale'      => 0,
+            'nullable'   => false,
+            'columnName' => 'is_default',
+        ]);
+
         $metadata->mapField(
             [
-                'fieldName'  => 'id',
+                'fieldName'  => 'display_order',
                 'type'       => 'integer',
                 'precision'  => 0,
                 'scale'      => 0,
+                'default'    => 0,
                 'nullable'   => false,
-                'columnName' => 'id',
-                'id'         => true,
+                'columnName' => 'display_order',
             ]
         );
-        $metadata->mapField(
-            [
-                'fieldName'  => 'title',
-                'type'       => 'string',
-                'length'     => 255,
-                'precision'  => 0,
-                'scale'      => 0,
-                'nullable'   => false,
-                'columnName' => 'title',
-            ]
-        );
+        $metadata->mapField([
+            'fieldName'  => 'isAgent',
+            'default'    => false,
+            'type'       => 'boolean',
+            'precision'  => 0,
+            'scale'      => 0,
+            'nullable'   => false,
+            'columnName' => 'is_agent',
+        ]);
 
-        $metadata->mapField(
-            [
-                'fieldName'  => 'is_default',
-                'default'    => false,
-                'type'       => 'boolean',
-                'precision'  => 0,
-                'scale'      => 0,
-                'nullable'   => false,
-                'columnName' => 'is_default',
-            ]
-        );
+        $metadata->mapOneToMany([
+            'fieldName'     => 'reports',
+            'targetEntity'  => ReportDashboardReport::class,
+            'mappedBy'      => 'dashboard',
+            'inversedBy'    => null,
+            'orderBy'       => ['sort_order' => 'ASC', 'id' => 'ASC'],
+            'cascade'       => ['persist', 'remove'],
+            'orphanRemoval' => true,
+        ]);
+        $metadata->mapOneToMany([
+            'fieldName'     => 'permissions',
+            'targetEntity'  => ReportDashboardPermission::class,
+            'mappedBy'      => 'dashboard',
+            'inversedBy'    => null,
+            'cascade'       => ['persist', 'remove'],
+            'orphanRemoval' => true,
+        ]);
 
-        $metadata->mapOneToMany(
+        $metadata->mapManyToOne(
             [
-                'fieldName'    => 'reports',
-                'targetEntity' => ReportDashboardReport::class,
-                'mappedBy'     => 'dashboard',
+                'fieldName'    => 'person',
+                'targetEntity' => Person::class,
+                'mappedBy'     => null,
                 'inversedBy'   => null,
-                'orderBy'      => ['sort_order' => 'ASC', 'id' => 'ASC'],
-                'cascade'      => ['persist', 'remove'],
-            ]);
+                'nullable'     => true,
+                'joinColumns'  => [
+                    0 => [
+                        'name'                 => 'person_id',
+                        'referencedColumnName' => 'id',
+                        'nullable'             => true,
+                        'onDelete'             => 'set null',
+                        'columnDefinition'     => null,
+                    ],
+                ],
+            ]
+        );
 
         $metadata->setIdGeneratorType(ClassMetadataInfo::GENERATOR_TYPE_IDENTITY);
     }

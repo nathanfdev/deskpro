@@ -37,6 +37,7 @@ namespace Application\DeskPRO\Tickets\Triggers\Terms;
 use Application\DeskPRO\Entity\CustomDataAbstract;
 use Application\DeskPRO\Entity\Ticket;
 use Application\DeskPRO\Tickets\ExecutorContextInterface;
+use Application\DeskPRO\Tickets\ExecutorContextVars;
 use Orb\Util\CheckedOptionsArray;
 use Orb\Util\Util;
 
@@ -55,9 +56,11 @@ abstract class AbstractCheckCustomField extends AbstractTriggerTerm
     {
         $options = new CheckedOptionsArray();
         $options->addRequiredNames('field_id', 'value');
+        $options->setAliases('field_id', ['field']);
 
         return $options;
     }
+
 
     /**
      * @param Ticket                   $ticket
@@ -66,6 +69,40 @@ abstract class AbstractCheckCustomField extends AbstractTriggerTerm
      * @return CustomDataAbstract[]
      */
     abstract public function getCustomDataArray(Ticket $ticket, ExecutorContextInterface $context);
+
+    /**
+     * Parse the action options and return the field id
+     *
+     * @param \Orb\Util\OptionsArray $options
+     * @param ExecutorContextInterface $context
+     * @return string
+     */
+    protected function resolveFieldId(\Orb\Util\OptionsArray $options, ExecutorContextInterface $context)
+    {
+        // if the field id is set in the options, used that
+        $fieldId = isset($options['field_id']) ? $options['field_id'] : null;
+        if (! empty($fieldId)) {
+            return $fieldId;
+        }
+
+        // let's see if we have a field alias
+        $fieldId = isset($options['field']) ? $options['field'] : null;
+        if (!empty($fieldId)) {
+            $fieldDef = null;
+            $fieldManager = ExecutorContextVars::getTicketFieldManagerFromContext($context);
+            if ($fieldManager) {
+                $fieldDef = $fieldManager->getFieldFromId($fieldId);
+            }
+
+            if (empty($fieldDef)) {
+                return null;
+            }
+            return $fieldDef->getId();
+        }
+
+        return null;
+    }
+
 
     /**
      * {@inheritdoc}
@@ -81,11 +118,14 @@ abstract class AbstractCheckCustomField extends AbstractTriggerTerm
 
         $customDataArray = $this->getCustomDataArray($ticket, $context);
 
-        $fieldId   = $options->get('field_id');
+        $fieldId   = $this->resolveFieldId($options, $context);
         $field     = null;
         $fieldData = null;
 
         foreach ($customDataArray as $customData) {
+            $field = $customData->getField();
+
+
             if ($customData->getField()->getId() == $fieldId) {
                 $fieldData = $customData->getData();
                 $field     = $customData->getField();

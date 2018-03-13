@@ -38,7 +38,7 @@ class OnlineAgents extends React.Component {
         }
 
         <List className={classNames('agents', { hidden: !expanded })}>
-          {onlineAgents.map((agent) => {
+          {onlineAgents.toArray().map((agent) => {
             let img = agent.get('avatar').get('default_url_pattern');
             if (agent.get('avatar').get('url_pattern')) {
               img = agent.get('avatar').get('url_pattern');

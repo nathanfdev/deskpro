@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2017, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2018, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -26,13 +26,7 @@
  * ~ Thanks, Everyone at Team DeskPRO
  */
 
-/**
- * DeskPRO.
- */
-
 namespace Application\DeskPRO\CustomFields\Handler;
-
-use Orb\Util\Strings;
 
 /**
  * Handles the data json value custom field.
@@ -40,25 +34,30 @@ use Orb\Util\Strings;
 class DataList extends HandlerAbstract
 {
     /**
-     * @param array $form_data
-     * @param null $default
+     * @param array $formData
+     * @param null  $default
+     *
      * @return mixed|null
      */
-    private function findValue(array $form_data, $default = null)
+    private function findValue(array $formData, $default = null)
     {
         $names = $this->getAllFormFieldNames();
         foreach ($names as $name) {
             if (isset($formData[$name])) {
-                return $form_data[$name];
+                return $formData[$name];
             }
         }
+
         return $default;
     }
 
+    /**
+     * {@inheritdoc}
+     */
     public function getDataFromForm(array $form_data)
     {
         $valueIfNotPresent = new \stdClass();
-        $value = $this->findValue($form_data, $valueIfNotPresent);
+        $value             = $this->findValue($form_data, $valueIfNotPresent);
 
         if ($value !== $valueIfNotPresent) {
             $decodedValue = null;
@@ -73,22 +72,32 @@ class DataList extends HandlerAbstract
             }
 
             $data = is_null($decodedValue) ? $value : json_encode($decodedValue);
-            return [[$this->field_def->getId(), 'input', $data]] ;
+
+            return [[$this->field_def->getId(), 'input', $data]];
         }
 
         return [];
     }
 
+    /**
+     * {@inheritdoc}
+     */
     public function getSearchCapabilities()
     {
         return ['is', 'not', 'contains', 'notcontains'];
     }
 
+    /**
+     * {@inheritdoc}
+     */
     public function getFilterCapabilities()
     {
-        return ['is', 'not'];
+        return ['is', 'not', 'empty', 'notempty'];
     }
 
+    /**
+     * {@inheritdoc}
+     */
     public function getSearchType()
     {
         return 'input';

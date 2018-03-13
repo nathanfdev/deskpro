@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2017, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2018, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -34,11 +34,25 @@ namespace Application\AgentBundle\Form\Type;
 
 use Application\DeskPRO\App;
 use Application\DeskPRO\Form\Type\PhoneNumberType;
+use Application\DeskPRO\Translate\Translate;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormBuilderInterface;
 
 class SettingsProfile extends AbstractType
 {
+    /**
+     * @var Translate
+     */
+    protected $translate;
+
+    /**
+     * @param Translate $translate
+     */
+    public function __construct(Translate $translate)
+    {
+        $this->translate = $translate;
+    }
+
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
         $builder->add('name', 'text', ['required' => false]);
@@ -52,7 +66,7 @@ class SettingsProfile extends AbstractType
         $lang_names = [];
         foreach (App::getContainer()->getLanguageData()->getAll() as $lang) {
             if ($lang->has_agent) {
-                $lang_names[$lang->id] = App::getTranslator()->getPhraseObject($lang, 'title');
+                $lang_names[$lang->id] = $this->translate->getPhraseObject($lang, 'title');
             }
         }
 
@@ -74,20 +88,21 @@ class SettingsProfile extends AbstractType
         $builder->add('default_team_id', 'hidden', ['required' => false]);
 
         $builder->add('new_picture_blob_id', 'hidden', ['required' => false]);
+        $builder->add('remove_picture', 'checkbox', ['required' => false]);
 
         $builder->add('auto_dismiss_notifications', 'choice', [
             'choices' => [
-                5    => '5 seconds',
-                10   => '10 seconds',
-                15   => '15 seconds',
-                30   => '30 seconds',
-                60   => '1 minute',
-                120  => '2 minutes',
-                300  => '5 minutes',
-                900  => '15 minutes',
-                1800 => '30 minutes',
-                3600 => '1 hour',
-                0    => 'Never',
+                5    => $this->translate->phrase('agent.time.x_second', ['count' => 5]),
+                10   => $this->translate->phrase('agent.time.x_second', ['count' => 10]),
+                15   => $this->translate->phrase('agent.time.x_second', ['count' => 15]),
+                30   => $this->translate->phrase('agent.time.x_second', ['count' => 30]),
+                60   => $this->translate->phrase('agent.time.x_minute', ['count' => 1]),
+                120  => $this->translate->phrase('agent.time.x_minute', ['count' => 2]),
+                300  => $this->translate->phrase('agent.time.x_minute', ['count' => 5]),
+                900  => $this->translate->phrase('agent.time.x_minute', ['count' => 15]),
+                1800 => $this->translate->phrase('agent.time.x_minute', ['count' => 30]),
+                3600 => $this->translate->phrase('agent.time.x_hour', ['count' => 1]),
+                0    => $this->translate->phrase('agent.general.never'),
             ],
             'expanded' => false,
             'multiple' => false,

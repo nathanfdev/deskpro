@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2017, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2018, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -100,7 +100,8 @@ class AgentsController extends AbstractPeopleController
      *     statusCodes={
      *         200="Returned if everything is ok"
      *     },
-     *     output="array<Person>"
+     *     output="array<Person>",
+     *     deprecated=true
      * )
      * @Rest\Get("/assigned_to_chat")
      *

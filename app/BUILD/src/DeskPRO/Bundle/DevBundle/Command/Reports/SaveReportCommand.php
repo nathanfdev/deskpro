@@ -62,8 +62,9 @@ class SaveReportCommand extends ContainerAwareCommand
         $reportId = $input->getArgument('reportId');
         /** @var ReportDashboardReport $report */
         $report      = $em->getRepository(ReportDashboardReport::class)->find($reportId);
-        $savedReport = $this->getContainer()->get('deskpro.reports.saver')->saveReport($report);
-        $output->writeln($this
+        $reportSaver = $this->getContainer()->get('deskpro.reports.saver');
+        $savedReport = $reportSaver->saveReport($report);
+        $url         = $this
             ->getContainer()
             ->get('router')
             ->generate(
@@ -73,7 +74,7 @@ class SaveReportCommand extends ContainerAwareCommand
                     'authcode' => $savedReport->getAuthcode(),
                 ],
                 UrlGeneratorInterface::ABSOLUTE_URL
-            )
-        );
+            );
+        $output->writeln($url);
     }
 }

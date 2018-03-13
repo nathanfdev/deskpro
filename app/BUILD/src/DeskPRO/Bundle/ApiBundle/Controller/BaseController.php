@@ -109,6 +109,10 @@ class BaseController extends FOSRestController
         ], Response::HTTP_BAD_REQUEST);
     }
 
+    protected function createEntityNotFoundExceptionMessage($entity, $id) {
+        return  "#{$id} Not Found";
+    }
+
     /**
      * @param string $class
      * @param int    $id
@@ -119,7 +123,7 @@ class BaseController extends FOSRestController
     protected function findOr404($class, $id, $message = null)
     {
         if (!$entity = $this->getManager()->getRepository($class)->find($id)) {
-            throw $this->createNotFoundException($message ?: "#{$id} Not Found");
+            throw $this->createNotFoundException($message ?: $this->createEntityNotFoundExceptionMessage($class, $id));
         }
 
         return $entity;

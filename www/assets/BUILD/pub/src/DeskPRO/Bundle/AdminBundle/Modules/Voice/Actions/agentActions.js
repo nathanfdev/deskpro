@@ -9,12 +9,11 @@ export const toggleVoiceEnabled = createAction(
   'VOICE_TOGGLE_AGENT_VOICE_ENABLED',
   agent => (dispatch) => {
     const isVoiceEnabled = !agent.getIn(['agent_data', 'is_voice_enabled']);
-    const agentData = agent.get('agent_data') ? agent.get('agent_data').toJS() : {};
     const data = {
       agent_data: {
-        ...agentData,
         is_voice_enabled:       isVoiceEnabled,
-        outbound_calls_enabled: isVoiceEnabled
+        outbound_calls_enabled: isVoiceEnabled,
+        can_use_forwarding:     isVoiceEnabled
       }
     };
 
@@ -35,11 +34,23 @@ export const toggleOutboundCallsEnabled = createAction(
   'VOICE_TOGGLE_AGENT_OUTBOUND_CALL',
   agent => (dispatch) => {
     const isOutboundCallsEnabled = !agent.getIn(['agent_data', 'outbound_calls_enabled']);
-    const agentData = agent.get('agent_data') ? agent.get('agent_data').toJS() : {};
     const data = {
       agent_data: {
-        ...agentData,
         outbound_calls_enabled: isOutboundCallsEnabled
+      }
+    };
+
+    return dispatch(editAgent(agent.get('id'), data));
+  }
+);
+
+export const toggleUseForwarding = createAction(
+  'VOICE_TOGGLE_AGENT_USE_FORWARDING',
+  agent => (dispatch) => {
+    const canUseForwarding = !agent.getIn(['agent_data', 'can_use_forwarding']);
+    const data = {
+      agent_data: {
+        can_use_forwarding: canUseForwarding
       }
     };
 
@@ -70,16 +81,14 @@ export const toggleAll = createAction(
         return;
       }
 
-      const agentData = agent.get('agent_data') ? agent.get('agent_data').toJS() : {};
-
       requests[agent.get('id')] = {
         method: 'put',
         url:    `/people/${agent.get('id')}`,
         data:   {
           agent_data: {
-            ...agentData,
             is_voice_enabled:       isVoiceEnabled,
-            outbound_calls_enabled: isVoiceEnabled
+            outbound_calls_enabled: isVoiceEnabled,
+            can_use_forwarding:     isVoiceEnabled
           }
         }
       };
@@ -102,6 +111,7 @@ export const toggleAll = createAction(
 
           newAgent = newAgent.setIn(['agent_data', 'is_voice_enabled'], isVoiceEnabled);
           newAgent = newAgent.setIn(['agent_data', 'outbound_calls_enabled'], isVoiceEnabled);
+          newAgent = newAgent.setIn(['agent_data', 'can_use_forwarding'], isVoiceEnabled);
 
           dispatch(updateCollection('Person', Immutable.List([newAgent]), 'merge'));
         }

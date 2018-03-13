@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2017, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2018, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -404,7 +404,7 @@ class PersonSearch extends SearcherAbstract
 
                         // Some groups should be processed differently
                         $specialGroupsWhere = '';
-                        $registeredGroupId = $this->extractRegisteredUsergroupId($choice);
+                        $registeredGroupId  = $this->extractRegisteredUsergroupId($choice);
                         if ($registeredGroupId) {
                             $specialGroupsWhere = $this->_choiceMatch("$people_table.is_user", self::OP_IS, 1);
                             if (!$choice) {
@@ -455,7 +455,7 @@ class PersonSearch extends SearcherAbstract
 
                         if ($specialGroupsWhere) {
                             $currWhere = array_pop($wheres);
-                            $wheres[] = sprintf("(%s) OR (%s)", $specialGroupsWhere, $currWhere);
+                            $wheres[]  = sprintf('(%s) OR (%s)', $specialGroupsWhere, $currWhere);
                         }
 
                         $this->mode = self::MODE_ANY;
@@ -778,11 +778,17 @@ class PersonSearch extends SearcherAbstract
                                             }
                                         }
                                         break;
-                                    case 'not_isset':
+                                    case self::OP_NOT_ISSET:
                                         $wheres[] = "$field IS NULL";
                                         break;
-                                    case 'isset':
+                                    case self::OP_ISSET:
                                         $wheres[] = "$field IS NOT NULL";
+                                        break;
+                                    case self::OP_EMPTY:
+                                        $wheres[] = "$field IS NULL OR $field = ''";
+                                        break;
+                                    case self::OP_NOT_EMPTY:
+                                        $wheres[] = "$field != ''";
                                         break;
                                 }
                                 break;
@@ -844,14 +850,14 @@ class PersonSearch extends SearcherAbstract
                                             $wheres[] = "custom_data_person_$join_id.id IS NULL";
                                         }
                                         break;
-                                    case 'not_isset':
+                                    case self::OP_NOT_ISSET:
                                         $joins[] = [
                                             'custom_data_person',
                                             "LEFT JOIN custom_data_person AS custom_data_person_$join_id ON (custom_data_person_$join_id.person_id = people.id AND custom_data_person_$join_id.root_field_id = {$field_def->id})",
                                         ];
                                         $wheres[] = "custom_data_person_$join_id.id IS NULL";
                                         break;
-                                    case 'isset':
+                                    case self::OP_ISSET:
                                         $joins[] = [
                                             'custom_data_person',
                                             "LEFT JOIN custom_data_person AS custom_data_person_$join_id ON (custom_data_person_$join_id.person_id = people.id AND custom_data_person_$join_id.root_field_id = {$field_def->id})",
@@ -933,9 +939,10 @@ class PersonSearch extends SearcherAbstract
     }
 
     /**
-     * Extract and return Id of User Group 'Registered'
+     * Extract and return Id of User Group 'Registered'.
      *
      * @param array $usergroupIds
+     *
      * @return int|false
      */
     protected function extractRegisteredUsergroupId(&$usergroupIds)

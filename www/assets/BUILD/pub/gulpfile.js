@@ -4,7 +4,6 @@ const webpack               = require('webpack');
 const express               = require('express');
 const cors                  = require('cors');
 const del                   = require('del');
-const runSeq                = require('run-sequence');
 const path                  = require('path');
 const ExtractTextPlugin     = require('extract-text-webpack-plugin');
 const WebpackNotifierPlugin = require('webpack-notifier');
@@ -29,52 +28,6 @@ gulp.task('clean', (cb) => {
   del(['./build']).then(() => {
     cb();
   });
-});
-
-gulp.task('default', ['clean'], (cb) => {
-  runSeq(['bundle'], cb);
-});
-
-// used in init-project-dev, builds to filesystem but without any optimisations
-// so its quicker during a new project checkout
-gulp.task('default-dev', ['clean'], (cb) => {
-  runSeq(['bundle:dev'], cb);
-});
-
-gulp.task('prod', ['clean', 'priv:start-prod'], (cb) => {
-  runSeq(['bundle'], cb);
-});
-
-gulp.task('dev', (cb) => {
-  // prefer to use one at a time, build speed is faster
-  // and you can still just open up two terminal winodws if you need both
-  console.log('Use:');
-  console.log('\tdev:agent    -  For the agent interface');
-  console.log('\tdev:portal   -  For the portal');
-  console.log('\tdev:widget   -  For the widget');
-  console.log('\tdev:demo     -  For the demo');
-  console.log('\tdev:all      -  For all');
-  cb();
-});
-
-gulp.task('dev:agent', (cb) => {
-  runSeq(['bundle:dev-server:agent'], cb);
-});
-
-gulp.task('dev:portal', (cb) => {
-  runSeq(['bundle:dev-server:portal'], cb);
-});
-
-gulp.task('dev:widget', (cb) => {
-  runSeq(['bundle:dev-server:widget'], cb);
-});
-
-gulp.task('dev:demo', (cb) => {
-  runSeq(['bundle:dev-server:demo'], cb);
-});
-
-gulp.task('dev:all', (cb) => {
-  runSeq(['bundle:dev-server'], cb);
 });
 
 // ######################################################################################################################
@@ -161,13 +114,13 @@ function getWebpackConfig(mode, isProd) {
     },
 
     resolve: {
-      root: [
+      modules: [
+        path.join(__dirname, 'node_modules'),
         path.join(__dirname, 'src'),
         path.join(__dirname, 'src/DeskPRO/Component'),
         path.join(__dirname, 'src/DeskPRO/Dev'),
         path.join(__dirname, 'built-tools'),
         path.join(__dirname, 'vendor'),
-        //path.join(__dirname, 'node_modules')
       ],
 
       alias: {
@@ -176,18 +129,15 @@ function getWebpackConfig(mode, isProd) {
         'jquery.ui':            'jquery-ui',
         'jquery.ui.widget':     'jquery.ui.widget/jquery.ui.widget',
         'jquery.serializejson': 'jquery-serializejson/jquery.serializejson',
-        'mark.js':              'mark.js/dist/jquery.mark.min'
+        react:                  path.join(__dirname, 'node_modules', 'react')
       }
     },
 
-    resolveLoader: {
-      modulesDirectories: ['web_loaders', 'web_modules', 'node_loaders', 'node_modules', 'build-tools', 'vendor']
-    },
-
     module: {
-      preLoaders: [
+      rules: [
         {
           test:    /\/Reducers\/.*?\.js$/,
+          enforce: 'pre',
           loader:  'app-reducer-gen',
           include: [
             path.resolve(__dirname, 'src/DeskPRO/Bundle/AdminBundle/Modules'),
@@ -198,20 +148,32 @@ function getWebpackConfig(mode, isProd) {
             path.resolve(__dirname, 'src/DeskPRO/Bundle/WidgetBundle/Modules'),
             path.resolve(__dirname, 'src/DeskPRO/Bundle/Apps/Modules'),
           ]
-        }
-      ],
-
-      loaders: [
+        },
         {
-          test:    /\.js$/,
-          loader:  'babel?cacheDirectory',
+          test: /\.js$/,
+          use:  [
+            {
+              loader:  'babel-loader',
+              options: {
+                cacheDirectory: true
+              }
+            }
+          ],
           include: [
             path.resolve(__dirname, 'src/DeskPRO')
           ]
         },
         {
-          test:    /\.(png|gif|jpg|jpeg|woff|woff2|ttf|eot|svg|mp3|ogg|wav)(\?|$)/,
-          loader:  'file-loader?context=src&name=[path][name].[ext]',
+          test: /\.(png|gif|jpg|jpeg|woff|woff2|ttf|eot|svg|mp3|ogg|wav)(\?|$)/,
+          use:  [
+            {
+              loader:  'file-loader',
+              options: {
+                context: 'src',
+                name:    '[path][name].[ext]'
+              }
+            }
+          ],
           include: [
             path.resolve(__dirname, 'src/DeskPRO'),
             path.resolve(__dirname, 'node_modules/bourbon'),
@@ -234,14 +196,34 @@ function getWebpackConfig(mode, isProd) {
             path.resolve(__dirname, 'src/DeskPRO/Bundle/WidgetBundle')
           ],
 
-          loader: ExtractTextPlugin.extract('style-loader',
-            `css-loader?sourceMap!sass-loader?sourceMap&outputStyle=expanded&includePaths[]=${bowerDir}&includePaths[]=${nodeModulesDir}`,
-            { publicPath: './' }
-          )
+          use: ExtractTextPlugin.extract({
+            fallback: 'style-loader',
+            use:      [
+              {
+                loader:  'css-loader',
+                options: {
+                  sourceMap: true
+                }
+              },
+              {
+                loader:  'sass-loader',
+                options: {
+                  sourceMap:    true,
+                  outputStyle:  'expanded',
+                  includePaths: [bowerDir, nodeModulesDir],
+                }
+              }
+            ],
+            publicPath: './'
+          })
         },
         {
-          test:   /\.json/,
-          loader: 'json-loader'
+          test: /\.json/,
+          use:  [
+            {
+              loader: 'json-loader'
+            }
+          ],
         },
         {
           test:    /\.(ttf|eot|woff|woff2)$/,
@@ -250,15 +232,37 @@ function getWebpackConfig(mode, isProd) {
             name: 'fonts/[name].[ext]',
           },
         },
-        { test: require.resolve('react'), loader: 'expose-loader?React' },
-        { test: require.resolve('react-dom'), loader: 'expose-loader?ReactDOM' },
+        {
+          test: require.resolve('react'),
+          use:  [
+            {
+              loader:  'expose-loader',
+              options: {
+                React: true
+              }
+            }
+          ],
+        },
+        {
+          test: require.resolve('react-dom'),
+          use:  [
+            {
+              loader:  'expose-loader',
+              options: {
+                ReactDom: true
+              }
+            }
+          ],
+        },
       ],
-      noParse: [/(^(froala|jquery\.mark))\.min\.js/]
+      noParse: /(^(froala|jquery\.mark))\.min\.js/
     },
 
     plugins: [
       new WebpackNotifierPlugin(),
-      new ExtractTextPlugin('[name].css'),
+      new ExtractTextPlugin({
+        filename: '[name].css'
+      }),
       new webpack.DefinePlugin({
         'process.env.NODE_ENV': (isProd ? '"production"' : '"development"'),
         __DEV__:                !isProd
@@ -340,13 +344,25 @@ function getWebpackConfig(mode, isProd) {
     //---
     // Dev server stuff
     //---
-    config.debug           = true;
+    config.plugins.push(new webpack.LoaderOptionsPlugin({
+      debug: true
+    }));
     config.output.pathinfo = true;
     config.plugins.push(new webpack.HotModuleReplacementPlugin());
-    config.plugins.push(new webpack.NoErrorsPlugin());
+    config.plugins.push(new webpack.NoEmitOnErrorsPlugin());
 
     // .js loader
-    config.module.loaders[0].loaders = ['react-hot-loader', 'babel-loader?stage=0'];
+    config.module.rules[1].use = [
+      {
+        loader: 'react-hot-loader'
+      },
+      {
+        loader:  'babel-loader',
+        options: {
+          presets: ['stage-0']
+        }
+      }
+    ];
 
     if (config.entry.DeskPRO_AdminBundle) {
       config.entry.DeskPRO_AdminBundle.unshift('webpack-hot-middleware/client?path=http://localhost:9666/__webpack_hmr');

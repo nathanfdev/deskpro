@@ -1,7 +1,7 @@
 import React from 'react';
 import Immutable from 'immutable';
 import NumberList from 'DeskPRO/Bundle/AdminBundle/Modules/Voice/Components/Numbers/List/NumberList';
-import { storiesOf } from '@kadira/storybook';
+import { storiesOf } from '@storybook/react';
 import { adminCss, redux } from '../../../../decorators';
 
 const numbers = Immutable.fromJS([

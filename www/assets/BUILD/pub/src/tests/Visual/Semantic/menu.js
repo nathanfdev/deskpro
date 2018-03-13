@@ -1,5 +1,5 @@
 import React from 'react';
-import { storiesOf } from '@kadira/storybook';
+import { storiesOf } from '@storybook/react';
 import { MenuWrapper } from 'Semantic/Menu';
 import Accordion from 'Semantic/Accordion/Accordion';
 import List from 'Semantic/List/List';

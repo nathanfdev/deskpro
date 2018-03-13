@@ -25,6 +25,11 @@ yarn-error.log
 /dev/dev_config
 bin/deskpro-importer-tools
 
+# generated via gen-lic-list
+/www/assets/BUILD/docs/third-party/composer-lic-info.json
+/www/assets/BUILD/docs/third-party/npm-lic-info.json
+/www/assets/BUILD/docs/third-party/legacy-npm-lic-info.json
+
 # vendors and build files
 /node_modules
 /app/BUILD/vendor
@@ -106,6 +111,7 @@ bin/deskpro-importer-tools
 /config/advanced/*
 !/config/.gitkeep
 !/config/advanced/.gitkeep
+!/config/importer/.gitkeep
 
 
 
@@ -265,3 +271,4 @@ www/assets/BUILD/pub/nightwatch.conf.js
 /app/BUILD/sys/config/build-num.txt
 /app/BUILD/sys/config/commit-id.txt
 /app/run/build-num.txt
+/app/BUILD/src/DeskPRO/Bundle/ReportBundle/Dpql2/PHP/

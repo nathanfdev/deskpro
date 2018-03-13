@@ -127,7 +127,7 @@
 				<div class="col-lg-12">
 					<div class="inner-group">
 						<p>
-							DeskPRO sends a number of non-ticket related emails such as password reset links, welcome emails,
+							Deskpro sends a number of non-ticket related emails such as password reset links, welcome emails,
 							or login alerts. This option defines which email account to use for these types of emails.
 						</p>
 						<p>
@@ -138,16 +138,13 @@
 							some helpdesks may wish to <a href="https://support.deskpro.com/kb/articles/208" target="_blank">configure a noreply address</a>
 							instead.
 						</p>
-						<div style="padding-top: 10px;">
-							Brand: <select ui-select2 ng-model="currentBrand">
-								<option
-										ng-selected="currentBrand === brand.id"
-										ng-repeat="brand in brands" value="{{ ng_var('brand.id') }}">{{ ng_var('brand.name') }}
-								</option>
+						<div style="padding-top: 10px;" ng-if="brands.length > 1" ng-repeat="brand in brands">
+							{{ ng_var('brand.name') }} default account: <select ui-select2 ng-model="settings.default_from_email[brand.id]">
+								<option ng-repeat="acc in email_accounts" value="{{ ng_var('acc.address') }}">{{ ng_var('acc.address') }}</option>
 							</select>
 						</div>
-						<div style="padding-top: 10px;">
-							Default account: <select ui-select2 ng-model="settings.default_from_email[currentBrand]">
+						<div style="padding-top: 10px;" ng-if="brands.length = 1" ng-repeat="brand in brands">
+                            Default email account: <select ui-select2 ng-model="settings.default_from_email[brand.id]">
 								<option ng-repeat="acc in email_accounts" value="{{ ng_var('acc.address') }}">{{ ng_var('acc.address') }}</option>
 							</select>
 						</div>
@@ -167,7 +164,7 @@
 				</h3>
 				<div class="panel-help inhelp-body">
 					<p>
-						Refer to the DeskPRO knowledgebase for information on <a href="https://support.deskpro.com/kb/articles/182" target="_blank">Date and Time formats &rarr;</a>
+						Refer to the Deskpro knowledgebase for information on <a href="https://support.deskpro.com/kb/articles/182" target="_blank">Date and Time formats &rarr;</a>
 					</p>
 				</div>
 			</div>

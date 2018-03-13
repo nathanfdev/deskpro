@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2017, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2018, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -161,6 +161,48 @@ class AgentData implements EntityInterface, NotifyPropertyChanged
      * @var bool
      */
     private $outboundCallsEnabled = false;
+
+    /**
+     * @ORM\Column(name="can_use_forwarding", type="boolean")
+     *
+     * @JMS\Expose()
+     * @JMS\Type("boolean")
+     *
+     * @var bool
+     */
+    private $canUseForwarding = false;
+
+    /**
+     * @ORM\Column(name="agent_can_use_forwarding", type="boolean")
+     *
+     * @JMS\Expose()
+     * @JMS\Type("boolean")
+     *
+     * @var bool
+     */
+    private $agentCanUseForwarding = false;
+
+    /**
+     * @ORM\Column(name="forwarding_number", type="string", length=50, nullable=true)
+     *
+     * @JMS\Expose()
+     * @JMS\Type("string")
+     *
+     * @AppAssert\CallNumber()
+     *
+     * @var string
+     */
+    private $forwardingNumber;
+
+    /**
+     * @ORM\Column(name="forwarding_number_type", type="string", length=50, nullable=true)
+     *
+     * @JMS\Expose()
+     * @JMS\Type("string")
+     *
+     * @var string
+     */
+    private $forwardingNumberType;
 
     /**
      * @return int
@@ -351,5 +393,83 @@ class AgentData implements EntityInterface, NotifyPropertyChanged
         $this->setModelField('outboundCallsEnabled', $outboundCallsEnabled);
 
         return $this;
+    }
+
+    /**
+     * @return bool
+     */
+    public function canUseForwarding()
+    {
+        return $this->canUseForwarding;
+    }
+
+    /**
+     * @param bool $canUseForwarding
+     *
+     * @return $this
+     */
+    public function setCanUseForwarding($canUseForwarding)
+    {
+        $this->setModelField('canUseForwarding', $canUseForwarding);
+
+        return $this;
+    }
+
+    /**
+     * @return bool
+     */
+    public function agentCanUseForwarding()
+    {
+        return $this->agentCanUseForwarding;
+    }
+
+    /**
+     * @param bool $agentCanUseForwarding
+     *
+     * @return $this
+     */
+    public function setAgentCanUseForwarding($agentCanUseForwarding)
+    {
+        $this->setModelField('agentCanUseForwarding', $agentCanUseForwarding);
+
+        return $this;
+    }
+
+    /**
+     * @return string
+     */
+    public function getForwardingNumber()
+    {
+        return $this->forwardingNumber;
+    }
+
+    /**
+     * @param string $forwardingNumber
+     *
+     * @return $this
+     */
+    public function setForwardingNumber($forwardingNumber)
+    {
+        if ($forwardingNumber) {
+            if (preg_match('/^sip:/', $forwardingNumber)) {
+                $this->setModelField('forwardingNumberType', VoicePhoneCall::EXTERNAL_NUMBER_TYPE_SIP);
+            } else {
+                $this->setModelField('forwardingNumberType', VoicePhoneCall::EXTERNAL_NUMBER_TYPE_PHONE);
+            }
+        } else {
+            $this->setModelField('forwardingNumberType', '');
+        }
+
+        $this->setModelField('forwardingNumber', $forwardingNumber);
+
+        return $this;
+    }
+
+    /**
+     * @return string
+     */
+    public function getForwardingNumberType()
+    {
+        return $this->forwardingNumberType;
     }
 }

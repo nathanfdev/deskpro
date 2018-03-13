@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2017, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2018, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -42,18 +42,12 @@ use Symfony\Component\Validator\Constraints as Assert;
 /**
  * Settings used by the system.
  *
- * @property int $id
  * @property string $name
  * @property string $value
  * @property \Application\DeskPRO\Entity\Brand $brand
  */
 class Setting extends \Application\DeskPRO\Domain\DomainObject
 {
-    /**
-     * @var int
-     */
-    protected $id;
-
     /**
      * The name of the setting.
      *
@@ -119,7 +113,6 @@ class Setting extends \Application\DeskPRO\Domain\DomainObject
     public static function loadMetadata(ClassMetadata $metadata)
     {
         $builder = new ClassMetadataBuilder($metadata);
-        $builder->mapId();
         $builder->setTable('settings');
         $builder->setCustomRepositoryClass('Application\DeskPRO\EntityRepository\Setting');
         $builder->addUniqueConstraint(['name'], 'unique_setting_name');
@@ -135,6 +128,7 @@ class Setting extends \Application\DeskPRO\Domain\DomainObject
                 'scale'      => 0,
                 'nullable'   => false,
                 'columnName' => 'name',
+                'id'         => true,
             ]
         );
         $metadata->mapField(

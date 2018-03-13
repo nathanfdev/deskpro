@@ -1,4 +1,3 @@
-@new
 Feature: /tickets endpoint
   Check list filters
 
