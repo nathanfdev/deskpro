@@ -125,6 +125,8 @@ define ['DeskPRO/Util/Arrays'], (Arrays) ->
       .then (resp) =>
         widgets = resp.data.data;
         widgets.map((widget) =>
+          if !(widget.rendered_result?) or widget.rendered_result == false or widget.rendered_result == ''
+            widget.rendered_result = null
           widget.sizeX = widget.size_x
           widget.sizeY = widget.size_y
         )
