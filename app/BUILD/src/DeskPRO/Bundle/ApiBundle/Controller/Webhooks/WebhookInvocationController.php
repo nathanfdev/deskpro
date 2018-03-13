@@ -50,13 +50,14 @@ class WebhookInvocationController extends BaseController
 {
     /**
      * @Rest\Post("")
+     * @Rest\Get("")
      *
      * @param $webhook
      * @param Request $request
      *
      * @return View
      */
-    public function postAction($webhook, Request $request)
+    public function invokekAction($webhook, Request $request)
     {
         /** @var Webhooks\Repository $repository */
         $repository    = $this->getDoctrine()->getRepository(Webhooks\TicketWebhook::class);
@@ -70,8 +71,13 @@ class WebhookInvocationController extends BaseController
         $container = $this->getContainer();
         /** @var \DeskPRO\Bundle\AppBundle\Webhooks\TicketWebhookExecutor $executor */
         $executor = $container->get(\DeskPRO\Bundle\AppBundle\Webhooks\TicketWebhookExecutor::class);
-        $executor->execute($webhookEntity, $webhookRequest);
+        $stats = $executor->execute($webhookEntity, $webhookRequest);
 
-        return View::create([], Response::HTTP_NO_CONTENT);
+        return View::create([
+            "data" => [
+                "count" => count($stats->getMatchedByTriggers()),
+                "tickedIds" => $stats->getMatchedByTriggers()
+            ]
+        ], Response::HTTP_OK);
     }
 }

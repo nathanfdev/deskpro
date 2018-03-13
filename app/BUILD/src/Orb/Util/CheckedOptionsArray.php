@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2017, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2018, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -93,6 +93,7 @@ class CheckedOptionsArray extends OptionsArray
 
     /**
      * @param $name
+     *
      * @return array|string[]
      */
     public function getAliases($name)
@@ -105,15 +106,12 @@ class CheckedOptionsArray extends OptionsArray
     }
 
     /**
-     * @param string $name
+     * @param string         $name
      * @param array|string[] $aliases
      */
     public function setAliases($name, array $aliases)
     {
         $this->alias_names[$name] = $aliases;
-        foreach ($aliases as $alias) {
-            $this->addValidNames($alias);
-        }
     }
 
     /**
@@ -272,7 +270,16 @@ class CheckedOptionsArray extends OptionsArray
     public function set($name, $value)
     {
         if ($this->valid_names && (!isset($this->valid_names[$name]) && !isset($this->required_names[$name]))) {
-            throw new CheckedOptionsException('Invalid option name: '.$name, ['invalid_name'], ['name' => $name]);
+            $foundAlias = false;
+            foreach ($this->alias_names as $n => $ans) {
+                if ($name == $n || in_array($name, $ans)) {
+                    $foundAlias = true;
+                    break;
+                }
+            }
+            if (!$foundAlias) {
+                throw new CheckedOptionsException('Invalid option name: '.$name, ['invalid_name'], ['name' => $name]);
+            }
         }
 
         if (isset($this->validators[$name])) {

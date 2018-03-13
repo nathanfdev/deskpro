@@ -12,15 +12,22 @@ define -> [
     $scope.activeTab = 'general'
 
     $scope.report = report
-    $scope.schedule = {
-      frequency: 'daily'
-      when:
-        time: '10:00'
-        weekday: 'monday'
-        monthday: 1
-        monthday2: 15
-      sendTo: ''
-    }
+    if $scope.report.schedule
+      $scope.enabled = 1
+      $scope.schedule = angular.copy $scope.report.schedule
+      $scope.schedule.send_to = $scope.schedule.send_to.join(',')
+    else
+      $scope.enabled = 0
+      $scope.schedule = {
+        frequency: 'daily'
+        when:
+          time: '10:00'
+          weekday: 'monday'
+          monthday: 1
+          monthday2: 15
+        send_to: ''
+      }
+
     $scope.month = []
 
     for num in [1..31] by 1
@@ -32,8 +39,6 @@ define -> [
       $scope.month.push({name: "#{num}#{suffix}", value: num})
     $scope.month.push({name: 'last day of month', value: 'last'})
 
-    console.log $scope.month
-
     $scope.cancel = ->
       $modalInstance.dismiss('cancel')
 
@@ -41,6 +46,7 @@ define -> [
       $modalInstance.close($scope.report)
 
     $scope.scheduleReport= ->
-      DashboardService.scheduleReport(report, $scope.schedule)
-      $modalInstance.close($scope.report)
+      DashboardService.scheduleReport(report, $scope.schedule, $scope.enabled)
+      .then () ->
+        $modalInstance.dismiss('scheduled')
 ]

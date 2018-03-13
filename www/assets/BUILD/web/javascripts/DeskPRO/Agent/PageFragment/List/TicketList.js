@@ -239,6 +239,11 @@ DeskPRO.Agent.PageFragment.List.TicketList = new Orb.Class({
 
         if (oldSlaCount !== newSlaCount) {
           cachedSlaCount.html(newSlaCount);
+          if (newSlaCount > 0) {
+            cachedSlaCount.addClass('not-empty');
+          } else {
+            cachedSlaCount.removeClass('not-empty');
+          }
         }
       } else {
         ['ok', 'warning', 'fail'].forEach(function(slaStatus) {
@@ -248,6 +253,11 @@ DeskPRO.Agent.PageFragment.List.TicketList = new Orb.Class({
 
           if (oldSlaCount !== newSlaCount) {
             cachedSlaCount.html(newSlaCount);
+            if (newSlaCount > 0) {
+              cachedSlaCount.addClass('not-empty');
+            } else {
+              cachedSlaCount.removeClass('not-empty');
+            }
           }
         });
       }
@@ -410,8 +420,6 @@ DeskPRO.Agent.PageFragment.List.TicketList = new Orb.Class({
             }).length === 1;
           if (currentlyInView) {
             self.queueChangeEvent('refreshTicketResults', [ticketId]);
-          } else {
-            self.queueChangeEvent('addTicketResults', [ticketId]);
           }
         });
       }
@@ -463,6 +471,21 @@ DeskPRO.Agent.PageFragment.List.TicketList = new Orb.Class({
             } else if (data.op === 'del') {
               self.queueChangeEvent('removeTicketResults', [ticketId]);
               self.updateSubgroupingBubbles('refresh');
+            }
+          }
+        }
+      }, null, [this.OBJ_ID]);
+    } else {
+      DeskPRO_Window.getMessageBroker().addMessageListener('agent.filter-update', function(data) {
+        var filterId = parseInt(data.filter_id);
+        var ticketId = parseInt(data.ticket_id || 0);
+        if (filterId === self.filterId) {
+          if (ticketId && data.op) {
+            if (data.op === 'add') {
+              // ticket is added via Tickets.js
+              // filterUpdated() method
+            } else if (data.op === 'del') {
+              self.queueChangeEvent('removeTicketResults', [ticketId]);
             }
           }
         }

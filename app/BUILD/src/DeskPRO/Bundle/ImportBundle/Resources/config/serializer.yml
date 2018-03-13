@@ -1,0 +1,6 @@
+services:
+
+  dp.importer.parser.metadata_listener:
+    class: DeskPRO\Bundle\ImportBundle\Serializer\MetadataListener
+    tags:
+      - { name: "jms_serializer.event_subscriber" }

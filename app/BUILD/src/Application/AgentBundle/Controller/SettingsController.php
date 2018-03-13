@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2017, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2018, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -52,7 +52,7 @@ class SettingsController extends AbstractController
     {
         $defaultCountryCode = $this->getContainer()->get('deskpro.core.settings')->get('core.default_country_code');
         $edit_profile       = new SettingsProfileModel($this->person, $defaultCountryCode);
-        $edit_form          = new SettingsProfile();
+        $edit_form          = new SettingsProfile($this->get('language_manager')->getTranslator());
         $form               = $this->get('form.factory')->create($edit_form, $edit_profile);
 
         /** @var \Application\DeskPRO\People\PasswordPolicyValidator $password_validator */
@@ -73,7 +73,7 @@ class SettingsController extends AbstractController
     public function profileSaveAction(Request $request)
     {
         $edit_profile = new SettingsProfileModel($this->person);
-        $edit_form    = new SettingsProfile();
+        $edit_form    = new SettingsProfile($this->get('language_manager')->getTranslator());
         $form         = $this->get('form.factory')->create($edit_form, $edit_profile);
 
         $form->handleRequest($request);
@@ -493,7 +493,7 @@ class SettingsController extends AbstractController
         if ($macro_id) {
             $is_new = false;
             $macro  = $this->em->getRepository(Entity\TicketMacro::class)->find($macro_id);
-            if (!$macro || (!$macro->is_global && $macro->person->id != $this->person->id)) {
+            if (!$macro || !$this->person->getPermissionsManager()->TicketMacroChecker->canEdit($macro)) {
                 throw $this->createNotFoundException('Could not find macro');
             }
         } else {
@@ -523,7 +523,7 @@ class SettingsController extends AbstractController
         if ($macro_id) {
             $is_new = false;
             $macro  = $this->em->getRepository(Entity\TicketMacro::class)->find($macro_id);
-            if (!$macro || (!$macro->is_global && $macro->person->id != $this->person->id)) {
+            if (!$macro || !$this->person->getPermissionsManager()->TicketMacroChecker->canEdit($macro)) {
                 throw $this->createNotFoundException('Could not find macro');
             }
         } else {
@@ -532,8 +532,15 @@ class SettingsController extends AbstractController
             $is_new          = true;
         }
 
-        $macro['title']     = $this->in->getString('macro.title');
-        $macro['is_global'] = $this->in->getBool('macro.is_global');
+        $macro['title'] = $this->in->getString('macro.title');
+
+        // only do changes to permissions if Department permission was not set in Admin interface
+        if (!$macro['department']) {
+            $macro['is_global'] = $this->in->getBool('macro.is_global');
+            if (!$macro['is_global']) {
+                $macro['person'] = $this->person;
+            }
+        }
 
         $action_rules = RuleBuilder::newActionsBuilder();
         $actions      = $action_rules->readForm($this->in->getCleanValueArray('actions', 'raw', 'str_simple'));
@@ -558,7 +565,7 @@ class SettingsController extends AbstractController
     public function ticketMacroDeleteAction($macro_id)
     {
         $macro = $this->em->getRepository(Entity\TicketMacro::class)->find($macro_id);
-        if (!$macro || (!$macro->is_global && $macro->person->id != $this->person->id)) {
+        if (!$macro || !$this->person->getPermissionsManager()->TicketMacroChecker->canEdit($macro)) {
             throw $this->createNotFoundException('Could not find macro');
         }
 

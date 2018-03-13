@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2017, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2018, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -32,14 +32,4 @@ use Zend\Mail\Headers as BaseHeaders;
 
 class Headers extends BaseHeaders
 {
-    public function addHeaderLine($headerFieldNameOrLine, $fieldValue = null)
-    {
-        if (substr($headerFieldNameOrLine, 0, 9) === 'Subject: ') {
-            $subject               = substr($headerFieldNameOrLine, 9);
-            $headerFieldNameOrLine = 'Subject: =?UTF-8?Q?'.quoted_printable_encode($subject).'?=';
-            $headerFieldNameOrLine = str_replace("\r\n", '', $headerFieldNameOrLine);
-        }
-
-        return parent::addHeaderLine($headerFieldNameOrLine, $fieldValue);
-    }
 }

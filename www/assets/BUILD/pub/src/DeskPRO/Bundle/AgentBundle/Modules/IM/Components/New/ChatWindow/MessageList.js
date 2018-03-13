@@ -1,7 +1,7 @@
 import PropTypes from 'prop-types';
 import React from 'react';
 import Immutable from 'immutable';
-import Loader from 'react-loader';
+import Loader from '@deskpro/react-loader';
 import { SegmentsGroup } from 'DeskPRO/Component/Semantic/Segment';
 import { Header } from 'DeskPRO/Component/Semantic/Common';
 import Message from './Message';
@@ -156,7 +156,7 @@ class MessageList extends React.Component {
                 return first.id - second.id;
               }
               return first.timestamp - second.timestamp;
-            }).map((message) => {
+            }).toArray().map((message) => {
               const result = [];
               let person = agents.get(message.person);
               if (!person) {

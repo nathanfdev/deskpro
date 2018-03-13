@@ -531,6 +531,9 @@ DeskPRO.Agent.PageFragment.Page.NewTicket = new Orb.Class({
 			emailCheckboxState = $input.prop('checked');
 
     $toggle.children('li').on('click', function(){
+    	if ($(this).hasClass('on')) {
+    		return;
+			}
       $toggle.children('li').removeClass('on');
       $(this).addClass('on');
 
@@ -1842,9 +1845,21 @@ DeskPRO.Agent.PageFragment.Page.NewTicket = new Orb.Class({
 		selectBrand.on('change', function () {
 			$.get('/agent/tickets/new/get-departments/' + this.value, function(res) {
 				var selectDepartment = self.getEl('dep');
+				var previousValue = selectDepartment.val();
 				selectDepartment.children().remove();
-				$(res).find('option').appendTo(selectDepartment);
-				selectDepartment.select2('val', '');
+				$(res).children().appendTo(selectDepartment);
+				var val = '';
+				var options = $(res).find('option');
+				// An empty option is always offered
+				if (options.length === 2) {
+					val = options[1].value;
+				}
+				if (!val && previousValue) {
+          if (options.filter('option[value='+previousValue+']').length > 0) {
+          	val = previousValue;
+					}
+				}
+				selectDepartment.select2('val', val);
 			});
 		});
 	},

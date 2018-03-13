@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2017, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2018, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -85,7 +85,9 @@ class ExceptionController extends BaseController
 
         if ($exception instanceof HttpException) {
             $status = $exception->getStatusCode();
-        } elseif ($exception->getCode()) {
+        } elseif (method_exists($exception, 'getStatusCode') && isset(Response::$statusTexts[$exception->getStatusCode()])) {
+            $status = $exception->getStatusCode();
+        } elseif ($exception->getCode() && isset(Response::$statusTexts[$exception->getCode()])) {
             $status = $exception->getCode();
         } else {
             $status = 500;

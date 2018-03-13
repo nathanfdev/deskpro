@@ -1,6 +1,6 @@
 import React from 'react';
 import Immutable from 'immutable';
-import { storiesOf } from '@kadira/storybook';
+import { storiesOf } from '@storybook/react';
 import AccountForm from 'DeskPRO/Bundle/AdminBundle/Modules/Voice/Components/Accounts/Form/AccountForm';
 import { adminCss } from '../../../../decorators';
 

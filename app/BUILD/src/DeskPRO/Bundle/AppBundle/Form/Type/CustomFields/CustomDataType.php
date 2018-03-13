@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2017, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2018, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -44,7 +44,6 @@ use DeskPRO\Bundle\PortalBundle\Form\Form\Type\SingleCheckboxType;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Symfony\Component\Form\AbstractType;
-use Symfony\Component\Form\Extension\Core\Type\FormType;
 use Symfony\Component\Form\Extension\Core\Type\TextareaType;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\FormBuilderInterface;
@@ -192,8 +191,8 @@ class CustomDataType extends AbstractType
                     $customDefData->add($customData);
                 }
             }
-        } else if ($customDef->isDataListType()) {
-            $data = $form->get('data')->getData();
+        } elseif ($customDef->isDataListType()) {
+            $data     = $form->get('data')->getData();
             $itemList = is_string($data) ? json_decode($data) : [];
 
             // remove deleted items and collect the id's of existing ones
@@ -356,6 +355,7 @@ class CustomDataType extends AbstractType
             foreach ($customDefData as $data) {
                 array_push($formFieldData, $data->getData());
             }
+
             return $formFieldData;
         }
 
@@ -468,6 +468,8 @@ class CustomDataType extends AbstractType
     /**
      * @param CustomDefAbstract $def
      * @param bool              $isInline
+     *
+     * @throws \Exception
      *
      * @return FormField
      */

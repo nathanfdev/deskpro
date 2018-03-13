@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2017, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2018, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -59,6 +59,10 @@ class EmailAccountsSettings
         'rate_count'    => self::DEFAULT_RATE_COUNT,
         'rate_time'     => self::DEFAULT_RATE_TIME,
         'rate_locktime' => self::DEFAULT_RATE_LOCK_TIME,
+
+        'download_hotlinked_images.enabled'       => true,
+        'download_hotlinked_images.image_maxsize' => 10 * 1024 * 1024,
+        'download_hotlinked_images.total_maxsize' => 25 * 1024 * 1024,
     ];
 
     /**
@@ -97,13 +101,17 @@ class EmailAccountsSettings
                 $storedValue = $this->settings->get(self::PREFIX.'.'.$k, $v);
             }
 
-            if (is_int($v)) {
-                $storedValue = (int) $storedValue;
-            } elseif (is_array($v)) {
-                $storedValue = $storedValue ? explode(',', $storedValue) : $v;
-            }
+            if (in_array($k, ['download_hotlinked_images.enabled'])) {
+                $data[$k] = $this->values[$k] = (bool) $storedValue;
+            } else {
+                if (is_int($v)) {
+                    $storedValue = (int) $storedValue;
+                } elseif (is_array($v)) {
+                    $storedValue = $storedValue ? explode(',', $storedValue) : $v;
+                }
 
-            $data[$k] = $this->values[$k] = $storedValue ?: $v;
+                $data[$k] = $this->values[$k] = $storedValue ?: $v;
+            }
         }
 
         foreach ($this->otherValues as $k => $v) {
@@ -130,7 +138,9 @@ class EmailAccountsSettings
             }
 
             $storeValue = $v;
-            if (is_int($this->values[$k])) {
+            if (in_array($k, ['download_hotlinked_images.enabled'])) {
+                $storeValue = $v = (bool) $v;
+            } elseif (is_int($this->values[$k])) {
                 $storeValue = $v = (int) $v;
             } elseif (is_array($this->values[$k])) {
                 $v          = (array) $v;

@@ -88,7 +88,6 @@
 
       $select.on('change', function () {
         var val = parseInt($(this).val());
-        isNaN(val) && $el.val('').trigger('change');
 
         var process = function (node) {
           if (!node.children) return;
@@ -98,7 +97,9 @@
                 child.$selectWrap.show();
                 child.$select.trigger('change');
               } else {
-                $el.val(val).trigger('change');
+                if ($el.val() !== val) {
+                  $el.val(val).trigger('change');
+                }
               }
             } else {
               child.$selectWrap && child.$selectWrap.hide();
@@ -166,13 +167,28 @@
         return $el;
       }
 
+      var render = function () {
+        $el.parent().find('.multilevel-select').remove();
+
+        if (parseInt($el.data('max-depth')) <= 2) {
+          setupSimple($el, map);
+        } else {
+          setupMulti($el, map);
+        }
+      };
+
       $el.addClass('dp-two-select');
 
-      if (parseInt($el.data('max-depth')) <= 2) {
-        setupSimple($el, map);
-      } else {
-        setupMulti($el, map);
+      // re-render for multi select only
+      // simple selectbox uses save element, just modifies its options
+      // otherwise it causes infinite recursion
+      if ($el.data('max-depth') > 2) {
+        $el.on('change', function() {
+          setTimeout(render, 1);
+        });
       }
+
+      render();
     });
   };
 })(jQuery);

@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2017, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2018, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -57,11 +57,13 @@ class LanguagePhrases
         $groupToReal = [
             'adm'     => 'admin',
             'admin'   => 'admin',
+            'reports' => 'admin',
             'api'     => 'api',
             'agent'   => 'agent',
             'general' => 'general',
             'portal'  => 'portal',
             'user'    => 'portal',
+            'reports' => 'reports',
         ];
 
         $lang_dir = dir($this->lang_root);
@@ -73,7 +75,10 @@ class LanguagePhrases
             $phrases = require $lang_dir->path.'/'.$file;
 
             foreach ($phrases as $phraseId => $x) {
-                $parts       = explode('.', $phraseId);
+                $parts = explode('.', $phraseId);
+                if (!isset($groupToReal[$parts[0]])) {
+                    continue;
+                }
                 $realGroupId = $groupToReal[$parts[0]];
                 $file        = isset($parts[2]) ? $parts[1] : $realGroupId;
 

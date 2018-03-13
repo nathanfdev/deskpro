@@ -10,13 +10,13 @@
     <article class="form-horizontal dp-form">
       <div class="panel panel-innertable">
         <p>
-          DeskPRO always uses a secure <a href="https://en.wikipedia.org/wiki/Cryptographic_hash_function" target="_blank">one-way hashing algorithm</a> for storing user, agent and admin passwords.
-          DeskPRO stores the hash digest of a password and throws away the original password. The original simply is not stored anywhere, so it can never be read (by anyone, be it a sysadmin
+          Deskpro always uses a secure <a href="https://en.wikipedia.org/wiki/Cryptographic_hash_function" target="_blank">one-way hashing algorithm</a> for storing user, agent and admin passwords.
+          Deskpro stores the hash digest of a password and throws away the original password. The original simply is not stored anywhere, so it can never be read (by anyone, be it a sysadmin
           or a malicious attacker).
         </p>
         <p>
-          However, there are still sensitive pieces of information that must be stored in the database where DeskPRO needs the original. For example, to connect to an email account,
-          DeskPRO needs to read the real password so it can log-in to your mail server. In situations like this, the system cannot use a hash algorithm because it needs to
+          However, there are still sensitive pieces of information that must be stored in the database where Deskpro needs the original. For example, to connect to an email account,
+          Deskpro needs to read the real password so it can log-in to your mail server. In situations like this, the system cannot use a hash algorithm because it needs to
           keep the original.
         </p>
         <p>
@@ -41,7 +41,7 @@
         </div>
         <div class="form-group" ng-if="!status.is_able">
           <p>
-            Your server is not capable of DeskPRO's encryption features. The most common cause of this is a missing <a href="http://php.net/manual/en/book.openssl.php">OpenSSL extension</a>
+            Your server is not capable of Deskpro's encryption features. The most common cause of this is a missing <a href="http://php.net/manual/en/book.openssl.php">OpenSSL extension</a>
             or <a href="http://php.net/manual/en/book.mcrypt.php">mcrypt extension</a>
             . Make sure that these are installed and enabeled.
           </p>
@@ -57,7 +57,7 @@
             <div class="inner-group">
               <p>
                 To enable encryption, click the button below. This will generate a new secure key in a file on your server (<var>data/encryption-key.bin</var>). This file must never be removed or lost. Losing your encryption key file
-                will result in data loss because DeskPRO won't be able to read the encrypted data anymore. Therefore, if you enable encryption, it is highly recommended you copy the file to a second, secure location.
+                will result in data loss because Deskpro won't be able to read the encrypted data anymore. Therefore, if you enable encryption, it is highly recommended you copy the file to a second, secure location.
               </p>
               <p>
                 <strong>Note:</strong> After you enable encryption, you will need direct access to the filesystem to disable it again.

@@ -39,6 +39,17 @@ $secondary-surface-border: #d5d6d7;
   background: #f4f4f4 url('../../../../images/spinner.gif') no-repeat 100%;
 }
 
+@media only screen and (-webkit-min-device-pixel-ratio: 1.5), only screen and (min-resolution: 144dpi)  {
+  .select2-search input, .select2-search-choice-close, .select2-container .select2-choice abbr, .select2-container .select2-choice div b {
+    background-image: url('../../../../images/select2x2.png') !important;
+    background-repeat: no-repeat !important;
+    background-size: 60px 40px !important;
+  }
+  .select2-search input {
+    background-position: 100% -21px !important;
+  }
+}
+
 .dropdown {
   border-top: 4px solid #325d80;
   position: absolute;

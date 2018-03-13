@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2017, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2018, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -50,16 +50,18 @@ class FeatureProcessorTest extends ApiTestCase
     public function setUp()
     {
         $em = $this->getEntityManager();
-
         $em->getConnection()->executeQuery('DELETE FROM jobs');
 
-        $this->getContainer()->get('deskpro.features_collection')
+        $this
+            ->getContainer()
+            ->get('deskpro.features_collection')
             ->addFeature(new EnabledFeature())
-            ->addFeature(new DisabledFeature());
+            ->addFeature(new DisabledFeature())
+        ;
 
         $this->featureProcessor = new FeatureProcessor(
             $em->getConnection(),
-            $this->getContainer()
+            $this->getContainer()->get('deskpro.toggle_feature_manager')
         );
     }
 
@@ -102,9 +104,9 @@ class FeatureProcessorTest extends ApiTestCase
         $this->featureProcessor->execute($this->getJobArray($job));
         $this->getEntityManager()->refresh($job);
 
-        $this->assertEquals('error', $job->status);
-        $this->assertEquals('failed', $job->status_code);
-        $this->assertTrue(strpos($job->log, 'Code: 400') !== false);
+        $this->assertEquals('complete', $job->status);
+        $this->assertEquals('success', $job->status_code);
+        $this->assertEquals('Successful', $job->log_summary);
     }
 
     public function test_process_enabling_feature()
@@ -133,9 +135,9 @@ class FeatureProcessorTest extends ApiTestCase
         $this->featureProcessor->execute($this->getJobArray($job));
         $this->getEntityManager()->refresh($job);
 
-        $this->assertEquals('error', $job->status);
-        $this->assertEquals('failed', $job->status_code);
-        $this->assertTrue(strpos($job->log, 'Code: 400') !== false);
+        $this->assertEquals('complete', $job->status);
+        $this->assertEquals('success', $job->status_code);
+        $this->assertEquals('Successful', $job->log_summary);
     }
 
     public function test_enable()

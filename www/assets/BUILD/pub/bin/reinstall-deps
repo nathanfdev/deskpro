@@ -9,4 +9,5 @@ echo ".. done"
 echo ">> Installing deps..."
 cd $DIR_ROOT/pub
 npm install
+rm -rf $DIR_ROOT/pub/node_modules/@deskpro/react-components/node_modules/react
 echo ".. done"

@@ -4,10 +4,7 @@ import difflib from 'difflib';
 import diff2html from 'diff2html';
 import htmlToText from 'html-to-text';
 import Moment from 'moment';
-import Modal from '@deskpro/react-components/lib/Components/Modal';
-import { ConfirmButton } from '@deskpro/react-components/lib/Components/Buttons';
-import { Checkbox, CustomSelect } from '@deskpro/react-components/lib/Components/Forms';
-import { List, ListElement } from '@deskpro/react-components/lib/Components/Common';
+import { Modal, ConfirmButton, Checkbox, CustomSelect, List, ListElement  } from '@deskpro/react-components';
 import AgentAvatar from 'DeskPRO/Component/Avatar/AgentAvatar';
 import agentPhrases from 'DeskPRO/Bundle/AgentBundle/AgentPhrases';
 

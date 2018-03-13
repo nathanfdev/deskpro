@@ -398,6 +398,18 @@ class LegacyTicketFilter extends DomainObject
                 case 'all':
                 case 'all_w_hold':
                     return $tr->phrase('agent.tickets.filter_all');
+                case 'archive_awaiting_user':
+                    return $tr->phrase('agent.tickets.status_awaiting_user');
+                case 'archive_resolved':
+                    return $tr->phrase('agent.tickets.status_resolved');
+                case 'archive_archived':
+                    return $tr->phrase('agent.tickets.status_archived');
+                case 'archive_validating':
+                    return $tr->phrase('agent.general.awaiting_validation');
+                case 'archive_spam':
+                    return $tr->phrase('agent.general.spam');
+                case 'archive_deleted':
+                    return $tr->phrase('agent.general.recycle_bin');
             }
         }
 

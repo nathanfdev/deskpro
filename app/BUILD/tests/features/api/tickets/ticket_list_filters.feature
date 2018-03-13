@@ -1,4 +1,3 @@
-@new
 Feature: /tickets endpoint
   Check list filters
 
@@ -241,10 +240,10 @@ Feature: /tickets endpoint
       | t1 | Ticket 1 |
       | t2 | Ticket 2 |
       | t3 | Ticket 3 |
-    And the object "t1" has "f1" custom data with "text1"
-    And the object "t2" has "f1" custom data with "text2"
-    And the object "t3" has "f1" custom data with "some data"
-    And the object "t3" has "f2" custom data with "text"
+    And the object "t1" has "f1" custom data set to "text1"
+    And the object "t2" has "f1" custom data set to "text2"
+    And the object "t3" has "f1" custom data set to "some data"
+    And the object "t3" has "f2" custom data set to "text"
 
     When I send a GET request to "/api/v2/tickets?ticket_field.{f1}=text&order_dir=asc"
     Then the JSON node "data" should have 2 elements
@@ -266,8 +265,8 @@ Feature: /tickets endpoint
       | t1 | Ticket 1 |
       | t2 | Ticket 2 |
       | t3 | Ticket 3 |
-    And the object "t1" has "f1" custom data with "2017-04-20"
-    And the object "t2" has "f1" custom data with "2017-04-18"
+    And the object "t1" has "f1" custom data set to "2017-04-20"
+    And the object "t2" has "f1" custom data set to "2017-04-18"
 
     When I send a GET request to "/api/v2/tickets?ticket_field.{f1}[from]=2017-04-15&order_dir=asc"
     Then the JSON node "data" should have 2 elements
@@ -294,8 +293,8 @@ Feature: /tickets endpoint
       | t1 | Ticket 1 |
       | t2 | Ticket 2 |
       | t3 | Ticket 3 |
-    And the object "t1" has "f1" custom data with "{c1}"
-    And the object "t2" has "f1" custom data with "{c2}"
+    And the object "t1" has "f1" custom data set to "{c1}"
+    And the object "t2" has "f1" custom data set to "{c2}"
 
     When I send a GET request to "/api/v2/tickets?ticket_field.{f1}={c1}&order_dir=asc"
     Then the JSON node "data" should have 1 element

@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2017, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2018, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -34,6 +34,26 @@
 
 namespace Application\DeskPRO\EntityRepository;
 
+use Application\DeskPRO\Entity\Feedback as FeedbackEntity;
+
 class FeedbackSubscription extends AbstractEntityRepository
 {
+    /**
+     * @param FeedbackEntity|int $feedback
+     *
+     * @return array
+     */
+    public function getSubscribedPersonIds($feedback)
+    {
+        if ($feedback instanceof FeedbackEntity) {
+            $feedback = $feedback->id;
+        }
+
+        $query = $this->getEntityManager()->createQuery(
+            'SELECT DISTINCT IDENTITY(fs.person) FROM DeskPRO:FeedbackSubscription fs WHERE fs.feedback = :feedback'
+        );
+        $query->setParameter('feedback', $feedback);
+
+        return array_map('current', $query->getResult());
+    }
 }

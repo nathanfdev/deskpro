@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2017, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2018, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -35,9 +35,10 @@ class Comparators
     /**
      * @param \DeskPRO\Bundle\AppBundle\ObjectAlias\ObjectAliasInterface $a
      * @param \DeskPRO\Bundle\AppBundle\ObjectAlias\ObjectAliasInterface $b
+     *
      * @return bool
      */
-    public static function equal( ObjectAlias\ObjectAliasInterface $a, ObjectAlias\ObjectAliasInterface $b)
+    public static function equal(ObjectAlias\ObjectAliasInterface $a, ObjectAlias\ObjectAliasInterface $b)
     {
         if ($a->getObjectId() !== $b->getObjectId()) {
             return false;
@@ -47,21 +48,10 @@ class Comparators
             return false;
         }
 
-        if ($a->getAlias() !== $b->getAlias()) {
+        if ($a->getQualifiedName() !== $b->getQualifiedName()) {
             return false;
         }
 
-        $aQualifiers = $a->getQualifiers();
-        $bQualifiers = $b->getQualifiers();
-
-        if (count($aQualifiers) !== count($bQualifiers)) {
-            return false;
-        }
-
-        $aQualifiers = array_map('implode', $aQualifiers);
-        $bQualifiers = array_map('implode', $bQualifiers);
-
-        return array_diff($aQualifiers, $bQualifiers) === array_diff($bQualifiers, $aQualifiers);
+        return true;
     }
-
 }

@@ -41,5 +41,6 @@
   "angularUiDatetime":               ["angular"],
   "angularOcLazyLoad":               ["angular"],
   "angularGridster":                 ["angular"],
-  "datatables":                      {"exports": "DataTable"}
+  "datatables":                      {"exports": "DataTable"},
+  "datatables.pageResize":           ["datatables"]
 }

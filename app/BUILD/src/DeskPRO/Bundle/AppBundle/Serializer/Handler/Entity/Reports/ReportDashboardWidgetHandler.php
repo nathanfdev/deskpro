@@ -33,8 +33,7 @@ use DeskPRO\Bundle\AppBundle\Serializer\Deferred\CallbackDeferredProperty;
 use DeskPRO\Bundle\AppBundle\Serializer\Handler\Entity\AbstractEntityHandler;
 use DeskPRO\Bundle\AppBundle\Serializer\Model\Reports\ReportDashboardWidget as ReportDashboardWidgetModel;
 use DeskPRO\Bundle\AppBundle\Serializer\Sideload\SideloadSerializationContext;
-use DeskPRO\Bundle\ReportBundle\Dpql2\DpqlCompiler;
-use DeskPRO\Bundle\ReportBundle\Reports\Renderer\ReportsRendererRegistry;
+use DeskPRO\Bundle\ReportBundle\Dashboard\DashboardWidgetManager;
 
 /**
  * Class ReportDashboardWidgetHandler.
@@ -42,25 +41,18 @@ use DeskPRO\Bundle\ReportBundle\Reports\Renderer\ReportsRendererRegistry;
 class ReportDashboardWidgetHandler extends AbstractEntityHandler
 {
     /**
-     * @var DpqlCompiler
+     * @var DashboardWidgetManager
      */
-    private $compiler;
-
-    /**
-     * @var ReportsRendererRegistry
-     */
-    private $reportsRendererRegistry;
+    private $dashboardWidgetService;
 
     /**
      * Constructor.
      *
-     * @param DpqlCompiler            $compiler
-     * @param ReportsRendererRegistry $reportsRendererRegistry
+     * @param DashboardWidgetManager $dashboardWidgetService
      */
-    public function __construct(DpqlCompiler $compiler, ReportsRendererRegistry $reportsRendererRegistry)
+    public function __construct(DashboardWidgetManager $dashboardWidgetService)
     {
-        $this->compiler                = $compiler;
-        $this->reportsRendererRegistry = $reportsRendererRegistry;
+        $this->dashboardWidgetService = $dashboardWidgetService;
     }
 
     /**
@@ -79,57 +71,16 @@ class ReportDashboardWidgetHandler extends AbstractEntityHandler
     public function createModel($entity, SideloadSerializationContext $context)
     {
         $model = new ReportDashboardWidgetModel($entity);
+        $model->setWidgetType($this->dashboardWidgetService->getWidgetType($entity->getType()));
 
         $sideloads = $context->getSideloadStore();
         $sideloads->addCustomSideload(
             'rendered_result',
             $entity->getId(),
-            new CallbackDeferredProperty([$this, 'getRenderedResult'], [$entity]),
+            new CallbackDeferredProperty([$this->dashboardWidgetService, 'renderWidget'], [$entity, $context->getUser()]),
             $model
         );
 
         return $model;
-    }
-
-    /**
-     * @param ReportDashboardWidgetEntity $entity
-     *
-     * @return string
-     */
-    public function getRenderedResult(ReportDashboardWidgetEntity $entity)
-    {
-        $report = $entity->getWidget();
-        $query  = $report->getQuery();
-
-        $variables       = [];
-        $reportVariables = $report->getVariables();
-        $widgetVariables = $entity->getVariables();
-
-        foreach ($reportVariables as $variable) {
-            $variables[$variable['name']] = $variable;
-            if (isset($widgetVariables[$variable['name']]) && isset($widgetVariables[$variable['name']]['value'])) {
-                $variables[$variable['name']]['value'] = $widgetVariables[$variable['name']]['value'];
-            }
-        }
-
-        $query    = $this->compiler->compile($query, ['variables' => $variables]);
-        $results  = $query->getResults();
-        $renderer = $this->reportsRendererRegistry->getRenderer($entity->getType(), 'json');
-
-        $data = $renderer->render($results);
-        if ($data && $entity->getType() == ReportDashboardWidgetEntity::WIDGET_TYPE_TABLE) {
-            $aoColumns = [];
-            $columns   = [];
-
-            foreach ($data['columns'] as $column) {
-                $aoColumns[] = null;
-                $columns[]   = ['title' => $column];
-            }
-
-            $data['aoColumns'] = $aoColumns;
-            $data['columns']   = $columns;
-        }
-
-        return $data;
     }
 }

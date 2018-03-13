@@ -102,7 +102,7 @@
 			<div style="margin-left: 50px;">
 				<h3 style="margin-top: 8px;">
 				  <span style="display: inline-block; border-bottom: 2px dotted #f00;">
-					DANGER: Your web root contains DeskPRO source files
+					DANGER: Your web root contains Deskpro source files
 				  </span>
 				</h3>
 				<p>
@@ -169,7 +169,7 @@
 			<div style="margin-left: 50px;">
 				<h3 style="margin-top: 8px;">Some HTTP methods are being blocked by your server</h3>
 				<p>
-					DeskPRO must handle multiple HTTP methods (GET, POST, PUT and DELETE). It appears
+					Deskpro must handle multiple HTTP methods (GET, POST, PUT and DELETE). It appears
 					as though your server is blocking some of these requests:
 				</p>
 				<ul>
@@ -198,11 +198,11 @@
                 {% if not app.getSetting('disable_admin_deskpro_updates') %}
                     <td width="50%" class="dp-item" ng-class="{'with-error': Home.latest_version_status == 'okay' && Home.latest_version.count_behind > 0 }">
                         <header>
-                            <h3>DeskPRO Updates</h3>
+                            <h3>Deskpro Updates</h3>
                         </header>
                         <article style="padding: 10px;">
                             <p>
-                                You are currently using DeskPRO version <strong>{{ ng_var('Home.version_info.build_name') }}</strong>.
+                                You are currently using Deskpro version <strong>{{ ng_var('Home.version_info.build_name') }}</strong>.
                             </p>
                             <div class="status-content" ng-if="Home.latest_version_status == 'okay' && Home.latest_version.count_behind > 0">
                                 <header>
@@ -214,7 +214,7 @@
                                 </header>
                                 <article>
                                     <p>
-                                        <a class="btn btn-primary" href="{{ ng_href('setup.updater') }}">Update DeskPRO Now &rarr;</a>
+                                        <a class="btn btn-primary" href="{{ ng_href('setup.updater') }}">Update Deskpro Now &rarr;</a>
                                     </p>
                                 </article>
                             </div>
@@ -244,7 +244,7 @@
 					</header>
 					<article>
 						<div class="dp-mpadded">
-							&bull; Visit the <a href="http://support.deskpro.com/">DeskPRO Knowledgebase</a> for how-to articles, troubleshooting guides and other help articles.
+							&bull; Visit the <a href="http://support.deskpro.com/">Deskpro Knowledgebase</a> for how-to articles, troubleshooting guides and other help articles.
 						</div>
 						<div class="dp-mpadded">
 							&bull; Browse our manuals for in-depth information:

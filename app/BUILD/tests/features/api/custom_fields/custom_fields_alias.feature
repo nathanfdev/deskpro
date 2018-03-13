@@ -1,5 +1,5 @@
 @new
-Feature: Custom fields
+Feature: Custom fields @aka1
   I want to create a custom field with an alias
 
   Background:
@@ -22,9 +22,9 @@ Feature: Custom fields
 
     Examples:
       | Endpoint                            | Title               | Alias          |
-      | /api/v2/ticket_custom_fields        | Text field          | james_vagabond |
-      | /api/v2/person_custom_fields        | Text field          | james_vagabond |
-      | /api/v2/organization_custom_fields  | Text field          | james_vagabond |
+      | /api/v2/ticket_custom_fields        | Text field          | james_vagabond10 |
+      | /api/v2/person_custom_fields        | Text field          | james_vagabond11 |
+      | /api/v2/organization_custom_fields  | Text field          | james_vagabond12 |
 
 
 ## TEXTAREA FIELD
@@ -43,9 +43,9 @@ Feature: Custom fields
 
     Examples:
       | Endpoint                            | Title               | Alias          |
-      | /api/v2/ticket_custom_fields        | Textarea field      | james_vagabond |
-      | /api/v2/person_custom_fields        | Textarea field      | james_vagabond |
-      | /api/v2/organization_custom_fields  | Textarea field      | james_vagabond |
+      | /api/v2/ticket_custom_fields        | Textarea field      | james_vagabond20 |
+      | /api/v2/person_custom_fields        | Textarea field      | james_vagabond21 |
+      | /api/v2/organization_custom_fields  | Textarea field      | james_vagabond22 |
 
 
 ## DATE FIELD
@@ -65,9 +65,9 @@ Feature: Custom fields
 
     Examples:
       | Endpoint                            | Title               | Alias          |
-      | /api/v2/ticket_custom_fields        | Date field          | james_vagabond |
-      | /api/v2/person_custom_fields        | Date field          | james_vagabond |
-      | /api/v2/organization_custom_fields  | Date field          | james_vagabond |
+      | /api/v2/ticket_custom_fields        | Date field          | james_vagabond30 |
+      | /api/v2/person_custom_fields        | Date field          | james_vagabond31 |
+      | /api/v2/organization_custom_fields  | Date field          | james_vagabond32 |
 
 ## DATETIME FIELD
 
@@ -86,9 +86,9 @@ Feature: Custom fields
 
     Examples:
       | Endpoint                            | Title               | Alias          |
-      | /api/v2/ticket_custom_fields        | Datetime field      | james_vagabond |
-      | /api/v2/person_custom_fields        | Datetime field      | james_vagabond |
-      | /api/v2/organization_custom_fields  | Datetime field      | james_vagabond |
+      | /api/v2/ticket_custom_fields        | Datetime field      | james_vagabond40 |
+      | /api/v2/person_custom_fields        | Datetime field      | james_vagabond41 |
+      | /api/v2/organization_custom_fields  | Datetime field      | james_vagabond42 |
 
 ## DATA LIST FIELD
 
@@ -107,9 +107,9 @@ Feature: Custom fields
 
     Examples:
       | Endpoint                             | Title          | Alias          |
-      | /api/v2/ticket_custom_fields        | Data list       | james_vagabond |
-      | /api/v2/person_custom_fields        | Data list       | james_vagabond |
-      | /api/v2/organization_custom_fields  | Data list       | james_vagabond |
+      | /api/v2/ticket_custom_fields        | Data list       | james_vagabond50 |
+      | /api/v2/person_custom_fields        | Data list       | james_vagabond51 |
+      | /api/v2/organization_custom_fields  | Data list       | james_vagabond52 |
 
 
 ## DATA JSON FIELD
@@ -129,9 +129,9 @@ Feature: Custom fields
 
     Examples:
       | Endpoint                             | Title     | Alias          |
-      | /api/v2/ticket_custom_fields        | Data json  | james_vagabond |
-      | /api/v2/person_custom_fields        | Data json  | james_vagabond |
-      | /api/v2/organization_custom_fields  | Data json  | james_vagabond |
+      | /api/v2/ticket_custom_fields        | Data json  | james_vagabond60 |
+      | /api/v2/person_custom_fields        | Data json  | james_vagabond61 |
+      | /api/v2/organization_custom_fields  | Data json  | james_vagabond62 |
 
 ## PREDEFINED CHOICE FIELDs
 
@@ -161,10 +161,10 @@ Feature: Custom fields
 
     Examples:
       | Field Type    | Title                   | Alias          |
-      | multi_select  | Multiple Choice field   | james_vagabond |
-      | select        | select                  | james_vagabond |
-      | radio         | radio                   | james_vagabond |
-      | checkbox      | checkbox                | james_vagabond |
+      | multi_select  | Multiple Choice field   | james_vagabond70 |
+      | select        | select                  | james_vagabond71 |
+      | radio         | radio                   | james_vagabond72 |
+      | checkbox      | checkbox                | james_vagabond73 |
 
 
   Scenario Outline: I try to modify the value of a ticket custom field using its alias
@@ -196,7 +196,7 @@ Feature: Custom fields
     And the JSON node "data.fields.{field_id}.value" should be equal to "new value"
     Examples:
       | Entity Endopoint      | Endpoint                            | Title     | Alias           |
-      | /api/v2/tickets       | /api/v2/ticket_custom_fields        | Data json  | james_vagabond |
+      | /api/v2/tickets       | /api/v2/ticket_custom_fields        | Data json  | james_vagabond90 |
 
   Scenario Outline: I try to modify the value of an organization ticket custom field using its alias
     Given there are no "CustomDefOrganization" records
@@ -229,4 +229,48 @@ Feature: Custom fields
     Examples:
       | Entity Endopoint      | Endpoint                            | Title     | Alias           |
 #      | /api/v2/persons       | /api/v2/person_custom_fields        | Data json  | james_vagabond |
-      | /api/v2/organizations | /api/v2/organization_custom_fields  | Data json  | james_vagabond |
+      | /api/v2/organizations | /api/v2/organization_custom_fields  | Data json  | james_vagabond100 |
+
+  Scenario Outline: I check alias dupe validation
+    Given only the following CustomDefTicket records exist:
+      | #  | Type | Title      |
+      | f1 | text | Text field |
+    And only the following CustomTicketFieldDefinitionAlias records exist:
+      | #  | Object | Alias    |
+      | a1 | {f1}   | my_alias |
+
+    When I send a POST request to "/api/v2/<endpoint>" with a json body:
+    """
+{
+  "title":"My field",
+  "is_enabled":true,
+  "alias": "my_alias",
+  "handler_class":"Application\\DeskPRO\\CustomFields\\Handler\\Text"
+}
+    """
+    Then the response status code should be 400
+    And the JSON node "errors.fields.alias.errors[0].code" should be equal to "not_unique_alias"
+
+    Examples:
+      | endpoint                   |
+      | ticket_custom_fields       |
+      | person_custom_fields       |
+      | organization_custom_fields |
+
+  Scenario Outline: I check alias format validation
+    When I send a POST request to "/api/v2/ticket_custom_fields" with a json body:
+    """
+{
+  "title":"My field",
+  "is_enabled":true,
+  "alias": "<alias>",
+  "handler_class":"Application\\DeskPRO\\CustomFields\\Handler\\Text"
+}
+    """
+    Then the response status code should be 400
+    And the JSON node "errors.fields.alias.errors[0].code" should be equal to "invalid_alias_format"
+
+    Examples:
+      | alias      |
+      | my alias   |
+      | %my_alias% |

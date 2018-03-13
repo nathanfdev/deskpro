@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2017, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2018, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -180,7 +180,10 @@ class TicketMacrosController extends AbstractController implements ProtectedCont
     public function saveAction(TicketMacro $macro, Request $request)
     {
         $form = $this->createForm(TicketMacroType::class, $macro);
-        $form->submit($request->request->all());
+        // Set second argument to false because
+        // we don't want to set Macro fields to NULL when they are missing in the submitted data
+        // for example we don't pass Macro `actions` to this endpoint when we just edit macro permissions
+        $form->submit($request->request->all(), false);
 
         $this->em->persist($macro);
         $this->em->flush();

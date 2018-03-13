@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2017, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2018, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -1243,8 +1243,15 @@ $collection->create('agent_ticket_unlink', [
     'methods'    => ['POST'],
 ]);
 
+$collection->create('agent_ticket_link_existing_feedback_overlay', [
+    'path'         => '/tickets/{ticket_id}/link-feedback-overlay',
+    'controller'   => 'AgentBundle:Ticket:linkExistingFeedbackOverlay',
+    'requirements' => ['ticket_id' => '\\d+'],
+]);
+
 $collection->create('agent_ticket_departments_by_brand', [
     'path'       => '/tickets/new/get-departments/{brandId}',
+    'defaults'   => ['brandId' => null],
     'controller' => 'AgentBundle:Ticket:ajaxGetDepartments',
     'methods'    => ['GET'],
 ]);
@@ -1630,6 +1637,11 @@ $collection->create(
         'requirements' => ['feedbackId' => '\\d+'],
     ]
 );
+
+$collection->create('agent_feedbacksearch_quicksearch', [
+    'path'       => '/feedback-search/quick-search',
+    'controller' => 'AgentBundle:FeedbackSearch:quickSearch',
+]);
 
 $collection->create('agent_publish_listcomments', [
     'path'       => '/publish/comments/list/{brandId}/{type}',
@@ -2071,8 +2083,22 @@ $collection->create('agent_feedback_save', [
     'requirements' => ['news_id' => '\\d+'],
 ]);
 
+$collection->create('agent_feedback_subscribe_person', [
+    'path'         => '/feedback/{feedback_id}/ajax-subscribe-person',
+    'controller'   => 'AgentBundle:Feedback:ajaxSubscribePerson',
+    'requirements' => ['feedback_id' => '\\d+'],
+    'methods'      => ['POST'],
+]);
+
+$collection->create('agent_feedback_unsubscribe_person', [
+    'path'         => '/feedback/{feedback_id}/ajax-unsubscribe-person',
+    'controller'   => 'AgentBundle:Feedback:ajaxUnsubscribePerson',
+    'requirements' => ['feedback_id' => '\\d+'],
+    'methods'      => ['POST'],
+]);
+
 $collection->create('agent_feedback_ajax_labels_save', [
-    'path'         => '/feedback/view/{feedback_id}/ajax-save-labels',
+    'path'         => '/feedback/{feedback_id}/ajax-save-labels',
     'controller'   => 'AgentBundle:Feedback:ajaxSaveLabels',
     'requirements' => ['news_id' => '\\d+'],
 ]);
@@ -2172,6 +2198,11 @@ $collection->create('agent_topic_ajax_get_topics', [
     'path'         => '/guides/topics/{guide_id}',
     'controller'   => 'AgentBundle:Guide:ajaxGetTopicsByGuide',
     'requirements' => ['guide_id' => '\\d+'],
+]);
+
+$collection->create('agent_guides_comparerevs', [
+    'path'       => '/guides/compare-revs/{rev_old_id}/{rev_new_id}',
+    'controller' => 'AgentBundle:Guide:compareRevisions',
 ]);
 
 $collection->create('agent_agentchat_getonlineagents', [

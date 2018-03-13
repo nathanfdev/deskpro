@@ -14,6 +14,7 @@ class EditContainer extends React.Component {
   static propTypes = {
     report:       PropTypes.object.isRequired,
     groupParams:  PropTypes.object.isRequired,
+    labels:       PropTypes.object.isRequired,
     onCloneClick: PropTypes.func.isRequired,
     onRunClick:   PropTypes.func.isRequired,
     dispatch:     PropTypes.func.isRequired
@@ -33,8 +34,9 @@ class EditContainer extends React.Component {
     const queryParts = report.has('query_parts') ? report.get('query_parts') : Immutable.fromJS({});
     const initialFormValue = {
       title:  report.get('title'),
-      labels: report.get('labels', Immutable.List()).toArray().join(', '),
+      labels: report.get('labels', Immutable.List()).toArray(),
       query:  {
+        raw:      report.get('query'),
         select:   queryParts.get('select', ''),
         from:     queryParts.get('from', ''),
         where:    queryParts.get('where', ''),
@@ -44,7 +46,7 @@ class EditContainer extends React.Component {
         offset:   queryParts.get('offset', ''),
         limit:    queryParts.get('limit', '')
       },
-      vars: report.get('variables', Immutable.Map()).toJS()
+      vars: report.get('variables', Immutable.Map()).toJS(),
     };
 
     return { initialFormValue };
@@ -81,7 +83,7 @@ class EditContainer extends React.Component {
   onSubmit = (formData) => {
     const { dispatch, report } = this.props;
 
-    const labels        = formData.labels.length ? formData.labels.split(',') : null;
+    const labels        = formData.labels.length ? formData.labels : [];
     const displayTypes  = report.get('display_types', Immutable.fromJS([])).toArray().map(t => t.toLowerCase());
 
     const reportData = {
@@ -106,12 +108,13 @@ class EditContainer extends React.Component {
 
   renderForm() {
     const saving = this.state.saving;
-    const { groupParams, report } = this.props;
+    const { groupParams, report, labels } = this.props;
 
     const EditStatForm = reduxForm({
-      form:          'editStat',
-      initialValues: this.state.initialFormValue,
-      onSubmit:      this.onSubmit,
+      form:               'editStat',
+      initialValues:      this.state.initialFormValue,
+      onSubmit:           this.onSubmit,
+      enableReinitialize: true
     })(EditForm);
 
     const saveBtn = (<button
@@ -135,7 +138,12 @@ class EditContainer extends React.Component {
     );
 
     return (<div>
-      <EditStatForm groupParams={groupParams.toJS()} dpqlParser={EditContainer.dpqlParser} />
+      <EditStatForm
+        labels={labels.toJS()}
+        groupParams={groupParams.toJS()}
+        extendedQuery={report.get('extended_query', false)}
+        dpqlParser={EditContainer.dpqlParser}
+      />
       {controls}
     </div>);
   }

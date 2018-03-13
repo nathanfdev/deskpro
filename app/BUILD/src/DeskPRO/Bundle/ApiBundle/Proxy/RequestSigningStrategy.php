@@ -28,33 +28,9 @@
 
 namespace DeskPRO\Bundle\ApiBundle\Proxy;
 
-class RequestSigningStrategy
+interface RequestSigningStrategy
 {
-    /** @var string */
-    private $algorithm;
+    const STRATEGY_OAUTH1 = 'oauth1';
 
-    /** @var string */
-    private $credentials;
-
-    public function __construct($algorithm, $credentials)
-    {
-        $this->algorithm   = $algorithm;
-        $this->credentials = $credentials;
-    }
-
-    /**
-     * @return string
-     */
-    public function getAlgorithm()
-    {
-        return $this->algorithm;
-    }
-
-    /**
-     * @return string
-     */
-    public function getCredentials()
-    {
-        return $this->credentials;
-    }
+    function configureProxyClient(HttpProxyClientBuilder $clientBuilder);
 }

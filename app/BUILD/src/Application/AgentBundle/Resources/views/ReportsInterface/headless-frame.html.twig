@@ -6,22 +6,36 @@
                     <div class="box-header">
                         <h3 class="ng-binding">{{ ng_var('widget.title') }}</h3>
                     </div>
-                    <div class="box" ng-if="widget.type=='graph'">
+                    <div class="box stat-box" ng-if="widget.data === null">
+                        <div class="stat">
+                            <div class="stat-value no-data">no data</div>
+                        </div>
+                    </div>
+                    <div class="box" ng-if="widget.data && widget.widget_type === 'graph'">
                         <dashboard-amcharts
                                 report-level-vars={{ ng_var('report.variables') }}
                                 title="{{ ng_var('widget.title') }}"
                                 widget-id = "{{ ng_var('widget.id') }}"
                                 chart-data = "{{ ng_var('widget.data') }}"
-                                chtype="{{ ng_var('widget.type') }}"
+                                chtype="{{ ng_var('widget.widget_type') }}"
                                 options="{{ ng_var('widget.options') }}"
                         />
                     </div>
-                    <div class="box" ng-if="widget.type=='table'">
+                    <div class="box" ng-if="widget.data && widget.type === 'table'">
                         <dashboard-table
                                 title="{{ ng_var('widget.title') }}"
                                 table-data="{{ ng_var('widget.data') }}"
                                 widget-id = "{{ ng_var('widget.id') }}"
                                 wtype="{{ ng_var('widget.type') }}"
+                        />
+                    </div>
+                    <div class="box stat-box" ng-if="widget.data && widget.type === 'simple_stat'">
+                        <dashboard-stat
+                                my-index="{{ ng_var('$index') }}"
+                                title="{{ ng_var('widget.title') }}"
+                                value="{{ ng_var('widget.data.value') }}"
+                                description="{{ ng_var('widget.data.description') }}"
+                                widget-id = "{{ ng_var('widget.id') }}"
                         />
                     </div>
                 </div>

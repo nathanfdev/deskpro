@@ -26,10 +26,6 @@
  * ~ Thanks, Everyone at Team DeskPRO
  */
 
-/**
- * DeskPRO.
- */
-
 namespace DeskPRO\Bundle\PortalBundle\Twig;
 
 use Application\DeskPRO\EntityRepository\Template;
@@ -37,34 +33,44 @@ use DeskPRO\Bundle\PortalBundle\Brand\BrandStack;
 use DeskPRO\Bundle\PortalBundle\Brand\Theme\PortalBrandThemeLoader;
 use Twig_Error_Loader;
 
+/**
+ * Class PortalLoader.
+ */
 class PortalLoader implements \Twig_LoaderInterface
 {
     /**
      * @var \DeskPRO\Bundle\PortalBundle\Brand\BrandStack
      */
-    private $brand_stack;
+    private $brandStack;
 
     /**
      * @var \Application\DeskPRO\EntityRepository\Template
      */
-    private $template_repo;
+    private $templateRepo;
 
     /**
      * @var PortalBrandThemeLoader
      */
-    private $brand_theme_loader;
+    private $brandThemeLoader;
 
     /**
      * @var array a list of templates that crashed, so we can fallback on filesystem if needed
      */
-    private $crashed_templates;
+    private $crashedTemplates;
 
-    public function __construct(BrandStack $brand_stack, Template $template_repo, PortalBrandThemeLoader $brand_theme_loader)
+    /**
+     * Constructor.
+     *
+     * @param BrandStack             $brandStack
+     * @param Template               $templateRepo
+     * @param PortalBrandThemeLoader $brandThemeLoader
+     */
+    public function __construct(BrandStack $brandStack, Template $templateRepo, PortalBrandThemeLoader $brandThemeLoader)
     {
-        $this->brand_stack        = $brand_stack;
-        $this->template_repo      = $template_repo;
-        $this->brand_theme_loader = $brand_theme_loader;
-        $this->crashed_templates  = [];
+        $this->brandStack       = $brandStack;
+        $this->templateRepo     = $templateRepo;
+        $this->brandThemeLoader = $brandThemeLoader;
+        $this->crashedTemplates = [];
     }
 
     /**
@@ -82,13 +88,7 @@ class PortalLoader implements \Twig_LoaderInterface
     }
 
     /**
-     * Gets the source code of a template, given its name.
-     *
-     * @param string $name The name of the template to load
-     *
-     * @throws Twig_Error_Loader When $name is not found
-     *
-     * @return string The template source code
+     * {@inheritdoc}
      */
     public function getSource($name)
     {
@@ -100,13 +100,7 @@ class PortalLoader implements \Twig_LoaderInterface
     }
 
     /**
-     * Gets the cache key to use for the cache for a given template name.
-     *
-     * @param string $name The name of the template to load
-     *
-     * @throws Twig_Error_Loader When $name is not found
-     *
-     * @return string The cache key
+     * {@inheritdoc}
      */
     public function getCacheKey($name)
     {
@@ -114,21 +108,18 @@ class PortalLoader implements \Twig_LoaderInterface
 
         $persisted = $this->getDbTemplate($name) ? '1' : '';
 
+        if (!$this->getBrandTheme() || !$this->getBrandTheme()->getActiveThemeSet()) {
+            throw new Twig_Error_Loader(sprintf('Template "%s" is not defined.', $name));
+        }
+
         return $this->getBrandTheme()->getActiveThemeSet()->getThemeId()
-               .$this->brand_theme_loader->getPortalModeStorage()->getMode()
+               .$this->brandThemeLoader->getPortalModeStorage()->getMode()
                .$persisted
                .$name;
     }
 
     /**
-     * Returns true if the template is still fresh.
-     *
-     * @param string $name The template name
-     * @param int    $time The last modification time of the cached template
-     *
-     * @throws Twig_Error_Loader When $name is not found
-     *
-     * @return bool true if the template is fresh, false otherwise
+     * {@inheritdoc}
      */
     public function isFresh($name, $time)
     {
@@ -147,30 +138,33 @@ class PortalLoader implements \Twig_LoaderInterface
      */
     protected function getBrandContainer()
     {
-        if (!$brand_container = $this->brand_stack->getActive()) {
-            $this->brand_stack->push($this->brand_stack->getDefaultBrand());
+        if (!$brand_container = $this->brandStack->getActive()) {
+            $this->brandStack->push($this->brandStack->getDefaultBrand());
         }
 
-        if (!$brand_container && !$brand_container = $this->brand_stack->getActive()) {
+        if (!$brand_container && !$brand_container = $this->brandStack->getActive()) {
             throw new \RuntimeException('no brand is active in the brand stack. cannot fetch a theme template.');
         }
 
         return $brand_container;
     }
 
+    /**
+     * @param string $name
+     */
     public function markCustomTemplateAsCrashed($name)
     {
-        $this->crashed_templates[] = $name;
+        $this->crashedTemplates[] = $name;
     }
 
     /**
-     * @param $name
+     * @param string $name
      *
      * @return \Application\DeskPRO\Entity\Template|null
      */
     public function getDbTemplate($name)
     {
-        if (in_array($name, $this->crashed_templates)) {
+        if (in_array($name, $this->crashedTemplates)) {
             return; // this db template crashed, so tell the twig env to look into the filesystem as a fallback
         }
 
@@ -186,6 +180,6 @@ class PortalLoader implements \Twig_LoaderInterface
      */
     private function getBrandTheme()
     {
-        return $this->brand_theme_loader->getPortalBrandTheme($this->getBrandContainer()->getBrand());
+        return $this->brandThemeLoader->getPortalBrandTheme($this->getBrandContainer()->getBrand());
     }
 }

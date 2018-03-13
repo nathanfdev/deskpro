@@ -325,51 +325,77 @@ DeskPRO.Agent.Window = new Orb.Class({
 				};
 
 				// Same as default except added check for 'that' still exists
-				options.done = function (e, data) {
-					var that = $(this).data('fileupload'),
-						template,
-						preview;
-
-					// Means the widget is no longer visible (eg tab closed before upload finished)
-					if (!that) {
-						return;
-					}
-
-					if (data.context) {
-						data.context.each(function (index) {
-							var file = ($.isArray(data.result) &&
-									data.result[index]) || {error: 'emptyResult'};
-							if (file.error && that._adjustMaxNumberOfFiles) {
-								that._adjustMaxNumberOfFiles(1);
-							}
-							that._transition($(this)).done(
+				if (options.forceSend) {
+					options.add = function (e, data) {
+						var that = $(this).data('blueimp-fileupload') ||
+								$(this).data('fileupload'),
+							options = that.options,
+							files = data.files;
+						$(this).fileupload('process', data).done(function () {
+							that._adjustMaxNumberOfFiles(-files.length);
+							data.maxNumberOfFilesAdjusted = true;
+							data.files.valid = data.isValidated = that._validate(files);
+							data.context = that._renderUpload(files).data('data', data);
+							that._forceReflow(data.context);
+							that._transition(data.context).done(
 								function () {
-									var node = $(this);
-									template = that._renderDownload([file])
-										.css('height', node.height())
-										.replaceAll(node);
-									that._forceReflow(template);
-									that._transition(template).done(
-										function () {
-											data.context = $(this);
-											that._trigger('completed', e, data);
-										}
-									);
+									if ((that._trigger('added', e, data) !== false) &&
+										(options.autoUpload || data.autoUpload) &&
+										data.autoUpload !== false && data.isValidated) {
+										data.submit();
+									}
 								}
 							);
 						});
-					} else {
-						template = that._renderDownload(data.result)
-							.appendTo(that.options.filesContainer);
-						that._forceReflow(template);
-						that._transition(template).done(
-							function () {
-								data.context = $(this);
-								that._trigger('completed', e, data);
-							}
-						);
-					}
-				};
+					};
+					options.done = function (e, data) {};
+				} else {
+					options.done = function (e, data) {
+						var that = $(this).data('fileupload'),
+							template,
+							preview;
+
+						// Means the widget is no longer visible (eg tab closed before upload finished)
+						if (!that) {
+							return;
+						}
+
+						if (data.context) {
+							data.context.each(function (index) {
+								var file = ($.isArray(data.result) &&
+									data.result[index]) || {error: 'emptyResult'};
+								if (file.error && that._adjustMaxNumberOfFiles) {
+									that._adjustMaxNumberOfFiles(1);
+								}
+								that._transition($(this)).done(
+									function () {
+										var node = $(this);
+										template = that._renderDownload([file])
+											.css('height', node.height())
+											.replaceAll(node);
+										that._forceReflow(template);
+										that._transition(template).done(
+											function () {
+												data.context = $(this);
+												that._trigger('completed', e, data);
+											}
+										);
+									}
+								);
+							});
+						} else {
+							template = that._renderDownload(data.result)
+								.appendTo(that.options.filesContainer);
+							that._forceReflow(template);
+							that._transition(template).done(
+								function () {
+									data.context = $(this);
+									that._trigger('completed', e, data);
+								}
+							);
+						}
+					};
+				}
 
 				// Same as default except added check for 'that' still exists
 				options.stop = function (e) {
@@ -641,6 +667,11 @@ DeskPRO.Agent.Window = new Orb.Class({
 			loadReports = loadReports[1];
 		}
 
+		var loadReportsInterface;
+		if (loadReportsInterface = window.location.hash.match(/#reports-interface:(.*?)$/)) {
+			loadReportsInterface = loadReportsInterface[1];
+		}
+
 		if (this.util.inIframe()) {
 			console.log('Sending iframe message');
 			data = {
@@ -688,7 +719,7 @@ DeskPRO.Agent.Window = new Orb.Class({
 			$('body').addClass('dp-is-retina');
 		}
 
-		if (!loadAdmin && !loadReports) {
+		if (!loadAdmin && !loadReports && !loadReportsInterface) {
 			$('#page_loading').remove();
 			$('#loading_css').remove();
 		}
@@ -815,6 +846,16 @@ DeskPRO.Agent.Window = new Orb.Class({
 				if ($('#reports_interface_trigger').data('handler')) {
 					console.log("Loading reports: " + loadReports);
 					$('#reports_interface_trigger').data('handler').open(loadReports, function () {
+						$('#page_loading').remove();
+						$('#loading_css').remove();
+					});
+				}
+			} else if (loadReportsInterface) {
+				this.disableHashPath(function () {
+				});
+				if ($('#reports2_interface_trigger').data('handler')) {
+					console.log("Loading reports: " + loadReportsInterface);
+					$('#reports2_interface_trigger').data('handler').open(loadReportsInterface, function () {
 						$('#page_loading').remove();
 						$('#loading_css').remove();
 					});
@@ -2048,6 +2089,14 @@ DeskPRO.Agent.Window = new Orb.Class({
 					DeskPRO_Window.TabBar.activateTabById(existTab.id);
 				} else {
 					if (DeskPRO_Window.TabBar.currentTabId == existTab.id) {
+						if (existTab.page && existTab.page.fireEvent) {
+							event.deskpro = {cancelClose: false};
+							existTab.page.fireEvent('closeTab', [event, existTab]);
+
+							if (event.deskpro.cancelClose) {
+								return;
+							}
+						}
 						DeskPRO_Window.TabBar.removeTabById(existTab.id);
 						if (routeData.routeTriggerEl && routeData.toggleOpenClass) {
 							routeData.routeTriggerEl.removeClass(routeData.toggleOpenClass);
@@ -2807,6 +2856,13 @@ DeskPRO.Agent.Window = new Orb.Class({
 				tabRoute: 'page:' + BASE_URL + 'agent/feedback/new',
 				autostart: autostart
 			});
+			this.newFeedbackLoader.newLinkedFeedback = function(ticket_id, message_id) {
+				self.newFeedbackLoader.nextParams = {
+					ticket_id: ticket_id,
+					message_id: message_id || 0
+				};
+				self.newFeedbackLoader.open();
+			};
       this.newTopicLoader = new DeskPRO.Agent.Widget.BackgroundPopout({
         loadUrl: BASE_URL + 'agent/guides/new',
         tabRoute: 'page:' + BASE_URL + 'agent/guides/new',

@@ -155,6 +155,13 @@ services:
     tags:
       - { name: form.type }
 
+  form.ticket_feedback_link:
+    class: DeskPRO\Bundle\AppBundle\Form\Type\Tickets\TicketFeedbackLinkType
+    arguments: ["@brand_aware_settings_resolver"]
+    tags:
+      - { name: form.type }
+
+
   form.organization:
     class: DeskPRO\Bundle\AppBundle\Form\Type\Organizations\OrganizationType
     arguments: ["@custom_field_manager"]
@@ -286,6 +293,13 @@ services:
     tags:
       - { name: form.type }
 
+  form.ticket_charge:
+    class: DeskPRO\Bundle\AppBundle\Form\Type\Tickets\TicketChargeType
+    arguments:
+      - "@doctrine.orm.default_entity_manager"
+    tags:
+      - { name: form.type }
+
   form.widget_brand_chat_settings:
     class: DeskPRO\Bundle\AppBundle\Form\Type\Settings\Widget\BrandSettings\Chat\WidgetBrandChatSettingsType
     arguments:
@@ -364,6 +378,12 @@ services:
     tags:
       - { name: form.type }
 
+  form.voice_outbound_call_type:
+    class: DeskPRO\Bundle\AppBundle\Form\Type\Voice\VoiceOutboundCallType
+    arguments: ["@person_repository"]
+    tags:
+      - { name: form.type }
+
   form.manual:
     class: DeskPRO\Bundle\AppBundle\Form\Type\Content\GuideType
     arguments:
@@ -405,10 +425,19 @@ services:
     tags:
       - { name: form.type }
 
+  form.report_dashboard_report_collection:
+    class: DeskPRO\Bundle\AppBundle\Form\Type\Reports\ReportDashboardReportCollectionType
+    arguments:
+      - "@doctrine.orm.default_entity_manager"
+      - "@reports.dashboard_manager"
+    tags:
+      - { name: form.type }
+
   form.report_widget:
     class: DeskPRO\Bundle\AppBundle\Form\Type\Reports\ReportWidgetType
     arguments:
-      - "@dashboard.service"
+      - "@deskpro.core.translate_loader"
+      - "@language_manager"
     tags:
       - { name: form.type }
 
@@ -416,5 +445,12 @@ services:
     class: DeskPRO\Bundle\AppBundle\Form\Type\Reports\DpqlPartsType
     arguments:
       - "@dpql.compiler"
+    tags:
+      - { name: form.type }
+
+  form.scheduled_report:
+    class: DeskPRO\Bundle\AppBundle\Form\Type\Reports\ScheduledReportType
+    arguments:
+      - "@deskpro.reports.saver"
     tags:
       - { name: form.type }

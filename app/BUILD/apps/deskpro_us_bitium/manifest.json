@@ -9,7 +9,7 @@
   "version_name": "1.0.0",
   "is_single": false,
   "author": {
-    "name": "DeskPRO",
+    "name": "Deskpro",
     "email": "support@deskpro.com",
     "link": "https://www.deskpro.com/"
   },
@@ -26,28 +26,28 @@
       "name": "issuer_id",
       "type": "text",
       "label": "Entity ID (URL)",
-      "description": "You can find this value under the SSO tab within the DeskPRO app on your Bitium account",
+      "description": "You can find this value under the SSO tab within the Deskpro app on your Bitium account",
       "native_only": true
     },
     {
       "name": "sso_url",
       "type": "text",
       "label": "Login URL",
-      "description": "You can find this value under the SSO tab within the DeskPRO app on your Bitium account",
+      "description": "You can find this value under the SSO tab within the Deskpro app on your Bitium account",
       "native_only": true
     },
     {
       "name": "slo_url",
       "type": "text",
       "label": "Logout URL",
-      "description": "You can find this value under the SSO tab within the DeskPRO app on your Bitium account",
+      "description": "You can find this value under the SSO tab within the Deskpro app on your Bitium account",
       "native_only": true
     },
     {
       "name": "cert",
       "type": "textarea",
       "label": "x509 Certificate",
-      "description": "You can find this value under the SSO tab within the DeskPRO app on your Bitium account.",
+      "description": "You can find this value under the SSO tab within the Deskpro app on your Bitium account.",
       "native_only": true
     },
     {
@@ -61,7 +61,7 @@
       "name": "sso_type",
       "type": "choice",
       "label": "SSO Method",
-      "description": "When SSO is enabled, users will be automatically logged-in when they visit DeskPRO.",
+      "description": "When SSO is enabled, users will be automatically logged-in when they visit Deskpro.",
       "native_only": true,
       "default_value": "none",
       "options": [

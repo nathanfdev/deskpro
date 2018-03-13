@@ -15,7 +15,7 @@ class DepartmentList extends AbstractList {
   }
 
   getItems() {
-    return this.props.departments.map(department => this.getItem(department, 'department', 'title'));
+    return this.props.departments.toArray().map(department => this.getItem(department, 'department', 'title'));
   }
 
   getAgents(container) {

@@ -23,7 +23,7 @@ define ['DeskPRO/Util/Arrays'], (Arrays) ->
 
     updateWidgetsSize: (widgets, cols) ->
       ws = []
-      ws.push widget for widget, i in widgets when widget != 'last' and widget.sizeX > cols
+      ws.push widget for widget, i in widgets when widget != 'last' and widget.size_x > cols
       return ws
 
     getReports: () ->
@@ -55,11 +55,11 @@ define ['DeskPRO/Util/Arrays'], (Arrays) ->
         return false
 
     saveWidget: (widget) ->
-      @Api.sendPost \
-        "/dashboards/widgets/#{widget.id}",
+      @Api2.sendPutJson \
+        "/dashboard_report_widgets/#{widget.id}",
         {
-          "size_x":  if widget.newSizeX? then widget.newSizeX else widget.sizeX
-          "size_y":  if widget.newSizeY? then widget.newSizeY else widget.sizeY
+          "size_x":  if widget.newSizeX? then widget.newSizeX else widget.size_x
+          "size_y":  if widget.newSizeY? then widget.newSizeY else widget.size_y
           "col":     if widget.newCol? then widget.newCol else widget.col
           "row":     if widget.newRow? then widget.newRow else widget.row
           "title":   widget.title
@@ -70,16 +70,34 @@ define ['DeskPRO/Util/Arrays'], (Arrays) ->
       @dashboardService = service
 
     addWidget: (report, widget) ->
-      url = "/dashboards/#{report.id}/widgets"
-      data = widget
+      widgetVars = []
+      for name,variable of widget.variables
+        variable.name = name
+        widgetVars.push(variable)
+
+      url = "/dashboard_report_widgets"
+      data = {
+        title: widget.title
+        type: widget.type
+        col: widget.col
+        row: widget.row
+        size_x: widget.sizeX
+        size_y: widget.sizeY
+        report: report.id
+        widget_variables: widgetVars
+      }
+
+      if widget.widget_id == 'advanced'
+        data.js_code = widget.js_code
+      else
+        data.widget = widget.widget_id
+
       deferred = @$q.defer()
 
-      @Api
+      @Api2
       .sendPostJson url, data
       .then (response) =>
-        newWidget = response.data
-        report.widgets.push newWidget
-        deferred.resolve()
+        deferred.resolve(response.data.data)
 
       return deferred.promise
 
@@ -97,13 +115,32 @@ define ['DeskPRO/Util/Arrays'], (Arrays) ->
 
 
     removeWidget: (widget) ->
-      @Api.sendDelete "/dashboards/widgets/#{widget.id}"
+      @Api2.sendDelete "/dashboard_report_widgets/#{widget.id}"
+
+    getWidgets: (reportId) ->
+      deferred = @$q.defer()
+
+      @Api2
+      .sendGet "/dashboard_reports/#{reportId}/widgets?include=rendered_result&inline_sideloads=1"
+      .then (resp) =>
+        widgets = resp.data.data;
+        widgets.map((widget) =>
+          widget.sizeX = widget.size_x
+          widget.sizeY = widget.size_y
+        )
+
+        deferred.resolve(widgets)
+      return deferred.promise
 
     getWidget: (id) ->
       deferred = @$q.defer()
 
-      @Api
-        .sendGet "/dashboards/widgets/#{id}"
+      @Api2
+        .sendGet "/dashboard_report_widgets/#{id}?include=rendered_result&inline_sideloads=1"
         .then (resp) =>
-          deferred.resolve(resp.data.data)
+          widget = resp.data.data;
+          widget.sizeX = widget.size_x
+          widget.sizeY = widget.size_y
+
+          deferred.resolve(widget)
       return deferred.promise

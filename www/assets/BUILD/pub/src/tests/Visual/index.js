@@ -1,8 +1,8 @@
 import './AdminBundle/Modules/Common/sectionHeader';
 import './AdminBundle/Modules/Common/loadingPage';
 import './AdminBundle/Modules/Voice/index';
+import './AdminBundle/Modules/Apps/index';
 import './AdminBundle/Modules/Application/emailTemplates';
-import './AgentBundle/Modules/Application/AppSwitcher';
 import './AgentBundle/Modules/Application/notifications';
 import './AgentBundle/Modules/Application/sidebar';
 import './AgentBundle/Modules/Application/topbar';

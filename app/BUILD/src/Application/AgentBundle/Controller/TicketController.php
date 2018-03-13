@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2017, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2018, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -84,6 +84,7 @@ use Application\DeskPRO\Tickets\TicketSplit;
 use Application\EmailBundle\SwiftMailer\Message\MessageOptionsInterface;
 use DeskPRO\Bundle\AppBundle\Entity\SnippetTranslation;
 use DeskPRO\Bundle\AppBundle\Entity\SnippetUseLog;
+use DeskPRO\Bundle\AppBundle\Entity\TicketFeedbackLink;
 use DeskPRO\Bundle\AppBundle\Serializer\Sideload\SideloadSerializationContext;
 use DeskPRO\Component\Pdf\PdfRendererInterface;
 use DeskPRO\Component\Util\ListUtils;
@@ -91,7 +92,6 @@ use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\DBAL\Connection;
 use DpSys\LowError\SystemErrorHandler;
 use Orb\Util\Arrays;
-use Orb\Util\Dates;
 use Orb\Util\DpStrings;
 use Orb\Util\Strings;
 use Orb\Validator\StringEmail;
@@ -424,6 +424,12 @@ class TicketController extends AbstractController
         );
 
         //------------------------------
+        // Linked Feedback
+        //------------------------------
+        $feedbackRepo        = $this->em->getRepository(TicketFeedbackLink::class);
+        $ticketFeedbackLinks = $feedbackRepo->findByTicketAndJoinFeedbackData($ticket);
+
+        //------------------------------
         // Pre-load person and org
         //------------------------------
 
@@ -486,8 +492,9 @@ class TicketController extends AbstractController
             'custom_person_fields' => $custom_person_fields,
             'custom_org_fields'    => $custom_org_fields,
 
-            'show_related_content' => $show_related_content,
-            'linked_tickets'       => $linked_tickets,
+            'show_related_content'  => $show_related_content,
+            'linked_tickets'        => $linked_tickets,
+            'ticket_feedback_links' => $ticketFeedbackLinks,
 
             'ticket_messages_block' => $ticket_messages_block,
             'logs_block'            => $logs_block_info['rendered'],
@@ -1425,7 +1432,6 @@ class TicketController extends AbstractController
                     }
                 }
             }
-            $this->em->flush();
         }
 
         if ($macro) {
@@ -1433,7 +1439,9 @@ class TicketController extends AbstractController
             $this->em->persist($macroLog);
         }
 
-        if ($dupeMessage = $this->em->getRepository(TicketMessage::class)->checkDupeMessage(
+        /** @var \Application\DeskPRO\EntityRepository\TicketMessage $messageRepo */
+        $messageRepo = $this->em->getRepository(TicketMessage::class);
+        if ($dupeMessage = $messageRepo->checkDupeMessage(
             $message,
             $ticket,
             5 * 60
@@ -3324,37 +3332,30 @@ class TicketController extends AbstractController
             throw new NotFoundHttpException();
         }
 
-        $ticket_person = $ticket->person;
-
         $this->db->replace(
             'tickets_deleted',
             [
-                'ticket_id'     => $ticket->id,
-                'by_person_id'  => $this->person->id,
+                'ticket_id'     => $ticket->getId(),
+                'by_person_id'  => $this->person->getId(),
                 'new_ticket_id' => 0,
                 'reason'        => $this->in->getString('reason'),
                 'date_created'  => date('Y-m-d H:i:s'),
             ]
         );
 
-        $this->em->getConnection()->beginTransaction();
-
-        if ($this->in->getBool('ban') && !$ticket_person->is_agent) {
-            $ticket->getTicketLogger()->recordExtra('is_physical_delete', true);
-        }
-
         try {
+            $this->em->getConnection()->beginTransaction();
             $ticket->setStatus('hidden.deleted');
             $this->em->flush();
             $this->em->getConnection()->commit();
         } catch (\Exception $e) {
-            $this->em->getConnection()->rollback();
+            $this->em->getConnection()->rollBack();
             throw $e;
         }
 
-        if ($this->in->getBool('ban') && !$ticket_person->is_agent) {
-            foreach ($ticket->person->emails as $email) {
-                $email_addy = strtolower($email->email);
+        if ($this->in->getBool('ban') && !$ticket->getPerson()->isAgent()) {
+            foreach ($ticket->getPerson()->getEmails() as $email) {
+                $email_addy = strtolower($email->getEmail());
                 App::getDb()->replace(
                     'ban_emails',
                     [
@@ -3364,7 +3365,7 @@ class TicketController extends AbstractController
                 );
             }
 
-            $person       = $ticket->person;
+            $person       = $ticket->getPerson();
             $edit_manager = $this->container->getSystemService('person_edit_manager');
             $edit_manager->setPersonContext($this->person);
             $edit_manager->deleteUser($person);
@@ -3461,19 +3462,11 @@ class TicketController extends AbstractController
                     'core_tickets.hard_delete_time'
                 );
             $hard_delete_time = max(0, $hard_delete_time - time());
-
-            if ($hard_delete_time) {
-                $hard_delete_time = Dates::secsToReadable($hard_delete_time);
-            }
         } elseif ($ticket['hidden_status'] == 'spam') {
             $hard_delete_time = $ticket->date_status->getTimestamp() + $this->container->getSetting(
                     'core_tickets.spam_delete_time'
                 );
             $hard_delete_time = max(0, $hard_delete_time - time());
-
-            if ($hard_delete_time) {
-                $hard_delete_time = Dates::secsToReadable($hard_delete_time);
-            }
         }
 
         return [
@@ -4598,6 +4591,7 @@ class TicketController extends AbstractController
                 'custom_person_fields' => $customPersonFields,
                 'custom_org_fields'    => $customOrgFields,
                 'brands'               => $brands,
+                'default_brand'        => $this->get('brand_stack')->getDefaultBrand()->getId(),
             ]
         );
     }
@@ -5690,6 +5684,30 @@ CSS;
         }
 
         return $this->render('AgentBundle:Ticket:link.html.twig');
+    }
+
+    public function linkExistingFeedbackOverlayAction($ticket_id)
+    {
+        try {
+            $ticket = $this->getTicketOr404($ticket_id);
+        } catch (NotFoundHttpException $e) {
+            // try to find a delete log
+            $delete_log = $this->em->getRepository(TicketDeleted::class)->findOneBy(['ticket_id' => $ticket_id]);
+            if ($delete_log) {
+                return $this->render('AgentBundle:Ticket:deleted.html.twig', ['delete_log' => $delete_log]);
+            } else {
+                throw $e;
+            }
+        }
+
+        $exludeIds = $ticket->getFeedbackLinks()->map(function ($e) {
+            return $e->getFeedback()->getId();
+        })->toArray();
+
+        return $this->render('AgentBundle:Ticket:link-feedback.html.twig', [
+            'ticket'    => $ticket,
+            'exludeIds' => $exludeIds,
+        ]);
     }
 
     public function unlinkTicketAction($ticket_id)

@@ -35,53 +35,40 @@
 namespace Application\DeskPRO\Entity;
 
 use Application\DeskPRO\Domain\DomainObject;
-use Application\DeskPRO\Entity;
+use DeskPRO\Bundle\AppBundle\Validator\Constraints as AppAssert;
 use Doctrine\ORM\Mapping\ClassMetadata;
 use Doctrine\ORM\Mapping\ClassMetadataInfo;
+use Symfony\Component\Validator\Constraints as Assert;
 
 /**
  * ReportDashboardWidget.
+ *
+ * @AppAssert\Reports\ReportDashboardWidgetQuery()
  */
 class ReportDashboardWidget extends DomainObject
 {
-    const WIDGET_TYPE_GRAPH     = 'graph';
-    const WIDGET_TYPE_STAT      = 'stat';
-    const WIDGET_TYPE_HARDCODED = 'hardcoded';
-    const WIDGET_TYPE_BAR       = 'bar';
-    const WIDGET_TYPE_PIE       = 'pie';
-    const WIDGET_TYPE_TABLE     = 'table';
-
-    /**
-     * @var array
-     */
-    protected $widgetTypesMapping = [
-        'simple_bars'  => self::WIDGET_TYPE_GRAPH,
-        'bars'         => self::WIDGET_TYPE_GRAPH,
-        'simple_lines' => self::WIDGET_TYPE_GRAPH,
-        'lines'        => self::WIDGET_TYPE_GRAPH,
-        'area'         => self::WIDGET_TYPE_GRAPH,
-        'simple_area'  => self::WIDGET_TYPE_GRAPH,
-        'pie'          => self::WIDGET_TYPE_GRAPH,
-        'table'        => self::WIDGET_TYPE_TABLE,
-        'simple_stat'  => self::WIDGET_TYPE_STAT,
-    ];
-
     /**
      * @var int
      */
     protected $id = null;
 
     /**
+     * @Assert\NotBlank()
+     *
      * @var ReportDashboardReport
      */
     protected $report = null;
 
     /**
-     * @var ReportWidget it's a reference to ReportWidget Entity that holds DPQL
+     * It's a reference to ReportWidget Entity that holds DPQL.
+     *
+     * @var ReportWidget
      */
     protected $widget = null;
 
     /**
+     * @Assert\NotBlank()
+     *
      * @var string
      */
     protected $title = '';
@@ -97,11 +84,8 @@ class ReportDashboardWidget extends DomainObject
     protected $size = '8:5';
 
     /**
-     * @var string
-     */
-    protected $hc_data = null;
-
-    /**
+     * @Assert\NotBlank()
+     *
      * @var string
      */
     protected $type;
@@ -109,12 +93,17 @@ class ReportDashboardWidget extends DomainObject
     /**
      * @var array
      */
-    protected $variables;
+    protected $variables = [];
 
     /**
      * @var string
      */
     protected $options;
+
+    /**
+     * @var string
+     */
+    protected $jsCode;
 
     /**
      * @return int
@@ -151,7 +140,7 @@ class ReportDashboardWidget extends DomainObject
      */
     public function setTitle($title)
     {
-        $this->title = $title;
+        $this->setModelField('title', $title);
 
         return $this;
     }
@@ -162,6 +151,54 @@ class ReportDashboardWidget extends DomainObject
     public function getPosition()
     {
         return explode(':', $this->position);
+    }
+
+    /**
+     * @return int
+     */
+    public function getCol()
+    {
+        $position = $this->getPosition();
+
+        return isset($position[1]) ? $position[1] : 0;
+    }
+
+    /**
+     * @param int $col
+     *
+     * @throws \Exception
+     *
+     * @return $this
+     */
+    public function setCol($col)
+    {
+        $this->setPosition([$this->getRow(), $col]);
+
+        return $this;
+    }
+
+    /**
+     * @return int
+     */
+    public function getRow()
+    {
+        $position = $this->getPosition();
+
+        return isset($position[0]) ? $position[0] : 0;
+    }
+
+    /**
+     * @param int $row
+     *
+     * @throws \Exception
+     *
+     * @return $this
+     */
+    public function setRow($row)
+    {
+        $this->setPosition([$row, $this->getCol()]);
+
+        return $this;
     }
 
     /**
@@ -185,7 +222,8 @@ class ReportDashboardWidget extends DomainObject
         } else {
             throw new \Exception('Wrong point given!');
         }
-        $this->position = implode(':', [(int) $x, (int) $y]);
+
+        $this->setModelField('position', implode(':', [(int) $x, (int) $y]));
 
         return $this;
     }
@@ -203,9 +241,57 @@ class ReportDashboardWidget extends DomainObject
      *
      * @return $this
      */
-    public function setReport(ReportDashboardReport $report)
+    public function setReport(ReportDashboardReport $report = null)
     {
-        $this->report = $report;
+        $this->setModelField('report', $report);
+
+        return $this;
+    }
+
+    /**
+     * @return int
+     */
+    public function getSizeX()
+    {
+        $size = $this->getSize();
+
+        return isset($size[0]) ? $size[0] : 0;
+    }
+
+    /**
+     * @param int $sizeX
+     *
+     * @throws \Exception
+     *
+     * @return $this
+     */
+    public function setSizeX($sizeX)
+    {
+        $this->setSize([$sizeX, $this->getSizeY()]);
+
+        return $this;
+    }
+
+    /**
+     * @return int
+     */
+    public function getSizeY()
+    {
+        $size = $this->getSize();
+
+        return isset($size[1]) ? $size[1] : 0;
+    }
+
+    /**
+     * @param int $sizeY
+     *
+     * @throws \Exception
+     *
+     * @return $this
+     */
+    public function setSizeY($sizeY)
+    {
+        $this->setSize([$this->getSizeX(), $sizeY]);
 
         return $this;
     }
@@ -219,7 +305,7 @@ class ReportDashboardWidget extends DomainObject
     }
 
     /**
-     * @param string $size
+     * @param string|array $size
      *
      * @throws \Exception
      *
@@ -238,7 +324,8 @@ class ReportDashboardWidget extends DomainObject
         } else {
             throw new \Exception('Wrong point given!');
         }
-        $this->size = implode(':', [(int) $x, (int) $y]);
+
+        $this->setModelField('size', implode(':', [(int) $x, (int) $y]));
 
         return $this;
     }
@@ -252,53 +339,25 @@ class ReportDashboardWidget extends DomainObject
     }
 
     /**
-     * @param ReportWidget $report
+     * @param ReportWidget $widget
      *
      * @return $this
      */
-    public function setWidget(ReportWidget $report = null)
+    public function setWidget(ReportWidget $widget = null)
     {
-        $this->widget = $report;
+        $this->setModelField('widget', $widget);
 
         return $this;
     }
 
     /**
-     * @return array
-     */
-    public function getHcData()
-    {
-        if (!is_null($this->hc_data) && !is_array($this->hc_data)) {
-            $temp          = explode(':', $this->hc_data);
-            $this->hc_data = [
-                'inner_type' => $temp[1],
-                'outer_type' => $temp[0],
-            ];
-        }
-
-        return $this->hc_data;
-    }
-
-    /**
-     * @param string $data
-     *
-     * @return $this
-     */
-    public function setHcData($data)
-    {
-        $this->hc_data = $data;
-
-        return $this;
-    }
-
-    /**
-     * @param $type
+     * @param string $type
      *
      * @return $this
      */
     public function setType($type)
     {
-        $this->type = $type;
+        $this->setModelField('type', $type);
 
         return $this;
     }
@@ -309,14 +368,6 @@ class ReportDashboardWidget extends DomainObject
     public function getType()
     {
         return $this->type;
-    }
-
-    /**
-     * @return string
-     */
-    public function getWidgetType()
-    {
-        return isset($this->widgetTypesMapping[$this->type]) ? $this->widgetTypesMapping[$this->type] : self::WIDGET_TYPE_TABLE;
     }
 
     /**
@@ -334,7 +385,7 @@ class ReportDashboardWidget extends DomainObject
      */
     public function setVariables(array $variables)
     {
-        $this->variables = $variables;
+        $this->setModelField('variables', $variables);
 
         return $this;
     }
@@ -354,7 +405,27 @@ class ReportDashboardWidget extends DomainObject
      */
     public function setOptions($options)
     {
-        $this->options = $options;
+        $this->setModelField('options', $options);
+
+        return $this;
+    }
+
+    /**
+     * @return string
+     */
+    public function getJsCode()
+    {
+        return $this->jsCode;
+    }
+
+    /**
+     * @param string $jsCode
+     *
+     * @return $this
+     */
+    public function setJsCode($jsCode)
+    {
+        $this->setModelField('jsCode', $jsCode);
 
         return $this;
     }
@@ -365,6 +436,8 @@ class ReportDashboardWidget extends DomainObject
 
     /**
      * @param ClassMetadata $metadata
+     *
+     * @throws \Doctrine\ORM\Mapping\MappingException
      */
     public static function loadMetadata(ClassMetadata $metadata)
     {
@@ -406,7 +479,7 @@ class ReportDashboardWidget extends DomainObject
             [
                 'fieldName'  => 'position',
                 'type'       => 'string',
-                'length'     => 5,
+                'length'     => 255,
                 'precision'  => 0,
                 'scale'      => 0,
                 'nullable'   => false,
@@ -417,22 +490,11 @@ class ReportDashboardWidget extends DomainObject
             [
                 'fieldName'  => 'size',
                 'type'       => 'string',
-                'length'     => 5,
+                'length'     => 255,
                 'precision'  => 0,
                 'scale'      => 0,
                 'nullable'   => false,
                 'columnName' => 'size',
-            ]
-        );
-        $metadata->mapField(
-            [
-                'fieldName'  => 'hc_data',
-                'type'       => 'string',
-                'length'     => 50,
-                'precision'  => 0,
-                'scale'      => 0,
-                'nullable'   => true,
-                'columnName' => 'hc_data',
             ]
         );
 
@@ -452,7 +514,6 @@ class ReportDashboardWidget extends DomainObject
             [
                 'fieldName'  => 'variables',
                 'type'       => 'json_array',
-                'length'     => 250,
                 'precision'  => 0,
                 'scale'      => 0,
                 'nullable'   => true,
@@ -468,6 +529,17 @@ class ReportDashboardWidget extends DomainObject
                 'scale'      => 0,
                 'nullable'   => true,
                 'columnName' => 'options',
+            ]
+        );
+
+        $metadata->mapField(
+            [
+                'fieldName'  => 'jsCode',
+                'type'       => 'text',
+                'precision'  => 0,
+                'scale'      => 0,
+                'nullable'   => true,
+                'columnName' => 'js_code',
             ]
         );
 

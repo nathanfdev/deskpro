@@ -185,6 +185,9 @@ class DpScript extends LowScriptAbstract
             }
 
             $add_phrases = [
+                'agent.general.clear',
+                'agent.tasks.no_due_date',
+                'agent.tasks.no_due_time',
                 'agent.userchat.message_started',
                 'agent.userchat.transcript_sent',
                 'agent.userchat.message_user_joined',

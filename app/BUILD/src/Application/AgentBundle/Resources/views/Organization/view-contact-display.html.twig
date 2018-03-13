@@ -52,10 +52,12 @@
 		{% if not show_only or show_only.mobile %}
 			{% for contact in contact_data.mobile %}
 				<li class="mobile {% if contact.rec.comment %}tipped{% endif %}" {% if contact.rec.comment %}title="{{ contact.rec.comment }}"{% endif %} data-tipped-options="hook: 'leftmiddle'">
+					<a href="tel:{{ contact.country_calling_code ? "+#{contact.country_calling_code}#{contact.number}"|replace({' ': '', '-': ''}) : contact.number|replace({' ': '', '-': ''}) }}" class="phone-number" data-phone-number="{{ contact.country_calling_code ? "+#{contact.country_calling_code}#{contact.number}"|replace({' ': '', '-': ''}) : contact.number|replace({' ': '', '-': ''}) }}">
 					{% if contact.country_calling_code %}
 						<span class="country-code">+{{ contact.country_calling_code }}</span>
 					{% endif %}
 					<span class="number">{{ contact.number }} {% if contact.rec.comment %}({{contact.rec.comment}}){% endif %}</span>
+					</a>
 				</li>
 			{% endfor %}
 		{% endif %}
@@ -63,10 +65,12 @@
 		{% if not show_only or show_only.phone %}
 			{% for contact in contact_data.phone %}
 				<li class="{{ contact.type }} {% if contact.rec.comment %}tipped{% endif %}" {% if contact.rec.comment %}title="{{ contact.rec.comment }}"{% endif %} data-tipped-options="hook: 'leftmiddle'">
+					<a href="tel:{{ contact.country_calling_code ? "+#{contact.country_calling_code}#{contact.number}"|replace({' ': '', '-': ''}) : contact.number|replace({' ': '', '-': ''}) }}" class="phone-number" data-phone-number="{{ contact.country_calling_code ? "+#{contact.country_calling_code}#{contact.number}"|replace({' ': '', '-': ''}) : contact.number|replace({' ': '', '-': ''}) }}">
 					{% if contact.country_calling_code %}
 						<span class="country-code">+{{ contact.country_calling_code }}</span>
 					{% endif %}
 					<span class="number">{{ contact.number }} {% if contact.rec.comment %}({{contact.rec.comment}}){% endif %}</span>
+					</a>
 				</li>
 			{% endfor %}
 		{% endif %}
@@ -74,10 +78,12 @@
 		{% if not show_only or show_only.fax %}
 			{% for contact in contact_data.fax %}
 				<li class="fax {% if contact.rec.comment %}tipped{% endif %}" {% if contact.rec.comment %}title="{{ contact.rec.comment }}"{% endif %} data-tipped-options="hook: 'leftmiddle'">
+					<a href="tel:{{ contact.country_calling_code ? "+#{contact.country_calling_code}#{contact.number}"|replace({' ': '', '-': ''}) : contact.number|replace({' ': '', '-': ''}) }}" class="phone-number" data-phone-number="{{ contact.country_calling_code ? "+#{contact.country_calling_code}#{contact.number}"|replace({' ': '', '-': ''}) : contact.number|replace({' ': '', '-': ''}) }}">
 					{% if contact.country_calling_code %}
 						<span class="country-code">+{{ contact.country_calling_code }}</span>
 					{% endif %}
 					<span class="number">{{ contact.number }}</span> {% if contact.rec.comment %}({{contact.rec.comment}}){% endif %}
+					</a>
 				</li>
 			{% endfor %}
 		{% endif %}

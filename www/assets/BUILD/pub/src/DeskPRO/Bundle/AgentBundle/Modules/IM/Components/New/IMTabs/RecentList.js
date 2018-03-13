@@ -48,7 +48,7 @@ class RecentList extends React.Component {
     const { chats, startedByMeChats, me } = this.props;
     const filtered = chats.filter(chat => chat.get('date_last_message') || startedByMeChats.get(chat.get('id')) || me.get('id') === chat.get('admin'));
 
-    return RecentList.sortList(filtered).map(this.getItem.bind(this));
+    return RecentList.sortList(filtered).toArray().map(this.getItem.bind(this));
   }
 
   getNotificationCount(chat) {

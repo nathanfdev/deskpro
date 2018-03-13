@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2017, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2018, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -483,5 +483,19 @@ class GuideController extends PublishController
         }
 
         return $guides;
+    }
+
+    //###########################################################################
+    // Compare revisions
+    //###########################################################################
+
+    public function compareRevisionsAction($rev_old_id, $rev_new_id)
+    {
+        $diffInfo = ContentRevisionUtil::compareRevisions(TopicRevision::class, $rev_old_id, $rev_new_id);
+
+        return $this->render('AgentBundle:Guide:compare-revs.html.twig', [
+            'rendered_content_diff' => $diffInfo['rendered_content_diff'],
+            'rendered_title_diff'   => $diffInfo['rendered_title_diff'],
+        ]);
     }
 }

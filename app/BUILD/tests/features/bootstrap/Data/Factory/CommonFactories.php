@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2017, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2018, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -31,6 +31,7 @@ namespace DpBehat\Data\Factory;
 use Application\DeskPRO\Entity\AgentTeam;
 use Application\DeskPRO\Entity\ChatConversation;
 use Application\DeskPRO\Entity\CustomDefAbstract;
+use Application\DeskPRO\Entity\CustomDefBilling;
 use Application\DeskPRO\Entity\CustomDefChat;
 use Application\DeskPRO\Entity\CustomDefFeedback;
 use Application\DeskPRO\Entity\CustomDefOrganization;
@@ -157,6 +158,7 @@ class CommonFactories
             'person'       => CustomDefPerson::class,
             'conversation' => CustomDefChat::class,
             'feedback'     => CustomDefFeedback::class,
+            'billing'      => CustomDefBilling::class,
         ];
 
         $typeToHandler = [
@@ -174,7 +176,7 @@ class CommonFactories
             'display'        => CustomDefAbstract::HANDLER_CLASS_DISPLAY,
             'data'           => CustomDefAbstract::HANDLER_CLASS_DATA,
             'data_list'      => CustomDefAbstract::HANDLER_CLASS_DATALIST,
-            'data_json'      => CustomDefAbstract::HANDLER_CLASS_DATAJSON
+            'data_json'      => CustomDefAbstract::HANDLER_CLASS_DATAJSON,
         ];
 
         $def = new $types[$type]();

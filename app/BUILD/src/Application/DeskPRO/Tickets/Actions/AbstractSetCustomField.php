@@ -71,6 +71,29 @@ abstract class AbstractSetCustomField extends AbstractContainerAwareAction imple
     abstract public function getApplicableObject(Ticket $ticket, ExecutorContextInterface $context);
 
     /**
+     * Parse the action options and return the field id
+     *
+     * @throw \RuntimeException
+     * @param bool $formFieldFormat
+     * @return string
+     */
+    public function resolveFieldId($formFieldFormat = true)
+    {
+        // is field referenced by id ?
+        $fieldId = $this->getActionOption('field_id');
+        if (!empty($fieldId)) {
+            return $formFieldFormat ? "field_{$fieldId}" : $fieldId;
+        }
+
+        // is field referenced by alias ?
+        $fieldId =  $this->getActionOption('field');
+        if (empty($fieldId)) {
+            throw new \RuntimeException(sprintf('could not resolve the field id from options'));
+        }
+        return $fieldId;
+    }
+
+    /**
      * {@inheritdoc}
      */
     public function applyAction(Ticket $ticket, ExecutorContextInterface $context)
@@ -83,6 +106,7 @@ abstract class AbstractSetCustomField extends AbstractContainerAwareAction imple
         }
 
         $operator = $this->getActionOption('op');
+
         switch ($operator) {
             case 'unset':
                 $this->applyUnsetOperator($ticket, $context);
@@ -99,9 +123,9 @@ abstract class AbstractSetCustomField extends AbstractContainerAwareAction imple
     {
         $fm  = $this->getFieldManager($ticket, $context);
         $obj = $this->getApplicableObject($ticket, $context);
-        $fieldId = $this->getActionOption('field_id');
 
-        $form_array = ["field_{$fieldId}" => null];
+        $fieldId = $this->resolveFieldId();
+        $form_array = [$fieldId => null];
         $fm->saveFormToObject($form_array, $obj, true);
     }
 
@@ -109,7 +133,6 @@ abstract class AbstractSetCustomField extends AbstractContainerAwareAction imple
     {
         $fm  = $this->getFieldManager($ticket, $context);
         $obj = $this->getApplicableObject($ticket, $context);
-        $fieldId = $this->getActionOption('field_id');
         $value   = $this->getActionOption('value');
 
         if (is_string($value) && $this->getActionOption('with_formatter')) {
@@ -118,7 +141,8 @@ abstract class AbstractSetCustomField extends AbstractContainerAwareAction imple
             $value    = $renderer->renderTicketTemplate($value, $ticket, $context, $extraVars);
         }
 
-        $form_array = ["field_{$fieldId}" => $value];
+        $fieldId = $this->resolveFieldId();
+        $form_array = [$fieldId => $value];
         $fm->saveFormToObject($form_array, $obj, true);
     }
 
@@ -127,11 +151,7 @@ abstract class AbstractSetCustomField extends AbstractContainerAwareAction imple
         $fm  = $this->getFieldManager($ticket, $context);
         $obj = $this->getApplicableObject($ticket, $context);
 
-        $fieldId = $this->getActionOption('field_id');
-        if (empty($fieldId)) {
-            $fieldId = $this->getActionOption('field');
-        }
-
+        $fieldId = $this->resolveFieldId(false);
         $fieldDef = $fm->getFieldFromId($fieldId);
         if (empty($fieldDef)) {
             throw new \RuntimeException(sprintf('could not find field with id: %s', $fieldId));
@@ -148,7 +168,6 @@ abstract class AbstractSetCustomField extends AbstractContainerAwareAction imple
 
             $value    = $renderer->renderTicketTemplate($value, $ticket, $context, $extraVars);
         }
-
         $fm->removeSomeCustomDataOnObjectAndFlushChanges(
             $obj,
             $fieldDef,

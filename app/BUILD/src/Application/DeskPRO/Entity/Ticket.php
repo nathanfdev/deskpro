@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2017, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2018, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -42,6 +42,7 @@ use Application\DeskPRO\Tickets\ExecutorContext;
 use Application\DeskPRO\Tickets\TicketChangeTracker;
 use DeskPRO\Bundle\AppBundle\Entity\CustomPerDataOwnerInterface;
 use DeskPRO\Bundle\AppBundle\Entity\CustomPerDataTrait;
+use DeskPRO\Bundle\AppBundle\Entity\TicketFeedbackLink;
 use DeskPRO\Bundle\AppBundle\Entity\TicketFollowUp;
 use DeskPRO\Bundle\AppBundle\ObjectRouter\Configuration\PortalLinkCustom;
 use DeskPRO\Bundle\AppBundle\ObjectRouter\Configuration\PortalLinkRoute;
@@ -87,6 +88,7 @@ use Symfony\Component\Validator\Constraints as Assert;
  * @property TicketAccessCode[]|ArrayCollection  $access_codes
  * @property TicketMessage[]|ArrayCollection     $messages
  * @property TicketSms[]                         $sms_messages
+ * @property TicketFeedbackLink[]|ArrayCollection  $feedback_links
  * @property CustomDataTicket[]|ArrayCollection  $custom_data
  * @property LabelTicket[]                       $labels
  * @property string                              $sent_to_address
@@ -314,6 +316,11 @@ class Ticket extends DomainObject implements HighlightableModelInterface, Labels
      * @var ArrayCollection
      */
     protected $sms_messages;
+
+    /**
+     * @var TicketFeedbackLink[]|ArrayCollection
+     */
+    protected $feedback_links;
 
     /**
      * @var ArrayCollection|CustomDataTicket[]
@@ -657,6 +664,7 @@ class Ticket extends DomainObject implements HighlightableModelInterface, Labels
         $this->jira_issues      = new ArrayCollection();
         $this->messages         = new ArrayCollection();
         $this->sms_messages     = new ArrayCollection();
+        $this->feedback_links   = new ArrayCollection();
         $this->custom_data      = new ArrayCollection();
         $this->customPerData    = new ArrayCollection();
         $this->labels           = new ArrayCollection();
@@ -926,6 +934,26 @@ class Ticket extends DomainObject implements HighlightableModelInterface, Labels
     public function getParticipants()
     {
         return $this->participants;
+    }
+
+    /**
+     * @return TicketParticipant[]|ArrayCollection
+     */
+    public function getCcs()
+    {
+        return $this->participants->filter(function (TicketParticipant $participant) {
+            return $participant->getPerson() && !$participant->getPerson()->isAgent();
+        });
+    }
+
+    /**
+     * @return TicketParticipant[]|ArrayCollection
+     */
+    public function getFollowers()
+    {
+        return $this->participants->filter(function (TicketParticipant $participant) {
+            return $participant->getPerson() && $participant->getPerson()->isAgent();
+        });
     }
 
     /**
@@ -1468,6 +1496,14 @@ class Ticket extends DomainObject implements HighlightableModelInterface, Labels
     }
 
     /**
+     * @return TicketCharge[]|ArrayCollection
+     */
+    public function getCharges()
+    {
+        return $this->charges;
+    }
+
+    /**
      * @param Person $agent
      * @param int    $time
      * @param int    $amount
@@ -1619,7 +1655,7 @@ class Ticket extends DomainObject implements HighlightableModelInterface, Labels
     /**
      * @param bool $includeNote
      *
-     * @return ArrayCollection|Collection
+     * @return TicketMessage
      */
     public function getLastReply($includeNote = false)
     {
@@ -1628,7 +1664,7 @@ class Ticket extends DomainObject implements HighlightableModelInterface, Labels
         $criteria->orderBy(['id' => 'desc']);
 
         if (!$includeNote) {
-            $criteria->andWhere($criteria->expr()->eq('is_agent_note', 0));
+            $criteria->andWhere($criteria->expr()->eq('is_agent_note', false));
         }
 
         return $this->messages->matching($criteria)->first();
@@ -1730,6 +1766,56 @@ class Ticket extends DomainObject implements HighlightableModelInterface, Labels
         $this->messages->removeElement($message);
         $this->_onPropertyChanged('messages', null, $this->messages);
         $this->getStateChangeRecorder()->record('message', $message, null);
+
+        return $this;
+    }
+
+    /**
+     * @return TicketFeedbackLink[]|ArrayCollection
+     */
+    public function getFeedbackLinks()
+    {
+        return $this->feedback_links;
+    }
+
+    /**
+     * Add a TicketFeedbackLink to this ticket.
+     *
+     * @param TicketFeedbackLink $feedbackLink
+     */
+    public function addFeedbackLink(TicketFeedbackLink $feedbackLink)
+    {
+        if ($this->feedback_links->contains($feedbackLink)) {
+            return;
+        }
+
+        $changes = $this->getStateChangeRecorder()->getChangesForField('feedback_links');
+        if ($changes) {
+            foreach ($changes as $c) {
+                if ($c->getNew() === $feedbackLink) {
+                    // already added
+                    return;
+                }
+            }
+        }
+
+        $this->feedback_links->add($feedbackLink);
+        $feedbackLink->setTicket($this);
+
+        $this->_onPropertyChanged('feedback_links', null, $feedbackLink, true);
+        $this->getStateChangeRecorder()->record('feedback_link', null, $feedbackLink);
+    }
+
+    /**
+     * @param TicketFeedbackLink $feedbackLink
+     *
+     * @return $this
+     */
+    public function removeFeedbackLink(TicketFeedbackLink $feedbackLink)
+    {
+        $this->feedback_links->removeElement($feedbackLink);
+        $this->_onPropertyChanged('feedback_links', null, $this->feedback_links);
+        $this->getStateChangeRecorder()->record('feedback_link', $feedbackLink, null);
 
         return $this;
     }
@@ -5333,6 +5419,17 @@ class Ticket extends DomainObject implements HighlightableModelInterface, Labels
             [
                 'fieldName'     => 'sms_messages',
                 'targetEntity'  => 'Application\\DeskPRO\\Entity\\TicketSms',
+                'cascade'       => ['remove', 'persist', 'merge'],
+                'mappedBy'      => 'ticket',
+                'fetch'         => ClassMetadataInfo::FETCH_EXTRA_LAZY,
+                'orderBy'       => ['date_created' => 'ASC'],
+                'orphanRemoval' => true,
+            ]
+        );
+        $metadata->mapOneToMany(
+            [
+                'fieldName'     => 'feedback_links',
+                'targetEntity'  => 'DeskPRO\\Bundle\\AppBundle\\Entity\\TicketFeedbackLink',
                 'cascade'       => ['remove', 'persist', 'merge'],
                 'mappedBy'      => 'ticket',
                 'fetch'         => ClassMetadataInfo::FETCH_EXTRA_LAZY,

@@ -1,0 +1,6 @@
+services:
+
+  dp.importer.data_service.job:
+    class: DeskPRO\Bundle\ImportBundle\DataService\ImporterJobDataService
+    arguments:
+      - "@doctrine.orm.entity_manager"

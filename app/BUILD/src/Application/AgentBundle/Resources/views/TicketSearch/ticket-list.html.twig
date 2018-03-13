@@ -14,17 +14,17 @@
 
 				<span ng-show="!paneVis.tabs && checkedTicketsCount > 0">
 					&mdash;
-					<a class="clean-white" ng-click="openMassActions()">Perform mass actions</a>
+					<a class="clean-white" ng-click="openMassActions()">{{ phrase('agent.general.perform_mass_actions') }}</a>
 				</span>
 
 				<div class="realtime-indicator half-realtime" ng-show="halfrealtime && massActionsOpen">
-					<em>Limited real-time updating</em>
+					<em>{{ phrase('agent.tickets.real_time_updates_limited') }}</em>
 					<div dp-sticky-tip offset-top="18" right-align>
 						<article>
 							<div class="content-text" style="max-width: 200px;">
-							While you are working with mass actions, no <em>new</em> tickets will appear in this list.
+              {{ phrase('agent.tickets.real_time_updates_limited_desc_1') }}
 								<br/><br/>
-								Updates to tickets <em>already</em> in the list will still appear in real-time as they change.
+								{{ phrase('agent.tickets.real_time_updates_limited_desc_2') }}
 							</div>
 						</article>
 					</div>
@@ -43,14 +43,12 @@
 							</div>
 						</div>
 						<div ng-show="!realtime">
-							<em>Real-time updates are disabled</em>
+							<em>{{ phrase('agent.tickets.real_time_updates_disabled') }}</em>
 							<i class="icon-retweet"></i>
 							<div dp-sticky-tip offset-top="25" right-align>
 								<article>
 									<div class="content-text">
-										With real-time updates disabled, this list will remain static and unchanged.
-										You will see a warning at the top of the list when changes have been detected,
-										but you will need to manually refresh the list to see updates.
+                    {{ phrase('agent.tickets.real_time_updates_disabled_desc') }}
 									</div>
 								</article>
 							</div>
@@ -62,9 +60,9 @@
 			</header>
 		</header>
 		<header class="view-alert-subheader hidden">
-			There have been updates since you loaded this list.
+			{{ phrase('agent.tickets.real_time_updates_new_updates') }}
 			<button class="clean-white" ng-click="refreshCursor();">
-				<span ng-hide="refreshCursorLoading">Refresh List</span>
+				<span ng-hide="refreshCursorLoading">{{ phrase('agent.tickets.real_time_updates_refresh') }}</span>
 				<span ng-show="refreshCursorLoading"><i class="spinner-flat"></i></span>
 			</button>
 		</header>

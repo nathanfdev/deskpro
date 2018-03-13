@@ -1,5 +1,5 @@
 import React from 'react';
-import { storiesOf } from '@kadira/storybook';
+import { storiesOf } from '@storybook/react';
 import { Form, Field } from 'DeskPRO/Component/Semantic/ReactForm';
 import { Fieldset, Input, createValue } from '@deskpro/react-forms';
 import { css } from '../decorators';

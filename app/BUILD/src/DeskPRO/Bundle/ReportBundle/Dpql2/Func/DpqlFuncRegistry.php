@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2017, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2018, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -81,15 +81,15 @@ class DpqlFuncRegistry
         if (isset($this->functions[$name])) {
             return $this->container->get($this->functions[$name]);
         } else {
-            return new SqlPass($name);
+            return new DpqlSqlPass($name);
         }
     }
 
     /**
-     * @return Link
+     * @return DpqlLink
      */
     public function getLinkFunction()
     {
-        return $this->getFunction('link');
+        return $this->getFunction('dpql_link');
     }
 }

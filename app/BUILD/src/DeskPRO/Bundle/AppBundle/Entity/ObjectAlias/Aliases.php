@@ -29,10 +29,23 @@
 namespace DeskPRO\Bundle\AppBundle\Entity\ObjectAlias;
 
 use DeskPRO\Bundle\AppBundle\ObjectAlias\Converters;
+use DeskPRO\Bundle\AppBundle\ObjectAlias\QualifiedName;
 use Doctrine\ORM;
 
 class Aliases
 {
+    /**
+     * Returns the list of entity types representing aliases
+     *
+     * @param ORM\EntityManager $entityManager
+     * @return array|string[]
+     */
+    public static function getAliasTypes(ORM\EntityManager $entityManager)
+    {
+        $metadata = $entityManager->getClassMetadata(AbstractAlias::class);
+        return $metadata->subClasses;
+    }
+
     /**
      * @param string $objectType
      * @param ORM\EntityManager $entityManager
@@ -60,13 +73,16 @@ class Aliases
      * @param Builder $builder
      * @return AbstractAlias
      */
-    public static function createAlias($aliasName, $object, Builder $builder)
+    public static function createAlias( $alias, $object, Builder $builder)
     {
-        $builder->setObject($object);
-        $name = Converters::toNameFromString($aliasName);
+        $name = Converters::toNameFromString($alias);
+        if (QualifiedName::isValidIdentifier($name)) {
+            $builder->setAlias($alias);
+        }
 
-        $builder->setName($name->getIdentifier());
-        $appQualifier = AppQualifier::fromName($name);
+        $builder->setObject($object);
+
+        $appQualifier = FullyQualifiedAppName::parseName($name);
         if ($appQualifier) {
             $builder->setApp($appQualifier);
         }

@@ -1,0 +1,76 @@
+<table cellspacing="0" cellpadding="0" width="100%" class="field-holders-table th-la sla-table">
+	<tbody>
+    <tr class="subscribe-person" id="{{ baseId }}_subscribe_person_row">
+        <td colspan="2" class="textarea-section">
+            <div
+                  id="{{ baseId }}_subscribe_searchbox"
+                  data-element-handler="DeskPRO.Agent.ElementHandler.PersonSearchBox"
+                  data-search-url="{{ path('agent_peoplesearch_performquick', {'format': 'json', 'limit': 10, 'start_with': 'a'}) }}"
+                  data-highlight-term="1"
+                  data-touch-focus="1"
+                  data-search-param="term"
+                  data-position-bound="@parent(td)"
+            >
+            <script type="text/x-deskpro-tmpl" class="user-row-tpl">
+              <li>
+              <a>
+              <span class="user-name"></span>
+              <address>&lt;<span class="user-email"></span>&gt;</address>
+              <div class="bound-fade"></div>
+              </a></li>
+            </script>
+                <div class="input-wrapper">
+                  <input type="text" id="{{ baseId }}_subscribe_searchbox_txt" style="width: 98%"
+                         class="term integrated"
+                         placeholder="{{ phrase('agent.feedback.subscribe_user') }}"
+                         class="user-input" />
+                </div>
+                
+                <div class="person-search-box" style="display: none">
+                    <section>
+                        <ul class="results-list">
+
+                        </ul>
+                    </section>
+                </div>
+            </div>
+        </td>
+    </tr>
+    <tr class="subscribe-person-named" style="display: none" id="{{ baseId }}_subscribe_person_row_named">
+      <td>
+        <a class="as-popover dp-btn dp-btn-small" id="{{ baseId }}_subscribe_person_route" data-route="" style="margin-right: 5px">
+          <span class="text">
+            <span class="user-name" id="{{ baseId }}_subscribe_person_name"></span>
+            (<span class="user-email" id="{{ baseId }}_subscribe_person_email"></span>)
+          </span>
+        </a>
+        <input type="hidden" id="{{ baseId }}_subscribe_person_id" value="" />
+        <button class="clean-white"
+                id="{{ baseId }}_subscribe_person_btn">{{ phrase('agent.general.subscribe') }}</button>
+        <button class="clean-white"
+                id="{{ baseId }}_subscribe_person_cancel_btn">{{ phrase('agent.general.cancel') }}</button>
+      </td>
+    </tr>
+    {% for p in subscribed_persons %}
+      <tr class="person_row">
+        <td>
+          <div class="fade-container">
+            <div class="line">
+              <a data-route="person:{{ path('agent_people_view', {'person_id': p.id}) }}" data-route-title="@text"
+                 {% if p.primary_email_address %}title="{{ p.primary_email_address }}"{% endif %}
+                 style="background: url('{{ p.getPictureUrl(16) }}') no-repeat 0 50%; padding-left: 20px;"
+              >
+                <span class="id-number">#{{ p.id }}</span>
+                {{p.getNameWithTitle()}}
+              </a>
+            </div>
+            <div class="bound-fade"></div>
+          </div>
+        </td>
+        <td width="10" style="text-align: right;">
+          <img src="{{ asset('images/agent/icons/cross.png') }}" style="cursor: pointer;" class="unsubscribe-person" data-person-id="{{ p.id }}"/>
+        </td>
+      </tr>
+    {% endfor %}
+	</tbody>
+</table>

@@ -50,6 +50,7 @@ define [
     ###
     Module.directive('dashboardAmcharts', Reports_Dashboards_Directive_DashboardAmcharts)
     Module.directive('dashboardTable', Reports_Dashboards_Directive_DashboardTable)
+    Module.directive('dashboardStat', Reports_Dashboards_Directive_DashboardStat)
     Module.directive('dashboardWidget', Reports_Dashboards_Directive_DashboardWidget)
     Module.directive('dpReportVariables', Reports_Dashboards_Directive_DpReportVariables)
 

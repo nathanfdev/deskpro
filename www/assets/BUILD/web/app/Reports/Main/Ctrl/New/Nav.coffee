@@ -19,7 +19,7 @@ define [], () -> [
           if db.reports?.length
             $state.go('reports.dashboards.view.report', { dashboard_id: db.id, report_id: db.reports[0].id })
           else
-            $state.go('reports.dashboards.view.index', { dashboard_id: db[0].id })
+            $state.go('reports.dashboards.view.index', { dashboard_id: db.id })
       )
 
     $scope.$watch(

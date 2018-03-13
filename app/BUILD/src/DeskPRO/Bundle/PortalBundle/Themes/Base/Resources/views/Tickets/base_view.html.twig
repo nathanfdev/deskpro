@@ -91,7 +91,7 @@
                                                     {{ phrase('portal.tickets.view_participants' ) }}
                                                 </span>
                                                 <ul>
-                                                    {% for participant in ticket.participants %}
+                                                    {% for participant in ticket.getCcs() %}
                                                         {% if participant.id %}
                                                         <li>
                                                             {{ macros.person_sidebar(participant.person, path('portal_tickets_cc_remove', { ticket_ref: ticket_public_id(ticket), cc_id: participant.id })) }}

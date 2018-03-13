@@ -1,0 +1,10 @@
+<dp:subject>{{ phrase('agent.email_subjects.scheduled_report_ready', {report_title: reportTitle}) }}</dp:subject>
+{{ phrase('agent.scheduled_report.accost', {person_title: person.getDisplayName()}) }}
+
+<br /><br />
+
+{{ phrase('agent.scheduled_report.acknowledgment', {frequency: frequency}) }}
+
+<br /><br />
+
+<a href="{{ link }}">{{ link }}</a>

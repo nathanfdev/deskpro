@@ -1,0 +1,30 @@
+services:
+
+  dp.importer.storage_adapter:
+    class: DeskPRO\Bundle\ImportBundle\Storage\StorageAdapter\StorageAdapterInterface
+    factory: ['@dp.importer.storage_adapter_factory', create]
+
+  dp.importer.storage_adapter_factory:
+    class: DeskPRO\Bundle\ImportBundle\Storage\StorageAdapter\StorageAdapterFactory
+    arguments:
+      - "@deskpro.app_env"
+      - "@service_container"
+
+  dp.importer.storage_adapter.amazon_s3:
+    class: DeskPRO\Bundle\ImportBundle\Storage\StorageAdapter\AmazonS3Adapter
+    factory: ['@dp.importer.storage_adapter_factory', createAmazonS3Adapter]
+
+  dp.importer.storage_adapter.filesystem:
+    class: DeskPRO\Bundle\ImportBundle\Storage\StorageAdapter\FilesystemAdapter
+    factory: ['@dp.importer.storage_adapter_factory', createFilesystemAdapter]
+
+  dp.importer.storage:
+    class: DeskPRO\Bundle\ImportBundle\Storage\Storage
+    arguments:
+      - "@dp.importer.writer.entity_handler_registry"
+      - "@dp.importer.storage_adapter"
+      - "@serializer"
+      - "@dp.importer.parser"
+      - "@validator"
+      - "@form_error.validator_errors_generator.api"
+      - "@dp.importer_logger"

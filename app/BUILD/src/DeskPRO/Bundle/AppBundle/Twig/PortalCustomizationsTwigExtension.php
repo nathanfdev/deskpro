@@ -28,7 +28,9 @@
 
 namespace DeskPRO\Bundle\AppBundle\Twig;
 
+use Application\DeskPRO\Entity\Blob;
 use Application\DeskPRO\Entity\Language;
+use Application\DeskPRO\EntityRepository\Blob as BlobRepository;
 use DeskPRO\Bundle\PortalBundle\Designer\AssetsManager;
 use DeskPRO\Bundle\PortalBundle\Helper\PortalModeTrait;
 use Symfony\Bundle\FrameworkBundle\Routing\Router;
@@ -77,38 +79,45 @@ class PortalCustomizationsTwigExtension extends \Twig_Extension
      *
      * Depending on custom styles availability returns link to the custom .css or link to the default file
      *
-     * @param string $text_direction LTR or RTL, or null to use the current language
+     * @param string $textDirection LTR or RTL, or null to use the current language
      *
      * @return string
      */
-    public function getPortalCssUrl($text_direction = null)
+    public function getPortalCssUrl($textDirection = null)
     {
-        if ($text_direction === null) {
+        if ($textDirection === null) {
             /** @var Language $lang */
             if (!$lang = $this->container->get('language_stack')->getActive()) {
                 $lang = $this->container->get('language_stack')->getDefaultLanguage();
             }
-            $text_direction = $lang->getDirection();
+            $textDirection = $lang->getDirection();
         }
 
-        $text_direction = strtoupper($text_direction);
+        $textDirection = strtoupper($textDirection);
 
         $blob = $this->isPreviewMode($this->container)
-                ? $this->getStylesManager()->getEditThemeSetCssBlob($text_direction)
-                : $this->getStylesManager()->getCssBlob($text_direction);
+                ? $this->getStylesManager()->getEditThemeSetCssBlob($textDirection)
+                : $this->getStylesManager()->getCssBlob($textDirection);
 
         if ($blob) {
+            $parameters = [
+                'filename'     => $blob->getFilenameSafe(),
+                'blob_auth_id' => $blob->getAuthId(),
+                'local'        => true,
+            ];
+            /** @var BlobRepository $blobRepository */
+            $blobRepository = $this->container->getEm()->getRepository(Blob::class);
+            if ($gzBlob = $blobRepository->getSystemBlob("blob-$blob[id]-gzip")) {
+                $parameters['g'] = $gzBlob->getAuthCode();
+            }
+
             return $this->getRouter()->generate(
                 'serve_blob',
-                [
-                    'filename'     => $blob->getFilenameSafe(),
-                    'blob_auth_id' => $blob->getAuthId(),
-                    'local'        => true,
-                ],
+                $parameters,
                 RouterInterface::ABSOLUTE_PATH
             );
         } else {
-            if ($text_direction === 'RTL') {
+            if ($textDirection === 'RTL') {
                 return $this->getAssetsExtension()->getAssetUrl(self::$default_rtl_css_asset, 'app_assets');
             } else {
                 return $this->getAssetsExtension()->getAssetUrl(self::$default_ltr_css_asset, 'app_assets');

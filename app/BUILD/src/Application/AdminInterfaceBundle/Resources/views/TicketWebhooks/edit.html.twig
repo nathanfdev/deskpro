@@ -1,0 +1,129 @@
+{% extends 'AdminInterfaceBundle:Layout:list-editpane.html.twig' %}
+
+{% block editpane_content %}
+	<form role="form" name="form_props" ng-submit="form_props.$valid && EditCtrl.saveForm()">
+		<section class="dp-paneblock dp-editpane">
+			<article class="form-horizontal dp-form">
+				<div class="panel panel-fill indent">
+					<div class="panel-body" style="margin-bottom: 0; padding-bottom: 0;">
+						<div class="form-group">
+							<div class="col-lg-2">
+								<h3>{{ phrase('agent.general.title') }} *</h3>
+							</div>
+							<div class="col-lg-10">
+								<div class="inner-group" dp-error-class="form_props.title">
+									<input type="text" class="form-control" name="title" ng-model="EditCtrl.form.title"
+										   style="width: 50%;" required autofocus>
+									<span class="help-block">
+										{{ phrase('adm.ticket_filters.title_explain') }}
+									</span>
+								</div>
+							</div>
+						</div>
+
+						<div class="form-group">
+							<div class="col-lg-2">
+								<h3> Payload format </h3>
+							</div>
+							<div class="col-lg-8">
+								<div class="inner-group">
+
+									<select
+											name="payload_decoder"
+											style="min-width: 240px"
+											ng-model="EditCtrl.form.payload_decoder"
+									>
+										<option selected value="">My webhook does not accept a payload</option>
+										<option selected value="json">JSON</option>
+									</select>
+
+									</select>
+
+									<span class="help-block">
+										The payload format this webhook can consume when triggered
+									</span>
+								</div>
+							</div>
+						</div>
+
+						<div class="form-group" ng-if="EditCtrl.webhookUrl">
+							<div class="col-lg-2">
+								<h3>Webhook url</h3>
+							</div>
+							<div class="col-lg-10">
+								<input type="text" style="width: 50%" readonly="readonly" ng-model="EditCtrl.webhookUrl" id="webhook-url" />
+								<button class="btn btn-default btn-sm" dp-clipboard data-clipboard-target="#webhook-url">Copy URL</button>
+								<span class="help-block">
+									{{ phrase('adm.ticket_webhooks.webhookUrl') }}
+								</span>
+							</div>
+						</div>
+
+					</div>
+
+					<div class="panel panel-innertable">
+						<div class="panel-heading">
+							<h3>
+								<span>Filter</span>
+								<button dp-inhelp-btn="admin.ticket_filters.edit.search_terms"></button>
+							</h3>
+						</div>
+						<div class="panel-help" dp-inhelp-body="admin.ticket_filters.edit.search_terms">
+							<p>
+								When you run this filter, only tickets that match all of the search terms defined here
+								will be processed by the webhook's triggers.
+							</p>
+						</div>
+
+						<div class="dp-ob-set">
+							<div class="dp-ob-setrow">
+								<header>
+									<em class="dp-ob-row-tag if">if</em>
+									The following conditions are met:
+								</header>
+								<article>
+									<dp-option-builder
+											types-def="EditCtrl.criteriaTypeDef"
+											save-target="EditCtrl.filter_criteria"
+											options="{tag_first: false, tag_after: 'and'}"
+											option-types="EditCtrl.criteriaOptionTypes"
+									>
+										<add-btn-label>Criteria</add-btn-label>
+									</dp-option-builder>
+								</article>
+							</div>
+						</div>
+					</div>
+				</div>
+			</article>
+			<footer>
+				<div class="dp-content">
+					<div class="text-danger ng-hide" ng-show="form_props.$attempted && form_props.$invalid">
+						<p><strong>{{ phrase('adm.general.please_correct_errors') }}</strong></p>
+						<ul>
+							<li ng-show="form_props.title.$error.required">{{ phrase('adm.departments.title_error') }}</li>
+						</ul>
+					</div>
+
+					<div class="dp-delete-control" ng-if="EditCtrl.webhook.id"
+						 ng-hide="form_props.$attempted && form_props.$invalid">
+						<span class="btn btn-danger"
+								ng-click="$parent.List.startDelete(EditCtrl.webhook.id)">
+							Delete
+						</span>
+					</div>
+
+					<div class="dp-btn-controls" ng-hide="form_props.$attempted && form_props.$invalid">
+						<div dp-hide-spinning="saving">
+							<button class="btn btn-primary" dp-submit-form>{{ phrase('agent.general.save') }}</button>
+						</div>
+						<div dp-show-spinning="saving">
+							<i class="spinner-flat"></i>
+						</div>
+					</div>
+				</div>
+			</footer>
+		</section>
+	</form>
+	<div dp-register-message="saved_filter">Webhook was saved successfully.</div>
+{% endblock %}

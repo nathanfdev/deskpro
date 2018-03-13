@@ -85,9 +85,10 @@ class TicketWebhookExecutor implements ContainerAwareInterface
     }
 
     /**
-     * @param TicketWebhook  $webhook
+     * @param TicketWebhook $webhook
      * @param WebhookRequest $request
      *
+     * @return ExecutionStats
      * @throws WebhookException
      */
     public function execute(TicketWebhook $webhook, WebhookRequest $request)
@@ -111,14 +112,24 @@ class TicketWebhookExecutor implements ContainerAwareInterface
         // log difference between matches and tickets
         // perhaps should check again if tickets match the search criteria -> concurrency issues ?
 
+        $matchedByTriggers = [];
         foreach ($tickets as $ticket) {
             foreach ($webhook->getTriggers() as $trigger) {
                 $context = $this->createExecutionContext($webhook, $request, $webhookInvocation);
                 if ($trigger->terms->isTriggerMatch($ticket, $context)) {
+                    $matchedByTriggers[] = $ticket;
                     $this->executeTrigger($trigger->actions, $ticket, $context);
                 }
             }
         }
+
+        $ticketMapper = function (Ticket $ticket) {
+            return $ticket->getId();
+        };
+        return new ExecutionStats(
+            array_map($ticketMapper, $tickets),
+            array_unique(array_map($ticketMapper, $matchedByTriggers))
+        );
     }
 
     /**
@@ -130,11 +141,21 @@ class TicketWebhookExecutor implements ContainerAwareInterface
     private function createWebhookInvocation(TicketWebhook $webhook, WebhookRequest $request)
     {
         $converterName = $webhook->getPayloadDecoder();
-        $converter     = $this->convertersRegistry->lookupDecoderByName($converterName);
-        if (empty($converter)) {
-            throw new WebhookException('could not find a suitable decoder');
+        if (empty ($converterName) && !is_null($request->getContent())) {
+            $e = WebhookException::payloadForbidden($webhook->getAuthId());
+            throw $e;
         }
-        $payload = $converter->decode($request);
+
+        $payload = null;
+        if (! empty($converterName)) {
+            $converter     = $this->convertersRegistry->lookupDecoderByName($converterName);
+            if (empty($converter)) {
+                $e = WebhookException::decoderNotFound($webhook->getAuthId(), $converterName);
+                throw $e;
+            }
+            $payload = $converter->decode($request);
+        }
+
         return WebhookInvocation::fromRequestAndData($request, $payload);
     }
 

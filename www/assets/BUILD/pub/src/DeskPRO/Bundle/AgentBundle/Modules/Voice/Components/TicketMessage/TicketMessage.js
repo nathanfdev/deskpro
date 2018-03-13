@@ -76,7 +76,11 @@ class TicketMessage extends React.Component {
             </span>
             <span className="voice-ticket-message-title">
               <i className="icon call" />
-              {agentPhrases.get('agent.voice.incoming_call_title')}
+              {agentPhrases.get(
+                phoneCall.get('type') === 'outbound'
+                  ? 'agent.voice.outgoing_call_title'
+                  : 'agent.voice.incoming_call_title'
+              )}
             </span>
             <span className="voice-ticket-message-date">
               <time
@@ -142,12 +146,13 @@ class TicketMessage extends React.Component {
                     </td>
                     <td>
                       {agentPhrases.get(`agent.voice.${log.get('action_type').replace(/\.+/, '_')}`, {
-                        '{number}':       phoneCall.get('external_number'),
-                        '{to_number}':    number.get('nickname') || number.get('number'),
-                        '{person_name}':  person.get('first_name') || '',
-                        '{person_email}': person.get('primary_email') || '',
-                        '{key}':          log.getIn(['details', 'Digits']) || '',
-                        '{target_name}':  log.getIn(['details', 'target_name']) || 'Unknown'
+                        '{number}':           phoneCall.get('external_number'),
+                        '{to_number}':        number.get('nickname') || number.get('number'),
+                        '{person_name}':      person.get('first_name') || '',
+                        '{person_email}':     person.get('primary_email') || '',
+                        '{key}':              log.getIn(['details', 'Digits']) || '',
+                        '{target_name}':      log.getIn(['details', 'target_name']) || 'Unknown',
+                        '{forwarded_number}': log.getIn(['details', 'forwarded_number']) || ''
                       })}
                     </td>
                   </tr>

@@ -15,6 +15,17 @@
                 <input class="widget-title" type="text" ng-model="widget.title" placeholder="Enter widget name" />
             </div>
         </div>
+        <div class="bucket" ng-if="widget.widget_id == 'advanced'">
+            <div class="box">
+                <label class="widget-js-code" for="widget-name">Enter widget JS code</label>
+                <div class="editor" style="height: 200px; margin-top: 10px" ng-model="widget.js_code" ui-ace="{
+						mode: 'javascript',
+						useWrapMode: true,
+						theme: 'textmate',
+						onLoad: aceLoadedMessage
+					}"></div>
+            </div>
+        </div>
     </div>
 
     <!-- Popup Content -->
@@ -61,6 +72,26 @@
             </a>
 
             <a
+                    name='gauge'
+                    ng-click="makeChoice('gauge')"
+                    class="link-pointer stat-preview-bucket"
+                    ng-class="{'selected' : widget.type == 'gauge'}"
+            >
+                <span class="title">Gauge</span>
+                <div class="stat-preview stat-preview-gauge"></div>
+            </a>
+
+            <a
+                    name='bubble'
+                    ng-click="makeChoice('bubble')"
+                    class="link-pointer stat-preview-bucket"
+                    ng-class="{'selected' : widget.type == 'bubble'}"
+            >
+                <span class="title">Bubble</span>
+                <div class="stat-preview stat-preview-bubble"></div>
+            </a>
+
+            <a
               name='table_data'
               ng-click="makeChoice('table')"
               class="link-pointer stat-preview-bucket"
@@ -69,7 +100,14 @@
                 <span class="title">Table data</span>
                 <div class="stat-preview stat-preview-multi-group"></div>
             </a>
+            <a name='simple_stat' ng-click="makeChoice('simple_stat')" class="link-pointer stat-preview-bucket"
+               ng-class="{'selected' : widget.type == 'simple_stat'}">
+                <span class="title">Simple Stat</span>
+
+                <div class="stat-preview stat-preview-simple-stat"></div>
+            </a>
         </div>
+
         <!-- needs js to fit verticaly to it's container -->
         <div class="popup-stat-preview">
             <div class="stat-preview-header">Chart Preview</div>
@@ -78,25 +116,38 @@
                     <dashboard-amcharts
                             my-index="{{ ng_var('$index') }}"
                             title="{{ ng_var('widgetPreview.title') }}"
-                            widget-id = "{{ ng_var('reportWidget.id') }}"
-                            chart-data = "{{ ng_var('widgetPreview.rendered_result') }}"
-                            render-type = "test"
-                            chtype="graph"
+                            widget-id="{{ ng_var('reportWidget.id') }}"
+                            chart-data="{{ ng_var('widgetPreview.rendered_result') }}"
+                            render-type="test"
+                            widget-type="{{ ng_var('widgetPreview.type') }}"
+                            chart-type="{{ ng_var('widgetPreview.rendered_result.chartType') }}"
                     />
                 </div>
             </div>
             <div class="stat-preview" ng-if="widgetPreview && widgetPreview.type=='table' && widgetPreview.rendered_result">
-                <div>
+                <div style="height: 100%; overflow: hidden;">
                     <dashboard-table
                             render-type = "test"
                             my-index="{{ ng_var('$index') }}"
                             title="{{ ng_var('widgetPreview.title') }}"
                             table-data="{{ ng_var('widgetPreview.rendered_result') }}"
-                            widget-id = "{{ ng_var('reportWidget.id') }}"
+                            widget-id="{{ ng_var('reportWidget.id') }}"
                     />
                 </div>
             </div>
-            <div class="stat-preview" style="padding: 20px" ng-if="widgetPreview && !widgetPreview.rendered_result">
+            <div class="stat-preview" ng-if="widgetPreview && widgetPreview.type=='simple_stat' && widgetPreview.rendered_result">
+                <div class="stat-box">
+                    <dashboard-stat
+                            render-type="test"
+                            my-index="{{ ng_var('$index') }}"
+                            title="{{ ng_var('widgetPreview.title') }}"
+                            value="{{ ng_var('widgetPreview.rendered_result.value') }}"
+                            description="{{ ng_var('widgetPreview.rendered_result.description') }}"
+                            widget-id="{{ ng_var('reportWidget.id') }}"
+                    />
+                </div>
+            </div>
+            <div class="stat-preview" style="padding: 20px" ng-if="widgetPreview && !widgetPreview.rendered_result && !widgetPreview.js_code">
                 No results to show. Please, try another graph type and/or another variables values.
             </div>
         </div>

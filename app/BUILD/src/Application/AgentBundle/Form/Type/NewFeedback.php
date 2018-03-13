@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2017, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2018, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -32,7 +32,11 @@
 
 namespace Application\AgentBundle\Form\Type;
 
+use Application\DeskPRO\Entity\Ticket;
+use DeskPRO\Bundle\AppBundle\Form\Type\PersonAssignType;
+use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 use Symfony\Component\Form\AbstractType;
+use Symfony\Component\Form\Extension\Core\Type\CheckboxType;
 use Symfony\Component\Form\FormBuilderInterface;
 
 class NewFeedback extends AbstractType
@@ -61,6 +65,20 @@ class NewFeedback extends AbstractType
             'required'     => false,
             'allow_add'    => true,
             'allow_delete' => true,
+        ]);
+
+        $builder->add('linked_ticket', EntityType::class, [
+            'class'    => Ticket::class,
+            'required' => false,
+        ]);
+        $builder->add('is_subscribe_ticket_owner', CheckboxType::class, [
+            'required' => false,
+        ]);
+        $builder->add('is_subscribe_ticket_participants', CheckboxType::class, [
+            'required' => false,
+        ]);
+        $builder->add('person', PersonAssignType::class, [
+            'required' => false
         ]);
     }
 

@@ -32,7 +32,20 @@ use JMS\Serializer\Annotation as JMS;
 
 class SerializedOauth1Connection implements Oauth1ProviderDetails, Oauth1ClientCredentials
 {
-    /** @var \JMS\Serializer\Serializer $serializer */
+    /**
+     * @param $serializedValue
+     * @param \JMS\Serializer\SerializerInterface null $serializer
+     *
+     * @return SerializedOauth1Connection
+     */
+    public static function fromArray($serializedValue, $serializer = null)
+    {
+        if (is_null($serializer)) {
+            $serializer = \JMS\Serializer\SerializerBuilder::create()->build();
+        }
+
+        return $serializer->fromArray($serializedValue, self::class);
+    }
 
     /**
      * @param $serializedValue
@@ -173,6 +186,14 @@ class SerializedOauth1Connection implements Oauth1ProviderDetails, Oauth1ClientC
     }
 
     /**
+     * @return string
+     */
+    public function setProviderName($providerName)
+    {
+        $this->providerName = $providerName;
+    }
+
+    /**
      * Get the URL for retrieving temporary credentials.
      *
      * @return string
@@ -180,6 +201,16 @@ class SerializedOauth1Connection implements Oauth1ProviderDetails, Oauth1ClientC
     public function getUrlTemporaryCredentials()
     {
         return $this->urlTemporaryCredentials;
+    }
+
+    /**
+     * Set the URL for retrieving temporary credentials.
+     *
+     * @param string $urlTemporaryCredentials
+     */
+    public function setUrlTemporaryCredentials($urlTemporaryCredentials)
+    {
+        $this->urlTemporaryCredentials = $urlTemporaryCredentials;
     }
 
     /**
@@ -193,6 +224,14 @@ class SerializedOauth1Connection implements Oauth1ProviderDetails, Oauth1ClientC
     }
 
     /**
+     * @param string $urlAuthorize
+     */
+    public function setUrlAuthorization($urlAuthorize)
+    {
+        $this->urlAuthorize = $urlAuthorize;
+    }
+
+    /**
      * Get the URL retrieving token credentials.
      *
      * @return string
@@ -200,6 +239,14 @@ class SerializedOauth1Connection implements Oauth1ProviderDetails, Oauth1ClientC
     public function getUrlTokenCredentials()
     {
         return $this->urlAccessToken;
+    }
+
+    /**
+     * @param string $urlAccessToken
+     */
+    public function setUrlTokenCredentials($urlAccessToken)
+    {
+        $this->urlAccessToken = $urlAccessToken;
     }
 
     /**
@@ -213,11 +260,27 @@ class SerializedOauth1Connection implements Oauth1ProviderDetails, Oauth1ClientC
     }
 
     /**
+     * @param string $urlResourceOwnerDetails
+     */
+    public function setUrlUserDetails($urlResourceOwnerDetails)
+    {
+        $this->urlResourceOwnerDetails = $urlResourceOwnerDetails;
+    }
+
+    /**
      * @return string
      */
     public function getRSAPrivateKey()
     {
         return $this->rsaPrivateKey;
+    }
+
+    /**
+     * @param string $rsaPrivateKey
+     */
+    public function setRSAPrivateKey($rsaPrivateKey)
+    {
+        $this->rsaPrivateKey = $rsaPrivateKey;
     }
 
     /**
@@ -229,6 +292,14 @@ class SerializedOauth1Connection implements Oauth1ProviderDetails, Oauth1ClientC
     }
 
     /**
+     * @param string $urlRedirect
+     */
+    public function setUrlRedirect($urlRedirect)
+    {
+        $this->urlRedirect = $urlRedirect;
+    }
+
+    /**
      * @return string
      */
     public function getClientId()
@@ -237,11 +308,27 @@ class SerializedOauth1Connection implements Oauth1ProviderDetails, Oauth1ClientC
     }
 
     /**
+     * @param $clientId
+     */
+    public function setClientId($clientId)
+    {
+        $this->clientId = $clientId;
+    }
+
+    /**
      * @return string
      */
     public function getClientSecret()
     {
         return $this->clientSecret;
+    }
+
+    /**
+     * @param string $clientSecret
+     */
+    public function setClientSecret($clientSecret)
+    {
+        $this->clientSecret = $clientSecret;
     }
 
     // tokens
@@ -255,10 +342,27 @@ class SerializedOauth1Connection implements Oauth1ProviderDetails, Oauth1ClientC
     }
 
     /**
+     * @param string $token
+     */
+    public function setToken($token)
+    {
+        $this->token = $token;
+    }
+
+    /**
      * @return string
      */
     public function getTokenSecret()
     {
         return $this->tokenSecret;
     }
+
+    /**
+     * @param string $tokenSecret
+     */
+    public function setTokenSecret($tokenSecret)
+    {
+        $this->tokenSecret = $tokenSecret;
+    }
+
 }

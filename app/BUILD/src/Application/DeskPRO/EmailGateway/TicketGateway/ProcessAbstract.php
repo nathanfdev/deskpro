@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2017, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2018, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -37,6 +37,8 @@ namespace Application\DeskPRO\EmailGateway\TicketGateway;
 use Application\DeskPRO\App;
 use Application\DeskPRO\EmailGateway\InlineImageTokens;
 use Application\DeskPRO\EmailGateway\PersonFromEmailProcessor;
+use DeskPRO\Bundle\AppBundle\Util\HttpClient;
+use GuzzleHttp;
 use Orb\Log\Logger;
 use Orb\Util\Strings;
 use Orb\Validator\StringEmail;
@@ -180,8 +182,8 @@ abstract class ProcessAbstract
             $cc_email = $cc->getEmail();
             $this->logMessage("Checking cc: $cc_email");
 
-            // Max 10 CC's to prevent mass spamming
-            if ($count >= 10) {
+            // Max 100 CC's to prevent mass spamming
+            if ($count >= 100) {
                 $this->logMessage('CC limit reached, break');
                 break;
             }
@@ -354,5 +356,110 @@ abstract class ProcessAbstract
         }
 
         return $body;
+    }
+
+    protected function importReplaceLinkedImages($body)
+    {
+        if (!App::getContainer()->getSetting('core.emails.download_hotlinked_images.enabled')) {
+            $this->logMessage('Skipping `importReplaceLinkedImages` because settings '
+                              .'`core.emails.download_hotlinked_images.enabled` disabled');
+
+            return $body;
+        }
+
+        static $cache;
+        $m      = null;
+        $tmpDir = App::$container->get('deskpro.app_env')->getUserTmpDir();
+        $client = new HttpClient([
+            GuzzleHttp\RequestOptions::ALLOW_REDIRECTS => true,
+            GuzzleHttp\RequestOptions::CONNECT_TIMEOUT => 4,
+            GuzzleHttp\RequestOptions::TIMEOUT         => 10,
+        ]);
+        $maxImageSize = (int) App::getContainer()->getSetting('core.emails.download_hotlinked_images.image_maxsize');
+        $maxTotalSize = (int) App::getContainer()->getSetting('core.emails.download_hotlinked_images.total_maxsize');
+
+        $totalImageSize = 0;
+        if (preg_match_all('#(<|&lt;)img[^>]*/?(>|&gt;)((<|&lt;)/img(>|&gt;))?#iu', $body, $m, \PREG_SET_ORDER)) {
+            foreach ($m as $match) {
+                // Check if it is even an inline image
+                $src = Strings::extractRegexMatch('#src=("|\')((https?:)?//.*?)(\1)#iu', $match[0], 2);
+                if ($src) {
+                    if (isset($cache[$src])) {
+                        $body = str_replace($match[0], $cache[$src], $body);
+                    } else {
+                        $tmpFile  = $tmpDir.'/email-image-'.mt_rand(1000, 9999);
+                        $resource = fopen($tmpFile, 'w');
+                        try {
+                            $client->request('GET', $src, ['sink' => $resource]);
+                        } catch (\Exception $e) {
+                            $this->logger->logError(sprintf('Download file failed: [%s:%s] %s', get_class($e), $e->getCode(), substr($e->getMessage(), 0, 1000)));
+                            $tag  = "<a href=\"$src\" target=\"_blank\">$src</a>";
+                            $body = str_replace($match[0], $tag, $body);
+
+                            continue;
+                        } finally {
+                            @fclose($resource);
+                        }
+                        if (!file_exists($tmpFile)) {
+                            continue;
+                        }
+                        $imageSize = filesize($tmpFile);
+                        // We don't import images over 10 MB and more than 25MB of images in total
+                        if ($imageSize > $maxImageSize || $totalImageSize + $imageSize > $maxTotalSize) {
+                            unlink($tmpFile);
+                            $tag  = "<a href=\"$src\" target=\"_blank\">$src</a>";
+                            $body = str_replace($match[0], $tag, $body);
+                            continue;
+                        }
+                        $totalImageSize += $imageSize;
+                        if (function_exists('exif_imagetype')) {
+                            if (!$type = exif_imagetype($tmpFile)) {
+                                // The downloaded file is not an image
+                                unlink($tmpFile);
+                                continue;
+                            }
+                        } else {
+                            if (!$size = getimagesize($tmpFile)) {
+                                // The downloaded file is not an image
+                                unlink($tmpFile);
+                                continue;
+                            }
+                            $type = $size[2];
+                        }
+
+                        $name = $this->generateNameFromType($type);
+                        $blob = App::getContainer()->getBlobStorage()->createBlobRecordFromFile(
+                            $tmpFile,
+                            $name[0],
+                            $name[1]
+                        );
+                        unlink($tmpFile);
+                        $tag         = '[attach:image:'.$blob->getAuthcode().':'.$name[0].']';
+                        $body        = str_replace($match[0], $tag, $body);
+                        $cache[$src] = $tag;
+                    }
+                }
+            }
+        }
+
+        return $body;
+    }
+
+    protected function generateNameFromType($type)
+    {
+        $name = 'image'.mt_rand(1000, 9999);
+        switch ($type) {
+            case IMAGETYPE_GIF:
+                return [$name.'.gif', 'image/gif'];
+            case IMAGETYPE_JPEG:
+                return [$name.'.jpg', 'image/jpeg'];
+            case IMAGETYPE_PNG:
+                return [$name.'.png', 'image/png'];
+            case IMAGETYPE_BMP:
+                return [$name.'.bmp', 'image/bmp'];
+            case IMAGETYPE_TIFF_II:
+            case IMAGETYPE_TIFF_MM:
+                return [$name.'.tiff', 'image/tiff'];
+        }
     }
 }

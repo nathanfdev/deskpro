@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2017, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2018, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -124,13 +124,19 @@ class UserChatManager
     }
 
     /**
-     * Start a new chat conversation, or if its within time and sitll open, resume the previous.
+     * Start a new chat conversation, or if its within time and still open, resume the previous.
+     *
+     * @param array $chat_options
+     * @param bool  $is_window_mode
+     * @param bool  $error_code
+     *
+     * @throws \Exception
      *
      * @return ChatConversation|null
      */
     public function startChat(array $chat_options, $is_window_mode = false, &$error_code = false)
     {
-        $convo = $this->em->getRepository('DeskPRO:ChatConversation')->getLatestChatForSession($this->session);
+        $convo = $this->em->getRepository(ChatConversation::class)->getLatestChatForSession($this->session);
 
         $is_new_convo = false;
         $new_person   = false;

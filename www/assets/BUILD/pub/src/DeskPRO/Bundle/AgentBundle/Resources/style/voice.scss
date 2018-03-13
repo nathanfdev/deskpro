@@ -229,6 +229,20 @@ $voice-green-border-color: #47BF61;
                 font-size: 14px;
                 color: $dp-greyscale-850;
               }
+
+              .intl-tel-input {
+                width: 100%;
+
+                .selected-flag {
+                  position: absolute;
+                  left: 3px;
+                }
+
+                input {
+                  padding-left: 50px;
+                  width: 100%;
+                }
+              }
             }
           }
         }
@@ -288,6 +302,14 @@ $voice-green-border-color: #47BF61;
             color: $dp-greyscale-850;
             background-color: $dp-greyscale-150;
             border: 1px solid $dp-greyscale-250;
+          }
+        }
+
+        .voice-sip-number-mode {
+          margin-top: 10px;
+
+          label {
+            font-weight: normal;
           }
         }
 
@@ -461,6 +483,10 @@ $voice-green-border-color: #47BF61;
         .incoming-call-another-agent-message {
           margin-top: 50px;
         }
+
+        .incoming-call-avatar-loader {
+          margin-top: 20px;
+        }
       }
 
       .voice-voicemail {
@@ -481,6 +507,11 @@ $voice-green-border-color: #47BF61;
           margin-left: 10px;
           cursor: pointer;
         }
+      }
+
+      .voice-forward-help {
+        margin: 20px;
+        font-size: 14px;
       }
 
       .voice-online-agents {
@@ -1008,6 +1039,11 @@ $voice-green-border-color: #47BF61;
       border-radius: 10px;
       background-color: #FFFFFF;
       overflow: hidden;
+      opacity: 0.2;
+
+      &.active {
+        opacity: 1;
+      }
 
       i {
         margin-top: 10px;
@@ -1238,5 +1274,19 @@ $voice-green-border-color: #47BF61;
         }
       }
     }
+  }
+}
+
+.voice-sip-number {
+  position: relative;
+
+  .sip-label {
+    position: absolute;
+    top: 10px;
+    left: 10px;
+  }
+
+  input {
+    padding-left: 50px !important;
   }
 }

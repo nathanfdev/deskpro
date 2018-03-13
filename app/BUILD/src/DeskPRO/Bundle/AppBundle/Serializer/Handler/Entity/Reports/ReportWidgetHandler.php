@@ -30,12 +30,13 @@ namespace DeskPRO\Bundle\AppBundle\Serializer\Handler\Entity\Reports;
 
 use Application\DeskPRO\Entity\ReportWidget as ReportWidgetEntity;
 use Application\DeskPRO\Translate\Translate;
-use Application\LegacyApiBundle\Service\DashboardWidget;
 use DeskPRO\Bundle\AppBundle\Serializer\Deferred\CallbackDeferredProperty;
 use DeskPRO\Bundle\AppBundle\Serializer\Handler\Entity\AbstractEntityHandler;
 use DeskPRO\Bundle\AppBundle\Serializer\Model\Reports\ReportWidget as ReportWidgetModel;
 use DeskPRO\Bundle\AppBundle\Serializer\Sideload\SideloadSerializationContext;
+use DeskPRO\Bundle\ReportBundle\Dashboard\DashboardWidgetManager;
 use DeskPRO\Bundle\ReportBundle\Dpql2\DpqlCompiler;
+use DeskPRO\Bundle\ReportBundle\Dpql2\DpqlException;
 use DeskPRO\Bundle\ReportBundle\Reports\Renderer\ReportsRendererRegistry;
 
 /**
@@ -59,17 +60,28 @@ class ReportWidgetHandler extends AbstractEntityHandler
     private $translate;
 
     /**
+     * @var DashboardWidgetManager
+     */
+    private $dashboardWidgetService;
+
+    /**
      * Constructor.
      *
      * @param DpqlCompiler            $compiler
      * @param ReportsRendererRegistry $rendererRegistry
      * @param Translate               $translate
+     * @param DashboardWidgetManager  $dashboardWidgetService
      */
-    public function __construct(DpqlCompiler $compiler, ReportsRendererRegistry $rendererRegistry, Translate $translate)
-    {
-        $this->compiler         = $compiler;
-        $this->rendererRegistry = $rendererRegistry;
-        $this->translate        = $translate;
+    public function __construct(
+        DpqlCompiler $compiler,
+        ReportsRendererRegistry $rendererRegistry,
+        Translate $translate,
+        DashboardWidgetManager $dashboardWidgetService
+    ) {
+        $this->compiler               = $compiler;
+        $this->rendererRegistry       = $rendererRegistry;
+        $this->translate              = $translate;
+        $this->dashboardWidgetService = $dashboardWidgetService;
     }
 
     /**
@@ -93,10 +105,20 @@ class ReportWidgetHandler extends AbstractEntityHandler
             $translated[] = $this->translate->hasPhrase($phraseName) ? $this->translate->phrase($phraseName) : ucfirst($label);
         }
 
-        $statement  = $this->compiler->compile($entity->getQuery());
-        $queryParts = $statement->getDpqlPartsForInput();
+        $extendedQuery = false;
+        try {
+            $statement  = $this->compiler->compile($entity->getQuery());
+            $queryParts = $statement->getDpqlPartsForInput();
+        } catch (DpqlException $e) {
+            if ($e->getCode() === DpqlException::CODE_LAYERED_DIRECT_COMPILE_ERROR) {
+                $extendedQuery = true;
+                $queryParts    = [];
+            } else {
+                throw $e;
+            }
+        }
 
-        $model = new ReportWidgetModel($entity, $queryParts, $translated);
+        $model = new ReportWidgetModel($entity, $queryParts, $translated, $extendedQuery);
 
         $sideloads = $context->getSideloadStore();
         $sideloads->addCustomSideload(
@@ -112,32 +134,26 @@ class ReportWidgetHandler extends AbstractEntityHandler
     /**
      * @param ReportWidgetEntity $entity
      *
+     * @throws \DeskPRO\Bundle\ReportBundle\Dpql2\DpqlException
+     * @throws \Exception
+     *
      * @return array
      */
     public function getRenderedResult(ReportWidgetEntity $entity)
     {
         $result = [];
-        foreach ($entity->getGraphTypes() as $graphType) {
-            $outputFormat = 'json';
-            if ($graphType === DashboardWidget::WIDGET_RENDER_TYPE_TABLE) {
-                $outputFormat = 'html';
+        foreach ($entity->getDisplayTypes() as $displayType) {
+            $graphType = $this->dashboardWidgetService->getWidgetGraphType($displayType);
+            $data      = $this->dashboardWidgetService->doRender(
+                $entity->getQuery(),
+                ['variables' => $entity->getVariables()],
+                $graphType
+            );
+
+            $data = $this->dashboardWidgetService->formatData($data, $displayType);
+            if ($data) {
+                $data['chartType'] = $graphType;
             }
-
-            $query    = $this->compiler->compile($entity->getQuery(), ['variables' => $entity->getVariables()]);
-            $renderer = $this->rendererRegistry->getRenderer($graphType, $outputFormat);
-
-            $data = $renderer->render($query->getResults());
-            if ($data && $graphType == DashboardWidget::WIDGET_RENDER_TYPE_TABLE && $outputFormat === 'json') {
-                $aoColumns = [];
-                $columns   = [];
-                foreach ($data['columns'] as $column) {
-                    $aoColumns[] = null;
-                    $columns[]   = ['title' => $column];
-                }
-                $data['aoColumns'] = $aoColumns;
-                $data['columns']   = $columns;
-            }
-
             $result[] = $data;
         }
 

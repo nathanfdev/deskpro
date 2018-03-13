@@ -284,6 +284,21 @@
 		</div>
 	</div>
 	{% endif  %}
+  
+	{% if 'feedback_links' not in no_show_fields and (not event_trigger or event_trigger != 'new_ticket') %}
+	<div class="builder-type" title="{{ phrase('agent.general.linked_feedback_items') }}" data-rule-type="feedback_links" data-rule-handler="DeskPRO.Agent.RuleBuilder.TicketFeedbackLinksTerm">
+		<div class="builder-op">
+			<select name="op" class="op">
+				<option value="isset">{{ phrase('agent.general.exists') }}</option>
+				<option value="not_isset">{{ phrase('agent.general.not_exists') }}</option>
+				<option value="is">{{ phrase('agent.general.is') }}</option>
+			</select>
+		</div>
+		<div class="builder-options">
+      <input type="text" name="feedback_links" class="feedback_links_values" value="" style="display: none;"/>
+    </div>
+	</div>
+	{% endif %}
 
 	{% if 'status' not in no_show_fields %}
 	<div class="builder-type" title="{{ phrase('agent.general.status') }}" data-rule-type="status" data-term-type="GenericMenuTerm" data-term-triggers="status">
@@ -317,7 +332,7 @@
 		</div>
 	</div>
 
-	<div class="builder-type" title="Ticket is on hold" data-rule-type="is_hold" data-term-type="GenericMenuTerm" data-term-triggers="is_hold">
+	<div class="builder-type" title="{{ phrase('agent.general.ticket_is_on_hold') }}" data-rule-type="is_hold" data-term-type="GenericMenuTerm" data-term-triggers="is_hold">
 		<div class="builder-op">
 			<input type="hidden" name="op" value="is" />
 		</div>
@@ -398,7 +413,7 @@
 	{% endif %}
 
 	{% if 'email_account' not in no_show_fields and app.getEmailAccounts() %}
-		<div class="builder-type" title="Email Account" data-rule-type="email_account" data-term-type="GenericMenuTerm" data-term-triggers="email,account">
+		<div class="builder-type" title="{{ phrase('agent.general.email_account') }}" data-rule-type="email_account" data-term-type="GenericMenuTerm" data-term-triggers="email,account">
 			<div class="builder-op">
 				<select name="op" class="op">
 					<option value="is">{{ phrase('agent.general.is') }}</option>
@@ -512,7 +527,7 @@
 		</div>
 		<div class="builder-options">
 			<select name="language">
-				<option value="0">None</option>
+				<option value="0">{{ phrase('agent.general.none') }}</option>
 				{% for id,title in term_options.languages %}
 				<option value="{{id}}">{{title}}</option>
 				{% endfor %}
@@ -523,7 +538,7 @@
 
 {% if term_options.slas %}
 	{% if 'sla' not in no_show_fields %}
-		<div class="builder-type" title="SLA" data-rule-type="sla" data-term-type="GenericMenuTerm" data-term-triggers="sla">
+		<div class="builder-type" title="{{ phrase('agent.general.sla') }}" data-rule-type="sla" data-term-type="GenericMenuTerm" data-term-triggers="sla">
 			<div class="builder-op">
 				<select name="op" class="op">
 					<option value="is">{{ phrase('agent.general.is') }}</option>
@@ -541,7 +556,7 @@
 	{% endif %}
 
 	{% if 'sla_status' not in no_show_fields %}
-		<div class="builder-type" title="SLA Status" data-rule-type="sla_status" data-term-type="GenericMenuTerm" data-term-triggers="sla_status,slastatus">
+		<div class="builder-type" title="{{ phrase('agent.general.sla_status') }}" data-rule-type="sla_status" data-term-type="GenericMenuTerm" data-term-triggers="sla_status,slastatus">
 			<div class="builder-op">
 				<select name="op" class="op">
 					<option value="is">{{ phrase('agent.general.is') }}</option>
@@ -550,13 +565,13 @@
 			</div>
 			<div class="builder-options">
 				<select name="sla_status">
-					<option value="ok">OK</option>
-					<option value="warning">Warning</option>
-					<option value="fail">Fail</option>
+					<option value="ok">{{ phrase('agent.general.okay') }}</option>
+					<option value="warning">{{ phrase('agent.general.warning') }}</option>
+					<option value="fail">{{ phrase('agent.general.failed') }}</option>
 				</select>
-				for SLA
+				{{ phrase('agent.general.for_SLA') }}
 				<select name="sla_id">
-					<option value="0">Any</option>
+					<option value="0">{{ phrase('agent.general.any_sla') }}</option>
 				{% for id,title in term_options.slas %}
 					<option value="{{id}}">{{title}}</option>
 				{% endfor %}
@@ -566,7 +581,7 @@
 	{% endif %}
 {% endif %}
 
-	<div class="builder-type" title="User Waiting Time" data-rule-type="user_waiting">
+	<div class="builder-type" title="{{ phrase('agent.general.user_waiting_time') }}" data-rule-type="user_waiting">
 		<div class="builder-op">
 			<select name="op" class="op">
 				<option value="gte">{{ phrase('agent.general.is_greater_than') }}</option>
@@ -576,14 +591,14 @@
 		<div class="builder-options">
 			<input type="text" name="waiting_time" value="" style="width:50px" />
 			<select name="waiting_time_unit">
-				{% for scale,label in {'minutes': phrase('admin.tickets.minutes'), 'hours': phrase('admin.tickets.hours'), 'days': phrase('admin.tickets.days'), 'weeks': phrase('admin.tickets.weeks'), 'months': phrase('admin.tickets.months')} %}
+				{% for scale,label in {'minutes': phrase('agent.general.minutes')|capitalize, 'hours': phrase('agent.general.hours')|capitalize, 'days': phrase('agent.general.days')|capitalize, 'weeks': phrase('agent.general.weeks')|capitalize, 'months': phrase('agent.general.months')|capitalize} %}
 					<option value="{{ scale }}">{{ label }}</option>
 				{% endfor %}
 			</select>
 		</div>
 	</div>
 
-	<div class="builder-type" title="User Total Waiting Time" data-rule-type="total_user_waiting">
+	<div class="builder-type" title="{{ phrase('agent.tickets.total_user_waiting_time')|title }}" data-rule-type="total_user_waiting">
 		<div class="builder-op">
 			<select name="op" class="op">
 				<option value="lte">{{ phrase('agent.general.is_less_than') }}</option>
@@ -593,7 +608,7 @@
 		<div class="builder-options">
 			<input type="text" name="waiting_time" value="" style="width:50px" />
 			<select name="waiting_time_unit">
-				{% for scale,label in {'minutes': phrase('admin.tickets.minutes'), 'hours': phrase('admin.tickets.hours'), 'days': phrase('admin.tickets.days'), 'weeks': phrase('admin.tickets.weeks'), 'months': phrase('admin.tickets.months')} %}
+				{% for scale,label in {'minutes': phrase('agent.general.minutes')|capitalize, 'hours': phrase('agent.general.hours')|capitalize, 'days': phrase('agent.general.days')|capitalize, 'weeks': phrase('agent.general.weeks')|capitalize, 'months': phrase('agent.general.months')|capitalize} %}
 					<option value="{{ scale }}">{{ label }}</option>
 				{% endfor %}
 			</select>
@@ -799,7 +814,8 @@
 				'lt': phrase('agent.general.is_less_than'),
 				'before': phrase('agent.general.before'),
 				'after': phrase('agent.general.after'),
-				'between': phrase('agent.general.between')
+				'empty': phrase('agent.general.empty'),
+				'notempty': phrase('agent.general.not_empty')
 			}
 		%}
 		{% for field in app.getTicketFieldManager().getDisplayArray() %}

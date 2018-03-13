@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2017, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2018, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -28,13 +28,15 @@
 
 namespace DeskPRO\Bundle\AppBundle\Form\Type;
 
-use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\Form\FormEvent;
 use Symfony\Component\Form\FormEvents;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 
+/**
+ * Class DataListType.
+ */
 class DataListType extends TextType
 {
     /**
@@ -42,9 +44,9 @@ class DataListType extends TextType
      */
     public function configureOptions(OptionsResolver $resolver)
     {
-        $resolver->setDefaults(array(
+        $resolver->setDefaults([
             'compound' => false,
-        ));
+        ]);
     }
 
     /**
@@ -57,13 +59,14 @@ class DataListType extends TextType
 
     /**
      * @param FormEvent $event
+     *
      * @return string
      */
     public function onPreSubmitSerialize(FormEvent $event)
     {
         $serializedData = null;
 
-        $data = $event->getData();
+        $data        = $event->getData();
         $encodedData = json_encode($data, JSON_NUMERIC_CHECK);
 
         if (json_last_error() === JSON_ERROR_NONE && is_string($encodedData)) {
@@ -73,7 +76,9 @@ class DataListType extends TextType
                 $listItems = [$listItems];
             }
 
-            $isListOfStrings = function ($carry, $item) { return $carry & is_string($item); };
+            $isListOfStrings = function ($carry, $item) {
+                return $carry & is_string($item);
+            };
             if (is_array($listItems) && array_reduce($listItems, $isListOfStrings, true)) {
                 $serializedData = json_encode($listItems);
             }
@@ -81,6 +86,4 @@ class DataListType extends TextType
 
         $event->setData($serializedData);
     }
-
 }
-

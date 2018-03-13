@@ -88,7 +88,7 @@ Feature: Custom fields
     Given only the following custom person fields exist:
       | #  | Type   | Title        |
       | f1 | <type> | Custom field |
-    And the object "admin" has "f1" custom data with "some value"
+    And the object "admin" has "f1" custom data set to "some value"
 
     When I send a GET request to "/api/v2/people/{admin}"
     Then the response status code should be 200
@@ -109,7 +109,7 @@ Feature: Custom fields
     Given only the following custom person fields exist:
       | #  | Type   | Title        |
       | f1 | <type> | Custom field |
-    And the object "admin" has "f1" custom data with "2016-07-08 18:00"
+    And the object "admin" has "f1" custom data set to "2016-07-08 18:00"
 
     When I send a GET request to "/api/v2/people/{admin}"
     Then the response status code should be 200
@@ -128,7 +128,7 @@ Feature: Custom fields
     Given only the following custom person fields exist:
       | #  | Type   | Title        |
       | f1 | toggle | Custom field |
-    And the object "admin" has "f1" custom data with "<value>"
+    And the object "admin" has "f1" custom data set to "<value>"
 
     When I send a GET request to "/api/v2/people/{admin}"
     Then the response status code should be 200
@@ -150,7 +150,7 @@ Feature: Custom fields
       | f1 |        | <type> | Custom field |
       | c1 | {f1}   | <type> | Choice 1     |
       | c2 | {f1}   | <type> | Choice 2     |
-    And the object "admin" has "f1" custom data with "{c1}"
+    And the object "admin" has "f1" custom data set to "{c1}"
 
     When I send a GET request to "/api/v2/people/{admin}"
     Then the response status code should be 200
@@ -180,7 +180,7 @@ Feature: Custom fields
       | f1 |        | <type> | Custom field |
       | c1 | {f1}   | <type> | Choice 1     |
       | c2 | {f1}   | <type> | Choice 2     |
-    And the object "admin" has "f1" custom data with "{c1},{c2}"
+    And the object "admin" has "f1" custom data set to "{c1},{c2}"
 
     When I send a GET request to "/api/v2/people/{admin}"
     Then the response status code should be 200

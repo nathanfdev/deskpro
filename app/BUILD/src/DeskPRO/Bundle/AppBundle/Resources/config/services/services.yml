@@ -76,6 +76,10 @@ services:
     #todo #portal second param here needs to be setting for gravatar
     arguments: ["@router.default", "@doctrine.orm.default_entity_manager", "@settings_resolver"]
 
+  feedback_subscription_helper:
+    class: DeskPRO\Bundle\AppBundle\Content\FeedbackSubscriptionHelper
+    arguments: ["@doctrine.orm.default_entity_manager", "@portal_permissions_manager"]
+
   agent_data:
     class: DeskPRO\Bundle\AppBundle\Agent\AgentData
     arguments: ["@avatar_resolver", "@doctrine.orm.default_entity_manager"]
@@ -147,3 +151,8 @@ services:
   request_matcher:
     class: DeskPRO\Bundle\AppBundle\Routing\RequestMatcher
     arguments: ["@dp.dynamic_context_router"]
+
+  amazon_s3_client:
+    class: Aws\S3\S3Client
+    factory: ['DeskPRO\Bundle\AppBundle\BlobStorage\AmazonS3ClientFactory', create]
+    arguments: ["@settings_resolver"]

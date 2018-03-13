@@ -2,12 +2,14 @@ define [
   'DeskPRO/Util/Util',
   'DeskPRO/Util/Arrays',
   'Admin/OptionBuilder/TypesDef/BaseTypesDef',
-  'underscore'
+  'underscore',
+  'moment'
 ], (
   Util,
   Arrays,
   BaseTypesDef,
-  _
+  _,
+  moment
 ) ->
   class Admin_OptionBuilder_TypesDef_BaseCriteriaTypesDef extends BaseTypesDef
     constructor: (@$q, @Api, @dpTemplateManager) ->
@@ -366,10 +368,10 @@ define [
 
               if not model.use_relative
                 if not model.date1 then model.date1 = new Date()
-                value.options.date1 = parseInt(model.date1.getTime() / 1000)
+                value.options.date1 = parseInt(moment(model.date1).toDate().getTime() / 1000)
                 if (model.op == 'between')
                   if not model.date2 then model.date2 = new Date()
-                  value.options.date2 = parseInt(model.date2.getTime() / 1000)
+                  value.options.date2 = parseInt(moment(model.date2).toDate().getTime() / 1000)
               else
                 if (model.op == 'lte' || model.op == 'gte' || model.op == 'between') and model.date1_relative
                   d1 = model.date1_relative || [1, 'days']

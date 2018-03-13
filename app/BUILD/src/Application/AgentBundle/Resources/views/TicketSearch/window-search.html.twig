@@ -117,7 +117,7 @@
 					<tr>
 						<td width="80">{{ phrase('agent.general.subject') }}</td>
 						<td>
-							<input class="full-width search-string" type="text" name="search_subject_string[]" placeholder="Enter search words" style="margin-bottom: 6px;" />
+							<input class="full-width search-string" type="text" name="search_subject_string[]" placeholder="{{ phrase('agent.general.enter_search_terms') }}" style="margin-bottom: 6px;" />
 						</td>
 					</tr>
 					<tr>
@@ -171,7 +171,7 @@
 					<tr>
 						<td width="80">{{ phrase('agent.general.message') }}</td>
 						<td>
-							<input class="full-width search-string" type="text" name="search_message_string[]" placeholder="Enter search words" style="margin-bottom: 6px;" />
+							<input class="full-width search-string" type="text" name="search_message_string[]" placeholder="{{ phrase('agent.general.enter_search_terms') }}" style="margin-bottom: 6px;" />
 						</td>
 					</tr>
 					<tr>
@@ -281,6 +281,25 @@
 
 	<div class="source-pane-search-panel panel-date-fields" data-target-summary="#{{ elid }}_termlist">
 		{% include 'AgentBundle:TicketSearch:window-search-dates.html.twig' %}
+	</div>
+
+	{##################################################################################################################}
+	{# Feedback links #}
+	{##################################################################################################################}
+
+	{% set elid = el_uid() %}
+	<div class="input-row">
+		<div class="input-row-title">
+			<strong>{{ phrase('agent.general.linked_feedback_items') }}</strong>
+		</div>
+		<div class="adv-btn trigger-open-panel" data-panel-id="panel-feedback-links-fields"><i class="icon-cog"></i></div>
+		<div class="text-value with-adv trigger-open-panel" data-panel-id="panel-feedback-links-fields" id="{{ elid }}_termlist">
+
+		</div>
+	</div>
+
+	<div class="source-pane-search-panel panel-feedback-links-fields" data-target-summary="#{{ elid }}_termlist">
+		{% include 'AgentBundle:TicketSearch:window-search-feedback-links.html.twig' %}
 	</div>
 
 	<footer>

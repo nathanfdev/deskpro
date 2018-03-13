@@ -157,28 +157,17 @@ $container->setDefinition('deskpro.core.input_reader', $definition);
 //###########################################################################
 
 $definition = new Definition();
-$definition->setClass('Application\\LegacyApiBundle\\Service\\DashboardPermissions');
+$definition->setClass('Application\\DeskPRO\\Reports\\ReportsWidgetService');
 $definition->setArguments([new Reference('doctrine.orm.entity_manager')]);
-$container->setDefinition('dashboard.permissions.service', $definition);
+$container->setDefinition('reports.widget.service', $definition);
 
 $definition = new Definition();
-$definition->setClass('Application\\LegacyApiBundle\\Service\\DashboardWidget');
-$definition->setArguments([new Reference('doctrine.orm.entity_manager')]);
-$container->setDefinition('dashboard.widget.service', $definition);
-
-$definition = new Definition();
-$definition->setClass('Application\\LegacyApiBundle\\Service\\Dashboard');
+$definition->setClass('Application\\DeskPRO\\Reports\\ReportSaver');
 $definition->setArguments([
     new Reference('doctrine.orm.entity_manager'),
-    new Reference('dashboard.widget.service'),
-    new Reference('deskpro.core.translate'),
+    new Reference('reports.dashboard_widget.service'),
 ]);
-$container->setDefinition('dashboard.service', $definition);
-
-$definition = new Definition();
-$definition->setClass('Application\\DeskPRO\\Reports\\ReportsWidgetService');
-$definition->setArguments([new Reference('doctrine.orm.entity_manager'), new Reference('dashboard.widget.service')]);
-$container->setDefinition('reports.widget.service', $definition);
+$container->setDefinition('deskpro.reports.saver', $definition);
 
 //###########################################################################
 // Doctrine services

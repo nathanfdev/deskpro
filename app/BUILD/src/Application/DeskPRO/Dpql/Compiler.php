@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2017, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2018, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -26,14 +26,10 @@
  * ~ Thanks, Everyone at Team DeskPRO
  */
 
-/**
- * DeskPRO.
- */
-
 namespace Application\DeskPRO\Dpql;
 
 use Application\DeskPRO\Entity\ReportWidget;
-use Application\LegacyApiBundle\Service\DashboardWidget;
+use DeskPRO\Bundle\ReportBundle\Dashboard\DashboardWidgetManager;
 
 /**
  * Compiles a DPQL string statement into a statement object.
@@ -270,7 +266,7 @@ class Compiler
         if (isset($variables[$varName])) {
             $valueExists = isset($variables[$varName]['value']) && $variables[$varName]['value'];
             $value       = $valueExists ? strval($variables[$varName]['value']) : $default;
-            if ($value != DashboardWidget::WIDGET_VALUE_FROM_REPORT && isset($groupParams['dates'][$value])) {
+            if ($value != DashboardWidgetManager::WIDGET_VALUE_FROM_REPORT && isset($groupParams['dates'][$value])) {
                 return $groupParams['dates'][$value][1];
             }
         }

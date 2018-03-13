@@ -1,5 +1,5 @@
 import React from 'react';
-import { storiesOf, action } from '@kadira/storybook'; // eslint-disable-line import/no-extraneous-dependencies
+import { storiesOf, action } from '@storybook/react'; // eslint-disable-line import/no-extraneous-dependencies
 import { List } from 'immutable';
 import { SnippetsMenu } from 'DeskPRO/Bundle/AgentBundle/Modules/Snippets/Components/SnippetsMenu';
 import { SnippetsModal } from 'DeskPRO/Bundle/AgentBundle/Modules/Snippets/Components/SnippetsModal';

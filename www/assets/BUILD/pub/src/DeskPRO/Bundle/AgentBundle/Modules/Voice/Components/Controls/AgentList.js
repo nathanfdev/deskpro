@@ -1,6 +1,6 @@
 import PropTypes from 'prop-types';
 import React from 'react';
-import ScrollArea from '@deskpro/react-scrollbar';
+import ScrollArea from 'react-scrollbar';
 import classNames from 'classnames';
 import Avatar from '../Common/Avatar';
 
@@ -27,7 +27,7 @@ class AgentList extends React.Component {
 
     return (
       <ScrollArea className="voice-agent-list">
-        {agents.map((agent, index) =>
+        {agents.toArray().map((agent, index) =>
           <Agent
             key={index}
             agent={agent}

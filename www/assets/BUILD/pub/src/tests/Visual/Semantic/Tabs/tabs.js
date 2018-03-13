@@ -1,5 +1,5 @@
 import React from 'react';
-import { storiesOf } from '@kadira/storybook';
+import { storiesOf } from '@storybook/react';
 import { Tabs } from 'Semantic/Tabs';
 import { css } from 'Visual/decorators';
 

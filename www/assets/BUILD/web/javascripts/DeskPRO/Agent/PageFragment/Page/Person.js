@@ -744,7 +744,7 @@ DeskPRO.Agent.PageFragment.Page.Person = new Orb.Class({
 			propToggle('display');
 		});
 
-		var tabWarn = $('.full-tab-warn', this.el);
+		var tabWarn = $('.full-tab-warn', this.wrapper);
 		if (tabWarn.length) {
 			$('.dismiss-trigger', tabWarn).on('click', function() {
 				tabWarn.fadeOut('fast', function() {
@@ -812,7 +812,7 @@ DeskPRO.Agent.PageFragment.Page.Person = new Orb.Class({
 
 	refreshPropBox: function() {
 
-		var contactBox = $('.profile-box-container.contact', this.el);
+		var contactBox = $('.profile-box-container.contact', this.wrapper);
 
 		var has = false;
 		if ($('.contact-data-list > li', contactBox).length) {
@@ -832,6 +832,18 @@ DeskPRO.Agent.PageFragment.Page.Person = new Orb.Class({
 		} else {
 			contactBox.removeClass('no-section');
 		}
+
+		$('.phone-number', this.wrapper).on('click', function (event) {
+			if (window.AgentLegacyBundle.canOpenDialpad()) {
+				event.preventDefault();
+
+				var $el = $(this);
+				window.AgentLegacyBundle.openVoiceDialpad($el.data('phoneNumber'));
+				return false;
+			}
+
+			return true;
+		});
 
 		this.updateUi();
 	},

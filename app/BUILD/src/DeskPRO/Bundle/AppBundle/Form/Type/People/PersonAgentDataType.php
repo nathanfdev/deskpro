@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2017, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2018, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -35,6 +35,7 @@ use DeskPRO\Bundle\AppBundle\Form\Type\Voice\VoiceAssetAuthType;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
 use Symfony\Component\Form\Extension\Core\Type\NumberType;
+use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\Form\FormEvent;
 use Symfony\Component\Form\FormEvents;
@@ -77,6 +78,19 @@ class PersonAgentDataType extends AbstractType
             ])
             ->add('agent_calls_enabled', ApiBooleanType::class, [
                 'property_path' => 'agentCallsEnabled',
+                'required'      => false,
+            ])
+            ->add('can_use_forwarding', ApiBooleanType::class, [
+                'property_path' => 'canUseForwarding',
+                'required'      => false,
+            ])
+            ->add('agent_can_use_forwarding', ApiBooleanType::class, [
+                'property_path' => 'agentCanUseForwarding',
+                'required'      => false,
+            ])
+            ->add('forwarding_number', TextType::class, [
+                'property_path' => 'forwardingNumber',
+                'required'      => false,
             ])
         ;
 

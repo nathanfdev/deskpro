@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2017, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2018, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -56,6 +56,8 @@ class SettingsProfile
     public $password2 = '';
     /** @var bool */
     public $new_picture_blob_id = false;
+    /** @var bool */
+    public $remove_picture = false;
 
     /** @var bool */
     public $ticket_close_reply = false;
@@ -164,6 +166,13 @@ class SettingsProfile
             if ($blob) {
                 $person->picture_blob = $blob;
             }
+        }
+
+        if ($this->remove_picture && $person->hasPicture()) {
+            if ($person->getPictureBlob()) {
+                App::$container->getBlobStorage()->deleteBlobRecord($person->getPictureBlob());
+            }
+            $person->setPictureBlob(null);
         }
 
         $primary_email = $person->getPrimaryEmail();

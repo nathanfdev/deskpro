@@ -6,7 +6,7 @@ import { storageAvailable } from 'DeskPRO/Component/Util/storageAvailable';
 import { loadBatch, addToCollection, updateCollection } from 'DeskPRO/Bundle/AppBundle/Modules/RecordsStore';
 import { meSelector } from 'DeskPRO/Bundle/AppBundle/Modules/RecordsStore/Shortcuts/me';
 import { agentsSelector } from 'DeskPRO/Bundle/AppBundle/Modules/RecordsStore/Shortcuts/agents';
-import { callsEnabledSelector } from '../Selectors/agents';
+import { callsEnabledSelector, callsForwardingEnabledSelector } from '../Selectors/agents';
 import { phoneTokenSelector, workerTokenSelector, idleActivitySidSelector, busyActivitySidSelector, offlineActivitySidSelector, connectionsSelector } from '../Selectors/client';
 import { allPhoneCallsSelector } from '../Selectors/phoneCalls';
 import { allNumbersSelector } from '../Selectors/numbers';
@@ -26,6 +26,7 @@ export const openDialpad = createAction('VOICE_AGENT_OPEN_DIALPAD');
 export const dialpadOpened = createAction('VOICE_AGENT_DIALPAD_OPENED');
 export const setOutgoingCall = createAction('VOICE_AGENT_SET_OUTGOING_CALL');
 export const resetOutgoingCall = createAction('VOICE_AGENT_RESET_OUTGOING_CALL');
+export const updateConnectionState = createAction('VOICE_AGENT_UPDATE_CONNECTION_STATE');
 
 export const setRingingVolume = createAction(
   'VOICE_AGENT_SET_RINGING_VOLUME',
@@ -55,6 +56,13 @@ export const voiceBootstrap = createAction(
       return;
     }
 
+    const resetActivitySid = () => {
+      const state   = getState();
+      const canCall = callsEnabledSelector(state);
+
+      worker.update('ActivitySid', canCall ? idleSid : offlineSid);
+    };
+
     // check if mic is enabled
     if (navigator.mediaDevices && navigator.mediaDevices.getUserMedia) {
       navigator.mediaDevices.getUserMedia({ audio: true }).then((stream) => {
@@ -63,7 +71,7 @@ export const voiceBootstrap = createAction(
         dispatch(setMicEnabled(true));
 
         // init twilio worker
-        worker = new window.Twilio.TaskRouter.Worker(workerToken, true, connectSid, offlineSid);
+        worker = new window.Twilio.TaskRouter.Worker(workerToken, true, connectSid);
         worker.on('ready', () => {
           console.log('worker ready');
         });
@@ -82,16 +90,21 @@ export const voiceBootstrap = createAction(
         worker.on('reservation.canceled', (reservation) => {
           console.log('reservation.canceled');
           dispatch(removeIncomingCall(reservation));
-          worker.update('ActivitySid', idleSid);
+          resetActivitySid();
         });
         worker.on('reservation.timeout', (reservation) => {
           console.log('reservation.timeout');
           dispatch(removeIncomingCall(reservation));
-          worker.update('ActivitySid', idleSid);
+          resetActivitySid();
+        });
+        worker.on('reservation.rejected', (reservation) => {
+          console.log('reservation.rejected');
+          dispatch(removeIncomingCall(reservation));
+          resetActivitySid();
         });
         worker.on('reservation.rescinded', (reservation) => {
           console.log('reservation.rescinded');
-          worker.update('ActivitySid', idleSid);
+          resetActivitySid();
 
           // another agent have already accepted the call
           if (reservation.task.assignmentStatus === 'assigned') {
@@ -129,6 +142,14 @@ export const voiceBootstrap = createAction(
           console.log('worker error');
           console.log(data);
         });
+        window.addEventListener('unload', () => {
+          const state             = getState();
+          const forwardingEnabled = callsForwardingEnabledSelector(state);
+          const voiceEnabled      = callsEnabledSelector(state);
+          const disconnectSid     = voiceEnabled && forwardingEnabled ? idleSid : offlineSid;
+
+          worker.update('ActivitySid', disconnectSid);
+        });
 
         try {
           window.Twilio.Device.setup(phoneToken, { debug: true });
@@ -161,7 +182,7 @@ export const voiceBootstrap = createAction(
               dispatch(removeConnection(connection));
               dispatch(resetOutgoingCall());
 
-              worker.update('ActivitySid', idleSid);
+              resetActivitySid();
             });
           });
         } catch (e) {
@@ -176,6 +197,10 @@ export const voiceBootstrap = createAction(
           let agent  = agents.get(data.person_id);
           if (!agent) {
             return;
+          }
+
+          if (!agent.get('agent_data')) {
+            agent = agent.set('agent_data', Immutable.fromJS({}));
           }
 
           agent = agent.setIn(['agent_data', 'agent_calls_enabled'], !!data.agent_calls_enabled);
@@ -208,7 +233,7 @@ export const voiceBootstrap = createAction(
           // change worker status to idle on conference end
           if (eventName === 'conference-end') {
             dispatch(removeConferenceIncomingCalls(event.ConferenceSid));
-            worker.update('ActivitySid', idleSid);
+            resetActivitySid();
           }
         });
         messageBroker.addMessageListener('agent.voice.voicemail.new-message', (event) => {
@@ -224,6 +249,15 @@ export const voiceBootstrap = createAction(
           }
         });
         messageBroker.addMessageListener('agent.voice.incoming-call-answered', (data) => {
+          const state = getState();
+          const me    = meSelector(state);
+
+          // don't remove incoming call notification for other agents
+          // just stop it ringing in other browser tabs
+          if (parseInt(me.get('id'), 10) !== parseInt(data.agent_id, 10)) {
+            return;
+          }
+
           dispatch(removeIncomingCall(data));
         });
         messageBroker.addMessageListener('agent.voice.outgoing-call-answered', (data) => {
@@ -239,8 +273,37 @@ export const voiceBootstrap = createAction(
             window.DeskPRO_Window.runPageRoute(`ticket:/agent/tickets/${data.ticket.id}`);
           }
         });
+        messageBroker.addMessageListener('agent.voice.outgoing-call-declined', (data) => {
+          const state       = getState();
+          const connections = connectionsSelector(state);
+          const connection  = connections.filter(c => c.parameters.CallSid === data.CallSid).first();
+
+          dispatch(resetOutgoingCall());
+          if (connection) {
+            connection.disconnect();
+          }
+        });
+        messageBroker.addMessageListener('agent.voice.conference.hold', (data) => {
+          dispatch(updateConnectionState({
+            call_id: parseInt(data.call_id, 10),
+            state:   {
+              hold: !!data.hold
+            }
+          }));
+        });
+        messageBroker.addMessageListener('agent.voice.conference.status', (data) => {
+          dispatch(updateConnectionState({
+            call_id: parseInt(data.phone_call.id, 10),
+            state:   {
+              participants: data.agent_participants,
+              hold:         !!data.hold
+            }
+          }));
+        });
       })
-      .catch(() => {
+      .catch((e) => {
+        console.log(e);
+
         // catch mic disabled exception
         // nothing to do
       });
@@ -256,12 +319,6 @@ export const makeOutboundCall = createAction(
     const agentId = me.get('id');
     const busySid = busyActivitySidSelector(state);
     const numbers = allNumbersSelector(state);
-
-    const number = numbers.get(callFrom);
-    if (!number) {
-      return null;
-    }
-
     const promise = api.sendPost('DP_API/voice_client/prepare_outbound_call?include=person', {
       call_from: callFrom,
       call_to:   callTo
@@ -271,6 +328,7 @@ export const makeOutboundCall = createAction(
         dispatch(addToCollection('VoicePhoneCall', 'all', Object.values(linked.person)));
       }
 
+      const number = numbers.get(callFrom);
       dispatch(setOutgoingCall({ callFrom: number, callTo, phoneCall: data }));
       worker.update('ActivitySid', busySid);
       window.Twilio.Device.connect({
@@ -357,8 +415,10 @@ export const toggleMute = createAction(
 
 export const toggleHold = createAction(
   'VOICE_AGENT_TOGGLE_HOLD',
-  (connection, hold) => {
+  (connection, hold) => (dispatch) => {
     const callId = connection.message.CallId;
+    dispatch(updateConnectionState({ call_id: parseInt(callId, 10), state: { hold } }));
+
     return api.sendPut(`DP_API/voice_client/phone_call/${callId}/hold_call`, { hold });
   }
 );

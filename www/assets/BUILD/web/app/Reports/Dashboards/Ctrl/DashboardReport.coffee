@@ -20,22 +20,25 @@ define ['DeskPRO/Util/Arrays'], (Arrays) -> [
   ) ->
     $scope.loaded = false
     $scope.report = {
-      dashboard_id: 0
-      options:
-        columns: 24
+      dashboard: 0
+      options: {}
       variables: []
     }
+    $scope.widgets = []
 
     report_id = parseInt($stateParams.report_id)
 
     $scope.gridsterOptions =
-      margins: [10, 10],
+      margins: [13, 13],
       width: 10000,
       columns: 150,
       colWidth: 50,
+      pushing: false,
+      floating: false,
+      swapping: true,
       draggable:
         enabled: false
-        handle: 'h3'
+        handle: '.box-header'
         stop: (event, $element, $widget) ->
           DashboardWidgetService.saveWidget($widget)
       resizable:
@@ -44,38 +47,59 @@ define ['DeskPRO/Util/Arrays'], (Arrays) -> [
         stop: (event, $element, $widget) ->
           DashboardWidgetService.saveWidget($widget)
 
-    DashboardsInfo.getReportDetail(report_id).then((loadedReport) ->
+    load_promises = []
+    load_promises.push DashboardsInfo.getReportDetail(report_id).then((loadedReport) ->
       $scope.report = loadedReport
 
-
-      DashboardsInfo.getDashboardList().then((dbs) ->
-        $scope.dashboard = Arrays.find(dbs, (x) -> x.id == loadedReport.dashboard_id)
+      DashboardsInfo.getDashboardDetail(loadedReport.dashboard).then( (db) ->
+        $scope.dashboard = db
         $scope.groupParams = DashboardWidgetService.groupParams
         $scope.loaded = true
       )
     )
 
+    load_promises.push DashboardWidgetService.getWidgets(report_id).then((widgets) ->
+      widgets = widgets.map((w) ->
+        if !(w.rendered_result?) or w.rendered_result == false or w.rendered_result == ''
+          w.rendered_result = null
+
+        return w
+      )
+      $scope.widgets = widgets
+    )
+
+    $scope.me = {}
+    load_promises.push DashboardsInfo.getMe().then( (me) ->
+      $scope.me = me
+    )
+
+    $scope.agents = []
+    load_promises.push DashboardsInfo.getAgents().then( (agents) ->
+      agents.map((agent) => $scope.agents[agent.id] = agent)
+    )
+
+    $q.all(load_promises).then(-> $scope.updateReportVariables())
+
     # just reload info when its been changed
-    $scope.$watch('dashboard.reports_version_id', (n, o) ->
+    $scope.$watch('dashboard.version_id + \'.\' + dashboard.reports_version_id', (n, o) ->
       return if not o
 
-      p1 = DashboardsInfo.getDashboardList().then((dbs) ->
-        $scope.dashboard = Arrays.find(dbs, (x) -> x.id == $scope.report.dashboard_id)
-      )
+      reloadPromises = []
+      if $scope.report.dashboard
+        reloadPromises.push DashboardsInfo.getDashboardDetail($scope.report.dashboard).then( (db) ->
+          $scope.dashboard = db
+        )
 
-      p2 = DashboardsInfo.getReportDetail(report_id).then((loadedReport) ->
+      reloadPromises.push DashboardsInfo.getReportDetail(report_id).then((loadedReport) ->
         $scope.report = loadedReport
+        $scope.updateReportVariables()
       )
 
-      $q.all([p1, p2]).then(->
+      $q.all(reloadPromises).then(->
         # all ok
         return
       , ->
-        #invalid, maybe removed the dashboard?
-        if $scope.dashboard.reports[0]?
-          $state.go('reports.dashboards.view.report', { report_id: $scope.dashboard.reports[0].id})
-        else
-          $state.go('reports.dashboards.view.empty')
+        $state.go('reports.dashboards.view.empty')
       )
     )
 
@@ -84,26 +108,30 @@ define ['DeskPRO/Util/Arrays'], (Arrays) -> [
     ####################################################################################################################
 
     $scope.toggleLayoutEdit = () ->
-      $scope.gridsterOptions.draggable.enabled = !$scope.gridsterOptions.draggable.enabled
-      $scope.gridsterOptions.resizable.enabled = !$scope.gridsterOptions.resizable.enabled
       $scope.layoutEditing = !$scope.layoutEditing
+      $scope.gridsterOptions.pushing = $scope.layoutEditing
+      $scope.gridsterOptions.floating = $scope.layoutEditing
+      $scope.gridsterOptions.draggable.enabled = $scope.layoutEditing
+      $scope.gridsterOptions.resizable.enabled = $scope.layoutEditing
+
 
     ###
     # Staff for removing widget from dashboard. Works if and only if the dashboard.layoutEditing is switched on
     ###
     $scope.removeWidget = (widget) ->
       if $scope.layoutEditing
-        index = DashboardWidgetService.getIndexById $scope.report.widgets, widget.id
+        index = DashboardWidgetService.getIndexById $scope.widgets, widget.id
         DashboardWidgetService
         .removeWidget(widget)
         .then () ->
-          $scope.report.widgets.splice(index, 1)
+          $scope.widgets.splice(index, 1)
           DashboardsInfo.getReportDetail($scope.report.id, true).then((loadedReport) ->
             $scope.report.variables = loadedReport.variables
+            $scope.updateReportVariables()
           )
 
     $scope.download = (widget) ->
-      window.open($http.formatApiUrl('/reports/widget/download/' + widget.id + '/csv'))
+      window.open($http.formatApi2Url('/dashboard_report_widgets/' + widget.id + '/download/csv'))
       return true
 
     ####################################################################################################################
@@ -127,6 +155,11 @@ define ['DeskPRO/Util/Arrays'], (Arrays) -> [
         if result?.add == true
           DashboardsInfo.getReportDetail($scope.report.id, true).then((loadedReport) ->
             $scope.report.variables = loadedReport.variables
+            $scope.updateReportVariables()
+          )
+          DashboardWidgetService.getWidgets(report_id).then((widgets) ->
+            $scope.widgets = widgets
+            $scope.updateReportVariables()
           )
 
     $scope.openAddWidget = (widget) ->
@@ -150,8 +183,8 @@ define ['DeskPRO/Util/Arrays'], (Arrays) -> [
             widget
       }
       modalInstance.result.then (result) ->
-        index = DashboardWidgetService.getIndexById $scope.report.widgets, widget.id
-        $scope.report.widgets[index] = result
+        index = DashboardWidgetService.getIndexById $scope.widgets, widget.id
+        $scope.widgets[index] = result
         DashboardWidgetService.saveWidget(result).then () ->
 
 
@@ -171,9 +204,50 @@ define ['DeskPRO/Util/Arrays'], (Arrays) -> [
 
     $scope.changeReportLevelVar = () ->
       DashboardService.saveReportVars($scope.report).then( () ->
-        $scope.report.widgets = [];
+        $scope.widgets = [];
         DashboardsInfo.getReportDetail($scope.report.id, true).then((loadedReport) ->
           $scope.report = loadedReport
         )
-      );
+        DashboardWidgetService.getWidgets(report_id).then((widgets) ->
+          $scope.widgets = widgets
+          $scope.updateReportVariables()
+        )
+        $scope.updateReportVariables()
+      )
+
+    $scope.canViewAllAgents = () ->
+      permission = $scope.dashboard.permissions.filter((permission) => permission.person == parseInt(window.DP_PERSON_ID))[0]
+      return permission and permission.view_all
+
+    $scope.updateReportVariables = () ->
+      if !$scope.report || !$scope.widgets || !$scope.dashboard || !$scope.me
+        return
+
+      vars = []
+      $scope.widgets.map((widget) ->
+        (widget.widget_variables || []).map((variable) ->
+          if vars.map((reportVar) => reportVar.name).indexOf(variable.name) != -1
+            return
+
+          if variable.value == 'from_report_value'
+            cloneVar = $.extend({}, variable);
+            cloneVar.value = ''
+            $scope.report.variables.map((reportVar) ->
+              if reportVar.name == cloneVar.name
+                cloneVar.value = reportVar.value
+            )
+
+            vars.push(cloneVar)
+          else if (variable.name == 'agent' or variable.name == 'agent_team') and $scope.dashboard.is_agent
+            cloneVar = $.extend({}, variable);
+            if variable.name == 'agent'
+              cloneVar.value = parseInt($scope.me.person.id)
+            else if variable.name == 'agent_team'
+              cloneVar.value = parseInt($scope.me.person.primary_team)
+
+            vars.push(cloneVar)
+        )
+      )
+
+      $scope.report.variables = vars
   ]

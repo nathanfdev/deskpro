@@ -213,17 +213,20 @@ class ThemeResolver
     }
 
     /**
-     * @param $theme_id
+     * @param $themeId
      *
      * @return ThemeInterface
      */
-    public function getThemeById($theme_id)
+    public function getThemeById($themeId)
     {
-        if ($theme_id instanceof ThemeSet) {
-            $theme_id = $theme_id->getThemeId();
+        if (!$themeId) {
+            return;
+        }
+        if ($themeId instanceof ThemeSet) {
+            $themeId = $themeId->getThemeId();
         }
 
-        return $this->theme_repo->find($theme_id);
+        return $this->theme_repo->find($themeId);
     }
 
     /**

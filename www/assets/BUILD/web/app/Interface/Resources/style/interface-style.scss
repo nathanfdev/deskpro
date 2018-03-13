@@ -72,6 +72,7 @@ $content-width: $app-nav-width + $sidebar-width;
   bottom: 0;
   left: 0;
   width: $app-nav-width;
+
   background: #f4f5f5;
   border-right: 1px solid #d4d7d8;
 }
@@ -93,7 +94,6 @@ $content-width: $app-nav-width + $sidebar-width;
     font-size: 1.5em;
     color: #cecece;
     padding: 15px 0;
-
     &:hover {
       color: #fff;
     }
@@ -102,7 +102,6 @@ $content-width: $app-nav-width + $sidebar-width;
       background: #0B0E10;
     }
   }
-
 }
 
 // Main sidebar

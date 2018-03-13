@@ -1,7 +1,7 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import { Button, Container, Tabs, TabLink, Section } from '@deskpro/react-components';
-import { Input, Checkbox, Textarea, Select, validators } from '@deskpro/react-components/lib/bindings/redux-form';
+import { reduxForm } from '@deskpro/react-components/dist/bindings';
 import { formValues, Field, FieldArray, FormSection } from 'redux-form';
 import classNames from 'classnames';
 import { varTypes } from './helper';
@@ -38,7 +38,7 @@ class VarsFieldComponent extends React.PureComponent {
       return choice;
     });
 
-    return (<Select key={name} name={name} options={choices} />);
+    return (<reduxForm.Select key={name} name={name} options={choices} />);
   }
 
   static renderTypeField(name, values) {
@@ -51,7 +51,7 @@ class VarsFieldComponent extends React.PureComponent {
       return choice;
     });
 
-    return (<Select label="Record Type" key={name} name={name} options={choices} />);
+    return (<reduxForm.Select label="Record Type" key={name} name={name} options={choices} />);
   }
 
   static renderTypeValueField(name, values) {
@@ -64,7 +64,7 @@ class VarsFieldComponent extends React.PureComponent {
       return choice;
     });
 
-    return (<Select label="Default Value" key={name} name={name} options={choices} />);
+    return (<reduxForm.Select label="Default Value" key={name} name={name} options={choices} />);
   }
 
   onAddButtonClick = (event) => {
@@ -106,12 +106,12 @@ class VarsFieldComponent extends React.PureComponent {
 
             return (<div className="varsfield-item" key={key}>
               <div className="remove-ctrl" onClick={() => fields.remove(index)}><i className="fa fa-trash" /></div>
-              <Input
+              <reduxForm.Input
                 label={hint}
                 name={`${varName}.name`}
                 validate={[VarsFieldComponent.validateVarName]}
               />
-              <Select
+              <reduxForm.Select
                 label="Type"
                 options={varTypes}
                 name={`${varName}.type`}
@@ -134,29 +134,60 @@ class VarsFieldComponent extends React.PureComponent {
   }
 }
 
-const VarsField = formValues('vars')(VarsFieldComponent);
-
-export class EditFormComponent extends React.PureComponent {
-
+class LabelsFieldComponent extends React.PureComponent {
   static defaultProps = {
-    select:       '',
-    groupBy:      '',
-    dpqlParser:   null,
-    change:       null,
-    queryValues:  {},
-    handleSubmit: null,
-    error:        null
+    labels: []
   };
 
   static propTypes = {
-    groupParams:  PropTypes.object.isRequired,
-    select:       PropTypes.string,
-    groupBy:      PropTypes.string,
-    dpqlParser:   PropTypes.func,
-    change:       PropTypes.func,
-    queryValues:  PropTypes.object,
-    handleSubmit: PropTypes.func,
-    error:        PropTypes.string
+    fields:  PropTypes.object.isRequired,
+    options: PropTypes.array.isRequired,
+  };
+
+  render() {
+    const { fields, options } = this.props;
+
+    const newOptions = options.map(label => label.label);
+
+    return (<reduxForm.TagSet
+      name="labels"
+      label="Labels"
+      tags={fields.getAll() || []}
+      options={newOptions}
+    />);
+  }
+}
+
+const VarsField = formValues('vars')(VarsFieldComponent);
+const LabelsField = formValues('labels')(LabelsFieldComponent);
+
+export class EditFormComponent extends React.Component {
+
+  static defaultProps = {
+    select:        '',
+    groupBy:       '',
+    dpqlParser:    null,
+    change:        null,
+    queryValues:   {},
+    handleSubmit:  null,
+    error:         null,
+    labels:        [],
+    extendedQuery: false
+  };
+
+  static propTypes = {
+    groupParams:   PropTypes.object.isRequired,
+    labels:        PropTypes.array.isRequired,
+    select:        PropTypes.string,
+    groupBy:       PropTypes.string,
+    dpqlParser:    PropTypes.func,
+    change:        PropTypes.func,
+    initialize:    PropTypes.func,
+    queryValues:   PropTypes.object,
+    initialValues: PropTypes.object,
+    handleSubmit:  PropTypes.func,
+    error:         PropTypes.string,
+    extendedQuery: PropTypes.bool,
   };
 
   static toDpql(fields) {
@@ -191,12 +222,13 @@ export class EditFormComponent extends React.PureComponent {
   constructor(props) {
     super(props);
     this.state = {
-      queryInputMode:    'form',
+      queryInputMode:    props.extendedQuery ? 'dpql' : 'form',
       queryModeChanging: true
     };
   }
 
   componentDidMount() {
+    this.props.initialize(this.props.initialValues);
     this.props.change('query_input_mode', this.state.queryInputMode);
   }
 
@@ -215,6 +247,12 @@ export class EditFormComponent extends React.PureComponent {
   }
 
   queryModeChange = (to) => {
+    const extendedQuery = this.props.queryValues.raw ? this.props.queryValues.raw.indexOf('LAYER WITH') !== -1 : false;
+    if (extendedQuery) {
+      console.info('Cant change mode to form, you\'re using extended query syntax');
+      return;
+    }
+
     this.props.change('query_input_mode', to);
 
     if (to === 'dpql') {
@@ -242,25 +280,22 @@ export class EditFormComponent extends React.PureComponent {
   };
 
   render() {
-    const select  = this.props.select;
     const groupBy = this.props.groupBy || '';
+    const { select, groupParams, labels } = this.props;
 
-    const renderVars = field => <VarsField fields={field.fields} groupParams={this.props.groupParams || {}} />;
+    const renderVars = field => <VarsField fields={field.fields} groupParams={groupParams || {}} />;
+    const renderLabels = field => <LabelsField fields={field.fields} options={labels} />;
 
     return (
       <form onSubmit={this.props.handleSubmit}>
         <Container>
-          <Input
+          <reduxForm.Input
             label="Title"
             id="title"
             name="title"
-            validate={validators.required}
+            validate={reduxForm.validators.required}
           />
-          <Input
-            label="Labels"
-            id="labels"
-            name="labels"
-          />
+          <FieldArray name="labels" component={renderLabels} />
           <Field component="input" type="hidden" name="query_input_mode" />
           <div className="query-builder-input">
             <Tabs active={this.state.queryInputMode} onChange={this.queryModeChange}>
@@ -270,28 +305,28 @@ export class EditFormComponent extends React.PureComponent {
             <div className="input-wrap">
               <FormSection name="query">
                 <Section hidden={this.state.queryInputMode !== 'form'}>
-                  <Input label="SELECT" name="select" />
-                  <Input label="FROM" name="from" />
-                  <Input label="WHERE" name="where" />
-                  <Input label="SPLIT BY" name="split_by" />
-                  <Input label="GROUP BY" name="group_by" />
+                  <reduxForm.Input label="SELECT" name="select" />
+                  <reduxForm.Input label="FROM" name="from" />
+                  <reduxForm.Input label="WHERE" name="where" />
+                  <reduxForm.Input label="SPLIT BY" name="split_by" />
+                  <reduxForm.Input label="GROUP BY" name="group_by" />
                   <div
                     className={classNames({
                       'field-hidden': !(select && select.match(/count\s*\(.*?\)/i) && groupBy.length)
                     })}
                   >
-                    <Checkbox
+                    <reduxForm.Checkbox
                       label="WITH ROLLUP - Adds a Total column to grouped COUNT queries made against hierarchies"
                       name="with_rollup"
                     />
                   </div>
                   <div style={{ width: '150px' }}>
-                    <Input label="LIMIT" name="limit" />
-                    <Input label="OFFSET" name="offset" />
+                    <reduxForm.Input label="LIMIT" name="limit" />
+                    <reduxForm.Input label="OFFSET" name="offset" />
                   </div>
                 </Section>
                 <Section hidden={this.state.queryInputMode !== 'dpql'}>
-                  <Textarea name="raw" />
+                  <reduxForm.Textarea name="raw" />
                 </Section>
               </FormSection>
               <div className="vars-wrap">

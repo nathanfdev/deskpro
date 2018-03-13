@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2017, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2018, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -207,6 +207,12 @@ class TicketLog extends AbstractEntityRepository
         return $counts;
     }
 
+    /**
+     * @param Entity\Person $agent
+     * @param array         $options
+     *
+     * @return Entity\TicketLog[]
+     */
     public function getLogsForAgent(Entity\Person $agent, array $options = [])
     {
         $qb = $qb = $this->getEntityManager()->createQueryBuilder();

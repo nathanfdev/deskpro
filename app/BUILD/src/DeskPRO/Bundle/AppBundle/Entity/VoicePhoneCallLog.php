@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2017, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2018, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -36,7 +36,7 @@ use JMS\Serializer\Annotation as JMS;
 /**
  * Class VoicePhoneCallLog.
  *
- * @ORM\Entity()
+ * @ORM\Entity(repositoryClass="DeskPRO\Bundle\AppBundle\Entity\Repository\VoicePhoneCallLogRepository")
  * @ORM\Table(name="voice_phone_call_logs")
  *
  * @JMS\ExclusionPolicy("all")
@@ -55,6 +55,7 @@ class VoicePhoneCallLog implements EntityInterface, NotifyPropertyChanged
     const ACTION_CALL_TARGET                          = 'call.target';
     const ACTION_REJECTED                             = 'call.rejected';
     const ACTION_ANSWERED                             = 'call.answered';
+    const ACTION_FORWARD_ANSWERED                     = 'call.forward_answered';
     const ACTION_MUTED                                = 'call.participant_muted';
     const ACTION_UNMUTED                              = 'call.participant_unmuted';
     const ACTION_HOLD                                 = 'call.participant_hold';

@@ -140,6 +140,8 @@ trait PortalDesignerTestHelper
             $storage          = new BlobStorage();
             $storage->blob_id = $blob->getId();
             $storage->data    = uniqid();
+            $blob->blob_hash  = md5($storage->data);
+            $em->persist($blob);
             $em->persist($storage);
             $em->flush();
         }

@@ -160,7 +160,7 @@ class TicketTrigger extends DomainObject
     /**
      * @var \Application\DeskPRO\Tickets\Triggers\TriggerActions
      */
-    public $actions;
+    protected $actions;
 
     protected $_has_stop_trigger_action;
 

@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2017, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2018, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -26,10 +26,6 @@
  * ~ Thanks, Everyone at Team DeskPRO
  */
 
-/**
- * DeskPRO.
- */
-
 namespace Application\DeskPRO\Dpql\Statement\Part;
 
 use Application\DeskPRO\App;
@@ -37,6 +33,7 @@ use Application\DeskPRO\Dpql;
 use Application\DeskPRO\Dpql\Exception;
 use Application\DeskPRO\Dpql\Statement\Display;
 use Doctrine\ORM\Mapping\ClassMetadataInfo;
+use Orb\Util\Strings;
 
 /**
  * Represents a reference to all data in a table.
@@ -100,7 +97,7 @@ class ColumnStar extends AbstractPart
 
             // are we referencing a field?
             foreach ($repository->getFieldMappings() as $key => $field) {
-                if (strtolower($key) == $part) {
+                if (strtolower(Strings::camelCaseToUnderscore($key)) == $part) {
                     throw new Exception("Select star conditions may only include references to tables or associations (did not expect $partsString).");
                 }
             }

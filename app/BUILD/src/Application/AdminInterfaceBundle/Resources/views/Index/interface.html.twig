@@ -130,6 +130,8 @@
                     {{ nav.list_subitem('New Reply triggers', ng_href('tickets.triggers', {type: "newreply"}), 'type:tickets.triggers.newreply', 'fa-group') }}
                     {{ nav.list_subitem('Ticket Update triggers', ng_href('tickets.triggers', {type: "update"}), 'type:tickets.triggers.update', 'fa-group') }}
 
+                    {{ nav.list_subitem('Webhooks', ng_href('tickets.webhooks', {type: "list"}), 'type:tickets.webhooks.list', 'fa-cloud') }}
+
                     {{ nav.list_subitem('Macros', ng_href('tickets.macros'), 'tickets.macros', 'fa-keyboard-o') }}
                     {{ nav.list_subitem('Filters', ng_href('tickets.ticket_filters'), 'tickets.ticket_filters', 'fa-filter') }}
                     {{ nav.list_subitem('Satisfaction', ng_href('tickets.satisfaction'), 'tickets.satisfaction', 'fa-smile-o') }}
@@ -219,6 +221,7 @@
                     {{ nav.list_subitem(phrase('adm.general.apps'), ng_href('apps.apps'), 'apps.apps', 'fa-puzzle-piece') }}
                     {{ nav.list_subitem(phrase('adm.general.api_keys'), ng_href('apps.api_keys'), 'apps.api_keys', 'fa-key') }}
                     {{ nav.list_subitem(phrase('adm.general.oauth'), ng_href('apps.oauth_clients'), 'apps.oauth_clients', 'fa-openid') }}
+                    {{ nav.list_subitem(phrase('adm.general.importer'), ng_href('apps.importer'), 'apps.importer', 'fa-cloud-download') }}
                 {{ nav.list_item_group_end() }}
                 {{ nav.list_item_group(phrase('adm.general.tasks'), 'fa-check-circle-o', '', 'tasks') }}
                     {{ nav.list_subitem(phrase('adm.tasks.settings'), ng_href('tasks.settings'), 'tasks.settings', 'fa-cog') }}

@@ -128,6 +128,7 @@ class FollowUpTime extends React.Component {
   renderPicker = () => (
     <li>
       <Datetimepicker
+        locale={window.DP_LOCALE}
         onSelect={this.onPickerSelect}
         onChange={this.onPickerChange}
         value={this.state.pickerValue}

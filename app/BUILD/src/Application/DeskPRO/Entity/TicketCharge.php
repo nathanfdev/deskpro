@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2017, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2018, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -129,11 +129,35 @@ class TicketCharge extends DomainObject
     }
 
     /**
+     * @param Ticket $ticket
+     *
+     * @return $this
+     */
+    public function setTicket(Ticket $ticket = null)
+    {
+        $this->setModelField('ticket', $ticket);
+
+        return $this;
+    }
+
+    /**
      * @return Ticket|null
      */
     public function getTicket()
     {
         return $this->ticket;
+    }
+
+    /**
+     * @param Person $person
+     *
+     * @return $this
+     */
+    public function setPerson(Person $person = null)
+    {
+        $this->setModelField('person', $person);
+
+        return $this;
     }
 
     /**
@@ -145,11 +169,35 @@ class TicketCharge extends DomainObject
     }
 
     /**
+     * @param Organization $organization
+     *
+     * @return $this
+     */
+    public function setOrganization(Organization $organization = null)
+    {
+        $this->setModelField('organization', $organization);
+
+        return $this;
+    }
+
+    /**
      * @return Organization|null
      */
     public function getOrganization()
     {
         return $this->organization;
+    }
+
+    /**
+     * @param Person $agent
+     *
+     * @return $this
+     */
+    public function setAgent(Person $agent = null)
+    {
+        $this->setModelField('agent', $agent);
+
+        return $this;
     }
 
     /**

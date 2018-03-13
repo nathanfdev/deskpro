@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2017, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2018, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -28,6 +28,7 @@
 
 namespace DpSys\LowError;
 
+use DpRun\LowUtil;
 use Psr\Log\LoggerInterface;
 use Psr\Log\LogLevel;
 use Symfony\Component\HttpFoundation\Request;
@@ -748,6 +749,9 @@ class SystemErrorHandler
             $str = substr_replace($str, '<DP_LOG.BEGIN:', $pos, strlen('<DP_LOG:'));
         }
 
+        $dbInfo = LowUtil::getMysqlInfoFromConfigArray(self::getDpEnv()->getConfig('database'));
+        $str    = str_replace($dbInfo['password'], '***', $str);
+
         // Always write error line to standard error log
         if (defined('DPC_IS_CLOUD') && defined('DPC_SITE_DOMAIN')) {
             $line = '['.DPC_SITE_DOMAIN.'] '.$line;
@@ -777,6 +781,11 @@ class SystemErrorHandler
         }
 
         foreach ($logFiles as $errorLogFile) {
+            // create log file if not exists
+            if (!is_file($errorLogFile) && !is_dir($errorLogFile)) {
+                @touch($errorLogFile);
+            }
+
             if (
                 $errorLogFile
                 && is_file($errorLogFile)

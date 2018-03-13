@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2017, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2018, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -102,6 +102,26 @@ class CustomDataBilling extends CustomDataAbstract
     public function getOwner()
     {
         return $this->ticket_charge;
+    }
+
+    /**
+     * @return TicketCharge
+     */
+    public function getTicketCharge()
+    {
+        return $this->ticket_charge;
+    }
+
+    /**
+     * @param TicketCharge $ticket_charge
+     *
+     * @return $this
+     */
+    public function setTicketCharge(TicketCharge $ticket_charge = null)
+    {
+        $this->setModelField('ticket_charge', $ticket_charge);
+
+        return $this;
     }
 
     //###########################################################################

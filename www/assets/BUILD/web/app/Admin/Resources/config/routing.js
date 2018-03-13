@@ -554,7 +554,7 @@ define(function() {
   //###
   routes.push({
     id: 'tickets.triggers',
-    url: '/triggers/{type:(?:newticket|newreply|update)}',
+    url: '/triggers/{type:(?:newticket|newreply|update|webhook)}',
     templateName: 'TicketTriggers/list.html',
     controller: 'Admin_TicketTriggers_Ctrl_List'
   });
@@ -611,6 +611,57 @@ define(function() {
     templateName: 'TicketTriggers/edit.html',
     controller: 'Admin_TicketTriggers_Ctrl_Edit',
     data: { stateMarkId: "tickets.triggers" }
+  });
+
+  //###
+  //# Webhooks
+  //###
+
+  routes.push({
+    id: 'tickets.webhooks',
+    url: '/webhooks',
+    templateName: 'TicketWebhooks/list.html',
+    controller: 'Admin_TicketWebhooks_Ctrl_List'
+  });
+
+  routes.push({
+    id: 'tickets.webhooks.edit',
+    url: '/{id:[0-9]+}',
+    templateName: 'TicketWebhooks/edit.html',
+    controller: 'Admin_TicketWebhooks_Ctrl_Edit',
+    data: { stateMarkId: "tickets.webhooks" }
+  });
+
+  routes.push({
+    id: 'tickets.webhooks.create',
+    url: '/',
+    templateName: 'TicketWebhooks/edit.html',
+    controller: 'Admin_TicketWebhooks_Ctrl_Edit'
+  });
+
+  routes.push({
+    id: 'tickets.webhooks.trigger-edit',
+    url: '/{webhookId:[0-9]+}/trigger/{id:[0-9]+}',
+    templateName: 'TicketTriggers/edit.html',
+    controller: 'Admin_TicketWebhooks_Ctrl_TriggerEdit',
+    data: { stateMarkId: "tickets.triggers" }
+  });
+
+  routes.push({
+    id: 'tickets.webhooks.trigger-edit-redirect',
+    url: '/trigger-create',
+    template: '',
+    controller: ['$state', '$stateParams', function ($state, $stateParams) {
+      alert('sdadasdas')
+      $state.go('tickets.webhooks.trigger-edit', $stateParams);
+    }]
+  });
+
+  routes.push({
+    id: 'tickets.webhooks.trigger-create',
+    url: '{webhookId:[0-9]+}/trigger',
+    templateName: 'TicketTriggers/edit.html',
+    controller: 'Admin_TicketWebhooks_Ctrl_TriggerEdit'
   });
 
 
@@ -2493,22 +2544,47 @@ define(function() {
   routes.push({
     id:           'apps.oauth_clients',
     url:          '/oauth_clients',
-    templateName: 'VoiceChannel/react_component.html',
-    controller:   'Admin_VoiceChannel_Ctrl_ReactComponent'
+    templateName: 'ReactRoutes/react_component.html',
+    controller:   'Admin_ReactRoutes_Ctrl_ReactComponent'
   });
 
   routes.push({
     id:           'apps.oauth_client_new',
     url:          '/oauth_clients/new',
-    templateName: 'VoiceChannel/react_component.html',
-    controller:   'Admin_VoiceChannel_Ctrl_ReactComponent'
+    templateName: 'ReactRoutes/react_component.html',
+    controller:   'Admin_ReactRoutes_Ctrl_ReactComponent'
   });
 
   routes.push({
     id:           'apps.oauth_client_edit',
     url:          '/oauth_clients/{id:[0-9]+}',
-    templateName: 'VoiceChannel/react_component.html',
-    controller:   'Admin_VoiceChannel_Ctrl_ReactComponent'
+    templateName: 'ReactRoutes/react_component.html',
+    controller:   'Admin_ReactRoutes_Ctrl_ReactComponent'
+  });
+
+  //###
+  //# Importer
+  //###
+
+  routes.push({
+    id:           'apps.importer',
+    url:          '/importer',
+    templateName: 'ReactRoutes/react_component.html',
+    controller:   'Admin_ReactRoutes_Ctrl_ReactComponent'
+  });
+
+  routes.push({
+    id:           'apps.importer_source',
+    url:          '/importer/source/{id:[a-zA-Z0-9\\._\\-]+}',
+    templateName: 'ReactRoutes/react_component.html',
+    controller:   'Admin_ReactRoutes_Ctrl_ReactComponent'
+  });
+
+  routes.push({
+    id:           'apps.importer_status',
+    url:          '/importer/status',
+    templateName: 'ReactRoutes/react_component.html',
+    controller:   'Admin_ReactRoutes_Ctrl_ReactComponent'
   });
 
   //##################################################################################################################
@@ -2611,23 +2687,6 @@ define(function() {
     url: '/file_uploads',
     templateName: 'Server/server-file-uploads.html',
     controller: 'Admin_ServerFileUploads_Ctrl_ServerFileUploads'
-  });
-
-  //###
-  //# Imports
-  //###
-  routes.push({
-    id:           'apps.importers',
-    url:          '/importers',
-    templateName: 'Apps/importers-list.html',
-    controller:   'Admin_Apps_Ctrl_ImportersList'
-  });
-
-  routes.push({
-    id:           'apps.importers.view',
-    url:          '/{id}',
-    templateName: 'Apps/importers-view.html',
-    controller:   'Admin_Apps_Ctrl_ImportersView'
   });
 
   //###

@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2017, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2018, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -62,6 +62,13 @@ class DeskproClientModel
      * @var int
      */
     protected $port;
+
+    /**
+     * @JMS\Type("boolean")
+     *
+     * @var bool
+     */
+    protected $secure;
 
     /**
      * @return bool
@@ -139,6 +146,26 @@ class DeskproClientModel
     public function setPort($port)
     {
         $this->port = $port;
+
+        return $this;
+    }
+
+    /**
+     * @return bool
+     */
+    public function isSecure()
+    {
+        return $this->secure;
+    }
+
+    /**
+     * @param bool $secure
+     *
+     * @return $this
+     */
+    public function setSecure($secure)
+    {
+        $this->secure = (bool) $secure;
 
         return $this;
     }

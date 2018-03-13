@@ -37,7 +37,7 @@ use JMS\Serializer\Annotation as JMS;
  * @ORM\Entity
  * @ORM\Table(
  *  name="object_aliases", uniqueConstraints={
- *     @ORM\UniqueConstraint(name="unique_alias", columns={"alias", "app_instance_id"})
+ *     @ORM\UniqueConstraint(name="unique_alias", columns={"alias"})
  *  })
  * @ORM\InheritanceType("SINGLE_TABLE")
  * @ORM\DiscriminatorColumn(name="object_type", type="string")
@@ -103,7 +103,7 @@ abstract class AbstractAlias implements ObjectAlias\ObjectAliasInterface
     /**
      * @return string
      */
-    public function getAlias()
+    public function getQualifiedName()
     {
         return $this->alias;
     }

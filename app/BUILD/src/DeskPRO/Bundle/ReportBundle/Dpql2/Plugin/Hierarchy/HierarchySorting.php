@@ -197,7 +197,7 @@ class HierarchySorting
             }
 
             $selectTableAlias = $hierarchicalTargetTableAlias;
-            if (strpos($selectTableAlias, 'custom_data_')) {
+            if (strpos($selectTableAlias, 'custom_data_') && !preg_match('/_field$/', $selectTableAlias)) {
                 $selectTableAlias .= '_field';
             }
 

@@ -1,10 +1,10 @@
 <?php
 
 /*
- * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
+ * Deskpro (r) has been developed by Deskpro Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2017, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2018, Deskpro Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -12,18 +12,18 @@
  * By using this software, you acknowledge having read the license
  * and agree to be bound thereby.
  *
- * Please note that DeskPRO is not free software. We release the full
+ * Please note that Deskpro is not free software. We release the full
  * source code for our software because we trust our users to pay us for
  * the huge investment in time and energy that has gone into both creating
  * this software and supporting our customers. By providing the source code
  * we preserve our customers' ability to modify, audit and learn from our
- * work. We have been developing DeskPRO since 2001, please help us make it
+ * work. We have been developing Deskpro since 2001, please help us make it
  * another decade.
  *
  * Like the work you see? Think you could make it better? We are always
  * looking for great developers to join us: http://www.deskpro.com/jobs/
  *
- * ~ Thanks, Everyone at Team DeskPRO
+ * ~ Thanks, Everyone at Team Deskpro
  */
 
 return [
@@ -99,11 +99,11 @@ return [
     'agent.defaults.usergroup_everyone_note'                  => 'Todos los usuarios, tanto invitados como miembros registrados',
     'agent.defaults.usergroup_registered'                     => 'Registrado/a',
     'agent.defaults.usergroup_registered_note'                => 'Todas las personas registradas en el sistema',
-    'agent.emails.newagent-created-account'                   => 'Tu colega {{admin_name}} ({{admin_email}}) ha creado una cuenta de DeskPRO para ti en <a href="{{helpdesk_url}}">{{helpdesk_url}}</a>.',
+    'agent.emails.newagent-created-account'                   => 'Tu colega {{admin_name}} ({{admin_email}}) ha creado una cuenta de Deskpro para ti en <a href="{{helpdesk_url}}">{{helpdesk_url}}</a>.',
     'agent.emails.newagent-login-initial-password'            => 'Tu password inicial: {{password}}',
     'agent.emails.newagent-login-link'                        => 'Puedes acceder aquí: <a href="{{link}}">{{link}}</a>',
     'agent.emails.newagent-login-your-email'                  => 'Tu dirección de email: {{email}}',
-    'agent.emails.newagent-welcome-to-deskpro'                => '¡Te damos la bienvenida a DeskPRO!',
+    'agent.emails.newagent-welcome-to-deskpro'                => '¡Te damos la bienvenida a Deskpro!',
     'agent.emails.person_replied'                             => '{{name}} ha respondido a "{{subject}}"',
     'agent.emails.task_assigned_due_today'                    => 'La tarea {{title}}, que tienes asignada, expira hoy.',
     'agent.emails.task_assigned_team_due_today'               => 'La tarea {{title}} asignada a tu equipo expira hoy.',
@@ -153,7 +153,7 @@ return [
     'agent.interface.close_current_tab'                       => 'Cerrar pestaña actual',
     'agent.interface.create_ticket_person'                    => 'Crear ticket para la persona',
     'agent.interface.creation'                                => 'Creación',
-    'agent.interface.deskpro_agent_interface'                 => 'Interfaz de Agente de DeskPRO',
+    'agent.interface.deskpro_agent_interface'                 => 'Interfaz de Agente de Deskpro',
     'agent.interface.deskpro_website_host'                    => 'www.deskpro.com',
     'agent.interface.error_report_submitting'                 => 'Informando de error...',
     'agent.interface.go_to_next_tab'                          => 'Ir a siguiente pestaña',
@@ -282,7 +282,7 @@ return [
     'agent.tickets.date_last_user_reply'                      => 'Fecha de última respuesta de usuario',
     'agent.tickets.debug_file'                                => 'Depurar Archivo',
     'agent.tickets.debug_file_download'                       => 'Descargar archivo de depuración',
-    'agent.tickets.debug_file_explain'                        => 'A DeskPRO support agent may ask you to provide this file to help diagnose issues.',
+    'agent.tickets.debug_file_explain'                        => 'A Deskpro support agent may ask you to provide this file to help diagnose issues.',
     'agent.tickets.decrease_urgency_action'                   => 'Disminuir urgencia por {{amount}}',
     'agent.tickets.delete_attach'                             => 'Eliminar archivos adjuntos',
     'agent.tickets.delete_attach_confirm'                     => '¿Seguro que quieres borrar este archivo adjunto?',

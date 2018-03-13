@@ -45,13 +45,21 @@ class NotificationsHandler {
       const notification = new Notify(
         title,
         {
-          body:        summary,
-          timeout:     7,
+          body:               summary,
+          // don't allow browser to close notification automatically, notification should remain available
+          // until the user activates or dismisses the notification or we close by timeout
+          // https://notifications.spec.whatwg.org/#require-interaction-preference-flag
+          requireInteraction: true,
           icon,
-          notifyClick: () => { notifyClick(); $(window).focus(); }
+          notifyClick:        () => { notifyClick(); $(window).focus(); }
         }
       );
       notification.show();
+      if (!isNaN(window.DESKPRO_PERSON_NOTIFICATION_DISMISS)) {
+        // Notify options `requireInteraction` and `timeout` are mutually exclusive
+        // have to manually initialize close by timeout
+        setTimeout(notification.close.bind(notification), window.DESKPRO_PERSON_NOTIFICATION_DISMISS * 1000);
+      }
     }
   }
 }

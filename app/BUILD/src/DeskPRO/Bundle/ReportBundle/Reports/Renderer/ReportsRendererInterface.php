@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2017, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2018, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -35,11 +35,14 @@ use DeskPRO\Bundle\ReportBundle\Reports\Results;
  */
 interface ReportsRendererInterface
 {
-    const TYPE_TABLE = 'table';
-    const TYPE_LINE  = 'line';
-    const TYPE_PIE   = 'pie';
-    const TYPE_BAR   = 'bar';
-    const TYPE_AREA  = 'area';
+    const TYPE_TABLE  = 'table';
+    const TYPE_LINE   = 'line';
+    const TYPE_PIE    = 'pie';
+    const TYPE_BAR    = 'bar';
+    const TYPE_AREA   = 'area';
+    const TYPE_GAUGE  = 'gauge';
+    const TYPE_BUBBLE = 'bubble';
+    const TYPE_STAT   = 'stat';
 
     /**
      * @return string
@@ -66,7 +69,16 @@ interface ReportsRendererInterface
      * @param Results $results
      * @param array   $options
      *
-     * @return string
+     * @return string|array
      */
     public function render(Results $results, array $options = []);
+
+    /**
+     * Merge layered results.
+     *
+     * @param array $results
+     *
+     * @return mixed
+     */
+    public function mergeResults(array $results);
 }
