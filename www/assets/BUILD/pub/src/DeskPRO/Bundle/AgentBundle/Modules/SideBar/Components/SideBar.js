@@ -230,7 +230,7 @@ export class SideBar extends React.PureComponent {
   };
 
   static openDeskPro() {
-    window.open('http://deskpro.com', '_blank');
+    window.open(`${window.DP_BASE_URL}goto/vendor-home`, '_blank');
   }
 
   constructor(props) {

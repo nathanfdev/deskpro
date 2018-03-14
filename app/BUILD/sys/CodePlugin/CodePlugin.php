@@ -32,7 +32,8 @@ use Symfony\Component\DependencyInjection\Container;
 
 class CodePlugin
 {
-    const CUSTOM_HTML_AGENT_RES = 'agent_res';
+    const CUSTOM_HTML_AGENT_RES  = 'agent_res';
+    const CUSTOM_HTML_REPOTS_RES = 'reports_res';
 
     /**
      * In specific cases where the system is looking up classnames
@@ -113,5 +114,16 @@ class CodePlugin
     public function filterInstallFixtures(array $fixtures, $installSource)
     {
         return $fixtures;
+    }
+
+    /**
+     * @param string    $id
+     * @param Container $container
+     *
+     * @return null|Response
+     */
+    public function handleGoRequest($id, Container $container)
+    {
+        return null;
     }
 }

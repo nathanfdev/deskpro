@@ -156,4 +156,19 @@ class CodePluginManager
 
         return $fixtures;
     }
+
+    /**
+     * @param string    $id
+     * @param Container $container
+     *
+     * @return Response|null
+     */
+    public function handleGoRequest($id, Container $container)
+    {
+        foreach ($this->plugins as $plugin) {
+            if ($res = $plugin->handleGoRequest($id, $container)) {
+                return $res;
+            }
+        }
+    }
 }
