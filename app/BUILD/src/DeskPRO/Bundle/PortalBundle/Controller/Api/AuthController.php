@@ -69,7 +69,7 @@ class AuthController extends AbstractApiController
         $visitorId = $this->get('visitor_identification_provider')->getVisitorIdentifier(true);
         $request->attributes->set(VisitorIdentificationProvider::ATTRIBUTE_NAME, $visitorId);
 
-        $lastChat     = $this->getLastChat($request);
+        $lastChat     = $this->getLastChat();
         $trackVisitor = $request->request->get('trackVisitor');
 
         if ($trackVisitor) {

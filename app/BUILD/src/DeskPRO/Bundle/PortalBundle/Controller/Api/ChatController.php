@@ -89,6 +89,8 @@ class ChatController extends AbstractApiController
      *
      * @param Request $request
      *
+     * @throws \Exception
+     *
      * @return View
      */
     public function createNewChatAction(Request $request)
@@ -156,7 +158,7 @@ class ChatController extends AbstractApiController
             $chatManager->sendMessageAssignEvent($conversation);
         }
 
-        $this->setWidgetOption('chat_id', $conversation->getAuthId());
+        $this->setWidgetOption($this->getUser(), 'chat_id', $conversation->getAuthId());
 
         if ($session->getVisitorId()) {
             $hit = $this->getDoctrine()->getRepository(HitRecord::class)->findLastForVisitorId($session->getVisitorId());
@@ -402,7 +404,7 @@ class ChatController extends AbstractApiController
 
         $this->saveConversation($conversation);
         $this->dispatch(UserChatEvent::END_BY_USER, new UserChatEvent($conversation, [], ['chat_ended']));
-        $this->setWidgetOption('chat_id', null);
+        $this->setWidgetOption($this->getUser(), 'chat_id', null);
 
         return View::create();
     }
@@ -427,7 +429,7 @@ class ChatController extends AbstractApiController
 
         $this->saveConversation($conversation);
         $this->dispatch(UserChatEvent::USER_RETURNED, new UserChatEvent($conversation));
-        $this->setWidgetOption('chat_id', $conversation->getId());
+        $this->setWidgetOption($this->getUser(), 'chat_id', $conversation->getId());
 
         return View::create();
     }

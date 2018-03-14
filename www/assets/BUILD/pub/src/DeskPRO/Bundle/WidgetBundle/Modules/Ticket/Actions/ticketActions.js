@@ -65,7 +65,7 @@ export const loadNewTicketForm = createAction(
       queryParams.ticket = defaultValues;
     }
 
-    const promise = widgetApi.sendGet(`DP_API/tickets/new?${compileParams(queryParams)}`, { ...ajaxOptions });
+    const promise = widgetApi.sendGet(`DP_API/tickets/new?${compileParams(queryParams)}`, { ...ajaxOptions(state) });
     promise.success(response => dispatch(setNewTicketFormContent(response.data)));
 
     return promise;
@@ -82,7 +82,7 @@ export const saveNewTicketForm = createAction(
     }
 
     const queryParams = getNewTicketQueryParams(state);
-    const promise = widgetApi.sendPost(`DP_API/tickets/new?${compileParams(queryParams)}`, params, { ...ajaxOptions });
+    const promise = widgetApi.sendPost(`DP_API/tickets/new?${compileParams(queryParams)}`, params, { ...ajaxOptions(state) });
     promise.then(
       (response) => {
         if (response.data && response.data.ticket_id) {

@@ -97,7 +97,7 @@ class PeopleController extends AbstractApiController
     {
         // allow to fetch only people who is in person's chat
         $allowedIds = [];
-        $lastChat   = $this->getLastChat($request);
+        $lastChat   = $this->getLastChat();
 
         if ($this->getUser() && $this->getUser()->getId()) {
             $allowedIds[] = $this->getUser()->getId();

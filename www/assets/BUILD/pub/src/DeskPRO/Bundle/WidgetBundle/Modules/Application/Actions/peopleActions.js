@@ -39,7 +39,7 @@ export const loadOnlineAgents = createAction(
       defaultDepartment = '';
     }
 
-    widgetApi.sendGet(`DP_API/people/online_agents?default_department=${defaultDepartment}&jwt=${jwtToken}`, { ...ajaxOptions })
+    widgetApi.sendGet(`DP_API/people/online_agents?default_department=${defaultDepartment}&jwt=${jwtToken}`, { ...ajaxOptions(state) })
       .success((response) => {
         updateAgents(response.data);
         lscache.set('dpWidget.onlineAgents', response.data, 15);

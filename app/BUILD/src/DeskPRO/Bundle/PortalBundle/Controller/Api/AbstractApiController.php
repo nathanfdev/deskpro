@@ -38,7 +38,6 @@ use FOS\RestBundle\Controller\FOSRestController;
 use FOS\RestBundle\View\View;
 use Symfony\Component\EventDispatcher\Event;
 use Symfony\Component\Form\Form;
-use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 
 /**
@@ -121,22 +120,23 @@ abstract class AbstractApiController extends FOSRestController
     }
 
     /**
-     * @param string $key
-     * @param mixed  $value
+     * @param Person|mixed $person
+     * @param string       $key
+     * @param mixed        $value
      */
-    protected function setWidgetOption($key, $value)
+    protected function setWidgetOption($person, $key, $value)
     {
-        if (!$this->getUser() instanceof Person || !$this->getUser()->getId()) {
+        if (!$person instanceof Person || !$person->getId()) {
             return;
         }
 
         $dataStore = $this->getDoctrine()->getRepository(DataStore::class)->findOneBy([
-            'name' => 'dpWidgetOptions.'.$this->getUser()->getId(),
+            'name' => 'dpWidgetOptions.'.$person->getId(),
         ]);
 
         if (!$dataStore) {
             $dataStore = new DataStore();
-            $dataStore->setName('dpWidgetOptions.'.$this->getUser()->getId());
+            $dataStore->setName('dpWidgetOptions.'.$person->getId());
         }
 
         $dataStore->setData($key, $value);
@@ -145,18 +145,11 @@ abstract class AbstractApiController extends FOSRestController
     }
 
     /**
-     * @param Request $request
-     *
      * @return ChatConversation
      */
-    protected function getLastChat(Request $request)
+    protected function getLastChat()
     {
-        if ($jwtPayload = $request->get('jwt')) {
-            $person = $this->get('widget_jwt_decoder')->getPersonFromJwtPayload($jwtPayload);
-        } else {
-            $person = $this->getUser();
-        }
-
+        $person       = $this->getUser();
         $storedChatId = $this->getWidgetOption($person, 'chat_id');
         if ($storedChatId) {
             list($storedChatId) = explode(':', $storedChatId);
@@ -168,6 +161,21 @@ abstract class AbstractApiController extends FOSRestController
         }
 
         return;
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function getUser()
+    {
+        $request = $this->container->get('request_stack')->getCurrentRequest();
+        if ($jwtPayload = $request->headers->get('X-Jwt-Token')) {
+            $person = $this->get('widget_jwt_decoder')->getPersonFromJwtPayload($jwtPayload);
+        } else {
+            $person = parent::getUser();
+        }
+
+        return $person;
     }
 
     /**
