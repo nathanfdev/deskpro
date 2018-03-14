@@ -98,7 +98,7 @@ export class LoginDropdownWidget extends PageWidget {
               <span>${us.text}</span>
             </a>
           `;
-        this.usersources.append(div);
+        this.usersources.appendChild(div);
       });
     }
 
