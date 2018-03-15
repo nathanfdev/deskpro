@@ -2092,7 +2092,7 @@ return [
     'agent.tickets.billing_amount'                             => 'Amount',
     'agent.tickets.billing_and_timelog'                        => 'Billing & Time Log',
     'agent.tickets.billing_charge'                             => 'Charge',
-    'agent.tickets.billing_chargetime'                         => 'Charge/Time',
+    'agent.tickets.billing_chargetime'                         => 'Amount',
     'agent.tickets.billing_delete_confirm'                     => 'Are you sure you want to delete this charge?',
     'agent.tickets.billing_time'                               => 'Time',
     'agent.tickets.billing_timelog'                            => 'Time Log',
