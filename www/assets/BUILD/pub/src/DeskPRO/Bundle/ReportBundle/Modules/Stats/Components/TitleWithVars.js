@@ -220,6 +220,7 @@ class TitleWithVars extends React.Component {
         case 'fields':
         case 'statuses':
         case 'orders':
+        case 'values':
           return this.renderGroupSelectBox(entry);
         default:
           return varName;
