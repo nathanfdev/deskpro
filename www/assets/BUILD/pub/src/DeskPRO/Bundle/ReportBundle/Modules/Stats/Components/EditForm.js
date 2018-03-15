@@ -288,8 +288,6 @@ export class EditFormComponent extends React.Component {
     const renderVars = field => <VarsField fields={field.fields} groupParams={groupParams || {}} />;
     const renderLabels = field => <LabelsField fields={field.fields} options={labels} />;
 
-    console.log(this.props.formErrors, this.props.hasError);
-
     return (
       <form onSubmit={this.props.handleSubmit}>
         <Container>
