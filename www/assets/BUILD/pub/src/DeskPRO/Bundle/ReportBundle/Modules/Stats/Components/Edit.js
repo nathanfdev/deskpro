@@ -55,7 +55,9 @@ class EditContainer extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
-      saving: false,
+      saving:     false,
+      error:      false,
+      formErrors: {},
       ...EditContainer.getStateFromReport(props.report)
     };
   }
@@ -63,6 +65,9 @@ class EditContainer extends React.Component {
   componentWillReceiveProps(props) {
     if (props.report !== this.props.report) {
       this.setState({
+        saving:     false,
+        error:      false,
+        formErrors: {},
         ...EditContainer.getStateFromReport(props.report)
       });
     }
@@ -96,20 +101,20 @@ class EditContainer extends React.Component {
       ...formData.query
     };
 
-    this.setState({ saving: true });
+    this.setState({ saving: true, error: false, formErrors: {} });
     dispatch(saveReport(reportData))
         .then(() => {
-          this.setState({ saving: false });
+          this.setState({ saving: false, error: false, formErrors: {} });
         })
         .catch((response) => {
-          this.setState({ saving: false });
+          const flattenErrors = {};
           if (response.data.errors) {
-            const flattenErrors = {};
             Object.keys(response.data.errors.fields).forEach((key) => {
               flattenErrors[key] = response.data.errors.fields[key].errors.map(error => error.message).join(' ');
             });
           }
-          throw new SubmissionError({ title: response.data.errors.fields.title.errors[0].message });
+          this.setState({ saving: false, error: true, formErrors: flattenErrors });
+          throw new SubmissionError(flattenErrors);
         });
   };
 
@@ -150,6 +155,8 @@ class EditContainer extends React.Component {
 
     return (<div>
       <EditStatForm
+        hasError={this.state.error}
+        formErrors={this.state.formErrors}
         labels={labels.toJS()}
         groupParams={groupParams.toJS()}
         extendedQuery={report.get('extended_query', false)}
