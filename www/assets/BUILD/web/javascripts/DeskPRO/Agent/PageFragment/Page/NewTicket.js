@@ -2139,7 +2139,7 @@ DeskPRO.Agent.PageFragment.Page.NewTicket = new Orb.Class({
   },
 
   convertDateFormat: function(from, to, value){
-    if (!value || value.length == 0) {
+    if (!value) {
       return value;
     }
     var mom = moment(value, from);
