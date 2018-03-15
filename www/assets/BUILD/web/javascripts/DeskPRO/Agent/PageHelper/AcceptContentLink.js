@@ -7,7 +7,6 @@ DeskPRO.Agent.PageHelper.AcceptContentLink = new Orb.Class({
 	Implements: [Orb.Util.Events, Orb.Util.Options],
 
 	initialize: function(options) {
-		var self = this;
 		this.options = {
 			/**
 			 * The page fragment
@@ -46,6 +45,6 @@ DeskPRO.Agent.PageHelper.AcceptContentLink = new Orb.Class({
 			title = linkTitle;
 		}
 
-		this.options.rte.froalaEditor('html.insert', '<a href="' + url + '">' + Orb.escapeHtml(title) + '</a>', true);
+    this.options.rte.froalaEditor('html.insert', '<a href="' + url + '">' + Orb.escapeHtml(title) + '</a>', true);
 	}
 });

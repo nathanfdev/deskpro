@@ -60,11 +60,12 @@ class RteTextarea {
 
     localOptions = Object.merge(defaultOptions, localOptions || {});
 
-    const rte = $(field).froalaEditor(localOptions);
-    $(field).on('froalaEditor.focus', () => {
+    const rte = $(field);
+    rte.froalaEditor(localOptions);
+    rte.on('froalaEditor.focus', () => {
       window.DeskPRO_Window.keyboardShortcuts.isPaused = true;
     });
-    $(field).on('froalaEditor.blur', () => {
+    rte.on('froalaEditor.blur', () => {
       window.DeskPRO_Window.keyboardShortcuts.isPaused = false;
     });
 

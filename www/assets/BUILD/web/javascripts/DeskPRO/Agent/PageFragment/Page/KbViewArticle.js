@@ -897,7 +897,7 @@ DeskPRO.Agent.PageFragment.Page.KbViewArticle = new Orb.Class({
 			var saveBtn = this.getEl('save_btn');
 			this.acceptContentLink = new DeskPRO.Agent.PageHelper.AcceptContentLink({
 				page: this,
-				rte: txt,
+				rte: this.rte,
 				isReadyCallback: function() {
 					return saveBtn.is(':visible');
 				}

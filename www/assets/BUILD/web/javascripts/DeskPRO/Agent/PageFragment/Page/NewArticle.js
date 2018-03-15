@@ -216,7 +216,7 @@ DeskPRO.Agent.PageFragment.Page.NewArticle = new Orb.Class({
 
 		var txt = this.getEl('content');
 
-    window.LegacyRteTextarea.init(txt, {
+    this.rte = window.LegacyRteTextarea.init(txt, {
 			height: Math.max(h - 500, 200)
 		});
 
@@ -228,7 +228,7 @@ DeskPRO.Agent.PageFragment.Page.NewArticle = new Orb.Class({
 
 		this.acceptContentLink = new DeskPRO.Agent.PageHelper.AcceptContentLink({
 			page: this,
-			rte: txt
+			rte: this.rte
 		});
 	},
 
