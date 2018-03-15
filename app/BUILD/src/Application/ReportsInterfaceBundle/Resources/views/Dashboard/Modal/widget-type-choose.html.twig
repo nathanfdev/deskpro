@@ -11,6 +11,9 @@
     <div class="big-list-of-stats-filters">
         <div class="bucket">
             <div class="box">
+                <div ng-if="error" class="alert alert-error">
+                    {{ ng_var('error') }}
+                </div>
                 <label class="widget-title" for="widget-name">Enter widget name</label>
                 <input class="widget-title" type="text" ng-model="widget.title" placeholder="Enter widget name" />
             </div>
