@@ -97,9 +97,13 @@ class EditContainer extends React.Component {
     };
 
     this.setState({ saving: true });
-    dispatch(saveReport(reportData)).then(() => {
-      this.setState({ saving: false });
-    });
+    dispatch(saveReport(reportData))
+        .then(() => {
+          this.setState({ saving: false });
+        })
+        .catch(() => {
+          this.setState({ saving: false });
+        });
   };
 
   doSubmit = () => {
