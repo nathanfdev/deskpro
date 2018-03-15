@@ -594,25 +594,21 @@ pageMeta.baseId = '{{ baseId }}';
 		<table cellpadding="0" cellspacing="0" border="0"><tr>
 			<td valign="middle" style="vertical-align: middle;">
 				<div id="{{ baseId }}_send_btn">
-					<div class="dp-btn-group dp-dropup hide-note" id="{{ baseId }}_reply_btn_group">
+					<div class="dp-btn-group dp-dropup" id="{{ baseId }}_reply_btn_group">
 						<a class="dp-btn dp-btn-primary submit-trigger">
 							<i class="icon-share-alt"></i>&nbsp;
 							{% if app.getSetting('core_tickets.new_status') == 'awaiting_user' %}
-								<span id="{{ baseId }}_reply_as_type" data-type="awaiting_user">{{ phrase('agent.tickets.send_reply_as_x', {status: phrase('agent.tickets.status_awaiting_user')}) }}</span>
+								<span id="{{ baseId }}_reply_as_type" data-type="awaiting_user">{{ phrase('agent.tickets.kbd_send_awaiting_user') }}</span>
 							{% elseif app.getSetting('core_tickets.new_status') == 'awaiting_agent' %}
-								<span id="{{ baseId }}_reply_as_type" data-type="awaiting_agent">{{ phrase('agent.tickets.send_reply_as_x', {status: phrase('agent.tickets.status_awaiting_agent')}) }}</span>
+								<span id="{{ baseId }}_reply_as_type" data-type="awaiting_agent">{{ phrase('agent.tickets.kbd_send_awaiting_agent') }}</span>
 							{% elseif app.getSetting('core_tickets.new_status') == 'resolved' %}
-								<span id="{{ baseId }}_reply_as_type" data-type="resolved">{{ phrase('agent.tickets.send_reply_as_x', {status: phrase('agent.tickets.status_resolved')}) }}</span>
+								<span id="{{ baseId }}_reply_as_type" data-type="resolved">{{ phrase('agent.tickets.kbd_send_awaiting_resolved') }}</span>
 							{% else %}
-								<span id="{{ baseId }}_reply_as_type" data-type="awaiting_user">{{ phrase('agent.tickets.send_reply_as_x', {status: phrase('agent.tickets.status_awaiting_user')}) }}</span>
+								<span id="{{ baseId }}_reply_as_type" data-type="awaiting_user">{{ phrase('agent.tickets.kbd_send_awaiting_user') }}</span>
 							{% endif %}
 						</a>
 						<a class="dp-btn dp-btn-primary dp-dropdown-toggle status-menu-trigger"><span class="dp-caret dp-caret-up"></span></a>
 					</div>
-					<a class="dp-btn dp-btn-primary submit-trigger hide-reply" style="position: relative; z-index: 50; display: none;">
-						<i class="icon-share"></i>&nbsp;
-						{{ phrase('agent.tickets.add_note') }}
-					</a>
 					<a id="discard-draft-btn" class="dp-btn dp-btn-primary" type="button" style="display: none;">
 						<span>
 							{{ phrase('agent.tickets.discard_draft') }}
