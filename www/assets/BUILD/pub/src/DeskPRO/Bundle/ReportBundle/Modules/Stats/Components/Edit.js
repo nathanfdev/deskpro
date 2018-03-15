@@ -1,6 +1,6 @@
 import PropTypes from 'prop-types';
 import React from 'react';
-import { reduxForm, submit } from 'redux-form';
+import { reduxForm, submit, SubmissionError } from 'redux-form';
 import { Button, Loader } from '@deskpro/react-components';
 import { api } from 'DeskPRO/Bundle/AppBundle/DAL';
 import Immutable from 'immutable';
@@ -101,8 +101,15 @@ class EditContainer extends React.Component {
         .then(() => {
           this.setState({ saving: false });
         })
-        .catch(() => {
+        .catch((response) => {
           this.setState({ saving: false });
+          if (response.data.errors) {
+            const flattenErrors = {};
+            Object.keys(response.data.errors.fields).forEach((key) => {
+              flattenErrors[key] = response.data.errors.fields[key].errors.map(error => error.message).join(' ');
+            });
+          }
+          throw new SubmissionError({ title: response.data.errors.fields.title.errors[0].message });
         });
   };
 
