@@ -64,6 +64,7 @@
 					{% endif %}
 				</li>
 			{% elseif field == 'department' and (ticket.department or changed_fields[ticket.id].department) %}
+                {% if app.getSetting('using_department') %}
 				<li class="{{field}} {% if changed_fields[ticket.id].department %}changed{% endif %}">
 					<span class="prop-title">{{ phrase('agent.general.department') }}:</span>
 					<span class="prop-val department_id" data-prop-value="{{ticket.department.id}}">
@@ -74,6 +75,7 @@
 					{% endif %}
 					</span>
 				</li>
+				{% endif %}
 			{% elseif field == 'brand' %}
 				<li class="{{field}}">
 					<span class="prop-title">{{ phrase('agent.general.brand') }}:</span>

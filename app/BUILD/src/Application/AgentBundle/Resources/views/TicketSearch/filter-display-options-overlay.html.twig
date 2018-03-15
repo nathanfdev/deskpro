@@ -49,7 +49,7 @@
 	<li data-field="status"><label><input type="checkbox" name="status" {% if 'status' in display_fields %}checked="checked"{% endif %} /> {{ phrase('agent.general.status') }}</label></li>
 	<li data-field="subject" {% if not show_all %}style="display: none"{% endif %}><label><input type="checkbox" name="subject" {% if not show_all or 'subject' in display_fields %}checked="checked"{% endif %} /> {{ phrase('agent.general.subject') }}</label></li>
 	<li data-field="user"><label><input type="checkbox" name="user" {% if 'user' in display_fields %}checked="checked"{% endif %} /> {{ phrase('agent.general.user') }}</label></li>
-	<li data-field="department"><label><input type="checkbox" name="department" {% if 'department' in display_fields %}checked="checked"{% endif %} /> {{ phrase('agent.general.department') }}</label></li>
+	{% if app.getSetting('using_department') %}<li data-field="department"><label><input type="checkbox" name="department" {% if 'department' in display_fields %}checked="checked"{% endif %} /> {{ phrase('agent.general.department') }}</label></li>{% endif %}
 	<li data-field="agent"><label><input type="checkbox" name="agent" {% if 'agent' in display_fields %}checked="checked"{% endif %} /> {{ phrase('agent.general.agent') }}</label></li>
 	{% if app.getSetting('core.use_agent_team') %}<li data-field="agent_team"><label><input type="checkbox" name="agent_team" {% if 'agent_team' in display_fields %}checked="checked"{% endif %} /> {{ phrase('agent.general.agent_team') }}</label></li>{% endif %}
 	{% if app.languages.isMultiLang() %}<li data-field="language"><label><input type="checkbox" name="language" {% if 'language' in display_fields %}checked="checked"{% endif %} /> {{ phrase('agent.general.language') }}</label></li>{% endif %}

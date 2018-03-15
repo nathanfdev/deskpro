@@ -299,7 +299,7 @@ pageMeta.baseId = '{{ baseId }}';
 							</td>
 						</tr>
 					{% endif %}
-					<tr>
+					<tr {% if not app.getSetting('using_department') %}style="display: none"{% endif %}>
 						<th width="80">{{ phrase('agent.general.department') }}</th>
 						<td>
 							{% if not ticket.department_id %}

@@ -320,7 +320,7 @@
 
         <nav id="{{ baseId }}_header_nav_primary" class="header-nav header-nav-primary">
             <ul>
-                <li title="{{ phrase('agent.general.department') }}" data-btn-id="department">
+                <li title="{{ phrase('agent.general.department') }}" data-btn-id="department" {% if not app.getSetting('using_department') %}style="display: none" {% endif %}>
                     {% include 'AgentBundle:Common:select-department.html.twig' with {
                     'name': "department_id",
                     'with_blank': blank_option,
