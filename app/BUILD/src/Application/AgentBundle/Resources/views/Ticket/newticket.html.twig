@@ -311,7 +311,7 @@ pageMeta.baseId = '{{ baseId }}';
                 {# todo why tbody included into loop? #}
 				{% if custom_fields %}
 					{% for f in custom_fields if f.field_def.getTypeName() != 'hidden' %}
-						<tbody class="col fieldprop ticket-field item-on ticket-field-{{f.field_def.id}} item-on-{{f.field_def.id}} inline-field" style="clear:both;display: none;" data-default-value="{{ f.field_def.getStringDefaultValue() }}">
+						<tbody class="col fieldprop ticket-field item-on ticket-field-{{f.field_def.id}} item-on-{{f.field_def.id}} inline-field" style="clear:both;display: none;" data-default-value="{{ f.field_def.getStringDefaultValue() }}" data-custom-field-handler="{{ f.field_handler }}">
 							<tr>
 								<th>{{ f.title }}</th>
 								<td>

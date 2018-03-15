@@ -44,6 +44,7 @@ DeskPRO.Agent.PageFragment.Page.NewTicket = new Orb.Class({
 		this._initPropertiesSection();
 		this._initLabels();
 		this._initDraft();
+    this._initDateCustomFields();
 
     this.addEvent('destroy', function() {
       this.draft && this.draft.reset();
@@ -148,7 +149,8 @@ DeskPRO.Agent.PageFragment.Page.NewTicket = new Orb.Class({
 
 		$('.Date.customfield input', this.wrapper).each(function() {
 			$(this).datetimepicker({
-				format: 'YYYY-MM-DD',
+				format: 'L',
+        locale: moment.locale(),
 				widgetParent: $(this).parent().css('position', 'relative'),
 				widgetPositioning: { vertical: 'bottom' },
 				icons: {
@@ -165,7 +167,8 @@ DeskPRO.Agent.PageFragment.Page.NewTicket = new Orb.Class({
 
     $('.DateTime.customfield input', this.wrapper).each(function () {
 			$(this).datetimepicker({
-				format: 'YYYY-MM-DD HH:mm',
+				format: 'L HH:mm',
+        locale: moment.locale(),
 				widgetParent: $(this).parent().css('position', 'relative'),
 				widgetPositioning: { vertical: 'bottom' },
 				icons: {
@@ -832,6 +835,8 @@ DeskPRO.Agent.PageFragment.Page.NewTicket = new Orb.Class({
     if (this.billing) {
       formData.push({ name: 'billing_type', value: this.billing.getBillingType() });
     }
+
+    formData = this.normalizeCustomFieldValues(formData);
 
 		$.ajax({
 			url: BASE_URL + 'agent/tickets/new/save',
@@ -2084,6 +2089,61 @@ DeskPRO.Agent.PageFragment.Page.NewTicket = new Orb.Class({
         this.set(item);
       }
     };
+  },
+
+  _initDateCustomFields: function() {
+    var self = this;
+
+    self.getEl('fields_container').find('.Date.customfield input').each(function(){
+      if ($(this).val()) {
+        $(this).val(self.convertDateFormat('YYYY-MM-DD', 'L', $(this).val()));
+      }
+      var parent = $(this).closest('tbody');
+      if (parent.data('default-value')) {
+        parent.data('default-value', self.convertDateFormat('YYYY-MM-DD', 'L', parent.data('default-value')));
+      }
+    });
+    self.getEl('fields_container').find('.DateTime.customfield input').each(function(){
+      if ($(this).val()) {
+        $(this).val(self.convertDateFormat('YYYY-MM-DD HH:mm', 'L HH:mm', $(this).val()));
+      }
+      var parent = $(this).closest('tbody');
+      if (parent.data('default-value')) {
+        parent.data('default-value', self.convertDateFormat('YYYY-MM-DD HH:mm', 'L HH:mm', parent.data('default-value')));
+      }
+    });
+  },
+
+  normalizeCustomFieldValues: function(formData) {
+    var self = this;
+
+    var nameToHandlerMap = {};
+    // for now we need only Date and DateTime fields
+    self.getEl('fields_container').find('.customfield input').each(function(){
+      // skip `hijri` now
+      if ($(this).closest('.customfield.hijri').length) {
+        return;
+      }
+      nameToHandlerMap[$(this).attr('name')] = $(this).closest('tbody').data('custom-field-handler');
+    });
+
+    return formData.map(function(field){
+      if (nameToHandlerMap[field.name] === 'date') {
+        field.value = self.convertDateFormat('L', 'YYYY-MM-DD', field.value);
+      } else if (nameToHandlerMap[field.name] === 'datetime') {
+        field.value = self.convertDateFormat('L HH:mm', 'YYYY-MM-DD HH:mm', field.value);
+      }
+
+      return field;
+    });
+  },
+
+  convertDateFormat: function(from, to, value){
+    if (!value || value.length == 0) {
+      return value;
+    }
+    var mom = moment(value, from);
+    return mom.isValid() ? mom.format(to) : value;
   },
 
 	destroyPage: function() {
