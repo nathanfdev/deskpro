@@ -82,9 +82,9 @@ class SettingsResolverService
             }
         );
 
-        $departmentData = $container->getTicketDepartments();
+        $resolver->setVirtual('using_department', function () use ($container) {
+            $departmentData = $container->getTicketDepartments();
 
-        $resolver->setVirtual('using_department', function () use ($departmentData) {
             return count($departmentData->getAllIds()) > 1;
         }
         );
