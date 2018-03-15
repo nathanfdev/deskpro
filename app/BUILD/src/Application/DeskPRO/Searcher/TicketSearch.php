@@ -36,6 +36,7 @@ use Application\DeskPRO\App;
 use Application\DeskPRO\Entity;
 use Application\DeskPRO\Entity\Ticket;
 use Application\DeskPRO\Tickets\TicketTerms;
+use DeskPRO\Bundle\AppBundle\Entity\Currency;
 use DpSys\LowError\SystemErrorHandler;
 use Orb\Util\Arrays;
 use Orb\Util\Strings;
@@ -2180,7 +2181,7 @@ class TicketSearch extends SearcherAbstract
                         break;
 
                     case self::TERM_TICKET_FIELD:
-                        $fieldDef = App::getEntityRepository('DeskPRO:CustomDefTicket')->find($term_id);
+                        $fieldDef = App::getEntityRepository(Entity\CustomDefTicket::class)->find($term_id);
                         if (!$fieldDef) {
                             break;
                         }
@@ -2200,6 +2201,19 @@ class TicketSearch extends SearcherAbstract
                         }
                         if (is_array($choice) && isset($choice['field_'.$field->getId()])) {
                             $choice = $choice['field_'.$field->getId()];
+                        }
+                        if ($fieldDef->isCurrencyType()) {
+                            $currencyId = $fieldDef->getOption('currency_id');
+                            if (!$currencyId) {
+                                break;
+                            }
+
+                            $currency = App::getEntityRepository(Currency::class)->find($currencyId);
+                            if (!$currency) {
+                                break;
+                            }
+
+                            $choice *= $currency->getDelimiter();
                         }
 
                         switch ($search_type) {
@@ -2266,6 +2280,8 @@ class TicketSearch extends SearcherAbstract
                                             } elseif (!empty($choice['date1_relative'])) {
                                                 $wheres[] = "$field $op ".strtotime('-'.$choice['date1_relative'].' '.$choice['date1_relative_type']);
                                             }
+                                        } elseif ($fieldDef->isCurrencyType()) {
+                                            $wheres[] = "$field $op ".$this->quoteDbValue($choice);
                                         } elseif (!is_array($choice) && strlen($choice) && 'DP_NO_SELECTION' !== $choice) {
                                             $wheres[] = "$field $op ".$this->quoteDbValue('%'.$choice.'%');
                                         }

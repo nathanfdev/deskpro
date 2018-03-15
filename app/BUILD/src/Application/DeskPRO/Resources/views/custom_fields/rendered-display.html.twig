@@ -27,6 +27,11 @@
             {% if propValue %}
 				<a href="{{ propValue }}" target="_blank">{{ propValue }}</a>
             {% endif %}
+        {% elseif field_handler_name == 'Currency' %}
+			{% set currency = get_currency(field_def.getOption('currency_id')) %}
+			{% if currency %}
+                {{ currency.getSymbol() }} {{ (data.value / currency.getDelimiter()) | number_format(currency.getDecimalPlaces(), '.', '') }}
+			{% endif %}
         {% else %}
 			{{ propValue|raw }}
 		{% endif %}

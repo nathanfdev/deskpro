@@ -56,9 +56,9 @@ class Text extends HandlerAbstract
     /**
      * {@inheritdoc}
      */
-    public function getDataFromForm(array $form_data)
+    public function getDataFromForm(array $formData)
     {
-        $value = $this->findValue($form_data);
+        $value = $this->findValue($formData);
         if (is_array($value)) {
             $value = implode(' ', $value);
         }
@@ -71,10 +71,10 @@ class Text extends HandlerAbstract
     /**
      * {@inheritdoc}
      */
-    public function validateFormData(array $form_data, $context = self::CONTEXT_USER, $context_data = null)
+    public function validateFormData(array $formData, $context = self::CONTEXT_USER, $contextData = null)
     {
         $valueIfNotPresent = new \stdClass();
-        $data              = $this->findValue($form_data, $valueIfNotPresent);
+        $data              = $this->findValue($formData, $valueIfNotPresent);
         if ($data === $valueIfNotPresent) {
             $data = '';
         }

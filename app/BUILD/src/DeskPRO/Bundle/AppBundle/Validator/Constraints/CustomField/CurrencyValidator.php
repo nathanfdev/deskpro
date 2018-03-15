@@ -26,45 +26,27 @@
  * ~ Thanks, Everyone at Team Deskpro
  */
 
-namespace DeskPRO\Bundle\AppBundle\Form\Type;
+namespace DeskPRO\Bundle\AppBundle\Validator\Constraints\CustomField;
 
-use DeskPRO\Bundle\AppBundle\Form\EventListener\FixUrlProtocolListener;
-use Symfony\Component\Form\AbstractType;
-use Symfony\Component\Form\Extension\Core\Type\TextType;
-use Symfony\Component\Form\FormBuilderInterface;
-use Symfony\Component\OptionsResolver\OptionsResolver;
+use Symfony\Component\Validator\Constraints as Assert;
 
 /**
- * Class DpUrlType.
+ * Class CurrencyValidator.
  */
-class DpUrlType extends AbstractType
+class CurrencyValidator extends AbstractSingleValueValidator
 {
     /**
      * {@inheritdoc}
      */
-    public function buildForm(FormBuilderInterface $builder, array $options)
+    protected function getValidators($data, AbstractCustomDefConstraint $constraint)
     {
-        if (null !== $options['default_protocol']) {
-            $builder->addEventSubscriber(new FixUrlProtocolListener($options['default_protocol']));
+        $validators = [];
+
+        // Required validator
+        if ($constraint->getCustomDefOption('required', true)) {
+            $validators[] = new Assert\NotBlank();
         }
-    }
 
-    /**
-     * {@inheritdoc}
-     */
-    public function getParent()
-    {
-        return TextType::class;
-    }
-
-    /**
-     * {@inheritdoc}
-     */
-    public function configureOptions(OptionsResolver $resolver)
-    {
-        $resolver
-            ->setDefault('default_protocol', 'http')
-            ->setAllowedTypes('default_protocol', ['null', 'string'])
-        ;
+        return $validators;
     }
 }

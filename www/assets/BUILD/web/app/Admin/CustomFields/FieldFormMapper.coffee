@@ -96,6 +96,12 @@ define ['moment', 'DeskPRO/Util/Util'], (moment, Util) ->
           user_validation:          '0'
           agent_validation:         '0'
           agent_validation_resolve: false
+        },
+        currency: {
+          currency_id:              null
+          user_validation:          '0'
+          agent_validation:         '0'
+          agent_validation_resolve: false
         }
       }
 
@@ -230,6 +236,16 @@ define ['moment', 'DeskPRO/Util/Util'], (moment, Util) ->
 
           when "url"
             formTypeOpts.allow_file = !!fieldModel.options.allow_file
+
+            if fieldModel.options.required
+              formTypeOpts.user_validation = 'required'
+            if fieldModel.options.agent_required
+              formTypeOpts.agent_validation = 'required'
+              if fieldModel.options.agent_validation_resolve
+                formTypeOpts.agent_validation_resolve = true
+
+          when "currency"
+            formTypeOpts.currency_id = fieldModel.options.currency_id
 
             if fieldModel.options.required
               formTypeOpts.user_validation = 'required'
@@ -382,6 +398,15 @@ define ['moment', 'DeskPRO/Util/Util'], (moment, Util) ->
         when "url"
           postData.handler_class = 'Application\\DeskPRO\\CustomFields\\Handler\\Url'
           postData.allow_file    = formTypeOpts.allow_file
+
+          if formTypeOpts.user_validation == 'required'
+            postData.required = true
+          if formTypeOpts.agent_validation == 'required'
+            postData.agent_required = true
+
+        when "currency"
+          postData.handler_class = 'Application\\DeskPRO\\CustomFields\\Handler\\Currency'
+          postData.currency_id = formTypeOpts.currency_id
 
           if formTypeOpts.user_validation == 'required'
             postData.required = true

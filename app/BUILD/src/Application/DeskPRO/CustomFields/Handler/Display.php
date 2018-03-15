@@ -63,7 +63,7 @@ class Display extends HandlerAbstract
     /**
      * {@inheritdoc}
      */
-    public function getDataFromForm(array $form_data)
+    public function getDataFromForm(array $formData)
     {
         return [];
     }

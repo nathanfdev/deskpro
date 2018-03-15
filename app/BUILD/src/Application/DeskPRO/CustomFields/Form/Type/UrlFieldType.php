@@ -44,12 +44,10 @@ class UrlFieldType extends AbstractType
      */
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
-        $builder
-            ->add('allow_file', ApiBooleanType::class, [
-                'property_path' => 'allowFile',
-                'required'      => false,
-            ])
-        ;
+        $builder->add('allow_file', ApiBooleanType::class, [
+            'property_path' => 'allowFile',
+            'required'      => false,
+        ]);
     }
 
     /**

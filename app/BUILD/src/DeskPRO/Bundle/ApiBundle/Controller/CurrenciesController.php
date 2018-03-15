@@ -26,45 +26,22 @@
  * ~ Thanks, Everyone at Team Deskpro
  */
 
-namespace DeskPRO\Bundle\AppBundle\Form\Type;
+namespace DeskPRO\Bundle\ApiBundle\Controller;
 
-use DeskPRO\Bundle\AppBundle\Form\EventListener\FixUrlProtocolListener;
-use Symfony\Component\Form\AbstractType;
-use Symfony\Component\Form\Extension\Core\Type\TextType;
-use Symfony\Component\Form\FormBuilderInterface;
-use Symfony\Component\OptionsResolver\OptionsResolver;
+use DeskPRO\Bundle\ApiBundle\ApiDoc\Annotation\ApiDoc;
+use DeskPRO\Bundle\AppBundle\Annotation\ActionPermissions\Annotation\ApiModes;
+use DeskPRO\Bundle\AppBundle\Entity\Currency;
+use FOS\RestBundle\Controller\Annotations as Rest;
 
 /**
- * Class DpUrlType.
+ * Class CurrenciesController.
+ *
+ * @ApiModes("all")
+ * @Rest\Route("/currencies")
+ * @ApiDoc(target="all", section="Currencies", output="DeskPRO\Bundle\AppBundle\Entity\Currency")
  */
-class DpUrlType extends AbstractType
+class CurrenciesController extends CrudController
 {
-    /**
-     * {@inheritdoc}
-     */
-    public function buildForm(FormBuilderInterface $builder, array $options)
-    {
-        if (null !== $options['default_protocol']) {
-            $builder->addEventSubscriber(new FixUrlProtocolListener($options['default_protocol']));
-        }
-    }
-
-    /**
-     * {@inheritdoc}
-     */
-    public function getParent()
-    {
-        return TextType::class;
-    }
-
-    /**
-     * {@inheritdoc}
-     */
-    public function configureOptions(OptionsResolver $resolver)
-    {
-        $resolver
-            ->setDefault('default_protocol', 'http')
-            ->setAllowedTypes('default_protocol', ['null', 'string'])
-        ;
-    }
+    public static $entity     = Currency::class;
+    public static $exposeOnly = ['get', 'list', 'count'];
 }

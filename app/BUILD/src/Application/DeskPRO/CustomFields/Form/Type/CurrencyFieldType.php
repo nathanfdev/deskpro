@@ -26,27 +26,61 @@
  * ~ Thanks, Everyone at Team Deskpro
  */
 
-namespace DeskPRO\Bundle\AppBundle\Form\Type;
+namespace Application\DeskPRO\CustomFields\Form\Type;
 
-use DeskPRO\Bundle\AppBundle\Form\EventListener\FixUrlProtocolListener;
+use Application\DeskPRO\CustomFields\Form\Model\CurrencyField;
+use DeskPRO\Bundle\AppBundle\Entity\Currency;
+use DeskPRO\Bundle\AppBundle\Form\DataTransformer\EntityToIdTransformer;
+use Doctrine\ORM\EntityManager;
+use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 use Symfony\Component\Form\AbstractType;
-use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\FormBuilderInterface;
+use Symfony\Component\Form\ReversedTransformer;
 use Symfony\Component\OptionsResolver\OptionsResolver;
+use Symfony\Component\Validator\Constraints as Assert;
 
 /**
- * Class DpUrlType.
+ * Class CurrencyFieldType.
  */
-class DpUrlType extends AbstractType
+class CurrencyFieldType extends AbstractType
 {
+    /**
+     * @var EntityManager
+     */
+    private $em;
+
+    /**
+     * Constructor.
+     *
+     * @param EntityManager $em
+     */
+    public function __construct(EntityManager $em)
+    {
+        $this->em = $em;
+    }
+
     /**
      * {@inheritdoc}
      */
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
-        if (null !== $options['default_protocol']) {
-            $builder->addEventSubscriber(new FixUrlProtocolListener($options['default_protocol']));
-        }
+        $builder->add('currency_id', EntityType::class, [
+            'class'         => Currency::class,
+            'property_path' => 'currencyId',
+            'required'      => false,
+            'constraints'   => [
+                new Assert\NotNull([
+                    'message' => 'Currency field value is required',
+                ]),
+            ],
+        ]);
+
+        $builder
+            ->get('currency_id')
+            ->addModelTransformer(new ReversedTransformer(new EntityToIdTransformer(
+                $this->em->getRepository(Currency::class)
+            )))
+        ;
     }
 
     /**
@@ -54,7 +88,7 @@ class DpUrlType extends AbstractType
      */
     public function getParent()
     {
-        return TextType::class;
+        return CustomFieldTypeAbstract::class;
     }
 
     /**
@@ -62,9 +96,8 @@ class DpUrlType extends AbstractType
      */
     public function configureOptions(OptionsResolver $resolver)
     {
-        $resolver
-            ->setDefault('default_protocol', 'http')
-            ->setAllowedTypes('default_protocol', ['null', 'string'])
-        ;
+        $resolver->setDefaults([
+            'data_class' => CurrencyField::class,
+        ]);
     }
 }

@@ -29,6 +29,7 @@
 namespace DeskPRO\Bundle\AppBundle\DataService;
 
 use Application\DeskPRO\CustomFields\Handler\Choice;
+use Application\DeskPRO\CustomFields\Handler\Currency;
 use Application\DeskPRO\CustomFields\Handler\Date;
 use Application\DeskPRO\CustomFields\Handler\DateTime;
 use Application\DeskPRO\CustomFields\Handler\Display;
@@ -40,6 +41,8 @@ use Application\DeskPRO\CustomFields\Handler\Url;
 use Application\DeskPRO\Entity\CustomDataAbstract;
 use Application\DeskPRO\Entity\CustomDefAbstract;
 use Application\DeskPRO\Entity\Person;
+use DeskPRO\Bundle\AppBundle\Entity\Currency as CurrencyEntity;
+use Doctrine\ORM\EntityManager;
 use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorage;
 
 /**
@@ -50,6 +53,11 @@ use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorage;
 class CustomFieldUtil
 {
     /**
+     * @var EntityManager
+     */
+    private $em;
+
+    /**
      * @var TokenStorage
      */
     private $tokenStorage;
@@ -57,10 +65,12 @@ class CustomFieldUtil
     /**
      * Constructor.
      *
-     * @param TokenStorage $tokenStorage
+     * @param EntityManager $em
+     * @param TokenStorage  $tokenStorage
      */
-    public function __construct(TokenStorage $tokenStorage)
+    public function __construct(EntityManager $em, TokenStorage $tokenStorage)
     {
+        $this->em           = $em;
         $this->tokenStorage = $tokenStorage;
     }
 
@@ -129,6 +139,18 @@ class CustomFieldUtil
                 break;
             case Url::class:
                 $value = $data->getInput();
+                break;
+            case Currency::class:
+                $value      = null;
+                $currencyId = $fieldDef->getOption('currency_id');
+                if ($currencyId) {
+                    $currency = $this->em->getRepository(CurrencyEntity::class)->find($currencyId);
+                    if ($currency) {
+                        $value = $data->getData() ? ($data->getData() / $currency->getDelimiter()) : 0;
+                        $value = $currency->getSymbol().' '.number_format($value, $currency->getDecimalPlaces(), '.', '');
+                    }
+                }
+
                 break;
             default:
                 $value = null;

@@ -178,6 +178,7 @@ class CommonFactories
             'data_list'      => CustomDefAbstract::HANDLER_CLASS_DATALIST,
             'data_json'      => CustomDefAbstract::HANDLER_CLASS_DATAJSON,
             'url'            => CustomDefAbstract::HANDLER_CLASS_URL,
+            'currency'       => CustomDefAbstract::HANDLER_CLASS_CURRENCY,
         ];
 
         $def = new $types[$type]();

@@ -85,6 +85,9 @@ class CustomDataValidator extends ConstraintValidator
             case CustomDefAbstract::TYPE_URL:
                 $validators[] = new AppAssert\CustomField\Url($handlerOptions);
                 break;
+            case CustomDefAbstract::TYPE_CURRENCY:
+                $validators[] = new AppAssert\CustomField\Currency($handlerOptions);
+                break;
         }
 
         /** @var Collection $custom_def_data */

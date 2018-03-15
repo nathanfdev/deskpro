@@ -357,7 +357,9 @@ abstract class HandlerAbstract
     /**
      * Get the form field.
      *
-     * @return Symfony\Component\Form\Field
+     * @param null $data
+     *
+     * @return \Symfony\Component\Form\FormBuilderInterface
      */
     public function getFormField($data = null)
     {
@@ -376,14 +378,30 @@ abstract class HandlerAbstract
             $options['attr']['class'] = @$options['attr']['class'].' '.$class;
         }
 
-        $field = App::getFormFactory()->createNamedBuilder($this->getFormFieldName(), $this->getWidgetName(), @$data['value'], $options);
+        $field = App::getFormFactory()->createNamedBuilder(
+            $this->getFormFieldName(),
+            $this->getWidgetName(),
+            @$data['value'],
+            array_merge($this->getWidgetOptions(), $options)
+        );
 
         return $field;
     }
 
+    /**
+     * @return string
+     */
     public function getWidgetName()
     {
         return 'text';
+    }
+
+    /**
+     * @return array
+     */
+    public function getWidgetOptions()
+    {
+        return [];
     }
 
     /**
@@ -392,11 +410,11 @@ abstract class HandlerAbstract
      * This must return an array of array(field_id, type, value)
      * If no value is set, then use null.
      *
-     * @param $form_data
+     * @param $formData
      *
      * @return array
      */
-    abstract public function getDataFromForm(array $form_data);
+    abstract public function getDataFromForm(array $formData);
 
     /**
      * Get an array of errors from a posted form.
@@ -404,11 +422,11 @@ abstract class HandlerAbstract
      * This must return a standard array of error codes (see Orb\Validator\ValidatorInterface).
      * If an empty array is returned, then that means the field is valid.
      *
-     * @param array $form_data
+     * @param array $formData
      *
      * @return array
      */
-    public function validateFormData(array $form_data, $context = self::CONTEXT_USER, $context_data = null)
+    public function validateFormData(array $formData, $context = self::CONTEXT_USER, $contextData = null)
     {
         return [];
     }

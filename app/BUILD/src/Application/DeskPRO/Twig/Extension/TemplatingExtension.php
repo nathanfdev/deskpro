@@ -48,6 +48,7 @@ use Application\DeskPRO\HttpFoundation\Session;
 use Application\DeskPRO\Tickets\ExecutorContextInterface;
 use Application\DeskPRO\Usersource\UsersourceInfo;
 use Application\DeskPRO\Usersource\UsersourceManager;
+use DeskPRO\Bundle\AppBundle\Entity\Currency;
 use DeskPRO\Bundle\AppBundle\Routing\RouterUtils;
 use DeskPRO\Bundle\AppBundle\Settings\BrandAwareSettingsResolver;
 use DeskPRO\Bundle\AppBundle\Twig\TwigTemplateRenderer;
@@ -191,6 +192,7 @@ class TemplatingExtension extends \Twig_Extension
             // override so we can suppress errors where templates are out of date
             new \Twig_SimpleFunction('url', [$this, 'getUrl']),
             new \Twig_SimpleFunction('has_login_form', [$this, 'hasLoginForm'], []),
+            new \Twig_SimpleFunction('get_currency', [$this, 'getCurrency'], []),
         ];
     }
 
@@ -1945,5 +1947,19 @@ class TemplatingExtension extends \Twig_Extension
         }
 
         return $count;
+    }
+
+    /**
+     * @param int $currencyId
+     *
+     * @return string
+     */
+    public function getCurrency($currencyId)
+    {
+        if ($currencyId) {
+            return $this->getContainer()->getEm()->getRepository(Currency::class)->find($currencyId);
+        }
+
+        return;
     }
 }

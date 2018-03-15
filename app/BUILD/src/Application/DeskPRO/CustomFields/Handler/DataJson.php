@@ -54,10 +54,10 @@ class DataJson extends HandlerAbstract
     /**
      * {@inheritdoc}
      */
-    public function getDataFromForm(array $form_data)
+    public function getDataFromForm(array $formData)
     {
         $valueIfNotPresent = new \stdClass();
-        $value             = $this->findValue($form_data, $valueIfNotPresent);
+        $value             = $this->findValue($formData, $valueIfNotPresent);
 
         if ($value !== $valueIfNotPresent) {
             $decodedValue = null;

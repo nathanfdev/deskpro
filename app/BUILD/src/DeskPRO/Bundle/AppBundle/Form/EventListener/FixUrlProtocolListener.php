@@ -26,45 +26,28 @@
  * ~ Thanks, Everyone at Team Deskpro
  */
 
-namespace DeskPRO\Bundle\AppBundle\Form\Type;
+namespace DeskPRO\Bundle\AppBundle\Form\EventListener;
 
-use DeskPRO\Bundle\AppBundle\Form\EventListener\FixUrlProtocolListener;
-use Symfony\Component\Form\AbstractType;
-use Symfony\Component\Form\Extension\Core\Type\TextType;
-use Symfony\Component\Form\FormBuilderInterface;
-use Symfony\Component\OptionsResolver\OptionsResolver;
+use Symfony\Component\Form\FormEvent;
 
 /**
- * Class DpUrlType.
+ * Adds a protocol to a URL if it doesn't already have one.
  */
-class DpUrlType extends AbstractType
+class FixUrlProtocolListener extends \Symfony\Component\Form\Extension\Core\EventListener\FixUrlProtocolListener
 {
     /**
-     * {@inheritdoc}
+     * @internal
+     *
+     * @param FormEvent $event
      */
-    public function buildForm(FormBuilderInterface $builder, array $options)
+    public function onSubmit(FormEvent $event)
     {
-        if (null !== $options['default_protocol']) {
-            $builder->addEventSubscriber(new FixUrlProtocolListener($options['default_protocol']));
+        $data = $event->getData();
+        if (preg_match('#^\\\\[\w\d-_\\\]+$#', $data)) {
+            // shared folder
+            return;
         }
-    }
 
-    /**
-     * {@inheritdoc}
-     */
-    public function getParent()
-    {
-        return TextType::class;
-    }
-
-    /**
-     * {@inheritdoc}
-     */
-    public function configureOptions(OptionsResolver $resolver)
-    {
-        $resolver
-            ->setDefault('default_protocol', 'http')
-            ->setAllowedTypes('default_protocol', ['null', 'string'])
-        ;
+        parent::onSubmit($event);
     }
 }
