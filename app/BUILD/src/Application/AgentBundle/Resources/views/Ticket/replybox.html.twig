@@ -120,7 +120,7 @@
 			</div>
 		{% endif %}
 		<nav>
-			<ul>
+			<ul id="{{ replyBaseId }}_message_toggle">
 				{% if ticket_perms.reply %}<li id="{{replyBaseId}}_replybox_replytab_btn" class="on">{{ phrase('agent.general.reply') }}</li>{% endif %}
 				{% if ticket_perms.modify_notes %}<li id="{{replyBaseId}}_replybox_notetab_btn" class="note-type {% if not ticket_perms.reply %}on{% endif %}">{{ phrase('agent.general.note') }}</li>{% endif %}
                 {% if ticket_perms.reply and app.hasBeta('new_fwd') %}<li id="{{replyBaseId}}_replybox_fwdtab_btn" class="fwd-type">{{ phrase('agent.tickets.forward') }}</li>{% endif %}

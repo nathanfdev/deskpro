@@ -31,6 +31,7 @@ namespace DpSys\LowScript;
 use Application\DeskPRO\App;
 use Application\DeskPRO\Domain\DomainObject;
 use Application\DeskPRO\Entity\Blob;
+use DpSys\CodePlugin\DpPlugins;
 use Imagine\Exception\InvalidArgumentException;
 use Imagine\Exception\RuntimeException;
 use Imagine\Image\Box;
@@ -137,7 +138,7 @@ class ServeFileScript extends LowScriptAbstract
                 $this->defaultOrgAvatarAction();
 
             // A standard asset
-            } elseif (preg_match('#^/dp-asset/([a-zA-Z0-9_\.\-]+)$#', $pathInfo, $m)) {
+            } elseif (preg_match('#^/dp-asset/([a-zA-Z0-9_\.\-\/]+)$#', $pathInfo, $m)) {
                 $this->dpAsset($m[1]);
 
             // A standard asset
@@ -476,6 +477,8 @@ class ServeFileScript extends LowScriptAbstract
      */
     public function dpAsset($asset_name)
     {
+        $disposition = 'attachment';
+
         switch ($asset_name) {
             case 'Getting-Started-with-DeskPRO.pdf':
                 $path     = DP_ROOT.'/src/Application/AgentBundle/Resources/assets/agent-quickstart/en_US.pdf';
@@ -490,13 +493,22 @@ class ServeFileScript extends LowScriptAbstract
                 break;
 
             default:
-                if ($this->errorMode == 'exception') {
-                    throw new \Exception('File not found. (300)', 400);
-                }
-                header('HTTP/1.0 404 Not Found');
-                echo 'File not found. (300)';
+                $path = DpPlugins::getManager()->getServeAssetFilePath($asset_name);
+                if (!$path || !is_file($path)) {
+                    if ($this->errorMode == 'exception') {
+                        throw new \Exception('File not found. (300)', 400);
+                    }
+                    header('HTTP/1.0 404 Not Found');
+                    echo 'File not found. (300)';
 
-                return;
+                    return;
+                }
+
+                $filename = basename($path);
+                $mimetype = ContentTypes::getContentTypeFromFilename($filename);
+                if (ContentTypes::isImageContentType($mimetype) || ContentTypes::isInlineContentType($mimetype, false)) {
+                    $disposition = 'inline';
+                }
         }
 
         $filesize = filesize($path);
@@ -504,7 +516,7 @@ class ServeFileScript extends LowScriptAbstract
         header('Content-Type: '.$mimetype.'; filename="'.addslashes($filename).'"');
         header('Content-Length: '.$filesize);
         header('X-Content-Type-Options: nosniff');
-        header('Content-Disposition: attachment; filename="'.addslashes($filename).'"');
+        header('Content-Disposition: '.$disposition.'; filename="'.addslashes($filename).'"');
         header('X-Robots-Tag: noindex, nofollow');
 
         if ($this->dpEnv->getConfig('settings.filestorage_use_xsendfile')) {

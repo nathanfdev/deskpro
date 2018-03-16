@@ -37,6 +37,9 @@ DeskPRO.Agent.PageFragment.Page.NewTicket = new Orb.Class({
 			ev.preventDefault();
 		});
 
+		this.page = this;
+		this.initTicketAgentProps();
+
 		this._initUserSection();
 		this._initMessageSection();
 		this._initOtherSection();
@@ -833,7 +836,7 @@ DeskPRO.Agent.PageFragment.Page.NewTicket = new Orb.Class({
       formData.push({ name: 'billing_type', value: this.billing.getBillingType() });
     }
 
-		$.ajax({
+		return $.ajax({
 			url: BASE_URL + 'agent/tickets/new/save',
 			type: 'POST',
 			data: formData,
@@ -2134,6 +2137,73 @@ DeskPRO.Agent.PageFragment.Page.NewTicket = new Orb.Class({
 
     this.te && this.te.destroy();
     this.te = null;
+	},
+
+	initTicketAgentProps: function() {
+		var self = this;
+
+    //------------------------------
+    // Followers
+    //------------------------------
+
+    var followerSel = this.page.getEl('followers_sel');
+    var followersList = this.page.getEl('followers_list');
+
+    this.page.getEl('add_follower_btn').on('click', function(ev) {
+      ev.preventDefault();
+      self.page.getEl('followers_sel_wrap').toggleClass('on');
+      followerSel.select2('val', '0');
+    });
+
+    this.page.getEl('follower_me').on('click', function() {
+      followerSel.val($(this).data('me')).trigger('change');
+    });
+
+    followerSel.on('change', function() {
+      var agentId = parseInt($(this).val());
+      self.page.getEl('followers_sel_wrap').removeClass('on');
+
+      if (!agentId || followersList.find('.agent-' + agentId)[0]) {
+        return;
+      }
+
+      var option = followerSel.find('option[value="' + agentId + '"]');
+
+      var li = $('<li class="agent-'+agentId+'" data-agent-id="'+agentId+'"><a class="dp-btn dp-btn-small agent-link" data-agent-id="'+agentId+'"><span class="text"></span><span class="remove-row-trigger"> <i class="icon-remove"></i></span></a></li>');
+      li.find('span.text').css('background-image', 'url(' +option.data('icon-small') + ')').text(option.text());
+
+      followersList.append(li);
+      updateFollowersList();
+    });
+
+    followersList.on('click', '.remove-row-trigger', function(ev) {
+      ev.preventDefault();
+      ev.stopPropagation();
+      ev.stopImmediatePropagation();
+
+      $(this).closest('li').remove();
+      updateFollowersList();
+    });
+
+    var updateFollowersList = function() {
+      var postData = [{
+        name: 'with_set_agent_parts',
+        value: 1
+      }];
+      followersList.find('li').each(function() {
+        postData.push({
+          name: 'set_agent_part_ids[]',
+          value: $(this).data('agent-id')
+        });
+      });
+
+      var $assign = self.getEl('follower_me');
+      followersList.find('.agent-' + $assign.data('me')).length ? $assign.hide() : $assign.show();
+    };
+
+    DP.select(this.getEl('agent_sel'));
+    DP.select(this.getEl('agent_team_sel'));
+    DP.select(this.getEl('followers_sel'));
 	}
 
 });

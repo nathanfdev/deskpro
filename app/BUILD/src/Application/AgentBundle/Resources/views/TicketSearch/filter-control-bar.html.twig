@@ -50,7 +50,7 @@
 	<ul style="display: none" class="group-by-menu">
 		<li data-group-by="">{{ phrase('agent.general.none') }}</li>
 		<li class="sep">-</li>
-		<li data-group-by="department">{{ phrase('agent.general.department') }}</li>
+        {% if app.getSetting('using_department') %}<li data-group-by="department">{{ phrase('agent.general.department') }}</li>{% endif %}
 		{% if app.getSetting('core.use_ticket_category') %}<li data-group-by="category">{{ phrase('agent.general.category') }}</li>{% endif %}
 		{% if app.getSetting('core.use_ticket_priority') %}<li data-group-by="priority">{{ phrase('agent.general.priority') }}</li>{% endif %}
 		{% if app.getSetting('core.use_product') %}<li data-group-by="product">{{ phrase('agent.general.product') }}</li>{% endif %}
