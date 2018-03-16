@@ -37,7 +37,8 @@ Feature: /tickets/{id}/feedback_links endpoint
       | Ticket | Person                |
       | {t1}   | ~user_1@deskpro.dev~  |
       | {t1}   | ~user_2@deskpro.dev~  |
-    When I send a POST request to "/api/v2/tickets/{t1}/feedback_links" with body:
+    When I reset ticket logs
+    And I send a POST request to "/api/v2/tickets/{t1}/feedback_links" with body:
     """
 {
   "feedback": ~f1~,
@@ -50,6 +51,7 @@ Feature: /tickets/{id}/feedback_links endpoint
     And the JSON node "data.feedback" should be equal to "{f1}"
     And the JSON node "data.ticket" should be equal to "{t1}"
     And the "{t1}" ticket should have "feedback_link_added" log
+    And the "{t1}" ticket should have "action_starter" log with detail "event_performer" = "agent"
     And the "{f1}" feedback should have subscribed persons "{admin},{~user_1@deskpro.dev~},{~user_2@deskpro.dev~}"
 
   Scenario: I retrieve ticket feedback links by ticket id and by ticket ref
@@ -72,9 +74,11 @@ Feature: /tickets/{id}/feedback_links endpoint
       | #   | Person  | Ticket | Feedback |
       | ttf | {admin} | {t1}   | {f1}     |
 
-    When I send a DELETE request to "/api/v2/tickets/{t1}/feedback_links/{ttf}"
+    When I reset ticket logs
+    And I send a DELETE request to "/api/v2/tickets/{t1}/feedback_links/{ttf}"
     Then the response status code should be 200
     And the "{t1}" ticket should have "feedback_link_removed" log
+    And the "{t1}" ticket should have "action_starter" log with detail "event_performer" = "agent"
 
     When I send a GET request to "/api/v2/tickets/{t1}/feedback_links/{ttf}"
     Then the response status code should be 404
