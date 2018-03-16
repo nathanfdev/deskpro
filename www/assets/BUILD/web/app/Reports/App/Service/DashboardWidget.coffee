@@ -98,6 +98,8 @@ define ['DeskPRO/Util/Arrays'], (Arrays) ->
       .sendPostJson url, data
       .then (response) =>
         deferred.resolve(response.data.data)
+      .catch (response) =>
+        deferred.reject(response.data)
 
       return deferred.promise
 
