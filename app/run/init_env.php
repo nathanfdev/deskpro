@@ -34,6 +34,12 @@ if (version_compare(phpversion(), '5.5.0', '<')) {
     echo "(ERR_CODE:MPHPVFT)";
     exit(1);
 }
+if (version_compare(phpversion(), '7.2.0alpha', '>')) {
+    echo "You are using PHP 7.2.x that is incompatible with this software for now.\n\n";
+    echo "Please refer to the server requirements here: https://www.deskpro.com/requirements.\n";
+    echo "(ERR_CODE:MPHPVFT)";
+    exit(1);
+}
 
 #------------------------------
 # Normalize env
