@@ -2,8 +2,10 @@
 Feature: /dashboards endpoint
 
   Background:
+    Given I'm authenticated as admin
     Given I'm authenticated as agent
     And "agent_2@deskpro.dev" agent exists
+    And "admin_2@deskpro.dev" admin exists
     And the setting "beta_features.new_reports" is set to 1
     And only the following ReportDashboard records exist:
       | #  | Title       | Is Default |
@@ -16,6 +18,7 @@ Feature: /dashboards endpoint
       | p1 | {d1}      | {agent} | view |
       | p2 | {d2}      | {agent} | full |
       | p3 | {d4}      | {agent} | full |
+      | p4 | {d1}      | {admin} | full |
     And only the following ReportDashboardReport records exist:
       | #  | Title    | Dashboard | Variables                                             |
       | r1 | Report 1 | {d1}      | [{"name":"date","type":"dates","value":"last_month"}] |
@@ -34,7 +37,7 @@ Feature: /dashboards endpoint
     Then the JSON node "data.id" should be equal to "{d1}"
     And the JSON node "data.title" should be equal to "Dashboard 1"
     And the JSON node "data.is_default" should be equal to 1
-    And the JSON node "data.permissions" should have 1 element
+    And the JSON node "data.permissions" should have 2 elements
     And the JSON node "data.permissions[0].id" should not exist
     And the JSON node "data.permissions[0].person" should be equal to "{agent}"
     And the JSON node "data.permissions[0].name" should be equal to "view"
@@ -161,14 +164,48 @@ Feature: /dashboards endpoint
     """
     Then the response status code should be 204
 
-    When I send a GET request to "/api/v2/dashboards/{d4}"
-    Then the JSON node "data.title" should be equal to "Dashboard 4"
-    And the JSON node "data.is_default" should be equal to 1
-    And the JSON node "data.permissions" should have 2 elements
-    And the JSON node "data.permissions[0].person" should be equal to "{agent_2@deskpro.dev}"
-    And the JSON node "data.permissions[0].name" should be equal to "view"
-    And the JSON node "data.permissions[1].person" should be equal to "{agent}"
-    And the JSON node "data.permissions[1].name" should be equal to "view"
+  Scenario: I update dashboard and trying to set full permissions to agent
+    Given I'm authenticated as admin
+    When I send a PUT request to "/api/v2/dashboards/{d1}" with body:
+    """
+{
+  "permissions": [
+    {
+      "name": "full",
+      "person": ~admin~
+    },
+    {
+      "name": "full",
+      "person": ~agent~
+    }
+  ]
+}
+    """
+    Then the response status code should be 400
+    And the JSON node "errors.fields.permissions.fields.permissions_1.errors[0].code" should be equal to "no_default_dashboard_permission"
+
+  Scenario: I update dashboard and trying to set full permissions to admin
+    Given I'm authenticated as admin
+    When I send a PUT request to "/api/v2/dashboards/{d1}" with body:
+    """
+{
+  "permissions": [
+    {
+      "name": "full",
+      "person": ~admin~
+    },
+    {
+      "name": "full",
+      "person": ~admin_2@deskpro.dev~
+    }
+  ]
+}
+    """
+    Then the response status code should be 204
+
+    When I send a GET request to "/api/v2/dashboards/{d1}"
+    Then the JSON node "data.permissions" should have 2 elements
+    And the JSON node "data.permissions[1].person" should be equal to "~admin_2@deskpro.dev~"
 
   Scenario: I try to delete dashboard w/o permissions
     When I send a DELETE request to "/api/v2/dashboards/{d1}"
@@ -192,7 +229,7 @@ Feature: /dashboards endpoint
 
     Then the JSON node "data.title" should be equal to "Dashboard 1 (copy)"
     And the JSON node "data.is_default" should be equal to 0
-    And the JSON node "data.permissions" should have 1 element
+    And the JSON node "data.permissions" should have 2 element
     And the JSON node "data.permissions[0].name" should be equal to "view"
     And the JSON node "data.permissions[0].person" should be equal to "{agent}"
 
