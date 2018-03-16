@@ -1341,6 +1341,9 @@ img.emojione, svg.emojione {
   }
 }
 
-.fr-toolbar, .fr-tooltip, .fr-popup {
+.fr-toolbar, .fr-popup {
   z-index: 99999 !important;
+}
+.fr-tooltip {
+  z-index: 100000 !important;
 }

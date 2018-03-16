@@ -106,7 +106,6 @@ $CONFIG['agent_vendors'] = [
         'vendor/jquery/jquery.dotdotdot.min.js',
         'vendor/jqTree/tree.jquery.js',
         'vendor/jquery/jquery-checkbox/jquery.checkbox.js',
-        'vendor/tiny_mce/jquery.tinymce.js',
         'vendor/redactor/redactor.js',
         'vendor/jquery/colorbox/jquery.colorbox-min.js',
         'vendor/jquery/fileupload/jquery.fileupload.js',

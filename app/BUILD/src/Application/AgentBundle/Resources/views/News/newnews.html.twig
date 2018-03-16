@@ -8,7 +8,6 @@ pageMeta.uploadAttachUrl              = '{{ path('agent_accept_upload') }}';
 pageMeta.baseId = '{{ baseId }}';
 </script>
 <div class="layout-content page-new-news page-new-content">
-<div class="drop-file-zone"><h1>{{ phrase('agent.publish.drop_file_to_add') }}</h1></div>
 <div class="dp-page-content">
 
 <a class="tab-anchor" href="#">&nbsp;</a>
@@ -106,7 +105,7 @@ pageMeta.baseId = '{{ baseId }}';
 					{% include 'AgentBundle:Common:attach-row-tmpl.html.twig' with {formname: 'newnews[attach][]'} %}
 					<h6>{{ phrase('agent.general.attachments') }}</h6>
 					<div class="file-input">
-						<input type="file" name="file-upload" multiple="multiple" /> <button class="clean-gray xxx-small">{{ phrase('agent.general.upload') }}</button>
+						<input type="file" name="file-upload" multiple="multiple" />
 					</div>
 					<ul class="files file-list"></ul>
 				</div>

@@ -218,23 +218,20 @@ DeskPRO.Agent.PageFragment.Page.NewFeedback = new Orb.Class({
 
 		var self = this;
 
-		this.getEl('content').css({
-			width: this.wrapper.width() - 150
-		});
-
 		// Make the size of the message box based off of the height of the window
 		var h = $(window).height();
-		this.getEl('content').css('height', Math.max(h - 500, 200));
 
-		DP.rteTextarea(this.getEl('content'), {
-			setup: function(ed) {
-				ed.onKeyPress.add(function() {
-					if (self.stateSaver) {
-						self.stateSaver.triggerChange();
-					}
-				});
-			}
+		var txt = this.getEl('content');
+
+    window.LegacyRteTextarea.init(txt, {
+			height: Math.max(h - 500, 200)
 		});
+
+    txt.on('froalaEditor.keypress', function () {
+      if (self.stateSaver) {
+        self.editStateSaver.triggerChange();
+      }
+    });
 	},
 
 	//#########################################################################
