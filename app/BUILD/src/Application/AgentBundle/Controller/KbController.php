@@ -394,8 +394,8 @@ class KbController extends AbstractController
                 break;
 
             case 'slug':
-                $article['slug'] = Strings::slugifyTitle($this->in->getString('slug')) ?: 'view';
-                $data['slug']    = $article['slug'];
+                $article->setSlug(Strings::slugifyTitle($this->in->getString('slug')) ?: 'view');
+                $data['slug'] = $article['slug'];
                 break;
 
             case 'delete':
