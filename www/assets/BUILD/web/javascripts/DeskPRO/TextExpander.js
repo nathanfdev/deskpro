@@ -38,7 +38,9 @@ DeskPRO.TextExpander = new Orb.Class({
           combo = self.comboString + '%';
           self.insertSnippet(combo, ev);
         }
-        var found = window.getSelection().anchorNode.textContent.match(/%[-a-z0-9:._]+%?/i);
+
+        var textContent = window.getSelection().anchorNode ? window.getSelection().anchorNode.textContent : ev.currentTarget.textContent;
+        var found = textContent && textContent.match(/%[-a-z0-9:._]+%?/i);
         if (found) {
           combo = found[0];
           self.insertSnippet(combo, ev);
@@ -61,7 +63,7 @@ DeskPRO.TextExpander = new Orb.Class({
         self.comboString = null;
       }
 
-      self.updateShortcutList();
+      self.updateShortcutList(ev);
     });
 
     this.$txt.on('keydown', function(ev) {
@@ -133,13 +135,13 @@ DeskPRO.TextExpander = new Orb.Class({
       if (self.comboString && ev.which === 8) {
         self.comboString = self.comboString.substring(0, self.comboString.length-1);
         if (self.shortcutListOpen) {
-          self.updateShortcutList();
+          self.updateShortcutList(ev);
         }
       }
     });
   },
 
-  updateShortcutList: function() {
+  updateShortcutList: function(ev) {
     var self = this;
     if (!self.comboString || !self.comboString.length > 3) {
       if (self.shortcutListOpen) {
@@ -178,13 +180,35 @@ DeskPRO.TextExpander = new Orb.Class({
         self.shortcutList.append(li);
       }
 
-      var anchorRect = window.getSelection().getRangeAt(0).getBoundingClientRect(); //get the text range
+      var $el = $(ev.currentTarget);
 
+      try {
+        var anchorRect = window.getSelection().getRangeAt(0).getBoundingClientRect(); // get the text range
+      } catch (e) {
+        // fallback for safari
+        if (ev) {
+          anchorRect = {
+            top:  $el.offset().top,
+            left: $el.offset().left
+          };
+        } else {
+          throw e;
+        }
+      }
+
+      // window.getSelection() can return empty results, get position by rte box
+      if (!anchorRect.left && !anchorRect.top) {
+        anchorRect = {
+          top:  $el.offset().top,
+          left: $el.offset().left
+        };
+      }
 
       self.shortcutList.css({
         top:  anchorRect.top - self.shortcutList.outerHeight() - 1,
         left: anchorRect.left
       });
+
       self.shortcutList.show();
       self.shortcutListOpen = true;
     } else {
