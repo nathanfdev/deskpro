@@ -2469,7 +2469,6 @@ return [
     'agent.tickets.ticket_changes'                             => 'Ticket Changes',
     'agent.tickets.ticket_feedback'                            => 'Ticket Feedback',
     'agent.tickets.ticket_field_name'                          => 'Ticket Field: {{field}}',
-    'agent.tickets.ticket_is_delete7d'                         => 'Ticket is deleted',
     'agent.tickets.ticket_is_deleted'                          => 'Ticket is deleted',
     'agent.tickets.ticket_is_marked_as_spam'                   => 'This ticket has been marked as spam.',
     'agent.tickets.ticket_merged'                              => 'Ticket merged',
