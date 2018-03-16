@@ -39,6 +39,7 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpKernel\Event\GetResponseEvent;
 use Symfony\Component\HttpKernel\KernelEvents;
 use Symfony\Component\Security\Core\Authorization\AuthorizationCheckerInterface;
+use Symfony\Component\Security\Core\Exception\AuthenticationException;
 
 /**
  * Class SsoListener.
@@ -93,8 +94,11 @@ class SsoListener implements EventSubscriberInterface
             return;
         }
 
-        if ($this->authorizationChecker->isGranted('ROLE_USER')) {
-            return;
+        try {
+            if ($this->authorizationChecker->isGranted('ROLE_USER')) {
+                return;
+            }
+        } catch (AuthenticationException $e) {
         }
 
         $request  = $event->getRequest();

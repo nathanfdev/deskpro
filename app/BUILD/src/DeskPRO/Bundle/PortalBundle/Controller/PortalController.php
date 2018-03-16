@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2017, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2018, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -147,7 +147,7 @@ class PortalController extends AbstractController
      */
     public function loginAction(Request $request)
     {
-        if ($this->getUser() instanceof Person) {
+        if ($this->getUser() instanceof Person && !$this->getUser() instanceof PersonGuest) {
             return $this->redirectToRoute('portal_user_profile');
         }
 
