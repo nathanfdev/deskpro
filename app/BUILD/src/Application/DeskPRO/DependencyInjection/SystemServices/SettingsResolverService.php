@@ -84,8 +84,8 @@ class SettingsResolverService
 
         $resolver->setVirtual('using_department', function () use ($container) {
             global $DP_ENV;
-            if ($DP_ENV->getRuntimeVar('is_building')) {
-                return false;
+            if ($DP_ENV->getRuntimeVar('is_building', false)) {
+                return true;
             }
 
             $departmentData = $container->getTicketDepartments();
