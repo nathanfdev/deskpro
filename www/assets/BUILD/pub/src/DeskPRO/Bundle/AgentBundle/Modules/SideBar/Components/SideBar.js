@@ -127,6 +127,10 @@ export class SideBarContainer extends SeparateComponent {
     return true;
   }
 
+  static hasAccessToDashboards() {
+    return window.DESKPRO_PERSON_PERMS['agent_reports.has_dashboards'];
+  }
+
   openAdmin = () => {
     closeIframes();
     window.DP_FRAME_OVERLAYS.admin.open();
@@ -183,23 +187,24 @@ export class SideBarContainer extends SeparateComponent {
 
   render() {
     const props = {
-      canUseTicket:     SideBarContainer.canUseTicket,
-      canUseChat:       SideBarContainer.canUseChat,
-      canUsePeople:     SideBarContainer.canUsePeople,
-      canUseFeedback:   SideBarContainer.canUseFeedback,
-      canUsePublish:    SideBarContainer.canUsePublish,
-      canUseTasks:      SideBarContainer.canUseTasks,
-      canUseReports:    SideBarContainer.canUseReports,
-      canUseAdmin:      SideBarContainer.canUseAdmin,
-      canUseBilling:    SideBarContainer.canUseBilling,
-      canUsePortal:     SideBarContainer.canUsePortal,
-      openAdmin:        this.openAdmin,
-      openReports:      this.openReports,
-      openReports2:     this.openReports2,
-      openBilling:      this.openBilling,
-      changeSection:    this.changeSection,
-      resumeOnboarding: this.resumeOnboarding,
-      sectionsBadges:   this.state.sectionsBadges
+      canUseTicket:          SideBarContainer.canUseTicket,
+      canUseChat:            SideBarContainer.canUseChat,
+      canUsePeople:          SideBarContainer.canUsePeople,
+      canUseFeedback:        SideBarContainer.canUseFeedback,
+      canUsePublish:         SideBarContainer.canUsePublish,
+      canUseTasks:           SideBarContainer.canUseTasks,
+      canUseReports:         SideBarContainer.canUseReports,
+      canUseAdmin:           SideBarContainer.canUseAdmin,
+      canUseBilling:         SideBarContainer.canUseBilling,
+      canUsePortal:          SideBarContainer.canUsePortal,
+      hasAccessToDashboards: SideBarContainer.hasAccessToDashboards,
+      openAdmin:             this.openAdmin,
+      openReports:           this.openReports,
+      openReports2:          this.openReports2,
+      openBilling:           this.openBilling,
+      changeSection:         this.changeSection,
+      resumeOnboarding:      this.resumeOnboarding,
+      sectionsBadges:        this.state.sectionsBadges
     };
     return <SideBar {...this.props} {...props} />;
   }
@@ -207,26 +212,27 @@ export class SideBarContainer extends SeparateComponent {
 
 export class SideBar extends React.PureComponent {
   static propTypes = {
-    canUseTicket:     PropTypes.func.isRequired,
-    canUseChat:       PropTypes.func.isRequired,
-    canUsePeople:     PropTypes.func.isRequired,
-    canUseFeedback:   PropTypes.func.isRequired,
-    canUsePublish:    PropTypes.func.isRequired,
-    canUseTasks:      PropTypes.func.isRequired,
-    canUseReports:    PropTypes.func.isRequired,
-    canUseAdmin:      PropTypes.func.isRequired,
-    canUseBilling:    PropTypes.func.isRequired,
-    canUsePortal:     PropTypes.func.isRequired,
-    openAdmin:        PropTypes.func.isRequired,
-    openReports:      PropTypes.func.isRequired,
-    openReports2:     PropTypes.func.isRequired,
-    openBilling:      PropTypes.func.isRequired,
-    changeSection:    PropTypes.func.isRequired,
-    currentSection:   PropTypes.string.isRequired,
-    logoCallback:     PropTypes.func,
-    logoActive:       PropTypes.bool,
-    resumeOnboarding: PropTypes.func,
-    sectionsBadges:   PropTypes.array
+    canUseTicket:          PropTypes.func.isRequired,
+    canUseChat:            PropTypes.func.isRequired,
+    canUsePeople:          PropTypes.func.isRequired,
+    canUseFeedback:        PropTypes.func.isRequired,
+    canUsePublish:         PropTypes.func.isRequired,
+    canUseTasks:           PropTypes.func.isRequired,
+    canUseReports:         PropTypes.func.isRequired,
+    hasAccessToDashboards: PropTypes.func.isRequired,
+    canUseAdmin:           PropTypes.func.isRequired,
+    canUseBilling:         PropTypes.func.isRequired,
+    canUsePortal:          PropTypes.func.isRequired,
+    openAdmin:             PropTypes.func.isRequired,
+    openReports:           PropTypes.func.isRequired,
+    openReports2:          PropTypes.func.isRequired,
+    openBilling:           PropTypes.func.isRequired,
+    changeSection:         PropTypes.func.isRequired,
+    currentSection:        PropTypes.string.isRequired,
+    logoCallback:          PropTypes.func,
+    logoActive:            PropTypes.bool,
+    resumeOnboarding:      PropTypes.func,
+    sectionsBadges:        PropTypes.array
   };
 
   static openDeskPro() {
@@ -324,17 +330,17 @@ export class SideBar extends React.PureComponent {
           this.props.openReports();
         }
       });
-      if (window.DP_HAS_NEW_REPORTS) {
-        menus.push({
-          className: 'reports2',
-          label:     `${agentPhrases.get('agent.general.new')} ${agentPhrases.get('agent.general.reports')}`,
-          link:      '/agent/#r:/',
-          icon:      `${window.DESKPRO_APP_ASSETS_URL}/DeskPRO/Bundle/AgentBundle/Resources/img/sidebar/reports.svg`,
-          callback:  () => {
-            this.props.openReports2();
-          }
-        });
-      }
+    }
+    if (window.DP_HAS_NEW_REPORTS && (this.props.canUseReports() || this.props.hasAccessToDashboards())) {
+      menus.push({
+        className: 'reports2',
+        label:     `${agentPhrases.get('agent.general.new')} ${agentPhrases.get('agent.general.reports')}`,
+        link:      '/agent/#r:/',
+        icon:      `${window.DESKPRO_APP_ASSETS_URL}/DeskPRO/Bundle/AgentBundle/Resources/img/sidebar/reports.svg`,
+        callback:  () => {
+          this.props.openReports2();
+        }
+      });
     }
     if (this.props.canUseAdmin()) {
       menus.push({

@@ -858,6 +858,7 @@ class ServeFileScript extends LowScriptAbstract
                 if ($count > 25) {
                     $file = $this->createSizedImage($blob, $size, $isFit, false);
 
+                    $blob['filesize'] = strlen($file);
                     $this->sendHeaders($blob);
                     echo $file;
 

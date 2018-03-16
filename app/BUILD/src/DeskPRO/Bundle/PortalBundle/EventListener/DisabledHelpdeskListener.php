@@ -53,6 +53,7 @@ class DisabledHelpdeskListener implements EventSubscriberInterface, SkipLowReque
         'portal_ping',
         'portal_reset_password_process',
         'portal_set_password_process',
+        'gregwar_captcha.generate_captcha',
         'goto',
     ];
 

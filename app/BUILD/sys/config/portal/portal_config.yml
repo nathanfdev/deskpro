@@ -208,7 +208,7 @@ nelmio_cors:
     paths:
         '^/portal/api/':
             allow_origin: ['*']
-            allow_headers: ['X-Agent-Request', 'Content-Type', 'Cache-Control', 'X-Requested-With']
+            allow_headers: ['X-Agent-Request', 'Content-Type', 'Cache-Control', 'X-Requested-With', 'X-Jwt-Token']
             allow_methods: ['POST', 'PUT', 'GET', 'DELETE']
             allow_credentials: true
             max_age: 3600

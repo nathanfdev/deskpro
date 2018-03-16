@@ -27,6 +27,7 @@ define ->
         chartData   = if scope.chartData then JSON.parse(scope.chartData) else []
         options     = scope.options
         drawn       = false
+        interval    = false
 
         scope.$watch 'chartData', (n) ->
           return if !drawn
@@ -67,6 +68,8 @@ define ->
                   drawWidget(widget)
 
         drawWidget = (widget) ->
+          if interval
+            clearInterval(interval)
           drawn = true
           try
             options = if scope.options then JSON.parse(scope.options) else {}
@@ -86,7 +89,6 @@ define ->
             chart = new AmCharts.makeChart("ch#{scope.widgetId}", Object.assign(widget, options));
 
           chartDiv.height(chartParent.height() - chartHeader.outerHeight())
-          chart.invalidateSize()
           chart.validateData()
           if widget.multiplePies?
             defaultDataProvider = widget.dataProvider
@@ -109,12 +111,10 @@ define ->
                 chart.dataProvider = defaultDataProvider
               chart.validateData()
 
-
-
           width = chartParent.height()
           height = chartParent.width()
 
-          setInterval \
+          interval = setInterval \
             () ->
               w = chartParent.width()
               h = chartParent.height()
@@ -125,7 +125,7 @@ define ->
 
                 width = w
                 height = h
-          , 200
+          , 1000
 
         initChart()
     }

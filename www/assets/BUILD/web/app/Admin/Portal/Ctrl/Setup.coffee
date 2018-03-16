@@ -104,9 +104,10 @@ define ['Admin/Main/Ctrl/Base'], (Admin_Ctrl_Base) ->
       )
 
     deleteBrand: ->
-      if confirm "Are you sure you want to delete this brand? Theme personalization and templates will be lost."
+      if confirm "Are you sure you want to delete this brand? Deleting the brand will re-assign tickets and chat to the default brand. Theme personalization and templates will be lost."
         @Api2.sendDelete('brands/' + @$scope.brand_id).then  =>
           @Growl.success("Brand deleted")
           @$state.go 'portal.setup', {brandId: @$scope.default_brand.id}
+          @$scope.$emit 'dp-update-brands'
 
   Admin_Portal_Ctrl_Setup.EXPORT_CTRL()

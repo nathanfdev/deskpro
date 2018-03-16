@@ -1,10 +1,10 @@
 <?php
 
 /*
- * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
+ * Deskpro (r) has been developed by Deskpro Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2017, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2018, Deskpro Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -12,18 +12,18 @@
  * By using this software, you acknowledge having read the license
  * and agree to be bound thereby.
  *
- * Please note that DeskPRO is not free software. We release the full
+ * Please note that Deskpro is not free software. We release the full
  * source code for our software because we trust our users to pay us for
  * the huge investment in time and energy that has gone into both creating
  * this software and supporting our customers. By providing the source code
  * we preserve our customers' ability to modify, audit and learn from our
- * work. We have been developing DeskPRO since 2001, please help us make it
+ * work. We have been developing Deskpro since 2001, please help us make it
  * another decade.
  *
  * Like the work you see? Think you could make it better? We are always
  * looking for great developers to join us: http://www.deskpro.com/jobs/
  *
- * ~ Thanks, Everyone at Team DeskPRO
+ * ~ Thanks, Everyone at Team Deskpro
  */
 
 namespace Application\AgentBundle\Controller;
@@ -62,36 +62,36 @@ class DownloadsController extends AbstractController
             throw $this->createNotFoundException();
         }
 
-        $download_comments = $this->em->getRepository(DownloadComment::class)->getComments($download);
+        $downloadComments = $this->em->getRepository(DownloadComment::class)->getComments($download);
 
-        $related_finder  = new RelatedContentFinder($this->person, $download);
-        $related_content = $related_finder->getRelatedEntities(true);
+        $relatedFinder  = new RelatedContentFinder($this->person, $download);
+        $relatedContent = $relatedFinder->getRelatedEntities(true);
 
         $state = $this->em->getRepository(PersonPref::class)->getPrefForPersonId('agent.ui.state.editdownload', $this->person->id);
 
-        $sticky_search_words = $this->em->getRepository(SearchStickyResult::class)->getWordsForObject($download);
+        $stickySearchWords = $this->em->getRepository(SearchStickyResult::class)->getWordsForObject($download);
 
-        $rated_searches = $this->em->getRepository(SearchLog::class)->getRatedSearchesFor('download', $download['id'], 'counted');
+        $ratedSearches = $this->em->getRepository(SearchLog::class)->getRatedSearchesFor('download', $download['id'], 'counted');
 
         if ($download->getCategory() && $download->getCategory()->getBrand()) {
             $brandId = $download->getCategory()->getBrand()->getId();
         } else {
             $brandId = $this->get('settings_resolver')->getGlobalSettings()->get('portal.default_brand');
         }
-        $download_categories = $this->getFilteredCategory($brandId);
+        $downloadCategories = $this->getFilteredCategory($brandId);
 
         $perms = [
             'can_edit'   => $this->person->PermissionsManager->PublishChecker->canEdit($download),
             'can_delete' => $this->person->PermissionsManager->PublishChecker->canDelete($download),
         ];
 
-        $user_view_count = $this->db->fetchColumn('
+        $userViewCount = $this->db->fetchColumn('
             SELECT COUNT(*)
             FROM page_view_log
             WHERE object_type = 2 AND object_id = ? AND view_action = 1 AND person_id IS NOT NULL
         ', [$download->id]);
 
-        $user_download_count = $this->db->fetchColumn('
+        $userDownloadCount = $this->db->fetchColumn('
             SELECT COUNT(*)
             FROM page_view_log
             WHERE object_type = 2 AND object_id = ? AND view_action = 2 AND person_id IS NOT NULL
@@ -99,22 +99,22 @@ class DownloadsController extends AbstractController
 
         return $this->render('AgentBundle:Downloads:view.html.twig', [
             'download'            => $download,
-            'download_comments'   => $download_comments,
-            'download_categories' => $download_categories,
-            'related_content'     => $related_content,
+            'download_comments'   => $downloadComments,
+            'download_categories' => $downloadCategories,
+            'related_content'     => $relatedContent,
             'state'               => $state,
-            'sticky_search_words' => $sticky_search_words,
-            'rated_searches'      => $rated_searches,
+            'sticky_search_words' => $stickySearchWords,
+            'rated_searches'      => $ratedSearches,
             'perms'               => $perms,
-            'user_view_count'     => $user_view_count,
-            'user_download_count' => $user_download_count,
+            'user_view_count'     => $userViewCount,
+            'user_download_count' => $userDownloadCount,
         ]);
     }
 
     public function infoAction($download_id)
     {
         $download = $this->em->find(Download::class, $download_id);
-        $blob     = $download->blob;
+        $blob     = $download->getBlob();
 
         $data = [
             'blob_id'           => $blob['id'],
@@ -427,7 +427,13 @@ class DownloadsController extends AbstractController
             $tpl = 'AgentBundle:Downloads:filter-page.html.twig';
         }
 
-        $downloadCategories = $this->getFilteredCategory($category->getBrand()->getId());
+        if ($category) {
+            $brandId = $category->getBrand()->getId();
+        } else {
+            $brandId = $this->get('settings_resolver')->getGlobalSettings()->get('portal.default_brand');
+        }
+
+        $downloadCategories = $this->getFilteredCategory($brandId);
 
         $commentCounts = [];
         if ($results) {
@@ -480,6 +486,16 @@ class DownloadsController extends AbstractController
 
         $rootCategories = $this->getFilteredCategory($brandId);
 
+        if (count($rootCategories) === 0) {
+            $brands = $this->em->getRepository(Brand::class)->findAll();
+            $brand  = array_shift($brands);
+            while (count($rootCategories) === 0 && $brand->getId()) {
+                $brandId        = $brand->getId();
+                $rootCategories = $this->getFilteredCategory($brandId);
+                $brand          = array_shift($brands);
+            }
+        }
+
         $state = $this->em->getRepository(PersonPref::class)->getPrefForPersonId('agent.ui.state.newdownload', $this->person->id);
 
         $brands = $this->em->getRepository(Brand::class)->findAll();
@@ -488,6 +504,7 @@ class DownloadsController extends AbstractController
             'download_categories' => $rootCategories,
             'state'               => $state,
             'brands'              => $brands,
+            'selected_brand_id'   => $brandId,
         ]);
     }
 
