@@ -55,6 +55,7 @@ use DeskPRO\Bundle\SendmailBundle\View\Model\FeedbackNew;
 use DeskPRO\Bundle\SendmailBundle\View\Model\FeedbackNewComment;
 use DeskPRO\Bundle\SendmailBundle\View\Model\FeedbackSubscription;
 use DeskPRO\Bundle\SendmailBundle\View\Model\FeedbackUpdated;
+use DeskPRO\Bundle\SendmailBundle\View\Model\FeedbackCreatedForUser;
 use DeskPRO\Bundle\SendmailBundle\View\Model\GatewayAutoresponseWarn;
 use DeskPRO\Bundle\SendmailBundle\View\Model\KbSubscription;
 use DeskPRO\Bundle\SendmailBundle\View\Model\LoginAlert;
@@ -251,6 +252,16 @@ class UserViewModelFactory extends AbstractViewModelFactory
         $unsubscribeUrl = $this->router->generate('portal_feedback_unsubscribe_all', [], UrlGeneratorInterface::ABSOLUTE_URL);
 
         return $this->convertParameters(FeedbackSubscription::class, [$portalHome, $unsubscribeUrl, $updatedFeedback]);
+    }
+
+    /**
+     * @param Feedback $feedback
+     *
+     * @return FeedbackCreatedForUser
+     */
+    public function createFeedbackCreatedForUserModel(Feedback $feedback)
+    {
+        return $this->convertParameters(FeedbackCreatedForUser::class, [$feedback]);
     }
 
     /**

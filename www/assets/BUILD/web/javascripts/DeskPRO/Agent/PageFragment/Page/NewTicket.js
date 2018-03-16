@@ -94,11 +94,11 @@ DeskPRO.Agent.PageFragment.Page.NewTicket = new Orb.Class({
 			});
 			this.addEvent('activate', function() {
 				if (this.meta.auto_start_bill) {
-					self.billing.startBillingTimer(true);
+					self.billing.startBillingTimer();
 				}
 			});
 			this.addEvent('deactivate', function() {
-				self.billing.stopBillingTimer(true);
+				self.billing.stopBillingTimer();
 			});
 		}
 

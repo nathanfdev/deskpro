@@ -6,6 +6,7 @@ define ->
       scope:
         widgetId: '@'
         chartData: '@'
+        jsCode: '@'
         reportLevelVars: '@'
         renderType: '@'
         options: '@'
@@ -49,6 +50,15 @@ define ->
           # this is valid for serial and pie charts, gauge has not dataProvider
           if (chartData and chartData.dataProvider?) || (scope.chartType == 'gauge' && chartData.axes?[0]?.bands?)
             drawWidget chartData
+          else if scope.jsCode
+            try
+              eval(scope.jsCode)
+            catch e
+              console.log(e)
+
+            if promise and promise.then
+              promise.then (response) ->
+                drawWidget response
           else
             DashboardWidgetService
               .getWidget(scope.widgetId || 0)

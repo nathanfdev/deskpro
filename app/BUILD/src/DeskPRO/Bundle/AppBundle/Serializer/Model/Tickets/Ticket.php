@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2017, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2018, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -693,7 +693,7 @@ class Ticket
         $this->totalToFirstReply    = $ticket->getTotalToFirstReply();
         $this->lockedByAgent        = $ticket->getLockedByAgent();
         $this->dateLocked           = $ticket->getDateLocked();
-        $this->hasAttachments       = $ticket->isHasAttachments();
+        $this->hasAttachments       = $ticket->hasAttachments();
         $this->subject              = $ticket->getSubject();
         $this->originalSubject      = $ticket->getOriginalSubject();
         $this->properties           = $ticket->getProperties();

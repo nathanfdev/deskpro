@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2017, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2018, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -101,40 +101,42 @@ abstract class AbstractApiController extends FOSRestController
     }
 
     /**
-     * @param string $key
+     * @param Person|mixed $person
+     * @param string       $key
      *
      * @return mixed
      */
-    protected function getWidgetOption($key)
+    protected function getWidgetOption($person, $key)
     {
-        if (!$this->getUser() instanceof Person || !$this->getUser()->getId()) {
+        if (!$person instanceof Person || !$person->getId()) {
             return;
         }
 
         $dataStore = $this->getDoctrine()->getRepository(DataStore::class)->findOneBy([
-            'name' => 'dpWidgetOptions.'.$this->getUser()->getId(),
+            'name' => 'dpWidgetOptions.'.$person->getId(),
         ]);
 
         return $dataStore ? $dataStore->getData($key) : null;
     }
 
     /**
-     * @param string $key
-     * @param mixed  $value
+     * @param Person|mixed $person
+     * @param string       $key
+     * @param mixed        $value
      */
-    protected function setWidgetOption($key, $value)
+    protected function setWidgetOption($person, $key, $value)
     {
-        if (!$this->getUser() instanceof Person || !$this->getUser()->getId()) {
+        if (!$person instanceof Person || !$person->getId()) {
             return;
         }
 
         $dataStore = $this->getDoctrine()->getRepository(DataStore::class)->findOneBy([
-            'name' => 'dpWidgetOptions.'.$this->getUser()->getId(),
+            'name' => 'dpWidgetOptions.'.$person->getId(),
         ]);
 
         if (!$dataStore) {
             $dataStore = new DataStore();
-            $dataStore->setName('dpWidgetOptions.'.$this->getUser()->getId());
+            $dataStore->setName('dpWidgetOptions.'.$person->getId());
         }
 
         $dataStore->setData($key, $value);
@@ -147,7 +149,8 @@ abstract class AbstractApiController extends FOSRestController
      */
     protected function getLastChat()
     {
-        $storedChatId = $this->getWidgetOption('chat_id');
+        $person       = $this->getUser();
+        $storedChatId = $this->getWidgetOption($person, 'chat_id');
         if ($storedChatId) {
             list($storedChatId) = explode(':', $storedChatId);
 
@@ -158,6 +161,21 @@ abstract class AbstractApiController extends FOSRestController
         }
 
         return;
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function getUser()
+    {
+        $request = $this->container->get('request_stack')->getCurrentRequest();
+        if ($jwtPayload = $request->headers->get('X-Jwt-Token')) {
+            $person = $this->get('widget_jwt_decoder')->getPersonFromJwtPayload($jwtPayload);
+        } else {
+            $person = parent::getUser();
+        }
+
+        return $person;
     }
 
     /**

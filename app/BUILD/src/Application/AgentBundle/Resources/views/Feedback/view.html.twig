@@ -76,74 +76,104 @@ pageMeta.baseId = '{{ baseId }}';
 	<br class="clear" />
 </header>
 
-<div class="profile-box-container">
-	<header>
-		<h4>{{ phrase('agent.general.properties') }}</h4>
-	</header>
-	<section class="description-area">
-		<dl class="info-list">
+<div id="{{ baseId }}_header_profile_box" class="header-profile-box">
+  <div class="profile-box-container dp-simpletab-container">
+    <header id="{{ baseId }}_properties_header">
+        <nav data-element-handler="DeskPRO.ElementHandler.SimpleTabs">
+            <ul>
+                <li data-tab-for="#{{ baseId }}_fields_display_main_wrap">{{ phrase('agent.general.properties') }}</li>
+                {% if ticket_feedback_links|length and app.user.hasPerm('agent_tickets.use') %}
+                    <li data-tab-for="#{{ baseId }}_linked_tickets_wrap"><i
+                          class="icon-link"></i> {{ phrase('agent.tickets.linked_tickets') }} (<span
+                          id="{{ baseId }}_linked_tickets_count"
+                          data-count="{{ ticket_feedback_links|length }}">{{ ticket_feedback_links|length }}</span>)
+                    </li>
+                {% endif %}
+                  <li data-tab-for="#{{ baseId }}_subscribed_persons_wrap"><i
+                        class="icon-link"></i> {{ phrase('agent.feedback.subscribed_users') }}
+                        {% if subscribed_persons|length %}
+                          (<span id="{{ baseId }}_subscribed_persons_count"
+                                 data-count="{{ subscribed_persons|length }}">{{ subscribed_persons|length }}</span>)
+                        {% endif %}
+                  </li>
+            </ul>
+        </nav>
+    </header>
+    <section class="description-area">
+      <article id="{{ baseId }}_fields_display_main_wrap" class="headerbox" style="position: relative;">
+        <dl class="info-list">
 
-			<dt>{{ phrase('agent.publish.slug') }}</dt>
-			<dd>
-				<span id="{{ baseId }}_slug">{{ feedback.slug }}</span>
-				<button class="clean-white" id="{{ baseId }}_editslug" data-prompt="{{ phrase('agent.publish.slug_edit_prompt') }}">
-					{{ phrase('agent.publish.slug_edit') }}
-				</button>
-			</dd>
+          <dt>{{ phrase('agent.publish.slug') }}</dt>
+          <dd>
+            <span id="{{ baseId }}_slug">{{ feedback.slug }}</span>
+            <button class="clean-white" id="{{ baseId }}_editslug" data-prompt="{{ phrase('agent.publish.slug_edit_prompt') }}">
+              {{ phrase('agent.publish.slug_edit') }}
+            </button>
+          </dd>
 
-			<dt>{{ phrase('agent.general.votes') }}:</dt>
-			<dd>
-				<span class="link-look who-voted-trigger">
-                    {% set phrase_part %}
-                    <span id="{{baseId}}_num_votes">{{ feedback.num_ratings }}</span>
-                    {% endset %}
-                    {{ phrase('agent.feedback.count_votes', {'display_count':phrase_part,'count':feedback.num_ratings}, true) }}
+          <dt>{{ phrase('agent.general.votes') }}:</dt>
+          <dd>
+            <span class="link-look who-voted-trigger">
+                        {% set phrase_part %}
+                        <span id="{{baseId}}_num_votes">{{ feedback.num_ratings }}</span>
+                        {% endset %}
+                        {{ phrase('agent.feedback.count_votes', {'display_count':phrase_part,'count':feedback.num_ratings}, true) }}
+                    </span>
+          </dd>
+
+          <dt>{{ phrase('agent.general.author') }}:</dt>
+          <dd>
+            {% for author in feedback.authors %}
+              <a class="as-popover dp-btn dp-btn-small" data-route="person:{{ path('agent_people_view', {'person_id': author.id}) }}">
+                <span class="text" style="background: url({{ author.getPictureUrl(15) }}) no-repeat 0 50%; padding-left: 18px;">
+                  {{ author.getNameWithTitle() }}
+                  ({{ author.primary_email_address }})
                 </span>
-			</dd>
+              </a>
+            {% endfor %}
+          </dd>
+        </dl>
 
-			<dt>{{ phrase('agent.general.author') }}:</dt>
-			<dd>
-				{% for author in feedback.authors %}
-					<a class="as-popover dp-btn dp-btn-small" data-route="person:{{ path('agent_people_view', {'person_id': author.id}) }}">
-						<span class="text" style="background: url({{ author.getPictureUrl(15) }}) no-repeat 0 50%; padding-left: 18px;">
-							{{ author.getNameWithTitle() }}
-							({{ author.primary_email_address }})
-						</span>
-					</a>
-				{% endfor %}
-			</dd>
-		</dl>
+        {% if custom_fields|length %}
+          <dl class="info-list" id="{{baseId}}_custom_fields_rendered">
+            {% include 'AgentBundle:Feedback:view-customfields-rendered-rows.html.twig' %}
+          </dl>
+          <dl class="info-list" id="{{baseId}}_custom_fields_editable" style="display: none">
+            {% include 'AgentBundle:Feedback:view-customfields-edit-rows.html.twig' %}
+          </dl>
+        {% endif %}
 
-		{% if custom_fields|length %}
-			<dl class="info-list" id="{{baseId}}_custom_fields_rendered">
-				{% include 'AgentBundle:Feedback:view-customfields-rendered-rows.html.twig' %}
-			</dl>
-			<dl class="info-list" id="{{baseId}}_custom_fields_editable" style="display: none">
-				{% include 'AgentBundle:Feedback:view-customfields-edit-rows.html.twig' %}
-			</dl>
-		{% endif %}
+        <div class="controls" id="{{baseId}}_properties_controls">
+          <div class="showing-editing-fields" style="display: none">
+            <button class="clean-white save-fields-trigger"><span>{{ phrase('agent.general.save') }}</span></button>
+          </div>
+          <div class="showing-rendered-fields" id="{{baseId}}_action_buttons">
+            {% if custom_fields|length %}
+              <button class="clean-white edit-fields-trigger noedit-hide"><span>{{ phrase('agent.general.edit_properties') }}</span></button>
+            {% endif %}
+            <button class="clean-white delete delete-type nodelete-hide" {% if feedback.status_code == "hidden.deleted" %}style="display:none"{% endif %}>{{ phrase('agent.general.delete') }}</button>
+            <span class="merge menu-fitted noedit-hide" data-menu-button="> a"><a class="clean-white arrow">{{ phrase('agent.general.merge') }} <em></em></a></span>
+            <button class="clean-white permalink" data-prompt="{{ phrase('agent.publish.permalink_copy_prompt') }}">
+              {{ phrase('agent.general.copy_permalink') }}
+            </button>
+            <button class="clean-white view-user-interface">{{ phrase('agent.general.view_in_user_interface') }}</button>
+          </div>
+        </div>
 
-		<div class="controls" id="{{baseId}}_properties_controls">
-			<div class="showing-editing-fields" style="display: none">
-				<button class="clean-white save-fields-trigger"><span>{{ phrase('agent.general.save') }}</span></button>
-			</div>
-			<div class="showing-rendered-fields" id="{{baseId}}_action_buttons">
-				{% if custom_fields|length %}
-					<button class="clean-white edit-fields-trigger noedit-hide"><span>{{ phrase('agent.general.edit_properties') }}</span></button>
-				{% endif %}
-				<button class="clean-white delete delete-type nodelete-hide" {% if feedback.status_code == "hidden.deleted" %}style="display:none"{% endif %}>{{ phrase('agent.general.delete') }}</button>
-				<span class="merge menu-fitted noedit-hide" data-menu-button="> a"><a class="clean-white arrow">{{ phrase('agent.general.merge') }} <em></em></a></span>
-				<button class="clean-white permalink" data-prompt="{{ phrase('agent.publish.permalink_copy_prompt') }}">
-					{{ phrase('agent.general.copy_permalink') }}
-				</button>
-				<button class="clean-white view-user-interface">{{ phrase('agent.general.view_in_user_interface') }}</button>
-			</div>
-		</div>
-
-		<ul id="{{baseId}}_merge_menu" style="display: none;">
-			<li class="elm no-choice">{{ phrase('agent.feedback.merge_howto') }}</li>
-		</ul>
-	</section>
+        <ul id="{{baseId}}_merge_menu" style="display: none;">
+          <li class="elm no-choice">{{ phrase('agent.feedback.merge_howto') }}</li>
+        </ul>
+      </article>
+      {% if ticket_feedback_links|length and app.user.hasPerm('agent_tickets.use') %}
+        <article id="{{ baseId }}_linked_tickets_wrap">
+            {% include 'AgentBundle:Feedback:linked-tickets.html.twig' %}
+        </article>
+      {% endif %}
+      <article id="{{ baseId }}_subscribed_persons_wrap">
+          {% include 'AgentBundle:Feedback:view-subscribed-persons.html.twig' %}
+      </article>
+    </section>
+  </div>
 </div>
 
 <div class="profile-box-container reply-box-wrap">

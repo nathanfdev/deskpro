@@ -2,6 +2,7 @@
   "name": "DeskPRO",
   "description": "Client-side scripts for DeskPRO",
   "version": "1.0.0",
+  "private": true,
   "dependencies": {
     "Select2": "^3.5.7",
     "angular-ui-select2": "0.0.5",
@@ -47,6 +48,7 @@
     "kss": "^3.0.0-beta.14",
     "lazypipe": "0.2.2",
     "less": "^2.3.1",
+    "license-checker": "^16.0.0",
     "node-sass": "^4.7.0",
     "path": "^0.12.7",
     "postcss-discard-comments": "^2.0.4",
@@ -64,6 +66,7 @@
     "dev": "gulp && gulp watch",
     "prod": "gulp prod",
     "watch": "gulp watch",
-    "postinstall": "bower install"
+    "postinstall": "bower install",
+    "license-checker": "license-checker --production --json"
   }
 }

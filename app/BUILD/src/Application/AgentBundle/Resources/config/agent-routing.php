@@ -1243,6 +1243,12 @@ $collection->create('agent_ticket_unlink', [
     'methods'    => ['POST'],
 ]);
 
+$collection->create('agent_ticket_link_existing_feedback_overlay', [
+    'path'         => '/tickets/{ticket_id}/link-feedback-overlay',
+    'controller'   => 'AgentBundle:Ticket:linkExistingFeedbackOverlay',
+    'requirements' => ['ticket_id' => '\\d+'],
+]);
+
 $collection->create('agent_ticket_departments_by_brand', [
     'path'       => '/tickets/new/get-departments/{brandId}',
     'defaults'   => ['brandId' => null],
@@ -1631,6 +1637,11 @@ $collection->create(
         'requirements' => ['feedbackId' => '\\d+'],
     ]
 );
+
+$collection->create('agent_feedbacksearch_quicksearch', [
+    'path'       => '/feedback-search/quick-search',
+    'controller' => 'AgentBundle:FeedbackSearch:quickSearch',
+]);
 
 $collection->create('agent_publish_listcomments', [
     'path'       => '/publish/comments/list/{brandId}/{type}',
@@ -2072,8 +2083,22 @@ $collection->create('agent_feedback_save', [
     'requirements' => ['news_id' => '\\d+'],
 ]);
 
+$collection->create('agent_feedback_subscribe_person', [
+    'path'         => '/feedback/{feedback_id}/ajax-subscribe-person',
+    'controller'   => 'AgentBundle:Feedback:ajaxSubscribePerson',
+    'requirements' => ['feedback_id' => '\\d+'],
+    'methods'      => ['POST'],
+]);
+
+$collection->create('agent_feedback_unsubscribe_person', [
+    'path'         => '/feedback/{feedback_id}/ajax-unsubscribe-person',
+    'controller'   => 'AgentBundle:Feedback:ajaxUnsubscribePerson',
+    'requirements' => ['feedback_id' => '\\d+'],
+    'methods'      => ['POST'],
+]);
+
 $collection->create('agent_feedback_ajax_labels_save', [
-    'path'         => '/feedback/view/{feedback_id}/ajax-save-labels',
+    'path'         => '/feedback/{feedback_id}/ajax-save-labels',
     'controller'   => 'AgentBundle:Feedback:ajaxSaveLabels',
     'requirements' => ['news_id' => '\\d+'],
 ]);

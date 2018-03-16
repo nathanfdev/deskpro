@@ -73,9 +73,14 @@ export class ChatPollingContainer extends React.Component {
     const onErrorResponse = (response) => {
       // Stop polling on wring session code
       const data = response.data;
-      if (data && data.code === 400 && data.message === 'wrong_session_code') {
-        dispatch(unsetChatId());
-        return;
+      if (data) {
+        if (data.code === 400 && data.message === 'wrong_session_code') {
+          dispatch(unsetChatId());
+          return;
+        }
+        if (data.code === 403) {
+          return;
+        }
       }
 
       setTimeout(this.pollingRequest, 3000);

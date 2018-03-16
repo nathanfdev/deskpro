@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2017, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2018, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -32,6 +32,7 @@
 
 namespace Application\DeskPRO\UI;
 
+use Application\DeskPRO\Searcher\SearcherAbstract;
 use Orb\Util\Arrays;
 
 /**
@@ -168,7 +169,12 @@ class RuleBuilder
                 }
             }
 
-            if ($is_blank && @$data_item['op'] != 'not_isset' && @$data_item['op'] != 'isset') {
+            if ($is_blank && !in_array(@$data_item['op'], [
+                SearcherAbstract::OP_ISSET,
+                SearcherAbstract::OP_NOT_ISSET,
+                SearcherAbstract::OP_EMPTY,
+                SearcherAbstract::OP_NOT_EMPTY,
+            ])) {
                 continue;
             }
 

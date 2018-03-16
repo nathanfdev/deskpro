@@ -9,7 +9,7 @@
 	"version_name": "1.0.0",
 	"is_single": false,
 	"author": {
-		"name": "DeskPRO",
+		"name": "Deskpro",
 		"email": "support@deskpro.com",
 		"link": "https://www.deskpro.com/"
 	},
@@ -107,7 +107,7 @@
 		  "name": "sync_enabled",
 		  "type": "checkbox",
 		  "label": "Enable Auto Sync",
-		  "checkbox_label": "Routinely sync user information from this usersource to DeskPRO",
+		  "checkbox_label": "Routinely sync user information from this usersource to Deskpro",
 		  "default_value": false
 		},
 		{

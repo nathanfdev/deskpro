@@ -9,7 +9,7 @@
 	"version_name": "1.0.0",
 	"is_single": false,
 	"author": {
-		"name": "DeskPRO",
+		"name": "Deskpro",
 		"email": "support@deskpro.com",
 		"link": "https://www.deskpro.com/"
 	},
@@ -64,14 +64,14 @@
 		{
 			"name": "check_service_url",
 			"type": "text",
-			"label": "DeskPRO Service URL",
+			"label": "Deskpro Service URL",
 			"description": "",
 			"native_only": true
 		},
 		{
 			"name": "check_service_key",
 			"type": "text",
-			"label": "DeskPRO Service Key",
+			"label": "Deskpro Service Key",
 			"description": "",
 			"native_only": true
 		},

@@ -138,6 +138,13 @@ services:
   validator.dpql_query:
     class: DeskPRO\Bundle\AppBundle\Validator\Constraints\Reports\DpqlQueryValidator
     arguments:
-      - "@dpql.compiler"
+      - "@reports.dashboard_widget.service"
+    tags:
+      - { name: validator.constraint_validator }
+
+  validator.object_alias:
+    class: DeskPRO\Bundle\AppBundle\Validator\Constraints\ObjectAliasValidator
+    arguments:
+      - "@doctrine.orm.default_entity_manager"
     tags:
       - { name: validator.constraint_validator }

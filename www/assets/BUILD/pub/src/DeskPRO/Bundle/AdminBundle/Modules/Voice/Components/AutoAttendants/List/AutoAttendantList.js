@@ -1,6 +1,5 @@
 import PropTypes from 'prop-types';
 import React from 'react';
-import { PopUp } from 'DeskPRO/Component/Semantic/PopUp';
 import { AssetPlayButton } from 'DeskPRO/Component/AudioWidget/PlayButton';
 import SectionHeader from '../../../../Common/Components/SectionHeader';
 import VoiceTargetNameContainer from '../../Common/NumberTarget/VoiceTargetNameContainer';
@@ -56,7 +55,7 @@ class AutoAttendantList extends React.Component {
             <div className="column name">Name</div>
             <div className="column auto-attendant-dial-numbers">Active dialpad targets</div>
           </div>
-          {autoAttendants.map((autoAttendant, index) =>
+          {autoAttendants.toArray().map((autoAttendant, index) =>
             <AutoAttendantRow
               key={index}
               autoAttendant={autoAttendant}
@@ -91,14 +90,15 @@ class AutoAttendantRow extends React.Component {
 
   render() {
     const { autoAttendant } = this.props;
+    const targets = autoAttendant.get('targets');
 
     return (
       <div className="row">
         <div className="info">
           <div className="column name">{autoAttendant.get('name')}</div>
           <div className="column auto-attendant-dial-numbers">
-            {autoAttendant.get('targets').map((target, dialNumber) =>
-              <VoiceTargetNameContainer key={dialNumber} target={target}>
+            {targets.keySeq().toArray().map(dialNumber =>
+              <VoiceTargetNameContainer key={dialNumber} target={targets.get(dialNumber)}>
                 <AutoAttendantDialNumber dialNumber={dialNumber} />
               </VoiceTargetNameContainer>
             )}
@@ -125,6 +125,7 @@ class AutoAttendantRow extends React.Component {
             <AssetPlayButton value={autoAttendant.get('audio_asset')}>
               <PlayButton />
             </AssetPlayButton>}
+          <div style={{ clear: 'both' }} />
         </div>
       </div>
     );
@@ -139,40 +140,12 @@ class AutoAttendantDialNumber extends React.Component {
     onRedirectToTarget: PropTypes.func
   };
 
-  renderButton() {
-    const { dialNumber, onRedirectToTarget } = this.props;
-
+  render() {
+    const { dialNumber, onRedirectToTarget, targetName } = this.props;
     return (
       <div className="dial-number" onClick={onRedirectToTarget}>
-        {dialNumber}
+        {dialNumber}: {targetName || '...'}
       </div>
-    );
-  }
-
-  render() {
-    const { targetName } = this.props;
-    if (!targetName) {
-      return this.renderButton();
-    }
-
-    return (
-      <PopUp
-        positionMy="left top"
-        positionAt="left bottom"
-        zIndex={99999}
-        autoOpen
-        autoClose
-        content={(
-          <div className="voice-dial-target">
-            <span className="dial-target-label">Target</span>
-            <span className="dial-target-name">
-              {targetName}
-            </span>
-          </div>
-        )}
-      >
-        {this.renderButton()}
-      </PopUp>
     );
   }
 }

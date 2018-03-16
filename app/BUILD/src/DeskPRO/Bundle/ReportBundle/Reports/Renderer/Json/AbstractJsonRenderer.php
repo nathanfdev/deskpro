@@ -82,4 +82,83 @@ abstract class AbstractJsonRenderer extends AbstractRenderer
     {
         return [];
     }
+
+    /**
+     * @param array $rows
+     *
+     * @return array
+     */
+    protected function collectHierarchyParents(array &$rows)
+    {
+        $hierarchyParents = [];
+        foreach ($rows as $row) {
+            if ($row['hierarchy_parent_id']) {
+                $parent = $this->findHierarchyParent($rows, $row['hierarchy_parent_id']);
+                if ($parent) {
+                    list($index, $parent) = $parent;
+                    // collect all hierarchy parents, so we gonna stack results under them
+                    $hierarchyParents[$parent['hierarchy_id']] = $parent;
+                    unset($rows[$index]);
+                }
+            }
+        }
+
+        return $hierarchyParents;
+    }
+
+    /**
+     * @param array $rows
+     * @param int   $parentId
+     *
+     * @return array|bool
+     */
+    protected function findHierarchyParent($rows, $parentId)
+    {
+        foreach ($rows as $i => $row) {
+            if ($row['hierarchy_id'] === $parentId) {
+                return [$i, $row];
+            }
+        }
+
+        return false;
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function mergeResults(array $results)
+    {
+        $mainResults = array_pop($results);
+
+        $assocKeyedDataProvider = [];
+        foreach ($mainResults['dataProvider'] as $dataProviderItem) {
+            $assocKeyedDataProvider[$dataProviderItem['category']] = $dataProviderItem;
+        }
+        $mainResults['dataProvider'] = $assocKeyedDataProvider;
+
+        foreach ($results as $resultIndex => $result) {
+            foreach ($result['dataProvider'] as $dataProviderItem) {
+                if (isset($mainResults['dataProvider'][$dataProviderItem['category']])) {
+                    foreach ($dataProviderItem as $itemKey => $value) {
+                        if (strpos($itemKey, 'value') !== false) {
+                            $newKey                                                              = $resultIndex.'_'.$itemKey;
+                            $mainResults['dataProvider'][$dataProviderItem['category']][$newKey] = $value;
+                        }
+                    }
+                }
+            }
+
+            foreach ($result['graphs'] as &$graph) {
+                $graph['valueField'] = $resultIndex.'_'.$graph['valueField'];
+                $graph['id']         = $resultIndex.'_'.$graph['id'];
+                $graph['clustered']  = false;
+                // should be less than 0.8, idk why but > 0.8 won't work
+                $graph['columnWidth'] = 0.8 - 0.1 * ($resultIndex + 1);
+            }
+            $mainResults['graphs'] = array_merge($mainResults['graphs'], $result['graphs']);
+        }
+        $mainResults['dataProvider'] = array_values($mainResults['dataProvider']);
+
+        return $mainResults;
+    }
 }

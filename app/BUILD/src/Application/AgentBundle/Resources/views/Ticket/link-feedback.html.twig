@@ -1,0 +1,58 @@
+<div class="extended-merge overlay">
+	<div class="overlay-title">
+		<h4>{{ phrase('agent.tickets.link_existing_feedback') }}</h4>
+	</div>
+
+	<div class="overlay-content">
+    <form>
+      <div
+        class="feedback-finder"
+        data-element-handler="DeskPRO.Agent.ElementHandler.FeedbackSearchBox"
+        data-search-url="{{ path('agent_feedbacksearch_quicksearch', {'format': 'json', 'limit': 10}) }}"
+        data-highlight-term="1"
+        data-touch-focus="1"
+        data-search-param="term"
+        data-exclude="{{ exludeIds|join(',')}}"
+      >
+        <script type="text/x-deskpro-tmpl" class="feedback-row-tpl">
+          <li><a>
+            <span class="feedback-id pill">1234</span>
+            <span class="feedback-title"></span>
+            <div class="right">
+              <div class="feedback-type"></div>
+            </div>
+          </a></li>
+        </script>
+        <div class="input-wrapper">
+          {% if brand_setting('user.feedback_subscriptions') %}
+            <div style="display: block;">
+              <input type="checkbox" id="is_subscribe_owner" name="is_subscribe_owner" checked="checked">
+              <label for="is_subscribe_owner">{{ phrase('agent.tickets.link_existing_feedback_subscr_owner', {'name': ticket.person.display_name, 'email': ticket.person.email_address}) }}</label>
+            </div>
+            <div style="display: block;">
+              <input type="checkbox" id="is_subscribe_participants" name="is_subscribe_participants">
+              <label for="is_subscribe_participants">{{ phrase('agent.tickets.link_existing_feedback_subscr_part', {'count': ticket.participants.count}) }}</label>
+            </div>
+          {% else %}
+            <input type="hidden" id="is_subscribe_owner" name="is_subscribe_owner">
+            <input type="hidden" id="is_subscribe_participants" name="is_subscribe_participants">
+          {% endif %}
+          <input type="text" style="width: 78%" class="term" placeholder="{{ phrase('agent.tickets.find_feedback') }}" class="user-input" />
+        </div>
+        <input type="hidden" name="feedback_id" class="feedback-id" value="" />
+        <div class="ticket-search-box person-search-box feedback-search-box" style="display: none">
+          <section>
+            <ul class="results-list">
+
+            </ul>
+          </section>
+        </div>
+      </div>
+    </form>
+  </div>
+  <div class="overlay-footer">
+      <div class="loading-on" style="display:none">
+          <span>{{ phrase('agent.general.saving') }}... <span class="flat-spinner"></span></span>
+      </div>
+  </div>
+</div>

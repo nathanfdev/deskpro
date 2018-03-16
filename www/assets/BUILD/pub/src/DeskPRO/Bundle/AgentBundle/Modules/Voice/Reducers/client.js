@@ -10,13 +10,14 @@ if (storageAvailable('localStorage') && localStorage.getItem('dpAgent.voice.ring
 }
 
 const initialState = {
-  micEnabled:     false,
-  tokens:         {},
-  activities:     {},
-  incomingCalls:  [],
-  outgoingCall:   null,
-  connections:    [],
-  outboundNumber: null,
+  micEnabled:       false,
+  tokens:           {},
+  activities:       {},
+  incomingCalls:    [],
+  outgoingCall:     null,
+  connections:      [],
+  connectionStates: [],
+  outboundNumber:   null,
   ringingVolume
 };
 
@@ -70,11 +71,23 @@ export default createReducer(initialState, {
 
     return state.set('incomingCalls', incomingCalls);
   },
-  [actions.addConnection]:     pushPayloadToCollection('connections'),
-  [actions.removeConnection]:  deletePayloadFromCollection('connections'),
-  [actions.openDialpad]:       setFullPayload('outboundNumber'),
-  [actions.dialpadOpened]:     setValue('outboundNumber', null),
-  [actions.setOutgoingCall]:   setFullPayload('outgoingCall'),
-  [actions.resetOutgoingCall]: setValue('outgoingCall', null),
-  [actions.setRingingVolume]:  setFullPayload('ringingVolume')
+  [actions.addConnection]:         pushPayloadToCollection('connections'),
+  [actions.removeConnection]:      deletePayloadFromCollection('connections'),
+  [actions.openDialpad]:           setFullPayload('outboundNumber'),
+  [actions.dialpadOpened]:         setValue('outboundNumber', null),
+  [actions.setOutgoingCall]:       setFullPayload('outgoingCall'),
+  [actions.resetOutgoingCall]:     setValue('outgoingCall', null),
+  [actions.setRingingVolume]:      setFullPayload('ringingVolume'),
+  [actions.updateConnectionState]: (state, payload) => {
+    const connectionStates = state.get('connectionStates');
+    const connection = connectionStates.get(payload.call_id, Immutable.fromJS({
+      hold:         false,
+      participants: []
+    }));
+
+    const newConnection = connection.merge(payload.state);
+    const newConnectionStates = connectionStates.set(payload.call_id, newConnection);
+
+    return state.set('connectionStates', newConnectionStates);
+  }
 });

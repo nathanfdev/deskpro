@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2017, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2018, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -85,7 +85,6 @@ $CONFIG['agent_vendors'] = [
         'vendor/modernizr.min.js',
         'javascripts/Orb/modernizr-ext.js',
         'node_modules/custom-event-polyfill/custom-event-polyfill.js',
-        'vendor/JSON-js/json2.js',
         'vendor/jquery/jquery.min.js',
         'vendor/jquery/jquery-migrate.min.js',
         'vendor/jquery.patch.js',
@@ -117,8 +116,6 @@ $CONFIG['agent_vendors'] = [
         'vendor/mootools/mootools-core.min.js',
         'javascripts/DeskPRO/tinycon.js',
         'vendor/select2/select2.js',
-        'vendor/idbstore/idbstore.min.js',
-        'vendor/twig/twig.js',
         'bower_components/moment/min/moment-with-locales.min.js',
         'bower_components/moment-timezone/builds/moment-timezone-with-data.min.js',
         'bower_components/notify.js/notify.js',
@@ -259,6 +256,7 @@ $CONFIG['agent_pages'] = [
         'javascripts/DeskPRO/Agent/PageFragment/Page/Ticket/TicketLocked.js',
         'javascripts/DeskPRO/Agent/PageFragment/Page/Ticket/TicketActions.js',
         'javascripts/DeskPRO/Agent/PageFragment/Page/TicketHelper/LinkTicket.js',
+        'javascripts/DeskPRO/Agent/PageFragment/Page/TicketHelper/LinkFeedback.js',
         'javascripts/DeskPRO/Agent/PageFragment/Page/UserChat.js',
         'javascripts/DeskPRO/Agent/PageFragment/Page/Visitor.js',
         'javascripts/DeskPRO/Agent/PageFragment/Page/Test.js',
@@ -276,6 +274,7 @@ $CONFIG['agent_element_handlers'] = [
         'javascripts/DeskPRO/Agent/ElementHandler/PersonSearchBox.js',
         'javascripts/DeskPRO/Agent/ElementHandler/OrgSearchBox.js',
         'javascripts/DeskPRO/Agent/ElementHandler/TicketSearchBox.js',
+        'javascripts/DeskPRO/Agent/ElementHandler/FeedbackSearchBox.js',
         'javascripts/DeskPRO/Agent/ElementHandler/PhoneCountryCode.js',
         'javascripts/DeskPRO/Agent/ElementHandler/PasswordPrompt.js',
         'javascripts/DeskPRO/Agent/ElementHandler/OverlayFrame.js',
@@ -377,6 +376,7 @@ $CONFIG['agent_misc'] = [
         'javascripts/DeskPRO/Agent/RuleBuilder/DateTerm.js',
         'javascripts/DeskPRO/Agent/RuleBuilder/DateTimeTerm.js',
         'javascripts/DeskPRO/Agent/RuleBuilder/LabelsTerm.js',
+        'javascripts/DeskPRO/Agent/RuleBuilder/TicketFeedbackLinksTerm.js',
         'javascripts/DeskPRO/Agent/RuleBuilder/SelectNewOption.js',
         'javascripts/DeskPRO/Agent/Ticket/ChangeManager.js',
         'javascripts/DeskPRO/Agent/Ticket/Property/Abstract.js',
@@ -476,7 +476,6 @@ $CONFIG['user_vendors'] = [
         'vendor/jquery/fileupload/jquery.fileupload-ui.js',
         'vendor/jquery/fileupload/jquery.iframe-transport.js',
         'vendor/mootools/mootools-core.min.js',
-        'vendor/PIE/PIE.js',
         'vendor/bootstrap/bootstrap-custom.js',
         'bower_components/moment/min/moment-with-locales.min.js',
         'vendor/eonasdan-bootstrap-datetimepicker/build/js/bootstrap-datetimepicker.min.js',

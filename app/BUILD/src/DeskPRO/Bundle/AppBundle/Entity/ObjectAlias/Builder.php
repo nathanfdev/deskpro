@@ -38,7 +38,7 @@ class Builder
     private $entityManager;
 
     /** @var string */
-    private $name;
+    private $alias;
 
     /** @var AppStore\AppInstance  */
     private $app;
@@ -58,23 +58,33 @@ class Builder
     }
 
     /**
-     * @param string|ObjectAlias\Name $name
+     * @param string|ObjectAlias\QualifiedName $name
      * @return Builder
      * @throw \DomainException
      */
-    public function setName($name)
+    public function setAlias($name)
     {
-        $name = $name instanceof ObjectAlias\Name ? $name->getIdentifier() : $name;
-        if (ObjectAlias\Name::isValidIdentifier($name)) {
-            $this->name = $name;
-            return $this;
+        $qualifiedName = null;
+        if (is_string($name) ) {
+            $qualifiedName = ObjectAlias\Converters::toNameFromString($name);
+        } else if ($name instanceof ObjectAlias\QualifiedName) {
+            $qualifiedName = $name;
         }
 
-        throw new \DomainException('invalid identifier');
+        if (is_null($qualifiedName)) {
+            throw new \DomainException('invalid alias');
+        }
+
+        if (! ObjectAlias\QualifiedName::isValidIdentifier($qualifiedName)) {
+            throw new \DomainException('invalid identifier');
+        }
+
+        $this->alias = is_string($name) ? $name : ObjectAlias\Converters::toStringFromName($qualifiedName);
+        return $this;
     }
 
     /**
-     * @param {string|int|AppStore\App|AppQualifier} $id
+     * @param string|int|AppStore\App|FullyQualifiedAppName $ref
      * @return Builder
      * @throw \DomainException
      */
@@ -85,7 +95,7 @@ class Builder
             return $this;
         }
 
-        if ($ref instanceof AppQualifier) {
+        if ($ref instanceof FullyQualifiedAppName) {
             $id = $ref->getId();
         } else {
             $id = $ref;
@@ -126,7 +136,7 @@ class Builder
      */
     public function canBuild()
     {
-        return !empty($this->name) && !empty($this->aliasType) && !empty($this->object);
+        return !empty($this->alias) && !empty($this->aliasType) && !empty($this->object);
     }
 
     /**
@@ -142,7 +152,7 @@ class Builder
         /** @var AbstractAlias $alias */
         $alias = $aliasFactory->newInstance();
 
-        $alias->setAlias($this->name);
+        $alias->setAlias($this->alias);
         $alias->tryAndSetObject($this->object);
 
         if ($alias->getObject() !== $this->object) {

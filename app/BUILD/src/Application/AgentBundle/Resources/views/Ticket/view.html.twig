@@ -430,6 +430,13 @@
                                       id="{{ baseId }}_linked_count"
                                       data-count="{{ linked_tickets.count }}">{{ linked_tickets.count }}</span>)
                                 </li>{% endif %}
+                            {% if ticket_feedback_links|length and app.user.hasPerm('agent_publish.use') and app.user.hasPerm('agent_publish.validate') %}
+                                <li data-tab-for="#{{ baseId }}_linked_feedback_wrap"><i
+                                      class="icon-link"></i> {{ phrase('agent.tickets.linked_feedback') }} (<span
+                                      id="{{ baseId }}_linked_feedback_count"
+                                      data-count="{{ ticket_feedback_links|length }}">{{ ticket_feedback_links|length }}</span>)
+                                </li>
+                            {% endif %}
                             {% if app.getSetting('core.apps_tasks') and app.user.hasPerm('agent_tasks.use') %}
                                 <li data-tab-for="#{{ baseId }}_tasks_wrap">{{ phrase('agent.general.tasks') }} (<span
                                   id="{{ baseId }}_task_count">{{ tasks|length }}</span>)</li>{% endif %}
@@ -680,6 +687,11 @@
                     <article id="{{ baseId }}_linked_wrap">
                         {% include 'AgentBundle:Ticket:linked-tickets.html.twig' %}
                     </article>
+                    {% if ticket_feedback_links|length and app.user.hasPerm('agent_publish.use') and app.user.hasPerm('agent_publish.validate') %}
+                      <article id="{{ baseId }}_linked_feedback_wrap">
+                          {% include 'AgentBundle:Ticket:linked-feedback.html.twig' %}
+                      </article>
+                    {% endif %}
                     {% if app.getSetting('core.apps_tasks') and app.user.hasPerm('agent_tasks.use') %}
                         <article id="{{ baseId }}_tasks_wrap">
                             {% include 'AgentBundle:Ticket:view-tasks.html.twig' %}
@@ -774,6 +786,10 @@
             {% if app.user.hasPerm('agent_tickets.create') %}
                 <li data-action="linked_ticket">{{ phrase('agent.tickets.create_linked_ticket') }}</li>
                 <li data-action="link_existing_ticket">{{ phrase('agent.tickets.link_existing_ticket') }}</li>
+            {% endif %}
+            {% if app.user.hasPerm('agent_publish.use') and app.user.hasPerm('agent_publish.validate') %}
+              <li data-action="link_new_feedback">{{ phrase('agent.tickets.create_linked_feedback') }}</li>
+              <li data-action="link_existing_feedback">{{ phrase('agent.tickets.link_existing_feedback') }}</li>
             {% endif %}
             <li data-action="kb-pending">{{ phrase('agent.tickets.create_new_pending_article') }}</li>
             <li><a target="_blank"
@@ -1146,6 +1162,8 @@
                     <li data-option-id="split">{{ phrase('agent.tickets.split_message_btn') }}</li>{% endif %}
                 {% if app.user.hasPerm('agent_tickets.create') %}
                     <li data-option-id="linked_ticket">{{ phrase('agent.tickets.create_linked_ticket') }}</li>{% endif %}
+                {% if app.user.hasPerm('agent_publish.use') and app.user.hasPerm('agent_publish.validate') %}
+                    <li data-option-id="link_new_feedback">{{ phrase('agent.tickets.create_linked_feedback') }}</li>{% endif %}
                 {% if ticket_perms.modify_messages %}
                     <li data-option-id="edit">{{ phrase('agent.general.edit') }}</li>{% endif %}
                 {% if app.user.can_admin %}

@@ -28,20 +28,22 @@ export function activateLabel(clickedLabel, labels, toggle = true) {
 export function transformReportData(report) {
   const queryParts = report.has('query_parts') ? report.get('query_parts') : Immutable.fromJS({});
   return {
-    title:         report.get('title'),
-    labels:        report.get('labels', Immutable.List()).toArray(),
-    desc:          report.get('description', ''),
-    display_types: report.get('display_types', Immutable.List()).toJS(),
-    select:        queryParts.get('select', ''),
-    from:          queryParts.get('from', ''),
-    where:         queryParts.get('where', ''),
-    split_by:      queryParts.get('split_by', ''),
-    group_by:      queryParts.get('group_by', ''),
-    order_by:      queryParts.get('order_by', ''),
-    offset:        queryParts.get('offset', ''),
-    limit:         queryParts.get('limit', ''),
-    vars:          report.get('variables', Immutable.List()).toJS(),
-    id:            report.get('id', 0)
+    query:          report.get('query', ''),
+    title:          report.get('title'),
+    labels:         report.get('labels', Immutable.List()).toArray(),
+    desc:           report.get('description', ''),
+    display_types:  report.get('display_types', Immutable.List()).toJS(),
+    select:         queryParts.get('select', ''),
+    from:           queryParts.get('from', ''),
+    where:          queryParts.get('where', ''),
+    split_by:       queryParts.get('split_by', ''),
+    group_by:       queryParts.get('group_by', ''),
+    order_by:       queryParts.get('order_by', ''),
+    offset:         queryParts.get('offset', ''),
+    limit:          queryParts.get('limit', ''),
+    vars:           report.get('variables', Immutable.List()).toJS(),
+    id:             report.get('id', 0),
+    extended_query: report.get('extended_query', false)
   };
 }
 

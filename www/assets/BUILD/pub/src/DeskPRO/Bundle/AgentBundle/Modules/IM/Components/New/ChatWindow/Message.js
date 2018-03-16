@@ -2,7 +2,7 @@ import PropTypes from 'prop-types';
 import React from 'react';
 import moment from 'moment';
 import $ from 'jquery';
-import 'mark.js';
+import 'mark.js/dist/jquery.mark';
 import classNames from 'classnames';
 import emojione from 'emojione';
 import { Segment } from 'DeskPRO/Component/Semantic/Segment';

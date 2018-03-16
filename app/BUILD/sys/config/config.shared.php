@@ -608,6 +608,13 @@ $container->loadFromExtension(
                                 'pattern'           => '[^0-9]',
                                 'replacement'       => '',
                             ],
+                            'filename_filter' => [
+                                'type'              => 'pattern_capture',
+                                'preserve_original' => 1,
+                                'patterns'          => [
+                                    '([^\\._\\s]+)',
+                                ],
+                            ],
                         ],
                         'analyzer' => [
                             'title_content_analyzer' => [
@@ -643,6 +650,11 @@ $container->loadFromExtension(
                                 'type'      => 'custom',
                                 'tokenizer' => 'keyword',
                                 'filter'    => ['phone_filter_leading_zero', 'phone_filter', 'ngram_filter_5'],
+                            ],
+                            'filename_analyzer' => [
+                                'type'      => 'custom',
+                                'tokenizer' => 'keyword',
+                                'filter'    => ['lowercase', 'asciifolding', 'filename_filter'],
                             ],
                         ],
                     ],
@@ -830,6 +842,7 @@ $container->loadFromExtension(
                             'messages'        => [],
                             'date_created'    => ['type' => 'date', 'format' => 'yyyy-MM-dd HH:mm:ss'],
                             'date_active'     => ['type' => 'date', 'format' => 'yyyy-MM-dd HH:mm:ss'],
+                            'attachments'     => ['type' => 'string', 'analyzer' => 'filename_analyzer'],
                             'attachment'      => ['type' => 'nested'],
                         ],
                         'persistence' => [

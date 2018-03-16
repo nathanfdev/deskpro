@@ -34,7 +34,7 @@ use Application\DeskPRO\Entity\ReportDashboardWidget;
 use Application\DeskPRO\Entity\SavedDashboardReport;
 use Application\DeskPRO\Entity\SavedDashboardWidget;
 use DeskPRO\Bundle\AppBundle\Entity\Report\ScheduledReport;
-use DeskPRO\Bundle\ReportBundle\Service\DashboardWidget;
+use DeskPRO\Bundle\ReportBundle\Dashboard\DashboardWidgetManager;
 use Doctrine\ORM\EntityManager;
 use Orb\Util\DpStrings;
 use Orb\Util\Strings;
@@ -50,15 +50,15 @@ class ReportSaver
     private $em;
 
     /**
-     * @var DashboardWidget
+     * @var DashboardWidgetManager
      */
     private $widgetService;
 
     /**
-     * @param EntityManager   $em
-     * @param DashboardWidget $widgetService
+     * @param EntityManager          $em
+     * @param DashboardWidgetManager $widgetService
      */
-    public function __construct(EntityManager $em, DashboardWidget $widgetService)
+    public function __construct(EntityManager $em, DashboardWidgetManager $widgetService)
     {
         $this->em            = $em;
         $this->widgetService = $widgetService;
@@ -84,7 +84,7 @@ class ReportSaver
             $reportLevelVars = $report->getVariables();
             $widgetVars      = $widget->getVariables() ?: [];
             foreach ($widgetVars as $key => &$var) {
-                if ($var['value'] === DashboardWidget::WIDGET_VALUE_FROM_REPORT
+                if ($var['value'] === DashboardWidgetManager::WIDGET_VALUE_FROM_REPORT
                     && isset($reportLevelVars[$key]) && $reportLevelVars[$key] && $reportLevelVars[$key]['value']) {
                     $var['value'] = $reportLevelVars[$key]['value'];
                 }

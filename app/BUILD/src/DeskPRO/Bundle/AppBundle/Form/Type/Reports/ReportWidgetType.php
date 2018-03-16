@@ -31,7 +31,7 @@ namespace DeskPRO\Bundle\AppBundle\Form\Type\Reports;
 use Application\DeskPRO\Entity\ReportWidget;
 use Application\DeskPRO\Translate\Loader\DeskproLoader;
 use DeskPRO\Bundle\AppBundle\Language\LanguageManager;
-use DeskPRO\Bundle\ReportBundle\Service\DashboardWidget;
+use DeskPRO\Bundle\ReportBundle\Dashboard\DashboardWidgetManager;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
 use Symfony\Component\Form\Extension\Core\Type\CollectionType;
@@ -76,14 +76,14 @@ class ReportWidgetType extends AbstractType
     {
         $builder->add('display_types', ChoiceType::class, [
             'choices' => [
-                DashboardWidget::WIDGET_RENDER_TYPE_AREA,
-                DashboardWidget::WIDGET_RENDER_TYPE_BAR,
-                DashboardWidget::WIDGET_RENDER_TYPE_LINE,
-                DashboardWidget::WIDGET_RENDER_TYPE_PIE,
-                DashboardWidget::WIDGET_RENDER_TYPE_TABLE,
-                DashboardWidget::WIDGET_RENDER_TYPE_STAT,
-                DashboardWidget::WIDGET_RENDER_TYPE_GAUGE,
-                DashboardWidget::WIDGET_RENDER_TYPE_BUBBLE,
+                DashboardWidgetManager::WIDGET_RENDER_TYPE_AREA,
+                DashboardWidgetManager::WIDGET_RENDER_TYPE_BAR,
+                DashboardWidgetManager::WIDGET_RENDER_TYPE_LINE,
+                DashboardWidgetManager::WIDGET_RENDER_TYPE_PIE,
+                DashboardWidgetManager::WIDGET_RENDER_TYPE_TABLE,
+                DashboardWidgetManager::WIDGET_RENDER_TYPE_STAT,
+                DashboardWidgetManager::WIDGET_RENDER_TYPE_GAUGE,
+                DashboardWidgetManager::WIDGET_RENDER_TYPE_BUBBLE,
             ],
             'multiple'          => true,
             'choices_as_values' => true,

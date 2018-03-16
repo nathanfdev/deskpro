@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2017, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2018, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -766,8 +766,11 @@ class TicketSearchController extends AbstractController
                 }
             }
 
+            $typesWithAllowedEmptyOptions = ['feedback_links'];
             foreach ($this->in->getCleanValueArray('terms_expanded', 'raw', 'raw') as $type => $info) {
-                if (empty($info['options']) || empty($info['op'])) {
+                if (
+                    (!in_array($type, $typesWithAllowedEmptyOptions) && empty($info['options']))
+                    || empty($info['op'])) {
                     continue;
                 }
 
@@ -786,7 +789,7 @@ class TicketSearchController extends AbstractController
                 $opts = Arrays::removeValue($opts, null, true);
                 $opts = Arrays::removeValue($opts, false, true);
 
-                if (!$opts) {
+                if (!$opts && !in_array($type, $typesWithAllowedEmptyOptions)) {
                     continue;
                 }
 

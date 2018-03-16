@@ -134,6 +134,13 @@ class ReportDashboardWidget
     private $options;
 
     /**
+     * @JMS\Type("string")
+     *
+     * @var string
+     */
+    private $jsCode;
+
+    /**
      * @JMS\Type("raw")
      *
      * @var InlineCustomSideload
@@ -158,6 +165,7 @@ class ReportDashboardWidget
         $this->sizeY           = $entity->getSizeY();
         $this->widgetVariables = $entity->getVariables() ?: [];
         $this->options         = $entity->getOptions();
+        $this->jsCode          = $entity->getJsCode();
     }
 
     /**

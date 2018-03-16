@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2017, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2018, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -73,6 +73,12 @@ class CommonController extends AbstractController
 
         // no bar for a non-agent
         if (!$agent || !$agent->isAgent()) {
+            return new Response('');
+        }
+
+        // no-agent-bar for focus window or preview
+        $portalMode = $this->get('portal_mode_storage')->getMode();
+        if ($portalMode && ($portalMode->isFocusWindow() || $portalMode->isAdminPreview())) {
             return new Response('');
         }
 
