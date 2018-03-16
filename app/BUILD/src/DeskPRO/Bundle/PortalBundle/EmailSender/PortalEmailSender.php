@@ -141,10 +141,8 @@ class PortalEmailSender
     public function sendEmailValidation(EmailTo $emailTo, $verifyUrl)
     {
         if ($this->container->get('deskpro.feature_flags')->hasBeta('email_templates')) {
-            $viewModel = $this->container->get('email.user_viewmodel_factory')
-                ->createEmailValidationModel($verifyUrl);
-            $this->container->get('email.email_sender')
-                ->send($viewModel, ['to' => $emailTo]);
+            $viewModel = $this->container->get('email.user_viewmodel_factory')->createEmailValidationModel($verifyUrl);
+            $this->container->get('email.email_sender')->send($viewModel, ['to' => $emailTo]);
         } else {
             $this->sendTo(
                 $emailTo,

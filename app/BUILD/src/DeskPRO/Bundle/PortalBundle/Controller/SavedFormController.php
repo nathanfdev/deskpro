@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2017, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2018, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -26,22 +26,18 @@
  * ~ Thanks, Everyone at Team DeskPRO
  */
 
-/**
- * DeskPRO.
- */
-
 namespace DeskPRO\Bundle\PortalBundle\Controller;
 
 use Application\DeskPRO\Auth\LoginProcessor;
 use Application\DeskPRO\EmailGateway\Runner;
 use Application\DeskPRO\Entity\Person;
+use Application\DeskPRO\Entity\PersonEmail;
 use Application\DeskPRO\Entity\TmpData;
 use Application\DeskPRO\People\PersonGuest;
 use DeskPRO\Bundle\AppBundle\Entity\SavedForm;
 use DeskPRO\Bundle\AppBundle\Form\Type\PersonEmailType;
 use DeskPRO\Bundle\AppBundle\Person\Context\CreatePersonContext;
 use DeskPRO\Bundle\PortalBundle\Helper\PortalValidation;
-use Sensio\Bundle\FrameworkExtraBundle\Configuration\ParamConverter;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Security;
 use Symfony\Component\HttpFoundation\Request;
@@ -205,43 +201,75 @@ class SavedFormController extends AbstractController
 
     /**
      * @Route("/validate/{type}/{auth_code}", name="portal_validation")
-     * @ParamConverter("saved_form", class="AppBundle:SavedForm", options={"auth_code" = "auth_code"})
+     *
+     * @param Request $request
+     * @param string  $type
+     * @param string  $auth_code
+     *
+     * @return \Symfony\Component\HttpFoundation\Response
      */
-    public function validateAction(Request $request, $type, SavedForm $saved_form)
+    public function validateAction(Request $request, $type, $auth_code)
     {
-        $email_address = $saved_form->getMetaDataValue('email');
+        $savedForm = $this->getEm()->getRepository(SavedForm::class)->findOneBy([
+            'auth_code' => $auth_code,
+        ]);
+        if (!$savedForm) {
+            // handle the case when a user click email verification link twice
+            if ($type === PortalValidation::REGISTRATION) {
+                $emailAddress = $request->query->get('email');
+                if ($emailAddress && is_string($emailAddress)) {
+                    $email = $this->getEm()->getRepository(PersonEmail::class)->findOneBy([
+                        'email' => $emailAddress,
+                    ]);
+
+                    if ($email && $email->isValidated()) {
+                        $this->addFlash('success', $this->phrase('portal.flashes.user_registered_verified'));
+
+                        return $this->redirectToRoute('portal_home');
+                    } else {
+                        return $this->renderThemeView('Theme:Error:error_custom.html.twig', [
+                            'error_title' => 'portal.account.link-expired',
+                        ]);
+                    }
+                }
+            }
+
+            throw $this->createNotFoundException();
+        }
+
+        $emailAddress = $savedForm->getMetaDataValue('email');
 
         // make sure this is a valid request
-        $this->checkEmailAddress($email_address);
+        $this->checkEmailAddress($emailAddress);
 
         switch ($type) {
             case PortalValidation::REGISTRATION:
                 // submitting the saved registration form will validate the user and email
                 // there is no person yet to speak of
-                return $this->submitSavedForm($saved_form, $request);
+                return $this->submitSavedForm($savedForm, $request);
             case PortalValidation::COMMENT:
-                $person = $this->getPersonToValidate($saved_form);
-                $this->validateThisPerson($person, $email_address);
+                $person = $this->getPersonToValidate($savedForm);
+                $this->validateThisPerson($person, $emailAddress);
                 $this->maybeAuthenticateThisPerson($person);
 
-                return $this->submitSavedForm($saved_form, $request);
+                return $this->submitSavedForm($savedForm, $request);
             case PortalValidation::ADD_EMAIL:
-                $person = $saved_form->getPerson();
+                $person = $savedForm->getPerson();
                 $this->get('person_manipulator')->validatePerson($person);
                 $this->maybeAuthenticateThisPerson($person);
 
-                return $this->submitSavedForm($saved_form, $request);
+                return $this->submitSavedForm($savedForm, $request);
             case PortalValidation::NEW_FEEDBACK:
-                $person = $this->getPersonToValidate($saved_form);
-                $this->validateThisPerson($person, $email_address);
+                $person = $this->getPersonToValidate($savedForm);
+                $this->validateThisPerson($person, $emailAddress);
                 $this->maybeAuthenticateThisPerson($person);
 
-                return $this->submitSavedForm($saved_form, $request);
+                return $this->submitSavedForm($savedForm, $request);
             case PortalValidation::NEW_TICKET:
-                $person = $this->getPersonToValidate($saved_form);
-                $this->validateThisPerson($person, $email_address);
+                $person = $this->getPersonToValidate($savedForm);
+                $this->validateThisPerson($person, $emailAddress);
 
-                return $this->submitSavedForm($saved_form, $request);
+                return $this->submitSavedForm($savedForm, $request);
             default:
                 break;
         }
