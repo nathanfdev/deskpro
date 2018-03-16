@@ -27,6 +27,7 @@ class CallLogView extends React.Component {
     const fromNumber = call.getIn(['data', 'From']);
     const toNumber = call.getIn(['data', 'To']);
     const isInbound = call.get('type') === 'inbound';
+    const rawData = call.get('data').toJS();
 
     return (
       <div className="page">
@@ -56,7 +57,7 @@ class CallLogView extends React.Component {
             <tr>
               <th>Callee(s)</th>
               <td>
-                {call.get('participants').map((participant, index) =>
+                {call.get('participants').toArray().map((participant, index) =>
                   <PersonName id={participant.get('person')} className="list-item" key={index} />
                 )}
               </td>
@@ -110,10 +111,10 @@ class CallLogView extends React.Component {
               <td>
                 <table>
                   <tbody>
-                    {call.get('data').map((value, key) =>
+                    {Object.keys(rawData).map(key =>
                       <tr key={key}>
                         <th width="140">{key}</th>
-                        <td>{value}</td>
+                        <td>{rawData[key]}</td>
                       </tr>
                     )}
                   </tbody>
@@ -126,7 +127,7 @@ class CallLogView extends React.Component {
               <td>
                 <table>
                   <tbody>
-                    {call.get('phone_call_logs').map((log, index) => {
+                    {call.get('phone_call_logs').toArray().map((log, index) => {
                       const person = people.get(log.get('person')) || Immutable.fromJS({});
                       const logDate  = moment(log.get('date_created'));
                       const callDate = moment(call.get('date_created'));

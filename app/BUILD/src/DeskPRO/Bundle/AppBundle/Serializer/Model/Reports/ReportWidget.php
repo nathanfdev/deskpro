@@ -129,26 +129,41 @@ class ReportWidget
     private $renderedResult;
 
     /**
+     * Indicates if this widget allowed to be changed with parts-build-form.
+     *
+     * @JMS\Type("boolean")
+     *
+     * @var bool
+     */
+    private $extendedQuery;
+
+    /**
      * Constructor.
      *
      * @param ReportWidgetEntity $entity
      * @param array              $queryParts
      * @param array              $translatedLabels
+     * @param bool               $extendedQuery
      */
-    public function __construct(ReportWidgetEntity $entity, array $queryParts, array $translatedLabels)
-    {
-        $this->id           = $entity->getId();
-        $this->uniqueKey    = $entity->getUniqueKey();
-        $this->title        = $entity->getTitle();
-        $this->description  = $entity->getDescription();
-        $this->query        = $entity->getQuery();
-        $this->queryParts   = $queryParts;
-        $this->parent       = $entity->getParent();
-        $this->isCustom     = $entity->isCustom();
-        $this->labels       = $translatedLabels;
-        $this->displayOrder = $entity->getDisplayOrder();
-        $this->displayTypes = $entity->getDisplayTypes();
-        $this->variables    = $entity->getVariables();
+    public function __construct(
+        ReportWidgetEntity $entity,
+        array $queryParts,
+        array $translatedLabels,
+        $extendedQuery = false
+    ) {
+        $this->id            = $entity->getId();
+        $this->uniqueKey     = $entity->getUniqueKey();
+        $this->title         = $entity->getTitle();
+        $this->description   = $entity->getDescription();
+        $this->query         = $entity->getQuery();
+        $this->queryParts    = $queryParts;
+        $this->parent        = $entity->getParent();
+        $this->isCustom      = $entity->isCustom();
+        $this->labels        = $translatedLabels;
+        $this->displayOrder  = $entity->getDisplayOrder();
+        $this->displayTypes  = $entity->getDisplayTypes();
+        $this->variables     = $entity->getVariables();
+        $this->extendedQuery = $extendedQuery;
     }
 
     /**

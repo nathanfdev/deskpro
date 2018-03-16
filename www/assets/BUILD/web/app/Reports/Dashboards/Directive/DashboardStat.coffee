@@ -10,16 +10,29 @@ define ->
       </div>
     """
     link: (scope, element, attrs) ->
-      value       = attrs.value
-      description = attrs.description
+      initValue = (result) ->
+        if !result
+          return
 
-      el = $(element)
-      valueElement = el.find('.stat-value')
-      valueElement.html(value)
-      if description
-        el.find('.stat-description').html(description)
+        el = $(element)
+        valueElement = el.find('.stat-value')
+        valueElement.html(result.value)
+        if result.description
+          el.find('.stat-description').html(result.description)
+        else
+          el.find('.stat-description').remove()
+
+      if attrs.jsCode
+        try
+          eval(attrs.jsCode)
+        catch e
+          console.log(e)
+
+        if promise and promise.then
+          promise.then (response) ->
+            initValue(response)
       else
-        el.find('.stat-description').remove()
+        initValue(attrs)
 
       # dynamic handler position
       el = $(element)

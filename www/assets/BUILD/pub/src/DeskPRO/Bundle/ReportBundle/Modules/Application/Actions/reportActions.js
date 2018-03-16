@@ -40,9 +40,13 @@ export const runReport = createAction(
     const data = {
       display_types: report.display_types,
       variables:     report.vars,
-      input_mode:    'form',
+      input_mode:    report.extended_query ? 'dpql' : 'form',
       title:         report.title,
-      query_parts:   {
+    };
+    if (report.extended_query) {
+      data.query = report.query;
+    } else {
+      data.query_parts = {
         select:   report.select,
         from:     report.from,
         where:    report.where,
@@ -51,8 +55,8 @@ export const runReport = createAction(
         order_by: report.order_by,
         limit:    report.limit,
         offset:   report.offset
-      }
-    };
+      };
+    }
 
     return new Promise(resolve => api
       .sendPost(`DP_API/report_widgets/test/${reportId}?include=rendered_result&inline_sideloads=1`, data)

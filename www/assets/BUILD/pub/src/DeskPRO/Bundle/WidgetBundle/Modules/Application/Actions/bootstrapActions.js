@@ -12,8 +12,18 @@ import { widgetHasChatSelector, widgetSessionChatIdSelector, buildNumSelector } 
 import { liveDemoSelector, noFetchOptionsSelector, widgetLanguageSelector, widgetEnabledSelector, jwtTokenSelector } from '../Selectors/dpWindow';
 import { onlineAgentsCountSelector } from '../Selectors/peopleSelectors';
 
-export const ajaxOptions = { crossDomain: true, dataType: 'json' };
 export const setSettings = createAction('WIDGET_SET_SETTINGS', settings => $.extend(true, {}, settings));
+export const ajaxOptions = (state) => {
+  const jwtToken = jwtTokenSelector(state);
+
+  return {
+    crossDomain: true,
+    dataType:    'json',
+    headers:     {
+      'X-Jwt-Token': jwtToken
+    }
+  };
+};
 
 // Api actions
 export const setLiveDemoSession = createAction(
@@ -32,7 +42,7 @@ export const getSession = createAction(
       .sendPost('DP_API/auth/session', {
         trackVisitor: window.DP_SEND_VISITOR_TRACK || {},
         jwt:          jwtToken
-      }, { ...ajaxOptions })
+      }, { ...ajaxOptions(state) })
       .success((response) => {
         const data = response.data;
 
@@ -94,7 +104,7 @@ export const loadPortalPhraseTranslations = createAction(
       setPhrases(cachedData);
     } else {
       widgetApi
-        .sendGet(`DP_API/lang/widget-phrases.json?language=${language}`, { ...ajaxOptions })
+        .sendGet(`DP_API/lang/widget-phrases.json?language=${language}`, { ...ajaxOptions(state) })
         .success((response) => {
           setPhrases(response);
           lscache.set(cacheKey, response, 60);

@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2017, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2018, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -464,6 +464,13 @@ class LegacyTermsTransformer
                     ],
                 ];
 
+            case 'FilterFeedbackLinks':
+                return [
+                    'type'    => 'feedback_links',
+                    'op'      => $term->getTermOperator(),
+                    'options' => $options->all(),
+                ];
+
             case 'FilterTicketField':
                 return $this->filterFieldToLegacyOptions($term, 'ticket');
 
@@ -811,6 +818,9 @@ class LegacyTermsTransformer
             case 'person_is_disabled':
                 return new Terms\FilterUserIsDisabled($op, $options);
 
+            case 'feedback_links':
+                return new Terms\FilterFeedbackLinks($op, $options);
+
             case 'person_organization_manager':
                 return new Terms\FilterUserIsManager($op, $options);
 
@@ -889,14 +899,14 @@ class LegacyTermsTransformer
         if (isset($options['date1']) || isset($options['date2']) || isset($options['date1_relative']) || isset($options['date2_relative'])) {
             $new_opts             = $options;
             $new_opts['field_id'] = $type_id;
-        } else if (!empty($type_id))  {
+        } elseif (!empty($type_id)) {
             $new_opts             = [];
             $new_opts['field_id'] = $type_id;
             $new_opts['value']    = @$options['custom_fields']['field_'.$type_id];
         } else {
-            $new_opts             = [];
-            $new_opts['value']    = @$options['value'];
-            $new_opts['field']    = @$options['field'];
+            $new_opts          = [];
+            $new_opts['value'] = @$options['value'];
+            $new_opts['field'] = @$options['field'];
         }
 
         return $new_opts;
@@ -908,14 +918,16 @@ class LegacyTermsTransformer
         $options = $term->getTermOptions();
 
         if ($options->has('date1') || $options->has('date2') || $options->has('date1_relative') || $options->has('date2_relative')) {
-            $fid     = $options->get('field_id');
+            $fid = $options->get('field_id');
+
             return [
                 'type'    => "{$type}_field[{$fid}]",
                 'op'      => $term->getTermOperator(),
                 'options' => $options->all(),
             ];
-        } else if ($options->has('field_id'))  {
-            $fid     = $options->get('field_id');
+        } elseif ($options->has('field_id')) {
+            $fid = $options->get('field_id');
+
             return [
                 'type'    => "{$type}_field[{$fid}]",
                 'op'      => $term->getTermOperator(),
@@ -930,8 +942,8 @@ class LegacyTermsTransformer
                 'type'    => "{$type}_field",
                 'op'      => $term->getTermOperator(),
                 'options' => [
-                    "field" => $options->get('field'),
-                    "value" => $options->get('value')
+                    'field' => $options->get('field'),
+                    'value' => $options->get('value'),
                 ],
             ];
         }

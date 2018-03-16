@@ -4,7 +4,7 @@ services:
     class: DeskPRO\Bundle\ReportBundle\Dashboard\DashboardManager
 
   reports.dashboard_widget.service:
-    class: DeskPRO\Bundle\ReportBundle\Service\DashboardWidget
+    class: DeskPRO\Bundle\ReportBundle\Dashboard\DashboardWidgetManager
     arguments:
       - "@doctrine.orm.entity_manager"
       - "@dpql.compiler"

@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2017, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2018, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -40,6 +40,7 @@ use DeskPRO\Bundle\PortalBundle\Brand\BrandContainer;
 use DeskPRO\Bundle\PortalBundle\Theme\ThemeView;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
+use Symfony\Component\Security\Core\Exception\AuthenticationException;
 
 /**
  * Extension designed to make working with templates easier by simplifying
@@ -178,7 +179,11 @@ class PortalSupportExtension extends \Twig_Extension
     {
         $n = strtoupper($name);
 
-        return $this->container->get('security.authorization_checker')->isGranted('USE_'.$n);
+        try {
+            return $this->container->get('security.authorization_checker')->isGranted('USE_'.$n);
+        } catch (AuthenticationException $e) {
+            return false;
+        }
     }
 
     /**
@@ -188,7 +193,11 @@ class PortalSupportExtension extends \Twig_Extension
      */
     public function canViewTicketsLink()
     {
-        return $this->container->get('security.authorization_checker')->isGranted('VIEW_TICKETS_LINK');
+        try {
+            return $this->container->get('security.authorization_checker')->isGranted('VIEW_TICKETS_LINK');
+        } catch (AuthenticationException $e) {
+            return false;
+        }
     }
 
     /**
@@ -203,7 +212,11 @@ class PortalSupportExtension extends \Twig_Extension
     {
         $n = strtoupper($name);
 
-        return $this->container->get('security.authorization_checker')->isGranted('RATE_'.$n, $object);
+        try {
+            return $this->container->get('security.authorization_checker')->isGranted('RATE_'.$n, $object);
+        } catch (AuthenticationException $e) {
+            return false;
+        }
     }
 
     /**
@@ -442,7 +455,11 @@ class PortalSupportExtension extends \Twig_Extension
      */
     public function isGuest()
     {
-        return !$this->container->get('security.authorization_checker')->isGranted('ROLE_USER');
+        try {
+            return !$this->container->get('security.authorization_checker')->isGranted('ROLE_USER');
+        } catch (AuthenticationException $e) {
+            return true;
+        }
     }
 
     /**

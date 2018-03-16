@@ -26,14 +26,10 @@
  * ~ Thanks, Everyone at Team DeskPRO
  */
 
-/**
- * DeskPRO.
- */
-
 namespace Application\DeskPRO\Dpql;
 
 use Application\DeskPRO\Entity\ReportWidget;
-use DeskPRO\Bundle\ReportBundle\Service\DashboardWidget;
+use DeskPRO\Bundle\ReportBundle\Dashboard\DashboardWidgetManager;
 
 /**
  * Compiles a DPQL string statement into a statement object.
@@ -270,7 +266,7 @@ class Compiler
         if (isset($variables[$varName])) {
             $valueExists = isset($variables[$varName]['value']) && $variables[$varName]['value'];
             $value       = $valueExists ? strval($variables[$varName]['value']) : $default;
-            if ($value != DashboardWidget::WIDGET_VALUE_FROM_REPORT && isset($groupParams['dates'][$value])) {
+            if ($value != DashboardWidgetManager::WIDGET_VALUE_FROM_REPORT && isset($groupParams['dates'][$value])) {
                 return $groupParams['dates'][$value][1];
             }
         }

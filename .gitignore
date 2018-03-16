@@ -25,6 +25,11 @@ yarn-error.log
 /dev/dev_config
 bin/deskpro-importer-tools
 
+# generated via gen-lic-list
+/www/assets/BUILD/docs/third-party/composer-lic-info.json
+/www/assets/BUILD/docs/third-party/npm-lic-info.json
+/www/assets/BUILD/docs/third-party/legacy-npm-lic-info.json
+
 # vendors and build files
 /node_modules
 /app/BUILD/vendor

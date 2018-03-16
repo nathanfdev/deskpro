@@ -382,8 +382,16 @@ END)
                     }
 
                     if ($extraConditionValue !== false) {
+                        $joinValue = $extraConditionValue;
+                        if (strpos($childSqlTable, 'custom_data_') === 0 && !is_numeric($extraConditionValue)) {
+                            $field = App::$container->get('dpql.helper.custom_data')->getCustomField($childSqlTable, $extraConditionValue);
+                            if ($field) {
+                                $joinValue = $field->getId();
+                            }
+                        }
+
                         $joinConditions[] = sprintf(
-                            self::$_conditionResolver[$childSqlTable], $joinAlias, App::getDb()->quote($extraConditionValue)
+                            self::$_conditionResolver[$childSqlTable], $joinAlias, App::getDb()->quote($joinValue)
                         );
                     }
 
@@ -424,30 +432,7 @@ END)
 
                 return new Prepared($prepped->sql(), $this->_prettifyColumnName($name), false, $renderer);
             } elseif (preg_match('/^custom_data_/', $assocTable)) {
-                $custom_def_table = str_replace('_data_', '_def_', $assocTable);
-                switch ($custom_def_table) {
-                    case 'custom_def_ticket':
-                        $manager = App::getContainer()->getSystemService('TicketFieldsManager');
-                        break;
-                    case 'custom_def_billing':
-                        $manager = App::getContainer()->getBillingFieldManager();
-                        break;
-                    case 'custom_def_people':
-                        $manager = App::getContainer()->getSystemService('PersonFieldsManager');
-                        break;
-                    case 'custom_def_organizations':
-                        $manager = App::getContainer()->getSystemService('OrgFieldsManager');
-                        break;
-                    default:
-                        $manager = null;
-                        break;
-                }
-
-                $field = null;
-                if ($manager) {
-                    $field = $manager->getFieldFromId($extraConditionValue);
-                }
-
+                $field        = App::$container->get('dpql.helper.custom_data')->getCustomField($assocTable, $extraConditionValue);
                 $renderer     = null;
                 $preppedPrint = null;
                 if ($field && (array_search($type = $field->getTypeName(), ['date', 'datetime']) !== false)) {
@@ -459,7 +444,7 @@ END)
 
                         return $valueRenderer->renderValue($date ?: null, $type);
                     };
-                } elseif ($field && $section !== 'select' && $field->isChoiceType()) {
+                } elseif ($field && $section === 'group' && $field->isChoiceType()) {
                     $call    = new self(array_merge($this->parts, ['field', 'id']));
                     $prepped = $call->prepare($statement, $section, $stack, $select, $result);
 

@@ -1,0 +1,11 @@
+{% if parent.id %}
+    {% include 'AgentBundle:Person:view-parent-org.html.twig' with {
+        'parent' : parent.parent,
+        'with_link' : with_link
+    } %}
+    {% if with_link %}
+        <a class="org_link as-popover" data-route="page:{{ path('agent_org_view', {'organization_id': parent.id}) }}">{{ parent.name }}</a> >
+    {% else %}
+        {{ parent.name }} >
+    {% endif %}
+{% endif  %}

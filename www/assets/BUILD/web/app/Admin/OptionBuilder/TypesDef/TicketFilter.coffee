@@ -79,6 +79,11 @@ define [
       })
 
       options.push({
+        title: 'Linked feedback items'
+        value: 'FilterFeedbackLinks'
+      })
+
+      options.push({
         title: 'Email Account',
         value: 'FilterEmailAccount'
       })
@@ -625,6 +630,12 @@ define [
     getFilterSubject: (options = {}) ->
       options.propName = 'subject'
       options.operators = ['is', 'not', 'contains', 'notcontains']
+      def = @getStandardInput(options)
+      return def
+
+    getFilterFeedbackLinks: (options = {}) ->
+      options.propName = 'feedback_links'
+      options.operators = ['isset', 'not_isset', 'is']
       def = @getStandardInput(options)
       return def
 

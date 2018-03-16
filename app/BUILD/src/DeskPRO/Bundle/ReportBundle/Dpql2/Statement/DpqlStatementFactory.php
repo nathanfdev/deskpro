@@ -187,10 +187,7 @@ class DpqlStatementFactory
             $this->container->get('dpql.func_registry'),
             $this->container->get('doctrine.orm.default_entity_manager'),
             $this->container->get('doctrine.dbal.default_connection'),
-            $this->container->getTicketFieldManager(),
-            $this->container->getBillingFieldManager(),
-            $this->container->getPersonFieldManager(),
-            $this->container->getOrgFieldManager(),
+            $this->container->get('dpql.helper.custom_data'),
             $parts
         );
     }

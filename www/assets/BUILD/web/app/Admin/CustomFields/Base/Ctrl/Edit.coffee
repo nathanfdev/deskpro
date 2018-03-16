@@ -83,6 +83,8 @@ define [
       promise.error((info, code) =>
         @stopSpinner('saving', true)
         @applyErrorResponseToView(info)
+        if info.error_message and info.error_message
+          @Growl.error info.error_message
       )
 
     startDelete: ->

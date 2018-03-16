@@ -72,4 +72,13 @@ interface ReportsRendererInterface
      * @return string|array
      */
     public function render(Results $results, array $options = []);
+
+    /**
+     * Merge layered results.
+     *
+     * @param array $results
+     *
+     * @return mixed
+     */
+    public function mergeResults(array $results);
 }

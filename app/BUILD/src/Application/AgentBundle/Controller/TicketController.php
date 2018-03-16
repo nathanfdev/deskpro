@@ -84,6 +84,7 @@ use Application\DeskPRO\Tickets\TicketSplit;
 use Application\EmailBundle\SwiftMailer\Message\MessageOptionsInterface;
 use DeskPRO\Bundle\AppBundle\Entity\SnippetTranslation;
 use DeskPRO\Bundle\AppBundle\Entity\SnippetUseLog;
+use DeskPRO\Bundle\AppBundle\Entity\TicketFeedbackLink;
 use DeskPRO\Bundle\AppBundle\Serializer\Sideload\SideloadSerializationContext;
 use DeskPRO\Component\Pdf\PdfRendererInterface;
 use DeskPRO\Component\Util\ListUtils;
@@ -423,6 +424,12 @@ class TicketController extends AbstractController
         );
 
         //------------------------------
+        // Linked Feedback
+        //------------------------------
+        $feedbackRepo        = $this->em->getRepository(TicketFeedbackLink::class);
+        $ticketFeedbackLinks = $feedbackRepo->findByTicketAndJoinFeedbackData($ticket);
+
+        //------------------------------
         // Pre-load person and org
         //------------------------------
 
@@ -485,8 +492,9 @@ class TicketController extends AbstractController
             'custom_person_fields' => $custom_person_fields,
             'custom_org_fields'    => $custom_org_fields,
 
-            'show_related_content' => $show_related_content,
-            'linked_tickets'       => $linked_tickets,
+            'show_related_content'  => $show_related_content,
+            'linked_tickets'        => $linked_tickets,
+            'ticket_feedback_links' => $ticketFeedbackLinks,
 
             'ticket_messages_block' => $ticket_messages_block,
             'logs_block'            => $logs_block_info['rendered'],
@@ -5676,6 +5684,30 @@ CSS;
         }
 
         return $this->render('AgentBundle:Ticket:link.html.twig');
+    }
+
+    public function linkExistingFeedbackOverlayAction($ticket_id)
+    {
+        try {
+            $ticket = $this->getTicketOr404($ticket_id);
+        } catch (NotFoundHttpException $e) {
+            // try to find a delete log
+            $delete_log = $this->em->getRepository(TicketDeleted::class)->findOneBy(['ticket_id' => $ticket_id]);
+            if ($delete_log) {
+                return $this->render('AgentBundle:Ticket:deleted.html.twig', ['delete_log' => $delete_log]);
+            } else {
+                throw $e;
+            }
+        }
+
+        $exludeIds = $ticket->getFeedbackLinks()->map(function ($e) {
+            return $e->getFeedback()->getId();
+        })->toArray();
+
+        return $this->render('AgentBundle:Ticket:link-feedback.html.twig', [
+            'ticket'    => $ticket,
+            'exludeIds' => $exludeIds,
+        ]);
     }
 
     public function unlinkTicketAction($ticket_id)

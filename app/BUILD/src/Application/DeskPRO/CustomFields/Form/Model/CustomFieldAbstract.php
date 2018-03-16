@@ -1,10 +1,10 @@
 <?php
 
 /*
- * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
+ * Deskpro (r) has been developed by Deskpro Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2017, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2018, Deskpro Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -12,18 +12,18 @@
  * By using this software, you acknowledge having read the license
  * and agree to be bound thereby.
  *
- * Please note that DeskPRO is not free software. We release the full
+ * Please note that Deskpro is not free software. We release the full
  * source code for our software because we trust our users to pay us for
  * the huge investment in time and energy that has gone into both creating
  * this software and supporting our customers. By providing the source code
  * we preserve our customers' ability to modify, audit and learn from our
- * work. We have been developing DeskPRO since 2001, please help us make it
+ * work. We have been developing Deskpro since 2001, please help us make it
  * another decade.
  *
  * Like the work you see? Think you could make it better? We are always
  * looking for great developers to join us: http://www.deskpro.com/jobs/
  *
- * ~ Thanks, Everyone at Team DeskPRO
+ * ~ Thanks, Everyone at Team Deskpro
  */
 
 /**
@@ -109,6 +109,14 @@ abstract class CustomFieldAbstract
         $this->init();
     }
 
+    /**
+     * @return CustomDefAbstract|null
+     */
+    public function getField()
+    {
+        return $this->_field;
+    }
+
     protected function init()
     {
     }
@@ -126,17 +134,18 @@ abstract class CustomFieldAbstract
             $this->title = 'Untitled';
         }
 
-        $saveAlias  = !is_null($this->alias) && ObjectAlias\Aliases::canHaveAlias($this->_field, $this->_em);
-        $alias = null;
-        if ($saveAlias && ( is_string($this->alias) || $this->alias instanceof  StringObject ) && '' !== (string) $this->alias) {
+        $saveAlias = !is_null($this->alias) && ObjectAlias\Aliases::canHaveAlias($this->_field, $this->_em);
+        $alias     = null;
+        if ($saveAlias && (is_string($this->alias) || $this->alias instanceof  StringObject) && '' !== (string) $this->alias) {
             $aliasBuilder = new ObjectAlias\Builder($this->_em);
-            $alias = ObjectAlias\Aliases::createAlias((string) $this->alias, $this->_field, $aliasBuilder);
-        } else if ($saveAlias && is_array($this->alias)) {
+            $alias        = ObjectAlias\Aliases::createAlias((string) $this->alias, $this->_field, $aliasBuilder);
+        } elseif ($saveAlias && is_array($this->alias)) {
             $alias = array_filter($this->alias, function ($x) {
-               return !empty(trim($x));
+                return !empty(trim($x));
             });
             $alias = array_map(function ($x) {
                 $aliasBuilder = new ObjectAlias\Builder($this->_em);
+
                 return ObjectAlias\Aliases::createAlias((string) $x, $this->_field, $aliasBuilder);
             }, $alias);
         }
@@ -170,7 +179,6 @@ abstract class CustomFieldAbstract
                 } else {
                     $this->saveAlias($alias);
                 }
-
             }
 
             $this->saveAdditional();
@@ -186,7 +194,8 @@ abstract class CustomFieldAbstract
     /**
      * @param array|ObjectAlias\AbstractAlias[] $aliasList
      */
-    protected function saveAliasList(array $aliasList) {
+    protected function saveAliasList(array $aliasList)
+    {
         if (empty($aliasList)) {
             $this->saveAlias();
         }
@@ -201,14 +210,16 @@ abstract class CustomFieldAbstract
             $additions = $aliasList;
         } else {
             $additions = $aliasList;
-            foreach($existingAliasList as $existingAlias) {
+            foreach ($existingAliasList as $existingAlias) {
                 $keep = false;
-                for($i = 0; $i < count($additions), $keep === false; $i++) {
-                    $keep = Comparators::equal($aliasList[$i], $existingAlias);
+                foreach ($aliasList as $newAlias) {
+                    if (Comparators::equal($newAlias, $existingAlias)) {
+                        $keep = true;
+                    }
                 }
 
-                if ($keep) {
-                    array_splice($additions, $i-1, 1);
+                if ($keep && $index = array_search($existingAlias, $additions) !== false) {
+                    array_splice($additions, $index, 1);
                 } else {
                     $removals[] = $existingAlias;
                 }
@@ -236,14 +247,17 @@ abstract class CustomFieldAbstract
                     $this->_em->remove($existingAlias);
                 }
             }
-            return ;
+
+            return;
         }
 
         $existingAliasList = $this->_field->getAliases();
         if ($existingAliasList) {
             // if the new one is already attached to the field we don't need to do anything
             foreach ($existingAliasList as $existingAlias) {
-                if (Comparators::equal($alias, $existingAlias)) { return ; }
+                if (Comparators::equal($alias, $existingAlias)) {
+                    return;
+                }
             }
 
             // replace all other aliases with the new one

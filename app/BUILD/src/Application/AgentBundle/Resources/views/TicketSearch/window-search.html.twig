@@ -283,6 +283,25 @@
 		{% include 'AgentBundle:TicketSearch:window-search-dates.html.twig' %}
 	</div>
 
+	{##################################################################################################################}
+	{# Feedback links #}
+	{##################################################################################################################}
+
+	{% set elid = el_uid() %}
+	<div class="input-row">
+		<div class="input-row-title">
+			<strong>{{ phrase('agent.general.linked_feedback_items') }}</strong>
+		</div>
+		<div class="adv-btn trigger-open-panel" data-panel-id="panel-feedback-links-fields"><i class="icon-cog"></i></div>
+		<div class="text-value with-adv trigger-open-panel" data-panel-id="panel-feedback-links-fields" id="{{ elid }}_termlist">
+
+		</div>
+	</div>
+
+	<div class="source-pane-search-panel panel-feedback-links-fields" data-target-summary="#{{ elid }}_termlist">
+		{% include 'AgentBundle:TicketSearch:window-search-feedback-links.html.twig' %}
+	</div>
+
 	<footer>
 		<button class="dp-btn trigger-submit-search" data-search-url="{{ path('agent_ticketsearch_runcustomfilter') }}">{{ phrase('agent.general.search') }}</button>
 		<div style="padding-top: 4px; text-align: center; font-size: 11px;">

@@ -1,0 +1,352 @@
+{
+  "bower": [
+    {
+      "name": "selectize",
+      "link": "https://github.com/selectize/selectize.js",
+      "license": "Apache-2.0",
+      "description": "Selectize is a jQuery-based custom <select> UI control. Useful for tagging, contact lists, country selectors, etc."
+    },
+    {
+      "name": "normalize-css",
+      "link": "https://github.com/necolas/normalize.css",
+      "license": "MIT",
+      "description": "A modern alternative to CSS resets"
+    },
+    {
+      "name": "microplugin",
+      "link": "https://github.com/brianreavis/microplugin.js",
+      "license": "Apache-2.0",
+      "description": "A lightweight plugin / dependency system for javascript libraries."
+    },
+    {
+      "name": "moment-timezone",
+      "link": "https://github.com/moment/moment-timezone",
+      "license": "MIT",
+      "description": "Parse and display moments in any timezone."
+    },
+    {
+      "name": "tinycon",
+      "link": "https://github.com/tommoor/tinycon",
+      "license": "MIT",
+      "description": "Add notification bubbles in the favicon"
+    },
+    {
+      "name": "angular-file-upload",
+      "link": "https://github.com/danialfarid/angular-file-upload",
+      "license": "MIT",
+      "description": "Lightweight Angular JS directive to upload files. Support drag&drop, progress and abort"
+    },
+    {
+      "name": "angular-ui-ace",
+      "link": "https://github.com/angular-ui/ui-ace",
+      "license": "MIT",
+      "description": "This directive allows you to add ACE editor elements"
+    },
+    {
+      "name": "angular-sanitize",
+      "link": "https://github.com/angular/bower-angular-sanitize",
+      "license": "MIT",
+      "description": "AngularJS module for sanitizing HTML"
+    },
+    {
+      "name": "bootstrap",
+      "link": "http://getbootstrap.com",
+      "license": "MIT",
+      "description": "The most popular front-end framework for developing responsive, mobile first projects on the web."
+    },
+    {
+      "name": "angular-ui-router",
+      "link": "https://github.com/angular-ui/angular-ui-router-bower",
+      "license": "MIT",
+      "description": "State-based routing for AngularJS 1.x"
+    },
+    {
+      "name": "moment",
+      "link": "https://github.com/moment/moment",
+      "license": "MIT",
+      "description": "Time library"
+    },
+    {
+      "name": "blueimp-tmpl",
+      "link": "https://github.com/blueimp/JavaScript-Templates",
+      "license": "MIT",
+      "description": ""
+    },
+    {
+      "name": "notify.js",
+      "link": "https://github.com/alexgibson/notify.js",
+      "license": "MIT",
+      "description": "A handy wrapper for the Web Notifications API"
+    },
+    {
+      "name": "datatables-scroller",
+      "link": "https://github.com/DataTables/Scroller",
+      "license": "MIT",
+      "description": "Scroller is a virtual rendering plug-in for DataTables"
+    },
+    {
+      "name": "datatables",
+      "link": "https://github.com/DataTables/DataTables",
+      "license": "MIT",
+      "description": "Scroller is a virtual rendering plug-in for DataTables"
+    },
+    {
+      "name": "angular-ui-sortable",
+      "link": "http://angular-ui.github.com",
+      "license": "MIT",
+      "description": "This directive allows you to jQueryUI Sortable."
+    },
+    {
+      "name": "toastr",
+      "link": "https://github.com/johnpapa/toastr-bower",
+      "license": "MIT",
+      "description": "toastr is a Javascript library for non-blocking notifications"
+    },
+    {
+      "name": "animate.css",
+      "link": "https://github.com/daneden/animate.css",
+      "license": "MIT",
+      "description": ""
+    },
+    {
+      "name": "jquery",
+      "link": "https://github.com/jquery/jquery-dist",
+      "license": "MIT",
+      "description": "Utils"
+    },
+    {
+      "name": "kbw-calendars",
+      "link": "https://github.com/kbwood/calendars",
+      "license": "MIT",
+      "description": "This plugin provides support for various world calendars, including a datepicker."
+    },
+    {
+      "name": "angular-spectrum-colorpicker",
+      "link": "https://github.com/Jimdo/angular-spectrum-colorpicker",
+      "license": "MIT",
+      "description": "Angular directive for a colorpicker, that bases on the spectrum colorpicker"
+    },
+    {
+      "name": "requirejs",
+      "link": "http://requirejs.org",
+      "license": ["BSD", "MIT"],
+      "description": "A file and module loader for JavaScript"
+    },
+    {
+      "name": "angular",
+      "link": "https://github.com/angular/bower-angular",
+      "license": "MIT",
+      "description": "Framework"
+    },
+    {
+      "name": "blueimp-file-upload",
+      "link": "https://github.com/blueimp/jQuery-File-Upload",
+      "license": "MIT",
+      "description": "File Upload widget with multiple file selection, drag&amp;drop support, progress bar, validation and preview images, audio and video for jQuery. Supports cross-domain, chunked and resumable file uploads. Works with any server-side platform (Google App Engine, PHP, Python, Ruby on Rails, Java, etc.) that supports standard HTML form file uploads."
+    },
+    {
+      "name": "underscore",
+      "link": "https://github.com/jashkenas/underscore",
+      "license": "MIT",
+      "description": "Utils"
+    },
+    {
+      "name": "angular-scroll-glue",
+      "link": "https://github.com/Luegg/angularjs-scroll-glue",
+      "license": "MIT",
+      "description": "An AngularJs directive that automatically scrolls to the bottom of an element on changes in it's scope."
+    },
+    {
+      "name": "angular-bootstrap-datetimepicker",
+      "link": "https://github.com/dalelotts/angular-bootstrap-datetimepicker",
+      "license": "MIT",
+      "description": "This directive allows you to add a datetime-picker to your form elements"
+    },
+    {
+      "name": "jquery-qrcode",
+      "link": "http://larsjung.de/jquery-qrcode/",
+      "license": "MIT",
+      "description": "generate QR codes dynamically"
+    },
+    {
+      "name": "sifter",
+      "link": "https://github.com/brianreavis/sifter.js",
+      "license": "Apache-2.0",
+      "description": "A library for textually searching arrays and hashes of objects by property (or multiple properties). Designed specifically for autocomplete."
+    },
+    {
+      "name": "angular-route",
+      "link": "https://github.com/angular/bower-angular-route",
+      "license": "MIT",
+      "description": "AngularJS router module"
+    },
+    {
+      "name": "ace-builds",
+      "link": "https://github.com/ajaxorg/ace-builds",
+      "license": "BSD-3-Clause",
+      "description": "Ace (Ajax.org Cloud9 Editor)"
+    },
+    {
+      "name": "angular-ui-tree",
+      "link": "https://github.com/angular-ui-tree/angular-ui-tree",
+      "license": "MIT",
+      "description": "Tree directive for AngularJS"
+    },
+    {
+      "name": "angular-moment",
+      "link": "http://github.com/urish/angular-moment",
+      "license": "MIT",
+      "description": "Moment.JS directives & filters for AngularJS (timeago alternative)"
+    },
+    {
+      "name": "angular-gridster",
+      "link": "https://github.com/ImmRanneft/angular-gridster",
+      "license": "MIT",
+      "description": "This directive gives you gridster behavior"
+    },
+    {
+      "name": "bourbon",
+      "link": "http://bourbon.io/",
+      "license": "MIT",
+      "description": "A lightweight Sass tool set"
+    },
+    {
+      "name": "blueimp-load-image",
+      "link": "https://github.com/blueimp/JavaScript-Load-Image",
+      "license": "MIT",
+      "description": "JavaScript Load Image is a library to load images provided as File or Blob objects or via URL. It returns an optionally scaled and/or cropped HTML img or canvas element. It also provides a method to parse image meta data to extract Exif tags and thumbnails and to restore the complete image header after resizing."
+    },
+    {
+      "name": "javascript-detect-element-resize",
+      "link": "https://github.com/sdecima/javascript-detect-element-resize",
+      "license": "MIT",
+      "description": "A Cross-Browser, Event-based, Element Resize Detection"
+    },
+    {
+      "name": "json3",
+      "link": "https://github.com/bestiejs/json3",
+      "license": "MIT",
+      "description": "A modern JSON implementation compatible with nearly all JavaScript platforms"
+    },
+    {
+      "name": "angular-animate",
+      "link": "https://github.com/angular/bower-angular-animate",
+      "license": "MIT",
+      "description": "AngularJS module for animations"
+    },
+    {
+      "name": "jquery-resize",
+      "link": "https://github.com/cowboy/jquery-resize",
+      "license": ["MIT", "GPL"],
+      "description": "With jQuery resize event, you can bind resize event handlers to elements other than window"
+    },
+    {
+      "name": "spectrum",
+      "link": "http://bgrins.github.com/spectrum",
+      "license": "MIT",
+      "description": "Spectrum: the no hassle jQuery colorpicker"
+    },
+    {
+      "name": "intl-tel-input",
+      "link": "https://github.com/Bluefieldscom/intl-tel-input",
+      "license": "MIT",
+      "description": "A jQuery plugin for entering international telephone numbers"
+    },
+    {
+      "name": "stacktrace.js",
+      "link": "https://github.com/eriwen/javascript-stacktrace",
+      "license": "MIT",
+      "description": "Framework-agnostic, micro-library for getting stack traces in all environments"
+    },
+    {
+      "name": "angular-i18n",
+      "link": "https://github.com/angular/bower-angular-i18n",
+      "license": "MIT",
+      "description": "AngularJS module for internationalization"
+    },
+    {
+      "name": "neat",
+      "link": "http://neat.bourbon.io/",
+      "license": "MIT",
+      "description": "A lightweight, semantic grid framework"
+    },
+    {
+      "name": "select2",
+      "link": "https://github.com/ivaynberg/select2",
+      "license": "MIT",
+      "description": "Select2 is a jQuery based replacement for select boxes"
+    },
+    {
+      "name": "perfect-scrollbar",
+      "link": "http://noraesae.github.io/perfect-scrollbar/",
+      "license": "MIT",
+      "description": "Tiny but perfect jQuery scrollbar plugin"
+    },
+    {
+      "name": "angular-selectize.js",
+      "link": "https://github.com/EvanOxfeld/angular-selectize.js",
+      "license": "MIT",
+      "description": "Angular Selectize directive for a hybrid textbox + <select> box. Supports ngOptions and two-way bindings."
+    },
+    {
+      "name": "angular-dragdrop",
+      "link": "http://codef0rmer.github.io/angular-dragdrop",
+      "license": "MIT",
+      "description": "This directive allows you to use jQuery UI's draggable and droppable plugins with AngularJS."
+    },
+    {
+      "name": "blueimp-canvas-to-blob",
+      "link": "https://github.com/blueimp/JavaScript-Canvas-to-Blob",
+      "license": "MIT",
+      "description": "JavaScript Canvas to Blob"
+    },
+    {
+      "name": "angular-bootstrap",
+      "link": "https://github.com/angular-ui/bootstrap-bower",
+      "license": "MIT",
+      "description": "Bootstrap widgets for Angular"
+    },
+    {
+      "name": "angular-slider",
+      "link": "https://github.com/PopSugar/angular-slider",
+      "license": "MIT",
+      "description": "Slider directive implementation for AngularJS, without jQuery dependencies."
+    },
+    {
+      "name": "ng-grid",
+      "link": "https://github.com/angular-ui/ng-grid",
+      "license": "MIT",
+      "description": "Angular data grid"
+    },
+    {
+      "name": "font-awesome",
+      "link": "http://fontawesome.io",
+      "license": ["OFL-1.1","MIT","CC-BY-3.0"],
+      "description": "Font Awesome"
+    },
+    {
+      "name": "angular-ui-select2",
+      "link": "http://angular-ui.github.com",
+      "license": "MIT",
+      "description": "AngularUI - The companion suite for AngularJS"
+    },
+    {
+      "name": "oclazyload",
+      "link": "https://github.com/ocombe/ocLazyLoad",
+      "license": "MIT",
+      "description": "Load modules on demand (lazy load) with angularJS"
+    },
+    {
+      "name": "jquery-ui",
+      "link": "https://github.com/components/jqueryui",
+      "license": "MIT",
+      "description": "A curated set of user interface interactions, effects, widgets, and themes built on top of the jQuery"
+    },
+    {
+      "name": "kbw-plugin",
+      "link": "https://github.com/kbwood/plugin",
+      "license": "MIT",
+      "description": "A base for jQuery collection plugins, providing common abilities around instantiation, option handling, method handling, and destruction."
+    }
+  ]
+}

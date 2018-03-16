@@ -417,7 +417,7 @@ DeskPRO.Form.RuleBuilder = new Orb.Class({
 		var opSel = $('.builder-op select', row);
 		var updateOp = function() {
 			var val = opSel.val();
-			if (val == 'changed' || val == 'not_isset' || val == 'isset') {
+			if (val == 'changed' || val == 'not_isset' || val == 'isset' || val == 'empty' || val == 'notempty') {
 				$('.builder-options', row).hide();
 			} else {
 				$('.builder-options', row).show();

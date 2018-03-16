@@ -293,4 +293,12 @@ abstract class AbstractRenderer implements ReportsRendererInterface
      * @return mixed
      */
     abstract protected function doRender(array $rows, ResultMetadata $metadata, array $options = []);
+
+    /**
+     * {@inheritdoc}
+     */
+    public function mergeResults(array $results)
+    {
+        return implode('PHP_EOL', $results);
+    }
 }

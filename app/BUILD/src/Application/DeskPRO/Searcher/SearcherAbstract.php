@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2017, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2018, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -52,6 +52,10 @@ abstract class SearcherAbstract implements PersonContextInterface
     const OP_BETWEEN     = 'between';
     const OP_CONTAINS    = 'contains';
     const OP_NOTCONTAINS = 'notcontains';
+    const OP_ISSET       = 'isset';
+    const OP_NOT_ISSET   = 'not_isset';
+    const OP_EMPTY       = 'empty';
+    const OP_NOT_EMPTY   = 'notempty';
     const OP_NOOP        = null;
 
     const ORDER_ASC  = 'ASC';

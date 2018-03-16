@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2017, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2018, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -200,7 +200,6 @@ class FieldManager
             $all_fields = $this->em->getRepository($this->options->get('entity_name'))->getEnabledFields();
 
             foreach ($all_fields as $f) {
-
                 $this->real_all_fields[$f->getId()] = $f;
 
                 if (!$f->getParentId()) {
@@ -289,26 +288,22 @@ class FieldManager
     {
         $this->getFields();
 
+        // lookup by id
         if (isset($this->fields[$field_id])) {
             return $this->fields[$field_id];
         }
 
-        $foundField = null;
+        // lookup by alias
+        /** @var CustomDefAbstract $field */
         foreach ($this->fields as $field) {
-            foreach (ObjectAlias\Converters::toMergedList($field->getAliases()) as $name) {
-                if ($name === $field_id) {
-                    // it is possible to have two fields with the same unqualified alias, in this case
-                    // we can not resolve this ambiguity and we return null
-                    // TODO exception would be better
-                    if ($foundField) {
-                        return null;
-                    }
-                    $foundField = $field;
+            foreach ($field->getAliases() as $alias) {
+                if ($alias->getQualifiedName() === $field_id) {
+                    return $field;
                 }
             }
         }
 
-        return $foundField;
+        return;
     }
 
     /**
@@ -578,11 +573,12 @@ class FieldManager
     }
 
     /**
-     * @param array $form
+     * @param array             $form
      * @param CustomDefAbstract $fieldDef
+     *
      * @return bool
      */
-    private function fieldIsPresent( array $form, CustomDefAbstract $fieldDef)
+    private function fieldIsPresent(array $form, CustomDefAbstract $fieldDef)
     {
         if (array_key_exists('field_'.$fieldDef->getId(), $form)) {
             return true;
@@ -597,21 +593,21 @@ class FieldManager
         return false;
     }
 
-
     /**
-     * Returns a list of the field names which can resolve to more than one field
+     * Returns a list of the field names which can resolve to more than one field.
      *
-     * @param array $form
+     * @param array               $form
      * @param CustomDefAbstract[] $fieldDefs
+     *
      * @return array|int[]
      */
-    private function findAmbiguousFieldReferences( array $form, $fieldDefs)
+    private function findAmbiguousFieldReferences(array $form, $fieldDefs)
     {
         $refs = [];
 
         foreach ($fieldDefs as $def) {
             foreach (ObjectAlias\Converters::toMergedList($def->getAliases()) as $name) {
-                $counter = array_key_exists($name, $refs) ? $refs[$name] : 0;
+                $counter     = array_key_exists($name, $refs) ? $refs[$name] : 0;
                 $refs[$name] = $counter + 1;
             }
         }
@@ -812,6 +808,7 @@ class FieldManager
      * Mainly exists because it's not clear when the entity manager is flushed.
      *
      * @todo investigate if can be removed
+     *
      * @param                                               $object
      * @param \Application\DeskPRO\Entity\CustomDefAbstract $fieldDefinition
      * @param \Closure                                      $customDataFilter
@@ -824,7 +821,7 @@ class FieldManager
     }
 
     /**
-     * Removes only a subset of the values of a field. Mostly used for DataList fields
+     * Removes only a subset of the values of a field. Mostly used for DataList fields.
      *
      * @param                                               $object
      * @param \Application\DeskPRO\Entity\CustomDefAbstract $fieldDefinition

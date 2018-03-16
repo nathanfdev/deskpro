@@ -126,4 +126,9 @@ class JsonStatRenderer extends AbstractJsonRenderer
 
         return $this->valueRenderer->renderValue($value, $renderer, $metadata);
     }
+
+    public function mergeResults(array $results)
+    {
+        return reset($results);
+    }
 }

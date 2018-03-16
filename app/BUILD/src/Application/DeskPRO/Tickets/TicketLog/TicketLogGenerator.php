@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2017, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2018, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -415,6 +415,30 @@ class TicketLogGenerator
                     $logData['is_agent_message'] = $m->person->is_agent;
                     $logData['old_message']      = $m->getMessageHtml();
                     $logSet[]                    = $logData;
+                }
+
+                return $logSet;
+                break;
+
+            case 'feedback_link':
+                $logSet = [];
+
+                if ($new) {
+                    $m                      = $new;
+                    $logData                = [];
+                    $logData['action_type'] = 'feedback_link_added';
+                    $logData['id_after']    = $m->getId();
+                    $logData['person_id']   = $m->getPerson() ? $m->getPerson()->getId() : '';
+                    $logSet[]               = $logData;
+                }
+
+                if ($old) {
+                    $m                      = $old;
+                    $logData                = [];
+                    $logData['action_type'] = 'feedback_link_removed';
+                    $logData['id_before']   = $m->getId();
+                    $logData['person_id']   = $m->getPerson() ? $m->getPerson()->getId() : '';
+                    $logSet[]               = $logData;
                 }
 
                 return $logSet;

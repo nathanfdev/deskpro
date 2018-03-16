@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2017, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2018, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -114,24 +114,31 @@ class TicketToElasticaTransformer implements ModelToElasticaTransformerInterface
         }
 
         $document->set('messages', $messages);
-        $document->set('date_created', $object->date_created->format('Y-m-d H:i:s'));
+        $document->set('date_created', $object->getDateCreated()->format('Y-m-d H:i:s'));
 
-        $dates = [$object->date_created, $object->date_status, $object->date_last_agent_reply, $object->date_last_user_reply];
+        $dates = [$object->getDateCreated(), $object->getDateStatus(), $object->getDateLastAgentReply(), $object->getDateLastUserReply()];
         $dates = Arrays::removeFalsey($dates);
         $d     = max($dates);
         $document->set('date_active', $d->format('Y-m-d H:i:s'));
 
-        if ($this->getApacheTika()->isEnabled()) {
+        if ($object->hasAttachments()) {
             $attachments = [];
-            if ($object->has_attachments) {
+            foreach ($object->getAttachments() as $attachment) {
+                $attachments[] = $attachment->getBlob()->getFilename();
+            }
+
+            $document->set('attachments', $attachments);
+
+            if ($this->getApacheTika()->isEnabled()) {
+                $attachmentData = [];
                 try {
                     /** @var ApacheTikaManager $client */
                     $client = $this->getApacheTika()->getClient();
                     /** @var TicketAttachment $attachment */
-                    foreach ($object->getAttachments() as $attachment) {
+                    foreach ($attachments as $attachment) {
                         $blob = $attachment->getBlob();
                         if (!$blob->isImage()) {
-                            $attachments[] = [
+                            $attachmentData[] = [
                                 'filename' => $blob->getFilenameSafe(),
                                 'content'  => $client->getText($blob->getDownloadUrl(true)),
                             ];
@@ -141,8 +148,12 @@ class TicketToElasticaTransformer implements ModelToElasticaTransformerInterface
                     // TODO log error
                     $error = $e->getMessage();
                 }
+
+                $document->set('attachment', $attachmentData);
             }
-            $document->set('attachment', $attachments);
+        } else {
+            $document->set('attachments', []);
+            $document->set('attachment', []);
         }
 
         return $document;

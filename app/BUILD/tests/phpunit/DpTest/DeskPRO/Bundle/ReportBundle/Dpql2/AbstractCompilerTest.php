@@ -53,6 +53,7 @@ abstract class AbstractCompilerTest extends ApiTestCase
     public function setUp()
     {
         $connection = $this->getEntityManager()->getConnection();
+        $connection->executeQuery('DELETE FROM object_aliases');
         $connection->executeQuery('DELETE FROM custom_def_ticket');
         $connection->executeQuery('DELETE FROM custom_def_people');
         $connection->executeQuery('DELETE FROM custom_def_organizations');

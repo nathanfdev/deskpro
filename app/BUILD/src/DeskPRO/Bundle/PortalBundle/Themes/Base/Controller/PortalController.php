@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2017, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2018, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -34,6 +34,7 @@ use DeskPRO\Bundle\PortalBundle\Annotation\TagOptions;
 use DeskPRO\Bundle\PortalBundle\Controller\AbstractController;
 use DeskPRO\Bundle\PortalBundle\HttpCache\Configuration\TagHttpCache;
 use DeskPRO\Bundle\PortalBundle\Request\TagRequest;
+use Symfony\Component\Security\Core\Exception\AuthenticationException;
 
 class PortalController extends AbstractController
 {
@@ -106,11 +107,23 @@ class PortalController extends AbstractController
                 ->getWidgetOptions($brand)
                 ->getGlobal()
                 ->getChat()
-                ->isEnabled();
+                ->isEnabled()
+            ;
+
+            try {
+                $canViewTicketsLink = $this->isGranted(UseSectionVoter::VIEW_TICKETS_LINK);
+                $canUseChat         = $chatEnabled && $this->isGranted(UseSectionVoter::USE_CHAT);
+                $canUseFeedback     = $this->isGranted(UseSectionVoter::USE_FEEDBACK);
+            } catch (AuthenticationException $e) {
+                $canViewTicketsLink = false;
+                $canUseChat         = false;
+                $canUseFeedback     = false;
+            }
+
             $extendedOptions = [
-                'can_view_tickets_link' => $this->isGranted(UseSectionVoter::VIEW_TICKETS_LINK),
-                'can_use_chat'          => $chatEnabled && $this->isGranted(UseSectionVoter::USE_CHAT),
-                'can_use_feedback'      => $this->isGranted(UseSectionVoter::USE_FEEDBACK),
+                'can_view_tickets_link' => $canViewTicketsLink,
+                'can_use_chat'          => $canUseChat,
+                'can_use_feedback'      => $canUseFeedback,
             ];
 
             $extendedOptions = array_merge(

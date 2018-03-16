@@ -27,6 +27,7 @@ DeskPRO.Agent.PageFragment.Page.FeedbackView = new Orb.Class({
 		this._initActions();
 		this._initLabels();
 		this._initCommentForm();
+    this._initSubscribedUsers();
 
 		if (this.meta.canEdit) {
 			if (this.meta.isValidating) {
@@ -211,6 +212,64 @@ DeskPRO.Agent.PageFragment.Page.FeedbackView = new Orb.Class({
 			self.deleteHelper.handleUndelete();
 		});
 		this.ownObject(this.deleteHelper);
+
+    var decTabCount = function(id) {
+      var countEl = self.getEl(id);
+      var count = countEl.data('count');
+      count = count > 0 ? count - 1 : 0;
+      countEl.data('count', count).html(count);
+    };
+
+		this.wrapper.find('.unlink-ticket').on('click', function(ev) {
+			Orb.cancelEvent(ev);
+
+			if (!confirm("Are you sure you want to unlink the selected ticket?")) {
+				return;
+			}
+
+			var ticketFeedbackLinkId = $(this).data('id');
+      var ticketId = $(this).data('ticket-id');
+
+			$(this).closest('tr').hide();
+			$.ajax({
+				url: DP_BASE_API_URL + "/v2/tickets/" + ticketId + "/feedback_links/" + ticketFeedbackLinkId,
+				type: 'DELETE',
+        withActionAlerts: true,
+				error: function() {
+					$(this).closest('tr').show();
+				},
+				success: function() {
+					$(this).closest('tr').remove();
+          decTabCount('linked_tickets_count');
+				}
+			});
+		});
+
+		this.wrapper.find('.unsubscribe-person').on('click', function(ev) {
+			Orb.cancelEvent(ev);
+
+			if (!confirm("Are you sure you want to unsubscribe the selected person?")) {
+				return;
+			}
+
+      var personId = $(this).data('person-id');
+
+			$(this).closest('tr').hide();
+			$.ajax({
+				url: BASE_URL + 'agent/feedback/' + self.feedback_id + '/ajax-unsubscribe-person',
+				type: 'POST',
+				context: this,
+				data: {person_id: personId},
+				dataType: 'json',
+				success: function(data) {
+					$(this).closest('tr').remove();
+          decTabCount('subscribed_persons_count');
+				},
+				error: function() {
+					$(this).closest('tr').show();
+				}
+			});
+		});
 	},
 
 	destroyPage: function() {
@@ -691,4 +750,55 @@ DeskPRO.Agent.PageFragment.Page.FeedbackView = new Orb.Class({
 			});
 		});
 	},
+
+	//#################################################################
+	//# Subscribed Users
+	//#################################################################
+
+	_initSubscribedUsers: function() {
+    var self = this;
+    
+		this.getEl('subscribe_searchbox').bind('personsearchboxclick', function(ev, personId, name, email, sb) {
+			self.getEl('subscribe_person_name').text(name);
+			self.getEl('subscribe_person_email').text(email);
+			self.getEl('subscribe_person_id').val(personId);
+      self.getEl('subscribe_person_route').data('route', 'person:/agent/people/'+personId);
+
+			self.getEl('subscribe_person_row').hide();
+			self.getEl('subscribe_person_row_named').show();
+
+			sb.close();
+			sb.reset();
+		});
+
+		var closeSubscribePersonRow = function() {
+      self.getEl('subscribe_searchbox_txt').val('');
+			self.getEl('subscribe_person_row_named').hide();
+			self.getEl('subscribe_person_row').show();
+		};
+    
+		this.getEl('subscribe_person_cancel_btn').on('click', function() {
+      closeSubscribePersonRow();
+		});
+
+		this.getEl('subscribe_person_btn').on('click', function() {
+			var personId = self.getEl('subscribe_person_id').val();
+			$.ajax({
+				url: BASE_URL + 'agent/feedback/' + self.feedback_id + '/ajax-subscribe-person',
+				data: { person_id: personId },
+				type: 'POST',
+				context: this,
+        dataType: 'json',
+        success: function(data) {
+          DeskPRO_Window.loadPage(BASE_URL + 'agent/feedback/view/' + self.feedback_id, {ignoreExist:true});
+          self.closeSelf();
+        },
+        error: function(xhr, textStatus, errorThrown) {
+          var status = (xhr.status || '') + ' ' + (errorThrown || '') + ' ' + (xhr.statusText || '');
+          DeskPRO_Window._showAjaxError('<div class="error-details">Here is the raw output returned from the server error:<textarea class="raw">' + status + "\n\n" + Orb.escapeHtml(xhr.responseText) + '</textarea></div>');
+          closeSubscribePersonRow();
+        }
+			});
+		});
+	}
 });

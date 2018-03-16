@@ -47,7 +47,7 @@ class AccountList extends React.Component {
             <div className="column date">Date Added</div>
             <div className="column date">Is synced</div>
           </div>
-          {accounts.map((account, index) =>
+          {accounts.toArray().map((account, index) =>
             <div className="row" key={index}>
               <div className="info">
                 <div className="column account-name">{account.get('account_name')}</div>
@@ -66,6 +66,7 @@ class AccountList extends React.Component {
                     <i className="fa fa-gear" />
                   </a>
                 </div>
+                <div style={{ clear: 'both' }} />
               </div>
             </div>
           )}

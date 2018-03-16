@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file",
         "This file is @generated automatically"
     ],
-    "content-hash": "0fd85ca0e0fa6c0d8d2138f151c5fea0",
+    "content-hash": "87a381d65fe9cfcb7960a63153a031fa",
     "packages": [
         {
             "name": "alchemy/zippy",
@@ -4664,13 +4664,13 @@
             "version": "dev-master",
             "source": {
                 "type": "git",
-                "url": "https://github.com/syastrebov/mpdf.git",
-                "reference": "9f0a8efdaf4638995868cf8087765549cd7cde00"
+                "url": "https://github.com/ImmRanneft/mpdf.git",
+                "reference": "cf3b0c3ee00cd1cc796bb937a94052a3389de186"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/syastrebov/mpdf/zipball/9f0a8efdaf4638995868cf8087765549cd7cde00",
-                "reference": "9f0a8efdaf4638995868cf8087765549cd7cde00",
+                "url": "https://api.github.com/repos/ImmRanneft/mpdf/zipball/cf3b0c3ee00cd1cc796bb937a94052a3389de186",
+                "reference": "cf3b0c3ee00cd1cc796bb937a94052a3389de186",
                 "shasum": ""
             },
             "require": {
@@ -4741,7 +4741,7 @@
                 "source": "https://github.com/mpdf/mpdf",
                 "docs": "http://mpdf.github.io"
             },
-            "time": "2017-10-31T14:47:22+00:00"
+            "time": "2018-03-01T19:41:30+00:00"
         },
         {
             "name": "mtdowling/jmespath.php",

@@ -108,7 +108,7 @@ class AgentsVoiceToggle extends React.Component {
               </tr>
             </tbody>
             <tbody>
-              {agents.map((agent, index) =>
+              {agents.toArray().map((agent, index) =>
                 <AgentVoiceToggle
                   key={index}
                   agent={agent}

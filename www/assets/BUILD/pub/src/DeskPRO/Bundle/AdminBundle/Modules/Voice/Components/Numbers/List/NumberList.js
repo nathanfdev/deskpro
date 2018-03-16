@@ -63,6 +63,7 @@ class NumberRow extends React.Component {
               <i className="fa fa-gear" />
             </a>
           </div>
+          <div style={{ clear: 'both' }} />
         </div>
       </div>
     );
@@ -142,7 +143,7 @@ class NumberList extends React.Component {
             <div className="column nickname">Nickname</div>
             <div className="column targets">Target</div>
           </div>
-          {numbers.sortBy(number => -number.get('id')).map(number =>
+          {numbers.sortBy(number => -number.get('id')).toArray().map(number =>
             <NumberRow
               number={number}
               queues={queues}

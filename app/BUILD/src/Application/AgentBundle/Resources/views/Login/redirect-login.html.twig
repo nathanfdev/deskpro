@@ -7,6 +7,9 @@
 	<script type="text/javascript">
 		{% if not is_helpdesk_path(return) %}{% set return = '' %}{% endif %}
 		var url = '{{ path('agent_login') }}?return=' + escape('{{ return }}' + window.location.hash);
+        {% if disable_sso %}
+        	url += '&disable_sso=1';
+        {% endif %}
 		window.location = url;
 
 		window.onlod = function() {
