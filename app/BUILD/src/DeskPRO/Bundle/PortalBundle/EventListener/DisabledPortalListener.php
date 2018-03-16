@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2017, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2018, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -126,6 +126,8 @@ class DisabledPortalListener implements EventSubscriberInterface, SkipLowRequest
             || $this->isAdminPreviewApiCall($event)
             || $this->isFavicon($event)
             || $this->isPortalApi($event)
+            || $this->isFocusWindow($event)
+            || $this->isProxy($event)
         ) {
             // we only make this decision on master requests. sub requests are never "offline".
             // whitlisted routes obviously should pass
@@ -198,6 +200,50 @@ class DisabledPortalListener implements EventSubscriberInterface, SkipLowRequest
      */
     private function isPortalApi(GetResponseEvent $event)
     {
-        return strpos($event->getRequest()->getPathInfo(), '/portal/api') === 0;
+        $request   = $event->getRequest();
+        $routeName = $request->attributes->get('_route');
+
+        return $routeName && (strpos($routeName, 'portal_api_') === 0 || strpos($routeName, 'deskpro_portal_api_') === 0);
+    }
+
+    /**
+     * @param GetResponseEvent $event
+     *
+     * @return bool
+     */
+    private function isFocusWindow(GetResponseEvent $event)
+    {
+        $request   = $event->getRequest();
+        $routeName = $request->attributes->get('_route');
+
+        if (!$routeName) {
+            return false;
+        }
+
+        $whitelistedRoutes = [
+            'portal_new_ticket',
+            'portal_thanks',
+            'portal_thanks_verify',
+            'portal_login',
+            'portal_validation',
+            'portal_search_similar',
+            'portal_reset_password',
+            'saved_form_auto_submit',
+            'dp_pagehit',
+        ];
+
+        return $this->modeStorage->getMode()
+            && $this->modeStorage->getMode()->isFocusWindow()
+            && in_array($routeName, $whitelistedRoutes);
+    }
+
+    /**
+     * @param GetResponseEvent $event
+     *
+     * @return bool
+     */
+    private function isProxy(GetResponseEvent $event)
+    {
+        return $event->getRequest()->getPathInfo() === '/_proxy';
     }
 }

@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2017, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2018, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -63,7 +63,6 @@ class PortalRouter implements WarmableInterface, RouterInterface, RequestMatcher
         'portal_login_usersource_sso',
         'portal_login_callback',
         'portal_login_authenticate',
-        'portal_login_submit',
         'serve_blob_sizefit',
         'serve_default_picture',
         'serve_blob',
