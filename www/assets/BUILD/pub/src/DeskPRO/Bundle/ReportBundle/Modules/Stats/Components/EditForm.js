@@ -170,7 +170,8 @@ export class EditFormComponent extends React.Component {
     change:        null,
     queryValues:   {},
     handleSubmit:  null,
-    error:         null,
+    formErrors:    {},
+    hasError:      false,
     labels:        [],
     extendedQuery: false
   };
@@ -186,7 +187,8 @@ export class EditFormComponent extends React.Component {
     queryValues:   PropTypes.object,
     initialValues: PropTypes.object,
     handleSubmit:  PropTypes.func,
-    error:         PropTypes.string,
+    formErrors:    PropTypes.object,
+    hasError:      PropTypes.bool,
     extendedQuery: PropTypes.bool,
   };
 
@@ -281,7 +283,7 @@ export class EditFormComponent extends React.Component {
 
   render() {
     const groupBy = this.props.groupBy || '';
-    const { select, groupParams, labels } = this.props;
+    const { select, groupParams, labels, formErrors, hasError } = this.props;
 
     const renderVars = field => <VarsField fields={field.fields} groupParams={groupParams || {}} />;
     const renderLabels = field => <LabelsField fields={field.fields} options={labels} />;
@@ -289,6 +291,13 @@ export class EditFormComponent extends React.Component {
     return (
       <form onSubmit={this.props.handleSubmit}>
         <Container>
+          {hasError && <div className="form-error-message">Please check form accuarte, there is an error.</div>}
+          {Object.keys(formErrors).length > 0
+            ? <div className="form-error-message">
+              {Object.keys(formErrors).map(key => (<span>{key}: {formErrors[key]}<br /></span>))}
+            </div>
+            : null
+          }
           <reduxForm.Input
             label="Title"
             id="title"
@@ -337,7 +346,7 @@ export class EditFormComponent extends React.Component {
             </div>
           </div>
         </Container>
-        {this.props.error && <div className="form-error-message">{this.props.error}</div>}
+
       </form>
     );
   }
