@@ -40,6 +40,8 @@
 			data-frame-id="reports"
 			data-win-title="DeskPRO Reports Interface"
 	></script>
+{% endif %}
+{% if app.hasBeta('new_reports') and (app.user.can_reports or app.user.getReportDashboardPermissions()) %}
 	<script
 			id="reports2_interface_trigger"
 			data-frame-url="{{ app.request.getBaseUrl() }}/agent/reports-interface#/"
