@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2017, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2018, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -26,16 +26,14 @@
  * ~ Thanks, Everyone at Team DeskPRO
  */
 
-/**
- * DeskPRO.
- */
-
 namespace Application\DeskPRO\Entity;
 
 use Application\DeskPRO\Domain\DomainObject;
 use Application\DeskPRO\EntityRepository\Brand as BrandRepository;
 use DeskPRO\Bundle\AppBundle\Entity\ThemeSet;
+use DeskPRO\Bundle\AppBundle\EventListener\Doctrine\BrandListener;
 use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\ORM\Events;
 use Doctrine\ORM\Mapping\ClassMetadata;
 use JMS\Serializer\Annotation as JMS;
 use Orb\Doctrine\ORM\Mapping\Builder\ClassMetadataBuilder;
@@ -265,6 +263,7 @@ class Brand extends DomainObject
         $builder->createOneToOne('theme_set', ThemeSet::class)->cascadePersist()->build();
         $builder->createOneToOne('edit_theme_set', ThemeSet::class)->build();
 
+        $metadata->addEntityListener(Events::preRemove, BrandListener::class, Events::preRemove);
         $metadata->mapManyToMany(
             [
                 'fieldName'    => 'departments',

@@ -29,6 +29,7 @@
 namespace DeskPRO\Bundle\AppBundle\Serializer\Model\Tickets;
 
 use Application\DeskPRO\Entity\AgentTeam;
+use Application\DeskPRO\Entity\Brand;
 use Application\DeskPRO\Entity\ChatConversation;
 use Application\DeskPRO\Entity\CustomDataTicket;
 use Application\DeskPRO\Entity\CustomFieldData;
@@ -104,7 +105,7 @@ class Ticket
      *
      * @JMS\Type("entity<Application\DeskPRO\Entity\Brand>")
      *
-     * @var Language
+     * @var Brand
      */
     private $brand;
 
