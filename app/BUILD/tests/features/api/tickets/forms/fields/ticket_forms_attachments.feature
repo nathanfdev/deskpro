@@ -84,3 +84,16 @@ Feature: /ticket_forms
     When I send a GET request to "/api/v2/tickets/{t1}/messages/{m1}"
     Then the response status code should be 200
     And the JSON node "data.attachments" should have 0 elements
+
+  Scenario: I check unique validation
+    When I send a PUT request to "/api/v2/ticket_forms/agent/{t1}" with body:
+    """
+{
+  "attachments": [
+    {"blob_auth": "AAAAAAAAAAAAAAAAAA"},
+    {"blob_auth": "AAAAAAAAAAAAAAAAAA"}
+  ]
+}
+    """
+    Then the response status code should be 400
+    And the JSON node "errors.fields.attachments.errors[0].code" should be equal to "not_unique_collection"
