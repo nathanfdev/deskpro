@@ -88,9 +88,13 @@ class SettingsResolverService
                 return true;
             }
 
-            $departmentData = $container->getTicketDepartments();
+            try {
+                $departmentData = $container->getTicketDepartments();
 
-            return count($departmentData->getAllIds()) > 1;
+                return count($departmentData->getAllIds()) > 1;
+            } catch (\Exception $e) {
+                return true;
+            }
         }
         );
 
