@@ -485,7 +485,7 @@ class AbstractController extends BaseController
         $subRequest->setSession($request->getSession());
 
         // get rid of the saved form now
-        //$this->getFormSaver()->markCompleted($saved_form);
+        $this->getFormSaver()->markCompleted($saved_form);
 
         // submit the form again for the user
         $response = $this->get('http_kernel')->handle($subRequest, HttpKernelInterface::SUB_REQUEST);
