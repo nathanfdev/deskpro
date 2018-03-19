@@ -556,6 +556,19 @@
                     </tr>
                 {% endif %}
                 <tr>
+                    <td class="label">Has confirmed? <span class="small-light-icon tipped"
+                                                           title="If the user has ever confirmed their account e.g. by clicking a validatioin link in an email. Depending on the settings enabled by the administrator, an unconfirmed account may have limitations enforced until the user confirms their account."></span>
+                    </td>
+                    <td class="value">
+                        <select id="{{ baseId }}_toggle_confirmed">
+                            <option value="0"
+                                    {% if not person.is_confirmed %}selected="selected"{% endif %}>Not confirmed</option>
+                            <option value="1"
+                                    {% if person.is_confirmed %}selected="selected"{% endif %}>Confirmed</option>
+                        </select>
+                    </td>
+                </tr>
+                <tr>
                     <td class="label">Auto-responder <span class="small-light-icon tipped"
                                                            title="If the system detects a user automatically responds to messages (e.g., a robot or script), then DeskPRO will disable outgoing auto-emails to the user. The user will still get normal email notifications (like agent replies), only automatic auto-confirmations are disabled."></span>
                     </td>
