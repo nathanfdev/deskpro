@@ -602,7 +602,7 @@ pageMeta.baseId = '{{ baseId }}';
 							{% elseif app.getSetting('core_tickets.new_status') == 'awaiting_agent' %}
 								<span id="{{ baseId }}_reply_as_type" data-type="awaiting_agent">{{ phrase('agent.tickets.kbd_send_awaiting_agent') }}</span>
 							{% elseif app.getSetting('core_tickets.new_status') == 'resolved' %}
-								<span id="{{ baseId }}_reply_as_type" data-type="resolved">{{ phrase('agent.tickets.kbd_send_awaiting_resolved') }}</span>
+								<span id="{{ baseId }}_reply_as_type" data-type="resolved">{{ phrase('agent.tickets.kbd_send_resolved') }}</span>
 							{% else %}
 								<span id="{{ baseId }}_reply_as_type" data-type="awaiting_user">{{ phrase('agent.tickets.kbd_send_awaiting_user') }}</span>
 							{% endif %}
