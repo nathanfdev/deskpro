@@ -53,7 +53,7 @@ DeskPRO.Agent.Layout.DeskproWindow = Orb.Class({
 						? jqXHR.metadata.splitPoint : jqXHR.getResponseHeader('X-DeskPRO-With-ActionAlerts-SplitPoint');
 
           // no split point, we have nothing to do
-          if (!splitPoint) {
+          if (!splitPoint || data.indexOf(splitPoint) === -1) {
             return data;
           }
 
