@@ -54,7 +54,7 @@ class PortalUrlBuilder
         $parts = [];
         $path  = $this->path;
 
-        if ($path[0] !== '/') {
+        if ($path && $path[0] !== '/' && strlen($this->baseUrl) > 1) {
             $this->baseUrl = ltrim($this->baseUrl, '/');
         }
         // remove base url from the url path to set it in the proper order
