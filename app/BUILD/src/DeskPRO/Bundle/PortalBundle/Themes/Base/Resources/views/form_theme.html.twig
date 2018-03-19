@@ -462,7 +462,7 @@
 {% block captcha_widget %}
 {% spaceless %}
     <div class="captcha-field">
-        <img id="{{ image_id }}" src="{{ root_url(false) }}{{ no_cache_url(captcha_code) }}" title="captcha" width="{{ captcha_width }}" height="{{ captcha_height }}" />
+        <img id="{{ image_id }}" src="{{ no_cache_url(captcha_code) }}" title="captcha" width="{{ captcha_width }}" height="{{ captcha_height }}" />
         {% if reload %}
             <script type="text/javascript">
                 function reload_{{ image_id }}() {
