@@ -152,6 +152,7 @@ class LabelsFieldComponent extends React.PureComponent {
     const newOptions = options.map(label => label.label);
 
     return (<reduxForm.TagSet
+      onChange={() => {}}
       name="labels"
       label="Labels"
       tags={fields.getAll() || []}
