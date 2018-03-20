@@ -38,7 +38,7 @@ class VarsFieldComponent extends React.PureComponent {
       return choice;
     });
 
-    return (<reduxForm.Select key={name} name={name} options={choices} />);
+    return (<reduxForm.Select onChange={() => {}} key={name} name={name} options={choices} />);
   }
 
   static renderTypeField(name, values) {
@@ -51,7 +51,7 @@ class VarsFieldComponent extends React.PureComponent {
       return choice;
     });
 
-    return (<reduxForm.Select label="Record Type" key={name} name={name} options={choices} />);
+    return (<reduxForm.Select onChange={() => {}} label="Record Type" key={name} name={name} options={choices} />);
   }
 
   static renderTypeValueField(name, values) {
@@ -64,7 +64,7 @@ class VarsFieldComponent extends React.PureComponent {
       return choice;
     });
 
-    return (<reduxForm.Select label="Default Value" key={name} name={name} options={choices} />);
+    return (<reduxForm.Select onChange={() => {}} label="Default Value" key={name} name={name} options={choices} />);
   }
 
   onAddButtonClick = (event) => {
@@ -107,11 +107,13 @@ class VarsFieldComponent extends React.PureComponent {
             return (<div className="varsfield-item" key={key}>
               <div className="remove-ctrl" onClick={() => fields.remove(index)}><i className="fa fa-trash" /></div>
               <reduxForm.Input
+                onChange={() => {}}
                 label={hint}
                 name={`${varName}.name`}
                 validate={[VarsFieldComponent.validateVarName]}
               />
               <reduxForm.Select
+                onChange={() => {}}
                 label="Type"
                 options={varTypes}
                 name={`${varName}.type`}
@@ -299,6 +301,7 @@ export class EditFormComponent extends React.Component {
             : null
           }
           <reduxForm.Input
+            onChange={() => {}}
             label="Title"
             id="title"
             name="title"
@@ -314,11 +317,11 @@ export class EditFormComponent extends React.Component {
             <div className="input-wrap">
               <FormSection name="query">
                 <Section hidden={this.state.queryInputMode !== 'form'}>
-                  <reduxForm.Input label="SELECT" name="select" />
-                  <reduxForm.Input label="FROM" name="from" />
-                  <reduxForm.Input label="WHERE" name="where" />
-                  <reduxForm.Input label="SPLIT BY" name="split_by" />
-                  <reduxForm.Input label="GROUP BY" name="group_by" />
+                  <reduxForm.Input onChange={() => {}} label="SELECT" name="select" />
+                  <reduxForm.Input onChange={() => {}} label="FROM" name="from" />
+                  <reduxForm.Input onChange={() => {}} label="WHERE" name="where" />
+                  <reduxForm.Input onChange={() => {}} label="SPLIT BY" name="split_by" />
+                  <reduxForm.Input onChange={() => {}} label="GROUP BY" name="group_by" />
                   <div
                     className={classNames({
                       'field-hidden': !(select && select.match(/count\s*\(.*?\)/i) && groupBy.length)
@@ -330,8 +333,8 @@ export class EditFormComponent extends React.Component {
                     />
                   </div>
                   <div style={{ width: '150px' }}>
-                    <reduxForm.Input label="LIMIT" name="limit" />
-                    <reduxForm.Input label="OFFSET" name="offset" />
+                    <reduxForm.Input onChange={() => {}} label="LIMIT" name="limit" />
+                    <reduxForm.Input onChange={() => {}} label="OFFSET" name="offset" />
                   </div>
                 </Section>
                 <Section hidden={this.state.queryInputMode !== 'dpql'}>
