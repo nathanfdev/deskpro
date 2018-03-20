@@ -232,7 +232,7 @@ define ['DeskPRO/Util/Arrays'], (Arrays) -> [
             )
 
             vars.push(cloneVar)
-          else if (variable.name == 'agent' or variable.name == 'agent_team') and $scope.dashboard.is_agent
+          else if (variable.type == 'agent' or variable.type == 'agent_team') and $scope.dashboard.is_agent
             cloneVar = $.extend({}, variable);
             if variable.name == 'agent'
               cloneVar.value = parseInt($scope.me.person.id)
