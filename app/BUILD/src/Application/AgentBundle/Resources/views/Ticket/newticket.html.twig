@@ -425,10 +425,9 @@ pageMeta.baseId = '{{ baseId }}';
 					</tbody>
 				{% endif %}
 
-                {# todo why tbody included into loop? #}
 				{% if custom_fields %}
 					{% for f in custom_fields if f.field_def.getTypeName() != 'hidden' %}
-						<tbody class="col fieldprop ticket-field item-on ticket-field-{{f.field_def.id}} item-on-{{f.field_def.id}} inline-field" style="clear:both;display: none;" data-default-value="{{ f.field_def.getStringDefaultValue() }}">
+						<tbody class="col fieldprop ticket-field item-on ticket-field-{{f.field_def.id}} {% for a in f.field_def.getAliases() %}ticket-field-{{ a.getQualifiedName() }}{% endfor %} item-on-{{f.field_def.id}} inline-field" style="clear:both;display: none;" data-default-value="{{ f.field_def.getStringDefaultValue() }}">
 							<tr>
 								<th>{{ f.title }}</th>
 								<td>
@@ -475,7 +474,7 @@ pageMeta.baseId = '{{ baseId }}';
 </div>
 
 {% if app.getSetting('core_tickets.enable_billing') or app.getSetting('core_tickets.enable_timelog') %}
-<div class="profile-box-container reply-box-wrap" style="position: relative">
+<div class="profile-box-container reply-box-wrap billing-form" style="position: relative">
 	<header>
 		<h4>{{ phrase('agent.tickets.billing') }}</h4>
 	</header>
