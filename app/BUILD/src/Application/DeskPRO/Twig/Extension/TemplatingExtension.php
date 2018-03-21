@@ -1047,6 +1047,7 @@ class TemplatingExtension extends \Twig_Extension
         if (is_object($display_array)) {
             $display_array = $display_array->toArray();
         }
+
         $vars = array_merge($display_array, $vars);
 
         return $handler->renderHtml($display_array['value'], $vars);
