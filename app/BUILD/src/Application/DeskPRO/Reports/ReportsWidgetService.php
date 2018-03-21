@@ -132,7 +132,7 @@ class ReportsWidgetService
             if ($def->getChoices()) {
                 $result[$def->getRawTitle()] = [];
                 foreach ($def->getChoices() as $choice) {
-                    $result[$def->getRawTitle()][$choice['id']] = [$choice['title']];
+                    $result[$def->getRawTitle()][$choice['title']] = [$choice['title']];
                 }
                 $result[DashboardWidgetManager::WIDGET_VALUE_FROM_REPORT] = ['value from report'];
             }
