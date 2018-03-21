@@ -1,9 +1,9 @@
 import PropTypes from 'prop-types';
 import React from 'react';
 import { connect } from 'react-redux';
+import { FormattedMessage } from 'react-intl';
 import Immutable from 'immutable';
 import { Button, List, ListElement, Label, Select, CustomSelect, Checkbox, Input } from '@deskpro/react-components';
-import agentPhrases from 'DeskPRO/Bundle/AgentBundle/AgentPhrases';
 import { allSelectorFactory, collectionSelectorFactory } from 'DeskPRO/Bundle/AppBundle/Modules/RecordsStore';
 import { MassActionsSelect } from './Menus/MassActionsSelect';
 import { VisibilitySelectContainer } from './Menus/VisibilitySelect';
@@ -143,7 +143,7 @@ class LabelSelect extends React.Component {
         <ListElement
           key="create_label"
         >
-          {agentPhrases.get('agent.snippets.no_results_new_label', { label: this.state.filter })}
+          <FormattedMessage id="agent.snippets.no_results_new_label" values={{ label: this.state.filter }} />
         </ListElement>
       );
     }
@@ -190,7 +190,7 @@ class LabelSelect extends React.Component {
     }
   }
 
-  inputRenderer = () => agentPhrases.get('agent.general.select');
+  inputRenderer = () => <FormattedMessage id="agent.general.select" />;
 
   handleChange = (checked, newValue) => {
     const labelsExisting = new Set(this.state.labelsExisting);
@@ -229,7 +229,7 @@ class LabelSelect extends React.Component {
         displayInputWhenOpened={false}
       >
         <Input
-          placeholder={agentPhrases.get('agent.general.filter')}
+          placeholder={<FormattedMessage id="agent.general.filter" />}
           value={this.state.filter}
           className="labels_filter"
           onChange={this.onFilterChange}
@@ -549,7 +549,7 @@ class TypeSelect extends React.Component {
     }
   }
 
-  inputRenderer = () => agentPhrases.get('agent.general.select');
+  inputRenderer = () => <FormattedMessage id="agent.general.select" />;
 
   handleChange = (checked, newValue) => {
     const { values } = this.state;
@@ -583,7 +583,7 @@ class TypeSelect extends React.Component {
               existing={values.ticket.existing}
               onChange={this.handleChange}
             >
-              {agentPhrases.get('agent.general.ticket')}
+              <FormattedMessage id="agent.general.ticket" />
             </Checkbox>
           </ListElement>
           <ListElement>
@@ -593,14 +593,14 @@ class TypeSelect extends React.Component {
               existing={values.chat.existing}
               onChange={this.handleChange}
             >
-              {agentPhrases.get('agent.general.chat')}
+              <FormattedMessage id="agent.general.chat" />
             </Checkbox>
           </ListElement>
           { this.props.selected.size
             && !values.ticket.checked && !values.ticket.existing
             && !values.chat.checked && !values.chat.existing ?
               <ListElement className="error">
-                {agentPhrases.get('agent.snippets.at_least_one_type')}
+                <FormattedMessage id="agent.snippets.at_least_one_type" />
               </ListElement>
             : null
           }
@@ -623,8 +623,8 @@ class DraftSelect extends React.PureComponent {
   render() {
     const { value } = this.props;
     const options = [
-      { value: 'draft', label: agentPhrases.get('agent.snippets.set_as_draft') },
-      { value: 'published', label: agentPhrases.get('agent.snippets.set_as_published') },
+      { value: 'draft', label: <FormattedMessage id="agent.snippets.set_as_draft" /> },
+      { value: 'published', label: <FormattedMessage id="agent.snippets.set_as_published" /> },
     ];
     return (
       <Select
@@ -732,7 +732,7 @@ export default class MassActions extends React.Component {
     return (
       <div className="snippets__mass-actions--content">
         <a href="#close" className="close-cross" onClick={close}>
-          {agentPhrases.get('agent.general.close_lc')}
+          <FormattedMessage id="agent.general.close_lc" />
         </a>
         <Label>
           {actions.find(a => a.value === action).text}
@@ -744,14 +744,14 @@ export default class MassActions extends React.Component {
           disabled={selected.size === 0 || (this.state.actionValue === null && this.props.action !== 'export')}
         >
           {this.props.action === 'export' ?
-            agentPhrases.get('agent.general.export')
-            : agentPhrases.get('agent.snippets.save_changes')
+            <FormattedMessage id="agent.general.export" />
+            : <FormattedMessage id="agent.snippets.save_changes" />
           }
         </Button>
         <span className="count">
           ({selected.size} {selected.size === 1 ?
-            agentPhrases.get('agent.general.snippet')
-          : agentPhrases.get('agent.general.snippets')})
+            <FormattedMessage id="agent.general.snippet" />
+          : <FormattedMessage id="agent.general.snippets" />})
         </span>
       </div>
     );

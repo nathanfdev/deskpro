@@ -1,12 +1,12 @@
 import React from 'react';
 import PropTypes from 'prop-types';
+import { FormattedMessage } from 'react-intl';
 import { connect } from 'react-redux';
 import moment from 'moment';
 import Immutable from 'immutable';
 import { Container, Button, Checkbox } from '@deskpro/react-components';
 import { agentsSelector } from 'DeskPRO/Bundle/AppBundle/Modules/RecordsStore/Shortcuts/agents';
 import { allSelectorFactory } from 'DeskPRO/Bundle/AppBundle/Modules/RecordsStore';
-import agentPhrases from 'DeskPRO/Bundle/AgentBundle/AgentPhrases';
 import ActionsBlock from './ActionsBlock';
 import FollowUpTime from './FollowUpTime';
 import FollowUpTable from './FollowUpTable';
@@ -119,7 +119,7 @@ export class FollowUp extends React.Component {
   render() {
     return (
       <Container className="follow_up">
-        <h4>{agentPhrases.get('agent.general.follow_ups')}</h4>
+        <h4><FormattedMessage id="agent.general.follow_ups" /></h4>
         <FollowUpTable
           followUps={this.props.followUps}
           agents={this.props.agents}
@@ -140,7 +140,7 @@ export class FollowUp extends React.Component {
             size="m"
             onClick={this.displayForm}
           >
-            {agentPhrases.get('agent.follow_up.new_follow_up')}
+            <FormattedMessage id="agent.follow_up.new_follow_up" />
           </Button>
         }
       </Container>
@@ -171,10 +171,10 @@ class FollowUpForm extends React.Component {
       this.types.push({ value: 'agent_team', label: 'Assign Team' });
     }
     if (ticketPerms.reply) {
-      this.types.push({ value: 'reply', label: agentPhrases.get('agent.tickets.add_reply_action') });
+      this.types.push({ value: 'reply', label: <FormattedMessage id="agent.tickets.add_reply_action" /> });
     }
     if (ticketPerms.modify_notes) {
-      this.types.push({ value: 'note', label: agentPhrases.get('agent.tickets.add_note_action') });
+      this.types.push({ value: 'note', label: <FormattedMessage id="agent.tickets.add_note_action" /> });
     }
     if (ticketPerms.modify_set_hold) {
       this.types.push({ value: 'hold', label: 'Hold' });
@@ -182,7 +182,7 @@ class FollowUpForm extends React.Component {
     if (ticketPerms.modify_set_awaiting_agent
       || ticketPerms.modify_set_awaiting_user
       || ticketPerms.modify_set_resolved) {
-      this.types.push({ value: 'status', label: agentPhrases.get('agent.general.status') });
+      this.types.push({ value: 'status', label: <FormattedMessage id="agent.general.status" /> });
     }
     if (this.props.macros.size) {
       this.types.push({ value: 'run_macro', label: 'Run macro' });
@@ -220,10 +220,10 @@ class FollowUpForm extends React.Component {
 
     let errors = [];
     if (this.state.actions.length === 0) {
-      errors.push(agentPhrases.get('agent.follow_up.you_must_add_one_action'));
+      errors.push(<FormattedMessage id="agent.follow_up.you_must_add_one_action" />);
     }
     if (!this.state.dateToRun.type) {
-      errors.push(agentPhrases.get('agent.follow_up.you_must_select_time'));
+      errors.push(<FormattedMessage id="agent.follow_up.you_must_select_time" />);
     }
     errors = errors.concat(this.validateActions());
     this.setState({
@@ -273,37 +273,37 @@ class FollowUpForm extends React.Component {
       switch (action.type) {
         case 'agent':
           if (typeof action.options.agent === 'undefined') {
-            errors.push(agentPhrases.get('agent.follow_up.error_agent'));
+            errors.push(<FormattedMessage id="agent.follow_up.error_agent" />);
           }
           break;
         case 'agent_team':
           if (typeof action.options.agent_team === 'undefined') {
-            errors.push(agentPhrases.get('agent.follow_up.error_agent_team'));
+            errors.push(<FormattedMessage id="agent.follow_up.error_agent_team" />);
           }
           break;
         case 'reply':
           if (typeof action.options.reply_text === 'undefined') {
-            errors.push(agentPhrases.get('agent.follow_up.error_reply'));
+            errors.push(<FormattedMessage id="agent.follow_up.error_reply" />);
           }
           break;
         case 'note':
           if (typeof action.options.reply_text === 'undefined') {
-            errors.push(agentPhrases.get('agent.follow_up.error_note'));
+            errors.push(<FormattedMessage id="agent.follow_up.error_note" />);
           }
           break;
         case 'hold':
           if (typeof action.options.is_hold === 'undefined') {
-            errors.push(agentPhrases.get('agent.follow_up.error_hold'));
+            errors.push(<FormattedMessage id="agent.follow_up.error_hold" />);
           }
           break;
         case 'status':
           if (typeof action.options.status === 'undefined') {
-            errors.push(agentPhrases.get('agent.follow_up.error_status'));
+            errors.push(<FormattedMessage id="agent.follow_up.error_status" />);
           }
           break;
         case 'run_macro':
           if (typeof action.options.macroId === 'undefined') {
-            errors.push(agentPhrases.get('agent.follow_up.error_macro'));
+            errors.push(<FormattedMessage id="agent.follow_up.error_macro" />);
           }
           break;
         default:
@@ -347,13 +347,13 @@ class FollowUpForm extends React.Component {
   render() {
     return (
       <div>
-        <h4>{agentPhrases.get('agent.follow_up.add_follow_up')}</h4>
-        <h5>{agentPhrases.get('agent.follow_up.follow_up_time')}</h5>
+        <h4><FormattedMessage id="agent.follow_up.add_follow_up" /></h4>
+        <h5><FormattedMessage id="agent.follow_up.follow_up_time" /></h5>
         <FollowUpTime
           value={this.state.dateToRun}
           onChange={this.updateTime}
         />
-        <h5>{agentPhrases.get('agent.follow_up.follow_up_actions')}</h5>
+        <h5><FormattedMessage id="agent.follow_up.follow_up_actions" /></h5>
         <ActionsBlock
           actions={this.state.actions}
           onChange={this.updateActions}
@@ -363,19 +363,19 @@ class FollowUpForm extends React.Component {
           macros={this.props.macros}
           types={this.types}
         />
-        <h5>{agentPhrases.get('agent.general.criteria')}</h5>
+        <h5><FormattedMessage id="agent.general.criteria" /></h5>
         <Checkbox
           checked={this.state.cancelIfUserReply}
           onChange={this.updateCancelIfUserReply}
         >
-          {agentPhrases.get('agent.follow_up.cancel_if_reply')}
+          <FormattedMessage id="agent.follow_up.cancel_if_reply" />
         </Checkbox>
         <Button
           size="medium"
           onClick={this.createFollowUp}
           loading={this.state.saving}
         >
-          {agentPhrases.get('agent.general.create')}
+          <FormattedMessage id="agent.general.create" />
         </Button>
         {this.renderErrors()}
       </div>

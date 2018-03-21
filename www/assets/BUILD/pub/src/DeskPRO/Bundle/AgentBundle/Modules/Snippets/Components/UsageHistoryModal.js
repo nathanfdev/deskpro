@@ -1,10 +1,10 @@
 import PropTypes from 'prop-types';
 import React from 'react';
+import { FormattedMessage } from 'react-intl';
 import TimeAgo from '@deskpro/react-timeago';
 import { connect } from 'react-redux';
 import { Checkbox, Modal, Icon } from '@deskpro/react-components';
 import AgentAvatar from 'DeskPRO/Component/Avatar/AgentAvatar';
-import agentPhrases from 'DeskPRO/Bundle/AgentBundle/AgentPhrases';
 import * as actions from '../Actions/snippetsActions';
 
 @connect()
@@ -69,7 +69,7 @@ export class UsageHistoryModal extends React.Component {
             {UsageHistoryModal.getRating(use)}
             {use.message ?
               <span className="comment">{use.message}</span>
-              : <span className="no-comment">{agentPhrases.get('agent.snippets.no_comment')}</span>}
+              : <FormattedMessage className="no-comment" id="agent.snippets.no_comment" />}
           </div>
           : null}
       </div>);
@@ -88,23 +88,23 @@ export class UsageHistoryModal extends React.Component {
       <div id="usage_history_modal">
         <Modal
           title={<div>
-            {agentPhrases.get('agent.snippets.usage_history')}: {snippet.get('title')}
+            <FormattedMessage id="agent.snippets.usage_history" />: {snippet.get('title')}
           </div>}
           closeModal={closeModal}
         >
           <div className="display-options">
-            {agentPhrases.get('agent.general.display_options')}:
+            <FormattedMessage id="agent.general.display_options" />:
             <Checkbox
               checked={this.state.onlyWithFeedback}
               value="onlyWithFeedback"
               onChange={this.handleDisplayOption}
             >
-              {agentPhrases.get('agent.snippets.show_only_with_feedback')}
+              <FormattedMessage id="agent.snippets.show_only_with_feedback" />
             </Checkbox>
           </div>
           {this.state.loading ?
             <div className="ui active inverted dimmer">
-              <div className="ui text loader">{agentPhrases.get('agent.general.loading_dot')}</div>
+              <div className="ui text loader"><FormattedMessage id="agent.general.loading_dot" /></div>
             </div>
           : this.getUses()
           }

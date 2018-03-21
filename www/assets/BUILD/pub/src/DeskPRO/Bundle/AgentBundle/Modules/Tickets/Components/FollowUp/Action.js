@@ -1,9 +1,9 @@
 import React from 'react';
 import PropTypes from 'prop-types';
+import { FormattedMessage } from 'react-intl';
 import { connect } from 'react-redux';
 import { Select, Label, Radio } from '@deskpro/react-components';
 import { newid } from '@deskpro/react-components/dist/utils';
-import agentPhrases from 'DeskPRO/Bundle/AgentBundle/AgentPhrases';
 import { meSelector } from 'DeskPRO/Bundle/AppBundle/Modules/RecordsStore/Shortcuts/me';
 import Editor from './Editor';
 
@@ -106,7 +106,7 @@ class Action extends React.Component {
     }
     return (
       <div>
-        <Label>{agentPhrases.get('agent.general.agent')}</Label>
+        <Label><FormattedMessage id="agent.general.agent" /></Label>
         <Select
           name="agent"
           options={agents}
@@ -141,7 +141,7 @@ class Action extends React.Component {
     ));
     return (
       <div>
-        <Label>{agentPhrases.get('agent.general.team')}</Label>
+        <Label><FormattedMessage id="agent.general.team" /></Label>
         <Select
           name="agent_team"
           options={agentTeams}
@@ -169,7 +169,7 @@ class Action extends React.Component {
           onChange={this.onRadioChange}
           value={0}
         >
-          {agentPhrases.get('agent.tickets.unhold_btn')}
+          <FormattedMessage id="agent.tickets.unhold_btn" />
         </Radio>
         <Radio
           name="is_hold"
@@ -177,7 +177,7 @@ class Action extends React.Component {
           onChange={this.onRadioChange}
           value={1}
         >
-          {agentPhrases.get('agent.tickets.hold_btn')}
+          <FormattedMessage id="agent.tickets.hold_btn" />
         </Radio>
       </div>
     );
@@ -187,17 +187,17 @@ class Action extends React.Component {
     const { action, ticketPerms } = this.props;
     const options = [];
     if (ticketPerms.modify_set_awaiting_agent) {
-      options.push({ value: 'awaiting_agent', label: agentPhrases.get('agent.tickets.status_awaiting_agent') });
+      options.push({ value: 'awaiting_agent', label: <FormattedMessage id="agent.tickets.status_awaiting_agent" /> });
     }
     if (ticketPerms.modify_set_awaiting_user) {
-      options.push({ value: 'awaiting_user', label: agentPhrases.get('agent.tickets.status_awaiting_user') });
+      options.push({ value: 'awaiting_user', label: <FormattedMessage id="agent.tickets.status_awaiting_user" /> });
     }
     if (ticketPerms.modify_set_resolved) {
-      options.push({ value: 'resolved', label: agentPhrases.get('agent.tickets.status_resolved') });
+      options.push({ value: 'resolved', label: <FormattedMessage id="agent.tickets.status_resolved" /> });
     }
     return (
       <div>
-        <Label>{agentPhrases.get('agent.general.status')}</Label>
+        <Label><FormattedMessage id="agent.general.status" /></Label>
         <Select
           name="status"
           options={options}
@@ -229,7 +229,7 @@ class Action extends React.Component {
     );
     return (
       <div>
-        <Label>{agentPhrases.get('agent.general.macro')}</Label>
+        <Label><FormattedMessage id="agent.general.macro" /></Label>
         <Select
           name="macroId"
           options={macros}
