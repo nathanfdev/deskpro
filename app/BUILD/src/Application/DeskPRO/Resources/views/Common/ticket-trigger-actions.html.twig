@@ -294,6 +294,7 @@
 	{% if field.field_def.isFormField() %}
 		<div class="builder-type" title="{{ phrase('agent.general.set_field_name', {'field':field.field_def.title}) }}" data-rule-group="Ticket" data-rule-type="ticket_field[{{field.field_def.id}}]">
 			<div class="builder-options">
+        {% if field.field_def.widgetType == 'toggle' %}<input type="hidden" name="x" value="DP_ALLOW_BLANK" />{% endif %}
 				{{ form_widget(field.formView) }}
 			</div>
 		</div>
