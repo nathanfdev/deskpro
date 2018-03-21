@@ -4,9 +4,11 @@ import ReactDOM from 'react-dom';
 import { Provider } from 'react-redux';
 import { AppContainer } from 'react-hot-loader';
 import { DragDropContextProvider } from 'react-dnd';
+import { IntlProvider, addLocaleData } from 'react-intl';
 import HTML5Backend from 'react-dnd-html5-backend';
 import Twig from 'twig';
 import { api } from 'DeskPRO/Bundle/AppBundle/DAL';
+import agentPhrases from 'DeskPRO/Bundle/AgentBundle/AgentPhrases';
 import { AgentTopBarContainer } from 'DeskPRO/Bundle/AgentBundle/Modules/TopBar/Components/AgentTopBar';
 import { SideBarContainer } from 'DeskPRO/Bundle/AgentBundle/Modules/SideBar/Components/SideBar';
 import { LeftDrawerContainer } from 'DeskPRO/Bundle/AgentBundle/Modules/SideBar/Components/LeftDrawer';
@@ -59,6 +61,9 @@ class AgentLegacyApp {
   }
 
   start() {
+    const possibleLocale = window.DP_LOCALE.split(/_/)[0] || 'en';
+    addLocaleData(require(`react-intl/locale-data/${possibleLocale}`)); // eslint-disable-line import/no-dynamic-require, global-require
+
     window.DP_DEV_MODE = __DEV__; // eslint-disable-line no-undef
     if (typeof window.DeskPRO_Window === 'undefined'
       || !this.store.getState().Application.bootstrap.get('isBootstrapped')) {
@@ -105,6 +110,7 @@ class AgentLegacyApp {
     const element = React.createElement(piece, { store: this.store });
     const elementPlace = piecePlace.replace(/([A-Z])/g, $1 => `_${$1.toLowerCase()}`);
     const node = document.getElementById(`react_dp${elementPlace}`);
+    const locale = window.DP_LOCALE.replace(/_/, '-');
 
     if (node) {
       this.rendered[piecePlace] = true;
@@ -113,13 +119,27 @@ class AgentLegacyApp {
         ReactDOM.render(
           <AppContainer>
             <Provider store={this.store}>
-              <DragDropContextProvider backend={HTML5Backend} window={node}>
-                {element}
-              </DragDropContextProvider>
+              <IntlProvider
+                locale={locale}
+                messages={agentPhrases.getPhrases()}
+              >
+                <DragDropContextProvider backend={HTML5Backend} window={node}>
+                  {element}
+                </DragDropContextProvider>
+              </IntlProvider>
             </Provider>
           </AppContainer>, node);
       } else {
-        ReactDOM.render(<Provider store={this.store}>{element}</Provider>, node);
+        ReactDOM.render(
+          <Provider store={this.store}>
+            <IntlProvider
+              locale={locale}
+              messages={agentPhrases.getPhrases()}
+            >
+              {element}
+            </IntlProvider>
+          </Provider>, node
+        );
       }
       return;
     }

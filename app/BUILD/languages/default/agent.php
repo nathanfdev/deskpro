@@ -247,8 +247,6 @@ return [
     'agent.emails.updated_ticket_followed'                     => 'and added you as a follower',
     'agent.emails.user_agent'                                  => 'User Agent',
     'agent.emails.user_ip'                                     => 'User IP',
-    'agent.emails.user_agent'                                  => 'User Agent',
-    'agent.emails.landing_page'                                => 'Landing Page',
     'agent.emails.referer_page'                                => 'Referer Page',
     'agent.emails.user_replied_to_tweet'                       => '{{name}} replied to your tweet',
     'agent.emails.user_replied_to_tweet_you_wrote'             => '{{name}} replied to a tweet you wrote for {{account}}.',

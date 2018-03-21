@@ -46,6 +46,10 @@ class AgentPhrases {
     return text;
   }
 
+  getPhrases() {
+    return this.phrases;
+  }
+
   /**
    *
    * @param phraseId phraseId of the translation

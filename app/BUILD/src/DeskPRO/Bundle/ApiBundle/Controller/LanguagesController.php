@@ -529,8 +529,19 @@ class LanguagesController extends CrudController
             $language = $this->getManager()->getRepository(Language::class)->find($request->get('language'));
         }
 
-        $output = MapUtils::map($phrases, function ($idx, $id) use ($translate, $language) {
-            return [$id, $translate->phrase($id, [], $language)];
+        $format = 'twig';
+        if ($request->get('format')) {
+            $format = $request->get('format');
+        }
+
+        $output = MapUtils::map($phrases, function ($idx, $id) use ($translate, $language, $format) {
+            switch ($format) {
+                case 'icu':
+                    return [$id, $this->convertToIcu($translate->phrase($id, [], $language))];
+                case 'twig':
+                default:
+                    return [$id, $translate->phrase($id, [], $language)];
+            }
         });
 
         $res = new JsonResponse($output);
@@ -605,5 +616,17 @@ class LanguagesController extends CrudController
         $entityManager->flush();
 
         return new JsonResponse($phrases);
+    }
+
+    private function convertToIcu($phrase)
+    {
+        $phrase = str_replace('{{', '{', $phrase);
+        $phrase = str_replace('}}', '}', $phrase);
+        if (strpos($phrase, '|') !== false) {
+            $parts  = explode('|', $phrase);
+            $phrase = "{count, plural,\none {{$parts[0]}}\nother {{$parts[1]}}\n}";
+        }
+
+        return $phrase;
     }
 }

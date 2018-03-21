@@ -1,6 +1,6 @@
 import PropTypes from 'prop-types';
 import React from 'react';
-import TimeAgo from '@deskpro/react-timeago';
+import { FormattedRelative } from 'react-intl';
 import { connect } from 'react-redux';
 import classNames from 'classnames';
 import { Select, Modal, Icon } from '@deskpro/react-components';
@@ -56,7 +56,7 @@ export class ChangeLogModal extends React.Component {
         <Icon name="file-text" size="s" />
         {agentPhrases.get('agent.snippets.content_change')} (#{version})
             <AgentAvatar agent={change.person} />
-        <span className="date"><TimeAgo date={change.date_created} /></span>
+        <span className="date"><FormattedRelative value={change.date_created} /></span>
       </div>);
     }
       );
@@ -201,7 +201,7 @@ export class ChangeLogModal extends React.Component {
                 <Icon name="file-text" size="s" />
                 {agentPhrases.get('agent.snippets.snippet_created')} (#1)
                 <AgentAvatar agent={snippet.get('person')} />
-                <span className="date"><TimeAgo date={snippet.get('date_created')} /></span>
+                <span className="date"><FormattedRelative value={snippet.get('date_created')} /></span>
               </div>
             </div>
           }
