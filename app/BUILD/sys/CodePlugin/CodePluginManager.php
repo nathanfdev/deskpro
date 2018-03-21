@@ -29,6 +29,7 @@
 namespace DpSys\CodePlugin;
 
 use Symfony\Component\DependencyInjection\Container;
+use Symfony\Component\HttpFoundation\Request;
 
 class CodePluginManager
 {
@@ -43,7 +44,7 @@ class CodePluginManager
     private $plugins = [];
 
     /**
-     * @return CodePlugins
+     * @return self
      */
     public static function getManager()
     {
@@ -170,5 +171,24 @@ class CodePluginManager
                 return $res;
             }
         }
+    }
+
+    /**
+     * @param Request $request
+     * @param string  $context    agent or user
+     * @param string  $controller
+     * @param stirng  $action
+     *
+     * @return null|string The name of the class and action. e.g. Foo\Bar::myAction
+     */
+    public function routeScriptController(Request $request, $context, $controller, $action)
+    {
+        foreach ($this->plugins as $plugin) {
+            if ($res = $plugin->routeScriptController($request, $context, $controller, $action)) {
+                return $res;
+            }
+        }
+
+        return null;
     }
 }
