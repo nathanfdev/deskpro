@@ -302,7 +302,8 @@ class DpqlCompiler
                         case 'orders':
                         case 'statuses':
                             return $this->replaceGroup($variable, $variables, $variable['type']);
-                        case 'values':
+                        // this would include 'value' and all custom def stuff
+                        default:
                             return $variable['field_value'];
                     }
                 }

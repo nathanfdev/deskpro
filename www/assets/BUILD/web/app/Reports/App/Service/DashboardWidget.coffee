@@ -107,9 +107,10 @@ define ['DeskPRO/Util/Arrays'], (Arrays) ->
     testWidget: (reportWidget) ->
       url = "/report_widgets/test/#{reportWidget.id}?include=rendered_result&inline_sideloads=1"
       dataToSend =
-        display_types: reportWidget.display_types,
-        variables:     reportWidget.variables,
-        input_mode:    'form',
+        title:         'test widget'
+        display_types: reportWidget.display_types
+        variables:     reportWidget.variables
+        input_mode:    'form'
         query_parts:   reportWidget.query_parts
 
       @Api2
