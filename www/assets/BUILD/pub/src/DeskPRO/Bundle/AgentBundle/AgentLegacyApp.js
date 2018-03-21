@@ -5,6 +5,7 @@ import { Provider } from 'react-redux';
 import { AppContainer } from 'react-hot-loader';
 import { DragDropContextProvider } from 'react-dnd';
 import HTML5Backend from 'react-dnd-html5-backend';
+import Twig from 'twig';
 import { api } from 'DeskPRO/Bundle/AppBundle/DAL';
 import { AgentTopBarContainer } from 'DeskPRO/Bundle/AgentBundle/Modules/TopBar/Components/AgentTopBar';
 import { SideBarContainer } from 'DeskPRO/Bundle/AgentBundle/Modules/SideBar/Components/SideBar';
@@ -29,7 +30,6 @@ import RteTextArea from 'DeskPRO/Bundle/AgentBundle/Modules/Publish/Services/Rte
 import store from 'DeskPRO/Bundle/AgentBundle/Services/store';
 import { FollowUpContainer } from './Modules/Tickets/Components/FollowUp/FollowUp';
 
-
 class AgentLegacyApp {
 
   rendered = {};
@@ -39,6 +39,9 @@ class AgentLegacyApp {
   run() {
     // IE/Edge Hack http://stackoverflow.com/questions/1481251/what-does-document-domain-document-domain-do
     document.domain = document.domain;
+
+    // for old snippets (e.g. SnippetViewer.js)
+    window.twig = Twig.twig;
 
     window.LegacyRteTextarea = new RteTextArea();
     window.LegacySnippetInserter = new LegacySnippetInserter();
