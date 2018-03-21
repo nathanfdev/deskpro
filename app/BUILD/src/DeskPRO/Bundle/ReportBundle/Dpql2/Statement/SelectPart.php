@@ -79,6 +79,14 @@ class SelectPart
     private $statementFactory;
 
     /**
+     * E.g. if part of a LAYER WITH <type>, a hint to the renderer
+     * what type of graph we want.
+     *
+     * @var string|null
+     */
+    private $graphTypeHint;
+
+    /**
      * List of expressions in SELECT clause.
      *
      * @var AbstractPart[]
@@ -1311,5 +1319,21 @@ class SelectPart
     public function withRollup()
     {
         return $this->withRollup;
+    }
+
+    /**
+     * @return null|string
+     */
+    public function getGraphTypeHint()
+    {
+        return $this->graphTypeHint;
+    }
+
+    /**
+     * @param null|string $graphTypeHint
+     */
+    public function setGraphTypeHint($graphTypeHint)
+    {
+        $this->graphTypeHint = $graphTypeHint;
     }
 }
