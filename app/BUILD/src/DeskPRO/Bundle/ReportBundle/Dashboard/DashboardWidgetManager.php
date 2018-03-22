@@ -401,7 +401,7 @@ class DashboardWidgetManager
             return $item;
         });
         if (count($renderedResults) > 1) {
-            return $renderer->mergeResults($renderedResults);
+            return $renderer->mergeResults($renderedResults, $options ?: []);
         }
 
         return reset($renderedResults);
