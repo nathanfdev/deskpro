@@ -107,6 +107,28 @@ abstract class AbstractJsonRenderer extends AbstractRenderer
     }
 
     /**
+     * @param array $row
+     * @param array $hierarchyParents
+     *
+     * @return string
+     */
+    protected function getFullHierarchyTitle(array $row, array $hierarchyParents)
+    {
+        $parts    = [];
+        $iterator = function (array $row) use ($hierarchyParents, &$iterator, &$parts) {
+            if (isset($row['hierarchy_parent_id']) && isset($hierarchyParents[$row['hierarchy_parent_id']])) {
+                $iterator($hierarchyParents[$row['hierarchy_parent_id']]);
+            }
+
+            $parts[] = $row['hierarchy_title'];
+        };
+
+        $iterator($row);
+
+        return implode(' / ', $parts);
+    }
+
+    /**
      * @param array $rows
      * @param int   $parentId
      *
@@ -115,7 +137,7 @@ abstract class AbstractJsonRenderer extends AbstractRenderer
     protected function findHierarchyParent($rows, $parentId)
     {
         foreach ($rows as $i => $row) {
-            if ($row['hierarchy_id'] === $parentId) {
+            if ((int) $row['hierarchy_id'] === (int) $parentId) {
                 return [$i, $row];
             }
         }
