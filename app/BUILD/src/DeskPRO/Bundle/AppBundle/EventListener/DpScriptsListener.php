@@ -28,7 +28,7 @@
 
 namespace DeskPRO\Bundle\AppBundle\EventListener;
 
-use DpSys\CodePlugin\CodePluginManager;
+use DeskPRO\Component\Util\StringUtils;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 use Symfony\Component\HttpKernel\Event\GetResponseEvent;
 use Symfony\Component\HttpKernel\KernelEvents;
@@ -59,20 +59,22 @@ class DpScriptsListener implements EventSubscriberInterface
         }
 
         $request = $event->getRequest();
-        if (!preg_match('#/scripts/(agent|user)/(\w+)/(\w+)#', $request->getPathInfo(), $m)) {
+        if (!preg_match('#/scripts/(?P<context>agent|user)/(?P<controller>[a-zA-Z0-9\-_:]+)(?:/(?P<action>[a-zA-Z0-9\-_:]+))?#', $request->getPathInfo(), $m)) {
             return;
         }
 
-        list(, $context, $controller, $action) = $m;
+        $context    = $m['context'];
+        $controller = $m['controller'];
+        $action     = @$m['action'] ?: 'index';
 
-        $controller = CodePluginManager::getManager()->routeScriptController($request, $context, $controller, $action);
-        if (!$controller) {
-            $controller = 'DpScripts\\'.ucfirst($context).'\\'.ucfirst($controller).'Controller::'.$action.'Action';
+        $controllerClass = \DpSys\CodePlugin\DpPlugins::getManager()->routeScriptController($request, $context, $controller, $action);
+        if (!$controllerClass) {
+            $controllerClass = 'DpScripts\\'.ucfirst($context).'\\'.StringUtils::toCamelCase(str_replace('-', '_', $controller)).'Controller::'.StringUtils::toCamelCase(str_replace('-', '_', $action)).'Action';
         }
 
         $request->attributes->add([
             '_route'        => 'scripts_'.$controller.'_'.$action,
-            '_controller'   => $controller,
+            '_controller'   => $controllerClass,
             '_route_params' => [],
         ]);
     }
