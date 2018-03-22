@@ -571,44 +571,60 @@ export class AgentTopBar extends React.Component {
 
     return (<TopBar>
       <TopBarItem className="search-box legacy-omnibox">
-        <SearchBox
-          onUserInput={onSearch}
-          onFocus={onSearchFocus}
-          onBlur={onSearchBlur}
-          onClearInput={onClearSearchInput}
-          placeholder={`${<FormattedMessage id="agent.chrome.nav_search" />} ...`}
-          ref={(c) => { this.searchBox = c; }}
-          icon={<Isvg className="search" src={`${window.DESKPRO_APP_ASSETS_URL}/DeskPRO/Bundle/AgentBundle/Resources/img/general/search.svg`} />}
-        />
+        <FormattedMessage id="agent.chrome.nav_search">
+          {placeholder => (
+            <SearchBox
+              onUserInput={onSearch}
+              onFocus={onSearchFocus}
+              onBlur={onSearchBlur}
+              onClearInput={onClearSearchInput}
+              placeholder={`${placeholder} ...`}
+              ref={(c) => { this.searchBox = c; }}
+              icon={<Isvg className="search" src={`${window.DESKPRO_APP_ASSETS_URL}/DeskPRO/Bundle/AgentBundle/Resources/img/general/search.svg`} />}
+            />
+          )}
+        </FormattedMessage>
       </TopBarItem>
-      <TopBarItem
-        className="legacy-omnibox recent"
-        onClick={onRecent}
-        title={<FormattedMessage id="agent.chrome.recent_tooltip" />}
-      >
-        <Isvg src={`${window.DESKPRO_APP_ASSETS_URL}/DeskPRO/Bundle/AgentBundle/Resources/img/topbar/recent.svg`} />
-      </TopBarItem>
+      <FormattedMessage id="agent.chrome.recent_tooltip">
+        {title => (
+          <TopBarItem
+            className="legacy-omnibox recent"
+            onClick={onRecent}
+            title={title}
+          >
+            <Isvg src={`${window.DESKPRO_APP_ASSETS_URL}/DeskPRO/Bundle/AgentBundle/Resources/img/topbar/recent.svg`} />
+          </TopBarItem>
+        )}
+      </FormattedMessage>
       { this.renderIM() }
       <AddButton closeIframes={closeIframes} />
       <TopBarRightMenu>
-        <TopBarItem
-          className="views"
-          onClick={toggleViewMode}
-          title={<FormattedMessage id="agent.chrome.view_tooltip" />}
-        >
-          <Isvg src={`${window.DESKPRO_APP_ASSETS_URL}/DeskPRO/Bundle/AgentBundle/Resources/img/topbar/views.svg`} />
-        </TopBarItem>
-        <TopBarItem
-          className="legacy-omnibox notifications"
-          onClick={onNotification}
-          title={<FormattedMessage id="agent.chrome.notification_tooltip" />}
-        >
-          <TopBarNotificationIcon
-            elementId="notifications"
-            svg={`${window.DESKPRO_APP_ASSETS_URL}/DeskPRO/Bundle/AgentBundle/Resources/img/topbar/notifications.svg`}
-            count={notificationCount}
-          />
-        </TopBarItem>
+        <FormattedMessage id="agent.chrome.view_tooltip">
+          {title => (
+            <TopBarItem
+              className="views"
+              onClick={toggleViewMode}
+              title={title}
+            >
+              <Isvg src={`${window.DESKPRO_APP_ASSETS_URL}/DeskPRO/Bundle/AgentBundle/Resources/img/topbar/views.svg`} />
+            </TopBarItem>
+          )}
+        </FormattedMessage>
+        <FormattedMessage id="agent.chrome.notification_tooltip">
+          {title => (
+            <TopBarItem
+              className="legacy-omnibox notifications"
+              onClick={onNotification}
+              title={title}
+            >
+              <TopBarNotificationIcon
+                elementId="notifications"
+                svg={`${window.DESKPRO_APP_ASSETS_URL}/DeskPRO/Bundle/AgentBundle/Resources/img/topbar/notifications.svg`}
+                count={notificationCount}
+              />
+            </TopBarItem>
+          )}
+        </FormattedMessage>
         <TopBarItem>
           <AvatarResolver avatar={me && me.get('avatar')} size={56}>
             <User />

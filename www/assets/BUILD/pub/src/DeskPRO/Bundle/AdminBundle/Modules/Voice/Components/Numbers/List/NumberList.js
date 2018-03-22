@@ -145,6 +145,7 @@ class NumberList extends React.Component {
           </div>
           {numbers.sortBy(number => -number.get('id')).toArray().map(number =>
             <NumberRow
+              key={number}
               number={number}
               queues={queues}
               onEditNumber={onEditNumber}

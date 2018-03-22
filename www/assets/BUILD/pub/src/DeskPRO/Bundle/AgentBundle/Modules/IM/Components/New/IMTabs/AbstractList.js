@@ -1,8 +1,8 @@
 import PropTypes from 'prop-types';
 import React from 'react';
+import { FormattedRelative } from 'react-intl';
 import classNames from 'classnames';
 import { List, ListElement } from 'DeskPRO/Component/Semantic/List';
-import TimeAgo from '@deskpro/react-timeago';
 import moment from 'moment';
 import AvatarHelper from './AvatarHelper';
 
@@ -24,7 +24,7 @@ class AbstractList extends React.Component {
     if (nObj.years === mObj.years && nObj.months === mObj.months && (nObj.date - mObj.date) === 1) {
       return 'Yesterday';
     }
-    return m && (diff < 60 * 60 * 24) ? m.format('h:mm a') : <TimeAgo date={date} />;
+    return m && (diff < 60 * 60 * 24) ? m.format('h:mm a') : <FormattedRelative value={date} />;
   }
 
   getItem(item, type, titleProp) {

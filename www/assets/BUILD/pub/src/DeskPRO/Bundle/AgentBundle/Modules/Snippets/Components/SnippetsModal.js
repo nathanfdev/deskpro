@@ -842,12 +842,16 @@ export class SnippetsModal extends React.Component {
             </div>
             <div className="labels-field field">
               <Label htmlFor="snippet_label_input"><FormattedMessage id="agent.general.labels" /></Label>
-              <TagInput
-                tags={labels}
-                onChange={changeLabels}
-                options={labelsSource}
-                inputProps={{ placeholder: <FormattedMessage id="agent.general.add_a_label" /> }}
-              />
+              <FormattedMessage id="agent.general.add_a_label">
+                {placeholder => (
+                  <TagInput
+                    tags={labels}
+                    onChange={changeLabels}
+                    options={labelsSource}
+                    inputProps={{ placeholder }}
+                  />
+                )}
+              </FormattedMessage>
             </div>
             {this.props.isSplit ?
               <div>

@@ -3,7 +3,6 @@ import React from 'react';
 import { FormattedMessage } from 'react-intl';
 import { connect } from 'react-redux';
 import { CustomSelect, Radio, Checkbox, Input, List, ListElement } from '@deskpro/react-components';
-import agentPhrases from 'DeskPRO/Bundle/AgentBundle/AgentPhrases';
 import { collectionSelectorFactory } from 'DeskPRO/Bundle/AppBundle/Modules/RecordsStore';
 
 class Department extends React.Component {
@@ -289,7 +288,9 @@ export class VisibilitySelect extends React.Component {
         .map(o => o.get('title')).toArray());
       return departments.join(', ');
     }
-    return `${selectedDepartments.size} ${agentPhrases.get('agent.general.departments').toLowerCase()}`;
+    return (<FormattedMessage id="agent.general.departments">
+      {txt => `${selectedDepartments.size} ${txt.toLowerCase()}`}
+    </FormattedMessage>);
   };
 
   render() {

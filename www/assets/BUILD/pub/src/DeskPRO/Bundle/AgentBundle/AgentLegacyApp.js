@@ -48,6 +48,11 @@ class AgentLegacyApp {
     window.LegacyRteTextarea = new RteTextArea();
     window.LegacySnippetInserter = new LegacySnippetInserter();
 
+    this.locale = window.DP_LOCALE.replace(/_/, '-');
+
+    const possibleLocale = window.DP_LOCALE.split(/_/)[0] || 'en';
+    addLocaleData(require(`react-intl/locale-data/${possibleLocale}`)); // eslint-disable-line import/no-dynamic-require, global-require
+
     if (window.DP_SKIP_REACT) {
       return;
     }
@@ -61,8 +66,7 @@ class AgentLegacyApp {
   }
 
   start() {
-    const possibleLocale = window.DP_LOCALE.split(/_/)[0] || 'en';
-    addLocaleData(require(`react-intl/locale-data/${possibleLocale}`)); // eslint-disable-line import/no-dynamic-require, global-require
+    console.log('start');
 
     window.DP_DEV_MODE = __DEV__; // eslint-disable-line no-undef
     if (typeof window.DeskPRO_Window === 'undefined'
@@ -110,7 +114,6 @@ class AgentLegacyApp {
     const element = React.createElement(piece, { store: this.store });
     const elementPlace = piecePlace.replace(/([A-Z])/g, $1 => `_${$1.toLowerCase()}`);
     const node = document.getElementById(`react_dp${elementPlace}`);
-    const locale = window.DP_LOCALE.replace(/_/, '-');
 
     if (node) {
       this.rendered[piecePlace] = true;
@@ -120,7 +123,7 @@ class AgentLegacyApp {
           <AppContainer>
             <Provider store={this.store}>
               <IntlProvider
-                locale={locale}
+                locale={this.locale}
                 messages={agentPhrases.getPhrases()}
               >
                 <DragDropContextProvider backend={HTML5Backend} window={node}>
@@ -133,7 +136,7 @@ class AgentLegacyApp {
         ReactDOM.render(
           <Provider store={this.store}>
             <IntlProvider
-              locale={locale}
+              locale={this.locale}
               messages={agentPhrases.getPhrases()}
             >
               {element}
@@ -221,9 +224,14 @@ class AgentLegacyApp {
     ReactDOM.render(
       <AppContainer>
         <Provider store={this.store}>
-          <FollowUpContainer
-            {...data}
-          />
+          <IntlProvider
+            locale={this.locale}
+            messages={agentPhrases.getPhrases()}
+          >
+            <FollowUpContainer
+              {...data}
+            />
+          </IntlProvider>
         </Provider>
       </AppContainer>,
       node

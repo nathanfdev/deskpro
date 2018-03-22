@@ -114,6 +114,7 @@
     "to-markdown": "^3.0.3",
     "toastr": "^2.1.2",
     "twig": "^1.10.5",
+    "util-deprecate": "https://registry.npmjs.org/util-deprecate/-/util-deprecate-1.0.2.tgz",
     "uuid": "^3.1.0",
     "warning": "^3.0.0"
   },

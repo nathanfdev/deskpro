@@ -1,7 +1,6 @@
 import PropTypes from 'prop-types';
 import React from 'react';
-import { FormattedMessage } from 'react-intl';
-import TimeAgo from '@deskpro/react-timeago';
+import { FormattedMessage, FormattedRelative } from 'react-intl';
 import { connect } from 'react-redux';
 import { Checkbox, Modal, Icon } from '@deskpro/react-components';
 import AgentAvatar from 'DeskPRO/Component/Avatar/AgentAvatar';
@@ -63,7 +62,7 @@ export class UsageHistoryModal extends React.Component {
         <span className="separator">|</span> <span className="person">{person.display_name}</span>
         <span className="email">&lt;{person.primary_email}&gt;</span>
         <AgentAvatar agent={use.person} />
-        <span className="date"><TimeAgo date={use.date_created} /></span>
+        <span className="date"><FormattedRelative value={use.date_created} /></span>
         {use.rating !== null ?
           <div className="rating">
             {UsageHistoryModal.getRating(use)}

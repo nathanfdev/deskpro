@@ -5,7 +5,6 @@ import { connect } from 'react-redux';
 import { List, ListElement, CustomSelect, Radio, Checkbox, Input } from '@deskpro/react-components';
 import { meSelector } from 'DeskPRO/Bundle/AppBundle/Modules/RecordsStore/Shortcuts/me';
 import { allSelectorFactory } from 'DeskPRO/Bundle/AppBundle/Modules/RecordsStore';
-import agentPhrases from 'DeskPRO/Bundle/AgentBundle/AgentPhrases';
 
 @connect(state => ({
   me:         meSelector(state),
@@ -103,6 +102,8 @@ export class OwnershipSelect extends React.Component {
   onFilterChange = filter => this.setState({ filter });
 
   onRadioChange = (checked, value) => {
+    console.log(checked);
+    console.log(value);
     this.setState({
       radio: value
     });
@@ -126,6 +127,7 @@ export class OwnershipSelect extends React.Component {
   };
 
   getSpecific = () => {
+    console.log('specific');
     const { me, selectedTeams, existingTeams } = this.props;
     const teams = [];
     const re = new RegExp(this.state.filter, 'i');
@@ -150,12 +152,16 @@ export class OwnershipSelect extends React.Component {
     return (
       <div>
         {this.props.agentTeams.size > 10 ?
-          <Input
-            placeholder={<FormattedMessage id="agent.general.filter" />}
-            value={this.state.filter}
-            className="teams_filter"
-            onChange={this.onFilterChange}
-          />
+          <FormattedMessage id="agent.general.filter">
+            {placeholder => (
+              <Input
+                placeholder={placeholder}
+                value={this.state.filter}
+                className="teams_filter"
+                onChange={this.onFilterChange}
+              />
+            )}
+          </FormattedMessage>
           : null }
         <List>
           {teams}
@@ -174,7 +180,9 @@ export class OwnershipSelect extends React.Component {
     } else if (selectedTeams.size === 0 && existingTeams.size > 0) {
       return <FormattedMessage id="agent.general.select" />;
     }
-    return `${selectedTeams.size} ${agentPhrases.get('agent.general.teams').toLowerCase()}`;
+    return (<FormattedMessage id="agent.general.teams" >
+      {txt => `${selectedTeams.size} ${txt.toLowerCase()}`}
+    </FormattedMessage>);
   };
 
   render() {

@@ -1,3 +1,4 @@
+import deprecate from 'util-deprecate';
 import escape from 'lodash/escape';
 import mapValues from 'lodash/mapValues';
 import assign from 'lodash/assign';
@@ -21,6 +22,7 @@ class AgentPhrases {
   }
 
   get(phraseId, vars) {
+    deprecate(() => {}, 'AgentPhrases.get() is deprecated please use FormattedMessage instead')();
     // Prevent to complain before getting any translation
     if (Object.keys(this.phrases).length === 0) {
       return '';

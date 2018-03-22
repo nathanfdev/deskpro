@@ -1,7 +1,7 @@
 import PropTypes from 'prop-types';
 import React from 'react';
+import { FormattedMessage } from 'react-intl';
 import classNames from 'classnames';
-import agentPhrases from 'DeskPRO/Bundle/AgentBundle/AgentPhrases';
 import PopUp from 'DeskPRO/Component/Semantic/PopUp/PopUp';
 import VoiceMenu from './VoiceMenu';
 
@@ -37,7 +37,7 @@ class VoiceMenuDropdown extends React.Component {
 
   getStatus() {
     const { onlineAgents, callsEnabled, voiceSynced, isSecure, micEnabled } = this.props;
-    const status = callsEnabled ? agentPhrases.get('agent.general.on') : agentPhrases.get('agent.general.off');
+    const status = callsEnabled ? 'agent.general.on' : 'agent.general.off';
 
     if (!voiceSynced) {
       return (
@@ -66,7 +66,7 @@ class VoiceMenuDropdown extends React.Component {
 
     return (
       <div className="status">
-        {status} <span className="count">({onlineAgents.size})</span>
+        <FormattedMessage id={status} /> <span className="count">({onlineAgents.size})</span>
       </div>
     );
   }

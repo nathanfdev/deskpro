@@ -333,6 +333,7 @@
         window.DP_HAS_VOICE         = {% if app.hasVoice() %}true{% else %}false{% endif %};
         window.DP_HAS_DEV           = {% if app.hasFeature('dev') %}true{% else %}false{% endif %};
         window.DP_HAS_NEW_EMAILS    = {% if app.hasBeta('email_templates') %}true{% else %}false{% endif %};
+        window.DP_LOCALE            = '{{ app.user.language.locale }}';
         window.DP_VERSION_NUMBER    = '{{ app.getVersionName() }}';
         window.DP_SECURE_LIC_SERVER = '{{ license_server }}';
         window.DP_ENABLED_LANGS     = [{% for language in enabled_languages() %}{{ '{' }}code: '{{ language.urlCode }}', locale: '{{ language.locale }}', title:'{{ language.title|capitalize }}',flag:'{{ language.flag_image }}'{{ '}' }}{% if not loop.last %},{% endif %}{% endfor %}];
