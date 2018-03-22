@@ -896,6 +896,10 @@ class SelectPart
 
                 $resultTitle = ($alias !== false ? $alias : $groupBy->name());
                 $renderer    = $groupBy->renderer() ?: function ($valueRenderer, $value, $row) {
+                    if (count($this->resultMetadata->getGroupYColumns()) > 1) {
+                        return $value;
+                    }
+
                     return array_key_exists('hierarchy_title', $row) ? $row['hierarchy_title'] : $value;
                 };
                 $this->resultMetadata->addGroupYColumn($resultTitle, $groupId, $printId, $renderer);

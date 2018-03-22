@@ -68,7 +68,12 @@ class JsonBarRenderer extends AbstractJsonChartRenderer
         $chartData   = $graphs   = [];
 
         // we have stacked results here
-        if ($groupXColumns && $metadata->hasFlag(ResultMetadata::FLAG_HIERARCHICAL) && !$metadata->hasFlag(ResultMetadata::FLAG_LAYERED)) {
+        // stack results if simple grouping only, e.g. can't stack for matrix
+        if (count($groupXColumns) === 1
+            && count($groupYColumns) === 1
+            && $metadata->hasFlag(ResultMetadata::FLAG_HIERARCHICAL)
+            && !$metadata->hasFlag(ResultMetadata::FLAG_LAYERED)
+        ) {
             $arrayOutput['valueAxes'][0]['stackType'] = 'regular';
             $arrayOutput['valueAxes'][0]['title']     = $selectColumns[0]['title'];
             $arrayOutput['categoryAxis']['title']     = $groupYColumns[0]['title'];

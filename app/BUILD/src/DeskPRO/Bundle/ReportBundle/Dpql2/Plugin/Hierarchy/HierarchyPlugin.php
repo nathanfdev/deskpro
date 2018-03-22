@@ -179,13 +179,13 @@ class HierarchyPlugin implements PluginInterface
         $titleIndex    = $lastNum - 1;
         $parentIdIndex = $lastNum - 2;
         $idIndex       = $lastNum - 3;
-        $optionsId     = $lastNum - 4;
+        $optionsIndex  = $lastNum - 4;
         foreach ($results as &$result) {
             $result['hierarchy_id']    = $result[$idIndex];
             $result['hierarchy_title'] = $path.$result[$titleIndex];
 
             if (strpos($this->titleFieldSql, 'custom_data_') !== false) {
-                $customFieldOptions = $result[$optionsId];
+                $customFieldOptions = $result[$optionsIndex];
                 $decodedOptions     = @unserialize($customFieldOptions);
 
                 if (isset($decodedOptions['parent_id'])) {
@@ -200,6 +200,7 @@ class HierarchyPlugin implements PluginInterface
             unset($result[$idIndex]);
             unset($result[$parentIdIndex]);
             unset($result[$titleIndex]);
+            unset($result[$optionsIndex]);
         }
 
         // Tree sort and count depth
