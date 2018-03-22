@@ -1559,7 +1559,6 @@ class TicketSearch extends SearcherAbstract
                         $this->affected_fields[] = 'ticket.date_resolved';
                         $wheres[]                = $this->_dateMatch("$tickets_table.date_resolved", $op, $choice);
                         $wheres[]                = $this->_choiceMatch("$tickets_table.status", 'is', ['resolved']);
-                        $this->is_archive        = false;
                         break;
                     case self::TERM_DATE_ON_HOLD:
                         $this->affected_fields[] = 'ticket.date_on_hold';
