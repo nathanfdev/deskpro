@@ -110,7 +110,7 @@ abstract class AbstractRenderer implements ReportsRendererInterface
                     $value[] = $resultId ? $row[$resultId - 1] : '';
                 }
             } else {
-                $value = $column['resultId'] ? $row[$column['resultId'] - 1] : '';
+                $value = $column['resultId'] && isset($row[$column['resultId'] - 1]) ? $row[$column['resultId'] - 1] : '';
             }
         }
 
