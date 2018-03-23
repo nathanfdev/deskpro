@@ -839,6 +839,8 @@ DeskPRO.Agent.PageFragment.Page.NewTicket = new Orb.Class({
       formData.push({ name: 'billing_type', value: this.billing.getBillingType() });
     }
 
+    formData = this.normalizeCustomFieldValues(formData);
+
 		return $.ajax({
 
 			url: BASE_URL + 'agent/tickets/new/save',
