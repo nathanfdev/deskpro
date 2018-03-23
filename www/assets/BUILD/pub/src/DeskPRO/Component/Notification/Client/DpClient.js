@@ -43,7 +43,10 @@ export default class DpClient extends AbstractClient {
         console.log(`DpClient received message with type: ${eventName}`, data);
       }
       if (data.cm_strategy && data.cm_strategy !== 'deskpro') {
-        window.DeskPRO_Window.showRefreshAlert(null, 'Your connection method is out of date, you may miss notifications and messages');
+        if (!this.userNotified) {
+          window.DeskPRO_Window.showRefreshAlert(null, 'Your connection method is out of date, you may miss notifications and messages');
+          this.userNotified = true;
+        }
       }
       if (data.target === 'agent_public' || (parseInt(data.target, 10) === that.options.me)) {
         that.options.dispatcher(eventName, data);

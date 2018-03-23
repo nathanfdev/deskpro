@@ -97,7 +97,10 @@ export default class PusherClient extends AbstractClient {
 
   handle(eventName, data) {
     if (data.cm_strategy && data.cm_strategy !== 'pusher') {
-      window.DeskPRO_Window.showRefreshAlert(null, 'Your connection method is out of date, you may miss notifications and messages');
+      if (!this.userNotified) {
+        window.DeskPRO_Window.showRefreshAlert(null, 'Your connection method is out of date, you may miss notifications and messages');
+        this.userNotified = true;
+      }
     }
     if (data.type === 'multiplex_message') {
       this.handleMultiplexMessage(eventName, data);
