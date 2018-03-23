@@ -29,6 +29,7 @@
 namespace DpSys\CodePlugin;
 
 use Symfony\Component\DependencyInjection\Container;
+use Symfony\Component\HttpFoundation\Request;
 
 class CodePlugin
 {
@@ -123,6 +124,19 @@ class CodePlugin
      * @return null|Response
      */
     public function handleGoRequest($id, Container $container)
+    {
+        return null;
+    }
+
+    /**
+     * @param Request $request
+     * @param string  $context    agent or user
+     * @param string  $controller
+     * @param stirng  $action
+     *
+     * @return null|string The name of the class and action. e.g. Foo\Bar::myAction
+     */
+    public function routeScriptController(Request $request, $context, $controller, $action)
     {
         return null;
     }

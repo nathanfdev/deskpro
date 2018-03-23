@@ -128,8 +128,12 @@ class DpqlCompiler
         $input = $this->replacePlaceholders($input, $placeholders);
         $input = $this->replaceVariables($input, $placeholders);
 
-        $statement = $this->lexAndParse($input);
-        $statement->prepare();
+        try {
+            $statement = $this->lexAndParse($input);
+            $statement->prepare();
+        } catch (DpqlException $e) {
+            throw DpqlCompileException::createFromException($e, $input);
+        }
 
         return $statement;
     }
@@ -290,7 +294,7 @@ class DpqlCompiler
         $groupParams = $repository->getReportGroupParams();
 
         $input = preg_replace_callback(
-            '#(\$\{([a-zA-Z0-9_]+)\})#',
+            '#(\$\{\s*([a-zA-Z0-9_]+)\s*\})#',
             function ($match) use ($input, $variables, $placeholders, $groupParams) {
                 $varName = $match[2];
                 if (isset($variables[$varName])) {
@@ -304,7 +308,7 @@ class DpqlCompiler
                             return $this->replaceGroup($variable, $variables, $variable['type']);
                         // this would include 'value' and all custom def stuff
                         default:
-                            return $variable['field_value'];
+                            return @$variable['field_value'] ?: @$variable['value'] ?: $match[0];
                     }
                 }
 

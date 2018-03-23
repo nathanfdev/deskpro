@@ -148,7 +148,7 @@ abstract class AbstractJsonRenderer extends AbstractRenderer
     /**
      * {@inheritdoc}
      */
-    public function mergeResults(array $results)
+    public function mergeResults(array $results, array $options)
     {
         $mainResults = array_shift($results);
 

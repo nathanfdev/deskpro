@@ -86,7 +86,7 @@ define ->
           if chart and widget.dataProvider
             chart.dataProvider = widget.dataProvider
           else
-            chart = new AmCharts.makeChart("ch#{scope.widgetId}", Object.assign(widget, options));
+            chart = new AmCharts.makeChart("ch#{scope.widgetId}", lodashMerge(widget, options));
 
           chartDiv.height(chartParent.height() - chartHeader.outerHeight())
           chart.validateData()
