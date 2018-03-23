@@ -90,7 +90,23 @@ define ->
 
           chartDiv.height(chartParent.height() - chartHeader.outerHeight())
           chart.validateData()
-          if widget.multiplePies?
+
+          if options.click_url
+
+            vars = {};
+            matches = options.click_url.match(/\$\{([a-zA-z0-9_]+)\}/)
+            for match, index in matches
+              if index % 2 == 1
+                vars[match] = matches[index - 1]
+
+            chart.addListener "clickGraphItem", (event) ->
+              url = options.click_url
+              for key, variable of vars
+                if event.item.dataContext[key]
+                  url = url.replace(variable, event.item.dataContext[key])
+              window.open url
+
+          else if widget.multiplePies?
             defaultDataProvider = widget.dataProvider
             chart.addListener "clickSlice", (event) ->
               if (event.dataItem.dataContext.id != undefined)
