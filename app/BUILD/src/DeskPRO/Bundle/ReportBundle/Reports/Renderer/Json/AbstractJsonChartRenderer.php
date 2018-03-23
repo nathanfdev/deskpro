@@ -319,7 +319,7 @@ abstract class AbstractJsonChartRenderer extends AbstractJsonRenderer
 
                     // process additional data for internal chart purposes
                     foreach ($additionalData as $key => $column) {
-                        $rowData[$key] = $this->filterGraphValue($this->getColumnValue($row, $column));
+                        $data[$key] = $this->filterGraphValue($this->getColumnValue($row, $column));
                     }
 
                     $chartData[] = $data;
