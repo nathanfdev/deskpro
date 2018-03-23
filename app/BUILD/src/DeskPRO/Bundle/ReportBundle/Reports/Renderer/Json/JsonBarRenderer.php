@@ -91,7 +91,7 @@ class JsonBarRenderer extends AbstractJsonChartRenderer
                         'type'        => 'column',
                         'fillAlphas'  => '0.9',
                         'valueField'  => "value$i$j",
-                        'title'       => $this->getFullHierarchyTitle($values, $hierarchyParents),
+                        'title'       => $this->getFullHierarchyTitle($values, $hierarchyParents).', '.$this->renderCellValue($values, $selectColumns[0], $metadata),
                         'balloonText' => '[[title]]:[[value]]',
                     ];
                 }
