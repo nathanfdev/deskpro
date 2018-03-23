@@ -91,7 +91,14 @@ define ->
           chartDiv.height(chartParent.height() - chartHeader.outerHeight())
           chart.validateData()
 
-          if options.click_url
+          if options.click_url?
+
+            if widget.type == 'pie'
+              eventType = 'clickSlice'
+              dataItem = 'dataItem'
+            else
+              eventType = 'clickGraphItem'
+              dataItem = 'item'
 
             vars = {};
             matches = options.click_url.match(/\$\{([a-zA-z0-9_]+)\}/)
@@ -99,11 +106,11 @@ define ->
               if index % 2 == 1
                 vars[match] = matches[index - 1]
 
-            chart.addListener "clickGraphItem", (event) ->
+            chart.addListener eventType, (event) ->
               url = options.click_url
               for key, variable of vars
-                if event.item.dataContext[key]
-                  url = url.replace(variable, event.item.dataContext[key])
+                if event[dataItem].dataContext[key]
+                  url = url.replace(variable, event[dataItem].dataContext[key])
               window.open url
 
           else if widget.multiplePies?
