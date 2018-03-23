@@ -28,13 +28,10 @@
 
 namespace DeskPRO\Bundle\ReportBundle\Dpql2;
 
-use DeskPRO\Bundle\AppBundle\Exception\HelpdeskInstanceExceptionInterface;
-use Throwable;
-
 /**
  * The exception for an error that occurs when compiling.
  */
-class DpqlCompileException extends \Exception implements HelpdeskInstanceExceptionInterface
+class DpqlCompileException extends DpqlException
 {
     /**
      * @var string
@@ -54,7 +51,7 @@ class DpqlCompileException extends \Exception implements HelpdeskInstanceExcepti
         return new self($message, $e->getCode(), $e, $query);
     }
 
-    public function __construct($message = '', $code = 0, Throwable $previous = null, $query = '')
+    public function __construct($message = '', $code = 0, $previous = null, $query = '')
     {
         parent::__construct($message, $code, $previous);
         $this->query = $query;
