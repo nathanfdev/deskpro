@@ -1,5 +1,6 @@
 import PropTypes from 'prop-types';
 import React from 'react';
+import { FormattedMessage } from 'react-intl';
 import { connect } from 'react-redux';
 import classNames from 'classnames';
 import { List, ListElement } from 'DeskPRO/Component/Semantic/List';
@@ -210,7 +211,12 @@ export class ArchiveFiles extends React.Component {
         }}
       >
         <a onClick={this.toggleFiles}>
-          <span>view files &nbsp;</span>
+          <FormattedMessage
+            id="agent.tickets.view_files"
+            defaultMessage="view files"
+          >
+            {txt => <span>{txt}  &nbsp;</span>}
+          </FormattedMessage>
           <i className="fitted icon dropdown" />
         </a>
         <Detached

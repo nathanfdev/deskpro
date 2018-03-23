@@ -2473,6 +2473,7 @@ return [
     'agent.tickets.user_is_disabled'                           => 'The user you selected has been disabled. You cannot create tickets for disabled users.',
     'agent.tickets.users_tickets'                              => 'User\'s Tickets',
     'agent.tickets.view_entire_in_new_win'                     => 'View the entire message in a new window',
+    'agent.tickets.view_files'                                 => 'view files',
     'agent.tickets.view_full_message'                          => 'View Full Message',
     'agent.tickets.view_full_quoted_message'                   => 'View full quoted message',
     'agent.tickets.view_message_in_window'                     => 'View message in a new window',

@@ -210,10 +210,15 @@ class AgentLegacyApp {
     ReactDOM.render(
       <AppContainer>
         <Provider store={this.store}>
-          <ArchiveFilesContainer
-            authId={data.authId}
-            layout={layout}
-          />
+          <IntlProvider
+            locale={this.locale}
+            messages={agentPhrases.getPhrases()}
+          >
+            <ArchiveFilesContainer
+              authId={data.authId}
+              layout={layout}
+            />
+          </IntlProvider>
         </Provider>
       </AppContainer>,
       node.get(0)
@@ -248,12 +253,17 @@ class AgentLegacyApp {
     ReactDOM.render(
       <AppContainer>
         <Provider store={this.store}>
-          <EditorContainer
-            value={value}
-            inputType={inputType}
-            save={save}
-            updateSource={updateSource}
-          />
+          <IntlProvider
+            locale={this.locale}
+            messages={agentPhrases.getPhrases()}
+          >
+            <EditorContainer
+              value={value}
+              inputType={inputType}
+              save={save}
+              updateSource={updateSource}
+            />
+          </IntlProvider>
         </Provider>
       </AppContainer>,
       node
