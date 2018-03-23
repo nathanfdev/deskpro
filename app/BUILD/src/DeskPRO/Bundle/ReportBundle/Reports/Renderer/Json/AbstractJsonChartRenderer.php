@@ -341,18 +341,31 @@ abstract class AbstractJsonChartRenderer extends AbstractJsonRenderer
             $hasCategory = count($groupYColumns) > 0;
         }
 
-        if (static::getOutputFormat() == 'pie') {
+        if (static::getOutputFormat() === 'pie') {
             $pieData = [];
 
             if (count($graphs) > 1) {
                 foreach ($chartData as $key => $info) {
                     $data = [];
                     foreach ($graphs as $graph) {
+                        $dataToPush = [];
                         if (isset($info[$graph['value']])) {
-                            $data[] = [
-                                'category' => $graph['title'],
-                                'value'    => $info[$graph['value']],
-                            ];
+                            $dataToPush['category'] = $graph['title'];
+                            $dataToPush['value']    = $info[$graph['value']];
+                        }
+
+                        if (!empty($dataToPush)) {
+                            // additional data only for those data which contain something already
+                            foreach ($additionalData as $key => $additionalDatum) {
+                                if (isset($info[$key])) {
+                                    $dataToPush[$key] = $info[$key];
+                                }
+                            }
+                        }
+
+                        // push data only in case we have something
+                        if (!empty($dataToPush)) {
+                            $data[] = $dataToPush;
                         }
                     }
 
@@ -369,12 +382,21 @@ abstract class AbstractJsonChartRenderer extends AbstractJsonRenderer
                     foreach ($pie['data'] as $info) {
                         $sum += (int) $info['value'];
                     }
-                    $data[] = [
+
+                    $dataToPush = [
                         'category' => $pie['title'],
                         'value'    => $sum,
                         'id'       => $k,
                         'color'    => $this->randomColor(),
                     ];
+
+                    foreach ($additionalData as $key => $additionalDatum) {
+                        if (isset($pie['data'][0]) && isset($pie['data'][0]) && isset($pie['data'][0][$key])) {
+                            $dataToPush[$key] = $pie['data'][0][$key];
+                        }
+                    }
+
+                    $data[] = $dataToPush;
                 }
 
                 array_unshift($pieData, [
