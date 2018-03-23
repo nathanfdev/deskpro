@@ -42,16 +42,18 @@ class Hierarchy
     ];
 
     /**
+     * @param bool      $forceHierarchy
      * @param SqlSelect $sql
      *
      * @return bool
      */
-    public static function isHierarchical(SqlSelect $sql)
+    public static function isHierarchical(SqlSelect $sql, $forceHierarchy)
     {
         $isGrouping          = count($sql->getGroupBy()) >= 1;
+        $isSimpleGrouping    = count($sql->getGroupBy()) === 1;
         $groupingTargetTable = self::getGroupingTargetTable($sql);
 
-        if ($isGrouping && (
+        if ((($isGrouping && $forceHierarchy) || $isSimpleGrouping) && (
                 in_array($groupingTargetTable, self::$hierarchicalTables)
                 || (is_string($groupingTargetTable) && strpos($groupingTargetTable, 'custom_data_') === 0)
                 || (is_string($groupingTargetTable) && strpos($groupingTargetTable, 'custom_def_') === 0)

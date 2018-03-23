@@ -88,6 +88,11 @@ class HierarchyPlugin implements PluginInterface
     private $titleFieldSql = null;
 
     /**
+     * @var bool
+     */
+    private $forceHierarchy = false;
+
+    /**
      * Constructor.
      *
      * @param Connection       $connection
@@ -114,7 +119,7 @@ class HierarchyPlugin implements PluginInterface
      */
     public function beforeQuery()
     {
-        if (!Hierarchy::isHierarchical($this->sql)) {
+        if (!Hierarchy::isHierarchical($this->sql, $this->forceHierarchy)) {
             return;
         }
         $hierarchicalTargetTable = Hierarchy::getGroupingTargetTableReference($this->sql);
@@ -145,9 +150,9 @@ class HierarchyPlugin implements PluginInterface
     /**
      * {@inheritdoc}
      */
-    public function afterQuery(array $results)
+    public function afterQuery(array $results, ResultMetadata $metadata)
     {
-        if (!Hierarchy::isHierarchical($this->sql) || empty($results)) {
+        if (!Hierarchy::isHierarchical($this->sql, $this->forceHierarchy) || empty($results)) {
             return $results;
         }
 
@@ -192,8 +197,6 @@ class HierarchyPlugin implements PluginInterface
                 } else {
                     $result['hierarchy_parent_id'] = null;
                 }
-
-                unset($result[$optionsIndex]);
             } else {
                 $result['hierarchy_parent_id'] = $result[$parentIdIndex];
             }
@@ -229,7 +232,7 @@ class HierarchyPlugin implements PluginInterface
 
         // Limit depth if needed
         if ($this->hierarchyMinDepth > 0 || !is_null($this->hierarchyMaxDepth)) {
-            $results = HierarchyDepth::limitTo($this->hierarchyMinDepth, $this->hierarchyMaxDepth, $results);
+            $results = HierarchyDepth::limitTo($this->hierarchyMinDepth, $this->hierarchyMaxDepth, $results, $metadata);
         }
 
         return $results;
@@ -240,7 +243,7 @@ class HierarchyPlugin implements PluginInterface
      */
     public function resultHandlerCallback(ResultMetadata $handler, array $results)
     {
-        if (!Hierarchy::isHierarchical($this->sql)) {
+        if (!Hierarchy::isHierarchical($this->sql, $this->forceHierarchy)) {
             return;
         }
 
@@ -289,6 +292,22 @@ class HierarchyPlugin implements PluginInterface
     {
         $this->hierarchyDescendsFromId    = $id;
         $this->hierarchyDescendsFromTable = $table;
+    }
+
+    /**
+     * @return bool
+     */
+    public function isForceHierarchy()
+    {
+        return $this->forceHierarchy;
+    }
+
+    /**
+     * @param bool $forceHierarchy
+     */
+    public function setForceHierarchy($forceHierarchy)
+    {
+        $this->forceHierarchy = $forceHierarchy;
     }
 
     /**

@@ -28,19 +28,22 @@
 
 namespace DeskPRO\Bundle\ReportBundle\Dpql2\Plugin\Hierarchy;
 
+use DeskPRO\Bundle\ReportBundle\Reports\ResultMetadata;
+
 /**
  * Class HierarchyDepth.
  */
 class HierarchyDepth
 {
     /**
-     * @param int   $min
-     * @param int   $max
-     * @param array $results
+     * @param int            $min
+     * @param int            $max
+     * @param array          $results
+     * @param ResultMetadata $metadata
      *
      * @return array
      */
-    public static function limitTo($min, $max, array $results)
+    public static function limitTo($min, $max, array $results, ResultMetadata $metadata)
     {
         // Collapse titles
         if ($min !== 0) {
@@ -66,9 +69,43 @@ class HierarchyDepth
         }
 
         // Filter out all with depth out of [$min, $max] range
-        $results = array_filter($results, function ($result) use ($min, $max) {
-            return ($result['hierarchy_depth'] >= $min) && ($result['hierarchy_depth'] <= $max);
+        $results = array_filter($results, function ($result) use ($min) {
+            return $result['hierarchy_depth'] >= $min;
         });
+
+        $groupColumns = $metadata->getGroupYColumns();
+        $groupColumn  = array_shift($groupColumns); // unset first hierarchy one
+
+        foreach ($results as &$result) {
+            // try to merge children
+            if ($result['hierarchy_depth'] > $max) {
+                $result[$groupColumn['resultId'] - 1] = $result['hierarchy_root_title'];
+            }
+        }
+
+        $mergeResults = $results;
+        foreach ($results as &$result) {
+            foreach ($mergeResults as $i => &$mergeResult) {
+                if ($result['hierarchy_depth'] <= $max || $mergeResult['hierarchy_root_title'] !== $result['hierarchy_root_title']) {
+                    continue;
+                }
+
+                $found = true;
+                foreach ($groupColumns as $groupColumn) {
+                    if ($mergeResult[$groupColumn['groupResultId']] !== $result[$groupColumn['groupResultId']]) {
+                        $found = false;
+                    }
+                }
+
+                if ($found) {
+                    foreach ($metadata->getSelectColumns() as $column) {
+                        if ($column['title'] === 'DPQL_COUNT()') {
+                            $result[$column['resultId'] - 1] = (int) $result[$column['resultId'] - 1] + (int) $mergeResult[$column['resultId'] - 1];
+                        }
+                    }
+                }
+            }
+        }
 
         // Reduce depth by $min so that it starts from 0
         foreach ($results as &$result) {
