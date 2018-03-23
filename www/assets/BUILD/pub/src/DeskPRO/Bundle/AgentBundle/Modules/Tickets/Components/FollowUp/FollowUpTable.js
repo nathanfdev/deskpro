@@ -1,6 +1,6 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import { FormattedMessage } from 'react-intl';
+import { FormattedMessage, FormattedRelative } from 'react-intl';
 import moment from 'moment';
 import htmlToText from 'html-to-text';
 import { Icon } from '@deskpro/react-components';
@@ -53,16 +53,39 @@ class FollowUpTable extends React.Component {
         if (agentId === -1) {
           agent = <FormattedMessage id="agent.general.me" />;
         } else if (agentId === 0) {
-          return 'Agent: Unassign';
+          return (<span>
+            <FormattedMessage id="agent.general.agent" />: <FormattedMessage id="agent.general.unassign" />
+          </span>);
         } else {
           agent = this.getAgent(agentId);
         }
-        return `Agent: Assign to ${agent}`;
+        return (
+          <span>
+            <FormattedMessage id="agent.general.agent" />
+            : <FormattedMessage id="agent.general.assign_to_agent" values={{ agent }} />
+          </span>
+        );
       }
       case 'agent_team':
-        return `Agent team: Assign to ${this.getAgentTeam(action.getIn(['options', 'agent_team']))}`;
+        return (
+          <span>
+            <FormattedMessage id="agent.general.agent_team" />
+            : <FormattedMessage
+              id="agent.general.assign_to_agent"
+              values={{ agent: this.getAgentTeam(action.getIn(['options', 'agent_team'])) }}
+            />
+          </span>
+        );
       case 'run_macro':
-        return `Macro: Run ${this.getMacro(action.getIn(['options', 'macroId']))}`;
+        return (
+          <span>
+            <FormattedMessage id="agent.general.macro" />:
+            <FormattedMessage
+              id="agent.general.run_macro"
+              values={{ macro: this.getMacro(action.getIn(['options', 'macroId'])) }}
+            />
+          </span>
+        );
       case 'status': {
         const statuses = {
           awaiting_agent: <FormattedMessage id="agent.tickets.status_awaiting_agent" />,
@@ -70,7 +93,7 @@ class FollowUpTable extends React.Component {
           resolved:       <FormattedMessage id="agent.tickets.status_resolved" />
         };
         const status = statuses[action.getIn(['options', 'status'])];
-        return `${<FormattedMessage id="agent.general.status" />}: ${status}`;
+        return <span><FormattedMessage id="agent.general.status" />: {status}</span>;
       }
       case 'reply':
       case 'note': {
@@ -78,12 +101,18 @@ class FollowUpTable extends React.Component {
           reply: <FormattedMessage id="agent.general.reply" />,
           note:  <FormattedMessage id="agent.general.note" />,
         };
-        return `${labels[action.get('type')]}: ${htmlToText.fromString(
+        return (<span>{labels[action.get('type')]}: {htmlToText.fromString(
           action.getIn(['options', 'reply_text']).substr(0, 100)
-        )}`;
+        )}</span>);
       }
       case 'hold':
-        return `Hold: ${action.getIn(['options', 'hold']) ? 'Put ticket on hold' : 'Unhold ticket'}`;
+        return (
+          <span>
+            <FormattedMessage id="agent.general.hold" />
+            : {action.getIn(['options', 'hold']) ?
+              <FormattedMessage id="agent.tickets.put_on_hold" /> : <FormattedMessage id="agent.tickets.unhold_ticket" />}
+          </span>
+        );
       default:
         return null;
     }
@@ -121,7 +150,7 @@ class FollowUpTable extends React.Component {
             .map(followUp =>
               <tr key={followUp.get('id')}>
                 <td title={moment(followUp.get('date_to_run')).format('YYYY-MM-DD H:mm:ss')}>
-                  {moment(followUp.get('date_to_run')).fromNow()}
+                  <FormattedRelative value={followUp.get('date_to_run')} />
                 </td>
                 <td>{this.getAgent(followUp.get('person'))}</td>
                 <td>

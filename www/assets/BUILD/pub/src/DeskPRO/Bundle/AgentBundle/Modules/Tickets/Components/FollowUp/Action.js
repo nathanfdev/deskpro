@@ -198,14 +198,19 @@ class Action extends React.Component {
     return (
       <div>
         <Label><FormattedMessage id="agent.general.status" /></Label>
-        <Select
-          name="status"
-          options={options}
-          clearable={false}
-          searchable={false}
-          value={action.options.status}
-          onChange={this.onSelectChange}
-        />
+        <FormattedMessage id="agent.general.please_select">
+          {placeholder => (
+            <Select
+              name="status"
+              options={options}
+              clearable={false}
+              searchable={false}
+              placeholder={placeholder}
+              value={action.options.status}
+              onChange={this.onSelectChange}
+            />
+          )}
+        </FormattedMessage>
       </div>
     );
   };
