@@ -40,6 +40,7 @@ use DeskPRO\Bundle\ReportBundle\Reports\Renderer\ReportsRendererRegistry;
 use DeskPRO\Bundle\ReportBundle\Reports\ResultMetadata;
 use DeskPRO\Component\Util\RegexUtils;
 use Doctrine\ORM\EntityManager;
+use DpSys\LowError\SystemErrorHandler;
 
 /**
  * Class DashboardWidget.
@@ -200,14 +201,19 @@ class DashboardWidgetManager
         $variables = $this->transformVariables($widget);
         $variables = $this->applyPermissionsToVariables($variables, $widget, $person);
 
-        $data = $this->doRender(
-            $widget->getWidget()->getQuery(),
-            ['variables' => $variables],
-            $this->getWidgetGraphType($widget->getType()),
-            'json',
-            $person,
-            $widget->getOptions()
-        );
+        try {
+            $data = $this->doRender(
+                $widget->getWidget()->getQuery(),
+                ['variables' => $variables],
+                $this->getWidgetGraphType($widget->getType()),
+                'json',
+                $person,
+                $widget->getOptions()
+            );
+        } catch (\Exception $e) {
+            SystemErrorHandler::logException($e);
+            throw $e;
+        }
 
         return $this->formatData($data, $widget->getType());
     }
