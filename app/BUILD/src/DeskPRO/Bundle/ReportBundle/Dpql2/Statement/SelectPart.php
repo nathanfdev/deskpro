@@ -1,10 +1,10 @@
 <?php
 
 /*
- * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
+ * Deskpro (r) has been developed by Deskpro Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2018, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2018, Deskpro Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -12,18 +12,18 @@
  * By using this software, you acknowledge having read the license
  * and agree to be bound thereby.
  *
- * Please note that DeskPRO is not free software. We release the full
+ * Please note that Deskpro is not free software. We release the full
  * source code for our software because we trust our users to pay us for
  * the huge investment in time and energy that has gone into both creating
  * this software and supporting our customers. By providing the source code
  * we preserve our customers' ability to modify, audit and learn from our
- * work. We have been developing DeskPRO since 2001, please help us make it
+ * work. We have been developing Deskpro since 2001, please help us make it
  * another decade.
  *
  * Like the work you see? Think you could make it better? We are always
  * looking for great developers to join us: http://www.deskpro.com/jobs/
  *
- * ~ Thanks, Everyone at Team DeskPRO
+ * ~ Thanks, Everyone at Team Deskpro
  */
 
 namespace DeskPRO\Bundle\ReportBundle\Dpql2\Statement;
@@ -77,6 +77,14 @@ class SelectPart
      * @var DpqlStatementFactory
      */
     private $statementFactory;
+
+    /**
+     * E.g. if part of a LAYER WITH <type>, a hint to the renderer
+     * what type of graph we want.
+     *
+     * @var string|null
+     */
+    private $graphTypeHint;
 
     /**
      * List of expressions in SELECT clause.
@@ -758,8 +766,23 @@ class SelectPart
                 $field = $this->statementFactory->createSubSelect($field->toSql());
             }
 
-            $select = $field->prepare($this, 'select', [], $sql, $this->resultMetadata);
-            $this->addPreparedSelectField($select, $alias);
+            if ($field instanceof Part\FunctionCall && $field->name === 'DPQL_CONCAT') {
+                $concatIds = [];
+                foreach ($field->arguments as $concatField) {
+                    $select = $concatField->prepare($this, 'select', [], $sql, $this->resultMetadata);
+                    if ($select->hasValue()) {
+                        $concatIds[] = $this->addSqlSelectField($select->printed());
+                    }
+                }
+
+                $select      = $field->prepare($this, 'select', [], $sql, $this->resultMetadata);
+                $resultTitle = ($alias !== false ? $alias : $select->name());
+
+                $this->resultMetadata->addSelectColumn($resultTitle, $concatIds, $select->renderer());
+            } else {
+                $select = $field->prepare($this, 'select', [], $sql, $this->resultMetadata);
+                $this->addPreparedSelectField($select, $alias);
+            }
         }
     }
 
@@ -873,6 +896,10 @@ class SelectPart
 
                 $resultTitle = ($alias !== false ? $alias : $groupBy->name());
                 $renderer    = $groupBy->renderer() ?: function ($valueRenderer, $value, $row) {
+                    if (count($this->resultMetadata->getGroupYColumns()) > 1) {
+                        return $value;
+                    }
+
                     return array_key_exists('hierarchy_title', $row) ? $row['hierarchy_title'] : $value;
                 };
                 $this->resultMetadata->addGroupYColumn($resultTitle, $groupId, $printId, $renderer);
@@ -1296,5 +1323,21 @@ class SelectPart
     public function withRollup()
     {
         return $this->withRollup;
+    }
+
+    /**
+     * @return null|string
+     */
+    public function getGraphTypeHint()
+    {
+        return $this->graphTypeHint;
+    }
+
+    /**
+     * @param null|string $graphTypeHint
+     */
+    public function setGraphTypeHint($graphTypeHint)
+    {
+        $this->graphTypeHint = $graphTypeHint;
     }
 }

@@ -102,5 +102,37 @@ export const varTypes = [
   {
     label: 'Value',
     value: 'values'
+  },
+  {
+    label: 'Ticket custom fields',
+    value: 'ticket_custom_fields'
+  },
+  {
+    label: 'Org custom fields',
+    value: 'org_custom_fields'
+  },
+  {
+    label: 'Chat custom fields',
+    value: 'chat_custom_fields'
+  },
+  {
+    label: 'User custom fields',
+    value: 'user_custom_fields'
+  },
+  {
+    label: 'Article custom fields',
+    value: 'article_custom_fields'
+  },
+  {
+    label: 'Feedback custom fields',
+    value: 'feedback_custom_fields'
+  },
+  {
+    label: 'Billing custom fields',
+    value: 'billing_custom_fields'
+  },
+  {
+    label: 'Product custom fields',
+    value: 'product_custom_fields'
   }
 ];

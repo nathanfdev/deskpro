@@ -11,6 +11,7 @@
 
   pageMeta.labelsAutocompleteUrl = '{{ path('agent_ajax_labels_autocomplete', {'label_type': 'tickets'}) }}';
   pageMeta.labelsSaveUrl = '{{ path('agent_ticket_ajax_labels_save', {'ticket_id': ticket.id}) }}';
+  pageMeta.labelsSearchUrl = '{{ path('agent_ticketsearch_runcustomfilter') }}?terms[0][type]=label&terms[0][op]=is&terms[0][label]=';
   pageMeta.getMacroUrl = '{{ path('agent_ticket_ajax_get_macro', {'ticket_id': ticket.id }) }}?macro_id=$macro_id';
   pageMeta.saveActionsUrl = '{{ path('agent_ticket_ajax_save_actions', {'ticket_id': ticket.id }) }}';
   pageMeta.getDataholdersUrl = '{{ path('agent_ticket_ajax_get_dataholders', {'ticket_id': ticket.id }) }}';
@@ -32,6 +33,7 @@
   pageMeta.ticket = {{ ticket_api|json_encode|raw }};
   pageMeta.api_data = {{ ticket.toApiData()|json_encode|raw }};
   pageMeta.hasBilling = {{ app.getSetting('core_tickets.enable_billing')? 'true' : 'false' }};
+  pageMeta.billingCurrency = '{{ app.getSetting('core_tickets.billing_currency') }}';
   pageMeta.hasTimeLog = {{ app.getSetting('core_tickets.enable_timelog')? 'true' : 'false' }};
 
   pageMeta.ticket_perms = {{ ticket_perms|json_encode|raw }};
@@ -318,7 +320,7 @@
 
         <nav id="{{ baseId }}_header_nav_primary" class="header-nav header-nav-primary">
             <ul>
-                <li title="{{ phrase('agent.general.department') }}" data-btn-id="department">
+                <li title="{{ phrase('agent.general.department') }}" data-btn-id="department" {% if not app.getSetting('using_department') %}style="display: none" {% endif %}>
                     {% include 'AgentBundle:Common:select-department.html.twig' with {
                     'name': "department_id",
                     'with_blank': blank_option,
@@ -455,6 +457,7 @@
                                     {% else %}
                                         {{ phrase('agent.tickets.billing') }}
                                     {% endif %}
+                                    <span id="{{ baseId }}_billing_tab_counter"></span>
                                 </li>
                             {% endif %}
                             <!--

@@ -8,7 +8,7 @@
 		{% if brands|length > 1 %}
 		<% if (field == 'brand') { %>{{ phrase('agent.general.brand') }}<% } %>
 		{% endif %}
-		<% if (field == 'department') { %>{{ phrase('agent.general.department') }}<% } %>
+        {% if app.getSetting('using_department') %}<% if (field == 'department') { %>{{ phrase('agent.general.department') }}<% } %>{% endif %}
 		<% if (field == 'ref') { %>{{ phrase('agent.general.ref') }}<% } %>
 		<% if (field == 'language') { %>{{ phrase('agent.general.language') }}<% } %>
 		<% if (field == 'category') { %>{{ phrase('agent.general.category') }}<% } %>

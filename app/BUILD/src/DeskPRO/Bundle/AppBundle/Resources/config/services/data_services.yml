@@ -2,7 +2,7 @@ services:
 
   data.custom_field_util:
     class: DeskPRO\Bundle\AppBundle\DataService\CustomFieldUtil
-    arguments: ["@security.token_storage"]
+    arguments: ["@doctrine.orm.default_entity_manager", "@security.token_storage"]
 
   data.person:
     class: DeskPRO\Bundle\AppBundle\DataService\PersonDataService

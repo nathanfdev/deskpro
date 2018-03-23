@@ -33,7 +33,12 @@ DeskPRO.Agent.Layout.DeskproWindow = Orb.Class({
 				}
 				if (DeskPRO_Window && DeskPRO_Window.LegacyClient) {
           options.headers["X-DeskPRO-Return-ActionAlerts"] = DeskPRO_Window.LegacyClient.getLastActionAlert();
+          var splitPoint = self.getRandomStringWithTS(30, '--action-alerts');
+          options.headers["X-DeskPRO-Return-ActionAlerts-SplitPoint"] = splitPoint;
+          jqXHR.metadata = { splitPoint: splitPoint };
         }
+
+
 
         DeskPRO_Window.getPoller().pause();
         jqXHR.always(function() {
@@ -44,10 +49,11 @@ DeskPRO.Agent.Layout.DeskproWindow = Orb.Class({
         options.dataTypes.unshift("deskpro-actionalerts");
 
         options.converters['* deskpro-actionalerts'] = function (data) {
-          var splitPoint = jqXHR.getResponseHeader('X-DeskPRO-With-ActionAlerts-SplitPoint');
+          var splitPoint = jqXHR.metadata && jqXHR.metadata.splitPoint
+						? jqXHR.metadata.splitPoint : jqXHR.getResponseHeader('X-DeskPRO-With-ActionAlerts-SplitPoint');
 
           // no split point, we have nothing to do
-          if (!splitPoint) {
+          if (!splitPoint || data.indexOf(splitPoint) === -1) {
             return data;
           }
 
@@ -323,5 +329,20 @@ DeskPRO.Agent.Layout.DeskproWindow = Orb.Class({
 		}
 
 		this.fireEvent('resized', [this]);
+	},
+
+  getRandomStringWithTS: function(length, prefix) {
+
+		if(!length) {
+			length = 10;
+		}
+
+		var charList = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
+		var randomString = '';
+
+		for (var i = 0; i < length; i++)
+      randomString += charList.charAt(Math.floor(Math.random() * charList.length));
+
+		return (prefix || (new Date().getUTCSeconds() / 1000)) + '-' + randomString;
 	}
 });

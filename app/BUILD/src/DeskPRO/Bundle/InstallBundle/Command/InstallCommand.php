@@ -1,10 +1,10 @@
 <?php
 
 /*
- * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
+ * Deskpro (r) has been developed by Deskpro Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2017, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2018, Deskpro Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -12,18 +12,18 @@
  * By using this software, you acknowledge having read the license
  * and agree to be bound thereby.
  *
- * Please note that DeskPRO is not free software. We release the full
+ * Please note that Deskpro is not free software. We release the full
  * source code for our software because we trust our users to pay us for
  * the huge investment in time and energy that has gone into both creating
  * this software and supporting our customers. By providing the source code
  * we preserve our customers' ability to modify, audit and learn from our
- * work. We have been developing DeskPRO since 2001, please help us make it
+ * work. We have been developing Deskpro since 2001, please help us make it
  * another decade.
  *
  * Like the work you see? Think you could make it better? We are always
  * looking for great developers to join us: http://www.deskpro.com/jobs/
  *
- * ~ Thanks, Everyone at Team DeskPRO
+ * ~ Thanks, Everyone at Team Deskpro
  */
 
 namespace DeskPRO\Bundle\InstallBundle\Command;
@@ -59,6 +59,7 @@ class InstallCommand extends ContainerAwareCommand
             ->addOption('skip', 'x', InputOption::VALUE_REQUIRED | InputOption::VALUE_IS_ARRAY, 'Skip one or more steps (by name)')
             ->addOption('list-steps', 'l', InputOption::VALUE_NONE, 'List all steps instead of running them')
             ->addOption('restart', null, InputOption::VALUE_NONE, 'Restart an installation (instead of resume)')
+            ->addOption('truncate-db', null, InputOption::VALUE_NONE, 'If the db has existing tables, then we will truncate all tables instead of recreating. This can make things slightly faster during testing.')
             ->addOption('redo-step', 'r', InputOption::VALUE_REQUIRED, 'Redo a specific step even if it is marked as complete')
             ->addOption('profile', 'p', InputOption::VALUE_REQUIRED, 'Get answers from a profile file')
             ->addOption('skip-wizard', null, InputOption::VALUE_NONE, 'Use the existing config files and skip the install wizard (including checks)')
@@ -259,7 +260,7 @@ class InstallCommand extends ContainerAwareCommand
             new InstallStep\AcceptPathsStep($context),
             new InstallStep\AcceptWebUrlStep($context),
             new InstallStep\AcceptDatabaseStep($context),
-            new InstallStep\InstallTablesStep($context),
+            new InstallStep\InstallTablesStep($context, (bool) $input->getOption('truncate-db')),
             new InstallStep\InstallConfigStep($context),
             new InstallStep\InstallFixturesStep($context),
             new InstallStep\InstallCronCommand($context),

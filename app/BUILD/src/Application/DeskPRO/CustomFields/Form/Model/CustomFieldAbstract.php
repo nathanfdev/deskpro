@@ -26,10 +26,6 @@
  * ~ Thanks, Everyone at Team Deskpro
  */
 
-/**
- * DeskPRO.
- */
-
 namespace Application\DeskPRO\CustomFields\Form\Model;
 
 use Application\DeskPRO\App;
@@ -214,12 +210,14 @@ abstract class CustomFieldAbstract
                 $keep = false;
                 foreach ($aliasList as $newAlias) {
                     if (Comparators::equal($newAlias, $existingAlias)) {
-                        $keep = true;
+                        $keep = $newAlias;
                     }
                 }
 
-                if ($keep && $index = array_search($existingAlias, $additions) !== false) {
-                    array_splice($additions, $index, 1);
+                if ($keep) {
+                    if (($index = array_search($keep, $additions)) !== false) {
+                        array_splice($additions, $index, 1);
+                    }
                 } else {
                     $removals[] = $existingAlias;
                 }

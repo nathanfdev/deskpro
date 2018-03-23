@@ -30,6 +30,7 @@ namespace Application\DeskPRO\CustomFields\Form\Type;
 
 use Application\DeskPRO\CustomFields\Form\AliasType;
 use Application\DeskPRO\CustomFields\Form\StringObject;
+use DeskPRO\Bundle\AppBundle\Form\Type\ApiBooleanType;
 use DeskPRO\Bundle\AppBundle\Validator\Constraints as AppAssert;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormBuilderInterface;
@@ -38,7 +39,7 @@ use Symfony\Component\OptionsResolver\OptionsResolver;
 /**
  * Class CustomFieldTypeAbstract.
  */
-abstract class CustomFieldTypeAbstract extends AbstractType
+class CustomFieldTypeAbstract extends AbstractType
 {
     /**
      * {@inheritdoc}
@@ -69,13 +70,14 @@ abstract class CustomFieldTypeAbstract extends AbstractType
         $builder->add('agent_validation_type', 'hidden', ['required' => false]);
         $builder->add('agent_validation_resolve', 'hidden', ['required' => false]);
 
-        $builder->add('required', 'checkbox', ['required' => false]);
-        $builder->add('custom_css_classname', 'text', ['required' => false]);
+        $builder->add('required', ApiBooleanType::class, ['required' => false]);
+        $builder->add('agent_required', ApiBooleanType::class, [
+            'required' => false,
+        ]);
 
+        $builder->add('custom_css_classname', 'text', ['required' => false]);
         $builder->add('is_enabled', 'checkbox', ['required' => false]);
         $builder->add('is_agent_field', 'checkbox', ['required' => false]);
-
-        $this->buildCustomFieldForm($builder, $options);
     }
 
     /**
@@ -86,14 +88,6 @@ abstract class CustomFieldTypeAbstract extends AbstractType
         $resolver->setDefaults([
             'allow_extra_fields' => true,
         ]);
-    }
-
-    /**
-     * @param FormBuilderInterface $builder
-     * @param array                $options
-     */
-    protected function buildCustomFieldForm(FormBuilderInterface $builder, array $options)
-    {
     }
 
     /**

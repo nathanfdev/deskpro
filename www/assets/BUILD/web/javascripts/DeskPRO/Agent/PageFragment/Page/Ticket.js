@@ -245,6 +245,7 @@ DeskPRO.Agent.PageFragment.Page.Ticket = new Orb.Class({
       onBeforeBillingChange: this.onBeforeBillingChange.bind(this),
       onAfterBillingChange: this.onAfterBillingChange.bind(this),
 		});
+		this.updateBillingTabTitle();
 
 		this.addEvent('deactivate', function() {
 			$('form.ticket-reply-form', this.getEl('replybox_wrap')).trigger('page_deactivate');
@@ -952,7 +953,53 @@ DeskPRO.Agent.PageFragment.Page.Ticket = new Orb.Class({
       this.meta.api_data.charges = this.billingRollbackCharges;
     }
     this.billingRollbackCharges = null;
+    this.updateBillingTabTitle();
   },
+
+	updateBillingTabTitle: function() {
+		var timeAmount  = 0;
+		var moneyAmount = 0;
+
+		this.wrapper.find('.ticket-charge-row').each(function() {
+			var data = $(this).data('charge');
+			if (data.charge_time) {
+				timeAmount += data.charge_time;
+			}
+			if (data.amount) {
+				moneyAmount += parseFloat(data.amount);
+			}
+		});
+
+		var phraseParts = [];
+		if (timeAmount > 0) {
+			var parts = [];
+			if (timeAmount > 3600) {
+				var hours = Math.floor(timeAmount / 3600);
+				parts.push(hours + 'h');
+				timeAmount -= hours * 3600;
+			}
+      if (timeAmount > 60) {
+        var mins = Math.floor(timeAmount / 60);
+        parts.push(mins + 'm');
+        timeAmount -= mins * 60;
+      }
+      if (timeAmount > 0) {
+        parts.push(timeAmount + 's');
+      }
+
+      phraseParts.push(parts.join(' '));
+		}
+
+		if (moneyAmount > 0.00) {
+			phraseParts.push(moneyAmount.toFixed(2) + ' ' + this.meta.billingCurrency);
+		}
+
+		if (phraseParts.length) {
+			this.getEl('billing_tab_counter').text('(' + phraseParts.join(', ') + ')');
+		} else {
+      this.getEl('billing_tab_counter').text('');
+		}
+	},
 
   /**
    * @param {'add'|'delete'|'udpdate'} changeType
@@ -2114,6 +2161,13 @@ DeskPRO.Agent.PageFragment.Page.Ticket = new Orb.Class({
 				type: 'tickets',
 				input: this.getEl('labels_input'),
 				onChange: this.saveLabels.bind(this)
+			});
+
+			var $container = this.getEl('labels_input').parent();
+			var self = this;
+      $container.delegate('.select2-search-choice', 'click', function(ev) {
+      	var label = $(this).find('> div').first().text();
+				window.DeskPRO_Window.runPageRoute('listpane:' + self.meta.labelsSearchUrl + encodeURI(label), {});
 			});
 		}
 	},

@@ -79,6 +79,9 @@ define [
       else if field.type_name == 'date' || field.type_name == 'datetime'
         options.operators = options.operators || ['lte', 'gte', 'between']
         return @getDateInput(options, field)
+      else if field.type_name == 'currency'
+        options.operators = options.operators || ['is', 'not', 'lte', 'gte', 'between']
+        return @getStandardInput(options, field)
       else
         if not options.operators then options.operators = ['is', 'not', 'touched', 'nottouched', 'contains', 'notcontains', 'is_regex', 'not_regex', 'isset', 'not_isset']
         return @getStandardInput(options, field)

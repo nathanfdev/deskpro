@@ -77,8 +77,7 @@ class FormHelper
         $typeClass    = 'Application\\DeskPRO\\CustomFields\\Form\\Type\\'.$baseType.'FieldType';
 
         $editField = new $modelClass($field);
-        $formType  = new $typeClass();
-        $form      = $this->formFactory->create($formType, $editField);
+        $form      = $this->formFactory->create($typeClass, $editField);
 
         return $form;
     }
@@ -112,9 +111,9 @@ class FormHelper
             if (!$form->isValid()) {
                 // check if the field's alias is valid
                 // e.g. to prevent unique key exceptions
-                $aliasErrors = $form->get('alias')->getErrors();
-                if (count($aliasErrors)) {
-                    throw new \RuntimeException($aliasErrors[0]->getMessage());
+                $errors = $form->getErrors(true);
+                if (count($errors)) {
+                    throw new \RuntimeException($errors[0]->getMessage());
                 }
             }
 

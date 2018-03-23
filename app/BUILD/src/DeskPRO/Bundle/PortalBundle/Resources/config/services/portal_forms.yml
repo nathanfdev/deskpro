@@ -117,6 +117,7 @@ services:
       - "@custom_field_manager"
       - "@brand_stack"
       - "@permissions_manager"
+      - "@widget_jwt_decoder"
     tags:
       - { name: form.type }
 

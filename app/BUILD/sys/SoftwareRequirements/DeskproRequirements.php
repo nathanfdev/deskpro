@@ -1,10 +1,10 @@
 <?php
 
 /*
- * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
+ * Deskpro (r) has been developed by Deskpro Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2017, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2018, Deskpro Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -12,25 +12,25 @@
  * By using this software, you acknowledge having read the license
  * and agree to be bound thereby.
  *
- * Please note that DeskPRO is not free software. We release the full
+ * Please note that Deskpro is not free software. We release the full
  * source code for our software because we trust our users to pay us for
  * the huge investment in time and energy that has gone into both creating
  * this software and supporting our customers. By providing the source code
  * we preserve our customers' ability to modify, audit and learn from our
- * work. We have been developing DeskPRO since 2001, please help us make it
+ * work. We have been developing Deskpro since 2001, please help us make it
  * another decade.
  *
  * Like the work you see? Think you could make it better? We are always
  * looking for great developers to join us: http://www.deskpro.com/jobs/
  *
- * ~ Thanks, Everyone at Team DeskPRO
+ * ~ Thanks, Everyone at Team Deskpro
  */
 
 namespace DpSys\SoftwareRequirements;
 
 class DeskproRequirements extends RequirementCollection
 {
-    const REQUIRED_PHP_VERSION = '5.5.0';
+    const REQUIRED_PHP_MIN_VERSION = '5.5.0';
 
     /**
      * Constructor that initializes the requirements.
@@ -42,12 +42,20 @@ class DeskproRequirements extends RequirementCollection
         $installedPhpVersion = phpversion();
 
         $this->addRequirement(
-            version_compare($installedPhpVersion, self::REQUIRED_PHP_VERSION, '>='),
-            sprintf('PHP version must be at least %s (%s installed)', self::REQUIRED_PHP_VERSION, $installedPhpVersion),
-            sprintf('You are running PHP version "<strong>%s</strong>", but DeskPRO needs at least PHP "<strong>%s</strong>" to run.
-                Before using DeskPRO, upgrade your PHP installation, preferably to the latest version.',
-                $installedPhpVersion, self::REQUIRED_PHP_VERSION),
-            sprintf('Install PHP %s or newer (installed version is %s)', self::REQUIRED_PHP_VERSION, $installedPhpVersion)
+            version_compare($installedPhpVersion, self::REQUIRED_PHP_MIN_VERSION, '>='),
+            sprintf('PHP version must be at least %s (%s installed)', self::REQUIRED_PHP_MIN_VERSION, $installedPhpVersion),
+            sprintf('You are running PHP version "<strong>%s</strong>", but Deskpro needs at least PHP "<strong>%s</strong>" to run.
+                Before using Deskpro, upgrade your PHP installation, preferably to the latest version.',
+                $installedPhpVersion, self::REQUIRED_PHP_MIN_VERSION),
+            sprintf('Install PHP %s or newer (installed version is %s)', self::REQUIRED_PHP_MIN_VERSION, $installedPhpVersion)
+        );
+        $this->addRequirement(
+            version_compare($installedPhpVersion, '7.2.0alpha', '<'),
+            sprintf('Max PHP version must be 7.1.x (%s installed)', $installedPhpVersion),
+            sprintf('You are running PHP version "<strong>%s</strong>", but it\'s not supported by Deskpro yet. Please install PHP 7.1.x for now to run.
+                Before using Deskpro, upgrade your PHP installation, preferably to the latest version.',
+                $installedPhpVersion),
+            sprintf('Install PHP 7.1.x (installed version is %s)', $installedPhpVersion)
         );
 
         $this->addPhpIniRequirement(
@@ -56,7 +64,7 @@ class DeskproRequirements extends RequirementCollection
             'Set the "<strong>date.timezone</strong>" setting in php.ini<a href="#phpini">*</a> (like Europe/Paris).'
         );
 
-        if (version_compare($installedPhpVersion, self::REQUIRED_PHP_VERSION, '>=')) {
+        if (version_compare($installedPhpVersion, self::REQUIRED_PHP_MIN_VERSION, '>=')) {
             $timezones = [];
             foreach (\DateTimeZone::listAbbreviations() as $abbreviations) {
                 foreach ($abbreviations as $abbreviation) {
@@ -171,7 +179,7 @@ class DeskproRequirements extends RequirementCollection
             $this->addRecommendation(
                 $pcreVersion >= 8.0,
                 sprintf('PCRE extension should be at least version 8.0 (%s installed)', $pcreVersion),
-                '<strong>PCRE 8.0+</strong> is preconfigured in PHP but you are using an outdated version of it. DeskPRO probably works anyway but it is recommended to upgrade your PCRE extension.'
+                '<strong>PCRE 8.0+</strong> is preconfigured in PHP but you are using an outdated version of it. Deskpro probably works anyway but it is recommended to upgrade your PCRE extension.'
             );
         }
 

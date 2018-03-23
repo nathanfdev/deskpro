@@ -302,7 +302,21 @@
 		{% endif %}
 
 		{% if app.getTicketFieldManager().getFields() %}
-			{% set op_lang = {'is': phrase('agent.general.is'), 'not': phrase('agent.general.is_not'), 'contains': phrase('agent.general.contains'), 'notcontains': phrase('agent.general.does_not_contain'), 'gt': phrase('agent.general.is_greater_than'), 'gte': phrase('agent.general.is_greater_than_or_equal'), 'lt': phrase('agent.general.is_less_than'), 'lte': phrase('agent.general.is_less_than_or_equal'), 'not_isset': phrase('agent.general.is_not_set'), 'isset': phrase('agent.general.is_set'), 'between': phrase('agent.general.between') } %}
+			{% set op_lang = {
+				'is': phrase('agent.general.is'),
+				'not': phrase('agent.general.is_not'),
+				'contains': phrase('agent.general.contains'),
+				'notcontains': phrase('agent.general.does_not_contain'),
+				'gt': phrase('agent.general.is_greater_than'),
+				'gte': phrase('agent.general.is_greater_than_or_equal'),
+				'lt': phrase('agent.general.is_less_than'),
+				'lte': phrase('agent.general.is_less_than_or_equal'),
+				'not_isset': phrase('agent.general.is_not_set'),
+				'isset': phrase('agent.general.is_set'),
+				'between': phrase('agent.general.between'),
+                'empty': phrase('agent.general.empty'),
+                'notempty': phrase('agent.general.not_empty')
+			} %}
 			{% for field in app.getTicketFieldManager().getDisplayArray() %}
 				{% if field.field_def.getFilterCapabilities(search_context) %}
 					{% if field.field_def.isDateType() %}

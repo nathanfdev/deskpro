@@ -10165,6 +10165,20 @@ form {
   display: inline !important;
 }
 
+.dp-money-field {
+  position: relative;
+
+  span {
+    position: absolute;
+    left: 10px;
+    top: 5px;
+  }
+
+  input {
+    padding-left: 50px;
+  }
+}
+
 // This cleans up the style as widgets are loaded
 .with-dpui {
   .dpx-date-time, .dpx-date {

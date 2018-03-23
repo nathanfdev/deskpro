@@ -1,10 +1,10 @@
 <?php
 
 /*
- * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
+ * Deskpro (r) has been developed by Deskpro Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2017, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2018, Deskpro Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -12,18 +12,18 @@
  * By using this software, you acknowledge having read the license
  * and agree to be bound thereby.
  *
- * Please note that DeskPRO is not free software. We release the full
+ * Please note that Deskpro is not free software. We release the full
  * source code for our software because we trust our users to pay us for
  * the huge investment in time and energy that has gone into both creating
  * this software and supporting our customers. By providing the source code
  * we preserve our customers' ability to modify, audit and learn from our
- * work. We have been developing DeskPRO since 2001, please help us make it
+ * work. We have been developing Deskpro since 2001, please help us make it
  * another decade.
  *
  * Like the work you see? Think you could make it better? We are always
  * looking for great developers to join us: http://www.deskpro.com/jobs/
  *
- * ~ Thanks, Everyone at Team DeskPRO
+ * ~ Thanks, Everyone at Team Deskpro
  */
 
 namespace DeskPRO\Bundle\PortalBundle\Form\Form\Type\Api\Chat;
@@ -38,10 +38,9 @@ use DeskPRO\Bundle\AppBundle\Security\Permissions\PermissionsManager;
 use DeskPRO\Bundle\AppBundle\Settings\WidgetSettingsResolver;
 use DeskPRO\Bundle\AppBundle\Validator\Constraints as AppAssert;
 use DeskPRO\Bundle\PortalBundle\Brand\BrandStack;
+use DeskPRO\Bundle\PortalBundle\Helper\WidgetJwtDecoder;
 use Doctrine\ORM\EntityManager;
 use Doctrine\ORM\EntityRepository;
-use Firebase\JWT\JWT;
-use Orb\Util\Arrays;
 use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\EmailType;
@@ -89,6 +88,11 @@ class ChatCreateType extends AbstractType
     private $permissionsManager;
 
     /**
+     * @var WidgetJwtDecoder
+     */
+    private $jwtDecoder;
+
+    /**
      * Constructor.
      *
      * @param EntityManager          $em
@@ -97,6 +101,7 @@ class ChatCreateType extends AbstractType
      * @param CustomFieldManager     $fieldManager
      * @param BrandStack             $brandStack
      * @param PermissionsManager     $permissionsManager
+     * @param WidgetJwtDecoder       $jwtDecoder
      */
     public function __construct(
         EntityManager          $em,
@@ -104,7 +109,8 @@ class ChatCreateType extends AbstractType
         WidgetSettingsResolver $settingsResolver,
         CustomFieldManager     $fieldManager,
         BrandStack             $brandStack,
-        PermissionsManager     $permissionsManager
+        PermissionsManager     $permissionsManager,
+        WidgetJwtDecoder       $jwtDecoder
     ) {
         $this->em                 = $em;
         $this->personListener     = $personListener;
@@ -112,6 +118,7 @@ class ChatCreateType extends AbstractType
         $this->fieldManager       = $fieldManager;
         $this->brandStack         = $brandStack;
         $this->permissionsManager = $permissionsManager;
+        $this->jwtDecoder         = $jwtDecoder;
     }
 
     /**
@@ -262,7 +269,7 @@ class ChatCreateType extends AbstractType
             $data['jwt'] = '';
         }
         if ($data['jwt']) {
-            $decodedJwt = $this->decodeJwtPayload($data['jwt']);
+            $decodedJwt = $this->jwtDecoder->decodeJwtPayload($data['jwt']);
 
             // set person email from the jwt token
             foreach (['email', 'user_email'] as $option) {
@@ -322,7 +329,7 @@ class ChatCreateType extends AbstractType
         $person     = $conversation->getPerson();
         $session    = $conversation->getSession();
 
-        if ($person && $session && $decodedJwt = $this->decodeJwtPayload($jwtPayload)) {
+        if ($person && $session && $decodedJwt = $this->jwtDecoder->decodeJwtPayload($jwtPayload)) {
             $matched = false;
 
             // check payload by person id
@@ -365,29 +372,5 @@ class ChatCreateType extends AbstractType
         }
 
         return $fields;
-    }
-
-    /**
-     * @param string $payload
-     *
-     * @return array|null
-     */
-    private function decodeJwtPayload($payload)
-    {
-        if (!$payload) {
-            return;
-        }
-
-        $brand     = $this->brandStack->getActive()->getBrand();
-        $jwtSecret = $this->settingsResolver->getJwtSecret($brand);
-
-        try {
-            $payload = JWT::decode($payload, $jwtSecret, array_keys(JWT::$supported_algs));
-            $payload = Arrays::fromStdClass($payload);
-
-            return $payload;
-        } catch (\Exception $e) {
-            return;
-        }
     }
 }

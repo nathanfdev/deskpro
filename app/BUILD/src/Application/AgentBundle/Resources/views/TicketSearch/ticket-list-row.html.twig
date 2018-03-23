@@ -101,7 +101,7 @@
 	<div class="extra-fields">
 		<ul>
 			<% for (var i = 0; i < displayable_fields.length; i++) { var field = displayable_fields[i]; %>
-				<li>
+				<li {% if not app.getSetting('using_department') %}<% if (field == 'department') { %>style="display:none"<% } %>{% endif %}>
 					<% if (field == 'department') { %>
 						<span class="prop-title">{{ phrase('agent.general.department') }}:</span>
 						<span class="prop-val">

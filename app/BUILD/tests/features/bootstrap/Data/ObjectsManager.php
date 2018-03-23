@@ -116,6 +116,7 @@ use DeskPRO\Bundle\AppBundle\Entity\AppStore\App;
 use DeskPRO\Bundle\AppBundle\Entity\AppStore\AppAssetBlob;
 use DeskPRO\Bundle\AppBundle\Entity\AppStore\AppState;
 use DeskPRO\Bundle\AppBundle\Entity\ClientDevice;
+use DeskPRO\Bundle\AppBundle\Entity\Currency;
 use DeskPRO\Bundle\AppBundle\Entity\Notification;
 use DeskPRO\Bundle\AppBundle\Entity\OAuthClient;
 use DeskPRO\Bundle\AppBundle\Entity\ObjectAlias\CustomTicketFieldDefinitionAlias;
@@ -402,6 +403,7 @@ class ObjectsManager
             'ScheduledReport'                  => [Factory\SimpleFactory::class, 'create', ScheduledReport::class],
             'Job'                              => [Factory\SimpleFactory::class, 'create', Job::class],
             'CustomTicketFieldDefinitionAlias' => [Factory\SimpleFactory::class, 'create', CustomTicketFieldDefinitionAlias::class],
+            'Currency'                         => [Factory\SimpleFactory::class, 'create', Currency::class],
         ];
     }
 
@@ -527,6 +529,7 @@ class ObjectsManager
             'ScheduledReport'                  => [$this, 'find', ScheduledReport::class],
             'Job'                              => [$this, 'find', Job::class],
             'CustomTicketFieldDefinitionAlias' => [$this, 'find', CustomTicketFieldDefinitionAlias::class],
+            'Currency'                         => [$this, 'find', Currency::class],
         ];
     }
 }

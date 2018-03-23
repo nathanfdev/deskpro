@@ -19,8 +19,18 @@ define -> [
     $scope.back = -> $modalInstance.close {back: true}
 
     $scope.saveChoice = ->
-      DashboardWidgetService.addWidget(report, $scope.widget).then () ->
-        $modalInstance.close {add: true}
+      DashboardWidgetService.addWidget(report, $scope.widget)
+        .then \
+          () ->
+            $scope.error = false
+            $modalInstance.close {add: true}
+        , (response) ->
+            if (response.errors?.fields?.type?.errors[0])
+              $scope.error = 'You have to choose widget type before adding'
+            else if (response.errors?.fields?.title?.errors[0])
+              $scope.error = 'Name your widget'
+            else if (response.errors)
+              $scope.error = 'There is an error when was adding a widget, please pick up another widget type or another widget'
 
     $scope.makeChoice = (displayType) ->
       $scope.widget.type = displayType

@@ -176,7 +176,9 @@
                                                 {% if property.isVisible %}
                                                     <li>
                                                         <h3>{{ property.label }}</h3>
-                                                        {% if property.isLinkify %}
+                                                        {% if property.type == 'url' %}
+                                                            <p><a href="{{ propValue }}" target="_blank">{{ propValue }}</a></p>
+                                                        {% elseif property.isLinkify %}
                                                             <p>{{ propValue|safe_link_urls }}</p>
                                                         {% else %}
                                                             <p>{{ propValue }}</p>

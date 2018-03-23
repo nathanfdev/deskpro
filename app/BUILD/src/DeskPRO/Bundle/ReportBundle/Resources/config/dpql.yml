@@ -28,6 +28,7 @@ services:
   dpql.compiler:
     class: DeskPRO\Bundle\ReportBundle\Dpql2\DpqlCompiler
     arguments:
+      - "@settings_resolver"
       - "@doctrine.orm.default_entity_manager"
       - "@dpql.lexer"
       - "@dpql.parser"
@@ -208,6 +209,11 @@ services:
     tags:
       - { name: dpql.func }
 
+  dpql.func.concat:
+    class: DeskPRO\Bundle\ReportBundle\Dpql2\Func\DpqlConcat
+    tags:
+      - { name: dpql.func }
+
   # DPQL placeholders
   dpql.placeholder.ever:
     class: DeskPRO\Bundle\ReportBundle\Dpql2\Placeholder\Ever
@@ -232,6 +238,13 @@ services:
 
   dpql.placeholder.last_year:
     class: DeskPRO\Bundle\ReportBundle\Dpql2\Placeholder\LastYear
+    arguments:
+      - "@dpql.context_storage"
+    tags:
+      - { name: dpql.placeholder }
+
+  dpql.placeholder.next_12_months:
+    class: DeskPRO\Bundle\ReportBundle\Dpql2\Placeholder\Next12Months
     arguments:
       - "@dpql.context_storage"
     tags:

@@ -4,7 +4,7 @@
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2017, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2018, DeskPRO Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -51,7 +51,7 @@ class HttpClient extends Client
         $usSysCABundle = (bool) $DP_ENV->getConfig('settings.http_client.use_sys_ca_bundle');
 
         $proxy = $DP_ENV->getConfig('settings.http_client.proxy');
-        if ($proxy && !$config[RequestOptions::PROXY]) {
+        if ($proxy && empty($config[RequestOptions::PROXY])) {
             $config[RequestOptions::PROXY] = $proxy;
         }
 

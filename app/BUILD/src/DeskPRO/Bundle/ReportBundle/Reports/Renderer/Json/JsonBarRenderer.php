@@ -1,10 +1,10 @@
 <?php
 
 /*
- * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
+ * Deskpro (r) has been developed by Deskpro Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2018, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2018, Deskpro Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -12,18 +12,18 @@
  * By using this software, you acknowledge having read the license
  * and agree to be bound thereby.
  *
- * Please note that DeskPRO is not free software. We release the full
+ * Please note that Deskpro is not free software. We release the full
  * source code for our software because we trust our users to pay us for
  * the huge investment in time and energy that has gone into both creating
  * this software and supporting our customers. By providing the source code
  * we preserve our customers' ability to modify, audit and learn from our
- * work. We have been developing DeskPRO since 2001, please help us make it
+ * work. We have been developing Deskpro since 2001, please help us make it
  * another decade.
  *
  * Like the work you see? Think you could make it better? We are always
  * looking for great developers to join us: http://www.deskpro.com/jobs/
  *
- * ~ Thanks, Everyone at Team DeskPRO
+ * ~ Thanks, Everyone at Team Deskpro
  */
 
 namespace DeskPRO\Bundle\ReportBundle\Reports\Renderer\Json;
@@ -68,7 +68,12 @@ class JsonBarRenderer extends AbstractJsonChartRenderer
         $chartData   = $graphs   = [];
 
         // we have stacked results here
-        if ($groupXColumns && $metadata->hasFlag(ResultMetadata::FLAG_HIERARCHICAL) && !$metadata->hasFlag(ResultMetadata::FLAG_LAYERED)) {
+        // stack results if simple grouping only, e.g. can't stack for matrix
+        if (count($groupXColumns) === 1
+            && count($groupYColumns) === 1
+            && $metadata->hasFlag(ResultMetadata::FLAG_HIERARCHICAL)
+            && !$metadata->hasFlag(ResultMetadata::FLAG_LAYERED)
+        ) {
             $arrayOutput['valueAxes'][0]['stackType'] = 'regular';
             $arrayOutput['valueAxes'][0]['title']     = $selectColumns[0]['title'];
             $arrayOutput['categoryAxis']['title']     = $groupYColumns[0]['title'];
@@ -86,7 +91,7 @@ class JsonBarRenderer extends AbstractJsonChartRenderer
                         'type'        => 'column',
                         'fillAlphas'  => '0.9',
                         'valueField'  => "value$i$j",
-                        'title'       => $values['hierarchy_title'],
+                        'title'       => $this->getFullHierarchyTitle($values, $hierarchyParents).', '.$this->renderCellValue($values, $selectColumns[0], $metadata),
                         'balloonText' => '[[title]]:[[value]]',
                     ];
                 }
@@ -109,18 +114,25 @@ class JsonBarRenderer extends AbstractJsonChartRenderer
      */
     protected function getStacks(array &$rows, array $hierarchyParents)
     {
-        $stacks = [];
-        foreach ($rows as $index => $row) {
-            $parentId = $row['hierarchy_parent_id'];
+        $stacks   = [];
+        $iterator = function ($row, $parentId) use ($hierarchyParents, &$stacks, &$iterator) {
+            $id       = (int) $row['hierarchy_id'];
+            $parentId = (int) $parentId;
+
             if (array_key_exists($parentId, $hierarchyParents)) {
-                unset($rows[$index]);
-                if (!isset($stacks[$parentId]) || !is_array($stacks[$parentId])) {
-                    $stacks[$parentId] = [];
+                $hierarchyParent = $hierarchyParents[$parentId];
+                if (isset($hierarchyParent['hierarchy_parent_id']) && $hierarchyParent['hierarchy_parent_id']) {
+                    $iterator($row, $hierarchyParent['hierarchy_parent_id']);
+                } else {
+                    $stacks[$parentId][] = $row;
                 }
-                $stacks[$parentId][] = $row;
             } else {
-                $stacks[$row['hierarchy_id']] = [$row];
+                $stacks[$id] = [$row];
             }
+        };
+
+        foreach ($rows as $index => $row) {
+            $iterator($row, $row['hierarchy_parent_id']);
         }
 
         return $stacks;

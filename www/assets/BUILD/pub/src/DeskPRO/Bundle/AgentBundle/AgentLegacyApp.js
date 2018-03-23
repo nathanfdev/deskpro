@@ -5,6 +5,7 @@ import { Provider } from 'react-redux';
 import { AppContainer } from 'react-hot-loader';
 import { DragDropContextProvider } from 'react-dnd';
 import HTML5Backend from 'react-dnd-html5-backend';
+import Twig from 'twig';
 import { api } from 'DeskPRO/Bundle/AppBundle/DAL';
 import { AgentTopBarContainer } from 'DeskPRO/Bundle/AgentBundle/Modules/TopBar/Components/AgentTopBar';
 import { SideBarContainer } from 'DeskPRO/Bundle/AgentBundle/Modules/SideBar/Components/SideBar';
@@ -25,10 +26,9 @@ import { voiceBootstrap, openDialpad } from 'DeskPRO/Bundle/AgentBundle/Modules/
 import DeskproAppStore from 'DeskPRO/Bundle/AgentBundle/Modules/DeskproApps/DeskproAppStore';
 import LegacyStoreProvider from 'DeskPRO/Bundle/AgentBundle/Services/LegacyStoreProvider';
 import LegacySnippetInserter from 'DeskPRO/Bundle/AgentBundle/Modules/Snippets/Services/LegacySnippetInserter';
+import RteTextArea from 'DeskPRO/Bundle/AgentBundle/Modules/Publish/Services/RteTextarea';
 import store from 'DeskPRO/Bundle/AgentBundle/Services/store';
-import { copyTextToClipboard as copyTextToClipboardUtil } from 'DeskPRO/Component/Util/ClipBoard';
 import { FollowUpContainer } from './Modules/Tickets/Components/FollowUp/FollowUp';
-
 
 class AgentLegacyApp {
 
@@ -39,6 +39,13 @@ class AgentLegacyApp {
   run() {
     // IE/Edge Hack http://stackoverflow.com/questions/1481251/what-does-document-domain-document-domain-do
     document.domain = document.domain;
+
+    // for old snippets (e.g. SnippetViewer.js)
+    window.twig = Twig.twig;
+
+    window.LegacyRteTextarea = new RteTextArea();
+    window.LegacySnippetInserter = new LegacySnippetInserter();
+
     if (window.DP_SKIP_REACT) {
       return;
     }
@@ -68,8 +75,6 @@ class AgentLegacyApp {
       window.LegacyStoreProvider = new LegacyStoreProvider();
       window.LegacyStoreProvider.init(this.store);
 
-      window.LegacySnippetInserter = new LegacySnippetInserter();
-
       const messageBroker = window.DeskPRO_Window.getMessageBroker();
       messageBroker.addMessageListener('agent.online-agents', (event) => {
         this.store.dispatch(setOnlineAgents(event.online_agents));
@@ -90,10 +95,6 @@ class AgentLegacyApp {
      // let the app store know we finished the start sequence so
       DeskproAppStore.onAgentLegacyAppReady(this.store, window, api, messageBroker);
     }
-  }
-
-  copyTextToClipboard(text) {
-    return copyTextToClipboardUtil(text);
   }
 
   renderPiece(piece, piecePlace) {

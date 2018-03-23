@@ -38,7 +38,7 @@ class VarsFieldComponent extends React.PureComponent {
       return choice;
     });
 
-    return (<reduxForm.Select key={name} name={name} options={choices} />);
+    return (<reduxForm.Select onChange={() => {}} key={name} name={name} options={choices} />);
   }
 
   static renderTypeField(name, values) {
@@ -51,7 +51,7 @@ class VarsFieldComponent extends React.PureComponent {
       return choice;
     });
 
-    return (<reduxForm.Select label="Record Type" key={name} name={name} options={choices} />);
+    return (<reduxForm.Select onChange={() => {}} label="Record Type" key={name} name={name} options={choices} />);
   }
 
   static renderTypeValueField(name, values) {
@@ -64,7 +64,7 @@ class VarsFieldComponent extends React.PureComponent {
       return choice;
     });
 
-    return (<reduxForm.Select label="Default Value" key={name} name={name} options={choices} />);
+    return (<reduxForm.Select onChange={() => {}} label="Default Value" key={name} name={name} options={choices} />);
   }
 
   onAddButtonClick = (event) => {
@@ -107,11 +107,13 @@ class VarsFieldComponent extends React.PureComponent {
             return (<div className="varsfield-item" key={key}>
               <div className="remove-ctrl" onClick={() => fields.remove(index)}><i className="fa fa-trash" /></div>
               <reduxForm.Input
+                onChange={() => {}}
                 label={hint}
                 name={`${varName}.name`}
                 validate={[VarsFieldComponent.validateVarName]}
               />
               <reduxForm.Select
+                onChange={() => {}}
                 label="Type"
                 options={varTypes}
                 name={`${varName}.type`}
@@ -150,6 +152,7 @@ class LabelsFieldComponent extends React.PureComponent {
     const newOptions = options.map(label => label.label);
 
     return (<reduxForm.TagSet
+      onChange={() => {}}
       name="labels"
       label="Labels"
       tags={fields.getAll() || []}
@@ -170,7 +173,8 @@ export class EditFormComponent extends React.Component {
     change:        null,
     queryValues:   {},
     handleSubmit:  null,
-    error:         null,
+    formErrors:    {},
+    hasError:      false,
     labels:        [],
     extendedQuery: false
   };
@@ -186,7 +190,8 @@ export class EditFormComponent extends React.Component {
     queryValues:   PropTypes.object,
     initialValues: PropTypes.object,
     handleSubmit:  PropTypes.func,
-    error:         PropTypes.string,
+    formErrors:    PropTypes.object,
+    hasError:      PropTypes.bool,
     extendedQuery: PropTypes.bool,
   };
 
@@ -281,7 +286,7 @@ export class EditFormComponent extends React.Component {
 
   render() {
     const groupBy = this.props.groupBy || '';
-    const { select, groupParams, labels } = this.props;
+    const { select, groupParams, labels, formErrors, hasError } = this.props;
 
     const renderVars = field => <VarsField fields={field.fields} groupParams={groupParams || {}} />;
     const renderLabels = field => <LabelsField fields={field.fields} options={labels} />;
@@ -289,7 +294,15 @@ export class EditFormComponent extends React.Component {
     return (
       <form onSubmit={this.props.handleSubmit}>
         <Container>
+          {hasError && <div className="form-error-message">Please check form accuarte, there is an error.</div>}
+          {Object.keys(formErrors).length > 0
+            ? <div className="form-error-message">
+              {Object.keys(formErrors).map(key => (<span>{key}: {formErrors[key]}<br /></span>))}
+            </div>
+            : null
+          }
           <reduxForm.Input
+            onChange={() => {}}
             label="Title"
             id="title"
             name="title"
@@ -305,11 +318,11 @@ export class EditFormComponent extends React.Component {
             <div className="input-wrap">
               <FormSection name="query">
                 <Section hidden={this.state.queryInputMode !== 'form'}>
-                  <reduxForm.Input label="SELECT" name="select" />
-                  <reduxForm.Input label="FROM" name="from" />
-                  <reduxForm.Input label="WHERE" name="where" />
-                  <reduxForm.Input label="SPLIT BY" name="split_by" />
-                  <reduxForm.Input label="GROUP BY" name="group_by" />
+                  <reduxForm.Input onChange={() => {}} label="SELECT" name="select" />
+                  <reduxForm.Input onChange={() => {}} label="FROM" name="from" />
+                  <reduxForm.Input onChange={() => {}} label="WHERE" name="where" />
+                  <reduxForm.Input onChange={() => {}} label="SPLIT BY" name="split_by" />
+                  <reduxForm.Input onChange={() => {}} label="GROUP BY" name="group_by" />
                   <div
                     className={classNames({
                       'field-hidden': !(select && select.match(/count\s*\(.*?\)/i) && groupBy.length)
@@ -321,8 +334,8 @@ export class EditFormComponent extends React.Component {
                     />
                   </div>
                   <div style={{ width: '150px' }}>
-                    <reduxForm.Input label="LIMIT" name="limit" />
-                    <reduxForm.Input label="OFFSET" name="offset" />
+                    <reduxForm.Input onChange={() => {}} label="LIMIT" name="limit" />
+                    <reduxForm.Input onChange={() => {}} label="OFFSET" name="offset" />
                   </div>
                 </Section>
                 <Section hidden={this.state.queryInputMode !== 'dpql'}>
@@ -337,7 +350,7 @@ export class EditFormComponent extends React.Component {
             </div>
           </div>
         </Container>
-        {this.props.error && <div className="form-error-message">{this.props.error}</div>}
+
       </form>
     );
   }

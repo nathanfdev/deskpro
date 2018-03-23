@@ -63,11 +63,13 @@
 					</span>
 				</td>
 			{% elseif field == 'department' %}
+            	{% if app.getSetting('using_department') %}
 				<td class="{{field}}">
 					<span class="prop-val department_id" data-prop-value="{{ticket.department.id}}">
 						{{ticket.department.title}}
 					</span>
 				</td>
+				{% endif %}
 			{% elseif field == 'category' %}
 				<td class="{{field}}">
 					<span class="prop-val category_id" data-prop-value="{{ticket.category.id}}">
