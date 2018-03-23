@@ -108,6 +108,16 @@ abstract class AbstractJsonChartRenderer extends AbstractJsonRenderer
         $firstSel       = reset($selectColumns);
         $valueAxisTitle = $firstSel['title'];
 
+        $additionalData = [];
+        foreach ($selectColumns as $index => $selectColumn) {
+            if (strpos($selectColumn['title'], '__var') !== false) {
+                $additionalData[$selectColumn['title']] = $selectColumn;
+                //we're gonna add this column in another way, it should have same key for it and would be used for
+                // click_url option in chart
+                unset($selectColumns[$index]);
+            }
+        }
+
         if ($groupXColumns && !$metadata->hasFlag(ResultMetadata::FLAG_HIERARCHICAL)) {
             // matrix table - X() values translate to bottom axis, each row (from Y()) is a new line/stack.
             $prepared = $this->prepareMatrixTable($metadata, $rows);
@@ -181,6 +191,11 @@ abstract class AbstractJsonChartRenderer extends AbstractJsonRenderer
                         $rowData['value'.$i] = $this->filterGraphValue($this->getColumnValue($row, $column));
                     }
 
+                    // process additional data for internal chart purposes
+                    foreach ($additionalData as $key => $column) {
+                        $rowData[$key] = $this->filterGraphValue($this->getColumnValue($row, $column));
+                    }
+
                     $rowGroups[$grouper][$category] = $rowData;
                 }
 
@@ -193,7 +208,12 @@ abstract class AbstractJsonChartRenderer extends AbstractJsonRenderer
                     foreach ($values as $categoryName => $groupValues) {
                         $uniqueGraphs[$categoryName] = true;
                         foreach ($groupValues as $valueId => $value) {
-                            $data["$categoryName-$valueId"] = $value;
+                            $key = "$categoryName-$valueId";
+                            // this value is used for internal purposes, don't change key name
+                            if (strpos($valueId, '__var') !== false) {
+                                $key = $valueId;
+                            }
+                            $data[$key] = $value;
                         }
                     }
 
@@ -230,6 +250,11 @@ abstract class AbstractJsonChartRenderer extends AbstractJsonRenderer
                         $rowData['value'.$i] = $this->filterGraphValue($this->getColumnValue($row, $column));
                     }
 
+                    // process additional data for internal chart purposes
+                    foreach ($additionalData as $key => $column) {
+                        $rowData[$key] = $this->filterGraphValue($this->getColumnValue($row, $column));
+                    }
+
                     $rowGroups[$grouper][$category] = $rowData;
                 }
 
@@ -242,7 +267,13 @@ abstract class AbstractJsonChartRenderer extends AbstractJsonRenderer
                     foreach ($values as $categoryName => $groupValues) {
                         $uniqueGraphs[$categoryName] = true;
                         foreach ($groupValues as $valueId => $value) {
-                            $data["$categoryName-$valueId"] = $value;
+                            $key = "$categoryName-$valueId";
+
+                            // this value is used for internal purposes, don't change key name
+                            if (strpos($valueId, '__var') !== false) {
+                                $key = $valueId;
+                            }
+                            $data[$key] = $value;
                         }
                     }
 
@@ -280,11 +311,18 @@ abstract class AbstractJsonChartRenderer extends AbstractJsonRenderer
                     $category          = implode(' / ', $categories);
                     $maxCategoryLength = max($maxCategoryLength, strlen($category));
 
-                    $chartData[] = [
+                    $data = [
                         'category' => $category,
                         'title'    => $this->renderCellValue($row, $sel, $metadata),
                         'value'    => $this->filterGraphValue($this->getColumnValue($row, $sel)),
                     ];
+
+                    // process additional data for internal chart purposes
+                    foreach ($additionalData as $key => $column) {
+                        $rowData[$key] = $this->filterGraphValue($this->getColumnValue($row, $column));
+                    }
+
+                    $chartData[] = $data;
                 }
 
                 $graphs[] = [
