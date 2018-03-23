@@ -65,6 +65,8 @@ class CustomDefAbstract extends \Application\DeskPRO\Domain\DomainObject impleme
     const HANDLER_CLASS_DATA     = Handler\Data::class;
     const HANDLER_CLASS_DATAJSON = Handler\DataJson::class;
     const HANDLER_CLASS_DATALIST = Handler\DataList::class;
+    const HANDLER_CLASS_URL      = Handler\Url::class;
+    const HANDLER_CLASS_CURRENCY = Handler\Currency::class;
 
     const TYPE_TEXT      = 'text';
     const TYPE_TEXTAREA  = 'textarea';
@@ -77,6 +79,8 @@ class CustomDefAbstract extends \Application\DeskPRO\Domain\DomainObject impleme
     const TYPE_DATA      = 'data';
     const TYPE_DATA_JSON = 'datajson';
     const TYPE_DATA_LIST = 'datalist';
+    const TYPE_URL       = 'url';
+    const TYPE_CURRENCY  = 'currency';
 
     /**
      * The unique ID.
@@ -1169,6 +1173,14 @@ class CustomDefAbstract extends \Application\DeskPRO\Domain\DomainObject impleme
     public function isDataListType()
     {
         return $this->handler_class === self::HANDLER_CLASS_DATALIST;
+    }
+
+    /**
+     * @return bool
+     */
+    public function isCurrencyType()
+    {
+        return $this->handler_class === self::HANDLER_CLASS_CURRENCY;
     }
 
     /**

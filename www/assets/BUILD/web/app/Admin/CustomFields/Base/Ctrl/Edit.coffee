@@ -12,6 +12,7 @@ define [
       @field_id = parseInt(@$stateParams.id || 0)
       @field_type = '0'
       @field_type_chooser = 'text'
+      @currencies = []
 
       @showFieldType = true
       @showEnabled = true
@@ -27,18 +28,20 @@ define [
       return
 
     initialLoad: ->
-      p = @initialLoadExtra()
-      promise = @fieldDataService.loadEditFieldData(@$stateParams.id || null).then( (data) =>
+      promises = []
+      promises.push @Api2.sendGet('/currencies').then (response) => @currencies = response.data.data
+      promises.push @fieldDataService.loadEditFieldData(@$stateParams.id || null).then( (data) =>
         @field      = data.field
         @field_type = data.field_type
         @form       = data.form
         @postLoad(data)
       )
 
+      p = @initialLoadExtra()
       if p
-        return @$q.all([promise, p])
-      else
-        promise
+        promises.push p
+
+      return @$q.all(promises)
 
     getDataService: ->
       throw new Error("Not implemented")

@@ -57,6 +57,8 @@ services:
 
   api_serializer.handler.custom_data:
     class: DeskPRO\Bundle\AppBundle\Serializer\Handler\Entity\CustomDataHandler
+    arguments:
+      - "@doctrine.orm.default_entity_manager"
     tags:
       - { name: "jms_serializer.subscribing_handler" }
 

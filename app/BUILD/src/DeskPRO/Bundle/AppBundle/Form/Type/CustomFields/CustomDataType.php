@@ -31,6 +31,7 @@ namespace DeskPRO\Bundle\AppBundle\Form\Type\CustomFields;
 use Application\DeskPRO\Entity\CustomDataAbstract;
 use Application\DeskPRO\Entity\CustomDefAbstract;
 use Application\DeskPRO\Entity\Ticket;
+use DeskPRO\Bundle\AppBundle\Entity\Currency;
 use DeskPRO\Bundle\AppBundle\Form\FormField;
 use DeskPRO\Bundle\AppBundle\Form\Type\ApiBooleanType;
 use DeskPRO\Bundle\AppBundle\Form\Type\DataJsonType;
@@ -39,11 +40,14 @@ use DeskPRO\Bundle\AppBundle\Form\Type\DateTimeType;
 use DeskPRO\Bundle\AppBundle\Form\Type\DisplayHtmlType;
 use DeskPRO\Bundle\AppBundle\Form\Type\DpDateType;
 use DeskPRO\Bundle\AppBundle\Form\Type\DpHiddenType;
+use DeskPRO\Bundle\AppBundle\Form\Type\DpUrlType;
 use DeskPRO\Bundle\AppBundle\Validator\Constraints as AppAssert;
 use DeskPRO\Bundle\PortalBundle\Form\Form\Type\SingleCheckboxType;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
+use Doctrine\ORM\EntityManager;
 use Symfony\Component\Form\AbstractType;
+use Symfony\Component\Form\Extension\Core\Type\MoneyType;
 use Symfony\Component\Form\Extension\Core\Type\TextareaType;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\FormBuilderInterface;
@@ -62,17 +66,24 @@ use Symfony\Component\Validator\Validator\ValidatorInterface;
 class CustomDataType extends AbstractType
 {
     /**
+     * @var EntityManager
+     */
+    private $em;
+
+    /**
      * @var ValidatorInterface
      */
-    protected $validator;
+    private $validator;
 
     /**
      * Constructor.
      *
+     * @param EntityManager      $em
      * @param ValidatorInterface $validator
      */
-    public function __construct(ValidatorInterface $validator)
+    public function __construct(EntityManager $em, ValidatorInterface $validator)
     {
+        $this->em        = $em;
         $this->validator = $validator;
     }
 
@@ -121,6 +132,10 @@ class CustomDataType extends AbstractType
         /** @var CustomDefAbstract $customDef */
         $customDef = $config->getOption('custom_def');
         $field     = $this->createCustomField($customDef, $config->getOption('inline'));
+
+        if (!$field) {
+            return;
+        }
 
         // custom fields are implemented as a compound type
         // and this label is for the 'data' attribute, whereas
@@ -270,6 +285,10 @@ class CustomDataType extends AbstractType
         $options = $form->getConfig()->getOptions();
 
         if (!$form->isSubmitted()) {
+            return;
+        }
+        if ($form->get('data') && $form->get('data')->getTransformationFailure()) {
+            // don't validate if we've already got an error on data transformation
             return;
         }
 
@@ -585,6 +604,27 @@ class CustomDataType extends AbstractType
                 ];
 
                 return new FormField(DpHiddenType::class, $options);
+
+            case CustomDefAbstract::TYPE_URL:
+                return new FormField(DpUrlType::class, [
+                    'help' => $def->getRealDescription(),
+                ]);
+
+            case CustomDefAbstract::TYPE_CURRENCY:
+                if (!$def->getOption('currency_id')) {
+                    return;
+                }
+
+                $currency = $this->em->getRepository(Currency::class)->find($def->getOption('currency_id'));
+                if (!$currency) {
+                    return;
+                }
+
+                return new FormField(MoneyType::class, [
+                    'help'     => $def->getRealDescription(),
+                    'currency' => $currency->getCurrencyCode(),
+                    'divisor'  => $currency->getDelimiter(),
+                ]);
 
             default:
                 throw new \InvalidArgumentException("Invalid field #{$def->getId()}. Cannot find handler for type \"{$def->getType()}\".");

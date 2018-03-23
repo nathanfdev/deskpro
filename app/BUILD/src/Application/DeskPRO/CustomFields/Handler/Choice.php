@@ -26,10 +26,6 @@
  * ~ Thanks, Everyone at Team Deskpro
  */
 
-/**
- * DeskPRO.
- */
-
 namespace Application\DeskPRO\CustomFields\Handler;
 
 use Application\DeskPRO\App;
@@ -78,10 +74,7 @@ class Choice extends HandlerAbstract
     }
 
     /**
-     * @param null  $data
-     * @param array $templateVars
-     *
-     * @return string
+     * {@inheritdoc}
      */
     public function renderHtml($data = null, array $templateVars = [])
     {
@@ -99,10 +92,7 @@ class Choice extends HandlerAbstract
     }
 
     /**
-     * @param array|null $data
-     * @param array      $templateVars
-     *
-     * @return string
+     * {@inheritdoc}
      */
     public function renderText($data = null, array $templateVars = [])
     {
@@ -151,10 +141,7 @@ class Choice extends HandlerAbstract
     }
 
     /**
-     * @param null $data
-     * @param bool $availableOnly
-     *
-     * @return \Symfony\Component\Form\FormBuilderInterface
+     * {@inheritdoc}
      */
     public function getFormField($data = null, $availableOnly = false)
     {
@@ -343,9 +330,7 @@ class Choice extends HandlerAbstract
     }
 
     /**
-     * @param array $formData
-     *
-     * @return array
+     * {@inheritdoc}
      */
     public function getDataFromForm(array $formData)
     {
@@ -372,11 +357,7 @@ class Choice extends HandlerAbstract
     }
 
     /**
-     * @param array  $formData
-     * @param string $context
-     * @param null   $contextData
-     *
-     * @return array
+     * {@inheritdoc}
      */
     public function validateFormData(array $formData, $context = self::CONTEXT_USER, $contextData = null)
     {
@@ -457,10 +438,7 @@ class Choice extends HandlerAbstract
     }
 
     /**
-     * @param       $formView
-     * @param array $templateVars
-     *
-     * @return string
+     * {@inheritdoc}
      */
     public function renderFormHtml($formView, array $templateVars = [])
     {
@@ -482,7 +460,7 @@ class Choice extends HandlerAbstract
     }
 
     /**
-     * @return array
+     * {@inheritdoc}
      */
     public function getSearchCapabilities()
     {
@@ -490,7 +468,7 @@ class Choice extends HandlerAbstract
     }
 
     /**
-     * @return array
+     * {@inheritdoc}
      */
     public function getFilterCapabilities()
     {
@@ -498,7 +476,7 @@ class Choice extends HandlerAbstract
     }
 
     /**
-     * @return string
+     * {@inheritdoc}
      */
     public function getSearchType()
     {
