@@ -449,11 +449,11 @@ class SelectPart
                         }
                     }
 
-                    $queryResults = $this->sqlSelectContext->execute($sql);
+                    $queryResults = $this->sqlSelectContext->execute($sql, $this->resultMetadata);
                     $results->addSplitResults($this->fillResults($queryResults), $splitResult);
                 }
             } else {
-                $queryResults = $this->sqlSelectContext->execute($this->sql);
+                $queryResults = $this->sqlSelectContext->execute($this->sql, $this->resultMetadata);
                 $results->setResults($this->fillResults($queryResults));
             }
         } catch (DpqlException $e) {
