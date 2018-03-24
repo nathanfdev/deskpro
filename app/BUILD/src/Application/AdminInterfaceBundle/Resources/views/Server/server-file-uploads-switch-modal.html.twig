@@ -94,6 +94,16 @@
 							</div>
 						</td>
 					</tr>
+					<tr>
+						<th>File URL template:</th>
+						<td>
+							<input type="text" class="form-control" ng-model="options.s3_file_url_template" style="width: 95%;" />
+							<div style="margin-top: 4px; font-size: 11px;" ng-non-bindable>{% verbatim %}
+								You can customize file URL pattern in case of using third-party services that use the same API as AWS.
+                Available variables in pattern: {{bucketName}}, {{bucketRegion}}, {{path}}. Example of default pattern for AWS: https://{{bucketName}}.s3.amazonaws.com/{{path}}
+							{% endverbatim %}</div>
+						</td>
+					</tr>
 				</table>
 			</div>
 		</li>

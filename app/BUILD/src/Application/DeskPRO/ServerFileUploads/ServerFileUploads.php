@@ -1,10 +1,10 @@
 <?php
 
 /*
- * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
+ * Deskpro (r) has been developed by Deskpro Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2017, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2018, Deskpro Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -12,18 +12,18 @@
  * By using this software, you acknowledge having read the license
  * and agree to be bound thereby.
  *
- * Please note that DeskPRO is not free software. We release the full
+ * Please note that Deskpro is not free software. We release the full
  * source code for our software because we trust our users to pay us for
  * the huge investment in time and energy that has gone into both creating
  * this software and supporting our customers. By providing the source code
  * we preserve our customers' ability to modify, audit and learn from our
- * work. We have been developing DeskPRO since 2001, please help us make it
+ * work. We have been developing Deskpro since 2001, please help us make it
  * another decade.
  *
  * Like the work you see? Think you could make it better? We are always
  * looking for great developers to join us: http://www.deskpro.com/jobs/
  *
- * ~ Thanks, Everyone at Team DeskPRO
+ * ~ Thanks, Everyone at Team Deskpro
  */
 
 /**
@@ -250,6 +250,7 @@ class ServerFileUploads
                 $settings->setSetting('core.filestorage_s3_bucket', $options->get('s3_bucket', null));
                 $settings->setSetting('core.filestorage_s3_region', $options->get('s3_region', null));
                 $settings->setSetting('core.filestorage_s3_endpoint', $options->get('s3_endpoint', null));
+                $settings->setSetting('core.filestorage_s3_file_url_template', $options->get('s3_file_url_template', null));
 
                 break;
         }
@@ -260,6 +261,7 @@ class ServerFileUploads
             $settings->setSetting('core.filestorage_s3_bucket', null);
             $settings->setSetting('core.filestorage_s3_region', null);
             $settings->setSetting('core.filestorage_s3_endpoint', null);
+            $settings->setSetting('core.filestorage_s3_file_url_template', null);
         }
 
         $settings->setSetting('core.filesystem_move_from_id', '-1');

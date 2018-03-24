@@ -60,7 +60,8 @@ define ['Admin/Main/Ctrl/Base', 'DeskPRO/Util/Strings'], (Admin_Ctrl_Base, Strin
             s3_key:      data.s3_key,
             s3_secret:   data.s3_secret,
             s3_region:   data.s3_region,
-            s3_endpoint: data.s3_endpoint
+            s3_endpoint: data.s3_endpoint,
+            s3_file_url_template: data.s3_file_url_template
           }
 
           $scope.bucketNameTrans = ->
@@ -115,6 +116,9 @@ define ['Admin/Main/Ctrl/Base', 'DeskPRO/Util/Strings'], (Admin_Ctrl_Base, Strin
     ###
     switchStorage: (options) ->
       @$scope.updating_method = true
+      if options.s3_endpoint && options.s3_endpoint.toLowerCase().indexOf('http') != 0
+        options.s3_endpoint = 'https://' + options.s3_endpoint
+
       @Api.sendPostJson('/server_file_uploads/switch', {options: options}).then( =>
         @$scope.updating_method = false
         @$scope.data.filestorage_method = options.method
@@ -123,6 +127,7 @@ define ['Admin/Main/Ctrl/Base', 'DeskPRO/Util/Strings'], (Admin_Ctrl_Base, Strin
         @$scope.data.s3_secret   = options.s3_secret
         @$scope.data.s3_region   = options.s3_region
         @$scope.data.s3_endpoint = options.s3_endpoint
+        @$scope.data.s3_file_url_template = options.s3_file_url_template
 
         @Growl.success('Transfering of files started')
         @$scope.fileTransferStarted = true
