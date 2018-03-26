@@ -85,8 +85,12 @@ class HierarchyDepth
 
         $mergeResults = $results;
         foreach ($results as &$result) {
+            if ($result['hierarchy_depth'] > $max) {
+                continue;
+            }
+
             foreach ($mergeResults as $i => &$mergeResult) {
-                if ($result['hierarchy_depth'] <= $max || $mergeResult['hierarchy_root_title'] !== $result['hierarchy_root_title']) {
+                if ($mergeResult['hierarchy_depth'] <= $max || $mergeResult['hierarchy_root_title'] !== $result['hierarchy_root_title']) {
                     continue;
                 }
 
@@ -99,13 +103,17 @@ class HierarchyDepth
 
                 if ($found) {
                     foreach ($metadata->getSelectColumns() as $column) {
-                        if ($column['title'] === 'DPQL_COUNT()') {
-                            $result[$column['resultId'] - 1] = (int) $result[$column['resultId'] - 1] + (int) $mergeResult[$column['resultId'] - 1];
+                        if (is_numeric($mergeResult[$column['resultId'] - 1])) {
+                            $result[$column['resultId'] - 1] = (float) $result[$column['resultId'] - 1] + (float) $mergeResult[$column['resultId'] - 1];
                         }
                     }
                 }
             }
         }
+
+        $results = array_filter($results, function ($result) use ($max) {
+            return $result['hierarchy_depth'] <= $max;
+        });
 
         // Reduce depth by $min so that it starts from 0
         foreach ($results as &$result) {

@@ -185,7 +185,6 @@ class DashboardWidgetManager
      * @param DashboardWidgetEntity $widget
      * @param Person|null           $person
      *
-     * @throws \DeskPRO\Bundle\ReportBundle\Dpql2\DpqlException
      * @throws \Exception
      *
      * @return array|bool|string
@@ -362,7 +361,6 @@ class DashboardWidgetManager
      * @param Person $person
      * @param string $options
      *
-     * @throws \DeskPRO\Bundle\ReportBundle\Dpql2\DpqlException
      * @throws \Exception
      *
      * @return array|bool|string
