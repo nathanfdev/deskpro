@@ -3,7 +3,6 @@
 namespace Application\DeskPRO\Entity;
 
 use Application\DeskPRO\App;
-use Application\DeskPRO\Domain\DomainObject;
 use Application\DeskPRO\EntityRepository\Guide as ManualRepository;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\Mapping\ClassMetadata;
@@ -12,7 +11,7 @@ use JMS\Serializer\Annotation as JMS;
 use Orb\Util\Strings;
 use Symfony\Component\Validator\Constraints as Assert;
 
-class Guide extends DomainObject
+class Guide extends CategoryAbstract
 {
     /**
      * The unique id of the guide.
