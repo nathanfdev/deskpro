@@ -14241,6 +14241,14 @@
         }
       }
     },
+    "react-highlight": {
+      "version": "0.11.1",
+      "resolved": "https://registry.npmjs.org/react-highlight/-/react-highlight-0.11.1.tgz",
+      "integrity": "sha512-Tu/X1lP7Ve268nWLz9BIXOIwuZBXf8Jurgmcf9IhBHPVG34Jf2XB6gX8eolQQnTlRS+p6YfF+t5gh//z4e0QnQ==",
+      "requires": {
+        "highlight.js": "9.12.0"
+      }
+    },
     "react-highlight-words": {
       "version": "0.8.1",
       "resolved": "https://registry.npmjs.org/react-highlight-words/-/react-highlight-words-0.8.1.tgz",

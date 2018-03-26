@@ -25,6 +25,7 @@
 	window.DP_HAS_NEW_SNIPPETS = {% if app.hasBeta('new_snippets') %}true{% else %}false{% endif %};
 	window.DP_HAS_NEW_EMAILS   = {% if app.hasBeta('email_templates') %}true{% else %}false{% endif %};
 	window.DP_HAS_NEW_REPORTS  = {% if app.hasBeta('new_reports') %}true{% else %}false{% endif %};
+	window.DP_HAS_NEW_FILTERS  = {% if app.hasBeta('new_filters') %}true{% else %}false{% endif %};
 	window.DP_HAS_FOLLOW_UP    = {% if app.hasBeta('follow_up') %}true{% else %}false{% endif %};
 	window.DP_VERSION_NUMBER   = '{{ app.getVersionName() }}';
 
