@@ -10,6 +10,8 @@ import { CustomFieldRadio } from './CustomFieldRadio';
 import { CustomFieldCheckbox } from './CustomFieldCheckbox';
 import { CustomFieldHidden } from './CustomFieldHidden';
 import { CustomFieldToggle } from './CustomFieldToggle';
+import { CustomFieldUrl } from './CustomFieldUrl';
+import CustomFieldCurrency from './CustomFieldCurrency';
 
 export class CustomField extends React.Component {
 
@@ -56,6 +58,10 @@ export class CustomField extends React.Component {
         return <CustomFieldHidden {...widgetProps} />;
       case 'toggle':
         return <CustomFieldToggle {...widgetProps} />;
+      case 'url':
+        return <CustomFieldUrl {...widgetProps} />;
+      case 'currency':
+        return <CustomFieldCurrency {...widgetProps} />;
       default:
         return null;
     }
