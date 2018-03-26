@@ -1,5 +1,6 @@
 <?php
 
+<<<<<<< HEAD:app/BUILD/tests/phpunit/DpTest/DeskPRO/Bundle/AppBundle/TicketFilters/Model/ChangedFieldsTest.php
 /*
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
@@ -27,6 +28,13 @@
  */
 
 namespace DpTest\Bundle\AppBundle\TicketFilters\Diff;
+=======
+/**
+ * DeskPRO.
+ */
+
+namespace DeskPRO\Bundle\AppBundle\TermEngine\Engine\Php\TermCompiler;
+>>>>>>> origin/develop:app/BUILD/src/DeskPRO/Bundle/AppBundle/TermEngine/Engine/Php/TermCompiler/PhpTermCompilerFactory.php
 
 use DeskPRO\Bundle\AppBundle\TicketFilters\Model\Entity\TicketModel;
 

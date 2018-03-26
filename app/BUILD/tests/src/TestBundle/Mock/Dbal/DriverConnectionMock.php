@@ -1,5 +1,6 @@
 <?php
 
+<<<<<<< HEAD:app/BUILD/tests/src/TestBundle/Mock/Dbal/DriverConnectionMock.php
 /*
  * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
  * a British company located in London, England.
@@ -27,6 +28,16 @@
  */
 
 namespace DpTestSrc\TestBundle\Mock\Dbal;
+=======
+/**
+ * DeskPRO.
+ */
+
+namespace DeskPRO\Bundle\AppBundle\TermEngine\Engine\Dbal\TermCompiler\Helper;
+
+use DeskPRO\Bundle\AppBundle\TermEngine\TermCompilerHelperInterface;
+use Psr\Log\LoggerInterface;
+>>>>>>> origin/develop:app/BUILD/src/DeskPRO/Bundle/AppBundle/TermEngine/Engine/Dbal/TermCompiler/Helper/AbstractDbalHelper.php
 
 class DriverConnectionMock implements \Doctrine\DBAL\Driver\Connection
 {
