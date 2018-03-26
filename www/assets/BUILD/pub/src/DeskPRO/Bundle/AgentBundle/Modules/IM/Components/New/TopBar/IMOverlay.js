@@ -246,14 +246,18 @@ export default class IMOverlay extends React.Component {
         <div className="im header"><FormattedMessage id="agent.chrome.nav_agentchat" /></div>
         <SegmentsGroup className="im">
           <Segment className="search-wrapper">
-            <SearchBox
-              text={this.state.filter}
-              focusOnMount
-              onFocus={onFocus}
-              onBlur={onBlur}
-              onUserInput={this.onListFilter}
-              placeholder={<FormattedMessage id="agent.general.search" />}
-            />
+            <FormattedMessage id="agent.general.search">
+              {placeholder => (
+                <SearchBox
+                  text={this.state.filter}
+                  focusOnMount
+                  onFocus={onFocus}
+                  onBlur={onBlur}
+                  onUserInput={this.onListFilter}
+                  placeholder={placeholder}
+                />
+              )}
+            </FormattedMessage>
           </Segment>
           <Segment className="im-tabs">{this.getTabs()}</Segment>
         </SegmentsGroup>

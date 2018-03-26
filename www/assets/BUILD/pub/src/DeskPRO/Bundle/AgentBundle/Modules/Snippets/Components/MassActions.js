@@ -228,13 +228,17 @@ class LabelSelect extends React.Component {
         inputRenderer={this.inputRenderer}
         displayInputWhenOpened={false}
       >
-        <Input
-          placeholder={<FormattedMessage id="agent.general.filter" />}
-          value={this.state.filter}
-          className="labels_filter"
-          onChange={this.onFilterChange}
-          onKeyDown={this.handleInputKeyDown}
-        />
+        <FormattedMessage id="agent.general.filter">
+          {placeholder => (
+            <Input
+              placeholder={placeholder}
+              value={this.state.filter}
+              className="labels_filter"
+              onChange={this.onFilterChange}
+              onKeyDown={this.handleInputKeyDown}
+            />
+          )}
+        </FormattedMessage>
         <List>
           {this.getLabels(this.state.labels)}
         </List>

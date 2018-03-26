@@ -261,12 +261,16 @@ export class VisibilitySelect extends React.Component {
     return (
       <div>
         {departmentsCount > 10 ?
-          <Input
-            placeholder={<FormattedMessage id="agent.general.filter" />}
-            value={this.state.filter}
-            className="departments_filter"
-            onChange={this.onFilterChange}
-          />
+          <FormattedMessage id="agent.general.filter">
+            {placeholder => (
+              <Input
+                placeholder={placeholder}
+                value={this.state.filter}
+                className="departments_filter"
+                onChange={this.onFilterChange}
+              />
+            )}
+          </FormattedMessage>
           : null }
         <List>
           {departments}

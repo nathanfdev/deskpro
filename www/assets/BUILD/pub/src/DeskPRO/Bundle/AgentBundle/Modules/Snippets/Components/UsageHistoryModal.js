@@ -86,9 +86,9 @@ export class UsageHistoryModal extends React.Component {
     return (
       <div id="usage_history_modal">
         <Modal
-          title={<div>
+          title={<span>
             <FormattedMessage id="agent.snippets.usage_history" />: {snippet.get('title')}
-          </div>}
+          </span>}
           closeModal={closeModal}
         >
           <div className="display-options">
