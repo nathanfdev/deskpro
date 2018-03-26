@@ -135,7 +135,7 @@ class TicketToElasticaTransformer implements ModelToElasticaTransformerInterface
                     /** @var ApacheTikaManager $client */
                     $client = $this->getApacheTika()->getClient();
                     /** @var TicketAttachment $attachment */
-                    foreach ($attachments as $attachment) {
+                    foreach ($object->getAttachments() as $attachment) {
                         $blob = $attachment->getBlob();
                         if (!$blob->isImage()) {
                             $attachmentData[] = [
