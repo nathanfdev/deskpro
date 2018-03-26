@@ -1,10 +1,10 @@
 <?php
 
 /*
- * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
+ * Deskpro (r) has been developed by Deskpro Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2018, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2018, Deskpro Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -12,23 +12,24 @@
  * By using this software, you acknowledge having read the license
  * and agree to be bound thereby.
  *
- * Please note that DeskPRO is not free software. We release the full
+ * Please note that Deskpro is not free software. We release the full
  * source code for our software because we trust our users to pay us for
  * the huge investment in time and energy that has gone into both creating
  * this software and supporting our customers. By providing the source code
  * we preserve our customers' ability to modify, audit and learn from our
- * work. We have been developing DeskPRO since 2001, please help us make it
+ * work. We have been developing Deskpro since 2001, please help us make it
  * another decade.
  *
  * Like the work you see? Think you could make it better? We are always
  * looking for great developers to join us: http://www.deskpro.com/jobs/
  *
- * ~ Thanks, Everyone at Team DeskPRO
+ * ~ Thanks, Everyone at Team Deskpro
  */
 
 namespace DeskPRO\Bundle\ReportBundle\Dpql2\Plugin\Hierarchy;
 
 use DeskPRO\Bundle\ReportBundle\Dpql2\DpqlException;
+use DeskPRO\Bundle\ReportBundle\Reports\ResultMetadata;
 use Doctrine\DBAL\Connection;
 
 /**
@@ -77,18 +78,20 @@ class HierarchySorting
      * Given $results elements with hierarchy_id and hierarchy_parent_id fields, this function sorts the elements as
      * they should appear in the view and adds hierarchy_depth and hierarchy_root_title fields
      *
-     * @param array    $results
-     * @param string   $hierarchicalTargetTable
-     * @param string   $hierarchicalTargetTableAlias
-     * @param array    $selectedFields
-     * @param int|null $countFieldNum
-     * @param int      $recursionLevel
+     * @param ResultMetadata $metadata
+     * @param array          $results
+     * @param string         $hierarchicalTargetTable
+     * @param string         $hierarchicalTargetTableAlias
+     * @param array          $selectedFields
+     * @param int|null       $countFieldNum
+     * @param int            $recursionLevel
      *
      * @throws DpqlException
      *
      * @return array
      */
     public function sort(
+        ResultMetadata $metadata,
         array $results,
         $hierarchicalTargetTable,
         $hierarchicalTargetTableAlias,
@@ -121,7 +124,7 @@ class HierarchySorting
 
         // If no root elements, then simply init the additional fields and return results as is
         // (e.g. we can have no root elements if using the HIERARCHY_DESCENDS_FROM() DPQL function)
-        if (empty($newResults)) {
+        if (empty($newResults) && $metadata->hasFlag(ResultMetadata::FLAG_HIERARCHY_DESCENDS_FROM)) {
             foreach ($results as &$result) {
                 $result['hierarchy_depth']                            = 0;
                 is_null($countFieldNum) or $result['hierarchy_count'] = (int) $result[$countFieldNum];
@@ -227,7 +230,7 @@ class HierarchySorting
 
             $combined   = array_merge($newResults, $results, $missing);
             $newResults = $this->sort(
-                $combined, $hierarchicalTargetTable, $hierarchicalTargetTableAlias, $selectedFields, $countFieldNum,
+                $metadata, $combined, $hierarchicalTargetTable, $hierarchicalTargetTableAlias, $selectedFields, $countFieldNum,
                 1 + $recursionLevel
             );
         }

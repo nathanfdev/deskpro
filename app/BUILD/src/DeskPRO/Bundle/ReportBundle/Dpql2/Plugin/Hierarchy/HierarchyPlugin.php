@@ -209,6 +209,7 @@ class HierarchyPlugin implements PluginInterface
         // Tree sort and count depth
         $countFieldNum = $this->getCountFieldNum();
         $results       = $this->sorting->sort(
+            $metadata,
             $results,
             Hierarchy::getGroupingTargetTable($this->sql),
             Hierarchy::getGroupingTargetTableReference($this->sql),

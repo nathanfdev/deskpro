@@ -273,7 +273,7 @@ abstract class AbstractJsonChartRenderer extends AbstractJsonRenderer
                     foreach ($groupYColumns as $column) {
                         $categories[] = $this->renderCellValue($row, $column, $metadata);
                     }
-                    if ($metadata->hasFlag(ResultMetadata::FLAG_HIERARCHICAL) && $row['hierarchy_parent_id']) {
+                    if ($metadata->hasFlag(ResultMetadata::FLAG_HIERARCHICAL) && $row['hierarchy_parent_id'] && isset($row['hierarchy_root_title'])) {
                         array_unshift($categories, $row['hierarchy_root_title']);
                     }
 
