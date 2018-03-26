@@ -140,7 +140,8 @@ class Url extends HandlerAbstract
 
         if (is_string($value)
             && !preg_match('#^\\\\[\w\d-_\\\]+$#', $value) // shared folder
-            && !preg_match('~^\w+://~', $value)) {
+            && !preg_match('~^\w+://~', $value)
+            && preg_match('/\.+/', $value)) {
             $value = 'http://'.$value;
         }
 
