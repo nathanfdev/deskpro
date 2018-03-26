@@ -122,7 +122,7 @@ export const createChat = createAction(
     const jwt = jwtTokenSelector(state);
 
     return widgetApi
-      .sendPost(`DP_API/chats/create?dp__v=${visitorId}`, { ...params, jwt }, { ...ajaxOptions })
+      .sendPost(`DP_API/chats/create?dp__v=${visitorId}`, { ...params, jwt }, { ...ajaxOptions(state) })
       .success((response) => {
         const data = response.data || {};
         const chatId = data.auth_id;
@@ -141,18 +141,20 @@ export const createChat = createAction(
 
 export const ackChatMessages = createAction(
   'WIDGET_CHAT_ACK_MESSAGES',
-  (chatId, params) => {
+  (chatId, params) => (dispatch, getState) => {
+    const state = getState();
     if (!chatId) {
       return null;
     }
 
-    return widgetApi.sendPost(`DP_API/chats/${chatId}/ack_messages`, params, { ...ajaxOptions });
+    return widgetApi.sendPost(`DP_API/chats/${chatId}/ack_messages`, params, { ...ajaxOptions(state) });
   }
 );
 
 export const toggleSendTranscript = createAction(
   'WIDGET_CHAT_TOGGLE_SEND_TRANSCRIPT',
-  (chatId, value) => (dispatch) => {
+  (chatId, value) => (dispatch, getState) => {
+    const state = getState();
     if (!chatId) {
       return null;
     }
@@ -161,7 +163,7 @@ export const toggleSendTranscript = createAction(
     dispatch(optimisticToggleSendTranscript(value));
 
     const params  = { should_send_transcript: value };
-    const promise = widgetApi.sendPost(`DP_API/chats/${chatId}/transcript/toggle`, params, { ...ajaxOptions });
+    const promise = widgetApi.sendPost(`DP_API/chats/${chatId}/transcript/toggle`, params, { ...ajaxOptions(state) });
     promise.success(() => dispatch(unlockPollingResponse()));
     promise.catch(() => dispatch(unlockPollingResponse()));
 
@@ -171,14 +173,15 @@ export const toggleSendTranscript = createAction(
 
 export const sendTranscriptInfo = createAction(
   'WIDGET_CHAT_SEND_TRANSCRIPT_INFO',
-  (chatId, params) => (dispatch) => {
+  (chatId, params) => (dispatch, getState) => {
+    const state = getState();
     if (!chatId) {
       return null;
     }
 
     dispatch(lockPollingResponse());
 
-    const promise = widgetApi.sendPost(`DP_API/chats/${chatId}/transcript/info`, params, { ...ajaxOptions });
+    const promise = widgetApi.sendPost(`DP_API/chats/${chatId}/transcript/info`, params, { ...ajaxOptions(state) });
     promise.success(() => dispatch(unlockPollingResponse()));
     promise.catch(() => dispatch(unlockPollingResponse()));
 
@@ -195,7 +198,7 @@ export const pollingChat = createAction(
     }
 
     const queryParams = compileParams(params);
-    const promise = widgetApi.sendGet(`DP_API/chats/${chatId}/polling?${queryParams}`, { ...ajaxOptions });
+    const promise = widgetApi.sendGet(`DP_API/chats/${chatId}/polling?${queryParams}`, { ...ajaxOptions(state) });
     promise.success((response) => {
       const locked = lockedPollingSelector(state);
       const skipped = skippedPollingSelector(state);
@@ -286,12 +289,13 @@ export const pollingChat = createAction(
 
 export const sendUserTyping = createAction(
   'WIDGET_CHAT_SEND_USER_TYPING',
-  (chatId, params) => {
+  (chatId, params) => (dispatch, getState) => {
+    const state = getState();
     if (!chatId) {
       return null;
     }
 
-    return widgetApi.sendPost(`DP_API/chats/${chatId}/user_typing`, params, { ...ajaxOptions });
+    return widgetApi.sendPost(`DP_API/chats/${chatId}/user_typing`, params, { ...ajaxOptions(state) });
   }
 );
 
@@ -366,7 +370,7 @@ export const sendChatMessage = createAction(
       dispatch(removeAttachment(attachment));
     });
 
-    const promise = widgetApi.sendPost(`DP_API/chats/${chatId}/messages`, params, { ...ajaxOptions });
+    const promise = widgetApi.sendPost(`DP_API/chats/${chatId}/messages`, params, { ...ajaxOptions(state) });
     promise.catch(() => {
       dispatch(markNotDelivered(tmpId));
     });
@@ -377,14 +381,15 @@ export const sendChatMessage = createAction(
 
 export const endChat = createAction(
   'WIDGET_CHAT_END',
-  chatId => (dispatch) => {
+  chatId => (dispatch, getState) => {
     if (!chatId) {
       return null;
     }
 
     dispatch(lockPollingResponse());
 
-    const promise = widgetApi.sendPost(`DP_API/chats/${chatId}/end`, null, { ...ajaxOptions });
+    const state   = getState();
+    const promise = widgetApi.sendPost(`DP_API/chats/${chatId}/end`, null, { ...ajaxOptions(state) });
     promise.success(() => {
       dispatch(unlockPollingResponse());
     });
@@ -396,14 +401,15 @@ export const endChat = createAction(
 
 export const reopenChat = createAction(
   'WIDGET_CHAT_REOPEN',
-  chatId => (dispatch) => {
+  chatId => (dispatch, getState) => {
     if (!chatId) {
       return null;
     }
 
     dispatch(lockPollingResponse());
 
-    const promise = widgetApi.sendPost(`DP_API/chats/${chatId}/reopen`, null, { ...ajaxOptions });
+    const state   = getState();
+    const promise = widgetApi.sendPost(`DP_API/chats/${chatId}/reopen`, null, { ...ajaxOptions(state) });
     promise.success(() => {
       dispatch(unlockPollingResponse());
     });
@@ -415,11 +421,12 @@ export const reopenChat = createAction(
 
 export const sendFeedback = createAction(
   'WIDGET_CHAT_SEND_FEEDBACK',
-  (chatId, params) => {
+  (chatId, params) => (dispatch, getState) => {
+    const state = getState();
     if (!chatId) {
       return null;
     }
 
-    return widgetApi.sendPost(`DP_API/chats/${chatId}/feedback`, params, { ...ajaxOptions });
+    return widgetApi.sendPost(`DP_API/chats/${chatId}/feedback`, params, { ...ajaxOptions(state) });
   }
 );

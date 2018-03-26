@@ -108,6 +108,10 @@ class AddButton extends React.Component {
     this.closePopup();
   };
 
+  runCustomAddBtnClick = () => {
+    window.HEADER_ADD_BTN_CLICK_ACTION();
+  };
+
   closePopup = () => {
     this.addPopup.closePopup();
     this.props.closeIframes();
@@ -119,6 +123,17 @@ class AddButton extends React.Component {
 
   render() {
     const content = this.getPopupContent();
+
+    // code plugin hook to override the btn
+    if (window.HEADER_ADD_BTN_CLICK_ACTION) {
+      return (
+        <div className="item add">
+          <button className="ui button" onClick={this.runCustomAddBtnClick}>
+            <Isvg src={`${window.DESKPRO_APP_ASSETS_URL}/DeskPRO/Bundle/AgentBundle/Resources/img/topbar/plus.svg`} />
+          </button>
+        </div>
+      );
+    }
 
     if (content) {
       return (

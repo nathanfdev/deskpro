@@ -195,3 +195,28 @@ Feature: /ticket_forms
     When I send a GET request to "/api/v2/organizations/{o1}"
     Then the response status code should be 200
     And the JSON node "data.fields.{f1}.value" should be equal to the string "some text"
+
+  Scenario: I check None choice of radio field
+    Given only the following custom ticket fields exist:
+      | #  | Type        | Title        | Parent |
+      | f1 | radio_group | Choice field |        |
+      | c1 |             | Choice 1     | {f1}   |
+      | c2 |             | Choice 2     | {f1}   |
+      | c3 |             | Choice 3     | {f1}   |
+    And the only default ticket layout exists with fields:
+      | agent_layout      |
+      | ticket_field_{f1} |
+
+    When I send a PUT request to "/api/v2/ticket_forms/agent/{t1}" with body:
+    """
+{
+  "fields": {
+    "~f1~": null
+  }
+}
+    """
+    Then the response status code should be 204
+
+    When I send a GET request to "/api/v2/tickets/{t1}"
+    Then the response status code should be 200
+    And the JSON node "data.fields.{f1}" should not exist

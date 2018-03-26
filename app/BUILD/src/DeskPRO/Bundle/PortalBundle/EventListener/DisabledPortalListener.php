@@ -1,10 +1,10 @@
 <?php
 
 /*
- * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
+ * Deskpro (r) has been developed by Deskpro Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2017, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2018, Deskpro Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -12,18 +12,18 @@
  * By using this software, you acknowledge having read the license
  * and agree to be bound thereby.
  *
- * Please note that DeskPRO is not free software. We release the full
+ * Please note that Deskpro is not free software. We release the full
  * source code for our software because we trust our users to pay us for
  * the huge investment in time and energy that has gone into both creating
  * this software and supporting our customers. By providing the source code
  * we preserve our customers' ability to modify, audit and learn from our
- * work. We have been developing DeskPRO since 2001, please help us make it
+ * work. We have been developing Deskpro since 2001, please help us make it
  * another decade.
  *
  * Like the work you see? Think you could make it better? We are always
  * looking for great developers to join us: http://www.deskpro.com/jobs/
  *
- * ~ Thanks, Everyone at Team DeskPRO
+ * ~ Thanks, Everyone at Team Deskpro
  */
 
 namespace DeskPRO\Bundle\PortalBundle\EventListener;
@@ -126,6 +126,8 @@ class DisabledPortalListener implements EventSubscriberInterface, SkipLowRequest
             || $this->isAdminPreviewApiCall($event)
             || $this->isFavicon($event)
             || $this->isPortalApi($event)
+            || $this->isFocusWindow($event)
+            || $this->isProxy($event)
         ) {
             // we only make this decision on master requests. sub requests are never "offline".
             // whitlisted routes obviously should pass
@@ -198,6 +200,50 @@ class DisabledPortalListener implements EventSubscriberInterface, SkipLowRequest
      */
     private function isPortalApi(GetResponseEvent $event)
     {
-        return strpos($event->getRequest()->getPathInfo(), '/portal/api') === 0;
+        $request   = $event->getRequest();
+        $routeName = $request->attributes->get('_route');
+
+        return $routeName && (strpos($routeName, 'portal_api_') === 0 || strpos($routeName, 'deskpro_portal_api_') === 0);
+    }
+
+    /**
+     * @param GetResponseEvent $event
+     *
+     * @return bool
+     */
+    private function isFocusWindow(GetResponseEvent $event)
+    {
+        $request   = $event->getRequest();
+        $routeName = $request->attributes->get('_route');
+
+        if (!$routeName) {
+            return false;
+        }
+
+        $whitelistedRoutes = [
+            'portal_new_ticket',
+            'portal_thanks',
+            'portal_thanks_verify',
+            'portal_login',
+            'portal_validation',
+            'portal_search_similar',
+            'portal_reset_password',
+            'saved_form_auto_submit',
+            'dp_pagehit',
+        ];
+
+        return $this->modeStorage->getMode()
+            && $this->modeStorage->getMode()->isFocusWindow()
+            && in_array($routeName, $whitelistedRoutes);
+    }
+
+    /**
+     * @param GetResponseEvent $event
+     *
+     * @return bool
+     */
+    private function isProxy(GetResponseEvent $event)
+    {
+        return $event->getRequest()->getPathInfo() === '/_proxy';
     }
 }

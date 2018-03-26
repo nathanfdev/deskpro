@@ -63,5 +63,8 @@ define ['Admin/Main/Ctrl/Base'], (Admin_Ctrl_Base) ->
         if @$state.current.name == 'emails.ticket_accounts.edit' and parseInt(@$state.params.id) == acc.id
           @$state.go('emails.ticket_accounts')
       )
+        .error (res) =>
+          if res.error_message
+            @Growl.error res.error_message
 
   Admin_TicketAccounts_Ctrl_List.EXPORT_CTRL()

@@ -109,7 +109,7 @@ services:
 
   form.custom_data:
     class: DeskPRO\Bundle\AppBundle\Form\Type\CustomFields\CustomDataType
-    arguments: ["@validator"]
+    arguments: ["@doctrine.orm.default_entity_manager", "@validator"]
     tags:
       - { name: form.type }
 
@@ -440,5 +440,12 @@ services:
     class: DeskPRO\Bundle\AppBundle\Form\Type\Reports\ScheduledReportType
     arguments:
       - "@deskpro.reports.saver"
+    tags:
+      - { name: form.type }
+
+  form.currency_field:
+    class: Application\DeskPRO\CustomFields\Form\Type\CurrencyFieldType
+    arguments:
+      - "@doctrine.orm.default_entity_manager"
     tags:
       - { name: form.type }

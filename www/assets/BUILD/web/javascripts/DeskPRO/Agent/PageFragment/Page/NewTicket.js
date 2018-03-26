@@ -37,6 +37,9 @@ DeskPRO.Agent.PageFragment.Page.NewTicket = new Orb.Class({
 			ev.preventDefault();
 		});
 
+		this.page = this;
+		this.initTicketAgentProps();
+
 		this._initUserSection();
 		this._initMessageSection();
 		this._initOtherSection();
@@ -44,6 +47,7 @@ DeskPRO.Agent.PageFragment.Page.NewTicket = new Orb.Class({
 		this._initPropertiesSection();
 		this._initLabels();
 		this._initDraft();
+    this._initDateCustomFields();
 
     this.addEvent('destroy', function() {
       this.draft && this.draft.reset();
@@ -94,11 +98,11 @@ DeskPRO.Agent.PageFragment.Page.NewTicket = new Orb.Class({
 			});
 			this.addEvent('activate', function() {
 				if (this.meta.auto_start_bill) {
-					self.billing.startBillingTimer(true);
+					self.billing.startBillingTimer();
 				}
 			});
 			this.addEvent('deactivate', function() {
-				self.billing.stopBillingTimer(true);
+				self.billing.stopBillingTimer();
 			});
 		}
 
@@ -148,7 +152,8 @@ DeskPRO.Agent.PageFragment.Page.NewTicket = new Orb.Class({
 
 		$('.Date.customfield input', this.wrapper).each(function() {
 			$(this).datetimepicker({
-				format: 'YYYY-MM-DD',
+				format: 'L',
+        locale: moment.locale(),
 				widgetParent: $(this).parent().css('position', 'relative'),
 				widgetPositioning: { vertical: 'bottom' },
 				icons: {
@@ -165,7 +170,8 @@ DeskPRO.Agent.PageFragment.Page.NewTicket = new Orb.Class({
 
     $('.DateTime.customfield input', this.wrapper).each(function () {
 			$(this).datetimepicker({
-				format: 'YYYY-MM-DD HH:mm',
+				format: 'L HH:mm',
+        locale: moment.locale(),
 				widgetParent: $(this).parent().css('position', 'relative'),
 				widgetPositioning: { vertical: 'bottom' },
 				icons: {
@@ -833,7 +839,10 @@ DeskPRO.Agent.PageFragment.Page.NewTicket = new Orb.Class({
       formData.push({ name: 'billing_type', value: this.billing.getBillingType() });
     }
 
-		$.ajax({
+    formData = this.normalizeCustomFieldValues(formData);
+
+		return $.ajax({
+
 			url: BASE_URL + 'agent/tickets/new/save',
 			type: 'POST',
 			data: formData,
@@ -2086,6 +2095,61 @@ DeskPRO.Agent.PageFragment.Page.NewTicket = new Orb.Class({
     };
   },
 
+  _initDateCustomFields: function() {
+    var self = this;
+
+    self.getEl('fields_container').find('.Date.customfield input').each(function(){
+      if ($(this).val()) {
+        $(this).val(self.convertDateFormat('YYYY-MM-DD', 'L', $(this).val()));
+      }
+      var parent = $(this).closest('tbody');
+      if (parent.data('default-value')) {
+        parent.data('default-value', self.convertDateFormat('YYYY-MM-DD', 'L', parent.data('default-value')));
+      }
+    });
+    self.getEl('fields_container').find('.DateTime.customfield input').each(function(){
+      if ($(this).val()) {
+        $(this).val(self.convertDateFormat('YYYY-MM-DD HH:mm', 'L HH:mm', $(this).val()));
+      }
+      var parent = $(this).closest('tbody');
+      if (parent.data('default-value')) {
+        parent.data('default-value', self.convertDateFormat('YYYY-MM-DD HH:mm', 'L HH:mm', parent.data('default-value')));
+      }
+    });
+  },
+
+  normalizeCustomFieldValues: function(formData) {
+    var self = this;
+
+    var nameToHandlerMap = {};
+    // for now we need only Date and DateTime fields
+    self.getEl('fields_container').find('.customfield input').each(function(){
+      // skip `hijri` now
+      if ($(this).closest('.customfield.hijri').length) {
+        return;
+      }
+      nameToHandlerMap[$(this).attr('name')] = $(this).closest('tbody').data('custom-field-handler');
+    });
+
+    return formData.map(function(field){
+      if (nameToHandlerMap[field.name] === 'date') {
+        field.value = self.convertDateFormat('L', 'YYYY-MM-DD', field.value);
+      } else if (nameToHandlerMap[field.name] === 'datetime') {
+        field.value = self.convertDateFormat('L HH:mm', 'YYYY-MM-DD HH:mm', field.value);
+      }
+
+      return field;
+    });
+  },
+
+  convertDateFormat: function(from, to, value){
+    if (!value) {
+      return value;
+    }
+    var mom = moment(value, from);
+    return mom.isValid() ? mom.format(to) : value;
+  },
+
 	destroyPage: function() {
 		clearTimeout(this.submitBindTimeout);
 		this.contentWrapper = null;
@@ -2134,6 +2198,73 @@ DeskPRO.Agent.PageFragment.Page.NewTicket = new Orb.Class({
 
     this.te && this.te.destroy();
     this.te = null;
+	},
+
+	initTicketAgentProps: function() {
+		var self = this;
+
+    //------------------------------
+    // Followers
+    //------------------------------
+
+    var followerSel = this.page.getEl('followers_sel');
+    var followersList = this.page.getEl('followers_list');
+
+    this.page.getEl('add_follower_btn').on('click', function(ev) {
+      ev.preventDefault();
+      self.page.getEl('followers_sel_wrap').toggleClass('on');
+      followerSel.select2('val', '0');
+    });
+
+    this.page.getEl('follower_me').on('click', function() {
+      followerSel.val($(this).data('me')).trigger('change');
+    });
+
+    followerSel.on('change', function() {
+      var agentId = parseInt($(this).val());
+      self.page.getEl('followers_sel_wrap').removeClass('on');
+
+      if (!agentId || followersList.find('.agent-' + agentId)[0]) {
+        return;
+      }
+
+      var option = followerSel.find('option[value="' + agentId + '"]');
+
+      var li = $('<li class="agent-'+agentId+'" data-agent-id="'+agentId+'"><a class="dp-btn dp-btn-small agent-link" data-agent-id="'+agentId+'"><span class="text"></span><span class="remove-row-trigger"> <i class="icon-remove"></i></span></a></li>');
+      li.find('span.text').css('background-image', 'url(' +option.data('icon-small') + ')').text(option.text());
+
+      followersList.append(li);
+      updateFollowersList();
+    });
+
+    followersList.on('click', '.remove-row-trigger', function(ev) {
+      ev.preventDefault();
+      ev.stopPropagation();
+      ev.stopImmediatePropagation();
+
+      $(this).closest('li').remove();
+      updateFollowersList();
+    });
+
+    var updateFollowersList = function() {
+      var postData = [{
+        name: 'with_set_agent_parts',
+        value: 1
+      }];
+      followersList.find('li').each(function() {
+        postData.push({
+          name: 'set_agent_part_ids[]',
+          value: $(this).data('agent-id')
+        });
+      });
+
+      var $assign = self.getEl('follower_me');
+      followersList.find('.agent-' + $assign.data('me')).length ? $assign.hide() : $assign.show();
+    };
+
+    DP.select(this.getEl('agent_sel'));
+    DP.select(this.getEl('agent_team_sel'));
+    DP.select(this.getEl('followers_sel'));
 	}
 
 });

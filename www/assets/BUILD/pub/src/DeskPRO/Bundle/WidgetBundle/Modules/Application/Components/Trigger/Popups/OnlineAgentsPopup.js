@@ -39,7 +39,7 @@ export class OnlineAgentsPopup extends React.Component {
               <span>{portalPhrases.get('portal.widget.online_agents')}</span>
             </h1>
             <div className="dpdesignportal-chat-header">
-              <AgentAvatars onlineAgents={onlineAgents} />
+              <AgentAvatars onlineAgents={onlineAgents.toArray()} />
             </div>
           </div>
         </div>

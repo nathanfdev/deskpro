@@ -135,6 +135,11 @@ DeskPRO.Agent.PageFragment.Page.Person = new Orb.Class({
 			});
 			this.ownObject(autoResMenu);
 
+      var isConfirmedMenu = new DeskPRO.UI.Menu({
+        menuElement: this.getEl('toggle_confirmed')
+      });
+      this.ownObject(isConfirmedMenu);
+
 			this.getEl('timezone').on('change', function(){
 				var val = $(this).val();
 				$('.timezone-info', this.wrapper).empty();
@@ -167,6 +172,17 @@ DeskPRO.Agent.PageFragment.Page.Person = new Orb.Class({
 
 				self.getEl('disable_autoresponses_reason').remove();
 			});
+
+      this.getEl('toggle_confirmed').on('change', function(){
+        $.ajax({
+          url: BASE_URL + 'agent/people/' + self.meta.person_id + '/ajax-save',
+          type: 'POST',
+          dataType: 'json',
+          data: {
+            action: 'toggle_confirmed'
+          }
+        });
+      });
 
 			var namef       = this.getEl('showname');
 			var editName    = this.getEl('editname');

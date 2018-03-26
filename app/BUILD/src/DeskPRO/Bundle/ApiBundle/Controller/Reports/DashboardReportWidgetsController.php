@@ -35,6 +35,7 @@ use DeskPRO\Bundle\AppBundle\Annotation\ActionPermissions\Annotation\ApiModes;
 use DeskPRO\Bundle\AppBundle\Annotation\ActionPermissions\Annotation\Feature;
 use DeskPRO\Bundle\AppBundle\Form\Type\Reports\ReportDashboardWidgetType;
 use DeskPRO\Bundle\AppBundle\Security\Voter\PermissionGroups\PermissionGroupVoter;
+use DeskPRO\Bundle\ReportBundle\Reports\Renderer\ReportsRendererInterface;
 use Doctrine\ORM\QueryBuilder;
 use FOS\RestBundle\Controller\Annotations as Rest;
 use Symfony\Component\HttpFoundation\Request;
@@ -72,6 +73,9 @@ class DashboardReportWidgetsController extends CrudController
      * @param string                $type
      * @param Request               $request
      *
+     * @throws \DeskPRO\Bundle\ReportBundle\Dpql2\DpqlException
+     * @throws \Exception
+     *
      * @return Response
      */
     public function downloadAction(ReportDashboardWidget $dashboardWidget, $type, Request $request)
@@ -95,14 +99,19 @@ class DashboardReportWidgetsController extends CrudController
             $variables[] = $widgetVariable;
         }
 
-        $query    = $this->get('dpql.compiler')->compile($query, ['variables' => $variables]);
-        $results  = $query->getResults();
-        $renderer = $this->get('reports.renderer_registry')->getRenderer(ReportDashboardWidget::TYPE_TABLE, $type);
+        $results = $this->getContainer()->get('reports.dashboard_widget.service')->doRender(
+            $query,
+            ['variables' => $variables],
+            ReportsRendererInterface::TYPE_TABLE,
+            $type,
+            $this->getUser()
+        );
+        $renderer = $this->get('reports.renderer_registry')->getRenderer(ReportsRendererInterface::TYPE_TABLE, $type);
 
         $response = new Response();
         $response->headers->set('Content-Type', $renderer->getContentType());
         $response->headers->set('Content-Disposition', 'inline; filename='.$widget->getTitle().'.'.$renderer->getExtension());
-        $response->setContent($renderer->render($results));
+        $response->setContent($results);
 
         return $response;
     }
@@ -111,6 +120,8 @@ class DashboardReportWidgetsController extends CrudController
      * @param HttpKernelInterface $kernel
      * @param Request             $masterRequest
      * @param array               $params
+     *
+     * @throws \Exception
      *
      * @return Response
      */

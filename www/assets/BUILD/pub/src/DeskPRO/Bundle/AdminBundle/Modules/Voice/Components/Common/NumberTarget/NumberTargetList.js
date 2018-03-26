@@ -36,7 +36,7 @@ class NumberTargetList extends React.Component {
               autoClose
               content={(
                 <div>
-                  {popupTargets.map((target, index) => (
+                  {popupTargets.toArray().map((target, index) => (
                     <div key={index}>{target.name}</div>
                   ))}
                 </div>

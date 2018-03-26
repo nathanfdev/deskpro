@@ -118,7 +118,7 @@ DeskPRO.Agent.WindowElement.TabBar = new Orb.Class({
 
       window.requestIdleCallback ?
         window.requestIdleCallback(preInit, {timeout: 5000}) :
-        window.setTimeout(cleanup, this.preInitWait * 100);
+        window.setTimeout(preInit, this.preInitWait * 100);
     }).bind(this));
   },
 

@@ -230,3 +230,47 @@ Feature: Custom fields @aka1
       | Entity Endopoint      | Endpoint                            | Title     | Alias           |
 #      | /api/v2/persons       | /api/v2/person_custom_fields        | Data json  | james_vagabond |
       | /api/v2/organizations | /api/v2/organization_custom_fields  | Data json  | james_vagabond100 |
+
+  Scenario Outline: I check alias dupe validation
+    Given only the following CustomDefTicket records exist:
+      | #  | Type | Title      |
+      | f1 | text | Text field |
+    And only the following CustomTicketFieldDefinitionAlias records exist:
+      | #  | Object | Alias    |
+      | a1 | {f1}   | my_alias |
+
+    When I send a POST request to "/api/v2/<endpoint>" with a json body:
+    """
+{
+  "title":"My field",
+  "is_enabled":true,
+  "alias": "my_alias",
+  "handler_class":"Application\\DeskPRO\\CustomFields\\Handler\\Text"
+}
+    """
+    Then the response status code should be 400
+    And the JSON node "errors.fields.alias.errors[0].code" should be equal to "not_unique_alias"
+
+    Examples:
+      | endpoint                   |
+      | ticket_custom_fields       |
+      | person_custom_fields       |
+      | organization_custom_fields |
+
+  Scenario Outline: I check alias format validation
+    When I send a POST request to "/api/v2/ticket_custom_fields" with a json body:
+    """
+{
+  "title":"My field",
+  "is_enabled":true,
+  "alias": "<alias>",
+  "handler_class":"Application\\DeskPRO\\CustomFields\\Handler\\Text"
+}
+    """
+    Then the response status code should be 400
+    And the JSON node "errors.fields.alias.errors[0].code" should be equal to "invalid_alias_format"
+
+    Examples:
+      | alias      |
+      | my alias   |
+      | %my_alias% |

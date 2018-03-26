@@ -1,10 +1,10 @@
 <?php
 
 /*
- * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
+ * Deskpro (r) has been developed by Deskpro Ltd. https://www.deskpro.com/
  * a British company located in London, England.
  *
- * All source code and content Copyright (c) 2017, DeskPRO Ltd.
+ * All source code and content Copyright (c) 2018, Deskpro Ltd.
  *
  * The license agreement under which this software is released
  * can be found at https://www.deskpro.com/eula/
@@ -12,18 +12,18 @@
  * By using this software, you acknowledge having read the license
  * and agree to be bound thereby.
  *
- * Please note that DeskPRO is not free software. We release the full
+ * Please note that Deskpro is not free software. We release the full
  * source code for our software because we trust our users to pay us for
  * the huge investment in time and energy that has gone into both creating
  * this software and supporting our customers. By providing the source code
  * we preserve our customers' ability to modify, audit and learn from our
- * work. We have been developing DeskPRO since 2001, please help us make it
+ * work. We have been developing Deskpro since 2001, please help us make it
  * another decade.
  *
  * Like the work you see? Think you could make it better? We are always
  * looking for great developers to join us: http://www.deskpro.com/jobs/
  *
- * ~ Thanks, Everyone at Team DeskPRO
+ * ~ Thanks, Everyone at Team Deskpro
  */
 
 /**
@@ -33,7 +33,6 @@
 namespace DeskPRO\Component\Util;
 
 use DeskPRO\Component\Collections\ReverseIterator;
-use Symfony\Component\Validator\Tests\Fixtures\Countable;
 
 /**
  * Utility methods used with plain arrays/collections (i.e., numerically indexed).
@@ -444,20 +443,9 @@ class ListUtils
 
             return;
         } else {
-            if (!is_array($array) && !$array instanceof \ArrayAccess) {
-                $array = iterator_to_array($array, false);
+            foreach ($array as $v) {
+                return $v;
             }
-
-            if (empty($array)) {
-                throw new \InvalidArgumentException('Array is empty');
-            }
-
-            // This casts a map to a list
-            if (!array_key_exists(0, $array)) {
-                $array = array_values($array);
-            }
-
-            return $array[0];
         }
     }
 
@@ -480,22 +468,12 @@ class ListUtils
 
             return;
         } else {
-            if (!is_array($array) && !($array instanceof \ArrayAccess && $array instanceof Countable)) {
-                $array = iterator_to_array($array, false);
+            $last = null;
+            foreach ($array as $v) {
+                $last = $v;
             }
 
-            if (empty($array)) {
-                throw new \InvalidArgumentException('Array is empty');
-            }
-
-            // This casts a map to a list
-            if (!array_key_exists(0, $array)) {
-                $array = array_values($array);
-            }
-
-            $len = count($array);
-
-            return $array[$len - 1];
+            return $last;
         }
     }
 
