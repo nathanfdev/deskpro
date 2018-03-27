@@ -6,7 +6,6 @@ use Application\DeskPRO\Entity\Ticket;
 use DeskPRO\Bundle\ApiBundle\ApiDoc\Annotation\ApiDoc;
 use DeskPRO\Bundle\ApiBundle\Controller\CrudController;
 use DeskPRO\Bundle\AppBundle\Annotation\ActionPermissions\Annotation\ApiModes;
-use DeskPRO\Bundle\AppBundle\Annotation\ActionPermissions\Annotation\Feature;
 use DeskPRO\Bundle\AppBundle\CountBadge\Count;
 use DeskPRO\Bundle\AppBundle\CountBadge\CountBuilder;
 use DeskPRO\Bundle\AppBundle\Entity\TicketFilter;
@@ -14,6 +13,7 @@ use DeskPRO\Bundle\AppBundle\TicketFilters\Context;
 use DeskPRO\Bundle\AppBundle\TicketFilters\TicketCountTitleResolver;
 use DeskPRO\Bundle\AppBundle\TicketFilters\TicketSearchParams;
 use DeskPRO\Component\Util\ListUtils;
+use Doctrine\ORM\QueryBuilder;
 use FOS\RestBundle\Controller\Annotations as Rest;
 use FOS\RestBundle\View\View;
 use Symfony\Component\HttpFoundation\Request;
@@ -23,7 +23,6 @@ use Symfony\Component\HttpFoundation\Request;
  *
  * @ApiModes("all")
  * @Rest\Route("/ticket_filters2")
- * @Feature("new_filters")
  * @ApiDoc(
  *     target="all",
  *     section="Ticket filters (new)",
@@ -32,10 +31,41 @@ use Symfony\Component\HttpFoundation\Request;
  */
 class TicketFiltersController extends CrudController
 {
-    public static $exposeOnly = ['list', 'get', 'count'];
+    public static $exposeOnly = ['list', 'get'];
     public static $entity     = TicketFilter::class;
-    public static $listSort   = 'displayOrder';
     public static $listOrder  = 'asc';
+
+    /**
+     * {@inheritdoc}
+     */
+    protected function applyListFilters(QueryBuilder $qb, $alias, Request $request)
+    {
+        /** @var Person $person */
+        $person = $this->getUser();
+
+        if ($request->query->getBoolean('enabled')) {
+            $qb->andWhere("$alias.isEnabled = true");
+        }
+
+        if (!$person->isAdmin() || $request->query->getBoolean('mine')) {
+            $qb->leftJoin("$alias.filterSetLinks", 'filterSetLink');
+            $qb->leftJoin('filterSetLink.filterSet', 'filterSet');
+            $qb->leftJoin('filterSet.sharedAgents', 'agents');
+
+            $personWhere = $qb->expr()->orX(
+                'filterSet.isGlobal = 1',
+                'agents = :person'
+            );
+
+            if ($person->getTeams()->count()) {
+                $qb->leftJoin('filterSet.sharedTeams', 'teams');
+                $personWhere->add('teams IN (:teams)');
+                $qb->setParameter('teams', $person->getTeams());
+            }
+
+            $qb->andWhere($personWhere)->setParameter('person', $person);
+        }
+    }
 
     /**
      * @ApiDoc(

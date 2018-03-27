@@ -6,6 +6,7 @@
 
 namespace DeskPRO\Bundle\AppBundle\Entity;
 
+use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\NotifyPropertyChanged;
 use Doctrine\ORM\Mapping as ORM;
 use JMS\Serializer\Annotation as JMS;
@@ -80,6 +81,26 @@ class TicketFilter implements EntityInterface, NotifyPropertyChanged
     protected $isEnabled = true;
 
     /**
+     * An array of filter associations.
+     *
+     * @ORM\OneToMany(
+     *     targetEntity="DeskPRO\Bundle\AppBundle\Entity\TicketFilterSetAssoc",
+     *     mappedBy="filter"
+     * )
+     *
+     * @var TicketFilterSetAssoc[]|ArrayCollection
+     */
+    protected $filterSetLinks;
+
+    /**
+     * TicketFilter constructor.
+     */
+    public function __construct()
+    {
+        $this->filterSetLinks = new ArrayCollection();
+    }
+
+    /**
      * @return int|null
      */
     public function getId()
@@ -151,5 +172,25 @@ class TicketFilter implements EntityInterface, NotifyPropertyChanged
         $this->setModelField('isEnabled', false);
 
         return $this;
+    }
+
+    /**
+     * @internal used from TicketFilterSet only please
+     *
+     * @param TicketFilterSetAssoc $a
+     */
+    public function addFilterSetAssoc(TicketFilterSetAssoc $a)
+    {
+        $this->filterSetLinks->add($a);
+    }
+
+    /**
+     * @internal used from TicketFilterSet only please
+     *
+     * @param TicketFilterSetAssoc $a
+     */
+    public function removeFilterSetAssoc(TicketFilterSetAssoc $a)
+    {
+        $this->filterSetLinks->removeElement($a);
     }
 }

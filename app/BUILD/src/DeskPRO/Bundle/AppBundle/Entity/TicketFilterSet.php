@@ -100,7 +100,7 @@ class TicketFilterSet implements EntityInterface, NotifyPropertyChanged
      *          @ORM\JoinColumn(name="filter_set_id", referencedColumnName="id", onDelete="CASCADE")
      *      },
      *      inverseJoinColumns={
-     *          @ORM\JoinColumn(name="agent_id", referencedColumnName="id", onDelete="CASCADE")
+     *          @ORM\JoinColumn(name="agent_team_id", referencedColumnName="id", onDelete="CASCADE")
      *      }
      * )
      *
@@ -149,6 +149,10 @@ class TicketFilterSet implements EntityInterface, NotifyPropertyChanged
     }
 
     /**
+     * @JMS\VirtualProperty()
+     * @JMS\Type("collection<entity<DeskPRO\Bundle\AppBundle\Entity\TicketFilter>>")
+     * @JMS\SerializedName("filters")
+     *
      * @return TicketFilter[]
      */
     public function getFilters()
@@ -184,9 +188,10 @@ class TicketFilterSet implements EntityInterface, NotifyPropertyChanged
                 $displayOrder += 10;
             }
 
-            $existLink = new TicketFilterSetAssoc($this, $filter, $displayOrder);
-            $this->filterLinks->add($existLink);
+            $newLink = new TicketFilterSetAssoc($this, $filter, $displayOrder);
+            $this->filterLinks->add($newLink);
             $this->setModelField('filterLinks', $this->filterLinks);
+            $filter->addFilterSetAssoc($newLink);
         } else {
             $existLink->setDisplayOrder($displayOrder);
         }
@@ -204,6 +209,7 @@ class TicketFilterSet implements EntityInterface, NotifyPropertyChanged
         foreach ($this->filterLinks as $idx => $a) {
             if ($a->getFilter() === $filter) {
                 $this->filterLinks->remove($idx);
+                $filter->removeFilterSetAssoc($a);
                 break;
             }
         }
