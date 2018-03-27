@@ -1,31 +1,5 @@
 <?php
 
-/*
- * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
- * a British company located in London, England.
- *
- * All source code and content Copyright (c) 2018, DeskPRO Ltd.
- *
- * The license agreement under which this software is released
- * can be found at https://www.deskpro.com/eula/
- *
- * By using this software, you acknowledge having read the license
- * and agree to be bound thereby.
- *
- * Please note that DeskPRO is not free software. We release the full
- * source code for our software because we trust our users to pay us for
- * the huge investment in time and energy that has gone into both creating
- * this software and supporting our customers. By providing the source code
- * we preserve our customers' ability to modify, audit and learn from our
- * work. We have been developing DeskPRO since 2001, please help us make it
- * another decade.
- *
- * Like the work you see? Think you could make it better? We are always
- * looking for great developers to join us: http://www.deskpro.com/jobs/
- *
- * ~ Thanks, Everyone at Team DeskPRO
- */
-
 namespace DeskPRO\Bundle\ReportBundle\Dashboard;
 
 use Application\DeskPRO\Entity\Person;
@@ -38,7 +12,9 @@ use DeskPRO\Bundle\ReportBundle\Dpql2\Statement\SelectPart;
 use DeskPRO\Bundle\ReportBundle\Reports\Renderer\ReportsRendererInterface;
 use DeskPRO\Bundle\ReportBundle\Reports\Renderer\ReportsRendererRegistry;
 use DeskPRO\Bundle\ReportBundle\Reports\ResultMetadata;
+use DeskPRO\Component\Util\RegexUtils;
 use Doctrine\ORM\EntityManager;
+use DpSys\LowError\SystemErrorHandler;
 
 /**
  * Class DashboardWidget.
@@ -183,7 +159,6 @@ class DashboardWidgetManager
      * @param DashboardWidgetEntity $widget
      * @param Person|null           $person
      *
-     * @throws \DeskPRO\Bundle\ReportBundle\Dpql2\DpqlException
      * @throws \Exception
      *
      * @return array|bool|string
@@ -199,14 +174,19 @@ class DashboardWidgetManager
         $variables = $this->transformVariables($widget);
         $variables = $this->applyPermissionsToVariables($variables, $widget, $person);
 
-        $data = $this->doRender(
-            $widget->getWidget()->getQuery(),
-            ['variables' => $variables],
-            $this->getWidgetGraphType($widget->getType()),
-            'json',
-            $person,
-            $widget->getOptions()
-        );
+        try {
+            $data = $this->doRender(
+                $widget->getWidget()->getQuery(),
+                ['variables' => $variables],
+                $this->getWidgetGraphType($widget->getType()),
+                'json',
+                $person,
+                $widget->getOptions()
+            );
+        } catch (\Exception $e) {
+            SystemErrorHandler::logException($e);
+            throw $e;
+        }
 
         return $this->formatData($data, $widget->getType());
     }
@@ -310,10 +290,38 @@ class DashboardWidgetManager
      */
     public function getCompiledQueries($query, array $params = [], Person $person = null)
     {
-        $queries         = preg_split('#LAYER WITH#', $query);
+        /*
+         * $queries will be like:
+         *
+         * [
+         *    'query 1',
+         *    'LAYER WITH bar',
+         *    'query 2',
+         *    'LAYER WITH',
+         *    'query 3'
+         * ]
+         *
+         * So every odd index (cause 0-based) is the 'LAYER WITH', of which we need to see if the uer provided a graph type
+         */
+        $queries         = preg_split('#^\s*(LAYER\s+WITH(?:\s+(?:'.implode('|', $this->widgetGraphTypesMapping).'))?)\s*$#m', $query, -1, \PREG_SPLIT_NO_EMPTY | \PREG_SPLIT_DELIM_CAPTURE);
         $compiledQueries = [];
-        foreach ($queries as $layeredQuery) {
-            $compiledQueries[] = $this->compiler->compile($layeredQuery, $params, new DpqlContext($person));
+        $curGraphType    = null; // null means it comes from the widget
+
+        foreach ($queries as $idx => $layeredQuery) {
+            $layeredQuery = trim($layeredQuery);
+            if ($idx && $idx % 2 !== 0) {
+                $curGraphType = RegexUtils::getMatch(
+                    '#^LAYER\s+WITH\s+(?P<graphType>'.implode('|', $this->widgetGraphTypesMapping).')$#',
+                    $layeredQuery,
+                    'graphType'
+                ) ?: null;
+            } else {
+                $compiledQ = $this->compiler->compile($layeredQuery, $params, new DpqlContext($person));
+                if ($curGraphType) {
+                    $compiledQ->setGraphTypeHint($curGraphType);
+                }
+                $compiledQueries[] = $compiledQ;
+            }
         }
 
         return $compiledQueries;
@@ -327,7 +335,6 @@ class DashboardWidgetManager
      * @param Person $person
      * @param string $options
      *
-     * @throws \DeskPRO\Bundle\ReportBundle\Dpql2\DpqlException
      * @throws \Exception
      *
      * @return array|bool|string
@@ -340,8 +347,6 @@ class DashboardWidgetManager
         Person $person = null,
         $options = ''
     ) {
-        $renderer = $this->rendererRegistry->getRenderer($graphType, $format);
-
         $results         = [];
         $compiledQueries = $this->getCompiledQueries($query, $params, $person);
         $multiLayer      = count($compiledQueries) > 1;
@@ -351,7 +356,10 @@ class DashboardWidgetManager
             if ($multiLayer) {
                 $queryResult->getMetadata()->addFlag(ResultMetadata::FLAG_LAYERED);
             }
-            $results[] = $queryResult;
+            $results[] = [
+                'graphType'   => $compiledQuery->getGraphTypeHint() ?: $graphType,
+                'queryResult' => $queryResult,
+            ];
         }
 
         if ($options) {
@@ -360,15 +368,18 @@ class DashboardWidgetManager
             $options = [];
         }
 
+        $renderer = $this->rendererRegistry->getRenderer($graphType, $format);
+
         $renderedResults = [];
         foreach ($results as $queryResult) {
-            $renderedResults[] = $renderer->render($queryResult, $options);
+            $partRenderer      = $this->rendererRegistry->getRenderer($queryResult['graphType'], $format);
+            $renderedResults[] = $partRenderer->render($queryResult['queryResult'], $options);
         }
         $renderedResults = array_filter($renderedResults, function ($item) {
             return $item;
         });
         if (count($renderedResults) > 1) {
-            return $renderer->mergeResults($renderedResults);
+            return $renderer->mergeResults($renderedResults, $options ?: []);
         }
 
         return reset($renderedResults);

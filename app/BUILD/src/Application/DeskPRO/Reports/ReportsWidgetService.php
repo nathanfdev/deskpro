@@ -1,34 +1,16 @@
 <?php
 
-/*
- * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
- * a British company located in London, England.
- *
- * All source code and content Copyright (c) 2018, DeskPRO Ltd.
- *
- * The license agreement under which this software is released
- * can be found at https://www.deskpro.com/eula/
- *
- * By using this software, you acknowledge having read the license
- * and agree to be bound thereby.
- *
- * Please note that DeskPRO is not free software. We release the full
- * source code for our software because we trust our users to pay us for
- * the huge investment in time and energy that has gone into both creating
- * this software and supporting our customers. By providing the source code
- * we preserve our customers' ability to modify, audit and learn from our
- * work. We have been developing DeskPRO since 2001, please help us make it
- * another decade.
- *
- * Like the work you see? Think you could make it better? We are always
- * looking for great developers to join us: http://www.deskpro.com/jobs/
- *
- * ~ Thanks, Everyone at Team DeskPRO
- */
-
 namespace Application\DeskPRO\Reports;
 
 use Application\DeskPRO\Entity\AgentTeam;
+use Application\DeskPRO\Entity\CustomDefArticle;
+use Application\DeskPRO\Entity\CustomDefBilling;
+use Application\DeskPRO\Entity\CustomDefChat;
+use Application\DeskPRO\Entity\CustomDefFeedback;
+use Application\DeskPRO\Entity\CustomDefOrganization;
+use Application\DeskPRO\Entity\CustomDefPerson;
+use Application\DeskPRO\Entity\CustomDefProduct;
+use Application\DeskPRO\Entity\CustomDefTicket;
 use Application\DeskPRO\Entity\Department;
 use Application\DeskPRO\Entity\Person;
 use Application\DeskPRO\Entity\ReportWidget;
@@ -103,6 +85,33 @@ class ReportsWidgetService
             $groupParams['values']['team'][$agentTeam->getId()] = [$agentTeam->getName()];
         }
 
+        $groupParams['ticket_custom_fields']   = $this->customFields(CustomDefTicket::class);
+        $groupParams['org_custom_fields']      = $this->customFields(CustomDefOrganization::class);
+        $groupParams['user_custom_fields']     = $this->customFields(CustomDefPerson::class);
+        $groupParams['article_custom_fields']  = $this->customFields(CustomDefArticle::class);
+        $groupParams['chat_custom_fields']     = $this->customFields(CustomDefChat::class);
+        $groupParams['feedback_custom_fields'] = $this->customFields(CustomDefFeedback::class);
+        $groupParams['billing_custom_fields']  = $this->customFields(CustomDefBilling::class);
+        $groupParams['product_custom_fields']  = $this->customFields(CustomDefProduct::class);
+
         return $groupParams;
+    }
+
+    private function customFields($class)
+    {
+        $defs   = $this->em->getRepository($class)->findBy(['parent' => null, 'is_enabled' => true]);
+        $result = [];
+
+        foreach ($defs as $def) {
+            if ($def->getChoices()) {
+                $result[$def->getRawTitle()] = [];
+                foreach ($def->getChoices() as $choice) {
+                    $result[$def->getRawTitle()][$choice['title']] = [$choice['title']];
+                }
+                $result[$def->getRawTitle()][DashboardWidgetManager::WIDGET_VALUE_FROM_REPORT] = ['value from report'];
+            }
+        }
+
+        return $result;
     }
 }

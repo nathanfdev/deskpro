@@ -1,35 +1,5 @@
 <?php
 
-/*
- * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
- * a British company located in London, England.
- *
- * All source code and content Copyright (c) 2017, DeskPRO Ltd.
- *
- * The license agreement under which this software is released
- * can be found at https://www.deskpro.com/eula/
- *
- * By using this software, you acknowledge having read the license
- * and agree to be bound thereby.
- *
- * Please note that DeskPRO is not free software. We release the full
- * source code for our software because we trust our users to pay us for
- * the huge investment in time and energy that has gone into both creating
- * this software and supporting our customers. By providing the source code
- * we preserve our customers' ability to modify, audit and learn from our
- * work. We have been developing DeskPRO since 2001, please help us make it
- * another decade.
- *
- * Like the work you see? Think you could make it better? We are always
- * looking for great developers to join us: http://www.deskpro.com/jobs/
- *
- * ~ Thanks, Everyone at Team DeskPRO
- */
-
-/**
- * DeskPRO.
- */
-
 namespace Application\DeskPRO\CustomFields\Form\Model;
 
 use Orb\Util\Arrays;
@@ -58,6 +28,16 @@ class ChoiceField extends CustomFieldAbstract
     public $choices_removed_structure = '';
     /** @var mixed */
     public $default_value = null;
+
+    /**
+     * @var bool
+     */
+    public $none_choice = false;
+
+    /**
+     * @var string
+     */
+    public $none_choice_title = '';
 
     protected function init()
     {
@@ -110,6 +90,11 @@ class ChoiceField extends CustomFieldAbstract
             } else {
                 $this->field_type = 'select';
             }
+        }
+
+        if (!$this->field_type === 'radio') {
+            $this->none_choice       = $this->_field->getOption('none_choice');
+            $this->none_choice_title = $this->_field->getOption('none_choice_title');
         }
 
         if (!$this->isNewField()) {
@@ -172,6 +157,12 @@ class ChoiceField extends CustomFieldAbstract
             $field->setOption('agent_required', null);
             $field->setOption('agent_min_length', null);
             $field->setOption('agent_max_length', null);
+        }
+
+        // radio choice
+        if (!$this->multiple && $this->expanded) {
+            $field->setOption('none_choice', $this->none_choice);
+            $field->setOption('none_choice_title', $this->none_choice_title);
         }
 
         if (!$this->default_value) {

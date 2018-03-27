@@ -273,7 +273,7 @@
 {# Custom fields#}
 {% for f in custom_fields %}
     <tbody
-          class="ticket_field_{{ f.id }} custom-field item off {% if f.field_def.isFormField() and not ticket.hasCustomField(f.id) %}no-value{% endif %}"
+          class="ticket_field_{{ f.id }} custom-field item off {% if f.field_def.isFormField() and not ticket.hasCustomField(f.id) %}no-value{% endif %} {% for a in f.field_def.getAliases() %}ticket-field-{{ a.getQualifiedName() }}{% endfor %}"
           data-field-type="ticket_field"
           data-item-id="{{ f.id }}"
           data-custom-field-handler="{{ f.field_handler }}"

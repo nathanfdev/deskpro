@@ -1,42 +1,11 @@
 <?php
 
-/*
- * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
- * a British company located in London, England.
- *
- * All source code and content Copyright (c) 2017, DeskPRO Ltd.
- *
- * The license agreement under which this software is released
- * can be found at https://www.deskpro.com/eula/
- *
- * By using this software, you acknowledge having read the license
- * and agree to be bound thereby.
- *
- * Please note that DeskPRO is not free software. We release the full
- * source code for our software because we trust our users to pay us for
- * the huge investment in time and energy that has gone into both creating
- * this software and supporting our customers. By providing the source code
- * we preserve our customers' ability to modify, audit and learn from our
- * work. We have been developing DeskPRO since 2001, please help us make it
- * another decade.
- *
- * Like the work you see? Think you could make it better? We are always
- * looking for great developers to join us: http://www.deskpro.com/jobs/
- *
- * ~ Thanks, Everyone at Team DeskPRO
- */
-
-/**
- * DeskPRO.
- */
-
 namespace Application\DeskPRO\CustomFields\Handler;
 
 use Application\DeskPRO\App;
 use Application\DeskPRO\Entity;
-use Orb\Util\Util;
 use DeskPRO\Bundle\AppBundle\ObjectAlias;
-
+use Orb\Util\Util;
 
 /**
  * A custom field handler knows how to render an HTML form field as well as
@@ -151,7 +120,7 @@ abstract class HandlerAbstract
     }
 
     /**
-     * Returns a list of possible names, ordered from the most specific to the least
+     * Returns a list of possible names, ordered from the most specific to the least.
      *
      * @return array|string[]
      */
@@ -362,7 +331,9 @@ abstract class HandlerAbstract
     /**
      * Get the form field.
      *
-     * @return Symfony\Component\Form\Field
+     * @param null $data
+     *
+     * @return \Symfony\Component\Form\FormBuilderInterface
      */
     public function getFormField($data = null)
     {
@@ -381,14 +352,30 @@ abstract class HandlerAbstract
             $options['attr']['class'] = @$options['attr']['class'].' '.$class;
         }
 
-        $field = App::getFormFactory()->createNamedBuilder($this->getFormFieldName(), $this->getWidgetName(), @$data['value'], $options);
+        $field = App::getFormFactory()->createNamedBuilder(
+            $this->getFormFieldName(),
+            $this->getWidgetName(),
+            @$data['value'],
+            array_merge($this->getWidgetOptions(), $options)
+        );
 
         return $field;
     }
 
+    /**
+     * @return string
+     */
     public function getWidgetName()
     {
         return 'text';
+    }
+
+    /**
+     * @return array
+     */
+    public function getWidgetOptions()
+    {
+        return [];
     }
 
     /**
@@ -397,11 +384,11 @@ abstract class HandlerAbstract
      * This must return an array of array(field_id, type, value)
      * If no value is set, then use null.
      *
-     * @param $form_data
+     * @param $formData
      *
      * @return array
      */
-    abstract public function getDataFromForm(array $form_data);
+    abstract public function getDataFromForm(array $formData);
 
     /**
      * Get an array of errors from a posted form.
@@ -409,11 +396,11 @@ abstract class HandlerAbstract
      * This must return a standard array of error codes (see Orb\Validator\ValidatorInterface).
      * If an empty array is returned, then that means the field is valid.
      *
-     * @param array $form_data
+     * @param array $formData
      *
      * @return array
      */
-    public function validateFormData(array $form_data, $context = self::CONTEXT_USER, $context_data = null)
+    public function validateFormData(array $formData, $context = self::CONTEXT_USER, $contextData = null)
     {
         return [];
     }
