@@ -6,13 +6,15 @@ import { SeparateComponent } from 'DeskPRO/Bundle/AgentBundle/Modules/Common/Com
 import AgentFilters from './AgentFilters';
 
 @connect(state => ({
-  filterSets: allSelectorFactory('TicketFilterSets')(state),
-  filters:    allSelectorFactory('TicketFilters')(state)
+  filterSets:    allSelectorFactory('TicketFilterSets')(state),
+  filters:       allSelectorFactory('TicketFilters')(state),
+  filtersCounts: allSelectorFactory('TicketFilterCounts')(state)
 }))
 export class AgentFiltersContainer extends SeparateComponent {
   static propTypes = {
-    filterSets: PropTypes.object,
-    filters:    PropTypes.object,
+    filterSets:    PropTypes.object,
+    filters:       PropTypes.object,
+    filtersCounts: PropTypes.object,
   };
 
   static getType() {
@@ -20,11 +22,13 @@ export class AgentFiltersContainer extends SeparateComponent {
   }
 
   render() {
-    const { filterSets, filters } = this.props;
+    const { filterSets, filters, filtersCounts } = this.props;
+    console.log(filtersCounts);
     return (
       <AgentFilters
         filterSets={filterSets}
         filters={filters}
+        filtersCounts={filtersCounts}
         stars={[]}
         labels={[]}
       />

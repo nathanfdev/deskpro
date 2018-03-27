@@ -174,6 +174,30 @@ export const preloadData    = createAction(
         if (window.DP_HAS_NEW_FILTERS) {
           dispatch(setCollection('TicketFilters', 'all', data.ticket_filters));
           dispatch(setCollection('TicketFilterSets', 'all', data.ticket_filter_sets));
+          // dispatch(setCollection('TicketFilterCounts', 'all', []));
+          let counts = {};
+          let i = 0;
+          data.ticket_filters.forEach((filter) => {
+            counts[`filter${filter.id}`] = { endpoint: `ticket_filters2/${filter.id}/count` };
+            i += 1;
+            if (i >= 5) {
+              api.sendGet(api.prepareParams(counts))
+                .success((countsResponses) => {
+                  const countsData = flattenBatchResponses(countsResponses.responses);
+                  dispatch(addToCollection('TicketFilterCounts', 'all', countsData));
+                });
+              counts = {};
+              i = 0;
+            }
+          });
+          if (i > 0) {
+            api.sendGet(api.prepareParams(counts))
+              .success((countsResponses) => {
+                console.log(countsResponses.responses);
+                const countsData = flattenBatchResponses(countsResponses.responses);
+                console.log(countsData);
+              });
+          }
         }
 
         // set legacy agent notify map

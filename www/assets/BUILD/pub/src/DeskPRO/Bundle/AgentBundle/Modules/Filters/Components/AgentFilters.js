@@ -12,11 +12,12 @@ import Labels from './Labels';
 
 export default class AgentFilters extends React.Component {
   static propTypes = {
-    filterSets:   PropTypes.object,
-    filters:      PropTypes.object,
-    stars:        PropTypes.array,
-    labels:       PropTypes.array,
-    onSelectMode: PropTypes.func,
+    filterSets:    PropTypes.object,
+    filters:       PropTypes.object,
+    filtersCounts: PropTypes.object,
+    stars:         PropTypes.array,
+    labels:        PropTypes.array,
+    onSelectMode:  PropTypes.func,
   };
 
   static defaultProps = {
@@ -67,6 +68,7 @@ export default class AgentFilters extends React.Component {
     const {
       filterSets,
       filters,
+      filtersCounts,
       stars,
       labels,
     } = this.props;
@@ -92,6 +94,7 @@ export default class AgentFilters extends React.Component {
                 onSelectMode={this.onSelectMode}
                 filterSet={filterSet}
                 filters={filters}
+                filtersCounts={filtersCounts}
                 mode={mode}
               />
             );
