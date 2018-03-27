@@ -2,6 +2,9 @@
 
 namespace DeskPRO\Bundle\AppBundle\Model;
 
+/**
+ * Class TicketColumns.
+ */
 class TicketColumns implements \IteratorAggregate, \Countable
 {
     /**
@@ -9,11 +12,17 @@ class TicketColumns implements \IteratorAggregate, \Countable
      */
     protected $columns;
 
+    /**
+     * Constructor.
+     */
     public function __construct()
     {
         $this->columns = [];
     }
 
+    /**
+     * @return array
+     */
     public function toArray()
     {
         return array_map(function ($col) {
@@ -22,26 +31,44 @@ class TicketColumns implements \IteratorAggregate, \Countable
         }, $this->columns);
     }
 
-    public function addColumn($id, $label, $type)
+    /**
+     * @param string $id
+     * @param string $label
+     * @param string $type
+     * @param string $widgetType
+     */
+    public function addColumn($id, $label, $type, $widgetType)
     {
-        $this->appendColumn(new TicketColumn($id, $label, $type));
+        $this->appendColumn(new TicketColumn($id, $label, $type, $widgetType));
     }
 
-    public function appendColumn(TicketColumn $ticket_column)
+    /**
+     * @param TicketColumn $ticketColumn
+     */
+    public function appendColumn(TicketColumn $ticketColumn)
     {
-        $this->columns[$ticket_column->getId()] = $ticket_column;
+        $this->columns[$ticketColumn->getId()] = $ticketColumn;
     }
 
+    /**
+     * @return array|TicketColumn[]
+     */
     public function getColumns()
     {
         return $this->columns;
     }
 
+    /**
+     * @return \ArrayIterator|\Traversable
+     */
     public function getIterator()
     {
         return new \ArrayIterator($this->columns);
     }
 
+    /**
+     * @return int
+     */
     public function count()
     {
         return count($this->columns);

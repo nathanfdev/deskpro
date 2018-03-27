@@ -4,9 +4,9 @@ Feature: Custom url field
   Background:
     Given I'm authenticated as admin
     And only the following custom person fields exist:
-      | #  | Type | Title          | Options              |
-      | f1 | url  | Url field      | {"required": true}   |
-      | f2 | url  | File url field | {"allow_file": true} |
+      | #  | Type | Title          | Options                  |
+      | f1 | url  | Url field      | {"agent_required": true} |
+      | f2 | url  | File url field | {"allow_file": true}     |
 
   Scenario Outline: I set url
     When I send a PUT request to "/api/v2/people/{admin}" with body:
