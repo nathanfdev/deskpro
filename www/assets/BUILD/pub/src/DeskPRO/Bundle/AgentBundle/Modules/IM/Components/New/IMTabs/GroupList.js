@@ -99,7 +99,7 @@ class GroupList extends AbstractList {
 
   getItems() {
     return this.props.groups
-      .filter(chat => chat.get('date_last_message') || this.props.me.get('id') === chat.get('admin'))
+      .filter(chat => chat.get('date_last_message') || this.props.me.get('id') === chat.get('admin')).toArray()
       .map(group => this.getItem(group, 'group', 'name'));
   }
 }

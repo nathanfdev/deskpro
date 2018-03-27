@@ -1,35 +1,5 @@
 <?php
 
-/*
- * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
- * a British company located in London, England.
- *
- * All source code and content Copyright (c) 2017, DeskPRO Ltd.
- *
- * The license agreement under which this software is released
- * can be found at https://www.deskpro.com/eula/
- *
- * By using this software, you acknowledge having read the license
- * and agree to be bound thereby.
- *
- * Please note that DeskPRO is not free software. We release the full
- * source code for our software because we trust our users to pay us for
- * the huge investment in time and energy that has gone into both creating
- * this software and supporting our customers. By providing the source code
- * we preserve our customers' ability to modify, audit and learn from our
- * work. We have been developing DeskPRO since 2001, please help us make it
- * another decade.
- *
- * Like the work you see? Think you could make it better? We are always
- * looking for great developers to join us: http://www.deskpro.com/jobs/
- *
- * ~ Thanks, Everyone at Team DeskPRO
- */
-
-/**
- * DeskPRO.
- */
-
 namespace Application\DeskPRO\CustomFields\Handler;
 
 use Orb\Util\Strings;
@@ -41,7 +11,8 @@ class Text extends HandlerAbstract
 {
     /**
      * @param array $form_data
-     * @param null $default
+     * @param null  $default
+     *
      * @return mixed|null
      */
     private function findValue(array $form_data, $default = null)
@@ -52,12 +23,16 @@ class Text extends HandlerAbstract
                 return $form_data[$name];
             }
         }
+
         return $default;
     }
 
-    public function getDataFromForm(array $form_data)
+    /**
+     * {@inheritdoc}
+     */
+    public function getDataFromForm(array $formData)
     {
-        $value = $this->findValue($form_data);
+        $value = $this->findValue($formData);
         if (is_array($value)) {
             $value = implode(' ', $value);
         }
@@ -67,10 +42,13 @@ class Text extends HandlerAbstract
         ];
     }
 
-    public function validateFormData(array $form_data, $context = self::CONTEXT_USER, $context_data = null)
+    /**
+     * {@inheritdoc}
+     */
+    public function validateFormData(array $formData, $context = self::CONTEXT_USER, $contextData = null)
     {
         $valueIfNotPresent = new \stdClass();
-        $data = $this->findValue($form_data, $valueIfNotPresent);
+        $data              = $this->findValue($formData, $valueIfNotPresent);
         if ($data === $valueIfNotPresent) {
             $data = '';
         }
@@ -125,16 +103,25 @@ class Text extends HandlerAbstract
         return [];
     }
 
+    /**
+     * {@inheritdoc}
+     */
     public function getSearchCapabilities()
     {
         return ['is', 'not', 'contains', 'notcontains'];
     }
 
+    /**
+     * {@inheritdoc}
+     */
     public function getFilterCapabilities()
     {
         return ['is', 'not'];
     }
 
+    /**
+     * {@inheritdoc}
+     */
     public function getSearchType()
     {
         return 'input';
