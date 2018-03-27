@@ -1,6 +1,6 @@
 import { fromJS } from 'immutable';
 
-export const filterSets = [
+export const filterSetsArray = [
   {
     id:            1,
     title:         'Inbox',
@@ -29,6 +29,7 @@ export const filterSets = [
     shared_agents: []
   }
 ];
+export const filterSets = fromJS(filterSetsArray);
 
 const filtersArray = [
   {

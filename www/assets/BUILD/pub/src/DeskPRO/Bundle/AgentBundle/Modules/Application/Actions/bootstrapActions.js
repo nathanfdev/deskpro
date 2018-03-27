@@ -84,6 +84,11 @@ export const preloadData    = createAction(
         batchComponents.ticket_macros  = { endpoint: 'ticket_macros' };
       }
 
+      if (window.DP_HAS_NEW_FILTERS) {
+        batchComponents.ticket_filters     = { endpoint: 'ticket_filters2' };
+        batchComponents.ticket_filter_sets = { endpoint: 'ticket_filters2_sets' };
+      }
+
       const onBatchComponentsSuccess = ({ responses }) => {
         const data = flattenBatchResponses(responses);
 
@@ -164,6 +169,11 @@ export const preloadData    = createAction(
 
         if (window.DP_HAS_FOLLOW_UP) {
           dispatch(setCollection('TicketMacros', 'all', data.ticket_macros));
+        }
+
+        if (window.DP_HAS_NEW_FILTERS) {
+          dispatch(setCollection('TicketFilters', 'all', data.ticket_filters));
+          dispatch(setCollection('TicketFilterSets', 'all', data.ticket_filter_sets));
         }
 
         // set legacy agent notify map
