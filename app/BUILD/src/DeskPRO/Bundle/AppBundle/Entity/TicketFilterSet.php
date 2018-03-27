@@ -8,6 +8,7 @@ namespace DeskPRO\Bundle\AppBundle\Entity;
 
 use Application\DeskPRO\Entity\AgentTeam;
 use Application\DeskPRO\Entity\Person;
+use DeskPRO\Component\Util\ListUtils;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\NotifyPropertyChanged;
 use Doctrine\ORM\Mapping as ORM;
@@ -24,10 +25,6 @@ use Symfony\Component\Validator\Constraints as Assert;
 class TicketFilterSet implements EntityInterface, NotifyPropertyChanged
 {
     use NotifyPropertyChangedTrait;
-
-    const SHARE_GLOBAL = 'global';
-    const SHARE_AGENTS = 'agents';
-    const SHARE_TEAMS  = 'teams';
 
     /**
      * The unique set id.
@@ -70,36 +67,33 @@ class TicketFilterSet implements EntityInterface, NotifyPropertyChanged
     protected $displayOrder;
 
     /**
-     * An array of filter object identities.
+     * An array of filter associations.
      *
      * @ORM\OneToMany(
-     *     targetEntity="DeskPRO\Bundle\AppBundle\Entity\TicketFilter",
+     *     targetEntity="DeskPRO\Bundle\AppBundle\Entity\TicketFilterSetAssoc",
      *     mappedBy="filterSet",
-     *     cascade={"persist", "remove"}
+     *     cascade={"all"}
      * )
      * @ORM\OrderBy({"displayOrder" = "ASC"})
      *
-     * @JMS\Expose()
-     * @JMS\Type("collection<entity<DeskPRO\Bundle\AppBundle\Entity\TicketFilter>>")
-     *
-     * @var TicketFilter[]|ArrayCollection
+     * @var TicketFilterSetAssoc[]|ArrayCollection
      */
-    protected $filters;
+    protected $filterLinks;
 
     /**
-     * @ORM\Column(name="share_mode", type="string", length=50)
+     * @ORM\Column(name="is_global", type="boolean")
      *
      * @JMS\Expose()
-     * @JMS\Type("string"))
+     * @JMS\Type("boolean")
      *
-     * @var string
+     * @var bool
      */
-    protected $shareMode = self::SHARE_GLOBAL;
+    protected $isGlobal = false;
 
     /**
      * Specific teams to share this with.
      *
-     * @ORM\ManyToMany(targetEntity="Application\DeskPRO\Entity\AgentTeam")
+     * @ORM\ManyToMany(targetEntity="Application\DeskPRO\Entity\AgentTeam", cascade={"all"})
      * @ORM\JoinTable(
      *      name="ticket_filters2_set_teams",
      *      joinColumns={
@@ -120,7 +114,7 @@ class TicketFilterSet implements EntityInterface, NotifyPropertyChanged
     /**
      * Specific agents to share this with.
      *
-     * @ORM\ManyToMany(targetEntity="Application\DeskPRO\Entity\Person")
+     * @ORM\ManyToMany(targetEntity="Application\DeskPRO\Entity\Person", cascade={"all"})
      * @ORM\JoinTable(
      *      name="ticket_filters2_set_agents",
      *      joinColumns={
@@ -140,7 +134,7 @@ class TicketFilterSet implements EntityInterface, NotifyPropertyChanged
 
     public function __construct()
     {
-        $this->setModelField('filters', new ArrayCollection());
+        $this->setModelField('filterLinks', new ArrayCollection());
         $this->setModelField('sharedAgents', new ArrayCollection());
         $this->setModelField('sharedTeams', new ArrayCollection());
         $this->setModelField('displayOrder', 0);
@@ -155,11 +149,49 @@ class TicketFilterSet implements EntityInterface, NotifyPropertyChanged
     }
 
     /**
-     * @return TicketFilter[]|ArrayCollection
+     * @return TicketFilter[]
      */
     public function getFilters()
     {
-        return $this->filters;
+        return ListUtils::map($this->filterLinks, function (TicketFilterSetAssoc $a) {
+            return $a->getFilter();
+        });
+    }
+
+    /**
+     * @param TicketFilter $filter
+     * @param int|null     $displayOrder Set the display order. If null and the filter is not already in the list, it will be last
+     *
+     * @return $this
+     */
+    public function addFilter(TicketFilter $filter, $displayOrder = null)
+    {
+        /** @var TicketFilterSetAssoc $existLink */
+        $existLink = ListUtils::first($this->filterLinks, function (TicketFilterSetAssoc $a) use ($filter) {
+            if ($a->getFilter() === $filter) {
+                return $a;
+            }
+
+            return false;
+        });
+
+        if (!$existLink) {
+            if ($displayOrder === null) {
+                $displayOrder = 0;
+                foreach ($this->filterLinks as $a) {
+                    $displayOrder = max($displayOrder, $a->getDisplayOrder());
+                }
+                $displayOrder += 10;
+            }
+
+            $existLink = new TicketFilterSetAssoc($this, $filter, $displayOrder);
+            $this->filterLinks->add($existLink);
+            $this->setModelField('filterLinks', $this->filterLinks);
+        } else {
+            $existLink->setDisplayOrder($displayOrder);
+        }
+
+        return $this;
     }
 
     /**
@@ -167,11 +199,14 @@ class TicketFilterSet implements EntityInterface, NotifyPropertyChanged
      *
      * @return $this
      */
-    public function addFilter(TicketFilter $filter)
+    public function removeFilter(TicketFilter $filter)
     {
-        $this->filters->add($filter);
-        $this->setModelField('filters', $this->filters);
-        $filter->setFilterSet($this);
+        foreach ($this->filterLinks as $idx => $a) {
+            if ($a->getFilter() === $filter) {
+                $this->filterLinks->remove($idx);
+                break;
+            }
+        }
 
         return $this;
     }
@@ -221,7 +256,7 @@ class TicketFilterSet implements EntityInterface, NotifyPropertyChanged
      */
     public function isGlobal()
     {
-        return $this->shareMode === self::SHARE_GLOBAL;
+        return $this->isGlobal;
     }
 
     /**
@@ -229,7 +264,7 @@ class TicketFilterSet implements EntityInterface, NotifyPropertyChanged
      */
     public function isSharedWithAgents()
     {
-        return $this->shareMode === self::SHARE_AGENTS;
+        return count($this->sharedAgents) >= 1;
     }
 
     /**
@@ -237,7 +272,7 @@ class TicketFilterSet implements EntityInterface, NotifyPropertyChanged
      */
     public function isSharedWithTeams()
     {
-        return $this->shareMode === self::SHARE_TEAMS;
+        return count($this->sharedTeams) >= 1;
     }
 
     /**
@@ -247,7 +282,7 @@ class TicketFilterSet implements EntityInterface, NotifyPropertyChanged
      */
     public function enableGlobalSharing()
     {
-        $this->setModelField('shareMode', self::SHARE_GLOBAL);
+        $this->setModelField('isGlobal', true);
         $this->clearSharedAgents();
         $this->clearSharedTeams();
 
@@ -255,25 +290,15 @@ class TicketFilterSet implements EntityInterface, NotifyPropertyChanged
     }
 
     /**
-     * Enable agent sharing.
+     * Disable global sharing.
      *
      * @return $this
      */
-    public function enableAgentSharing()
+    public function disableGlobalSharing()
     {
-        $this->setModelField('shareMode', self::SHARE_AGENTS);
-        $this->clearSharedTeams();
-    }
+        $this->setModelField('isGlobal', false);
 
-    /**
-     * Enable agent sharing.
-     *
-     * @return $this
-     */
-    public function enableTeamSharing()
-    {
-        $this->setModelField('shareMode', self::SHARE_TEAMS);
-        $this->clearSharedAgents();
+        return $this;
     }
 
     /**
@@ -291,8 +316,8 @@ class TicketFilterSet implements EntityInterface, NotifyPropertyChanged
      */
     public function addSharedTeam(AgentTeam $team)
     {
-        if ($this->shareMode !== self::SHARE_TEAMS) {
-            throw new \BadMethodCallException('Cannot add a shared team to a non-team shared set. Did you want to switch the share mode with enableTeamSharing()?');
+        if ($this->isGlobal) {
+            throw new \BadMethodCallException('Cannot add a shared team to a globally shared set. Did you want to disable global sharing via disableGlobalSharing() first?');
         }
         $this->sharedTeams->add($team);
         $this->setModelField('sharedTeams', $this->sharedTeams);
@@ -339,9 +364,10 @@ class TicketFilterSet implements EntityInterface, NotifyPropertyChanged
      */
     public function addSharedAgent(Person $agent)
     {
-        if ($this->shareMode !== self::SHARE_AGENTS) {
-            throw new \BadMethodCallException('Cannot add a shared agent to a non-agent shared set. Did you want to switch the share mode with enableAgentSharing()?');
+        if ($this->isGlobal) {
+            throw new \BadMethodCallException('Cannot add a shared agent to a globally shared set. Did you want to disable global sharing via disableGlobalSharing() first?');
         }
+
         $this->sharedAgents->add($agent);
         $this->setModelField('sharedAgents', $this->sharedAgents);
 

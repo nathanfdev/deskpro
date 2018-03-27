@@ -70,37 +70,14 @@ class TicketFilter implements EntityInterface, NotifyPropertyChanged
     protected $query;
 
     /**
-     * Filter`s display order.
-     *
-     * @var int
-     *
-     * @ORM\Column(name="display_order", type="integer")
+     * @ORM\Column(name="is_enabled", type="boolean")
      *
      * @JMS\Expose()
-     * @JMS\Type("integer")
-     */
-    protected $displayOrder = 0;
-
-    /**
-     * Filter set this filter belongs to.
+     * @JMS\Type("boolean")
      *
-     * @ORM\ManyToOne(targetEntity="DeskPRO\Bundle\AppBundle\Entity\TicketFilterSet", inversedBy="filters")
-     * @ORM\JoinColumn(name="filter_set_id", referencedColumnName="id", onDelete="CASCADE")
-     *
-     * @JMS\Expose()
-     * @JMS\Type("entity<DeskPRO\Bundle\AppBundle\Entity\TicketFilterSet>")
-     * @JMS\SerializedName("ticket_filter_set")
-     *
-     * @var TicketFilterSet
+     * @var bool
      */
-    protected $filterSet;
-
-    /**
-     * Constructor.
-     */
-    public function __construct()
-    {
-    }
+    protected $isEnabled = true;
 
     /**
      * @return int|null
@@ -131,46 +108,6 @@ class TicketFilter implements EntityInterface, NotifyPropertyChanged
     }
 
     /**
-     * @return int
-     */
-    public function getDisplayOrder()
-    {
-        return $this->displayOrder;
-    }
-
-    /**
-     * @param int $displayOrder
-     *
-     * @return $this
-     */
-    public function setDisplayOrder($displayOrder)
-    {
-        $this->setModelField('displayOrder', (int) $displayOrder);
-
-        return $this;
-    }
-
-    /**
-     * @return TicketFilterSet
-     */
-    public function getFilterSet()
-    {
-        return $this->filterSet;
-    }
-
-    /**
-     * @param TicketFilterSet $filterSet
-     *
-     * @return $this
-     */
-    public function setFilterSet(TicketFilterSet $filterSet)
-    {
-        $this->setModelField('filterSet', $filterSet);
-
-        return $this;
-    }
-
-    /**
      * @return string
      */
     public function getQuery()
@@ -184,6 +121,34 @@ class TicketFilter implements EntityInterface, NotifyPropertyChanged
     public function setQuery($query)
     {
         $this->setModelField('query', $query);
+
+        return $this;
+    }
+
+    /**
+     * @return bool
+     */
+    public function isEnabled()
+    {
+        return $this->isEnabled;
+    }
+
+    /**
+     * Enable the filter.
+     */
+    public function enable()
+    {
+        $this->setModelField('isEnabled', true);
+
+        return $this;
+    }
+
+    /**
+     * Disable the filter.
+     */
+    public function disable()
+    {
+        $this->setModelField('isEnabled', false);
 
         return $this;
     }

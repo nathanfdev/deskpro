@@ -13,42 +13,53 @@ use Symfony\Component\Process\ProcessBuilder;
 
 class InstallTablesStep extends AbstractStep
 {
+    const TRUNCATE_DB = 'truncate';
+    const RECREATE_DB = 'recreate';
+
     /**
      * @var array
      */
     private $failedCachePaths = [];
 
     /**
-     * @var bool
+     * @var string|null
      */
-    private $doTruncate;
+    private $dbExistAction;
 
-    public function __construct(InstallerContext $context, $doTruncate = false)
+    public function __construct(InstallerContext $context, $dbExistAction = null)
     {
         parent::__construct($context);
-        $this->doTruncate = $doTruncate;
+        $this->dbExistAction = $dbExistAction;
     }
 
     public function run()
     {
         $this->writeBigTitle('Installing Database Schema');
 
-        if ($this->doTruncate) {
+        if ($this->dbExistAction) {
             try {
                 $pdo    = $this->getSession()->getDbInfo()->getPdo();
+                $dbname = $this->getSession()->getDbInfo()->dbname;
                 $tables = $pdo->query('SHOW TABLES')->fetchAll(\PDO::FETCH_COLUMN);
                 if (!empty($tables)) {
                     $this->write('');
-                    $this->writeln('<info>Database already has tables. Doing a truncate (because you used the --truncate-db flag)</info>');
-                    $this->writeln('NOTE: We did not check the schema. If the schema has changed, you need to use a new db.');
-                    $pdo->exec('SET FOREIGN_KEY_CHECKS = 0');
-                    foreach ($tables as $t) {
-                        $pdo->exec("TRUNCATE TABLE {$t}");
-                    }
-                    $pdo->exec('SET FOREIGN_KEY_CHECKS = 1');
-                    $this->getSession()->enableFlag('install_tables_ok');
 
-                    return;
+                    if ($this->dbExistAction === self::TRUNCATE_DB) {
+                        $this->writeln('<info>Database '.$dbname.' already has tables. Doing a truncate (because you used the --truncate-db flag)</info>');
+                        $this->writeln('NOTE: We did not check the schema. If the schema has changed, you need to use a new db.');
+                        $pdo->exec('SET FOREIGN_KEY_CHECKS = 0');
+                        foreach ($tables as $t) {
+                            $pdo->exec("TRUNCATE TABLE {$t}");
+                        }
+                        $pdo->exec('SET FOREIGN_KEY_CHECKS = 1');
+                        $this->getSession()->enableFlag('install_tables_ok');
+
+                        return;
+                    } elseif ($this->dbExistAction === self::RECREATE_DB) {
+                        $this->writeln('<info>Database '.$dbname.' already has tables. Recreating database.</info>');
+                        $pdo->exec("DROP DATABASE {$dbname}");
+                        $pdo->exec("CREATE DATABASE {$dbname}");
+                    }
                 }
             } catch (\Exception $e) {
                 $this->writeln('<info>'.$e->getMessage().'</info>');

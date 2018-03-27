@@ -27,37 +27,32 @@ class DefaultTicketFiltersFixture extends AbstractDpFixture
 
         $f = new TicketFilter();
         $f->setTitle('Assigned To Me');
-        $f->setDisplayOrder(10);
         $f->setQuery('ticket.status = \'awaiting_agent\' AND ticket.agent = $me');
-        $set->addFilter($f);
+        $set->addFilter($f, 10);
         $manager->persist($f);
 
         $f = new TicketFilter();
         $f->setTitle('Tickets I Follow');
-        $f->setDisplayOrder(20);
         $f->setQuery('ticket.status = \'awaiting_agent\' AND ticket.followers HAS $me');
-        $set->addFilter($f);
+        $set->addFilter($f, 20);
         $manager->persist($f);
 
         $f = new TicketFilter();
         $f->setTitle('Assigned To Team');
-        $f->setDisplayOrder(30);
         $f->setQuery('ticket.status = \'awaiting_agent\' AND ticket.agent_team IN $my_teams');
-        $set->addFilter($f);
+        $set->addFilter($f, 30);
         $manager->persist($f);
 
         $f = new TicketFilter();
         $f->setTitle('Unassigned');
-        $f->setDisplayOrder(40);
         $f->setQuery('ticket.status = \'awaiting_agent\' AND ticket.agent IS EMPTY');
-        $set->addFilter($f);
+        $set->addFilter($f, 40);
         $manager->persist($f);
 
         $f = new TicketFilter();
         $f->setTitle('All Awaiting Agent');
-        $f->setDisplayOrder(50);
         $f->setQuery('ticket.status = \'awaiting_agent\'');
-        $set->addFilter($f);
+        $set->addFilter($f, 50);
         $manager->persist($f);
 
         $manager->flush();
