@@ -2,6 +2,8 @@
 
 namespace DeskPRO\Bundle\AppBundle\TicketFilters\Model\Entity;
 
+use DeskPRO\Component\Util\ListUtils;
+
 class PersonModel
 {
     /**

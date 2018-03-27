@@ -31,7 +31,11 @@ use Application\DeskPRO\Tickets\Tickets;
 use Application\DeskPRO\UI\RuleBuilder;
 use DeskPRO\Bundle\AppBundle\Entity\SnippetTranslation;
 use DeskPRO\Bundle\AppBundle\Entity\SnippetUseLog;
+use DeskPRO\Bundle\AppBundle\Entity\TicketFilter;
+use DeskPRO\Bundle\AppBundle\TicketFilters\Context;
+use DeskPRO\Bundle\AppBundle\TicketFilters\TicketSearchParams;
 use DeskPRO\Bundle\AppBundle\Validator\Constraints as AppAssert;
+use DeskPRO\Component\Util\ListUtils;
 use DeskPRO\Component\Util\RegexUtils;
 use DpSys\LowError\SystemErrorHandler;
 use Orb\Util\Arrays;
@@ -984,6 +988,120 @@ class TicketSearchController extends AbstractController
     }
 
     public function runFilterAction($filter_id)
+    {
+        if ($this->get('deskpro.feature_flags')->hasBeta('new_filters')) {
+            return $this->runNewFilterAction($filter_id);
+        } else {
+            return $this->runLegacyFilterAction($filter_id);
+        }
+    }
+
+    public function runNewFilterAction($filter_id)
+    {
+        $view_type = $this->in->getString('view_type');
+
+        $ticketFilter = $this->get('doctrine.orm.entity_manager')->find(TicketFilter::class, $filter_id);
+        if (!$ticketFilter) {
+            throw $this->createNotFoundException();
+        }
+
+        $order_by  = $this->in->getString('order_by');
+        $order_dir = 'desc';
+        if (!$order_by) {
+            $order_by = $this->person->getPref('agent.ui.ticket-filter-order-by.'.$ticketFilter->getId());
+        }
+
+        $set_group_term   = null;
+        $set_group_option = null;
+        if ($this->in->getString('set_group_term')) {
+            $set_group_term   = $this->in->getString('set_group_term');
+            $set_group_option = $this->in->getString('set_group_option');
+
+            $term = GroupingCounter::getSearchTerm($set_group_term, $set_group_option);
+            if ($term) {
+                $type   = $term['type'];
+                $op     = $term['op'];
+                $choice = $term;
+                unset($choice['type'], $choice['op']);
+
+                //TODO
+            }
+        }
+
+        $loader  = $this->container->get('ticketfilters.loader');
+        $meAgent = $loader->getAgentById($this->person->getId());
+        if (!$meAgent) {
+            throw $this->createNotFoundException('failed to get agent model');
+        }
+        $context = new Context($meAgent);
+        $filter  = $loader->getFilterById($ticketFilter->getId());
+        if (!$filter) {
+            throw $this->createNotFoundException('failed to get filter model');
+        }
+
+        $searchParams = new TicketSearchParams();
+        if ($order_by) {
+            $searchParams->orderBy($order_by, $order_dir);
+        }
+
+        $searcher = $this->container->get('ticketfilter.ticket_sql_searcher');
+        $qb       = $searcher
+            ->getIdsQueryBuilder($filter->query, $context)
+            ->setFirstResult(0)
+            ->setMaxResults(10000);
+
+        $results = $qb->execute()->fetchAll(\PDO::FETCH_COLUMN);
+        $results = ListUtils::map($results, function ($v) {
+            return (int) $v;
+        });
+
+        $helper = new Helper\TicketResults($this);
+        $helper->setTicketIds($results);
+
+        if ($order_by) {
+            $helper->setGroupOrderBy($order_by);
+        }
+
+        // Or if the user has their own
+        $group_by = $this->person->getPref('agent.ui.ticket-filter-group-by.'.$ticketFilter->getId());
+
+        if ($this->in->checkIsset('group_by')) {
+            $group_by = $this->in->getString('group_by');
+
+            App::getEntityRepository(PersonPref::class)->savePref(
+                $this->person,
+                'agent.ui.ticket-filter-group-by.'.$ticketFilter->getId(),
+                $group_by
+            );
+        }
+
+        if ($group_by) {
+            $helper->setGroupField($group_by);
+        }
+
+        $vars = [
+            'filter'           => $ticketFilter,
+            'filter_id'        => $ticketFilter->getId(),
+            'needs_urgency'    => true,
+            'order_by_summary' => '???',
+            'set_group_term'   => $set_group_term,
+            'set_group_option' => $set_group_option,
+            'ticket_ids'       => $results,
+            'order_by'         => $order_by,
+        ];
+
+        $pref_display_fields = $this->person->getPref('agent.ui.ticket-filter-display-fields.'.$ticketFilter->getId());
+        if ($pref_display_fields) {
+            $vars['display_fields'] = $pref_display_fields;
+        } else {
+            // Default display fields based on the filter
+            $vars['display_fields'] = $this->_suggestedDisplayFields(null);
+        }
+
+        return $this->_getResponseForTickets('filter', $ticketFilter->getId(), $helper, $vars);
+    }
+
+    public function runLegacyFilterAction($filter_id)
     {
         $view_type = $this->in->getString('view_type');
 

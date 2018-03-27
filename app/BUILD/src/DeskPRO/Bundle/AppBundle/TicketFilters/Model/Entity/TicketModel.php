@@ -184,7 +184,7 @@ class TicketModel
 
         // Models
         foreach ([
-            'person', 'agent', 'organization',
+            'person', 'organization',
         ] as $modelField) {
             if ($this->$modelField && $other->$modelField) {
                 $modelChanged = $this->$modelField->getChangedFields($other->$modelField);

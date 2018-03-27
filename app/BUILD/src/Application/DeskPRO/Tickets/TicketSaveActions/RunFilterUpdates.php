@@ -12,10 +12,10 @@ use Application\DeskPRO\DependencyInjection\DeskproContainer;
 use Application\DeskPRO\Entity\Person;
 use Application\DeskPRO\Entity\Ticket;
 use Application\DeskPRO\Tickets\ExecutorContextInterface;
+use DeskPRO\Bundle\AppBundle\Notification\Event\Ticket\TicketUpdatedEvent;
 use DeskPRO\Bundle\AppBundle\TicketFilters\Diff\DiffEnv;
 use DeskPRO\Bundle\AppBundle\TicketFilters\Diff\FilterDiffer;
 use DeskPRO\Bundle\AppBundle\TicketFilters\Diff\TicketChange;
-use DeskPRO\Bundle\AppBundle\TicketFilters\Loader;
 use Doctrine\ORM\EntityManager;
 
 /**
@@ -34,6 +34,11 @@ class RunFilterUpdates implements TicketSaveActionInterface, ErrorCheckedInterfa
     private $em;
 
     /**
+     * @var \Symfony\Component\EventDispatcher\EventDispatcher
+     */
+    private $eventDispatcher;
+
+    /**
      * @var \DeskPRO\Bundle\AppBundle\Notification\NotificationEventManager
      */
     private $eventManager;
@@ -43,9 +48,10 @@ class RunFilterUpdates implements TicketSaveActionInterface, ErrorCheckedInterfa
      */
     public function __construct(DeskproContainer $container)
     {
-        $this->container    = $container;
-        $this->em           = $this->container->get('doctrine.orm.default_entity_manager');
-        $this->eventManager = $container->get('deskpro.notification.event_manager');
+        $this->container       = $container;
+        $this->em              = $this->container->get('doctrine.orm.default_entity_manager');
+        $this->eventDispatcher = $container->get('event_dispatcher');
+        $this->eventManager    = $container->get('deskpro.notification.event_manager');
     }
 
     /**
@@ -77,7 +83,7 @@ class RunFilterUpdates implements TicketSaveActionInterface, ErrorCheckedInterfa
     private function processTicketNewFilters(Ticket $ticket, ExecutorContextInterface $context)
     {
         $loader  = $this->container->get('ticketfilters.loader');
-        $matcher = $this->container->get('ticketfilters.ticket_matcher');
+        $matcher = $this->container->get('ticketfilter.ticket_matcher');
         $diffEnv = new DiffEnv($matcher, $loader->getAgents(), $loader->getFilters());
         $differ  = new FilterDiffer($diffEnv);
 

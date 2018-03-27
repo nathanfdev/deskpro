@@ -29,26 +29,26 @@ class CustomData
         $changed = [];
 
         foreach ($customFields1 as $field1) {
-            if (!isset($customFields2[$field1->id])) {
-                $changed[] = $field1->id;
+            if (!isset($customFields2[$field1->field])) {
+                $changed[] = $field1->field;
             } else {
-                $field2 = $customFields2[$field1->id];
+                $field2 = $customFields2[$field1->field];
 
                 if ($field1->value != $field2->value) {
                     if (is_array($field1->value) && is_array($field2->value)) {
                         if (ListUtils::isSame($field1->value, $field2->value)) {
-                            $changed[] = $field1->id;
+                            $changed[] = $field1->field;
                         }
                     } else {
-                        $changed[] = $field1->id;
+                        $changed[] = $field1->field;
                     }
                 }
             }
         }
 
         foreach ($customFields2 as $field2) {
-            if (!isset($customFields1[$field2->id])) {
-                $changed[] = $field2->id;
+            if (!isset($customFields1[$field2->field])) {
+                $changed[] = $field2->field;
             }
         }
 

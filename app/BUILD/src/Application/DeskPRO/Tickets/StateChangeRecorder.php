@@ -8,12 +8,18 @@
 
 namespace Application\DeskPRO\Tickets;
 
+use Application\DeskPRO\Entity\LabelOrganization;
+use Application\DeskPRO\Entity\LabelPerson;
 use Application\DeskPRO\Entity\LabelTicket;
+use Application\DeskPRO\Entity\Organization;
 use Application\DeskPRO\Entity\Person;
 use Application\DeskPRO\Entity\Ticket;
 use Application\DeskPRO\Entity\TicketSla;
+use Application\DeskPRO\Entity\Usergroup;
 use Application\DeskPRO\ORM\StateChange\StateChangeRecorder as BaseStateChangeRecorder;
 use DeskPRO\Bundle\AppBundle\TicketFilters\Model\Entity\CustomData;
+use DeskPRO\Bundle\AppBundle\TicketFilters\Model\Entity\OrgModel;
+use DeskPRO\Bundle\AppBundle\TicketFilters\Model\Entity\PersonModel;
 use DeskPRO\Bundle\AppBundle\TicketFilters\Model\Entity\TicketModel;
 use DeskPRO\Bundle\AppBundle\TicketFilters\Model\Entity\TicketSlaModel;
 use DeskPRO\Component\Util\ListUtils;
@@ -86,8 +92,18 @@ class StateChangeRecorder extends BaseStateChangeRecorder
         if (!$ticket->id) {
             $this->no_id = true;
         }
+    }
 
-        $this->before_ticket_model = $this->getSimpleTicketModel();
+    public function touchField($field_id)
+    {
+        // touchField is called in Ticket model before the change is actually saved,
+        // so its a good time to make the 'before' model
+
+        if (!$this->before_ticket_model && !isset(self::$trivial_fields[$field_id])) {
+            $this->before_ticket_model = $this->getSimpleTicketModel();
+        }
+
+        parent::touchField($field_id);
     }
 
     /**
@@ -98,6 +114,58 @@ class StateChangeRecorder extends BaseStateChangeRecorder
     public function getBeforeAfterModels()
     {
         return [$this->before_ticket_model, $this->getSimpleTicketModel()];
+    }
+
+    private function makePersonModel(Person $person)
+    {
+        $model           = new PersonModel();
+        $model->id       = $person->getId();
+        $model->language = $person->getLanguageId();
+        $model->labels   = ListUtils::map($person->getLabels(), function (LabelPerson $l) {
+            return $l->getLabel();
+        });
+        $model->user_groups   = $person->getUsergroupIds();
+        $model->custom_fields = $this->makeCustomFieldsModels($person->getCustomData());
+
+        return $model;
+    }
+
+    private function makeOrgModel(Organization $org)
+    {
+        $model              = new OrgModel();
+        $model->id          = $org->getId();
+        $model->user_groups = ListUtils::map($org->getUsergroups(), function (Usergroup $ug) {
+            return $ug->getId();
+        });
+        $model->labels = ListUtils::map($org->getLabels(), function (LabelOrganization $l) {
+            return $l->getLabel();
+        });
+        $model->custom_fields = $this->makeCustomFieldsModels($org->getCustomData());
+
+        return $model;
+    }
+
+    private function makeCustomFieldsModels($customData)
+    {
+        $models = [];
+        foreach ($customData as $d) {
+            $fid = $d->getFieldId();
+            if (isset($models[$fid])) {
+                $m = $models[$fid];
+            } else {
+                $m        = new CustomData();
+                $m->field = $fid;
+            }
+            if ($d->getField()->isMulti()) {
+                $m->data[] = $d->getData();
+            } else {
+                $m->data = $d->getData();
+            }
+
+            $models[$fid] = $m;
+        }
+
+        return $models;
     }
 
     /**
@@ -112,7 +180,7 @@ class StateChangeRecorder extends BaseStateChangeRecorder
         $cur->urgency    = $this->ticket->status === Ticket::STATUS_AWAITING_AGENT ? $this->ticket->urgency : 0;
         $cur->status     = $this->ticket->getStatusCode();
         $cur->is_hold    = $this->ticket->is_hold;
-        $cur->person     = $this->ticket->person ? $this->ticket->person->getId() : 0;
+        $cur->person     = $this->ticket->person ? $this->makePersonModel($this->ticket->person) : null;
         $cur->labels     = ListUtils::map($this->ticket->labels, function (LabelTicket $l) {
             return $l->getLabel();
         });
@@ -121,7 +189,7 @@ class StateChangeRecorder extends BaseStateChangeRecorder
         $cur->priority              = $this->ticket->priority ? $this->ticket->priority->getId() : 0;
         $cur->category              = $this->ticket->category ? $this->ticket->category->getId() : 0;
         $cur->product               = $this->ticket->product ? $this->ticket->product->getId() : 0;
-        $cur->organization          = $this->ticket->organization ? $this->ticket->organization->getId() : 0;
+        $cur->organization          = $this->ticket->organization ? $this->makeOrgModel($this->ticket->organization) : null;
         $cur->email_account         = $this->ticket->email_account ? $this->ticket->email_account->getId() : 0;
         $cur->date_user_waiting     = $this->ticket->date_user_waiting;
         $cur->date_agent_waiting    = $this->ticket->date_agent_waiting;
@@ -142,25 +210,7 @@ class StateChangeRecorder extends BaseStateChangeRecorder
             return $slaM;
         });
 
-        $models = [];
-        foreach ($this->ticket->custom_data as $d) {
-            $fid = $d->getFieldId();
-            if (isset($models[$fid])) {
-                $m = $models[$fid];
-            } else {
-                $m        = new CustomData();
-                $m->field = $fid;
-            }
-            if ($d->getField()->isMulti()) {
-                $m->data[] = $d->getData();
-            } else {
-                $m->data = $d->getData();
-            }
-
-            $models[$fid] = $m;
-        }
-
-        $cur->custom_fields = $models;
+        $cur->custom_fields = $this->makeCustomFieldsModels($this->ticket->getCustomData());
 
         return $cur;
     }
