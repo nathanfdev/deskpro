@@ -102,9 +102,7 @@ class CheckUsesCommand extends ContainerAwareCommand
             $iter  = new \FilesystemIterator($lang_dir);
             /** @var \SplFileInfo $f */
             foreach ($iter as $f) {
-                if ($f->isDir()) {
-                    $zones[] = $f->getBasename();
-                }
+                $zones[] = $f->getBasename('.php');
             }
         }
 
