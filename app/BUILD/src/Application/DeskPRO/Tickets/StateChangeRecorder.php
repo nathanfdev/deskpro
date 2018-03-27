@@ -174,6 +174,7 @@ class StateChangeRecorder extends BaseStateChangeRecorder
     public function getSimpleTicketModel()
     {
         $cur             = new TicketModel();
+        $cur->id         = $this->ticket->getId();
         $cur->agent      = $this->ticket->agent ? $this->ticket->agent->getId() : 0;
         $cur->agent_team = $this->ticket->agent_team ? $this->ticket->agent_team->getId() : 0;
         $cur->department = $this->ticket->department ? $this->ticket->department->getId() : 0;

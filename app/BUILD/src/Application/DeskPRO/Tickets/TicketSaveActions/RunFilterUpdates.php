@@ -107,9 +107,9 @@ class RunFilterUpdates implements TicketSaveActionInterface, ErrorCheckedInterfa
             }
             if ($del) {
                 $eventOps[] = [
-                    'op'        => 'add',
+                    'op'        => 'del',
                     'filter_id' => $op->getFilterId(),
-                    'targets'   => $add,
+                    'targets'   => $del,
                     'version'   => '2',
                 ];
             }

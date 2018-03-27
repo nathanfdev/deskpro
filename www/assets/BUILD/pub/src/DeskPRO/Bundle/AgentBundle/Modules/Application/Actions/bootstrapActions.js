@@ -85,8 +85,8 @@ export const preloadData    = createAction(
       }
 
       if (window.DP_HAS_NEW_FILTERS) {
-        batchComponents.ticket_filters     = { endpoint: 'ticket_filters2' };
-        batchComponents.ticket_filter_sets = { endpoint: 'ticket_filters2_sets' };
+        batchComponents.ticket_filters     = { endpoint: 'ticket_filters2', query: 'mine=1' };
+        batchComponents.ticket_filter_sets = { endpoint: 'ticket_filters2_sets', query: 'mine=1' };
       }
 
       const onBatchComponentsSuccess = ({ responses }) => {

@@ -85,6 +85,10 @@ class PermSets
             $parts[] = 'un';
         }
 
+        if (empty($parts)) {
+            $parts = ['none'];
+        }
+
         return implode(',', $parts);
     }
 }

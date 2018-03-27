@@ -60,6 +60,31 @@ class FilterDifferTest extends \PHPUnit_Framework_TestCase
         ], $ops);
     }
 
+    public function test_simple_status_change_del()
+    {
+        $differ = new FilterDiffer($this->makeEnv());
+
+        $ticketA             = new TicketModel();
+        $ticketA->id         = 1;
+        $ticketA->status     = 'awaiting_agent';
+        $ticketA->department = 1;
+
+        $ticketB             = new TicketModel();
+        $ticketB->id         = 1;
+        $ticketB->status     = 'awaiting_user';
+        $ticketB->department = 1;
+
+        $ops = $this->getPlainOpsArray(
+            $differ->getFilterChangeOperations(new TicketChange($ticketA, $ticketB))
+        );
+
+        $this->assertEquals([
+            4   => ['add' => [], 'del' => [1, 2]],
+            5   => ['add' => [], 'del' => [1, 2]],
+            100 => ['add' => [], 'del' => [1, 2]],
+        ], $ops);
+    }
+
     public function test_noop()
     {
         $differ = new FilterDiffer($this->makeEnv());
