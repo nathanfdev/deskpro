@@ -12,11 +12,12 @@ import Labels from './Labels';
 
 export default class AgentFilters extends React.Component {
   static propTypes = {
-    filterSets:   PropTypes.array,
-    filters:      PropTypes.object,
-    stars:        PropTypes.array,
-    labels:       PropTypes.array,
-    onSelectMode: PropTypes.func,
+    filterSets:    PropTypes.object,
+    filters:       PropTypes.object,
+    filtersCounts: PropTypes.object,
+    stars:         PropTypes.array,
+    labels:        PropTypes.array,
+    onSelectMode:  PropTypes.func,
   };
 
   static defaultProps = {
@@ -31,11 +32,11 @@ export default class AgentFilters extends React.Component {
     super(props);
     let currentDrawer = '';
     let mode = null;
-    if (props.filterSets.length) {
-      currentDrawer = `filterSet${props.filterSets[0].id}`;
+    if (props.filterSets.size) {
+      currentDrawer = `filterSet${props.filterSets.first().get('id')}`;
       mode = {
         type:   'filter',
-        filter: props.filterSets[0].filters[0],
+        filter: props.filterSets.first().get('filters').first(),
       };
     }
     this.state = {
@@ -67,6 +68,7 @@ export default class AgentFilters extends React.Component {
     const {
       filterSets,
       filters,
+      filtersCounts,
       stars,
       labels,
     } = this.props;
@@ -81,17 +83,18 @@ export default class AgentFilters extends React.Component {
           Tickets
         </Heading>
         <DrawerList>
-          {filterSets.map((filterSet) => {
-            const opened = `filterSet${filterSet.id}` === this.state.currentDrawer;
+          {filterSets.toArray().map((filterSet) => {
+            const opened = `filterSet${filterSet.get('id')}` === this.state.currentDrawer;
             return (
               <FiltersSet
-                key={filterSet.id}
-                ref={(c) => { this.drawers[`filterSet${filterSet.id}`] = c; }}
+                key={filterSet.get('id')}
+                ref={(c) => { this.drawers[`filterSet${filterSet.get('id')}`] = c; }}
                 opened={opened}
                 onChange={this.setDrawer}
                 onSelectMode={this.onSelectMode}
                 filterSet={filterSet}
                 filters={filters}
+                filtersCounts={filtersCounts}
                 mode={mode}
               />
             );

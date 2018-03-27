@@ -131,9 +131,10 @@ class TicketsForm extends React.Component {
 
 export default class Filter extends React.Component {
   static propTypes = {
-    filter:   PropTypes.object,
-    selected: PropTypes.bool,
-    onSelect: PropTypes.func
+    filter:        PropTypes.object,
+    filtersCounts: PropTypes.object,
+    selected:      PropTypes.bool,
+    onSelect:      PropTypes.func,
   };
 
   constructor(props) {
@@ -212,6 +213,14 @@ export default class Filter extends React.Component {
     });
   };
 
+  renderCount() {
+    const count = this.props.filtersCounts.find(filter => filter.get('id') === this.props.filter.get('id'));
+    if (count) {
+      return <Count>{count.get('count')}</Count>;
+    }
+    return <Count>&middot;</Count>;
+  }
+
   render() {
     const { filter, selected, onSelect } = this.props;
     const render = [
@@ -221,7 +230,7 @@ export default class Filter extends React.Component {
         onClick={onSelect}
       >
         {filter.get('title')}
-        <Count>0</Count>
+        {this.renderCount()}
         {
           filter.get('filterable') ?
             <ItemFilter ref={(ref) => { this.filter = ref; }}>

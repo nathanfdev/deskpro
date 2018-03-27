@@ -9,12 +9,13 @@ import Filter from './Filter';
 
 export default class FiltersSet extends React.Component {
   static propTypes = {
-    filterSet:    PropTypes.object,
-    filters:      PropTypes.object,
-    onChange:     PropTypes.func,
-    onSelectMode: PropTypes.func,
-    opened:       PropTypes.bool,
-    mode:         PropTypes.object,
+    filterSet:     PropTypes.object,
+    filters:       PropTypes.object,
+    filtersCounts: PropTypes.object,
+    onChange:      PropTypes.func,
+    onSelectMode:  PropTypes.func,
+    opened:        PropTypes.bool,
+    mode:          PropTypes.object,
   };
 
   onSelectFilter = (key) => {
@@ -34,12 +35,13 @@ export default class FiltersSet extends React.Component {
     const {
       filterSet,
       filters,
+      filtersCounts,
       onChange,
       opened,
       mode,
     } = this.props;
     const items = [];
-    filterSet.filters.forEach((key) => {
+    filterSet.get('filters').forEach((key) => {
       const filter = filters.find(item => item.get('id') === key);
       const selected = mode && mode.filter === key;
       if (filter) {
@@ -47,6 +49,7 @@ export default class FiltersSet extends React.Component {
           <Filter
             key={filter.get('id')}
             filter={filter}
+            filtersCounts={filtersCounts}
             selected={selected}
             onSelect={() => this.onSelectFilter(key)}
           />
@@ -57,11 +60,11 @@ export default class FiltersSet extends React.Component {
       <Drawer
         onChange={onChange}
         opened={opened}
-        id={`filterSet${filterSet.id}`}
+        id={`filterSet${filterSet.get('id')}`}
         ref={(c) => { this.drawer = c; }}
       >
         <Heading>
-          {filterSet.title}
+          {filterSet.get('title')}
         </Heading>
         <ItemList on="mouseOver">
           {items}
