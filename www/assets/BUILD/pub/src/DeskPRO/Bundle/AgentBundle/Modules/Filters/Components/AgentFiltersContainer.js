@@ -8,13 +8,17 @@ import AgentFilters from './AgentFilters';
 @connect(state => ({
   filterSets:    allSelectorFactory('TicketFilterSets')(state),
   filters:       allSelectorFactory('TicketFilters')(state),
-  filtersCounts: allSelectorFactory('TicketFilterCounts')(state)
+  filtersCounts: allSelectorFactory('TicketFilterCounts')(state),
+  stars:         allSelectorFactory('TicketStars')(state),
+  starsCounts:   allSelectorFactory('TicketStarsCounts')(state),
 }))
 export class AgentFiltersContainer extends SeparateComponent {
   static propTypes = {
     filterSets:    PropTypes.object,
     filters:       PropTypes.object,
     filtersCounts: PropTypes.object,
+    stars:         PropTypes.object,
+    starsCounts:   PropTypes.object,
   };
 
   static getType() {
@@ -22,14 +26,20 @@ export class AgentFiltersContainer extends SeparateComponent {
   }
 
   render() {
-    const { filterSets, filters, filtersCounts } = this.props;
-    console.log(filtersCounts);
+    const {
+      filterSets,
+      filters,
+      filtersCounts,
+      stars,
+      starsCounts,
+    } = this.props;
     return (
       <AgentFilters
         filterSets={filterSets}
         filters={filters}
         filtersCounts={filtersCounts}
-        stars={[]}
+        stars={stars}
+        starsCounts={starsCounts}
         labels={[]}
       />
     );

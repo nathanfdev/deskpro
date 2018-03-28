@@ -15,16 +15,18 @@ export default class AgentFilters extends React.Component {
     filterSets:    PropTypes.object,
     filters:       PropTypes.object,
     filtersCounts: PropTypes.object,
-    stars:         PropTypes.array,
+    stars:         PropTypes.object,
+    starsCounts:   PropTypes.object,
     labels:        PropTypes.array,
     onSelectMode:  PropTypes.func,
   };
 
   static defaultProps = {
-    filterSets: [],
-    filters:    [],
-    stars:      [],
-    labels:     [],
+    filterSets:  {},
+    filters:     {},
+    stars:       {},
+    starsCounts: {},
+    labels:      [],
     onSelectMode() {},
   };
 
@@ -70,6 +72,7 @@ export default class AgentFilters extends React.Component {
       filters,
       filtersCounts,
       stars,
+      starsCounts,
       labels,
     } = this.props;
     const {
@@ -103,6 +106,7 @@ export default class AgentFilters extends React.Component {
           <Stars
             ref={(c) => { this.drawers.stars = c; }}
             stars={stars}
+            starsCounts={starsCounts}
             opened={false}
             onChange={this.setDrawer}
             onSelectMode={this.onSelectMode}

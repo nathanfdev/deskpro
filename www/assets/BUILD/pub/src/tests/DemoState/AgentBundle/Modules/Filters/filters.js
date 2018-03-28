@@ -200,23 +200,52 @@ const filtersArray = [
 ];
 export const filters = fromJS(filtersArray);
 
-export const stars = [
+const starsArray = [
   {
     id:    1,
-    title: 'Bug',
-    color: '#4696dc'
+    name:  'Blue',
+    color: 'blue',
+    hex:   '#0000FF'
   },
   {
     id:    2,
-    title: 'Green',
-    color: '#54c66a'
+    name:  'Nesciunt',
+    color: 'green',
+    hex:   '#008000'
   },
   {
     id:    3,
-    title: 'Yellow',
-    color: '#f9d6a4'
+    name:  'Orange',
+    color: 'orange',
+    hex:   '#FFA500'
+  },
+  {
+    id:    4,
+    name:  'Adipisci',
+    color: 'pink',
+    hex:   '#FFC0CB'
+  },
+  {
+    id:    5,
+    name:  'Purple',
+    color: 'purple',
+    hex:   '#800080'
+  },
+  {
+    id:    6,
+    name:  'Pariatur',
+    color: 'red',
+    hex:   '#FF0000'
+  },
+  {
+    id:    7,
+    name:  'Yellow',
+    color: 'yellow',
+    hex:   '#FFFF00'
   }
 ];
+
+export const stars = fromJS(starsArray);
 
 export const labels = [
   'Android Mobile App',
@@ -248,3 +277,7 @@ export const labels = [
   'Fixed',
   'Mobile'
 ];
+
+export const filtersCounts = fromJS({});
+
+export const starsCounts = fromJS({});

@@ -11,7 +11,8 @@ import PropTypes from 'prop-types';
 
 export default class Stars extends React.Component {
   static propTypes = {
-    stars:        PropTypes.array,
+    stars:        PropTypes.object,
+    starsCounts:  PropTypes.object,
     onChange:     PropTypes.func,
     onSelectMode: PropTypes.func,
     opened:       PropTypes.bool,
@@ -24,6 +25,14 @@ export default class Stars extends React.Component {
 
   close() {
     this.drawer.close();
+  }
+
+  renderCount(star) {
+    const count = this.props.starsCounts.find(e => e.get('id') === star.get('id'));
+    if (count) {
+      return <Count>{count.get('count')}</Count>;
+    }
+    return <Count>&middot;</Count>;
   }
 
   render() {
@@ -44,17 +53,18 @@ export default class Stars extends React.Component {
           My Stars
         </Heading>
         <ItemList>
-          {stars.map(star => (
+          {stars.toArray().map(star => (
             <Item
-              key={star.id}
-              selected={mode && mode.type === 'star' && mode.star === star.id}
+              key={star.get('id')}
+              selected={mode && mode.type === 'star' && mode.star === star.get('id')}
               onSelect={selected => this.onSelect(selected, star)}
             >
-              <Icon name="star" style={{ color: star.color }} />
-              {star.title}
-              <Count>0</Count>
+              <Icon name="star" style={{ color: star.get('hex') }} />
+              {star.get('name')}
+              {this.renderCount(star)}
             </Item>
-            ))}
+            )
+          )}
         </ItemList>
       </Drawer>
     );
