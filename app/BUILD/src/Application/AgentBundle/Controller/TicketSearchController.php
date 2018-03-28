@@ -33,7 +33,6 @@ use DeskPRO\Bundle\AppBundle\Entity\SnippetTranslation;
 use DeskPRO\Bundle\AppBundle\Entity\SnippetUseLog;
 use DeskPRO\Bundle\AppBundle\Entity\TicketFilter;
 use DeskPRO\Bundle\AppBundle\TicketFilters\Context;
-use DeskPRO\Bundle\AppBundle\TicketFilters\TicketSearchParams;
 use DeskPRO\Bundle\AppBundle\Validator\Constraints as AppAssert;
 use DeskPRO\Component\Util\ListUtils;
 use DeskPRO\Component\Util\RegexUtils;
@@ -1028,25 +1027,28 @@ class TicketSearchController extends AbstractController
             }
         }
 
-        $loader  = $this->container->get('ticketfilters.loader');
-        $meAgent = $loader->getAgentById($this->person->getId());
-        if (!$meAgent) {
-            throw $this->createNotFoundException('failed to get agent model');
-        }
-        $context = new Context($meAgent);
-        $filter  = $loader->getFilterById($ticketFilter->getId());
-        if (!$filter) {
+        $ticketFilters = $this->container->get('ticketfilters');
+
+        try {
+            $query = $ticketFilters->getFilterQuery($ticketFilter->getId());
+        } catch (\OutOfBoundsException $e) {
             throw $this->createNotFoundException('failed to get filter model');
         }
 
-        $searchParams = new TicketSearchParams();
+        try {
+            $context = $ticketFilters->getAgentContext($this->person->getId());
+        } catch (\OutOfBoundsException $e) {
+            throw $this->createNotFoundException('failed to get agent model');
+        }
+
+        $searchParams = $ticketFilters->createSearchParams();
         if ($order_by) {
             $searchParams->orderBy($order_by, $order_dir);
         }
 
-        $searcher = $this->container->get('ticketfilter.ticket_sql_searcher');
+        $searcher = $ticketFilters->getSearcher();
         $qb       = $searcher
-            ->getIdsQueryBuilder($filter->query, $context)
+            ->getIdsQueryBuilder($query, $context)
             ->setFirstResult(0)
             ->setMaxResults(10000);
 

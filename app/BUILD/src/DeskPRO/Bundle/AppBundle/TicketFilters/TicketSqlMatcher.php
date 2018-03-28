@@ -3,12 +3,14 @@
 namespace DeskPRO\Bundle\AppBundle\TicketFilters;
 
 use DeskPRO\Bundle\AppBundle\TicketFilters\Model\Agent;
+use DeskPRO\Bundle\AppBundle\TicketFilters\Model\Entity\CustomField;
 use DeskPRO\Bundle\AppBundle\TicketFilters\SqlBuilder\SqlBuilder;
 use DeskPRO\Bundle\AppBundle\TicketFilters\SqlBuilder\SqlCondition;
 use DeskPRO\Bundle\AppBundle\TicketFilters\SqlBuilder\SqlConditionGroup;
 use DeskPRO\Component\FilterQueryLanguage\Query\Node\Term;
 use DeskPRO\Component\FilterQueryLanguage\Query\Node\TermGroup;
 use DeskPRO\Component\FilterQueryLanguage\Query\Query;
+use DeskPRO\Component\Util\ListUtils;
 use Doctrine\DBAL\Connection;
 
 class TicketSqlMatcher extends AbstractMatcher
@@ -27,14 +29,20 @@ class TicketSqlMatcher extends AbstractMatcher
     private $db;
 
     /**
+     * @var CustomField[]
+     */
+    private $ticketFields;
+
+    /**
      * TicketSqlMatcher constructor.
      *
-     * @param ValueResolver $valueResolver
-     * @param array         $handlers
-     * @param Connection    $db
-     * @param string        $mode          TicketSqlMatcher::ACTIVE for active tickets, or TicketSqlMatcher::ALL for all tickets (slower)
+     * @param ValueResolver                                                           $valueResolver
+     * @param array                                                                   $handlers
+     * @param Connection                                                              $db
+     * @param string                                                                  $mode          TicketSqlMatcher::ACTIVE for active tickets, or TicketSqlMatcher::ALL for all tickets (slower)
+     * @param \DeskPRO\Bundle\AppBundle\TicketFilters\Model\Entity\CustomField[]|null $ticketFields
      */
-    public function __construct(ValueResolver $valueResolver, array $handlers, Connection $db, $mode)
+    public function __construct(ValueResolver $valueResolver, array $handlers, Connection $db, $mode, array $ticketFields = null)
     {
         parent::__construct($valueResolver, $handlers);
         $this->db = $db;
@@ -43,7 +51,8 @@ class TicketSqlMatcher extends AbstractMatcher
             throw new \InvalidArgumentException('Invalid mode');
         }
 
-        $this->mode = $mode;
+        $this->mode         = $mode;
+        $this->ticketFields = $ticketFields ?: [];
     }
 
     /**
@@ -153,11 +162,13 @@ class TicketSqlMatcher extends AbstractMatcher
             $selectId = "group_field{$idx}";
             $joinId   = 'grouping'.$idx;
 
-            switch ($fieldId) {
+            $fieldInfo = TicketSearchParams::parseFieldId($fieldId);
+
+            switch ($fieldInfo['type']) {
                 case TicketSearchParams::GROUP_SLA_SEVERITY:
                     $qb->addSelect("MAX(FIELD($joinId.sla_status, 'ok', 'warning', 'fail')) AS $selectId");
                     $qb->leftJoin('tickets', 'ticket_slas', $joinId, "$joinId.ticket_id = tickets.id");
-                    $qb->addGroupBy('group_field');
+                    $qb->addGroupBy($selectId);
                     break;
 
                 case TicketSearchParams::GROUP_AGENT:
@@ -200,8 +211,41 @@ class TicketSqlMatcher extends AbstractMatcher
                     $qb->addGroupBy('tickets.language_id');
                     break;
 
+                case TicketSearchParams::GROUP_URGENCY:
+                    $qb->addSelect("tickets.urgency AS $selectId");
+                    $qb->addGroupBy('tickets.urgency');
+                    break;
+
+                case TicketSearchParams::GROUP_DATE_CREATED:
+                    // TODO
+                    //$qb->addSelect("tickets.date_created AS $selectId");
+                    //$qb->addGroupBy($selectId);
+                    break;
+
+                case TicketSearchParams::GROUP_TICKET_FIELD_PREFIX:
+                    $ticketFieldId = (int) $fieldInfo['name'];
+
+                    /** @var CustomField $field */
+                    $field = ListUtils::findByProp($this->ticketFields, 'field', $ticketFieldId);
+
+                    if (!$field) {
+                        throw new \InvalidArgumentException('Unknown grouping field: '.$fieldId);
+                    }
+
+                    if (!$field->isGroupingCapable()) {
+                        throw new \InvalidArgumentException('Field is not a valid grouping field: '.$fieldId);
+                    }
+
+                    // All grouping fields are choice fields at the moment,
+                    // so we group on the field_id which is the specific option selected
+                    $qb->addSelect("COALESCE($joinId.field_id, 0) AS $selectId");
+                    $qb->leftJoin('tickets', 'custom_data_ticket', $joinId, "$joinId.ticket_id = tickets.id AND $joinId.root_field_id = {$field->field}");
+                    $qb->addGroupBy($selectId);
+
+                    break;
+
                 default:
-                    throw new \InvalidArgumentException();
+                    throw new \InvalidArgumentException("Unknown grouping field: {$fieldId} (type: {$fieldInfo['type']})");
             }
         }
     }
@@ -261,7 +305,7 @@ class TicketSqlMatcher extends AbstractMatcher
                     break;
 
                 default:
-                    throw new \InvalidArgumentException();
+                    throw new \InvalidArgumentException('Unknown grouping field: '.$fieldId);
             }
         }
     }

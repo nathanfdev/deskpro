@@ -3,6 +3,7 @@
 namespace DeskPRO\Bundle\AppBundle\TicketFilters;
 
 use Application\DeskPRO\Entity\AgentTeam;
+use Application\DeskPRO\Entity\CustomDefTicket;
 use Application\DeskPRO\Entity\Department;
 use Application\DeskPRO\Entity\Language;
 use Application\DeskPRO\Entity\Person;
@@ -22,13 +23,19 @@ class TicketCountTitleResolver implements CountTitleResolver
     private $container;
 
     /**
+     * @var EnvLoader
+     */
+    private $loader;
+
+    /**
      * TicketCountTitleResolver constructor.
      *
      * @param Container $container
      */
-    public function __construct(Container $container)
+    public function __construct(Container $container, EnvLoader $loader)
     {
         $this->container = $container;
+        $this->loader    = $loader;
     }
 
     /**
@@ -36,7 +43,9 @@ class TicketCountTitleResolver implements CountTitleResolver
      */
     public function getTitles($fieldId, array $values)
     {
-        switch ($fieldId) {
+        $fieldInfo = TicketSearchParams::parseFieldId($fieldId);
+
+        switch ($fieldInfo['type']) {
             case TicketSearchParams::GROUP_SLA_SEVERITY:
                 return ['ok' => 'Ok', 'fail' => 'Fail', 'warn' => 'Warning'];
                 break;
@@ -136,6 +145,20 @@ class TicketCountTitleResolver implements CountTitleResolver
                     }
                 );
                 break;
+
+            case TicketSearchParams::GROUP_TICKET_FIELD_PREFIX:
+                $ticketFieldId = (int) $fieldInfo['name'];
+
+                $field = $this->container->get('doctrine.orm.entity_manager')->find(CustomDefTicket::class, $ticketFieldId);
+
+                if (!$field) {
+                    return [];
+                }
+
+                $titles     = $field->getAllChildTitles();
+                $titles[-1] = 'None';
+
+                return $titles;
 
             default:
                 return [];

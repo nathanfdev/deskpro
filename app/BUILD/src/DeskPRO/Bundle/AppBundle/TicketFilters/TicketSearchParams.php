@@ -2,6 +2,9 @@
 
 namespace DeskPRO\Bundle\AppBundle\TicketFilters;
 
+use DeskPRO\Bundle\AppBundle\Model\TicketGrouping as OldTicketGrouping;
+use DeskPRO\Component\Util\RegexUtils;
+
 class TicketSearchParams
 {
     const ORDER_ID                    = 'ticket.id';
@@ -16,15 +19,18 @@ class TicketSearchParams
     const ORDER_DATE_USER_WAITING     = 'ticket.date_user_waiting';
     const ORDER_SLA_SEVERITY          = 'ticket.sla_severity';
 
-    const GROUP_SLA_SEVERITY = 'ticket.sla_severity';
-    const GROUP_AGENT        = 'ticket.agent';
-    const GROUP_AGENT_TEAM   = 'ticket.agent_team';
-    const GROUP_DEPARTMENT   = 'ticket.department';
-    const GROUP_WORKFLOW     = 'ticket.workflow';
-    const GROUP_PRIORITY     = 'ticket.priority';
-    const GROUP_CATEGORY     = 'ticket.category';
-    const GROUP_PRODUCT      = 'ticket.product';
-    const GROUP_LANGUAGE     = 'ticket.language';
+    const GROUP_SLA_SEVERITY        = 'ticket.sla_severity';
+    const GROUP_AGENT               = 'ticket.agent';
+    const GROUP_AGENT_TEAM          = 'ticket.agent_team';
+    const GROUP_DEPARTMENT          = 'ticket.department';
+    const GROUP_WORKFLOW            = 'ticket.workflow';
+    const GROUP_PRIORITY            = 'ticket.priority';
+    const GROUP_CATEGORY            = 'ticket.category';
+    const GROUP_PRODUCT             = 'ticket.product';
+    const GROUP_LANGUAGE            = 'ticket.language';
+    const GROUP_URGENCY             = 'ticket.urgency';
+    const GROUP_DATE_CREATED        = 'ticket.date_created';
+    const GROUP_TICKET_FIELD_PREFIX = 'ticket.field';
 
     private $availableOrderFields = [
         'ticket.id',
@@ -50,6 +56,8 @@ class TicketSearchParams
         'ticket.category',
         'ticket.product',
         'ticket.language',
+        'ticket.urgency',
+        'ticket.date_created',
     ];
 
     /**
@@ -66,6 +74,22 @@ class TicketSearchParams
      * @var array
      */
     private $subFilterFields = [];
+
+    /**
+     * TicketSearchParams constructor.
+     *
+     * @param \DeskPRO\Bundle\AppBundle\TicketFilters\Model\Entity\CustomField[]|null $customTicketFields
+     */
+    public function __construct(array $customTicketFields = null)
+    {
+        if ($customTicketFields) {
+            foreach ($customTicketFields as $f) {
+                if ($f->isGroupingCapable()) {
+                    $this->availableGroupFields[] = self::GROUP_TICKET_FIELD_PREFIX.".{$f->field}";
+                }
+            }
+        }
+    }
 
     /**
      * Order results by a field. This is ignored for counts.
@@ -125,6 +149,8 @@ class TicketSearchParams
      */
     public function groupBy($fieldId)
     {
+        $fieldId = $this->groupFieldTranslator($fieldId);
+
         if (!in_array($fieldId, $this->availableGroupFields)) {
             throw new \InvalidArgumentException('Invalid order field');
         }
@@ -132,6 +158,32 @@ class TicketSearchParams
         $this->groupFields[] = $fieldId;
 
         return $this;
+    }
+
+    /**
+     * Converts old names for grouping vars to new names.
+     *
+     * @param string $fieldId
+     *
+     * @return string
+     */
+    private function groupFieldTranslator($fieldId)
+    {
+        switch ($fieldId) {
+            case OldTicketGrouping::DEPARTMENT:           return self::GROUP_DEPARTMENT;
+            case OldTicketGrouping::AGENT:                return self::GROUP_AGENT;
+            case OldTicketGrouping::AGENT_TEAM:           return self::GROUP_AGENT_TEAM;
+            case OldTicketGrouping::URGENCY:              return self::GROUP_URGENCY;
+            case OldTicketGrouping::DATE_CREATED:         return self::GROUP_DATE_CREATED;
+            case OldTicketGrouping::LANGUAGE:             return self::GROUP_LANGUAGE;
+            default:
+                if ($customFieldId = RegexUtils::getMatch('/^'.OldTicketGrouping::CUSTOM_FIELD_COLUMN_PREFIX.'\.(\d+)$/', $fieldId)) {
+                    return self::GROUP_TICKET_FIELD_PREFIX.".{$customFieldId}";
+                }
+
+                // no match
+                return $fieldId;
+        }
     }
 
     /**
@@ -196,5 +248,36 @@ class TicketSearchParams
     public function hasSubFilterFields()
     {
         return !empty($this->subFilterFields);
+    }
+
+    /**
+     * @param string $fieldId
+     *
+     * @return array
+     */
+    public static function parseFieldId($fieldId)
+    {
+        if ($m = RegexUtils::getMatch('/^(ticket)\.field\.(.*?)$/', $fieldId, -1)) {
+            return [
+                'id'   => $fieldId,
+                'type' => 'ticket.field',
+                'name' => $m[2],
+            ];
+        } else {
+            $parts = explode('.', $fieldId);
+            if (isset($parts[1])) {
+                $fieldName = array_pop($parts);
+                $fieldType = implode('.', $parts);
+            } else {
+                $fieldType = 'ticket';
+                $fieldName = $fieldId;
+            }
+
+            return [
+                'id'   => $fieldId,
+                'type' => $fieldId,
+                'name' => $fieldName,
+            ];
+        }
     }
 }

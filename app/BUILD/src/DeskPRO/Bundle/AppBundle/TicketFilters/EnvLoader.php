@@ -5,12 +5,18 @@ namespace DeskPRO\Bundle\AppBundle\TicketFilters;
 use Application\DeskPRO\EntityRepository;
 use DeskPRO\Bundle\AppBundle\Entity\Repository\TicketFilterSetRepository;
 use DeskPRO\Bundle\AppBundle\TicketFilters\Model\Agent;
+use DeskPRO\Bundle\AppBundle\TicketFilters\Model\Entity\CustomField;
 use DeskPRO\Bundle\AppBundle\TicketFilters\Model\Filter;
-use DeskPRO\Component\FilterQueryLanguage;
+use DeskPRO\Component\FilterQueryLanguage\Parser as FQLParser;
 use DeskPRO\Component\Util\ListUtils;
 
-class Loader
+class EnvLoader
 {
+    /**
+     * @var QueryParser
+     */
+    private $queryParser;
+
     /**
      * @var TicketFilterSetRepository
      */
@@ -22,9 +28,9 @@ class Loader
     private $agentRepos;
 
     /**
-     * @var FilterQueryLanguage\Parser
+     * @var EntityRepository\CustomDefTicket
      */
-    private $queryParser;
+    private $ticketFieldRepos;
 
     /**
      * Filter models (not filter entities).
@@ -39,17 +45,24 @@ class Loader
     private $agents;
 
     /**
-     * Loader constructor.
-     *
-     * @param TicketFilterSetRepository  $filterSetEntRepos
-     * @param EntityRepository\Person    $agentRepos
-     * @param FilterQueryLanguage\Parser $queryParser
+     * @var CustomField[]
      */
-    public function __construct(TicketFilterSetRepository $filterSetEntRepos, EntityRepository\Person $agentRepos, FilterQueryLanguage\Parser $queryParser)
+    private $ticketFields;
+
+    /**
+     * EnvLoader constructor.
+     *
+     * @param FQLParser                        $queryParser
+     * @param TicketFilterSetRepository        $filterSetEntRepos
+     * @param EntityRepository\Person          $agentRepos
+     * @param EntityRepository\CustomDefTicket $ticketFieldRepos
+     */
+    public function __construct(FQLParser $queryParser, TicketFilterSetRepository $filterSetEntRepos, EntityRepository\Person $agentRepos, EntityRepository\CustomDefTicket $ticketFieldRepos)
     {
+        $this->queryParser       = $queryParser;
         $this->filterSetEntRepos = $filterSetEntRepos;
         $this->agentRepos        = $agentRepos;
-        $this->queryParser       = $queryParser;
+        $this->ticketFieldRepos  = $ticketFieldRepos;
     }
 
     /**
@@ -100,9 +113,15 @@ class Loader
      */
     public function getFilterById($id)
     {
-        return ListUtils::first($this->getFilters(), function ($f) use ($id) {
+        $filter = ListUtils::first($this->getFilters(), function ($f) use ($id) {
             return $f->id == $id;
         });
+
+        if (!$filter) {
+            throw new \OutOfBoundsException();
+        }
+
+        return $filter;
     }
 
     /**
@@ -151,8 +170,34 @@ class Loader
      */
     public function getAgentById($id)
     {
-        return ListUtils::first($this->getAgents(), function ($a) use ($id) {
+        $agent = ListUtils::first($this->getAgents(), function ($a) use ($id) {
             return $a->id == $id;
         });
+
+        if (!$agent) {
+            throw new \OutOfBoundsException();
+        }
+
+        return $agent;
+    }
+
+    /**
+     * @return CustomField[]
+     */
+    public function getTicketFields()
+    {
+        if ($this->ticketFields !== null) {
+            return $this->ticketFields;
+        }
+
+        $this->ticketFields = [];
+        foreach ($this->ticketFieldRepos->getEnabledTopFields() as $customDef) {
+            $f                    = new CustomField();
+            $f->field             = $customDef->getId();
+            $f->type              = $customDef->getTypeName();
+            $this->ticketFields[] = $f;
+        }
+
+        return $this->ticketFields;
     }
 }

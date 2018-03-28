@@ -157,9 +157,17 @@ services:
     factory: ['DeskPRO\Bundle\AppBundle\BlobStorage\AmazonS3ClientFactory', create]
     arguments: ["@settings_resolver"]
 
+  ticketfilters.env_loader:
+    class: DeskPRO\Bundle\AppBundle\TicketFilters\EnvLoader
+    arguments:
+      - "@ticketfilters.queryparser"
+      - "@=service('doctrine.orm.entity_manager').getRepository('DeskPRO\\\\Bundle\\\\AppBundle\\\\Entity\\\\TicketFilterSet')"
+      - "@=service('doctrine.orm.entity_manager').getRepository('Application\\\\DeskPRO\\\\Entity\\\\Person')"
+      - "@=service('doctrine.orm.entity_manager').getRepository('Application\\\\DeskPRO\\\\Entity\\\\CustomDefTicket')"
+
   ticketfilters.matcher_factory:
     class: DeskPRO\Bundle\AppBundle\TicketFilters\MatcherFactory
-    arguments: ["@service_container"]
+    arguments: ["@service_container", "@ticketfilters.env_loader"]
 
   ticketfilter.ticket_matcher:
     class: DeskPRO\Bundle\AppBundle\TicketFilters\TicketMatcher
@@ -172,9 +180,12 @@ services:
   ticketfilters.queryparser:
     class: DeskPRO\Component\FilterQueryLanguage\Parser
 
-  ticketfilters.loader:
-    class: DeskPRO\Bundle\AppBundle\TicketFilters\Loader
+  ticketfilters.count_title_resolver:
+    class: DeskPRO\Bundle\AppBundle\TicketFilters\TicketCountTitleResolver
+    arguments: ["@service_container", "@ticketfilters.env_loader"]
+
+  ticketfilters:
+    class: DeskPRO\Bundle\AppBundle\TicketFilters\TicketFilterEnv
     arguments:
-      - "@=service('doctrine.orm.entity_manager').getRepository('DeskPRO\\\\Bundle\\\\AppBundle\\\\Entity\\\\TicketFilterSet')"
-      - "@=service('doctrine.orm.entity_manager').getRepository('Application\\\\DeskPRO\\\\Entity\\\\Person')"
-      - "@ticketfilters.queryparser"
+      - "@ticketfilters.env_loader"
+      - "@ticketfilters.matcher_factory"

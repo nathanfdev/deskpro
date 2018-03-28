@@ -134,9 +134,6 @@ class TicketCountsDataService
                 return $this->em->find(Person::class, $id)->getName();
             case TicketGrouping::AGENT_TEAM:
                 return $this->em->find(AgentTeam::class, $id)->getName();
-            case TicketGrouping::OPEN_TIME:
-            case TicketGrouping::WAITING_TIME:
-            case TicketGrouping::ALL_WAITING_TIME:
             case TicketGrouping::URGENCY:
             case TicketGrouping::DATE_CREATED:
                 return $id;

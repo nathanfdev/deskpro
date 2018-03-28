@@ -65,7 +65,7 @@ class DiffEnvTest extends \PHPUnit_Framework_TestCase
         });
 
         $this->assertEquals(
-            [1, 2, 3, 4, 5],
+            [1, 2, 3, 4, 5, 100, 101],
             $match
         );
     }

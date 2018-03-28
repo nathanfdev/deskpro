@@ -122,8 +122,10 @@ class CountBuilder
             $id   = $info['count']->getId();
             if (isset($titles[$type][$id])) {
                 $info['count']->setTitle($titles[$type][$id]);
-            } else {
+            } elseif ($id !== null) {
                 $info['count']->setTitle("{$type}.{$id}");
+            } else {
+                $info['count']->setTitle(''); // the top level count
             }
         }
 

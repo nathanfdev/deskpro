@@ -82,10 +82,11 @@ class RunFilterUpdates implements TicketSaveActionInterface, ErrorCheckedInterfa
 
     private function processTicketNewFilters(Ticket $ticket, ExecutorContextInterface $context)
     {
-        $loader  = $this->container->get('ticketfilters.loader');
-        $matcher = $this->container->get('ticketfilter.ticket_matcher');
-        $diffEnv = new DiffEnv($matcher, $loader->getAgents(), $loader->getFilters());
-        $differ  = new FilterDiffer($diffEnv);
+        $loader        = $this->container->get('ticketfilters.env_loader');
+        $ticketFilters = $this->container->get('ticketfilters');
+        $matcher       = $ticketFilters->getTicketMatcher();
+        $diffEnv       = new DiffEnv($matcher, $loader->getAgents(), $loader->getFilters());
+        $differ        = new FilterDiffer($diffEnv);
 
         list($ticketA, $ticketB) = $ticket->getStateChangeRecorder()->getBeforeAfterModels();
 

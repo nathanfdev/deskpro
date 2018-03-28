@@ -127,7 +127,7 @@ class TicketSqlMatcherTest extends \PHPUnit_Framework_TestCase
             FROM tickets_search_active tickets
             LEFT JOIN ticket_slas grouping0 ON grouping0.ticket_id = tickets.id
             WHERE tickets.status = :c0
-            GROUP BY group_field, tickets.agent_id WITH ROLLUP',
+            GROUP BY group_field0, tickets.agent_id WITH ROLLUP',
             ['c0' => 'awaiting_agent'],
             $params
         );

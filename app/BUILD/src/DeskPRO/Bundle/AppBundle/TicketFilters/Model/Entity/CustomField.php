@@ -2,6 +2,8 @@
 
 namespace DeskPRO\Bundle\AppBundle\TicketFilters\Model\Entity;
 
+use Application\DeskPRO\Entity\CustomDefAbstract;
+
 class CustomField
 {
     /**
@@ -13,15 +15,23 @@ class CustomField
 
     /**
      * The deskpro field type (e.g. choice, text, etc).
+     * See CustomDefAbstract::TYPE_*.
      *
      * @var string
      */
     public $type = null;
 
     /**
-     * The filter data type. E.g. STRING or INT[].
+     * Is the field suitable for grouping on?
      *
-     * @var string
+     * @return bool
      */
-    public $valueType;
+    public function isGroupingCapable()
+    {
+        switch ($this->type) {
+            case CustomDefAbstract::TYPE_CHOICE: return true;
+        }
+
+        return false;
+    }
 }

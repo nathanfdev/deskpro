@@ -2,6 +2,7 @@
 
 namespace DeskPRO\Bundle\AppBundle\TicketFilters;
 
+use DeskPRO\Bundle\AppBundle\TicketFilters\Terms\AbstractTermsHandler;
 use DeskPRO\Bundle\AppBundle\TicketFilters\Terms\TicketBasicTermsHandler;
 use DeskPRO\Bundle\AppBundle\TicketFilters\Terms\TicketDateTermsHandler;
 use DeskPRO\Bundle\AppBundle\TicketFilters\Terms\TicketSlaTermsHandler;
@@ -15,13 +16,43 @@ class MatcherFactory
     private $container;
 
     /**
+     * @var EnvLoader
+     */
+    private $loader;
+
+    /**
+     * @var AbstractTermsHandler[]
+     */
+    private $termHandlers;
+
+    /**
      * MatcherFactory constructor.
      *
      * @param Container $container
+     * @param EnvLoader $loader
      */
-    public function __construct(Container $container)
+    public function __construct(Container $container, EnvLoader $loader)
     {
         $this->container = $container;
+        $this->loader    = $loader;
+    }
+
+    /**
+     * @return AbstractTermsHandler[]
+     */
+    private function getTermHandlers()
+    {
+        if ($this->termHandlers !== null) {
+            return $this->termHandlers;
+        }
+
+        $this->termHandlers = [
+            new TicketBasicTermsHandler(),
+            new TicketSlaTermsHandler(),
+            new TicketDateTermsHandler(),
+        ];
+
+        return $this->termHandlers;
     }
 
     /**
@@ -31,11 +62,7 @@ class MatcherFactory
     {
         $resolver = new ValueResolver();
 
-        $matcher = new TicketMatcher($resolver, [
-            new TicketBasicTermsHandler(),
-            new TicketSlaTermsHandler(),
-            new TicketDateTermsHandler(),
-        ]);
+        $matcher = new TicketMatcher($resolver, $this->getTermHandlers());
 
         return $matcher;
     }
@@ -49,11 +76,13 @@ class MatcherFactory
     {
         $resolver = new ValueResolver();
 
-        $matcher = new TicketSqlMatcher($resolver, [
-            new TicketBasicTermsHandler(),
-            new TicketSlaTermsHandler(),
-            new TicketDateTermsHandler(),
-        ], $this->container->get('doctrine.dbal.read_search_connection'), TicketSqlMatcher::ACTIVE);
+        $matcher = new TicketSqlMatcher(
+            $resolver,
+            $this->getTermHandlers(),
+            $this->container->get('doctrine.dbal.read_search_connection'),
+            TicketSqlMatcher::ACTIVE,
+            $this->loader->getTicketFields()
+        );
 
         return $matcher;
     }

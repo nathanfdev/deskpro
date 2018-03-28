@@ -9,9 +9,6 @@ use DeskPRO\Bundle\AppBundle\Annotation\ActionPermissions\Annotation\ApiModes;
 use DeskPRO\Bundle\AppBundle\CountBadge\Count;
 use DeskPRO\Bundle\AppBundle\CountBadge\CountBuilder;
 use DeskPRO\Bundle\AppBundle\Entity\TicketFilter;
-use DeskPRO\Bundle\AppBundle\TicketFilters\Context;
-use DeskPRO\Bundle\AppBundle\TicketFilters\TicketCountTitleResolver;
-use DeskPRO\Bundle\AppBundle\TicketFilters\TicketSearchParams;
 use DeskPRO\Component\Util\ListUtils;
 use Doctrine\ORM\QueryBuilder;
 use FOS\RestBundle\Controller\Annotations as Rest;
@@ -105,25 +102,28 @@ class TicketFiltersController extends CrudController
         $offset     = $request->query->getInt('offset');
         $maxPerPage = $request->query->getInt('count', self::$listPerPage);
 
-        $loader  = $this->container->get('ticketfilters.loader');
-        $meAgent = $loader->getAgentById($this->getUser()->getId());
-        if (!$meAgent) {
-            throw $this->createNotFoundException('failed to get agent model');
-        }
-        $context = new Context($meAgent);
-        $filter  = $loader->getFilterById($ticketFilter->getId());
-        if (!$filter) {
+        $ticketFilters = $this->container->get('ticketfilters');
+
+        try {
+            $query = $ticketFilters->getFilterQuery($ticketFilter->getId());
+        } catch (\OutOfBoundsException $e) {
             throw $this->createNotFoundException('failed to get filter model');
         }
 
-        $searchParams = new TicketSearchParams();
+        try {
+            $context = $ticketFilters->getAgentContext($this->getUser()->getId());
+        } catch (\OutOfBoundsException $e) {
+            throw $this->createNotFoundException('failed to get agent model');
+        }
+
+        $searchParams = $ticketFilters->createSearchParams();
         if ($orderBy) {
             $searchParams->orderBy($orderBy, $orderDir);
         }
 
-        $searcher = $this->container->get('ticketfilter.ticket_sql_searcher');
+        $searcher = $ticketFilters->getSearcher();
         $qb       = $searcher
-            ->getIdsQueryBuilder($filter->query, $context)
+            ->getIdsQueryBuilder($query, $context)
             ->setFirstResult($offset)
             ->setMaxResults($maxPerPage + 1);
 
@@ -174,18 +174,21 @@ class TicketFiltersController extends CrudController
     {
         $groupBy = $request->get('group_by');
 
-        $loader  = $this->container->get('ticketfilters.loader');
-        $meAgent = $loader->getAgentById($this->getUser()->getId());
-        if (!$meAgent) {
-            throw $this->createNotFoundException('failed to get agent model');
-        }
-        $context = new Context($meAgent);
-        $filter  = $loader->getFilterById($ticketFilter->getId());
-        if (!$filter) {
+        $ticketFilters = $this->container->get('ticketfilters');
+
+        try {
+            $query = $ticketFilters->getFilterQuery($ticketFilter->getId());
+        } catch (\OutOfBoundsException $e) {
             throw $this->createNotFoundException('failed to get filter model');
         }
 
-        $searchParams = new TicketSearchParams();
+        try {
+            $context = $ticketFilters->getAgentContext($this->getUser()->getId());
+        } catch (\OutOfBoundsException $e) {
+            throw $this->createNotFoundException('failed to get agent model');
+        }
+
+        $searchParams = $ticketFilters->createSearchParams();
         if ($groupBy) {
             $groupBy = explode(',', $groupBy);
             foreach ($groupBy as $g) {
@@ -193,23 +196,23 @@ class TicketFiltersController extends CrudController
             }
         }
 
-        $searcher = $this->container->get('ticketfilter.ticket_sql_searcher');
+        $searcher = $ticketFilters->getSearcher();
 
         if (!$searchParams->hasGroupFields()) {
             $countInt = $searcher
-                ->getCountQueryBuilder($filter->query, $context, $searchParams)
+                ->getCountQueryBuilder($query, $context, $searchParams)
                 ->execute()
                 ->fetchColumn();
 
             $count = Count::create(
                 $countInt,
-                $filter->id,
+                $ticketFilter->getId(),
                 'filter',
                 $ticketFilter->getTitle()
             );
         } else {
             $countInts = $searcher
-                ->getCountQueryBuilder($filter->query, $context, $searchParams)
+                ->getCountQueryBuilder($query, $context, $searchParams)
                 ->execute()
                 ->fetchAll(\PDO::FETCH_ASSOC);
 
@@ -220,13 +223,25 @@ class TicketFiltersController extends CrudController
                 $newCount = ['count' => $count['count']];
                 foreach ($groupFields as $idx => $fieldId) {
                     $key = 'group_field'.$idx;
-                    $newCount[$fieldId] = $count[$key];
+                    $titleKey = $count[$key];
+                    if ($titleKey === null) {
+                        // special key used to look up self
+                        $titleKey = null;
+                    } elseif ($titleKey === 0) {
+                        // -1 represents null -- used to distinguish it
+                        // from no value i.e. user clciks top-level label means no sub-filtering at all
+                        // but clicking 'None' means searching for a null value
+                        $titleKey = -1;
+                    }
+                    $newCount[$fieldId] = $titleKey;
                 }
 
                 return $newCount;
             });
 
-            $b     = new CountBuilder(new TicketCountTitleResolver($this->container));
+            $titleResolver = $this->get('ticketfilters.count_title_resolver');
+
+            $b     = new CountBuilder($titleResolver);
             $count = $b->buildFromArray($countRekeyed, $searchParams->getGroupFields());
         }
 

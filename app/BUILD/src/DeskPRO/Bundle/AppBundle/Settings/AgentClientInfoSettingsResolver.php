@@ -208,15 +208,8 @@ class AgentClientInfoSettingsResolver extends AbstractBrandAwareSettingsResolver
             TicketGrouping::AGENT,
             TicketGrouping::AGENT_TEAM,
             TicketGrouping::URGENCY,
-            TicketGrouping::WAITING_TIME,
-            TicketGrouping::ALL_WAITING_TIME,
             TicketGrouping::DATE_CREATED,
             TicketGrouping::LANGUAGE,
-            TicketGrouping::ORGANIZATION,
-            TicketGrouping::PERSON,
-            // not supported by legacy ticket grouping counter
-            // temporary disabled until we are using legacy filters
-            // TicketGrouping::OPEN_TIME,
         ];
 
         foreach ($groupFields as $groupField) {
@@ -225,13 +218,15 @@ class AgentClientInfoSettingsResolver extends AbstractBrandAwareSettingsResolver
         }
 
         foreach ($customDefRepo->getEnabledTopFields() as $customDef) {
-            $model->addGroupByField(
-                new TicketGroupFieldSettings(
-                    TicketGrouping::CUSTOM_FIELD_COLUMN_PREFIX.'.'.$customDef->getId(),
-                    TicketGrouping::CUSTOM_FIELD_COLUMN_PREFIX,
-                    $customDef->getId()
-                )
-            );
+            if ($customDef->isChoiceType()) {
+                $model->addGroupByField(
+                    new TicketGroupFieldSettings(
+                        TicketGrouping::CUSTOM_FIELD_COLUMN_PREFIX.'.'.$customDef->getId(),
+                        TicketGrouping::CUSTOM_FIELD_COLUMN_PREFIX,
+                        $customDef->getId()
+                    )
+                );
+            }
         }
 
         $permissions = $model->getPermissions();

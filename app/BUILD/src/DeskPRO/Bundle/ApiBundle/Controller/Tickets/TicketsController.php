@@ -12,7 +12,6 @@ use DeskPRO\Bundle\AppBundle\Annotation\ActionPermissions\Annotation\ApiModes;
 use DeskPRO\Bundle\AppBundle\Form\Type\Tickets\TicketType;
 use DeskPRO\Bundle\AppBundle\Security\Voter\PermissionGroups\PermissionGroupVoter;
 use DeskPRO\Bundle\AppBundle\Serializer\Annotation\SerializerView;
-use DeskPRO\Bundle\AppBundle\TicketFilters\Context;
 use DeskPRO\Bundle\AppBundle\TicketFilters\Terms\Terms;
 use DeskPRO\Bundle\AppBundle\TicketFilters\TicketSearchParams;
 use DeskPRO\Component\FilterQueryLanguage\QueryUtil;
@@ -328,15 +327,16 @@ class TicketsController extends AbstractTicketsController
                 $searchQuery = '';
             }
 
-            $loader  = $this->container->get('ticketfilters.loader');
-            $meAgent = $loader->getAgentById($this->getUser()->getId());
-            if (!$meAgent) {
+            $ticketFilters = $this->container->get('ticketfilters');
+            try {
+                $context = $ticketFilters->getAgentContext($this->getUser()->getId());
+            } catch (\OutOfBoundsException $e) {
                 throw $this->createNotFoundException('failed to get agent model');
             }
-            $context = new Context($meAgent);
 
-            $searcher = $this->container->get('ticketfilter.ticket_sql_searcher');
             $parser   = $this->container->get('ticketfilters.queryparser');
+            $queyr    = $parser->parseQuery($searchQuery);
+            $searcher = $ticketFilters->getSearcher();
             $qb       = $searcher
                 ->getIdsQueryBuilder($parser->parseQuery($searchQuery), $context)
                 ->setMaxResults(1000);

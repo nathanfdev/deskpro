@@ -181,14 +181,8 @@ abstract class AbstractCount
             $this->oldId = $id;
         }
 
-        // new id representation
-        if (is_numeric($id)) {
-            $this->id    = $id;
-            $this->value = null;
-        } else {
-            $this->id    = null;
-            $this->value = $id;
-        }
+        $this->id    = $id;
+        $this->value = $id;
     }
 
     /**

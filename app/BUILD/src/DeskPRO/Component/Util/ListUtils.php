@@ -452,6 +452,33 @@ class ListUtils
     }
 
     /**
+     * Find the first value in a list whose prop is the specified value.
+     *
+     * @param \Traversable|array $array
+     * @param string             $propName
+     * @param mixed              $checkValue
+     * @param bool               $strict
+     *
+     * @return null|mixed
+     */
+    public static function findByProp($array, $propName, $checkValue, $strict = true)
+    {
+        foreach ($array as $value) {
+            if ($strict) {
+                if (property_exists($value, $propName) && $value->$propName === $checkValue) {
+                    return $value;
+                }
+            } else {
+                if (property_exists($value, $propName) && $value->$propName == $checkValue) {
+                    return $value;
+                }
+            }
+        }
+
+        return null;
+    }
+
+    /**
      * Checks if two arrays contain the same elements in any order.
      *
      * @param \Traversable|array $array1
