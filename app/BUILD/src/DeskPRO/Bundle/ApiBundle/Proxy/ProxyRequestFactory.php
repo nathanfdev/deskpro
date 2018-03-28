@@ -196,7 +196,7 @@ class ProxyRequestFactory
             return [];
         }
 
-        return $manifest->getExternalApis();
+        return $manifest->getDomainWhitelist();
     }
 
     /**

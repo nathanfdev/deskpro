@@ -7,9 +7,10 @@
   },
   "description": "A foundation to get you started developing React DeskPro Apps with the best developer experience ",
   "name": "@deskproapps/app-boilerplate-react",
-  "version": "2.4.0",
+  "version": "2.3.0",
   "title": "Your app title",
   "isSingle": true,
+  "scope": "agent",
   "targets": [
     { "target": "ticket-sidebar", "url": "html/index.html" },
     { "target": "install", "url": "html/install.html" }
@@ -126,7 +127,7 @@
   "deskproApiTags": [
     "tickets.*"
   ],
-  "domainWhitelist": [
+  "externalApis": [
     "/^https?://([^.]+\\.)*mailchimp.com/?.*$/"
   ]
 }

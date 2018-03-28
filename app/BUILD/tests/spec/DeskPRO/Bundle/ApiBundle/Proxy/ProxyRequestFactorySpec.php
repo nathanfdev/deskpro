@@ -173,7 +173,7 @@ class ProxyRequestFactorySpec extends ObjectBehavior
 
         $instance->getApp()->willReturn($app);
         $app->getManifest()->willReturn($manifest);
-        $manifest->getExternalApis()->willReturn($whiteList);
+        $manifest->getDomainWhitelist()->willReturn($whiteList);
 
         $appState1 = new AppState();
         $appState1->setName('site_url');
@@ -206,7 +206,7 @@ class ProxyRequestFactorySpec extends ObjectBehavior
         ]);
 
         $app->getManifest()->willReturn($manifest);
-        $manifest->getExternalApis()->willReturn([
+        $manifest->getDomainWhitelist()->willReturn([
             'http://my_url/api/*',
             'http://{{site_url}}/api/*',
         ]);
