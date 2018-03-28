@@ -15,18 +15,18 @@ export default class AgentFilters extends React.Component {
     filterSets:    PropTypes.object,
     filters:       PropTypes.object,
     filtersCounts: PropTypes.object,
+    labels:        PropTypes.object,
     stars:         PropTypes.object,
     starsCounts:   PropTypes.object,
-    labels:        PropTypes.array,
     onSelectMode:  PropTypes.func,
   };
 
   static defaultProps = {
     filterSets:  {},
     filters:     {},
+    labels:      {},
     stars:       {},
     starsCounts: {},
-    labels:      [],
     onSelectMode() {},
   };
 

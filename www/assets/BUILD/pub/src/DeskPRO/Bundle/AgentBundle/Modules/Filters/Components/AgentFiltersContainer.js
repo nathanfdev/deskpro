@@ -9,6 +9,7 @@ import AgentFilters from './AgentFilters';
   filterSets:    allSelectorFactory('TicketFilterSets')(state),
   filters:       allSelectorFactory('TicketFilters')(state),
   filtersCounts: allSelectorFactory('TicketFilterCounts')(state),
+  labels:        allSelectorFactory('TicketLabels')(state),
   stars:         allSelectorFactory('TicketStars')(state),
   starsCounts:   allSelectorFactory('TicketStarsCounts')(state),
 }))
@@ -17,6 +18,7 @@ export class AgentFiltersContainer extends SeparateComponent {
     filterSets:    PropTypes.object,
     filters:       PropTypes.object,
     filtersCounts: PropTypes.object,
+    labels:        PropTypes.object,
     stars:         PropTypes.object,
     starsCounts:   PropTypes.object,
   };
@@ -30,6 +32,7 @@ export class AgentFiltersContainer extends SeparateComponent {
       filterSets,
       filters,
       filtersCounts,
+      labels,
       stars,
       starsCounts,
     } = this.props;
@@ -38,9 +41,9 @@ export class AgentFiltersContainer extends SeparateComponent {
         filterSets={filterSets}
         filters={filters}
         filtersCounts={filtersCounts}
+        labels={labels}
         stars={stars}
         starsCounts={starsCounts}
-        labels={[]}
       />
     );
   }

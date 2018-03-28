@@ -88,6 +88,7 @@ export const preloadData    = createAction(
         batchComponents.ticket_filters     = { endpoint: 'ticket_filters2', query: 'mine=1' };
         batchComponents.ticket_filter_sets = { endpoint: 'ticket_filters2_sets', query: 'mine=1' };
         batchComponents.ticket_stars       = { endpoint: 'ticket_stars' };
+        batchComponents.ticket_labels      = { endpoint: 'ticket_labels' };
       }
 
       const onBatchComponentsSuccess = ({ responses }) => {
@@ -176,6 +177,7 @@ export const preloadData    = createAction(
           dispatch(setCollection('TicketFilters', 'all', data.ticket_filters));
           dispatch(setCollection('TicketFilterSets', 'all', data.ticket_filter_sets));
           dispatch(setCollection('TicketStars', 'all', data.ticket_stars));
+          dispatch(setCollection('TicketLabels', 'all', replaceIds(data.ticket_labels, 'label')));
           let counts = {};
           let i = 0;
           data.ticket_filters.forEach((filter) => {
