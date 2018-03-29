@@ -38,6 +38,7 @@
     "font-awesome": "4.4.0",
     "froala-editor": "^2.7.5",
     "history": "^3.3.0",
+    "html-entities": "^1.2.1",
     "html-to-text": "^3.3.0",
     "html5shiv": "3.7.3",
     "iframe-resizer": "^3.5.3",
