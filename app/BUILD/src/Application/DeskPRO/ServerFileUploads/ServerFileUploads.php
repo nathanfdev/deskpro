@@ -219,12 +219,19 @@ class ServerFileUploads
             case 's3':
                 $settings->setSetting('core.filestorage_method', 's3');
                 $db->executeUpdate("UPDATE blobs SET storage_loc_pref = 's3' WHERE storage_loc != 's3' AND storage_loc_specific IS NULL");
-                $settings->setSetting('core.filestorage_s3_key', $options->get('s3_key', null));
-                $settings->setSetting('core.filestorage_s3_secret', $options->get('s3_secret', null));
                 $settings->setSetting('core.filestorage_s3_bucket', $options->get('s3_bucket', null));
                 $settings->setSetting('core.filestorage_s3_region', $options->get('s3_region', null));
                 $settings->setSetting('core.filestorage_s3_endpoint', $options->get('s3_endpoint', null));
                 $settings->setSetting('core.filestorage_s3_file_url_template', $options->get('s3_file_url_template', null));
+                $credentialsSource = $options->get('s3_credentials_source', null);
+                $settings->setSetting('core.filestorage_s3_credentials_source', $credentialsSource);
+                if ($credentialsSource === 'ec2') {
+                    $settings->setSetting('core.filestorage_s3_key', null);
+                    $settings->setSetting('core.filestorage_s3_secret', null);
+                } else {
+                    $settings->setSetting('core.filestorage_s3_key', $options->get('s3_key', null));
+                    $settings->setSetting('core.filestorage_s3_secret', $options->get('s3_secret', null));
+                }
 
                 break;
         }
@@ -236,6 +243,7 @@ class ServerFileUploads
             $settings->setSetting('core.filestorage_s3_region', null);
             $settings->setSetting('core.filestorage_s3_endpoint', null);
             $settings->setSetting('core.filestorage_s3_file_url_template', null);
+            $settings->setSetting('core.filestorage_s3_credentials_source', null);
         }
 
         $settings->setSetting('core.filesystem_move_from_id', '-1');

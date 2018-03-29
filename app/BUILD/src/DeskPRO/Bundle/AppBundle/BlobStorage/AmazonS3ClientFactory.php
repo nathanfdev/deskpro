@@ -3,7 +3,9 @@
 namespace DeskPRO\Bundle\AppBundle\BlobStorage;
 
 use Application\DeskPRO\NewSettings\SettingsResolver;
+use Aws\DoctrineCacheAdapter;
 use Aws\S3\S3Client;
+use Doctrine\Common\Cache\FilesystemCache;
 
 /**
  * Class AmazonS3ClientFactory.
@@ -12,10 +14,11 @@ class AmazonS3ClientFactory
 {
     /**
      * @param SettingsResolver $settingsResolver
+     * @param string           $tmpDir           Used to cache credentials fetched from EC2 instance
      *
      * @return S3Client
      */
-    public static function create(SettingsResolver $settingsResolver)
+    public static function create(SettingsResolver $settingsResolver, $tmpDir)
     {
         if (!defined('CURLOPT_CONNECTTIMEOUT')) {
             define(CURLOPT_CONNECTTIMEOUT, 78);
@@ -36,10 +39,10 @@ class AmazonS3ClientFactory
         }
 
         $s3Config = [
-            'credentials' => [
-                'key'    => $settingsBag->get('core.filestorage_s3_key'),
-                'secret' => $settingsBag->get('core.filestorage_s3_secret'),
-            ],
+//            'credentials' => [
+//                'key'    => $settingsBag->get('core.filestorage_s3_key'),
+//                'secret' => $settingsBag->get('core.filestorage_s3_secret'),
+//            ],
             'region'          => $settingsBag->get('core.filestorage_s3_region', 'us-east-1'),
             'version'         => 'latest',
             'request.options' => [
@@ -57,6 +60,16 @@ class AmazonS3ClientFactory
                 $endpoint = 'https://'.$endpoint;
             }
             $s3Config['endpoint'] = $endpoint;
+        }
+
+        if (strtolower($settingsBag->get('core.filestorage_s3_credentials_source', '')) === 'ec2') {
+            $cacheAdapter            = new DoctrineCacheAdapter(new FilesystemCache($tmpDir));
+            $s3Config['credentials'] = $cacheAdapter;
+        } else {
+            $s3Config['credentials'] = [
+                'key'    => $settingsBag->get('core.filestorage_s3_key'),
+                'secret' => $settingsBag->get('core.filestorage_s3_secret'),
+            ];
         }
 
         return new S3Client($s3Config);
