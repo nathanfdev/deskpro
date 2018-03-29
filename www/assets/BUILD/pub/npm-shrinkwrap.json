@@ -7678,6 +7678,11 @@
       "resolved": "https://registry.npmjs.org/highlight-words-core/-/highlight-words-core-1.2.0.tgz",
       "integrity": "sha512-nu5bMsWIgpsrlXEMNKSvbJMeUPhFxCOVT28DnI8UCVfhm3e98LC8oeyMNrc7E18+QQ4l/PvbeN7ojyN4XsmBdA=="
     },
+    "highlight.js": {
+      "version": "9.12.0",
+      "resolved": "https://registry.npmjs.org/highlight.js/-/highlight.js-9.12.0.tgz",
+      "integrity": "sha1-5tnb5Xy+/mB1HwKvM2GVhwyQwB4="
+    },
     "history": {
       "version": "3.3.0",
       "resolved": "https://registry.npmjs.org/history/-/history-3.3.0.tgz",
@@ -7775,8 +7780,7 @@
     "html-entities": {
       "version": "1.2.1",
       "resolved": "https://registry.npmjs.org/html-entities/-/html-entities-1.2.1.tgz",
-      "integrity": "sha1-DfKTUfByEWNRXfueVUPl9u7VFi8=",
-      "dev": true
+      "integrity": "sha1-DfKTUfByEWNRXfueVUPl9u7VFi8="
     },
     "html-loader": {
       "version": "0.5.5",

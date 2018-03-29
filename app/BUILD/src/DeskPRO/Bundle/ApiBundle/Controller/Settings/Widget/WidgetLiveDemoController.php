@@ -9,6 +9,7 @@ use Application\DeskPRO\Entity\Person;
 use DeskPRO\Bundle\ApiBundle\ApiDoc\Annotation\ApiDoc;
 use DeskPRO\Bundle\ApiBundle\Controller\BaseController;
 use DeskPRO\Bundle\AppBundle\Annotation\ActionPermissions\Annotation\ApiModes;
+use DeskPRO\Bundle\AppBundle\Entity\Currency;
 use DeskPRO\Bundle\AppBundle\Serializer\Annotation\SerializerView;
 use DeskPRO\Bundle\AppBundle\Serializer\Model\Widget\WidgetLiveDemoState;
 use DeskPRO\Bundle\AppBundle\Serializer\Model\Widget\WidgetPeopleDemoState;
@@ -94,8 +95,9 @@ class WidgetLiveDemoController extends BaseController
         $chat->addMessage(UserChatMessages::createAgentTextMessage($chat, 'Sample answer'));
 
         $departments = $this->getRepository(Department::class)->findBy(['is_chat_enabled' => true]);
+        $currencies  = $this->getRepository(Currency::class)->findAll();
 
-        return new View($this->wrap(new WidgetLiveDemoState($people['agent'], $people['user'], $chat, $departments)));
+        return new View($this->wrap(new WidgetLiveDemoState($people['agent'], $people['user'], $chat, $departments, $currencies)));
     }
 
     /**

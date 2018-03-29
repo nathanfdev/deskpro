@@ -1,9 +1,5 @@
 <?php
 
-/**
- * DeskPRO.
- */
-
 namespace Application\DeskPRO\Searcher;
 
 use Application\DeskPRO\App;
@@ -16,11 +12,16 @@ use Orb\Util\Arrays;
 use Orb\Util\Strings;
 use Orb\Util\Util;
 
+/**
+ * Class TicketSearch.
+ */
 class TicketSearch extends SearcherAbstract
 {
     const TERM_ID                    = 'id';
+    const TERM_RANGE_ID              = 'range_id';
     const TERM_REF                   = 'ref';
     const TERM_PERSON_ID             = 'person_id';
+    const TERM_PERSON_RANGE_ID       = 'person_range_id';
     const TERM_DEPARTMENT            = 'department';
     const TERM_CATEGORY              = 'category';
     const TERM_PRODUCT               = 'product';
@@ -400,10 +401,12 @@ class TicketSearch extends SearcherAbstract
 
                 switch ($term) {
                     case self::TERM_ID:
+                    case self::TERM_RANGE_ID:
                         break;
                     case self::TERM_REF:
                         break;
                     case self::TERM_PERSON_ID:
+                    case self::TERM_PERSON_RANGE_ID:
                         break;
                     case self::TERM_ARCHIVE_SEARCH:
                         break;
@@ -1379,6 +1382,18 @@ class TicketSearch extends SearcherAbstract
                         } else {
                             $wheres[] = $this->_rangeMatch("$tickets_table.id", $op, $choice, true);
                         }
+                        break;
+                    case self::TERM_RANGE_ID:
+                        $this->enableArchiveSearch();
+                        $set_status = true;
+
+                        $choice = is_array($choice) && isset($choice['id']) ? $choice['id'] : $choice;
+                        if (!$choice) {
+                            $choice = 0;
+                        }
+
+                        $wheres[] = $this->_rangeMatch("$tickets_table.id", $op, $choice, true);
+
                         break;
 
                     case self::TERM_REF:

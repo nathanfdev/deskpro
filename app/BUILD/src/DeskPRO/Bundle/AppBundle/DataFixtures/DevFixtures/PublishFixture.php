@@ -414,7 +414,7 @@ class PublishFixture extends AbstractDpFixture implements OrderedFixtureInterfac
                     'referrer'     => '',
                     'user_agent'   => 'Dev Fixture',
                     'geo_country'  => 'GB',
-                    'meta'         => json_encode(['title' => $this->faker->words(3)]),
+                    'meta'         => json_encode(['pageTitle' => $this->faker->words(3, true)]),
                     'date_created' => date('Y-m-d H:i:s'),
                 ];
             }

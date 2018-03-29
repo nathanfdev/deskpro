@@ -91,7 +91,7 @@ $CONFIG['agent_vendors'] = [
         'vendor/select2/select2.js',
         'bower_components/moment/min/moment-with-locales.min.js',
         'bower_components/moment-timezone/builds/moment-timezone-with-data.min.js',
-        'bower_components/notify.js/notify.js',
+        'bower_components/notify.js/dist/notify.js',
         'bower_components/intl-tel-input/build/js/intlTelInput.min.js',
         'bower_components/jquery-qrcode/dist/jquery.qrcode.js',
         'vendor/eonasdan-bootstrap-datetimepicker/build/js/bootstrap-datetimepicker.min.js',

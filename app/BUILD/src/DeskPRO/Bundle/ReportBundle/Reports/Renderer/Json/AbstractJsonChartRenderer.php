@@ -82,6 +82,16 @@ abstract class AbstractJsonChartRenderer extends AbstractJsonRenderer
         $firstSel       = reset($selectColumns);
         $valueAxisTitle = $firstSel['title'];
 
+        $additionalData = [];
+        foreach ($selectColumns as $index => $selectColumn) {
+            if (strpos($selectColumn['title'], '__var') !== false) {
+                $additionalData[$selectColumn['title']] = $selectColumn;
+                //we're gonna add this column in another way, it should have same key for it and would be used for
+                // click_url option in chart
+                unset($selectColumns[$index]);
+            }
+        }
+
         if ($groupXColumns && !$metadata->hasFlag(ResultMetadata::FLAG_HIERARCHICAL)) {
             // matrix table - X() values translate to bottom axis, each row (from Y()) is a new line/stack.
             $prepared = $this->prepareMatrixTable($metadata, $rows);
@@ -155,6 +165,11 @@ abstract class AbstractJsonChartRenderer extends AbstractJsonRenderer
                         $rowData['value'.$i] = $this->filterGraphValue($this->getColumnValue($row, $column));
                     }
 
+                    // process additional data for internal chart purposes
+                    foreach ($additionalData as $key => $column) {
+                        $rowData[$key] = $this->filterGraphValue($this->getColumnValue($row, $column));
+                    }
+
                     $rowGroups[$grouper][$category] = $rowData;
                 }
 
@@ -167,7 +182,12 @@ abstract class AbstractJsonChartRenderer extends AbstractJsonRenderer
                     foreach ($values as $categoryName => $groupValues) {
                         $uniqueGraphs[$categoryName] = true;
                         foreach ($groupValues as $valueId => $value) {
-                            $data["$categoryName-$valueId"] = $value;
+                            $key = "$categoryName-$valueId";
+                            // this value is used for internal purposes, don't change key name
+                            if (strpos($valueId, '__var') !== false) {
+                                $key = $valueId;
+                            }
+                            $data[$key] = $value;
                         }
                     }
 
@@ -204,6 +224,11 @@ abstract class AbstractJsonChartRenderer extends AbstractJsonRenderer
                         $rowData['value'.$i] = $this->filterGraphValue($this->getColumnValue($row, $column));
                     }
 
+                    // process additional data for internal chart purposes
+                    foreach ($additionalData as $key => $column) {
+                        $rowData[$key] = $this->filterGraphValue($this->getColumnValue($row, $column));
+                    }
+
                     $rowGroups[$grouper][$category] = $rowData;
                 }
 
@@ -216,7 +241,13 @@ abstract class AbstractJsonChartRenderer extends AbstractJsonRenderer
                     foreach ($values as $categoryName => $groupValues) {
                         $uniqueGraphs[$categoryName] = true;
                         foreach ($groupValues as $valueId => $value) {
-                            $data["$categoryName-$valueId"] = $value;
+                            $key = "$categoryName-$valueId";
+
+                            // this value is used for internal purposes, don't change key name
+                            if (strpos($valueId, '__var') !== false) {
+                                $key = $valueId;
+                            }
+                            $data[$key] = $value;
                         }
                     }
 
@@ -254,11 +285,18 @@ abstract class AbstractJsonChartRenderer extends AbstractJsonRenderer
                     $category          = implode(' / ', $categories);
                     $maxCategoryLength = max($maxCategoryLength, strlen($category));
 
-                    $chartData[] = [
+                    $data = [
                         'category' => $category,
                         'title'    => $this->renderCellValue($row, $sel, $metadata),
                         'value'    => $this->filterGraphValue($this->getColumnValue($row, $sel)),
                     ];
+
+                    // process additional data for internal chart purposes
+                    foreach ($additionalData as $key => $column) {
+                        $data[$key] = $this->filterGraphValue($this->getColumnValue($row, $column));
+                    }
+
+                    $chartData[] = $data;
                 }
 
                 $graphs[] = [
@@ -277,18 +315,31 @@ abstract class AbstractJsonChartRenderer extends AbstractJsonRenderer
             $hasCategory = count($groupYColumns) > 0;
         }
 
-        if (static::getOutputFormat() == 'pie') {
+        if (static::getOutputFormat() === 'pie') {
             $pieData = [];
 
             if (count($graphs) > 1) {
                 foreach ($chartData as $key => $info) {
                     $data = [];
                     foreach ($graphs as $graph) {
+                        $dataToPush = [];
                         if (isset($info[$graph['value']])) {
-                            $data[] = [
-                                'category' => $graph['title'],
-                                'value'    => $info[$graph['value']],
-                            ];
+                            $dataToPush['category'] = $graph['title'];
+                            $dataToPush['value']    = $info[$graph['value']];
+                        }
+
+                        if (!empty($dataToPush)) {
+                            // additional data only for those data which contain something already
+                            foreach ($additionalData as $key => $additionalDatum) {
+                                if (isset($info[$key])) {
+                                    $dataToPush[$key] = $info[$key];
+                                }
+                            }
+                        }
+
+                        // push data only in case we have something
+                        if (!empty($dataToPush)) {
+                            $data[] = $dataToPush;
                         }
                     }
 
@@ -305,12 +356,21 @@ abstract class AbstractJsonChartRenderer extends AbstractJsonRenderer
                     foreach ($pie['data'] as $info) {
                         $sum += (int) $info['value'];
                     }
-                    $data[] = [
+
+                    $dataToPush = [
                         'category' => $pie['title'],
                         'value'    => $sum,
                         'id'       => $k,
                         'color'    => $this->randomColor(),
                     ];
+
+                    foreach ($additionalData as $key => $additionalDatum) {
+                        if (isset($pie['data'][0]) && isset($pie['data'][0]) && isset($pie['data'][0][$key])) {
+                            $dataToPush[$key] = $pie['data'][0][$key];
+                        }
+                    }
+
+                    $data[] = $dataToPush;
                 }
 
                 array_unshift($pieData, [

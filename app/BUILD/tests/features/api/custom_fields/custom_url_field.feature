@@ -79,17 +79,22 @@ Feature: Custom url field
     Then the response status code should be 400
     And the JSON node "errors.fields.fields.fields.fields_~f1~.errors[0].code" should be equal to "invalid_url"
 
-  Scenario: I check url validation
+  Scenario Outline: I check url validation
     When I send a PUT request to "/api/v2/people/{admin}" with body:
     """
 {
   "fields": {
-    "~f1~": "http:example.com"
+    "~f1~": "<url>"
   }
 }
     """
     Then the response status code should be 400
     And the JSON node "errors.fields.fields.fields.fields_~f1~.errors[0].code" should be equal to "invalid_url"
+
+    Examples:
+      | url              |
+      | http:example.com |
+      | example          |
 
   Scenario: I check required validation
     When I send a PUT request to "/api/v2/people/{admin}" with body:
@@ -102,3 +107,17 @@ Feature: Custom url field
     """
     Then the response status code should be 400
     And the JSON node "errors.fields.fields.fields.fields_~f1~.errors[0].code" should be equal to "required"
+
+  Scenario: I check the url protocol fixer
+    When I send a PUT request to "/api/v2/people/{admin}" with body:
+    """
+{
+  "fields": {
+    "~f1~": "example.com"
+  }
+}
+    """
+    Then the response status code should be 204
+
+    When I send a GET request to "/api/v2/people/{admin}"
+    Then the JSON node "data.fields.~f1~.value" should be equal to "http://example.com"

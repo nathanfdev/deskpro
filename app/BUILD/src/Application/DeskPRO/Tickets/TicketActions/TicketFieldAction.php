@@ -34,6 +34,15 @@ class TicketFieldAction extends AbstractAction implements PermissionableAction
         $this->field_manager = $field_manager;
         $this->field_def     = $field_def;
         $this->set_value     = $set_value;
+
+        // for some of actions `custom_fields` might be empty
+        // for example for unchecked checkbox
+        // fill it manually to prevent errors
+        if (!array_key_exists('custom_fields', $this->set_value)) {
+            $this->set_value['custom_fields'] = [
+                'field_'.$field_def->getId() => null,
+            ];
+        }
     }
 
     /**

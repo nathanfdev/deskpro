@@ -2233,10 +2233,13 @@ class TicketController extends AbstractController
 
                 $actions = $this->in->getCleanValueArray('actions', 'raw', 'raw');
 
-                if (count($actions) == 1 && isset($actions['department_id'])) {
-                    // Validation not on dep changes,
-                    // because changing dep could change validation options
-                    $new_department_id = $actions['department_id'];
+                if (count($actions) == 1 && (isset($actions['department_id']) || isset($actions['urgency']))) {
+                    // skip validation for realtime updates
+                    if (isset($actions['department_id'])) {
+                        // Validation not on dep changes,
+                        // because changing dep could change validation options
+                        $new_department_id = $actions['department_id'];
+                    }
                 } elseif ($ticket->status == 'hidden' && count(
                         $actions
                     ) == 2 && isset($actions['status']) && isset($actions['hidden_status'])

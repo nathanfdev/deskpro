@@ -318,6 +318,13 @@ class GetMsgScript extends LowScriptAbstract
             $data['action_alerts'] = array_values($data['action_alerts']);
             $data['notifications'] = $readNotifications ? $this->getNotifications() : [];
 
+            // Polling method
+            $defaultStrategy = $this->_getSetting('notification.settings.default_strategy');
+            if (is_string($defaultStrategy)) {
+                $defaultStrategy = unserialize($defaultStrategy);
+            }
+            $data['cm_strategy'] = isset($defaultStrategy['delivery'][0]) ? $defaultStrategy['delivery'][0] : 'db';
+
             header('Content-Type: application/json');
             echo json_encode($data);
         } catch (\Exception $exception) {
@@ -539,6 +546,9 @@ class GetMsgScript extends LowScriptAbstract
 
     protected function _getSetting($name, $default = null)
     {
+        /* @var \DpRun\DpEnv */
+        global $DP_ENV;
+
         if (!$this->_settings) {
             $this->_settings = [];
             $q               = $this->getPdoRead()->prepare('
@@ -551,7 +561,15 @@ class GetMsgScript extends LowScriptAbstract
             }
         }
 
-        return isset($this->_settings[$name]) ? $this->_settings[$name] : $default;
+        if (isset($this->_settings[$name])) {
+            return $this->_settings[$name];
+        } elseif ($DP_ENV->getConfig($name)) {
+            return $DP_ENV->getConfig($name);
+        }
+        // if not a config settings we fail over on regular settings
+        $this->_getContainer();
+
+        return App::getSetting($name, $default);
     }
 
     protected $_container;

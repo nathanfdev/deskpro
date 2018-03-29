@@ -32,16 +32,26 @@ class WidgetLiveDemoState
     private $departments;
 
     /**
+     * @var array
+     *
+     * @JMS\Type("array<DeskPRO\Bundle\AppBundle\Entity\Currency>")
+     */
+    private $currencies;
+
+    /**
      * Constructor.
      *
      * @param array            $agents
      * @param array            $users
      * @param ChatConversation $chat
+     * @param array            $departments
+     * @param array            $currencies
      */
-    public function __construct(array $agents, array $users, ChatConversation $chat, array $departments)
+    public function __construct(array $agents, array $users, ChatConversation $chat, array $departments, array $currencies)
     {
         $this->people      = new WidgetPeopleDemoState($agents, $users);
         $this->chat        = new WidgetChatDemoState($chat);
         $this->departments = $departments;
+        $this->currencies  = $currencies;
     }
 }

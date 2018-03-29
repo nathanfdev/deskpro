@@ -4507,6 +4507,13 @@ $collection->create(
     ]
 );
 
+$collection->create('api_ticket_fields_convert', [
+    'path'         => '/ticket_fields/convert/{type}',
+    'controller'   => 'LegacyApiBundle:TicketFields:convert',
+    'methods'      => ['POST'],
+    'requirements' => ['type' => 'categories|workflows|priorities|products'],
+]);
+
 //#######################################################################################################################
 // SMS Channel
 //#######################################################################################################################
