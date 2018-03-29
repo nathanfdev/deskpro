@@ -21,6 +21,9 @@ class FixUrlProtocolListener extends \Symfony\Component\Form\Extension\Core\Even
             // shared folder
             return;
         }
+        if (!preg_match('/\.+/', $data)) {
+            return;
+        }
 
         parent::onSubmit($event);
     }
