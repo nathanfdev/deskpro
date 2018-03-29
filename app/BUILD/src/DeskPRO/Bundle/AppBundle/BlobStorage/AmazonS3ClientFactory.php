@@ -39,10 +39,6 @@ class AmazonS3ClientFactory
         }
 
         $s3Config = [
-//            'credentials' => [
-//                'key'    => $settingsBag->get('core.filestorage_s3_key'),
-//                'secret' => $settingsBag->get('core.filestorage_s3_secret'),
-//            ],
             'region'          => $settingsBag->get('core.filestorage_s3_region', 'us-east-1'),
             'version'         => 'latest',
             'request.options' => [
