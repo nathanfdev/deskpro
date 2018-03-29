@@ -16,11 +16,13 @@ use DeskPRO\Bundle\AppBundle\Entity\SnippetTranslation;
 use DeskPRO\Bundle\AppBundle\Form\Error\Exception\InvalidFormException;
 use DeskPRO\Bundle\AppBundle\Form\Type\Snippets\SnippetMassActionType;
 use DeskPRO\Bundle\AppBundle\Form\Type\Snippets\SnippetType;
+use DeskPRO\Bundle\AppBundle\Notification\Event\Snippet\SnippetsUpdatedEvent;
 use DeskPRO\Bundle\AppBundle\Security\Voter\PermissionGroups\PermissionGroupContext;
 use DeskPRO\Bundle\AppBundle\Security\Voter\PermissionGroups\PermissionGroupVoter;
 use Doctrine\ORM\QueryBuilder;
 use FOS\RestBundle\Controller\Annotations as Rest;
 use FOS\RestBundle\View\View;
+use Symfony\Component\Form\FormInterface;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\ResponseHeaderBag;
 use Symfony\Component\HttpFoundation\StreamedResponse;
@@ -131,6 +133,20 @@ class SnippetsController extends CrudController
         ]);
 
         return parent::handleForm($model, $request, $options);
+    }
+
+    protected function persistModel($model, FormInterface $form = null)
+    {
+        /** @var Snippet $model */
+        $model = parent::persistModel($model);
+        $this->container
+            ->get('event_dispatcher')
+            ->dispatch(SnippetsUpdatedEvent::EVENT_NAME, new SnippetsUpdatedEvent(
+                $model,
+                'update'
+            ));
+
+        return $model;
     }
 
     /**
