@@ -222,9 +222,13 @@ DeskPRO.Agent.PageFragment.Page.NewFeedback = new Orb.Class({
 		var h = $(window).height();
 
 		var txt = this.getEl('content');
+    var contentHeight = 500;
+    if (this.getEl('linked_ticket_section').length) {
+      contentHeight += 150;
+    }
 
     window.LegacyRteTextarea.init(txt, {
-			height: Math.max(h - 500, 150)
+			height: Math.max(h - contentHeight, 150)
 		});
 
     txt.on('froalaEditor.keypress', function () {
