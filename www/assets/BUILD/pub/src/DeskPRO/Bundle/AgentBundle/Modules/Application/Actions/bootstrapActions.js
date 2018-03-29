@@ -4,6 +4,7 @@ import { api } from 'DeskPRO/Bundle/AppBundle/DAL';
 import { flattenBatchResponses, getLinkedData, replaceIds } from 'DeskPRO/Component/Util/Api';
 import { setCollection, addToCollection } from 'DeskPRO/Bundle/AppBundle/Modules/RecordsStore';
 import { setAgentSettings } from 'DeskPRO/Bundle/AgentBundle/Modules/Agent/Actions/settingsActions';
+import { setAgentInfo } from 'DeskPRO/Bundle/AgentBundle/Modules/Agent/Actions/infoActions';
 import { setupActionAlerts } from 'DeskPRO/Bundle/AgentBundle/Modules/Application/Actions/notificationActions';
 import { setImMe, loadDrafts } from 'DeskPRO/Bundle/AgentBundle/Modules/IM/Actions/messagesActions';
 import { agentsSelector } from 'DeskPRO/Bundle/AppBundle/Modules/RecordsStore/Shortcuts/agents';
@@ -48,6 +49,7 @@ export const preloadData    = createAction(
         languages:               { endpoint: 'languages', query: 'count=100' },
         user_groups:             { endpoint: 'user_groups' },
         settings:                { endpoint: 'helpdesk/agent-client/settings' },
+        info:                    { endpoint: 'helpdesk/agent-client/info' },
         me:                      { endpoint: 'me' },
         agent_teams:             { endpoint: 'agent_teams' },
         my_agent_teams:          { endpoint: 'agent_teams', query: 'my=true' },
@@ -129,6 +131,7 @@ export const preloadData    = createAction(
         });
 
         dispatch(setAgentSettings(data.settings));
+        dispatch(setAgentInfo(data.info));
         dispatch(setCollection('Person', 'me', [data.me.person]));
 
         if (window.DP_HAS_NEW_IM) {

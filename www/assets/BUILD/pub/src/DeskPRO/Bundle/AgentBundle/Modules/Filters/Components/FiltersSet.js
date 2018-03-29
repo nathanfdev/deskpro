@@ -9,13 +9,15 @@ import Filter from './Filter';
 
 export default class FiltersSet extends React.Component {
   static propTypes = {
-    filterSet:     PropTypes.object,
-    filters:       PropTypes.object,
-    filtersCounts: PropTypes.object,
-    onChange:      PropTypes.func,
-    onSelectMode:  PropTypes.func,
-    opened:        PropTypes.bool,
-    mode:          PropTypes.object,
+    filterSet:          PropTypes.object,
+    filters:            PropTypes.object,
+    filtersCounts:      PropTypes.object,
+    groupFields:        PropTypes.object,
+    ticketCustomFields: PropTypes.object,
+    onChange:           PropTypes.func,
+    onSelectMode:       PropTypes.func,
+    opened:             PropTypes.bool,
+    mode:               PropTypes.object,
   };
 
   onSelectFilter = (key) => {
@@ -36,6 +38,8 @@ export default class FiltersSet extends React.Component {
       filterSet,
       filters,
       filtersCounts,
+      groupFields,
+      ticketCustomFields,
       onChange,
       opened,
       mode,
@@ -50,6 +54,8 @@ export default class FiltersSet extends React.Component {
             key={filter.get('id')}
             filter={filter}
             filtersCounts={filtersCounts}
+            groupFields={groupFields}
+            ticketCustomFields={ticketCustomFields}
             selected={selected}
             onSelect={() => this.onSelectFilter(key)}
           />

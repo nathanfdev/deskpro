@@ -1,5 +1,6 @@
 import React from 'react';
 import PropTypes from 'prop-types';
+import { FormattedMessage } from 'react-intl';
 import classNames from 'classnames';
 import {
   Item,
@@ -37,10 +38,12 @@ class Sla extends React.Component {
 
 class TicketsForm extends React.Component {
   static propTypes = {
-    onChange:    PropTypes.func,
-    onSlaChange: PropTypes.func,
-    filter:      PropTypes.object,
-    slaValue:    PropTypes.bool,
+    onChange:           PropTypes.func,
+    onSlaChange:        PropTypes.func,
+    filter:             PropTypes.object,
+    groupFields:        PropTypes.object,
+    ticketCustomFields: PropTypes.object,
+    slaValue:           PropTypes.bool,
   };
 
   constructor(props) {
@@ -74,15 +77,25 @@ class TicketsForm extends React.Component {
       }
     };
 
-    const groups = {
-      '@none':      'None',
-      urgency:      'Urgency',
-      agent:        'Agent',
-      'agent-team': 'Agent Team'
-    };
-
     const { value } = this.state;
-    const { filter } = this.props;
+    const {
+      filter,
+      groupFields,
+      ticketCustomFields,
+    } = this.props;
+
+    const groups = {
+      '@none': 'None',
+    };
+    groupFields.forEach((group) => {
+      if (group.get('ticket_field')) {
+        groups[group.get('id')] = ticketCustomFields.find(field => field.get('id') === group.get('field_id')).get('title');
+      } else {
+        groups[group.get('id')] = <FormattedMessage id={`agent.grouping_option_${group.get('id')}`} />;
+      }
+    });
+    console.log(groupFields.toObject());
+    console.log(groups);
 
     return (
       <div>
@@ -101,7 +114,7 @@ class TicketsForm extends React.Component {
           </Checkbox>
         </div>
         <hr />
-        <Scrollbar autoHeightMax={100} style={{ height: 110 }}>
+        <Scrollbar autoHeightMax={115} style={{ height: 120 }}>
           <div style={formStyles.formGroup}>
             <label style={formStyles.label}>
               Group by field
@@ -131,10 +144,12 @@ class TicketsForm extends React.Component {
 
 export default class Filter extends React.Component {
   static propTypes = {
-    filter:        PropTypes.object,
-    filtersCounts: PropTypes.object,
-    selected:      PropTypes.bool,
-    onSelect:      PropTypes.func,
+    filter:             PropTypes.object,
+    filtersCounts:      PropTypes.object,
+    groupFields:        PropTypes.object,
+    ticketCustomFields: PropTypes.object,
+    selected:           PropTypes.bool,
+    onSelect:           PropTypes.func,
   };
 
   constructor(props) {
@@ -222,7 +237,13 @@ export default class Filter extends React.Component {
   }
 
   render() {
-    const { filter, selected, onSelect } = this.props;
+    const {
+      filter,
+      groupFields,
+      ticketCustomFields,
+      selected,
+      onSelect,
+    } = this.props;
     const render = [
       <Item
         key="item"
@@ -231,18 +252,16 @@ export default class Filter extends React.Component {
       >
         {filter.get('title')}
         {this.renderCount()}
-        {
-          filter.get('filterable') ?
-            <ItemFilter ref={(ref) => { this.filter = ref; }}>
-              <TicketsForm
-                onChange={this.handleTicketsChange}
-                onSlaChange={this.handleSlaChange}
-                filter={filter}
-                slaValue={this.state.slaValue}
-              />
-            </ItemFilter>
-            : ''
-        }
+        <ItemFilter ref={(ref) => { this.filter = ref; }}>
+          <TicketsForm
+            onChange={this.handleTicketsChange}
+            onSlaChange={this.handleSlaChange}
+            filter={filter}
+            groupFields={groupFields}
+            ticketCustomFields={ticketCustomFields}
+            slaValue={this.state.slaValue}
+          />
+        </ItemFilter>
       </Item>
     ];
     const subFilters = this.getSubFilters();

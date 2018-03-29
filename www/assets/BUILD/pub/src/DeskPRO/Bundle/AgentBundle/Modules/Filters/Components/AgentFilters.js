@@ -12,21 +12,25 @@ import Labels from './Labels';
 
 export default class AgentFilters extends React.Component {
   static propTypes = {
-    filterSets:    PropTypes.object,
-    filters:       PropTypes.object,
-    filtersCounts: PropTypes.object,
-    labels:        PropTypes.object,
-    stars:         PropTypes.object,
-    starsCounts:   PropTypes.object,
-    onSelectMode:  PropTypes.func,
+    filterSets:         PropTypes.object,
+    filters:            PropTypes.object,
+    filtersCounts:      PropTypes.object,
+    groupFields:        PropTypes.object,
+    labels:             PropTypes.object,
+    stars:              PropTypes.object,
+    starsCounts:        PropTypes.object,
+    ticketCustomFields: PropTypes.object,
+    onSelectMode:       PropTypes.func,
   };
 
   static defaultProps = {
-    filterSets:  {},
-    filters:     {},
-    labels:      {},
-    stars:       {},
-    starsCounts: {},
+    filterSets:         {},
+    filters:            {},
+    groupFields:        {},
+    labels:             {},
+    stars:              {},
+    starsCounts:        {},
+    ticketCustomFields: {},
     onSelectMode() {},
   };
 
@@ -55,9 +59,11 @@ export default class AgentFilters extends React.Component {
       filterSets,
       filters,
       filtersCounts,
+      groupFields,
+      labels,
       stars,
       starsCounts,
-      labels,
+      ticketCustomFields,
     } = this.props;
     const {
       mode
@@ -71,16 +77,19 @@ export default class AgentFilters extends React.Component {
         </Heading>
         <DrawerList>
           {filterSets.toArray().map(filterSet => (
-            <FiltersSet
-              key={filterSet.get('id')}
-              ref={(c) => { this.drawers[`filterSet${filterSet.get('id')}`] = c; }}
-              opened
-              onSelectMode={this.onSelectMode}
-              filterSet={filterSet}
-              filters={filters}
-              filtersCounts={filtersCounts}
-              mode={mode}
-            />
+
+              <FiltersSet
+                key={filterSet.get('id')}
+                ref={(c) => { this.drawers[`filterSet${filterSet.get('id')}`] = c; }}
+                opened
+                onSelectMode={this.onSelectMode}
+                filterSet={filterSet}
+                filters={filters}
+                filtersCounts={filtersCounts}
+                groupFields={groupFields}
+                mode={mode}
+                ticketCustomFields={ticketCustomFields}
+              />
             )
           )}
           <Stars
