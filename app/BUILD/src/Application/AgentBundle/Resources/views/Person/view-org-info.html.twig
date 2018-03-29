@@ -1,5 +1,6 @@
-<div class="table-content contact-list contact-list-wrapper org" data-organization-id="{{ person.organization.name }}">
+<div class="table-content contact-list contact-list-wrapper org" data-organization-id="{{ person.organization.id }}">
 	<strong>
+        {% include 'AgentBundle:Person:view-parent-org.html.twig' with { 'parent': person.organization.parent, 'with_link': true } %}
 		{% if person.organization_position %}{{ person.organization_position }}, {% endif %}
 		{% if person.organization_manager %}Manager, {% endif %}
 		{% if person.organization.id %}<a class="org_link as-popover" data-route="page:{{ path('agent_org_view', {'organization_id': person.organization.id}) }}">{{ person.organization.name }}</a>{% endif %}

@@ -22,15 +22,15 @@ class UserProfile extends React.Component {
         <div>
           {window.DP_HAS_VOICE && <StatusFormContainer />}
           <div className="voice-profile-menu">
-            <div className="voice-profile-menu-item" onClick={onClickPreferences}>
+            <div className="voice-profile-menu-item preferences" onClick={onClickPreferences}>
               <i className="fa fa-gear" />
               {agentPhrases.get('agent.chrome.link_preferences')}
             </div>
-            <div className="voice-profile-menu-item" onClick={onClickHelp}>
+            <div className="voice-profile-menu-item help" onClick={onClickHelp}>
               <i className="fa fa-question-circle" />
               {agentPhrases.get('agent.chrome.link_help')}
             </div>
-            <div className="voice-profile-menu-item" onClick={onClickLogout}>
+            <div className="voice-profile-menu-item logout" onClick={onClickLogout}>
               <i className="fa fa-reply" />
               {agentPhrases.get('agent.chrome.link_logout')}
             </div>

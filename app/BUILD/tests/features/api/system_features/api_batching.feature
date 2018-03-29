@@ -6,6 +6,7 @@ Feature: API batch requests
 
   Background:
     Given no Person records exist
+    And no CustomDefPerson records exist
     And I'm authenticated as admin
     And I have only default brand
     And only the following Department records exist:

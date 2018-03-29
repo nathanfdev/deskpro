@@ -13,7 +13,7 @@
             {% set alert_id = saved.link %}
             <span class="alert" data-alert-id="{{ alert_id }}">
                 <div class="click-to-dismiss"><i class="fa fa-times"></i></div>
-                {{ phrase('portal.account.submit-saved-form' ~ saved.dataType) }}
+                {% if saved.dataType is defined %}{{ phrase('portal.account.submit-saved-form' ~ saved.dataType) }}{% endif %}
                 <a class="alert-button" href="{{ saved.link }}">{{ phrase('portal.account.submit-saved-form-go') }}</a>
             </span>
         {% endfor %}

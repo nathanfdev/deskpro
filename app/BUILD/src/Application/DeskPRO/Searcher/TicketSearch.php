@@ -1,31 +1,5 @@
 <?php
 
-/*
- * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
- * a British company located in London, England.
- *
- * All source code and content Copyright (c) 2018, DeskPRO Ltd.
- *
- * The license agreement under which this software is released
- * can be found at https://www.deskpro.com/eula/
- *
- * By using this software, you acknowledge having read the license
- * and agree to be bound thereby.
- *
- * Please note that DeskPRO is not free software. We release the full
- * source code for our software because we trust our users to pay us for
- * the huge investment in time and energy that has gone into both creating
- * this software and supporting our customers. By providing the source code
- * we preserve our customers' ability to modify, audit and learn from our
- * work. We have been developing DeskPRO since 2001, please help us make it
- * another decade.
- *
- * Like the work you see? Think you could make it better? We are always
- * looking for great developers to join us: http://www.deskpro.com/jobs/
- *
- * ~ Thanks, Everyone at Team DeskPRO
- */
-
 /**
  * DeskPRO.
  */
@@ -36,6 +10,7 @@ use Application\DeskPRO\App;
 use Application\DeskPRO\Entity;
 use Application\DeskPRO\Entity\Ticket;
 use Application\DeskPRO\Tickets\TicketTerms;
+use DeskPRO\Bundle\AppBundle\Entity\Currency;
 use DpSys\LowError\SystemErrorHandler;
 use Orb\Util\Arrays;
 use Orb\Util\Strings;
@@ -1559,7 +1534,6 @@ class TicketSearch extends SearcherAbstract
                         $this->affected_fields[] = 'ticket.date_resolved';
                         $wheres[]                = $this->_dateMatch("$tickets_table.date_resolved", $op, $choice);
                         $wheres[]                = $this->_choiceMatch("$tickets_table.status", 'is', ['resolved']);
-                        $this->is_archive        = false;
                         break;
                     case self::TERM_DATE_ON_HOLD:
                         $this->affected_fields[] = 'ticket.date_on_hold';
@@ -2180,16 +2154,16 @@ class TicketSearch extends SearcherAbstract
                         break;
 
                     case self::TERM_TICKET_FIELD:
-                        $field_def = App::getEntityRepository('DeskPRO:CustomDefTicket')->find($term_id);
-                        if (!$field_def) {
+                        $fieldDef = App::getEntityRepository(Entity\CustomDefTicket::class)->find($term_id);
+                        if (!$fieldDef) {
                             break;
                         }
 
-                        $field = $field_def;
+                        $field = $fieldDef;
 
-                        $this->affected_fields[] = 'ticket.custom_data_ticket_'.$field_def['id'];
+                        $this->affected_fields[] = 'ticket.custom_data_ticket_'.$fieldDef['id'];
 
-                        $search_type = $field_def->getHandler()->getSearchType();
+                        $search_type = $fieldDef->getHandler()->getSearchType();
 
                         $isDate = isset($choice['date1']) || isset($choice['date1_relative']);
                         if (is_array($choice) && isset($choice['value']) && !$isDate) {
@@ -2200,6 +2174,19 @@ class TicketSearch extends SearcherAbstract
                         }
                         if (is_array($choice) && isset($choice['field_'.$field->getId()])) {
                             $choice = $choice['field_'.$field->getId()];
+                        }
+                        if ($fieldDef->isCurrencyType()) {
+                            $currencyId = $fieldDef->getOption('currency_id');
+                            if (!$currencyId) {
+                                break;
+                            }
+
+                            $currency = App::getEntityRepository(Currency::class)->find($currencyId);
+                            if (!$currency) {
+                                break;
+                            }
+
+                            $choice *= $currency->getDelimiter();
                         }
 
                         switch ($search_type) {
@@ -2266,6 +2253,8 @@ class TicketSearch extends SearcherAbstract
                                             } elseif (!empty($choice['date1_relative'])) {
                                                 $wheres[] = "$field $op ".strtotime('-'.$choice['date1_relative'].' '.$choice['date1_relative_type']);
                                             }
+                                        } elseif ($fieldDef->isCurrencyType()) {
+                                            $wheres[] = "$field $op ".$this->quoteDbValue($choice);
                                         } elseif (!is_array($choice) && strlen($choice) && 'DP_NO_SELECTION' !== $choice) {
                                             $wheres[] = "$field $op ".$this->quoteDbValue('%'.$choice.'%');
                                         }
@@ -2285,11 +2274,17 @@ class TicketSearch extends SearcherAbstract
                                             }
                                         }
                                         break;
-                                    case 'not_isset':
+                                    case self::OP_NOT_ISSET:
                                         $wheres[] = "$field IS NULL";
                                         break;
-                                    case 'isset':
+                                    case self::OP_ISSET:
                                         $wheres[] = "$field IS NOT NULL";
+                                        break;
+                                    case self::OP_EMPTY:
+                                        $wheres[] = "$field IS NULL OR $field = ''";
+                                        break;
+                                    case self::OP_NOT_EMPTY:
+                                        $wheres[] = "$field != ''";
                                         break;
                                 }
 
@@ -2309,8 +2304,8 @@ class TicketSearch extends SearcherAbstract
 
                                 if ($choice != 'DP_NO_SELECTION') {
                                     $choice = (array) $choice;
-                                    if (isset($choice["field_{$field_def->getId()}"])) {
-                                        $choice = $choice["field_{$field_def->getId()}"];
+                                    if (isset($choice["field_{$fieldDef->getId()}"])) {
+                                        $choice = $choice["field_{$fieldDef->getId()}"];
                                     }
                                     if (!is_array($choice)) {
                                         $choice = [$choice];
@@ -2319,7 +2314,7 @@ class TicketSearch extends SearcherAbstract
                                     /* @var  $children */
                                     $children_titles = array_map(function ($v) {
                                         return trim(strtolower($v));
-                                    }, $field_def->getAllChildTitles());
+                                    }, $fieldDef->getAllChildTitles());
 
                                     foreach ($choice as $c) {
                                         if (!is_scalar($c)) {
@@ -2366,7 +2361,7 @@ class TicketSearch extends SearcherAbstract
                                         if ($choice == 'DP_NO_SELECTION') {
                                             $joins[] = [
                                                 'custom_data_ticket',
-                                                "LEFT JOIN custom_data_ticket AS custom_data_ticket_$join_id ON (custom_data_ticket_$join_id.ticket_id = tickets.id AND custom_data_ticket_$join_id.root_field_id = {$field_def->id})",
+                                                "LEFT JOIN custom_data_ticket AS custom_data_ticket_$join_id ON (custom_data_ticket_$join_id.ticket_id = tickets.id AND custom_data_ticket_$join_id.root_field_id = {$fieldDef->id})",
                                             ];
                                             $wheres[] = "custom_data_ticket_$join_id.id IS NULL";
                                         } else {
@@ -2383,7 +2378,7 @@ class TicketSearch extends SearcherAbstract
                                         if ($choice == 'DP_NO_SELECTION') {
                                             $joins[] = [
                                                 'custom_data_ticket',
-                                                "LEFT JOIN custom_data_ticket AS custom_data_ticket_$join_id ON (custom_data_ticket_$join_id.ticket_id = tickets.id AND custom_data_ticket_$join_id.root_field_id = {$field_def->id})",
+                                                "LEFT JOIN custom_data_ticket AS custom_data_ticket_$join_id ON (custom_data_ticket_$join_id.ticket_id = tickets.id AND custom_data_ticket_$join_id.root_field_id = {$fieldDef->id})",
                                             ];
                                             $wheres[] = "custom_data_ticket_$join_id.id IS NOT NULL";
                                         } else {
@@ -2394,17 +2389,17 @@ class TicketSearch extends SearcherAbstract
                                             $wheres[] = "custom_data_ticket_$join_id.id IS NULL";
                                         }
                                         break;
-                                    case 'not_isset':
+                                    case self::OP_NOT_ISSET:
                                         $joins[] = [
                                             'custom_data_ticket',
-                                            "LEFT JOIN custom_data_ticket AS custom_data_ticket_$join_id ON (custom_data_ticket_$join_id.ticket_id = tickets.id AND custom_data_ticket_$join_id.root_field_id = {$field_def->id})",
+                                            "LEFT JOIN custom_data_ticket AS custom_data_ticket_$join_id ON (custom_data_ticket_$join_id.ticket_id = tickets.id AND custom_data_ticket_$join_id.root_field_id = {$fieldDef->id})",
                                         ];
                                         $wheres[] = "custom_data_ticket_$join_id.id IS NULL";
                                         break;
-                                    case 'isset':
+                                    case self::OP_ISSET:
                                         $joins[] = [
                                             'custom_data_ticket',
-                                            "LEFT JOIN custom_data_ticket AS custom_data_ticket_$join_id ON (custom_data_ticket_$join_id.ticket_id = tickets.id AND custom_data_ticket_$join_id.root_field_id = {$field_def->id})",
+                                            "LEFT JOIN custom_data_ticket AS custom_data_ticket_$join_id ON (custom_data_ticket_$join_id.ticket_id = tickets.id AND custom_data_ticket_$join_id.root_field_id = {$fieldDef->id})",
                                         ];
                                         $wheres[] = "custom_data_ticket_$join_id.id IS NOT NULL";
                                         break;

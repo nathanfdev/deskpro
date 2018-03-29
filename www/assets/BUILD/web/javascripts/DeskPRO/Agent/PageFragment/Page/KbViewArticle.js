@@ -859,7 +859,7 @@ DeskPRO.Agent.PageFragment.Page.KbViewArticle = new Orb.Class({
 		}
 	},
 
-	showEditor: function() {
+  showEditor: function() {
 
 		$('body').addClass('content-link-control-on');
 
@@ -879,29 +879,25 @@ DeskPRO.Agent.PageFragment.Page.KbViewArticle = new Orb.Class({
 			this._hasInitEd = true;
 
 			var txt = $('.edit-content-field', this.getEl('content_ed'));
-			var w = $(txt.closest('.content-tab-item')).width() - 30;
 
-			// Means the whole thign is visible at once, lets try and max out the viewport
+			var h = 425;
+			// Means the whole thing is visible at once, lets try and max out the viewport
 			if (this.wrapper.find('> .layout-content > .scrollbar.disabled')) {
-				var h = $(window).height() - 90 - txt.offset().top;
-			} else {
-				h = 425;
+				h = $(window).height() - 170 - txt.offset().top;
 			}
 
-			txt.css({ width: w, height: h });
-
-			this.rte = DP.rteTextarea(txt, {
-				setup: function(ed) {
-					ed.onKeyPress.add(function() {
-						self.editStateSaver.triggerChange();
-					});
-				}
+			this.rte = window.LegacyRteTextarea.init(txt, {
+				height: h
 			});
+
+      txt.on('froalaEditor.keypress', function () {
+        self.editStateSaver.triggerChange();
+      });
 
 			var saveBtn = this.getEl('save_btn');
 			this.acceptContentLink = new DeskPRO.Agent.PageHelper.AcceptContentLink({
 				page: this,
-				rte: txt,
+				rte: this.rte,
 				isReadyCallback: function() {
 					return saveBtn.is(':visible');
 				}
@@ -1017,7 +1013,7 @@ DeskPRO.Agent.PageFragment.Page.KbViewArticle = new Orb.Class({
 		});
 
 		transGroup.find('textarea').each(function() {
-			var rte = DP.rteTextarea($(this));
+			var rte = window.LegacyRteTextarea.init($(this));
 			$(this).data('rte', rte);
 		});
 
@@ -1030,7 +1026,7 @@ DeskPRO.Agent.PageFragment.Page.KbViewArticle = new Orb.Class({
 			var defaultContentInput = self.wrapper.find('.article-editor-wrap').find('.edit-content-field-default');
 
 			titleInput.val(defaultTitleInput.val());
-			contentInput.tinymce().setContent(defaultContentInput.val());
+			contentInput.froalaEditor().setContent(defaultContentInput.val());
 		});
 
 		transGroup.find('.save-trigger').on('click', function() {

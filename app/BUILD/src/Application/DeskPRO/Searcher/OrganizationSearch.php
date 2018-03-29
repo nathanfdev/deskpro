@@ -1,31 +1,5 @@
 <?php
 
-/*
- * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
- * a British company located in London, England.
- *
- * All source code and content Copyright (c) 2017, DeskPRO Ltd.
- *
- * The license agreement under which this software is released
- * can be found at https://www.deskpro.com/eula/
- *
- * By using this software, you acknowledge having read the license
- * and agree to be bound thereby.
- *
- * Please note that DeskPRO is not free software. We release the full
- * source code for our software because we trust our users to pay us for
- * the huge investment in time and energy that has gone into both creating
- * this software and supporting our customers. By providing the source code
- * we preserve our customers' ability to modify, audit and learn from our
- * work. We have been developing DeskPRO since 2001, please help us make it
- * another decade.
- *
- * Like the work you see? Think you could make it better? We are always
- * looking for great developers to join us: http://www.deskpro.com/jobs/
- *
- * ~ Thanks, Everyone at Team DeskPRO
- */
-
 /**
  * DeskPRO.
  */
@@ -516,11 +490,17 @@ class OrganizationSearch extends SearcherAbstract
                                             }
                                         }
                                         break;
-                                    case 'not_isset':
+                                    case self::OP_NOT_ISSET:
                                         $wheres[] = "$field IS NULL";
                                         break;
-                                    case 'isset':
+                                    case self::OP_ISSET:
                                         $wheres[] = "$field IS NOT NULL";
+                                        break;
+                                    case self::OP_EMPTY:
+                                        $wheres[] = "$field IS NULL OR $field = ''";
+                                        break;
+                                    case self::OP_NOT_EMPTY:
+                                        $wheres[] = "$field != ''";
                                         break;
                                 }
                                 break;
@@ -582,14 +562,14 @@ class OrganizationSearch extends SearcherAbstract
                                             $wheres[] = "custom_data_organizations_$join_id.id IS NULL";
                                         }
                                         break;
-                                    case 'not_isset':
+                                    case self::OP_NOT_ISSET:
                                         $joins[] = [
                                             'custom_data_organizations',
                                             "LEFT JOIN custom_data_organizations AS custom_data_organizations_$join_id ON (custom_data_organizations_$join_id.organization_id = organizations.id AND custom_data_organizations_$join_id.root_field_id = {$field_def->id})",
                                         ];
                                         $wheres[] = "custom_data_organizations_$join_id.id IS NULL";
                                         break;
-                                    case 'isset':
+                                    case self::OP_ISSET:
                                         $joins[] = [
                                             'custom_data_organizations',
                                             "LEFT JOIN custom_data_organizations AS custom_data_organizations_$join_id ON (custom_data_organizations_$join_id.organization_id = organizations.id AND custom_data_organizations_$join_id.root_field_id = {$field_def->id})",

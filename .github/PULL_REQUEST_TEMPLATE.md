@@ -17,7 +17,7 @@
 - [ ] I have rebased my code on the latest `develop` branch.
 - [ ] My API code has inline documentation and appropriate modes/tags.
 - [ ] I have included a build script for any changes to models.
-    - [ ] I have checked that my build script implements the appropriate interface
+- [ ] I have checked that my build script implements the appropriate interface
 
 # Notes
 

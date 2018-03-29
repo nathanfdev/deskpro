@@ -1,35 +1,5 @@
 <?php
 
-/*
- * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
- * a British company located in London, England.
- *
- * All source code and content Copyright (c) 2018, DeskPRO Ltd.
- *
- * The license agreement under which this software is released
- * can be found at https://www.deskpro.com/eula/
- *
- * By using this software, you acknowledge having read the license
- * and agree to be bound thereby.
- *
- * Please note that DeskPRO is not free software. We release the full
- * source code for our software because we trust our users to pay us for
- * the huge investment in time and energy that has gone into both creating
- * this software and supporting our customers. By providing the source code
- * we preserve our customers' ability to modify, audit and learn from our
- * work. We have been developing DeskPRO since 2001, please help us make it
- * another decade.
- *
- * Like the work you see? Think you could make it better? We are always
- * looking for great developers to join us: http://www.deskpro.com/jobs/
- *
- * ~ Thanks, Everyone at Team DeskPRO
- */
-
-/**
- * DeskPRO.
- */
-
 namespace Application\DeskPRO\CustomFields\Handler;
 
 use Application\DeskPRO\App;
@@ -78,14 +48,15 @@ class Choice extends HandlerAbstract
     }
 
     /**
-     * @param null  $data
-     * @param array $templateVars
-     *
-     * @return string
+     * {@inheritdoc}
      */
     public function renderHtml($data = null, array $templateVars = [])
     {
         if ($data === null) {
+            if ($this->field_def->isRadio() && $this->field_def->getOption('none_choice')) {
+                return $this->field_def->getOption('none_choice_title') ?: 'None';
+            }
+
             return '';
         }
 
@@ -95,14 +66,15 @@ class Choice extends HandlerAbstract
     }
 
     /**
-     * @param array|null $data
-     * @param array      $templateVars
-     *
-     * @return string
+     * {@inheritdoc}
      */
     public function renderText($data = null, array $templateVars = [])
     {
         if ($data === null) {
+            if ($this->field_def->isRadio() && $this->field_def->getOption('none_choice')) {
+                return $this->field_def->getOption('none_choice_title') ?: 'None';
+            }
+
             return '';
         }
 
@@ -143,10 +115,7 @@ class Choice extends HandlerAbstract
     }
 
     /**
-     * @param null $data
-     * @param bool $availableOnly
-     *
-     * @return \Symfony\Component\Form\FormBuilderInterface
+     * {@inheritdoc}
      */
     public function getFormField($data = null, $availableOnly = false)
     {
@@ -286,6 +255,11 @@ class Choice extends HandlerAbstract
             $emptyVal = '';
         }
 
+        // empty value for radio checkboxes
+        if ($this->field_def->isRadio() && $this->field_def->getOption('none_choice')) {
+            $emptyVal = $this->field_def->getOption('none_choice_title') ?: 'None';
+        }
+
         $fieldOpts = [
             'choices' => $choices,
             // no required for radios because it adds required="required" to HTML,
@@ -330,9 +304,7 @@ class Choice extends HandlerAbstract
     }
 
     /**
-     * @param array $formData
-     *
-     * @return array
+     * {@inheritdoc}
      */
     public function getDataFromForm(array $formData)
     {
@@ -359,11 +331,7 @@ class Choice extends HandlerAbstract
     }
 
     /**
-     * @param array  $formData
-     * @param string $context
-     * @param null   $contextData
-     *
-     * @return array
+     * {@inheritdoc}
      */
     public function validateFormData(array $formData, $context = self::CONTEXT_USER, $contextData = null)
     {
@@ -444,10 +412,7 @@ class Choice extends HandlerAbstract
     }
 
     /**
-     * @param       $formView
-     * @param array $templateVars
-     *
-     * @return string
+     * {@inheritdoc}
      */
     public function renderFormHtml($formView, array $templateVars = [])
     {
@@ -469,7 +434,7 @@ class Choice extends HandlerAbstract
     }
 
     /**
-     * @return array
+     * {@inheritdoc}
      */
     public function getSearchCapabilities()
     {
@@ -477,7 +442,7 @@ class Choice extends HandlerAbstract
     }
 
     /**
-     * @return array
+     * {@inheritdoc}
      */
     public function getFilterCapabilities()
     {
@@ -485,7 +450,7 @@ class Choice extends HandlerAbstract
     }
 
     /**
-     * @return string
+     * {@inheritdoc}
      */
     public function getSearchType()
     {

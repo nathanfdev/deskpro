@@ -90,6 +90,18 @@ define ['moment', 'DeskPRO/Util/Util'], (moment, Util) ->
         datalist: {
           usersource_id: '0',
           field_name: ''
+        },
+        url: {
+          allow_file:               false
+          user_validation:          '0'
+          agent_validation:         '0'
+          agent_validation_resolve: false
+        },
+        currency: {
+          currency_id:              null
+          user_validation:          '0'
+          agent_validation:         '0'
+          agent_validation_resolve: false
         }
       }
 
@@ -162,6 +174,10 @@ define ['moment', 'DeskPRO/Util/Util'], (moment, Util) ->
 
             if fieldModel.choices and fieldModel.choices.length
               formTypeOpts.options = fieldModel.choices
+            if formTypeOpts.field_type == 'radio'
+              formTypeOpts.none_choice = !!fieldModel.options.none_choice
+              if fieldModel.options.none_choice
+                formTypeOpts.none_choice_title = fieldModel.options.none_choice_title
 
             formTypeOpts.default_value = fieldModel.default_value
 
@@ -217,6 +233,26 @@ define ['moment', 'DeskPRO/Util/Util'], (moment, Util) ->
           when "data", "datajson", "datalist"
             formTypeOpts.usersource_id = (parseInt(fieldModel.options.usersource_id || '0') || 0) + ""
             formTypeOpts.field_name    = fieldModel.options.field_name || ''
+
+          when "url"
+            formTypeOpts.allow_file = !!fieldModel.options.allow_file
+
+            if fieldModel.options.required
+              formTypeOpts.user_validation = 'required'
+            if fieldModel.options.agent_required
+              formTypeOpts.agent_validation = 'required'
+              if fieldModel.options.agent_validation_resolve
+                formTypeOpts.agent_validation_resolve = true
+
+          when "currency"
+            formTypeOpts.currency_id = fieldModel.options.currency_id
+
+            if fieldModel.options.required
+              formTypeOpts.user_validation = 'required'
+            if fieldModel.options.agent_required
+              formTypeOpts.agent_validation = 'required'
+              if fieldModel.options.agent_validation_resolve
+                formTypeOpts.agent_validation_resolve = true
 
       if fieldModel.options.agent_validation_resolve
         formTypeOpts.agent_validation_resolve = true
@@ -289,6 +325,11 @@ define ['moment', 'DeskPRO/Util/Util'], (moment, Util) ->
             postData.agent_validation_type = 'required'
             postData.agent_min_length = 1
 
+          if formTypeOpts.field_type == 'radio'
+            postData.none_choice = formTypeOpts.none_choice
+            if formTypeOpts.none_choice
+              postData.none_choice_title = formTypeOpts.none_choice_title
+
         when "toggle"
           postData.handler_class = 'Application\\DeskPRO\\CustomFields\\Handler\\Toggle'
           postData.default_value = formTypeOpts.default_value
@@ -353,6 +394,24 @@ define ['moment', 'DeskPRO/Util/Util'], (moment, Util) ->
           postData.handler_class = 'Application\\DeskPRO\\CustomFields\\Handler\\Data'
           postData.usersource_id = parseInt(formTypeOpts.usersource_id) || 0
           postData.field_name    = formTypeOpts.field_name
+
+        when "url"
+          postData.handler_class = 'Application\\DeskPRO\\CustomFields\\Handler\\Url'
+          postData.allow_file    = formTypeOpts.allow_file
+
+          if formTypeOpts.user_validation == 'required'
+            postData.required = true
+          if formTypeOpts.agent_validation == 'required'
+            postData.agent_required = true
+
+        when "currency"
+          postData.handler_class = 'Application\\DeskPRO\\CustomFields\\Handler\\Currency'
+          postData.currency_id = formTypeOpts.currency_id
+
+          if formTypeOpts.user_validation == 'required'
+            postData.required = true
+          if formTypeOpts.agent_validation == 'required'
+            postData.agent_required = true
 
       if formTypeOpts.agent_validation_resolve
         postData.agent_validation_resolve = true

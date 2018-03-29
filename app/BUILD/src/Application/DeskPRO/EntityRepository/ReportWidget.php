@@ -1,31 +1,5 @@
 <?php
 
-/*
- * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
- * a British company located in London, England.
- *
- * All source code and content Copyright (c) 2018, DeskPRO Ltd.
- *
- * The license agreement under which this software is released
- * can be found at https://www.deskpro.com/eula/
- *
- * By using this software, you acknowledge having read the license
- * and agree to be bound thereby.
- *
- * Please note that DeskPRO is not free software. We release the full
- * source code for our software because we trust our users to pay us for
- * the huge investment in time and energy that has gone into both creating
- * this software and supporting our customers. By providing the source code
- * we preserve our customers' ability to modify, audit and learn from our
- * work. We have been developing DeskPRO since 2001, please help us make it
- * another decade.
- *
- * Like the work you see? Think you could make it better? We are always
- * looking for great developers to join us: http://www.deskpro.com/jobs/
- *
- * ~ Thanks, Everyone at Team DeskPRO
- */
-
 /**
  * DeskPRO.
  *
@@ -195,95 +169,95 @@ class ReportWidget extends AbstractEntityRepository
                     'user_replies'  => ['number of user replies', 'DPQL_ALIAS(%s.count_user_replies, \'User Replies\')'],
                     'replies'       => ['number of replies', 'DPQL_ALIAS(%1$s.count_user_replies + %1$s.count_agent_replies, \'Total Replies\')'],
                     // todo: ticket rating
-                    'hour_created'                            => ['hour created', 'DPQL_ALIAS(DPQL_HOUR(%s.date_created), \'Hour Created\')'],
-                    'day_week_created'                        => ['day of week created', 'DPQL_ALIAS(DPQL_DAYNAME(%s.date_created), \'Day of Week Created\')'],
-                    'day_month_created'                       => ['day of month created', 'DPQL_ALIAS(DPQL_DAYOFMONTH(%s.date_created), \'Day of Month Created\')'],
-                    'month_created'                           => ['month created', 'DPQL_ALIAS(DPQL_MONTHNAME(%s.date_created), \'Month Created\')'],
-                    'year_created'                            => ['year created', 'DPQL_ALIAS(DPQL_YEAR(%s.date_created), \'Year Created\')'],
-                    'date_created'                            => ['date created', 'DPQL_ALIAS(DPQL_DATE(%s.date_created), \'Date Created\')'],
-                    'hour_resolved'                           => ['hour created', 'DPQL_ALIAS(DPQL_HOUR(%s.date_created), \'Hour Created\')'],
-                    'day_week_resolved'                       => ['day of week resolved', 'DPQL_ALIAS(DPQL_DAYNAME(%s.date_resolved), \'Day of Week Resolved\')'],
-                    'day_month_resolved'                      => ['day of month resolved', 'DPQL_ALIAS(DPQL_DAYOFMONTH(%s.date_resolved), \'Day of Month Resolved\')'],
-                    'month_resolved'                          => ['month resolved', 'DPQL_ALIAS(DPQL_MONTHNAME(%s.date_resolved), \'Month Resolved\')'],
-                    'year_resolved'                           => ['year resolved', 'DPQL_ALIAS(DPQL_YEAR(%s.date_resolved), \'Year Resolved\')'],
-                    'date_resolved'                           => ['date resolved', 'DPQL_ALIAS(DPQL_DATE(%s.date_resolved), \'Date Resolved\')'],
+                    'hour_created'                                   => ['hour created', 'DPQL_ALIAS(DPQL_HOUR(%s.date_created), \'Hour Created\')'],
+                    'day_week_created'                               => ['day of week created', 'DPQL_ALIAS(DPQL_DAYNAME(%s.date_created), \'Day of Week Created\')'],
+                    'day_month_created'                              => ['day of month created', 'DPQL_ALIAS(DPQL_DAYOFMONTH(%s.date_created), \'Day of Month Created\')'],
+                    'month_created'                                  => ['month created', 'DPQL_ALIAS(DPQL_MONTHNAME(%s.date_created), \'Month Created\')'],
+                    'year_created'                                   => ['year created', 'DPQL_ALIAS(DPQL_YEAR(%s.date_created), \'Year Created\')'],
+                    'date_created'                                   => ['date created', 'DPQL_ALIAS(DPQL_DATE(%s.date_created), \'Date Created\')'],
+                    'hour_resolved'                                  => ['hour created', 'DPQL_ALIAS(DPQL_HOUR(%s.date_created), \'Hour Created\')'],
+                    'day_week_resolved'                              => ['day of week resolved', 'DPQL_ALIAS(DPQL_DAYNAME(%s.date_resolved), \'Day of Week Resolved\')'],
+                    'day_month_resolved'                             => ['day of month resolved', 'DPQL_ALIAS(DPQL_DAYOFMONTH(%s.date_resolved), \'Day of Month Resolved\')'],
+                    'month_resolved'                                 => ['month resolved', 'DPQL_ALIAS(DPQL_MONTHNAME(%s.date_resolved), \'Month Resolved\')'],
+                    'year_resolved'                                  => ['year resolved', 'DPQL_ALIAS(DPQL_YEAR(%s.date_resolved), \'Year Resolved\')'],
+                    'date_resolved'                                  => ['date resolved', 'DPQL_ALIAS(DPQL_DATE(%s.date_resolved), \'Date Resolved\')'],
                     DashboardWidgetManager::WIDGET_VALUE_FROM_REPORT => ['value from report', DashboardWidgetManager::WIDGET_VALUE_FROM_REPORT],
                 ],
                 'chats' => [
-                    'department'                              => ['department', '%s.department'],
-                    'agent'                                   => ['agent', '%s.agent'],
-                    'agent_team'                              => ['agent team', '%s.agent_team'],
-                    'person'                                  => ['person', '%s.person'],
-                    'hour_created'                            => ['hour created', 'DPQL_ALIAS(DPQL_HOUR(%s.date_created), \'Hour Created\')'],
-                    'day_week_created'                        => ['day of week created', 'DPQL_ALIAS(DPQL_DAYNAME(%s.date_created), \'Day of Week Created\')'],
-                    'day_month_created'                       => ['day of month created', 'DPQL_ALIAS(DPQL_DAYOFMONTH(%s.date_created), \'Day of Month Created\')'],
-                    'month_created'                           => ['month created', 'DPQL_ALIAS(DPQL_MONTHNAME(%s.date_created), \'Month Created\')'],
-                    'year_created'                            => ['year created', 'DPQL_ALIAS(DPQL_YEAR(%s.date_created), \'Year Created\')'],
-                    'date_created'                            => ['date created', 'DPQL_ALIAS(DPQL_DATE(%s.date_created), \'Date Created\')'],
-                    'none'                                    => ['nothing', 'NULL'],
+                    'department'                                     => ['department', '%s.department'],
+                    'agent'                                          => ['agent', '%s.agent'],
+                    'agent_team'                                     => ['agent team', '%s.agent_team'],
+                    'person'                                         => ['person', '%s.person'],
+                    'hour_created'                                   => ['hour created', 'DPQL_ALIAS(DPQL_HOUR(%s.date_created), \'Hour Created\')'],
+                    'day_week_created'                               => ['day of week created', 'DPQL_ALIAS(DPQL_DAYNAME(%s.date_created), \'Day of Week Created\')'],
+                    'day_month_created'                              => ['day of month created', 'DPQL_ALIAS(DPQL_DAYOFMONTH(%s.date_created), \'Day of Month Created\')'],
+                    'month_created'                                  => ['month created', 'DPQL_ALIAS(DPQL_MONTHNAME(%s.date_created), \'Month Created\')'],
+                    'year_created'                                   => ['year created', 'DPQL_ALIAS(DPQL_YEAR(%s.date_created), \'Year Created\')'],
+                    'date_created'                                   => ['date created', 'DPQL_ALIAS(DPQL_DATE(%s.date_created), \'Date Created\')'],
+                    'none'                                           => ['nothing', 'NULL'],
                     DashboardWidgetManager::WIDGET_VALUE_FROM_REPORT => ['value from report', DashboardWidgetManager::WIDGET_VALUE_FROM_REPORT],
                 ],
                 'articles' => [
-                    'person'                                  => ['person', '%s.person'],
-                    'hour_created'                            => ['hour created', 'DPQL_ALIAS(DPQL_HOUR(%s.date_created), \'Hour Created\')'],
-                    'day_week_created'                        => ['day of week created', 'DPQL_ALIAS(DPQL_DAYNAME(%s.date_created), \'Day of Week Created\')'],
-                    'day_month_created'                       => ['day of month created', 'DPQL_ALIAS(DPQL_DAYOFMONTH(%s.date_created), \'Day of Month Created\')'],
-                    'month_created'                           => ['month created', 'DPQL_ALIAS(DPQL_MONTHNAME(%s.date_created), \'Month Created\')'],
-                    'year_created'                            => ['year created', 'DPQL_ALIAS(DPQL_YEAR(%s.date_created), \'Year Created\')'],
-                    'date_created'                            => ['date created', 'DPQL_ALIAS(DPQL_DATE(%s.date_created), \'Date Created\')'],
-                    'none'                                    => ['nothing', 'NULL'],
+                    'person'                                         => ['person', '%s.person'],
+                    'hour_created'                                   => ['hour created', 'DPQL_ALIAS(DPQL_HOUR(%s.date_created), \'Hour Created\')'],
+                    'day_week_created'                               => ['day of week created', 'DPQL_ALIAS(DPQL_DAYNAME(%s.date_created), \'Day of Week Created\')'],
+                    'day_month_created'                              => ['day of month created', 'DPQL_ALIAS(DPQL_DAYOFMONTH(%s.date_created), \'Day of Month Created\')'],
+                    'month_created'                                  => ['month created', 'DPQL_ALIAS(DPQL_MONTHNAME(%s.date_created), \'Month Created\')'],
+                    'year_created'                                   => ['year created', 'DPQL_ALIAS(DPQL_YEAR(%s.date_created), \'Year Created\')'],
+                    'date_created'                                   => ['date created', 'DPQL_ALIAS(DPQL_DATE(%s.date_created), \'Date Created\')'],
+                    'none'                                           => ['nothing', 'NULL'],
                     DashboardWidgetManager::WIDGET_VALUE_FROM_REPORT => ['value from report', DashboardWidgetManager::WIDGET_VALUE_FROM_REPORT],
                 ],
                 'article_comments' => [
-                    'hour_created'                            => ['hour created', 'DPQL_ALIAS(DPQL_HOUR(%s.date_created), \'Hour Created\')'],
-                    'day_week_created'                        => ['day of week created', 'DPQL_ALIAS(DPQL_DAYNAME(%s.date_created), \'Day of Week Created\')'],
-                    'day_month_created'                       => ['day of month created', 'DPQL_ALIAS(DPQL_DAYOFMONTH(%s.date_created), \'Day of Month Created\')'],
-                    'month_created'                           => ['month created', 'DPQL_ALIAS(DPQL_MONTHNAME(%s.date_created), \'Month Created\')'],
-                    'year_created'                            => ['year created', 'DPQL_ALIAS(DPQL_YEAR(%s.date_created), \'Year Created\')'],
-                    'date_created'                            => ['date created', 'DPQL_ALIAS(DPQL_DATE(%s.date_created), \'Date Created\')'],
-                    'none'                                    => ['nothing', 'NULL'],
+                    'hour_created'                                   => ['hour created', 'DPQL_ALIAS(DPQL_HOUR(%s.date_created), \'Hour Created\')'],
+                    'day_week_created'                               => ['day of week created', 'DPQL_ALIAS(DPQL_DAYNAME(%s.date_created), \'Day of Week Created\')'],
+                    'day_month_created'                              => ['day of month created', 'DPQL_ALIAS(DPQL_DAYOFMONTH(%s.date_created), \'Day of Month Created\')'],
+                    'month_created'                                  => ['month created', 'DPQL_ALIAS(DPQL_MONTHNAME(%s.date_created), \'Month Created\')'],
+                    'year_created'                                   => ['year created', 'DPQL_ALIAS(DPQL_YEAR(%s.date_created), \'Year Created\')'],
+                    'date_created'                                   => ['date created', 'DPQL_ALIAS(DPQL_DATE(%s.date_created), \'Date Created\')'],
+                    'none'                                           => ['nothing', 'NULL'],
                     DashboardWidgetManager::WIDGET_VALUE_FROM_REPORT => ['value from report', DashboardWidgetManager::WIDGET_VALUE_FROM_REPORT],
                 ],
                 'feedback' => [
-                    'type'                                    => ['type', 'DPQL_ALIAS(%s.category, \'Type\')'],
-                    'status'                                  => ['status', 'DPQL_ALIAS(%s.status_category, \'Status\')'],
-                    'category'                                => ['category', 'DPQL_ALIAS(%s.custom_data[1], \'category\')'],
-                    'person'                                  => ['person', '%s.person'],
-                    'hour_created'                            => ['hour created', 'DPQL_ALIAS(DPQL_HOUR(%s.date_created), \'Hour Created\')'],
-                    'day_week_created'                        => ['day of week created', 'DPQL_ALIAS(DPQL_DAYNAME(%s.date_created), \'Day of Week Created\')'],
-                    'day_month_created'                       => ['day of month created', 'DPQL_ALIAS(DPQL_DAYOFMONTH(%s.date_created), \'Day of Month Created\')'],
-                    'month_created'                           => ['month created', 'DPQL_ALIAS(DPQL_MONTHNAME(%s.date_created), \'Month Created\')'],
-                    'year_created'                            => ['year created', 'DPQL_ALIAS(DPQL_YEAR(%s.date_created), \'Year Created\')'],
-                    'date_created'                            => ['date created', 'DPQL_ALIAS(DPQL_DATE(%s.date_created), \'Date Created\')'],
-                    'none'                                    => ['nothing', 'NULL'],
+                    'type'                                           => ['type', 'DPQL_ALIAS(%s.category, \'Type\')'],
+                    'status'                                         => ['status', 'DPQL_ALIAS(%s.status_category, \'Status\')'],
+                    'category'                                       => ['category', 'DPQL_ALIAS(%s.custom_data[1], \'category\')'],
+                    'person'                                         => ['person', '%s.person'],
+                    'hour_created'                                   => ['hour created', 'DPQL_ALIAS(DPQL_HOUR(%s.date_created), \'Hour Created\')'],
+                    'day_week_created'                               => ['day of week created', 'DPQL_ALIAS(DPQL_DAYNAME(%s.date_created), \'Day of Week Created\')'],
+                    'day_month_created'                              => ['day of month created', 'DPQL_ALIAS(DPQL_DAYOFMONTH(%s.date_created), \'Day of Month Created\')'],
+                    'month_created'                                  => ['month created', 'DPQL_ALIAS(DPQL_MONTHNAME(%s.date_created), \'Month Created\')'],
+                    'year_created'                                   => ['year created', 'DPQL_ALIAS(DPQL_YEAR(%s.date_created), \'Year Created\')'],
+                    'date_created'                                   => ['date created', 'DPQL_ALIAS(DPQL_DATE(%s.date_created), \'Date Created\')'],
+                    'none'                                           => ['nothing', 'NULL'],
                     DashboardWidgetManager::WIDGET_VALUE_FROM_REPORT => ['value from report', DashboardWidgetManager::WIDGET_VALUE_FROM_REPORT],
                 ],
                 'feedback_comments' => [
-                    'hour_created'                            => ['hour created', 'DPQL_ALIAS(DPQL_HOUR(%s.date_created), \'Hour Created\')'],
-                    'day_week_created'                        => ['day of week created', 'DPQL_ALIAS(DPQL_DAYNAME(%s.date_created), \'Day of Week Created\')'],
-                    'day_month_created'                       => ['day of month created', 'DPQL_ALIAS(DPQL_DAYOFMONTH(%s.date_created), \'Day of Month Created\')'],
-                    'month_created'                           => ['month created', 'DPQL_ALIAS(DPQL_MONTHNAME(%s.date_created), \'Month Created\')'],
-                    'year_created'                            => ['year created', 'DPQL_ALIAS(DPQL_YEAR(%s.date_created), \'Year Created\')'],
-                    'date_created'                            => ['date created', 'DPQL_ALIAS(DPQL_DATE(%s.date_created), \'Date Created\')'],
-                    'none'                                    => ['nothing', 'NULL'],
+                    'hour_created'                                   => ['hour created', 'DPQL_ALIAS(DPQL_HOUR(%s.date_created), \'Hour Created\')'],
+                    'day_week_created'                               => ['day of week created', 'DPQL_ALIAS(DPQL_DAYNAME(%s.date_created), \'Day of Week Created\')'],
+                    'day_month_created'                              => ['day of month created', 'DPQL_ALIAS(DPQL_DAYOFMONTH(%s.date_created), \'Day of Month Created\')'],
+                    'month_created'                                  => ['month created', 'DPQL_ALIAS(DPQL_MONTHNAME(%s.date_created), \'Month Created\')'],
+                    'year_created'                                   => ['year created', 'DPQL_ALIAS(DPQL_YEAR(%s.date_created), \'Year Created\')'],
+                    'date_created'                                   => ['date created', 'DPQL_ALIAS(DPQL_DATE(%s.date_created), \'Date Created\')'],
+                    'none'                                           => ['nothing', 'NULL'],
                     DashboardWidgetManager::WIDGET_VALUE_FROM_REPORT => ['value from report', DashboardWidgetManager::WIDGET_VALUE_FROM_REPORT],
                 ],
             ],
             'dates' => [
-                'today'                                   => ['today', '%TODAY%'],
-                'yesterday'                               => ['yesterday', '%YESTERDAY%'],
-                'this_week'                               => ['this week', '%THIS_WEEK%'],
-                'this_month'                              => ['this month', '%THIS_MONTH%'],
-                'this_year'                               => ['this year', '%THIS_DPQL_YEAR%'],
-                'last_week'                               => ['last week', '%LAST_WEEK%'],
-                'last_month'                              => ['last month', '%LAST_MONTH%'],
-                'last_year'                               => ['last year', '%LAST_DPQL_YEAR%'],
-                'past_24_hours'                           => ['in the past 24 hours', '%PAST_24_HOURS%'],
-                'past_12_hours'                           => ['in the past 12 hours', '%PAST_12_HOURS%'],
-                'past_hour'                               => ['in the past hour', '%PAST_DPQL_HOUR%'],
-                'past_7_days'                             => ['in the past 7 days', '%PAST_7_DAYS%'],
-                'past_30_days'                            => ['in the past 30 days', '%PAST_30_DAYS%'],
-                'ever'                                    => ['any time', '%EVER%'],
+                'today'                                          => ['today', '%TODAY%'],
+                'yesterday'                                      => ['yesterday', '%YESTERDAY%'],
+                'this_week'                                      => ['this week', '%THIS_WEEK%'],
+                'this_month'                                     => ['this month', '%THIS_MONTH%'],
+                'this_year'                                      => ['this year', '%THIS_DPQL_YEAR%'],
+                'last_week'                                      => ['last week', '%LAST_WEEK%'],
+                'last_month'                                     => ['last month', '%LAST_MONTH%'],
+                'last_year'                                      => ['last year', '%LAST_DPQL_YEAR%'],
+                'past_24_hours'                                  => ['in the past 24 hours', '%PAST_24_HOURS%'],
+                'past_12_hours'                                  => ['in the past 12 hours', '%PAST_12_HOURS%'],
+                'past_hour'                                      => ['in the past hour', '%PAST_DPQL_HOUR%'],
+                'past_7_days'                                    => ['in the past 7 days', '%PAST_7_DAYS%'],
+                'past_30_days'                                   => ['in the past 30 days', '%PAST_30_DAYS%'],
+                'ever'                                           => ['any time', '%EVER%'],
                 DashboardWidgetManager::WIDGET_VALUE_FROM_REPORT => ['value from report', DashboardWidgetManager::WIDGET_VALUE_FROM_REPORT],
             ],
             'statuses' => [
@@ -321,6 +295,11 @@ class ReportWidget extends AbstractEntityRepository
             $return['fields']['tickets']['ticketfield'.$field->id] = [
                 $field->title, 'DPQL_ALIAS(%s.custom_data['.$field->id.'], \''.$escaped.'\')',
             ];
+            foreach ($field->getAliases() as $a) {
+                $return['fields']['tickets']['ticketfield_'.$a->getQualifiedName()] = [
+                    $field->title, 'DPQL_ALIAS(%s.custom_data['.$field->id.'], \''.$escaped.'\')',
+                ];
+            }
         }
 
         /** @var CustomDefPersonRepository $customDefPersonRepository */

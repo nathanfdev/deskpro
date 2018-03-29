@@ -1,31 +1,5 @@
 <?php
 
-/*
- * Deskpro (r) has been developed by Deskpro Ltd. https://www.deskpro.com/
- * a British company located in London, England.
- *
- * All source code and content Copyright (c) 2018, Deskpro Ltd.
- *
- * The license agreement under which this software is released
- * can be found at https://www.deskpro.com/eula/
- *
- * By using this software, you acknowledge having read the license
- * and agree to be bound thereby.
- *
- * Please note that Deskpro is not free software. We release the full
- * source code for our software because we trust our users to pay us for
- * the huge investment in time and energy that has gone into both creating
- * this software and supporting our customers. By providing the source code
- * we preserve our customers' ability to modify, audit and learn from our
- * work. We have been developing Deskpro since 2001, please help us make it
- * another decade.
- *
- * Like the work you see? Think you could make it better? We are always
- * looking for great developers to join us: http://www.deskpro.com/jobs/
- *
- * ~ Thanks, Everyone at Team Deskpro
- */
-
 return [
     'agent.chat.added_as_participant'                          => 'Added as a participant',
     'agent.chat.agent_chats'                                   => 'Agent Chats',
@@ -582,6 +556,8 @@ return [
     'agent.general.display_name'                               => 'Display name',
     'agent.general.display_options'                            => 'Display Options',
     'agent.general.do_not_refresh'                             => 'Do Not Refresh',
+    'agent.general.empty'                                      => 'is empty',
+    'agent.general.not_empty'                                  => 'is not empty',
     'agent.general.does_not_contain'                           => 'does not contain',
     'agent.general.does_not_include'                           => 'does not include',
     'agent.general.does_not_include_label'                     => 'does not include label',
@@ -1854,6 +1830,7 @@ return [
     'agent.settings.desktop_notifs_explicit_disabled'          => 'Desktop notifications have been explicitly disabled. They must be enabled for this domain via the browser itself.',
     'agent.settings.desktop_notifs_secure_disabled'            => '<b>Note</b>: Modern browsers sometimes require HTTPS for notifications to work. You are NOT using HTTPS right now so you may not receive notifications. Ask your administrator to enable HTTPS for the helpdesk.',
     'agent.settings.desktop_notifs_test'                       => 'Generate Test Notification',
+    'agent.settings.desktop_notifs_tip'                        => 'All browsers and platforms handle desktop notifications in slightly different ways. On some platforms, Deskpro cannot override notification behaviour and they may disappear faster than the time you select here.',
     'agent.settings.done_start_using'                          => 'Done, start using Deskpro',
     'agent.settings.drop_here_insert_signature'                => 'Drop your <strong>image</strong> here to insert it into your signature',
     'agent.settings.edit_filter'                               => 'Edit Filter',
@@ -2090,7 +2067,7 @@ return [
     'agent.tickets.billing_amount'                             => 'Amount',
     'agent.tickets.billing_and_timelog'                        => 'Billing & Time Log',
     'agent.tickets.billing_charge'                             => 'Charge',
-    'agent.tickets.billing_chargetime'                         => 'Charge/Time',
+    'agent.tickets.billing_chargetime'                         => 'Amount',
     'agent.tickets.billing_delete_confirm'                     => 'Are you sure you want to delete this charge?',
     'agent.tickets.billing_time'                               => 'Time',
     'agent.tickets.billing_timelog'                            => 'Time Log',
@@ -2467,7 +2444,6 @@ return [
     'agent.tickets.ticket_changes'                             => 'Ticket Changes',
     'agent.tickets.ticket_feedback'                            => 'Ticket Feedback',
     'agent.tickets.ticket_field_name'                          => 'Ticket Field: {{field}}',
-    'agent.tickets.ticket_is_delete7d'                         => 'Ticket is deleted',
     'agent.tickets.ticket_is_deleted'                          => 'Ticket is deleted',
     'agent.tickets.ticket_is_marked_as_spam'                   => 'This ticket has been marked as spam.',
     'agent.tickets.ticket_merged'                              => 'Ticket merged',

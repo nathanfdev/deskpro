@@ -1,31 +1,5 @@
 <?php
 
-/*
- * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
- * a British company located in London, England.
- *
- * All source code and content Copyright (c) 2017, DeskPRO Ltd.
- *
- * The license agreement under which this software is released
- * can be found at https://www.deskpro.com/eula/
- *
- * By using this software, you acknowledge having read the license
- * and agree to be bound thereby.
- *
- * Please note that DeskPRO is not free software. We release the full
- * source code for our software because we trust our users to pay us for
- * the huge investment in time and energy that has gone into both creating
- * this software and supporting our customers. By providing the source code
- * we preserve our customers' ability to modify, audit and learn from our
- * work. We have been developing DeskPRO since 2001, please help us make it
- * another decade.
- *
- * Like the work you see? Think you could make it better? We are always
- * looking for great developers to join us: http://www.deskpro.com/jobs/
- *
- * ~ Thanks, Everyone at Team DeskPRO
- */
-
 namespace Application\DeskPRO\NewSearch\Manager;
 
 use Application\DeskPRO\Elastica\ClientFactory;
@@ -224,10 +198,14 @@ class Elasticsearch implements SearchManagerInterface, ContainerAwareInterface
         $client        = $clientFactory->createClientByConfig($config);
         $res           = $client->request('/');
         if ($res instanceof Response) {
-            $res = $res->getData();
-            if (version_compare(@$res['version']['number'], '2.0.0') < 0) {
-                throw new \Exception('DeskPRO is not compatible with your ElasticSearch '.@$res['version']['number']
-                    .' server. Please use DeskPRO with an ElasticSearch 2.x or 5.x server.');
+            $res     = $res->getData();
+            $version = isset($res['version']['number']) ? $res['version']['number'] : null;
+
+            if (!$version) {
+                throw new \Exception('Unable to get ElasticSearch version.');
+            }
+            if (version_compare($version, '2.0.0') < 0 || version_compare($version, '6.0.0') >= 0) {
+                throw new \Exception("Deskpro is not compatible with your ElasticSearch $version server. Please use DeskPRO with an ElasticSearch 2.x or 5.x server.");
             }
         }
     }

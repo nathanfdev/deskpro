@@ -1130,7 +1130,7 @@ img.emojione, svg.emojione {
     }
 
     .reply {
-      width: 100%;
+      width: 435px;
       padding: 15px;
       background: $dp-greyscale-150;
       border-top: 1px solid $dp-greyscale-450;
@@ -1168,6 +1168,11 @@ img.emojione, svg.emojione {
           &:focus {
             border: 1px solid $dp-sonic-primary;
             outline: none;
+          }
+
+          .fr-element {
+            max-height: 100px;
+            overflow-y: scroll;
           }
         }
 
@@ -1336,6 +1341,9 @@ img.emojione, svg.emojione {
   }
 }
 
-.fr-toolbar, .fr-tooltip, .fr-popup {
+.fr-toolbar, .fr-popup {
   z-index: 99999 !important;
+}
+.fr-tooltip {
+  z-index: 100000 !important;
 }

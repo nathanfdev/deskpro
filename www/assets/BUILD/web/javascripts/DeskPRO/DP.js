@@ -23,74 +23,9 @@ var DP = {
 		delete DP.init;
 	},
 
-	rteTextarea: function(field, options) {
-
-		options = options || {};
-		options.extended_valid_elements =
-			'iframe[align<bottom?left?middle?right?top|class|frameborder|height|id'
-			+'|longdesc|marginheight|marginwidth|name|scrolling<auto?no?yes|src|style'
-			+'|title|width|webkitallowfullscreen|mozallowfullscreen|allowfullscreen]';
-
-		if (!field) {
-			return;
-		}
-
-		field = $(field);
-
-		if (!field.closest('body')) {
-			return;
-		}
-
-		defaultOptions = {
-			script_url: ASSETS_BASE_URL + '/vendor/tiny_mce/tiny_mce_src.js',
-
-			skin : "o2k7",
-			skin_variant : "silver",
-
-			theme: 'advanced',
-			plugins : "fullscreen,table,wordcount,media",
-			theme_advanced_buttons1: 'bold,italic,underline,|,justifyleft,justifycenter,justifyright,|,forecolor,backcolor,|,styleselect,fontselect,fontsizeselect',
-			theme_advanced_buttons2: 'bullist,numlist,|,outdent,indent,|,link,unlink,anchor,dp_media,image,|,hr,tablecontrols,|,pasteword,visualaid,code,removeformat,fullscreen',
-			theme_advanced_buttons3: '',
-			theme_advanced_toolbar_location: 'top',
-			theme_advanced_toolbar_align: 'left',
-			theme_advanced_resizing: true,
-			theme_advanced_statusbar_location: 'bottom',
-			theme_advanced_path: false,
-			relative_urls: false,
-      media_strict: false,
-      extended_valid_elements: "iframe[src|width|height|name|align], embed[width|height|name|flashvars|src|bgcolor|align|play|loop|quality|allowscriptaccess|type|pluginspage]",
-			width: '100%',
-
-			style_formats: [
-				{ title: 'Paragraph', block: 'p' },
-				{ title: 'Heading 1', block: 'h2' },
-				{ title: 'Heading 2', block: 'h3' },
-				{ title: 'Heading 3', block: 'h4' },
-				{ title: 'Heading 4', block: 'h5' },
-				{ title: 'Quote', block: 'blockquote' },
-				{ title: 'Code Box', block: 'code', classes: 'codebox' }
-			]
-		};
-
-		var oldsetup = options.setup || function() { };
-		options.setup = function(ed) {
-			ed.addButton('dp_media', {
-				title : 'Upload Image',
-				image : ASSETS_BASE_URL + '/images/agent/icons/picture_add.png',
-				onclick : function() {
-					MEDIA_MANAGER_WINDOW.bindToEditor(ed);
-					MEDIA_MANAGER_WINDOW.open();
-				}
-			});
-
-			oldsetup(ed);
-		};
-
-		options = Object.merge(defaultOptions, options || {});
-
-		return field.tinymce(options);
-	},
+  rteTextarea: function(field, options) {
+    console.warn('Function deprecated, please use window.LegacyRteTextarea.init()');
+  },
 
 	convertTextToWysiwygHtml: function(text, pOneLine) {
 		if (!text.length) {

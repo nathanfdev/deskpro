@@ -123,7 +123,18 @@
 
 {% if 'org_field' not in no_show_fields %}
 {% if app.getOrgFieldManager().getFields() %}
-	{% set op_lang = {'is': phrase('agent.general.is'), 'not': phrase('agent.general.is_not'), 'contains': phrase('agent.general.contains'), 'notcontains': phrase('agent.general.does_not_contain'), 'gt': phrase('agent.general.is_greater_than'), 'lt': phrase('agent.general.is_less_than'), 'not_isset': phrase('agent.general.is_not_set'), 'isset': phrase('agent.general.is_set') } %}
+	{% set op_lang = {
+		'is': phrase('agent.general.is'),
+		'not': phrase('agent.general.is_not'),
+		'contains': phrase('agent.general.contains'),
+		'notcontains': phrase('agent.general.does_not_contain'),
+		'gt': phrase('agent.general.is_greater_than'),
+		'lt': phrase('agent.general.is_less_than'),
+		'not_isset': phrase('agent.general.is_not_set'),
+		'isset': phrase('agent.general.is_set'),
+        'empty': phrase('agent.general.empty'),
+        'notempty': phrase('agent.general.not_empty')
+	} %}
 	{% for field in app.getOrgFieldManager().getDisplayArray() %}
 	{% if field.field_def.getFilterCapabilities(search_context) %}
 	<div class="builder-type" title="{{field.field_def.title}}" data-rule-group="Organization Fields" data-rule-type="org_field[{{field.field_def.id}}]" {{ field.formViewCriteria.vars.rule_handler|raw }}>

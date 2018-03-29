@@ -27,6 +27,7 @@ define ->
         chartData   = if scope.chartData then JSON.parse(scope.chartData) else []
         options     = scope.options
         drawn       = false
+        interval    = false
 
         scope.$watch 'chartData', (n) ->
           return if !drawn
@@ -67,6 +68,8 @@ define ->
                   drawWidget(widget)
 
         drawWidget = (widget) ->
+          if interval
+            clearInterval(interval)
           drawn = true
           try
             options = if scope.options then JSON.parse(scope.options) else {}
@@ -83,12 +86,34 @@ define ->
           if chart and widget.dataProvider
             chart.dataProvider = widget.dataProvider
           else
-            chart = new AmCharts.makeChart("ch#{scope.widgetId}", Object.assign(widget, options));
+            chart = new AmCharts.makeChart("ch#{scope.widgetId}", lodashMerge(widget, options));
 
           chartDiv.height(chartParent.height() - chartHeader.outerHeight())
-          chart.invalidateSize()
           chart.validateData()
-          if widget.multiplePies?
+
+          if options.click_url?
+
+            if widget.type == 'pie'
+              eventType = 'clickSlice'
+              dataItem = 'dataItem'
+            else
+              eventType = 'clickGraphItem'
+              dataItem = 'item'
+
+            vars = {};
+            matches = options.click_url.match(/\$\{([a-zA-z0-9_]+)\}/)
+            for match, index in matches
+              if index % 2 == 1
+                vars[match] = matches[index - 1]
+
+            chart.addListener eventType, (event) ->
+              url = options.click_url
+              for key, variable of vars
+                if event[dataItem].dataContext[key]
+                  url = url.replace(variable, event[dataItem].dataContext[key])
+              window.open url
+
+          else if widget.multiplePies?
             defaultDataProvider = widget.dataProvider
             chart.addListener "clickSlice", (event) ->
               if (event.dataItem.dataContext.id != undefined)
@@ -109,12 +134,10 @@ define ->
                 chart.dataProvider = defaultDataProvider
               chart.validateData()
 
-
-
           width = chartParent.height()
           height = chartParent.width()
 
-          setInterval \
+          interval = setInterval \
             () ->
               w = chartParent.width()
               h = chartParent.height()
@@ -125,7 +148,7 @@ define ->
 
                 width = w
                 height = h
-          , 200
+          , 1000
 
         initChart()
     }

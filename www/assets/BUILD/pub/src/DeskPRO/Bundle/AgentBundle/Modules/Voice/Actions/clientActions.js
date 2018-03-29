@@ -26,6 +26,7 @@ export const openDialpad = createAction('VOICE_AGENT_OPEN_DIALPAD');
 export const dialpadOpened = createAction('VOICE_AGENT_DIALPAD_OPENED');
 export const setOutgoingCall = createAction('VOICE_AGENT_SET_OUTGOING_CALL');
 export const resetOutgoingCall = createAction('VOICE_AGENT_RESET_OUTGOING_CALL');
+export const updateConnectionState = createAction('VOICE_AGENT_UPDATE_CONNECTION_STATE');
 
 export const setRingingVolume = createAction(
   'VOICE_AGENT_SET_RINGING_VOLUME',
@@ -282,6 +283,23 @@ export const voiceBootstrap = createAction(
             connection.disconnect();
           }
         });
+        messageBroker.addMessageListener('agent.voice.conference.hold', (data) => {
+          dispatch(updateConnectionState({
+            call_id: parseInt(data.call_id, 10),
+            state:   {
+              hold: !!data.hold
+            }
+          }));
+        });
+        messageBroker.addMessageListener('agent.voice.conference.status', (data) => {
+          dispatch(updateConnectionState({
+            call_id: parseInt(data.phone_call.id, 10),
+            state:   {
+              participants: data.agent_participants,
+              hold:         !!data.hold
+            }
+          }));
+        });
       })
       .catch((e) => {
         console.log(e);
@@ -397,8 +415,10 @@ export const toggleMute = createAction(
 
 export const toggleHold = createAction(
   'VOICE_AGENT_TOGGLE_HOLD',
-  (connection, hold) => {
+  (connection, hold) => (dispatch) => {
     const callId = connection.message.CallId;
+    dispatch(updateConnectionState({ call_id: parseInt(callId, 10), state: { hold } }));
+
     return api.sendPut(`DP_API/voice_client/phone_call/${callId}/hold_call`, { hold });
   }
 );

@@ -11,7 +11,7 @@ class AccountChoiceWrapper extends React.Component {
 
   render() {
     const { children, accounts = Immutable.fromJS([]) } = this.props;
-    const choices = accounts.map(account => ({
+    const choices = accounts.toArray().map(account => ({
       value: account.get('id'),
       label: account.get('account_name')
     })).toArray();

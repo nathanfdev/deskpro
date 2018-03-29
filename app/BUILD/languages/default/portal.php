@@ -1,31 +1,5 @@
 <?php
 
-/*
- * Deskpro (r) has been developed by Deskpro Ltd. https://www.deskpro.com/
- * a British company located in London, England.
- *
- * All source code and content Copyright (c) 2018, Deskpro Ltd.
- *
- * The license agreement under which this software is released
- * can be found at https://www.deskpro.com/eula/
- *
- * By using this software, you acknowledge having read the license
- * and agree to be bound thereby.
- *
- * Please note that Deskpro is not free software. We release the full
- * source code for our software because we trust our users to pay us for
- * the huge investment in time and energy that has gone into both creating
- * this software and supporting our customers. By providing the source code
- * we preserve our customers' ability to modify, audit and learn from our
- * work. We have been developing Deskpro since 2001, please help us make it
- * another decade.
- *
- * Like the work you see? Think you could make it better? We are always
- * looking for great developers to join us: http://www.deskpro.com/jobs/
- *
- * ~ Thanks, Everyone at Team Deskpro
- */
-
 return [
     'portal.account.automatically_join_org_tickets'          => 'Automatically join {{org_name}}\'s tickets?',
     'portal.account.change-password'                         => 'Change Password',
@@ -117,7 +91,7 @@ return [
     'portal.account.welcome-back'                            => 'Welcome back',
     'portal.account.your-emails'                             => 'Your Email Addresses',
     'portal.account.your-pending-email-addresses'            => 'Your Pending Email Addresses',
-    'portal.account.link-expired'                            => 'Your link was already clicked or expired.',
+    'portal.account.link-expired'                            => 'Sorry, the link you clicked has expired or has already been used before.',
     'portal.articles.by-line'                                => 'By {{name}} on {{date}}',
     'portal.articles.link'                                   => 'Link: <a href="{{link}}">{{link}}</a>',
     'portal.articles.none'                                   => 'No articles yet',
@@ -453,6 +427,7 @@ return [
     'portal.flashes.user_changed_password'                   => 'Your password has been updated.',
     'portal.flashes.user_changed_primary_email'              => 'Your primary email address has been changed.',
     'portal.flashes.user_registered_must_verify'             => 'Thank you for registering. Please check your email, we have sent you a verification link.',
+    'portal.flashes.user_registered_verified'                => 'Thank you. Your email address has been verified.',
     'portal.flashes.user_registered_verified_authenticated'  => 'Thank you. Your email address has been verified and you have been logged in.',
     'portal.flashes.user_removed_an_email'                   => 'Your email address {{email}} was removed.',
     'portal.flashes.user_resend_email_verify'                => 'The validation email has been sent to your email address again.',
@@ -517,6 +492,9 @@ return [
     'portal.forms.error_not_assignable_choice'               => 'Unable to select parent choice.',
     'portal.forms.error_bad_choice'                          => 'One or more of the given values is invalid.',
     'portal.forms.error_system_email'                        => 'Email "{{ email }}" is already being used as email account.',
+    'portal.forms.error_not_unique_collection'               => 'One or more of the given values is not unique.',
+    'portal.forms.error_invalid_url'                         => 'This value is not a valid URL.',
+    'portal.forms.error_numeric'                             => 'Please enter a number, with no other characters.',
     'portal.forms.label_add_attachment'                      => 'Add Another Attachment',
     'portal.forms.label_captcha'                             => 'To prove you are a human, please tell us the text you see in the CAPTCHA image',
     'portal.forms.label_category'                            => 'Category',

@@ -34,7 +34,7 @@ class Queues extends React.Component {
 
     return (
       <ScrollArea className="voice-queue-list">
-        {myQueues.map((queue, index) => {
+        {myQueues.toArray().map((queue, index) => {
           const voiceAgent = queue.get('agents').filter(agent => agent.get('agent') === me.get('id')).first();
 
           return (
@@ -89,7 +89,7 @@ class QueueItem extends React.Component {
         </div>
         <div className="queue-agents">
           {queueAgents.size} agents
-          {queueAgents.map((agent, index) =>
+          {queueAgents.toArray().map((agent, index) =>
             <Avatar
               key={index}
               person={agent}

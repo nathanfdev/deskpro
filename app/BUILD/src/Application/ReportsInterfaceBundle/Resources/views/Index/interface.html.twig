@@ -114,5 +114,7 @@
 	window.DP_INTERFACE_LOADER = 'ReportsLoad';
 </script>
 <script	type="text/javascript" data-main="{{ asset('loader-build/requirejs-config.js') }}?v={{ app.getBuildTime() }}" src="{{ asset('bower_components/requirejs/require.js') }}"></script>
+
+{{ include_code_plugin('reports_res') }}
 </body>
 </html>

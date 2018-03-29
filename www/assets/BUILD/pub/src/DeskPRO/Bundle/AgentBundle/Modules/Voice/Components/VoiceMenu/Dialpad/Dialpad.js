@@ -5,7 +5,7 @@ import { Form, Field, PhoneInput } from 'DeskPRO/Component/Semantic/ReactForm';
 import { ClickOut } from 'DeskPRO/Component/ClickOut';
 import $ from 'jquery';
 import Immutable from 'immutable';
-import 'mark.js';
+import 'mark.js/dist/jquery.mark';
 import debounce from 'lodash/debounce';
 import classNames from 'classnames';
 import NumberSelect from '../NumberSelect';
