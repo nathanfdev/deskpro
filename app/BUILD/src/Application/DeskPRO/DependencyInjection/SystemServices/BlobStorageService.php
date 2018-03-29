@@ -55,7 +55,10 @@ class BlobStorageService
 
         $s3_adapter  = null;
         $settingsBag = $container->get('settings_resolver')->getGlobalSettings();
-        if ($settingsBag->get('core.filestorage_s3_key') && $settingsBag->get('core.filestorage_s3_secret') && $settingsBag->get('core.filestorage_s3_bucket')) {
+        if (
+            ($settingsBag->get('core.filestorage_s3_key') && $settingsBag->get('core.filestorage_s3_secret') && $settingsBag->get('core.filestorage_s3_bucket'))
+            || ($settingsBag->get('core.filestorage_s3_bucket') && $settingsBag->get('core.filestorage_s3_credentials_source') == 'ec2')
+        ) {
             $cumulativeTimeout = $settingsBag->get('filestorage.s3.web.cumulative_timeout', 5);
 
             if (php_sapi_name() === 'cli') {
