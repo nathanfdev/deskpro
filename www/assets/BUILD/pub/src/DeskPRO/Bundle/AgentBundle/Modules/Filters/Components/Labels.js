@@ -26,7 +26,7 @@ class LabelTitle extends React.Component {
 
 export default class Labels extends React.Component {
   static propTypes = {
-    labels:       PropTypes.array,
+    labels:       PropTypes.object,
     onChange:     PropTypes.func,
     onSelectMode: PropTypes.func,
     opened:       PropTypes.bool,
@@ -40,11 +40,11 @@ export default class Labels extends React.Component {
   sortLabels = () => {
     const groups = {};
     for (const label of this.props.labels) {
-      const initial = label.charAt(0).toUpperCase();
+      const initial = label[0].charAt(0).toUpperCase();
       if (!groups[initial]) {
         groups[initial] = [];
       }
-      groups[initial].push(label.replace(/ /, ' '));
+      groups[initial].push(label[0].replace(/ /, ' '));
     }
     Object.keys(groups).forEach((key) => {
       groups[key].sort();

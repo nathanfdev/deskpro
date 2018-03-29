@@ -88,6 +88,8 @@ export const preloadData    = createAction(
       if (window.DP_HAS_NEW_FILTERS) {
         batchComponents.ticket_filters     = { endpoint: 'ticket_filters2', query: 'mine=1' };
         batchComponents.ticket_filter_sets = { endpoint: 'ticket_filters2_sets', query: 'mine=1' };
+        batchComponents.ticket_stars       = { endpoint: 'ticket_stars' };
+        batchComponents.ticket_labels      = { endpoint: 'ticket_labels' };
       }
 
       const onBatchComponentsSuccess = ({ responses }) => {
@@ -175,7 +177,8 @@ export const preloadData    = createAction(
         if (window.DP_HAS_NEW_FILTERS) {
           dispatch(setCollection('TicketFilters', 'all', data.ticket_filters));
           dispatch(setCollection('TicketFilterSets', 'all', data.ticket_filter_sets));
-          // dispatch(setCollection('TicketFilterCounts', 'all', []));
+          dispatch(setCollection('TicketStars', 'all', data.ticket_stars));
+          dispatch(setCollection('TicketLabels', 'all', replaceIds(data.ticket_labels, 'label')));
           let counts = {};
           let i = 0;
           data.ticket_filters.forEach((filter) => {
@@ -206,6 +209,15 @@ export const preloadData    = createAction(
             dispatch(decreaseCount(id));
           };
         }
+        const starCounts = {
+          endpoint: 'ticket_stars/counts',
+        };
+        api.sendGet(api.prepareParams({ star_counts: starCounts }))
+          .success((response) => {
+            if (response.responses.star_counts.data.nested) {
+              dispatch(setCollection('TicketStarsCounts', 'all', response.responses.star_counts.data.nested));
+            }
+          });
 
         // set legacy agent notify map
         window.notifyAgentMap = {};
