@@ -11,6 +11,7 @@ import { updateAgentStatus, setOnlineAgents } from 'DeskPRO/Bundle/AgentBundle/M
 import agentPhrases from 'DeskPRO/Bundle/AgentBundle/AgentPhrases';
 import DeskproAppStore from 'DeskPRO/Bundle/AgentBundle/Modules/DeskproApps/DeskproAppStore';
 import { setVoiceTokens, setVoiceActivities, setVoiceSettings } from '../../Voice/Actions/clientActions';
+import { increaseCount, decreaseCount } from '../../Filters/Actions/filterActions';
 
 export const loadAgentPhraseTranslations = createAction(
   'AGENT_LOAD_PHRASE_TRANSLATIONS',
@@ -198,6 +199,12 @@ export const preloadData    = createAction(
                 console.log(countsData);
               });
           }
+          window.increase_count = (id) => {
+            dispatch(increaseCount(id));
+          };
+          window.decrease_count = (id) => {
+            dispatch(decreaseCount(id));
+          };
         }
 
         // set legacy agent notify map

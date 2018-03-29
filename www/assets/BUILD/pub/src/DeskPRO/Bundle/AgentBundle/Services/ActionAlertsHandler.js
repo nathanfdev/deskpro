@@ -6,6 +6,7 @@ import { markMessages } from '../Modules/IM/Actions/messagesActions';
 import { updateAgentStatus } from '../Modules/Agent/Actions/agentActions';
 import { addToCollection, updateCollection, removeFromCollection } from '../../AppBundle/Modules/RecordsStore/Actions/store';
 import * as snippetActions from '../Modules/Snippets/Actions/snippetsActions';
+import * as filtersActions from '../Modules/Filters/Actions/filterActions';
 
 /* eslint no-undef: "warn" */
 
@@ -100,6 +101,9 @@ class ActionAlertsHandler {
           const newData = clone(datum);
           newData.eventType = payload.data.eventType;
           newData.ticket_id = payload.data.ticket_id;
+          if (window.DP_HAS_NEW_FILTERS) {
+            this.handleFilterUpdate(newData);
+          }
           this.handleLegacyBroadcastClientMessage(newData, true);
         });
         break;
@@ -148,6 +152,19 @@ class ActionAlertsHandler {
       console.error('payload.eventType is not set', payload);
     } else if (!checkTarget || (checkTarget && payload.targets && payload.targets.indexOf(this.options.me) !== -1)) {
       DeskPRO_Window.messageBroker.sendMessage(payload.eventType, payload); // eslint-disable-line no-undef
+    }
+  }
+
+  handleFilterUpdate(payload) {
+    switch (payload.op) {
+      case 'del':
+        this.options.dispatch(filtersActions.decreaseCount(payload.filter_id));
+        break;
+      case 'add':
+        this.options.dispatch(filtersActions.increaseCount(payload.filter_id));
+        break;
+      default:
+        break;
     }
   }
 }
