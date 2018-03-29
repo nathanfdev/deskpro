@@ -273,6 +273,27 @@ class LegacyTermsTransformer
                     'options' => $options->all(),
                 ];
 
+            case 'FilterRangeId':
+                return [
+                    'type'    => 'range_id',
+                    'op'      => $term->getTermOperator(),
+                    'options' => $options->all(),
+                ];
+
+            case 'FilterRef':
+                return [
+                    'type'    => 'ref',
+                    'op'      => $term->getTermOperator(),
+                    'options' => $options->all(),
+                ];
+
+            case 'FilterUserRangeId':
+                return [
+                    'type'    => 'person_range_id',
+                    'op'      => $term->getTermOperator(),
+                    'options' => $options->all(),
+                ];
+
             case 'FilterUserContactPhone':
                 return [
                     'type'    => 'person_contact_phone',
@@ -510,6 +531,16 @@ class LegacyTermsTransformer
         }
 
         switch ($type_name) {
+            case 'range_id':
+                return new Terms\FilterRangeId($op, [
+                    'id' => @$options['id'] ?: '',
+                ]);
+
+            case 'ref':
+                return new Terms\FilterRef($op, [
+                    'ref' => @$options['ref'] ?: '',
+                ]);
+
             case 'subject':
                 return new Terms\FilterSubject($op, [
                     'subject' => @$options['subject'] ?: '',
@@ -755,6 +786,11 @@ class LegacyTermsTransformer
 
                 return new Terms\FilterUserId($op, [
                     'user_ids' => $ids,
+                ]);
+
+            case 'person_range_id':
+                return new Terms\FilterUserRangeId($op, [
+                    'person_id' => @$options['person_id'] ?: '',
                 ]);
 
             case 'person_language':
