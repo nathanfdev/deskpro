@@ -89,7 +89,7 @@ export class UserPhoto extends React.Component {
       <span {...spanProps} >
         {text && <span className={classNames('text', className)} style={this.getTextStyle()}>{text}</span>}
         {children}
-        {title && !tooltipId ? <ReactTooltip delayShow={1000} id={`tooltip-${id}`} effect="solid" place="top" className="im-tooltip" /> : null}
+        {title && tooltipId ? <ReactTooltip delayShow={1000} id={`tooltip-${id}`} effect="solid" place="top" className="im-tooltip" /> : null}
       </span>
     );
   }
