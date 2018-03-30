@@ -36,10 +36,31 @@ class JsonStatRenderer extends AbstractJsonRenderer
             return;
         }
 
-        return [
+        $return = [
             'value'       => $this->renderValue($metadata, $rows),
             'description' => $this->renderDescription($metadata, $rows),
         ];
+
+        return $this->extractClickUrlVars($rows, $metadata, $return);
+    }
+
+    /**
+     * @param array          $rows
+     * @param ResultMetadata $metadata
+     * @param array          $result
+     *
+     * @return mixed
+     */
+    private function extractClickUrlVars(array $rows, ResultMetadata $metadata, array $result)
+    {
+        $selectColumns = $metadata->getSelectColumns();
+        foreach ($selectColumns as $selectColumn) {
+            if (strpos($selectColumn['title'], '__var') !== false) {
+                $result[$selectColumn['title']] = $this->renderCellValue($rows[0], $selectColumn, $metadata);
+            }
+        }
+
+        return $result;
     }
 
     /**
@@ -101,6 +122,12 @@ class JsonStatRenderer extends AbstractJsonRenderer
         return $this->valueRenderer->renderValue($value, $renderer, $metadata);
     }
 
+    /**
+     * @param array $results
+     * @param array $options
+     *
+     * @return mixed
+     */
     public function mergeResults(array $results, array $options)
     {
         return reset($results);
