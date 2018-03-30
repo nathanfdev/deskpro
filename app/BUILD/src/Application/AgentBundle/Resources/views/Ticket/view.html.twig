@@ -1159,8 +1159,10 @@
                     <li class="delete-attachments-link"
                         data-option-id="delete-attachments">{{ phrase('agent.tickets.delete_attach') }}</li>{% endif %}
                 <li class="set-as-note" data-option-id="setnote.note">{{ phrase('agent.tickets.set_as_note') }}</li>
+                {% if ticket_perms.reply %}
                 <li class="set-as-message"
                     data-option-id="setnote.message">{{ phrase('agent.tickets.set_as_normal_message') }}</li>
+                {% endif %}
                 {% if ticket_perms.modify_merge %}
                     <li data-option-id="split">{{ phrase('agent.tickets.split_message_btn') }}</li>{% endif %}
                 {% if app.user.hasPerm('agent_tickets.create') %}
