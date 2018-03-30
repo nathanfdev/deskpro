@@ -98,6 +98,11 @@ class ReportsWidgetService
         return $groupParams;
     }
 
+    /**
+     * @param $class
+     *
+     * @return array
+     */
     private function customFields($class)
     {
         $defs   = $this->em->getRepository($class)->findBy(['parent' => null, 'is_enabled' => true]);
@@ -117,6 +122,11 @@ class ReportsWidgetService
         return $result;
     }
 
+    /**
+     * @param $choices
+     * @param $prevTitle
+     * @param $result
+     */
     private function getChoices($choices, $prevTitle, &$result)
     {
         /* @var CustomDefAbstract $def */
