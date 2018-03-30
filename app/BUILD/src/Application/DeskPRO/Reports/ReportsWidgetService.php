@@ -108,7 +108,7 @@ class ReportsWidgetService
             if ($def->isChoiceType()) {
                 $choices = $def->getChoices();
                 $arr     = [];
-                $this->getChoices($choices, 0, $arr);
+                $this->getChoices($choices, '', $arr);
                 $result[$def->getRawTitle()]                                                   = $arr;
                 $result[$def->getRawTitle()][DashboardWidgetManager::WIDGET_VALUE_FROM_REPORT] = ['value from report'];
             }
@@ -117,14 +117,15 @@ class ReportsWidgetService
         return $result;
     }
 
-    private function getChoices($choices, $level, &$result)
+    private function getChoices($choices, $prevTitle, &$result)
     {
         /* @var CustomDefAbstract $def */
         foreach ($choices as $choice) {
             if ($choice['is_selectable']) {
-                $result[$choice['title']] = [str_repeat('--', $level).$choice['title']];
+                $title                    = $prevTitle ? $prevTitle.' > ' : '';
+                $result[$choice['title']] = [$title.$choice['title']];
             } else {
-                $this->getChoices($choice['children'], ++$level, $result);
+                $this->getChoices($choice['children'], $choice['title'], $result);
             }
         }
     }
