@@ -3,6 +3,7 @@
 namespace Application\DeskPRO\Reports;
 
 use Application\DeskPRO\Entity\AgentTeam;
+use Application\DeskPRO\Entity\CustomDefAbstract;
 use Application\DeskPRO\Entity\CustomDefArticle;
 use Application\DeskPRO\Entity\CustomDefBilling;
 use Application\DeskPRO\Entity\CustomDefChat;
@@ -103,15 +104,28 @@ class ReportsWidgetService
         $result = [];
 
         foreach ($defs as $def) {
-            if ($def->getChoices()) {
-                $result[$def->getRawTitle()] = [];
-                foreach ($def->getChoices() as $choice) {
-                    $result[$def->getRawTitle()][$choice['title']] = [$choice['title']];
-                }
+            /** @var CustomDefAbstract $def */
+            if ($def->isChoiceType()) {
+                $choices = $def->getChoices();
+                $arr     = [];
+                $this->getChoices($choices, 0, $arr);
+                $result[$def->getRawTitle()]                                                   = $arr;
                 $result[$def->getRawTitle()][DashboardWidgetManager::WIDGET_VALUE_FROM_REPORT] = ['value from report'];
             }
         }
 
         return $result;
+    }
+
+    private function getChoices($choices, $level, &$result)
+    {
+        /* @var CustomDefAbstract $def */
+        foreach ($choices as $choice) {
+            if ($choice['is_selectable']) {
+                $result[$choice['title']] = [str_repeat('--', $level).$choice['title']];
+            } else {
+                $this->getChoices($choice['children'], ++$level, $result);
+            }
+        }
     }
 }
