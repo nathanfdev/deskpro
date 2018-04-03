@@ -140,6 +140,17 @@ class EzcReader extends AbstractReader
 
         $this->mail = $this->mail[0];
 
+        if ($this->mail->body instanceof \ezcMailMultipart && $this->mail->body->multipartType() == 'mixed') {
+            // we gonna roughly change part types and text in case we have multipart/mixed here with plain text
+            // further processors would deal with html and other parts themselves
+            foreach ($this->mail->fetchParts() as $part) {
+                if ($part instanceof \ezcMailText && $part->subType == 'plain') {
+                    $part->subType = 'html';
+                    $part->text    = nl2br($part->text);
+                }
+            }
+        }
+
         foreach ($this->mail->fetchParts() as $part) {
             if (isset($part->mimeType) && $part->mimeType === 'pkcs7-mime') {
                 $this->decryptEmail();
