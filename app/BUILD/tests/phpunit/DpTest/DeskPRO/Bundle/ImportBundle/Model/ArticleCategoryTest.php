@@ -16,8 +16,8 @@ class ArticleCategoryTest extends AbstractModelTest
         $errors = $this->validateData([]);
 
         $this->assertCount(2, $errors);
-        $this->assertEquals('title', $errors[0]->getPropertyPath());
-        $this->assertEquals('raw_data', $errors[1]->getPropertyPath());
+        $this->assertEquals('raw_data', $errors[0]->getPropertyPath());
+        $this->assertEquals('title', $errors[1]->getPropertyPath());
     }
 
     public function test_sub_category_validation()
