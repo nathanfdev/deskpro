@@ -129,21 +129,6 @@ class Currency extends HandlerAbstract
     }
 
     /**
-     * {@inheritdoc}
-     */
-    public function getFormField($data = null)
-    {
-        if (isset($data['value']) && $data['value']) {
-            $form = $this->getCurrencyForm($data['value']);
-            if ($form) {
-                $data['value'] = $form->getViewData();
-            }
-        }
-
-        return parent::getFormField($data);
-    }
-
-    /**
      * @param array $formData
      * @param null  $default
      *
