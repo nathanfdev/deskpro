@@ -290,7 +290,7 @@ DeskPRO.Agent.ElementHandler.OrgSearchBox = new Orb.Class({
 	 * Destroys the widget
 	 */
 	destroy: function() {
-		if (this._hasInitResultsBox) {
+		if (this._hasInitResultsBox && this.resultsBox) {
 			this.resultsBox.remove();
 		}
 
