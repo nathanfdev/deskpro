@@ -4,7 +4,7 @@ namespace Application\DeskPRO\CustomFields\Handler;
 
 use Application\DeskPRO\App;
 use DeskPRO\Bundle\AppBundle\Entity\Currency as CurrencyEntity;
-use Symfony\Component\Form\Extension\Core\Type\MoneyType;
+use DeskPRO\Bundle\AppBundle\Form\Type\MoneyType;
 
 /**
  * Class Currency.
