@@ -16,17 +16,13 @@ export default class FiltersSet extends React.Component {
     ticketCustomFields: PropTypes.object,
     onChange:           PropTypes.func,
     onSelectMode:       PropTypes.func,
+    onGroupingChange:   PropTypes.func,
     opened:             PropTypes.bool,
     mode:               PropTypes.object,
   };
 
   onSelectFilter = (key) => {
     this.props.onSelectMode({ type: 'filter', filter: key });
-    /* eslint-disable no-undef, camelcase */
-    if (DeskPRO_Window) {
-      DeskPRO_Window.loadListPane(`ticket-search/filter/${key}`, { isBackgroundLoad: false });
-    }
-    /* eslint-enable no-undef, camelcase */
   };
 
   close() {
@@ -41,6 +37,8 @@ export default class FiltersSet extends React.Component {
       groupFields,
       ticketCustomFields,
       onChange,
+      onGroupingChange,
+      onSelectMode,
       opened,
       mode,
     } = this.props;
@@ -58,6 +56,8 @@ export default class FiltersSet extends React.Component {
             ticketCustomFields={ticketCustomFields}
             selected={selected}
             onSelect={() => this.onSelectFilter(key)}
+            onSelectMode={onSelectMode}
+            onGroupingChange={onGroupingChange}
           />
         );
       }

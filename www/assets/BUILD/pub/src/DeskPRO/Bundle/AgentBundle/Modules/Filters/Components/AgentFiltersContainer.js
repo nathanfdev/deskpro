@@ -5,6 +5,7 @@ import { filterGroupFieldsSettingsSelector } from 'DeskPRO/Bundle/AgentBundle/Mo
 import { allSelectorFactory } from 'DeskPRO/Bundle/AppBundle/Modules/RecordsStore';
 import { SeparateComponent } from 'DeskPRO/Bundle/AgentBundle/Modules/Common/Components/SeparateComponent';
 import AgentFilters from './AgentFilters';
+import { loadGrouping } from '../Actions/filterActions';
 
 @connect(state => ({
   filterSets:         allSelectorFactory('TicketFilterSets')(state),
@@ -26,11 +27,47 @@ export class AgentFiltersContainer extends SeparateComponent {
     stars:              PropTypes.object,
     starsCounts:        PropTypes.object,
     ticketCustomFields: PropTypes.object,
+    dispatch:           PropTypes.func,
   };
 
   static getType() {
     return 'AgentFilters';
   }
+
+  constructor(props) {
+    super(props);
+    let mode = null;
+    if (props.filterSets.size) {
+      mode = {
+        type:   'filter',
+        filter: props.filterSets.first().get('filters').first(),
+      };
+    }
+    this.state = {
+      mode,
+    };
+  }
+
+  onGroupingChange = (id, groupBy) => {
+    this.props.dispatch(loadGrouping(id, groupBy));
+  };
+
+  onSelectMode = (mode) => {
+    console.log(mode);
+    if (mode !== this.state.mode) {
+      switch (mode.type) {
+        case 'filter':
+          /* eslint-disable no-undef, camelcase */
+          if (DeskPRO_Window) {
+            DeskPRO_Window.loadListPane(`ticket-search/filter/${mode.filter}`, { isBackgroundLoad: false });
+          }
+          /* eslint-enable no-undef, camelcase */
+          break;
+        default:
+      }
+    }
+    this.setState({ mode });
+  };
 
   render() {
     const {
@@ -53,6 +90,8 @@ export class AgentFiltersContainer extends SeparateComponent {
         stars={stars}
         starsCounts={starsCounts}
         ticketCustomFields={ticketCustomFields}
+        onSelectMode={this.onSelectMode}
+        onGroupingChange={this.onGroupingChange}
       />
     );
   }

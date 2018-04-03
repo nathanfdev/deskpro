@@ -21,6 +21,7 @@ export default class AgentFilters extends React.Component {
     starsCounts:        PropTypes.object,
     ticketCustomFields: PropTypes.object,
     onSelectMode:       PropTypes.func,
+    onGroupingChange:   PropTypes.func,
   };
 
   static defaultProps = {
@@ -32,6 +33,7 @@ export default class AgentFilters extends React.Component {
     starsCounts:        {},
     ticketCustomFields: {},
     onSelectMode() {},
+    onGroupingChange() {},
   };
 
   constructor(props) {
@@ -64,6 +66,7 @@ export default class AgentFilters extends React.Component {
       stars,
       starsCounts,
       ticketCustomFields,
+      onGroupingChange,
     } = this.props;
     const {
       mode
@@ -77,19 +80,19 @@ export default class AgentFilters extends React.Component {
         </Heading>
         <DrawerList>
           {filterSets.toArray().map(filterSet => (
-
-              <FiltersSet
-                key={filterSet.get('id')}
-                ref={(c) => { this.drawers[`filterSet${filterSet.get('id')}`] = c; }}
-                opened
-                onSelectMode={this.onSelectMode}
-                filterSet={filterSet}
-                filters={filters}
-                filtersCounts={filtersCounts}
-                groupFields={groupFields}
-                mode={mode}
-                ticketCustomFields={ticketCustomFields}
-              />
+            <FiltersSet
+              key={filterSet.get('id')}
+              ref={(c) => { this.drawers[`filterSet${filterSet.get('id')}`] = c; }}
+              opened
+              onSelectMode={this.onSelectMode}
+              onGroupingChange={onGroupingChange}
+              filterSet={filterSet}
+              filters={filters}
+              filtersCounts={filtersCounts}
+              groupFields={groupFields}
+              mode={mode}
+              ticketCustomFields={ticketCustomFields}
+            />
             )
           )}
           <Stars
