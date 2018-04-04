@@ -40,11 +40,11 @@ class ApiLimitsContext extends BaseContext
      */
     public function globalLimitsAreExhausted()
     {
-        $limits = $this->getApiKeyLimitRepository()->findBy(['limit_type' => AbstractLimit::TYPE_GLOBAL]);
-        foreach ($limits as $limit) {
-            $limit->setCurrent(0);
-            $this->persistAndFlush($limit);
-        }
+        $this->get('settings_resolver')->setVirtual('api_limits.global.hour', 10);
+        $limit = new ApiKeyLimit();
+        $limit->setType(AbstractLimit::TYPE_GLOBAL);
+        $limit->setInterval(AbstractLimit::INTERVAL_HOUR);
+        $this->persistAndFlush($limit);
     }
 
     /**
