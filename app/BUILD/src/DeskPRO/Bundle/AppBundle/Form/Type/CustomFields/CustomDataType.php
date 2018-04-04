@@ -598,6 +598,7 @@ class CustomDataType extends AbstractType
                     'help'     => $def->getRealDescription(),
                     'currency' => $currency->getCurrencyCode(),
                     'divisor'  => $currency->getDelimiter(),
+                    'grouping' => true,
                 ]);
 
             default:

@@ -272,7 +272,7 @@ class CustomDataHandler implements SubscribingHandlerInterface
             $currency = $this->em->getRepository(Currency::class)->find($currencyId);
             if ($currency) {
                 $value = $data->getData() / $currency->getDelimiter();
-                $value = number_format($value, $currency->getDecimalPlaces(), '.', '');
+                $value = number_format($value, $currency->getDecimalPlaces(), '.', ',');
             }
         }
 

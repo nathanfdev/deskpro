@@ -121,7 +121,7 @@ class CustomFieldUtil
                     $currency = $this->em->getRepository(CurrencyEntity::class)->find($currencyId);
                     if ($currency) {
                         $value = $data->getData() ? ($data->getData() / $currency->getDelimiter()) : 0;
-                        $value = $currency->getSymbol().' '.number_format($value, $currency->getDecimalPlaces(), '.', '');
+                        $value = $currency->getSymbol().' '.number_format($value, $currency->getDecimalPlaces(), '.', ',');
                     }
                 }
 
