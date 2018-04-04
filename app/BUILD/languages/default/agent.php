@@ -2358,6 +2358,7 @@ return [
     'agent.tickets.reply_and_set_status'                       => 'Reply and set a status',
     'agent.tickets.results'                                    => 'Results',
     'agent.tickets.save_errors'                                => 'Please correct the following errors',
+    'agent.tickets.save_note_as'                               => 'Save Note as ...',
     'agent.tickets.search_all_tickets'                         => 'Search all tickets',
     'agent.tickets.search_for_people_to_add'                   => 'Search for people to add, or enter their email addresses to create them',
     'agent.tickets.select_group_var'                           => 'Select Field to Group Tickets',
