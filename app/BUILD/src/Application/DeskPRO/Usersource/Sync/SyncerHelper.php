@@ -128,6 +128,11 @@ class SyncerHelper
             // tries the auto-agent routine, if agent usersource (just like on login from a usersource)
             LoginProcessor::tryAutoAgent($usersource, $person);
         }
+
+        if (!empty($user_info['picture_data'])) {
+            $this->updatePictureData($person, $user_info['picture_data']);
+        }
+
         try {
             LoginProcessor::tryUsergroupPromotion($usersource, $person, $user_info);
         } catch (\Exception $ex) {
@@ -146,6 +151,55 @@ class SyncerHelper
         );
 
         return $person;
+    }
+
+    /**
+     * @param Person $person
+     * @param mixed  $pictureData
+     */
+    protected function updatePictureData(Person $person, $pictureData)
+    {
+        $filename = tempnam(dp_get_tmp_dir(), 'picture');
+        $fp       = @fopen($filename, 'w');
+
+        if (!$fp) {
+            return;
+        }
+
+        @fwrite($fp, $pictureData);
+        @fclose($fp);
+
+        $mime_map = [
+            IMAGETYPE_GIF  => ['gif', 'image/gif'],
+            IMAGETYPE_JPEG => ['jpg', 'image/jpeg'],
+            IMAGETYPE_PNG  => ['png', 'image/png'],
+        ];
+        $image_info = getimagesize($filename);
+        if ($image_info && $image_info[0] && $image_info[1] && isset($mime_map[$image_info[2]])) {
+            $mime = $mime_map[$image_info[2]];
+            $file = new \Symfony\Component\HttpFoundation\File\UploadedFile(
+                $filename, 'dp-source-picture.'.$mime[0], $mime[1], strlen($pictureData)
+            );
+
+            $accept = App::getContainer()->getAttachmentAccepter();
+            $error  = $accept->getRestrictionSet($person->isAgent() ? 'agent' : 'user')->getError($file);
+            if ($error) {
+                $this->log(Logger::WARN, sprintf(
+                    'Error during updating profile picture (skipping this error): %s',
+                    print_r($error, true)
+                ));
+            } else {
+                $blob = $accept->accept($file);
+                if ($person->getPictureBlob()) {
+                    App::getContainer()->getBlobStorage()->deleteBlobRecord(
+                        $person->getPictureBlob()
+                    );
+                }
+                $person->setPictureBlob($blob);
+            }
+        }
+
+        @unlink($filename);
     }
 
     public function updateOrCreateAssociation(
