@@ -11,7 +11,6 @@ parameters:
   monolog.logger.class: DeskPRO\Bundle\AppBundle\Logging\NoExceptionsLogger
   file_locator.class: DeskPRO\Bundle\AppBundle\HttpKernel\Config\FileLocator
   nelmio_api_doc.extractor.api_doc_extractor.class: DeskPRO\Bundle\ApiBundle\ApiDoc\Extractor\ApiDocExtractor
-  jms_serializer.json_serialization_visitor.class: DeskPRO\Bundle\AppBundle\Serializer\Visitor\JsonSerializationVisitor
   sensio_framework_extra.controller.listener.class: DeskPRO\Bundle\AppBundle\Security\EventListener\ControllerListener
   fos_rest.body_listener.throw_exception_on_unsupported_content_type: true
   fos_rest.body_listener.default_format: json
