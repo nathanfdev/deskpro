@@ -22,11 +22,11 @@ INSERT INTO `currencies` (`currency_code`, `name`, `symbol`, `decimal_places`) V
 ('EUR', 'Euro', '€', '2'),
 ('JPY', 'Japanese yen', ' ¥‎', '2'),
 ('AUD', 'Australian dollar', 'A$', '2'),
-('CHF', 'Swiss franc', 'SFr.', '2'),
-('CAD', 'Canadian dollar', 'C$', '2'),
-('HKD', 'Hong Kong dollar', 'hk$', '2'),
-('SEK', 'Swedish krona', 'kr', '2'),
-('NZD', 'New Zealand dollar', '$', '2')
+('CHF', 'Swiss franc', 'CHF', '2'),
+('CAD', 'Canadian dollar', 'CA$', '2'),
+('HKD', 'Hong Kong dollar', 'HK$', '2'),
+('SEK', 'Swedish krona', 'SEK', '2'),
+('NZD', 'New Zealand dollar', 'NZ$', '2')
 SQL
         );
     }
