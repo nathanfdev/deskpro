@@ -60,6 +60,7 @@ TXT
             ->addOption('fix-indexes', null, InputOption::VALUE_NONE, 'Fix indexes')
             ->addOption('fix-fks', null, InputOption::VALUE_NONE, 'Fix foreign key constraints')
             ->addOption('fix-ref-integrity', null, InputOption::VALUE_NONE, 'Fix referential integrity. This will check all FKs to ensure referential integrity between tables. If there is a problem, columns will be set to NULL or rows may be deleted. Since integrity errors may sometimes involve deleting data, it\'s very highly recommend to make a backup first. Deleted records SHOULD be unrefernced or old (i.e. unused or invalid), but you should make a backup anyway just in case.')
+            ->addOption('fix-all', null, InputOption::VALUE_NONE, 'Shortcut to enable all --fix-XXX options.')
         ;
     }
 
@@ -70,6 +71,24 @@ TXT
     {
         $logger = new Logger('fix-schema');
         $logger->pushHandler(new StreamHandler($this->getContainer()->get('deskpro.app_env')->getUserLogsDir().'/fix-schema.log'));
+
+        if (!$input->getOption('fix-tables')
+            && !$input->getOption('fix-indexes')
+            && !$input->getOption('fix-fks')
+            && !$input->getOption('fix-ref-integrity')
+            && !$input->getOption('fix-all')
+        ) {
+            $output->writeln('Specify at least one fix option. Check --help for usage info.');
+
+            return 1;
+        }
+
+        if ($input->getOption('fix-all')) {
+            $input->setOption('fix-tables', true);
+            $input->setOption('fix-indexes', true);
+            $input->setOption('fix-fks', true);
+            $input->setOption('fix-ref-integrity', true);
+        }
 
         if (!$input->getOption('run')) {
             $output->writeln('<info>!!! NOTE !!!</info>');
