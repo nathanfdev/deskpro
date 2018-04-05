@@ -142,11 +142,6 @@ class AppsController extends AbstractController
 
     public function getPackageAction($name)
     {
-        // we are expecting the client to double url encode $name
-        // in case it contains forward slashes, e.g @deskproapps/app-name
-        // the actual problem can be solved by just double encoding of '/', / => %2F => %252F
-        // but it is simpler on the client to double encode everything
-        $name    = urldecode(urldecode($name));
         $manager = $this->container->getAppManager();
 
         if (!$manager->hasPackage($name)) {
