@@ -65,7 +65,29 @@ pageMeta.baseId = '{{ baseId }}';
 			<h4 class="light">{{ phrase('agent.general.status') }}</h4>
 			{% include 'AgentBundle:Common:select-feedback-status.html.twig' with {'name': 'newfeedback[status_code]'} %}
 		</div>
-		<br class="clear" />
+		<div class="col">
+			<h4 class="light">{{ phrase('agent.general.labels') }}</h4>
+      <div class="tags-wrap article-tags" style="width:250px">
+        <input type="text" value="{% for label in state.newfeedback.labels %}{{label.label}},{% endfor %}" data-allow-new="{{ app.user.hasPerm('agent_publish.articles_create_labels') ? 1 : 0 }}" />
+      </div>
+		</div>
+		<div class="col">
+			<h4 class="light">{{ phrase('agent.general.attachments') }}</h4>
+      {% include 'AgentBundle:Common:attach-row-tmpl.html.twig' with {formname: 'newfeedback[attach_ids][]'} %}
+      <div class="file-input">
+        <input type="file" name="file-upload" multiple="multiple" />
+      </div>
+      <ul class="files file-list">
+        {% for attachment in attachments %}
+          <li class="in" style="height: 18px;">
+            <input type="hidden" name="newfeedback[attach_ids][]" value="{{ attachment.blob.id }}">
+            <em class="remove-attach-trigger"></em>
+            <label><a href="{{ attachment.url }}" target="_blank">{{ attachment.blob.filename }}</a><span>&nbsp;{{ attachment.filesize_readable }}</span></label>
+          </li>
+        {% endfor %}
+      </ul>
+		</div>
+    <br class="clear" />
 	</div>
 </div>
 
@@ -136,55 +158,6 @@ pageMeta.baseId = '{{ baseId }}';
 	<div class="content" style="padding-right: 10px;">
 		<h4>{{ phrase('agent.general.description') }}</h4>
 		<textarea type="text" name="newfeedback[content]" id="{{baseId}}_content">{% if message %}{{message.getMessageHtml()}}{% else %}{{ state.newfeedback.content }}{% endif %}</textarea>
-	</div>
-</div>
-
-
-<div class="section other-section" id="{{baseId}}_other_section">
-	<div class="content">
-		{# Tab Container #}
-		<div class="tab-container">
-			<nav id="{{baseId}}_other_props_tabs_wrap" {% if attachments|length %}class="on"{% endif %}>
-				<ul id="{{baseId}}_other_props_tabs">
-					<li data-tab-for="> .tab-properties">{{ phrase('agent.general.properties') }}</li>
-					<li data-tab-for="> .tab-attach" {% if attachments|length %}class="on"{% endif %}>{{ phrase('agent.general.attachments') }}</li>
-				</ul>
-			</nav>
-			<div class="content-wrapper" id="{{baseId}}_other_props_tabs_content" {% if not attachments|length %}style="display: none"{% endif %}>
-				{# Tab Properties #}
-				<div class="tab-properties" style="display: none">
-					<dl>
-						<dt class="prop">{{ phrase('agent.general.labels') }}</dt>
-						<dd class="prop">
-							<div class="tags-wrap article-tags">
-								<input type="text" value="{% for label in state.newfeedback.labels %}{{label.label}},{% endfor %}" data-allow-new="{{ app.user.hasPerm('agent_publish.articles_create_labels') ? 1 : 0 }}" />
-							</div>
-						</dd>
-					</dl>
-				</div>
-				{# /Tab Properties #}
-
-				{# Tab Attach #}
-				<div class="tab-attach" {% if not attachments|length %}style="display: none"{% endif %}>
-					{% include 'AgentBundle:Common:attach-row-tmpl.html.twig' with {formname: 'newfeedback[attach_ids][]'} %}
-					<h6>{{ phrase('agent.general.attachments') }}</h6>
-					<div class="file-input">
-						<input type="file" name="file-upload" multiple="multiple" />
-					</div>
-          <ul class="files file-list">
-            {% for attachment in attachments %}
-              <li class="in" style="height: 18px;">
-                <input type="hidden" name="newfeedback[attach_ids][]" value="{{ attachment.blob.id }}">
-                <em class="remove-attach-trigger"></em>
-                <label><a href="{{ attachment.url }}" target="_blank">{{ attachment.blob.filename }}</a><span>&nbsp;{{ attachment.filesize_readable }}</span></label>
-              </li>
-            {% endfor %}
-          </ul>
-				</div>
-				{# /Tab Attach #}
-			</div>
-		</div>
-		{# /Tab Container #}
 	</div>
 </div>
 

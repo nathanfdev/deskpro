@@ -222,9 +222,13 @@ DeskPRO.Agent.PageFragment.Page.NewFeedback = new Orb.Class({
 		var h = $(window).height();
 
 		var txt = this.getEl('content');
+    var contentHeight = 500;
+    if (this.getEl('linked_ticket_section').length) {
+      contentHeight += 150;
+    }
 
     window.LegacyRteTextarea.init(txt, {
-			height: Math.max(h - 500, 200)
+			height: Math.max(h - contentHeight, 150)
 		});
 
     txt.on('froalaEditor.keypress', function () {
@@ -240,57 +244,32 @@ DeskPRO.Agent.PageFragment.Page.NewFeedback = new Orb.Class({
 
 	_initOtherSection: function() {
 		var self = this;
-		this.otherTabs = new DeskPRO.UI.SimpleTabs({
-			triggerElements: $('li', this.getEl('other_props_tabs')),
-			context: this.getEl('other_props_tabs_content'),
-			autoSelectFirst: false,
-			onTabSwitch: function(eventData) {
-				if (!self.labelsInput && eventData.tabContent.hasClass('tab-properties')) {
-					self.labelsInput = new DeskPRO.UI.LabelsInput({
-						type: 'feedback',
-						fieldName: 'newfeedback[labels]',
-						input: $(".tags-wrap input", eventData.tabContent),
-						onChange: function() {
-							if (self.stateSaver) {
-								self.stateSaver.triggerChange();
-							}
-						}
-					});
-					self.ownObject(self.labelsInput);
-				}
-			},
-			onTabClick: (function(ev) {
-				var contentWrap = this.getEl('other_props_tabs_content');
-				var navWrap = this.getEl('other_props_tabs_wrap');
-				var tab = ev.tabEl;
 
-				// Toggle content state if we're clicking for the first time,
-				// or re-clicking a tab
-				if (!$('.on', navWrap).length || tab.is('.on')) {
-					if (contentWrap.is(':visible')) {
-						contentWrap.hide();
-						navWrap.removeClass('on');
-					} else {
-						contentWrap.show();
-						navWrap.addClass('on');
-					}
-				}
-			}).bind(this)
-		});
-		this.ownObject(this.otherTabs);
+    // Labels
+    self.labelsInput = new DeskPRO.UI.LabelsInput({
+      type: 'feedback',
+      fieldName: 'newfeedback[labels]',
+      input: $(".tags-wrap.article-tags input", self.wrapper),
+      onChange: function() {
+        if (self.stateSaver) {
+          self.stateSaver.triggerChange();
+        }
+      }
+    });
+    self.ownObject(self.labelsInput);
 
-		// Attachments
-		DeskPRO_Window.util.fileupload(this.wrapper, { page: this });
-		var list = $('.file-list', this.wrapper);
-		$('input', list[0]).live('click', function() {
-			var el = $(this);
-			var li = el.parent();
-			if (el.is(':checked')) {
-				li.removeClass('unchecked');
-			} else {
-				li.addClass('unchecked');
-			}
-			self.updateUi();
-		});
-	}
+    // Attachments
+    DeskPRO_Window.util.fileupload(this.wrapper, { page: this });
+    var list = $('.file-list', this.wrapper);
+    $('input', list[0]).live('click', function() {
+      var el = $(this);
+      var li = el.parent();
+      if (el.is(':checked')) {
+        li.removeClass('unchecked');
+      } else {
+        li.addClass('unchecked');
+      }
+      self.updateUi();
+    });
+  }
 });
