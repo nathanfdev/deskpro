@@ -40,9 +40,14 @@ class ApiLimitsContext extends BaseContext
      */
     public function globalLimitsAreExhausted()
     {
-        $this->get('settings_resolver')->setVirtual('api_limits.global.hour', 10);
+        $this->em()->getConnection()->executeUpdate(
+            'REPLACE INTO settings (name, value) VALUES (:name, :value)',
+            ['name' => 'api_limits.global.hour', 'value' => 10]
+        );
         $limit = new ApiKeyLimit();
         $limit->setType(AbstractLimit::TYPE_GLOBAL);
+        $limit->setLimit(10);
+        $limit->setCurrent(0);
         $limit->setInterval(AbstractLimit::INTERVAL_HOUR);
         $this->persistAndFlush($limit);
     }
