@@ -201,11 +201,7 @@ export const preloadData    = createAction(
           const appStoreConfig = builder.build();
 
           // bootstrap appstore
-          return DeskproAppStore.bootstrap(dispatch, api, appStoreConfig)
-            .then(() => api.sendGet(api.prepareParams(batchComponents)).success(onBatchComponentsSuccess))
-            .then(() => {
-              dispatch(donePreloading());
-            });
+          return DeskproAppStore.bootstrap(dispatch, api, appStoreConfig);
         })
         .then(() => {
           dispatch(donePreloading());
