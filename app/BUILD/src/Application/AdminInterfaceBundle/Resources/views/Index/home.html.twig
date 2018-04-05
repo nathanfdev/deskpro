@@ -118,6 +118,20 @@
 		</div>
 	</div>
 
+	<div style="margin: 15px 15px 0 15px" ng-if="missed_fk_found">
+		<div class="alert alert-danger" style="margin-bottom: 0; position: relative; border-width: 10px; border-color: #f00;">
+			<div style="float:left">
+				<i class="fa fa-exclamation-circle" style="font-size: 40px;"></i>
+			</div>
+			<div style="margin-left: 50px;">
+				<p>
+				  Your database schema is corrupt and is missing relationship mapping information (foreign keys). This can lead to referential integrity issues that cause errors and unexpected behaviour. 
+          Please contact Deskpro support at <a href="https://support.deskpro.com/">https://support.deskpro.com/</a> for assistance in solving this.
+				</p>
+			</div>
+		</div>
+	</div>
+
 	<div style="margin: 15px 15px 0 15px" ng-if="missconfigured_web_root">
 		<div class="alert alert-danger" style="margin-bottom: 0; position: relative; border-width: 10px; border-color: #f00;">
 			<div style="float:left">

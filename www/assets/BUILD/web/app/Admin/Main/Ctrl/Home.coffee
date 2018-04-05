@@ -17,6 +17,7 @@ define [
       @$scope.hide_admin_upgrade_notice = window.hide_admin_upgrade_notice || false
       @$scope.readable_config = false
       @$scope.missconfigure_web_root = false
+      @$scope.missed_fk_found = false
       @$scope.valid_url = true
 
       @online_agents  = []
@@ -77,6 +78,7 @@ define [
           @apc_status?.is_problem
         ]
         @is_server_problem = problem_triggers.filter((x) -> return !!x).length > 0
+        @$scope.missed_fk_found = @error_status.missed_fk_found
       )
 
       # Get news and version info in parallel
