@@ -25,6 +25,18 @@ class InlineSelectComp extends React.Component {
     this.state = { isOpen: false };
   }
 
+  componentDidMount() {
+    const pos  = this.$el.offset();
+    const posLeft = pos.left;
+    const posTop  = pos.top + 20;
+
+    // eslint-disable-next-line react/no-did-mount-set-state
+    this.setState({
+      posTop, posLeft
+    });
+  }
+
+
   componentDidUpdate() {
     this.refreshSize();
   }
