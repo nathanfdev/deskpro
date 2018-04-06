@@ -18,7 +18,7 @@ function loadInstance(app) {
 }
 
 /**
- * @param {String} app
+ * @param {String} appName
  * @return Promise
  */
 function createInstance(appName) {
