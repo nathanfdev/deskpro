@@ -36,7 +36,7 @@ class List extends React.Component {
     const { onLabelClick, onEditReportClick, onRunReportClick, onChangeReportVar } = this.props;
 
     return (
-      <div className="stat-list-wrapper">
+      <div className="stat-list-wrapper" onScroll={() => console.log}>
         <ul className="stat-list">
           {customReports.map(
             report =>
