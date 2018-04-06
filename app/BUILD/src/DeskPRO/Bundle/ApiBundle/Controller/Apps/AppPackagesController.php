@@ -66,7 +66,7 @@ class AppPackagesController extends CrudController
      *      requirements={
      *          {
      *              "name"="application",
-     *              "requirement"="^(?=.*[^\d].*)[^/]+$",
+     *              "requirement"="^(@[^/]+/)?([^/]+)$",
      *              "description"="The name of the application",
      *              "dataType"="string"
      *          }
