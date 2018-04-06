@@ -113,7 +113,7 @@ class AppsController extends BaseController
     }
 
     /**
-     * @Rest\Get("/{application}", name="api_get_app_instance")
+     * @Rest\Get("/{application}", name="api_get_app_instance", requirements={"application"="^(@[^/]+/)?([^/]+)$"})
      *
      * @param Entity\AppStore\AppInstance|null $application
      * @ParamConverter("application", class="AppBundle:Entity\AppStore\AppInstance", converter="DeskPRO\Bundle\AppStoreBundle\ParamConverter\AppInstanceParamConverter")
@@ -154,7 +154,7 @@ class AppsController extends BaseController
     }
 
      /**
-      * @Rest\Post("/{application}")
+      * @Rest\Post("/{application}", requirements={"application"="^(@[^/]+/)?([^/]+)$"})
       * @ParamConverter("application", class="AppBundle:Entity\AppStore\App", converter="DeskPRO\Bundle\AppStoreBundle\ParamConverter\AppParamConverter", options={"numericId" = "instanceId"})
       */
      public function createAction(Entity\AppStore\App $application = null)
@@ -183,7 +183,7 @@ class AppsController extends BaseController
      }
 
     /**
-     * @Rest\Put("/{application}", condition="request.headers.get('Content-Type') matches '#application/json#i'")
+     * @Rest\Put("/{application}", condition="request.headers.get('Content-Type') matches '#application/json#i'", requirements={"application"="^(@[^/]+/)?([^/]+)$"})
      * @ParamConverter("application", class="AppBundle:Entity\AppStore\App", converter="DeskPRO\Bundle\AppStoreBundle\ParamConverter\AppInstanceParamConverter")
      *
      * @param Entity\AppStore\AppInstance $application
@@ -243,7 +243,7 @@ class AppsController extends BaseController
     }
 
     /**
-     * @Rest\Delete("/{application}")
+     * @Rest\Delete("/{application}", requirements={"application"="^(@[^/]+/)?([^/]+)$"})
      *
      * @param Entity\AppStore\AppInstance $application
      * @ParamConverter("application", class="AppBundle:Entity\AppStore\AppInstance", converter="DeskPRO\Bundle\AppStoreBundle\ParamConverter\AppInstanceParamConverter")
@@ -276,7 +276,7 @@ class AppsController extends BaseController
     }
 
     /**
-     * @Rest\Get("/{application}/manifest")
+     * @Rest\Get("/{application}/manifest", requirements={"application"="^(@[^/]+/)?([^/]+)$"})
      * @ParamConverter("application", class="AppBundle:Entity\AppStore\App", converter="DeskPRO\Bundle\AppStoreBundle\ParamConverter\AppInstanceParamConverter")
      *
      * @param Entity\AppStore\AppInstance $application
@@ -293,7 +293,7 @@ class AppsController extends BaseController
     }
 
     /**
-     * @Rest\Get("/{application}/settings")
+     * @Rest\Get("/{application}/settings", requirements={"application"="^(@[^/]+/)?([^/]+)$"})
      *
      * @ParamConverter("application", class="AppBundle:Entity\AppStore\AppInstance", converter="DeskPRO\Bundle\AppStoreBundle\ParamConverter\AppInstanceParamConverter")
      *
@@ -311,7 +311,7 @@ class AppsController extends BaseController
     }
 
     /**
-     * @Rest\Get("/{application}/assets")
+     * @Rest\Get("/{application}/assets", requirements={"application"="^(@[^/]+/)?([^/]+)$"})
      *
      * @ParamConverter("application", class="AppBundle:Entity\AppStore\App", converter="DeskPRO\Bundle\AppStoreBundle\ParamConverter\AppInstanceParamConverter")
      * @ParamConverter("searchFilter", class="AppStoreBundle:Domain\AssetFilter", converter="DeskPRO\Bundle\AppStoreBundle\ParamConverter\AssetFilterParamConverter")
@@ -334,7 +334,7 @@ class AppsController extends BaseController
     }
 
     /**
-     * @Rest\Get("/{application}/status")
+     * @Rest\Get("/{application}/status", requirements={"application"="^(@[^/]+/)?([^/]+)$"})
      *
      * @ParamConverter("application", class="AppBundle:Entity\AppStore\App", converter="DeskPRO\Bundle\AppStoreBundle\ParamConverter\AppInstanceParamConverter")
      *

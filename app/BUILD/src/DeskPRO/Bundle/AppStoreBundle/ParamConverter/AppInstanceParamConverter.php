@@ -73,7 +73,7 @@ class AppInstanceParamConverter implements ParamConverterInterface
     /**
      * @param string $from
      *
-     * @return Entity\AppStore\App
+     * @return Entity\AppStore\AppInstance
      */
     private function convert($from)
     {
