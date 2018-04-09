@@ -558,7 +558,7 @@ class QueryParser
                         case 'w': $unit = 'week'; break;
                         case 'm': $unit = 'month'; break;
                         case 'y': $unit = 'year'; break;
-                        default: $this->semanticalError('Invalid relative date unit', $this->lexer->token);
+                        default: $this->semanticalError('Invalid relative date unit ', $this->lexer->token);
                     }
 
                     return Query\Val\RelativeTimeVal::makeTime($num, $unit);

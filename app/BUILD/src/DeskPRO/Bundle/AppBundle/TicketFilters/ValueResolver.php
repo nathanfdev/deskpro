@@ -155,11 +155,11 @@ class ValueResolver
     }
 
     /**
-     * @return string
+     * @return \DateTime
      */
     public function fnNow()
     {
-        return date('Y-m-d H:i:s');
+        return new \DateTime();
     }
 
     /**

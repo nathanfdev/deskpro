@@ -28,12 +28,12 @@ class Terms
     const TICKET_DATE_LAST_USER_REPLY  = 'ticket.date_last_user_reply';
     const TICKET_DATE_AGENT_WAITING    = 'ticket.date_agent_waiting';
     const TICKET_DATE_USER_WAITING     = 'ticket.date_user_waiting';
-    const TICKET_CUSTOM                = 'ticket.custom.field_%s';
+    const TICKET_CUSTOM                = 'ticket.data.%s';
 
     const PERSON_ID         = 'ticket.person.id';
     const PERSON_LABELS     = 'ticket.person.labels';
     const PERSON_USERGROUPS = 'ticket.person.usergroups';
-    const PERSON_CUSTOM     = 'ticket.person.custom.field_%s';
+    const PERSON_CUSTOM     = 'ticket.person.data.%s';
 
     const ORG_ID         = 'ticket.organization.id';
     const ORG_LABELS     = 'ticket.organization.labels';

@@ -21,6 +21,18 @@ class CustomData
     public $value = null;
 
     /**
+     * CustomData constructor.
+     *
+     * @param int   $field
+     * @param mixed $value
+     */
+    public function __construct($field = 0, $value = null)
+    {
+        $this->field = $field;
+        $this->value = $value;
+    }
+
+    /**
      * @param CustomData[] $customFields1
      * @param CustomData[] $customFields2
      */

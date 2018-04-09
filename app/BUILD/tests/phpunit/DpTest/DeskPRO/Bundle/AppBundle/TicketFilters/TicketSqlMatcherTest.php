@@ -4,6 +4,8 @@ namespace DpTest\Bundle\AppBundle\TicketFilters;
 
 use DeskPRO\Bundle\AppBundle\TicketFilters\Context;
 use DeskPRO\Bundle\AppBundle\TicketFilters\Model\Agent;
+use DeskPRO\Bundle\AppBundle\TicketFilters\Model\Entity\CustomField;
+use DeskPRO\Bundle\AppBundle\TicketFilters\Terms\CustomFieldsTermsHandler;
 use DeskPRO\Bundle\AppBundle\TicketFilters\Terms\TicketBasicTermsHandler;
 use DeskPRO\Bundle\AppBundle\TicketFilters\TicketSearchParams;
 use DeskPRO\Bundle\AppBundle\TicketFilters\TicketSqlMatcher;
@@ -42,6 +44,12 @@ class TicketSqlMatcherTest extends \PHPUnit_Framework_TestCase
 
         $this->matcher = new TicketSqlMatcher($resolver, [
             new TicketBasicTermsHandler(),
+            new CustomFieldsTermsHandler([
+                new CustomField(1, 'choice', ['my_choice']),
+                new CustomField(2, 'choice', ['my_other_choice']),
+                new CustomField(3, 'text', ['my_text']),
+                new CustomField(4, 'date', ['my_date']),
+            ]),
         ], ConnectionMock::create(), TicketSqlMatcher::ACTIVE);
     }
 
@@ -70,8 +78,8 @@ class TicketSqlMatcherTest extends \PHPUnit_Framework_TestCase
             'SELECT
                COUNT(*) AS count FROM tickets_search_active tickets
                LEFT JOIN tickets_participants c1_part ON c1_part.ticket_id = tickets.id
-               WHERE tickets.status = :c0 AND c1_part.person_id IN (:c1)',
-            ['c0' => 'awaiting_agent', 'c1' => [1]]
+               WHERE tickets.status = :c0 AND c1_part.person_id IN (:c2)',
+            ['c0' => 'awaiting_agent', 'c2' => [1]]
         );
     }
 
@@ -182,6 +190,62 @@ class TicketSqlMatcherTest extends \PHPUnit_Framework_TestCase
             WHERE (tickets.status = :c0) AND (tickets.agent_id = :subfilterval0) AND (tickets.department_id = :subfilterval1)',
             ['c0' => 'awaiting_agent', 'subfilterval0' => 5, 'subfilterval1' => 6],
             $params
+        );
+    }
+
+    public function test_custom_choice()
+    {
+        $this->assertEqualQuery(
+            'ticket.data.1 = 10',
+            'SELECT COUNT(*) AS count
+            FROM tickets_search_active tickets
+            LEFT JOIN custom_data_ticket c0_dat ON c0_dat.ticket_id = tickets.id AND c0_dat.root_field_id = :c1
+            WHERE c0_dat.field_id = :c2
+            ',
+            ['c1' => 1, 'c2' => 10]
+        );
+
+        $this->assertEqualQuery(
+            'ticket.data.my_choice = 10',
+            'SELECT COUNT(*) AS count
+            FROM tickets_search_active tickets
+            LEFT JOIN custom_data_ticket c0_dat ON c0_dat.ticket_id = tickets.id AND c0_dat.root_field_id = :c1
+            WHERE c0_dat.field_id = :c2
+            ',
+            ['c1' => 1, 'c2' => 10]
+        );
+
+        $this->assertEqualQuery(
+            'ticket.data.my_choice HAS 10',
+            'SELECT COUNT(*) AS count
+            FROM tickets_search_active tickets
+            LEFT JOIN custom_data_ticket c0_dat ON c0_dat.ticket_id = tickets.id AND c0_dat.root_field_id = :c1
+            WHERE c0_dat.field_id IN (:c2)
+            ',
+            ['c1' => 1, 'c2' => [10]]
+        );
+    }
+
+    public function test_custom_date()
+    {
+        $this->assertEqualQuery(
+            'ticket.data.4 < "2018-04-09"',
+            'SELECT COUNT(*) AS count
+            FROM tickets_search_active tickets
+            LEFT JOIN custom_data_ticket c0_dat ON c0_dat.ticket_id = tickets.id AND c0_dat.root_field_id = :c1
+            WHERE c0_dat.value < :c2
+            ',
+            ['c1' => 4, 'c2' => strtotime('2018-04-09')]
+        );
+
+        $this->assertEqualQuery(
+            'ticket.data.my_date > "2018-04-09"',
+            'SELECT COUNT(*) AS count
+            FROM tickets_search_active tickets
+            LEFT JOIN custom_data_ticket c0_dat ON c0_dat.ticket_id = tickets.id AND c0_dat.root_field_id = :c1
+            WHERE c0_dat.value > :c2
+            ',
+            ['c1' => 4, 'c2' => strtotime('2018-04-09')]
         );
     }
 

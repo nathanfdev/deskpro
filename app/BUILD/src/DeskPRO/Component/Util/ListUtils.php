@@ -104,6 +104,31 @@ class ListUtils
     }
 
     /**
+     * @param $array
+     * @param $fn
+     *
+     * @return array
+     */
+    public static function flatMap($array, $fn)
+    {
+        $flat = [];
+
+        foreach ($array as $idx => $v) {
+            $res = $fn($v, $idx);
+
+            if (is_array($res) || $res instanceof \Traversable) {
+                foreach ($res as $subV) {
+                    $flat[] = $subV;
+                }
+            } elseif ($res !== null) {
+                $flat[] = $res;
+            }
+        }
+
+        return $flat;
+    }
+
+    /**
      * Calls $fn on each value in $array and any that are not null are returned as part of a new array.
      *
      * @param \Traversable|array $array

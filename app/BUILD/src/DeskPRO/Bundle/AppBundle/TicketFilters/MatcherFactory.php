@@ -3,6 +3,7 @@
 namespace DeskPRO\Bundle\AppBundle\TicketFilters;
 
 use DeskPRO\Bundle\AppBundle\TicketFilters\Terms\AbstractTermsHandler;
+use DeskPRO\Bundle\AppBundle\TicketFilters\Terms\CustomFieldsTermsHandler;
 use DeskPRO\Bundle\AppBundle\TicketFilters\Terms\TicketBasicTermsHandler;
 use DeskPRO\Bundle\AppBundle\TicketFilters\Terms\TicketDateTermsHandler;
 use DeskPRO\Bundle\AppBundle\TicketFilters\Terms\TicketSlaTermsHandler;
@@ -50,6 +51,7 @@ class MatcherFactory
             new TicketBasicTermsHandler(),
             new TicketSlaTermsHandler(),
             new TicketDateTermsHandler(),
+            new CustomFieldsTermsHandler($this->loader->getTicketFields()),
         ];
 
         return $this->termHandlers;
@@ -62,7 +64,10 @@ class MatcherFactory
     {
         $resolver = new ValueResolver();
 
-        $matcher = new TicketMatcher($resolver, $this->getTermHandlers());
+        $matcher = new TicketMatcher(
+            $resolver,
+            $this->getTermHandlers()
+        );
 
         return $matcher;
     }

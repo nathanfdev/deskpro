@@ -22,6 +22,25 @@ class CustomField
     public $type = null;
 
     /**
+     * @var string[]
+     */
+    public $aliases = [];
+
+    /**
+     * CustomField constructor.
+     *
+     * @param int      $field
+     * @param string   $type
+     * @param string[] $aliases
+     */
+    public function __construct($field = 0, $type = null, array $aliases = [])
+    {
+        $this->field   = $field;
+        $this->type    = $type;
+        $this->aliases = $aliases;
+    }
+
+    /**
      * Is the field suitable for grouping on?
      *
      * @return bool

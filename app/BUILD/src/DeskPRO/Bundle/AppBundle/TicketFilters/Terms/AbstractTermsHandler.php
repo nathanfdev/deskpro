@@ -182,6 +182,12 @@ abstract class AbstractTermsHandler implements TermsHandlerInterface
             $checkValue = $checkValue->getValue();
         }
 
+        if ($checkValue instanceof \DateTime) {
+            $tmp = clone $checkValue;
+            $tmp->setTimezone(new \DateTimeZone('UTC'));
+            $checkValue = $tmp->format('Y-m-d H:i:s');
+        }
+
         $colVarName = preg_replace('/[^a-zA-Z0-9]/', '', $fieldColumn);
 
         switch ($operator) {

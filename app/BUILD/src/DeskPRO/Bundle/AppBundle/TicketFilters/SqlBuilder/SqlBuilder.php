@@ -169,17 +169,19 @@ class SqlBuilder extends \Doctrine\DBAL\Query\QueryBuilder
             $joinRenames[$this->mainTableAlias] = $queryParts['from'][0]['alias'];
         }
 
-        foreach ($cond->getParams() as $localName => $valueInfo) {
-            $uniqueName             = "c{$id}_{$localName}";
-            $varRenames[$localName] = $uniqueName;
-            $this->setParameter($uniqueName, $valueInfo[0], $valueInfo[1]);
-        }
         foreach ($cond->getSharedJoins() as $j) {
             $joinRenames[$j['localAlias']] = $j['table'];
         }
         foreach ($cond->getUniqueJoins() as $j) {
-            $uniqueName                    = "c{$id}_{$j['localAlias']}";
+            $uniqueName = "c{$id}_{$j['localAlias']}";
+            ++$id;
             $joinRenames[$j['localAlias']] = $uniqueName;
+        }
+        foreach ($cond->getParams() as $localName => $valueInfo) {
+            $uniqueName = "c{$id}_{$localName}";
+            ++$id;
+            $varRenames[$localName] = $uniqueName;
+            $this->setParameter($uniqueName, $valueInfo[0], $valueInfo[1]);
         }
 
         // Sort vars from longest name to shortest

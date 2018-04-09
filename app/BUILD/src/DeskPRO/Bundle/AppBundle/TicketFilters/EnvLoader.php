@@ -4,6 +4,7 @@ namespace DeskPRO\Bundle\AppBundle\TicketFilters;
 
 use Application\DeskPRO\EntityRepository;
 use DeskPRO\Bundle\AppBundle\Entity\Repository\TicketFilterSetRepository;
+use DeskPRO\Bundle\AppBundle\ObjectAlias\ObjectAliasInterface;
 use DeskPRO\Bundle\AppBundle\TicketFilters\Model\Agent;
 use DeskPRO\Bundle\AppBundle\TicketFilters\Model\Entity\CustomField;
 use DeskPRO\Bundle\AppBundle\TicketFilters\Model\Filter;
@@ -192,9 +193,12 @@ class EnvLoader
 
         $this->ticketFields = [];
         foreach ($this->ticketFieldRepos->getEnabledTopFields() as $customDef) {
-            $f                    = new CustomField();
-            $f->field             = $customDef->getId();
-            $f->type              = $customDef->getTypeName();
+            $f          = new CustomField();
+            $f->field   = $customDef->getId();
+            $f->type    = $customDef->getTypeName();
+            $f->aliases = ListUtils::map($customDef->getAliases(), function (ObjectAliasInterface $a) {
+                return $a->getQualifiedName();
+            });
             $this->ticketFields[] = $f;
         }
 

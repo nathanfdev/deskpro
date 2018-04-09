@@ -4,10 +4,13 @@ namespace DpTest\Bundle\AppBundle\TicketFilters;
 
 use DeskPRO\Bundle\AppBundle\TicketFilters\Context;
 use DeskPRO\Bundle\AppBundle\TicketFilters\Model\Agent;
+use DeskPRO\Bundle\AppBundle\TicketFilters\Model\Entity\CustomData;
+use DeskPRO\Bundle\AppBundle\TicketFilters\Model\Entity\CustomField;
 use DeskPRO\Bundle\AppBundle\TicketFilters\Model\Entity\OrgModel;
 use DeskPRO\Bundle\AppBundle\TicketFilters\Model\Entity\PersonModel;
 use DeskPRO\Bundle\AppBundle\TicketFilters\Model\Entity\TicketModel;
 use DeskPRO\Bundle\AppBundle\TicketFilters\Model\Entity\TicketSlaModel;
+use DeskPRO\Bundle\AppBundle\TicketFilters\Terms\CustomFieldsTermsHandler;
 use DeskPRO\Bundle\AppBundle\TicketFilters\Terms\TicketBasicTermsHandler;
 use DeskPRO\Bundle\AppBundle\TicketFilters\Terms\TicketDateTermsHandler;
 use DeskPRO\Bundle\AppBundle\TicketFilters\Terms\TicketSlaTermsHandler;
@@ -65,21 +68,42 @@ class TicketMatcherTest extends \PHPUnit_Framework_TestCase
 
         $this->matcherContext = new Context($this->agentContext);
 
+        $makeField = function ($type, $id, $alias) {
+            $f          = new CustomField();
+            $f->field   = $id;
+            $f->type    = $type;
+            $f->aliases = [$alias];
+
+            return $f;
+        };
+
         $this->matcher = new TicketMatcher($resolver, [
             new TicketBasicTermsHandler(),
             new TicketSlaTermsHandler(),
             new TicketDateTermsHandler(),
+            new CustomFieldsTermsHandler([
+                new CustomField(1, 'choice', ['my_choice']),
+                new CustomField(2, 'choice', ['my_other_choice']),
+                new CustomField(3, 'text', ['my_text']),
+                new CustomField(4, 'date', ['my_date']),
+            ]),
         ]);
 
         // Ticket 1
-        $this->ticket1               = new TicketModel();
-        $this->ticket1->date_created = \DateTime::createFromFormat('Y-m-d H:i:s', '2017-12-04 14:00:00');
-        $this->ticket1->id           = 1;
-        $this->ticket1->agent        = 1;
-        $this->ticket1->agent_team   = 1;
-        $this->ticket1->department   = 1;
-        $this->ticket1->followers    = [100, 102];
-        $this->ticket1->labels       = ['label1', 'label2'];
+        $this->ticket1                = new TicketModel();
+        $this->ticket1->date_created  = \DateTime::createFromFormat('Y-m-d H:i:s', '2017-12-04 14:00:00');
+        $this->ticket1->id            = 1;
+        $this->ticket1->agent         = 1;
+        $this->ticket1->agent_team    = 1;
+        $this->ticket1->department    = 1;
+        $this->ticket1->followers     = [100, 102];
+        $this->ticket1->labels        = ['label1', 'label2'];
+        $this->ticket1->custom_fields = [
+            new CustomData(1, [10]),
+            new CustomData(2, [20]),
+            new CustomData(3, 'foo'),
+            new CustomData(4, strtotime('2018-04-09 01:00:00')),
+        ];
 
         $this->ticket1->person         = new PersonModel();
         $this->ticket1->person->labels = ['plabel1', 'plabel2'];
@@ -104,13 +128,17 @@ class TicketMatcherTest extends \PHPUnit_Framework_TestCase
         $this->ticket1->slasInfo = [$slaPass, $slaWarn, $slaFail];
 
         // Ticket 2
-        $this->ticket2             = new TicketModel();
-        $this->ticket2->id         = 2;
-        $this->ticket2->agent      = 2;
-        $this->ticket2->agent_team = 2;
-        $this->ticket2->department = 2;
-        $this->ticket2->followers  = [103, 104];
-        $this->ticket2->labels     = ['label3', 'label4'];
+        $this->ticket2                = new TicketModel();
+        $this->ticket2->id            = 2;
+        $this->ticket2->agent         = 2;
+        $this->ticket2->agent_team    = 2;
+        $this->ticket2->department    = 2;
+        $this->ticket2->followers     = [103, 104];
+        $this->ticket2->labels        = ['label3', 'label4'];
+        $this->ticket2->custom_fields = [
+            new CustomData(1, [10]),
+            new CustomData(4, strtotime('2018-01-01 01:00:00')),
+        ];
 
         $this->ticket2->person         = new PersonModel();
         $this->ticket2->person->labels = ['plabel3', 'plabel4'];
@@ -189,6 +217,27 @@ class TicketMatcherTest extends \PHPUnit_Framework_TestCase
     {
         $this->assertTrue($this->runTicket1Query('ticket.product IS NULL'));
         $this->assertTrue($this->runTicket1Query('ticket.product IS NULL AND ticket.priority IS NULL'));
+    }
+
+    public function test_custom_choice_checks()
+    {
+        $this->assertTrue($this->runTicket1Query('ticket.data.1 HAS 10'));
+        $this->assertTrue($this->runTicket1Query('ticket.data.1 IN (10, 11)'));
+        $this->assertTrue($this->runTicket1Query('ticket.data.my_choice HAS 10'));
+        $this->assertFalse($this->runTicket1Query('ticket.data.my_choice HAS 15'));
+
+        $this->assertTrue($this->runTicket1Query('ticket.data.2 HAS 20'));
+        $this->assertTrue($this->runTicket1Query('ticket.data.2 IN (20, 10)'));
+        $this->assertTrue($this->runTicket1Query('ticket.data.my_other_choice HAS 20'));
+        $this->assertFalse($this->runTicket1Query('ticket.data.my_other_choice HAS 15'));
+    }
+
+    public function test_custom_date_checks()
+    {
+        $this->assertTrue($this->runTicket1Query('ticket.data.4 < "2018-04-10"'));
+        $this->assertTrue($this->runTicket1Query('ticket.data.4 > "2018-01-01"'));
+        $this->assertTrue($this->runTicket1Query('ticket.data.my_date < "2018-04-10"'));
+        $this->assertTrue($this->runTicket1Query('ticket.data.my_date > "2018-01-01"'));
     }
 
     private function runTicket1Query($fql)
