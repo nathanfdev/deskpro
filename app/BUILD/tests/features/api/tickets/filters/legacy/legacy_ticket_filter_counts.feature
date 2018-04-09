@@ -30,6 +30,7 @@ Feature: /ticket_filters_counts endpoint
     When I send a GET request to "/api/v2/ticket_filters_counts"
     Then the response status code should be 200
     And the response should be in JSON
+    And print last response body
 
     And the JSON node "data.count" should be equal to 12
     And the JSON node "data.type" should be equal to 0
@@ -101,6 +102,7 @@ Feature: /ticket_filters_counts endpoint
     When I send a GET request to "/api/v2/ticket_filters_counts?group_by[{f3}]=<group_by>"
     Then the response status code should be 200
     And the response should be in JSON
+    And print last response body
     And the JSON node "data.nested[2].count" should be equal to 3
     And the JSON node "data.nested[2].grouped_by" should be equal to "<group_by>"
     And the JSON node "data.nested[2].nested" should have 2 elements

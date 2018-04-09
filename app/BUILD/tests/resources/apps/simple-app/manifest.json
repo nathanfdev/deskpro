@@ -71,14 +71,6 @@
       "type":"text"
     }
   ],
-  "customFields":[
-    {
-      "type":"dataList",
-      "attachedTo":"ticket",
-      "alias":"jiraCards",
-      "title":"Jira linked issues"
-    }
-  ],
   "deskproApiTags":[
     "tickets.*"
   ],
