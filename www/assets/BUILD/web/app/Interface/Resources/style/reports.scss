@@ -7,7 +7,6 @@
   }
 }
 
-
 // Header
 // Contains: The current dashboard, edit/create dashboard links and user access
 .reports-header {
@@ -307,11 +306,6 @@ ul.nav-link-list li.type-heading {
   a.control-inactive { color: $grey; }
 }
 
-
-
-
-
-
 .report-tabs {
   line-height: 16px;
   border-bottom: 1px solid $global-border;
@@ -488,8 +482,6 @@ ul.nav-link-list li.type-heading {
 
   a:hover { color: #333; }
 }
-
-
 
 
 // Buttons to enable/disable filters and layout editing

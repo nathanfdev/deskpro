@@ -175,3 +175,14 @@ ul.scroll-menu {
     li li li { padding-left: 21px; }
   }
 }
+
+$table-border-color: #999;
+$cell-border-color: #eee;
+
+.dataTables_length, .dataTables_filter {
+  padding: 10px;
+}
+
+.dataTables_wrapper {
+  padding: 0 10px 10px;
+}
