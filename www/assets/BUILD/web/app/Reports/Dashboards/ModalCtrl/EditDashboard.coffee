@@ -77,6 +77,14 @@ define ['DeskPRO/Util/Arrays', 'DeskPRO/Util/Util'], (Arrays, Util) -> [
     # UI handlers
     ####################################################################################################################
 
+    $scope.getInitials = (agent) ->
+      return '?' if !agent?
+      first    = agent.first_name
+      last     = agent.last_name
+      initials = (if first && first.length then first[0] else '') + (if last && last.length then last[0] else '')
+
+      return initials
+
     $scope.cancel = -> $modalInstance.dismiss('cancel')
 
     ###

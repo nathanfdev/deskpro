@@ -449,6 +449,17 @@ $right-bucket: 200px;
         position: relative;
         margin: 5px;
 
+        .text, .image {
+          position: absolute;
+          top: -2px;
+          left: -2px;
+          height: 26px;
+          width: 26px;
+          border-radius: 4px;
+          background-size: cover;
+          background: transparent no-repeat;
+          padding: 4px 0 2px 0;
+        }
       }
     }
 

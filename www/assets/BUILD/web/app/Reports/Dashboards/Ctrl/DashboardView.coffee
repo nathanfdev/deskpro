@@ -56,6 +56,14 @@ define ['DeskPRO/Util/Arrays'], (Arrays) -> [
     $scope.filterPermissions = (permission) ->
       permission.person || permission.team || permission.department
 
+    $scope.getInitials = (agent) ->
+      return '?' if !agent?
+      first    = agent.first_name
+      last     = agent.last_name
+      initials = (if first && first.length then first[0] else '') + (if last && last.length then last[0] else '')
+
+      return initials || '?';
+
     ####################################################################################################################
     # MODAL HANDLERS
     ####################################################################################################################
