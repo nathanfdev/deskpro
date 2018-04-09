@@ -54,10 +54,20 @@ class ReportDashboard
      */
     public function __construct(ReportDashboardEntity $entity)
     {
-        $this->id          = $entity->getId();
-        $this->title       = $entity->getTitle();
-        $this->isDefault   = $entity->isDefault();
-        $this->isAgent     = $entity->isAgent();
-        $this->permissions = $entity->getPermissions();
+        $this->id         = $entity->getId();
+        $this->title      = $entity->getTitle();
+        $this->isDefault  = $entity->isDefault();
+        $this->isAgent    = $entity->isAgent();
+        $permissionsArray = is_array($entity->getPermissions())
+            ? $entity->getPermissions()
+            : $entity->getPermissions()->toArray();
+        $this->permissions = array_filter($permissionsArray, function ($permission) {
+            /** @var ReportDashboardPermission $permission */
+            if ($permission->getAgent() && !$permission->getAgent()->isActiveAgent()) {
+                return false;
+            }
+
+            return true;
+        });
     }
 }
