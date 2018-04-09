@@ -31,7 +31,7 @@ Feature: apps packages api
     And I send a "GET" request to "api/v2/apps/packages/<packageName>"
     And I save the JSON node "data.id" as placeholder "appId"
 
-    When I send a "GET" request to "api/v2/apps/packages/<name>/manifest"
+    When I send a "GET" request to "api/v2/apps/packages/<packageName>/manifest"
     Then the response status code should be 200
     Then the JSON node "name" should be equal to "<packageName>"
 
