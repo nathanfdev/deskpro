@@ -1037,6 +1037,12 @@ class CustomDefAbstract extends \Application\DeskPRO\Domain\DomainObject impleme
             case self::TYPE_CHOICE:
                 $this->setHandlerClass(self::HANDLER_CLASS_CHOICE);
                 break;
+            case self::TYPE_CURRENCY:
+                $this->setHandlerClass(self::HANDLER_CLASS_CURRENCY);
+                break;
+            case self::TYPE_URL:
+                $this->setHandlerClass(self::HANDLER_CLASS_URL);
+                break;
 
             // extended choice types
             case 'multichoice':

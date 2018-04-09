@@ -22,7 +22,7 @@ class AsseticManagerService
 
         $manager = new \Application\DeskPRO\Assetic\AsseticManager(
             App::getConfigFromFile('assets'),
-            rtrim($app_env->getWwwRoot().$packages->getUrl('/', 'legacy_web'), '/'),
+            rtrim($app_env->getWwwRoot().$packages->getUrl('', 'legacy_web'), '/'),
             'build'
         );
 

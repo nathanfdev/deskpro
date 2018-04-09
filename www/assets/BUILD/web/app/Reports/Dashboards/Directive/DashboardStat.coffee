@@ -10,11 +10,39 @@ define ->
       </div>
     """
     link: (scope, element, attrs) ->
+
       initValue = (result) ->
+
+        el = $(element)
+        box = el.parent()
+
         if !result
           return
 
-        el = $(element)
+        try
+          options = if result.options then JSON.parse(result.options) else {}
+        catch e
+          options = {}
+          console.warn("invalid options")
+          console.log(e)
+
+        data = if result.data then JSON.parse(result.data) else []
+
+        if options.click_url?
+          vars = {};
+          matches = options?.click_url.match(/\$\{([a-zA-z0-9_]+)\}/)
+          url = options.click_url
+
+          for match, index in matches
+            if index % 2 == 1
+              vars[match] = matches[index - 1]
+            for key, variable of vars
+              if data[key]?
+                url = url.replace(variable, data[key])
+
+          box.css {cursor: 'pointer'}
+          box.click () -> window.open url
+
         valueElement = el.find('.stat-value')
         valueElement.html(result.value)
         if result.description
@@ -49,6 +77,8 @@ define ->
           h = $(this)
           c = 1 + valueElementTop
           h[0].style.bottom = "#{c}px"
+
+
     }
   ]
 

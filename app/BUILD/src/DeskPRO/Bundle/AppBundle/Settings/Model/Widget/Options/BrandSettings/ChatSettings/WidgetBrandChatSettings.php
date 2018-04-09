@@ -377,4 +377,28 @@ class WidgetBrandChatSettings implements GroupSequenceProviderInterface
 
         return $this;
     }
+
+    /**
+     * @param $userGroup
+     *
+     * @return $this
+     */
+    public function addUserGroup($userGroup)
+    {
+        $this->userGroups->add($userGroup);
+
+        return $this;
+    }
+
+    /**
+     * @param $userGroup
+     *
+     * @return $this
+     */
+    public function removeUserGroup($userGroup)
+    {
+        $this->userGroups->removeElement($userGroup);
+
+        return $this;
+    }
 }
