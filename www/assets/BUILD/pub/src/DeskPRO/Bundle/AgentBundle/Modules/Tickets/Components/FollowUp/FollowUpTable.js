@@ -109,7 +109,7 @@ class FollowUpTable extends React.Component {
         return (
           <span>
             <FormattedMessage id="agent.general.hold" />
-            : {action.getIn(['options', 'hold']) ?
+            : {action.getIn(['options', 'is_hold']) === '1' ?
               <FormattedMessage id="agent.tickets.put_on_hold" /> : <FormattedMessage id="agent.tickets.unhold_ticket" />}
           </span>
         );
@@ -128,7 +128,7 @@ class FollowUpTable extends React.Component {
       <table className="field-holders-table th-la">
         <thead>
           <tr>
-            <th>When</th>
+            <th><FormattedMessage id="agent.general.when" /></th>
             <th><FormattedMessage id="agent.general.agent" /></th>
             <th><FormattedMessage id="agent.general.actions" /></th>
             <th><FormattedMessage id="agent.general.criteria" /></th>

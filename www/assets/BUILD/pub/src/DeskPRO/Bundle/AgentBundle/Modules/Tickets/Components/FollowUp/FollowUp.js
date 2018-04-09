@@ -165,10 +165,10 @@ class FollowUpForm extends React.Component {
     this.types = [];
 
     if (ticketPerms.modify_assign_agent || ticketPerms.modify_assign_self) {
-      this.types.push({ value: 'agent', label: 'Assign Agent' });
+      this.types.push({ value: 'agent', label: <FormattedMessage id="agent.tickets.assign_agent" /> });
     }
     if (ticketPerms.modify_assign_team) {
-      this.types.push({ value: 'agent_team', label: 'Assign Team' });
+      this.types.push({ value: 'agent_team', label: <FormattedMessage id="agent.tickets.assign_team" /> });
     }
     if (ticketPerms.reply) {
       this.types.push({ value: 'reply', label: <FormattedMessage id="agent.tickets.add_reply_action" /> });
@@ -177,7 +177,7 @@ class FollowUpForm extends React.Component {
       this.types.push({ value: 'note', label: <FormattedMessage id="agent.tickets.add_note_action" /> });
     }
     if (ticketPerms.modify_set_hold) {
-      this.types.push({ value: 'hold', label: 'Hold' });
+      this.types.push({ value: 'hold', label: <FormattedMessage id="agent.general.hold" /> });
     }
     if (ticketPerms.modify_set_awaiting_agent
       || ticketPerms.modify_set_awaiting_user
@@ -185,7 +185,7 @@ class FollowUpForm extends React.Component {
       this.types.push({ value: 'status', label: <FormattedMessage id="agent.general.status" /> });
     }
     if (this.props.macros.size) {
-      this.types.push({ value: 'run_macro', label: 'Run macro' });
+      this.types.push({ value: 'run_macro', label: <FormattedMessage id="agent.tickets.run_macro_action" /> });
     }
 
     this.state = {

@@ -107,14 +107,19 @@ class Action extends React.Component {
     return (
       <div>
         <Label><FormattedMessage id="agent.general.agent" /></Label>
-        <Select
-          name="agent"
-          options={agents}
-          clearable={false}
-          searchable={false}
-          value={action.options.agent}
-          onChange={this.onSelectChange}
-        />
+        <FormattedMessage id="agent.general.please_select">
+          {placeholder => (
+            <Select
+              name="agent"
+              options={agents}
+              clearable={false}
+              searchable={false}
+              value={action.options.agent}
+              onChange={this.onSelectChange}
+              placeholder={placeholder}
+            />
+          )}
+        </FormattedMessage>
       </div>
     );
   };
@@ -142,14 +147,19 @@ class Action extends React.Component {
     return (
       <div>
         <Label><FormattedMessage id="agent.general.team" /></Label>
-        <Select
-          name="agent_team"
-          options={agentTeams}
-          clearable={false}
-          searchable={false}
-          value={action.options.agent_team}
-          onChange={this.onSelectChange}
-        />
+        <FormattedMessage id="agent.general.please_select">
+          {placeholder => (
+            <Select
+              name="agent_team"
+              options={agentTeams}
+              clearable={false}
+              searchable={false}
+              value={action.options.agent_team}
+              onChange={this.onSelectChange}
+              placeholder={placeholder}
+            />
+          )}
+        </FormattedMessage>
       </div>
     );
   };
@@ -162,7 +172,7 @@ class Action extends React.Component {
     const { action } = this.props;
     return (
       <div>
-        <Label>Hold</Label><br />
+        <Label><FormattedMessage id="agent.general.hold" /></Label><br />
         <Radio
           name="is_hold"
           checked={action.options.is_hold === 0}
@@ -252,7 +262,7 @@ class Action extends React.Component {
     return (
       <div className="action">
         <div className="type">
-          <Label htmlFor={this.typeId}>Type</Label>
+          <Label htmlFor={this.typeId}><FormattedMessage id="agent.general.type" /></Label>
           <Select
             id={this.typeId}
             options={types}

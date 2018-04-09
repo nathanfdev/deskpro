@@ -1,7 +1,9 @@
 import React from 'react';
 import PropTypes from 'prop-types';
+import { FormattedMessage } from 'react-intl';
 import classNames from 'classnames';
 import { Select, Input, Datetimepicker } from '@deskpro/react-components';
+import { ucFirst } from 'DeskPRO/Component/Util/String';
 
 class FollowUpTime extends React.Component {
   static propTypes = {
@@ -15,11 +17,11 @@ class FollowUpTime extends React.Component {
   };
 
   static presets = [
-    { time: { value: '15', unit: 'minutes' }, label: '15 minutes' },
-    { time: { value: '1', unit: 'hours' }, label: '1 hour' },
-    { time: { value: '6', unit: 'hours' }, label: '6 hours' },
-    { time: { value: '1', unit: 'days' }, label: '1 day' },
-    { time: { value: '3', unit: 'days' }, label: '3 days' },
+    { time: { value: '15', unit: 'minutes' }, label: <FormattedMessage id="agent.general.minutes">{text => `15 ${text}`}</FormattedMessage> },
+    { time: { value: '1', unit: 'hours' }, label: <FormattedMessage id="agent.general.hour">{text => `1 ${text.toLowerCase()}`}</FormattedMessage> },
+    { time: { value: '6', unit: 'hours' }, label: <FormattedMessage id="agent.general.hours">{text => `6 ${text}`}</FormattedMessage> },
+    { time: { value: '1', unit: 'days' }, label: <FormattedMessage id="agent.general.day">{text => `1 ${text.toLowerCase()}`}</FormattedMessage> },
+    { time: { value: '3', unit: 'days' }, label: <FormattedMessage id="agent.general.days">{text => `3 ${text}`}</FormattedMessage> },
   ];
 
   constructor(props) {
@@ -96,10 +98,10 @@ class FollowUpTime extends React.Component {
 
   renderSelector = () => {
     const options = [
-      { value: 'minutes', label: 'Minutes' },
-      { value: 'hours', label: 'Hours' },
-      { value: 'days', label: 'Days' },
-      { value: 'months', label: 'Months' },
+      { value: 'minutes', label: <FormattedMessage id="agent.general.minutes">{text => ucFirst(text)}</FormattedMessage> },
+      { value: 'hours', label: <FormattedMessage id="agent.general.hours">{text => ucFirst(text)}</FormattedMessage> },
+      { value: 'days', label: <FormattedMessage id="agent.general.days">{text => ucFirst(text)}</FormattedMessage> },
+      { value: 'months', label: <FormattedMessage id="agent.general.months">{text => ucFirst(text)}</FormattedMessage> },
     ];
     let value = '';
     let unit  = null;
@@ -113,14 +115,19 @@ class FollowUpTime extends React.Component {
           className="selector_value"
           onChange={this.onSelectorValueChange}
         />
-        <Select
-          clearable={false}
-          searchable={false}
-          className="unit"
-          value={unit}
-          onChange={this.onSelectorUnitChange}
-          options={options}
-        />
+        <FormattedMessage id="agent.general.please_select">
+          {placeholder => (
+            <Select
+              clearable={false}
+              searchable={false}
+              className="unit"
+              value={unit}
+              placeholder={placeholder}
+              onChange={this.onSelectorUnitChange}
+              options={options}
+            />
+          )}
+        </FormattedMessage>
       </li>
     );
   };
