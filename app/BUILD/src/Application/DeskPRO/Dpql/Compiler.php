@@ -2,7 +2,7 @@
 
 namespace Application\DeskPRO\Dpql;
 
-use Application\DeskPRO\Entity\ReportWidget;
+use Application\DeskPRO\Entity\ReportBuilder;
 use DeskPRO\Bundle\ReportBundle\Dashboard\DashboardWidgetManager;
 
 /**
@@ -83,7 +83,7 @@ class Compiler
      */
     public function replacePlaceholders($input, array $placeholders = [])
     {
-        $repository = \Application\DeskPRO\App::getEntityRepository(ReportWidget::class);
+        $repository = \Application\DeskPRO\App::getEntityRepository(ReportBuilder::class);
 
         $groupParams = $repository->getReportGroupParams();
 
@@ -195,7 +195,7 @@ class Compiler
             $variables[$var['name']] = $var;
         }
 
-        $repository  = \Application\DeskPRO\App::getEntityRepository(ReportWidget::class);
+        $repository  = \Application\DeskPRO\App::getEntityRepository(ReportBuilder::class);
         $groupParams = $repository->getReportGroupParams();
         $that        = $this;
 
@@ -232,7 +232,7 @@ class Compiler
      */
     protected function replaceDate($var, $varName, $variables)
     {
-        $repository  = \Application\DeskPRO\App::getEntityRepository(ReportWidget::class);
+        $repository  = \Application\DeskPRO\App::getEntityRepository(ReportBuilder::class);
         $groupParams = $repository->getReportGroupParams();
 
         $default = isset($var['default']) ? $var['default'] : null;
@@ -259,7 +259,7 @@ class Compiler
      */
     protected function replaceGroup($var, $variables, $groupType)
     {
-        $repository  = \Application\DeskPRO\App::getEntityRepository(ReportWidget::class);
+        $repository  = \Application\DeskPRO\App::getEntityRepository(ReportBuilder::class);
         $groupParams = $repository->getReportGroupParams();
 
         $varName = $var['name'];
