@@ -50,14 +50,6 @@ class AppManifest
     private $description;
 
     /**
-     * @JMS\Type("string")
-     * @JMS\Expose()
-     *
-     * @var string
-     */
-    private $scope;
-
-    /**
      * @JMS\Type("array<DeskPRO\Bundle\AppStoreBundle\Domain\AppManifest\Setting>")
      * @JMS\Expose()
      * @JMS\SerializedName("settings")
@@ -102,11 +94,11 @@ class AppManifest
     /**
      * @JMS\Type("array<string>")
      * @JMS\Expose()
-     * @JMS\SerializedName("externalApis")
+     * @JMS\SerializedName("domainWhitelist")
      *
      * @var string[]
      */
-    private $externalApis = [];
+    private $domainWhitelist = [];
 
     /**
      * @JMS\Type("array<string>")
@@ -207,26 +199,6 @@ class AppManifest
     }
 
     /**
-     * @return string
-     */
-    public function getScope()
-    {
-        return $this->scope;
-    }
-
-    /**
-     * @param string $scope
-     *
-     * @return $this
-     */
-    public function setScope($scope)
-    {
-        $this->scope = $scope;
-
-        return $this;
-    }
-
-    /**
      * @return AppManifest\Setting[]
      */
     public function getSettings()
@@ -269,9 +241,9 @@ class AppManifest
     /**
      * @return \string[]
      */
-    public function getExternalApis()
+    public function getDomainWhitelist()
     {
-        return $this->externalApis;
+        return $this->domainWhitelist;
     }
 
     /**
@@ -279,9 +251,9 @@ class AppManifest
      *
      * @return $this
      */
-    public function setExternalApis(array $externalApis)
+    public function setDomainWhitelist(array $externalApis)
     {
-        $this->externalApis = $externalApis;
+        $this->domainWhitelist = $externalApis;
 
         return $this;
     }

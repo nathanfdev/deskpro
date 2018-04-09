@@ -3,6 +3,8 @@ import PropTypes from 'prop-types';
 import { Progress, ProgressBar } from '@deskpro/react-components';
 import { api } from 'DeskPRO/Bundle/AppBundle/DAL';
 import { AppInfo } from './AppInfo';
+import { ScreenInstallerError } from './ScreenInstallerError';
+import { InstallerErrors } from '../InstallerErrors';
 
 function delay(interval, f) {
   if (window && typeof window.setTimeout === 'function') {
@@ -22,7 +24,8 @@ export class ScreenInstallerDefault extends React.Component {
   constructor(props)  {
     super(props);
     this.state = {
-      progress: 0
+      progress: 0,
+      error:    null
     };
   }
 
@@ -33,11 +36,23 @@ export class ScreenInstallerDefault extends React.Component {
       .then(() => {
         this.setState({ progress: 100 });
         delay(500, () => onInstallFinished(instanceId));
+      }).catch((error) => {
+        if (typeof error === 'object') {
+          error.deskpro = { type: InstallerErrors.INSTALL_DEFAULT_FAIL, instanceId };
+        }
+
+        this.setState({ error });
       });
   }
 
   render() {
     const { packageManifest } = this.props;
+
+    if (this.state.error) {
+      return (
+        <ScreenInstallerError error={this.state.error} />
+      );
+    }
 
     return (
       <AppInfo

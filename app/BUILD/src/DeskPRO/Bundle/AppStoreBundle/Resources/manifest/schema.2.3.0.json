@@ -19,6 +19,13 @@
     "isSingle": {
       "type": "boolean"
     },
+    "scope": {
+      "type": "string",
+      "enum": [
+        "agent",
+        "user"
+      ]
+    },
     "state": {
       "type": "array",
       "minItems": 0,
@@ -50,7 +57,7 @@
         "type": "string"
       }
     },
-    "domainWhitelist": {
+    "externalApis": {
       "type": "array",
       "items": {
         "type": "string"
@@ -62,6 +69,7 @@
     "name",
     "description",
     "author",
+    "scope",
     "targets"
   ],
   "definitions": {
