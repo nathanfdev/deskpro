@@ -1,4 +1,3 @@
-@new
 Feature: /ticket_filters_counts endpoint
   To legacy ticket filters grouping count
   As an API user
