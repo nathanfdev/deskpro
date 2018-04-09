@@ -26,7 +26,7 @@ define ['Admin/Main/Ctrl/Base', 'DeskPRO/Util/Strings'], (Admin_Ctrl_Base, Strin
       @$scope.done = =>
         @closeForSuccess(@info)
 
-      url = "/apps/packages/#{encodeURIComponent(encodeURIComponent(@pack.name))}"
+      url = "/apps/packages/#{@pack.name}"
       if @usersourceType then url += '?usersource_type=' + @usersourceType
       @Api.sendPutJson(url, {settings: @setting_values}).success( (info) =>
         @markAsDone(info)

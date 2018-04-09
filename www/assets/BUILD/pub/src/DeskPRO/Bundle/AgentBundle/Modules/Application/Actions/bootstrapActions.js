@@ -255,10 +255,8 @@ export const preloadData    = createAction(
 
           // bootstrap appstore
           return DeskproAppStore.bootstrap(dispatch, api, appStoreConfig)
-            .then(() => api.sendGet(api.prepareParams(batchComponents)).success(onBatchComponentsSuccess))
-            .then(() => {
-              dispatch(donePreloading());
-            });
+             .then(() => new Promise(appResolve => setTimeout(appResolve, 100)))
+          ;
         })
         .then(() => {
           dispatch(donePreloading());
