@@ -7,6 +7,8 @@ use DeskPRO\Bundle\AppBundle\TicketFilters\Context;
 use DeskPRO\Bundle\AppBundle\TicketFilters\Model\Entity\CustomData;
 use DeskPRO\Bundle\AppBundle\TicketFilters\Model\Entity\CustomField;
 use DeskPRO\Bundle\AppBundle\TicketFilters\Model\Entity\TicketModel;
+use DeskPRO\Bundle\AppBundle\TicketFilters\OptionMappterInterface;
+use DeskPRO\Bundle\AppBundle\TicketFilters\OptValue\CompareValue;
 use DeskPRO\Bundle\AppBundle\TicketFilters\OptValue\OptValue;
 use DeskPRO\Bundle\AppBundle\TicketFilters\SqlBuilder\SqlCondition;
 use DeskPRO\Component\FilterQueryLanguage\Query\Node\Term;
@@ -27,15 +29,37 @@ class CustomFieldsTermsHandler extends AbstractTermsHandler
     private $customPersonFields = [];
 
     /**
+     * @var OptionMappterInterface
+     */
+    private $optionMapper;
+
+    /**
      * Terms constructor.
      *
-     * @param CustomField[] $customTicketFields
-     * @param CustomField[] $customPersonFields
+     * @param CustomField[]          $customTicketFields
+     * @param CustomField[]          $customPersonFields
+     * @param OptionMappterInterface $optionMappter
      */
-    public function __construct(array $customTicketFields = [], array $customPersonFields = [])
+    public function __construct(array $customTicketFields = [], array $customPersonFields = [], OptionMappterInterface $optionMappter = null)
     {
         $this->customTicketFields = $customTicketFields;
         $this->customPersonFields = $customPersonFields;
+        $this->optionMapper       = $optionMappter;
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function getCompareFunctions()
+    {
+        return [
+            FunctionCompareDef::create()
+                ->setName('Option')
+                ->setFields($this->getHandledFields())
+                ->setMatchFn('doesTicketMatchFieldOption')
+                ->setQueryBuilderFn('buildFieldOptionQueryCondition')
+                ->setOperators(Query::OP_HAS, Query::OP_IN, Query::OP_NOT_IN, Query::OP_EQ, Query::OP_NEQ),
+        ];
     }
 
     /**
@@ -132,6 +156,9 @@ class CustomFieldsTermsHandler extends AbstractTermsHandler
         return $this->checkValue($fieldValue, $operator, $checkValue);
     }
 
+    /**
+     * {@inheritdoc}
+     */
     public function buildQueryCondition($fieldId, $operator, OptValue $options, Context $context, Term $term)
     {
         /** @var $field CustomField */
@@ -194,6 +221,38 @@ class CustomFieldsTermsHandler extends AbstractTermsHandler
             default:
                 return $this->checkValueQueryCondition('{dat}.input', $operator, $options, $cond);
         }
+    }
+
+    public function doesTicketMatchFieldOption($fieldId, $operator, array $params, TicketModel $ticketModel, Context $context, Term $term)
+    {
+        if (!$this->optionMapper) {
+            throw new \RuntimeException('No option mapper is registered');
+        }
+
+        $newOptions = $this->getOptionIdFromTitleValue($fieldId, $params[0]);
+
+        return $this->doesTicketMatch($fieldId, $operator, $newOptions, $ticketModel, $context, $term);
+    }
+
+    public function buildFieldOptionQueryCondition($fieldId, $operator, array $params, Context $context, Term $term)
+    {
+        if (!$this->optionMapper) {
+            throw new \RuntimeException('No option mapper is registered');
+        }
+
+        $newOptions = $this->getOptionIdFromTitleValue($fieldId, $params[0]);
+
+        return $this->buildQueryCondition($fieldId, $operator, $newOptions, $context, $term);
+    }
+
+    private function getOptionIdFromTitleValue($fieldId, $v)
+    {
+        /** @var $field CustomField */
+        list($field, $type) = $this->getFieldPropsFromReference($fieldId);
+
+        $value = $this->optionMapper->getValue($type.'.'.$field->field, $v) ?: $v;
+
+        return new CompareValue($value);
     }
 
     /**

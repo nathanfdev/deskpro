@@ -267,9 +267,9 @@ class TicketSqlMatcherTest extends \PHPUnit_Framework_TestCase
             'SELECT COUNT(*) AS count
             FROM tickets_search_active tickets
             LEFT JOIN custom_data_ticket c0_dat ON c0_dat.ticket_id = tickets.id AND c0_dat.root_field_id = :c1
-            WHERE c0_dat.value = :c2
+            WHERE c0_dat.value = 0 OR c0_dat.value IS NULL
             ',
-            ['c1' => 5, 'c2' => '0']
+            ['c1' => 5]
         );
     }
 

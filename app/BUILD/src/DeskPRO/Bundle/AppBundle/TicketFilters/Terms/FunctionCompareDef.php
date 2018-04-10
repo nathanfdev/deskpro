@@ -2,6 +2,8 @@
 
 namespace DeskPRO\Bundle\AppBundle\TicketFilters\Terms;
 
+use DeskPRO\Component\Util\ListUtils;
+
 class FunctionCompareDef
 {
     public $name;
@@ -46,6 +48,7 @@ class FunctionCompareDef
     public function setFields($fields)
     {
         $this->fields = func_get_args();
+        $this->fields = ListUtils::flatten($this->fields);
 
         return $this;
     }
@@ -82,6 +85,7 @@ class FunctionCompareDef
     public function setOperators($operators)
     {
         $this->operators = func_get_args();
+        $this->operators = ListUtils::flatten($this->operators);
 
         return $this;
     }

@@ -2,6 +2,7 @@
 
 namespace DeskPRO\Bundle\AppBundle\TicketFilters;
 
+use Application\DeskPRO\Entity\CustomDefTicket;
 use DeskPRO\Bundle\AppBundle\TicketFilters\Terms\AbstractTermsHandler;
 use DeskPRO\Bundle\AppBundle\TicketFilters\Terms\CustomFieldsTermsHandler;
 use DeskPRO\Bundle\AppBundle\TicketFilters\Terms\TicketBasicTermsHandler;
@@ -51,7 +52,11 @@ class MatcherFactory
             new TicketBasicTermsHandler(),
             new TicketSlaTermsHandler(),
             new TicketDateTermsHandler(),
-            new CustomFieldsTermsHandler($this->loader->getTicketFields()),
+            new CustomFieldsTermsHandler(
+                $this->loader->getTicketFields(),
+                [],
+                new ChoiceFieldOptionMapper($this->container->get('doctrine.orm.entity_manager')->getRepository(CustomDefTicket::class))
+            ),
         ];
 
         return $this->termHandlers;

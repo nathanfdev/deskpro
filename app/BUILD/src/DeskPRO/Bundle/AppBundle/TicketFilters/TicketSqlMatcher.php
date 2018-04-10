@@ -407,7 +407,7 @@ class TicketSqlMatcher extends AbstractMatcher
             }
 
             return call_user_func(
-                [$h, $def->matchFn],
+                [$h, $def->queryBuilderFn],
                 $fieldId,
                 $operator,
                 $this->getValueResovler()->getFuncCallParamValues($term->options->value, $term, $context),

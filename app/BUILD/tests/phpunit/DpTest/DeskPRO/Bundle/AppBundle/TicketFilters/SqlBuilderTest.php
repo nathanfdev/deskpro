@@ -41,7 +41,7 @@ class SqlBuilderTest extends ApiTestCase
         $sql = $qb->getSQL();
 
         $this->assertEquals(
-            $this->normalizeForCmp('SELECT COUNT(*) FROM tickets t LEFT JOIN tickets_messages c0_m ON c0_m.ticket_id = t.id WHERE t.foo = :c0'),
+            $this->normalizeForCmp('SELECT COUNT(*) FROM tickets t LEFT JOIN tickets_messages c0_m ON c0_m.ticket_id = t.id WHERE t.foo = :c1'),
             $this->normalizeForCmp($sql)
         );
     }
@@ -73,8 +73,8 @@ class SqlBuilderTest extends ApiTestCase
                 LEFT JOIN tickets_messages c0_m ON c0_m.ticket_id = t.id
                 LEFT JOIN people c1_agent ON c1_agent.person_id = t.agent_id
                 WHERE
-                    (t.foo = :c0_foo)
-                    AND (c1_agent.name = :c1_agent_name)
+                    (t.foo = :c1_foo)
+                    AND (c1_agent.name = :c2_agent_name)
             '),
             $this->normalizeForCmp($sql)
         );

@@ -190,15 +190,6 @@ abstract class AbstractTermsHandler implements TermsHandlerInterface
 
         $colVarName = preg_replace('/[^a-zA-Z0-9]/', '', $fieldColumn);
 
-        // In mysql null values fail != type checks,
-        // so if we want to know if field != foo, null is also "not foo",
-        // so we need to check null specifically
-        if ($checkValue === null) {
-            $orNull = "OR $fieldColumn IS NULL";
-        } else {
-            $orNull = null;
-        }
-
         switch ($operator) {
             case Query::OP_EQ:
                 if ($checkValue === null) {
@@ -268,7 +259,7 @@ abstract class AbstractTermsHandler implements TermsHandlerInterface
 
                 $where = "$fieldColumn $op (:$colVarName)";
 
-                if (Query::OP_NOT_IN) {
+                if ($operator === Query::OP_NOT_IN) {
                     $where = "($where OR $fieldColumn IS NULL)";
                 }
 
