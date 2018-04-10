@@ -12,22 +12,28 @@ import Labels from './Labels';
 
 export default class AgentFilters extends React.Component {
   static propTypes = {
-    filterSets:    PropTypes.object,
-    filters:       PropTypes.object,
-    filtersCounts: PropTypes.object,
-    labels:        PropTypes.object,
-    stars:         PropTypes.object,
-    starsCounts:   PropTypes.object,
-    onSelectMode:  PropTypes.func,
+    filterSets:         PropTypes.object,
+    filters:            PropTypes.object,
+    filtersCounts:      PropTypes.object,
+    groupFields:        PropTypes.object,
+    labels:             PropTypes.object,
+    stars:              PropTypes.object,
+    starsCounts:        PropTypes.object,
+    ticketCustomFields: PropTypes.object,
+    onSelectMode:       PropTypes.func,
+    onGroupingChange:   PropTypes.func,
   };
 
   static defaultProps = {
-    filterSets:  {},
-    filters:     {},
-    labels:      {},
-    stars:       {},
-    starsCounts: {},
+    filterSets:         {},
+    filters:            {},
+    groupFields:        {},
+    labels:             {},
+    stars:              {},
+    starsCounts:        {},
+    ticketCustomFields: {},
     onSelectMode() {},
+    onGroupingChange() {},
   };
 
   constructor(props) {
@@ -55,9 +61,12 @@ export default class AgentFilters extends React.Component {
       filterSets,
       filters,
       filtersCounts,
+      groupFields,
+      labels,
       stars,
       starsCounts,
-      labels,
+      ticketCustomFields,
+      onGroupingChange,
     } = this.props;
     const {
       mode
@@ -76,10 +85,13 @@ export default class AgentFilters extends React.Component {
               ref={(c) => { this.drawers[`filterSet${filterSet.get('id')}`] = c; }}
               opened
               onSelectMode={this.onSelectMode}
+              onGroupingChange={onGroupingChange}
               filterSet={filterSet}
               filters={filters}
               filtersCounts={filtersCounts}
+              groupFields={groupFields}
               mode={mode}
+              ticketCustomFields={ticketCustomFields}
             />
             )
           )}

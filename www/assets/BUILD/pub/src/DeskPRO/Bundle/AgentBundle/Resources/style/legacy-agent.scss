@@ -846,4 +846,13 @@ i.icon.fitted {
       }
     }
   }
+  .dp-drawer-item .dp-urgency {
+    min-width: 1.2em;
+  }
+  .dp-icon__filter {
+    display: none;
+  }
+  .dp-drawer-item:hover .dp-icon__filter {
+    display: inline-block;
+  }
 }

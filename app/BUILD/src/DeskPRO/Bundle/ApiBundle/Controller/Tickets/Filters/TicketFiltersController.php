@@ -243,6 +243,9 @@ class TicketFiltersController extends CrudController
 
             $b     = new CountBuilder($titleResolver);
             $count = $b->buildFromArray($countRekeyed, $searchParams->getGroupFields());
+            $count->setId($ticketFilter->getId());
+            $count->setTitle($ticketFilter->getTitle());
+            $count->setType('filter');
         }
 
         return View::create($this->wrap($count));
