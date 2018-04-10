@@ -33,6 +33,7 @@ use DeskPRO\Bundle\AppBundle\Entity\SnippetTranslation;
 use DeskPRO\Bundle\AppBundle\Entity\SnippetUseLog;
 use DeskPRO\Bundle\AppBundle\Entity\TicketFilter;
 use DeskPRO\Bundle\AppBundle\TicketFilters\Context;
+use DeskPRO\Bundle\AppBundle\TicketFilters\TicketSearchParams;
 use DeskPRO\Bundle\AppBundle\Validator\Constraints as AppAssert;
 use DeskPRO\Component\Util\ListUtils;
 use DeskPRO\Component\Util\RegexUtils;
@@ -1004,10 +1005,17 @@ class TicketSearchController extends AbstractController
             throw $this->createNotFoundException();
         }
 
-        $order_by  = $this->in->getString('order_by');
-        $order_dir = 'desc';
-        if (!$order_by) {
-            $order_by = $this->person->getPref('agent.ui.ticket-filter-order-by.'.$ticketFilter->getId());
+        $legacy_order_by = $this->in->getString('order_by');
+        if (!$legacy_order_by) {
+            $legacy_order_by = $this->person->getPref('agent.ui.ticket-filter-order-by.'.$ticketFilter->getId());
+        }
+        if (!$legacy_order_by) {
+            $legacy_order_by = 'ticket.date_created:desc';
+        }
+
+        $legacy_order_by = explode(':', $legacy_order_by);
+        if (!isset($legacy_order_by[1])) {
+            $legacy_order_by[1] = 'desc';
         }
 
         $set_group_term   = null;
@@ -1042,13 +1050,16 @@ class TicketSearchController extends AbstractController
         }
 
         $searchParams = $ticketFilters->createSearchParams();
-        if ($order_by) {
-            $searchParams->orderBy($order_by, $order_dir);
+        if ($legacy_order_by) {
+            if (!in_array($legacy_order_by[0], $searchParams->getAvailableOrderFields())) {
+                $legacy_order_by[0] = TicketSearchParams::ORDER_DATE_CREATED;
+            }
+            $searchParams->orderBy($legacy_order_by[0], $legacy_order_by[1]);
         }
 
         $searcher = $ticketFilters->getSearcher();
         $qb       = $searcher
-            ->getIdsQueryBuilder($query, $context)
+            ->getIdsQueryBuilder($query, $context, $searchParams)
             ->setFirstResult(0)
             ->setMaxResults(10000);
 
@@ -1059,10 +1070,6 @@ class TicketSearchController extends AbstractController
 
         $helper = new Helper\TicketResults($this);
         $helper->setTicketIds($results);
-
-        if ($order_by) {
-            $helper->setGroupOrderBy($order_by);
-        }
 
         // Or if the user has their own
         $group_by = $this->person->getPref('agent.ui.ticket-filter-group-by.'.$ticketFilter->getId());
@@ -1085,11 +1092,12 @@ class TicketSearchController extends AbstractController
             'filter'           => $ticketFilter,
             'filter_id'        => $ticketFilter->getId(),
             'needs_urgency'    => true,
-            'order_by_summary' => '???',
+            'order_by_summary' => implode(':', $legacy_order_by),
             'set_group_term'   => $set_group_term,
             'set_group_option' => $set_group_option,
             'ticket_ids'       => $results,
-            'order_by'         => $order_by,
+            'order_by'         => $legacy_order_by,
+            'is_new_filters'   => true,
         ];
 
         $pref_display_fields = $this->person->getPref('agent.ui.ticket-filter-display-fields.'.$ticketFilter->getId());

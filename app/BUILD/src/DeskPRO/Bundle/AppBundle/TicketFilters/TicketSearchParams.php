@@ -132,7 +132,7 @@ class TicketSearchParams
     public function subFilterBy($fieldId, $value)
     {
         if (!in_array($fieldId, $this->availableGroupFields)) {
-            throw new \InvalidArgumentException('Invalid order field');
+            throw new \InvalidArgumentException('Invalid sub-filter group field');
         }
 
         $this->subFilterFields[] = [$fieldId, $value];
@@ -152,7 +152,7 @@ class TicketSearchParams
         $fieldId = $this->groupFieldTranslator($fieldId);
 
         if (!in_array($fieldId, $this->availableGroupFields)) {
-            throw new \InvalidArgumentException('Invalid order field');
+            throw new \InvalidArgumentException('Invalid group field');
         }
 
         $this->groupFields[] = $fieldId;
@@ -177,7 +177,7 @@ class TicketSearchParams
             case OldTicketGrouping::DATE_CREATED:         return self::GROUP_DATE_CREATED;
             case OldTicketGrouping::LANGUAGE:             return self::GROUP_LANGUAGE;
             default:
-                if ($customFieldId = RegexUtils::getMatch('/^'.OldTicketGrouping::CUSTOM_FIELD_COLUMN_PREFIX.'\.(\d+)$/', $fieldId)) {
+                if ($customFieldId = RegexUtils::getMatch('/^(?:ticket\.)?'.OldTicketGrouping::CUSTOM_FIELD_COLUMN_PREFIX.'\.(?P<customFieldId>\d+)$/', $fieldId, 'customFieldId')) {
                     return self::GROUP_TICKET_FIELD_PREFIX.".{$customFieldId}";
                 }
 

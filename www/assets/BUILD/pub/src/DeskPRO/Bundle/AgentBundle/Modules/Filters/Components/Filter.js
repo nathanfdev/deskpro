@@ -35,6 +35,10 @@ class TicketsForm extends React.Component {
     });
   };
 
+  eatClick = (e) => {
+    e.stopPropagation();
+  };
+
   render() {
     const formStyles = {
       formGroup: {
@@ -69,8 +73,8 @@ class TicketsForm extends React.Component {
     });
 
     return (
-      <div>
-        <Scrollbar autoHeightMax={115} style={{ height: 120 }}>
+      <div onClick={this.eatClick}>
+        <Scrollbar autoHeightMax={115}>
           <div style={formStyles.formGroup}>
             <label style={formStyles.label}>
               Group by field
@@ -80,6 +84,7 @@ class TicketsForm extends React.Component {
                 key={key}
                 style={formStyles.checkboxLabel}
                 htmlFor={`filter_${filter.get('id')}_group_${key}`}
+                className={`filter-group-option filter-${filter.get('id')} option-${key}`}
               >
                 <input
                   type="radio"
