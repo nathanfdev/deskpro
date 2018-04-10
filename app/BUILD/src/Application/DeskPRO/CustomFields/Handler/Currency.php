@@ -38,6 +38,7 @@ class Currency extends HandlerAbstract
         return [
             'currency' => $currency->getCurrencyCode(),
             'divisor'  => $currency->getDelimiter(),
+            'grouping' => true,
         ];
     }
 

@@ -200,7 +200,7 @@
 {# Currency #}
 
 {%- block money_widget -%}
-    <div class="dp-money-field">
+    <div class="dp-money-field {{ form.vars.currency_code }}">
         {% if money_pattern matches '/^{{ widget }}/' %}
             {{ block('form_widget_simple') }} <span>{{ money_pattern|replace({'{{ widget }}': ''}) }}</span>
         {% elseif money_pattern matches '/{{ widget }}$/' %}

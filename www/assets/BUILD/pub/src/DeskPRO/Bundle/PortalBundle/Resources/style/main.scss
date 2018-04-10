@@ -10175,7 +10175,18 @@ form {
   }
 
   input {
-    padding-left: 50px;
+    padding-left: 40px;
+  }
+
+  &.eur, &.jpy, &.gbp, &.usd {
+    input {
+      padding-left: 20px;
+    }
+  }
+  &.aud {
+    input {
+      padding-left: 30px;
+    }
   }
 }
 

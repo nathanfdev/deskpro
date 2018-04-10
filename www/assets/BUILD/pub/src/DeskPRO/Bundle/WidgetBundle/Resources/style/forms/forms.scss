@@ -166,4 +166,15 @@
   input {
     padding-left: 35px !important;
   }
+
+  &.eur, &.jpy, &.gbp, &.usd {
+    input {
+      padding-left: 20px !important;
+    }
+  }
+  &.aud, &.nzd {
+    input {
+      padding-left: 30px !important;
+    }
+  }
 }

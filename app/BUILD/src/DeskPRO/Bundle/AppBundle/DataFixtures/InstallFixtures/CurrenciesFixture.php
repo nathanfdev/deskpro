@@ -71,7 +71,7 @@ class CurrenciesFixture extends AbstractDpFixture
         $currency
             ->setName('Swiss franc')
             ->setCurrencyCode('CHF')
-            ->setSymbol('SFr.')
+            ->setSymbol('CHF')
         ;
 
         $manager->persist($currency);
@@ -81,7 +81,7 @@ class CurrenciesFixture extends AbstractDpFixture
         $currency
             ->setName('Canadian dollar')
             ->setCurrencyCode('CAD')
-            ->setSymbol('C$')
+            ->setSymbol('CA$')
         ;
 
         $manager->persist($currency);
@@ -91,7 +91,7 @@ class CurrenciesFixture extends AbstractDpFixture
         $currency
             ->setName('Hong Kong dollar')
             ->setCurrencyCode('HKD')
-            ->setSymbol('hk$')
+            ->setSymbol('HK$')
         ;
 
         $manager->persist($currency);
@@ -101,7 +101,7 @@ class CurrenciesFixture extends AbstractDpFixture
         $currency
             ->setName('Swedish krona')
             ->setCurrencyCode('SEK')
-            ->setSymbol('kr')
+            ->setSymbol('SEK')
         ;
 
         $manager->persist($currency);
@@ -111,7 +111,7 @@ class CurrenciesFixture extends AbstractDpFixture
         $currency
             ->setName('New Zealand dollar')
             ->setCurrencyCode('NZD')
-            ->setSymbol('$')
+            ->setSymbol('NZ$')
         ;
 
         $manager->persist($currency);

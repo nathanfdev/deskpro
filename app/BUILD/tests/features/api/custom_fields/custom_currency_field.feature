@@ -63,3 +63,17 @@ Feature: Custom url field
 
     When I send a GET request to "/api/v2/people/{admin}"
     Then the JSON node "data.fields.~f1~.value" should be equal to "0.00"
+
+  Scenario: I check currency grouping
+    When I send a PUT request to "/api/v2/people/{admin}" with body:
+    """
+{
+  "fields": {
+    "~f1~": "1,500.20"
+  }
+}
+    """
+    Then the response status code should be 204
+
+    When I send a GET request to "/api/v2/people/{admin}"
+    Then the JSON node "data.fields.~f1~.value" should be equal to "1,500.20"
