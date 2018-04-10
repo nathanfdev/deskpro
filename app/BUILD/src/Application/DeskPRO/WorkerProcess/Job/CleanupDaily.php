@@ -335,6 +335,10 @@ class CleanupDaily extends AbstractJob
 
     private function _checkFKConstraints()
     {
+        if (defined('DPC_IS_CLOUD')) {
+            return;
+        }
+
         /** @var EntityManager[] $entityManagers */
         $entityManagers = [
             'default' => App::getContainer()->get('doctrine.orm.default_entity_manager'),
