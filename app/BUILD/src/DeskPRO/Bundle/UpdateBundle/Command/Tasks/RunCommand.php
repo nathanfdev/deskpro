@@ -3,6 +3,7 @@
 namespace DeskPRO\Bundle\UpdateBundle\Command\Tasks;
 
 use Application\DeskPRO\Monolog\Logger;
+use Application\DeskPRO\ORM\Util\Util as ORMUtil;
 use DeskPRO\Bundle\AppBundle\Util\BinariesPathValidator;
 use Monolog\Handler\StreamHandler;
 use Symfony\Bridge\Monolog\Formatter\ConsoleFormatter;
@@ -23,6 +24,7 @@ class RunCommand extends ContainerAwareCommand
             ->addOption('fast-sync', null, InputOption::VALUE_OPTIONAL, 'After a full upgrade, attempt to use fast post-build sync scripts. This is just a hint unless you use --fast-sync=FORCE', false)
             ->addOption('preview', null, InputOption::VALUE_NONE, 'Do not run any commands, just show a preview of what will happen')
             ->addOption('ignore-errors', null, InputOption::VALUE_NONE, 'Continue even if a build task returns an error status')
+            ->addOption('skip-fk-checks', null, InputOption::VALUE_NONE, 'Skip foreign keys constraints check')
             ->addOption('skip-refresh-signal', null, InputOption::VALUE_NONE, 'Do not send refresh signal')
         ;
     }
@@ -30,6 +32,12 @@ class RunCommand extends ContainerAwareCommand
     protected function execute(InputInterface $input, OutputInterface $output)
     {
         if ($ret = $this->envReqCheck($output)) {
+            return $ret;
+        }
+
+        if (
+            !$input->getOption('skip-fk-checks')
+            && ($ret = $this->FKConstraintsCheck($output))) {
             return $ret;
         }
 
@@ -275,6 +283,32 @@ class RunCommand extends ContainerAwareCommand
             $output->writeln('<info>'.$root.DIRECTORY_SEPARATOR.'config'.DIRECTORY_SEPARATOR.'config.paths.php</info>');
 
             return 1;
+        }
+
+        return 0;
+    }
+
+    private function FKConstraintsCheck(OutputInterface $output)
+    {
+        if (defined('DPC_IS_CLOUD')) {
+            return 0;
+        }
+
+        /** @var EntityManager[] $entityManagers */
+        $entityManagers = [
+            'default' => $this->getContainer()->get('doctrine.orm.default_entity_manager'),
+            'system'  => $this->getContainer()->get('doctrine.orm.system_entity_manager'),
+            'audit'   => $this->getContainer()->get('doctrine.orm.audit_entity_manager'),
+        ];
+
+        foreach ($entityManagers as $em) {
+            if (!ORMUtil::isAllFKConstraintsExist($em)) {
+                $output->writeln('<error>Your database schema is corrupt and is missing relationship mapping information (foreign keys).</error>');
+                $output->writeln('<error>This can lead to referential integrity issues that cause errors and unexpected behaviour.</error>');
+                $output->writeln('<error>Please contact Deskpro support at https://support.deskpro.com/ for assistance in solving this.</error>');
+
+                return 1;
+            }
         }
 
         return 0;

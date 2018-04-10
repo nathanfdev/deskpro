@@ -68,4 +68,25 @@ class Util
 
         return $lines;
     }
+
+    /**
+     * Check that all FK constraints exist in DB.
+     *
+     * @param EntityManager $em
+     *
+     * @return bool
+     */
+    public static function isAllFKConstraintsExist(EntityManager $em = null)
+    {
+        $schemaDiff = self::getUpdateSchemaSql($em);
+        if ($schemaDiff) {
+            foreach ($schemaDiff as $query) {
+                if (preg_match('/ALTER TABLE (.+) ADD CONSTRAINT (.+) FOREIGN KEY/', $query)) {
+                    return false;
+                }
+            }
+        }
+
+        return true;
+    }
 }

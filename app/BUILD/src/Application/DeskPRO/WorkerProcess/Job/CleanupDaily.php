@@ -348,16 +348,8 @@ class CleanupDaily extends AbstractJob
 
         $missedFkFound = false;
         foreach ($entityManagers as $em) {
-            $schemaDiff = ORMUtil::getUpdateSchemaSql($em);
-            if ($schemaDiff) {
-                foreach ($schemaDiff as $query) {
-                    if (preg_match('/ALTER TABLE (.+) ADD CONSTRAINT (.+) FOREIGN KEY/', $query)) {
-                        $missedFkFound = true;
-                        break;
-                    }
-                }
-            }
-            if ($missedFkFound) {
+            if (!ORMUtil::isAllFKConstraintsExist($em)) {
+                $missedFkFound = true;
                 break;
             }
         }
