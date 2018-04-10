@@ -190,16 +190,38 @@ abstract class AbstractTermsHandler implements TermsHandlerInterface
 
         $colVarName = preg_replace('/[^a-zA-Z0-9]/', '', $fieldColumn);
 
+        // In mysql null values fail != type checks,
+        // so if we want to know if field != foo, null is also "not foo",
+        // so we need to check null specifically
+        if ($checkValue === null) {
+            $orNull = "OR $fieldColumn IS NULL";
+        } else {
+            $orNull = null;
+        }
+
         switch ($operator) {
             case Query::OP_EQ:
+                if ($checkValue === null) {
+                    $where = "$fieldColumn IS NULL";
+                } else {
+                    $where = "$fieldColumn = :$colVarName";
+                }
+
                 return [
-                    'where'  => "$fieldColumn = :$colVarName",
+                    'where'  => $where,
                     'params' => [$colVarName => [$checkValue, null]],
                 ];
 
             case Query::OP_NEQ:
+
+                if ($checkValue === null) {
+                    $where = "$fieldColumn IS NOT NULL";
+                } else {
+                    $where = "($fieldColumn != :$colVarName OR $fieldColumn IS NULL)";
+                }
+
                 return [
-                    'where'  => "$fieldColumn != :$colVarName",
+                    'where'  => $where,
                     'params' => [$colVarName => [$checkValue, null]],
                 ];
 
@@ -244,8 +266,14 @@ abstract class AbstractTermsHandler implements TermsHandlerInterface
 
                 $op = $operator === Query::OP_NOT_IN ? 'NOT IN' : 'IN';
 
+                $where = "$fieldColumn $op (:$colVarName)";
+
+                if (Query::OP_NOT_IN) {
+                    $where = "($where OR $fieldColumn IS NULL)";
+                }
+
                 return [
-                    'where'  => "$fieldColumn $op (:$colVarName)",
+                    'where'  => $where,
                     'params' => [$colVarName => [$checkValue, Connection::PARAM_STR_ARRAY]],
                 ];
 

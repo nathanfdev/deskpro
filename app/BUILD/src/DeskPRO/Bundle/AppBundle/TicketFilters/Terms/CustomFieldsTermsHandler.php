@@ -126,6 +126,9 @@ class CustomFieldsTermsHandler extends AbstractTermsHandler
             case CustomDefAbstract::TYPE_CHOICE:
                 return $this->checkValueQueryCondition('{dat}.field_id', $operator, $options, $cond);
 
+            case CustomDefAbstract::TYPE_TOGGLE:
+                return $this->checkValueQueryCondition('{dat}.value', $operator, $options, $cond);
+
             case CustomDefAbstract::TYPE_DATETIME:
             case CustomDefAbstract::TYPE_DATE:
 

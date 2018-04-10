@@ -49,6 +49,7 @@ class TicketSqlMatcherTest extends \PHPUnit_Framework_TestCase
                 new CustomField(2, 'choice', ['my_other_choice']),
                 new CustomField(3, 'text', ['my_text']),
                 new CustomField(4, 'date', ['my_date']),
+                new CustomField(5, 'toggle', ['my_toggle']),
             ]),
         ], ConnectionMock::create(), TicketSqlMatcher::ACTIVE);
     }
@@ -246,6 +247,29 @@ class TicketSqlMatcherTest extends \PHPUnit_Framework_TestCase
             WHERE c0_dat.value > :c2
             ',
             ['c1' => 4, 'c2' => strtotime('2018-04-09')]
+        );
+    }
+
+    public function test_custom_toggle()
+    {
+        $this->assertEqualQuery(
+            'ticket.data.my_toggle = 1',
+            'SELECT COUNT(*) AS count
+            FROM tickets_search_active tickets
+            LEFT JOIN custom_data_ticket c0_dat ON c0_dat.ticket_id = tickets.id AND c0_dat.root_field_id = :c1
+            WHERE c0_dat.value = :c2
+            ',
+            ['c1' => 5, 'c2' => '1']
+        );
+
+        $this->assertEqualQuery(
+            'ticket.data.my_toggle = 0',
+            'SELECT COUNT(*) AS count
+            FROM tickets_search_active tickets
+            LEFT JOIN custom_data_ticket c0_dat ON c0_dat.ticket_id = tickets.id AND c0_dat.root_field_id = :c1
+            WHERE c0_dat.value = :c2
+            ',
+            ['c1' => 5, 'c2' => '0']
         );
     }
 

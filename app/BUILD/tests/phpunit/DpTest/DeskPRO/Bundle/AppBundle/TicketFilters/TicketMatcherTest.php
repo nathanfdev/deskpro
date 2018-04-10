@@ -86,6 +86,7 @@ class TicketMatcherTest extends \PHPUnit_Framework_TestCase
                 new CustomField(2, 'choice', ['my_other_choice']),
                 new CustomField(3, 'text', ['my_text']),
                 new CustomField(4, 'date', ['my_date']),
+                new CustomField(5, 'toggle', ['my_toggle']),
             ]),
         ]);
 
@@ -103,6 +104,7 @@ class TicketMatcherTest extends \PHPUnit_Framework_TestCase
             new CustomData(2, [20]),
             new CustomData(3, 'foo'),
             new CustomData(4, strtotime('2018-04-09 01:00:00')),
+            new CustomData(5, 1),
         ];
 
         $this->ticket1->person         = new PersonModel();
@@ -138,6 +140,7 @@ class TicketMatcherTest extends \PHPUnit_Framework_TestCase
         $this->ticket2->custom_fields = [
             new CustomData(1, [10]),
             new CustomData(4, strtotime('2018-01-01 01:00:00')),
+            new CustomData(5, 0),
         ];
 
         $this->ticket2->person         = new PersonModel();
@@ -238,6 +241,15 @@ class TicketMatcherTest extends \PHPUnit_Framework_TestCase
         $this->assertTrue($this->runTicket1Query('ticket.data.4 > "2018-01-01"'));
         $this->assertTrue($this->runTicket1Query('ticket.data.my_date < "2018-04-10"'));
         $this->assertTrue($this->runTicket1Query('ticket.data.my_date > "2018-01-01"'));
+    }
+
+    public function test_custom_toggle_check()
+    {
+        $this->assertTrue($this->runTicket1Query('ticket.data.my_toggle = 1'));
+        $this->assertFalse($this->runTicket1Query('ticket.data.my_toggle = 0'));
+
+        $this->assertFalse($this->runTicket2Query('ticket.data.my_toggle = 1'));
+        $this->assertTrue($this->runTicket2Query('ticket.data.my_toggle = 0'));
     }
 
     private function runTicket1Query($fql)

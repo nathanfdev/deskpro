@@ -442,10 +442,6 @@ class QueryParser
             return $this->HasExpression();
         }
 
-        if ($token['type'] === Lexer::T_IS) {
-            return $this->IsExpression();
-        }
-
         if ($token['type'] === Lexer::T_EXISTS) {
             return $this->ExistsExpression();
         }
@@ -776,22 +772,6 @@ class QueryParser
             Query\Op\Op::createOp(Query\Query::OP_HAS),
             $field,
             new Query\Opt\CompareOpt($rightExpr)
-        ), $tokenPos);
-    }
-
-    public function IsExpression()
-    {
-        $field    = $this->CompareField();
-        $tokenPos = $this->lexer->token['position'];
-
-        $this->match(Lexer::T_IS);
-
-        $rightExpr = $this->ArithmeticExpression(true);
-
-        return $this->addTokenPos(new Query\Node\Term(
-            Query\Op\Op::createOp(Query\Query::OP_IS),
-            $field,
-            $rightExpr
         ), $tokenPos);
     }
 
