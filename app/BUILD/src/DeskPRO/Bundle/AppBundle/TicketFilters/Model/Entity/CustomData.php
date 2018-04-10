@@ -3,6 +3,7 @@
 namespace DeskPRO\Bundle\AppBundle\TicketFilters\Model\Entity;
 
 use DeskPRO\Component\Util\ListUtils;
+use DeskPRO\Component\Util\MapUtils;
 
 class CustomData
 {
@@ -38,6 +39,9 @@ class CustomData
      */
     public static function compareFieldArrays(array $customFields1, array $customFields2)
     {
+        $customFields1 = MapUtils::rekeyByProperty($customFields1, 'field');
+        $customFields2 = MapUtils::rekeyByProperty($customFields2, 'field');
+
         $changed = [];
 
         foreach ($customFields1 as $field1) {
@@ -48,7 +52,7 @@ class CustomData
 
                 if ($field1->value != $field2->value) {
                     if (is_array($field1->value) && is_array($field2->value)) {
-                        if (ListUtils::isSame($field1->value, $field2->value)) {
+                        if (!ListUtils::isSame($field1->value, $field2->value)) {
                             $changed[] = $field1->field;
                         }
                     } else {

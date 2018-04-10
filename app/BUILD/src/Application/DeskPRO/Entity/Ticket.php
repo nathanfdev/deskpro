@@ -1918,6 +1918,8 @@ class Ticket extends DomainObject implements HighlightableModelInterface, Labels
      */
     public function setCustomData(Collection $custom_data)
     {
+        $this->getStateChangeRecorder()->touchField('custom_data');
+
         $this->custom_data = $custom_data;
         foreach ($custom_data as $cd) {
             $cd->ticket = $this;
@@ -1939,6 +1941,8 @@ class Ticket extends DomainObject implements HighlightableModelInterface, Labels
      */
     public function setCustomDataField($field_id, $value_type, $value)
     {
+        $this->getStateChangeRecorder()->touchField('custom_data');
+
         $custom_data = $this->getCustomDataForField($field_id);
         $orig_data   = $custom_data;
         $is_new      = false;
@@ -1982,6 +1986,8 @@ class Ticket extends DomainObject implements HighlightableModelInterface, Labels
 
         if ($is_new) {
             $this->addCustomData($custom_data);
+        } else {
+            $this->_onPropertyChanged('custom_data', null, $this->custom_data);
         }
 
         return $custom_data;
@@ -1992,6 +1998,8 @@ class Ticket extends DomainObject implements HighlightableModelInterface, Labels
      */
     public function removeCustomDataForField(CustomDefTicket $field)
     {
+        $this->getStateChangeRecorder()->touchField('custom_data');
+
         $changed = false;
         foreach ($this->custom_data as $data) {
             if ($data->field->getId() === $field->getId() || $data->root_field->getId() == $field->getId()) {
@@ -2018,6 +2026,7 @@ class Ticket extends DomainObject implements HighlightableModelInterface, Labels
      */
     public function resetCustomData()
     {
+        $this->getStateChangeRecorder()->touchField('custom_data');
         $this->custom_data->clear();
 
         return $this;
@@ -2030,6 +2039,8 @@ class Ticket extends DomainObject implements HighlightableModelInterface, Labels
      */
     public function addCustomData(CustomDataTicket $data)
     {
+        $this->getStateChangeRecorder()->touchField('custom_data');
+
         if ($this->custom_data === null) {
             $this->custom_data = new ArrayCollection();
         }

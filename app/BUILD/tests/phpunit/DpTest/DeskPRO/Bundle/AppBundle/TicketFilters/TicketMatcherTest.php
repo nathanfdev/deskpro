@@ -87,6 +87,7 @@ class TicketMatcherTest extends \PHPUnit_Framework_TestCase
                 new CustomField(3, 'text', ['my_text']),
                 new CustomField(4, 'date', ['my_date']),
                 new CustomField(5, 'toggle', ['my_toggle']),
+                new CustomField(6, 'toggle', ['my_other_toggle']),
             ]),
         ]);
 
@@ -225,9 +226,16 @@ class TicketMatcherTest extends \PHPUnit_Framework_TestCase
     public function test_custom_choice_checks()
     {
         $this->assertTrue($this->runTicket1Query('ticket.data.1 HAS 10'));
+        $this->assertTrue($this->runTicket1Query('ticket.data.1 = 10'));
+        $this->assertTrue($this->runTicket1Query('ticket.data.1 != 11'));
         $this->assertTrue($this->runTicket1Query('ticket.data.1 IN (10, 11)'));
         $this->assertTrue($this->runTicket1Query('ticket.data.my_choice HAS 10'));
         $this->assertFalse($this->runTicket1Query('ticket.data.my_choice HAS 15'));
+
+        $this->assertTrue($this->runTicket1Query('ticket.data.my_other_toggle != 1'));
+        $this->assertTrue($this->runTicket1Query('ticket.data.my_other_toggle = 0'));
+        $this->assertFalse($this->runTicket1Query('ticket.data.my_other_toggle != 0'));
+        $this->assertFalse($this->runTicket1Query('ticket.data.my_other_toggle = 1'));
 
         $this->assertTrue($this->runTicket1Query('ticket.data.2 HAS 20'));
         $this->assertTrue($this->runTicket1Query('ticket.data.2 IN (20, 10)'));

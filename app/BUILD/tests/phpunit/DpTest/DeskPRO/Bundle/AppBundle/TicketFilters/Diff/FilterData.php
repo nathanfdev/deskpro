@@ -24,6 +24,13 @@ class FilterData
             // These are just for testing
             self::createFilter(100, [1, 2, 3], "ticket.status = 'awaiting_agent' AND ticket.department = 1"),
             self::createFilter(101, [1, 2, 3], "ticket.status = 'awaiting_agent' AND ticket.department = 3"),
+
+            // testing custom fields
+            self::createFilter(200, [1], 'ticket.data.my_toggle = 1'),
+            self::createFilter(201, [1], 'ticket.data.my_toggle = 0'),
+            self::createFilter(202, [1], 'ticket.data.my_choice = 10'),
+            self::createFilter(203, [1], 'ticket.data.my_other_choice != 20'),
+            self::createFilter(204, [1], 'ticket.data.my_other_choice = 21'),
         ];
     }
 

@@ -4,6 +4,7 @@ namespace DeskPRO\Bundle\AppBundle\TicketFilters\Diff;
 
 use DeskPRO\Bundle\AppBundle\TicketFilters\Context;
 use DeskPRO\Bundle\AppBundle\TicketFilters\Model\Agent;
+use DeskPRO\Bundle\AppBundle\TicketFilters\Model\Filter;
 use DeskPRO\Component\Util\ListUtils;
 
 /**

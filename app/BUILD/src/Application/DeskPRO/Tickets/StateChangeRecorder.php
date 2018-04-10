@@ -23,6 +23,7 @@ use DeskPRO\Bundle\AppBundle\TicketFilters\Model\Entity\PersonModel;
 use DeskPRO\Bundle\AppBundle\TicketFilters\Model\Entity\TicketModel;
 use DeskPRO\Bundle\AppBundle\TicketFilters\Model\Entity\TicketSlaModel;
 use DeskPRO\Component\Util\ListUtils;
+use DpSys\LowError\SystemErrorHandler;
 
 class StateChangeRecorder extends BaseStateChangeRecorder
 {
@@ -113,6 +114,15 @@ class StateChangeRecorder extends BaseStateChangeRecorder
      */
     public function getBeforeAfterModels()
     {
+        // means no change has happened yet to trigger the before model to generate,
+        // so the before model is the same as the after model
+        if (!$this->before_ticket_model) {
+            SystemErrorHandler::logException(new \RuntimeException('StateChangeRecorder::getBeforeAfterModels called with no updates logged. This is most likely a bug.'));
+            $this->before_ticket_model = $this->getSimpleTicketModel();
+
+            return [$this->before_ticket_model, $this->before_ticket_model];
+        }
+
         return [$this->before_ticket_model, $this->getSimpleTicketModel()];
     }
 
@@ -157,15 +167,15 @@ class StateChangeRecorder extends BaseStateChangeRecorder
                 $m->field = $fid;
             }
             if ($d->getField()->isMulti()) {
-                $m->data[] = $d->getData();
+                $m->value[] = $d->getData();
             } else {
-                $m->data = $d->getData();
+                $m->value = $d->getData();
             }
 
             $models[$fid] = $m;
         }
 
-        return $models;
+        return array_values($models);
     }
 
     /**

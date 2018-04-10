@@ -10,6 +10,7 @@ use DeskPRO\Bundle\AppBundle\TicketFilters\Model\Entity\TicketModel;
 use DeskPRO\Bundle\AppBundle\TicketFilters\OptValue\OptValue;
 use DeskPRO\Bundle\AppBundle\TicketFilters\SqlBuilder\SqlCondition;
 use DeskPRO\Component\FilterQueryLanguage\Query\Node\Term;
+use DeskPRO\Component\FilterQueryLanguage\Query\Query;
 use DeskPRO\Component\Util\ListUtils;
 use DeskPRO\Component\Util\StringUtils;
 
@@ -55,12 +56,14 @@ class CustomFieldsTermsHandler extends AbstractTermsHandler
             return $d->field == $field->field;
         });
 
+        if (empty($fieldDataRecs)) {
+            return $this->checkCustomDataValue($field, new CustomData($field->field, null), $operator, $options);
+        }
+
         // at least one match
         return ListUtils::first($fieldDataRecs, function (CustomData $d) use ($field, $operator, $options) {
             return $this->checkCustomDataValue($field, $d, $operator, $options);
         }) !== null;
-
-        return false;
     }
 
     /**
@@ -76,6 +79,9 @@ class CustomFieldsTermsHandler extends AbstractTermsHandler
      */
     protected function checkCustomDataValue(CustomField $field, CustomData $data, $operator, OptValue $optValue)
     {
+        $fieldValue = $data->value;
+        $checkValue = $optValue;
+
         switch ($field->type) {
             case CustomDefAbstract::TYPE_DATE:
             case CustomDefAbstract::TYPE_DATETIME:
@@ -96,6 +102,25 @@ class CustomFieldsTermsHandler extends AbstractTermsHandler
                     }
                 }
 
+                break;
+
+            case CustomDefAbstract::TYPE_CHOICE:
+                // choice fields are always collections, so we need
+                // to rewrite = and != into IN and NOT IN
+                if ($operator === Query::OP_EQ) {
+                    $operator = Query::OP_IN;
+                } elseif ($operator === Query::OP_NEQ) {
+                    $operator = Query::OP_NOT_IN;
+                }
+                break;
+
+            case CustomDefAbstract::TYPE_TOGGLE:
+                $fieldValue = $data->value;
+                $checkValue = $optValue;
+
+                if ($fieldValue === null) {
+                    $fieldValue = 0;
+                }
                 break;
 
             default:
@@ -127,11 +152,22 @@ class CustomFieldsTermsHandler extends AbstractTermsHandler
                 return $this->checkValueQueryCondition('{dat}.field_id', $operator, $options, $cond);
 
             case CustomDefAbstract::TYPE_TOGGLE:
+                $checkValue = $options->getValue();
+
+                if ($operator == Query::OP_EQ && $checkValue == '0') {
+                    $cond->setWhere('{dat}.value = 0 OR {dat}.value IS NULL');
+
+                    return $cond;
+                } elseif ($operator == Query::OP_NEQ && $checkValue == '1') {
+                    $cond->setWhere('{dat}.value = 0 OR {dat}.value IS NULL');
+
+                    return $cond;
+                }
+
                 return $this->checkValueQueryCondition('{dat}.value', $operator, $options, $cond);
 
             case CustomDefAbstract::TYPE_DATETIME:
             case CustomDefAbstract::TYPE_DATE:
-
                 $checkValue = $options->getValue();
                 if (!$checkValue instanceof \DateTime) {
                     try {

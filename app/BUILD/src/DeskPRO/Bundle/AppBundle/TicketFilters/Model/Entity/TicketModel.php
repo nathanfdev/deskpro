@@ -122,15 +122,11 @@ class TicketModel
     public $slas = [];
 
     /**
-     * Keyed by sla ID.
-     *
      * @var TicketSlaModel[]
      */
     public $slasInfo = [];
 
     /**
-     * Keyed by field ID.
-     *
      * @var CustomData[]
      */
     public $custom_fields = [];
@@ -179,7 +175,7 @@ class TicketModel
         // Custom fields
         $customFieldChanged = CustomData::compareFieldArrays($this->custom_fields, $other->custom_fields);
         foreach ($customFieldChanged as $fieldId) {
-            $changed[] = "ticket.field$fieldId";
+            $changed[] = "ticket.data.$fieldId";
         }
 
         // Models

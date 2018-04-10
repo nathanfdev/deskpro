@@ -7,7 +7,10 @@ use DeskPRO\Bundle\AppBundle\TicketFilters\Diff\FilterDiffer;
 use DeskPRO\Bundle\AppBundle\TicketFilters\Diff\FilterOp;
 use DeskPRO\Bundle\AppBundle\TicketFilters\Diff\TicketChange;
 use DeskPRO\Bundle\AppBundle\TicketFilters\Model\Agent;
+use DeskPRO\Bundle\AppBundle\TicketFilters\Model\Entity\CustomData;
+use DeskPRO\Bundle\AppBundle\TicketFilters\Model\Entity\CustomField;
 use DeskPRO\Bundle\AppBundle\TicketFilters\Model\Entity\TicketModel;
+use DeskPRO\Bundle\AppBundle\TicketFilters\Terms\CustomFieldsTermsHandler;
 use DeskPRO\Bundle\AppBundle\TicketFilters\Terms\TicketBasicTermsHandler;
 use DeskPRO\Bundle\AppBundle\TicketFilters\TicketMatcher;
 use DeskPRO\Bundle\AppBundle\TicketFilters\ValueResolver;
@@ -22,15 +25,24 @@ class FilterDifferTest extends \PHPUnit_Framework_TestCase
      */
     private function makeEnv()
     {
+        $customTicketFields = [
+            new CustomField(1, 'choice', ['my_choice']),
+            new CustomField(2, 'choice', ['my_other_choice']),
+            new CustomField(3, 'text', ['my_text']),
+            new CustomField(4, 'date', ['my_date']),
+            new CustomField(5, 'toggle', ['my_toggle']),
+        ];
+
         $resolver = new ValueResolver();
         $matcher  = new TicketMatcher($resolver, [
             new TicketBasicTermsHandler(),
+            new CustomFieldsTermsHandler($customTicketFields),
         ]);
 
         $agents  = FilterData::getAgents();
         $filters = FilterData::getFilters();
 
-        $env = new DiffEnv($matcher, $agents, $filters);
+        $env = new DiffEnv($matcher, $agents, $filters, $customTicketFields);
 
         return $env;
     }
@@ -169,7 +181,7 @@ class FilterDifferTest extends \PHPUnit_Framework_TestCase
 
         $ticketB             = new TicketModel();
         $ticketB->id         = 1;
-        $ticketA->agent      = 3;
+        $ticketB->agent      = 0;
         $ticketB->status     = 'awaiting_agent';
         $ticketB->department = 3;
 
@@ -181,6 +193,46 @@ class FilterDifferTest extends \PHPUnit_Framework_TestCase
         $this->assertEquals([
             100 => ['add' => [], 'del' => [1, 2, 3]],
             101 => ['add' => [1, 3], 'del' => []],
+        ], $ops);
+    }
+
+    public function test_custom_change()
+    {
+        $differ = new FilterDiffer($this->makeEnv());
+
+        $ticketA                = new TicketModel();
+        $ticketA->id            = 1;
+        $ticketA->status        = 'awaiting_agent';
+        $ticketA->department    = 1;
+        $ticketA->custom_fields = [
+            new CustomData(1, [10]),
+            new CustomData(2, [20]),
+            new CustomData(3, 'foo'),
+            new CustomData(4, strtotime('2018-04-09 01:00:00')),
+            new CustomData(5, 1),
+        ];
+
+        $ticketB                = new TicketModel();
+        $ticketB->id            = 1;
+        $ticketB->status        = 'awaiting_agent';
+        $ticketB->department    = 1;
+        $ticketB->custom_fields = [
+            new CustomData(1, [10]),
+            new CustomData(2, [21]),
+            new CustomData(4, strtotime('2018-01-01 01:00:00')),
+            new CustomData(5, 0),
+        ];
+
+        $ops = $this->getPlainOpsArray(
+            $differ->getFilterChangeOperations(new TicketChange($ticketA, $ticketB)),
+            [200, 201, 202, 203, 204]
+        );
+
+        $this->assertEquals([
+            200 => ['add' => [], 'del' => [1]],
+            201 => ['add' => [1], 'del' => []],
+            203 => ['add' => [1], 'del' => []],
+            204 => ['add' => [1], 'del' => []],
         ], $ops);
     }
 

@@ -3,6 +3,7 @@
 namespace DeskPRO\Bundle\AppBundle\TicketFilters\Diff;
 
 use DeskPRO\Bundle\AppBundle\TicketFilters\Model\Agent;
+use DeskPRO\Bundle\AppBundle\TicketFilters\Model\Entity\CustomField;
 use DeskPRO\Bundle\AppBundle\TicketFilters\Model\Filter;
 use DeskPRO\Bundle\AppBundle\TicketFilters\Terms\Terms;
 use DeskPRO\Bundle\AppBundle\TicketFilters\TicketMatcher;
@@ -12,6 +13,7 @@ use DeskPRO\Component\FilterQueryLanguage\Query\Val\VarVal;
 use DeskPRO\Component\FilterQueryLanguage\QueryIterator;
 use DeskPRO\Component\FilterQueryLanguage\ValueIterator;
 use DeskPRO\Component\Util\ListUtils;
+use DeskPRO\Component\Util\StringUtils;
 
 class DiffEnv
 {
@@ -50,17 +52,27 @@ class DiffEnv
     private $uniqueContextFilters;
 
     /**
+     * @var CustomField[]
+     */
+    private $customTicketFields = [];
+
+    /**
      * DiffEnv constructor.
      *
      * @param Agent[]  $agents
      * @param Filter[] $filters
      */
-    public function __construct(TicketMatcher $ticketMatcher, array $agents, array $filters)
-    {
-        $this->ticketMatcher = $ticketMatcher;
-        $this->agents        = $agents;
-        $this->filters       = $filters;
-        $this->agentPermSets = new PermSets($this->agents);
+    public function __construct(
+        TicketMatcher $ticketMatcher,
+        array $agents,
+        array $filters,
+        array $customTicketFields = null
+    ) {
+        $this->ticketMatcher      = $ticketMatcher;
+        $this->agents             = $agents;
+        $this->filters            = $filters;
+        $this->agentPermSets      = new PermSets($this->agents);
+        $this->customTicketFields = $customTicketFields ?: [];
     }
 
     /**
@@ -145,7 +157,9 @@ class DiffEnv
                 if (!$node instanceof Term) {
                     continue;
                 }
-                $fields[] = $node->field->identity;
+
+                $ident    = $this->canonicalizeIdentity($node->field->identity);
+                $fields[] = $ident;
 
                 if (!$isUnique && $this->isUniqueContextTerm($node)) {
                     $isUnique = true;
@@ -158,6 +172,40 @@ class DiffEnv
                 $this->uniqueContextFilters[] = $f->id;
             }
         }
+    }
+
+    /**
+     * Normalise identities that appear in queries. At this point its just custom fields
+     * with aliases.
+     *
+     * @param string $ident
+     *
+     * @return string
+     */
+    private function canonicalizeIdentity($ident)
+    {
+        if ($fieldAlias = StringUtils::removeFromStart(sprintf(Terms::TICKET_CUSTOM, ''), $ident)) {
+            $fieldCollection = $this->customTicketFields;
+            $prefix          = 'ticket.data.';
+        } elseif ($fieldAlias = StringUtils::removeFromStart(sprintf(Terms::PERSON_CUSTOM, ''), $ident)) {
+            $fieldCollection = $this->customPersonFields;
+            $prefix          = 'ticket.person.data.';
+        } else {
+            $fieldCollection = null;
+            $prefix          = null;
+        }
+
+        if ($fieldCollection && $prefix) {
+            $field = ListUtils::first($fieldCollection, function (CustomField $f) use ($fieldAlias) {
+                return $f->field == $fieldAlias || in_array($fieldAlias, $f->aliases);
+            });
+
+            if ($field) {
+                return $prefix.$field->field;
+            }
+        }
+
+        return $ident;
     }
 
     /**
