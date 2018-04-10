@@ -32,17 +32,14 @@ export default class AgentFilters extends React.Component {
 
   constructor(props) {
     super(props);
-    let currentDrawer = '';
     let mode = null;
     if (props.filterSets.size) {
-      currentDrawer = `filterSet${props.filterSets.first().get('id')}`;
       mode = {
         type:   'filter',
         filter: props.filterSets.first().get('filters').first(),
       };
     }
     this.state = {
-      currentDrawer,
       mode,
     };
     this.drawers = {};
@@ -51,19 +48,6 @@ export default class AgentFilters extends React.Component {
   onSelectMode = (mode) => {
     this.setState({ mode });
     this.props.onSelectMode(mode);
-  };
-
-  setDrawer = (drawer) => {
-    if (drawer.isOpen()) {
-      this.setState({
-        currentDrawer: drawer.id
-      });
-      Object.entries(this.drawers).forEach(([key, object]) => {
-        if (key !== drawer.id && object) {
-          object.close();
-        }
-      });
-    }
   };
 
   render() {
@@ -86,37 +70,31 @@ export default class AgentFilters extends React.Component {
           Tickets
         </Heading>
         <DrawerList>
-          {filterSets.toArray().map((filterSet) => {
-            const opened = `filterSet${filterSet.get('id')}` === this.state.currentDrawer;
-            return (
-              <FiltersSet
-                key={filterSet.get('id')}
-                ref={(c) => { this.drawers[`filterSet${filterSet.get('id')}`] = c; }}
-                opened={opened}
-                onChange={this.setDrawer}
-                onSelectMode={this.onSelectMode}
-                filterSet={filterSet}
-                filters={filters}
-                filtersCounts={filtersCounts}
-                mode={mode}
-              />
-            );
-          }
+          {filterSets.toArray().map(filterSet => (
+            <FiltersSet
+              key={filterSet.get('id')}
+              ref={(c) => { this.drawers[`filterSet${filterSet.get('id')}`] = c; }}
+              opened
+              onSelectMode={this.onSelectMode}
+              filterSet={filterSet}
+              filters={filters}
+              filtersCounts={filtersCounts}
+              mode={mode}
+            />
+            )
           )}
           <Stars
             ref={(c) => { this.drawers.stars = c; }}
             stars={stars}
             starsCounts={starsCounts}
-            opened={false}
-            onChange={this.setDrawer}
+            opened
             onSelectMode={this.onSelectMode}
             mode={mode}
           />
           <Labels
             ref={(c) => { this.drawers.labels = c; }}
             labels={labels}
-            opened={false}
-            onChange={this.setDrawer}
+            opened
             onSelectMode={this.onSelectMode}
             mode={mode}
           />
