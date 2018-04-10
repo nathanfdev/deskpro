@@ -45,8 +45,10 @@ export const loadGrouping = createAction(
       api.sendGet(api.prepareParams({ count }))
         .success((countsResponses) => {
           const data = flattenBatchResponses(countsResponses.responses);
-          filterCount = filterCount.set('nested', data.count.nested);
-          dispatch(updateCollection('TicketFilterCounts', Immutable.List([filterCount])));
+          if (data.count) {
+            filterCount = filterCount.set('nested', data.count.nested);
+            dispatch(updateCollection('TicketFilterCounts', Immutable.List([filterCount])));
+          }
         });
     }
     return true;
