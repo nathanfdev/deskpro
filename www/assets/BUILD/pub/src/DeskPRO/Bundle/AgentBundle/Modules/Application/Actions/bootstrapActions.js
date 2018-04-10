@@ -197,9 +197,8 @@ export const preloadData    = createAction(
           if (i > 0) {
             api.sendGet(api.prepareParams(counts))
               .success((countsResponses) => {
-                console.log(countsResponses.responses);
                 const countsData = flattenBatchResponses(countsResponses.responses);
-                console.log(countsData);
+                dispatch(addToCollection('TicketFilterCounts', 'all', countsData));
               });
           }
           window.increase_count = (id) => {
