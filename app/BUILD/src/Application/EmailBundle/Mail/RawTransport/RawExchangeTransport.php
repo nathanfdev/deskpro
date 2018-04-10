@@ -33,7 +33,7 @@ class RawExchangeTransport implements RawTransportInterface
     public function __construct(AccountConfigInterface $config, RawMessageDecoderInterface $decoder, LoggerInterface $logger)
     {
         if (!($config instanceof ExchangeConfig) && !($config instanceof Office365ExchangeConfig)) {
-            throw new \InvalidArgumentException('This transport support only ExchangeConfig or Office365ExchangeConfig configs');
+            throw new \InvalidArgumentException('This transport supports only ExchangeConfig or Office365ExchangeConfig configs');
         }
         $this->config  = $config;
         $this->decoder = $decoder;

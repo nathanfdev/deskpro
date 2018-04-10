@@ -100,6 +100,7 @@ class Exchange extends AbstractFetcher
 
         switch ($incomingAccount->getType()) {
             case 'exchange':
+            case 'office365_exchange':
                 /** @var ExchangeConfig $protocolConfig */
                 $protocolConfig = $incomingAccount;
 
@@ -112,18 +113,6 @@ class Exchange extends AbstractFetcher
                 if ($protocolConfig->mode === self::MODE_ARCHIVE) {
                     $options['archive_mailbox'] = $protocolConfig->archive_mailbox;
                 }
-
-                break;
-           case 'office365_exchange':
-                /** @var \Application\DeskPRO\Email\EmailAccount\IncomingAccount\Office365ExchangeConfig $exchangeConfig */
-                $exchangeConfig = $incomingAccount;
-
-                $options['host']         = $exchangeConfig->host;
-                $options['port']         = $exchangeConfig->port;
-                $options['user']         = $exchangeConfig->user;
-                $options['password']     = $exchangeConfig->password;
-                $options['mode']         = $exchangeConfig->mode;
-                $options['read_mailbox'] = null;
 
                 break;
 
