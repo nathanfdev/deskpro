@@ -62,6 +62,11 @@ class EditEmailAccount
     public $in_office365_account;
 
     /**
+     * @var \Application\DeskPRO\Email\EmailAccount\IncomingAccount\Office365ExchangeConfig
+     */
+    public $in_office365_exchange_account;
+
+    /**
      * @var \Application\DeskPRO\Email\EmailAccount\IncomingAccount\Pop3Config
      */
     public $in_pop3_account;
@@ -90,6 +95,11 @@ class EditEmailAccount
      * @var \Application\DeskPRO\Email\EmailAccount\OutgoingAccount\Office365Config
      */
     public $out_office365_account;
+
+    /**
+     * @var \Application\DeskPRO\Email\EmailAccount\OutgoingAccount\Office365ExchangeConfig5
+     */
+    public $out_office365_exchange_account;
 
     /**
      * @var \Application\DeskPRO\Email\EmailAccount\OutgoingAccount\SmtpConfig
@@ -269,6 +279,13 @@ class EditEmailAccount
             case 'office365':
                 return $this->in_office365_account;
 
+            case 'office365_exchange':
+                if (!$this->in_office365_exchange_account->user) {
+                    return;
+                }
+
+                return $this->in_office365_exchange_account;
+
             case 'noop':
                 return new NoopConfig();
 
@@ -306,6 +323,9 @@ class EditEmailAccount
 
             case 'office365':
                 return $this->out_office365_account;
+
+            case 'office365_exchange':
+                return $this->out_office365_exchange_account;
 
             case 'php_mail':
                 return new PhpMailConfig();

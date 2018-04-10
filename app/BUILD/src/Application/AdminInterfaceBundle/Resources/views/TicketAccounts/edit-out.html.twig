@@ -2,7 +2,7 @@
 {# Outgoing Account Details #}
 {##################################################################################################}
 
-<div class="form-group" ng-hide="form.incoming_type == 'gmail' || form.incoming_type == 'office365'">
+<div class="form-group" ng-hide="form.incoming_type == 'gmail' || form.incoming_type == 'office365' || form.incoming_type == 'office365_exchange'">
 	<div class="col-lg-3">
 		<h3>Outgoing Email *</h3>
 	</div>
@@ -22,7 +22,8 @@
 				<option value="php_mail">Send mail using PHP mail()</option>
 				<option value="smtp">SMTP</option>
 				<option value="gmail">GMail or Google Apps</option>
-				<option value="office365">Office365</option>
+        <option value="office365_exchange">Office365 (Exchange) - Recommended</option>
+				<option value="office365">Office365 (POP3/SMTP)</option>
 				<option value="exchange">MS Exchange</option>
 			</select>
 		</div>
@@ -180,9 +181,46 @@
 			</div>
 		</div>
 
-		{##############}
-		{# Office 365 #}
-		{##############}
+		{#######################}
+		{# Office365 Exchange  #}
+		{#######################}
+
+		<div class="ng-hide" ng-show="form.outgoing_type == 'office365_exchange'">
+			<div class="inner-group">
+				<table width="100%" class="inner-form-table">
+          <tr>
+            <th width="75">Exchange Server</th>
+            <td>
+              https://<input type="text" class="form-control" name="host" ng-model="form.out_office365_exchange_account.host" style="display: inline-block; width: 50%;" />
+              <br/>
+              <span class="help-block">
+                  If you’re connecting to your Office 365 email, use partner.outlook.cn
+                  If you’re not using Office 365 or not latest version, please check <a href="https://support.office.com/en-us/article/Set-up-your-Office-365-or-Microsoft-Exchange-based-email-on-an-Amazon-Kindle-Fire-d47ac3cb-e01b-46ff-ba69-9826b28fa313#__find_your_exchange">how to find your exchange server</a>.
+									Make sure your firewall is not blocking connections.
+              </span>
+            </td>
+          </tr>
+					<tr>
+						<th>Username</th>
+						<td><input type="text" class="form-control" name="title" ng-model="form.out_office365_exchange_account.user" style="width: 50%;" /></td>
+					</tr>
+					<tr>
+						<th>Password</th>
+						<td><input type="password" class="form-control" name="title" ng-model="form.out_office365_exchange_account.password" style="width: 50%;" /></td>
+					</tr>
+					<tr>
+						<th>&nbsp;</th>
+						<td>
+							<button class="btn btn-info" ng-click="TicketAccountsEdit.testOutgoingModal(); $event.preventDefault();"><i class="fa fa-bolt"></i> Test Account Settings</button>
+						</td>
+					</tr>
+				</table>
+			</div>
+		</div>
+
+		{#########################}
+		{# Office365 (POP3/SMTP) #}
+		{#########################}
 
 		<div class="ng-hide" ng-show="form.outgoing_type == 'office365'">
 			<div class="inner-group">

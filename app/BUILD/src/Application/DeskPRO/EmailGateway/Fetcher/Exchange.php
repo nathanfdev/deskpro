@@ -114,6 +114,19 @@ class Exchange extends AbstractFetcher
                 }
 
                 break;
+           case 'office365_exchange':
+                /** @var \Application\DeskPRO\Email\EmailAccount\IncomingAccount\Office365ExchangeConfig $exchangeConfig */
+                $exchangeConfig = $incomingAccount;
+
+                $options['host']         = $exchangeConfig->host;
+                $options['port']         = $exchangeConfig->port;
+                $options['user']         = $exchangeConfig->user;
+                $options['password']     = $exchangeConfig->password;
+                $options['mode']         = $exchangeConfig->mode;
+                $options['read_mailbox'] = null;
+
+                break;
+
             default:
                 throw new \InvalidArgumentException(
                     "Unknown account type: {$incomingAccount->getType()}"

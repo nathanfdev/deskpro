@@ -67,6 +67,7 @@ class RawTransportFactory
                 $tr = $this->createPhpMailTransport($config);
                 break;
             case 'exchange':
+            case 'office365_exchange':
                 $tr = $this->createExchangeTransport($config);
                 break;
             default:
@@ -189,7 +190,7 @@ class RawTransportFactory
      *
      * @return RawExchangeTransport
      */
-    public function createExchangeTransport(OutgoingAccount\ExchangeConfig $config)
+    public function createExchangeTransport(AccountConfigInterface $config)
     {
         $decoder = new Rfc2822Decoder();
 

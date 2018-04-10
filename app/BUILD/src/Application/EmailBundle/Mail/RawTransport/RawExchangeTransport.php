@@ -2,14 +2,16 @@
 
 namespace Application\EmailBundle\Mail\RawTransport;
 
+use Application\DeskPRO\Email\EmailAccount\AccountConfigInterface;
 use Application\DeskPRO\Email\EmailAccount\OutgoingAccount\ExchangeConfig;
+use Application\DeskPRO\Email\EmailAccount\OutgoingAccount\Office365ExchangeConfig;
 use Application\EmailBundle\Mail\RawMessage\RawMessageDecoderInterface;
 use Psr\Log\LoggerInterface;
 
 class RawExchangeTransport implements RawTransportInterface
 {
     /**
-     * @var ExchangeConfig
+     * @var AccountConfigInterface
      */
     protected $config;
 
@@ -28,8 +30,11 @@ class RawExchangeTransport implements RawTransportInterface
      */
     protected $ews;
 
-    public function __construct(ExchangeConfig $config, RawMessageDecoderInterface $decoder, LoggerInterface $logger)
+    public function __construct(AccountConfigInterface $config, RawMessageDecoderInterface $decoder, LoggerInterface $logger)
     {
+        if (!($config instanceof ExchangeConfig) && !($config instanceof Office365ExchangeConfig)) {
+            throw new \InvalidArgumentException('This transport support only ExchangeConfig or Office365ExchangeConfig configs');
+        }
         $this->config  = $config;
         $this->decoder = $decoder;
         $this->logger  = $logger;
