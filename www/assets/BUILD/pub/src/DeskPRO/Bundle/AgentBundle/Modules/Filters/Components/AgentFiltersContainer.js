@@ -59,7 +59,11 @@ export class AgentFiltersContainer extends SeparateComponent {
         case 'filter':
           /* eslint-disable no-undef, camelcase */
           if (DeskPRO_Window) {
-            DeskPRO_Window.loadListPane(`ticket-search/filter/${mode.filter}`, { isBackgroundLoad: false });
+            const listPath =
+              mode.grouping ?
+                `ticket-search/filter/${mode.filter}?subFilterBy=${mode.grouping}&subFilterByValue=${mode.groupingValue}`
+                : `ticket-search/filter/${mode.filter}`;
+            DeskPRO_Window.loadListPane(listPath, { isBackgroundLoad: false });
           }
           /* eslint-enable no-undef, camelcase */
           break;

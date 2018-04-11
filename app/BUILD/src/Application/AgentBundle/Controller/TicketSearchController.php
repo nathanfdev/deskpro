@@ -1020,19 +1020,9 @@ class TicketSearchController extends AbstractController
 
         $set_group_term   = null;
         $set_group_option = null;
-        if ($this->in->getString('set_group_term')) {
-            $set_group_term   = $this->in->getString('set_group_term');
-            $set_group_option = $this->in->getString('set_group_option');
-
-            $term = GroupingCounter::getSearchTerm($set_group_term, $set_group_option);
-            if ($term) {
-                $type   = $term['type'];
-                $op     = $term['op'];
-                $choice = $term;
-                unset($choice['type'], $choice['op']);
-
-                //TODO
-            }
+        if ($this->in->getString('subFilterBy')) {
+            $set_group_term   = $this->in->getString('subFilterBy');
+            $set_group_option = $this->in->getString('subFilterByValue');
         }
 
         $ticketFilters = $this->container->get('ticketfilters');
@@ -1055,6 +1045,10 @@ class TicketSearchController extends AbstractController
                 $legacy_order_by[0] = TicketSearchParams::ORDER_DATE_CREATED;
             }
             $searchParams->orderBy($legacy_order_by[0], $legacy_order_by[1]);
+        }
+
+        if ($set_group_term) {
+            $searchParams->subFilterBy($set_group_term, $set_group_option);
         }
 
         $searcher = $ticketFilters->getSearcher();

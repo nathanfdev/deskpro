@@ -30,7 +30,7 @@ class TicketSearchParams
     const GROUP_LANGUAGE            = 'ticket.language';
     const GROUP_URGENCY             = 'ticket.urgency';
     const GROUP_DATE_CREATED        = 'ticket.date_created';
-    const GROUP_TICKET_FIELD_PREFIX = 'ticket.field';
+    const GROUP_TICKET_FIELD_PREFIX = 'ticket.data';
 
     private $availableOrderFields = [
         'ticket.id',
@@ -131,6 +131,8 @@ class TicketSearchParams
      */
     public function subFilterBy($fieldId, $value)
     {
+        $fieldId = $this->groupFieldTranslator($fieldId);
+
         if (!in_array($fieldId, $this->availableGroupFields)) {
             throw new \InvalidArgumentException('Invalid sub-filter group field');
         }

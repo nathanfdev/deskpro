@@ -2,15 +2,18 @@
 
 namespace DeskPRO\Bundle\AppBundle\TicketFilters;
 
+use Application\DeskPRO\Entity\CustomDefAbstract;
 use DeskPRO\Bundle\AppBundle\TicketFilters\Model\Agent;
 use DeskPRO\Bundle\AppBundle\TicketFilters\Model\Entity\CustomField;
 use DeskPRO\Bundle\AppBundle\TicketFilters\SqlBuilder\SqlBuilder;
 use DeskPRO\Bundle\AppBundle\TicketFilters\SqlBuilder\SqlCondition;
 use DeskPRO\Bundle\AppBundle\TicketFilters\SqlBuilder\SqlConditionGroup;
+use DeskPRO\Bundle\AppBundle\TicketFilters\Terms\Terms;
 use DeskPRO\Component\FilterQueryLanguage\Query\Node\Term;
 use DeskPRO\Component\FilterQueryLanguage\Query\Node\TermGroup;
 use DeskPRO\Component\FilterQueryLanguage\Query\Query;
 use DeskPRO\Component\Util\ListUtils;
+use DeskPRO\Component\Util\StructComparer;
 use Doctrine\DBAL\Connection;
 
 class TicketSqlMatcher extends AbstractMatcher
@@ -305,7 +308,39 @@ class TicketSqlMatcher extends AbstractMatcher
                     break;
 
                 default:
-                    throw new \InvalidArgumentException('Unknown grouping field: '.$fieldId);
+                    list($fieldType, $customFieldId) = Terms::parseCustomFieldId($fieldId);
+
+                    /** @var CustomField $field */
+                    $field = null;
+
+                    if ($customFieldId) {
+                        switch ($fieldType) {
+                            case 'ticket.data':
+                                $field = ListUtils::first($this->ticketFields, StructComparer::byProp('field', $customFieldId));
+                                break;
+                            default:
+                                $field = null;
+                                break;
+                        }
+                    }
+
+                    if (!$field || !$field->isGroupingCapable()) {
+                        throw new \InvalidArgumentException('Unknown sub-filter field: '.$fieldId);
+                    }
+
+                    switch ($field->type) {
+                        case CustomDefAbstract::TYPE_CHOICE:
+                            $qb->leftJoin('tickets', 'custom_data_ticket', $joinId, "$joinId.ticket_id = tickets.id AND $joinId.root_field_id = :rootFieldId")
+                                ->andWhere("$joinId.field_id = :filterValue")
+                                ->setParameter('rootFieldId', $field->field)
+                                ->setParameter('filterValue', $value);
+                            break;
+
+                        default:
+                            throw new \RuntimeException('Unhandled sub-filtering on custom field type '.$field->type);
+                    }
+
+                    break;
             }
         }
     }
