@@ -124,7 +124,12 @@ export default class Filter extends React.Component {
 
   onSelectMode = (mode) => {
     const { filter, onSelectMode } = this.props;
-    onSelectMode({ type: 'filter', filter: filter.get('id'), grouping: mode.type });
+    onSelectMode({
+      type:          'filter',
+      filter:        filter.get('id'),
+      grouping:      mode.grouping,
+      groupingValue: mode.groupingValue
+    });
   };
 
   getSubFilters = () => {
@@ -145,7 +150,7 @@ export default class Filter extends React.Component {
                   }
                   const index = group.value;
                   return (
-                    <Urgency key={index} level={index} onClick={() => this.onSelectMode({ type: `urgency${index}` })}>{group.count}</Urgency>
+                    <Urgency key={index} level={index} onClick={() => this.onSelectMode({ grouping: 'urgency', groupingValue: index })}>{group.count}</Urgency>
                   );
                 })
               }
@@ -161,11 +166,11 @@ export default class Filter extends React.Component {
               if (!group) {
                 return '';
               }
-              const type = `${grouping}-${group.id}`;
+              const mode = { grouping, groupingValue: group.id };
               return (
                 <Item
                   key={group.id}
-                  onClick={() => this.onSelectMode({ type })}
+                  onClick={() => this.onSelectMode(mode)}
                 >
                   {group.title}
                   <Count>{group.count}</Count>
