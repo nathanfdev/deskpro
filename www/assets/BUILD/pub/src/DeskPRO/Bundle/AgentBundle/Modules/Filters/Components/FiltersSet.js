@@ -45,7 +45,6 @@ export default class FiltersSet extends React.Component {
     const items = [];
     filterSet.get('filters').forEach((key) => {
       const filter = filters.find(item => item.get('id') === key);
-      const selected = mode && mode.filter === key;
       if (filter) {
         items.push(
           <Filter
@@ -54,7 +53,7 @@ export default class FiltersSet extends React.Component {
             filtersCounts={filtersCounts}
             groupFields={groupFields}
             ticketCustomFields={ticketCustomFields}
-            selected={selected}
+            mode={mode}
             onSelect={() => this.onSelectFilter(key)}
             onSelectMode={onSelectMode}
             onGroupingChange={onGroupingChange}

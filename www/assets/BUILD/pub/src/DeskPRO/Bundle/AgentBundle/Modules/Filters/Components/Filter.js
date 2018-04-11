@@ -109,7 +109,7 @@ export default class Filter extends React.Component {
     filtersCounts:      PropTypes.object,
     groupFields:        PropTypes.object,
     ticketCustomFields: PropTypes.object,
-    selected:           PropTypes.bool,
+    mode:               PropTypes.object,
     onSelect:           PropTypes.func,
     onSelectMode:       PropTypes.func,
     onGroupingChange:   PropTypes.func,
@@ -133,7 +133,8 @@ export default class Filter extends React.Component {
   };
 
   getSubFilters = () => {
-    const count = this.props.filtersCounts.find(filter => filter.get('id') === this.props.filter.get('id'));
+    const { filter, mode } = this.props;
+    const count = this.props.filtersCounts.find(e => e.get('id') === this.props.filter.get('id'));
     let list = null;
     switch (this.state.ticketsWhereGroup) {
       case '@none':
@@ -150,7 +151,13 @@ export default class Filter extends React.Component {
                   }
                   const index = group.value;
                   return (
-                    <Urgency key={index} level={index} onClick={() => this.onSelectMode({ grouping: 'urgency', groupingValue: index })}>{group.count}</Urgency>
+                    <Urgency
+                      key={index}
+                      level={index}
+                      onClick={() => this.onSelectMode({ grouping: 'urgency', groupingValue: index })}
+                    >
+                      {group.count}
+                    </Urgency>
                   );
                 })
               }
@@ -166,11 +173,21 @@ export default class Filter extends React.Component {
               if (!group) {
                 return '';
               }
-              const mode = { grouping, groupingValue: group.id };
+              const newMode = { grouping, groupingValue: group.id };
+              let selected = false;
+              if (
+                mode &&
+                mode.filter === filter.get('id') &&
+                mode.grouping === grouping &&
+                mode.groupingValue === group.id
+              ) {
+                selected = true;
+              }
               return (
                 <Item
                   key={group.id}
-                  onClick={() => this.onSelectMode(mode)}
+                  selected={selected}
+                  onClick={() => this.onSelectMode(newMode)}
                 >
                   {group.title}
                   <Count>{group.count}</Count>
@@ -212,9 +229,13 @@ export default class Filter extends React.Component {
       filter,
       groupFields,
       ticketCustomFields,
-      selected,
+      mode,
       onSelect,
     } = this.props;
+    let selected = false;
+    if (mode && mode.filter === filter.get('id') && !mode.grouping) {
+      selected = true;
+    }
     const render = [
       <Item
         key="item"
