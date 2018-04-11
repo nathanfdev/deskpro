@@ -2,6 +2,9 @@
 
 namespace DeskPRO\Bundle\AppBundle\Model;
 
+/**
+ * Class TicketColumn.
+ */
 class TicketColumn
 {
     const TYPE_DEPARTMENT_SUBJECT = 'department_subject';
@@ -28,11 +31,37 @@ class TicketColumn
         self::TYPE_PROPERTY,
     ];
 
+    /**
+     * @var string
+     */
     protected $id;
+
+    /**
+     * @var string
+     */
     protected $label;
+
+    /**
+     * @var string
+     */
     protected $type;
 
-    public function __construct($id, $label, $type)
+    /**
+     * @var string
+     */
+    protected $widgetType;
+
+    /**
+     * Constructor.
+     *
+     * @param string $id
+     * @param string $label
+     * @param string $type
+     * @param string $widgetType
+     *
+     * @throws \InvalidArgumentException
+     */
+    public function __construct($id, $label, $type, $widgetType)
     {
         if (!$id) {
             throw new \InvalidArgumentException('cannot create a TicketColumn with no ID');
@@ -48,13 +77,14 @@ class TicketColumn
             );
         }
 
-        $this->id    = $id;
-        $this->label = $label;
-        $this->type  = $type;
+        $this->id         = $id;
+        $this->label      = $label;
+        $this->type       = $type;
+        $this->widgetType = $widgetType;
     }
 
     /**
-     * @return mixed
+     * @return string
      */
     public function getId()
     {
@@ -62,7 +92,7 @@ class TicketColumn
     }
 
     /**
-     * @return mixed
+     * @return string
      */
     public function getType()
     {
@@ -70,10 +100,18 @@ class TicketColumn
     }
 
     /**
-     * @return mixed
+     * @return string
      */
     public function getLabel()
     {
         return $this->label;
+    }
+
+    /**
+     * @return string
+     */
+    public function getWidgetType()
+    {
+        return $this->widgetType;
     }
 }

@@ -8,6 +8,7 @@
 
 namespace Application\DeskPRO\Attachments;
 
+use Application\DeskPRO\Entity\CustomDefAbstract;
 use Orb\Util\Numbers;
 use Orb\Util\Strings;
 use Symfony\Component\HttpFoundation\File\File;
@@ -91,18 +92,28 @@ class RestrictionSet
         }
 
         if (isset($props['ext'])) {
-            if ($this->allowed_exts && !in_array($props['ext'], $this->allowed_exts)) {
-                return [
-                    'error_code'   => self::ERR_FAIL_MUST_EXT,
-                    'error_detail' => implode(',', $this->allowed_exts),
-                ];
+            $extension = strtolower($props['ext']);
+
+            if ($this->allowed_exts) {
+                $allowedExtensions = array_map('strtolower', $this->allowed_exts);
+
+                if (!in_array($extension, $allowedExtensions)) {
+                    return [
+                        'error_code'   => self::ERR_FAIL_MUST_EXT,
+                        'error_detail' => implode(',', $allowedExtensions),
+                    ];
+                }
             }
 
-            if ($this->disallowed_exts && in_array($props['ext'], $this->disallowed_exts)) {
-                return [
-                    'error_code'   => self::ERR_FAIL_NOT_EXT,
-                    'error_detail' => implode(',', $this->disallowed_exts),
-                ];
+            if ($this->disallowed_exts) {
+                $disallowedExtensions = array_map('strtolower', $this->disallowed_exts);
+
+                if (in_array($extension, $disallowedExtensions)) {
+                    return [
+                        'error_code'   => self::ERR_FAIL_NOT_EXT,
+                        'error_detail' => implode(',', $disallowedExtensions),
+                    ];
+                }
             }
         }
 
@@ -173,5 +184,25 @@ class RestrictionSet
     public function getMaxSize()
     {
         return $this->max_size;
+    }
+
+    /**
+     * @param CustomDefAbstract $customDef
+     * @param string            $context
+     *
+     * @return string
+     */
+    public static function getSetIdForCustomField(CustomDefAbstract $customDef, $context = null)
+    {
+        $reflection = new \ReflectionClass($customDef);
+        $fieldType  = preg_replace('/^CustomDef/', '', $reflection->getShortName());
+        $fieldType  = strtolower($fieldType);
+
+        $id = 'custom_field.'.$fieldType.'.'.$customDef->getId();
+        if ($context) {
+            $id .= '.'.$context;
+        }
+
+        return $id;
     }
 }

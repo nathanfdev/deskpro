@@ -75,32 +75,32 @@ class TicketFieldManager extends FieldManager
         return array_values($this->em->getRepository(CustomDefTicket::class)->getTopFields());
     }
 
-    public function setCustomDataOnObject($ticket, CustomDefAbstract $field_def, array $in_data)
+    public function setCustomDataOnObject($ticket, CustomDefAbstract $fieldDef, array $in_data)
     {
         if (!$ticket->getTicketLogger()) {
-            return parent::setCustomDataOnObject($ticket, $field_def, $in_data);
+            return parent::setCustomDataOnObject($ticket, $fieldDef, $in_data);
         }
 
         $all_display_data = $this->_orig_display;
 
         $old_value = null;
 
-        if (isset($all_display_data[$field_def->id])) {
-            $handler   = $all_display_data[$field_def->id]['handler'];
-            $old_value = $handler->renderText($all_display_data[$field_def->id]['value']);
+        if (isset($all_display_data[$fieldDef->id])) {
+            $handler   = $all_display_data[$fieldDef->id]['handler'];
+            $old_value = $handler->renderText($all_display_data[$fieldDef->id]['value']);
 
             if ($old_value) {
                 $old_value = trim(str_replace(["\n", "\r\n"], ' ', strip_tags($old_value)));
             }
         }
 
-        $return = parent::setCustomDataOnObject($ticket, $field_def, $in_data);
+        $return = parent::setCustomDataOnObject($ticket, $fieldDef, $in_data);
 
         $new_value = null;
         if ($return) {
             $all_display_data = $this->getDisplayArrayForObject($ticket);
-            $handler          = $all_display_data[$field_def->id]['handler'];
-            $new_value        = $handler->renderText($all_display_data[$field_def->id]['value']);
+            $handler          = $all_display_data[$fieldDef->id]['handler'];
+            $new_value        = $handler->renderText($all_display_data[$fieldDef->id]['value']);
             if ($new_value) {
                 $new_value = trim(str_replace(["\n", "\r\n"], ' ', strip_tags($new_value)));
             }
@@ -109,8 +109,8 @@ class TicketFieldManager extends FieldManager
         if (($new_value || $old_value) && ($new_value != $old_value)) {
             $ticket->getTicketLogger()->recordMultiPropertyChanged(
                 'custom_data',
-                ['field_def' => $field_def, 'value' => $old_value],
-                ['field_def' => $field_def, 'value' => $new_value]
+                ['field_def' => $fieldDef, 'value' => $old_value],
+                ['field_def' => $fieldDef, 'value' => $new_value]
             );
         }
 

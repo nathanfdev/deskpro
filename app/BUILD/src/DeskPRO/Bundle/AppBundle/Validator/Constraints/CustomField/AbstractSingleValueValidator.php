@@ -15,9 +15,9 @@ abstract class AbstractSingleValueValidator extends AbstractCustomDefConstraintV
      */
     protected function getData(Collection $value, AbstractCustomDefConstraint $constraint)
     {
-        $custom_data = $value->first();
+        $customData = $value->first();
 
-        return $custom_data ? $this->getCustomDataValue($custom_data) : '';
+        return $customData ? $this->getCustomDataValue($customData) : '';
     }
 
     /**

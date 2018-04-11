@@ -14,6 +14,8 @@ use Application\DeskPRO\Entity\CustomDefTicket;
 use Application\DeskPRO\TicketLayout\Layout;
 use Application\DeskPRO\TicketLayout\LayoutDisplay;
 use Application\DeskPRO\TicketLayout\LayoutField;
+use DeskPRO\Bundle\AppBundle\Validator\Constraints\BlobRestrictionSet;
+use Orb\Util\Numbers;
 use Orb\Validator\AbstractValidator;
 
 class NewTicketValidator extends AbstractValidator
@@ -184,6 +186,21 @@ class NewTicketValidator extends AbstractValidator
                                     break;
                                 case 'regex':
                                     $str = "$title is invalid";
+                                    break;
+                                case BlobRestrictionSet::ACCEPT_SIZE:
+                                    $str = $translator->phrase('api.error_codes.'.$code, [
+                                        'detail' => Numbers::filesizeDisplay($field->getOption('agent_max_file_size')),
+                                    ]);
+                                    break;
+                                case BlobRestrictionSet::ACCEPT_NOT_ALLOWED_EXTENSION:
+                                    $str = $translator->phrase('api.error_codes.'.$code, [
+                                        'detail' => implode(',', $field->getOption('agent_not_extensions')),
+                                    ]);
+                                    break;
+                                case BlobRestrictionSet::ACCEPT_NOT_IN_ALLOWED_EXTENSION:
+                                    $str = $translator->phrase('api.error_codes.'.$code, [
+                                        'detail' => implode(',', $field->getOption('agent_must_extensions')),
+                                    ]);
                                     break;
                             }
 

@@ -25,6 +25,11 @@ class CustomDataHandler implements SubscribingHandlerInterface
     private $em;
 
     /**
+     * @var array
+     */
+    private $aliases = [];
+
+    /**
      * Constructor.
      *
      * @param EntityManager $em
@@ -66,134 +71,66 @@ class CustomDataHandler implements SubscribingHandlerInterface
 
         $result = [];
 
-        // split the result according to cardinality of value set
-        $lists   = []; // unlimited number of values
-        $choices = []; // fixed number of values
-        /** @var CustomDataAbstract[] $singles */
-        $singles = []; // only one value
         foreach ($collection as $customData) {
-            $customDef = self::getFieldTypeDefinition($customData);
+            $customDef = $customData->getRootField();
             $defId     = $customDef->getId();
 
-            if ($customDef->isDataListType()) {
-                $values = array_key_exists($defId, $lists) ? $lists[$defId] : [];
-                array_push($values, $customData);
-                $lists[$defId] = $values;
-            } elseif ($customDef->isChoiceType()) {
-                $values = array_key_exists($defId, $choices) ? $choices[$defId] : [];
-                array_push($values, $customData);
-                $choices[$defId] = $values;
-            } else {
-                $singles[$defId] = $customData;
-            }
-        }
+            $result[$defId]['aliases'] = $this->serializeAliases($customDef);
 
-        /** @var CustomDataAbstract[] $customDataList */
-        foreach ($lists as $customDataList) {
-            $first                 = reset($customDataList);
-            $def                   = self::getFieldTypeDefinition($first);
-            $serialized            = $this->serializeList($def, $customDataList, $context);
-            $result[$def->getId()] = $serialized;
-        }
+            switch ($customDef->getType()) {
+                case CustomDefAbstract::TYPE_FILE:
+                    $result[$defId]['value'][] = $customData->getValue();
+                    break;
 
-        /** @var CustomDataAbstract[] $customDataList */
-        foreach ($choices as $customDataList) {
-            $first                 = reset($customDataList);
-            $def                   = self::getFieldTypeDefinition($first);
-            $serialized            = $this->serializeChoice($def, $customDataList, $context);
-            $result[$def->getId()] = $serialized;
-        }
+                case CustomDefAbstract::TYPE_DATA_LIST:
+                    $result[$defId]['value'][] = $customData->getData();
+                    break;
 
-        foreach ($singles as $customData) {
-            $def = self::getFieldTypeDefinition($customData);
-            switch ($def->getType()) {
+                case CustomDefAbstract::TYPE_CHOICE:
+                    $choiceDef = $customData->getField();
+                    $choiceId  = $choiceDef->getId();
+
+                    $result[$defId]['value'][]           = $choiceId;
+                    $result[$defId]['detail'][$choiceId] = [
+                        'id'    => $choiceDef->getId(),
+                        'title' => $choiceDef->getTitle(),
+                    ];
+                    break;
+
                 case CustomDefAbstract::TYPE_DATE:
                 case CustomDefAbstract::TYPE_DATETIME:
-                    $serialized = $this->serializeDateTime($def, $customData, $context);
+                    $result[$defId]['value'] = $this->serializeDateTimeValue($customData->getData(), $context);
                     break;
                 case CustomDefAbstract::TYPE_DATA_JSON:
-                    $serialized = $this->serializeJson($def, $customData);
+                    $result[$defId]['value'] = $this->serializeDataJsonValue($customData->getData());
                     break;
                 case CustomDefAbstract::TYPE_CURRENCY:
-                    $serialized = $this->serializeCurrency($def, $customData);
+                    $result[$defId]['value'] = $this->serializeCurrencyValue($customDef, $customData->getData());
                     break;
+
                 default:
-                    $serialized = $this->serializeData($def, $customData);
+                    if ($customData->getData()) {
+                        $value = $customData->getData();
+                    } else {
+                        $value = null;
+                    }
+
+                    $result[$defId]['value'] = $value;
                     break;
             }
-            $result[$def->getId()] = $serialized;
         }
 
         return $result ?: new \ArrayObject();
     }
 
     /**
-     * @param CustomDefAbstract $def
-     *
-     * @return array|string[]
-     */
-    private function serializeAliases(CustomDefAbstract $def)
-    {
-        $aliases = [];
-        foreach ($def->getAliases() as $alias) {
-            $aliases = array_merge($aliases,  CustomFieldManager\FieldAliasConverter::toList($alias));
-        }
-        sort($aliases);
-
-        return array_unique($aliases);
-    }
-
-    /**
-     * @param CustomDataAbstract $fieldData
-     *
-     * @return CustomDefAbstract
-     */
-    private function getFieldTypeDefinition(CustomDataAbstract $fieldData)
-    {
-        return  $fieldData->field->getParent() ? $fieldData->field->getParent() : $fieldData->field;
-    }
-
-    /**
-     * @param CustomDefAbstract    $def
-     * @param CustomDataAbstract[] $choices
-     *
-     * @return array
-     */
-    private function serializeChoice(CustomDefAbstract $def, array $choices)
-    {
-        $extractChoiceId = function (CustomDataAbstract $data) {
-            return $data->field->getId();
-        };
-        $mapToChoiceMap = function (array $map, CustomDataAbstract $data) {
-            $choiceDef                = $data->field;
-            $map[$choiceDef->getId()] = [
-                'id'    => $choiceDef->getId(),
-                'title' => $choiceDef->getTitle(),
-            ];
-
-            return $map;
-        };
-
-        $serialized = [
-            'aliases' => self::serializeAliases($def),
-            'value'   => array_map($extractChoiceId, $choices),
-            'detail'  => array_reduce($choices, $mapToChoiceMap, []),
-        ];
-
-        return $serialized;
-    }
-
-    /**
-     * @param CustomDefAbstract            $def
-     * @param CustomDataAbstract           $data
+     * @param mixed                        $value
      * @param SideloadSerializationContext $context
      *
-     * @return array
+     * @return \DateTime|null
      */
-    private function serializeDateTime(CustomDefAbstract $def, CustomDataAbstract $data, SideloadSerializationContext $context)
+    private function serializeDateTimeValue($value, SideloadSerializationContext $context)
     {
-        $value = $data->getData();
-
         if ($value) {
             try {
                 $value = new \DateTime('@'.$value);
@@ -208,21 +145,18 @@ class CustomDataHandler implements SubscribingHandlerInterface
             $value = null;
         }
 
-        return [
-            'aliases' => self::serializeAliases($def),
-            'value'   => $context->accept($value),
-        ];
+        $value = $context->accept($value);
+
+        return $value;
     }
 
     /**
-     * @param CustomDefAbstract  $def
-     * @param CustomDataAbstract $data
+     * @param string $value
      *
-     * @return array
+     * @return mixed
      */
-    private function serializeJson(CustomDefAbstract $def, CustomDataAbstract $data)
+    private function serializeDataJsonValue($value)
     {
-        $value = $data->getData();
         try {
             $value = json_decode($value);
             if (json_last_error() !== JSON_ERROR_NONE) {
@@ -232,73 +166,50 @@ class CustomDataHandler implements SubscribingHandlerInterface
             $value = null;
         }
 
-        return [
-            'aliases' => self::serializeAliases($def),
-            'value'   => $value,
-        ];
+        return $value;
     }
 
     /**
-     * @param CustomDefAbstract    $def
-     * @param CustomDataAbstract[] $list
+     * @param CustomDefAbstract $def
+     * @param int               $value
      *
-     * @return array
+     * @return string
      */
-    private function serializeList(CustomDefAbstract $def, array $list)
+    private function serializeCurrencyValue(CustomDefAbstract $def, $value)
     {
-        $extractValue = function (CustomDataAbstract $data) {
-            return $data->getData();
-        };
-
-        $values = array_map($extractValue, $list);
-
-        return [
-            'aliases' => self::serializeAliases($def),
-            'value'   => $values,
-        ];
-    }
-
-    /**
-     * @param CustomDefAbstract  $def
-     * @param CustomDataAbstract $data
-     *
-     * @return array
-     */
-    private function serializeCurrency(CustomDefAbstract $def, CustomDataAbstract $data)
-    {
-        $value      = null;
         $currencyId = $def->getOption('currency_id');
         if ($currencyId) {
             $currency = $this->em->getRepository(Currency::class)->find($currencyId);
             if ($currency) {
-                $value = $data->getData() / $currency->getDelimiter();
+                $value = $value / $currency->getDelimiter();
                 $value = number_format($value, $currency->getDecimalPlaces(), '.', ',');
+            } else {
+                $value = null;
             }
-        }
-
-        return [
-            'aliases' => self::serializeAliases($def),
-            'value'   => $value,
-        ];
-    }
-
-    /**
-     * @param CustomDefAbstract  $def
-     * @param CustomDataAbstract $data
-     *
-     * @return array
-     */
-    private function serializeData(CustomDefAbstract $def, CustomDataAbstract $data)
-    {
-        if ($data->getData()) {
-            $value = $data->getData();
         } else {
             $value = null;
         }
 
-        return [
-            'aliases' => self::serializeAliases($def),
-            'value'   => $value,
-        ];
+        return $value;
+    }
+
+    /**
+     * @param CustomDefAbstract $def
+     *
+     * @return array|string[]
+     */
+    private function serializeAliases(CustomDefAbstract $def)
+    {
+        if (!isset($this->aliases[$def->getId()])) {
+            $aliases = [];
+            foreach ($def->getAliases() as $alias) {
+                $aliases = array_merge($aliases,  CustomFieldManager\FieldAliasConverter::toList($alias));
+            }
+
+            sort($aliases);
+            $this->aliases[$def->getId()] = array_unique($aliases);
+        }
+
+        return $this->aliases[$def->getId()];
     }
 }

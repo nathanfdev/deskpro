@@ -236,7 +236,10 @@ class TicketViewDataService extends AbstractDataService
             $value = array_map(function ($data) use ($def) {
                 return $data ? $this->customFieldUtil->getValueForCustomFormField($def, $data) : null;
             }, $data);
-            $value = implode(', ', $value);
+
+            if (!$def->isFileType()) {
+                $value = implode(', ', $value);
+            }
         } else {
             $value = $data ? $this->customFieldUtil->getValueForCustomFormField($def, $data) : null;
         }
@@ -248,7 +251,7 @@ class TicketViewDataService extends AbstractDataService
             $fieldId,
             $def->getWidgetType(),
             $def->getTitle(),
-            (string) $value,
+            is_array($value) ? $value : (string) $value,
             $isAlwaysVisible,
             $def->getOption('clickable_links')
         );

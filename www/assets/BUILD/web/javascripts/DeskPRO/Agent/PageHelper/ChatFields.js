@@ -37,6 +37,7 @@ DeskPRO.Agent.PageHelper.ChatFields = new Orb.Class({
 	},
 
 	openEditMode: function() {
+    var self = this;
 		this.mode = 'edit';
 
 		this.display.addClass('mode-edit-on');
@@ -91,6 +92,29 @@ DeskPRO.Agent.PageHelper.ChatFields = new Orb.Class({
 				$(this).trigger('change');
 			});
 		});
+
+    $('.File.customfield input', this.display).each(function() {
+      var $el = $(this);
+
+      if (!$('.mode-edit [data-blob-id='+$el.val()+']', self.display).length) {
+        var $removeBtn = $('<em class="remove-attach-trigger"></em>');
+        var $editWrapper = $('<div data-blob-id="'+$el.val()+'" />');
+        var $fileLink = $(self.display).find('.mode-display [data-blob-id='+$el.val()+']').clone();
+
+        $editWrapper.append($('<label>'+$('<div />').append($fileLink).html()+'</label>'));
+        $editWrapper.append($removeBtn);
+        $editWrapper.insertAfter($el);
+
+        $removeBtn.on('click', function() {
+          $el.remove();
+          $editWrapper.remove();
+
+          self.customFieldsUpload.updateVisibility();
+        });
+      }
+    });
+
+    this.customFieldsUpload = new DeskPRO.Agent.PageHelper.CustomFieldUpload(this.display);
 
 		// Make sure field tab is selected
 		this.page.getEl('fields_display_main_wrap_tab').click();
