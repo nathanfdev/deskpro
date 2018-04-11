@@ -12,7 +12,7 @@ import { updateAgentStatus, setOnlineAgents } from 'DeskPRO/Bundle/AgentBundle/M
 import agentPhrases from 'DeskPRO/Bundle/AgentBundle/AgentPhrases';
 import DeskproAppStore from 'DeskPRO/Bundle/AgentBundle/Modules/DeskproApps/DeskproAppStore';
 import { setVoiceTokens, setVoiceActivities, setVoiceSettings } from '../../Voice/Actions/clientActions';
-import { increaseCount, decreaseCount, loadGrouping } from '../../Filters/Actions/filterActions';
+import { increaseCount, decreaseCount } from '../../Filters/Actions/filterActions';
 
 export const loadAgentPhraseTranslations = createAction(
   'AGENT_LOAD_PHRASE_TRANSLATIONS',
@@ -184,9 +184,13 @@ export const preloadData    = createAction(
           dispatch(setCollection('TicketLabels', 'all', replaceIds(data.ticket_labels, 'label')));
           let counts = {};
           let i = 0;
-          const groupingActions = [];
           data.ticket_filters.forEach((filter) => {
-            counts[`filter${filter.id}`] = { endpoint: `ticket_filters2/${filter.id}/count` };
+            let query = null;
+            const groupBy = localStorage.getItem(`column_filter_subfilter_${filter.id}`);
+            if (groupBy && groupBy !== '@none') {
+              query = `group_by=ticket.${groupBy}`;
+            }
+            counts[`filter${filter.id}`] = { endpoint: `ticket_filters2/${filter.id}/count`, query };
             i += 1;
             if (i >= 5) {
               api.sendGet(api.prepareParams(counts))
@@ -197,10 +201,6 @@ export const preloadData    = createAction(
               counts = {};
               i = 0;
             }
-            const groupBy = localStorage.getItem(`column_filter_subfilter_${filter.id}`);
-            if (groupBy && groupBy !== '@none') {
-              groupingActions.push(loadGrouping(filter.id, groupBy));
-            }
           });
           if (i > 0) {
             api.sendGet(api.prepareParams(counts))
@@ -209,7 +209,6 @@ export const preloadData    = createAction(
                 dispatch(addToCollection('TicketFilterCounts', 'all', countsData));
               });
           }
-          groupingActions.forEach(action => dispatch(action));
           window.increase_count = (id) => {
             dispatch(increaseCount(id));
           };

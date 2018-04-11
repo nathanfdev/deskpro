@@ -241,11 +241,21 @@ class TicketFiltersController extends CrudController
 
             $titleResolver = $this->get('ticketfilters.count_title_resolver');
 
-            $b     = new CountBuilder($titleResolver);
-            $count = $b->buildFromArray($countRekeyed, $searchParams->getGroupFields());
-            $count->setId($ticketFilter->getId());
-            $count->setTitle($ticketFilter->getTitle());
-            $count->setType('filter');
+            $b = new CountBuilder($titleResolver);
+            if ($countRekeyed) {
+                $count = $b->buildFromArray($countRekeyed, $searchParams->getGroupFields());
+                $count->setId($ticketFilter->getId());
+                $count->setTitle($ticketFilter->getTitle());
+                $count->setType('filter');
+            } else {
+                // Failover when filter is empty
+                $count = Count::create(
+                    0,
+                    $ticketFilter->getId(),
+                    'filter',
+                    $ticketFilter->getTitle()
+                );
+            }
         }
 
         return View::create($this->wrap($count));
