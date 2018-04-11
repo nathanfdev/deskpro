@@ -65,10 +65,10 @@ class ProxyRequestFactorySpec extends ObjectBehavior
         ParameterBag $headers
     ) {
         $headers->get('X-Proxy-ReplaceVars', false)->willReturn(null);
-        $headers->get('X-Proxy-Url')->willReturn('{{settings.site_url}}/api/some-endpoint');
+        $headers->get('X-Proxy-Url')->willReturn('{{site_url}}/api/some-endpoint');
 
         $proxyRequest = $this->createFromAppRequest($instance, $request, $person);
-        $proxyRequest->getProxyUrl()->shouldReturn('{{settings.site_url}}/api/some-endpoint');
+        $proxyRequest->getProxyUrl()->shouldReturn('{{site_url}}/api/some-endpoint');
     }
 
     public function it_should_replace_proxy_url_var_to_undefined(
@@ -78,7 +78,7 @@ class ProxyRequestFactorySpec extends ObjectBehavior
         ParameterBag $headers
     ) {
         $headers->get('X-Proxy-ReplaceVars', false)->willReturn(true);
-        $headers->get('X-Proxy-Url')->willReturn('{{settings.site_url}}/api/some-endpoint');
+        $headers->get('X-Proxy-Url')->willReturn('{{site_url}}/api/some-endpoint');
 
         $proxyRequest = $this->createFromAppRequest($instance, $request, $person);
         $proxyRequest->getProxyUrl()->shouldReturn('(undefined)/api/some-endpoint');
@@ -92,13 +92,18 @@ class ProxyRequestFactorySpec extends ObjectBehavior
         AppStateRepository $appStateRepository
     ) {
         $headers->get('X-Proxy-ReplaceVars', false)->willReturn(true);
-        $headers->get('X-Proxy-Url')->willReturn('{{settings.site_url}}/api/some-endpoint');
-        $instance->getSettings()->willReturn([
-            'site_url' => 'http://deskpro-dev',
-        ]);
-        $instance->getApp()->willReturn(null);
-        $appStateRepository->findReadableByName($instance, $person, [])->willReturn([]);
+        $headers->get('X-Proxy-Url')->willReturn('{{site_url}}/api/some-endpoint');
 
+        $appState1 = new AppState();
+        $appState1->setName('site_url');
+        $appState1->setValue(json_encode('http://deskpro-dev'));
+
+        $appStateRepository->findReadableByName($instance, $person, ['site_url'])->willReturn([
+            $appState1,
+        ]);
+
+
+        $instance->getApp()->willReturn(null);
         $proxyRequest = $this->createFromAppRequest($instance, $request, $person);
         $proxyRequest->getProxyUrl()->shouldReturn('http://deskpro-dev/api/some-endpoint');
     }
@@ -112,20 +117,22 @@ class ProxyRequestFactorySpec extends ObjectBehavior
     ) {
         $appState1 = new AppState();
         $appState1->setName('site_url');
-        $appState1->setValue('http://deskpro-dev');
+        $appState1->setValue(json_encode('http://deskpro-dev'));
 
         $appState2 = new AppState();
         $appState2->setName('endpoint');
-        $appState2->setValue('some-endpoint');
+        $appState2->setValue(json_encode('some-endpoint'));
 
-        $headers->get('X-Proxy-ReplaceVars', false)->willReturn(true);
-        $headers->get('X-Proxy-Url')->willReturn('{{privateState.site_url}}/api/{{privateState.endpoint}}');
-        $instance->getSettings()->willReturn([]);
-        $instance->getApp()->willReturn(null);
         $appStateRepository->findReadableByName($instance, $person, ['site_url', 'endpoint'])->willReturn([
             $appState1,
             $appState2,
         ]);
+
+        $headers->get('X-Proxy-ReplaceVars', false)->willReturn(true);
+        $headers->get('X-Proxy-Url')->willReturn('{{site_url}}/api/{{endpoint}}');
+        $instance->getSettings()->willReturn([]);
+        $instance->getApp()->willReturn(null);
+
 
         $proxyRequest = $this->createFromAppRequest($instance, $request, $person);
         $proxyRequest->getProxyUrl()->shouldReturn('http://deskpro-dev/api/some-endpoint');
@@ -140,11 +147,10 @@ class ProxyRequestFactorySpec extends ObjectBehavior
     ) {
         $appState = new AppState();
         $appState->setName('site_url');
-        $appState->setValue('http://deskpro-dev');
+        $appState->setValue(json_encode('http://deskpro-dev'));
 
         $headers->get('X-Proxy-ReplaceVars', false)->willReturn(true);
-        $headers->get('X-Proxy-Url')->willReturn('{{privateState.site_url}}/api/some-endpoint');
-        $instance->getSettings()->willReturn([]);
+        $headers->get('X-Proxy-Url')->willReturn('{{site_url}}/api/some-endpoint');
         $instance->getApp()->willReturn(null);
         $appStateRepository->findReadableByName($instance, $person, ['site_url'])->willReturn([]);
 
@@ -157,18 +163,23 @@ class ProxyRequestFactorySpec extends ObjectBehavior
         Request      $request,
         Person       $person,
         App          $app,
-        AppManifest  $manifest
+        AppManifest  $manifest,
+        AppStateRepository $appStateRepository
     ) {
         $whiteList = [
             'http://my_url/api/*',
-            'http://{{settings.site_url}}/api/*',
+            'http://{{site_url}}/api/*',
         ];
 
         $instance->getApp()->willReturn($app);
         $app->getManifest()->willReturn($manifest);
-        $manifest->getExternalApis()->willReturn($whiteList);
-        $instance->getSettings()->willReturn([
-            'site_url' => 'http://deskpro-dev',
+        $manifest->getDomainWhitelist()->willReturn($whiteList);
+
+        $appState1 = new AppState();
+        $appState1->setName('site_url');
+        $appState1->setValue(json_encode('http://deskpro-dev'));
+        $appStateRepository->findReadableByName($instance, $person, ['site_url'])->willReturn([
+            $appState1
         ]);
 
         $proxyRequest = $this->createFromAppRequest($instance, $request, $person);
@@ -186,16 +197,18 @@ class ProxyRequestFactorySpec extends ObjectBehavior
     ) {
         $headers->get('X-Proxy-ReplaceVars', false)->willReturn(true);
         $instance->getApp()->willReturn($app);
-        $instance->getSettings()->willReturn([
-            'site_url' => 'deskpro-dev',
+
+        $appState1 = new AppState();
+        $appState1->setName('site_url');
+        $appState1->setValue(json_encode('deskpro-dev'));
+        $appStateRepository->findReadableByName($instance, $person, ['site_url'])->willReturn([
+            $appState1
         ]);
 
-        $appStateRepository->findReadableByName($instance, $person, [])->willReturn([]);
-
         $app->getManifest()->willReturn($manifest);
-        $manifest->getExternalApis()->willReturn([
+        $manifest->getDomainWhitelist()->willReturn([
             'http://my_url/api/*',
-            'http://{{settings.site_url}}/api/*',
+            'http://{{site_url}}/api/*',
         ]);
 
         $proxyRequest = $this->createFromAppRequest($instance, $request, $person);
@@ -238,16 +251,17 @@ class ProxyRequestFactorySpec extends ObjectBehavior
         $headers->all()->willReturn([
             'header-1'                     => 'value 1',
             'x-proxy-header-authorization' => [
-                'key {{settings.api_key}}',
+                'key {{api_key}}',
             ],
         ]);
 
         $instance->getApp()->willReturn(null);
-        $instance->getSettings()->willReturn([
-            'api_key' => 'key_val',
+        $appState1 = new AppState();
+        $appState1->setName('api_key');
+        $appState1->setValue(json_encode('key_val'));
+        $appStateRepository->findReadableByName($instance, $person, ['api_key'])->willReturn([
+            $appState1
         ]);
-
-        $appStateRepository->findReadableByName($instance, $person, [])->willReturn([]);
 
         $proxyRequest = $this->createFromAppRequest($instance, $request, $person);
         $proxyRequest->getProxyHeaders()->shouldReturn([

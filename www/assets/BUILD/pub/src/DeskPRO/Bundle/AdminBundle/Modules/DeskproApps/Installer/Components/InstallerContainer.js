@@ -24,12 +24,16 @@ export class InstallerContainer extends React.Component {
   }
 
   componentDidMount()  {
-    this.loadInitialState().then(state => this.setState(state));
+    this.loadInitialState()
+      .catch(error => ({ route: 'error', error }))
+      .then(state => this.setState(state))
+    ;
   }
 
   initState()  {
     this.state = {
       error:             null,
+      errorType:         null,
       route:             'loading',
       appManifest:       null,
       installerManifest: null,
@@ -47,7 +51,9 @@ export class InstallerContainer extends React.Component {
       return this.loadPackageManifest();
     }
 
-    return Promise.resolve({ screen: 'error', error: InstallerErrors.UNEXPECTED_INSTALL_ACTION });
+    const error = new Error('unexpected install action');
+    error.deskpro = { type: InstallerErrors.UNEXPECTED_INSTALL_TYPE, installType };
+    return Promise.reject(error);
   }
 
   loadPackageManifest()  {
@@ -55,8 +61,17 @@ export class InstallerContainer extends React.Component {
 
     return loadPackage(app)
       .then(packageManifest => ({ route: 'confirm-install',  packageManifest }))
-      .catch(err =>  // eslint-disable-line no-unused-expressions, no-unused-vars
-           ({ route: 'error', error: InstallerErrors.UNEXPECTED_ERROR }))
+      .catch((error) => {
+        if (typeof error === 'object') {
+          error.deskpro = { type: InstallerErrors.LOAD_MANIFEST_FAIL_PACKAGE, app };
+        }
+
+        return {
+          route:     'error',
+          error,
+          errorType: InstallerErrors.LOAD_MANIFEST_FAIL_PACKAGE
+        };
+      })
     ;
   }
 
@@ -74,8 +89,13 @@ export class InstallerContainer extends React.Component {
         return loadInstaller(manifest);
       })
       .then(installerManifest => ({ route: 'settings', installerManifest, appManifest }))
-      .catch(err =>  // eslint-disable-line no-unused-expressions, no-unused-vars
-         ({ route: 'error', error: InstallerErrors.UNEXPECTED_ERROR }))
+      .catch((error) => {
+        if (typeof error === 'object') {
+          error.deskpro = { type: InstallerErrors.LOAD_MANIFEST_FAIL_APP, app, createInstanceFirst };
+        }
+
+        return { route: 'error', error, errorType: InstallerErrors.LOAD_MANIFEST_FAIL_APP };
+      })
     ;
   }
 
@@ -111,7 +131,8 @@ export class InstallerContainer extends React.Component {
       return <ScreenInstallerLoading />;
     }
 
-    return null;
+    const error = new Error('unknown installer route');
+    return <ScreenInstallerError error={error} />;
   }
 }
 

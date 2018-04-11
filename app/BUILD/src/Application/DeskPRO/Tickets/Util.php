@@ -137,5 +137,14 @@ class Util
             SET blobs.is_temp = 1
             WHERE ticket_proc_log.ticket_id = ?
         ', [$ticket_id]);
+
+        $db->executeUpdate(<<<'SQL'
+            UPDATE blobs b
+            LEFT JOIN custom_data_ticket cd ON (cd.value = b.id)
+            LEFT JOIN custom_def_ticket cf ON (cd.root_field_id = cf.id)
+            SET b.is_temp = 1
+            WHERE cf.handler_class = 'Application\\DeskPRO\\CustomFields\\Handler\\File' AND cd.ticket_id = ?;
+SQL
+        , [$ticket_id]);
     }
 }

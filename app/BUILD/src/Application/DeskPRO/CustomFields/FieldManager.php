@@ -3,11 +3,13 @@
 namespace Application\DeskPRO\CustomFields;
 
 use Application\DeskPRO\CustomFields\Handler\HandlerAbstract;
+use Application\DeskPRO\Entity\Blob;
 use Application\DeskPRO\Entity\CustomDataAbstract;
 use Application\DeskPRO\Entity\CustomDefAbstract;
 use Application\DeskPRO\Entity\Person;
 use Application\DeskPRO\Entity\Ticket;
 use DeskPRO\Bundle\AppBundle\ObjectAlias;
+use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\EntityManager;
 use Doctrine\ORM\PersistentCollection;
 
@@ -488,19 +490,23 @@ class FieldManager
      * easy for simple fields like text or textarea, but we need this method for
      * complex fields that have multiple levels, like a choice.
      *
-     * @param $field_datas
+     * @param $fieldDatas
      *
      * @return array
      */
-    public function createFieldDataFromArray($field_datas)
+    public function createFieldDataFromArray($fieldDatas)
     {
         // Create a map of keys
-        $data_keys = [];
-        foreach ($field_datas as $k => $v) {
-            $data_keys[$v->field->getId()] = $k;
+        $dataKeys = [];
+        foreach ($fieldDatas as $k => $v) {
+            if ($v->getRootField()->isFileType()) {
+                $dataKeys[$v->field->getId()][] = $k;
+            } else {
+                $dataKeys[$v->field->getId()] = $k;
+            }
         }
 
-        $data = $this->_createDataHierarchy($data_keys, $field_datas, $this->getFields());
+        $data = $this->_createDataHierarchy($dataKeys, $fieldDatas, $this->getFields());
 
         return $data;
     }
@@ -513,7 +519,20 @@ class FieldManager
             $item = ['value' => null, 'children' => null];
 
             if (isset($data_keys[$def['id']])) {
-                $item['value'] = $field_datas[$data_keys[$def['id']]]->getData();
+                if ($def->isFileType()) {
+                    foreach ($data_keys[$def['id']] as $valKey) {
+                        $blobId = $field_datas[$valKey]->getValue();
+                        if ($blobId) {
+                            $blob = $this->em->getRepository(Blob::class)->find($blobId);
+                            if ($blob) {
+                                $item['value'][] = $blob;
+                            }
+                        }
+                    }
+                } else {
+                    $item['value'] = $field_datas[$data_keys[$def['id']]]->getData();
+                }
+
                 $item['title'] = $def['title'];
             }
 
@@ -698,12 +717,12 @@ class FieldManager
 
     /**
      * @param                                               $object
-     * @param \Application\DeskPRO\Entity\CustomDefAbstract $field_def
+     * @param \Application\DeskPRO\Entity\CustomDefAbstract $fieldDef
      * @param array                                         $in_data
      *
      * @return array
      */
-    public function setCustomDataOnObject($object, CustomDefAbstract $field_def, array $in_data)
+    public function setCustomDataOnObject($object, CustomDefAbstract $fieldDef, array $in_data)
     {
         if (!$object) {
             return;
@@ -716,10 +735,10 @@ class FieldManager
         // Ex: Choice fields we save under the actual choice option
         $set_field = null;
 
-        if ($field_def->getId() == $set_field_id) {
-            $set_field = $field_def;
-        } elseif (isset($this->field_to_children[$field_def->getId()])) {
-            foreach ($this->field_to_children[$field_def->getId()] as $c) {
+        if ($fieldDef->getId() == $set_field_id) {
+            $set_field = $fieldDef;
+        } elseif (isset($this->field_to_children[$fieldDef->getId()])) {
+            foreach ($this->field_to_children[$fieldDef->getId()] as $c) {
                 if ($c->getId() == $set_field_id) {
                     $set_field = $c;
                     break;
@@ -729,30 +748,53 @@ class FieldManager
 
         // No value
         if ($value === null || $set_field === null) {
-            $this->removeCustomDataOnObject($object, $field_def);
+            $this->removeCustomDataOnObject($object, $fieldDef);
 
             return;
         }
 
-        $old_custom_data = $object->getCustomDataForField($set_field);
-
-        $custom_data              = $old_custom_data ?: $this->createDataClass();
-        $custom_data->field       = $set_field;
-        $custom_data->root_field  = $field_def;
-        $custom_data[$value_type] = $value;
-
-        if (!$old_custom_data) {
-            $object->addCustomData($custom_data);
-        }
-
-        // remove dupes
-        foreach ($object->getCustomData() as $existCustomData) {
-            if ($existCustomData->getField() === $set_field && $existCustomData !== $custom_data) {
-                $object->getCustomData()->removeElement($existCustomData);
+        if ($fieldDef->isFileType() || $fieldDef->isDataListType()) {
+            /** @var CustomDataAbstract[]|ArrayCollection $customData */
+            $customData = $object->getCustomData();
+            $existItems = [];
+            foreach ($customData as $customDatum) {
+                if (!in_array($customDatum->getData(), $value)) {
+                    $customData->removeElement($customDatum);
+                } else {
+                    $existItems[] = $customDatum->getData();
+                }
             }
-        }
+            foreach ($value as $item) {
+                if (!in_array($item, $existItems)) {
+                    $customDatum = $fieldDef->createCustomData();
+                    $customDatum->setData($item);
 
-        return $custom_data;
+                    $object->addCustomData($customDatum);
+                }
+            }
+
+            return $customData;
+        } else {
+            $old_custom_data = $object->getCustomDataForField($set_field);
+
+            $customDatum              = $old_custom_data ?: $this->createDataClass();
+            $customDatum->field       = $set_field;
+            $customDatum->root_field  = $fieldDef;
+            $customDatum[$value_type] = $value;
+
+            if (!$old_custom_data) {
+                $object->addCustomData($customDatum);
+            }
+
+            // remove dupes
+            foreach ($object->getCustomData() as $existCustomData) {
+                if ($existCustomData->getField() === $set_field && $existCustomData !== $customDatum) {
+                    $object->getCustomData()->removeElement($existCustomData);
+                }
+            }
+
+            return $customDatum;
+        }
     }
 
     /**

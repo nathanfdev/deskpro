@@ -75,6 +75,19 @@ class ApplicationProxyRequest implements ProxyRequestInterface
     }
 
     /**
+     * @return array|null
+     */
+    public function getProxyHeader($name)
+    {
+        if (!is_string($name)) {
+            return null;
+        }
+
+        $headerKey = strtolower($name);
+        return array_key_exists($headerKey, $this->proxyHeaders) ? $this->proxyHeaders[$headerKey] : null;
+    }
+
+    /**
      * @return \string[]
      */
     public function getWhiteList()

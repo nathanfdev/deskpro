@@ -156,7 +156,7 @@ class AppsController extends AbstractController
                 'name'         => $manifest->getName(),
                 'native_name'  => $manifest->getName(),
                 'title'        => $manifest->getTitle(),
-                'scope'        => $manifest->getScope(),
+                'scope'        => $appArchive ? '' : $manifest->getScope(), // v2 apps no longer use this property
                 'is_installed' => $app ? $app->getInstances()->count() > 0 : false,
                 'is_single'    => $manifest->isSingle(),
                 'readme'       => $manifest->getDescription(),

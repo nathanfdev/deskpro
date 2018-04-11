@@ -2,6 +2,7 @@
 
 namespace DeskPRO\Bundle\AppBundle\Form\Type\CustomFields;
 
+use Application\DeskPRO\Entity\Blob;
 use Application\DeskPRO\Entity\CustomDataAbstract;
 use Application\DeskPRO\Entity\CustomDefAbstract;
 use Application\DeskPRO\Entity\Ticket;
@@ -105,7 +106,11 @@ class CustomDataType extends AbstractType
 
         /** @var CustomDefAbstract $customDef */
         $customDef = $config->getOption('custom_def');
-        $field     = $this->createCustomField($customDef, $config->getOption('inline'));
+        $field     = $this->createCustomField(
+            $customDef,
+            $config->getOption('inline'),
+            $config->getOption('agent_interface')
+        );
 
         if (!$field) {
             return;
@@ -171,9 +176,9 @@ class CustomDataType extends AbstractType
             }
 
             // add new items
-            foreach ($data as $fieldId) {
-                if (!in_array($fieldId, $exist)) {
-                    if (!$fieldId || !$choiceDef = $customDef->getChildById($fieldId)) {
+            foreach ($data as $blobId) {
+                if (!in_array($blobId, $exist)) {
+                    if (!$blobId || !$choiceDef = $customDef->getChildById($blobId)) {
                         continue;
                     }
 
@@ -203,6 +208,42 @@ class CustomDataType extends AbstractType
                 $customData = $customDef->createCustomData();
                 $customData->setData($item);
                 $customDefData->add($customData);
+            }
+        } elseif ($customDef->isFileType()) {
+            $data = $form->get('data')->getData();
+            $data = is_array($data) ? $data : ($data ? [$data] : []);
+
+            $newBlobIds = [];
+            foreach ($data as $blob) {
+                if ($blob instanceof Blob && $blob->getId()) {
+                    $newBlobIds[] = $blob->getId();
+                } else {
+                    // set null for validation
+                    $newBlobIds[] = null;
+                }
+            }
+            $existBlobIds = $customDefData
+                ->map(function (CustomDataAbstract $custom_data) {
+                    return $custom_data->getValue();
+                })
+                ->toArray()
+            ;
+
+            // remove deleted items
+            foreach ($customDefData as $customData) {
+                if (!in_array($customData->getValue(), $newBlobIds)) {
+                    $customDefData->removeElement($customData);
+                }
+            }
+
+            // add new items
+            foreach ($newBlobIds as $blobId) {
+                if (!in_array($blobId, $existBlobIds)) {
+                    $customData = $customDef->createCustomData();
+                    $customData->setValue($blobId);
+
+                    $customDefData->add($customData);
+                }
             }
         } else {
             $data = $form->get('data')->getData();
@@ -361,8 +402,8 @@ class CustomDataType extends AbstractType
             $formFieldData = $customDefData->first()->getData();
             if ($customDef->isChoiceType()) {
                 $formFieldData = $customDefData
-                    ->map(function (CustomDataAbstract $custom_data) {
-                        return $custom_data->getFieldId();
+                    ->map(function (CustomDataAbstract $customData) {
+                        return $customData->getFieldId();
                     })
                     ->toArray()
                 ;
@@ -375,6 +416,13 @@ class CustomDataType extends AbstractType
                 if (!$formFieldData) {
                     $formFieldData = null;
                 }
+            } elseif ($customDef->isFileType()) {
+                $formFieldData = $customDefData
+                    ->map(function (CustomDataAbstract $customData) {
+                        return $this->em->getRepository(Blob::class)->find($customData->getValue());
+                    })
+                    ->toArray()
+                ;
             }
         }
 
@@ -427,7 +475,7 @@ class CustomDataType extends AbstractType
             }
         } else {
             // make sure we have no dupes
-            if (!$customDef->isChoiceType()) {
+            if (!$customDef->isMulti()) {
                 $customDefData = new ArrayCollection([$customDefData->first()]);
             }
         }
@@ -465,12 +513,13 @@ class CustomDataType extends AbstractType
     /**
      * @param CustomDefAbstract $def
      * @param bool              $isInline
+     * @param bool              $isAgentContext
      *
      * @throws \Exception
      *
-     * @return FormField
+     * @return FormField|null
      */
-    private function createCustomField(CustomDefAbstract $def, $isInline = false)
+    private function createCustomField(CustomDefAbstract $def, $isInline = false, $isAgentContext = false)
     {
         switch ($def->getType()) {
             case CustomDefAbstract::TYPE_DATA_LIST:
@@ -586,11 +635,13 @@ class CustomDataType extends AbstractType
 
             case CustomDefAbstract::TYPE_CURRENCY:
                 if (!$def->getOption('currency_id')) {
+                    // unable to get the field's currency, skipping
                     return;
                 }
 
                 $currency = $this->em->getRepository(Currency::class)->find($def->getOption('currency_id'));
                 if (!$currency) {
+                    // unable to get the field's currency, skipping
                     return;
                 }
 
@@ -598,6 +649,13 @@ class CustomDataType extends AbstractType
                     'help'     => $def->getRealDescription(),
                     'currency' => $currency->getCurrencyCode(),
                     'divisor'  => $currency->getDelimiter(),
+                    'grouping' => true,
+                ]);
+
+            case CustomDefAbstract::TYPE_FILE:
+                return new FormField(CustomFieldFileCollectionType::class, [
+                    'custom_field'    => $def,
+                    'agent_interface' => $isAgentContext,
                 ]);
 
             default:

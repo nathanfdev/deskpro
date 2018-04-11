@@ -141,10 +141,12 @@ class DpScript extends LowScriptAbstract
                 $cache_file  = dp_get_tmp_dir().'/agent-lang-'.$language_id.'.cache';
             }
 
-            $js_phrases                              = [];
-            $js_phrases['agent.general.add_a_label'] = $tr->getPhraseText('agent.general.add_a_label');
-            $js_phrases['agent.general.on']          = $tr->getPhraseText('agent.general.on');
-            $js_phrases['agent.general.off']         = $tr->getPhraseText('agent.general.off');
+            $js_phrases                                           = [];
+            $js_phrases['agent.general.add_a_label']              = $tr->getPhraseText('agent.general.add_a_label');
+            $js_phrases['agent.general.on']                       = $tr->getPhraseText('agent.general.on');
+            $js_phrases['agent.general.off']                      = $tr->getPhraseText('agent.general.off');
+            $js_phrases['agent.general.saving']                   = $tr->getPhraseText('agent.general.saving');
+            $js_phrases['agent.general.drop_here_to_attach_file'] = $tr->getPhraseText('agent.general.drop_here_to_attach_file');
 
             $js_phrases['agent.time.reltime_less_second']    = $tr->getPhraseText('agent.time.reltime_less_second');
             $js_phrases['agent.time.reltime_less_minute']    = $tr->getPhraseText('agent.time.reltime_less_minute');

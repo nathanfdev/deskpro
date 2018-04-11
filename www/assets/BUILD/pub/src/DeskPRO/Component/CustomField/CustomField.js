@@ -12,10 +12,12 @@ import { CustomFieldHidden } from './CustomFieldHidden';
 import { CustomFieldToggle } from './CustomFieldToggle';
 import { CustomFieldUrl } from './CustomFieldUrl';
 import CustomFieldCurrency from './CustomFieldCurrency';
+import CustomFieldFile from './CustomFieldFile';
 
 export class CustomField extends React.Component {
 
   static propTypes = {
+    fieldType:  PropTypes.string,
     config:     PropTypes.object,
     language:   PropTypes.number,
     formErrors: PropTypes.object,
@@ -28,10 +30,11 @@ export class CustomField extends React.Component {
   }
 
   renderCustomField() {
-    const { config } = this.props;
+    const { config, fieldType } = this.props;
     const widgetType = config.get('widget_type');
     const widgetProps = {
       ...this.props,
+      fieldType,
       name: CustomField.getFieldPropertyPath(this.props)
     };
 
@@ -62,6 +65,8 @@ export class CustomField extends React.Component {
         return <CustomFieldUrl {...widgetProps} />;
       case 'currency':
         return <CustomFieldCurrency {...widgetProps} />;
+      case 'file':
+        return <CustomFieldFile {...widgetProps} />;
       default:
         return null;
     }

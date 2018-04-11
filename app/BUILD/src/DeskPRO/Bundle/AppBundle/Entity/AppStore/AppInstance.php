@@ -61,8 +61,9 @@ class AppInstance implements Domain\ApplicationInstance, EntityInterface, Notify
      *
      * @JMS\Expose()
      * @JMS\Type("string")
+     * @deprecated
      */
-    private $scope;
+    private $scope = 'agent';
 
     /**
      * @ORM\Column(type="json_array", nullable=true)

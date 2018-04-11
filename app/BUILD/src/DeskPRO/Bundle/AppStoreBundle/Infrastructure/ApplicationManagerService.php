@@ -251,7 +251,6 @@ class ApplicationManagerService
             ->setApp($app)
             ->setName($app->getManifest()->getTitle())
             ->setSettings($settings)
-            ->setScope($app->getManifest()->getScope())
         ;
 
         $this->em->persist($instance);

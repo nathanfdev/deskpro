@@ -8,7 +8,7 @@ class RequestSigningStrategyException extends HttpProxyException
 
     public static function createUnexpectedCredentials($message = null, \Exception $previous = null)
     {
-        $actualMessage = $message || 'unexpected credential';
+        $actualMessage = empty($message) ?  'unexpected credential' : $message;
         return new RequestSigningStrategyException(
             $actualMessage,
             RequestSigningStrategyException::CODE_UNEXPECTED_CREDENTIALS,

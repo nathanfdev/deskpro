@@ -96,7 +96,8 @@ export class ChatBeginContainer extends React.Component {
       widgetOptions: {
         context:       [parent.document, window.widgetFrame.document],
         contentWindow: window.widgetFrame,
-        ownerDocument: window.widgetFrame.document
+        ownerDocument: window.widgetFrame.document,
+        isWidget:      true
       },
       config: Immutable.fromJS(config)
     };

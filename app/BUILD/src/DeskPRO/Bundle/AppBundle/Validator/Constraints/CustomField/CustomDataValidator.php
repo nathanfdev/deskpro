@@ -62,11 +62,14 @@ class CustomDataValidator extends ConstraintValidator
             case CustomDefAbstract::TYPE_CURRENCY:
                 $validators[] = new AppAssert\CustomField\Currency($handlerOptions);
                 break;
+            case CustomDefAbstract::TYPE_FILE:
+                $validators[] = new AppAssert\CustomField\File($handlerOptions);
+                break;
         }
 
-        /** @var Collection $custom_def_data */
-        $custom_def_data = $value->filter(function (CustomDataAbstract $custom_data) use ($customDef) {
-            return $custom_data->root_field === $customDef;
+        /** @var Collection $customDefData */
+        $customDefData = $value->filter(function (CustomDataAbstract $custom_data) use ($customDef) {
+            return $custom_data->getRootField() === $customDef;
         });
 
         /** @var \Symfony\Component\Validator\Context\ExecutionContext $context */
@@ -77,6 +80,6 @@ class CustomDataValidator extends ConstraintValidator
             $validator->atPath('['.$customDef->getId().']');
         }
 
-        $validator->validate($custom_def_data, $validators);
+        $validator->validate($customDefData, $validators);
     }
 }
