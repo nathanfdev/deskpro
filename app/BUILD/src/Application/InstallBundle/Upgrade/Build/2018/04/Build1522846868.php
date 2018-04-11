@@ -14,6 +14,6 @@ class Build1522846868 extends AbstractBuild implements OnlineBuildInterface
 
     public function run()
     {
-        $this->execDbQuery('default', 'DELETE FROM TABLE `api_key_limits` WHERE `limit_type` = \'global\';');
+        $this->execDbQuery('default', 'DELETE FROM `api_key_limits` WHERE `limit_type` = \'global\';');
     }
 }
