@@ -1,10 +1,10 @@
 import PropTypes from 'prop-types';
 import React from 'react';
+import { FormattedMessage } from 'react-intl';
 import { connect } from 'react-redux';
 import { List, ListElement, CustomSelect, Radio, Checkbox, Input } from '@deskpro/react-components';
 import { meSelector } from 'DeskPRO/Bundle/AppBundle/Modules/RecordsStore/Shortcuts/me';
 import { allSelectorFactory } from 'DeskPRO/Bundle/AppBundle/Modules/RecordsStore';
-import agentPhrases from 'DeskPRO/Bundle/AgentBundle/AgentPhrases';
 
 @connect(state => ({
   me:         meSelector(state),
@@ -102,6 +102,8 @@ export class OwnershipSelect extends React.Component {
   onFilterChange = filter => this.setState({ filter });
 
   onRadioChange = (checked, value) => {
+    console.log(checked);
+    console.log(value);
     this.setState({
       radio: value
     });
@@ -125,6 +127,7 @@ export class OwnershipSelect extends React.Component {
   };
 
   getSpecific = () => {
+    console.log('specific');
     const { me, selectedTeams, existingTeams } = this.props;
     const teams = [];
     const re = new RegExp(this.state.filter, 'i');
@@ -149,12 +152,16 @@ export class OwnershipSelect extends React.Component {
     return (
       <div>
         {this.props.agentTeams.size > 10 ?
-          <Input
-            placeholder={agentPhrases.get('agent.general.filter')}
-            value={this.state.filter}
-            className="teams_filter"
-            onChange={this.onFilterChange}
-          />
+          <FormattedMessage id="agent.general.filter">
+            {placeholder => (
+              <Input
+                placeholder={placeholder}
+                value={this.state.filter}
+                className="teams_filter"
+                onChange={this.onFilterChange}
+              />
+            )}
+          </FormattedMessage>
           : null }
         <List>
           {teams}
@@ -166,14 +173,16 @@ export class OwnershipSelect extends React.Component {
   inputRenderer = () => {
     const { selectedTeams, existingTeams, isOwnershipGlobal, agentTeams } = this.props;
     if (selectedTeams.size === 0 && existingTeams.size === 0) {
-      return isOwnershipGlobal ? agentPhrases.get('agent.general.everyone') : agentPhrases.get('agent.general.just_me');
+      return isOwnershipGlobal ? <FormattedMessage id="agent.general.everyone" /> : <FormattedMessage id="agent.general.just_me" />;
     } else if (selectedTeams.size <= 3 && selectedTeams.size > 0) {
       return agentTeams.filter(t => selectedTeams.has(t.get('id')))
         .map(o => o.get('name')).toArray().join(', ');
     } else if (selectedTeams.size === 0 && existingTeams.size > 0) {
-      return agentPhrases.get('agent.general.select');
+      return <FormattedMessage id="agent.general.select" />;
     }
-    return `${selectedTeams.size} ${agentPhrases.get('agent.general.teams').toLowerCase()}`;
+    return (<FormattedMessage id="agent.general.teams" >
+      {txt => `${selectedTeams.size} ${txt.toLowerCase()}`}
+    </FormattedMessage>);
   };
 
   render() {
@@ -195,7 +204,7 @@ export class OwnershipSelect extends React.Component {
                   onChange={this.onRadioChange}
                   checked={radio === 'me'}
                 >
-                  {agentPhrases.get('agent.general.just_me')}
+                  <FormattedMessage id="agent.general.just_me" />
                 </Radio>
               </ListElement>
             : null }
@@ -209,7 +218,7 @@ export class OwnershipSelect extends React.Component {
                   onChange={this.onRadioChange}
                   checked={radio === 'everyone'}
                 >
-                  {agentPhrases.get('agent.general.everyone')}
+                  <FormattedMessage id="agent.general.everyone" />
                 </Radio>
               </ListElement>
             : null }
@@ -224,7 +233,7 @@ export class OwnershipSelect extends React.Component {
                 onChange={this.onRadioChange}
                 checked={radio === 'specific'}
               >
-                {agentPhrases.get('agent.snippets.specific_teams')}
+                <FormattedMessage id="agent.snippets.specific_teams" />
               </Radio>
             </ListElement>
             : null }

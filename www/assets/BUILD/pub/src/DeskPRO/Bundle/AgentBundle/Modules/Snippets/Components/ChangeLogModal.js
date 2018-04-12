@@ -1,10 +1,9 @@
 import PropTypes from 'prop-types';
 import React from 'react';
-import TimeAgo from '@deskpro/react-timeago';
+import { FormattedMessage, FormattedRelative } from 'react-intl';
 import { connect } from 'react-redux';
 import classNames from 'classnames';
 import { Select, Modal, Icon } from '@deskpro/react-components';
-import agentPhrases from 'DeskPRO/Bundle/AgentBundle/AgentPhrases';
 import AgentAvatar from 'DeskPRO/Component/Avatar/AgentAvatar';
 import * as actions from '../Actions/snippetsActions';
 import { ComparisonModal } from './ComparisonModal';
@@ -54,9 +53,9 @@ export class ChangeLogModal extends React.Component {
       const version = changes.length + 1 - key;
       return (<div key={change.id} className="change" onClick={() => this.handleChangeClick(version)}>
         <Icon name="file-text" size="s" />
-        {agentPhrases.get('agent.snippets.content_change')} (#{version})
+        <FormattedMessage id="agent.snippets.content_change" /> (#{version})
             <AgentAvatar agent={change.person} />
-        <span className="date"><TimeAgo date={change.date_created} /></span>
+        <span className="date"><FormattedRelative value={change.date_created} /></span>
       </div>);
     }
       );
@@ -117,11 +116,11 @@ export class ChangeLogModal extends React.Component {
     const options = [
       {
         value: 'ticket',
-        label: agentPhrases.get('agent.general.ticket')
+        label: <FormattedMessage id="agent.general.ticket" />
       },
       {
         value: 'chat',
-        label: agentPhrases.get('agent.general.chat')
+        label: <FormattedMessage id="agent.general.chat" />
       },
     ];
     return (
@@ -178,19 +177,19 @@ export class ChangeLogModal extends React.Component {
     return (
       <div id="change_log_modal">
         <Modal
-          title={agentPhrases.get('agent.general.changelog')}
+          title={<FormattedMessage id="agent.general.changelog" />}
           closeModal={closeModal}
         >
           {translations.size > 1 || snippet.get('is_split', false) ?
             <div className="display-options">
-              {agentPhrases.get('agent.general.display_options')}:
+              <FormattedMessage id="agent.general.display_options" />:
               {this.getLanguages()}
               {this.getTypes()}
             </div>
           : null }
           {this.state.loading ?
             <div className="ui active inverted dimmer">
-              <div className="ui text loader">{agentPhrases.get('agent.general.loading_dot')}</div>
+              <div className="ui text loader">{<FormattedMessage id="agent.general.loading_dot" />}</div>
             </div>
             : <div>
               {this.getChanges()}
@@ -199,9 +198,9 @@ export class ChangeLogModal extends React.Component {
                 onClick={() => changes.length !== 0 && this.handleChangeClick(2)}
               >
                 <Icon name="file-text" size="s" />
-                {agentPhrases.get('agent.snippets.snippet_created')} (#1)
+                <FormattedMessage id="agent.snippets.snippet_created" /> (#1)
                 <AgentAvatar agent={snippet.get('person')} />
-                <span className="date"><TimeAgo date={snippet.get('date_created')} /></span>
+                <span className="date"><FormattedRelative value={snippet.get('date_created')} /></span>
               </div>
             </div>
           }

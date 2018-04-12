@@ -1,8 +1,8 @@
 import PropTypes from 'prop-types';
 import React from 'react';
+import { FormattedMessage } from 'react-intl';
 import Immutable from 'immutable';
 import moment from 'moment';
-import agentPhrases from 'DeskPRO/Bundle/AgentBundle/AgentPhrases';
 import { Button } from 'DeskPRO/Component/Semantic/Button';
 import MediaControls from 'DeskPRO/Component/MediaControls';
 import Duration from 'DeskPRO/Component/Duration';
@@ -76,11 +76,11 @@ class TicketMessage extends React.Component {
             </span>
             <span className="voice-ticket-message-title">
               <i className="icon call" />
-              {agentPhrases.get(
-                phoneCall.get('type') === 'outbound'
+              <FormattedMessage
+                id={phoneCall.get('type') === 'outbound'
                   ? 'agent.voice.outgoing_call_title'
-                  : 'agent.voice.incoming_call_title'
-              )}
+                  : 'agent.voice.incoming_call_title'}
+              />
             </span>
             <span className="voice-ticket-message-date">
               <time
@@ -145,15 +145,18 @@ class TicketMessage extends React.Component {
                       [<Duration value={duration} />]
                     </td>
                     <td>
-                      {agentPhrases.get(`agent.voice.${log.get('action_type').replace(/\.+/, '_')}`, {
-                        '{number}':           phoneCall.get('external_number'),
-                        '{to_number}':        number.get('nickname') || number.get('number'),
-                        '{person_name}':      person.get('first_name') || '',
-                        '{person_email}':     person.get('primary_email') || '',
-                        '{key}':              log.getIn(['details', 'Digits']) || '',
-                        '{target_name}':      log.getIn(['details', 'target_name']) || 'Unknown',
-                        '{forwarded_number}': log.getIn(['details', 'forwarded_number']) || ''
-                      })}
+                      <FormattedMessage
+                        id={`agent.voice.${log.get('action_type').replace(/\.+/, '_')}`}
+                        values={{
+                          number:           phoneCall.get('external_number'),
+                          to_number:        number.get('nickname') || number.get('number'),
+                          person_name:      person.get('first_name') || '',
+                          person_email:     person.get('primary_email') || '',
+                          key:              log.getIn(['details', 'Digits']) || '',
+                          target_name:      log.getIn(['details', 'target_name']) || 'Unknown',
+                          forwarded_number: log.getIn(['details', 'forwarded_number']) || ''
+                        }}
+                      />
                     </td>
                   </tr>
                 );

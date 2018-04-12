@@ -1,9 +1,9 @@
 import React from 'react';
 import PropTypes from 'prop-types';
+import { FormattedMessage, FormattedRelative } from 'react-intl';
 import moment from 'moment';
 import htmlToText from 'html-to-text';
 import { Icon } from '@deskpro/react-components';
-import agentPhrases from 'DeskPRO/Bundle/AgentBundle/AgentPhrases';
 
 class FollowUpTable extends React.Component {
   static propTypes = {
@@ -51,39 +51,68 @@ class FollowUpTable extends React.Component {
         const agentId = action.getIn(['options', 'agent']);
         let agent;
         if (agentId === -1) {
-          agent = agentPhrases.get('agent.general.me');
+          agent = <FormattedMessage id="agent.general.me" />;
         } else if (agentId === 0) {
-          return 'Agent: Unassign';
+          return (<span>
+            <FormattedMessage id="agent.general.agent" />: <FormattedMessage id="agent.general.unassign" />
+          </span>);
         } else {
           agent = this.getAgent(agentId);
         }
-        return `Agent: Assign to ${agent}`;
+        return (
+          <span>
+            <FormattedMessage id="agent.general.agent" />
+            : <FormattedMessage id="agent.general.assign_to_agent" values={{ agent }} />
+          </span>
+        );
       }
       case 'agent_team':
-        return `Agent team: Assign to ${this.getAgentTeam(action.getIn(['options', 'agent_team']))}`;
+        return (
+          <span>
+            <FormattedMessage id="agent.general.agent_team" />
+            : <FormattedMessage
+              id="agent.general.assign_to_agent"
+              values={{ agent: this.getAgentTeam(action.getIn(['options', 'agent_team'])) }}
+            />
+          </span>
+        );
       case 'run_macro':
-        return `Macro: Run ${this.getMacro(action.getIn(['options', 'macroId']))}`;
+        return (
+          <span>
+            <FormattedMessage id="agent.general.macro" />:
+            <FormattedMessage
+              id="agent.general.run_macro"
+              values={{ macro: this.getMacro(action.getIn(['options', 'macroId'])) }}
+            />
+          </span>
+        );
       case 'status': {
         const statuses = {
-          awaiting_agent: agentPhrases.get('agent.tickets.status_awaiting_agent'),
-          awaiting_user:  agentPhrases.get('agent.tickets.status_awaiting_user'),
-          resolved:       agentPhrases.get('agent.tickets.status_resolved')
+          awaiting_agent: <FormattedMessage id="agent.tickets.status_awaiting_agent" />,
+          awaiting_user:  <FormattedMessage id="agent.tickets.status_awaiting_user" />,
+          resolved:       <FormattedMessage id="agent.tickets.status_resolved" />
         };
         const status = statuses[action.getIn(['options', 'status'])];
-        return `${agentPhrases.get('agent.general.status')}: ${status}`;
+        return <span><FormattedMessage id="agent.general.status" />: {status}</span>;
       }
       case 'reply':
       case 'note': {
         const labels = {
-          reply: agentPhrases.get('agent.general.reply'),
-          note:  agentPhrases.get('agent.general.note'),
+          reply: <FormattedMessage id="agent.general.reply" />,
+          note:  <FormattedMessage id="agent.general.note" />,
         };
-        return `${labels[action.get('type')]}: ${htmlToText.fromString(
+        return (<span>{labels[action.get('type')]}: {htmlToText.fromString(
           action.getIn(['options', 'reply_text']).substr(0, 100)
-        )}`;
+        )}</span>);
       }
       case 'hold':
-        return `Hold: ${action.getIn(['options', 'hold']) ? 'Put ticket on hold' : 'Unhold ticket'}`;
+        return (
+          <span>
+            <FormattedMessage id="agent.general.hold" />
+            : {action.getIn(['options', 'is_hold']) === '1' ?
+              <FormattedMessage id="agent.tickets.put_on_hold" /> : <FormattedMessage id="agent.tickets.unhold_ticket" />}
+          </span>
+        );
       default:
         return null;
     }
@@ -91,19 +120,19 @@ class FollowUpTable extends React.Component {
 
   render() {
     const statuses = {
-      pending:   agentPhrases.get('agent.general.pending'),
-      done:      agentPhrases.get('agent.general.done'),
-      cancelled: agentPhrases.get('agent.general.cancelled'),
+      pending:   <FormattedMessage id="agent.general.pending" />,
+      done:      <FormattedMessage id="agent.general.done" />,
+      cancelled: <FormattedMessage id="agent.general.cancelled" />,
     };
     return (
       <table className="field-holders-table th-la">
         <thead>
           <tr>
-            <th>When</th>
-            <th>{agentPhrases.get('agent.general.agent')}</th>
-            <th>{agentPhrases.get('agent.general.actions')}</th>
-            <th>{agentPhrases.get('agent.general.criteria')}</th>
-            <th>{agentPhrases.get('agent.general.status')}</th>
+            <th><FormattedMessage id="agent.general.when" /></th>
+            <th><FormattedMessage id="agent.general.agent" /></th>
+            <th><FormattedMessage id="agent.general.actions" /></th>
+            <th><FormattedMessage id="agent.general.criteria" /></th>
+            <th><FormattedMessage id="agent.general.status" /></th>
             <th />
           </tr>
         </thead>
@@ -121,7 +150,7 @@ class FollowUpTable extends React.Component {
             .map(followUp =>
               <tr key={followUp.get('id')}>
                 <td title={moment(followUp.get('date_to_run')).format('YYYY-MM-DD H:mm:ss')}>
-                  {moment(followUp.get('date_to_run')).fromNow()}
+                  <FormattedRelative value={followUp.get('date_to_run')} />
                 </td>
                 <td>{this.getAgent(followUp.get('person'))}</td>
                 <td>
@@ -149,7 +178,7 @@ class FollowUpTable extends React.Component {
           {this.props.followUps.size === 0 ?
             <tr>
               <td colSpan={6}>
-                {agentPhrases.get('agent.follow_up.no_follow_ups')}
+                <FormattedMessage id="agent.follow_up.no_follow_ups" />
               </td>
             </tr>
         : null }

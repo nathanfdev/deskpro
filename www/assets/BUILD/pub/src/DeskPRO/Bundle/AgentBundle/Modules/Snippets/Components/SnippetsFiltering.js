@@ -1,10 +1,10 @@
 import PropTypes from 'prop-types';
 import React from 'react';
+import { FormattedMessage } from 'react-intl';
 import classNames from 'classnames';
 import Immutable from 'immutable';
 import Isvg from 'react-inlinesvg';
 import { Input, Checkbox, Radio, List, ListElement } from '@deskpro/react-components';
-import agentPhrases from 'DeskPRO/Bundle/AgentBundle/AgentPhrases';
 
 class SnippetsFiltering extends React.Component {
   static propTypes = {
@@ -163,7 +163,7 @@ class SnippetsFiltering extends React.Component {
     const showOptions = [
       {
         value: 'all',
-        label: agentPhrases.get('agent.snippets.all_snippets'),
+        label: <FormattedMessage id="agent.snippets.all_snippets" />,
         count: allSnippets,
       },
     ];
@@ -173,7 +173,7 @@ class SnippetsFiltering extends React.Component {
     );
     showOptions.push({
       value: 'my_snippets',
-      label: agentPhrases.get('agent.snippets.my_snippets'),
+      label: <FormattedMessage id="agent.snippets.my_snippets" />,
       count: mySnippets,
     });
     const myTeams = me.get('teams', new Immutable.List());
@@ -186,8 +186,8 @@ class SnippetsFiltering extends React.Component {
       showOptions.push({
         value: 'my_team',
         label: me.get('teams').size > 1 ?
-                 agentPhrases.get('agent.snippets.my_teams_snippets')
-                 : agentPhrases.get('agent.snippets.my_team_snippets'),
+          <FormattedMessage id="agent.snippets.my_teams_snippets" />
+                 : <FormattedMessage id="agent.snippets.my_team_snippets" />,
         count: teamSnippets,
       });
     }
@@ -196,13 +196,13 @@ class SnippetsFiltering extends React.Component {
     );
     showOptions.push({
       value: 'my_drafts',
-      label: agentPhrases.get('agent.snippets.my_drafts'),
+      label: <FormattedMessage id="agent.snippets.my_drafts" />,
       count: myDrafts,
     });
     const allDrafts = snippets.count(snippet => snippet.get('is_draft', false));
     showOptions.push({
       value: 'all_drafts',
-      label: agentPhrases.get('agent.snippets.all_drafts'),
+      label: <FormattedMessage id="agent.snippets.all_drafts" />,
       count: allDrafts,
     });
     this.setState({
@@ -247,7 +247,9 @@ class SnippetsFiltering extends React.Component {
       >
         <div className="show block">
           <div className="title">
-            {agentPhrases.get('agent.general.show')}
+            <FormattedMessage
+              id="agent.general.show"
+            />
           </div>
           {this.state.showOptions.map(option =>
             <Radio
@@ -263,7 +265,7 @@ class SnippetsFiltering extends React.Component {
         <div className="labels block">
           <div className="title">
             <i className="fa fa-tag" />&nbsp;
-            {agentPhrases.get('agent.general.labels')}
+            <FormattedMessage id="agent.general.labels" />
           </div>
           { multiLabels.length || selectedLabel ?
             <a className="clear" onClick={this.props.clearLabels}>
@@ -271,7 +273,7 @@ class SnippetsFiltering extends React.Component {
                 className="close-icon"
                 src={`${window.DESKPRO_APP_ASSETS_URL}/DeskPRO/Bundle/AgentBundle/Resources/img/general/close.svg`}
               />
-              {agentPhrases.get('agent.general.clear')}
+              <FormattedMessage id="agent.general.clear" />
             </a>
               : null
             }

@@ -1,6 +1,6 @@
 import PropTypes from 'prop-types';
 import React from 'react';
-import agentPhrases from 'DeskPRO/Bundle/AgentBundle/AgentPhrases';
+import { FormattedMessage } from 'react-intl';
 import { PopUp } from 'DeskPRO/Component/Semantic/PopUp';
 import UserProfile from './UserProfile';
 
@@ -52,28 +52,32 @@ class User extends React.Component {
     const { imageUrl, defaultUrl } = this.props;
 
     return (
-      <div className="user" onClick={this.togglePopup} title={agentPhrases.get('agent.chrome.user_tooltip')}>
-        <PopUp
-          positionMy="right top"
-          positionAt="right bottom"
-          elementId="user-menu-popup"
-          zIndex={99999}
-          content={(
-            <UserProfile
-              onClickPreferences={this.clickSettings}
-              onClickHelp={this.clickHelp}
-              onClickLogout={this.clickLogout}
-            />
-          )}
-          ref={(c) => { this.userPopup = c; }}
-          className="user_popup"
-          autoOpen={false}
-        >
-          <img className="ui circular image" src={defaultUrl} alt="agent" />
-          {imageUrl && <img className="ui circular image" src={imageUrl} style={{ position: 'absolute', left: 0, top: 3 }} alt="agent" />}
-          <i className="dropdown icon" />
-        </PopUp>
-      </div>
+      <FormattedMessage id="agent.chrome.user_tooltip" >
+        {title => (
+          <div className="user" onClick={this.togglePopup} title={title}>
+            <PopUp
+              positionMy="right top"
+              positionAt="right bottom"
+              elementId="user-menu-popup"
+              zIndex={99999}
+              content={(
+                <UserProfile
+                  onClickPreferences={this.clickSettings}
+                  onClickHelp={this.clickHelp}
+                  onClickLogout={this.clickLogout}
+                />
+              )}
+              ref={(c) => { this.userPopup = c; }}
+              className="user_popup"
+              autoOpen={false}
+            >
+              <img className="ui circular image" src={defaultUrl} alt="agent" />
+              {imageUrl && <img className="ui circular image" src={imageUrl} style={{ position: 'absolute', left: 0, top: 3 }} alt="agent" />}
+              <i className="dropdown icon" />
+            </PopUp>
+          </div>
+        )}
+      </FormattedMessage>
     );
   }
 }

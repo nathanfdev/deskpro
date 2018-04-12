@@ -89,6 +89,7 @@ class LanguagesController extends CrudController
             'agent.general.all',
             'agent.general.article',
             'agent.general.are_you_sure',
+            'agent.general.assign_to_agent',
             'agent.general.attach_files',
             'agent.general.billing',
             'agent.general.brand',
@@ -105,6 +106,8 @@ class LanguagesController extends CrudController
             'agent.general.create',
             'agent.general.criteria',
             'agent.general.crm',
+            'agent.general.day',
+            'agent.general.days',
             'agent.general.delete',
             'agent.general.department',
             'agent.general.departments',
@@ -123,6 +126,9 @@ class LanguagesController extends CrudController
             'agent.general.follow_ups',
             'agent.general.global',
             'agent.general.groups',
+            'agent.general.hold',
+            'agent.general.hour',
+            'agent.general.hours',
             'agent.general.just_me',
             'agent.general.labels',
             'agent.general.language',
@@ -133,6 +139,8 @@ class LanguagesController extends CrudController
             'agent.general.mass_actions',
             'agent.general.me',
             'agent.general.merge',
+            'agent.general.minutes',
+            'agent.general.months',
             'agent.general.myself',
             'agent.general.name',
             'agent.general.new',
@@ -145,13 +153,16 @@ class LanguagesController extends CrudController
             'agent.general.org_position',
             'agent.general.pending',
             'agent.general.person',
+            'agent.general.please_select',
             'agent.general.portal',
             'agent.general.priority',
             'agent.general.product',
             'agent.general.publish',
             'agent.general.reply',
             'agent.general.reports',
+            'agent.general.run_macro',
             'agent.general.save',
+            'agent.general.saved',
             'agent.general.search',
             'agent.general.select',
             'agent.general.select_all',
@@ -171,7 +182,9 @@ class LanguagesController extends CrudController
             'agent.general.topic',
             'agent.general.type',
             'agent.general.types',
+            'agent.general.unassign',
             'agent.general.user',
+            'agent.general.when',
             'agent.general.workflow',
             'agent.general.your_profile',
             'agent.onboarding.topbar_search_title',
@@ -235,12 +248,18 @@ class LanguagesController extends CrudController
             'agent.snippets.your_language',
             'agent.tickets.add_reply_action',
             'agent.tickets.add_note_action',
+            'agent.tickets.assign_agent',
+            'agent.tickets.assign_team',
             'agent.tickets.count_agents',
             'agent.tickets.hold_btn',
+            'agent.tickets.put_on_hold',
+            'agent.tickets.run_macro_action',
             'agent.tickets.status_awaiting_agent',
             'agent.tickets.status_awaiting_user',
             'agent.tickets.status_resolved',
             'agent.tickets.unhold_btn',
+            'agent.tickets.unhold_ticket',
+            'agent.tickets.view_files',
             'agent.voice.incoming_call_title',
             'agent.voice.outgoing_call_title',
             'agent.voice.call_new_incoming',
@@ -529,8 +548,19 @@ class LanguagesController extends CrudController
             $language = $this->getManager()->getRepository(Language::class)->find($request->get('language'));
         }
 
-        $output = MapUtils::map($phrases, function ($idx, $id) use ($translate, $language) {
-            return [$id, $translate->phrase($id, [], $language)];
+        $format = 'twig';
+        if ($request->get('format')) {
+            $format = $request->get('format');
+        }
+
+        $output = MapUtils::map($phrases, function ($idx, $id) use ($translate, $language, $format) {
+            switch ($format) {
+                case 'icu':
+                    return [$id, $this->convertToIcu($translate->phrase($id, [], $language))];
+                case 'twig':
+                default:
+                    return [$id, $translate->phrase($id, [], $language)];
+            }
         });
 
         $res = new JsonResponse($output);
@@ -605,5 +635,17 @@ class LanguagesController extends CrudController
         $entityManager->flush();
 
         return new JsonResponse($phrases);
+    }
+
+    private function convertToIcu($phrase)
+    {
+        $phrase = str_replace('{{', '{', $phrase);
+        $phrase = str_replace('}}', '}', $phrase);
+        if (strpos($phrase, '|') !== false) {
+            $parts  = explode('|', $phrase);
+            $phrase = "{count, plural,\none {{$parts[0]}}\nother {{$parts[1]}}\n}";
+        }
+
+        return $phrase;
     }
 }

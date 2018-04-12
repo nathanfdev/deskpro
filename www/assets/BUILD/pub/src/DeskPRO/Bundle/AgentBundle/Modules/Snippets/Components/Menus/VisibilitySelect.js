@@ -1,8 +1,8 @@
 import PropTypes from 'prop-types';
 import React from 'react';
+import { FormattedMessage } from 'react-intl';
 import { connect } from 'react-redux';
 import { CustomSelect, Radio, Checkbox, Input, List, ListElement } from '@deskpro/react-components';
-import agentPhrases from 'DeskPRO/Bundle/AgentBundle/AgentPhrases';
 import { collectionSelectorFactory } from 'DeskPRO/Bundle/AppBundle/Modules/RecordsStore';
 
 class Department extends React.Component {
@@ -211,7 +211,7 @@ export class VisibilitySelect extends React.Component {
       if (types.length > 1) {
         departments.push(
           <ListElement key="ticket_header">
-            {agentPhrases.get('agent.general.ticket_departments')}
+            <FormattedMessage id="agent.general.ticket_departments" />
           </ListElement>
         );
       }
@@ -238,7 +238,7 @@ export class VisibilitySelect extends React.Component {
       if (types.length > 1) {
         departments.push(
           <ListElement key="chat_header">
-            {agentPhrases.get('agent.general.chat_departments')}
+            <FormattedMessage id="agent.general.chat_departments" />
           </ListElement>
         );
       }
@@ -261,12 +261,16 @@ export class VisibilitySelect extends React.Component {
     return (
       <div>
         {departmentsCount > 10 ?
-          <Input
-            placeholder={agentPhrases.get('agent.general.filter')}
-            value={this.state.filter}
-            className="departments_filter"
-            onChange={this.onFilterChange}
-          />
+          <FormattedMessage id="agent.general.filter">
+            {placeholder => (
+              <Input
+                placeholder={placeholder}
+                value={this.state.filter}
+                className="departments_filter"
+                onChange={this.onFilterChange}
+              />
+            )}
+          </FormattedMessage>
           : null }
         <List>
           {departments}
@@ -278,9 +282,9 @@ export class VisibilitySelect extends React.Component {
   inputRenderer = () => {
     const { selectedDepartments, isVisibleGlobal, ticketDepartments, chatDepartments } = this.props;
     if (isVisibleGlobal) {
-      return agentPhrases.get('agent.snippets.all_departments');
+      return <FormattedMessage id="agent.snippets.all_departments" />;
     } else if (selectedDepartments.size === 0) {
-      return agentPhrases.get('agent.snippets.please_select');
+      return <FormattedMessage id="agent.snippets.please_select" />;
     } else if (selectedDepartments.size <= 3) {
       let departments = ticketDepartments.filter(t => selectedDepartments.has(t.get('id')))
         .map(o => o.get('title')).toArray();
@@ -288,7 +292,9 @@ export class VisibilitySelect extends React.Component {
         .map(o => o.get('title')).toArray());
       return departments.join(', ');
     }
-    return `${selectedDepartments.size} ${agentPhrases.get('agent.general.departments').toLowerCase()}`;
+    return (<FormattedMessage id="agent.general.departments">
+      {txt => `${selectedDepartments.size} ${txt.toLowerCase()}`}
+    </FormattedMessage>);
   };
 
   render() {
@@ -306,7 +312,7 @@ export class VisibilitySelect extends React.Component {
               onChange={this.onRadioChange}
               checked={radio === 'all'}
             >
-              {agentPhrases.get('agent.snippets.all_departments')}
+              <FormattedMessage id="agent.snippets.all_departments" />
             </Radio>
           </ListElement>
           <ListElement>
@@ -316,7 +322,7 @@ export class VisibilitySelect extends React.Component {
               onChange={this.onRadioChange}
               checked={radio === 'specific'}
             >
-              {agentPhrases.get('agent.snippets.specific_departments')}
+              <FormattedMessage id="agent.snippets.specific_departments" />
             </Radio>
           </ListElement>
           { this.state.radio === 'specific' ? this.getSpecific() : null}

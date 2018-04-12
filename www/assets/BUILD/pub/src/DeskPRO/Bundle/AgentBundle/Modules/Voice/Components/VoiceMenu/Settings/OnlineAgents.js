@@ -1,6 +1,6 @@
 import PropTypes from 'prop-types';
 import React from 'react';
-import agentPhrases from 'DeskPRO/Bundle/AgentBundle/AgentPhrases';
+import { FormattedMessage } from 'react-intl';
 import { List, ListElement } from 'DeskPRO/Component/Semantic/List';
 import classNames from 'classnames';
 
@@ -29,7 +29,12 @@ class OnlineAgents extends React.Component {
 
     return (
       <div className="voice-online-agents">
-        {agentPhrases.get('agent.tickets.count_agents', { count: onlineAgents.size })}
+        <FormattedMessage
+          id="agent.tickets.count_agents"
+          values={{
+            count: onlineAgents.size
+          }}
+        />
         {onlineAgents.size > 0 &&
           <button className="ui basic button expand-button" onClick={this.toggleExpand}>
             <i className="icon users" />
