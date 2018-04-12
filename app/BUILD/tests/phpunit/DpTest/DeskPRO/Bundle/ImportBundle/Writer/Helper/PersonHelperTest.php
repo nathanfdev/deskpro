@@ -48,18 +48,17 @@ class PersonHelperTest extends AbstractWriterTest
      */
     public function setUp()
     {
-        $this->em()->getConnection()->executeUpdate(
-            'DELETE FROM settings WHERE name = :name',
-            ['name' => 'importer_allow_create_agents']
-        );
-
-        // reset settings
-        $this->getContainer()->get('settings_resolver')->getGlobalSettings(true);
+        $this->resetAllowCreateAgentsSetting();
 
         $this->helper = $this->getContainer()->get('dp.importer.writer.helper.person');
         $this->clearTable('people');
 
         parent::setUp();
+    }
+
+    public function tearDown()
+    {
+        $this->resetAllowCreateAgentsSetting();
     }
 
     public function test_import_new_person_by_oid()
@@ -189,5 +188,16 @@ class PersonHelperTest extends AbstractWriterTest
         $helperPerson = $this->helper->findOrCreatePerson('email@deskpro.dev', true);
         $this->assertNotNull($helperPerson);
         $this->assertEquals($person, $helperPerson);
+    }
+
+    private function resetAllowCreateAgentsSetting()
+    {
+        $this->em()->getConnection()->executeUpdate(
+            'DELETE FROM settings WHERE name = :name',
+            ['name' => 'importer_allow_create_agents']
+        );
+
+        // reset settings
+        $this->getContainer()->get('settings_resolver')->getGlobalSettings(true);
     }
 }
