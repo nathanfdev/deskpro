@@ -1,6 +1,8 @@
 <?php
 /**
  * DeskproEdit
+ *
+ * Copy of https://github.com/zetacomponents/Mail/blob/master/tests/parser/data/classes/custom_classes.php
  */
 class SingleFileSet implements ezcMailParserSet
 {
@@ -14,11 +16,6 @@ class SingleFileSet implements ezcMailParserSet
             throw new Exception( "Could not open file '{$file}' for testing." );
         }
         $this->fp = $fp;
-
-//        while (!feof($fp)) {
-//        $buffer = fgets($fp, 4096);
-//        echo $buffer;
-//    }
     }
 
     public function hasData()

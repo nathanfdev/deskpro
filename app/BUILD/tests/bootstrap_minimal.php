@@ -1,9 +1,5 @@
 <?php
 
-//------------------------------
-// Normalize env
-//------------------------------
-
 @setlocale(LC_CTYPE, 'C');
 @date_default_timezone_set('UTC');
 @ini_set('default_charset', 'UTF-8');
