@@ -65,3 +65,8 @@ libxml_disable_entity_loader(false);
 
     return ['install_key' => '', 'license_code' => $code];
 });
+
+//------------------------------
+// Configure ezcMailParser
+//------------------------------
+\ezcMailParser::setTmpDir(dp_get_tmp_dir().DIRECTORY_SEPARATOR);
