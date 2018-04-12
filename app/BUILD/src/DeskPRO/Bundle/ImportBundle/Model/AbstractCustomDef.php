@@ -122,7 +122,6 @@ abstract class AbstractCustomDef implements GroupSequenceProviderInterface, Prim
      *
      * @JMS\Type("array<DeskPRO\Bundle\ImportBundle\Model\CustomDefChoice>")
      *
-     * @Assert\Count(min="1", groups={"choices"})
      * @Assert\Valid()
      */
     protected $choices = [];
