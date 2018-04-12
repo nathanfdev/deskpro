@@ -21,6 +21,7 @@ services:
     class: DeskPRO\ImporterTools\Helpers\FormatHelper
     arguments:
       - "@validator"
+      - "@settings_resolver"
       - "@dp.importer_logger"
     tags:
       - { name: dp.importer.source.helper }
