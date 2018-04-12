@@ -182,6 +182,7 @@ services:
   dp.importer.writer.helper.person:
     class: DeskPRO\Bundle\ImportBundle\Writer\Helper\PersonHelper
     arguments:
+      - "@settings_resolver"
       - "@dp.importer.writer.mapper.person"
       - "@dp.importer.writer.mapper.import_map"
       - "@dp.importer_validator"

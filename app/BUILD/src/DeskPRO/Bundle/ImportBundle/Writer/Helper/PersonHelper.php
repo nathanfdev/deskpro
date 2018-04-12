@@ -29,6 +29,7 @@
 namespace DeskPRO\Bundle\ImportBundle\Writer\Helper;
 
 use Application\DeskPRO\Entity;
+use Application\DeskPRO\NewSettings\SettingsResolver;
 use DeskPRO\Bundle\ImportBundle\Model;
 use DeskPRO\Bundle\ImportBundle\Writer\EntityPersister;
 use DeskPRO\Bundle\ImportBundle\Writer\Mapper\ImportMapMapper;
@@ -42,6 +43,11 @@ use Symfony\Component\Validator\Validator\ValidatorInterface;
  */
 class PersonHelper
 {
+    /**
+     * @var SettingsResolver
+     */
+    private $settingsResolver;
+
     /**
      * @var PersonMapper
      */
@@ -70,6 +76,7 @@ class PersonHelper
     /**
      * Constructor.
      *
+     * @param SettingsResolver   $settingsResolver
      * @param PersonMapper       $personMapper
      * @param ImportMapMapper    $importMapMapper
      * @param ValidatorInterface $validator
@@ -77,22 +84,26 @@ class PersonHelper
      * @param LoggerInterface    $logger
      */
     public function __construct(
+        SettingsResolver   $settingsResolver,
         PersonMapper       $personMapper,
         ImportMapMapper    $importMapMapper,
         ValidatorInterface $validator,
         EntityPersister    $persister,
         LoggerInterface    $logger
     ) {
-        $this->personMapper    = $personMapper;
-        $this->importMapMapper = $importMapMapper;
-        $this->validator       = $validator;
-        $this->persister       = $persister;
-        $this->logger          = $logger;
+        $this->settingsResolver = $settingsResolver;
+        $this->personMapper     = $personMapper;
+        $this->importMapMapper  = $importMapMapper;
+        $this->validator        = $validator;
+        $this->persister        = $persister;
+        $this->logger           = $logger;
     }
 
     /**
      * @param string $personOidOrEmail
      * @param bool   $isAgent
+     *
+     * @throws \Exception
      *
      * @return Entity\Person|null
      */
@@ -154,13 +165,24 @@ class PersonHelper
             }
         }
 
+        $allowCreateAgents = $this->settingsResolver->getGlobalSettings()->get('importer_allow_create_agents', true);
         if (!$entity->getId()) {
+            // a new agent but we can't allow to create new agents
+            if ($isAgent && !$allowCreateAgents) {
+                return;
+            }
+
             $entity->setName($entity->getDisplayName());
             $this->persister->persistAndFlush($entity, $model);
         }
 
         // force set person as agent
         if ($isAgent && !$entity->isAgent()) {
+            // not an agent but we can't allow to force set to an agent
+            if (!$allowCreateAgents) {
+                return;
+            }
+
             $entity->setIsAgent(true);
             $this->persister->persistAndFlush($entity, $model);
         }
