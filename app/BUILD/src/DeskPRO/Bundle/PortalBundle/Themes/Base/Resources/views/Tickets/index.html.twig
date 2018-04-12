@@ -183,7 +183,23 @@
                     {% else  %}
                         {% set property = ticket_view.getProperty(col.id) %}
                         {% if property and property.isVisible() %}
-                            {{ property.value }}
+                            {% if property.value is iterable %}
+                                {% for item in property.value %}
+                                    <div>
+                                        {% if col.widgetType == 'file' %}
+                                            <a href="{{ item.downloadUrl }}{{ item.is_image ? '' : '?dl=1' }}" target="_blank">
+                                                {{ content_icon(item) }}
+                                                {{ item.filename }}
+                                                ({{ item.readableFilesize }})
+                                            </a>
+                                        {% else %}
+                                            {{ item }}
+                                        {% endif %}
+                                    </div>
+                                {% endfor %}
+                            {% else %}
+                                {{ property.value }}
+                            {% endif %}
                         {% endif %}
                     {% endif %}
                 {% endif %}

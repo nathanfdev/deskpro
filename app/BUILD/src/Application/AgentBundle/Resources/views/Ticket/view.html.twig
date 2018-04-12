@@ -876,9 +876,9 @@
                 <section id="{{ baseId }}_logs_wrap" style="margin: 0;padding: 0;">
                     {{ logs_block|raw }}
                 </section>
-                <section id="{{ baseId }}_times" style="display: none; padding: 0;">
+                <section id="{{ baseId }}_times" class="times-table-wrapper" style="display: none; padding: 0;">
                     <table cellspacing="0" cellpadding="0" width="100%" class="field-holders-table th-ra">
-                        <tbody>
+                        <tbody class="times-row-created">
                             <tr>
                                 <th width="200">{{ phrase('agent.general.created') }}:</th>
                                 <td>
@@ -889,7 +889,7 @@
                         </tbody>
                         {% set times_work_hours = (ticket.getWorkHoursSet().getActiveTime() != 'all') %}
                         {% if ticket.status == 'awaiting_agent' and ticket.date_user_waiting %}
-                            <tbody>
+                            <tbody class="times-row-waiting-time">
                                 <tr>
                                     <th>{{ phrase('agent.tickets.current_user_waiting_time') }}:</th>
                                     <td>
@@ -913,7 +913,7 @@
                             </tbody>
                         {% endif %}
                         {% if ticket.real_total_user_waiting %}
-                            <tbody>
+                            <tbody class="times-row-all-waiting-time">
                                 <tr>
                                     <th>{{ phrase('agent.tickets.total_user_waiting_time') }}:</th>
                                     <td>
@@ -930,7 +930,7 @@
                             </tbody>
                         {% endif %}
                         {% if ticket.total_to_first_reply and ticket.total_to_first_reply > 0 %}
-                            <tbody>
+                            <tbody class="times-row-time-first-reply">
                                 <tr>
                                     <th>
                                         {% if not app.isRelativeTimesDisabled() %}
@@ -955,7 +955,7 @@
                             </tbody>
                         {% endif %}
                         {% if ticket.status == 'awaiting_user' and ticket.date_agent_waiting %}
-                            <tbody>
+                            <tbody class="times-row-agent-waiting-time">
                                 <tr>
                                     <th>{{ phrase('agent.tickets.current_agent_waiting_time') }}:</th>
                                     <td>
@@ -968,7 +968,7 @@
                             </tbody>
                         {% endif %}
                         {% if ticket.date_resolved %}
-                            <tbody>
+                            <tbody class="times-row-resolved">
                                 <tr>
                                     <th>{{ phrase('agent.general.date_resolved') }}:</th>
                                     <td>
@@ -978,7 +978,7 @@
                                     </td>
                                 </tr>
                             </tbody>
-                            <tbody>
+                            <tbody class="times-row-time-until-resolved">
                                 <tr>
                                     <th>{{ phrase('agent.tickets.time_til_resolve') }}:</th>
                                     <td>
@@ -995,7 +995,7 @@
                             </tbody>
                         {% endif %}
                         {% if ticket.date_archived %}
-                            <tbody>
+                            <tbody class="times-row-archived">
                                 <tr>
                                     <th>{{ phrase('agent.general.date_archived') }}:</th>
                                     <td>
@@ -1007,7 +1007,7 @@
                             </tbody>
                         {% endif %}
                         {% if ticket.date_first_agent_assign %}
-                            <tbody>
+                            <tbody class="times-row-first-assigned">
                                 <tr>
                                     <th>{{ phrase('agent.tickets.first_assignment') }}:</th>
                                     <td>
@@ -1019,7 +1019,7 @@
                             </tbody>
                         {% endif %}
                         {% if ticket.date_first_agent_reply %}
-                            <tbody>
+                            <tbody class="times-row-first-agent-reply">
                                 <tr>
                                     <th>{{ phrase('agent.tickets.first_agent_reply') }}:</th>
                                     <td>
@@ -1031,7 +1031,7 @@
                             </tbody>
                         {% endif %}
                         {% if ticket.date_last_agent_reply %}
-                            <tbody>
+                            <tbody class="times-row-last-agent-reply">
                                 <tr>
                                     <th>{{ phrase('agent.tickets.last_agent_reply') }}:</th>
                                     <td>
@@ -1043,7 +1043,7 @@
                             </tbody>
                         {% endif %}
                         {% if ticket.date_last_user_reply %}
-                            <tbody>
+                            <tbody class="times-row-last-user-reply">
                                 <tr>
                                     <th>{{ phrase('agent.tickets.last_user_reply') }}:</th>
                                     <td>

@@ -12,6 +12,14 @@ pageMeta.baseId = '{{ baseId }}';
 <a class="tab-anchor" href="#">&nbsp;</a>
 
 <form id="{{baseId}}_neworg" class="keybound-submit">
+	<script class="template-upload" type="text/x-tmpl">
+		{{ '{% for (var i=0, file; file=o.files[i]; i++) { %}' }}
+		<p>{{ '{%=file.name%}' }} ({{ phrase('agent.general.saving') }})</p>
+		{{ '{% } %}' }}
+	</script>
+	<script class="template-download" type="text/x-tmpl">
+		<div style="display:none"></div>
+	</script>
 
 <div class="first section cat-section" id="{{baseId}}_cat_section">
 	<div class="content">

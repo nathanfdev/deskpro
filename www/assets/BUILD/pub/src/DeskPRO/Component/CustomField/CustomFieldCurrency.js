@@ -2,6 +2,7 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import { Field } from '@deskpro/react-forms';
+import classNames from 'classnames';
 import { collectionSelectorFactory } from 'DeskPRO/Bundle/AppBundle/Modules/RecordsStore';
 import { Input } from 'DeskPRO/Component/Semantic/ReactForm';
 import { AbstractCustomField } from './AbstractCustomField';
@@ -47,7 +48,7 @@ class CurrencyField extends React.Component {
     const { value, onChange, currency } = this.props;
 
     return (
-      <div className="currency-field">
+      <div className={classNames('currency-field', currency.get('currency_code').toLowerCase())}>
         <span className="currency-symbol">{currency.get('symbol')}</span>
         <Input type="text" value={value} onChange={onChange} />
       </div>

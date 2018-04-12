@@ -41,6 +41,7 @@ class CustomDefAbstract extends \Application\DeskPRO\Domain\DomainObject impleme
     const HANDLER_CLASS_DATALIST = Handler\DataList::class;
     const HANDLER_CLASS_URL      = Handler\Url::class;
     const HANDLER_CLASS_CURRENCY = Handler\Currency::class;
+    const HANDLER_CLASS_FILE     = Handler\File::class;
 
     const TYPE_TEXT      = 'text';
     const TYPE_TEXTAREA  = 'textarea';
@@ -55,6 +56,7 @@ class CustomDefAbstract extends \Application\DeskPRO\Domain\DomainObject impleme
     const TYPE_DATA_LIST = 'datalist';
     const TYPE_URL       = 'url';
     const TYPE_CURRENCY  = 'currency';
+    const TYPE_FILE      = 'file';
 
     /**
      * The unique ID.
@@ -1037,6 +1039,12 @@ class CustomDefAbstract extends \Application\DeskPRO\Domain\DomainObject impleme
             case self::TYPE_CHOICE:
                 $this->setHandlerClass(self::HANDLER_CLASS_CHOICE);
                 break;
+            case self::TYPE_CURRENCY:
+                $this->setHandlerClass(self::HANDLER_CLASS_CURRENCY);
+                break;
+            case self::TYPE_URL:
+                $this->setHandlerClass(self::HANDLER_CLASS_URL);
+                break;
 
             // extended choice types
             case 'multichoice':
@@ -1106,7 +1114,7 @@ class CustomDefAbstract extends \Application\DeskPRO\Domain\DomainObject impleme
      */
     public function isMulti()
     {
-        return $this->isChoiceType() && $this->getOption('multiple');
+        return ($this->isChoiceType() && $this->getOption('multiple')) || $this->isDataListType() || $this->isFileType();
     }
 
     /**
@@ -1155,6 +1163,14 @@ class CustomDefAbstract extends \Application\DeskPRO\Domain\DomainObject impleme
     public function isCurrencyType()
     {
         return $this->handler_class === self::HANDLER_CLASS_CURRENCY;
+    }
+
+    /**
+     * @return bool
+     */
+    public function isFileType()
+    {
+        return $this->handler_class === self::HANDLER_CLASS_FILE;
     }
 
     /**

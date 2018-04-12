@@ -3,6 +3,7 @@
 namespace Application\DeskPRO\Reports;
 
 use Application\DeskPRO\Entity\AgentTeam;
+use Application\DeskPRO\Entity\CustomDefAbstract;
 use Application\DeskPRO\Entity\CustomDefArticle;
 use Application\DeskPRO\Entity\CustomDefBilling;
 use Application\DeskPRO\Entity\CustomDefChat;
@@ -97,21 +98,45 @@ class ReportsWidgetService
         return $groupParams;
     }
 
+    /**
+     * @param $class
+     *
+     * @return array
+     */
     private function customFields($class)
     {
         $defs   = $this->em->getRepository($class)->findBy(['parent' => null, 'is_enabled' => true]);
         $result = [];
 
         foreach ($defs as $def) {
-            if ($def->getChoices()) {
-                $result[$def->getRawTitle()] = [];
-                foreach ($def->getChoices() as $choice) {
-                    $result[$def->getRawTitle()][$choice['title']] = [$choice['title']];
-                }
+            /** @var CustomDefAbstract $def */
+            if ($def->isChoiceType()) {
+                $choices = $def->getChoices();
+                $arr     = [];
+                $this->getChoices($choices, '', $arr);
+                $result[$def->getRawTitle()]                                                   = $arr;
                 $result[$def->getRawTitle()][DashboardWidgetManager::WIDGET_VALUE_FROM_REPORT] = ['value from report'];
             }
         }
 
         return $result;
+    }
+
+    /**
+     * @param $choices
+     * @param $prevTitle
+     * @param $result
+     */
+    private function getChoices($choices, $prevTitle, &$result)
+    {
+        /* @var CustomDefAbstract $def */
+        foreach ($choices as $choice) {
+            if ($choice['is_selectable']) {
+                $title                    = $prevTitle ? $prevTitle.' > ' : '';
+                $result[$choice['title']] = [$title.$choice['title']];
+            } else {
+                $this->getChoices($choice['children'], $choice['title'], $result);
+            }
+        }
     }
 }

@@ -570,6 +570,7 @@ return [
     'agent.general.downloads'                                  => 'Downloads',
     'agent.general.dp_updates'                                 => 'Deskpro Updates',
     'agent.general.draft'                                      => 'Draft',
+    'agent.general.drop_here_to_attach_file'                   => 'Drop your file here to attach',
     'agent.general.drop_here_to_attach'                        => 'Drop your file here to attach it to your reply',
     'agent.general.drop_here_to_insert_image'                  => 'Drop your <strong>image</strong> here to insert it into your reply',
     'agent.general.drop_here_to_upload'                        => 'Drop your file here to upload a new picture',

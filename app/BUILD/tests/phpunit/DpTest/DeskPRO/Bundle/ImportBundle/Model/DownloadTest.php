@@ -16,11 +16,11 @@ class DownloadTest extends AbstractModelTest
         $errors = $this->validateData([]);
 
         $this->assertCount(5, $errors);
-        $this->assertEquals('title', $errors[0]->getPropertyPath());
-        $this->assertEquals('content', $errors[1]->getPropertyPath());
-        $this->assertEquals('status', $errors[2]->getPropertyPath());
-        $this->assertEquals('raw_data', $errors[3]->getPropertyPath());
-        $this->assertEquals('blob', $errors[4]->getPropertyPath());
+        $this->assertEquals('blob', $errors[0]->getPropertyPath());
+        $this->assertEquals('title', $errors[1]->getPropertyPath());
+        $this->assertEquals('content', $errors[2]->getPropertyPath());
+        $this->assertEquals('status', $errors[3]->getPropertyPath());
+        $this->assertEquals('raw_data', $errors[4]->getPropertyPath());
     }
 
     public function test_required_params()

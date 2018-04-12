@@ -4,7 +4,7 @@ namespace Application\DeskPRO\CustomFields\Handler;
 
 use Application\DeskPRO\App;
 use DeskPRO\Bundle\AppBundle\Entity\Currency as CurrencyEntity;
-use Symfony\Component\Form\Extension\Core\Type\MoneyType;
+use DeskPRO\Bundle\AppBundle\Form\Type\MoneyType;
 
 /**
  * Class Currency.
@@ -38,6 +38,7 @@ class Currency extends HandlerAbstract
         return [
             'currency' => $currency->getCurrencyCode(),
             'divisor'  => $currency->getDelimiter(),
+            'grouping' => true,
         ];
     }
 
@@ -126,21 +127,6 @@ class Currency extends HandlerAbstract
         }
 
         return [];
-    }
-
-    /**
-     * {@inheritdoc}
-     */
-    public function getFormField($data = null)
-    {
-        if (isset($data['value']) && $data['value']) {
-            $form = $this->getCurrencyForm($data['value']);
-            if ($form) {
-                $data['value'] = $form->getViewData();
-            }
-        }
-
-        return parent::getFormField($data);
     }
 
     /**

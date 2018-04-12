@@ -25,8 +25,25 @@ class InlineSelectComp extends React.Component {
     this.state = { isOpen: false };
   }
 
+  componentDidMount() {
+    const pos  = this.$el.offset();
+    const posLeft = pos.left;
+    const posTop  = pos.top + 20;
+
+    document.addEventListener('scroll', this.refreshOnScroll, true);
+
+    // eslint-disable-next-line react/no-did-mount-set-state
+    this.setState({
+      posTop, posLeft
+    });
+  }
+
   componentDidUpdate() {
     this.refreshSize();
+  }
+
+  componentWillUnmount() {
+    document.removeEventListener('scroll', this.refreshOnScroll, true);
   }
 
   onClick = (ev, value) => {
@@ -35,6 +52,20 @@ class InlineSelectComp extends React.Component {
       this.props.onChange(value);
       this.setState({ isOpen: false });
     }
+  };
+
+  refreshOnScroll = () => {
+    const pos  = this.$el.offset();
+    const posLeft = pos.left;
+    const posTop  = pos.top + 20;
+
+    this.setState({
+      posTop, posLeft
+    }, () => {
+      if (this.state.isOpen) {
+        this.refreshSize();
+      }
+    });
   };
 
   handleClickOutside = () => {

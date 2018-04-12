@@ -1,5 +1,5 @@
 parameters:
-    manifest.current.version: 2.3.0
+    manifest.current.version: 2.4.0
 
 services:
   DeskPRO\Bundle\AppStoreBundle\Domain\AppBundleValidator:

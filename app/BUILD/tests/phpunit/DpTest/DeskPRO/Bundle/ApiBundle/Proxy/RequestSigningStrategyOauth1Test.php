@@ -29,10 +29,31 @@ class RequestSigningStrategyOauth1Test extends DeskProTestCase
         $secondConnection->setToken('expected_token');
 
         $serializer = \JMS\Serializer\SerializerBuilder::create()->build();
-        $strategy = new RequestSigningStrategyOauth1([
-            $serializer->serialize($firstConnection, 'json'),
-            $serializer->serialize($secondConnection, 'json')
-        ]);
+
+        $trials = [
+            [
+                $serializer->serialize($firstConnection, 'json'),
+                $serializer->serialize($secondConnection, 'json')
+            ],
+            [
+                $serializer->serialize($firstConnection, 'json'),
+                json_decode($serializer->serialize($secondConnection, 'json'), true)
+            ],
+            [
+                json_decode($serializer->serialize($firstConnection, 'json'), true),
+                json_decode($serializer->serialize($secondConnection, 'json'), true)
+            ],
+            [
+                json_decode($serializer->serialize($firstConnection, 'json'), true),
+                $serializer->serialize($secondConnection, 'json')
+            ],
+        ];
+
+        /** @var RequestSigningStrategyOauth1 $strategy */
+        $strategy = null;
+        foreach ($trials as $trial) {
+            $strategy = RequestSigningStrategyOauth1::fromRequestVariables($trial);
+        }
 
         /** @var \PHPUnit_Framework_MockObject_MockObject|HttpProxyClientBuilder $builder */
         $builder = $this->getMockBuilder(HttpProxyClientBuilder::class)
@@ -56,11 +77,11 @@ class RequestSigningStrategyOauth1Test extends DeskProTestCase
 
     public function testConfigureProxyClientThrowsExceptionWhenCredentialUnserializationFails()
     {
-        $strategy = new RequestSigningStrategyOauth1([
-            json_encode('not an array')
-        ]);
         $actualException = null;
         try {
+            $strategy = RequestSigningStrategyOauth1::fromRequestVariables([
+                json_encode('not an array')
+            ]);
             $strategy->configureProxyClient(new HttpProxyClientBuilder());
         } catch (RequestSigningStrategyException $e) {
             $actualException = $e;
@@ -68,13 +89,12 @@ class RequestSigningStrategyOauth1Test extends DeskProTestCase
         $this->assertNotNull($actualException);
 
 
-        $strategy = new RequestSigningStrategyOauth1([
-            json_encode('not an array'),
-            json_encode(['value' => 'key'])
-        ]);
-
         $actualException = null;
         try {
+            $strategy = RequestSigningStrategyOauth1::fromRequestVariables([
+                json_encode('not an array'),
+                json_encode(['value' => 'key'])
+            ]);
             $strategy->configureProxyClient(new HttpProxyClientBuilder());
         } catch (RequestSigningStrategyException $e) {
             $actualException = $e;

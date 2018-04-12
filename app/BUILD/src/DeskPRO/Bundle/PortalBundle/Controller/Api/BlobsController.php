@@ -6,8 +6,8 @@ use Application\DeskPRO\Attachments\AcceptAttachment;
 use FOS\RestBundle\View\View;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Method;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
-use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\HttpFoundation\Response;
 
 /**
  * Class BlobsController.
@@ -36,13 +36,18 @@ class BlobsController extends AbstractApiController
     }
 
     /**
+     * @Route("/portal/api/dpblob/{restrictionSet}", name="portal_api_custom_blob_upload")
      * @Route("/portal/api/dpblob", name="portal_api_blob_upload")
      * @Method("POST")
      *
-     * @return JsonResponse
+     * @param string $restrictionSet
+     *
+     * @return Response
      */
-    public function uploadBlobAction()
+    public function uploadBlobAction($restrictionSet = null)
     {
-        return $this->forward('PortalBundle:Portal:uploadBlob');
+        return $this->forward('PortalBundle:Portal:uploadBlob', [
+            'restrictionSet' => $restrictionSet,
+        ]);
     }
 }

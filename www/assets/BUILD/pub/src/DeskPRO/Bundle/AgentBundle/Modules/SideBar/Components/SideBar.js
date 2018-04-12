@@ -334,7 +334,7 @@ export class SideBar extends React.PureComponent {
     if (window.DP_HAS_NEW_REPORTS && (this.props.canUseReports() || this.props.hasAccessToDashboards())) {
       menus.push({
         className: 'reports2',
-        label:     [<FormattedMessage key="new" id="agent.general.new" />, ' ', <FormattedMessage key="reports" id="agent.general.reports" />],
+        label:     <FormattedMessage id="agent.general.reports" />,
         link:      '/agent/#r:/',
         icon:      `${window.DESKPRO_APP_ASSETS_URL}/DeskPRO/Bundle/AgentBundle/Resources/img/sidebar/reports.svg`,
         callback:  () => {

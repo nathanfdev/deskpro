@@ -12,6 +12,15 @@
 			{% endif %}
         {% elseif field_handler_name == 'Choice' %}
 			{{ data.value|raw }}
+        {% elseif field_handler_name == 'File' %}
+			{% for file in data.value %}
+				<div>
+                    <a href="{{ file.downloadUrl }}{{ file.is_image ? '' : '?dl=1' }}" target="_blank">
+                        {{ file.filename }}
+                        ({{ file.readableFilesize }})
+                    </a>
+				</div>
+			{% endfor %}
 		{% else %}
 			{{ data.value }}
 		{% endif %}

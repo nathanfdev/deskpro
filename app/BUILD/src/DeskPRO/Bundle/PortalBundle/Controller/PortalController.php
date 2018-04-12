@@ -390,14 +390,16 @@ class PortalController extends AbstractController
      * and as the csrf posted with "file[_dp_csrf_token]"
      *
      *
+     * @Route("/dpblob/{restrictionSet}", name="portal_custom_blob_upload")
      * @Route("/dpblob", name="portal_blob_upload")
      * @Method("POST")
      *
      * @param Request $request
+     * @param string  $restrictionSet
      *
      * @return JsonResponse
      */
-    public function uploadBlobAction(Request $request)
+    public function uploadBlobAction(Request $request, $restrictionSet = null)
     {
         $response = $this->checkRateLimitAndCsrf($request);
         if ($response) {
@@ -414,7 +416,7 @@ class PortalController extends AbstractController
             ], Response::HTTP_BAD_REQUEST);
         }
 
-        $error = $this->get('attachment_accepter')->getError($file, 'user');
+        $error = $this->get('attachment_accepter')->getError($file, $restrictionSet ? $restrictionSet.'.user' : 'user');
         if ($error) {
             $error_code = $error['error_code'];
             $params     = [];

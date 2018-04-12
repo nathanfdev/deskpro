@@ -40,7 +40,7 @@ class AppPackagesController extends CrudController
      *      requirements={
      *          {
      *              "name"="application",
-     *              "requirement"="^(?=.*[^\d].*)[^/]+$",
+     *              "requirement"="^(@[^/]+/)?([^/]+)$",
      *              "description"="The name of the application",
      *              "dataType"="string"
      *          }
@@ -52,7 +52,7 @@ class AppPackagesController extends CrudController
      *     output="DeskPRO\Bundle\AppBundle\Entity\AppStore\App"
      * )
 
-     * @Rest\Get("/{application}", requirements={"application"="^(?=.*[^\d].*)[^/]+$"})
+     * @Rest\Get("/{application}", requirements={"application"="^(@[^/]+/)?([^/]+)$"})
      * @ParamConverter("app", class="AppBundle:Entity\AppStore\App", converter="DeskPRO\Bundle\AppStoreBundle\ParamConverter\AppParamConverter", options={"attribute" = "application"})
      *
      * @param App     $app
@@ -72,7 +72,7 @@ class AppPackagesController extends CrudController
     }
 
     /**
-     * @Rest\Put("/{application}/url", condition="request.headers.get('Content-Type') matches '#application/json#i'")
+     * @Rest\Put("/{application}/url", condition="request.headers.get('Content-Type') matches '#application/json#i'", requirements={"application"="^(@[^/]+/)?([^/]+)$"})
      * @ParamConverter("application", class="AppBundle:Entity\AppStore\App", converter="DeskPRO\Bundle\AppStoreBundle\ParamConverter\AppParamConverter")
      *
      * @param App $application
@@ -87,7 +87,7 @@ class AppPackagesController extends CrudController
     }
 
     /**
-     * @Rest\Get("/{application}/manifest")
+     * @Rest\Get("/{application}/manifest", requirements={"application"="^(@[^/]+/)?([^/]+)$"})
      * @ParamConverter("application", class="AppBundle:Entity\AppStore\App", converter="DeskPRO\Bundle\AppStoreBundle\ParamConverter\AppParamConverter")
      *
      * @param App $application
@@ -104,7 +104,7 @@ class AppPackagesController extends CrudController
     }
 
     /**
-     * @Rest\Get("/{application}/manifest-changes")
+     * @Rest\Get("/{application}/manifest-changes", requirements={"application"="^(@[^/]+/)?([^/]+)$"})
      *
      * @ParamConverter("application", class="AppBundle:Entity\AppStore\App", converter="DeskPRO\Bundle\AppStoreBundle\ParamConverter\AppParamConverter")
      *

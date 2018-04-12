@@ -102,6 +102,20 @@ define ['moment', 'DeskPRO/Util/Util'], (moment, Util) ->
           user_validation:          '0'
           agent_validation:         '0'
           agent_validation_resolve: false
+        },
+        file: {
+          multiple:                    false
+          user_extensions_limit_mode:  'any'
+          user_must_extensions:        null
+          user_not_extensions:         null
+          user_validation:             false
+          user_max_file_size:          0
+          agent_extensions_limit_mode: 'any'
+          agent_must_extensions:       null
+          agent_not_extensions:        null
+          agent_validation:            false
+          agent_validation_resolve:    false
+          agent_max_file_size:         0
         }
       }
 
@@ -251,6 +265,23 @@ define ['moment', 'DeskPRO/Util/Util'], (moment, Util) ->
               formTypeOpts.user_validation = 'required'
             if fieldModel.options.agent_required
               formTypeOpts.agent_validation = 'required'
+              if fieldModel.options.agent_validation_resolve
+                formTypeOpts.agent_validation_resolve = true
+
+          when "file"
+            formTypeOpts.multiple                    = !!fieldModel.options.multiple
+            formTypeOpts.user_validation             = !!fieldModel.options.required
+            formTypeOpts.user_extensions_limit_mode  = fieldModel.options.user_extensions_limit_mode
+            formTypeOpts.user_must_extensions        = fieldModel.options.user_must_extensions
+            formTypeOpts.user_not_extensions         = fieldModel.options.user_not_extensions
+            formTypeOpts.user_max_file_size          = fieldModel.options.user_max_file_size
+            formTypeOpts.agent_extensions_limit_mode = fieldModel.options.agent_extensions_limit_mode
+            formTypeOpts.agent_must_extensions       = fieldModel.options.agent_must_extensions
+            formTypeOpts.agent_not_extensions        = fieldModel.options.agent_not_extensions
+            formTypeOpts.agent_max_file_size         = fieldModel.options.agent_max_file_size
+
+            if fieldModel.options.agent_required
+              formTypeOpts.agent_validation = true
               if fieldModel.options.agent_validation_resolve
                 formTypeOpts.agent_validation_resolve = true
 
@@ -411,6 +442,23 @@ define ['moment', 'DeskPRO/Util/Util'], (moment, Util) ->
           if formTypeOpts.user_validation == 'required'
             postData.required = true
           if formTypeOpts.agent_validation == 'required'
+            postData.agent_required = true
+
+        when "file"
+          postData.handler_class               = 'Application\\DeskPRO\\CustomFields\\Handler\\File'
+          postData.multiple                    = formTypeOpts.multiple
+          postData.user_extensions_limit_mode  = formTypeOpts.user_extensions_limit_mode
+          postData.user_must_extensions        = formTypeOpts.user_must_extensions
+          postData.user_not_extensions         = formTypeOpts.user_not_extensions
+          postData.user_max_file_size          = formTypeOpts.user_max_file_size
+          postData.agent_extensions_limit_mode = formTypeOpts.agent_extensions_limit_mode
+          postData.agent_must_extensions       = formTypeOpts.agent_must_extensions
+          postData.agent_not_extensions        = formTypeOpts.agent_not_extensions
+          postData.agent_max_file_size         = formTypeOpts.agent_max_file_size
+
+          if formTypeOpts.user_validation
+            postData.required = true
+          if formTypeOpts.agent_validation
             postData.agent_required = true
 
       if formTypeOpts.agent_validation_resolve

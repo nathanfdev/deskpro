@@ -14,7 +14,15 @@ export default class PortalAttach extends React.Component {
     $input:        PropTypes.object,
     inputName:     PropTypes.string,
     maxFileSize:   PropTypes.string,
-    $form:         PropTypes.object
+    $form:         PropTypes.object,
+    multiple:      PropTypes.bool,
+    customField:   PropTypes.bool,
+    uploadUrl:     PropTypes.string
+  };
+
+  static defaultProps = {
+    uploadUrl: 'dpblob',
+    multiple:  true
   };
 
   constructor(props) {
@@ -26,9 +34,11 @@ export default class PortalAttach extends React.Component {
   }
 
   componentDidMount() {
-    const { $input, $form } = this.props;
+    const { $input, $form, customField } = this.props;
 
-    pageWidgetEmitter.on('rteFileUpload', this.onRteFileUpload);
+    if (!customField) {
+      pageWidgetEmitter.on('rteFileUpload', this.onRteFileUpload);
+    }
 
     $input.on('setBlobs', (event, blobs) => {
       if (!Array.isArray(blobs)) {
@@ -122,7 +132,7 @@ export default class PortalAttach extends React.Component {
     const { $input } = this.props;
     const newFiles = this.state.files.filter(f => f.info !== file.info);
 
-    $input.trigger('blobs', newFiles);
+    $input.trigger('blobs', [newFiles]);
     this.setState({
       files: newFiles
     });
@@ -154,7 +164,8 @@ export default class PortalAttach extends React.Component {
   }
 
   render() {
-    const { widgetOptions, inputName } = this.props;
+    const { widgetOptions, inputName, multiple, uploadUrl } = this.props;
+    const { files, lastError } = this.state;
     const context = widgetOptions.context || document;
 
     const params = {};
@@ -164,22 +175,25 @@ export default class PortalAttach extends React.Component {
 
     return (
       <div className="new-ticket-attachments">
-        <DropZone
-          ref={(node) => { this.refDropZone = node; }}
-          getExternalInput={() => this.refFileUpload}
-          uploadUrl={`${portalUrlGenerator.path('/')}dpblob`}
-          uploadParams={params}
-          context={context}
-          onSend={this.onUploadStarted}
-          onSuccess={this.onUploadSuccess}
-          onFail={this.onUploadFail}
-          getDropZoneNode={widgetOptions.getDropZoneNode}
-        >
-          {widgetOptions.isWidget ? this.renderLink() : this.renderButton()}
-        </DropZone>
-
-        <AttachedList files={this.state.files} inputName={inputName} onDelete={this.onDelete} />
-        {this.state.lastError}
+        {(multiple || !files.length) &&
+          <DropZone
+            ref={(node) => {
+              this.refDropZone = node;
+            }}
+            getExternalInput={() => this.refFileUpload}
+            uploadUrl={`${portalUrlGenerator.path('/')}${uploadUrl}`}
+            uploadParams={params}
+            context={context}
+            onSend={this.onUploadStarted}
+            onSuccess={this.onUploadSuccess}
+            onFail={this.onUploadFail}
+            getDropZoneNode={widgetOptions.getDropZoneNode}
+          >
+            {widgetOptions.isWidget ? this.renderLink() : this.renderButton()}
+          </DropZone>
+        }
+        <AttachedList files={files} inputName={inputName} onDelete={this.onDelete} />
+        {lastError}
       </div>
     );
   }

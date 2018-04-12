@@ -116,11 +116,6 @@ class AppsController extends AbstractController
 
     public function getPackageAction($name)
     {
-        // we are expecting the client to double url encode $name
-        // in case it contains forward slashes, e.g @deskproapps/app-name
-        // the actual problem can be solved by just double encoding of '/', / => %2F => %252F
-        // but it is simpler on the client to double encode everything
-        $name    = urldecode(urldecode($name));
         $manager = $this->container->getAppManager();
 
         if (!$manager->hasPackage($name)) {
@@ -161,7 +156,7 @@ class AppsController extends AbstractController
                 'name'         => $manifest->getName(),
                 'native_name'  => $manifest->getName(),
                 'title'        => $manifest->getTitle(),
-                'scope'        => $manifest->getScope(),
+                'scope'        => $appArchive ? '' : $manifest->getScope(), // v2 apps no longer use this property
                 'is_installed' => $app ? $app->getInstances()->count() > 0 : false,
                 'is_single'    => $manifest->isSingle(),
                 'readme'       => $manifest->getDescription(),

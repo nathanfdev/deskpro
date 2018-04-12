@@ -118,6 +118,10 @@ DeskPRO.Agent.PageFragment.Page.NewTicket = new Orb.Class({
 			downloadTemplate: $('.template-download', this.wrapper)
 		});
 		this.wrapper.bind('fileuploaddone', function(e, data) {
+      if ($(e.target).hasClass('customfield')) {
+        return;
+      }
+
 			self.uploading = false;
 			self.getEl('reply_as_type').parent().removeAttr('disabled');
 			self.getEl('reply_as_type').parent().siblings('.status-menu-trigger').removeAttr('disabled');
@@ -127,7 +131,11 @@ DeskPRO.Agent.PageFragment.Page.NewTicket = new Orb.Class({
 			});
 
 		});
-		this.wrapper.bind('fileuploadstart', function() {
+		this.wrapper.bind('fileuploadstart', function(e) {
+			if ($(e.target).hasClass('customfield')) {
+				return;
+			}
+
 			self.uploading = true;
 			self.getEl('reply_as_type').parent().attr('disabled', 'disabled');
 			self.getEl('reply_as_type').parent().siblings('.status-menu-trigger').attr('disabled', 'disabled');
@@ -187,6 +195,8 @@ DeskPRO.Agent.PageFragment.Page.NewTicket = new Orb.Class({
         $(this).trigger('change');
       });
 		});
+
+    this.customFieldsUpload = new DeskPRO.Agent.PageHelper.CustomFieldUpload(this.wrapper);
 
 		this.wrapper.find('.pending-info').on('click', '.reset', function(ev) {
 			ev.preventDefault();

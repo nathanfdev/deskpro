@@ -135,7 +135,7 @@ Feature: Check custom field pre set values
     And only the following custom person fields exist:
       | #              | Type     | Title          | Options                                 |
       | currency_field | currency | Currency field | {"required": true, "currency_id": ~c2~} |
-    And the object "user" has "currency_field" custom data set to "1020"
+    And the object "user" has "currency_field" custom data set to "150020"
 
     When I go to "/profile"
-    Then the "person_profile[{currency_field}][data]" field should contain "10.20"
+    Then the "person_profile[{currency_field}][data]" field should contain "1,500.20"
