@@ -2,7 +2,6 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import {
   Item,
-  ItemFilter,
   ListElementGroup,
   QueryableList,
   Scrollbar,
@@ -10,6 +9,7 @@ import {
   Count,
 } from '@deskpro/react-components';
 import agentPhrases from 'DeskPRO/Bundle/AgentBundle/AgentPhrases';
+import ItemFilter from './ItemFilter';
 
 class TicketsForm extends React.Component {
   static propTypes = {
@@ -74,7 +74,7 @@ class TicketsForm extends React.Component {
 
     return (
       <div onClick={this.eatClick}>
-        <Scrollbar autoHeightMax={115}>
+        <Scrollbar autoHeightMax={205}>
           <div style={formStyles.formGroup}>
             <label style={formStyles.label}>
               Group by field
@@ -135,6 +135,9 @@ export default class Filter extends React.Component {
   getSubFilters = () => {
     const count = this.props.filtersCounts.find(filter => filter.get('id') === this.props.filter.get('id'));
     let list = null;
+    if (!count) {
+      return null;
+    }
     switch (this.state.ticketsWhereGroup) {
       case '@none':
         list = null;
