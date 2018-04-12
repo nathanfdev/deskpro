@@ -38,7 +38,7 @@ export const loadGrouping = createAction(
     if (!filterCount) {
       return null;
     }
-    dispatch(updateCollection('TicketFilterCounts', Immutable.List([filterCount.set('nested', [])])));
+    dispatch(updateCollection('TicketFilterCounts', Immutable.List([filterCount.set('nested', Immutable.fromJS([]))])));
     if (groupBy !== '@none') {
       const count = { endpoint: `ticket_filters2/${id}/count`, query: `group_by=ticket.${groupBy}` };
 
@@ -46,7 +46,7 @@ export const loadGrouping = createAction(
         .success((countsResponses) => {
           const data = flattenBatchResponses(countsResponses.responses);
           if (data.count) {
-            filterCount = filterCount.set('nested', data.count.nested);
+            filterCount = filterCount.set('nested', Immutable.fromJS(data.count.nested));
             dispatch(updateCollection('TicketFilterCounts', Immutable.List([filterCount])));
           }
         });
