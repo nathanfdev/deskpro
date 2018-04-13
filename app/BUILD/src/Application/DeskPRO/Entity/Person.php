@@ -1194,6 +1194,16 @@ class Person extends DomainObject implements
     }
 
     /**
+     * @param Brand $brand
+     *
+     * @return bool
+     */
+    public function hasBrand(Brand $brand)
+    {
+        return $this->brands->contains($brand);
+    }
+
+    /**
      * @return bool
      */
     public function isOrganizationManager()
