@@ -92,7 +92,13 @@ class ReportsWidgetService
             $groupParams['values']['team'][$agentTeam->getId()] = [$agentTeam->getName()];
         }
 
-        $groupParams['values']['organization']                                                   = $orgRepository->getOrganizationNames();
+        $groupParams['values']['organization'] = array_map(
+            function ($org) {
+                return [$org];
+            },
+            $orgRepository->getOrganizationNames()
+        );
+
         $groupParams['values']['organization'][DashboardWidgetManager::WIDGET_VALUE_FROM_REPORT] = ['value from report'];
 
         $groupParams['ticket_custom_fields']   = $this->customFields(CustomDefTicket::class);
