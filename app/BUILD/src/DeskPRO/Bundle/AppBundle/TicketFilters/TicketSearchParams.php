@@ -259,10 +259,10 @@ class TicketSearchParams
      */
     public static function parseFieldId($fieldId)
     {
-        if ($m = RegexUtils::getMatch('/^(ticket)\.field\.(.*?)$/', $fieldId, -1)) {
+        if ($m = RegexUtils::getMatch('/^(ticket)\.(?:field|data)\.(.*?)$/', $fieldId, -1)) {
             return [
                 'id'   => $fieldId,
-                'type' => 'ticket.field',
+                'type' => 'ticket.data',
                 'name' => $m[2],
             ];
         } else {

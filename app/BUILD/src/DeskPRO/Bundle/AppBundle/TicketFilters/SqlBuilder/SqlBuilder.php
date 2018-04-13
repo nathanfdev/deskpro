@@ -83,6 +83,12 @@ class SqlBuilder extends \Doctrine\DBAL\Query\QueryBuilder
      */
     public function addQueryConditionGroup(SqlConditionGroup $group)
     {
+        if ($group->countConditions() === 1 && !$group->countSubGroups()) {
+            $conds = $group->getConditions();
+
+            return $this->addQueryCondition($conds[0]);
+        }
+
         $where = $this->initQueryCondGroup($group);
         $this->andWhere($where);
 
@@ -120,7 +126,10 @@ class SqlBuilder extends \Doctrine\DBAL\Query\QueryBuilder
 
         $wheres = [];
         foreach ($group->getConditions() as $cond) {
-            $wheres[] = $this->initQueryCond($cond);
+            // conditions must always be grouped. the user can set any arbitrary condition,
+            // and when that is concatenated into the full query, the meaning can change
+            // because of operator precedence -- unless we group, then we can lock-in what the user intended
+            $wheres[] = '('.$this->initQueryCond($cond).')';
         }
 
         foreach ($group->getSubGroups() as $subGroup) {

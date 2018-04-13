@@ -67,7 +67,7 @@ class TicketSqlMatcherTest extends \PHPUnit_Framework_TestCase
     {
         $this->assertEqualQuery(
             'ticket.status = \'awaiting_agent\' AND ticket.agent = $me',
-            'SELECT COUNT(*) AS count FROM tickets_search_active tickets WHERE tickets.status = :c0 AND tickets.agent_id = :c1',
+            'SELECT COUNT(*) AS count FROM tickets_search_active tickets WHERE (tickets.status = :c0) AND (tickets.agent_id = :c1)',
             ['c0' => 'awaiting_agent', 'c1' => 1]
         );
     }
@@ -79,7 +79,7 @@ class TicketSqlMatcherTest extends \PHPUnit_Framework_TestCase
             'SELECT
                COUNT(*) AS count FROM tickets_search_active tickets
                LEFT JOIN tickets_participants c1_part ON c1_part.ticket_id = tickets.id
-               WHERE tickets.status = :c0 AND c1_part.person_id IN (:c2)',
+               WHERE (tickets.status = :c0) AND (c1_part.person_id IN (:c2))',
             ['c0' => 'awaiting_agent', 'c2' => [1]]
         );
     }
@@ -88,7 +88,7 @@ class TicketSqlMatcherTest extends \PHPUnit_Framework_TestCase
     {
         $this->assertEqualQuery(
             'ticket.status = \'awaiting_agent\' AND ticket.agent_team IN $my_teams',
-            'SELECT COUNT(*) AS count FROM tickets_search_active tickets WHERE tickets.status = :c0 AND tickets.agent_team_id IN (:c1)',
+            'SELECT COUNT(*) AS count FROM tickets_search_active tickets WHERE (tickets.status = :c0) AND (tickets.agent_team_id IN (:c1))',
             ['c0' => 'awaiting_agent', 'c1' => [1, 2, 3]]
         );
     }
@@ -97,7 +97,7 @@ class TicketSqlMatcherTest extends \PHPUnit_Framework_TestCase
     {
         $this->assertEqualQuery(
             'ticket.status = \'awaiting_agent\' AND ticket.agent IS EMPTY',
-            'SELECT COUNT(*) AS count FROM tickets_search_active tickets WHERE tickets.status = :c0 AND tickets.agent_id IS NULL',
+            'SELECT COUNT(*) AS count FROM tickets_search_active tickets WHERE (tickets.status = :c0) AND (tickets.agent_id IS NULL)',
             ['c0' => 'awaiting_agent']
         );
     }
@@ -263,13 +263,13 @@ class TicketSqlMatcherTest extends \PHPUnit_Framework_TestCase
         );
 
         $this->assertEqualQuery(
-            'ticket.data.my_toggle = 0',
+            'ticket.status = \'awaiting_agent\' AND ticket.agent = $me AND ticket.data.my_toggle = 0',
             'SELECT COUNT(*) AS count
             FROM tickets_search_active tickets
-            LEFT JOIN custom_data_ticket c0_dat ON c0_dat.ticket_id = tickets.id AND c0_dat.root_field_id = :c1
-            WHERE c0_dat.value = 0 OR c0_dat.value IS NULL
+            LEFT JOIN custom_data_ticket c2_dat ON c2_dat.ticket_id = tickets.id AND c2_dat.root_field_id = :c3
+            WHERE (tickets.status = :c0) AND (tickets.agent_id = :c1) AND (c2_dat.value = 0 OR c2_dat.value IS NULL)
             ',
-            ['c1' => 5]
+            ['c0' => 'awaiting_agent', 'c1' => 1, 'c3' => 5]
         );
     }
 

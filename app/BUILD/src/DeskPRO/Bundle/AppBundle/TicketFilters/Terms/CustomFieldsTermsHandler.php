@@ -181,11 +181,7 @@ class CustomFieldsTermsHandler extends AbstractTermsHandler
             case CustomDefAbstract::TYPE_TOGGLE:
                 $checkValue = $options->getValue();
 
-                if ($operator == Query::OP_EQ && $checkValue == '0') {
-                    $cond->setWhere('{dat}.value = 0 OR {dat}.value IS NULL');
-
-                    return $cond;
-                } elseif ($operator == Query::OP_NEQ && $checkValue == '1') {
+                if (($operator === Query::OP_EQ && $checkValue == '0') || ($operator === Query::OP_NEQ && $checkValue == '1')) {
                     $cond->setWhere('{dat}.value = 0 OR {dat}.value IS NULL');
 
                     return $cond;

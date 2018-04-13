@@ -39,9 +39,9 @@ class TicketSqlMatcherPermTest extends \PHPUnit_Framework_TestCase
             SELECT tickets.id FROM tickets tickets
             WHERE
             (
-                (tickets.agent_id = :c0 OR tickets.agent_team_id IN (:c1))
+                ((tickets.agent_id = :c0) OR (tickets.agent_team_id IN (:c1)))
                 OR
-                (tickets.agent_id IS NULL OR tickets.agent_team_id IS NULL)
+                ((tickets.agent_id IS NULL OR tickets.agent_team_id IS NULL))
             ) AND (tickets.department_id = 1)
         ', [
             'c0' => 1,
@@ -62,8 +62,8 @@ class TicketSqlMatcherPermTest extends \PHPUnit_Framework_TestCase
             SELECT tickets.id FROM tickets tickets
             WHERE
             (
-                (tickets.agent_id = :c0 OR tickets.agent_team_id IN (:c1))
-                OR tickets.department_id IN (:c2)
+                ((tickets.agent_id = :c0) OR (tickets.agent_team_id IN (:c1)))
+                OR (tickets.department_id IN (:c2))
             ) AND (tickets.department_id = 1)
         ', [
             'c0' => 1,
@@ -85,11 +85,11 @@ class TicketSqlMatcherPermTest extends \PHPUnit_Framework_TestCase
             SELECT tickets.id FROM tickets tickets
             WHERE
             (
-                (tickets.agent_id = :c0 OR tickets.agent_team_id IN (:c1))
+                ((tickets.agent_id = :c0) OR (tickets.agent_team_id IN (:c1)))
                 OR (
-                    tickets.department_id IN (:c2)
-                    AND (tickets.agent_id IS NOT NULL OR tickets.agent_team_id IS NOT NULL)
-                    AND (tickets.agent_id IS NULL OR tickets.agent_team_id IS NULL)
+                    (tickets.department_id IN (:c2))
+                    AND ((tickets.agent_id IS NOT NULL OR tickets.agent_team_id IS NOT NULL))
+                    AND ((tickets.agent_id IS NULL OR tickets.agent_team_id IS NULL))
                 )
             ) AND (tickets.department_id = 1)
         ', [
@@ -112,8 +112,8 @@ class TicketSqlMatcherPermTest extends \PHPUnit_Framework_TestCase
             SELECT tickets.id FROM tickets tickets
             WHERE
             (
-                tickets.agent_id = :c0
-                OR tickets.department_id IN (:c1)
+                (tickets.agent_id = :c0)
+                OR (tickets.department_id IN (:c1))
             ) AND (tickets.department_id = 1)
         ', [
             'c0' => 1,
@@ -134,11 +134,11 @@ class TicketSqlMatcherPermTest extends \PHPUnit_Framework_TestCase
             SELECT tickets.id FROM tickets tickets
             WHERE
             (
-                tickets.agent_id = :c0
+                (tickets.agent_id = :c0)
                 OR (
-                    tickets.department_id IN (:c1)
-                    AND (tickets.agent_id IS NOT NULL OR tickets.agent_team_id IS NOT NULL)
-                    AND (tickets.agent_id IS NULL OR tickets.agent_team_id IS NULL)
+                    (tickets.department_id IN (:c1))
+                    AND ((tickets.agent_id IS NOT NULL OR tickets.agent_team_id IS NOT NULL))
+                    AND ((tickets.agent_id IS NULL OR tickets.agent_team_id IS NULL))
                 )
             ) AND (tickets.department_id = 1)
         ', [
@@ -160,8 +160,8 @@ class TicketSqlMatcherPermTest extends \PHPUnit_Framework_TestCase
             SELECT tickets.id FROM tickets tickets
             WHERE
             (
-                tickets.agent_id = :c0 OR
-                tickets.agent_team_id IN (:c1)
+                (tickets.agent_id = :c0) OR
+                (tickets.agent_team_id IN (:c1))
             ) AND (tickets.department_id = 1)
         ', [
             'c0' => 1,
