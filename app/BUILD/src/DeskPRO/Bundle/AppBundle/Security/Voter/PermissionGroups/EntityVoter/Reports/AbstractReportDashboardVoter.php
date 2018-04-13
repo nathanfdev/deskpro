@@ -52,7 +52,9 @@ abstract class AbstractReportDashboardVoter implements PermissionGroupEntityVote
         }
 
         foreach ($entity->getPermissions() as $permission) {
-            if ($permission->getPerson() === $user && $permission->getName() === ReportDashboardPermission::FULL) {
+            if (
+                ($permission->getPerson() === $user || (!$entity->getPerson() && !$entity->getTeam() && !$entity->getDepartment()))
+                && $permission->getName() === ReportDashboardPermission::FULL) {
                 return true;
             }
         }
@@ -78,6 +80,7 @@ abstract class AbstractReportDashboardVoter implements PermissionGroupEntityVote
             if (
                 $permission->getPerson() === $user
                 || $user->getTeams()->contains($permission->getTeam())
+                || (!$permission->getPerson() && !$permission->getTeam() && !$permission->getDepartment())
             ) {
                 $result = true;
                 break;

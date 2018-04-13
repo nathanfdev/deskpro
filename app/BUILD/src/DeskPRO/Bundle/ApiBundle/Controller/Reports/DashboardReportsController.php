@@ -114,6 +114,7 @@ class DashboardReportsController extends CrudController
             ->join("$alias.dashboard", 'd')
             ->leftJoin('d.permissions', 'p')
             ->andWhere('p.person IN (:person) OR p.team IN (:teams) OR d.person IN (:person)')
+            ->orWhere('p.person IS NULL AND p.team IS NULL AND p.department IS NULL')
             ->setParameter('teams', $this->getUser()->getTeams())
             ->setParameter('person', $this->getUser());
 
