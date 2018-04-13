@@ -746,8 +746,9 @@ class EmailTemplatesEditor extends React.Component {
               </Button>
               {this.props.emailTemplates.get('legacyTemplates').size ?
                 <Button
-                  className="right basic small floated"
+                  className="right basic small floated upgrade-legacy"
                   onClick={this.openLegacyTemplatesEditor}
+                  title="Upgrade Legacy Templates"
                 >
                   Upgrade Legacy Templates
                 </Button> : null
