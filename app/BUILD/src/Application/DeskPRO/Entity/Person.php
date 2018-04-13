@@ -86,6 +86,7 @@ use Symfony\Component\Validator\GroupSequenceProviderInterface;
  * @property ArrayCollection|CustomDataPerson[]  $custom_data
  * @property ArrayCollection|PersonContactData[] $contact_data
  * @property ArrayCollection|Usergroup[]         $usergroups
+ * @property ArrayCollection|Brand[]             $brands
  * @property TwitterAccount[]                    $twitter_accounts
  * @property TwitterUser[]                       $twitter_users
  * @property PersonPref[]                        $preferences
@@ -418,6 +419,13 @@ class Person extends DomainObject implements
     protected $usergroups;
 
     /**
+     * Brands the user belongs to.
+     *
+     * @var ArrayCollection
+     */
+    protected $brands;
+
+    /**
      * Twitter accounts this user has access to.
      *
      * @var ArrayCollection
@@ -659,6 +667,7 @@ class Person extends DomainObject implements
 
         $this->emails                 = new ArrayCollection();
         $this->usergroups             = new ArrayCollection();
+        $this->brands                 = new ArrayCollection();
         $this->twitter_accounts       = new ArrayCollection();
         $this->twitter_users          = new ArrayCollection();
         $this->usersource_assoc       = new ArrayCollection();
@@ -1145,6 +1154,42 @@ class Person extends DomainObject implements
         return $this->usergroups->filter(function (Usergroup $group) {
             return $group->is_agent_group && $group->is_enabled;
         });
+    }
+
+    /**
+     * @return ArrayCollection|Brand[]
+     */
+    public function getBrands()
+    {
+        return $this->brands;
+    }
+
+    /**
+     * @param Brand $brand
+     *
+     * @return self
+     */
+    public function addBrand(Brand $brand)
+    {
+        if (!$this->brands->contains($brand)) {
+            $this->brands->add($brand);
+            $this->_onPropertyChanged('brands', $this->brands, $this->brands);
+        }
+
+        return $this;
+    }
+
+    /**
+     * @param Brand $brand
+     *
+     * @return self
+     */
+    public function removeBrand(Brand $brand)
+    {
+        $this->brands->removeElement($brand);
+        $this->_onPropertyChanged('brands', $this->brands, $this->usergroups);
+
+        return $this;
     }
 
     /**
@@ -3682,6 +3727,12 @@ class Person extends DomainObject implements
         $data['usergroup_ids']  = Arrays::castToType($data['usergroup_ids'], 'int');
         $data['agentgroup_ids'] = Arrays::castToType($data['agentgroup_ids'], 'int');
 
+        $data['brand_ids'] = [];
+        foreach ($this->brands as $brand) {
+            $data['brand_ids'][] = $brand->id;
+        }
+        $data['brand_ids'] = Arrays::castToType($data['brand_ids'], 'int');
+
         $urlTemplate        = $this->getPictureUrl('{{size}}');
         $defaultUrlTemplate = $this->getPictureUrl('{{size}}', null, true);
         $encodedTag         = urlencode('{{size}}');
@@ -4427,6 +4478,36 @@ class Person extends DomainObject implements
                     'inverseJoinColumns' => [
                         0 => [
                             'name'                 => 'usergroup_id',
+                            'referencedColumnName' => 'id',
+                            'nullable'             => true,
+                            'onDelete'             => 'cascade',
+                            'columnDefinition'     => null,
+                        ],
+                    ],
+                ],
+                'dpApi' => true,
+            ]
+        );
+        $metadata->mapManyToMany(
+            [
+                'fieldName'    => 'brands',
+                'targetEntity' => Brand::class,
+                'cascade'      => ['persist', 'merge'],
+                'joinTable'    => [
+                    'name'        => 'person_to_brand',
+                    'schema'      => null,
+                    'joinColumns' => [
+                        0 => [
+                            'name'                 => 'person_id',
+                            'referencedColumnName' => 'id',
+                            'nullable'             => true,
+                            'onDelete'             => 'cascade',
+                            'columnDefinition'     => null,
+                        ],
+                    ],
+                    'inverseJoinColumns' => [
+                        0 => [
+                            'name'                 => 'brand_id',
                             'referencedColumnName' => 'id',
                             'nullable'             => true,
                             'onDelete'             => 'cascade',
