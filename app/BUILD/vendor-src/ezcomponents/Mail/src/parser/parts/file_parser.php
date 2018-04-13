@@ -249,6 +249,11 @@ class ezcMailFileParser extends ezcMailPartParser
             case '8bit':
                 // do nothing here, file is already just binary
                 break;
+            // DESKPRO EDIT add uuencode support
+            case 'uuencode':
+                // same as for 'base64' do decoding manually in parseBody
+                $this->_dp_enc_type = 'uuencode';
+                break;
             default:
                 // 7bit default
                 break;
@@ -285,6 +290,20 @@ class ezcMailFileParser extends ezcMailPartParser
 			// cases when we try to decode it if using a stream filter
             if ($this->_dp_enc_type === 'base64') {
                 if (fwrite( $this->fp, base64_decode($line) ) === false) {
+                    $this->_dp_parse_failed = true;
+                }
+            } else if ($this->_dp_enc_type === 'uuencode') {
+                // DeskPRO Edit
+                // skip uuencodign headers lines (https://en.wikipedia.org/wiki/Uuencoding#Encoded_format)
+                if (
+                    strlen(trim($line)) === 0
+                    || strpos($line, '`') === 0
+                    || strpos($line, 'end') === 0
+                    || strpos($line, 'begin') === 0
+                ) {
+                    return;
+                }
+                if (fwrite( $this->fp, convert_uudecode($line) ) === false) {
                     $this->_dp_parse_failed = true;
                 }
             } else {
