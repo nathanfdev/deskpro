@@ -100,6 +100,12 @@ services:
     tags:
       - { name: doctrine.entity_listener }
 
+  event_listener.person:
+    class: DeskPRO\Bundle\AppBundle\EventListener\Doctrine\PersonListener
+    arguments: ["@doctrine.orm.default_entity_manager", "@settings_resolver"]
+    tags:
+      - { name: doctrine.entity_listener }
+
   event_listener.custom_data_ticket:
     class: DeskPRO\Bundle\AppBundle\EventListener\Doctrine\CustomDataChangeListener
     tags:
