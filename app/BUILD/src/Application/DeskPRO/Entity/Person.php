@@ -19,6 +19,7 @@ use DeskPRO\Bundle\AppBundle\Entity\AgentData;
 use DeskPRO\Bundle\AppBundle\Entity\PersonOnboarding;
 use DeskPRO\Bundle\AppBundle\Entity\VoiceQueue;
 use DeskPRO\Bundle\AppBundle\Entity\VoiceQueueAgent;
+use DeskPRO\Bundle\AppBundle\EventListener\Doctrine\PersonListener;
 use DeskPRO\Bundle\AppBundle\EventListener\Person\PersonOnboardingListener;
 use DeskPRO\Bundle\AppBundle\Validator\Constraints as AppAssert;
 use DeskPRO\Component\Util\ListUtils;
@@ -3932,6 +3933,9 @@ class Person extends DomainObject implements
         $metadata->addLifecycleCallback('_postPersist', 'postPersist');
         $metadata->addLifecycleCallback('_savePersonLogs', 'postPersist');
         $metadata->addLifecycleCallback('_savePersonLogs', 'postUpdate');
+
+        $metadata->addEntityListener(Events::prePersist, PersonListener::class, 'prePersist');
+        $metadata->addEntityListener(Events::preUpdate, PersonListener::class, 'preUpdate');
 
         if (defined('DP_INTERFACE') && DP_INTERFACE != 'install') {
             foreach ([Events::prePersist, Events::postPersist, Events::preUpdate, Events::postUpdate] as $event) {

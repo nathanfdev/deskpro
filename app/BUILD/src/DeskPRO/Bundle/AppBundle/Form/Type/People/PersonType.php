@@ -3,6 +3,7 @@
 namespace DeskPRO\Bundle\AppBundle\Form\Type\People;
 
 use Application\DeskPRO\Entity\AgentTeam;
+use Application\DeskPRO\Entity\Brand;
 use Application\DeskPRO\Entity\CustomDefPerson;
 use Application\DeskPRO\Entity\LabelPerson;
 use Application\DeskPRO\Entity\Language;
@@ -136,6 +137,12 @@ class PersonType extends AbstractType
                         new AppConstraints\PhoneNumber(),
                     ],
                 ],
+            ])
+            ->add('brands', EntityType::class, [
+                'class'        => Brand::class,
+                'multiple'     => true,
+                'by_reference' => false,
+                'required'     => false,
             ])
         ;
 
