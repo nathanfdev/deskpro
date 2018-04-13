@@ -299,7 +299,7 @@ END)
 
                 foreach ($association['joinColumns'] as $joinColumn) {
                     // are we referencing a field that is only listed in an association?
-                    if (strtolower($joinColumn['name']) == $part) {
+                    if (strtolower(Strings::camelCaseToUnderscore($joinColumn['name'])) == $part) {
                         if ($extraConditionValue !== false) {
                             throw new DpqlException("$partsString contains an unexpected extra condition");
                         }
@@ -312,7 +312,7 @@ END)
             }
 
             foreach ($repository->getReportAssociations() as $name => $association) {
-                if (strtolower($name) == $part) {
+                if (strtolower(Strings::camelCaseToUnderscore($name)) == $part) {
                     $target          = $association['targetEntity'];
                     $childRepository = $this->em->getRepository($target);
 
@@ -351,7 +351,7 @@ END)
 
             foreach ($repository->getAssociationMappings() as $association) {
                 // are we referencing an association?
-                if (strtolower($association['fieldName']) == $part) {
+                if (strtolower(Strings::camelCaseToUnderscore($association['fieldName'])) == $part) {
                     $target          = $association['targetEntity'];
                     $childRepository = $this->em->getRepository($target);
 
