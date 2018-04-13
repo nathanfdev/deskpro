@@ -689,7 +689,7 @@ class EmailTemplatesEditor extends React.Component {
   };
 
   openLegacyTemplatesEditor = () => {
-    window.location.href = 'admin-interface#/tickets/email_templates_legacy';
+    window.location.href = 'admin-interface#/emails/email_templates_legacy';
   };
 
   closeNewTemplateDialog = () => {
