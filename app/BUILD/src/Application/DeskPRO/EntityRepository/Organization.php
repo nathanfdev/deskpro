@@ -70,11 +70,8 @@ class Organization extends AbstractEntityRepository
      */
     public function getOrganizationNames($for_ids = null)
     {
-        if (!$for_ids) {
-            // Calling without for_ids is depreciated because there might be hundreds of thousands
-            return [];
-        }
 
+        // we have only one method call in it needs ALL organizations
         if ($this->_organization_names == null) {
             $db                        = $this->getEntityManager()->getConnection();
             $this->_organization_names = $db->fetchAllKeyValue('
