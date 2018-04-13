@@ -2,16 +2,6 @@
 
 namespace Application\InstallBundle\Upgrade\Build;
 
-// NOTE: I used the OnlineBuildInterface interface because
-//       it looks like your schema changes ARE backwards compatible with the previous version.
-//       You should double-check this yourself though. If there are breaking changes, use BlockingBuildInterface instead.
-
-// NOTE: I have added the SkipPostBuildInterface interface because
-//       it looks like you do not have any changes that require PostBuild to run.
-//       You should double-check this yourself though. Remove the SkipPostBuildInterface interface if necessary.
-
-// Please remove these NOTE comments after you have checked the code.
-
 class Build1523605744 extends AbstractBuild implements OnlineBuildInterface, SkipPostBuildInterface
 {
     public function addNewTables()
@@ -27,5 +17,18 @@ class Build1523605744 extends AbstractBuild implements OnlineBuildInterface, Ski
 
     public function run()
     {
+        $this->out('Bind persons to default brand');
+
+        $brands = $this->getDbConnection('default')->fetchAll('SELECT id FROM `brands` ORDER BY id ASC limit 1');
+        $brand  = current($brands);
+
+        $statement = $this->getDbConnection('default')->prepare('
+            INSERT INTO `person_to_brand` (`person_id`, `brand_id`)
+            SELECT id, :brand
+            FROM people
+        ');
+        $statement->execute([
+            'brand' => $brand['id'],
+        ]);
     }
 }

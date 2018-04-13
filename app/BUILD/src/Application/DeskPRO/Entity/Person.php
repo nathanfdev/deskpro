@@ -1187,7 +1187,7 @@ class Person extends DomainObject implements
     public function removeBrand(Brand $brand)
     {
         $this->brands->removeElement($brand);
-        $this->_onPropertyChanged('brands', $this->brands, $this->usergroups);
+        $this->_onPropertyChanged('brands', $this->brands, $this->brands);
 
         return $this;
     }
@@ -4493,6 +4493,7 @@ class Person extends DomainObject implements
                 'fieldName'    => 'brands',
                 'targetEntity' => Brand::class,
                 'cascade'      => ['persist', 'merge'],
+                'fetch'        => ClassMetadataInfo::FETCH_EXTRA_LAZY,
                 'joinTable'    => [
                     'name'        => 'person_to_brand',
                     'schema'      => null,
