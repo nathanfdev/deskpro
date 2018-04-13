@@ -24,7 +24,7 @@ class TicketLinkType extends AbstractType
             'mapped'      => false,
         ]);
 
-        $builder->addEventListener(FormEvents::SUBMIT, [$this, 'onSetLink']);
+        $builder->addEventListener(FormEvents::SUBMIT, [$this, 'onSubmit']);
     }
 
     /**
@@ -38,7 +38,7 @@ class TicketLinkType extends AbstractType
     /**
      * @param FormEvent $event
      */
-    public function onSetLink(FormEvent $event)
+    public function onSubmit(FormEvent $event)
     {
         $form = $event->getForm();
 
