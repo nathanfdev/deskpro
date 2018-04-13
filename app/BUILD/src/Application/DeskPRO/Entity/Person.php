@@ -3596,6 +3596,17 @@ class Person extends DomainObject implements
         return $this;
     }
 
+    public function getAllReportDashboardPermissions()
+    {
+        $repo                  = App::getContainer()->getEm()->getRepository(ReportDashboardPermission::class);
+        $additionalPermissions = $repo->findBy(['person' => null, 'team' => null, 'department' => null]);
+        $newPerms              = is_array($this->report_dashboard_permissions)
+            ? $this->report_dashboard_permissions
+            : $this->report_dashboard_permissions->toArray();
+
+        return array_merge($newPerms, $additionalPermissions);
+    }
+
     /**
      * @param bool  $primary
      * @param bool  $deep
