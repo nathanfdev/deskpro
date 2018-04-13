@@ -88,10 +88,11 @@ class UrlHostChecker
      * @param string $url
      * @param bool   $withScheme
      * @param bool   $stripWww
+     * @param bool   $keepPath
      *
      * @return string
      */
-    public function simplifyUrl($url, $withScheme = false, $stripWww = true)
+    public function simplifyUrl($url, $withScheme = false, $stripWww = true, $keepPath = false)
     {
         // fix schemaless urls
         if (substr($url, 0, 2) != '//' && !preg_match('#^\w+://#', $url)) {
@@ -122,6 +123,9 @@ class UrlHostChecker
 
         $result .= $host;
         $result .= ($port && $port != 80) ? ':'.$port : '';
+        if ($keepPath && isset($parsed['path'])) {
+            $result .= $parsed['path'];
+        }
 
         return $result;
     }
