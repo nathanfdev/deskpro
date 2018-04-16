@@ -72,6 +72,7 @@ class PersonFactory
     {
         $person = new Person();
         $person->setLanguage($this->language_stack->getActiveOrDefault());
+        $person->addBrand($this->brand_stack->getActive()->getBrand());
 
         return $person;
     }
@@ -92,6 +93,7 @@ class PersonFactory
         }
 
         $person->setLanguage($this->language_stack->getActiveOrDefault());
+        $person->addBrand($this->brand_stack->getActive()->getBrand());
 
         $email = new PersonEmail();
         $email->setEmail($raw_email);
@@ -135,6 +137,7 @@ class PersonFactory
         if (!$person->getLanguage()) {
             $person->setLanguage($this->language_stack->getActiveOrDefault());
         }
+        $person->addBrand($this->brand_stack->getActive()->getBrand());
 
         $this->event_dispatcher->dispatch(Person::EVENT_PRE_CREATE, new PersonCreateEvent($person, $context));
 
@@ -206,6 +209,7 @@ class PersonFactory
             'name'  => $name,
         ]);
         $person->setLanguage($this->language_stack->getActiveOrDefault());
+        $person->addBrand($this->brand_stack->getActive()->getBrand());
 
         // saveNewPerson() will check settings and take care of validation flags
         $this->saveNewPerson($person, new CreatePersonContext('gateway.person'));
