@@ -3,6 +3,7 @@ Feature: I check set brands relation on create/edit person
 
   Background:
     Given no Person records exist
+    And no CustomDefPerson records exist
     And I'm authenticated as admin
     And "user@example.com" user exists
     And I have only default brand
