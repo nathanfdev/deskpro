@@ -7,6 +7,7 @@
 namespace Application\LegacyApiBundle\Controller;
 
 use Application\DeskPRO\App;
+use Application\DeskPRO\Entity\Brand;
 use Application\DeskPRO\Entity\Organization;
 use Application\DeskPRO\Entity\Person;
 use Application\DeskPRO\Entity\PhoneNumber;
@@ -197,6 +198,12 @@ class PersonController extends AbstractController implements ProtectedController
             $ug = $this->em->find('DeskPRO:Usergroup', $ug_id);
             if ($ug && !$ug->is_agent_group && !$ug->sys_name) {
                 $person->usergroups->add($ug);
+            }
+        }
+        foreach ($this->in->getCleanValueArray('brand_id', 'int') as $brandId) {
+            $brand = $this->em->find(Brand::class, $brandId);
+            if ($brand) {
+                $person->brands->add($brand);
             }
         }
 
@@ -1385,6 +1392,101 @@ class PersonController extends AbstractController implements ProtectedController
     }
 
     /**
+     * @param int $personId
+     *
+     * @throws \Exception
+     *
+     * @return Response
+     */
+    public function getPersonBrandsAction($personId)
+    {
+        $person = $this->_getPersonOr404($personId);
+
+        return $this->createApiResponse(['brands' => $this->getApiData($person->getBrands())]);
+    }
+
+    /**
+     * @param int $person_id
+     * @param int $brand_id
+     *
+     * @throws \Exception
+     *
+     * @return Response
+     */
+    public function getPersonBrandAction($person_id, $brand_id)
+    {
+        $person = $this->_getPersonOr404($person_id);
+
+        foreach ($person->getBrands() as $brand) {
+            if ($brand->getId() == $brand_id) {
+                return $this->createApiResponse(['exists' => true]);
+            }
+        }
+
+        return $this->createApiResponse(['exists' => false]);
+    }
+
+    /**
+     * @param int $person_id
+     *
+     * @throws \Exception
+     *
+     * @return Response
+     */
+    public function postPersonBrandsAction($person_id)
+    {
+        $person  = $this->_getPersonOr404($person_id, 'edit');
+        $brandId = $this->in->getUint('id');
+        $exists  = false;
+        foreach ($person->getBrands() as $brand) {
+            if ($brand->getId() == $brandId) {
+                $exists = true;
+            }
+        }
+
+        if (!$exists) {
+            $this->db->insert('person_to_brand', [
+                'person_id' => $person->getId(),
+                'brand_id'  => $brandId,
+            ]);
+        }
+
+        return $this->createApiCreateResponse(
+            ['id' => $brandId],
+            $this->generateUrl(
+                'api_people_person_brand',
+                ['person_id' => $person->getId(), 'brand_id' => $brandId],
+                UrlGeneratorInterface::ABSOLUTE_URL
+            )
+        );
+    }
+
+    /**
+     * @param int $person_id
+     * @param int $brand_id
+     *
+     * @throws \Exception
+     *
+     * @return Response
+     */
+    public function deletePersonBrandAction($person_id, $brand_id)
+    {
+        $person = $this->_getPersonOr404($person_id, 'edit');
+
+        foreach ($person->getBrands() as $brand) {
+            if ($brand->getId() == $brand_id) {
+                $person->removeBrand($brand);
+
+                $this->em->persist($person);
+                $this->em->flush();
+                break;
+            }
+        }
+
+        return $this->createSuccessResponse();
+    }
+
+    /**
      * @param int $person_id
      *
      * @throws \Exception
@@ -1540,7 +1642,7 @@ class PersonController extends AbstractController implements ProtectedController
      *
      * @throws \Exception
      *
-     * @return mixed
+     * @return Person|null
      */
     protected function _getPersonOr404($id, $check_perm = '')
     {
