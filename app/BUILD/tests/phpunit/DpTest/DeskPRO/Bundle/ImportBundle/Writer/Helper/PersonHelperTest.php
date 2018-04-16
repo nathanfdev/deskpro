@@ -48,10 +48,17 @@ class PersonHelperTest extends AbstractWriterTest
      */
     public function setUp()
     {
+        $this->resetAllowCreateAgentsSetting();
+
         $this->helper = $this->getContainer()->get('dp.importer.writer.helper.person');
         $this->clearTable('people');
 
         parent::setUp();
+    }
+
+    public function tearDown()
+    {
+        $this->resetAllowCreateAgentsSetting();
     }
 
     public function test_import_new_person_by_oid()
@@ -103,5 +110,94 @@ class PersonHelperTest extends AbstractWriterTest
 
         $this->assertEquals($person->getId(), $helperPerson->getId());
         $this->assertEquals('email@deskpro.dev', $person->getEmailAddress());
+    }
+
+    public function test_create_user_with_disabled_allow_create_agents_setting()
+    {
+        $this->em()->getConnection()->executeUpdate(
+            'REPLACE INTO settings (name, value) VALUES (:name, :value)',
+            ['name' => 'importer_allow_create_agents', 'value' => false]
+        );
+
+        // reset settings
+        $this->getContainer()->get('settings_resolver')->getGlobalSettings(true);
+
+        $person = $this->helper->findOrCreatePerson('user@example.com');
+
+        $this->assertNotNull($person);
+        $this->assertNotNull($person->getId());
+        $this->assertEquals('user@example.com', $person->getEmailAddress());
+    }
+
+    public function test_disallow_create_agent()
+    {
+        $this->em()->getConnection()->executeUpdate(
+            'REPLACE INTO settings (name, value) VALUES (:name, :value)',
+            ['name' => 'importer_allow_create_agents', 'value' => false]
+        );
+
+        // reset settings
+        $this->getContainer()->get('settings_resolver')->getGlobalSettings(true);
+
+        $person = $this->helper->findOrCreatePerson('agent@example.com', true);
+        $this->assertNull($person);
+    }
+
+    public function test_disallow_change_end_user_to_agent()
+    {
+        $this->em()->getConnection()->executeUpdate(
+            'REPLACE INTO settings (name, value) VALUES (:name, :value)',
+            ['name' => 'importer_allow_create_agents', 'value' => false]
+        );
+
+        // reset settings
+        $this->getContainer()->get('settings_resolver')->getGlobalSettings(true);
+
+        $person = new Person();
+        $person->setName('name');
+        $person->addEmailAddressString('email@deskpro.dev');
+
+        $this->em()->persist($person);
+        $this->em()->flush();
+
+        $helperPerson = $this->helper->findOrCreatePerson('email@deskpro.dev', true);
+        $this->assertNull($helperPerson);
+
+        $this->assertNotNull($person->getId());
+        $this->assertFalse((bool) $person->isAgent());
+    }
+
+    public function test_get_existing_agent_if_disallow_create_agent()
+    {
+        $this->em()->getConnection()->executeUpdate(
+            'REPLACE INTO settings (name, value) VALUES (:name, :value)',
+            ['name' => 'importer_allow_create_agents', 'value' => false]
+        );
+
+        // reset settings
+        $this->getContainer()->get('settings_resolver')->getGlobalSettings(true);
+
+        $person = new Person();
+        $person->setName('name');
+        $person->addEmailAddressString('email@deskpro.dev');
+        $person->setIsAgent(true);
+
+        $this->em()->persist($person);
+        $this->em()->flush();
+
+        $helperPerson = $this->helper->findOrCreatePerson('email@deskpro.dev', true);
+        $this->assertNotNull($helperPerson);
+        $this->assertEquals($person, $helperPerson);
+    }
+
+    private function resetAllowCreateAgentsSetting()
+    {
+        $this->em()->getConnection()->executeUpdate(
+            'DELETE FROM settings WHERE name = :name',
+            ['name' => 'importer_allow_create_agents']
+        );
+
+        // reset settings
+        $this->getContainer()->get('settings_resolver')->getGlobalSettings(true);
     }
 }
