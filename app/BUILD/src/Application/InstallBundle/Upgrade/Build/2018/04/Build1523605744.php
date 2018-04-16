@@ -20,10 +20,7 @@ class Build1523605744 extends AbstractBuild implements OnlineBuildInterface, Ski
         $this->out('Bind persons to default brand');
 
         $brand          = null;
-        $defaultBrandId = $this->container
-            ->get('settings_resolver')
-            ->getGlobalSettings()
-            ->get('portal.default_brand');
+        $defaultBrandId = $this->readSetting('portal.default_brand');
         if ($defaultBrandId) {
             $brands = $this->getDbConnection('default')->fetchAll('SELECT id FROM `brands` WHERE id = ?', [$defaultBrandId]);
             $brand  = current($brands);
