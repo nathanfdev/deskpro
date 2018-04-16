@@ -30,6 +30,7 @@ class AuthenticationManagerService
             $um,
             $aaf,
             $app_settings,
+            $container->get('brand_stack'),
             $interface == 'user' ? 'user' : 'agent'
         );
     }

@@ -11,6 +11,7 @@ use Application\DeskPRO\NewSettings\SettingsBag;
 use Application\DeskPRO\Usersource\UsersourceAuthAdapterFactory;
 use Application\DeskPRO\Usersource\UsersourceInfo;
 use Application\DeskPRO\Usersource\UsersourceManager;
+use DeskPRO\Bundle\PortalBundle\Brand\BrandStack;
 use DpSys\LowError\SystemErrorHandler;
 use Orb\Auth\Adapter\FormLoginInterface;
 use Orb\Auth\Identity;
@@ -74,10 +75,16 @@ class AuthenticationManager
     private $authBy;
 
     /**
+     * @var BrandStack
+     */
+    private $brandStack;
+
+    /**
      * @param UsersourceManager            $usersourceManager    system service
      * @param AuthSettings                 $authSettings         system service
      * @param UsersourceAuthAdapterFactory $auth_adapter_factory
      * @param SettingsBag                  $appSettings
+     * @param BrandStack                   $brandStack
      * @param string                       $interface            this MUST be "user" or "agent"
      */
     public function __construct(
@@ -85,6 +92,7 @@ class AuthenticationManager
         UsersourceManager            $usersourceManager,
         UsersourceAuthAdapterFactory $auth_adapter_factory,
         SettingsBag                  $appSettings,
+        BrandStack                   $brandStack,
         $interface
     ) {
         $this->usersourceManager  = $usersourceManager;
@@ -92,9 +100,13 @@ class AuthenticationManager
         $this->authAdapterFactory = $auth_adapter_factory;
         $this->interface          = $interface;
         $this->appSettings        = $appSettings;
+        $this->brandStack         = $brandStack;
 
-        $this->usersourcesForInterface = $this->usersourceManager->getAll()->forInterface($interface);
         $this->settings                = $interface === 'user' ? $authSettings->getUserInterfaceSettings() : $authSettings->getAgentInterfaceSettings();
+        $this->usersourcesForInterface = $this->usersourceManager->getAll()->forInterface($interface);
+        if ($interface === 'user') {
+            $this->usersourcesForInterface = $this->usersourcesForInterface->forBrand($this->brandStack->getActive()->getBrand());
+        }
     }
 
     /**
