@@ -25,6 +25,39 @@
 		</div>
 	</div>
 </div>
+<div class="form-group" ng-show="TicketAccountsEdit.brands.length > 1">
+  <div class="col-lg-3">
+    <h3>{{ phrase('agent.general.brands') }}</h3>
+  </div>
+  <div class="col-lg-9">
+    <div class="inner-group">
+      <label>
+          <h4>
+              <input type="radio" name="is_all_brands" ng-value="true" ng-model="form.is_all_brands" />
+              {{ phrase('adm.ticket_accounts.brands_radio_all') }}
+          </h4>
+      </label>
+      <br/>
+      <label>
+          <h4>
+              <input type="radio" name="is_all_brands" ng-value="false" ng-model="form.is_all_brands" />
+              {{ phrase('adm.ticket_accounts.brands_radio_specific') }}
+          </h4>
+      </label>
+    </div>
+    <div class="inner-group" ng-show="!form.is_all_brands">
+      <ul class="dp-item-list checkbox-list" ng-model="form.brands"
+        style="overflow-y: auto; max-height: {{ 20 * 24 }}px;min-width: 250px;max-width:400px;">
+        <li ng-repeat="brand in TicketAccountsEdit.brands">
+          <label style="width: 100%;padding-left:20px;position: relative;white-space: nowrap;">
+            <input type="checkbox" value="{{ ng_var('brand.id') }}" ng-click="TicketAccountsEdit.handleBrand(brand.id, $event)" ng-checked="form.brands.indexOf(brand.id) > -1" />
+            {{ ng_var('brand.name') }}
+          </label>
+        </li>
+      </ul>
+    </div>
+  </div>
+</div>
 <div class="form-group">
 	<div class="col-lg-3">
 		<h3>Enabled</h3>

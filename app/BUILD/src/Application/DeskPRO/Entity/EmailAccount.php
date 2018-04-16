@@ -12,9 +12,11 @@ use Application\DeskPRO\Domain\DomainObject;
 use Application\DeskPRO\Email\EmailAccount\OutgoingAccount\PhpMailConfig;
 use Application\DeskPRO\Email\EmailAccount\OutgoingAccount\SmtpConfig;
 use DeskPRO\Component\Util\IpUtils;
+use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\Mapping\ClassMetadata;
 use Doctrine\ORM\Mapping\ClassMetadataInfo;
 use JMS\Serializer\Annotation as JMS;
+use Orb\Util\Arrays;
 
 /**
  * @property int $id
@@ -25,6 +27,8 @@ use JMS\Serializer\Annotation as JMS;
  * @property string $address
  * @property array $other_addresses
  * @property array $options
+ * @property Brand[]|ArrayCollection $brands
+ * @property bool $is_all_brands
  * @property \DateTime $date_created
  * @property \DateTime $date_read_start
  * @property \DateTime $date_last_incoming
@@ -103,6 +107,18 @@ class EmailAccount extends DomainObject
     protected $options;
 
     /**
+     * @var \Doctrine\Common\Collections\ArrayCollection
+     */
+    protected $brands;
+
+    /**
+     * True if enabled for all brands.
+     *
+     * @var bool
+     */
+    protected $is_all_brands = true;
+
+    /**
      * @var \DateTime
      */
     protected $date_created;
@@ -154,6 +170,7 @@ class EmailAccount extends DomainObject
 
         $this->date_created    = new \DateTime();
         $this->date_read_start = new \DateTime();
+        $this->brands          = new ArrayCollection();
     }
 
     /**
@@ -391,6 +408,79 @@ class EmailAccount extends DomainObject
     }
 
     /**
+     * @return ArrayCollection|Brand[]
+     */
+    public function getBrands()
+    {
+        return $this->brands;
+    }
+
+    /**
+     * @param Brand $brand
+     *
+     * @return self
+     */
+    public function addBrand(Brand $brand)
+    {
+        if (!$this->brands->contains($brand)) {
+            $this->brands->add($brand);
+            $this->_onPropertyChanged('brands', $this->brands, $this->brands);
+        }
+
+        return $this;
+    }
+
+    /**
+     * @param Brand $brand
+     *
+     * @return self
+     */
+    public function removeBrand(Brand $brand)
+    {
+        $this->brands->removeElement($brand);
+        $this->_onPropertyChanged('brands', $this->brands, $this->brands);
+
+        return $this;
+    }
+
+    /**
+     * @param Brand $brand
+     *
+     * @return bool
+     */
+    public function hasBrand(Brand $brand)
+    {
+        return $this->brands->contains($brand);
+    }
+
+    /**
+     * @return $this
+     */
+    public function clearBrands()
+    {
+        $this->brands->clear();
+        $this->_onPropertyChanged('brands', $this->brands, $this->brands);
+
+        return $this;
+    }
+
+    /**
+     * @param bool $is_enabled
+     */
+    public function setIsAllBrands($is_all_brands)
+    {
+        $this->setModelField('is_all_brands', $is_all_brands);
+    }
+
+    /**
+     * @return bool
+     */
+    public function isAllBrands()
+    {
+        return (bool) $this->is_all_brands;
+    }
+
+    /**
      * @return Blob
      */
     public function getCertBlob()
@@ -463,6 +553,12 @@ class EmailAccount extends DomainObject
         $data['outgoing_account_type'] = $this->getOutgoingAccountType();
         $data['outgoing_account']      = $this->outgoing_account ? $this->getOutgoingAccount()->serializeJsonArray() : [];
         $data['use_email_address']     = $this->getUseEmailAddress();
+
+        $data['brand_ids'] = [];
+        foreach ($this->brands as $brand) {
+            $data['brand_ids'][] = $brand->getId();
+        }
+        $data['brand_ids'] = Arrays::castToType($data['brand_ids'], 'int');
 
         return $data;
     }
@@ -561,6 +657,46 @@ class EmailAccount extends DomainObject
             'fieldName'  => 'is_read_active',
             'type'       => 'boolean',
             'nullable'   => false,
+        ]);
+        $metadata->mapManyToMany(
+            [
+                'fieldName'    => 'brands',
+                'targetEntity' => Brand::class,
+                'cascade'      => ['persist', 'merge'],
+                'fetch'        => ClassMetadataInfo::FETCH_EXTRA_LAZY,
+                'joinTable'    => [
+                    'name'        => 'email_account_to_brand',
+                    'schema'      => null,
+                    'joinColumns' => [
+                        0 => [
+                            'name'                 => 'email_account_id',
+                            'referencedColumnName' => 'id',
+                            'nullable'             => false,
+                            'onDelete'             => 'cascade',
+                            'columnDefinition'     => null,
+                        ],
+                    ],
+                    'inverseJoinColumns' => [
+                        0 => [
+                            'name'                 => 'brand_id',
+                            'referencedColumnName' => 'id',
+                            'nullable'             => false,
+                            'onDelete'             => 'cascade',
+                            'columnDefinition'     => null,
+                        ],
+                    ],
+                ],
+            ]
+        );
+
+        $metadata->mapField([
+            'fieldName'  => 'is_all_brands',
+            'type'       => 'boolean',
+            'precision'  => 0,
+            'scale'      => 0,
+            'nullable'   => false,
+            'columnName' => 'is_all_brands',
+            'options'    => ['default' => '1'],
         ]);
         $metadata->mapManyToOne([
             'fieldName'    => 'cert_blob',
