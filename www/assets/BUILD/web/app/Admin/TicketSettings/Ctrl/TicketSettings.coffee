@@ -9,12 +9,22 @@ define ['Admin/Main/Ctrl/Base', 'DeskPRO/Util/Util', 'angular'], (Admin_Ctrl_Bas
       @$scope.escalation_days = 3
 
       @$scope.editSatisfactionTemplate = =>
-        @$modal.open({
-          templateUrl: DP_BASE_ADMIN_URL+'/load-view/Templates/modal-email-editor.html',
-          controller: 'Admin_Templates_Ctrl_EmailTemplateEditor',
-          resolve:
-            templateName: -> 'DeskPRO:emails_user:ticket-rate.html.twig'
-        })
+        console.log
+        if window.DP_HAS_NEW_EMAILS
+          @$modal.open({
+            templateUrl: DP_BASE_ADMIN_URL+'/load-view/Templates/modal-new-email-editor.html',
+            size: 'lg',
+            controller: 'Admin_Templates_Ctrl_NewEmailTemplateEditor',
+            resolve:
+              templateName: -> 'SendmailBundle:emails_user:ticket_rate.html.twig'
+          })
+        else
+          @$modal.open({
+            templateUrl: DP_BASE_ADMIN_URL+'/load-view/Templates/modal-email-editor.html',
+            controller: 'Admin_Templates_Ctrl_EmailTemplateEditor',
+            resolve:
+              templateName: -> 'DeskPRO:emails_user:ticket-rate.html.twig'
+          })
 
       @$scope.$watch(
         =>

@@ -45,7 +45,7 @@ class NewRegistrationNotification extends AbstractAgentNotification
         $this->sendBrowserNotifications('AgentBundle:Person:alert-new-registration.html.twig', ['person' => $this->person, 'notify_data' => ['notify_type' => 'new_registration']]);
         if (App::$container->get('deskpro.feature_flags')->hasBeta('email_templates')) {
             $viewModel = App::$container->get('email.agent_viewmodel_factory')
-                ->createNewRegistrationModel($this->person);
+                ->createAgentNewRegistrationModel($this->person);
             $this->sendNewEmailNotifications($viewModel);
         } else {
             $this->sendEmailNotifications(

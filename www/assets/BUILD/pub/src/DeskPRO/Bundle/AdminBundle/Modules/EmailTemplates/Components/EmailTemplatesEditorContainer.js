@@ -689,7 +689,7 @@ class EmailTemplatesEditor extends React.Component {
   };
 
   openLegacyTemplatesEditor = () => {
-    window.location.href = 'admin-interface#/tickets/email_templates_legacy';
+    window.location.href = 'admin-interface#/emails/email_templates_legacy';
   };
 
   closeNewTemplateDialog = () => {
@@ -746,8 +746,9 @@ class EmailTemplatesEditor extends React.Component {
               </Button>
               {this.props.emailTemplates.get('legacyTemplates').size ?
                 <Button
-                  className="right basic small floated"
+                  className="right basic small floated upgrade-legacy"
                   onClick={this.openLegacyTemplatesEditor}
+                  title="Upgrade Legacy Templates"
                 >
                   Upgrade Legacy Templates
                 </Button> : null

@@ -239,8 +239,6 @@ class Ticket extends DomainObject implements HighlightableModelInterface, Labels
 
     /**
      * @var \Application\DeskPRO\Entity\Person
-     *
-     * @Assert\Valid()
      */
     protected $person = null;
 

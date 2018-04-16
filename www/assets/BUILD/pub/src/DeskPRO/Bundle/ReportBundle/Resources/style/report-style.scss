@@ -17,6 +17,9 @@ $dp-styles-font-path: '../../../../../../node_modules/@deskpro/react-components/
 @import 'stats-builder';
 @import 'modal';
 
+@import 'dashboards/dashboards';
+@import 'dashboards/gridster';
+
 .two-panels-menu {
   display: table;
   border-collapse: collapse;

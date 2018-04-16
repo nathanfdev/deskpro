@@ -9,6 +9,7 @@ use Application\DeskPRO\Entity\Language;
 use Application\DeskPRO\Entity\Organization;
 use Application\DeskPRO\Entity\Person;
 use DeskPRO\Bundle\AppBundle\Form\CustomFieldManager\CustomFieldManager;
+use DeskPRO\Bundle\AppBundle\Form\Type\ApiBooleanType;
 use DeskPRO\Bundle\AppBundle\Form\Type\CombinedType;
 use DeskPRO\Bundle\AppBundle\Form\Type\ContactData\ContactDataType;
 use DeskPRO\Bundle\AppBundle\Form\Type\CustomFields\CustomDataType;
@@ -89,6 +90,10 @@ class PersonType extends AbstractType
                 'owner_property' => 'person',
                 'required'       => false,
             ])
+            ->add('is_agent', ApiBooleanType::class, [
+                'required'     => false,
+                'by_reference' => false,
+            ])
             ->add('user_groups', UsergroupsType::class, [
                 'is_agent_group' => false,
                 'owner'          => $builder->getData(),
@@ -143,8 +148,8 @@ class PersonType extends AbstractType
         $fieldNameResolver = $this->fieldManager->getFieldNameResolver(CustomDefPerson::class);
         $builder->addEventSubscriber($fieldNameResolver);
 
-        $builder->addEventListener(FormEvents::PRE_SUBMIT, [$this, 'onSyncName']);
-        $builder->addEventListener(FormEvents::POST_SUBMIT, [$this, 'onUnsetAgentData'], 100);
+        $builder->addEventListener(FormEvents::PRE_SUBMIT, [$this, 'onPreSubmit']);
+        $builder->addEventListener(FormEvents::POST_SUBMIT, [$this, 'onPostSubmit'], 100);
     }
 
     /**
@@ -172,7 +177,7 @@ class PersonType extends AbstractType
      *
      * @param FormEvent $event
      */
-    public function onSyncName(FormEvent $event)
+    public function onPreSubmit(FormEvent $event)
     {
         /** @var Person $person */
         $person = $event->getForm()->getData();
@@ -192,7 +197,7 @@ class PersonType extends AbstractType
      *
      * @param FormEvent $event
      */
-    public function onUnsetAgentData(FormEvent $event)
+    public function onPostSubmit(FormEvent $event)
     {
         $data = $event->getData();
         if (!$data instanceof Person) {

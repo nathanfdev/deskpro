@@ -49,6 +49,12 @@ class ApplyCommand extends AbstractImporterCommand
                 InputOption::VALUE_REQUIRED,
                 'Specify brand to import for multi-brand helpdesk'
             )
+            ->addOption(
+                'skip-re-index',
+                null,
+                InputOption::VALUE_NONE,
+                'Skip re-index of Elasticsearch and ticket search tables.'
+            )
         ;
     }
 
@@ -69,7 +75,7 @@ class ApplyCommand extends AbstractImporterCommand
         if ($input->getOption('batch')) {
             $exitCode = $this->executeBatchRun($input, $output);
         } else {
-            $exitCode = $this->executeUnattendedRun($output);
+            $exitCode = $this->executeUnattendedRun($input, $output);
         }
 
         unset($GLOBALS['DP_IS_IMPORTING']);
@@ -79,11 +85,12 @@ class ApplyCommand extends AbstractImporterCommand
     }
 
     /**
+     * @param InputInterface  $input
      * @param OutputInterface $output
      *
      * @return int
      */
-    protected function executeUnattendedRun(OutputInterface $output)
+    protected function executeUnattendedRun(InputInterface $input, OutputInterface $output)
     {
         $arguments = array_map(function ($argument) {
             return escapeshellarg($argument);
@@ -123,7 +130,6 @@ class ApplyCommand extends AbstractImporterCommand
             }
 
             $output->writeln('<info>Done batch</info>');
-            $output->writeln('<info>Updating search tables.</info>');
 
             // dispatch end of import for each model type
             $batchConfig = $importer->readBatchConfig();
@@ -140,21 +146,23 @@ class ApplyCommand extends AbstractImporterCommand
             }
         } while ($rerun);
 
-        if ($container->getSetting('elastica.enabled')) {
-            $output->writeln('<info>Update elasctic search.</info>');
+        if (!$input->getOption('skip-re-index')) {
+            if ($container->getSetting('elastica.enabled')) {
+                $output->writeln('<info>Update elasctic search.</info>');
 
-            $command = $this->getApplication()->find('dp:elastica:populate');
-            $input   = new ArrayInput(['']);
-            $output  = new NullOutput();
-            $command->run($input, $output);
+                $command = $this->getApplication()->find('dp:elastica:populate');
+                $input   = new ArrayInput(['']);
+                $output  = new NullOutput();
+                $command->run($input, $output);
+            }
+
+            // finishing import, update search tables
+            $output->writeln('<info>Update ticket search tables.</info>');
+
+            /** @var EntityRepository\Ticket $ticketRepository */
+            $ticketRepository = $container->getEm()->getRepository(Ticket::class);
+            $ticketRepository->fillSearchTable();
         }
-
-        // finishing import, update search tables
-        $output->writeln('<info>Update ticket search tables.</info>');
-
-        /** @var EntityRepository\Ticket $ticketRepository */
-        $ticketRepository = $container->getEm()->getRepository(Ticket::class);
-        $ticketRepository->fillSearchTable();
 
         $dispatcher->dispatch(ProgressEvent::FINISH, new ProgressEvent());
         $output->writeln('<info>Done all.</info>');

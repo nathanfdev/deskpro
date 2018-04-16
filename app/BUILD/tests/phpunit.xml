@@ -7,6 +7,10 @@
         <testsuite name="DeskPRO-Portal">
             <directory>phpunit/DpTest/DeskPRO/Bundle/PortalBundle</directory>
         </testsuite>
+        <testsuite name="ezcMail">
+            <directory>../vendor-src/ezcomponents/Mail/tests/parser</directory>
+            <file>../vendor-src/ezcomponents/Mail/tests/parser/parser_test.php</file>
+        </testsuite>
     </testsuites>
     <filter>
         <whitelist addUncoveredFilesFromWhitelist="true" processUncoveredFilesFromWhitelist="true">

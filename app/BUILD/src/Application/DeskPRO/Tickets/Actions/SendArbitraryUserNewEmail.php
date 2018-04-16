@@ -148,6 +148,10 @@ class SendArbitraryUserNewEmail extends AbstractEmailAction
         }
         $viewModel = $this->createViewModelFromTemplate($template, $arguments, $context);
 
+        if (!$viewModel) {
+            return;
+        }
+
         $mailer = $this->getContainer()->get('mailer');
 
         $builder = TicketEmailBuilder::createFromContainer($this->getContainer())

@@ -1,7 +1,7 @@
 import PropTypes from 'prop-types';
 import React from 'react';
+import { FormattedMessage } from 'react-intl';
 import { Icon, CustomSelect, List, ListElement } from '@deskpro/react-components';
-import agentPhrases from 'DeskPRO/Bundle/AgentBundle/AgentPhrases';
 
 export class MassActionsSelect extends React.PureComponent {
   static propTypes = {
@@ -13,32 +13,32 @@ export class MassActionsSelect extends React.PureComponent {
       {
         value: 'labels',
         icon:  'tag',
-        text:  agentPhrases.get('agent.general.labels'),
+        text:  <FormattedMessage id="agent.general.labels" />,
       },
       {
         value: 'visibility',
         icon:  'eye',
-        text:  agentPhrases.get('agent.snippets.visibility'),
+        text:  <FormattedMessage id="agent.snippets.visibility" />,
       },
       {
         value: 'ownership',
         icon:  'users',
-        text:  agentPhrases.get('agent.snippets.ownership'),
+        text:  <FormattedMessage id="agent.snippets.ownership" />,
       },
       {
         value: 'type',
         icon:  'envelope-o',
-        text:  agentPhrases.get('agent.general.type'),
+        text:  <FormattedMessage id="agent.general.type" />,
       },
       {
         value: 'export',
         icon:  'download',
-        text:  agentPhrases.get('agent.general.export'),
+        text:  <FormattedMessage id="agent.general.export" />,
       },
       {
         value: 'draft',
         icon:  'pencil',
-        text:  agentPhrases.get('agent.snippets.draft_status'),
+        text:  <FormattedMessage id="agent.snippets.draft_status" />,
       },
     ];
   }
@@ -48,7 +48,7 @@ export class MassActionsSelect extends React.PureComponent {
     this.select.toggleOpened();
   };
 
-  inputRenderer = () => <span key="label">{agentPhrases.get('agent.general.mass_actions')}</span>;
+  inputRenderer = () => <span key="label"><FormattedMessage id="agent.general.mass_actions" /></span>;
 
   render() {
     return (

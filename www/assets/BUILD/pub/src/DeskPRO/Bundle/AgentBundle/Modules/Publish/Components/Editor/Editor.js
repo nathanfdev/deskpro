@@ -1,6 +1,7 @@
 import PropTypes from 'prop-types';
 import React from 'react';
 import { connect } from 'react-redux';
+import { FormattedMessage } from 'react-intl';
 import { Button } from 'DeskPRO/Component/Semantic/Button';
 import 'froala-editor/js/froala_editor.pkgd.min';
 import classNames from 'classnames';
@@ -231,7 +232,7 @@ export class Editor extends React.Component {
               className={classNames('pull-right', { loading: this.props.saving })}
               onClick={this.onSave}
             >
-              {this.props.saved ? 'Saved' : 'Save'}
+              {this.props.saved ? <FormattedMessage id="agent.general.saved" defaultMessage="Saved" /> : <FormattedMessage id="agent.general.save" defaultMessage="Save" />}
             </Button> : '' }
         </div>
         <div className="editor">

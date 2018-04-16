@@ -29,6 +29,7 @@ class CleanupDaily extends AbstractJob
     {
         $this->_cleanupLogItems();
         $this->_cleanupAgentAlerts();
+        $this->_cleanupUsersourceSyncLog();
         $this->_cleanupResultCaches();
         $this->_cleanupTaskQueueLogsItems();
         $this->_cleanupRefReserve();
@@ -78,6 +79,20 @@ class CleanupDaily extends AbstractJob
             if ($num) {
                 $this->logStatus("Cleaned up $num dismissed agent alerts");
             }
+        }
+    }
+
+    private function _cleanupUsersourceSyncLog()
+    {
+        $daysAgo = new  \DateTime('-30 days');
+
+        $num = App::getDb()->executeUpdate('
+            DELETE FROM usersource_sync_log
+            WHERE date_start < ? OR date_phase_2_start < ?
+        ', [$daysAgo->format('Y-m-d H:i:s'), $daysAgo->format('Y-m-d H:i:s')]);
+
+        if ($num) {
+            $this->logStatus("Cleaned up $num records from usersource_sync_log");
         }
     }
 

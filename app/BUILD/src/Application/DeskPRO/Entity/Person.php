@@ -974,11 +974,18 @@ class Person extends DomainObject implements
      */
     public function setIsAgent($yesno)
     {
-        if ($yesno) {
-            $this['is_confirmed'] = true;
-        }
-
         $this->setModelField('is_agent', $yesno);
+
+        if ($yesno) {
+            $this->setModelField('is_confirmed', true);
+        } else {
+            $this->setModelField('agentData', null);
+            $this->setModelField('primary_team', null);
+
+            foreach ($this->teams as $team) {
+                $this->removeTeam($team);
+            }
+        }
 
         return $this;
     }

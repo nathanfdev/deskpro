@@ -3,6 +3,7 @@
 namespace DpBehat\Data\Factory;
 
 use DpBehat\Data\DataNormalizer;
+use Symfony\Component\PropertyAccess\StringUtil;
 
 /**
  * Class SimpleFactory.
@@ -43,6 +44,22 @@ class SimpleFactory
                 continue;
             }
 
+            // Try add* method for collections
+            if (is_array($value) || $value instanceof \Traversable) {
+                // Try add* method
+                $singulars = (array) StringUtil::singularify($prop);
+                foreach ($singulars as $singular) {
+                    $add = DataNormalizer::underscoreToAddMethod($singular);
+                    if (method_exists($object, $add)) {
+                        foreach ($value as $item) {
+                            call_user_func([$object, $add], $item);
+                        }
+
+                        continue;
+                    }
+                }
+            }
+
             // Try setter
             $setter = DataNormalizer::underscoreToSetter($prop);
             if (method_exists($object, $setter)) {
@@ -50,10 +67,11 @@ class SimpleFactory
                 continue;
             }
 
-            // Try add* method
+            // Try add* method for single values
             $add = DataNormalizer::underscoreToAddMethod($prop);
             if (method_exists($object, $add)) {
                 call_user_func([$object, $add], $value);
+
                 continue;
             }
 
