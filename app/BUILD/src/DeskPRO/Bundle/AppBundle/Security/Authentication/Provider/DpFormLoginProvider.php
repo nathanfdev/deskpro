@@ -90,6 +90,16 @@ class DpFormLoginProvider implements AuthenticationProviderInterface
                 throw new DisabledException('portal.account.login-disabled');
             }
 
+            // add person to an active brand on login
+            $brand = $this->container->get('brand_stack')->getActive()->getBrand();
+            if ($brand && !$person->hasBrand($brand)) {
+                $person->addBrand($brand);
+
+                $em = $this->container->get('doctrine.orm.default_entity_manager');
+                $em->persist($person);
+                $em->flush();
+            }
+
             $authenticatedToken = new DpFormLoginToken($person, $person->getPassword(), array_merge(['ROLE_USER'], $person->getRoles()));
             $authenticatedToken->setAttributes($token->getAttributes());
 
