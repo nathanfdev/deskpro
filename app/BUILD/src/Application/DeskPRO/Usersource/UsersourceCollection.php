@@ -6,6 +6,7 @@
 
 namespace Application\DeskPRO\Usersource;
 
+use Application\DeskPRO\Entity\Brand;
 use Application\DeskPRO\Entity\Usersource;
 
 /**
@@ -31,6 +32,22 @@ class UsersourceCollection extends \ArrayObject
         }
 
         throw new \InvalidArgumentException("Unknown interface '$interface'");
+    }
+
+    /**
+     * @param Brand $brand
+     *
+     * @return static
+     */
+    public function forBrand(Brand $brand)
+    {
+        $filtered = array_filter(
+            (array) $this, function (Usersource $us) use ($brand) {
+                return $us->hasBrand($brand) || $us->isAllBrands();
+            }
+        );
+
+        return new static($filtered);
     }
 
     /**
