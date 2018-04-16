@@ -24,7 +24,7 @@
             <ul>
                 <li ng-repeat="(index, var) in report.variables">
                     {{ ng_var('var.name') }}
-                    <select ng-change="changeReportLevelVar()" style="min-width: 150px;" ui-select2 ng-model="report.variables[index].value" ng-if="var.type != 'dates'" ng-disabled="(var.type == 'agent' || var.type == 'agent_team') && !canViewAllAgents() && dashboard.is_agent && !me.person.is_admin">
+                    <select ng-change="changeReportLevelVar()" style="min-width: 150px;" ui-select2 ng-model="report.variables[index].value" ng-if="var.type != 'dates'" ng-disabled="(var.type == 'values' && (var.field_type == 'agent' || var.field_type == 'agent_team')) && !canViewAllAgents() && dashboard.is_agent && !me.person.is_admin">
                         <option ng-if="key != 'from_report_value'" ng-repeat="(key, param) in groupParams[var.type][var.field_type]" ng-value="key" ng-selected="key === report.variables[index].value">
                             {{ ng_var('param[0]') }}
                         </option>
