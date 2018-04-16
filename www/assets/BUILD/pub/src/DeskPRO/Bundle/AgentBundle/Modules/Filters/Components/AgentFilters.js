@@ -6,6 +6,7 @@ import {
   Icon,
   DrawerList,
 } from '@deskpro/react-components';
+import { FormattedMessage } from 'react-intl';
 import FiltersSet from './FiltersSet';
 import Stars from './Stars';
 import Labels from './Labels';
@@ -76,7 +77,7 @@ export default class AgentFilters extends React.Component {
       <Column style={{ width: '213px' }} className="agent-filters">
         <Heading>
           <Icon name="envelope-o" />
-          Tickets
+          <FormattedMessage id="agent.search.type_ticket" />
         </Heading>
         <DrawerList>
           {filterSets.toArray().map(filterSet => (
@@ -95,21 +96,25 @@ export default class AgentFilters extends React.Component {
             />
             )
           )}
-          <Stars
-            ref={(c) => { this.drawers.stars = c; }}
-            stars={stars}
-            starsCounts={starsCounts}
-            opened
-            onSelectMode={this.onSelectMode}
-            mode={mode}
-          />
-          <Labels
-            ref={(c) => { this.drawers.labels = c; }}
-            labels={labels}
-            opened
-            onSelectMode={this.onSelectMode}
-            mode={mode}
-          />
+          <div className="agent-filters--stars">
+            <Stars
+              ref={(c) => { this.drawers.stars = c; }}
+              stars={stars}
+              starsCounts={starsCounts}
+              opened
+              onSelectMode={this.onSelectMode}
+              mode={mode}
+            />
+          </div>
+          <div className="agent-filters--labels">
+            <Labels
+              ref={(c) => { this.drawers.labels = c; }}
+              labels={labels}
+              opened
+              onSelectMode={this.onSelectMode}
+              mode={mode}
+            />
+          </div>
         </DrawerList>
       </Column>
     );

@@ -5,9 +5,9 @@
 		<li class="detail-view" ng-click="openTableView()"><a class="setupIcon"></a></li>
 		<li class="right"><span class="sep"></span></li>
 	</ul>
-	<ul>
-		<li>{{ phrase('agent.general.ordered_by') }} </li>
-		<li class="order-by-menu-trigger menu-fitted" data-menu-button=".button"><a class="button"><span class="label"><label>{{ order_by_summary }}</label> <i class="order-dir asc" {% if order_by[1] != 'asc' %}style="display: none"{% endif %}>{{ phrase('agent.general.sort_asc') }}</i><i class="order-dir desc" {% if order_by[1] != 'desc' %}style="display: none"{% endif %}>{{ phrase('agent.general.sort_desc') }}</i></span><em></em></a></li>
+	<ul class="ticketlist--filter-options">
+		<li class="opt-orderby is-label">{{ phrase('agent.general.ordered_by') }} </li>
+		<li class="opt-orderby is-control order-by-menu-trigger menu-fitted" data-menu-button=".button"><a class="button"><span class="label"><label>{{ order_by_summary }}</label> <i class="order-dir asc" {% if order_by[1] != 'asc' %}style="display: none"{% endif %}>{{ phrase('agent.general.sort_asc') }}</i><i class="order-dir desc" {% if order_by[1] != 'desc' %}style="display: none"{% endif %}>{{ phrase('agent.general.sort_desc') }}</i></span><em></em></a></li>
 		<li>{{ phrase('agent.general.and_grouped_by') }} </li>
 		<li class="group-by-menu-trigger menu-fitted" data-menu-button=".button"><a class="button"><span class="label">{{ grouping_summary|default(phrase('agent.general.none')) }}</span><em></em></a></li>
 

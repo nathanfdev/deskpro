@@ -62,13 +62,21 @@ class TicketsForm extends React.Component {
     } = this.props;
 
     const groups = {
-      '@none': 'None',
+      '@none': { title: 'None', className: 'none' },
     };
+
     groupFields.forEach((group) => {
       if (group.get('type') === 'ticket_field') {
-        groups[group.get('id')] = ticketCustomFields.find(field => field.get('id') === group.get('field_id')).get('title');
+        const f = ticketCustomFields.find(field => field.get('id') === group.get('field_id'));
+        groups[group.get('id')] = {
+          title:     f.get('title'),
+          className: f.get('aliases').map(a => `option-${a}`).join(' ')
+        };
       } else {
-        groups[group.get('id')] = agentPhrases.get(`agent.grouping_option.${group.get('id')}`);
+        groups[group.get('id')] = {
+          title:     agentPhrases.get(`agent.grouping_option.${group.get('id')}`),
+          className: ''
+        };
       }
     });
 
@@ -84,7 +92,7 @@ class TicketsForm extends React.Component {
                 key={key}
                 style={formStyles.checkboxLabel}
                 htmlFor={`filter_${filter.get('id')}_group_${key}`}
-                className={`filter-group-option filter-${filter.get('id')} option-${key}`}
+                className={`filter-group-option filter-${filter.get('id')} option-${key} ${group.className}`}
               >
                 <input
                   type="radio"
@@ -93,7 +101,7 @@ class TicketsForm extends React.Component {
                   value={key}
                   checked={value === key}
                   onChange={this.handleChange}
-                /> {group}
+                /> {group.title}
               </label>
             ))}
           </div>

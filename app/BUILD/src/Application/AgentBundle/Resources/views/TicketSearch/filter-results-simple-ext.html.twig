@@ -82,4 +82,4 @@ pageMeta.baseId = '{{ baseId }}';
 </script>
 <script id="{{ baseId }}_ticket_json" type="application/json">{{ ticket_json|raw }}</script>
 <script id="{{ baseId }}_ticket_ids_json" type="application/json">{{ all_ticket_ids|json_encode|raw }}</script>
-<div id="{{ baseId }}_ng_attach">{% include 'AgentBundle:TicketSearch:ticket-list.html.twig' %}</div>
+<div id="{{ baseId }}_ng_attach" class="page-ticket-list-pane">{% include 'AgentBundle:TicketSearch:ticket-list.html.twig' %}</div>
