@@ -314,6 +314,18 @@ class PeopleController extends AbstractPeopleController
     /**
      * {@inheritdoc}
      */
+    protected function handleForm($model, Request $request, array $options = [])
+    {
+        $options = array_merge($options, [
+            'agent_interface' => true,
+        ]);
+
+        return parent::handleForm($model, $request, $options);
+    }
+
+    /**
+     * {@inheritdoc}
+     */
     protected function deleteEntity($entity)
     {
         if ($entity->isAgent()) {

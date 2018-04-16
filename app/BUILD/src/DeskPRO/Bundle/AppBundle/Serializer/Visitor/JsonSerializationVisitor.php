@@ -30,7 +30,17 @@ class JsonSerializationVisitor extends BaseVisitor
                             $value[$key] = $iterator($item);
                         }
                     } elseif (is_string($value)) {
-                        $value = iconv('UTF-8', 'UTF-8//IGNORE', $value);
+                        // fix german umlauts
+                        $value = utf8_encode($value);
+
+                        // fix encoding
+                        // e.g. detected an incomplete multibyte character in input string
+                        $encoding = mb_detect_encoding($value, mb_detect_order(), false);
+                        if ($encoding === 'UTF-8') {
+                            $value = mb_convert_encoding($value, 'UTF-8', 'UTF-8');
+                        }
+
+                        $value = iconv(mb_detect_encoding($value, mb_detect_order(), false), 'UTF-8//IGNORE', $value);
                     }
 
                     return $value;

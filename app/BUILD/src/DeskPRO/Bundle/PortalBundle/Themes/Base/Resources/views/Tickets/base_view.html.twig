@@ -172,12 +172,22 @@
                                         <ul>
                                             {# see the TicketViewDataService in AppBundle's data services #}
                                             {% for property in ticket_view.properties %}
-                                                {% set propValue = property.value|smart_wrap(35) %}
+                                                {% set propValue = property.value is iterable ? property.value : property.value|smart_wrap(35) %}
                                                 {% if property.isVisible %}
                                                     <li>
                                                         <h3>{{ property.label }}</h3>
                                                         {% if property.type == 'url' %}
                                                             <p><a href="{{ propValue }}" target="_blank">{{ propValue }}</a></p>
+                                                        {% elseif property.type == 'file' %}
+                                                            {% for file in propValue %}
+                                                                <div>
+                                                                    <a href="{{ file.downloadUrl }}{{ file.is_image ? '' : '?dl=1' }}" target="_blank">
+                                                                        {{ content_icon(file) }}
+                                                                        {{ file.filename }}
+                                                                        ({{ file.readableFilesize }})
+                                                                    </a>
+                                                                </div>
+                                                            {% endfor %}
                                                         {% elseif property.isLinkify %}
                                                             <p>{{ propValue|safe_link_urls }}</p>
                                                         {% else %}

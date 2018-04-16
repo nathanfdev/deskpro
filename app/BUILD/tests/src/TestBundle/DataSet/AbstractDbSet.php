@@ -186,7 +186,16 @@ abstract class AbstractDbSet implements DataSetInterface
     private function dumpToCache()
     {
         $modifiers = '--no-create-info --skip-triggers --extended-insert --lock-tables --quick';
-        if (strlen($GLOBALS['DP_ENV']->getConfig('database.password'))) {
+        if (strlen($GLOBALS['DP_ENV']->getConfig('database.login-path'))) {
+            $cmd = sprintf(
+                "%s --login-path=%s --opt -Q --port=%s %s $modifiers > %s",
+                $this->mysqldump_bin_path,
+                escapeshellarg($GLOBALS['DP_ENV']->getConfig('database.login-path')),
+                escapeshellarg(3306),
+                escapeshellarg($this->getDatabaseName()),
+                escapeshellarg($this->getCachePath())
+            );
+        } elseif (strlen($GLOBALS['DP_ENV']->getConfig('database.password'))) {
             $cmd = sprintf(
                 "%s --opt -Q -h%s --port=%s -u%s -p%s %s $modifiers > %s",
                 $this->mysqldump_bin_path,
@@ -227,7 +236,15 @@ abstract class AbstractDbSet implements DataSetInterface
      */
     private function installFromCache()
     {
-        if (strlen($GLOBALS['DP_ENV']->getConfig('database.password'))) {
+        if (strlen($GLOBALS['DP_ENV']->getConfig('database.login-path'))) {
+            $cmd = sprintf(
+                '%s --login-path=%s %s < %s',
+                $this->mysql_bin_path,
+                escapeshellarg($GLOBALS['DP_ENV']->getConfig('database.login-path')),
+                escapeshellarg($this->getDatabaseName()),
+                escapeshellarg($this->getCachePath())
+            );
+        } elseif (strlen($GLOBALS['DP_ENV']->getConfig('database.password'))) {
             $cmd = sprintf(
                 '%s -h%s -u%s -p%s %s < %s',
                 $this->mysql_bin_path,

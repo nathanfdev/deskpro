@@ -5,6 +5,7 @@ import { DpxCheckboxGroup } from './Common/Form/DpxCheckboxGroup';
 import { DpxDateWidget } from './Common/Form/DpxDateWidget';
 import DpxAttach from './Common/Form/DpxAttach';
 import DpxRte from './Common/Form/DpxRte';
+import DpxCustomFieldAttach from './Common/Form/DpxCustomFieldAttach';
 import { DpxRadio } from './Common/Form/DpxRadio';
 import { DpxDoubleSubmitPrevention } from './Common/Form/DpxDoubleSubmitPrevention';
 import DpxFormDraft from './Common/Form/Draft/DpxFormDraft';
@@ -21,6 +22,7 @@ export default class PortalFormWidget extends PageWidget {
     this.addWidgetDef(DpxRte, '[data-rte]');
     this.addWidgetDef(DpxRadio, '.dpx-radio-button');
     this.addWidgetDef(DpxFormDraft, 'form[data-save-draft]');
+    this.addWidgetDef(DpxCustomFieldAttach, '.dpx-custom-field-attach');
     this.addWidgetDef(DpxDoubleSubmitPrevention, '[type="submit"]');
 
     if (this.$element.is('form')) {

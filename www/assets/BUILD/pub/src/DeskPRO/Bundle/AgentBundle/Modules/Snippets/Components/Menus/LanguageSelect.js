@@ -1,8 +1,8 @@
 import PropTypes from 'prop-types';
 import React from 'react';
+import { FormattedMessage } from 'react-intl';
 import { DragDropContext } from 'react-dnd';
 import HTML5Backend from 'react-dnd-html5-backend';
-import agentPhrases from 'DeskPRO/Bundle/AgentBundle/AgentPhrases';
 import { Icon, List, ListElement, CustomSelect, Checkbox } from '@deskpro/react-components';
 import { sortByAttribute } from 'DeskPRO/Component/Util/Map';
 import LanguageItem from './LanguageItem';
@@ -69,10 +69,10 @@ export class LanguageList extends React.Component {
       let title;
       switch (this.props.type) {
         case 'ticket':
-          title = agentPhrases.get('agent.general.ticket');
+          title = <FormattedMessage id="agent.general.ticket" />;
           break;
         case 'chat':
-          title = agentPhrases.get('agent.general.chat');
+          title = <FormattedMessage id="agent.general.chat" />;
           break;
         default:
           title = 'Context';
@@ -100,7 +100,7 @@ export class LanguageList extends React.Component {
           key={`agent_lang_${agentLanguage.get('id')}`}
         >
           <Checkbox checked={checked} value="agent" readOnly>
-            {agentPhrases.get('agent.snippets.your_language')} ({agentLanguage.get('title')})
+            <FormattedMessage id="agent.snippets.your_language" /> ({agentLanguage.get('title')})
           </Checkbox>
         </LanguageItem>
       );
@@ -117,7 +117,7 @@ export class LanguageList extends React.Component {
           key={`helpdesk_lang_${helpdeskLanguage.get('id')}`}
         >
           <Checkbox checked={checked} value="helpdesk" readOnly>
-            {agentPhrases.get('agent.snippets.helpdesk_default')} ({helpdeskLanguage.get('title')})
+            <FormattedMessage id="agent.snippets.helpdesk_default" /> ({helpdeskLanguage.get('title')})
           </Checkbox>
         </LanguageItem>
       );
@@ -224,7 +224,7 @@ export class LanguageSelect extends React.PureComponent {
     type:        PropTypes.string,
   };
 
-  inputRenderer = () => <span key="label"><Icon name="globe" />&nbsp;{agentPhrases.get('agent.general.languages')}</span>;
+  inputRenderer = () => <span key="label"><Icon name="globe" />&nbsp;<FormattedMessage id="agent.general.languages" /></span>;
 
   render() {
     const { languages, langContext, langPref, onChange, type } = this.props;

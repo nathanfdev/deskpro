@@ -9,8 +9,8 @@ Feature: Custom url field
       | c2 | British Pound | GBP           | £      |
       | c2 | Euro          | EUR           | €      |
     And only the following custom person fields exist:
-      | #  | Type     | Title          | Options                                 |
-      | f1 | currency | Currency field | {"required": true, "currency_id": ~c2~} |
+      | #  | Type     | Title          | Options                                       |
+      | f1 | currency | Currency field | {"agent_required": true, "currency_id": ~c2~} |
 
   Scenario: I set currency value
     When I send a PUT request to "/api/v2/people/{admin}" with body:

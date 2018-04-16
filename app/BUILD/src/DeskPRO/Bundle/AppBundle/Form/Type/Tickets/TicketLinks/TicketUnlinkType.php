@@ -37,8 +37,8 @@ class TicketUnlinkType extends AbstractType
             ],
         ]);
 
-        $builder->addEventListener(FormEvents::PRE_SUBMIT, [$this, 'onRemoveLinkTicketForParent']);
-        $builder->addEventListener(FormEvents::SUBMIT, [$this, 'onUnsetLink']);
+        $builder->addEventListener(FormEvents::PRE_SUBMIT, [$this, 'onPreSubmit']);
+        $builder->addEventListener(FormEvents::SUBMIT, [$this, 'onSubmit']);
     }
 
     /**
@@ -52,10 +52,11 @@ class TicketUnlinkType extends AbstractType
     /**
      * @param FormEvent $event
      */
-    public function onRemoveLinkTicketForParent(FormEvent $event)
+    public function onPreSubmit(FormEvent $event)
     {
         $data = $event->getData();
 
+        // remove link_ticket for parent type
         if (isset($data['link_type']) && $data['link_type'] === self::LINK_TYPE_PARENT) {
             $event->getForm()->remove('link_ticket');
         }
@@ -64,7 +65,7 @@ class TicketUnlinkType extends AbstractType
     /**
      * @param FormEvent $event
      */
-    public function onUnsetLink(FormEvent $event)
+    public function onSubmit(FormEvent $event)
     {
         $form = $event->getForm();
 
