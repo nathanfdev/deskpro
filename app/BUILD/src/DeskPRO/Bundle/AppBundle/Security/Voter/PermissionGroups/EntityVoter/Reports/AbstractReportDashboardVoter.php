@@ -53,7 +53,7 @@ abstract class AbstractReportDashboardVoter implements PermissionGroupEntityVote
 
         foreach ($entity->getPermissions() as $permission) {
             if (
-                ($permission->getPerson() === $user || (!$entity->getPerson() && !$entity->getTeam() && !$entity->getDepartment()))
+                ($permission->getPerson() === $user || (!$permission->getPerson() && !$permission->getTeam() && !$permission->getDepartment()))
                 && $permission->getName() === ReportDashboardPermission::FULL) {
                 return true;
             }
