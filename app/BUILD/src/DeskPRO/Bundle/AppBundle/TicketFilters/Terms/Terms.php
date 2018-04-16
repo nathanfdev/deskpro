@@ -11,6 +11,7 @@ class Terms
 {
     const TICKET_ID                    = 'ticket.id';
     const TICKET_STATUS                = 'ticket.status';
+    const TICKET_STARRED               = 'ticket.starred';
     const TICKET_DEPARTMENT            = 'ticket.department';
     const TICKET_AGENT                 = 'ticket.agent';
     const TICKET_AGENT_TEAM            = 'ticket.agent_team';
@@ -24,6 +25,7 @@ class Terms
     const TICKET_LABELS                = 'ticket.labels';
     const TICKET_EMAIL_ACCOUNT         = 'ticket.email_account';
     const TICKET_IS_HOLD               = 'ticket.is_hold';
+    const TICKET_PROBLEM_ID            = 'ticket.problems';
     const TICKET_SLAS                  = 'ticket.slas';
     const TICKET_DATE_CREATED          = 'ticket.date_created';
     const TICKET_DATE_LAST_AGENT_REPLY = 'ticket.date_last_agent_reply';
@@ -32,12 +34,12 @@ class Terms
     const TICKET_DATE_USER_WAITING     = 'ticket.date_user_waiting';
     const TICKET_CUSTOM                = 'ticket.data.%s';
 
-    const PERSON_ID         = 'ticket.person.id';
+    const PERSON_ID         = 'ticket.person';
     const PERSON_LABELS     = 'ticket.person.labels';
     const PERSON_USERGROUPS = 'ticket.person.usergroups';
     const PERSON_CUSTOM     = 'ticket.person.data.%s';
 
-    const ORG_ID         = 'ticket.organization.id';
+    const ORG_ID         = 'ticket.organization';
     const ORG_LABELS     = 'ticket.organization.labels';
     const ORG_USERGROUPS = 'ticket.organization.usergroups';
 

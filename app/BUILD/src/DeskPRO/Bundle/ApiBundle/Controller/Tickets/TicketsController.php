@@ -212,7 +212,7 @@ class TicketsController extends AbstractTicketsController
                         $orderBy = TicketSearchParams::ORDER_DATE_LAST_USER_REPLY;
                         break;
                     case 'date_last_reply':
-                        $orderBy = TicketSearchParams::ORDER_ID; // todo -- DP-1065
+                        $orderBy = TicketSearchParams::ORDER_DATE_LAST_REPLY;
                         break;
                     case 'date_user_waiting':
                         $orderBy = TicketSearchParams::ORDER_DATE_USER_WAITING;
@@ -260,8 +260,8 @@ class TicketsController extends AbstractTicketsController
                         $searchField = Terms::TICKET_LABELS;
                         break;
                     case 'star':
-                        // TODO
-                        throw $this->createBadRequestException("Unknown filter termvalue: $field");
+                        $searchField = Terms::TICKET_STARRED;
+                        break;
                     case 'status':
                         $searchField = Terms::TICKET_STATUS;
                         break;
@@ -273,17 +273,17 @@ class TicketsController extends AbstractTicketsController
                         $searchField = Terms::TICKET_AGENT;
                         break;
                     case 'person':
-                        // TODO
-                        throw $this->createBadRequestException("Unknown filter termvalue: $field");
+                        $searchField = Terms::PERSON_ID;
+                        break;
                     case 'language':
                         $searchField = Terms::TICKET_LANGUAGE;
                         break;
                     case 'organization':
-                        // TODO
-                        throw $this->createBadRequestException("Unknown filter termvalue: $field");
+                        $searchField = Terms::ORG_ID;
+                        break;
                     case 'problem':
-                        // TODO
-                        throw $this->createBadRequestException("Unknown filter termvalue: $field");
+                        $searchField = Terms::TICKET_PROBLEM_ID;
+                        break;
                     case 'department':
                         $searchField = Terms::TICKET_DEPARTMENT;
                         break;
@@ -335,7 +335,6 @@ class TicketsController extends AbstractTicketsController
             }
 
             $parser   = $this->container->get('ticketfilters.queryparser');
-            $queyr    = $parser->parseQuery($searchQuery);
             $searcher = $ticketFilters->getSearcher();
             $qb       = $searcher
                 ->getIdsQueryBuilder($parser->parseQuery($searchQuery), $context)

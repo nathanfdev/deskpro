@@ -2,58 +2,11 @@
 
 namespace DpTest\Bundle\AppBundle\TicketFilters;
 
-use DeskPRO\Bundle\AppBundle\TicketFilters\Context;
 use DeskPRO\Bundle\AppBundle\TicketFilters\Model\Agent;
-use DeskPRO\Bundle\AppBundle\TicketFilters\Model\Entity\CustomField;
-use DeskPRO\Bundle\AppBundle\TicketFilters\Terms\CustomFieldsTermsHandler;
-use DeskPRO\Bundle\AppBundle\TicketFilters\Terms\TicketBasicTermsHandler;
 use DeskPRO\Bundle\AppBundle\TicketFilters\TicketSearchParams;
-use DeskPRO\Bundle\AppBundle\TicketFilters\TicketSqlMatcher;
-use DeskPRO\Bundle\AppBundle\TicketFilters\ValueResolver;
-use DeskPRO\Component\FilterQueryLanguage\Parser;
-use DpTestSrc\TestBundle\Mock\Dbal\ConnectionMock;
 
-class TicketSqlMatcherTest extends \PHPUnit_Framework_TestCase
+class TicketSqlMatcherTest extends BaseTicketSqlMatcherTest
 {
-    /**
-     * @var Agent
-     */
-    private $agent;
-
-    /**
-     * @var MatcherContext
-     */
-    private $matcherContext;
-
-    /**
-     * @var TicketSqlMatcher
-     */
-    private $matcher;
-
-    /**
-     * {@inheritdoc}
-     */
-    protected function setUp()
-    {
-        $resolver           = new ValueResolver();
-        $this->agent        = new Agent();
-        $this->agent->id    = 1;
-        $this->agent->teams = [1, 2, 3];
-
-        $this->matcherContext = new Context($this->agent);
-
-        $this->matcher = new TicketSqlMatcher($resolver, [
-            new TicketBasicTermsHandler(),
-            new CustomFieldsTermsHandler([
-                new CustomField(1, 'choice', ['my_choice']),
-                new CustomField(2, 'choice', ['my_other_choice']),
-                new CustomField(3, 'text', ['my_text']),
-                new CustomField(4, 'date', ['my_date']),
-                new CustomField(5, 'toggle', ['my_toggle']),
-            ]),
-        ], ConnectionMock::create(), TicketSqlMatcher::ACTIVE);
-    }
-
     public function test_id_match()
     {
         $this->assertEqualQuery(
@@ -167,6 +120,24 @@ class TicketSqlMatcherTest extends \PHPUnit_Framework_TestCase
         );
     }
 
+    public function test_order_last_reply()
+    {
+        $params = new TicketSearchParams();
+        $params->orderBy(TicketSearchParams::ORDER_DATE_LAST_REPLY);
+        $this->assertEqualIdQuery(
+            'ticket.status = \'awaiting_agent\'',
+            'SELECT tickets.id FROM tickets_search_active tickets WHERE tickets.status = :c0
+            ORDER BY GREATEST(
+                COALESCE(tickets.date_last_agent_reply, \'0000-00-00\'),
+                COALESCE(tickets.date_last_user_reply, \'0000-00-00\'),
+                tickets.date_created
+            ) ASC
+            ',
+            ['c0' => 'awaiting_agent'],
+            $params
+        );
+    }
+
     public function test_subfilter_by()
     {
         $params = new TicketSearchParams();
@@ -271,119 +242,5 @@ class TicketSqlMatcherTest extends \PHPUnit_Framework_TestCase
             ',
             ['c0' => 'awaiting_agent', 'c1' => 1, 'c3' => 5]
         );
-    }
-
-    /**
-     * @param string             $fql
-     * @param string             $expectedSql
-     * @param array              $expectedParams
-     * @param TicketSearchParams $params
-     */
-    private function assertEqualQuery($fql, $expectedSql, $expectedParams = [], TicketSearchParams $params = null)
-    {
-        $qb = $this->queryFromFql($fql, $params);
-
-        // the sql compiler gives placeholders descriptive names like :c12_fieldname
-        // this can help debugging queries manually, but is a bit of a pain
-        // when comparing them here.
-
-        // noramlizing them here just strips off the descriptive bit and just
-        // leaves the positioning id like :c12
-
-        $expectedSql = $this->normalizeForCmp($expectedSql);
-        $realSql     = $this->normalizeForCmp($qb->getSQL());
-
-        $realParams = [];
-        foreach ($qb->getParameters() as $name => $val) {
-            $name              = preg_replace('#_.*?$#', '', $name);
-            $realParams[$name] = $val;
-        }
-
-        $this->assertEquals($expectedSql, $realSql);
-        $this->assertEquals($expectedParams, $realParams);
-    }
-
-    /**
-     * @param string             $fql
-     * @param TicketSearchParams $params
-     *
-     * @return \DeskPRO\Bundle\AppBundle\TicketFilters\SqlBuilder\SqlBuilder
-     */
-    private function queryFromFql($fql, TicketSearchParams $params = null)
-    {
-        $qb = $this->matcher->getCountQueryBuilder(
-            $this->parseFql($fql),
-            $this->matcherContext,
-            $params
-        );
-
-        return $qb;
-    }
-
-    /**
-     * @param string             $fql
-     * @param string             $expectedSql
-     * @param array              $expectedParams
-     * @param TicketSearchParams $params
-     */
-    private function assertEqualIdQuery($fql, $expectedSql, $expectedParams = [], TicketSearchParams $params = null)
-    {
-        $qb = $this->idsQueryFromFql($fql, $params);
-
-        $expectedSql = $this->normalizeForCmp($expectedSql);
-        $realSql     = $this->normalizeForCmp($qb->getSQL());
-
-        $realParams = [];
-        foreach ($qb->getParameters() as $name => $val) {
-            $name              = preg_replace('#_.*?$#', '', $name);
-            $realParams[$name] = $val;
-        }
-
-        $this->assertEquals($expectedSql, $realSql);
-        $this->assertEquals($expectedParams, $realParams);
-    }
-
-    /**
-     * @param string             $fql
-     * @param TicketSearchParams $params
-     *
-     * @return \DeskPRO\Bundle\AppBundle\TicketFilters\SqlBuilder\SqlBuilder
-     */
-    private function idsQueryFromFql($fql, TicketSearchParams $params = null)
-    {
-        $qb = $this->matcher->getIdsQueryBuilder(
-            $this->parseFql($fql),
-            $this->matcherContext,
-            $params
-        );
-
-        return $qb;
-    }
-
-    /**
-     * @param string $sql
-     *
-     * @return string
-     */
-    private function normalizeForCmp($sql)
-    {
-        $sql = str_replace(['(', ')'], [' ( ', ' ) '], $sql);
-        $sql = preg_replace('/\s+/', ' ', $sql);
-        $sql = preg_replace('#(:c\d+)_.*?\b#', '$1', $sql);
-
-        return trim($sql);
-    }
-
-    /**
-     * @param $fql
-     *
-     * @return array
-     */
-    private function parseFql($fql)
-    {
-        $parser = new Parser();
-        $q      = $parser->parseQuery($fql);
-
-        return $q;
     }
 }

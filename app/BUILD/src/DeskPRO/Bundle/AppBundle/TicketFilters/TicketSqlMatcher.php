@@ -386,7 +386,13 @@ class TicketSqlMatcher extends AbstractMatcher
                     $qb->addOrderBy('tickets.date_last_agent_reply', $order);
                     break;
                 case TicketSearchParams::ORDER_DATE_LAST_REPLY:
-                    $qb->addOrderBy('tickets.date_last_reply', $order);
+                    $qb->addOrderBy("
+                        GREATEST(
+                            COALESCE(tickets.date_last_agent_reply, '0000-00-00'),
+                            COALESCE(tickets.date_last_user_reply, '0000-00-00'),
+                            tickets.date_created
+                        )
+                    ");
                     break;
                 case TicketSearchParams::ORDER_DATE_USER_WAITING:
                     $qb->addOrderBy('tickets.date_user_waiting', $order);

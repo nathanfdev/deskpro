@@ -208,7 +208,7 @@ abstract class AbstractTermsHandler implements TermsHandlerInterface
                 if ($checkValue === null) {
                     $where = "$fieldColumn IS NOT NULL";
                 } else {
-                    $where = "($fieldColumn != :$colVarName OR $fieldColumn IS NULL)";
+                    $where = "$fieldColumn != :$colVarName OR $fieldColumn IS NULL";
                 }
 
                 return [
@@ -260,7 +260,7 @@ abstract class AbstractTermsHandler implements TermsHandlerInterface
                 $where = "$fieldColumn $op (:$colVarName)";
 
                 if ($operator === Query::OP_NOT_IN) {
-                    $where = "($where OR $fieldColumn IS NULL)";
+                    $where = "$where OR $fieldColumn IS NULL";
                 }
 
                 return [
@@ -304,7 +304,7 @@ abstract class AbstractTermsHandler implements TermsHandlerInterface
 
             case Query::OP_EXISTS:
             case Query::OP_NOT_EXISTS:
-                $op = $operator === Query::OP_NOT_EXISTS ? 'IS NOT NULL' : 'IS NULL';
+                $op = $operator === Query::OP_EXISTS ? 'IS NOT NULL' : 'IS NULL';
 
                 return [
                     'where'  => "$fieldColumn $op",

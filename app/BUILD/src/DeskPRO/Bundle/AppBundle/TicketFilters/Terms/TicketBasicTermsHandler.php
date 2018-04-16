@@ -17,6 +17,11 @@ class TicketBasicTermsHandler extends AbstractTermsHandler
     {
         return [
             Terms::TICKET_ID,
+
+            // org id in here because only one supproted now, when adding other org fields
+            // should move this into that handler instead to keep consistency
+            Terms::ORG_ID,
+
             Terms::TICKET_STATUS,
             Terms::TICKET_DEPARTMENT,
             Terms::TICKET_AGENT,
@@ -31,6 +36,7 @@ class TicketBasicTermsHandler extends AbstractTermsHandler
             Terms::TICKET_LABELS,
             Terms::TICKET_EMAIL_ACCOUNT,
             Terms::TICKET_IS_HOLD,
+            Terms::TICKET_PROBLEM_ID,
         ];
     }
 
@@ -41,6 +47,7 @@ class TicketBasicTermsHandler extends AbstractTermsHandler
     {
         switch ($fieldId) {
             case Terms::TICKET_ID:            $fieldValue = $ticketModel->id; break;
+            case Terms::ORG_ID:               $fieldValue = $ticketModel->organization->id; break;
             case Terms::TICKET_STATUS:        $fieldValue = $ticketModel->status; break;
             case Terms::TICKET_DEPARTMENT:    $fieldValue = $ticketModel->department; break;
             case Terms::TICKET_AGENT:         $fieldValue = $ticketModel->agent; break;
@@ -55,6 +62,7 @@ class TicketBasicTermsHandler extends AbstractTermsHandler
             case Terms::TICKET_LABELS:        $fieldValue = $ticketModel->labels; break;
             case Terms::TICKET_EMAIL_ACCOUNT: $fieldValue = $ticketModel->email_account; break;
             case Terms::TICKET_IS_HOLD:       $fieldValue = $ticketModel->is_hold; break;
+            case Terms::TICKET_PROBLEM_ID:    return false;
             default: throw new \InvalidArgumentException('Unknown field');
         }
 
@@ -68,6 +76,7 @@ class TicketBasicTermsHandler extends AbstractTermsHandler
     {
         switch ($fieldId) {
             case Terms::TICKET_ID:            $column = '{tickets}.id'; break;
+            case Terms::ORG_ID:               $column = '{tickets}.organization_id'; break;
             case Terms::TICKET_STATUS:        $column = '{tickets}.status'; break;
             case Terms::TICKET_DEPARTMENT:    $column = '{tickets}.department_id'; break;
             case Terms::TICKET_AGENT:         $column = '{tickets}.agent_id'; break;
@@ -100,6 +109,12 @@ class TicketBasicTermsHandler extends AbstractTermsHandler
                 $cond->addUniqueJoin('tickets', 'labels_tickets', 'label', '{label}.ticket_id = {tickets}.id');
 
                 return $this->checkValueQueryCondition('{label}.label', $operator, $options, $cond);
+
+            case Terms::TICKET_PROBLEM_ID:
+                $cond = new SqlCondition();
+                $cond->addUniqueJoin('tickets', 'problem2tickets', 'prob', '{prob}.ticket_id = {tickets}.id');
+
+                return $this->checkValueQueryCondition('{prob}.problem_id', $operator, $options, $cond);
         }
 
         throw new \InvalidArgumentException('Unknown field');
