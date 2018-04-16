@@ -39,11 +39,15 @@ define [
         @$scope.actionOptionTypes.push(opt)
 
     getFormModel: ->
-      return new EditTicketAccountModel(@account || {}, @deps || [], @trigger || {})
+      return new EditTicketAccountModel(@account || {}, @deps || [], @trigger || {}, @brands || {})
 
     initialLoad: ->
       dep_promise = @DataService.get('TicketDeps').loadList().then( (list) =>
         @deps = list
+      )
+
+      brands_promise = @Api2.sendGet('brands').then( (res) =>
+        @brands = res.data.data
       )
 
       get = {
@@ -77,10 +81,10 @@ define [
 
       trigger_data_promise = @actionsTypeDef.loadDataOptions()
 
-      proms = [trigger_promise, trigger_data_promise, dep_promise]
+      proms = [trigger_promise, trigger_data_promise, dep_promise, brands_promise]
 
       if not @accountId
-        @account = {is_enabled: true}
+        @account = {is_enabled: true, is_all_brands: true}
         @trigger = {}
       else
         data_promise = @Api.sendDataGet({
@@ -328,7 +332,17 @@ define [
         ]
       });
 
-
+    handleBrand: (brandId, e) ->
+      index = @form_model.form.brands.indexOf brandId
+      if index == -1
+        @form_model.form.brands.unshift brandId
+      else
+        if (@form_model.form.brands.length > 1)
+          @form_model.form.brands.splice(index, 1)
+        else
+          alert "Account needs to be linked to at least one Brand"
+          $(e.target).prop("checked", true)
+          return true
 
     getCode: (url) ->
       newWindow = window.open(url, 'name', 'height=600,width=450');
