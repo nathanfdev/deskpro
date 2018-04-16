@@ -123,12 +123,17 @@ class PopUp extends React.Component {
     const { isOpen } = this.state;
     const { children, className, style } = this.props;
 
+    let onClick = function () {};
+    if (!this.props.manual) {
+      onClick = this.openPopup;
+    }
+
     return (
       <div
         className={classNames({ active: isOpen }, className)}
         style={style}
         ref={(c) => { this.button = c; }}
-        onClick={!this.props.manual && this.openPopup}
+        onClick={onClick}
         onMouseEnter={this.onMouseEnter}
         onMouseLeave={this.onMouseLeave}
       >

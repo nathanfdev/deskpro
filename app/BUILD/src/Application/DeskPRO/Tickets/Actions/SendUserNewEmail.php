@@ -105,6 +105,10 @@ class SendUserNewEmail extends AbstractEmailAction
         }
         $viewModel = $this->createViewModelFromTemplate($template, $arguments, $context);
 
+        if (!$viewModel) {
+            return;
+        }
+
         $mailer = $this->getContainer()->get('mailer');
 
         $emailBuilder = TicketEmailBuilder::createFromContainer($this->getContainer())
