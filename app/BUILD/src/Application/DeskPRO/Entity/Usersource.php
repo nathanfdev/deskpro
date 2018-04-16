@@ -625,6 +625,7 @@ class Usersource extends \Application\DeskPRO\Domain\DomainObject
             'scale'      => 0,
             'nullable'   => false,
             'columnName' => 'is_all_brands',
+            'options'    => ['default' => '1'],
         ]);
 
         $metadata->mapField([
