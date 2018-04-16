@@ -3727,9 +3727,9 @@ class Person extends DomainObject implements
         $data['agentgroup_ids'] = [];
         foreach ($this->usergroups as $ug) {
             if ($ug->is_agent_group) {
-                $data['agentgroup_ids'][] = $ug->id;
+                $data['agentgroup_ids'][] = $ug->getId();
             } else {
-                $data['usergroup_ids'][] = $ug->id;
+                $data['usergroup_ids'][] = $ug->getId();
             }
         }
 
@@ -3740,7 +3740,7 @@ class Person extends DomainObject implements
 
         $data['brand_ids'] = [];
         foreach ($this->brands as $brand) {
-            $data['brand_ids'][] = $brand->id;
+            $data['brand_ids'][] = $brand->getId();
         }
         $data['brand_ids'] = Arrays::castToType($data['brand_ids'], 'int');
 
