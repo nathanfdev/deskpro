@@ -11,6 +11,7 @@ use Application\DeskPRO\Entity\Product;
 use Application\DeskPRO\Entity\TicketCategory;
 use Application\DeskPRO\Entity\TicketPriority;
 use Application\DeskPRO\Entity\TicketWorkflow;
+use Application\DeskPRO\Tickets\GroupingCounter;
 use DeskPRO\Bundle\AppBundle\CountBadge\CountTitleResolver;
 use DeskPRO\Component\Util\MapUtils;
 use Symfony\Component\DependencyInjection\Container;
@@ -46,6 +47,18 @@ class TicketCountTitleResolver implements CountTitleResolver
         $fieldInfo = TicketSearchParams::parseFieldId($fieldId);
 
         switch ($fieldInfo['type']) {
+            case TicketSearchParams::GROUP_STATUS:
+                $lang = $this->container->get('deskpro.core.translate');
+
+                return [
+                    'awaiting_user'  => $lang->phrase('agent.tickets.status_awaiting_user'),
+                    'awaiting_agent' => $lang->phrase('agent.tickets.status_awaiting_agent'),
+                    'resolved'       => $lang->phrase('agent.tickets.status_resolved'),
+                    'archived'       => $lang->phrase('agent.tickets.status_archived'),
+                    'hidden'         => $lang->phrase('agent.tickets.status_hidden'),
+                ];
+                break;
+
             case TicketSearchParams::GROUP_SLA_SEVERITY:
                 return ['ok' => 'Ok', 'fail' => 'Fail', 'warn' => 'Warning'];
                 break;
@@ -144,6 +157,10 @@ class TicketCountTitleResolver implements CountTitleResolver
                         return [$a->getId(), $a->getTitle()];
                     }
                 );
+                break;
+
+            case TicketSearchParams::GROUP_DATE_CREATED:
+                return GroupingCounter::getTimeTitles();
                 break;
 
             case TicketSearchParams::GROUP_TICKET_FIELD_PREFIX:

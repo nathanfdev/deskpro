@@ -3,6 +3,7 @@
 namespace DeskPRO\Bundle\AppBundle\TicketFilters;
 
 use Application\DeskPRO\Entity\CustomDefAbstract;
+use Application\DeskPRO\Tickets\GroupingCounter;
 use DeskPRO\Bundle\AppBundle\TicketFilters\Model\Agent;
 use DeskPRO\Bundle\AppBundle\TicketFilters\Model\Entity\CustomField;
 use DeskPRO\Bundle\AppBundle\TicketFilters\SqlBuilder\SqlBuilder;
@@ -168,6 +169,11 @@ class TicketSqlMatcher extends AbstractMatcher
             $fieldInfo = TicketSearchParams::parseFieldId($fieldId);
 
             switch ($fieldInfo['type']) {
+                case TicketSearchParams::GROUP_STATUS:
+                    $qb->addSelect("tickets.status AS $selectId");
+                    $qb->addGroupBy('tickets.status');
+                    break;
+
                 case TicketSearchParams::GROUP_SLA_SEVERITY:
                     $qb->addSelect("MAX(FIELD($joinId.sla_status, 'ok', 'warning', 'fail')) AS $selectId");
                     $qb->leftJoin('tickets', 'ticket_slas', $joinId, "$joinId.ticket_id = tickets.id");
@@ -220,9 +226,20 @@ class TicketSqlMatcher extends AbstractMatcher
                     break;
 
                 case TicketSearchParams::GROUP_DATE_CREATED:
-                    // TODO
-                    //$qb->addSelect("tickets.date_created AS $selectId");
-                    //$qb->addGroupBy($selectId);
+                    $ranges   = GroupingCounter::getTimeRanges();
+                    $now      = time();
+                    $sqlParts = [];
+
+                    foreach (GroupingCounter::getTimeGroups() as $t) {
+                        $from       = date('Y-m-d H:i:s', max($now - $t, 0));
+                        $to         = date('Y-m-d H:i:s', $now - $ranges[$t]);
+                        $sqlParts[] = " WHEN tickets.date_created BETWEEN '$from' AND '$to' THEN $t ";
+                    }
+
+                    $sql = 'CASE '.implode('', $sqlParts)." ELSE 0 END AS $selectId";
+
+                    $qb->addSelect($sql);
+                    $qb->addGroupBy($selectId);
                     break;
 
                 case TicketSearchParams::GROUP_TICKET_FIELD_PREFIX:
@@ -270,6 +287,10 @@ class TicketSqlMatcher extends AbstractMatcher
             $placeId = 'subfilterval'.$idx;
 
             switch ($fieldId) {
+                case TicketSearchParams::GROUP_STATUS:
+                    $qb->andWhere("tickets.status = :$placeId")->setParameter($placeId, $value);
+                    break;
+
                 case TicketSearchParams::GROUP_SLA_SEVERITY:
                     $qb->leftJoin('tickets', 'ticket_slas', $joinId, "$joinId.ticket_id = tickets.id");
                     $qb->andWhere("$joinId.sla_status = :$placeId")->setParameter($placeId, $value);
@@ -305,6 +326,25 @@ class TicketSqlMatcher extends AbstractMatcher
 
                 case TicketSearchParams::GROUP_LANGUAGE:
                     $qb->andWhere("tickets.language_id = :$placeId")->setParameter($placeId, $value);
+                    break;
+
+                case TicketSearchParams::GROUP_DATE_CREATED:
+                    $ranges = GroupingCounter::getTimeRanges();
+                    if (!isset($ranges[$value])) {
+                        $qb->andWhere('0');
+                        break;
+                    }
+
+                    $now      = time();
+                    $placeIdA = $placeId.'a';
+                    $placeIdB = $placeId.'b';
+                    $dateA    = date('Y-m-d H:i:s', max($now - $value, 0));
+                    $dateB    = date('Y-m-d H:i:s', $now - $ranges[$value]);
+
+                    $qb->andWhere("tickets.date_created BETWEEN :$placeIdA AND :$placeIdB")
+                       ->setParameter($placeIdA, $dateA)
+                       ->setParameter($placeIdB, $dateB)
+                    ;
                     break;
 
                 default:

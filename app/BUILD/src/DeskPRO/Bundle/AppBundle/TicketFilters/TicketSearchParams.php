@@ -19,6 +19,7 @@ class TicketSearchParams
     const ORDER_DATE_USER_WAITING     = 'ticket.date_user_waiting';
     const ORDER_SLA_SEVERITY          = 'ticket.sla_severity';
 
+    const GROUP_STATUS              = 'ticket.status';
     const GROUP_SLA_SEVERITY        = 'ticket.sla_severity';
     const GROUP_AGENT               = 'ticket.agent';
     const GROUP_AGENT_TEAM          = 'ticket.agent_team';
@@ -47,6 +48,7 @@ class TicketSearchParams
     ];
 
     private $availableGroupFields = [
+        'ticket.status',
         'ticket.sla_severity',
         'ticket.agent',
         'ticket.agent_team',

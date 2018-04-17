@@ -797,6 +797,11 @@ class GroupingCounter
         return $times;
     }
 
+    public static function getTimeGroups()
+    {
+        return array_keys(self::getTimeRanges());
+    }
+
     /**
      * Set mode which defines which kinds of tickets we want.
      *

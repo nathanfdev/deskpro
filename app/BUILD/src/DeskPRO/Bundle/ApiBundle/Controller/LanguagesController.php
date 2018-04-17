@@ -187,6 +187,7 @@ class LanguagesController extends CrudController
             'agent.general.when',
             'agent.general.workflow',
             'agent.general.your_profile',
+            'agent.grouping_option.status',
             'agent.grouping_option.agent',
             'agent.grouping_option.agent_team',
             'agent.grouping_option.date_created',
@@ -563,10 +564,10 @@ class LanguagesController extends CrudController
         $output = MapUtils::map($phrases, function ($idx, $id) use ($translate, $language, $format) {
             switch ($format) {
                 case 'icu':
-                    return [$id, $this->convertToIcu($translate->phrase($id, [], $language))];
+                    return [$id, $this->convertToIcu($translate->phrase($id, [], $language) ?: "!$id!")];
                 case 'twig':
                 default:
-                    return [$id, $translate->phrase($id, [], $language)];
+                    return [$id, $translate->phrase($id, [], $language) ?: "!$id!"];
             }
         });
 

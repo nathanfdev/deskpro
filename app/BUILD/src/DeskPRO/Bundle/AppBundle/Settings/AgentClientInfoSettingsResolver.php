@@ -204,6 +204,7 @@ class AgentClientInfoSettingsResolver extends AbstractBrandAwareSettingsResolver
 
         // set group fields
         $groupFields = [
+            'status',
             TicketGrouping::DEPARTMENT,
             TicketGrouping::AGENT,
             TicketGrouping::AGENT_TEAM,

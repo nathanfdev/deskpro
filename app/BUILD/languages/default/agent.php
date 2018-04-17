@@ -1177,6 +1177,7 @@ return [
     'agent.general.your_profile'                               => 'Your Profile',
     'agent.general.your_email_address'                         => 'Your Email Address',
     'agent.general.your_teams'                                 => 'Your Teams',
+    'agent.grouping_option.status'                             => 'Status',
     'agent.grouping_option.agent'                              => 'Agent',
     'agent.grouping_option.agent_team'                         => 'Agent Team',
     'agent.grouping_option.date_created'                       => 'Date Created',
