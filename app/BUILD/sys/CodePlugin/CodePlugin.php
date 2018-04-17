@@ -7,6 +7,7 @@ use Symfony\Component\HttpFoundation\Request;
 
 class CodePlugin
 {
+    const CUSTOM_HTML_ADMIN_RES  = 'admin_res';
     const CUSTOM_HTML_AGENT_RES  = 'agent_res';
     const CUSTOM_HTML_REPOTS_RES = 'reports_res';
 
