@@ -843,7 +843,11 @@ DeskPRO.Agent.PageFragment.Page.NewTicket = new Orb.Class({
 		api.$editor.linkify();
 		api.syncCode();
 
-		this.getEl('action').val(this.getEl('reply_as_type').data('type'));
+		if (this.isNote) {
+			this.getEl('action').val(this.getEl('note_as_type').data('type'));
+		} else {
+			this.getEl('action').val(this.getEl('reply_as_type').data('type'));
+		}
 		var formData = this.form.serializeArray();
     formData.push({
       name: 'is_note',
