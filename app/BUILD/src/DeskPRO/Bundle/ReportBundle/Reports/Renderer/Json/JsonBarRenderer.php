@@ -9,6 +9,8 @@ use DeskPRO\Bundle\ReportBundle\Reports\ResultMetadata;
  */
 class JsonBarRenderer extends AbstractJsonChartRenderer
 {
+    protected $hash = [];
+
     /**
      * @var array
      */
@@ -66,10 +68,12 @@ class JsonBarRenderer extends AbstractJsonChartRenderer
                 $chartData[$i] = [];
                 foreach ($stack as $j => $values) {
                     $chartData[$i]['category']  = isset($hierarchyParents[$i]) ? $hierarchyParents[$i]['hierarchy_root_title'] : $values['hierarchy_root_title'];
-                    $chartData[$i]["value$i$j"] = $values[$selectColumns[0]['resultId'] - 1];
+                    $chartData[$i]["value$i$j"] = $this->renderCellValueHash($values, $selectColumns[0], $metadata);
+                    $values[$selectColumns[0]['resultId'] - 1];
 
                     foreach ($additionalData as $key => $resultId) {
-                        $chartData[$i][$key] = $values[$resultId - 1];
+                        $chartData[$i][$key] = $this->renderCellValueHash($values, $selectColumns[0], $metadata);
+                        $values[$resultId - 1];
                     }
 
                     $graphs[] = [
@@ -83,6 +87,19 @@ class JsonBarRenderer extends AbstractJsonChartRenderer
                 }
             }
 
+            $hash = $this->getCollectedHash();
+            if ($hash) {
+                $hash = array_flip(array_keys($hash));
+                foreach ($chartData as &$chartDatum) {
+                    foreach ($chartDatum as $key => &$value) {
+                        if (strpos($key, 'value') !== false) {
+                            $value = $hash[$value];
+                        }
+                    }
+                }
+                $arrayOutput['valueAxes'][0]['hash'] = array_flip($hash);
+            }
+
             $arrayOutput['dataProvider'] = array_values($chartData);
             $arrayOutput['graphs']       = array_values($graphs);
 
@@ -90,6 +107,25 @@ class JsonBarRenderer extends AbstractJsonChartRenderer
         }
 
         return parent::doRender($rows, $metadata, $options);
+    }
+
+    protected function renderCellValueHash(array $row, $column, ResultMetadata $metadata)
+    {
+        $renderedValue = parent::renderCellValue($row, $column, $metadata);
+        if (!is_numeric($renderedValue)) {
+            if (!isset($this->hash[$renderedValue])) {
+                $this->hash[$renderedValue] = $row[$column['resultId'] - 1];
+            }
+        }
+
+        return $renderedValue;
+    }
+
+    protected function getCollectedHash()
+    {
+        asort($this->hash);
+
+        return $this->hash;
     }
 
     /**
