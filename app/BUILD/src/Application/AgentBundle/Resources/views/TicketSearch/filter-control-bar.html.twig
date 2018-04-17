@@ -89,7 +89,7 @@
             {% if app.getSetting('core.use_agent_team') %}<li data-group-by="agent_team">{{ phrase('agent.general.agent_team') }}</li>{% endif %}
 			<li data-group-by="date_created">{{ phrase('agent.general.time_since_creation') }}</li>
             {% for f in app.getTicketFieldManager().getFields() if f.isChoiceType() %}
-				<li data-group-by="ticket_field_{{ f.id }}">{{ f.title }}</li>
+				<li class="{% for a in f.getAliases() %}field-{{ a.getQualifiedName() }}{% endfor %}" data-group-by="ticket_field_{{ f.id }}">{{ f.title }}</li>
             {% endfor %}
         {% else %}
 			{% if app.getSetting('using_department') %}<li data-group-by="department">{{ phrase('agent.general.department') }}</li>{% endif %}
