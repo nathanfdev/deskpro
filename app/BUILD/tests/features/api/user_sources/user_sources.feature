@@ -1,3 +1,4 @@
+@new
 Feature: /user_sources endpoint
   To retrieve DeskPRO user sources
   As an API user

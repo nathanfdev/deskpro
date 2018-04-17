@@ -350,6 +350,18 @@ class Usersource extends \Application\DeskPRO\Domain\DomainObject
     }
 
     /**
+     * @param string $type
+     *
+     * @return $this
+     */
+    public function setType($type)
+    {
+        $this->setModelField('type', $type);
+
+        return $this;
+    }
+
+    /**
      * @param string $source_type
      */
     public function setSourceType($source_type)
