@@ -20,6 +20,14 @@ define ['Admin/Main/Ctrl/Base', 'DeskPRO/Util/Util', 'Admin/Usersources/Helper/U
       d = @$q.defer()
       d2 = @$q.defer()
 
+      brands_promise = @Api2.sendGet('brands').then( (res) =>
+        @brands = res.data.data
+      )
+
+      usersource_detailsv2 = @Api2.sendGet('user_sources/'+ @usersourceType + '/' + @instanceId).then( (res) =>
+        @$scope.usersource_detailsv2 = res.data.data
+      )
+
       @listCtrl().refresh().then =>
         enabled = 0
         @listCtrl().usersources.map (source) =>
@@ -116,7 +124,7 @@ define ['Admin/Main/Ctrl/Base', 'DeskPRO/Util/Util', 'Admin/Usersources/Helper/U
             d2.resolve()
       )
 
-      return d2.promise
+      return @$q.all([d2.promise, brands_promise, usersource_detailsv2])
 
 
 
@@ -152,6 +160,8 @@ define ['Admin/Main/Ctrl/Base', 'DeskPRO/Util/Util', 'Admin/Usersources/Helper/U
         )
       )
 
+      @Api.sendPostJson('/user_sources/' + @usersourceType + '/' + @usersourceId, @$scope.usersource_detailsv2)
+
 
 
     doSaveUsersource: ->
@@ -168,6 +178,8 @@ define ['Admin/Main/Ctrl/Base', 'DeskPRO/Util/Util', 'Admin/Usersources/Helper/U
           msg = @getRegisteredMessage(res.data.error_code) || res.data.error_message || ''
           @Growl.error msg
       )
+
+      @Api.sendPostJson('/user_sources/' + @usersourceType + '/' + @usersourceId, @$scope.usersource_detailsv2)
 
     saveUsersource: ->
       @startSpinner('saving_settings')
@@ -237,6 +249,18 @@ define ['Admin/Main/Ctrl/Base', 'DeskPRO/Util/Util', 'Admin/Usersources/Helper/U
 
     listCtrl: ->
       @$scope.$parent?.ListCtrl || {refresh: =>}
+
+    handleBrand: (brandId, e) ->
+      index = @$scope.usersource_detailsv2.brands.indexOf brandId
+      if index == -1
+        @$scope.usersource_detailsv2.brands.unshift brandId
+      else
+        if (@$scope.usersource_detailsv2.brands.length > 1)
+          @$scope.usersource_detailsv2.brands.splice(index, 1)
+        else
+          alert "Usersource needs to be linked to at least one Brand"
+          $(e.target).prop("checked", true)
+          return true
 
 
 
