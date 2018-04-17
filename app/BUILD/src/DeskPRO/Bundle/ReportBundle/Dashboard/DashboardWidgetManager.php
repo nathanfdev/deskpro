@@ -241,10 +241,10 @@ class DashboardWidgetManager
 
             if (!$ownPermission || !$ownPermission->isViewAll()) {
                 foreach ($variables as &$variable) {
-                    if ($variable['name'] === 'agent') {
+                    if ($variable['type'] === 'values' && $variable['field_type'] === 'agent') {
                         $variable['field_value'] = $person->getId();
                     }
-                    if ($variable['name'] === 'agent_team') {
+                    if ($variable['type'] === 'values' && $variable['field_type'] === 'agent_team') {
                         $variable['field_value'] = $person->getPrimaryTeam() ? $person->getPrimaryTeam()->getId() : null;
                     }
                 }
