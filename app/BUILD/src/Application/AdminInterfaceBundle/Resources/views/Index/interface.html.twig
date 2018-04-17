@@ -107,7 +107,7 @@
                     {% endif %}
                 {{ nav.list_item_group_end() }}
                 {{ nav.list_item_group(phrase('adm.general.apps_agents'), 'fa-user', '', 'agents') }}
-                    {{ nav.list_subitem('Agents', ng_href('agents.agents'), 'agents.agents', 'fa-user') }}
+                    {{ nav.list_subitem(phrase('agent.general.agents'), ng_href('agents.agents'), 'agents.agents', 'fa-user') }}
                     {{ nav.list_subitem('Auth & SSO', ng_href('agents.usersources'), 'agents.usersources', 'fa-key') }}
                     {{ nav.list_subitem('Teams', ng_href('agents.teams'), 'agents.teams', 'fa-users') }}
                     {{ nav.list_subitem('Permission Groups', ng_href('agents.groups'), 'agents.groups', 'fa-shield') }}
