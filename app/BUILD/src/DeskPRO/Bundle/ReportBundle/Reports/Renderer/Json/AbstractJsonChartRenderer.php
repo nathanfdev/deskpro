@@ -15,6 +15,8 @@ abstract class AbstractJsonChartRenderer extends AbstractJsonRenderer
      */
     protected $options = [];
 
+    protected $hash = [];
+
     /**
      * Constructor.
      *
@@ -461,6 +463,25 @@ abstract class AbstractJsonChartRenderer extends AbstractJsonRenderer
                     'minimum' => 0,
                 ];
             }
+
+            $hash = $this->getCollectedHash();
+            if ($hash) {
+                $hash = array_flip(array_keys($hash));
+                array_walk($hash, function (&$item) {
+                    ++$item;
+                });
+                foreach ($chartData as &$chartDatum) {
+                    foreach ($chartDatum as $key => &$value) {
+                        if (strpos($key, 'value') !== false && isset($hash[$value])) {
+                            $value = $hash[$value];
+                        } elseif (strpos($key, 'title') !== false && isset($hash[$value])) {
+                            $chartDatum['value'] = $hash[$value];
+                        }
+                    }
+                }
+                $arrayOutput['valueAxes'][0]['hash'] = array_flip($hash);
+            }
+
             $arrayOutput['dataProvider']          = $chartData;
             $arrayOutput['categoryAxis']['title'] = $categoryAxisTitle;
             $arrayOutput['valueAxes'][0]['title'] = $valueAxisTitle;
@@ -468,6 +489,25 @@ abstract class AbstractJsonChartRenderer extends AbstractJsonRenderer
         }
 
         return $arrayOutput;
+    }
+
+    protected function renderCellValue(array $row, $column, ResultMetadata $metadata)
+    {
+        $renderedValue = parent::renderCellValue($row, $column, $metadata);
+        if (!is_numeric($renderedValue)) {
+            if (!isset($this->hash[$renderedValue])) {
+                $this->hash[$renderedValue] = $row[$column['resultId'] - 1];
+            }
+        }
+
+        return $renderedValue;
+    }
+
+    protected function getCollectedHash()
+    {
+        asort($this->hash);
+
+        return $this->hash;
     }
 
     /**
