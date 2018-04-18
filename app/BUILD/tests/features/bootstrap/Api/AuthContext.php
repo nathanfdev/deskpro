@@ -276,8 +276,9 @@ class AuthContext extends BaseContext
                 ->setStartTime(new \DateTime())
                 ->setInterval(AbstractLimit::INTERVAL_HOUR)
                 ->setApiKey($key)
-                ->setLimit(5000)
-                ->setCurrent(5000);
+                ->setLimit(-1)
+                ->setCurrent(-1)
+            ;
 
             $this->persistAndFlush($key);
             $this->persistAndFlush($key_limit);
