@@ -6,6 +6,7 @@ use DeskPRO\Bundle\ReportBundle\Dpql2\DpqlException;
 use DeskPRO\Bundle\ReportBundle\Dpql2\SqlSelect;
 use DeskPRO\Bundle\ReportBundle\Dpql2\Statement\DpqlStatementFactory;
 use DeskPRO\Bundle\ReportBundle\Dpql2\Statement\Part\Number;
+use DeskPRO\Bundle\ReportBundle\Dpql2\Statement\Part\Variable;
 use DeskPRO\Bundle\ReportBundle\Dpql2\Statement\SelectPart;
 use DeskPRO\Bundle\ReportBundle\Reports\ResultMetadata;
 
@@ -40,8 +41,8 @@ class DpqlHierarchyDescendsFrom extends AbstractDpqlFunc
         if (count($arguments) !== 2) {
             throw new DpqlException('DPQL_HIERARCHY_DESCENDS_FROM() must have 2 arguments.');
         }
-        if (!$arguments[1] instanceof Number) {
-            throw new DpqlException('DPQL_HIERARCHY_DESCENDS_FROM() 2nd argument must be a number.');
+        if (!$arguments[1] instanceof Number && !$arguments[1] instanceof Variable) {
+            throw new DpqlException('DPQL_HIERARCHY_DESCENDS_FROM() 2nd argument must be a number or variable.');
         }
 
         $expression    = $arguments[0];
