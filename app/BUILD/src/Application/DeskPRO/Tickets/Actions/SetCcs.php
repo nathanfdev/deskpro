@@ -60,7 +60,7 @@ class SetCcs extends AbstractContainerAwareAction implements ActionInterface, Ma
         //------------------------------
 
         $account_manager = $this->getContainer()->getEmailAccountManager();
-        $reg_closed      = !$this->getContainer()->getSetting('core.reg_enabled');
+        $reg_closed      = !$this->getContainer()->get('dp_authentication_manager.user')->isRegistrationFormVisible();
         if ($this->getActionOption('add_emails')) {
             foreach ($this->getActionOption('add_emails') as $email) {
                 $email = trim($email);

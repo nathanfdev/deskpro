@@ -559,7 +559,7 @@ class TicketGatewayProcessor extends AbstractGatewayProcessor
             $this->logMessage('[TicketGatewayProcessor] Found existing person: '.$person['id']);
             $person_processor->passPerson($this->reader->getFromAddress(), $person);
         } else {
-            if ($this->container->getSetting('core.reg_enabled')) {
+            if ($this->container->get('dp_authentication_manager.user')->isRegistrationFormVisible()) {
                 $person = $person_processor->createPerson($this->reader->getFromAddress());
                 $this->logMessage('[TicketGatewayProcessor] Created new contact: '.$person['id']);
             }

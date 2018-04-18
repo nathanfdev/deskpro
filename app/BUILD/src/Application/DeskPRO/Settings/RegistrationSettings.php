@@ -28,10 +28,6 @@ class RegistrationSettings
     /**
      * @var bool
      */
-    public $reg_enabled;
-    /**
-     * @var bool
-     */
     public $everyone_group_enabled;
 
     /**
@@ -53,7 +49,6 @@ class RegistrationSettings
      */
     public function resetSettings()
     {
-        $this->reg_enabled            = (bool) $this->settings->get('core.reg_enabled');
         $this->everyone_group_enabled = (bool) $this->everyone_group->is_enabled;
     }
 
@@ -63,7 +58,6 @@ class RegistrationSettings
     public function toArray()
     {
         $export_settings = [
-            'reg_enabled'            => $this->reg_enabled,
             'everyone_group_enabled' => $this->everyone_group_enabled,
         ];
 
@@ -87,12 +81,6 @@ class RegistrationSettings
      */
     public function saveSettings()
     {
-        if ($this->reg_enabled) {
-            $this->settings->setSetting('core.reg_enabled', 1);
-        } else {
-            $this->settings->setSetting('core.reg_enabled', 0);
-        }
-
         $this->everyone_group->is_enabled = (bool) $this->everyone_group_enabled;
         $this->em->persist($this->everyone_group);
 
