@@ -388,7 +388,12 @@ class AuthenticationManager
     public function cloneForInterface($interface)
     {
         return new self(
-            $this->authSettings, $this->usersourceManager, $this->authAdapterFactory, $this->appSettings, $interface
+            $this->authSettings,
+            $this->usersourceManager,
+            $this->authAdapterFactory,
+            $this->appSettings,
+            $this->brandStack,
+            $interface
         );
     }
 

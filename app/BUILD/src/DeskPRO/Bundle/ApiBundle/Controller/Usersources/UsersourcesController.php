@@ -20,6 +20,16 @@ use Symfony\Component\HttpFoundation\Request;
  * @ApiModes("all")
  * @Rest\Route("/user_sources/{context}", requirements={"context": "(agent|user)"})
  * @ApiDoc(target="all", section="Usersources", output="DeskPRO\Bundle\AppBundle\Serializer\Model\Usersource")
+ * @ApiDoc(
+ *     target="putAction",
+ *     input={
+ *      "class"="DeskPRO\Bundle\AppBundle\Form\Type\Usersource\UsersourceType",
+ *      "options"={
+ *          "data"="Application\DeskPRO\Entity\Usersource",
+ *          "context"="user"
+ *      }
+ *     }
+ * )
  * @ApiUserContext("open", admin={"put"})
  */
 class UsersourcesController extends CrudController
