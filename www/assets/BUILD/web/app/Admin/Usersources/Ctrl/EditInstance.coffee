@@ -15,6 +15,11 @@ define ['Admin/Main/Ctrl/Base', 'DeskPRO/Util/Util', 'Admin/Usersources/Helper/U
       @app = null
 
     getInstanceId: -> @$stateParams.id
+    getApp2Id: ->
+      if @instanceId == 'deskpro'
+        appId = @instanceId
+      else
+        appId = 'app-' + @instanceId
 
     initialLoad: ->
       d = @$q.defer()
@@ -24,7 +29,7 @@ define ['Admin/Main/Ctrl/Base', 'DeskPRO/Util/Util', 'Admin/Usersources/Helper/U
         @brands = res.data.data
       )
 
-      usersource_detailsv2 = @Api2.sendGet('user_sources/'+ @usersourceType + '/' + @instanceId).then( (res) =>
+      usersource_detailsv2_promise = @Api2.sendGet('user_sources/'+ @usersourceType + '/' + @getApp2Id()).then( (res) =>
         @$scope.usersource_detailsv2 = res.data.data
       )
 
@@ -124,7 +129,7 @@ define ['Admin/Main/Ctrl/Base', 'DeskPRO/Util/Util', 'Admin/Usersources/Helper/U
             d2.resolve()
       )
 
-      return @$q.all([d2.promise, brands_promise, usersource_detailsv2])
+      return @$q.all([d2.promise, brands_promise, usersource_detailsv2_promise])
 
 
 
@@ -160,7 +165,13 @@ define ['Admin/Main/Ctrl/Base', 'DeskPRO/Util/Util', 'Admin/Usersources/Helper/U
         )
       )
 
-      @Api.sendPostJson('/user_sources/' + @usersourceType + '/' + @usersourceId, @$scope.usersource_detailsv2)
+      if @usersourceType == 'user'
+        postData = {
+          brands: @$scope.usersource_detailsv2.brands
+          is_all_brands: @$scope.usersource_detailsv2.is_all_brands
+        }
+
+        @Api2.sendPutJson('/user_sources/' + @usersourceType + '/' + @getApp2Id(), postData)
 
 
 
@@ -179,7 +190,13 @@ define ['Admin/Main/Ctrl/Base', 'DeskPRO/Util/Util', 'Admin/Usersources/Helper/U
           @Growl.error msg
       )
 
-      @Api.sendPostJson('/user_sources/' + @usersourceType + '/' + @usersourceId, @$scope.usersource_detailsv2)
+      if @usersourceType == 'user'
+        postData = {
+          brands: @$scope.usersource_detailsv2.brands
+          is_all_brands: @$scope.usersource_detailsv2.is_all_brands
+        }
+
+        @Api2.sendPutJson('/user_sources/' + @usersourceType + '/' + @getApp2Id(), postData)
 
     saveUsersource: ->
       @startSpinner('saving_settings')
