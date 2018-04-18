@@ -17,13 +17,20 @@ class DpqlPartsTransformer implements DataTransformerInterface
     private $compiler;
 
     /**
+     * @var array
+     */
+    private $variables;
+
+    /**
      * Constructor.
      *
      * @param DpqlCompiler $compiler
+     * @param array        $variables
      */
-    public function __construct(DpqlCompiler $compiler)
+    public function __construct(DpqlCompiler $compiler, array $variables)
     {
-        $this->compiler = $compiler;
+        $this->compiler  = $compiler;
+        $this->variables = $variables;
     }
 
     /**
@@ -32,7 +39,7 @@ class DpqlPartsTransformer implements DataTransformerInterface
     public function transform($value)
     {
         try {
-            return $this->compiler->compile($value)->getDpqlPartsForInput();
+            return $this->compiler->compile($value, ['variables' => $this->variables])->getDpqlPartsForInput();
         } catch (\Exception $e) {
             return [];
         }

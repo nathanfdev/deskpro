@@ -138,6 +138,7 @@ class ReportWidgetType extends AbstractType
                     'property_path'  => 'query',
                     'required'       => true,
                     'error_bubbling' => false,
+                    'variables'      => $data['variables'],
                 ]);
             }
         }
