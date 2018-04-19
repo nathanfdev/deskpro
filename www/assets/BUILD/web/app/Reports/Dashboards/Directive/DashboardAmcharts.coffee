@@ -83,16 +83,6 @@ define ->
           if widget.dataProvider? && widget.dataProvider[0]? && (Object.keys(widget.dataProvider[0]).length > 6 || (widget.type == 'pie' && widget.dataProvider.length > 6))
             widget.legend = false
 
-          if widget.valueAxes[0] && widget.valueAxes[0].hash
-            widget.valueAxes[0].labelFunction = (value) ->
-              hash = widget.valueAxes[0].hash
-              return if hash[value] then hash[value] else ''
-
-          if widget.valueAxes[1] && widget.valueAxes[1].hash
-            widget.valueAxes[1].labelFunction = (value) ->
-              hash = widget.valueAxes[1].hash
-              return if hash[value] then hash[value] else ''
-
           if chart and widget.dataProvider
             chart.dataProvider = widget.dataProvider
           else
