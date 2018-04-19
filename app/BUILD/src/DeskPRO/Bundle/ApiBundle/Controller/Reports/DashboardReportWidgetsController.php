@@ -131,8 +131,9 @@ class DashboardReportWidgetsController extends CrudController
         $qb
             ->join("$alias.report", 'r')
             ->join('r.dashboard', 'd')
-            ->leftJoin('d.permissions', 'p')
+            ->join('d.permissions', 'p')
             ->andWhere('p.person IN (:person) OR p.team IN (:teams) OR d.person IN (:person)')
+            ->orWhere('p.person IS NULL AND p.team IS NULL AND p.department IS NULL')
             ->setParameter('person', $this->getUser())
             ->setParameter('teams', $this->getUser()->getTeams())
         ;

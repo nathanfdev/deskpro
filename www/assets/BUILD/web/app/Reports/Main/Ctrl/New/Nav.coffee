@@ -18,8 +18,8 @@ define [], () -> [
     $scope.getDashboardList = (firstLoad = false) ->
       DashboardsInfo.getDashboardList().then((dbs) ->
         $scope.dashboards = dbs
-        $scope.hasAccessToBuiltIn = dbs.filter((db) => db.is_default).length > 1
-        $scope.hasAccessToCustom = dbs.filter((db) => !db.is_default).length > 1
+        $scope.hasAccessToBuiltIn = dbs.filter((db) => db.is_default).length >= 1
+        $scope.hasAccessToCustom = dbs.filter((db) => !db.is_default).length >= 1
 
         if(firstLoad && $state.includes('reports.dashboards'))
           db = dbs[0]

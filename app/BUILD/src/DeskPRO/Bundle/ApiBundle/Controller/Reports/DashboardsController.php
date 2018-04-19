@@ -102,8 +102,9 @@ class DashboardsController extends CrudController
     protected function applyListFilters(QueryBuilder $qb, $alias, Request $request)
     {
         $qb
-            ->leftJoin("$alias.permissions", 'p')
+            ->join("$alias.permissions", 'p')
             ->andWhere("p.person IN (:person) OR p.team IN (:teams) OR $alias.person IN (:person)")
+            ->orWhere('p.person IS NULL AND p.team IS NULL AND p.department IS NULL')
             ->setParameter('person', $this->getUser())
             ->setParameter('teams', $this->getUser()->getTeams())
         ;

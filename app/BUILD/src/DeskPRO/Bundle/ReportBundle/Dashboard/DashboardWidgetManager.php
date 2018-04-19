@@ -239,13 +239,13 @@ class DashboardWidgetManager
                 return $permission->getPerson() === $person;
             })->first();
 
-            if (!$ownPermission || !$ownPermission->isViewAll()) {
+            if (!($person->isAdmin() || ($ownPermission && $ownPermission->isViewAll()))) {
                 foreach ($variables as &$variable) {
-                    if ($variable['name'] === 'agent') {
-                        $variable['field_value'] = $person->getId();
+                    if ($variable['type'] === 'values' && $variable['field_type'] === 'agent') {
+                        $variable['value'] = $person->getId();
                     }
-                    if ($variable['name'] === 'agent_team') {
-                        $variable['field_value'] = $person->getPrimaryTeam() ? $person->getPrimaryTeam()->getId() : null;
+                    if ($variable['type'] === 'values' && $variable['field_type'] === 'agent_team') {
+                        $variable['value'] = $person->getPrimaryTeam() ? $person->getPrimaryTeam()->getId() : null;
                     }
                 }
             }
