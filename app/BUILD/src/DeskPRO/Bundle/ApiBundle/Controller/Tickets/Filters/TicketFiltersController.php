@@ -227,7 +227,7 @@ class TicketFiltersController extends CrudController
                     if ($titleKey === null) {
                         // special key used to look up self
                         $titleKey = null;
-                    } elseif ($titleKey === 0) {
+                    } elseif ($titleKey === 0 || $titleKey === '0') {
                         // -1 represents null -- used to distinguish it
                         // from no value i.e. user clciks top-level label means no sub-filtering at all
                         // but clicking 'None' means searching for a null value

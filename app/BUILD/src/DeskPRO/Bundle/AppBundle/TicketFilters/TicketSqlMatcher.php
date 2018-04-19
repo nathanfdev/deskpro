@@ -370,10 +370,16 @@ class TicketSqlMatcher extends AbstractMatcher
 
                     switch ($field->type) {
                         case CustomDefAbstract::TYPE_CHOICE:
-                            $qb->leftJoin('tickets', 'custom_data_ticket', $joinId, "$joinId.ticket_id = tickets.id AND $joinId.root_field_id = :rootFieldId")
-                                ->andWhere("$joinId.field_id = :filterValue")
-                                ->setParameter('rootFieldId', $field->field)
-                                ->setParameter('filterValue', $value);
+                            if ($value === null || $value == -1) {
+                                $qb->leftJoin('tickets', 'custom_data_ticket', $joinId, "$joinId.ticket_id = tickets.id AND $joinId.root_field_id = :rootFieldId")
+                                    ->andWhere("$joinId.field_id IS NULL")
+                                    ->setParameter('rootFieldId', $field->field);
+                            } else {
+                                $qb->leftJoin('tickets', 'custom_data_ticket', $joinId, "$joinId.ticket_id = tickets.id AND $joinId.root_field_id = :rootFieldId")
+                                    ->andWhere("$joinId.field_id = :filterValue")
+                                    ->setParameter('rootFieldId', $field->field)
+                                    ->setParameter('filterValue', $value);
+                            }
                             break;
 
                         default:

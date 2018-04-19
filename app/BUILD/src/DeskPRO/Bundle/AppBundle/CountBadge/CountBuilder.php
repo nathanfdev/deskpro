@@ -48,7 +48,10 @@ class CountBuilder
                 ++$depth;
             }
 
-            $id            = implode('.', $idParts) ?: 'TOP';
+            $id = implode('.', $idParts);
+            if ($id === '') {
+                $id = 'TOP';
+            }
             $parentIdParts = $depth ? array_slice($idParts, 0, $depth - 1) : ['TOP'];
             $parentId      = implode('.', $parentIdParts) ?: 'TOP';
 
