@@ -355,6 +355,7 @@
         window.DP_ADMIN_BUNDLE_PATH = '{{ asset('DeskPRO_AdminBundle.js', 'app_assets') }}';
         window.DP_DISABLE_RELATIVE_TIMES = {% if app.isRelativeTimesDisabled() %}true{% else %}false{% endif %};
     </script>
+    {{ include_code_plugin('admin_pre_res') }}
     {{ js_error_tracking('admin_interface') }}
     <script type="text/javascript" src="{{ asset('app/DeskPRO/preboot.js') }}"></script>
     <script type="text/javascript">
