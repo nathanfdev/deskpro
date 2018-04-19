@@ -289,7 +289,7 @@ abstract class AbstractJsonChartRenderer extends AbstractJsonRenderer
 
                     $data = [
                         'category' => $category,
-                        'title'    => $this->renderCellValue($row, $sel, $metadata),
+                        'title'    => $this->renderCellValue($row, $sel, $metadata, true),
                         'value'    => $this->filterGraphValue($this->getColumnValue($row, $sel)),
                     ];
 
@@ -491,10 +491,10 @@ abstract class AbstractJsonChartRenderer extends AbstractJsonRenderer
         return $arrayOutput;
     }
 
-    protected function renderCellValue(array $row, $column, ResultMetadata $metadata)
+    protected function renderCellValue(array $row, $column, ResultMetadata $metadata, $collectHash = false)
     {
         $renderedValue = parent::renderCellValue($row, $column, $metadata);
-        if (!is_numeric($renderedValue)) {
+        if ($collectHash && !is_numeric($renderedValue)) {
             if (!isset($this->hash[$renderedValue])) {
                 $this->hash[$renderedValue] = $row[$column['resultId'] - 1];
             }
