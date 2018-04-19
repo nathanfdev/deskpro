@@ -3,6 +3,7 @@
 namespace DpBehat\Data;
 
 use Application\DeskPRO\Entity\Ticket;
+use Application\DeskPRO\Entity\TicketSearchActive;
 use Behat\Behat\Hook\Scope\BeforeFeatureScope;
 use Behat\Behat\Hook\Scope\BeforeScenarioScope;
 use Behat\Gherkin\Node\TableNode;
@@ -399,6 +400,24 @@ class DataContext extends BaseContext
                 $this->setReference($reference, $record);
             }
         }
+
+        // need this because ticket filters operate on the active table
+        if ($type === 'Ticket') {
+            $db        = $this->em()->getConnection();
+            $field_ids = TicketSearchActive::getFieldNames();
+            $field_ids = array_map(function ($f) {
+                return "`$f`";
+            }, $field_ids);
+            $field_ids = implode(', ', $field_ids);
+
+            $db->exec('TRUNCATE TABLE tickets_search_active');
+            $db->exec("
+                INSERT IGNORE INTO tickets_search_active ($field_ids) SELECT $field_ids
+                FROM tickets
+                WHERE status IN ('awaiting_agent', 'awaiting_user', 'resolved')
+                ORDER BY id ASC
+            ");
+        }
     }
 
     /**
@@ -450,7 +469,6 @@ class DataContext extends BaseContext
         $this->em()->persist($record);
         $this->em()->flush();
         $this->em()->clear();
-
     }
 
     /**
