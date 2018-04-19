@@ -201,6 +201,11 @@ define [
         value: 'CheckTicketCharge'
       })
 
+      options.push({
+        title: 'Check Expression [Expert]',
+        value: 'CheckExpression'
+      })
+
       if @options_data?.ticket_settings?.satisfaction_enabled
         options.push({
           title: 'Ticket Satisfaction',
@@ -909,6 +914,12 @@ define [
     getCheckTicketCharge: (options = {}) ->
       options.propName = 'amount'
       options.operators = ['isset', 'not_isset', 'contains', 'notcontains', 'is_regex', 'not_regex', 'is', 'not', 'gt', 'gte', 'lt', 'lte']
+      def = @getStandardInput(options)
+      return def
+
+    getCheckExpression: (options = {}) ->
+      options.propName = 'expr'
+      options.operators = ['is', 'not']
       def = @getStandardInput(options)
       return def
 

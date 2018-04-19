@@ -207,6 +207,22 @@ class CustomDefAbstract extends \Application\DeskPRO\Domain\DomainObject impleme
     }
 
     /**
+     * @param string $alias
+     *
+     * @return bool
+     */
+    public function hasAlias($alias)
+    {
+        foreach ($this->getAliases() as $a) {
+            if ($a->getQualifiedName() === $alias) {
+                return true;
+            }
+        }
+
+        return false;
+    }
+
+    /**
      * @return int
      */
     public function getId()
