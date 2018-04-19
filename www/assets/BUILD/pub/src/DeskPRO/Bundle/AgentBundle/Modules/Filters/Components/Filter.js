@@ -7,8 +7,10 @@ import {
   Scrollbar,
   Urgency,
   Count,
+  Avatar,
 } from '@deskpro/react-components';
 import agentPhrases from 'DeskPRO/Bundle/AgentBundle/AgentPhrases';
+import { AvatarResolver } from 'DeskPRO/Component/Avatar';
 import ItemFilter from './ItemFilter';
 
 class TicketsForm extends React.Component {
@@ -111,12 +113,35 @@ class TicketsForm extends React.Component {
   }
 }
 
+class AgentAvatar extends React.Component {
+  static propTypes = {
+    defaultUrl: PropTypes.string,
+    imageUrl:   PropTypes.string,
+  };
+
+  render() {
+    let src = null;
+    if (this.props.imageUrl) {
+      src = this.props.imageUrl;
+    } else if (this.props.defaultUrl) {
+      src = this.props.defaultUrl;
+    }
+    if (src) {
+      return <Avatar src={src} />;
+    }
+    return null;
+  }
+}
+
 export default class Filter extends React.Component {
   static propTypes = {
+    agents:             PropTypes.object,
+    agentTeams:         PropTypes.object,
     filter:             PropTypes.object,
     filtersCounts:      PropTypes.object,
     groupFields:        PropTypes.object,
     ticketCustomFields: PropTypes.object,
+    ticketDepartments:  PropTypes.object,
     mode:               PropTypes.object,
     onSelect:           PropTypes.func,
     onSelectMode:       PropTypes.func,
@@ -194,16 +219,67 @@ export default class Filter extends React.Component {
               ) {
                 selected = true;
               }
-              return (
-                <Item
-                  key={group.get('id')}
-                  selected={selected}
-                  onClick={() => this.onSelectMode(newMode)}
-                >
-                  {group.get('title')}
-                  <Count>{group.get('count')}</Count>
-                </Item>
-              );
+              switch (this.state.ticketsWhereGroup) {
+                case 'agent': {
+                  const agent = this.props.agents.find(a => a.get('id') === group.get('id'));
+                  return (
+                    <Item
+                      key={group.get('id')}
+                      selected={selected}
+                      onClick={() => this.onSelectMode(newMode)}
+                    >
+                      <AvatarResolver avatar={agent.get('avatar')} size={10}>
+                        <AgentAvatar />
+                      </AvatarResolver>
+                      {group.get('title')}
+                      <Count>{group.get('count')}</Count>
+                    </Item>
+                  );
+                }
+                case 'department': {
+                  const department = this.props.ticketDepartments.find(d => d.get('id') === group.get('id'));
+                  return (
+                    <Item
+                      key={group.get('id')}
+                      selected={selected}
+                      onClick={() => this.onSelectMode(newMode)}
+                    >
+                      <AvatarResolver avatar={department.get('avatar')} size={10}>
+                        <AgentAvatar />
+                      </AvatarResolver>
+                      {group.get('title')}
+                      <Count>{group.get('count')}</Count>
+                    </Item>
+                  );
+                }
+                case 'agent_team': {
+                  const team = this.props.agentTeams.find(t => t.get('id') === group.get('id'));
+                  return (
+                    <Item
+                      key={group.get('id')}
+                      selected={selected}
+                      onClick={() => this.onSelectMode(newMode)}
+                    >
+                      <AvatarResolver avatar={team.get('avatar')} size={10}>
+                        <AgentAvatar />
+                      </AvatarResolver>
+                      {group.get('title')}
+                      <Count>{group.get('count')}</Count>
+                    </Item>
+                  );
+                }
+                default:
+                  return (
+                    <Item
+                      key={group.get('id')}
+                      selected={selected}
+                      onClick={() => this.onSelectMode(newMode)}
+                    >
+                      {group.get('title')}
+                      <Count>{group.get('count')}</Count>
+                    </Item>
+                  );
+              }
             })
           }
         </ListElementGroup>);

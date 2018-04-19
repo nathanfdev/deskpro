@@ -2,12 +2,15 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import { filterGroupFieldsSettingsSelector } from 'DeskPRO/Bundle/AgentBundle/Modules/Agent/Selectors/info';
-import { allSelectorFactory } from 'DeskPRO/Bundle/AppBundle/Modules/RecordsStore';
+import { allSelectorFactory, collectionSelectorFactory } from 'DeskPRO/Bundle/AppBundle/Modules/RecordsStore';
 import { SeparateComponent } from 'DeskPRO/Bundle/AgentBundle/Modules/Common/Components/SeparateComponent';
+import { agentsSelector } from 'DeskPRO/Bundle/AppBundle/Modules/RecordsStore/Shortcuts/agents';
 import AgentFilters from './AgentFilters';
 import { loadGrouping } from '../Actions/filterActions';
 
 @connect(state => ({
+  agents:             agentsSelector(state),
+  agentTeams:         allSelectorFactory('AgentTeam')(state),
   filterSets:         allSelectorFactory('TicketFilterSets')(state),
   filters:            allSelectorFactory('TicketFilters')(state),
   filtersCounts:      allSelectorFactory('TicketFilterCounts')(state),
@@ -16,9 +19,12 @@ import { loadGrouping } from '../Actions/filterActions';
   stars:              allSelectorFactory('TicketStars')(state),
   starsCounts:        allSelectorFactory('TicketStarsCounts')(state),
   ticketCustomFields: allSelectorFactory('TicketCustomFields')(state),
+  ticketDepartments:  collectionSelectorFactory('Department', 'all_tickets')(state),
 }))
 export class AgentFiltersContainer extends SeparateComponent {
   static propTypes = {
+    agents:             PropTypes.object,
+    agentTeams:         PropTypes.object,
     filterSets:         PropTypes.object,
     filters:            PropTypes.object,
     filtersCounts:      PropTypes.object,
@@ -27,6 +33,7 @@ export class AgentFiltersContainer extends SeparateComponent {
     stars:              PropTypes.object,
     starsCounts:        PropTypes.object,
     ticketCustomFields: PropTypes.object,
+    ticketDepartments:  PropTypes.object,
     dispatch:           PropTypes.func,
   };
 
@@ -75,6 +82,8 @@ export class AgentFiltersContainer extends SeparateComponent {
 
   render() {
     const {
+      agents,
+      agentTeams,
       filterSets,
       filters,
       filtersCounts,
@@ -83,9 +92,12 @@ export class AgentFiltersContainer extends SeparateComponent {
       stars,
       starsCounts,
       ticketCustomFields,
+      ticketDepartments,
     } = this.props;
     return (
       <AgentFilters
+        agents={agents}
+        agentTeams={agentTeams}
         filterSets={filterSets}
         filters={filters}
         filtersCounts={filtersCounts}
@@ -94,6 +106,7 @@ export class AgentFiltersContainer extends SeparateComponent {
         stars={stars}
         starsCounts={starsCounts}
         ticketCustomFields={ticketCustomFields}
+        ticketDepartments={ticketDepartments}
         onSelectMode={this.onSelectMode}
         onGroupingChange={this.onGroupingChange}
       />

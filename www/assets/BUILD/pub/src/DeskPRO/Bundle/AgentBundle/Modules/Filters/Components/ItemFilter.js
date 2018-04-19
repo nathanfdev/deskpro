@@ -31,7 +31,6 @@ export default class ItemFilter extends React.Component {
   }
 
   componentDidMount() {
-    console.log(this.popper);
     this.setState({ popper: this.popper }); // eslint-disable-line
   }
 
@@ -53,7 +52,9 @@ export default class ItemFilter extends React.Component {
    * Closes the popper
    */
   close = () => {
-    this.popper.close();
+    if (this.popper) {
+      this.popper.close();
+    }
   };
 
   /**

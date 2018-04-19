@@ -9,11 +9,14 @@ import Filter from './Filter';
 
 export default class FiltersSet extends React.Component {
   static propTypes = {
+    agents:             PropTypes.object,
+    agentTeams:         PropTypes.object,
     filterSet:          PropTypes.object,
     filters:            PropTypes.object,
     filtersCounts:      PropTypes.object,
     groupFields:        PropTypes.object,
     ticketCustomFields: PropTypes.object,
+    ticketDepartments:  PropTypes.object,
     onChange:           PropTypes.func,
     onSelectMode:       PropTypes.func,
     onGroupingChange:   PropTypes.func,
@@ -31,11 +34,14 @@ export default class FiltersSet extends React.Component {
 
   render() {
     const {
+      agents,
+      agentTeams,
       filterSet,
       filters,
       filtersCounts,
       groupFields,
       ticketCustomFields,
+      ticketDepartments,
       onChange,
       onGroupingChange,
       onSelectMode,
@@ -50,9 +56,12 @@ export default class FiltersSet extends React.Component {
           <Filter
             key={filter.get('id')}
             filter={filter}
+            agents={agents}
+            agentTeams={agentTeams}
             filtersCounts={filtersCounts}
             groupFields={groupFields}
             ticketCustomFields={ticketCustomFields}
+            ticketDepartments={ticketDepartments}
             mode={mode}
             onSelect={() => this.onSelectFilter(key)}
             onSelectMode={onSelectMode}
