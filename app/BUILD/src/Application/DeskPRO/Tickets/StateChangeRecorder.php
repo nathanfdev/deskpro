@@ -14,6 +14,7 @@ use Application\DeskPRO\Entity\LabelTicket;
 use Application\DeskPRO\Entity\Organization;
 use Application\DeskPRO\Entity\Person;
 use Application\DeskPRO\Entity\Ticket;
+use Application\DeskPRO\Entity\TicketCharge;
 use Application\DeskPRO\Entity\TicketSla;
 use Application\DeskPRO\Entity\Usergroup;
 use Application\DeskPRO\ORM\StateChange\StateChangeRecorder as BaseStateChangeRecorder;
@@ -300,6 +301,24 @@ class StateChangeRecorder extends BaseStateChangeRecorder
         }
 
         return false;
+    }
+
+    /**
+     * @return TicketCharge[]
+     */
+    public function getNewTicketCharges()
+    {
+        if (!$this->hasChangedField('charges')) {
+            return [];
+        }
+
+        $charges = [];
+
+        foreach (array_reverse($this->getChangesForField('charges')) as $c) {
+            $charges[] = $c;
+        }
+
+        return $charges;
     }
 
     /**
