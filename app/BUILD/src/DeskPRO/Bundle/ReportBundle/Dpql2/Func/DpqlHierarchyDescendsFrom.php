@@ -72,6 +72,10 @@ class DpqlHierarchyDescendsFrom extends AbstractDpqlFunc
             return new Number($num);
         }, $ids);
 
+        if (empty($ids)) {
+            $ids = [new Number(0)];
+        }
+
         $condition = $this->statementFactory->createIn(
             $this->statementFactory->createRaw("`$targetTableAlias`.`id`"),
             $ids
