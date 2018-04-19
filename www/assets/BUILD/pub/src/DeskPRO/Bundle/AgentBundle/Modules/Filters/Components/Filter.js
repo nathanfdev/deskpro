@@ -184,13 +184,13 @@ export default class Filter extends React.Component {
               if (!group) {
                 return '';
               }
-              const newMode = { grouping, groupingValue: group.get('id') };
+              const newMode = { grouping, groupingValue: group.get('id') || group.get('value') };
               let selected = false;
               if (
                 mode &&
                 mode.filter === filter.get('id') &&
                 mode.grouping === grouping &&
-                mode.groupingValue === group.get('id')
+                mode.groupingValue === (group.get('id') || group.get('value'))
               ) {
                 selected = true;
               }

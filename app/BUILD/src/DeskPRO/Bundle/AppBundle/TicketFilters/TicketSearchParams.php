@@ -174,6 +174,7 @@ class TicketSearchParams
     private function groupFieldTranslator($fieldId)
     {
         switch ($fieldId) {
+            case 'status':                                return self::GROUP_STATUS;
             case OldTicketGrouping::DEPARTMENT:           return self::GROUP_DEPARTMENT;
             case OldTicketGrouping::AGENT:                return self::GROUP_AGENT;
             case OldTicketGrouping::AGENT_TEAM:           return self::GROUP_AGENT_TEAM;
