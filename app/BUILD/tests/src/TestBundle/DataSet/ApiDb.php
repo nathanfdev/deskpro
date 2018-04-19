@@ -154,7 +154,9 @@ SQL
             $deskProUsers->is_enabled    = true;
             $deskProUsers->display_order = -10; // ensure #1 order (initially!)
             $deskProUsers->title         = 'DeskPRO';
-            $deskProUsers->options       = [];
+            $deskProUsers->options       = [
+                'reg_enabled' => true,
+            ];
             $this->getEm()->persist($deskProUsers);
 
             $googlePlusUs                = new Usersource();
