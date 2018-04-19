@@ -7,6 +7,7 @@ use DeskPRO\Bundle\ReportBundle\Dpql2\DpqlCompiler;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\FormBuilderInterface;
+use Symfony\Component\OptionsResolver\OptionsResolver;
 
 /**
  * Class DpqlPartsType.
@@ -63,6 +64,18 @@ class DpqlPartsType extends AbstractType
             ])
         ;
 
-        $builder->addViewTransformer(new DpqlPartsTransformer($this->compiler));
+        $builder->addViewTransformer(new DpqlPartsTransformer($this->compiler, $options['variables']));
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function configureOptions(OptionsResolver $resolver)
+    {
+        $resolver
+            ->setRequired('variables')
+            ->setAllowedTypes('variables', ['array', 'null'])
+            ->setDefaults(['variables' => []])
+        ;
     }
 }

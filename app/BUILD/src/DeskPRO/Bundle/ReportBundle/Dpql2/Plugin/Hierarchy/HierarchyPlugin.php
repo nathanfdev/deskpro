@@ -221,10 +221,11 @@ class HierarchyPlugin implements PluginInterface
         if (!Hierarchy::isHierarchical($this->sql, $this->forceHierarchy)) {
             return;
         }
-
-        $countFieldNum = $this->getCountFieldNum();
-        $handler->addGroupXColumn('', 'hierarchy_root_title', $countFieldNum ? $countFieldNum + 1 : 1);
-        $handler->addFlag(ResultMetadata::FLAG_HIERARCHICAL);
+        if (!$handler->hasFlag(ResultMetadata::FLAG_HIERARCHY_DESCENDS_FROM)) {
+            $countFieldNum = $this->getCountFieldNum();
+            $handler->addGroupXColumn('', 'hierarchy_root_title', $countFieldNum ? $countFieldNum + 1 : 1);
+            $handler->addFlag(ResultMetadata::FLAG_HIERARCHICAL);
+        }
     }
 
     /**

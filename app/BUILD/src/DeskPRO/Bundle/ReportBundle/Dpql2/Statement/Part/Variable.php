@@ -41,4 +41,9 @@ class Variable extends AbstractPart
     {
         return '${'.$this->name.'}';
     }
+
+    public function getValue()
+    {
+        return '${'.$this->name.'}';
+    }
 }
