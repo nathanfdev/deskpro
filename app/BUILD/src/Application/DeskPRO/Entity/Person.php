@@ -1715,7 +1715,7 @@ class Person extends DomainObject implements
     {
         $l = $this->getLanguage();
 
-        return $l ? $l->getLanguage()->getId() : 0;
+        return $l ? $l->getId() : 0;
     }
 
     /**
