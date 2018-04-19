@@ -47,6 +47,38 @@ export function transformReportData(report) {
   };
 }
 
+export function transformReportDataToApi(reportData) {
+  const data = {
+    display_types: reportData.display_types
+  };
+
+  if (!reportData.displayOnly) {
+    data.title         = reportData.title;
+    data.description   = reportData.desc;
+    data.display_types = reportData.display_types;
+    data.variables     = reportData.vars;
+    data.labels        = reportData.labels;
+    data.input_mode    = reportData.inputMode || 'form';
+
+    if (data.input_mode === 'dpql') {
+      data.query = reportData.raw;
+    } else {
+      data.query_parts = {
+        select:   reportData.select,
+        from:     reportData.from,
+        where:    reportData.where,
+        split_by: reportData.split_by,
+        group_by: reportData.group_by,
+        order_by: reportData.order_by,
+        limit:    reportData.limit,
+        offset:   reportData.offset
+      };
+    }
+  }
+
+  return data;
+}
+
 export const displayTypes = [
   {
     label: 'Bars',
