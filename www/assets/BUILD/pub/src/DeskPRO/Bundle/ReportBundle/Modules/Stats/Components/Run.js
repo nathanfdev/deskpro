@@ -41,17 +41,19 @@ class Run extends React.Component {
   static doRenderChart(options, index) {
     const newOptions = options.toJS();
 
-    if (newOptions.valueAxes[0] && newOptions.valueAxes[0].hash) {
-      newOptions.valueAxes[0].labelFunction = (value) => {
-        const hash = newOptions.valueAxes[0].hash;
-        return hash[value] ? hash[value] : '';
-      };
-    }
-    if (newOptions.valueAxes[1] && newOptions.valueAxes[1].hash) {
-      newOptions.valueAxes[1].labelFunction = (value) => {
-        const hash = newOptions.valueAxes[1].hash;
-        return hash[value] ? hash[value] : '';
-      };
+    if (newOptions.chartType === 'bubble') {
+      if (newOptions.valueAxes[0].hash) {
+        newOptions.valueAxes[0].labelFunction = (value) => {
+          const hash = newOptions.valueAxes[0].hash;
+          return hash[value] ? hash[value] : '';
+        };
+      }
+      if (newOptions.valueAxes[1].hash) {
+        newOptions.valueAxes[1].labelFunction = (value) => {
+          const hash = newOptions.valueAxes[1].hash;
+          return hash[value] ? hash[value] : '';
+        };
+      }
     }
 
     switch (newOptions.chartType) {

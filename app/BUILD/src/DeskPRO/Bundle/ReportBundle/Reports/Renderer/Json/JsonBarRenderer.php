@@ -66,12 +66,10 @@ class JsonBarRenderer extends AbstractJsonChartRenderer
                 $chartData[$i] = [];
                 foreach ($stack as $j => $values) {
                     $chartData[$i]['category']  = isset($hierarchyParents[$i]) ? $hierarchyParents[$i]['hierarchy_root_title'] : $values['hierarchy_root_title'];
-                    $chartData[$i]["value$i$j"] = $this->renderCellValue($values, $selectColumns[0], $metadata, true);
-                    $values[$selectColumns[0]['resultId'] - 1];
+                    $chartData[$i]["value$i$j"] = $values[$selectColumns[0]['resultId'] - 1];
 
                     foreach ($additionalData as $key => $resultId) {
-                        $chartData[$i][$key] = $this->renderCellValue($values, $selectColumns[0], $metadata, true);
-                        $values[$resultId - 1];
+                        $chartData[$i][$key] = $values[$resultId - 1];
                     }
 
                     $graphs[] = [
@@ -83,22 +81,6 @@ class JsonBarRenderer extends AbstractJsonChartRenderer
                         'balloonText' => '[[title]]:[[value]]',
                     ];
                 }
-            }
-
-            $hash = $this->getCollectedHash();
-            if ($hash) {
-                $hash = array_flip(array_keys($hash));
-                array_walk($hash, function (&$item) {
-                    ++$item;
-                });
-                foreach ($chartData as &$chartDatum) {
-                    foreach ($chartDatum as $key => &$value) {
-                        if (strpos($key, 'value') !== false) {
-                            $value = $hash[$value];
-                        }
-                    }
-                }
-                $arrayOutput['valueAxes'][0]['hash'] = array_flip($hash);
             }
 
             $arrayOutput['dataProvider'] = array_values($chartData);
