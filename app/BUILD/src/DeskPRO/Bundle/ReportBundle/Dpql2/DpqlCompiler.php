@@ -282,7 +282,7 @@ class DpqlCompiler
                             return $this->replaceGroup($variable, $variables, $variable['type']);
                         // this would include 'value' and all custom def stuff
                         default:
-                            return @$variable['field_value'] ?: @$variable['value'] ?: $match[0];
+                            return @$variable['value'] ?: @$variable['field_value'] ?: $match[0];
                     }
                 }
 
