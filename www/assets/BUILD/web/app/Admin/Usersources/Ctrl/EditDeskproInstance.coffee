@@ -15,7 +15,7 @@ define ['Admin/Usersources/Ctrl/EditInstance', 'DeskPRO/Util/Util']
 
     doSaveUsersource: ->
       @usersource.is_enabled = !@usersource.is_disabled;
-      if @$scope.settings.reg_enabled
+      if @usersource.options.reg_enabled
         @usersource.is_enabled = true
       p = super()
       @$q.all([p, @savePolicySettings(), @saveRegSettings()])
@@ -102,11 +102,6 @@ define ['Admin/Usersources/Ctrl/EditInstance', 'DeskPRO/Util/Util']
         rate_limit_settings: @$scope.rate_limit_settings
         rate_limit_context: 'user'
       }
-
-      if ["1", 1, true, "true"].indexOf(postData.registration_settings.reg_enabled) != -1
-        postData.registration_settings.reg_enabled = true
-      else
-        postData.registration_settings.reg_enabled = false
 
       @Api.sendPostJson('/registration_settings', postData)
 

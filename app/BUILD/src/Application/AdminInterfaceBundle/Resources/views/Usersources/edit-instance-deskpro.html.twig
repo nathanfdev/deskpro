@@ -11,24 +11,24 @@
                 <div class="form-group">
                     <div class="labels-group">
                         <label>
-                            <input type="radio" ng-model="settings.reg_enabled" ng-value="true" />
+                            <input type="radio" ng-model="Ctrl.usersource.options.reg_enabled" ng-value="true" />
                             <h4>Enable Registration</h4>
-							<span class="help-block" ng-show="settings.reg_enabled">
+							<span class="help-block" ng-show="Ctrl.usersource.options.reg_enabled">
 								With registration enabled, new users will be able to create accounts on your helpdesk. This means
                                 users can register manually and they will register automatically by submitting new tickets or other content like feedback or comments.
 							</span>
                         </label>
                         <label>
-                            <input type="radio" ng-model="settings.reg_enabled" ng-value="false" />
+                            <input type="radio" ng-model="Ctrl.usersource.options.reg_enabled" ng-value="false" />
                             <h4>Disable Registration</h4>
-							<span class="help-block" ng-show="!settings.reg_enabled">
+							<span class="help-block" ng-show="!Ctrl.usersource.options.reg_enabled">
 								With registration <strong>disabled</strong>, no new users will be able to create new accounts. This means
 								to submit content to the helpdesk (such as tickets or comments), users must already exist or be manually created by an agent.
                                 For example, if a user sends the helpdesk an email but they don't exist, their email will be completely rejected.
 							</span>
                         </label>
 
-                        <div class="inner-group" ng-if="can_disable_deskpro && !settings.reg_enabled" style="padding-left: 25px; padding-top: 10px;">
+                        <div class="inner-group" ng-if="can_disable_deskpro && !Ctrl.usersource.options.reg_enabled" style="padding-left: 25px; padding-top: 10px;">
                             <label>
                                 <input type="checkbox" ng-model="Ctrl.usersource.is_disabled" class="ng-pristine ng-valid">
                                 <h4>Completely disable Deskpro User Management</h4>

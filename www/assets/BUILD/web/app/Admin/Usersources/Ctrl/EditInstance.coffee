@@ -179,6 +179,7 @@ define ['Admin/Main/Ctrl/Base', 'DeskPRO/Util/Util', 'Admin/Usersources/Helper/U
       postData = {
         title: @usersource.title,
         is_enabled: @usersource.is_enabled
+        options: @usersource.options
       }
 
       @Api.sendPostJson('/usersources/' + @usersourceType + '/' + @usersourceId, postData).then(
