@@ -66,11 +66,11 @@ class JsonBarRenderer extends AbstractJsonChartRenderer
                 $chartData[$i] = [];
                 foreach ($stack as $j => $values) {
                     $chartData[$i]['category']  = isset($hierarchyParents[$i]) ? $hierarchyParents[$i]['hierarchy_root_title'] : $values['hierarchy_root_title'];
-                    $chartData[$i]["value$i$j"] = $this->renderCellValue($values, $selectColumns[0], $metadata);
+                    $chartData[$i]["value$i$j"] = $this->renderCellValue($values, $selectColumns[0], $metadata, true);
                     $values[$selectColumns[0]['resultId'] - 1];
 
                     foreach ($additionalData as $key => $resultId) {
-                        $chartData[$i][$key] = $this->renderCellValue($values, $selectColumns[0], $metadata);
+                        $chartData[$i][$key] = $this->renderCellValue($values, $selectColumns[0], $metadata, true);
                         $values[$resultId - 1];
                     }
 
