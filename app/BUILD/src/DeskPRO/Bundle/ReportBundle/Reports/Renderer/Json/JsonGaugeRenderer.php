@@ -64,6 +64,9 @@ class JsonGaugeRenderer extends AbstractJsonChartRenderer
         $statValue = $this->getValue($rows, $metadata);
         $statTotal = $this->getTotalValue($rows, $metadata);
 
+        if ($statTotal && $statValue && $statValue > $statTotal) {
+            $statValue = $statTotal;
+        }
         if ($statValue > $statTotal || (!$statTotal && $statValue > 100)) {
             $statTotal = ceil($statValue % 100) * 100;
         }
