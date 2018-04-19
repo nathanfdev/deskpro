@@ -156,6 +156,10 @@ class ActionAlertsHandler {
   }
 
   handleFilterUpdate(payload) {
+    if (payload.targets && payload.targets.indexOf(this.options.me) === -1) {
+      // doesnt apply to me
+      return;
+    }
     switch (payload.op) {
       case 'del':
         this.options.dispatch(filtersActions.decreaseCount(payload.filter_id));
