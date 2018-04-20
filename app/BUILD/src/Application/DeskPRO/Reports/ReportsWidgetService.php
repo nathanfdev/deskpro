@@ -128,7 +128,12 @@ class ReportsWidgetService
             if ($def->isChoiceType()) {
                 $choices = $def->getChoices();
                 $arr     = [];
-                $this->getChoices($choices, $def->getTitle(), $arr);
+
+                $maxLevel = null;
+                if ($def->getOption('reports_field_var_max_level')) {
+                    $maxLevel = (int) $def->getOption('reports_field_var_max_level');
+                }
+                $this->getChoices($choices, $def->getTitle(), $arr, $maxLevel);
                 $result[$def->getRawTitle()][$def->getTitle()] = [$def->getTitle()];
                 $result[$def->getRawTitle()] += $arr;
                 $result[$def->getRawTitle()][DashboardWidgetManager::WIDGET_VALUE_FROM_REPORT] = ['value from report'];
@@ -139,18 +144,20 @@ class ReportsWidgetService
     }
 
     /**
-     * @param $choices
-     * @param $prevTitle
-     * @param $result
+     * @param array  $choices
+     * @param string $prevTitle
+     * @param array  $result
+     * @param int    $maxLevel
+     * @param int    $level
      */
-    private function getChoices($choices, $prevTitle, &$result)
+    private function getChoices(array $choices, $prevTitle, array &$result, $maxLevel = null, $level = 1)
     {
         /* @var CustomDefAbstract $def */
         foreach ($choices as $choice) {
             $title                    = $prevTitle ? $prevTitle.' > ' : '';
             $result[$choice['title']] = [$title.$choice['title']];
-            if (isset($choice['children'])) {
-                $this->getChoices($choice['children'], $title.$choice['title'], $result);
+            if ((!$maxLevel || $level < $maxLevel) && isset($choice['children'])) {
+                $this->getChoices($choice['children'], $title.$choice['title'], $result, ++$level);
             }
         }
     }
