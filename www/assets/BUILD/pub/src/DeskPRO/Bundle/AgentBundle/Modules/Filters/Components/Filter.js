@@ -9,8 +9,8 @@ import {
   Count,
   Avatar,
 } from '@deskpro/react-components';
-import agentPhrases from 'DeskPRO/Bundle/AgentBundle/AgentPhrases';
 import { AvatarResolver } from 'DeskPRO/Component/Avatar';
+import { FormattedMessage } from 'react-intl';
 import ItemFilter from './ItemFilter';
 
 class TicketsForm extends React.Component {
@@ -76,7 +76,7 @@ class TicketsForm extends React.Component {
         };
       } else {
         groups[group.get('id')] = {
-          title:     agentPhrases.get(`agent.grouping_option.${group.get('id')}`),
+          title:     <FormattedMessage id={`agent.grouping_option.${group.get('id')}`} />,
           className: ''
         };
       }
