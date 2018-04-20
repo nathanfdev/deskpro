@@ -1211,6 +1211,25 @@ class Person extends DomainObject implements
     }
 
     /**
+     * @param array|ArrayCollection $brands
+     *
+     * @return bool
+     */
+    public function hasOneOfTheBrands($brands)
+    {
+        foreach ($brands as $brand) {
+            if (!$brand instanceof Brand) {
+                continue;
+            }
+            if ($this->hasBrand($brand)) {
+                return true;
+            }
+        }
+
+        return false;
+    }
+
+    /**
      * @return bool
      */
     public function isOrganizationManager()

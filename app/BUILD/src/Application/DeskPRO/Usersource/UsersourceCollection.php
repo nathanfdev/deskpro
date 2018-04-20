@@ -86,6 +86,25 @@ class UsersourceCollection extends \ArrayObject
     }
 
     /**
+     * Filter out any usersources that not enabled for registration.
+     *
+     *
+     * @param int $id id
+     *
+     * @return UsersourceCollection
+     */
+    public function mustHaveRegEnabled()
+    {
+        $filtered = array_filter(
+            (array) $this, function (Usersource $us) {
+                return (bool) $us->getOption('reg_enabled');
+            }
+        );
+
+        return new static($filtered);
+    }
+
+    /**
      * Limits to this ID only, still allowing other filters to fit your criteria.
      *
      * @param int $id id
