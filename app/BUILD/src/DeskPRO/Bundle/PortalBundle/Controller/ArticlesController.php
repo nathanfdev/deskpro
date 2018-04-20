@@ -93,7 +93,7 @@ class ArticlesController extends AbstractController
     }
 
     /**
-     * @Route("/kb/{slug}.{_format}", name="portal_kb_browse", defaults={"_format":"html"}, requirements={"_format":"html|rss"})
+     * @Route("/kb/{slug}.{_format}", name="portal_kb_browse", defaults={"_format":"html"})
      * @Route("/kb/{slug}", name="user_articles")
      * @ParamConverter(name="category", converter="deskpro_slug")
      * @Security("is_granted('USE_ARTICLES') and is_granted('VIEW_ARTICLE_CATEGORY', category)")

@@ -4,7 +4,8 @@ Feature: /ticket_filters_counts endpoint
   I want to check endpoint
 
   Background:
-    Given I'm authenticated as admin
+    Given no Person records exist
+    And I'm authenticated as admin
     And "user_1@deskpro.dev" user exists
     And "user_2@deskpro.dev" user exists
     And only the following LegacyTicketFilter records exist:

@@ -185,6 +185,15 @@ class TicketMessage
     protected $messageRaw = null;
 
     /**
+     * This is a preview of the message.
+     *
+     * @JMS\Type("string")
+     *
+     * @var string
+     */
+    protected $messagePreviewText = null;
+
+    /**
      * A hint to say if we should show message_full by default. We do this when
      * we detect that the user has replied to a message inline rather than above the cut line.
      *
@@ -224,6 +233,7 @@ class TicketMessage
         $this->message            = $ticketMessage->getMessageHtml();
         $this->messageFull        = $ticketMessage->getMessageFull();
         $this->messageRaw         = $ticketMessage->message_raw;
+        $this->messagePreviewText = $ticketMessage->getMessagePreviewText(185);
         $this->showFullHint       = $ticketMessage->show_full_hint;
         $this->langCode           = $ticketMessage->lang_code;
     }

@@ -236,6 +236,7 @@ return [
         'newTemplate' => 'SendmailBundle:emails_user:new_ticket_guest.html.twig',
         'viewModel'   => 'NewTicketGuest',
     ],
+    /* Not Used */
     [
         'typeId'      => 'user',
         'groupId'     => 'tickets',
@@ -330,7 +331,6 @@ return [
         'subGroupId' => 'rating',
         'name'       => 'DeskPRO:emails_common:ticket-rating-links.html.twig',
         'type'       => 'template',
-        'viewModel'  => 'TicketRatingLinks',
     ],
     [
         'typeId'      => 'user',

@@ -83,9 +83,15 @@ class HtmlPurifier implements CleanerPlugin
             // with two <html>..</html> documents in one message. This screws up the cleaner.
             // This just moves the tags around so the body wraps the entire document
 
+            // @TODO: find text after last </html> and check if it contains tags,
+            // if yes - apply logic like below (remove all html|body)
             $value = str_replace('<?xml version="1.0" encoding="UTF-8"?>', '', $value);
             $value = preg_replace('#<html[^>]*>#i', '<html>', $value);
-            if (substr_count($value, '<html>') > 1) {
+            if (
+                substr_count($value, '<html>') > 1
+                || substr_count($value, '</body>') > 1 // fix case with malformed email html
+                || substr_count($value, '</html>') > 1 // fix case with malformed email html
+            ) {
                 $value = str_replace('<html>', '', $value);
                 $value = str_ireplace('</html>', '', $value);
                 $value = preg_replace('#<body[^>]*>#i', '', $value);

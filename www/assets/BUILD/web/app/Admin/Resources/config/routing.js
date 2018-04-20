@@ -2218,7 +2218,7 @@ define(function() {
     id: 'emails.email_templates',
     url: '/email_templates',
     templateName: 'Templates/email-groups.html',
-    controller: 'Admin_Templates_Ctrl_EmailGroupList'
+    controller: 'Admin_Templates_Ctrl_EmailGroupListOld'
   });
 
   //###
@@ -2228,7 +2228,7 @@ define(function() {
     id: 'emails.email_templates_legacy',
     url: '/email_templates_legacy',
     templateName: 'Templates/email-groups-legacy.html',
-    controller: 'Admin_Templates_Ctrl_EmailGroupListOld'
+    controller: 'Admin_Templates_Ctrl_EmailGroupList'
   });
 
   routes.push({

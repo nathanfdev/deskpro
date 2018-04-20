@@ -9,7 +9,6 @@ use Application\DeskPRO\Entity\Department;
 use Application\DeskPRO\Entity\PersonUsersourceAssoc;
 use Application\DeskPRO\Entity\Usersource;
 use DeskPRO\Bundle\AppBundle\Entity\ThemeSet;
-use DeskPRO\Bundle\AppBundle\Limits\Model\AbstractLimit;
 use DpTestSrc\TestBundle\Mock\Usersource\CallbackAdapterMock;
 use DpTestSrc\TestBundle\UserDetailsRepo;
 
@@ -155,7 +154,9 @@ SQL
             $deskProUsers->is_enabled    = true;
             $deskProUsers->display_order = -10; // ensure #1 order (initially!)
             $deskProUsers->title         = 'DeskPRO';
-            $deskProUsers->options       = [];
+            $deskProUsers->options       = [
+                'reg_enabled' => true,
+            ];
             $this->getEm()->persist($deskProUsers);
 
             $googlePlusUs                = new Usersource();
@@ -702,28 +703,6 @@ SQL
             "
         );
         // end of AgentAlerts
-
-        $date = new \DateTime();
-
-        $global_limits = [
-            [
-                'hit_limit'     => 5000,
-                'current'       => 5000,
-                'start_time'    => $date->format('Y-m-d H:i:s'),
-                'time_interval' => 3600,
-                'limit_type'    => AbstractLimit::TYPE_GLOBAL,
-            ],
-            [
-                'hit_limit'     => 15000,
-                'current'       => 15000,
-                'start_time'    => $date->format('Y-m-d H:i:s'),
-                'time_interval' => 86400,
-                'limit_type'    => AbstractLimit::TYPE_GLOBAL,
-            ],
-
-        ];
-
-        $this->getDb()->batchInsert('api_key_limits', $global_limits, true);
 
         // SLAs
         $this->getDb()->exec(

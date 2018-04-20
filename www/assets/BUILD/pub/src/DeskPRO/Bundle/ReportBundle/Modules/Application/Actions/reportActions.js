@@ -1,6 +1,7 @@
 import { createAction } from 'DeskPRO/Component/Ampliflux';
 import { repository, api } from 'DeskPRO/Bundle/AppBundle/DAL';
 import { setCollection, addToCollection } from 'DeskPRO/Bundle/AppBundle/Modules/RecordsStore';
+import { transformReportDataToApi } from '../../Stats/Components/helper';
 
 export const reportsLoaded = createAction('REPORTS_LOADED');
 export const addLabels = createAction('REPORTS_ADD_LABELS');
@@ -72,33 +73,7 @@ export const loadGroupParams = createAction(
 export const saveReport = createAction(
   'REPORTS_SAVE_REPORT',
   report => (dispatch) => {
-    const data = {
-      display_types: report.display_types
-    };
-
-    if (!report.displayOnly) {
-      data.title         = report.title;
-      data.description   = report.desc;
-      data.display_types = report.display_types;
-      data.variables     = report.vars;
-      data.labels        = report.labels;
-      data.input_mode    = report.inputMode || 'form';
-
-      if (data.input_mode === 'dpql') {
-        data.query = report.raw;
-      } else {
-        data.query_parts = {
-          select:   report.select,
-          from:     report.from,
-          where:    report.where,
-          split_by: report.split_by,
-          group_by: report.group_by,
-          order_by: report.order_by,
-          limit:    report.limit,
-          offset:   report.offset
-        };
-      }
-    }
+    const data = transformReportDataToApi(report);
 
     let promise;
     if (report.id > 0) {

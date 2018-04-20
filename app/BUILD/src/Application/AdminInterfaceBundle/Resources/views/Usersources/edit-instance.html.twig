@@ -36,6 +36,46 @@
 		<div ng-if="!default_form && form_template && install_ctrl" class="dp-sep-top">
 			<div ng-include="form_template" ng-controller="install_ctrl"></div>
 		</div>
+		<div class="dp-sep-top">
+			<article class="form-horizontal dp-form">
+				<div class="panel panel-fill indent">
+					<div class="panel-body">
+						<div class="form-group" ng-show="Ctrl.usersourceType == 'user' && Ctrl.brands.length > 1">
+							<div class="col-lg-4">
+								<h3>{{ phrase('agent.general.brands') }}</h3>
+							</div>
+							<div class="col-lg-8">
+								<div class="inner-group">
+									<label>
+										<h4>
+											<input type="radio" name="is_all_brands" ng-value="true" ng-model="usersource_detailsv2.is_all_brands" />
+                                            {{ phrase('adm.ticket_accounts.brands_radio_all') }}
+										</h4>
+									</label>
+									<br/>
+									<label>
+										<h4>
+											<input type="radio" name="is_all_brands" ng-value="false" ng-model="usersource_detailsv2.is_all_brands" />
+                                            {{ phrase('adm.ticket_accounts.brands_radio_specific') }}
+										</h4>
+									</label>
+								</div>
+								<div class="inner-group" ng-show="!usersource_detailsv2.is_all_brands">
+									<ul class="dp-item-list checkbox-list" style="overflow-y: auto; max-height: {{ 20 * 24 }}px;min-width: 250px;max-width:400px;">
+										<li ng-repeat="brand in Ctrl.brands">
+											<label style="width: 100%;padding-left:20px;position: relative;white-space: nowrap;">
+												<input type="checkbox" value="{{ ng_var('brand.id') }}" ng-click="Ctrl.handleBrand(brand.id, $event)" ng-checked="usersource_detailsv2.brands.indexOf(brand.id) > -1" />
+                                                {{ ng_var('brand.name') }}
+											</label>
+										</li>
+									</ul>
+								</div>
+							</div>
+						</div>
+					</div>
+				</div>
+			</article>
+		</div>
 		<footer ng-hide="has_own_footer">
 			<div class="dp-content">
 				<div class="dp-delete-control">

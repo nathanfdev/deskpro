@@ -540,6 +540,11 @@ we detect that the user has replied to a message inline rather than above the cu
                         'type'        => 'string',
                         'attribute'   => 'lang_code',
                     ],
+                    'message_preview_text' => [
+                        'description' => 'This is a preview of the message.',
+                        'type'        => 'string',
+                        'attribute'   => 'message_preview_text',
+                    ],
                 ],
             ],
         ];

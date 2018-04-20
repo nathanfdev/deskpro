@@ -8,6 +8,7 @@ import classNames from 'classnames';
 import { connect } from 'react-redux';
 import { EditForm } from './EditForm';
 import { saveReport } from '../../Application/Actions/reportActions';
+import { transformReportDataToApi } from './helper';
 
 class EditContainer extends React.Component {
 
@@ -113,7 +114,14 @@ class EditContainer extends React.Component {
               flattenErrors[key] = response.data.errors.fields[key].errors.map(error => error.message).join(' ');
             });
           }
-          this.setState({ saving: false, error: true, formErrors: flattenErrors });
+
+          const data = transformReportDataToApi(reportData);
+          if (reportData.id > 0) {
+            data.id = reportData.id;
+          }
+
+          // return state of EditForm to one which has errors in dpql
+          this.setState({ saving: false, error: true, formErrors: flattenErrors, ...EditContainer.getStateFromReport(Immutable.fromJS(data)) });
           throw new SubmissionError(flattenErrors);
         });
   };

@@ -6,7 +6,7 @@
 		<strong>Attachments</strong>
 		{% for attach in message.attachments %}
 			<br />
-			&bull; <a href="{{ attach.blob.getDownloadUrl(true) }}" style="{{ _self.link_style() }}">{{attach.blob.filename}}</a> ({{ attach.blob.getReadableFilesize() }})
+			&bull; <a href="{{ attach.blob.download_url }}" style="{{ _self.link_style() }}">{{attach.blob.filename}}</a> ({{ attach.blob.filesize_readable }})
 		{% endfor %}
 	</div>
 {% endif %}

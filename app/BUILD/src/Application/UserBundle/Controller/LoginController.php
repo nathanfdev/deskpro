@@ -1026,7 +1026,7 @@ class LoginController extends AbstractController
 
             // If reg is enabled, then resetting a password makes them a user (below)
             // otherwise we fail with a no account error
-            if (!$this->container->getSetting('core.reg_enabled')) {
+            if (!$this->container->get('dp_authentication_manager.agent')->isRegistrationFormVisible()) {
                 if ($us_names) {
                     if ($this->request->isXmlHttpRequest()) {
                         return $this->createJsonResponse(['status' => 'usersource_no_reset', 'usersource_name' => implode(', ', $us_names)]);

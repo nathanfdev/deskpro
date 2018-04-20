@@ -1,11 +1,8 @@
 <?php
 
-/**
- * DeskPRO.
- */
-
 namespace DeskPRO\Bundle\PortalBundle\EventListener;
 
+use DeskPRO\Bundle\AppBundle\Language\LanguageManager;
 use DeskPRO\Bundle\AppBundle\Request\InterfaceInfo;
 use DeskPRO\Component\Util\RegexUtils;
 use Psr\Log\LoggerInterface;
@@ -25,19 +22,40 @@ class InterfaceUrlCorrectorEventListener implements EventSubscriberInterface
     private $interfaceInfo;
 
     /**
+     * @var LanguageManager
+     */
+    private $languageManager;
+
+    /**
      * @var LoggerInterface
      */
     private $logger;
 
-    public function __construct(InterfaceInfo $interfaceInfo, LoggerInterface $logger)
+    /**
+     * Constructor.
+     *
+     * @param InterfaceInfo   $interfaceInfo
+     * @param LanguageManager $languageManager
+     * @param LoggerInterface $logger
+     */
+    public function __construct(InterfaceInfo $interfaceInfo, LanguageManager $languageManager, LoggerInterface $logger)
     {
-        $this->interfaceInfo = $interfaceInfo;
-        $this->logger        = $logger;
+        $this->interfaceInfo   = $interfaceInfo;
+        $this->languageManager = $languageManager;
+        $this->logger          = $logger;
     }
 
+    /**
+     * @internal
+     *
+     * @param GetResponseEvent $event
+     */
     public function onRequest(GetResponseEvent $event)
     {
         if (!$event->isMasterRequest()) {
+            return;
+        }
+        if (!$this->languageManager->isMultiLanguagePortal()) {
             return;
         }
 

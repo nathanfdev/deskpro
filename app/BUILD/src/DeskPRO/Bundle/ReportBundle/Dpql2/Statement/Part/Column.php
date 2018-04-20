@@ -85,18 +85,24 @@ class Column extends AbstractPart
     ELSE CONCAT(\'ID-\', %1$s.id)
 END)
 ', 'person'],
-        'products'                 => ['id', 'title'],
-        'slas'                     => ['id', 'title'],
-        'tickets'                  => ['id', 'subject', 'ticket'],
-        'ticket_categories'        => ['id', 'title'],
-        'ticket_priorities'        => ['id', 'title'],
-        'ticket_workflows'         => ['id', 'title'],
-        'custom_def_article'       => ['id', 'title'],
-        'custom_def_chat'          => ['id', 'title'],
-        'custom_def_feedback'      => ['id', 'title'],
-        'custom_def_organizations' => ['id', 'title'],
-        'custom_def_ticket'        => ['id', 'title'],
-        'custom_def_people'        => ['id', 'title'],
+        'products'                  => ['id', 'title'],
+        'slas'                      => ['id', 'title'],
+        'tickets'                   => ['id', 'subject', 'ticket'],
+        'ticket_categories'         => ['id', 'title'],
+        'ticket_priorities'         => ['id', 'title'],
+        'ticket_workflows'          => ['id', 'title'],
+        'custom_def_article'        => ['id', 'title'],
+        'custom_def_chat'           => ['id', 'title'],
+        'custom_def_feedback'       => ['id', 'title'],
+        'custom_def_organizations'  => ['id', 'title'],
+        'custom_def_ticket'         => ['id', 'title'],
+        'custom_def_people'         => ['id', 'title'],
+        'custom_data_article'       => ['id', 'title'],
+        'custom_data_chat'          => ['id', 'title'],
+        'custom_data_feedback'      => ['id', 'title'],
+        'custom_data_organizations' => ['id', 'title'],
+        'custom_data_ticket'        => ['id', 'title'],
+        'custom_data_people'        => ['id', 'title'],
     ];
 
     /**
@@ -299,7 +305,7 @@ END)
 
                 foreach ($association['joinColumns'] as $joinColumn) {
                     // are we referencing a field that is only listed in an association?
-                    if (strtolower($joinColumn['name']) == $part) {
+                    if (strtolower(Strings::camelCaseToUnderscore($joinColumn['name'])) == $part) {
                         if ($extraConditionValue !== false) {
                             throw new DpqlException("$partsString contains an unexpected extra condition");
                         }
@@ -312,7 +318,7 @@ END)
             }
 
             foreach ($repository->getReportAssociations() as $name => $association) {
-                if (strtolower($name) == $part) {
+                if (strtolower(Strings::camelCaseToUnderscore($name)) == $part) {
                     $target          = $association['targetEntity'];
                     $childRepository = $this->em->getRepository($target);
 
@@ -351,7 +357,7 @@ END)
 
             foreach ($repository->getAssociationMappings() as $association) {
                 // are we referencing an association?
-                if (strtolower($association['fieldName']) == $part) {
+                if (strtolower(Strings::camelCaseToUnderscore($association['fieldName'])) == $part) {
                     $target          = $association['targetEntity'];
                     $childRepository = $this->em->getRepository($target);
 

@@ -287,7 +287,7 @@ abstract class AbstractJsonChartRenderer extends AbstractJsonRenderer
 
                     $data = [
                         'category' => $category,
-                        'title'    => $this->renderCellValue($row, $sel, $metadata),
+                        'title'    => $this->renderCellValue($row, $sel, $metadata, true),
                         'value'    => $this->filterGraphValue($this->getColumnValue($row, $sel)),
                     ];
 

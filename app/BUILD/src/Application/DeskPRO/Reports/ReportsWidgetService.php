@@ -13,10 +13,12 @@ use Application\DeskPRO\Entity\CustomDefPerson;
 use Application\DeskPRO\Entity\CustomDefProduct;
 use Application\DeskPRO\Entity\CustomDefTicket;
 use Application\DeskPRO\Entity\Department;
+use Application\DeskPRO\Entity\Organization;
 use Application\DeskPRO\Entity\Person;
 use Application\DeskPRO\Entity\ReportWidget;
 use Application\DeskPRO\EntityRepository\AgentTeam as AgentTeamRepository;
 use Application\DeskPRO\EntityRepository\Department as DepartmentRepository;
+use Application\DeskPRO\EntityRepository\Organization as OrganizationRepository;
 use Application\DeskPRO\EntityRepository\Person as PersonRepository;
 use Application\DeskPRO\EntityRepository\ReportWidget as ReportWidgetRepository;
 use DeskPRO\Bundle\ReportBundle\Dashboard\DashboardWidgetManager;
@@ -53,9 +55,10 @@ class ReportsWidgetService
         $groupParams = $this->repository->getReportGroupParams();
 
         $groupParams['values'] = [
-            'agent'      => [],
-            'department' => [],
-            'team'       => [],
+            'agent'        => [],
+            'department'   => [],
+            'team'         => [],
+            'organization' => [],
         ];
 
         /** @var PersonRepository $personRepository */
@@ -69,6 +72,9 @@ class ReportsWidgetService
         /** @var AgentTeamRepository $agentTeamRepository */
         $agentTeamRepository = $this->em->getRepository(AgentTeam::class);
         $agentTeams          = $agentTeamRepository->getTeams();
+
+        /** @var OrganizationRepository $orgRepository */
+        $orgRepository = $this->em->getRepository(Organization::class);
 
         $groupParams['values']['agent'][DashboardWidgetManager::WIDGET_VALUE_FROM_REPORT] = ['value from report'];
         foreach ($agents as $agent) {
@@ -85,6 +91,15 @@ class ReportsWidgetService
         foreach ($agentTeams as $agentTeam) {
             $groupParams['values']['team'][$agentTeam->getId()] = [$agentTeam->getName()];
         }
+
+        $groupParams['values']['organization'] = array_map(
+            function ($org) {
+                return [$org];
+            },
+            $orgRepository->getOrganizationNames()
+        );
+
+        $groupParams['values']['organization'][DashboardWidgetManager::WIDGET_VALUE_FROM_REPORT] = ['value from report'];
 
         $groupParams['ticket_custom_fields']   = $this->customFields(CustomDefTicket::class);
         $groupParams['org_custom_fields']      = $this->customFields(CustomDefOrganization::class);
@@ -113,8 +128,14 @@ class ReportsWidgetService
             if ($def->isChoiceType()) {
                 $choices = $def->getChoices();
                 $arr     = [];
-                $this->getChoices($choices, '', $arr);
-                $result[$def->getRawTitle()]                                                   = $arr;
+
+                $maxLevel = null;
+                if ($def->getOption('reports_field_var_max_level')) {
+                    $maxLevel = (int) $def->getOption('reports_field_var_max_level');
+                }
+                $this->getChoices($choices, $def->getTitle(), $arr, $maxLevel);
+                $result[$def->getRawTitle()][$def->getTitle()] = [$def->getTitle()];
+                $result[$def->getRawTitle()] += $arr;
                 $result[$def->getRawTitle()][DashboardWidgetManager::WIDGET_VALUE_FROM_REPORT] = ['value from report'];
             }
         }
@@ -123,19 +144,20 @@ class ReportsWidgetService
     }
 
     /**
-     * @param $choices
-     * @param $prevTitle
-     * @param $result
+     * @param array  $choices
+     * @param string $prevTitle
+     * @param array  $result
+     * @param int    $maxLevel
+     * @param int    $level
      */
-    private function getChoices($choices, $prevTitle, &$result)
+    private function getChoices(array $choices, $prevTitle, array &$result, $maxLevel = null, $level = 1)
     {
         /* @var CustomDefAbstract $def */
         foreach ($choices as $choice) {
-            if ($choice['is_selectable']) {
-                $title                    = $prevTitle ? $prevTitle.' > ' : '';
-                $result[$choice['title']] = [$title.$choice['title']];
-            } else {
-                $this->getChoices($choice['children'], $choice['title'], $result);
+            $title                    = $prevTitle ? $prevTitle.' > ' : '';
+            $result[$choice['title']] = [$title.$choice['title']];
+            if ((!$maxLevel || $level < $maxLevel) && isset($choice['children'])) {
+                $this->getChoices($choice['children'], $title.$choice['title'], $result, ++$level);
             }
         }
     }

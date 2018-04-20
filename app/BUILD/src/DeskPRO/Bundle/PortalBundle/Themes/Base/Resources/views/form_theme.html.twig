@@ -454,7 +454,7 @@
 
 {% block deskpro_recaptcha_widget %}
     {% spaceless %}
-        <script src="//www.google.com/recaptcha/api.js"></script>
+        <script src="//www.google.com/recaptcha/api.js" async defer></script>
         <div class="g-recaptcha" data-sitekey="{{ site_key }}"{% if secure_token %} data-stoken="{{ secure_token }}"{% endif %}></div>
     {% endspaceless %}
 {% endblock deskpro_recaptcha_widget %}

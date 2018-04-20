@@ -2,6 +2,7 @@
 
 namespace DeskPRO\Bundle\AppBundle\Settings;
 
+use Application\DeskPRO\Auth\AuthenticationManager;
 use Application\DeskPRO\Usersource\UsersourceInfo;
 use Application\DeskPRO\Usersource\UsersourceManager;
 use DeskPRO\Bundle\AppBundle\Settings\Model\UsersourceSettings;
@@ -9,7 +10,7 @@ use DeskPRO\Bundle\AppBundle\Settings\Model\UsersourceSettings;
 /**
  * Class UsersourceSettingsResolver.
  */
-class UsersourceSettingsResolver extends AbstractBrandAwareSettingsResolver
+class UsersourceSettingsResolver
 {
     /**
      * @var UsersourceManager
@@ -17,16 +18,20 @@ class UsersourceSettingsResolver extends AbstractBrandAwareSettingsResolver
     private $usersourceManager;
 
     /**
+     * @var AuthenticationManager
+     */
+    private $authManager;
+
+    /**
      * Constructor.
      *
-     * @param UsersourceManager          $usersourceManager
-     * @param BrandAwareSettingsResolver $settingsResolver
+     * @param UsersourceManager     $usersourceManager
+     * @param AuthenticationManager $authManager
      */
-    public function __construct(UsersourceManager $usersourceManager, BrandAwareSettingsResolver $settingsResolver)
+    public function __construct(UsersourceManager $usersourceManager, AuthenticationManager $authManager)
     {
-        parent::__construct($settingsResolver);
-
         $this->usersourceManager = $usersourceManager;
+        $this->authManager       = $authManager;
     }
 
     /**
@@ -40,7 +45,7 @@ class UsersourceSettingsResolver extends AbstractBrandAwareSettingsResolver
         $model
             ->setHasAgentLoginForm($this->hasCapability('agent', UsersourceInfo::CAPABILITY_FORM_LOGIN))
             ->setHasUserLoginForm($this->hasCapability('user', UsersourceInfo::CAPABILITY_FORM_LOGIN))
-            ->setRegEnabled($this->getSetting('core.reg_enabled'))
+            ->setRegEnabled($this->authManager->isRegistrationFormVisible())
         ;
 
         return $model;

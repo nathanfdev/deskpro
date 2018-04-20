@@ -42,8 +42,9 @@ class AuthenticationManager
 
     /**
      * The usersources relevant for this request.
+     * Collection of usersources for this interface.
      *
-     * @var \Application\DeskPRO\Usersource\UsersourceCollection collection of usersources for this interface
+     * @var \Application\DeskPRO\Usersource\UsersourceCollection|Usersource[]
      */
     private $usersourcesForInterface;
 
@@ -296,7 +297,13 @@ class AuthenticationManager
      */
     public function hasRegistrationCapability()
     {
-        return $this->isDeskPROEnabled() && $this->appSettings->get('core.reg_enabled');
+        foreach ($this->usersourcesForInterface as $usersource) {
+            if ($usersource->app === null && $usersource->getOption('reg_enabled')) {
+                return true;
+            }
+        }
+
+        return false;
     }
 
     public function isRememberMeEnabled()
@@ -317,11 +324,11 @@ class AuthenticationManager
     public function isDeskPROEnabled($interface = null)
     {
         if (null === $interface) { // if we have a usersource that doesn't have an app (which always means the DeskPRO usersource)
-        foreach ($this->usersourcesForInterface as $usersource) {
-            if ($usersource->app === null) {
-                return true;
+            foreach ($this->usersourcesForInterface as $usersource) {
+                if ($usersource->app === null) {
+                    return true;
+                }
             }
-        }
 
             return false;
         }
@@ -368,16 +375,12 @@ class AuthenticationManager
         ;
     }
 
-    public function isRegistrationFormVisible($interface = null)
+    /**
+     * @return bool
+     */
+    public function isRegistrationFormVisible()
     {
-        if (null === $interface) {
-            return $this->isAuthVisible() && $this->hasRegistrationCapability();
-        }
-
-        // clone the auth manager except make it for the specific interface, not the default
-        $authManager = $this->cloneForInterface($interface);
-
-        return $authManager->isRegistrationFormVisible();
+        return $this->isAuthVisible() && $this->hasRegistrationCapability();
     }
 
     /**
@@ -388,7 +391,12 @@ class AuthenticationManager
     public function cloneForInterface($interface)
     {
         return new self(
-            $this->authSettings, $this->usersourceManager, $this->authAdapterFactory, $this->appSettings, $interface
+            $this->authSettings,
+            $this->usersourceManager,
+            $this->authAdapterFactory,
+            $this->appSettings,
+            $this->brandStack,
+            $interface
         );
     }
 

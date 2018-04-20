@@ -8,6 +8,8 @@ define ['DeskPRO/Util/Arrays'], (Arrays) -> [
     $scope.dashboard = null
     $scope.reports = []
     $scope.agents = {}
+    $scope.me = {}
+
 
     ####################################################################################################################
     # LOADING
@@ -34,6 +36,9 @@ define ['DeskPRO/Util/Arrays'], (Arrays) -> [
     )
     load_promises.push DashboardsInfo.getAgents().then( (agents) ->
       agents.map((agent) => $scope.agents[agent.id] = agent)
+    )
+    load_promises.push DashboardsInfo.getMe().then( (me) ->
+      $scope.me = me
     )
 
     # just reload info when its been changed
@@ -123,4 +128,10 @@ define ['DeskPRO/Util/Arrays'], (Arrays) -> [
           DashboardService.deleteDashboard($scope.dashboard)
           $state.go('reports.dashboards.view.empty')
       )
+
+    $scope.canEdit = () ->
+      return false if !$scope.dashboard || !$scope.me.person
+      for permission in $scope.dashboard.permissions
+        return true if (permission.person == $scope.me.person.id || (!permission.person && !permission.team && !permission.department)) && permission.name == 'full'
+      return false
   ]
