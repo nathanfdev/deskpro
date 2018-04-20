@@ -146,10 +146,9 @@ class ReportsWidgetService
     {
         /* @var CustomDefAbstract $def */
         foreach ($choices as $choice) {
-            if ($choice['is_selectable']) {
-                $title                    = $prevTitle ? $prevTitle.' > ' : '';
-                $result[$choice['title']] = [$title.$choice['title']];
-            } else {
+            $title                    = $prevTitle ? $prevTitle.' > ' : '';
+            $result[$choice['title']] = [$title.$choice['title']];
+            if (isset($choice['children'])) {
                 $this->getChoices($choice['children'], $choice['title'], $result);
             }
         }
