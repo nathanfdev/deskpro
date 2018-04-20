@@ -280,6 +280,7 @@ $contrast: 5% !default;
         width: 164px;
         padding-left: 8px !important;
         margin-right: 2px;
+        background: transparent;
         @include placeholder {
           color: $dp-greyscale-850 !important;
         }

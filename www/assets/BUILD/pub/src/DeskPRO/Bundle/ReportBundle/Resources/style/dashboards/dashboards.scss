@@ -579,7 +579,12 @@ ul.nav-link-list li.type-heading {
   }
 
   .reports-control {
-    margin-top: 1px;
+    vertical-align: middle;
+
+    span {
+      vertical-align: middle;
+      padding-right: 4px;
+    }
 
     i {
       font-size: 14px;
