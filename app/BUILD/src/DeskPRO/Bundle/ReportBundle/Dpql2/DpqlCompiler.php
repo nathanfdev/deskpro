@@ -282,7 +282,9 @@ class DpqlCompiler
                             return $this->replaceGroup($variable, $variables, $variable['type']);
                         // this would include 'value' and all custom def stuff
                         default:
-                            return @$variable['value'] ?: @$variable['field_value'] ?: $match[0];
+                            $value = @$variable['value'] ?: @$variable['field_value'] ?: $match[0];
+
+                            return !is_numeric($value) ? $this->em->getConnection()->quote($value) : $value;
                     }
                 }
 
