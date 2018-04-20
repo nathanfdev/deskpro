@@ -12,7 +12,7 @@ use DeskPRO\Bundle\AppBundle\Annotation\ActionPermissions\Annotation\ApiModes;
 use DeskPRO\Bundle\AppBundle\Form\Type\Tickets\TicketType;
 use DeskPRO\Bundle\AppBundle\Security\Voter\PermissionGroups\PermissionGroupVoter;
 use DeskPRO\Bundle\AppBundle\Serializer\Annotation\SerializerView;
-use DeskPRO\Bundle\AppBundle\TicketFilters\Terms;
+use DeskPRO\Bundle\AppBundle\TicketFilters\TermFieldIds;
 use DeskPRO\Bundle\AppBundle\TicketFilters\TicketSearchParams;
 use DeskPRO\Component\FilterQueryLanguage\QueryUtil;
 use DeskPRO\Component\Util\ListUtils;
@@ -257,39 +257,39 @@ class TicketsController extends AbstractTicketsController
                 switch ($field) {
                     case 'labels':
                         $op          = 'IN';
-                        $searchField = Terms::TICKET_LABELS;
+                        $searchField = TermFieldIds::TICKET_LABELS;
                         break;
                     case 'star':
-                        $searchField = Terms::TICKET_STARRED;
+                        $searchField = TermFieldIds::TICKET_STARRED;
                         break;
                     case 'status':
-                        $searchField = Terms::TICKET_STATUS;
+                        $searchField = TermFieldIds::TICKET_STATUS;
                         break;
                     case 'not_status':
                         $op          = '!=';
-                        $searchField = Terms::TICKET_STATUS;
+                        $searchField = TermFieldIds::TICKET_STATUS;
                         break;
                     case 'agent':
-                        $searchField = Terms::TICKET_AGENT;
+                        $searchField = TermFieldIds::TICKET_AGENT;
                         break;
                     case 'person':
-                        $searchField = Terms::PERSON_ID;
+                        $searchField = TermFieldIds::PERSON_ID;
                         break;
                     case 'language':
-                        $searchField = Terms::TICKET_LANGUAGE;
+                        $searchField = TermFieldIds::TICKET_LANGUAGE;
                         break;
                     case 'organization':
-                        $searchField = Terms::ORG_ID;
+                        $searchField = TermFieldIds::ORG_ID;
                         break;
                     case 'problem':
-                        $searchField = Terms::TICKET_PROBLEM_ID;
+                        $searchField = TermFieldIds::TICKET_PROBLEM_ID;
                         break;
                     case 'department':
-                        $searchField = Terms::TICKET_DEPARTMENT;
+                        $searchField = TermFieldIds::TICKET_DEPARTMENT;
                         break;
                     case 'sla':
                         $op          = 'HAS';
-                        $searchField = Terms::TICKET_SLAS;
+                        $searchField = TermFieldIds::TICKET_SLAS;
                         break;
                     case 'sla_status':
                         $op = 'HAS';
@@ -310,7 +310,7 @@ class TicketsController extends AbstractTicketsController
                             default:
                                 throw $this->createBadRequestException("Unknown sla_status value: $value");
                         }
-                        $searchField = Terms::TICKET_SLAS;
+                        $searchField = TermFieldIds::TICKET_SLAS;
                         break;
                     default:
                         throw $this->createBadRequestException("Unknown filter termvalue: $field");
@@ -337,7 +337,7 @@ class TicketsController extends AbstractTicketsController
             $parser   = $this->container->get('ticketfilters.queryparser');
             $searcher = $ticketFilters->getSearcher();
             $qb       = $searcher
-                ->getIdsQueryBuilder($parser->parseQuery($searchQuery), $context)
+                ->getIdsQueryBuilder($parser->parseQuery($searchQuery), $context, $searchParams)
                 ->setMaxResults(1000);
 
             $ids         = $qb->execute()->fetchAll(\PDO::FETCH_COLUMN);

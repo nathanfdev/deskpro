@@ -62,10 +62,18 @@ class CustomFieldsTermsHandler extends AbstractTermsHandler
     {
         list($realFieldId, $field, $type) = $this->customFieldSet->getFieldInfoById($fieldId);
 
-        if ($type === 'ticket.data') {
-            $dataCollection = $ticketModel->custom_fields;
-        } else {
-            $dataCollection = $ticketModel->person->custom_fields;
+        switch ($type) {
+            case TermFieldIds::TICKET_CUSTOM:
+                $dataCollection = $ticketModel->custom_fields;
+                break;
+            case TermFieldIds::PERSON_CUSTOM:
+                $dataCollection = $ticketModel->person->custom_fields;
+                break;
+            case TermFieldIds::ORG_CUSTOM:
+                $dataCollection = $ticketModel->person->custom_fields;
+                break;
+            default:
+                throw new \RuntimeException();
         }
 
         /** @var CustomData[] $fieldDataRecs */
@@ -157,14 +165,22 @@ class CustomFieldsTermsHandler extends AbstractTermsHandler
         /** @var $field CustomField */
         list($realFieldId, $field, $type) = $this->customFieldSet->getFieldInfoById($fieldId);
 
-        if ($type === 'ticket.data') {
-            $tableName = 'custom_data_ticket';
-        } else {
-            $tableName = 'custom_data_person';
+        $cond = new SqlCondition();
+
+        switch ($type) {
+            case TermFieldIds::TICKET_CUSTOM:
+                $cond->addUniqueJoin('tickets', 'custom_data_ticket', 'dat', '{dat}.ticket_id = {tickets}.id AND {dat}.root_field_id = :rootFieldId');
+                break;
+            case TermFieldIds::PERSON_CUSTOM:
+                $cond->addUniqueJoin('tickets', 'custom_data_person', 'dat', '{dat}.person_id = {tickets}.person_id AND {dat}.root_field_id = :rootFieldId');
+                break;
+            case TermFieldIds::ORG_CUSTOM:
+                $cond->addUniqueJoin('tickets', 'custom_data_organizations', 'dat', '{dat}.organization_id = {tickets}.organization_id AND {dat}.root_field_id = :rootFieldId');
+                break;
+            default:
+                throw new \RuntimeException();
         }
 
-        $cond = new SqlCondition();
-        $cond->addUniqueJoin('tickets', $tableName, 'dat', '{dat}.ticket_id = {tickets}.id AND {dat}.root_field_id = :rootFieldId');
         $cond->setParam('rootFieldId', $field->field);
 
         switch ($field->type) {
