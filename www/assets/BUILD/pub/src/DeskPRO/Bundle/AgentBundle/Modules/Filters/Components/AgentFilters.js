@@ -13,6 +13,8 @@ import Labels from './Labels';
 
 export default class AgentFilters extends React.Component {
   static propTypes = {
+    agents:             PropTypes.object,
+    agentTeams:         PropTypes.object,
     filterSets:         PropTypes.object,
     filters:            PropTypes.object,
     filtersCounts:      PropTypes.object,
@@ -21,11 +23,13 @@ export default class AgentFilters extends React.Component {
     stars:              PropTypes.object,
     starsCounts:        PropTypes.object,
     ticketCustomFields: PropTypes.object,
+    ticketDepartments:  PropTypes.object,
     onSelectMode:       PropTypes.func,
     onGroupingChange:   PropTypes.func,
   };
 
   static defaultProps = {
+    agents:             {},
     filterSets:         {},
     filters:            {},
     groupFields:        {},
@@ -59,6 +63,8 @@ export default class AgentFilters extends React.Component {
 
   render() {
     const {
+      agents,
+      agentTeams,
       filterSets,
       filters,
       filtersCounts,
@@ -67,6 +73,7 @@ export default class AgentFilters extends React.Component {
       stars,
       starsCounts,
       ticketCustomFields,
+      ticketDepartments,
       onGroupingChange,
     } = this.props;
     const {
@@ -87,12 +94,15 @@ export default class AgentFilters extends React.Component {
               opened
               onSelectMode={this.onSelectMode}
               onGroupingChange={onGroupingChange}
+              agents={agents}
+              agentTeams={agentTeams}
               filterSet={filterSet}
               filters={filters}
               filtersCounts={filtersCounts}
               groupFields={groupFields}
               mode={mode}
               ticketCustomFields={ticketCustomFields}
+              ticketDepartments={ticketDepartments}
             />
             )
           )}
