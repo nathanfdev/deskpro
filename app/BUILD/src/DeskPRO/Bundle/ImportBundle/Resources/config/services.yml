@@ -51,6 +51,7 @@ services:
       - "@dp.importer"
       - "@dp.importer.parser"
       - "@mailer"
+      - "@mailer.utils"
       - "@deskpro.core.translate"
       - "@email.user_viewmodel_factory"
       - "@email.email_sender"

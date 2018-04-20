@@ -211,7 +211,7 @@ class EmailAccountManager
      *
      * @return \Application\DeskPRO\Entity\EmailAccount
      */
-    public function findAccountForSwiftmailerMessage(\Swift_Mime_Message $message)
+    public function findAccountForSwiftmailerMessage(\Swift_Mime_Message $message, $brand = null)
     {
         if ($message instanceof MessageOptionsInterface) {
             if ($message->getMessageOptions()->has(MessageOptionsInterface::OPT_ACCOUNT_ID)) {
@@ -234,7 +234,7 @@ class EmailAccountManager
             }
         }
 
-        return $this->getDefaultOutAccountWithFallback();
+        return $this->getDefaultOutAccountWithFallback($brand);
     }
 
     /**
@@ -420,6 +420,15 @@ class EmailAccountManager
 
             if ($account) { // return here only if we have something
                 return $account;
+            }
+        }
+
+        // try to find first account that has brand and matches our needs
+        if ($brand) {
+            foreach ($this->getAllActiveAccounts() as $acc) {
+                if ($this->accountHasTransport($acc) && $acc->hasBrand($brand)) {
+                    return $acc;
+                }
             }
         }
 

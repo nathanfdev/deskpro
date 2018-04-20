@@ -444,13 +444,24 @@ class EmailAccount extends DomainObject
     }
 
     /**
-     * @param Brand $brand
+     * @param Brand|int $brand
      *
      * @return bool
      */
-    public function hasBrand(Brand $brand)
+    public function hasBrand($brand)
     {
-        return $this->brands->contains($brand);
+        if ($brand instanceof Brand) {
+            return $this->brands->contains($brand);
+        }
+
+        $brand = (int) $brand;
+        foreach ($this->brands as $brand) {
+            if ($brand->getId() === $brand) {
+                return true;
+            }
+        }
+
+        return false;
     }
 
     /**

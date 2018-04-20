@@ -191,16 +191,7 @@ class TicketGatewayProcessor extends AbstractGatewayProcessor
                 ]);
                 $message->setTo($this->reader->getFromAddress()->getEmail());
 
-                $lang = $person ? $person->getLanguage() : null;
-                if ($lang) {
-                    $this->container->getTranslator()->setTemporaryLanguage($lang, function () use ($message) {
-                        $message->prepare();
-                    });
-                } else {
-                    $message->prepare();
-                }
-
-                $this->container->getMailer()->send($message);
+                $this->container->get('mailer.utils')->sendWithPersonContext($person, $message);
             }
 
             if ($isRateReject) {
@@ -264,8 +255,11 @@ class TicketGatewayProcessor extends AbstractGatewayProcessor
                     if ($this->container->get('deskpro.feature_flags')->hasBeta('email_templates')) {
                         $viewModel = $this->container->get('email.user_viewmodel_factory')
                             ->createAccountDisabledModel($ticket);
-                        $message = $this->container->get('email.email_sender')
-                            ->prepareMessage($viewModel, ['to' => $this->reader->getFromAddress()->getEmail()]);
+                        $this->container->get('mailer.utils')->sendModelWithPersonContext(
+                            $person,
+                            $viewModel,
+                            ['to' => $this->reader->getFromAddress()->getEmail()]
+                        );
                     } else {
                         $message = $this->container->getMailer()->createMessage();
                         $message->setTemplate(
@@ -278,15 +272,8 @@ class TicketGatewayProcessor extends AbstractGatewayProcessor
                             ]
                         );
                         $message->setTo($this->reader->getFromAddress()->getEmail());
+                        $this->container->get('mailer.utils')->sendWithPersonContext($person, $message);
                     }
-                    $this->container->getTranslator()->setTemporaryLanguage(
-                        $person->getLanguage(),
-                        function () use ($message) {
-                            $message->prepare();
-                        }
-                    );
-
-                    $this->container->getMailer()->send($message);
                 }
             }
             $this->logMessage('[TicketGatewayProcessor] User is disabeld, rejecting message');
@@ -323,10 +310,19 @@ class TicketGatewayProcessor extends AbstractGatewayProcessor
                 // user is disabled so can't create/reply to tickets
                 if (!$this->reader->isFromRobot() && !$isBounce) {
                     if ($this->container->get('deskpro.feature_flags')->hasBeta('email_templates')) {
-                        $viewModel = $this->container->get('email.user_viewmodel_factory')
-                            ->createNewReplyRejectResolvedModel($ticket);
-                        $this->container->get('email.email_sender')
-                            ->send($viewModel, ['to' => $this->reader->getFromAddress()->getEmail()]);
+                        $self      = $this;
+                        $viewModel = $this->container->get('brand_stack')->pushTemporary(
+                            $person->getBrands()->first(),
+                            function () use ($self, $ticket) {
+                                return $self->container->get('email.user_viewmodel_factory')
+                                    ->createNewReplyRejectResolvedModel($ticket);
+                            }
+                        );
+                        $this->container->get('mailer.utils')->sendModelWithPersonContext(
+                            $person,
+                            $viewModel,
+                            ['to' => $this->reader->getFromAddress()->getEmail()]
+                        );
                     } else {
                         $message = $this->container->getMailer()->createMessage();
                         $message->setTemplate('DeskPRO:emails_user:new-reply-reject-resolved.html.twig', [
@@ -344,11 +340,7 @@ class TicketGatewayProcessor extends AbstractGatewayProcessor
                             'message/rfc822'
                         ));
 
-                        $this->container->getTranslator()->setTemporaryLanguage($person->getLanguage(), function () use ($message) {
-                            $message->prepare();
-                        });
-
-                        $this->container->getMailer()->send($message);
+                        $this->container->get('mailer.utils')->sendWithPersonContext($person, $message);
                     }
                 }
 
