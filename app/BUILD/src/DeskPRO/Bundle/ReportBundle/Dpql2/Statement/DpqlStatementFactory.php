@@ -73,6 +73,7 @@ class DpqlStatementFactory
             $this->container->get('doctrine.orm.default_entity_manager'),
             $this->container->getDbRead('reports'),
             $this->container->get('dpql.context_storage'),
+            $this->container->get('dpql.helper.custom_data'),
             $this,
             $select,
             $from

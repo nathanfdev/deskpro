@@ -42,4 +42,9 @@ class StringPart extends AbstractPart
     {
         return $statement->quoteDpqlString($this->string);
     }
+
+    public function getValue()
+    {
+        return $this->string;
+    }
 }

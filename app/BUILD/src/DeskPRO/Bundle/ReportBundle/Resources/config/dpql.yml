@@ -106,6 +106,7 @@ services:
     class: DeskPRO\Bundle\ReportBundle\Dpql2\Func\DpqlHierarchyDescendsFrom
     arguments:
       - "@dpql.statement_factory"
+      - "@dpql.helper.custom_data"
     tags:
       - { name: dpql.func }
 
