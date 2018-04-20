@@ -39,13 +39,16 @@ export default class Labels extends React.Component {
 
   sortLabels = () => {
     const groups = {};
-    for (const label of this.props.labels) {
-      const initial = label[0].charAt(0).toUpperCase();
+    this.props.labels.toArray().forEach((label) => {
+      if (label.get('label') === '') {
+        return;
+      }
+      const initial = label.get('label').charAt(0).toUpperCase();
       if (!groups[initial]) {
         groups[initial] = [];
       }
-      groups[initial].push(label[0].replace(/ /, ' '));
-    }
+      groups[initial].push(label.get('label').replace(/ /, ' '));
+    });
     Object.keys(groups).forEach((key) => {
       groups[key].sort();
     });
@@ -72,9 +75,12 @@ export default class Labels extends React.Component {
         <Heading>
           Labels
         </Heading>
-        <Scrollbar style={{ height: '300px' }}>
+        <Scrollbar
+          autoHeightMax={400}
+          hideTracksWhenNotNeeded
+        >
           <List className="dp-drawer-item-list dp-labels">
-            {Object.keys(groups).map(key =>
+            {Object.keys(groups).sort().map(key =>
               <Item key={key} leftTypes={[LabelTitle]}>
                 <LabelTitle>{key}</LabelTitle>
                 <div className="dp-label-list">
