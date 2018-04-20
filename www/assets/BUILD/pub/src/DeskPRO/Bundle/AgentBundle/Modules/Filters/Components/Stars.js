@@ -20,7 +20,7 @@ export default class Stars extends React.Component {
   };
 
   onSelect(selected, star) {
-    this.props.onSelectMode({ type: 'star', star: star.id });
+    this.props.onSelectMode({ type: 'star', star: star.get('id') });
   }
 
   close() {
@@ -52,19 +52,20 @@ export default class Stars extends React.Component {
         <Heading>
           My Stars
         </Heading>
-        <ItemList>
+        <ItemList
+          controlled
+        >
           {stars.toArray().map(star => (
             <Item
               key={star.get('id')}
               selected={mode && mode.type === 'star' && mode.star === star.get('id')}
-              onSelect={selected => this.onSelect(selected, star)}
+              onClick={selected => this.onSelect(selected, star)}
             >
               <Icon name="star" style={{ color: star.get('hex') }} />
               {star.get('name')}
               {this.renderCount(star)}
             </Item>
-            )
-          )}
+            ))}
         </ItemList>
       </Drawer>
     );
