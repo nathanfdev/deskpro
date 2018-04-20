@@ -10,6 +10,7 @@ namespace Application\DeskPRO\Entity;
 
 use Application\DeskPRO\App;
 use Application\DeskPRO\CustomFields\Handler;
+use Application\DeskPRO\Entity\Hierarchy\Hierarchical;
 use Application\DeskPRO\Translate\HasPhraseName;
 use Application\DeskPRO\Translate\Translate;
 use DeskPRO\Bundle\AppBundle\ObjectAlias;
@@ -26,7 +27,7 @@ use Symfony\Component\Validator\Constraints as Assert;
  *
  * @method setParent(CustomDefAbstract $parent)
  */
-class CustomDefAbstract extends \Application\DeskPRO\Domain\DomainObject implements HasPhraseName
+class CustomDefAbstract extends \Application\DeskPRO\Domain\DomainObject implements HasPhraseName, Hierarchical
 {
     const HANDLER_CLASS_TEXT     = Handler\Text::class;
     const HANDLER_CLASS_TEXTAREA = Handler\Textarea::class;
@@ -362,6 +363,34 @@ class CustomDefAbstract extends \Application\DeskPRO\Domain\DomainObject impleme
         }
 
         return $subChoices;
+    }
+
+    /**
+     * @return array
+     */
+    public function getAllDescendants()
+    {
+        $descendants = [];
+        if ($this->getParent()) {
+            $root = $this->getParent();
+        } else {
+            $root = $this;
+        }
+
+        $iter = function (CustomDefAbstract $node, array $descendants) use ($root, &$iter) {
+            foreach ($root->getChildren() as $child) {
+                if ($child->getOption('parent_id') === $node->getId()) {
+                    $descendants[$child->getId()] = $child;
+                    $descendants                  = $descendants + $iter($child, $descendants);
+                }
+            }
+
+            return $descendants;
+        };
+
+        $descendants = $iter($this, $descendants);
+
+        return $descendants;
     }
 
     /**

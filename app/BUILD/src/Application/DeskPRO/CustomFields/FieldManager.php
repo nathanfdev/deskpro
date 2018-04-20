@@ -222,6 +222,18 @@ class FieldManager
     }
 
     /**
+     * Get all fields.
+     *
+     * @return array
+     */
+    public function getAllFields()
+    {
+        $this->getFields();
+
+        return $this->all_fields;
+    }
+
+    /**
      * Get a named system field.
      *
      * @param string $sys_name
