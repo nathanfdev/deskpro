@@ -164,6 +164,8 @@ services:
       - "@=service('doctrine.orm.entity_manager').getRepository('DeskPRO\\\\Bundle\\\\AppBundle\\\\Entity\\\\TicketFilterSet')"
       - "@=service('doctrine.orm.entity_manager').getRepository('Application\\\\DeskPRO\\\\Entity\\\\Person')"
       - "@=service('doctrine.orm.entity_manager').getRepository('Application\\\\DeskPRO\\\\Entity\\\\CustomDefTicket')"
+      - "@=service('doctrine.orm.entity_manager').getRepository('Application\\\\DeskPRO\\\\Entity\\\\CustomDefPerson')"
+      - "@=service('doctrine.orm.entity_manager').getRepository('Application\\\\DeskPRO\\\\Entity\\\\CustomDefOrganization')"
 
   ticketfilters.matcher_factory:
     class: DeskPRO\Bundle\AppBundle\TicketFilters\MatcherFactory

@@ -56,9 +56,11 @@ class MatcherFactory
             new TicketSlaTermsHandler(),
             new TicketDateTermsHandler(),
             new CustomFieldsTermsHandler(
-                $this->loader->getTicketFields(),
-                [],
-                new ChoiceFieldOptionMapper($this->container->get('doctrine.orm.entity_manager')->getRepository(CustomDefTicket::class))
+                $this->loader->getCustomFieldsSet(),
+                new ChoiceFieldOptionMapper(
+                    $this->loader->getCustomFieldsSet(),
+                    $this->container->get('doctrine.orm.entity_manager')->getRepository(CustomDefTicket::class)
+                )
             ),
             new TicketOwnContextTermsHandler($this->container->get('doctrine.dbal.read_search_connection')),
             new PersonTermsHandler($this->container->get('doctrine.orm.entity_manager')->getRepository(Person::class)),
@@ -96,7 +98,7 @@ class MatcherFactory
             $this->getTermHandlers(),
             $this->container->get('doctrine.dbal.read_search_connection'),
             TicketSqlMatcher::ACTIVE,
-            $this->loader->getTicketFields()
+            $this->loader->getCustomFieldsSet()
         );
 
         return $matcher;

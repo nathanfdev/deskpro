@@ -4,6 +4,7 @@ namespace DeskPRO\Bundle\AppBundle\TicketFilters\Terms;
 
 use Application\DeskPRO\Entity\CustomDefAbstract;
 use DeskPRO\Bundle\AppBundle\TicketFilters\Context;
+use DeskPRO\Bundle\AppBundle\TicketFilters\CustomFieldSet;
 use DeskPRO\Bundle\AppBundle\TicketFilters\Model\Entity\CustomData;
 use DeskPRO\Bundle\AppBundle\TicketFilters\Model\Entity\CustomField;
 use DeskPRO\Bundle\AppBundle\TicketFilters\Model\Entity\TicketModel;
@@ -11,22 +12,17 @@ use DeskPRO\Bundle\AppBundle\TicketFilters\OptionMappterInterface;
 use DeskPRO\Bundle\AppBundle\TicketFilters\OptValue\CompareValue;
 use DeskPRO\Bundle\AppBundle\TicketFilters\OptValue\OptValue;
 use DeskPRO\Bundle\AppBundle\TicketFilters\SqlBuilder\SqlCondition;
+use DeskPRO\Bundle\AppBundle\TicketFilters\TermFieldIds;
 use DeskPRO\Component\FilterQueryLanguage\Query\Node\Term;
 use DeskPRO\Component\FilterQueryLanguage\Query\Query;
 use DeskPRO\Component\Util\ListUtils;
-use DeskPRO\Component\Util\StringUtils;
 
 class CustomFieldsTermsHandler extends AbstractTermsHandler
 {
     /**
-     * @var CustomField[]
+     * @var CustomFieldSet
      */
-    private $customTicketFields = [];
-
-    /**
-     * @var CustomField[]
-     */
-    private $customPersonFields = [];
+    private $customFieldSet;
 
     /**
      * @var OptionMappterInterface
@@ -36,15 +32,12 @@ class CustomFieldsTermsHandler extends AbstractTermsHandler
     /**
      * Terms constructor.
      *
-     * @param CustomField[]          $customTicketFields
-     * @param CustomField[]          $customPersonFields
      * @param OptionMappterInterface $optionMappter
      */
-    public function __construct(array $customTicketFields = [], array $customPersonFields = [], OptionMappterInterface $optionMappter = null)
+    public function __construct(CustomFieldSet $customFieldSet, OptionMappterInterface $optionMappter = null)
     {
-        $this->customTicketFields = $customTicketFields;
-        $this->customPersonFields = $customPersonFields;
-        $this->optionMapper       = $optionMappter;
+        $this->customFieldSet = $customFieldSet;
+        $this->optionMapper   = $optionMappter;
     }
 
     /**
@@ -67,7 +60,7 @@ class CustomFieldsTermsHandler extends AbstractTermsHandler
      */
     public function doesTicketMatch($fieldId, $operator, OptValue $options, TicketModel $ticketModel, Context $context, Term $term)
     {
-        list($field, $type) = $this->getFieldPropsFromReference($fieldId);
+        list($realFieldId, $field, $type) = $this->customFieldSet->getFieldInfoById($fieldId);
 
         if ($type === 'ticket.data') {
             $dataCollection = $ticketModel->custom_fields;
@@ -162,7 +155,7 @@ class CustomFieldsTermsHandler extends AbstractTermsHandler
     public function buildQueryCondition($fieldId, $operator, OptValue $options, Context $context, Term $term)
     {
         /** @var $field CustomField */
-        list($field, $type) = $this->getFieldPropsFromReference($fieldId);
+        list($realFieldId, $field, $type) = $this->customFieldSet->getFieldInfoById($fieldId);
 
         if ($type === 'ticket.data') {
             $tableName = 'custom_data_ticket';
@@ -244,44 +237,11 @@ class CustomFieldsTermsHandler extends AbstractTermsHandler
     private function getOptionIdFromTitleValue($fieldId, $v)
     {
         /** @var $field CustomField */
-        list($field, $type) = $this->getFieldPropsFromReference($fieldId);
+        list($realFieldId, $field, $type) = $this->customFieldSet->getFieldInfoById($fieldId);
 
         $value = $this->optionMapper->getValue($type.'.'.$field->field, $v) ?: $v;
 
         return new CompareValue($value);
-    }
-
-    /**
-     * @param string $fieldIdRef e.g. ticket.data.some_field
-     *
-     * @return array
-     */
-    private function getFieldPropsFromReference($fieldIdRef)
-    {
-        if ($fieldAlias = StringUtils::removeFromStart(sprintf(Terms::TICKET_CUSTOM, ''), $fieldIdRef)) {
-            $fieldCollection = $this->customTicketFields;
-            $type            = 'ticket.data';
-        } elseif ($fieldAlias = StringUtils::removeFromStart(sprintf(Terms::PERSON_CUSTOM, ''), $fieldIdRef)) {
-            $fieldCollection = $this->customPersonFields;
-            $type            = 'ticket.person.data';
-        } else {
-            throw new \InvalidArgumentException('Unknown field type');
-        }
-
-        /** @var CustomField $field */
-        $field = ListUtils::first($fieldCollection, function (CustomField $f) use ($fieldAlias) {
-            return $f->field == $fieldAlias || in_array($fieldAlias, $f->aliases);
-        });
-
-        if (!$field) {
-            throw new \InvalidArgumentException('Unknown field');
-        }
-
-        return [
-            $field,
-            $type,
-            $fieldCollection,
-        ];
     }
 
     /**
@@ -290,14 +250,19 @@ class CustomFieldsTermsHandler extends AbstractTermsHandler
     public function getHandledFields()
     {
         return array_merge(
-            ListUtils::flatMap($this->customTicketFields, function (CustomField $f) {
+            ListUtils::flatMap($this->customFieldSet->customTicketFields, function (CustomField $f) {
                 return ListUtils::map(array_merge([$f->field], $f->aliases), function ($x) {
-                    return sprintf(Terms::TICKET_CUSTOM, $x);
+                    return TermFieldIds::getCustomFieldTermId(TermFieldIds::TICKET_CUSTOM, $x);
                 });
             }),
-            ListUtils::flatMap($this->customPersonFields, function (CustomField $f) {
+            ListUtils::flatMap($this->customFieldSet->customPersonFields, function (CustomField $f) {
                 return ListUtils::map(array_merge([$f->field], $f->aliases), function ($x) {
-                    return sprintf(Terms::PERSON_CUSTOM, $x);
+                    return TermFieldIds::getCustomFieldTermId(TermFieldIds::PERSON_CUSTOM, $x);
+                });
+            }),
+            ListUtils::flatMap($this->customFieldSet->customOrgFields, function (CustomField $f) {
+                return ListUtils::map(array_merge([$f->field], $f->aliases), function ($x) {
+                    return TermFieldIds::getCustomFieldTermId(TermFieldIds::ORG_CUSTOM, $x);
                 });
             })
         );

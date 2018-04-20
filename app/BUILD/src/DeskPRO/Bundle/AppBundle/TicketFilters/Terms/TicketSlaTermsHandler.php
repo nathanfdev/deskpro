@@ -6,6 +6,7 @@ use Application\DeskPRO\Entity\TicketSla;
 use DeskPRO\Bundle\AppBundle\TicketFilters\Context;
 use DeskPRO\Bundle\AppBundle\TicketFilters\Model\Entity\TicketModel;
 use DeskPRO\Bundle\AppBundle\TicketFilters\OptValue\OptValue;
+use DeskPRO\Bundle\AppBundle\TicketFilters\TermFieldIds;
 use DeskPRO\Component\FilterQueryLanguage\Query\Node\Term;
 use DeskPRO\Component\FilterQueryLanguage\Query\Query;
 
@@ -17,7 +18,7 @@ class TicketSlaTermsHandler extends AbstractTermsHandler
     public function getHandledFields()
     {
         return [
-            Terms::TICKET_SLAS,
+            TermFieldIds::TICKET_SLAS,
         ];
     }
 
@@ -29,19 +30,19 @@ class TicketSlaTermsHandler extends AbstractTermsHandler
         return [
             FunctionCompareDef::create()
                 ->setName('passingSlas')
-                ->setFields(Terms::TICKET_SLAS)
+                ->setFields(TermFieldIds::TICKET_SLAS)
                 ->setMatchFn('matchHasPassingSlas')
                 ->setOperators(Query::OP_HAS),
 
             FunctionCompareDef::create()
                 ->setName('warningSlas')
-                ->setFields(Terms::TICKET_SLAS)
+                ->setFields(TermFieldIds::TICKET_SLAS)
                 ->setMatchFn('matchHasWarningSlas')
                 ->setOperators(Query::OP_HAS),
 
             FunctionCompareDef::create()
                 ->setName('failedSlas')
-                ->setFields(Terms::TICKET_SLAS)
+                ->setFields(TermFieldIds::TICKET_SLAS)
                 ->setMatchFn('matchHasFailingSlas')
                 ->setOperators(Query::OP_HAS),
         ];
@@ -53,7 +54,7 @@ class TicketSlaTermsHandler extends AbstractTermsHandler
     public function doesTicketMatch($fieldId, $operator, OptValue $options, TicketModel $ticketModel, Context $context, Term $term)
     {
         switch ($fieldId) {
-            case Terms::TICKET_SLAS: $fieldValue = $ticketModel->id; break;
+            case TermFieldIds::TICKET_SLAS: $fieldValue = $ticketModel->id; break;
             default: throw new \InvalidArgumentException('Unknown field');
         }
 

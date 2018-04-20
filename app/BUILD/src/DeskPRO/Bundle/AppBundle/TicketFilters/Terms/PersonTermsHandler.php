@@ -6,6 +6,7 @@ use Application\DeskPRO\EntityRepository\Person as PersonRepos;
 use DeskPRO\Bundle\AppBundle\TicketFilters\Context;
 use DeskPRO\Bundle\AppBundle\TicketFilters\Model\Entity\TicketModel;
 use DeskPRO\Bundle\AppBundle\TicketFilters\OptValue\OptValue;
+use DeskPRO\Bundle\AppBundle\TicketFilters\TermFieldIds;
 use DeskPRO\Component\FilterQueryLanguage\Query\Node\Term;
 use DeskPRO\Component\Util\ListUtils;
 use Orb\Validator\StringEmail;
@@ -33,7 +34,7 @@ class PersonTermsHandler extends AbstractTermsHandler
     public function getHandledFields()
     {
         return [
-            Terms::PERSON_ID,
+            TermFieldIds::PERSON_ID,
             //Terms::PERSON_LABELS,
             //Terms::PERSON_USERGROUPS,
         ];
@@ -42,7 +43,7 @@ class PersonTermsHandler extends AbstractTermsHandler
     public function doesTicketMatch($fieldId, $operator, OptValue $options, TicketModel $ticketModel, Context $context, Term $term)
     {
         switch ($fieldId) {
-            case Terms::PERSON_ID:
+            case TermFieldIds::PERSON_ID:
                 $value = $this->normalizePersonId($options->getValue());
 
                 return $this->checkValue($ticketModel->person->id, $operator, $value);
@@ -55,7 +56,7 @@ class PersonTermsHandler extends AbstractTermsHandler
     public function buildQueryCondition($fieldId, $operator, OptValue $options, Context $context, Term $term)
     {
         switch ($fieldId) {
-            case Terms::PERSON_ID:
+            case TermFieldIds::PERSON_ID:
                 $value = $this->normalizePersonId($options->getValue());
 
                 return $this->checkValueQueryCondition('{tickets}.person_id', $operator, $value);

@@ -2,11 +2,11 @@
 
 namespace DpTest\Bundle\AppBundle\TicketFilters\Diff;
 
+use DeskPRO\Bundle\AppBundle\TicketFilters\CustomFieldSet;
 use DeskPRO\Bundle\AppBundle\TicketFilters\Diff\DiffEnv;
 use DeskPRO\Bundle\AppBundle\TicketFilters\Diff\FilterDiffer;
 use DeskPRO\Bundle\AppBundle\TicketFilters\Diff\FilterOp;
 use DeskPRO\Bundle\AppBundle\TicketFilters\Diff\TicketChange;
-use DeskPRO\Bundle\AppBundle\TicketFilters\Model\Agent;
 use DeskPRO\Bundle\AppBundle\TicketFilters\Model\Entity\CustomData;
 use DeskPRO\Bundle\AppBundle\TicketFilters\Model\Entity\CustomField;
 use DeskPRO\Bundle\AppBundle\TicketFilters\Model\Entity\TicketModel;
@@ -33,16 +33,18 @@ class FilterDifferTest extends \PHPUnit_Framework_TestCase
             new CustomField(5, 'toggle', ['my_toggle']),
         ];
 
+        $customFieldSet = new CustomFieldSet($customTicketFields);
+
         $resolver = new ValueResolver();
         $matcher  = new TicketMatcher($resolver, [
             new TicketBasicTermsHandler(),
-            new CustomFieldsTermsHandler($customTicketFields),
+            new CustomFieldsTermsHandler($customFieldSet),
         ]);
 
         $agents  = FilterData::getAgents();
         $filters = FilterData::getFilters();
 
-        $env = new DiffEnv($matcher, $agents, $filters, $customTicketFields);
+        $env = new DiffEnv($matcher, $agents, $filters, $customFieldSet);
 
         return $env;
     }

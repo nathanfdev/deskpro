@@ -6,6 +6,7 @@ use DeskPRO\Bundle\AppBundle\TicketFilters\Context;
 use DeskPRO\Bundle\AppBundle\TicketFilters\Model\Entity\TicketModel;
 use DeskPRO\Bundle\AppBundle\TicketFilters\OptValue\OptValue;
 use DeskPRO\Bundle\AppBundle\TicketFilters\SqlBuilder\SqlCondition;
+use DeskPRO\Bundle\AppBundle\TicketFilters\TermFieldIds;
 use DeskPRO\Component\FilterQueryLanguage\Query\Node\Term;
 use Doctrine\DBAL\Connection;
 
@@ -27,14 +28,14 @@ class TicketOwnContextTermsHandler extends AbstractTermsHandler
     public function getHandledFields()
     {
         return [
-            Terms::TICKET_STARRED,
+            TermFieldIds::TICKET_STARRED,
         ];
     }
 
     public function doesTicketMatch($fieldId, $operator, OptValue $options, TicketModel $ticketModel, Context $context, Term $term)
     {
         switch ($fieldId) {
-            case Terms::TICKET_STARRED:
+            case TermFieldIds::TICKET_STARRED:
                 if ($context->getAgentId() && $ticketModel->id) {
                     $flaggedWith = $this->db->fetchColumn('
                         SELECT color
@@ -55,7 +56,7 @@ class TicketOwnContextTermsHandler extends AbstractTermsHandler
     public function buildQueryCondition($fieldId, $operator, OptValue $options, Context $context, Term $term)
     {
         switch ($fieldId) {
-            case Terms::TICKET_STARRED:
+            case TermFieldIds::TICKET_STARRED:
                 $cond = new SqlCondition();
 
                 // no context, the filter makes no sense

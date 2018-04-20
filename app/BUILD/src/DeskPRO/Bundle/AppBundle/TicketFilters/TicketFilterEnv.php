@@ -77,7 +77,7 @@ class TicketFilterEnv
      */
     public function createSearchParams()
     {
-        $searchParams = new TicketSearchParams($this->loader->getTicketFields());
+        $searchParams = new TicketSearchParams($this->loader->getCustomFieldsSet());
 
         return $searchParams;
     }

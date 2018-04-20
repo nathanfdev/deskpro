@@ -12,7 +12,7 @@ use DeskPRO\Bundle\AppBundle\Annotation\ActionPermissions\Annotation\ApiModes;
 use DeskPRO\Bundle\AppBundle\Form\Type\Tickets\TicketType;
 use DeskPRO\Bundle\AppBundle\Security\Voter\PermissionGroups\PermissionGroupVoter;
 use DeskPRO\Bundle\AppBundle\Serializer\Annotation\SerializerView;
-use DeskPRO\Bundle\AppBundle\TicketFilters\Terms\Terms;
+use DeskPRO\Bundle\AppBundle\TicketFilters\Terms;
 use DeskPRO\Bundle\AppBundle\TicketFilters\TicketSearchParams;
 use DeskPRO\Component\FilterQueryLanguage\QueryUtil;
 use DeskPRO\Component\Util\ListUtils;
