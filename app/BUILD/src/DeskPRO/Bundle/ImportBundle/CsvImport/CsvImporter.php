@@ -7,12 +7,12 @@ use Application\DeskPRO\Entity\Language;
 use Application\DeskPRO\Entity\Person;
 use Application\DeskPRO\Translate\Translate;
 use Application\EmailBundle\SwiftMailer\Mailer;
+use Application\EmailBundle\SwiftMailer\MailerUtils;
 use DeskPRO\Bundle\ImportBundle\Model\Person as PersonModel;
 use DeskPRO\Bundle\ImportBundle\Model\PersonCustomDef as PersonCustomDefModel;
 use DeskPRO\Bundle\ImportBundle\Parser\Parser;
 use DeskPRO\Bundle\ImportBundle\Writer\Importer;
 use DeskPRO\Bundle\SendmailBundle\Factory\UserViewModelFactory;
-use DeskPRO\Bundle\SendmailBundle\Sender\EmailSender;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\EntityManager;
 use DpSys\Features;
@@ -43,6 +43,11 @@ class CsvImporter
     private $mailer;
 
     /**
+     * @var MailerUtils
+     */
+    private $mailerUtils;
+
+    /**
      * @var Translate
      */
     private $translator;
@@ -54,9 +59,9 @@ class CsvImporter
      * @param Importer             $importer
      * @param Parser               $parser
      * @param Mailer               $mailer
+     * @param MailerUtils          $mailerUtils
      * @param Translate            $translator
      * @param UserViewModelFactory $viewModelFactory
-     * @param EmailSender          $emailSender
      * @param Features             $featureFlags     // Temporary until SendmailBundle is permanently activated
      */
     public function __construct(
@@ -64,18 +69,18 @@ class CsvImporter
         Importer $importer,
         Parser $parser,
         Mailer $mailer,
+        MailerUtils $mailerUtils,
         Translate $translator,
         UserViewModelFactory $viewModelFactory,
-        EmailSender $emailSender,
         Features $featureFlags
     ) {
         $this->em               = $em;
         $this->importer         = $importer;
         $this->parser           = $parser;
         $this->mailer           = $mailer;
+        $this->mailerUtils      = $mailerUtils;
         $this->translator       = $translator;
         $this->viewModelFactory = $viewModelFactory;
-        $this->emailSender      = $emailSender;
         $this->featureFlags     = $featureFlags;
     }
 
@@ -260,16 +265,12 @@ class CsvImporter
             if ($this->featureFlags->hasBeta('email_templates')) {
                 $viewModel = $this->viewModelFactory
                     ->createRegisterWelcomeByAgentModel($person->getPlaintextPassword());
-                $this->emailSender->send($viewModel, ['to' => $person]);
+                $this->mailerUtils->sendModelWithPersonContext($person, $viewModel, ['to' => $person]);
             } else {
                 $message = $this->mailer->createMessage();
                 $message->setToPerson($person);
                 $message->setTemplate('DeskPRO:emails_user:register-welcome-byagent.html.twig', ['person' => $person]);
-                $this->translator->setTemporaryLanguage($person->getLanguage(), function () use ($message) {
-                    $message->prepare();
-                });
-
-                $this->mailer->send($message);
+                $this->mailerUtils->sendWithPersonContext($person, $message);
             }
         }
 

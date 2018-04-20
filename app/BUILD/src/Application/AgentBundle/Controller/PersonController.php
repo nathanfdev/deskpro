@@ -668,11 +668,16 @@ class PersonController extends AbstractController
                     $email = $person->getPrimaryEmailAddress();
 
                     if ($email) {
-                        if ($this->get('deskpro.feature_flags')->hasBeta('email_templates')) {
-                            $viewModel = $this->get('email.user_viewmodel_factory')
-                                ->createAgentChangedPasswordModel($person->getPlaintextPassword());
-                            $this->get('email.email_sender')
-                                ->send($viewModel, ['to' => $person]);
+                        if ($this->get('deskpro.feature_flags')->hasBeta('email_templates') and false) {
+                            $factory   = $this->get('email.user_viewmodel_factory');
+                            $viewModel = $this->get('brand_stack')->pushTemporary(
+                                $person->getBrands()->first(),
+                                function () use ($factory, $person) {
+                                    return $factory->createAgentChangedPasswordModel($person->getPlaintextPassword());
+                                }
+                            );
+                            $this->get('mailer.utils')
+                                ->sendModelWithPersonContext($person, $viewModel, ['to' => $person]);
                         } else {
                             $message = $this->container->getMailer()->createMessage();
                             $message->setTo($person->getPrimaryEmailAddress(), $person->getDisplayName());
@@ -680,11 +685,7 @@ class PersonController extends AbstractController
                                 'person' => $person,
                             ]);
 
-                            $this->container->getTranslator()->setTemporaryLanguage($person->getLanguage(), function () use ($message) {
-                                $message->prepare();
-                            });
-
-                            $this->container->getMailer()->send($message);
+                            $this->container->get('mailer.utils')->sendWithPersonContext($person, $message);
                         }
                     }
                 }

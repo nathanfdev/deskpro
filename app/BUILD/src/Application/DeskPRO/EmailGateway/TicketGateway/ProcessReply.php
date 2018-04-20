@@ -87,11 +87,7 @@ class ProcessReply extends ProcessAbstract
                     ]);
                     $message->setTo($this->reader->getFromAddress()->getEmail());
 
-                    App::$container->getTranslator()->setTemporaryLanguage($this->person->getLanguage(), function () use ($message) {
-                        $message->prepare();
-                    });
-
-                    App::getMailer()->send($message);
+                    App::$container->get('mailer.utils')->sendWithPersonContext($this->person, $message);
                 }
 
                 $this->setError('perm_insufficient');
@@ -138,7 +134,11 @@ class ProcessReply extends ProcessAbstract
             if (App::getContainer()->get('deskpro.feature_flags')->hasBeta('email_templates')) {
                 $viewModel = App::getContainer()->get('email.agent_viewmodel_factory')
                     ->createAgentErrorMarkerMissingModel($this->ticket, $this->reader->getSubject()->getSubjectUtf8());
-                App::getContainer()->get('email.email_sender')->send($viewModel, ['to' => $this->reader->getFromAddress()->getEmail()]);
+                App::getContainer()->get('mailer.utils')->sendModelWithPersonContext(
+                    $this->person,
+                    $viewModel,
+                    ['to' => $this->reader->getFromAddress()->getEmail()]
+                );
             } else {
                 $message = App::getMailer()->createMessage();
                 $message->setTemplate('DeskPRO:emails_agent:error-marker-missing.html.twig', [
@@ -148,11 +148,7 @@ class ProcessReply extends ProcessAbstract
                 ]);
                 $message->setTo($this->reader->getFromAddress()->getEmail());
 
-                App::$container->getTranslator()->setTemporaryLanguage($this->person->getLanguage(), function () use ($message) {
-                    $message->prepare();
-                });
-
-                App::getMailer()->send($message);
+                App::$container->get('mailer.utils')->sendWithPersonContext($this->person, $message);
             }
 
             return;
