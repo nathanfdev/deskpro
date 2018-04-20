@@ -128,8 +128,9 @@ class ReportsWidgetService
             if ($def->isChoiceType()) {
                 $choices = $def->getChoices();
                 $arr     = [];
-                $this->getChoices($choices, '', $arr);
-                $result[$def->getRawTitle()]                                                   = $arr;
+                $this->getChoices($choices, $def->getTitle(), $arr);
+                $result[$def->getRawTitle()][$def->getTitle()] = [$def->getTitle()];
+                $result[$def->getRawTitle()] += $arr;
                 $result[$def->getRawTitle()][DashboardWidgetManager::WIDGET_VALUE_FROM_REPORT] = ['value from report'];
             }
         }
@@ -149,7 +150,7 @@ class ReportsWidgetService
             $title                    = $prevTitle ? $prevTitle.' > ' : '';
             $result[$choice['title']] = [$title.$choice['title']];
             if (isset($choice['children'])) {
-                $this->getChoices($choice['children'], $choice['title'], $result);
+                $this->getChoices($choice['children'], $title.$choice['title'], $result);
             }
         }
     }
