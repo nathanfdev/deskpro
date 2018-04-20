@@ -53,7 +53,16 @@ abstract class AbstractRenderer implements ReportsRendererInterface
      */
     public function getColumnValue(array $row, $id)
     {
-        if (is_array($id) && isset($id['resultId'])) {
+        if (isset($id['resultId']) && is_array($id['resultId'])) {
+            $value = [];
+            foreach ($id['resultId'] as $resultId) {
+                $value[] = $resultId ? $row[$resultId - 1] : '';
+            }
+
+            return implode('', $value);
+        }
+
+        if (isset($id['resultId'])) {
             $index = $id['resultId'] - 1;
         } elseif (is_string($id) && !ctype_digit($id)) {
             $index = $id;
