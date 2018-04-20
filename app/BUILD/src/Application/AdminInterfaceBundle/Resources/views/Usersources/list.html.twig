@@ -12,10 +12,10 @@
 		<article>
 			<ul class="dp-item-list" ui-sortable="ListCtrl.sortedListOptions">
 				<li ng-repeat="source in ListCtrl.usersources"
-					dp-state-mark="{{ ng_var('ListCtrl.show_url') }}.{{ ng_var('source.app ? source.app.id : "deskpro"') }}"
+					dp-state-mark="{{ ng_var('ListCtrl.show_url') }}.{{ ng_var('source.app ? source.app.id : "deskpro-"+source.usersource.id') }}"
 					class="with-drag-handle"
 					data-id="{{ ng_var('source.usersource.id') }}">
-					<a ng-href="{{ ng_href_var('ListCtrl.show_url', '{id: source.app ? source.app.id : "deskpro" }') }}">
+					<a ng-href="{{ ng_href_var('ListCtrl.show_url', '{id: source.app ? source.app.id : "deskpro-"+source.usersource.id }') }}">
 						<aside style="display: inline-block">
 							<i class="fa fa-bars drag-handle"></i>
 							<span class="title-id" title="ID">#{{ ng_var('source.usersource.id') }}</span>

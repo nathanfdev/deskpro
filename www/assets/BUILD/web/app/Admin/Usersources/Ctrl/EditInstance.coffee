@@ -13,25 +13,31 @@ define ['Admin/Main/Ctrl/Base', 'DeskPRO/Util/Util', 'Admin/Usersources/Helper/U
       @usersourceType = Admin_Usersources_Helper_UsersourceTypeDecider.decide(@$state)
       @presaveCallback = null
       @app = null
+      @$scope.usersource_detailsv2 = {
+        brands: [],
+        is_all_brands: false
+
+      }
 
     getInstanceId: -> @$stateParams.id
-    getApp2Id: ->
-      if @instanceId == 'deskpro'
-        appId = @instanceId
-      else
-        appId = 'app-' + @instanceId
+    getApp2Id: -> 'app-' + @instanceId
 
     initialLoad: ->
       d = @$q.defer()
       d2 = @$q.defer()
+      d3 = @$q.defer()
 
       brands_promise = @Api2.sendGet('brands').then( (res) =>
         @brands = res.data.data
       )
 
-      usersource_detailsv2_promise = @Api2.sendGet('user_sources/'+ @usersourceType + '/' + @getApp2Id()).then( (res) =>
-        @$scope.usersource_detailsv2 = res.data.data
-      )
+      if @instanceId
+        @Api2.sendGet('user_sources/'+ @usersourceType + '/' + @getApp2Id()).then( (res) =>
+          @$scope.usersource_detailsv2 = res.data.data
+          d3.resolve()
+        )
+      else
+        d3.resolve()
 
       @listCtrl().refresh().then =>
         enabled = 0
@@ -42,32 +48,41 @@ define ['Admin/Main/Ctrl/Base', 'DeskPRO/Util/Util', 'Admin/Usersources/Helper/U
           enabled++ if s.is_enabled
         @$scope.can_disable_deskpro = enabled > 0
 
-      @Api.sendDataGet({
-        app: '/apps/instances/' + @instanceId
-      }).then( (result) =>
-        @app = result.data.app?.app
-
-        @$scope.app = @app
-        @$scope.appId = @app?.id
-
-        if @app
-          @Api.sendDataGet({
-            extra_info: '/usersources/' + @usersourceType + '/app-' + @instanceId + '/extra-details',
-            pack: '/apps/packages/' + @app.package_name
-          }).then( (result) =>
-            @pack = result.data.pack['package']
-            @$scope.usersource_details = result.data.extra_info?.usersource_details
-            @packageName = @pack.name
-            d.resolve()
-          )
-        else
+      if @instanceId
+        if @is_local
           @usersourceId = @instanceId
           @Api.sendGet('/usersources/' + @usersourceType + '/' + @usersourceId).then((result) =>
             @usersource = result.data.usersource
             d.resolve()
 
           )
-      )
+        else
+          @Api.sendDataGet({
+            app: '/apps/instances/' + @instanceId
+          }).then( (result) =>
+            @app = result.data.app?.app
+
+            @$scope.app = @app
+            @$scope.appId = @app?.id
+
+            if @app
+              @Api.sendDataGet({
+                extra_info: '/usersources/' + @usersourceType + '/app-' + @instanceId + '/extra-details',
+                pack: '/apps/packages/' + @app.package_name
+              }).then( (result) =>
+                @pack = result.data.pack['package']
+                @$scope.usersource_details = result.data.extra_info?.usersource_details
+                @packageName = @pack.name
+                d.resolve()
+              )
+            else
+              @usersourceId = @instanceId
+              @Api.sendGet('/usersources/' + @usersourceType + '/' + @usersourceId).then((result) =>
+                @usersource = result.data.usersource
+                d.resolve()
+
+              )
+          )
 
       d.promise.then( =>
         # we do nothing here if its a direct usersource, but if its an app we have some work t do
@@ -129,7 +144,7 @@ define ['Admin/Main/Ctrl/Base', 'DeskPRO/Util/Util', 'Admin/Usersources/Helper/U
             d2.resolve()
       )
 
-      return @$q.all([d2.promise, brands_promise, usersource_detailsv2_promise])
+      return @$q.all([d2.promise, d3.promise, brands_promise])
 
 
 
@@ -232,7 +247,10 @@ define ['Admin/Main/Ctrl/Base', 'DeskPRO/Util/Util', 'Admin/Usersources/Helper/U
     ###
     # SHow delete modal
     ###
-    startDelete: ->
+    startDelete: ($event) ->
+      if $event
+        $event.preventDefault()
+
       doDelete = =>
         @Api.sendDelete('/apps/instances/' + @app.id).success( =>
 

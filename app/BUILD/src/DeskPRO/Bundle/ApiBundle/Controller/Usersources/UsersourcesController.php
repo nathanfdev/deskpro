@@ -30,15 +30,14 @@ use Symfony\Component\HttpFoundation\Request;
  *      }
  *     }
  * )
- * @ApiUserContext("open", admin={"put"})
+ * @ApiUserContext("open", admin={"put", "post", "delete"})
  */
 class UsersourcesController extends CrudController
 {
-    public static $exposeOnly = ['get', 'put', 'list', 'count'];
-    public static $entity     = Usersource::class;
-    public static $type       = UsersourceType::class;
-    public static $listSort   = 'display_order';
-    public static $listOrder  = 'asc';
+    public static $entity    = Usersource::class;
+    public static $type      = UsersourceType::class;
+    public static $listSort  = 'display_order';
+    public static $listOrder = 'asc';
 
     /**
      * @ApiDoc(
@@ -47,7 +46,7 @@ class UsersourcesController extends CrudController
      *      requirements={
      *          {
      *              "name"="id",
-     *              "requirement"="\d+|app-\d+|deskpro",
+     *              "requirement"="\d+|app-\d+",
      *              "description"="The id of the resource",
      *              "dataType"="integer"
      *          }
@@ -57,7 +56,7 @@ class UsersourcesController extends CrudController
      *          404="Not Found error will returned in case we can't find entity with specified ID"
      *      }
      * )
-     * @Rest\Get("/{id}", requirements={"id"="\d+|app-\d+|deskpro"})
+     * @Rest\Get("/{id}", requirements={"id"="\d+|app-\d+"})
      *
      * @param Request $request
      * @param int     $id
@@ -76,7 +75,7 @@ class UsersourcesController extends CrudController
      *      requirements={
      *          {
      *              "name"="id",
-     *              "requirement"="\d+|app-\d+|deskpro",
+     *              "requirement"="\d+|app-\d+",
      *              "description"="The id of the resource",
      *              "dataType"="integer"
      *          }
@@ -86,7 +85,7 @@ class UsersourcesController extends CrudController
      *          400="We will return this in case your request was malformed",
      *      }
      * )
-     * @Rest\Put("/{id}", requirements={"id"="\d+|app-\d+|deskpro"})
+     * @Rest\Put("/{id}", requirements={"id"="\d+|app-\d+"})
      *
      * @param int     $id
      * @param Request $request
@@ -158,13 +157,7 @@ class UsersourcesController extends CrudController
     {
         $context = $request->attributes->get('context');
 
-        if ($id === 'deskpro') {
-            if (!$entity = $this->getManager()->getRepository(Usersource::class)->findOneBy(['app' => null, 'type' => $context])) {
-                throw $this->createNotFoundException($this->createEntityNotFoundExceptionMessage(Usersource::class, $id));
-            }
-
-            return $entity;
-        } elseif (preg_match('/^app-(\d+)$/', $id, $matches)) {
+        if (preg_match('/^app-(\d+)$/', $id, $matches)) {
             list(, $appId) = $matches;
 
             if (!$entity = $this->getManager()->getRepository(Usersource::class)->findOneBy(['app' => $appId, 'type' => $context])) {
