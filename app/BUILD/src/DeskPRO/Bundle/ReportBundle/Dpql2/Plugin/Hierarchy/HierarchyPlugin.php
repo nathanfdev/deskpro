@@ -4,6 +4,7 @@ namespace DeskPRO\Bundle\ReportBundle\Dpql2\Plugin\Hierarchy;
 
 use Application\DeskPRO\Entity\Hierarchy\Hierarchical;
 use DeskPRO\Bundle\ReportBundle\Dpql2\DpqlException;
+use DeskPRO\Bundle\ReportBundle\Dpql2\Helper\CustomDataHelper;
 use DeskPRO\Bundle\ReportBundle\Dpql2\Plugin\PluginInterface;
 use DeskPRO\Bundle\ReportBundle\Dpql2\SqlSelect;
 use DeskPRO\Bundle\ReportBundle\Dpql2\Statement\Part\Column;
@@ -67,17 +68,28 @@ class HierarchyPlugin implements PluginInterface
     private $forceHierarchy = false;
 
     /**
+     * @var CustomDataHelper
+     */
+    private $customDataHelper;
+
+    /**
      * Constructor.
      *
      * @param Connection       $connection
      * @param HierarchySorting $sorting
      * @param SelectPart       $query
+     * @param CustomDataHelper $customDataHelper
      */
-    public function __construct(Connection $connection, HierarchySorting $sorting, SelectPart $query)
-    {
-        $this->connection = $connection;
-        $this->sorting    = $sorting;
-        $this->query      = $query;
+    public function __construct(
+        Connection $connection,
+        HierarchySorting $sorting,
+        SelectPart $query,
+        CustomDataHelper $customDataHelper
+    ) {
+        $this->connection       = $connection;
+        $this->sorting          = $sorting;
+        $this->query            = $query;
+        $this->customDataHelper = $customDataHelper;
     }
 
     /**
@@ -293,24 +305,44 @@ class HierarchyPlugin implements PluginInterface
      */
     public function collectChildrenIds()
     {
-        $rootId     = $this->hierarchyDescendsFromId;
-        $repository = $this->query->getRepositoryByTable($this->hierarchyDescendsFromTable);
+        $rootId              = $this->hierarchyDescendsFromId;
+        $repository          = $this->query->getRepositoryByTable($this->hierarchyDescendsFromTable);
+        $customDataHierarchy = false;
+
+        if (strpos($this->hierarchyDescendsFromTable, 'custom_def_') === false) {
+            $root = $repository->find($rootId);
+        } else {
+            $customDataHierarchy = true;
+            $manager             = $this->customDataHelper->getFieldManager($repository->getTableName());
+            $root                = null;
+            foreach ($manager->getAllFields() as $field) {
+                if ($field['title'] === $this->hierarchyDescendsFromId) {
+                    $root = $field;
+                    break;
+                }
+            }
+        }
 
         /** @var Hierarchical $root */
-        if (!$root = $repository->find($rootId)) {
-            return [];
+        if (!$root) {
+            return [0]; // this prevents query from failing with wrong sql error
         }
+
         if (!$root instanceof Hierarchical) {
             throw new DpqlException("{$this->hierarchyDescendsFromTable} is not a Hierarchical entity");
         }
 
-        $children                        = $root->getChildren();
+        if (!$customDataHierarchy) {
+            $children = $root->getChildren();
+        } else {
+            $children = $root->getAllDescendants();
+        }
         is_array($children) or $children = $children->toArray();
         $children                        = array_map(function (Hierarchical $entity) {
             return $entity->getId();
         }, $children);
 
-        return $children;
+        return !empty($children) ? $children : [0]; // this prevents query from failing with wrong sql error
     }
 
     /**
