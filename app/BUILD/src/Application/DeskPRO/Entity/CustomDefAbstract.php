@@ -363,7 +363,7 @@ class CustomDefAbstract extends \Application\DeskPRO\Domain\DomainObject impleme
 
         $iter = function (CustomDefAbstract $node, array $descendants) use ($root, &$iter) {
             foreach ($root->getChildren() as $child) {
-                if ($child->getOption('parent_id') === $node->getId()) {
+                if ($child->getOption('parent_id') === $node->getId() || $child->getParentId() === $node->getId()) {
                     $descendants[$child->getId()] = $child;
                     $descendants                  = $descendants + $iter($child, $descendants);
                 }
