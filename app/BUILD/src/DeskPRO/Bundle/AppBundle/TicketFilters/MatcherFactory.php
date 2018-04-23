@@ -89,7 +89,7 @@ class MatcherFactory
      *
      * @return TicketSqlMatcher
      */
-    public function createSqlMatcher()
+    public function createSqlMatcher($activeOnly = true)
     {
         $resolver = new ValueResolver();
 
@@ -97,7 +97,7 @@ class MatcherFactory
             $resolver,
             $this->getTermHandlers(),
             $this->container->get('doctrine.dbal.read_search_connection'),
-            TicketSqlMatcher::ACTIVE,
+            $activeOnly ? TicketSqlMatcher::ACTIVE : TicketSqlMatcher::ALL,
             $this->loader->getCustomFieldsSet()
         );
 

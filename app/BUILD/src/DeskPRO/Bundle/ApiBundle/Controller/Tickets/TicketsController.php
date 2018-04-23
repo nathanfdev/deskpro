@@ -243,6 +243,11 @@ class TicketsController extends AbstractTicketsController
                 $orderBy = TicketSearchParams::ORDER_ID;
             }
 
+            // default to searching non-hidden
+            if (!isset($params['status']) && !isset($params['not_status'])) {
+                $params['not_status'] = 'hidden';
+            }
+
             foreach ($params as $field => $value) {
                 $op          = '=';
                 $valueQuoted = null;
@@ -399,7 +404,7 @@ class TicketsController extends AbstractTicketsController
             }
 
             $parser   = $this->container->get('ticketfilters.queryparser');
-            $searcher = $ticketFilters->getSearcher();
+            $searcher = $ticketFilters->getArchiveSearcher();
             $qb       = $searcher
                 ->getIdsQueryBuilder($parser->parseQuery($searchQuery), $context, $searchParams)
                 ->setMaxResults(1000);

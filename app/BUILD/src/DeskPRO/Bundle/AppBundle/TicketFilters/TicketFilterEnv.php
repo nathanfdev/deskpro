@@ -24,6 +24,11 @@ class TicketFilterEnv
     private $ticketSearcher;
 
     /**
+     * @var TicketSqlMatcher
+     */
+    private $ticketSearcherArchive;
+
+    /**
      * @var TicketMatcher
      */
     private $ticketMatcher;
@@ -92,6 +97,22 @@ class TicketFilterEnv
         }
 
         return $this->ticketSearcher;
+    }
+
+    /**
+     * Creates a searcher that searches all tickets, even archived.
+     *
+     * @throws \Exception
+     *
+     * @return TicketSqlMatcher
+     */
+    public function getArchiveSearcher()
+    {
+        if (!$this->ticketSearcherArchive) {
+            $this->ticketSearcherArchive = $this->matcherFactory->createSqlMatcher(false);
+        }
+
+        return $this->ticketSearcherArchive;
     }
 
     /**
