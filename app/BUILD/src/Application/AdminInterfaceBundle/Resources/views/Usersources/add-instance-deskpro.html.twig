@@ -1,5 +1,4 @@
 <form class="form-horizontal dp-form" role="form" name="form_props" ng-submit="form_props.$valid && Ctrl.saveUsersource()">
-
     <section class="dp-paneblock dp-listpane">
         <article class="form-horizontal dp-form">
             <div class="panel panel-fill indent">
@@ -234,11 +233,8 @@
         <footer>
             <div class="dp-content">
                 <div class="dp-btn-controls" ng-hide="form_props.$attempted && form_props.$invalid">
-                    <div class="dp-delete-control">
-                        <button class="btn btn-danger" ng-click="Ctrl.startDelete($event);">Uninstall</button>
-                    </div>
                     <div dp-hide-spinning="saving_settings">
-                        <button class="btn btn-primary" dp-submit-form>{{ phrase('agent.general.save') }}</button>
+                        <button class="btn btn-primary" dp-submit-form>{{ phrase('agent.general.create') }}</button>
                     </div>
                     <div dp-show-spinning="saving_settings">
                         <i class="spinner-flat"></i>

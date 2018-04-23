@@ -1,17 +1,21 @@
-define ['Admin/Usersources/Ctrl/EditInstance', 'DeskPRO/Util/Util']
-, (Admin_Usersources_Ctrl_EditInstance, Util) ->
-  class Admin_Usersources_Ctrl_EditDeskproInstance extends Admin_Usersources_Ctrl_EditInstance
-    @CTRL_ID   = 'Admin_Usersources_Ctrl_EditDeskproInstance'
+define ['Admin/Usersources/Ctrl/EditDeskproInstance', 'DeskPRO/Util/Util']
+, (Admin_Usersources_Ctrl_EditDeskproInstance, Util) ->
+  class Admin_Usersources_Ctrl_AddDeskproInstance extends Admin_Usersources_Ctrl_EditDeskproInstance
+    @CTRL_ID   = 'Admin_Usersources_Ctrl_AddDeskproInstance'
     @CTRL_AS   = 'Ctrl'
     @DEPS      = ['$http', 'dpTemplateManager']
 
-    getApp2Id: -> @instanceId
+    getInstanceId: -> null
     initialLoad: ->
-      @is_local = true
-      p = super()
-      @$q.all([p, @loadPasswordSettings(), @loadRegSettings()]).then( =>
-        @usersource.is_disabled = !@usersource.is_enabled
-      )
+      @usersource = {
+        title: 'Deskpro'
+        is_disabled: false
+        options: {
+          reg_enabled: true
+        }
+      }
+
+      super()
 
     doSaveUsersource: ->
       @usersource.is_enabled = !@usersource.is_disabled;
@@ -105,41 +109,22 @@ define ['Admin/Usersources/Ctrl/EditInstance', 'DeskPRO/Util/Util']
 
       @Api.sendPostJson('/registration_settings', postData)
 
-    ###
-    # SHow delete modal
-    ###
-    startDelete: ($event) ->
-      if $event
-        $event.preventDefault()
+    doSaveUsersource: ->
+      postData = {
+        title: @usersource.title || 'Deskpro',
+        is_enabled: @usersource.is_enabled
+        options: @usersource.options
+        brands: @$scope.usersource_detailsv2.brands
+        is_all_brands: @$scope.usersource_detailsv2.is_all_brands
+      }
 
-      doDelete = =>
-        @Api2.sendDelete('user_sources/'+ @usersourceType + '/' + @getApp2Id()).success( =>
-
-          # If we are viewing with the parent list, we need to remove this
-          # app from the list
+      @Api2.sendPostJson('/user_sources/' + @usersourceType, postData).then(
+        =>
           @listCtrl().refresh()
+          @Growl.success @getRegisteredMessage 'saved_settings'
+        (res) =>
+          msg = @getRegisteredMessage(res.data.error_code) || res.data.error_message || ''
+          @Growl.error msg
+      )
 
-          # close this view
-          @$state.go('^')
-        )
-
-      @$modal.open({
-        templateUrl: @getTemplatePath('Usersources/deskpro-delete-modal.html'),
-        controller: ['app', '$scope', '$modalInstance', (app, $scope, $modalInstance) ->
-          $scope.app = app
-          $scope.dismiss = ->
-            $modalInstance.close()
-
-          $scope.confirm = ->
-            $scope.is_loading = true
-            doDelete().then(->
-              $modalInstance.close()
-            )
-        ],
-        resolve: {
-          app: =>
-            return @app
-        }
-      })
-
-  Admin_Usersources_Ctrl_EditDeskproInstance.EXPORT_CTRL()
+  Admin_Usersources_Ctrl_AddDeskproInstance.EXPORT_CTRL()

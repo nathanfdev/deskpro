@@ -48,6 +48,16 @@ class CsvImporter
     private $mailerUtils;
 
     /**
+     * @var UserViewModelFactory
+     */
+    private $viewModelFactory;
+
+    /**
+     * @var Features
+     */
+    private $featureFlags;
+
+    /**
      * @var Translate
      */
     private $translator;
@@ -65,14 +75,14 @@ class CsvImporter
      * @param Features             $featureFlags     // Temporary until SendmailBundle is permanently activated
      */
     public function __construct(
-        EntityManager $em,
-        Importer $importer,
-        Parser $parser,
-        Mailer $mailer,
-        MailerUtils $mailerUtils,
-        Translate $translator,
+        EntityManager        $em,
+        Importer             $importer,
+        Parser               $parser,
+        Mailer               $mailer,
+        MailerUtils          $mailerUtils,
+        Translate            $translator,
         UserViewModelFactory $viewModelFactory,
-        Features $featureFlags
+        Features             $featureFlags
     ) {
         $this->em               = $em;
         $this->importer         = $importer;

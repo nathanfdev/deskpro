@@ -2,6 +2,23 @@
 {% block editpane_content %}
 	<section class="dp-paneblock dp-editpane">
 		<ul class="dp-item-list dp-icon-list compact">
+			<li ng-if="NewCtrl.usersourceType == 'user'">
+				<aside>
+					<a href="{{ ng_href_var('install_deskpro_url') }}"><img
+								ng-src="{{ asset('images/dp-logo-48.png') }}" alt="Icon" /></a>
+				</aside>
+				<div class="content">
+					<h4><a href="{{ ng_href_var('install_deskpro_url') }}"><span
+									class="title-text">Dekspro</span></a></h4>
+
+					<p class="info">
+						by Dekspro &middot; <a
+								ng-href="https://deskpro.com">Website</a>
+					</p>
+
+					<p>Enables local Deskpro authentication.</p>
+				</div>
+			</li>
 			<li ng-repeat="package in NewCtrl.packages">
 
 				<aside>

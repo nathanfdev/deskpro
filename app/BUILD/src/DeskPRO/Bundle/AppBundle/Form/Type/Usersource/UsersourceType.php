@@ -4,9 +4,12 @@ namespace DeskPRO\Bundle\AppBundle\Form\Type\Usersource;
 
 use Application\DeskPRO\Entity\Brand;
 use Application\DeskPRO\Entity\Usersource;
+use Application\DeskPRO\Usersource\Adapter\DeskPRO;
 use DeskPRO\Bundle\AppBundle\Form\Type\ApiBooleanType;
+use DeskPRO\Bundle\AppBundle\Form\Type\JsonArrayType;
 use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 use Symfony\Component\Form\AbstractType;
+use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\Form\FormEvent;
 use Symfony\Component\Form\FormEvents;
@@ -22,6 +25,18 @@ class UsersourceType extends AbstractType
      */
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
+        $builder
+            ->add('title', TextType::class, [
+                'required' => true,
+            ])
+            ->add('is_enabled', ApiBooleanType::class, [
+                'required' => false,
+            ])
+            ->add('options', JsonArrayType::class, [
+                'required' => false,
+            ])
+        ;
+
         // only user context can have brands
         if ($options['context'] === 'user') {
             $builder
@@ -65,6 +80,12 @@ class UsersourceType extends AbstractType
 
         if ($data instanceof Usersource) {
             $data->setType($options['context']);
+
+            // allow to create just local usersources because they don't have an app reference,
+            // others are installed via apps controller
+            if (!$data->getId()) {
+                $data->setSourceType(DeskPRO::class);
+            }
 
             // agent usersources are not brand dependant
             if ($data->getType() === 'agent') {
