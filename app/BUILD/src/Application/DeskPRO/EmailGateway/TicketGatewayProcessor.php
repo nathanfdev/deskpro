@@ -21,7 +21,6 @@ use Application\DeskPRO\EmailGateway\TicketGateway\ProcessAgentFwd;
 use Application\DeskPRO\EmailGateway\TicketGateway\ProcessNew;
 use Application\DeskPRO\EmailGateway\TicketGateway\ProcessReply;
 use Application\DeskPRO\EmailGateway\TicketGateway\TicketIncomingEmail;
-use Application\DeskPRO\Entity\EmailAccount;
 use Application\DeskPRO\Entity\EmailSource;
 use Application\DeskPRO\Entity\Person;
 use Application\DeskPRO\Entity\TmpData;
@@ -220,12 +219,20 @@ class TicketGatewayProcessor extends AbstractGatewayProcessor
             if (!$person) {
                 $this->logMessage('[TicketGatewayProcessor] No existing person found, will try and create it');
                 $person = $personProcessor->createPerson($this->reader->getFromAddress());
-                $brand  = $this->account->getBrands()->first();
-                if ($brand) {
-                    $person->addBrand($brand);
-                    $this->container->getEm()->flush($person);
-                }
                 $this->logMessage('[TicketGatewayProcessor] Person ID is '.$person->id);
+            }
+
+            $brand = $ticket->getBrand();
+            if ($brand) {
+                $person->addBrand($brand);
+                $this->container->getEm()->persist($person);
+                $this->container->getEm()->flush($person);
+                $this->logMessage("Add Person #{$person->id} to Ticket Brand #{$brand->id}");
+            } elseif (!$personProcessor->isPersonAssociatedWithAccountBrands($this->account, $person)) {
+                $brand = $personProcessor->associatePersonWithAccountBrand($this->account, $person, $forceRegEnabled = false);
+                if ($brand) {
+                    $this->logMessage("Add Person #{$person->id} to Account Brand #{$brand->id}");
+                }
             }
 
             if ($person && !$person->is_agent && !$isBounce) {
@@ -496,7 +503,7 @@ class TicketGatewayProcessor extends AbstractGatewayProcessor
 
         // todo injection
         $translator = $this->container->getTranslator();
-        $reply_proc = new ProcessReply($ticket, $person, $ticket_email, $translator);
+        $reply_proc = new ProcessReply($this->account, $ticket, $person, $ticket_email, $translator);
         $reply_proc->setLogger($this->logger);
 
         if (
@@ -555,24 +562,26 @@ class TicketGatewayProcessor extends AbstractGatewayProcessor
 
         if ($person) {
             $this->logMessage('[TicketGatewayProcessor] Found existing person: '.$person['id']);
-            if (!$this->isPersonAssociatedWithAccountBrands($person, $this->account)) {
-                $this->logMessage('[TicketGatewayProcessor] Person is not associated with brands for account: '.$this->account['id']);
-                if ($brand = $this->getFirstAccountBrandEnabledForRegistration($this->account, $person->is_agent ? 'agent' : 'user')) {
-                    $this->logMessage('[TicketGatewayProcessor] Associate User with Brand with Usersource enabled for registration: '.$brand['id']);
-                    $person->addBrand($brand);
-                    $this->container->getEm()->flush($person);
+            if (!$person_processor->isPersonAssociatedWithAccountBrands($this->account, $person)) {
+                $this->logMessage('[TicketGatewayProcessor] Person is not associated with brands for account: #'.$this->account['id']);
+                $brand = $person_processor->associatePersonWithAccountBrand($this->account, $person);
+                if ($brand) {
+                    $this->logMessage("Add Person #{$person->id} to Account Brand #{$brand->id}");
                     $person_processor->passPerson($this->reader->getFromAddress(), $person);
                 } else {
-                    $this->logMessage('[TicketGatewayProcessor] Can\'t find Brand with Usersource enabled for registration. Reject email.');
+                    $this->logMessage("Can't add Person #{$person->id} to Account Brand.");
                     $person = false;
                 }
             }
         } else {
-            if ($brand = $this->getFirstAccountBrandEnabledForRegistration($this->account, 'user')) {
+            if ($person_processor->canAssociatePersonWithAccountBrands($this->account)) {
                 $person = $person_processor->createPerson($this->reader->getFromAddress());
-                $person->addBrand($brand);
-                $this->container->getEm()->flush($person);
                 $this->logMessage('[TicketGatewayProcessor] Created new contact: '.$person['id']);
+
+                $brand = $person_processor->associatePersonWithAccountBrand($this->account, $person);
+                if ($brand) {
+                    $this->logMessage("Add Person #{$person->id} to Account Brand #{$brand->id}");
+                }
             }
         }
 
@@ -742,49 +751,6 @@ class TicketGatewayProcessor extends AbstractGatewayProcessor
 
             return $created['ticket'];
         }
-    }
-
-    /**
-     * @param Person       $person
-     * @param EmailAccount $account
-     *
-     * @return bool
-     */
-    private function isPersonAssociatedWithAccountBrands(Person $person, EmailAccount $account)
-    {
-        return $person->hasOneOfTheBrands($account->getBrands());
-    }
-
-    /**
-     * Try to find first Account Brand with `reg_enabled` UserSource
-     * Return found Brand or false.
-     *
-     * @param EmailAccount $account
-     * @param string       $interface 'user'|'agent'
-     *
-     * @return bool|Brand
-     */
-    private function getFirstAccountBrandEnabledForRegistration(EmailAccount $account, $interface)
-    {
-        /** @var \Application\DeskPRO\Usersource\UsersourceManager $usersourceManager */
-        $usersourceManager = $this->container->getSystemService('usersource_manager');
-
-        // find first Brand with `reg_enabled` Usersource
-        foreach ($account->getBrands() as $brand) {
-            if (
-                $usersourceManager
-                    ->getAll()
-                    ->forInterface($interface)
-                    ->forBrand($brand)
-                    ->withNoApp()
-                    ->mustHaveRegEnabled()
-                    ->getFirstOrNull()
-            ) {
-                return $brand;
-            }
-        }
-
-        return false;
     }
 
     /**

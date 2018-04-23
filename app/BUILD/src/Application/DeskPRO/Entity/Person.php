@@ -1177,8 +1177,12 @@ class Person extends DomainObject implements
      *
      * @return self
      */
-    public function addBrand(Brand $brand)
+    public function addBrand(Brand $brand = null)
     {
+        if (!$brand) {
+            return $this;
+        }
+
         if (!$this->brands->contains($brand)) {
             $this->brands->add($brand);
             $this->_onPropertyChanged('brands', $this->brands, $this->brands);

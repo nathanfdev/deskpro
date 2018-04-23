@@ -35,11 +35,6 @@ class ProcessAgentFwd extends ProcessAbstract
     protected $ticket_email;
 
     /**
-     * @var \Application\DeskPRO\Entity\EmailAccount
-     */
-    protected $account;
-
-    /**
      * @var \Orb\Input\Cleaner\Cleaner
      */
     protected $cleaner;
@@ -177,6 +172,12 @@ class ProcessAgentFwd extends ProcessAbstract
             $personProcessor->passPerson($personEmailItem, $user);
         } else {
             $user = $personProcessor->createPerson($personEmailItem);
+        }
+        if (!$personProcessor->isPersonAssociatedWithAccountBrands($this->account, $user)) {
+            $brand = $personProcessor->associatePersonWithAccountBrand($this->account, $user, $forceRegEnabled = false);
+            if ($brand) {
+                $this->logMessage("Add Person #{$user->id} to Account Brand #{$brand->id}");
+            }
         }
 
         //------------------------------
@@ -493,6 +494,12 @@ class ProcessAgentFwd extends ProcessAbstract
             $personProcessor->passPerson($personEmailItem, $user);
         } else {
             $user = $personProcessor->createPerson($personEmailItem);
+        }
+        if (!$personProcessor->isPersonAssociatedWithAccountBrands($this->account, $user)) {
+            $brand = $personProcessor->associatePersonWithAccountBrand($this->account, $user, $forceRegEnabled = false);
+            if ($brand) {
+                $this->logMessage("Add Person #{$user->id} to Account Brand #{$brand->id}");
+            }
         }
 
         //------------------------------
