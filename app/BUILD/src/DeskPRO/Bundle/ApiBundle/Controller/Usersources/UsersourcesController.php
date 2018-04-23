@@ -21,7 +21,7 @@ use Symfony\Component\HttpFoundation\Request;
  * @Rest\Route("/user_sources/{context}", requirements={"context": "(agent|user)"})
  * @ApiDoc(target="all", section="Usersources", output="DeskPRO\Bundle\AppBundle\Serializer\Model\Usersource")
  * @ApiDoc(
- *     target="putAction",
+ *     target="postAction, putAction",
  *     input={
  *      "class"="DeskPRO\Bundle\AppBundle\Form\Type\Usersource\UsersourceType",
  *      "options"={

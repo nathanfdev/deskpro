@@ -26,8 +26,3 @@ Feature: /user_sources endpoint
   Scenario: I can't get a usersource by app instance id with wrong context
     When I send a GET request to "/api/v2/user_sources/user/app-{i1}"
     Then the response status code should be 404
-
-  Scenario: I get local usersource
-    When I send a GET request to "/api/v2/user_sources/user/deskpro"
-    Then the response status code should be 200
-    And the JSON node "data.id" should be equal to "{u3}"
