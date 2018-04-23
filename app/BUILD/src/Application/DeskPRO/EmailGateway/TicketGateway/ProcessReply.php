@@ -9,6 +9,7 @@
 namespace Application\DeskPRO\EmailGateway\TicketGateway;
 
 use Application\DeskPRO\App;
+use Application\DeskPRO\Entity\EmailAccount;
 use Application\DeskPRO\Entity\Person;
 use Application\DeskPRO\Entity\Ticket;
 use Application\DeskPRO\Entity\TicketAttachment;
@@ -36,12 +37,14 @@ class ProcessReply extends ProcessAbstract
     protected $cleaner;
 
     /**
+     * @param EmailAccount        $account
      * @param Ticket              $ticket
      * @param Person              $person
      * @param TicketIncomingEmail $ticket_email
      */
-    public function __construct(Ticket $ticket, Person $person, TicketIncomingEmail $ticket_email, Translate $translator)
+    public function __construct(EmailAccount $account, Ticket $ticket, Person $person, TicketIncomingEmail $ticket_email, Translate $translator)
     {
+        $this->account      = $account;
         $this->ticket       = $ticket;
         $this->person       = $person;
         $this->ticket_email = $ticket_email;

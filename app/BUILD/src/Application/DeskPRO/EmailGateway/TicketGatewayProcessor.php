@@ -222,6 +222,19 @@ class TicketGatewayProcessor extends AbstractGatewayProcessor
                 $this->logMessage('[TicketGatewayProcessor] Person ID is '.$person->id);
             }
 
+            $brand = $ticket->getBrand();
+            if ($brand) {
+                $person->addBrand($brand);
+                $this->container->getEm()->persist($person);
+                $this->container->getEm()->flush($person);
+                $this->logMessage("[TicketGatewayProcessor] Add Person #{$person->id} to Ticket Brand #{$brand->id}");
+            } elseif (!$personProcessor->isPersonAssociatedWithAccountBrands($this->account, $person)) {
+                $brand = $personProcessor->associatePersonWithAccountBrand($this->account, $person, $forceRegEnabled = false);
+                if ($brand) {
+                    $this->logMessage("[TicketGatewayProcessor] Add Person #{$person->id} to Account Brand #{$brand->id}");
+                }
+            }
+
             if ($person && !$person->is_agent && !$isBounce) {
                 $ticket->addParticipantPerson($person);
             }
@@ -490,7 +503,7 @@ class TicketGatewayProcessor extends AbstractGatewayProcessor
 
         // todo injection
         $translator = $this->container->getTranslator();
-        $reply_proc = new ProcessReply($ticket, $person, $ticket_email, $translator);
+        $reply_proc = new ProcessReply($this->account, $ticket, $person, $ticket_email, $translator);
         $reply_proc->setLogger($this->logger);
 
         if (
@@ -549,11 +562,26 @@ class TicketGatewayProcessor extends AbstractGatewayProcessor
 
         if ($person) {
             $this->logMessage('[TicketGatewayProcessor] Found existing person: '.$person['id']);
-            $person_processor->passPerson($this->reader->getFromAddress(), $person);
+            if (!$person_processor->isPersonAssociatedWithAccountBrands($this->account, $person)) {
+                $this->logMessage('[TicketGatewayProcessor] Person is not associated with brands for account: #'.$this->account['id']);
+                $brand = $person_processor->associatePersonWithAccountBrand($this->account, $person);
+                if ($brand) {
+                    $this->logMessage("[TicketGatewayProcessor] Add Person #{$person->id} to Account Brand #{$brand->id}");
+                    $person_processor->passPerson($this->reader->getFromAddress(), $person);
+                } else {
+                    $this->logMessage("[TicketGatewayProcessor] Can't add Person #{$person->id} to Account Brand.");
+                    $person = false;
+                }
+            }
         } else {
-            if ($this->container->get('dp_authentication_manager.user')->isRegistrationFormVisible()) {
+            if ($person_processor->canAssociatePersonWithAccountBrands($this->account)) {
                 $person = $person_processor->createPerson($this->reader->getFromAddress());
                 $this->logMessage('[TicketGatewayProcessor] Created new contact: '.$person['id']);
+
+                $brand = $person_processor->associatePersonWithAccountBrand($this->account, $person);
+                if ($brand) {
+                    $this->logMessage("[TicketGatewayProcessor] Add Person #{$person->id} to Account Brand #{$brand->id}");
+                }
             }
         }
 

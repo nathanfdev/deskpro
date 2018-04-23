@@ -1177,8 +1177,12 @@ class Person extends DomainObject implements
      *
      * @return self
      */
-    public function addBrand(Brand $brand)
+    public function addBrand(Brand $brand = null)
     {
+        if (!$brand) {
+            return $this;
+        }
+
         if (!$this->brands->contains($brand)) {
             $this->brands->add($brand);
             $this->_onPropertyChanged('brands', $this->brands, $this->brands);
@@ -1208,6 +1212,25 @@ class Person extends DomainObject implements
     public function hasBrand(Brand $brand)
     {
         return $this->brands->contains($brand);
+    }
+
+    /**
+     * @param array|ArrayCollection $brands
+     *
+     * @return bool
+     */
+    public function hasOneOfTheBrands($brands)
+    {
+        foreach ($brands as $brand) {
+            if (!$brand instanceof Brand) {
+                continue;
+            }
+            if ($this->hasBrand($brand)) {
+                return true;
+            }
+        }
+
+        return false;
     }
 
     /**
