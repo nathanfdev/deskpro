@@ -158,7 +158,7 @@ class PublishController extends AbstractController
         // Guides
         //------------------------------
 
-        $guides       = $this->em->getRepository(Guide::class)->findAll();
+        $guides       = $this->em->getRepository(Guide::class)->findBy(['brand' => $selectedBrandId]);
         $guideRepo    = $this->em->getRepository(Guide::class);
         $guidesCounts = $this->em->getRepository(Guide::class)->getAllCounts();
 
@@ -859,6 +859,15 @@ class PublishController extends AbstractController
                     'title' => $cat->getTitle(),
                     'slug'  => $cat->getSlug(),
                 ], ['id' => $cat->id]);
+            }
+
+            if ($type === 'topics') {
+                $brandId = $this->in->getUInt('category.brand_id');
+                if ($cat->getBrand()->getId() !== $brandId) {
+                    $this->db->update($table, [
+                        'brand_id' => $brandId,
+                    ], ['id' => $cat->getId()]);
+                }
             }
 
             $this->db->delete($permTable, [$categoryField => $cat->id]);

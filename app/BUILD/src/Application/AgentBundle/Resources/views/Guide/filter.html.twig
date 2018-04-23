@@ -131,6 +131,20 @@
                                         </ul>
                                     </td>
                                 </tr>
+                            {% if (brands|length) > 1 %}
+                                <tr>
+                                    <th>{{ phrase('agent.general.brand') }}</th>
+                                    <td>
+                                        <select class="dp-select-widget-simple brand_id" name="category[brand_id]" id="publish_brand_id" style="width: 100%">
+                                            {% for brand in brands %}
+                                                <option value="{{ brand.id }}" {% if guide.brand_id == brand.id %}selected="selected"{% endif %}>
+                                                    {{ brand.name }}
+                                                </option>
+                                            {% endfor %}
+                                        </select>
+                                    </td>
+                                </tr>
+                            {% endif %}
                                 </tbody>
                             </table>
                         </div>
