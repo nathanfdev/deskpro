@@ -176,7 +176,7 @@ class ProcessAgentFwd extends ProcessAbstract
         if (!$personProcessor->isPersonAssociatedWithAccountBrands($this->account, $user)) {
             $brand = $personProcessor->associatePersonWithAccountBrand($this->account, $user, $forceRegEnabled = false);
             if ($brand) {
-                $this->logMessage("Add Person #{$user->id} to Account Brand #{$brand->id}");
+                $this->logMessage("[TicketGatewayProcessor] Add Person #{$user->id} to Account Brand #{$brand->id}");
             }
         }
 
@@ -498,7 +498,7 @@ class ProcessAgentFwd extends ProcessAbstract
         if (!$personProcessor->isPersonAssociatedWithAccountBrands($this->account, $user)) {
             $brand = $personProcessor->associatePersonWithAccountBrand($this->account, $user, $forceRegEnabled = false);
             if ($brand) {
-                $this->logMessage("Add Person #{$user->id} to Account Brand #{$brand->id}");
+                $this->logMessage("[TicketGatewayProcessor] Add Person #{$user->id} to Account Brand #{$brand->id}");
             }
         }
 

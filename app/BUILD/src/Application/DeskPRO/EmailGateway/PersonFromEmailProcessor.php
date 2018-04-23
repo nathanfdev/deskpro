@@ -254,7 +254,9 @@ class PersonFromEmailProcessor
 
         if (!$brand && $forceRegEnabled) {
             return false;
-        } else {
+        }
+
+        if (!$brand) {
             $brand = $account->getBrands()->first();
         }
 

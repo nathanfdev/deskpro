@@ -227,11 +227,11 @@ class TicketGatewayProcessor extends AbstractGatewayProcessor
                 $person->addBrand($brand);
                 $this->container->getEm()->persist($person);
                 $this->container->getEm()->flush($person);
-                $this->logMessage("Add Person #{$person->id} to Ticket Brand #{$brand->id}");
+                $this->logMessage("[TicketGatewayProcessor] Add Person #{$person->id} to Ticket Brand #{$brand->id}");
             } elseif (!$personProcessor->isPersonAssociatedWithAccountBrands($this->account, $person)) {
                 $brand = $personProcessor->associatePersonWithAccountBrand($this->account, $person, $forceRegEnabled = false);
                 if ($brand) {
-                    $this->logMessage("Add Person #{$person->id} to Account Brand #{$brand->id}");
+                    $this->logMessage("[TicketGatewayProcessor] Add Person #{$person->id} to Account Brand #{$brand->id}");
                 }
             }
 
@@ -566,10 +566,10 @@ class TicketGatewayProcessor extends AbstractGatewayProcessor
                 $this->logMessage('[TicketGatewayProcessor] Person is not associated with brands for account: #'.$this->account['id']);
                 $brand = $person_processor->associatePersonWithAccountBrand($this->account, $person);
                 if ($brand) {
-                    $this->logMessage("Add Person #{$person->id} to Account Brand #{$brand->id}");
+                    $this->logMessage("[TicketGatewayProcessor] Add Person #{$person->id} to Account Brand #{$brand->id}");
                     $person_processor->passPerson($this->reader->getFromAddress(), $person);
                 } else {
-                    $this->logMessage("Can't add Person #{$person->id} to Account Brand.");
+                    $this->logMessage("[TicketGatewayProcessor] Can't add Person #{$person->id} to Account Brand.");
                     $person = false;
                 }
             }
@@ -580,7 +580,7 @@ class TicketGatewayProcessor extends AbstractGatewayProcessor
 
                 $brand = $person_processor->associatePersonWithAccountBrand($this->account, $person);
                 if ($brand) {
-                    $this->logMessage("Add Person #{$person->id} to Account Brand #{$brand->id}");
+                    $this->logMessage("[TicketGatewayProcessor] Add Person #{$person->id} to Account Brand #{$brand->id}");
                 }
             }
         }
