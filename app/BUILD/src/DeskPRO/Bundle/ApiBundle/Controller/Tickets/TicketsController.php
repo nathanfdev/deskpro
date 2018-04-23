@@ -243,18 +243,11 @@ class TicketsController extends AbstractTicketsController
             }
 
             foreach ($params as $field => $value) {
-                if (is_array($value)) {
-                    $valueQuoted = ListUtils::map($value, function ($v) {
-                        return QueryUtil::quoteValue($v);
-                    });
-                    $valueQuoted = '("'.implode('","', $valueQuoted).'")';
-                } else {
-                    $valueQuoted = QueryUtil::quoteValue($value);
-                }
-
-                $op = '=';
+                $op          = '=';
+                $valueQuoted = null;
 
                 switch ($field) {
+                    case 'label':
                     case 'labels':
                         $op          = 'IN';
                         $searchField = TermFieldIds::TICKET_LABELS;
@@ -291,6 +284,10 @@ class TicketsController extends AbstractTicketsController
                         $op          = 'HAS';
                         $searchField = TermFieldIds::TICKET_SLAS;
                         break;
+                    case 'urgency':
+                        $op          = '=';
+                        $searchField = TermFieldIds::TICKET_URGENCY;
+                        break;
                     case 'sla_status':
                         $op = 'HAS';
                         switch ($value) {
@@ -314,6 +311,26 @@ class TicketsController extends AbstractTicketsController
                         break;
                     default:
                         throw $this->createBadRequestException("Unknown filter termvalue: $field");
+                }
+
+                if ($valueQuoted === null) {
+                    if ($op === 'IN' && !is_array($value)) {
+                        $value = [$value];
+                    }
+                    if ($op === '=' && is_array($value)) {
+                        $op = 'IN';
+                    }
+                    if ($op === '!=' && is_array($value)) {
+                        $op = 'NOT IN';
+                    }
+                    if (is_array($value)) {
+                        $valueQuoted = ListUtils::map($value, function ($v) {
+                            return QueryUtil::quoteValue($v);
+                        });
+                        $valueQuoted = '('.implode(',', $valueQuoted).')';
+                    } else {
+                        $valueQuoted = QueryUtil::quoteValue($value);
+                    }
                 }
 
                 $searchQueryParts[] = "{$searchField} {$op} {$valueQuoted}";

@@ -9,7 +9,6 @@ use DeskPRO\Bundle\AppBundle\TicketFilters\OptValue\OptValue;
 use DeskPRO\Bundle\AppBundle\TicketFilters\TermFieldIds;
 use DeskPRO\Component\FilterQueryLanguage\Query\Node\Term;
 use DeskPRO\Component\Util\ListUtils;
-use Orb\Validator\StringEmail;
 
 class PersonTermsHandler extends AbstractTermsHandler
 {
@@ -69,12 +68,14 @@ class PersonTermsHandler extends AbstractTermsHandler
     private function normalizePersonId($value)
     {
         if (is_array($value)) {
-            return ListUtils::map($value, [$this, 'normalizePersonId']);
+            return ListUtils::map($value, function ($v) {
+                return $this->normalizePersonId($v);
+            });
         }
 
         if (is_numeric($value) || ctype_digit($value)) {
-            return $value;
-        } elseif (StringEmail::isValueValid($value)) {
+            return (int) $value;
+        } elseif (is_string($value) && strpos($value, '@') !== false) {
             $person = $this->personRepos->findOneByEmail($value);
             if ($person) {
                 return $person->getId();
