@@ -313,7 +313,7 @@ class SearchController extends AbstractController
         $total   = 0;
         $results = [];
 
-        if ($q) {
+        if ($q && is_string($q)) {
             /** @var SearchEngine $se */
             $se = $this->get('search_engine');
 
