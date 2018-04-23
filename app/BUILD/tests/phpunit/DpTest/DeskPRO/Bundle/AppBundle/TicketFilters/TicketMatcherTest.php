@@ -69,15 +69,6 @@ class TicketMatcherTest extends \PHPUnit_Framework_TestCase
 
         $this->matcherContext = new Context($this->agentContext);
 
-        $makeField = function ($type, $id, $alias) {
-            $f          = new CustomField();
-            $f->field   = $id;
-            $f->type    = $type;
-            $f->aliases = [$alias];
-
-            return $f;
-        };
-
         $this->matcher = new TicketMatcher($resolver, [
             new TicketBasicTermsHandler(),
             new TicketSlaTermsHandler(),

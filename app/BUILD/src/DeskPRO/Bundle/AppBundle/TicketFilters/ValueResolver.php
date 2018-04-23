@@ -49,18 +49,18 @@ class ValueResolver
 
         switch (true) {
             case $options instanceof CompareOpt:
-                return new CompareValue(self::rawValueFromQueryVal($options->value, $term, $context));
+                return new CompareValue($this->rawValueFromQueryVal($options->value, $term, $context));
 
             case $options instanceof BetweenOpt:
                 return new BetweenValue(
-                    self::rawValueFromQueryVal($options->value1, $term, $context),
-                    self::rawValueFromQueryVal($options->value2, $term, $context)
+                    $this->rawValueFromQueryVal($options->value1, $term, $context),
+                    $this->rawValueFromQueryVal($options->value2, $term, $context)
                 );
 
             case $term->options instanceof InOpt:
                 $values = [];
                 foreach ($term->options->valueList as $v) {
-                    $values[] = self::rawValueFromQueryVal($v, $term, $context);
+                    $values[] = $this->rawValueFromQueryVal($v, $term, $context);
                 }
 
                 return new InValue($values);

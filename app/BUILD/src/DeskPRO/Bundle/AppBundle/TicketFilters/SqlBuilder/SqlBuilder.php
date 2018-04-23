@@ -83,6 +83,10 @@ class SqlBuilder extends \Doctrine\DBAL\Query\QueryBuilder
      */
     public function addQueryConditionGroup(SqlConditionGroup $group)
     {
+        if ($group->isEmpty()) {
+            throw new \InvalidArgumentException('The group is empty');
+        }
+
         if ($group->countConditions() === 1 && !$group->countSubGroups()) {
             $conds = $group->getConditions();
 
@@ -102,6 +106,10 @@ class SqlBuilder extends \Doctrine\DBAL\Query\QueryBuilder
      */
     public function addQueryCondition(SqlCondition $cond)
     {
+        if ($cond->isEmpty()) {
+            throw new \InvalidArgumentException('The condition is empty');
+        }
+
         $where = $this->initQueryCond($cond);
         $this->andWhere($where);
 

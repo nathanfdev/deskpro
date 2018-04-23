@@ -149,6 +149,30 @@ class SqlConditionGroup
      */
     public function isEmpty()
     {
-        return empty($this->subGroups) && empty($this->conds);
+        if (empty($this->subGroups)) {
+            $emptySubGroups = true;
+        } else {
+            $emptySubGroups = true;
+            foreach ($this->subGroups as $g) {
+                if (!$g->isEmpty()) {
+                    $emptySubGroups = false;
+                    break;
+                }
+            }
+        }
+
+        if (empty($this->conds)) {
+            $emptyConds = true;
+        } else {
+            $emptyConds = true;
+            foreach ($this->conds as $c) {
+                if (!$c->isEmpty()) {
+                    $emptyConds = false;
+                    break;
+                }
+            }
+        }
+
+        return $emptySubGroups && $emptyConds;
     }
 }

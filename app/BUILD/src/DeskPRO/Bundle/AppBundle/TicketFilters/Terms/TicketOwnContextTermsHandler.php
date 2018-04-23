@@ -2,12 +2,14 @@
 
 namespace DeskPRO\Bundle\AppBundle\TicketFilters\Terms;
 
+use Application\DeskPRO\Entity\TicketFlagged;
 use DeskPRO\Bundle\AppBundle\TicketFilters\Context;
 use DeskPRO\Bundle\AppBundle\TicketFilters\Model\Entity\TicketModel;
 use DeskPRO\Bundle\AppBundle\TicketFilters\OptValue\OptValue;
 use DeskPRO\Bundle\AppBundle\TicketFilters\SqlBuilder\SqlCondition;
 use DeskPRO\Bundle\AppBundle\TicketFilters\TermFieldIds;
 use DeskPRO\Component\FilterQueryLanguage\Query\Node\Term;
+use DeskPRO\Component\Util\ListUtils;
 use Doctrine\DBAL\Connection;
 
 class TicketOwnContextTermsHandler extends AbstractTermsHandler
@@ -36,6 +38,7 @@ class TicketOwnContextTermsHandler extends AbstractTermsHandler
     {
         switch ($fieldId) {
             case TermFieldIds::TICKET_STARRED:
+                $value = $this->mapIdToColor($options->getValue());
                 if ($context->getAgentId() && $ticketModel->id) {
                     $flaggedWith = $this->db->fetchColumn('
                         SELECT color
@@ -46,7 +49,7 @@ class TicketOwnContextTermsHandler extends AbstractTermsHandler
                     $flaggedWith = null;
                 }
 
-                return $this->checkValue($flaggedWith, $operator, $options);
+                return $this->checkValue($flaggedWith, $operator, $value);
 
             default:
                 throw new \InvalidArgumentException();
@@ -69,10 +72,31 @@ class TicketOwnContextTermsHandler extends AbstractTermsHandler
                 $cond->addUniqueJoin('tickets', 'tickets_flagged', 'flag', '{flag}.ticket_id = {tickets}.id AND {flag}.person_id = :person_id')
                     ->setParam('person_id', $context->getAgentId());
 
-                return $this->checkValueQueryCondition('{flag}.color', $operator, $options, $cond);
+                $value = $this->mapIdToColor($options->getValue());
+
+                return $this->checkValueQueryCondition('{flag}.color', $operator, $value, $cond);
 
             default:
                 throw new \InvalidArgumentException();
         }
+    }
+
+    /**
+     * Maps an int "id" to the color that is stored in the db. apiv2 uses "ids" for stars
+     * because we want to make them customisable per-agent at some point.
+     *
+     * @param string $id
+     *
+     * @return array
+     */
+    private function mapIdToColor($id)
+    {
+        if (is_array($id)) {
+            return ListUtils::map($id, function ($x) {
+                return $this->mapIdToColor($x);
+            });
+        }
+
+        return isset(TicketFlagged::$colorMap[$id]) ? TicketFlagged::$colorMap[$id] : $id;
     }
 }
