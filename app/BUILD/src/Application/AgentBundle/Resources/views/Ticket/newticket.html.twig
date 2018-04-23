@@ -667,7 +667,13 @@ pageMeta.baseId = '{{ baseId }}';
 					{% import _self as metpl %}
 					{% if item.type == 'item' %}
 						{% set macro = item.item %}
-						<li class="res-ticketmacro-{{ macro.id }}" data-type="macro:{{ macro.id }}" data-label="{{ phrase('agent.tickets.send_newticket_and_apply_x', {name: macro.title}) }}" data-get-macro-url="{{ path('agent_ticket_ajax_get_macro', {ticket_id: '0', macro_id: macro.id, macro_reply_context: 1 }) }}">
+						<li
+							class="res-ticketmacro-{{ macro.id }}"
+							data-type="macro:{{ macro.id }}"
+							data-label="{{ phrase('agent.tickets.send_newticket_and_apply_x', {name: macro.title}) }}"
+							data-note-label="{{ phrase('agent.tickets.save_note_and_apply_x', {name: macro.title}) }}"
+							data-get-macro-url="{{ path('agent_ticket_ajax_get_macro', {ticket_id: '0', macro_id: macro.id, macro_reply_context: 1 }) }}"
+						>
 							<div class="on-icon"><i class="icon-ok"></i></div>
 							<span class="macro-title">{{ item.title }}</span>
 						</li>
