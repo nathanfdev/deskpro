@@ -98,7 +98,7 @@ abstract class AbstractTermsHandler implements TermsHandlerInterface
 
             case Query::OP_BETWEEN:
             case Query::OP_NOT_BETWEEN:
-                if (!isset($checkValue[0]) || !isset($checkValue[1])) {
+                if (empty($checkValue[0]) || empty($checkValue[1])) {
                     return false;
                 }
 
@@ -270,9 +270,17 @@ abstract class AbstractTermsHandler implements TermsHandlerInterface
 
             case Query::OP_BETWEEN:
             case Query::OP_NOT_BETWEEN:
-                if (!isset($checkValue[0]) || !isset($checkValue[1])) {
+                if (empty($checkValue[0]) || empty($checkValue[1])) {
                     return false;
                 }
+
+                $checkValue = ListUtils::map($checkValue, function ($v) {
+                    if ($v instanceof \DateTime) {
+                        return $v->format('Y-m-d H:i:s');
+                    }
+
+                    return $v;
+                });
 
                 $op = $operator === Query::OP_NOT_BETWEEN ? 'NOT BETWEEN' : 'BETWEEN';
 

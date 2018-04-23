@@ -9,6 +9,7 @@ use DeskPRO\Bundle\AppBundle\TicketFilters\Model\Entity\CustomData;
 use DeskPRO\Bundle\AppBundle\TicketFilters\Model\Entity\CustomField;
 use DeskPRO\Bundle\AppBundle\TicketFilters\Model\Entity\TicketModel;
 use DeskPRO\Bundle\AppBundle\TicketFilters\OptionMappterInterface;
+use DeskPRO\Bundle\AppBundle\TicketFilters\OptValue\BetweenValue;
 use DeskPRO\Bundle\AppBundle\TicketFilters\OptValue\CompareValue;
 use DeskPRO\Bundle\AppBundle\TicketFilters\OptValue\OptValue;
 use DeskPRO\Bundle\AppBundle\TicketFilters\SqlBuilder\SqlCondition;
@@ -200,25 +201,29 @@ class CustomFieldsTermsHandler extends AbstractTermsHandler
 
             case CustomDefAbstract::TYPE_DATETIME:
             case CustomDefAbstract::TYPE_DATE:
-                $checkValue = $options->getValue();
-                if (!$checkValue instanceof \DateTime) {
-                    try {
-                        $checkValue = new \DateTime($checkValue);
-                    } catch (\Exception $e) {
-                        $checkValue = null;
+                if ($options instanceof BetweenValue) {
+                    return $this->checkValueQueryCondition('{dat}.value', Query::OP_BETWEEN, $options->getValue(), $cond);
+                } else {
+                    $checkValue = $options->getValue();
+                    if (!$checkValue instanceof \DateTime) {
+                        try {
+                            $checkValue = new \DateTime($checkValue);
+                        } catch (\Exception $e) {
+                            $checkValue = null;
+                        }
+                        if (!$checkValue) {
+                            return SqlCondition::create()->setWhere('0');
+                        }
                     }
-                    if (!$checkValue) {
-                        return SqlCondition::create()->setWhere('0');
+
+                    if ($checkValue instanceof \DateTime) {
+                        $tmp = clone $checkValue;
+                        $tmp->setTimezone(new \DateTimeZone('UTC'));
+                        $checkValue = $tmp->getTimestamp();
                     }
-                }
 
-                if ($checkValue instanceof \DateTime) {
-                    $tmp = clone $checkValue;
-                    $tmp->setTimezone(new \DateTimeZone('UTC'));
-                    $checkValue = $tmp->getTimestamp();
+                    return $this->checkValueQueryCondition('FROM_UNIXTIME({dat}.value)', $operator, $checkValue, $cond);
                 }
-
-                return $this->checkValueQueryCondition('{dat}.value', $operator, $checkValue, $cond);
 
             case CustomDefAbstract::TYPE_CURRENCY:
                 return $this->checkValueQueryCondition('{dat}.value', $operator, $options, $cond);

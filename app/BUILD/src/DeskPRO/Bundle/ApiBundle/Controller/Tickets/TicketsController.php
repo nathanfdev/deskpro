@@ -357,13 +357,13 @@ class TicketsController extends AbstractTicketsController
                         if (is_array($value)) {
 
                             // date ranges -> foo BETWEEN DATE('something') AND DATE('else')
-                            if (isset($value['from']) || isset($value['to'])) {
-                                if (isset($value['from']) && isset($value['to'])) {
+                            if (!empty($value['from']) || !empty($value['to'])) {
+                                if (!empty($value['from']) && !empty($value['to'])) {
                                     $op          = 'BETWEEN';
                                     $valueQuoted = 'DATE('.QueryUtil::quoteValue($value['from']).')'
                                         .' AND '
                                         .'DATE('.QueryUtil::quoteValue($value['to']).')';
-                                } elseif (isset($value['from'])) {
+                                } elseif (!empty($value['from'])) {
                                     $op          = '>=';
                                     $valueQuoted = 'DATE('.QueryUtil::quoteValue($value['from']).')';
                                 } else {
@@ -391,7 +391,7 @@ class TicketsController extends AbstractTicketsController
             $searchParams->orderBy($orderBy, $orderDir);
 
             if (!empty($searchQueryParts)) {
-                $searchQuery = implode('AND ', $searchQueryParts);
+                $searchQuery = implode(' AND ', $searchQueryParts);
             } else {
                 $searchQuery = '';
             }

@@ -6,6 +6,7 @@ Feature: Filter data by custom fields
     Given I'm authenticated as admin
 
   Scenario Outline: I filter by custom fields
+    Given there are no <entity_type> records
     Given only the following <custom_def_type> records exist:
       | #                      | Type          | Title               | Parent                |
       | text_field             | text          | Text field          |                       |
@@ -48,7 +49,7 @@ Feature: Filter data by custom fields
     And the JSON node "data[0].id" should be equal to "~entity_1~"
     And the JSON node "data[0].fields.{text_field}.value" should be equal to the string "text"
 
-    When I send a GET request to "/api/v2/<endpoint>?<prefix>_field.~textarea_field~=text"
+    When I send a GET request to "/api/v2/<endpoint>?<prefix>_field.~textarea_field~=textarea"
     And the response status code should be 200
     And the JSON node "data" should have 2 elements
     And the JSON node "data[0].fields.{textarea_field}.value" should be equal to the string "textarea"
@@ -58,7 +59,7 @@ Feature: Filter data by custom fields
     And the response status code should be 200
     And the JSON node "data" should have 0 elements
 
-    When I send a GET request to "/api/v2/<endpoint>?<prefix>_field.~text_field~=text&<prefix>_field.~textarea_field~=text"
+    When I send a GET request to "/api/v2/<endpoint>?<prefix>_field.~text_field~=text&<prefix>_field.~textarea_field~=textarea"
     And the response status code should be 200
     And the JSON node "data" should have 1 element
     And the JSON node "data[0].id" should be equal to "~entity_1~"
@@ -73,9 +74,9 @@ Feature: Filter data by custom fields
 
     When I send a GET request to "/api/v2/<endpoint>?<prefix>_field.~toggle_field~=0"
     And the response status code should be 200
-    And the JSON node "data" should have 1 element
-    And the JSON node "data[0].id" should be equal to "~entity_4~"
-    And the JSON node "data[0].fields.{toggle_field}.value" should be equal to 0
+    And the JSON node "data" should have 9 elements
+    And the JSON node "data[0].id" should be equal to "~entity_1~"
+    And the JSON node "data[0].fields.{toggle_field}.value" should not exist
 
     When I send a GET request to "/api/v2/<endpoint>?<prefix>_field.~hidden_field~=val1"
     And the response status code should be 200
@@ -138,8 +139,8 @@ Feature: Filter data by custom fields
 
     Examples:
       | custom_def_type       | entity_type  | endpoint      | prefix   |
+      | CustomDefTicket       | Ticket       | tickets       | ticket   |
       | CustomDefPerson       | User         | people        | person   |
       | CustomDefOrganization | Organization | organizations | org      |
-      | CustomDefTicket       | Ticket       | tickets       | ticket   |
       | CustomDefChat         | Chat         | user_chats    | chat     |
       | CustomDefFeedback     | Feedback     | feedback      | feedback |
