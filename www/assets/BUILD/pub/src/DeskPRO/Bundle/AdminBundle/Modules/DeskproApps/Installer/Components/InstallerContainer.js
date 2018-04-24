@@ -2,11 +2,12 @@ import PropTypes from 'prop-types';
 import React from 'react';
 import MarkdownIt from 'markdown-it';
 
+import { api } from 'DeskPRO/Bundle/AppBundle/DAL';
 import { ScreenInstallerError } from './ScreenInstallerError';
 import { ScreenInstallerLoading } from './ScreenInstallerLoading';
 import { ScreenConfirmInstall } from './ScreenConfirmInstall';
 import { InstallerErrors } from '../InstallerErrors';
-import { api } from 'DeskPRO/Bundle/AppBundle/DAL';
+
 
 /**
  *
@@ -16,7 +17,7 @@ import { api } from 'DeskPRO/Bundle/AppBundle/DAL';
 function getReadme(manifest) {
   const assets = manifest.assets;
   let readmeDownloadUrl = null;
-  for(let i = 0; i < assets.length; i++) {
+  for (let i = 0; i < assets.length; i++) {
     if (assets[i].path === 'docs/ADMIN_README.md') {
       readmeDownloadUrl = assets[i].blob.download_url;
     }
@@ -89,7 +90,8 @@ export class InstallerContainer extends React.Component {
 
     return loadPackage(app)
       .then(
-        packageManifest => Promise.all([getReadme(packageManifest), packageManifest]).then(([readme, packageManifest]) => ({ route: 'confirm-install',  packageManifest, readme }))
+        /* eslint-disable no-shadow */
+        packageManifest => getReadme(packageManifest).then(readme => ({ route: 'confirm-install',  packageManifest, readme }))
       )
       .catch((error) => {
         if (typeof error === 'object') {
