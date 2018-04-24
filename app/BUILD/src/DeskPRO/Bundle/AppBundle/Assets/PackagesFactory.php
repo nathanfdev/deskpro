@@ -151,7 +151,7 @@ class PackagesFactory
     /**
      * @param PathMapInfo $p
      *
-     * @return \Symfony\Component\Asset\Package[]
+     * @return UrlPackage|PathPackage
      */
     private function getAssetPackage(PathMapInfo $p)
     {
@@ -221,7 +221,11 @@ class PackagesFactory
         // Create URL pack(s)
         //------------------------------
         } else {
-            $urls  = $p->getAllUrls();
+            $urls = $p->getAllUrls();
+            foreach ($urls as &$url) {
+                $url = $this->replaceVars($url);
+            }
+
             $packs = new UrlPackage($urls, $version);
 
             return $packs;
