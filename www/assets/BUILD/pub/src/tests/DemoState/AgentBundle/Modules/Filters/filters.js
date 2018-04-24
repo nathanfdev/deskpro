@@ -1051,7 +1051,6 @@ const labelsArray = {
 };
 
 export const labels = fromJS(labelsArray);
-console.log(labels);
 
 export const filtersCounts = fromJS({});
 

@@ -17,7 +17,7 @@ exports[`>>> Filters --- Snapshot +++capturing Snapshot of Filters 1`] = `
       className="fa fa-envelope-o dp-icon dp-icon--s"
     />
     <span>
-      agent.search.type_ticket
+      Tickets
     </span>
   </h1>
   <ul
@@ -657,8 +657,8 @@ exports[`>>> Filters --- Snapshot +++capturing Snapshot of Filters 1`] = `
             className="dp-scrollbar"
             style={
               Object {
-                "height": "300px",
-                "maxHeight": 200,
+                "height": "auto",
+                "maxHeight": 400,
                 "minHeight": 0,
                 "overflow": "hidden",
                 "position": "relative",
@@ -674,7 +674,7 @@ exports[`>>> Filters --- Snapshot +++capturing Snapshot of Filters 1`] = `
                   "left": undefined,
                   "marginBottom": 0,
                   "marginRight": 0,
-                  "maxHeight": 200,
+                  "maxHeight": 400,
                   "minHeight": 0,
                   "overflow": "scroll",
                   "position": "relative",

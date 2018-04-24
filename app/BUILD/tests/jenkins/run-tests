@@ -201,7 +201,7 @@ echo "--------------------------------------------------------------------------
 phpunit=$(tail -n 2 "$LOGS_DIR/phpunit.txt" | tr '\n' ' ')
 phpunit_portal=$(tail -n 2 "$LOGS_DIR/phpunit-portal.txt" | tr '\n' ' ')
 phpspec=$(tail -n 3 "$LOGS_DIR/phpspec.txt" | tr '\n' ' ')
-jest=$(tail -n 3 "$LOGS_DIR/jest.txt" | tr '\n' ' ')
+jest=$(tail -n 4 "$LOGS_DIR/jest.txt" | tr '\n' ' ')
 behat_install=$(tail -n 3 "$LOGS_DIR/behat-install.txt" | tr '\n' ' ')
 behat_system_api=$(tail -n 3 "$LOGS_DIR/behat-system-api.txt" | tr '\n' ' ')
 behat_production=$(tail -n 3 "$LOGS_DIR/behat-production.txt" | tr '\n' ' ')
@@ -297,7 +297,7 @@ if [[ ${phpspec} =~ "failed" ]] || [[ ${phpspec} =~ "broken" ]] || [[ ! ${phpspe
 fi
 
 jest_failed=0
-if [[ ${jest} =~ "fail" ]] || [[ ! ${jest} =~ "tests passed" ]] ; then
+if [[ ${jest} =~ "failed" ]] || [[ ! ${jest} =~ "passed" ]] ; then
     jest_failed=1
     mv "$LOGS_DIR/jest.txt" "$LOGS_DIR/FAILED-jest.txt"
     echo "- Jest failed"
