@@ -11,6 +11,7 @@ use DeskPRO\Bundle\AppBundle\TicketFilters\Terms\TicketBasicTermsHandler;
 use DeskPRO\Bundle\AppBundle\TicketFilters\Terms\TicketDateTermsHandler;
 use DeskPRO\Bundle\AppBundle\TicketFilters\Terms\TicketOwnContextTermsHandler;
 use DeskPRO\Bundle\AppBundle\TicketFilters\Terms\TicketSlaTermsHandler;
+use Psr\Log\LoggerInterface;
 use Symfony\Component\DependencyInjection\Container;
 
 class MatcherFactory
@@ -31,15 +32,22 @@ class MatcherFactory
     private $termHandlers;
 
     /**
+     * @var LoggerInterface
+     */
+    private $logger;
+
+    /**
      * MatcherFactory constructor.
      *
-     * @param Container $container
-     * @param EnvLoader $loader
+     * @param Container       $container
+     * @param EnvLoader       $loader
+     * @param LoggerInterface $logger
      */
-    public function __construct(Container $container, EnvLoader $loader)
+    public function __construct(Container $container, EnvLoader $loader, LoggerInterface $logger = null)
     {
         $this->container = $container;
         $this->loader    = $loader;
+        $this->logger    = $logger;
     }
 
     /**
@@ -81,6 +89,10 @@ class MatcherFactory
             $this->getTermHandlers()
         );
 
+        if ($this->logger) {
+            $matcher->setLogger($this->logger);
+        }
+
         return $matcher;
     }
 
@@ -100,6 +112,10 @@ class MatcherFactory
             $activeOnly ? TicketSqlMatcher::ACTIVE : TicketSqlMatcher::ALL,
             $this->loader->getCustomFieldsSet()
         );
+
+        if ($this->logger) {
+            $matcher->setLogger($this->logger);
+        }
 
         return $matcher;
     }

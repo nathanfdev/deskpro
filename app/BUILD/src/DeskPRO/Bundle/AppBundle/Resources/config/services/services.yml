@@ -169,7 +169,9 @@ services:
 
   ticketfilters.matcher_factory:
     class: DeskPRO\Bundle\AppBundle\TicketFilters\MatcherFactory
-    arguments: ["@service_container", "@ticketfilters.env_loader"]
+    arguments: ["@service_container", "@ticketfilters.env_loader", "@logger"]
+    tags:
+      - { name: monolog.logger, channel: ticketfilters }
 
   ticketfilter.ticket_matcher:
     class: DeskPRO\Bundle\AppBundle\TicketFilters\TicketMatcher

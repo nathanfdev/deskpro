@@ -189,22 +189,12 @@ class CustomFieldsTermsHandler extends AbstractTermsHandler
                 return $this->checkValueQueryCondition('{dat}.field_id', $operator, $options, $cond);
 
             case CustomDefAbstract::TYPE_TOGGLE:
-                $checkValue = $options->getValue();
-
-                if (($operator === Query::OP_EQ && $checkValue == '0') || ($operator === Query::OP_NEQ && $checkValue == '1')) {
-                    $cond->setWhere('{dat}.value = 0 OR {dat}.value IS NULL');
-
-                    return $cond;
-                }
-
                 return $this->checkValueQueryCondition('{dat}.value', $operator, $options, $cond);
 
             case CustomDefAbstract::TYPE_DATETIME:
             case CustomDefAbstract::TYPE_DATE:
-                if ($options instanceof BetweenValue) {
-                    return $this->checkValueQueryCondition('{dat}.value', Query::OP_BETWEEN, $options->getValue(), $cond);
-                } else {
-                    $checkValue = $options->getValue();
+
+                $inputToTs = function ($checkValue) {
                     if (!$checkValue instanceof \DateTime) {
                         try {
                             $checkValue = new \DateTime($checkValue);
@@ -222,7 +212,17 @@ class CustomFieldsTermsHandler extends AbstractTermsHandler
                         $checkValue = $tmp->getTimestamp();
                     }
 
-                    return $this->checkValueQueryCondition('FROM_UNIXTIME({dat}.value)', $operator, $checkValue, $cond);
+                    return $checkValue;
+                };
+
+                if ($options instanceof BetweenValue) {
+                    $values = ListUtils::map($options->getValue(), $inputToTs);
+
+                    return $this->checkValueQueryCondition('{dat}.value', Query::OP_BETWEEN, $values, $cond);
+                } else {
+                    $checkValue = $inputToTs($options->getValue());
+
+                    return $this->checkValueQueryCondition('{dat}.value', $operator, $checkValue, $cond);
                 }
 
             case CustomDefAbstract::TYPE_CURRENCY:

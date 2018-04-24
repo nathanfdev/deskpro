@@ -238,9 +238,20 @@ class TicketSqlMatcherTest extends BaseTicketSqlMatcherTest
             'SELECT COUNT(*) AS count
             FROM tickets_search_active tickets
             LEFT JOIN custom_data_ticket c2_dat ON c2_dat.ticket_id = tickets.id AND c2_dat.root_field_id = :c3
-            WHERE (tickets.status = :c0) AND (tickets.agent_id = :c1) AND (c2_dat.value = 0 OR c2_dat.value IS NULL)
+            WHERE (tickets.status = :c0) AND (tickets.agent_id = :c1) AND (c2_dat.value = :c4)
             ',
-            ['c0' => 'awaiting_agent', 'c1' => 1, 'c3' => 5]
+            ['c0' => 'awaiting_agent', 'c1' => 1, 'c3' => 5, 'c4' => 0]
+        );
+
+        $this->assertEqualQuery(
+            'ticket.status = \'awaiting_agent\' AND ticket.agent = $me AND (ticket.data.my_toggle = 0 OR ticket.data.my_toggle IS EMPTY)',
+            'SELECT COUNT(*) AS count
+            FROM tickets_search_active tickets
+            LEFT JOIN custom_data_ticket c2_dat ON c2_dat.ticket_id = tickets.id AND c2_dat.root_field_id = :c3
+            LEFT JOIN custom_data_ticket c3_dat ON c3_dat.ticket_id = tickets.id AND c3_dat.root_field_id = :c4
+            WHERE (tickets.status = :c0) AND (tickets.agent_id = :c1) AND ((c2_dat.value = :c4) OR (c3_dat.value IS NULL))
+            ',
+            ['c0' => 'awaiting_agent', 'c1' => 1, 'c3' => 5, 'c4' => 5]
         );
     }
 }

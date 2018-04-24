@@ -149,12 +149,13 @@ abstract class AbstractTermsHandler implements TermsHandlerInterface
      * @param $fieldColumn
      * @param $operator
      * @param $checkValue
+     * @param $handleNull
      *
      * @return SqlCondition
      */
-    public function checkValueQueryCondition($fieldColumn, $operator, $checkValue, $cond = null)
+    public function checkValueQueryCondition($fieldColumn, $operator, $checkValue, $cond = null, $handleNull = false)
     {
-        $where = $this->checkValueQueryWhere($fieldColumn, $operator, $checkValue);
+        $where = $this->checkValueQueryWhere($fieldColumn, $operator, $checkValue, $handleNull);
 
         if (!$cond) {
             $cond = new SqlCondition();
@@ -176,7 +177,7 @@ abstract class AbstractTermsHandler implements TermsHandlerInterface
      *
      * @return array Array of ['where' => XXX, 'params' => ['x' => ['val', type]]]
      */
-    public function checkValueQueryWhere($fieldColumn, $operator, $checkValue)
+    public function checkValueQueryWhere($fieldColumn, $operator, $checkValue, $handleNull = false)
     {
         if ($checkValue instanceof OptValue) {
             $checkValue = $checkValue->getValue();
@@ -208,7 +209,11 @@ abstract class AbstractTermsHandler implements TermsHandlerInterface
                 if ($checkValue === null) {
                     $where = "$fieldColumn IS NOT NULL";
                 } else {
-                    $where = "$fieldColumn != :$colVarName OR $fieldColumn IS NULL";
+                    if ($handleNull) {
+                        $where = "$fieldColumn != :$colVarName OR $fieldColumn IS NULL";
+                    } else {
+                        $where = "$fieldColumn != :$colVarName";
+                    }
                 }
 
                 return [
@@ -259,7 +264,7 @@ abstract class AbstractTermsHandler implements TermsHandlerInterface
 
                 $where = "$fieldColumn $op (:$colVarName)";
 
-                if ($operator === Query::OP_NOT_IN) {
+                if ($operator === Query::OP_NOT_IN && $handleNull) {
                     $where = "$where OR $fieldColumn IS NULL";
                 }
 

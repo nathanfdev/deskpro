@@ -12,6 +12,7 @@ use DeskPRO\Bundle\AppBundle\TicketFilters\SqlBuilder\SqlConditionGroup;
 use DeskPRO\Component\FilterQueryLanguage\Query\Node\Term;
 use DeskPRO\Component\FilterQueryLanguage\Query\Node\TermGroup;
 use DeskPRO\Component\FilterQueryLanguage\Query\Query;
+use DeskPRO\Component\Util\DebugUtils;
 use DeskPRO\Component\Util\ListUtils;
 use DeskPRO\Component\Util\StructComparer;
 use Doctrine\DBAL\Connection;
@@ -87,6 +88,13 @@ class TicketSqlMatcher extends AbstractMatcher
             }
         }
 
+        $this->logger->debug(sprintf(
+            '[TicketSqlMatcher::getCountQueryBuilder] Query: %s -- SQL: %s -- Params: %s',
+            $query->fql ?: print_r($query, 1),
+            $qb->getSQL(),
+            DebugUtils::varToString($qb->getParameters())
+        ));
+
         return $qb;
     }
 
@@ -110,6 +118,13 @@ class TicketSqlMatcher extends AbstractMatcher
         if (!$params || !$params->hasOrderFields()) {
             $qb->orderBy('tickets.id', 'DESC');
         }
+
+        $this->logger->debug(sprintf(
+            '[TicketSqlMatcher::getIdsQueryBuilder] Query: %s -- SQL: %s -- Params: %s',
+            $query->fql ?: print_r($query, 1),
+            $qb->getSQL(),
+            DebugUtils::varToString($qb->getParameters())
+        ));
 
         return $qb;
     }
