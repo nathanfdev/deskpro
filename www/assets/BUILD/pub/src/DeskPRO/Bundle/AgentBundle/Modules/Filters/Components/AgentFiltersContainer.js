@@ -41,6 +41,10 @@ export class AgentFiltersContainer extends SeparateComponent {
     return 'AgentFilters';
   }
 
+  static resizeList() {
+    window.DeskPRO.Agent.ScrollerHandler.updateListPane();
+  }
+
   constructor(props) {
     super(props);
     let mode = null;
@@ -53,6 +57,15 @@ export class AgentFiltersContainer extends SeparateComponent {
     this.state = {
       mode,
     };
+  }
+
+
+  componentDidMount() {
+    window.addEventListener('resize', AgentFiltersContainer.resizeList);
+  }
+
+  componentWillUnmount() {
+    window.removeEventListener('resize', AgentFiltersContainer.resizeList);
   }
 
   onGroupingChange = (id, groupBy) => {

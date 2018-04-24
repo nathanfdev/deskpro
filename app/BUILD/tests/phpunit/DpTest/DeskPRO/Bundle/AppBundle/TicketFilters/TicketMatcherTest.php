@@ -3,6 +3,7 @@
 namespace DpTest\Bundle\AppBundle\TicketFilters;
 
 use DeskPRO\Bundle\AppBundle\TicketFilters\Context;
+use DeskPRO\Bundle\AppBundle\TicketFilters\CustomFieldSet;
 use DeskPRO\Bundle\AppBundle\TicketFilters\Model\Agent;
 use DeskPRO\Bundle\AppBundle\TicketFilters\Model\Entity\CustomData;
 use DeskPRO\Bundle\AppBundle\TicketFilters\Model\Entity\CustomField;
@@ -68,27 +69,18 @@ class TicketMatcherTest extends \PHPUnit_Framework_TestCase
 
         $this->matcherContext = new Context($this->agentContext);
 
-        $makeField = function ($type, $id, $alias) {
-            $f          = new CustomField();
-            $f->field   = $id;
-            $f->type    = $type;
-            $f->aliases = [$alias];
-
-            return $f;
-        };
-
         $this->matcher = new TicketMatcher($resolver, [
             new TicketBasicTermsHandler(),
             new TicketSlaTermsHandler(),
             new TicketDateTermsHandler(),
-            new CustomFieldsTermsHandler([
+            new CustomFieldsTermsHandler(new CustomFieldSet([
                 new CustomField(1, 'choice', ['my_choice']),
                 new CustomField(2, 'choice', ['my_other_choice']),
                 new CustomField(3, 'text', ['my_text']),
                 new CustomField(4, 'date', ['my_date']),
                 new CustomField(5, 'toggle', ['my_toggle']),
                 new CustomField(6, 'toggle', ['my_other_toggle']),
-            ]),
+            ])),
         ]);
 
         // Ticket 1

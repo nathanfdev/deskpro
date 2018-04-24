@@ -34,6 +34,16 @@ class EnvLoader
     private $ticketFieldRepos;
 
     /**
+     * @var EntityRepository\CustomDefTicket
+     */
+    private $personFieldRepos;
+
+    /**
+     * @var EntityRepository\CustomDefTicket
+     */
+    private $orgFieldRepos;
+
+    /**
      * Filter models (not filter entities).
      *
      * @var Filter
@@ -46,9 +56,9 @@ class EnvLoader
     private $agents;
 
     /**
-     * @var CustomField[]
+     * @var CustomFieldSet
      */
-    private $ticketFields;
+    private $customFieldSet;
 
     /**
      * EnvLoader constructor.
@@ -58,12 +68,20 @@ class EnvLoader
      * @param EntityRepository\Person          $agentRepos
      * @param EntityRepository\CustomDefTicket $ticketFieldRepos
      */
-    public function __construct(FQLParser $queryParser, TicketFilterSetRepository $filterSetEntRepos, EntityRepository\Person $agentRepos, EntityRepository\CustomDefTicket $ticketFieldRepos)
-    {
+    public function __construct(
+        FQLParser $queryParser,
+        TicketFilterSetRepository $filterSetEntRepos,
+        EntityRepository\Person $agentRepos,
+        EntityRepository\CustomDefTicket $ticketFieldRepos,
+        EntityRepository\CustomDefPerson $personFieldRepos,
+        EntityRepository\CustomDefOrganization $orgFieldRepos
+    ) {
         $this->queryParser       = $queryParser;
         $this->filterSetEntRepos = $filterSetEntRepos;
         $this->agentRepos        = $agentRepos;
         $this->ticketFieldRepos  = $ticketFieldRepos;
+        $this->personFieldRepos  = $personFieldRepos;
+        $this->orgFieldRepos     = $orgFieldRepos;
     }
 
     /**
@@ -183,25 +201,32 @@ class EnvLoader
     }
 
     /**
-     * @return CustomField[]
+     * @return CustomFieldSet
      */
-    public function getTicketFields()
+    public function getCustomFieldsSet()
     {
-        if ($this->ticketFields !== null) {
-            return $this->ticketFields;
+        if ($this->customFieldSet !== null) {
+            return $this->customFieldSet;
         }
 
-        $this->ticketFields = [];
-        foreach ($this->ticketFieldRepos->getEnabledTopFields() as $customDef) {
-            $f          = new CustomField();
-            $f->field   = $customDef->getId();
-            $f->type    = $customDef->getTypeName();
-            $f->aliases = ListUtils::map($customDef->getAliases(), function (ObjectAliasInterface $a) {
-                return $a->getQualifiedName();
-            });
-            $this->ticketFields[] = $f;
+        $cols = [];
+
+        foreach (['ticketFieldRepos', 'personFieldRepos', 'orgFieldRepos'] as $propName) {
+            $fields = [];
+            foreach ($this->$propName->getEnabledTopFields() as $customDef) {
+                $f          = new CustomField();
+                $f->field   = $customDef->getId();
+                $f->type    = $customDef->getTypeName();
+                $f->aliases = ListUtils::map($customDef->getAliases(), function (ObjectAliasInterface $a) {
+                    return $a->getQualifiedName();
+                });
+                $fields[] = $f;
+            }
+            $cols[] = $fields;
         }
 
-        return $this->ticketFields;
+        $this->customFieldSet = new CustomFieldSet($cols[0], $cols[1], $cols[2]);
+
+        return $this->customFieldSet;
     }
 }

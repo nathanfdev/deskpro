@@ -11,6 +11,7 @@ use DeskPRO\Bundle\AppBundle\TicketFilters\Terms\TicketBasicTermsHandler;
 use DeskPRO\Bundle\AppBundle\TicketFilters\Terms\TicketDateTermsHandler;
 use DeskPRO\Bundle\AppBundle\TicketFilters\Terms\TicketOwnContextTermsHandler;
 use DeskPRO\Bundle\AppBundle\TicketFilters\Terms\TicketSlaTermsHandler;
+use Psr\Log\LoggerInterface;
 use Symfony\Component\DependencyInjection\Container;
 
 class MatcherFactory
@@ -31,15 +32,22 @@ class MatcherFactory
     private $termHandlers;
 
     /**
+     * @var LoggerInterface
+     */
+    private $logger;
+
+    /**
      * MatcherFactory constructor.
      *
-     * @param Container $container
-     * @param EnvLoader $loader
+     * @param Container       $container
+     * @param EnvLoader       $loader
+     * @param LoggerInterface $logger
      */
-    public function __construct(Container $container, EnvLoader $loader)
+    public function __construct(Container $container, EnvLoader $loader, LoggerInterface $logger = null)
     {
         $this->container = $container;
         $this->loader    = $loader;
+        $this->logger    = $logger;
     }
 
     /**
@@ -56,9 +64,11 @@ class MatcherFactory
             new TicketSlaTermsHandler(),
             new TicketDateTermsHandler(),
             new CustomFieldsTermsHandler(
-                $this->loader->getTicketFields(),
-                [],
-                new ChoiceFieldOptionMapper($this->container->get('doctrine.orm.entity_manager')->getRepository(CustomDefTicket::class))
+                $this->loader->getCustomFieldsSet(),
+                new ChoiceFieldOptionMapper(
+                    $this->loader->getCustomFieldsSet(),
+                    $this->container->get('doctrine.orm.entity_manager')->getRepository(CustomDefTicket::class)
+                )
             ),
             new TicketOwnContextTermsHandler($this->container->get('doctrine.dbal.read_search_connection')),
             new PersonTermsHandler($this->container->get('doctrine.orm.entity_manager')->getRepository(Person::class)),
@@ -79,6 +89,10 @@ class MatcherFactory
             $this->getTermHandlers()
         );
 
+        if ($this->logger) {
+            $matcher->setLogger($this->logger);
+        }
+
         return $matcher;
     }
 
@@ -87,7 +101,7 @@ class MatcherFactory
      *
      * @return TicketSqlMatcher
      */
-    public function createSqlMatcher()
+    public function createSqlMatcher($activeOnly = true)
     {
         $resolver = new ValueResolver();
 
@@ -95,9 +109,13 @@ class MatcherFactory
             $resolver,
             $this->getTermHandlers(),
             $this->container->get('doctrine.dbal.read_search_connection'),
-            TicketSqlMatcher::ACTIVE,
-            $this->loader->getTicketFields()
+            $activeOnly ? TicketSqlMatcher::ACTIVE : TicketSqlMatcher::ALL,
+            $this->loader->getCustomFieldsSet()
         );
+
+        if ($this->logger) {
+            $matcher->setLogger($this->logger);
+        }
 
         return $matcher;
     }

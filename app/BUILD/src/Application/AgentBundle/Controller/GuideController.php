@@ -277,6 +277,8 @@ class GuideController extends PublishController
     {
         $guides = $this->em->getRepository(Guide::class)->findBy(['brand' => $brand_id]);
 
+        $guide = $guides[0];
+
         return $this->render('AgentBundle:Common:select-standard.html.twig', [
             'name'             => 'newtopic[guide_id]',
             'id'               => 'new_topic_guide_id',
@@ -284,6 +286,7 @@ class GuideController extends PublishController
             'add_attr'         => '',
             'categories'       => $guides,
             'allow_parent_sel' => true,
+            'selected'         => $guide->getId(),
         ]);
     }
 
@@ -405,6 +408,9 @@ class GuideController extends PublishController
             $guideStructureData = $this->getFilteredCategory($guide->getBrand()->getId());
         }
 
+        /** @var Brand[] $brands */
+        $brands = $this->em->getRepository(Brand::class)->findAll();
+
         return $this->render($tpl, [
             'results'            => $results,
             'display_fields'     => $displayFields,
@@ -415,6 +421,7 @@ class GuideController extends PublishController
             'num_pages'          => 1,
             'cur_page'           => 1,
             'showing_to'         => $totalResults,
+            'brands'             => $brands,
         ]);
     }
 

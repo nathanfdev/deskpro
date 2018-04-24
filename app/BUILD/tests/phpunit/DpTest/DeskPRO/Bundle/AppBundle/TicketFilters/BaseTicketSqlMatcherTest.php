@@ -3,6 +3,7 @@
 namespace DpTest\Bundle\AppBundle\TicketFilters;
 
 use DeskPRO\Bundle\AppBundle\TicketFilters\Context;
+use DeskPRO\Bundle\AppBundle\TicketFilters\CustomFieldSet;
 use DeskPRO\Bundle\AppBundle\TicketFilters\Model\Agent;
 use DeskPRO\Bundle\AppBundle\TicketFilters\Model\Entity\CustomField;
 use DeskPRO\Bundle\AppBundle\TicketFilters\Terms\CustomFieldsTermsHandler;
@@ -67,13 +68,13 @@ abstract class BaseTicketSqlMatcherTest extends \PHPUnit_Framework_TestCase
     {
         $this->matcher = new TicketSqlMatcher($this->valueResolver, [
             new TicketBasicTermsHandler(),
-            new CustomFieldsTermsHandler([
+            new CustomFieldsTermsHandler(new CustomFieldSet([
                 new CustomField(1, 'choice', ['my_choice']),
                 new CustomField(2, 'choice', ['my_other_choice']),
                 new CustomField(3, 'text', ['my_text']),
                 new CustomField(4, 'date', ['my_date']),
                 new CustomField(5, 'toggle', ['my_toggle']),
-            ]),
+            ])),
         ], ConnectionMock::create(), TicketSqlMatcher::ACTIVE);
     }
 

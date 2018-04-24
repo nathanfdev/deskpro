@@ -80,12 +80,12 @@ class TicketSearchParams
     /**
      * TicketSearchParams constructor.
      *
-     * @param \DeskPRO\Bundle\AppBundle\TicketFilters\Model\Entity\CustomField[]|null $customTicketFields
+     * @param CustomFieldSet $customFieldSet
      */
-    public function __construct(array $customTicketFields = null)
+    public function __construct(CustomFieldSet $customFieldSet = null)
     {
-        if ($customTicketFields) {
-            foreach ($customTicketFields as $f) {
+        if ($customFieldSet) {
+            foreach ($customFieldSet->customTicketFields as $f) {
                 if ($f->isGroupingCapable()) {
                     $this->availableGroupFields[] = self::GROUP_TICKET_FIELD_PREFIX.".{$f->field}";
                 }

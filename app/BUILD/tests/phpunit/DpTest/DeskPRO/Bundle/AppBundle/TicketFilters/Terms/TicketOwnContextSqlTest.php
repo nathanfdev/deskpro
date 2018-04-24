@@ -67,7 +67,7 @@ class TicketOwnContextSqlTest extends BaseTicketSqlMatcherTest
             'SELECT COUNT(*) AS count
             FROM tickets_search_active tickets
             LEFT JOIN tickets_flagged c1_flag ON c1_flag.ticket_id = tickets.id AND c1_flag.person_id = :c2
-            WHERE (tickets.id = :c0) AND (c1_flag.color != :c3 OR c1_flag.color IS NULL)
+            WHERE (tickets.id = :c0) AND (c1_flag.color != :c3)
             ',
             ['c0' => 1, 'c2' => $this->matcherContext->getAgentId(), 'c3' => 'blue']
         );

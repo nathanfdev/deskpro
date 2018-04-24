@@ -1,9 +1,5 @@
 <?php
 
-// Test Config
-
-// The tests need this config file to run.
-
 // To run the tests, you need to do the following:
 
 // 1. rename this file to "config.all.php"
@@ -36,6 +32,7 @@ $CONFIG['paths'] = [
 $CONFIG['logs'] = [
     'log_level'           => 'debug',
     'log_level_threshold' => 'debug',
+    'log_db_queries'      => true,
 ];
 
 $CONFIG['env'] = [

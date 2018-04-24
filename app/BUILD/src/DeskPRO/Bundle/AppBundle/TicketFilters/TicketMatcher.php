@@ -4,7 +4,6 @@ namespace DeskPRO\Bundle\AppBundle\TicketFilters;
 
 use DeskPRO\Bundle\AppBundle\TicketFilters\Model\Entity\TicketModel;
 use DeskPRO\Bundle\AppBundle\TicketFilters\Terms\FunctionCompareDef;
-use DeskPRO\Bundle\AppBundle\TicketFilters\Terms\TermsHandlerInterface;
 use DeskPRO\Component\FilterQueryLanguage\Query\Node\GroupOp\AndGroupOp;
 use DeskPRO\Component\FilterQueryLanguage\Query\Node\GroupOp\NotGroupOp;
 use DeskPRO\Component\FilterQueryLanguage\Query\Node\GroupOp\OrGroupOp;

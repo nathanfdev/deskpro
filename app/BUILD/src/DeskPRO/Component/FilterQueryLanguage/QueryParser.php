@@ -766,12 +766,29 @@ class QueryParser
 
         $this->match(Lexer::T_HAS);
 
-        $rightExpr = $this->ArithmeticExpression(true);
+        if ($this->lexer->isNextToken(Lexer::T_OPEN_PARENTHESIS)) {
+            $this->match(Lexer::T_OPEN_PARENTHESIS);
+
+            $literals   = [];
+            $literals[] = $this->Literal(true);
+
+            while ($this->lexer->isNextToken(Lexer::T_COMMA)) {
+                $this->match(Lexer::T_COMMA);
+                $literals[] = $this->Literal(true);
+            }
+
+            $this->match(Lexer::T_CLOSE_PARENTHESIS);
+
+            $opt = new Query\Opt\InOpt($literals);
+        } else {
+            $expr = $this->ArithmeticExpression(true);
+            $opt  = new Query\Opt\CompareOpt($expr);
+        }
 
         return $this->addTokenPos(new Query\Node\Term(
             Query\Op\Op::createOp(Query\Query::OP_HAS),
             $field,
-            new Query\Opt\CompareOpt($rightExpr)
+            $opt
         ), $tokenPos);
     }
 

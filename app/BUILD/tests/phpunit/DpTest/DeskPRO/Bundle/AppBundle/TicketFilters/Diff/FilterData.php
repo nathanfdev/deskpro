@@ -82,7 +82,7 @@ class FilterData
      *
      * @return Agent
      */
-    public function makeAgent($id, $depids, $all, $other, $unassigned)
+    public static function makeAgent($id, $depids, $all, $other, $unassigned)
     {
         $agent                      = new Agent();
         $agent->id                  = $id;

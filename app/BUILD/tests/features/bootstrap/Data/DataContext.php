@@ -421,6 +421,14 @@ class DataContext extends BaseContext
     }
 
     /**
+     * @Given I re-fill ticket search table
+     */
+    public function iRefillTicketSearchTable()
+    {
+        $this->repository(Ticket::class)->fillSearchTable();
+    }
+
+    /**
      * @Given only the following :type records exist:
      *
      * @param string    $type

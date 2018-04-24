@@ -12,10 +12,11 @@ use DeskPRO\Bundle\AppBundle\Annotation\ActionPermissions\Annotation\ApiModes;
 use DeskPRO\Bundle\AppBundle\Form\Type\Tickets\TicketType;
 use DeskPRO\Bundle\AppBundle\Security\Voter\PermissionGroups\PermissionGroupVoter;
 use DeskPRO\Bundle\AppBundle\Serializer\Annotation\SerializerView;
-use DeskPRO\Bundle\AppBundle\TicketFilters\Terms\Terms;
+use DeskPRO\Bundle\AppBundle\TicketFilters\TermFieldIds;
 use DeskPRO\Bundle\AppBundle\TicketFilters\TicketSearchParams;
 use DeskPRO\Component\FilterQueryLanguage\QueryUtil;
 use DeskPRO\Component\Util\ListUtils;
+use DeskPRO\Component\Util\StringUtils;
 use FOS\RestBundle\Controller\Annotations as Rest;
 use FOS\RestBundle\View\View;
 use Symfony\Component\HttpFoundation\Request;
@@ -152,11 +153,9 @@ class TicketsController extends AbstractTicketsController
         // if the "ids" param is provided, then just use it to select tickets
         $ids = $request->query->get('ids');
         if ($ids) {
-            $offset      = $request->query->getInt('offset');
-            $currentPage = !$offset ? $request->query->getInt('page', 1) : null;
-            $maxPerPage  = $request->query->getInt('count', min(count($ids), self::$listMaxResults));
-            $ids         = !empty($ids) ? explode(',', $ids) : [];
-            $total       = count($ids);
+            $ids        = !empty($ids) ? explode(',', $ids) : [];
+            $total      = count($ids);
+            $maxPerPage = $request->query->getInt('count', min(count($ids), self::$listMaxResults));
         } // otherwise search for IDs using term engine and return Pagerfanta instance
         else {
             $searchParams     = new TicketSearchParams();
@@ -242,87 +241,155 @@ class TicketsController extends AbstractTicketsController
                 $orderBy = TicketSearchParams::ORDER_ID;
             }
 
-            foreach ($params as $field => $value) {
-                if (is_array($value)) {
-                    $valueQuoted = ListUtils::map($value, function ($v) {
-                        return QueryUtil::quoteValue($v);
-                    });
-                    $valueQuoted = '("'.implode('","', $valueQuoted).'")';
-                } else {
-                    $valueQuoted = QueryUtil::quoteValue($value);
-                }
+            // default to searching non-hidden
+            if (!isset($params['status']) && !isset($params['not_status'])) {
+                $params['not_status'] = 'hidden';
+            }
 
-                $op = '=';
+            foreach ($params as $field => $value) {
+                $op          = '=';
+                $valueQuoted = null;
+                $searchField = null;
 
                 switch ($field) {
+                    case 'label':
                     case 'labels':
                         $op          = 'IN';
-                        $searchField = Terms::TICKET_LABELS;
+                        $searchField = TermFieldIds::TICKET_LABELS;
                         break;
                     case 'star':
-                        $searchField = Terms::TICKET_STARRED;
+                        $searchField = TermFieldIds::TICKET_STARRED;
                         break;
                     case 'status':
-                        $searchField = Terms::TICKET_STATUS;
+                        $searchField = TermFieldIds::TICKET_STATUS;
                         break;
                     case 'not_status':
                         $op          = '!=';
-                        $searchField = Terms::TICKET_STATUS;
+                        $searchField = TermFieldIds::TICKET_STATUS;
                         break;
                     case 'agent':
-                        $searchField = Terms::TICKET_AGENT;
+                        $searchField = TermFieldIds::TICKET_AGENT;
+                        break;
+                    case 'agent_team':
+                        $searchField = TermFieldIds::TICKET_AGENT_TEAM;
                         break;
                     case 'person':
-                        $searchField = Terms::PERSON_ID;
+                    case 'email':
+                        $searchField = TermFieldIds::PERSON_ID;
                         break;
                     case 'language':
-                        $searchField = Terms::TICKET_LANGUAGE;
+                        $searchField = TermFieldIds::TICKET_LANGUAGE;
                         break;
                     case 'organization':
-                        $searchField = Terms::ORG_ID;
+                        $searchField = TermFieldIds::ORG_ID;
                         break;
                     case 'problem':
-                        $searchField = Terms::TICKET_PROBLEM_ID;
+                        $searchField = TermFieldIds::TICKET_PROBLEM_ID;
                         break;
                     case 'department':
-                        $searchField = Terms::TICKET_DEPARTMENT;
+                        $searchField = TermFieldIds::TICKET_DEPARTMENT;
                         break;
                     case 'sla':
                         $op          = 'HAS';
-                        $searchField = Terms::TICKET_SLAS;
+                        $searchField = TermFieldIds::TICKET_SLAS;
+                        break;
+                    case 'urgency':
+                        $op          = '=';
+                        $searchField = TermFieldIds::TICKET_URGENCY;
                         break;
                     case 'sla_status':
-                        $op = 'HAS';
-                        switch ($value) {
-                            case 'ok':
-                                $valueQuoted = 'passingSlas()';
-                                break;
-                            case 'fail':
-                            case 'failing':
-                            case 'failed':
-                                $valueQuoted = 'failedSlas()';
-                                break;
-                            case 'warn':
-                            case 'warning':
-                            case 'warned':
-                                $valueQuoted = 'warningSlas()';
-                                break;
-                            default:
-                                throw $this->createBadRequestException("Unknown sla_status value: $value");
+                        if (!is_array($value)) {
+                            $value = (array) $value;
                         }
-                        $searchField = Terms::TICKET_SLAS;
+
+                        $myParts = [];
+                        foreach ($value as $slaStatus) {
+                            $op = 'HAS';
+                            switch ($slaStatus) {
+                                case 'ok':
+                                    $fn = 'passingSlas()';
+                                    break;
+                                case 'fail':
+                                case 'failing':
+                                case 'failed':
+                                    $fn = 'failedSlas()';
+                                    break;
+                                case 'warn':
+                                case 'warning':
+                                case 'warned':
+                                    $fn = 'warningSlas()';
+                                    break;
+                                default:
+                                    throw $this->createBadRequestException("Unknown sla_status value: $value");
+                            }
+                            $myParts[] = TermFieldIds::TICKET_SLAS." {$op} $fn";
+                        }
+
+                        if (!empty($myParts)) {
+                            $searchQueryParts[] = '('.implode(' OR ', $myParts).')';
+                        }
+
                         break;
                     default:
-                        throw $this->createBadRequestException("Unknown filter termvalue: $field");
+
+                        // renamed field ticket_field.123 -> ticket.data.123
+                        if (StringUtils::startsWith('ticket_field_', $field)) {
+                            $customFieldId = StringUtils::removeFromStart('ticket_field_', $field);
+                            $searchField   = "ticket.data.{$customFieldId}";
+                        } else {
+                            throw $this->createBadRequestException("Unknown filter termvalue: $field");
+                        }
                 }
 
-                $searchQueryParts[] = "{$searchField} {$op} {$valueQuoted}";
+                if ($searchField !== null) {
+                    if ($valueQuoted === null) {
+                        if ($op === 'IN' && !is_array($value)) {
+                            $value = [$value];
+                        }
+                        if ($op === '=' && is_array($value)) {
+                            $op = 'IN';
+                        }
+                        if ($op === '!=' && is_array($value)) {
+                            $op = 'NOT IN';
+                        }
+                        if (is_array($value)) {
+
+                            // date ranges -> foo BETWEEN DATE('something') AND DATE('else')
+                            if (!empty($value['from']) || !empty($value['to'])) {
+                                if (!empty($value['from']) && !empty($value['to'])) {
+                                    $op          = 'BETWEEN';
+                                    $valueQuoted = 'DATE('.QueryUtil::quoteValue($value['from']).')'
+                                        .' AND '
+                                        .'DATE('.QueryUtil::quoteValue($value['to']).')';
+                                } elseif (!empty($value['from'])) {
+                                    $op          = '>=';
+                                    $valueQuoted = 'DATE('.QueryUtil::quoteValue($value['from']).')';
+                                } else {
+                                    $op          = '<=';
+                                    $valueQuoted = 'DATE('.QueryUtil::quoteValue($value['to']).')';
+                                }
+                            } else {
+                                if (empty($value)) {
+                                    $value = [0];
+                                }
+                                $valueQuoted = ListUtils::map($value, function ($v) {
+                                    return QueryUtil::quoteValue($v);
+                                });
+                                $valueQuoted = '('.implode(',', $valueQuoted).')';
+                            }
+                        } else {
+                            $valueQuoted = QueryUtil::quoteValue($value);
+                        }
+                    }
+
+                    $searchQueryParts[] = "{$searchField} {$op} {$valueQuoted}";
+                }
             }
 
             $searchParams->orderBy($orderBy, $orderDir);
 
             if (!empty($searchQueryParts)) {
-                $searchQuery = implode('AND ', $searchQueryParts);
+                $searchQuery = implode(' AND ', $searchQueryParts);
             } else {
                 $searchQuery = '';
             }
@@ -335,9 +402,9 @@ class TicketsController extends AbstractTicketsController
             }
 
             $parser   = $this->container->get('ticketfilters.queryparser');
-            $searcher = $ticketFilters->getSearcher();
+            $searcher = $ticketFilters->getArchiveSearcher();
             $qb       = $searcher
-                ->getIdsQueryBuilder($parser->parseQuery($searchQuery), $context)
+                ->getIdsQueryBuilder($parser->parseQuery($searchQuery), $context, $searchParams)
                 ->setMaxResults(1000);
 
             $ids         = $qb->execute()->fetchAll(\PDO::FETCH_COLUMN);
@@ -346,6 +413,7 @@ class TicketsController extends AbstractTicketsController
         }
 
         if ($offset) {
+            $ids    = array_slice($ids, $offset);
             $result = $this->getTicketsOffsetList($total, $ids, $offset, $maxPerPage);
         } else {
             $result = $this->getTicketsPager($total, $ids, $currentPage, $maxPerPage);

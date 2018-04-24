@@ -1,13 +1,11 @@
 <?php
 
-namespace DeskPRO\Bundle\AppBundle\TicketFilters\Terms;
-
-use DeskPRO\Component\Util\StringUtils;
+namespace DeskPRO\Bundle\AppBundle\TicketFilters;
 
 /**
  * This is just used to define constants.
  */
-class Terms
+class TermFieldIds
 {
     const TICKET_ID                    = 'ticket.id';
     const TICKET_STATUS                = 'ticket.status';
@@ -32,16 +30,17 @@ class Terms
     const TICKET_DATE_LAST_USER_REPLY  = 'ticket.date_last_user_reply';
     const TICKET_DATE_AGENT_WAITING    = 'ticket.date_agent_waiting';
     const TICKET_DATE_USER_WAITING     = 'ticket.date_user_waiting';
-    const TICKET_CUSTOM                = 'ticket.data.%s';
+    const TICKET_CUSTOM                = 'ticket.data';
 
-    const PERSON_ID         = 'ticket.person';
+    const PERSON_ID         = 'ticket.person'; // allows ids or email addresses which get resolved to ids
     const PERSON_LABELS     = 'ticket.person.labels';
     const PERSON_USERGROUPS = 'ticket.person.usergroups';
-    const PERSON_CUSTOM     = 'ticket.person.data.%s';
+    const PERSON_CUSTOM     = 'ticket.person.data';
 
     const ORG_ID         = 'ticket.organization';
     const ORG_LABELS     = 'ticket.organization.labels';
     const ORG_USERGROUPS = 'ticket.organization.usergroups';
+    const ORG_CUSTOM     = 'ticket.organization.data';
 
     const VAR_ME       = 'me.id';
     const VAR_MY_TEAM  = 'me.primary_team';
@@ -55,20 +54,20 @@ class Terms
     const FUNC_FAILED_SLAS  = 'failedSlas';
 
     /**
-     * Given an ID, check if it's a custom field.
+     * @param $type
+     * @param $customFieldId
      *
-     * @param string $fieldId
-     *
-     * @return array [type, customFieldId] if not found, then values will be null
+     * @return string
      */
-    public static function parseCustomFieldId($fieldId)
+    public static function getCustomFieldTermId($type, $customFieldId)
     {
-        if ($fieldAlias = StringUtils::removeFromStart(sprintf(self::TICKET_CUSTOM, ''), $fieldId)) {
-            return ['ticket.data', $fieldAlias];
-        } elseif ($fieldAlias = StringUtils::removeFromStart(sprintf(self::PERSON_CUSTOM, ''), $fieldId)) {
-            return ['ticket.person.data', $fieldAlias];
-        } else {
-            return [null, null];
+        switch ($type) {
+            case self::TICKET_CUSTOM:
+            case self::PERSON_CUSTOM:
+            case self::ORG_CUSTOM:
+                return $type.'.'.$customFieldId;
+            default:
+                throw new \InvalidArgumentException('Unknown field type');
         }
     }
 }

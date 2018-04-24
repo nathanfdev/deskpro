@@ -31,7 +31,6 @@ Feature: I check count versioning
   Scenario: I check 20170401 int identity
     When I send a GET request to "/api/v2/20170401/user_chats/counts?group_by=agent"
     Then the JSON node "data.nested[0].id" should be equal to "{agent}"
-    And the JSON node "data.nested[0].value" should be null
     And the JSON node "data.nested[0].type" should be equal to "agent"
     And the JSON node "data.nested[0].title" should be equal to "Agent Agent"
     And the JSON node "data.nested[0].count" should be equal to 1

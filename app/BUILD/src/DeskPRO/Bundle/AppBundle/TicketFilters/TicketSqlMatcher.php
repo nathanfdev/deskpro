@@ -9,10 +9,10 @@ use DeskPRO\Bundle\AppBundle\TicketFilters\Model\Entity\CustomField;
 use DeskPRO\Bundle\AppBundle\TicketFilters\SqlBuilder\SqlBuilder;
 use DeskPRO\Bundle\AppBundle\TicketFilters\SqlBuilder\SqlCondition;
 use DeskPRO\Bundle\AppBundle\TicketFilters\SqlBuilder\SqlConditionGroup;
-use DeskPRO\Bundle\AppBundle\TicketFilters\Terms\Terms;
 use DeskPRO\Component\FilterQueryLanguage\Query\Node\Term;
 use DeskPRO\Component\FilterQueryLanguage\Query\Node\TermGroup;
 use DeskPRO\Component\FilterQueryLanguage\Query\Query;
+use DeskPRO\Component\Util\DebugUtils;
 use DeskPRO\Component\Util\ListUtils;
 use DeskPRO\Component\Util\StructComparer;
 use Doctrine\DBAL\Connection;
@@ -33,20 +33,20 @@ class TicketSqlMatcher extends AbstractMatcher
     private $db;
 
     /**
-     * @var CustomField[]
+     * @var CustomFieldSet
      */
-    private $ticketFields;
+    private $customFieldSet;
 
     /**
      * TicketSqlMatcher constructor.
      *
-     * @param ValueResolver                                                           $valueResolver
-     * @param array                                                                   $handlers
-     * @param Connection                                                              $db
-     * @param string                                                                  $mode          TicketSqlMatcher::ACTIVE for active tickets, or TicketSqlMatcher::ALL for all tickets (slower)
-     * @param \DeskPRO\Bundle\AppBundle\TicketFilters\Model\Entity\CustomField[]|null $ticketFields
+     * @param ValueResolver  $valueResolver
+     * @param array          $handlers
+     * @param Connection     $db
+     * @param string         $mode           TicketSqlMatcher::ACTIVE for active tickets, or TicketSqlMatcher::ALL for all tickets (slower)
+     * @param CustomFieldSet $customFieldSet
      */
-    public function __construct(ValueResolver $valueResolver, array $handlers, Connection $db, $mode, array $ticketFields = null)
+    public function __construct(ValueResolver $valueResolver, array $handlers, Connection $db, $mode, CustomFieldSet $customFieldSet = null)
     {
         parent::__construct($valueResolver, $handlers);
         $this->db = $db;
@@ -55,8 +55,8 @@ class TicketSqlMatcher extends AbstractMatcher
             throw new \InvalidArgumentException('Invalid mode');
         }
 
-        $this->mode         = $mode;
-        $this->ticketFields = $ticketFields ?: [];
+        $this->mode           = $mode;
+        $this->customFieldSet = $customFieldSet ?: new CustomFieldSet();
     }
 
     /**
@@ -88,6 +88,13 @@ class TicketSqlMatcher extends AbstractMatcher
             }
         }
 
+        $this->logger->debug(sprintf(
+            '[TicketSqlMatcher::getCountQueryBuilder] Query: %s -- SQL: %s -- Params: %s',
+            $query->fql ?: print_r($query, 1),
+            $qb->getSQL(),
+            DebugUtils::varToString($qb->getParameters())
+        ));
+
         return $qb;
     }
 
@@ -111,6 +118,13 @@ class TicketSqlMatcher extends AbstractMatcher
         if (!$params || !$params->hasOrderFields()) {
             $qb->orderBy('tickets.id', 'DESC');
         }
+
+        $this->logger->debug(sprintf(
+            '[TicketSqlMatcher::getIdsQueryBuilder] Query: %s -- SQL: %s -- Params: %s',
+            $query->fql ?: print_r($query, 1),
+            $qb->getSQL(),
+            DebugUtils::varToString($qb->getParameters())
+        ));
 
         return $qb;
     }
@@ -246,7 +260,7 @@ class TicketSqlMatcher extends AbstractMatcher
                     $ticketFieldId = (int) $fieldInfo['name'];
 
                     /** @var CustomField $field */
-                    $field = ListUtils::findByProp($this->ticketFields, 'field', $ticketFieldId);
+                    $field = ListUtils::findByProp($this->customFieldSet->customTicketFields, 'field', $ticketFieldId);
 
                     if (!$field) {
                         throw new \InvalidArgumentException('Unknown grouping field: '.$fieldId);
@@ -356,7 +370,7 @@ class TicketSqlMatcher extends AbstractMatcher
                     if ($customFieldId) {
                         switch ($fieldType) {
                             case 'ticket.data':
-                                $field = ListUtils::first($this->ticketFields, StructComparer::byProp('field', $customFieldId));
+                                $field = ListUtils::first($this->customFieldSet->customTicketFields, StructComparer::byProp('field', $customFieldId));
                                 break;
                             default:
                                 $field = null;

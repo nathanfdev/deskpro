@@ -96,6 +96,7 @@ class DoctrineQueriesCounterListener
 
         // check max queries count
         if (count($queries) > self::$maxQueriesCount) {
+            print_r($queries);
             throw new \Exception(sprintf(
                 'Too many db queries, expected less than %d, got %d',
                 self::$maxQueriesCount, count($queries)

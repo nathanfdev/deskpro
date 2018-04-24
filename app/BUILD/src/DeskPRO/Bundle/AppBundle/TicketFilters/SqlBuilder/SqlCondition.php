@@ -156,7 +156,7 @@ class SqlCondition
             $where = implode(' AND ', $where);
         }
 
-        $this->where = $where;
+        $this->where = trim($where);
 
         return $this;
     }
@@ -191,5 +191,13 @@ class SqlCondition
     public function getUniqueJoins()
     {
         return $this->uniqueJoins;
+    }
+
+    /**
+     * @return bool
+     */
+    public function isEmpty()
+    {
+        return empty($this->where);
     }
 }

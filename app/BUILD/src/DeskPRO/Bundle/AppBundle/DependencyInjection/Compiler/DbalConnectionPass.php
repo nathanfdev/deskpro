@@ -16,8 +16,10 @@ class DbalConnectionPass implements CompilerPassInterface
             $def     = $container->getDefinition($serviceId);
             $args    = $def->getArguments();
             $args[0] = new Expression("service('deskpro.db_config_reader').getParams('$id')");
-
             $def->setArguments($args);
+
+            $cnfDef = $container->getDefinition(sprintf('doctrine.dbal.%s_connection.configuration', $id));
+            $cnfDef->addMethodCall('setSQLLogger', [new Expression("service('deskpro.db_config_reader').getSqlLogger('$id')")]);
         }
     }
 }
