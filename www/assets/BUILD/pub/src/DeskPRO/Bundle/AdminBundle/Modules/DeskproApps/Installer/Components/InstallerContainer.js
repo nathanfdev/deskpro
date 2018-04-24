@@ -1,10 +1,38 @@
 import PropTypes from 'prop-types';
 import React from 'react';
+import MarkdownIt from 'markdown-it';
 
+import { api } from 'DeskPRO/Bundle/AppBundle/DAL';
 import { ScreenInstallerError } from './ScreenInstallerError';
 import { ScreenInstallerLoading } from './ScreenInstallerLoading';
 import { ScreenConfirmInstall } from './ScreenConfirmInstall';
 import { InstallerErrors } from '../InstallerErrors';
+
+
+/**
+ *
+ * @param {*} manifest
+ * @returns Promise
+ */
+function getReadme(manifest) {
+  const assets = manifest.assets;
+  let readmeDownloadUrl = null;
+  for (let i = 0; i < assets.length; i++) {
+    if (assets[i].path === 'docs/ADMIN_README.md') {
+      readmeDownloadUrl = assets[i].blob.download_url;
+    }
+  }
+
+  if (!readmeDownloadUrl) {
+    return Promise.resolve(null);
+  }
+
+  return api.sendGet(readmeDownloadUrl)
+    .then((resp) => {
+      const md = new MarkdownIt();
+      return md.render(resp.data);
+    });
+}
 
 export class InstallerContainer extends React.Component {
   static propTypes = {
@@ -35,6 +63,7 @@ export class InstallerContainer extends React.Component {
       error:             null,
       errorType:         null,
       route:             'loading',
+      readme:            null,
       appManifest:       null,
       installerManifest: null,
       packageManifest:   null
@@ -42,13 +71,25 @@ export class InstallerContainer extends React.Component {
   }
 
   loadInitialState()  {
-    const { installType } = this.props;
+    const { installType, loadPackage } = this.props;
 
     if (installType === 'update') {
-      return this.loadAppManifests();
+      return this.loadAppManifests()
+        .then(
+          state => ({ ...state, route: 'settings' })
+        )
+        .then(
+          state => loadPackage(state.appManifest.name).then(packageManifest => getReadme(packageManifest))
+            .then(readme => ({ ...state, readme }))
+        )
+      ;
     }
+
     if (installType === 'install') {
-      return this.loadPackageManifest();
+      return this.loadPackageManifest()
+        .then(state => ({ ...state, route: 'confirm-install' }))
+        .then(state => getReadme(state.packageManifest).then(readme => ({ ...state, readme })))
+      ;
     }
 
     const error = new Error('unexpected install action');
@@ -60,12 +101,14 @@ export class InstallerContainer extends React.Component {
     const { app, loadPackage } = this.props;
 
     return loadPackage(app)
-      .then(packageManifest => ({ route: 'confirm-install',  packageManifest }))
+      .then(
+        /* eslint-disable no-shadow */
+        packageManifest => ({ packageManifest })
+      )
       .catch((error) => {
         if (typeof error === 'object') {
           error.deskpro = { type: InstallerErrors.LOAD_MANIFEST_FAIL_PACKAGE, app };
         }
-
         return {
           route:     'error',
           error,
@@ -88,7 +131,7 @@ export class InstallerContainer extends React.Component {
         appManifest = manifest;
         return loadInstaller(manifest);
       })
-      .then(installerManifest => ({ route: 'settings', installerManifest, appManifest }))
+      .then(installerManifest => ({ installerManifest, appManifest }))
       .catch((error) => {
         if (typeof error === 'object') {
           error.deskpro = { type: InstallerErrors.LOAD_MANIFEST_FAIL_APP, app, createInstanceFirst };
@@ -99,7 +142,7 @@ export class InstallerContainer extends React.Component {
     ;
   }
 
-  render()  {
+  renderScreen()  {
     const { route } = this.state;
 
     if (route === 'error') {
@@ -134,5 +177,35 @@ export class InstallerContainer extends React.Component {
     const error = new Error('unknown installer route');
     return <ScreenInstallerError error={error} />;
   }
-}
 
+  render() {
+    const { readme } = this.state;
+
+    const hrStyle = {
+      marginLeft:   15,
+      marginRight:  15,
+      border:       0,
+      borderBottom: '1px dotted #aaa',
+      width:        'auto'
+    };
+
+    const sectionStyle = {
+      margin: 15
+    };
+
+    return (
+      <div>
+        {this.renderScreen()}
+        {readme && (
+          <div>
+            <hr style={hrStyle} />
+            <section
+              style={sectionStyle}
+              dangerouslySetInnerHTML={{ __html: readme }}
+            />
+          </div>
+        )}
+      </div>
+    );
+  }
+}
