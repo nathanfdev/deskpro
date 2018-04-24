@@ -71,13 +71,25 @@ export class InstallerContainer extends React.Component {
   }
 
   loadInitialState()  {
-    const { installType } = this.props;
+    const { installType, loadPackage } = this.props;
 
     if (installType === 'update') {
-      return this.loadAppManifests();
+      return this.loadAppManifests()
+        .then(
+          state => ({ ...state, route: 'settings' })
+        )
+        .then(
+          state => loadPackage(state.appManifest.name).then(packageManifest => getReadme(packageManifest))
+            .then(readme => ({ ...state, readme }))
+        )
+      ;
     }
+
     if (installType === 'install') {
-      return this.loadPackageManifest();
+      return this.loadPackageManifest()
+        .then(state => ({ ...state, route: 'confirm-install' }))
+        .then(state => getReadme(state.packageManifest).then(readme => ({ ...state, readme })))
+      ;
     }
 
     const error = new Error('unexpected install action');
@@ -91,7 +103,7 @@ export class InstallerContainer extends React.Component {
     return loadPackage(app)
       .then(
         /* eslint-disable no-shadow */
-        packageManifest => getReadme(packageManifest).then(readme => ({ route: 'confirm-install',  packageManifest, readme }))
+        packageManifest => ({ packageManifest })
       )
       .catch((error) => {
         if (typeof error === 'object') {
@@ -119,7 +131,7 @@ export class InstallerContainer extends React.Component {
         appManifest = manifest;
         return loadInstaller(manifest);
       })
-      .then(installerManifest => ({ route: 'settings', installerManifest, appManifest }))
+      .then(installerManifest => ({ installerManifest, appManifest }))
       .catch((error) => {
         if (typeof error === 'object') {
           error.deskpro = { type: InstallerErrors.LOAD_MANIFEST_FAIL_APP, app, createInstanceFirst };
