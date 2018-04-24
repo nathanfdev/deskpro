@@ -153,11 +153,9 @@ class TicketsController extends AbstractTicketsController
         // if the "ids" param is provided, then just use it to select tickets
         $ids = $request->query->get('ids');
         if ($ids) {
-            $offset      = $request->query->getInt('offset');
-            $currentPage = !$offset ? $request->query->getInt('page', 1) : null;
-            $maxPerPage  = $request->query->getInt('count', min(count($ids), self::$listMaxResults));
-            $ids         = !empty($ids) ? explode(',', $ids) : [];
-            $total       = count($ids);
+            $ids        = !empty($ids) ? explode(',', $ids) : [];
+            $total      = count($ids);
+            $maxPerPage = $request->query->getInt('count', min(count($ids), self::$listMaxResults));
         } // otherwise search for IDs using term engine and return Pagerfanta instance
         else {
             $searchParams     = new TicketSearchParams();
@@ -415,6 +413,7 @@ class TicketsController extends AbstractTicketsController
         }
 
         if ($offset) {
+            $ids    = array_slice($ids, $offset);
             $result = $this->getTicketsOffsetList($total, $ids, $offset, $maxPerPage);
         } else {
             $result = $this->getTicketsPager($total, $ids, $currentPage, $maxPerPage);

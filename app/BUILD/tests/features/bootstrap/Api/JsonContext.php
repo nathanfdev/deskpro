@@ -108,7 +108,7 @@ class JsonContext extends \Behatch\Context\JsonContext
     }
 
     /**
-     * Checks, that given JSON list does not contain given value
+     * Checks, that given JSON list does not contain given value.
      *
      * @Then the JSON list node :node should not contain :text
      */
@@ -117,12 +117,10 @@ class JsonContext extends \Behatch\Context\JsonContext
         $node = DataContext::replace($node);
         $text = DataContext::replace($text);
 
-
-        $json = $this->getJson();
+        $json   = $this->getJson();
         $actual = $this->inspector->evaluate($json, $node);
 
         foreach ($actual as $item) {
-
             if ($text === (string) $item) {
                 throw new \Exception(
                     sprintf('The node `%s` contains: %s', json_encode($actual), $text)
@@ -171,7 +169,7 @@ class JsonContext extends \Behatch\Context\JsonContext
     }
 
     /**
-     * Checks, that given JSON node is equal to given value
+     * Checks, that given JSON node is equal to given value.
      *
      * @Then the JSON node :node should be equal to node:
      */
@@ -179,33 +177,28 @@ class JsonContext extends \Behatch\Context\JsonContext
     {
         $json = $this->getJson();
         try {
-            $node = DataContext::replace($node);
+            $node   = DataContext::replace($node);
             $actual = $this->inspector->evaluate($json, $node);
             $actual = new Json(json_encode($actual));
-        }
-        catch (\Exception $e) {
+        } catch (\Exception $e) {
             throw new \Exception('The actual JSON is not valid', 0, $e);
         }
 
         try {
-
             $expected = DataContext::replace($text->getRaw(), false);
             $expected = new Json($expected);
-        }
-        catch (\Exception $e) {
+        } catch (\Exception $e) {
             throw new \Exception('The expected JSON is not valid', 0, $e);
         }
-
 
         $this->assertSame(
             (string) $expected,
             (string) $actual,
-            "The json is equal to:\n". $expected->encode(true) . "\n" , $actual->encode(true)
+            "The json is equal to:\n".$expected->encode(true)."\n", $actual->encode(true)
         );
     }
 
     /**
-     *
      * @Given I save the JSON node :node as placeholder :placeholder
      *
      * @param $node
@@ -218,5 +211,4 @@ class JsonContext extends \Behatch\Context\JsonContext
 
         DataContext::setPlaceholder($placeholder, $actual);
     }
-
 }
