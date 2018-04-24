@@ -88,22 +88,13 @@ export class InstallerContainer extends React.Component {
     const { app, loadPackage } = this.props;
 
     return loadPackage(app)
-      .then((packageManifest) => {
-        return getReadme(packageManifest)
-          .then((readme) => {
-            return { route: 'confirm-install',  packageManifest, readme };
-          })
-      })
-
       .then(
-        packageManifest => ({ route: 'confirm-install',  packageManifest })
-
+        packageManifest => Promise.all([getReadme(packageManifest), packageManifest]).then(([readme, packageManifest]) => ({ route: 'confirm-install',  packageManifest, readme }))
       )
       .catch((error) => {
         if (typeof error === 'object') {
           error.deskpro = { type: InstallerErrors.LOAD_MANIFEST_FAIL_PACKAGE, app };
         }
-
         return {
           route:     'error',
           error,
