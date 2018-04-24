@@ -9,6 +9,8 @@
 namespace Application\DeskPRO\ORM\Util;
 
 use Application\DeskPRO\App;
+use Application\DeskPRO\DBAL\SchemaHelper;
+use DeskPRO\Component\Doctrine\ORM\Tools\SchemaTool as DPSchemaTool;
 use Doctrine\ORM\EntityManager;
 use Doctrine\ORM\PersistentCollection;
 use Doctrine\ORM\Tools\SchemaTool;
@@ -76,12 +78,26 @@ class Util
      *
      * @return bool
      */
-    public static function isAllFKConstraintsExist(EntityManager $em = null)
+    public static function isAllFKConstraintsExist(EntityManager $em)
     {
-        $schemaDiff = self::getUpdateSchemaSql($em);
-        if ($schemaDiff) {
-            foreach ($schemaDiff as $query) {
-                if (preg_match('/ALTER TABLE (.+) ADD CONSTRAINT (.+) FOREIGN KEY/', $query)) {
+        $metadata     = $em->getMetadataFactory()->getAllMetadata();
+        $schemaTool   = new DPSchemaTool($em);
+        $schemaHelper = new SchemaHelper($em->getConnection());
+        $schema       = $schemaTool->getSchemaFromMetadata($metadata);
+
+        foreach ($schema->getTables() as $table) {
+            foreach ($table->getForeignKeys() as $foreignKey) {
+                try {
+                    $realKey = $schemaHelper->findForeignKey(
+                        $table->getName(),
+                        $foreignKey->getColumns(),
+                        $foreignKey->getForeignTableName(),
+                        $foreignKey->getForeignColumns()
+                    );
+                    if (!$realKey) {
+                        return false;
+                    }
+                } catch (\Exception $e) {
                     return false;
                 }
             }
