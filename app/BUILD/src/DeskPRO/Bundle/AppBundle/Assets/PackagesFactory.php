@@ -124,14 +124,12 @@ class PackagesFactory
      */
     public function createPackages()
     {
-        $asset_packs = [];
+        $assetPacks = [];
         foreach ($this->asset_paths as $id => $p) {
-            $asset_packs[$id] = $this->getAssetPackage($p);
+            $assetPacks[$id] = $this->getAssetPackage($p);
         }
 
-        $default = $this->getAssetPackage(PathMapInfo::create()->setDeskproPath('/assets/%DP_ACTIVE_BUILD%/web'));
-
-        return new Packages($default, $asset_packs);
+        return new Packages($assetPacks['legacy_web'], $assetPacks);
     }
 
     /**
