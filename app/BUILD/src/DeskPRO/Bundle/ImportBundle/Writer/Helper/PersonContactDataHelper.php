@@ -52,7 +52,7 @@ class PersonContactDataHelper extends AbstractContactDataHelper
         /** @var PhoneNumber $contactEntity */
         $contactEntity = $this->createEntityHelper->findOrCreateEntity($this->phoneNumberMapper, $contactModel);
         $contactEntity
-            ->setNumber((string) $phoneNumber)
+            ->setNumber($contactModel->getNumber())
             ->setRegion(PhoneNumberUtil::getInstance()->getRegionCodeForNumber($phoneNumber))
             ->setGuessedType($contactModel->getType() ?: 'phone')
             ->setPerson($entity)
