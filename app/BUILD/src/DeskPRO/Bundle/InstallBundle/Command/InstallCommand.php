@@ -34,6 +34,7 @@ class InstallCommand extends ContainerAwareCommand
             ->addOption('list-steps', 'l', InputOption::VALUE_NONE, 'List all steps instead of running them')
             ->addOption('restart', null, InputOption::VALUE_NONE, 'Restart an installation (instead of resume)')
             ->addOption('truncate-db', null, InputOption::VALUE_NONE, 'If the db has existing tables, then we will truncate all tables instead of recreating. This can make things slightly faster during testing.')
+            ->addOption('recreate-db', null, InputOption::VALUE_NONE, 'If the db name exists, it will be dropped and re-created (the db user must have permission to drop/create dbs).')
             ->addOption('redo-step', 'r', InputOption::VALUE_REQUIRED, 'Redo a specific step even if it is marked as complete')
             ->addOption('profile', 'p', InputOption::VALUE_REQUIRED, 'Get answers from a profile file')
             ->addOption('skip-wizard', null, InputOption::VALUE_NONE, 'Use the existing config files and skip the install wizard (including checks)')
@@ -226,6 +227,13 @@ class InstallCommand extends ContainerAwareCommand
             unset($skip_list[$key]);
         }
 
+        $dbExistAction = null;
+        if ($input->getOption('truncate-db')) {
+            $dbExistAction = InstallStep\InstallTablesStep::TRUNCATE_DB;
+        } elseif ($input->getOption('recreate-db')) {
+            $dbExistAction = InstallStep\InstallTablesStep::RECREATE_DB;
+        }
+
         $steps = [
             new InstallStep\WelcomeStep($context, in_array('admin_account', $skip_list)),
             new InstallStep\FileIntegrityStep($context),
@@ -234,7 +242,7 @@ class InstallCommand extends ContainerAwareCommand
             new InstallStep\AcceptPathsStep($context),
             new InstallStep\AcceptWebUrlStep($context),
             new InstallStep\AcceptDatabaseStep($context),
-            new InstallStep\InstallTablesStep($context, (bool) $input->getOption('truncate-db')),
+            new InstallStep\InstallTablesStep($context, $dbExistAction),
             new InstallStep\InstallConfigStep($context),
             new InstallStep\InstallFixturesStep($context),
             new InstallStep\InstallCronCommand($context),

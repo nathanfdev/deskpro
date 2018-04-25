@@ -3,6 +3,8 @@
 namespace DeskPRO\Bundle\AppBundle\Serializer\Model;
 
 use Application\DeskPRO\Entity\CustomDefAbstract;
+use DeskPRO\Bundle\AppBundle\ObjectAlias\ObjectAliasInterface;
+use DeskPRO\Component\Util\ListUtils;
 use JMS\Serializer\Annotation as JMS;
 
 /**
@@ -112,6 +114,13 @@ class CustomDef
     private $translations = [];
 
     /**
+     * @JMS\Type("array<string>")
+     *
+     * @var string[]
+     */
+    private $aliases;
+
+    /**
      * Constructor.
      *
      * @param CustomDefAbstract $def
@@ -129,6 +138,9 @@ class CustomDef
         $this->defaultValue  = $def->getDefaultValue();
         $this->widgetType    = $def->getWidgetType();
         $this->choices       = $def->getChoices();
+        $this->aliases       = ListUtils::map($def->getAliases(), function (ObjectAliasInterface $a) {
+            return $a->getQualifiedName();
+        });
 
         $this->options = $def->getOptions();
         if (isset($this->options['choices'])) {

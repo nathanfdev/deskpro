@@ -7,6 +7,7 @@ use Application\DeskPRO\Entity\Blob;
 use Application\DeskPRO\Entity\CustomDataAbstract;
 use Application\DeskPRO\Entity\CustomDefAbstract;
 use Application\DeskPRO\Entity\Person;
+use Application\DeskPRO\Entity\Ticket;
 use DeskPRO\Bundle\AppBundle\ObjectAlias;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\EntityManager;
@@ -825,6 +826,9 @@ class FieldManager
 
         foreach ($object->$prop as $v) {
             if ($v->field->getId() == $field_def->getId() || ($v->field->parent && $v->field->parent->getId() == $field_def->getId())) {
+                if ($object instanceof Ticket) {
+                    $object->getStateChangeRecorder()->touchField('custom_data');
+                }
                 $object->custom_data->removeElement($v);
             }
         }

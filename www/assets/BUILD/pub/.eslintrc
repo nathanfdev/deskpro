@@ -84,6 +84,7 @@
       ] }
     ],
     "jsx-a11y/tabindex-no-positive": 0,
+    "jsx-a11y/label-has-for": 1,
     "strict": 0,
     "no-param-reassign": [
       "error",

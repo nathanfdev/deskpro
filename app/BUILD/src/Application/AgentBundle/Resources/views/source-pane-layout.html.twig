@@ -1,5 +1,6 @@
 {% block top %}{% endblock %}
 <div class="source-pane-instance {{ add_classname }}">
+    {% block pane_instance %}
 	<div class="source-pane-header">
 		{% block pane_header %}
 			<ul class="pane-tabs">
@@ -17,4 +18,5 @@
 		</div>
 		</div>
 	</div>
+	{% endblock %}
 </div>

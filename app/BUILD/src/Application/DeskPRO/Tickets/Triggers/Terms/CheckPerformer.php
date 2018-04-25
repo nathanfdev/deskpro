@@ -45,7 +45,7 @@ class CheckPerformer extends AbstractTriggerTerm
 
         // Assigned Agent
         if (in_array('-1', $check)) {
-            return $performer->getId() === $ticket->getAgentId();
+            $check[] = $performer->getId();
         }
 
         // Member of assigned team
@@ -55,7 +55,9 @@ class CheckPerformer extends AbstractTriggerTerm
 
         // Follower of the ticket
         if (in_array('-3', $check)) {
-            return $ticket->hasParticipantPerson($performer->getId());
+            foreach ($ticket->getAgentParticipants() as $a) {
+                $check[] = $a->getId();
+            }
         }
 
         return $this->isIntMatch($ticket, $context, TermValue::createWithValue($performer->getId()), $check);

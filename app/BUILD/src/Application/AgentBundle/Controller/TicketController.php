@@ -2154,6 +2154,7 @@ class TicketController extends AbstractController
     public function ajaxSaveActionsAction($ticket_id, Request $request)
     {
         $ticket = $this->getTicketOr404($ticket_id, 'modify');
+        $ticket->getStateChangeRecorder()->touchField('__ajax_save_actions');
 
         $tm = $this->container->getTicketManager();
         $tm->markAsManaged($ticket);

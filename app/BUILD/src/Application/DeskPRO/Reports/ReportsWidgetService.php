@@ -133,8 +133,14 @@ class ReportsWidgetService
                 if ($def->getOption('reports_field_var_max_level')) {
                     $maxLevel = (int) $def->getOption('reports_field_var_max_level');
                 }
-                $this->getChoices($choices, $def->getTitle(), $arr, $maxLevel);
-                $result[$def->getRawTitle()][$def->getTitle()] = [$def->getTitle()];
+                if ($maxLevel > 1) {
+                    $this->getChoices($choices, $def->getTitle(), $arr, $maxLevel);
+                    $result[$def->getRawTitle()][$def->getTitle()] = [$def->getTitle()];
+                } else {
+                    $this->getChoices($choices, '', $arr, $maxLevel);
+                    $result[$def->getRawTitle()] = [];
+                }
+
                 $result[$def->getRawTitle()] += $arr;
                 $result[$def->getRawTitle()][DashboardWidgetManager::WIDGET_VALUE_FROM_REPORT] = ['value from report'];
             }

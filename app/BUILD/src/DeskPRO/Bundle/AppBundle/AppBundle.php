@@ -22,7 +22,6 @@ use DeskPRO\Bundle\AppBundle\DependencyInjection\Compiler\NotificationCompilerPa
 use DeskPRO\Bundle\AppBundle\DependencyInjection\Compiler\PermissionGroupsCompilerPass;
 use DeskPRO\Bundle\AppBundle\DependencyInjection\Compiler\RegisterQuickSearchEventsPass;
 use DeskPRO\Bundle\AppBundle\DependencyInjection\Compiler\SerializerPass;
-use DeskPRO\Bundle\AppBundle\DependencyInjection\Compiler\TermEnginePass;
 use DeskPRO\Bundle\AppBundle\Security\Factory\AgentImpersonateFactory;
 use DeskPRO\Bundle\AppBundle\Security\Factory\DpFormLoginFactory;
 use DeskPRO\Bundle\AppBundle\Security\Factory\TransferSessionAuthFactory;
@@ -55,7 +54,6 @@ class AppBundle extends Bundle
         $container->addCompilerPass(new LazyWarmersPass());
         $container->addCompilerPass(new AppSecretPass());
         $container->addCompilerPass(new FormOrderExtensionsPass(), PassConfig::TYPE_BEFORE_REMOVING);
-        $container->addCompilerPass(new TermEnginePass());
         $container->addCompilerPass(new RegisterQuickSearchEventsPass());
         $container->addCompilerPass(new DbalConnectionPass());
         $container->addCompilerPass(new MongoConnectionPass());

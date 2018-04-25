@@ -22,7 +22,6 @@ services:
                 - "@dbset.empty"
                 - "@dbset.fresh"
                 - "@dbset.api"
-                - "@dbset.term_engine"
 
     dbset.empty:
         class: DpTestSrc\TestBundle\DataSet\EmptyDb
@@ -40,13 +39,6 @@ services:
 
     dbset.api:
         class: DpTestSrc\TestBundle\DataSet\ApiDb
-        arguments:
-            - "@service_container"
-            - "@doctrine.dbal.default_connection"
-            - %kernel.cache_dir%/dbset
-
-    dbset.term_engine:
-        class: DpTestSrc\TestBundle\DataSet\TermEngineDb
         arguments:
             - "@service_container"
             - "@doctrine.dbal.default_connection"

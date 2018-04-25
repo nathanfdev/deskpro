@@ -1475,6 +1475,26 @@ class Ticket extends DomainObject implements HighlightableModelInterface, Labels
         return $this->charges;
     }
 
+    public function getChargesTotalAmount()
+    {
+        $sum = 0.0;
+        foreach ($this->charges as $c) {
+            $sum += $c->getAmount();
+        }
+
+        return $sum;
+    }
+
+    public function getChargesTotalTime()
+    {
+        $secs = 0;
+        foreach ($this->charges as $c) {
+            $secs += $c->getChargeTime();
+        }
+
+        return $secs;
+    }
+
     /**
      * @param Person $agent
      * @param int    $time
@@ -1837,7 +1857,7 @@ class Ticket extends DomainObject implements HighlightableModelInterface, Labels
     /**
      * Find an existing data record for a field id.
      *
-     * @param int|CustomDefTicket $field_id
+     * @param int|CustomDefTicket|string $field_id
      *
      * @return CustomDataTicket
      */
@@ -1850,6 +1870,14 @@ class Ticket extends DomainObject implements HighlightableModelInterface, Labels
         foreach ($this->custom_data as $data) {
             if ($data['field_id'] == $field_id) {
                 return $data;
+            }
+        }
+
+        if (is_string($field_id) && !is_numeric($field_id)) {
+            foreach ($this->custom_data as $data) {
+                if ($data->getField()->hasAlias($field_id)) {
+                    return $data;
+                }
             }
         }
 
@@ -1916,6 +1944,8 @@ class Ticket extends DomainObject implements HighlightableModelInterface, Labels
      */
     public function setCustomData(Collection $custom_data)
     {
+        $this->getStateChangeRecorder()->touchField('custom_data');
+
         $this->custom_data = $custom_data;
         foreach ($custom_data as $cd) {
             $cd->ticket = $this;
@@ -1937,6 +1967,8 @@ class Ticket extends DomainObject implements HighlightableModelInterface, Labels
      */
     public function setCustomDataField($field_id, $value_type, $value)
     {
+        $this->getStateChangeRecorder()->touchField('custom_data');
+
         $custom_data = $this->getCustomDataForField($field_id);
         $orig_data   = $custom_data;
         $is_new      = false;
@@ -1980,6 +2012,8 @@ class Ticket extends DomainObject implements HighlightableModelInterface, Labels
 
         if ($is_new) {
             $this->addCustomData($custom_data);
+        } else {
+            $this->_onPropertyChanged('custom_data', null, $this->custom_data);
         }
 
         return $custom_data;
@@ -1990,6 +2024,8 @@ class Ticket extends DomainObject implements HighlightableModelInterface, Labels
      */
     public function removeCustomDataForField(CustomDefTicket $field)
     {
+        $this->getStateChangeRecorder()->touchField('custom_data');
+
         $changed = false;
         foreach ($this->custom_data as $data) {
             if ($data->field->getId() === $field->getId() || $data->root_field->getId() == $field->getId()) {
@@ -2016,6 +2052,7 @@ class Ticket extends DomainObject implements HighlightableModelInterface, Labels
      */
     public function resetCustomData()
     {
+        $this->getStateChangeRecorder()->touchField('custom_data');
         $this->custom_data->clear();
 
         return $this;
@@ -2028,6 +2065,8 @@ class Ticket extends DomainObject implements HighlightableModelInterface, Labels
      */
     public function addCustomData(CustomDataTicket $data)
     {
+        $this->getStateChangeRecorder()->touchField('custom_data');
+
         if ($this->custom_data === null) {
             $this->custom_data = new ArrayCollection();
         }

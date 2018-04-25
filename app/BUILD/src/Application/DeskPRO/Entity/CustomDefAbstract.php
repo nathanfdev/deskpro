@@ -208,6 +208,22 @@ class CustomDefAbstract extends \Application\DeskPRO\Domain\DomainObject impleme
     }
 
     /**
+     * @param string $alias
+     *
+     * @return bool
+     */
+    public function hasAlias($alias)
+    {
+        foreach ($this->getAliases() as $a) {
+            if ($a->getQualifiedName() === $alias) {
+                return true;
+            }
+        }
+
+        return false;
+    }
+
+    /**
      * @return int
      */
     public function getId()
@@ -1073,6 +1089,9 @@ class CustomDefAbstract extends \Application\DeskPRO\Domain\DomainObject impleme
                 break;
             case self::TYPE_URL:
                 $this->setHandlerClass(self::HANDLER_CLASS_URL);
+                break;
+            case self::TYPE_FILE:
+                $this->setHandlerClass(self::HANDLER_CLASS_FILE);
                 break;
 
             // extended choice types

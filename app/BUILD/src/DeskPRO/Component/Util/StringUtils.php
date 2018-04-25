@@ -69,6 +69,33 @@ class StringUtils
     }
 
     /**
+     * Remove a prefix from the string. If the string does not include the prefix
+     * (i.e. it fails startsWith() check), then null is returned instead.
+     *
+     * <code>
+     * $a = 'foo.bar.baz';
+     * echo StringUtils::removeFromStart('foo.bar.', $a); // => baz
+     *
+     * $b = 'foo.bar.baz';
+     * echo StringUtils::removeFromStart('loo.bar.', $b); // => null
+     * </code>
+     *
+     * @param string $needle
+     * @param string $haystack
+     * @param bool   $ignoreCase
+     *
+     * @return string
+     */
+    public static function removeFromStart($needle, $haystack, $ignoreCase = false)
+    {
+        if (!self::startsWith($needle, $haystack, $ignoreCase)) {
+            return null;
+        }
+
+        return substr($haystack, strlen($needle));
+    }
+
+    /**
      * Check if $needle is at the beginning of $haystack.
      *
      * @param string $needle     The string to search for

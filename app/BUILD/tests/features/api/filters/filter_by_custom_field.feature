@@ -3,6 +3,11 @@ Feature: Filter data by custom fields
   As an API user
 
   Background:
+    Given there are no User records
+    Given there are no Organization records
+    Given there are no Ticket records
+    Given there are no Chat records
+    Given there are no Feedback records
     Given I'm authenticated as admin
 
   Scenario Outline: I filter by custom fields
@@ -48,7 +53,7 @@ Feature: Filter data by custom fields
     And the JSON node "data[0].id" should be equal to "~entity_1~"
     And the JSON node "data[0].fields.{text_field}.value" should be equal to the string "text"
 
-    When I send a GET request to "/api/v2/<endpoint>?<prefix>_field.~textarea_field~=text"
+    When I send a GET request to "/api/v2/<endpoint>?<prefix>_field.~textarea_field~=textarea"
     And the response status code should be 200
     And the JSON node "data" should have 2 elements
     And the JSON node "data[0].fields.{textarea_field}.value" should be equal to the string "textarea"
@@ -58,7 +63,7 @@ Feature: Filter data by custom fields
     And the response status code should be 200
     And the JSON node "data" should have 0 elements
 
-    When I send a GET request to "/api/v2/<endpoint>?<prefix>_field.~text_field~=text&<prefix>_field.~textarea_field~=text"
+    When I send a GET request to "/api/v2/<endpoint>?<prefix>_field.~text_field~=text&<prefix>_field.~textarea_field~=textarea"
     And the response status code should be 200
     And the JSON node "data" should have 1 element
     And the JSON node "data[0].id" should be equal to "~entity_1~"
@@ -73,7 +78,7 @@ Feature: Filter data by custom fields
 
     When I send a GET request to "/api/v2/<endpoint>?<prefix>_field.~toggle_field~=0"
     And the response status code should be 200
-    And the JSON node "data" should have 1 element
+    And the JSON node "data" should have 1 elements
     And the JSON node "data[0].id" should be equal to "~entity_4~"
     And the JSON node "data[0].fields.{toggle_field}.value" should be equal to 0
 

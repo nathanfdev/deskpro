@@ -142,7 +142,9 @@ export const loadRecentChats = createAction(
     api
       .sendGet('DP_API/agent_chats?order_by=date_last_message&order_dir=desc&count=100&include=person')
       .success((response) => {
-        dispatch(addToCollection('Person', 'people', response.linked.person));
+        if (response.linked.person) {
+          dispatch(addToCollection('Person', 'people', response.linked.person));
+        }
         dispatch(addToCollection('AgentChat', 'recent', response.data));
       });
     return {};
@@ -153,7 +155,9 @@ export const loadGroups = createAction(
   'IM_LOAD_RECENT_CHATS',
   () => (dispatch) => {
     api.sendGet('DP_API/agent_chats/groups?include=person').success((response) => {
-      dispatch(addToCollection('Person', 'people', response.linked.person));
+      if (response.linked.person) {
+        dispatch(addToCollection('Person', 'people', response.linked.person));
+      }
       dispatch(addToCollection('AgentChat', 'group', response.data));
     });
     return {};

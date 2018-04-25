@@ -16,11 +16,12 @@ use Symfony\Component\HttpFoundation\Response;
  */
 abstract class AbstractCustomFieldsController extends CrudController
 {
-    public static $exposeOnly  = ['list', 'get', 'put', 'delete', 'post'];
-    public static $type        = CustomFieldType::class;
-    public static $listSort    = 'display_order';
-    public static $listOrder   = 'asc';
-    public static $sortOptions = [
+    public static $exposeOnly   = ['list', 'get', 'put', 'delete', 'post'];
+    public static $type         = CustomFieldType::class;
+    public static $listPaginate = false;
+    public static $listSort     = 'display_order';
+    public static $listOrder    = 'asc';
+    public static $sortOptions  = [
         'display_order' => 'display_order',
     ];
 

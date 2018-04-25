@@ -92,13 +92,13 @@ if (!window.DP_NO_JS_SCROLL) {
 	});
 
   DeskPRO.Agent.ScrollerHandler.updateListPane = function() {
-    // hardcoded update of list height
-    var $content = $('.list-pane-content'),
+      // hardcoded update of list height
+      var $content = $('.list-pane-content'),
       sh = $('#dp_center').height() - 65,
       hh = 0,
       $listing = $('.list-listing', $content).not(':hidden').first();
 
-    $listing.siblings('header').not(':hidden').each(function(){
+      $listing.siblings('header').not(':hidden').each(function(){
       hh += $(this).outerHeight(true);
     });
 

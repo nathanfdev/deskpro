@@ -199,18 +199,6 @@ services:
     tags:
       - { name: form.type }
 
-  form.term_engine.term:
-    class: DeskPRO\Bundle\AppBundle\Form\Type\TermEngineTermType
-    arguments:
-        - "@form.term_engine.term_transformer"
-    tags:
-      - { name: form.type, alias: term_engine_term }
-
-  form.term_engine.term_transformer:
-    class: DeskPRO\Bundle\AppBundle\Form\DataTransformer\TermEngineTermTransformer
-    arguments:
-      - "@term_to_json_converter"
-
   form.attachment_type:
     class: DeskPRO\Bundle\AppBundle\Form\Type\Attachments\BaseAttachmentType
     arguments: ["@blob_repository"]

@@ -3,6 +3,8 @@
 namespace DeskPRO\Bundle\AppBundle\DBAL;
 
 use DeskPRO\Bundle\AppBundle\AppEnv\AppEnvInterface;
+use Doctrine\DBAL\Connection;
+use Doctrine\DBAL\Logging\SQLLogger;
 use DpRun\LowUtil;
 
 class DbConfigReader
@@ -20,13 +22,19 @@ class DbConfigReader
     private $appEnv;
 
     /**
+     * @var SQLLogger
+     */
+    private $logger;
+
+    /**
      * DbConfigReader constructor.
      *
      * @param AppEnvInterface $appEnv
      */
-    public function __construct(AppEnvInterface $appEnv)
+    public function __construct(AppEnvInterface $appEnv, SQLLogger $logger = null)
     {
         $this->appEnv = $appEnv;
+        $this->logger = $logger;
     }
 
     /**
@@ -82,5 +90,14 @@ class DbConfigReader
         $doctrine_params['dp_connect_attempts'] = 2;
 
         return $doctrine_params;
+    }
+
+    public function getSqlLogger()
+    {
+        if ($this->appEnv->getConfig('logs.log_db_queries')) {
+            return $this->logger;
+        }
+
+        return null;
     }
 }

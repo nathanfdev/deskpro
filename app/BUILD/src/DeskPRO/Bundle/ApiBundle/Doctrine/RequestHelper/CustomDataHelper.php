@@ -103,8 +103,7 @@ class CustomDataHelper
             } elseif ($def->isChoiceType()) {
                 $qb->andWhere("$dataAlias.field IN(:$valuePlaceholder)");
             } elseif (in_array($def->getWidgetType(), [CustomDefAbstract::TYPE_TEXT, CustomDefAbstract::TYPE_TEXTAREA])) {
-                $qb->andWhere("$dataAlias.input LIKE :$valuePlaceholder");
-                $qb->setParameter($valuePlaceholder, "%$value%");
+                $qb->andWhere("$dataAlias.input = :$valuePlaceholder");
             } else {
                 $qb->andWhere("CASE WHEN $dataAlias.value > 0 THEN $dataAlias.value ELSE $dataAlias.input END = :$valuePlaceholder");
             }

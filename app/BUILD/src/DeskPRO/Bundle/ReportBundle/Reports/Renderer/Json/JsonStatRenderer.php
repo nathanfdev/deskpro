@@ -73,9 +73,21 @@ class JsonStatRenderer extends AbstractJsonRenderer
      */
     protected function renderValue(ResultMetadata $metadata, array $rows)
     {
+        $unitLeft  = '';
+        $unitRight = '';
+
+        foreach ($metadata->getSelectColumns() as $column) {
+            if ($column['title'] === 'unit_left') {
+                $unitLeft = $this->renderCellValue($rows[0], $column, $metadata);
+            }
+            if ($column['title'] === 'unit_right') {
+                $unitLeft = $this->renderCellValue($rows[0], $column, $metadata);
+            }
+        }
+
         foreach ($metadata->getSelectColumns() as $column) {
             if ($column['title'] === 'stat_value') {
-                return $this->renderCellValue($rows[0], $column, $metadata);
+                return $unitLeft.$this->renderCellValue($rows[0], $column, $metadata).$unitRight;
             }
         }
 
