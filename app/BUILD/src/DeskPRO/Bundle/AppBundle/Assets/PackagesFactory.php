@@ -129,7 +129,12 @@ class PackagesFactory
             $assetPacks[$id] = $this->getAssetPackage($p);
         }
 
-        return new Packages($assetPacks['legacy_web'], $assetPacks);
+        $defaultPath = clone $this->asset_paths['legacy_web'];
+        $defaultPath->setVersion(null);
+
+        $default = $this->getAssetPackage($defaultPath);
+
+        return new Packages($default, $assetPacks);
     }
 
     /**
