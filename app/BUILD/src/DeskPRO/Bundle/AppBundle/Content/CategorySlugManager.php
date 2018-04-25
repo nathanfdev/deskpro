@@ -96,7 +96,7 @@ class CategorySlugManager
         return;
     }
 
-    protected function isValidSlug($newSlug, CategoryAbstract $category)
+    protected function isValidSlug($newSlug, $category)
     {
         if ($contentObject = $this->getContentBySlug($newSlug, $category)) {
             // valid if it is the current slug (should be covered already in ensureValidSlug, here for sanity)
@@ -106,17 +106,17 @@ class CategorySlugManager
         return true;
     }
 
-    protected function getContentBySlug($newSlug, CategoryAbstract $category)
+    protected function getContentBySlug($newSlug, $category)
     {
         return $this->getRepoForContent($category)->findOneBy(['slug' => $newSlug]);
     }
 
     /**
-     * @param CategoryAbstract $category
+     * @param CategoryAbstract|Guide $category
      *
      * @return \Doctrine\ORM\EntityRepository
      */
-    private function getRepoForContent(CategoryAbstract $category)
+    private function getRepoForContent($category)
     {
         $class = get_class($category);
 
