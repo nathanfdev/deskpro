@@ -13,13 +13,22 @@ define ->
         version: '@'
         widgetType: '@'
         chartType: '@'
+        loaded: '@'
 
       link: (scope, element) ->
-        template = "<div id=\"ch#{scope.widgetId}\"></div>"
+        template = """
+          <div>
+            <div ng-hide='loaded' class="box stat-box"><div class="stat-value no-data">loading...</div></div>
+            <div ng-show='loaded && noData' class="box stat-box"><div class="stat-value no-data">no data</div></div>
+            <div ng-show='loaded' id="ch#{scope.widgetId}"></div>
+          </div>
+        """
         linkFn = $compile(template)
         content = linkFn(scope)
         element.replaceWith(content)
         chart = false
+        scope.loaded = false
+        scope.noData = false
 
         chartDiv    = angular.element(document.getElementById("ch#{scope.widgetId}"))
         chartParent = chartDiv.parent().parent()
@@ -59,15 +68,28 @@ define ->
 
             if promise and promise.then
               promise.then (response) ->
+                scope.loaded = true
+                scope.noData = true
+
                 drawWidget response
           else
             DashboardWidgetService
               .getWidget(scope.widgetId || 0)
               .then (widget) =>
-                if widget? && widget && (widget.dataProvider || widget.axes?[0]?.bands?)
-                  drawWidget(widget)
+                scope.loaded = true
+                scope.noData = true
+
+                if widget? && widget.rendered_result && (widget.rendered_result.dataProvider || widget.rendered_result.axes?[0]?.bands?)
+                  drawWidget(widget.rendered_result)
 
         drawWidget = (widget) ->
+          scope.loaded = true
+          scope.noData = false
+          setTimeout(->
+            doDrawWidget(widget)
+          , 1)
+
+        doDrawWidget = (widget) ->
           if interval
             clearInterval(interval)
           drawn = true

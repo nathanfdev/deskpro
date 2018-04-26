@@ -70,11 +70,6 @@
                         </div>
                         <h3 class="ng-binding">{{ ng_var('widget.title') }}</h3>
                     </div>
-                    <div class="box stat-box" ng-if="widget.rendered_result === null && !widget.js_code">
-                        <div class="stat">
-                            <div class="stat-value no-data">no data</div>
-                        </div>
-                    </div>
                     <div class="box" ng-if="(widget.rendered_result !== null || widget.js_code) && widget.widget_type=='graph'">
                         <dashboard-amcharts
                             report-level-vars={{ ng_var('report.variables') }}

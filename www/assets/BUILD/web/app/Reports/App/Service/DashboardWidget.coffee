@@ -124,17 +124,16 @@ define ['DeskPRO/Util/Arrays'], (Arrays) ->
       deferred = @$q.defer()
 
       @Api2
-      .sendGet "/dashboard_reports/#{reportId}/widgets?include=rendered_result&inline_sideloads=1"
+      .sendGet "/dashboard_reports/#{reportId}/widgets"
       .then (resp) =>
         widgets = resp.data.data;
-        widgets.map((widget) =>
-          if !(widget.rendered_result?) or widget.rendered_result == false or widget.rendered_result == ''
-            widget.rendered_result = null
+
+        for widget in widgets
           widget.sizeX = widget.size_x
           widget.sizeY = widget.size_y
-        )
 
         deferred.resolve(widgets)
+
       return deferred.promise
 
     getWidget: (id) ->
@@ -146,6 +145,9 @@ define ['DeskPRO/Util/Arrays'], (Arrays) ->
           widget = resp.data.data;
           widget.sizeX = widget.size_x
           widget.sizeY = widget.size_y
+
+          if !(widget.rendered_result?) or widget.rendered_result == false or widget.rendered_result == ''
+            widget.rendered_result = null
 
           deferred.resolve(widget)
       return deferred.promise

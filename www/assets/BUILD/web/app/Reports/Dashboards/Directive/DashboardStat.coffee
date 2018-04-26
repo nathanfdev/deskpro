@@ -1,23 +1,34 @@
 define ->
-  Reports_Directive_DashboardStat = ['$state', ($state) ->
+  Reports_Directive_DashboardStat = ['$state', 'DashboardWidgetService', ($state, DashboardWidgetService) ->
     return {
     restrict: 'E',
     replace: true,
+    scope:
+      widgetId: '@'
+      loaded: '@'
     template: """
-      <div class="stat">
-          <div class="stat-value"></div>
-          <div class="stat-description"></div>
+      <div style="height: auto">
+        <div ng-hide='loaded' class="stat-value no-data">loading...</div>
+        <div ng-show='loaded && noData' class="box stat-box"><div class="stat-value no-data">no data</div></div>
+        <div ng-show='loaded' class="stat">
+            <div class="stat-value"></div>
+            <div class="stat-description"></div>
+        </div>
       </div>
     """
     link: (scope, element, attrs) ->
+      scope.loaded = false
 
       initValue = (result) ->
+        scope.loaded = true
 
         el = $(element)
         box = el.parent()
 
         if !result
           return
+
+        scope.noData = false
 
         try
           options = if result.options then JSON.parse(result.options) else {}
@@ -58,9 +69,19 @@ define ->
 
         if promise and promise.then
           promise.then (response) ->
+            scope.loaded = true
+            scope.noData = true
             initValue(response)
-      else
+      else if attrs.value
         initValue(attrs)
+      else
+        DashboardWidgetService
+          .getWidget(scope.widgetId || 0)
+          .then (widget) =>
+            scope.loaded = true
+            scope.noData = true
+            if widget? && widget.rendered_result
+              initValue(widget.rendered_result)
 
       # dynamic handler position
       el = $(element)
