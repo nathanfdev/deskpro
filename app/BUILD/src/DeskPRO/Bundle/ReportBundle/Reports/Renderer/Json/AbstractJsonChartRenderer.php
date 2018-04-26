@@ -79,9 +79,9 @@ abstract class AbstractJsonChartRenderer extends AbstractJsonRenderer
         $isStacked         = false;
         $maxCategoryLength = 0;
         $integersOnly      = true;
-
-        $firstSel       = reset($selectColumns);
-        $valueAxisTitle = $firstSel['title'];
+        $hasCategory       = false;
+        $firstSel          = reset($selectColumns);
+        $valueAxisTitle    = $firstSel['title'];
 
         $additionalData = [];
         foreach ($selectColumns as $index => $selectColumn) {
@@ -142,7 +142,16 @@ abstract class AbstractJsonChartRenderer extends AbstractJsonRenderer
                 ++$i;
             }
 
-            $hasCategory = true;
+            $resultingArray = array_udiff($groupXColumns, $groupYColumns,
+                function ($a, $b) {
+                    if ($a['title'] === $b['title'] && $a['resultId'] === $b['resultId']) {
+                        return 0;
+                    }
+
+                    return 1;
+                }
+            );
+            $hasCategory = count($resultingArray) > 0 && count($groupYColumns) > 0 && count($groupXColumns) > 0;
             $isStacked   = (static::getOutputFormat() == 'bar' || static::getOutputFormat() == 'area');
 
             $parts = [];
