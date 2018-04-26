@@ -18,7 +18,7 @@ class Build1524744446 extends AbstractBuild implements OnlineBuildInterface
         $localUsersources = $this->getDbConnection('default')->fetchAll('SELECT id, options FROM `usersources` WHERE app_id IS NULL');
 
         foreach ($localUsersources as $usersource) {
-            $decodedOptions                = json_decode($usersource['options']);
+            $decodedOptions                = json_decode($usersource['options'], true);
             $decodedOptions['reg_enabled'] = $regEnabled;
             $encodedOptions                = json_encode($decodedOptions);
 
