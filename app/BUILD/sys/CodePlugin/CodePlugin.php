@@ -2,6 +2,8 @@
 
 namespace DpSys\CodePlugin;
 
+use DeskPRO\Bundle\ReportBundle\Dpql2\DpqlContextStorage;
+use DeskPRO\Bundle\ReportBundle\Dpql2\Placeholder\AbstractPlaceholder;
 use Symfony\Component\DependencyInjection\Container;
 use Symfony\Component\HttpFoundation\Request;
 
@@ -113,6 +115,18 @@ class CodePlugin
      * @return null|string The name of the class and action. e.g. Foo\Bar::myAction
      */
     public function routeScriptController(Request $request, $context, $controller, $action)
+    {
+        return null;
+    }
+
+    /**
+     * @param string             $placeholderName
+     * @param DpqlContextStorage $contextStorage
+     * @param Container          $container
+     *
+     * @return AbstractPlaceholder|null
+     */
+    public function getDpqlPlaceholder($placeholderName, DpqlContextStorage $contextStorage, Container $container)
     {
         return null;
     }

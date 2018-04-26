@@ -46,7 +46,7 @@ abstract class AbstractPlaceholder implements DpqlPlaceholderInterface
     /**
      * {@inheritdoc}
      */
-    public function prepareWithIntervals(SqlSelect $statement, $section, array $stack, SqlSelect $select, ResultMetadata $result, array $intervals = [])
+    public function prepareWithIntervals(SelectPart $statement, $section, array $stack, SqlSelect $select, ResultMetadata $result, array $intervals = [])
     {
         return $this->prepare($statement, $section, $stack, $select, $result);
     }

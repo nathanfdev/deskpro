@@ -39,7 +39,7 @@ abstract class AbstractDateRange extends AbstractPlaceholder
      *
      * @return Prepared|bool Prepared results or false if there's no output
      */
-    public function prepare(SqlSelect $statement, $section, array $stack, SqlSelect $select, ResultMetadata $result)
+    public function prepare(SelectPart $statement, $section, array $stack, SqlSelect $select, ResultMetadata $result)
     {
         $range = $this->getDateRange();
 
@@ -60,7 +60,7 @@ abstract class AbstractDateRange extends AbstractPlaceholder
      *
      * @return Prepared|bool Prepared results or false if there's no output
      */
-    public function prepareWithIntervals(SqlSelect $statement, $section, array $stack, SqlSelect $select, ResultMetadata $result, array $intervals = [])
+    public function prepareWithIntervals(SelectPart $statement, $section, array $stack, SqlSelect $select, ResultMetadata $result, array $intervals = [])
     {
         $range = $this->getDateRange();
 
