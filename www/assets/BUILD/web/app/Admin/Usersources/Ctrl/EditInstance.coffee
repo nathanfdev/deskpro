@@ -149,6 +149,10 @@ define ['Admin/Main/Ctrl/Base', 'DeskPRO/Util/Util', 'Admin/Usersources/Helper/U
 
 
     saveSettings: ->
+      if (!@$scope.usersource_detailsv2.is_all_brands and !@$scope.usersource_detailsv2.brands.length)
+        window.alert "Usersource needs to be linked to at least one Brand"
+        return false
+
       @startSpinner('saving_settings')
       if @presaveCallback
         @presaveCallback().then( =>
@@ -215,6 +219,10 @@ define ['Admin/Main/Ctrl/Base', 'DeskPRO/Util/Util', 'Admin/Usersources/Helper/U
         @Api2.sendPutJson('/user_sources/' + @usersourceType + '/' + @getApp2Id(), postData)
 
     saveUsersource: ->
+      if (!@$scope.usersource_detailsv2.is_all_brands and !@$scope.usersource_detailsv2.brands.length)
+        window.alert "Usersource needs to be linked to at least one Brand"
+        return false
+
       @startSpinner('saving_settings')
       @doSaveUsersource().finally => @stopSpinner('saving_settings')
 

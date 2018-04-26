@@ -10,8 +10,10 @@ namespace Application\DeskPRO\Entity;
 
 use Application\DeskPRO\Usersource\ActionsCollection;
 use Application\DeskPRO\Usersource\Adapter as UsersourceAdapter;
+use DeskPRO\Bundle\AppBundle\EventListener\Doctrine\UsersourceListener;
 use deskpro_us_jwt\Usersource\Adapter\Jwt as JwtAdapter;
 use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\ORM\Events;
 use Doctrine\ORM\Mapping\ClassMetadata;
 use Doctrine\ORM\Mapping\ClassMetadataInfo;
 use Orb\Util\Strings;
@@ -486,6 +488,9 @@ class Usersource extends \Application\DeskPRO\Domain\DomainObject
         $metadata->customRepositoryClassName = 'Application\DeskPRO\EntityRepository\Usersource';
         $metadata->setPrimaryTable(['name' => 'usersources']);
         $metadata->setChangeTrackingPolicy(ClassMetadataInfo::CHANGETRACKING_NOTIFY);
+
+        $metadata->addEntityListener(Events::prePersist, UsersourceListener::class, 'prePersist');
+        $metadata->addEntityListener(Events::preUpdate, UsersourceListener::class, 'preUpdate');
 
         $metadata->mapField([
             'fieldName'  => 'id',

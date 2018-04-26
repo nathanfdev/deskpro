@@ -19,23 +19,6 @@
 				</div>
 			</div>
 		</article>
-		<article ng-if="default_form" class="form-horizontal dp-form">
-			<div class="panel panel-fill indent">
-				<div class="panel-body" ng-show="!has_display_settings">
-					<p>
-						This app does not require any configuration.
-					</p>
-				</div>
-				<div class="panel-body" ng-show="has_display_settings">
-					<div class="form-group" ng-repeat="setting in pack.settings_def" ng-switch="setting.type" ng-if="setting.type != 'hidden' && (!setting.usersource_display || setting.usersource_display == Ctrl.usersourceType)">
-						{% include 'AdminInterfaceBundle:Apps:package-setting.html.twig' %}
-					</div>
-				</div>
-			</div>
-		</article>
-		<div ng-if="!default_form && form_template && install_ctrl" class="dp-sep-top">
-			<div ng-include="form_template" ng-controller="install_ctrl"></div>
-		</div>
 		<div class="dp-sep-top">
 			<article class="form-horizontal dp-form">
 				<div class="panel panel-fill indent">
@@ -75,6 +58,23 @@
 					</div>
 				</div>
 			</article>
+		</div>
+		<article ng-if="default_form" class="form-horizontal dp-form">
+			<div class="panel panel-fill indent">
+				<div class="panel-body" ng-show="!has_display_settings">
+					<p>
+						This app does not require any configuration.
+					</p>
+				</div>
+				<div class="panel-body" ng-show="has_display_settings">
+					<div class="form-group" ng-repeat="setting in pack.settings_def" ng-switch="setting.type" ng-if="setting.type != 'hidden' && (!setting.usersource_display || setting.usersource_display == Ctrl.usersourceType)">
+						{% include 'AdminInterfaceBundle:Apps:package-setting.html.twig' %}
+					</div>
+				</div>
+			</div>
+		</article>
+		<div ng-if="!default_form && form_template && install_ctrl" class="dp-sep-top">
+			<div ng-include="form_template" ng-controller="install_ctrl"></div>
 		</div>
 		<footer ng-hide="has_own_footer">
 			<div class="dp-content">

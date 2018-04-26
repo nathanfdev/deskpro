@@ -17,13 +17,6 @@ define ['Admin/Usersources/Ctrl/EditDeskproInstance', 'DeskPRO/Util/Util']
 
       super()
 
-    doSaveUsersource: ->
-      @usersource.is_enabled = !@usersource.is_disabled;
-      if @usersource.options.reg_enabled
-        @usersource.is_enabled = true
-      p = super()
-      @$q.all([p, @savePolicySettings(), @saveRegSettings()])
-
     loadPasswordSettings: ->
       @Api.sendGet('/password_settings', {rate_limit_context: 'user'}).then( (res) =>
         @$scope.policy_settings = {
@@ -110,6 +103,10 @@ define ['Admin/Usersources/Ctrl/EditDeskproInstance', 'DeskPRO/Util/Util']
       @Api.sendPostJson('/registration_settings', postData)
 
     doSaveUsersource: ->
+      @usersource.is_enabled = !@usersource.is_disabled;
+      if @usersource.options.reg_enabled
+        @usersource.is_enabled = true
+
       postData = {
         title: @usersource.title || 'Deskpro',
         is_enabled: @usersource.is_enabled
@@ -118,7 +115,7 @@ define ['Admin/Usersources/Ctrl/EditDeskproInstance', 'DeskPRO/Util/Util']
         is_all_brands: @$scope.usersource_detailsv2.is_all_brands
       }
 
-      @Api2.sendPostJson('/user_sources/' + @usersourceType, postData).then(
+      p = @Api2.sendPostJson('/user_sources/' + @usersourceType, postData).then(
         =>
           @listCtrl().refresh()
           @Growl.success @getRegisteredMessage 'saved_settings'
@@ -126,5 +123,7 @@ define ['Admin/Usersources/Ctrl/EditDeskproInstance', 'DeskPRO/Util/Util']
           msg = @getRegisteredMessage(res.data.error_code) || res.data.error_message || ''
           @Growl.error msg
       )
+
+      @$q.all([p, @savePolicySettings(), @saveRegSettings()])
 
   Admin_Usersources_Ctrl_AddDeskproInstance.EXPORT_CTRL()
