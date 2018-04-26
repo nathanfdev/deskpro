@@ -91,13 +91,19 @@ class JsonBarRenderer extends AbstractJsonChartRenderer
                         $chartData[$i][$key] = $value;
                     }
 
+                    $title = $this->renderCellValue($values, $selectColumns[0], $metadata);
+                    if ($value == $title) {
+                        $balloonText = '[[category]]: [[value]]';
+                    } else {
+                        $balloonText = '[[category]]: [[title]]';
+                    }
                     $graphs[] = [
                         'id'          => "graph-$i-$j",
                         'type'        => 'column',
                         'fillAlphas'  => '0.9',
                         'valueField'  => "value$i$j",
-                        'title'       => $this->getFullHierarchyTitle($values, $hierarchyParents).', '.$this->renderCellValue($values, $selectColumns[0], $metadata),
-                        'balloonText' => '[[title]]:[[value]]',
+                        'title'       => $title,
+                        'balloonText' => $balloonText,
                     ];
                 }
             }
