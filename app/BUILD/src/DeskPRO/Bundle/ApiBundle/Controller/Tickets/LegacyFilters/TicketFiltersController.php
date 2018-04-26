@@ -87,7 +87,7 @@ class TicketFiltersController extends CrudController
 
         // ordering
         $orderDir = $request->get('order_dir') === 'asc' ? SearcherAbstract::ORDER_ASC : SearcherAbstract::ORDER_DESC;
-        $orderBy  = $request->get('order_by') ? 'ticket.'.$request->get('order_by') : '';
+        $orderBy  = $request->get('order_by') ? 'ticket.'.$request->get('order_by') : 'ticket.urgency';
 
         if ($orderBy) {
             $searcher->setOrderBy($orderBy, $orderDir);

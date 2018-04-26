@@ -4,6 +4,7 @@ import { api } from 'DeskPRO/Bundle/AppBundle/DAL';
 import { flattenBatchResponses, getLinkedData, replaceIds } from 'DeskPRO/Component/Util/Api';
 import { setCollection, addToCollection } from 'DeskPRO/Bundle/AppBundle/Modules/RecordsStore';
 import { setAgentSettings } from 'DeskPRO/Bundle/AgentBundle/Modules/Agent/Actions/settingsActions';
+import { setAgentInfo } from 'DeskPRO/Bundle/AgentBundle/Modules/Agent/Actions/infoActions';
 import { setupActionAlerts } from 'DeskPRO/Bundle/AgentBundle/Modules/Application/Actions/notificationActions';
 import { setImMe, loadDrafts } from 'DeskPRO/Bundle/AgentBundle/Modules/IM/Actions/messagesActions';
 import { agentsSelector } from 'DeskPRO/Bundle/AppBundle/Modules/RecordsStore/Shortcuts/agents';
@@ -11,6 +12,7 @@ import { updateAgentStatus, setOnlineAgents } from 'DeskPRO/Bundle/AgentBundle/M
 import agentPhrases from 'DeskPRO/Bundle/AgentBundle/AgentPhrases';
 import DeskproAppStore from 'DeskPRO/Bundle/AgentBundle/Modules/DeskproApps/DeskproAppStore';
 import { setVoiceTokens, setVoiceActivities, setVoiceSettings } from '../../Voice/Actions/clientActions';
+import { increaseCount, decreaseCount } from '../../Filters/Actions/filterActions';
 
 export const loadAgentPhraseTranslations = createAction(
   'AGENT_LOAD_PHRASE_TRANSLATIONS',
@@ -47,6 +49,7 @@ export const preloadData    = createAction(
         languages:               { endpoint: 'languages', query: 'count=100' },
         user_groups:             { endpoint: 'user_groups' },
         settings:                { endpoint: 'helpdesk/agent-client/settings' },
+        info:                    { endpoint: 'helpdesk/agent-client/info' },
         me:                      { endpoint: 'me' },
         agent_teams:             { endpoint: 'agent_teams' },
         my_agent_teams:          { endpoint: 'agent_teams', query: 'my=true' },
@@ -82,6 +85,13 @@ export const preloadData    = createAction(
 
       if (window.DP_HAS_FOLLOW_UP) {
         batchComponents.ticket_macros  = { endpoint: 'ticket_macros' };
+      }
+
+      if (window.DP_HAS_NEW_FILTERS) {
+        batchComponents.ticket_filters     = { endpoint: 'ticket_filters2', query: 'mine=1' };
+        batchComponents.ticket_filter_sets = { endpoint: 'ticket_filters2_sets', query: 'mine=1' };
+        batchComponents.ticket_stars       = { endpoint: 'ticket_stars' };
+        batchComponents.ticket_labels      = { endpoint: 'ticket_labels' };
       }
 
       const onBatchComponentsSuccess = ({ responses }) => {
@@ -121,6 +131,7 @@ export const preloadData    = createAction(
         });
 
         dispatch(setAgentSettings(data.settings));
+        dispatch(setAgentInfo(data.info));
         dispatch(setCollection('Person', 'me', [data.me.person]));
 
         if (window.DP_HAS_NEW_IM) {
@@ -165,6 +176,55 @@ export const preloadData    = createAction(
         if (window.DP_HAS_FOLLOW_UP) {
           dispatch(setCollection('TicketMacros', 'all', data.ticket_macros));
         }
+
+        if (window.DP_HAS_NEW_FILTERS) {
+          dispatch(setCollection('TicketFilters', 'all', data.ticket_filters));
+          dispatch(setCollection('TicketFilterSets', 'all', data.ticket_filter_sets));
+          dispatch(setCollection('TicketStars', 'all', data.ticket_stars));
+          dispatch(setCollection('TicketLabels', 'all', replaceIds(data.ticket_labels, 'label')));
+          let counts = {};
+          let i = 0;
+          data.ticket_filters.forEach((filter) => {
+            let query = null;
+            const groupBy = localStorage.getItem(`column_filter_subfilter_${filter.id}`);
+            if (groupBy && groupBy !== '@none') {
+              query = `group_by=ticket.${groupBy}`;
+            }
+            counts[`filter${filter.id}`] = { endpoint: `ticket_filters2/${filter.id}/count`, query };
+            i += 1;
+            if (i >= 5) {
+              api.sendGet(api.prepareParams(counts))
+                .success((countsResponses) => {
+                  const countsData = flattenBatchResponses(countsResponses.responses);
+                  dispatch(addToCollection('TicketFilterCounts', 'all', countsData));
+                });
+              counts = {};
+              i = 0;
+            }
+          });
+          if (i > 0) {
+            api.sendGet(api.prepareParams(counts))
+              .success((countsResponses) => {
+                const countsData = flattenBatchResponses(countsResponses.responses);
+                dispatch(addToCollection('TicketFilterCounts', 'all', countsData));
+              });
+          }
+          window.increase_count = (id) => {
+            dispatch(increaseCount(id));
+          };
+          window.decrease_count = (id) => {
+            dispatch(decreaseCount(id));
+          };
+        }
+        const starCounts = {
+          endpoint: 'ticket_stars/counts',
+        };
+        api.sendGet(api.prepareParams({ star_counts: starCounts }))
+          .success((response) => {
+            if (response.responses.star_counts.data.nested) {
+              dispatch(setCollection('TicketStarsCounts', 'all', response.responses.star_counts.data.nested));
+            }
+          });
 
         // set legacy agent notify map
         window.notifyAgentMap = {};

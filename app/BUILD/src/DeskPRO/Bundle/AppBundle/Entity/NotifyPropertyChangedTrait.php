@@ -63,6 +63,10 @@ trait NotifyPropertyChangedTrait
             if ($value->id == $old->id) {
                 return;
             }
+        } elseif (is_object($value) && $value instanceof EntityInterface && is_object($old) && $old instanceof EntityInterface) {
+            if ($value->getId() === $old->getId()) {
+                return;
+            }
         }
 
         $this->$field = $value;

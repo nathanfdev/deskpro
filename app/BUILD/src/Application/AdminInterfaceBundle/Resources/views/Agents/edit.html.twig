@@ -1,6 +1,6 @@
 {% extends 'AdminInterfaceBundle:Layout:list-editpane.html.twig' %}
 {% block editpane_content %}
-	<form class="form-horizontal dp-form" role="form" name="form_props" ng-submit="form_props.$valid && EditCtrl.saveAgent()">
+	<form class="form-horizontal dp-form dp-agent-form" role="form" name="form_props" ng-submit="form_props.$valid && EditCtrl.saveAgent()">
 		<section class="dp-paneblock dp-editpane">
 
 			<div class="alert alert-success" style="margin: 8px;" ng-show="EditCtrl.created_agent">
@@ -13,26 +13,26 @@
 				<menu dropdown>
 					<button class="btn btn-default" type="button" dropdown-toggle><span><i class="fa fa-cog"></i></span> <i class="fa fa-caret-down"></i></button>
 					<ul class="dropdown-menu pull-right">
-						<li><a ng-click="EditCtrl.showCopySettings()"><i class="fa fa-copy"></i> Copy settings from another agent</a></li>
+						<li><a ng-click="EditCtrl.showCopySettings()"><i class="fa fa-copy"></i> Copy settings from another profile</a></li>
 						<li ng-if="EditCtrl.agent.id" class="divider"></li>
 						<li><a ng-click="EditCtrl.showEditProfile()"><i class="fa fa-user"></i> Edit profile</a></li>
 						<li ng-if="EditCtrl.agent.id" class="divider"></li>
 						{% if app.authenticationManager.isDeskPROEnabled %}
 						<li ng-if="EditCtrl.agent.id"><a ng-click="EditCtrl.showResetPassword()"><i class="fa fa-asterisk"></i> Reset password</a></li>
 						{% endif %}
-						<li ng-if="EditCtrl.agent.id"><a ng-click="EditCtrl.showLoginAs()"><i class="fa fa-globe"></i> Log in as this agent</a></li>
+						<li ng-if="EditCtrl.agent.id"><a ng-click="EditCtrl.showLoginAs()"><i class="fa fa-globe"></i> Log in as this person</a></li>
 					</ul>
 				</menu>
-				<ul>
-					<li class="active" dp-tab-btn="main.props"><a href="#"><i class="fa fa-pencil"></i> {{ phrase('agent.general.properties') }}</a></li>
-					<li class="pipe">|</li>
-					<li dp-tab-btn="main.perms"><a href="#"><i class="fa fa-key"></i> Permissions</a></li>
-					<li class="pipe">|</li>
-					<li dp-tab-btn="main.deps"><a href="#"><i class="fa fa-key"></i> Departments</a></li>
-					<li class="pipe">|</li>
-					<li dp-tab-btn="main.notif_prefs"><a href="#"><i class="fa fa-envelope"></i> Ticket Notifications</a></li>
-					<li class="pipe">|</li>
-					<li dp-tab-btn="main.othernotif_prefs"><a href="#"><i class="fa fa-envelope-o"></i> Other Notifications</a></li>
+				<ul class="formpart-tabs">
+					<li class="active formpart-tab-main" dp-tab-btn="main.props"><a href="#"><i class="fa fa-pencil"></i> {{ phrase('agent.general.properties') }}</a></li>
+					<li class="pipe" class="formpart-tab-main-sep">|</li>
+					<li dp-tab-btn="main.perms" class="formpart-tab-perms"><a href="#"><i class="fa fa-key"></i> Permissions</a></li>
+					<li class="pipe" class="formpart-tab-perms-sep">|</li>
+					<li dp-tab-btn="main.deps" class="formpart-tab-depperms"><a href="#"><i class="fa fa-key"></i> Departments</a></li>
+					<li class="pipe" class="formpart-tab-depperms-sep">|</li>
+					<li dp-tab-btn="main.notif_prefs" class="formpart-tab-notifs"><a href="#"><i class="fa fa-envelope"></i> Ticket Notifications</a></li>
+					<li class="pipe" class="formpart-tab-notifs-sep">|</li>
+					<li dp-tab-btn="main.othernotif_prefs" class="formpart-tab-othernotifs"><a href="#"><i class="fa fa-envelope-o"></i> Other Notifications</a></li>
 				</ul>
 			</nav>
 			<article class="form-horizontal dp-form">

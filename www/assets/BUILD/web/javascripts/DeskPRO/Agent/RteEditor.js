@@ -1,6 +1,10 @@
 Orb.createNamespace('DeskPRO.Agent');
 
 DeskPRO.Agent.RteEditor = {
+	getButtons: function() {
+    return ['bold', 'italic', 'underline', '|', 'formatting', 'fontcolor', '|', 'alignment', 'unorderedlist', 'orderedlist', 'outdent', 'indent', '|', 'table', 'image', 'link', 'horizontalrule', '|', 'html'];
+	},
+
 	initRteAgentReply: function(textarea, options) {
 		textarea = $(textarea);
 		options = options || {};
@@ -17,7 +21,7 @@ DeskPRO.Agent.RteEditor = {
 		// must be done before initializing
 		var dropZone = textarea.siblings('.drop-file-zone');
 
-    var buttons = ['bold', 'italic', 'underline', '|', 'formatting', 'fontcolor', '|', 'alignment', 'unorderedlist', 'orderedlist', 'outdent', 'indent', '|', 'table', 'image', 'link', 'horizontalrule', '|', 'html'];
+    var buttons = DeskPRO.Agent.RteEditor.getButtons();
 
 		var defaultOptions = {
 			direction: textarea.attr('dir') || 'ltr',

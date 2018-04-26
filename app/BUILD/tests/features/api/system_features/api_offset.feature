@@ -55,7 +55,7 @@ Feature: CRUD offset
       | endpoint                     | id_pref |
       | people?is_agent=0            | u       |
       | tickets?                     | t       |
-      | ticket_filters/{f1}/tickets? | t       |
+      | ticket_filters/{f1}/tickets?order_by=ticket.date_created | t       |
 
   Scenario Outline: I get crud list w/ offset and count
     When I send a GET request to "/api/v2/<endpoint>&order_dir=asc&offset=5&count=2"
@@ -70,4 +70,4 @@ Feature: CRUD offset
       | endpoint                     | id_pref |
       | people?is_agent=0            | u       |
       | tickets?                     | t       |
-      | ticket_filters/{f1}/tickets? | t       |
+      | ticket_filters/{f1}/tickets?order_by=ticket.date_created | t       |

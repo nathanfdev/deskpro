@@ -8,7 +8,6 @@ namespace DeskPRO\Bundle\AppBundle\Settings;
 
 use Application\DeskPRO\Entity\Person;
 use Application\DeskPRO\Entity\PersonPref;
-use DeskPRO\Bundle\AppBundle\Entity\TicketFilterPreference;
 use DeskPRO\Bundle\AppBundle\Settings\Model\AgentSettings;
 use DeskPRO\Bundle\AppBundle\Settings\Model\IMSettings;
 use DeskPRO\Bundle\AppBundle\Settings\Model\Tickets\TicketsSettings;
@@ -58,18 +57,8 @@ class SettingsManager
     private function getTicketsSettings()
     {
         $settings = new TicketsSettings();
-        $prefs    = $this->em->getRepository(TicketFilterPreference::class)
-            ->findBy(['agent' => $this->user]);
 
         $grouping = [];
-        /** @var TicketFilterPreference $pref */
-        foreach ($prefs as $pref) {
-            $grouping[$pref->getFilter()->getId()] = [
-                'id'            => $pref->getId(),
-                'main_grouping' => $pref->getMainGrouping(),
-            ];
-        }
-
         $settings->setFilterGroupings($grouping);
 
         return $settings;

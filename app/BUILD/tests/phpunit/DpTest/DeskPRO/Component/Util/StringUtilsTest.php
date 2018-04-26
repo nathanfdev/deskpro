@@ -86,4 +86,12 @@ class StringUtilsTest extends DeskProTestCase
             ['x', '', false, false],
         ];
     }
+
+    public function testRemoveFromStart()
+    {
+        $this->assertEquals('baz', StringUtils::removeFromStart('foo.bar.', 'foo.bar.baz'));
+        $this->assertEquals(null, StringUtils::removeFromStart('FOO.BAR.', 'foo.bar.baz'));
+        $this->assertEquals('baz', StringUtils::removeFromStart('FOO.BAR.', 'foo.bar.baz', true));
+        $this->assertEquals(null, StringUtils::removeFromStart('loo.bar.', 'foo.bar.baz'));
+    }
 }

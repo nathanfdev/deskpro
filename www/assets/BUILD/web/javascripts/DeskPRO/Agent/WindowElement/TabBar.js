@@ -352,6 +352,7 @@ DeskPRO.Agent.WindowElement.TabBar = new Orb.Class({
    */
   addTab: function (page) {
 
+    DeskPRO_Window.backToAgent();
     var self = this;
 
     this.isAdding = true;

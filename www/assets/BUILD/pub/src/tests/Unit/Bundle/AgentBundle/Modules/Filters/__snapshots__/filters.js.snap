@@ -1,0 +1,738 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`>>> Filters --- Snapshot +++capturing Snapshot of Filters 1`] = `
+<div
+  className="dp-column agent-filters"
+  role="tree"
+  style={
+    Object {
+      "width": "213px",
+    }
+  }
+>
+  <h1
+    className="dp-heading"
+  >
+    <i
+      className="fa fa-envelope-o dp-icon dp-icon--s"
+    />
+    <span>
+      Tickets
+    </span>
+  </h1>
+  <ul
+    className="dp-list dp-column-drawer-list"
+    role="tree"
+  >
+    <li
+      aria-expanded={true}
+      className="dp-list__element dp-column-drawer"
+      id="dp-column-drawer-filterSet1"
+      role="treeitem"
+    >
+      <h1
+        aria-controls="dp-column-drawer-body-filterSet1"
+        aria-label="Click to close."
+        className="dp-heading"
+        onClick={[Function]}
+      >
+        Inbox
+        <i
+          aria-hidden={true}
+          className="fa fa-caret-up dp-icon dp-icon--s dp-column-drawer__arrow"
+          onClick={[Function]}
+          title="Close"
+        />
+      </h1>
+      <div
+        aria-hidden={false}
+        className="dp-column-drawer__body dp-column-drawer__body--opened"
+        id="dp-column-drawer-body-filterSet1"
+      >
+        <ul
+          className="dp-list dp-drawer-item-list"
+        >
+          <li
+            className="dp-list__element dp-drawer-item dp-drawer-item--selected"
+            onClick={[Function]}
+            onSelect={[Function]}
+          >
+            <span
+              className="dp-drawer-item__pos-left"
+            />
+            <span
+              className="dp-drawer-item__pos-middle"
+            >
+              Assigned To Me
+              <span
+                onClick={[Function]}
+              >
+                <div
+                  className="dp-icon__filter dp-filters-popup"
+                  onClick={[Function]}
+                  onMouseEnter={[Function]}
+                  onMouseLeave={[Function]}
+                  style={undefined}
+                >
+                  <i
+                    className="fa fa-filter dp-icon dp-icon--s"
+                  />
+                  <div />
+                </div>
+              </span>
+            </span>
+            <span
+              className="dp-drawer-item__pos-right"
+            >
+              <span
+                className="dp-count"
+              >
+                ·
+              </span>
+            </span>
+          </li>
+          <li
+            className="dp-list__element dp-drawer-item"
+            onClick={[Function]}
+            onSelect={[Function]}
+          >
+            <span
+              className="dp-drawer-item__pos-left"
+            />
+            <span
+              className="dp-drawer-item__pos-middle"
+            >
+              Tickets I Follow
+              <span
+                onClick={[Function]}
+              >
+                <div
+                  className="dp-icon__filter dp-filters-popup"
+                  onClick={[Function]}
+                  onMouseEnter={[Function]}
+                  onMouseLeave={[Function]}
+                  style={undefined}
+                >
+                  <i
+                    className="fa fa-filter dp-icon dp-icon--s"
+                  />
+                  <div />
+                </div>
+              </span>
+            </span>
+            <span
+              className="dp-drawer-item__pos-right"
+            >
+              <span
+                className="dp-count"
+              >
+                ·
+              </span>
+            </span>
+          </li>
+          <li
+            className="dp-list__element dp-drawer-item"
+            onClick={[Function]}
+            onSelect={[Function]}
+          >
+            <span
+              className="dp-drawer-item__pos-left"
+            />
+            <span
+              className="dp-drawer-item__pos-middle"
+            >
+              Assigned To Team
+              <span
+                onClick={[Function]}
+              >
+                <div
+                  className="dp-icon__filter dp-filters-popup"
+                  onClick={[Function]}
+                  onMouseEnter={[Function]}
+                  onMouseLeave={[Function]}
+                  style={undefined}
+                >
+                  <i
+                    className="fa fa-filter dp-icon dp-icon--s"
+                  />
+                  <div />
+                </div>
+              </span>
+            </span>
+            <span
+              className="dp-drawer-item__pos-right"
+            >
+              <span
+                className="dp-count"
+              >
+                ·
+              </span>
+            </span>
+          </li>
+          <li
+            className="dp-list__element dp-drawer-item"
+            onClick={[Function]}
+            onSelect={[Function]}
+          >
+            <span
+              className="dp-drawer-item__pos-left"
+            />
+            <span
+              className="dp-drawer-item__pos-middle"
+            >
+              Unassigned
+              <span
+                onClick={[Function]}
+              >
+                <div
+                  className="dp-icon__filter dp-filters-popup"
+                  onClick={[Function]}
+                  onMouseEnter={[Function]}
+                  onMouseLeave={[Function]}
+                  style={undefined}
+                >
+                  <i
+                    className="fa fa-filter dp-icon dp-icon--s"
+                  />
+                  <div />
+                </div>
+              </span>
+            </span>
+            <span
+              className="dp-drawer-item__pos-right"
+            >
+              <span
+                className="dp-count"
+              >
+                ·
+              </span>
+            </span>
+          </li>
+          <li
+            className="dp-list__element dp-drawer-item"
+            onClick={[Function]}
+            onSelect={[Function]}
+          >
+            <span
+              className="dp-drawer-item__pos-left"
+            />
+            <span
+              className="dp-drawer-item__pos-middle"
+            >
+              All Awaiting Agent
+              <span
+                onClick={[Function]}
+              >
+                <div
+                  className="dp-icon__filter dp-filters-popup"
+                  onClick={[Function]}
+                  onMouseEnter={[Function]}
+                  onMouseLeave={[Function]}
+                  style={undefined}
+                >
+                  <i
+                    className="fa fa-filter dp-icon dp-icon--s"
+                  />
+                  <div />
+                </div>
+              </span>
+            </span>
+            <span
+              className="dp-drawer-item__pos-right"
+            >
+              <span
+                className="dp-count"
+              >
+                ·
+              </span>
+            </span>
+          </li>
+        </ul>
+      </div>
+    </li>
+    <li
+      aria-expanded={true}
+      className="dp-list__element dp-column-drawer"
+      id="dp-column-drawer-filterSet2"
+      role="treeitem"
+    >
+      <h1
+        aria-controls="dp-column-drawer-body-filterSet2"
+        aria-label="Click to close."
+        className="dp-heading"
+        onClick={[Function]}
+      >
+        Filters
+        <i
+          aria-hidden={true}
+          className="fa fa-caret-up dp-icon dp-icon--s dp-column-drawer__arrow"
+          onClick={[Function]}
+          title="Close"
+        />
+      </h1>
+      <div
+        aria-hidden={false}
+        className="dp-column-drawer__body dp-column-drawer__body--opened"
+        id="dp-column-drawer-body-filterSet2"
+      >
+        <ul
+          className="dp-list dp-drawer-item-list"
+        >
+          <li
+            className="dp-list__element dp-drawer-item"
+            onClick={[Function]}
+            onSelect={[Function]}
+          >
+            <span
+              className="dp-drawer-item__pos-left"
+            />
+            <span
+              className="dp-drawer-item__pos-middle"
+            >
+              Demo
+              <span
+                onClick={[Function]}
+              >
+                <div
+                  className="dp-icon__filter dp-filters-popup"
+                  onClick={[Function]}
+                  onMouseEnter={[Function]}
+                  onMouseLeave={[Function]}
+                  style={undefined}
+                >
+                  <i
+                    className="fa fa-filter dp-icon dp-icon--s"
+                  />
+                  <div />
+                </div>
+              </span>
+            </span>
+            <span
+              className="dp-drawer-item__pos-right"
+            >
+              <span
+                className="dp-count"
+              >
+                ·
+              </span>
+            </span>
+          </li>
+          <li
+            className="dp-list__element dp-drawer-item"
+            onClick={[Function]}
+            onSelect={[Function]}
+          >
+            <span
+              className="dp-drawer-item__pos-left"
+            />
+            <span
+              className="dp-drawer-item__pos-middle"
+            >
+              Pricing
+              <span
+                onClick={[Function]}
+              >
+                <div
+                  className="dp-icon__filter dp-filters-popup"
+                  onClick={[Function]}
+                  onMouseEnter={[Function]}
+                  onMouseLeave={[Function]}
+                  style={undefined}
+                >
+                  <i
+                    className="fa fa-filter dp-icon dp-icon--s"
+                  />
+                  <div />
+                </div>
+              </span>
+            </span>
+            <span
+              className="dp-drawer-item__pos-right"
+            >
+              <span
+                className="dp-count"
+              >
+                ·
+              </span>
+            </span>
+          </li>
+        </ul>
+      </div>
+    </li>
+    <div
+      className="agent-filters--stars"
+    >
+      <li
+        aria-expanded={true}
+        className="dp-list__element dp-column-drawer"
+        id="dp-column-drawer-stars"
+        role="treeitem"
+      >
+        <h1
+          aria-controls="dp-column-drawer-body-stars"
+          aria-label="Click to close."
+          className="dp-heading"
+          onClick={[Function]}
+        >
+          My Stars
+          <i
+            aria-hidden={true}
+            className="fa fa-caret-up dp-icon dp-icon--s dp-column-drawer__arrow"
+            onClick={[Function]}
+            title="Close"
+          />
+        </h1>
+        <div
+          aria-hidden={false}
+          className="dp-column-drawer__body dp-column-drawer__body--opened"
+          id="dp-column-drawer-body-stars"
+        >
+          <ul
+            className="dp-list dp-drawer-item-list"
+          >
+            <li
+              className="dp-list__element dp-drawer-item"
+              data-dp-toggle-id={0}
+              onClick={[Function]}
+              onSelect={[Function]}
+            >
+              <span
+                className="dp-drawer-item__pos-left"
+              >
+                <i
+                  className="fa fa-star dp-icon dp-icon--s"
+                  style={
+                    Object {
+                      "color": "#0000FF",
+                    }
+                  }
+                />
+              </span>
+              <span
+                className="dp-drawer-item__pos-middle"
+              >
+                Blue
+              </span>
+              <span
+                className="dp-drawer-item__pos-right"
+              >
+                <span
+                  className="dp-count"
+                >
+                  ·
+                </span>
+              </span>
+            </li>
+            <li
+              className="dp-list__element dp-drawer-item"
+              data-dp-toggle-id={1}
+              onClick={[Function]}
+              onSelect={[Function]}
+            >
+              <span
+                className="dp-drawer-item__pos-left"
+              >
+                <i
+                  className="fa fa-star dp-icon dp-icon--s"
+                  style={
+                    Object {
+                      "color": "#008000",
+                    }
+                  }
+                />
+              </span>
+              <span
+                className="dp-drawer-item__pos-middle"
+              >
+                Nesciunt
+              </span>
+              <span
+                className="dp-drawer-item__pos-right"
+              >
+                <span
+                  className="dp-count"
+                >
+                  ·
+                </span>
+              </span>
+            </li>
+            <li
+              className="dp-list__element dp-drawer-item"
+              data-dp-toggle-id={2}
+              onClick={[Function]}
+              onSelect={[Function]}
+            >
+              <span
+                className="dp-drawer-item__pos-left"
+              >
+                <i
+                  className="fa fa-star dp-icon dp-icon--s"
+                  style={
+                    Object {
+                      "color": "#FFA500",
+                    }
+                  }
+                />
+              </span>
+              <span
+                className="dp-drawer-item__pos-middle"
+              >
+                Orange
+              </span>
+              <span
+                className="dp-drawer-item__pos-right"
+              >
+                <span
+                  className="dp-count"
+                >
+                  ·
+                </span>
+              </span>
+            </li>
+            <li
+              className="dp-list__element dp-drawer-item"
+              data-dp-toggle-id={3}
+              onClick={[Function]}
+              onSelect={[Function]}
+            >
+              <span
+                className="dp-drawer-item__pos-left"
+              >
+                <i
+                  className="fa fa-star dp-icon dp-icon--s"
+                  style={
+                    Object {
+                      "color": "#FFC0CB",
+                    }
+                  }
+                />
+              </span>
+              <span
+                className="dp-drawer-item__pos-middle"
+              >
+                Adipisci
+              </span>
+              <span
+                className="dp-drawer-item__pos-right"
+              >
+                <span
+                  className="dp-count"
+                >
+                  ·
+                </span>
+              </span>
+            </li>
+            <li
+              className="dp-list__element dp-drawer-item"
+              data-dp-toggle-id={4}
+              onClick={[Function]}
+              onSelect={[Function]}
+            >
+              <span
+                className="dp-drawer-item__pos-left"
+              >
+                <i
+                  className="fa fa-star dp-icon dp-icon--s"
+                  style={
+                    Object {
+                      "color": "#800080",
+                    }
+                  }
+                />
+              </span>
+              <span
+                className="dp-drawer-item__pos-middle"
+              >
+                Purple
+              </span>
+              <span
+                className="dp-drawer-item__pos-right"
+              >
+                <span
+                  className="dp-count"
+                >
+                  ·
+                </span>
+              </span>
+            </li>
+            <li
+              className="dp-list__element dp-drawer-item"
+              data-dp-toggle-id={5}
+              onClick={[Function]}
+              onSelect={[Function]}
+            >
+              <span
+                className="dp-drawer-item__pos-left"
+              >
+                <i
+                  className="fa fa-star dp-icon dp-icon--s"
+                  style={
+                    Object {
+                      "color": "#FF0000",
+                    }
+                  }
+                />
+              </span>
+              <span
+                className="dp-drawer-item__pos-middle"
+              >
+                Pariatur
+              </span>
+              <span
+                className="dp-drawer-item__pos-right"
+              >
+                <span
+                  className="dp-count"
+                >
+                  ·
+                </span>
+              </span>
+            </li>
+            <li
+              className="dp-list__element dp-drawer-item"
+              data-dp-toggle-id={6}
+              onClick={[Function]}
+              onSelect={[Function]}
+            >
+              <span
+                className="dp-drawer-item__pos-left"
+              >
+                <i
+                  className="fa fa-star dp-icon dp-icon--s"
+                  style={
+                    Object {
+                      "color": "#FFFF00",
+                    }
+                  }
+                />
+              </span>
+              <span
+                className="dp-drawer-item__pos-middle"
+              >
+                Yellow
+              </span>
+              <span
+                className="dp-drawer-item__pos-right"
+              >
+                <span
+                  className="dp-count"
+                >
+                  ·
+                </span>
+              </span>
+            </li>
+          </ul>
+        </div>
+      </li>
+    </div>
+    <div
+      className="agent-filters--labels"
+    >
+      <li
+        aria-expanded={true}
+        className="dp-list__element dp-column-drawer"
+        id="dp-column-drawer-labels"
+        role="treeitem"
+      >
+        <h1
+          aria-controls="dp-column-drawer-body-labels"
+          aria-label="Click to close."
+          className="dp-heading"
+          onClick={[Function]}
+        >
+          Labels
+          <i
+            aria-hidden={true}
+            className="fa fa-caret-up dp-icon dp-icon--s dp-column-drawer__arrow"
+            onClick={[Function]}
+            title="Close"
+          />
+        </h1>
+        <div
+          aria-hidden={false}
+          className="dp-column-drawer__body dp-column-drawer__body--opened"
+          id="dp-column-drawer-body-labels"
+        >
+          <div
+            className="dp-scrollbar"
+            style={
+              Object {
+                "height": "auto",
+                "maxHeight": 400,
+                "minHeight": 0,
+                "overflow": "hidden",
+                "position": "relative",
+                "width": "100%",
+              }
+            }
+          >
+            <div
+              style={
+                Object {
+                  "WebkitOverflowScrolling": "touch",
+                  "bottom": undefined,
+                  "left": undefined,
+                  "marginBottom": 0,
+                  "marginRight": 0,
+                  "maxHeight": 400,
+                  "minHeight": 0,
+                  "overflow": "scroll",
+                  "position": "relative",
+                  "right": undefined,
+                  "top": undefined,
+                }
+              }
+            >
+              <ul
+                className="dp-list dp-drawer-item-list dp-labels"
+              />
+            </div>
+            <div
+              className="dp-scrollbar__track-horizontal"
+              style={
+                Object {
+                  "display": "none",
+                  "height": 6,
+                  "position": "absolute",
+                }
+              }
+            >
+              <div
+                className="dp-scrollbar__thumb-horizontal"
+                style={
+                  Object {
+                    "display": "block",
+                    "height": "100%",
+                    "position": "relative",
+                  }
+                }
+              />
+            </div>
+            <div
+              className="dp-scrollbar__track-vertical"
+              style={
+                Object {
+                  "display": "none",
+                  "position": "absolute",
+                  "width": 6,
+                }
+              }
+            >
+              <div
+                className="dp-scrollbar__thumb-vertical"
+                style={
+                  Object {
+                    "display": "block",
+                    "position": "relative",
+                    "width": "100%",
+                  }
+                }
+              />
+            </div>
+          </div>
+        </div>
+      </li>
+    </div>
+  </ul>
+</div>
+`;

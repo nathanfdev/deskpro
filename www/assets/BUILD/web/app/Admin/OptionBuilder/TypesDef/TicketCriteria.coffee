@@ -196,6 +196,15 @@ define [
         title: 'User Message',
         value: 'CheckUserMessage'
       })
+      options.push({
+        title: 'New Ticket Charge',
+        value: 'CheckTicketCharge'
+      })
+
+      options.push({
+        title: 'Check Expression [Expert]',
+        value: 'CheckExpression'
+      })
 
       if @options_data?.ticket_settings?.satisfaction_enabled
         options.push({
@@ -899,6 +908,18 @@ define [
     getCheckAgentMessage: (options = {}) ->
       options.propName = 'message'
       options.operators = ['isset', 'not_isset', 'contains', 'notcontains', 'is_regex', 'not_regex']
+      def = @getStandardInput(options)
+      return def
+
+    getCheckTicketCharge: (options = {}) ->
+      options.propName = 'amount'
+      options.operators = ['isset', 'not_isset', 'contains', 'notcontains', 'is_regex', 'not_regex', 'is', 'not', 'gt', 'gte', 'lt', 'lte']
+      def = @getStandardInput(options)
+      return def
+
+    getCheckExpression: (options = {}) ->
+      options.propName = 'expr'
+      options.operators = ['is', 'not']
       def = @getStandardInput(options)
       return def
 

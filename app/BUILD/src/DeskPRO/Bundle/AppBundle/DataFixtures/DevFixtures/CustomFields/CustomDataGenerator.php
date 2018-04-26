@@ -100,8 +100,7 @@ class CustomDataGenerator
 
                 break;
             default:
-                throw new \InvalidArgumentException();
-
+                // ignore anything else
         }
     }
 }

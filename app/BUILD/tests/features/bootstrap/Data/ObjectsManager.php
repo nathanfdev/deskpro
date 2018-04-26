@@ -101,6 +101,8 @@ use DeskPRO\Bundle\AppBundle\Entity\Snippet;
 use DeskPRO\Bundle\AppBundle\Entity\SnippetTranslation;
 use DeskPRO\Bundle\AppBundle\Entity\TicketFeedbackLink;
 use DeskPRO\Bundle\AppBundle\Entity\TicketFilter;
+use DeskPRO\Bundle\AppBundle\Entity\TicketFilterSet;
+use DeskPRO\Bundle\AppBundle\Entity\TicketFilterSetAssoc;
 use DeskPRO\Bundle\AppBundle\Entity\TicketFollowUp;
 use DeskPRO\Bundle\AppBundle\Entity\VoiceAccount;
 use DeskPRO\Bundle\AppBundle\Entity\VoiceAsset\AbstractVoiceAsset;
@@ -357,6 +359,8 @@ class ObjectsManager
             'ClientDevice'                     => [Factory\SimpleFactory::class, 'create', ClientDevice::class],
             'LegacyTicketFilter'               => [Factory\SimpleFactory::class, 'create', LegacyTicketFilter::class],
             'TicketFilter'                     => [Factory\SimpleFactory::class, 'create', TicketFilter::class],
+            'TicketFilterSet'                  => [Factory\SimpleFactory::class, 'create', TicketFilterSet::class],
+            'TicketFilterSetAssoc'             => [Factory\CommonFactories::class, 'ticketFilterSetAssoc'],
             'Problem'                          => [Factory\SimpleFactory::class, 'create', Problem::class],
             'PersonPref'                       => [Factory\SimpleFactory::class, 'create', PersonPref::class],
             'Blob'                             => [Factory\SimpleFactory::class, 'create', Blob::class],
@@ -418,6 +422,9 @@ class ObjectsManager
             'TicketFilter'                     => [$this, 'find', TicketFilter::class],
             'TicketSla'                        => [$this, 'find', TicketSla::class],
             'TicketLog'                        => [$this, 'find', TicketLog::class],
+            'TicketFilter'                     => [$this, 'find', TicketFilter::class],
+            'TicketFilterSet'                  => [$this, 'find', TicketFilterSet::class],
+            'TicketFilterSetAssoc'             => [$this, 'find', TicketFilterSetAssoc::class],
             'TicketFollowUp'                   => [$this, 'find', TicketFollowUp::class],
             'TicketCharge'                     => [$this, 'find', TicketCharge::class],
             'SLA'                              => [$this, 'find', Sla::class],

@@ -216,6 +216,26 @@ abstract class AbstractBuild
 
     /**
      * @param string $connName
+     * @param array  $queries  Array of 'create' and 'alter' queries (such as those found in a generated schema file)
+     *
+     * @throws \Exception
+     */
+    public function execDbTableDefArray($connName, array $queries)
+    {
+        if (!empty($queries['create'])) {
+            foreach ($queries['create'] as $sql) {
+                $this->execDbQuery($connName, $sql);
+            }
+        }
+        if (!empty($queries['alter'])) {
+            foreach ($queries['alter'] as $sql) {
+                $this->execDbQuery($connName, $sql);
+            }
+        }
+    }
+
+    /**
+     * @param string $connName
      *
      * @return \Application\DeskPRO\DBAL\Connection
      */

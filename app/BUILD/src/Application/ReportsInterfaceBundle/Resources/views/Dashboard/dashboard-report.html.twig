@@ -23,7 +23,7 @@
         <nav class="reports-control" ng-show="report.id">
             <ul>
                 <li ng-repeat="(index, var) in report.variables">
-                    {{ ng_var('var.name') }}
+                    <span>{{ ng_var('var.name') }}</span>
                     <select ng-change="changeReportLevelVar()" style="min-width: 150px;" ui-select2 ng-model="report.variables[index].value" ng-if="var.type != 'dates'" ng-disabled="(var.type == 'values' && (var.field_type == 'agent' || var.field_type == 'agent_team')) && !canViewAllAgents() && dashboard.is_agent && !me.person.can_admin">
                         <option ng-if="key != 'from_report_value'" ng-repeat="(key, param) in groupParams[var.type][var.field_type]" ng-value="key" ng-selected="key === report.variables[index].value">
                             {{ ng_var('param[0]') }}
@@ -69,11 +69,6 @@
                             <a target='_self' title="Download as CSV" ng-click="download(widget)"><i class="fa fa-file-excel-o"></i></a>
                         </div>
                         <h3 class="ng-binding">{{ ng_var('widget.title') }}</h3>
-                    </div>
-                    <div class="box stat-box" ng-if="widget.rendered_result === null && !widget.js_code">
-                        <div class="stat">
-                            <div class="stat-value no-data">no data</div>
-                        </div>
                     </div>
                     <div class="box" ng-if="(widget.rendered_result !== null || widget.js_code) && widget.widget_type=='graph'">
                         <dashboard-amcharts

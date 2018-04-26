@@ -9,8 +9,8 @@ define(function() {
   routes.push({
     id: 'home',
     url: '/',
-    templateName: 'Index/home.html',
-    controller: 'Admin_Main_Ctrl_Home'
+    templateName: window.ADMIN_DASH_IFRAME_SRC ? 'Index/home-frame.html' : 'Index/home.html',
+    controller:   window.ADMIN_DASH_IFRAME_SRC ? 'Admin_Main_Ctrl_HomeFrame' : 'Admin_Main_Ctrl_Home'
   });
 
   routes.push({

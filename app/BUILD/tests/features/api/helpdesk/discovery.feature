@@ -6,8 +6,8 @@ Feature: Discover settings
     And I have only default brand
     And only the following custom ticket fields exist:
       | #  | Type | Title      |
-      | f1 | text | Text field |
-      | f2 | text | Text field |
+      | f1 | single_choice | Text field |
+      | f2 | single_choice | Text field |
     And only the following Language records exist:
       | #  | Sys Name |
       | l1 | default  |
@@ -60,65 +60,91 @@ Feature: Discover settings
     And the JSON node "data.tickets.billing.currency_name" should be equal to 0
 
     And the JSON node "data.tickets.timelog.enabled" should be equal to 0
+    
+    And the JSON node "data.tickets.group_fields" should be equal to node:
+      """
+      [
+        {
+          "id": "status",
+          "type": "status",
+          "field_id": null
+        },
+        {
+          "id": "department",
+          "type": "department",
+          "field_id": null
+        },
+        {
+          "id": "agent",
+          "type": "agent",
+          "field_id": null
+        },
+        {
+          "id": "agent_team",
+          "type": "agent_team",
+          "field_id": null
+        },
+        {
+          "id": "urgency",
+          "type": "urgency",
+          "field_id": null
+        },
+        {
+          "id": "date_created",
+          "type": "date_created",
+          "field_id": null
+        },
+        {
+          "id": "language",
+          "type": "language",
+          "field_id": null
+        },
+        {
+          "id": "ticket_field.~f1~",
+          "type": "ticket_field",
+          "field_id": ~f1~
+        },
+        {
+          "id": "ticket_field.~f2~",
+          "type": "ticket_field",
+          "field_id": ~f2~
+        }
+      ]
+      """
 
-    And the JSON node "data.tickets.group_fields[0].id" should be equal to "department"
-    And the JSON node "data.tickets.group_fields[0].type" should be equal to "department"
-
-    And the JSON node "data.tickets.group_fields[1].id" should be equal to "agent"
-    And the JSON node "data.tickets.group_fields[1].type" should be equal to "agent"
-
-    And the JSON node "data.tickets.group_fields[2].id" should be equal to "agent_team"
-    And the JSON node "data.tickets.group_fields[2].type" should be equal to "agent_team"
-
-    And the JSON node "data.tickets.group_fields[3].id" should be equal to "urgency"
-    And the JSON node "data.tickets.group_fields[3].type" should be equal to "urgency"
-
-    And the JSON node "data.tickets.group_fields[4].id" should be equal to "waiting_time"
-    And the JSON node "data.tickets.group_fields[4].type" should be equal to "waiting_time"
-
-    And the JSON node "data.tickets.group_fields[5].id" should be equal to "all_waiting_time"
-    And the JSON node "data.tickets.group_fields[5].type" should be equal to "all_waiting_time"
-
-    And the JSON node "data.tickets.group_fields[6].id" should be equal to "date_created"
-    And the JSON node "data.tickets.group_fields[6].type" should be equal to "date_created"
-
-    And the JSON node "data.tickets.group_fields[7].id" should be equal to "language"
-    And the JSON node "data.tickets.group_fields[7].type" should be equal to "language"
-
-    And the JSON node "data.tickets.group_fields[8].id" should be equal to "organization"
-    And the JSON node "data.tickets.group_fields[8].type" should be equal to "organization"
-
-    And the JSON node "data.tickets.group_fields[9].id" should be equal to "person"
-    And the JSON node "data.tickets.group_fields[9].type" should be equal to "person"
-
-    And the JSON node "data.tickets.group_fields[10].id" should be equal to "ticket_field.{f1}"
-    And the JSON node "data.tickets.group_fields[10].type" should be equal to "ticket_field"
-    And the JSON node "data.tickets.group_fields[10].field_id" should be equal to "{f1}"
-
-    And the JSON node "data.tickets.group_fields[11].id" should be equal to "ticket_field.{f2}"
-    And the JSON node "data.tickets.group_fields[11].type" should be equal to "ticket_field"
-    And the JSON node "data.tickets.group_fields[11].field_id" should be equal to "{f2}"
-
-    And the JSON node "data.tickets.order_fields[0].id" should be equal to "urgency"
-    And the JSON node "data.tickets.order_fields[0].type" should be equal to "urgency"
-
-    And the JSON node "data.tickets.order_fields[1].id" should be equal to "date_created"
-    And the JSON node "data.tickets.order_fields[1].type" should be equal to "date_created"
-
-    And the JSON node "data.tickets.order_fields[2].id" should be equal to "date_last_agent_reply"
-    And the JSON node "data.tickets.order_fields[2].type" should be equal to "date_last_agent_reply"
-
-    And the JSON node "data.tickets.order_fields[3].id" should be equal to "date_last_user_reply"
-    And the JSON node "data.tickets.order_fields[3].type" should be equal to "date_last_user_reply"
-
-    And the JSON node "data.tickets.order_fields[4].id" should be equal to "date_last_reply"
-    And the JSON node "data.tickets.order_fields[4].type" should be equal to "date_last_reply"
-
-    And the JSON node "data.tickets.order_fields[5].id" should be equal to "date_user_waiting"
-    And the JSON node "data.tickets.order_fields[5].type" should be equal to "date_user_waiting"
-
-    And the JSON node "data.tickets.order_fields[6].id" should be equal to "total_user_waiting"
-    And the JSON node "data.tickets.order_fields[6].type" should be equal to "total_user_waiting"
+    And the JSON node "data.tickets.order_fields" should be equal to node:
+      """
+      [
+        {
+          "id": "urgency",
+          "type": "urgency"
+        },
+        {
+          "id": "date_created",
+          "type": "date_created"
+        },
+        {
+          "id": "date_last_agent_reply",
+          "type": "date_last_agent_reply"
+        },
+        {
+          "id": "date_last_user_reply",
+          "type": "date_last_user_reply"
+        },
+        {
+          "id": "date_last_reply",
+          "type": "date_last_reply"
+        },
+        {
+          "id": "date_user_waiting",
+          "type": "date_user_waiting"
+        },
+        {
+          "id": "total_user_waiting",
+          "type": "total_user_waiting"
+        }
+      ]
+      """
 
     And the JSON node "data.chat.enabled" should exist
     And the JSON node "data.crm.enabled" should exist

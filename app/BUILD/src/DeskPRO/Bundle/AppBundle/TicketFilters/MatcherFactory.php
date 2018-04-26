@@ -1,0 +1,122 @@
+<?php
+
+namespace DeskPRO\Bundle\AppBundle\TicketFilters;
+
+use Application\DeskPRO\Entity\CustomDefTicket;
+use Application\DeskPRO\Entity\Person;
+use DeskPRO\Bundle\AppBundle\TicketFilters\Terms\AbstractTermsHandler;
+use DeskPRO\Bundle\AppBundle\TicketFilters\Terms\CustomFieldsTermsHandler;
+use DeskPRO\Bundle\AppBundle\TicketFilters\Terms\PersonTermsHandler;
+use DeskPRO\Bundle\AppBundle\TicketFilters\Terms\TicketBasicTermsHandler;
+use DeskPRO\Bundle\AppBundle\TicketFilters\Terms\TicketDateTermsHandler;
+use DeskPRO\Bundle\AppBundle\TicketFilters\Terms\TicketOwnContextTermsHandler;
+use DeskPRO\Bundle\AppBundle\TicketFilters\Terms\TicketSlaTermsHandler;
+use Psr\Log\LoggerInterface;
+use Symfony\Component\DependencyInjection\Container;
+
+class MatcherFactory
+{
+    /**
+     * @var Container
+     */
+    private $container;
+
+    /**
+     * @var EnvLoader
+     */
+    private $loader;
+
+    /**
+     * @var AbstractTermsHandler[]
+     */
+    private $termHandlers;
+
+    /**
+     * @var LoggerInterface
+     */
+    private $logger;
+
+    /**
+     * MatcherFactory constructor.
+     *
+     * @param Container       $container
+     * @param EnvLoader       $loader
+     * @param LoggerInterface $logger
+     */
+    public function __construct(Container $container, EnvLoader $loader, LoggerInterface $logger = null)
+    {
+        $this->container = $container;
+        $this->loader    = $loader;
+        $this->logger    = $logger;
+    }
+
+    /**
+     * @return AbstractTermsHandler[]
+     */
+    private function getTermHandlers()
+    {
+        if ($this->termHandlers !== null) {
+            return $this->termHandlers;
+        }
+
+        $this->termHandlers = [
+            new TicketBasicTermsHandler(),
+            new TicketSlaTermsHandler(),
+            new TicketDateTermsHandler(),
+            new CustomFieldsTermsHandler(
+                $this->loader->getCustomFieldsSet(),
+                new ChoiceFieldOptionMapper(
+                    $this->loader->getCustomFieldsSet(),
+                    $this->container->get('doctrine.orm.entity_manager')->getRepository(CustomDefTicket::class)
+                )
+            ),
+            new TicketOwnContextTermsHandler($this->container->get('doctrine.dbal.read_search_connection')),
+            new PersonTermsHandler($this->container->get('doctrine.orm.entity_manager')->getRepository(Person::class)),
+        ];
+
+        return $this->termHandlers;
+    }
+
+    /**
+     * @return TicketMatcher
+     */
+    public function createMatcher()
+    {
+        $resolver = new ValueResolver();
+
+        $matcher = new TicketMatcher(
+            $resolver,
+            $this->getTermHandlers()
+        );
+
+        if ($this->logger) {
+            $matcher->setLogger($this->logger);
+        }
+
+        return $matcher;
+    }
+
+    /**
+     * @throws \Exception
+     *
+     * @return TicketSqlMatcher
+     */
+    public function createSqlMatcher($activeOnly = true)
+    {
+        $resolver = new ValueResolver();
+
+        $matcher = new TicketSqlMatcher(
+            $resolver,
+            $this->getTermHandlers(),
+            $this->container->get('doctrine.dbal.read_search_connection'),
+            $activeOnly ? TicketSqlMatcher::ACTIVE : TicketSqlMatcher::ALL,
+            $this->loader->getCustomFieldsSet()
+        );
+
+        if ($this->logger) {
+            $matcher->setLogger($this->logger);
+        }
+
+        return $matcher;
+    }
+}

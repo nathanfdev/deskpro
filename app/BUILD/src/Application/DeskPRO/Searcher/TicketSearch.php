@@ -1115,7 +1115,7 @@ class TicketSearch extends SearcherAbstract
 
         // Set a default if none
         if (!$this->order_by) {
-            $this->order_by = ['ticket.urgency', 'DESC'];
+            $this->order_by = ['ticket.date_created', 'DESC'];
         }
 
         list($type, $dir) = $this->order_by;

@@ -1694,6 +1694,8 @@ DeskPRO.Agent.Window = new Orb.Class({
 
 	setListPage: function(page, noswitch) {
 
+		this.backToAgent();
+
 		// Route a list page fragment into the proper
 		// section
 
@@ -1786,6 +1788,8 @@ DeskPRO.Agent.Window = new Orb.Class({
    */
 	runPageRoute: function(route, extraData) {
 		var found_listener = false;
+
+		this.backToAgent();
 
 		var data = this.parseRoute(route);
 		if (extraData) {

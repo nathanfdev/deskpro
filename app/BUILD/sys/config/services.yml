@@ -14,7 +14,7 @@ services:
 
   deskpro.db_config_reader:
     class: DeskPRO\Bundle\AppBundle\DBAL\DbConfigReader
-    arguments: ["@deskpro.app_env"]
+    arguments: ["@deskpro.app_env", "@doctrine.dbal.logger"]
 
   deskpro.mongo_config_reader:
     class: DeskPRO\Bundle\AppBundle\MongoDB\MongoConfigReader

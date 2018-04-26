@@ -104,6 +104,31 @@ class ListUtils
     }
 
     /**
+     * @param $array
+     * @param $fn
+     *
+     * @return array
+     */
+    public static function flatMap($array, $fn)
+    {
+        $flat = [];
+
+        foreach ($array as $idx => $v) {
+            $res = $fn($v, $idx);
+
+            if (is_array($res) || $res instanceof \Traversable) {
+                foreach ($res as $subV) {
+                    $flat[] = $subV;
+                }
+            } elseif ($res !== null) {
+                $flat[] = $res;
+            }
+        }
+
+        return $flat;
+    }
+
+    /**
      * Calls $fn on each value in $array and any that are not null are returned as part of a new array.
      *
      * @param \Traversable|array $array
@@ -449,5 +474,59 @@ class ListUtils
 
             return $last;
         }
+    }
+
+    /**
+     * Find the first value in a list whose prop is the specified value.
+     *
+     * @param \Traversable|array $array
+     * @param string             $propName
+     * @param mixed              $checkValue
+     * @param bool               $strict
+     *
+     * @return null|mixed
+     */
+    public static function findByProp($array, $propName, $checkValue, $strict = true)
+    {
+        foreach ($array as $value) {
+            if ($strict) {
+                if (property_exists($value, $propName) && $value->$propName === $checkValue) {
+                    return $value;
+                }
+            } else {
+                if (property_exists($value, $propName) && $value->$propName == $checkValue) {
+                    return $value;
+                }
+            }
+        }
+
+        return null;
+    }
+
+    /**
+     * Checks if two arrays contain the same elements in any order.
+     *
+     * @param \Traversable|array $array1
+     * @param \Traversable|array $array2
+     *
+     * @return bool
+     */
+    public static function isSame($array1, $array2)
+    {
+        if (count($array1) !== count($array2)) {
+            return false;
+        }
+
+        $diff1 = array_diff($array1, $array2);
+        if (!empty($diff1)) {
+            return false;
+        }
+
+        $diff2 = array_diff($array2, $array1);
+        if (!empty($diff2)) {
+            return false;
+        }
+
+        return true;
     }
 }

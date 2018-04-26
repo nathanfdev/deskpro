@@ -183,7 +183,7 @@ class PathMapInfo
     }
 
     /**
-     * @return string
+     * @return string[]
      */
     public function getAllUrls()
     {

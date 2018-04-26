@@ -130,12 +130,12 @@ class FilterChangeSet
      */
     public function getListUpdateClientMessages(array $onlineAgentsIds)
     {
+        $ticketId   = $this->ticket->getId();
         $operations = [];
 
         foreach ($this->changed_filters as $filter_change) {
             $filter = $filter_change->getFilter();
 
-            $ticketId = $this->ticket->getId();
             $filterId = $filter['id'];
 
             $addedTargets = array_values(array_map(
@@ -165,7 +165,7 @@ class FilterChangeSet
                     'op'        => 'del',
                     'filter_id' => $filterId,
                     'targets'   => $removedTargets,
-            ];
+                ];
             }
         }
 
