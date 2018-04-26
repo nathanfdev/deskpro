@@ -838,7 +838,7 @@ class TicketController extends AbstractController
         }
 
         if ($ticket_messages) {
-            if ($is_pdf) {
+            if ($is_pdf || $is_print) {
                 $tpl = 'DeskPRO:pdf_agent:ticket-messages-batch.html.twig';
             } else {
                 $tpl = 'AgentBundle:Ticket:ticket-messages-batch.html.twig';

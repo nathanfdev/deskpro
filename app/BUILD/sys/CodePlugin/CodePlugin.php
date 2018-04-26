@@ -12,6 +12,7 @@ class CodePlugin
     const CUSTOM_HTML_ADMIN_RES     = 'admin_res';
     const CUSTOM_HTML_ADMIN_PRE_RES = 'admin_pre_res';
     const CUSTOM_HTML_AGENT_RES     = 'agent_res';
+    const CUSTOM_HTML_AGENT_PRINT   = 'agent_print';
     const CUSTOM_HTML_REPOTS_RES    = 'reports_res';
 
     /**
