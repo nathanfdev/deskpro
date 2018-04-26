@@ -41,6 +41,8 @@ class JsonBarRenderer extends AbstractJsonChartRenderer
         $arrayOutput = $this->getDefaultOutputArray();
         $chartData   = $graphs   = [];
 
+        $integersOnly = true;
+
         // we have stacked results here
         // stack results if simple grouping only, e.g. can't stack for matrix
         if (count($groupXColumns) === 1
@@ -66,13 +68,27 @@ class JsonBarRenderer extends AbstractJsonChartRenderer
             foreach ($stacks as $i => $stack) {
                 $chartData[$i] = [];
                 foreach ($stack as $j => $values) {
-                    $category                   = isset($hierarchyParents[$i]) ? $hierarchyParents[$i]['hierarchy_root_title'] : $values['hierarchy_root_title'];
-                    $maxCategoryLength          = max($maxCategoryLength, strlen($category));
-                    $chartData[$i]['category']  = $category;
-                    $chartData[$i]["value$i$j"] = $values[$selectColumns[0]['resultId'] - 1];
+                    $category                  = isset($hierarchyParents[$i]) ? $hierarchyParents[$i]['hierarchy_root_title'] : $values['hierarchy_root_title'];
+                    $maxCategoryLength         = max($maxCategoryLength, strlen($category));
+                    $chartData[$i]['category'] = $category;
+
+                    $value = $values[$selectColumns[0]['resultId'] - 1];
+
+                    /*
+                     * @see https://deskpro.myjetbrains.com/youtrack/issue/DP-1503
+                     */
+                    if (!filter_var($value, FILTER_VALIDATE_INT)) {
+                        $integersOnly = false;
+                    }
+
+                    $chartData[$i]["value$i$j"] = $value;
 
                     foreach ($additionalData as $key => $resultId) {
-                        $chartData[$i][$key] = $values[$resultId - 1];
+                        $value = $values[$resultId - 1];
+                        if (!filter_var($value, FILTER_VALIDATE_INT)) {
+                            $integersOnly = false;
+                        }
+                        $chartData[$i][$key] = $value;
                     }
 
                     $graphs[] = [
@@ -96,6 +112,7 @@ class JsonBarRenderer extends AbstractJsonChartRenderer
                     'marginBottom'  => $labelHeight,
                 ]);
             }
+            $arrayOutput['valueAxes'][0]['integersOnly'] = $integersOnly;
 
             return $arrayOutput;
         }
