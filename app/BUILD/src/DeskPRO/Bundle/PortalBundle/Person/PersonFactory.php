@@ -6,6 +6,7 @@
 
 namespace DeskPRO\Bundle\PortalBundle\Person;
 
+use Application\DeskPRO\Auth\AuthenticationManager;
 use Application\DeskPRO\Entity\Person;
 use Application\DeskPRO\Entity\PersonEmail;
 use Application\DeskPRO\People\PersonGuest;
@@ -30,39 +31,52 @@ class PersonFactory
     /**
      * @var \Symfony\Component\EventDispatcher\EventDispatcher
      */
-    private $event_dispatcher;
+    private $eventDispatcher;
 
     /**
      * @var \DeskPRO\Bundle\PortalBundle\Brand\BrandStack
      */
-    private $brand_stack;
+    private $brandStack;
 
     /**
      * @var LanguageStack
      */
-    private $language_stack;
+    private $languageStack;
 
     /**
      * @var UserRuleProcessor
      */
-    private $user_rule_processor;
+    private $userRuleProcessor;
+
+    /**
+     * @var AuthenticationManager
+     */
+    private $authManager;
 
     /**
      * Constructor.
      *
      * @param EntityManager            $em
-     * @param EventDispatcherInterface $event_dispatcher
-     * @param BrandStack               $brand_stack
-     * @param LanguageStack            $language_stack
-     * @param UserRuleProcessor        $user_rule_processor
+     * @param EventDispatcherInterface $eventDispatcher
+     * @param BrandStack               $brandStack
+     * @param LanguageStack            $languageStack
+     * @param UserRuleProcessor        $userRuleProcessor
+     * @param AuthenticationManager    $authManager
      */
-    public function __construct(EntityManager $em, EventDispatcherInterface $event_dispatcher, BrandStack $brand_stack, LanguageStack $language_stack, UserRuleProcessor $user_rule_processor)
-    {
-        $this->em                  = $em;
-        $this->brand_stack         = $brand_stack;
-        $this->event_dispatcher    = $event_dispatcher;
-        $this->language_stack      = $language_stack;
-        $this->user_rule_processor = $user_rule_processor;
+    public function __construct(
+        EntityManager            $em,
+        EventDispatcherInterface $eventDispatcher,
+        BrandStack               $brandStack,
+        LanguageStack            $languageStack,
+        UserRuleProcessor        $userRuleProcessor,
+        AuthenticationManager    $authManager
+    ) {
+        $this->em                = $em;
+        $this->brandStack        = $brandStack;
+        $this->eventDispatcher   = $eventDispatcher;
+        $this->languageStack     = $languageStack;
+        $this->userRuleProcessor = $userRuleProcessor;
+        $this->authManager       = $authManager;
     }
 
     /**
@@ -71,8 +85,8 @@ class PersonFactory
     public function createNewPerson()
     {
         $person = new Person();
-        $person->setLanguage($this->language_stack->getActiveOrDefault());
-        $person->addBrand($this->brand_stack->getActive()->getBrand());
+        $person->setLanguage($this->languageStack->getActiveOrDefault());
+        $person->addBrand($this->brandStack->getActive()->getBrand());
 
         return $person;
     }
@@ -92,8 +106,8 @@ class PersonFactory
             $person->setName($name);
         }
 
-        $person->setLanguage($this->language_stack->getActiveOrDefault());
-        $person->addBrand($this->brand_stack->getActive()->getBrand());
+        $person->setLanguage($this->languageStack->getActiveOrDefault());
+        $person->addBrand($this->brandStack->getActive()->getBrand());
 
         $email = new PersonEmail();
         $email->setEmail($raw_email);
@@ -101,12 +115,12 @@ class PersonFactory
 
         $person->addEmailAddress($email);
 
-        $this->event_dispatcher->dispatch(Person::EVENT_PRE_CREATE, new PersonCreateEvent($person, $context));
+        $this->eventDispatcher->dispatch(Person::EVENT_PRE_CREATE, new PersonCreateEvent($person, $context));
 
         $this->em->persist($person);
         $this->em->flush();
 
-        $this->event_dispatcher->dispatch(Person::EVENT_POST_CREATE, new PersonCreateEvent($person, $context));
+        $this->eventDispatcher->dispatch(Person::EVENT_POST_CREATE, new PersonCreateEvent($person, $context));
 
         return $person;
     }
@@ -119,7 +133,7 @@ class PersonFactory
      */
     protected function getBrandSetting($name, $default = null)
     {
-        return $this->brand_stack->getActive()->getSetting($name, $default);
+        return $this->brandStack->getActive()->getSetting($name, $default);
     }
 
     /**
@@ -132,19 +146,19 @@ class PersonFactory
      */
     public function saveNewPerson(Person $person, CreatePersonContext $context)
     {
-        $this->user_rule_processor->newRegister($person);
+        $this->userRuleProcessor->newRegister($person);
 
         if (!$person->getLanguage()) {
-            $person->setLanguage($this->language_stack->getActiveOrDefault());
+            $person->setLanguage($this->languageStack->getActiveOrDefault());
         }
-        $person->addBrand($this->brand_stack->getActive()->getBrand());
+        $person->addBrand($this->brandStack->getActive()->getBrand());
 
-        $this->event_dispatcher->dispatch(Person::EVENT_PRE_CREATE, new PersonCreateEvent($person, $context));
+        $this->eventDispatcher->dispatch(Person::EVENT_PRE_CREATE, new PersonCreateEvent($person, $context));
 
         $this->em->persist($person);
         $this->em->flush();
 
-        $this->event_dispatcher->dispatch(Person::EVENT_POST_CREATE, new PersonCreateEvent($person, $context));
+        $this->eventDispatcher->dispatch(Person::EVENT_POST_CREATE, new PersonCreateEvent($person, $context));
 
         return $person;
     }
@@ -161,6 +175,8 @@ class PersonFactory
      *
      * @param PersonGuest $guest
      * @param bool        $already_validated
+     *
+     * @throws \Exception
      *
      * @return bool
      */
@@ -180,6 +196,11 @@ class PersonFactory
             if ($email) {
                 $person = $email->getPerson();
             }
+        }
+
+        // if user is not logged in and reg is disabled then we should redirect the user to the login form
+        if (!$this->authManager->isRegistrationFormVisible()) {
+            throw new LoginRequiredException($guest);
         }
 
         if (!$person) {
@@ -208,8 +229,8 @@ class PersonFactory
             'email' => $email_address,
             'name'  => $name,
         ]);
-        $person->setLanguage($this->language_stack->getActiveOrDefault());
-        $person->addBrand($this->brand_stack->getActive()->getBrand());
+        $person->setLanguage($this->languageStack->getActiveOrDefault());
+        $person->addBrand($this->brandStack->getActive()->getBrand());
 
         // saveNewPerson() will check settings and take care of validation flags
         $this->saveNewPerson($person, new CreatePersonContext('gateway.person'));

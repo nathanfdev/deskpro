@@ -15,7 +15,9 @@ use DeskPRO\Bundle\PortalBundle\Person\EmailValidationRequiredException;
 use DeskPRO\Bundle\PortalBundle\Person\LoginRequiredException;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Security;
+use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\HttpFoundation\Response;
 
 /**
  * Class NewTicketController.
@@ -33,7 +35,7 @@ class NewTicketController extends AbstractController
      * @param Request $request
      * @param string  $visitor_id
      *
-     * @return \Symfony\Component\HttpFoundation\RedirectResponse|\Symfony\Component\HttpFoundation\Response
+     * @return RedirectResponse|Response
      */
     public function newTicketAction(Request $request, $visitor_id)
     {
@@ -100,8 +102,17 @@ class NewTicketController extends AbstractController
                         } catch (LoginRequiredException $e) {
                             // the email used belongs to a user, and brand settings say they need to log in
                             $person = $e->getPerson();
+                            if ($person instanceof PersonGuest) {
+                                $savedForm = $this->getFormSaver()->saveForm(SavedForm::TYPE_NEW_TICKET, $form, $request, $person->getEmail(), $person->getDisplayName());
 
-                            return $this->getFormSaver()->saveFormForPersonLogin(SavedForm::TYPE_NEW_TICKET, $person, $form, $request);
+                                return new RedirectResponse(
+                                    $this->container->get('router')->generate('portal_login', [
+                                        'saved_form' => $savedForm->getExternalCode(),
+                                    ])
+                                );
+                            } else {
+                                return $this->getFormSaver()->saveFormForPersonLogin(SavedForm::TYPE_NEW_TICKET, $person, $form, $request);
+                            }
                         } catch (EmailValidationRequiredException $e) {
                             // this exception just means the guest exists but does not
                             // have a valid email address
