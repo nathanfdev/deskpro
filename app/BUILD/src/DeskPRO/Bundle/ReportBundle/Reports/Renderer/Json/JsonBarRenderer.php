@@ -77,7 +77,7 @@ class JsonBarRenderer extends AbstractJsonChartRenderer
                     /*
                      * @see https://deskpro.myjetbrains.com/youtrack/issue/DP-1503
                      */
-                    if (!filter_var($value, FILTER_VALIDATE_INT)) {
+                    if (!$integersOnly || !filter_var($value, FILTER_VALIDATE_INT)) {
                         $integersOnly = false;
                     }
 

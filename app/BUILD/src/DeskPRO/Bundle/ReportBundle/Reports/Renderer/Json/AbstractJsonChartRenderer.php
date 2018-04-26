@@ -122,7 +122,7 @@ abstract class AbstractJsonChartRenderer extends AbstractJsonRenderer
                     /*
                      * @see https://deskpro.myjetbrains.com/youtrack/issue/DP-1503
                      */
-                    if (!filter_var($value, FILTER_VALIDATE_INT)) {
+                    if (!$integersOnly || !filter_var($value, FILTER_VALIDATE_INT)) {
                         $integersOnly = false;
                     }
 
@@ -176,7 +176,7 @@ abstract class AbstractJsonChartRenderer extends AbstractJsonRenderer
                         /*
                          * @see https://deskpro.myjetbrains.com/youtrack/issue/DP-1503
                          */
-                        if (!filter_var($value, FILTER_VALIDATE_INT)) {
+                        if (!$integersOnly || !filter_var($value, FILTER_VALIDATE_INT)) {
                             $integersOnly = false;
                         }
 
@@ -189,7 +189,7 @@ abstract class AbstractJsonChartRenderer extends AbstractJsonRenderer
                         /*
                          * @see https://deskpro.myjetbrains.com/youtrack/issue/DP-1503
                          */
-                        if (!filter_var($value, FILTER_VALIDATE_INT)) {
+                        if (!$integersOnly || !filter_var($value, FILTER_VALIDATE_INT)) {
                             $integersOnly = false;
                         }
                         $rowData[$key] = $value;
@@ -250,7 +250,7 @@ abstract class AbstractJsonChartRenderer extends AbstractJsonRenderer
                         /*
                          * @see https://deskpro.myjetbrains.com/youtrack/issue/DP-1503
                          */
-                        if (!filter_var($value, FILTER_VALIDATE_INT)) {
+                        if (!$integersOnly || !filter_var($value, FILTER_VALIDATE_INT)) {
                             $integersOnly = false;
                         }
                         $rowData['value'.$i] = $value;
@@ -262,7 +262,7 @@ abstract class AbstractJsonChartRenderer extends AbstractJsonRenderer
                         /*
                          * @see https://deskpro.myjetbrains.com/youtrack/issue/DP-1503
                          */
-                        if (!filter_var($value, FILTER_VALIDATE_INT)) {
+                        if (!$integersOnly || !filter_var($value, FILTER_VALIDATE_INT)) {
                             $integersOnly = false;
                         }
                         $rowData[$key] = $value;
@@ -328,7 +328,7 @@ abstract class AbstractJsonChartRenderer extends AbstractJsonRenderer
                     /*
                      * @see https://deskpro.myjetbrains.com/youtrack/issue/DP-1503
                      */
-                    if (!filter_var($value, FILTER_VALIDATE_INT)) {
+                    if (!$integersOnly || !filter_var($value, FILTER_VALIDATE_INT)) {
                         $integersOnly = false;
                     }
                     $data = [
@@ -343,7 +343,7 @@ abstract class AbstractJsonChartRenderer extends AbstractJsonRenderer
                         /*
                          * @see https://deskpro.myjetbrains.com/youtrack/issue/DP-1503
                          */
-                        if (!filter_var($value, FILTER_VALIDATE_INT)) {
+                        if (!$integersOnly || !filter_var($value, FILTER_VALIDATE_INT)) {
                             $integersOnly = false;
                         }
                         $data[$key] = $value;
