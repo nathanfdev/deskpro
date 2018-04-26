@@ -52,8 +52,9 @@ class JsonBarRenderer extends AbstractJsonChartRenderer
             $arrayOutput['valueAxes'][0]['title']     = $selectColumns[0]['title'];
             $arrayOutput['categoryAxis']['title']     = $groupYColumns[0]['title'];
 
-            $hierarchyParents = $this->collectHierarchyParents($rows);
-            $stacks           = $this->getStacks($rows, $hierarchyParents);
+            $hierarchyParents  = $this->collectHierarchyParents($rows);
+            $stacks            = $this->getStacks($rows, $hierarchyParents);
+            $maxCategoryLength = 0;
 
             $additionalData = [];
             foreach ($selectColumns as $selectColumn) {
@@ -65,7 +66,9 @@ class JsonBarRenderer extends AbstractJsonChartRenderer
             foreach ($stacks as $i => $stack) {
                 $chartData[$i] = [];
                 foreach ($stack as $j => $values) {
-                    $chartData[$i]['category']  = isset($hierarchyParents[$i]) ? $hierarchyParents[$i]['hierarchy_root_title'] : $values['hierarchy_root_title'];
+                    $category                   = isset($hierarchyParents[$i]) ? $hierarchyParents[$i]['hierarchy_root_title'] : $values['hierarchy_root_title'];
+                    $maxCategoryLength          = max($maxCategoryLength, strlen($category));
+                    $chartData[$i]['category']  = $category;
                     $chartData[$i]["value$i$j"] = $values[$selectColumns[0]['resultId'] - 1];
 
                     foreach ($additionalData as $key => $resultId) {
@@ -85,6 +88,14 @@ class JsonBarRenderer extends AbstractJsonChartRenderer
 
             $arrayOutput['dataProvider'] = array_values($chartData);
             $arrayOutput['graphs']       = array_values($graphs);
+            if ($maxCategoryLength > 10) {
+                $labelHeight                 = $maxCategoryLength * 4;
+                $arrayOutput['categoryAxis'] = array_merge($arrayOutput['categoryAxis'], [
+                    'labelRotation' => 45,
+                    'gridCount'     => min(15, count($rows)),
+                    'marginBottom'  => $labelHeight,
+                ]);
+            }
 
             return $arrayOutput;
         }
