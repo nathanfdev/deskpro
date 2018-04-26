@@ -100,6 +100,14 @@ class SearchLog extends \Application\DeskPRO\Domain\DomainObject
     }
 
     /**
+     * @param $query
+     */
+    public function setRawQuery($query)
+    {
+        $this->setModelField('query', $query);
+    }
+
+    /**
      * Sets the query after trying to normalize it a bit.
      *
      * @param $query
