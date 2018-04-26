@@ -328,8 +328,17 @@ class EmailAccountManager
      *
      * @return EmailAccount
      */
-    public function getPrimaryTicketAccount()
+    public function getPrimaryTicketAccount($brand = null)
     {
+        // try to find first account that has brand and matches our needs
+        if ($brand) {
+            foreach ($this->getAllActiveAccounts() as $acc) {
+                if ($this->accountHasFetcherStorage($acc) && $this->accountHasTransport($acc) && $acc->hasBrand($brand)) {
+                    return $acc;
+                }
+            }
+        }
+
         foreach ($this->getAllActiveAccounts() as $acc) {
             if ($this->accountHasFetcherStorage($acc) && $this->accountHasTransport($acc)) {
                 return $acc;
@@ -349,7 +358,7 @@ class EmailAccountManager
     public function getPrimaryTicketAccountWithFallback($brand = null)
     {
         try {
-            return $this->getPrimaryTicketAccount();
+            return $this->getPrimaryTicketAccount($brand);
         } catch (MissingConfigurationException $e) {
             return $this->getDefaultOutAccountWithFallback($brand);
         }
