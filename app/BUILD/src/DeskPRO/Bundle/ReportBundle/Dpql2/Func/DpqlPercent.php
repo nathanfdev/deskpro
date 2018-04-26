@@ -4,6 +4,7 @@ namespace DeskPRO\Bundle\ReportBundle\Dpql2\Func;
 
 use DeskPRO\Bundle\ReportBundle\Dpql2\DpqlException;
 use DeskPRO\Bundle\ReportBundle\Dpql2\SqlSelect;
+use DeskPRO\Bundle\ReportBundle\Dpql2\Statement\Part\Number;
 use DeskPRO\Bundle\ReportBundle\Dpql2\Statement\Part\Prepared;
 use DeskPRO\Bundle\ReportBundle\Dpql2\Statement\SelectPart;
 use DeskPRO\Bundle\ReportBundle\Reports\ResultMetadata;
@@ -28,10 +29,15 @@ class DpqlPercent extends AbstractDpqlFunc
         }
 
         $condition = reset($arguments);
-        $prepped   = $condition->prepare($statement, $section, $stack, $select, $metadata);
+
+        $renderer = 'percent';
+        if (isset($arguments[1]) && $arguments[1] instanceof Number && $arguments[1]->getValue() === 1) {
+            $renderer = 'percentfull';
+        }
+        $prepped = $condition->prepare($statement, $section, $stack, $select, $metadata);
 
         $sql = 'IF(COUNT(*) > 0, (SUM(IF('.$prepped->sql().', 1, 0)) / COUNT(*)) * 100, 0)';
 
-        return new Prepared($sql, 'DPQL_PERCENT('.$prepped->name().')', false, 'percent');
+        return new Prepared($sql, 'DPQL_PERCENT('.$prepped->name().')', false, $renderer);
     }
 }

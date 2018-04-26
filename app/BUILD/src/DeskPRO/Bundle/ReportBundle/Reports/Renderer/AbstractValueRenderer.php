@@ -122,6 +122,10 @@ abstract class AbstractValueRenderer
                     return $this->escapeValue($value);
                 }
 
+            case 'percentfull':
+                return sprintf('%f', $value);
+                break;
+
             case 'percent':
                 return sprintf('%.2f', $value);
                 break;
