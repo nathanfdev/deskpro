@@ -91,10 +91,12 @@ class JsonGaugeRenderer extends AbstractJsonChartRenderer
                     'endAngle'         => 90,
                     'unit'             => $statTotal ? '' : '%',
                     'bandOutlineAlpha' => 0,
+                    'usePrefixes'      => true,
                     'bands'            => [
                         [
                             'color'         => $this->randomColor(),
                             'endValue'      => $statTotal ?: 100,
+                            'balloonText'   => $statValue,
                             'innerRadius'   => '105%',
                             'radius'        => '170%',
                             'gradientRatio' => [0.5, 0, -0.5],
@@ -103,6 +105,7 @@ class JsonGaugeRenderer extends AbstractJsonChartRenderer
                         [
                             'color'         => $this->randomColor(),
                             'endValue'      => $statValue,
+                            'balloonText'   => $statValue,
                             'innerRadius'   => '105%',
                             'radius'        => '170%',
                             'gradientRatio' => [0.5, 0, -0.5],
@@ -110,6 +113,12 @@ class JsonGaugeRenderer extends AbstractJsonChartRenderer
                         ],
                     ],
                 ],
+            ],
+            'balloon' => [
+                'adjustBorderColor' => true,
+                'color'             => '#000000',
+                'cornerRadius'      => 5,
+                'fillColor'         => '#FFFFFF',
             ],
             'arrows' => [
                 [

@@ -143,7 +143,7 @@ class InlineSelectComp extends React.Component {
     return (
       <div ref={(el) => { this.$el = $(el); }} className="inline-select">
         <span className="inline-select-label" onClick={this.open}>
-          {valueOpt ? (valueOpt[0].label || valueOpt[0].value) : defaultText}
+          {valueOpt[0] ? (valueOpt[0].label || valueOpt[0].value) : defaultText}
         </span>
         <span className="inline-select-arrow" onClick={this.open}>▼</span>
         <Portal isOpened={this.state.isOpen}>{this.renderMenu()}</Portal>
