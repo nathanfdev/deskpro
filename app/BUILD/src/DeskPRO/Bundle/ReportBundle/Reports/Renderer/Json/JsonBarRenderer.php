@@ -70,7 +70,7 @@ class JsonBarRenderer extends AbstractJsonChartRenderer
                 foreach ($stack as $j => $values) {
                     $category                  = isset($hierarchyParents[$i]) ? $hierarchyParents[$i]['hierarchy_root_title'] : $values['hierarchy_root_title'];
                     $maxCategoryLength         = max($maxCategoryLength, strlen($category));
-                    $chartData[$i]['category'] = $category;
+                    $chartData[$i]['category'] = $category ?: 'None';
 
                     $value = $values[$selectColumns[0]['resultId'] - 1];
 
@@ -93,9 +93,10 @@ class JsonBarRenderer extends AbstractJsonChartRenderer
 
                     $title = $this->renderCellValue($values, $selectColumns[0], $metadata);
                     if ($value == $title) {
-                        $balloonText = '[[category]]: [[value]]';
-                    } else {
                         $balloonText = '[[category]]: [[title]]';
+                    } else {
+                        $title       = $this->getFullHierarchyTitle($values, $hierarchyParents).': '.$title;
+                        $balloonText = '[[title]]';
                     }
                     $graphs[] = [
                         'id'          => "graph-$i-$j",
