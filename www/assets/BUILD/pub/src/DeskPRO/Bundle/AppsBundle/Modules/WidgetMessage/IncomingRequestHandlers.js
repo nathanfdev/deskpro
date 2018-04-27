@@ -235,23 +235,19 @@ export const EVENT_WEBAPI_REQUEST_DESKPRO = (response, widget, widgetMessage, se
   }
 
   requestPromise
-    .catch((httpResponse) => {
-      const data = httpResponse instanceof Error ? null : { status: httpResponse.status, body: httpResponse.data };
-      const requestError = httpResponse instanceof Error ? httpResponse : new Error('[API] Failed to execute request');
-      response(requestError, data);
+    .then((httpResponse) => {
+      const headers = httpResponse.getAllHeadersMap();
+      const data = { status: httpResponse.status, body: httpResponse.data, headers };
+      response(null, data);
 
       return httpResponse;
     })
-    .then((httpResponse) => {
+    .catch((httpResponse) => {
       const headers = httpResponse.getAllHeadersMap();
-      const data = {
-        status:     httpResponse.status,
-        body:       httpResponse.data,
-        headers,
-        statusCode: httpResponse.getResponseCode()
-      };
+      const data = httpResponse instanceof Error ? null : { status: httpResponse.status, body: httpResponse.data, headers };
       const requestError = httpResponse instanceof Error ? httpResponse : new Error('[API] Failed to execute request');
       response(requestError, data);
+
       return httpResponse;
     })
   ;

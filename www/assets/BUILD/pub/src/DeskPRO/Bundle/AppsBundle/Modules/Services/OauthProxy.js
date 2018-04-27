@@ -30,7 +30,7 @@ function changeUrl(baseUrl, newParts) {
     builder.set('protocol', 'https');
   }
 
-  Object.keys(newParts).each(partName => builder.set(partName, newParts[partName]));
+  Object.keys(newParts).forEach(partName => builder.set(partName, newParts[partName]));
   return builder.toString();
 }
 
