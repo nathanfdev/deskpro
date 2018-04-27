@@ -93,7 +93,8 @@ class JsonBarRenderer extends AbstractJsonChartRenderer
 
                     $title = $this->renderCellValue($values, $selectColumns[0], $metadata);
                     if ($value == $title) {
-                        $balloonText = '[[category]]: [[title]]';
+                        $balloonText = '[[category]]: [[value]]';
+                        $title       = $this->getFullHierarchyTitle($values, $hierarchyParents).': '.$value;
                     } else {
                         $title       = $this->getFullHierarchyTitle($values, $hierarchyParents).': '.$title;
                         $balloonText = '[[title]]';
