@@ -155,7 +155,7 @@ export class InstallerContainer extends React.Component {
     if (route === 'confirm-install') {
       const { packageManifest } = this.state;
       return (<ScreenConfirmInstall
-        onConfirm={() => this.loadAppManifests(true).then(state => this.setState(state))}
+        onConfirm={() => this.loadAppManifests(true).then(state => this.setState({ ...state, route: 'settings' }))}
         packageManifest={packageManifest}
       />
       );
