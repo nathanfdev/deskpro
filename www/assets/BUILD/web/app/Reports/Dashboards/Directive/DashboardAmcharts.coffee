@@ -105,7 +105,7 @@ define ['handlebars'], (Handlebars) ->
           if widget.dataProvider? && widget.dataProvider[0]? && (Object.keys(widget.dataProvider[0]).length > 6 || (widget.type == 'pie' && widget.dataProvider.length > 6))
             widget.legend = false
 
-          if widget.valueAxes[0] && (widget.valueAxes[0].hash || widget.valueAxes[0].labelTemplate)
+          if widget.valueAxes && widget.valueAxes[0] && (widget.valueAxes[0].hash || widget.valueAxes[0].labelTemplate)
             widget.valueAxes[0].labelFunction = (value) ->
               hash = widget.valueAxes[0].hash
               finalValue = value;
@@ -117,12 +117,12 @@ define ['handlebars'], (Handlebars) ->
 
               return finalValue
 
-          if widget.valueAxes[1] && widget.valueAxes[1].hash
+          if widget.valueAxes && widget.valueAxes[1] && widget.valueAxes[1].hash
             widget.valueAxes[1].labelFunction = (value) ->
               hash = widget.valueAxes[1].hash
               return if hash[value] then hash[value] else ''
 
-          if widget.categoryAxis.labelTemplate
+          if widget.categoryAxis && widget.categoryAxis.labelTemplate
             widget.categoryAxis.labelFunction = (value) ->
               template = Handlebars.compile(widget.categoryAxis.labelTemplate)
               return template({ category: value })
