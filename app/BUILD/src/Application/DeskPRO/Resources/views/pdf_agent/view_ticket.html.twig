@@ -11,12 +11,8 @@
 {% import 'AgentBundle:Common:macro-flagname.html.twig' as flag %}
 
 <style type="text/css">
-    #ticket_properties th {
-        text-align: left;
-    }
-
     body {
-        font-family: DejaVuSans;
+        font-family: -apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Oxygen-Sans,Ubuntu,Cantarell,"Helvetica Neue",sans-serif;
     }
 
     .ticket_list_table {
@@ -26,183 +22,117 @@
     .ticket_list_table td {
         overflow: wrap;
     }
+
+    #ticket_properties {
+        margin-bottom: 15px;
+    }
+
+    .ticket-prop {
+        padding: 5px;
+    }
+
+    .ticket-prop-label {
+        width: 210px;
+        text-overflow: ellipsis;
+        float: left;
+    }
+    .ticket-prop-val {
+        float: left;
+    }
+    .ticket-prop-over {
+        clear: both;
+    }
+    .clearfix {
+        height: 1px;
+        width: 1px;
+        overflow: hidden;
+        clear: both;
+    }
 </style>
+{{ include_code_plugin('agent_print') }}
+
+{% macro row(fieldName, title, content, isHtml) %}
+    {# wrapping in a div so css can target the row to e.g. display none it #}
+
+    <div class="ticket-prop ticket-prop-{{ fieldName }}">
+        <div class="ticket-prop-label">{{ title }}</div>
+        <div class="ticket-prop-val">
+            {% if isHtml %}{{ content|raw }}{% else %}{{ content }}{% endif %}
+        </div>
+        <div class="clearfix"></div>
+    </div>
+
+{% endmacro %}
+
 <h1>{{ ticket.subject }}</h1>
-<table id="ticket_properties">
-    <tr>
-        <th>
-            {{ phrase('agent.general.ticket_id') }}:
-        </th>
-        <td>
-            {{ ticket.id }}
-        </td>
-    </tr>
-    <tr>
-        <th>
-            {{ phrase('agent.general.ticket_ref') }}:
-        </th>
-        <td>
-            {{ ticket.ref }}
-        </td>
-    </tr>
-    {% if brands|length > 1 %}
-    <tr>
-        <th>
-            {{ phrase('agent.general.brand') }}:
-        </th>
-        <td>
-            {{ ticket.brand.name }}
-        </td>
-    </tr>
-    {% endif %}
-    <tr>
-        <th>
-            {{ phrase('agent.general.urgency') }}:
-        </th>
-        <td>
-            {{ ticket.urgency }}
-        </td>
-    </tr>
-    <tr>
-        <th>
-            {{ phrase('agent.general.status') }}:
-        </th>
-        <td>
-            {% set status_strings = {
-                'awaiting_agent': 'Awaiting Agent',
-                'awaiting_user': 'Awaiting User',
-                'archived': 'Archived',
-                'resolved': 'Resolved',
-                'hidden.spam': 'Spam',
-                'hidden.deleted': 'Deleted'
-                }
-            %}
-            {{ status_strings[ticket.status_code] }}
-        </td>
-    </tr>
-    <tr>
-        <th>
-            {{ phrase('agent.general.department') }}:
-        </th>
-        <td>
-            {{ ticket.department.title }}
-        </td>
-    </tr>
+<div id="ticket_properties">
+    {{ _self.row('id', phrase('agent.general.ticket_id'), ticket.id) }}
+    {{ _self.row('ref', phrase('agent.general.ticket_ref'), ticket.ref) }}
+    {% if brands|length > 1 %}{{ _self.row('brand', phrase('agent.general.brand'), ticket.brand.name) }}{% endif %}
+    {{ _self.row('urgency', phrase('agent.general.urgency'), ticket.urgency) }}
+    {{ _self.row('status', phrase('agent.general.status'), phrase('agent.tickets.status_' ~ ticket.status_code|replace({'.': '_'}))) }}
+    {{ _self.row('department', phrase('agent.general.department'), ticket.department.title) }}
+
     {% if ticket_flagged %}
-        <tr>
-            <th>{{ phrase('agent.general.flag') }}:</th>
-            <td>
-                {% for color in ['blue', 'green', 'orange', 'pink', 'purple', 'red', 'yellow'] %}
-                    {% if ticket_flagged == color %}{{ flag.flag_name(color) }}{% endif %}
-                {% endfor %}
-            </td>
-        </tr>
+        {% set rowVal %}
+            {% for color in ['blue', 'green', 'orange', 'pink', 'purple', 'red', 'yellow'] %}
+                {% if ticket_flagged == color %}{{ flag.flag_name(color) }}{% endif %}
+            {% endfor %}
+        {% endset %}
+        {{ _self.row('flag', phrase('agent.general.flag'), rowVal, true) }}
     {% endif %}
-    {% if ticket.linked_chat %}
-    <tr>
-        <th>{{ phrase('agent.general.linked_chat') }}:</th>
-        <td>{{ ticket.linked_chat.getSubjectLine() }}</td>
-    </tr>
-    {% endif %}
+
+    {% if ticket.linked_chat %}{{ _self.row('chat', phrase('agent.general.linked_chat'), ticket.linked_chat.getSubjectLine() ) }}{% endif %}
+
     {% if ticket.labels|length %}
-    <tr>
-        <th class="type-labels">{{ phrase('agent.general.labels') }}:</th>
-        <td class="ticket-tags tags-wrap">
+        {% set rowVal %}
             <ul>
                 {% for label in ticket.labels %}
                     <li>{{label.label}}</li>
                 {% endfor %}
             </ul>
-        </td>
-    </tr>
+        {% endset %}
+        {{ _self.row('labels', phrase('agent.general.labels'), rowVal, true) }}
     {% endif %}
 
-    <tr>
-        <th>{{ phrase('agent.general.created') }}:</th>
-        <td>
-            {{ ticket.date_created|date('fulltime') }}
-        </td>
-    </tr>
-    <tr>
-        <th>{{ phrase('agent.general.owner') }}:</th>
-        <td>
-            <span>
-                {{ ticket.person.display_name }}
-                {% if ticket.person.organization %},
-                    {% if ticket.person.organization_position %}
-                        {{ ticket.person.organization_position }}
-                    {% endif %}
-                    {{ ticket.person.organization }}
-                {% endif %}
-                <span>&lt;{{ ticket.person_email_address }}&gt;</span>
-            </span>
-            </dl>
-        </td>
-    <tr>
-        <th>{{ phrase('agent.general.assignments') }}:</th>
-        <td>
-            {{ ticket.agent.display_name|default(phrase('agent.general.no_agent_assigned')) }}
-        </td>
-    </tr>
-    {% if ticket.agent_team %}
-        <tr>
-            <th>{{ phrase('agent.general.team') }}:</th>
-            <td>{{ ticket.agent_team.name|default(phrase('agent.general.none')) }}</td>
-        </tr>
+    {{ _self.row('date-created', phrase('agent.general.created'), ticket.date_created|date('fulltime') ) }}
+
+    {% set rowVal %}
+        {{ ticket.person.display_name }}
+        {% if ticket.person.organization %},
+            {% if ticket.person.organization_position %}
+                {{ ticket.person.organization_position }}
+            {% endif %}
+            {{ ticket.person.organization }}
+        {% endif %}
+        <span>&lt;{{ ticket.person_email_address }}&gt;</span>
+    {% endset %}
+    {{ _self.row('user', phrase('agent.general.user'), rowVal, true) }}
+
+    {{ _self.row('agent', phrase('agent.general.agent'), ticket.agent.display_name|default(phrase('agent.general.no_agent_assigned')) ) }}
+    {% if ticket.agent_team %}{{ _self.row('team', phrase('agent.general.team'), ticket.agent_team.name|default(phrase('agent.general.none')) ) }}{% endif %}
+
+    {% if agent_parts %}
+        {% set rowVal %}
+            {% for part in agent_parts %}
+                {{ part.person.display_name }}
+                {% if not loop.last %}, {% endif %}
+            {% endfor %}
+        {% endset %}
+        {{ _self.row('followers', phrase('agent.general.followers'), rowVal, true) }}
     {% endif %}
-    {% if agent_parts|length %}
-        <tr>
-            <th>{{ phrase('agent.general.followers') }}:</th>
-            <td>
-                {% for part in agent_parts %}
-                    {{ part.person.display_name }}
-                    {% if not loop.last %}, {% endif %}
-                {% endfor %}
-            </td>
-        </tr>
-    {% endif %}
-    {% if ticket.category %}
-        <tr>
-            <th>{{ phrase('agent.general.category') }}:</th>
-            <td>
-                {{ ticket.category.title }}
-            </td>
-        </tr>
-    {% endif %}
-    {% if ticket.priority %}
-        <tr>
-            <th>{{ phrase('agent.general.priority') }}:</th>
-            <td>
-                {{ ticket.priority.title }}
-            </td>
-        </tr>
-    {% endif %}
-    {% if ticket.product %}
-        <tr>
-            <th>{{ phrase('agent.general.product') }}:</th>
-            <td>
-                {{ ticket.product.title }}
-            </td>
-        </tr>
-    {% endif %}
-    {% if ticket.workflow %}
-        <tr>
-            <th>{{ phrase('agent.general.workflow') }}:</th>
-            <td>
-                {{ ticket.workflow.title }}
-            </td>
-        </tr>
-    {% endif %}
+
+    {% if ticket.category %}{{ _self.row('category', phrase('agent.general.category'), ticket.category.title ) }}{% endif %}
+    {% if ticket.priority %}{{ _self.row('priority', phrase('agent.general.priority'), ticket.priority.title ) }}{% endif %}
+    {% if ticket.product %}{{ _self.row('product', phrase('agent.general.product'), ticket.product.title ) }}{% endif %}
+    {% if ticket.workflow %}{{ _self.row('workflow', phrase('agent.general.workflow'), ticket.product.workflow ) }}{% endif %}
 
     {% for f in custom_fields if layout.has('ticket_' ~ f.name) %}
-        <tr>
-            <th>{{ f.title }}:</th>
-            <td>
-                {{ render_custom_field(f) }}
-            </td>
-        </tr>
+        {% set aliases %}{% for a in f.field_def.getAliases() %}ticket-prop-field-{{ a.getQualifiedName() }}{% endfor %}{% endset %}
+        {{ _self.row('field ' ~ aliases, f.title, render_custom_field(f), true) }}
     {% endfor %}
 
-</table>
+</div>
+<br><br>
 
 {{ ticket_messages_block|raw }}

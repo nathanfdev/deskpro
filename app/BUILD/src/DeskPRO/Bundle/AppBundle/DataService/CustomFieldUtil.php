@@ -86,7 +86,7 @@ class CustomFieldUtil
                 if ($data->getData() == 1) {
                     $value = $fieldDef->getOption('label_text') ?: 'Checked';
                 } else {
-                    $value = 'None';
+                    $value = $fieldDef->getOption('unchecked_text') ?: 'None';
                 }
                 break;
             case Text::class:

@@ -18,7 +18,7 @@
                         {% if data.value == 1 %}
                             {{ field_def.getOption('label_text')|default('Checked')|raw }}
                         {% else %}
-							None
+                            {{ field_def.getOption('unchecked_text')|default('None')|raw }}
                         {% endif %}
                     {% else %}
                         {{ data.value|raw }}

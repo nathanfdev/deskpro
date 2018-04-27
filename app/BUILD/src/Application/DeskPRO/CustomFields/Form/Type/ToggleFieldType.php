@@ -19,6 +19,7 @@ class ToggleFieldType extends AbstractType
     {
         $builder->add('default_value', 'checkbox', ['required' => false]);
         $builder->add('label_text', 'text', ['required' => false]);
+        $builder->add('unchecked_text', 'text', ['required' => false]);
     }
 
     /**

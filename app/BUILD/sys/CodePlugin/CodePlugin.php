@@ -2,6 +2,8 @@
 
 namespace DpSys\CodePlugin;
 
+use DeskPRO\Bundle\ReportBundle\Dpql2\DpqlContextStorage;
+use DeskPRO\Bundle\ReportBundle\Dpql2\Placeholder\AbstractPlaceholder;
 use Symfony\Component\DependencyInjection\Container;
 use Symfony\Component\HttpFoundation\Request;
 
@@ -10,6 +12,7 @@ class CodePlugin
     const CUSTOM_HTML_ADMIN_RES     = 'admin_res';
     const CUSTOM_HTML_ADMIN_PRE_RES = 'admin_pre_res';
     const CUSTOM_HTML_AGENT_RES     = 'agent_res';
+    const CUSTOM_HTML_AGENT_PRINT   = 'agent_print';
     const CUSTOM_HTML_REPOTS_RES    = 'reports_res';
 
     /**
@@ -113,6 +116,18 @@ class CodePlugin
      * @return null|string The name of the class and action. e.g. Foo\Bar::myAction
      */
     public function routeScriptController(Request $request, $context, $controller, $action)
+    {
+        return null;
+    }
+
+    /**
+     * @param string             $placeholderName
+     * @param DpqlContextStorage $contextStorage
+     * @param Container          $container
+     *
+     * @return AbstractPlaceholder|null
+     */
+    public function getDpqlPlaceholder($placeholderName, DpqlContextStorage $contextStorage, Container $container)
     {
         return null;
     }

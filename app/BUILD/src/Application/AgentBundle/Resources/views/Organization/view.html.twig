@@ -40,7 +40,7 @@
 {#<div class="layout-sidebar-sizer" id="{{ baseId }}_layout_sidebar_sizer"></div>#}
 
 {# Page Containers #}
-<div id="{{ baseId }}_layout_content" class="layout-content profile org-profile profile {% if not app.user.hasPerm('agent_org.edit') %}perm-no-edit{% endif %}">
+<div id="{{ baseId }}_layout_content" class="layout-content profile org-profile profile {% if not app.user.hasPerm('agent_org.edit') %}perm-no-edit{% endif %} is-org">
     <div class="dp-page-content">
         {# /Page Containers #}
 
