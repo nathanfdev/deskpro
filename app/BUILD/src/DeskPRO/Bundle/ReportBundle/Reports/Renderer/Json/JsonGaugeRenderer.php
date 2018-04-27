@@ -29,24 +29,19 @@ class JsonGaugeRenderer extends AbstractJsonChartRenderer
 
     protected function getValue(array $rows, ResultMetadata $metadata)
     {
-        foreach ($metadata->getSelectColumns() as $column) {
-            if ($column['title'] === 'stat_value') {
-                $value = $column['resultId'] ? $rows[0][$column['resultId'] - 1] : 0;
-
-                return $this->valueRenderer->renderValue($value, 'numberraw', $metadata);
-            }
-        }
-
-        return 0;
+        return $this->getRowVal('stat_value', $rows, $metadata, 'numberraw');
     }
 
     protected function getTotalValue(array $rows, ResultMetadata $metadata)
     {
-        foreach ($metadata->getSelectColumns() as $column) {
-            if ($column['title'] === 'stat_total') {
-                $value = $column['resultId'] ? $rows[0][$column['resultId'] - 1] : 0;
+        return $this->getRowVal('stat_total', $rows, $metadata, 'numberraw');
+    }
 
-                return $this->valueRenderer->renderValue($value, 'numberraw', $metadata);
+    protected function getRowVal($name, array $rows, ResultMetadata $metadata, $useRenderer = null)
+    {
+        foreach ($metadata->getSelectColumns() as $column) {
+            if ($column['title'] === $name) {
+                return $this->renderCellValue($rows[0], $column, $metadata, $useRenderer);
             }
         }
 
@@ -62,14 +57,15 @@ class JsonGaugeRenderer extends AbstractJsonChartRenderer
             return;
         }
         $statValue = $this->getValue($rows, $metadata);
-        $statTotal = $this->getTotalValue($rows, $metadata);
+        $statTotal = $this->getTotalValue($rows, $metadata) ?: 100;
 
         if ($statTotal && $statValue && $statValue > $statTotal) {
             $statValue = $statTotal;
         }
-        if ($statValue > $statTotal || (!$statTotal && $statValue > 100)) {
-            $statTotal = ceil($statValue % 100) * 100;
-        }
+
+        $unitLeft  = $this->getRowVal('unit_left', $rows, $metadata);
+        $unitRight = $this->getRowVal('unit_left', $rows, $metadata);
+        $tipText   = $this->getRowVal('tooltip_text', $rows, $metadata);
 
         //initial output array
         $output = [
@@ -85,18 +81,19 @@ class JsonGaugeRenderer extends AbstractJsonChartRenderer
                     'gridInside'       => true,
                     'inside'           => true,
                     'radius'           => '50%',
-                    'valueInterval'    => $statTotal ? ceil($statTotal / 5) : 10,
+                    'valueInterval'    => ceil($statTotal / 5),
                     'tickColor'        => $this->randomColor(),
                     'startAngle'       => -90,
                     'endAngle'         => 90,
-                    'unit'             => $statTotal ? '' : '%',
+                    'unit'             => $unitLeft ?: $unitRight ?: '',
+                    'unitPosition'     => $unitRight ? 'right' : 'left',
                     'bandOutlineAlpha' => 0,
                     'usePrefixes'      => true,
                     'bands'            => [
                         [
                             'color'         => $this->randomColor(),
                             'endValue'      => $statTotal ?: 100,
-                            'balloonText'   => $statValue,
+                            'balloonText'   => $tipText ?: '',
                             'innerRadius'   => '105%',
                             'radius'        => '170%',
                             'gradientRatio' => [0.5, 0, -0.5],
@@ -105,7 +102,7 @@ class JsonGaugeRenderer extends AbstractJsonChartRenderer
                         [
                             'color'         => $this->randomColor(),
                             'endValue'      => $statValue,
-                            'balloonText'   => $statValue,
+                            'balloonText'   => $tipText ?: '',
                             'innerRadius'   => '105%',
                             'radius'        => '170%',
                             'gradientRatio' => [0.5, 0, -0.5],

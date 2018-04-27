@@ -82,7 +82,7 @@ abstract class AbstractRenderer implements ReportsRendererInterface
      *
      * @return string
      */
-    protected function renderCellValue(array $row, $column, ResultMetadata $metadata)
+    protected function renderCellValue(array $row, $column, ResultMetadata $metadata, $useRenderer = null)
     {
         if (is_string($column)) {
             $value = array_key_exists($column, $row) ? $row[$column] : '';
@@ -97,7 +97,11 @@ abstract class AbstractRenderer implements ReportsRendererInterface
             }
         }
 
-        $renderer = is_array($column) && array_key_exists('renderer', $column) ? $column['renderer'] : null;
+        if ($useRenderer) {
+            $renderer = $useRenderer;
+        } else {
+            $renderer = is_array($column) && array_key_exists('renderer', $column) ? $column['renderer'] : null;
+        }
         if ($renderer instanceof \Closure) {
             /* @var $renderer \Closure */
 

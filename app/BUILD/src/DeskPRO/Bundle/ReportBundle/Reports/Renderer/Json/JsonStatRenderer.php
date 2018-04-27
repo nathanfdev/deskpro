@@ -120,11 +120,15 @@ class JsonStatRenderer extends AbstractJsonRenderer
      *
      * @return string
      */
-    protected function renderCellValue(array $row, $column, ResultMetadata $metadata)
+    protected function renderCellValue(array $row, $column, ResultMetadata $metadata, $useRenderer = null)
     {
         $value = $column['resultId'] ? $row[$column['resultId'] - 1] : '';
 
-        $renderer = is_array($column) && array_key_exists('renderer', $column) ? $column['renderer'] : 'string';
+        if ($useRenderer) {
+            $renderer = $useRenderer;
+        } else {
+            $renderer = is_array($column) && array_key_exists('renderer', $column) ? $column['renderer'] : 'string';
+        }
         if ($renderer instanceof \Closure) {
             /* @var $renderer \Closure */
 
