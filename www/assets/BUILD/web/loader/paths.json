@@ -101,5 +101,6 @@
   "angularGridster":                 "bower_components/angular-gridster/src/angular-gridster",
   "datatables":                      "bower_components/datatables/media/js/jquery.dataTables",
   "datatables.scroller":             "bower_components/datatables-scroller/js/dataTables.scroller",
-  "datatables.pageResize":           "../pub/vendor/datatables/plugins/pageResize"
+  "datatables.pageResize":           "../pub/vendor/datatables/plugins/pageResize",
+  "handlebars":                      "../pub/node_modules/handlebars/dist/handlebars.amd"
 }

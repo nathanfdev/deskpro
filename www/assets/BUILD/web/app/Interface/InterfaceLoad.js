@@ -20,6 +20,7 @@ define([
   'jquery.fileupload',
   'underscore',
   'stacktrace',
+  'handlebars',
   'DeskPRO/OptionBuilder/Module',
   'DeskPRO/CategoryBuilder/Module',
   window.DP_REPORT_BUNDLE_PATH

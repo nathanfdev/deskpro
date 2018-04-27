@@ -4,6 +4,7 @@ import AmCharts from '@amcharts/amcharts3-react';
 import { Button, Loader } from '@deskpro/react-components';
 import Select from 'react-select';
 import Immutable from 'immutable';
+import Handlebars from 'handlebars';
 import TitleWithVars from './TitleWithVars';
 import { displayTypes } from './helper';
 import DataTable from './DataTables';
@@ -41,19 +42,30 @@ class Run extends React.Component {
   static doRenderChart(options, index) {
     const newOptions = options.toJS();
 
-    if (newOptions.chartType === 'bubble') {
-      if (newOptions.valueAxes[0].hash) {
-        newOptions.valueAxes[0].labelFunction = (value) => {
-          const hash = newOptions.valueAxes[0].hash;
-          return hash[value] ? hash[value] : '';
-        };
-      }
-      if (newOptions.valueAxes[1].hash) {
-        newOptions.valueAxes[1].labelFunction = (value) => {
-          const hash = newOptions.valueAxes[1].hash;
-          return hash[value] ? hash[value] : '';
-        };
-      }
+    if (newOptions.valueAxes[0] && (newOptions.valueAxes[0].hash || newOptions.valueAxes[0].labelTemplate)) {
+      newOptions.valueAxes[0].labelFunction = (value) => {
+        const hash = newOptions.valueAxes[0].hash;
+        let finalValue = value;
+
+        if (hash) {
+          finalValue = hash[value] ? hash[value] : '';
+        }
+        if (newOptions.valueAxes[0].labelTemplate) {
+          const template = Handlebars.compile(newOptions.valueAxes[0].labelTemplate);
+          finalValue = template({ value: finalValue });
+        }
+
+        return finalValue;
+      };
+    }
+    if (newOptions.valueAxes[1] && newOptions.valueAxes[1].hash) {
+      newOptions.valueAxes[1].labelFunction = (value) => {
+        const hash = newOptions.valueAxes[1].hash;
+        return hash[value] ? hash[value] : '';
+      };
+    }
+    if (newOptions.categoryAxis && newOptions.categoryAxis.labelTemplate) {
+      newOptions.categoryAxis.labelFunction = value => Handlebars.compile(newOptions.categoryAxis.labelTemplate)({ category: value });
     }
 
     switch (newOptions.chartType) {

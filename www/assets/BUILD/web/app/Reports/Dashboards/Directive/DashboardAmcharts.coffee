@@ -1,4 +1,4 @@
-define ->
+define ['handlebars'], (Handlebars) ->
   Reports_Directive_Amcharts = ['$compile', '$state', 'DashboardWidgetService', ($compile, $state, DashboardWidgetService) ->
     return {
       restrict: 'E'
@@ -104,6 +104,28 @@ define ->
 
           if widget.dataProvider? && widget.dataProvider[0]? && (Object.keys(widget.dataProvider[0]).length > 6 || (widget.type == 'pie' && widget.dataProvider.length > 6))
             widget.legend = false
+
+          if widget.valueAxes[0] && (widget.valueAxes[0].hash || widget.valueAxes[0].labelTemplate)
+            widget.valueAxes[0].labelFunction = (value) ->
+              hash = widget.valueAxes[0].hash
+              finalValue = value;
+              if hash && hash[value]
+                finalValue = hash[value]
+              if widget.valueAxes[0].labelTemplate
+                template = Handlebars.compile(widget.valueAxes[0].labelTemplate)
+                finalValue = template({ 'value': finalValue })
+
+              return finalValue
+
+          if widget.valueAxes[1] && widget.valueAxes[1].hash
+            widget.valueAxes[1].labelFunction = (value) ->
+              hash = widget.valueAxes[1].hash
+              return if hash[value] then hash[value] else ''
+
+          if widget.categoryAxis.labelTemplate
+            widget.categoryAxis.labelFunction = (value) ->
+              template = Handlebars.compile(widget.categoryAxis.labelTemplate)
+              return template({ category: value })
 
           if chart and widget.dataProvider
             chart.dataProvider = widget.dataProvider

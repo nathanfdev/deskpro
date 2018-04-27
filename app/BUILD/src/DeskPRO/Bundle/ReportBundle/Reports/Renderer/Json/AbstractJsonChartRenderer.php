@@ -74,14 +74,14 @@ abstract class AbstractJsonChartRenderer extends AbstractJsonRenderer
         $groupYColumns = $metadata->getGroupYColumns();
         $groupXColumns = $metadata->getGroupXColumns();
 
-        $chartData         = [];
-        $graphs            = [];
-        $isStacked         = false;
-        $maxCategoryLength = 0;
-        $integersOnly      = true;
-
-        $firstSel       = reset($selectColumns);
-        $valueAxisTitle = $firstSel['title'];
+        $chartData          = [];
+        $graphs             = [];
+        $isStacked          = false;
+        $maxCategoryLength  = 0;
+        $integersOnly       = true;
+        $firstSel           = reset($selectColumns);
+        $valueLabelTemplate = $categoryLabelTemplate = null;
+        $valueAxisTitle     = $firstSel['title'];
 
         $additionalData = [];
         foreach ($selectColumns as $index => $selectColumn) {
@@ -89,6 +89,17 @@ abstract class AbstractJsonChartRenderer extends AbstractJsonRenderer
                 $additionalData[$selectColumn['title']] = $selectColumn;
                 //we're gonna add this column in another way, it should have same key for it and would be used for
                 // click_url option in chart
+                unset($selectColumns[$index]);
+            }
+            // it would be same for each row of course since it
+            // SELECT blah-blah-blah
+            // '{{value * 4}} as 'value_label_template'
+            if ($selectColumn['title'] === 'value_label_template') {
+                $valueLabelTemplate = $rows[0][$selectColumn['resultId'] - 1];
+                unset($selectColumns[$index]);
+            }
+            if ($selectColumn['title'] === 'category_label_template') {
+                $categoryLabelTemplate = $rows[0][$selectColumn['resultId'] - 1];
                 unset($selectColumns[$index]);
             }
         }
@@ -142,7 +153,16 @@ abstract class AbstractJsonChartRenderer extends AbstractJsonRenderer
                 ++$i;
             }
 
-            $hasCategory = true;
+            $resultingArray = array_udiff($groupXColumns, $groupYColumns,
+                function ($a, $b) {
+                    if ($a['title'] === $b['title'] && $a['resultId'] === $b['resultId']) {
+                        return 0;
+                    }
+
+                    return 1;
+                }
+            );
+            $hasCategory = count($resultingArray) > 0 && count($groupYColumns) > 0 && count($groupXColumns) > 0;
             $isStacked   = (static::getOutputFormat() == 'bar' || static::getOutputFormat() == 'area');
 
             $parts = [];
@@ -333,7 +353,7 @@ abstract class AbstractJsonChartRenderer extends AbstractJsonRenderer
                     }
                     $data = [
                         'category' => $category,
-                        'title'    => $this->renderCellValue($row, $sel, $metadata, true),
+                        'title'    => $this->renderCellValue($row, $sel, $metadata),
                         'value'    => $value,
                     ];
 
@@ -521,6 +541,11 @@ abstract class AbstractJsonChartRenderer extends AbstractJsonRenderer
             $arrayOutput['valueAxes'][0]['integersOnly'] = $integersOnly;
             $arrayOutput['graphs']                       = $graphArray;
         }
+
+        if ($arrayOutput['valueAxes'][0]) {
+            $arrayOutput['valueAxes'][0]['labelTemplate'] = $valueLabelTemplate;
+        }
+        $arrayOutput['categoryAxis']['labelTemplate'] = $categoryLabelTemplate;
 
         return $arrayOutput;
     }

@@ -42,5 +42,6 @@
   "angularOcLazyLoad":               ["angular"],
   "angularGridster":                 ["angular"],
   "datatables":                      {"exports": "DataTable"},
-  "datatables.pageResize":           ["datatables"]
+  "datatables.pageResize":           ["datatables"],
+  "handlebars":                      {"exports": "Handlebars"}
 }

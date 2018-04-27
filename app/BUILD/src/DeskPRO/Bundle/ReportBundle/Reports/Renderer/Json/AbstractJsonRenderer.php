@@ -94,7 +94,7 @@ abstract class AbstractJsonRenderer extends AbstractRenderer
                 $iterator($hierarchyParents[$row['hierarchy_parent_id']]);
             }
 
-            $parts[] = $row['hierarchy_title'];
+            $parts[] = $row['hierarchy_title'] ?: 'None';
         };
 
         $iterator($row);
