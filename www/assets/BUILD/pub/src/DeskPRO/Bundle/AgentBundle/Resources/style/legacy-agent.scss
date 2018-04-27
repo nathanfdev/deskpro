@@ -814,6 +814,10 @@ i.icon.fitted {
   100% { background-color: #630030; box-shadow: 0 0 9px  #333;    }
 }
 
+#dp_center .agent-filters * {
+  box-sizing: border-box;
+}
+
 .agent-filters {
   .dp-settings {
     display: none;
