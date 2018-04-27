@@ -110,7 +110,7 @@ fos_oauth_server:
         supported_scopes: session
 
 nelmio_api_doc:
-    name: 'DeskPRO API Documentation'
+    name: 'Deskpro API Documentation'
     motd:
       template: 'ApiBundle::apidocs/motd.html.twig'
     sandbox:
