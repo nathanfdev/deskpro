@@ -74,14 +74,14 @@ abstract class AbstractJsonChartRenderer extends AbstractJsonRenderer
         $groupYColumns = $metadata->getGroupYColumns();
         $groupXColumns = $metadata->getGroupXColumns();
 
-        $chartData         = [];
-        $graphs            = [];
-        $isStacked         = false;
-        $maxCategoryLength = 0;
-        $integersOnly      = true;
-        $hasCategory       = false;
-        $firstSel          = reset($selectColumns);
-        $valueAxisTitle    = $firstSel['title'];
+        $chartData          = [];
+        $graphs             = [];
+        $isStacked          = false;
+        $maxCategoryLength  = 0;
+        $integersOnly       = true;
+        $firstSel           = reset($selectColumns);
+        $valueLabelTemplate = $categoryLabelTemplate = null;
+        $valueAxisTitle     = $firstSel['title'];
 
         $additionalData = [];
         foreach ($selectColumns as $index => $selectColumn) {
@@ -89,6 +89,17 @@ abstract class AbstractJsonChartRenderer extends AbstractJsonRenderer
                 $additionalData[$selectColumn['title']] = $selectColumn;
                 //we're gonna add this column in another way, it should have same key for it and would be used for
                 // click_url option in chart
+                unset($selectColumns[$index]);
+            }
+            // it would be same for each row of course since it
+            // SELECT blah-blah-blah
+            // '{{value * 4}} as 'value_label_template'
+            if ($selectColumn['title'] === 'value_label_template') {
+                $valueLabelTemplate = $rows[0][$selectColumn['resultId'] - 1];
+                unset($selectColumns[$index]);
+            }
+            if ($selectColumn['title'] === 'category_label_template') {
+                $categoryLabelTemplate = $rows[0][$selectColumn['resultId'] - 1];
                 unset($selectColumns[$index]);
             }
         }
@@ -530,6 +541,11 @@ abstract class AbstractJsonChartRenderer extends AbstractJsonRenderer
             $arrayOutput['valueAxes'][0]['integersOnly'] = $integersOnly;
             $arrayOutput['graphs']                       = $graphArray;
         }
+
+        if ($arrayOutput['valueAxes'][0]) {
+            $arrayOutput['valueAxes'][0]['labelTemplate'] = $valueLabelTemplate;
+        }
+        $arrayOutput['categoryAxis']['labelTemplate'] = $categoryLabelTemplate;
 
         return $arrayOutput;
     }

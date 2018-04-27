@@ -41,7 +41,8 @@ class JsonBarRenderer extends AbstractJsonChartRenderer
         $arrayOutput = $this->getDefaultOutputArray();
         $chartData   = $graphs   = [];
 
-        $integersOnly = true;
+        $valueLabelTemplate = $categoryLabelTemplate = null;
+        $integersOnly       = true;
 
         // we have stacked results here
         // stack results if simple grouping only, e.g. can't stack for matrix
@@ -59,9 +60,20 @@ class JsonBarRenderer extends AbstractJsonChartRenderer
             $maxCategoryLength = 0;
 
             $additionalData = [];
-            foreach ($selectColumns as $selectColumn) {
+            foreach ($selectColumns as $index => $selectColumn) {
                 if (strpos($selectColumn['title'], '__var') !== false) {
                     $additionalData[$selectColumn['title']] = $selectColumn['resultId'];
+                }
+                // it would be same for each row of course since it
+                // SELECT blah-blah-blah
+                // '{{value * 4}} as 'value_label_template'
+                if ($selectColumn['title'] === 'value_label_template') {
+                    $valueLabelTemplate = $rows[0][$selectColumn['resultId'] - 1];
+                    unset($selectColumns[$index]);
+                }
+                if ($selectColumn['title'] === 'category_label_template') {
+                    $categoryLabelTemplate = $rows[0][$selectColumn['resultId'] - 1];
+                    unset($selectColumns[$index]);
                 }
             }
 
@@ -120,7 +132,9 @@ class JsonBarRenderer extends AbstractJsonChartRenderer
                     'marginBottom'  => $labelHeight,
                 ]);
             }
-            $arrayOutput['valueAxes'][0]['integersOnly'] = $integersOnly;
+            $arrayOutput['valueAxes'][0]['integersOnly']  = $integersOnly;
+            $arrayOutput['valueAxes'][0]['labelTemplate'] = $valueLabelTemplate;
+            $arrayOutput['categoryAxis']['labelTemplate'] = $categoryLabelTemplate;
 
             return $arrayOutput;
         }
