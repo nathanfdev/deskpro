@@ -7,6 +7,7 @@ use Application\DeskPRO\EntityRepository\AppInstance;
 use DeskPRO\Bundle\AppBundle\Entity\AppStore\AppState;
 use DeskPRO\Bundle\AppBundle\Entity\Repository\AppStateRepository;
 use Doctrine\ORM;
+use League\OAuth2\Client\Token\AccessToken;
 
 class OauthProviderConnectionLoader
 {
@@ -63,7 +64,30 @@ class OauthProviderConnectionLoader
     }
 
     /**
-     * @param $instance
+     * @param AppInstance|string $instance
+     * @param Person             $readableBy
+     * @param string             $storageKey
+     * @return AccessToken|null
+     */
+    public function loadOauth2Tokens($instance, $readableBy, $storageKey)
+    {
+        /** @var AppStateRepository $appStateRepo */
+        $appStateRepo = $this->manager->getRepository(AppState::class);
+        $appState = $appStateRepo->findOneReadableByName($instance, $readableBy, $storageKey);
+        if ($appState instanceof AppState) {
+            $value = $appState->getValue();
+            $jsonDecodedValue = \json_decode($value, $assoc = true);
+
+            if (JSON_ERROR_NONE === json_last_error()) {
+                return new AccessToken($jsonDecodedValue);
+            }
+        }
+
+        return null;
+    }
+
+    /**
+     * @param AppInstance|string $instance
      * @param $readableBy
      *
      * @return AppState|null

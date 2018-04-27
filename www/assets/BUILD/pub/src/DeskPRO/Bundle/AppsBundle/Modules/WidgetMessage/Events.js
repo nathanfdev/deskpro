@@ -3,6 +3,8 @@ export const EVENT_SECURITY_AUTHENTICATE_OAUTH = 'security.authenticate.oauth';
 
 export const EVENT_SECURITY_SETTINGS_OAUTH = 'security.settings.oauth';
 
+export const EVENT_SECURITY_OAUTH_REFRESH = 'security.oauth.refresh';
+
 // FETCH EVENTS
 export const EVENT_WEBAPI_REQUEST_FETCH = 'webapi.request.fetch';
 
@@ -49,6 +51,8 @@ export const events =
     EVENT_SECURITY_AUTHENTICATE_OAUTH,
 
     EVENT_SECURITY_SETTINGS_OAUTH,
+
+    EVENT_SECURITY_OAUTH_REFRESH,
 
   // API REQUEST EVENTS
 

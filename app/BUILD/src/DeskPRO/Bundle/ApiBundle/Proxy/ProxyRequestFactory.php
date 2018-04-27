@@ -59,10 +59,11 @@ class ProxyRequestFactory
 
     /**
      * @param AppInstance $instance
-     * @param Request     $request
-     * @param Person      $person
+     * @param Request $request
+     * @param Person $person
      *
      * @return ApplicationProxyRequest
+     * @throws RequestSigningStrategyException
      */
     public function createFromAppRequest(AppInstance $instance, Request $request, Person $person)
     {
@@ -104,7 +105,12 @@ class ProxyRequestFactory
         return new ApplicationProxyRequest($proxyMethod, $proxyUrl, $proxyHeaders, $whiteList, $requestSigningStrategy);
     }
 
-    private function getRequestSigningStrategy(ProxySignWithHeader $header)
+    /**
+     * @param ProxySignWithHeader $header
+     * @return RequestSigningStrategyOauth1
+     * @throws RequestSigningStrategyException
+     */
+    private function getRequestSigningStrategy( ProxySignWithHeader $header)
     {
         $strategyName = $header->getSignWithStrategy();
         if ($strategyName === RequestSigningStrategy::STRATEGY_OAUTH1) {

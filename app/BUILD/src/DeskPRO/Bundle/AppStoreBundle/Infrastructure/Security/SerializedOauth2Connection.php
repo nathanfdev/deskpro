@@ -127,6 +127,27 @@ class SerializedOauth2Connection
         return $provider->getAccessToken($grant, $options);
     }
 
+    /**
+     * @param $code
+     * @param array $extraParams
+     * @return \League\OAuth2\Client\Token\AccessToken
+     */
+    public function getAccessTokenWithAuthorizationCode($code, array $extraParams = [])
+    {
+        $params = array_merge($extraParams, ['code' => $code]);
+        return $this->getAccessToken('authorization_code', $params);
+    }
+
+    /**
+     * @param $token
+     * @param array $extraParams
+     * @return \League\OAuth2\Client\Token\AccessToken
+     */
+    public function getAccessTokenWithRefreshToken($token, array $extraParams)
+    {
+        $params = array_merge($extraParams, ['refresh_token' => $token]);
+        return $this->getAccessToken('refresh_token', $params);
+    }
 
     /**
      * @return string

@@ -11,7 +11,9 @@ use DeskPRO\Bundle\AppStoreBundle\Infrastructure\Security\OauthProviderConnectio
 use DeskPRO\Bundle\AppStoreBundle\Infrastructure\Security\SerializedOauth2Connection;
 use Firebase\JWT\JWT;
 use FOS\RestBundle\Controller\Annotations as Rest;
+use League\OAuth2\Client\Token\AccessToken;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\ParamConverter;
+use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -93,61 +95,62 @@ class Oauth2ProxyController extends BaseController
      */
     public function authorizeAction(OauthProviderConnectionLoader $provider = null, Request $request)
     {
-        // check that we have an application
-        $applicationId = $request->query->get('applicationId', null);
-        if (is_null($applicationId)) {
-            return new Response('Connection not found', 400);
-        }
-
         // check that we can post back messages. if we can not then, we show html errors
-        $callbackMethod = $request->query->get('callbackMethod', 'postMessage');
-        $callbackUrl    = $request->query->get('callbackUrl');
+        $callbackMethod = ProxyParams::getDPQueryParam('callbackMethod', $request);
+        $callbackUrl    = ProxyParams::getDPQueryParam('callbackUrl', $request);
+
         if ($callbackMethod !== 'postMessage' || empty($callbackUrl)) {
             return new Response('Invalid callback method', 400);
         }
 
+        // check that we have an application
+        $applicationId = $request->query->get('dp_applicationId', null);
+        if (is_null($applicationId)) {
+            return new Response('Connection not found', 400);
+        }
+
         $errorResponseBuilder = OauthResponseBuilder::forResponseType('error')
             ->withApplicationState($request->query->get('state', null))
-            ->withRedirectUrl($callbackUrl)
         ;
 
-        $clientProfile = $request->query->get('client_profile', 'web-server'); //web-server, user-agent, [ native applications, autonomous clients ]
+        $clientProfile = ProxyParams::getDPQueryParam('client_profile', $request, 'web-server'); //web-server, user-agent, [ native applications, autonomous clients ]
         if (!in_array($clientProfile, ['web-server', 'user-agent'])) {
-            return $errorResponseBuilder->withErrorType('invalid client profile')->buildPostMessage();
+            return $errorResponseBuilder->withErrorType('invalid client profile')->buildPostMessage($callbackUrl);
         }
 
         /** @var SerializedOauth2Connection $connection */
         $connection = null;
         if ($clientProfile === 'web-server') {
             if (is_null($provider)) {
-                return $errorResponseBuilder->withErrorType('provider not found')->buildPostMessage();
+                return $errorResponseBuilder->withErrorType('provider not found')->buildPostMessage($callbackUrl);
             }
 
             $connection = $provider->loadOauth2Connection($applicationId, $this->getUser());
             if (empty($connection)) {
-                return $errorResponseBuilder->withErrorType('connection not found')->buildPostMessage();
+                return $errorResponseBuilder->withErrorType('connection not found')->buildPostMessage($callbackUrl);
             }
         }
 
         if ($clientProfile === 'web-server') {
-            $proxyState = [
-                'appState'       => $request->query->get('state', null),
+            $proxyState = ProxyParams::qualifyAllDpParams([
+                'appState'       => ProxyParams::getDPQueryParam('state', $request),
                 'callbackMethod' => $callbackMethod,
-                'callbackUrl'    => $request->query->get('callbackUrl'),
-            ];
+                'callbackUrl'    => $callbackUrl,
+            ]);
 
             $secret = $this->readJWTSecret($this->getContainer());
             $state  = self::encode($proxyState, $secret);
             if (empty($state)) {
-                return $errorResponseBuilder->withErrorType('failed to secure the request')->buildPostMessage();
+                return $errorResponseBuilder->withErrorType('failed to secure the request')->buildPostMessage($callbackUrl);
             }
 
-            $authorizationUrl = $connection->getAuthorizationUrl(['state' => $state]);
+            $extraQueryParams = ProxyParams::getExtraQueryParams($request);
+            $authorizationUrl = $connection->getAuthorizationUrl(array_merge($extraQueryParams, ['state' => $state]));
 
             return new RedirectResponse($authorizationUrl);
         }
 
-        return $errorResponseBuilder->withErrorType('only web-server profile allowed')->buildPostMessage();
+        return $errorResponseBuilder->withErrorType('only web-server profile allowed')->buildPostMessage($callbackUrl);
     }
 
     /**
@@ -176,38 +179,86 @@ class Oauth2ProxyController extends BaseController
             return new Response('Invalid oauth request', 400);
         }
 
+        $callbackUrl = ProxyParams::getDPQueryParamFromArray('callbackUrl', $proxyState);
+        $appState = ProxyParams::getDPQueryParamFromArray('appState', $proxyState);
         // prepare the error response builder
-        $errorResponseBuilder = OauthResponseBuilder::forResponseType('error')
-            ->withApplicationState($proxyState['appState'])
-            ->withRedirectUrl($proxyState['callbackUrl'])
-        ;
+        $errorResponseBuilder = OauthResponseBuilder::forResponseType('error')->withApplicationState($appState);
 
         $responseType = $request->query->get('response_type', 'code'); // === 'code'
         if (!in_array($responseType, ['code', 'error'])) {
-            return $errorResponseBuilder->withErrorType('unexpected response type')->buildPostMessage();
+            return $errorResponseBuilder->withErrorType('unexpected response type')->buildPostMessage($callbackUrl);
         }
 
         if ($responseType === 'code') {
             $connection = $provider->loadOauth2Connection($application, $this->getUser());
             if (empty($connection)) {
-                return $errorResponseBuilder->withErrorType('connection not found')->buildPostMessage();
+                return $errorResponseBuilder->withErrorType('connection not found')->buildPostMessage($callbackUrl);
             }
 
             try {
                 $code  = $request->query->get('code');
-                $token = $connection->getAccessToken('authorization_code', ['code' => $code]);
+                $token = $connection->getAccessTokenWithAuthorizationCode($code);
 
                 return OauthResponseBuilder::forResponseType('token')
-                    ->withApplicationState($proxyState['appState'])
+                    ->withApplicationState($appState)
                     ->withOauth2Token($token)
-                    ->withRedirectUrl($proxyState['callbackUrl'])
-                    ->buildPostMessage();
+                    ->buildPostMessage($callbackUrl);
             } catch (\Exception $e) {
-                return $errorResponseBuilder->withErrorType('failed to retrieve token')->buildPostMessage();
+                return $errorResponseBuilder->withErrorType('failed to retrieve token')->buildPostMessage($callbackUrl);
             }
         }
 
         // when $responseType === 'error'
-        return $errorResponseBuilder->withErrorType('oauth error')->buildPostMessage();
+        return $errorResponseBuilder->withErrorType('oauth error')->buildPostMessage($callbackUrl);
     }
+
+    /**
+     * @ParamConverter("provider", class="AppStoreBundle:Infrastructure\Security\OauthProviderConnectionLoader", converter="DeskPRO\Bundle\AppStoreBundle\ParamConverter\OauthProviderConnectionLoaderConverter")
+     *
+     * @Rest\Get("/{provider}/refresh-access")
+     *
+     * @param OauthProviderConnectionLoader|null $provider
+     * @param Request                            $request
+     *
+     * @return JsonResponse
+     */
+    public function refreshAccessAction(OauthProviderConnectionLoader $provider = null, Request $request)
+    {
+        // prepare the error response builder
+        $errorResponseBuilder = OauthResponseBuilder::forResponseType('error');
+
+        // check that we have an application
+        $applicationId = ProxyParams::getDPQueryParam('applicationId', $request);
+        if (is_null($applicationId)) {
+            return $errorResponseBuilder->withErrorType('Connection not found')->buildJSON();
+        }
+
+        // check that we can post back messages. if we can not then, we show html errors
+        $refreshToken = $request->query->get('refresh_token', null);
+        if (empty($refreshToken)) {
+            return $errorResponseBuilder->withErrorType('Missing refresh token')->buildJSON();
+        }
+
+        $person = $this->getUser();
+        $connection = $provider->loadOauth2Connection($applicationId, $person);
+        if (empty($connection)) {
+            return $errorResponseBuilder->withErrorType('connection not found')->buildJSON();
+        }
+
+        $extraQueryParams = ProxyParams::getExtraQueryParams($request);
+        $tokens = $provider->loadOauth2Tokens($applicationId, $person, $refreshToken);
+        $newAccessToken = $connection->getAccessTokenWithRefreshToken($tokens->getRefreshToken(), $extraQueryParams);
+
+        // we're merging the tokens to preserve the information requested with the original token, such as
+        // the refresh token which is not always returned with the refresh token response and since the api clients
+        // are just replacing the old token with the new one that information will be lost
+        $tokenValues = array_merge($tokens->jsonSerialize(), $newAccessToken->jsonSerialize());
+        $finalToken = new AccessToken($tokenValues);
+
+        return OauthResponseBuilder::forResponseType('token')
+            ->withOauth2Token($finalToken)
+            ->buildJSON()
+        ;
+    }
+
 }

@@ -1,3 +1,4 @@
+import { default as serializeError } from 'serialize-error';
 import { events } from './Events';
 
 /**
@@ -31,7 +32,7 @@ export const EVENT_SECURITY_SETTINGS_OAUTH = (response, widget, widgetMessage, s
     const settings = { urlRedirect };
     response(null, settings);
   } catch (e) {
-    response(new Error('failed to build redirect url'));
+    response(new Error('failed to build redirect url'), serializeError(e));
   }
 };
 
@@ -46,18 +47,16 @@ export const EVENT_SECURITY_AUTHENTICATE_OAUTH = (response, widget, widgetMessag
   const { correlationId }  = widgetMessage;
   const { id } = widget;
 
-  const { provider, protocolVersion } = widgetMessage.body;
-
+  const { provider, protocolVersion, query } = widgetMessage.body;
   try {
     const authParams = {
-      provider,
       applicationId:  widget.instanceId,
       correlationId,
       callbackMethod: 'postMessage',
       callbackUrl:    services.location.href
     };
 
-    const oauthProxyUrl = services.oauthProxy.buildAuthorizeUrl({ protocolVersion })(authParams);
+    const oauthProxyUrl = services.oauthProxy.buildAuthorizeUrl({ provider, protocolVersion, query })(authParams);
     const listener = services.oauthProxy.buildReceiveTokenListener({ cb: response, protocolVersion, oauthProxyUrl })(authParams);
 
     const windowName = `auth-${id}-${provider}`;
@@ -66,7 +65,55 @@ export const EVENT_SECURITY_AUTHENTICATE_OAUTH = (response, widget, widgetMessag
     registerPostMessageListener(services.window, listener);
     services.window.open(oauthProxyUrl, windowName, windowFeatures);
   } catch (e) {
-    response(new Error('failed to authenticate'));
+    response(new Error('failed to authenticate'), serializeError(e));
+  }
+};
+
+/**
+ * @param {function} response
+ * @param {Widget} widget
+ * @param {WidgetRequest} widgetMessage
+ * @param {AppServices}  services
+ * @constructor
+ */
+export const EVENT_SECURITY_OAUTH_REFRESH = (response, widget, widgetMessage, services) => {
+  const { correlationId }  = widgetMessage;
+
+  const { provider, protocolVersion, query } = widgetMessage.body;
+  try {
+    const authParams = {
+      applicationId: widget.instanceId,
+      correlationId
+    };
+
+    const oauthProxyUrl = services.oauthProxy.buildRefreshAccessUrl({ protocolVersion, provider, query })(authParams);
+    services.getDeskproAPIClient({ allowAbsoluteUrls: true }).fetch(oauthProxyUrl, { method: 'GET' })
+      .then((httpResponse) => {
+        const headers = httpResponse.getAllHeadersMap();
+        const data = {
+          status:     httpResponse.status,
+          body:       httpResponse.data,
+          headers,
+          statusCode: httpResponse.getResponseCode()
+        };
+        response(null, data);
+        return httpResponse;
+      })
+      .catch((httpResponse) => {
+        const headers = httpResponse.getAllHeadersMap();
+        const data = httpResponse instanceof Error ? null : {
+          status:     httpResponse.status,
+          body:       httpResponse.data,
+          headers,
+          statusCode: httpResponse.getResponseCode()
+        };
+        const requestError = httpResponse instanceof Error ? httpResponse : new Error('[API] Failed to execute request');
+        response(requestError, data);
+
+        return httpResponse;
+      });
+  } catch (e) {
+    response(new Error('failed to authenticate'), serializeError(e));
   }
 };
 
@@ -196,9 +243,15 @@ export const EVENT_WEBAPI_REQUEST_DESKPRO = (response, widget, widgetMessage, se
       return httpResponse;
     })
     .then((httpResponse) => {
-      const data = { status: httpResponse.status, body: httpResponse.data };
-      response(null, data);
-
+      const headers = httpResponse.getAllHeadersMap();
+      const data = {
+        status:     httpResponse.status,
+        body:       httpResponse.data,
+        headers,
+        statusCode: httpResponse.getResponseCode()
+      };
+      const requestError = httpResponse instanceof Error ? httpResponse : new Error('[API] Failed to execute request');
+      response(requestError, data);
       return httpResponse;
     })
   ;
@@ -437,6 +490,8 @@ export const handlers = {
   // SECURITY EVENT HANDLERS
 
   EVENT_SECURITY_AUTHENTICATE_OAUTH,
+
+  EVENT_SECURITY_OAUTH_REFRESH,
 
   EVENT_SECURITY_SETTINGS_OAUTH,
 
