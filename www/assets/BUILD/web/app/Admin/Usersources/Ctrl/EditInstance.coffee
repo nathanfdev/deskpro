@@ -46,7 +46,7 @@ define ['Admin/Main/Ctrl/Base', 'DeskPRO/Util/Util', 'Admin/Usersources/Helper/U
           return if @usersourceType != s.type
           return if 'Application\\DeskPRO\\Usersource\\Adapter\\DeskPRO' == s.source_type
           enabled++ if s.is_enabled
-        @$scope.can_disable_deskpro = enabled > 0
+        @$scope.can_disable_deskpro = @usersourceType == 'user' || enabled > 0
 
       if @instanceId
         if @is_local

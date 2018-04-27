@@ -2,6 +2,7 @@
 
 namespace DeskPRO\Bundle\PortalBundle\Controller;
 
+use Application\DeskPRO\Entity\Person;
 use Application\DeskPRO\Entity\Ticket;
 use Application\DeskPRO\People\PersonGuest;
 use DeskPRO\Bundle\AppBundle\AntiAbuse\Event\SubmitTicketAbuseCheck;
@@ -35,10 +36,30 @@ class NewTicketController extends AbstractController
      * @param Request $request
      * @param string  $visitor_id
      *
+     * @throws \Exception
+     *
      * @return RedirectResponse|Response
      */
     public function newTicketAction(Request $request, $visitor_id)
     {
+        // user is not logged in and auth is disabled
+        // that means no way to submit a ticket, so don't show the page
+        $authManager = $this->container->get('dp_authentication_manager.user');
+
+        $user    = $this->getUser();
+        $noLogin = false;
+        if (!$user instanceof Person || $user->getId()) {
+            // no way to login, display error message
+            if (!$authManager->isAuthVisible()) {
+                $noLogin = true;
+            }
+
+            // still can login, redirect to login form
+            if ($authManager->isAuthVisible() && !$authManager->isRegistrationFormVisible()) {
+                return new RedirectResponse($this->container->get('router')->generate('portal_login'));
+            }
+        }
+
         $ticket = $this->getNewTicketService()->createNewTicket(
             $request,
             $visitor_id,
@@ -102,7 +123,7 @@ class NewTicketController extends AbstractController
                         } catch (LoginRequiredException $e) {
                             // the email used belongs to a user, and brand settings say they need to log in
                             $person = $e->getPerson();
-                            if ($person instanceof PersonGuest) {
+                            if (!$noLogin && $person instanceof PersonGuest) {
                                 $savedForm = $this->getFormSaver()->saveForm(SavedForm::TYPE_NEW_TICKET, $form, $request, $person->getEmail(), $person->getDisplayName());
 
                                 return new RedirectResponse(
@@ -204,6 +225,7 @@ class NewTicketController extends AbstractController
                 'show_ticket_suggestions' => $show_ticket_suggestions,
                 'lockout'                 => $abuseCheck->isLockoutRecommended(),
                 'lockout_time'            => $abuseCheck->getLockoutTime(true),
+                'no_login'                => $noLogin && $request->isMethod('post'),
             ]
         );
     }

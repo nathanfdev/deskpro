@@ -86,6 +86,7 @@ return [
     'portal.account.submit-saved-comment'                    => 'Your comment has not been submitted yet but we have saved it for you.',
     'portal.account.submit-saved-new_ticket'                 => 'Your new ticket has not been submitted yet but we have saved it for you.',
     'portal.account.submit-saved-form-go'                    => 'Click here to automatically re-submit the form.',
+    'portal.account.new-ticket-no-login'                     => 'Portal CRM is disabled. Unable to submit a ticket.',
     'portal.account.tickets-lockout'                         => 'You have submitted too many tickets so you have been locked out. Please try again later.',
     'portal.account.usersource-set-email-desc'               => 'Before you can login we need your email address. Please enter your email address below so we can send you a verification email.',
     'portal.account.welcome-back'                            => 'Welcome back',
