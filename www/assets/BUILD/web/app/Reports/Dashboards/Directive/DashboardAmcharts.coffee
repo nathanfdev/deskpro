@@ -135,6 +135,8 @@ define ['handlebars'], (Handlebars) ->
                 g.balloonFunction = (item, graph) ->
                   vars = { item: item, graph: graph }
                   Object.keys(item.dataContext).forEach((k) -> vars[k] = item.dataContext[k])
+                  if not vars.value and graph.valueField
+                    vars.value = item.dataContext[graph.valueField]
                   return Handlebars.compile(g.balloonTextTemplate)(vars)
 
               return g
