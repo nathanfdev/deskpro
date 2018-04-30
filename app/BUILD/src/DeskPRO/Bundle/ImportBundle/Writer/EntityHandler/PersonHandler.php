@@ -42,6 +42,7 @@ class PersonHandler extends AbstractEntityHandler
             ->setIsDisabled($model->isDisabled())
             ->setIsDeleted($model->isDeleted())
             ->setTitlePrefix($model->getTitlePrefix())
+            ->setTimezone($model->getTimezone())
         ;
 
         if ($model->getDateCreated()) {
