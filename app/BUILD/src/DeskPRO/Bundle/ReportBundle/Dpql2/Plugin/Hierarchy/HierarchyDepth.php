@@ -40,6 +40,7 @@ class HierarchyDepth
                     }
                 }
             }
+            unset($result);
         }
 
         // Filter out all with depth out of [$min, $max] range
@@ -56,6 +57,7 @@ class HierarchyDepth
                 $result[$groupColumn['resultId'] - 1] = $result['hierarchy_root_title'];
             }
         }
+        unset($result);
 
         $mergeResults = $results;
 
@@ -175,6 +177,7 @@ class HierarchyDepth
                 }
             }
         }
+        unset($result);
 
         // remove children nodes
         $results = array_filter($results, function ($result) use ($max) {
@@ -185,6 +188,7 @@ class HierarchyDepth
         foreach ($results as &$result) {
             $result['hierarchy_depth'] = max(0, $result['hierarchy_depth'] - $min);
         }
+        unset($result);
 
         return array_values($results);
     }
