@@ -34,7 +34,6 @@ class PersonHandler extends AbstractEntityHandler
 
         $entity = $this->findOrCreatePerson($model);
         $entity
-            ->setTimezone($model->getTimezone())
             ->setIsAgent($model->isAgent())
             ->setCanAgent($model->isAgent())
             ->setCanAdmin($model->isAdmin())
