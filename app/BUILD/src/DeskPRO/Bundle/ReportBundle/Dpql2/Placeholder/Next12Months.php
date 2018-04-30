@@ -10,7 +10,7 @@ class Next12Months extends AbstractDateRange
     /**
      * {@inheritdoc}
      */
-    protected function getDateRange()
+    public function getDateRange()
     {
         $date = $this->getDate();
         $now  = $date->format('Y-m-d');

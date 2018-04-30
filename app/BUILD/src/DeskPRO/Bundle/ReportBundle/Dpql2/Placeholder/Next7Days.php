@@ -7,7 +7,7 @@ class Next7Days extends AbstractDateRange
     /**
      * {@inheritdoc}
      */
-    protected function getDateRange()
+    public function getDateRange()
     {
         $date = $this->getDate();
         $now  = $date->format('Y-m-d');

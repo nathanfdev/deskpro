@@ -24,7 +24,7 @@ abstract class AbstractDateRange extends AbstractPlaceholder
      *
      * @return string[int]
      */
-    abstract protected function getDateRange();
+    abstract public function getDateRange();
 
     /**
      * Prepares the placeholder for use, including validating that the usage is valid.

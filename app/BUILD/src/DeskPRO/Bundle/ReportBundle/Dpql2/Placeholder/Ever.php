@@ -10,7 +10,7 @@ class Ever extends AbstractDateRange
     /**
      * {@inheritdoc}
      */
-    protected function getDateRange()
+    public function getDateRange()
     {
         return ['ever'];
     }

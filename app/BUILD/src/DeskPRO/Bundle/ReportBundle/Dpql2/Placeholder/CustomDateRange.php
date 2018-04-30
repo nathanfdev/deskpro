@@ -33,7 +33,7 @@ class CustomDateRange extends AbstractDateRange
     /**
      * {@inheritdoc}
      */
-    protected function getDateRange()
+    public function getDateRange()
     {
         $startDateValue = $this->startDate->format('Y-m-d');
         $endDateValue   = $this->endDate->format('Y-m-d');
