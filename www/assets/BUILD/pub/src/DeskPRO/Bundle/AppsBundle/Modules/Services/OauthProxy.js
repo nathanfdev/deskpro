@@ -14,6 +14,36 @@ const validateOauthProxyMessage = (ev, originURL) => {
   return origin === ev.origin;
 };
 
+function prefixDpQueryParams(params) {
+  const prefix = 'dp_';
+  return Object.keys(params).reduce((acc, value) => {
+    acc[`${prefix}${value}`] = params[value];
+    return acc;
+  }, {});
+}
+
+function changeUrl(baseUrl, newParts) {
+  const builder = new URL(baseUrl);
+  // switch to https if we host window is using https but oauthProxyEndpoint is not, mostly affects dev environs
+  const isWindowHttps = window && typeof window.location === 'object' && window.location.protocol === 'https:';
+  if (isWindowHttps && builder.protocol !== 'https') {
+    builder.set('protocol', 'https');
+  }
+
+  Object.keys(newParts).forEach(partName => builder.set(partName, newParts[partName]));
+  return builder.toString();
+}
+
+function appendPathname(baseUrl, append) {
+  const builder = new URL(baseUrl);
+  let existingPath = builder.pathname;
+  if (!existingPath) {
+    existingPath = '';
+  }
+  const pathname = `${existingPath.trim('/')}/${append}`;
+  return builder.set('pathname', pathname).toString();
+}
+
 export class OauthProxy {
   /**
    * @param {Base64Converter} base64
@@ -28,79 +58,116 @@ export class OauthProxy {
   get oauthProxyEndpoint() { return this.props.appsConfig.oauthProxyEndpoint; }
 
   /**
-   * @param protocolVersion
+   * @param {string} protocolVersion
+   * @param {string} provider
+   * @param others
    * @return {function|null}
    */
-  buildAuthorizeUrl({ protocolVersion })  {
+  buildAuthorizeUrl({ protocolVersion, provider, ...others })  {
     if (protocolVersion === '2.0' || !protocolVersion) {
       const protocolParams = {
         protocolVersion,
-        verifyUrl: this.buildURL(this.props.appsConfig.apiRoot) // use canonic xxx.deskpro.com
+        provider,
+        verifyUrl: (new URL(this.props.appsConfig.apiRoot)) // use canonic xxx.deskpro.com
           .set('username', this.props.username)
           .set('password', this.props.base64.encode(`token ${this.props.apiToken}`))
-          .toString()
+          .toString(),
+        ...others
       };
       return this.buildOauth2AuthorizeUrl.bind(this, protocolParams);
     }
 
     if (['1.0', '1.0a'].indexOf(protocolVersion) !== -1) {
-      return this.buildOauth1AuthorizeUrl.bind(this, { protocolVersion });
+      return this.buildOauth1AuthorizeUrl.bind(this, { protocolVersion, provider, ...others });
+    }
+
+    return null;
+  }
+
+  buildRedirectUrl({ provider, protocolVersion, applicationId })  {
+    let path = protocolVersion === '2.0' || !protocolVersion ? [] : [protocolVersion];
+    path = path.concat([provider, 'grant-access', applicationId].join('/'));
+    const url = appendPathname(this.oauthProxyEndpoint, path);
+    return changeUrl(url, {});
+  }
+
+  buildRefreshAccessUrl({ protocolVersion, ...others }) {
+    if (protocolVersion === '2.0' || !protocolVersion) {
+      const protocolParams = {
+        protocolVersion,
+        verifyUrl: (new URL(this.props.appsConfig.apiRoot)) // use canonic xxx.deskpro.com
+          .set('username', this.props.username)
+          .set('password', this.props.base64.encode(`token ${this.props.apiToken}`))
+          .toString(),
+        ...others
+      };
+      return this.buildOauth2RefreshTokenUrl.bind(this, protocolParams);
     }
 
     return null;
   }
 
   /**
-   * @param protocolVersion
-   * @param provider
-   * @param callbackMethod
-   * @param callbackUrl
-   * @param applicationId
+   * @param {String}    protocolVersion
+   * @param {String}    provider
+   * @param {Object}    [query]
+   * @param {String}    callbackMethod
+   * @param {String}    callbackUrl
+   * @param {String}    applicationId
    * @return {String}
    */
-  buildOauth1AuthorizeUrl({ protocolVersion }, { provider, callbackMethod, callbackUrl, applicationId }) {
-    const builder = new URL(this.oauthProxyEndpoint, true);
+  buildOauth1AuthorizeUrl({ protocolVersion, provider, query }, { callbackMethod, callbackUrl, applicationId }) {
+    // prefix deskpro query param names
+    const dpQuery = prefixDpQueryParams({ callbackMethod, callbackUrl, applicationId });
+    // normalize extra query parameters
+    const xQuery = query && typeof query === 'object' ? query : {};
 
-    let existingPath = builder.pathname;
-    if (!existingPath) {
-      existingPath = '';
-    }
-    existingPath = [existingPath.trim('/'), protocolVersion].join('/');
-
-    const pathname = `${existingPath}/${provider}/authorize`;
-    return builder
-        .set('protocol', 'https').set('pathname', pathname)
-        .set('query', { callbackMethod, callbackUrl, applicationId })
-        .toString()
-    ;
+    const url = appendPathname(this.oauthProxyEndpoint, [protocolVersion, provider, 'authorize'].join('/'));
+    return changeUrl(url, { query: { ...xQuery, ...dpQuery } });
   }
 
   /**
    * @param protocolVersion
    * @param {String} verifyUrl
    * @param {String} provider
+   * @param {Object} [query]
    * @param {String} callbackMethod
    * @param {String} callbackUrl
    * @param applicationId
    * @param correlationId
    * @return {String}
    */
-  buildOauth2AuthorizeUrl({ protocolVersion, verifyUrl }, { provider, callbackMethod, callbackUrl, applicationId, correlationId })  {
-    const builder = new URL(this.oauthProxyEndpoint, true);
-
+  buildOauth2AuthorizeUrl({ protocolVersion, verifyUrl, provider, query }, { callbackMethod, callbackUrl, applicationId, correlationId })  {
+    // prefix deskpro query param names
     const state = this.props.base64.encodeJSON({ correlationId });
+    const dpQuery = prefixDpQueryParams({ verifyUrl, state, callbackMethod, callbackUrl, applicationId });
+    // normalize extra query parameters
+    const xQuery = query && typeof query === 'object' ? query : {};
 
-    let existingPath = builder.pathname;
-    if (!existingPath) {
-      existingPath = '';
-    }
-    const pathname = `${existingPath.trim('/')}/${provider}/authorize`;
+    const url = appendPathname(this.oauthProxyEndpoint, [provider, 'authorize'].join('/'));
+    return changeUrl(url, { query: { ...xQuery, ...dpQuery } });
+  }
 
-    return builder.set('protocol', 'https')
-      .set('pathname', pathname)
-      .set('query', { verifyUrl, state, callbackMethod, callbackUrl, applicationId })
-      .toString()
-      ;
+  /**
+   * @param protocolVersion
+   * @param {String} verifyUrl
+   * @param {String} provider
+   * @param {Object} [query]
+   * @param {String} callbackMethod
+   * @param {String} callbackUrl
+   * @param applicationId
+   * @param correlationId
+   * @return {String}
+   */
+  buildOauth2RefreshTokenUrl({ protocolVersion, verifyUrl, provider, query }, { applicationId, correlationId })  {
+    // prefix deskpro query param names
+    const state = this.props.base64.encodeJSON({ correlationId });
+    const dpQuery = prefixDpQueryParams({ verifyUrl, state, applicationId });
+    // normalize extra query parameters
+    const xQuery = query && typeof query === 'object' ? query : {};
+
+    const url = appendPathname(this.oauthProxyEndpoint, [provider, 'refresh-access'].join('/'));
+    return changeUrl(url, { query: { ...xQuery, ...dpQuery } });
   }
 
   buildReceiveTokenListener({ protocolVersion, cb, oauthProxyUrl })  {
@@ -122,9 +189,9 @@ export class OauthProxy {
    * @param {{}} ev
    * @return {boolean}
    */
-  onReceiveOauth1TokenListener({ cb, oauthProxyUrl }, { correlationId }, ev)  {
+  onReceiveOauth1TokenListener({ cb, oauthProxyUrl }, { correlationId }, ev)  { // eslint-disable-line class-methods-use-this
     // there could two different authentication schemes running concurrently
-    if (!validateOauthProxyMessage(ev, this.buildURL(oauthProxyUrl))) {
+    if (!validateOauthProxyMessage(ev, new URL(oauthProxyUrl))) {
       return false;
     }
 
@@ -148,7 +215,7 @@ export class OauthProxy {
    */
   onReceiveOauth2TokenListener({ cb, oauthProxyUrl }, { correlationId }, ev)  {
     // there could two different authentication schemes running concurrently
-    if (!validateOauthProxyMessage(ev, this.buildURL(oauthProxyUrl))) {
+    if (!validateOauthProxyMessage(ev, new URL(oauthProxyUrl))) {
       return false;
     }
 
@@ -161,7 +228,7 @@ export class OauthProxy {
     }
 
     if (!messageIsAuthentic) {
-      cb(new Error('authentication failed'));
+      cb(new Error('authentication failed. message appears to be tampered with'));
       return true;
     }
 
@@ -174,33 +241,6 @@ export class OauthProxy {
       cb(new Error(errorMessage), null);
     }
     return true;
-  }
-
-  /**
-   * @param urlString
-   * @return {URL}
-   */
-  buildURL(urlString) {
-    // es-lint forces the use of this in class methods....
-    const { props } = this;
-    const parseUrlString = !!props || true;
-
-    return new URL(urlString, parseUrlString);
-  }
-
-  buildRedirectUrl({ provider, protocolVersion, applicationId })  {
-    const builder = new URL(this.oauthProxyEndpoint, true);
-
-    let existingPath = builder.pathname;
-    if (!existingPath) {
-      existingPath = '';
-    }
-
-    let pathPrefix = existingPath.trim('/');
-    pathPrefix = protocolVersion === '2.0' || !protocolVersion ? pathPrefix : [pathPrefix, protocolVersion].join('/');
-
-    const pathname = `${pathPrefix}/${provider}/grant-access/${applicationId}`;
-    return builder.set('protocol', 'https').set('pathname', pathname);
   }
 }
 
