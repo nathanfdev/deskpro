@@ -167,6 +167,9 @@ class HierarchyDepth
                     foreach ($metadata->getSelectColumns() as $column) {
                         if (is_numeric($mergeResult[$column['resultId'] - 1])) {
                             $result[$column['resultId'] - 1] = (float) $result[$column['resultId'] - 1] + (float) $mergeResult[$column['resultId'] - 1];
+                        } elseif ($result[$column['resultId'] - 1] === '-') {
+                            // copies constant values e.g. tooltip_text_template
+                            $result[$column['resultId'] - 1] = $mergeResult[$column['resultId'] - 1];
                         }
                     }
                 }

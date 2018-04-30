@@ -16,6 +16,8 @@ define ['handlebars'], (Handlebars) ->
         loaded: '@'
 
       link: (scope, element) ->
+        window.initHandlebars(Handlebars)
+
         template = """
           <div>
             <div ng-hide='loaded' class="box stat-box"><div class="stat-value no-data">loading...</div></div>

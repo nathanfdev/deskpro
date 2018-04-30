@@ -20,6 +20,33 @@ import App from './Modules/Application/Components/AppContainer';
 
 $.DataTable = DataTables;
 
+window.initHandlebars = (Handlebars) => {
+  if (Handlebars.dpHasDoneInit) {
+    return;
+  }
+  Handlebars.dpHasDoneInit = true;
+  Handlebars.registerHelper('formatNumber', (value, options = {}) => {
+    const numValue = Number(value);
+    if (isNaN(numValue)) {
+      return value;
+    }
+    try {
+      return numValue.toLocaleString('en-US', options);
+    } catch (e) {
+      return value;
+    }
+  });
+
+  Handlebars.registerHelper('formatPercent', (value) => {
+    const numValue = Number(value);
+    if (isNaN(numValue)) {
+      return value;
+    }
+
+    return `${parseInt(value, 10)}%`;
+  });
+};
+
 class ReportApp {
 
   static render(props, node) {
