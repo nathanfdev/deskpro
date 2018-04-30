@@ -104,13 +104,14 @@ class Oauth2ProxyController extends BaseController
         }
 
         // check that we have an application
-        $applicationId = $request->query->get('dp_applicationId', null);
+        $applicationId = ProxyParams::getDPQueryParam('applicationId', $request);
         if (is_null($applicationId)) {
             return new Response('Connection not found', 400);
         }
 
+        $state = ProxyParams::getDPQueryParam('state', $request);
         $errorResponseBuilder = OauthResponseBuilder::forResponseType('error')
-            ->withApplicationState($request->query->get('state', null))
+            ->withApplicationState($state)
         ;
 
         $clientProfile = ProxyParams::getDPQueryParam('client_profile', $request, 'web-server'); //web-server, user-agent, [ native applications, autonomous clients ]

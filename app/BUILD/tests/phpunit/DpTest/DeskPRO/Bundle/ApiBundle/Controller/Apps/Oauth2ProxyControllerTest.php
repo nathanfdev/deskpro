@@ -4,6 +4,7 @@ namespace DpTest\DeskPRO\Bundle\ApiBundle\Controller\Apps;
 
 use Application\DeskPRO\DependencyInjection\DeskproContainer;
 use DeskPRO\Bundle\ApiBundle\Controller\Apps\Oauth2ProxyController;
+use DeskPRO\Bundle\ApiBundle\Controller\Apps\ProxyParams;
 use DeskPRO\Bundle\AppBundle\Entity\AppStore\AppInstance;
 use DeskPRO\Bundle\AppStoreBundle\Infrastructure\Security\OauthProviderConnectionLoader;
 use DeskPRO\Bundle\AppStoreBundle\Infrastructure\Security\SerializedOauth2Connection;
@@ -58,18 +59,18 @@ class Oauth2ProxyControllerTest extends AbstractKernelAwareTestCase
         $connectionLoader->method('loadOauth2Connection')->willReturn($connection);
 
         $request = new Request();
-        $request->query->add([
+        $request->query->add(ProxyParams::qualifyAllDpParams([
             'applicationId' => 1,
             'callbackMethod' => 'postMessage',
             'callbackUrl' => 'http://127.0.0.1',
             'state' => 'some state'
-        ]);
+        ]));
 
         $controller = new Oauth2ProxyController();
         $controller->setContainer($container);
 
         $response = $controller->authorizeAction($connectionLoader, $request);
-        $this->assertTrue($response instanceof RedirectResponse, 'expecting a redirect response');
+        $this->assertTrue($response instanceof RedirectResponse, sprintf('expecting a redirect response, received %s', get_class($response)));
 
 
         $query = Request::create($response->getTargetUrl())->query;
@@ -94,12 +95,12 @@ class Oauth2ProxyControllerTest extends AbstractKernelAwareTestCase
         ;
 
         $request = new Request();
-        $request->query->add([
+        $request->query->add(ProxyParams::qualifyAllDpParams([
             'applicationId' => 1,
             'response_type' => 'code',
             'code' => 'injected code',
             'state' => 'some state'
-        ]);
+        ]));
 
         $controller = new Oauth2ProxyController();
         $controller->setContainer($container);
