@@ -3,7 +3,7 @@
 <head>
     <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
     <meta name="robots" content="noindex,nofollow" />
-    <title>DeskPRO Server Requirements</title>
+    <title>Deskpro Server Requirements</title>
     <style type="text/css">
         html {
             background: #eee;
@@ -288,7 +288,7 @@
                 <h1 class="title">Requirements Checker</h1>
                 <p>
                     This script analyzes your system to check whether is
-                    ready to run DeskPRO.
+                    ready to run Deskpro.
                 </p>
 
                 <?php if (count($majorProblems)): ?>
@@ -302,13 +302,13 @@
                 <?php endif; ?>
 
                 <?php if (!count($majorProblems)): ?>
-                    <p class="ok">All checks passed successfully. Your system is ready to run DeskPRO.</p>
+                    <p class="ok">All checks passed successfully. Your system is ready to run Deskpro.</p>
                 <?php endif; ?>
 
                 <?php if (count($minorProblems)): ?>
                     <h2>Recommendations</h2>
                     <p>
-                        <?php if (count($majorProblems)): ?>Additionally, to<?php else: ?>To<?php endif; ?> enhance your DeskPRO experience,
+                        <?php if (count($majorProblems)): ?>Additionally, to<?php else: ?>To<?php endif; ?> enhance your Deskpro experience,
                         it’s recommended that you fix the following:
                     </p>
                     <ol>
