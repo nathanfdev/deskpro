@@ -80,7 +80,7 @@ abstract class AbstractJsonChartRenderer extends AbstractJsonRenderer
         $maxCategoryLength  = 0;
         $integersOnly       = true;
         $firstSel           = reset($selectColumns);
-        $valueLabelTemplate = $categoryLabelTemplate = null;
+        $valueLabelTemplate = $categoryLabelTemplate = $customBalloonText = $balloonTextTemplate = null;
         $valueAxisTitle     = $firstSel['title'];
 
         $additionalData = [];
@@ -100,6 +100,18 @@ abstract class AbstractJsonChartRenderer extends AbstractJsonRenderer
             }
             if ($selectColumn['title'] === 'category_label_template') {
                 $categoryLabelTemplate = $rows[0][$selectColumn['resultId'] - 1];
+                unset($selectColumns[$index]);
+            }
+            if ($selectColumn['title'] === 'tooltip_text') {
+                $customBalloonText = $rows[0][$selectColumn['resultId'] - 1];
+                unset($selectColumns[$index]);
+            }
+            if ($selectColumn['title'] === 'tooltip_text_template') {
+                $balloonTextTemplate = $rows[0][$selectColumn['resultId'] - 1];
+                unset($selectColumns[$index]);
+            }
+            if ($selectColumn['title'] === 'value_axis_title') {
+                $valueAxisTitle = $rows[0][$selectColumn['resultId'] - 1];
                 unset($selectColumns[$index]);
             }
         }
@@ -353,7 +365,7 @@ abstract class AbstractJsonChartRenderer extends AbstractJsonRenderer
                     }
                     $data = [
                         'category' => $category,
-                        'title'    => $this->renderCellValue($row, $sel, $metadata),
+                        'title'    => $sel['title'],
                         'value'    => $value,
                     ];
 
@@ -505,10 +517,11 @@ abstract class AbstractJsonChartRenderer extends AbstractJsonRenderer
             $graphArray = [];
             foreach ($graphs as $graph) {
                 $graphArray[] = array_merge($this->options, [
-                    'valueField'  => $graph['value'],
-                    'id'          => $graph['id'],
-                    'title'       => $graph['title'],
-                    'balloonText' => $balloonText,
+                    'valueField'          => $graph['value'],
+                    'id'                  => $graph['id'],
+                    'title'               => $graph['title'],
+                    'balloonText'         => $customBalloonText ?: $balloonText,
+                    'balloonTextTemplate' => $balloonTextTemplate,
                 ]);
             }
 

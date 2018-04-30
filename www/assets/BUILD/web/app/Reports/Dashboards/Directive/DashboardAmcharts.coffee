@@ -127,6 +127,19 @@ define ['handlebars'], (Handlebars) ->
               template = Handlebars.compile(widget.categoryAxis.labelTemplate)
               return template({ category: value })
 
+          if widget.graphs
+            widget.graphs = widget.graphs.map((g) ->
+              if g.balloonTextTemplate
+                g.balloonFunction = (item, graph) ->
+                  vars = { item: item, graph: graph }
+                  Object.keys(item.dataContext).forEach((k) -> vars[k] = item.dataContext[k])
+                  return Handlebars.compile(g.balloonTextTemplate)(vars)
+
+              return g
+            )
+
+          console.log(widget)
+
           if chart and widget.dataProvider
             chart.dataProvider = widget.dataProvider
           else
