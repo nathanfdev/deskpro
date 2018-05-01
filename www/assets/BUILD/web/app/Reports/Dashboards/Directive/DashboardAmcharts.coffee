@@ -1,5 +1,5 @@
 define ['handlebars'], (Handlebars) ->
-  Reports_Directive_Amcharts = ['$compile', '$state', 'DashboardWidgetService', ($compile, $state, DashboardWidgetService) ->
+  Reports_Directive_Amcharts = ['$compile', '$state', 'DashboardWidgetService', '$timeout', ($compile, $state, DashboardWidgetService, $timeout) ->
     return {
       restrict: 'E'
       replace: true
@@ -61,7 +61,9 @@ define ['handlebars'], (Handlebars) ->
 
           # this is valid for serial and pie charts, gauge has not dataProvider
           if (chartData and chartData.dataProvider?) || (scope.chartType == 'gauge' && chartData.axes?[0]?.bands?)
-            drawWidget chartData
+            $timeout(->
+              drawWidget(chartData)
+            , 1)
           else if scope.jsCode
             try
               eval(scope.jsCode)
@@ -85,9 +87,9 @@ define ['handlebars'], (Handlebars) ->
                   drawWidget(widget.rendered_result)
 
         drawWidget = (widget) ->
-          scope.loaded = true
-          scope.noData = false
-          setTimeout(->
+          $timeout(->
+            scope.loaded = true
+            scope.noData = false
             doDrawWidget(widget)
           , 1)
 

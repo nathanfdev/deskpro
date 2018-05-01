@@ -1,5 +1,5 @@
 define ->
-  Reports_Directive_DashboardStat = ['$state', 'DashboardWidgetService', ($state, DashboardWidgetService) ->
+  Reports_Directive_DashboardStat = ['$state', 'DashboardWidgetService', '$timeout', ($state, DashboardWidgetService, $timeout) ->
     return {
     restrict: 'E',
     replace: true,
@@ -73,7 +73,9 @@ define ->
             scope.noData = true
             initValue(response)
       else if attrs.value
-        initValue(attrs)
+        $timeout(->
+          initValue(attrs)
+        ,1)
       else
         DashboardWidgetService
           .getWidget(scope.widgetId || 0)
