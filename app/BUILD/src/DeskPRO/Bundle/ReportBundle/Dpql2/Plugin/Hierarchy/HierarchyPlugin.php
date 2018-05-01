@@ -18,6 +18,9 @@ use Doctrine\DBAL\Connection;
  */
 class HierarchyPlugin implements PluginInterface
 {
+    const ROLLUP_MODE_SUM = 'SUM';
+    const ROLLUP_MODE_AVG = 'AVG';
+
     /**
      * @var Connection
      */
@@ -72,6 +75,14 @@ class HierarchyPlugin implements PluginInterface
      * @var CustomDataHelper
      */
     private $customDataHelper;
+
+    /**
+     * When rolling up counts, this is how we take child numbers
+     * and calculate it into the parent.
+     *
+     * @var string
+     */
+    private $rollupMode = self::ROLLUP_MODE_SUM;
 
     /**
      * Constructor.
@@ -217,12 +228,12 @@ class HierarchyPlugin implements PluginInterface
 
         // Init rollup counts if needed
         if ($this->query->withRollup() && !is_null($countFieldNum)) {
-            $results = HierarchyRollup::init($results);
+            $results = HierarchyRollup::init($results, $this->rollupMode);
         }
 
         // Limit depth if needed
         if ($this->hierarchyMinDepth > 0 || !is_null($this->hierarchyMaxDepth)) {
-            $results = HierarchyDepth::limitTo($this->hierarchyMinDepth, $this->hierarchyMaxDepth, $results, $metadata);
+            $results = HierarchyDepth::limitTo($this->hierarchyMinDepth, $this->hierarchyMaxDepth, $results, $metadata, $this->rollupMode);
         }
 
         // copy static values over into missing values on the parent options
@@ -331,6 +342,22 @@ class HierarchyPlugin implements PluginInterface
     public function setForceHierarchy($forceHierarchy)
     {
         $this->forceHierarchy = $forceHierarchy;
+    }
+
+    /**
+     * @return string
+     */
+    public function getRollupMode()
+    {
+        return $this->rollupMode;
+    }
+
+    /**
+     * @param string $rollupMode
+     */
+    public function setRollupMode($rollupMode)
+    {
+        $this->rollupMode = $rollupMode;
     }
 
     /**

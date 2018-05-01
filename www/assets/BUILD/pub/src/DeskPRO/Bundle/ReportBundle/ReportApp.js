@@ -60,6 +60,19 @@ window.initHandlebars = (Handlebars) => {
 
     return `${parseInt(value, 10)}%`;
   });
+
+  Handlebars.registerHelper('math', (lvalue, operator, rvalue) => {
+    const lval = parseFloat(lvalue);
+    const rval = parseFloat(rvalue);
+
+    return {
+      '+': lval + rval,
+      '-': lval - rval,
+      '*': lval * rval,
+      '/': lval / rval,
+      '%': lval % rval
+    }[operator];
+  });
 };
 
 class ReportApp {

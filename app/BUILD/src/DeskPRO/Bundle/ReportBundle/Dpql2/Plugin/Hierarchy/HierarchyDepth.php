@@ -17,7 +17,7 @@ class HierarchyDepth
      *
      * @return array
      */
-    public static function limitTo($min, $max, array $results, ResultMetadata $metadata)
+    public static function limitTo($min, $max, array $results, ResultMetadata $metadata, $rollupMode = HierarchyPlugin::ROLLUP_MODE_SUM)
     {
         // Collapse titles
         if ($min !== 0) {
@@ -168,7 +168,11 @@ class HierarchyDepth
                 if ($found) {
                     foreach ($metadata->getSelectColumns() as $column) {
                         if (is_numeric($mergeResult[$column['resultId'] - 1])) {
+                            $wasUnset                        = $result[$column['resultId'] - 1] === '-';
                             $result[$column['resultId'] - 1] = (float) $result[$column['resultId'] - 1] + (float) $mergeResult[$column['resultId'] - 1];
+                            if ($rollupMode === HierarchyPlugin::ROLLUP_MODE_AVG && !$wasUnset) {
+                                $result[$column['resultId'] - 1] = $result[$column['resultId'] - 1] / 2;
+                            }
                         } elseif ($result[$column['resultId'] - 1] === '-') {
                             // copies constant values e.g. tooltip_text_template
                             $result[$column['resultId'] - 1] = $mergeResult[$column['resultId'] - 1];
