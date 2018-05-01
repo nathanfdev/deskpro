@@ -25,12 +25,27 @@ window.initHandlebars = (Handlebars) => {
     return;
   }
   Handlebars.dpHasDoneInit = true;
-  Handlebars.registerHelper('formatNumber', (value, options = {}) => {
+  Handlebars.registerHelper('formatNumber', (value, info = {}) => {
     const numValue = Number(value);
     if (isNaN(numValue)) {
       return value;
     }
     try {
+      return numValue.toLocaleString('en-US', info.hash || {});
+    } catch (e) {
+      return value;
+    }
+  });
+
+  Handlebars.registerHelper('formatCurrency', (value, currency, info = {}) => {
+    const numValue = Number(value);
+    if (isNaN(numValue)) {
+      return value;
+    }
+    try {
+      const options = info.hash || {};
+      options.style = 'currency';
+      options.currency = currency;
       return numValue.toLocaleString('en-US', options);
     } catch (e) {
       return value;
