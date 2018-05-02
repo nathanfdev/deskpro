@@ -71,7 +71,9 @@ define ->
           promise.then (response) ->
             scope.loaded = true
             scope.noData = true
-            initValue(response)
+            $timeout(->
+              initValue(response)
+            ,1)
       else if attrs.value
         $timeout(->
           initValue(attrs)
