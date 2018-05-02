@@ -28,6 +28,14 @@ class CustomValuePlaceholder extends AbstractPlaceholder
         $this->value = $value;
     }
 
+    /**
+     * @return float|int|string
+     */
+    public function getLiteralValue()
+    {
+        return $this->value;
+    }
+
     public function prepare(SelectPart $statement, $section, array $stack, SqlSelect $select, ResultMetadata $result)
     {
         return new Prepared($select->quoteForSql($this->value));

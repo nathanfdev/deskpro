@@ -157,4 +157,48 @@ class MathUtils
 
         return $o < 125;
     }
+
+    /**
+     * Maps a number from one scale to another.
+     *
+     * @param float|int $val
+     * @param float|int $min1
+     * @param float|int $max1
+     * @param float|int $min2
+     * @param float|int $max2
+     *
+     * @return float|int
+     */
+    public static function mapScale($val, $min1, $max1, $min2, $max2)
+    {
+        return self::lerp(self::norm($val, $min1, $max1), $min2, $max2);
+    }
+
+    /**
+     * Gets normalized ratio of value inside range.
+     *
+     * @param float|int $val
+     * @param float|int $min
+     * @param float|int $max
+     *
+     * @return float|int
+     */
+    public static function norm($val, $min, $max)
+    {
+        return ($val - $min) / ($max - $min);
+    }
+
+    /**
+     * Linear interpolation.
+     *
+     * @param float|int $ratio
+     * @param float|int $start
+     * @param float|int $end
+     *
+     * @return float|int
+     */
+    public static function lerp($ratio, $start, $end)
+    {
+        return $start + ($end - $start) * $ratio;
+    }
 }

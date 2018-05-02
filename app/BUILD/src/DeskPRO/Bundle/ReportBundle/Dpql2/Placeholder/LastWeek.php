@@ -10,7 +10,7 @@ class LastWeek extends AbstractDateRange
     /**
      * {@inheritdoc}
      */
-    protected function getDateRange()
+    public function getDateRange()
     {
         $person = $this->getPerson();
         $date   = $this->getDate();

@@ -1,5 +1,5 @@
 define ['handlebars'], (Handlebars) ->
-  Reports_Directive_Amcharts = ['$compile', '$state', 'DashboardWidgetService', ($compile, $state, DashboardWidgetService) ->
+  Reports_Directive_Amcharts = ['$compile', '$state', 'DashboardWidgetService', '$timeout', ($compile, $state, DashboardWidgetService, $timeout) ->
     return {
       restrict: 'E'
       replace: true
@@ -16,6 +16,8 @@ define ['handlebars'], (Handlebars) ->
         loaded: '@'
 
       link: (scope, element) ->
+        window.initHandlebars(Handlebars)
+
         template = """
           <div>
             <div ng-hide='loaded' class="box stat-box"><div class="stat-value no-data">loading...</div></div>
@@ -59,7 +61,9 @@ define ['handlebars'], (Handlebars) ->
 
           # this is valid for serial and pie charts, gauge has not dataProvider
           if (chartData and chartData.dataProvider?) || (scope.chartType == 'gauge' && chartData.axes?[0]?.bands?)
-            drawWidget chartData
+            $timeout(->
+              drawWidget(chartData)
+            , 1)
           else if scope.jsCode
             try
               eval(scope.jsCode)
@@ -83,9 +87,9 @@ define ['handlebars'], (Handlebars) ->
                   drawWidget(widget.rendered_result)
 
         drawWidget = (widget) ->
-          scope.loaded = true
-          scope.noData = false
-          setTimeout(->
+          $timeout(->
+            scope.loaded = true
+            scope.noData = false
             doDrawWidget(widget)
           , 1)
 
@@ -126,6 +130,21 @@ define ['handlebars'], (Handlebars) ->
             widget.categoryAxis.labelFunction = (value) ->
               template = Handlebars.compile(widget.categoryAxis.labelTemplate)
               return template({ category: value })
+
+          if widget.graphs
+            widget.graphs = widget.graphs.map((g) ->
+              if g.balloonTextTemplate
+                g.balloonFunction = (item, graph) ->
+                  vars = { item: item, graph: graph }
+                  Object.keys(item.dataContext).forEach((k) -> vars[k] = item.dataContext[k])
+                  if not vars.value and graph.valueField
+                    vars.value = item.dataContext[graph.valueField]
+                  return Handlebars.compile(g.balloonTextTemplate)(vars)
+
+              return g
+            )
+
+          console.log(widget)
 
           if chart and widget.dataProvider
             chart.dataProvider = widget.dataProvider

@@ -3,10 +3,12 @@
 namespace DeskPRO\Bundle\ReportBundle\Dpql2\Func;
 
 use DeskPRO\Bundle\ReportBundle\Dpql2\DpqlException;
+use DeskPRO\Bundle\ReportBundle\Dpql2\Plugin\Hierarchy\HierarchyPlugin;
 use DeskPRO\Bundle\ReportBundle\Dpql2\SqlSelect;
 use DeskPRO\Bundle\ReportBundle\Dpql2\Statement\Part\Number;
 use DeskPRO\Bundle\ReportBundle\Dpql2\Statement\SelectPart;
 use DeskPRO\Bundle\ReportBundle\Reports\ResultMetadata;
+use DeskPRO\Component\Util\ListUtils;
 
 /**
  * Handler for DPQL_HIERARCHY function.
@@ -62,6 +64,14 @@ class DpqlHierarchy extends AbstractDpqlFunc
         $hierarchyPlugin->setHierarchyMinDepth($minDepth - 1);
         $hierarchyPlugin->setHierarchyMaxDepth($maxDepth - 1);
         $hierarchyPlugin->setForceHierarchy(true);
+
+        $avg = ListUtils::first($select->getSelectFields(), function ($f) {
+            return strpos($f, 'AVG(') !== false;
+        });
+
+        if ($avg) {
+            $hierarchyPlugin->setRollupMode(HierarchyPlugin::ROLLUP_MODE_AVG);
+        }
 
         return $prepared;
     }

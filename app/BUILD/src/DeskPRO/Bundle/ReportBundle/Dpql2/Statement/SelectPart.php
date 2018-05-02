@@ -443,7 +443,7 @@ class SelectPart
         } catch (DpqlException $e) {
             throw new DpqlException($e->getMessage());
         } catch (\Exception $e) {
-            throw new DpqlException('This DPQL statement generated an invalid MySQL query. Please try a different query.');
+            throw new DpqlException('This DPQL statement generated an invalid MySQL query. Please try a different query.', 0, $e);
         }
 
         return $results;

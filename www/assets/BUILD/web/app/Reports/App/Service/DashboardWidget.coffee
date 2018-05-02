@@ -124,7 +124,7 @@ define ['DeskPRO/Util/Arrays'], (Arrays) ->
       deferred = @$q.defer()
 
       @Api2
-      .sendGet "/dashboard_reports/#{reportId}/widgets"
+      .sendGet "/dashboard_reports/#{reportId}/widgets?include=rendered_result&inline_sideloads=1"
       .then (resp) =>
         widgets = resp.data.data;
 

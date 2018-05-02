@@ -36,6 +36,16 @@ class Placeholder extends AbstractPart
     }
 
     /**
+     * @throws DpqlException
+     *
+     * @return \DeskPRO\Bundle\ReportBundle\Dpql2\Placeholder\AbstractPlaceholder
+     */
+    public function getPlaceholder()
+    {
+        return $this->dpqlPlaceholderRegistry->getPlaceholder($this->name);
+    }
+
+    /**
      * {@inheritdoc}
      */
     public function prepare(SelectPart $statement, $section, array $stack, SqlSelect $select, ResultMetadata $result)

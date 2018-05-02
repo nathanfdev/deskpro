@@ -10,7 +10,7 @@ class LastYear extends AbstractDateRange
     /**
      * {@inheritdoc}
      */
-    protected function getDateRange()
+    public function getDateRange()
     {
         $date = $this->getDate();
         $year = $date->format('Y') - 1;
