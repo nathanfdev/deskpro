@@ -66,16 +66,15 @@ FROM tickets WHERE tickets.date_created = ${date} AND tickets.date_last_agent_re
             'display_order' => 40,
             // all today created positive feedback / all today created feedback * 100 gives you today positive %
             'query' => '
-            SELECT CONCAT(
-	DPQL_FORMAT(
-		(
-    		(SELECT DPQL_COUNT() FROM ticket_feedback WHERE ticket_feedback.rating = 1 AND ticket_feedback.date_created = ${date})
-    		/ 
-    		(SELECT DPQL_COUNT() FROM ticket_feedback WHERE ticket_feedback.date_created = ${date})
-    	) * 100,
-    \'number\'),
-    \'%\'
-) AS \'stat_value\',
+            SELECT
+    DPQL_FORMAT(
+	(
+    	 (SELECT DPQL_COUNT() FROM ticket_feedback WHERE ticket_feedback.rating = 1 AND ticket_feedback.date_created = ${date})
+    	  / 
+    	 (SELECT DPQL_COUNT() FROM ticket_feedback WHERE ticket_feedback.date_created = ${date})
+    	),
+    \'percent\', 0)
+    AS \'stat_value\',
 \'satisfied users\' as \'stat_description\'
 FROM ticket_feedback
 WHERE ticket_feedback.date_created = ${date}
