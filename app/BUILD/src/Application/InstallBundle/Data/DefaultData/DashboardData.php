@@ -76,7 +76,7 @@ class DashboardData extends AbstractDefaultData
                             ],
                         ],
                         [
-                            'title'      => 'Avg Response Time',
+                            'title'      => 'Resp. Time This Month',
                             'position'   => '0:4',
                             'size'       => '1:1',
                             'widget_key' => 'avg-response-time-x-date',
@@ -85,7 +85,7 @@ class DashboardData extends AbstractDefaultData
                                 [
                                     'name'  => 'date',
                                     'type'  => 'dates',
-                                    'value' => 'today',
+                                    'value' => 'this_month',
                                 ],
                             ],
                         ],
