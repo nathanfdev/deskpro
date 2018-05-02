@@ -239,7 +239,7 @@ class DashboardData extends AbstractDefaultData
                             'widget_key' => 'incomplete-sla',
                             'type'       => 'pie',
                             'variables'  => [],
-                            'options'    => '{"legend":false,"labelsEnabled":false}',
+                            'options'    => '{"legend":false,"labelsEnabled":false, "pieColors": {"ok": "#008000", "fail": "#f80000", "warning": "#fde910"}}',
                         ],
                         [
                             'title'      => 'New Tickets by Channel',
