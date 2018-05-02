@@ -14,14 +14,18 @@ class CallStatus extends React.Component {
     const { call, showDateEnded } = this.props;
     const dateStarted = call.get('date_started');
     const dateEnded = call.get('date_ended');
-    const status = call.get('status');
     const duration = dateEnded && dateStarted ? moment(dateEnded).unix() - moment(dateStarted).unix() : 0;
+
+    let status = call.get('status');
+    if (status === 'ended' && !duration) {
+      status = 'missed';
+    }
 
     return (
       <td
         className={classNames({
           success: status === 'ended' && duration > 0,
-          warning: status === 'ended' && !duration
+          warning: status === 'missed'
         })}
       >
         {status.toUpperCase()}
