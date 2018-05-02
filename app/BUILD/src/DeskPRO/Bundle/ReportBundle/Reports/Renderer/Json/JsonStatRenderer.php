@@ -41,6 +41,10 @@ class JsonStatRenderer extends AbstractJsonRenderer
             'description' => $this->renderDescription($metadata, $rows),
         ];
 
+        if (!$return['value']) {
+            return;
+        }
+
         return $this->extractClickUrlVars($rows, $metadata, $return);
     }
 
