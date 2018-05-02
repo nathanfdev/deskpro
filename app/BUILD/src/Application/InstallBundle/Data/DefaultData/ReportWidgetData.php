@@ -54,8 +54,8 @@ FROM chat_conversations WHERE chat_conversations.date_created = ${date}',
             'description'   => 'Average response time of tickets created by date',
             'display_types' => 'simple_stat',
             'display_order' => 40,
-            'query'         => 'SELECT DPQL_FORMAT(AVG(tickets.total_to_first_reply), \'number\', 0) as \'stat_value\', \'minutes to reply\' as \'stat_description\' 
-FROM tickets WHERE tickets.date_created = ${date} AND tickets.date_last_agent_reply <> NULL',
+            'query'         => 'SELECT DPQL_FORMAT(AVG(tickets.total_to_first_reply) / 60, \'number\', 0) as \'stat_value\', \'minutes to reply\' as \'stat_description\' 
+FROM tickets WHERE tickets.date_created = ${date} AND tickets.date_first_agent_reply <> NULL',
             'variables' => '[{"name":"date","type":"dates","default":"today"}]',
         ],
         'satisfaction-x-date' => [
