@@ -48,7 +48,7 @@ class NewTicketController extends AbstractController
 
         $user    = $this->getUser();
         $noLogin = false;
-        if (!$user instanceof Person || $user->getId()) {
+        if (!$user instanceof Person || !$user->getId()) {
             // no way to login, display error message
             if (!$authManager->isAuthVisible()) {
                 $noLogin = true;
