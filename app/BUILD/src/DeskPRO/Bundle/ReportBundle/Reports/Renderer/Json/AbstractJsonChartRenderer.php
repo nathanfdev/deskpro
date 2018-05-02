@@ -471,6 +471,7 @@ abstract class AbstractJsonChartRenderer extends AbstractJsonRenderer
             $arrayOutput['outlineThickness'] = '2';
             $arrayOutput['colorField']       = 'color';
             $arrayOutput['pulledField']      = 'pulled';
+            $arrayOutput['percentPrecision'] = 0;
             if (count($pieData) > 1) {
                 $overAllPie                  = array_shift($pieData);
                 $arrayOutput['dataProvider'] = $overAllPie['data'];
