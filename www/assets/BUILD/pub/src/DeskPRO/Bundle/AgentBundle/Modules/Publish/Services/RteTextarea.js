@@ -36,7 +36,7 @@ class RteTextarea {
       htmlAllowedAttrs: [
         'class', 'frameborder', 'height', 'id', 'longdesc', 'marginheight', 'marginwidth',
         'name', 'scrolling', 'src', 'style', 'title', 'width', 'webkitallowfullscreen',
-        'mozallowfullscreen', 'allowfullscreen'
+        'mozallowfullscreen', 'allowfullscreen', 'href', 'colspan', 'rowspan'
       ],
       toolbarButtons: [
         'bold', 'italic', 'underline', '|', 'align', 'color', '|', 'paragraphFormat', 'fontFamily', 'fontSize',
