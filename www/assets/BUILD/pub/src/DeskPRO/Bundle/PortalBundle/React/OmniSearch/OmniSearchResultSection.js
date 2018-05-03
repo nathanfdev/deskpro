@@ -4,7 +4,7 @@ import { portalHttp } from 'DeskPRO/Bundle/PortalBundle/Http/PortalHttp';
 import filter from 'lodash/filter';
 import forEach from 'lodash/forEach';
 import map from 'lodash/map';
-import TimeAgo from '@deskpro/react-timeago';
+import TimeAgo from 'react-timeago';
 import moment from 'moment';
 import { timeAgoFormatter } from '../../../WidgetBundle/Services/timeago';
 
