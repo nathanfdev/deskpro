@@ -350,6 +350,16 @@ class UsersourcesController extends AbstractController
         );
     }
 
+    /**
+     * @param string $id
+     *
+     * @return Response
+     */
+    public function checkRequirementsAction($id)
+    {
+        return $this->createApiSuccessResponse(['id' => $id]);
+    }
+
     public function updateDisplayOrderAction()
     {
         $inputOrders = $this->in->getCleanValueArray('display_orders', 'uint', 'discard');
