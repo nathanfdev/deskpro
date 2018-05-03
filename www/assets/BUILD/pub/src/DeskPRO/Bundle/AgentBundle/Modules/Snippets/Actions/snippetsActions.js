@@ -23,6 +23,11 @@ export const getSnippets = createAction(
     (resolve, reject) => {
       repository('Snippets').loadBatch(ids, 'snippet_translation,blob', true)
         .then((promise) => {
+          let blobs = [];
+          if (promise.data.linked.blob) {
+            blobs = promise.data.linked.blob;
+          }
+          dispatch(addToCollection('SnippetBlobs', 'all', replaceIds(blobs, 'blob_id')));
           dispatch(addToCollection('Snippets', 'all', promise.data.data));
           resolve(promise.data.data);
         },

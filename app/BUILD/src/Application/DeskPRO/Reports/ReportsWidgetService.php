@@ -1,42 +1,27 @@
 <?php
 
-/*
- * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
- * a British company located in London, England.
- *
- * All source code and content Copyright (c) 2018, DeskPRO Ltd.
- *
- * The license agreement under which this software is released
- * can be found at https://www.deskpro.com/eula/
- *
- * By using this software, you acknowledge having read the license
- * and agree to be bound thereby.
- *
- * Please note that DeskPRO is not free software. We release the full
- * source code for our software because we trust our users to pay us for
- * the huge investment in time and energy that has gone into both creating
- * this software and supporting our customers. By providing the source code
- * we preserve our customers' ability to modify, audit and learn from our
- * work. We have been developing DeskPRO since 2001, please help us make it
- * another decade.
- *
- * Like the work you see? Think you could make it better? We are always
- * looking for great developers to join us: http://www.deskpro.com/jobs/
- *
- * ~ Thanks, Everyone at Team DeskPRO
- */
-
 namespace Application\DeskPRO\Reports;
 
 use Application\DeskPRO\Entity\AgentTeam;
+use Application\DeskPRO\Entity\CustomDefAbstract;
+use Application\DeskPRO\Entity\CustomDefArticle;
+use Application\DeskPRO\Entity\CustomDefBilling;
+use Application\DeskPRO\Entity\CustomDefChat;
+use Application\DeskPRO\Entity\CustomDefFeedback;
+use Application\DeskPRO\Entity\CustomDefOrganization;
+use Application\DeskPRO\Entity\CustomDefPerson;
+use Application\DeskPRO\Entity\CustomDefProduct;
+use Application\DeskPRO\Entity\CustomDefTicket;
 use Application\DeskPRO\Entity\Department;
+use Application\DeskPRO\Entity\Organization;
 use Application\DeskPRO\Entity\Person;
 use Application\DeskPRO\Entity\ReportWidget;
 use Application\DeskPRO\EntityRepository\AgentTeam as AgentTeamRepository;
 use Application\DeskPRO\EntityRepository\Department as DepartmentRepository;
+use Application\DeskPRO\EntityRepository\Organization as OrganizationRepository;
 use Application\DeskPRO\EntityRepository\Person as PersonRepository;
 use Application\DeskPRO\EntityRepository\ReportWidget as ReportWidgetRepository;
-use DeskPRO\Bundle\ReportBundle\Service\DashboardWidget;
+use DeskPRO\Bundle\ReportBundle\Dashboard\DashboardWidgetManager;
 use Doctrine\ORM\EntityManager;
 
 class ReportsWidgetService
@@ -70,9 +55,10 @@ class ReportsWidgetService
         $groupParams = $this->repository->getReportGroupParams();
 
         $groupParams['values'] = [
-            'agent'      => [],
-            'department' => [],
-            'team'       => [],
+            'agent'        => [],
+            'department'   => [],
+            'team'         => [],
+            'organization' => [],
         ];
 
         /** @var PersonRepository $personRepository */
@@ -87,22 +73,98 @@ class ReportsWidgetService
         $agentTeamRepository = $this->em->getRepository(AgentTeam::class);
         $agentTeams          = $agentTeamRepository->getTeams();
 
-        $groupParams['values']['agent'][DashboardWidget::WIDGET_VALUE_FROM_REPORT] = ['value from report'];
+        /** @var OrganizationRepository $orgRepository */
+        $orgRepository = $this->em->getRepository(Organization::class);
+
+        $groupParams['values']['agent'][DashboardWidgetManager::WIDGET_VALUE_FROM_REPORT] = ['value from report'];
         foreach ($agents as $agent) {
             $groupParams['values']['agent'][$agent->getId()] = [$agent->getDisplayName()];
         }
 
-        $groupParams['values']['department'][DashboardWidget::WIDGET_VALUE_FROM_REPORT] = ['value from report'];
+        $groupParams['values']['department'][DashboardWidgetManager::WIDGET_VALUE_FROM_REPORT] = ['value from report'];
         foreach ($departments as $department) {
             $postfix                                                   = $department->isTicketsEnabled() ? '' : ' [Chat]';
             $groupParams['values']['department'][$department->getId()] = [$department->getTitle().$postfix];
         }
 
-        $groupParams['values']['team'][DashboardWidget::WIDGET_VALUE_FROM_REPORT] = ['value from report'];
+        $groupParams['values']['team'][DashboardWidgetManager::WIDGET_VALUE_FROM_REPORT] = ['value from report'];
         foreach ($agentTeams as $agentTeam) {
             $groupParams['values']['team'][$agentTeam->getId()] = [$agentTeam->getName()];
         }
 
+        $groupParams['values']['organization'] = array_map(
+            function ($org) {
+                return [$org];
+            },
+            $orgRepository->getOrganizationNames()
+        );
+
+        $groupParams['values']['organization'][DashboardWidgetManager::WIDGET_VALUE_FROM_REPORT] = ['value from report'];
+
+        $groupParams['ticket_custom_fields']   = $this->customFields(CustomDefTicket::class);
+        $groupParams['org_custom_fields']      = $this->customFields(CustomDefOrganization::class);
+        $groupParams['user_custom_fields']     = $this->customFields(CustomDefPerson::class);
+        $groupParams['article_custom_fields']  = $this->customFields(CustomDefArticle::class);
+        $groupParams['chat_custom_fields']     = $this->customFields(CustomDefChat::class);
+        $groupParams['feedback_custom_fields'] = $this->customFields(CustomDefFeedback::class);
+        $groupParams['billing_custom_fields']  = $this->customFields(CustomDefBilling::class);
+        $groupParams['product_custom_fields']  = $this->customFields(CustomDefProduct::class);
+
         return $groupParams;
+    }
+
+    /**
+     * @param $class
+     *
+     * @return array
+     */
+    private function customFields($class)
+    {
+        $defs   = $this->em->getRepository($class)->findBy(['parent' => null, 'is_enabled' => true]);
+        $result = [];
+
+        foreach ($defs as $def) {
+            /** @var CustomDefAbstract $def */
+            if ($def->isChoiceType()) {
+                $choices = $def->getChoices();
+                $arr     = [];
+
+                $maxLevel = null;
+                if ($def->getOption('reports_field_var_max_level')) {
+                    $maxLevel = (int) $def->getOption('reports_field_var_max_level');
+                }
+                if ($maxLevel > 1) {
+                    $this->getChoices($choices, $def->getTitle(), $arr, $maxLevel);
+                    $result[$def->getRawTitle()][$def->getTitle()] = [$def->getTitle()];
+                } else {
+                    $this->getChoices($choices, '', $arr, $maxLevel);
+                    $result[$def->getRawTitle()] = [];
+                }
+
+                $result[$def->getRawTitle()] += $arr;
+                $result[$def->getRawTitle()][DashboardWidgetManager::WIDGET_VALUE_FROM_REPORT] = ['value from report'];
+            }
+        }
+
+        return $result;
+    }
+
+    /**
+     * @param array  $choices
+     * @param string $prevTitle
+     * @param array  $result
+     * @param int    $maxLevel
+     * @param int    $level
+     */
+    private function getChoices(array $choices, $prevTitle, array &$result, $maxLevel = null, $level = 1)
+    {
+        /* @var CustomDefAbstract $def */
+        foreach ($choices as $choice) {
+            $title                    = $prevTitle ? $prevTitle.' > ' : '';
+            $result[$choice['title']] = [$title.$choice['title']];
+            if ((!$maxLevel || $level < $maxLevel) && isset($choice['children'])) {
+                $this->getChoices($choice['children'], $title.$choice['title'], $result, ++$level);
+            }
+        }
     }
 }

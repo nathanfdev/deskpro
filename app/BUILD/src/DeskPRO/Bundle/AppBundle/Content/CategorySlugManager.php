@@ -1,31 +1,5 @@
 <?php
 
-/*
- * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
- * a British company located in London, England.
- *
- * All source code and content Copyright (c) 2017, DeskPRO Ltd.
- *
- * The license agreement under which this software is released
- * can be found at https://www.deskpro.com/eula/
- *
- * By using this software, you acknowledge having read the license
- * and agree to be bound thereby.
- *
- * Please note that DeskPRO is not free software. We release the full
- * source code for our software because we trust our users to pay us for
- * the huge investment in time and energy that has gone into both creating
- * this software and supporting our customers. By providing the source code
- * we preserve our customers' ability to modify, audit and learn from our
- * work. We have been developing DeskPRO since 2001, please help us make it
- * another decade.
- *
- * Like the work you see? Think you could make it better? We are always
- * looking for great developers to join us: http://www.deskpro.com/jobs/
- *
- * ~ Thanks, Everyone at Team DeskPRO
- */
-
 /**
  * DeskPRO.
  */
@@ -122,7 +96,7 @@ class CategorySlugManager
         return;
     }
 
-    protected function isValidSlug($newSlug, CategoryAbstract $category)
+    protected function isValidSlug($newSlug, $category)
     {
         if ($contentObject = $this->getContentBySlug($newSlug, $category)) {
             // valid if it is the current slug (should be covered already in ensureValidSlug, here for sanity)
@@ -132,17 +106,17 @@ class CategorySlugManager
         return true;
     }
 
-    protected function getContentBySlug($newSlug, CategoryAbstract $category)
+    protected function getContentBySlug($newSlug, $category)
     {
         return $this->getRepoForContent($category)->findOneBy(['slug' => $newSlug]);
     }
 
     /**
-     * @param CategoryAbstract $category
+     * @param CategoryAbstract|Guide $category
      *
      * @return \Doctrine\ORM\EntityRepository
      */
-    private function getRepoForContent(CategoryAbstract $category)
+    private function getRepoForContent($category)
     {
         $class = get_class($category);
 

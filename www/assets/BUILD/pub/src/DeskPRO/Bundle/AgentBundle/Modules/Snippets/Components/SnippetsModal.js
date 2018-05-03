@@ -1,5 +1,6 @@
 import React from 'react';
 import PropTypes from 'prop-types';
+import { FormattedMessage } from 'react-intl';
 import { connect } from 'react-redux';
 import classNames from 'classnames';
 import Immutable from 'immutable';
@@ -7,7 +8,6 @@ import Isvg from 'react-inlinesvg';
 import htmlToText from 'html-to-text';
 import { Button, ConfirmButton, Modal, Icon, Checkbox, Input, Label, TagInput, Select, Tabs, TabLink } from '@deskpro/react-components';
 import { UploadButton } from 'DeskPRO/Component/Uploader/UploadButton';
-import agentPhrases from 'DeskPRO/Bundle/AgentBundle/AgentPhrases';
 import { meSelector } from 'DeskPRO/Bundle/AppBundle/Modules/RecordsStore/Shortcuts/me';
 import { allSelectorFactory, collectionSelectorFactory } from 'DeskPRO/Bundle/AppBundle/Modules/RecordsStore';
 import * as actions from '../Actions/snippetsActions';
@@ -24,7 +24,7 @@ class VariableValue extends React.Component {
       <div className="Select-value">
         <span className="Select-value-label">
           <i className="fa fa-dollar" />&nbsp;
-          {agentPhrases.get('agent.snippets.variables')}
+          <FormattedMessage id="agent.snippets.variables" />
         </span>
       </div>
     );
@@ -534,18 +534,18 @@ export class SnippetsModal extends React.Component {
     const { types, ticketCustomFields, personCustomFields, userChatCustomFields } = this.props;
     if (types.find(type => type === 'ticket')) {
       variables = [
-        { value: 'ticket', label: agentPhrases.get('agent.general.ticket'), disabled: true },
-        { value: 'entity.subject', label: agentPhrases.get('agent.general.subject') },
-        { value: 'entity.department.title', label: agentPhrases.get('agent.general.department') },
-        { value: 'entity.department.parent.title', label: agentPhrases.get('agent.general.department.parent') },
-        { value: 'entity.brand.name', label: agentPhrases.get('agent.general.brand') },
-        { value: 'entity.product.title', label: agentPhrases.get('agent.general.product') },
-        { value: 'entity.category.title', label: agentPhrases.get('agent.general.category') },
-        { value: 'entity.workflow.title', label: agentPhrases.get('agent.general.workflow') },
-        { value: 'entity.priority.title', label: agentPhrases.get('agent.general.priority') },
-        { value: 'entity.agent.display_name', label: agentPhrases.get('agent.general.agent') },
-        { value: 'entity.agent.primary_email.email', label: agentPhrases.get('agent.general.agent_email_address') },
-        { value: 'entity.agent_team.name', label: agentPhrases.get('agent.general.agent_team') }
+        { value: 'ticket', label: <FormattedMessage id="agent.general.ticket" />, disabled: true },
+        { value: 'entity.subject', label: <FormattedMessage id="agent.general.subject" /> },
+        { value: 'entity.department.title', label: <FormattedMessage id="agent.general.department" /> },
+        { value: 'entity.department.parent.title', label: <FormattedMessage id="agent.general.department.parent" /> },
+        { value: 'entity.brand.name', label: <FormattedMessage id="agent.general.brand" /> },
+        { value: 'entity.product.title', label: <FormattedMessage id="agent.general.product" /> },
+        { value: 'entity.category.title', label: <FormattedMessage id="agent.general.category" /> },
+        { value: 'entity.workflow.title', label: <FormattedMessage id="agent.general.workflow" /> },
+        { value: 'entity.priority.title', label: <FormattedMessage id="agent.general.priority" /> },
+        { value: 'entity.agent.display_name', label: <FormattedMessage id="agent.general.agent" /> },
+        { value: 'entity.agent.primary_email.email', label: <FormattedMessage id="agent.general.agent_email_address" /> },
+        { value: 'entity.agent_team.name', label: <FormattedMessage id="agent.general.agent_team" /> }
       ];
       ticketCustomFields.forEach((field) => {
         variables.push({
@@ -556,13 +556,13 @@ export class SnippetsModal extends React.Component {
     }
     if (types.find(type => type === 'chat')) {
       variables = variables.concat([
-        { value: 'chat', label: agentPhrases.get('agent.general.chat'), disabled: true },
-        { value: 'entity.subject', label: agentPhrases.get('agent.general.subject') },
-        { value: 'entity.department.title', label: agentPhrases.get('agent.general.department') },
-        { value: 'entity.department.parent.title', label: agentPhrases.get('agent.general.department.parent') },
-        { value: 'entity.agent.display_name', label: agentPhrases.get('agent.general.agent') },
-        { value: 'entity.agent.primary_email.email', label: agentPhrases.get('agent.general.agent_email_address') },
-        { value: 'entity.agent_team.name', label: agentPhrases.get('agent.general.agent_team') }
+        { value: 'chat', label: <FormattedMessage id="agent.general.chat" />, disabled: true },
+        { value: 'entity.subject', label: <FormattedMessage id="agent.general.subject" /> },
+        { value: 'entity.department.title', label: <FormattedMessage id="agent.general.department" /> },
+        { value: 'entity.department.parent.title', label: <FormattedMessage id="agent.general.department.parent" /> },
+        { value: 'entity.agent.display_name', label: <FormattedMessage id="agent.general.agent" /> },
+        { value: 'entity.agent.primary_email.email', label: <FormattedMessage id="agent.general.agent_email_address" /> },
+        { value: 'entity.agent_team.name', label: <FormattedMessage id="agent.general.agent_team" /> }
       ]);
       userChatCustomFields.forEach((field) => {
         variables.push({
@@ -572,13 +572,13 @@ export class SnippetsModal extends React.Component {
       });
     }
     variables = variables.concat([
-      { value: 'user', label: agentPhrases.get('agent.general.user'), disabled: true },
-      { value: 'entity.person.display_name', label: agentPhrases.get('agent.general.name') },
-      { value: 'entity.person.first_name', label: agentPhrases.get('agent.general.first_name') },
-      { value: 'entity.person.last_name', label: agentPhrases.get('agent.general.last_name') },
-      { value: 'entity.person.primary_email.email', label: agentPhrases.get('agent.general.email_address') },
-      { value: 'entity.person.organization.name', label: agentPhrases.get('agent.general.organization') },
-      { value: 'entity.person.organization_position', label: agentPhrases.get('agent.general.org_position') },
+      { value: 'user', label: <FormattedMessage id="agent.general.user" />, disabled: true },
+      { value: 'entity.person.display_name', label: <FormattedMessage id="agent.general.name" /> },
+      { value: 'entity.person.first_name', label: <FormattedMessage id="agent.general.first_name" /> },
+      { value: 'entity.person.last_name', label: <FormattedMessage id="agent.general.last_name" /> },
+      { value: 'entity.person.primary_email.email', label: <FormattedMessage id="agent.general.email_address" /> },
+      { value: 'entity.person.organization.name', label: <FormattedMessage id="agent.general.organization" /> },
+      { value: 'entity.person.organization_position', label: <FormattedMessage id="agent.general.org_position" /> },
     ]);
 
     personCustomFields.forEach((field) => {
@@ -644,15 +644,15 @@ export class SnippetsModal extends React.Component {
     let usage = null;
     if (snippet.get('usage_count')) {
       usage = (<a className="usage_history" onClick={this.openUsageHistoryModal}>
-        {agentPhrases.get('agent.snippets.usage_history')} ({snippet.get('usage_count')})
+        <FormattedMessage id="agent.snippets.usage_history" /> ({snippet.get('usage_count')})
       </a>);
     }
     return (
       <div>
-        {snippet.get('id', false) ? agentPhrases.get('agent.snippets.edit_snippet') : 'New snippet'}
+        {snippet.get('id', false) ? <FormattedMessage id="agent.snippets.edit_snippet" /> : 'New snippet'}
         {usage}
         {snippet.get('id', false) ?
-          <a className="change_log" onClick={this.openChangeLogModal}>{agentPhrases.get('agent.general.changelog')}</a>
+          <a className="change_log" onClick={this.openChangeLogModal}><FormattedMessage id="agent.general.changelog" /></a>
           : null }
       </div>
     );
@@ -790,7 +790,7 @@ export class SnippetsModal extends React.Component {
           buttons={
             <div>
               <Button type="primary" size="large" onClick={saveSnippet} disabled={!this.isValid()} loading={saving}>
-                {agentPhrases.get('agent.general.save')}
+                <FormattedMessage id="agent.general.save" />
               </Button>
               <Checkbox
                 checked={this.props.isDraft}
@@ -798,10 +798,10 @@ export class SnippetsModal extends React.Component {
                 className="draft"
                 onChange={handleChangeDraft}
               >
-                {agentPhrases.get('agent.snippets.snippet_is_draft')}
+                <FormattedMessage id="agent.snippets.snippet_is_draft" />
               </Checkbox>
               <Button type="secondary" size="large" className="right" onClick={closeModal}>
-                {agentPhrases.get('agent.general.cancel')}
+                <FormattedMessage id="agent.general.cancel" />
               </Button>
               <ConfirmButton
                 type="secondary"
@@ -809,16 +809,16 @@ export class SnippetsModal extends React.Component {
                 className="right"
                 onClick={deleteSnippet}
                 disabled={!canDelete}
-                message={agentPhrases.get('agent.general.are_you_sure')}
+                message={<FormattedMessage id="agent.general.are_you_sure" />}
               >
-                {agentPhrases.get('agent.general.delete')}
+                <FormattedMessage id="agent.general.delete" />
               </ConfirmButton>
             </div>
         }
         >
           <form id="snippet_form" onSubmit={this.onSubmit}>
             <div className="title-field field">
-              <Label htmlFor="snippet_title" required>{agentPhrases.get('agent.general.title')}</Label>
+              <Label htmlFor="snippet_title" required><FormattedMessage id="agent.general.title" /></Label>
               <Input
                 id="snippet_title"
                 value={title}
@@ -828,7 +828,7 @@ export class SnippetsModal extends React.Component {
             </div>
             <div className="shortcut-field field">
               <Label htmlFor="snippet_shortcut_code">
-                {agentPhrases.get('agent.snippets.shortcut_code')}
+                <FormattedMessage id="agent.snippets.shortcut_code" />
               </Label>
               <Input
                 id="snippet_shortcut_code"
@@ -841,23 +841,27 @@ export class SnippetsModal extends React.Component {
               />
             </div>
             <div className="labels-field field">
-              <Label htmlFor="snippet_label_input">{agentPhrases.get('agent.general.labels')}</Label>
-              <TagInput
-                tags={labels}
-                onChange={changeLabels}
-                options={labelsSource}
-                inputProps={{ placeholder: agentPhrases.get('agent.general.add_a_label') }}
-              />
+              <Label htmlFor="snippet_label_input"><FormattedMessage id="agent.general.labels" /></Label>
+              <FormattedMessage id="agent.general.add_a_label">
+                {placeholder => (
+                  <TagInput
+                    tags={labels}
+                    onChange={changeLabels}
+                    options={labelsSource}
+                    inputProps={{ placeholder }}
+                  />
+                )}
+              </FormattedMessage>
             </div>
             {this.props.isSplit ?
               <div>
                 <div className="type-tabs">
                   <Tabs active={this.props.type} onChange={changeType}>
                     <TabLink name="ticket">
-                      {agentPhrases.get('agent.general.ticket')}
+                      <FormattedMessage id="agent.general.ticket" />
                     </TabLink>
                     <TabLink name="chat">
-                      {agentPhrases.get('agent.general.chat')}
+                      <FormattedMessage id="agent.general.chat" />
                     </TabLink>
                   </Tabs>
                 </div>
@@ -872,10 +876,10 @@ export class SnippetsModal extends React.Component {
                     />
                     <Button type="primary" size="medium" onClick={mergeSnippet}>
                       <Icon name="compress" />
-                      {agentPhrases.get('agent.general.merge')}
+                      <FormattedMessage id="agent.general.merge" />
                     </Button>
                     <Button type="secondary" size="medium" onClick={this.displayMerge}>
-                      {agentPhrases.get('agent.general.cancel')}
+                      <FormattedMessage id="agent.general.cancel" />
                     </Button>
                   </div>
                  : <a href="#merge" className="merge-link" onClick={this.displayMerge}>
@@ -905,7 +909,7 @@ export class SnippetsModal extends React.Component {
             <div className="upload">
               <div className="upload-button">
                 <span className="styled-button">
-                  <Icon name="paperclip" /> {agentPhrases.get('agent.general.attach_files')}
+                  <Icon name="paperclip" /> <FormattedMessage id="agent.general.attach_files" />
                 </span>
                 <UploadButton
                   id={'upload_attachment'}
@@ -926,7 +930,7 @@ export class SnippetsModal extends React.Component {
               </span>
             </div>
             <div className="ownership-field field">
-              <Label htmlFor="snippet_ownership">{agentPhrases.get('agent.snippets.ownership')}</Label>
+              <Label htmlFor="snippet_ownership"><FormattedMessage id="agent.snippets.ownership" /></Label>
               <OwnershipSelectContainer
                 selectedTeams={this.props.snippetTeams}
                 isOwnershipGlobal={this.props.isOwnershipGlobal}
@@ -935,7 +939,7 @@ export class SnippetsModal extends React.Component {
               />
             </div>
             <div className="visibility-field field">
-              <Label htmlFor="snippet_visibility">{agentPhrases.get('agent.snippets.visibility')}</Label>
+              <Label htmlFor="snippet_visibility"><FormattedMessage id="agent.snippets.visibility" /></Label>
               <VisibilitySelectContainer
                 selectedDepartments={this.props.snippetDepartments}
                 isVisibleGlobal={this.props.isVisibleGlobal}
@@ -945,24 +949,24 @@ export class SnippetsModal extends React.Component {
               />
             </div>
             <div className="types-field field">
-              <Label htmlFor="snippet_types_input">{agentPhrases.get('agent.general.types')}</Label>
+              <Label htmlFor="snippet_types_input"><FormattedMessage id="agent.general.types" /></Label>
               <Checkbox
                 checked={!!this.props.types.find(type => type === 'ticket')}
                 value="ticket"
                 onChange={handleChangeTypes}
               >
-                {agentPhrases.get('agent.general.ticket')}
+                <FormattedMessage id="agent.general.ticket" />
               </Checkbox>
               <Checkbox
                 checked={!!this.props.types.find(type => type === 'chat')}
                 value="chat"
                 onChange={handleChangeTypes}
               >
-                {agentPhrases.get('agent.general.chat')}
+                {<FormattedMessage id="agent.general.chat" />}
               </Checkbox>
               {!this.props.isSplit ?
                 <a href="#expand" onClick={splitSnippet}><Icon name="expand" />
-                  &nbsp;{agentPhrases.get('agent.snippets.split_snippet')}
+                  &nbsp;<FormattedMessage id="agent.snippets.split_snippet" />
                 </a>
               : null}
             </div>

@@ -1,31 +1,5 @@
 <?php
 
-/*
- * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
- * a British company located in London, England.
- *
- * All source code and content Copyright (c) 2017, DeskPRO Ltd.
- *
- * The license agreement under which this software is released
- * can be found at https://www.deskpro.com/eula/
- *
- * By using this software, you acknowledge having read the license
- * and agree to be bound thereby.
- *
- * Please note that DeskPRO is not free software. We release the full
- * source code for our software because we trust our users to pay us for
- * the huge investment in time and energy that has gone into both creating
- * this software and supporting our customers. By providing the source code
- * we preserve our customers' ability to modify, audit and learn from our
- * work. We have been developing DeskPRO since 2001, please help us make it
- * another decade.
- *
- * Like the work you see? Think you could make it better? We are always
- * looking for great developers to join us: http://www.deskpro.com/jobs/
- *
- * ~ Thanks, Everyone at Team DeskPRO
- */
-
 namespace DeskPRO\Bundle\AppBundle\Form\Type;
 
 use Application\DeskPRO\Entity\Person;
@@ -39,6 +13,7 @@ use Symfony\Component\Form\FormError;
 use Symfony\Component\Form\FormEvent;
 use Symfony\Component\Form\FormEvents;
 use Symfony\Component\OptionsResolver\OptionsResolver;
+use Symfony\Component\Validator\Constraints as Assert;
 
 /**
  * Assigns person entity using multiple formats.
@@ -76,15 +51,17 @@ class PersonAssignType extends AbstractType
                 'required' => false,
             ])
             ->add('email', EmailType::class, [
-                'label'    => $options['label_email'],
-                'required' => false,
-                'mapped'   => false,
+                'label'       => $options['label_email'],
+                'required'    => false,
+                'mapped'      => false,
+                'constraints' => [
+                    new Assert\Email(['strict' => true]),
+                ],
             ])
         ;
 
-        $builder->addEventListener(FormEvents::PRE_SUBMIT, [$this, 'onSetFields'], 200);
-        $builder->addEventListener(FormEvents::PRE_SUBMIT, [$this, 'onSetPerson'], 100);
-        $builder->addEventListener(FormEvents::SUBMIT, [$this, 'onResetPerson']);
+        $builder->addEventListener(FormEvents::PRE_SUBMIT, [$this, 'onPreSubmit'], 100);
+        $builder->addEventListener(FormEvents::SUBMIT, [$this, 'onSubmit']);
     }
 
     /**
@@ -92,28 +69,20 @@ class PersonAssignType extends AbstractType
      *
      * @param FormEvent $event
      */
-    public function onSetFields(FormEvent $event)
-    {
-        $data = $event->getData();
-
-        if (is_scalar($data)) {
-            if (is_numeric($data)) {
-                $event->setData(['id' => $data]);
-            } else {
-                $event->setData(['email' => $data]);
-            }
-        }
-    }
-
-    /**
-     * @internal
-     *
-     * @param FormEvent $event
-     */
-    public function onSetPerson(FormEvent $event)
+    public function onPreSubmit(FormEvent $event)
     {
         $data = $event->getData();
         $form = $event->getForm();
+
+        if (is_scalar($data)) {
+            if (is_numeric($data)) {
+                $data = ['id' => $data];
+            } else {
+                $data = ['email' => $data];
+            }
+
+            $event->setData($data);
+        }
 
         /** @var \Application\DeskPRO\EntityRepository\Person $personRepository */
         $personRepository = $this->em->getRepository(Person::class);
@@ -152,9 +121,9 @@ class PersonAssignType extends AbstractType
         /** @var Person $person */
         $person = $form->getData();
         if (!isset($data['name']) && $person) {
-            // If we sent just ID and person doesn't have a name
+            // If we sent just ID or email and person doesn't have a name
             // then force set name from its display name to prevent validation error because name is a required field
-            if ($person->getId() && !$person->getName()) {
+            if (!$person->getName()) {
                 $person->setName($person->getDisplayName());
             }
 
@@ -171,7 +140,7 @@ class PersonAssignType extends AbstractType
      *
      * @param FormEvent $event
      */
-    public function onResetPerson(FormEvent $event)
+    public function onSubmit(FormEvent $event)
     {
         $data = $event->getData();
         if ($data instanceof Person && !$data->getEmailAddress()) {

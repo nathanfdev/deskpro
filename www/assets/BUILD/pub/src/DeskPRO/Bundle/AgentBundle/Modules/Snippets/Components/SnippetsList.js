@@ -1,9 +1,9 @@
 import PropTypes from 'prop-types';
 import React from 'react';
+import { FormattedMessage } from 'react-intl';
 import classNames from 'classnames';
 import htmlToText from 'html-to-text';
 import Highlighter from 'react-highlight-words';
-import agentPhrases from 'DeskPRO/Bundle/AgentBundle/AgentPhrases';
 import { List } from 'react-virtualized';
 import { Checkbox, Tag, Icon } from '@deskpro/react-components';
 
@@ -41,7 +41,7 @@ export class SnippetsListElement extends React.PureComponent {
   getDraft() {
     const { snippet } = this.props;
     if (snippet.get('is_draft')) {
-      return <span className="draft"><i className="fa fa-file-o" />{agentPhrases.get('agent.general.draft')}</span>;
+      return <span className="draft"><i className="fa fa-file-o" /><FormattedMessage id="agent.general.draft" /></span>;
     }
     return null;
   }
@@ -156,9 +156,9 @@ export class SnippetsListElement extends React.PureComponent {
   getStats() {
     const { snippet } = this.props;
     return (<div className="stats">
-      <span className="stat">{agentPhrases.get('agent.snippets.used')} <span className="value">{snippet.get('usage_count')}</span></span>
+      <span className="stat"><FormattedMessage id="agent.snippets.used" /> <span className="value">{snippet.get('usage_count')}</span></span>
       <span className="stat">
-        {agentPhrases.get('agent.snippets.feedback')}&nbsp;
+        <FormattedMessage id="agent.snippets.feedback" />&nbsp;
         <span className="rating">
           <Icon name="smile-o" />
           <span className="value">{snippet.get('positive_ratings')}</span>
@@ -254,7 +254,7 @@ export class SnippetsList extends React.Component {
   static noRowsRenderer() {
     return (
       <div className="snippet_list_element_wrapper">
-        {agentPhrases.get('agent.search.no_results_found')}
+        <FormattedMessage id="agent.search.no_results_found" />
       </div>
     );
   }
@@ -388,7 +388,7 @@ export class SnippetsList extends React.Component {
             onChange={(checked) => { selectForMassAction(checked, this.list); }}
             checked={this.list.filter(snippet => !massActionsSelected.has(snippet.get('id'))).length === 0}
           >
-            {agentPhrases.get('agent.general.select_all')}
+            <FormattedMessage id="agent.general.select_all" />
           </Checkbox>
           : null
         }

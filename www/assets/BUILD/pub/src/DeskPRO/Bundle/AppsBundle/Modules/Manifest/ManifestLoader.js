@@ -15,18 +15,12 @@ export class ManifestLoader {
     ;
   }
 
-  loadPackage(app)  {
-    // double encoded as symfony decodes the uri before matching the routes so forward slashes which are part of the
-    // name will influence the matching algorithm
-    const encodedName = encodeURIComponent(encodeURIComponent(app));
-    return this.apiClient.sendGet(`DP_API/apps/packages/${encodedName}`).then(response => response.data.data);
+  loadPackage(appName)  {
+    return this.apiClient.sendGet(`DP_API/apps/packages/${appName}`).then(response => response.data.data);
   }
 
-  loadApp(app)  {
-    // double encoded as symfony decodes the uri before matching the routes so forward slashes which are part of the
-    // name will influence the matching algorithm
-    const encodedName = encodeURIComponent(encodeURIComponent(app));
-    return this.apiClient.sendGet(`DP_API/apps/${encodedName}?include=app`)
+  loadApp(appName)  {
+    return this.apiClient.sendGet(`DP_API/apps/${appName}?include=app`)
       .then(response => response.data)
       .then(ManifestParsers.parseManifestResponseBody)
       ;

@@ -27,7 +27,7 @@ class AgentList extends React.Component {
 
     return (
       <ScrollArea className="voice-agent-list">
-        {agents.map((agent, index) =>
+        {agents.toArray().map((agent, index) =>
           <Agent
             key={index}
             agent={agent}

@@ -79,6 +79,33 @@
 							</div>
 						</div>
 
+						<div class="form-group">
+							<div class="col-lg-12">
+								<h3><label><input type="radio" ng-model="EditCtrl.field_type_chooser" value="url" /> Url</label></h3>
+								<p>
+									This is a url field lets you enter any url links.
+								</p>
+							</div>
+						</div>
+
+						<div class="form-group">
+							<div class="col-lg-12">
+								<h3><label><input type="radio" ng-model="EditCtrl.field_type_chooser" value="currency" /> Currency</label></h3>
+								<p>
+									This is a currency field lets you enter any money values.
+								</p>
+							</div>
+						</div>
+
+						<div class="form-group">
+							<div class="col-lg-12">
+								<h3><label><input type="radio" ng-model="EditCtrl.field_type_chooser" value="file" /> File</label></h3>
+								<p>
+									This is a file field lets you attach any files.
+								</p>
+							</div>
+						</div>
+
 						{% block extra_types_choose %}{% endblock %}
 					</div>
 					<div class="panel-body" ng-show="EditCtrl.field_type != 0">
@@ -100,6 +127,9 @@
                                         <span ng-switch-when="datetime">Date/Time</span>
 										<span ng-switch-when="display">Display</span>
 										<span ng-switch-when="hidden">Hidden</span>
+										<span ng-switch-when="url">Url</span>
+										<span ng-switch-when="currency">Currency</span>
+										<span ng-switch-when="file">File</span>
 										{% block extra_types_titleswitch %}{% endblock %}
 									</p>
 								</div>
@@ -136,8 +166,7 @@
 								</div>
 								<div class="col-lg-9">
 									<div class="inner-group" dp-error-class="form_props.alias">
-										<input type="text" class="form-control" name="alias" ng-model="EditCtrl.form.alias"
-											   style="width: 50%;" required autofocus />
+										<input type="text" class="form-control" name="alias" ng-model="EditCtrl.form.alias" style="width: 50%;" />
 									</div>
 								</div>
 							</div>
@@ -265,6 +294,15 @@
 											<option ng-if="c.disabled == false" value="{{ ng_var('c.id') }}" ng-repeat="c in EditCtrl.form.choice.options">{{ ng_var('c.title') }}</option>
 										</select>
 									</p>
+									<p style="margin-top: 4px;" ng-if="EditCtrl.form.choice.field_type == 'radio'">
+										<label style="font-weight: normal">
+											<input type="checkbox" ng-model="EditCtrl.form.choice.none_choice" />
+											Add a "None" option
+										</label>
+										<p ng-if="EditCtrl.form.choice.none_choice">
+											With name: <input type="text" ng-model="EditCtrl.form.choice.none_choice_title" placeholder="None" />
+										</p>
+									</p>
 								</div>
 							</div>
 
@@ -309,6 +347,15 @@
 								</div>
 								<div class="col-lg-9">
 									<input type="text" class="form-control" ng-model="EditCtrl.form.toggle.label_text" style="width: 50%;" />
+								</div>
+							</div>
+
+							<div class="form-group">
+								<div class="col-lg-3">
+									<h3>Unchecked Display Label</h3>
+								</div>
+								<div class="col-lg-9">
+									<input type="text" class="form-control" ng-model="EditCtrl.form.toggle.unchecked_text" style="width: 50%;" />
 								</div>
 							</div>
 
@@ -633,8 +680,234 @@
 							</div>
 						</div>
 
-						{###############################################################################################}
-						{# bottom #}
+                        {###############################################################################################}
+						{# Url Field #}
+
+						<div ng-show="EditCtrl.field_type == 'url'">
+							<div class="form-group">
+								<div class="col-lg-3">
+									<h3>Allow File Links</h3>
+								</div>
+								<div class="col-lg-9">
+									<div class="inner-group">
+										<label style="font-weight: normal">
+											<input type="checkbox" ng-model="EditCtrl.form.url.allow_file" />
+											Enable links to files or network shares.
+										</label>
+									</div>
+								</div>
+							</div>
+
+							<div class="form-group">
+								<div class="col-lg-3">
+									<h3>User Validation</h3>
+								</div>
+								<div class="col-lg-9">
+									<div class="inner-group">
+										<label style="display: block; margin-bottom: 4px;"><input type="radio" ng-model="EditCtrl.form.url.user_validation" value="0" /> No user validation</label>
+										<label style="display: block; margin-bottom: 4px;"><input type="radio" ng-model="EditCtrl.form.url.user_validation" value="required" /> Require the user to provide a value</label>
+									</div>
+								</div>
+							</div>
+
+							<div class="form-group with-border">
+								<div class="col-lg-3">
+									<h3>Agent Validation</h3>
+								</div>
+								<div class="col-lg-9">
+									<div class="inner-group">
+										<label style="display: block; margin-bottom: 4px;"><input type="radio" ng-model="EditCtrl.form.url.agent_validation" value="0" /> No agent validation</label>
+										<label style="display: block; margin-bottom: 4px;"><input type="radio" ng-model="EditCtrl.form.url.agent_validation" value="required" /> Require the agent to provide a value</label>
+										<p ng-show="EditCtrl.form.text.agent_validation && EditCtrl.form.url.agent_validation != '0'">
+											<label style="font-weight: normal">
+												<input type="checkbox" ng-model="EditCtrl.form.url.agent_validation_resolve" />
+												Only enable agent validation when the ticket is being resolved
+											</label>
+										</p>
+									</div>
+								</div>
+							</div>
+						</div>
+
+                        {###############################################################################################}
+						{# Currency Field #}
+
+						<div ng-show="EditCtrl.field_type == 'currency'">
+							<div class="form-group">
+								<div class="col-lg-3">
+									<h3>Currency</h3>
+								</div>
+								<div class="col-lg-9">
+									<select ng-model="EditCtrl.form.currency.currency_id" ui-select2 style="width: 250px;">
+										<option ng-repeat="currency in EditCtrl.currencies" value="{{ ng_var('currency.id') }}">{{ ng_var('currency.name') }}</option>
+									</select>
+								</div>
+							</div>
+
+							<div class="form-group">
+								<div class="col-lg-3">
+									<h3>User Validation</h3>
+								</div>
+								<div class="col-lg-9">
+									<div class="inner-group">
+										<label style="display: block; margin-bottom: 4px;"><input type="radio" ng-model="EditCtrl.form.currency.user_validation" value="0" /> No user validation</label>
+										<label style="display: block; margin-bottom: 4px;"><input type="radio" ng-model="EditCtrl.form.currency.user_validation" value="required" /> Require the user to provide a value</label>
+									</div>
+								</div>
+							</div>
+
+							<div class="form-group with-border">
+								<div class="col-lg-3">
+									<h3>Agent Validation</h3>
+								</div>
+								<div class="col-lg-9">
+									<div class="inner-group">
+										<label style="display: block; margin-bottom: 4px;"><input type="radio" ng-model="EditCtrl.form.currency.agent_validation" value="0" /> No agent validation</label>
+										<label style="display: block; margin-bottom: 4px;"><input type="radio" ng-model="EditCtrl.form.currency.agent_validation" value="required" /> Require the agent to provide a value</label>
+										<p ng-show="EditCtrl.form.text.agent_validation && EditCtrl.form.currency.agent_validation != '0'">
+											<label style="font-weight: normal">
+												<input type="checkbox" ng-model="EditCtrl.form.currency.agent_validation_resolve" />
+												Only enable agent validation when the ticket is being resolved
+											</label>
+										</p>
+									</div>
+								</div>
+							</div>
+						</div>
+
+                        {###############################################################################################}
+						{# File Field #}
+
+						<div ng-show="EditCtrl.field_type == 'file'">
+
+							<div class="form-group">
+								<div class="col-lg-3">
+									<h3>Max files</h3>
+								</div>
+								<div class="col-lg-9">
+									<div class="inner-group">
+										<label style="display: block; margin-bottom: 4px;"><input type="radio" ng-model="EditCtrl.form.file.multiple" value="0" /> Single upload</label>
+										<label style="display: block; margin-bottom: 4px;"><input type="radio" ng-model="EditCtrl.form.file.multiple" value="1" /> Multiple upload</label>
+									</div>
+								</div>
+							</div>
+
+							<div class="form-group">
+								<div class="col-lg-3">
+									<h3>User Validation</h3>
+								</div>
+								<div class="col-lg-9">
+									<div class="inner-group">
+										<label style="display: block; margin-bottom: 4px;">
+											<h4>
+												<input type="radio" name="attach_user_exts_limitmode" value="any" ng-model="EditCtrl.form.file.user_extensions_limit_mode" />
+												Allow all files
+											</h4>
+										</label>
+										<label style="display: block; margin-bottom: 4px;">
+											<h4>
+												<input type="radio" name="attach_user_exts_limitmode" value="allow" ng-model="EditCtrl.form.file.user_extensions_limit_mode" />
+												Only allow specific file extensions
+											</h4>
+										</label>
+										<div ng-show="EditCtrl.form.file.user_extensions_limit_mode == 'allow'">
+											<input type="text" ui-select2="{multiple: true, simple_tags: true, tags: [], tokenSeparators: [',', ' ']}" ng-model="EditCtrl.form.file.user_must_extensions" style="width: 350px;" placeholder="Example: zip, pdf" />
+										</div>
+										<label style="display: block; margin-bottom: 4px;">
+											<h4>
+												<input type="radio" name="user_extensions_limit_mode" value="disallow" ng-model="EditCtrl.form.file.user_extensions_limit_mode" />
+												Just disallow specific file extensions
+											</h4>
+										</label>
+										<div ng-show="EditCtrl.form.file.user_extensions_limit_mode == 'disallow'">
+											<input type="text" ui-select2="{multiple: true, simple_tags: true, tags: [], tokenSeparators: [',', ' ']}" ng-model="EditCtrl.form.file.user_not_extensions" style="width: 350px;" placeholder="Example: exe, msi" />
+										</div>
+									</div>
+                                    {% if not app.isCloud() %}
+										<div class="inner-group">
+											<label>
+												<h4>
+													Max file size a user can upload.
+												</h4>
+												<span class="help-block">
+								<span class="label label-danger ng-hide" ng-show="EditCtrl.form.file.user_max_file_size > maxUploadSize">Warning</span>
+								The max file size supported by your server is {{ ng_var('maxUploadSize | filesize_display') }}. <a href="{{ ng_href('server.file_uploads') }}">Learn more.</a>
+							</span>
+											</label>
+											<div>
+												<dp-filesize-with-unit ng-model="EditCtrl.form.file.user_max_file_size"></dp-filesize-with-unit>
+											</div>
+										</div>
+                                    {% endif %}
+									<div class="inner-group">
+										<label style="display: block; margin-bottom: 4px;"><input type="checkbox" ng-model="EditCtrl.form.file.user_validation" /> Require the user to provide a value</label>
+									</div>
+								</div>
+							</div>
+
+							<div class="form-group with-border">
+								<div class="col-lg-3">
+									<h3>Agent Validation</h3>
+								</div>
+								<div class="col-lg-9">
+									<div class="inner-group">
+										<label style="display: block; margin-bottom: 4px;">
+											<h4>
+												<input type="radio" name="agent_extensions_limit_mode" value="any" ng-model="EditCtrl.form.file.agent_extensions_limit_mode" />
+												Allow all files
+											</h4>
+										</label>
+										<label style="display: block; margin-bottom: 4px;">
+											<h4>
+												<input type="radio" name="agent_extensions_limit_mode" value="allow" ng-model="EditCtrl.form.file.agent_extensions_limit_mode" />
+												Only allow specific file extensions
+											</h4>
+										</label>
+										<div ng-show="EditCtrl.form.file.agent_extensions_limit_mode == 'allow'">
+											<input type="text" ui-select2="{multiple: true, simple_tags: true, tags: [], tokenSeparators: [',', ' ']}" ng-model="EditCtrl.form.file.agent_must_extensions" style="width: 350px;" placeholder="Example: zip, pdf" />
+										</div>
+										<label style="display: block; margin-bottom: 4px;">
+											<h4>
+												<input type="radio" name="agent_extensions_limit_mode" value="disallow" ng-model="EditCtrl.form.file.agent_extensions_limit_mode" />
+												Just disallow specific file extensions
+											</h4>
+										</label>
+										<div ng-show="EditCtrl.form.file.agent_extensions_limit_mode == 'disallow'">
+											<input type="text" ui-select2="{multiple: true, simple_tags: true, tags: [], tokenSeparators: [',', ' ']}" ng-model="EditCtrl.form.file.agent_not_extensions" style="width: 350px;" placeholder="Example: exe, msi" />
+										</div>
+									</div>
+                                    {% if not app.isCloud() %}
+										<div class="inner-group">
+											<label>
+												<h4>
+													Max file size an agent can upload.
+												</h4>
+												<span class="help-block">
+								<span class="label label-danger ng-hide" ng-show="EditCtrl.form.file.agent_max_file_size > maxUploadSize">Warning</span>
+								The max file size supported by your server is {{ ng_var('maxUploadSize | filesize_display') }}. <a href="{{ ng_href('server.file_uploads') }}">Learn more.</a>
+							</span>
+											</label>
+											<div>
+												<dp-filesize-with-unit ng-model="EditCtrl.form.file.agent_max_file_size"></dp-filesize-with-unit>
+											</div>
+										</div>
+                                    {% endif %}
+									<div class="inner-group">
+										<label style="display: block; margin-bottom: 4px;"><input type="checkbox" ng-model="EditCtrl.form.file.agent_validation" /> Require the agent to provide a value</label>
+										<p ng-show="EditCtrl.form.text.agent_validation && EditCtrl.form.file.agent_validation != '0'">
+											<label style="font-weight: normal">
+												<input type="checkbox" ng-model="EditCtrl.form.file.agent_validation_resolve" />
+												Only enable agent validation when the ticket is being resolved
+											</label>
+										</p>
+									</div>
+								</div>
+							</div>
+
+						</div>
+
+                        {###############################################################################################}
+                        {# bottom #}
 
 						{% block pre_bottomdefault_fields %}{% endblock %}
 

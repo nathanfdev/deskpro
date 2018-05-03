@@ -33,6 +33,7 @@ define ['moment', 'DeskPRO/Util/Util'], (moment, Util) ->
         },
         toggle: {
           label_text: '',
+          unchecked_text: '',
           user_validation:           '0',
           agent_validation:          '0',
           agent_validation_resolve:  false
@@ -90,6 +91,32 @@ define ['moment', 'DeskPRO/Util/Util'], (moment, Util) ->
         datalist: {
           usersource_id: '0',
           field_name: ''
+        },
+        url: {
+          allow_file:               false
+          user_validation:          '0'
+          agent_validation:         '0'
+          agent_validation_resolve: false
+        },
+        currency: {
+          currency_id:              null
+          user_validation:          '0'
+          agent_validation:         '0'
+          agent_validation_resolve: false
+        },
+        file: {
+          multiple:                    false
+          user_extensions_limit_mode:  'any'
+          user_must_extensions:        null
+          user_not_extensions:         null
+          user_validation:             false
+          user_max_file_size:          0
+          agent_extensions_limit_mode: 'any'
+          agent_must_extensions:       null
+          agent_not_extensions:        null
+          agent_validation:            false
+          agent_validation_resolve:    false
+          agent_max_file_size:         0
         }
       }
 
@@ -162,11 +189,16 @@ define ['moment', 'DeskPRO/Util/Util'], (moment, Util) ->
 
             if fieldModel.choices and fieldModel.choices.length
               formTypeOpts.options = fieldModel.choices
+            if formTypeOpts.field_type == 'radio'
+              formTypeOpts.none_choice = !!fieldModel.options.none_choice
+              if fieldModel.options.none_choice
+                formTypeOpts.none_choice_title = fieldModel.options.none_choice_title
 
             formTypeOpts.default_value = fieldModel.default_value
 
           when "toggle"
             formTypeOpts.label_text = fieldModel.options.label_text || ''
+            formTypeOpts.unchecked_text = fieldModel.options.unchecked_text || ''
 
             if fieldModel.options.validation_type
               formTypeOpts.user_validation = 'required'
@@ -217,6 +249,43 @@ define ['moment', 'DeskPRO/Util/Util'], (moment, Util) ->
           when "data", "datajson", "datalist"
             formTypeOpts.usersource_id = (parseInt(fieldModel.options.usersource_id || '0') || 0) + ""
             formTypeOpts.field_name    = fieldModel.options.field_name || ''
+
+          when "url"
+            formTypeOpts.allow_file = !!fieldModel.options.allow_file
+
+            if fieldModel.options.required
+              formTypeOpts.user_validation = 'required'
+            if fieldModel.options.agent_required
+              formTypeOpts.agent_validation = 'required'
+              if fieldModel.options.agent_validation_resolve
+                formTypeOpts.agent_validation_resolve = true
+
+          when "currency"
+            formTypeOpts.currency_id = fieldModel.options.currency_id
+
+            if fieldModel.options.required
+              formTypeOpts.user_validation = 'required'
+            if fieldModel.options.agent_required
+              formTypeOpts.agent_validation = 'required'
+              if fieldModel.options.agent_validation_resolve
+                formTypeOpts.agent_validation_resolve = true
+
+          when "file"
+            formTypeOpts.multiple                    = !!fieldModel.options.multiple
+            formTypeOpts.user_validation             = !!fieldModel.options.required
+            formTypeOpts.user_extensions_limit_mode  = fieldModel.options.user_extensions_limit_mode
+            formTypeOpts.user_must_extensions        = fieldModel.options.user_must_extensions
+            formTypeOpts.user_not_extensions         = fieldModel.options.user_not_extensions
+            formTypeOpts.user_max_file_size          = fieldModel.options.user_max_file_size
+            formTypeOpts.agent_extensions_limit_mode = fieldModel.options.agent_extensions_limit_mode
+            formTypeOpts.agent_must_extensions       = fieldModel.options.agent_must_extensions
+            formTypeOpts.agent_not_extensions        = fieldModel.options.agent_not_extensions
+            formTypeOpts.agent_max_file_size         = fieldModel.options.agent_max_file_size
+
+            if fieldModel.options.agent_required
+              formTypeOpts.agent_validation = true
+              if fieldModel.options.agent_validation_resolve
+                formTypeOpts.agent_validation_resolve = true
 
       if fieldModel.options.agent_validation_resolve
         formTypeOpts.agent_validation_resolve = true
@@ -289,10 +358,16 @@ define ['moment', 'DeskPRO/Util/Util'], (moment, Util) ->
             postData.agent_validation_type = 'required'
             postData.agent_min_length = 1
 
+          if formTypeOpts.field_type == 'radio'
+            postData.none_choice = formTypeOpts.none_choice
+            if formTypeOpts.none_choice
+              postData.none_choice_title = formTypeOpts.none_choice_title
+
         when "toggle"
           postData.handler_class = 'Application\\DeskPRO\\CustomFields\\Handler\\Toggle'
           postData.default_value = formTypeOpts.default_value
           postData.label_text = formTypeOpts.label_text
+          postData.unchecked_text = formTypeOpts.unchecked_text
 
           if formTypeOpts.user_validation == 'required'
             postData.validation_type = 'required'
@@ -353,6 +428,41 @@ define ['moment', 'DeskPRO/Util/Util'], (moment, Util) ->
           postData.handler_class = 'Application\\DeskPRO\\CustomFields\\Handler\\Data'
           postData.usersource_id = parseInt(formTypeOpts.usersource_id) || 0
           postData.field_name    = formTypeOpts.field_name
+
+        when "url"
+          postData.handler_class = 'Application\\DeskPRO\\CustomFields\\Handler\\Url'
+          postData.allow_file    = formTypeOpts.allow_file
+
+          if formTypeOpts.user_validation == 'required'
+            postData.required = true
+          if formTypeOpts.agent_validation == 'required'
+            postData.agent_required = true
+
+        when "currency"
+          postData.handler_class = 'Application\\DeskPRO\\CustomFields\\Handler\\Currency'
+          postData.currency_id = formTypeOpts.currency_id
+
+          if formTypeOpts.user_validation == 'required'
+            postData.required = true
+          if formTypeOpts.agent_validation == 'required'
+            postData.agent_required = true
+
+        when "file"
+          postData.handler_class               = 'Application\\DeskPRO\\CustomFields\\Handler\\File'
+          postData.multiple                    = formTypeOpts.multiple
+          postData.user_extensions_limit_mode  = formTypeOpts.user_extensions_limit_mode
+          postData.user_must_extensions        = formTypeOpts.user_must_extensions
+          postData.user_not_extensions         = formTypeOpts.user_not_extensions
+          postData.user_max_file_size          = formTypeOpts.user_max_file_size
+          postData.agent_extensions_limit_mode = formTypeOpts.agent_extensions_limit_mode
+          postData.agent_must_extensions       = formTypeOpts.agent_must_extensions
+          postData.agent_not_extensions        = formTypeOpts.agent_not_extensions
+          postData.agent_max_file_size         = formTypeOpts.agent_max_file_size
+
+          if formTypeOpts.user_validation
+            postData.required = true
+          if formTypeOpts.agent_validation
+            postData.agent_required = true
 
       if formTypeOpts.agent_validation_resolve
         postData.agent_validation_resolve = true

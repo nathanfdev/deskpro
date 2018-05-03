@@ -62,6 +62,7 @@
   "microplugin":                     "bower_components/microplugin/src/microplugin",
 
   "clipboard":                       "node_modules/clipboard/dist/clipboard.min",
+  "froalaEditor":                    "node_modules/froala-editor/js/froala_editor.min",
 
   "spectrum":                        "bower_components/spectrum/spectrum",
   "angularSpectrumColorpicker":      "bower_components/angular-spectrum-colorpicker/dist/angular-spectrum-colorpicker",
@@ -100,5 +101,6 @@
   "angularGridster":                 "bower_components/angular-gridster/src/angular-gridster",
   "datatables":                      "bower_components/datatables/media/js/jquery.dataTables",
   "datatables.scroller":             "bower_components/datatables-scroller/js/dataTables.scroller",
-  "datatables.pageResize":           "../pub/vendor/datatables/plugins/pageResize"
+  "datatables.pageResize":           "../pub/vendor/datatables/plugins/pageResize",
+  "handlebars":                      "../pub/node_modules/handlebars/dist/handlebars.amd"
 }

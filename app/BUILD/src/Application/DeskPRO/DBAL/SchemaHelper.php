@@ -1,31 +1,5 @@
 <?php
 
-/*
- * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
- * a British company located in London, England.
- *
- * All source code and content Copyright (c) 2017, DeskPRO Ltd.
- *
- * The license agreement under which this software is released
- * can be found at https://www.deskpro.com/eula/
- *
- * By using this software, you acknowledge having read the license
- * and agree to be bound thereby.
- *
- * Please note that DeskPRO is not free software. We release the full
- * source code for our software because we trust our users to pay us for
- * the huge investment in time and energy that has gone into both creating
- * this software and supporting our customers. By providing the source code
- * we preserve our customers' ability to modify, audit and learn from our
- * work. We have been developing DeskPRO since 2001, please help us make it
- * another decade.
- *
- * Like the work you see? Think you could make it better? We are always
- * looking for great developers to join us: http://www.deskpro.com/jobs/
- *
- * ~ Thanks, Everyone at Team DeskPRO
- */
-
 /**
  * DeskPRO.
  */
@@ -70,20 +44,27 @@ class SchemaHelper
     }
 
     /**
-     * @param string $table   The table that has the FK
-     * @param string $col     The column on the table that has the FK
-     * @param string $f_table The foreign table
-     * @param string $f_col   The column in the foreign table
+     * @param string       $table  The table that has the FK
+     * @param string|array $col    The column on the table that has the FK
+     * @param string       $fTable The foreign table
+     * @param string|array $fCol   The column in the foreign table
      *
      * @return \Doctrine\DBAL\Schema\ForeignKeyConstraint|null
      */
-    public function findForeignKey($table, $col, $f_table, $f_col)
+    public function findForeignKey($table, $col, $fTable, $fCol)
     {
+        if (!is_array($col)) {
+            $col = [$col];
+        }
+        if (!is_array($fCol)) {
+            $fCol = [$fCol];
+        }
+
         foreach ($this->getSchemaManager()->listTableForeignKeys($table) as $fk) {
             if (
-                $fk->getForeignTableName() == $f_table
-                && in_array($col, $fk->getLocalColumns())
-                && in_array($f_col, $fk->getForeignColumns())
+                $fk->getForeignTableName() === $fTable
+                && count($col) === count($fk->getLocalColumns()) && Arrays::isIn($col, $fk->getLocalColumns(), true, true)
+                && count($fCol) === count($fk->getForeignColumns()) && Arrays::isIn($fCol, $fk->getForeignColumns(), true, true)
             ) {
                 return $fk;
             }

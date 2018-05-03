@@ -1,45 +1,21 @@
 <?php
 
-/*
- * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
- * a British company located in London, England.
- *
- * All source code and content Copyright (c) 2017, DeskPRO Ltd.
- *
- * The license agreement under which this software is released
- * can be found at https://www.deskpro.com/eula/
- *
- * By using this software, you acknowledge having read the license
- * and agree to be bound thereby.
- *
- * Please note that DeskPRO is not free software. We release the full
- * source code for our software because we trust our users to pay us for
- * the huge investment in time and energy that has gone into both creating
- * this software and supporting our customers. By providing the source code
- * we preserve our customers' ability to modify, audit and learn from our
- * work. We have been developing DeskPRO since 2001, please help us make it
- * another decade.
- *
- * Like the work you see? Think you could make it better? We are always
- * looking for great developers to join us: http://www.deskpro.com/jobs/
- *
- * ~ Thanks, Everyone at Team DeskPRO
- */
-
-/**
- * DeskPRO.
- *
- * @category DependencyInjection
- */
-
 namespace Application\DeskPRO\DependencyInjection\SystemServices;
 
 use Application\DeskPRO\Attachments\AcceptAttachment;
 use Application\DeskPRO\DependencyInjection\DeskproContainer;
 use Orb\Util\Env as EnvUtil;
 
+/**
+ * Class AttachmentAccepterService.
+ */
 class AttachmentAccepterService
 {
+    /**
+     * @param DeskproContainer $container
+     *
+     * @return AcceptAttachment
+     */
     public static function create(DeskproContainer $container)
     {
         $accepter = new AcceptAttachment(
@@ -47,36 +23,35 @@ class AttachmentAccepterService
             $container->getBlobStorage()
         );
 
-        $effective_max_size = EnvUtil::getEffectiveMaxUploadSize();
+        $effectiveMaxUploadSize = EnvUtil::getEffectiveMaxUploadSize();
 
         foreach (['', 'emails.'] as $prefix) {
             foreach (['agent', 'user'] as $type) {
                 $res = new \Application\DeskPRO\Attachments\RestrictionSet();
 
-                $max_size = $container->getSetting('core.'.$prefix.'attach_'.$type.'_maxsize');
-
+                $maxSize = $container->getSetting('core.'.$prefix.'attach_'.$type.'_maxsize');
                 if ($prefix != 'emails.') {
-                    $max_size = min($effective_max_size, $max_size);
+                    $maxSize = min($effectiveMaxUploadSize, $maxSize);
                 }
 
-                $must_exts = $container->getSetting('core.'.$prefix.'attach_'.$type.'_must_exts');
-                $not_exts  = $container->getSetting('core.'.$prefix.'attach_'.$type.'_not_exts');
+                $mustExtensions = $container->getSetting('core.'.$prefix.'attach_'.$type.'_must_exts');
+                $notExtensions  = $container->getSetting('core.'.$prefix.'attach_'.$type.'_not_exts');
 
-                if ($must_exts) {
-                    $must_exts = explode(',', strtolower($must_exts));
-                    array_walk($must_exts, 'trim');
+                if ($mustExtensions) {
+                    $mustExtensions = explode(',', strtolower($mustExtensions));
+                    array_walk($mustExtensions, 'trim');
                 } else {
-                    $must_exts = null;
+                    $mustExtensions = null;
                 }
 
-                if ($not_exts) {
-                    $not_exts = explode(',', strtolower($not_exts));
-                    array_walk($not_exts, 'trim');
+                if ($notExtensions) {
+                    $notExtensions = explode(',', strtolower($notExtensions));
+                    array_walk($notExtensions, 'trim');
                 } else {
-                    $not_exts = null;
+                    $notExtensions = null;
                 }
 
-                $res->setMaxSize($max_size)->setAllowedExts($must_exts)->setDisallowedExts($not_exts);
+                $res->setMaxSize($maxSize)->setAllowedExts($mustExtensions)->setDisallowedExts($notExtensions);
 
                 $accepter->addRestrictionSet($prefix.$type, $res);
             }

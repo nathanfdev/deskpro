@@ -3,14 +3,16 @@
         <div class="report-access-avatars">
             <span class="title">On this dashboard:</span>
             <a
-                ng-repeat='permission in (filteredPermissions = dashboard.permissions | limitTo:6) track by $index '
+                ng-repeat='permission in (filteredPermissions = dashboard.permissions | filter:filterPermissions | limitTo:6) track by $index '
                 ng-if="permission.person"
                 class="avatar"
                 title="{{ ng_var('agents[permission.person].name') }}"
-                style="background-image: url({{ ng_var('agents[permission.person].avatar.url') }});">
+            >
+                <span class="text">{{ ng_var('getInitials(agents[permission.person])') }}</span>
+                <span class="image" style="background-image: url({{ ng_var('agents[permission.person].avatar.url') }});"/>
             </a>
-            <a ng-if="filteredPermissions.length > 6" class="avatar avatar-blank"><span>+{{ ng_var('filteredPermissions.length - 6') }}</span></a>
-            <a ng-click="openEdit('permissions')" class="avatar edit-access-link"><span>Edit Agent Access <i class="fa fa-user"></i></span></a>
+            <a ng-if="(dashboard.permissions | filter:filterPermissions).length > 6" class="avatar avatar-blank"><span>+{{ ng_var('(dashboard.permissions | filter:filterPermissions).length - 6') }}</span></a>
+            <a ng-if="canEdit()" ng-click="openEdit('permissions')" class="avatar edit-access-link"><span>Edit Agent Access <i class="fa fa-user"></i></span></a>
         </div>
     </div>
 

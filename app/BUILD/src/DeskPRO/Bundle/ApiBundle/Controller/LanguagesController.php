@@ -1,31 +1,5 @@
 <?php
 
-/*
- * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
- * a British company located in London, England.
- *
- * All source code and content Copyright (c) 2018, DeskPRO Ltd.
- *
- * The license agreement under which this software is released
- * can be found at https://www.deskpro.com/eula/
- *
- * By using this software, you acknowledge having read the license
- * and agree to be bound thereby.
- *
- * Please note that DeskPRO is not free software. We release the full
- * source code for our software because we trust our users to pay us for
- * the huge investment in time and energy that has gone into both creating
- * this software and supporting our customers. By providing the source code
- * we preserve our customers' ability to modify, audit and learn from our
- * work. We have been developing DeskPRO since 2001, please help us make it
- * another decade.
- *
- * Like the work you see? Think you could make it better? We are always
- * looking for great developers to join us: http://www.deskpro.com/jobs/
- *
- * ~ Thanks, Everyone at Team DeskPRO
- */
-
 namespace DeskPRO\Bundle\ApiBundle\Controller;
 
 use Application\DeskPRO\Entity\Language;
@@ -115,6 +89,7 @@ class LanguagesController extends CrudController
             'agent.general.all',
             'agent.general.article',
             'agent.general.are_you_sure',
+            'agent.general.assign_to_agent',
             'agent.general.attach_files',
             'agent.general.billing',
             'agent.general.brand',
@@ -131,6 +106,8 @@ class LanguagesController extends CrudController
             'agent.general.create',
             'agent.general.criteria',
             'agent.general.crm',
+            'agent.general.day',
+            'agent.general.days',
             'agent.general.delete',
             'agent.general.department',
             'agent.general.departments',
@@ -149,6 +126,9 @@ class LanguagesController extends CrudController
             'agent.general.follow_ups',
             'agent.general.global',
             'agent.general.groups',
+            'agent.general.hold',
+            'agent.general.hour',
+            'agent.general.hours',
             'agent.general.just_me',
             'agent.general.labels',
             'agent.general.language',
@@ -159,6 +139,8 @@ class LanguagesController extends CrudController
             'agent.general.mass_actions',
             'agent.general.me',
             'agent.general.merge',
+            'agent.general.minutes',
+            'agent.general.months',
             'agent.general.myself',
             'agent.general.name',
             'agent.general.new',
@@ -171,13 +153,16 @@ class LanguagesController extends CrudController
             'agent.general.org_position',
             'agent.general.pending',
             'agent.general.person',
+            'agent.general.please_select',
             'agent.general.portal',
             'agent.general.priority',
             'agent.general.product',
             'agent.general.publish',
             'agent.general.reply',
             'agent.general.reports',
+            'agent.general.run_macro',
             'agent.general.save',
+            'agent.general.saved',
             'agent.general.search',
             'agent.general.select',
             'agent.general.select_all',
@@ -197,9 +182,18 @@ class LanguagesController extends CrudController
             'agent.general.topic',
             'agent.general.type',
             'agent.general.types',
+            'agent.general.unassign',
             'agent.general.user',
+            'agent.general.when',
             'agent.general.workflow',
             'agent.general.your_profile',
+            'agent.grouping_option.status',
+            'agent.grouping_option.agent',
+            'agent.grouping_option.agent_team',
+            'agent.grouping_option.date_created',
+            'agent.grouping_option.department',
+            'agent.grouping_option.language',
+            'agent.grouping_option.urgency',
             'agent.onboarding.topbar_search_title',
             'agent.onboarding.topbar_search_text',
             'agent.onboarding.topbar_history_title',
@@ -223,6 +217,7 @@ class LanguagesController extends CrudController
             'agent.onboarding.new_im_position_text',
             'agent.onboarding.new_im_start_new_title',
             'agent.onboarding.new_im_start_new_text',
+            'agent.search.type_ticket',
             'agent.search.no_results_found',
             'agent.snippets.all_departments',
             'agent.snippets.all_snippets',
@@ -261,12 +256,18 @@ class LanguagesController extends CrudController
             'agent.snippets.your_language',
             'agent.tickets.add_reply_action',
             'agent.tickets.add_note_action',
+            'agent.tickets.assign_agent',
+            'agent.tickets.assign_team',
             'agent.tickets.count_agents',
             'agent.tickets.hold_btn',
+            'agent.tickets.put_on_hold',
+            'agent.tickets.run_macro_action',
             'agent.tickets.status_awaiting_agent',
             'agent.tickets.status_awaiting_user',
             'agent.tickets.status_resolved',
             'agent.tickets.unhold_btn',
+            'agent.tickets.unhold_ticket',
+            'agent.tickets.view_files',
             'agent.voice.incoming_call_title',
             'agent.voice.outgoing_call_title',
             'agent.voice.call_new_incoming',
@@ -555,8 +556,19 @@ class LanguagesController extends CrudController
             $language = $this->getManager()->getRepository(Language::class)->find($request->get('language'));
         }
 
-        $output = MapUtils::map($phrases, function ($idx, $id) use ($translate, $language) {
-            return [$id, $translate->phrase($id, [], $language)];
+        $format = 'twig';
+        if ($request->get('format')) {
+            $format = $request->get('format');
+        }
+
+        $output = MapUtils::map($phrases, function ($idx, $id) use ($translate, $language, $format) {
+            switch ($format) {
+                case 'icu':
+                    return [$id, $this->convertToIcu($translate->phrase($id, [], $language) ?: "!$id!")];
+                case 'twig':
+                default:
+                    return [$id, $translate->phrase($id, [], $language) ?: "!$id!"];
+            }
         });
 
         $res = new JsonResponse($output);
@@ -631,5 +643,17 @@ class LanguagesController extends CrudController
         $entityManager->flush();
 
         return new JsonResponse($phrases);
+    }
+
+    private function convertToIcu($phrase)
+    {
+        $phrase = str_replace('{{', '{', $phrase);
+        $phrase = str_replace('}}', '}', $phrase);
+        if (strpos($phrase, '|') !== false) {
+            $parts  = explode('|', $phrase);
+            $phrase = "{count, plural,\none {{$parts[0]}}\nother {{$parts[1]}}\n}";
+        }
+
+        return $phrase;
     }
 }

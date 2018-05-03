@@ -197,6 +197,20 @@
     {% endif %}
 {%- endblock time_widget -%}
 
+{# Currency #}
+
+{%- block money_widget -%}
+    <div class="dp-money-field {{ form.vars.currency_code }}">
+        {% if money_pattern matches '/^{{ widget }}/' %}
+            {{ block('form_widget_simple') }} <span>{{ money_pattern|replace({'{{ widget }}': ''}) }}</span>
+        {% elseif money_pattern matches '/{{ widget }}$/' %}
+            <span>{{ money_pattern|replace({'{{ widget }}': ''}) }}</span> {{ block('form_widget_simple') }}
+        {% else %}
+            {{ block('form_widget_simple') }}
+        {% endif %}
+    </div>
+{%- endblock money_widget -%}
+
 {# Labels #}
 
 {%- block form_label -%}
@@ -440,7 +454,7 @@
 
 {% block deskpro_recaptcha_widget %}
     {% spaceless %}
-        <script src="//www.google.com/recaptcha/api.js"></script>
+        <script src="//www.google.com/recaptcha/api.js" async defer></script>
         <div class="g-recaptcha" data-sitekey="{{ site_key }}"{% if secure_token %} data-stoken="{{ secure_token }}"{% endif %}></div>
     {% endspaceless %}
 {% endblock deskpro_recaptcha_widget %}
@@ -448,7 +462,7 @@
 {% block captcha_widget %}
 {% spaceless %}
     <div class="captcha-field">
-        <img id="{{ image_id }}" src="{{ root_url(false) }}{{ no_cache_url(captcha_code) }}" title="captcha" width="{{ captcha_width }}" height="{{ captcha_height }}" />
+        <img id="{{ image_id }}" src="{{ no_cache_url(captcha_code) }}" title="captcha" width="{{ captcha_width }}" height="{{ captcha_height }}" />
         {% if reload %}
             <script type="text/javascript">
                 function reload_{{ image_id }}() {
@@ -597,8 +611,58 @@ CUSTOM FIELD CHOICE (CustomDefAbstract type choices)
 END HEIRARCHY
 ###}
 
+{% block custom_field_file_collection_widget %}
+    <div class="bucket">
+        <div class="with-dpx">
+            <div
+                class="dpx-custom-field-attach"
+                data-multiple="{{ form.vars.multiple }}"
+                data-max-file-size="{{ form.vars.max_file_size | filesize_display }}"
+                data-extensions-limit-mode="{{ form.vars.extensions_limit_mode }}"
+                data-must-extensions="{{ form.vars.must_extensions|join(',') }}"
+                data-not-extensions="{{ form.vars.not_extensions|join(',') }}"
+                data-restriction-set="{{ form.vars.restriction_set }}"
+            >
+                {% if prototype is defined %}
+                    {%- set attr = attr|merge({'data-prototype': form_row(prototype) }) -%}
+                {% endif %}
+                {{- block('form_widget') -}}
+            </div>
+        </div>
+    </div>
+{% endblock %}
 
-
+{% block custom_field_file_widget %}
+    {% if form.vars.data %}
+    <div
+            class="attach-row"
+            data-blob-id="{{ form.vars.data.id }}"
+            data-blob-auth="{{ form.vars.data.authcode }}"
+            data-blob-filename="{{ form.vars.data.filename }}"
+            data-blob-download-url="{{ form.vars.data.downloadUrl }}"
+            data-blob-filesize="{{ form.vars.data.readableFilesize }}"
+            {% if form.vars.data.is_image %}data-blob-thumb-url="{{ form.vars.data.thumbnailUrl }}"{% endif %}
+    >
+        <div class="attach-row-icon" style="display: none;">
+            {{ file_icon(form.vars.data) }}
+        </div>
+        <div class="attach-row-errors">
+            {{ form_errors(form) }}
+        </div>
+        <a href="{{ form.vars.data.downloadUrl }}">
+            {% if form.vars.data.is_image %}
+                <img src="{{ form.vars.data.thumbnailUrl }}" alt=""/>
+            {% else %}
+                {{ content_icon(form.vars.data) }}
+            {% endif %}
+            {{ form.vars.data.filename }}
+        </a>
+        {{ form_widget(form) }}
+    </div>
+    {% else %}
+        {{ form_widget(form) }}
+    {% endif %}
+{% endblock %}
 
 
 {% block entity_hierarchy_widget %}

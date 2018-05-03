@@ -1,40 +1,16 @@
 <?php
 
-/*
- * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
- * a British company located in London, England.
- *
- * All source code and content Copyright (c) 2018, DeskPRO Ltd.
- *
- * The license agreement under which this software is released
- * can be found at https://www.deskpro.com/eula/
- *
- * By using this software, you acknowledge having read the license
- * and agree to be bound thereby.
- *
- * Please note that DeskPRO is not free software. We release the full
- * source code for our software because we trust our users to pay us for
- * the huge investment in time and energy that has gone into both creating
- * this software and supporting our customers. By providing the source code
- * we preserve our customers' ability to modify, audit and learn from our
- * work. We have been developing DeskPRO since 2001, please help us make it
- * another decade.
- *
- * Like the work you see? Think you could make it better? We are always
- * looking for great developers to join us: http://www.deskpro.com/jobs/
- *
- * ~ Thanks, Everyone at Team DeskPRO
- */
-
 namespace DeskPRO\Bundle\ReportBundle\Dpql2\Plugin\Hierarchy;
 
 use Application\DeskPRO\Entity\Hierarchy\Hierarchical;
 use DeskPRO\Bundle\ReportBundle\Dpql2\DpqlException;
+use DeskPRO\Bundle\ReportBundle\Dpql2\Helper\CustomDataHelper;
 use DeskPRO\Bundle\ReportBundle\Dpql2\Plugin\PluginInterface;
 use DeskPRO\Bundle\ReportBundle\Dpql2\SqlSelect;
 use DeskPRO\Bundle\ReportBundle\Dpql2\Statement\Part\Column;
 use DeskPRO\Bundle\ReportBundle\Dpql2\Statement\SelectPart;
 use DeskPRO\Bundle\ReportBundle\Reports\ResultMetadata;
+use DeskPRO\Component\Util\ListUtils;
 use Doctrine\DBAL\Connection;
 
 /**
@@ -42,6 +18,9 @@ use Doctrine\DBAL\Connection;
  */
 class HierarchyPlugin implements PluginInterface
 {
+    const ROLLUP_MODE_SUM = 'SUM';
+    const ROLLUP_MODE_AVG = 'AVG';
+
     /**
      * @var Connection
      */
@@ -88,17 +67,41 @@ class HierarchyPlugin implements PluginInterface
     private $titleFieldSql = null;
 
     /**
+     * @var bool
+     */
+    private $forceHierarchy = false;
+
+    /**
+     * @var CustomDataHelper
+     */
+    private $customDataHelper;
+
+    /**
+     * When rolling up counts, this is how we take child numbers
+     * and calculate it into the parent.
+     *
+     * @var string
+     */
+    private $rollupMode = self::ROLLUP_MODE_SUM;
+
+    /**
      * Constructor.
      *
      * @param Connection       $connection
      * @param HierarchySorting $sorting
      * @param SelectPart       $query
+     * @param CustomDataHelper $customDataHelper
      */
-    public function __construct(Connection $connection, HierarchySorting $sorting, SelectPart $query)
-    {
-        $this->connection = $connection;
-        $this->sorting    = $sorting;
-        $this->query      = $query;
+    public function __construct(
+        Connection $connection,
+        HierarchySorting $sorting,
+        SelectPart $query,
+        CustomDataHelper $customDataHelper
+    ) {
+        $this->connection       = $connection;
+        $this->sorting          = $sorting;
+        $this->query            = $query;
+        $this->customDataHelper = $customDataHelper;
     }
 
     /**
@@ -114,7 +117,7 @@ class HierarchyPlugin implements PluginInterface
      */
     public function beforeQuery()
     {
-        if (!Hierarchy::isHierarchical($this->sql)) {
+        if (!Hierarchy::isHierarchical($this->sql, $this->forceHierarchy)) {
             return;
         }
         $hierarchicalTargetTable = Hierarchy::getGroupingTargetTableReference($this->sql);
@@ -122,11 +125,17 @@ class HierarchyPlugin implements PluginInterface
         list($id, $title)        = Column::resolveTable($groupingTableName);
 
         if (strpos($groupingTableName, 'custom_def') === 0) {
-            $this->sql->addSelectField("`{$hierarchicalTargetTable}`.`$id` as 'hierarchy_id'");
-            $this->sql->addSelectField("`{$hierarchicalTargetTable}`.`options` as 'hierarchy_parent_options'");
-            $this->sql->addSelectField("`{$hierarchicalTargetTable}`.`$title` as 'hierarchy_title'");
+            $selectHierarchicalTargetTable = $hierarchicalTargetTable;
+            if (!preg_match('/_field$/', $selectHierarchicalTargetTable)) {
+                $selectHierarchicalTargetTable .= '_field';
+            }
 
-            $this->titleFieldSql = "`{$hierarchicalTargetTable}`.`$title`";
+            $this->sql->addSelectField("`{$selectHierarchicalTargetTable}`.`options` as 'hierarchy_parent_options'");
+            $this->sql->addSelectField("`{$hierarchicalTargetTable}`.`$id` as 'hierarchy_id'");
+            $this->sql->addSelectField("`{$hierarchicalTargetTable}`.`parent_id` as 'hierarchy_parent_id'");
+            $this->sql->addSelectField("`{$selectHierarchicalTargetTable}`.`$title` as 'hierarchy_title'");
+
+            $this->titleFieldSql = "`{$selectHierarchicalTargetTable}`.`$title`";
         } else {
             $this->sql->addSelectField("`$hierarchicalTargetTable`.`$id` as 'hierarchy_id'");
             $this->sql->addSelectField("`$hierarchicalTargetTable`.`parent_id` as 'hierarchy_parent_id'");
@@ -139,9 +148,9 @@ class HierarchyPlugin implements PluginInterface
     /**
      * {@inheritdoc}
      */
-    public function afterQuery(array $results)
+    public function afterQuery(array $results, ResultMetadata $metadata)
     {
-        if (!Hierarchy::isHierarchical($this->sql) || empty($results)) {
+        if (!Hierarchy::isHierarchical($this->sql, $this->forceHierarchy) || empty($results)) {
             return $results;
         }
 
@@ -173,14 +182,14 @@ class HierarchyPlugin implements PluginInterface
         $titleIndex    = $lastNum - 1;
         $parentIdIndex = $lastNum - 2;
         $idIndex       = $lastNum - 3;
+        $optionsIndex  = $lastNum - 4;
         foreach ($results as &$result) {
             $result['hierarchy_id']    = $result[$idIndex];
             $result['hierarchy_title'] = $path.$result[$titleIndex];
 
             if (strpos($this->titleFieldSql, 'custom_data_') !== false) {
-                $customFieldOptions = $result[$parentIdIndex];
+                $customFieldOptions = $result[$optionsIndex];
                 $decodedOptions     = @unserialize($customFieldOptions);
-
                 if (isset($decodedOptions['parent_id'])) {
                     $result['hierarchy_parent_id'] = $decodedOptions['parent_id'];
                 } else {
@@ -198,12 +207,15 @@ class HierarchyPlugin implements PluginInterface
         // Tree sort and count depth
         $countFieldNum = $this->getCountFieldNum();
         $results       = $this->sorting->sort(
+            $metadata,
             $results,
             Hierarchy::getGroupingTargetTable($this->sql),
             Hierarchy::getGroupingTargetTableReference($this->sql),
             $this->sql->getSelectFields(),
             $countFieldNum
         );
+
+        $origResults = $results;
 
         // Replace table entry name/title with hierarchy_title
         if (!is_null($titleFieldNum = $this->getTitleFieldNum())) {
@@ -216,13 +228,45 @@ class HierarchyPlugin implements PluginInterface
 
         // Init rollup counts if needed
         if ($this->query->withRollup() && !is_null($countFieldNum)) {
-            $results = HierarchyRollup::init($results);
+            $results = HierarchyRollup::init($results, $this->rollupMode);
         }
 
         // Limit depth if needed
         if ($this->hierarchyMinDepth > 0 || !is_null($this->hierarchyMaxDepth)) {
-            $results = HierarchyDepth::limitTo($this->hierarchyMinDepth, $this->hierarchyMaxDepth, $results);
+            $results = HierarchyDepth::limitTo($this->hierarchyMinDepth, $this->hierarchyMaxDepth, $results, $metadata, $this->rollupMode);
         }
+
+        // copy static values over into missing values on the parent options
+        // for example, label templates, value axies titles, etc
+        $results = ListUtils::map($results, function ($result) use ($origResults, $metadata) {
+            // we only care about generated values, and that is evident based on these '-' array item
+            if (!isset($result['-'])) {
+                return $result;
+            }
+
+            $firstOfGroup = ListUtils::first($origResults, function ($r) {
+                if (isset($r['-'])) {
+                    // looking for an actual value, which discounts generated values
+                    return false;
+                }
+
+                return true;
+            });
+
+            if (!$firstOfGroup) {
+                return $result;
+            }
+
+            foreach ($metadata->getSelectColumns() as $col) {
+                $colIdx = $col['resultId'] - 1;
+
+                if ($result[$colIdx] === '-') {
+                    $result[$colIdx] = $firstOfGroup[$colIdx];
+                }
+            }
+
+            return $result;
+        });
 
         return $results;
     }
@@ -232,13 +276,14 @@ class HierarchyPlugin implements PluginInterface
      */
     public function resultHandlerCallback(ResultMetadata $handler, array $results)
     {
-        if (!Hierarchy::isHierarchical($this->sql)) {
+        if (!Hierarchy::isHierarchical($this->sql, $this->forceHierarchy)) {
             return;
         }
-
-        $countFieldNum = $this->getCountFieldNum();
-        $handler->addGroupXColumn('', 'hierarchy_root_title', $countFieldNum ? $countFieldNum + 1 : 1);
-        $handler->addFlag(ResultMetadata::FLAG_HIERARCHICAL);
+        if (!$handler->hasFlag(ResultMetadata::FLAG_HIERARCHY_DESCENDS_FROM)) {
+            $countFieldNum = $this->getCountFieldNum();
+            $handler->addGroupXColumn('', 'hierarchy_root_title', $countFieldNum ? $countFieldNum + 1 : 1);
+            $handler->addFlag(ResultMetadata::FLAG_HIERARCHICAL);
+        }
     }
 
     /**
@@ -284,30 +329,82 @@ class HierarchyPlugin implements PluginInterface
     }
 
     /**
+     * @return bool
+     */
+    public function isForceHierarchy()
+    {
+        return $this->forceHierarchy;
+    }
+
+    /**
+     * @param bool $forceHierarchy
+     */
+    public function setForceHierarchy($forceHierarchy)
+    {
+        $this->forceHierarchy = $forceHierarchy;
+    }
+
+    /**
+     * @return string
+     */
+    public function getRollupMode()
+    {
+        return $this->rollupMode;
+    }
+
+    /**
+     * @param string $rollupMode
+     */
+    public function setRollupMode($rollupMode)
+    {
+        $this->rollupMode = $rollupMode;
+    }
+
+    /**
      * @throws DpqlException
      *
      * @return array
      */
     public function collectChildrenIds()
     {
-        $rootId     = $this->hierarchyDescendsFromId;
-        $repository = $this->query->getRepositoryByTable($this->hierarchyDescendsFromTable);
+        $rootId              = $this->hierarchyDescendsFromId;
+        $repository          = $this->query->getRepositoryByTable($this->hierarchyDescendsFromTable);
+        $customDataHierarchy = false;
+
+        if (strpos($this->hierarchyDescendsFromTable, 'custom_def_') === false) {
+            $root = $repository->find($rootId);
+        } else {
+            $customDataHierarchy = true;
+            $manager             = $this->customDataHelper->getFieldManager($repository->getTableName());
+            $root                = null;
+            foreach ($manager->getAllFields() as $field) {
+                if ($field['title'] === $this->hierarchyDescendsFromId) {
+                    $root = $field;
+                    break;
+                }
+            }
+        }
 
         /** @var Hierarchical $root */
-        if (!$root = $repository->find($rootId)) {
-            return [];
+        if (!$root) {
+            return [0]; // this prevents query from failing with wrong sql error
         }
+
         if (!$root instanceof Hierarchical) {
             throw new DpqlException("{$this->hierarchyDescendsFromTable} is not a Hierarchical entity");
         }
 
-        $children                        = $root->getChildren();
+        if (!$customDataHierarchy) {
+            $children = $root->getChildren();
+        } else {
+            $children = $root->getAllDescendants();
+        }
         is_array($children) or $children = $children->toArray();
         $children                        = array_map(function (Hierarchical $entity) {
             return $entity->getId();
         }, $children);
 
-        return $children;
+        return !empty($children) ? $children : [0]; // this prevents query from failing with wrong sql error
     }
 
     /**

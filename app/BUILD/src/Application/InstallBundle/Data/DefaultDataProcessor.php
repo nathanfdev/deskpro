@@ -1,31 +1,5 @@
 <?php
 
-/*
- * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
- * a British company located in London, England.
- *
- * All source code and content Copyright (c) 2017, DeskPRO Ltd.
- *
- * The license agreement under which this software is released
- * can be found at https://www.deskpro.com/eula/
- *
- * By using this software, you acknowledge having read the license
- * and agree to be bound thereby.
- *
- * Please note that DeskPRO is not free software. We release the full
- * source code for our software because we trust our users to pay us for
- * the huge investment in time and energy that has gone into both creating
- * this software and supporting our customers. By providing the source code
- * we preserve our customers' ability to modify, audit and learn from our
- * work. We have been developing DeskPRO since 2001, please help us make it
- * another decade.
- *
- * Like the work you see? Think you could make it better? We are always
- * looking for great developers to join us: http://www.deskpro.com/jobs/
- *
- * ~ Thanks, Everyone at Team DeskPRO
- */
-
 /**
  * DeskPRO.
  *
@@ -36,6 +10,9 @@ namespace Application\InstallBundle\Data;
 
 use Application\DeskPRO\DependencyInjection\DeskproContainer;
 use Application\DeskPRO\Monolog\NullLogger;
+use Application\InstallBundle\Data\DefaultData\AbstractDefaultData;
+use Application\InstallBundle\Data\DefaultData\NoOpData;
+use DpSys\CodePlugin\DpPlugins;
 use Orb\Util\DpStrings;
 use Orb\Util\Util;
 use Psr\Log\LoggerInterface;
@@ -67,6 +44,11 @@ class DefaultDataProcessor
      */
     private $logger;
 
+    /**
+     * @var array
+     */
+    private $extraOptions = [];
+
     public function __construct(DeskproContainer $container, $root_dir = null)
     {
         if ($root_dir === null) {
@@ -77,6 +59,22 @@ class DefaultDataProcessor
         $this->root_dir  = $root_dir;
 
         $this->logger = new NullLogger();
+    }
+
+    /**
+     * @return array
+     */
+    public function getExtraOptions()
+    {
+        return $this->extraOptions;
+    }
+
+    /**
+     * @param array $extraOptions
+     */
+    public function setExtraOptions($extraOptions)
+    {
+        $this->extraOptions = $extraOptions;
     }
 
     /**
@@ -155,10 +153,19 @@ class DefaultDataProcessor
             }
             $classname = 'Application\\InstallBundle\\Data\\DefaultData\\'.str_replace('.php', '', $f);
 
+            if ($classname === NoOpData::class) {
+                continue;
+            }
+
             if (class_exists($classname)) {
                 $this->data_classes[] = $classname;
             }
         }
+
+        $this->data_classes = array_merge(
+            $this->data_classes,
+            DpPlugins::getManager()->getExtraDefaultDataClasses()
+        );
 
         usort($this->data_classes, function ($a, $b) {
             $pri_a = $a::PRIORITY;
@@ -199,7 +206,7 @@ class DefaultDataProcessor
             $this->logger->info('Running install on '.Util::getBaseClassname($classname));
             $start_time = microtime(true);
 
-            $obj = new $classname($this->container, $this->logger);
+            $obj = $this->createDataClass($classname);
             $obj->runInstall();
 
             $this->data_info['installed'][] = $classname;
@@ -235,7 +242,7 @@ class DefaultDataProcessor
                 $this->logger->info('Running install via upgrade on '.Util::getBaseClassname($classname));
                 $start_time = microtime(true);
 
-                $obj = new $classname($this->container, $this->logger);
+                $obj = $this->createDataClass($classname);
                 $obj->runInstallViaUpgrade();
 
                 $this->data_info['installed'][] = $classname;
@@ -246,7 +253,7 @@ class DefaultDataProcessor
                 $this->logger->info('Running sync on '.Util::getBaseClassname($classname));
                 $start_time = microtime(true);
 
-                $obj = new $classname($this->container, $this->logger);
+                $obj = $this->createDataClass($classname);
                 $obj->runSync();
 
                 $this->logger->info(sprintf('... done in %.4fs', microtime(true) - $start_time));
@@ -280,7 +287,7 @@ class DefaultDataProcessor
                 $this->logger->info('Running install via upgrade on '.Util::getBaseClassname($classname));
                 $start_time = microtime(true);
 
-                $obj = new $classname($this->container, $this->logger);
+                $obj = $this->createDataClass($classname);
                 $obj->runInstallViaUpgrade();
 
                 $this->data_info['installed'][] = $classname;
@@ -291,11 +298,23 @@ class DefaultDataProcessor
                 $this->logger->info('Running reset on '.Util::getBaseClassname($classname));
                 $start_time = microtime(true);
 
-                $obj = new $classname($this->container, $this->logger);
+                $obj = $this->createDataClass($classname);
                 $obj->runReset();
 
                 $this->logger->info(sprintf('... done in %.4fs', microtime(true) - $start_time));
             }
         }
+    }
+
+    /**
+     * @param string $classname
+     *
+     * @return AbstractDefaultData
+     */
+    private function createDataClass($classname)
+    {
+        $classname = DpPlugins::getManager()->getRewrittenClassName($classname);
+
+        return new $classname($this->container, $this->logger, $this->extraOptions);
     }
 }

@@ -78,6 +78,8 @@ rm -rf $DP_DIR/app/BUILD/.phan
 # can mess up the archive anyway
 rm -rf $DP_DIR/app/BUILD/tests
 
+rm -rf $DP_DIR/app/BUILD/vendor-src/yuicompressor
+
 ########################################################################################################################
 # Cleanup web vendors
 ########################################################################################################################
@@ -230,12 +232,19 @@ cd $DIR_ROOT/www/assets/BUILD/pub/node_modules
 find . -type d -maxdepth 1 ! \( \
         -name '.' -o -name '..' \
         -o -name 'bourbon' \
+        -o -name 'handlebars' \
         -o -name 'bourbon-neat' \
         -o -name 'bi-app-sass' \
         -o -name 'html5shiv' \
         -o -name 'font-awesome' \
         -o -name 'hover.css' \
 \) -exec rm -rf {} \;
+
+########################################################################################################################
+# Build deps json files
+########################################################################################################################
+
+$DIR_ROOT/dev/bin/gen-lic-list.sh
 
 ########################################################################################################################
 # Make sure cleaned files arent in checksum file

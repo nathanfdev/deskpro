@@ -22,12 +22,14 @@ export class DpxDateWidget extends PageWidget {
     const calendar = $el.data('calendar');
 
     if (!calendar || calendar === 'gregorian') {
+      let dayOfWeekStart = 0;
       if (window.DESKPRO_LOCALE) {
         // datetime picker has locale for month/day names
         $.datetimepicker.setLocale(window.DESKPRO_LOCALE.toLowerCase().split('_')[0]);
 
         // we have to use moment for formatting tho
         moment.locale(window.DESKPRO_LOCALE.toLowerCase().replace('_', '-'));
+        dayOfWeekStart = moment.localeData(window.DESKPRO_LOCALE.toLowerCase().replace('_', '-')).firstDayOfWeek();
       }
 
       $.datetimepicker.setDateFormatter({
@@ -83,6 +85,7 @@ export class DpxDateWidget extends PageWidget {
         format,
         formatTime: 'LT',
         formatDate: 'L',
+        dayOfWeekStart,
 
         closeOnDateSelect: true,
         scrollInput:       false,
@@ -203,6 +206,7 @@ export class DpxDateWidget extends PageWidget {
         calendar:      $.calendars.instance('islamic', 'ar'),
         ownerDocument: this.options.ownerDocument || document,
         contentWindow: this.options.contentWindow || window,
+        firstDay:      0,
 
         onSelect(dates) {
           const date = dates[0];

@@ -1,31 +1,5 @@
 <?php
 
-/*
- * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
- * a British company located in London, England.
- *
- * All source code and content Copyright (c) 2017, DeskPRO Ltd.
- *
- * The license agreement under which this software is released
- * can be found at https://www.deskpro.com/eula/
- *
- * By using this software, you acknowledge having read the license
- * and agree to be bound thereby.
- *
- * Please note that DeskPRO is not free software. We release the full
- * source code for our software because we trust our users to pay us for
- * the huge investment in time and energy that has gone into both creating
- * this software and supporting our customers. By providing the source code
- * we preserve our customers' ability to modify, audit and learn from our
- * work. We have been developing DeskPRO since 2001, please help us make it
- * another decade.
- *
- * Like the work you see? Think you could make it better? We are always
- * looking for great developers to join us: http://www.deskpro.com/jobs/
- *
- * ~ Thanks, Everyone at Team DeskPRO
- */
-
 /**
  * DeskPRO.
  *
@@ -48,11 +22,13 @@ use Application\DeskPRO\HttpFoundation\Session;
 use Application\DeskPRO\Tickets\ExecutorContextInterface;
 use Application\DeskPRO\Usersource\UsersourceInfo;
 use Application\DeskPRO\Usersource\UsersourceManager;
+use DeskPRO\Bundle\AppBundle\Entity\Currency;
 use DeskPRO\Bundle\AppBundle\Routing\RouterUtils;
 use DeskPRO\Bundle\AppBundle\Settings\BrandAwareSettingsResolver;
 use DeskPRO\Bundle\AppBundle\Twig\TwigTemplateRenderer;
 use DeskPRO\Component\Filesystem\SafeFile;
 use DeskPRO\Component\Util\RegexUtils;
+use DpSys\CodePlugin\DpPlugins;
 use DpSys\License;
 use Orb\Auth\Adapter\IframeSsoInterface;
 use Orb\Auth\Adapter\JsSsoInterface;
@@ -157,6 +133,7 @@ class TemplatingExtension extends \Twig_Extension
             new \Twig_SimpleFunction('captcha_html', [$this, 'captchaHtml'], ['is_safe' => ['html']]),
             new \Twig_SimpleFunction('include_file', [$this, 'includeFile'], ['is_safe' => ['html']]),
             new \Twig_SimpleFunction('include_php_file', [$this, 'includePhpFile'], ['is_safe' => ['html']]),
+            new \Twig_SimpleFunction('include_code_plugin', [$this, 'includeCodePlugin'], ['is_safe' => ['html']]),
             new \Twig_SimpleFunction('var_dump', [$this, 'dumpVar']),
             new \Twig_SimpleFunction('dp_copyright', [$this, 'staticGetUserCopyrightHtml'], ['is_safe' => ['html']]),
             new \Twig_SimpleFunction('dp_widgets', [$this, 'getWidgets'], ['is_safe' => ['html']]),
@@ -189,6 +166,7 @@ class TemplatingExtension extends \Twig_Extension
             // override so we can suppress errors where templates are out of date
             new \Twig_SimpleFunction('url', [$this, 'getUrl']),
             new \Twig_SimpleFunction('has_login_form', [$this, 'hasLoginForm'], []),
+            new \Twig_SimpleFunction('get_currency', [$this, 'getCurrency'], []),
         ];
     }
 
@@ -1045,6 +1023,7 @@ class TemplatingExtension extends \Twig_Extension
         if (is_object($display_array)) {
             $display_array = $display_array->toArray();
         }
+
         $vars = array_merge($display_array, $vars);
 
         return $handler->renderHtml($display_array['value'], $vars);
@@ -1272,6 +1251,11 @@ class TemplatingExtension extends \Twig_Extension
         $content = ob_get_clean();
 
         return $content;
+    }
+
+    public function includeCodePlugin($locationName)
+    {
+        return DpPlugins::getManager()->getCustomHtml($locationName, $this->container);
     }
 
     public function dumpVar($var)
@@ -1937,5 +1921,19 @@ class TemplatingExtension extends \Twig_Extension
         }
 
         return $count;
+    }
+
+    /**
+     * @param int $currencyId
+     *
+     * @return string
+     */
+    public function getCurrency($currencyId)
+    {
+        if ($currencyId) {
+            return $this->getContainer()->getEm()->getRepository(Currency::class)->find($currencyId);
+        }
+
+        return;
     }
 }

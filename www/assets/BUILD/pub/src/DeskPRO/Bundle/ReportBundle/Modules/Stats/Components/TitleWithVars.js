@@ -25,8 +25,25 @@ class InlineSelectComp extends React.Component {
     this.state = { isOpen: false };
   }
 
+  componentDidMount() {
+    const pos  = this.$el.offset();
+    const posLeft = pos.left;
+    const posTop  = pos.top + 20;
+
+    document.addEventListener('scroll', this.refreshOnScroll, true);
+
+    // eslint-disable-next-line react/no-did-mount-set-state
+    this.setState({
+      posTop, posLeft
+    });
+  }
+
   componentDidUpdate() {
     this.refreshSize();
+  }
+
+  componentWillUnmount() {
+    document.removeEventListener('scroll', this.refreshOnScroll, true);
   }
 
   onClick = (ev, value) => {
@@ -35,6 +52,20 @@ class InlineSelectComp extends React.Component {
       this.props.onChange(value);
       this.setState({ isOpen: false });
     }
+  };
+
+  refreshOnScroll = () => {
+    const pos  = this.$el.offset();
+    const posLeft = pos.left;
+    const posTop  = pos.top + 20;
+
+    this.setState({
+      posTop, posLeft
+    }, () => {
+      if (this.state.isOpen) {
+        this.refreshSize();
+      }
+    });
   };
 
   handleClickOutside = () => {
@@ -112,7 +143,7 @@ class InlineSelectComp extends React.Component {
     return (
       <div ref={(el) => { this.$el = $(el); }} className="inline-select">
         <span className="inline-select-label" onClick={this.open}>
-          {valueOpt ? (valueOpt[0].label || valueOpt[0].value) : defaultText}
+          {valueOpt[0] ? (valueOpt[0].label || valueOpt[0].value) : defaultText}
         </span>
         <span className="inline-select-arrow" onClick={this.open}>▼</span>
         <Portal isOpened={this.state.isOpen}>{this.renderMenu()}</Portal>
@@ -220,6 +251,15 @@ class TitleWithVars extends React.Component {
         case 'fields':
         case 'statuses':
         case 'orders':
+        case 'values':
+        case 'ticket_custom_fields':
+        case 'org_custom_fields':
+        case 'user_custom_fields':
+        case 'product_custom_fields':
+        case 'article_custom_fields':
+        case 'feedback_custom_fields':
+        case 'billing_custom_fields':
+        case 'chat_custom_fields':
           return this.renderGroupSelectBox(entry);
         default:
           return varName;

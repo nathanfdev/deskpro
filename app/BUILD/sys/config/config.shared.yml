@@ -6,6 +6,7 @@ parameters:
   doctrine.dbal.connection_factory.class: DeskPRO\Bundle\AppBundle\Doctrine\ConnectionFactory
   templating.cache_warmer.template_paths.class: DeskPRO\Bundle\AppBundle\CacheWarmer\TemplatePathsCacheWarmer
   jms_serializer.twig_extension.class: DeskPRO\Bundle\AppBundle\Twig\SerializerExtension
+  jms_serializer.json_serialization_visitor.class: DeskPRO\Bundle\AppBundle\Serializer\Visitor\JsonSerializationVisitor
   validator.email.class: DeskPRO\Bundle\AppBundle\Validator\Constraints\Person\Email\EmailFormatValidator
   portal.session.name: sess_data
   security.encoder_factory.generic.class: DeskPRO\Bundle\AppBundle\Security\Encoder\EncoderFactory
@@ -39,14 +40,6 @@ monolog:
     main:
       type:     service
       id:       monolog.handler.deskpro_fingers_crossed
-    term_engine:
-      type: service
-      id: term_engine.log_handler
-      channels:
-        - "dp.tickets.filters.tengine.dbal.engine"
-        - "dp.tickets.filters.tengine.dbal.compiler"
-        - "dp.tickets.filters.tengine.php.engine"
-        - "dp.tickets.filters.tengine.php.compiler"
 
 doctrine_mongodb:
     connections:

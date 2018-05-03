@@ -1,31 +1,5 @@
 <?php
 
-/*
- * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
- * a British company located in London, England.
- *
- * All source code and content Copyright (c) 2018, DeskPRO Ltd.
- *
- * The license agreement under which this software is released
- * can be found at https://www.deskpro.com/eula/
- *
- * By using this software, you acknowledge having read the license
- * and agree to be bound thereby.
- *
- * Please note that DeskPRO is not free software. We release the full
- * source code for our software because we trust our users to pay us for
- * the huge investment in time and energy that has gone into both creating
- * this software and supporting our customers. By providing the source code
- * we preserve our customers' ability to modify, audit and learn from our
- * work. We have been developing DeskPRO since 2001, please help us make it
- * another decade.
- *
- * Like the work you see? Think you could make it better? We are always
- * looking for great developers to join us: http://www.deskpro.com/jobs/
- *
- * ~ Thanks, Everyone at Team DeskPRO
- */
-
 /**
  * DeskPRO.
  */
@@ -429,6 +403,77 @@ class MapUtils
         }
 
         return $diff;
+    }
+
+    /**
+     * Sorts a map using the return value of $fn(item).
+     *
+     * The return value of an item is typically an integer. If it is not,
+     * we will try to handle it th ebest we can (e.g. true/false, nulls, objects with toString, etc).
+     *
+     * @param \Traversable|array $array
+     * @param callable           $fn      Accepts key, value
+     * @param bool               $reverse
+     *
+     * @return array
+     */
+    public static function sortByFnValue($array, $fn, $reverse = false)
+    {
+        $procType = function ($val) {
+            $type = strtolower(gettype($val));
+
+            switch ($type) {
+                case $val instanceof \Countable:
+                    return count($val);
+                case 'null':
+                    return 2;
+                case 'boolean':
+                    return $val ? -1 : 1;
+                case 'array':
+                    return count($val);
+                case 'object':
+                    if (method_exists($val, '__toString')) {
+                        return $val->__toString();
+                    } else {
+                        return 1;
+                    }
+                case 'integer':
+                case 'double':
+                case 'float':
+                    return $val;
+                case 'resource':
+                    return 0;
+                default:
+                    return 0;
+            }
+        };
+
+        $sortedKeys = array_keys($array);
+        usort($sortedKeys, function ($a, $b) use ($fn, $procType, $reverse, $array) {
+            $aVal = $procType($fn($a, $array[$a]));
+            $bVal = $procType($fn($b, $array[$b]));
+
+            if ($aVal === $bVal) {
+                $order = 0;
+            } elseif (is_string($aVal) && is_string($bVal)) {
+                $order = strcmp($aVal, $bVal);
+            } else {
+                $order = $aVal < $bVal ? -1 : 1;
+            }
+
+            if ($reverse) {
+                $order = $order * -1;
+            }
+
+            return $order;
+        });
+
+        $array2 = [];
+        foreach ($sortedKeys as $k) {
+            $array2[$k] = $array[$k];
+        }
+
+        return $array2;
     }
 
     /**

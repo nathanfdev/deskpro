@@ -35,14 +35,14 @@ pageMeta.fragmentClass = 'DeskPRO.Agent.PageFragment.SettingsPage.Profile';
 	</div>
 
 	<div class="dp-form">
-		<div class="dp-form-row">
+		<div class="dp-form-row name">
 			<div class="dp-form-label"><label>{{ phrase('agent.general.name') }}</label></div>
 			<div class="dp-form-input">
 				{{ form_widget(form.name) }}
 			</div>
 		</div>
 
-		<div class="dp-form-row">
+		<div class="dp-form-row override_name">
 			<div class="dp-form-label"><label>{{ phrase('agent.settings.override_name') }}</label></div>
 			<div class="dp-form-input">
 				{{ form_widget(form.override_display_name) }}
@@ -50,7 +50,7 @@ pageMeta.fragmentClass = 'DeskPRO.Agent.PageFragment.SettingsPage.Profile';
 			</div>
 		</div>
 
-		<div class="dp-form-row">
+		<div class="dp-form-row emails">
 			<div class="dp-form-label"><label>{{ phrase('agent.general.email') }}</label></div>
 			<div class="dp-form-input">
 				{{ form_widget(form.email, {'attr': {'id': 'settings_profile_email'}}) }}
@@ -73,7 +73,7 @@ pageMeta.fragmentClass = 'DeskPRO.Agent.PageFragment.SettingsPage.Profile';
 			</div>
 		</div>
 
-		<div class="dp-form-row">
+		<div class="dp-form-row phone_number">
 			<div class="dp-form-label"><label>{{ phrase('agent.general.phone_number') }}</label></div>
 			<div class="dp-form-input">
 				{{ form_widget(form.primary_phone.number) }}
@@ -105,7 +105,7 @@ pageMeta.fragmentClass = 'DeskPRO.Agent.PageFragment.SettingsPage.Profile';
 			</div>
 		{% endif %}
 
-		<div class="dp-form-row">
+		<div class="dp-form-row timezone">
 			<div class="dp-form-label"><label>{{ phrase('agent.general.timezone') }}</label></div>
 			<div class="dp-form-input">
 				{{ form_widget(form.timezone) }}
@@ -113,7 +113,7 @@ pageMeta.fragmentClass = 'DeskPRO.Agent.PageFragment.SettingsPage.Profile';
 		</div>
 
 		{% if app.getLanguages().isMultiLang() %}
-			<div class="dp-form-row">
+			<div class="dp-form-row language">
 				<div class="dp-form-label"><label>{{ phrase('agent.general.language') }}</label></div>
 				<div class="dp-form-input">
 					{{ form_widget(form.language_id) }}
@@ -169,7 +169,7 @@ pageMeta.fragmentClass = 'DeskPRO.Agent.PageFragment.SettingsPage.Profile';
 				<button class="clean-white enable-desktop-notifications">{{ phrase('agent.settings.desktop_notifs_enable') }}</button>
 				<div class="dp-desktop-notifications-enabled">
 					<div>{{ phrase('agent.settings.desktop_notifs_are_enabled') }}</div>
-					<div>{{ phrase('agent.settings.desktop_notifs_autohide') }} {{ form_widget(form.auto_dismiss_notifications) }}</div>
+					<div>{{ phrase('agent.settings.desktop_notifs_autohide') }} {{ form_widget(form.auto_dismiss_notifications) }} <span class="small-light-icon tipped" data-tipped-options="maxWidth: 250" title="{{ phrase('agent.settings.desktop_notifs_tip') }}"></span></div>
 					<div><button class="clean-white generate-test-notification">{{ phrase('agent.settings.desktop_notifs_test') }}</button></div>
 				</div>
 				<div class="dp-desktop-notifications-disabled" style="display:none">
@@ -181,7 +181,7 @@ pageMeta.fragmentClass = 'DeskPRO.Agent.PageFragment.SettingsPage.Profile';
 			</div>
 		</div>
 
-		<div class="dp-form-row" >
+		<div class="dp-form-row ticket_prefs">
 			<div class="dp-form-label"><label>{{ phrase('agent.general.tickets') }}</label></div>
 			<div class="dp-form-input">
 				{{ phrase('agent.settings.auto_close_ticket_tabs') }}
@@ -197,7 +197,7 @@ pageMeta.fragmentClass = 'DeskPRO.Agent.PageFragment.SettingsPage.Profile';
 			</div>
 		</div>
 
-		<div class="dp-form-row">
+		<div class="dp-form-row chat_prefs">
 			<div class="dp-form-label"><label>{{ phrase('agent.general.chat') }}</label></div>
 			<div class="dp-form-input">
 				<label>{{ form_widget(form.hide_claimed_chat) }} {{ phrase('agent.settings.chat_immediate_dismiss') }}</label>
@@ -206,7 +206,7 @@ pageMeta.fragmentClass = 'DeskPRO.Agent.PageFragment.SettingsPage.Profile';
 
 		{% set assign_team_setting = (app.getSetting('core_tickets.new_assignteam') == 'assign' or app.getSetting('core_tickets.reply_assignteam_assigned') == 'assign' or app.getSetting('core_tickets.reply_assignteam_unassigned') == 'assign') %}
 		{% if app.user.getAgent().getTeams()|length >= 2 and assign_team_setting %}
-			<div class="dp-form-row">
+			<div class="dp-form-row default_team">
 				<div class="dp-form-label"><label>{{ phrase('agent.settings.default_team') }}</label></div>
 				<div class="dp-form-input">
 					<select name="settings_profile[default_team_id]">
@@ -219,14 +219,14 @@ pageMeta.fragmentClass = 'DeskPRO.Agent.PageFragment.SettingsPage.Profile';
 		{% endif %}
 
 		{% if app.user.getApiToken() %}
-			<div class="dp-form-row">
+			<div class="dp-form-row reset_api_token">
 				<div class="dp-form-label"><label>{{ phrase('agent.general.api_token') }}</label></div>
 				<div class="dp-form-input">
 					<label><input type="checkbox" name="settings_profile[reset_api_token]" value="1" /> {{ phrase('agent.settings.reset_api_token') }}</label>
 				</div>
 			</div>
 		{% endif %}
-        <div class="dp-form-row">
+        <div class="dp-form-row setup_device_token">
             <div class="dp-form-label"><label>{{ phrase('agent.general.setup_device_token') }}</label></div>
             <div class="dp-form-input">
                 <div class="dp-device-qr-code">

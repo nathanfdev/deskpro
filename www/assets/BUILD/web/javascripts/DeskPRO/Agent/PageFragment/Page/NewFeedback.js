@@ -28,6 +28,7 @@ DeskPRO.Agent.PageFragment.Page.NewFeedback = new Orb.Class({
 		$('button.submit-trigger', this.wrapper).on('click', this.submit.bind(this));
 
 		this._initCategorySection();
+    this._initUserSection();
 		this._initTitleSection();
 		this._initContentSection();
 		this._initOtherSection();
@@ -138,6 +139,54 @@ DeskPRO.Agent.PageFragment.Page.NewFeedback = new Orb.Class({
 	},
 
 	//#################################################################
+	//# User section
+	//#################################################################
+
+	_initUserSection: function() {
+		var self = this;
+		var searchbox = this.getEl('user_searchbox');
+		var userfields = this.getEl('user_choice');
+		var rechooseBtn = this.getEl('switch_user');
+
+		rechooseBtn.on('click', function(ev) {
+			ev.preventDefault(); // default would be submitting the ticket form
+			showUserChoice();
+		});
+
+		var showUserChoice = function() {
+			userfields.empty();
+			userfields.hide();
+			searchbox.show();
+			self.getEl('choose_user').show();
+			rechooseBtn.hide();
+		};
+
+		var placeUserRow = function(personId, name, email) {
+
+      var tplHtml = DeskPRO_Window.util.getPlainTpl($('.user-selected-tpl', self.getEl('choose_user')));
+      var row = $(tplHtml);
+      $('.user-name', row).text(name);
+      $('.user-email', row).text(email);
+      row.data('route', 'person:/agent/people/'+personId);
+
+      userfields.empty();
+      userfields.html(row);
+
+      self.getEl('choose_user').hide();
+      rechooseBtn.show();
+      searchbox.data('handler').close();
+      userfields.show();
+    };
+
+		searchbox.bind('personsearchboxclick', function(ev, personId, name, email, sb) {
+      $('input.person-id', searchbox).val(personId);
+      placeUserRow(personId, name, email);
+			sb.close();
+			sb.reset();
+		});
+	},
+
+	//#################################################################
 	//# Title section
 	//#################################################################
 
@@ -169,23 +218,24 @@ DeskPRO.Agent.PageFragment.Page.NewFeedback = new Orb.Class({
 
 		var self = this;
 
-		this.getEl('content').css({
-			width: this.wrapper.width() - 150
-		});
-
 		// Make the size of the message box based off of the height of the window
 		var h = $(window).height();
-		this.getEl('content').css('height', Math.max(h - 500, 200));
 
-		DP.rteTextarea(this.getEl('content'), {
-			setup: function(ed) {
-				ed.onKeyPress.add(function() {
-					if (self.stateSaver) {
-						self.stateSaver.triggerChange();
-					}
-				});
-			}
+		var txt = this.getEl('content');
+    var contentHeight = 500;
+    if (this.getEl('linked_ticket_section').length) {
+      contentHeight += 150;
+    }
+
+    window.LegacyRteTextarea.init(txt, {
+			height: Math.max(h - contentHeight, 150)
 		});
+
+    txt.on('froalaEditor.keypress', function () {
+      if (self.stateSaver) {
+        self.editStateSaver.triggerChange();
+      }
+    });
 	},
 
 	//#########################################################################
@@ -194,57 +244,32 @@ DeskPRO.Agent.PageFragment.Page.NewFeedback = new Orb.Class({
 
 	_initOtherSection: function() {
 		var self = this;
-		this.otherTabs = new DeskPRO.UI.SimpleTabs({
-			triggerElements: $('li', this.getEl('other_props_tabs')),
-			context: this.getEl('other_props_tabs_content'),
-			autoSelectFirst: false,
-			onTabSwitch: function(eventData) {
-				if (!self.labelsInput && eventData.tabContent.hasClass('tab-properties')) {
-					self.labelsInput = new DeskPRO.UI.LabelsInput({
-						type: 'feedback',
-						fieldName: 'newfeedback[labels]',
-						input: $(".tags-wrap input", eventData.tabContent),
-						onChange: function() {
-							if (self.stateSaver) {
-								self.stateSaver.triggerChange();
-							}
-						}
-					});
-					self.ownObject(self.labelsInput);
-				}
-			},
-			onTabClick: (function(ev) {
-				var contentWrap = this.getEl('other_props_tabs_content');
-				var navWrap = this.getEl('other_props_tabs_wrap');
-				var tab = ev.tabEl;
 
-				// Toggle content state if we're clicking for the first time,
-				// or re-clicking a tab
-				if (!$('.on', navWrap).length || tab.is('.on')) {
-					if (contentWrap.is(':visible')) {
-						contentWrap.hide();
-						navWrap.removeClass('on');
-					} else {
-						contentWrap.show();
-						navWrap.addClass('on');
-					}
-				}
-			}).bind(this)
-		});
-		this.ownObject(this.otherTabs);
+    // Labels
+    self.labelsInput = new DeskPRO.UI.LabelsInput({
+      type: 'feedback',
+      fieldName: 'newfeedback[labels]',
+      input: $(".tags-wrap.article-tags input", self.wrapper),
+      onChange: function() {
+        if (self.stateSaver) {
+          self.stateSaver.triggerChange();
+        }
+      }
+    });
+    self.ownObject(self.labelsInput);
 
-		// Attachments
-		DeskPRO_Window.util.fileupload(this.wrapper, { page: this });
-		var list = $('.file-list', this.wrapper);
-		$('input', list[0]).live('click', function() {
-			var el = $(this);
-			var li = el.parent();
-			if (el.is(':checked')) {
-				li.removeClass('unchecked');
-			} else {
-				li.addClass('unchecked');
-			}
-			self.updateUi();
-		});
-	}
+    // Attachments
+    DeskPRO_Window.util.fileupload(this.wrapper, { page: this });
+    var list = $('.file-list', this.wrapper);
+    $('input', list[0]).live('click', function() {
+      var el = $(this);
+      var li = el.parent();
+      if (el.is(':checked')) {
+        li.removeClass('unchecked');
+      } else {
+        li.addClass('unchecked');
+      }
+      self.updateUi();
+    });
+  }
 });

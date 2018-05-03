@@ -1,31 +1,5 @@
 <?php
 
-/*
- * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
- * a British company located in London, England.
- *
- * All source code and content Copyright (c) 2018, DeskPRO Ltd.
- *
- * The license agreement under which this software is released
- * can be found at https://www.deskpro.com/eula/
- *
- * By using this software, you acknowledge having read the license
- * and agree to be bound thereby.
- *
- * Please note that DeskPRO is not free software. We release the full
- * source code for our software because we trust our users to pay us for
- * the huge investment in time and energy that has gone into both creating
- * this software and supporting our customers. By providing the source code
- * we preserve our customers' ability to modify, audit and learn from our
- * work. We have been developing DeskPRO since 2001, please help us make it
- * another decade.
- *
- * Like the work you see? Think you could make it better? We are always
- * looking for great developers to join us: http://www.deskpro.com/jobs/
- *
- * ~ Thanks, Everyone at Team DeskPRO
- */
-
 /**
  * DeskPRO.
  *
@@ -42,6 +16,7 @@ use Application\DeskPRO\Tickets\ExecutorContext;
 use Application\DeskPRO\Tickets\TicketChangeTracker;
 use DeskPRO\Bundle\AppBundle\Entity\CustomPerDataOwnerInterface;
 use DeskPRO\Bundle\AppBundle\Entity\CustomPerDataTrait;
+use DeskPRO\Bundle\AppBundle\Entity\TicketFeedbackLink;
 use DeskPRO\Bundle\AppBundle\Entity\TicketFollowUp;
 use DeskPRO\Bundle\AppBundle\ObjectRouter\Configuration\PortalLinkCustom;
 use DeskPRO\Bundle\AppBundle\ObjectRouter\Configuration\PortalLinkRoute;
@@ -83,10 +58,11 @@ use Symfony\Component\Validator\Constraints as Assert;
  * @property AgentTeam                           $agent_team
  * @property Organization                        $organization
  * @property ChatConversation                    $linked_chat
- * @property TicketAttachment[]                  $attachments
+ * @property TicketAttachment[]|ArrayCollection  $attachments
  * @property TicketAccessCode[]|ArrayCollection  $access_codes
  * @property TicketMessage[]|ArrayCollection     $messages
  * @property TicketSms[]                         $sms_messages
+ * @property TicketFeedbackLink[]|ArrayCollection  $feedback_links
  * @property CustomDataTicket[]|ArrayCollection  $custom_data
  * @property LabelTicket[]                       $labels
  * @property string                              $sent_to_address
@@ -263,8 +239,6 @@ class Ticket extends DomainObject implements HighlightableModelInterface, Labels
 
     /**
      * @var \Application\DeskPRO\Entity\Person
-     *
-     * @Assert\Valid()
      */
     protected $person = null;
 
@@ -314,6 +288,11 @@ class Ticket extends DomainObject implements HighlightableModelInterface, Labels
      * @var ArrayCollection
      */
     protected $sms_messages;
+
+    /**
+     * @var TicketFeedbackLink[]|ArrayCollection
+     */
+    protected $feedback_links;
 
     /**
      * @var ArrayCollection|CustomDataTicket[]
@@ -657,6 +636,7 @@ class Ticket extends DomainObject implements HighlightableModelInterface, Labels
         $this->jira_issues      = new ArrayCollection();
         $this->messages         = new ArrayCollection();
         $this->sms_messages     = new ArrayCollection();
+        $this->feedback_links   = new ArrayCollection();
         $this->custom_data      = new ArrayCollection();
         $this->customPerData    = new ArrayCollection();
         $this->labels           = new ArrayCollection();
@@ -926,6 +906,26 @@ class Ticket extends DomainObject implements HighlightableModelInterface, Labels
     public function getParticipants()
     {
         return $this->participants;
+    }
+
+    /**
+     * @return TicketParticipant[]|ArrayCollection
+     */
+    public function getCcs()
+    {
+        return $this->participants->filter(function (TicketParticipant $participant) {
+            return $participant->getPerson() && !$participant->getPerson()->isAgent();
+        });
+    }
+
+    /**
+     * @return TicketParticipant[]|ArrayCollection
+     */
+    public function getFollowers()
+    {
+        return $this->participants->filter(function (TicketParticipant $participant) {
+            return $participant->getPerson() && $participant->getPerson()->isAgent();
+        });
     }
 
     /**
@@ -1475,6 +1475,26 @@ class Ticket extends DomainObject implements HighlightableModelInterface, Labels
         return $this->charges;
     }
 
+    public function getChargesTotalAmount()
+    {
+        $sum = 0.0;
+        foreach ($this->charges as $c) {
+            $sum += $c->getAmount();
+        }
+
+        return $sum;
+    }
+
+    public function getChargesTotalTime()
+    {
+        $secs = 0;
+        foreach ($this->charges as $c) {
+            $secs += $c->getChargeTime();
+        }
+
+        return $secs;
+    }
+
     /**
      * @param Person $agent
      * @param int    $time
@@ -1743,6 +1763,56 @@ class Ticket extends DomainObject implements HighlightableModelInterface, Labels
     }
 
     /**
+     * @return TicketFeedbackLink[]|ArrayCollection
+     */
+    public function getFeedbackLinks()
+    {
+        return $this->feedback_links;
+    }
+
+    /**
+     * Add a TicketFeedbackLink to this ticket.
+     *
+     * @param TicketFeedbackLink $feedbackLink
+     */
+    public function addFeedbackLink(TicketFeedbackLink $feedbackLink)
+    {
+        if ($this->feedback_links->contains($feedbackLink)) {
+            return;
+        }
+
+        $changes = $this->getStateChangeRecorder()->getChangesForField('feedback_links');
+        if ($changes) {
+            foreach ($changes as $c) {
+                if ($c->getNew() === $feedbackLink) {
+                    // already added
+                    return;
+                }
+            }
+        }
+
+        $this->feedback_links->add($feedbackLink);
+        $feedbackLink->setTicket($this);
+
+        $this->_onPropertyChanged('feedback_links', null, $feedbackLink, true);
+        $this->getStateChangeRecorder()->record('feedback_link', null, $feedbackLink);
+    }
+
+    /**
+     * @param TicketFeedbackLink $feedbackLink
+     *
+     * @return $this
+     */
+    public function removeFeedbackLink(TicketFeedbackLink $feedbackLink)
+    {
+        $this->feedback_links->removeElement($feedbackLink);
+        $this->_onPropertyChanged('feedback_links', null, $this->feedback_links);
+        $this->getStateChangeRecorder()->record('feedback_link', $feedbackLink, null);
+
+        return $this;
+    }
+
+    /**
      * @return TicketAttachment[]|ArrayCollection
      */
     public function getAttachments()
@@ -1757,7 +1827,7 @@ class Ticket extends DomainObject implements HighlightableModelInterface, Labels
      */
     public function addAttachment(TicketAttachment $attach)
     {
-        $attach->ticket = $this;
+        $attach->setTicket($this);
         $this->attachments->add($attach);
 
         $this->_onPropertyChanged('attachments', null, $this->attachments);
@@ -1769,8 +1839,12 @@ class Ticket extends DomainObject implements HighlightableModelInterface, Labels
      */
     public function removeAttachment(TicketAttachment $attach)
     {
+        $attach->setTicket(null);
+
         $this->attachments->removeElement($attach);
-        $attach->message->removeAttachment($attach);
+        if ($attach->getMessage()) {
+            $attach->getMessage()->removeAttachment($attach);
+        }
 
         $this->_onPropertyChanged('attachments', null, $this->attachments);
         $this->getStateChangeRecorder()->record('attachments', $attach, null);
@@ -1783,7 +1857,7 @@ class Ticket extends DomainObject implements HighlightableModelInterface, Labels
     /**
      * Find an existing data record for a field id.
      *
-     * @param int|CustomDefTicket $field_id
+     * @param int|CustomDefTicket|string $field_id
      *
      * @return CustomDataTicket
      */
@@ -1796,6 +1870,14 @@ class Ticket extends DomainObject implements HighlightableModelInterface, Labels
         foreach ($this->custom_data as $data) {
             if ($data['field_id'] == $field_id) {
                 return $data;
+            }
+        }
+
+        if (is_string($field_id) && !is_numeric($field_id)) {
+            foreach ($this->custom_data as $data) {
+                if ($data->getField()->hasAlias($field_id)) {
+                    return $data;
+                }
             }
         }
 
@@ -1862,6 +1944,8 @@ class Ticket extends DomainObject implements HighlightableModelInterface, Labels
      */
     public function setCustomData(Collection $custom_data)
     {
+        $this->getStateChangeRecorder()->touchField('custom_data');
+
         $this->custom_data = $custom_data;
         foreach ($custom_data as $cd) {
             $cd->ticket = $this;
@@ -1883,6 +1967,8 @@ class Ticket extends DomainObject implements HighlightableModelInterface, Labels
      */
     public function setCustomDataField($field_id, $value_type, $value)
     {
+        $this->getStateChangeRecorder()->touchField('custom_data');
+
         $custom_data = $this->getCustomDataForField($field_id);
         $orig_data   = $custom_data;
         $is_new      = false;
@@ -1926,6 +2012,8 @@ class Ticket extends DomainObject implements HighlightableModelInterface, Labels
 
         if ($is_new) {
             $this->addCustomData($custom_data);
+        } else {
+            $this->_onPropertyChanged('custom_data', null, $this->custom_data);
         }
 
         return $custom_data;
@@ -1936,6 +2024,8 @@ class Ticket extends DomainObject implements HighlightableModelInterface, Labels
      */
     public function removeCustomDataForField(CustomDefTicket $field)
     {
+        $this->getStateChangeRecorder()->touchField('custom_data');
+
         $changed = false;
         foreach ($this->custom_data as $data) {
             if ($data->field->getId() === $field->getId() || $data->root_field->getId() == $field->getId()) {
@@ -1962,6 +2052,7 @@ class Ticket extends DomainObject implements HighlightableModelInterface, Labels
      */
     public function resetCustomData()
     {
+        $this->getStateChangeRecorder()->touchField('custom_data');
         $this->custom_data->clear();
 
         return $this;
@@ -1974,6 +2065,8 @@ class Ticket extends DomainObject implements HighlightableModelInterface, Labels
      */
     public function addCustomData(CustomDataTicket $data)
     {
+        $this->getStateChangeRecorder()->touchField('custom_data');
+
         if ($this->custom_data === null) {
             $this->custom_data = new ArrayCollection();
         }
@@ -4600,7 +4693,7 @@ class Ticket extends DomainObject implements HighlightableModelInterface, Labels
     /**
      * @return bool
      */
-    public function isHasAttachments()
+    public function hasAttachments()
     {
         return $this->has_attachments;
     }
@@ -5341,6 +5434,17 @@ class Ticket extends DomainObject implements HighlightableModelInterface, Labels
             [
                 'fieldName'     => 'sms_messages',
                 'targetEntity'  => 'Application\\DeskPRO\\Entity\\TicketSms',
+                'cascade'       => ['remove', 'persist', 'merge'],
+                'mappedBy'      => 'ticket',
+                'fetch'         => ClassMetadataInfo::FETCH_EXTRA_LAZY,
+                'orderBy'       => ['date_created' => 'ASC'],
+                'orphanRemoval' => true,
+            ]
+        );
+        $metadata->mapOneToMany(
+            [
+                'fieldName'     => 'feedback_links',
+                'targetEntity'  => 'DeskPRO\\Bundle\\AppBundle\\Entity\\TicketFeedbackLink',
                 'cascade'       => ['remove', 'persist', 'merge'],
                 'mappedBy'      => 'ticket',
                 'fetch'         => ClassMetadataInfo::FETCH_EXTRA_LAZY,

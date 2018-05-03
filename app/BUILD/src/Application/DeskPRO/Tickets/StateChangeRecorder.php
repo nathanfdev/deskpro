@@ -1,31 +1,5 @@
 <?php
 
-/*
- * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
- * a British company located in London, England.
- *
- * All source code and content Copyright (c) 2017, DeskPRO Ltd.
- *
- * The license agreement under which this software is released
- * can be found at https://www.deskpro.com/eula/
- *
- * By using this software, you acknowledge having read the license
- * and agree to be bound thereby.
- *
- * Please note that DeskPRO is not free software. We release the full
- * source code for our software because we trust our users to pay us for
- * the huge investment in time and energy that has gone into both creating
- * this software and supporting our customers. By providing the source code
- * we preserve our customers' ability to modify, audit and learn from our
- * work. We have been developing DeskPRO since 2001, please help us make it
- * another decade.
- *
- * Like the work you see? Think you could make it better? We are always
- * looking for great developers to join us: http://www.deskpro.com/jobs/
- *
- * ~ Thanks, Everyone at Team DeskPRO
- */
-
 /**
  * DeskPRO.
  *
@@ -34,8 +8,23 @@
 
 namespace Application\DeskPRO\Tickets;
 
+use Application\DeskPRO\Entity\LabelOrganization;
+use Application\DeskPRO\Entity\LabelPerson;
+use Application\DeskPRO\Entity\LabelTicket;
+use Application\DeskPRO\Entity\Organization;
+use Application\DeskPRO\Entity\Person;
 use Application\DeskPRO\Entity\Ticket;
+use Application\DeskPRO\Entity\TicketCharge;
+use Application\DeskPRO\Entity\TicketSla;
+use Application\DeskPRO\Entity\Usergroup;
 use Application\DeskPRO\ORM\StateChange\StateChangeRecorder as BaseStateChangeRecorder;
+use DeskPRO\Bundle\AppBundle\TicketFilters\Model\Entity\CustomData;
+use DeskPRO\Bundle\AppBundle\TicketFilters\Model\Entity\OrgModel;
+use DeskPRO\Bundle\AppBundle\TicketFilters\Model\Entity\PersonModel;
+use DeskPRO\Bundle\AppBundle\TicketFilters\Model\Entity\TicketModel;
+use DeskPRO\Bundle\AppBundle\TicketFilters\Model\Entity\TicketSlaModel;
+use DeskPRO\Component\Util\ListUtils;
+use DpSys\LowError\SystemErrorHandler;
 
 class StateChangeRecorder extends BaseStateChangeRecorder
 {
@@ -71,6 +60,11 @@ class StateChangeRecorder extends BaseStateChangeRecorder
     private $ticket;
 
     /**
+     * @var TicketModel
+     */
+    private $before_ticket_model;
+
+    /**
      * @var bool
      */
     private $no_id = false;
@@ -100,6 +94,137 @@ class StateChangeRecorder extends BaseStateChangeRecorder
         if (!$ticket->id) {
             $this->no_id = true;
         }
+    }
+
+    public function touchField($field_id)
+    {
+        // touchField is called in Ticket model before the change is actually saved,
+        // so its a good time to make the 'before' model
+
+        if (!$this->before_ticket_model && !isset(self::$trivial_fields[$field_id])) {
+            $this->before_ticket_model = $this->getSimpleTicketModel();
+        }
+
+        parent::touchField($field_id);
+    }
+
+    /**
+     * Get an array of [before, after] simple ticket models. 0th is old, 1st is new.
+     *
+     * @return TicketModel[]
+     */
+    public function getBeforeAfterModels()
+    {
+        // means no change has happened yet to trigger the before model to generate,
+        // so the before model is the same as the after model
+        if (!$this->before_ticket_model) {
+            SystemErrorHandler::logException(new \RuntimeException('StateChangeRecorder::getBeforeAfterModels called with no updates logged. This is most likely a bug.'));
+            $this->before_ticket_model = $this->getSimpleTicketModel();
+
+            return [$this->before_ticket_model, $this->before_ticket_model];
+        }
+
+        return [$this->before_ticket_model, $this->getSimpleTicketModel()];
+    }
+
+    private function makePersonModel(Person $person)
+    {
+        $model           = new PersonModel();
+        $model->id       = $person->getId();
+        $model->language = $person->getLanguageId();
+        $model->labels   = ListUtils::map($person->getLabels(), function (LabelPerson $l) {
+            return $l->getLabel();
+        });
+        $model->user_groups   = $person->getUsergroupIds();
+        $model->custom_fields = $this->makeCustomFieldsModels($person->getCustomData());
+
+        return $model;
+    }
+
+    private function makeOrgModel(Organization $org)
+    {
+        $model              = new OrgModel();
+        $model->id          = $org->getId();
+        $model->user_groups = ListUtils::map($org->getUsergroups(), function (Usergroup $ug) {
+            return $ug->getId();
+        });
+        $model->labels = ListUtils::map($org->getLabels(), function (LabelOrganization $l) {
+            return $l->getLabel();
+        });
+        $model->custom_fields = $this->makeCustomFieldsModels($org->getCustomData());
+
+        return $model;
+    }
+
+    private function makeCustomFieldsModels($customData)
+    {
+        $models = [];
+        foreach ($customData as $d) {
+            $fid = $d->getFieldId();
+            if (isset($models[$fid])) {
+                $m = $models[$fid];
+            } else {
+                $m        = new CustomData();
+                $m->field = $fid;
+            }
+            if ($d->getField()->isMulti()) {
+                $m->value[] = $d->getData();
+            } else {
+                $m->value = $d->getData();
+            }
+
+            $models[$fid] = $m;
+        }
+
+        return array_values($models);
+    }
+
+    /**
+     * @return TicketModel
+     */
+    public function getSimpleTicketModel()
+    {
+        $cur             = new TicketModel();
+        $cur->id         = $this->ticket->getId();
+        $cur->agent      = $this->ticket->agent ? $this->ticket->agent->getId() : 0;
+        $cur->agent_team = $this->ticket->agent_team ? $this->ticket->agent_team->getId() : 0;
+        $cur->department = $this->ticket->department ? $this->ticket->department->getId() : 0;
+        $cur->urgency    = $this->ticket->status === Ticket::STATUS_AWAITING_AGENT ? $this->ticket->urgency : 0;
+        $cur->status     = $this->ticket->getStatusCode();
+        $cur->is_hold    = $this->ticket->is_hold;
+        $cur->person     = $this->ticket->person ? $this->makePersonModel($this->ticket->person) : null;
+        $cur->labels     = ListUtils::map($this->ticket->labels, function (LabelTicket $l) {
+            return $l->getLabel();
+        });
+        $cur->language              = $this->ticket->language ? $this->ticket->language->getId() : 0;
+        $cur->workflow              = $this->ticket->workflow ? $this->ticket->workflow->getId() : 0;
+        $cur->priority              = $this->ticket->priority ? $this->ticket->priority->getId() : 0;
+        $cur->category              = $this->ticket->category ? $this->ticket->category->getId() : 0;
+        $cur->product               = $this->ticket->product ? $this->ticket->product->getId() : 0;
+        $cur->organization          = $this->ticket->organization ? $this->makeOrgModel($this->ticket->organization) : null;
+        $cur->email_account         = $this->ticket->email_account ? $this->ticket->email_account->getId() : 0;
+        $cur->date_user_waiting     = $this->ticket->date_user_waiting;
+        $cur->date_agent_waiting    = $this->ticket->date_agent_waiting;
+        $cur->date_last_user_reply  = $this->ticket->date_last_user_reply;
+        $cur->date_last_agent_reply = $this->ticket->date_last_agent_reply;
+        $cur->date_created          = $this->ticket->date_created;
+        $cur->followers             = ListUtils::map($this->ticket->getAgentParticipants(), function (Person $a) {
+            return $a->getId();
+        });
+        $cur->slas = ListUtils::map($this->ticket->ticket_slas, function (TicketSla $sla) {
+            $slaM = new TicketSlaModel();
+            $slaM->sla_id = $sla->sla->getId();
+            $slaM->status = $sla->sla_status;
+            $slaM->fail_date = $sla->fail_date;
+            $slaM->warn_date = $sla->warn_date;
+            $slaM->is_completed = $sla->is_completed;
+
+            return $slaM;
+        });
+
+        $cur->custom_fields = $this->makeCustomFieldsModels($this->ticket->getCustomData());
+
+        return $cur;
     }
 
     /**
@@ -176,6 +301,24 @@ class StateChangeRecorder extends BaseStateChangeRecorder
         }
 
         return false;
+    }
+
+    /**
+     * @return TicketCharge[]
+     */
+    public function getNewTicketCharges()
+    {
+        if (!$this->hasChangedField('charges')) {
+            return [];
+        }
+
+        $charges = [];
+
+        foreach (array_reverse($this->getChangesForField('charges')) as $c) {
+            $charges[] = $c;
+        }
+
+        return $charges;
     }
 
     /**

@@ -1,31 +1,5 @@
 <?php
 
-/*
- * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
- * a British company located in London, England.
- *
- * All source code and content Copyright (c) 2018, DeskPRO Ltd.
- *
- * The license agreement under which this software is released
- * can be found at https://www.deskpro.com/eula/
- *
- * By using this software, you acknowledge having read the license
- * and agree to be bound thereby.
- *
- * Please note that DeskPRO is not free software. We release the full
- * source code for our software because we trust our users to pay us for
- * the huge investment in time and energy that has gone into both creating
- * this software and supporting our customers. By providing the source code
- * we preserve our customers' ability to modify, audit and learn from our
- * work. We have been developing DeskPRO since 2001, please help us make it
- * another decade.
- *
- * Like the work you see? Think you could make it better? We are always
- * looking for great developers to join us: http://www.deskpro.com/jobs/
- *
- * ~ Thanks, Everyone at Team DeskPRO
- */
-
 namespace DeskPRO\Bundle\ReportBundle\Reports\Renderer\Json;
 
 use DeskPRO\Bundle\ReportBundle\Reports\ResultMetadata;
@@ -62,10 +36,35 @@ class JsonStatRenderer extends AbstractJsonRenderer
             return;
         }
 
-        return [
+        $return = [
             'value'       => $this->renderValue($metadata, $rows),
             'description' => $this->renderDescription($metadata, $rows),
         ];
+
+        if (!$return['value']) {
+            return;
+        }
+
+        return $this->extractClickUrlVars($rows, $metadata, $return);
+    }
+
+    /**
+     * @param array          $rows
+     * @param ResultMetadata $metadata
+     * @param array          $result
+     *
+     * @return mixed
+     */
+    private function extractClickUrlVars(array $rows, ResultMetadata $metadata, array $result)
+    {
+        $selectColumns = $metadata->getSelectColumns();
+        foreach ($selectColumns as $selectColumn) {
+            if (strpos($selectColumn['title'], '__var') !== false) {
+                $result[$selectColumn['title']] = $this->renderCellValue($rows[0], $selectColumn, $metadata);
+            }
+        }
+
+        return $result;
     }
 
     /**
@@ -78,9 +77,21 @@ class JsonStatRenderer extends AbstractJsonRenderer
      */
     protected function renderValue(ResultMetadata $metadata, array $rows)
     {
+        $unitLeft  = '';
+        $unitRight = '';
+
+        foreach ($metadata->getSelectColumns() as $column) {
+            if ($column['title'] === 'unit_left') {
+                $unitLeft = $this->renderCellValue($rows[0], $column, $metadata);
+            }
+            if ($column['title'] === 'unit_right') {
+                $unitLeft = $this->renderCellValue($rows[0], $column, $metadata);
+            }
+        }
+
         foreach ($metadata->getSelectColumns() as $column) {
             if ($column['title'] === 'stat_value') {
-                return $this->renderCellValue($rows[0], $column, $metadata);
+                return $unitLeft.$this->renderCellValue($rows[0], $column, $metadata).$unitRight;
             }
         }
 
@@ -113,11 +124,15 @@ class JsonStatRenderer extends AbstractJsonRenderer
      *
      * @return string
      */
-    protected function renderCellValue(array $row, $column, ResultMetadata $metadata)
+    protected function renderCellValue(array $row, $column, ResultMetadata $metadata, $useRenderer = null)
     {
         $value = $column['resultId'] ? $row[$column['resultId'] - 1] : '';
 
-        $renderer = is_array($column) && array_key_exists('renderer', $column) ? $column['renderer'] : 'string';
+        if ($useRenderer) {
+            $renderer = $useRenderer;
+        } else {
+            $renderer = is_array($column) && array_key_exists('renderer', $column) ? $column['renderer'] : 'string';
+        }
         if ($renderer instanceof \Closure) {
             /* @var $renderer \Closure */
 
@@ -125,5 +140,16 @@ class JsonStatRenderer extends AbstractJsonRenderer
         }
 
         return $this->valueRenderer->renderValue($value, $renderer, $metadata);
+    }
+
+    /**
+     * @param array $results
+     * @param array $options
+     *
+     * @return mixed
+     */
+    public function mergeResults(array $results, array $options)
+    {
+        return reset($results);
     }
 }

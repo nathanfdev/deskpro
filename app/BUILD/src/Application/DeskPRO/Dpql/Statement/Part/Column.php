@@ -1,31 +1,5 @@
 <?php
 
-/*
- * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
- * a British company located in London, England.
- *
- * All source code and content Copyright (c) 2018, DeskPRO Ltd.
- *
- * The license agreement under which this software is released
- * can be found at https://www.deskpro.com/eula/
- *
- * By using this software, you acknowledge having read the license
- * and agree to be bound thereby.
- *
- * Please note that DeskPRO is not free software. We release the full
- * source code for our software because we trust our users to pay us for
- * the huge investment in time and energy that has gone into both creating
- * this software and supporting our customers. By providing the source code
- * we preserve our customers' ability to modify, audit and learn from our
- * work. We have been developing DeskPRO since 2001, please help us make it
- * another decade.
- *
- * Like the work you see? Think you could make it better? We are always
- * looking for great developers to join us: http://www.deskpro.com/jobs/
- *
- * ~ Thanks, Everyone at Team DeskPRO
- */
-
 namespace Application\DeskPRO\Dpql\Statement\Part;
 
 use Application\DeskPRO\App;
@@ -382,8 +356,16 @@ END)
                     }
 
                     if ($extraConditionValue !== false) {
+                        $joinValue = $extraConditionValue;
+                        if (strpos($childSqlTable, 'custom_data_') === 0 && !is_numeric($extraConditionValue)) {
+                            $field = App::$container->get('dpql.helper.custom_data')->getCustomField($childSqlTable, $extraConditionValue);
+                            if ($field) {
+                                $joinValue = $field->getId();
+                            }
+                        }
+
                         $joinConditions[] = sprintf(
-                            self::$_conditionResolver[$childSqlTable], $joinAlias, App::getDb()->quote($extraConditionValue)
+                            self::$_conditionResolver[$childSqlTable], $joinAlias, App::getDb()->quote($joinValue)
                         );
                     }
 
@@ -424,30 +406,7 @@ END)
 
                 return new Prepared($prepped->sql(), $this->_prettifyColumnName($name), false, $renderer);
             } elseif (preg_match('/^custom_data_/', $assocTable)) {
-                $custom_def_table = str_replace('_data_', '_def_', $assocTable);
-                switch ($custom_def_table) {
-                    case 'custom_def_ticket':
-                        $manager = App::getContainer()->getSystemService('TicketFieldsManager');
-                        break;
-                    case 'custom_def_billing':
-                        $manager = App::getContainer()->getBillingFieldManager();
-                        break;
-                    case 'custom_def_people':
-                        $manager = App::getContainer()->getSystemService('PersonFieldsManager');
-                        break;
-                    case 'custom_def_organizations':
-                        $manager = App::getContainer()->getSystemService('OrgFieldsManager');
-                        break;
-                    default:
-                        $manager = null;
-                        break;
-                }
-
-                $field = null;
-                if ($manager) {
-                    $field = $manager->getFieldFromId($extraConditionValue);
-                }
-
+                $field        = App::$container->get('dpql.helper.custom_data')->getCustomField($assocTable, $extraConditionValue);
                 $renderer     = null;
                 $preppedPrint = null;
                 if ($field && (array_search($type = $field->getTypeName(), ['date', 'datetime']) !== false)) {
@@ -459,7 +418,7 @@ END)
 
                         return $valueRenderer->renderValue($date ?: null, $type);
                     };
-                } elseif ($field && $section !== 'select' && $field->isChoiceType()) {
+                } elseif ($field && $section === 'group' && $field->isChoiceType()) {
                     $call    = new self(array_merge($this->parts, ['field', 'id']));
                     $prepped = $call->prepare($statement, $section, $stack, $select, $result);
 

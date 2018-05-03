@@ -9,8 +9,8 @@ define(function() {
   routes.push({
     id: 'home',
     url: '/',
-    templateName: 'Index/home.html',
-    controller: 'Admin_Main_Ctrl_Home'
+    templateName: window.ADMIN_DASH_IFRAME_SRC ? 'Index/home-frame.html' : 'Index/home.html',
+    controller:   window.ADMIN_DASH_IFRAME_SRC ? 'Admin_Main_Ctrl_HomeFrame' : 'Admin_Main_Ctrl_Home'
   });
 
   routes.push({
@@ -2218,7 +2218,7 @@ define(function() {
     id: 'emails.email_templates',
     url: '/email_templates',
     templateName: 'Templates/email-groups.html',
-    controller: 'Admin_Templates_Ctrl_EmailGroupList'
+    controller: 'Admin_Templates_Ctrl_EmailGroupListOld'
   });
 
   //###
@@ -2228,7 +2228,7 @@ define(function() {
     id: 'emails.email_templates_legacy',
     url: '/email_templates_legacy',
     templateName: 'Templates/email-groups-legacy.html',
-    controller: 'Admin_Templates_Ctrl_EmailGroupListOld'
+    controller: 'Admin_Templates_Ctrl_EmailGroupList'
   });
 
   routes.push({

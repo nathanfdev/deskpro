@@ -1,7 +1,7 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import { Button, Container, Tabs, TabLink, Section } from '@deskpro/react-components';
-import { ReduxForm } from '@deskpro/react-components/dist/bindings';
+import { reduxForm } from '@deskpro/react-components/dist/bindings';
 import { formValues, Field, FieldArray, FormSection } from 'redux-form';
 import classNames from 'classnames';
 import { varTypes } from './helper';
@@ -38,7 +38,7 @@ class VarsFieldComponent extends React.PureComponent {
       return choice;
     });
 
-    return (<ReduxForm.Select key={name} name={name} options={choices} />);
+    return (<reduxForm.Select onChange={() => {}} key={name} name={name} options={choices} />);
   }
 
   static renderTypeField(name, values) {
@@ -51,7 +51,7 @@ class VarsFieldComponent extends React.PureComponent {
       return choice;
     });
 
-    return (<ReduxForm.Select label="Record Type" key={name} name={name} options={choices} />);
+    return (<reduxForm.Select onChange={() => {}} label="Record Type" key={name} name={name} options={choices} />);
   }
 
   static renderTypeValueField(name, values) {
@@ -64,7 +64,7 @@ class VarsFieldComponent extends React.PureComponent {
       return choice;
     });
 
-    return (<ReduxForm.Select label="Default Value" key={name} name={name} options={choices} />);
+    return (<reduxForm.Select onChange={() => {}} label="Default Value" key={name} name={name} options={choices} />);
   }
 
   onAddButtonClick = (event) => {
@@ -106,12 +106,14 @@ class VarsFieldComponent extends React.PureComponent {
 
             return (<div className="varsfield-item" key={key}>
               <div className="remove-ctrl" onClick={() => fields.remove(index)}><i className="fa fa-trash" /></div>
-              <ReduxForm.Input
+              <reduxForm.Input
+                onChange={() => {}}
                 label={hint}
                 name={`${varName}.name`}
                 validate={[VarsFieldComponent.validateVarName]}
               />
-              <ReduxForm.Select
+              <reduxForm.Select
+                onChange={() => {}}
                 label="Type"
                 options={varTypes}
                 name={`${varName}.type`}
@@ -149,10 +151,11 @@ class LabelsFieldComponent extends React.PureComponent {
 
     const newOptions = options.map(label => label.label);
 
-    return (<ReduxForm.TagSet
+    return (<reduxForm.TagSet
+      onChange={() => {}}
       name="labels"
       label="Labels"
-      tags={fields.getAll()}
+      tags={fields.getAll() || []}
       options={newOptions}
     />);
   }
@@ -161,29 +164,35 @@ class LabelsFieldComponent extends React.PureComponent {
 const VarsField = formValues('vars')(VarsFieldComponent);
 const LabelsField = formValues('labels')(LabelsFieldComponent);
 
-export class EditFormComponent extends React.PureComponent {
+export class EditFormComponent extends React.Component {
 
   static defaultProps = {
-    select:       '',
-    groupBy:      '',
-    dpqlParser:   null,
-    change:       null,
-    queryValues:  {},
-    handleSubmit: null,
-    error:        null,
-    labels:       []
+    select:        '',
+    groupBy:       '',
+    dpqlParser:    null,
+    change:        null,
+    queryValues:   {},
+    handleSubmit:  null,
+    formErrors:    {},
+    hasError:      false,
+    labels:        [],
+    extendedQuery: false
   };
 
   static propTypes = {
-    groupParams:  PropTypes.object.isRequired,
-    labels:       PropTypes.array.isRequired,
-    select:       PropTypes.string,
-    groupBy:      PropTypes.string,
-    dpqlParser:   PropTypes.func,
-    change:       PropTypes.func,
-    queryValues:  PropTypes.object,
-    handleSubmit: PropTypes.func,
-    error:        PropTypes.string
+    groupParams:   PropTypes.object.isRequired,
+    labels:        PropTypes.array.isRequired,
+    select:        PropTypes.string,
+    groupBy:       PropTypes.string,
+    dpqlParser:    PropTypes.func,
+    change:        PropTypes.func,
+    initialize:    PropTypes.func,
+    queryValues:   PropTypes.object,
+    initialValues: PropTypes.object,
+    handleSubmit:  PropTypes.func,
+    formErrors:    PropTypes.object,
+    hasError:      PropTypes.bool,
+    extendedQuery: PropTypes.bool,
   };
 
   static toDpql(fields) {
@@ -218,12 +227,13 @@ export class EditFormComponent extends React.PureComponent {
   constructor(props) {
     super(props);
     this.state = {
-      queryInputMode:    'form',
+      queryInputMode:    props.extendedQuery ? 'dpql' : 'form',
       queryModeChanging: true
     };
   }
 
   componentDidMount() {
+    this.props.initialize(this.props.initialValues);
     this.props.change('query_input_mode', this.state.queryInputMode);
   }
 
@@ -242,6 +252,12 @@ export class EditFormComponent extends React.PureComponent {
   }
 
   queryModeChange = (to) => {
+    const extendedQuery = this.props.queryValues.raw ? this.props.queryValues.raw.indexOf('LAYER WITH') !== -1 : false;
+    if (extendedQuery) {
+      console.info('Cant change mode to form, you\'re using extended query syntax');
+      return;
+    }
+
     this.props.change('query_input_mode', to);
 
     if (to === 'dpql') {
@@ -270,7 +286,7 @@ export class EditFormComponent extends React.PureComponent {
 
   render() {
     const groupBy = this.props.groupBy || '';
-    const { select, groupParams, labels } = this.props;
+    const { select, groupParams, labels, formErrors, hasError } = this.props;
 
     const renderVars = field => <VarsField fields={field.fields} groupParams={groupParams || {}} />;
     const renderLabels = field => <LabelsField fields={field.fields} options={labels} />;
@@ -278,11 +294,19 @@ export class EditFormComponent extends React.PureComponent {
     return (
       <form onSubmit={this.props.handleSubmit}>
         <Container>
-          <ReduxForm.Input
+          {hasError && <div className="form-error-message">Please check form accuarte, there is an error.</div>}
+          {Object.keys(formErrors).length > 0
+            ? <div className="form-error-message">
+              {Object.keys(formErrors).map(key => (<span>{key}: {formErrors[key]}<br /></span>))}
+            </div>
+            : null
+          }
+          <reduxForm.Input
+            onChange={() => {}}
             label="Title"
             id="title"
             name="title"
-            validate={ReduxForm.validators.required}
+            validate={reduxForm.validators.required}
           />
           <FieldArray name="labels" component={renderLabels} />
           <Field component="input" type="hidden" name="query_input_mode" />
@@ -294,28 +318,28 @@ export class EditFormComponent extends React.PureComponent {
             <div className="input-wrap">
               <FormSection name="query">
                 <Section hidden={this.state.queryInputMode !== 'form'}>
-                  <ReduxForm.Input label="SELECT" name="select" />
-                  <ReduxForm.Input label="FROM" name="from" />
-                  <ReduxForm.Input label="WHERE" name="where" />
-                  <ReduxForm.Input label="SPLIT BY" name="split_by" />
-                  <ReduxForm.Input label="GROUP BY" name="group_by" />
+                  <reduxForm.Input onChange={() => {}} label="SELECT" name="select" />
+                  <reduxForm.Input onChange={() => {}} label="FROM" name="from" />
+                  <reduxForm.Input onChange={() => {}} label="WHERE" name="where" />
+                  <reduxForm.Input onChange={() => {}} label="SPLIT BY" name="split_by" />
+                  <reduxForm.Input onChange={() => {}} label="GROUP BY" name="group_by" />
                   <div
                     className={classNames({
                       'field-hidden': !(select && select.match(/count\s*\(.*?\)/i) && groupBy.length)
                     })}
                   >
-                    <ReduxForm.Checkbox
+                    <reduxForm.Checkbox
                       label="WITH ROLLUP - Adds a Total column to grouped COUNT queries made against hierarchies"
                       name="with_rollup"
                     />
                   </div>
                   <div style={{ width: '150px' }}>
-                    <ReduxForm.Input label="LIMIT" name="limit" />
-                    <ReduxForm.Input label="OFFSET" name="offset" />
+                    <reduxForm.Input onChange={() => {}} label="LIMIT" name="limit" />
+                    <reduxForm.Input onChange={() => {}} label="OFFSET" name="offset" />
                   </div>
                 </Section>
                 <Section hidden={this.state.queryInputMode !== 'dpql'}>
-                  <ReduxForm.Textarea name="raw" />
+                  <reduxForm.Textarea name="raw" />
                 </Section>
               </FormSection>
               <div className="vars-wrap">
@@ -326,7 +350,7 @@ export class EditFormComponent extends React.PureComponent {
             </div>
           </div>
         </Container>
-        {this.props.error && <div className="form-error-message">{this.props.error}</div>}
+
       </form>
     );
   }

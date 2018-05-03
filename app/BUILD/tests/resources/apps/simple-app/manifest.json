@@ -1,0 +1,80 @@
+{
+  "appVersion":"0.1.0",
+  "author":{
+    "name":"Deskpro Ltd.",
+    "email":"apps@deskpro.com",
+    "url":"https://deskpro.com"
+  },
+  "description":"Just a simple app for testing",
+  "name":"simple-app",
+  "version":"2.3.0",
+  "title":"Simple App",
+  "isSingle":false,
+  "scope":"agent",
+  "storage":[
+    {
+      "name": "user-only",
+      "isBackendOnly": false,
+      "permRead": "OWNER",
+      "permWrite": "OWNER"
+    },
+    {
+      "name": "user-writable",
+      "isBackendOnly": false,
+      "permRead": "EVERYBODY",
+      "permWrite": "OWNER"
+    },
+    {
+      "name": "world-accessible",
+      "isBackendOnly": false,
+      "permRead": "EVERYBODY",
+      "permWrite": "EVERYBODY"
+    }
+  ],
+  "targets":[
+    {
+      "target":"ticket-sidebar",
+      "url":"html/index.html"
+    },
+    {
+      "target":"install",
+      "url":"html/install.html"
+    }
+  ],
+  "settings":[
+    {
+      "name":"rsaPrivateKey",
+      "defaultValue":"",
+      "title":"Your private key",
+      "required":true,
+      "type":"textarea"
+    },
+    {
+      "name":"rsaPublicKey",
+      "defaultValue":"",
+      "title":"Your public key",
+      "required":true,
+      "type":"textarea"
+    },
+    {
+      "name":"jiraInstanceUrl",
+      "defaultValue":"",
+      "title":"The Jira instance you want to connect to",
+      "required":true,
+      "type":"text"
+    },
+    {
+      "name":"jiraClientId",
+      "defaultValue":"",
+      "title":"The consumer key",
+      "required":true,
+      "type":"text"
+    }
+  ],
+  "deskproApiTags":[
+    "tickets.*"
+  ],
+  "externalApis":[
+    "/^https?://([^.]+\\.)*atlassian.net/?.*$/"
+  ]
+}

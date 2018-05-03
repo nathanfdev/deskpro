@@ -1,34 +1,9 @@
 <?php
 
-/*
- * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
- * a British company located in London, England.
- *
- * All source code and content Copyright (c) 2017, DeskPRO Ltd.
- *
- * The license agreement under which this software is released
- * can be found at https://www.deskpro.com/eula/
- *
- * By using this software, you acknowledge having read the license
- * and agree to be bound thereby.
- *
- * Please note that DeskPRO is not free software. We release the full
- * source code for our software because we trust our users to pay us for
- * the huge investment in time and energy that has gone into both creating
- * this software and supporting our customers. By providing the source code
- * we preserve our customers' ability to modify, audit and learn from our
- * work. We have been developing DeskPRO since 2001, please help us make it
- * another decade.
- *
- * Like the work you see? Think you could make it better? We are always
- * looking for great developers to join us: http://www.deskpro.com/jobs/
- *
- * ~ Thanks, Everyone at Team DeskPRO
- */
-
 namespace DeskPRO\Bundle\AppBundle\Limits\Adapter;
 
 use Application\DeskPRO\Entity\ApiKey;
+use Application\DeskPRO\NewSettings\SettingsResolver;
 use DeskPRO\Bundle\AppBundle\Entity\ApiKeyLimit;
 use DeskPRO\Bundle\AppBundle\Limits\Model\AbstractLimit;
 use DeskPRO\Bundle\AppBundle\Limits\Model\GlobalLimit;
@@ -49,23 +24,30 @@ class DbLimitAdapter implements LimitAdapterInterface
     /**
      * @var \SplObjectStorage
      */
-    protected $global_limits;
+    protected $globalLimits;
 
     /**
      * @var \SplObjectStorage
      */
-    protected $key_limits;
+    protected $keyLimits;
+
+    /**
+     * @var SettingsResolver
+     */
+    protected $settingsResolver;
 
     /**
      * DbLimitAdapter constructor.
      *
-     * @param EntityManager $em
+     * @param EntityManager    $em
+     * @param SettingsResolver $resolver
      */
-    public function __construct(EntityManager $em)
+    public function __construct(EntityManager $em, SettingsResolver $resolver)
     {
-        $this->em            = $em;
-        $this->global_limits = new \SplObjectStorage();
-        $this->key_limits    = new \SplObjectStorage();
+        $this->em               = $em;
+        $this->globalLimits     = new \SplObjectStorage();
+        $this->keyLimits        = new \SplObjectStorage();
+        $this->settingsResolver = $resolver;
     }
 
     /**
@@ -73,12 +55,12 @@ class DbLimitAdapter implements LimitAdapterInterface
      */
     public function getGlobalLimits()
     {
-        $db_global_limits = $this->repo()->findBy(['limit_type' => AbstractLimit::TYPE_GLOBAL]);
-        foreach ($db_global_limits as $db_limit) {
-            $this->global_limits->attach($this->getLimit($db_limit), $db_limit);
+        $dbGlobalLimits = $this->getLimitsFromSettings();
+        foreach ($dbGlobalLimits as $dbLimit) {
+            $this->globalLimits->attach($this->getLimit($dbLimit), $dbLimit);
         }
 
-        return $this->global_limits;
+        return $this->globalLimits;
     }
 
     /**
@@ -86,12 +68,55 @@ class DbLimitAdapter implements LimitAdapterInterface
      */
     public function getKeyLimits(ApiKey $key)
     {
-        $db_key_limits = $this->repo()->findBy(['limit_type' => AbstractLimit::TYPE_KEY, 'api_key' => $key]);
-        foreach ($db_key_limits as $db_limit) {
-            $this->key_limits->attach($this->getLimit($db_limit), $db_limit);
+        $dbKeyLimits = $this->repo()->findBy(['limit_type' => AbstractLimit::TYPE_KEY, 'api_key' => $key]);
+        foreach ($dbKeyLimits as $dbLimit) {
+            $this->keyLimits->attach($this->getLimit($dbLimit), $dbLimit);
         }
 
-        return $this->key_limits;
+        return $this->keyLimits;
+    }
+
+    protected function getLimitsFromSettings()
+    {
+        $limits   = [];
+        $dayLimit = $this->settingsResolver->getGlobalSettings()->get('api_limits.global.day');
+        if ($dayLimit && $dayLimit !== -1) {
+            $dbDayLimit = $this->repo()->findOneBy([
+                'limit_type'    => AbstractLimit::TYPE_GLOBAL,
+                'time_interval' => AbstractLimit::INTERVAL_DAY,
+            ]);
+            if (!$dbDayLimit) {
+                $dbDayLimit = new ApiKeyLimit();
+                $dbDayLimit
+                    ->setInterval(AbstractLimit::INTERVAL_DAY)
+                    ->setCurrent($dayLimit)
+                    ->setLimit($dayLimit)
+                    ->setType(AbstractLimit::TYPE_GLOBAL);
+                $this->persistAndFlush($dbDayLimit);
+            }
+            $dbDayLimit->setLimit($dayLimit);
+            $limits[] = $dbDayLimit;
+        }
+        $hourLimit = $this->settingsResolver->getGlobalSettings()->get('api_limits.global.hour');
+        if ($hourLimit && $hourLimit !== -1) {
+            $dbHourLimit = $this->repo()->findOneBy([
+                'limit_type'    => AbstractLimit::TYPE_GLOBAL,
+                'time_interval' => AbstractLimit::INTERVAL_HOUR,
+            ]);
+            if (!$dbHourLimit) {
+                $dbHourLimit = new ApiKeyLimit();
+                $dbHourLimit
+                    ->setInterval(AbstractLimit::INTERVAL_HOUR)
+                    ->setCurrent($hourLimit)
+                    ->setLimit($hourLimit)
+                    ->setType(AbstractLimit::TYPE_GLOBAL);
+                $this->persistAndFlush($dbHourLimit);
+            }
+            $dbHourLimit->setLimit($hourLimit);
+            $limits[] = $dbHourLimit;
+        }
+
+        return $limits;
     }
 
     /**
@@ -107,7 +132,7 @@ class DbLimitAdapter implements LimitAdapterInterface
      */
     public function saveKeyLimit(LimitInterface $limit, $key)
     {
-        if (!$this->key_limits->offsetExists($limit)) {
+        if (!$this->keyLimits->offsetExists($limit)) {
             $this->createKeyLimit($key, $limit);
         } else {
             $this->saveLimit($limit);
@@ -116,14 +141,14 @@ class DbLimitAdapter implements LimitAdapterInterface
 
     protected function createKeyLimit(ApiKey $key, LimitInterface $limit)
     {
-        $db_limit = new ApiKeyLimit();
-        $db_limit
+        $dbLimit = new ApiKeyLimit();
+        $dbLimit
             ->setInterval($limit->getIntervalInSeconds())
             ->setCurrent($limit->getCurrentLimit())
             ->setLimit($limit->getLimit())
             ->setApiKey($key)
             ->setType($limit->getType());
-        $this->persistAndFlush($db_limit);
+        $this->persistAndFlush($dbLimit);
     }
 
     /**
@@ -132,36 +157,36 @@ class DbLimitAdapter implements LimitAdapterInterface
     protected function saveLimit(LimitInterface $limit)
     {
         if ($limit->getType() === AbstractLimit::TYPE_GLOBAL) {
-            $storage = $this->global_limits;
+            $storage = $this->globalLimits;
         } else {
-            $storage = $this->key_limits;
+            $storage = $this->keyLimits;
         }
 
-        $db_limit = $storage->offsetGet($limit);
-        /* @var ApiKeyLimit $db_limit */
-        $db_limit
+        $dbLimit = $storage->offsetGet($limit);
+        /* @var ApiKeyLimit $dbLimit */
+        $dbLimit
             ->setCurrent($limit->getCurrentLimit())
             ->setLimit($limit->getLimit())
             ->setInterval($limit->getIntervalInSeconds())
             ->setStartTime($limit->getStartTime());
 
-        $this->persistAndFlush($db_limit);
+        $this->persistAndFlush($dbLimit);
     }
 
-    protected function persistAndFlush(ApiKeyLimit $db_limit)
+    protected function persistAndFlush(ApiKeyLimit $dbLimit)
     {
-        $this->em->persist($db_limit);
-        $this->em->flush($db_limit);
+        $this->em->persist($dbLimit);
+        $this->em->flush($dbLimit);
     }
 
     /**
-     * @param ApiKeyLimit $db_limit
+     * @param ApiKeyLimit $dbLimit
      *
      * @return GlobalLimit|KeyLimit
      */
-    protected function getLimit(ApiKeyLimit $db_limit)
+    protected function getLimit(ApiKeyLimit $dbLimit)
     {
-        switch ($db_limit->getType()) {
+        switch ($dbLimit->getType()) {
             case AbstractLimit::TYPE_GLOBAL:
                 $limit = new GlobalLimit();
                 break;
@@ -172,18 +197,18 @@ class DbLimitAdapter implements LimitAdapterInterface
                 throw new \LogicException(
                     sprintf(
                         'Unknown limit type [ %s ], expecting one of [ %s ]',
-                        $db_limit->getType(),
+                        $dbLimit->getType(),
                         implode(',', [AbstractLimit::TYPE_KEY, AbstractLimit::TYPE_GLOBAL]))
                 );
         }
 
-        !$db_limit->getStartTime() ? $db_limit->setStartTime(new \DateTime()) : null;
+        !$dbLimit->getStartTime() ? $dbLimit->setStartTime(new \DateTime()) : null;
 
         $limit
-            ->setInterval(\DateInterval::createFromDateString($db_limit->getInterval().' seconds'))
-            ->setStartTime($db_limit->getStartTime())
-            ->setCurrent($db_limit->getCurrent())
-            ->setLimit($db_limit->getLimit());
+            ->setInterval(\DateInterval::createFromDateString($dbLimit->getInterval().' seconds'))
+            ->setStartTime($dbLimit->getStartTime())
+            ->setCurrent($dbLimit->getCurrent())
+            ->setLimit($dbLimit->getLimit());
 
         return $limit;
     }
@@ -193,6 +218,6 @@ class DbLimitAdapter implements LimitAdapterInterface
      */
     private function repo()
     {
-        return $this->em->getRepository('\DeskPRO\Bundle\AppBundle\Entity\ApiKeyLimit');
+        return $this->em->getRepository(ApiKeyLimit::class);
     }
 }

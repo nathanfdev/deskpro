@@ -1,31 +1,5 @@
 <?php
 
-/*
- * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
- * a British company located in London, England.
- *
- * All source code and content Copyright (c) 2017, DeskPRO Ltd.
- *
- * The license agreement under which this software is released
- * can be found at https://www.deskpro.com/eula/
- *
- * By using this software, you acknowledge having read the license
- * and agree to be bound thereby.
- *
- * Please note that DeskPRO is not free software. We release the full
- * source code for our software because we trust our users to pay us for
- * the huge investment in time and energy that has gone into both creating
- * this software and supporting our customers. By providing the source code
- * we preserve our customers' ability to modify, audit and learn from our
- * work. We have been developing DeskPRO since 2001, please help us make it
- * another decade.
- *
- * Like the work you see? Think you could make it better? We are always
- * looking for great developers to join us: http://www.deskpro.com/jobs/
- *
- * ~ Thanks, Everyone at Team DeskPRO
- */
-
 /**
  * DeskPRO.
  */
@@ -42,9 +16,12 @@ use Application\DeskPRO\Entity\Feedback;
 use Application\DeskPRO\Entity\FeedbackCategory;
 use Application\DeskPRO\Entity\FeedbackComment;
 use Application\DeskPRO\Entity\FeedbackStatusCategory;
+use Application\DeskPRO\Entity\Person;
 use Application\DeskPRO\Entity\PersonPref;
 use Application\DeskPRO\Entity\SearchLog;
 use Application\DeskPRO\Entity\SearchStickyResult;
+use Application\DeskPRO\Entity\Ticket;
+use Application\DeskPRO\Entity\TicketMessage;
 use Application\DeskPRO\EntityRepository\Feedback as FeedbackRepository;
 use Application\DeskPRO\EntityRepository\FeedbackCategory as FeedbackCategoryRepository;
 use Application\DeskPRO\EntityRepository\FeedbackComment as FeedbackCommentRepository;
@@ -59,6 +36,7 @@ use Application\DeskPRO\Labels\LabelLister;
 use Application\DeskPRO\People\PermissionChecker\PublishChecker;
 use Application\DeskPRO\Publish\Feedback\GroupingCounter;
 use Application\DeskPRO\Publish\RelatedContentUpdate;
+use DeskPRO\Bundle\AppBundle\Entity\TicketFeedbackLink;
 use Doctrine\ORM\EntityManager;
 use Orb\Util\Arrays;
 use Orb\Util\Numbers;
@@ -233,6 +211,16 @@ class FeedbackController extends AbstractController
         $activeStatusCategories = $feedbackStatusCategoryRepository->getActiveCategories();
         $closedStatusCategories = $feedbackStatusCategoryRepository->getClosedCategories();
 
+        //@TODO: related entities fetching optimization
+        $feedbackRepo        = $this->em->getRepository(TicketFeedbackLink::class);
+        $ticketFeedbackLinks = $feedbackRepo->findByFeedback($feedback);
+
+        //@TODO: select only needed data to display persons
+        $subscribedIds = $this->em->getRepository('DeskPRO:FeedbackSubscription')->getSubscribedPersonIds($feedback);
+        // limit to 250
+        $subscribedIds     = array_slice($subscribedIds, 0, 250);
+        $subscribedPersons = $this->em->getRepository('DeskPRO:Person')->findById($subscribedIds);
+
         $perms = [
             'can_edit'   => $publishChecker->canEdit($feedback),
             'can_delete' => $publishChecker->canDelete($feedback),
@@ -241,20 +229,22 @@ class FeedbackController extends AbstractController
         return $this->render(
             'AgentBundle:Feedback:view.html.twig',
             [
-                'feedback'            => $feedback,
-                'feedback_comments'   => $feedbackComments,
-                'feedback_revisions'  => $feedbackRevisions,
-                'state'               => $state,
-                'category'            => $category,
-                'category_path'       => $categoryPath,
-                'custom_fields'       => $customFields,
-                'rated_searches'      => $ratedSearches,
-                'related_content'     => $relatedContent,
-                'sticky_search_words' => $stickySearchWords,
-                'feedback_categories' => $feedbackCategories,
-                'active_status_cats'  => $activeStatusCategories,
-                'closed_status_cats'  => $closedStatusCategories,
-                'perms'               => $perms,
+                'feedback'              => $feedback,
+                'feedback_comments'     => $feedbackComments,
+                'feedback_revisions'    => $feedbackRevisions,
+                'state'                 => $state,
+                'category'              => $category,
+                'category_path'         => $categoryPath,
+                'custom_fields'         => $customFields,
+                'rated_searches'        => $ratedSearches,
+                'related_content'       => $relatedContent,
+                'sticky_search_words'   => $stickySearchWords,
+                'feedback_categories'   => $feedbackCategories,
+                'active_status_cats'    => $activeStatusCategories,
+                'closed_status_cats'    => $closedStatusCategories,
+                'ticket_feedback_links' => $ticketFeedbackLinks,
+                'subscribed_persons'    => $subscribedPersons,
+                'perms'                 => $perms,
             ]
         );
     }
@@ -624,6 +614,48 @@ class FeedbackController extends AbstractController
         }
 
         return $this->createJsonResponse($data);
+    }
+
+    /**
+     * @param $feedback_id
+     *
+     * @return Response
+     */
+    public function ajaxSubscribePersonAction($feedback_id)
+    {
+        $feedback = $this->getFeedback($feedback_id);
+
+        if (!$person = $this->em->find(Person::class, $this->in->getUInt('person_id'))) {
+            throw $this->createNotFoundException(sprintf(
+                'There is no person with ID %s',
+                $this->in->getUInt('person_id')
+            ));
+        }
+
+        $this->get('feedback_subscription_helper')->subscribePersons($feedback, [$person]);
+
+        return $this->createJsonResponse(['success' => 1]);
+    }
+
+    /**
+     * @param $feedback_id
+     *
+     * @return Response
+     */
+    public function ajaxUnsubscribePersonAction($feedback_id)
+    {
+        $feedback = $this->getFeedback($feedback_id);
+
+        if (!$person = $this->em->find(Person::class, $this->in->getUInt('person_id'))) {
+            throw $this->createNotFoundException(sprintf(
+                'There is no person with ID %s',
+                $this->in->getUInt('person_id')
+            ));
+        }
+
+        $this->get('feedback_subscription_helper')->unsubscribePerson($feedback, $person);
+
+        return $this->createJsonResponse(['success' => 1]);
     }
 
     //###########################################################################
@@ -1147,6 +1179,51 @@ class FeedbackController extends AbstractController
      */
     public function newFeedbackAction()
     {
+        $ticket          = null;
+        $message         = null;
+        $attachments     = [];
+        $feedback_person = $this->person;
+
+        if ($this->in->getUInt('ticket_id')) {
+            $ticket = $this->getTicket($this->in->getUInt('ticket_id'));
+
+            /** @var \Application\DeskPRO\EntityRepository\TicketMessage $ticketMessageRepo */
+            $ticketMessageRepo = $this->em->getRepository(TicketMessage::class);
+
+            if ($this->in->getUInt('message_id')) {
+                $message = $ticketMessageRepo->find($this->in->getUInt('message_id'));
+            }
+            if (!$message || $message->ticket != $ticket) {
+                $message = $ticketMessageRepo->getFirstTicketMessage($ticket);
+            }
+
+            $feedback_person = $ticket->getPerson();
+        }
+
+        if ($message && count($message->attachments)) {
+            $storage = $this->container->getBlobStorage();
+            foreach ($message->attachments as $attach) {
+                try {
+                    $newBlob = $storage->createBlobRecordFromString(
+                        $storage->copyBlobRecordToString($attach->blob),
+                        $attach->blob['filename'],
+                        $attach->blob['content_type']
+                    );
+                } catch (\Exception $ex) {
+                    // $ex should be looged internally in services
+                    // no need to additional log here
+                    continue;
+                }
+                $this->em->persist($newBlob);
+
+                $attachData                      = [];
+                $attachData['blob']              = $newBlob->toArray();
+                $attachData['url']               = $newBlob->getDownloadUrl(true);
+                $attachData['filesize_readable'] = $newBlob->getReadableFilesize();
+                $attachments[]                   = $attachData;
+            }
+        }
+
         /** @var PersonPrefRepository $personPrefRepository */
          /* @var FeedbackCategoryRepository       $feedbackCategoryRepository */
          /* @var FeedbackStatusCategoryRepository $feedbackStatusCategoryRepository */
@@ -1163,6 +1240,10 @@ class FeedbackController extends AbstractController
         return $this->render(
             'AgentBundle:Feedback:newfeedback.html.twig',
             [
+                'ticket'              => $ticket,
+                'message'             => $message,
+                'feedback_person'     => $feedback_person,
+                'attachments'         => $attachments,
                 'feedback_categories' => $feedbackCategories,
                 'active_status_cats'  => $activeStatusCategories,
                 'closed_status_cats'  => $closedStatusCategories,
@@ -1178,7 +1259,12 @@ class FeedbackController extends AbstractController
      */
     public function newFeedbackSaveAction(Request $request)
     {
-        $newfeedback = new NewFeedback($this->person);
+        $newfeedback = new NewFeedback(
+            $this->getDoctrine()->getManager(),
+            $this->person,
+            $this->get('ticket_manager'),
+            $this->get('feedback_subscription_helper')
+        );
 
         $formType = new NewFeedbackTypeOld();
         $form     = $this->get('form.factory')->create($formType, $newfeedback);
@@ -1212,10 +1298,15 @@ class FeedbackController extends AbstractController
                 $this->person->id
             );
 
+            if ($feedback->getPerson()->getId() !== $this->person->getId()) {
+                $this->_sendAgentCreatedFeedbackForUserNotification($feedback);
+            }
+
             return $this->createJsonResponse(
                 [
-                    'success'     => true,
-                    'feedback_id' => $feedback['id'],
+                    'success'      => true,
+                    'feedback_id'  => $feedback['id'],
+                    'feedback_url' => $this->get('object_router')->getPortalUrl($feedback),
                 ]
             );
         } else {
@@ -1224,6 +1315,26 @@ class FeedbackController extends AbstractController
                     'success' => false,
                 ]
             );
+        }
+    }
+
+    protected function _sendAgentCreatedFeedbackForUserNotification(Feedback $feedback)
+    {
+        if ($this->get('deskpro.feature_flags')->hasBeta('email_templates')) {
+            $viewModel = $this->get('email.user_viewmodel_factory')
+                ->createAgentCreatedNewFeedbackForUserModel($feedback);
+            $this->get('email.email_sender')
+                ->send($viewModel, ['to' => $feedback->getPerson()->getEmail()]);
+        } else {
+            $message = $this->container->getMailer()->createMessage();
+            $message->setTo(
+                $feedback->getPerson()->getEmail(),
+                $feedback->getPerson()->getDisplayName()
+            );
+            $message->setTemplate('DeskPRO:emails_user:new-feedback-created-for-user.html.twig', [
+                    'feedback' => $feedback,
+            ]);
+            $this->container->getMailer()->send($message);
         }
     }
 
@@ -1243,6 +1354,24 @@ class FeedbackController extends AbstractController
         }
 
         return $feedback;
+    }
+
+    /**
+     * @param $ticketId
+     *
+     * @throws \Doctrine\ORM\ORMException
+     * @throws \Doctrine\ORM\OptimisticLockException
+     * @throws \Doctrine\ORM\TransactionRequiredException
+     *
+     * @return Ticket
+     */
+    private function getTicket($ticketId)
+    {
+        if (!$ticket = $this->em->find(Ticket::class, $ticketId)) {
+            throw $this->createNotFoundException(sprintf('There is no ticket with ID %s', $ticketId));
+        }
+
+        return $ticket;
     }
 
     /**

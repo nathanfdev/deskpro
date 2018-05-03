@@ -1,4 +1,8 @@
-﻿<div class="dataTable_parent">
-    <table class="display" cellspacing="0" width="100%">
-    </table>
+﻿<div>
+    <div ng-hide='loaded' class="box stat-box"><div class="stat-value no-data">loading...</div></div>
+    <div ng-show='loaded && noData' class="box stat-box"><div class="stat-value no-data">no data</div></div>
+    <div ng-show='loaded' class="dataTable_parent">
+        <table class="display" cellspacing="0" width="100%">
+        </table>
+    </div>
 </div>

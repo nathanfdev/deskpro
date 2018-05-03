@@ -1,31 +1,5 @@
 <?php
 
-/*
- * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
- * a British company located in London, England.
- *
- * All source code and content Copyright (c) 2017, DeskPRO Ltd.
- *
- * The license agreement under which this software is released
- * can be found at https://www.deskpro.com/eula/
- *
- * By using this software, you acknowledge having read the license
- * and agree to be bound thereby.
- *
- * Please note that DeskPRO is not free software. We release the full
- * source code for our software because we trust our users to pay us for
- * the huge investment in time and energy that has gone into both creating
- * this software and supporting our customers. By providing the source code
- * we preserve our customers' ability to modify, audit and learn from our
- * work. We have been developing DeskPRO since 2001, please help us make it
- * another decade.
- *
- * Like the work you see? Think you could make it better? We are always
- * looking for great developers to join us: http://www.deskpro.com/jobs/
- *
- * ~ Thanks, Everyone at Team DeskPRO
- */
-
 /**
  * DeskPRO.
  */
@@ -101,32 +75,32 @@ class TicketFieldManager extends FieldManager
         return array_values($this->em->getRepository(CustomDefTicket::class)->getTopFields());
     }
 
-    public function setCustomDataOnObject($ticket, CustomDefAbstract $field_def, array $in_data)
+    public function setCustomDataOnObject($ticket, CustomDefAbstract $fieldDef, array $in_data)
     {
         if (!$ticket->getTicketLogger()) {
-            return parent::setCustomDataOnObject($ticket, $field_def, $in_data);
+            return parent::setCustomDataOnObject($ticket, $fieldDef, $in_data);
         }
 
         $all_display_data = $this->_orig_display;
 
         $old_value = null;
 
-        if (isset($all_display_data[$field_def->id])) {
-            $handler   = $all_display_data[$field_def->id]['handler'];
-            $old_value = $handler->renderText($all_display_data[$field_def->id]['value']);
+        if (isset($all_display_data[$fieldDef->id])) {
+            $handler   = $all_display_data[$fieldDef->id]['handler'];
+            $old_value = $handler->renderText($all_display_data[$fieldDef->id]['value']);
 
             if ($old_value) {
                 $old_value = trim(str_replace(["\n", "\r\n"], ' ', strip_tags($old_value)));
             }
         }
 
-        $return = parent::setCustomDataOnObject($ticket, $field_def, $in_data);
+        $return = parent::setCustomDataOnObject($ticket, $fieldDef, $in_data);
 
         $new_value = null;
         if ($return) {
             $all_display_data = $this->getDisplayArrayForObject($ticket);
-            $handler          = $all_display_data[$field_def->id]['handler'];
-            $new_value        = $handler->renderText($all_display_data[$field_def->id]['value']);
+            $handler          = $all_display_data[$fieldDef->id]['handler'];
+            $new_value        = $handler->renderText($all_display_data[$fieldDef->id]['value']);
             if ($new_value) {
                 $new_value = trim(str_replace(["\n", "\r\n"], ' ', strip_tags($new_value)));
             }
@@ -135,8 +109,8 @@ class TicketFieldManager extends FieldManager
         if (($new_value || $old_value) && ($new_value != $old_value)) {
             $ticket->getTicketLogger()->recordMultiPropertyChanged(
                 'custom_data',
-                ['field_def' => $field_def, 'value' => $old_value],
-                ['field_def' => $field_def, 'value' => $new_value]
+                ['field_def' => $fieldDef, 'value' => $old_value],
+                ['field_def' => $fieldDef, 'value' => $new_value]
             );
         }
 

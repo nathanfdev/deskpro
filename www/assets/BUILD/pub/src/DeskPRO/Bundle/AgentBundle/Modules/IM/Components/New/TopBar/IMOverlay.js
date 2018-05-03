@@ -1,9 +1,9 @@
 import PropTypes from 'prop-types';
 import React from 'react';
+import { FormattedMessage } from 'react-intl';
 import Loader from '@deskpro/react-loader';
 import classNames from 'classnames';
 import debounce from 'lodash/debounce';
-import agentPhrases from 'DeskPRO/Bundle/AgentBundle/AgentPhrases';
 import { ClickOut } from 'DeskPRO/Component/ClickOut';
 import { Detached } from 'DeskPRO/Component/Positioned/Detached';
 import { Tabs } from 'DeskPRO/Component/Semantic/Tabs';
@@ -122,7 +122,7 @@ export default class IMOverlay extends React.Component {
 
     return  {
       id:        'recent',
-      title:     <span><i className="fa fa-clock-o dp-im-tab-menu-icon" />{this.getHeader(agentPhrases.get('agent.chrome.btn_recent'), chats)}</span>,
+      title:     <span><i className="fa fa-clock-o dp-im-tab-menu-icon" />{this.getHeader(<FormattedMessage id="agent.chrome.btn_recent" />, chats)}</span>,
       className: 'native-bars',
       content
     };
@@ -145,7 +145,7 @@ export default class IMOverlay extends React.Component {
 
     return  {
       id:        'agents',
-      title:     <span><i className="fa fa-user dp-im-tab-menu-icon" />{this.getHeader(agentPhrases.get('agent.general.agents'), filteredAgents)}</span>,
+      title:     <span><i className="fa fa-user dp-im-tab-menu-icon" />{this.getHeader(<FormattedMessage id="agent.general.agents" />, filteredAgents)}</span>,
       className: 'native-bars',
       content
     };
@@ -209,7 +209,7 @@ export default class IMOverlay extends React.Component {
       </Loader>
     );
 
-    let header = agentPhrases.get('agent.general.groups');
+    let header = <FormattedMessage id="agent.general.groups" />;
     if (this.state.filter) {
       header = `${header} (${filteredGroups.size + filteredDepartments.size + filteredTeams.size})`;
     }
@@ -243,17 +243,21 @@ export default class IMOverlay extends React.Component {
 
     return (
       <div>
-        <div className="im header">{agentPhrases.get('agent.chrome.nav_agentchat')}</div>
+        <div className="im header"><FormattedMessage id="agent.chrome.nav_agentchat" /></div>
         <SegmentsGroup className="im">
           <Segment className="search-wrapper">
-            <SearchBox
-              text={this.state.filter}
-              focusOnMount
-              onFocus={onFocus}
-              onBlur={onBlur}
-              onUserInput={this.onListFilter}
-              placeholder={agentPhrases.get('agent.general.search')}
-            />
+            <FormattedMessage id="agent.general.search">
+              {placeholder => (
+                <SearchBox
+                  text={this.state.filter}
+                  focusOnMount
+                  onFocus={onFocus}
+                  onBlur={onBlur}
+                  onUserInput={this.onListFilter}
+                  placeholder={placeholder}
+                />
+              )}
+            </FormattedMessage>
           </Segment>
           <Segment className="im-tabs">{this.getTabs()}</Segment>
         </SegmentsGroup>

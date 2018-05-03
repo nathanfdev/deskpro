@@ -1,31 +1,5 @@
 <?php
 
-/*
- * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
- * a British company located in London, England.
- *
- * All source code and content Copyright (c) 2017, DeskPRO Ltd.
- *
- * The license agreement under which this software is released
- * can be found at https://www.deskpro.com/eula/
- *
- * By using this software, you acknowledge having read the license
- * and agree to be bound thereby.
- *
- * Please note that DeskPRO is not free software. We release the full
- * source code for our software because we trust our users to pay us for
- * the huge investment in time and energy that has gone into both creating
- * this software and supporting our customers. By providing the source code
- * we preserve our customers' ability to modify, audit and learn from our
- * work. We have been developing DeskPRO since 2001, please help us make it
- * another decade.
- *
- * Like the work you see? Think you could make it better? We are always
- * looking for great developers to join us: http://www.deskpro.com/jobs/
- *
- * ~ Thanks, Everyone at Team DeskPRO
- */
-
 namespace Application\LegacyApiBundle\Controller;
 
 use Application\DeskPRO\App\AppManipulatorContext;
@@ -142,11 +116,6 @@ class AppsController extends AbstractController
 
     public function getPackageAction($name)
     {
-        // we are expecting the client to double url encode $name
-        // in case it contains forward slashes, e.g @deskproapps/app-name
-        // the actual problem can be solved by just double encoding of '/', / => %2F => %252F
-        // but it is simpler on the client to double encode everything
-        $name    = urldecode(urldecode($name));
         $manager = $this->container->getAppManager();
 
         if (!$manager->hasPackage($name)) {
@@ -187,7 +156,7 @@ class AppsController extends AbstractController
                 'name'         => $manifest->getName(),
                 'native_name'  => $manifest->getName(),
                 'title'        => $manifest->getTitle(),
-                'scope'        => $manifest->getScope(),
+                'scope'        => $appArchive ? '' : $manifest->getScope(), // v2 apps no longer use this property
                 'is_installed' => $app ? $app->getInstances()->count() > 0 : false,
                 'is_single'    => $manifest->isSingle(),
                 'readme'       => $manifest->getDescription(),

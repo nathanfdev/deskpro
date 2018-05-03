@@ -1,31 +1,5 @@
 <?php
 
-/*
- * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
- * a British company located in London, England.
- *
- * All source code and content Copyright (c) 2017, DeskPRO Ltd.
- *
- * The license agreement under which this software is released
- * can be found at https://www.deskpro.com/eula/
- *
- * By using this software, you acknowledge having read the license
- * and agree to be bound thereby.
- *
- * Please note that DeskPRO is not free software. We release the full
- * source code for our software because we trust our users to pay us for
- * the huge investment in time and energy that has gone into both creating
- * this software and supporting our customers. By providing the source code
- * we preserve our customers' ability to modify, audit and learn from our
- * work. We have been developing DeskPRO since 2001, please help us make it
- * another decade.
- *
- * Like the work you see? Think you could make it better? We are always
- * looking for great developers to join us: http://www.deskpro.com/jobs/
- *
- * ~ Thanks, Everyone at Team DeskPRO
- */
-
 namespace DeskPRO\Bundle\AppStoreBundle\Domain;
 
 use JMS\Serializer\Annotation as JMS;
@@ -76,14 +50,6 @@ class AppManifest
     private $description;
 
     /**
-     * @JMS\Type("string")
-     * @JMS\Expose()
-     *
-     * @var string
-     */
-    private $scope;
-
-    /**
      * @JMS\Type("array<DeskPRO\Bundle\AppStoreBundle\Domain\AppManifest\Setting>")
      * @JMS\Expose()
      * @JMS\SerializedName("settings")
@@ -128,11 +94,11 @@ class AppManifest
     /**
      * @JMS\Type("array<string>")
      * @JMS\Expose()
-     * @JMS\SerializedName("externalApis")
+     * @JMS\SerializedName("domainWhitelist")
      *
      * @var string[]
      */
-    private $externalApis = [];
+    private $domainWhitelist = [];
 
     /**
      * @JMS\Type("array<string>")
@@ -233,26 +199,6 @@ class AppManifest
     }
 
     /**
-     * @return string
-     */
-    public function getScope()
-    {
-        return $this->scope;
-    }
-
-    /**
-     * @param string $scope
-     *
-     * @return $this
-     */
-    public function setScope($scope)
-    {
-        $this->scope = $scope;
-
-        return $this;
-    }
-
-    /**
      * @return AppManifest\Setting[]
      */
     public function getSettings()
@@ -295,9 +241,9 @@ class AppManifest
     /**
      * @return \string[]
      */
-    public function getExternalApis()
+    public function getDomainWhitelist()
     {
-        return $this->externalApis;
+        return $this->domainWhitelist;
     }
 
     /**
@@ -305,9 +251,9 @@ class AppManifest
      *
      * @return $this
      */
-    public function setExternalApis(array $externalApis)
+    public function setDomainWhitelist(array $externalApis)
     {
-        $this->externalApis = $externalApis;
+        $this->domainWhitelist = $externalApis;
 
         return $this;
     }

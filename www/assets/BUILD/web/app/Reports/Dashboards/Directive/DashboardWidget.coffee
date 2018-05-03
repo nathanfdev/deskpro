@@ -20,7 +20,7 @@ define ->
           DashboardWidgetService
             .getWidget(conf)
             .then (widget) =>
-              chartDiv.html(widget)
+              chartDiv.html(widget.rendered_result)
 
         initChart()
     }

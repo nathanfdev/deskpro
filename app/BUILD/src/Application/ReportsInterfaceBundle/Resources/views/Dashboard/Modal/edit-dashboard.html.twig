@@ -202,7 +202,10 @@
 
                     <tr ng-repeat="agent in agents track by agent.id">
                         <td class="agent-name">
-                            <span class="avatar" style="background-image: url({{ ng_var('agent.avatar.url') }})"></span>
+                            <span class="avatar">
+                                <span class="text">{{ ng_var('getInitials(agent)') }}</span>
+                                <span class="image" style="background-image: url({{ ng_var('agent.avatar.url') }})"></span>
+                            </span>
                             {{ ng_var('agent.name') }}
                         </td>
                         <td ng-if="dashboard.is_agent">

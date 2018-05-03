@@ -1,6 +1,6 @@
 import PropTypes from 'prop-types';
 import React from 'react';
-import { reduxForm, submit } from 'redux-form';
+import { reduxForm, submit, SubmissionError } from 'redux-form';
 import { Button, Loader } from '@deskpro/react-components';
 import { api } from 'DeskPRO/Bundle/AppBundle/DAL';
 import Immutable from 'immutable';
@@ -8,6 +8,7 @@ import classNames from 'classnames';
 import { connect } from 'react-redux';
 import { EditForm } from './EditForm';
 import { saveReport } from '../../Application/Actions/reportActions';
+import { transformReportDataToApi } from './helper';
 
 class EditContainer extends React.Component {
 
@@ -36,6 +37,7 @@ class EditContainer extends React.Component {
       title:  report.get('title'),
       labels: report.get('labels', Immutable.List()).toArray(),
       query:  {
+        raw:      report.get('query'),
         select:   queryParts.get('select', ''),
         from:     queryParts.get('from', ''),
         where:    queryParts.get('where', ''),
@@ -45,7 +47,7 @@ class EditContainer extends React.Component {
         offset:   queryParts.get('offset', ''),
         limit:    queryParts.get('limit', '')
       },
-      vars: report.get('variables', Immutable.Map()).toJS()
+      vars: report.get('variables', Immutable.Map()).toJS(),
     };
 
     return { initialFormValue };
@@ -54,7 +56,9 @@ class EditContainer extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
-      saving: false,
+      saving:     false,
+      error:      false,
+      formErrors: {},
       ...EditContainer.getStateFromReport(props.report)
     };
   }
@@ -62,6 +66,9 @@ class EditContainer extends React.Component {
   componentWillReceiveProps(props) {
     if (props.report !== this.props.report) {
       this.setState({
+        saving:     false,
+        error:      false,
+        formErrors: {},
         ...EditContainer.getStateFromReport(props.report)
       });
     }
@@ -95,10 +102,28 @@ class EditContainer extends React.Component {
       ...formData.query
     };
 
-    this.setState({ saving: true });
-    dispatch(saveReport(reportData)).then(() => {
-      this.setState({ saving: false });
-    });
+    this.setState({ saving: true, error: false, formErrors: {} });
+    dispatch(saveReport(reportData))
+        .then(() => {
+          this.setState({ saving: false, error: false, formErrors: {} });
+        })
+        .catch((response) => {
+          const flattenErrors = {};
+          if (response.data.errors) {
+            Object.keys(response.data.errors.fields).forEach((key) => {
+              flattenErrors[key] = response.data.errors.fields[key].errors.map(error => error.message).join(' ');
+            });
+          }
+
+          const data = transformReportDataToApi(reportData);
+          if (reportData.id > 0) {
+            data.id = reportData.id;
+          }
+
+          // return state of EditForm to one which has errors in dpql
+          this.setState({ saving: false, error: true, formErrors: flattenErrors, ...EditContainer.getStateFromReport(Immutable.fromJS(data)) });
+          throw new SubmissionError(flattenErrors);
+        });
   };
 
   doSubmit = () => {
@@ -110,9 +135,10 @@ class EditContainer extends React.Component {
     const { groupParams, report, labels } = this.props;
 
     const EditStatForm = reduxForm({
-      form:          'editStat',
-      initialValues: this.state.initialFormValue,
-      onSubmit:      this.onSubmit,
+      form:               'editStat',
+      initialValues:      this.state.initialFormValue,
+      onSubmit:           this.onSubmit,
+      enableReinitialize: true
     })(EditForm);
 
     const saveBtn = (<button
@@ -136,7 +162,14 @@ class EditContainer extends React.Component {
     );
 
     return (<div>
-      <EditStatForm labels={labels.toJS()} groupParams={groupParams.toJS()} dpqlParser={EditContainer.dpqlParser} />
+      <EditStatForm
+        hasError={this.state.error}
+        formErrors={this.state.formErrors}
+        labels={labels.toJS()}
+        groupParams={groupParams.toJS()}
+        extendedQuery={report.get('extended_query', false)}
+        dpqlParser={EditContainer.dpqlParser}
+      />
       {controls}
     </div>);
   }

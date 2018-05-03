@@ -1,32 +1,8 @@
 <?php
 
-/*
- * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
- * a British company located in London, England.
- *
- * All source code and content Copyright (c) 2017, DeskPRO Ltd.
- *
- * The license agreement under which this software is released
- * can be found at https://www.deskpro.com/eula/
- *
- * By using this software, you acknowledge having read the license
- * and agree to be bound thereby.
- *
- * Please note that DeskPRO is not free software. We release the full
- * source code for our software because we trust our users to pay us for
- * the huge investment in time and energy that has gone into both creating
- * this software and supporting our customers. By providing the source code
- * we preserve our customers' ability to modify, audit and learn from our
- * work. We have been developing DeskPRO since 2001, please help us make it
- * another decade.
- *
- * Like the work you see? Think you could make it better? We are always
- * looking for great developers to join us: http://www.deskpro.com/jobs/
- *
- * ~ Thanks, Everyone at Team DeskPRO
- */
-
 namespace DeskPRO\Bundle\ReportBundle\Reports\Renderer\Json;
+
+use DeskPRO\Bundle\ReportBundle\Reports\ResultMetadata;
 
 /**
  * Class JsonBarRenderer.
@@ -47,5 +23,168 @@ class JsonBarRenderer extends AbstractJsonChartRenderer
     public static function getOutputFormat()
     {
         return self::TYPE_BAR;
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function doRender(array $rows, ResultMetadata $metadata, array $options = [])
+    {
+        if (!$rows) {
+            return;
+        }
+
+        $groupXColumns = $metadata->getGroupXColumns();
+        $groupYColumns = $metadata->getGroupYColumns();
+        $selectColumns = $metadata->getSelectColumns();
+
+        $arrayOutput = $this->getDefaultOutputArray();
+        $chartData   = $graphs   = [];
+
+        $valueLabelTemplate = $categoryLabelTemplate = $customBalloonText = $balloonTextTemplate = null;
+        $integersOnly       = true;
+        $valueAxisTitle     = null;
+
+        // we have stacked results here
+        // stack results if simple grouping only, e.g. can't stack for matrix
+        if (count($groupXColumns) === 1
+            && count($groupYColumns) === 1
+            && $metadata->hasFlag(ResultMetadata::FLAG_HIERARCHICAL)
+            && !$metadata->hasFlag(ResultMetadata::FLAG_LAYERED)
+        ) {
+            $hierarchyParents  = $this->collectHierarchyParents($rows);
+            $stacks            = $this->getStacks($rows, $hierarchyParents);
+            $maxCategoryLength = 0;
+
+            $additionalData = [];
+            foreach ($selectColumns as $index => $selectColumn) {
+                if (strpos($selectColumn['title'], '__var') !== false) {
+                    $additionalData[$selectColumn['title']] = $selectColumn['resultId'];
+                }
+                // it would be same for each row of course since it
+                // SELECT blah-blah-blah
+                // '{{value * 4}} as 'value_label_template'
+                if ($selectColumn['title'] === 'value_label_template') {
+                    $valueLabelTemplate = $rows[0][$selectColumn['resultId'] - 1];
+                    unset($selectColumns[$index]);
+                }
+                if ($selectColumn['title'] === 'category_label_template') {
+                    $categoryLabelTemplate = $rows[0][$selectColumn['resultId'] - 1];
+                    unset($selectColumns[$index]);
+                }
+                if ($selectColumn['title'] === 'tooltip_text') {
+                    $customBalloonText = $rows[0][$selectColumn['resultId'] - 1];
+                    unset($selectColumns[$index]);
+                }
+                if ($selectColumn['title'] === 'tooltip_text_template') {
+                    $balloonTextTemplate = $rows[0][$selectColumn['resultId'] - 1];
+                    unset($selectColumns[$index]);
+                }
+                if ($selectColumn['title'] === 'value_axis_title') {
+                    $valueAxisTitle = $rows[0][$selectColumn['resultId'] - 1];
+                    unset($selectColumns[$index]);
+                }
+            }
+
+            $arrayOutput['valueAxes'][0]['stackType'] = 'regular';
+            $arrayOutput['valueAxes'][0]['title']     = $selectColumns[0]['title'];
+            $arrayOutput['categoryAxis']['title']     = $valueAxisTitle ?: $groupYColumns[0]['title'];
+
+            foreach ($stacks as $i => $stack) {
+                $chartData[$i] = [];
+                foreach ($stack as $j => $values) {
+                    $category                  = isset($hierarchyParents[$i]) ? $hierarchyParents[$i]['hierarchy_root_title'] : $values['hierarchy_root_title'];
+                    $maxCategoryLength         = max($maxCategoryLength, strlen($category));
+                    $chartData[$i]['category'] = $category ?: 'None';
+
+                    $value = $values[$selectColumns[0]['resultId'] - 1];
+
+                    /*
+                     * @see https://deskpro.myjetbrains.com/youtrack/issue/DP-1503
+                     */
+                    if (!$integersOnly || !filter_var($value, FILTER_VALIDATE_INT)) {
+                        $integersOnly = false;
+                    }
+
+                    $chartData[$i]["value$i$j"] = $value;
+
+                    foreach ($additionalData as $key => $resultId) {
+                        $value = $values[$resultId - 1];
+                        if (!filter_var($value, FILTER_VALIDATE_INT)) {
+                            $integersOnly = false;
+                        }
+                        $chartData[$i][$key] = $value;
+                    }
+
+                    $title = $this->renderCellValue($values, $selectColumns[0], $metadata);
+                    if ($value == $title) {
+                        $balloonText = '[[category]]: [[value]]';
+                        $title       = $this->getFullHierarchyTitle($values, $hierarchyParents).': '.$value;
+                    } else {
+                        $title       = $this->getFullHierarchyTitle($values, $hierarchyParents).': '.$title;
+                        $balloonText = '[[title]]';
+                    }
+                    $graphs[] = [
+                        'id'                  => "graph-$i-$j",
+                        'type'                => 'column',
+                        'fillAlphas'          => '0.9',
+                        'valueField'          => "value$i$j",
+                        'title'               => $title,
+                        'balloonText'         => $customBalloonText ?: $balloonText,
+                        'balloonTextTemplate' => $balloonTextTemplate,
+                    ];
+                }
+            }
+
+            $arrayOutput['dataProvider'] = array_values($chartData);
+            $arrayOutput['graphs']       = array_values($graphs);
+            if ($maxCategoryLength > 10) {
+                $labelHeight                 = $maxCategoryLength * 4;
+                $arrayOutput['categoryAxis'] = array_merge($arrayOutput['categoryAxis'], [
+                    'labelRotation' => 45,
+                    'gridCount'     => min(15, count($rows)),
+                    'marginBottom'  => $labelHeight,
+                ]);
+            }
+            $arrayOutput['valueAxes'][0]['integersOnly']  = $integersOnly;
+            $arrayOutput['valueAxes'][0]['labelTemplate'] = $valueLabelTemplate;
+            $arrayOutput['categoryAxis']['labelTemplate'] = $categoryLabelTemplate;
+
+            return $arrayOutput;
+        }
+
+        return parent::doRender($rows, $metadata, $options);
+    }
+
+    /**
+     * @param array $rows
+     * @param array $hierarchyParents
+     *
+     * @return array
+     */
+    protected function getStacks(array &$rows, array $hierarchyParents)
+    {
+        $stacks   = [];
+        $iterator = function ($row, $parentId) use ($hierarchyParents, &$stacks, &$iterator) {
+            $id       = (int) $row['hierarchy_id'];
+            $parentId = (int) $parentId;
+
+            if (array_key_exists($parentId, $hierarchyParents)) {
+                $hierarchyParent = $hierarchyParents[$parentId];
+                if (isset($hierarchyParent['hierarchy_parent_id']) && $hierarchyParent['hierarchy_parent_id']) {
+                    $iterator($row, $hierarchyParent['hierarchy_parent_id']);
+                } else {
+                    $stacks[$parentId][] = $row;
+                }
+            } else {
+                $stacks[$id] = [$row];
+            }
+        };
+
+        foreach ($rows as $index => $row) {
+            $iterator($row, $row['hierarchy_parent_id']);
+        }
+
+        return $stacks;
     }
 }

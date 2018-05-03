@@ -3,13 +3,17 @@ Feature: /ticket_forms
   I want to check person field
 
   Background:
-    Given no Person records exist
+    Given I have only default brand
+    And no Person records exist
     And I'm authenticated as admin
     And "user_1@deskpro.dev" user exists
     And "user_2@deskpro.dev" user exists
+    And only the following Department records exist:
+      | #  | Title        | Brands           | Is Tickets Enabled |
+      | d1 | Department 1 | [{defaultBrand}] | 1                  |
     And only the following Ticket records exist:
-      | #  | Subject  | Person               |
-      | t1 | Ticket 1 | {user_1@deskpro.dev} |
+      | #  | Brand          | Department | Subject  | Person               |
+      | t1 | {defaultBrand} | {d1}       | Ticket 1 | {user_1@deskpro.dev} |
     And only the following TicketMessage records exist:
       | #  | Ticket | Person               | Message         |
       | m1 | {t1}   | {user_1@deskpro.dev} | my text message |
@@ -59,6 +63,46 @@ Feature: /ticket_forms
     And the JSON node "data[0].primary_email" should be equal to "new-user@deskpro.dev"
     And the JSON node "data[0].emails[0]" should be equal to "new-user@deskpro.dev"
 
+  Scenario: I modify ticket with a person by unknown email (inline)
+    When I send a PUT request to "/api/v2/ticket_forms/agent/{t1}" with body:
+    """
+{
+  "person": "unknown-email@deskpro.dev"
+}
+    """
+    Then the response status code should be 204
+
+    When I send a GET request to "/api/v2/tickets/{t1}"
+    Then the response status code should be 200
+    And the JSON node "data.person" should exist
+
+    When I send a GET request to "/api/v2/people?order_by=id&order_dir=desc"
+    Then the response status code should be 200
+    And the JSON node "data[0].name" should be equal to "Unknown-email"
+    And the JSON node "data[0].primary_email" should be equal to "unknown-email@deskpro.dev"
+    And the JSON node "data[0].emails[0]" should be equal to "unknown-email@deskpro.dev"
+
+  Scenario: I modify ticket with a person by unknown email
+    When I send a PUT request to "/api/v2/ticket_forms/agent/{t1}" with body:
+    """
+{
+  "person": {
+    "email": "unknown-email@deskpro.dev"
+  }
+}
+    """
+    Then the response status code should be 204
+
+    When I send a GET request to "/api/v2/tickets/{t1}"
+    Then the response status code should be 200
+    And the JSON node "data.person" should exist
+
+    When I send a GET request to "/api/v2/people?order_by=id&order_dir=desc"
+    Then the response status code should be 200
+    And the JSON node "data[0].name" should be equal to "Unknown-email"
+    And the JSON node "data[0].primary_email" should be equal to "unknown-email@deskpro.dev"
+    And the JSON node "data[0].emails[0]" should be equal to "unknown-email@deskpro.dev"
+
   Scenario: I edit specific person name via the ticket form
     When I send a PUT request to "/api/v2/ticket_forms/agent/{t1}" with body:
     """
@@ -90,3 +134,18 @@ Feature: /ticket_forms
     When I send a GET request to "/api/v2/people/{admin}"
     Then the response status code should be 200
     And the JSON node "data.name" should be equal to "My Edited Name"
+
+  Scenario: I check that person's props are not validated on assign to a ticket
+    Given the following AgentTeam records exist:
+      | #    | Name   |
+      | team | Team 1 |
+    And the following User records exist:
+      | #  | Name     | Email               | Primary Team |
+      | p1 | Person 1 | person1@example.com | {team}       |
+    When I send a PUT request to "/api/v2/ticket_forms/agent/{t1}" with body:
+    """
+{
+  "person": ~p1~
+}
+    """
+    Then the response status code should be 204

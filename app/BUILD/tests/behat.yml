@@ -12,7 +12,6 @@ api:
         api:
             paths:
                 - %paths.base%/features/api
-                - %paths.base%/features/term-engine
             contexts:
                 - DpBehat\DataSetContext:
                     dataset_manager: @dataset_manager
@@ -22,7 +21,6 @@ api:
                 - DpBehat\Api\RestContext
                 - DpBehat\Api\AuthContext
                 - DpBehat\Api\BrandContext
-                - DpBehat\TermEngine\TermEngineBehatContext
                 - DpBehat\Api\PeopleContext
                 - DpBehat\Api\AgentsContext
                 - DpBehat\PermissionContext
@@ -32,6 +30,7 @@ api:
                 - DpBehat\Api\NotificationsContext
                 - DpBehat\Portal\GenericContext
                 - DpBehat\System\Alerts\IncidentsContext
+                - DpBehat\FeedbackSubscriptionContext
                 - DpBehat\TicketLogsContext
                 - DpBehat\Data\DataContext
                 - DpBehat\Data\PeopleContext

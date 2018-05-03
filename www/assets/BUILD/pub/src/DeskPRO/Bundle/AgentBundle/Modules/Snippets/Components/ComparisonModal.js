@@ -1,12 +1,12 @@
 import PropTypes from 'prop-types';
 import React from 'react';
+import { FormattedMessage } from 'react-intl';
 import difflib from 'difflib';
 import diff2html from 'diff2html';
 import htmlToText from 'html-to-text';
 import Moment from 'moment';
 import { Modal, ConfirmButton, Checkbox, CustomSelect, List, ListElement  } from '@deskpro/react-components';
 import AgentAvatar from 'DeskPRO/Component/Avatar/AgentAvatar';
-import agentPhrases from 'DeskPRO/Bundle/AgentBundle/AgentPhrases';
 
 export class ComparisonModal extends React.Component {
   static propTypes = {
@@ -204,7 +204,7 @@ export class ComparisonModal extends React.Component {
     return (
       <div id="comparison_modal">
         <Modal
-          title={agentPhrases.get('agent.general.comparison')}
+          title={<FormattedMessage id="agent.general.comparison" />}
           closeModal={closeModal}
         >
           <div className="revisions">
@@ -252,10 +252,10 @@ export class ComparisonModal extends React.Component {
             type="secondary"
             size="medium"
             disabled={current.number < this.props.changes.length + 1}
-            message={agentPhrases.get('agent.general.are_you_sure')}
+            message={<FormattedMessage id="agent.general.are_you_sure" />}
             onClick={this.revertToVersion}
           >
-            {agentPhrases.get('agent.snippets.revert_content')}
+            <FormattedMessage id="agent.snippets.revert_content" />
           </ConfirmButton>
           <Checkbox
             checked={this.state.viewHtml}

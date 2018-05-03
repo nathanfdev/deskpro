@@ -1,31 +1,5 @@
 <?php
 
-/*
- * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
- * a British company located in London, England.
- *
- * All source code and content Copyright (c) 2018, DeskPRO Ltd.
- *
- * The license agreement under which this software is released
- * can be found at https://www.deskpro.com/eula/
- *
- * By using this software, you acknowledge having read the license
- * and agree to be bound thereby.
- *
- * Please note that DeskPRO is not free software. We release the full
- * source code for our software because we trust our users to pay us for
- * the huge investment in time and energy that has gone into both creating
- * this software and supporting our customers. By providing the source code
- * we preserve our customers' ability to modify, audit and learn from our
- * work. We have been developing DeskPRO since 2001, please help us make it
- * another decade.
- *
- * Like the work you see? Think you could make it better? We are always
- * looking for great developers to join us: http://www.deskpro.com/jobs/
- *
- * ~ Thanks, Everyone at Team DeskPRO
- */
-
 namespace DeskPRO\Bundle\ReportBundle\Reports\Renderer\Json;
 
 use DeskPRO\Bundle\ReportBundle\Reports\Renderer\TextValueRenderer;
@@ -52,16 +26,11 @@ abstract class AbstractJsonChartRenderer extends AbstractJsonRenderer
     }
 
     /**
-     * {@inheritdoc}
+     * @return array
      */
-    protected function doRender(array $rows, ResultMetadata $metadata, array $options = [])
+    protected function getDefaultOutputArray()
     {
-        if (!$rows) {
-            return null;
-        }
-
-        //initial output array
-        $arrayOutput = [
+        return [
             'dataProvider' => [],
             'categoryAxis' => [
                 'gridPosition' => 'start',
@@ -89,20 +58,65 @@ abstract class AbstractJsonChartRenderer extends AbstractJsonRenderer
             'categoryField' => 'category',
             'exportConfig'  => false,
         ];
+    }
 
+    /**
+     * {@inheritdoc}
+     */
+    protected function doRender(array $rows, ResultMetadata $metadata, array $options = [])
+    {
+        if (!$rows) {
+            return null;
+        }
+
+        $arrayOutput   = $this->getDefaultOutputArray();
         $selectColumns = $metadata->getSelectColumns();
         $groupYColumns = $metadata->getGroupYColumns();
         $groupXColumns = $metadata->getGroupXColumns();
 
-        $chartData         = [];
-        $graphs            = [];
-        $isStacked         = false;
-        $maxCategoryLength = 0;
+        $chartData          = [];
+        $graphs             = [];
+        $isStacked          = false;
+        $maxCategoryLength  = 0;
+        $integersOnly       = true;
+        $firstSel           = reset($selectColumns);
+        $valueLabelTemplate = $categoryLabelTemplate = $customBalloonText = $balloonTextTemplate = null;
+        $valueAxisTitle     = $firstSel['title'];
 
-        $firstSel       = reset($selectColumns);
-        $valueAxisTitle = $firstSel['title'];
+        $additionalData = [];
+        foreach ($selectColumns as $index => $selectColumn) {
+            if (strpos($selectColumn['title'], '__var') !== false) {
+                $additionalData[$selectColumn['title']] = $selectColumn;
+                //we're gonna add this column in another way, it should have same key for it and would be used for
+                // click_url option in chart
+                unset($selectColumns[$index]);
+            }
+            // it would be same for each row of course since it
+            // SELECT blah-blah-blah
+            // '{{value * 4}} as 'value_label_template'
+            if ($selectColumn['title'] === 'value_label_template') {
+                $valueLabelTemplate = $rows[0][$selectColumn['resultId'] - 1];
+                unset($selectColumns[$index]);
+            }
+            if ($selectColumn['title'] === 'category_label_template') {
+                $categoryLabelTemplate = $rows[0][$selectColumn['resultId'] - 1];
+                unset($selectColumns[$index]);
+            }
+            if ($selectColumn['title'] === 'tooltip_text') {
+                $customBalloonText = $rows[0][$selectColumn['resultId'] - 1];
+                unset($selectColumns[$index]);
+            }
+            if ($selectColumn['title'] === 'tooltip_text_template') {
+                $balloonTextTemplate = $rows[0][$selectColumn['resultId'] - 1];
+                unset($selectColumns[$index]);
+            }
+            if ($selectColumn['title'] === 'value_axis_title') {
+                $valueAxisTitle = $rows[0][$selectColumn['resultId'] - 1];
+                unset($selectColumns[$index]);
+            }
+        }
 
-        if ($groupXColumns) {
+        if ($groupXColumns && !$metadata->hasFlag(ResultMetadata::FLAG_HIERARCHICAL)) {
             // matrix table - X() values translate to bottom axis, each row (from Y()) is a new line/stack.
             $prepared = $this->prepareMatrixTable($metadata, $rows);
             $lookup   = $prepared['lookup'];
@@ -127,6 +141,14 @@ abstract class AbstractJsonChartRenderer extends AbstractJsonRenderer
                     } else {
                         $value = '';
                     }
+
+                    /*
+                     * @see https://deskpro.myjetbrains.com/youtrack/issue/DP-1503
+                     */
+                    if (!$integersOnly || !filter_var($value, FILTER_VALIDATE_INT)) {
+                        $integersOnly = false;
+                    }
+
                     $rowData['value'.$i] = $value;
                     ++$i;
                 }
@@ -136,13 +158,23 @@ abstract class AbstractJsonChartRenderer extends AbstractJsonRenderer
             $i = 0;
             foreach ($rowGroups as $printable) {
                 $graphs[$i] = [
+                    'id'    => 'graph-'.$i,
                     'title' => implode(' / ', $printable),
                     'value' => "value$i",
                 ];
                 ++$i;
             }
 
-            $hasCategory = true;
+            $resultingArray = array_udiff($groupXColumns, $groupYColumns,
+                function ($a, $b) {
+                    if ($a['title'] === $b['title'] && $a['resultId'] === $b['resultId']) {
+                        return 0;
+                    }
+
+                    return 1;
+                }
+            );
+            $hasCategory = count($resultingArray) > 0 && count($groupYColumns) > 0 && count($groupXColumns) > 0;
             $isStacked   = (static::getOutputFormat() == 'bar' || static::getOutputFormat() == 'area');
 
             $parts = [];
@@ -171,7 +203,28 @@ abstract class AbstractJsonChartRenderer extends AbstractJsonRenderer
                     $rowData = [];
 
                     foreach ($selectColumns as $i => $column) {
-                        $rowData['value'.$i] = $this->filterGraphValue($this->getColumnValue($row, $column));
+                        $value = $this->filterGraphValue($this->getColumnValue($row, $column));
+
+                        /*
+                         * @see https://deskpro.myjetbrains.com/youtrack/issue/DP-1503
+                         */
+                        if (!$integersOnly || !filter_var($value, FILTER_VALIDATE_INT)) {
+                            $integersOnly = false;
+                        }
+
+                        $rowData['value'.$i] = $value;
+                    }
+
+                    // process additional data for internal chart purposes
+                    foreach ($additionalData as $key => $column) {
+                        $value = $this->filterGraphValue($this->getColumnValue($row, $column));
+                        /*
+                         * @see https://deskpro.myjetbrains.com/youtrack/issue/DP-1503
+                         */
+                        if (!$integersOnly || !filter_var($value, FILTER_VALIDATE_INT)) {
+                            $integersOnly = false;
+                        }
+                        $rowData[$key] = $value;
                     }
 
                     $rowGroups[$grouper][$category] = $rowData;
@@ -186,7 +239,12 @@ abstract class AbstractJsonChartRenderer extends AbstractJsonRenderer
                     foreach ($values as $categoryName => $groupValues) {
                         $uniqueGraphs[$categoryName] = true;
                         foreach ($groupValues as $valueId => $value) {
-                            $data["$categoryName-$valueId"] = $value;
+                            $key = "$categoryName-$valueId";
+                            // this value is used for internal purposes, don't change key name
+                            if (strpos($valueId, '__var') !== false) {
+                                $key = $valueId;
+                            }
+                            $data[$key] = $value;
                         }
                     }
 
@@ -195,6 +253,7 @@ abstract class AbstractJsonChartRenderer extends AbstractJsonRenderer
 
                 foreach ($uniqueGraphs as $categoryName => $null) {
                     $graphs[] = [
+                        'id'    => "graph-$categoryName",
                         'title' => "$categoryName",
                         'value' => "$categoryName-value0",
                     ];
@@ -219,7 +278,26 @@ abstract class AbstractJsonChartRenderer extends AbstractJsonRenderer
                     $rowData = [];
 
                     foreach ($selectColumns as $i => $column) {
-                        $rowData['value'.$i] = $this->filterGraphValue($this->getColumnValue($row, $column));
+                        $value = $this->filterGraphValue($this->getColumnValue($row, $column));
+                        /*
+                         * @see https://deskpro.myjetbrains.com/youtrack/issue/DP-1503
+                         */
+                        if (!$integersOnly || !filter_var($value, FILTER_VALIDATE_INT)) {
+                            $integersOnly = false;
+                        }
+                        $rowData['value'.$i] = $value;
+                    }
+
+                    // process additional data for internal chart purposes
+                    foreach ($additionalData as $key => $column) {
+                        $value = $this->filterGraphValue($this->getColumnValue($row, $column));
+                        /*
+                         * @see https://deskpro.myjetbrains.com/youtrack/issue/DP-1503
+                         */
+                        if (!$integersOnly || !filter_var($value, FILTER_VALIDATE_INT)) {
+                            $integersOnly = false;
+                        }
+                        $rowData[$key] = $value;
                     }
 
                     $rowGroups[$grouper][$category] = $rowData;
@@ -234,7 +312,13 @@ abstract class AbstractJsonChartRenderer extends AbstractJsonRenderer
                     foreach ($values as $categoryName => $groupValues) {
                         $uniqueGraphs[$categoryName] = true;
                         foreach ($groupValues as $valueId => $value) {
-                            $data["$categoryName-$valueId"] = $value;
+                            $key = "$categoryName-$valueId";
+
+                            // this value is used for internal purposes, don't change key name
+                            if (strpos($valueId, '__var') !== false) {
+                                $key = $valueId;
+                            }
+                            $data[$key] = $value;
                         }
                     }
 
@@ -243,6 +327,7 @@ abstract class AbstractJsonChartRenderer extends AbstractJsonRenderer
 
                 foreach ($uniqueGraphs as $categoryName => $null) {
                     $graphs[] = [
+                        'id'    => "graph-$categoryName",
                         'title' => "$categoryName",
                         'value' => "$categoryName-value0",
                     ];
@@ -255,23 +340,52 @@ abstract class AbstractJsonChartRenderer extends AbstractJsonRenderer
             } else {
                 $sel = reset($selectColumns);
 
+                if ($metadata->hasFlag(ResultMetadata::FLAG_LAYERED) && $metadata->hasFlag(ResultMetadata::FLAG_HIERARCHICAL)) {
+                    $this->collectHierarchyParents($rows); // this gonna remove hierarchy from results
+                }
+
                 foreach ($rows as $row) {
                     $categories = [];
                     foreach ($groupYColumns as $column) {
                         $categories[] = $this->renderCellValue($row, $column, $metadata);
                     }
-                    $category = implode(' / ', $categories);
+                    if ($metadata->hasFlag(ResultMetadata::FLAG_HIERARCHICAL) && $row['hierarchy_parent_id'] && isset($row['hierarchy_root_title'])) {
+                        array_unshift($categories, $row['hierarchy_root_title']);
+                    }
 
+                    $category          = implode(' / ', $categories);
                     $maxCategoryLength = max($maxCategoryLength, strlen($category));
 
-                    $rowData = ['category' => $category];
+                    $value = $this->filterGraphValue($this->getColumnValue($row, $sel));
+                    /*
+                     * @see https://deskpro.myjetbrains.com/youtrack/issue/DP-1503
+                     */
+                    if (!$integersOnly || !filter_var($value, FILTER_VALIDATE_INT)) {
+                        $integersOnly = false;
+                    }
+                    $data = [
+                        'category' => $category,
+                        'title'    => $sel['title'],
+                        'value'    => $value,
+                    ];
 
-                    $rowData['value'] = $this->filterGraphValue($this->getColumnValue($row, $sel));
+                    // process additional data for internal chart purposes
+                    foreach ($additionalData as $key => $column) {
+                        $value = $this->filterGraphValue($this->getColumnValue($row, $sel));
+                        /*
+                         * @see https://deskpro.myjetbrains.com/youtrack/issue/DP-1503
+                         */
+                        if (!$integersOnly || !filter_var($value, FILTER_VALIDATE_INT)) {
+                            $integersOnly = false;
+                        }
+                        $data[$key] = $value;
+                    }
 
-                    $chartData[] = $rowData;
+                    $chartData[] = $data;
                 }
 
                 $graphs[] = [
+                    'id'    => 'graph-'.$sel['title'],
                     'title' => $sel['title'],
                     'value' => 'value',
                 ];
@@ -286,19 +400,31 @@ abstract class AbstractJsonChartRenderer extends AbstractJsonRenderer
             $hasCategory = count($groupYColumns) > 0;
         }
 
-        if (static::getOutputFormat() == 'pie') {
+        if (static::getOutputFormat() === 'pie') {
             $pieData = [];
 
             if (count($graphs) > 1) {
                 foreach ($chartData as $key => $info) {
                     $data = [];
                     foreach ($graphs as $graph) {
+                        $dataToPush = [];
                         if (isset($info[$graph['value']])) {
-                            $data[] = [
-                                'category' => $graph['title'],
-                                'value'    => $info[$graph['value']],
-                                'pulled'   => true,
-                            ];
+                            $dataToPush['category'] = $graph['title'];
+                            $dataToPush['value']    = $info[$graph['value']];
+                        }
+
+                        if (!empty($dataToPush)) {
+                            // additional data only for those data which contain something already
+                            foreach ($additionalData as $key => $additionalDatum) {
+                                if (isset($info[$key])) {
+                                    $dataToPush[$key] = $info[$key];
+                                }
+                            }
+                        }
+
+                        // push data only in case we have something
+                        if (!empty($dataToPush)) {
+                            $data[] = $dataToPush;
                         }
                     }
 
@@ -315,12 +441,21 @@ abstract class AbstractJsonChartRenderer extends AbstractJsonRenderer
                     foreach ($pie['data'] as $info) {
                         $sum += (int) $info['value'];
                     }
-                    $data[] = [
+
+                    $dataToPush = [
                         'category' => $pie['title'],
                         'value'    => $sum,
                         'id'       => $k,
                         'color'    => $this->randomColor(),
                     ];
+
+                    foreach ($additionalData as $key => $additionalDatum) {
+                        if (isset($pie['data'][0]) && isset($pie['data'][0]) && isset($pie['data'][0][$key])) {
+                            $dataToPush[$key] = $pie['data'][0][$key];
+                        }
+                    }
+
+                    $data[] = $dataToPush;
                 }
 
                 array_unshift($pieData, [
@@ -348,6 +483,7 @@ abstract class AbstractJsonChartRenderer extends AbstractJsonRenderer
             $arrayOutput['outlineThickness'] = '2';
             $arrayOutput['colorField']       = 'color';
             $arrayOutput['pulledField']      = 'pulled';
+            $arrayOutput['percentPrecision'] = 0;
             if (count($pieData) > 1) {
                 $overAllPie                  = array_shift($pieData);
                 $arrayOutput['dataProvider'] = $overAllPie['data'];
@@ -373,6 +509,14 @@ abstract class AbstractJsonChartRenderer extends AbstractJsonRenderer
                     }
                 }
             }
+
+            if (isset($options['pieColors'])) {
+                foreach ($arrayOutput['dataProvider'] as &$datum) {
+                    if (isset($options['pieColors'][$datum['category']])) {
+                        $datum['color'] = $options['pieColors'][$datum['category']];
+                    }
+                }
+            }
         } else {
             if ($hasCategory) {
                 $balloonText = '[[category]], [[title]]: [[value]]';
@@ -382,9 +526,11 @@ abstract class AbstractJsonChartRenderer extends AbstractJsonRenderer
             $graphArray = [];
             foreach ($graphs as $graph) {
                 $graphArray[] = array_merge($this->options, [
-                    'valueField'  => $graph['value'],
-                    'title'       => $graph['title'],
-                    'balloonText' => $balloonText,
+                    'valueField'          => $graph['value'],
+                    'id'                  => $graph['id'],
+                    'title'               => $graph['title'],
+                    'balloonText'         => $customBalloonText ?: $balloonText,
+                    'balloonTextTemplate' => $balloonTextTemplate,
                 ]);
             }
 
@@ -410,11 +556,18 @@ abstract class AbstractJsonChartRenderer extends AbstractJsonRenderer
                     'minimum' => 0,
                 ];
             }
-            $arrayOutput['dataProvider']          = $chartData;
-            $arrayOutput['categoryAxis']['title'] = $categoryAxisTitle;
-            $arrayOutput['valueAxes'][0]['title'] = $valueAxisTitle;
-            $arrayOutput['graphs']                = $graphArray;
+
+            $arrayOutput['dataProvider']                 = $chartData;
+            $arrayOutput['categoryAxis']['title']        = $categoryAxisTitle;
+            $arrayOutput['valueAxes'][0]['title']        = $valueAxisTitle;
+            $arrayOutput['valueAxes'][0]['integersOnly'] = $integersOnly;
+            $arrayOutput['graphs']                       = $graphArray;
         }
+
+        if ($arrayOutput['valueAxes'][0]) {
+            $arrayOutput['valueAxes'][0]['labelTemplate'] = $valueLabelTemplate;
+        }
+        $arrayOutput['categoryAxis']['labelTemplate'] = $categoryLabelTemplate;
 
         return $arrayOutput;
     }

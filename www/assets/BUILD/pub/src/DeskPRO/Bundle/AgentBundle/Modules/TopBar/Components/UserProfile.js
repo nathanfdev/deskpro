@@ -1,6 +1,6 @@
 import PropTypes from 'prop-types';
 import React from 'react';
-import agentPhrases from 'DeskPRO/Bundle/AgentBundle/AgentPhrases';
+import { FormattedMessage } from 'react-intl';
 import StatusFormContainer from './StatusForm/StatusFormContainer';
 
 class UserProfile extends React.Component {
@@ -17,22 +17,22 @@ class UserProfile extends React.Component {
     return (
       <div className="voice-profile">
         <div className="voice-header">
-          {agentPhrases.get('agent.general.your_profile')}
+          <FormattedMessage id="agent.general.your_profile" />
         </div>
         <div>
           {window.DP_HAS_VOICE && <StatusFormContainer />}
           <div className="voice-profile-menu">
-            <div className="voice-profile-menu-item" onClick={onClickPreferences}>
+            <div className="voice-profile-menu-item preferences" onClick={onClickPreferences}>
               <i className="fa fa-gear" />
-              {agentPhrases.get('agent.chrome.link_preferences')}
+              <FormattedMessage id="agent.chrome.link_preferences" />
             </div>
-            <div className="voice-profile-menu-item" onClick={onClickHelp}>
+            <div className="voice-profile-menu-item help" onClick={onClickHelp}>
               <i className="fa fa-question-circle" />
-              {agentPhrases.get('agent.chrome.link_help')}
+              <FormattedMessage id="agent.chrome.link_help" />
             </div>
-            <div className="voice-profile-menu-item" onClick={onClickLogout}>
+            <div className="voice-profile-menu-item logout" onClick={onClickLogout}>
               <i className="fa fa-reply" />
-              {agentPhrases.get('agent.chrome.link_logout')}
+              <FormattedMessage id="agent.chrome.link_logout" />
             </div>
           </div>
         </div>

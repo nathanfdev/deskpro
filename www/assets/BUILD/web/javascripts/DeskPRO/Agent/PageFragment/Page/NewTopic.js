@@ -176,7 +176,7 @@ DeskPRO.Agent.PageFragment.Page.NewTopic = new Orb.Class({
 	},
 
 	updateGuides: function() {
-		var brand_select = $('#new_news_brand_id');
+		var brand_select = $('#new_topic_brand_id');
 		var brand_id = brand_select.val();
 		var categories_select = $(brand_select.parents('.cat-section')[0]).find('select.guide_id');
 		$.ajax({
@@ -184,9 +184,13 @@ DeskPRO.Agent.PageFragment.Page.NewTopic = new Orb.Class({
 			type: 'GET',
 			context: this,
 			success: function(result) {
+				var value = '';
+        if ($(result).find('option').length) {
+          value = $($(result).find('option')[0]).val();
+        }
 				categories_select.children().remove();
 				categories_select.append($(result).find('option'));
-				categories_select.select2("val", '');
+				categories_select.select2("val", value);
 			}
 		});
 	},

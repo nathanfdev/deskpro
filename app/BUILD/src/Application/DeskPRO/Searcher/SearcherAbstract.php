@@ -1,35 +1,5 @@
 <?php
 
-/*
- * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
- * a British company located in London, England.
- *
- * All source code and content Copyright (c) 2017, DeskPRO Ltd.
- *
- * The license agreement under which this software is released
- * can be found at https://www.deskpro.com/eula/
- *
- * By using this software, you acknowledge having read the license
- * and agree to be bound thereby.
- *
- * Please note that DeskPRO is not free software. We release the full
- * source code for our software because we trust our users to pay us for
- * the huge investment in time and energy that has gone into both creating
- * this software and supporting our customers. By providing the source code
- * we preserve our customers' ability to modify, audit and learn from our
- * work. We have been developing DeskPRO since 2001, please help us make it
- * another decade.
- *
- * Like the work you see? Think you could make it better? We are always
- * looking for great developers to join us: http://www.deskpro.com/jobs/
- *
- * ~ Thanks, Everyone at Team DeskPRO
- */
-
-/**
- * DeskPRO.
- */
-
 namespace Application\DeskPRO\Searcher;
 
 use Application\DeskPRO\App;
@@ -52,6 +22,10 @@ abstract class SearcherAbstract implements PersonContextInterface
     const OP_BETWEEN     = 'between';
     const OP_CONTAINS    = 'contains';
     const OP_NOTCONTAINS = 'notcontains';
+    const OP_ISSET       = 'isset';
+    const OP_NOT_ISSET   = 'not_isset';
+    const OP_EMPTY       = 'empty';
+    const OP_NOT_EMPTY   = 'notempty';
     const OP_NOOP        = null;
 
     const ORDER_ASC  = 'ASC';
@@ -853,14 +827,6 @@ abstract class SearcherAbstract implements PersonContextInterface
         $range1 = (int) $range1;
         $range2 = (int) $range2;
 
-        // Normalize operations
-        if ($op == self::OP_LT) {
-            $op = self::OP_LTE;
-        }
-        if ($op == self::OP_GT) {
-            $op = self::OP_GTE;
-        }
-
         if ($range1 && $range2) {
             $op = self::OP_BETWEEN;
         }
@@ -887,9 +853,17 @@ abstract class SearcherAbstract implements PersonContextInterface
             $where = "$field = $range1";
         } elseif ($op == self::OP_BETWEEN) {
             $where = "$field BETWEEN $range1 AND $range2";
+        } elseif ($op == self::OP_GT) {
+            $range1 = Util::coalesce($range1, $range2);
+            $where  = "$field > $range1";
         } elseif ($op == self::OP_GTE) {
             $range1 = Util::coalesce($range1, $range2);
             $where  = "$field >= $range1";
+        } elseif ($op == self::OP_NOT) {
+            $where = "$field != $range1";
+        } elseif ($op == self::OP_LT) {
+            $range1 = Util::coalesce($range1, $range2);
+            $where  = "$field < $range1";
         } else {
             $range1 = Util::coalesce($range1, $range2);
             $where  = "$field <= $range1";

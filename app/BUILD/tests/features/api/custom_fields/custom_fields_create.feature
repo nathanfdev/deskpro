@@ -4,6 +4,9 @@ Feature: Custom fields
 
   Background:
     Given I'm authenticated as admin
+    And no CustomDefTicket records exist
+    And no CustomDefPerson records exist
+    And no CustomDefOrganization records exist
 
 ## TEXT FIELD
 

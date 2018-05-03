@@ -59,12 +59,6 @@ define ['DeskPRO/Util/Arrays'], (Arrays) -> [
     )
 
     load_promises.push DashboardWidgetService.getWidgets(report_id).then((widgets) ->
-      widgets = widgets.map((w) ->
-        if !(w.rendered_result?) or w.rendered_result == false or w.rendered_result == ''
-          w.rendered_result = null
-
-        return w
-      )
       $scope.widgets = widgets
     )
 
@@ -238,11 +232,11 @@ define ['DeskPRO/Util/Arrays'], (Arrays) -> [
             )
 
             vars.push(cloneVar)
-          else if (variable.name == 'agent' or variable.name == 'agent_team') and $scope.dashboard.is_agent
+          else if (variable.type == 'values' and (variable.field_type == 'agent' or variable.field_type == 'agent_team')) and $scope.dashboard.is_agent
             cloneVar = $.extend({}, variable);
-            if variable.name == 'agent'
+            if variable.field_type == 'agent'
               cloneVar.value = parseInt($scope.me.person.id)
-            else if variable.name == 'agent_team'
+            else if variable.field_type == 'agent_team'
               cloneVar.value = parseInt($scope.me.person.primary_team)
 
             vars.push(cloneVar)

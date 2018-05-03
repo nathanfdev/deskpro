@@ -1,10 +1,38 @@
 import PropTypes from 'prop-types';
 import React from 'react';
+import MarkdownIt from 'markdown-it';
 
+import { api } from 'DeskPRO/Bundle/AppBundle/DAL';
 import { ScreenInstallerError } from './ScreenInstallerError';
 import { ScreenInstallerLoading } from './ScreenInstallerLoading';
 import { ScreenConfirmInstall } from './ScreenConfirmInstall';
 import { InstallerErrors } from '../InstallerErrors';
+
+
+/**
+ *
+ * @param {*} manifest
+ * @returns Promise
+ */
+function getReadme(manifest) {
+  const assets = manifest.assets;
+  let readmeDownloadUrl = null;
+  for (let i = 0; i < assets.length; i++) {
+    if (assets[i].path === 'docs/ADMIN_README.md') {
+      readmeDownloadUrl = assets[i].blob.download_url;
+    }
+  }
+
+  if (!readmeDownloadUrl) {
+    return Promise.resolve(null);
+  }
+
+  return api.sendGet(readmeDownloadUrl)
+    .then((resp) => {
+      const md = new MarkdownIt();
+      return md.render(resp.data);
+    });
+}
 
 export class InstallerContainer extends React.Component {
   static propTypes = {
@@ -24,13 +52,18 @@ export class InstallerContainer extends React.Component {
   }
 
   componentDidMount()  {
-    this.loadInitialState().then(state => this.setState(state));
+    this.loadInitialState()
+      .catch(error => ({ route: 'error', error }))
+      .then(state => this.setState(state))
+    ;
   }
 
   initState()  {
     this.state = {
       error:             null,
+      errorType:         null,
       route:             'loading',
+      readme:            null,
       appManifest:       null,
       installerManifest: null,
       packageManifest:   null
@@ -38,25 +71,50 @@ export class InstallerContainer extends React.Component {
   }
 
   loadInitialState()  {
-    const { installType } = this.props;
+    const { installType, loadPackage } = this.props;
 
     if (installType === 'update') {
-      return this.loadAppManifests();
-    }
-    if (installType === 'install') {
-      return this.loadPackageManifest();
+      return this.loadAppManifests()
+        .then(
+          state => ({ ...state, route: 'settings' })
+        )
+        .then(
+          state => loadPackage(state.appManifest.name).then(packageManifest => getReadme(packageManifest))
+            .then(readme => ({ ...state, readme }))
+        )
+      ;
     }
 
-    return Promise.resolve({ screen: 'error', error: InstallerErrors.UNEXPECTED_INSTALL_ACTION });
+    if (installType === 'install') {
+      return this.loadPackageManifest()
+        .then(state => ({ ...state, route: 'confirm-install' }))
+        .then(state => getReadme(state.packageManifest).then(readme => ({ ...state, readme })))
+      ;
+    }
+
+    const error = new Error('unexpected install action');
+    error.deskpro = { type: InstallerErrors.UNEXPECTED_INSTALL_TYPE, installType };
+    return Promise.reject(error);
   }
 
   loadPackageManifest()  {
     const { app, loadPackage } = this.props;
 
     return loadPackage(app)
-      .then(packageManifest => ({ route: 'confirm-install',  packageManifest }))
-      .catch(err =>  // eslint-disable-line no-unused-expressions, no-unused-vars
-           ({ route: 'error', error: InstallerErrors.UNEXPECTED_ERROR }))
+      .then(
+        /* eslint-disable no-shadow */
+        packageManifest => ({ packageManifest })
+      )
+      .catch((error) => {
+        if (typeof error === 'object') {
+          error.deskpro = { type: InstallerErrors.LOAD_MANIFEST_FAIL_PACKAGE, app };
+        }
+        return {
+          route:     'error',
+          error,
+          errorType: InstallerErrors.LOAD_MANIFEST_FAIL_PACKAGE
+        };
+      })
     ;
   }
 
@@ -73,13 +131,18 @@ export class InstallerContainer extends React.Component {
         appManifest = manifest;
         return loadInstaller(manifest);
       })
-      .then(installerManifest => ({ route: 'settings', installerManifest, appManifest }))
-      .catch(err =>  // eslint-disable-line no-unused-expressions, no-unused-vars
-         ({ route: 'error', error: InstallerErrors.UNEXPECTED_ERROR }))
+      .then(installerManifest => ({ installerManifest, appManifest }))
+      .catch((error) => {
+        if (typeof error === 'object') {
+          error.deskpro = { type: InstallerErrors.LOAD_MANIFEST_FAIL_APP, app, createInstanceFirst };
+        }
+
+        return { route: 'error', error, errorType: InstallerErrors.LOAD_MANIFEST_FAIL_APP };
+      })
     ;
   }
 
-  render()  {
+  renderScreen()  {
     const { route } = this.state;
 
     if (route === 'error') {
@@ -92,7 +155,7 @@ export class InstallerContainer extends React.Component {
     if (route === 'confirm-install') {
       const { packageManifest } = this.state;
       return (<ScreenConfirmInstall
-        onConfirm={() => this.loadAppManifests(true).then(state => this.setState(state))}
+        onConfirm={() => this.loadAppManifests(true).then(state => this.setState({ ...state, route: 'settings' }))}
         packageManifest={packageManifest}
       />
       );
@@ -111,7 +174,38 @@ export class InstallerContainer extends React.Component {
       return <ScreenInstallerLoading />;
     }
 
-    return null;
+    const error = new Error('unknown installer route');
+    return <ScreenInstallerError error={error} />;
+  }
+
+  render() {
+    const { readme } = this.state;
+
+    const hrStyle = {
+      marginLeft:   15,
+      marginRight:  15,
+      border:       0,
+      borderBottom: '1px dotted #aaa',
+      width:        'auto'
+    };
+
+    const sectionStyle = {
+      margin: 15
+    };
+
+    return (
+      <div>
+        {this.renderScreen()}
+        {readme && (
+          <div>
+            <hr style={hrStyle} />
+            <section
+              style={sectionStyle}
+              dangerouslySetInnerHTML={{ __html: readme }}
+            />
+          </div>
+        )}
+      </div>
+    );
   }
 }
-

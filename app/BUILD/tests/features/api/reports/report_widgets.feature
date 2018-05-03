@@ -201,8 +201,22 @@ Feature: /report_widgets endpoint
     Then the response status code should be 204
 
     When I send a GET request to "/api/v2/report_widgets/{r2}"
-    And the JSON node "data.labels" should have 4 elements
+    Then the JSON node "data.labels" should have 4 elements
     And the JSON node "data.labels[0]" should be equal to "Label 1"
     And the JSON node "data.labels[1]" should be equal to "Label 2"
     And the JSON node "data.labels[2]" should be equal to "Person"
     And the JSON node "data.labels[3]" should be equal to "Feedback"
+
+
+    Scenario: I fetch group-params which would be used as vars
+      When I send a GET request to "/api/v2/report_widgets/group-params"
+      Then the JSON node "" should have 13 elements
+      And the JSON node "fields" should exist
+      And the JSON node "dates" should exist
+      And the JSON node "statuses" should exist
+      And the JSON node "orders" should exist
+      And the JSON node "values" should exist
+      And the JSON node "values.agent" should exist
+      And the JSON node "values.team" should exist
+      And the JSON node "values.department" should exist
+      And the JSON node "values.organization" should exist

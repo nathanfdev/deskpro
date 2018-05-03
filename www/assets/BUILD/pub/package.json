@@ -5,7 +5,7 @@
   "author": "DeskPRO <support@deskpro.com>",
   "dependencies": {
     "@amcharts/amcharts3-react": "^3.0.3",
-    "@deskpro/react-components": "^1.3.9",
+    "@deskpro/react-components": "^1.3.23",
     "@deskpro/react-forms": "^2.0.0-beta41",
     "@deskpro/react-loader": "^2.4.2",
     "@deskpro/react-timeago": "^3.4.3",
@@ -36,7 +36,10 @@
     "flag-icon-css": "^2.4.0",
     "flux-standard-action": "0.6.0",
     "font-awesome": "4.4.0",
+    "froala-editor": "^2.7.5",
+    "handlebars": "^4.0.11",
     "history": "^3.3.0",
+    "html-entities": "^1.2.1",
     "html-to-text": "^3.3.0",
     "html5shiv": "3.7.3",
     "iframe-resizer": "^3.5.3",
@@ -53,7 +56,7 @@
     "linkifyjs": "^2.1.4",
     "lodash": "^4.17.4",
     "lscache": "^1.0.5",
-    "mark.js": "8.11.0",
+    "mark.js": "8.11.1",
     "markdown-it": "^8.2.2",
     "markdown-it-container": "^2.0.0",
     "markdown-it-emoji": "^1.3.0",
@@ -76,7 +79,7 @@
     "react-dom": "^16.2.0",
     "react-emojione": "^5.0.0",
     "react-froala-wysiwyg": "^2.7.1",
-    "react-highlight": "git+https://github.com/briancappello/react-highlight.git#react-v16-compiled",
+    "react-highlight": "^0.12.0",
     "react-highlight-words": "^0.8.0",
     "react-immutable-proptypes": "^1.7.1",
     "react-inlinesvg": "^0.7.0",
@@ -102,7 +105,7 @@
     "redbox-react": "1.1.1",
     "redux": "3.5.x",
     "redux-actions": "0.9.1",
-    "redux-form": "^7.1.2",
+    "redux-form": "^7.2.3",
     "reselect": "2.0.1",
     "socket.io-client": "^2.0.3",
     "spin.js": "2.3.2",
@@ -112,6 +115,7 @@
     "to-markdown": "^3.0.3",
     "toastr": "^2.1.2",
     "twig": "^1.10.5",
+    "util-deprecate": "^1.0.2",
     "uuid": "^3.1.0",
     "warning": "^3.0.0"
   },
@@ -140,7 +144,7 @@
     "del": "2.0.2",
     "eslint": "^3.6.0",
     "eslint-config-airbnb": "^12.0.0",
-    "eslint-import-resolver-babel-namespace": "^0.0.8",
+    "eslint-import-resolver-babel-namespace": "0.0.8",
     "eslint-plugin-import": "^1.16.0",
     "eslint-plugin-jsx-a11y": "^2.2.2",
     "eslint-plugin-react": "^6.3.0",
@@ -154,14 +158,16 @@
     "graceful-fs": "^4.1.9",
     "intl": "^1.2.4",
     "invariant": "2.2.1",
-    "jest-cli": "12.1.1",
+    "jest-cli": "22.4.2",
     "json-loader": "0.5.4",
+    "license-checker": "^16.0.0",
     "mkdirp": "0.5.1",
     "nightwatch": "^0.9.4",
     "node-notifier": "4.3.1",
-    "node-sass": "^4.7.0",
+    "node-sass": "^4.9.0",
     "raw-loader": "^0.5.1",
     "react-hot-loader": "^3.1.2",
+    "react-test-renderer": "^16.2.0",
     "sass-loader": "^6.0.6",
     "selenium-download": "^2.0.2",
     "serialize-error": "2.1.0",
@@ -176,10 +182,16 @@
     "webpack-notifier": "1.3.0"
   },
   "jest": {
-    "testDirectoryName": "tests/Unit",
+    "testMatch": [
+      "<rootDir>/src/tests/Unit/**/(*).js"
+    ],
     "cacheDirectory": "./.jest-cache",
-    "scriptPreprocessor": "./jest-preprocessor",
-    "setupEnvScriptFile": "./jest-env",
+    "transform": {
+      ".*": "./jest-preprocessor"
+    },
+    "setupFiles": [
+      "./jest-env"
+    ],
     "unmockedModulePathPatterns": [
       "react",
       "/node_modules/",
@@ -199,10 +211,6 @@
       "/RecordsStore/",
       "App_Reducers.js",
       ".test-helper.js"
-    ],
-    "testFileExtensions": [
-      "es6",
-      "js"
     ],
     "moduleFileExtensions": [
       "js",
@@ -231,6 +239,7 @@
     "test:e2e": "nightwatch",
     "test:e2e:setup": "node selenium-download.js",
     "flow": "flow; test $? -eq 0 -o $? -eq 2",
-    "webpack": "rm -rf ./build && npm run-script gulp-refresh-reducers && node bin/refresh-widget-loader && webpack --config webpack.prod.config.js --progress --profile --colors --display-error-details"
+    "webpack": "rm -rf ./build && npm run-script gulp-refresh-reducers && node bin/refresh-widget-loader && webpack --config webpack.prod.config.js --progress --profile --colors --display-error-details",
+    "license-checker": "license-checker --production --json"
   }
 }

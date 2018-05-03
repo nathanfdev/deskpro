@@ -1,31 +1,5 @@
 <?php
 
-/*
- * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
- * a British company located in London, England.
- *
- * All source code and content Copyright (c) 2017, DeskPRO Ltd.
- *
- * The license agreement under which this software is released
- * can be found at https://www.deskpro.com/eula/
- *
- * By using this software, you acknowledge having read the license
- * and agree to be bound thereby.
- *
- * Please note that DeskPRO is not free software. We release the full
- * source code for our software because we trust our users to pay us for
- * the huge investment in time and energy that has gone into both creating
- * this software and supporting our customers. By providing the source code
- * we preserve our customers' ability to modify, audit and learn from our
- * work. We have been developing DeskPRO since 2001, please help us make it
- * another decade.
- *
- * Like the work you see? Think you could make it better? We are always
- * looking for great developers to join us: http://www.deskpro.com/jobs/
- *
- * ~ Thanks, Everyone at Team DeskPRO
- */
-
 namespace Application\DeskPRO\CustomFields\Handler;
 
 use Application\DeskPRO\App;
@@ -39,7 +13,8 @@ class DateTime extends Date
 {
     /**
      * @param array $form_data
-     * @param null $default
+     * @param null  $default
+     *
      * @return mixed|null
      */
     private function findValue(array $form_data, $default = null)
@@ -50,15 +25,16 @@ class DateTime extends Date
                 return $form_data[$name];
             }
         }
+
         return $default;
     }
 
     /**
      * {@inheritdoc}
      */
-    public function getDataFromForm(array $form_data)
+    public function getDataFromForm(array $formData)
     {
-        $value = $this->findValue($form_data);
+        $value = $this->findValue($formData);
         if (!$value) {
             return [];
         }
@@ -87,10 +63,10 @@ class DateTime extends Date
     /**
      * {@inheritdoc}
      */
-    public function validateFormData(array $form_data, $context = self::CONTEXT_USER, $context_data = null)
+    public function validateFormData(array $formData, $context = self::CONTEXT_USER, $contextData = null)
     {
         $valueIfNotPresent = new \stdClass();
-        $data = $this->findValue($form_data, $valueIfNotPresent);
+        $data              = $this->findValue($formData, $valueIfNotPresent);
         if ($data === $valueIfNotPresent) {
             $data = '';
         }
@@ -131,12 +107,7 @@ class DateTime extends Date
             }
 
             if ($date) {
-                try {
-                    $adminTz = new \DateTimeZone($this->field_def->getOption('date_valid_timezone'));
-                } catch (\Exception $e) {
-                    $adminTz = App::getCurrentPerson()->getDateTimezone();
-                }
-
+                $adminTz = App::getCurrentPerson()->getDateTimezone();
                 $date->setTimezone($adminTz);
             } else {
                 return $this->makeErrorArray(['date_invalid']);
@@ -182,9 +153,9 @@ class DateTime extends Date
 
         // "Days from now"
         } elseif ($this->field_def->getOption('date_valid_type') == 'range') {
-            if ($context_data && isset($context_data['exist_ticket'])) {
+            if ($contextData && isset($contextData['exist_ticket'])) {
                 /** @var \DateTime $now */
-                $now = clone $context_data['exist_ticket']->date_created;
+                $now = clone $contextData['exist_ticket']->date_created;
                 $now->setTimezone($adminTz);
             } else {
                 $now = new \DateTime('now', $adminTz);

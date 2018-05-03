@@ -1,31 +1,5 @@
 <?php
 
-/*
- * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
- * a British company located in London, England.
- *
- * All source code and content Copyright (c) 2017, DeskPRO Ltd.
- *
- * The license agreement under which this software is released
- * can be found at https://www.deskpro.com/eula/
- *
- * By using this software, you acknowledge having read the license
- * and agree to be bound thereby.
- *
- * Please note that DeskPRO is not free software. We release the full
- * source code for our software because we trust our users to pay us for
- * the huge investment in time and energy that has gone into both creating
- * this software and supporting our customers. By providing the source code
- * we preserve our customers' ability to modify, audit and learn from our
- * work. We have been developing DeskPRO since 2001, please help us make it
- * another decade.
- *
- * Like the work you see? Think you could make it better? We are always
- * looking for great developers to join us: http://www.deskpro.com/jobs/
- *
- * ~ Thanks, Everyone at Team DeskPRO
- */
-
 /**
  * DeskPRO.
  */
@@ -182,5 +156,49 @@ class MathUtils
         $o = round((($r * 299) + ($g * 587) + ($b * 114)) / 1000);
 
         return $o < 125;
+    }
+
+    /**
+     * Maps a number from one scale to another.
+     *
+     * @param float|int $val
+     * @param float|int $min1
+     * @param float|int $max1
+     * @param float|int $min2
+     * @param float|int $max2
+     *
+     * @return float|int
+     */
+    public static function mapScale($val, $min1, $max1, $min2, $max2)
+    {
+        return self::lerp(self::norm($val, $min1, $max1), $min2, $max2);
+    }
+
+    /**
+     * Gets normalized ratio of value inside range.
+     *
+     * @param float|int $val
+     * @param float|int $min
+     * @param float|int $max
+     *
+     * @return float|int
+     */
+    public static function norm($val, $min, $max)
+    {
+        return ($val - $min) / ($max - $min);
+    }
+
+    /**
+     * Linear interpolation.
+     *
+     * @param float|int $ratio
+     * @param float|int $start
+     * @param float|int $end
+     *
+     * @return float|int
+     */
+    public static function lerp($ratio, $start, $end)
+    {
+        return $start + ($end - $start) * $ratio;
     }
 }

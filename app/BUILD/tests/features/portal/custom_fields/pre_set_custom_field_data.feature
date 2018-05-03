@@ -116,3 +116,26 @@ Feature: Check custom field pre set values
     Then the "person_profile[{datetime_field}][data][date][day]" multiple field should contain 15
     Then the "person_profile[{datetime_field}][data][time][hour]" multiple field should contain 20
     Then the "person_profile[{datetime_field}][data][time][minute]" multiple field should contain 30
+
+  Scenario: I check url field
+    Given only the following custom person fields exist:
+      | #         | Type | Title     |
+      | url_field | url  | Url field |
+    And the object "user" has "url_field" custom data set to "http://domain.tld"
+
+    When I go to "/profile"
+    Then the "person_profile[{url_field}][data]" field should contain "http://domain.tld"
+
+  Scenario: I check currency field
+    Given only the following Currency records exist:
+      | #  | Name          | Currency Code | Symbol |
+      | c1 | US Dollar     | USD           | $      |
+      | c2 | British Pound | GBP           | £      |
+      | c2 | Euro          | EUR           | €      |
+    And only the following custom person fields exist:
+      | #              | Type     | Title          | Options                                 |
+      | currency_field | currency | Currency field | {"required": true, "currency_id": ~c2~} |
+    And the object "user" has "currency_field" custom data set to "150020"
+
+    When I go to "/profile"
+    Then the "person_profile[{currency_field}][data]" field should contain "1,500.20"

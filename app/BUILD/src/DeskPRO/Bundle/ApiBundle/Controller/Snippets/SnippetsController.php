@@ -1,31 +1,5 @@
 <?php
 
-/*
- * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
- * a British company located in London, England.
- *
- * All source code and content Copyright (c) 2017, DeskPRO Ltd.
- *
- * The license agreement under which this software is released
- * can be found at https://www.deskpro.com/eula/
- *
- * By using this software, you acknowledge having read the license
- * and agree to be bound thereby.
- *
- * Please note that DeskPRO is not free software. We release the full
- * source code for our software because we trust our users to pay us for
- * the huge investment in time and energy that has gone into both creating
- * this software and supporting our customers. By providing the source code
- * we preserve our customers' ability to modify, audit and learn from our
- * work. We have been developing DeskPRO since 2001, please help us make it
- * another decade.
- *
- * Like the work you see? Think you could make it better? We are always
- * looking for great developers to join us: http://www.deskpro.com/jobs/
- *
- * ~ Thanks, Everyone at Team DeskPRO
- */
-
 namespace DeskPRO\Bundle\ApiBundle\Controller\Snippets;
 
 use Application\DeskPRO\DependencyInjection\SystemServices\LanguageDataService;
@@ -42,11 +16,13 @@ use DeskPRO\Bundle\AppBundle\Entity\SnippetTranslation;
 use DeskPRO\Bundle\AppBundle\Form\Error\Exception\InvalidFormException;
 use DeskPRO\Bundle\AppBundle\Form\Type\Snippets\SnippetMassActionType;
 use DeskPRO\Bundle\AppBundle\Form\Type\Snippets\SnippetType;
+use DeskPRO\Bundle\AppBundle\Notification\Event\Snippet\SnippetsUpdatedEvent;
 use DeskPRO\Bundle\AppBundle\Security\Voter\PermissionGroups\PermissionGroupContext;
 use DeskPRO\Bundle\AppBundle\Security\Voter\PermissionGroups\PermissionGroupVoter;
 use Doctrine\ORM\QueryBuilder;
 use FOS\RestBundle\Controller\Annotations as Rest;
 use FOS\RestBundle\View\View;
+use Symfony\Component\Form\FormInterface;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\ResponseHeaderBag;
 use Symfony\Component\HttpFoundation\StreamedResponse;
@@ -91,6 +67,9 @@ class SnippetsController extends CrudController
     public static $type      = SnippetType::class;
     public static $listOrder = 'asc';
 
+    /**
+     * {@inheritdoc}
+     */
     protected function applyListFilters(QueryBuilder $qb, $alias, Request $request)
     {
         $agent = $this->getUser();
@@ -136,6 +115,9 @@ class SnippetsController extends CrudController
         return $this->handleForm($this->instantiateEntity($request), $request);
     }
 
+    /**
+     * {@inheritdoc}
+     */
     protected function additionalValidation($model, Request $request)
     {
         $this->denyAccessUnlessGranted(PermissionGroupVoter::CREATE, new PermissionGroupContext($model));
@@ -153,12 +135,22 @@ class SnippetsController extends CrudController
         return parent::handleForm($model, $request, $options);
     }
 
+    protected function persistModel($model, FormInterface $form = null)
+    {
+        /** @var Snippet $model */
+        $model = parent::persistModel($model);
+        $this->container
+            ->get('event_dispatcher')
+            ->dispatch(SnippetsUpdatedEvent::EVENT_NAME, new SnippetsUpdatedEvent(
+                $model,
+                'update'
+            ));
+
+        return $model;
+    }
+
     /**
-     * @param int     $id
-     * @param Request $request
-     * @param string  $type
-     *
-     * @return object
+     * {@inheritdoc}
      */
     protected function findEntity($id, Request $request, $type = '')
     {
@@ -166,12 +158,7 @@ class SnippetsController extends CrudController
     }
 
     /**
-     * @param string $class
-     * @param int    $id
-     * @param string $message
-     * @param string $type
-     *
-     * @return object
+     * {@inheritdoc}
      */
     protected function findOr404($class, $id, $message = null, $type = '')
     {
@@ -245,6 +232,8 @@ class SnippetsController extends CrudController
      * @Rest\Post("/mass_actions")
      *
      * @param Request $request
+     *
+     * @throws \Exception
      *
      * @return View
      */

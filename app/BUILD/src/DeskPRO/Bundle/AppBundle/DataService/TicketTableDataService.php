@@ -1,37 +1,8 @@
 <?php
 
-/*
- * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
- * a British company located in London, England.
- *
- * All source code and content Copyright (c) 2017, DeskPRO Ltd.
- *
- * The license agreement under which this software is released
- * can be found at https://www.deskpro.com/eula/
- *
- * By using this software, you acknowledge having read the license
- * and agree to be bound thereby.
- *
- * Please note that DeskPRO is not free software. We release the full
- * source code for our software because we trust our users to pay us for
- * the huge investment in time and energy that has gone into both creating
- * this software and supporting our customers. By providing the source code
- * we preserve our customers' ability to modify, audit and learn from our
- * work. We have been developing DeskPRO since 2001, please help us make it
- * another decade.
- *
- * Like the work you see? Think you could make it better? We are always
- * looking for great developers to join us: http://www.deskpro.com/jobs/
- *
- * ~ Thanks, Everyone at Team DeskPRO
- */
-
-/**
- * DeskPRO.
- */
-
 namespace DeskPRO\Bundle\AppBundle\DataService;
 
+use Application\DeskPRO\Entity\CustomDefAbstract;
 use Application\DeskPRO\Entity\Person;
 use Application\DeskPRO\TicketLayout\LayoutField;
 use DeskPRO\Bundle\AppBundle\Form\CustomFieldManager\CustomFieldManager;
@@ -45,6 +16,9 @@ use DeskPRO\Bundle\PortalBundle\View\Ticket\TicketListTable;
 use Doctrine\ORM\EntityManager;
 use Symfony\Component\HttpFoundation\Request;
 
+/**
+ * Class TicketTableDataService.
+ */
 class TicketTableDataService extends AbstractDataService
 {
     /**
@@ -65,12 +39,12 @@ class TicketTableDataService extends AbstractDataService
     /**
      * @var TicketLayoutFactory
      */
-    private $ticket_layout_factory;
+    private $ticketLayoutFactory;
 
     /**
      * @var CustomFieldManager
      */
-    private $form_field_manager;
+    private $fieldManager;
 
     /**
      * @var BrandAwareSettingsResolver
@@ -90,8 +64,8 @@ class TicketTableDataService extends AbstractDataService
         $this->ticket_data_service     = $ticket_data_service;
         $this->language_manager        = $language_manager;
         $this->department_data_service = $department_data_service;
-        $this->ticket_layout_factory   = $ticket_layout_factory;
-        $this->form_field_manager      = $form_field_manager;
+        $this->ticketLayoutFactory     = $ticket_layout_factory;
+        $this->fieldManager            = $form_field_manager;
         $this->brand_aware_settings    = $brand_aware_settings;
     }
 
@@ -134,49 +108,57 @@ class TicketTableDataService extends AbstractDataService
         $columns->addColumn(
             TicketColumn::TYPE_SUBJECT,
             $this->phrase('portal.tickets.list_subject'),
-            TicketColumn::TYPE_SUBJECT
+            TicketColumn::TYPE_SUBJECT,
+            CustomDefAbstract::TYPE_TEXT
         );
 
         $columns->addColumn(
             TicketColumn::TYPE_DEPARTMENT,
             $this->phrase('portal.tickets.list_department'),
-            TicketColumn::TYPE_DEPARTMENT
+            TicketColumn::TYPE_DEPARTMENT,
+            CustomDefAbstract::TYPE_CHOICE
         );
 
         $columns->addColumn(
             TicketColumn::TYPE_USER,
             $this->phrase('portal.tickets.list_user'),
-            TicketColumn::TYPE_USER
+            TicketColumn::TYPE_USER,
+            CustomDefAbstract::TYPE_DISPLAY
         );
 
         $columns->addColumn(
             TicketColumn::TYPE_AGENT,
             $this->phrase('portal.tickets.list_agent'),
-            TicketColumn::TYPE_AGENT
+            TicketColumn::TYPE_AGENT,
+            CustomDefAbstract::TYPE_DISPLAY
         );
 
         $columns->addColumn(
             TicketColumn::TYPE_DATE_CREATED,
             $this->phrase('portal.tickets.list_date_created'),
-            TicketColumn::TYPE_DATE_CREATED
+            TicketColumn::TYPE_DATE_CREATED,
+            CustomDefAbstract::TYPE_DATETIME
         );
 
         $columns->addColumn(
             TicketColumn::TYPE_DATE_ACTIVITY,
             $this->phrase('portal.tickets.list_last_action'),
-            TicketColumn::TYPE_DATE_ACTIVITY
+            TicketColumn::TYPE_DATE_ACTIVITY,
+            CustomDefAbstract::TYPE_DATETIME
         );
 
         $columns->addColumn(
             TicketColumn::TYPE_DATE_USER,
             $this->phrase('portal.tickets.list_date_last_user'),
-            TicketColumn::TYPE_DATE_USER
+            TicketColumn::TYPE_DATE_USER,
+            CustomDefAbstract::TYPE_DATETIME
         );
 
         $columns->addColumn(
             TicketColumn::TYPE_DATE_AGENT,
             $this->phrase('portal.tickets.list_date_last_agent'),
-            TicketColumn::TYPE_DATE_AGENT
+            TicketColumn::TYPE_DATE_AGENT,
+            CustomDefAbstract::TYPE_DATETIME
         );
     }
 
@@ -189,17 +171,19 @@ class TicketTableDataService extends AbstractDataService
         $deps = $this->department_data_service->getTicketDepartmentsForPerson($person);
 
         foreach ($deps as $dep) {
-            $layout = $this->ticket_layout_factory->getLayoutForTicketForm($dep);
+            $layout = $this->ticketLayoutFactory->getLayoutForTicketForm($dep);
             $layout = $layout->getUserLayout();
             /** @var LayoutField $field */
             foreach ($layout as $field) {
-                if (!$label = $this->makeLabelForLayoutField($field)) {
+                if (!$label = $this->getLabelForLayoutField($field)) {
                     continue;
                 }
+
                 $column = new TicketColumn(
                     $field->getId(),
                    $label,
-                    TicketColumn::TYPE_PROPERTY
+                    TicketColumn::TYPE_PROPERTY,
+                    $this->getWidgetTypeForLayoutField($field)
                 );
                 $columns->appendColumn($column);
             }
@@ -215,9 +199,9 @@ class TicketTableDataService extends AbstractDataService
      *
      * @return string|null
      */
-    private function makeLabelForLayoutField(LayoutField $field)
+    private function getLabelForLayoutField(LayoutField $field)
     {
-        $def_id = $field->getFieldId();
+        $defId = $field->getFieldId();
         if (!$field->isVisibleOnView()) {
             // if the field is not visible on view, don't add it as a column
             return;
@@ -230,28 +214,75 @@ class TicketTableDataService extends AbstractDataService
             case FormFields::PRIORITY:
                 return $this->phrase('user.tickets.fields_priority');
             case FormFields::TICKET_FIELD:
-                /** @var \Application\DeskPRO\Entity\CustomDefTicket $field_def */
-                if (!$field_def = $this->form_field_manager->getCustomTicketFieldById($def_id)) {
+                /** @var \Application\DeskPRO\Entity\CustomDefTicket $fieldDef */
+                if (!$fieldDef = $this->fieldManager->getCustomTicketFieldById($defId)) {
                     // ignore fields that don't have a definition. this may rarely happen if admin deletes fields?
                     break;
                 }
 
-                return $field_def->getTitle();
+                return $fieldDef->getTitle();
             case FormFields::ORG_FIELD:
-                if (!$field_def = $this->form_field_manager->getCustomOrganizationFieldById($def_id)) {
+                if (!$fieldDef = $this->fieldManager->getCustomOrganizationFieldById($defId)) {
                     // ignore fields that don't have a definition. this may rarely happen if admin deletes fields?
                     break;
                 }
 
-                return $field_def->getTitle();
+                return $fieldDef->getTitle();
             case FormFields::USER_FIELD:
-                /** @var \Application\DeskPRO\Entity\CustomDefPerson $field_def */
-                if (!$field_def = $this->form_field_manager->getCustomPersonFieldById($def_id)) {
+                /* @var \Application\DeskPRO\Entity\CustomDefPerson $field_def */
+                if (!$fieldDef = $this->fieldManager->getCustomPersonFieldById($defId)) {
                     // ignore fields that don't have a definition. this may rarely happen if admin deletes fields?
                     break;
                 }
 
-                return $field_def->getTitle();
+                return $fieldDef->getTitle();
         }
+
+        return;
+    }
+
+    /**
+     * @param LayoutField $field
+     *
+     * @return string|null
+     */
+    private function getWidgetTypeForLayoutField(LayoutField $field)
+    {
+        $defId = $field->getFieldId();
+        if (!$field->isVisibleOnView()) {
+            // if the field is not visible on view, don't add it as a column
+            return;
+        }
+        switch ($field->getFieldType()) {
+            case FormFields::CATEGORY:
+            case FormFields::PRODUCT:
+            case FormFields::PRIORITY:
+                return CustomDefAbstract::TYPE_CHOICE;
+            case FormFields::TICKET_FIELD:
+                /** @var \Application\DeskPRO\Entity\CustomDefTicket $fieldDef */
+                if (!$fieldDef = $this->fieldManager->getCustomTicketFieldById($defId)) {
+                    // ignore fields that don't have a definition. this may rarely happen if admin deletes fields?
+                    break;
+                }
+
+                return $fieldDef->getWidgetType();
+            case FormFields::ORG_FIELD:
+                if (!$fieldDef = $this->fieldManager->getCustomOrganizationFieldById($defId)) {
+                    // ignore fields that don't have a definition. this may rarely happen if admin deletes fields?
+                    break;
+                }
+
+                return $fieldDef->getWidgetType();
+            case FormFields::USER_FIELD:
+                /* @var \Application\DeskPRO\Entity\CustomDefPerson $field_def */
+                if (!$fieldDef = $this->fieldManager->getCustomPersonFieldById($defId)) {
+                    // ignore fields that don't have a definition. this may rarely happen if admin deletes fields?
+                    break;
+                }
+
+                return $fieldDef->getWidgetType();
+        }
+
+        return;
     }
 }

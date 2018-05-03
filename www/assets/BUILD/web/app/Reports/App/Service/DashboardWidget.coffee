@@ -84,15 +84,22 @@ define ['DeskPRO/Util/Arrays'], (Arrays) ->
         size_x: widget.sizeX
         size_y: widget.sizeY
         report: report.id
-        widget: widget.widget_id
         widget_variables: widgetVars
       }
+
+      if widget.widget_id == 'advanced'
+        data.js_code = widget.js_code
+      else
+        data.widget = widget.widget_id
+
       deferred = @$q.defer()
 
       @Api2
       .sendPostJson url, data
       .then (response) =>
         deferred.resolve(response.data.data)
+      .catch (response) =>
+        deferred.reject(response.data)
 
       return deferred.promise
 
@@ -100,9 +107,10 @@ define ['DeskPRO/Util/Arrays'], (Arrays) ->
     testWidget: (reportWidget) ->
       url = "/report_widgets/test/#{reportWidget.id}?include=rendered_result&inline_sideloads=1"
       dataToSend =
-        display_types: reportWidget.display_types,
-        variables:     reportWidget.variables,
-        input_mode:    'form',
+        title:         'test widget'
+        display_types: reportWidget.display_types
+        variables:     reportWidget.variables
+        input_mode:    'form'
         query_parts:   reportWidget.query_parts
 
       @Api2
@@ -119,12 +127,13 @@ define ['DeskPRO/Util/Arrays'], (Arrays) ->
       .sendGet "/dashboard_reports/#{reportId}/widgets?include=rendered_result&inline_sideloads=1"
       .then (resp) =>
         widgets = resp.data.data;
-        widgets.map((widget) =>
+
+        for widget in widgets
           widget.sizeX = widget.size_x
           widget.sizeY = widget.size_y
-        )
 
         deferred.resolve(widgets)
+
       return deferred.promise
 
     getWidget: (id) ->
@@ -136,6 +145,9 @@ define ['DeskPRO/Util/Arrays'], (Arrays) ->
           widget = resp.data.data;
           widget.sizeX = widget.size_x
           widget.sizeY = widget.size_y
+
+          if !(widget.rendered_result?) or widget.rendered_result == false or widget.rendered_result == ''
+            widget.rendered_result = null
 
           deferred.resolve(widget)
       return deferred.promise

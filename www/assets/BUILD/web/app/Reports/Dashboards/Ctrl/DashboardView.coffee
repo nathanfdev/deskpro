@@ -8,6 +8,8 @@ define ['DeskPRO/Util/Arrays'], (Arrays) -> [
     $scope.dashboard = null
     $scope.reports = []
     $scope.agents = {}
+    $scope.me = {}
+
 
     ####################################################################################################################
     # LOADING
@@ -35,6 +37,9 @@ define ['DeskPRO/Util/Arrays'], (Arrays) -> [
     load_promises.push DashboardsInfo.getAgents().then( (agents) ->
       agents.map((agent) => $scope.agents[agent.id] = agent)
     )
+    load_promises.push DashboardsInfo.getMe().then( (me) ->
+      $scope.me = me
+    )
 
     # just reload info when its been changed
     $scope.$watch('dashboard.version_id + \'.\' + dashboard.reports_version_id', (n, o) ->
@@ -52,6 +57,17 @@ define ['DeskPRO/Util/Arrays'], (Arrays) -> [
     )
 
     $q.all(load_promises).then(-> $scope.loaded = true)
+
+    $scope.filterPermissions = (permission) ->
+      permission.person || permission.team || permission.department
+
+    $scope.getInitials = (agent) ->
+      return '?' if !agent?
+      first    = agent.first_name
+      last     = agent.last_name
+      initials = (if first && first.length then first[0] else '') + (if last && last.length then last[0] else '')
+
+      return initials || '?';
 
     ####################################################################################################################
     # MODAL HANDLERS
@@ -112,4 +128,10 @@ define ['DeskPRO/Util/Arrays'], (Arrays) -> [
           DashboardService.deleteDashboard($scope.dashboard)
           $state.go('reports.dashboards.view.empty')
       )
+
+    $scope.canEdit = () ->
+      return false if !$scope.dashboard || !$scope.me.person
+      for permission in $scope.dashboard.permissions
+        return true if (permission.person == $scope.me.person.id || (!permission.person && !permission.team && !permission.department)) && permission.name == 'full'
+      return false
   ]

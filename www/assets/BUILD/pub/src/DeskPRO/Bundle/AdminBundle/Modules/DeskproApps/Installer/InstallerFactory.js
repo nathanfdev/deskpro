@@ -18,12 +18,11 @@ function loadInstance(app) {
 }
 
 /**
- * @param {String} app
+ * @param {String} appName
  * @return Promise
  */
-function createInstance(app) {
-  const encodedAppName = encodeURIComponent(encodeURIComponent(app));
-  return api.sendPost(`DP_API/apps/${encodedAppName}?include=app`)
+function createInstance(appName) {
+  return api.sendPost(`DP_API/apps/${appName}?include=app`)
     .then(response => response.data)
     .then(ManifestParsers.parseManifestResponseBody)
   ;

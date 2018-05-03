@@ -10165,6 +10165,31 @@ form {
   display: inline !important;
 }
 
+.dp-money-field {
+  position: relative;
+
+  span {
+    position: absolute;
+    left: 10px;
+    top: 5px;
+  }
+
+  input {
+    padding-left: 40px;
+  }
+
+  &.eur, &.jpy, &.gbp, &.usd {
+    input {
+      padding-left: 20px;
+    }
+  }
+  &.aud {
+    input {
+      padding-left: 30px;
+    }
+  }
+}
+
 // This cleans up the style as widgets are loaded
 .with-dpui {
   .dpx-date-time, .dpx-date {

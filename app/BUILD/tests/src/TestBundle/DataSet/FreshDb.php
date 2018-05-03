@@ -1,31 +1,5 @@
 <?php
 
-/*
- * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
- * a British company located in London, England.
- *
- * All source code and content Copyright (c) 2017, DeskPRO Ltd.
- *
- * The license agreement under which this software is released
- * can be found at https://www.deskpro.com/eula/
- *
- * By using this software, you acknowledge having read the license
- * and agree to be bound thereby.
- *
- * Please note that DeskPRO is not free software. We release the full
- * source code for our software because we trust our users to pay us for
- * the huge investment in time and energy that has gone into both creating
- * this software and supporting our customers. By providing the source code
- * we preserve our customers' ability to modify, audit and learn from our
- * work. We have been developing DeskPRO since 2001, please help us make it
- * another decade.
- *
- * Like the work you see? Think you could make it better? We are always
- * looking for great developers to join us: http://www.deskpro.com/jobs/
- *
- * ~ Thanks, Everyone at Team DeskPRO
- */
-
 /**
  * DeskPRO.
  */
@@ -36,7 +10,6 @@ use Application\DeskPRO\Entity\Brand;
 use Application\DeskPRO\Entity\CustomDefFeedback;
 use Application\DeskPRO\Entity\Usergroup;
 use Application\InstallBundle\Data\DefaultDataProcessor;
-use DeskPRO\Bundle\AppBundle\Limits\Model\AbstractLimit;
 use DpTestSrc\TestBundle\UserDetailsRepo;
 use Symfony\Bundle\FrameworkBundle\Console\Application;
 use Symfony\Component\Console\Input\ArrayInput;
@@ -196,28 +169,6 @@ class FreshDb extends AbstractDbSet
             }
             $em->flush();
         }
-
-        $date = new \DateTime();
-
-        $global_limits = [
-            [
-                'hit_limit'     => 5000,
-                'current'       => 5000,
-                'start_time'    => $date->format('Y-m-d H:i:s'),
-                'time_interval' => 3600,
-                'limit_type'    => AbstractLimit::TYPE_GLOBAL,
-            ],
-            [
-                'hit_limit'     => 15000,
-                'current'       => 15000,
-                'start_time'    => $date->format('Y-m-d H:i:s'),
-                'time_interval' => 86400,
-                'limit_type'    => AbstractLimit::TYPE_GLOBAL,
-            ],
-
-        ];
-
-        $this->getDb()->batchInsert('api_key_limits', $global_limits, true);
 
         ++$count;
 

@@ -1,0 +1,336 @@
+{
+  "overrides": {
+    "@amcharts/amcharts3-react": { "license": ["Apache-2.0"] },
+    "arcturial/clickatell": { "license": ["MIT"] },
+    "Base64": { "license": ["Apache-2.0"] },
+    "derivable": { "license": ["Apache-2.0"] },
+    "deskpro/deskpro-api-php": { "license": ["Apache-2.0"] },
+    "domelementtype": { "license": ["BSD-2-Clause"] },
+    "entities": { "license": ["BSD-2-Clause"] },
+    "foreachasync": { "license": ["Apache-2.0"] },
+    "duplexer2": { "license": ["BSD-3-Clause"] },
+    "esrecurse": { "license": ["BSD-2-Clause"] },
+    "estraverse": { "license": ["BSD-2-Clause"] },
+    "esutils": { "license": ["BSD-2-Clause"] },
+    "hoist-non-react-statics": { "license": ["BSD-3-Clause"] },
+    "jkuchar/bigfiletools": { "license": ["BSD-3-Clause"] },
+    "js-base64": { "license": ["BSD-3-Clause"] },
+    "jquery-resize": { "license": ["MIT", "GPL-2.0-only"] },
+    "json-schema": { "license": ["BSD-3-Clause"] },
+    "languages": { "license": ["GPL-2.0-or-later"] },
+    "phpmd/phpmd": { "license": ["BSD-3-Clause"] },
+    "ng-table": { "license": ["BSD-3-Clause"] },
+    "requirejs": { "license": ["MIT"] },
+    "Select2": { "license": ["MIT"] },
+    "ua-parser-js": { "license": ["MIT"] },
+    "webonyx/graphql-php": { "license": ["MIT"] }
+  },
+  "php": [
+    {
+      "name": "cssmin",
+      "link": "http://code.google.com/p/cssmin/",
+      "license": "MIT",
+      "description": "Simple CSS minification"
+    },
+    {
+      "name": "ezcomponents",
+      "link": "http://ezcomponents.org/",
+      "license": "BSD-3-Clause",
+      "description": "Email decoding"
+    },
+    {
+      "name": "facebook/php-sdk",
+      "link": "https://github.com/facebookarchive/facebook-php-sdk",
+      "license": "Apache-2.0",
+      "description": "Facebook auth"
+    },
+    {
+      "name": "geoip-api",
+      "link": "https://github.com/maxmind/geoip-api-php",
+      "license": "LGPL-2.1-only",
+      "description": "IP geolocation API"
+    },
+    {
+      "name": "geoip-db",
+      "link": "https://dev.maxmind.com/geoip/geoip2/geolite2/",
+      "license": "CC-BY-SA-4.0",
+      "description": "IP geolocation database"
+    },
+    {
+      "name": "htmlpurifier",
+      "link": "http://htmlpurifier.org/",
+      "license": "LGPL-2.1-or-later",
+      "description": "HTML sanitizer"
+    },
+    {
+      "name": "libphonenumber",
+      "link": "https://github.com/giggsey/libphonenumber-for-php",
+      "license": "Apache-2.0",
+      "description": "i18n phone number validation and parsing"
+    },
+    {
+      "name": "metadata",
+      "link": "",
+      "license": "Apache-2.0",
+      "description": ""
+    },
+    {
+      "name": "pclzip",
+      "link": "http://www.phpconcept.net/pclzip/",
+      "license": "LGPL-2.1-only",
+      "description": "PHP implementation of PKZIP"
+    },
+    {
+      "name": "pear",
+      "link": "http://pear.php.net/package/PEAR",
+      "license": "BSD-2-Clause",
+      "description": "Base PEAR package required for other PEAR packages"
+    },
+    {
+      "name": "pear/Archive_Tar",
+      "link": "http://pear.php.net/package/Archive_Tar",
+      "license": "BSD-2-Clause",
+      "description": "For working with Tar archived"
+    },
+    {
+      "name": "pear/Console_Getopt",
+      "link": "http://pear.php.net/package/Console_Getopt",
+      "license": "PHP-3.0",
+      "description": "For working with CLI options"
+    },
+    {
+      "name": "pear/File_IMC",
+      "link": "http://pear.php.net/package/File_IMC",
+      "license": "BSD-2-Clause",
+      "description": "For working with the vCard file format"
+    },
+    {
+      "name": "pear/XML_Util",
+      "link": "http://pear.php.net/package/XML_Util",
+      "license": "BSD-2-Clause",
+      "description": "For working with XML"
+    },
+    {
+      "name": "php-ews",
+      "link": "https://github.com/jamesiarmes/php-ews",
+      "license": "MIT",
+      "description": "Exchange Web Services"
+    },
+    {
+      "name": "php-markdown",
+      "link": "https://github.com/michelf/php-markdown",
+      "license": "BSD-3-Clause",
+      "description": "Markdown to HTML"
+    },
+    {
+      "name": "php-utf8",
+      "link": "http://phputf8.cvs.sourceforge.net/",
+      "license": "LGPL-2.1-only",
+      "description": "UTF8 string utils"
+    },
+    {
+      "name": "phpass",
+      "link": "http://www.openwall.com/phpass/",
+      "license": "Public Domain",
+      "description": "Password hashing utils"
+    },
+    {
+      "name": "phpthumb",
+      "link": "http://www.openwall.com/phpass/",
+      "license": "MPL-2.0",
+      "description": "ICO utils"
+    },
+    {
+      "name": "pt-online-schema-change",
+      "link": "https://www.percona.com/doc/percona-toolkit/LATEST/pt-online-schema-change.html",
+      "license": "GPL-2.0-only",
+      "description": "Mysql online schema change"
+    },
+    {
+      "name": "querypath",
+      "link": "http://querypath.org",
+      "license": "MIT",
+      "description": "HTML parsing and traversal"
+    },
+    {
+      "name": "salesforce",
+      "link": "https://developer.salesforce.com/page/PHP",
+      "license": "BSD-3-Clause",
+      "description": "SF API client"
+    },
+    {
+      "name": "Text_LanguageDetect",
+      "link": "http://pear.php.net/package/Text_LanguageDetect/",
+      "license": "BSD-3-Clause",
+      "description": "Language detection"
+    },
+    {
+      "name": "tnef-decoder",
+      "link": "http://www.horde.org/",
+      "license": "LGPL-2.0-only",
+      "description": "TNEF decoding (MS Outlook attachment format)"
+    },
+    {
+      "name": "twitter-async",
+      "link": "http://wiki.github.com/jmathai/twitter-async",
+      "license": "BSD-3-Clause",
+      "description": "Twitter API"
+    },
+    {
+      "name": "yuicompressor",
+      "link": "http://yui.github.io/yuicompressor/",
+      "license": "BSD-2-Clause",
+      "description": "JS compressor"
+    }
+  ],
+  "javascript": [
+    {
+      "name": "amcharts",
+      "link": "https://www.amcharts.com/",
+      "license": "Commercial-amcharts",
+      "licenseLink": "http://www.amcharts.com/licenses/javascript-charts/20130924/oem/",
+      "description": "JS compressor"
+    },
+    {
+      "name": "bootstrap",
+      "link": "https://getbootstrap.com/",
+      "license": "MIT",
+      "description": "bootstrap"
+    },
+    {
+      "name": "colorpicker",
+      "link": "http://www.eyecon.ro/",
+      "license": "MIT",
+      "description": "colorpicker"
+    },
+    {
+      "name": "detect_timezone.js",
+      "link": "http://pellepim.bitbucket.org/jstz/",
+      "license": "MIT",
+      "description": "detect_timezone.js"
+    },
+    {
+      "name": "eonasdan-bootstrap-datetimepicker",
+      "link": "http://eonasdan.github.io/bootstrap-datetimepicker/",
+      "license": "MIT",
+      "description": "eonasdan-bootstrap-datetimepicker"
+    },
+    {
+      "name": "error-stack-parser",
+      "link": "https://github.com/stacktracejs/error-stack-parser",
+      "license": "MIT",
+      "description": ""
+    },
+    {
+      "name": "html5shiv",
+      "link": "https://github.com/aFarkas/html5shiv",
+      "license": ["MIT"],
+      "description": "html5shiv.min.js"
+    },
+    {
+      "name": "flaticon",
+      "link": "https://www.flaticon.com/",
+      "license": "Commercial-flaticon",
+      "licenseLink": "https://profile.flaticon.com/license/premium",
+      "description": "icons"
+    },
+    {
+      "name": "font-lato",
+      "link": "https://fonts.google.com/specimen/Lato",
+      "license": "OFL-1.1",
+      "description": "font"
+    },
+    {
+      "name": "froala-editor",
+      "link": "https://www.froala.com/",
+      "license": "Commercial-froala",
+      "licenseLink": "https://www.froala.com/wysiwyg-editor/terms",
+      "description": "rich text editor"
+    },
+    {
+      "name": "jqTree",
+      "link": "https://mbraak.github.io/jqTree/",
+      "license": "Apache-2.0",
+      "description": "jqTree"
+    },
+    {
+      "name": "jquery",
+      "link": "http://jquery.com/",
+      "license": "MIT",
+      "description": "jquery"
+    },
+    {
+      "name": "less",
+      "link": "http://lesscss.org/",
+      "license": "Apache-2.0",
+      "description": "less"
+    },
+    {
+      "name": "modernizr.min.js",
+      "link": "https://modernizr.com/",
+      "license": "MIT",
+      "description": "modernizr.min.js"
+    },
+    {
+      "name": "moment-timezone.js",
+      "link": "https://momentjs.com/timezone/",
+      "license": "MIT",
+      "description": "moment-timezone.js"
+    },
+    {
+      "name": "momentjs",
+      "link": "https://momentjs.com/",
+      "license": "MIT",
+      "description": "momentjs"
+    },
+    {
+      "name": "mootools",
+      "link": "http://mootools.net",
+      "license": "MIT",
+      "description": "mootools"
+    },
+    {
+      "name": "ng-context-menu",
+      "link": "https://github.com/Wildhoney/ngContextMenu",
+      "license": "MIT",
+      "description": "ng-context-menu"
+    },
+    {
+      "name": "redactor",
+      "link": "https://imperavi.com/redactor/",
+      "license": "Commercial-redactor",
+      "licenseLink": "https://imperavi.com/redactor/license/",
+      "description": "redactor"
+    },
+    {
+      "name": "ripemd160",
+      "link": "https://github.com/crypto-browserify/ripemd160",
+      "license": "MIT",
+      "description": ""
+    },
+    {
+      "name": "scriptjs",
+      "link": "https://github.com/ded/script.js",
+      "license": "MIT",
+      "description": ""
+    },
+    {
+      "name": "select2",
+      "link": "https://select2.org/",
+      "license": "MIT",
+      "description": "select2"
+    },
+    {
+      "name": "tiny_mce",
+      "link": "https://www.tinymce.com/",
+      "license": "LGPL-2.1-only",
+      "description": "tiny_mce"
+    },
+    {
+      "name": "ui-datetime.js",
+      "link": "https://github.com/Gillardo/bootstrap-ui-datetime-picker",
+      "license": "MIT",
+      "description": "ui-datetime.js"
+    }
+  ]
+}

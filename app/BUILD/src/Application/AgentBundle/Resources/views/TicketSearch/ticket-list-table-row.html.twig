@@ -27,9 +27,11 @@
 		<% if (field == 'brand') { %>
 			<span class="prop-val"><%- ticket_display.brand.name %></span>
 		<% } %>
+		{% if app.getSetting('using_department') %}
 		<% if (field == 'department') { %>
 			<span class="prop-val"><%- ticket_display.department.title_full %></span>
 		<% } %>
+		{% endif %}
 		<% if (field == 'status') { %>
 			<div class="status-pill status urgency-<%- ticket_display.urgency %> <%- ticket_display.status %> <%- ticket_display.status %>_<%- ticket_display.hidden_status %>" style="top: auto;">
 				<% if (ticket_display.status == 'awaiting_agent') { %><label>{{ phrase('agent.tickets.status_awaiting_agent') }}</label><i class="ticket-urgency"><%- ticket_display.urgency %></i><% } %>

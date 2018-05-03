@@ -507,9 +507,11 @@ DeskPRO.Agent.ElementHandler.TicketReplyBox = new Orb.Class({
 			downloadTemplate: $('.template-download', this.el)
 		});
 
-		this.el.bind('fileuploaddone', function(attachInfo) {
+		this.el.bind('fileuploaddone', function(attachInfo, data) {
 			self.uploading = false;
-			self.fwdAttachments.push(attachInfo.blob_id);
+			if (data) {
+				self.fwdAttachments.push(data.result[0].blob_id);
+			}
 			self.getElById('reply_as_type').parent().removeAttr('disabled');
 			self.getElById('reply_as_type').parent().siblings('.status-menu-trigger').removeAttr('disabled');
 			self.getElById('attach_row').show().removeClass('is-hidden');

@@ -1,8 +1,8 @@
 import PropTypes from 'prop-types';
 import React from 'react';
+import { FormattedMessage } from 'react-intl';
 import classNames from 'classnames';
 import Isvg from 'react-inlinesvg';
-import agentPhrases from 'DeskPRO/Bundle/AgentBundle/AgentPhrases';
 import { PopUp } from 'DeskPRO/Component/Semantic/PopUp';
 import { List, ListElement } from 'DeskPRO/Component/Semantic/List';
 import { Toggle, Range } from 'DeskPRO/Component/Semantic/Form';
@@ -52,7 +52,7 @@ class Chat extends React.Component {
 
   getStatus() {
     const { activeChat, onlineAgents } = this.props;
-    const status = activeChat ? agentPhrases.get('agent.general.on') : agentPhrases.get('agent.general.off');
+    const status = activeChat ? <FormattedMessage id="agent.general.on" /> : <FormattedMessage id="agent.general.off" />;
 
     return (
       <div className="status">
@@ -93,14 +93,14 @@ class Chat extends React.Component {
     return (
       <div id="chat-menu">
         <div className="header">
-          {agentPhrases.get('agent.general.chat')}&nbsp;
+          <FormattedMessage id="agent.general.chat" />&nbsp;
           <span className="count">
-            ({agentPhrases.get('agent.tickets.count_agents', { count: onlineAgents.size })})
+            (<FormattedMessage id="agent.tickets.count_agents" values={{ count: onlineAgents.size }} />)
           </span>
         </div>
         <div className="description">
           <Toggle active={activeChat} onChange={onToggleChat} className="small">
-            {agentPhrases.get('agent.chat.online_for_chat')}
+            <FormattedMessage id="agent.chat.online_for_chat" />
           </Toggle>
           <hr className="full" />
           <i
@@ -110,17 +110,17 @@ class Chat extends React.Component {
               'volume',
               { off: volume === 0, up: volume > 7, down: (volume <= 7 && volume > 0) }
             )}
-          /> {agentPhrases.get('agent.chat.notification_volume')}<br />
+          /> <FormattedMessage id="agent.chat.notification_volume" /><br />
           <Range min={0} max={10} value={volume} onChange={this.updateAudioVolume} />
           <hr className="full" />
-          {agentPhrases.get('agent.tickets.count_agents', { count: onlineAgents.size })}
+          <FormattedMessage id="agent.tickets.count_agents" values={{ count: onlineAgents.size }} />
           {chatDepartments && chatDepartments.length > 1 &&
             <button
               className={classNames('ui button basic tiny compact right department-filter', { active: departmentMode })}
               onClick={this.toggleDepartmentMode}
             >
               <i className="icon users" />
-              {agentPhrases.get('agent.chat.by_department')}
+              <FormattedMessage id="agent.chat.by_department" />
             </button>}
           {this.getAgents()}
         </div>

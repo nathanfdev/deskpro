@@ -1,11 +1,12 @@
+import $ from 'jquery';
 import PropTypes from 'prop-types';
 import React from 'react';
+import { FormattedMessage } from 'react-intl';
 import { connect } from 'react-redux';
 import Joyride  from 'react-joyride';
 import moment from 'moment';
 import Isvg from 'react-inlinesvg';
 import { collectionSelectorFactory } from 'DeskPRO/Bundle/AppBundle/Modules/RecordsStore';
-import agentPhrases from 'DeskPRO/Bundle/AgentBundle/AgentPhrases';
 import { SeparateComponent } from '../../Common/Components/SeparateComponent';
 import * as actions from '../Actions/onboardingActions';
 import * as Tours from '../Tours';
@@ -188,10 +189,10 @@ export class AgentOnboarding extends React.Component {
           <div className="joyride-hole" />
           <div className="joyride-intro" style={style}>
             <img src={intro.img} role="presentation" />
-            <h3>{agentPhrases.get(intro.title)}</h3>
-            <p>{agentPhrases.get(intro.text)}</p>
+            <h3><FormattedMessage id={intro.title} /></h3>
+            <p><FormattedMessage id={intro.text} /></p>
             <footer>
-              <button className="ui button" onClick={this.closeIntro}>{agentPhrases.get(intro.action)}</button>
+              <button className="ui button" onClick={this.closeIntro}><FormattedMessage id={intro.action} /></button>
             </footer>
           </div>
         </div>
@@ -212,8 +213,8 @@ export class AgentOnboarding extends React.Component {
 
     stepsArray = stepsArray.map((step) => {
       const newStep = step;
-      newStep.title = agentPhrases.get(step.title);
-      newStep.text = agentPhrases.get(step.text);
+      newStep.title = <FormattedMessage id={step.title} />;
+      newStep.text = <FormattedMessage id={step.text} />;
       return newStep;
     });
 

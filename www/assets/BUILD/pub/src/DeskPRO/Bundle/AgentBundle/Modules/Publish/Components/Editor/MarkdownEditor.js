@@ -318,6 +318,7 @@ class MarkdownEditor extends React.Component {
           positionMy="right top"
           positionAt="right bottom"
           elementId="markdown-add-link"
+          style={{ display: 'inline-block' }}
           zIndex={99999}
           content={<LinkMenu insertLink={this.insertLink} />}
           ref={(c) => { this.linkMenu = c; }}

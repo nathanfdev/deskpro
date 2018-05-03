@@ -4075,8 +4075,14 @@ ul.cc-list {
 }
 
 
-.field-input .Text input[type="text"], .field-input .Textarea textarea {
+.field-input .Text input[type="text"],
+.field-input .Textarea textarea,
+.field-input .Url input[type="text"],
+.field-input .Currency input[type="text"] {
     width: 65%;
+}
+.File.form.customfield {
+	position: relative;
 }
 
 .single-click-activate:hover {
@@ -4916,4 +4922,28 @@ ul.jqtree-tree .jqtree-moving > .jqtree-element .jqtree-title {
 	-moz-hyphens: auto;
 	-webkit-hyphens: auto;
 	hyphens: auto;
+}
+
+.File.form.customfield {
+	.custom-field-attach {
+		overflow: hidden;
+		position: relative;
+	}
+
+	input[type="file"] {
+		position: absolute;
+		top: 0;
+		left: 0;
+		margin: 0;
+		border: solid transparent;
+		border-width: 0 0 100px 200px;
+		opacity: 0;
+		filter: alpha(opacity=0);
+		-moz-transform: translate(-300px, 0) scale(4);
+		direction: ltr;
+		cursor: pointer;
+		padding: 0;
+		margin: 0;
+		z-index: 2;
+	}
 }

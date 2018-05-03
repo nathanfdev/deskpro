@@ -1,31 +1,5 @@
 <?php
 
-/*
- * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
- * a British company located in London, England.
- *
- * All source code and content Copyright (c) 2017, DeskPRO Ltd.
- *
- * The license agreement under which this software is released
- * can be found at https://www.deskpro.com/eula/
- *
- * By using this software, you acknowledge having read the license
- * and agree to be bound thereby.
- *
- * Please note that DeskPRO is not free software. We release the full
- * source code for our software because we trust our users to pay us for
- * the huge investment in time and energy that has gone into both creating
- * this software and supporting our customers. By providing the source code
- * we preserve our customers' ability to modify, audit and learn from our
- * work. We have been developing DeskPRO since 2001, please help us make it
- * another decade.
- *
- * Like the work you see? Think you could make it better? We are always
- * looking for great developers to join us: http://www.deskpro.com/jobs/
- *
- * ~ Thanks, Everyone at Team DeskPRO
- */
-
 namespace DeskPRO\Bundle\ImportBundle\Command;
 
 use Application\DeskPRO\Entity\Ticket;
@@ -75,6 +49,12 @@ class ApplyCommand extends AbstractImporterCommand
                 InputOption::VALUE_REQUIRED,
                 'Specify brand to import for multi-brand helpdesk'
             )
+            ->addOption(
+                'skip-re-index',
+                null,
+                InputOption::VALUE_NONE,
+                'Skip re-index of Elasticsearch and ticket search tables.'
+            )
         ;
     }
 
@@ -95,7 +75,7 @@ class ApplyCommand extends AbstractImporterCommand
         if ($input->getOption('batch')) {
             $exitCode = $this->executeBatchRun($input, $output);
         } else {
-            $exitCode = $this->executeUnattendedRun($output);
+            $exitCode = $this->executeUnattendedRun($input, $output);
         }
 
         unset($GLOBALS['DP_IS_IMPORTING']);
@@ -105,11 +85,12 @@ class ApplyCommand extends AbstractImporterCommand
     }
 
     /**
+     * @param InputInterface  $input
      * @param OutputInterface $output
      *
      * @return int
      */
-    protected function executeUnattendedRun(OutputInterface $output)
+    protected function executeUnattendedRun(InputInterface $input, OutputInterface $output)
     {
         $arguments = array_map(function ($argument) {
             return escapeshellarg($argument);
@@ -149,7 +130,6 @@ class ApplyCommand extends AbstractImporterCommand
             }
 
             $output->writeln('<info>Done batch</info>');
-            $output->writeln('<info>Updating search tables.</info>');
 
             // dispatch end of import for each model type
             $batchConfig = $importer->readBatchConfig();
@@ -166,21 +146,23 @@ class ApplyCommand extends AbstractImporterCommand
             }
         } while ($rerun);
 
-        if ($container->getSetting('elastica.enabled')) {
-            $output->writeln('<info>Update elasctic search.</info>');
+        if (!$input->getOption('skip-re-index')) {
+            if ($container->getSetting('elastica.enabled')) {
+                $output->writeln('<info>Update elasctic search.</info>');
 
-            $command = $this->getApplication()->find('dp:elastica:populate');
-            $input   = new ArrayInput(['']);
-            $output  = new NullOutput();
-            $command->run($input, $output);
+                $command = $this->getApplication()->find('dp:elastica:populate');
+                $input   = new ArrayInput(['']);
+                $output  = new NullOutput();
+                $command->run($input, $output);
+            }
+
+            // finishing import, update search tables
+            $output->writeln('<info>Update ticket search tables.</info>');
+
+            /** @var EntityRepository\Ticket $ticketRepository */
+            $ticketRepository = $container->getEm()->getRepository(Ticket::class);
+            $ticketRepository->fillSearchTable();
         }
-
-        // finishing import, update search tables
-        $output->writeln('<info>Update ticket search tables.</info>');
-
-        /** @var EntityRepository\Ticket $ticketRepository */
-        $ticketRepository = $container->getEm()->getRepository(Ticket::class);
-        $ticketRepository->fillSearchTable();
 
         $dispatcher->dispatch(ProgressEvent::FINISH, new ProgressEvent());
         $output->writeln('<info>Done all.</info>');

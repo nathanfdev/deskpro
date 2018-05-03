@@ -245,6 +245,7 @@ DeskPRO.Agent.PageFragment.Page.Ticket = new Orb.Class({
       onBeforeBillingChange: this.onBeforeBillingChange.bind(this),
       onAfterBillingChange: this.onAfterBillingChange.bind(this),
 		});
+		this.updateBillingTabTitle();
 
 		this.addEvent('deactivate', function() {
 			$('form.ticket-reply-form', this.getEl('replybox_wrap')).trigger('page_deactivate');
@@ -612,6 +613,13 @@ DeskPRO.Agent.PageFragment.Page.Ticket = new Orb.Class({
 			})();
 		}
 
+    var decTabCount = function(id) {
+      var countEl = self.getEl(id);
+      var count = countEl.data('count');
+      count = count > 0 ? count - 1 : 0;
+      countEl.data('count', count).html(count);
+    };
+
 		this.linkExistingTicket = new DeskPRO.Agent.PageFragment.Page.TicketHelper.LinkTicket(this, {
 			loadUrl: BASE_URL + "agent/tickets/" + this.meta.ticket_id + "/link-overlay",
 			saveUrl: BASE_URL + "agent/tickets/" + this.meta.ticket_id + "/link",
@@ -645,6 +653,39 @@ DeskPRO.Agent.PageFragment.Page.Ticket = new Orb.Class({
 				},
 				success: function() {
 					$(this).closest('tr').remove();
+          decTabCount('linked_count');
+				}
+			});
+		});
+
+		this.linkExistingFeedback = new DeskPRO.Agent.PageFragment.Page.TicketHelper.LinkFeedback(this, {
+			loadUrl: BASE_URL + "agent/tickets/" + this.meta.ticket_id + "/link-feedback-overlay",
+			saveUrl: DP_BASE_API_URL + "/v2/tickets/" + this.meta.ticket_id + "/feedback_links",
+      reloadPageUrl: BASE_URL + 'agent/tickets/' + this.meta.ticket_id
+		});
+
+		this.ownObject(this.linkExistingFeedback);
+
+		this.wrapper.find('.unlink-feedback').on('click', function(ev) {
+			Orb.cancelEvent(ev);
+
+			if (!confirm("Are you sure you want to unlink the selected feedback?")) {
+				return;
+			}
+
+			var ticketFeedbackLinkId = $(this).data('id');
+
+			$(this).closest('tr').hide();
+			$.ajax({
+				url: DP_BASE_API_URL + "/v2/tickets/" + self.meta.ticket_id + "/feedback_links/" + ticketFeedbackLinkId,
+				type: 'DELETE',
+        withActionAlerts: true,
+				error: function() {
+					$(this).closest('tr').show();
+				},
+				success: function() {
+					$(this).closest('tr').remove();
+          decTabCount('linked_feedback_count');
 				}
 			});
 		});
@@ -912,7 +953,53 @@ DeskPRO.Agent.PageFragment.Page.Ticket = new Orb.Class({
       this.meta.api_data.charges = this.billingRollbackCharges;
     }
     this.billingRollbackCharges = null;
+    this.updateBillingTabTitle();
   },
+
+	updateBillingTabTitle: function() {
+		var timeAmount  = 0;
+		var moneyAmount = 0;
+
+		this.wrapper.find('.ticket-charge-row').each(function() {
+			var data = $(this).data('charge');
+			if (data.charge_time) {
+				timeAmount += data.charge_time;
+			}
+			if (data.amount) {
+				moneyAmount += parseFloat(data.amount);
+			}
+		});
+
+		var phraseParts = [];
+		if (timeAmount > 0) {
+			var parts = [];
+			if (timeAmount > 3600) {
+				var hours = Math.floor(timeAmount / 3600);
+				parts.push(hours + 'h');
+				timeAmount -= hours * 3600;
+			}
+      if (timeAmount > 60) {
+        var mins = Math.floor(timeAmount / 60);
+        parts.push(mins + 'm');
+        timeAmount -= mins * 60;
+      }
+      if (timeAmount > 0) {
+        parts.push(timeAmount + 's');
+      }
+
+      phraseParts.push(parts.join(' '));
+		}
+
+		if (moneyAmount > 0.00) {
+			phraseParts.push(moneyAmount.toFixed(2) + ' ' + this.meta.billingCurrency);
+		}
+
+		if (phraseParts.length) {
+			this.getEl('billing_tab_counter').text('(' + phraseParts.join(', ') + ')');
+		} else {
+      this.getEl('billing_tab_counter').text('');
+		}
+	},
 
   /**
    * @param {'add'|'delete'|'udpdate'} changeType
@@ -1408,6 +1495,10 @@ DeskPRO.Agent.PageFragment.Page.Ticket = new Orb.Class({
 		if (this.linkExistingTicket) {
       this.linkExistingTicket.destroy();
       this.linkExistingTicket = null;
+		}
+		if (this.linkExistingFeedback) {
+      this.linkExistingFeedback.destroy();
+      this.linkExistingFeedback = null;
 		}
 		if (this.labelsInput) {
       this.labelsInput.destroy();
@@ -2071,6 +2162,13 @@ DeskPRO.Agent.PageFragment.Page.Ticket = new Orb.Class({
 				input: this.getEl('labels_input'),
 				onChange: this.saveLabels.bind(this)
 			});
+
+			var $container = this.getEl('labels_input').parent();
+			var self = this;
+      $container.delegate('.select2-search-choice', 'click', function(ev) {
+      	var label = $(this).find('> div').first().text();
+				window.DeskPRO_Window.runPageRoute('listpane:' + self.meta.labelsSearchUrl + encodeURI(label), {});
+			});
 		}
 	},
 
@@ -2237,6 +2335,14 @@ DeskPRO.Agent.PageFragment.Page.Ticket = new Orb.Class({
           case 'link_existing_ticket':
 						self.linkExistingTicket.open();
             break;
+
+          case 'link_existing_feedback':
+						self.linkExistingFeedback.open();
+            break;
+
+					case 'link_new_feedback':
+						DeskPRO_Window.newFeedbackLoader.newLinkedFeedback(self.meta.ticket_id);
+						break;
 
 					case 'kb-pending':
 						if (!self.pendingKbOverlay) {
@@ -2795,6 +2901,10 @@ DeskPRO.Agent.PageFragment.Page.Ticket = new Orb.Class({
 
 			case 'linked_ticket':
 				DeskPRO_Window.newTicketLoader.newLinkedTicket(this.meta.ticket_id, messageId);
+				break;
+
+			case 'link_new_feedback':
+        DeskPRO_Window.newFeedbackLoader.newLinkedFeedback(this.meta.ticket_id, messageId);
 				break;
 
 			case 'fwd_legacy':

@@ -30,6 +30,7 @@ services:
     class: DeskPRO\Bundle\AppBundle\Limits\Adapter\DbLimitAdapter
     arguments:
       - "@doctrine.orm.default_entity_manager"
+      - "@settings_resolver"
 
   api_limits.limits_service:
     class: DeskPRO\Bundle\AppBundle\Limits\LimitsService

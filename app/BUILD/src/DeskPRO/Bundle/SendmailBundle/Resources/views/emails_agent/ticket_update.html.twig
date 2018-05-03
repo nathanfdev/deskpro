@@ -38,8 +38,8 @@
 
 	<container>
 		{%- set phrase_part -%}
-			{% if action_performer and action_performer.getId() %}
-				{{ action_performer.getDisplayContact() }}
+			{% if action_performer and action_performer.id %}
+				{{ action_performer.display_contact }}
 			{% elseif sla %}
 				{{ phrase('agent.general.sla') }} {{ sla.title }}{% if sla_status == 'warning' %} ({{ phrase('agent.general.warning') }}){% elseif sla_status == 'fail' %} ({{ phrase('agent.general.failed') }}){% endif %}
 			{% else %}

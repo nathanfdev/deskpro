@@ -18,6 +18,14 @@ define [
 
       options = []
 
+      options.push
+        title: 'Ticket ID'
+        value: 'FilterRangeId'
+
+      options.push
+        title: 'Ticket Ref'
+        value: 'FilterRef'
+
       options.push({
         title: 'Status',
         value: 'FilterStatus'
@@ -76,6 +84,11 @@ define [
       options.push({
         title: 'Labels',
         value: 'FilterLabels'
+      })
+
+      options.push({
+        title: 'Linked feedback items'
+        value: 'FilterFeedbackLinks'
       })
 
       options.push({
@@ -203,6 +216,11 @@ define [
       #------------------------------
 
       options = []
+
+      options.push({
+        title: 'Person ID',
+        value: 'FilterUserRangeId'
+      })
 
       options.push({
         title: 'Name',
@@ -507,6 +525,26 @@ define [
             }
       }
 
+    getFilterRangeId: (options = {}) ->
+      options.propName = 'id'
+      options.operators = ['is', 'not', 'gt', 'gte', 'lt', 'lte']
+      def = (options)
+      def = @getStandardInput(options)
+      return def
+
+    getFilterRef: (options = {}) ->
+      options.propName = 'ref'
+      def = (options)
+      def = @getStandardInput(options)
+      return def
+
+    getFilterUserRangeId: (options = {}) ->
+      options.propName = 'person_id'
+      options.operators = ['is', 'not', 'gt', 'gte', 'lt', 'lte']
+      def = (options)
+      def = @getStandardInput(options)
+      return def
+
     getFilterUserWaiting: (options = {}) ->
       options.propName = 'time'
       def = @getTimeElapsedInput(options)
@@ -625,6 +663,12 @@ define [
     getFilterSubject: (options = {}) ->
       options.propName = 'subject'
       options.operators = ['is', 'not', 'contains', 'notcontains']
+      def = @getStandardInput(options)
+      return def
+
+    getFilterFeedbackLinks: (options = {}) ->
+      options.propName = 'feedback_links'
+      options.operators = ['isset', 'not_isset', 'is']
       def = @getStandardInput(options)
       return def
 

@@ -156,7 +156,7 @@ class MessageList extends React.Component {
                 return first.id - second.id;
               }
               return first.timestamp - second.timestamp;
-            }).map((message) => {
+            }).toArray().map((message) => {
               const result = [];
               let person = agents.get(message.person);
               if (!person) {

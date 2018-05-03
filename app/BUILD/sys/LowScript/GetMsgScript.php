@@ -1,31 +1,5 @@
 <?php
 
-/*
- * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
- * a British company located in London, England.
- *
- * All source code and content Copyright (c) 2017, DeskPRO Ltd.
- *
- * The license agreement under which this software is released
- * can be found at https://www.deskpro.com/eula/
- *
- * By using this software, you acknowledge having read the license
- * and agree to be bound thereby.
- *
- * Please note that DeskPRO is not free software. We release the full
- * source code for our software because we trust our users to pay us for
- * the huge investment in time and energy that has gone into both creating
- * this software and supporting our customers. By providing the source code
- * we preserve our customers' ability to modify, audit and learn from our
- * work. We have been developing DeskPRO since 2001, please help us make it
- * another decade.
- *
- * Like the work you see? Think you could make it better? We are always
- * looking for great developers to join us: http://www.deskpro.com/jobs/
- *
- * ~ Thanks, Everyone at Team DeskPRO
- */
-
 namespace DpSys\LowScript;
 
 use Application\DeskPRO\App;
@@ -344,6 +318,13 @@ class GetMsgScript extends LowScriptAbstract
             $data['action_alerts'] = array_values($data['action_alerts']);
             $data['notifications'] = $readNotifications ? $this->getNotifications() : [];
 
+            // Polling method
+            $defaultStrategy = $this->_getSetting('notification.settings.default_strategy');
+            if (is_string($defaultStrategy)) {
+                $defaultStrategy = unserialize($defaultStrategy);
+            }
+            $data['cm_strategy'] = isset($defaultStrategy['delivery'][0]) ? $defaultStrategy['delivery'][0] : 'db';
+
             header('Content-Type: application/json');
             echo json_encode($data);
         } catch (\Exception $exception) {
@@ -565,6 +546,9 @@ class GetMsgScript extends LowScriptAbstract
 
     protected function _getSetting($name, $default = null)
     {
+        /* @var \DpRun\DpEnv */
+        global $DP_ENV;
+
         if (!$this->_settings) {
             $this->_settings = [];
             $q               = $this->getPdoRead()->prepare('
@@ -577,7 +561,15 @@ class GetMsgScript extends LowScriptAbstract
             }
         }
 
-        return isset($this->_settings[$name]) ? $this->_settings[$name] : $default;
+        if (isset($this->_settings[$name])) {
+            return $this->_settings[$name];
+        } elseif ($DP_ENV->getConfig($name)) {
+            return $DP_ENV->getConfig($name);
+        }
+        // if not a config settings we fail over on regular settings
+        $this->_getContainer();
+
+        return App::getSetting($name, $default);
     }
 
     protected $_container;

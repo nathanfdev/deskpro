@@ -135,6 +135,11 @@ DeskPRO.Agent.PageFragment.Page.Person = new Orb.Class({
 			});
 			this.ownObject(autoResMenu);
 
+      var isConfirmedMenu = new DeskPRO.UI.Menu({
+        menuElement: this.getEl('toggle_confirmed')
+      });
+      this.ownObject(isConfirmedMenu);
+
 			this.getEl('timezone').on('change', function(){
 				var val = $(this).val();
 				$('.timezone-info', this.wrapper).empty();
@@ -167,6 +172,17 @@ DeskPRO.Agent.PageFragment.Page.Person = new Orb.Class({
 
 				self.getEl('disable_autoresponses_reason').remove();
 			});
+
+      this.getEl('toggle_confirmed').on('change', function(){
+        $.ajax({
+          url: BASE_URL + 'agent/people/' + self.meta.person_id + '/ajax-save',
+          type: 'POST',
+          dataType: 'json',
+          data: {
+            action: 'toggle_confirmed'
+          }
+        });
+      });
 
 			var namef       = this.getEl('showname');
 			var editName    = this.getEl('editname');
@@ -684,6 +700,31 @@ DeskPRO.Agent.PageFragment.Page.Person = new Orb.Class({
 					});
 				}
 
+        this.customFieldsUpload = new DeskPRO.Agent.PageHelper.CustomFieldUpload(fieldsForm);
+				$('.File.customfield input', fieldsForm).each(function() {
+					var $el = $(this);
+					if (!$el.val()) {
+						return;
+					}
+
+					if (!$('[data-blob-id='+$el.val()+']', fieldsForm).length) {
+						var $removeBtn = $('<em class="remove-attach-trigger"></em>');
+						var $editWrapper = $('<div class="edit-wrapper" data-blob-id="'+$el.val()+'" />');
+						var $fileLink = $(fieldsRendered).find('[data-blob-id='+$el.val()+']').clone();
+
+						$editWrapper.append($('<label>'+$('<div />').append($fileLink).html()+'</label>'));
+						$editWrapper.append($removeBtn);
+						$editWrapper.insertAfter($el);
+
+						$removeBtn.on('click', function() {
+							$el.remove();
+							$editWrapper.remove();
+
+              self.customFieldsUpload.updateVisibility();
+						});
+          }
+				});
+
 				$('.prop-edit-trigger', box).hide();
 				$('.is-loading', box).hide();
 				$('.save', box).show();
@@ -702,7 +743,7 @@ DeskPRO.Agent.PageFragment.Page.Person = new Orb.Class({
 		});
 		$('.save', box).on('click', function() {
 			var formData = { custom_fields_definitions: self.$scope.custom_fields_definitions };
-			$('input[type="text"], input[type="password"], input:checked, select, textarea', fieldsForm).each(function(){
+			$('input[type="text"], input[type="password"], input[type="hidden"], input:checked, select, textarea', fieldsForm).each(function(){
 			  var n = $(this).attr('name');
 			  if (!n) return;
 			  if (!!n && n.indexOf('[]') !== -1 && formData[n]) n = n.replace(/\[\]/, '[' + Orb.uuid() + ']')

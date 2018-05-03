@@ -492,7 +492,7 @@ gulp.task('precache', function () {
 gulp.task('watch', ['precache'], function () {
   deskpro.isWatching = true;
   deskpro.watches.forEach(function (w) {
-    gulp.watch(w[0], w[1]);
+    gulp.watch(w[0], { interval: 750 }, w[1]);
   });
 });
 

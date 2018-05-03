@@ -1,9 +1,9 @@
 import PropTypes from 'prop-types';
 import React from 'react';
+import { FormattedMessage } from 'react-intl';
 import Isvg from 'react-inlinesvg';
 import { PopUp } from 'DeskPRO/Component/Semantic/PopUp';
 import { MenuItem } from 'DeskPRO/Component/Semantic/Menu';
-import agentPhrases from 'DeskPRO/Bundle/AgentBundle/AgentPhrases';
 
 class AddButton extends React.Component {
   static propTypes = {
@@ -18,37 +18,37 @@ class AddButton extends React.Component {
     if (window.DESKPRO_PERSON_PERMS) {
       if (window.DESKPRO_PERSON_PERMS['agent_tickets.create']) {
         items.push(<MenuItem key="ticket" onClick={this.addTicket}>
-          <i className="icon mail" /> {agentPhrases.get('agent.general.ticket')}
+          <i className="icon mail" /> <FormattedMessage id="agent.general.ticket" />
         </MenuItem>);
       }
       if (window.DESKPRO_PERSON_PERMS['agent_people.create']) {
         items.push(<MenuItem key="person" onClick={this.addPerson}>
-          <i className="icon user" /> {agentPhrases.get('agent.general.person')}</MenuItem>);
+          <i className="icon user" /> <FormattedMessage id="agent.general.person" /></MenuItem>);
       }
       if (window.DESKPRO_PERSON_PERMS['agent_org.create']) {
         items.push(<MenuItem key="organisation" onClick={this.addOrganisation}>
-          <i className="icon users" /> {agentPhrases.get('agent.general.organization')}</MenuItem>);
+          <i className="icon users" /> <FormattedMessage id="agent.general.organization" /></MenuItem>);
       }
       // if (app.getConfig('enable_twitter') && app.user.getTwitterAccountIds()|length %}
       //   items.push(<MenuItem key="twitter" onClick={this.addTweet}><i className="icon twitter" /> Tweet</MenuItem>);
       // }
       if (window.DESKPRO_PERSON_PERMS['agent_publish.create']) {
         items.push(<MenuItem key="article" onClick={this.addArticle}>
-          <i className="icon edit" /> {agentPhrases.get('agent.general.article')}</MenuItem>);
+          <i className="icon edit" /> <FormattedMessage id="agent.general.article" /></MenuItem>);
         items.push(<MenuItem key="news" onClick={this.addNewsPost}>
-          <i className="icon calendar outline" /> {agentPhrases.get('agent.general.news_post')}</MenuItem>);
+          <i className="icon calendar outline" /> <FormattedMessage id="agent.general.news_post" /></MenuItem>);
         items.push(<MenuItem key="download" onClick={this.addDownload}>
-          <i className="icon download" /> {agentPhrases.get('agent.general.download')}</MenuItem>);
+          <i className="icon download" /> <FormattedMessage id="agent.general.download" /></MenuItem>);
         items.push(<MenuItem key="feedback" onClick={this.addFeedback}>
-          <i className="icon thumbs outline up" /> {agentPhrases.get('agent.general.feedback')}</MenuItem>);
+          <i className="icon thumbs outline up" /> <FormattedMessage id="agent.general.feedback" /></MenuItem>);
         if (window.DESKPRO_APP_SETTINGS['core.apps_guides']) {
           items.push(<MenuItem key="topic" onClick={this.addTopic}>
-            <i className="icon book" /> {agentPhrases.get('agent.general.topic')}</MenuItem>);
+            <i className="icon book" /> <FormattedMessage id="agent.general.topic" /></MenuItem>);
         }
       }
       if (window.DESKPRO_APP_SETTINGS['core.apps_tasks'] && window.DESKPRO_PERSON_PERMS['agent_tasks.use']) {
         items.push(<MenuItem key="task" onClick={this.addTask}>
-          <i className="icon check circle outline" /> {agentPhrases.get('agent.general.task')}</MenuItem>);
+          <i className="icon check circle outline" /> <FormattedMessage id="agent.general.task" /></MenuItem>);
       }
     }
     if (items.length) {
@@ -108,6 +108,10 @@ class AddButton extends React.Component {
     this.closePopup();
   };
 
+  runCustomAddBtnClick = () => {
+    window.HEADER_ADD_BTN_CLICK_ACTION();
+  };
+
   closePopup = () => {
     this.addPopup.closePopup();
     this.props.closeIframes();
@@ -119,6 +123,17 @@ class AddButton extends React.Component {
 
   render() {
     const content = this.getPopupContent();
+
+    // code plugin hook to override the btn
+    if (window.HEADER_ADD_BTN_CLICK_ACTION) {
+      return (
+        <div className="item add">
+          <button className="ui button" onClick={this.runCustomAddBtnClick}>
+            <Isvg src={`${window.DESKPRO_APP_ASSETS_URL}/DeskPRO/Bundle/AgentBundle/Resources/img/topbar/plus.svg`} />
+          </button>
+        </div>
+      );
+    }
 
     if (content) {
       return (

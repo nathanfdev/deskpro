@@ -704,6 +704,12 @@
     {% if log.details.removed %}
         {{ phrase('agent.general.problems_removed') }}: <span class="new-val">{{ log.details.removed|join(', ') }}</span>
     {% endif %}
+{% elseif log.action_type == 'feedback_link_added' %}
+	<span class="type">{{ phrase('agent.tickets.log_feedback_link_added') }}</span>
+	<span class="new-val">{{ phrase('agent.general.id') }} {{log.id_after}}</span>
+{% elseif log.action_type == 'feedback_link_removed' %}
+	<span class="type">{{ phrase('agent.tickets.log_feedback_link_removed') }}</span>
+	<span class="old-val">{{ phrase('agent.general.id') }} {{log.id_before}}</span>
 {% elseif log.action_type == 'task_created' %}
 	<span class="type">{{ phrase('agent.tasks.task_created') }}</span>
 	<span class="new-val">{{log.details.task_id}}: {{ log.details.task_title}}</span>

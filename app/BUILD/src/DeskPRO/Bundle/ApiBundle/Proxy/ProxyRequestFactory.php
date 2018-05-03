@@ -1,31 +1,5 @@
 <?php
 
-/*
- * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
- * a British company located in London, England.
- *
- * All source code and content Copyright (c) 2017, DeskPRO Ltd.
- *
- * The license agreement under which this software is released
- * can be found at https://www.deskpro.com/eula/
- *
- * By using this software, you acknowledge having read the license
- * and agree to be bound thereby.
- *
- * Please note that DeskPRO is not free software. We release the full
- * source code for our software because we trust our users to pay us for
- * the huge investment in time and energy that has gone into both creating
- * this software and supporting our customers. By providing the source code
- * we preserve our customers' ability to modify, audit and learn from our
- * work. We have been developing DeskPRO since 2001, please help us make it
- * another decade.
- *
- * Like the work you see? Think you could make it better? We are always
- * looking for great developers to join us: http://www.deskpro.com/jobs/
- *
- * ~ Thanks, Everyone at Team DeskPRO
- */
-
 namespace DeskPRO\Bundle\ApiBundle\Proxy;
 
 use Application\DeskPRO\Entity\Person;
@@ -40,7 +14,6 @@ use Symfony\Component\HttpFoundation\Request;
  */
 class ProxyRequestFactory
 {
-
     /**
      * @var AppStateRepository
      */
@@ -49,12 +22,7 @@ class ProxyRequestFactory
     /**
      * @var string[]
      */
-    private $settings = [];
-
-    /**
-     * @var string[]
-     */
-    private $privateStateVars = [];
+    private $requestVariables = [];
 
     /**
      * @param EntityManager $em
@@ -91,10 +59,11 @@ class ProxyRequestFactory
 
     /**
      * @param AppInstance $instance
-     * @param Request     $request
-     * @param Person      $person
+     * @param Request $request
+     * @param Person $person
      *
      * @return ApplicationProxyRequest
+     * @throws RequestSigningStrategyException
      */
     public function createFromAppRequest(AppInstance $instance, Request $request, Person $person)
     {
@@ -116,18 +85,17 @@ class ProxyRequestFactory
                 $nameProviders = array_merge($nameProviders, [$proxyUrl, $proxyHeaders, $whiteList ]);
             }
 
-            $this->collectPrivateStateVars($instance, $person, $nameProviders);
+            $this->collectRequestVariables($instance, $person, $nameProviders);
         }
 
         if ($shouldReplaceVars) {
-            // prepare placeholder values
-            $this->collectSettings($instance);
             // replace placeholders
             $proxyUrl = $this->replaceVars($proxyUrl);
 
             foreach ($proxyHeaders as &$value) {
                 $value = $this->replaceVars($value);
             }
+
             foreach ($whiteList as &$value) {
                 $value = $this->replaceVars($value);
             }
@@ -137,18 +105,23 @@ class ProxyRequestFactory
         return new ApplicationProxyRequest($proxyMethod, $proxyUrl, $proxyHeaders, $whiteList, $requestSigningStrategy);
     }
 
-    private function getRequestSigningStrategy(ProxySignWithHeader $header)
+    /**
+     * @param ProxySignWithHeader $header
+     * @return RequestSigningStrategyOauth1
+     * @throws RequestSigningStrategyException
+     */
+    private function getRequestSigningStrategy( ProxySignWithHeader $header)
     {
         $strategyName = $header->getSignWithStrategy();
         if ($strategyName === RequestSigningStrategy::STRATEGY_OAUTH1) {
-            $credentialNames = $header->getCredentialNames();
-            $credentials = array_intersect_key($this->privateStateVars, array_flip($credentialNames));
 
-            if (count($credentialNames) !== count($credentials)) {
+            $credentialNames = $header->getCredentialNames();
+            $requestVariables = array_intersect_key($this->requestVariables, array_flip($credentialNames));
+            if (count($credentialNames) !== count($requestVariables)) {
                 throw new \RuntimeException('unknown credentials');
             }
 
-            return new RequestSigningStrategyOauth1($credentials);
+            return RequestSigningStrategyOauth1::fromRequestVariables($requestVariables);
         }
 
         throw new \RuntimeException('unknown sign with strategy');
@@ -229,7 +202,7 @@ class ProxyRequestFactory
             return [];
         }
 
-        return $manifest->getExternalApis();
+        return $manifest->getDomainWhitelist();
     }
 
     /**
@@ -263,17 +236,10 @@ class ProxyRequestFactory
     private function replaceVars($string)
     {
         if (is_string($string)) {
-            // replace settings
-            if (is_array($this->settings)) {
-                foreach ($this->settings as $name => $value) {
-                    $string = str_replace("{{settings.$name}}", $value, $string);
-                }
-            }
-
-            // replace state vars
-            if (is_array($this->privateStateVars)) {
-                foreach ($this->privateStateVars as $name => $value) {
-                    $string = str_replace("{{privateState.$name}}", $value, $string);
+            // replace request variables
+            foreach ($this->requestVariables as $name => $value) {
+                if (is_string($value)) {
+                    $string = str_replace("{{" .$name. "}}", $value, $string);
                 }
             }
 
@@ -290,27 +256,23 @@ class ProxyRequestFactory
 
     /**
      * @param AppInstance $instance
-     */
-    private function collectSettings(AppInstance $instance)
-    {
-        $this->settings = $instance->getSettings() ?: [];
-    }
-
-    /**
-     * @param AppInstance $instance
      * @param Person $person
      * @param array $nameProviders
      */
-    private function collectPrivateStateVars(AppInstance $instance, Person $person, $nameProviders)
+    private function collectRequestVariables( AppInstance $instance, Person $person, $nameProviders)
     {
-        $this->privateStateVars = [];
-
         $names = $this->getAppStateNamesFromValue($nameProviders);
-        $appStates = $this->appStateRepository->findReadableByName($instance, $person, $names);
 
+        $this->requestVariables = [];
+        $appStates = $this->appStateRepository->findReadableByName($instance, $person, $names);
         if ($appStates) {
             foreach ($appStates as $appState) {
-                $this->privateStateVars[$appState->getName()] = $appState->getValue();
+                // TODO we need a better way to tell if a value should be json_decoded
+                $value = $appState->getValue();
+                $jsonDecodedValue = \json_decode($value);
+
+                $variableValue = JSON_ERROR_NONE === json_last_error() ? $jsonDecodedValue : $value;
+                $this->requestVariables[$appState->getName()] = $variableValue;
             }
         }
     }
@@ -326,7 +288,7 @@ class ProxyRequestFactory
         if ($value instanceof ProxySignWithHeader) {
             $names = $value->getCredentialNames();
         } if (is_string($value)) {
-            if (preg_match_all('#{{privateState\.(.*?)}}#', $value, $m)) {
+            if (preg_match_all('#{{(.*?)}}#', $value, $m)) {
                 $names = $m[1];
             }
         } elseif (is_array($value)) {

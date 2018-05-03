@@ -1,5 +1,4 @@
 import PropTypes from 'prop-types';
-import React from 'react';
 import ReactDOM from 'react-dom';
 import classNames from 'classnames';
 import { Abstract } from './Abstract';
@@ -35,7 +34,9 @@ export class Detached extends Abstract {
       if (onOpen) {
         onOpen();
       }
-      this.updatePosition();
+      window.requestAnimationFrame(() => {
+        this.updatePosition();
+      });
     } else {
       if (this.cont) {
         if (this.props.children) {

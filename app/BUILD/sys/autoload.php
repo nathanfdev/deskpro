@@ -1,31 +1,5 @@
 <?php
 
-/*
- * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
- * a British company located in London, England.
- *
- * All source code and content Copyright (c) 2017, DeskPRO Ltd.
- *
- * The license agreement under which this software is released
- * can be found at https://www.deskpro.com/eula/
- *
- * By using this software, you acknowledge having read the license
- * and agree to be bound thereby.
- *
- * Please note that DeskPRO is not free software. We release the full
- * source code for our software because we trust our users to pay us for
- * the huge investment in time and energy that has gone into both creating
- * this software and supporting our customers. By providing the source code
- * we preserve our customers' ability to modify, audit and learn from our
- * work. We have been developing DeskPRO since 2001, please help us make it
- * another decade.
- *
- * Like the work you see? Think you could make it better? We are always
- * looking for great developers to join us: http://www.deskpro.com/jobs/
- *
- * ~ Thanks, Everyone at Team DeskPRO
- */
-
 use Composer\Autoload\ClassLoader;
 use Doctrine\Common\Annotations\AnnotationRegistry;
 
@@ -79,39 +53,36 @@ foreach ([
 $loader->addClassMap([
     'DpShutdown' => DP_APP_DIR.'/sys/DpShutdown.php',
 
-    'Akismet'                                         => DP_APP_DIR.'/vendor-src/php5-akismet/src/main/php/net/achingbrain/Akismet.class.php',
-    'Browser'                                         => DP_APP_DIR.'/vendor-src/Browser/Browser.php',
-    'CssMin'                                          => DP_APP_DIR.'/vendor-src/cssmin/cssmin.php',
-    'MimeMailParser'                                  => DP_APP_DIR.'/vendor-src/php-mime-mail-parser/MimeMailParser.php',
-    'MimeMailParser_attachment'                       => DP_APP_DIR.'/vendor-src/php-mime-mail-parser/attachment.class.php',
-    'Phirehose'                                       => DP_APP_DIR.'/vendor-src/phirehose/Phirehose.php',
-    'UserstreamPhirehose'                             => DP_APP_DIR.'/vendor-src/phirehose/UserstreamPhirehose.php',
-    'HipChatApi'                                      => DP_APP_DIR.'/vendor-src/hipchat/HipChatApi.php',
-    'Markdown_Parser'                                 => DP_APP_DIR.'/vendor-src/php-markdown/markdown.php',
-    'FineDiff'                                        => DP_APP_DIR.'/vendor-src/PHP-FineDiff/finediff.php',
-    'GoogleOpenID'                                    => DP_APP_DIR.'/vendor-src/googleopenid/GoogleOpenID.php',
-    'POParser'                                        => DP_APP_DIR.'/vendor-src/simplepo/POParser.php',
-    'TempPoMsgStore'                                  => DP_APP_DIR.'/vendor-src/simplepo/POParser.php',
-    'Facebook'                                        => DP_APP_DIR.'/vendor-src/facebook/php-sdk/src/facebook.php',
-    'Text_LanguageDetect'                             => DP_APP_DIR.'/vendor-src/Text_LanguageDetect/lib/Text/LanguageDetect.php',
-    'Text_LanguageDetect_Exception'                   => DP_APP_DIR.'/vendor-src/Text_LanguageDetect/lib/Text/LanguageDetect/Exception.php',
-    'Text_LanguageDetect_ISO639'                      => DP_APP_DIR.'/vendor-src/Text_LanguageDetect/lib/Text/LanguageDetect/ISO639.php',
-    'Text_LanguageDetect_Parser'                      => DP_APP_DIR.'/vendor-src/Text_LanguageDetect/lib/Text/LanguageDetect/Parser.php',
-    'EpiCurl'                                         => DP_APP_DIR.'/vendor-src/twitter-async/EpiCurl.php',
-    'EpiOAuth'                                        => DP_APP_DIR.'/vendor-src/twitter-async/EpiOAuth.php',
-    'EpiOSequence'                                    => DP_APP_DIR.'/vendor-src/twitter-async/EpiOSequence.php',
-    'EpiTwitter'                                      => DP_APP_DIR.'/vendor-src/twitter-async/EpiTwitter.php',
-    'phpthumb_ico'                                    => DP_APP_DIR.'/vendor-src/phpthumb/phpthumb.ico.php',
-    'PasswordHash'                                    => DP_APP_DIR.'/vendor-src/phpass/PasswordHash.php',
-    'EWS_Exception'                                   => DP_APP_DIR.'/vendor-src/php-ews/EWS_Exception.php',
-    'EWSAutodiscover'                                 => DP_APP_DIR.'/vendor-src/php-ews/EWSAutodiscover.php',
-    'EWSType'                                         => DP_APP_DIR.'/vendor-src/php-ews/EWSType.php',
-    'ExchangeWebServices'                             => DP_APP_DIR.'/vendor-src/php-ews/ExchangeWebServices.php',
-    'NTLMSoapClient'                                  => DP_APP_DIR.'/vendor-src/php-ews/NTLMSoapClient.php',
-    'NTLMSoapClient_Exchange'                         => DP_APP_DIR.'/vendor-src/php-ews/NTLMSoapClient/Exchange.php',
-    'tnef'                                            => DP_APP_DIR.'/vendor-src/tnef-decoder/tnef.php',
-    'PDODblibBundle'                                  => DP_APP_DIR.'/vendor-src/ouster',
-    'Swift_Transport_Esmtp_Auth_XOAuth2Authenticator' => DP_APP_DIR.'/vendor-src/swiftmailer/XOAuth2Authenticator.php',
+    'Akismet'                                                    => DP_APP_DIR.'/vendor-src/php5-akismet/src/main/php/net/achingbrain/Akismet.class.php',
+    'Browser'                                                    => DP_APP_DIR.'/vendor-src/Browser/Browser.php',
+    'CssMin'                                                     => DP_APP_DIR.'/vendor-src/cssmin/cssmin.php',
+    'HipChatApi'                                                 => DP_APP_DIR.'/vendor-src/hipchat/HipChatApi.php',
+    'Markdown_Parser'                                            => DP_APP_DIR.'/vendor-src/php-markdown/markdown.php',
+    'FineDiff'                                                   => DP_APP_DIR.'/vendor-src/PHP-FineDiff/finediff.php',
+    'GoogleOpenID'                                               => DP_APP_DIR.'/vendor-src/googleopenid/GoogleOpenID.php',
+    'POParser'                                                   => DP_APP_DIR.'/vendor-src/simplepo/POParser.php',
+    'TempPoMsgStore'                                             => DP_APP_DIR.'/vendor-src/simplepo/POParser.php',
+    'Facebook'                                                   => DP_APP_DIR.'/vendor-src/facebook/php-sdk/src/facebook.php',
+    'Text_LanguageDetect'                                        => DP_APP_DIR.'/vendor-src/Text_LanguageDetect/lib/Text/LanguageDetect.php',
+    'Text_LanguageDetect_Exception'                              => DP_APP_DIR.'/vendor-src/Text_LanguageDetect/lib/Text/LanguageDetect/Exception.php',
+    'Text_LanguageDetect_ISO639'                                 => DP_APP_DIR.'/vendor-src/Text_LanguageDetect/lib/Text/LanguageDetect/ISO639.php',
+    'Text_LanguageDetect_Parser'                                 => DP_APP_DIR.'/vendor-src/Text_LanguageDetect/lib/Text/LanguageDetect/Parser.php',
+    'EpiCurl'                                                    => DP_APP_DIR.'/vendor-src/twitter-async/EpiCurl.php',
+    'EpiOAuth'                                                   => DP_APP_DIR.'/vendor-src/twitter-async/EpiOAuth.php',
+    'EpiOSequence'                                               => DP_APP_DIR.'/vendor-src/twitter-async/EpiOSequence.php',
+    'EpiTwitter'                                                 => DP_APP_DIR.'/vendor-src/twitter-async/EpiTwitter.php',
+    'phpthumb_ico'                                               => DP_APP_DIR.'/vendor-src/phpthumb/phpthumb.ico.php',
+    'PasswordHash'                                               => DP_APP_DIR.'/vendor-src/phpass/PasswordHash.php',
+    'EWS_Exception'                                              => DP_APP_DIR.'/vendor-src/php-ews/EWS_Exception.php',
+    'EWSAutodiscover'                                            => DP_APP_DIR.'/vendor-src/php-ews/EWSAutodiscover.php',
+    'EWSType'                                                    => DP_APP_DIR.'/vendor-src/php-ews/EWSType.php',
+    'ExchangeWebServices'                                        => DP_APP_DIR.'/vendor-src/php-ews/ExchangeWebServices.php',
+    'NTLMSoapClient'                                             => DP_APP_DIR.'/vendor-src/php-ews/NTLMSoapClient.php',
+    'NTLMSoapClient_Exchange'                                    => DP_APP_DIR.'/vendor-src/php-ews/NTLMSoapClient/Exchange.php',
+    'tnef'                                                       => DP_APP_DIR.'/vendor-src/tnef-decoder/tnef.php',
+    'PDODblibBundle'                                             => DP_APP_DIR.'/vendor-src/ouster',
+    'Swift_Transport_Esmtp_Auth_XOAuth2Authenticator'            => DP_APP_DIR.'/vendor-src/swiftmailer/XOAuth2Authenticator.php',
+    'Symfony\\Component\\Intl\\NumberFormatter\\NumberFormatter' => DP_APP_DIR.'/src/DeskPRO/Component/Intl/NumberFormatter.php',
 ]);
 
 foreach ([

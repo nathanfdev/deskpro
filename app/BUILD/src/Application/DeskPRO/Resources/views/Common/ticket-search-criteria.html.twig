@@ -284,6 +284,21 @@
 		</div>
 	</div>
 	{% endif  %}
+  
+	{% if 'feedback_links' not in no_show_fields and (not event_trigger or event_trigger != 'new_ticket') %}
+	<div class="builder-type" title="{{ phrase('agent.general.linked_feedback_items') }}" data-rule-type="feedback_links" data-rule-handler="DeskPRO.Agent.RuleBuilder.TicketFeedbackLinksTerm">
+		<div class="builder-op">
+			<select name="op" class="op">
+				<option value="isset">{{ phrase('agent.general.exists') }}</option>
+				<option value="not_isset">{{ phrase('agent.general.not_exists') }}</option>
+				<option value="is">{{ phrase('agent.general.is') }}</option>
+			</select>
+		</div>
+		<div class="builder-options">
+      <input type="text" name="feedback_links" class="feedback_links_values" value="" style="display: none;"/>
+    </div>
+	</div>
+	{% endif %}
 
 	{% if 'status' not in no_show_fields %}
 	<div class="builder-type" title="{{ phrase('agent.general.status') }}" data-rule-type="status" data-term-type="GenericMenuTerm" data-term-triggers="status">
@@ -799,7 +814,8 @@
 				'lt': phrase('agent.general.is_less_than'),
 				'before': phrase('agent.general.before'),
 				'after': phrase('agent.general.after'),
-				'between': phrase('agent.general.between')
+				'empty': phrase('agent.general.empty'),
+				'notempty': phrase('agent.general.not_empty')
 			}
 		%}
 		{% for field in app.getTicketFieldManager().getDisplayArray() %}

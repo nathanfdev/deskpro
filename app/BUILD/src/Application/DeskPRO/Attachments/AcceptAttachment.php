@@ -1,47 +1,20 @@
 <?php
 
-/*
- * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
- * a British company located in London, England.
- *
- * All source code and content Copyright (c) 2017, DeskPRO Ltd.
- *
- * The license agreement under which this software is released
- * can be found at https://www.deskpro.com/eula/
- *
- * By using this software, you acknowledge having read the license
- * and agree to be bound thereby.
- *
- * Please note that DeskPRO is not free software. We release the full
- * source code for our software because we trust our users to pay us for
- * the huge investment in time and energy that has gone into both creating
- * this software and supporting our customers. By providing the source code
- * we preserve our customers' ability to modify, audit and learn from our
- * work. We have been developing DeskPRO since 2001, please help us make it
- * another decade.
- *
- * Like the work you see? Think you could make it better? We are always
- * looking for great developers to join us: http://www.deskpro.com/jobs/
- *
- * ~ Thanks, Everyone at Team DeskPRO
- */
-
-/**
- * DeskPRO.
- *
- * @category DependencyInjection
- */
-
 namespace Application\DeskPRO\Attachments;
 
 use Application\DeskPRO\BlobStorage\DeskproBlobStorage;
+use Application\DeskPRO\Entity\CustomDefAbstract;
 use Doctrine\ORM\EntityManager;
 use DpSys\LowError\SystemErrorHandler;
 use Orb\Data\ContentTypes;
 use Orb\Util\Arrays;
+use Orb\Util\Env;
 use Orb\Util\Numbers;
 use Symfony\Component\HttpFoundation\File\UploadedFile;
 
+/**
+ * Class AcceptAttachment.
+ */
 class AcceptAttachment
 {
     const ERR_SIZE    = 'size';
@@ -62,8 +35,14 @@ class AcceptAttachment
     /**
      * @var \Application\DeskPRO\Attachments\RestrictionSet[]
      */
-    protected $restriction_sets = [];
+    protected $restrictionSets = [];
 
+    /**
+     * Constructor.
+     *
+     * @param EntityManager      $em
+     * @param DeskproBlobStorage $blobstorage
+     */
     public function __construct(EntityManager $em, DeskproBlobStorage $blobstorage)
     {
         $this->em          = $em;
@@ -76,7 +55,7 @@ class AcceptAttachment
      */
     public function addRestrictionSet($id, RestrictionSet $set)
     {
-        $this->restriction_sets[$id] = $set;
+        $this->restrictionSets[$id] = $set;
     }
 
     /**
@@ -88,27 +67,76 @@ class AcceptAttachment
      */
     public function getRestrictionSet($id)
     {
-        if (!isset($this->restriction_sets[$id])) {
+        if (!isset($this->restrictionSets[$id])) {
+            // check if it's a restriction set of a custom file field
+            // don't preload restrictions for all custom file fields on the service bootstrap
+            // load it runtime on a restriction set request
+
+            // e.g. custom_field.ticket.10.user
+            if (preg_match('/^custom_field\.(\w+)\.(\d+)\.(\w+)/', $id, $matches)) {
+                list(, $type, $fieldId, $context) = $matches;
+
+                $customDefClass = 'Application\\DeskPRO\\Entity\\CustomDef'.ucfirst($type);
+                if (!class_exists($customDefClass)) {
+                    throw new \InvalidArgumentException("Unable to get upload restriction set for `$type` custom field");
+                }
+                if (!$fieldId) {
+                    throw new \InvalidArgumentException('No custom field id provided');
+                }
+
+                /** @var CustomDefAbstract $def */
+                $def = $this->em->getRepository($customDefClass)->find($fieldId);
+                if (!$def || !$def->isFileType()) {
+                    throw new \InvalidArgumentException('Unable to get custom file field');
+                }
+
+                $effectiveMaxUploadSize = Env::getEffectiveMaxUploadSize();
+
+                $maxSize = $def->getOption($context.'_max_file_size');
+                $maxSize = min($effectiveMaxUploadSize, $maxSize);
+
+                $mustExtensions = $def->getOption($context.'_must_extensions', null);
+                $notExtensions  = $def->getOption($context.'_not_extensions', null);
+
+                if ($mustExtensions) {
+                    array_walk($mustExtensions, 'trim');
+                }
+                if ($notExtensions) {
+                    array_walk($notExtensions, 'trim');
+                }
+
+                $res = new RestrictionSet();
+                $res
+                    ->setMaxSize($maxSize)
+                    ->setAllowedExts($mustExtensions)
+                    ->setDisallowedExts($notExtensions)
+                ;
+
+                $this->addRestrictionSet($id, $res);
+
+                return $res;
+            }
+
             throw new \InvalidArgumentException("No set with id `$id`");
         }
 
-        return $this->restriction_sets[$id];
+        return $this->restrictionSets[$id];
     }
 
     /**
      * @param \Symfony\Component\HttpFoundation\File\UploadedFile $file
-     * @param $restriction_set_id
+     * @param $restrictionSetId
      *
      * @return array|null
      */
-    public function getError(UploadedFile $file = null, $restriction_set_id = null)
+    public function getError(UploadedFile $file = null, $restrictionSetId = null)
     {
         $restriction = null;
-        if ($restriction_set_id) {
-            $restriction = $this->getRestrictionSet($restriction_set_id);
+        if ($restrictionSetId) {
+            $restriction = $this->getRestrictionSet($restrictionSetId);
         }
 
-        $is_email = strpos($restriction_set_id, 'email') !== false;
+        $is_email = strpos($restrictionSetId, 'email') !== false;
 
         $max_size = min(\Orb\Util\Env::getEffectiveMaxUploadSize(), $restriction->getMaxSize());
 

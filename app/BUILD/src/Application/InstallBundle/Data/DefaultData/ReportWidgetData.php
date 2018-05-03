@@ -1,31 +1,5 @@
 <?php
 
-/*
- * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
- * a British company located in London, England.
- *
- * All source code and content Copyright (c) 2018, DeskPRO Ltd.
- *
- * The license agreement under which this software is released
- * can be found at https://www.deskpro.com/eula/
- *
- * By using this software, you acknowledge having read the license
- * and agree to be bound thereby.
- *
- * Please note that DeskPRO is not free software. We release the full
- * source code for our software because we trust our users to pay us for
- * the huge investment in time and energy that has gone into both creating
- * this software and supporting our customers. By providing the source code
- * we preserve our customers' ability to modify, audit and learn from our
- * work. We have been developing DeskPRO since 2001, please help us make it
- * another decade.
- *
- * Like the work you see? Think you could make it better? We are always
- * looking for great developers to join us: http://www.deskpro.com/jobs/
- *
- * ~ Thanks, Everyone at Team DeskPRO
- */
-
 namespace Application\InstallBundle\Data\DefaultData;
 
 use Application\DeskPRO\Entity\ReportWidget;
@@ -50,8 +24,8 @@ class ReportWidgetData extends AbstractDefaultData
             'description'   => 'Agents are online',
             'display_types' => 'simple_stat',
             'display_order' => 40,
-            'query'         => 'SELECT DPQL_COUNT() as \'stat_value\', \'online agents\' as \'stat_description\' 
-FROM sessions WHERE sessions.person.is_agent = 1 AND sessions.date_last > DPQL_NOW() - INTERVAL 6 MINUTE GROUP BY sessions.person',
+            'query'         => 'SELECT DPQL_COUNT_DISTINCT(sessions.person.id) as \'stat_value\', \'online agents\' as \'stat_description\' 
+FROM sessions WHERE sessions.person.is_agent = 1 AND sessions.date_last > DPQL_NOW() - INTERVAL 6 MINUTE',
             'variables' => '[]',
         ],
         'tickets-created-x-date' => [
@@ -80,8 +54,8 @@ FROM chat_conversations WHERE chat_conversations.date_created = ${date}',
             'description'   => 'Average response time of tickets created by date',
             'display_types' => 'simple_stat',
             'display_order' => 40,
-            'query'         => 'SELECT DPQL_FORMAT(AVG(tickets.total_to_first_reply), \'number\', 0) as \'stat_value\', \'minutes to reply\' as \'stat_description\' 
-FROM tickets WHERE tickets.date_created = ${date} AND tickets.date_last_agent_reply <> NULL',
+            'query'         => 'SELECT DPQL_FORMAT(AVG(tickets.total_to_first_reply) / 60, \'number\', 0) as \'stat_value\', \'minutes to reply\' as \'stat_description\' 
+FROM tickets WHERE tickets.date_created = ${date} AND tickets.date_first_agent_reply <> NULL',
             'variables' => '[{"name":"date","type":"dates","default":"today"}]',
         ],
         'satisfaction-x-date' => [
@@ -92,16 +66,15 @@ FROM tickets WHERE tickets.date_created = ${date} AND tickets.date_last_agent_re
             'display_order' => 40,
             // all today created positive feedback / all today created feedback * 100 gives you today positive %
             'query' => '
-            SELECT CONCAT(
-	DPQL_FORMAT(
-		(
-    		(SELECT DPQL_COUNT() FROM ticket_feedback WHERE ticket_feedback.rating = 1 AND ticket_feedback.date_created = ${date})
-    		/ 
-    		(SELECT DPQL_COUNT() FROM ticket_feedback WHERE ticket_feedback.date_created = ${date})
-    	) * 100,
-    \'number\'),
-    \'%\'
-) AS \'stat_value\',
+            SELECT
+    DPQL_FORMAT(
+	(
+    	 (SELECT DPQL_COUNT() FROM ticket_feedback WHERE ticket_feedback.rating = 1 AND ticket_feedback.date_created = ${date})
+    	  / 
+    	 (SELECT DPQL_COUNT() FROM ticket_feedback WHERE ticket_feedback.date_created = ${date})
+    	),
+    \'percent\', 0)
+    AS \'stat_value\',
 \'satisfied users\' as \'stat_description\'
 FROM ticket_feedback
 WHERE ticket_feedback.date_created = ${date}

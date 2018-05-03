@@ -1,44 +1,24 @@
 <?php
 
-/*
- * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
- * a British company located in London, England.
- *
- * All source code and content Copyright (c) 2017, DeskPRO Ltd.
- *
- * The license agreement under which this software is released
- * can be found at https://www.deskpro.com/eula/
- *
- * By using this software, you acknowledge having read the license
- * and agree to be bound thereby.
- *
- * Please note that DeskPRO is not free software. We release the full
- * source code for our software because we trust our users to pay us for
- * the huge investment in time and energy that has gone into both creating
- * this software and supporting our customers. By providing the source code
- * we preserve our customers' ability to modify, audit and learn from our
- * work. We have been developing DeskPRO since 2001, please help us make it
- * another decade.
- *
- * Like the work you see? Think you could make it better? We are always
- * looking for great developers to join us: http://www.deskpro.com/jobs/
- *
- * ~ Thanks, Everyone at Team DeskPRO
- */
-
 namespace DeskPRO\Bundle\AppBundle\DataService;
 
 use Application\DeskPRO\CustomFields\Handler\Choice;
+use Application\DeskPRO\CustomFields\Handler\Currency;
 use Application\DeskPRO\CustomFields\Handler\Date;
 use Application\DeskPRO\CustomFields\Handler\DateTime;
 use Application\DeskPRO\CustomFields\Handler\Display;
+use Application\DeskPRO\CustomFields\Handler\File;
 use Application\DeskPRO\CustomFields\Handler\Hidden;
 use Application\DeskPRO\CustomFields\Handler\Text;
 use Application\DeskPRO\CustomFields\Handler\Textarea;
 use Application\DeskPRO\CustomFields\Handler\Toggle;
+use Application\DeskPRO\CustomFields\Handler\Url;
+use Application\DeskPRO\Entity\Blob;
 use Application\DeskPRO\Entity\CustomDataAbstract;
 use Application\DeskPRO\Entity\CustomDefAbstract;
 use Application\DeskPRO\Entity\Person;
+use DeskPRO\Bundle\AppBundle\Entity\Currency as CurrencyEntity;
+use Doctrine\ORM\EntityManager;
 use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorage;
 
 /**
@@ -49,6 +29,11 @@ use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorage;
 class CustomFieldUtil
 {
     /**
+     * @var EntityManager
+     */
+    private $em;
+
+    /**
      * @var TokenStorage
      */
     private $tokenStorage;
@@ -56,10 +41,12 @@ class CustomFieldUtil
     /**
      * Constructor.
      *
-     * @param TokenStorage $tokenStorage
+     * @param EntityManager $em
+     * @param TokenStorage  $tokenStorage
      */
-    public function __construct(TokenStorage $tokenStorage)
+    public function __construct(EntityManager $em, TokenStorage $tokenStorage)
     {
+        $this->em           = $em;
         $this->tokenStorage = $tokenStorage;
     }
 
@@ -99,7 +86,7 @@ class CustomFieldUtil
                 if ($data->getData() == 1) {
                     $value = $fieldDef->getOption('label_text') ?: 'Checked';
                 } else {
-                    $value = 'None';
+                    $value = $fieldDef->getOption('unchecked_text') ?: 'None';
                 }
                 break;
             case Text::class:
@@ -125,6 +112,28 @@ class CustomFieldUtil
                 break;
             case Display::class:
                 $value = $fieldDef->getHtmlOption();
+                break;
+            case Url::class:
+                $value = $data->getInput();
+                break;
+            case Currency::class:
+                $value      = null;
+                $currencyId = $fieldDef->getOption('currency_id');
+                if ($currencyId) {
+                    $currency = $this->em->getRepository(CurrencyEntity::class)->find($currencyId);
+                    if ($currency) {
+                        $value = $data->getData() ? ($data->getData() / $currency->getDelimiter()) : 0;
+                        $value = $currency->getSymbol().' '.number_format($value, $currency->getDecimalPlaces(), '.', ',');
+                    }
+                }
+
+                break;
+            case File::class:
+                $value = null;
+                if ($data->getValue()) {
+                    $value = $this->em->getRepository(Blob::class)->find($data->getValue());
+                }
+
                 break;
             default:
                 $value = null;

@@ -17,6 +17,9 @@ DeskPRO.Agent.PageFragment.List.TicketList = new Orb.Class({
     this.filterId = parseInt(this.meta.filter_id) || 0;
     this.fixed_fields = ['subject'];
 
+    this.orderBy = this.meta.orderBy.replace(/^ticket\./, '');
+    this.orderByDir = this.meta.orderByDir.toUpperCase();
+
     self.$scope = DeskPRO_Window.$scope.$new();
     self.$q = DeskPRO_Window.$q;
     self.$timeout = DeskPRO_Window.$timeout;
@@ -335,8 +338,6 @@ DeskPRO.Agent.PageFragment.List.TicketList = new Orb.Class({
     };
 
     this.fieldUtil = DeskPRO.Agent.PageFragment.List.TicketList.FieldUtil;
-    this.orderBy = this.meta.orderBy.replace(/^ticket\./, '');
-    this.orderByDir = this.meta.orderByDir.toUpperCase();
 
     $scope.realtime = true;
     $scope.halfrealtime = false;
@@ -420,8 +421,6 @@ DeskPRO.Agent.PageFragment.List.TicketList = new Orb.Class({
             }).length === 1;
           if (currentlyInView) {
             self.queueChangeEvent('refreshTicketResults', [ticketId]);
-          } else {
-            self.queueChangeEvent('addTicketResults', [ticketId]);
           }
         });
       }
@@ -473,6 +472,21 @@ DeskPRO.Agent.PageFragment.List.TicketList = new Orb.Class({
             } else if (data.op === 'del') {
               self.queueChangeEvent('removeTicketResults', [ticketId]);
               self.updateSubgroupingBubbles('refresh');
+            }
+          }
+        }
+      }, null, [this.OBJ_ID]);
+    } else {
+      DeskPRO_Window.getMessageBroker().addMessageListener('agent.filter-update', function(data) {
+        var filterId = parseInt(data.filter_id);
+        var ticketId = parseInt(data.ticket_id || 0);
+        if (filterId === self.filterId) {
+          if (ticketId && data.op) {
+            if (data.op === 'add') {
+              // ticket is added via Tickets.js
+              // filterUpdated() method
+            } else if (data.op === 'del') {
+              self.queueChangeEvent('removeTicketResults', [ticketId]);
             }
           }
         }
@@ -1412,6 +1426,12 @@ DeskPRO.Agent.PageFragment.List.TicketList = new Orb.Class({
         displayOptions.saveAndRefresh({ isSortUpdate: true });
       }
     });
+
+    var disOptWrap = displayOptions.getWrapperElement();
+    var sel = disOptWrap.find('select.sel-order-by');
+    var text = sel.find('[value="ticket.' + this.orderBy + ':' + this.orderByDir.toLowerCase() +'"]').text();
+    sortMenuBtn.find('.label').text(text);
+
     this.ownObject(sortingMenu);
 
     groupMenuBtn = wrapperEl.find('.group-by-menu-trigger');

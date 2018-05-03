@@ -109,7 +109,7 @@ services:
 
   form.custom_data:
     class: DeskPRO\Bundle\AppBundle\Form\Type\CustomFields\CustomDataType
-    arguments: ["@validator"]
+    arguments: ["@doctrine.orm.default_entity_manager", "@validator"]
     tags:
       - { name: form.type }
 
@@ -155,6 +155,13 @@ services:
     tags:
       - { name: form.type }
 
+  form.ticket_feedback_link:
+    class: DeskPRO\Bundle\AppBundle\Form\Type\Tickets\TicketFeedbackLinkType
+    arguments: ["@brand_aware_settings_resolver"]
+    tags:
+      - { name: form.type }
+
+
   form.organization:
     class: DeskPRO\Bundle\AppBundle\Form\Type\Organizations\OrganizationType
     arguments: ["@custom_field_manager"]
@@ -191,18 +198,6 @@ services:
       - [ setContainer, [ '@service_container' ]]
     tags:
       - { name: form.type }
-
-  form.term_engine.term:
-    class: DeskPRO\Bundle\AppBundle\Form\Type\TermEngineTermType
-    arguments:
-        - "@form.term_engine.term_transformer"
-    tags:
-      - { name: form.type, alias: term_engine_term }
-
-  form.term_engine.term_transformer:
-    class: DeskPRO\Bundle\AppBundle\Form\DataTransformer\TermEngineTermTransformer
-    arguments:
-      - "@term_to_json_converter"
 
   form.attachment_type:
     class: DeskPRO\Bundle\AppBundle\Form\Type\Attachments\BaseAttachmentType
@@ -445,5 +440,12 @@ services:
     class: DeskPRO\Bundle\AppBundle\Form\Type\Reports\ScheduledReportType
     arguments:
       - "@deskpro.reports.saver"
+    tags:
+      - { name: form.type }
+
+  form.currency_field:
+    class: Application\DeskPRO\CustomFields\Form\Type\CurrencyFieldType
+    arguments:
+      - "@doctrine.orm.default_entity_manager"
     tags:
       - { name: form.type }

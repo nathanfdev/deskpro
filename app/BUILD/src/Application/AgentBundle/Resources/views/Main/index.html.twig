@@ -177,7 +177,8 @@
 		display: inline-block;
 		text-align: center;
 
-		background: url({{ asset('images/spinners/logo-loading.gif') }}) no-repeat 50% 0;
+		background: url({{ asset('images/spinners/logo-loading.svg') }}) no-repeat 50% 0;
+		background-size: 50%;
 
 		margin: 0;
 		padding: 0;
@@ -301,6 +302,7 @@
 		assign_agent:       phrase('agent.general.assign_agent'),
 		unassign:           phrase('agent.general.unassign'),
 		assign_team:        phrase('agent.general.assign_team'),
+		set_awaiting_user:  phrase('agent.tickets.set_awaiting_user'),
 		set_awaiting_agent: phrase('agent.tickets.set_awaiting_agent'),
 		set_resolved:       phrase('agent.tickets.set_resolved'),
 	}|json_encode }}"

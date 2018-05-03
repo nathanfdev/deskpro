@@ -43,7 +43,7 @@ DeskPRO.Agent.PageHelper.TicketFields = new Orb.Class({
 				var $holders = self.page.getEl('field_holders');
 
 				// check single fields
-				var $field = $holders.find('[name="' + name + '"], [name="' + name + '[]"]');
+				var $field = $holders.find('[name="' + name + '"], [name^="' + name + '["]');
 				if (!$field.length) {
           // field is not present on the form
           // e.g. org field if user doesn't belong to a org
@@ -54,6 +54,9 @@ DeskPRO.Agent.PageHelper.TicketFields = new Orb.Class({
           return $field.is(':checked');
         }
         if ($field.attr('type') === 'hidden') {
+					if ($field.val()) {
+            return $field.map(function(i, el) { return el.value; }).get();
+					}
           return $.trim($field.parent().text());
         }
         if ($field.is('input:not(:radio, :checkbox), textarea, select:not(.with-select2)')) {
@@ -90,6 +93,8 @@ DeskPRO.Agent.PageHelper.TicketFields = new Orb.Class({
 			}
 		};
 
+    this.initDateCustomFields();
+    this.initFileCustomFields();
 		this.initScope(this.page.getEl('field_holders'));
 		this.no_value_fields = [];
 
@@ -111,6 +116,7 @@ DeskPRO.Agent.PageHelper.TicketFields = new Orb.Class({
 			if (data.holders) {
 				if (self.mode == 'view') {
 					self.replaceHolders(data.holders);
+          self.initFileCustomFields();
 				}
 			}
 		});
@@ -144,7 +150,10 @@ DeskPRO.Agent.PageHelper.TicketFields = new Orb.Class({
       self.display.find('.item.'+id).each(function(i, el) {
         var $el = $(el);
         value = allowDefaultValue ? $el.data('default-value') : value;
-        $el.find('input[type=text], textarea, select').val(value);
+        $el.find('input[type=text], textarea, select').filter(function(){
+          //filter out select2 inputs, select2 val processed below as separate call
+          return $(this).parents('.with-select2').length === 0;
+        }).val(value);
         $el.find('.with-select2').val(Array.isArray(value) ? value : (value+'').split(',')).change();
         $el.find('input[type=radio]').each(function(i, field) {
           var $field = $(field);
@@ -170,6 +179,17 @@ DeskPRO.Agent.PageHelper.TicketFields = new Orb.Class({
             $field.prop('checked', value);
           }
         });
+
+        if ($el.data('custom-field-handler') === 'file') {
+        	var $fileWrapper = $el.find('.mode-edit .customfield div');
+          $fileWrapper.html('');
+          var $input = $($fileWrapper.data('prototype'));
+          var inputName = $input.attr('name') ? $input.attr('name').replace('[__name__]', '[]') : null;
+
+          $el.find('[data-blob-id]').each(function (i, el) {
+            $fileWrapper.append($('<input type="hidden" name="'+inputName+'" value="'+$(el).data('blob-id')+'" />'));
+          });
+				}
       });
 		};
 
@@ -240,6 +260,7 @@ DeskPRO.Agent.PageHelper.TicketFields = new Orb.Class({
       self.edit_fields_map = {};
       $scope.show_hidden = 0;
       self.updateDisplay();
+      self.initFileCustomFields();
 		};
 
 		$scope.saveFields = function() {
@@ -406,7 +427,8 @@ DeskPRO.Agent.PageHelper.TicketFields = new Orb.Class({
 
 		$('.Date.customfield input', $tbody).each(function(){
 			$(this).datetimepicker({
-				format: 'YYYY-MM-DD',
+				format: 'L',
+        locale: moment.locale(),
 				widgetParent: $(this).parent().css('position', 'relative'),
 				widgetPositioning: { vertical: 'bottom' },
 				icons: {
@@ -423,7 +445,8 @@ DeskPRO.Agent.PageHelper.TicketFields = new Orb.Class({
 
 		$('.DateTime.customfield input', $tbody).each(function(){
 			$(this).datetimepicker({
-				format: 'YYYY-MM-DD HH:mm',
+				format: 'L HH:mm',
+        locale: moment.locale(),
 				widgetParent: $(this).parent().css('position', 'relative'),
 				widgetPositioning: { vertical: 'bottom' },
 				icons: {
@@ -461,6 +484,7 @@ DeskPRO.Agent.PageHelper.TicketFields = new Orb.Class({
 			customFieldData[i].name = customFieldData[i].name.replace(baseId + '_', '');
 		}
 		customFieldData.unshift({name: 'custom_fields[]', value: ''});
+    customFieldData = self.normalizeCustomFieldValues(customFieldData);
 
 		this.$scope.is_saving = true;
 
@@ -471,7 +495,11 @@ DeskPRO.Agent.PageHelper.TicketFields = new Orb.Class({
 				if (data.data && data.data.reload) {
 					this.page.closeSelf();
 					DeskPRO_Window.runPageRoute('ticket:' + BASE_URL + 'agent/tickets/' + this.page.meta.ticket_id);
-				}
+				} else {
+          setTimeout(function() {
+          	self.initFileCustomFields();
+          }, 1);
+        }
 			}).bind(this),
 			(function(xhr, code, message) {
         self.$scope.is_saving = false;
@@ -516,6 +544,86 @@ DeskPRO.Agent.PageHelper.TicketFields = new Orb.Class({
 		this.updateDisplayNow();
 		this.$scope.$apply();
 	},
+
+  initDateCustomFields: function() {
+    var self = this;
+    
+    self.display.find('.Date.customfield input').each(function(){
+      if ($(this).val()) {
+        $(this).val(self.convertDateFormat('YYYY-MM-DD', 'L', $(this).val()));
+      }
+      var parent = $(this).closest('.custom-field.item');
+      if (parent.data('default-value')) {
+        parent.data('default-value', self.convertDateFormat('YYYY-MM-DD', 'L', parent.data('default-value')));
+      }
+    });
+    self.display.find('.DateTime.customfield input').each(function(){
+      if ($(this).val()) {
+        $(this).val(self.convertDateFormat('YYYY-MM-DD HH:mm', 'L HH:mm', $(this).val()));
+      }
+      var parent = $(this).closest('.custom-field.item');
+      if (parent.data('default-value')) {
+        parent.data('default-value', self.convertDateFormat('YYYY-MM-DD HH:mm', 'L HH:mm', parent.data('default-value')));
+      }
+    });
+  },
+
+  initFileCustomFields: function() {
+    this.customFieldsUpload = new DeskPRO.Agent.PageHelper.CustomFieldUpload(this.display);
+
+    var self = this;
+    self.display.find('.File.customfield input[type="hidden"]').each(function() {
+			var $el = $(this);
+
+			if (!self.display.find('.edit-wrapper[data-blob-id='+$el.val()+']').length) {
+        var $removeBtn = $('<em class="remove-attach-trigger"></em>');
+        var $editWrapper = $('<div data-blob-id="'+$el.val()+'" class="edit-wrapper" />');
+        var $fileLink = self.display.find('[data-blob-id='+$el.val()+']').clone();
+
+        $editWrapper.append($('<label>'+$('<div />').append($fileLink).html()+'</label>'));
+        $editWrapper.append($removeBtn);
+        $editWrapper.insertAfter($el);
+
+        $removeBtn.on('click', function() {
+          $el.remove();
+          $editWrapper.remove();
+
+          self.customFieldsUpload.updateVisibility();
+        });
+			}
+		});
+  },
+  
+  normalizeCustomFieldValues: function(customFieldsData) {
+    var self = this;
+    var nameToHandlerMap = {};
+    // for now we need only Date and DateTime fields
+    self.display.find('.custom-field input').each(function(){
+      // skip `hijri` now
+      if ($(this).closest('.form.customfield.hijri').length) {
+        return;
+      }
+      nameToHandlerMap[$(this).attr('name')] = $(this).closest('.custom-field.item').data('custom-field-handler');
+    });
+
+    return customFieldsData.map(function(customField){
+      if (nameToHandlerMap[customField.name] === 'date') {
+        customField.value = self.convertDateFormat('L', 'YYYY-MM-DD', customField.value);
+      } else if (nameToHandlerMap[customField.name] === 'datetime') {
+        customField.value = self.convertDateFormat('L HH:mm', 'YYYY-MM-DD HH:mm', customField.value);
+      }
+
+      return customField;
+    });
+  },
+
+  convertDateFormat: function(from, to, value){
+    if (!value) {
+      return value;
+    }
+    var mom = moment(value, from);
+    return mom.isValid() ? mom.format(to) : value;
+  },
 
 	destroy: function() {
 		this.page = null;

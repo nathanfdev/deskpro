@@ -1,36 +1,12 @@
 <?php
 
-/*
- * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
- * a British company located in London, England.
- *
- * All source code and content Copyright (c) 2017, DeskPRO Ltd.
- *
- * The license agreement under which this software is released
- * can be found at https://www.deskpro.com/eula/
- *
- * By using this software, you acknowledge having read the license
- * and agree to be bound thereby.
- *
- * Please note that DeskPRO is not free software. We release the full
- * source code for our software because we trust our users to pay us for
- * the huge investment in time and energy that has gone into both creating
- * this software and supporting our customers. By providing the source code
- * we preserve our customers' ability to modify, audit and learn from our
- * work. We have been developing DeskPRO since 2001, please help us make it
- * another decade.
- *
- * Like the work you see? Think you could make it better? We are always
- * looking for great developers to join us: http://www.deskpro.com/jobs/
- *
- * ~ Thanks, Everyone at Team DeskPRO
- */
-
 namespace DeskPRO\Bundle\AppBundle\Form\Type\CustomFields;
 
+use Application\DeskPRO\Entity\Blob;
 use Application\DeskPRO\Entity\CustomDataAbstract;
 use Application\DeskPRO\Entity\CustomDefAbstract;
 use Application\DeskPRO\Entity\Ticket;
+use DeskPRO\Bundle\AppBundle\Entity\Currency;
 use DeskPRO\Bundle\AppBundle\Form\FormField;
 use DeskPRO\Bundle\AppBundle\Form\Type\ApiBooleanType;
 use DeskPRO\Bundle\AppBundle\Form\Type\DataJsonType;
@@ -39,12 +15,14 @@ use DeskPRO\Bundle\AppBundle\Form\Type\DateTimeType;
 use DeskPRO\Bundle\AppBundle\Form\Type\DisplayHtmlType;
 use DeskPRO\Bundle\AppBundle\Form\Type\DpDateType;
 use DeskPRO\Bundle\AppBundle\Form\Type\DpHiddenType;
+use DeskPRO\Bundle\AppBundle\Form\Type\DpUrlType;
+use DeskPRO\Bundle\AppBundle\Form\Type\MoneyType;
 use DeskPRO\Bundle\AppBundle\Validator\Constraints as AppAssert;
 use DeskPRO\Bundle\PortalBundle\Form\Form\Type\SingleCheckboxType;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
+use Doctrine\ORM\EntityManager;
 use Symfony\Component\Form\AbstractType;
-use Symfony\Component\Form\Extension\Core\Type\FormType;
 use Symfony\Component\Form\Extension\Core\Type\TextareaType;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\FormBuilderInterface;
@@ -63,17 +41,24 @@ use Symfony\Component\Validator\Validator\ValidatorInterface;
 class CustomDataType extends AbstractType
 {
     /**
+     * @var EntityManager
+     */
+    private $em;
+
+    /**
      * @var ValidatorInterface
      */
-    protected $validator;
+    private $validator;
 
     /**
      * Constructor.
      *
+     * @param EntityManager      $em
      * @param ValidatorInterface $validator
      */
-    public function __construct(ValidatorInterface $validator)
+    public function __construct(EntityManager $em, ValidatorInterface $validator)
     {
+        $this->em        = $em;
         $this->validator = $validator;
     }
 
@@ -98,9 +83,9 @@ class CustomDataType extends AbstractType
      */
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
-        $builder->addEventListener(FormEvents::PRE_SET_DATA, [$this, 'onGenerateFields']);
-        $builder->addEventListener(FormEvents::SUBMIT, [$this, 'onTransformToCustomData'], -1);
-        $builder->addEventListener(FormEvents::POST_SUBMIT, [$this, 'onValidateData'], -1);
+        $builder->addEventListener(FormEvents::PRE_SET_DATA, [$this, 'onPreSetData']);
+        $builder->addEventListener(FormEvents::SUBMIT, [$this, 'onSubmit'], -1);
+        $builder->addEventListener(FormEvents::POST_SUBMIT, [$this, 'onPostSubmit'], -1);
 
         if ($options['inline']) {
             $builder->addEventSubscriber(new InlineCustomDataListener());
@@ -114,14 +99,22 @@ class CustomDataType extends AbstractType
      *
      * @param FormEvent $event
      */
-    public function onGenerateFields(FormEvent $event)
+    public function onPreSetData(FormEvent $event)
     {
         $form   = $event->getForm();
         $config = $form->getConfig();
 
         /** @var CustomDefAbstract $customDef */
         $customDef = $config->getOption('custom_def');
-        $field     = $this->createCustomField($customDef, $config->getOption('inline'));
+        $field     = $this->createCustomField(
+            $customDef,
+            $config->getOption('inline'),
+            $config->getOption('agent_interface')
+        );
+
+        if (!$field) {
+            return;
+        }
 
         // custom fields are implemented as a compound type
         // and this label is for the 'data' attribute, whereas
@@ -147,7 +140,7 @@ class CustomDataType extends AbstractType
      *
      * @param FormEvent $event
      */
-    public function onTransformToCustomData(FormEvent $event)
+    public function onSubmit(FormEvent $event)
     {
         $form   = $event->getForm();
         $config = $form->getConfig();
@@ -183,17 +176,21 @@ class CustomDataType extends AbstractType
             }
 
             // add new items
-            foreach ($data as $fieldId) {
-                if (!in_array($fieldId, $exist)) {
+            foreach ($data as $blobId) {
+                if (!in_array($blobId, $exist)) {
+                    if (!$blobId || !$choiceDef = $customDef->getChildById($blobId)) {
+                        continue;
+                    }
+
                     $customData = $customDef->createCustomData();
                     $customData->setValue(1);
-                    $customData->setField($customDef->getChildById($fieldId));
+                    $customData->setField($choiceDef);
 
                     $customDefData->add($customData);
                 }
             }
-        } else if ($customDef->isDataListType()) {
-            $data = $form->get('data')->getData();
+        } elseif ($customDef->isDataListType()) {
+            $data     = $form->get('data')->getData();
             $itemList = is_string($data) ? json_decode($data) : [];
 
             // remove deleted items and collect the id's of existing ones
@@ -211,6 +208,42 @@ class CustomDataType extends AbstractType
                 $customData = $customDef->createCustomData();
                 $customData->setData($item);
                 $customDefData->add($customData);
+            }
+        } elseif ($customDef->isFileType()) {
+            $data = $form->get('data')->getData();
+            $data = is_array($data) ? $data : ($data ? [$data] : []);
+
+            $newBlobIds = [];
+            foreach ($data as $blob) {
+                if ($blob instanceof Blob && $blob->getId()) {
+                    $newBlobIds[] = $blob->getId();
+                } else {
+                    // set null for validation
+                    $newBlobIds[] = null;
+                }
+            }
+            $existBlobIds = $customDefData
+                ->map(function (CustomDataAbstract $custom_data) {
+                    return $custom_data->getValue();
+                })
+                ->toArray()
+            ;
+
+            // remove deleted items
+            foreach ($customDefData as $customData) {
+                if (!in_array($customData->getValue(), $newBlobIds)) {
+                    $customDefData->removeElement($customData);
+                }
+            }
+
+            // add new items
+            foreach ($newBlobIds as $blobId) {
+                if (!in_array($blobId, $existBlobIds)) {
+                    $customData = $customDef->createCustomData();
+                    $customData->setValue($blobId);
+
+                    $customDefData->add($customData);
+                }
             }
         } else {
             $data = $form->get('data')->getData();
@@ -261,12 +294,16 @@ class CustomDataType extends AbstractType
      *
      * @param FormEvent $event
      */
-    public function onValidateData(FormEvent $event)
+    public function onPostSubmit(FormEvent $event)
     {
         $form    = $event->getForm();
         $options = $form->getConfig()->getOptions();
 
         if (!$form->isSubmitted()) {
+            return;
+        }
+        if ($form->get('data') && $form->get('data')->getTransformationFailure()) {
+            // don't validate if we've already got an error on data transformation
             return;
         }
 
@@ -356,6 +393,7 @@ class CustomDataType extends AbstractType
             foreach ($customDefData as $data) {
                 array_push($formFieldData, $data->getData());
             }
+
             return $formFieldData;
         }
 
@@ -364,8 +402,8 @@ class CustomDataType extends AbstractType
             $formFieldData = $customDefData->first()->getData();
             if ($customDef->isChoiceType()) {
                 $formFieldData = $customDefData
-                    ->map(function (CustomDataAbstract $custom_data) {
-                        return $custom_data->getFieldId();
+                    ->map(function (CustomDataAbstract $customData) {
+                        return $customData->getFieldId();
                     })
                     ->toArray()
                 ;
@@ -378,6 +416,13 @@ class CustomDataType extends AbstractType
                 if (!$formFieldData) {
                     $formFieldData = null;
                 }
+            } elseif ($customDef->isFileType()) {
+                $formFieldData = $customDefData
+                    ->map(function (CustomDataAbstract $customData) {
+                        return $this->em->getRepository(Blob::class)->find($customData->getValue());
+                    })
+                    ->toArray()
+                ;
             }
         }
 
@@ -430,7 +475,7 @@ class CustomDataType extends AbstractType
             }
         } else {
             // make sure we have no dupes
-            if (!$customDef->isChoiceType()) {
+            if (!$customDef->isMulti()) {
                 $customDefData = new ArrayCollection([$customDefData->first()]);
             }
         }
@@ -468,10 +513,13 @@ class CustomDataType extends AbstractType
     /**
      * @param CustomDefAbstract $def
      * @param bool              $isInline
+     * @param bool              $isAgentContext
      *
-     * @return FormField
+     * @throws \Exception
+     *
+     * @return FormField|null
      */
-    private function createCustomField(CustomDefAbstract $def, $isInline = false)
+    private function createCustomField(CustomDefAbstract $def, $isInline = false, $isAgentContext = false)
     {
         switch ($def->getType()) {
             case CustomDefAbstract::TYPE_DATA_LIST:
@@ -579,6 +627,36 @@ class CustomDataType extends AbstractType
                 ];
 
                 return new FormField(DpHiddenType::class, $options);
+
+            case CustomDefAbstract::TYPE_URL:
+                return new FormField(DpUrlType::class, [
+                    'help' => $def->getRealDescription(),
+                ]);
+
+            case CustomDefAbstract::TYPE_CURRENCY:
+                if (!$def->getOption('currency_id')) {
+                    // unable to get the field's currency, skipping
+                    return;
+                }
+
+                $currency = $this->em->getRepository(Currency::class)->find($def->getOption('currency_id'));
+                if (!$currency) {
+                    // unable to get the field's currency, skipping
+                    return;
+                }
+
+                return new FormField(MoneyType::class, [
+                    'help'     => $def->getRealDescription(),
+                    'currency' => $currency->getCurrencyCode(),
+                    'divisor'  => $currency->getDelimiter(),
+                    'grouping' => true,
+                ]);
+
+            case CustomDefAbstract::TYPE_FILE:
+                return new FormField(CustomFieldFileCollectionType::class, [
+                    'custom_field'    => $def,
+                    'agent_interface' => $isAgentContext,
+                ]);
 
             default:
                 throw new \InvalidArgumentException("Invalid field #{$def->getId()}. Cannot find handler for type \"{$def->getType()}\".");

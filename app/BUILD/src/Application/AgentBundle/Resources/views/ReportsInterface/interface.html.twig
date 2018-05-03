@@ -133,7 +133,8 @@
 			display: inline-block;
 			text-align: center;
 
-			background: url({{ asset('images/spinners/logo-loading.gif') }}) no-repeat 50% 0;
+			background: url({{ asset('images/spinners/logo-loading.svg') }}) no-repeat 50% 0;
+			background-size: 50%;
 
 			margin: 0;
 			padding: 0;
@@ -188,5 +189,6 @@
 	window.DP_INTERFACE_LOADER = 'InterfaceLoad';
 </script>
 <script	type="text/javascript" data-main="{{ asset('loader-build/requirejs-config.js') }}?v={{ app.getBuildTime() }}" src="{{ asset('bower_components/requirejs/require.js') }}"></script>
+{{ include_code_plugin('reports_res') }}
 </body>
 </html>

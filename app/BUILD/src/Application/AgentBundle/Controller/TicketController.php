@@ -1,31 +1,5 @@
 <?php
 
-/*
- * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
- * a British company located in London, England.
- *
- * All source code and content Copyright (c) 2018, DeskPRO Ltd.
- *
- * The license agreement under which this software is released
- * can be found at https://www.deskpro.com/eula/
- *
- * By using this software, you acknowledge having read the license
- * and agree to be bound thereby.
- *
- * Please note that DeskPRO is not free software. We release the full
- * source code for our software because we trust our users to pay us for
- * the huge investment in time and energy that has gone into both creating
- * this software and supporting our customers. By providing the source code
- * we preserve our customers' ability to modify, audit and learn from our
- * work. We have been developing DeskPRO since 2001, please help us make it
- * another decade.
- *
- * Like the work you see? Think you could make it better? We are always
- * looking for great developers to join us: http://www.deskpro.com/jobs/
- *
- * ~ Thanks, Everyone at Team DeskPRO
- */
-
 namespace Application\AgentBundle\Controller;
 
 use Application\AgentBundle\Form\Model\NewTicket;
@@ -84,6 +58,7 @@ use Application\DeskPRO\Tickets\TicketSplit;
 use Application\EmailBundle\SwiftMailer\Message\MessageOptionsInterface;
 use DeskPRO\Bundle\AppBundle\Entity\SnippetTranslation;
 use DeskPRO\Bundle\AppBundle\Entity\SnippetUseLog;
+use DeskPRO\Bundle\AppBundle\Entity\TicketFeedbackLink;
 use DeskPRO\Bundle\AppBundle\Serializer\Sideload\SideloadSerializationContext;
 use DeskPRO\Component\Pdf\PdfRendererInterface;
 use DeskPRO\Component\Util\ListUtils;
@@ -423,6 +398,12 @@ class TicketController extends AbstractController
         );
 
         //------------------------------
+        // Linked Feedback
+        //------------------------------
+        $feedbackRepo        = $this->em->getRepository(TicketFeedbackLink::class);
+        $ticketFeedbackLinks = $feedbackRepo->findByTicketAndJoinFeedbackData($ticket);
+
+        //------------------------------
         // Pre-load person and org
         //------------------------------
 
@@ -485,8 +466,9 @@ class TicketController extends AbstractController
             'custom_person_fields' => $custom_person_fields,
             'custom_org_fields'    => $custom_org_fields,
 
-            'show_related_content' => $show_related_content,
-            'linked_tickets'       => $linked_tickets,
+            'show_related_content'  => $show_related_content,
+            'linked_tickets'        => $linked_tickets,
+            'ticket_feedback_links' => $ticketFeedbackLinks,
 
             'ticket_messages_block' => $ticket_messages_block,
             'logs_block'            => $logs_block_info['rendered'],
@@ -856,7 +838,7 @@ class TicketController extends AbstractController
         }
 
         if ($ticket_messages) {
-            if ($is_pdf) {
+            if ($is_pdf || $is_print) {
                 $tpl = 'DeskPRO:pdf_agent:ticket-messages-batch.html.twig';
             } else {
                 $tpl = 'AgentBundle:Ticket:ticket-messages-batch.html.twig';
@@ -2172,6 +2154,7 @@ class TicketController extends AbstractController
     public function ajaxSaveActionsAction($ticket_id, Request $request)
     {
         $ticket = $this->getTicketOr404($ticket_id, 'modify');
+        $ticket->getStateChangeRecorder()->touchField('__ajax_save_actions');
 
         $tm = $this->container->getTicketManager();
         $tm->markAsManaged($ticket);
@@ -2251,10 +2234,13 @@ class TicketController extends AbstractController
 
                 $actions = $this->in->getCleanValueArray('actions', 'raw', 'raw');
 
-                if (count($actions) == 1 && isset($actions['department_id'])) {
-                    // Validation not on dep changes,
-                    // because changing dep could change validation options
-                    $new_department_id = $actions['department_id'];
+                if (count($actions) == 1 && (isset($actions['department_id']) || isset($actions['urgency']))) {
+                    // skip validation for realtime updates
+                    if (isset($actions['department_id'])) {
+                        // Validation not on dep changes,
+                        // because changing dep could change validation options
+                        $new_department_id = $actions['department_id'];
+                    }
                 } elseif ($ticket->status == 'hidden' && count(
                         $actions
                     ) == 2 && isset($actions['status']) && isset($actions['hidden_status'])
@@ -4944,6 +4930,7 @@ class TicketController extends AbstractController
                 //------------------------------
 
                 $add_followers = $this->in->getCleanValueArray('add_followers', 'uint', 'discard');
+                $add_followers = ListUtils::filterOutFalsey($add_followers);
                 if ($add_followers) {
                     $ticket->setParticipantAgentIds($add_followers);
                     $this->em->persist($ticket);
@@ -5676,6 +5663,30 @@ CSS;
         }
 
         return $this->render('AgentBundle:Ticket:link.html.twig');
+    }
+
+    public function linkExistingFeedbackOverlayAction($ticket_id)
+    {
+        try {
+            $ticket = $this->getTicketOr404($ticket_id);
+        } catch (NotFoundHttpException $e) {
+            // try to find a delete log
+            $delete_log = $this->em->getRepository(TicketDeleted::class)->findOneBy(['ticket_id' => $ticket_id]);
+            if ($delete_log) {
+                return $this->render('AgentBundle:Ticket:deleted.html.twig', ['delete_log' => $delete_log]);
+            } else {
+                throw $e;
+            }
+        }
+
+        $exludeIds = $ticket->getFeedbackLinks()->map(function ($e) {
+            return $e->getFeedback()->getId();
+        })->toArray();
+
+        return $this->render('AgentBundle:Ticket:link-feedback.html.twig', [
+            'ticket'    => $ticket,
+            'exludeIds' => $exludeIds,
+        ]);
     }
 
     public function unlinkTicketAction($ticket_id)

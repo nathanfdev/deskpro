@@ -4,16 +4,21 @@ define ['datatables', "datatables.pageResize"], () ->
       restrict: 'E'
       replace: true
       scope:
-        tableData: '@',
-        myIndex: '@',
+        tableData: '@'
+        jsCode: '@'
+        myIndex: '@'
         widgetId: '@'
         options: '@'
-        row: '@',
+        row: '@'
         col: '@'
+        loaded: '@'
 
       templateUrl: $sce.trustAsResourceUrl("ReportsInterfaceBundle:Dashboard/Widget:table_dt.html")
 
       link: (scope, element) ->
+        scope.loaded = false
+        scope.noData = false
+
         el = $(element)
         dt = null
         box = el.parent()
@@ -24,6 +29,8 @@ define ['datatables', "datatables.pageResize"], () ->
         interval = 0;
 
         initTable = (widget) ->
+          scope.loaded = true
+
           if interval?
             clearInterval(interval)
           scope.columns = widget.columns
@@ -63,11 +70,27 @@ define ['datatables', "datatables.pageResize"], () ->
         if tableData and tableData.data?
           tableData.noRedraw = true
           initTable tableData
+        else if scope.jsCode
+          try
+            eval(scope.jsCode)
+          catch e
+            console.log(e)
+
+          if promise and promise.then
+            promise.then (response) ->
+              scope.loaded = true
+              scope.noData = true
+
+              if response and response.data
+                initTable response
         else
           DashboardWidgetService
             .getWidget(conf).then (widget) =>
-              if widget and widget.data
-                initTable widget
+              scope.loaded = true
+              scope.noData = true
+
+              if widget.rendered_result and widget.rendered_result.data
+                initTable widget.rendered_result
     }
   ]
 

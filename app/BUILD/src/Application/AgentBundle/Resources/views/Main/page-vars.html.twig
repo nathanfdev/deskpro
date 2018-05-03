@@ -25,6 +25,7 @@
 	window.DP_HAS_NEW_SNIPPETS = {% if app.hasBeta('new_snippets') %}true{% else %}false{% endif %};
 	window.DP_HAS_NEW_EMAILS   = {% if app.hasBeta('email_templates') %}true{% else %}false{% endif %};
 	window.DP_HAS_NEW_REPORTS  = {% if app.hasBeta('new_reports') %}true{% else %}false{% endif %};
+	window.DP_HAS_NEW_FILTERS  = {% if app.hasBeta('new_filters') %}true{% else %}false{% endif %};
 	window.DP_HAS_FOLLOW_UP    = {% if app.hasBeta('follow_up') %}true{% else %}false{% endif %};
 	window.DP_VERSION_NUMBER   = '{{ app.getVersionName() }}';
 
@@ -69,6 +70,7 @@
 		'agent_publish.validate': {% if app.user.hasPerm('agent_publish.validate') %}true{% else %}false{% endif %},
 		'agent_tasks.use': {% if app.user.hasPerm('agent_tasks.use') %}true{% else %}false{% endif %},
 		'agent_reports.use': {% if app.user.can_reports %}true{% else %}false{% endif %},
+		'agent_reports.has_dashboards': {% if app.user.getAllReportDashboardPermissions() %}true{% else %}false{% endif %},
 		'agent_admin.use': {% if app.user.can_admin %}true{% else %}false{% endif %},
 		'chat_dep_ids': [
 			0{% for id in chat_dep_ids %},{{id}}{% endfor %}

@@ -1,31 +1,5 @@
 <?php
 
-/*
- * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
- * a British company located in London, England.
- *
- * All source code and content Copyright (c) 2018, DeskPRO Ltd.
- *
- * The license agreement under which this software is released
- * can be found at https://www.deskpro.com/eula/
- *
- * By using this software, you acknowledge having read the license
- * and agree to be bound thereby.
- *
- * Please note that DeskPRO is not free software. We release the full
- * source code for our software because we trust our users to pay us for
- * the huge investment in time and energy that has gone into both creating
- * this software and supporting our customers. By providing the source code
- * we preserve our customers' ability to modify, audit and learn from our
- * work. We have been developing DeskPRO since 2001, please help us make it
- * another decade.
- *
- * Like the work you see? Think you could make it better? We are always
- * looking for great developers to join us: http://www.deskpro.com/jobs/
- *
- * ~ Thanks, Everyone at Team DeskPRO
- */
-
 namespace DeskPRO\Bundle\ReportBundle\Reports\Renderer\Json;
 
 use DeskPRO\Bundle\ReportBundle\Reports\ResultMetadata;
@@ -55,20 +29,19 @@ class JsonGaugeRenderer extends AbstractJsonChartRenderer
 
     protected function getValue(array $rows, ResultMetadata $metadata)
     {
-        foreach ($metadata->getSelectColumns() as $column) {
-            if ($column['title'] === 'stat_value') {
-                return $this->renderCellValue($rows[0], $column, $metadata) ?: 0;
-            }
-        }
-
-        return 0;
+        return $this->getRowVal('stat_value', $rows, $metadata, 'numberraw');
     }
 
     protected function getTotalValue(array $rows, ResultMetadata $metadata)
     {
+        return $this->getRowVal('stat_total', $rows, $metadata, 'numberraw');
+    }
+
+    protected function getRowVal($name, array $rows, ResultMetadata $metadata, $useRenderer = null)
+    {
         foreach ($metadata->getSelectColumns() as $column) {
-            if ($column['title'] === 'stat_total') {
-                return $this->renderCellValue($rows[0], $column, $metadata);
+            if ($column['title'] === $name) {
+                return $this->renderCellValue($rows[0], $column, $metadata, $useRenderer);
             }
         }
 
@@ -84,11 +57,15 @@ class JsonGaugeRenderer extends AbstractJsonChartRenderer
             return;
         }
         $statValue = $this->getValue($rows, $metadata);
-        $statTotal = $this->getTotalValue($rows, $metadata);
+        $statTotal = $this->getTotalValue($rows, $metadata) ?: 100;
 
-        if ($statValue > $statTotal || (!$statTotal && $statValue > 100)) {
-            $statTotal = ceil($statValue % 100) * 100;
+        if ($statTotal && $statValue && $statValue > $statTotal) {
+            $statValue = $statTotal;
         }
+
+        $unitLeft  = $this->getRowVal('unit_left', $rows, $metadata);
+        $unitRight = $this->getRowVal('unit_left', $rows, $metadata);
+        $tipText   = $this->getRowVal('tooltip_text', $rows, $metadata);
 
         //initial output array
         $output = [
@@ -104,16 +81,19 @@ class JsonGaugeRenderer extends AbstractJsonChartRenderer
                     'gridInside'       => true,
                     'inside'           => true,
                     'radius'           => '50%',
-                    'valueInterval'    => $statTotal ? ceil($statTotal / 5) : 10,
+                    'valueInterval'    => ceil($statTotal / 5),
                     'tickColor'        => $this->randomColor(),
                     'startAngle'       => -90,
                     'endAngle'         => 90,
-                    'unit'             => $statTotal ? '' : '%',
+                    'unit'             => $unitLeft ?: $unitRight ?: '',
+                    'unitPosition'     => $unitRight ? 'right' : 'left',
                     'bandOutlineAlpha' => 0,
+                    'usePrefixes'      => true,
                     'bands'            => [
                         [
                             'color'         => $this->randomColor(),
                             'endValue'      => $statTotal ?: 100,
+                            'balloonText'   => $tipText ?: '',
                             'innerRadius'   => '105%',
                             'radius'        => '170%',
                             'gradientRatio' => [0.5, 0, -0.5],
@@ -122,6 +102,7 @@ class JsonGaugeRenderer extends AbstractJsonChartRenderer
                         [
                             'color'         => $this->randomColor(),
                             'endValue'      => $statValue,
+                            'balloonText'   => $tipText ?: '',
                             'innerRadius'   => '105%',
                             'radius'        => '170%',
                             'gradientRatio' => [0.5, 0, -0.5],
@@ -129,6 +110,12 @@ class JsonGaugeRenderer extends AbstractJsonChartRenderer
                         ],
                     ],
                 ],
+            ],
+            'balloon' => [
+                'adjustBorderColor' => true,
+                'color'             => '#000000',
+                'cornerRadius'      => 5,
+                'fillColor'         => '#FFFFFF',
             ],
             'arrows' => [
                 [
@@ -142,5 +129,10 @@ class JsonGaugeRenderer extends AbstractJsonChartRenderer
         ];
 
         return $output;
+    }
+
+    public function mergeResults(array $results, array $options)
+    {
+        return reset($results);
     }
 }

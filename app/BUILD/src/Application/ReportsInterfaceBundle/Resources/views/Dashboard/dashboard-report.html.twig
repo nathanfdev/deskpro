@@ -23,8 +23,8 @@
         <nav class="reports-control" ng-show="report.id">
             <ul>
                 <li ng-repeat="(index, var) in report.variables">
-                    {{ ng_var('var.name') }}
-                    <select ng-change="changeReportLevelVar()" style="min-width: 150px;" ui-select2 ng-model="report.variables[index].value" ng-if="var.type != 'dates'" ng-disabled="(var.name == 'agent' || var.name == 'agent_team') && !canViewAllAgents()">
+                    <span>{{ ng_var('var.name') }}</span>
+                    <select ng-change="changeReportLevelVar()" style="min-width: 150px;" ui-select2 ng-model="report.variables[index].value" ng-if="var.type != 'dates'" ng-disabled="(var.type == 'values' && (var.field_type == 'agent' || var.field_type == 'agent_team')) && !canViewAllAgents() && dashboard.is_agent && !me.person.can_admin">
                         <option ng-if="key != 'from_report_value'" ng-repeat="(key, param) in groupParams[var.type][var.field_type]" ng-value="key" ng-selected="key === report.variables[index].value">
                             {{ ng_var('param[0]') }}
                         </option>
@@ -70,38 +70,38 @@
                         </div>
                         <h3 class="ng-binding">{{ ng_var('widget.title') }}</h3>
                     </div>
-                    <div class="box stat-box" ng-if="widget.rendered_result === null">
-                        <div class="stat">
-                            <div class="stat-value no-data">no data</div>
-                        </div>
-                    </div>
-                    <div class="box" ng-if="widget.rendered_result !== null && widget.widget_type=='graph'">
+                    <div class="box" ng-if="(widget.rendered_result !== null || widget.js_code) && widget.widget_type=='graph'">
                         <dashboard-amcharts
                             report-level-vars={{ ng_var('report.variables') }}
                             title="{{ ng_var('widget.title') }}"
-                            widget-id = "{{ ng_var('widget.id') }}"
-                            chart-data = "{{ ng_var('widget.rendered_result') }}"
+                            widget-id="{{ ng_var('widget.id') }}"
+                            chart-data="{{ ng_var('widget.rendered_result') }}"
                             widget-type="{{ ng_var('widget.widget_type') }}"
                             chart-type="{{ ng_var('widget.type') }}"
                             options="{{ ng_var('widget.options') }}"
+                            js-code="{{ ng_var('widget.js_code') }}"
                         />
                     </div>
-                    <div class="box" ng-if="widget.rendered_result !== null && widget.type=='table'">
+                    <div class="box" ng-if="(widget.rendered_result !== null || widget.js_code) && widget.type=='table'">
                         <dashboard-table
                             title="{{ ng_var('widget.title') }}"
                             table-data="{{ ng_var('widget.rendered_result') }}"
                             widget-id = "{{ ng_var('widget.id') }}"
                             wtype="{{ ng_var('widget.widget_type') }}"
                             options="{{ ng_var('widget.options') }}"
+                            js-code="{{ ng_var('widget.js_code') }}"
                         />
                     </div>
-                    <div class="box stat-box" ng-if="widget.rendered_result !== null && widget.type=='simple_stat'">
+                    <div class="box stat-box" ng-if="(widget.rendered_result !== null || widget.js_code) && widget.type=='simple_stat'">
                         <dashboard-stat
                             my-index="{{ ng_var('$index') }}"
                             title="{{ ng_var('widget.title') }}"
                             value="{{ ng_var('widget.rendered_result.value') }}"
                             description="{{ ng_var('widget.rendered_result.description') }}"
+                            data="{{ ng_var('widget.rendered_result') }}"
+                            options="{{ ng_var('widget.options') }}"
                             widget-id = "{{ ng_var('widget.id') }}"
+                            js-code="{{ ng_var('widget.js_code') }}"
                         />
                     </div>
                 </div>

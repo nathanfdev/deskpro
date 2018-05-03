@@ -1,31 +1,52 @@
-{% set field_rendered %}
-	{% block field_rendered %}
-		{% if field_handler_name == 'Date' or field_handler_name == 'DateTime' %}
-			{{ data.value|date('full') }}
-		{% elseif field_handler_name == 'Toggle' %}
-			{% if data.value == 1 %}
-				{{ field_def.getOption('label_text')|default('Checked')|raw }}
-			{% else %}
-				None
-			{% endif %}
-		{% else %}
-			{{ data.value|raw }}
-		{% endif %}
-	{% endblock %}
-{% endset %}
 {% block content %}
 	<div class="{{field_type}}_{{field_def.id}} {{field_handler_name}} customfield rendered dont-break-out" id="{{elId}}_rendered_wrap">
-		{% if nl2br is defined and nl2br %}
-			{% set propValue = field_rendered|escape|nl2br %}
-		{% else %}
-			{% set propValue = field_rendered|escape %}
-		{% endif %}
+        {% if field_handler_name == 'File' %}
+			{% for file in data.value %}
+				<div>
+                    <a data-blob-id="{{ file.id }}" href="{{ file.downloadUrl }}{{ file.is_image ? '' : '?dl=1' }}" target="_blank">
+                        {{ file.filename }}
+                        ({{ file.readableFilesize }})
+                    </a>
+                </div>
+			{% endfor %}
+        {% else %}
+            {% set field_rendered %}
+                {% block field_rendered %}
+                    {% if field_handler_name == 'Date' or field_handler_name == 'DateTime' %}
+                        {{ data.value|date('full') }}
+                    {% elseif field_handler_name == 'Toggle' %}
+                        {% if data.value == 1 %}
+                            {{ field_def.getOption('label_text')|default('Checked')|raw }}
+                        {% else %}
+                            {{ field_def.getOption('unchecked_text')|default('None')|raw }}
+                        {% endif %}
+                    {% else %}
+                        {{ data.value|raw }}
+                    {% endif %}
+                {% endblock %}
+            {% endset %}
 
-		{% if field_def.getOption('clickable_links') %}
-			{{ propValue|safe_link_urls_html }}
-		{% else %}
-			{{ propValue|raw }}
-		{% endif %}
+			{% if nl2br is defined and nl2br %}
+				{% set propValue = field_rendered|escape|nl2br %}
+			{% else %}
+				{% set propValue = field_rendered|escape %}
+			{% endif %}
+
+			{% if field_def.getOption('clickable_links') %}
+				{{ propValue|safe_link_urls_html }}
+			{% elseif field_handler_name == 'Url' %}
+				{% if propValue %}
+					<a href="{{ propValue }}" target="_blank">{{ propValue }}</a>
+				{% endif %}
+			{% elseif field_handler_name == 'Currency' %}
+				{% set currency = get_currency(field_def.getOption('currency_id')) %}
+				{% if currency %}
+					{{ currency.getSymbol() }} {{ (data.value / currency.getDelimiter()) | number_format(currency.getDecimalPlaces(), '.', ',') }}
+				{% endif %}
+			{% else %}
+				{{ propValue|raw }}
+			{% endif %}
+        {% endif %}
 
 		{{ field_def.getHtmlOption()|raw }}
 	</div>

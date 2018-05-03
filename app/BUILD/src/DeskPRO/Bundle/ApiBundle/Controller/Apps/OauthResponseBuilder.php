@@ -1,6 +1,7 @@
 <?php namespace DeskPRO\Bundle\ApiBundle\Controller\Apps;
 
 use League\OAuth2\Client\Token\AccessToken;
+use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpFoundation\Request;
 
@@ -21,10 +22,11 @@ class OauthResponseBuilder
     /** @var array */
     private $messageProps = [];
 
-    private $callbackUrl;
-
     /** @var string */
     private $oauthVersion;
+
+    /** @var int  */
+    private $httpStatus;
 
     /**
      * @param bool $buildErrorResponse
@@ -34,6 +36,7 @@ class OauthResponseBuilder
     {
         $this->buildErrorResponse = $buildErrorResponse;
         $this->oauthVersion = $oauthVersion;
+        $this->httpStatus = $buildErrorResponse ? 400 : 200;
     }
 
     /**
@@ -73,56 +76,40 @@ class OauthResponseBuilder
     public function withErrorType($message)
     {
         $this->messageProps['error'] = $message;
-        return $this;
-    }
 
-    /**
-     * @param string $url
-     * @return OauthResponseBuilder
-     */
-    public function withRedirectUrl($url)
-    {
-        $this->callbackUrl = $url;
-        return $this;
-    }
-
-    /**
-     * @param string $callbackType
-     * @return Response
-     * @throws \DomainException
-     */
-    public function build($callbackType)
-    {
-        switch ($callbackType) {
-            case 'postMessage' :
-                return $this->buildPostMessage();
+        if ($message === 'Connection not found') {
+            $this->httpStatus = 404;
         }
 
-        throw new \DomainException(sprintf('unknown callback type: %s', $callbackType));
+        return $this;
+    }
+
+    /**
+     * @return JsonResponse
+     */
+    public function buildJSON()
+    {
+        return new JsonResponse($this->messageProps, $this->httpStatus);
     }
 
     /**
      * @return Response
      */
-    public function buildPostMessage()
+    public function buildPostMessage($callbackUrl)
     {
-        $templateVars = [
-            'message' => json_encode([
-                'type' => 'oauth-proxy-callback',
-                'status' => $this->buildErrorResponse ? 'error' : 'success',
-                'oauthVersion' => $this->oauthVersion,
-                'body' => $this->messageProps
-            ]),
-            'windowUrl' => $this->callbackUrl
-        ];
-
-
+        $message = json_encode([
+            'type' => 'oauth-proxy-callback',
+            'status' => $this->buildErrorResponse ? 'error' : 'success',
+            'http_status' => $this->httpStatus,
+            'oauthVersion' => $this->oauthVersion,
+            'body' => $this->messageProps
+        ]);
         $content = <<<EOT
 <html>
 <body>
 <script>
 if (window.opener != null && !window.opener.closed) {
-    window.opener.postMessage({$templateVars['message']}, '{$templateVars['windowUrl']}')
+    window.opener.postMessage({$message}, '{$callbackUrl}')
 }
 window.close();
 </script>
@@ -130,9 +117,8 @@ window.close();
 </html>
 
 EOT;
-
-        $status = $this->buildErrorResponse ? 400 : 200;
+        
         $headers = [ 'Content-Type' =>  'text/html; charset=UTF8' ];
-        return new Response($content, $status, $headers);
+        return new Response($content, $this->httpStatus, $headers);
     }
 }

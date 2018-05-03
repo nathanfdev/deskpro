@@ -10,9 +10,16 @@ define [], () -> [
     $modal
   ) ->
 
+    $scope.hasAccessToBuiltIn = $scope.hasAccessToCustom = false
+
+    $scope.canUseReports = () ->
+      return window.DESKPRO_PERSON_PERMS['agent_reports.use'];
+
     $scope.getDashboardList = (firstLoad = false) ->
       DashboardsInfo.getDashboardList().then((dbs) ->
         $scope.dashboards = dbs
+        $scope.hasAccessToBuiltIn = dbs.filter((db) => db.is_default).length >= 1
+        $scope.hasAccessToCustom = dbs.filter((db) => !db.is_default).length >= 1
 
         if(firstLoad && $state.includes('reports.dashboards'))
           db = dbs[0]

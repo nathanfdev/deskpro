@@ -1,38 +1,15 @@
 <?php
 
-/*
- * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
- * a British company located in London, England.
- *
- * All source code and content Copyright (c) 2017, DeskPRO Ltd.
- *
- * The license agreement under which this software is released
- * can be found at https://www.deskpro.com/eula/
- *
- * By using this software, you acknowledge having read the license
- * and agree to be bound thereby.
- *
- * Please note that DeskPRO is not free software. We release the full
- * source code for our software because we trust our users to pay us for
- * the huge investment in time and energy that has gone into both creating
- * this software and supporting our customers. By providing the source code
- * we preserve our customers' ability to modify, audit and learn from our
- * work. We have been developing DeskPRO since 2001, please help us make it
- * another decade.
- *
- * Like the work you see? Think you could make it better? We are always
- * looking for great developers to join us: http://www.deskpro.com/jobs/
- *
- * ~ Thanks, Everyone at Team DeskPRO
- */
-
 namespace Application\DeskPRO\CustomFields;
 
 use Application\DeskPRO\CustomFields\Handler\HandlerAbstract;
+use Application\DeskPRO\Entity\Blob;
 use Application\DeskPRO\Entity\CustomDataAbstract;
 use Application\DeskPRO\Entity\CustomDefAbstract;
 use Application\DeskPRO\Entity\Person;
+use Application\DeskPRO\Entity\Ticket;
 use DeskPRO\Bundle\AppBundle\ObjectAlias;
+use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\EntityManager;
 use Doctrine\ORM\PersistentCollection;
 
@@ -200,7 +177,6 @@ class FieldManager
             $all_fields = $this->em->getRepository($this->options->get('entity_name'))->getEnabledFields();
 
             foreach ($all_fields as $f) {
-
                 $this->real_all_fields[$f->getId()] = $f;
 
                 if (!$f->getParentId()) {
@@ -243,6 +219,18 @@ class FieldManager
         $this->getFields();
 
         return $this->real_fields;
+    }
+
+    /**
+     * Get all fields.
+     *
+     * @return array
+     */
+    public function getAllFields()
+    {
+        $this->getFields();
+
+        return $this->all_fields;
     }
 
     /**
@@ -289,26 +277,22 @@ class FieldManager
     {
         $this->getFields();
 
+        // lookup by id
         if (isset($this->fields[$field_id])) {
             return $this->fields[$field_id];
         }
 
-        $foundField = null;
+        // lookup by alias
+        /** @var CustomDefAbstract $field */
         foreach ($this->fields as $field) {
-            foreach (ObjectAlias\Converters::toMergedList($field->getAliases()) as $name) {
-                if ($name === $field_id) {
-                    // it is possible to have two fields with the same unqualified alias, in this case
-                    // we can not resolve this ambiguity and we return null
-                    // TODO exception would be better
-                    if ($foundField) {
-                        return null;
-                    }
-                    $foundField = $field;
+            foreach ($field->getAliases() as $alias) {
+                if ($alias->getQualifiedName() === $field_id) {
+                    return $field;
                 }
             }
         }
 
-        return $foundField;
+        return;
     }
 
     /**
@@ -518,19 +502,23 @@ class FieldManager
      * easy for simple fields like text or textarea, but we need this method for
      * complex fields that have multiple levels, like a choice.
      *
-     * @param $field_datas
+     * @param $fieldDatas
      *
      * @return array
      */
-    public function createFieldDataFromArray($field_datas)
+    public function createFieldDataFromArray($fieldDatas)
     {
         // Create a map of keys
-        $data_keys = [];
-        foreach ($field_datas as $k => $v) {
-            $data_keys[$v->field->getId()] = $k;
+        $dataKeys = [];
+        foreach ($fieldDatas as $k => $v) {
+            if ($v->getRootField()->isFileType()) {
+                $dataKeys[$v->field->getId()][] = $k;
+            } else {
+                $dataKeys[$v->field->getId()] = $k;
+            }
         }
 
-        $data = $this->_createDataHierarchy($data_keys, $field_datas, $this->getFields());
+        $data = $this->_createDataHierarchy($dataKeys, $fieldDatas, $this->getFields());
 
         return $data;
     }
@@ -543,7 +531,20 @@ class FieldManager
             $item = ['value' => null, 'children' => null];
 
             if (isset($data_keys[$def['id']])) {
-                $item['value'] = $field_datas[$data_keys[$def['id']]]->getData();
+                if ($def->isFileType()) {
+                    foreach ($data_keys[$def['id']] as $valKey) {
+                        $blobId = $field_datas[$valKey]->getValue();
+                        if ($blobId) {
+                            $blob = $this->em->getRepository(Blob::class)->find($blobId);
+                            if ($blob) {
+                                $item['value'][] = $blob;
+                            }
+                        }
+                    }
+                } else {
+                    $item['value'] = $field_datas[$data_keys[$def['id']]]->getData();
+                }
+
                 $item['title'] = $def['title'];
             }
 
@@ -578,11 +579,12 @@ class FieldManager
     }
 
     /**
-     * @param array $form
+     * @param array             $form
      * @param CustomDefAbstract $fieldDef
+     *
      * @return bool
      */
-    private function fieldIsPresent( array $form, CustomDefAbstract $fieldDef)
+    private function fieldIsPresent(array $form, CustomDefAbstract $fieldDef)
     {
         if (array_key_exists('field_'.$fieldDef->getId(), $form)) {
             return true;
@@ -597,21 +599,21 @@ class FieldManager
         return false;
     }
 
-
     /**
-     * Returns a list of the field names which can resolve to more than one field
+     * Returns a list of the field names which can resolve to more than one field.
      *
-     * @param array $form
+     * @param array               $form
      * @param CustomDefAbstract[] $fieldDefs
+     *
      * @return array|int[]
      */
-    private function findAmbiguousFieldReferences( array $form, $fieldDefs)
+    private function findAmbiguousFieldReferences(array $form, $fieldDefs)
     {
         $refs = [];
 
         foreach ($fieldDefs as $def) {
             foreach (ObjectAlias\Converters::toMergedList($def->getAliases()) as $name) {
-                $counter = array_key_exists($name, $refs) ? $refs[$name] : 0;
+                $counter     = array_key_exists($name, $refs) ? $refs[$name] : 0;
                 $refs[$name] = $counter + 1;
             }
         }
@@ -727,12 +729,12 @@ class FieldManager
 
     /**
      * @param                                               $object
-     * @param \Application\DeskPRO\Entity\CustomDefAbstract $field_def
+     * @param \Application\DeskPRO\Entity\CustomDefAbstract $fieldDef
      * @param array                                         $in_data
      *
      * @return array
      */
-    public function setCustomDataOnObject($object, CustomDefAbstract $field_def, array $in_data)
+    public function setCustomDataOnObject($object, CustomDefAbstract $fieldDef, array $in_data)
     {
         if (!$object) {
             return;
@@ -745,10 +747,10 @@ class FieldManager
         // Ex: Choice fields we save under the actual choice option
         $set_field = null;
 
-        if ($field_def->getId() == $set_field_id) {
-            $set_field = $field_def;
-        } elseif (isset($this->field_to_children[$field_def->getId()])) {
-            foreach ($this->field_to_children[$field_def->getId()] as $c) {
+        if ($fieldDef->getId() == $set_field_id) {
+            $set_field = $fieldDef;
+        } elseif (isset($this->field_to_children[$fieldDef->getId()])) {
+            foreach ($this->field_to_children[$fieldDef->getId()] as $c) {
                 if ($c->getId() == $set_field_id) {
                     $set_field = $c;
                     break;
@@ -758,30 +760,53 @@ class FieldManager
 
         // No value
         if ($value === null || $set_field === null) {
-            $this->removeCustomDataOnObject($object, $field_def);
+            $this->removeCustomDataOnObject($object, $fieldDef);
 
             return;
         }
 
-        $old_custom_data = $object->getCustomDataForField($set_field);
-
-        $custom_data              = $old_custom_data ?: $this->createDataClass();
-        $custom_data->field       = $set_field;
-        $custom_data->root_field  = $field_def;
-        $custom_data[$value_type] = $value;
-
-        if (!$old_custom_data) {
-            $object->addCustomData($custom_data);
-        }
-
-        // remove dupes
-        foreach ($object->getCustomData() as $existCustomData) {
-            if ($existCustomData->getField() === $set_field && $existCustomData !== $custom_data) {
-                $object->getCustomData()->removeElement($existCustomData);
+        if ($fieldDef->isFileType() || $fieldDef->isDataListType()) {
+            /** @var CustomDataAbstract[]|ArrayCollection $customData */
+            $customData = $object->getCustomData();
+            $existItems = [];
+            foreach ($customData as $customDatum) {
+                if (!in_array($customDatum->getData(), $value)) {
+                    $customData->removeElement($customDatum);
+                } else {
+                    $existItems[] = $customDatum->getData();
+                }
             }
-        }
+            foreach ($value as $item) {
+                if (!in_array($item, $existItems)) {
+                    $customDatum = $fieldDef->createCustomData();
+                    $customDatum->setData($item);
 
-        return $custom_data;
+                    $object->addCustomData($customDatum);
+                }
+            }
+
+            return $customData;
+        } else {
+            $old_custom_data = $object->getCustomDataForField($set_field);
+
+            $customDatum              = $old_custom_data ?: $this->createDataClass();
+            $customDatum->field       = $set_field;
+            $customDatum->root_field  = $fieldDef;
+            $customDatum[$value_type] = $value;
+
+            if (!$old_custom_data) {
+                $object->addCustomData($customDatum);
+            }
+
+            // remove dupes
+            foreach ($object->getCustomData() as $existCustomData) {
+                if ($existCustomData->getField() === $set_field && $existCustomData !== $customDatum) {
+                    $object->getCustomData()->removeElement($existCustomData);
+                }
+            }
+
+            return $customDatum;
+        }
     }
 
     /**
@@ -801,6 +826,9 @@ class FieldManager
 
         foreach ($object->$prop as $v) {
             if ($v->field->getId() == $field_def->getId() || ($v->field->parent && $v->field->parent->getId() == $field_def->getId())) {
+                if ($object instanceof Ticket) {
+                    $object->getStateChangeRecorder()->touchField('custom_data');
+                }
                 $object->custom_data->removeElement($v);
             }
         }
@@ -812,6 +840,7 @@ class FieldManager
      * Mainly exists because it's not clear when the entity manager is flushed.
      *
      * @todo investigate if can be removed
+     *
      * @param                                               $object
      * @param \Application\DeskPRO\Entity\CustomDefAbstract $fieldDefinition
      * @param \Closure                                      $customDataFilter
@@ -824,7 +853,7 @@ class FieldManager
     }
 
     /**
-     * Removes only a subset of the values of a field. Mostly used for DataList fields
+     * Removes only a subset of the values of a field. Mostly used for DataList fields.
      *
      * @param                                               $object
      * @param \Application\DeskPRO\Entity\CustomDefAbstract $fieldDefinition

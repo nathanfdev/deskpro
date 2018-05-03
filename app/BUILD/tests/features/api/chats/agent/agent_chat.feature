@@ -49,12 +49,12 @@ Feature: /agent_chats endpoint
     And the header "Location" should be equal to "/api/v2/agent_chats/{agent-agent-chat}"
 
   Scenario: I try to create chat with user
-    Given a user with "chewie@falcon.spaceship" email exists
+    Given a user with "chewieuser@falcon.spaceship" email exists
     When I send a POST request to "api/v2/agent_chats" with body:
     """
 {
   "type": "agent",
-  "participant": ~chewie@falcon.spaceship~
+  "participant": ~chewieuser@falcon.spaceship~
 }
     """
     Then the response should be in JSON

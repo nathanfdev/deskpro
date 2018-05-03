@@ -1,8 +1,8 @@
 import PropTypes from 'prop-types';
 import React from 'react';
+import { FormattedMessage } from 'react-intl';
 import moment from 'moment';
 import Immutable from 'immutable';
-import agentPhrases from 'DeskPRO/Bundle/AgentBundle/AgentPhrases';
 import MediaControls from 'DeskPRO/Component/MediaControls';
 import Duration from 'DeskPRO/Component/Duration';
 import SectionHeader from '../../../../Common/Components/SectionHeader';
@@ -27,6 +27,7 @@ class CallLogView extends React.Component {
     const fromNumber = call.getIn(['data', 'From']);
     const toNumber = call.getIn(['data', 'To']);
     const isInbound = call.get('type') === 'inbound';
+    const rawData = call.get('data').toJS();
 
     return (
       <div className="page">
@@ -56,7 +57,7 @@ class CallLogView extends React.Component {
             <tr>
               <th>Callee(s)</th>
               <td>
-                {call.get('participants').map((participant, index) =>
+                {call.get('participants').toArray().map((participant, index) =>
                   <PersonName id={participant.get('person')} className="list-item" key={index} />
                 )}
               </td>
@@ -110,10 +111,10 @@ class CallLogView extends React.Component {
               <td>
                 <table>
                   <tbody>
-                    {call.get('data').map((value, key) =>
+                    {Object.keys(rawData).map(key =>
                       <tr key={key}>
                         <th width="140">{key}</th>
-                        <td>{value}</td>
+                        <td>{rawData[key]}</td>
                       </tr>
                     )}
                   </tbody>
@@ -126,7 +127,7 @@ class CallLogView extends React.Component {
               <td>
                 <table>
                   <tbody>
-                    {call.get('phone_call_logs').map((log, index) => {
+                    {call.get('phone_call_logs').toArray().map((log, index) => {
                       const person = people.get(log.get('person')) || Immutable.fromJS({});
                       const logDate  = moment(log.get('date_created'));
                       const callDate = moment(call.get('date_created'));
@@ -138,14 +139,18 @@ class CallLogView extends React.Component {
                             [<Duration value={duration} />]
                           </td>
                           <td>
-                            {agentPhrases.get(`agent.voice.${log.get('action_type').replace(/\.+/, '_')}`, {
-                              '{number}':       call.get('external_number'),
-                              '{to_number}':    number.get('nickname') || number.get('number'),
-                              '{person_name}':  person.get('first_name') || '',
-                              '{person_email}': person.get('primary_email') || '',
-                              '{key}':          log.getIn(['details', 'Digits']) || '',
-                              '{target_name}':  log.getIn(['details', 'target_name']) || 'Unknown'
-                            })}
+                            <FormattedMessage
+                              id={`agent.voice.${log.get('action_type').replace(/\.+/, '_')}`}
+                              values={{
+                                number:           call.get('external_number'),
+                                to_number:        number.get('nickname') || number.get('number'),
+                                person_name:      person.get('first_name') || '',
+                                person_email:     person.get('primary_email') || '',
+                                key:              log.getIn(['details', 'Digits']) || '',
+                                target_name:      log.getIn(['details', 'target_name']) || 'Unknown',
+                                forwarded_number: log.getIn(['details', 'forwarded_number']) || ''
+                              }}
+                            />
                           </td>
                         </tr>
                       );

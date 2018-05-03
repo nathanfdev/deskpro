@@ -1,4 +1,3 @@
-@new
 Feature: /tickets endpoint
   Check list filters
 
@@ -247,11 +246,13 @@ Feature: /tickets endpoint
     And the object "t3" has "f2" custom data set to "text"
 
     When I send a GET request to "/api/v2/tickets?ticket_field.{f1}=text&order_dir=asc"
-    Then the JSON node "data" should have 2 elements
-    And the JSON node "data[0].id" should be equal to "{t1}"
-    And the JSON node "data[1].id" should be equal to "{t2}"
+    Then the JSON node "data" should have 0 elements
 
-    When I send a GET request to "/api/v2/tickets?ticket_field.{f1}=some&order_dir=asc"
+    When I send a GET request to "/api/v2/tickets?ticket_field.{f2}=text&order_dir=asc"
+    Then the JSON node "data" should have 1 elements
+    And the JSON node "data[0].id" should be equal to "{t3}"
+
+    When I send a GET request to "/api/v2/tickets?ticket_field.{f1}=some data&order_dir=asc"
     Then the JSON node "data" should have 1 element
     And the JSON node "data[0].id" should be equal to "{t3}"
 

@@ -1,31 +1,5 @@
 <?php
 
-/*
- * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
- * a British company located in London, England.
- *
- * All source code and content Copyright (c) 2017, DeskPRO Ltd.
- *
- * The license agreement under which this software is released
- * can be found at https://www.deskpro.com/eula/
- *
- * By using this software, you acknowledge having read the license
- * and agree to be bound thereby.
- *
- * Please note that DeskPRO is not free software. We release the full
- * source code for our software because we trust our users to pay us for
- * the huge investment in time and energy that has gone into both creating
- * this software and supporting our customers. By providing the source code
- * we preserve our customers' ability to modify, audit and learn from our
- * work. We have been developing DeskPRO since 2001, please help us make it
- * another decade.
- *
- * Like the work you see? Think you could make it better? We are always
- * looking for great developers to join us: http://www.deskpro.com/jobs/
- *
- * ~ Thanks, Everyone at Team DeskPRO
- */
-
 /**
  * DeskPRO.
  */
@@ -52,6 +26,7 @@ class PersonSearch extends SearcherAbstract
     // these term names.
 
     const TERM_ID                   = 'person_id';
+    const TERM_RANGE_ID             = 'person_range_id';
     const TERM_ORGANIZATION         = 'person_organization';
     const TERM_ORGANIZATION_NAME    = 'person_organization_name';
     const TERM_ORGANIZATION_MANAGER = 'person_organization_manager';
@@ -317,6 +292,7 @@ class PersonSearch extends SearcherAbstract
 
                 switch ($term) {
                     case self::TERM_ID:
+                    case self::TERM_RANGE_ID:
                         // One specific id
                         if (isset($choice['person_id'])) {
                             switch ($op) {
@@ -404,7 +380,7 @@ class PersonSearch extends SearcherAbstract
 
                         // Some groups should be processed differently
                         $specialGroupsWhere = '';
-                        $registeredGroupId = $this->extractRegisteredUsergroupId($choice);
+                        $registeredGroupId  = $this->extractRegisteredUsergroupId($choice);
                         if ($registeredGroupId) {
                             $specialGroupsWhere = $this->_choiceMatch("$people_table.is_user", self::OP_IS, 1);
                             if (!$choice) {
@@ -455,7 +431,7 @@ class PersonSearch extends SearcherAbstract
 
                         if ($specialGroupsWhere) {
                             $currWhere = array_pop($wheres);
-                            $wheres[] = sprintf("(%s) OR (%s)", $specialGroupsWhere, $currWhere);
+                            $wheres[]  = sprintf('(%s) OR (%s)', $specialGroupsWhere, $currWhere);
                         }
 
                         $this->mode = self::MODE_ANY;
@@ -778,11 +754,17 @@ class PersonSearch extends SearcherAbstract
                                             }
                                         }
                                         break;
-                                    case 'not_isset':
+                                    case self::OP_NOT_ISSET:
                                         $wheres[] = "$field IS NULL";
                                         break;
-                                    case 'isset':
+                                    case self::OP_ISSET:
                                         $wheres[] = "$field IS NOT NULL";
+                                        break;
+                                    case self::OP_EMPTY:
+                                        $wheres[] = "$field IS NULL OR $field = ''";
+                                        break;
+                                    case self::OP_NOT_EMPTY:
+                                        $wheres[] = "$field != ''";
                                         break;
                                 }
                                 break;
@@ -844,14 +826,14 @@ class PersonSearch extends SearcherAbstract
                                             $wheres[] = "custom_data_person_$join_id.id IS NULL";
                                         }
                                         break;
-                                    case 'not_isset':
+                                    case self::OP_NOT_ISSET:
                                         $joins[] = [
                                             'custom_data_person',
                                             "LEFT JOIN custom_data_person AS custom_data_person_$join_id ON (custom_data_person_$join_id.person_id = people.id AND custom_data_person_$join_id.root_field_id = {$field_def->id})",
                                         ];
                                         $wheres[] = "custom_data_person_$join_id.id IS NULL";
                                         break;
-                                    case 'isset':
+                                    case self::OP_ISSET:
                                         $joins[] = [
                                             'custom_data_person',
                                             "LEFT JOIN custom_data_person AS custom_data_person_$join_id ON (custom_data_person_$join_id.person_id = people.id AND custom_data_person_$join_id.root_field_id = {$field_def->id})",
@@ -933,9 +915,10 @@ class PersonSearch extends SearcherAbstract
     }
 
     /**
-     * Extract and return Id of User Group 'Registered'
+     * Extract and return Id of User Group 'Registered'.
      *
      * @param array $usergroupIds
+     *
      * @return int|false
      */
     protected function extractRegisteredUsergroupId(&$usergroupIds)
@@ -965,6 +948,7 @@ class PersonSearch extends SearcherAbstract
             switch ($term) {
 
                 case self::TERM_ID:
+                case self::TERM_RANGE_ID:
                     // One specific id
                     if (isset($choice['person_id'])) {
                         switch ($op) {

@@ -1,36 +1,8 @@
 <?php
 
-/*
- * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
- * a British company located in London, England.
- *
- * All source code and content Copyright (c) 2017, DeskPRO Ltd.
- *
- * The license agreement under which this software is released
- * can be found at https://www.deskpro.com/eula/
- *
- * By using this software, you acknowledge having read the license
- * and agree to be bound thereby.
- *
- * Please note that DeskPRO is not free software. We release the full
- * source code for our software because we trust our users to pay us for
- * the huge investment in time and energy that has gone into both creating
- * this software and supporting our customers. By providing the source code
- * we preserve our customers' ability to modify, audit and learn from our
- * work. We have been developing DeskPRO since 2001, please help us make it
- * another decade.
- *
- * Like the work you see? Think you could make it better? We are always
- * looking for great developers to join us: http://www.deskpro.com/jobs/
- *
- * ~ Thanks, Everyone at Team DeskPRO
- */
-
-/**
- * DeskPRO.
- */
-
 namespace DeskPRO\Bundle\ReportBundle\Dpql2\Plugin\Hierarchy;
+
+use DeskPRO\Bundle\ReportBundle\Reports\ResultMetadata;
 
 /**
  * Class HierarchyDepth.
@@ -38,13 +10,14 @@ namespace DeskPRO\Bundle\ReportBundle\Dpql2\Plugin\Hierarchy;
 class HierarchyDepth
 {
     /**
-     * @param int   $min
-     * @param int   $max
-     * @param array $results
+     * @param int            $min
+     * @param int            $max
+     * @param array          $results
+     * @param ResultMetadata $metadata
      *
      * @return array
      */
-    public static function limitTo($min, $max, array $results)
+    public static function limitTo($min, $max, array $results, ResultMetadata $metadata, $rollupMode = HierarchyPlugin::ROLLUP_MODE_SUM)
     {
         // Collapse titles
         if ($min !== 0) {
@@ -67,18 +40,160 @@ class HierarchyDepth
                     }
                 }
             }
+            unset($result);
         }
 
         // Filter out all with depth out of [$min, $max] range
-        $results = array_filter($results, function ($result) use ($min, $max) {
-            return ($result['hierarchy_depth'] >= $min) && ($result['hierarchy_depth'] <= $max);
+        $results = array_filter($results, function ($result) use ($min) {
+            return $result['hierarchy_depth'] >= $min;
+        });
+
+        $groupColumns = $metadata->getGroupYColumns();
+        $groupColumn  = $groupColumns[0];
+
+        foreach ($results as &$result) {
+            // try to merge children
+            if ($result['hierarchy_depth'] > $max) {
+                $result[$groupColumn['resultId'] - 1] = $result['hierarchy_root_title'];
+            }
+        }
+        unset($result);
+
+        $mergeResults = $results;
+
+        // populate root nodes with actual group field values
+        // if we have group columns like IF('', '', '') then we can't get such data for missing root nodes
+        // and we need to iterate the children nodes to get the all possible group values
+
+        // e. g. IF(UNIX_TIMESTAMP(tickets.date_resolved) <= tickets.custom_data[target_complete_date], 'On Time', 'Overdue') AS 'Status'
+
+        // and we got data like:
+
+        //      root node, '-'
+        //         -- child 1, 'On Time'
+        //         -- child 2, 'Overdue'
+
+        // so we replace it to:
+
+        //      root node, 'On Time'
+        //      root node, 'Overdue'
+        //         -- child 1, 'On Time'
+        //         -- child 2, 'Overdue'
+        $uniqueHashes = [];
+        foreach ($results as $i => $result) {
+            if ($result['hierarchy_depth'] > $max) {
+                continue;
+            }
+
+            foreach ($mergeResults as $mergeResult) {
+                if ($mergeResult['hierarchy_depth'] <= $max || $mergeResult['hierarchy_root_title'] !== $result['hierarchy_root_title']) {
+                    continue;
+                }
+
+                $newResult = $result;
+
+                foreach ($groupColumns as $groupColumn) {
+                    $expected = $result[$groupColumn['groupResultId'] - 1];
+                    $actual   = $mergeResult[$groupColumn['groupResultId'] - 1];
+
+                    if ($expected === '-' && $actual !== $expected) {
+                        // replace group column
+                        $newResult[$groupColumn['groupResultId'] - 1] = $actual;
+                    }
+
+                    // replace select column
+                    if (isset($groupColumn['resultId']) && $result[$groupColumn['resultId'] - 1] === '-') {
+                        $newResult[$groupColumn['resultId'] - 1] = $mergeResult[$groupColumn['resultId'] - 1];
+                    }
+                }
+
+                $hash = md5(serialize($newResult));
+                if (!isset($uniqueHashes[$hash])) {
+                    $results[]           = $newResult;
+                    $uniqueHashes[$hash] = true;
+                }
+            }
+        }
+
+        foreach ($results as $i => $result) {
+            if ($result['hierarchy_depth'] > $max) {
+                continue;
+            }
+
+            foreach ($groupColumns as $groupColumn) {
+                if ($result[$groupColumn['groupResultId'] - 1] === '-') {
+                    unset($results[$i]);
+                    break;
+                }
+            }
+        }
+
+        // merge countable select columns
+        // sum countable fields from children nodes, e.g.
+
+        //      root node, 'On Time', 0
+        //      root node, 'Overdue', 0
+        //         -- child 1, 'On Time', 10
+        //         -- child 2, 'On Time', 15
+        //         -- child 3, 'Overdue', 20
+
+        // so we will get:
+
+        //      root node, 'On Time', 25
+        //      root node, 'Overdue', 20
+
+        $groupColumns = $metadata->getGroupYColumns();
+        array_shift($groupColumns); // unshift DPQL_HIERARCHY columns from compare
+
+        foreach ($results as &$result) {
+            if ($result['hierarchy_depth'] > $max) {
+                continue;
+            }
+
+            foreach ($mergeResults as $i => $mergeResult) {
+                if ($mergeResult['hierarchy_depth'] <= $max || $mergeResult['hierarchy_root_title'] !== $result['hierarchy_root_title']) {
+                    continue;
+                }
+
+                $found = true;
+                foreach ($groupColumns as $groupColumn) {
+                    $expected = $result[$groupColumn['groupResultId'] - 1];
+                    $actual   = $mergeResult[$groupColumn['groupResultId'] - 1];
+
+                    if ($expected !== $actual) {
+                        $found = false;
+                    }
+                }
+
+                if ($found) {
+                    foreach ($metadata->getSelectColumns() as $column) {
+                        if (is_numeric($mergeResult[$column['resultId'] - 1])) {
+                            $wasUnset                        = $result[$column['resultId'] - 1] === '-';
+                            $result[$column['resultId'] - 1] = (float) $result[$column['resultId'] - 1] + (float) $mergeResult[$column['resultId'] - 1];
+                            if ($rollupMode === HierarchyPlugin::ROLLUP_MODE_AVG && !$wasUnset) {
+                                $result[$column['resultId'] - 1] = $result[$column['resultId'] - 1] / 2;
+                            }
+                        } elseif ($result[$column['resultId'] - 1] === '-') {
+                            // copies constant values e.g. tooltip_text_template
+                            $result[$column['resultId'] - 1] = $mergeResult[$column['resultId'] - 1];
+                        }
+                    }
+                }
+            }
+        }
+        unset($result);
+
+        // remove children nodes
+        $results = array_filter($results, function ($result) use ($max) {
+            return $result['hierarchy_depth'] <= $max;
         });
 
         // Reduce depth by $min so that it starts from 0
         foreach ($results as &$result) {
             $result['hierarchy_depth'] = max(0, $result['hierarchy_depth'] - $min);
         }
+        unset($result);
 
-        return $results;
+        return array_values($results);
     }
 }

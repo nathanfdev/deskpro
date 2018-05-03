@@ -1,5 +1,6 @@
 // Popups
 $item-padding: 9px 10px;
+
 // Dark cover for content
 .cover {
   position: fixed;
@@ -130,8 +131,6 @@ $popup-background: #f5f6f7;
 
 }
 
-
-
 // Sidebar width
 $popup-sidebar: 150px;
 // Right side column width
@@ -199,8 +198,6 @@ $right-bucket: 200px;
   }
 }
 
-
-
 // The form
 
 .popup-form-default {
@@ -232,8 +229,6 @@ $right-bucket: 200px;
       &:hover { opacity: 1; }
     }
   }
-
-
 
   // Upload avatar button
   .user-avatar {
@@ -281,8 +276,6 @@ $right-bucket: 200px;
     .focus { font-weight: 600; }
   }
 }
-
-
 
 // Sidebar vertical navigation
 .popup-sidebar-content {
@@ -366,15 +359,6 @@ $right-bucket: 200px;
   }
 }
 
-
-
-
-
-
-
-
-
-
 // Report styles
 
 .cloned-report-mark {
@@ -401,8 +385,6 @@ $right-bucket: 200px;
     text-decoration: none;
   }
 }
-
-
 
 .popup {
   .agent-list {
@@ -449,6 +431,17 @@ $right-bucket: 200px;
         position: relative;
         margin: 5px;
 
+        .text, .image {
+          position: absolute;
+          top: -2px;
+          left: -2px;
+          height: 26px;
+          width: 26px;
+          border-radius: 4px;
+          background-size: cover;
+          background: transparent no-repeat;
+          padding: 4px 0 2px 0;
+        }
       }
     }
 
@@ -462,16 +455,6 @@ $right-bucket: 200px;
     }
   }
 }
-
-
-
-
-
-
-
-
-
-
 
 .popup-breadcrumbs {
   background: #fff;
@@ -493,38 +476,3 @@ $right-bucket: 200px;
     &:hover { opacity: 1; }
   }
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-//

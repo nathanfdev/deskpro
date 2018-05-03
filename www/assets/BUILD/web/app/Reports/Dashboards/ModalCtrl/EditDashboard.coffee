@@ -77,6 +77,14 @@ define ['DeskPRO/Util/Arrays', 'DeskPRO/Util/Util'], (Arrays, Util) -> [
     # UI handlers
     ####################################################################################################################
 
+    $scope.getInitials = (agent) ->
+      return '?' if !agent?
+      first    = agent.first_name
+      last     = agent.last_name
+      initials = (if first && first.length then first[0] else '') + (if last && last.length then last[0] else '')
+
+      return initials
+
     $scope.cancel = -> $modalInstance.dismiss('cancel')
 
     ###
@@ -205,7 +213,7 @@ define ['DeskPRO/Util/Arrays', 'DeskPRO/Util/Util'], (Arrays, Util) -> [
         $scope.dashboard.permissions.agent.splice($scope.dashboard.permissions.agent.indexOf(permission), 1)
 
     $scope.addAgentViewDashboard = (agentId, permission = false) ->
-      if !$scope.dashboard.permissions.all
+      if $scope.dashboard.permissions.all != ''
         return
       if !permission
         permission = $scope.dashboard.permissions.agent.filter((permission) => permission.person == agentId)[0]
@@ -234,9 +242,11 @@ define ['DeskPRO/Util/Arrays', 'DeskPRO/Util/Util'], (Arrays, Util) -> [
     $scope.toggleViewAllAgents = (agentId) ->
       permission = $scope.dashboard.permissions.filter((permission) => permission.person == agentId)[0]
       if !permission
-        $scope.dashboard.permissions.push({
+        $scope.dashboard.permissions.agent.push({
           name: 'view'
           person: agentId
+          team: null
+          department: null
           view_all: true
         })
       else

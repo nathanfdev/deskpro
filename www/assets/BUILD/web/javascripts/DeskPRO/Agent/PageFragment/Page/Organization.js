@@ -480,6 +480,31 @@ DeskPRO.Agent.PageFragment.Page.Organization = new Orb.Class({
 							$(this).trigger('change');
 						});
 					});
+
+          this.customFieldsUpload = new DeskPRO.Agent.PageHelper.CustomFieldUpload(fieldsForm);
+          $('.File.customfield input', fieldsForm).each(function() {
+            var $el = $(this);
+            if (!$el.val()) {
+              return;
+            }
+
+            if (!$('[data-blob-id='+$el.val()+']', fieldsForm).length) {
+              var $removeBtn = $('<em class="remove-attach-trigger"></em>');
+              var $editWrapper = $('<div data-blob-id="'+$el.val()+'" />');
+              var $fileLink = $(fieldsRendered).find('[data-blob-id='+$el.val()+']').clone();
+
+              $editWrapper.append($('<label>'+$('<div />').append($fileLink).html()+'</label>'));
+              $editWrapper.append($removeBtn);
+              $editWrapper.insertAfter($el);
+
+              $removeBtn.on('click', function() {
+                $el.remove();
+                $editWrapper.remove();
+
+                self.customFieldsUpload.updateVisibility();
+              });
+            }
+          });
 				}
 
 				$('.prop-edit-trigger', box).hide();
@@ -499,7 +524,7 @@ DeskPRO.Agent.PageFragment.Page.Organization = new Orb.Class({
 		});
 		$('.save', box).on('click', function() {
 			var formData = { custom_fields_definitions: self.$scope.custom_fields_definitions };
-			$('input[type="text"], input[type="password"], input:checked, select, textarea', fieldsForm).each(function(){
+			$('input[type="text"], input[type="password"], input[type="hidden"], input:checked, select, textarea', fieldsForm).each(function(){
 			  var n = $(this).attr('name');
         if (!n) return;
 			  if (n.indexOf('[]') !== -1 && formData[n]) n = n.replace(/\[\]/, '[' + Orb.uuid() + ']')

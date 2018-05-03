@@ -14,7 +14,7 @@
 			{% elseif field == 'person_email' %}<th data-field="person">{{ phrase('agent.tickets.user_email') }}</th>
 			{% elseif field == 'person_organization' %}<th data-field="person_organization">{{ phrase('agent.general.organization') }}</th>
 			{% elseif field == 'brand' %}<th data-field="brand">{{ phrase('agent.general.brand') }}</th>
-			{% elseif field == 'department' %}<th data-field="department">{{ phrase('agent.general.department') }}</th>
+			{% elseif field == 'department' %}{% if app.getSetting('using_department') %}<th data-field="department">{{ phrase('agent.general.department') }}</th>{% endif %}
 			{% elseif field == 'category' %}<th data-field="category">{{ phrase('agent.general.category') }}</th>
 			{% elseif field == 'product' %}<th data-field="product">{{ phrase('agent.general.product') }}</th>
 			{% elseif field == 'priority' %}<th data-field="priority">{{ phrase('agent.general.priority') }}</th>

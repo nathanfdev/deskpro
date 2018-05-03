@@ -1,36 +1,12 @@
 <?php
 
-/*
- * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
- * a British company located in London, England.
- *
- * All source code and content Copyright (c) 2017, DeskPRO Ltd.
- *
- * The license agreement under which this software is released
- * can be found at https://www.deskpro.com/eula/
- *
- * By using this software, you acknowledge having read the license
- * and agree to be bound thereby.
- *
- * Please note that DeskPRO is not free software. We release the full
- * source code for our software because we trust our users to pay us for
- * the huge investment in time and energy that has gone into both creating
- * this software and supporting our customers. By providing the source code
- * we preserve our customers' ability to modify, audit and learn from our
- * work. We have been developing DeskPRO since 2001, please help us make it
- * another decade.
- *
- * Like the work you see? Think you could make it better? We are always
- * looking for great developers to join us: http://www.deskpro.com/jobs/
- *
- * ~ Thanks, Everyone at Team DeskPRO
- */
-
 namespace DeskPRO\Bundle\AppBundle\Form\Type;
 
+use Application\DeskPRO\Entity\Blob;
 use DeskPRO\Bundle\AppBundle\Form\DataTransformer\BlobAuthTransformer;
 use Doctrine\ORM\EntityManager;
 use Symfony\Component\Form\AbstractType;
+use Symfony\Component\Form\Extension\Core\Type\HiddenType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\Form\FormEvent;
 use Symfony\Component\Form\FormEvents;
@@ -62,7 +38,8 @@ class BlobAuthType extends AbstractType
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
         $builder->addViewTransformer(new BlobAuthTransformer($this->em));
-        $builder->addEventListener(FormEvents::PRE_SUBMIT, [$this, 'onSetInline']);
+        $builder->addEventListener(FormEvents::PRE_SUBMIT, [$this, 'onPreSubmit'], 2000);
+        $builder->addEventListener(FormEvents::POST_SUBMIT, [$this, 'onPostSubmit']);
     }
 
     /**
@@ -71,8 +48,16 @@ class BlobAuthType extends AbstractType
     public function configureOptions(OptionsResolver $resolver)
     {
         $resolver->setDefaults([
-            'compound' => false,
+            'error_bubbling' => false,
         ]);
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function getParent()
+    {
+        return HiddenType::class;
     }
 
     /**
@@ -80,11 +65,24 @@ class BlobAuthType extends AbstractType
      *
      * @param FormEvent $event
      */
-    public function onSetInline(FormEvent $event)
+    public function onPreSubmit(FormEvent $event)
     {
         $data = $event->getData();
         if (is_array($data)) {
             $event->setData(isset($data['blob_auth']) ? $data['blob_auth'] : null);
+        }
+    }
+
+    /**
+     * @internal
+     *
+     * @param FormEvent $event
+     */
+    public function onPostSubmit(FormEvent $event)
+    {
+        $data = $event->getForm()->getData();
+        if ($data instanceof Blob) {
+            $data->setIsTemp(false);
         }
     }
 }

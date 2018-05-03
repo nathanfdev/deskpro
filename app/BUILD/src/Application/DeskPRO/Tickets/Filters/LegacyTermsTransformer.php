@@ -1,31 +1,5 @@
 <?php
 
-/*
- * DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/
- * a British company located in London, England.
- *
- * All source code and content Copyright (c) 2017, DeskPRO Ltd.
- *
- * The license agreement under which this software is released
- * can be found at https://www.deskpro.com/eula/
- *
- * By using this software, you acknowledge having read the license
- * and agree to be bound thereby.
- *
- * Please note that DeskPRO is not free software. We release the full
- * source code for our software because we trust our users to pay us for
- * the huge investment in time and energy that has gone into both creating
- * this software and supporting our customers. By providing the source code
- * we preserve our customers' ability to modify, audit and learn from our
- * work. We have been developing DeskPRO since 2001, please help us make it
- * another decade.
- *
- * Like the work you see? Think you could make it better? We are always
- * looking for great developers to join us: http://www.deskpro.com/jobs/
- *
- * ~ Thanks, Everyone at Team DeskPRO
- */
-
 /**
  * DeskPRO.
  *
@@ -299,6 +273,27 @@ class LegacyTermsTransformer
                     'options' => $options->all(),
                 ];
 
+            case 'FilterRangeId':
+                return [
+                    'type'    => 'range_id',
+                    'op'      => $term->getTermOperator(),
+                    'options' => $options->all(),
+                ];
+
+            case 'FilterRef':
+                return [
+                    'type'    => 'ref',
+                    'op'      => $term->getTermOperator(),
+                    'options' => $options->all(),
+                ];
+
+            case 'FilterUserRangeId':
+                return [
+                    'type'    => 'person_range_id',
+                    'op'      => $term->getTermOperator(),
+                    'options' => $options->all(),
+                ];
+
             case 'FilterUserContactPhone':
                 return [
                     'type'    => 'person_contact_phone',
@@ -464,6 +459,13 @@ class LegacyTermsTransformer
                     ],
                 ];
 
+            case 'FilterFeedbackLinks':
+                return [
+                    'type'    => 'feedback_links',
+                    'op'      => $term->getTermOperator(),
+                    'options' => $options->all(),
+                ];
+
             case 'FilterTicketField':
                 return $this->filterFieldToLegacyOptions($term, 'ticket');
 
@@ -529,6 +531,16 @@ class LegacyTermsTransformer
         }
 
         switch ($type_name) {
+            case 'range_id':
+                return new Terms\FilterRangeId($op, [
+                    'id' => @$options['id'] ?: '',
+                ]);
+
+            case 'ref':
+                return new Terms\FilterRef($op, [
+                    'ref' => @$options['ref'] ?: '',
+                ]);
+
             case 'subject':
                 return new Terms\FilterSubject($op, [
                     'subject' => @$options['subject'] ?: '',
@@ -776,6 +788,11 @@ class LegacyTermsTransformer
                     'user_ids' => $ids,
                 ]);
 
+            case 'person_range_id':
+                return new Terms\FilterUserRangeId($op, [
+                    'person_id' => @$options['person_id'] ?: '',
+                ]);
+
             case 'person_language':
                 $ids = @$options['language'] ?: [];
                 if (!is_array($ids)) {
@@ -810,6 +827,9 @@ class LegacyTermsTransformer
 
             case 'person_is_disabled':
                 return new Terms\FilterUserIsDisabled($op, $options);
+
+            case 'feedback_links':
+                return new Terms\FilterFeedbackLinks($op, $options);
 
             case 'person_organization_manager':
                 return new Terms\FilterUserIsManager($op, $options);
@@ -889,14 +909,14 @@ class LegacyTermsTransformer
         if (isset($options['date1']) || isset($options['date2']) || isset($options['date1_relative']) || isset($options['date2_relative'])) {
             $new_opts             = $options;
             $new_opts['field_id'] = $type_id;
-        } else if (!empty($type_id))  {
+        } elseif (!empty($type_id)) {
             $new_opts             = [];
             $new_opts['field_id'] = $type_id;
             $new_opts['value']    = @$options['custom_fields']['field_'.$type_id];
         } else {
-            $new_opts             = [];
-            $new_opts['value']    = @$options['value'];
-            $new_opts['field']    = @$options['field'];
+            $new_opts          = [];
+            $new_opts['value'] = @$options['value'];
+            $new_opts['field'] = @$options['field'];
         }
 
         return $new_opts;
@@ -908,14 +928,16 @@ class LegacyTermsTransformer
         $options = $term->getTermOptions();
 
         if ($options->has('date1') || $options->has('date2') || $options->has('date1_relative') || $options->has('date2_relative')) {
-            $fid     = $options->get('field_id');
+            $fid = $options->get('field_id');
+
             return [
                 'type'    => "{$type}_field[{$fid}]",
                 'op'      => $term->getTermOperator(),
                 'options' => $options->all(),
             ];
-        } else if ($options->has('field_id'))  {
-            $fid     = $options->get('field_id');
+        } elseif ($options->has('field_id')) {
+            $fid = $options->get('field_id');
+
             return [
                 'type'    => "{$type}_field[{$fid}]",
                 'op'      => $term->getTermOperator(),
@@ -930,8 +952,8 @@ class LegacyTermsTransformer
                 'type'    => "{$type}_field",
                 'op'      => $term->getTermOperator(),
                 'options' => [
-                    "field" => $options->get('field'),
-                    "value" => $options->get('value')
+                    'field' => $options->get('field'),
+                    'value' => $options->get('value'),
                 ],
             ];
         }

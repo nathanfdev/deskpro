@@ -137,10 +137,12 @@ export class ChatBeginConversation extends React.Component {
           config={customField}
           language={widgetLanguage}
           formErrors={errors}
+          fieldType="chat"
           widgetOptions={{
             context:       [parent.document, window.widgetFrame.document],
             contentWindow: window.widgetFrame,
-            ownerDocument: window.widgetFrame.document
+            ownerDocument: window.widgetFrame.document,
+            isWidget:      true
           }}
         >
           <CustomFieldTemplate isSubmit={submit} onSubmit={this.onSubmit} hiddenFields={hiddenFields} />
