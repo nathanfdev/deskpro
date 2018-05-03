@@ -774,6 +774,9 @@ class FieldManager
             $customData = $object->getCustomData();
             $existItems = [];
             foreach ($customData as $customDatum) {
+                if ($customDatum->getRootField() !== $fieldDef) {
+                    continue;
+                }
                 if (!in_array($customDatum->getData(), $value)) {
                     $customData->removeElement($customDatum);
                 } else {
