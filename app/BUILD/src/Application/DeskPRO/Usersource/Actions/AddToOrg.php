@@ -38,9 +38,10 @@ class AddToOrg extends AbstractAction
             /** @var Form $form */
             $form = $container->get('form.factory')->create(
                 $formType,
-                $neworg,
+                $neworg
                 // this was REALLY unexpected and hard to find!
-                ['csrf_double_submit_protection' => false]
+                // Updated: looks like we don't use this protection for NewOrganization anymore
+                // ['csrf_double_submit_protection' => false]
             );
             $form->submit(['name' => $value], true);
             if ($form->isValid()) {
