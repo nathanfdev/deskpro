@@ -13,6 +13,11 @@ use DeskPRO\Bundle\ReportBundle\Reports\ResultMetadata;
  */
 class DpqlCurTime extends AbstractDpqlFunc
 {
+    public static function getName()
+    {
+        return 'DPQL_CURTIME';
+    }
+
     /**
      * {@inheritdoc}
      */

@@ -3,6 +3,7 @@ import PropTypes from 'prop-types';
 import React from 'react';
 import onClickOutside from 'react-onclickoutside';
 import Portal from 'react-portal/build/portal';
+import Immutable from 'immutable';
 
 class InlineSelectComp extends React.Component {
 
@@ -283,7 +284,7 @@ class TitleWithVars extends React.Component {
   renderGroupSelectBox(entry) {
     const varName = entry[1].get('name');
 
-    const choices = this.props.groupParams.getIn([entry[1].get('type'), entry[1].get('field_type')], [])
+    const choices = (this.props.groupParams.getIn([entry[1].get('type'), entry[1].get('field_type')]) || Immutable.fromJS({}))
       .map((value, key) => { const choice = { label: value.get(0), value: key }; return choice; })
       .toList()
       .toJS();

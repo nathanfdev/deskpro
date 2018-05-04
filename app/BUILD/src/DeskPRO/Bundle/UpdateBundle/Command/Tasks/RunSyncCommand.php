@@ -31,7 +31,9 @@ class RunSyncCommand extends ContainerAwareCommand
         $output->setVerbosity(OutputInterface::VERBOSITY_DEBUG);
 
         $logger = new Logger('upgrade');
-        $logger->pushHandler(new ConsoleHandler($output));
+        $h      = new ConsoleHandler($output);
+        $h->setFormatter(new ConsoleFormatter(null, null, true));
+        $logger->pushHandler($h);
         $logger->pushHandler(new StreamHandler($DP_ENV->getUserLogsDir().DIRECTORY_SEPARATOR.'upgrade.log'));
 
         $manifestReader = $this->getContainer()->get('dp.build_tasks.manifest_reader');
