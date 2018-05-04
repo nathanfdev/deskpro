@@ -616,12 +616,12 @@ class TypeSelect extends React.Component {
 
 class DraftSelect extends React.PureComponent {
   static propTypes = {
-    value:    PropTypes.string,
+    value:    PropTypes.object,
     setValue: PropTypes.func,
   };
 
   handleChange = (value) => {
-    this.props.setValue(value.value);
+    this.props.setValue({ publish_status: value.value });
   };
 
   render() {
@@ -632,7 +632,7 @@ class DraftSelect extends React.PureComponent {
     ];
     return (
       <Select
-        value={value}
+        value={value ? value.publish_status : null}
         options={options}
         clearable={false}
         searchable={false}

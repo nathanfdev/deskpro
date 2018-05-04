@@ -5,6 +5,7 @@ namespace DeskPRO\Bundle\AppBundle\EventListener\Doctrine;
 use Application\DeskPRO\Entity\Person;
 use DeskPRO\Bundle\AppBundle\Entity\Snippet;
 use DeskPRO\Bundle\AppBundle\Entity\SnippetChangeLog;
+use DeskPRO\Bundle\AppBundle\Entity\SnippetLabel;
 use DeskPRO\Bundle\AppBundle\Entity\SnippetTranslation;
 use DeskPRO\Bundle\AppBundle\Notification\Event\Snippet\SnippetsUpdatedEvent;
 use Doctrine\ORM\Event\LifecycleEventArgs;
@@ -37,10 +38,15 @@ class SnippetListener
     public function postPersist(LifecycleEventArgs $args)
     {
         /** @var $snippet Snippet */
-        if (!($snippet = $args->getEntity()) instanceof Snippet) {
-            return;
+        if (($snippet = $args->getEntity()) instanceof Snippet) {
+            $this->onSnippetsUpdate($snippet, 'update');
         }
-        $this->onSnippetsUpdate($snippet, 'update');
+
+        if (($snippetLabel = $args->getEntity()) instanceof SnippetLabel) {
+            $this->onSnippetsUpdate($snippetLabel->getSnippet(), 'update');
+        }
+
+        return;
     }
 
     /**
@@ -65,10 +71,15 @@ class SnippetListener
     public function preRemove(LifecycleEventArgs $args)
     {
         /** @var $snippet Snippet */
-        if (!($snippet = $args->getEntity()) instanceof Snippet) {
-            return;
+        if (($snippet = $args->getEntity()) instanceof Snippet) {
+            $this->onSnippetsUpdate($snippet, 'remove');
         }
-        $this->onSnippetsUpdate($snippet, 'remove');
+
+        if (($snippetLabel = $args->getEntity()) instanceof SnippetLabel) {
+            $this->onSnippetsUpdate($snippetLabel->getSnippet(), 'update');
+        }
+
+        return;
     }
 
     /**
