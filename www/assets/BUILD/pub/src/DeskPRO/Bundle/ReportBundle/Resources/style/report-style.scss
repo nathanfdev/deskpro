@@ -20,9 +20,10 @@ $dp-styles-font-path: '../../../../../../node_modules/@deskpro/react-components/
 @import 'dashboards/dashboards';
 @import 'dashboards/gridster';
 
-#dp-source {
+#dp_source {
   background: #ecf0f3 !important;
 }
+
 .two-panels-menu {
   display: table;
   border-collapse: collapse;
