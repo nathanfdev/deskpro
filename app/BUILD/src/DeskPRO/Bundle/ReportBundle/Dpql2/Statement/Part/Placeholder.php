@@ -48,10 +48,10 @@ class Placeholder extends AbstractPart
     /**
      * {@inheritdoc}
      */
-    public function prepare(SelectPart $statement, $section, array $stack, SqlSelect $select, ResultMetadata $result)
+    public function prepare(SelectPart $statement, $section, array $stack, SqlSelect $select, ResultMetadata $metadata)
     {
         $prepared = $this->dpqlPlaceholderRegistry->getPlaceholder($this->name)->prepare(
-            $statement, $section, $stack, $select, $result
+            $statement, $section, $stack, $select, $metadata
         );
         $prepared->setName('%'.$this->name.'%');
 

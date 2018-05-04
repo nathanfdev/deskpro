@@ -57,7 +57,7 @@ class ColumnStar extends AbstractPart
     /**
      * {@inheritdoc}
      */
-    public function prepare(SelectPart $statement, $section, array $stack, SqlSelect $select, ResultMetadata $result)
+    public function prepare(SelectPart $statement, $section, array $stack, SqlSelect $select, ResultMetadata $metadata)
     {
         $parts = $this->parts;
         $table = array_shift($parts);
@@ -165,7 +165,7 @@ class ColumnStar extends AbstractPart
             }
 
             $column = $this->statementFactory->createColumn(array_merge($partsSoFar, [$key]));
-            $statement->addPreparedSelectField($column->prepare($statement, $section, $stack, $select, $result));
+            $statement->addPreparedSelectField($column->prepare($statement, $section, $stack, $select, $metadata));
         }
         foreach ($repository->getAssociationMappings() as $association) {
             if ((isset($association['dpqlAccess']) && !$association['dpqlAccess'])
@@ -177,7 +177,7 @@ class ColumnStar extends AbstractPart
             if ($association['type'] & ClassMetadataInfo::TO_ONE) {
                 try {
                     $column = $this->statementFactory->createColumn(array_merge($partsSoFar, [$association['fieldName']]));
-                    $statement->addPreparedSelectField($column->prepare($statement, $section, $stack, $select, $result));
+                    $statement->addPreparedSelectField($column->prepare($statement, $section, $stack, $select, $metadata));
                 } catch (DpqlException $e) {
                 }
             } elseif (preg_match('/CustomData([a-zA-Z]+)$/', $association['targetEntity'], $match)) {
@@ -206,7 +206,7 @@ class ColumnStar extends AbstractPart
                     foreach ($this->em->getRepository($type)->getTopFields() as $field) {
                         $column = $this->statementFactory->createColumn(array_merge($partsSoFar, [$association['fieldName']."[$field->id]"]));
                         $statement->addPreparedSelectField(
-                            $column->prepare($statement, $section, $stack, $select, $result), $field->title
+                            $column->prepare($statement, $section, $stack, $select, $metadata), $field->title
                         );
                     }
                 }

@@ -29,7 +29,7 @@ class Raw extends AbstractPart
     /**
      * {@inheritdoc}
      */
-    public function prepare(SelectPart $statement, $section, array $stack, SqlSelect $select, ResultMetadata $result)
+    public function prepare(SelectPart $statement, $section, array $stack, SqlSelect $select, ResultMetadata $metadata)
     {
         return new Prepared($this->sql, $this->sql);
     }
