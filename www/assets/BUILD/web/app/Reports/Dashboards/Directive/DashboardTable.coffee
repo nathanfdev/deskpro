@@ -1,5 +1,5 @@
 define ['datatables', "datatables.pageResize"], () ->
-  Reports_Directive_DashboardTable = ['$sce', 'DashboardWidgetService', ($sce, DashboardWidgetService) ->
+  Reports_Directive_DashboardTable = ['$sce', 'DashboardWidgetService', '$timeout', ($sce, DashboardWidgetService, $timeout) ->
     return {
       restrict: 'E'
       replace: true
@@ -69,7 +69,9 @@ define ['datatables', "datatables.pageResize"], () ->
 
         if tableData and tableData.data?
           tableData.noRedraw = true
-          initTable tableData
+          $timeout(->
+            initTable tableData
+          ,1)
         else if scope.jsCode
           try
             eval(scope.jsCode)
