@@ -17,10 +17,10 @@
                                             </li>
                                             <li class="dp-list__element dp-drawer-item"
                                                 ng-repeat="dashboard in (dashboards|filter:defaultDashboardsFilter) track by dashboard.id"
-                                                ui-sref="reports.dashboards.view.index({ dashboard_id: dashboard.id })"
+                                                ui-sref="reports.dashboards.view({ dashboard_id: dashboard.id })"
                                                 ui-sref-active="dp-drawer-item--selected"
                                             >
-                                                {{ ng_var('dashboard.title') }}
+                                                <span class="dp-drawer-item__pos-middle">{{ ng_var('dashboard.title') }}</span>
                                             </li>
                                             <li
                                                 class="dp-list__element dp-drawer-item type-heading"
@@ -30,10 +30,10 @@
                                             <li
                                                 class="dp-list__element dp-drawer-item"
                                                 ng-repeat="dashboard in (dashboards|filter:customDashboardsFilter) track by dashboard.id"
-                                                ui-sref="reports.dashboards.view.index({ dashboard_id: dashboard.id })"
+                                                ui-sref="reports.dashboards.view({ dashboard_id: dashboard.id })"
                                                 ui-sref-active="dp-drawer-item--selected"
                                             >
-                                                    {{ ng_var('dashboard.title') }}
+                                                <span class="dp-drawer-item__pos-middle">{{ ng_var('dashboard.title') }}</span>
                                             </li>
                                             <li
                                                 ng-if="canUseReports()"
