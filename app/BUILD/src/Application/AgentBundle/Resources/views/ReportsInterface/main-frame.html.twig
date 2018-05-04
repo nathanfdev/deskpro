@@ -9,26 +9,31 @@
                                     <h1 class="dp-heading">Dashboards</h1>
                                     <div class="dp-column-drawer__body dp-column-drawer__body--opened">
                                         <ul class="dp-list dp-drawer-item-list">
-                                            <li  ng-if="hasAccessToBuiltIn"  class="dp-list__element dp-drawer-item">
+                                            <li
+                                                ng-if="hasAccessToBuiltIn"
+                                                class="dp-list__element dp-drawer-item type-heading"
+                                            >
                                                 <span class="dp-drawer-item__pos-middle">Built-in dashboards</span>
                                             </li>
                                             <li class="dp-list__element dp-drawer-item"
-                                                ng-repeat="dashboard in (dashboards|filter:defaultDashboardsFilter) track by dashboard.id">
-                                                <a ui-sref="reports.dashboards.view.index({ dashboard_id: dashboard.id })">
-                                                    {{ ng_var('dashboard.title') }}
-                                                </a>
+                                                ng-repeat="dashboard in (dashboards|filter:defaultDashboardsFilter) track by dashboard.id"
+                                                ui-sref="reports.dashboards.view.index({ dashboard_id: dashboard.id })"
+                                                ui-sref-active="dp-drawer-item--selected"
+                                            >
+                                                {{ ng_var('dashboard.title') }}
                                             </li>
                                             <li
-                                                class="dp-list__element dp-drawer-item"
-                                                ng-if="hasAccessToCustom" class="type-heading">
+                                                class="dp-list__element dp-drawer-item type-heading"
+                                                ng-if="hasAccessToCustom">
                                                 Custom dashboards
                                             </li>
                                             <li
                                                 class="dp-list__element dp-drawer-item"
-                                                ng-repeat="dashboard in (dashboards|filter:customDashboardsFilter) track by dashboard.id">
-                                                    <a ui-sref="reports.dashboards.view.index({ dashboard_id: dashboard.id })">
-                                                        {{ ng_var('dashboard.title') }}
-                                                    </a>
+                                                ng-repeat="dashboard in (dashboards|filter:customDashboardsFilter) track by dashboard.id"
+                                                ui-sref="reports.dashboards.view.index({ dashboard_id: dashboard.id })"
+                                                ui-sref-active="dp-drawer-item--selected"
+                                            >
+                                                    {{ ng_var('dashboard.title') }}
                                             </li>
                                             <li
                                                 ng-if="canUseReports()"
@@ -40,19 +45,37 @@
                                         </ul>
                                     </div>
                                 </li>
-                                <li class="dp-list__element dp-column-drawer">
-                                    <h1 class="dp-heading">
-                                        <a ng-if="canUseReports()" ui-sref="reports.stats">Stat Builder</a>
-                                    </h1>
-                                    <h1 class="dp-heading">
-                                        <a ng-if="canUseReports()" ui-sref="reports.agent_activity">Agent Activity</a>
-                                    </h1>
-                                    <h1 class="dp-heading">
-                                        <a ng-if="canUseReports()" ui-sref="reports.agent_hours">Agent Hours</a>
-                                    </h1>
-                                    <h1 class="dp-heading">
-                                        <a ng-if="canUseReports()" ui-sref="reports.ticket_satisfaction">Ticket Satisfaction</a>
-                                    </h1>
+                                <li
+                                    class="dp-list__element dp-column-drawer link-pointer dp-drawer-item "
+                                    ng-if="canUseReports()"
+                                    ui-sref="reports.stats"
+                                    ui-sref-active="dp-drawer-item--selected"
+                                >
+                                    <h1 class="dp-heading">Stat Builder</h1>
+                                </li>
+                                <li
+                                        class="dp-list__element dp-column-drawer link-pointer dp-drawer-item "
+                                        ng-if="canUseReports()"
+                                        ui-sref="reports.agent_activity"
+                                        ui-sref-active="dp-drawer-item--selected"
+                                >
+                                    <h1 class="dp-heading">Agent Activity</h1>
+                                </li>
+                                <li
+                                        class="dp-list__element dp-column-drawer link-pointer dp-drawer-item "
+                                        ng-if="canUseReports()"
+                                        ui-sref="reports.agent_hours"
+                                        ui-sref-active="dp-drawer-item--selected"
+                                >
+                                    <h1 class="dp-heading">Agent Hours</h1>
+                                </li>
+                                <li
+                                        class="dp-list__element dp-column-drawer link-pointer dp-drawer-item "
+                                        ng-if="canUseReports()"
+                                        ui-sref="reports.ticket_satisfaction"
+                                        ui-sref-active="dp-drawer-item--selected"
+                                >
+                                    <h1 class="dp-heading">Ticket Satisfaction</h1>
                                 </li>
                             </ul>
                         </div>
