@@ -56,7 +56,7 @@ export class OmniSearch extends React.Component {
     }, 700);
 
     $input.on('keyup change', event => throttleChanges(event));
-    $close.click(this.onClickOut);
+    $close.click(this.onClear);
 
     // 1000ms pause before showing "no results"
     this.interval = setInterval(() => {
@@ -74,7 +74,7 @@ export class OmniSearch extends React.Component {
     window.clearInterval(this.interval);
   }
 
-  onClickOut = (event) => {
+  onClear = (event) => {
     event.preventDefault();
 
     this.props.$input.val('');
@@ -85,6 +85,17 @@ export class OmniSearch extends React.Component {
       userTyping:      false,
       searchQuery:     '',
       lastSearchLogId: null
+    });
+  };
+
+  onClickOut = (event) => {
+    event.preventDefault();
+
+    this.setState({
+      data:        {},
+      doSpin:      false,
+      userTyping:  false,
+      searchQuery: ''
     });
   };
 

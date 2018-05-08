@@ -112,7 +112,6 @@ class SearchController extends AbstractController
                 'breadcrumbs'    => $breadcrumbs,
                 'page_title'     => $this->createPageTitle()->search(),
                 'combined'       => $combinedCounts,
-                'search_log_id'  => $searchLogId,
             ]
         );
     }
