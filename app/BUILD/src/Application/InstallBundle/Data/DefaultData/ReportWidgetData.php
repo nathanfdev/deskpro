@@ -211,7 +211,7 @@ FROM hit_record
 WHERE hit_record.date_created = ${date}
   AND hit_record.page_type = \'deskpro.kb_view\'
 GROUP BY hit_record.page_id
-ORDER BY DPQL_COUNT()',
+ORDER BY DPQL_COUNT() DESC',
             'variables' => '[{"name":"date","type":"dates","default":"today"}]',
         ],
         'kb-searches-x-date' => [
@@ -224,7 +224,7 @@ ORDER BY DPQL_COUNT()',
 FROM searchlog
 WHERE searchlog.date_created = ${date}
 GROUP BY searchlog.query
-ORDER BY searchlog.query DESC
+ORDER BY DPQL_COUNT() DESC
 ',
             'variables' => '[{"name":"date","type":"dates","default":"today"}]',
         ],
