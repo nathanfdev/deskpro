@@ -64,10 +64,12 @@ class SearchController extends AbstractController
         $ajax          = $request->isXmlHttpRequest();
         $perPage       = $ajax ? 10 : 2;
         $type          = $ajax ? $request->get('type', null) : null;
+        $searchLogId   = 0;
 
         if ($q) {
-            $isSearch = true;
-            $results  = $this->fetchSearchResults($request, $type ? [$type] : null, $person, $q, $curPage, $perPage);
+            $isSearch    = true;
+            $results     = $this->fetchSearchResults($request, $type ? [$type] : null, $person, $q, $curPage, $perPage);
+            $searchLogId = $results['meta'][self::SEARCH_LOG_ID_VAR];
             // we don't need meta here
             unset($results['meta']);
         }
@@ -94,6 +96,11 @@ class SearchController extends AbstractController
 
         $breadcrumbs = $this->getBreadcrumbGenerator()->buildSearch($q);
 
+        // pass searchLogId to `search_and_contact_bar` tag
+        if ($searchLogId) {
+            $request->attributes->set(self::SEARCH_LOG_ID_VAR, $searchLogId);
+        }
+
         return $this->renderThemeView(
             'Theme:Search:search_results.html.twig',
             [
@@ -105,6 +112,7 @@ class SearchController extends AbstractController
                 'breadcrumbs'    => $breadcrumbs,
                 'page_title'     => $this->createPageTitle()->search(),
                 'combined'       => $combinedCounts,
+                'search_log_id'  => $searchLogId,
             ]
         );
     }

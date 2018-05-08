@@ -13,19 +13,26 @@ import moment from 'moment';
 export class OmniSearch extends React.Component {
 
   static propTypes = {
-    $input:  PropTypes.object,
-    $close:  PropTypes.object,
-    $button: PropTypes.object
+    $input:            PropTypes.object,
+    $inputSearchLogId: PropTypes.object,
+    $close:            PropTypes.object,
+    $button:           PropTypes.object
   };
 
   constructor(props) {
     super(props);
+
+    // grab searchLogId from search form itself
+    // in case if user press search button
+    const { $inputSearchLogId } = this.props;
+    const searchLogId = $inputSearchLogId.val();
+
     this.state = {
       doSpin:          false, // a search is in progress
       lastSearch:      moment(), // the last time a user executed a search (typed something in)
       userTyping:      false,
       searchQuery:     '',
-      lastSearchLogId: null,
+      lastSearchLogId: searchLogId || null,
       data:            {
         pageinfo: {
           total_results: 0,
@@ -71,6 +78,7 @@ export class OmniSearch extends React.Component {
     event.preventDefault();
 
     this.props.$input.val('');
+    this.props.$inputSearchLogId.val('');
     this.setState({
       data:            {},
       doSpin:          false,
@@ -111,6 +119,7 @@ export class OmniSearch extends React.Component {
           delete response.data.data.meta;
         }
 
+        this.props.$inputSearchLogId.val(logId);
         this.setState({
           data:            response.data.data,
           doSpin:          false,
