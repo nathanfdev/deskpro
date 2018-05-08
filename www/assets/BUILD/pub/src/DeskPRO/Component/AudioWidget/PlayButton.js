@@ -1,6 +1,7 @@
 import PropTypes from 'prop-types';
 import React from 'react';
 import classNames from 'classnames';
+import { pageWidgetEmitter } from 'DeskPRO/Component/PageWidget/PageWidgetEmitter';
 
 class PlayButton extends React.Component {
 
@@ -62,6 +63,12 @@ export class UploadPlayButton extends React.Component {
         playing: false
       });
     });
+
+    pageWidgetEmitter.on('playAudio', (element) => {
+      if (this !== element) {
+        this.stopPlaying();
+      }
+    });
   }
 
   componentWillUnmount() {
@@ -81,7 +88,7 @@ export class UploadPlayButton extends React.Component {
       this.audio.play();
       this.setState({
         playing: true
-      });
+      }, () => pageWidgetEmitter.emit('playAudio', this));
     } else {
       this.audio.pause();
       this.audio.currentTime = 0;
@@ -92,8 +99,11 @@ export class UploadPlayButton extends React.Component {
   };
 
   stopPlaying() {
-    this.audio.pause();
-    this.audio.currentTime = 0;
+    if (this.audio) {
+      this.audio.pause();
+      this.audio.currentTime = 0;
+    }
+
     this.setState({
       playing: false
     });
@@ -138,6 +148,24 @@ export class AssetPlayButton extends React.Component {
       <UploadPlayButton
         {...this.props}
         downloadUrl={value.getIn(['blob', 'download_url'])}
+      />
+    );
+  }
+}
+
+export class BlobPlayButton extends React.Component {
+
+  static propTypes = {
+    value: PropTypes.object
+  };
+
+  render() {
+    const { value } = this.props;
+
+    return (
+      <UploadPlayButton
+        {...this.props}
+        downloadUrl={value.get('download_url')}
       />
     );
   }

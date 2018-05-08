@@ -1,6 +1,7 @@
 import PropTypes from 'prop-types';
 import React from 'react';
 import { connect } from 'react-redux';
+import { storageAvailable } from 'DeskPRO/Component/Util/storageAvailable';
 import Dialpad from './Dialpad';
 import { dialpadOpened, makeOutboundCall, searchPerson } from '../../../Actions/clientActions';
 import { outboundNumbersSelector } from '../../../Selectors/numbers';
@@ -24,13 +25,26 @@ class DialpadContainer extends React.Component {
     this.props.dispatch(dialpadOpened());
   }
 
-  onMakeCall = (callFrom, callTo) => this.props.dispatch(makeOutboundCall(callFrom, callTo));
+  onMakeCall = (callFrom, callTo) => {
+    if (storageAvailable('localStorage')) {
+      localStorage.setItem('dpAgent.voice.lastCallFrom', callFrom);
+    }
+
+    this.props.dispatch(makeOutboundCall(callFrom, callTo));
+  };
+
   onSearchPerson = searchString => this.props.dispatch(searchPerson(searchString));
 
   render() {
+    let lastCallFrom = null;
+    if (storageAvailable('localStorage')) {
+      lastCallFrom = parseInt(localStorage.getItem('dpAgent.voice.lastCallFrom'), 10);
+    }
+
     return (
       <Dialpad
         {...this.props}
+        lastCallFrom={lastCallFrom}
         onMakeCall={this.onMakeCall}
         onSearchPerson={this.onSearchPerson}
       />

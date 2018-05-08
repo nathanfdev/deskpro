@@ -68,6 +68,8 @@ class TwilioCallbacksController extends AbstractVoiceController
      * @param string       $accountAuth
      * @param Request      $request
      *
+     * @throws \Exception
+     *
      * @return Response
      */
     public function phoneNumberCallbackAction(VoiceAccount $account, $accountAuth, Request $request)
@@ -116,6 +118,8 @@ class TwilioCallbacksController extends AbstractVoiceController
      * @param VoiceAccount $account
      * @param string       $accountAuth
      * @param Request      $request
+     *
+     * @throws \Exception
      */
     public function phoneNumberStatusCallbackAction(VoiceAccount $account, $accountAuth, Request $request)
     {
@@ -153,6 +157,7 @@ class TwilioCallbacksController extends AbstractVoiceController
             ]);
 
             if ($participant) {
+                /** @var VoicePhoneCall $phoneCall */
                 $phoneCall = $participant->getPhoneCall();
 
                 // set participant leave event time
@@ -183,6 +188,28 @@ class TwilioCallbacksController extends AbstractVoiceController
                     // mark the phone call as finished
                     $phoneCall->setDateEnded(new \DateTime());
                     $phoneCall->setStatus(VoicePhoneCall::STATUS_ENDED);
+
+                    // user ends call
+                    // check the call is not answered and voicemail wasn't reached
+                    // create a ticket for missed calls
+                    if (!$phoneCall->hasAgentParticipants() && !$phoneCall->getVoicemailRecord()) {
+                        $ticketMessageCall = new TicketMessageVoicePhoneCall();
+                        $ticketMessageCall->setPhoneCall($phoneCall);
+
+                        $ticketMessage = new TicketMessage();
+                        $ticketMessage->setPerson($phoneCall->getPerson());
+                        $ticketMessage->addAttribute($ticketMessageCall);
+                        $ticketMessage->setMessage('Missed call from '.$phoneCall->getExternalNumber());
+                        $ticketMessage->setAsAgentNote(true);
+
+                        $ticket = new Ticket();
+                        $ticket->disableAutoTicketProcess();
+                        $ticket->setSubject('Missed call from '.$phoneCall->getExternalNumber());
+                        $ticket->setPerson($phoneCall->getPerson());
+                        $ticket->addMessage($ticketMessage);
+
+                        $this->saveTicket($ticket);
+                    }
 
                     // log call end event
                     // for now if a end-user finishes the call then it means the conference is ended
@@ -455,6 +482,8 @@ class TwilioCallbacksController extends AbstractVoiceController
      * @param Person       $agent
      * @param Request      $request
      *
+     * @throws \Exception
+     *
      * @return Response
      */
     public function conferenceCallbackAction(VoiceAccount $account, $accountAuth, Person $agent, Request $request)
@@ -532,7 +561,7 @@ class TwilioCallbacksController extends AbstractVoiceController
      * @param string       $accountAuth
      * @param Request      $request
      *
-     * @return Response
+     * @throws \Exception
      */
     public function conferenceStatusCallbackAction(VoiceAccount $account, $accountAuth, Request $request)
     {
@@ -676,6 +705,8 @@ class TwilioCallbacksController extends AbstractVoiceController
      * @param VoiceAutoAttendant $autoAttendant
      * @param Request            $request
      *
+     * @throws \Exception
+     *
      * @return Response
      */
     public function autoAttendantCallbackAction(VoiceAccount $account, $accountAuth, VoiceAutoAttendant $autoAttendant, Request $request)
@@ -789,6 +820,8 @@ class TwilioCallbacksController extends AbstractVoiceController
      * @param string       $accountAuth
      * @param Request      $request
      *
+     * @throws \Exception
+     *
      * @return Response
      */
     public function agentExtensionCallbackAction(VoiceAccount $account, $accountAuth, Request $request)
@@ -860,7 +893,7 @@ class TwilioCallbacksController extends AbstractVoiceController
      * @param string       $accountAuth
      * @param Request      $request
      *
-     * @return Response
+     * @throws \Exception
      */
     public function recordingStatusCallbackAction(VoiceAccount $account, $accountAuth, Request $request)
     {
@@ -919,6 +952,8 @@ class TwilioCallbacksController extends AbstractVoiceController
      * @param string       $accountAuth
      * @param Request      $request
      *
+     * @throws \Exception
+     *
      * @return Response
      */
     public function voicemailAction(VoiceAccount $account, $accountAuth, Request $request)
@@ -976,6 +1011,8 @@ class TwilioCallbacksController extends AbstractVoiceController
      * @param VoiceAccount $account
      * @param string       $accountAuth
      *
+     * @throws \Exception
+     *
      * @return Response
      */
     public function voicemailEndAction(VoiceAccount $account, $accountAuth)
@@ -1008,6 +1045,8 @@ class TwilioCallbacksController extends AbstractVoiceController
      * @param VoiceAccount $account
      * @param string       $accountAuth
      * @param Request      $request
+     *
+     * @throws \Exception
      *
      * @return Response
      */
@@ -1089,6 +1128,8 @@ class TwilioCallbacksController extends AbstractVoiceController
      * @param string       $accountAuth
      * @param Request      $request
      *
+     * @throws \Exception
+     *
      * @return Response
      */
     public function holdMusicAction(VoiceAccount $account, $accountAuth, Request $request)
@@ -1127,6 +1168,8 @@ class TwilioCallbacksController extends AbstractVoiceController
      * @param VoiceAccount $account
      * @param string       $accountAuth
      * @param Request      $request
+     *
+     * @throws \Exception
      *
      * @return Response
      */
@@ -1174,6 +1217,8 @@ class TwilioCallbacksController extends AbstractVoiceController
      * @param VoicePhoneCall $phoneCall
      * @param Person         $agent
      * @param Request        $request
+     *
+     * @throws \Exception
      *
      * @return Response
      */
@@ -1325,6 +1370,8 @@ class TwilioCallbacksController extends AbstractVoiceController
     /**
      * @param VoiceAccount $account
      * @param Request      $request
+     *
+     * @throws \Exception
      *
      * @return Response
      */
@@ -1519,6 +1566,8 @@ class TwilioCallbacksController extends AbstractVoiceController
 
     /**
      * @param int $agentId
+     *
+     * @throws \Exception
      *
      * @return Person
      */

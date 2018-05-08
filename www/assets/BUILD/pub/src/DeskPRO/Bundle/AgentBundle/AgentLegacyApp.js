@@ -162,11 +162,16 @@ class AgentLegacyApp {
     ReactDOM.render(
       <AppContainer>
         <Provider store={this.store}>
-          <VoiceControlsContainer
-            tabRef={(c) => { tabRef = c; }}
-            ticketId={ticketId}
-            onEndCall={onEndCall}
-          />
+          <IntlProvider
+            locale={this.locale}
+            messages={agentPhrases.getPhrases()}
+          >
+            <VoiceControlsContainer
+              tabRef={(c) => { tabRef = c; }}
+              ticketId={ticketId}
+              onEndCall={onEndCall}
+            />
+          </IntlProvider>
         </Provider>
       </AppContainer>,
       node
@@ -196,10 +201,15 @@ class AgentLegacyApp {
     ReactDOM.render(
       <AppContainer>
         <Provider store={this.store}>
-          <VoiceTicketMessageContainer
-            tabRef={(c) => { tabRef = c; }}
-            data={data}
-          />
+          <IntlProvider
+            locale={this.locale}
+            messages={agentPhrases.getPhrases()}
+          >
+            <VoiceTicketMessageContainer
+              tabRef={(c) => { tabRef = c; }}
+              data={data}
+            />
+          </IntlProvider>
         </Provider>
       </AppContainer>,
       node
