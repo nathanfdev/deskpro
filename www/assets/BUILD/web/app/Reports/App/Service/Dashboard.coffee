@@ -47,9 +47,9 @@ define ['DeskPRO/Util/Arrays'], (Arrays) ->
           .sendPostJson '/dashboards', data
           .then (response) =>
             if(response)
-              dashboard.id = response.data.id
-              dashboard.reports = response.data.reports
-              dashboard.permissions = response.data.permissions
+              dashboard.id = response.data.data.id
+              dashboard.reports = response.data.data.reports
+              dashboard.permissions = response.data.data.permissions
               @storage.dbs.push(dashboard)
               deferred.resolve dashboard
           , () ->
@@ -85,9 +85,9 @@ define ['DeskPRO/Util/Arrays'], (Arrays) ->
         @getDashboardsData().then \
           (resp) =>
             dbs = []
-            if resp? and resp.data.length > 0
+            if resp? and resp.data.data.length > 0
 
-              dbs.push element for element in resp.data
+              dbs.push element for element in resp.data.data
             @storage.dbs = dbs;
             deferred.resolve(@storage.dbs)
       else deferred.resolve(@storage.dbs)
@@ -122,20 +122,22 @@ define ['DeskPRO/Util/Arrays'], (Arrays) ->
       , (v, i) ->
         if v.id is dashboard.id then true else false
       @Api2
-        .sendGet "/dashboards/#{dashboard.id}"
+        .sendGet "/dashboards/#{dashboard.id}?include=reports&inline_sideloads=true"
         .then (resp) =>
           @storage.dbs[dashboardIndex] = resp.data.data
           deferred.resolve(resp.data.data)
       return deferred.promise
 
     getDashboardsData: () ->
-      @Api2.sendGet('/dashboards')
+      @Api2.sendGet('/dashboards?include=reports&inline_sideloads=true')
 
     deleteDashboard: (dashboard) ->
       promise = @Api2.sendDelete("/dashboards/#{dashboard.id}")
       promise.then () =>
-        Arrays.removeValue @storage.dbs, dashboard, 1
+        @storage.dbs.splice(@storage.dbs.indexOf(dashboard), 1)
         return promise
+
+      return promise
 
     ###
     # Operations about reports
