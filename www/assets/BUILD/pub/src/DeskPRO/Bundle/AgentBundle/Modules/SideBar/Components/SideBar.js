@@ -328,7 +328,7 @@ export class SideBar extends React.PureComponent {
       menus.push({
         className: 'reports',
         label:     (<span>
-          <FormattedMessage id="agent.general.reports" />
+          <FormattedMessage id="agent.general.reports" />&nbsp;
           (<FormattedMessage id="agent.general.badge_legacy" />)
         </span>),
         link:     '/agent/#reports:/',
@@ -343,7 +343,7 @@ export class SideBar extends React.PureComponent {
         className: 'reports2',
         label:     (this.props.canUseReports(1)
           ? (<span>
-            <FormattedMessage id="agent.general.reports" />
+            <FormattedMessage id="agent.general.reports" />&nbsp;
             (<FormattedMessage id="agent.general.badge_new" />)
           </span>) : <FormattedMessage id="agent.general.reports" />),
         link:        '/agent/#r:/',
