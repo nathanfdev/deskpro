@@ -91,6 +91,8 @@ class LanguagesController extends CrudController
             'agent.general.are_you_sure',
             'agent.general.assign_to_agent',
             'agent.general.attach_files',
+            'agent.general.badge_legacy',
+            'agent.general.badge_new',
             'agent.general.billing',
             'agent.general.brand',
             'agent.general.cancel',

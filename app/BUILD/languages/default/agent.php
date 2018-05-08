@@ -409,6 +409,8 @@ return [
     'agent.general.awaiting_email_validation'                  => 'Awaiting Email Validation',
     'agent.general.awaiting_validation'                        => 'Awaiting Validation',
     'agent.general.banned'                                     => 'Banned',
+    'agent.general.badge_legacy'                               => 'Legacy',
+    'agent.general.badge_new'                                  => 'New',
     'agent.general.before'                                     => 'before',
     'agent.general.between'                                    => 'between',
     'agent.general.billing_interface'                          => 'Billing Interface',

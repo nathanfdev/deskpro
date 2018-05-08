@@ -90,6 +90,7 @@
         'core.apps_downloads': {% if brand_app_settings['core.apps_kb'] %}true{% else %}false{% endif %},
         'core.apps_tasks': {% if brand_app_settings['core.apps_tasks'] %}true{% else %}false{% endif %},
         'core.apps_guides': {% if app.hasBeta('guides') %}true{% else %}false{% endif %},
+        'core.show_old_reports': {% if app.getSetting('core.show_old_reports') %}true{% else %}false{% endif %}
     };
 
 	{% if app.getSetting('agent.ui_snippets_use_client_db') %}var DESKPRO_SNIPPETS_USE_CLIENT_DB = true;{% endif %}
