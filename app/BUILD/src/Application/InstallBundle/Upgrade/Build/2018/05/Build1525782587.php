@@ -10,7 +10,7 @@ use DeskPRO\Component\Util\MapUtils;
 use DeskPRO\Component\Util\RegexUtils;
 use DeskPRO\Component\Util\StringUtils;
 
-class Build1525426643 extends AbstractBuild implements OnlineBuildInterface
+class Build1525782587 extends AbstractBuild implements OnlineBuildInterface
 {
     private static $fnMap = [
         'ALIAS'                   => 'DPQL_ALIAS',
