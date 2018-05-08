@@ -16,6 +16,9 @@
                 <li ng-class="{'active': activeTab == 'permissions'}">
                     <a ng-click="activeTab = 'permissions'">Agent Permissions</a>
                 </li>
+                <li ng-show="dashboard.id" ng-class="{'active': activeTab == 'shareable_links'}">
+                    <a ng-click="activeTab = 'shareable_links'; shareLink = null; shareLinkView = null">Shareable Links</a>
+                </li>
             </ul>
         </div>
     </div>
@@ -236,11 +239,130 @@
                 </table>
             </div>
         </form>
+
+        {##############################################################################################################}
+        {# Shareable Links #}
+        {##############################################################################################################}
+
+        <div ng-show="activeTab == 'shareable_links'" class="popup-form-default">
+            <div class="popup-blurb">
+                <h2>Create public, shareable permalinks here to give read-only access to the dashboard.</h2>
+            </div>
+
+            <div ng-if="!shareLink" class="shareable-links-list">
+                <div class="new-shareable-link">
+                    <a ng-click="openNewShareLinkForm()">Create New Link</a>
+                </div>
+                <table ng-if="shareLinks.length > 0">
+                    <thead>
+                        <tr>
+                            <th>Description</th>
+                            <th></th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr ng-repeat="shareLink in shareLinks track by shareLink.id">
+                            <td>{{ ng_var('shareLink.title') }}</td>
+                            <td class="shareable-link-options">
+                                <a ng-click="openShareLinkForm(shareLink)">Share</a>
+                                <a ng-click="openEditShareLinkForm(shareLink)">Edit</a>
+                                <a ng-click="deleteShareLink(shareLink)">Delete</a>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+                <div ng-if="!shareLinks.length">
+                    No shareable links are created yet.
+                </div>
+            </div>
+
+            <form ng-if="shareLinkView == 'new' || shareLinkView == 'edit'" class="shareable-link-form popup-form-default">
+                <div class="popup-blurb">
+                    <h2 ng-if="!shareLink.id">New Link</h2>
+                    <h2 ng-if="shareLink.id">Edit Link</h2>
+                </div>
+
+                <div class="bucket">
+                    <label class="label">Description</label>
+                    <div class="bucket-column">
+                        <input type="text" ng-model="shareLink.title" placeholder="Share link description">
+                    </div>
+                    <div ng-if="error" class="alert alert-error">
+                        {{ ng_var('error') }}
+                    </div>
+                </div>
+
+                <div ng-if="reports.length > 0" class="bucket">
+                    <label class="label">Default report tab to select</label>
+                    <div class="bucket-column">
+                        <select ng-model="shareLink.default_report" ui-select2>
+                            <option ng-repeat="report in reports track by report.id" ng-value="report.id" ng-selected="shareLink.default_report == report.id">{{ ng_var('report.title') }}</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div class="bucket">
+                    <label class="label">Who can use the link?</label>
+                    <div class="bucket-column">
+                        <div class="ui radio checkbox">
+                            <input type="radio" name="who_can_use" ng-model="shareLink.who_can_use" value="anyone" />
+                            <label>Anyone with the link?</label>
+                        </div>
+                        <div class="ui radio checkbox">
+                            <input type="radio" name="who_can_use" ng-model="shareLink.who_can_use" value="whitelist" />
+                            <label>Whitelist IP addresses</label>
+                        </div>
+                    </div>
+                </div>
+
+                <div ng-if="shareLink.who_can_use == 'whitelist'" class="bucket">
+                    <div class="bucket-column">
+                        <input type="text" ng-model="shareLink.ip_whitelist" placeholder="Comma-separated list of IP addresses (CIDR format)" />
+                    </div>
+                </div>
+            </form>
+            <form ng-if="shareLink && shareLink.id && shareLinkView == 'share'" class="shareable-link-form popup-form-default">
+                <div class="popup-blurb">
+                    <h2>Share Link {{ ng_var('shareLink.title') }}</h2>
+                </div>
+
+                <div class="bucket">
+                    <label class="label">Permalink</label>
+                    <div class="bucket-column">
+                        <input type="text" id="permalink" readonly ng-value="shareLink.permalink" />
+                        <a dp-clipboard class="copy-to-clipboard" data-clipboard-target="#permalink" ngclipboard-success="successAlert('The permalink was copied to your clipboard')">copy</a>
+                    </div>
+                </div>
+
+                <div class="bucket">
+                    <label class="label">Short URL</label>
+                    <div ng-if="shareLink.short_url" class="bucket-column">
+                        <input type="text" id="short_url" readonly ng-value="shareLink.short_url.redirect_url" />
+                        <a dp-clipboard class="copy-to-clipboard" data-clipboard-target="#short_url" ngclipboard-success="successAlert('The short url was copied to your clipboard')">copy</a>
+                    </div>
+                    <div ng-if="!shareLink.short_url" class="bucket-column">
+                        <a ng-click="createShortUrlForShareLink(shareLink)" class="create-short-url">Create temporary short URL</a>
+                        <p>
+                            If you need to use this link on a device such as TV where a long URL is difficult to type, you can instead create a temporary short URL that lasts for 1 hour.
+                            The short URL is easier to type and redirects to the full secure permalink.
+                        </p>
+                    </div>
+                </div>
+            </form>
+        </div>
     </div>
 
-    <footer ng-show="loaded">
+    <footer ng-show="loaded" ng-if="activeTab == 'info' || activeTab == 'permissions'">
         <div ng-hide="saving">
             <a ng-click="saveDashboard()" class="button">Save Dashboard</a>
+        </div>
+        <div ng-show="saving">
+            <i class="spinner-flat"></i>
+        </div>
+    </footer>
+    <footer ng-show="loaded" ng-if="activeTab == 'shareable_links' && (shareLinkView == 'new' || shareLinkView == 'edit')">
+        <div ng-hide="saving">
+            <a ng-click="saveShareLink()" class="button">Save Share Link</a>
         </div>
         <div ng-show="saving">
             <i class="spinner-flat"></i>

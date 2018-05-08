@@ -2571,6 +2571,20 @@ $collection->create('go_to_topic_id', [
     'requirements' => ['id' => '\\d+'],
 ]);
 
+$collection->create('go_to_dashboard_link', [
+    'path'         => '/go/dashboard/link/{authCode}',
+    'controller'   => 'AgentBundle:GoTo:dashboardLink',
+    'methods'      => ['GET'],
+    'requirements' => ['authCode' => '[a-zA-Z0-9]+'],
+]);
+
+$collection->create('go_to_dashboard_short_url', [
+    'path'         => '/go/dash/{authCode}',
+    'controller'   => 'AgentBundle:GoTo:dashboardShortUrl',
+    'methods'      => ['GET'],
+    'requirements' => ['authCode' => '[a-zA-Z0-9]+'],
+]);
+
 $collection->create('reports-interface', [
     'path'       => '/reports-interface',
     'controller' => 'AgentBundle:Interface:interface',
@@ -2582,6 +2596,13 @@ $collection->create('reports-interface-headless-view', [
     'controller'   => 'ReportsInterfaceBundle:Headless:view',
     'methods'      => ['GET'],
     'requirements' => ['id' => '\\d+', 'authcode' => '[a-zA-Z0-9]+'],
+]);
+
+$collection->create('reports-interface-dashboard-view', [
+    'path'         => '/reports-interface/dashboard/{authcode}',
+    'controller'   => 'ReportsInterfaceBundle:Headless:dashboard',
+    'methods'      => ['GET'],
+    'requirements' => ['authcode' => '[a-zA-Z0-9]+'],
 ]);
 
 $collection->create('iface_load_views', [

@@ -47,7 +47,6 @@ class DashboardReportWidgetsController extends CrudController
      * @param string                $type
      * @param Request               $request
      *
-     * @throws \DeskPRO\Bundle\ReportBundle\Dpql2\DpqlException
      * @throws \Exception
      *
      * @return Response

@@ -35,6 +35,7 @@ return [
     'api.error_codes.missing_country_code'            => 'Country code is missing.',
     'api.error_codes.invalid_session_id'              => 'Invalid session ID.',
     'api.error_codes.invalid_url'                     => 'This value is not a valid URL.',
+    'api.error_codes.invalid_ip'                      => 'This value is not a valid IP.',
     'api.error_codes.invalid_jwt_token'               => 'This value is not a valid JWT token.',
     'api.error_codes.missing_jwt_token'               => 'JWT token is required.',
     'api.error_codes.expired_jwt_token'               => 'JWT token is expired.',
