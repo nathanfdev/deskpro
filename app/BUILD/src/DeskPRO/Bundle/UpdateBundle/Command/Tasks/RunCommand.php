@@ -46,7 +46,9 @@ class RunCommand extends ContainerAwareCommand
         $this->getContainer()->get('audit_log.doctrine_listener')->disableListener();
 
         $logger = new Logger('upgrade');
-        $logger->pushHandler(new ConsoleHandler($output));
+        $h      = new ConsoleHandler($output);
+        $h->setFormatter(new ConsoleFormatter(null, null, true));
+        $logger->pushHandler($h);
         $logger->pushHandler(new StreamHandler($DP_ENV->getUserLogsDir().DIRECTORY_SEPARATOR.'upgrade.log'));
 
         $buildStatus    = $this->getContainer()->get('dp.build_tasks.build_status');

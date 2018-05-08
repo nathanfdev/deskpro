@@ -6,6 +6,7 @@ use Application\DeskPRO\Monolog\Logger;
 use DeskPRO\Bundle\UpdateBundle\BuildTasks\BuildFactory;
 use DeskPRO\Bundle\UpdateBundle\BuildTasks\BuildRunner;
 use Monolog\Handler\StreamHandler;
+use Symfony\Bridge\Monolog\Formatter\ConsoleFormatter;
 use Symfony\Bridge\Monolog\Handler\ConsoleHandler;
 use Symfony\Bundle\FrameworkBundle\Command\ContainerAwareCommand;
 use Symfony\Component\Console\Input\InputInterface;
@@ -31,7 +32,9 @@ class RunBuildCommand extends ContainerAwareCommand
         $output->setVerbosity(OutputInterface::VERBOSITY_DEBUG);
 
         $logger = new Logger('upgrade');
-        $logger->pushHandler(new ConsoleHandler($output));
+        $h      = new ConsoleHandler($output);
+        $h->setFormatter(new ConsoleFormatter(null, null, true));
+        $logger->pushHandler($h);
         $logger->pushHandler(new StreamHandler($DP_ENV->getUserLogsDir().DIRECTORY_SEPARATOR.'upgrade.log'));
 
         $buildStatus    = $this->getContainer()->get('dp.build_tasks.build_status');

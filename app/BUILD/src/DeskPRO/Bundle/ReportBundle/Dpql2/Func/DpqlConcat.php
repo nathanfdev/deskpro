@@ -16,6 +16,21 @@ use DeskPRO\Bundle\ReportBundle\Reports\ResultMetadata;
 class DpqlConcat extends AbstractDpqlFunc
 {
     /**
+     * @var DpqlFuncRegistry
+     */
+    private $reg;
+
+    /**
+     * DpqlConcat constructor.
+     *
+     * @param DpqlFuncRegistry $reg
+     */
+    public function __construct(DpqlFuncRegistry $reg)
+    {
+        $this->reg = $reg;
+    }
+
+    /**
      * {@inheritdoc}
      */
     public function prepare(array $arguments, SelectPart $statement, $section, array $stack, SqlSelect $select, ResultMetadata $metadata)
@@ -24,7 +39,8 @@ class DpqlConcat extends AbstractDpqlFunc
             throw new DpqlException('DPQL_CONCAT() requires at least 2 arguments.');
         }
         if ($section !== 'select') {
-            throw new DpqlException('DPQL_CONCAT() may only be used in SELECT.');
+            // pass-thru everywhere else...
+            return $this->reg->getFunction('CONCAT')->prepare($arguments, $statement, $section, $stack, $select, $metadata);
         }
 
         $argNames = [];

@@ -22,6 +22,11 @@ use DeskPRO\Bundle\ReportBundle\Reports\ResultMetadata;
  */
 class DpqlMonthName extends AbstractDpqlFunc
 {
+    public static function getName()
+    {
+        return 'DPQL_MONTHNAME';
+    }
+
     /**
      * {@inheritdoc}
      */
