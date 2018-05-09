@@ -159,6 +159,10 @@ class InstallProfile
      */
     public function getAnswer($qid)
     {
-        return @$this->answers[$qid] ?: null;
+        if (!isset($this->answers[$qid])) {
+            return null;
+        }
+
+        return $this->answers[$qid];
     }
 }
