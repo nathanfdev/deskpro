@@ -633,6 +633,9 @@ $transition-close-delay: 0.05s;
         transition-delay: $transition-close-delay;
       }
     }
+    .logo-text-string {
+      display: none;
+    }
     .logo-text svg {
       height: 30px;
     }
