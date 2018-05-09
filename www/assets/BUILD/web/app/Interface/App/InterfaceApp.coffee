@@ -32,7 +32,8 @@ define [
   'jquery',
   'moment',
   'momentTimezone',
-  'DeskPRO/Directive/DpDateTimePicker'
+  'DeskPRO/Directive/DpDateTimePicker',
+  'customEventPolyfill'
 ], (
   angular,
 
