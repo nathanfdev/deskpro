@@ -506,7 +506,7 @@ $CONFIG['agent_interface_css2'] = [
 ];
 
 $CONFIG['reports_interface_css1'] = [
-    'out'     => 'css/agent-interface2.css',
+    'out'     => 'css/reports-interface1.css',
     'filters' => ['less'],
     'files'   => [
         'stylesheets-less/agent/agent.less',
