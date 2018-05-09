@@ -33,6 +33,8 @@ class PersonSqlTest extends BaseTicketSqlMatcherTest
             new TicketBasicTermsHandler(),
             new PersonTermsHandler($repos),
         ], ConnectionMock::create(), TicketSqlMatcher::ACTIVE);
+
+        $this->matcher->disableContextPermissions();
     }
 
     public function test_id()

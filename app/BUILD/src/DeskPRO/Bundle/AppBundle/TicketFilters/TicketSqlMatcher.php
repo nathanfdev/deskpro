@@ -38,6 +38,11 @@ class TicketSqlMatcher extends AbstractMatcher
     private $customFieldSet;
 
     /**
+     * @var bool
+     */
+    private $applyContextPermissions = true;
+
+    /**
      * TicketSqlMatcher constructor.
      *
      * @param ValueResolver  $valueResolver
@@ -57,6 +62,22 @@ class TicketSqlMatcher extends AbstractMatcher
 
         $this->mode           = $mode;
         $this->customFieldSet = $customFieldSet ?: new CustomFieldSet();
+    }
+
+    /**
+     * Enable context permissions on the query builder.
+     */
+    public function enableContextPermissions()
+    {
+        $this->applyContextPermissions = true;
+    }
+
+    /**
+     * Disable context permissions on the query builder.
+     */
+    public function disableContextPermissions()
+    {
+        $this->applyContextPermissions = false;
     }
 
     /**
@@ -160,6 +181,13 @@ class TicketSqlMatcher extends AbstractMatcher
                 $qb->addQueryConditionGroup($cond);
             } else {
                 $qb->addQueryCondition($cond);
+            }
+        }
+
+        if ($this->applyContextPermissions) {
+            $agentCond = self::buildPermissionConditionForAgent($context->getAgent());
+            if ($agentCond) {
+                $qb->addQueryConditionGroup($agentCond);
             }
         }
 
