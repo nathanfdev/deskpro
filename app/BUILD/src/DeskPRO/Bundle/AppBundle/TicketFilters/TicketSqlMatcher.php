@@ -390,7 +390,7 @@ class TicketSqlMatcher extends AbstractMatcher
                     break;
 
                 default:
-                    list($fieldType, $customFieldId) = Terms::parseCustomFieldId($fieldId);
+                    list($fieldType, $customFieldId) = $this->customFieldSet->parseCustomFieldId($fieldId);
 
                     /** @var CustomField $field */
                     $field = null;
