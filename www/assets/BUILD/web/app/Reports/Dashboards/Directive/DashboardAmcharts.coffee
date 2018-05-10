@@ -144,8 +144,6 @@ define ['handlebars'], (Handlebars) ->
               return g
             )
 
-          console.log(widget)
-
           if chart and widget.dataProvider
             chart.dataProvider = widget.dataProvider
           else
