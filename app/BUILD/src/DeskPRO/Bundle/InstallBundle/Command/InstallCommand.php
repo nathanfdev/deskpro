@@ -15,6 +15,7 @@ use DeskPRO\Component\Util\EnvUtils;
 use DeskPRO\Component\Util\RandUtils;
 use DeskPRO\Component\Util\TypeUtils;
 use DpRun\DpEnv;
+use DpSys\CodePlugin\DpPlugins;
 use DpSys\LowError\SystemErrorHandler;
 use Orb\Util\Strings;
 use Symfony\Bundle\FrameworkBundle\Command\ContainerAwareCommand;
@@ -41,6 +42,7 @@ class InstallCommand extends ContainerAwareCommand
             ->addOption('dev', null, InputOption::VALUE_NONE, 'Shortcut for --restart, --skip-wizard, --opt_skip_recommendations, --install-source dev')
             ->addOption('user', null, InputOption::VALUE_REQUIRED, 'Shortcut for specifying all user info at once. It must be a comma-separated value of "name, email, password" or "email, password". Ex: --user "John Doe, foo@bar.com, mypassword"')
             ->addOption('advanced', null, InputOption::VALUE_NONE, 'If you want to set up advanced settings')
+            ->addOption('flag', null, InputOption::VALUE_REQUIRED | InputOption::VALUE_REQUIRED, 'Set properties in name:value')
             ->addOption('install-source', null, InputOption::VALUE_REQUIRED, 'From where this installer is being called from (internally used)');
 
         foreach (InstallProfile::getQuestionIds() as $qid) {
@@ -127,6 +129,26 @@ class InstallCommand extends ContainerAwareCommand
 
             return $step_id;
         }, $input->getOption('skip'));
+
+        if ($input->getOption('flag')) {
+            foreach ($input->getOption('flag') as $f) {
+                $f = explode(':', $f, 2);
+                if (!isset($f[1])) {
+                    $f[1] = true;
+                }
+
+                if ($f[1] === '1' || $f[1] === '0' || $f[1] === 1 || $f[1] === 0) {
+                    $f[1] = (bool) $f[1];
+                }
+
+                $session->setFlag($f[0], $f[1]);
+            }
+        }
+
+        $extraOpts = DpPlugins::getManager()->getOptionsArray(self::class);
+        foreach ($extraOpts as $k => $v) {
+            $session->setFlag($k, $v);
+        }
 
         //------------------------------
         // Make sure we can save the session ifo

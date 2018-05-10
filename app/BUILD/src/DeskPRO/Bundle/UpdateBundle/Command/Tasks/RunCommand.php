@@ -5,6 +5,7 @@ namespace DeskPRO\Bundle\UpdateBundle\Command\Tasks;
 use Application\DeskPRO\Monolog\Logger;
 use DeskPRO\Bundle\AppBundle\Util\BinariesPathValidator;
 use Monolog\Handler\StreamHandler;
+use Symfony\Bridge\Monolog\Formatter\ConsoleFormatter;
 use Symfony\Bridge\Monolog\Handler\ConsoleHandler;
 use Symfony\Bundle\FrameworkBundle\Command\ContainerAwareCommand;
 use Symfony\Component\Console\Input\InputInterface;
