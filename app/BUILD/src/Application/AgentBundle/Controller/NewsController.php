@@ -374,6 +374,11 @@ class NewsController extends AbstractController
             $catStructureData = Arrays::assocToNumericArray($catStructureData, 'children');
         }
 
+        $perms = [
+            'can_edit'   => $this->person->PermissionsManager->PublishChecker->canEdit($category),
+            'can_delete' => $this->person->PermissionsManager->PublishChecker->canDelete($category),
+        ];
+
         return $this->render($tpl, [
             'results'            => $results,
             'result_id'          => $resultCache['id'],
@@ -386,6 +391,7 @@ class NewsController extends AbstractController
             'num_pages'          => $numPages,
             'cur_page'           => $page,
             'showing_to'         => $showingTo,
+            'perms'              => $perms,
         ]);
     }
 

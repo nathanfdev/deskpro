@@ -896,6 +896,11 @@ class KbController extends AbstractController
             $articleCategories = [];
         }
 
+        $perms = [
+            'can_edit'   => $this->person->PermissionsManager->PublishChecker->canEdit($category),
+            'can_delete' => $this->person->PermissionsManager->PublishChecker->canDelete($category),
+        ];
+
         return $this->render($tpl, [
             'results'        => $results,
             'result_id'      => $resultCache['id'],
@@ -919,6 +924,7 @@ class KbController extends AbstractController
 
             'article_categories' => $articleCategories,
             'brands'             => $brands,
+            'perms'              => $perms,
         ]);
     }
 

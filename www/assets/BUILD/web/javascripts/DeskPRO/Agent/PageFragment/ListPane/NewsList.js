@@ -110,7 +110,7 @@ DeskPRO.Agent.PageFragment.ListPane.NewsList = new Orb.Class({
 			if (checked) {
 				ugOther.prop('checked', true);
 				ugOther.prop('disabled', true);
-			} else {
+			} else if (!ugEveryone.prop('disabled')) {
 				ugOther.prop('disabled', false);
 			}
 		};

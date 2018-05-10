@@ -206,7 +206,7 @@ pageMeta.baseId = '{{ baseId }}';
 						<dt>{{ phrase('agent.publish.slug') }}</dt>
 						<dd>
 							<span id="{{ baseId }}_slug">{{ article.slug }}</span>
-							<button class="clean-white" id="{{ baseId }}_editslug" data-prompt="{{ phrase('agent.publish.slug_edit_prompt') }}">
+							<button class="clean-white noedit-hide" id="{{ baseId }}_editslug" data-prompt="{{ phrase('agent.publish.slug_edit_prompt') }}">
 								{{ phrase('agent.publish.slug_edit') }}
 							</button>
 						</dd>
@@ -265,7 +265,13 @@ pageMeta.baseId = '{{ baseId }}';
 							{% endif %}
 						{% endif %}
 
-						<dd id="{{baseId}}_auto_unpub" {% if not (article.status == 'published') %}style="display: none"{% endif %}>
+            <dd id="{{baseId}}_auto_unpub_readonly" {% if not (article.status == 'published') or perms.can_edit %}style="display: none"{% endif %}>
+              <span class="auto-unpublish" {% if not article.date_end %}style="display: none"{% endif %}>
+                {{ phrase('user.knowledgebase.auto_action_on_date', {action: article.end_action|default('unpublish'), date: article.date_end|date('day')}, true) }}
+              </span>
+            </dd>
+
+						<dd id="{{baseId}}_auto_unpub" {% if not (article.status == 'published' and perms.can_edit) %}style="display: none"{% endif %}>
 							<div class="auto-unpublish" {% if not article.date_end %}style="display: none"{% endif %}>
 								{% set phrase_part1 %}<span class="end-action opt" data-val="{{article.end_action|default('unpublish')}}">{{article.end_action|default(phrase('agent.general.unpublish'))}}</span>{% endset %}
 								{% set phrase_part2 %}
@@ -288,7 +294,13 @@ pageMeta.baseId = '{{ baseId }}';
 							</ul>
 						</dd>
 
-						<dd id="{{baseId}}_auto_pub" {% if not (article.hidden_status == 'unpublished') %}style="display: none"{% endif %}>
+            <dd id="{{baseId}}_auto_pub_readonly" {% if not (article.hidden_status == 'unpublished') or perms.can_edit %}style="display: none"{% endif %}>
+              <span class="auto-publish" {% if not article.date_published %}style="display: none"{% endif %}>
+                {{ phrase('user.knowledgebase.auto_action_on_date', {action: phrase('agent.general.publish'), date: article.date_published|date('day')}, true) }}
+              </span>
+            </dd>
+
+						<dd id="{{baseId}}_auto_pub" {% if not (article.hidden_status == 'unpublished' and perms.can_edit) %}style="display: none"{% endif %}>
 							<span class="auto-publish" {% if not article.date_published %}style="display: none"{% endif %}>
 								{% set phrase_part1 %}{{ phrase('agent.general.publish') }}{% endset %}
 								{% set phrase_part2 %}

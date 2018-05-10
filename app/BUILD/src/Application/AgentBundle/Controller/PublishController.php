@@ -41,6 +41,7 @@ use DeskPRO\Bundle\PortalBundle\Brand\BrandStack;
 use Orb\Util\Arrays;
 use Orb\Util\Numbers;
 use Orb\Util\Strings;
+use Symfony\Component\HttpKernel\Exception\AccessDeniedHttpException;
 
 class PublishController extends AbstractController
 {
@@ -852,6 +853,10 @@ class PublishController extends AbstractController
         //------------------------------
 
         if ($saveCategory['id'] && $cat = $this->em->getRepository($entityName)->find($saveCategory['id'])) {
+            if (!$this->person->PermissionsManager->PublishChecker->canEdit($cat)) {
+                throw new AccessDeniedHttpException();
+            }
+
             if ($saveCategory['title']) {
                 $cat->setTitle($saveCategory['title']);
                 $this->getContainer()->get('category_slug_manager')->ensureValidSlug($cat);
@@ -1023,6 +1028,9 @@ class PublishController extends AbstractController
 
     public function addCategoryFormSaveAction($type)
     {
+        if (!$this->person->PermissionsManager->PublishChecker->canCreate()) {
+            throw new AccessDeniedHttpException();
+        }
         $class = null;
         switch ($type) {
             case 'article':
@@ -1142,6 +1150,13 @@ class PublishController extends AbstractController
     public function deleteCategoryAction($type)
     {
         try {
+            $category = PublishCategoryEdit::findCategoryFor($type, $this->in->getUInt('category_id'));
+            if (!$category) {
+                throw $this->createNotFoundException();
+            }
+            if (!$this->person->PermissionsManager->PublishChecker->canDelete($category)) {
+                throw new AccessDeniedHttpException();
+            }
             PublishCategoryEdit::deleteCategory($type, $this->in->getUInt('category_id'));
         } catch (\OutOfBoundsException $e) {
             return $this->createJsonResponse([

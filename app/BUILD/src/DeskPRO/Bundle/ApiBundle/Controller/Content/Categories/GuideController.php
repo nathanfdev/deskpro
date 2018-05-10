@@ -84,6 +84,9 @@ class GuideController extends AbstractCategoriesController
      */
     public function putTreeAction(Request $request, Guide $guide)
     {
+        if (!$this->getUser()->PermissionsManager->PublishChecker->canEdit($guide)) {
+            throw $this->createAccessDeniedException();
+        }
         $tree = $request->request->get('tree');
 
         $tree = self::fixParentId($tree);

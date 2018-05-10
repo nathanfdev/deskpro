@@ -411,6 +411,11 @@ class GuideController extends PublishController
         /** @var Brand[] $brands */
         $brands = $this->em->getRepository(Brand::class)->findAll();
 
+        $perms = [
+            'can_edit'   => $this->person->PermissionsManager->PublishChecker->canEdit($guide),
+            'can_delete' => $this->person->PermissionsManager->PublishChecker->canDelete($guide),
+        ];
+
         return $this->render($tpl, [
             'results'            => $results,
             'display_fields'     => $displayFields,
@@ -422,6 +427,7 @@ class GuideController extends PublishController
             'cur_page'           => 1,
             'showing_to'         => $totalResults,
             'brands'             => $brands,
+            'perms'              => $perms,
         ]);
     }
 

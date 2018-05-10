@@ -91,7 +91,7 @@ pageMeta.baseId = '{{ baseId }}';
 		<header>
 			<div class="controls" id="{{baseId}}_editfile_controls">
 				<div class="is-loading">{{ phrase('agent.general.saving') }}</div>
-				<button class="edit-trigger">{{ phrase('user.downloads.change_file') }}</button>
+				<button class="edit-trigger noedit-hide">{{ phrase('user.downloads.change_file') }}</button>
 				<button class="cancel-trigger" style="display: none">{{ phrase('agent.general.cancel') }}</button>
 				<button class="save-trigger" id="{{baseId}}_org_edit_save" style="display: none">{{ phrase('agent.general.save') }}</button>
 			</div>
@@ -146,7 +146,7 @@ pageMeta.baseId = '{{ baseId }}';
 				<dt>{{ phrase('agent.publish.slug') }}</dt>
 				<dd>
 					<span id="{{ baseId }}_slug">{{ download.slug }}</span>
-					<button class="clean-white" id="{{ baseId }}_editslug" data-prompt="{{ phrase('agent.publish.slug_edit_prompt') }}">
+					<button class="clean-white noedit-hide" id="{{ baseId }}_editslug" data-prompt="{{ phrase('agent.publish.slug_edit_prompt') }}">
 						{{ phrase('agent.publish.slug_edit') }}
 					</button>
 				</dd>
