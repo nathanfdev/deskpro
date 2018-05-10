@@ -42,7 +42,7 @@
 {# Articles #}
 {##################################}
 
-<div id="{{ tplvars.baseId }}_tab_main">
+<div id="{{ tplvars.baseId }}_tab_main" class="{% if not perms.can_delete %}perm-no-delete{% endif %} {% if not perms.can_edit %}perm-no-edit{% endif %}">
 
 	{% include 'AgentBundle:Kb:filter-display-options.html.twig' %}
 	{% include 'AgentBundle:Kb:filter-control-bar.html.twig' %}
