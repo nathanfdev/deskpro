@@ -152,7 +152,7 @@ abstract class AbstractJsonRenderer extends AbstractRenderer
                 }
             }
 
-            foreach ($result['graphs'] as $resultIndex => &$graph) {
+            foreach ($result['graphs'] as &$graph) {
                 $graph['valueField'] = $resultIndex.'_'.$graph['valueField'];
                 $graph['id']         = $resultIndex.'_'.$graph['id'];
                 $graph['clustered']  = false;
