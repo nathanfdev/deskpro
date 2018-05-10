@@ -23,13 +23,21 @@ class Hierarchy
      */
     public static function isHierarchical(SqlSelect $sql, $forceHierarchy)
     {
-        $isGrouping          = count($sql->getGroupBy()) >= 1;
-        $isSimpleGrouping    = count($sql->getGroupBy()) === 1;
-        $groupingTargetTable = self::getGroupingTargetTable($sql);
+        $isGrouping       = count($sql->getGroupBy()) >= 1;
+        $isSimpleGrouping = count($sql->getGroupBy()) === 1;
+
+        list($groupingTargetTable, $groupingTargetField) = self::getGroupingTargetTable($sql, true);
+
+        // hierarchy if:
+        // we actually have a grouping
+        // the grouping table is a known hierarchical table
+        // or we're selecting a group field that s a custom field
+        //     -- that field needs to be an 'id' field (value,input values are not hierarchical)
+        // or if we see a def table, then just assume hierarchical
 
         if ((($isGrouping && $forceHierarchy) || $isSimpleGrouping) && (
                 in_array($groupingTargetTable, self::$hierarchicalTables)
-                || (is_string($groupingTargetTable) && strpos($groupingTargetTable, 'custom_data_') === 0)
+                || (is_string($groupingTargetTable) && $groupingTargetField === 'id' && strpos($groupingTargetTable, 'custom_data_') === 0)
                 || (is_string($groupingTargetTable) && strpos($groupingTargetTable, 'custom_def_') === 0)
             )) {
             return true;
@@ -42,13 +50,17 @@ class Hierarchy
     }
 
     /**
+     * Gets the table the grouping clause is on. This is the name as it appears in the query (i.e. could be
+     * an alias). getGroupingTargetTable() is the "real" table name (i.e. de-aliased).
+     *
      * @param SqlSelect $sql
+     * @param bool      $returnFieldName Return an array of [table, fieldName] instead of just table
      *
      * @throws DpqlException
      *
-     * @return string|null
+     * @return string|string[]|null
      */
-    public static function getGroupingTargetTableReference(SqlSelect $sql)
+    public static function getGroupingTargetTableReference(SqlSelect $sql, $returnFieldName = false)
     {
         if (!$table = self::getGroupingTargetTable($sql)) {
             return;
@@ -63,6 +75,12 @@ class Hierarchy
             }
             preg_match('/`(.+)`\.`(.+)`/isU', $joins[0], $groupByData);
             if (count($groupByData) > 0) {
+                if ($returnFieldName) {
+                    // [table, fieldName]
+                    // eg [tickets_custom_data_x, id]
+                    return [$groupByData[1], $groupByData[2]];
+                }
+
                 return $groupByData[1];
             }
         }
@@ -71,11 +89,14 @@ class Hierarchy
     }
 
     /**
-     * @param SqlSelect $sql
+     * Gets the table the grouping clause is on.
      *
-     * @return null|string
+     * @param SqlSelect $sql
+     * @param bool      $returnFieldName Return an array of [table, fieldName] instead of just table
+     *
+     * @return string|string[]|null
      */
-    public static function getGroupingTargetTable(SqlSelect $sql)
+    public static function getGroupingTargetTable(SqlSelect $sql, $returnFieldName = false)
     {
         if (count($groupBy = $sql->getGroupBy()) >= 1) {
             preg_match('/`(.+)`\.`(.+)`/isU', $groupBy[0], $groupByData);
@@ -86,8 +107,12 @@ class Hierarchy
                     preg_match("/.+`(.+)` AS `$tableAlias`.+/isU", $joins[$tableAlias], $joinData);
                     if (count($joinData) > 0) {
                         $joinTable = $joinData[1];
-                        if (strpos($joinTable, 'custom_data_') === 0) {
-                            return str_replace('custom_data_', 'custom_def_', $joinTable);
+                        //if (strpos($joinTable, 'custom_data_') === 0) {
+                        //    return str_replace('custom_data_', 'custom_def_', $joinTable);
+                        //}
+
+                        if ($returnFieldName) {
+                            return [$joinTable, $groupByData[2]];
                         }
 
                         return $joinTable;
