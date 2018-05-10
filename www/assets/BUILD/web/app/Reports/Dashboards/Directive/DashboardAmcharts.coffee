@@ -76,6 +76,12 @@ define ['handlebars'], (Handlebars) ->
                 scope.noData = true
 
                 drawWidget response
+          else if DashboardWidgetService.widgetsResults and DashboardWidgetService.widgetsResults[scope.widgetId]
+            DashboardWidgetService.widgetsResults[scope.widgetId].promise.then (renderedResult) =>
+              scope.loaded = true
+              scope.noData = true
+              if renderedResult && (renderedResult.dataProvider || renderedResult.axes?[0]?.bands?)
+                drawWidget(renderedResult)
           else
             DashboardWidgetService
               .getWidget(scope.widgetId || 0)
