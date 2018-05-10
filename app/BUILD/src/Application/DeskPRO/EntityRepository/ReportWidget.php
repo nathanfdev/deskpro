@@ -254,7 +254,7 @@ class ReportWidget extends AbstractEntityRepository
                 'last_year'                                      => ['last year', '%LAST_YEAR%'],
                 'past_24_hours'                                  => ['in the past 24 hours', '%PAST_24_HOURS%'],
                 'past_12_hours'                                  => ['in the past 12 hours', '%PAST_12_HOURS%'],
-                'past_hour'                                      => ['in the past hour', '%PAST_DPQL_HOUR%'],
+                'past_hour'                                      => ['in the past hour', '%PAST_HOUR%'],
                 'past_7_days'                                    => ['in the past 7 days', '%PAST_7_DAYS%'],
                 'past_30_days'                                   => ['in the past 30 days', '%PAST_30_DAYS%'],
                 'ever'                                           => ['any time', '%EVER%'],
