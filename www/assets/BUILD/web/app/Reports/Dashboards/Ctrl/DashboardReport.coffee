@@ -73,7 +73,7 @@ define ['DeskPRO/Util/Arrays'], (Arrays) -> [
       agents.map((agent) => $scope.agents[agent.id] = agent)
     )
 
-    $q.all(load_promises).then(-> $scope.updateReportVariables(() => $scope.loaded = true))
+    $q.all(load_promises).then(-> $scope.updateReportVariables(false, () => $scope.loaded = true))
 
     # just reload info when its been changed
     $scope.$watch('dashboard.version_id + \'.\' + dashboard.reports_version_id', (n, o) ->
@@ -122,7 +122,7 @@ define ['DeskPRO/Util/Arrays'], (Arrays) -> [
           $scope.widgets.splice(index, 1)
           DashboardsInfo.getReportDetail($scope.report.id, true).then((loadedReport) ->
             $scope.report.variables = loadedReport.variables
-            $scope.updateReportVariables()
+            $scope.updateReportVariables(true)
           )
 
     $scope.download = (widget) ->
@@ -212,7 +212,7 @@ define ['DeskPRO/Util/Arrays'], (Arrays) -> [
           )
 
         $q.all(reloadPromises).then(->
-          $scope.updateReportVariables(() => $scope.loaded = true)
+          $scope.updateReportVariables(false, () => $scope.loaded = true)
         )
       )
 
@@ -220,11 +220,10 @@ define ['DeskPRO/Util/Arrays'], (Arrays) -> [
       permission = $scope.dashboard.permissions.filter((permission) => permission.person == parseInt(window.DP_PERSON_ID))[0]
       return permission and permission.view_all
 
-    $scope.updateReportVariables = (cb) ->
+    $scope.updateReportVariables = (forceUpdate = false, cb = null) ->
 
-
-
-      if !$scope.report || !$scope.widgets.length || !$scope.dashboard || !$scope.me
+      if !$scope.report || (!$scope.widgets.length && !forceUpdate)|| !$scope.dashboard || !$scope.me
+        if cb then cb()
         return
 
       vars = []
