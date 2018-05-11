@@ -25,6 +25,7 @@ define ['DeskPRO/Util/Arrays'], (Arrays) -> [
       variables: []
     }
     $scope.widgets = []
+    $scope.groupParams = DashboardWidgetService.groupParams
 
     report_id = parseInt($stateParams.report_id)
 
@@ -53,8 +54,6 @@ define ['DeskPRO/Util/Arrays'], (Arrays) -> [
 
       DashboardsInfo.getDashboardDetail(loadedReport.dashboard).then( (db) ->
         $scope.dashboard = db
-        $scope.groupParams = DashboardWidgetService.groupParams
-        $scope.loaded = true
       )
     )
 
@@ -72,7 +71,7 @@ define ['DeskPRO/Util/Arrays'], (Arrays) -> [
       agents.map((agent) => $scope.agents[agent.id] = agent)
     )
 
-    $q.all(load_promises).then(-> $scope.updateReportVariables())
+    $q.all(load_promises).then(-> $scope.updateReportVariables(() => $scope.loaded = true))
 
     # just reload info when its been changed
     $scope.$watch('dashboard.version_id + \'.\' + dashboard.reports_version_id', (n, o) ->
@@ -197,23 +196,32 @@ define ['DeskPRO/Util/Arrays'], (Arrays) -> [
 
 
     $scope.changeReportLevelVar = () ->
+      $scope.loaded = false
+
       DashboardService.saveReportVars($scope.report).then( () ->
+        reloadPromises = []
         $scope.widgets = [];
-        DashboardsInfo.getReportDetail($scope.report.id, true).then((loadedReport) ->
+        reloadPromises.push DashboardsInfo.getReportDetail($scope.report.id, true).then((loadedReport) ->
           $scope.report = loadedReport
         )
-        DashboardWidgetService.getWidgets(report_id).then((widgets) ->
-          $scope.widgets = widgets
-          $scope.updateReportVariables()
+
+        reloadPromises.push DashboardWidgetService.getWidgets(report_id).then((widgets) ->
+            $scope.widgets = widgets
+          )
+
+        $q.all(reloadPromises).then(->
+          $scope.updateReportVariables(() => $scope.loaded = true)
         )
-        $scope.updateReportVariables()
       )
 
     $scope.canViewAllAgents = () ->
       permission = $scope.dashboard.permissions.filter((permission) => permission.person == parseInt(window.DP_PERSON_ID))[0]
       return permission and permission.view_all
 
-    $scope.updateReportVariables = () ->
+    $scope.updateReportVariables = (cb) ->
+
+      console.log($scope.report.variables)
+
       if !$scope.report || !$scope.widgets || !$scope.dashboard || !$scope.me
         return
 
@@ -226,7 +234,7 @@ define ['DeskPRO/Util/Arrays'], (Arrays) -> [
           if variable.value == 'from_report_value'
             cloneVar = $.extend({}, variable);
             cloneVar.value = ''
-            $scope.report.variables.map((reportVar) ->
+            angular.forEach($scope.report.variables, (reportVar) ->
               if reportVar.name == cloneVar.name
                 cloneVar.value = reportVar.value
             )
@@ -244,4 +252,6 @@ define ['DeskPRO/Util/Arrays'], (Arrays) -> [
       )
 
       $scope.report.variables = vars
+
+      if cb then cb()
   ]
