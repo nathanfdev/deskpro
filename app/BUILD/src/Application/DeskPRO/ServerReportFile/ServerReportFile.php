@@ -647,7 +647,7 @@ class ServerReportFile
         $content = '';
 
         $content .= '### '.App::getContainer()->getBrandSetting('core.deskpro_url')."\n";
-        $content .= '### DeskPRO Build: '.$this->appEnv->getVersionName()."\n";
+        $content .= '### DeskPRO Build: '.$this->appEnv->getVersionName()." -- {$this->appEnv->getBuildId()}\n";
         $content .= '### Generated: '.date('Y-m-d H:i:s')."\n\n";
 
         $content .= 'License ID: '.$license->getLicenseId()."\n";
