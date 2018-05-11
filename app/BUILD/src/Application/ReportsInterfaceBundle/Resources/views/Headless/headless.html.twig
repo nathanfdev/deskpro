@@ -141,6 +141,12 @@
             cursor: text;
         }
     </style>
+    <style>
+        html {
+            height: {{ printConfig['height'] }};
+            width: {{ printConfig['width'] }};
+        }
+    </style>
     <script type="text/javascript" src="{{ asset('vendor/html5shiv.min.js') }}"></script>
 </head>
 <body>

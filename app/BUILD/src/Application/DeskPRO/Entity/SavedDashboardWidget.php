@@ -170,6 +170,38 @@ class SavedDashboardWidget extends DomainObject
     }
 
     /**
+     * @return mixed
+     */
+    public function getSizeX()
+    {
+        return (int) explode(':', $this->size)[0];
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getSizeY()
+    {
+        return (int) explode(':', $this->size)[1];
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getCol()
+    {
+        return (int) explode(':', $this->position)[1];
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getRow()
+    {
+        return (int) explode(':', $this->position)[0];
+    }
+
+    /**
      * @param string $size
      *
      * @throws \Exception

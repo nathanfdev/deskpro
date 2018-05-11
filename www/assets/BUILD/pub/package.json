@@ -68,6 +68,7 @@
     "notifyjs": "^3.0.0",
     "post-robot": "^7.0.8",
     "prop-types": "^15.6.0",
+    "puppeteer": "^1.0.0",
     "pusher-js": "3.0.0",
     "qrcode.react": "^0.7.2",
     "randomstring": "1.1.5",
