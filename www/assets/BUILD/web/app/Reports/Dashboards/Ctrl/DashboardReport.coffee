@@ -28,6 +28,7 @@ define ['DeskPRO/Util/Arrays'], (Arrays) -> [
     $scope.groupParams = DashboardWidgetService.groupParams
 
     report_id = parseInt($stateParams.report_id)
+    $scope.report_id = parseInt($stateParams.report_id)
 
     $scope.gridsterOptions =
       margins: [13, 13],
@@ -51,6 +52,7 @@ define ['DeskPRO/Util/Arrays'], (Arrays) -> [
     load_promises = []
     load_promises.push DashboardsInfo.getReportDetail(report_id).then((loadedReport) ->
       $scope.report = loadedReport
+      $scope.report.variables = loadedReport.variables
 
       DashboardsInfo.getDashboardDetail(loadedReport.dashboard).then( (db) ->
         $scope.dashboard = db
@@ -76,7 +78,6 @@ define ['DeskPRO/Util/Arrays'], (Arrays) -> [
     # just reload info when its been changed
     $scope.$watch('dashboard.version_id + \'.\' + dashboard.reports_version_id', (n, o) ->
       return if not o
-
       reloadPromises = []
       if $scope.report.dashboard
         reloadPromises.push DashboardsInfo.getDashboardDetail($scope.report.dashboard).then( (db) ->
@@ -85,6 +86,7 @@ define ['DeskPRO/Util/Arrays'], (Arrays) -> [
 
       reloadPromises.push DashboardsInfo.getReportDetail(report_id).then((loadedReport) ->
         $scope.report = loadedReport
+        $scope.report.variables = loadedReport.variables
         $scope.updateReportVariables()
       )
 
@@ -220,9 +222,9 @@ define ['DeskPRO/Util/Arrays'], (Arrays) -> [
 
     $scope.updateReportVariables = (cb) ->
 
-      console.log($scope.report.variables)
 
-      if !$scope.report || !$scope.widgets || !$scope.dashboard || !$scope.me
+
+      if !$scope.report || !$scope.widgets.length || !$scope.dashboard || !$scope.me
         return
 
       vars = []
