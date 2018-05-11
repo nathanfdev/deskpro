@@ -564,7 +564,7 @@ GROUP BY DPQL_MATRIX(${ticket}, ${ticket_2})',
                 'variables' => '[{"name":"ticket","type":"fields","field_type":"tickets","table":"tickets","default":"department"},{"name":"ticket_2","type":"fields","field_type":"tickets","table":"tickets","default":"agent"},{"name":"date","type":"dates"}]',
             ],
         'tickets-created-x-date-grouped-by-department' => [
-            'title'         => 'Number of tickets created ${date} grouped by ${ticket}',
+            'title'         => 'Number of tickets created ${date} grouped by department',
             'labels'        => 'tickets',
             'description'   => '',
             'display_types' => 'simple_bars,pie,simple_area,simple_lines',
