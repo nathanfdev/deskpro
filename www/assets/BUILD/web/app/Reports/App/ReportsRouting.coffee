@@ -109,3 +109,12 @@ define -> (States) ->
     .setUrl('/ticket_satisfaction')
     .setCtrl('Reports.TicketSatisfaction')
     .setTpl('ReportsInterfaceBundle:TicketSatisfaction:widget.html')
+
+
+  # open agent links in parent window when clicking in iframe
+  $(document).on 'click', (e) =>
+    href = $(e.target).attr('href')
+    if !href || 0 != href.indexOf('/agent/#') then return
+    e.preventDefault()
+    event = new CustomEvent('dpHashChange', { detail: { hash: href.replace(/.+(#.+)/, "$1") } } )
+    window.parent.document.dispatchEvent(event)
