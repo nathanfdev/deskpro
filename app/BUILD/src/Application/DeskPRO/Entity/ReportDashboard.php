@@ -25,6 +25,8 @@ class ReportDashboard extends DomainObject
     protected $id = null;
 
     /**
+     * @Assert\NotBlank()
+     *
      * @var string
      */
     protected $title = '';
