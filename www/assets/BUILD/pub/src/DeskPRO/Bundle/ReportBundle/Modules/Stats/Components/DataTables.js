@@ -12,13 +12,17 @@ class DataTable extends React.Component {
   };
 
   static defaultProps = {
-    options: {}
+    options: {
+      height: 200
+    }
   };
 
   componentDidMount() {
     const { data, columns, options } = this.props;
+    const $table = $(this.el);
+    const self = this;
 
-    $(this.el).DataTable({
+    $table.DataTable({
       data,
       columns,
       dom:            '<"data-table-wrapper"t>',
@@ -27,6 +31,16 @@ class DataTable extends React.Component {
       bJQueryUI:      true,
       iDisplayLength: 5,
       sDom:           'T<"clear">lfrtip',
+      deferRender:    true,
+      fnDrawCallback: (settings) => {
+        // eslint-disable-next-line no-underscore-dangle
+        if (settings._iDisplayLength === -1 || settings._iDisplayLength >= settings.fnRecordsDisplay()) {
+          $(settings.nTableWrapper).find('.dataTables_paginate').hide();
+        } else {
+          $(settings.nTableWrapper).find('.dataTables_paginate').show();
+        }
+        console.log(self.props.options.height);
+      },
       ...options
     });
   }
@@ -45,7 +59,7 @@ class DataTable extends React.Component {
 
   render() {
     return (
-      <div>
+      <div style={{ height: this.props.options.height ? this.props.options.height : 200 }}>
         <table ref={(el) => { this.el = el; }} />
       </div>);
   }

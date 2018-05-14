@@ -102,12 +102,13 @@ class Run extends React.Component {
           data={options.get('data').toJS()}
           columns={options.get('columns').toJS()}
           options={{
-            deferRender:    true,
             scrollCollapse: true,
             autoWidth:      true,
             pageResize:     true,
             ordering:       false,
+            searching:      false,
             lengthChange:   true,
+            height:         400
           }}
         />);
       case 'stat':

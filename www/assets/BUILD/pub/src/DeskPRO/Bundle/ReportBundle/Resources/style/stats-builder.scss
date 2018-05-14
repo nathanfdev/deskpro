@@ -543,7 +543,44 @@
     border-top: 1px solid $global-border;
 
     .dataTables_wrapper {
-      width: 500px;
+      border: none !important;
+      padding-top: 8px;
+
+      div.dataTables_length {
+        display: none;
+      }
+
+      table.dataTable.display tbody tr.even > td, table.dataTable.display tbody tr.odd > td {
+        background-color: #fff !important;
+        border: none !important;
+      }
+      table.dataTable thead th {
+        font-weight: bold;
+        text-align: left;
+      }
+
+      .dataTables_info {
+        font-size: 11px;
+        color: #888;
+      }
+      .dataTables_paginate {
+        font-size: 11px;
+        .paginate_button.disabled {
+          display: none;
+        }
+        .paginate_button, .paginate_button.current, .paginate_button:hover {
+          border: none !important;
+          background: transparent !important;
+          min-width: auto;
+          width: auto;
+          color: #888 !important;
+          margin: 0;
+          padding: 0.5em;
+        }
+        .paginate_button.current, .paginate_button:hover {
+          color: #000 !important;
+        }
+      }
     }
 
     .box {
