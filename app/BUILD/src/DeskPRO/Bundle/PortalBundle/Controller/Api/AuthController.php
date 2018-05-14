@@ -78,7 +78,7 @@ class AuthController extends AbstractApiController
             $this->isGranted(UseSectionVoter::USE_CHAT),
             $this->container->get('language_stack')->getActiveOrDefault(),
             $lastChat ? $lastChat->getAuthId() : null,
-            $this->get('deskpro.app_env')->getVersionName()
+            $this->get('deskpro.app_env')->getBuildId()
         );
 
         return new View($this->wrap($model));

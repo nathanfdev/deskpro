@@ -27,7 +27,7 @@
 	window.DP_HAS_NEW_REPORTS  = {% if app.hasBeta('new_reports') %}true{% else %}false{% endif %};
 	window.DP_HAS_NEW_FILTERS  = {% if app.hasBeta('new_filters') %}true{% else %}false{% endif %};
 	window.DP_HAS_FOLLOW_UP    = {% if app.hasBeta('follow_up') %}true{% else %}false{% endif %};
-	window.DP_VERSION_NUMBER   = '{{ app.getVersionName() }}';
+    window.DP_BUILD_ID         = '{{ app.getBuildId() }}';
 
     // Temporary hack to fix images not served
     window.DESKPRO_APP_ASSETS_URL = '{{ asset('', 'app_assets') | replace({'http://localhost:9666/': '/' ~ path('user')|ltrim('/') ~ 'assets/BUILD/'}) }}';
