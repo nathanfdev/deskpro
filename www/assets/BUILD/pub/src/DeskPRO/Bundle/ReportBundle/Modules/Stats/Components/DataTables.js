@@ -8,24 +8,26 @@ class DataTable extends React.Component {
   static propTypes = {
     columns: PropTypes.array.isRequired,
     data:    PropTypes.array.isRequired,
+    options: PropTypes.object
   };
 
+  static defaultProps = {
+    options: {}
+  };
 
   componentDidMount() {
+    const { data, columns, options } = this.props;
+
     $(this.el).DataTable({
+      data,
+      columns,
       dom:            '<"data-table-wrapper"t>',
-      data:           this.props.data,
-      columns:        this.props.columns,
       pagingType:     'first_last_numbers',
       searching:      false,
-      pageLength:     5,
       bJQueryUI:      true,
       iDisplayLength: 5,
       sDom:           'T<"clear">lfrtip',
-      lengthMenu:     [[5, 10, 25, 50, -1], [5, 10, 25, 50, 'All']],
-      deferRender:    true,
-      scrollCollapse: true,
-      autoWidth:      true
+      ...options
     });
   }
 
