@@ -7,6 +7,7 @@ use Application\InstallBundle\Upgrade\Build\PostBuild;
 use Application\InstallBundle\Upgrade\Build\PostBuildAlways;
 use DeskPRO\Bundle\UpdateBundle\BuildTasks\BuildFactory;
 use Monolog\Handler\StreamHandler;
+use Symfony\Bridge\Monolog\Formatter\ConsoleFormatter;
 use Symfony\Bridge\Monolog\Handler\ConsoleHandler;
 use Symfony\Bundle\FrameworkBundle\Command\ContainerAwareCommand;
 use Symfony\Component\Console\Input\InputInterface;
