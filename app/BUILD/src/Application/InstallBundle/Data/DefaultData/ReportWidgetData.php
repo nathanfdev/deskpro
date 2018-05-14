@@ -24,7 +24,7 @@ class ReportWidgetData extends AbstractDefaultData
             'description'   => 'Agents are online',
             'display_types' => 'simple_stat',
             'display_order' => 40,
-            'query'         => 'SELECT DPQL_COUNT_DISTINCT(sessions.person.id) as \'stat_value\', \'online agents\' as \'stat_description\' 
+            'query'         => 'SELECT DPQL_COUNT_DISTINCT(sessions.person.id) as \'stat_value\',  IF(DPQL_COUNT_DISTINCT(sessions.person.id) = 1, \'online agent\', \'online agents\') as \'stat_description\' 
 FROM sessions WHERE sessions.person.is_agent = 1 AND sessions.date_last > DPQL_NOW() - INTERVAL 6 MINUTE',
             'variables' => '[]',
         ],
