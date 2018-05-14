@@ -4,15 +4,17 @@
 
 <br /><br />
 
-{{ phrase('portal.emails.ticket_cc-added') }}
+{{ phrase('portal.emails.ticket_cc-added', { author_name: action_performer.name, author_email: action_performer.email })| raw }}
+
+<br /><br />
 
 {% if app.isPortalEnabled() %}
-    <br /><br />
-
-    {{ phrase('portal.emails.ticket_access_ticket_online') }}
+    {{ phrase('portal.emails.ticket_cc-added-reply-view') }}
     <a href="{{ portal_url(ticket) }}">{{ portal_url(ticket) }}</a>
+{% else %}
+    {{ phrase('portal.emails.ticket_cc-added-reply') }}
 {% endif %}
 
 <br /><br />
 
-{{ phrase('portal.emails.end_greeting')| raw }}
+<dp:ticket-messages />

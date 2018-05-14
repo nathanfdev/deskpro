@@ -9,6 +9,7 @@
 namespace Application\DeskPRO\Entity;
 
 use Application\DeskPRO\Domain\DomainObject;
+use Doctrine\ORM\Event\LifecycleEventArgs;
 use Doctrine\ORM\Mapping\ClassMetadata;
 use Doctrine\ORM\Mapping\ClassMetadataInfo;
 use JMS\Serializer\Annotation as JMS;
@@ -156,10 +157,23 @@ class TicketAttachment extends DomainObject
         return $this;
     }
 
-    public function prePersist()
+    /**
+     * @param LifecycleEventArgs $args
+     *
+     * @throws \RuntimeException
+     */
+    public function prePersist(LifecycleEventArgs $args)
     {
-        if (!$this->message->ticket) {
+        $em = $args->getEntityManager();
+
+        if (!$this->message) {
+            throw new \RuntimeException('Unable to add attachment, no message is referred to.');
+        }
+        if (!$this->message->getTicket()) {
             throw new \RuntimeException('Unable to add attachment, message is not added to ticket.');
+        }
+        if (!$em->contains($this->message) && !$em->contains($this->message->getTicket())) {
+            throw new \RuntimeException('Unable to persist attachment, message is not persisted.');
         }
 
         $this->ticket                           = $this->message->ticket;

@@ -324,6 +324,8 @@ return [
     'portal.emails.ticket_access_ticket_online'              => 'View and manage this ticket online:',
     'portal.emails.ticket_cc-added'                          => '{{author_name}}, {{author_email}}, has added you to the ticket {{ticket.subject}}.',
     'portal.emails.ticket_cc-new'                            => 'You have been included in a ticket started by {{name}}.',
+    'portal.emails.ticket_cc-added-reply-view'               => 'Replying to this email will reply to the ticket, or you can view the ticket online here:',
+    'portal.emails.ticket_cc-added-reply'                    => 'Replying to this email will reply to the ticket.',
     'portal.emails.ticket_flood'                             => 'You recently sent an email to our helpdesk. We have detected that you sent many messages in rapid succession that were most likely automated.<br /><br />To prevent an endless loop of automatic emails, our helpdesk will not send any more automatic notification emails to you.',
     'portal.emails.ticket_message_title'                     => 'On {{date}} at {{time}}, {{author}} wrote:',
     'portal.emails.ticket_no-autoresponse'                   => 'Warning: Confirmation emails turned off',

@@ -290,7 +290,8 @@ class SqlSelect
             $limit = false;
         }
 
-        $sql = 'SELECT '.implode(', ', $this->fields);
+        // max exec time here only works on MySQL 5.7+, will be ignored else
+        $sql = 'SELECT /*+ MAX_EXECUTION_TIME('.$this->getMaxExecTime().') */ '.implode(', ', $this->fields);
 
         if (is_string($this->table)) {
             $sql .= "\nFROM `$this->table`";
@@ -307,6 +308,16 @@ class SqlSelect
         self::$lastSql = $sql;
 
         return $sql;
+    }
+
+    /**
+     * Max exec time in ms.
+     *
+     * @return int
+     */
+    private function getMaxExecTime()
+    {
+        return 30000;
     }
 
     /**

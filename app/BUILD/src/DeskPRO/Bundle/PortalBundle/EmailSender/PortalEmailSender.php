@@ -276,31 +276,6 @@ class PortalEmailSender
         }
     }
 
-    public function sendTicketAddedCC(Person $person, Ticket $ticket)
-    {
-        $author = $ticket->getPerson();
-
-        if ($this->container->get('deskpro.feature_flags')->hasBeta('email_templates')) {
-            $viewModel = $this->container->get('email.user_viewmodel_factory')
-                ->createTicketAddCcModel(
-                    $ticket,
-                    $author
-                );
-            $this->container->get('email.email_sender')
-                ->send($viewModel, ['to' => $person]);
-        } else {
-            $this->sendTo(
-                new EmailTo($person),
-                'DeskPRO:emails_user:ticket-add-cc.html.twig',
-                [
-                    'author_email' => $author->getEmailAddress(),
-                    'author_name'  => $author->getName(),
-                    'ticket'       => $ticket,
-                ]
-            );
-        }
-    }
-
     public function sendTo(EmailTo $emailTo, $template, $vars)
     {
         $vars['site_name'] = $this->getSetting('site_name') ?: $this->getSetting('helpdesk_name');

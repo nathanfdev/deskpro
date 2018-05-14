@@ -76,6 +76,8 @@ abstract class BaseTicketSqlMatcherTest extends \PHPUnit_Framework_TestCase
                 new CustomField(5, 'toggle', ['my_toggle']),
             ])),
         ], ConnectionMock::create(), TicketSqlMatcher::ACTIVE);
+
+        $this->matcher->disableContextPermissions();
     }
 
     /**

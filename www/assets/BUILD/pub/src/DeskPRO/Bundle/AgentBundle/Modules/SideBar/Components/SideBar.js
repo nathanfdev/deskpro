@@ -446,6 +446,7 @@ export class SideBar extends React.PureComponent {
             className="logo-text"
             src={`${window.DESKPRO_APP_ASSETS_URL}/DeskPRO/Bundle/AgentBundle/Resources/img/sidebar/logoText.svg`}
           />
+          <span className="logo-text-string">{window.WHITELABEL_GET_NAME ? window.WHITELABEL_GET_NAME() : 'Deskpro'}</span>
         </div>
         {this.getMenuItems()}
       </div>

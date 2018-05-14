@@ -619,7 +619,10 @@ class EzcReader extends AbstractReader
         $mail = $this->decryptedMail ? $this->decryptedMail : $this->mail;
 
         foreach ($mail->fetchParts(['ezcMailText']) as $part) {
-            if ($part->subType == 'plain') {
+            if (
+                $part->subType == 'plain'
+                && !($part->contentDisposition && $part->contentDisposition->disposition == 'attachment')
+            ) {
                 $originalCharset = $this->getOriginalCharset($part);
 
                 $body                   = new Item\BodyText();

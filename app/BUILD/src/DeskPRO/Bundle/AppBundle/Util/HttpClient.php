@@ -30,7 +30,7 @@ class HttpClient extends Client
         }
 
         // cp from \DeskPRO_LowUtil_RequestCurl::setCaBundle
-        if (false !== @$config[RequestOptions::VERIFY] && !$usSysCABundle) {
+        if (isset($config[RequestOptions::VERIFY]) && false !== @$config[RequestOptions::VERIFY] && !$usSysCABundle) {
             $config[RequestOptions::VERIFY] = CaBundle::getBundledCaBundlePath();
         }
 

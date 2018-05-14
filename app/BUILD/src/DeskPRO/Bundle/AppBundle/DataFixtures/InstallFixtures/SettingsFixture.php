@@ -65,7 +65,7 @@ class SettingsFixture extends AbstractFixture implements OrderedFixtureInterface
      */
     private function findOrCreate($name, ObjectManager $manager)
     {
-        $setting = $manager->getRepository(Setting::class)->findBy(['name' => $name]);
+        $setting = $manager->getRepository(Setting::class)->findOneBy(['name' => $name]);
         if (!$setting) {
             $setting       = new Setting();
             $setting->name = $name;
@@ -83,7 +83,7 @@ class SettingsFixture extends AbstractFixture implements OrderedFixtureInterface
      */
     private function findOrCreateForBrand($name, ObjectManager $manager, Brand $brand)
     {
-        $setting = $manager->getRepository(BrandSetting::class)->findBy(['name' => $name, 'brand' => $brand]);
+        $setting = $manager->getRepository(BrandSetting::class)->findOneBy(['name' => $name, 'brand' => $brand]);
         if (!$setting) {
             $setting        = new BrandSetting();
             $setting->name  = $name;

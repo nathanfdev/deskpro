@@ -26,11 +26,15 @@ class ExceptionUtils
     public static function detectSuppressedError($run_fn, &$errorInfo)
     {
         $old = error_reporting(E_ALL);
+        set_error_handler(function () {
+        }, E_ALL);
 
         // This causes a suppressed error that we
         // know about, so we can test if the $run_fn
         // has it's own error
         $x = @$dp_clear_last_error;
+
+        restore_error_handler();
 
         $ret = null;
         $ex  = null;
