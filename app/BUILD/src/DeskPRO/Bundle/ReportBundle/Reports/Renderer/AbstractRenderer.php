@@ -135,7 +135,7 @@ abstract class AbstractRenderer implements ReportsRendererInterface
             $localPath[] = $key;
 
             $localPrintPath   = $printPath;
-            $localPrintPath[] = $value;
+            $localPrintPath[] = $value === '' ? 'None' : $value;
 
             $childOutput = $this->getFinalMatrixPathsWithPrintable($localPath, $distinctValues, $localPrintPath);
             if (!$childOutput) {
