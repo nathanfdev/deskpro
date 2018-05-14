@@ -41,5 +41,24 @@ class ResetCommand extends ContainerAwareCommand
                 $output->writeln("<error>Failed: [{$e->getCode()}] {$e->getMessage()})</error>");
             }
         }
+
+        if (defined('DP_BUILD_TIME')) {
+            $schemaId = DP_BUILD_TIME;
+        } else {
+            // developers
+            $schemaId = time();
+        }
+
+        $output->writeln("<info>Setting schema build to $schemaId</info>");
+        try {
+            $db = $this->getContainer()->get('database_connection');
+            $db->beginTransaction();
+            $db->delete('settings', ['name' => 'core.deskpro_build']);
+            $db->insert('settings', ['name' => 'core.deskpro_build', 'value' => $schemaId]);
+            $db->commit();
+            $output->writeln('.. done');
+        } catch (\Exception $e) {
+            $output->writeln("<error>Failed: [{$e->getCode()}] {$e->getMessage()})</error>");
+        }
     }
 }

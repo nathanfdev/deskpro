@@ -45,12 +45,12 @@ class RegExp extends AbstractPart
     /**
      * {@inheritdoc}
      */
-    public function prepare(SelectPart $statement, $section, array $stack, SqlSelect $select, ResultMetadata $result)
+    public function prepare(SelectPart $statement, $section, array $stack, SqlSelect $select, ResultMetadata $metadata)
     {
         $childStack = $this->getChildStack($stack);
 
-        $lhs = $this->lhs->prepare($statement, $section, $childStack, $select, $result);
-        $rhs = $this->rhs->prepare($statement, $section, $childStack, $select, $result);
+        $lhs = $this->lhs->prepare($statement, $section, $childStack, $select, $metadata);
+        $rhs = $this->rhs->prepare($statement, $section, $childStack, $select, $metadata);
         $not = ($this->positive ? '' : ' NOT');
 
         $sql = "{$lhs->sql()}$not REGEXP {$rhs->sql()}";

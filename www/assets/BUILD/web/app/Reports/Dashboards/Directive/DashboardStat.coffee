@@ -1,5 +1,5 @@
 define ->
-  Reports_Directive_DashboardStat = ['$state', 'DashboardWidgetService', ($state, DashboardWidgetService) ->
+  Reports_Directive_DashboardStat = ['$state', 'DashboardWidgetService', '$timeout', ($state, DashboardWidgetService, $timeout) ->
     return {
     restrict: 'E',
     replace: true,
@@ -71,9 +71,19 @@ define ->
           promise.then (response) ->
             scope.loaded = true
             scope.noData = true
-            initValue(response)
+            $timeout(->
+              initValue(response)
+            ,1)
       else if attrs.value
-        initValue(attrs)
+        $timeout(->
+          initValue(attrs)
+        ,1)
+      else if DashboardWidgetService.widgetsResults and DashboardWidgetService.widgetsResults[scope.widgetId]
+        DashboardWidgetService.widgetsResults[scope.widgetId].promise.then (renderedResult) =>
+          scope.loaded = true
+          scope.noData = true
+          if renderedResult
+            initValue(renderedResult)
       else
         DashboardWidgetService
           .getWidget(scope.widgetId || 0)

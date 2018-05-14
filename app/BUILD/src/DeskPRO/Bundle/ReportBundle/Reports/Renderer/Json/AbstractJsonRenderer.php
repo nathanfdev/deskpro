@@ -94,7 +94,7 @@ abstract class AbstractJsonRenderer extends AbstractRenderer
                 $iterator($hierarchyParents[$row['hierarchy_parent_id']]);
             }
 
-            $parts[] = $row['hierarchy_title'];
+            $parts[] = $row['hierarchy_title'] ?: 'None';
         };
 
         $iterator($row);
@@ -144,6 +144,10 @@ abstract class AbstractJsonRenderer extends AbstractRenderer
                             $newKey                                                              = $resultIndex.'_'.$itemKey;
                             $mainResults['dataProvider'][$dataProviderItem['category']][$newKey] = $value;
                         }
+                        if (strpos($itemKey, 'title') !== false) {
+                            $newKey                                                              = $resultIndex.'_'.$itemKey;
+                            $mainResults['dataProvider'][$dataProviderItem['category']][$newKey] = $value;
+                        }
                     }
                 }
             }
@@ -152,6 +156,13 @@ abstract class AbstractJsonRenderer extends AbstractRenderer
                 $graph['valueField'] = $resultIndex.'_'.$graph['valueField'];
                 $graph['id']         = $resultIndex.'_'.$graph['id'];
                 $graph['clustered']  = false;
+                if (isset($graph['balloonText'])) {
+                    $graph['balloonText'] = str_replace(
+                        ['[[title]]', '[[value]]'],
+                        ["[[{$resultIndex}_title]]", "[[{$resultIndex}_value]]"],
+                        $graph['balloonText']
+                    );
+                }
             }
             $mainResults['graphs'] = array_merge($mainResults['graphs'], $result['graphs']);
         }

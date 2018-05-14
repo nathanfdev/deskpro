@@ -1023,6 +1023,10 @@ class TicketSearchController extends AbstractController
         if ($this->in->getString('subFilterBy')) {
             $set_group_term   = $this->in->getString('subFilterBy');
             $set_group_option = $this->in->getString('subFilterByValue');
+        } elseif ($this->in->getString('set_group_term')) {
+            // legacy name for this param
+            $set_group_term   = $this->in->getString('set_group_term');
+            $set_group_option = $this->in->getString('set_group_option');
         }
 
         $ticketFilters = $this->container->get('ticketfilters');

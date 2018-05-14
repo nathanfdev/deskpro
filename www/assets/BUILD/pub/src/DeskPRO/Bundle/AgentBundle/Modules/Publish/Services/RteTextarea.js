@@ -1,19 +1,6 @@
 import $ from 'jquery';
 
-require('froala-editor');
-require('froala-editor/js/plugins/align.min');
-require('froala-editor/js/plugins/code_beautifier.min');
-require('froala-editor/js/plugins/code_view.min');
-require('froala-editor/js/plugins/colors.min');
-require('froala-editor/js/plugins/font_family.min');
-require('froala-editor/js/plugins/font_size.min');
-require('froala-editor/js/plugins/fullscreen.min');
-require('froala-editor/js/plugins/image.min');
-require('froala-editor/js/plugins/link.min');
-require('froala-editor/js/plugins/lists.min');
-require('froala-editor/js/plugins/paragraph_format.min');
-require('froala-editor/js/plugins/table.min');
-require('froala-editor/js/plugins/word_paste.min');
+require('froala-editor/js/froala_editor.pkgd.min');
 
 class RteTextarea {
   // eslint-disable-next-line class-methods-use-this
@@ -36,7 +23,7 @@ class RteTextarea {
       htmlAllowedAttrs: [
         'class', 'frameborder', 'height', 'id', 'longdesc', 'marginheight', 'marginwidth',
         'name', 'scrolling', 'src', 'style', 'title', 'width', 'webkitallowfullscreen',
-        'mozallowfullscreen', 'allowfullscreen'
+        'mozallowfullscreen', 'allowfullscreen', 'href', 'colspan', 'rowspan'
       ],
       toolbarButtons: [
         'bold', 'italic', 'underline', '|', 'align', 'color', '|', 'paragraphFormat', 'fontFamily', 'fontSize',

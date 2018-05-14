@@ -2,6 +2,10 @@
 
 namespace DpSys\CodePlugin;
 
+use Application\InstallBundle\Data\DefaultDataProcessor;
+use DeskPRO\Bundle\ReportBundle\Dpql2\DpqlContextStorage;
+use DeskPRO\Bundle\ReportBundle\Dpql2\Placeholder\AbstractPlaceholder;
+use DeskPRO\Component\Util\ListUtils;
 use Symfony\Component\DependencyInjection\Container;
 use Symfony\Component\HttpFoundation\Request;
 
@@ -30,6 +34,18 @@ class CodePluginManager
     }
 
     /**
+     * @param string $pluginClass
+     *
+     * @return CodePlugin|null
+     */
+    public function getPlugin($pluginClass)
+    {
+        return ListUtils::first($this->plugins, function ($p) use ($pluginClass) {
+            return get_class($p) === $pluginClass;
+        });
+    }
+
+    /**
      * @param CodePlugin $plugin
      */
     public function add(CodePlugin $plugin)
@@ -52,14 +68,16 @@ class CodePluginManager
     }
 
     /**
+     * @param DefaultDataProcessor $processor
+     *
      * @return array
      */
-    public function getExtraDefaultDataClasses()
+    public function getExtraDefaultDataClasses(DefaultDataProcessor $processor)
     {
         $extra = [];
 
         foreach ($this->plugins as $plugin) {
-            $extra = array_merge($extra, $plugin->getDefaultDataClasses());
+            $extra = array_merge($extra, $plugin->getDefaultDataClasses($processor));
         }
 
         return $extra;
@@ -164,5 +182,51 @@ class CodePluginManager
         }
 
         return null;
+    }
+
+    /**
+     * @param string             $placeholderName
+     * @param DpqlContextStorage $contextStorage
+     * @param Container          $container
+     *
+     * @return AbstractPlaceholder|null
+     */
+    public function getDpqlPlaceholder($placeholderName, DpqlContextStorage $contextStorage, Container $container)
+    {
+        foreach ($this->plugins as $plugin) {
+            if ($p = $plugin->getDpqlPlaceholder($placeholderName, $contextStorage, $container)) {
+                return $p;
+            }
+        }
+
+        return null;
+    }
+
+    /**
+     * @return \Symfony\Component\Console\Command\Command[]
+     */
+    public function getAppCommands()
+    {
+        return ListUtils::flatMap($this->plugins, function (CodePlugin $plugin) {
+            return $plugin->getAppCommands();
+        });
+    }
+
+    /**
+     * @param       $contextId
+     * @param array $contextOptions
+     *
+     * @return array
+     */
+    public function getOptionsArray($contextId, array $contextOptions = [])
+    {
+        $res = [];
+        foreach ($this->plugins as $plugin) {
+            if ($pluginRes = $plugin->getOptionsArray($contextId, $contextOptions)) {
+                $res = array_merge($res, $pluginRes);
+            }
+        }
+
+        return $res;
     }
 }

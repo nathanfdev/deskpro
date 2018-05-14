@@ -38,7 +38,7 @@ class Exists extends AbstractPart
     /**
      * {@inheritdoc}
      */
-    public function prepare(SelectPart $statement, $section, array $stack, SqlSelect $select, ResultMetadata $result)
+    public function prepare(SelectPart $statement, $section, array $stack, SqlSelect $select, ResultMetadata $metadata)
     {
         $this->subselect->prepare();
 

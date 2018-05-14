@@ -30,7 +30,7 @@ class Number extends AbstractPart
     /**
      * {@inheritdoc}
      */
-    public function prepare(SelectPart $statement, $section, array $stack, SqlSelect $select, ResultMetadata $result)
+    public function prepare(SelectPart $statement, $section, array $stack, SqlSelect $select, ResultMetadata $metadata)
     {
         if (!$stack && in_array($section, ['group', 'order'])) {
             throw new DpqlException('Numbers may not be referenced directly at the root of the GROUP BY or ORDER BY sections.');

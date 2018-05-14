@@ -9,6 +9,7 @@ define ['DeskPRO/Util/Arrays'], (Arrays) ->
       @storage = {reports: [], labels: [], reportsByLabels: {}}
       @groupParams = []
       @widgets = {}
+      @widgetsResults = {}
 
       @Api2.sendGet('report_widgets/group-params').then (response) =>
         @groupParams = response.data
@@ -122,6 +123,7 @@ define ['DeskPRO/Util/Arrays'], (Arrays) ->
 
     getWidgets: (reportId) ->
       deferred = @$q.defer()
+      @widgetsResults = {}
 
       @Api2
       .sendGet "/dashboard_reports/#{reportId}/widgets"
@@ -131,6 +133,19 @@ define ['DeskPRO/Util/Arrays'], (Arrays) ->
         for widget in widgets
           widget.sizeX = widget.size_x
           widget.sizeY = widget.size_y
+
+          @widgetsResults[widget.id] = @$q.defer()
+
+        # load widget rendered results in batches
+        widgetIds = widgets.map((widget) => widget.id)
+        idBatches = (widgetIds.splice(0, 10) while widgetIds.length)
+        for idBatch in idBatches
+          @Api2
+            .sendGet "/dashboard_reports/#{reportId}/widgets?include=rendered_result&inline_sideloads=1&ids=#{idBatch}"
+            .then (batchResp) =>
+              batchWidgets = batchResp.data.data;
+              for widget in batchWidgets
+                @widgetsResults[widget.id].resolve(widget.rendered_result)
 
         deferred.resolve(widgets)
 
@@ -148,6 +163,8 @@ define ['DeskPRO/Util/Arrays'], (Arrays) ->
 
           if !(widget.rendered_result?) or widget.rendered_result == false or widget.rendered_result == ''
             widget.rendered_result = null
+
+          @widgetsResults[widget.id].resolve(widget.rendered_result)
 
           deferred.resolve(widget)
       return deferred.promise

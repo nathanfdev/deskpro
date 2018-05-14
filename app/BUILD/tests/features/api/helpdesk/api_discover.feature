@@ -1,5 +1,5 @@
 Feature: API discover feature
-  Used to discover DeskPRO API
+  Used to discover Deskpro API
 
   Scenario: I am discovering helpdesk API
     When I send a GET request to "/api/v2/helpdesk/discover"

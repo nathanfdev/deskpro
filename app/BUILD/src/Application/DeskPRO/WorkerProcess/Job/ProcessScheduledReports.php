@@ -31,7 +31,7 @@ class ProcessScheduledReports extends AbstractJob
             ->orWhere('sr.nextSendDate IS NULL')
         ;
         $scheduledReports = $qb->getQuery()->execute();
-        $reportSaver      = $this->getContainer()->get('deskpro.reports.saver');
+        $reportSaver      = $this->getContainer()->get('reports.report_saver');
         foreach ($scheduledReports as $report) {
             /** @var ScheduledReport $report */
             $timezone = new \DateTimeZone($report->getWhenTz());

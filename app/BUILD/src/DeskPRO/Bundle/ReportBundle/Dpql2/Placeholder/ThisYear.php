@@ -10,7 +10,7 @@ class ThisYear extends AbstractDateRange
     /**
      * {@inheritdoc}
      */
-    protected function getDateRange()
+    public function getDateRange()
     {
         $year = $this->getDate()->format('Y');
 

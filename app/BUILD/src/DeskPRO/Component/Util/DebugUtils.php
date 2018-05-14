@@ -15,6 +15,9 @@ use Symfony\Component\Process\Process;
  */
 class DebugUtils
 {
+    const VARMODE_DETAIL = 1;
+    const VARMODE_TYPE   = 2;
+
     private function __construct()
     {
     }
@@ -46,10 +49,11 @@ class DebugUtils
 
     /**
      * @param \Exception $e
+     * @param $withTrace $withTrace True to include (short) trace info
      *
      * @return string
      */
-    public static function getExceptionSummary(\Exception $e)
+    public static function getExceptionSummary(\Exception $e, $withTrace = false)
     {
         $lines = [];
 
@@ -78,10 +82,127 @@ class DebugUtils
                 );
             }
 
+            if ($withTrace) {
+                $lines[] = self::formatStackTrace($e->getTrace());
+            }
+
             $e = $e->getPrevious();
         }
 
         return implode("\n", $lines);
+    }
+
+    /**
+     * @param array $stackTrace
+     *
+     * @return string
+     */
+    public static function formatStackTrace(array $stackTrace, $varMode = 0)
+    {
+        $trace = '';
+
+        $longestFilename = 0;
+
+        foreach ($stackTrace as $v) {
+            if (!empty($v['file'])) {
+                $longestFilename = max($longestFilename, strlen($v['file']) + strlen($v['line']) + 1);
+            }
+        }
+
+        $longestFilename += 5;
+
+        $prevLine = null;
+
+        $x = 0;
+        foreach ($stackTrace as $k => $v) {
+            ++$x;
+
+            $prefix  = sprintf('[#%02d] ', $x);
+            $preLine = '';
+            $line    = '';
+
+            if (!empty($v['file'])) {
+                $prefix .= "{$v['file']}:{$v['line']} ";
+            } else {
+                $prefix .= '<callback> ';
+            }
+
+            $showVarsString = null;
+
+            if (isset($v['object'])) {
+                if ($v['object'] instanceof \Twig_Template && method_exists($v['object'], 'getTemplateName')) {
+                    $showVarsString = '<template_context>';
+                    try {
+                        $tpl = @$v['object']->getTemplateName();
+                        if ($tpl) {
+                            $line .= '<'.@$v['object']->getTemplateName().'>';
+
+                            if ($prevLine && method_exists($v['object'], 'getDebugInfo')) {
+                                $debug_info = @$v['object']->getDebugInfo();
+                                if ($debug_info) {
+                                    $l = $prevLine + 1;
+                                    while (--$l > 0) {
+                                        if (isset($debug_info[$l])) {
+                                            $preLine = ">>>>> Template: $tpl:{$debug_info[$l]}";
+                                            break;
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    } catch (\Exception $e) {
+                    }
+                } elseif ($v['object'] instanceof \Application\DeskPRO\Templating\Engine || $v['object'] instanceof \Symfony\Bundle\TwigBundle\Debug\TimedTwigEngine) {
+                    if ($v['function'] == 'render') {
+                        $showVarsString = '<template_context>';
+                    }
+                } elseif ($v['function'] == 'renderView') {
+                    $showVarsString = '<template_context>';
+                }
+                $line .= get_class($v['object']).'::';
+            } elseif (isset($v['class'])) {
+                $line .= $v['class'].'::';
+            }
+
+            $line .= "{$v['function']}(";
+
+            if ($showVarsString) {
+                if (!$varMode) {
+                    $showVarsString = '...';
+                }
+                if (!empty($v['args'])) {
+                    $line .= $showVarsString;
+                }
+            } elseif ($varMode && !empty($v['args'])) {
+                switch ($varMode) {
+                    case self::VARMODE_DETAIL:
+                        $line .= self::varToString($v['args']);
+                        break;
+                    case self::VARMODE_TYPE:
+                        $parts = [];
+                        foreach ($v['args'] as $arg) {
+                            $parts[] = TypeUtils::getVarType($arg);
+                        }
+                        $line .= implode(', ', $parts);
+                        break;
+                }
+            }
+
+            $line .= ')';
+
+            if ($preLine) {
+                $trace .= $preLine."\n";
+            }
+
+            $trace .= sprintf("%-{$longestFilename}s", $prefix)."\t---\t".trim($line)."\n";
+
+            $prevLine = null;
+            if (isset($v['line'])) {
+                $prevLine = $v['line'];
+            }
+        }
+
+        return trim($trace);
     }
 
     /**

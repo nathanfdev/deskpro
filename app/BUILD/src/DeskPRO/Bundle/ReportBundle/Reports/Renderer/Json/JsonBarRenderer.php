@@ -41,6 +41,10 @@ class JsonBarRenderer extends AbstractJsonChartRenderer
         $arrayOutput = $this->getDefaultOutputArray();
         $chartData   = $graphs   = [];
 
+        $valueLabelTemplate = $categoryLabelTemplate = $customBalloonText = $balloonTextTemplate = null;
+        $integersOnly       = true;
+        $valueAxisTitle     = null;
+
         // we have stacked results here
         // stack results if simple grouping only, e.g. can't stack for matrix
         if (count($groupXColumns) === 1
@@ -48,40 +52,86 @@ class JsonBarRenderer extends AbstractJsonChartRenderer
             && $metadata->hasFlag(ResultMetadata::FLAG_HIERARCHICAL)
             && !$metadata->hasFlag(ResultMetadata::FLAG_LAYERED)
         ) {
-            $arrayOutput['valueAxes'][0]['stackType'] = 'regular';
-            $arrayOutput['valueAxes'][0]['title']     = $selectColumns[0]['title'];
-            $arrayOutput['categoryAxis']['title']     = $groupYColumns[0]['title'];
-
             $hierarchyParents  = $this->collectHierarchyParents($rows);
             $stacks            = $this->getStacks($rows, $hierarchyParents);
             $maxCategoryLength = 0;
 
             $additionalData = [];
-            foreach ($selectColumns as $selectColumn) {
+            foreach ($selectColumns as $index => $selectColumn) {
                 if (strpos($selectColumn['title'], '__var') !== false) {
                     $additionalData[$selectColumn['title']] = $selectColumn['resultId'];
                 }
+                // it would be same for each row of course since it
+                // SELECT blah-blah-blah
+                // '{{value * 4}} as 'value_label_template'
+                if ($selectColumn['title'] === 'value_label_template') {
+                    $valueLabelTemplate = $rows[0][$selectColumn['resultId'] - 1];
+                    unset($selectColumns[$index]);
+                }
+                if ($selectColumn['title'] === 'category_label_template') {
+                    $categoryLabelTemplate = $rows[0][$selectColumn['resultId'] - 1];
+                    unset($selectColumns[$index]);
+                }
+                if ($selectColumn['title'] === 'tooltip_text') {
+                    $customBalloonText = $rows[0][$selectColumn['resultId'] - 1];
+                    unset($selectColumns[$index]);
+                }
+                if ($selectColumn['title'] === 'tooltip_text_template') {
+                    $balloonTextTemplate = $rows[0][$selectColumn['resultId'] - 1];
+                    unset($selectColumns[$index]);
+                }
+                if ($selectColumn['title'] === 'value_axis_title') {
+                    $valueAxisTitle = $rows[0][$selectColumn['resultId'] - 1];
+                    unset($selectColumns[$index]);
+                }
             }
+
+            $arrayOutput['valueAxes'][0]['stackType'] = 'regular';
+            $arrayOutput['valueAxes'][0]['title']     = $selectColumns[0]['title'];
+            $arrayOutput['categoryAxis']['title']     = $valueAxisTitle ?: $groupYColumns[0]['title'];
 
             foreach ($stacks as $i => $stack) {
                 $chartData[$i] = [];
                 foreach ($stack as $j => $values) {
-                    $category                   = isset($hierarchyParents[$i]) ? $hierarchyParents[$i]['hierarchy_root_title'] : $values['hierarchy_root_title'];
-                    $maxCategoryLength          = max($maxCategoryLength, strlen($category));
-                    $chartData[$i]['category']  = $category;
-                    $chartData[$i]["value$i$j"] = $values[$selectColumns[0]['resultId'] - 1];
+                    $category                  = isset($hierarchyParents[$i]) ? $hierarchyParents[$i]['hierarchy_root_title'] : $values['hierarchy_root_title'];
+                    $maxCategoryLength         = max($maxCategoryLength, strlen($category));
+                    $chartData[$i]['category'] = $category ?: 'None';
 
-                    foreach ($additionalData as $key => $resultId) {
-                        $chartData[$i][$key] = $values[$resultId - 1];
+                    $value = $values[$selectColumns[0]['resultId'] - 1];
+
+                    /*
+                     * @see https://deskpro.myjetbrains.com/youtrack/issue/DP-1503
+                     */
+                    if (!$integersOnly || !filter_var($value, FILTER_VALIDATE_INT)) {
+                        $integersOnly = false;
                     }
 
+                    $chartData[$i]["value$i$j"] = $value;
+
+                    foreach ($additionalData as $key => $resultId) {
+                        $value = $values[$resultId - 1];
+                        if (!filter_var($value, FILTER_VALIDATE_INT)) {
+                            $integersOnly = false;
+                        }
+                        $chartData[$i][$key] = $value;
+                    }
+
+                    $title = $this->renderCellValue($values, $selectColumns[0], $metadata);
+                    if ($value == $title) {
+                        $balloonText = '[[category]]: [[value]]';
+                        $title       = $this->getFullHierarchyTitle($values, $hierarchyParents).': '.$value;
+                    } else {
+                        $title       = $this->getFullHierarchyTitle($values, $hierarchyParents).': '.$title;
+                        $balloonText = '[[title]]';
+                    }
                     $graphs[] = [
-                        'id'          => "graph-$i-$j",
-                        'type'        => 'column',
-                        'fillAlphas'  => '0.9',
-                        'valueField'  => "value$i$j",
-                        'title'       => $this->getFullHierarchyTitle($values, $hierarchyParents).', '.$this->renderCellValue($values, $selectColumns[0], $metadata),
-                        'balloonText' => '[[title]]:[[value]]',
+                        'id'                  => "graph-$i-$j",
+                        'type'                => 'column',
+                        'fillAlphas'          => '0.9',
+                        'valueField'          => "value$i$j",
+                        'title'               => $title,
+                        'balloonText'         => $customBalloonText ?: $balloonText,
+                        'balloonTextTemplate' => $balloonTextTemplate,
                     ];
                 }
             }
@@ -96,6 +146,9 @@ class JsonBarRenderer extends AbstractJsonChartRenderer
                     'marginBottom'  => $labelHeight,
                 ]);
             }
+            $arrayOutput['valueAxes'][0]['integersOnly']  = $integersOnly;
+            $arrayOutput['valueAxes'][0]['labelTemplate'] = $valueLabelTemplate;
+            $arrayOutput['categoryAxis']['labelTemplate'] = $categoryLabelTemplate;
 
             return $arrayOutput;
         }

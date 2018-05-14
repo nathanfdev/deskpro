@@ -37,7 +37,7 @@ class Alias extends AbstractPart
     /**
      * {@inheritdoc}
      */
-    public function prepare(SelectPart $statement, $section, array $stack, SqlSelect $select, ResultMetadata $result)
+    public function prepare(SelectPart $statement, $section, array $stack, SqlSelect $select, ResultMetadata $metadata)
     {
         if ($section !== 'from') {
             throw new DpqlException('Alias prepare() cannot not be called');
@@ -49,7 +49,7 @@ class Alias extends AbstractPart
             return new Prepared('('.$this->value->toSql().')', $this->alias);
         } else {
             $childStack = $this->getChildStack($stack);
-            $value      = $this->value->prepare($statement, $section, $childStack, $select, $result);
+            $value      = $this->value->prepare($statement, $section, $childStack, $select, $metadata);
 
             return new Prepared('('.$value->sql().')', $this->alias);
         }

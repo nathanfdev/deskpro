@@ -33,6 +33,7 @@ define ['moment', 'DeskPRO/Util/Util'], (moment, Util) ->
         },
         toggle: {
           label_text: '',
+          unchecked_text: '',
           user_validation:           '0',
           agent_validation:          '0',
           agent_validation_resolve:  false
@@ -197,6 +198,7 @@ define ['moment', 'DeskPRO/Util/Util'], (moment, Util) ->
 
           when "toggle"
             formTypeOpts.label_text = fieldModel.options.label_text || ''
+            formTypeOpts.unchecked_text = fieldModel.options.unchecked_text || ''
 
             if fieldModel.options.validation_type
               formTypeOpts.user_validation = 'required'
@@ -365,6 +367,7 @@ define ['moment', 'DeskPRO/Util/Util'], (moment, Util) ->
           postData.handler_class = 'Application\\DeskPRO\\CustomFields\\Handler\\Toggle'
           postData.default_value = formTypeOpts.default_value
           postData.label_text = formTypeOpts.label_text
+          postData.unchecked_text = formTypeOpts.unchecked_text
 
           if formTypeOpts.user_validation == 'required'
             postData.validation_type = 'required'

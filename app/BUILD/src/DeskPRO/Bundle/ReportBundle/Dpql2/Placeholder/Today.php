@@ -10,7 +10,7 @@ class Today extends AbstractDateRange
     /**
      * {@inheritdoc}
      */
-    protected function getDateRange()
+    public function getDateRange()
     {
         $today = $this->getDate()->format('Y-m-d');
 

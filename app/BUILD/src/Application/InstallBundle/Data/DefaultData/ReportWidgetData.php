@@ -24,8 +24,8 @@ class ReportWidgetData extends AbstractDefaultData
             'description'   => 'Agents are online',
             'display_types' => 'simple_stat',
             'display_order' => 40,
-            'query'         => 'SELECT DPQL_COUNT() as \'stat_value\', \'online agents\' as \'stat_description\' 
-FROM sessions WHERE sessions.person.is_agent = 1 AND sessions.date_last > DPQL_NOW() - INTERVAL 6 MINUTE GROUP BY sessions.person',
+            'query'         => 'SELECT DPQL_COUNT_DISTINCT(sessions.person.id) as \'stat_value\', \'online agents\' as \'stat_description\' 
+FROM sessions WHERE sessions.person.is_agent = 1 AND sessions.date_last > DPQL_NOW() - INTERVAL 6 MINUTE',
             'variables' => '[]',
         ],
         'tickets-created-x-date' => [
@@ -54,8 +54,8 @@ FROM chat_conversations WHERE chat_conversations.date_created = ${date}',
             'description'   => 'Average response time of tickets created by date',
             'display_types' => 'simple_stat',
             'display_order' => 40,
-            'query'         => 'SELECT DPQL_FORMAT(AVG(tickets.total_to_first_reply), \'number\', 0) as \'stat_value\', \'minutes to reply\' as \'stat_description\' 
-FROM tickets WHERE tickets.date_created = ${date} AND tickets.date_last_agent_reply <> NULL',
+            'query'         => 'SELECT DPQL_FORMAT(AVG(tickets.total_to_first_reply) / 60, \'number\', 0) as \'stat_value\', \'minutes to reply\' as \'stat_description\' 
+FROM tickets WHERE tickets.date_created = ${date} AND tickets.date_first_agent_reply <> NULL',
             'variables' => '[{"name":"date","type":"dates","default":"today"}]',
         ],
         'satisfaction-x-date' => [
@@ -66,16 +66,15 @@ FROM tickets WHERE tickets.date_created = ${date} AND tickets.date_last_agent_re
             'display_order' => 40,
             // all today created positive feedback / all today created feedback * 100 gives you today positive %
             'query' => '
-            SELECT CONCAT(
-	DPQL_FORMAT(
-		(
-    		(SELECT DPQL_COUNT() FROM ticket_feedback WHERE ticket_feedback.rating = 1 AND ticket_feedback.date_created = ${date})
-    		/ 
-    		(SELECT DPQL_COUNT() FROM ticket_feedback WHERE ticket_feedback.date_created = ${date})
-    	) * 100,
-    \'number\'),
-    \'%\'
-) AS \'stat_value\',
+            SELECT
+    DPQL_FORMAT(
+	(
+    	 (SELECT DPQL_COUNT() FROM ticket_feedback WHERE ticket_feedback.rating = 1 AND ticket_feedback.date_created = ${date})
+    	  / 
+    	 (SELECT DPQL_COUNT() FROM ticket_feedback WHERE ticket_feedback.date_created = ${date})
+    	),
+    \'percent\', 0)
+    AS \'stat_value\',
 \'satisfied users\' as \'stat_description\'
 FROM ticket_feedback
 WHERE ticket_feedback.date_created = ${date}
@@ -212,7 +211,7 @@ FROM hit_record
 WHERE hit_record.date_created = ${date}
   AND hit_record.page_type = \'deskpro.kb_view\'
 GROUP BY hit_record.page_id
-ORDER BY DPQL_COUNT()',
+ORDER BY DPQL_COUNT() DESC',
             'variables' => '[{"name":"date","type":"dates","default":"today"}]',
         ],
         'kb-searches-x-date' => [
@@ -225,7 +224,7 @@ ORDER BY DPQL_COUNT()',
 FROM searchlog
 WHERE searchlog.date_created = ${date}
 GROUP BY searchlog.query
-ORDER BY searchlog.query DESC
+ORDER BY DPQL_COUNT() DESC
 ',
             'variables' => '[{"name":"date","type":"dates","default":"today"}]',
         ],
@@ -565,7 +564,7 @@ GROUP BY DPQL_MATRIX(${ticket}, ${ticket_2})',
                 'variables' => '[{"name":"ticket","type":"fields","field_type":"tickets","table":"tickets","default":"department"},{"name":"ticket_2","type":"fields","field_type":"tickets","table":"tickets","default":"agent"},{"name":"date","type":"dates"}]',
             ],
         'tickets-created-x-date-grouped-by-department' => [
-            'title'         => 'Number of tickets created ${date} grouped by ${ticket}',
+            'title'         => 'Number of tickets created ${date} grouped by department',
             'labels'        => 'tickets',
             'description'   => '',
             'display_types' => 'simple_bars,pie,simple_area,simple_lines',
@@ -574,7 +573,7 @@ GROUP BY DPQL_MATRIX(${ticket}, ${ticket_2})',
 FROM tickets
 WHERE tickets.date_created = ${date}
 GROUP BY tickets.department.title',
-            'variables' => '[{"name":"date","type":"dates"},{"name":"ticket","type":"fields","field_type":"tickets","table":"tickets","default":"department"}]',
+            'variables' => '[{"name":"date","type":"dates"}]',
         ],
         'number-tickets-created-date-grouped-first-agent-x' => [
                 'title'         => 'Number of tickets created ${date} grouped by first agent response time & ${ticket}',

@@ -10,7 +10,7 @@ class Yesterday extends AbstractDateRange
     /**
      * {@inheritdoc}
      */
-    protected function getDateRange()
+    public function getDateRange()
     {
         $date = $this->getDate();
         $date->modify('-1 day');

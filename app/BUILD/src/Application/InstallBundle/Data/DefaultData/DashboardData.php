@@ -76,7 +76,7 @@ class DashboardData extends AbstractDefaultData
                             ],
                         ],
                         [
-                            'title'      => 'Avg Response Time',
+                            'title'      => 'Re Time This Mo',
                             'position'   => '0:4',
                             'size'       => '1:1',
                             'widget_key' => 'avg-response-time-x-date',
@@ -85,7 +85,7 @@ class DashboardData extends AbstractDefaultData
                                 [
                                     'name'  => 'date',
                                     'type'  => 'dates',
-                                    'value' => 'today',
+                                    'value' => 'this_month',
                                 ],
                             ],
                         ],
@@ -239,7 +239,7 @@ class DashboardData extends AbstractDefaultData
                             'widget_key' => 'incomplete-sla',
                             'type'       => 'pie',
                             'variables'  => [],
-                            'options'    => '{"legend":false,"labelsEnabled":false}',
+                            'options'    => '{"legend":false,"labelsEnabled":false, "pieColors": {"ok": "#008000", "fail": "#f80000", "warning": "#fde910"}}',
                         ],
                         [
                             'title'      => 'New Tickets by Channel',

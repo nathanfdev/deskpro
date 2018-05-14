@@ -38,7 +38,7 @@
 			data-frame-url="{{ app.request.getBaseUrl() }}/reports"
 			data-element-handler="DeskPRO.Agent.ElementHandler.OverlayFrame"
 			data-frame-id="reports"
-			data-win-title="DeskPRO Reports Interface"
+			data-win-title="{{ phrase('agent.general.reports_interface') }}"
 	></script>
 {% endif %}
 {% if app.hasBeta('new_reports') and (app.user.can_reports or app.user.getReportDashboardPermissions()) %}
@@ -47,7 +47,7 @@
 			data-frame-url="{{ app.request.getBaseUrl() }}/agent/reports-interface#/"
 			data-element-handler="DeskPRO.Agent.ElementHandler.OverlayFrame"
 			data-frame-id="reports-interface"
-			data-win-title="DeskPRO Reports Interface"
+			data-win-title="{{ phrase('agent.general.reports_interface') }}"
 	></script>
 {% endif %}
 {% if app.user.can_admin %}
@@ -55,7 +55,7 @@
 			id="billings_interface_trigger"
 			data-frame-url="{{ app.request.getBaseUrl() }}/admin/#/license"
 			data-element-handler="DeskPRO.Agent.ElementHandler.GoToBilling"
-			data-win-title="DeskPRO Billing"
+			data-win-title="{{ phrase('agent.general.billing_interface') }}"
 	></script>
 	<script
 			id="admin_interface_trigger"
@@ -63,7 +63,7 @@
 			data-frame-preload="true"
 			data-element-handler="DeskPRO.Agent.ElementHandler.OverlayFrame"
 			data-frame-id="admin"
-			data-win-title="DeskPRO Admin Interface"
+			data-win-title="{{ phrase('adm.general.deskpro_admin_interface') }}"
 	></script>
 {% endif %}
 <!-- END NAVIGATION -->

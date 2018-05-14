@@ -5,7 +5,7 @@ pageMeta.title = '{{ phrase('agent.general.new_organization') }}';
 {% set baseId = el_uid() %}
 pageMeta.baseId = '{{ baseId }}';
 </script>
-<div class="layout-content page-new-content">
+<div class="layout-content page-new-content page-new-org">
 <div class="dp-page-content">
 {{ start_counter('steps') }}
 
@@ -53,7 +53,7 @@ pageMeta.baseId = '{{ baseId }}';
 				{# Tab Properties #}
 				<div class="tab-properties">
 					<table cellspacing="0" cellpadding="0" width="100%" class="field-holders-table">
-						<tr>
+						<tr class="labels-input-row">
 							<th width="150">{{ phrase('agent.general.labels') }}</th>
 							<td>
 								<input

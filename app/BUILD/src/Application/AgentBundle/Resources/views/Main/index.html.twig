@@ -120,6 +120,9 @@
 	{% endif %}
 
 	<title>{{ phrase('agent.interface.deskpro_agent_interface') }}</title>
+
+    {{ include_code_plugin('agent_res_pre') }}
+
 	<style type="text/css">
 	body {
 		overflow: hidden;
@@ -136,12 +139,8 @@
 		bottom: 0;
 		left: 0;
 		z-index: 1000000000;
-
-		background: #91ada1 url('{{ asset('images') }}/login/background.jpg') repeat center top fixed;
-		-webkit-background-size: cover;
-		-moz-background-size: cover;
-		-o-background-size: cover;
-		background-size: cover;
+		background: #3297CE;
+		background-image: radial-gradient(circle, #3297ce, #2d88be, #2779ae, #226a9e, #1c5c8e);
 		text-align: center;
 	}
 
@@ -172,7 +171,7 @@
 	#dp_loading h1 {
 		font-family: "Helvetica Neue", Helvetica, arial, sans-serif;
 		font-size: 15px;
-		color: #000;
+		color: rgba(0,0,0,0.9);
 		width: 100%;
 		display: inline-block;
 		text-align: center;
@@ -217,7 +216,7 @@
 	})();
 </script>
 
-<div id="dp_loading"><div class="msg-outer"><div class="msg"><h1>{{ phrase('agent.general.loading_interface') }}</h1></div></div></div>
+<div id="dp_loading" class="window-loading-indicator"><div class="msg-outer"><div class="msg"><h1>{{ phrase('agent.general.loading_interface') }}</h1></div></div></div>
 <div id="dp_window" ng-init="
     routes = {
         ticket: 'ticket:{{ path('agent_ticket_view', {'ticket_id': '0000'})|raw }}',

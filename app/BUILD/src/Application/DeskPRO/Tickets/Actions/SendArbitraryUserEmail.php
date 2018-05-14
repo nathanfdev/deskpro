@@ -86,6 +86,14 @@ class SendArbitraryUserEmail extends AbstractEmailAction
             }
         }
 
+        $renderer = $this->getContainer()->get('twig_template_renderer');
+
+        $emails = $this->getActionOption('emails');
+        $emails = implode(',', $emails);
+        $emails = $renderer->renderTicketTemplate($emails, $ticket, $context);
+        $emails = explode(',', $emails);
+        $emails = array_map('trim', $emails);
+
         $regClosed = !$this->getContainer()->get('dp_authentication_manager.user')->isRegistrationFormVisible();
         foreach ($this->getActionOption('emails') as $email) {
             $person = $this->getContainer()->getEm()->getRepository(Person::class)->findOneByEmail($email);

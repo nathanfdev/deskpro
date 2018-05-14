@@ -11,6 +11,14 @@ use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 
 class HeadlessController extends \Application\DeskPRO\Controller\AbstractController
 {
+    /**
+     * @param $id
+     * @param $authcode
+     *
+     * @throws \Exception
+     *
+     * @return \Symfony\Component\HttpFoundation\Response
+     */
     public function viewAction($id, $authcode)
     {
         $entityRepository = $this->em->getRepository(SavedDashboardReport::class);
@@ -31,11 +39,14 @@ class HeadlessController extends \Application\DeskPRO\Controller\AbstractControl
             $widgets[]            = $wdata;
         }
 
+        $reportPdfGenerator = $this->getContainer()->get('reports.report_pdf_generator');
+
         return $this->render('ReportsInterfaceBundle:Headless:headless.html.twig', [
             'report' => [
                 'title'   => $report->getTitle(),
                 'widgets' => $widgets,
             ],
+            'printConfig' => $reportPdfGenerator->calculatePrintConfig($report),
         ]);
     }
 }

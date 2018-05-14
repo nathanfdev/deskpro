@@ -56,6 +56,23 @@ class RegexUtils
     }
 
     /**
+     * @param string $regex
+     * @param string $string
+     * @param int    $offset
+     *
+     * @return null|array
+     */
+    public static function getAllMatchSets($regex, $string, $offset = 0)
+    {
+        $matches = null;
+        if (!preg_match_all($regex, $string, $matches, \PREG_SET_ORDER, $offset)) {
+            return;
+        }
+
+        return $matches;
+    }
+
+    /**
      * Same as preg_match but it is safe to use with user-supplied expressions.
      *
      * A malicious user might construct a regex pattern that can consume high amounts of CPU

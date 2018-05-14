@@ -18,13 +18,13 @@ interface DpqlStatementPartInterface
      * @param string         $section   Name of the section usage is in (select, where, split, group, order)
      * @param AbstractPart[] $stack     Parent parts
      * @param SqlSelect      $select    Select being built up
-     * @param ResultMetadata $result
+     * @param ResultMetadata $metadata
      *
      * @throws \DeskPRO\Bundle\ReportBundle\Dpql2\DpqlException
      *
      * @return Prepared|bool Prepared results or false if there's no output
      */
-    public function prepare(SelectPart $statement, $section, array $stack, SqlSelect $select, ResultMetadata $result);
+    public function prepare(SelectPart $statement, $section, array $stack, SqlSelect $select, ResultMetadata $metadata);
 
     /**
      * Renders a part back to DPQL.

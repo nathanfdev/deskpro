@@ -164,7 +164,7 @@ class DefaultDataProcessor
 
         $this->data_classes = array_merge(
             $this->data_classes,
-            DpPlugins::getManager()->getExtraDefaultDataClasses()
+            DpPlugins::getManager()->getExtraDefaultDataClasses($this)
         );
 
         usort($this->data_classes, function ($a, $b) {

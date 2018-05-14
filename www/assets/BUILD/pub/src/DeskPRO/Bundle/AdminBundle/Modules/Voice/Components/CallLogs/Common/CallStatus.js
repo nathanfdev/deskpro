@@ -12,16 +12,23 @@ class CallStatus extends React.Component {
 
   render() {
     const { call, showDateEnded } = this.props;
-    const dateStarted = call.get('date_started');
     const dateEnded = call.get('date_ended');
-    const status = call.get('status');
-    const duration = dateEnded && dateStarted ? moment(dateEnded).unix() - moment(dateStarted).unix() : 0;
+    const agentParticipants = call.get('participants').filter(participant => participant.get('type') === 'agent');
+    const userParticipants = call.get('participants').filter(participant => participant.get('type') === 'user');
+
+    let status = call.get('status');
+    if (status === 'ended') {
+      if ((call.get('type') === 'inbound' && !agentParticipants.size)
+        || (call.get('type') === 'outbound' && !userParticipants.size)) {
+        status = 'missed';
+      }
+    }
 
     return (
       <td
         className={classNames({
-          success: status === 'ended' && duration > 0,
-          warning: status === 'ended' && !duration
+          success: status === 'ended',
+          warning: status === 'missed'
         })}
       >
         {status.toUpperCase()}

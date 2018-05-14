@@ -212,6 +212,8 @@ services:
 
   dpql.func.concat:
     class: DeskPRO\Bundle\ReportBundle\Dpql2\Func\DpqlConcat
+    arguments:
+      - "@dpql.func_registry"
     tags:
       - { name: dpql.func }
 
@@ -244,8 +246,50 @@ services:
     tags:
       - { name: dpql.placeholder }
 
-  dpql.placeholder.next_12_months:
+  dpql.placeholder.next12hours:
+    class: DeskPRO\Bundle\ReportBundle\Dpql2\Placeholder\Next12Hours
+    arguments:
+      - "@dpql.context_storage"
+    tags:
+      - { name: dpql.placeholder }
+
+  dpql.placeholder.next12months:
     class: DeskPRO\Bundle\ReportBundle\Dpql2\Placeholder\Next12Months
+    arguments:
+      - "@dpql.context_storage"
+    tags:
+      - { name: dpql.placeholder }
+
+  dpql.placeholder.next24hours:
+    class: DeskPRO\Bundle\ReportBundle\Dpql2\Placeholder\Next24Hours
+    arguments:
+      - "@dpql.context_storage"
+    tags:
+      - { name: dpql.placeholder }
+
+  dpql.placeholder.next30days:
+    class: DeskPRO\Bundle\ReportBundle\Dpql2\Placeholder\Next30Days
+    arguments:
+      - "@dpql.context_storage"
+    tags:
+      - { name: dpql.placeholder }
+
+  dpql.placeholder.next6months:
+    class: DeskPRO\Bundle\ReportBundle\Dpql2\Placeholder\Next6Months
+    arguments:
+      - "@dpql.context_storage"
+    tags:
+      - { name: dpql.placeholder }
+
+  dpql.placeholder.next7days:
+    class: DeskPRO\Bundle\ReportBundle\Dpql2\Placeholder\Next7Days
+    arguments:
+      - "@dpql.context_storage"
+    tags:
+      - { name: dpql.placeholder }
+
+  dpql.placeholder.nexthour:
+    class: DeskPRO\Bundle\ReportBundle\Dpql2\Placeholder\NextHour
     arguments:
       - "@dpql.context_storage"
     tags:

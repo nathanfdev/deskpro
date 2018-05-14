@@ -111,7 +111,11 @@ export class SideBarContainer extends SeparateComponent {
     return window.DESKPRO_PERSON_PERMS['agent_tasks.use'];
   }
 
-  static canUseReports() {
+  static canUseReports(version) {
+    // old reports is hidden unless coming from an upgrade which sets this flag
+    if (version === 1 && !window.DESKPRO_APP_SETTINGS['core.show_old_reports']) {
+      return false;
+    }
     return window.DESKPRO_PERSON_PERMS['agent_reports.use'];
   }
 
@@ -320,24 +324,32 @@ export class SideBar extends React.PureComponent {
         }
       });
     }
-    if (this.props.canUseReports()) {
+    if (this.props.canUseReports(1)) {
       menus.push({
         className: 'reports',
-        label:     <FormattedMessage id="agent.general.reports" />,
-        link:      '/agent/#reports:/',
-        icon:      `${window.DESKPRO_APP_ASSETS_URL}/DeskPRO/Bundle/AgentBundle/Resources/img/sidebar/reports.svg`,
-        callback:  () => {
+        label:     (<span>
+          <FormattedMessage id="agent.general.reports" />&nbsp;
+          (<FormattedMessage id="agent.general.badge_legacy" />)
+        </span>),
+        link:     '/agent/#reports:/',
+        icon:     `${window.DESKPRO_APP_ASSETS_URL}/DeskPRO/Bundle/AgentBundle/Resources/img/sidebar/reports.svg`,
+        callback: () => {
           this.props.openReports();
         }
       });
     }
-    if (window.DP_HAS_NEW_REPORTS && (this.props.canUseReports() || this.props.hasAccessToDashboards())) {
+    if (window.DP_HAS_NEW_REPORTS && (this.props.canUseReports(2) || this.props.hasAccessToDashboards())) {
       menus.push({
         className: 'reports2',
-        label:     <FormattedMessage id="agent.general.reports" />,
-        link:      '/agent/#r:/',
-        icon:      `${window.DESKPRO_APP_ASSETS_URL}/DeskPRO/Bundle/AgentBundle/Resources/img/sidebar/reports.svg`,
-        callback:  () => {
+        label:     (this.props.canUseReports(1)
+          ? (<span>
+            <FormattedMessage id="agent.general.reports" />&nbsp;
+            (<FormattedMessage id="agent.general.badge_new" />)
+          </span>) : <FormattedMessage id="agent.general.reports" />),
+        link:        '/agent/#r:/',
+        icon:        `${window.DESKPRO_APP_ASSETS_URL}/DeskPRO/Bundle/AgentBundle/Resources/img/sidebar/reports.svg`,
+        enableBadge: this.props.canUseReports(1), // show 'new' if we're showing legacy version
+        callback:    () => {
           this.props.openReports2();
         }
       });
@@ -382,7 +394,7 @@ export class SideBar extends React.PureComponent {
     this.getMenus().map((item) => {
       const menuItem = item;
       menuItem.key = `menu_${menuItem.className}`;
-      const badge = sectionsBadges.indexOf(`${menuItem.className}_section`) > -1;
+      const badge = item.enableBadge || sectionsBadges.indexOf(`${menuItem.className}_section`) > -1;
       menus.push(
         <MenuItem
           link={menuItem.link}
@@ -434,6 +446,7 @@ export class SideBar extends React.PureComponent {
             className="logo-text"
             src={`${window.DESKPRO_APP_ASSETS_URL}/DeskPRO/Bundle/AgentBundle/Resources/img/sidebar/logoText.svg`}
           />
+          <span className="logo-text-string">{window.WHITELABEL_GET_NAME ? window.WHITELABEL_GET_NAME() : 'Deskpro'}</span>
         </div>
         {this.getMenuItems()}
       </div>

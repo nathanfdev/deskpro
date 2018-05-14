@@ -109,38 +109,36 @@ class Oauth1ProxyController extends BaseController
     public function authorizeAction(OauthProviderConnectionLoader $provider = null, Request $request)
     {
         // check that we have an application
-        $applicationId = $request->query->get('applicationId', null);
+        $applicationId = ProxyParams::getDPQueryParam('applicationId', $request);
         if (is_null($applicationId)) {
             return new Response('Connection not found', 400);
         }
 
         // check that we can post back messages. if we can not then, we show html errors
-        $callbackMethod = $request->query->get('callbackMethod', 'postMessage');
-        $callbackUrl    = $request->query->get('callbackUrl');
+        $callbackMethod = ProxyParams::getDPQueryParam('callbackMethod', $request, 'postMessage');
+        $callbackUrl    = ProxyParams::getDPQueryParam('callbackUrl', $request, 'postMessage');
         if ($callbackMethod !== 'postMessage' || empty($callbackUrl)) {
             return new Response('Invalid callback method', 400);
         }
 
-        $errorResponseBuilder = OauthResponseBuilder::forResponseType('error')
-            ->withApplicationState($request->query->get('state', null))
-            ->withRedirectUrl($callbackUrl)
-        ;
+        $appState = ProxyParams::getDPQueryParam('state', $request);
+        $errorResponseBuilder = OauthResponseBuilder::forResponseType('error')->withApplicationState($appState);
 
-        $clientProfile = $request->query->get('client_profile', 'web-server'); //web-server, user-agent, [ native applications, autonomous clients ]
+        $clientProfile = ProxyParams::getDPQueryParam('client_profile', $request, 'web-server'); //web-server, user-agent, [ native applications, autonomous clients ]
         if (!in_array($clientProfile, ['web-server', 'user-agent'])) {
-            return $errorResponseBuilder->withErrorType('invalid client profile')->buildPostMessage();
+            return $errorResponseBuilder->withErrorType('invalid client profile')->buildPostMessage($callbackUrl);
         }
 
         /** @var SerializedOauth1Connection $connection */
         $connection = null;
         if ($clientProfile === 'web-server') {
             if (is_null($provider)) {
-                return $errorResponseBuilder->withErrorType('provider not found')->buildPostMessage();
+                return $errorResponseBuilder->withErrorType('provider not found')->buildPostMessage($callbackUrl);
             }
 
             $connection = $provider->loadOauth1Connection($applicationId, $this->getUser());
             if (empty($connection)) {
-                return $errorResponseBuilder->withErrorType('connection not found')->buildPostMessage();
+                return $errorResponseBuilder->withErrorType('connection not found')->buildPostMessage($callbackUrl);
             }
         }
 
@@ -155,7 +153,7 @@ class Oauth1ProxyController extends BaseController
             return $response;
         }
 
-        return $errorResponseBuilder->withErrorType('only web-server profile allowed')->buildPostMessage();
+        return $errorResponseBuilder->withErrorType('only web-server profile allowed')->buildPostMessage($callbackUrl);
     }
 
     /**
@@ -177,37 +175,34 @@ class Oauth1ProxyController extends BaseController
         }
 
         // prepare the error response builder
-        $errorResponseBuilder = OauthResponseBuilder::forResponseType('error', '1.0')
-            ->withRedirectUrl($callbackUrl)
-        ;
+        $errorResponseBuilder = OauthResponseBuilder::forResponseType('error', '1.0');
 
         $oauthToken    = $request->query->get('oauth_token', null);
         $oauthVerifier = $request->query->get('oauth_verifier', null);
 
         // was there an error ?
         if (empty($oauthVerifier) || empty($oauthToken)) {
-            return $errorResponseBuilder->withErrorType('oauth error')->buildPostMessage();
+            return $errorResponseBuilder->withErrorType('oauth error')->buildPostMessage($callbackUrl);
         }
 
         $connection = $provider->loadOauth1Connection($application, $this->getUser());
         if (empty($connection)) {
-            return $errorResponseBuilder->withErrorType('connection not found')->buildPostMessage();
+            return $errorResponseBuilder->withErrorType('connection not found')->buildPostMessage($callbackUrl);
         }
 
         try {
             $authSession = $this->readAuthSessionCookie($request);
             if (is_null($authSession)) {
-                return $errorResponseBuilder->withErrorType('failed to retrieve token')->buildPostMessage();
+                return $errorResponseBuilder->withErrorType('failed to retrieve token')->buildPostMessage($callbackUrl);
             }
 
             $token = $connection->getAccessToken($authSession, $oauthToken, $oauthVerifier);
 
             return OauthResponseBuilder::forResponseType('token', '1.0')
                 ->withTokenParams($token->jsonSerialize())
-                ->withRedirectUrl($callbackUrl)
-                ->buildPostMessage();
+                ->buildPostMessage($callbackUrl);
         } catch (\Exception $e) {
-            return $errorResponseBuilder->withErrorType('failed to retrieve token')->buildPostMessage();
+            return $errorResponseBuilder->withErrorType('failed to retrieve token')->buildPostMessage($callbackUrl);
         }
     }
 

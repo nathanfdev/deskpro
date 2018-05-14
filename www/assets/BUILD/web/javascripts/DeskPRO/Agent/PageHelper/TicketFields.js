@@ -150,7 +150,10 @@ DeskPRO.Agent.PageHelper.TicketFields = new Orb.Class({
       self.display.find('.item.'+id).each(function(i, el) {
         var $el = $(el);
         value = allowDefaultValue ? $el.data('default-value') : value;
-        $el.find('input[type=text], textarea, select').val(value);
+        $el.find('input[type=text], textarea, select').filter(function(){
+          //filter out select2 inputs, select2 val processed below as separate call
+          return $(this).parents('.with-select2').length === 0;
+        }).val(value);
         $el.find('.with-select2').val(Array.isArray(value) ? value : (value+'').split(',')).change();
         $el.find('input[type=radio]').each(function(i, field) {
           var $field = $(field);

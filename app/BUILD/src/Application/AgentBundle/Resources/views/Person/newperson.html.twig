@@ -5,7 +5,7 @@
     {% set baseId = el_uid() %}
     pageMeta.baseId = '{{ baseId }}';
 </script>
-<div class="layout-content page-new-news page-new-content">
+<div class="layout-content page-new-person page-new-content">
     <div class="dp-page-content">
         {{ start_counter('steps') }}
 
@@ -171,7 +171,7 @@
                                      style="display: none;padding: 0;">
                                     <div class="tab-properties content-table" style="border: none;">
                                         <table cellspacing="0" cellpadding="0" width="100%" class="field-holders-table">
-                                            <tr>
+                                            <tr class="labels-input-row">
                                                 <th width="150">{{ phrase('agent.general.labels') }}</th>
                                                 <td>
                                                     <input

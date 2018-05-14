@@ -1,5 +1,5 @@
-define ->
-  Reports_Directive_Amcharts = ['$compile', '$state', 'DashboardWidgetService', ($compile, $state, DashboardWidgetService) ->
+define ['handlebars'], (Handlebars) ->
+  Reports_Directive_Amcharts = ['$compile', '$state', 'DashboardWidgetService', '$timeout', ($compile, $state, DashboardWidgetService, $timeout) ->
     return {
       restrict: 'E'
       replace: true
@@ -16,6 +16,8 @@ define ->
         loaded: '@'
 
       link: (scope, element) ->
+        window.initHandlebars(Handlebars)
+
         template = """
           <div>
             <div ng-hide='loaded' class="box stat-box"><div class="stat-value no-data">loading...</div></div>
@@ -59,7 +61,9 @@ define ->
 
           # this is valid for serial and pie charts, gauge has not dataProvider
           if (chartData and chartData.dataProvider?) || (scope.chartType == 'gauge' && chartData.axes?[0]?.bands?)
-            drawWidget chartData
+            $timeout(->
+              drawWidget(chartData)
+            , 1)
           else if scope.jsCode
             try
               eval(scope.jsCode)
@@ -72,6 +76,12 @@ define ->
                 scope.noData = true
 
                 drawWidget response
+          else if DashboardWidgetService.widgetsResults and DashboardWidgetService.widgetsResults[scope.widgetId]
+            DashboardWidgetService.widgetsResults[scope.widgetId].promise.then (renderedResult) =>
+              scope.loaded = true
+              scope.noData = true
+              if renderedResult && (renderedResult.dataProvider || renderedResult.axes?[0]?.bands?)
+                drawWidget(renderedResult)
           else
             DashboardWidgetService
               .getWidget(scope.widgetId || 0)
@@ -83,9 +93,9 @@ define ->
                   drawWidget(widget.rendered_result)
 
         drawWidget = (widget) ->
-          scope.loaded = true
-          scope.noData = false
-          setTimeout(->
+          $timeout(->
+            scope.loaded = true
+            scope.noData = false
             doDrawWidget(widget)
           , 1)
 
@@ -104,6 +114,41 @@ define ->
 
           if widget.dataProvider? && widget.dataProvider[0]? && (Object.keys(widget.dataProvider[0]).length > 6 || (widget.type == 'pie' && widget.dataProvider.length > 6))
             widget.legend = false
+
+          if widget.valueAxes && widget.valueAxes[0] && (widget.valueAxes[0].hash || widget.valueAxes[0].labelTemplate)
+            widget.valueAxes[0].labelFunction = (value) ->
+              hash = widget.valueAxes[0].hash
+              finalValue = value;
+              if hash && hash[value]
+                finalValue = hash[value]
+              if widget.valueAxes[0].labelTemplate
+                template = Handlebars.compile(widget.valueAxes[0].labelTemplate)
+                finalValue = template({ 'value': finalValue })
+
+              return finalValue
+
+          if widget.valueAxes && widget.valueAxes[1] && widget.valueAxes[1].hash
+            widget.valueAxes[1].labelFunction = (value) ->
+              hash = widget.valueAxes[1].hash
+              return if hash[value] then hash[value] else ''
+
+          if widget.categoryAxis && widget.categoryAxis.labelTemplate
+            widget.categoryAxis.labelFunction = (value) ->
+              template = Handlebars.compile(widget.categoryAxis.labelTemplate)
+              return template({ category: value })
+
+          if widget.graphs
+            widget.graphs = widget.graphs.map((g) ->
+              if g.balloonTextTemplate
+                g.balloonFunction = (item, graph) ->
+                  vars = { item: item, graph: graph }
+                  Object.keys(item.dataContext).forEach((k) -> vars[k] = item.dataContext[k])
+                  if not vars.value and graph.valueField
+                    vars.value = item.dataContext[graph.valueField]
+                  return Handlebars.compile(g.balloonTextTemplate)(vars)
+
+              return g
+            )
 
           if chart and widget.dataProvider
             chart.dataProvider = widget.dataProvider
