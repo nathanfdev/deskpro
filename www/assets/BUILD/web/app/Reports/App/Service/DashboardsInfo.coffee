@@ -83,14 +83,13 @@ define ['DeskPRO/Util/Arrays', 'DeskPRO/Util/Util'], (Arrays, Util) ->
 
       if @lastDashboardDetail and @lastDashboardDetail.id == dashboard_id and !forceReload
         d.resolve(@lastDashboardDetail)
-        return d.promise
-
-      @Api2.sendGet("/dashboards/#{dashboard_id}").then( (resp) =>
-        @lastDashboardDetail = resp.data.data
-        @lastDashboardDetail.version_id = @version_id
-        @lastDashboardDetail.reports_version_id = @version_id
-        d.resolve(@lastDashboardDetail)
-      )
+      else
+        @Api2.sendGet("/dashboards/#{dashboard_id}").then( (resp) =>
+          @lastDashboardDetail = resp.data.data
+          @lastDashboardDetail.version_id = @version_id
+          @lastDashboardDetail.reports_version_id = @version_id
+          d.resolve(@lastDashboardDetail)
+        )
 
       return d.promise
 
@@ -107,13 +106,11 @@ define ['DeskPRO/Util/Arrays', 'DeskPRO/Util/Util'], (Arrays, Util) ->
 
       if @lastReportDetail and @lastReportDetail.id == report_id and ! forceReload
         d.resolve(@lastReportDetail)
-        return d.promise
-
-      @Api2.sendGet("/dashboard_reports/#{report_id}").then( (resp) =>
-        @lastReportDetail = resp.data.data
-        d.resolve(resp.data.data)
-        return d.promise
-      )
+      else
+        @Api2.sendGet("/dashboard_reports/#{report_id}").then( (resp) =>
+          @lastReportDetail = resp.data.data
+          d.resolve(resp.data.data)
+        )
 
       return d.promise
 
