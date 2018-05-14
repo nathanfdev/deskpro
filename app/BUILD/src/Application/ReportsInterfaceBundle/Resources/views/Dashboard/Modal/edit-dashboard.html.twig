@@ -48,6 +48,9 @@
                 <div class="bucket">
                     <label class="label">Dashboard Title:</label>
                     <div class="bucket-column"><input type="text" ng-model="dashboard.title" placeholder="Name of your new dashboard"></div>
+                    <div ng-if="error" class="alert alert-error">
+                        {{ ng_var('error') }}
+                    </div>
                 </div>
 
                 <hr>

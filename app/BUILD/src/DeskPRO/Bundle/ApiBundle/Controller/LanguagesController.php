@@ -160,6 +160,7 @@ class LanguagesController extends CrudController
             'agent.general.priority',
             'agent.general.product',
             'agent.general.publish',
+            'agent.general.ref',
             'agent.general.reply',
             'agent.general.reports',
             'agent.general.run_macro',

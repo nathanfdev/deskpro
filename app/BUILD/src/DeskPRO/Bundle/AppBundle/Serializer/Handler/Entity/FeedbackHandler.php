@@ -77,6 +77,10 @@ class FeedbackHandler extends AbstractEntityHandler
      */
     public function getCommentsCount(SerializedFeedback $model)
     {
+        if (!$model->getId()) {
+            return 0;
+        }
+
         if (!isset($this->commentCounts[$model->getId()])) {
             $qb = $this->em->createQueryBuilder();
             $qb

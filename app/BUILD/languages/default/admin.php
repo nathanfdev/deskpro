@@ -585,6 +585,8 @@ return [
     'adm.ticket_accounts.agent_attachments'                              => 'Agent Attachments',
     'adm.ticket_accounts.allow_all'                                      => 'Allow all files',
     'adm.ticket_accounts.allow_only'                                     => 'Only allow specific file extensions',
+    'adm.ticket_accounts.brands_radio_all'                               => 'Enable on all brands',
+    'adm.ticket_accounts.brands_radio_specific'                          => 'Enable on specific brands',
     'adm.ticket_accounts.disallow_only'                                  => 'Just disallow specific file extensions',
     'adm.ticket_accounts.download_hotlinked_images'                      => 'Download Hotlinked Images',
     'adm.ticket_accounts.download_hotlinked_images_help'                 => 'Replace linked images by blob attachments in incoming emails',

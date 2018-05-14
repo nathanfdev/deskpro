@@ -1,4 +1,4 @@
-{% if new_comment_form is defined and new_comment_form != null %}
+{% if new_comment_form is defined and new_comment_form != null and (can_login() or app.user) %}
 <div class="form-ticket">
     <div class="single-comment reply">
         <div class="comment-info">

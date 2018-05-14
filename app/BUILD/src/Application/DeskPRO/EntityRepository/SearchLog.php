@@ -100,17 +100,29 @@ class SearchLog extends AbstractEntityRepository
         ");
     }
 
-    public function getByIds(array $ids, $keep_order = false)
+    public function getByIds(array $ids, $keep_order = false, $maxAgeInSec = null)
     {
         if (!$ids) {
             return [];
         }
 
-        return $this->getEntityManager()->createQuery('
-            SELECT l
-            FROM DeskPRO:SearchLog l
-            WHERE l.id IN (?0)
-            ORDER BY l.id DESC
-        ')->execute([$ids]);
+        $qb = $this->getEntityManager()->createQueryBuilder();
+        $qb
+            ->select('sl')
+            ->from('DeskPRO:SearchLog', 'sl')
+            ->where('sl.id IN (:ids)')
+            ->setParameter('ids', $ids);
+
+        if (!$keep_order) {
+            $qb->orderBy('sl.id', 'DESC');
+        }
+
+        if ($maxAgeInSec) {
+            $qb
+                ->andWhere('sl.date_created >= :minDate')
+                ->setParameter('minDate', (new \DateTime())->modify(sprintf('%s seconds ago', $maxAgeInSec)));
+        }
+
+        return $qb->getQuery()->execute();
     }
 }

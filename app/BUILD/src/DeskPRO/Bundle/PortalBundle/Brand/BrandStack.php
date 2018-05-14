@@ -143,4 +143,40 @@ class BrandStack
 
         return $this->brandContainers[ $brandId];
     }
+
+    /**
+     * Temporarily push the Brand and runs $func, and then
+     * pop the brand after.
+     *
+     * This will attempt to catch exceptions so the brand is always pop
+     * afterwards.
+     *
+     * @param Brand    $brand
+     * @param callback $func
+     *
+     * @throws null|\Exception
+     */
+    public function pushTemporary(Brand $brand = null, $func = null)
+    {
+        if ($brand) {
+            $this->push($brand, true);
+        }
+
+        $e   = null;
+        $res = null;
+        try {
+            $res = $func($this, $brand);
+        } catch (\Exception $e) {
+        }
+
+        if ($brand) {
+            $this->pop();
+        }
+
+        if ($e) {
+            throw $e;
+        }
+
+        return $res;
+    }
 }

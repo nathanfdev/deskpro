@@ -43,7 +43,8 @@ define [
   Reports_App_Directive_DpShowSpinning,
   Reports_App_Directive_DpHideSpinning,
   Reports_App_Directive_DpTabBody,
-  Reports_App_Directive_DpTabBtn,) ->
+  Reports_App_Directive_DpTabBtn
+) ->
   return (Module) ->
     ###
     # Dashboards specific directives

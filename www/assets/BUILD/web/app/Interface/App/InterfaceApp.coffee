@@ -55,6 +55,7 @@ define [
     'angularMoment',
     'oc.lazyLoad',
     'gridster',
+    'dp.datetimepicker'
   ])
 
   SetupDeskPROService(InterfaceApp)

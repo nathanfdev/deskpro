@@ -29,6 +29,7 @@ use Sensio\Bundle\FrameworkExtraBundle\Configuration\ParamConverter;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Security;
 use Symfony\Component\HttpFoundation\JsonResponse;
+use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Security\Core\Exception\AccessDeniedException;
@@ -49,7 +50,7 @@ class FeedbackController extends AbstractController
      *
      * @throws \Exception
      *
-     * @return Response
+     * @return Response|RedirectResponse
      */
     public function indexAction(Request $request, $_format)
     {
@@ -140,7 +141,17 @@ class FeedbackController extends AbstractController
                         $person = $e->getPerson();
                         $this->submitNewFeedbackAbuseCheck($person, $request->getClientIp());
 
-                        return $this->getFormSaver()->saveFormForPersonLogin(SavedForm::TYPE_NEW_FEEDBACK, $person, $form, $request);
+                        if ($person instanceof PersonGuest) {
+                            $savedForm = $this->getFormSaver()->saveForm(SavedForm::TYPE_NEW_FEEDBACK, $form, $request, $person->getEmail(), $person->getDisplayName());
+
+                            return new RedirectResponse(
+                                $this->container->get('router')->generate('portal_login', [
+                                    'saved_form' => $savedForm->getExternalCode(),
+                                ])
+                            );
+                        } else {
+                            return $this->getFormSaver()->saveFormForPersonLogin(SavedForm::TYPE_NEW_FEEDBACK, $person, $form, $request);
+                        }
                     } catch (EmailValidationRequiredException $e) {
                         $this->submitNewFeedbackAbuseCheck($person, $request->getClientIp());
 

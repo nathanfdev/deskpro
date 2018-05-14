@@ -86,6 +86,13 @@ define ['datatables', "datatables.pageResize"], () ->
 
               if response and response.data
                 initTable response
+        else if DashboardWidgetService.widgetsResults and DashboardWidgetService.widgetsResults[scope.widgetId]
+          DashboardWidgetService.widgetsResults[scope.widgetId].promise.then (renderedResult) =>
+            scope.loaded = true
+            scope.noData = true
+
+            if renderedResult and renderedResult.data
+              initTable renderedResult
         else
           DashboardWidgetService
             .getWidget(conf).then (widget) =>

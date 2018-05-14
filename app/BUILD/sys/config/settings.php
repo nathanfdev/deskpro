@@ -7,11 +7,6 @@ return [
     //###################################################################################################################
 
     /*
-     * Is registration enabled?
-     */
-    'core.reg_enabled' => true,
-
-    /*
      * Is multi-language features enabled?
      */
     'core.enable_languages' => true,

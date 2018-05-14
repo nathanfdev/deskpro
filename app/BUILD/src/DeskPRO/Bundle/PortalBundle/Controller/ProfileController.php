@@ -42,7 +42,7 @@ class ProfileController extends AbstractController
             return $this->redirectToRoute('portal_home');
         }
 
-        if (!$this->getBrandSetting('core.reg_enabled')) {
+        if (!$this->get('dp_authentication_manager.user')->isRegistrationFormVisible()) {
             return $this->redirectToRoute('portal_home');
         }
 

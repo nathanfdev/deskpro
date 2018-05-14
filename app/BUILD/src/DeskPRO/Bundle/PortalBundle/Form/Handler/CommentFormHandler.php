@@ -1,9 +1,5 @@
 <?php
 
-/**
- * DeskPRO.
- */
-
 namespace DeskPRO\Bundle\PortalBundle\Form\Handler;
 
 use Application\DeskPRO\Entity\Article;
@@ -40,6 +36,9 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
 use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorage;
 
+/**
+ * Class CommentFormHandler.
+ */
 class CommentFormHandler
 {
     /**
@@ -55,101 +54,128 @@ class CommentFormHandler
     /**
      * @var PersonFactory
      */
-    private $person_factory;
+    private $personFactory;
 
     /**
      * @var FormFactory
      */
-    private $form_factory;
+    private $formFactory;
 
     /**
      * @var TokenStorage
      */
-    private $token_storage;
+    private $tokenStorage;
 
     /**
      * @var AntiAbuse
      */
-    private $anti_abuse;
+    private $antiAbuse;
 
     /**
      * @var PortalValidation
      */
-    private $portal_validation;
+    private $portalValidation;
 
     /**
      * @var LanguageManager
      */
-    private $language_manager;
+    private $languageManager;
 
     /**
      * @var ObjectRouter
      */
-    private $object_router;
+    private $objectRouter;
 
     /**
      * @var PortalPermissionsManager
      */
-    private $permissions_manager;
+    private $permissionsManager;
 
     /**
      * @var ContentSubscriptionsHelper
      */
-    private $subscription_helper;
+    private $subscriptionsHelper;
 
     /**
      * @var UrlGeneratorInterface
      */
-    private $url_generator;
+    private $urlGenerator;
 
     /**
      * @var PersonDataService
      */
-    private $person_data_service;
+    private $personDataService;
     /**
      * @var BrandStack
      */
-    private $brand_stack;
+    private $brandStack;
 
     /**
      * @var PortalEmailSender
      */
-    private $email_sender;
+    private $emailSender;
 
+    /**
+     * Constructor.
+     *
+     * @param FormSaver                  $saver
+     * @param PortalValidation           $portalValidation
+     * @param LanguageManager            $languageManager
+     * @param ObjectRouter               $objectRouter
+     * @param UrlGeneratorInterface      $urlGenerator
+     * @param PersonDataService          $personDataService
+     * @param BrandStack                 $brandStack
+     * @param PortalPermissionsManager   $permissionsManager
+     * @param ContentSubscriptionsHelper $subscriptionsHelper
+     * @param EntityManager              $em
+     * @param PersonFactory              $personFactory
+     * @param FormFactory                $formFactory
+     * @param TokenStorage               $tokenStorage
+     * @param AntiAbuse                  $antiAbuse
+     * @param PortalEmailSender          $emailSender
+     */
     public function __construct(
-        FormSaver $saver,
-        PortalValidation $portal_validation,
-        LanguageManager $language_manager,
-        ObjectRouter $object_router,
-        UrlGeneratorInterface $url_generator,
-        PersonDataService $person_data_service,
-        BrandStack $brand_stack,
-        PortalPermissionsManager $permissions_manager,
-        ContentSubscriptionsHelper $subscription_helper,
-        EntityManager $em,
-        PersonFactory $person_factory,
-        FormFactory $form_factory,
-        TokenStorage $token_storage,
-        AntiAbuse $anti_abuse,
-        PortalEmailSender $email_sender
+        FormSaver                  $saver,
+        PortalValidation           $portalValidation,
+        LanguageManager            $languageManager,
+        ObjectRouter               $objectRouter,
+        UrlGeneratorInterface      $urlGenerator,
+        PersonDataService          $personDataService,
+        BrandStack                 $brandStack,
+        PortalPermissionsManager   $permissionsManager,
+        ContentSubscriptionsHelper $subscriptionsHelper,
+        EntityManager              $em,
+        PersonFactory              $personFactory,
+        FormFactory                $formFactory,
+        TokenStorage               $tokenStorage,
+        AntiAbuse                  $antiAbuse,
+        PortalEmailSender          $emailSender
     ) {
         $this->saver               = $saver;
         $this->em                  = $em;
-        $this->person_factory      = $person_factory;
-        $this->form_factory        = $form_factory;
-        $this->token_storage       = $token_storage;
-        $this->anti_abuse          = $anti_abuse;
-        $this->portal_validation   = $portal_validation;
-        $this->language_manager    = $language_manager;
-        $this->object_router       = $object_router;
-        $this->permissions_manager = $permissions_manager;
-        $this->subscription_helper = $subscription_helper;
-        $this->url_generator       = $url_generator;
-        $this->person_data_service = $person_data_service;
-        $this->brand_stack         = $brand_stack;
-        $this->email_sender        = $email_sender;
+        $this->personFactory       = $personFactory;
+        $this->formFactory         = $formFactory;
+        $this->tokenStorage        = $tokenStorage;
+        $this->antiAbuse           = $antiAbuse;
+        $this->portalValidation    = $portalValidation;
+        $this->languageManager     = $languageManager;
+        $this->objectRouter        = $objectRouter;
+        $this->permissionsManager  = $permissionsManager;
+        $this->subscriptionsHelper = $subscriptionsHelper;
+        $this->urlGenerator        = $urlGenerator;
+        $this->personDataService   = $personDataService;
+        $this->brandStack          = $brandStack;
+        $this->emailSender         = $emailSender;
     }
 
+    /**
+     * @param FormInterface   $form
+     * @param Request         $request
+     * @param ContentAbstract $content
+     * @param CommentAbstract $comment
+     *
+     * @return bool|RedirectResponse
+     */
     public function handle(FormInterface $form, Request $request, ContentAbstract $content, CommentAbstract $comment)
     {
         $comment->setObject($content);
@@ -167,13 +193,19 @@ class CommentFormHandler
         return false;
     }
 
+    /**
+     * @param CommentAbstract $comment
+     * @param Request         $request
+     *
+     * @return FormInterface
+     */
     public function createForm(CommentAbstract $comment, Request $request)
     {
         if (!$comment->getPerson()) {
             $comment->setPerson($this->getUser());
         }
 
-        return $this->form_factory->create(
+        return $this->formFactory->create(
             'comment',
             $comment,
             [
@@ -201,7 +233,7 @@ class CommentFormHandler
         $this->informAntiAbuse($person, $request, $content);
         $this->acceptComment($content, $comment, $request);
 
-        return new RedirectResponse($this->object_router->getPortalPath($content));
+        return new RedirectResponse($this->objectRouter->getPortalPath($content));
     }
 
     /**
@@ -231,17 +263,17 @@ class CommentFormHandler
         $person->setPrimaryEmail($email);
         $person->setName($comment->getName());
         try {
-            $this->person_factory->checkGuestForValidation($person, $request->attributes->get('saved-form'));
+            $this->personFactory->checkGuestForValidation($person, $request->attributes->get('saved-form'));
 
             // this is someone who clicked the validation link and ended up here (no exception thrown).
             // if its a saved form, it appears to be a guest submission, but its not realy.
             // get the person and set them on the comment.
-            $person = $this->person_data_service->getPersonForEmail($email->getEmail());
+            $person = $this->personDataService->getPersonForEmail($email->getEmail());
             $comment->setPerson($person);
             $this->acceptComment($content, $comment, $request);
 
-            $destination = $this->object_router->getPortalPath($content);
-            if ($redirect = $this->portal_validation->getPasswordRedirectIfRequired($person, $request, $destination)) {
+            $destination = $this->objectRouter->getPortalPath($content);
+            if ($redirect = $this->portalValidation->getPasswordRedirectIfRequired($person, $request, $destination)) {
                 return $redirect;
             }
         } catch (LoginRequiredException $e) {
@@ -250,7 +282,17 @@ class CommentFormHandler
             $this->informAntiAbuse($person, $request, $content);
 
             // return the redirect response
-            return $this->saver->saveFormForPersonLogin(SavedForm::TYPE_COMMENT, $person, $form, $request);
+            if ($person instanceof PersonGuest) {
+                $savedForm = $this->saver->saveForm(SavedForm::TYPE_COMMENT, $form, $request, $person->getEmail(), $person->getDisplayName());
+
+                return new RedirectResponse(
+                    $this->urlGenerator->generate('portal_login', [
+                        'saved_form' => $savedForm->getExternalCode(),
+                    ])
+                );
+            } else {
+                return $this->saver->saveFormForPersonLogin(SavedForm::TYPE_COMMENT, $person, $form, $request);
+            }
         } catch (EmailValidationRequiredException $e) {
             $this->informAntiAbuse($person, $request, $content);
 
@@ -261,17 +303,22 @@ class CommentFormHandler
                 $person->getEmailAddress(),
                 $person->getDisplayName()
             );
-            $this->portal_validation->sendVerificationEmail(PortalValidation::COMMENT, $saved_form);
+            $this->portalValidation->sendVerificationEmail(PortalValidation::COMMENT, $saved_form);
             $this->addFlash($request, 'success', 'portal.flashes.guest_content_must_verify');
 
-            return new RedirectResponse($this->object_router->getPortalPath($content));
+            return new RedirectResponse($this->objectRouter->getPortalPath($content));
         }
     }
 
+    /**
+     * @param ContentAbstract $content
+     * @param CommentAbstract $comment
+     * @param Request|null    $request
+     */
     public function acceptComment(ContentAbstract $content, CommentAbstract $comment, Request $request = null)
     {
         $person   = $comment->getPerson();
-        $perm_bag = $this->permissions_manager->getPermissionsBagForPerson($person);
+        $perm_bag = $this->permissionsManager->getPermissionsBagForPerson($person);
         if (!$perm_bag->get($this->permPrefix($content).'.no_comment_validate')
             && !($person->isAgent() && $person->hasPerm('agent_publish.validate'))
         ) {
@@ -286,19 +333,26 @@ class CommentFormHandler
         $this->em->persist($comment);
         $this->em->flush([$comment, $content]);
 
-        $this->email_sender->sendCommentThankYouEmail($comment);
+        $this->emailSender->sendCommentThankYouEmail($comment);
 
         // auto subscribe
         if ($person = $comment->getPerson()) {
             if ($person instanceof Person) {
-                if (!$this->subscription_helper->isSubscribedContent($content, $person)) {
-                    $this->subscription_helper->subscribeToContent($content, $person);
+                if (!$this->subscriptionsHelper->isSubscribedContent($content, $person)) {
+                    $this->subscriptionsHelper->subscribeToContent($content, $person);
                     $this->addFlash($request, 'success', 'portal.flashes.article_subscribe');
                 }
             }
         }
     }
 
+    /**
+     * @param ContentAbstract $content
+     *
+     * @throws InvalidArgumentException
+     *
+     * @return string
+     */
     protected function permPrefix(ContentAbstract $content)
     {
         if ($content instanceof Article) {
@@ -316,6 +370,11 @@ class CommentFormHandler
         throw new InvalidArgumentException('content type not supported');
     }
 
+    /**
+     * @param Request $request
+     * @param string  $type
+     * @param string  $phrase
+     */
     protected function addFlash(Request $request, $type, $phrase)
     {
         $request->getSession()->getFlashBag()->add($type, $this->phrase($phrase));
@@ -326,7 +385,7 @@ class CommentFormHandler
      */
     protected function getUser()
     {
-        if (null === $token = $this->token_storage->getToken()) {
+        if (null === $token = $this->tokenStorage->getToken()) {
             return new PersonGuest();
         }
 
@@ -337,15 +396,26 @@ class CommentFormHandler
         return $user;
     }
 
+    /**
+     * @param mixed           $person
+     * @param Request         $request
+     * @param ContentAbstract $content
+     */
     private function informAntiAbuse($person, Request $request, ContentAbstract $content)
     {
         $check = new SubmitCommentAbuseCheck($person, $request->getClientIp());
-        $check->setResponse(new RedirectResponse($this->object_router->getPortalPath($content)));
-        $this->anti_abuse->check($check);
+        $check->setResponse(new RedirectResponse($this->objectRouter->getPortalPath($content)));
+        $this->antiAbuse->check($check);
     }
 
+    /**
+     * @param string $name
+     * @param array  $vars
+     *
+     * @return string
+     */
     private function phrase($name, array $vars = [])
     {
-        return $this->language_manager->phrase($name, $vars);
+        return $this->languageManager->phrase($name, $vars);
     }
 }

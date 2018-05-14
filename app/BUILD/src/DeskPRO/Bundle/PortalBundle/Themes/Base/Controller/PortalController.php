@@ -6,6 +6,7 @@ use DeskPRO\Bundle\AppBundle\Security\Voter\Portal\UseSectionVoter;
 use DeskPRO\Bundle\PortalBundle\Annotation\Tag;
 use DeskPRO\Bundle\PortalBundle\Annotation\TagOptions;
 use DeskPRO\Bundle\PortalBundle\Controller\AbstractController;
+use DeskPRO\Bundle\PortalBundle\Controller\SearchController;
 use DeskPRO\Bundle\PortalBundle\HttpCache\Configuration\TagHttpCache;
 use DeskPRO\Bundle\PortalBundle\Request\TagRequest;
 use Symfony\Component\Security\Core\Exception\AuthenticationException;
@@ -126,6 +127,11 @@ class PortalController extends AbstractController
             }
         } else {
             $extendedOptions = ['include_contact_us' => false];
+        }
+
+        $masterRequest = $this->container->get('request_stack')->getMasterRequest();
+        if ($masterRequest->attributes->has(SearchController::SEARCH_LOG_ID_VAR)) {
+            $extendedOptions['search_log_id'] = $masterRequest->attributes->get(SearchController::SEARCH_LOG_ID_VAR);
         }
 
         return $this->renderThemeView(

@@ -7,6 +7,7 @@
 namespace Application\AgentBundle\Form\Model;
 
 use Application\DeskPRO\App;
+use Application\DeskPRO\Entity\Brand;
 use Application\DeskPRO\Entity\Language;
 use Application\DeskPRO\Entity\Organization;
 use Application\DeskPRO\Entity\Person;
@@ -32,6 +33,8 @@ class NewPerson
     public $labels = [];
     /** @var array */
     public $usergroup_ids = [];
+    /** @var array */
+    public $brand_ids = [];
     /** @var array */
     public $custom_fields = [];
 
@@ -99,8 +102,15 @@ class NewPerson
 
         foreach ($this->usergroup_ids as $ug_id) {
             $ug = $this->em->find(Usergroup::class, $ug_id);
-            if ($ug_id) {
+            if ($ug) {
                 $person->addUsergroup($ug);
+            }
+        }
+
+        foreach ($this->brand_ids as $brandId) {
+            $brand = $this->em->find(Brand::class, $brandId);
+            if ($brand) {
+                $person->addBrand($brand);
             }
         }
 
