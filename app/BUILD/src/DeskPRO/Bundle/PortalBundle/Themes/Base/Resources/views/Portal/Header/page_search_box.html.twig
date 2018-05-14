@@ -2,11 +2,12 @@
   {%  if brand_setting('core.iface_portal') %}
   <div class="search-and-ticket">
     <div class="search-form">
-      <form action="{{ path('portal_search') }}" id="omnisearch" autocomplete="off">
+      <form method="POST" action="{{ path('portal_search') }}" id="omnisearch" autocomplete="off">
         <div class="input-wrap">
           <i class="fa fa-search"></i>
           <a href="#" class="search-clear" style="display: none;"><i class="fa fa-times"></i></a>
           <input type="text" class="omnisearch" name="q" autocomplete="off" placeholder="{{ phrase('portal.general.search_btn') }}...">
+          <input type="hidden" name="search_log_id" {% if search_log_id is defined %} value="{{search_log_id}} {% endif %}"/>
           <!-- .active on this if we need it active -->
         </div>
         <button type="submit" class="search-btn">{{ phrase('portal.general.search_btn') }}</button>

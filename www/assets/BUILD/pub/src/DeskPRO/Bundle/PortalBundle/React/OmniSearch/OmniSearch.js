@@ -13,19 +13,27 @@ import moment from 'moment';
 export class OmniSearch extends React.Component {
 
   static propTypes = {
-    $input:  PropTypes.object,
-    $close:  PropTypes.object,
-    $button: PropTypes.object
+    $input:            PropTypes.object,
+    $inputSearchLogId: PropTypes.object,
+    $close:            PropTypes.object,
+    $button:           PropTypes.object
   };
 
   constructor(props) {
     super(props);
+
+    // grab searchLogId from search form itself
+    // in case if user press search button
+    const { $inputSearchLogId } = this.props;
+    const searchLogId = $inputSearchLogId.val();
+
     this.state = {
-      doSpin:      false, // a search is in progress
-      lastSearch:  moment(), // the last time a user executed a search (typed something in)
-      userTyping:  false,
-      searchQuery: '',
-      data:        {
+      doSpin:          false, // a search is in progress
+      lastSearch:      moment(), // the last time a user executed a search (typed something in)
+      userTyping:      false,
+      searchQuery:     '',
+      lastSearchLogId: searchLogId || null,
+      data:            {
         pageinfo: {
           total_results: 0,
           curpage:       1
@@ -43,17 +51,17 @@ export class OmniSearch extends React.Component {
       // ensure we don't trigger a search if the actual search val hasn't changed
       if (lastVal !== e.target.value) {
         lastVal = e.target.value;
-        this.doSearch(lastVal);
+        this.doSearch(lastVal, this.state.lastSearchLogId);
       }
-    }, 500);
+    }, 700);
 
     $input.on('keyup change', event => throttleChanges(event));
-    $close.click(this.onClickOut);
+    $close.click(this.onClear);
 
     // 1000ms pause before showing "no results"
     this.interval = setInterval(() => {
       // update the "userTyping" state when necessary - check every 100ms
-      const newUserTyping = moment().diff(this.state.lastSearch, 'milliseconds') < 1000;
+      const newUserTyping = moment().diff(this.state.lastSearch, 'milliseconds') < 1200;
       if (this.state.userTyping !== newUserTyping) {
         this.setState({
           userTyping: newUserTyping
@@ -66,10 +74,23 @@ export class OmniSearch extends React.Component {
     window.clearInterval(this.interval);
   }
 
-  onClickOut = (event) => {
+  onClear = (event) => {
     event.preventDefault();
 
     this.props.$input.val('');
+    this.props.$inputSearchLogId.val('');
+    this.setState({
+      data:            {},
+      doSpin:          false,
+      userTyping:      false,
+      searchQuery:     '',
+      lastSearchLogId: null
+    });
+  };
+
+  onClickOut = (event) => {
+    event.preventDefault();
+
     this.setState({
       data:        {},
       doSpin:      false,
@@ -78,7 +99,7 @@ export class OmniSearch extends React.Component {
     });
   };
 
-  doSearch(newQuery) {
+  doSearch(newQuery, lastSearchLogId) {
     if (!newQuery || newQuery.length < 3) {
       // we need a query with a length of at least 3 for the server to do any real searching
       // so don't do a HTTP request if we don't at least have that
@@ -92,14 +113,28 @@ export class OmniSearch extends React.Component {
       searchQuery: newQuery,
       lastSearch:  moment()
     }, () => {
-      portalHttp.sendGet('DP_URL/search/omni', { data: { q: newQuery } }).then((response) => {
+      const searchData = {
+        q: newQuery
+      };
+      if (lastSearchLogId) {
+        searchData.search_log_id = lastSearchLogId;
+      }
+      portalHttp.sendGet('DP_URL/search/omni', { data: searchData }).then((response) => {
         if (response.isError() || (newQuery !== this.state.searchQuery)) {
           return;
         }
 
+        let logId = null;
+        if ('meta' in response.data.data) {
+          logId = response.data.data.meta.search_log_id;
+          delete response.data.data.meta;
+        }
+
+        this.props.$inputSearchLogId.val(logId);
         this.setState({
-          data:   response.data.data,
-          doSpin: false
+          data:            response.data.data,
+          doSpin:          false,
+          lastSearchLogId: logId
         });
       });
     });
