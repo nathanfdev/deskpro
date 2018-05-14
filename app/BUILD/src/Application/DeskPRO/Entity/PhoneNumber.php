@@ -244,6 +244,26 @@ class PhoneNumber extends \Application\DeskPRO\Domain\DomainObject
     }
 
     /**
+     * @return string
+     */
+    public function getLabel()
+    {
+        return $this->label;
+    }
+
+    /**
+     * @param string $label
+     *
+     * @return $this
+     */
+    public function setLabel($label)
+    {
+        $this->setModelField('label', $label);
+
+        return $this;
+    }
+
+    /**
      * @return string|int|null
      */
     public function getExt()

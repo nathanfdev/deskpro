@@ -1,4 +1,22 @@
 <form class="form-horizontal dp-form" role="form" name="form_props" ng-submit="form_props.$valid && Ctrl.saveUsersource()">
+
+    <section class="dp-paneblock dp-listpane">
+        <article class="form-horizontal dp-form">
+            <div class="panel panel-fill indent">
+                <div class="panel-body">
+                    <div class="form-group">
+                        <div style="float: left;">
+                            <img ng-src="{{ asset('images/dp-logo-48.png') }}" alt="Icon" />
+                        </div>
+                        <div style="margin-left: 52px;">
+                            <input type="text" class="form-control camo-input" ng-model="Ctrl.usersource.title" style="font-size: 22px; width: 75%; max-width: 350px; height: auto;" />
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </article>
+    </section>
+
     <section class="dp-paneblock dp-listpane">
         <header>
             <h3>Registration</h3>
@@ -11,24 +29,24 @@
                 <div class="form-group">
                     <div class="labels-group">
                         <label>
-                            <input type="radio" ng-model="settings.reg_enabled" ng-value="true" />
+                            <input type="radio" ng-model="Ctrl.usersource.options.reg_enabled" ng-value="true" />
                             <h4>Enable Registration</h4>
-							<span class="help-block" ng-show="settings.reg_enabled">
+							<span class="help-block" ng-show="Ctrl.usersource.options.reg_enabled">
 								With registration enabled, new users will be able to create accounts on your helpdesk. This means
                                 users can register manually and they will register automatically by submitting new tickets or other content like feedback or comments.
 							</span>
                         </label>
                         <label>
-                            <input type="radio" ng-model="settings.reg_enabled" ng-value="false" />
+                            <input type="radio" ng-model="Ctrl.usersource.options.reg_enabled" ng-value="false" />
                             <h4>Disable Registration</h4>
-							<span class="help-block" ng-show="!settings.reg_enabled">
+							<span class="help-block" ng-show="!Ctrl.usersource.options.reg_enabled">
 								With registration <strong>disabled</strong>, no new users will be able to create new accounts. This means
 								to submit content to the helpdesk (such as tickets or comments), users must already exist or be manually created by an agent.
                                 For example, if a user sends the helpdesk an email but they don't exist, their email will be completely rejected.
 							</span>
                         </label>
 
-                        <div class="inner-group" ng-if="can_disable_deskpro && !settings.reg_enabled" style="padding-left: 25px; padding-top: 10px;">
+                        <div class="inner-group" ng-if="can_disable_deskpro && !Ctrl.usersource.options.reg_enabled" style="padding-left: 25px; padding-top: 10px;">
                             <label>
                                 <input type="checkbox" ng-model="Ctrl.usersource.is_disabled" class="ng-pristine ng-valid">
                                 <h4>Completely disable Deskpro User Management</h4>
@@ -174,12 +192,51 @@
         </article>
     </section>
 
+    <section class="dp-paneblock dp-listpane" ng-show="Ctrl.usersourceType == 'user' && Ctrl.brands.length > 1">
+        <header>
+            <h3>{{ phrase('agent.general.brands') }}</h3>
+        </header>
+        <article class="form-horizontal dp-form">
+            <div class="panel panel-innertable" style="margin-top: 0;">
+                <div class="form-group">
+                    <div class="labels-group">
+                        <label>
+                            <h4>
+                                <input type="radio" name="is_all_brands" ng-value="true" ng-model="usersource_detailsv2.is_all_brands" />
+                                {{ phrase('adm.ticket_accounts.brands_radio_all') }}
+                            </h4>
+                        </label>
+                        <label>
+                            <h4>
+                                <input type="radio" name="is_all_brands" ng-value="false" ng-model="usersource_detailsv2.is_all_brands" />
+                                {{ phrase('adm.ticket_accounts.brands_radio_specific') }}
+                            </h4>
+                        </label>
+                    </div>
+                    <div class="inner-group" ng-show="!usersource_detailsv2.is_all_brands">
+                        <ul class="dp-item-list checkbox-list" style="overflow-y: auto; max-height: {{ 20 * 24 }}px;min-width: 250px;max-width:400px;">
+                            <li ng-repeat="brand in Ctrl.brands">
+                                <label style="width: 100%;padding-left:20px;position: relative;white-space: nowrap;">
+                                    <input type="checkbox" value="{{ ng_var('brand.id') }}" ng-click="Ctrl.handleBrand(brand.id, $event)" ng-checked="usersource_detailsv2.brands.indexOf(brand.id) > -1" />
+                                    {{ ng_var('brand.name') }}
+                                </label>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </article>
+    </section>
+
     {##################################################################################################}
 
     <section class="dp-paneblock dp-listpane">
         <footer>
             <div class="dp-content">
                 <div class="dp-btn-controls" ng-hide="form_props.$attempted && form_props.$invalid">
+                    <div class="dp-delete-control">
+                        <button class="btn btn-danger" ng-click="Ctrl.startDelete($event);">Uninstall</button>
+                    </div>
                     <div dp-hide-spinning="saving_settings">
                         <button class="btn btn-primary" dp-submit-form>{{ phrase('agent.general.save') }}</button>
                     </div>

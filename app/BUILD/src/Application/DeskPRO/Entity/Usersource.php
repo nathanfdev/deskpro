@@ -10,7 +10,10 @@ namespace Application\DeskPRO\Entity;
 
 use Application\DeskPRO\Usersource\ActionsCollection;
 use Application\DeskPRO\Usersource\Adapter as UsersourceAdapter;
+use DeskPRO\Bundle\AppBundle\EventListener\Doctrine\UsersourceListener;
 use deskpro_us_jwt\Usersource\Adapter\Jwt as JwtAdapter;
+use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\ORM\Events;
 use Doctrine\ORM\Mapping\ClassMetadata;
 use Doctrine\ORM\Mapping\ClassMetadataInfo;
 use Orb\Util\Strings;
@@ -32,6 +35,8 @@ use Orb\Util\Util;
  * @property $auto_agent_props
  * @property $app
  * @property $id
+ * @property Brand[]|ArrayCollection      $brands
+ * @property $is_all_brands
  */
 class Usersource extends \Application\DeskPRO\Domain\DomainObject
 {
@@ -145,6 +150,18 @@ class Usersource extends \Application\DeskPRO\Domain\DomainObject
     protected $actions;
 
     /**
+     * @var \Doctrine\Common\Collections\ArrayCollection
+     */
+    protected $brands;
+
+    /**
+     * True if this usersource enabled for all brands.
+     *
+     * @var bool
+     */
+    protected $is_all_brands = true;
+
+    /**
      * @var array
      */
     public static $callbackAdapters = [
@@ -159,6 +176,7 @@ class Usersource extends \Application\DeskPRO\Domain\DomainObject
     public function __construct()
     {
         $this->actions = new ActionsCollection();
+        $this->brands  = new ArrayCollection();
     }
 
     /**
@@ -334,6 +352,18 @@ class Usersource extends \Application\DeskPRO\Domain\DomainObject
     }
 
     /**
+     * @param string $type
+     *
+     * @return $this
+     */
+    public function setType($type)
+    {
+        $this->setModelField('type', $type);
+
+        return $this;
+    }
+
+    /**
      * @param string $source_type
      */
     public function setSourceType($source_type)
@@ -386,6 +416,68 @@ class Usersource extends \Application\DeskPRO\Domain\DomainObject
         return $this->actions ?: new ActionsCollection();
     }
 
+    /**
+     * @return ArrayCollection|Brand[]
+     */
+    public function getBrands()
+    {
+        return $this->brands;
+    }
+
+    /**
+     * @param Brand $brand
+     *
+     * @return self
+     */
+    public function addBrand(Brand $brand)
+    {
+        if (!$this->brands->contains($brand)) {
+            $this->brands->add($brand);
+            $this->_onPropertyChanged('brands', $this->brands, $this->brands);
+        }
+
+        return $this;
+    }
+
+    /**
+     * @param Brand $brand
+     *
+     * @return self
+     */
+    public function removeBrand(Brand $brand)
+    {
+        $this->brands->removeElement($brand);
+        $this->_onPropertyChanged('brands', $this->brands, $this->brands);
+
+        return $this;
+    }
+
+    /**
+     * @param Brand $brand
+     *
+     * @return bool
+     */
+    public function hasBrand(Brand $brand)
+    {
+        return $this->brands->contains($brand);
+    }
+
+    /**
+     * @param bool $is_enabled
+     */
+    public function setIsAllBrands($is_all_brands)
+    {
+        $this->setModelField('is_all_brands', $is_all_brands);
+    }
+
+    /**
+     * @return bool
+     */
+    public function isAllBrands()
+    {
+        return (bool) $this->is_all_brands;
+    }
+
     //###########################################################################
     // Doctrine Metadata
     //###########################################################################
@@ -396,6 +488,9 @@ class Usersource extends \Application\DeskPRO\Domain\DomainObject
         $metadata->customRepositoryClassName = 'Application\DeskPRO\EntityRepository\Usersource';
         $metadata->setPrimaryTable(['name' => 'usersources']);
         $metadata->setChangeTrackingPolicy(ClassMetadataInfo::CHANGETRACKING_NOTIFY);
+
+        $metadata->addEntityListener(Events::prePersist, UsersourceListener::class, 'prePersist');
+        $metadata->addEntityListener(Events::preUpdate, UsersourceListener::class, 'preUpdate');
 
         $metadata->mapField([
             'fieldName'  => 'id',
@@ -506,6 +601,48 @@ class Usersource extends \Application\DeskPRO\Domain\DomainObject
                     'columnDefinition'     => null,
                 ],
             ],
+        ]);
+
+        $metadata->mapManyToMany(
+            [
+                'fieldName'    => 'brands',
+                'targetEntity' => Brand::class,
+                'cascade'      => ['persist', 'merge'],
+                'fetch'        => ClassMetadataInfo::FETCH_EXTRA_LAZY,
+                'joinTable'    => [
+                    'name'        => 'usersource_to_brand',
+                    'schema'      => null,
+                    'joinColumns' => [
+                        0 => [
+                            'name'                 => 'usersource_id',
+                            'referencedColumnName' => 'id',
+                            'nullable'             => false,
+                            'onDelete'             => 'cascade',
+                            'columnDefinition'     => null,
+                        ],
+                    ],
+                    'inverseJoinColumns' => [
+                        0 => [
+                            'name'                 => 'brand_id',
+                            'referencedColumnName' => 'id',
+                            'nullable'             => false,
+                            'onDelete'             => 'cascade',
+                            'columnDefinition'     => null,
+                        ],
+                    ],
+                ],
+                'dpApi' => true,
+            ]
+        );
+
+        $metadata->mapField([
+            'fieldName'  => 'is_all_brands',
+            'type'       => 'boolean',
+            'precision'  => 0,
+            'scale'      => 0,
+            'nullable'   => false,
+            'columnName' => 'is_all_brands',
+            'options'    => ['default' => '1'],
         ]);
 
         $metadata->mapField([

@@ -65,6 +65,11 @@ abstract class ProcessAbstract
     protected $person;
 
     /**
+     * @var \Application\DeskPRO\Entity\EmailAccount
+     */
+    protected $account;
+
+    /**
      * @var \Application\DeskPRO\EmailGateway\Reader\AbstractReader
      */
     protected $reader;
@@ -183,7 +188,7 @@ abstract class ProcessAbstract
             $cc_person = $person_processor->findPerson($cc);
             if (!$cc_person) {
                 // Closed helpdesk and an unknown CC means we drop it
-                if (!App::getContainer()->getSetting('core.reg_enabled')) {
+                if (!$person_processor->canAssociatePersonWithAccountBrands($this->account)) {
                     $this->logMessage("Skipping cc: $cc_email (no person match and closed helpdesk)");
                     continue;
                 }
@@ -191,7 +196,21 @@ abstract class ProcessAbstract
                 $db->beginTransaction();
                 $cc_person = $person_processor->createPerson($cc);
                 $this->logMessage("Added cc: $cc_email (Person {$cc_person->id})");
+                $brand = $person_processor->associatePersonWithAccountBrand($this->account, $cc_person);
+                if ($brand) {
+                    $this->logMessage("Add Person #{$cc_person->id} to Account Brand #{$brand->id}");
+                } else {
+                    $this->logMessage("WARNING. Can't find Brand for Account (#{$this->account->id}), but should");
+                }
                 $db->commit();
+            } elseif (!$person_processor->isPersonAssociatedWithAccountBrands($this->account, $cc_person)) {
+                $brand = $person_processor->associatePersonWithAccountBrand($this->account, $cc_person);
+                if ($brand) {
+                    $this->logMessage("Add Person #{$cc_person->id} to Account Brand #{$brand->id}");
+                } else {
+                    $this->logMessage("Skipping cc: $cc_email (person not associated with account brands and closed helpdesk)");
+                    continue;
+                }
             }
 
             if ($cc_person) {

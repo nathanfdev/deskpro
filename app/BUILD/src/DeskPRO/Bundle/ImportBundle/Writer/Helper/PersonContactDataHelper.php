@@ -10,6 +10,7 @@ use DeskPRO\Bundle\ImportBundle\Writer\Mapper\MapperInterface;
 use DeskPRO\Bundle\ImportBundle\Writer\Mapper\PhoneNumberMapper;
 use libphonenumber\PhoneNumber as PhoneNumberModel;
 use libphonenumber\PhoneNumberUtil;
+use Orb\Util\PhoneNumbers;
 use Psr\Log\LoggerInterface;
 
 /**
@@ -54,7 +55,8 @@ class PersonContactDataHelper extends AbstractContactDataHelper
         $contactEntity
             ->setNumber($contactModel->getNumber())
             ->setRegion(PhoneNumberUtil::getInstance()->getRegionCodeForNumber($phoneNumber))
-            ->setGuessedType($contactModel->getType() ?: 'phone')
+            ->setLabel($contactModel->getType() ?: 'phone')
+            ->setGuessedType(PhoneNumbers::getTypeCode($contactModel->getNumber()))
             ->setPerson($entity)
         ;
 

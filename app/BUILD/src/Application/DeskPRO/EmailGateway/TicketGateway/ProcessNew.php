@@ -29,11 +29,6 @@ class ProcessNew extends ProcessAbstract
     protected $ticketEmail;
 
     /**
-     * @var \Application\DeskPRO\Entity\EmailAccount
-     */
-    protected $account;
-
-    /**
      * @var \Orb\Input\Cleaner\Cleaner
      */
     protected $cleaner;

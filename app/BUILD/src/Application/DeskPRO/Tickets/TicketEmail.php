@@ -433,7 +433,18 @@ class TicketEmail
      */
     public function send(array $vars = [])
     {
-        $this->sendmailSourceId = self::sendMailerMessage($this->prepareMailerMessage($vars), $this->logger);
+        $message = $this->prepareMailerMessage($vars);
+
+        if ($this->ticket->getBrand()) {
+            $this->brandStack->push($this->ticket->getBrand());
+        }
+
+        $this->sendmailSourceId = self::sendMailerMessage($message, $this->logger);
+
+        /* If we added a brand in the stack we remove it */
+        if ($this->ticket->getBrand()) {
+            $this->brandStack->pop();
+        }
     }
 
     /**

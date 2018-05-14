@@ -198,6 +198,16 @@ class PeopleFixture extends AbstractDpFixture implements OrderedFixtureInterface
             WHERE people.primary_email_id IS NULL
         '
         );
+
+        $brand = $this->getReference('brand');
+        $batch = [];
+        foreach ($peopleIds as $pid) {
+            $batch[] = [
+                'person_id' => $pid,
+                'brand_id'  => $brand->getId(),
+            ];
+        }
+        $this->db->batchInsert('person_to_brand', $batch, true);
     }
 
     private function addExtraGroups()

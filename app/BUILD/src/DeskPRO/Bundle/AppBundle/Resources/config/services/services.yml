@@ -47,7 +47,7 @@ services:
 
   usersource_settings_resolver:
     class: DeskPRO\Bundle\AppBundle\Settings\UsersourceSettingsResolver
-    arguments: ["@=service('service_container').getSystemService('usersource_manager')", "@brand_aware_settings_resolver"]
+    arguments: ["@=service('service_container').getSystemService('usersource_manager')", "@dp_authentication_manager.user"]
 
   updater_settings_resolver:
     class: DeskPRO\Bundle\AppBundle\Settings\UpdaterSettingsResolver

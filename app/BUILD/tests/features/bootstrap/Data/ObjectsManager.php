@@ -4,6 +4,8 @@ namespace DpBehat\Data;
 
 use Application\DeskPRO\Entity\AgentTeam;
 use Application\DeskPRO\Entity\ApiToken;
+use Application\DeskPRO\Entity\AppInstance;
+use Application\DeskPRO\Entity\AppPackage;
 use Application\DeskPRO\Entity\Article;
 use Application\DeskPRO\Entity\ArticleCategory;
 use Application\DeskPRO\Entity\ArticlePendingCreate;
@@ -382,6 +384,8 @@ class ObjectsManager
             'Job'                              => [Factory\SimpleFactory::class, 'create', Job::class],
             'CustomTicketFieldDefinitionAlias' => [Factory\SimpleFactory::class, 'create', CustomTicketFieldDefinitionAlias::class],
             'Currency'                         => [Factory\SimpleFactory::class, 'create', Currency::class],
+            'AppPackage'                       => [Factory\SimpleFactory::class, 'create', AppPackage::class],
+            'AppInstance'                      => [Factory\SimpleFactory::class, 'create', AppInstance::class],
         ];
     }
 
@@ -511,6 +515,8 @@ class ObjectsManager
             'Job'                              => [$this, 'find', Job::class],
             'CustomTicketFieldDefinitionAlias' => [$this, 'find', CustomTicketFieldDefinitionAlias::class],
             'Currency'                         => [$this, 'find', Currency::class],
+            'AppPackage'                       => [$this, 'find', AppPackage::class],
+            'AppInstance'                      => [$this, 'find', AppInstance::class],
         ];
     }
 }

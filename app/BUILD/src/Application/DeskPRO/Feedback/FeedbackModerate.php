@@ -12,10 +12,10 @@ use Application\DeskPRO\Entity\Person;
 use Application\DeskPRO\People\PersonContextInterface;
 use Application\DeskPRO\Translate\Translate;
 use Application\EmailBundle\SwiftMailer\Mailer;
+use Application\EmailBundle\SwiftMailer\MailerUtils;
 use DeskPRO\Bundle\AppBundle\DataService\Feedback\FeedbackDataService;
-use DeskPRO\Bundle\PortalBundle\Brand\BrandContainer;
+use DeskPRO\Bundle\PortalBundle\Brand\BrandStack;
 use DeskPRO\Bundle\SendmailBundle\Factory\UserViewModelFactory;
-use DeskPRO\Bundle\SendmailBundle\Sender\EmailSender;
 use Doctrine\ORM\EntityManager;
 use DpSys\Features;
 
@@ -47,9 +47,9 @@ class FeedbackModerate implements PersonContextInterface
     protected $feedbackDataService;
 
     /**
-     * @var BrandContainer
+     * @var BrandStack
      */
-    protected $brandContainer;
+    protected $brandStack;
 
     /**
      * @var Features
@@ -62,9 +62,9 @@ class FeedbackModerate implements PersonContextInterface
     protected $userViewmodelFactory;
 
     /**
-     * @var EmailSender
+     * @var MailerUtils
      */
-    protected $emailSender;
+    protected $mailerUtils;
 
     /**
      * @param DeskproContainer $container
@@ -78,7 +78,8 @@ class FeedbackModerate implements PersonContextInterface
         $this->feedbackDataService  = $container->get('data.feedback');
         $this->featureFlags         = $container->get('deskpro.feature_flags');
         $this->userViewmodelFactory = $container->get('email.user_viewmodel_factory');
-        $this->emailSender          = $container->get('email.email_sender');
+        $this->mailerUtils          = $container->get('mailer.utils');
+        $this->brandStack           = $container->get('brand_stack');
 
         $this->setPersonContext($person);
     }
@@ -125,28 +126,27 @@ class FeedbackModerate implements PersonContextInterface
             $mailer           = $this->mailer;
             $featureFlags     = $this->featureFlags;
             $viewModelFactory = $this->userViewmodelFactory;
-            $sender           = $this->emailSender;
+            $mailerUtils      = $this->mailerUtils;
 
-            $this->translator->setTemporaryLanguage(
-                $feedback->getPerson()->getLanguage(),
-                function () use ($mailer, $feedback, $agent, $featureFlags, $viewModelFactory, $sender) {
-                    $vars = [
-                        'feedback' => $feedback,
-                        'agent'    => $agent,
-                    ];
-
-                    if ($featureFlags->hasBeta('email_templates')) {
-                        $viewModel = $viewModelFactory->createFeedbackApprovedModel($feedback, $agent);
-                        $sender->send($viewModel, ['to' => $feedback->getPerson()]);
-                    } else {
-                        $message = $mailer->createMessage();
-                        $message->setToPerson($feedback->getPerson());
-                        $message->setTemplate('DeskPRO:emails_user:feedback-approved.html.twig', $vars);
-
-                        $mailer->send($message);
+            if ($featureFlags->hasBeta('email_templates')) {
+                $viewModel = $this->brandStack->pushTemporary(
+                    $feedback->getPerson()->getBrands()->first(),
+                    function () use ($viewModelFactory, $feedback, $agent) {
+                        return $viewModelFactory->createFeedbackApprovedModel($feedback, $agent);
                     }
-                }
-            );
+                );
+                $mailerUtils->sendModelWithPersonContext($feedback->getPerson(), $viewModel, ['to' => $feedback->getPerson()]);
+            } else {
+                $vars = [
+                    'feedback' => $feedback,
+                    'agent'    => $agent,
+                ];
+                $message = $mailer->createMessage();
+                $message->setToPerson($feedback->getPerson());
+                $message->setTemplate('DeskPRO:emails_user:feedback-approved.html.twig', $vars);
+
+                $mailerUtils->sendWithPersonContext($feedback->getPerson(), $message);
+            }
         }
     }
 
@@ -177,28 +177,22 @@ class FeedbackModerate implements PersonContextInterface
         $mailer           = $this->mailer;
         $featureFlags     = $this->featureFlags;
         $viewModelFactory = $this->userViewmodelFactory;
-        $sender           = $this->emailSender;
+        $mailerUtils      = $this->mailerUtils;
 
-        $this->translator->setTemporaryLanguage(
-            $feedback->getPerson()->getLanguage(),
-            function () use ($mailer, $feedback, $agent, $reason, $featureFlags, $viewModelFactory, $sender) {
-                $vars = [
-                    'feedback' => $feedback,
-                    'agent'    => $agent,
-                    'reason'   => $reason,
-                ];
+        if ($featureFlags->hasBeta('email_templates')) {
+            $viewModel = $viewModelFactory->createFeedbackDisapprovedModel($feedback, $agent, $reason);
+            $mailerUtils->sendModelWithPersonContext($feedback->getPerson(), $viewModel, ['to' => $feedback->getPerson()]);
+        } else {
+            $vars = [
+                'feedback' => $feedback,
+                'agent'    => $agent,
+                'reason'   => $reason,
+            ];
+            $message = $mailer->createMessage();
+            $message->setToPerson($feedback->getPerson());
+            $message->setTemplate('DeskPRO:emails_user:feedback-disapproved.html.twig', $vars);
 
-                if ($featureFlags->hasBeta('email_templates')) {
-                    $viewModel = $viewModelFactory->createFeedbackDisapprovedModel($feedback, $agent);
-                    $sender->send($viewModel, ['to' => $feedback->getPerson()]);
-                } else {
-                    $message = $mailer->createMessage();
-                    $message->setToPerson($feedback->getPerson());
-                    $message->setTemplate('DeskPRO:emails_user:feedback-disapproved.html.twig', $vars);
-
-                    $mailer->send($message);
-                }
-            }
-        );
+            $mailerUtils->sendWithPersonContext($feedback->getPerson(), $message);
+        }
     }
 }

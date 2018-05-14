@@ -24,12 +24,12 @@ use DeskPRO\Bundle\SendmailBundle\View\Model\DownloadSubscription;
 use DeskPRO\Bundle\SendmailBundle\View\Model\EmailTooBig;
 use DeskPRO\Bundle\SendmailBundle\View\Model\EmailValidation;
 use DeskPRO\Bundle\SendmailBundle\View\Model\FeedbackApproved;
+use DeskPRO\Bundle\SendmailBundle\View\Model\FeedbackCreatedForUser;
 use DeskPRO\Bundle\SendmailBundle\View\Model\FeedbackDisapproved;
 use DeskPRO\Bundle\SendmailBundle\View\Model\FeedbackNew;
 use DeskPRO\Bundle\SendmailBundle\View\Model\FeedbackNewComment;
 use DeskPRO\Bundle\SendmailBundle\View\Model\FeedbackSubscription;
 use DeskPRO\Bundle\SendmailBundle\View\Model\FeedbackUpdated;
-use DeskPRO\Bundle\SendmailBundle\View\Model\FeedbackCreatedForUser;
 use DeskPRO\Bundle\SendmailBundle\View\Model\GatewayAutoresponseWarn;
 use DeskPRO\Bundle\SendmailBundle\View\Model\KbSubscription;
 use DeskPRO\Bundle\SendmailBundle\View\Model\LoginAlert;
@@ -168,7 +168,7 @@ class UserViewModelFactory extends AbstractViewModelFactory
      */
     public function createFeedbackApprovedModel(Feedback $feedback, Person $agent)
     {
-        $feedbackLink = $this->router->generate('user_feedback_view', ['slug' => $feedback->getSlug()]);
+        $feedbackLink = $this->router->generate('user_feedback_view', ['slug' => $feedback->getSlug()], UrlGeneratorInterface::ABSOLUTE_URL);
 
         return $this->convertParameters(FeedbackApproved::class, [$feedback, $agent, $feedbackLink]);
     }
@@ -203,14 +203,14 @@ class UserViewModelFactory extends AbstractViewModelFactory
     public function createFeedbackNewCommentModel(FeedbackComment $comment)
     {
         $feedback     = $comment->getFeedback();
-        $feedbackLink = $this->router->generate('user_feedback_view', ['slug' => $feedback->getSlug()]);
+        $feedbackLink = $this->router->generate('user_feedback_view', ['slug' => $feedback->getSlug()], UrlGeneratorInterface::ABSOLUTE_URL);
 
         return $this->convertParameters(FeedbackNewComment::class, [$comment, $feedback, $feedbackLink]);
     }
 
     public function createFeedbackUpdatedModel(Feedback $feedback)
     {
-        $feedbackLink = $this->router->generate('user_feedback_view', ['slug' => $feedback->getSlug()]);
+        $feedbackLink = $this->router->generate('user_feedback_view', ['slug' => $feedback->getSlug()], UrlGeneratorInterface::ABSOLUTE_URL);
 
         return $this->convertParameters(FeedbackUpdated::class, [$feedback, $feedbackLink]);
     }

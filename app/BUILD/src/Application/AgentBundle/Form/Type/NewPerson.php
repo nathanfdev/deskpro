@@ -36,6 +36,12 @@ class NewPerson extends AbstractType
             'allow_add'    => true,
             'allow_delete' => true,
         ]);
+        $builder->add('brand_ids', 'collection', [
+            'type'         => 'integer',
+            'required'     => false,
+            'allow_add'    => true,
+            'allow_delete' => true,
+        ]);
     }
 
     public function getDefaultOptions(array $options)
