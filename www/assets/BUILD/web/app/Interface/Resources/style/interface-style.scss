@@ -1,6 +1,8 @@
 @import "lib";
 @import 'variables';
 @import '../../../../../pub/src/DeskPRO/Bundle/AppBundle/Resources/style/variables.scss';
+@import "../../../../bower_components/bootstrap/dist/css/bootstrap.css";
+@import "../../../../vendor/eonasdan-bootstrap-datetimepicker/build/css/bootstrap-datetimepicker.css";
 
 $tablet: new-breakpoint(max-width 960px 6);
 $mobile: new-breakpoint(max-width 640px 6);
