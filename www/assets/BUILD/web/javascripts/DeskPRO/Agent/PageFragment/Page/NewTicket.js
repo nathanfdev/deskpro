@@ -1775,7 +1775,36 @@ DeskPRO.Agent.PageFragment.Page.NewTicket = new Orb.Class({
 			blobs,
       ticketLangId,
       {
-        person: this.meta.person_api_data
+        person: this.meta.person_api_data,
+				// Hack to reinsert variable to replace them on the server later
+				ref: '{{ entity.ref }}',
+				subject: '{{ entity.subject }}',
+				department: {
+					title: '{{ entity.department.title }}',
+					parent: '{{ entity.department.parent }}'
+				},
+     		brand: {
+          name: '{{ entity.brand.name }}',
+      	},
+				product: {
+        	title: '{{ entity.product.title }}'
+				},
+     		category: {
+        	title: '{{ entity.category.title }}'
+				},
+     		workflow: {
+        	title: '{{ entity.workflow.title }}'
+				},
+     		priority: {
+        	title: '{{ entity.priority.title }}'
+				},
+				agent: {
+					display_name: '{{ entity.agent.display_name }}',
+					primary_email: '{{ entity.agent.primary_email }}'
+				},
+     		agent_team: {
+        	name: '{{ entity.agent_team.name }}'
+        }
       },
       'ticket',
       this.textarea,
