@@ -61,18 +61,19 @@ class Guide extends AbstractEntityRepository
         $qb   = $conn->createQueryBuilder();
 
         $tbl = $conn->quoteIdentifier('guide2usergroup');
-        $qb->select('guide_id');
+        $qb->select('t.guide_id');
         $qb->from($tbl, 't');
-        $qb->andWhere($qb->expr()->in('usergroup_id', $usergroupIds));
-        $qb->groupBy('guide_id');
+        $qb->andWhere($qb->expr()->in('t.usergroup_id', $usergroupIds));
+        $qb->groupBy('t.guide_id');
 
         /** @var BrandStack $brandStack */
         $brandStack = App::get('brand_stack');
 
         $currentBrand = $brandStack->getActive()->getBrand();
-
-        $qb->innerJoin('t', 'guides', 'g', 'g.id = t.guide_id');
-        $qb->andWhere($qb->expr()->eq('g.brand_id', $currentBrand->getId()));
+        if ($currentBrand && $currentBrand->getId()) {
+            $qb->innerJoin('t', 'guides', 'g', 'g.id = t.guide_id');
+            $qb->andWhere($qb->expr()->eq('g.brand_id', $currentBrand->getId()));
+        }
 
         $guideIds = $conn->fetchAllCol($qb->getSQL());
 

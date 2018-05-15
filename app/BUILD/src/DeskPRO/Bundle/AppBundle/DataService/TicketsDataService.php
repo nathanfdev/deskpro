@@ -241,7 +241,12 @@ class TicketsDataService extends AbstractDataService
                 $qb->select($qb->expr()->countDistinct('t.id'))
                     ->from(Ticket::class, 't')
                     ->andWhere('t.status IN (:status_list)')->setParameter('status_list', $statusList)
-                    ->andWhere('t.brand = :brand')->setParameter('brand', $brand);
+                ;
+
+                if ($brand && $brand->getId()) {
+                    $qb->andWhere('t.brand = :brand');
+                    $qb->setParameter('brand', $brand);
+                }
 
                 if ($ignoreOnlyNotes) {
                     $this->ignoreTicketsWithOnlyAgentNotes($qb);

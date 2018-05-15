@@ -478,10 +478,10 @@ class CategoryHierarchy
         $qb   = $conn->createQueryBuilder();
 
         $tbl = $conn->quoteIdentifier($permission_table_name);
-        $qb->select('category_id');
+        $qb->select('t.category_id');
         $qb->from($tbl, 't');
-        $qb->andWhere($qb->expr()->in('usergroup_id', $usergroup_ids));
-        $qb->groupBy('category_id');
+        $qb->andWhere($qb->expr()->in('t.usergroup_id', $usergroup_ids));
+        $qb->groupBy('t.category_id');
 
         $brandRelatedCategories = [
             ArticleCategory::class,
@@ -494,15 +494,16 @@ class CategoryHierarchy
             $brandStack = App::get('brand_stack');
 
             $currentBrand = $brandStack->getActive()->getBrand();
+            if ($currentBrand && $currentBrand->getId()) {
+                $tableName = $this->repos->getTableName();
 
-            $table_name = $this->repos->getTableName();
-
-            $qb->innerJoin('t', $table_name, 'c', 'c.id = t.category_id');
-            $qb->andWhere($qb->expr()->eq('c.brand_id', $currentBrand->getId()));
+                $qb->innerJoin('t', $tableName, 'c', 'c.id = t.category_id');
+                $qb->andWhere($qb->expr()->eq('c.brand_id', $currentBrand->getId()));
+            }
         }
 
-        $cat_ids = $conn->fetchAllCol($qb->getSQL());
+        $catIds = $conn->fetchAllCol($qb->getSQL());
 
-        return $cat_ids;
+        return $catIds;
     }
 }
