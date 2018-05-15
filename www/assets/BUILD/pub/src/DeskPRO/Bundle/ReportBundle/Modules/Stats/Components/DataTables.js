@@ -25,12 +25,11 @@ class DataTable extends React.Component {
     this.dt = $table.DataTable({
       data,
       columns,
-      dom:            '<"data-table-wrapper"t>',
       pagingType:     'first_last_numbers',
       searching:      false,
       bJQueryUI:      true,
       iDisplayLength: 5,
-      sDom:           'T<"clear">lfrtip',
+      sDom:           'T<"clear">lrtip',
       deferRender:    true,
       fnDrawCallback: (settings) => {
         // eslint-disable-next-line no-underscore-dangle
@@ -65,7 +64,7 @@ class DataTable extends React.Component {
   render() {
     return (
       <div style={{ height: this.props.options.height ? this.props.options.height : 200 }}>
-        <table ref={(el) => { this.el = el; }}>
+        <table className="display" ref={(el) => { this.el = el; }}>
           <tfoot>
             <tr className="dataTables_reset_wrapper">
               <td colSpan={this.props.columns.length}><span className="dataTables_reset" onClick={this.resetClick}>Reset order | </span></td>

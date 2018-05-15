@@ -48,9 +48,8 @@ define ['datatables', "datatables.pageResize"], () ->
             searching:      false,
             bJQueryUI:      true,
             lengthChange:   true,
-            sDom:           'T<"clear">lfrtip'
+            sDom:           'T<"clear">lrtip',
             deferRender:    true,
-            dom:            "rtS",
             scrollCollapse: true,
             autoWidth:      true,
             ordering:       true,
@@ -63,7 +62,7 @@ define ['datatables', "datatables.pageResize"], () ->
           }
 
           dt = el.find('table').DataTable Object.assign(defaultOptions, options)
-          box.parent().height(box.parent().height() - 1)
+          setTimeout box.parent().height(box.parent().height() - 1), 5
 
           listItem
             .find '.handle-e'
