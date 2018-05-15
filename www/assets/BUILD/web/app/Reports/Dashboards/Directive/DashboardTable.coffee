@@ -25,14 +25,14 @@ define ['datatables', "datatables.pageResize"], () ->
         tableData = if scope.tableData then JSON.parse(scope.tableData) else {}
 
         listItem = box.parent()
-        conf = scope.widgetId || 0;
-        interval = 0;
+        conf = scope.widgetId || 0
 
         initTable = (widget) ->
           scope.loaded = true
 
-          if interval?
-            clearInterval(interval)
+          scope.resetClick = () ->
+            dt.order([]).clear().rows.add(widget.data).draw()
+
           scope.columns = widget.columns
 
           try
@@ -63,6 +63,7 @@ define ['datatables', "datatables.pageResize"], () ->
           }
 
           dt = el.find('table').DataTable Object.assign(defaultOptions, options)
+          box.parent().height(box.parent().height() - 1)
 
           listItem
             .find '.handle-e'

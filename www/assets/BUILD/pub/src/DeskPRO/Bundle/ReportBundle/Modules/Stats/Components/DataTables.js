@@ -19,10 +19,10 @@ class DataTable extends React.Component {
 
   componentDidMount() {
     const { data, columns, options } = this.props;
+    this.originalData = data;
     const $table = $(this.el);
-    const self = this;
 
-    $table.DataTable({
+    this.dt = $table.DataTable({
       data,
       columns,
       dom:            '<"data-table-wrapper"t>',
@@ -39,7 +39,6 @@ class DataTable extends React.Component {
         } else {
           $(settings.nTableWrapper).find('.dataTables_paginate').show();
         }
-        console.log(self.props.options.height);
       },
       ...options
     });
@@ -57,10 +56,22 @@ class DataTable extends React.Component {
       .destroy(true);
   }
 
+  resetClick = () => {
+    if (this.dt) {
+      this.dt.order([]).clear().rows.add(this.originalData).draw();
+    }
+  };
+
   render() {
     return (
       <div style={{ height: this.props.options.height ? this.props.options.height : 200 }}>
-        <table ref={(el) => { this.el = el; }} />
+        <table ref={(el) => { this.el = el; }}>
+          <tfoot>
+            <tr className="dataTables_reset_wrapper">
+              <td colSpan={this.props.columns.length}><span className="dataTables_reset" onClick={this.resetClick}>Reset order | </span></td>
+            </tr>
+          </tfoot>
+        </table>
       </div>);
   }
 }
