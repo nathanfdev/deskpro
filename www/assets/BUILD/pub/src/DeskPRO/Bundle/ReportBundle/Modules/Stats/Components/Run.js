@@ -105,7 +105,8 @@ class Run extends React.Component {
             scrollCollapse: true,
             autoWidth:      true,
             pageResize:     true,
-            ordering:       false,
+            ordering:       true,
+            order:          [],
             searching:      false,
             lengthChange:   true,
             height:         400

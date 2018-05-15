@@ -53,7 +53,8 @@ define ['datatables', "datatables.pageResize"], () ->
             dom:            "rtS",
             scrollCollapse: true,
             autoWidth:      true,
-            ordering:       false,
+            ordering:       true,
+            order:          []
             fnDrawCallback: (settings) ->
               if settings._iDisplayLength == -1 || settings._iDisplayLength >= settings.fnRecordsDisplay()
                 $(settings.nTableWrapper).find('.dataTables_paginate').hide();
