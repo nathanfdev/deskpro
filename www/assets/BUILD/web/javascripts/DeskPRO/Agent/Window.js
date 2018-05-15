@@ -1694,8 +1694,6 @@ DeskPRO.Agent.Window = new Orb.Class({
 
 	setListPage: function(page, noswitch) {
 
-		this.backToAgent();
-
 		// Route a list page fragment into the proper
 		// section
 
