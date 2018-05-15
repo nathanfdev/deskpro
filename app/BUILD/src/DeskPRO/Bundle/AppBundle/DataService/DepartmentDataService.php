@@ -139,7 +139,7 @@ class DepartmentDataService extends AbstractDataService
             ->orderBy('d.display_order', 'ASC')
         ;
 
-        if ($brand) {
+        if ($brand && $brand->getId()) {
             $qb->join('d.brands', 'b');
             $qb->andWhere('b.id = :brand');
             $qb->setParameter('brand', $brand);

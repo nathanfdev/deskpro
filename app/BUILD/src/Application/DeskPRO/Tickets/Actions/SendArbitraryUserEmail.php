@@ -95,7 +95,7 @@ class SendArbitraryUserEmail extends AbstractEmailAction
         $emails = array_map('trim', $emails);
 
         $regClosed = !$this->getContainer()->get('dp_authentication_manager.user')->isRegistrationFormVisible();
-        foreach ($this->getActionOption('emails') as $email) {
+        foreach ($emails as $email) {
             $person = $this->getContainer()->getEm()->getRepository(Person::class)->findOneByEmail($email);
             if ($person) {
                 $sendPeople[$email] = $person;
