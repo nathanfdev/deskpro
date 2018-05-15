@@ -382,6 +382,6 @@ class DashboardWidgetManager
             return $renderer->mergeResults($renderedResults, $options ?: []);
         }
 
-        return reset($renderedResults);
+        return reset($renderedResults) ?: null;
     }
 }
