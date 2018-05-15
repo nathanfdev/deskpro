@@ -47,7 +47,7 @@ export function transformReportData(report) {
   };
 }
 
-export function transformReportDataToApi(reportData) {
+export function transformReportDataToApi(reportData, error = false) {
   const data = {
     display_types: reportData.display_types
   };
@@ -59,20 +59,24 @@ export function transformReportDataToApi(reportData) {
     data.variables     = reportData.vars;
     data.labels        = reportData.labels;
     data.input_mode    = reportData.inputMode || 'form';
+    data.query         = reportData.raw;
+    data.query_parts   = {
+      select:   reportData.select,
+      from:     reportData.from,
+      where:    reportData.where,
+      split_by: reportData.split_by,
+      group_by: reportData.group_by,
+      order_by: reportData.order_by,
+      limit:    reportData.limit,
+      offset:   reportData.offset
+    };
 
-    if (data.input_mode === 'dpql') {
-      data.query = reportData.raw;
-    } else {
-      data.query_parts = {
-        select:   reportData.select,
-        from:     reportData.from,
-        where:    reportData.where,
-        split_by: reportData.split_by,
-        group_by: reportData.group_by,
-        order_by: reportData.order_by,
-        limit:    reportData.limit,
-        offset:   reportData.offset
-      };
+    if (!error) {
+      if (data.input_mode === 'dpql') {
+        delete data.query_parts;
+      } else {
+        delete data.query;
+      }
     }
   }
 
