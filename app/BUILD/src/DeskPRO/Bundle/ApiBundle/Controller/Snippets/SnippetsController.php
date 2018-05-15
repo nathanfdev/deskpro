@@ -305,12 +305,11 @@ class SnippetsController extends CrudController
                                     $snippet->addDepartment($department);
                                     $processed[] = $snippet->getId();
                                 }
-                            }
-                        }
-                        foreach ($snippet->getVisibleDepartments() as $department) {
-                            if (!in_array($department->getId(), $selectedDepartmentIds)) {
-                                $snippet->removeDepartment($department);
-                                $processed[] = $snippet->getId();
+                            } else {
+                                if ($snippet->hasDepartment($department)) {
+                                    $snippet->removeDepartment($department);
+                                    $processed[] = $snippet->getId();
+                                }
                             }
                         }
                     } else {
