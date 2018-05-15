@@ -347,12 +347,11 @@ class SnippetsController extends CrudController
                                     $snippet->addTeam($team);
                                     $processed[] = $snippet->getId();
                                 }
-                            }
-                        }
-                        foreach ($snippet->getOwnershipTeams() as $team) {
-                            if (!in_array($team->getId(), $selectedTeamIds)) {
-                                $snippet->removeTeam($team);
-                                $processed[] = $snippet->getId();
+                            } else {
+                                if ($snippet->hasTeam($team)) {
+                                    $snippet->removeTeam($team);
+                                    $processed[] = $snippet->getId();
+                                }
                             }
                         }
                     } else {
