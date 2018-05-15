@@ -1787,8 +1787,6 @@ DeskPRO.Agent.Window = new Orb.Class({
 	runPageRoute: function(route, extraData) {
 		var found_listener = false;
 
-		this.backToAgent();
-
 		var data = this.parseRoute(route);
 		if (extraData) {
 			data = Object.merge(extraData, data);
