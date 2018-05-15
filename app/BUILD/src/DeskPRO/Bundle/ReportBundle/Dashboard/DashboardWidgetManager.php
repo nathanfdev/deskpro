@@ -316,7 +316,7 @@ class DashboardWidgetManager
                     'graphType'
                 ) ?: null;
             } else {
-                $compiledQ = $this->compiler->compile($layeredQuery, $params, new DpqlContext($person));
+                $compiledQ = $this->compiler->compile($layeredQuery, $params, $person ? new DpqlContext($person) : null);
                 if ($curGraphType) {
                     $compiledQ->setGraphTypeHint($curGraphType);
                 }
