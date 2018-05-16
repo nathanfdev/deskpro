@@ -20,27 +20,7 @@ abstract class AbstractRenderer implements ReportsRendererInterface
      */
     public function render(Results $results, array $options = [])
     {
-        $metadata     = $results->getMetadata();
-        $splitColumns = $metadata->getSplitColumns();
-
-        if ($splitColumns) {
-            $output = [];
-            foreach ($results->getSplitResults() as $splitResult) {
-                $result = $this->doRender($splitResult[0], $results->getMetadata(), $options);
-                if ($result) {
-                    $splitPrint = [];
-                    foreach ($metadata->getSplitColumns() as $splitColumn) {
-                        $splitPrint[] = $this->renderCellValue($splitResult[1], $splitColumn, $results->getMetadata());
-                    }
-
-                    $output[] = $this->renderSplitOutputWithHeader(implode(' / ', $splitPrint), $result);
-                }
-            }
-
-            return $this->implodeSplitOutput($output);
-        } else {
-            return $this->doRender($results->getResults(), $results->getMetadata(), $options);
-        }
+        return $this->doRender($results->getResults(), $results->getMetadata(), $options);
     }
 
     /**
