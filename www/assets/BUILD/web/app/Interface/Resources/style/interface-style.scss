@@ -1,7 +1,10 @@
 @import "lib";
 @import 'variables';
-@import '../../../../../pub/src/DeskPRO/Bundle/AppBundle/Resources/style/variables.scss';
-@import "../../../../bower_components/bootstrap/dist/css/bootstrap.css";
+@import '../../../../node_modules/bootstrap/scss/functions';
+@import '../../../../node_modules/bootstrap/scss/mixins';
+@import '../../../../node_modules/bootstrap/scss/variables';
+@import '../../../../node_modules/bootstrap/scss/dropdown';
+@import '../../../../node_modules/bootstrap/scss/type';
 @import "../../../../vendor/eonasdan-bootstrap-datetimepicker/build/css/bootstrap-datetimepicker.css";
 
 $tablet: new-breakpoint(max-width 960px 6);
@@ -113,4 +116,8 @@ $content-width: $app-nav-width + $sidebar-width;
 }
 .clearfix {
   @include clearfix;
+}
+
+.table-condensed > thead > tr > th, .table-condensed > tbody > tr > th, .table-condensed > tfoot > tr > th, .table-condensed > thead > tr > td, .table-condensed > tbody > tr > td, .table-condensed > tfoot > tr > td {
+  padding: 5px;
 }

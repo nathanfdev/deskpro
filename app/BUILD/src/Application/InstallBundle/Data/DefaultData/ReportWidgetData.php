@@ -14,7 +14,7 @@ class ReportWidgetData extends AbstractDefaultData
             'description'   => 'Tickets awaiting agent',
             'display_types' => 'simple_stat',
             'display_order' => 40,
-            'query'         => 'SELECT DPQL_COUNT() as \'stat_value\', \'tickets waiting\' as \'stat_description\'
+            'query'         => 'SELECT DPQL_COUNT() as \'stat_value\', IF(DPQL_COUNT() = 1, \'ticket waiting\', \'tickets waiting\') as \'stat_description\'
             FROM tickets WHERE tickets.status = \'awaiting_agent\'',
             'variables' => '[]',
         ],
@@ -24,7 +24,7 @@ class ReportWidgetData extends AbstractDefaultData
             'description'   => 'Agents are online',
             'display_types' => 'simple_stat',
             'display_order' => 40,
-            'query'         => 'SELECT DPQL_COUNT_DISTINCT(sessions.person.id) as \'stat_value\', \'online agents\' as \'stat_description\' 
+            'query'         => 'SELECT DPQL_COUNT_DISTINCT(sessions.person.id) as \'stat_value\',  IF(DPQL_COUNT_DISTINCT(sessions.person.id) = 1, \'online agent\', \'online agents\') as \'stat_description\' 
 FROM sessions WHERE sessions.person.is_agent = 1 AND sessions.date_last > DPQL_NOW() - INTERVAL 6 MINUTE',
             'variables' => '[]',
         ],
@@ -34,7 +34,7 @@ FROM sessions WHERE sessions.person.is_agent = 1 AND sessions.date_last > DPQL_N
             'description'   => 'Count of tickets created by date',
             'display_types' => 'simple_stat',
             'display_order' => 40,
-            'query'         => 'SELECT DPQL_COUNT() as \'stat_value\', \'tickets created\' as \'stat_description\' 
+            'query'         => 'SELECT DPQL_COUNT() as \'stat_value\', IF(DPQL_COUNT() = 1, \'ticket created\', \'tickets created\') as \'stat_description\' 
 FROM tickets WHERE tickets.date_created = ${date}',
             'variables' => '[{"name":"date","type":"dates","default":"today"}]',
         ],
@@ -44,7 +44,7 @@ FROM tickets WHERE tickets.date_created = ${date}',
             'description'   => 'Count of chats created by date',
             'display_types' => 'simple_stat',
             'display_order' => 40,
-            'query'         => 'SELECT DPQL_COUNT() as \'stat_value\', \'chats created\' as \'stat_description\' 
+            'query'         => 'SELECT DPQL_COUNT() as \'stat_value\', IF(DPQL_COUNT() = 1, \'chat created\', \'chats created\') as \'stat_description\' 
 FROM chat_conversations WHERE chat_conversations.date_created = ${date}',
             'variables' => '[{"name":"date","type":"dates","default":"today"}]',
         ],
@@ -54,7 +54,7 @@ FROM chat_conversations WHERE chat_conversations.date_created = ${date}',
             'description'   => 'Average response time of tickets created by date',
             'display_types' => 'simple_stat',
             'display_order' => 40,
-            'query'         => 'SELECT DPQL_FORMAT(AVG(tickets.total_to_first_reply) / 60, \'number\', 0) as \'stat_value\', \'minutes to reply\' as \'stat_description\' 
+            'query'         => 'SELECT DPQL_FORMAT(AVG(tickets.total_to_first_reply) / 60, \'number\', 0) as \'stat_value\', IF(DPQL_COUNT() = 1, \'minute to reply\', \'minutes to reply\') as \'stat_description\' 
 FROM tickets WHERE tickets.date_created = ${date} AND tickets.date_first_agent_reply <> NULL',
             'variables' => '[{"name":"date","type":"dates","default":"today"}]',
         ],
@@ -87,7 +87,7 @@ WHERE ticket_feedback.date_created = ${date}
             'description'   => 'Count of replies sent by date',
             'display_types' => 'simple_stat',
             'display_order' => 40,
-            'query'         => 'SELECT DPQL_COUNT() AS \'stat_value\', \'replies sent\' as \'stat_description\'
+            'query'         => 'SELECT DPQL_COUNT() AS \'stat_value\', IF(DPQL_COUNT() = 1, \'reply sent\', \'replies sent\') as \'stat_description\'
 FROM tickets_messages
 WHERE tickets_messages.date_created = ${date}
   AND tickets_messages.is_agent_note = 0
@@ -100,7 +100,7 @@ WHERE tickets_messages.date_created = ${date}
             'description'   => 'Count of tickets resolved by date',
             'display_types' => 'simple_stat',
             'display_order' => 40,
-            'query'         => 'SELECT DPQL_COUNT() AS \'stat_value\', \'tickets resolved\' as \'stat_description\'
+            'query'         => 'SELECT DPQL_COUNT() AS \'stat_value\', IF(DPQL_COUNT() = 1, \'ticket resolved\', \'tickets resolved\') as \'stat_description\'
 FROM tickets
 WHERE tickets.status = \'resolved\'
   AND tickets.date_resolved = ${date}',
@@ -134,25 +134,19 @@ ORDER BY DPQL_COUNT() DESC
             ORDER BY @\'Created Hour\'',
             'variables' => '[{"name":"date","type":"dates","default":"past_24_hours"}]',
         ],
-        'daily-activity' => [
-            'title'         => 'Daily activity ${date}',
+        'agent-replies-by-hour' => [
+            'title'         => 'Agent Replies by Hour',
             'labels'        => 'agents,tickets',
             'description'   => '',
             'display_types' => 'simple_bars',
             'display_order' => 40,
-//            'query'         => 'SELECT SUM(count_open), SUM(count_resolve), hr
-//FROM (
-//	(SELECT DPQL_COUNT() AS count_open, 0 AS count_resolve, DPQL_HOUR(tickets.date_created) AS hr FROM tickets WHERE tickets.date_created = ${date} GROUP BY DPQL_HOUR(tickets.date_created))
-//	UNION
-//	(SELECT 0 AS count_open, DPQL_COUNT()*-1 AS count_resolve, DPQL_HOUR(tickets.date_resolved) AS hr FROM tickets WHERE tickets.date_resolved = ${date} GROUP BY DPQL_HOUR(tickets.date_resolved))
-//) AS dat
-//GROUP BY hr',
-            'query' => 'SELECT DPQL_COUNT() AS \'Replies\', DPQL_HOUR(tickets_messages.date_created) as \'Reply Hour\' 
+            'query'         => 'SELECT DPQL_COUNT() AS \'Replies\' 
             FROM  tickets_messages 
-            WHERE tickets_messages.date_created = ${date}
-            GROUP BY @\'Reply Hour\'
-            ORDER BY @\'Reply Hour\'',
-            'variables' => '[{"name":"date","type":"dates","default":"yesterday"}]',
+            WHERE
+                tickets_messages.date_created = %PAST_24_HOURS%
+                AND tickets_messages.person.is_agent = 1
+            GROUP BY DPQL_HOUR(tickets_messages.date_created, 0, 23) AS \'Hour\'',
+            'variables' => '[]',
         ],
         'incomplete-sla' => [
             'title'         => 'SLA status of non completed SLAs',
@@ -634,7 +628,7 @@ GROUP BY DPQL_MATRIX(${ticket}, ${ticket_2})',
                 'display_types' => 'table,simple_bars,pie,simple_area,simple_lines',
                 'display_order' => 20,
                 'query'         => '
-SELECT DPQL_COUNT() AS \'Total Tickets\'
+SELECT DPQL_COUNT() AS \'Tickets\'
 FROM tickets
 WHERE ${status}
 GROUP BY DPQL_MATRIX(${ticket}, ${ticket_2})',

@@ -153,7 +153,23 @@ define ['handlebars'], (Handlebars) ->
           if chart and widget.dataProvider
             chart.dataProvider = widget.dataProvider
           else
-            chart = new AmCharts.makeChart("ch#{scope.widgetId}", lodashMerge(widget, options));
+            mergedData = lodashMerge(widget, options)
+            if options.allGraphs and widget.graphs
+              widget.graphs = widget.graphs.map((g) ->
+                g = lodashMerge(g, options.allGraphs)
+                return g
+              )
+            if options.allValueAxis and widget.valueAxis
+              widget.valueAxis = widget.valueAxis.map((va) ->
+                va = lodashMerge(va, options.allValueAxis)
+                return va
+              )
+
+
+            if window.DP_DEBUG
+              console.log("--- WidgetID: #{scope.widgetId} ---")
+              console.log(mergedData)
+            chart = new AmCharts.makeChart("ch#{scope.widgetId}", mergedData);
 
           chartDiv.height(chartParent.height() - chartHeader.outerHeight())
           chart.validateData()

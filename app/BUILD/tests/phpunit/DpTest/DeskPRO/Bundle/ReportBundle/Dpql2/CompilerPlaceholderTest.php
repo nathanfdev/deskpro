@@ -30,7 +30,7 @@ WHERE tickets.date_created = %EVER%
 DPQL
             ,
             <<<'SQL'
-SELECT `tickets`.`date_created`
+SELECT /*+ MAX_EXECUTION_TIME(30000) */ `tickets`.`date_created`
 FROM `tickets`
 WHERE 1
 LIMIT 2500
@@ -55,7 +55,7 @@ WHERE tickets.date_created = %$placeholder%
 DPQL
             ,
             <<<SQL
-SELECT `tickets`.`date_created`
+SELECT /*+ MAX_EXECUTION_TIME(30000) */ `tickets`.`date_created`
 FROM `tickets`
 WHERE (`tickets`.`date_created` BETWEEN '$date1' AND '$date2')
 LIMIT 2500

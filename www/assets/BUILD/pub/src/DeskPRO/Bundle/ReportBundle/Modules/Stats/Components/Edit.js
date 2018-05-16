@@ -56,9 +56,10 @@ class EditContainer extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
-      saving:     false,
-      error:      false,
-      formErrors: {},
+      saving:        false,
+      error:         false,
+      formErrors:    {},
+      extendedQuery: false,
       ...EditContainer.getStateFromReport(props.report)
     };
   }
@@ -102,7 +103,13 @@ class EditContainer extends React.Component {
       ...formData.query
     };
 
-    this.setState({ saving: true, error: false, formErrors: {} });
+    this.setState({
+      saving:        true,
+      error:         false,
+      formErrors:    {},
+      extendedQuery: reportData.inputMode === 'dpql'
+    });
+
     dispatch(saveReport(reportData))
         .then(() => {
           this.setState({ saving: false, error: false, formErrors: {} });
@@ -115,7 +122,7 @@ class EditContainer extends React.Component {
             });
           }
 
-          const data = transformReportDataToApi(reportData);
+          const data = transformReportDataToApi(reportData, true);
           if (reportData.id > 0) {
             data.id = reportData.id;
           }
@@ -131,12 +138,12 @@ class EditContainer extends React.Component {
   };
 
   renderForm() {
-    const saving = this.state.saving;
+    const { initialFormValue, saving, error, formErrors, extendedQuery } = this.state;
     const { groupParams, report, labels } = this.props;
 
     const EditStatForm = reduxForm({
       form:               'editStat',
-      initialValues:      this.state.initialFormValue,
+      initialValues:      initialFormValue,
       onSubmit:           this.onSubmit,
       enableReinitialize: true
     })(EditForm);
@@ -163,11 +170,11 @@ class EditContainer extends React.Component {
 
     return (<div>
       <EditStatForm
-        hasError={this.state.error}
-        formErrors={this.state.formErrors}
+        hasError={error}
+        formErrors={formErrors}
         labels={labels.toJS()}
         groupParams={groupParams.toJS()}
-        extendedQuery={report.get('extended_query', false)}
+        extendedQuery={extendedQuery || report.get('extended_query', false)}
         dpqlParser={EditContainer.dpqlParser}
       />
       {controls}
