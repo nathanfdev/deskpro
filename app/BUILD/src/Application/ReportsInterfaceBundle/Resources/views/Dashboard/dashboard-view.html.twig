@@ -20,8 +20,8 @@
         <nav class="reports-control">
             <ul>
                 <li class="dashboard-title">{{ ng_var('dashboard.title') }}</li>
-                <li ng-show="!dashboard.is_default"><a class='link-pointer' ng-click="openEdit()"><i class="fa fa-cog"></i> Edit Dashboard</a></li>
-                <li ng-show="!dashboard.is_default"><a class='link-pointer' ng-click="deleteDashboard(dashboard)"><i class="fa fa-times"></i> Delete Dashboard</a></li>
+                <li ng-show="!dashboard.is_default && canEdit()"><a class='link-pointer' ng-click="openEdit()"><i class="fa fa-cog"></i> Edit Dashboard</a></li>
+                <li ng-show="!dashboard.is_default && canEdit()"><a class='link-pointer' ng-click="deleteDashboard(dashboard)"><i class="fa fa-times"></i> Delete Dashboard</a></li>
             </ul>
         </nav>
     </div>
