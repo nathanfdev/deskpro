@@ -396,7 +396,20 @@ class DashboardWidgetManager
                     $splitResults->setMetadata($metadata);
                     $splitResults->setResults($splitResult[0]);
 
-                    $renderedResults[] = new SplitResult($splitResult[1][1], $partRenderer->render($splitResults, $options));
+                    $result = $partRenderer->render($splitResults, $options);
+                    if ($result) {
+                        $splitPrint = [];
+                        foreach ($metadata->getSplitColumns() as $splitColumn) {
+                            $splitPrint[] = $partRenderer->renderCellValue($splitResult[1], $splitColumn, $metadata);
+                        }
+
+                        $splitTitle = implode(' / ', $splitPrint);
+                        if ($splitTitle === '') {
+                            $splitTitle = 'None';
+                        }
+
+                        $renderedResults[] = new SplitResult($splitTitle, $result);
+                    }
                 }
             } else {
                 $renderedResults[] = $partRenderer->render($queryResult['queryResult'], $options);
