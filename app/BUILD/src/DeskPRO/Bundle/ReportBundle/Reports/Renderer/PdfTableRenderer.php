@@ -3,6 +3,7 @@
 namespace DeskPRO\Bundle\ReportBundle\Reports\Renderer;
 
 use DeskPRO\Bundle\ReportBundle\Reports\Renderer\Html\HtmlTableRenderer;
+use DeskPRO\Bundle\ReportBundle\Reports\ResultMetadata;
 use DeskPRO\Bundle\ReportBundle\Reports\Results;
 use DeskPRO\Component\Pdf\PdfRendererInterface;
 use Symfony\Component\Templating\EngineInterface;
@@ -79,8 +80,19 @@ class PdfTableRenderer implements ReportsRendererInterface
         return $this->pdfRenderer->render($contentHtml);
     }
 
+    /**
+     * {@inheritdoc}
+     */
     public function mergeResults(array $results, array $options)
     {
         // TODO: Implement mergeResults() method.
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function renderCellValue(array $row, $column, ResultMetadata $metadata, $useRenderer = null)
+    {
+        return $this->htmlRenderer->renderCellValue($row, $column, $metadata, $useRenderer);
     }
 }

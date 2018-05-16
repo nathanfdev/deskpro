@@ -54,15 +54,9 @@ abstract class AbstractRenderer implements ReportsRendererInterface
     }
 
     /**
-     * Renders the value for a specific cell.
-     *
-     * @param mixed [int]    $row
-     * @param mixed          $column
-     * @param ResultMetadata $metadata
-     *
-     * @return string
+     * {@inheritdoc}
      */
-    protected function renderCellValue(array $row, $column, ResultMetadata $metadata, $useRenderer = null)
+    public function renderCellValue(array $row, $column, ResultMetadata $metadata, $useRenderer = null)
     {
         if (is_string($column)) {
             $value = array_key_exists($column, $row) ? $row[$column] : '';
