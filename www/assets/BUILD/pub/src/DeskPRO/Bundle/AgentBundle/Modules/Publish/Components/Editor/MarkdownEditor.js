@@ -142,7 +142,7 @@ class MarkdownEditor extends React.Component {
 
   onPaste = (cm, event) => {
     const data = (event.clipboardData || event.originalEvent.clipboardData);
-    if (data.types.indexOf('text/html') > -1) {
+    if (data.types.indexOf('text/html') > -1 && data.files.length === 0) {
       this.importHtml(data.getData('text/html'));
       event.preventDefault();
     } else {

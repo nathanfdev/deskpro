@@ -132,6 +132,9 @@ class BlobsController extends CrudController
         foreach ($images as &$image) {
             $filename = basename($image['source']);
             $mimeType = ContentTypes::getContentTypeFromFilename($filename);
+            if (!$mimeType) {
+                $mimeType = ContentTypes::getContentTypeFromDataUrl($image['source']);
+            }
 
             file_put_contents($tmpFolder.$filename, fopen($image['source'], 'r'));
             $blob = $this->get('blob.storage')->createBlobRecordFromFile(
