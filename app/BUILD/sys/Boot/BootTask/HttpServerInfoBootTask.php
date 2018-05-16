@@ -2,6 +2,7 @@
 
 namespace DpSys\Boot\BootTask;
 
+use DeskPRO\Bundle\AppBundle\AppEnv\AppEnv;
 use DeskPRO\Bundle\UpdateBundle\Session\UpdateSessionManager;
 use DpRun\LowUtil;
 use Orb\Util\Dates;
@@ -34,7 +35,7 @@ class HttpServerInfoBootTask implements BootTaskInterface
         $auth   = @$_GET['auth'] ?: @$resources['serverinfo_params']['auth'];
 
         // Will exit if any match
-        $this->authlessServerChecks($action);
+        $this->authlessServerChecks($env, $action);
 
         if (!$this->checkAuth($auth, $action)) {
             echo "The auth code in the URL you are trying to view is invalid. Please run the dp:web-server-info command to generate new links.\n";
@@ -49,7 +50,7 @@ class HttpServerInfoBootTask implements BootTaskInterface
         exit;
     }
 
-    private function authlessServerChecks($action)
+    private function authlessServerChecks(\DpRun\DpEnv $env, $action)
     {
         switch ($action) {
             case 'ping':
@@ -78,6 +79,32 @@ class HttpServerInfoBootTask implements BootTaskInterface
             case 'check_http_methods':
                 header('Content-Type: text/plain');
                 echo 'HTTP_METHOD_'.htmlspecialchars_decode(strtoupper(@$_SERVER['REQUEST_METHOD']));
+                exit;
+
+            case 'version':
+            case 'version.json':
+                $appEnv = new AppEnv($env);
+
+                $time = $appEnv->getBuildTime();
+                if ($time) {
+                    $date = date('Y-m-d H:i:s', $time);
+                } else {
+                    $date = 'n/a';
+                }
+
+                if ($action === 'version.json') {
+                    header('Content-Type: application/json');
+                    echo json_encode([
+                        'version'   => $appEnv->getVersionName(),
+                        'buildId'   => $appEnv->getBuildId(),
+                        'buildTime' => $time ? $date : null,
+                    ], \JSON_PRETTY_PRINT);
+                } else {
+                    header('Content-Type: text/plain');
+                    echo "Version:    {$appEnv->getVersionName()}\n";
+                    echo "Build ID:   {$appEnv->getBuildId()}\n";
+                    echo "Build Time: {$date}\n";
+                }
                 exit;
         }
     }

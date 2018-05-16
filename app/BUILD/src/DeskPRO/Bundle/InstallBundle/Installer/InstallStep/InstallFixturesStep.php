@@ -37,7 +37,7 @@ class InstallFixturesStep extends AbstractStep
         $is_dev = $this->getSession()->getSource() === InstallSession::SOURCE_DEV
             || $this->getSession()->getSource() === InstallSession::SOURCE_BUILDSERVER;
 
-        if ($is_dev) {
+        if ($is_dev && !$this->getSession()->hasFlag('disableDevFixtures')) {
             $fixtures[] = 'DevFixtures';
         }
 

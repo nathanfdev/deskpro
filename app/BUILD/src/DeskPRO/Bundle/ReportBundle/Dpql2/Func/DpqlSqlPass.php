@@ -208,14 +208,28 @@ class DpqlSqlPass extends AbstractDpqlFunc
 
         $valuesSql   = [];
         $valuesNames = [];
+        $renderers   = [];
         foreach ($arguments as $arg) {
+            /** @var Prepared $prepped */
             $prepped       = $arg->prepare($statement, $section, $stack, $select, $metadata);
             $valuesSql[]   = $prepped->sql();
             $valuesNames[] = $prepped->name();
+            $renderers[]   = $prepped->renderer();
+        }
+
+        $fnRenderer = $info[0];
+
+        // try to get custom renderer for basic math functions, e.g. for currency values
+        if (in_array($lookupName,  ['AVG', 'MIN', 'MAX', 'SUM'])) {
+            foreach ($renderers as $renderer) {
+                if ($renderer instanceof \Closure) {
+                    $fnRenderer = $renderer;
+                }
+            }
         }
 
         $sql = strtoupper($this->name).'('.implode(', ', $valuesSql).')';
 
-        return new Prepared($sql, "$this->name(".implode(', ', $valuesNames).')', false, $info[0]);
+        return new Prepared($sql, "$this->name(".implode(', ', $valuesNames).')', false, $fnRenderer);
     }
 }

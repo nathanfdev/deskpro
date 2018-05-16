@@ -21,7 +21,7 @@ import { loadGrouping } from '../Actions/filterActions';
   ticketCustomFields: allSelectorFactory('TicketCustomFields')(state),
   ticketDepartments:  collectionSelectorFactory('Department', 'all_tickets')(state),
 }))
-export class AgentFiltersContainer extends SeparateComponent {
+class AgentFiltersContainer extends SeparateComponent {
   static propTypes = {
     agents:             PropTypes.object,
     agentTeams:         PropTypes.object,
@@ -64,6 +64,7 @@ export class AgentFiltersContainer extends SeparateComponent {
     window.addEventListener('resize', AgentFiltersContainer.resizeList);
   }
 
+  /* eslint-disable class-methods-use-this */
   componentWillUnmount() {
     window.removeEventListener('resize', AgentFiltersContainer.resizeList);
   }

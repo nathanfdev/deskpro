@@ -536,6 +536,7 @@ export class SnippetsModal extends React.Component {
       variables = [
         { value: 'ticket', label: <FormattedMessage id="agent.general.ticket" />, disabled: true },
         { value: 'entity.subject', label: <FormattedMessage id="agent.general.subject" /> },
+        { value: 'entity.ref', label: <FormattedMessage id="agent.general.ref" /> },
         { value: 'entity.department.title', label: <FormattedMessage id="agent.general.department" /> },
         { value: 'entity.department.parent.title', label: <FormattedMessage id="agent.general.department.parent" /> },
         { value: 'entity.brand.name', label: <FormattedMessage id="agent.general.brand" /> },

@@ -766,10 +766,17 @@ class FieldManager
         }
 
         if ($fieldDef->isFileType() || $fieldDef->isDataListType()) {
+            if (!is_array($value)) {
+                $value = [$value];
+            }
+
             /** @var CustomDataAbstract[]|ArrayCollection $customData */
             $customData = $object->getCustomData();
             $existItems = [];
             foreach ($customData as $customDatum) {
+                if ($customDatum->getRootField() !== $fieldDef) {
+                    continue;
+                }
                 if (!in_array($customDatum->getData(), $value)) {
                     $customData->removeElement($customDatum);
                 } else {
@@ -777,7 +784,7 @@ class FieldManager
                 }
             }
             foreach ($value as $item) {
-                if (!in_array($item, $existItems)) {
+                if ($item && !in_array($item, $existItems)) {
                     $customDatum = $fieldDef->createCustomData();
                     $customDatum->setData($item);
 

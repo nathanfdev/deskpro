@@ -12,13 +12,13 @@ services:
     tags:
       - { name: kernel.event_subscriber }
 
-  dp.api.event_listeners.label_entity:
+  dp.api.event_listeners.doctrine.label_entity:
     class: DeskPRO\Bundle\AppBundle\EventListener\Doctrine\LabelListener
     tags:
       - { name: doctrine.event_listener, event: postPersist }
       - { name: doctrine.event_listener, event: postRemove }
 
-  dp.api.event_listeners.ticket_follow_up_entity:
+  dp.api.event_listeners.doctrine.ticket_follow_up_entity:
     class: DeskPRO\Bundle\AppBundle\EventListener\Doctrine\TicketFollowUpListener
     arguments: ["@service_container"]
     tags:
@@ -26,7 +26,7 @@ services:
       - { name: doctrine.event_listener, event: postUpdate }
       - { name: doctrine.event_listener, event: preRemove }
 
-  dp.api.event_listeners.snippet_entity:
+  dp.api.event_listeners.doctrine.snippet_entity:
     class: DeskPRO\Bundle\AppBundle\EventListener\Doctrine\SnippetListener
     arguments: ["@service_container"]
     tags:
@@ -35,52 +35,52 @@ services:
       - { name: doctrine.event_listener, event: preRemove }
       - { name: doctrine.event_listener, event: onFlush }
 
-  event_listener.object_translatable:
+  event_listener.doctrine.object_translatable:
     class: DeskPRO\Bundle\AppBundle\EventListener\Doctrine\ObjectTranslatableListener
     tags:
       - { name: doctrine.event_subscriber, connection: default }
 
-  event_listener.phrase_translatable:
+  event_listener.doctrine.phrase_translatable:
     class: DeskPRO\Bundle\AppBundle\EventListener\Doctrine\PhraseTranslatableListener
     tags:
       - { name: doctrine.event_subscriber, connection: default }
 
-  event_listener.custom_per_data:
+  event_listener.doctrine.custom_per_data:
     class: DeskPRO\Bundle\AppBundle\EventListener\Doctrine\CustomPerDataListener
     tags:
       - { name: doctrine.event_subscriber, connection: default }
 
-  event_listener.agent_message:
+  event_listener.doctrine.agent_message:
     class: DeskPRO\Bundle\AppBundle\EventListener\Doctrine\AgentChatMessageListener
     arguments: ["@event_dispatcher"]
     tags:
       - { name: doctrine.entity_listener }
 
-  event_listener.voice_account:
+  event_listener.doctrine.voice_account:
     class: DeskPRO\Bundle\AppBundle\EventListener\Doctrine\Voice\VoiceAccountListener
     arguments: ["@twilio_adapter", "@doctrine.orm.default_entity_manager", "@router"]
     tags:
       - { name: doctrine.entity_listener }
 
-  event_listener.voice_queue:
+  event_listener.doctrine.voice_queue:
     class: DeskPRO\Bundle\AppBundle\EventListener\Doctrine\Voice\VoiceQueueListener
     arguments: ["@doctrine.orm.default_entity_manager"]
     tags:
       - { name: doctrine.entity_listener }
 
-  event_listener.voice_worker:
+  event_listener.doctrine.voice_worker:
     class: DeskPRO\Bundle\AppBundle\EventListener\Doctrine\Voice\VoiceWorkerListener
     arguments: ["@twilio_adapter", "@doctrine.orm.default_entity_manager", "@event_dispatcher"]
     tags:
       - { name: doctrine.entity_listener }
 
-  event_listener.voice_number:
+  event_listener.doctrine.voice_number:
     class: DeskPRO\Bundle\AppBundle\EventListener\Doctrine\Voice\VoiceNumberListener
     arguments: ["@twilio_adapter", "@doctrine.orm.default_entity_manager", "@event_dispatcher"]
     tags:
       - { name: doctrine.entity_listener }
 
-  event_listener.voice_settings:
+  event_listener.doctrine.voice_settings:
     class: DeskPRO\Bundle\AppBundle\EventListener\Doctrine\Voice\VoiceSettingsListener
     arguments:
       - "@doctrine.orm.default_entity_manager"
@@ -88,24 +88,36 @@ services:
     tags:
       - { name: doctrine.entity_listener }
 
-  event_listener.voice_agent_target:
+  event_listener.doctrine.voice_agent_target:
     class: DeskPRO\Bundle\AppBundle\EventListener\Doctrine\Voice\VoiceAgentTargetListener
     arguments: ["@doctrine.orm.default_entity_manager"]
     tags:
       - { name: doctrine.entity_listener }
 
-  event_listener.person_email:
+  event_listener.doctrine.person_email:
     class: DeskPRO\Bundle\AppBundle\EventListener\Doctrine\PersonEmailListener
     arguments: ["@email.email_account_manager", "@validator"]
     tags:
       - { name: doctrine.entity_listener }
 
-  event_listener.custom_data_ticket:
+  event_listener.doctrine.person:
+    class: DeskPRO\Bundle\AppBundle\EventListener\Doctrine\PersonListener
+    arguments: ["@doctrine.orm.default_entity_manager", "@settings_resolver"]
+    tags:
+      - { name: doctrine.entity_listener }
+
+  event_listener.doctrine.usersource:
+    class: DeskPRO\Bundle\AppBundle\EventListener\Doctrine\UsersourceListener
+    arguments: ["@doctrine.orm.default_entity_manager", "@settings_resolver"]
+    tags:
+      - { name: doctrine.entity_listener }
+
+  event_listener.doctrine.custom_data_ticket:
     class: DeskPRO\Bundle\AppBundle\EventListener\Doctrine\CustomDataChangeListener
     tags:
       - { name: doctrine.entity_listener }
 
-  event_listener.brand_listener:
+  event_listener.doctrine.brand_listener:
     class: DeskPRO\Bundle\AppBundle\EventListener\Doctrine\BrandListener
     arguments: ["@default_brand_finder", "@doctrine.orm.default_entity_manager"]
     tags:

@@ -509,6 +509,14 @@ abstract class AbstractJsonChartRenderer extends AbstractJsonRenderer
                     }
                 }
             }
+
+            if (isset($options['pieColors'])) {
+                foreach ($arrayOutput['dataProvider'] as &$datum) {
+                    if (isset($options['pieColors'][$datum['category']])) {
+                        $datum['color'] = $options['pieColors'][$datum['category']];
+                    }
+                }
+            }
         } else {
             if ($hasCategory) {
                 $balloonText = '[[category]], [[title]]: [[value]]';

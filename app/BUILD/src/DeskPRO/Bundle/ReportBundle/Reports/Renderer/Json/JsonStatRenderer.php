@@ -41,6 +41,10 @@ class JsonStatRenderer extends AbstractJsonRenderer
             'description' => $this->renderDescription($metadata, $rows),
         ];
 
+        if ($return['value'] === null) {
+            return;
+        }
+
         return $this->extractClickUrlVars($rows, $metadata, $return);
     }
 
@@ -73,8 +77,9 @@ class JsonStatRenderer extends AbstractJsonRenderer
      */
     protected function renderValue(ResultMetadata $metadata, array $rows)
     {
-        $unitLeft  = '';
-        $unitRight = '';
+        $unitLeft     = '';
+        $unitRight    = '';
+        $defaultValue = null;
 
         foreach ($metadata->getSelectColumns() as $column) {
             if ($column['title'] === 'unit_left') {
@@ -83,11 +88,19 @@ class JsonStatRenderer extends AbstractJsonRenderer
             if ($column['title'] === 'unit_right') {
                 $unitLeft = $this->renderCellValue($rows[0], $column, $metadata);
             }
+            if ($column['title'] === 'default_value') {
+                $defaultValue = $this->renderCellValue($rows[0], $column, $metadata);
+            }
         }
 
         foreach ($metadata->getSelectColumns() as $column) {
             if ($column['title'] === 'stat_value') {
-                return $unitLeft.$this->renderCellValue($rows[0], $column, $metadata).$unitRight;
+                $val = $this->renderCellValue($rows[0], $column, $metadata);
+                if ($val === null) {
+                    return $defaultValue;
+                }
+
+                return $unitLeft.$val.$unitRight;
             }
         }
 

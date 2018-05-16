@@ -134,6 +134,14 @@ class AppPackage extends DomainObject
         $this->assets = new ArrayCollection();
     }
 
+    /**
+     * {@inheritdoc}
+     */
+    public function getId()
+    {
+        return $this->name;
+    }
+
     public function getTags()
     {
         return $this->tags;

@@ -391,6 +391,7 @@ class PhraseData
                     'custom'       => $translatedTitle,
                     'lang_default' => $translatedTitle, // BC field
                     'set'          => $translatedTitle,
+                    'title'        => 'Title',
                 ],
                 [
                     'id'           => $phrase_group.'.'.$field->getId().'_description',
@@ -402,13 +403,20 @@ class PhraseData
                     'custom'       => $translatedDescription,
                     'lang_default' => $translatedDescription, // BC field
                     'set'          => $translatedDescription,
-                    'title'        => $field->getRawTitle().' - Description',
+                    'title'        => 'Description',
                 ],
             ];
 
+            // the only case with children custom fields is - Options for multichoise
+            // we don't need descriptions for them
+            if ($depth) {
+                array_pop($phraseData);
+                unset($phraseData[0]['title']);
+            }
+
             if ($children = $fm->getFieldChildren($field)) {
                 foreach ($children as $child_field) {
-                    array_merge($phraseData, $fn_get_rows($child_field, $depth + 1));
+                    $phraseData = array_merge($phraseData, $fn_get_rows($child_field, $depth + 1));
                 }
             }
 

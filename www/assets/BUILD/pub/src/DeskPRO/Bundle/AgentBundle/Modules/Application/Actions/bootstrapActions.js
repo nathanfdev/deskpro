@@ -18,7 +18,7 @@ export const loadAgentPhraseTranslations = createAction(
   'AGENT_LOAD_PHRASE_TRANSLATIONS',
   () => () => new Promise((resolve) => {
     const language = window.DESKPRO_PERSON_LANG_ID;
-    const buildNum = window.DP_VERSION_NUMBER;
+    const buildNum = window.DP_BUILD_ID;
 
     const setPhrases = (data) => {
       agentPhrases.setPhrases(data);

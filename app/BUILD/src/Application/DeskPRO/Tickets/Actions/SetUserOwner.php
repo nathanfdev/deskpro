@@ -42,8 +42,7 @@ class SetUserOwner extends AbstractContainerAwareAction implements ActionInterfa
     public function applyAction(Ticket $ticket, ExecutorContextInterface $context)
     {
         $user_email = $this->getActionOption('email_address');
-
-        $reg_closed = !$this->getContainer()->getSetting('core.reg_enabled');
+        $reg_closed = !$this->getContainer()->get('dp_authentication_manager.user')->isRegistrationFormVisible();
         $person     = $this->getContainer()->getEm()->getRepository('DeskPRO:Person')->findOneByEmail($user_email);
 
         if (!$person) {

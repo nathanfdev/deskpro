@@ -86,6 +86,7 @@ class ReplyActionsApplicator implements Loggable
 
             case 'user':
                 $ticket->person = $param;
+                $ticket->person->addBrand($ticket->getBrand());
                 break;
 
             case 'add_followers':

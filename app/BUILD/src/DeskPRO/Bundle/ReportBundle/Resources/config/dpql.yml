@@ -212,6 +212,8 @@ services:
 
   dpql.func.concat:
     class: DeskPRO\Bundle\ReportBundle\Dpql2\Func\DpqlConcat
+    arguments:
+      - "@dpql.func_registry"
     tags:
       - { name: dpql.func }
 

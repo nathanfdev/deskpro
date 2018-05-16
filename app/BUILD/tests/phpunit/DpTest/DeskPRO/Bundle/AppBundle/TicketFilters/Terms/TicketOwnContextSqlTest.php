@@ -19,6 +19,8 @@ class TicketOwnContextSqlTest extends BaseTicketSqlMatcherTest
             new TicketBasicTermsHandler(),
             new TicketOwnContextTermsHandler($db),
         ], $db, TicketSqlMatcher::ACTIVE);
+
+        $this->matcher->disableContextPermissions();
     }
 
     public function test_flag_set()

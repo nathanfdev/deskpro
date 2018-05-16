@@ -94,15 +94,15 @@ class BinaryInterval extends AbstractPart
     /**
      * {@inheritdoc}
      */
-    public function prepare(SelectPart $statement, $section, array $stack, SqlSelect $select, ResultMetadata $result)
+    public function prepare(SelectPart $statement, $section, array $stack, SqlSelect $select, ResultMetadata $metadata)
     {
         $placeholder = $this->_findPlaceholder();
         if ($placeholder) {
             return $placeholder[0]->prepareWithIntervals(
-                $statement, $section, $this->getChildStack($stack), $select, $result, $placeholder[1]
+                $statement, $section, $this->getChildStack($stack), $select, $metadata, $placeholder[1]
             );
         } else {
-            $lhs      = $this->lhs->prepare($statement, $section, $this->getChildStack($stack), $select, $result);
+            $lhs      = $this->lhs->prepare($statement, $section, $this->getChildStack($stack), $select, $metadata);
             $operator = self::$_operatorMap[$this->operator];
             $sqlUnit  = self::$_typeMap[strtolower($this->unit)];
 

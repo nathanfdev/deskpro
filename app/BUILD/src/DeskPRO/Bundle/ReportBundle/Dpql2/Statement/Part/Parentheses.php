@@ -29,9 +29,9 @@ class Parentheses extends AbstractPart
     /**
      * {@inheritdoc}
      */
-    public function prepare(SelectPart $statement, $section, array $stack, SqlSelect $select, ResultMetadata $result)
+    public function prepare(SelectPart $statement, $section, array $stack, SqlSelect $select, ResultMetadata $metadata)
     {
-        $prepared = $this->expression->prepare($statement, $section, $stack, $select, $result);
+        $prepared = $this->expression->prepare($statement, $section, $stack, $select, $metadata);
         $prepared->setName('('.$prepared->name().')');
 
         return $prepared;

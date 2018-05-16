@@ -75,7 +75,6 @@ class PersonHandlerTest extends AbstractEntityHandlerTest
         $model->setAsAdmin(true);
         $model->setAsDeleted(true);
         $model->setAsDisabled(true);
-        $model->setTimezone('Europe/London');
         $model->setPassword('password');
         $model->setOrganization(2);
         $model->setOrganizationPosition('manager');
@@ -84,6 +83,7 @@ class PersonHandlerTest extends AbstractEntityHandlerTest
         $model->setLabels(['label 1', 'label 2']);
         $model->addCustomField($customField1);
         $model->getContactData()->addWebsite($websiteModel1);
+        $model->setTimezone('Europe/Zurich');
 
         $this->writer->writeModel($model);
         $this->em()->clear();
@@ -99,7 +99,6 @@ class PersonHandlerTest extends AbstractEntityHandlerTest
         $this->assertTrue($entity->isAdmin());
         $this->assertTrue($entity->isDeleted());
         $this->assertTrue($entity->isDisabled());
-        $this->assertEquals('Europe/London', $entity->getTimezone());
         $this->assertNotNull($entity->getPassword());
         $this->assertEquals('Organization2', $entity->getOrganization()->getName());
         $this->assertEquals('manager', $entity->getOrganizationPosition());
@@ -110,6 +109,7 @@ class PersonHandlerTest extends AbstractEntityHandlerTest
         $this->assertCount(2, $entity->getLabels());
         $this->assertCount(1, $entity->getCustomData());
         $this->assertCount(1, $entity->getContactData());
+        $this->assertEquals('Europe/Zurich', $entity->getTimezone());
     }
 
     public function test_edit_emails()

@@ -12,20 +12,26 @@ class StringUtils
     }
 
     /**
-     * @param string $format
-     * @param array  $args
-     * @param string $default
+     * Simple string formatting. Use {varname} to replace that token with the value in the $vars array.
+     * Use {varname:format} to specify sprintf-compatible formatting, such as {count:010d} (0 padded integer).
+     *
+     * If you need to use a literal {thing} sequence, use a var with that value as the replacement.
+     *
+     * @param string $format  The format string. Example: Hello, {name: 15s}
+     * @param array  $vars
+     * @param string $default The default value to use if a var is referenced in $format that does not exist in $vars
      *
      * @return string
      */
-    public static function format($format, array $args, $default = '__EXCEPTION__')
+    public static function format($format, array $vars, $default = '__EXCEPTION__')
     {
         $values     = [];
-        $realFormat = preg_replace_callback('#%(\((?P<name>.?)\))?#', function (array $match) use (&$values, $args,
-            $default) {
+        $realFormat = str_replace('%', '%%', $format);
+
+        $realFormat = preg_replace_callback('#\{(?P<name>[a-zA-Z0-9\-_\.]+)(?::(?P<format>.*?))?\}#', function (array $match) use (&$values, $vars, $default) {
             $name = $match['name'];
-            if (array_key_exists($args, $name)) {
-                $val = $args[$name];
+            if (array_key_exists($name, $vars)) {
+                $val = $vars[$name];
             } else {
                 if ($default === '__EXCEPTION__') {
                     throw new \InvalidArgumentException('Unknown named argument');
@@ -35,8 +41,13 @@ class StringUtils
 
             $values[] = $val;
 
-            return '%';
-        }, $format);
+            $format = '%s';
+            if (!empty($match['format'])) {
+                $format = '%'.$match['format'];
+            }
+
+            return $format;
+        }, $realFormat);
 
         return vsprintf($realFormat, $values);
     }
@@ -148,5 +159,72 @@ class StringUtils
         }
 
         return substr_compare($haystack, $needle, $haystackLen - $needleLen, $needleLen, $ignoreCase) === 0;
+    }
+
+    /**
+     * Standarize the end-of-line character in a string.
+     *
+     * @param string $string The string to work on
+     * @param string $eol    The end of line character to use
+     *
+     * @return string
+     */
+    public static function standardEol($string, $eol = "\n")
+    {
+        return str_replace([
+            "\r\n",
+            "\r",
+            "\n",
+        ], $eol, $string);
+    }
+
+    /**
+     * Maps a function to every line of a string, then returns the new string.
+     *
+     * @param string   $string The string
+     * @param callable $fn     ($line) -> string
+     */
+    public static function mapLines($string, $fn = null)
+    {
+        return implode("\n", array_map($fn, explode("\n", self::standardEol($string))));
+    }
+
+    /**
+     * Similar to format() except we use the string itself as a variable along with matches from a regex.
+     * The string itself is stored as {.}.
+     *
+     * @param string      $string
+     * @param string      $format Format. Use {} for the string itself, or if using regex to match parts,
+     *                            use {name} (e.g. {1} etc) for each part. Use {{ or }} for literal braces
+     * @param null|string $regex
+     * @param array       $vars
+     */
+    public static function reformatString($string, $format, $regex = null, array $vars = [])
+    {
+        if ($regex) {
+            $vars = array_merge(RegexUtils::getMatches($regex, $string), $vars);
+        }
+
+        $vars['.'] = $string;
+
+        return self::format($format, $vars, '');
+    }
+
+    /**
+     * Same as reformatString except its run on every line.
+     *
+     * @param string      $string
+     * @param string      $format
+     * @param null|string $regex
+     * @param array       $vars
+     */
+    public static function reformatLines($string, $format, $regex = null, array $vars = [])
+    {
+        $string = self::standardEol($string);
+        $lines  = array_map(function ($l) use ($format, $regex, $vars) {
+            return self::reformatString($l, $format, $regex, $vars);
+        }, explode("\n", $string));
+
+        return implode("\n", $lines);
     }
 }

@@ -462,13 +462,17 @@ class AbstractController extends BaseController
 
     protected function submitSavedForm(SavedForm $saved_form, Request $request)
     {
-        $saved_form_view = new SavedFormView($saved_form);
+        $savedFormView = new SavedFormView($saved_form);
 
         // prep the sub request to re-submit the form
         $data = $saved_form->getFormData();
 
-        $url         = $this->generateUrl($saved_form_view->getRouteName(), $saved_form_view->getRouteParams());
-        $sub_request = Request::create(
+        $url     = $this->generateUrl($savedFormView->getRouteName(), $savedFormView->getRouteParams());
+        $baseUrl = $this->container->get('router')->getContext()->getBaseUrl();
+        if ($baseUrl && strpos($url, $baseUrl) === 0) {
+            $url = substr($url, strlen($baseUrl));
+        }
+        $subRequest = Request::create(
             $url,
             'POST',
             $data,
@@ -476,15 +480,15 @@ class AbstractController extends BaseController
         );
 
         // sub requests for saved forms have this attribute set
-        $sub_request->attributes->set('saved-form', true);
-        $sub_request->attributes->set(VisitorIdentificationProvider::ATTRIBUTE_NAME, $this->get('visitor_identification_provider')->getVisitorIdentifier());
-        $sub_request->setSession($request->getSession());
+        $subRequest->attributes->set('saved-form', true);
+        $subRequest->attributes->set(VisitorIdentificationProvider::ATTRIBUTE_NAME, $this->get('visitor_identification_provider')->getVisitorIdentifier());
+        $subRequest->setSession($request->getSession());
 
         // get rid of the saved form now
         $this->getFormSaver()->markCompleted($saved_form);
 
         // submit the form again for the user
-        $response = $this->get('http_kernel')->handle($sub_request, HttpKernelInterface::SUB_REQUEST);
+        $response = $this->get('http_kernel')->handle($subRequest, HttpKernelInterface::SUB_REQUEST);
 
         return $response;
     }

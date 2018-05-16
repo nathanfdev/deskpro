@@ -19,6 +19,7 @@ class ApiLimitsContext extends BaseContext
     {
         $limit = $this->getApiKeyLimitRepository()->findOneBy(['api_key' => DataContext::getReference('apiKey')]);
         $limit->setCurrent(1);
+        $limit->setLimit(1);
         $this->persistAndFlush($limit);
     }
 

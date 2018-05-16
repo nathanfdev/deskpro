@@ -16,16 +16,26 @@ class Dialpad extends React.Component {
   static propTypes = {
     numbers:        PropTypes.object,
     outboundNumber: PropTypes.string,
+    lastCallFrom:   PropTypes.number,
     onMakeCall:     PropTypes.func,
     onSearchPerson: PropTypes.func
   };
 
   constructor(props) {
     super(props);
+    let callFrom = '';
+    if (props.numbers) {
+      if (props.numbers.size > 1 && props.lastCallFrom && props.numbers.has(props.lastCallFrom)) {
+        callFrom = props.numbers.get(props.lastCallFrom).get('id');
+      } else if (props.numbers.size === 1) {
+        callFrom = props.numbers.first().get('id');
+      }
+    }
+
     this.state = {
       formData: createValue({
         value: {
-          call_from: props.numbers && props.numbers.size > 1 ? '' : props.numbers.first().get('id'),
+          call_from: callFrom,
           call_to:   props.outboundNumber
         },
         errorList: {},

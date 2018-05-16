@@ -107,6 +107,8 @@ abstract class CrudController extends BaseController
      *
      * @param Request $request
      *
+     * @throws \Exception
+     *
      * @return View
      */
     public function countAction(Request $request)
@@ -165,6 +167,8 @@ abstract class CrudController extends BaseController
      * @Rest\Get("")
      *
      * @param Request $request
+     *
+     * @throws \Exception
      *
      * @return View
      */

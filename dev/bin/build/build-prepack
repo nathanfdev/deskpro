@@ -232,6 +232,7 @@ cd $DIR_ROOT/www/assets/BUILD/pub/node_modules
 find . -type d -maxdepth 1 ! \( \
         -name '.' -o -name '..' \
         -o -name 'bourbon' \
+        -o -name 'handlebars' \
         -o -name 'bourbon-neat' \
         -o -name 'bi-app-sass' \
         -o -name 'html5shiv' \

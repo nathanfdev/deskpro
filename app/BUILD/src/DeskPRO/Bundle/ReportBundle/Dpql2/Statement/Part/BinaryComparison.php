@@ -87,7 +87,7 @@ class BinaryComparison extends AbstractPart
     /**
      * {@inheritdoc}
      */
-    public function prepare(SelectPart $statement, $section, array $stack, SqlSelect $select, ResultMetadata $result)
+    public function prepare(SelectPart $statement, $section, array $stack, SqlSelect $select, ResultMetadata $metadata)
     {
         $childStack = $this->getChildStack($stack);
 
@@ -105,15 +105,15 @@ class BinaryComparison extends AbstractPart
 
         if ($rhs instanceof Placeholder || $rhs instanceof BinaryInterval) {
             $prepared = $rhs->prepareComparison(
-                $lhs, $operator, $statement, $section, $childStack, $select, $result
+                $lhs, $operator, $statement, $section, $childStack, $select, $metadata
             );
             if ($prepared) {
                 return $prepared;
             }
         }
 
-        $lhsRes = $lhs->prepare($statement, $section, $childStack, $select, $result);
-        $rhsRes = $rhs->prepare($statement, $section, $childStack, $select, $result);
+        $lhsRes = $lhs->prepare($statement, $section, $childStack, $select, $metadata);
+        $rhsRes = $rhs->prepare($statement, $section, $childStack, $select, $metadata);
 
         $title = "{$lhsRes->name()} $operator {$rhsRes->name()}";
 

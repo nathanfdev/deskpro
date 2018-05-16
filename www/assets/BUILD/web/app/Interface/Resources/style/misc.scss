@@ -23,7 +23,7 @@ i.spinner-flat {
   line-height: 100%;
   margin: 0;
   padding: 0;
-  background: initial url('#{$old-img-path}/spinners/loading-small-flat.gif') 0 0 no-repeat;
+  background: url('#{$old-img-path}/spinners/loading-small-flat.gif') 0 0 no-repeat;
 }
 
 i.spinner-circle-32 {
@@ -35,7 +35,7 @@ i.spinner-circle-32 {
   line-height: 100%;
   margin: 0;
   padding: 0;
-  background: initial url('#{$old-img-path}/spinners/loading-big-circle.gif') 0 0 no-repeat;
+  background: url('#{$old-img-path}/spinners/loading-big-circle.gif') 0 0 no-repeat;
 }
 
 i.spinner-big-circle {
@@ -47,5 +47,5 @@ i.spinner-big-circle {
   line-height: 100%;
   margin: 0;
   padding: 0;
-  background: initial  url('#{$old-img-path}/spinners/editor-loading.gif') 0 0 no-repeat;
+  background: url('#{$old-img-path}/spinners/editor-loading.gif') 0 0 no-repeat;
 }

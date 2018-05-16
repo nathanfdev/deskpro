@@ -578,6 +578,7 @@ class TicketController extends AbstractController
                      'set_resolved',
                      'set_unresolved',
                      'billing',
+                     'followed',
                  ] as $p) {
             $ticket_perms["modify_$p"] = $this->person->PermissionsManager->TicketChecker->canModify($ticket, $p);
         }
@@ -2281,7 +2282,7 @@ class TicketController extends AbstractController
                 );
                 $ticket->addPropertyChangedListener($event_listener);
 
-                if ($this->in->getBool('with_set_agent_parts')) {
+                if ($this->in->getBool('with_set_agent_parts') && $this->person->PermissionsManager->TicketChecker->canModify($ticket, 'followed')) {
                     $set_parts = $this->in->getCleanValueArray('set_agent_part_ids', 'uint', 'discard');
                     $agents    = $this->em->getRepository(Person::class)->getPeopleFromIds($set_parts);
                     $ticket->setAgentParticipants($agents);

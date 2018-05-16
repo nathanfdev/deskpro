@@ -3,6 +3,7 @@ import React from 'react';
 import ReactPaginate from 'react-paginate';
 import moment from 'moment';
 import Immutable from 'immutable';
+import { BlobPlayButton } from 'DeskPRO/Component/AudioWidget/PlayButton';
 import { Checkbox } from 'DeskPRO/Component/Semantic/ReactForm';
 import SectionHeader from '../../../../Common/Components/SectionHeader';
 import PersonName from '../../../../Common/Components/PersonName';
@@ -43,6 +44,7 @@ class CallLogsList extends React.Component {
             <col width="5%" />
             <col width="5%" />
             <col width="1%" />
+            <col width="1%" />
           </colgroup>
           <thead>
             <tr>
@@ -56,6 +58,7 @@ class CallLogsList extends React.Component {
               <th>Type</th>
               <th>Duration</th>
               <th>Status</th>
+              <th>Record</th>
             </tr>
           </thead>
           <tbody>
@@ -122,6 +125,10 @@ class CallLogsList extends React.Component {
                     <CallDuration call={call}  />
                   </td>
                   <CallStatus call={call} />
+                  <td>
+                    {call.get('recording') ?
+                      <BlobPlayButton iconOnly value={call.get('recording')} /> : '-'}
+                  </td>
                 </tr>
               );
             })}

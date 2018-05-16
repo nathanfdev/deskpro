@@ -7,7 +7,7 @@
     </header>
 
     <!-- Popup Sidebar -->
-    <div class="popup-sidebar" style="height: 580px;"><!-- Need to calculate the height of popup with js and update the sidebar -->
+    <div class="popup-sidebar" style="height: 500px;"><!-- Need to calculate the height of popup with js and update the sidebar -->
         <div class="popup-sidebar-content">
             <ul>
                 <li ng-class="{'active': activeTab == 'info'}">
@@ -27,7 +27,7 @@
             <i class="spinner-big-circle"></i>
         </div>
     </div>
-    <div class="popup-content" ng-show="loaded" style="height: 580px;">
+    <div class="popup-content" ng-show="loaded" style="height: 500px;">
 
         {##############################################################################################################}
         {# Properties #}
@@ -48,6 +48,9 @@
                 <div class="bucket">
                     <label class="label">Dashboard Title:</label>
                     <div class="bucket-column"><input type="text" ng-model="dashboard.title" placeholder="Name of your new dashboard"></div>
+                    <div ng-if="error" class="alert alert-error">
+                        {{ ng_var('error') }}
+                    </div>
                 </div>
 
                 <hr>

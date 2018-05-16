@@ -321,6 +321,7 @@ export class EditFormComponent extends React.Component {
                   <reduxForm.Input onChange={() => {}} label="SELECT" name="select" />
                   <reduxForm.Input onChange={() => {}} label="FROM" name="from" />
                   <reduxForm.Input onChange={() => {}} label="WHERE" name="where" />
+                  <reduxForm.Input onChange={() => {}} label="ORDER BY" name="order_by" />
                   <reduxForm.Input onChange={() => {}} label="SPLIT BY" name="split_by" />
                   <reduxForm.Input onChange={() => {}} label="GROUP BY" name="group_by" />
                   <div
