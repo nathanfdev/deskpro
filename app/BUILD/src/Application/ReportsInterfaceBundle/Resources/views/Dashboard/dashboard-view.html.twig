@@ -29,7 +29,7 @@
 
 <div class="report-tabs">
     <ul>
-        <li ng-if='!dashboard.is_default' class="add-report-link">
+        <li ng-if='canEdit()' class="add-report-link">
             <a ng-click="openCreateReport()" class='link-pointer'><i class="fa fa-plus"></i></a>
         </li>
 
