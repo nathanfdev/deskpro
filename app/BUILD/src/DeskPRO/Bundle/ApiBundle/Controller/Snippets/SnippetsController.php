@@ -256,25 +256,20 @@ class SnippetsController extends CrudController
         switch ($action) {
             case 'labels':
                 foreach ($snippets as $snippet) {
-                    $selectedLabels = [];
                     foreach ($value as $label => $labelValue) {
                         $labelObject = new SnippetLabel($label);
                         if ($labelValue) {
-                            $selectedLabels[] = $label;
                             if (!$snippet->hasLabel($labelObject)) {
                                 $snippet->addLabel($labelObject);
                                 $processed[] = $snippet->getId();
                             }
+                        } else {
+                            if ($snippet->hasLabel($labelObject)) {
+                                $snippet->removeLabel($labelObject);
+                                $processed[] = $snippet->getId();
+                            }
                         }
                     }
-                    foreach ($snippet->getLabels() as $label) {
-                        if (!in_array($label->getLabel(), $selectedLabels)) {
-                            $snippet->removeLabel($label);
-                            $processed[] = $snippet->getId();
-                        }
-                    }
-                    // we need to call this, otherwise labels will not be saved/removed
-                    $this->getManager()->persist($snippet);
                 }
                 break;
             case 'visibility':
@@ -293,14 +288,12 @@ class SnippetsController extends CrudController
                             $snippet->setIsVisibleGlobal(false);
                             $processed[] = $snippet->getId();
                         }
-                        $selectedDepartmentIds = [];
                         foreach ($value['selectedDepartments'] as $departmentId => $departmentValue) {
                             $department = $this->getManager()->getRepository(Department::class)->find($departmentId);
                             if (!$department) {
                                 throw $this->createNotFoundException(sprintf('Unkown department %s', $department));
                             }
                             if ($departmentValue) {
-                                $selectedDepartmentIds[] = $departmentId;
                                 if (!$snippet->hasDepartment($department)) {
                                     $snippet->addDepartment($department);
                                     $processed[] = $snippet->getId();
@@ -311,12 +304,6 @@ class SnippetsController extends CrudController
                                     $processed[] = $snippet->getId();
                                 }
                             }
-                        }
-                    } else {
-                        if ($snippet->isVisibleGlobal() || $snippet->hasDepartments()) {
-                            $snippet->setIsVisibleGlobal(false);
-                            $snippet->clearDepartments();
-                            $processed[] = $snippet->getId();
                         }
                     }
                 }
@@ -334,14 +321,12 @@ class SnippetsController extends CrudController
                             $snippet->setIsOwnershipGlobal(false);
                             $processed[] = $snippet->getId();
                         }
-                        $selectedTeamIds = [];
                         foreach ($value['selectedTeams'] as $teamId => $teamValue) {
                             $team = $this->getManager()->getRepository(AgentTeam::class)->find($teamId);
                             if (!$team) {
                                 throw $this->createNotFoundException(sprintf('Unkown team %s', $teamId));
                             }
                             if ($teamValue) {
-                                $selectedTeamIds[] = $teamId;
                                 if (!$snippet->hasTeam($team)) {
                                     $snippet->addTeam($team);
                                     $processed[] = $snippet->getId();
