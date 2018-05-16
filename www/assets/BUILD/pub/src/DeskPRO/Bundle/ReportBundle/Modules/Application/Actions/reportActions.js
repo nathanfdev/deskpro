@@ -111,7 +111,7 @@ export const newReport = createAction(
       unique_key:    '',
       title:         '',
       description:   '',
-      query:         '',
+      query:         toClone.query || '',
       labels:        [],
       display_order: 10,
       display_types: [],

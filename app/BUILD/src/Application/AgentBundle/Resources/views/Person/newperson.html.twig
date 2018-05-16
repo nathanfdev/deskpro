@@ -199,7 +199,28 @@
                                                     </td>
                                                 </tr>
                                             {% endif %}
-
+                                            {% if brands|length %}
+                                                <tr>
+                                                    <th>{{ phrase('agent.general.brands') }}</th>
+                                                    <td>
+                                                        <div id="{{ baseId }}_brands_container">
+                                                            {% for brand in brands %}
+                                                                <div>
+                                                                    <label><input 
+                                                                              type="checkbox"
+                                                                              value="{{ brand.id }}"
+                                                                              name="newperson[brand_ids][]"
+                                                                              class="brand-check
+                                                                              brand-check-{{ id }}"
+                                                                              {% if brand.id == default_brand_id %}checked="checked"{% endif %} />
+                                                                          {{ brand.name }}
+                                                                    </label>
+                                                                </div>
+                                                            {% endfor %}
+                                                        </div>
+                                                    </td>
+                                                </tr>
+                                            {% endif %}
                                             <tr>
                                                 <th class="prop">{{ phrase('agent.general.language') }}</th>
                                                 <td class="prop">

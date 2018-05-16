@@ -231,7 +231,11 @@ interface AppEnvInterface
     public function getBuildTime();
 
     /**
-     * Get the version name, such as 5.0.
+     * Get the version name, such as 5.0. This is a human readonable version number and must not be used
+     * as any sort of identifier. It is possible (though discouraged) a version name is not 1-to-1 with a build.
+     * i.e. a hotfix might result in two different builds called version 5.0.
+     *
+     * If you need an identifier, use getBuildId().
      *
      * @return string
      */

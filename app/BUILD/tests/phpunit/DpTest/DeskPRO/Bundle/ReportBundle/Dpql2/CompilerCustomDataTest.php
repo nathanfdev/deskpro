@@ -46,7 +46,7 @@ GROUP BY tickets.custom_data[{$def->getId()}]
 DPQL
             ,
             <<<SQL
-SELECT COUNT(*), IF(`tickets_custom_data_{$def->getId()}`.`value`, `tickets_custom_data_{$def->getId()}_field`.`title`, `tickets_custom_data_{$def->getId()}`.`input`), `tickets_custom_data_{$def->getId()}_field`.`id` 
+SELECT /*+ MAX_EXECUTION_TIME(30000) */ COUNT(*), IF(`tickets_custom_data_{$def->getId()}`.`value`, `tickets_custom_data_{$def->getId()}_field`.`title`, `tickets_custom_data_{$def->getId()}`.`input`), `tickets_custom_data_{$def->getId()}_field`.`id` 
 FROM `tickets` 
 LEFT JOIN `custom_data_ticket` AS `tickets_custom_data_{$def->getId()}` ON (`tickets_custom_data_{$def->getId()}`.`ticket_id` = `tickets`.`id` AND tickets_custom_data_{$def->getId()}.root_field_id = '{$def->getId()}')
 LEFT JOIN `custom_def_ticket` AS `tickets_custom_data_{$def->getId()}_field` ON (`tickets_custom_data_{$def->getId()}`.`field_id` = `tickets_custom_data_{$def->getId()}_field`.`id`)
@@ -74,7 +74,7 @@ GROUP BY tickets.custom_data[{$def->getId()}]
 DPQL
             ,
             <<<SQL
-SELECT COUNT(*), IF(`tickets_custom_data_{$def->getId()}`.`value`, `tickets_custom_data_{$def->getId()}_field`.`title`, `tickets_custom_data_{$def->getId()}`.`input`) 
+SELECT /*+ MAX_EXECUTION_TIME(30000) */ COUNT(*), IF(`tickets_custom_data_{$def->getId()}`.`value`, `tickets_custom_data_{$def->getId()}_field`.`title`, `tickets_custom_data_{$def->getId()}`.`input`) 
 FROM `tickets`
 LEFT JOIN `custom_data_ticket` AS `tickets_custom_data_{$def->getId()}` ON (`tickets_custom_data_{$def->getId()}`.`ticket_id` = `tickets`.`id` AND tickets_custom_data_{$def->getId()}.root_field_id = '{$def->getId()}')
 LEFT JOIN `custom_def_ticket` AS `tickets_custom_data_{$def->getId()}_field` ON (`tickets_custom_data_{$def->getId()}`.`field_id` = `tickets_custom_data_{$def->getId()}_field`.`id`) 
@@ -106,7 +106,7 @@ GROUP BY tickets.custom_data[myalias]
 DPQL
             ,
             <<<SQL
-SELECT COUNT(*), IF(`tickets_custom_data_myalias`.`value`, `tickets_custom_data_myalias_field`.`title`, `tickets_custom_data_myalias`.`input`)
+SELECT /*+ MAX_EXECUTION_TIME(30000) */ COUNT(*), IF(`tickets_custom_data_myalias`.`value`, `tickets_custom_data_myalias_field`.`title`, `tickets_custom_data_myalias`.`input`)
 FROM `tickets`
 LEFT JOIN `custom_data_ticket` AS `tickets_custom_data_myalias` ON (`tickets_custom_data_myalias`.`ticket_id` = `tickets`.`id` AND tickets_custom_data_myalias.root_field_id = '{$def->getId()}')
 LEFT JOIN `custom_def_ticket` AS `tickets_custom_data_myalias_field` ON (`tickets_custom_data_myalias`.`field_id` = `tickets_custom_data_myalias_field`.`id`)

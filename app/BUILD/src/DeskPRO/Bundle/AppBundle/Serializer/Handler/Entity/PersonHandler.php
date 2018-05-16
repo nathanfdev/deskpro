@@ -4,6 +4,7 @@ namespace DeskPRO\Bundle\AppBundle\Serializer\Handler\Entity;
 
 use Application\DeskPRO\DBAL\Connection;
 use Application\DeskPRO\Entity\AgentTeam;
+use Application\DeskPRO\Entity\Brand;
 use Application\DeskPRO\Entity\CustomDataPerson;
 use Application\DeskPRO\Entity\LabelPerson;
 use Application\DeskPRO\Entity\Person;
@@ -100,6 +101,16 @@ class PersonHandler extends AbstractEntityHandler
     private $onlineForChatIds;
 
     /**
+     * @var array
+     */
+    private $brandsMapping;
+
+    /**
+     * @var array
+     */
+    private $brands;
+
+    /**
      * Constructor.
      *
      * @param AvatarResolver   $avatarResolver
@@ -180,6 +191,7 @@ class PersonHandler extends AbstractEntityHandler
             ->setPhoneNumbers(new CallbackDeferredProperty([$this, 'getPhoneNumbers'], [$entity]))
             ->setAgentTeams(new CallbackDeferredProperty([$this, 'getAgentTeams'], [$entity]))
             ->setPrimaryTeam(new CallbackDeferredProperty([$this, 'getPrimaryTeam'], [$entity]))
+            ->setBrands(new CallbackDeferredProperty([$this, 'getBrands'], [$entity]))
             ->setLabels(new CallbackDeferredProperty([$this, 'getLabels'], [$entity]))
             ->setEmails(new CallbackDeferredProperty([$this, 'getEmails'], [$entity]))
         ;
@@ -250,7 +262,7 @@ class PersonHandler extends AbstractEntityHandler
     /**
      * @param Person $entity
      *
-     * @return CustomDataPerson[]
+     * @return CustomDataPerson[]|ArrayCollection
      */
     public function getCustomData(Person $entity)
     {
@@ -308,7 +320,7 @@ class PersonHandler extends AbstractEntityHandler
     /**
      * @param Person $entity
      *
-     * @return PersonContactData[]
+     * @return PersonContactData[]|ArrayCollection
      */
     public function getContactData(Person $entity)
     {
@@ -333,7 +345,7 @@ class PersonHandler extends AbstractEntityHandler
     /**
      * @param Person $entity
      *
-     * @return PhoneNumber[]
+     * @return PhoneNumber[]|ArrayCollection
      */
     public function getPhoneNumbers(Person $entity)
     {
@@ -358,7 +370,7 @@ class PersonHandler extends AbstractEntityHandler
     /**
      * @param Person $entity
      *
-     * @return AgentTeam[]
+     * @return AgentTeam[]|ArrayCollection
      */
     public function getAgentTeams(Person $entity)
     {
@@ -431,6 +443,58 @@ class PersonHandler extends AbstractEntityHandler
             $this->agentTeams = [];
             foreach ($result as $agentTeam) {
                 $this->agentTeams[$agentTeam->getId()] = $agentTeam;
+            }
+        }
+    }
+
+    /**
+     * @param Person $entity
+     *
+     * @return Brand[]|ArrayCollection
+     */
+    public function getBrands(Person $entity)
+    {
+        $this->loadBrands();
+
+        if (isset($this->brandsMapping[$entity->getId()])) {
+            $brands = [];
+            foreach ($this->brandsMapping[$entity->getId()] as $brandId => $_) {
+                if (isset($this->brands[$brandId])) {
+                    $brands[] = $this->brands[$brandId];
+                }
+            }
+
+            return new ArrayCollection($brands);
+        }
+
+        return new ArrayCollection([]);
+    }
+
+    private function loadBrands()
+    {
+        if (null === $this->brandsMapping) {
+            $connection = $this->em->getConnection();
+            $result     = $connection->executeQuery(
+                'SELECT * FROM person_to_brand WHERE person_id IN (:people_ids)',
+                ['people_ids' => array_keys($this->personIds)],
+                ['people_ids' => Connection::PARAM_INT_ARRAY]
+            )->fetchAll();
+
+            $brandIds            = [];
+            $this->brandsMapping = [];
+
+            foreach ($result as $value) {
+                $brandIds[$value['brand_id']]                                 = true;
+                $this->brandsMapping[$value['person_id']][$value['brand_id']] = true;
+            }
+
+            $result = $this->em->getRepository(Brand::class)->findBy([
+                'id' => array_keys($brandIds),
+            ]);
+
+            $this->brands = [];
+            foreach ($result as $brand) {
+                $this->brands[$brand->getId()] = $brand;
             }
         }
     }

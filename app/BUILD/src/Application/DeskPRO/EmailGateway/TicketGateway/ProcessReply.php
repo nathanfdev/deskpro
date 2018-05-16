@@ -9,6 +9,7 @@
 namespace Application\DeskPRO\EmailGateway\TicketGateway;
 
 use Application\DeskPRO\App;
+use Application\DeskPRO\Entity\EmailAccount;
 use Application\DeskPRO\Entity\Person;
 use Application\DeskPRO\Entity\Ticket;
 use Application\DeskPRO\Entity\TicketAttachment;
@@ -36,12 +37,14 @@ class ProcessReply extends ProcessAbstract
     protected $cleaner;
 
     /**
+     * @param EmailAccount        $account
      * @param Ticket              $ticket
      * @param Person              $person
      * @param TicketIncomingEmail $ticket_email
      */
-    public function __construct(Ticket $ticket, Person $person, TicketIncomingEmail $ticket_email, Translate $translator)
+    public function __construct(EmailAccount $account, Ticket $ticket, Person $person, TicketIncomingEmail $ticket_email, Translate $translator)
     {
+        $this->account      = $account;
         $this->ticket       = $ticket;
         $this->person       = $person;
         $this->ticket_email = $ticket_email;
@@ -87,11 +90,7 @@ class ProcessReply extends ProcessAbstract
                     ]);
                     $message->setTo($this->reader->getFromAddress()->getEmail());
 
-                    App::$container->getTranslator()->setTemporaryLanguage($this->person->getLanguage(), function () use ($message) {
-                        $message->prepare();
-                    });
-
-                    App::getMailer()->send($message);
+                    App::$container->get('mailer.utils')->sendWithPersonContext($this->person, $message);
                 }
 
                 $this->setError('perm_insufficient');
@@ -138,7 +137,11 @@ class ProcessReply extends ProcessAbstract
             if (App::getContainer()->get('deskpro.feature_flags')->hasBeta('email_templates')) {
                 $viewModel = App::getContainer()->get('email.agent_viewmodel_factory')
                     ->createAgentErrorMarkerMissingModel($this->ticket, $this->reader->getSubject()->getSubjectUtf8());
-                App::getContainer()->get('email.email_sender')->send($viewModel, ['to' => $this->reader->getFromAddress()->getEmail()]);
+                App::getContainer()->get('mailer.utils')->sendModelWithPersonContext(
+                    $this->person,
+                    $viewModel,
+                    ['to' => $this->reader->getFromAddress()->getEmail()]
+                );
             } else {
                 $message = App::getMailer()->createMessage();
                 $message->setTemplate('DeskPRO:emails_agent:error-marker-missing.html.twig', [
@@ -148,11 +151,7 @@ class ProcessReply extends ProcessAbstract
                 ]);
                 $message->setTo($this->reader->getFromAddress()->getEmail());
 
-                App::$container->getTranslator()->setTemporaryLanguage($this->person->getLanguage(), function () use ($message) {
-                    $message->prepare();
-                });
-
-                App::getMailer()->send($message);
+                App::$container->get('mailer.utils')->sendWithPersonContext($this->person, $message);
             }
 
             return;

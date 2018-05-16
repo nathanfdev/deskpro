@@ -233,7 +233,8 @@ class CsvImportPersonTest extends AbstractWriterTest
         /** @var PhoneNumber[] $contactData */
         $contactData = array_values($this->getPerson()->getPhoneNumbers()->toArray());
         $this->assertEquals('+14157012311', $contactData[0]->getNumber());
-        $this->assertEquals('mobile', $contactData[0]->getGuessedType());
+        $this->assertEquals('mobile', $contactData[0]->getLabel());
+        $this->assertEquals(2, $contactData[0]->getGuessedType());
     }
 
     public function test_address()

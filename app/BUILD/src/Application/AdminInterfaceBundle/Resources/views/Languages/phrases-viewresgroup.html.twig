@@ -13,14 +13,19 @@
 				</thead>
 				<tbody ng-if="EditCtrl.phrases.length">
 					<tr ng-repeat="phrase in EditCtrl.phrases" ng-class="{'phrase-custom': phrase.set && phrase.set != phrase.default }">
-						<td class="phrase-title">
+            <td class="group-header" ng-if="phrase.type == '_header'">
+              <span>{{ ng_var('phrase.title') }}</span>
+            </td>
+            <td class="group-header" ng-if="phrase.type == '_header'">
+            </td>
+						<td class="phrase-title" ng-if="phrase.type != '_header'">
 							<span ng-if="phrase.type == 'user'" class="label label-success" tooltip="This phrase is displayed to users only. It overrides the default phrase, making the default phrase visible only to agents.">User Phrase</span>
 							<span ng-if="phrase.depth_items.length" class="indent">
 								<span ng-repeat="d in phrase.depth_items"><i class="fa fa-caret-right"></i></span>
 							</span>
 							<span>{{ ng_var('phrase.title ? phrase.title : phrase.default') }}</span>
 						</td>
-						<td class="phrase-user-title"><input type="text" ng-model="phrase.set" spellcheck="false" /></td>
+						<td class="phrase-user-title" ng-if="phrase.type != '_header'"><input type="text" ng-model="phrase.set" spellcheck="false" /></td>
 					</tr>
 				</tbody>
 				<tbody ng-if="!EditCtrl.phrases.length">

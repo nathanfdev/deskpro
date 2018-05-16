@@ -344,6 +344,9 @@ class AppEnv implements AppEnvInterface
      */
     public function getVersionName()
     {
-        return $this->getBuildInfoVal('build-name');
+        $name = $this->getBuildInfoVal('build-name');
+        $name = preg_replace('/\.(BUILD|\d{5})$/', '', $name);
+
+        return $name;
     }
 }

@@ -15,6 +15,7 @@ use Application\DeskPRO\DependencyInjection\SystemServices\LanguageDataService;
 use Application\DeskPRO\Entity\AgentTeam;
 use Application\DeskPRO\Entity\BanEmail;
 use Application\DeskPRO\Entity\Blob;
+use Application\DeskPRO\Entity\Brand;
 use Application\DeskPRO\Entity\ChatConversation;
 use Application\DeskPRO\Entity\LogEvent;
 use Application\DeskPRO\Entity\Organization;
@@ -313,6 +314,12 @@ class PersonController extends AbstractController
             ['id' => 'DESC']
         );
 
+        $brands         = $this->em->getRepository(Brand::class)->findAll();
+        $defaultBrandId = $this->get('settings_resolver')->getGlobalSettings()->get('portal.default_brand');
+        if (!$defaultBrandId && count($brands)) {
+            $defaultBrandId = $brands[0]->getId();
+        }
+
         return $this->render('AgentBundle:Person:view.html.twig', [
             'with_warn_for_email'       => $with_warn_for_email,
             'person'                    => $person,
@@ -344,6 +351,8 @@ class PersonController extends AbstractController
             'reg_group'                 => $reg_group,
             'person_object_counts'      => $this->em->getRepository(Person::class)->getPersonObjectCounts($person),
             'changelog'                 => $changelog,
+            'brands'                    => $brands,
+            'default_brand_id'          => $defaultBrandId,
 
             'custom_fields_definitions' => $custom_fields_definitions,
         ]);
@@ -604,6 +613,27 @@ class PersonController extends AbstractController
                 $this->em->flush();
                 break;
 
+            case 'set-brands':
+                $brand_ids = $this->in->getCleanValueArray('brand_ids', 'uint', 'discard');
+                $brand_ids = Arrays::removeFalsey($brand_ids);
+
+                $brands = $brand_ids
+                    ? $this->em->getRepository(Brand::class)->findBy(['id' => $brand_ids])
+                    : [];
+
+                foreach ($person->brands as $personBrand) {
+                    if (false === in_array($personBrand, $brands, true)) {
+                        $person->removeBrand($personBrand);
+                    }
+                }
+
+                foreach ($brands as $brand) {
+                    $person->addBrand($brand);
+                }
+
+                $this->em->flush();
+                break;
+
             case 'remove-usersource':
 
                 $userSourceId = $this->in->getUint('usersource_id');
@@ -638,11 +668,16 @@ class PersonController extends AbstractController
                     $email = $person->getPrimaryEmailAddress();
 
                     if ($email) {
-                        if ($this->get('deskpro.feature_flags')->hasBeta('email_templates')) {
-                            $viewModel = $this->get('email.user_viewmodel_factory')
-                                ->createAgentChangedPasswordModel($person->getPlaintextPassword());
-                            $this->get('email.email_sender')
-                                ->send($viewModel, ['to' => $person]);
+                        if ($this->get('deskpro.feature_flags')->hasBeta('email_templates') and false) {
+                            $factory   = $this->get('email.user_viewmodel_factory');
+                            $viewModel = $this->get('brand_stack')->pushTemporary(
+                                $person->getBrands()->first(),
+                                function () use ($factory, $person) {
+                                    return $factory->createAgentChangedPasswordModel($person->getPlaintextPassword());
+                                }
+                            );
+                            $this->get('mailer.utils')
+                                ->sendModelWithPersonContext($person, $viewModel, ['to' => $person]);
                         } else {
                             $message = $this->container->getMailer()->createMessage();
                             $message->setTo($person->getPrimaryEmailAddress(), $person->getDisplayName());
@@ -650,11 +685,7 @@ class PersonController extends AbstractController
                                 'person' => $person,
                             ]);
 
-                            $this->container->getTranslator()->setTemporaryLanguage($person->getLanguage(), function () use ($message) {
-                                $message->prepare();
-                            });
-
-                            $this->container->getMailer()->send($message);
+                            $this->container->get('mailer.utils')->sendWithPersonContext($person, $message);
                         }
                     }
                 }
@@ -1408,12 +1439,19 @@ class PersonController extends AbstractController
 
         $timezone_options = \DateTimeZone::listIdentifiers();
         $usergroup_names  = $this->em->getRepository(Usergroup::class)->getUsergroupNames();
+        $brands           = $this->em->getRepository(Brand::class)->findAll();
+        $defaultBrandId   = $this->get('settings_resolver')->getGlobalSettings()->get('portal.default_brand');
+        if (!$defaultBrandId && count($brands)) {
+            $defaultBrandId = $brands[0]->getId();
+        }
 
         return $this->render('AgentBundle:Person:newperson.html.twig', [
             'state'            => $state,
             'custom_fields'    => $custom_fields,
             'timezone_options' => $timezone_options,
             'usergroup_names'  => $usergroup_names,
+            'brands'           => $brands,
+            'default_brand_id' => $defaultBrandId,
 
             'custom_fields_definitions' => $custom_fields_definitions->createView(),
         ]);

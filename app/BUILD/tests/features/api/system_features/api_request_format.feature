@@ -3,6 +3,7 @@ Feature: I check different request format support
 
   Background:
     Given there are no "Person" records
+    And no CustomDefPerson records exist
     And I'm authenticated as "admin"
 
   Scenario: I check 'application/json' format

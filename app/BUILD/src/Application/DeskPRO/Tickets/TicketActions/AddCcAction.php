@@ -63,7 +63,7 @@ class AddCcAction extends AbstractAction
             if ($person) {
                 $this->add_people[$person->getId()] = $person;
             } else {
-                if (App::getContainer()->getSetting('core.reg_enabled')) {
+                if (App::getContainer()->get('dp_authentication_manager.user')->isRegistrationFormVisible()) {
                     continue;
                 }
                 $person_processor = new PersonFromEmailProcessor();

@@ -366,6 +366,15 @@ class Person extends BasePerson
     protected $primaryTeam;
 
     /**
+     * Brands.
+     *
+     * @JMS\Type("deferred<collection<entity<Application\DeskPRO\Entity\Brand>>>")
+     *
+     * @var \Application\DeskPRO\Entity\Brand[]
+     */
+    protected $brands;
+
+    /**
      * {@inheritdoc}
      *
      * @param array $customData
@@ -451,6 +460,18 @@ class Person extends BasePerson
     public function setAgentTeams($agentTeams = null)
     {
         $this->teams = $agentTeams;
+
+        return $this;
+    }
+
+    /**
+     * @param CallbackDeferredProperty $brands
+     *
+     * @return $this
+     */
+    public function setBrands($brands = null)
+    {
+        $this->brands = $brands;
 
         return $this;
     }

@@ -380,7 +380,7 @@ define(function() {
 
   routes.push({
     id: 'agents.usersources.deskpro',
-    url: '/deskpro',
+    url: '/deskpro-{id:[\\d\\w]+}',
     templateName: 'Usersources/edit-instance.html',
     controller: 'Admin_Usersources_Ctrl_EditDeskproInstance'
   });
@@ -1194,7 +1194,7 @@ define(function() {
 
   routes.push({
     id: 'crm.usersources.deskpro',
-    url: '/deskpro',
+    url: '/deskpro-{id:[\\d\\w]+}',
     templateName: 'Usersources/edit-instance.html',
     controller: 'Admin_Usersources_Ctrl_EditDeskproInstance'
   });
@@ -1204,6 +1204,13 @@ define(function() {
     url: '/{id:[\\d\\w]+}',
     templateName: 'Usersources/edit-instance.html',
     controller: 'Admin_Usersources_Ctrl_EditInstance'
+  });
+
+  routes.push({
+    id: 'crm.usersources.install_deskpro',
+    url: '/install/deskpro',
+    templateName: 'Usersources/add-instance-deskpro.html',
+    controller: 'Admin_Usersources_Ctrl_AddDeskproInstance'
   });
 
   routes.push({

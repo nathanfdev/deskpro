@@ -1026,7 +1026,7 @@ class LoginController extends AbstractController
 
             // If reg is enabled, then resetting a password makes them a user (below)
             // otherwise we fail with a no account error
-            if (!$this->container->getSetting('core.reg_enabled')) {
+            if (!$this->container->get('dp_authentication_manager.agent')->isRegistrationFormVisible()) {
                 if ($us_names) {
                     if ($this->request->isXmlHttpRequest()) {
                         return $this->createJsonResponse(['status' => 'usersource_no_reset', 'usersource_name' => implode(', ', $us_names)]);
@@ -1087,25 +1087,19 @@ class LoginController extends AbstractController
             if ($person->isAgent()) {
                 $resetUrl = $this->container->get('router')->generate(
                     'agent_login',
-                    ['code' => $tmpdata->getCode()],
+                    ['code' => $tmpdata->getCode(), 'brand' => $person->getBrands()->first()],
                     UrlGeneratorInterface::ABSOLUTE_URL
                 );
             } else {
                 $resetUrl = $this->container->get('router')->generate(
                     'portal_reset_password_process',
-                    ['code' => $tmpdata->getCode()],
+                    ['code' => $tmpdata->getCode(), 'brand' => $person->getBrands()->first()],
                     UrlGeneratorInterface::ABSOLUTE_URL
                 );
             }
             $viewModel = $this->get('email.user_viewmodel_factory')
                 ->createResetPasswordModel($resetUrl);
-            $emailSender = $this->get('email.email_sender');
-            $this->container->getTranslator()->setTemporaryLanguage(
-                $person->getLanguage(),
-                function () use ($emailSender, $viewModel, $person) {
-                    $emailSender->send($viewModel, ['to' => $person]);
-                }
-            );
+            $this->container->get('mailer.utils')->sendModelWithPersonContext($person, $viewModel, ['to' => $person]);
         } else {
             $vars = [
                 'code' => $tmpdata->getCode(),
@@ -1113,14 +1107,9 @@ class LoginController extends AbstractController
             $message = $this->container->getMailer()->createMessage();
             $message->setTemplate('DeskPRO:emails_user:reset-password.html.twig', $vars);
             $message->setTo($email, $person->getDisplayName());
+
             $this->container->getTranslator()->setDefaultPersonContext($person);
-            $this->container->getTranslator()->setTemporaryLanguage(
-                $person->getLanguage(),
-                function () use ($message) {
-                    $message->prepare();
-                }
-            );
-            $this->container->getMailer()->send($message);
+            $this->container->get('mailer.utils')->sendWithPersonContext($person, $message);
         }
 
         if ($_format == 'json') {

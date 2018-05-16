@@ -193,6 +193,11 @@ define [
         value: 'WebHook2'
       })
 
+      options.push({
+        title: 'Add brand to user',
+        value: 'AddBrandToPerson'
+      })
+
       set_options.push({
         title: 'Ticket Actions',
         subOptions: options
@@ -1974,3 +1979,8 @@ define [
               return value
           }
       }
+
+    getAddBrandToPerson: (options = {}) ->
+      options.propName = 'add_brand_to_person'
+      def = @getStandardIs(options)
+      return def

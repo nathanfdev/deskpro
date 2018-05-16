@@ -11,6 +11,7 @@ use Application\DeskPRO\NewSettings\SettingsBag;
 use Application\DeskPRO\Usersource\UsersourceAuthAdapterFactory;
 use Application\DeskPRO\Usersource\UsersourceInfo;
 use Application\DeskPRO\Usersource\UsersourceManager;
+use DeskPRO\Bundle\PortalBundle\Brand\BrandStack;
 use DpSys\LowError\SystemErrorHandler;
 use Orb\Auth\Adapter\FormLoginInterface;
 use Orb\Auth\Identity;
@@ -41,8 +42,9 @@ class AuthenticationManager
 
     /**
      * The usersources relevant for this request.
+     * Collection of usersources for this interface.
      *
-     * @var \Application\DeskPRO\Usersource\UsersourceCollection collection of usersources for this interface
+     * @var \Application\DeskPRO\Usersource\UsersourceCollection|Usersource[]
      */
     private $usersourcesForInterface;
 
@@ -74,10 +76,16 @@ class AuthenticationManager
     private $authBy;
 
     /**
+     * @var BrandStack
+     */
+    private $brandStack;
+
+    /**
      * @param UsersourceManager            $usersourceManager    system service
      * @param AuthSettings                 $authSettings         system service
      * @param UsersourceAuthAdapterFactory $auth_adapter_factory
      * @param SettingsBag                  $appSettings
+     * @param BrandStack                   $brandStack
      * @param string                       $interface            this MUST be "user" or "agent"
      */
     public function __construct(
@@ -85,6 +93,7 @@ class AuthenticationManager
         UsersourceManager            $usersourceManager,
         UsersourceAuthAdapterFactory $auth_adapter_factory,
         SettingsBag                  $appSettings,
+        BrandStack                   $brandStack,
         $interface
     ) {
         $this->usersourceManager  = $usersourceManager;
@@ -92,9 +101,13 @@ class AuthenticationManager
         $this->authAdapterFactory = $auth_adapter_factory;
         $this->interface          = $interface;
         $this->appSettings        = $appSettings;
+        $this->brandStack         = $brandStack;
 
-        $this->usersourcesForInterface = $this->usersourceManager->getAll()->forInterface($interface);
         $this->settings                = $interface === 'user' ? $authSettings->getUserInterfaceSettings() : $authSettings->getAgentInterfaceSettings();
+        $this->usersourcesForInterface = $this->usersourceManager->getAll()->forInterface($interface);
+        if ($interface === 'user') {
+            $this->usersourcesForInterface = $this->usersourcesForInterface->forBrand($this->brandStack->getActive()->getBrand());
+        }
     }
 
     /**
@@ -284,7 +297,13 @@ class AuthenticationManager
      */
     public function hasRegistrationCapability()
     {
-        return $this->isDeskPROEnabled() && $this->appSettings->get('core.reg_enabled');
+        foreach ($this->usersourcesForInterface as $usersource) {
+            if ($usersource->app === null && $usersource->getOption('reg_enabled')) {
+                return true;
+            }
+        }
+
+        return false;
     }
 
     public function isRememberMeEnabled()
@@ -305,11 +324,11 @@ class AuthenticationManager
     public function isDeskPROEnabled($interface = null)
     {
         if (null === $interface) { // if we have a usersource that doesn't have an app (which always means the DeskPRO usersource)
-        foreach ($this->usersourcesForInterface as $usersource) {
-            if ($usersource->app === null) {
-                return true;
+            foreach ($this->usersourcesForInterface as $usersource) {
+                if ($usersource->app === null) {
+                    return true;
+                }
             }
-        }
 
             return false;
         }
@@ -356,16 +375,12 @@ class AuthenticationManager
         ;
     }
 
-    public function isRegistrationFormVisible($interface = null)
+    /**
+     * @return bool
+     */
+    public function isRegistrationFormVisible()
     {
-        if (null === $interface) {
-            return $this->isAuthVisible() && $this->hasRegistrationCapability();
-        }
-
-        // clone the auth manager except make it for the specific interface, not the default
-        $authManager = $this->cloneForInterface($interface);
-
-        return $authManager->isRegistrationFormVisible();
+        return $this->isAuthVisible() && $this->hasRegistrationCapability();
     }
 
     /**
@@ -376,7 +391,12 @@ class AuthenticationManager
     public function cloneForInterface($interface)
     {
         return new self(
-            $this->authSettings, $this->usersourceManager, $this->authAdapterFactory, $this->appSettings, $interface
+            $this->authSettings,
+            $this->usersourceManager,
+            $this->authAdapterFactory,
+            $this->appSettings,
+            $this->brandStack,
+            $interface
         );
     }
 

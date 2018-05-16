@@ -78,6 +78,12 @@ define ->
         $timeout(->
           initValue(attrs)
         ,1)
+      else if DashboardWidgetService.widgetsResults and DashboardWidgetService.widgetsResults[scope.widgetId]
+        DashboardWidgetService.widgetsResults[scope.widgetId].promise.then (renderedResult) =>
+          scope.loaded = true
+          scope.noData = true
+          if renderedResult
+            initValue(renderedResult)
       else
         DashboardWidgetService
           .getWidget(scope.widgetId || 0)
