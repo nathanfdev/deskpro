@@ -32,99 +32,100 @@
 
     <!-- Popup Content -->
     <div class="popup-content">
-        <div class="popup-stat-list">
-            <a
-              name='pie'
-              ng-click="makeChoice('pie')"
-              class="link-pointer stat-preview-bucket"
-              ng-class="{'selected' : widget.type == 'pie'}"
-            >
-                <span class="title">Pie Chart</span>
-                <div class="stat-preview stat-preview-pie"></div>
-            </a>
+        <div ng-class="{'popup-stat-list': true, condensed: selected}">
+            <button class="popup-stat-list-expander" ng-if="selected" ng-click="restore()"> Select type </button>
+            <div ng-if="!selected">
+                <a
+                  name='pie'
+                  ng-click="makeChoice('pie')"
+                  class="link-pointer stat-preview-bucket"
+                  ng-class="{'selected' : widget.type == 'pie'}"
+                >
+                    <span class="title">Pie Chart</span>
+                    <div class="stat-preview stat-preview-pie"></div>
+                </a>
 
-            <a
-              name="bars"
-              ng-click="makeChoice('simple_bars')"
-              class="link-pointer stat-preview-bucket"
-              ng-class="{'selected' : widget.type == 'simple_bars'}"
-            >
-                <span class="title">Bars</span>
-                <div class="stat-preview stat-preview-bars"></div>
-            </a>
+                <a
+                  name="bars"
+                  ng-click="makeChoice('simple_bars')"
+                  class="link-pointer stat-preview-bucket"
+                  ng-class="{'selected' : widget.type == 'simple_bars'}"
+                >
+                    <span class="title">Bars</span>
+                    <div class="stat-preview stat-preview-bars"></div>
+                </a>
 
-            <a
-              name='lines'
-              ng-click="makeChoice('simple_lines')"
-              class="link-pointer stat-preview-bucket"
-              ng-class="{'selected' : widget.type == 'simple_lines'}"
-            >
-                <span class="title">Lines</span>
-                <div class="stat-preview stat-preview-line"></div>
-            </a>
+                <a
+                  name='lines'
+                  ng-click="makeChoice('simple_lines')"
+                  class="link-pointer stat-preview-bucket"
+                  ng-class="{'selected' : widget.type == 'simple_lines'}"
+                >
+                    <span class="title">Lines</span>
+                    <div class="stat-preview stat-preview-line"></div>
+                </a>
 
-            <a
-              name='area'
-              ng-click="makeChoice('simple_area')"
-              class="link-pointer stat-preview-bucket"
-              ng-class="{'selected' : widget.type == 'simple_area'}"
-            >
-                <span class="title">Area</span>
-                <div class="stat-preview stat-preview-area"></div>
-            </a>
+                <a
+                  name='area'
+                  ng-click="makeChoice('simple_area')"
+                  class="link-pointer stat-preview-bucket"
+                  ng-class="{'selected' : widget.type == 'simple_area'}"
+                >
+                    <span class="title">Area</span>
+                    <div class="stat-preview stat-preview-area"></div>
+                </a>
 
-            <a
-                    name='gauge'
-                    ng-click="makeChoice('gauge')"
-                    class="link-pointer stat-preview-bucket"
-                    ng-class="{'selected' : widget.type == 'gauge'}"
-            >
-                <span class="title">Gauge</span>
-                <div class="stat-preview stat-preview-gauge"></div>
-            </a>
+                <a
+                        name='gauge'
+                        ng-click="makeChoice('gauge')"
+                        class="link-pointer stat-preview-bucket"
+                        ng-class="{'selected' : widget.type == 'gauge'}"
+                >
+                    <span class="title">Gauge</span>
+                    <div class="stat-preview stat-preview-gauge"></div>
+                </a>
 
-            <a
-                    name='bubble'
-                    ng-click="makeChoice('bubble')"
-                    class="link-pointer stat-preview-bucket"
-                    ng-class="{'selected' : widget.type == 'bubble'}"
-            >
-                <span class="title">Bubble</span>
-                <div class="stat-preview stat-preview-bubble"></div>
-            </a>
+                <a
+                        name='bubble'
+                        ng-click="makeChoice('bubble')"
+                        class="link-pointer stat-preview-bucket"
+                        ng-class="{'selected' : widget.type == 'bubble'}"
+                >
+                    <span class="title">Bubble</span>
+                    <div class="stat-preview stat-preview-bubble"></div>
+                </a>
 
-            <a
-              name='table_data'
-              ng-click="makeChoice('table')"
-              class="link-pointer stat-preview-bucket"
-              ng-class="{'selected' : widget.type == 'table'}"
-            >
-                <span class="title">Table data</span>
-                <div class="stat-preview stat-preview-multi-group"></div>
-            </a>
-            <a name='simple_stat' ng-click="makeChoice('simple_stat')" class="link-pointer stat-preview-bucket"
-               ng-class="{'selected' : widget.type == 'simple_stat'}">
-                <span class="title">Simple Stat</span>
+                <a
+                  name='table_data'
+                  ng-click="makeChoice('table')"
+                  class="link-pointer stat-preview-bucket"
+                  ng-class="{'selected' : widget.type == 'table'}"
+                >
+                    <span class="title">Table data</span>
+                    <div class="stat-preview stat-preview-multi-group"></div>
+                </a>
+                <a name='simple_stat' ng-click="makeChoice('simple_stat')" class="link-pointer stat-preview-bucket"
+                   ng-class="{'selected' : widget.type == 'simple_stat'}">
+                    <span class="title">Simple Stat</span>
 
-                <div class="stat-preview stat-preview-simple-stat"></div>
-            </a>
+                    <div class="stat-preview stat-preview-simple-stat"></div>
+                </a>
+            </div>
         </div>
 
         <!-- needs js to fit verticaly to it's container -->
-        <div class="popup-stat-preview">
+        <div ng-class="{'popup-stat-preview': true, expanded: selected}">
             <div class="stat-preview-header">Chart Preview</div>
             <div class="stat-preview" ng-if="widgetPreview && widgetPreview.type=='graph' && widgetPreview.rendered_result">
-                <div>
-                    <dashboard-amcharts
-                            my-index="{{ ng_var('$index') }}"
-                            title="{{ ng_var('widgetPreview.title') }}"
-                            widget-id="{{ ng_var('reportWidget.id') }}"
-                            chart-data="{{ ng_var('widgetPreview.rendered_result') }}"
-                            render-type="test"
-                            widget-type="{{ ng_var('widgetPreview.type') }}"
-                            chart-type="{{ ng_var('widgetPreview.rendered_result.chartType') }}"
-                    />
-                </div>
+                <dashboard-amcharts
+                        my-index="{{ ng_var('$index') }}"
+                        title="{{ ng_var('widgetPreview.title') }}"
+                        widget-id="{{ ng_var('reportWidget.id') }}"
+                        chart-data="{{ ng_var('widgetPreview.rendered_result') }}"
+                        render-type="test"
+                        widget-type="{{ ng_var('widgetPreview.type') }}"
+                        chart-type="{{ ng_var('widgetPreview.rendered_result.chartType') }}"
+                />
             </div>
             <div class="stat-preview" ng-if="widgetPreview && widgetPreview.type=='table' && widgetPreview.rendered_result">
                 <div style="height: 100%; overflow: hidden;">
