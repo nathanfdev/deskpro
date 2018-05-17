@@ -231,8 +231,9 @@ ORDER BY DPQL_COUNT() DESC
             'query'         => 'SELECT DPQL_COUNT() AS \'count\', snippet_use_log.snippet.title
 FROM snippet_use_log
 WHERE snippet_use_log.date_created = ${date}
-GROUP BY snippet_use_log.snippet.id',
-            'variables' => '[{"name":"date","type":"dates","default":"today"}]',
+GROUP BY snippet_use_log.snippet.id
+ORDER BY DPQL_COUNT() DESC',
+            'variables' => '[{"name":"date","type":"dates","default":"last_month"}]',
         ],
         'article-views-date-x-grouped-date' => [
             'title'         => 'Number of article views ${date} grouped by date',
