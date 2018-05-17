@@ -1231,6 +1231,15 @@ ul.nav-link-list li.type-heading {
   width: 50%;
 }
 
+.popup-stat-list.condensed {
+  width: 10%;
+  overflow: hidden;
+  padding: 0;
+}
+.popup-stat-preview.expanded {
+  width: 90%;
+}
+
 
 // Hidden base for the selected dots on the previews (should appear on the preview when you've selected it)
 %stat-preview-selected-dot {
