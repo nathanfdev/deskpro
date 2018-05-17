@@ -650,9 +650,10 @@
     .dp-textarea textarea {
       width: 65%;
       height: 300px;
-      white-space: nowrap;
       overflow: auto;
       font-family: Monaco, Consolas, monospace;
+      white-space: pre-wrap;
+      word-wrap: break-word;
     }
 
     .field-hidden {
