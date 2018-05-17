@@ -83,10 +83,9 @@ class CloudBrandHelper
             $client = new \Zend\Http\Client(null, ['timeout' => 15, 'sslverifypeer' => false]);
             $client->setMethod(\Zend\Http\Request::METHOD_GET);
             $client->setUri($url);
-            $client->send();
-
             $response = $client->send();
-            $data     = json_decode($response->getBody(), true);
+
+            $data = json_decode($response->getBody(), true);
 
             return $data;
         } catch (\Exception $e) {
