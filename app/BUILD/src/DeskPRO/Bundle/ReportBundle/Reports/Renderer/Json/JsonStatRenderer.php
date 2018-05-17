@@ -125,15 +125,9 @@ class JsonStatRenderer extends AbstractJsonRenderer
     }
 
     /**
-     * Renders the value for a specific cell.
-     *
-     * @param mixed [int]    $row
-     * @param mixed          $column
-     * @param ResultMetadata $metadata
-     *
-     * @return string
+     * {@inheritdoc}
      */
-    protected function renderCellValue(array $row, $column, ResultMetadata $metadata, $useRenderer = null)
+    public function renderCellValue(array $row, $column, ResultMetadata $metadata, $useRenderer = null)
     {
         $value = $column['resultId'] ? $row[$column['resultId'] - 1] : '';
 

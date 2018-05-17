@@ -12,6 +12,7 @@ use DeskPRO\Bundle\ReportBundle\Dashboard\DashboardWidgetManager;
 use DeskPRO\Bundle\ReportBundle\Dpql2\DpqlCompiler;
 use DeskPRO\Bundle\ReportBundle\Dpql2\DpqlException;
 use DeskPRO\Bundle\ReportBundle\Reports\Renderer\ReportsRendererRegistry;
+use DeskPRO\Bundle\ReportBundle\Reports\SplitResults;
 
 /**
  * Class ReportWidgetHandler.
@@ -108,7 +109,6 @@ class ReportWidgetHandler extends AbstractEntityHandler
     /**
      * @param ReportWidgetEntity $entity
      *
-     * @throws \DeskPRO\Bundle\ReportBundle\Dpql2\DpqlException
      * @throws \Exception
      *
      * @return array
@@ -124,11 +124,22 @@ class ReportWidgetHandler extends AbstractEntityHandler
                 $graphType
             );
 
-            $data = $this->dashboardWidgetService->formatData($data, $displayType);
-            if ($data) {
-                $data['chartType'] = $graphType;
+            if ($data instanceof SplitResults) {
+                foreach ($data->getResults() as $splitResult) {
+                    $data = $this->dashboardWidgetService->formatData($splitResult->getResults(), $displayType);
+                    if ($data) {
+                        $data['title']     = $splitResult->getTitle();
+                        $data['chartType'] = $graphType;
+                    }
+                    $result[] = $data;
+                }
+            } else {
+                $data = $this->dashboardWidgetService->formatData($data, $displayType);
+                if ($data) {
+                    $data['chartType'] = $graphType;
+                }
+                $result[] = $data;
             }
-            $result[] = $data;
         }
 
         return $result;
