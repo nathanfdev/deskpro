@@ -120,7 +120,8 @@ define ['DeskPRO/Util/Arrays',], (Arrays) -> [
         $scope.widget.widget_id = report.id
 
     $scope.chooseType = () ->
-      $modalInstance.close({reportWidget: $scope.reportWidget, report: $scope.report, widget: $scope.widget})
+      if $scope?.widget?.widget_id
+        $modalInstance.close({reportWidget: $scope.reportWidget, report: $scope.report, widget: $scope.widget})
 
     $scope.changeWidgetParams = (params) ->
       $scope.widget.variables = params
