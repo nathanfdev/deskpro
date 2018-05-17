@@ -18,6 +18,8 @@ define -> [
 
     $scope.back = -> $modalInstance.close {back: true}
 
+    $scope.restore = -> $scope.selected = false
+
     $scope.saveChoice = ->
       DashboardWidgetService.addWidget(report, $scope.widget)
         .then \
@@ -61,6 +63,7 @@ define -> [
         DashboardWidgetService
           .testWidget widgetToTest, $scope.widget
           .then (response) ->
+            $scope.selected = true
             $scope.widgetPreview                 = response.data.data
             $scope.widgetPreview.rendered_result = $scope.widgetPreview.rendered_result[0]
             $scope.widgetPreview.type            = type
