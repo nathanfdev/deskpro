@@ -5,6 +5,7 @@ namespace DeskPRO\Bundle\AppBundle\Form\Type\Settings\Portal;
 use DeskPRO\Bundle\AppBundle\Form\Type\ApiBooleanType;
 use DeskPRO\Bundle\AppBundle\Settings\Model\Portal\GeneralSettings;
 use Symfony\Component\Form\AbstractType;
+use Symfony\Component\Form\Extension\Core\Type\HiddenType;
 use Symfony\Component\Form\Extension\Core\Type\IntegerType;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\Extension\Core\Type\UrlType;
@@ -27,6 +28,7 @@ class GeneralSettingsType extends AbstractType
             ->add('site_url', UrlType::class)
             ->add('deskpro_name', TextType::class)
             ->add('deskpro_url', UrlType::class)
+            ->add('orig_deskpro_url', HiddenType::class, ['mapped' => false]) //unused, there for perf reasons on FE
             ->add('apps_feedback', ApiBooleanType::class)
             ->add('apps_kb', ApiBooleanType::class)
             ->add('apps_news', ApiBooleanType::class)

@@ -69,6 +69,7 @@ define ['DeskPRO/Util/Util'], (Util)  ->
             res.data.deskpro_url = ''
             res.data.deskpro_name = ''
           me.settings = res.data
+          me.settings.orig_deskpro_url = me.settings.deskpro_url
           d.resolve(me.settings)
           me.settingPromise[me.brandId] = null
         ).error((data, status) ->

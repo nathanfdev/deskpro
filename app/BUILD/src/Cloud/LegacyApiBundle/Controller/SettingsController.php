@@ -94,7 +94,7 @@ class SettingsController extends BaseSettingsController
         $url_test = 'http://'.$domain.'/';
         $url_bits = @parse_url($url_test);
 
-        if (empty($url_bits['host']) || strpos($url_bits['host'], 'deskpro.com') !== false || $url_bits['host'] != $domain) {
+        if (!isset($_GET['allowProvider']) && (empty($url_bits['host']) || strpos($url_bits['host'], 'deskpro.com') !== false || $url_bits['host'] != $domain)) {
             return $this->createJsonResponse([
                 'error'   => true,
                 'type'    => 'ma',

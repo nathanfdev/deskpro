@@ -16,9 +16,11 @@ define ['Admin/Main/Ctrl/Base'], (Admin_Ctrl_Base) ->
         console.log(res)
 
         if res.data.error
+          @$scope.ma_pending_message = null
           @$scope.ma_error_message = res.data.message
           d.reject()
         else if !res.data.error && !res.data.domain_id
+          @$scope.ma_error_message = null
           @$scope.ma_pending_message = res.data.message
           @$timeout(=>
             @setupCustomDomain(domain).then(=>
@@ -28,6 +30,7 @@ define ['Admin/Main/Ctrl/Base'], (Admin_Ctrl_Base) ->
             )
           , 3000)
         else
+          @$scope.ma_pending_message = null
           @$scope.ma_pending_message = 'Your custom domain has been configured. It might take a few minutes for your domain to become fully functional.'
           d.resolve()
       , =>

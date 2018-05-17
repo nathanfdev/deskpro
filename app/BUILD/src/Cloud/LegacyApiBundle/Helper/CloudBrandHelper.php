@@ -18,21 +18,24 @@ class CloudBrandHelper
             (SELECT value FROM settings WHERE name = 'core.deskpro_url')
             UNION
             (SELECT value FROM settings_brand WHERE name = 'core.deskpro_url')
+            UNION
+            (SELECT CONCAT('https://', url, '/') AS value FROM brands)
         ");
 
         // just makes sure the setting via a dynamic setting is included
         array_unshift($brandUrls, App::getContainer()->getSetting('core.deskpro_url'));
 
         $domains = ListUtils::map($brandUrls, function ($url) {
+            if (!$url) {
+                return null;
+            }
+
             $host = @parse_url($url, \PHP_URL_HOST);
 
             return $host ?: null;
         });
 
-        $domains = ListUtils::filter($domains, function ($domain) {
-            return $domain && strpos($domain, '.deskpro.com') === false;
-        });
-
+        $domains = ListUtils::filterOutFalsey($domains);
         $domains = array_unique($domains);
 
         $tmpdata = new TmpData();
