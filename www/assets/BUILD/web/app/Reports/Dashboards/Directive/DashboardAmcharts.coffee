@@ -100,9 +100,13 @@ define ['handlebars'], (Handlebars) ->
           , 1)
 
         doDrawWidget = (widget) ->
-          if interval
-            clearInterval(interval)
           drawn = true
+          clearInterval(interval) if interval
+          if chart
+            chart.clear()
+            chart.destroy()
+            chart = null
+
           try
             options = if scope.options then JSON.parse(scope.options) else {}
           catch e
@@ -150,8 +154,8 @@ define ['handlebars'], (Handlebars) ->
               return g
             )
 
-          if chart and widget.dataProvider
-            chart.dataProvider = widget.dataProvider
+          if widget.dataProvider
+            mergedData = widget
           else
             mergedData = lodashMerge(widget, options)
             if options.allGraphs and widget.graphs
@@ -165,11 +169,11 @@ define ['handlebars'], (Handlebars) ->
                 return va
               )
 
+          if window.DP_DEBUG
+            console.log("--- WidgetID: #{scope.widgetId} ---")
+            console.log(mergedData)
 
-            if window.DP_DEBUG
-              console.log("--- WidgetID: #{scope.widgetId} ---")
-              console.log(mergedData)
-            chart = new AmCharts.makeChart("ch#{scope.widgetId}", mergedData);
+          chart = new AmCharts.makeChart("ch#{scope.widgetId}", mergedData);
 
           chartDiv.height(chartParent.height() - chartHeader.outerHeight())
           chart.validateData()

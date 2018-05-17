@@ -12,6 +12,9 @@ use DeskPRO\Bundle\ReportBundle\Dpql2\Statement\SelectPart;
 use DeskPRO\Bundle\ReportBundle\Reports\Renderer\ReportsRendererInterface;
 use DeskPRO\Bundle\ReportBundle\Reports\Renderer\ReportsRendererRegistry;
 use DeskPRO\Bundle\ReportBundle\Reports\ResultMetadata;
+use DeskPRO\Bundle\ReportBundle\Reports\Results;
+use DeskPRO\Bundle\ReportBundle\Reports\SplitResult;
+use DeskPRO\Bundle\ReportBundle\Reports\SplitResults;
 use DeskPRO\Component\Util\RegexUtils;
 use Doctrine\ORM\EntityManager;
 use DpSys\LowError\SystemErrorHandler;
@@ -186,6 +189,15 @@ class DashboardWidgetManager
         } catch (\Exception $e) {
             SystemErrorHandler::logException($e);
             throw $e;
+        }
+
+        // todo just single result for widgets for now
+        if ($data instanceof SplitResults) {
+            if ($data->getResults()) {
+                $data = $data->getResults()[0]->getResults();
+            } else {
+                $data = [];
+            }
         }
 
         return $this->formatData($data, $widget->getType());
@@ -371,15 +383,48 @@ class DashboardWidgetManager
         $renderer = $this->rendererRegistry->getRenderer($graphType, $format);
 
         $renderedResults = [];
+
         foreach ($results as $queryResult) {
-            $partRenderer      = $this->rendererRegistry->getRenderer($queryResult['graphType'], $format);
-            $renderedResults[] = $partRenderer->render($queryResult['queryResult'], $options);
+            /** @var Results $queryResultData */
+            $queryResultData = $queryResult['queryResult'];
+            $partRenderer    = $this->rendererRegistry->getRenderer($queryResult['graphType'], $format);
+            $metadata        = $queryResultData->getMetadata();
+
+            if ($metadata->getSplitColumns()) {
+                foreach ($queryResultData->getSplitResults() as $splitResult) {
+                    $splitResults = new Results();
+                    $splitResults->setMetadata($metadata);
+                    $splitResults->setResults($splitResult[0]);
+
+                    $result = $partRenderer->render($splitResults, $options);
+                    if ($result) {
+                        $splitPrint = [];
+                        foreach ($metadata->getSplitColumns() as $splitColumn) {
+                            $splitPrint[] = $partRenderer->renderCellValue($splitResult[1], $splitColumn, $metadata);
+                        }
+
+                        $splitTitle = implode(' / ', $splitPrint);
+                        if ($splitTitle === '') {
+                            $splitTitle = 'None';
+                        }
+
+                        $renderedResults[] = new SplitResult($splitTitle, $result);
+                    }
+                }
+            } else {
+                $renderedResults[] = $partRenderer->render($queryResult['queryResult'], $options);
+            }
         }
         $renderedResults = array_filter($renderedResults, function ($item) {
             return $item;
         });
         if (count($renderedResults) > 1) {
-            return $renderer->mergeResults($renderedResults, $options ?: []);
+            if ($multiLayer) {
+                return $renderer->mergeResults($renderedResults, $options ?: []);
+            }
+
+            // SPLIT BY, return as array
+            return new SplitResults($renderedResults);
         }
 
         return reset($renderedResults) ?: null;

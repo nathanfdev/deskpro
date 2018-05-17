@@ -2,6 +2,7 @@
 
 namespace DeskPRO\Bundle\ReportBundle\Reports\Renderer;
 
+use DeskPRO\Bundle\ReportBundle\Reports\ResultMetadata;
 use DeskPRO\Bundle\ReportBundle\Reports\Results;
 
 /**
@@ -46,6 +47,18 @@ interface ReportsRendererInterface
      * @return string|array
      */
     public function render(Results $results, array $options = []);
+
+    /**
+     * Renders the value for a specific cell.
+     *
+     * @param mixed [int]    $row
+     * @param mixed          $column
+     * @param ResultMetadata $metadata
+     * @param bool           $useRenderer
+     *
+     * @return string
+     */
+    public function renderCellValue(array $row, $column, ResultMetadata $metadata, $useRenderer = null);
 
     /**
      * Merge layered results.

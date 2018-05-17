@@ -13,6 +13,7 @@
             <ul>
                 <li>
                     <a
+                        ng-if="canEdit()"
                         ng-click='editReportModal(report)'
                         ng-class="{'control-inactive': dashboard.is_default}">
                         <i class="fa fa-cog"></i> Edit Report
@@ -66,12 +67,14 @@
     <div class="graph-container">
         <div class="graph-container-controls" ng-if="!dashboard.is_default">
             <a
+                ng-if="canEdit()"
                 ng-click="toggleLayoutEdit()"
                 class="control"
                 ng-class="{'control-active': layoutEditing}">
                 Dashboard Layout <i class="fa fa-columns"></i>
             </a>
             <a
+                ng-if="canEdit()"
                 ng-click='openAddWidget({})'
                 ng-class="{'control-inactive': dashboard.is_default}"
                 class="control"
