@@ -2313,7 +2313,7 @@ DeskPRO.Agent.PageFragment.Page.Ticket = new Orb.Class({
 						break;
 
 					case 'split':
-						self.showSplitOverlay('');
+						self.showSplitOverlay(0);
 						break;
 
 					case 'print':
