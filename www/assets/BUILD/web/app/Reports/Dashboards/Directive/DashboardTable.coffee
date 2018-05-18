@@ -40,6 +40,8 @@ define ['datatables', "datatables.pageResize"], () ->
           catch e
             options = {}
 
+          drawn = false
+
           defaultOptions = {
             data:           widget.data,
             columns:        widget.columns,
@@ -59,10 +61,19 @@ define ['datatables', "datatables.pageResize"], () ->
                 $(settings.nTableWrapper).find('.dataTables_paginate').hide();
               else
                 $(settings.nTableWrapper).find('.dataTables_paginate').show();
+              if !drawn
+                $timeout(
+                  ->
+                    drawn = true
+                    box.height(100)
+                , 100)
+                $timeout(
+                  ->
+                    box.height('auto')
+                , 105)
           }
 
           dt = el.find('table').DataTable Object.assign(defaultOptions, options)
-          setTimeout box.parent().height(box.parent().height() - 1), 5
 
           listItem
             .find '.handle-e'
