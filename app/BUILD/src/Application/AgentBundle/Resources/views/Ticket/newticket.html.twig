@@ -54,6 +54,7 @@ pageMeta.baseId = '{{ baseId }}';
 	<div style="display:none;" class="error-message department_id">&bull; {{ phrase('agent.general.select_a_department') }}</div>
 	<div style="display:none;" class="error-message message">&bull; {{ phrase('agent.general.enter_a_message') }}</div>
 	<div style="display:none;" class="error-message person_disabled">&bull; {{ phrase('agent.tickets.user_is_disabled') }}</div>
+  <div style="display:none;" class="error-message cc_limit">&bull; {{ phrase('agent.tickets.email_cc_limit_reached', {max: app.getSetting('core_tickets.email_cc_max_count')}) }}</div>
 	<div style="display:none;" class="error-message free" id="{{ baseId }}_freemessage"></div>
 </div>
 

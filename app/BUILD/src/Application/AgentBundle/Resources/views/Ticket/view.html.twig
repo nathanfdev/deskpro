@@ -292,6 +292,7 @@
                               data-msg-invalid-email-isaccount="{{ phrase('agent.tickets.email_is_ticket_account') }}"
                               data-msg-is-dupe="{{ phrase('agent.tickets.email_is_dupe') }}"
                               data-msg-invalid-email-isagent="{{ phrase('agent.tickets.email_is_agent_use_followers')|e }}"
+                              data-msg-cc-limit="{{ phrase('agent.tickets.email_cc_limit_reached', {max: app.getSetting('core_tickets.email_cc_max_count')}) }}"
                         >{{ phrase('agent.general.add') }}</button>
 					</span>
                                 <span class="is-loading">{{ phrase('agent.general.saving') }}</span>

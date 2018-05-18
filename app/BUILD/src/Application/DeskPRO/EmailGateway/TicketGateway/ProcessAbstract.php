@@ -155,6 +155,8 @@ abstract class ProcessAbstract
     {
         $account_manager = App::$container->getEmailAccountManager();
         $db              = App::$container->getDb();
+        $max_cc          = (int) App::getSetting('core_tickets.email_cc_max_count');
+        $max_cc          = $max_cc ?: 100;
 
         $count = 0;
         foreach ($ccs as $cc) {
@@ -162,8 +164,8 @@ abstract class ProcessAbstract
             $this->logMessage("Checking cc: $cc_email");
 
             // Max 100 CC's to prevent mass spamming
-            if ($count >= 100) {
-                $this->logMessage('CC limit reached, break');
+            if ($count >= $max_cc) {
+                $this->logMessage("CC limit ({$max_cc}) reached, break");
                 break;
             }
 

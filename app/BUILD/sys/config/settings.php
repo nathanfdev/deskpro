@@ -486,6 +486,8 @@ return [
      */
     'core_tickets.add_agent_ccs' => false,
 
+    'core_tickets.email_cc_max_count' => 20,
+
     /*
      * Process FW agent emails as forwards
      */

@@ -420,6 +420,7 @@ return [
     'portal.flashes.ticket_resolved'                         => 'Your ticket is now marked as resolved. Thank you.',
     'portal.flashes.ticket_updated'                          => 'Your ticket has been updated. Thanks!',
     'portal.flashes.ticket_participant_email_error'          => 'Please enter a valid email for your participant and try again.',
+    'portal.flashes.ticket_participant_cc_limit_reached'     => 'Maximum CC\'s limit ({{max}}) reached',
     'portal.flashes.ticket_participant_already_error'        => 'The person you tried to add as a participant is already a participant on this ticket.',
     'portal.flashes.ticket_participant_add_unknown_error'    => 'There was a problem when trying to add your participant. Please try again.',
     'portal.flashes.ticket_participant_remove_unknown_error' => 'There was a problem when trying to remove your participant. Please try again.',
