@@ -3,6 +3,7 @@
 namespace DeskPRO\Bundle\AppBundle\Validator\Constraints\Reports;
 
 use DeskPRO\Bundle\ReportBundle\Dashboard\DashboardWidgetManager;
+use DeskPRO\Bundle\ReportBundle\Dpql2\DpqlParseException;
 use Symfony\Component\Validator\Constraint;
 use Symfony\Component\Validator\ConstraintValidator;
 use Symfony\Component\Validator\Exception\UnexpectedTypeException;
@@ -41,6 +42,16 @@ class DpqlQueryValidator extends ConstraintValidator
 
         try {
             $this->dashboardWidget->getCompiledQueries($value);
+        } catch (DpqlParseException $e) {
+            /** @var \Symfony\Component\Validator\Context\ExecutionContext $context */
+            $context = $this->context;
+            $context
+                ->buildViolation($constraint->messageSyntax)
+                ->setCode(DpqlQuery::DPQL_SYNTAX_ERROR)
+                ->setParameter('line', $e->getQueryLine())
+                ->setParameter('token', $e->getQueryToken())
+                ->addViolation()
+            ;
         } catch (\Exception $e) {
             /** @var \Symfony\Component\Validator\Context\ExecutionContext $context */
             $context = $this->context;

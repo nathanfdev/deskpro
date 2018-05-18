@@ -95,7 +95,7 @@ Feature: /report_widgets endpoint
 }
     """
     Then the response status code should be 400
-    And the JSON node "errors.fields.query.errors[0].code" should be equal to "invalid_dpql_query"
+    And the JSON node "errors.fields.query.errors[0].code" should be equal to "dpql_syntax_error"
 
   Scenario: I check empty raw query validation
     When I send a POST request to "/api/v2/report_widgets" with body:
@@ -124,7 +124,7 @@ Feature: /report_widgets endpoint
 }
     """
     Then the response status code should be 400
-    And the JSON node "errors.fields.query_parts.errors[0].code" should be equal to "invalid_dpql_query"
+    And the JSON node "errors.fields.query_parts.errors[0].code" should be equal to "dpql_syntax_error"
 
   Scenario: I check empty query parts validation
     When I send a POST request to "/api/v2/report_widgets" with body:

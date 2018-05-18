@@ -3,7 +3,7 @@
 
 %syntax_error
 {
-	throw new DpqlException("Error parsing DPQL statement at line $this->line (got $TOKEN)");
+	throw new DpqlParseException($this->line, $TOKEN, "Error parsing DPQL statement at line $this->line (got $TOKEN)");
 }
 
 %include_class
