@@ -238,7 +238,7 @@ class PersonFromEmailProcessor
      */
     public function isPersonAssociatedWithAccountBrands(EmailAccount $account, Person $person)
     {
-        return $person->hasOneOfTheBrands($account->getBrands());
+        return $person->hasOneOfTheBrands($this->getAccountBrands($account));
     }
 
     /**
@@ -257,7 +257,7 @@ class PersonFromEmailProcessor
         }
 
         if (!$brand) {
-            $brand = $account->getBrands()->first();
+            $brand = $this->getAccountBrands($account)->first();
         }
 
         $person->addBrand($brand);
@@ -282,7 +282,7 @@ class PersonFromEmailProcessor
         $usersourceManager = App::$container->getSystemService('usersource_manager');
 
         // find first Brand with `reg_enabled` Usersource
-        foreach ($account->getBrands() as $brand) {
+        foreach ($this->getAccountBrands($account) as $brand) {
             if (
                 $usersourceManager
                     ->getAll()
@@ -297,5 +297,15 @@ class PersonFromEmailProcessor
         }
 
         return false;
+    }
+
+    /**
+     * @param EmailAccount $account
+     *
+     * @return Brand[]
+     */
+    protected function getAccountBrands(EmailAccount $account)
+    {
+        return $account->isAllBrands() ? App::getEntityRepository(Brand::class)->findAll() : $account->getBrands();
     }
 }
