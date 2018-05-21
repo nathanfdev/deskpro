@@ -279,7 +279,7 @@ define ['DeskPRO/Util/Arrays'], (Arrays) ->
 
     scheduleReport: (report, schedule, enabled) ->
       deferred = @$q.defer()
-      if enabled == 1
+      if parseInt(enabled, 10) == 1
         data = {
           schedule: {
             frequency: schedule.frequency
