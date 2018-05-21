@@ -45,37 +45,41 @@
                                         </ul>
                                     </div>
                                 </li>
-                                <li
-                                    class="dp-list__element dp-column-drawer link-pointer dp-drawer-item "
-                                    ng-if="canUseReports()"
-                                    ui-sref="reports.stats"
-                                    ui-sref-active="dp-drawer-item--selected"
-                                >
-                                    <h1 class="dp-heading">Stat Builder</h1>
-                                </li>
-                                <li
-                                        class="dp-list__element dp-column-drawer link-pointer dp-drawer-item "
-                                        ng-if="canUseReports()"
-                                        ui-sref="reports.agent_activity"
-                                        ui-sref-active="dp-drawer-item--selected"
-                                >
-                                    <h1 class="dp-heading">Agent Activity</h1>
-                                </li>
-                                <li
-                                        class="dp-list__element dp-column-drawer link-pointer dp-drawer-item "
-                                        ng-if="canUseReports()"
-                                        ui-sref="reports.agent_hours"
-                                        ui-sref-active="dp-drawer-item--selected"
-                                >
-                                    <h1 class="dp-heading">Agent Hours</h1>
-                                </li>
-                                <li
-                                        class="dp-list__element dp-column-drawer link-pointer dp-drawer-item "
-                                        ng-if="canUseReports()"
-                                        ui-sref="reports.ticket_satisfaction"
-                                        ui-sref-active="dp-drawer-item--selected"
-                                >
-                                    <h1 class="dp-heading">Ticket Satisfaction</h1>
+
+                                <li class="dp-list__element dp-column-drawer">
+                                    <h1 class="dp-heading">Reports</h1>
+                                    <div class="dp-column-drawer__body dp-column-drawer__body--opened">
+                                        <ul class="dp-list dp-drawer-item-list">
+                                            <li class="dp-list__element dp-drawer-item"
+                                                ng-if="canUseReports()"
+                                                ui-sref="reports.stats"
+                                                ui-sref-active="dp-drawer-item--selected"
+                                            >
+                                                <span class="dp-drawer-item__pos-middle">Stat builder</span>
+                                            </li>
+                                            <li class="dp-list__element dp-drawer-item"
+                                                ng-if="canUseReports()"
+                                                ui-sref="reports.agent_activity"
+                                                ui-sref-active="dp-drawer-item--selected"
+                                            >
+                                                <span class="dp-drawer-item__pos-middle">Agent Activity</span>
+                                            </li>
+                                            <li class="dp-list__element dp-drawer-item"
+                                                ng-if="canUseReports()"
+                                                ui-sref="reports.agent_hours"
+                                                ui-sref-active="dp-drawer-item--selected"
+                                            >
+                                                <span class="dp-drawer-item__pos-middle">Agent Hours</span>
+                                            </li>
+                                            <li class="dp-list__element dp-drawer-item"
+                                                ng-if="canUseReports()"
+                                                ui-sref="reports.ticket_satisfaction"
+                                                ui-sref-active="dp-drawer-item--selected"
+                                            >
+                                                <span class="dp-drawer-item__pos-middle">Ticket Satisfaction</span>
+                                            </li>
+                                        </ul>
+                                    </div>
                                 </li>
                             </ul>
                         </div>
