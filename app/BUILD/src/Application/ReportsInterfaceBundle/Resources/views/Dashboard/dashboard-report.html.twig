@@ -112,7 +112,7 @@
                             js-code="{{ ng_var('widget.js_code') }}"
                         />
                     </div>
-                    <div class="box" ng-if="(widget.rendered_result !== null || widget.js_code) && widget.type=='table'">
+                    <div class="box" style="overflow: hidden" ng-if="(widget.rendered_result !== null || widget.js_code) && widget.type=='table'">
                         <dashboard-table
                             title="{{ ng_var('widget.title') }}"
                             table-data="{{ ng_var('widget.rendered_result') }}"
