@@ -168,6 +168,10 @@
     padding-bottom: 20px;
   }
 
+  .dataTables_reset {
+    display: none;
+  }
+
   .dataTables_wrapper {
     border: none !important;
     padding-top: 8px;
@@ -198,6 +202,7 @@
     span.dataTables_reset {
       margin-left: -18px;
       cursor: pointer;
+      display: initial;
     }
 
     .dataTables_paginate {
