@@ -154,10 +154,8 @@ define ['handlebars'], (Handlebars) ->
               return g
             )
 
-          if widget.dataProvider
-            mergedData = widget
-          else
-            mergedData = lodashMerge(widget, options)
+          mergedData = lodashMerge(widget, options)
+          if !widget.dataProvider
             if options.allGraphs and widget.graphs
               widget.graphs = widget.graphs.map((g) ->
                 g = lodashMerge(g, options.allGraphs)
