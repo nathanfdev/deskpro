@@ -1,12 +1,12 @@
 define [], () -> [
   '$scope',
   '$state',
-  'DashboardsInfo',
+  'DashboardService',
   '$modal',
   (
     $scope,
     $state,
-    DashboardsInfo,
+    DashboardService,
     $modal
   ) ->
 
@@ -16,7 +16,7 @@ define [], () -> [
       return window.DESKPRO_PERSON_PERMS['agent_reports.use'];
 
     $scope.getDashboardList = (firstLoad = false) ->
-      DashboardsInfo.getDashboardList().then((dbs) ->
+      DashboardService.getDashboards().then((dbs) ->
         $scope.dashboards = dbs
         $scope.hasAccessToBuiltIn = dbs.filter((db) => db.is_default).length >= 1
         $scope.hasAccessToCustom = dbs.filter((db) => !db.is_default).length >= 1
@@ -30,7 +30,7 @@ define [], () -> [
       )
 
     $scope.$watch(
-      () -> DashboardsInfo,
+      () -> DashboardService,
       (dbinfo) -> $scope.getDashboardList(),
       true
     )

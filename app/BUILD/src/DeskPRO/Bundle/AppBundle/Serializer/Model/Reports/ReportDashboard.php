@@ -4,6 +4,7 @@ namespace DeskPRO\Bundle\AppBundle\Serializer\Model\Reports;
 
 use Application\DeskPRO\Entity\ReportDashboard as ReportDashboardEntity;
 use Application\DeskPRO\Entity\ReportDashboardPermission;
+use DeskPRO\Bundle\AppBundle\Serializer\Sideload\InlineCustomSideload;
 use Doctrine\Common\Collections\ArrayCollection;
 use JMS\Serializer\Annotation as JMS;
 
@@ -48,6 +49,13 @@ class ReportDashboard
     private $permissions;
 
     /**
+     * @JMS\Type("raw")
+     *
+     * @var InlineCustomSideload
+     */
+    private $reports;
+
+    /**
      * Constructor.
      *
      * @param ReportDashboardEntity $entity
@@ -69,5 +77,21 @@ class ReportDashboard
 
             return true;
         });
+    }
+
+    /**
+     * @return InlineCustomSideload
+     */
+    public function getReports()
+    {
+        return $this->reports;
+    }
+
+    /**
+     * @param InlineCustomSideload $reports
+     */
+    public function setReports(InlineCustomSideload $reports)
+    {
+        $this->reports = $reports;
     }
 }
