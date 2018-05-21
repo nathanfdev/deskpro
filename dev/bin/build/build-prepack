@@ -90,6 +90,7 @@ mv $DIR_ROOT/www/assets/BUILD/web/node_modules/Select2 $DIR_ROOT/www/assets/BUIL
 mv $DIR_ROOT/www/assets/BUILD/web/node_modules/angular-ui-select2 $DIR_ROOT/www/assets/BUILD/web/node_modules_tmp/angular-ui-select2
 mv $DIR_ROOT/www/assets/BUILD/web/node_modules/semantic-ui-less $DIR_ROOT/www/assets/BUILD/web/node_modules_tmp/semantic-ui-less
 mv $DIR_ROOT/www/assets/BUILD/web/node_modules/clipboard $DIR_ROOT/www/assets/BUILD/web/node_modules_tmp/clipboard
+mv $DIR_ROOT/www/assets/BUILD/web/node_modules/custom-event-polyfill $DIR_ROOT/www/assets/BUILD/web/node_modules_tmp/custom-event-polyfill
 
 # dont need the rest of web/ node_modules at all
 rm -rf $DIR_ROOT/www/assets/BUILD/web/node_modules
