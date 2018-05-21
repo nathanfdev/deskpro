@@ -143,7 +143,13 @@
 			cursor: text;
 		}
 	</style>
-	<script type="text/javascript" src="{{ asset('vendor/html5shiv.min.js') }}"></script>
+    <script type="text/javascript" src="{{ asset('vendor/html5shiv.min.js') }}"></script>
+    {% if app.isDebug() and (has_raw_assets is not defined or (has_raw_assets is defined and has_raw_assets)) %}
+		{{ dp_asset_html('reports_interface_css1') }}
+		<script type="text/javascript" src="{{ asset('vendor/less/less.min.js') }}"></script>
+    {% else %}
+        {{ dp_asset_html('reports_interface_css1') }}
+    {% endif %}
 </head>
 <body>
 
