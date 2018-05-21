@@ -239,7 +239,7 @@ define ['DeskPRO/Util/Arrays'], (Arrays) -> [
 
     $scope.updateReportVariables = (forceUpdate = false, cb = null) ->
 
-      if !$scope.report || (!$scope.widgets.length && !forceUpdate)|| !$scope.dashboard || !$scope.me
+      if !$scope.report || (!$scope.widgets.length && !forceUpdate)|| !$scope.dashboard || !$scope.me || !$scope.groupParams
         if cb then cb()
         return
 
@@ -251,9 +251,9 @@ define ['DeskPRO/Util/Arrays'], (Arrays) -> [
 
           if variable.value == 'from_report_value'
             cloneVar = $.extend({}, variable);
-            if variable.type == 'dates'
+            if variable.type == 'dates' && $scope.groupParams[variable.type]
               cloneVar.value = $scope.groupParams[variable.type][Object.keys($scope.groupParams[variable.type])[0]][0]
-            else
+            else if $scope.groupParams[variable.type]
               cloneVar.value = cloneVar.value = $scope.groupParams[variable.type][variable.field_type][Object.keys($scope.groupParams[variable.type])[0]][0]
             angular.forEach($scope.report.variables, (reportVar) ->
               if reportVar.name == cloneVar.name

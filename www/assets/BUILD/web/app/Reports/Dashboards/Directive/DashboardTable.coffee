@@ -25,14 +25,14 @@ define ['datatables', "datatables.pageResize"], () ->
         tableData = if scope.tableData then JSON.parse(scope.tableData) else {}
 
         listItem = box.parent()
-        conf = scope.widgetId || 0;
-        interval = 0;
+        conf = scope.widgetId || 0
 
         initTable = (widget) ->
           scope.loaded = true
 
-          if interval?
-            clearInterval(interval)
+          scope.resetClick = () ->
+            dt.order([]).clear().rows.add(widget.data).draw()
+
           scope.columns = widget.columns
 
           try
@@ -48,12 +48,12 @@ define ['datatables', "datatables.pageResize"], () ->
             searching:      false,
             bJQueryUI:      true,
             lengthChange:   true,
-            sDom:           'T<"clear">lfrtip'
+            sDom:           'T<"clear">lrtip',
             deferRender:    true,
-            dom:            "rtS",
             scrollCollapse: true,
             autoWidth:      true,
-            ordering:       false,
+            ordering:       true,
+            order:          []
             fnDrawCallback: (settings) ->
               if settings._iDisplayLength == -1 || settings._iDisplayLength >= settings.fnRecordsDisplay()
                 $(settings.nTableWrapper).find('.dataTables_paginate').hide();
@@ -62,6 +62,7 @@ define ['datatables', "datatables.pageResize"], () ->
           }
 
           dt = el.find('table').DataTable Object.assign(defaultOptions, options)
+          setTimeout box.parent().height(box.parent().height() - 1), 5
 
           listItem
             .find '.handle-e'

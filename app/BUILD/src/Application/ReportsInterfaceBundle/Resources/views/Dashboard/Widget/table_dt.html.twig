@@ -3,6 +3,11 @@
     <div ng-show='loaded && noData' class="box stat-box"><div class="stat-value no-data">no data</div></div>
     <div ng-show='loaded' class="dataTable_parent">
         <table class="display" cellspacing="0" width="100%">
+            <tfoot>
+            <tr class="dataTables_reset_wrapper">
+                <td colspan="{{ ng_var('columns.length') }}"><span class="dataTables_reset" ng-click="resetClick()">Reset order | </span></td>
+            </tr>
+            </tfoot>
         </table>
     </div>
 </div>
