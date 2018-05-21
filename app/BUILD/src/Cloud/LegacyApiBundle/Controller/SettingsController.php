@@ -20,16 +20,7 @@ class SettingsController extends BaseSettingsController
     public function getUrlSettingsAction()
     {
         $settings = [
-            // The custom domain being used, if any
             'cloud_custom_domain' => $this->settings->get('core.cloud_custom_domain') ?: null,
-
-            // The custom domain that we have configured with a custom cert
-            'cloud_custom_domain_ssl' => $this->settings->get('core.cloud_custom_domain_ssl') ? true : false,
-
-            // If the URL should be https or not
-            'cloud_url_ssl' => $this->settings->get('core.cloud_url_ssl') ? true : false,
-
-            'deskpro_url_autocorrect' => $this->settings->get('core.deskpro_url_autocorrect') ? true : false,
         ];
 
         $settings['domain_choice'] = 'default';
@@ -48,7 +39,7 @@ class SettingsController extends BaseSettingsController
     {
         $in_settings  = new OptionsArray($this->in->getArrayValue('settings'));
         $set_settings = [
-            'core.deskpro_url_autocorrect' => $in_settings->get('deskpro_url_autocorrect', false),
+            'core.deskpro_url_autocorrect' => false,
         ];
 
         if ($in_settings->get('domain_choice') == 'custom') {
@@ -64,17 +55,7 @@ class SettingsController extends BaseSettingsController
 
             $set_settings['core.cloud_custom_domain'] = $domain;
 
-            if ($in_settings->get('cloud_url_ssl') && $this->settings->get('core.cloud_custom_domain_ssl') == $domain) {
-                $set_settings['core.cloud_url_ssl'] = true;
-            } else {
-                $set_settings['core.cloud_url_ssl'] = false;
-            }
-
-            if ($set_settings['core.cloud_url_ssl']) {
-                $url = 'https://'.$domain.'/';
-            } else {
-                $url = 'http://'.$domain.'/';
-            }
+            $url                              = 'https://'.$domain.'/';
             $set_settings['core.deskpro_url'] = $url;
 
             if ($domain != $this->settings->get('core.cloud_custom_domain')) {
@@ -82,14 +63,7 @@ class SettingsController extends BaseSettingsController
             }
         } else {
             $set_settings['core.cloud_custom_domain'] = null;
-
-            $set_settings['core.cloud_url_ssl'] = (bool) $in_settings->get('cloud_url_ssl');
-            if ($set_settings['core.cloud_url_ssl']) {
-                $url = 'https://'.DPC_SITE_DOMAIN.'/';
-            } else {
-                $url = 'http://'.DPC_SITE_DOMAIN.'/';
-            }
-            $set_settings['core.deskpro_url'] = $url;
+            $set_settings['core.deskpro_url']         = 'https://'.DPC_SITE_DOMAIN.'/';
         }
 
         foreach ($set_settings as $k => $v) {
@@ -105,5 +79,30 @@ class SettingsController extends BaseSettingsController
         CloudBrandHelper::flushBrandDomains();
 
         return $this->createApiSuccessResponse();
+    }
+
+    //###################################################################################################################
+    // provision
+    //###################################################################################################################
+
+    public function setupCustomDomainAction()
+    {
+        $domain = $this->in->getString('domain');
+        $domain = preg_replace('#^https?://#', '', strtolower($domain));
+        $domain = trim($domain, '/');
+
+        $url_test = 'http://'.$domain.'/';
+        $url_bits = @parse_url($url_test);
+
+        if (!isset($_GET['allowProvider']) && (empty($url_bits['host']) || strpos($url_bits['host'], 'deskpro.com') !== false || $url_bits['host'] != $domain)) {
+            return $this->createJsonResponse([
+                'error'   => true,
+                'type'    => 'ma',
+                'code'    => 'domain.invalid',
+                'message' => 'Invalid domain name',
+            ]);
+        }
+
+        return $this->createJsonResponse(CloudBrandHelper::provisionCustomDomain($domain));
     }
 }
