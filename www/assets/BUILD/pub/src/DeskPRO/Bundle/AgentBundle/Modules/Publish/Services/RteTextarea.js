@@ -29,7 +29,7 @@ class RteTextarea {
         'bold', 'italic', 'underline', '|', 'align', 'color', '|', 'paragraphFormat', 'fontFamily', 'fontSize',
         'formatUL', 'formatOL', '|', 'indent', 'outdent', '|', 'insertLink', 'dp_media', 'insertTable', '|',
         'dpMedia', 'html', 'clearFormatting', 'fullscreen'],
-      key:             'qENARBFSTb1G1QJg1RA==',
+      key:             'MC1D2D1G2lG4J4A14A7D3D6F6C2C3F3gSXSE1LHAFJVCXCLS==',
       paragraphFormat: {
         N:          'Paragraph',
         H2:         'Heading 1',
