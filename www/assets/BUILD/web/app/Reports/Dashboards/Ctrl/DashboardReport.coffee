@@ -114,16 +114,33 @@ define ['DeskPRO/Util/Arrays'], (Arrays) -> [
     # Staff for removing widget from dashboard. Works if and only if the dashboard.layoutEditing is switched on
     ###
     $scope.removeWidget = (widget) ->
-      if $scope.layoutEditing
+      removeWidget = () ->
         index = DashboardWidgetService.getIndexById $scope.widgets, widget.id
         DashboardWidgetService
-        .removeWidget(widget)
-        .then () ->
-          $scope.widgets.splice(index, 1)
-          DashboardsInfo.getReportDetail($scope.report.id, true).then((loadedReport) ->
-            $scope.report.variables = loadedReport.variables
-            $scope.updateReportVariables(true)
-          )
+          .removeWidget(widget)
+          .then () ->
+            $scope.widgets.splice(index, 1)
+            DashboardsInfo.getReportDetail($scope.report.id, true).then((loadedReport) ->
+              $scope.report.variables = loadedReport.variables
+              $scope.updateReportVariables(true)
+            )
+
+      if $scope.layoutEditing
+        $modal.open({
+          templateUrl: "ReportsInterfaceBundle:Index:modal-confirm.html",
+          controller: ['$scope', '$modalInstance', ($scope, $modalInstance) ->
+
+            $scope.title   = 'Confirm discard'
+            $scope.message = 'Are you sure you want to delete this widget?'
+
+            $scope.dismiss = ->
+              $modalInstance.dismiss()
+
+            $scope.confirm = ->
+              removeWidget()
+              $modalInstance.dismiss()
+          ]
+        })
 
     $scope.download = (widget) ->
       window.open($http.formatApi2Url('/dashboard_report_widgets/' + widget.id + '/download/csv'))
