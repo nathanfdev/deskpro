@@ -106,6 +106,10 @@ class DpqlCompiler
             $statement = $this->lexAndParse($input);
             $statement->prepare();
         } catch (DpqlException $e) {
+            if ($e instanceof DpqlParseException) {
+                throw $e;
+            }
+
             throw DpqlCompileException::createFromException($e, $input);
         }
 
