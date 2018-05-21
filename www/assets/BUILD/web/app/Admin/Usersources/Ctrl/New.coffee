@@ -13,6 +13,7 @@ define [
     init: ->
       @usersourceType = Admin_Usersources_Helper_UsersourceTypeDecider.decide(@$state);
       @$scope.install_url = if @usersourceType == 'user' then 'crm.usersources.install' else 'agents.usersources.install'
+      @$scope.install_deskpro_url = if @usersourceType == 'user' then 'crm.usersources.install_deskpro' else 'agents.usersources.install_deskpro'
 
     initialLoad: ->
       url = '/usersources/available/app-packages/' + @usersourceType

@@ -16,8 +16,8 @@ use Application\DeskPRO\Tickets\Triggers\TriggerTerms;
 use DeskPRO\Bundle\AppBundle\Entity\ObjectAlias\TicketTriggerAlias;
 use Doctrine\ORM\Mapping\ClassMetadata;
 use Doctrine\ORM\Mapping\ClassMetadataInfo;
-use Orb\Util\Arrays;
 use JMS\Serializer\Annotation as JMS;
+use Orb\Util\Arrays;
 
 /**
  * @property int $id
@@ -186,6 +186,106 @@ class TicketTrigger extends DomainObject
             sort($modes, \SORT_STRING);
             $this->setModelField('by_agent_mode', $modes);
         }
+    }
+
+    /**
+     * @return string
+     */
+    public function getTitle()
+    {
+        return $this->title;
+    }
+
+    /**
+     * @param string $title
+     *
+     * @return $this
+     */
+    public function setTitle($title)
+    {
+        $this->setModelField('title', $title);
+
+        return $this;
+    }
+
+    /**
+     * @return string
+     */
+    public function getSysName()
+    {
+        return $this->sys_name;
+    }
+
+    /**
+     * @param string $sys_name
+     *
+     * @return $this
+     */
+    public function setSysName($sys_name)
+    {
+        $this->setModelField('sys_name', $sys_name);
+
+        return $this;
+    }
+
+    /**
+     * @return bool
+     */
+    public function isEnabled()
+    {
+        return $this->is_enabled;
+    }
+
+    /**
+     * @param bool $is_enabled
+     *
+     * @return $this
+     */
+    public function setIsEnabled($is_enabled)
+    {
+        $this->setModelField('is_enabled', $is_enabled);
+
+        return $this;
+    }
+
+    /**
+     * @return int
+     */
+    public function getRunOrder()
+    {
+        return $this->run_order;
+    }
+
+    /**
+     * @param int $run_order
+     *
+     * @return $this
+     */
+    public function setRunOrder($run_order)
+    {
+        $this->setModelField('run_order', $run_order);
+
+        return $this;
+    }
+
+    /**
+     * @return string
+     */
+    public function getEventTrigger()
+    {
+        return $this->event_trigger;
+    }
+
+    /**
+     * @param string $event_trigger
+     *
+     * @return $this
+     */
+    public function setEventTrigger($event_trigger)
+    {
+        $this->setModelField('event_trigger', $event_trigger);
+
+        return $this;
     }
 
     /**

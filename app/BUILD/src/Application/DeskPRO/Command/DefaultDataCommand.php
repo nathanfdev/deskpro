@@ -16,6 +16,7 @@ use Symfony\Bridge\Monolog\Handler\ConsoleHandler;
 use Symfony\Bundle\FrameworkBundle\Command\ContainerAwareCommand;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
+use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
 
 class DefaultDataCommand extends ContainerAwareCommand
@@ -25,7 +26,9 @@ class DefaultDataCommand extends ContainerAwareCommand
         $this->setDefinition([
             new InputArgument('action', InputArgument::REQUIRED, 'info, install, upgrade, sync or reset'),
             new InputArgument('classname', InputArgument::OPTIONAL, 'Specify the specific classname to run'),
-        ])->setName('dp:default-data');
+        ])
+            ->addOption('flag', null, InputOption::VALUE_REQUIRED | InputOption::VALUE_REQUIRED, 'Set properties in name:value')
+            ->setName('dp:default-data');
     }
 
     protected function execute(InputInterface $input, OutputInterface $output)
@@ -33,31 +36,50 @@ class DefaultDataCommand extends ContainerAwareCommand
         $action    = strtolower($input->getArgument('action'));
         $classname = $input->getArgument('classname') ?: null;
 
-        $logger          = new Logger('defaultdata');
-        $console_handler = new ConsoleHandler($output);
-        $logger->pushHandler($console_handler);
+        $logger = new Logger('defaultdata');
+        $logger->pushHandler(new ConsoleHandler($output));
+
+        $opts = [
+            'via' => self::class,
+        ];
+
+        if ($input->getOption('flag')) {
+            foreach ($input->getOption('flag') as $f) {
+                $f = explode(':', $f, 2);
+                if (!isset($f[1])) {
+                    $f[1] = true;
+                }
+
+                if ($f[1] === '1' || $f[1] === '0' || $f[1] === 1 || $f[1] === 0) {
+                    $f[1] = (bool) $f[1];
+                }
+
+                $opts[$f[0]] = $f[1];
+            }
+        }
 
         $output->setVerbosity(OutputInterface::VERBOSITY_VERY_VERBOSE);
-        $data_proc = new DefaultDataProcessor($this->getContainer());
-        $data_proc->setLogger($logger);
+        $dataProcessor = new DefaultDataProcessor($this->getContainer());
+        $dataProcessor->setExtraOptions($opts);
+        $dataProcessor->setLogger($logger);
 
         switch ($action) {
             case 'install':
-                $data_proc->runInstall($classname);
+                $dataProcessor->runInstall($classname);
                 break;
             case 'upgrade':
-                $data_proc->runSync($classname);
+                $dataProcessor->runSync($classname);
                 break;
             case 'sync':
-                $data_proc->runSync($classname);
+                $dataProcessor->runSync($classname);
                 break;
             case 'reset':
-                $data_proc->runReset($classname);
+                $dataProcessor->runReset($classname);
                 break;
             case 'info':
                 $array = [];
-                foreach ($data_proc->getDataClasses() as $classname) {
-                    $array[] = [Util::getBaseClassname($classname), $data_proc->isInstalled($classname) ? 'Yes' : 'No'];
+                foreach ($dataProcessor->getDataClasses() as $classname) {
+                    $array[] = [Util::getBaseClassname($classname), $dataProcessor->isInstalled($classname) ? 'Yes' : 'No'];
                 }
 
                 echo Strings::asciiTable($array, ['Data Class', 'Is Installed']);

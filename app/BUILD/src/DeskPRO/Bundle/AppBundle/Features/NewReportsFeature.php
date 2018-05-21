@@ -49,6 +49,11 @@ Disabling the new reporting system will hide the icon from your app bar.
 HTML;
     }
 
+    public function isEnabledOnInstall()
+    {
+        return true;
+    }
+
     /**
      * {@inheritdoc}
      */

@@ -2,6 +2,7 @@
 
 namespace DeskPRO\Bundle\AppBundle\Serializer\Model;
 
+use DeskPRO\Bundle\AppBundle\Serializer\Deferred\CallbackDeferredProperty;
 use JMS\Serializer\Annotation as JMS;
 use Orb\Util\Util;
 
@@ -79,6 +80,22 @@ class Usersource
     protected $isEnabled;
 
     /**
+     * @JMS\Type("boolean")
+     *
+     * @var bool
+     */
+    protected $isAllBrands;
+
+    /**
+     * Brands.
+     *
+     * @JMS\Type("deferred<collection<entity<Application\DeskPRO\Entity\Brand>>>")
+     *
+     * @var \Application\DeskPRO\Entity\Brand[]
+     */
+    protected $brands;
+
+    /**
      * Constructor.
      *
      * @param \Application\DeskPRO\Entity\Usersource $usersource
@@ -95,5 +112,18 @@ class Usersource
         $this->displayOrder   = $usersource->getDisplayOrder();
         $this->displayType    = $displayType;
         $this->displayOptions = $displayOptions;
+        $this->isAllBrands    = $usersource->isAllBrands();
+    }
+
+    /**
+     * @param CallbackDeferredProperty $brands
+     *
+     * @return $this
+     */
+    public function setBrands($brands = null)
+    {
+        $this->brands = $brands;
+
+        return $this;
     }
 }

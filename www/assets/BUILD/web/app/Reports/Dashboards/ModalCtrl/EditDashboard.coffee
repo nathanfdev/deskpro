@@ -147,14 +147,17 @@ define ['DeskPRO/Util/Arrays', 'DeskPRO/Util/Util'], (Arrays, Util) -> [
     ###
     $scope.saveDashboard = ->
       $scope.saving = true
-      doSaveDashboard().then(->
-        DashboardsInfo.resetData()
-        if !$scope.is_new
-          $scope.dashboard.version_id++
-          if $scope.did_edit_reports then $scope.dashboard.reports_version_id
+      doSaveDashboard().then( \
+        () ->
+          DashboardsInfo.resetData()
+          if !$scope.is_new
+            $scope.dashboard.version_id++
+            if $scope.did_edit_reports then $scope.dashboard.reports_version_id
 
-        $scope.saving = false
-        $modalInstance.close()
+          $scope.saving = false
+          $modalInstance.close()
+        , () ->
+          $scope.saving = false
       )
 
     # All
@@ -238,6 +241,8 @@ define ['DeskPRO/Util/Arrays', 'DeskPRO/Util/Util'], (Arrays, Util) -> [
         })
       else if permission.name == 'view'
         permission.name = 'full'
+      else if permission.name == 'full'
+        permission.name = 'view'
 
     $scope.toggleViewAllAgents = (agentId) ->
       permission = $scope.dashboard.permissions.filter((permission) => permission.person == agentId)[0]
@@ -315,7 +320,13 @@ define ['DeskPRO/Util/Arrays', 'DeskPRO/Util/Util'], (Arrays, Util) -> [
 
       DashboardService
       .saveDashboard data
-      .then (saved) ->
-        d.resolve saved
+      .then \
+        (saved) ->
+          $scope.error = null
+          d.resolve saved
+        , (response) ->
+          if (response.errors?.fields?.title?.errors[0])
+            $scope.error = 'Dashboard title could not be blank'
+          d.reject()
       d.promise
   ]

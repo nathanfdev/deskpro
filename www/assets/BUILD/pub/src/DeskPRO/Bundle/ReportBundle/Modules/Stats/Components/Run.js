@@ -101,6 +101,16 @@ class Run extends React.Component {
           style={{ width: '100%', height: '500px' }}
           data={options.get('data').toJS()}
           columns={options.get('columns').toJS()}
+          options={{
+            scrollCollapse: true,
+            autoWidth:      true,
+            pageResize:     true,
+            ordering:       true,
+            order:          [],
+            searching:      false,
+            lengthChange:   true,
+            height:         400
+          }}
         />);
       case 'stat':
         return <SimpleStat value={options.get('value')} description={options.get('description')} />;
@@ -170,7 +180,18 @@ class Run extends React.Component {
   renderReport() {
     const { report } = this.props;
     const results = report.get('rendered_result') ? report.get('rendered_result') : Immutable.List();
-    return results.map((renderedResult, index) => Run.renderChart(renderedResult, index));
+    return results.map((renderedResult, index) => {
+      if (renderedResult.get('title')) {
+        return (
+          <div>
+            <b>{renderedResult.get('title')}</b>
+            {Run.renderChart(renderedResult, index)}
+          </div>
+        );
+      }
+
+      return Run.renderChart(renderedResult, index);
+    });
   }
 
   renderRun() {

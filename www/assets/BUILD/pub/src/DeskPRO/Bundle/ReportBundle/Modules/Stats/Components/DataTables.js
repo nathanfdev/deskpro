@@ -8,24 +8,38 @@ class DataTable extends React.Component {
   static propTypes = {
     columns: PropTypes.array.isRequired,
     data:    PropTypes.array.isRequired,
+    options: PropTypes.object
   };
 
+  static defaultProps = {
+    options: {
+      height: 200
+    }
+  };
 
   componentDidMount() {
-    $(this.el).DataTable({
-      dom:            '<"data-table-wrapper"t>',
-      data:           this.props.data,
-      columns:        this.props.columns,
+    const { data, columns, options } = this.props;
+    this.originalData = data;
+    const $table = $(this.el);
+
+    this.dt = $table.DataTable({
+      data,
+      columns,
       pagingType:     'first_last_numbers',
       searching:      false,
-      pageLength:     5,
       bJQueryUI:      true,
       iDisplayLength: 5,
-      sDom:           'T<"clear">lfrtip',
-      lengthMenu:     [[5, 10, 25, 50, -1], [5, 10, 25, 50, 'All']],
+      sDom:           'T<"clear">lrtip',
       deferRender:    true,
-      scrollCollapse: true,
-      autoWidth:      true
+      fnDrawCallback: (settings) => {
+        // eslint-disable-next-line no-underscore-dangle
+        if (settings._iDisplayLength === -1 || settings._iDisplayLength >= settings.fnRecordsDisplay()) {
+          $(settings.nTableWrapper).find('.dataTables_paginate').hide();
+        } else {
+          $(settings.nTableWrapper).find('.dataTables_paginate').show();
+        }
+      },
+      ...options
     });
   }
 
@@ -41,10 +55,22 @@ class DataTable extends React.Component {
       .destroy(true);
   }
 
+  resetClick = () => {
+    if (this.dt) {
+      this.dt.order([]).clear().rows.add(this.originalData).draw();
+    }
+  };
+
   render() {
     return (
-      <div>
-        <table ref={(el) => { this.el = el; }} />
+      <div style={{ height: this.props.options.height ? this.props.options.height : 200 }}>
+        <table className="display" ref={(el) => { this.el = el; }}>
+          <tfoot>
+            <tr className="dataTables_reset_wrapper">
+              <td colSpan={this.props.columns.length}><span className="dataTables_reset" onClick={this.resetClick}>Reset order | </span></td>
+            </tr>
+          </tfoot>
+        </table>
       </div>);
   }
 }

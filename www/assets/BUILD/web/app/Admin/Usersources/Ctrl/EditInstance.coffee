@@ -13,12 +13,31 @@ define ['Admin/Main/Ctrl/Base', 'DeskPRO/Util/Util', 'Admin/Usersources/Helper/U
       @usersourceType = Admin_Usersources_Helper_UsersourceTypeDecider.decide(@$state)
       @presaveCallback = null
       @app = null
+      @$scope.usersource_detailsv2 = {
+        brands: [],
+        is_all_brands: false
+
+      }
 
     getInstanceId: -> @$stateParams.id
+    getApp2Id: -> 'app-' + @instanceId
 
     initialLoad: ->
       d = @$q.defer()
       d2 = @$q.defer()
+      d3 = @$q.defer()
+
+      brands_promise = @Api2.sendGet('brands').then( (res) =>
+        @brands = res.data.data
+      )
+
+      if @instanceId
+        @Api2.sendGet('user_sources/'+ @usersourceType + '/' + @getApp2Id()).then( (res) =>
+          @$scope.usersource_detailsv2 = res.data.data
+          d3.resolve()
+        )
+      else
+        d3.resolve()
 
       @listCtrl().refresh().then =>
         enabled = 0
@@ -27,34 +46,43 @@ define ['Admin/Main/Ctrl/Base', 'DeskPRO/Util/Util', 'Admin/Usersources/Helper/U
           return if @usersourceType != s.type
           return if 'Application\\DeskPRO\\Usersource\\Adapter\\DeskPRO' == s.source_type
           enabled++ if s.is_enabled
-        @$scope.can_disable_deskpro = enabled > 0
+        @$scope.can_disable_deskpro = @usersourceType == 'user' || enabled > 0
 
-      @Api.sendDataGet({
-        app: '/apps/instances/' + @instanceId
-      }).then( (result) =>
-        @app = result.data.app?.app
-
-        @$scope.app = @app
-        @$scope.appId = @app?.id
-
-        if @app
-          @Api.sendDataGet({
-            extra_info: '/usersources/' + @usersourceType + '/app-' + @instanceId + '/extra-details',
-            pack: '/apps/packages/' + @app.package_name
-          }).then( (result) =>
-            @pack = result.data.pack['package']
-            @$scope.usersource_details = result.data.extra_info?.usersource_details
-            @packageName = @pack.name
-            d.resolve()
-          )
-        else
+      if @instanceId
+        if @is_local
           @usersourceId = @instanceId
           @Api.sendGet('/usersources/' + @usersourceType + '/' + @usersourceId).then((result) =>
             @usersource = result.data.usersource
             d.resolve()
 
           )
-      )
+        else
+          @Api.sendDataGet({
+            app: '/apps/instances/' + @instanceId
+          }).then( (result) =>
+            @app = result.data.app?.app
+
+            @$scope.app = @app
+            @$scope.appId = @app?.id
+
+            if @app
+              @Api.sendDataGet({
+                extra_info: '/usersources/' + @usersourceType + '/app-' + @instanceId + '/extra-details',
+                pack: '/apps/packages/' + @app.package_name
+              }).then( (result) =>
+                @pack = result.data.pack['package']
+                @$scope.usersource_details = result.data.extra_info?.usersource_details
+                @packageName = @pack.name
+                d.resolve()
+              )
+            else
+              @usersourceId = @instanceId
+              @Api.sendGet('/usersources/' + @usersourceType + '/' + @usersourceId).then((result) =>
+                @usersource = result.data.usersource
+                d.resolve()
+
+              )
+          )
 
       d.promise.then( =>
         # we do nothing here if its a direct usersource, but if its an app we have some work t do
@@ -116,11 +144,15 @@ define ['Admin/Main/Ctrl/Base', 'DeskPRO/Util/Util', 'Admin/Usersources/Helper/U
             d2.resolve()
       )
 
-      return d2.promise
+      return @$q.all([d2.promise, d3.promise, brands_promise])
 
 
 
     saveSettings: ->
+      if (!@$scope.usersource_detailsv2.is_all_brands and !@$scope.usersource_detailsv2.brands.length)
+        window.alert "Usersource needs to be linked to at least one Brand"
+        return false
+
       @startSpinner('saving_settings')
       if @presaveCallback
         @presaveCallback().then( =>
@@ -152,12 +184,21 @@ define ['Admin/Main/Ctrl/Base', 'DeskPRO/Util/Util', 'Admin/Usersources/Helper/U
         )
       )
 
+      if @usersourceType == 'user'
+        postData = {
+          brands: @$scope.usersource_detailsv2.brands
+          is_all_brands: @$scope.usersource_detailsv2.is_all_brands
+        }
+
+        @Api2.sendPutJson('/user_sources/' + @usersourceType + '/' + @getApp2Id(), postData)
+
 
 
     doSaveUsersource: ->
       postData = {
         title: @usersource.title,
         is_enabled: @usersource.is_enabled
+        options: @usersource.options
       }
 
       @Api.sendPostJson('/usersources/' + @usersourceType + '/' + @usersourceId, postData).then(
@@ -169,7 +210,19 @@ define ['Admin/Main/Ctrl/Base', 'DeskPRO/Util/Util', 'Admin/Usersources/Helper/U
           @Growl.error msg
       )
 
+      if @usersourceType == 'user'
+        postData = {
+          brands: @$scope.usersource_detailsv2.brands
+          is_all_brands: @$scope.usersource_detailsv2.is_all_brands
+        }
+
+        @Api2.sendPutJson('/user_sources/' + @usersourceType + '/' + @getApp2Id(), postData)
+
     saveUsersource: ->
+      if (!@$scope.usersource_detailsv2.is_all_brands and !@$scope.usersource_detailsv2.brands.length)
+        window.alert "Usersource needs to be linked to at least one Brand"
+        return false
+
       @startSpinner('saving_settings')
       @doSaveUsersource().finally => @stopSpinner('saving_settings')
 
@@ -202,7 +255,10 @@ define ['Admin/Main/Ctrl/Base', 'DeskPRO/Util/Util', 'Admin/Usersources/Helper/U
     ###
     # SHow delete modal
     ###
-    startDelete: ->
+    startDelete: ($event) ->
+      if $event
+        $event.preventDefault()
+
       doDelete = =>
         @Api.sendDelete('/apps/instances/' + @app.id).success( =>
 
@@ -237,6 +293,18 @@ define ['Admin/Main/Ctrl/Base', 'DeskPRO/Util/Util', 'Admin/Usersources/Helper/U
 
     listCtrl: ->
       @$scope.$parent?.ListCtrl || {refresh: =>}
+
+    handleBrand: (brandId, e) ->
+      index = @$scope.usersource_detailsv2.brands.indexOf brandId
+      if index == -1
+        @$scope.usersource_detailsv2.brands.unshift brandId
+      else
+        if (@$scope.usersource_detailsv2.brands.length > 1)
+          @$scope.usersource_detailsv2.brands.splice(index, 1)
+        else
+          alert "Usersource needs to be linked to at least one Brand"
+          $(e.target).prop("checked", true)
+          return true
 
 
 

@@ -1194,6 +1194,46 @@ $collection->create(
 );
 
 $collection->create(
+    'api_people_person_brands',
+    [
+        'path'         => '/people/{person_id}/brands',
+        'controller'   => 'LegacyApiBundle:Person:getPersonBrands',
+        'requirements' => ['person_id' => '\\d+'],
+        'methods'      => ['GET'],
+    ]
+);
+
+$collection->create(
+    'api_people_person_brands_post',
+    [
+        'path'         => '/people/{person_id}/brands',
+        'controller'   => 'LegacyApiBundle:Person:postPersonBrands',
+        'requirements' => ['person_id' => '\\d+'],
+        'methods'      => ['POST'],
+    ]
+);
+
+$collection->create(
+    'api_people_person_brand',
+    [
+        'path'         => '/people/{person_id}/brands/{brand_id}',
+        'controller'   => 'LegacyApiBundle:Person:getPersonBrand',
+        'requirements' => ['person_id' => '\\d+', 'brand_id' => '\\d+'],
+        'methods'      => ['GET'],
+    ]
+);
+
+$collection->create(
+    'api_people_person_group_delete',
+    [
+        'path'         => '/people/{person_id}/brands/{brand_id}',
+        'controller'   => 'LegacyApiBundle:Person:deletePersonBrand',
+        'requirements' => ['person_id' => '\\d+', 'brand_id' => '\\d+'],
+        'methods'      => ['DELETE'],
+    ]
+);
+
+$collection->create(
     'api_people_person_labels',
     [
         'path'         => '/people/{person_id}/labels',

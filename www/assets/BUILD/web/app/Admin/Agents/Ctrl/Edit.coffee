@@ -659,6 +659,9 @@ define [
 
       postData = @getFormData()
 
+      if window.AGENT_SAVE_FORM_DATA_FILTER
+        postData = window.AGENT_SAVE_FORM_DATA_FILTER(postData, @)
+
       if @agentId
         promise = @Api.sendPostJson("/agents/#{@agentId}", postData)
       else

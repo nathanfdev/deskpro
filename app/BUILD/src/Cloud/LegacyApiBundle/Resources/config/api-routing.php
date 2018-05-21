@@ -52,6 +52,12 @@ $collection->create('api_dpc_call_resetpass', [
 // Settings
 //#######################################################################################################################
 
+$collection->create('api_cloud_urlsettings_setup_custom', [
+    'path'       => '/settings/cloud/setup-custom-domain',
+    'controller' => 'CloudLegacyApiBundle:Settings:setupCustomDomain',
+    'methods'    => ['POST'],
+]);
+
 $collection->create('api_cloud_urlsettings', [
     'path'       => '/settings/cloud/url-settings',
     'controller' => 'CloudLegacyApiBundle:Settings:getUrlSettings',

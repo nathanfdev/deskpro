@@ -27,6 +27,7 @@ define ['DeskPRO/Util/Arrays',], (Arrays) -> [
     $scope.reports = []
     $scope.labels = []
     $scope.selectedLabels = 0
+    $scope.vars = {}
 
     $scope.groupParams = DashboardWidgetService.groupParams
 
@@ -118,10 +119,12 @@ define ['DeskPRO/Util/Arrays',], (Arrays) -> [
       else
         $scope.reportWidget     = report
         $scope.widget.widget_id = report.id
+        $scope.widget.variables = $scope.vars[report.id]
 
     $scope.chooseType = () ->
-      $modalInstance.close({reportWidget: $scope.reportWidget, report: $scope.report, widget: $scope.widget})
+      if $scope?.widget?.widget_id
+        $modalInstance.close({reportWidget: $scope.reportWidget, report: $scope.report, widget: $scope.widget})
 
-    $scope.changeWidgetParams = (params) ->
-      $scope.widget.variables = params
+    $scope.changeWidgetParams = (params, report) ->
+      $scope.vars[report.id] = params
 ]

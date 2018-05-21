@@ -76,6 +76,12 @@ define ['handlebars'], (Handlebars) ->
                 scope.noData = true
 
                 drawWidget response
+          else if DashboardWidgetService.widgetsResults and DashboardWidgetService.widgetsResults[scope.widgetId]
+            DashboardWidgetService.widgetsResults[scope.widgetId].promise.then (renderedResult) =>
+              scope.loaded = true
+              scope.noData = true
+              if renderedResult && (renderedResult.dataProvider || renderedResult.axes?[0]?.bands?)
+                drawWidget(renderedResult)
           else
             DashboardWidgetService
               .getWidget(scope.widgetId || 0)
@@ -94,9 +100,13 @@ define ['handlebars'], (Handlebars) ->
           , 1)
 
         doDrawWidget = (widget) ->
-          if interval
-            clearInterval(interval)
           drawn = true
+          clearInterval(interval) if interval
+          if chart
+            chart.clear()
+            chart.destroy()
+            chart = null
+
           try
             options = if scope.options then JSON.parse(scope.options) else {}
           catch e
@@ -144,12 +154,26 @@ define ['handlebars'], (Handlebars) ->
               return g
             )
 
-          console.log(widget)
-
-          if chart and widget.dataProvider
-            chart.dataProvider = widget.dataProvider
+          if widget.dataProvider
+            mergedData = widget
           else
-            chart = new AmCharts.makeChart("ch#{scope.widgetId}", lodashMerge(widget, options));
+            mergedData = lodashMerge(widget, options)
+            if options.allGraphs and widget.graphs
+              widget.graphs = widget.graphs.map((g) ->
+                g = lodashMerge(g, options.allGraphs)
+                return g
+              )
+            if options.allValueAxis and widget.valueAxis
+              widget.valueAxis = widget.valueAxis.map((va) ->
+                va = lodashMerge(va, options.allValueAxis)
+                return va
+              )
+
+          if window.DP_DEBUG
+            console.log("--- WidgetID: #{scope.widgetId} ---")
+            console.log(mergedData)
+
+          chart = new AmCharts.makeChart("ch#{scope.widgetId}", mergedData);
 
           chartDiv.height(chartParent.height() - chartHeader.outerHeight())
           chart.validateData()

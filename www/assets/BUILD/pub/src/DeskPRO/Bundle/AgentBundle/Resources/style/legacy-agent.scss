@@ -592,7 +592,7 @@ i.ui.icon {
 }
 
 $folded-width: 52px;
-$expanded-width: 150px;
+$expanded-width: 190px;
 $transition-open-time: 0.2s;
 $transition-open-delay: 2s;
 $transition-delayed-delay: 2s;
@@ -632,6 +632,9 @@ $transition-close-delay: 0.05s;
         transition: fill $transition-close-time;
         transition-delay: $transition-close-delay;
       }
+    }
+    .logo-text-string {
+      display: none;
     }
     .logo-text svg {
       height: 30px;

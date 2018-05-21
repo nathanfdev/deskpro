@@ -5,9 +5,9 @@ define ['Admin/Usersources/Ctrl/EditInstance', 'DeskPRO/Util/Util']
     @CTRL_AS   = 'Ctrl'
     @DEPS      = ['$http', 'dpTemplateManager']
 
-    getInstanceId: -> 'deskpro'
-
+    getApp2Id: -> @instanceId
     initialLoad: ->
+      @is_local = true
       p = super()
       @$q.all([p, @loadPasswordSettings(), @loadRegSettings()]).then( =>
         @usersource.is_disabled = !@usersource.is_enabled
@@ -15,7 +15,7 @@ define ['Admin/Usersources/Ctrl/EditInstance', 'DeskPRO/Util/Util']
 
     doSaveUsersource: ->
       @usersource.is_enabled = !@usersource.is_disabled;
-      if @$scope.settings.reg_enabled
+      if @usersource.options.reg_enabled
         @usersource.is_enabled = true
       p = super()
       @$q.all([p, @savePolicySettings(), @saveRegSettings()])
@@ -103,11 +103,43 @@ define ['Admin/Usersources/Ctrl/EditInstance', 'DeskPRO/Util/Util']
         rate_limit_context: 'user'
       }
 
-      if ["1", 1, true, "true"].indexOf(postData.registration_settings.reg_enabled) != -1
-        postData.registration_settings.reg_enabled = true
-      else
-        postData.registration_settings.reg_enabled = false
-
       @Api.sendPostJson('/registration_settings', postData)
+
+    ###
+    # SHow delete modal
+    ###
+    startDelete: ($event) ->
+      if $event
+        $event.preventDefault()
+
+      doDelete = =>
+        @Api2.sendDelete('user_sources/'+ @usersourceType + '/' + @getApp2Id()).success( =>
+
+          # If we are viewing with the parent list, we need to remove this
+          # app from the list
+          @listCtrl().refresh()
+
+          # close this view
+          @$state.go('^')
+        )
+
+      @$modal.open({
+        templateUrl: @getTemplatePath('Usersources/deskpro-delete-modal.html'),
+        controller: ['app', '$scope', '$modalInstance', (app, $scope, $modalInstance) ->
+          $scope.app = app
+          $scope.dismiss = ->
+            $modalInstance.close()
+
+          $scope.confirm = ->
+            $scope.is_loading = true
+            doDelete().then(->
+              $modalInstance.close()
+            )
+        ],
+        resolve: {
+          app: =>
+            return @app
+        }
+      })
 
   Admin_Usersources_Ctrl_EditDeskproInstance.EXPORT_CTRL()

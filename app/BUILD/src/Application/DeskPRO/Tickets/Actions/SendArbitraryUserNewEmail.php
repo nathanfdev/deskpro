@@ -83,7 +83,7 @@ class SendArbitraryUserNewEmail extends AbstractEmailAction
             }
         }
 
-        $regClosed = !$this->getContainer()->getSetting('core.reg_enabled');
+        $regClosed = !$this->getContainer()->get('dp_authentication_manager.user')->isRegistrationFormVisible();
         foreach ($this->getActionOption('emails') as $email) {
             $person = $this->getContainer()->getEm()->getRepository(Person::class)->findOneByEmail($email);
             if ($person) {

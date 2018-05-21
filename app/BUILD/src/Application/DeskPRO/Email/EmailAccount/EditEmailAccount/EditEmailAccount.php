@@ -13,6 +13,7 @@ use Application\DeskPRO\Entity\TicketTrigger;
 use Application\DeskPRO\Tickets\Triggers\TriggerActions;
 use Application\DeskPRO\Tickets\Triggers\TriggerTerms;
 use DeskPRO\Component\Util\IpUtils;
+use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\EntityManager;
 use Orb\Validator\StringEmail;
 
@@ -42,6 +43,13 @@ class EditEmailAccount
      * @var string
      */
     public $incoming_type;
+
+    /**
+     * @var bool
+     */
+    public $is_all_brands;
+
+    public $brands;
 
     /**
      * @var \Application\DeskPRO\Email\EmailAccount\IncomingAccount\GmailConfig
@@ -104,6 +112,8 @@ class EditEmailAccount
         $this->is_enabled      = $account->is_enabled;
         $this->address         = $account->address;
         $this->account_type    = $account->account_type;
+        $this->is_all_brands   = $account->is_all_brands;
+        $this->brands          = $account->brands;
         $this->other_addresses = implode(', ', $account->other_addresses ?: []);
         $this->incoming_type   = $account->incoming_account ? $account->incoming_account->getType() : '';
         $this->outgoing_type   = $account->outgoing_account ? $account->outgoing_account->getType() : '';
@@ -117,9 +127,31 @@ class EditEmailAccount
      */
     public function apply($save_incoming = true, $save_outgoing = true)
     {
-        $this->account->address      = strtolower($this->address);
-        $this->account->is_enabled   = $this->is_enabled;
-        $this->account->account_type = strtolower($this->account_type);
+        $this->account->address       = strtolower($this->address);
+        $this->account->is_enabled    = $this->is_enabled;
+        $this->account->account_type  = strtolower($this->account_type);
+        $this->account->is_all_brands = (bool) $this->is_all_brands;
+
+        if ($this->account->is_all_brands) {
+            $this->account->clearBrands();
+        } else {
+            $brands = $this->brands;
+            if (!$brands) {
+                $brands = [];
+            } elseif ($brands instanceof ArrayCollection) {
+                $brands = $brands->toArray();
+            }
+
+            foreach ($this->account->brands as $accountBrand) {
+                if (false === in_array($accountBrand, $brands, true)) {
+                    $this->account->removeBrand($accountBrand);
+                }
+            }
+
+            foreach ($brands as $brand) {
+                $this->account->addBrand($brand);
+            }
+        }
 
         if ($this->other_addresses) {
             $emails_arr = [];

@@ -24,7 +24,7 @@ class SendUserEmail extends AbstractEmailAction
     protected function getOptionsDef()
     {
         $options = new CheckedOptionsArray();
-        $options->addValidNames('template', 'from_name', 'from_account', 'do_cc_users', 'headers');
+        $options->addValidNames('template', 'from_name', 'from_account', 'do_cc_users', 'do_cc_users_specify', 'headers');
 
         return $options;
     }
@@ -65,7 +65,7 @@ class SendUserEmail extends AbstractEmailAction
 
         $emailBuilder = TicketEmailBuilder::createFromContainer($this->getContainer())
             ->setTicket($ticket)
-            ->setToPerson($ticket->person)
+            ->setToPerson($ticket->getPerson())
             ->setUserMode()
             ->setTemplateName($template)
             ->setFromName($this->renderFromName($this->getActionOption('from_name'), $ticket, $context, 'user'))
@@ -93,15 +93,15 @@ class SendUserEmail extends AbstractEmailAction
                 }
             }
 
-            if ($ticket->person->disable_autoresponses) {
+            if ($ticket->getPerson()->disable_autoresponses) {
                 $context->getLogger()->info('Skipping email because user is marked as an auto-responder');
 
                 return;
             }
 
             foreach ($ticket->getStateChangeRecorder()->getNewUserReplies() as $m) {
-                if ($m->person->disable_autoresponses) {
-                    $context->getLogger()->info(sprintf('Skipping email because user #%d %s on message #%d is an auto-responder', $m->person->id, $m->person->getDisplayContact(), $m->id));
+                if ($m->getPerson()->disable_autoresponses) {
+                    $context->getLogger()->info(sprintf('Skipping email because user #%d %s on message #%d is an auto-responder', $m->getPerson()->getId(), $m->getPerson()->getDisplayContact(), $m->getId()));
 
                     return;
                 }

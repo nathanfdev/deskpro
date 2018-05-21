@@ -25,8 +25,10 @@ define ['DeskPRO/Util/Arrays'], (Arrays) -> [
       variables: []
     }
     $scope.widgets = []
+    $scope.groupParams = DashboardWidgetService.groupParams
 
     report_id = parseInt($stateParams.report_id)
+    $scope.report_id = parseInt($stateParams.report_id)
 
     $scope.gridsterOptions =
       margins: [13, 13],
@@ -50,11 +52,10 @@ define ['DeskPRO/Util/Arrays'], (Arrays) -> [
     load_promises = []
     load_promises.push DashboardsInfo.getReportDetail(report_id).then((loadedReport) ->
       $scope.report = loadedReport
+      $scope.report.variables = loadedReport.variables
 
       DashboardsInfo.getDashboardDetail(loadedReport.dashboard).then( (db) ->
         $scope.dashboard = db
-        $scope.groupParams = DashboardWidgetService.groupParams
-        $scope.loaded = true
       )
     )
 
@@ -72,12 +73,11 @@ define ['DeskPRO/Util/Arrays'], (Arrays) -> [
       agents.map((agent) => $scope.agents[agent.id] = agent)
     )
 
-    $q.all(load_promises).then(-> $scope.updateReportVariables())
+    $q.all(load_promises).then(-> $scope.updateReportVariables(false, () => $scope.loaded = true))
 
     # just reload info when its been changed
     $scope.$watch('dashboard.version_id + \'.\' + dashboard.reports_version_id', (n, o) ->
       return if not o
-
       reloadPromises = []
       if $scope.report.dashboard
         reloadPromises.push DashboardsInfo.getDashboardDetail($scope.report.dashboard).then( (db) ->
@@ -86,6 +86,7 @@ define ['DeskPRO/Util/Arrays'], (Arrays) -> [
 
       reloadPromises.push DashboardsInfo.getReportDetail(report_id).then((loadedReport) ->
         $scope.report = loadedReport
+        $scope.report.variables = loadedReport.variables
         $scope.updateReportVariables()
       )
 
@@ -113,16 +114,33 @@ define ['DeskPRO/Util/Arrays'], (Arrays) -> [
     # Staff for removing widget from dashboard. Works if and only if the dashboard.layoutEditing is switched on
     ###
     $scope.removeWidget = (widget) ->
-      if $scope.layoutEditing
+      removeWidget = () ->
         index = DashboardWidgetService.getIndexById $scope.widgets, widget.id
         DashboardWidgetService
-        .removeWidget(widget)
-        .then () ->
-          $scope.widgets.splice(index, 1)
-          DashboardsInfo.getReportDetail($scope.report.id, true).then((loadedReport) ->
-            $scope.report.variables = loadedReport.variables
-            $scope.updateReportVariables()
-          )
+          .removeWidget(widget)
+          .then () ->
+            $scope.widgets.splice(index, 1)
+            DashboardsInfo.getReportDetail($scope.report.id, true).then((loadedReport) ->
+              $scope.report.variables = loadedReport.variables
+              $scope.updateReportVariables(true)
+            )
+
+      if $scope.layoutEditing
+        $modal.open({
+          templateUrl: "ReportsInterfaceBundle:Index:modal-confirm.html",
+          controller: ['$scope', '$modalInstance', ($scope, $modalInstance) ->
+
+            $scope.title   = 'Confirm discard'
+            $scope.message = 'Are you sure you want to delete this widget?'
+
+            $scope.dismiss = ->
+              $modalInstance.dismiss()
+
+            $scope.confirm = ->
+              removeWidget()
+              $modalInstance.dismiss()
+          ]
+        })
 
     $scope.download = (widget) ->
       window.open($http.formatApi2Url('/dashboard_report_widgets/' + widget.id + '/download/csv'))
@@ -197,24 +215,32 @@ define ['DeskPRO/Util/Arrays'], (Arrays) -> [
 
 
     $scope.changeReportLevelVar = () ->
+      $scope.loaded = false
+
       DashboardService.saveReportVars($scope.report).then( () ->
+        reloadPromises = []
         $scope.widgets = [];
-        DashboardsInfo.getReportDetail($scope.report.id, true).then((loadedReport) ->
+        reloadPromises.push DashboardsInfo.getReportDetail($scope.report.id, true).then((loadedReport) ->
           $scope.report = loadedReport
         )
-        DashboardWidgetService.getWidgets(report_id).then((widgets) ->
-          $scope.widgets = widgets
-          $scope.updateReportVariables()
+
+        reloadPromises.push DashboardWidgetService.getWidgets(report_id).then((widgets) ->
+            $scope.widgets = widgets
+          )
+
+        $q.all(reloadPromises).then(->
+          $scope.updateReportVariables(false, () => $scope.loaded = true)
         )
-        $scope.updateReportVariables()
       )
 
     $scope.canViewAllAgents = () ->
       permission = $scope.dashboard.permissions.filter((permission) => permission.person == parseInt(window.DP_PERSON_ID))[0]
       return permission and permission.view_all
 
-    $scope.updateReportVariables = () ->
-      if !$scope.report || !$scope.widgets || !$scope.dashboard || !$scope.me
+    $scope.updateReportVariables = (forceUpdate = false, cb = null) ->
+
+      if !$scope.report || (!$scope.widgets.length && !forceUpdate)|| !$scope.dashboard || !$scope.me || !$scope.groupParams
+        if cb then cb()
         return
 
       vars = []
@@ -225,8 +251,11 @@ define ['DeskPRO/Util/Arrays'], (Arrays) -> [
 
           if variable.value == 'from_report_value'
             cloneVar = $.extend({}, variable);
-            cloneVar.value = ''
-            $scope.report.variables.map((reportVar) ->
+            if variable.type == 'dates' && $scope.groupParams[variable.type]
+              cloneVar.value = $scope.groupParams[variable.type][Object.keys($scope.groupParams[variable.type])[0]][0]
+            else if $scope.groupParams[variable.type]
+              cloneVar.value = cloneVar.value = $scope.groupParams[variable.type][variable.field_type][Object.keys($scope.groupParams[variable.type])[0]][0]
+            angular.forEach($scope.report.variables, (reportVar) ->
               if reportVar.name == cloneVar.name
                 cloneVar.value = reportVar.value
             )
@@ -244,4 +273,14 @@ define ['DeskPRO/Util/Arrays'], (Arrays) -> [
       )
 
       $scope.report.variables = vars
+
+      if cb then cb()
+
+    $scope.canEdit = () ->
+      return false if !$scope.dashboard || !$scope.me.person
+      if $scope.me.person.can_admin
+        return true
+      for permission in $scope.dashboard.permissions
+        return true if (permission.person == $scope.me.person.id || (!permission.person && !permission.team && !permission.department)) && permission.name == 'full'
+      return false
   ]

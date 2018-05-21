@@ -2,6 +2,7 @@ define ['Admin/Main/Ctrl/Base'], (Admin_Ctrl_Base) ->
   class Admin_Portal_Ctrl_Setup extends Admin_Ctrl_Base
     @CTRL_ID = 'Admin_Portal_Ctrl_Setup'
     @CTRL_AS = 'Ctrl'
+    @DEPS = ['$timeout']
 
     init: ->
       @settings = {}
@@ -61,11 +62,102 @@ define ['Admin/Main/Ctrl/Base'], (Admin_Ctrl_Base) ->
 
       @$q.all(promises)
 
-    saveSettings: ->
+    cloudSetupHost: ->
+
+      @$scope.ma_error_message = null
+      @$scope.ma_pending_message = null
+
+      d = @$q.defer()
+
+      if !window.DP_IS_CLOUD
+        d.resolve()
+        return d.promise
+
+      input = @settings.deskpro_url
+
+      parser = document.createElement('a')
+      parser.href = input
+      domain = parser.hostname
+
+      if !domain
+        @Growl.error "You must specify a name and a url"
+        $('#helpdesk_name').focus()
+        r.reject()
+        return
+
+      @settings.deskpro_url = 'https://' + domain + '/'
+
+      if @settings.orig_deskpro_url == @settings.deskpro_url
+        d.resolve()
+        return d.promise
+
+      @$scope.ma_pending_message = 'Checking your custom domain'
+
+      @setupCustomDomain(domain).then(=>
+        d.resolve()
+      , =>
+        d.reject()
+      )
+
+      return d.promise
+
+    setupCustomDomain: (domain) ->
+      d = @$q.defer()
+
+      @Api.sendPostJson('/settings/cloud/setup-custom-domain?allowProvider', { domain: domain }).then( (res) =>
+        console.log(res)
+
+        if res.data.error
+          @$scope.ma_pending_message = null
+          @$scope.ma_error_message = res.data.message
+          d.reject()
+        else if !res.data.error && !res.data.domain_id
+          @$scope.ma_error_message = null
+          @$scope.ma_pending_message = res.data.message
+          @$timeout(=>
+            @setupCustomDomain(domain).then(=>
+              d.resolve()
+            , =>
+              d.reject()
+            )
+          , 3000)
+        else
+          @$scope.ma_error_message = null
+          @$scope.ma_pending_message = 'Your custom domain has been configured. It might take a few minutes for your domain to become fully functional.'
+          d.resolve()
+      , =>
+        @$scope.form_error = 'server_error'
+        d.reject()
+      )
+
+      return d.promise
+
+    saveSettings: (skipCloudCheck) ->
+      if !@settings.deskpro_url.match(/^https?:\/\//i)
+        @settings.deskpro_url = 'https://' + @settings.deskpro_url
+
       @startSpinner()
-      @portalSettings.updateSettings(@settings).then(=>
-        @stopSpinner()
-        @$scope.$emit 'dp-update-brands'
+
+      if window.DP_IS_CLOUD
+        if skipCloudCheck
+          d = @$q.defer()
+          d.resolve()
+          checkP = d.promise
+        else
+          checkP = @cloudSetupHost()
+      else
+        d = @$q.defer()
+        d.resolve()
+        checkP = d.promise
+
+      checkP.then(=>
+        @portalSettings.updateSettings(@settings).then(=>
+          @originalUrl == @settings.deskpro_url
+          @stopSpinner()
+          @$scope.$emit 'dp-update-brands'
+        , =>
+          @stopSpinner()
+        )
       , =>
         @stopSpinner()
       )
@@ -74,33 +166,49 @@ define ['Admin/Main/Ctrl/Base'], (Admin_Ctrl_Base) ->
       if (!@settings.deskpro_name || !@settings.deskpro_url)
         @Growl.error "You must specify a name and a url"
         $('#helpdesk_name').focus()
+        @startSpinner()
         return false
+
+      if !@settings.deskpro_url.match(/^https?:\/\//i)
+        @settings.deskpro_url = 'https://' + @settings.deskpro_url
+
       brand = {
         name: @settings.deskpro_name,
         url: @settings.deskpro_url
       }
-      @Api2.sendPostJson('/brands/check_url', {url: @settings.deskpro_url})
-      .then(
-        (res) =>
-          if res.data.data.free
-            @Api2.sendPostJson('brands', brand).then (res) =>
-              @Growl.success "Brand created"
-              @$scope.brand_id = res.data.data.id
-              @portalSettings.setBrandId(res.data.data.id)
-              @brandId = res.data.data.id
-              @saveSettings().then(=>
-                @$state.go 'portal.setup', {brandId: @brandId}
-              )
-            , (res) =>
-              @Growl.error res.data.message
-          else if res.data.data.reason
-            @Growl.error res.data.data.reason
-            $('#helpdesk_url').focus()
-          else
-            @Growl.error "Each brand need to have a different url"
-            $('#helpdesk_url').focus()
-        =>
-          @Growl.error "We can't check this url. Try another one or contact your system administrator."
+
+      @startSpinner()
+
+      if window.DP_IS_CLOUD
+        checkP = @cloudSetupHost().then()
+      else
+        checkP = @Api2.sendPostJson('/brands/check_url', {url: @settings.deskpro_url})
+
+      checkP.then( (res) =>
+        if !res || res.data.data.free
+          @Api2.sendPostJson('brands', brand).then (res) =>
+            @Growl.success "Brand created"
+            @$scope.brand_id = res.data.data.id
+            @portalSettings.setBrandId(res.data.data.id)
+            @brandId = res.data.data.id
+            @saveSettings(true).then(=>
+              @stopSpinner()
+              @$state.go 'portal.setup', {brandId: @brandId}
+            )
+          , (res) =>
+            @Growl.error res.data.message
+            @stopSpinner()
+        else if res.data.data.reason
+          @Growl.error res.data.data.reason
+          $('#helpdesk_url').focus()
+          @stopSpinner()
+        else
+          @Growl.error "Each brand need to have a different url"
+          $('#helpdesk_url').focus()
+          @stopSpinner()
+      , =>
+        @stopSpinner()
+        @Growl.error "We can't check this url. Try another one or contact your system administrator."
       )
 
     deleteBrand: ->

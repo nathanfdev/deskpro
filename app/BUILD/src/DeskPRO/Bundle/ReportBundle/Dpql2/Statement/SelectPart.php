@@ -1086,6 +1086,24 @@ class SelectPart
     }
 
     /**
+     * @return string
+     */
+    public function getUserTimezone()
+    {
+        $context = $this->contextStorage->getContext();
+        if (!$context) {
+            return 'UTC';
+        }
+
+        $user = $context->getPerson();
+        if (!$user instanceof Person) {
+            return 'UTC';
+        }
+
+        return $user->getTimezone();
+    }
+
+    /**
      * Quotes a string as a DPQL literal.
      *
      * @param string $string

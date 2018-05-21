@@ -1,30 +1,89 @@
-<div class="app-nav-wrapper">
-    <header class="app-nav-header">
-        <h1><i class="fa fa-bar-chart"></i> Reports</h1>
-    </header>
-    <section class="nav-section">
-        <h1 class="nav-title">Dashboards</h1>
-        <ul class="nav-link-list">
-            <li ng-if="hasAccessToBuiltIn" class="type-heading">Built-in dashboards</li>
-            <li ng-repeat="dashboard in (dashboards|filter:defaultDashboardsFilter) track by dashboard.id">
-                <a ui-sref="reports.dashboards.view.index({ dashboard_id: dashboard.id })">
-                    {{ ng_var('dashboard.title') }}
-                </a>
-            </li>
-            <li ng-if="hasAccessToCustom" class="type-heading">Custom dashboards</li>
-            <li ng-repeat="dashboard in (dashboards|filter:customDashboardsFilter) track by dashboard.id">
-                <a ui-sref="reports.dashboards.view.index({ dashboard_id: dashboard.id })">
-                    {{ ng_var('dashboard.title') }}
-                </a>
-            </li>
-            <li ng-if="canUseReports()" class="type-heading">
-                <a ng-click="openCreate()" class='link-pointer' id="dp-add-dashboard-opener">[<i class="fa fa-plus"></i>Add]</a>
-            </li>
-        </ul>
-    </section>
-    <a ng-if="canUseReports()" class="nav-section nav-title" ui-sref="reports.stats">Stat Builder</a>
-    <a ng-if="canUseReports()" class="nav-section nav-title" ui-sref="reports.agent_activity">Agent Activity</a>
-    <a ng-if="canUseReports()" class="nav-section nav-title" ui-sref="reports.agent_hours">Agent Hours</a>
-    <a ng-if="canUseReports()" class="nav-section nav-title" ui-sref="reports.ticket_satisfaction">Ticket Satisfaction</a>
+<div id="dp_center" style="left: 52px;">
+    <div id="dp_source" style="left: 0px;">
+        <section id="tickets_outline" class="on"><div class="source-pane-wrapper"><div class="source-pane-instance ">
+                    <div id="react_dp_agent_filters">
+                        <div class="dp-column" role="tree" style="width: 213px;">
+                            <h1 class="dp-heading"><i class="dp-icon fa fa-bar-chart"></i> Reports</h1>
+                            <ul class="dp-list dp-column-drawer-list">
+                                <li class="dp-list__element dp-column-drawer">
+                                    <h1 class="dp-heading">Dashboards</h1>
+                                    <div class="dp-column-drawer__body dp-column-drawer__body--opened">
+                                        <ul class="dp-list dp-drawer-item-list">
+                                            <li
+                                                ng-if="hasAccessToBuiltIn"
+                                                class="dp-list__element dp-drawer-item type-heading"
+                                            >
+                                                <span class="dp-drawer-item__pos-middle">Built-in dashboards</span>
+                                            </li>
+                                            <li class="dp-list__element dp-drawer-item"
+                                                ng-repeat="dashboard in (dashboards|filter:defaultDashboardsFilter) track by dashboard.id"
+                                                ui-sref="reports.dashboards.view({ dashboard_id: dashboard.id })"
+                                                ui-sref-active="dp-drawer-item--selected"
+                                            >
+                                                <span class="dp-drawer-item__pos-middle">{{ ng_var('dashboard.title') }}</span>
+                                            </li>
+                                            <li
+                                                class="dp-list__element dp-drawer-item type-heading"
+                                                ng-if="hasAccessToCustom">
+                                                Custom dashboards
+                                            </li>
+                                            <li
+                                                class="dp-list__element dp-drawer-item"
+                                                ng-repeat="dashboard in (dashboards|filter:customDashboardsFilter) track by dashboard.id"
+                                                ui-sref="reports.dashboards.view({ dashboard_id: dashboard.id })"
+                                                ui-sref-active="dp-drawer-item--selected"
+                                            >
+                                                <span class="dp-drawer-item__pos-middle">{{ ng_var('dashboard.title') }}</span>
+                                            </li>
+                                            <li
+                                                ng-if="canUseReports()"
+                                                class="dp-list__element dp-drawer-item" style="margin-top: 10px;">
+                                                <h1 class="dp-heading" ng-click="openCreate()" id="dp-add-dashboard-opener">
+                                                    [<i style="margin-right: 5px" class="fa fa-plus"></i>ADD]
+                                                </h1>
+                                            </li>
+                                        </ul>
+                                    </div>
+                                </li>
+                                <li
+                                    class="dp-list__element dp-column-drawer link-pointer dp-drawer-item "
+                                    ng-if="canUseReports()"
+                                    ui-sref="reports.stats"
+                                    ui-sref-active="dp-drawer-item--selected"
+                                >
+                                    <h1 class="dp-heading">Stat Builder</h1>
+                                </li>
+                                <li
+                                        class="dp-list__element dp-column-drawer link-pointer dp-drawer-item "
+                                        ng-if="canUseReports()"
+                                        ui-sref="reports.agent_activity"
+                                        ui-sref-active="dp-drawer-item--selected"
+                                >
+                                    <h1 class="dp-heading">Agent Activity</h1>
+                                </li>
+                                <li
+                                        class="dp-list__element dp-column-drawer link-pointer dp-drawer-item "
+                                        ng-if="canUseReports()"
+                                        ui-sref="reports.agent_hours"
+                                        ui-sref-active="dp-drawer-item--selected"
+                                >
+                                    <h1 class="dp-heading">Agent Hours</h1>
+                                </li>
+                                <li
+                                        class="dp-list__element dp-column-drawer link-pointer dp-drawer-item "
+                                        ng-if="canUseReports()"
+                                        ui-sref="reports.ticket_satisfaction"
+                                        ui-sref-active="dp-drawer-item--selected"
+                                >
+                                    <h1 class="dp-heading">Ticket Satisfaction</h1>
+                                </li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </div>
 </div>
+
 <div class="app-container report-wrapper" id="dp_app_container" ui-view></div>

@@ -11,9 +11,10 @@ export class OmniSearchWidget extends PageWidget {
     this.$rElement = $('<div class="dp-react-widget"></div>').appendTo(this.$element);
 
     ReactDOM.render(React.createElement(OmniSearch, {
-      $input:  this.$element.find('input'),
-      $close:  this.$element.find('.search-clear'),
-      $button: this.$element.find('button')
+      $input:            this.$element.find('input[type=text]'),
+      $inputSearchLogId: this.$element.find('input[type=hidden]'),
+      $close:            this.$element.find('.search-clear'),
+      $button:           this.$element.find('button')
     }), this.$rElement.get(0));
 
     const $input = this.$element.find('input.omnisearch');
@@ -25,6 +26,10 @@ export class OmniSearchWidget extends PageWidget {
         $input.focus();
         return false;
       }
+      const $form = $button.closest('form')[0];
+      const action = $form.action;
+      $form.action = `${action}?q=${$input.val()}`;
+
       return true;
     });
 

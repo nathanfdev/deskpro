@@ -92,12 +92,8 @@
 			bottom: 0;
 			left: 0;
 			z-index: 1000000000;
-
-			background: #91ada1 url('{{ asset('images') }}/login/background.jpg') repeat center top fixed;
-			-webkit-background-size: cover;
-			-moz-background-size: cover;
-			-o-background-size: cover;
-			background-size: cover;
+			background: #3297CE;
+			background-image: radial-gradient(circle, #3297ce, #2d88be, #2779ae, #226a9e, #1c5c8e);
 			text-align: center;
 		}
 
@@ -147,7 +143,13 @@
 			cursor: text;
 		}
 	</style>
-	<script type="text/javascript" src="{{ asset('vendor/html5shiv.min.js') }}"></script>
+    <script type="text/javascript" src="{{ asset('vendor/html5shiv.min.js') }}"></script>
+    {% if app.isDebug() and (has_raw_assets is not defined or (has_raw_assets is defined and has_raw_assets)) %}
+		{{ dp_asset_html('reports_interface_css1') }}
+		<script type="text/javascript" src="{{ asset('vendor/less/less.min.js') }}"></script>
+    {% else %}
+        {{ dp_asset_html('reports_interface_css1') }}
+    {% endif %}
 </head>
 <body>
 

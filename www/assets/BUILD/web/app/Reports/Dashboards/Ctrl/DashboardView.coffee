@@ -131,6 +131,8 @@ define ['DeskPRO/Util/Arrays'], (Arrays) -> [
 
     $scope.canEdit = () ->
       return false if !$scope.dashboard || !$scope.me.person
+      if $scope.me.person.can_admin
+        return true
       for permission in $scope.dashboard.permissions
         return true if (permission.person == $scope.me.person.id || (!permission.person && !permission.team && !permission.department)) && permission.name == 'full'
       return false

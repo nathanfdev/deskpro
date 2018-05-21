@@ -74,7 +74,7 @@ class BugsnagJsListener implements EventSubscriberInterface
         if (isset($settings['app_version']) && $settings['app_version']) {
             $data['appversion'] = $settings['app_version'];
         } else {
-            $data['appversion'] = $this->env->getVersionName() ?: $this->env->getBuildId() ?: 'DEV';
+            $data['appversion'] = $this->env->getVersionName().'.'.$this->env->getBuildId() ?: $this->env->getBuildId() ?: 'DEV';
         }
 
         $strings = [];

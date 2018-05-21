@@ -10,6 +10,7 @@ use Application\DeskPRO\App;
 use Application\DeskPRO\Email\EmailAccount\EmailAccountManager;
 use Application\EmailBundle\SourceMapper\SourceMapperInterface;
 use Application\EmailBundle\SwiftMailer\Message\MessageOptionsInterface;
+use DeskPRO\Bundle\PortalBundle\Brand\BrandStack;
 use Orb\Util\Arrays;
 use Orb\Validator\StringEmail;
 use Psr\Log\LoggerInterface;
@@ -42,16 +43,22 @@ class DeskproTransport implements Swift_Transport, StorageTransportInterface
     private $logger = null;
 
     /**
+     * @var BrandStack
+     */
+    private $brandStack;
+
+    /**
      * @param SourceMapperInterface        $source_mapper
      * @param EmailAccountManager          $email_accounts
      * @param Swift_Events_EventDispatcher $event_dispatcher
      * @param LoggerInterface              $logger
      */
-    public function __construct(SourceMapperInterface $source_mapper, EmailAccountManager $email_accounts, Swift_Events_EventDispatcher $event_dispatcher, LoggerInterface $logger = null)
+    public function __construct(SourceMapperInterface $source_mapper, EmailAccountManager $email_accounts, Swift_Events_EventDispatcher $event_dispatcher, BrandStack $brandStack, LoggerInterface $logger = null)
     {
         $this->event_dispatcher = $event_dispatcher;
         $this->email_accounts   = $email_accounts;
         $this->source_mapper    = $source_mapper;
+        $this->brandStack       = $brandStack;
         $this->logger           = $logger ?: new NullLogger();
     }
 
@@ -71,7 +78,7 @@ class DeskproTransport implements Swift_Transport, StorageTransportInterface
             $this->logger->debug('[Before processing] From is empty');
         }
 
-        $acc        = $this->email_accounts->findAccountForSwiftmailerMessage($message);
+        $acc        = $this->email_accounts->findAccountForSwiftmailerMessage($message, $this->brandStack->getActive()->getBrand());
         $from_name  = Arrays::getFirstItem($message->getFrom() ?: []) ?: App::getSetting('core.site_name');
         $from_email = $acc->getUseEmailAddress();
 

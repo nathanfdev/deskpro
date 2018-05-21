@@ -297,7 +297,7 @@ class Parser //line 102 "Parser.php"
 **                          shifting non-terminals after a reduce.
 **  self::$yy_default       Default action for each state.
 */
-    const YY_SZ_ACTTAB   = 327;
+    const YY_SZ_ACTTAB       = 327;
     public static $yy_action = [
  /*     0 */    26,   26,   74,   18,   18,   18,   18,   18,   18,   41,
  /*    10 */    19,   25,    4,    4,   17,   17,   26,   26,   74,   18,
@@ -1637,7 +1637,7 @@ class Parser //line 102 "Parser.php"
     public function yy_r55()
     {
         // this line should be = @$this->yystack[$this->yyidx + -1]->minor, but due to a parser generator bug, doesn't work.
-    $token      = $this->yystack[$this->yyidx + -1]->major;
+    $token          = $this->yystack[$this->yyidx + -1]->major;
         $expression = $this->yystack[$this->yyidx + 0]->minor;
 
         if ($expression[0] == 'interval') {
@@ -1919,7 +1919,7 @@ class Parser //line 102 "Parser.php"
     {
         //line 5 "Parser.y"
 
-    throw new DpqlException("Error parsing DPQL statement at line $this->line (got $TOKEN)");
+    throw new DpqlParseException($this->line, $TOKEN, "Error parsing DPQL statement at line $this->line (got $TOKEN)");
 //line 1841 "Parser.php"
     }
 

@@ -16,7 +16,7 @@ FROM tickets
 DPQL
             ,
             <<<'SQL'
-SELECT `tickets`.`urgency`, MONTH(`tickets`.`date_created`), 'urgency', `tickets`.`subject` 
+SELECT /*+ MAX_EXECUTION_TIME(30000) */ `tickets`.`urgency`, MONTH(`tickets`.`date_created`), 'urgency', `tickets`.`subject` 
 FROM `tickets` 
 LIMIT 2500
 SQL
@@ -32,7 +32,7 @@ FROM tickets
 DPQL
             ,
             <<<'SQL'
-SELECT `tickets`.`subject`
+SELECT /*+ MAX_EXECUTION_TIME(30000) */ `tickets`.`subject`
 FROM `tickets`
 LIMIT 2500
 SQL
@@ -48,7 +48,7 @@ FROM tickets
 DPQL
             ,
             <<<'SQL'
-SELECT COUNT(*)
+SELECT /*+ MAX_EXECUTION_TIME(30000) */ COUNT(*)
 FROM `tickets`
 LIMIT 2500
 SQL
@@ -64,7 +64,7 @@ FROM tickets
 DPQL
             ,
             <<<'SQL'
-SELECT COUNT(DISTINCT `tickets`.`subject`)
+SELECT /*+ MAX_EXECUTION_TIME(30000) */ COUNT(DISTINCT `tickets`.`subject`)
 FROM `tickets`
 LIMIT 2500
 SQL
@@ -80,7 +80,7 @@ FROM tickets
 DPQL
             ,
             <<<'SQL'
-SELECT DATE(UTC_TIMESTAMP())
+SELECT /*+ MAX_EXECUTION_TIME(30000) */ DATE(UTC_TIMESTAMP())
 FROM `tickets`
 LIMIT 2500
 SQL
@@ -96,7 +96,7 @@ FROM tickets
 DPQL
             ,
             <<<'SQL'
-SELECT TIME(UTC_TIMESTAMP())
+SELECT /*+ MAX_EXECUTION_TIME(30000) */ TIME(UTC_TIMESTAMP())
 FROM `tickets`
 LIMIT 2500
 SQL
@@ -112,7 +112,7 @@ FROM tickets
 DPQL
             ,
             <<<'SQL'
-SELECT DATE('2017-12-22 12:56:00')
+SELECT /*+ MAX_EXECUTION_TIME(30000) */ DATE('2017-12-22 12:56:00')
 FROM `tickets`
 LIMIT 2500
 SQL
@@ -128,7 +128,7 @@ FROM tickets
 DPQL
             ,
             <<<'SQL'
-SELECT
+SELECT /*+ MAX_EXECUTION_TIME(30000) */ 
     IF(UNIX_TIMESTAMP(`tickets`.`date_created`) - UNIX_TIMESTAMP(`tickets`.`date_created`) IS NULL, 0,
     IF(UNIX_TIMESTAMP(`tickets`.`date_created`) - UNIX_TIMESTAMP(`tickets`.`date_created`) < 900, 900,
     IF(UNIX_TIMESTAMP(`tickets`.`date_created`) - UNIX_TIMESTAMP(`tickets`.`date_created`) < 1800, 1800,
@@ -162,7 +162,7 @@ FROM tickets
 DPQL
             ,
             <<<'SQL'
-SELECT DAYOFWEEK('2017-12-22 12:56:00')
+SELECT /*+ MAX_EXECUTION_TIME(30000) */ DAYOFWEEK('2017-12-22 12:56:00')
 FROM `tickets`
 LIMIT 2500
 SQL
@@ -178,7 +178,7 @@ FROM tickets
 DPQL
             ,
             <<<'SQL'
-SELECT DAYOFMONTH('2017-12-22 12:56:00')
+SELECT /*+ MAX_EXECUTION_TIME(30000) */ DAYOFMONTH('2017-12-22 12:56:00')
 FROM `tickets`
 LIMIT 2500
 SQL
@@ -194,7 +194,7 @@ FROM tickets
 DPQL
             ,
             <<<'SQL'
-SELECT DAYOFWEEK('2017-12-22 12:56:00')
+SELECT /*+ MAX_EXECUTION_TIME(30000) */ DAYOFWEEK('2017-12-22 12:56:00')
 FROM `tickets`
 LIMIT 2500
 SQL
@@ -210,7 +210,7 @@ FROM tickets
 DPQL
             ,
             <<<'SQL'
-SELECT `tickets`.`date_created`
+SELECT /*+ MAX_EXECUTION_TIME(30000) */ `tickets`.`date_created`
 FROM `tickets`
 LIMIT 2500
 SQL
@@ -228,7 +228,7 @@ WITH ROLLUP
 DPQL
             ,
             <<<'SQL'
-SELECT COUNT(*), `tickets`.`urgency`
+SELECT /*+ MAX_EXECUTION_TIME(30000) */ COUNT(*), `tickets`.`urgency`
 FROM `tickets`
 GROUP BY `tickets`.`urgency`
 ORDER BY `tickets`.`urgency`
@@ -246,7 +246,7 @@ FROM tickets
 DPQL
             ,
             <<<'SQL'
-SELECT HOUR('2017-12-22 12:56:00')
+SELECT /*+ MAX_EXECUTION_TIME(30000) */ HOUR('2017-12-22 12:56:00' + INTERVAL 0 SECOND)
 FROM `tickets`
 LIMIT 2500
 SQL
@@ -262,7 +262,7 @@ FROM tickets
 DPQL
             ,
             <<<'SQL'
-SELECT `tickets`.`id`
+SELECT /*+ MAX_EXECUTION_TIME(30000) */ `tickets`.`id`
 FROM `tickets`
 LIMIT 2500
 SQL
@@ -282,7 +282,7 @@ DPQL_ALIAS(DPQL_STACK_GROUP(tickets.department,COALESCE(tickets.department.paren
 DPQL
             ,
             <<<'SQL'
-SELECT COUNT(*), COALESCE(`tickets_department_parent`.`title`, `tickets_department`.`title`), DAYOFMONTH(`tickets`.`date_created`), `tickets_department`.`title`, `tickets_department`.`id`
+SELECT /*+ MAX_EXECUTION_TIME(30000) */ COUNT(*), COALESCE(`tickets_department_parent`.`title`, `tickets_department`.`title`), DAYOFMONTH(`tickets`.`date_created`), `tickets_department`.`title`, `tickets_department`.`id`
 FROM `tickets`
 LEFT JOIN `departments` AS `tickets_department` ON (`tickets`.`department_id` = `tickets_department`.`id`)
 LEFT JOIN `departments` AS `tickets_department_parent` ON (`tickets_department`.`parent_id` = `tickets_department_parent`.`id`)
@@ -302,7 +302,7 @@ FROM tickets
 DPQL
             ,
             <<<'SQL'
-SELECT MINUTE('2017-12-22 12:56:00')
+SELECT /*+ MAX_EXECUTION_TIME(30000) */ MINUTE('2017-12-22 12:56:00')
 FROM `tickets`
 LIMIT 2500
 SQL
@@ -318,7 +318,7 @@ FROM tickets
 DPQL
             ,
             <<<'SQL'
-SELECT MONTH('2017-12-22 12:56:00')
+SELECT /*+ MAX_EXECUTION_TIME(30000) */ MONTH('2017-12-22 12:56:00')
 FROM `tickets`
 LIMIT 2500
 SQL
@@ -334,7 +334,7 @@ FROM tickets
 DPQL
             ,
             <<<'SQL'
-SELECT MONTH('2017-12-22 12:56:00')
+SELECT /*+ MAX_EXECUTION_TIME(30000) */ MONTH('2017-12-22 12:56:00')
 FROM `tickets`
 LIMIT 2500
 SQL
@@ -350,7 +350,7 @@ FROM tickets
 DPQL
             ,
             <<<'SQL'
-SELECT (UTC_TIMESTAMP())
+SELECT /*+ MAX_EXECUTION_TIME(30000) */ (UTC_TIMESTAMP())
 FROM `tickets`
 LIMIT 2500
 SQL
@@ -366,7 +366,7 @@ FROM ticket_object_use_logs
 DPQL
         ,
             <<<'SQL'
-SELECT `ticket_object_use_logs_snippet_category`.`id`
+SELECT /*+ MAX_EXECUTION_TIME(30000) */ `ticket_object_use_logs_snippet_category`.`id`
 FROM `ticket_object_use_logs`
 LEFT JOIN `text_snippets` AS `ticket_object_use_logs_snippet` ON (`ticket_object_use_logs`.`snippet_id` = `ticket_object_use_logs_snippet`.`id`)
 LEFT JOIN `text_snippet_categories` AS `ticket_object_use_logs_snippet_category` ON (`ticket_object_use_logs_snippet`.`category_id` = `ticket_object_use_logs_snippet_category`.`id`)
@@ -384,7 +384,7 @@ FROM tickets
 DPQL
                 ,
                 <<<'SQL'
-SELECT IF(COUNT(*) > 0, (SUM(IF(`tickets`.`total_to_first_reply`, 1, 0)) / COUNT(*)) * 100, 0)
+SELECT /*+ MAX_EXECUTION_TIME(30000) */ IF(COUNT(*) > 0, (SUM(IF(`tickets`.`total_to_first_reply`, 1, 0)) / COUNT(*)) * 100, 0)
 FROM `tickets` LIMIT 2500
 SQL
             );
@@ -400,7 +400,7 @@ GROUP BY DPQL_PRINT(tickets.subject, tickets.id)
 DPQL
             ,
             <<<'SQL'
-SELECT `tickets`.`ref`, `tickets`.`id`, `tickets`.`subject` FROM `tickets`
+SELECT /*+ MAX_EXECUTION_TIME(30000) */ `tickets`.`ref`, `tickets`.`id`, `tickets`.`subject` FROM `tickets`
 GROUP BY `tickets`.`subject`
 ORDER BY `tickets`.`id`
 LIMIT 2500
@@ -417,7 +417,7 @@ FROM tickets
 DPQL
             ,
             <<<'SQL'
-SELECT FROM_UNIXTIME((UTC_TIMESTAMP()))
+SELECT /*+ MAX_EXECUTION_TIME(30000) */ FROM_UNIXTIME((UTC_TIMESTAMP()))
 FROM `tickets`
 LIMIT 2500
 SQL
@@ -434,7 +434,7 @@ GROUP BY DPQL_STACK_GROUP(tickets.department, COALESCE(tickets.department.parent
 DPQL
             ,
             <<<'SQL'
-SELECT COUNT(*), COALESCE(`tickets_department_parent`.`title`, `tickets_department`.`title`), `tickets_department`.`title`, `tickets_department`.`id`
+SELECT /*+ MAX_EXECUTION_TIME(30000) */ COUNT(*), COALESCE(`tickets_department_parent`.`title`, `tickets_department`.`title`), `tickets_department`.`title`, `tickets_department`.`id`
 FROM `tickets`
 LEFT JOIN `departments` AS `tickets_department` ON (`tickets`.`department_id` = `tickets_department`.`id`)
 LEFT JOIN `departments` AS `tickets_department_parent` ON (`tickets_department`.`parent_id` = `tickets_department_parent`.`id`)
@@ -454,7 +454,7 @@ FROM ticket_charges
 DPQL
             ,
             <<<'SQL'
-SELECT `ticket_charges`.`charge_time`
+SELECT /*+ MAX_EXECUTION_TIME(30000) */ `ticket_charges`.`charge_time`
 FROM `ticket_charges`
 LIMIT 2500
 SQL
@@ -470,7 +470,7 @@ FROM tickets
 DPQL
             ,
             <<<'SQL'
-SELECT `tickets`.`id`
+SELECT /*+ MAX_EXECUTION_TIME(30000) */ `tickets`.`id`
 FROM `tickets`
 LIMIT 2500
 SQL
@@ -486,7 +486,7 @@ FROM tickets
 DPQL
             ,
             <<<'SQL'
-SELECT (`tickets`.`date_created`)
+SELECT /*+ MAX_EXECUTION_TIME(30000) */ (`tickets`.`date_created`)
 FROM `tickets`
 LIMIT 2500
 SQL
@@ -502,7 +502,7 @@ FROM tickets
 DPQL
             ,
             <<<'SQL'
-SELECT `tickets`.`date_created`
+SELECT /*+ MAX_EXECUTION_TIME(30000) */ `tickets`.`date_created`
 FROM `tickets`
 LIMIT 2500
 SQL
@@ -519,7 +519,7 @@ GROUP BY DPQL_X(tickets.person_id), DPQL_Y(tickets.agent_id)
 DPQL
             ,
             <<<'SQL'
-SELECT `tickets`.`ref`, `tickets`.`person_id`, `tickets`.`agent_id`
+SELECT /*+ MAX_EXECUTION_TIME(30000) */ `tickets`.`ref`, `tickets`.`person_id`, `tickets`.`agent_id`
 FROM `tickets`
 GROUP BY `tickets`.`person_id`, `tickets`.`agent_id`
 ORDER BY `tickets`.`person_id`, `tickets`.`agent_id`
@@ -537,7 +537,7 @@ FROM tickets
 DPQL
             ,
             <<<'SQL'
-SELECT YEAR('2017-12-22 12:56:00')
+SELECT /*+ MAX_EXECUTION_TIME(30000) */ YEAR('2017-12-22 12:56:00')
 FROM `tickets`
 LIMIT 2500
 SQL
@@ -553,7 +553,7 @@ FROM tickets
 DPQL
             ,
             <<<'SQL'
-SELECT `tickets`.`id`
+SELECT /*+ MAX_EXECUTION_TIME(30000) */ `tickets`.`id`
 FROM `tickets`
 LIMIT 2500
 SQL

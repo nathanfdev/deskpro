@@ -9,6 +9,8 @@ namespace Application\DeskPRO\EmailGateway;
 use Application\DeskPRO\App;
 use Application\DeskPRO\EmailGateway\Reader\Item\EmailAddress;
 use Application\DeskPRO\Entity;
+use Application\DeskPRO\Entity\Brand;
+use Application\DeskPRO\Entity\EmailAccount;
 use Application\DeskPRO\Entity\Person;
 use Orb\Util\Arrays;
 
@@ -214,5 +216,96 @@ class PersonFromEmailProcessor
         App::$container->getEm()->persist($person);
 
         return $person;
+    }
+
+    /**
+     * Is Account open for registration and has Brands with UserSources enabled for registration.
+     *
+     * @param EmailAccount $account
+     *
+     * @return bool
+     */
+    public function canAssociatePersonWithAccountBrands(EmailAccount $account)
+    {
+        return (bool) $this->getFirstAccountBrandEnabledForRegistration($account, 'user');
+    }
+
+    /**
+     * @param Person       $person
+     * @param EmailAccount $account
+     *
+     * @return bool
+     */
+    public function isPersonAssociatedWithAccountBrands(EmailAccount $account, Person $person)
+    {
+        return $person->hasOneOfTheBrands($this->getAccountBrands($account));
+    }
+
+    /**
+     * @param EmailAccount $account
+     * @param Person       $person
+     * @param $forceRegEnabled
+     *
+     * @return Brand | boolean
+     */
+    public function associatePersonWithAccountBrand(EmailAccount $account, Person $person, $forceRegEnabled = true)
+    {
+        $brand = $this->getFirstAccountBrandEnabledForRegistration($account, $person->is_agent ? 'agent' : 'user');
+
+        if (!$brand && $forceRegEnabled) {
+            return false;
+        }
+
+        if (!$brand) {
+            $brand = $this->getAccountBrands($account)->first();
+        }
+
+        $person->addBrand($brand);
+        App::$container->getEm()->persist($person);
+        App::$container->getEm()->flush($person);
+
+        return $brand;
+    }
+
+    /**
+     * Try to find first Account Brand with `reg_enabled` UserSource
+     * Return found Brand or false.
+     *
+     * @param EmailAccount $account
+     * @param string       $interface 'user'|'agent'
+     *
+     * @return bool|Brand
+     */
+    protected function getFirstAccountBrandEnabledForRegistration(EmailAccount $account, $interface)
+    {
+        /** @var \Application\DeskPRO\Usersource\UsersourceManager $usersourceManager */
+        $usersourceManager = App::$container->getSystemService('usersource_manager');
+
+        // find first Brand with `reg_enabled` Usersource
+        foreach ($this->getAccountBrands($account) as $brand) {
+            if (
+                $usersourceManager
+                    ->getAll()
+                    ->forInterface($interface)
+                    ->forBrand($brand)
+                    ->withNoApp()
+                    ->mustHaveRegEnabled()
+                    ->getFirstOrNull()
+            ) {
+                return $brand;
+            }
+        }
+
+        return false;
+    }
+
+    /**
+     * @param EmailAccount $account
+     *
+     * @return Brand[]
+     */
+    protected function getAccountBrands(EmailAccount $account)
+    {
+        return $account->isAllBrands() ? App::getEntityRepository(Brand::class)->findAll() : $account->getBrands();
     }
 }

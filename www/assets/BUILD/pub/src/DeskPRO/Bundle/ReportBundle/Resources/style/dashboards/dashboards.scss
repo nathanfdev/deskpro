@@ -1,4 +1,4 @@
-a.link-pointer {cursor: pointer;}
+.link-pointer {cursor: pointer;}
 
 body {
 }
@@ -337,8 +337,13 @@ $cell-border-color: #eee;
   }
 }
 
-ul.nav-link-list li.type-heading {
+ul li.type-heading {
   font-weight: bold;
+}
+ul li.type-heading:hover {
+  font-weight: bold;
+  background: transparent;
+  color: #707576;
 }
 
 // Dashboard title (dropdown)
@@ -1229,6 +1234,15 @@ ul.nav-link-list li.type-heading {
 .popup-stat-list, .popup-stat-preview {
   float: left;
   width: 50%;
+}
+
+.popup-stat-list.condensed {
+  width: 10%;
+  overflow: hidden;
+  padding: 0;
+}
+.popup-stat-preview.expanded {
+  width: 90%;
 }
 
 

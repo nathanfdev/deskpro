@@ -41,7 +41,7 @@ class JsonStatRenderer extends AbstractJsonRenderer
             'description' => $this->renderDescription($metadata, $rows),
         ];
 
-        if (!$return['value']) {
+        if ($return['value'] === null) {
             return;
         }
 
@@ -77,8 +77,9 @@ class JsonStatRenderer extends AbstractJsonRenderer
      */
     protected function renderValue(ResultMetadata $metadata, array $rows)
     {
-        $unitLeft  = '';
-        $unitRight = '';
+        $unitLeft     = '';
+        $unitRight    = '';
+        $defaultValue = null;
 
         foreach ($metadata->getSelectColumns() as $column) {
             if ($column['title'] === 'unit_left') {
@@ -87,11 +88,19 @@ class JsonStatRenderer extends AbstractJsonRenderer
             if ($column['title'] === 'unit_right') {
                 $unitLeft = $this->renderCellValue($rows[0], $column, $metadata);
             }
+            if ($column['title'] === 'default_value') {
+                $defaultValue = $this->renderCellValue($rows[0], $column, $metadata);
+            }
         }
 
         foreach ($metadata->getSelectColumns() as $column) {
             if ($column['title'] === 'stat_value') {
-                return $unitLeft.$this->renderCellValue($rows[0], $column, $metadata).$unitRight;
+                $val = $this->renderCellValue($rows[0], $column, $metadata);
+                if ($val === null) {
+                    return $defaultValue;
+                }
+
+                return $unitLeft.$val.$unitRight;
             }
         }
 
@@ -116,15 +125,9 @@ class JsonStatRenderer extends AbstractJsonRenderer
     }
 
     /**
-     * Renders the value for a specific cell.
-     *
-     * @param mixed [int]    $row
-     * @param mixed          $column
-     * @param ResultMetadata $metadata
-     *
-     * @return string
+     * {@inheritdoc}
      */
-    protected function renderCellValue(array $row, $column, ResultMetadata $metadata, $useRenderer = null)
+    public function renderCellValue(array $row, $column, ResultMetadata $metadata, $useRenderer = null)
     {
         $value = $column['resultId'] ? $row[$column['resultId'] - 1] : '';
 
