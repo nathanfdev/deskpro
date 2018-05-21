@@ -138,7 +138,7 @@ class BrandsController extends CrudController
         $view = View::create($this->wrap($brand), Response::HTTP_CREATED);
         $view->setLocation($this->getLocationUrl($brand, $request));
 
-        if (is_defined('DPC_IS_CLOUD')) {
+        if (defined('DPC_IS_CLOUD')) {
             CloudBrandHelper::flushBrandDomains();
         }
 
