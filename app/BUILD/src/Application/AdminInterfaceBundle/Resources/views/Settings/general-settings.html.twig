@@ -143,7 +143,7 @@
 								<option ng-repeat="acc in email_accounts" value="{{ ng_var('acc.address') }}">{{ ng_var('acc.address') }}</option>
 							</select>
 						</div>
-						<div style="padding-top: 10px;" ng-if="brands.length = 1" ng-repeat="brand in brands">
+						<div style="padding-top: 10px;" ng-if="brands.length == 1">
                             Default email account: <select ui-select2 ng-model="settings.default_from_email[brand.id]">
 								<option ng-repeat="acc in email_accounts" value="{{ ng_var('acc.address') }}">{{ ng_var('acc.address') }}</option>
 							</select>
