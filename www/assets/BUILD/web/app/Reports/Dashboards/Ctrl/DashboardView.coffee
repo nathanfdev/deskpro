@@ -16,18 +16,11 @@ define ['DeskPRO/Util/Arrays'], (Arrays) -> [
     ####################################################################################################################
 
     load_promises = []
-    load_promises.push DashboardsInfo.getDashboardList().then((dbs) ->
-      $scope.dashboards = dbs
-      dashboard = Arrays.find(dbs, (x) -> x.id == dashboard_id)
-
-      $state.go('reports.dashboards.view.empty')
-      if not $scope.dashboard
-        $scope.dashboard = dashboard
-    )
 
     # fetches perm info
     load_promises.push DashboardsInfo.getDashboardDetail($stateParams.dashboard_id).then( (db) ->
       $scope.dashboard = db
+      $state.go('reports.dashboards.view.empty')
     )
     load_promises.push DashboardsInfo.getReportsList(dashboard_id).then( (reports) ->
       $scope.reports = reports
@@ -42,18 +35,16 @@ define ['DeskPRO/Util/Arrays'], (Arrays) -> [
     )
 
     # just reload info when its been changed
-    $scope.$watch('dashboard.version_id + \'.\' + dashboard.reports_version_id', (n, o) ->
-      return if not o
-      DashboardsInfo.getDashboardList().then((dbs) ->
-        $scope.dashboards = dbs
-        $scope.dashboard = Arrays.find(dbs, (x) -> x.id == dashboard_id)
-      )
-      DashboardsInfo.getDashboardDetail($stateParams.dashboard_id).then( (db) ->
-        $scope.dashboard = db
-      )
-      DashboardsInfo.getReportsList(dashboard_id).then( (reports) ->
-        $scope.reports = reports
-      )
+    $scope.$watch(
+      () -> DashboardsInfo.lastDashboardDetail,
+      () ->
+        DashboardsInfo.getDashboardDetail($stateParams.dashboard_id).then( (db) ->
+          $scope.dashboard = db
+        )
+        DashboardsInfo.getReportsList(dashboard_id).then( (reports) ->
+          $scope.reports = reports
+        )
+      , true
     )
 
     $q.all(load_promises).then(-> $scope.loaded = true)

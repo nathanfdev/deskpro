@@ -76,26 +76,28 @@ define ['DeskPRO/Util/Arrays'], (Arrays) -> [
     $q.all(load_promises).then(-> $scope.updateReportVariables(false, () => $scope.loaded = true))
 
     # just reload info when its been changed
-    $scope.$watch('dashboard.version_id + \'.\' + dashboard.reports_version_id', (n, o) ->
-      return if not o
-      reloadPromises = []
-      if $scope.report.dashboard
-        reloadPromises.push DashboardsInfo.getDashboardDetail($scope.report.dashboard).then( (db) ->
-          $scope.dashboard = db
+    $scope.$watch(
+      () -> DashboardsInfo.lastDashboardDetail,
+      () ->
+        reloadPromises = []
+        if $scope.report.dashboard
+          reloadPromises.push DashboardsInfo.getDashboardDetail($scope.report.dashboard).then( (db) ->
+            $scope.dashboard = db
+          )
+
+        reloadPromises.push DashboardsInfo.getReportDetail(report_id).then((loadedReport) ->
+          $scope.report = loadedReport
+          $scope.report.variables = loadedReport.variables
+          $scope.updateReportVariables()
         )
 
-      reloadPromises.push DashboardsInfo.getReportDetail(report_id).then((loadedReport) ->
-        $scope.report = loadedReport
-        $scope.report.variables = loadedReport.variables
-        $scope.updateReportVariables()
-      )
-
-      $q.all(reloadPromises).then(->
-        # all ok
-        return
-      , ->
-        $state.go('reports.dashboards.view.empty')
-      )
+        $q.all(reloadPromises).then(->
+          # all ok
+          return
+        , ->
+          $state.go('reports.dashboards.view.empty')
+        )
+      , true
     )
 
     ####################################################################################################################
