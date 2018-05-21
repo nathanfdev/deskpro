@@ -3,12 +3,12 @@
 namespace DeskPRO\Bundle\AppBundle\Form\Type\Reports;
 
 use Application\DeskPRO\Entity\Person;
-use Application\DeskPRO\Reports\ReportSaver;
 use DeskPRO\Bundle\AppBundle\Entity\Report\ScheduledReport;
 use DeskPRO\Bundle\AppBundle\Form\Type\Reports\ScheduleTime\ScheduleBimonthlyType;
 use DeskPRO\Bundle\AppBundle\Form\Type\Reports\ScheduleTime\ScheduleDailyType;
 use DeskPRO\Bundle\AppBundle\Form\Type\Reports\ScheduleTime\ScheduleMonthlyType;
 use DeskPRO\Bundle\AppBundle\Form\Type\Reports\ScheduleTime\ScheduleWeeklyType;
+use DeskPRO\Bundle\ReportBundle\Service\ReportSaver;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
 use Symfony\Component\Form\Extension\Core\Type\CollectionType;
@@ -24,16 +24,16 @@ use Symfony\Component\OptionsResolver\OptionsResolver;
 class ScheduledReportType extends AbstractType
 {
     /**
-     * @var ReportSaver
+     * @var \DeskPRO\Bundle\ReportBundle\Service\ReportSaver
      */
     private $reportSaver;
 
     /**
      * Constructor.
      *
-     * @param ReportSaver $reportSaver
+     * @param \DeskPRO\Bundle\ReportBundle\Service\ReportSaver $reportSaver
      */
-    public function __construct(ReportSaver $reportSaver)
+    public function __construct(\DeskPRO\Bundle\ReportBundle\Service\ReportSaver $reportSaver)
     {
         $this->reportSaver = $reportSaver;
     }

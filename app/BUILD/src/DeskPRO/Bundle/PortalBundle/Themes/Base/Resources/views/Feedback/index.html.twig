@@ -15,12 +15,14 @@
             <p>{{ phrase('portal.feedback.section-desc') }}</p>
         </header>
 
-        <article class="feedback-form-interactive">
-            {% if rerendering_saved %}
-                <strong>{{ phrase('portal.general.rerender-form') }}</strong>
-            {% endif %}
-            {% show feedback_form %}
-        </article>
+        {% if can_login() or app.user %}
+            <article class="feedback-form-interactive">
+                {% if rerendering_saved %}
+                    <strong>{{ phrase('portal.general.rerender-form') }}</strong>
+                {% endif %}
+                {% show feedback_form %}
+            </article>
+        {% endif %}
 
        <article class="feedback-filter-interactive  as-no-dpui">
            {% show feedback_filter_controls %}

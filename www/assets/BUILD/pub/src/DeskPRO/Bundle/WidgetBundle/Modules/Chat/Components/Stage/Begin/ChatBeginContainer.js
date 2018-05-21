@@ -29,6 +29,7 @@ import { ChatBeginSimple } from './ChatBeginSimple';
   customFields:             customChatFieldsOrderedSelector(state),
   chatDepartments:          collectionSelectorFactory('ChatDepartment', 'online')(state),
   chatDepartmentsLoaded:    isLoadedCollectionSelectorFactory('ChatDepartment', 'online')(state),
+  currenciesLoaded:         isLoadedCollectionSelectorFactory('Currency', 'all')(state),
   chatSelectDepartmentType: chatSelectDepartmentTypeSelector(state),
   chatDefaultDepartment:    chatDefaultDepartmentSelector(state),
   chatRequiredName:         chatRequiredNameSelector(state),
@@ -46,6 +47,7 @@ export class ChatBeginContainer extends React.Component {
     liveDemo:                 PropTypes.bool,
     customFieldsLoaded:       PropTypes.bool,
     chatDepartmentsLoaded:    PropTypes.bool,
+    currenciesLoaded:         PropTypes.bool,
     chatSelectDepartmentType: PropTypes.string,
     chatDefaultDepartment:    PropTypes.number,
     loggedIn:                 PropTypes.bool,
@@ -94,7 +96,8 @@ export class ChatBeginContainer extends React.Component {
       widgetOptions: {
         context:       [parent.document, window.widgetFrame.document],
         contentWindow: window.widgetFrame,
-        ownerDocument: window.widgetFrame.document
+        ownerDocument: window.widgetFrame.document,
+        isWidget:      true
       },
       config: Immutable.fromJS(config)
     };
@@ -115,6 +118,7 @@ export class ChatBeginContainer extends React.Component {
 
     // don't make api calls on live demo
     if (!liveDemo) {
+      dispatch(loadAll('Currency'));
       dispatch(loadAll('CustomDefChat'));
       dispatch(loadAll('ChatDepartment'));
       dispatch(loadWithParams('ChatDepartment', { online: true }, 'online'));
@@ -265,12 +269,12 @@ export class ChatBeginContainer extends React.Component {
   }
 
   render() {
-    const { loggedIn } = this.props;
+    const { loggedIn, currenciesLoaded } = this.props;
     const { customFields, customFieldsLoaded } = this.props;
     const { chatDepartments, chatDepartmentsLoaded, chatSelectDepartmentType } = this.props;
     const allowDepartmentSelection = chatSelectDepartmentType !== 'default' && chatDepartments.size > 1;
 
-    if (!customFieldsLoaded || !chatDepartmentsLoaded) {
+    if (!customFieldsLoaded || !chatDepartmentsLoaded || !currenciesLoaded) {
       return <ChatBeginLoadingSpinner />;
     }
 

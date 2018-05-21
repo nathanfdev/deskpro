@@ -1,19 +1,21 @@
 <?php
 
-/**
- * DeskPRO.
- *
- * @category DependencyInjection
- */
-
 namespace Application\DeskPRO\DependencyInjection\SystemServices;
 
 use Application\DeskPRO\Attachments\AcceptAttachment;
 use Application\DeskPRO\DependencyInjection\DeskproContainer;
 use Orb\Util\Env as EnvUtil;
 
+/**
+ * Class AttachmentAccepterService.
+ */
 class AttachmentAccepterService
 {
+    /**
+     * @param DeskproContainer $container
+     *
+     * @return AcceptAttachment
+     */
     public static function create(DeskproContainer $container)
     {
         $accepter = new AcceptAttachment(
@@ -21,36 +23,35 @@ class AttachmentAccepterService
             $container->getBlobStorage()
         );
 
-        $effective_max_size = EnvUtil::getEffectiveMaxUploadSize();
+        $effectiveMaxUploadSize = EnvUtil::getEffectiveMaxUploadSize();
 
         foreach (['', 'emails.'] as $prefix) {
             foreach (['agent', 'user'] as $type) {
                 $res = new \Application\DeskPRO\Attachments\RestrictionSet();
 
-                $max_size = $container->getSetting('core.'.$prefix.'attach_'.$type.'_maxsize');
-
+                $maxSize = $container->getSetting('core.'.$prefix.'attach_'.$type.'_maxsize');
                 if ($prefix != 'emails.') {
-                    $max_size = min($effective_max_size, $max_size);
+                    $maxSize = min($effectiveMaxUploadSize, $maxSize);
                 }
 
-                $must_exts = $container->getSetting('core.'.$prefix.'attach_'.$type.'_must_exts');
-                $not_exts  = $container->getSetting('core.'.$prefix.'attach_'.$type.'_not_exts');
+                $mustExtensions = $container->getSetting('core.'.$prefix.'attach_'.$type.'_must_exts');
+                $notExtensions  = $container->getSetting('core.'.$prefix.'attach_'.$type.'_not_exts');
 
-                if ($must_exts) {
-                    $must_exts = explode(',', strtolower($must_exts));
-                    array_walk($must_exts, 'trim');
+                if ($mustExtensions) {
+                    $mustExtensions = explode(',', strtolower($mustExtensions));
+                    array_walk($mustExtensions, 'trim');
                 } else {
-                    $must_exts = null;
+                    $mustExtensions = null;
                 }
 
-                if ($not_exts) {
-                    $not_exts = explode(',', strtolower($not_exts));
-                    array_walk($not_exts, 'trim');
+                if ($notExtensions) {
+                    $notExtensions = explode(',', strtolower($notExtensions));
+                    array_walk($notExtensions, 'trim');
                 } else {
-                    $not_exts = null;
+                    $notExtensions = null;
                 }
 
-                $res->setMaxSize($max_size)->setAllowedExts($must_exts)->setDisallowedExts($not_exts);
+                $res->setMaxSize($maxSize)->setAllowedExts($mustExtensions)->setDisallowedExts($notExtensions);
 
                 $accepter->addRestrictionSet($prefix.$type, $res);
             }

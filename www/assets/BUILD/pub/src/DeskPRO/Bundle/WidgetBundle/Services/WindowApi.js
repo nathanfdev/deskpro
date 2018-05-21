@@ -105,7 +105,7 @@ handlers.changeLiveDemoStage = (stage) => {
 handlers.setLiveDemoSampleState = (state) => {
   const { sampleState = {}, options = {}, settings = {}, chatCustomFields = {} } = state;
   const { agents = [], users = [] } = sampleState.people || {};
-  const { departments = [] } = sampleState;
+  const { departments = [], currencies = [] } = sampleState;
   const { dispatch } = store;
 
   // set global state
@@ -117,6 +117,7 @@ handlers.setLiveDemoSampleState = (state) => {
   dispatch(setCollection('Person', 'all', Immutable.fromJS(agents.concat(users))));
   dispatch(setCollection('ChatDepartment', 'all', Immutable.fromJS(departments)));
   dispatch(setCollection('ChatDepartment', 'online', Immutable.fromJS(departments)));
+  dispatch(setCollection('Currency', 'all', Immutable.fromJS(currencies)));
 
   // set chat state
   dispatch(chatActions.setLoaded());

@@ -47,7 +47,7 @@ services:
 
   usersource_settings_resolver:
     class: DeskPRO\Bundle\AppBundle\Settings\UsersourceSettingsResolver
-    arguments: ["@=service('service_container').getSystemService('usersource_manager')", "@brand_aware_settings_resolver"]
+    arguments: ["@=service('service_container').getSystemService('usersource_manager')", "@dp_authentication_manager.user"]
 
   updater_settings_resolver:
     class: DeskPRO\Bundle\AppBundle\Settings\UpdaterSettingsResolver
@@ -156,3 +156,40 @@ services:
     class: Aws\S3\S3Client
     factory: ['DeskPRO\Bundle\AppBundle\BlobStorage\AmazonS3ClientFactory', create]
     arguments: ["@settings_resolver", "@=service('deskpro.app_env').getUserTmpDir()"]
+
+  ticketfilters.env_loader:
+    class: DeskPRO\Bundle\AppBundle\TicketFilters\EnvLoader
+    arguments:
+      - "@ticketfilters.queryparser"
+      - "@=service('doctrine.orm.entity_manager').getRepository('DeskPRO\\\\Bundle\\\\AppBundle\\\\Entity\\\\TicketFilterSet')"
+      - "@=service('doctrine.orm.entity_manager').getRepository('Application\\\\DeskPRO\\\\Entity\\\\Person')"
+      - "@=service('doctrine.orm.entity_manager').getRepository('Application\\\\DeskPRO\\\\Entity\\\\CustomDefTicket')"
+      - "@=service('doctrine.orm.entity_manager').getRepository('Application\\\\DeskPRO\\\\Entity\\\\CustomDefPerson')"
+      - "@=service('doctrine.orm.entity_manager').getRepository('Application\\\\DeskPRO\\\\Entity\\\\CustomDefOrganization')"
+
+  ticketfilters.matcher_factory:
+    class: DeskPRO\Bundle\AppBundle\TicketFilters\MatcherFactory
+    arguments: ["@service_container", "@ticketfilters.env_loader", "@logger"]
+    tags:
+      - { name: monolog.logger, channel: ticketfilters }
+
+  ticketfilter.ticket_matcher:
+    class: DeskPRO\Bundle\AppBundle\TicketFilters\TicketMatcher
+    factory: "ticketfilters.matcher_factory:createMatcher"
+
+  ticketfilter.ticket_sql_searcher:
+    class: DeskPRO\Bundle\AppBundle\TicketFilters\TicketSqlMatcher
+    factory: "ticketfilters.matcher_factory:createSqlMatcher"
+
+  ticketfilters.queryparser:
+    class: DeskPRO\Component\FilterQueryLanguage\Parser
+
+  ticketfilters.count_title_resolver:
+    class: DeskPRO\Bundle\AppBundle\TicketFilters\TicketCountTitleResolver
+    arguments: ["@service_container", "@ticketfilters.env_loader"]
+
+  ticketfilters:
+    class: DeskPRO\Bundle\AppBundle\TicketFilters\TicketFilterEnv
+    arguments:
+      - "@ticketfilters.env_loader"
+      - "@ticketfilters.matcher_factory"

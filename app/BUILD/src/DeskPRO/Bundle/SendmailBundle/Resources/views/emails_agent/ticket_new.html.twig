@@ -3,7 +3,7 @@
 <dp:subject>
 	{% if ticket.agent.id == person.id %}
 		{{ phrase('agent.emails.subject_new_ticket_assigned') }}
-	{% elseif ticket.agent_team and person.getHelper('AgentTeam').isTeamMember(ticket.agent_team.id) %}
+	{% elseif person.id in ticket.agent_team.agents %}
 		{{ phrase('agent.emails.subject_new_ticket_assignedteam') }}
 	{% else %}
 		{{ phrase('agent.emails.subject_new_ticket') }}

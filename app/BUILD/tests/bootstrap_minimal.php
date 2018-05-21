@@ -1,9 +1,5 @@
 <?php
 
-//------------------------------
-// Normalize env
-//------------------------------
-
 @setlocale(LC_CTYPE, 'C');
 @date_default_timezone_set('UTC');
 @ini_set('default_charset', 'UTF-8');
@@ -65,3 +61,8 @@ libxml_disable_entity_loader(false);
 
     return ['install_key' => '', 'license_code' => $code];
 });
+
+//------------------------------
+// Configure ezcMailParser
+//------------------------------
+\ezcMailParser::setTmpDir(dp_get_tmp_dir().DIRECTORY_SEPARATOR);

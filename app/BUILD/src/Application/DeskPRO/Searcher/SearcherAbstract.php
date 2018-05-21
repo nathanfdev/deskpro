@@ -1,9 +1,5 @@
 <?php
 
-/**
- * DeskPRO.
- */
-
 namespace Application\DeskPRO\Searcher;
 
 use Application\DeskPRO\App;
@@ -831,14 +827,6 @@ abstract class SearcherAbstract implements PersonContextInterface
         $range1 = (int) $range1;
         $range2 = (int) $range2;
 
-        // Normalize operations
-        if ($op == self::OP_LT) {
-            $op = self::OP_LTE;
-        }
-        if ($op == self::OP_GT) {
-            $op = self::OP_GTE;
-        }
-
         if ($range1 && $range2) {
             $op = self::OP_BETWEEN;
         }
@@ -865,9 +853,17 @@ abstract class SearcherAbstract implements PersonContextInterface
             $where = "$field = $range1";
         } elseif ($op == self::OP_BETWEEN) {
             $where = "$field BETWEEN $range1 AND $range2";
+        } elseif ($op == self::OP_GT) {
+            $range1 = Util::coalesce($range1, $range2);
+            $where  = "$field > $range1";
         } elseif ($op == self::OP_GTE) {
             $range1 = Util::coalesce($range1, $range2);
             $where  = "$field >= $range1";
+        } elseif ($op == self::OP_NOT) {
+            $where = "$field != $range1";
+        } elseif ($op == self::OP_LT) {
+            $range1 = Util::coalesce($range1, $range2);
+            $where  = "$field < $range1";
         } else {
             $range1 = Util::coalesce($range1, $range2);
             $where  = "$field <= $range1";

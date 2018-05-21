@@ -1,4 +1,4 @@
-define(['DeskPRO/Util/Strings', 'DeskPRO/Util/Util'], function(Strings, Util) {
+define(['DeskPRO/Util/Strings'], function(Strings) {
 	return ['$scope', 'Api', '$q', '$modal', '$timeout', function($scope, Api, $q, $modal, $timeout) {
 		var touched = {},
 			validateFn = [];
@@ -37,6 +37,17 @@ define(['DeskPRO/Util/Strings', 'DeskPRO/Util/Util'], function(Strings, Util) {
 			return $scope.has_errors;
 		}
 
+		function checkRequirements() {
+      Api.sendGet('/apps/packages/deskpro_us_saml/check-requirements').then(function(res) {
+        $scope.has_errors = !res.data.success;
+        if(!res.data.success) {
+        	$scope.errors['requirements'] = res.data.error;
+        }
+      });
+		}
+
+		checkRequirements();
+
 		$scope.setPresaveCallback(function () {
 			var deferred = $q.defer();
 			updateFormErrors();
@@ -66,7 +77,6 @@ define(['DeskPRO/Util/Strings', 'DeskPRO/Util/Util'], function(Strings, Util) {
 			return $modal.open({
 				templateUrl: 'deskpro_us_saml/Install/test-settings-modal.html',
 				controller: ['$scope', '$modalInstance', '$timeout', function ($modalScope, $modalInstance, $timeout) {
-
 					$modalScope.is_verified = false;
 					$modalScope.is_error = false;
 					$modalScope.log = '';

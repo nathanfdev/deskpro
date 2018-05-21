@@ -10,6 +10,7 @@ namespace Application\DeskPRO\Entity;
 
 use Application\DeskPRO\App;
 use Application\DeskPRO\CustomFields\Handler;
+use Application\DeskPRO\Entity\Hierarchy\Hierarchical;
 use Application\DeskPRO\Translate\HasPhraseName;
 use Application\DeskPRO\Translate\Translate;
 use DeskPRO\Bundle\AppBundle\ObjectAlias;
@@ -26,7 +27,7 @@ use Symfony\Component\Validator\Constraints as Assert;
  *
  * @method setParent(CustomDefAbstract $parent)
  */
-class CustomDefAbstract extends \Application\DeskPRO\Domain\DomainObject implements HasPhraseName
+class CustomDefAbstract extends \Application\DeskPRO\Domain\DomainObject implements HasPhraseName, Hierarchical
 {
     const HANDLER_CLASS_TEXT     = Handler\Text::class;
     const HANDLER_CLASS_TEXTAREA = Handler\Textarea::class;
@@ -41,6 +42,7 @@ class CustomDefAbstract extends \Application\DeskPRO\Domain\DomainObject impleme
     const HANDLER_CLASS_DATALIST = Handler\DataList::class;
     const HANDLER_CLASS_URL      = Handler\Url::class;
     const HANDLER_CLASS_CURRENCY = Handler\Currency::class;
+    const HANDLER_CLASS_FILE     = Handler\File::class;
 
     const TYPE_TEXT      = 'text';
     const TYPE_TEXTAREA  = 'textarea';
@@ -55,6 +57,7 @@ class CustomDefAbstract extends \Application\DeskPRO\Domain\DomainObject impleme
     const TYPE_DATA_LIST = 'datalist';
     const TYPE_URL       = 'url';
     const TYPE_CURRENCY  = 'currency';
+    const TYPE_FILE      = 'file';
 
     /**
      * The unique ID.
@@ -205,6 +208,22 @@ class CustomDefAbstract extends \Application\DeskPRO\Domain\DomainObject impleme
     }
 
     /**
+     * @param string $alias
+     *
+     * @return bool
+     */
+    public function hasAlias($alias)
+    {
+        foreach ($this->getAliases() as $a) {
+            if ($a->getQualifiedName() === $alias) {
+                return true;
+            }
+        }
+
+        return false;
+    }
+
+    /**
      * @return int
      */
     public function getId()
@@ -344,6 +363,34 @@ class CustomDefAbstract extends \Application\DeskPRO\Domain\DomainObject impleme
         }
 
         return $subChoices;
+    }
+
+    /**
+     * @return array
+     */
+    public function getAllDescendants()
+    {
+        $descendants = [];
+        if ($this->getParent()) {
+            $root = $this->getParent();
+        } else {
+            $root = $this;
+        }
+
+        $iter = function (CustomDefAbstract $node, array $descendants) use ($root, &$iter) {
+            foreach ($root->getChildren() as $child) {
+                if ($child->getOption('parent_id') === $node->getId() || $child->getParentId() === $node->getId()) {
+                    $descendants[$child->getId()] = $child;
+                    $descendants                  = $descendants + $iter($child, $descendants);
+                }
+            }
+
+            return $descendants;
+        };
+
+        $descendants = $iter($this, $descendants);
+
+        return $descendants;
     }
 
     /**
@@ -1037,6 +1084,15 @@ class CustomDefAbstract extends \Application\DeskPRO\Domain\DomainObject impleme
             case self::TYPE_CHOICE:
                 $this->setHandlerClass(self::HANDLER_CLASS_CHOICE);
                 break;
+            case self::TYPE_CURRENCY:
+                $this->setHandlerClass(self::HANDLER_CLASS_CURRENCY);
+                break;
+            case self::TYPE_URL:
+                $this->setHandlerClass(self::HANDLER_CLASS_URL);
+                break;
+            case self::TYPE_FILE:
+                $this->setHandlerClass(self::HANDLER_CLASS_FILE);
+                break;
 
             // extended choice types
             case 'multichoice':
@@ -1106,7 +1162,7 @@ class CustomDefAbstract extends \Application\DeskPRO\Domain\DomainObject impleme
      */
     public function isMulti()
     {
-        return $this->isChoiceType() && $this->getOption('multiple');
+        return ($this->isChoiceType() && $this->getOption('multiple')) || $this->isDataListType() || $this->isFileType();
     }
 
     /**
@@ -1155,6 +1211,14 @@ class CustomDefAbstract extends \Application\DeskPRO\Domain\DomainObject impleme
     public function isCurrencyType()
     {
         return $this->handler_class === self::HANDLER_CLASS_CURRENCY;
+    }
+
+    /**
+     * @return bool
+     */
+    public function isFileType()
+    {
+        return $this->handler_class === self::HANDLER_CLASS_FILE;
     }
 
     /**

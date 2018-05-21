@@ -578,6 +578,7 @@ class TicketController extends AbstractController
                      'set_resolved',
                      'set_unresolved',
                      'billing',
+                     'followed',
                  ] as $p) {
             $ticket_perms["modify_$p"] = $this->person->PermissionsManager->TicketChecker->canModify($ticket, $p);
         }
@@ -838,7 +839,7 @@ class TicketController extends AbstractController
         }
 
         if ($ticket_messages) {
-            if ($is_pdf) {
+            if ($is_pdf || $is_print) {
                 $tpl = 'DeskPRO:pdf_agent:ticket-messages-batch.html.twig';
             } else {
                 $tpl = 'AgentBundle:Ticket:ticket-messages-batch.html.twig';
@@ -2154,6 +2155,7 @@ class TicketController extends AbstractController
     public function ajaxSaveActionsAction($ticket_id, Request $request)
     {
         $ticket = $this->getTicketOr404($ticket_id, 'modify');
+        $ticket->getStateChangeRecorder()->touchField('__ajax_save_actions');
 
         $tm = $this->container->getTicketManager();
         $tm->markAsManaged($ticket);
@@ -2233,10 +2235,13 @@ class TicketController extends AbstractController
 
                 $actions = $this->in->getCleanValueArray('actions', 'raw', 'raw');
 
-                if (count($actions) == 1 && isset($actions['department_id'])) {
-                    // Validation not on dep changes,
-                    // because changing dep could change validation options
-                    $new_department_id = $actions['department_id'];
+                if (count($actions) == 1 && (isset($actions['department_id']) || isset($actions['urgency']))) {
+                    // skip validation for realtime updates
+                    if (isset($actions['department_id'])) {
+                        // Validation not on dep changes,
+                        // because changing dep could change validation options
+                        $new_department_id = $actions['department_id'];
+                    }
                 } elseif ($ticket->status == 'hidden' && count(
                         $actions
                     ) == 2 && isset($actions['status']) && isset($actions['hidden_status'])
@@ -2277,7 +2282,7 @@ class TicketController extends AbstractController
                 );
                 $ticket->addPropertyChangedListener($event_listener);
 
-                if ($this->in->getBool('with_set_agent_parts')) {
+                if ($this->in->getBool('with_set_agent_parts') && $this->person->PermissionsManager->TicketChecker->canModify($ticket, 'followed')) {
                     $set_parts = $this->in->getCleanValueArray('set_agent_part_ids', 'uint', 'discard');
                     $agents    = $this->em->getRepository(Person::class)->getPeopleFromIds($set_parts);
                     $ticket->setAgentParticipants($agents);

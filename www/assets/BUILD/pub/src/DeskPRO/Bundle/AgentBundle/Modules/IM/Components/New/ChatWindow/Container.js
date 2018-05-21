@@ -286,9 +286,19 @@ class Container extends React.Component {
   };
 
   openAttach = () => {
+    const popupHeight   = 150;
+    const maxAllowedTop = window.innerHeight - popupHeight;
+    const replyFormRect = $('#replyForm')[0].getBoundingClientRect();
+    // popup `top` property relative to #replyForm container
+    let   top           = 25;
+
+    if ((replyFormRect.top + top) > maxAllowedTop) {
+      top = maxAllowedTop - replyFormRect.top;
+    }
+
     this.editor.commands.exec('insertFile');
     this.state.editorControls.getEditor()('popups.setContainer', 'file.insert', $('#replyForm'));
-    this.state.editorControls.getEditor()('popups.get', 'file.insert').css({ top: '25px', left: '325px' });
+    this.state.editorControls.getEditor()('popups.get', 'file.insert').css({ top: `${top}px`, left: '325px' });
   };
 
   groupHeader() {

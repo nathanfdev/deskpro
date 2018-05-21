@@ -152,3 +152,29 @@
     margin: 0 auto;
   }
 }
+
+.currency-field {
+  position: relative;
+
+  .currency-symbol {
+    position: absolute;
+    top: 8px;
+    left: 5px;
+    z-index: 10;
+  }
+
+  input {
+    padding-left: 35px !important;
+  }
+
+  &.eur, &.jpy, &.gbp, &.usd {
+    input {
+      padding-left: 20px !important;
+    }
+  }
+  &.aud, &.nzd {
+    input {
+      padding-left: 30px !important;
+    }
+  }
+}

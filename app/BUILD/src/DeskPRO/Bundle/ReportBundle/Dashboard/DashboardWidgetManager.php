@@ -12,6 +12,9 @@ use DeskPRO\Bundle\ReportBundle\Dpql2\Statement\SelectPart;
 use DeskPRO\Bundle\ReportBundle\Reports\Renderer\ReportsRendererInterface;
 use DeskPRO\Bundle\ReportBundle\Reports\Renderer\ReportsRendererRegistry;
 use DeskPRO\Bundle\ReportBundle\Reports\ResultMetadata;
+use DeskPRO\Bundle\ReportBundle\Reports\Results;
+use DeskPRO\Bundle\ReportBundle\Reports\SplitResult;
+use DeskPRO\Bundle\ReportBundle\Reports\SplitResults;
 use DeskPRO\Component\Util\RegexUtils;
 use Doctrine\ORM\EntityManager;
 use DpSys\LowError\SystemErrorHandler;
@@ -188,6 +191,15 @@ class DashboardWidgetManager
             throw $e;
         }
 
+        // todo just single result for widgets for now
+        if ($data instanceof SplitResults) {
+            if ($data->getResults()) {
+                $data = $data->getResults()[0]->getResults();
+            } else {
+                $data = [];
+            }
+        }
+
         return $this->formatData($data, $widget->getType());
     }
 
@@ -239,13 +251,13 @@ class DashboardWidgetManager
                 return $permission->getPerson() === $person;
             })->first();
 
-            if (!$ownPermission || !$ownPermission->isViewAll()) {
+            if (!($person->isAdmin() || ($ownPermission && $ownPermission->isViewAll()))) {
                 foreach ($variables as &$variable) {
-                    if ($variable['name'] === 'agent') {
-                        $variable['field_value'] = $person->getId();
+                    if ($variable['type'] === 'values' && $variable['field_type'] === 'agent') {
+                        $variable['value'] = $person->getId();
                     }
-                    if ($variable['name'] === 'agent_team') {
-                        $variable['field_value'] = $person->getPrimaryTeam() ? $person->getPrimaryTeam()->getId() : null;
+                    if ($variable['type'] === 'values' && $variable['field_type'] === 'agent_team') {
+                        $variable['value'] = $person->getPrimaryTeam() ? $person->getPrimaryTeam()->getId() : null;
                     }
                 }
             }
@@ -371,17 +383,50 @@ class DashboardWidgetManager
         $renderer = $this->rendererRegistry->getRenderer($graphType, $format);
 
         $renderedResults = [];
+
         foreach ($results as $queryResult) {
-            $partRenderer      = $this->rendererRegistry->getRenderer($queryResult['graphType'], $format);
-            $renderedResults[] = $partRenderer->render($queryResult['queryResult'], $options);
+            /** @var Results $queryResultData */
+            $queryResultData = $queryResult['queryResult'];
+            $partRenderer    = $this->rendererRegistry->getRenderer($queryResult['graphType'], $format);
+            $metadata        = $queryResultData->getMetadata();
+
+            if ($metadata->getSplitColumns()) {
+                foreach ($queryResultData->getSplitResults() as $splitResult) {
+                    $splitResults = new Results();
+                    $splitResults->setMetadata($metadata);
+                    $splitResults->setResults($splitResult[0]);
+
+                    $result = $partRenderer->render($splitResults, $options);
+                    if ($result) {
+                        $splitPrint = [];
+                        foreach ($metadata->getSplitColumns() as $splitColumn) {
+                            $splitPrint[] = $partRenderer->renderCellValue($splitResult[1], $splitColumn, $metadata);
+                        }
+
+                        $splitTitle = implode(' / ', $splitPrint);
+                        if ($splitTitle === '') {
+                            $splitTitle = 'None';
+                        }
+
+                        $renderedResults[] = new SplitResult($splitTitle, $result);
+                    }
+                }
+            } else {
+                $renderedResults[] = $partRenderer->render($queryResult['queryResult'], $options);
+            }
         }
         $renderedResults = array_filter($renderedResults, function ($item) {
             return $item;
         });
         if (count($renderedResults) > 1) {
-            return $renderer->mergeResults($renderedResults, $options ?: []);
+            if ($multiLayer) {
+                return $renderer->mergeResults($renderedResults, $options ?: []);
+            }
+
+            // SPLIT BY, return as array
+            return new SplitResults($renderedResults);
         }
 
-        return reset($renderedResults);
+        return reset($renderedResults) ?: null;
     }
 }

@@ -7,6 +7,7 @@
 namespace DpTest\DeskPRO\Component\Util;
 
 use DeskPRO\Component\Util\ListUtils;
+use DeskPRO\Component\Util\StructComparer;
 use DeskPRO\Component\Util\TypeUtils;
 use DpTest\DeskProTestCase;
 
@@ -73,5 +74,24 @@ class ListUtilsTest extends DeskProTestCase
         $this->assertFalse(TypeUtils::isList(['a', 'b' => 'c', 'd']));
         $this->assertFalse(TypeUtils::isList([0 => 1, 1 => 1, 3 => 2]));
         $this->assertFalse(TypeUtils::isList(['a' => 1, 'b' => 2]));
+    }
+
+    public function testCollectionFinder()
+    {
+        $arr = [
+            ['id' => 'a', 'foo' => 'bar'],
+            ['id' => 'a', 'foo' => 'baz'],
+            ['id' => 'b', 'foo' => 'pop'],
+        ];
+
+        $this->assertEquals(
+            [['id' => 'a', 'foo' => 'bar'], ['id' => 'a', 'foo' => 'baz']],
+            ListUtils::filter($arr, StructComparer::byKey('id', 'a'))
+        );
+
+        $this->assertEquals(
+            ['id' => 'b', 'foo' => 'pop'],
+            ListUtils::first($arr, StructComparer::byKey('id', 'b'))
+        );
     }
 }

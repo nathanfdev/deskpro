@@ -103,24 +103,6 @@ class UsersourceManager
     }
 
     /**
-     * Get all installed usersources.
-     *
-     * @return \Application\DeskPRO\Entity\Usersource[]
-     *
-     * @deprecated use getAll() and filter with UsersourceCollection as needed
-     */
-    public function getUsersources()
-    {
-        if ($this->usersources !== null) {
-            return $this->usersources;
-        }
-
-        $this->usersources = $this->em->getRepository('DeskPRO:Usersource')->getAllUsersources(true);
-
-        return $this->usersources;
-    }
-
-    /**
      * Get all usersources for the agent/admin area.
      *
      * @return \Application\DeskPRO\Usersource\UsersourceCollection|\Application\DeskPRO\Entity\Usersource[]
@@ -130,49 +112,6 @@ class UsersourceManager
         return new UsersourceCollection(
             $this->em->getRepository('DeskPRO:Usersource')->getAll()
         );
-    }
-
-    /**
-     * @param string $type
-     *
-     * @return \Application\DeskPRO\Entity\Usersource[]
-     *
-     * @deprecated use getAll() and filter with UsersourceCollection as needed
-     */
-    public function getUsersourcesOfType($type)
-    {
-        $ret = [];
-
-        $type = strtolower($type);
-
-        foreach ($this->getUsersources() as $us) {
-            if (strtolower($us->source_type) == $type) {
-                $ret[$us->id] = $us;
-            }
-        }
-
-        return $ret;
-    }
-
-    /**
-     * Get usersources with a certain capability.
-     *
-     * @param $capability
-     *
-     * @return \Application\DeskPRO\Entity\Usersource[]
-     *
-     * @deprecated use getAll() and filter with UsersourceCollection as needed
-     */
-    public function getWithCapability($capability)
-    {
-        $ret = [];
-        foreach ($this->getUsersources() as $us) {
-            if ($us->getAdapter()->isCapable($capability)) {
-                $ret[] = $us;
-            }
-        }
-
-        return $ret;
     }
 
     /**

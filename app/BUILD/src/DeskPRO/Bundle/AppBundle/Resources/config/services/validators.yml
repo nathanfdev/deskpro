@@ -135,6 +135,13 @@ services:
     tags:
       - { name: validator.constraint_validator }
 
+  validator.custom_field_file:
+    class: DeskPRO\Bundle\AppBundle\Validator\Constraints\CustomField\FileValidator
+    arguments:
+      - "@doctrine.orm.default_entity_manager"
+    tags:
+      - { name: validator.constraint_validator }
+
   validator.dpql_query:
     class: DeskPRO\Bundle\AppBundle\Validator\Constraints\Reports\DpqlQueryValidator
     arguments:
@@ -146,5 +153,12 @@ services:
     class: DeskPRO\Bundle\AppBundle\Validator\Constraints\ObjectAliasValidator
     arguments:
       - "@doctrine.orm.default_entity_manager"
+    tags:
+      - { name: validator.constraint_validator }
+
+  validator.blob_restriction_set:
+    class: DeskPRO\Bundle\AppBundle\Validator\Constraints\BlobRestrictionSetValidator
+    arguments:
+      - "@attachment_accepter"
     tags:
       - { name: validator.constraint_validator }

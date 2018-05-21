@@ -3,6 +3,7 @@
 namespace DeskPRO\Bundle\ReportBundle\Dpql2\Helper;
 
 use Application\DeskPRO\CustomFields\BillingFieldManager;
+use Application\DeskPRO\CustomFields\FieldManager;
 use Application\DeskPRO\CustomFields\OrganizationFieldManager;
 use Application\DeskPRO\CustomFields\PersonFieldManager;
 use Application\DeskPRO\CustomFields\TicketFieldManager;
@@ -54,15 +55,23 @@ class CustomDataHelper
     }
 
     /**
-     * @param string     $customDataTable
-     * @param int|string $fieldId
+     * @param $customDataTable
      *
-     * @return CustomDefAbstract|null
+     * @return mixed
      */
-    public function getCustomField($customDataTable, $fieldId)
+    public function getDefTable($customDataTable)
     {
-        $customDefTable = str_replace('_data_', '_def_', $customDataTable);
-        switch ($customDefTable) {
+        return str_replace('_data_', '_def_', $customDataTable);
+    }
+
+    /**
+     * @param $customDataTable
+     *
+     * @return FieldManager|null
+     */
+    public function getFieldManager($customDataTable)
+    {
+        switch ($this->getDefTable($customDataTable)) {
             case 'custom_def_ticket':
                 $manager = $this->ticketFieldManager;
                 break;
@@ -79,6 +88,19 @@ class CustomDataHelper
                 $manager = null;
                 break;
         }
+
+        return $manager;
+    }
+
+    /**
+     * @param string     $customDataTable
+     * @param int|string $fieldId
+     *
+     * @return CustomDefAbstract|null
+     */
+    public function getCustomField($customDataTable, $fieldId)
+    {
+        $manager = $this->getFieldManager($customDataTable);
 
         $field = null;
         if ($manager) {

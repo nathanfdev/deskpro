@@ -6,7 +6,6 @@
 
 namespace DeskPRO\Bundle\DevBundle\Command\Reports;
 
-use Application\DeskPRO\App;
 use Application\DeskPRO\Entity\ReportDashboardReport;
 use Symfony\Bundle\FrameworkBundle\Command\ContainerAwareCommand;
 use Symfony\Component\Console\Input\InputInterface;
@@ -23,7 +22,9 @@ class SaveReportCommand extends ContainerAwareCommand
     {
         $this
             ->setName('dpdev:reports:save-report')
-            ->addArgument('reportId', InputOption::VALUE_REQUIRED, 'The ID of the report to save');
+            ->addArgument('reportId', InputOption::VALUE_REQUIRED, 'The ID of the report to save')
+            ->addOption('pdf',  null, InputOption::VALUE_NONE, 'Save report as pdf')
+            ->addOption('pdf-name',  null, InputOption::VALUE_OPTIONAL, 'Save pdf with this name');
     }
 
     /**
@@ -31,12 +32,11 @@ class SaveReportCommand extends ContainerAwareCommand
      */
     protected function execute(InputInterface $input, OutputInterface $output)
     {
-        App::setCurrentPerson();
         $em       = $this->getContainer()->get('doctrine.orm.default_entity_manager');
         $reportId = $input->getArgument('reportId');
         /** @var ReportDashboardReport $report */
         $report      = $em->getRepository(ReportDashboardReport::class)->find($reportId);
-        $reportSaver = $this->getContainer()->get('deskpro.reports.saver');
+        $reportSaver = $this->getContainer()->get('reports.report_saver');
         $savedReport = $reportSaver->saveReport($report);
         $url         = $this
             ->getContainer()
@@ -49,6 +49,11 @@ class SaveReportCommand extends ContainerAwareCommand
                 ],
                 UrlGeneratorInterface::ABSOLUTE_URL
             );
-        $output->writeln($url);
+        $output->writeln('Link to report: '.$url);
+
+        if ($input->getOption('pdf')) {
+            $generator = $this->getContainer()->get('reports.report_pdf_generator');
+            $output->writeln('Saved pdf file: '.$generator->savePdf($savedReport, $url, $input->getOption('pdf-name')));
+        }
     }
 }

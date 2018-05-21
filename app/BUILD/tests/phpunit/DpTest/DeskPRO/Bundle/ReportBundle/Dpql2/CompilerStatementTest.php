@@ -17,7 +17,7 @@ WHERE tickets.id IN (1, 2, 3)
 DPQL
             ,
             <<<'SQL'
-SELECT `tickets`.`id`
+SELECT /*+ MAX_EXECUTION_TIME(30000) */ `tickets`.`id`
 FROM `tickets`
 WHERE `tickets`.`id` IN (1, 2, 3)
 LIMIT 2500
@@ -35,7 +35,7 @@ WHERE tickets.urgency IN (1, 2, 3)
 DPQL
             ,
             <<<'SQL'
-SELECT `tickets`.`subject`
+SELECT /*+ MAX_EXECUTION_TIME(30000) */ `tickets`.`subject`
 FROM `tickets`
 WHERE `tickets`.`urgency` IN (1, 2, 3)
 LIMIT 2500
@@ -54,7 +54,7 @@ ORDER BY @'Tickets' DESC
 DPQL
             ,
             <<<'SQL'
-SELECT COUNT(*), `tickets_agent`.`id`,
+SELECT /*+ MAX_EXECUTION_TIME(30000) */ COUNT(*), `tickets_agent`.`id`,
 (CASE
     WHEN (LENGTH(tickets_agent.first_name) > 0 AND LENGTH(tickets_agent.last_name) > 0) THEN CONCAT(tickets_agent.first_name, ' ', tickets_agent.last_name)
     WHEN LENGTH(tickets_agent.name) > 0 THEN tickets_agent.name
@@ -81,7 +81,7 @@ WHERE tickets.urgency > 1
 DPQL
             ,
             <<<'SQL'
-SELECT `tickets`.`urgency`
+SELECT /*+ MAX_EXECUTION_TIME(30000) */ `tickets`.`urgency`
 FROM `tickets`
 WHERE (`tickets`.`urgency` > 1)
 LIMIT 2500
@@ -98,7 +98,7 @@ FROM tickets
 DPQL
             ,
             <<<'SQL'
-SELECT (`tickets`.`date_created` + INTERVAL 1 DAY)
+SELECT /*+ MAX_EXECUTION_TIME(30000) */ (`tickets`.`date_created` + INTERVAL 1 DAY)
 FROM `tickets`
 LIMIT 2500
 SQL
@@ -114,7 +114,7 @@ FROM tickets
 DPQL
             ,
             <<<'SQL'
-SELECT (`tickets`.`urgency` + 100)
+SELECT /*+ MAX_EXECUTION_TIME(30000) */ (`tickets`.`urgency` + 100)
 FROM `tickets`
 LIMIT 2500
 SQL
@@ -130,7 +130,7 @@ FROM tickets
 DPQL
             ,
             <<<'SQL'
-SELECT `tickets`.`subject`, `tickets_person`.`id`,
+SELECT /*+ MAX_EXECUTION_TIME(30000) */ `tickets`.`subject`, `tickets_person`.`id`,
 (CASE
     WHEN (LENGTH(tickets_person.first_name) > 0 AND LENGTH(tickets_person.last_name) > 0) THEN CONCAT(tickets_person.first_name, ' ', tickets_person.last_name)
     WHEN LENGTH(tickets_person.name) > 0 THEN tickets_person.name
@@ -155,7 +155,7 @@ FROM tickets
 DPQL
             ,
             <<<'SQL'
-SELECT `tickets`.`id`, `tickets`.`ref`, `tickets`.`auth`, `tickets`.`sent_to_address`, `tickets`.`email_account_address`, `tickets`.`creation_system`, `tickets`.`creation_system_option`, `tickets`.`ticket_hash`, `tickets`.`status`, `tickets`.`hidden_status`, `tickets`.`is_hold`, `tickets`.`urgency`, `tickets`.`count_agent_replies`, `tickets`.`count_user_replies`, `tickets`.`feedback_rating`, `tickets`.`date_feedback_rating`, `tickets`.`date_created`, `tickets`.`date_resolved`, `tickets`.`date_archived`, `tickets`.`date_first_agent_assign`, `tickets`.`date_first_agent_reply`, `tickets`.`date_last_agent_reply`, `tickets`.`date_last_user_reply`, `tickets`.`date_agent_waiting`, `tickets`.`date_user_waiting`, `tickets`.`date_status`, `tickets`.`date_on_hold`, (`tickets`.`total_user_waiting` + IF(`tickets`.date_user_waiting AND `tickets`.status = 'awaiting_agent', UNIX_TIMESTAMP() - UNIX_TIMESTAMP(`tickets`.date_user_waiting), 0)), `tickets`.`total_to_first_reply`, `tickets`.`date_locked`, `tickets`.`has_attachments`, `tickets`.`subject`, `tickets`.`original_subject`, `tickets`.`properties`, `tickets`.`worst_sla_status`, `tickets`.`waiting_times`, `tickets_parent_ticket`.`id`, `tickets_parent_ticket`.`subject`, `tickets_language`.`title`, `tickets_brand`.`name`, `tickets_department`.`title`, `tickets_category`.`title`, `tickets_priority`.`title`, `tickets_workflow`.`title`, `tickets_product`.`title`, `tickets_person`.`id`,
+SELECT /*+ MAX_EXECUTION_TIME(30000) */ `tickets`.`id`, `tickets`.`ref`, `tickets`.`auth`, `tickets`.`sent_to_address`, `tickets`.`email_account_address`, `tickets`.`creation_system`, `tickets`.`creation_system_option`, `tickets`.`ticket_hash`, `tickets`.`status`, `tickets`.`hidden_status`, `tickets`.`is_hold`, `tickets`.`urgency`, `tickets`.`count_agent_replies`, `tickets`.`count_user_replies`, `tickets`.`feedback_rating`, `tickets`.`date_feedback_rating`, `tickets`.`date_created`, `tickets`.`date_resolved`, `tickets`.`date_archived`, `tickets`.`date_first_agent_assign`, `tickets`.`date_first_agent_reply`, `tickets`.`date_last_agent_reply`, `tickets`.`date_last_user_reply`, `tickets`.`date_agent_waiting`, `tickets`.`date_user_waiting`, `tickets`.`date_status`, `tickets`.`date_on_hold`, (`tickets`.`total_user_waiting` + IF(`tickets`.date_user_waiting AND `tickets`.status = 'awaiting_agent', UNIX_TIMESTAMP() - UNIX_TIMESTAMP(`tickets`.date_user_waiting), 0)), `tickets`.`total_to_first_reply`, `tickets`.`date_locked`, `tickets`.`has_attachments`, `tickets`.`subject`, `tickets`.`original_subject`, `tickets`.`properties`, `tickets`.`worst_sla_status`, `tickets`.`waiting_times`, `tickets_parent_ticket`.`id`, `tickets_parent_ticket`.`subject`, `tickets_language`.`title`, `tickets_brand`.`name`, `tickets_department`.`title`, `tickets_category`.`title`, `tickets_priority`.`title`, `tickets_workflow`.`title`, `tickets_product`.`title`, `tickets_person`.`id`,
 (CASE
     WHEN (LENGTH(tickets_person.first_name) > 0 AND LENGTH(tickets_person.last_name) > 0) THEN CONCAT(tickets_person.first_name, ' ', tickets_person.last_name)
     WHEN LENGTH(tickets_person.name) > 0 THEN tickets_person.name
@@ -207,9 +207,9 @@ WHERE EXISTS (
 DPQL
             ,
             <<<'SQL'
-SELECT `tickets`.`ref`
+SELECT /*+ MAX_EXECUTION_TIME(30000) */ `tickets`.`ref`
 FROM `tickets`
-WHERE  EXISTS (SELECT `people`.`id`, `tickets_person`.`id`
+WHERE  EXISTS (SELECT /*+ MAX_EXECUTION_TIME(30000) */ `people`.`id`, `tickets_person`.`id`
 FROM `people`
 LEFT JOIN `tickets` AS `tickets_person` ON (`tickets`.`person_id` = `tickets_person`.`id`)
 WHERE (`people`.`id` = `tickets_person`.`id`)
@@ -233,9 +233,9 @@ WHERE NOT EXISTS (
 DPQL
             ,
             <<<'SQL'
-SELECT `tickets`.`ref`
+SELECT /*+ MAX_EXECUTION_TIME(30000) */ `tickets`.`ref`
 FROM `tickets`
-WHERE (NOT  EXISTS (SELECT `people`.`id`, `tickets_person`.`id`
+WHERE (NOT  EXISTS (SELECT /*+ MAX_EXECUTION_TIME(30000) */ `people`.`id`, `tickets_person`.`id`
 FROM `people`
 LEFT JOIN `tickets` AS `tickets_person` ON (`tickets`.`person_id` = `tickets_person`.`id`)
 WHERE (`people`.`id` = `tickets_person`.`id`)
@@ -255,7 +255,7 @@ WHERE tickets.urgency IN (1, 2, 3)
 DPQL
             ,
             <<<'SQL'
-SELECT `tickets`.`urgency`
+SELECT /*+ MAX_EXECUTION_TIME(30000) */ `tickets`.`urgency`
 FROM `tickets`
 WHERE `tickets`.`urgency` IN (1, 2, 3)
 LIMIT 2500
@@ -272,7 +272,7 @@ FROM tickets
 DPQL
             ,
             <<<'SQL'
-SELECT (SELECT `people`.`name` FROM `people` WHERE (`people`.`id` = `tickets`.`person_id`) LIMIT 2500)
+SELECT /*+ MAX_EXECUTION_TIME(30000) */ (SELECT /*+ MAX_EXECUTION_TIME(30000) */ `people`.`name` FROM `people` WHERE (`people`.`id` = `tickets`.`person_id`) LIMIT 2500)
 FROM `tickets`
 LIMIT 2500
 SQL
@@ -288,7 +288,7 @@ FROM tickets
 DPQL
             ,
             <<<'SQL'
-SELECT CONCAT(((COUNT(*) * 100) / (SELECT `people`.`id` FROM `people` WHERE (`people`.`id` = `tickets`.`person_id`) LIMIT 2500)), '%')
+SELECT /*+ MAX_EXECUTION_TIME(30000) */ CONCAT(((COUNT(*) * 100) / (SELECT /*+ MAX_EXECUTION_TIME(30000) */ `people`.`id` FROM `people` WHERE (`people`.`id` = `tickets`.`person_id`) LIMIT 2500)), '%')
 FROM `tickets`
 LIMIT 2500
 SQL
@@ -303,8 +303,8 @@ SELECT people.id FROM (SELECT people.id FROM people) AS people
 DPQL
             ,
             <<<'SQL'
-SELECT `people`.`id`
-FROM (SELECT `people`.`id` FROM `people` LIMIT 2500) AS people
+SELECT /*+ MAX_EXECUTION_TIME(30000) */ `people`.`id`
+FROM (SELECT /*+ MAX_EXECUTION_TIME(30000) */ `people`.`id` FROM `people` LIMIT 2500) AS people
 LIMIT 2500
 SQL
         );
@@ -324,9 +324,9 @@ WHERE tickets.ref IN (
 DPQL
             ,
             <<<'SQL'
-SELECT `tickets`.`ref`
+SELECT /*+ MAX_EXECUTION_TIME(30000) */ `tickets`.`ref`
 FROM `tickets`
-WHERE `tickets`.`ref` IN (SELECT `tickets`.`ref`
+WHERE `tickets`.`ref` IN (SELECT /*+ MAX_EXECUTION_TIME(30000) */ `tickets`.`ref`
 FROM `tickets`
 WHERE (`tickets`.`ref` = 'AAAA-%')
 LIMIT 2500)
@@ -349,9 +349,9 @@ WHERE tickets.ref NOT IN (
 DPQL
             ,
             <<<'SQL'
-SELECT `tickets`.`ref`
+SELECT /*+ MAX_EXECUTION_TIME(30000) */ `tickets`.`ref`
 FROM `tickets`
-WHERE `tickets`.`ref` NOT IN (SELECT `tickets`.`ref`
+WHERE `tickets`.`ref` NOT IN (SELECT /*+ MAX_EXECUTION_TIME(30000) */ `tickets`.`ref`
 FROM `tickets`
 WHERE (`tickets`.`ref` = 'AAAA-%')
 LIMIT 2500)
@@ -370,7 +370,7 @@ WHERE tickets.ref LIKE 'AAAA-%'
 DPQL
             ,
             <<<'SQL'
-SELECT `tickets`.`ref`
+SELECT /*+ MAX_EXECUTION_TIME(30000) */ `tickets`.`ref`
 FROM `tickets`
 WHERE `tickets`.`ref` LIKE 'AAAA-%'
 LIMIT 2500
@@ -388,7 +388,7 @@ WHERE tickets.agent_id = NULL
 DPQL
             ,
             <<<'SQL'
-SELECT `tickets`.`ref`
+SELECT /*+ MAX_EXECUTION_TIME(30000) */ `tickets`.`ref`
 FROM `tickets`
 WHERE (`tickets`.`agent_id` IS NULL)
 LIMIT 2500
@@ -406,7 +406,7 @@ WHERE tickets.urgency > 1
 DPQL
             ,
             <<<'SQL'
-SELECT `tickets`.`urgency`
+SELECT /*+ MAX_EXECUTION_TIME(30000) */ `tickets`.`urgency`
 FROM `tickets`
 WHERE (`tickets`.`urgency` > 1)
 LIMIT 2500
@@ -424,7 +424,7 @@ ORDER BY tickets.urgency DESC
 DPQL
             ,
             <<<'SQL'
-SELECT `tickets`.`urgency`
+SELECT /*+ MAX_EXECUTION_TIME(30000) */ `tickets`.`urgency`
 FROM `tickets`
 ORDER BY `tickets`.`urgency` DESC
 LIMIT 2500
@@ -442,7 +442,7 @@ WHERE (tickets.urgency > 1 AND tickets.urgency < 3) OR (tickets.urgency > 8 AND 
 DPQL
             ,
             <<<'SQL'
-SELECT `tickets`.`urgency`
+SELECT /*+ MAX_EXECUTION_TIME(30000) */ `tickets`.`urgency`
 FROM `tickets`
 WHERE (((`tickets`.`urgency` > 1) AND (`tickets`.`urgency` < 3)) OR ((`tickets`.`urgency` > 8) AND (`tickets`.`urgency` < 10)))
 LIMIT 2500
@@ -460,7 +460,7 @@ WHERE tickets.ref REGEXP 'AAAA-%'
 DPQL
             ,
             <<<'SQL'
-SELECT `tickets`.`ref`
+SELECT /*+ MAX_EXECUTION_TIME(30000) */ `tickets`.`ref`
 FROM `tickets`
 WHERE `tickets`.`ref` REGEXP 'AAAA-%'
 LIMIT 2500
@@ -478,7 +478,7 @@ WHERE tickets.ref = 'AAAA'
 DPQL
             ,
             <<<'SQL'
-SELECT `tickets`.`ref`
+SELECT /*+ MAX_EXECUTION_TIME(30000) */ `tickets`.`ref`
 FROM `tickets`
 WHERE (`tickets`.`ref` = 'AAAA')
 LIMIT 2500
@@ -495,7 +495,7 @@ FROM tickets
 DPQL
             ,
             <<<'SQL'
-SELECT (-`tickets`.`urgency`)
+SELECT /*+ MAX_EXECUTION_TIME(30000) */ (-`tickets`.`urgency`)
 FROM `tickets`
 LIMIT 2500
 SQL
@@ -515,11 +515,11 @@ FROM (
 DPQL
             ,
             <<<'SQL'
-SELECT `tickets`.`id`
+SELECT /*+ MAX_EXECUTION_TIME(30000) */ `tickets`.`id`
 FROM (
-  (SELECT `tickets`.`id` FROM `tickets` LIMIT 2500)
+  (SELECT /*+ MAX_EXECUTION_TIME(30000) */ `tickets`.`id` FROM `tickets` LIMIT 2500)
   UNION DISTINCT
-  (SELECT `tickets`.`id` FROM `tickets` LIMIT 2500)
+  (SELECT /*+ MAX_EXECUTION_TIME(30000) */ `tickets`.`id` FROM `tickets` LIMIT 2500)
 ) AS tickets
 LIMIT 2500
 SQL
@@ -539,11 +539,11 @@ FROM (
 DPQL
             ,
             <<<'SQL'
-SELECT `tickets`.`id`
+SELECT /*+ MAX_EXECUTION_TIME(30000) */ `tickets`.`id`
 FROM (
-  (SELECT `tickets`.`id` FROM `tickets` LIMIT 2500)
+  (SELECT /*+ MAX_EXECUTION_TIME(30000) */ `tickets`.`id` FROM `tickets` LIMIT 2500)
   UNION DISTINCT
-  (SELECT `tickets`.`id` FROM `tickets` LIMIT 2500)
+  (SELECT /*+ MAX_EXECUTION_TIME(30000) */ `tickets`.`id` FROM `tickets` LIMIT 2500)
 ) AS tickets
 LIMIT 2500
 SQL
@@ -563,11 +563,11 @@ FROM (
 DPQL
             ,
             <<<'SQL'
-SELECT `tickets`.`id`
+SELECT /*+ MAX_EXECUTION_TIME(30000) */ `tickets`.`id`
 FROM (
-  (SELECT `tickets`.`id` FROM `tickets` LIMIT 2500)
+  (SELECT /*+ MAX_EXECUTION_TIME(30000) */ `tickets`.`id` FROM `tickets` LIMIT 2500)
   UNION ALL
-  (SELECT `tickets`.`id` FROM `tickets` LIMIT 2500)
+  (SELECT /*+ MAX_EXECUTION_TIME(30000) */ `tickets`.`id` FROM `tickets` LIMIT 2500)
 ) AS tickets
 LIMIT 2500
 SQL
@@ -593,16 +593,16 @@ FROM (
 DPQL
             ,
             <<<'SQL'
-SELECT `tickets`.`id` FROM (
-  (SELECT `tickets`.`id` FROM `tickets` LIMIT 2500)
+SELECT /*+ MAX_EXECUTION_TIME(30000) */ `tickets`.`id` FROM (
+  (SELECT /*+ MAX_EXECUTION_TIME(30000) */ `tickets`.`id` FROM `tickets` LIMIT 2500)
   UNION DISTINCT
-  (SELECT `tickets`.`id` FROM `tickets` LIMIT 2500)
+  (SELECT /*+ MAX_EXECUTION_TIME(30000) */ `tickets`.`id` FROM `tickets` LIMIT 2500)
   UNION DISTINCT
-  (SELECT `tickets`.`id` FROM `tickets` LIMIT 2500)
+  (SELECT /*+ MAX_EXECUTION_TIME(30000) */ `tickets`.`id` FROM `tickets` LIMIT 2500)
   UNION DISTINCT
-  (SELECT `tickets`.`id` FROM `tickets` LIMIT 2500)
+  (SELECT /*+ MAX_EXECUTION_TIME(30000) */ `tickets`.`id` FROM `tickets` LIMIT 2500)
   UNION ALL
-  (SELECT `tickets`.`id` FROM `tickets` LIMIT 2500)
+  (SELECT /*+ MAX_EXECUTION_TIME(30000) */ `tickets`.`id` FROM `tickets` LIMIT 2500)
 ) AS tickets LIMIT 2500
 SQL
         );
@@ -621,11 +621,11 @@ FROM (
 DPQL
             ,
             <<<'SQL'
-SELECT `tickets`.`id`
+SELECT /*+ MAX_EXECUTION_TIME(30000) */ `tickets`.`id`
 FROM (
-  (SELECT `tickets`.`id` FROM `tickets` LIMIT 2500)
+  (SELECT /*+ MAX_EXECUTION_TIME(30000) */ `tickets`.`id` FROM `tickets` LIMIT 2500)
   UNION DISTINCT
-  (SELECT `people`.`id` FROM `people` LIMIT 2500)
+  (SELECT /*+ MAX_EXECUTION_TIME(30000) */ `people`.`id` FROM `people` LIMIT 2500)
 ) AS tickets
 LIMIT 2500
 SQL
@@ -676,7 +676,7 @@ SELECT DPQL_COUNT(), snippets.id FROM snippets WHERE snippets.date_created > '20
 DPQL
             ,
             <<<'SQL'
-SELECT COUNT(*), `snippets`.`id`
+SELECT /*+ MAX_EXECUTION_TIME(30000) */ COUNT(*), `snippets`.`id`
 FROM `snippets`
 WHERE (`snippets`.`date_created` > '2018-01-25')
 LIMIT 2500

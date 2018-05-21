@@ -1,7 +1,11 @@
 @import "lib";
 @import 'variables';
-@import 'report-builder-table';
-@import '../../../../../pub/src/DeskPRO/Bundle/AppBundle/Resources/style/variables.scss';
+@import '../../../../node_modules/bootstrap/scss/functions';
+@import '../../../../node_modules/bootstrap/scss/mixins';
+@import '../../../../node_modules/bootstrap/scss/variables';
+@import '../../../../node_modules/bootstrap/scss/dropdown';
+@import '../../../../node_modules/bootstrap/scss/type';
+@import "../../../../vendor/eonasdan-bootstrap-datetimepicker/build/css/bootstrap-datetimepicker.css";
 
 $tablet: new-breakpoint(max-width 960px 6);
 $mobile: new-breakpoint(max-width 640px 6);
@@ -34,22 +38,15 @@ a {
 @import 'top-bar';
 @import 'content';
 @import 'dropdowns';
-@import 'live-search';
 @import 'forms';
 @import 'sidebar-kb';
 @import 'user-preferences';
 @import 'misc';
-@import 'reports';
 @import 'tooltips';
 @import 'editor';
-@import 'reports-overview';
 @import 'ticket_satisfaction';
 @import 'agent_performance';
 @import 'legacy-appstrip';
-
-@import 'dashboards/dashboards';
-@import 'dashboards/data-tables';
-@import 'dashboards/gridster';
 
 // To keep a set width sidebar with a full width content columns: float left and give the content container
 // padding-left equal to the full width of the sidebars.
@@ -61,7 +58,7 @@ a {
 //    A(pp-bar) + sidebar = content padding-left
 //
 
-$app-nav-width: 230px;
+$app-nav-width: 215px;
 $sidebar-width: 220px;
 $report-list-width: 555px;
 $content-width: $app-nav-width + $sidebar-width;
@@ -119,4 +116,8 @@ $content-width: $app-nav-width + $sidebar-width;
 }
 .clearfix {
   @include clearfix;
+}
+
+.table-condensed > thead > tr > th, .table-condensed > tbody > tr > th, .table-condensed > tfoot > tr > th, .table-condensed > thead > tr > td, .table-condensed > tbody > tr > td, .table-condensed > tfoot > tr > td {
+  padding: 5px;
 }

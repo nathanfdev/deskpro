@@ -238,6 +238,56 @@
 {# /Usergroups #}
 
 
+{# Brands #}
+{% if brands|length %}
+  {{ dp_app_loc(baseId, 'userbrands.before') }}
+  <div data-deskproapp="person-brands-before"></div>
+  <div class="profile-box-container dp-simpletab-container summary" id="{{ baseId }}_brands_box">
+      <header>
+          {% if perms.edit %}
+              <div class="controls">
+                  <span class="edit-gear edit-trigger"></span>
+                  <div class="is-loading">{{ phrase('agent.general.saving') }}</div>
+                  <button class="cancel cancel-trigger"
+                          style="display: none">{{ phrase('agent.general.cancel') }}</button>
+                  <button class="save save-trigger" style="display: none">{{ phrase('agent.general.save') }}</button>
+              </div>
+          {% endif %}
+      <nav>
+              <ul>
+                  <li data-tab-for="#{{ baseId }}_brands_body">{{ phrase('agent.general.brands') }}</li>
+              </ul>
+          </nav>
+      </header>
+      <section>
+          <div id="{{ baseId }}_brands_body">
+              <div id="{{ baseId }}_brands_display_box" class="contact-list">
+                  <ul>
+                      {% for brand in brands %}
+                          <li class="brand-row brand-row-{{ brand.id }} {% if brand.id == default_brand_id %}default-brand{% endif %}"
+                              style="padding-left:0;{% if not person.hasBrand(brand) %}display: none{% endif %}">{{ brand.name }}</li>
+                      {% endfor %}
+                  </ul>
+              </div>
+              <div id="{{ baseId }}_brands_edit_box" class="contact-list" style="display: none;">
+                  <ul>
+                      {% for brand in brands %}
+                          <div>
+                              <label><input type="checkbox" value="{{ brand.id }}" name="brand_ids[]"
+                                            class="brand-check brand-check-{{ brand.id }} {% if brand.id == default_brand_id %}default-brand{% endif %}"
+                                            {% if person.hasBrand(brand) %}checked="checked"{% endif %} /> {{ brand.name }}
+                              </label>
+                          </div>
+                      {% endfor %}
+                  </ul>
+              </div>
+          </div>
+      </section>
+  </div>
+  {{ dp_app_loc(baseId, 'userbrands.after') }}
+  <div data-deskproapp="person-brands-after"></div>
+{% endif %}
+{# /Brands #}
 
 
 {# Usersources #}

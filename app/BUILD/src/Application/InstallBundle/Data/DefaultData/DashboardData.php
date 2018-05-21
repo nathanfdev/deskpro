@@ -76,7 +76,7 @@ class DashboardData extends AbstractDefaultData
                             ],
                         ],
                         [
-                            'title'      => 'Avg Response Time',
+                            'title'      => 'Re Time This Mo',
                             'position'   => '0:4',
                             'size'       => '1:1',
                             'widget_key' => 'avg-response-time-x-date',
@@ -85,7 +85,7 @@ class DashboardData extends AbstractDefaultData
                                 [
                                     'name'  => 'date',
                                     'type'  => 'dates',
-                                    'value' => 'today',
+                                    'value' => 'this_month',
                                 ],
                             ],
                         ],
@@ -138,7 +138,7 @@ class DashboardData extends AbstractDefaultData
                             'size'       => '2:2',
                             'widget_key' => 'number-tickets-status-grouped-by-x-y',
                             'type'       => 'simple_bars',
-                            'options'    => '{"legend":false,"categoryAxis":{"title":null},"valueAxes":[{"stackType": "regular", "title": null}],"categoryAxis":{"labelRotation": 45}}',
+                            'options'    => '{"legend":false,"labelsEnabled":false,"allGraphs":{"balloonText":"Tickets: [[value]]"},"valueAxes":[{"stackType": "regular", "title": null}],"categoryAxis":{"labelRotation":45,"title":null}}',
                             'variables'  => [
                                 [
                                         'name'       => 'ticket',
@@ -172,7 +172,7 @@ class DashboardData extends AbstractDefaultData
                             'size'       => '2:2',
                             'widget_key' => 'number-tickets-status-grouped-by-x-y',
                             'type'       => 'simple_bars',
-                            'options'    => '{"legend":false,"valueAxes":[{"stackType": "regular", "title": null}],"categoryAxis":{"title":null}}',
+                            'options'    => '{"legend":false,"labelsEnabled":false,"allGraphs":{"balloonText":"Tickets: [[value]]"},"valueAxes":[{"stackType": "regular", "title": null}],"categoryAxis":{"labelRotation":45,"title":null}}',
                             'variables'  => [
 
                                 [
@@ -202,19 +202,13 @@ class DashboardData extends AbstractDefaultData
                             ],
                         ],
                         [
-                            'title'      => 'Replies Today',
+                            'title'      => 'Replies Past 24h',
                             'position'   => '1:4',
                             'size'       => '4:2',
-                            'widget_key' => 'daily-activity',
+                            'widget_key' => 'agent-replies-by-hour',
                             'type'       => 'simple_bars',
-                            'variables'  => [
-                                [
-                                    'name'  => 'date',
-                                    'type'  => 'dates',
-                                    'value' => 'yesterday',
-                                ],
-                            ],
-                            'options' => '{"legend":false}',
+                            'variables'  => [],
+                            'options'    => '{"legend":false}',
                         ],
                         // 3rd row
                         [
@@ -239,7 +233,7 @@ class DashboardData extends AbstractDefaultData
                             'widget_key' => 'incomplete-sla',
                             'type'       => 'pie',
                             'variables'  => [],
-                            'options'    => '{"legend":false,"labelsEnabled":false}',
+                            'options'    => '{"legend":false,"labelsEnabled":false, "pieColors": {"ok": "#008000", "fail": "#f80000", "warning": "#fde910"}}',
                         ],
                         [
                             'title'      => 'New Tickets by Channel',
@@ -398,6 +392,7 @@ class DashboardData extends AbstractDefaultData
                 ],
             ],
         ],
+        /*
         [
             'title'         => 'Chat Insights',
             'system_name'   => 'chat_insights',
@@ -409,6 +404,7 @@ class DashboardData extends AbstractDefaultData
                 ],
             ],
         ],
+        */
     ];
 
     /**

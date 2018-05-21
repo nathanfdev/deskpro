@@ -1,0 +1,222 @@
+<?php
+
+namespace DeskPRO\Bundle\AppBundle\TicketFilters\Diff;
+
+use DeskPRO\Bundle\AppBundle\TicketFilters\Context;
+use DeskPRO\Bundle\AppBundle\TicketFilters\Model\Agent;
+use DeskPRO\Bundle\AppBundle\TicketFilters\Model\Filter;
+use DeskPRO\Component\Util\ListUtils;
+
+/**
+ * Helps compute a diff of changes to filters given a TicketChange. Use this to deliver +1/-1 type messages to the end user.
+ */
+class FilterDiffer
+{
+    /**
+     * @var DiffEnv
+     */
+    private $diffEnv;
+
+    /**
+     * Differ constructor.
+     *
+     * @param DiffEnv $diffEnv
+     */
+    public function __construct(DiffEnv $diffEnv)
+    {
+        $this->diffEnv = $diffEnv;
+    }
+
+    /**
+     * @param TicketChange $ticketChange
+     *
+     * @return FilterOp[]
+     */
+    public function getFilterChangeOperations(TicketChange $ticketChange)
+    {
+        $ticketA = $ticketChange->getTicketA();
+        $ticketB = $ticketChange->getTicketB();
+
+        $matcher         = $this->diffEnv->getTicketMatcher();
+        $changedFields   = $ticketChange->getChangedFields();
+        $affectedFilters = $this->diffEnv->getFiltersWithAnyField($changedFields);
+
+        if (empty($affectedFilters)) {
+            return [];
+        }
+
+        $affectedAgentIds = [];
+        foreach ($affectedFilters as $f) {
+            $affectedAgentIds = array_merge($affectedAgentIds, $f->agents);
+        }
+        $affectedAgentIds = ListUtils::unique($affectedAgentIds);
+
+        $agentSets = $this->getAgentSets($ticketChange, $affectedAgentIds);
+
+        $filterOps = [];
+        foreach ($affectedFilters as $filter) {
+            $filterOp = new FilterOp($filter->id);
+
+            foreach ($agentSets as $agentSet) {
+                $agentContexts = ListUtils::filter($agentSet['agentContexts'], function ($a) use ($filter) {
+                    return in_array($a->getAgentId(), $filter->agents);
+                });
+                if (empty($agentContexts)) {
+                    continue;
+                }
+
+                //------------------------------
+                // Filter contains context-specific terms
+                //------------------------------
+
+                if ($this->diffEnv->isFilterContextUnique($filter->id)) {
+                    foreach ($agentContexts as $agentContext) {
+                        if ($agentSet['viewBefore']) {
+                            $matchBefore = $matcher->doesQueryMatch($filter->query, $ticketA, $agentContext);
+                        } else {
+                            $matchBefore = false;
+                        }
+
+                        if ($agentSet['viewAfter']) {
+                            $matchAfter = $matcher->doesQueryMatch($filter->query, $ticketB, $agentContext);
+                        } else {
+                            $matchAfter = false;
+                        }
+
+                        if ($matchBefore && !$matchAfter) {
+                            $filterOp->addDelAgentId($agentContext->getAgentId());
+                        } elseif (!$matchBefore && $matchAfter) {
+                            $filterOp->addAddAgentId($agentContext->getAgentId());
+                        }
+                        if ($matchBefore) {
+                            $filterOp->addBeforeMatchAgentId($agentContext->getAgentId());
+                        }
+                        if ($matchAfter) {
+                            $filterOp->addAfterMatchAgentId($agentContext->getAgentId());
+                        }
+                    }
+
+                //------------------------------
+                // Common terms, we only need to run it once per group
+                //------------------------------
+                } else {
+                    $agentContext = ListUtils::first($agentContexts);
+                    if ($agentSet['viewBefore']) {
+                        $matchBefore = $matcher->doesQueryMatch($filter->query, $ticketA, $agentContext);
+                    } else {
+                        $matchBefore = false;
+                    }
+
+                    if ($agentSet['viewAfter']) {
+                        $matchAfter = $matcher->doesQueryMatch($filter->query, $ticketB, $agentContext);
+                    } else {
+                        $matchAfter = false;
+                    }
+
+                    // Apply this result to all agents in the group
+                    foreach ($agentContexts as $agentContext) {
+                        if ($matchBefore && !$matchAfter) {
+                            $filterOp->addDelAgentId($agentContext->getAgentId());
+                        } elseif (!$matchBefore && $matchAfter) {
+                            $filterOp->addAddAgentId($agentContext->getAgentId());
+                        }
+                        if ($matchBefore) {
+                            $filterOp->addBeforeMatchAgentId($agentContext->getAgentId());
+                        }
+                        if ($matchAfter) {
+                            $filterOp->addAfterMatchAgentId($agentContext->getAgentId());
+                        }
+                    }
+                }
+            }
+
+            if (!empty($filterOp->getAddAgentIds()) || !empty($filterOp->getDelAgentIds())) {
+                $filterOps[$filter->id] = $filterOp;
+            }
+        }
+
+        return $filterOps;
+    }
+
+    /**
+     * Sorts agents into groups with similar permissions.
+     *
+     * @param TicketChange $ticketChange
+     * @param int[]        $affectedAgentIds
+     *
+     * @return array
+     */
+    private function getAgentSets(TicketChange $ticketChange, $affectedAgentIds)
+    {
+        $ticketA      = $ticketChange->getTicketA();
+        $ticketB      = $ticketChange->getTicketB();
+        $isPermChange = $ticketChange->isPermChange();
+
+        // turn it into a map for faster lookups
+        $affectedAgentIds = array_fill_keys($affectedAgentIds, true);
+
+        $agentSetsByPerm = [
+            'seeBoth'       => [],
+            'seeBeforeOnly' => [],
+            'seeAfterOnly'  => [],
+        ];
+
+        foreach ($this->diffEnv->getGroupedAgents() as $group) {
+            $group = ListUtils::filter($group, function (Agent $a) use ($affectedAgentIds) {
+                return isset($affectedAgentIds[$a->id]);
+            });
+
+            if (empty($group)) {
+                continue;
+            }
+
+            // The group all share perms, so
+            // the first dictates the perm of all agents in the group
+            /** @var Agent $first */
+            $first = ListUtils::first($group);
+
+            $canSeeAfter = $first->canViewTicket($ticketB);
+
+            if (!$ticketA->id) { // new ticket
+                $canSeeBefore = false;
+            } elseif (!$isPermChange) {
+                $canSeeBefore = $canSeeAfter;
+            } else {
+                $canSeeBefore = $first->canViewTicket($ticketA);
+            }
+
+            if ($canSeeBefore && $canSeeAfter) {
+                $agentSetsByPerm['seeBoth'][] = $group;
+            } elseif ($canSeeBefore && !$canSeeAfter) {
+                $agentSetsByPerm['seeBeforeOnly'][] = $group;
+            } elseif ($canSeeAfter && !$canSeeBefore) {
+                $agentSetsByPerm['seeAfterOnly'][] = $group;
+            }
+        }
+
+        $agentSets = [];
+        if (!empty($agentSetsByPerm['seeBoth'])) {
+            $agentSets[] = [
+                'viewBefore'    => true,
+                'viewAfter'     => true,
+                'agentContexts' => ListUtils::map(ListUtils::flatten($agentSetsByPerm['seeBoth']), [Context::class, 'createContext']),
+            ];
+        }
+        if (!empty($agentSetsByPerm['seeBeforeOnly'])) {
+            $agentSets[] = [
+                'viewBefore'    => true,
+                'viewAfter'     => false,
+                'agentContexts' => ListUtils::map(ListUtils::flatten($agentSetsByPerm['seeBeforeOnly']), [Context::class, 'createContext']),
+            ];
+        }
+        if (!empty($agentSetsByPerm['seeAfterOnly'])) {
+            $agentSets[] = [
+                'viewBefore'    => false,
+                'viewAfter'     => true,
+                'agentContexts' => ListUtils::map(ListUtils::flatten($agentSetsByPerm['seeAfterOnly']), [Context::class, 'createContext']),
+            ];
+        }
+
+        return $agentSets;
+    }
+}

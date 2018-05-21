@@ -144,6 +144,10 @@ class EmailAccountsController extends AbstractController implements ProtectedCon
             $edit_account->apply();
         }
 
+        if (!$account->is_all_brands && !$account->brands->count()) {
+            return $this->createApiErrorResponse('validation_error', 'Account needs to be linked to at least one Brand');
+        }
+
         $this->em->persist($account);
         $this->em->flush();
 

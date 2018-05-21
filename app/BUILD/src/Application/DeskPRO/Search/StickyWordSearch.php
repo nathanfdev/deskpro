@@ -69,7 +69,11 @@ class StickyWordSearch implements PersonContextInterface
      */
     public function getWordsFromQuery($query)
     {
-        // Split query into words, quoted strings are grouped togehter
+        if (!is_string($query)) {
+            return [];
+        }
+
+        // Split query into words, quoted strings are grouped together
         $words = preg_split(
             '/[\\s,]*\\"([^\\"]+)\\"[\\s,]*|[\\s,]+/',
             $query,

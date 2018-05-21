@@ -44,20 +44,27 @@ class SchemaHelper
     }
 
     /**
-     * @param string $table   The table that has the FK
-     * @param string $col     The column on the table that has the FK
-     * @param string $f_table The foreign table
-     * @param string $f_col   The column in the foreign table
+     * @param string       $table  The table that has the FK
+     * @param string|array $col    The column on the table that has the FK
+     * @param string       $fTable The foreign table
+     * @param string|array $fCol   The column in the foreign table
      *
      * @return \Doctrine\DBAL\Schema\ForeignKeyConstraint|null
      */
-    public function findForeignKey($table, $col, $f_table, $f_col)
+    public function findForeignKey($table, $col, $fTable, $fCol)
     {
+        if (!is_array($col)) {
+            $col = [$col];
+        }
+        if (!is_array($fCol)) {
+            $fCol = [$fCol];
+        }
+
         foreach ($this->getSchemaManager()->listTableForeignKeys($table) as $fk) {
             if (
-                $fk->getForeignTableName() == $f_table
-                && in_array($col, $fk->getLocalColumns())
-                && in_array($f_col, $fk->getForeignColumns())
+                $fk->getForeignTableName() === $fTable
+                && count($col) === count($fk->getLocalColumns()) && Arrays::isIn($col, $fk->getLocalColumns(), true, true)
+                && count($fCol) === count($fk->getForeignColumns()) && Arrays::isIn($fCol, $fk->getForeignColumns(), true, true)
             ) {
                 return $fk;
             }

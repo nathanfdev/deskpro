@@ -19,6 +19,7 @@ class ApiLimitsContext extends BaseContext
     {
         $limit = $this->getApiKeyLimitRepository()->findOneBy(['api_key' => DataContext::getReference('apiKey')]);
         $limit->setCurrent(1);
+        $limit->setLimit(1);
         $this->persistAndFlush($limit);
     }
 
@@ -40,11 +41,16 @@ class ApiLimitsContext extends BaseContext
      */
     public function globalLimitsAreExhausted()
     {
-        $limits = $this->getApiKeyLimitRepository()->findBy(['limit_type' => AbstractLimit::TYPE_GLOBAL]);
-        foreach ($limits as $limit) {
-            $limit->setCurrent(0);
-            $this->persistAndFlush($limit);
-        }
+        $this->em()->getConnection()->executeUpdate(
+            'REPLACE INTO settings (name, value) VALUES (:name, :value)',
+            ['name' => 'api_limits.global.hour', 'value' => 10]
+        );
+        $limit = new ApiKeyLimit();
+        $limit->setType(AbstractLimit::TYPE_GLOBAL);
+        $limit->setLimit(10);
+        $limit->setCurrent(0);
+        $limit->setInterval(AbstractLimit::INTERVAL_HOUR);
+        $this->persistAndFlush($limit);
     }
 
     /**

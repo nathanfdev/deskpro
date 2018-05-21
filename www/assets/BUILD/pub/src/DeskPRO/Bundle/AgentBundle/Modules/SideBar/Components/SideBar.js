@@ -1,9 +1,9 @@
 import PropTypes from 'prop-types';
 import React from 'react';
+import { FormattedMessage } from 'react-intl';
 import Isvg from 'react-inlinesvg';
 import { connect } from 'react-redux';
 import classNames from 'classnames';
-import agentPhrases from 'DeskPRO/Bundle/AgentBundle/AgentPhrases';
 import { MenuItem } from 'DeskPRO/Component/Semantic/Menu';
 import { SeparateComponent } from '../../Common/Components/SeparateComponent';
 import * as actions from '../Actions/sideBarActions';
@@ -111,7 +111,11 @@ export class SideBarContainer extends SeparateComponent {
     return window.DESKPRO_PERSON_PERMS['agent_tasks.use'];
   }
 
-  static canUseReports() {
+  static canUseReports(version) {
+    // old reports is hidden unless coming from an upgrade which sets this flag
+    if (version === 1 && !window.DESKPRO_APP_SETTINGS['core.show_old_reports']) {
+      return false;
+    }
     return window.DESKPRO_PERSON_PERMS['agent_reports.use'];
   }
 
@@ -251,7 +255,7 @@ export class SideBar extends React.PureComponent {
     if (this.props.canUseTicket()) {
       menus.push({
         className: 'tickets',
-        label:     agentPhrases.get('agent.general.tickets'),
+        label:     <FormattedMessage id="agent.general.tickets" />,
         link:      '/agent/#app.tickets',
         icon:      `${window.DESKPRO_APP_ASSETS_URL}/DeskPRO/Bundle/AgentBundle/Resources/img/sidebar/tickets.svg`,
         callback:  () => {
@@ -263,7 +267,7 @@ export class SideBar extends React.PureComponent {
     if (this.props.canUseChat()) {
       menus.push({
         className: 'chat',
-        label:     agentPhrases.get('agent.general.chats'),
+        label:     <FormattedMessage id="agent.general.chats" />,
         link:      '/agent/#app.userchat',
         icon:      `${window.DESKPRO_APP_ASSETS_URL}/DeskPRO/Bundle/AgentBundle/Resources/img/sidebar/chat.svg`,
         callback:  () => {
@@ -275,7 +279,7 @@ export class SideBar extends React.PureComponent {
     if (this.props.canUsePeople()) {
       menus.push({
         className: 'people',
-        label:     agentPhrases.get('agent.general.crm'),
+        label:     <FormattedMessage id="agent.general.crm" />,
         link:      '/agent/#app.people',
         icon:      `${window.DESKPRO_APP_ASSETS_URL}/DeskPRO/Bundle/AgentBundle/Resources/img/sidebar/crm.svg`,
         callback:  () => {
@@ -287,7 +291,7 @@ export class SideBar extends React.PureComponent {
     if (this.props.canUseFeedback()) {
       menus.push({
         className: 'feedback',
-        label:     agentPhrases.get('agent.general.feedback'),
+        label:     <FormattedMessage id="agent.general.feedback" />,
         link:      '/agent/#app.feedback',
         icon:      `${window.DESKPRO_APP_ASSETS_URL}/DeskPRO/Bundle/AgentBundle/Resources/img/sidebar/feedback.svg`,
         callback:  () => {
@@ -299,7 +303,7 @@ export class SideBar extends React.PureComponent {
     if (this.props.canUsePublish()) {
       menus.push({
         className: 'publish',
-        label:     agentPhrases.get('agent.general.publish'),
+        label:     <FormattedMessage id="agent.general.publish" />,
         link:      '/agent/#app.publish',
         icon:      `${window.DESKPRO_APP_ASSETS_URL}/DeskPRO/Bundle/AgentBundle/Resources/img/sidebar/publishing.svg`,
         callback:  () => {
@@ -311,7 +315,7 @@ export class SideBar extends React.PureComponent {
     if (this.props.canUseTasks()) {
       menus.push({
         className: 'tasks',
-        label:     agentPhrases.get('agent.general.tasks'),
+        label:     <FormattedMessage id="agent.general.tasks" />,
         link:      '/agent/#app.tasks',
         icon:      `${window.DESKPRO_APP_ASSETS_URL}/DeskPRO/Bundle/AgentBundle/Resources/img/sidebar/tasks.svg`,
         callback:  () => {
@@ -320,24 +324,32 @@ export class SideBar extends React.PureComponent {
         }
       });
     }
-    if (this.props.canUseReports()) {
+    if (this.props.canUseReports(1)) {
       menus.push({
         className: 'reports',
-        label:     agentPhrases.get('agent.general.reports'),
-        link:      '/agent/#reports:/',
-        icon:      `${window.DESKPRO_APP_ASSETS_URL}/DeskPRO/Bundle/AgentBundle/Resources/img/sidebar/reports.svg`,
-        callback:  () => {
+        label:     (<span>
+          <FormattedMessage id="agent.general.reports" />&nbsp;
+          (<FormattedMessage id="agent.general.badge_legacy" />)
+        </span>),
+        link:     '/agent/#reports:/',
+        icon:     `${window.DESKPRO_APP_ASSETS_URL}/DeskPRO/Bundle/AgentBundle/Resources/img/sidebar/reports.svg`,
+        callback: () => {
           this.props.openReports();
         }
       });
     }
-    if (window.DP_HAS_NEW_REPORTS && (this.props.canUseReports() || this.props.hasAccessToDashboards())) {
+    if (window.DP_HAS_NEW_REPORTS && (this.props.canUseReports(2) || this.props.hasAccessToDashboards())) {
       menus.push({
         className: 'reports2',
-        label:     `${agentPhrases.get('agent.general.new')} ${agentPhrases.get('agent.general.reports')}`,
-        link:      '/agent/#r:/',
-        icon:      `${window.DESKPRO_APP_ASSETS_URL}/DeskPRO/Bundle/AgentBundle/Resources/img/sidebar/reports.svg`,
-        callback:  () => {
+        label:     (this.props.canUseReports(1)
+          ? (<span>
+            <FormattedMessage id="agent.general.reports" />&nbsp;
+            (<FormattedMessage id="agent.general.badge_new" />)
+          </span>) : <FormattedMessage id="agent.general.reports" />),
+        link:        '/agent/#r:/',
+        icon:        `${window.DESKPRO_APP_ASSETS_URL}/DeskPRO/Bundle/AgentBundle/Resources/img/sidebar/reports.svg`,
+        enableBadge: this.props.canUseReports(1), // show 'new' if we're showing legacy version
+        callback:    () => {
           this.props.openReports2();
         }
       });
@@ -345,7 +357,7 @@ export class SideBar extends React.PureComponent {
     if (this.props.canUseAdmin()) {
       menus.push({
         className: 'admin',
-        label:     agentPhrases.get('agent.general.admin'),
+        label:     <FormattedMessage id="agent.general.admin" />,
         link:      '/agent/#admin:/',
         icon:      `${window.DESKPRO_APP_ASSETS_URL}/DeskPRO/Bundle/AgentBundle/Resources/img/sidebar/settings.svg`,
         callback:  () => {
@@ -356,7 +368,7 @@ export class SideBar extends React.PureComponent {
     if (this.props.canUseBilling()) {
       menus.push({
         className: 'billing',
-        label:     agentPhrases.get('agent.general.billing'),
+        label:     <FormattedMessage id="agent.general.billing" />,
         link:      '/agent/#admin:/license',
         icon:      `${window.DESKPRO_APP_ASSETS_URL}/DeskPRO/Bundle/AgentBundle/Resources/img/sidebar/billing.svg`,
         callback:  () => {
@@ -367,7 +379,7 @@ export class SideBar extends React.PureComponent {
     if (this.props.canUsePortal()) {
       menus.push({
         className: 'portal',
-        label:     <span>{agentPhrases.get('agent.general.portal')} <i className="icon external" /></span>,
+        label:     <span><FormattedMessage id="agent.general.portal" /> <i className="icon external" /></span>,
         icon:      `${window.DESKPRO_APP_ASSETS_URL}/DeskPRO/Bundle/AgentBundle/Resources/img/sidebar/portal.svg`,
         href:      window.DESKPRO_PORTAL_HOME,
         link:      window.DESKPRO_PORTAL_HOME
@@ -382,7 +394,7 @@ export class SideBar extends React.PureComponent {
     this.getMenus().map((item) => {
       const menuItem = item;
       menuItem.key = `menu_${menuItem.className}`;
-      const badge = sectionsBadges.indexOf(`${menuItem.className}_section`) > -1;
+      const badge = item.enableBadge || sectionsBadges.indexOf(`${menuItem.className}_section`) > -1;
       menus.push(
         <MenuItem
           link={menuItem.link}
@@ -434,6 +446,7 @@ export class SideBar extends React.PureComponent {
             className="logo-text"
             src={`${window.DESKPRO_APP_ASSETS_URL}/DeskPRO/Bundle/AgentBundle/Resources/img/sidebar/logoText.svg`}
           />
+          <span className="logo-text-string">{window.WHITELABEL_GET_NAME ? window.WHITELABEL_GET_NAME() : 'Deskpro'}</span>
         </div>
         {this.getMenuItems()}
       </div>

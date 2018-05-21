@@ -260,6 +260,7 @@ DeskPRO.Agent.Notifications = new Orb.Class({
           var title = $.trim(row.find('big').first().text().replace(/[\n]/g, ' ').replace(/\s+/g, ' ')).replace(/^#\d+\s*/, '');
           var body = $.trim(row.find('small').first().text().replace(/[\n]/g, ' ').replace(/\s+/g, ' '));
 
+          var Notify = window.Notify['default'];
           var notification = new Notify(title || 'DeskPRO', {
             body: body,
             icon: icon,
@@ -268,11 +269,19 @@ DeskPRO.Agent.Notifications = new Orb.Class({
               DeskPRO_Window.runPageRouteFromElement(row);
               self.removeRow(row);
             },
-            timeout: DESKPRO_PERSON_NOTIFICATION_DISMISS || null
+            // don't allow browser to close notification automatically, notification should remain available
+            // until the user activates or dismisses the notification or we close by timeout
+            // https://notifications.spec.whatwg.org/#require-interaction-preference-flag
+            requireInteraction: true
           });
 
           if (Notify.isSupported && !Notify.needsPermission) {
             notification.show();
+            if (DESKPRO_PERSON_NOTIFICATION_DISMISS) {
+              // Notify options `requireInteraction` and `timeout` are mutually exclusive
+              // have to manually initialize close by timeout
+              setTimeout(notification.close.bind(notification), DESKPRO_PERSON_NOTIFICATION_DISMISS * 1000);
+            }
             row.data('notification', notification);
           }
         });

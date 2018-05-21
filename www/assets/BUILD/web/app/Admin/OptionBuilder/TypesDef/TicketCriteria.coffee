@@ -82,6 +82,11 @@ define [
         })
 
         options.push({
+          title: 'CC(s) were added',
+          value: 'CheckEmailCcAdded'
+        })
+
+        options.push({
           title: 'Email Header',
           value: 'CheckEmailHeader'
         })
@@ -195,6 +200,15 @@ define [
       options.push({
         title: 'User Message',
         value: 'CheckUserMessage'
+      })
+      options.push({
+        title: 'New Ticket Charge',
+        value: 'CheckTicketCharge'
+      })
+
+      options.push({
+        title: 'Check Expression [Expert]',
+        value: 'CheckExpression'
       })
 
       if @options_data?.ticket_settings?.satisfaction_enabled
@@ -727,6 +741,11 @@ define [
       def = @getStandardInput(options)
       return def
 
+    getCheckEmailCcAdded: (options = {}) ->
+      options.propName = 'ccs_added'
+      def = @getStandardIs(options)
+      return def
+
     getCheckEmailCcName: (options = {}) ->
       options.propName = 'name'
       options.operators = ['is', 'not', 'contains', 'notcontains', 'is_regex', 'not_regex']
@@ -899,6 +918,18 @@ define [
     getCheckAgentMessage: (options = {}) ->
       options.propName = 'message'
       options.operators = ['isset', 'not_isset', 'contains', 'notcontains', 'is_regex', 'not_regex']
+      def = @getStandardInput(options)
+      return def
+
+    getCheckTicketCharge: (options = {}) ->
+      options.propName = 'amount'
+      options.operators = ['isset', 'not_isset', 'contains', 'notcontains', 'is_regex', 'not_regex', 'is', 'not', 'gt', 'gte', 'lt', 'lte']
+      def = @getStandardInput(options)
+      return def
+
+    getCheckExpression: (options = {}) ->
+      options.propName = 'expr'
+      options.operators = ['is', 'not']
       def = @getStandardInput(options)
       return def
 

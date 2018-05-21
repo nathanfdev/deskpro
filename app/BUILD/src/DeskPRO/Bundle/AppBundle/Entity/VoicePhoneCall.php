@@ -421,6 +421,14 @@ class VoicePhoneCall implements EntityInterface, NotifyPropertyChanged
     }
 
     /**
+     * @return bool
+     */
+    public function hasAgentParticipants()
+    {
+        return $this->getAgentParticipants()->count() > 0;
+    }
+
+    /**
      * @param AbstractVoicePhoneCallParticipant $participant
      *
      * @return $this

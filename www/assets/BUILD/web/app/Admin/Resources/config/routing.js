@@ -9,8 +9,8 @@ define(function() {
   routes.push({
     id: 'home',
     url: '/',
-    templateName: 'Index/home.html',
-    controller: 'Admin_Main_Ctrl_Home'
+    templateName: window.ADMIN_DASH_IFRAME_SRC ? 'Index/home-frame.html' : 'Index/home.html',
+    controller:   window.ADMIN_DASH_IFRAME_SRC ? 'Admin_Main_Ctrl_HomeFrame' : 'Admin_Main_Ctrl_Home'
   });
 
   routes.push({
@@ -380,7 +380,7 @@ define(function() {
 
   routes.push({
     id: 'agents.usersources.deskpro',
-    url: '/deskpro',
+    url: '/deskpro-{id:[\\d\\w]+}',
     templateName: 'Usersources/edit-instance.html',
     controller: 'Admin_Usersources_Ctrl_EditDeskproInstance'
   });
@@ -1194,7 +1194,7 @@ define(function() {
 
   routes.push({
     id: 'crm.usersources.deskpro',
-    url: '/deskpro',
+    url: '/deskpro-{id:[\\d\\w]+}',
     templateName: 'Usersources/edit-instance.html',
     controller: 'Admin_Usersources_Ctrl_EditDeskproInstance'
   });
@@ -1204,6 +1204,13 @@ define(function() {
     url: '/{id:[\\d\\w]+}',
     templateName: 'Usersources/edit-instance.html',
     controller: 'Admin_Usersources_Ctrl_EditInstance'
+  });
+
+  routes.push({
+    id: 'crm.usersources.install_deskpro',
+    url: '/install/deskpro',
+    templateName: 'Usersources/add-instance-deskpro.html',
+    controller: 'Admin_Usersources_Ctrl_AddDeskproInstance'
   });
 
   routes.push({
@@ -2218,7 +2225,7 @@ define(function() {
     id: 'emails.email_templates',
     url: '/email_templates',
     templateName: 'Templates/email-groups.html',
-    controller: 'Admin_Templates_Ctrl_EmailGroupList'
+    controller: 'Admin_Templates_Ctrl_EmailGroupListOld'
   });
 
   //###
@@ -2228,7 +2235,7 @@ define(function() {
     id: 'emails.email_templates_legacy',
     url: '/email_templates_legacy',
     templateName: 'Templates/email-groups-legacy.html',
-    controller: 'Admin_Templates_Ctrl_EmailGroupListOld'
+    controller: 'Admin_Templates_Ctrl_EmailGroupList'
   });
 
   routes.push({

@@ -71,7 +71,7 @@ echo "--> Done in $SECONDS seconds"
 
 SECONDS=0
 echo "Running small test suites in parallel (phpunit, phpspec, beaht install/production)"
-(export DP_PARALLEL_TESTING_PROCESS_NUM=1; bin/phpunit --testsuite DeskPRO &> "$LOGS_DIR/phpunit.txt"; bin/phpunit --testsuite DeskPRO-TermEngine &> "$LOGS_DIR/phpunit-term-engine.txt"; bin/phpunit --testsuite DeskPRO-Portal &> "$LOGS_DIR/phpunit-portal.txt") &
+(export DP_PARALLEL_TESTING_PROCESS_NUM=1; bin/phpunit --testsuite DeskPRO &> "$LOGS_DIR/phpunit.txt"; bin/phpunit --testsuite DeskPRO-Portal &> "$LOGS_DIR/phpunit-portal.txt") &
 (export DP_PARALLEL_TESTING_PROCESS_NUM=2 && bin/behat --profile=install --tags="~@skip-ci" --verbose &> "$LOGS_DIR/behat-install.txt") &
 (bin/phpspec run --format=dot &> "$LOGS_DIR/phpspec.txt") &
 (bin/behat --verbose --profile=production &> "$LOGS_DIR/behat-production.txt") &
@@ -126,7 +126,6 @@ echo "PHPUnit"
 echo "-----------------------------------------------------------------------------------------------------------------"
 echo ""
 tail -n 50 "$LOGS_DIR/phpunit.txt"; sleep .1
-tail -n 50 "$LOGS_DIR/phpunit-term-engine.txt"; sleep .1
 tail -n 50 "$LOGS_DIR/phpunit-portal.txt"; sleep .1
 
 echo ""
@@ -200,10 +199,9 @@ echo "Build summary"
 echo "-----------------------------------------------------------------------------------------------------------------"
 
 phpunit=$(tail -n 2 "$LOGS_DIR/phpunit.txt" | tr '\n' ' ')
-phpunit_term_engine=$(tail -n 2 "$LOGS_DIR/phpunit-term-engine.txt" | tr '\n' ' ')
 phpunit_portal=$(tail -n 2 "$LOGS_DIR/phpunit-portal.txt" | tr '\n' ' ')
 phpspec=$(tail -n 3 "$LOGS_DIR/phpspec.txt" | tr '\n' ' ')
-jest=$(tail -n 3 "$LOGS_DIR/jest.txt" | tr '\n' ' ')
+jest=$(tail -n 4 "$LOGS_DIR/jest.txt" | tr '\n' ' ')
 behat_install=$(tail -n 3 "$LOGS_DIR/behat-install.txt" | tr '\n' ' ')
 behat_system_api=$(tail -n 3 "$LOGS_DIR/behat-system-api.txt" | tr '\n' ' ')
 behat_production=$(tail -n 3 "$LOGS_DIR/behat-production.txt" | tr '\n' ' ')
@@ -223,7 +221,6 @@ echo "
 (1) PHPUnit:
 
  - DeskPRO: $phpunit
- - DeskPRO-TermEngine: $phpunit_term_engine
  - DeskPRO-Portal: $phpunit_portal
 
 (2) PHPSpec: $phpspec
@@ -286,11 +283,6 @@ if [[ ${phpunit} =~ "FAILURES" ]] || [[ ! ${phpunit} =~ "OK (" ]] ; then
     mv "$LOGS_DIR/phpunit.txt" "$LOGS_DIR/FAILED-phpunit.txt"
     echo "- PHPUnit failed"
 fi
-if [[ ${phpunit_term_engine} =~ "FAILURES" ]] || [[ ! ${phpunit_term_engine} =~ "OK (" ]] ; then
-    phpunit_failed=1
-    mv "$LOGS_DIR/phpunit-term-engine.txt" "$LOGS_DIR/FAILED-phpunit-term-engine.txt"
-    echo "- PHPUnit Term Engine failed"
-fi
 if [[ ${phpunit_portal} =~ "FAILURES" ]] || [[ ! ${phpunit_portal} =~ "OK (" ]] ; then
     phpunit_failed=1
     mv "$LOGS_DIR/phpunit-portal.txt" "$LOGS_DIR/FAILED-phpunit-portal.txt"
@@ -305,7 +297,7 @@ if [[ ${phpspec} =~ "failed" ]] || [[ ${phpspec} =~ "broken" ]] || [[ ! ${phpspe
 fi
 
 jest_failed=0
-if [[ ${jest} =~ "fail" ]] || [[ ! ${jest} =~ "tests passed" ]] ; then
+if [[ ${jest} =~ "failed" ]] || [[ ! ${jest} =~ "passed" ]] ; then
     jest_failed=1
     mv "$LOGS_DIR/jest.txt" "$LOGS_DIR/FAILED-jest.txt"
     echo "- Jest failed"

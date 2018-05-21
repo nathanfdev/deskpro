@@ -36,10 +36,35 @@ class JsonStatRenderer extends AbstractJsonRenderer
             return;
         }
 
-        return [
+        $return = [
             'value'       => $this->renderValue($metadata, $rows),
             'description' => $this->renderDescription($metadata, $rows),
         ];
+
+        if ($return['value'] === null) {
+            return;
+        }
+
+        return $this->extractClickUrlVars($rows, $metadata, $return);
+    }
+
+    /**
+     * @param array          $rows
+     * @param ResultMetadata $metadata
+     * @param array          $result
+     *
+     * @return mixed
+     */
+    private function extractClickUrlVars(array $rows, ResultMetadata $metadata, array $result)
+    {
+        $selectColumns = $metadata->getSelectColumns();
+        foreach ($selectColumns as $selectColumn) {
+            if (strpos($selectColumn['title'], '__var') !== false) {
+                $result[$selectColumn['title']] = $this->renderCellValue($rows[0], $selectColumn, $metadata);
+            }
+        }
+
+        return $result;
     }
 
     /**
@@ -52,9 +77,30 @@ class JsonStatRenderer extends AbstractJsonRenderer
      */
     protected function renderValue(ResultMetadata $metadata, array $rows)
     {
+        $unitLeft     = '';
+        $unitRight    = '';
+        $defaultValue = null;
+
+        foreach ($metadata->getSelectColumns() as $column) {
+            if ($column['title'] === 'unit_left') {
+                $unitLeft = $this->renderCellValue($rows[0], $column, $metadata);
+            }
+            if ($column['title'] === 'unit_right') {
+                $unitLeft = $this->renderCellValue($rows[0], $column, $metadata);
+            }
+            if ($column['title'] === 'default_value') {
+                $defaultValue = $this->renderCellValue($rows[0], $column, $metadata);
+            }
+        }
+
         foreach ($metadata->getSelectColumns() as $column) {
             if ($column['title'] === 'stat_value') {
-                return $this->renderCellValue($rows[0], $column, $metadata);
+                $val = $this->renderCellValue($rows[0], $column, $metadata);
+                if ($val === null) {
+                    return $defaultValue;
+                }
+
+                return $unitLeft.$val.$unitRight;
             }
         }
 
@@ -79,19 +125,17 @@ class JsonStatRenderer extends AbstractJsonRenderer
     }
 
     /**
-     * Renders the value for a specific cell.
-     *
-     * @param mixed [int]    $row
-     * @param mixed          $column
-     * @param ResultMetadata $metadata
-     *
-     * @return string
+     * {@inheritdoc}
      */
-    protected function renderCellValue(array $row, $column, ResultMetadata $metadata)
+    public function renderCellValue(array $row, $column, ResultMetadata $metadata, $useRenderer = null)
     {
         $value = $column['resultId'] ? $row[$column['resultId'] - 1] : '';
 
-        $renderer = is_array($column) && array_key_exists('renderer', $column) ? $column['renderer'] : 'string';
+        if ($useRenderer) {
+            $renderer = $useRenderer;
+        } else {
+            $renderer = is_array($column) && array_key_exists('renderer', $column) ? $column['renderer'] : 'string';
+        }
         if ($renderer instanceof \Closure) {
             /* @var $renderer \Closure */
 
@@ -101,6 +145,12 @@ class JsonStatRenderer extends AbstractJsonRenderer
         return $this->valueRenderer->renderValue($value, $renderer, $metadata);
     }
 
+    /**
+     * @param array $results
+     * @param array $options
+     *
+     * @return mixed
+     */
     public function mergeResults(array $results, array $options)
     {
         return reset($results);

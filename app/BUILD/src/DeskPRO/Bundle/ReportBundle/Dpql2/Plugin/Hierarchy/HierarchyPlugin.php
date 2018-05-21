@@ -4,11 +4,13 @@ namespace DeskPRO\Bundle\ReportBundle\Dpql2\Plugin\Hierarchy;
 
 use Application\DeskPRO\Entity\Hierarchy\Hierarchical;
 use DeskPRO\Bundle\ReportBundle\Dpql2\DpqlException;
+use DeskPRO\Bundle\ReportBundle\Dpql2\Helper\CustomDataHelper;
 use DeskPRO\Bundle\ReportBundle\Dpql2\Plugin\PluginInterface;
 use DeskPRO\Bundle\ReportBundle\Dpql2\SqlSelect;
 use DeskPRO\Bundle\ReportBundle\Dpql2\Statement\Part\Column;
 use DeskPRO\Bundle\ReportBundle\Dpql2\Statement\SelectPart;
 use DeskPRO\Bundle\ReportBundle\Reports\ResultMetadata;
+use DeskPRO\Component\Util\ListUtils;
 use Doctrine\DBAL\Connection;
 
 /**
@@ -16,6 +18,9 @@ use Doctrine\DBAL\Connection;
  */
 class HierarchyPlugin implements PluginInterface
 {
+    const ROLLUP_MODE_SUM = 'SUM';
+    const ROLLUP_MODE_AVG = 'AVG';
+
     /**
      * @var Connection
      */
@@ -67,17 +72,36 @@ class HierarchyPlugin implements PluginInterface
     private $forceHierarchy = false;
 
     /**
+     * @var CustomDataHelper
+     */
+    private $customDataHelper;
+
+    /**
+     * When rolling up counts, this is how we take child numbers
+     * and calculate it into the parent.
+     *
+     * @var string
+     */
+    private $rollupMode = self::ROLLUP_MODE_SUM;
+
+    /**
      * Constructor.
      *
      * @param Connection       $connection
      * @param HierarchySorting $sorting
      * @param SelectPart       $query
+     * @param CustomDataHelper $customDataHelper
      */
-    public function __construct(Connection $connection, HierarchySorting $sorting, SelectPart $query)
-    {
-        $this->connection = $connection;
-        $this->sorting    = $sorting;
-        $this->query      = $query;
+    public function __construct(
+        Connection $connection,
+        HierarchySorting $sorting,
+        SelectPart $query,
+        CustomDataHelper $customDataHelper
+    ) {
+        $this->connection       = $connection;
+        $this->sorting          = $sorting;
+        $this->query            = $query;
+        $this->customDataHelper = $customDataHelper;
     }
 
     /**
@@ -191,6 +215,8 @@ class HierarchyPlugin implements PluginInterface
             $countFieldNum
         );
 
+        $origResults = $results;
+
         // Replace table entry name/title with hierarchy_title
         if (!is_null($titleFieldNum = $this->getTitleFieldNum())) {
             foreach ($results as &$result) {
@@ -202,13 +228,45 @@ class HierarchyPlugin implements PluginInterface
 
         // Init rollup counts if needed
         if ($this->query->withRollup() && !is_null($countFieldNum)) {
-            $results = HierarchyRollup::init($results);
+            $results = HierarchyRollup::init($results, $this->rollupMode);
         }
 
         // Limit depth if needed
         if ($this->hierarchyMinDepth > 0 || !is_null($this->hierarchyMaxDepth)) {
-            $results = HierarchyDepth::limitTo($this->hierarchyMinDepth, $this->hierarchyMaxDepth, $results, $metadata);
+            $results = HierarchyDepth::limitTo($this->hierarchyMinDepth, $this->hierarchyMaxDepth, $results, $metadata, $this->rollupMode);
         }
+
+        // copy static values over into missing values on the parent options
+        // for example, label templates, value axies titles, etc
+        $results = ListUtils::map($results, function ($result) use ($origResults, $metadata) {
+            // we only care about generated values, and that is evident based on these '-' array item
+            if (!isset($result['-'])) {
+                return $result;
+            }
+
+            $firstOfGroup = ListUtils::first($origResults, function ($r) {
+                if (isset($r['-'])) {
+                    // looking for an actual value, which discounts generated values
+                    return false;
+                }
+
+                return true;
+            });
+
+            if (!$firstOfGroup) {
+                return $result;
+            }
+
+            foreach ($metadata->getSelectColumns() as $col) {
+                $colIdx = $col['resultId'] - 1;
+
+                if ($result[$colIdx] === '-') {
+                    $result[$colIdx] = $firstOfGroup[$colIdx];
+                }
+            }
+
+            return $result;
+        });
 
         return $results;
     }
@@ -221,10 +279,11 @@ class HierarchyPlugin implements PluginInterface
         if (!Hierarchy::isHierarchical($this->sql, $this->forceHierarchy)) {
             return;
         }
-
-        $countFieldNum = $this->getCountFieldNum();
-        $handler->addGroupXColumn('', 'hierarchy_root_title', $countFieldNum ? $countFieldNum + 1 : 1);
-        $handler->addFlag(ResultMetadata::FLAG_HIERARCHICAL);
+        if (!$handler->hasFlag(ResultMetadata::FLAG_HIERARCHY_DESCENDS_FROM)) {
+            $countFieldNum = $this->getCountFieldNum();
+            $handler->addGroupXColumn('', 'hierarchy_root_title', $countFieldNum ? $countFieldNum + 1 : 1);
+            $handler->addFlag(ResultMetadata::FLAG_HIERARCHICAL);
+        }
     }
 
     /**
@@ -286,30 +345,66 @@ class HierarchyPlugin implements PluginInterface
     }
 
     /**
+     * @return string
+     */
+    public function getRollupMode()
+    {
+        return $this->rollupMode;
+    }
+
+    /**
+     * @param string $rollupMode
+     */
+    public function setRollupMode($rollupMode)
+    {
+        $this->rollupMode = $rollupMode;
+    }
+
+    /**
      * @throws DpqlException
      *
      * @return array
      */
     public function collectChildrenIds()
     {
-        $rootId     = $this->hierarchyDescendsFromId;
-        $repository = $this->query->getRepositoryByTable($this->hierarchyDescendsFromTable);
+        $rootId              = $this->hierarchyDescendsFromId;
+        $repository          = $this->query->getRepositoryByTable($this->hierarchyDescendsFromTable);
+        $customDataHierarchy = false;
+
+        if (strpos($this->hierarchyDescendsFromTable, 'custom_def_') === false) {
+            $root = $repository->find($rootId);
+        } else {
+            $customDataHierarchy = true;
+            $manager             = $this->customDataHelper->getFieldManager($repository->getTableName());
+            $root                = null;
+            foreach ($manager->getAllFields() as $field) {
+                if ($field['title'] === $this->hierarchyDescendsFromId) {
+                    $root = $field;
+                    break;
+                }
+            }
+        }
 
         /** @var Hierarchical $root */
-        if (!$root = $repository->find($rootId)) {
-            return [];
+        if (!$root) {
+            return [0]; // this prevents query from failing with wrong sql error
         }
+
         if (!$root instanceof Hierarchical) {
             throw new DpqlException("{$this->hierarchyDescendsFromTable} is not a Hierarchical entity");
         }
 
-        $children                        = $root->getChildren();
+        if (!$customDataHierarchy) {
+            $children = $root->getChildren();
+        } else {
+            $children = $root->getAllDescendants();
+        }
         is_array($children) or $children = $children->toArray();
         $children                        = array_map(function (Hierarchical $entity) {
             return $entity->getId();
         }, $children);
 
-        return $children;
+        return !empty($children) ? $children : [0]; // this prevents query from failing with wrong sql error
     }
 
     /**

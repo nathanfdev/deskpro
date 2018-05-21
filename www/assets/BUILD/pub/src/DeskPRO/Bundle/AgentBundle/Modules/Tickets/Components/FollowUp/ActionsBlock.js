@@ -1,6 +1,6 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import agentPhrases from 'DeskPRO/Bundle/AgentBundle/AgentPhrases';
+import { FormattedMessage } from 'react-intl';
 import Action from './Action';
 
 class ActionsBlock extends React.Component {
@@ -61,7 +61,7 @@ class ActionsBlock extends React.Component {
           { this.renderActions() }
         </div>
         <div className="add_action" onClick={this.addAction}>
-          <i className="plus" /> {agentPhrases.get('agent.general.add_action_term')}
+          <i className="plus" /> <FormattedMessage id="agent.general.add_action_term" />
         </div>
       </div>
     );

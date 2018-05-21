@@ -1,0 +1,12 @@
+{% extends 'AdminInterfaceBundle:Layout:fill-page.html.twig' %}
+{% block fillpage_content %}
+    <div style="position: absolute; top: 0; right: 0; bottom: 0; left: 0; overflow: hidden;">
+        <iframe
+            src="{{ ng_var('iframe_src') }}"
+            width="100%"
+            height="100%"
+            frameborder="0"
+            style="width: 100%; height: 100%;"
+        ></iframe>
+    </div>
+{% endblock %}

@@ -14,7 +14,7 @@ services:
 
   deskpro.db_config_reader:
     class: DeskPRO\Bundle\AppBundle\DBAL\DbConfigReader
-    arguments: ["@deskpro.app_env"]
+    arguments: ["@deskpro.app_env", "@doctrine.dbal.logger"]
 
   deskpro.mongo_config_reader:
     class: DeskPRO\Bundle\AppBundle\MongoDB\MongoConfigReader
@@ -81,7 +81,13 @@ services:
 
   person_factory:
     class: DeskPRO\Bundle\PortalBundle\Person\PersonFactory
-    arguments: ["@doctrine.orm.default_entity_manager", "@event_dispatcher", "@brand_stack", "@language_stack", "@user_rule_processor"]
+    arguments:
+      - "@doctrine.orm.default_entity_manager"
+      - "@event_dispatcher"
+      - "@brand_stack"
+      - "@language_stack"
+      - "@user_rule_processor"
+      - "@dp_authentication_manager.user"
 
 
   ######################################################################################################################

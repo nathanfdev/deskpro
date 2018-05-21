@@ -248,7 +248,12 @@ class SendAgentNewEmail extends AbstractEmailAction implements ActionInterface, 
         }
 
         $viewModel = $this->createViewModelFromTemplate($template, $arguments, $context);
-        $mailer    = $this->getContainer()->get('mailer');
+
+        if (!$viewModel) {
+            return;
+        }
+
+        $mailer = $this->getContainer()->get('mailer');
 
         $emailBuilder = TicketEmailBuilder::createFromContainer($this->getContainer())
             ->setTicket($ticket)

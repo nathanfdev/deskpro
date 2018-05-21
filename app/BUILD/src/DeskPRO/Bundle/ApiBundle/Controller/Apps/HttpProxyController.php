@@ -52,9 +52,10 @@ class HttpProxyController extends BaseController
      * @ParamConverter("instance", class="AppBundle:Entity\AppStore\AppInstance", converter="DeskPRO\Bundle\AppStoreBundle\ParamConverter\AppInstanceParamConverter")
      *
      * @param AppInstance $instance
-     * @param Request     $request
+     * @param Request $request
      *
      * @return string
+     * @throws \GuzzleHttp\Exception\GuzzleException
      */
     public function proxyAction(AppInstance $instance = null, Request $request)
     {

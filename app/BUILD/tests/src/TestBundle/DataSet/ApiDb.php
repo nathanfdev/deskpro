@@ -9,7 +9,6 @@ use Application\DeskPRO\Entity\Department;
 use Application\DeskPRO\Entity\PersonUsersourceAssoc;
 use Application\DeskPRO\Entity\Usersource;
 use DeskPRO\Bundle\AppBundle\Entity\ThemeSet;
-use DeskPRO\Bundle\AppBundle\Limits\Model\AbstractLimit;
 use DpTestSrc\TestBundle\Mock\Usersource\CallbackAdapterMock;
 use DpTestSrc\TestBundle\UserDetailsRepo;
 
@@ -155,7 +154,9 @@ SQL
             $deskProUsers->is_enabled    = true;
             $deskProUsers->display_order = -10; // ensure #1 order (initially!)
             $deskProUsers->title         = 'DeskPRO';
-            $deskProUsers->options       = [];
+            $deskProUsers->options       = [
+                'reg_enabled' => true,
+            ];
             $this->getEm()->persist($deskProUsers);
 
             $googlePlusUs                = new Usersource();
@@ -423,30 +424,31 @@ SQL
         // end of ticket workflows
 
         // Ticket filter sets test data ----------------------------------------------------------------------------------
-        $this->getDb()->exec(
-            "
-            INSERT INTO `ticket_filter_sets`
-                (`id`, `title`, `display_order`, `is_default`)
+        $this->getDb()->exec("
+            INSERT INTO `ticket_filters2_sets` (`id`, `title`, `display_order`, `is_global`)
             VALUES
-              ('1', 'Filter set 1', '10', '1'),
-              ('2', 'Filter set 2', '20', '1'),
-              ('3', 'Filter set 3', '30', '1');
-        "
-        );
-        // end of ticket filter sets
+                (1,'Inbox',0,1)
+        ");
 
-        // Ticket filters test data ----------------------------------------------------------------------------------
-        $this->getDb()->exec(
-            <<<'SQL'
-            INSERT INTO `custom_ticket_filters`
-                (`id`, `filter_set_id`,  `title`, `term`, `display_order`, `date_created`, `date_updated`)
+        $this->getDb()->exec("
+            INSERT INTO `ticket_filters2` (`id`, `title`, `query`, `is_enabled`)
             VALUES
-              ('1', '1', 'Filter 1', '{"type":"ticket_status","op":"is","options":{"status":["awaiting_agent"]}}', '10', '2016-02-25 00:00:00', '2016-02-25 00:00:00'),
-              ('2', '1', 'Filter 2', '{"type":"ticket_status","op":"is","options":{"status":["resolved"]}}', '20', '2016-02-25 00:00:00', '2016-02-25 00:00:00'),
-              ('3', '2', 'Filter 3', '{"type":"ticket_status","op":"is","options":{"status":["deleted"]}}', '30', '2016-02-25 00:00:00', '2016-02-25 00:00:00');
-SQL
-        );
-        // end of ticket filters
+                (1,'Assigned To Me','ticket.status = \'awaiting_agent\' AND ticket.agent = \$me',1),
+                (2,'Tickets I Follow','ticket.status = \'awaiting_agent\' AND ticket.followers HAS \$me',1),
+                (3,'Assigned To Team','ticket.status = \'awaiting_agent\' AND ticket.agent_team IN \$my_teams',1),
+                (4,'Unassigned','ticket.status = \'awaiting_agent\' AND ticket.agent IS EMPTY',1),
+                (5,'All Awaiting Agent','ticket.status = \'awaiting_agent\'',1)
+        ");
+
+        $this->getDb()->exec('
+            INSERT INTO `ticket_filters2_assoc` (`filter_set_id`, `filter_id`, `display_order`)
+            VALUES
+                (1,1,10),
+                (1,2,20),
+                (1,3,30),
+                (1,4,40),
+                (1,5,50)
+        ');
 
         // Content (articles, news, downloads) test data ---------------------------------------------------------------
         $this->getDb()->exec(
@@ -702,28 +704,6 @@ SQL
             "
         );
         // end of AgentAlerts
-
-        $date = new \DateTime();
-
-        $global_limits = [
-            [
-                'hit_limit'     => 5000,
-                'current'       => 5000,
-                'start_time'    => $date->format('Y-m-d H:i:s'),
-                'time_interval' => 3600,
-                'limit_type'    => AbstractLimit::TYPE_GLOBAL,
-            ],
-            [
-                'hit_limit'     => 15000,
-                'current'       => 15000,
-                'start_time'    => $date->format('Y-m-d H:i:s'),
-                'time_interval' => 86400,
-                'limit_type'    => AbstractLimit::TYPE_GLOBAL,
-            ],
-
-        ];
-
-        $this->getDb()->batchInsert('api_key_limits', $global_limits, true);
 
         // SLAs
         $this->getDb()->exec(

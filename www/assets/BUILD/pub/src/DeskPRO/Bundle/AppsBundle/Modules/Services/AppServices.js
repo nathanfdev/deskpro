@@ -75,6 +75,15 @@ export class AppServices {
     return new InstanceProxyClient({ apiClient, httpProxyEndpoint, instanceId: widget.instanceId });
   }
 
+  /**
+   * @param {boolean} [allowAbsoluteUrls]
+   * @returns {DPAPIClient}
+   */
+  getDeskproAPIClient({ allowAbsoluteUrls })  {
+    const { api } = this.props;
+    return new DPAPIClient({ api, allowAbsoluteUrls });
+  }
+
   get dpClient() {
     const { api } = this.props;
     return new DPAPIClient({ api, allowAbsoluteUrls: false });

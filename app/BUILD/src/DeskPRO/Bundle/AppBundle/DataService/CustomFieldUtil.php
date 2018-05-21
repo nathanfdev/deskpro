@@ -7,11 +7,13 @@ use Application\DeskPRO\CustomFields\Handler\Currency;
 use Application\DeskPRO\CustomFields\Handler\Date;
 use Application\DeskPRO\CustomFields\Handler\DateTime;
 use Application\DeskPRO\CustomFields\Handler\Display;
+use Application\DeskPRO\CustomFields\Handler\File;
 use Application\DeskPRO\CustomFields\Handler\Hidden;
 use Application\DeskPRO\CustomFields\Handler\Text;
 use Application\DeskPRO\CustomFields\Handler\Textarea;
 use Application\DeskPRO\CustomFields\Handler\Toggle;
 use Application\DeskPRO\CustomFields\Handler\Url;
+use Application\DeskPRO\Entity\Blob;
 use Application\DeskPRO\Entity\CustomDataAbstract;
 use Application\DeskPRO\Entity\CustomDefAbstract;
 use Application\DeskPRO\Entity\Person;
@@ -84,7 +86,7 @@ class CustomFieldUtil
                 if ($data->getData() == 1) {
                     $value = $fieldDef->getOption('label_text') ?: 'Checked';
                 } else {
-                    $value = 'None';
+                    $value = $fieldDef->getOption('unchecked_text') ?: 'None';
                 }
                 break;
             case Text::class:
@@ -121,8 +123,15 @@ class CustomFieldUtil
                     $currency = $this->em->getRepository(CurrencyEntity::class)->find($currencyId);
                     if ($currency) {
                         $value = $data->getData() ? ($data->getData() / $currency->getDelimiter()) : 0;
-                        $value = $currency->getSymbol().' '.number_format($value, $currency->getDecimalPlaces(), '.', '');
+                        $value = $currency->getSymbol().' '.number_format($value, $currency->getDecimalPlaces(), '.', ',');
                     }
+                }
+
+                break;
+            case File::class:
+                $value = null;
+                if ($data->getValue()) {
+                    $value = $this->em->getRepository(Blob::class)->find($data->getValue());
                 }
 
                 break;

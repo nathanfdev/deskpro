@@ -19,7 +19,7 @@ search: true
 
 # Introduction
 
-Welcome to the DeskPRO API!
+Welcome to the Deskpro API!
 
 # Authentication
 > To auth with key just include related header like

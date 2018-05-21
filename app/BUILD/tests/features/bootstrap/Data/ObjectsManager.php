@@ -4,6 +4,8 @@ namespace DpBehat\Data;
 
 use Application\DeskPRO\Entity\AgentTeam;
 use Application\DeskPRO\Entity\ApiToken;
+use Application\DeskPRO\Entity\AppInstance;
+use Application\DeskPRO\Entity\AppPackage;
 use Application\DeskPRO\Entity\Article;
 use Application\DeskPRO\Entity\ArticleCategory;
 use Application\DeskPRO\Entity\ArticlePendingCreate;
@@ -99,6 +101,8 @@ use DeskPRO\Bundle\AppBundle\Entity\Snippet;
 use DeskPRO\Bundle\AppBundle\Entity\SnippetTranslation;
 use DeskPRO\Bundle\AppBundle\Entity\TicketFeedbackLink;
 use DeskPRO\Bundle\AppBundle\Entity\TicketFilter;
+use DeskPRO\Bundle\AppBundle\Entity\TicketFilterSet;
+use DeskPRO\Bundle\AppBundle\Entity\TicketFilterSetAssoc;
 use DeskPRO\Bundle\AppBundle\Entity\TicketFollowUp;
 use DeskPRO\Bundle\AppBundle\Entity\VoiceAccount;
 use DeskPRO\Bundle\AppBundle\Entity\VoiceAsset\AbstractVoiceAsset;
@@ -355,6 +359,8 @@ class ObjectsManager
             'ClientDevice'                     => [Factory\SimpleFactory::class, 'create', ClientDevice::class],
             'LegacyTicketFilter'               => [Factory\SimpleFactory::class, 'create', LegacyTicketFilter::class],
             'TicketFilter'                     => [Factory\SimpleFactory::class, 'create', TicketFilter::class],
+            'TicketFilterSet'                  => [Factory\SimpleFactory::class, 'create', TicketFilterSet::class],
+            'TicketFilterSetAssoc'             => [Factory\CommonFactories::class, 'ticketFilterSetAssoc'],
             'Problem'                          => [Factory\SimpleFactory::class, 'create', Problem::class],
             'PersonPref'                       => [Factory\SimpleFactory::class, 'create', PersonPref::class],
             'Blob'                             => [Factory\SimpleFactory::class, 'create', Blob::class],
@@ -378,6 +384,8 @@ class ObjectsManager
             'Job'                              => [Factory\SimpleFactory::class, 'create', Job::class],
             'CustomTicketFieldDefinitionAlias' => [Factory\SimpleFactory::class, 'create', CustomTicketFieldDefinitionAlias::class],
             'Currency'                         => [Factory\SimpleFactory::class, 'create', Currency::class],
+            'AppPackage'                       => [Factory\SimpleFactory::class, 'create', AppPackage::class],
+            'AppInstance'                      => [Factory\SimpleFactory::class, 'create', AppInstance::class],
         ];
     }
 
@@ -414,6 +422,9 @@ class ObjectsManager
             'TicketFilter'                     => [$this, 'find', TicketFilter::class],
             'TicketSla'                        => [$this, 'find', TicketSla::class],
             'TicketLog'                        => [$this, 'find', TicketLog::class],
+            'TicketFilter'                     => [$this, 'find', TicketFilter::class],
+            'TicketFilterSet'                  => [$this, 'find', TicketFilterSet::class],
+            'TicketFilterSetAssoc'             => [$this, 'find', TicketFilterSetAssoc::class],
             'TicketFollowUp'                   => [$this, 'find', TicketFollowUp::class],
             'TicketCharge'                     => [$this, 'find', TicketCharge::class],
             'SLA'                              => [$this, 'find', Sla::class],
@@ -504,6 +515,8 @@ class ObjectsManager
             'Job'                              => [$this, 'find', Job::class],
             'CustomTicketFieldDefinitionAlias' => [$this, 'find', CustomTicketFieldDefinitionAlias::class],
             'Currency'                         => [$this, 'find', Currency::class],
+            'AppPackage'                       => [$this, 'find', AppPackage::class],
+            'AppInstance'                      => [$this, 'find', AppInstance::class],
         ];
     }
 }

@@ -13,6 +13,7 @@ use DeskPRO\Bundle\AppBundle\Entity\VoicePhoneCall;
 use DeskPRO\Bundle\AppBundle\Entity\VoicePhoneCallLog;
 use DeskPRO\Bundle\ReportBundle\Dpql2\DpqlContextStorage;
 use DeskPRO\Bundle\ReportBundle\Dpql2\DpqlException;
+use DeskPRO\Bundle\ReportBundle\Dpql2\Helper\CustomDataHelper;
 use DeskPRO\Bundle\ReportBundle\Dpql2\Plugin\Hierarchy\HierarchyPlugin;
 use DeskPRO\Bundle\ReportBundle\Dpql2\Plugin\Hierarchy\HierarchySorting;
 use DeskPRO\Bundle\ReportBundle\Dpql2\SqlSelect;
@@ -46,6 +47,11 @@ class SelectPart
      * @var DpqlContextStorage
      */
     private $contextStorage;
+
+    /**
+     * @var CustomDataHelper
+     */
+    private $customDataHelper;
 
     /**
      * @var DpqlStatementFactory
@@ -312,6 +318,7 @@ class SelectPart
      * @param EntityManager        $em
      * @param Connection           $reportsConnection
      * @param DpqlContextStorage   $contextStorage
+     * @param CustomDataHelper     $customDataHelper
      * @param DpqlStatementFactory $statementFactory
      * @param array                $select            Fields to select
      * @param string               $from              Table to select from
@@ -320,6 +327,7 @@ class SelectPart
         EntityManager        $em,
         Connection           $reportsConnection,
         DpqlContextStorage   $contextStorage,
+        CustomDataHelper     $customDataHelper,
         DpqlStatementFactory $statementFactory,
         array                $select,
         $from
@@ -327,6 +335,7 @@ class SelectPart
         $this->em                = $em;
         $this->reportsConnection = $reportsConnection;
         $this->contextStorage    = $contextStorage;
+        $this->customDataHelper  = $customDataHelper;
         $this->statementFactory  = $statementFactory;
 
         $this->setSelect($select);
@@ -341,7 +350,8 @@ class SelectPart
             new HierarchyPlugin(
                 $this->reportsConnection,
                 new HierarchySorting($this->reportsConnection),
-                $this
+                $this,
+                $this->customDataHelper
             ),
         ]);
     }
@@ -433,7 +443,7 @@ class SelectPart
         } catch (DpqlException $e) {
             throw new DpqlException($e->getMessage());
         } catch (\Exception $e) {
-            throw new DpqlException('This DPQL statement generated an invalid MySQL query. Please try a different query.');
+            throw new DpqlException('This DPQL statement generated an invalid MySQL query. Please try a different query.', 0, $e);
         }
 
         return $results;
@@ -1073,6 +1083,24 @@ class SelectPart
         }
 
         return $user->getTimezoneOffset() * 3600;
+    }
+
+    /**
+     * @return string
+     */
+    public function getUserTimezone()
+    {
+        $context = $this->contextStorage->getContext();
+        if (!$context) {
+            return 'UTC';
+        }
+
+        $user = $context->getPerson();
+        if (!$user instanceof Person) {
+            return 'UTC';
+        }
+
+        return $user->getTimezone();
     }
 
     /**

@@ -31,13 +31,20 @@ class AbstractDefaultData
     private $logger;
 
     /**
+     * @var array
+     */
+    private $options;
+
+    /**
      * @param DeskproContainer $container
      * @param LoggerInterface  $logger
+     * @param array            $options
      */
-    public function __construct(DeskproContainer $container, LoggerInterface $logger)
+    public function __construct(DeskproContainer $container, LoggerInterface $logger, array $options = [])
     {
         $this->container = $container;
         $this->logger    = $logger;
+        $this->options   = $options;
     }
 
     /**
@@ -70,6 +77,35 @@ class AbstractDefaultData
     protected function getContainer()
     {
         return $this->container;
+    }
+
+    /**
+     * @return array
+     */
+    public function getAllOptions()
+    {
+        return $this->options;
+    }
+
+    /**
+     * @param string $name
+     * @param mixed  $default
+     *
+     * @return mixed
+     */
+    public function getOption($name, $default = null)
+    {
+        return isset($this->options[$name]) ? $this->options[$name] : $default;
+    }
+
+    /**
+     * @param string $name
+     *
+     * @return bool
+     */
+    public function hasOption($name)
+    {
+        return array_key_exists($name, $this->options);
     }
 
     /**

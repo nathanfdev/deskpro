@@ -10,3 +10,10 @@ services:
       - "@dp.importer.writer.entity_handler_registry"
     tags:
       - { name: dp.importer.event_subscriber }
+
+  dp.import.datetime_timezone_listener:
+    class: DeskPRO\Bundle\ImportBundle\EventListener\DateTimeTimezoneListener
+    arguments:
+      - "@service_container"
+    tags:
+      - { name: kernel.event_subscriber }

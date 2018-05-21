@@ -9,8 +9,8 @@ Feature: Custom url field
       | c2 | British Pound | GBP           | £      |
       | c2 | Euro          | EUR           | €      |
     And only the following custom person fields exist:
-      | #  | Type     | Title          | Options                                 |
-      | f1 | currency | Currency field | {"required": true, "currency_id": ~c2~} |
+      | #  | Type     | Title          | Options                                       |
+      | f1 | currency | Currency field | {"agent_required": true, "currency_id": ~c2~} |
 
   Scenario: I set currency value
     When I send a PUT request to "/api/v2/people/{admin}" with body:
@@ -63,3 +63,17 @@ Feature: Custom url field
 
     When I send a GET request to "/api/v2/people/{admin}"
     Then the JSON node "data.fields.~f1~.value" should be equal to "0.00"
+
+  Scenario: I check currency grouping
+    When I send a PUT request to "/api/v2/people/{admin}" with body:
+    """
+{
+  "fields": {
+    "~f1~": "1,500.20"
+  }
+}
+    """
+    Then the response status code should be 204
+
+    When I send a GET request to "/api/v2/people/{admin}"
+    Then the JSON node "data.fields.~f1~.value" should be equal to "1,500.20"

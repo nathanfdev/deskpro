@@ -102,6 +102,7 @@ abstract class CustomDataAbstract extends \Application\DeskPRO\Domain\DomainObje
 
         switch ($this->field->getTypeName()) {
             case CustomDefAbstract::TYPE_CURRENCY:
+            case CustomDefAbstract::TYPE_FILE:
             case CustomDefAbstract::TYPE_TOGGLE:
                 return $this->value;
             default:

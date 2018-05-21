@@ -3,9 +3,12 @@
 namespace DeskPRO\Bundle\ReportBundle\Dpql2\Func;
 
 use DeskPRO\Bundle\ReportBundle\Dpql2\DpqlException;
+use DeskPRO\Bundle\ReportBundle\Dpql2\Helper\CustomDataHelper;
 use DeskPRO\Bundle\ReportBundle\Dpql2\SqlSelect;
 use DeskPRO\Bundle\ReportBundle\Dpql2\Statement\DpqlStatementFactory;
 use DeskPRO\Bundle\ReportBundle\Dpql2\Statement\Part\Number;
+use DeskPRO\Bundle\ReportBundle\Dpql2\Statement\Part\StringPart;
+use DeskPRO\Bundle\ReportBundle\Dpql2\Statement\Part\Variable;
 use DeskPRO\Bundle\ReportBundle\Dpql2\Statement\SelectPart;
 use DeskPRO\Bundle\ReportBundle\Reports\ResultMetadata;
 
@@ -20,13 +23,20 @@ class DpqlHierarchyDescendsFrom extends AbstractDpqlFunc
     private $statementFactory;
 
     /**
+     * @var CustomDataHelper
+     */
+    private $custoDataHelper;
+
+    /**
      * Constructor.
      *
      * @param DpqlStatementFactory $statementFactory
+     * @param CustomDataHelper     $customDataHelper
      */
-    public function __construct(DpqlStatementFactory $statementFactory)
+    public function __construct(DpqlStatementFactory $statementFactory, CustomDataHelper $customDataHelper)
     {
         $this->statementFactory = $statementFactory;
+        $this->custoDataHelper  = $customDataHelper;
     }
 
     /**
@@ -40,8 +50,8 @@ class DpqlHierarchyDescendsFrom extends AbstractDpqlFunc
         if (count($arguments) !== 2) {
             throw new DpqlException('DPQL_HIERARCHY_DESCENDS_FROM() must have 2 arguments.');
         }
-        if (!$arguments[1] instanceof Number) {
-            throw new DpqlException('DPQL_HIERARCHY_DESCENDS_FROM() 2nd argument must be a number.');
+        if (!$arguments[1] instanceof Number && !$arguments[1] instanceof Variable && !$arguments[1] instanceof StringPart) {
+            throw new DpqlException('DPQL_HIERARCHY_DESCENDS_FROM() 2nd argument must be a number or variable.');
         }
 
         $expression    = $arguments[0];
@@ -64,12 +74,24 @@ class DpqlHierarchyDescendsFrom extends AbstractDpqlFunc
         }
         $targetTableName or $targetTableName = $select->getTable();
 
+        // this is simple workaround for string vars which custom_data vars are
+        // special condition to find descendants only would be applied
+        $customDataHierarchy = strpos($targetTableName, 'custom_data_') !== false;
+        if ($customDataHierarchy) {
+            $targetTableAlias .= '_field';
+            $targetTableName = $this->custoDataHelper->getDefTable($targetTableName);
+        }
+
         $hierarchyPlugin = $statement->getSqlSelectContext()->getHierarchyPlugin();
         $hierarchyPlugin->setHierarchyDescendsFrom($arguments[1]->getValue(), $targetTableName);
         $ids = $hierarchyPlugin->collectChildrenIds();
         $ids = array_map(function ($num) {
             return new Number($num);
         }, $ids);
+
+        if (empty($ids)) {
+            $ids = [new Number(0)];
+        }
 
         $condition = $this->statementFactory->createIn(
             $this->statementFactory->createRaw("`$targetTableAlias`.`id`"),

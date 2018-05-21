@@ -224,7 +224,17 @@ class InstallSession
      */
     public function hasFlag($id)
     {
-        return isset($this->flags[$id]);
+        return isset($this->flags[$id]) && $this->flags[$id];
+    }
+
+    /**
+     * @param string $id
+     *
+     * @return mixed
+     */
+    public function getFlag($id)
+    {
+        return isset($this->flags[$id]) ? $this->flags[$id] : null;
     }
 
     /**
@@ -233,6 +243,15 @@ class InstallSession
     public function enableFlag($id)
     {
         $this->flags[$id] = true;
+    }
+
+    /**
+     * @param string $id
+     * @param mixed  $value
+     */
+    public function setFlag($id, $value)
+    {
+        $this->flags[$id] = $value;
     }
 
     /**

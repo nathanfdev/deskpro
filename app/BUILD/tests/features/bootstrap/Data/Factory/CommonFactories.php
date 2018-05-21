@@ -21,6 +21,7 @@ use Application\DeskPRO\Entity\TaskComment;
 use Application\DeskPRO\Entity\Ticket;
 use Application\DeskPRO\Entity\TicketMessage;
 use Application\DeskPRO\Form\Type\CustomFields\ContextualChoiceType;
+use DeskPRO\Bundle\AppBundle\Entity\TicketFilterSetAssoc;
 use DpBehat\Data\DataContext;
 
 /**
@@ -153,6 +154,7 @@ class CommonFactories
             'data_json'      => CustomDefAbstract::HANDLER_CLASS_DATAJSON,
             'url'            => CustomDefAbstract::HANDLER_CLASS_URL,
             'currency'       => CustomDefAbstract::HANDLER_CLASS_CURRENCY,
+            'file'           => CustomDefAbstract::HANDLER_CLASS_FILE,
         ];
 
         $def = new $types[$type]();
@@ -312,5 +314,16 @@ class CommonFactories
         $comment = new TaskComment($me, '');
 
         return SimpleFactory::provide($comment, $data);
+    }
+
+    public static function ticketFilterSetAssoc(array $data)
+    {
+        $def = new TicketFilterSetAssoc(
+            $data['filter_set'],
+            $data['filter'],
+            @$data['display_order'] ?: 0
+        );
+
+        return SimpleFactory::provide($def, $data);
     }
 }

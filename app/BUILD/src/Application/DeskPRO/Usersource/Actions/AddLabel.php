@@ -28,7 +28,9 @@ class AddLabel extends AbstractAction
     protected function doHandle(DeskproContainer $container, Person $person, array $rawInput)
     {
         $value = $this->getValue($rawInput);
-        $label = new LabelPerson($value);
-        $person->addLabel($label);
+        if (trim($value)) {
+            $label = new LabelPerson($value);
+            $person->addLabel($label);
+        }
     }
 }

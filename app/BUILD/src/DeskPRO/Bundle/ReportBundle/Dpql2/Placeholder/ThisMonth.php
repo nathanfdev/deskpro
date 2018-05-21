@@ -10,7 +10,7 @@ class ThisMonth extends AbstractDateRange
     /**
      * {@inheritdoc}
      */
-    protected function getDateRange()
+    public function getDateRange()
     {
         $date  = $this->getDate();
         $start = $date->format('Y-m');

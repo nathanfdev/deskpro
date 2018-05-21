@@ -20,27 +20,7 @@ abstract class AbstractRenderer implements ReportsRendererInterface
      */
     public function render(Results $results, array $options = [])
     {
-        $metadata     = $results->getMetadata();
-        $splitColumns = $metadata->getSplitColumns();
-
-        if ($splitColumns) {
-            $output = [];
-            foreach ($results->getSplitResults() as $splitResult) {
-                $result = $this->doRender($splitResult[0], $results->getMetadata(), $options);
-                if ($result) {
-                    $splitPrint = [];
-                    foreach ($metadata->getSplitColumns() as $splitColumn) {
-                        $splitPrint[] = $this->renderCellValue($splitResult[1], $splitColumn, $results->getMetadata());
-                    }
-
-                    $output[] = $this->renderSplitOutputWithHeader(implode(' / ', $splitPrint), $result);
-                }
-            }
-
-            return $this->implodeSplitOutput($output);
-        } else {
-            return $this->doRender($results->getResults(), $results->getMetadata(), $options);
-        }
+        return $this->doRender($results->getResults(), $results->getMetadata(), $options);
     }
 
     /**
@@ -53,7 +33,16 @@ abstract class AbstractRenderer implements ReportsRendererInterface
      */
     public function getColumnValue(array $row, $id)
     {
-        if (is_array($id) && isset($id['resultId'])) {
+        if (isset($id['resultId']) && is_array($id['resultId'])) {
+            $value = [];
+            foreach ($id['resultId'] as $resultId) {
+                $value[] = $resultId ? $row[$resultId - 1] : '';
+            }
+
+            return implode('', $value);
+        }
+
+        if (isset($id['resultId'])) {
             $index = $id['resultId'] - 1;
         } elseif (is_string($id) && !ctype_digit($id)) {
             $index = $id;
@@ -65,15 +54,9 @@ abstract class AbstractRenderer implements ReportsRendererInterface
     }
 
     /**
-     * Renders the value for a specific cell.
-     *
-     * @param mixed [int]    $row
-     * @param mixed          $column
-     * @param ResultMetadata $metadata
-     *
-     * @return string
+     * {@inheritdoc}
      */
-    protected function renderCellValue(array $row, $column, ResultMetadata $metadata)
+    public function renderCellValue(array $row, $column, ResultMetadata $metadata, $useRenderer = null)
     {
         if (is_string($column)) {
             $value = array_key_exists($column, $row) ? $row[$column] : '';
@@ -88,7 +71,11 @@ abstract class AbstractRenderer implements ReportsRendererInterface
             }
         }
 
-        $renderer = is_array($column) && array_key_exists('renderer', $column) ? $column['renderer'] : null;
+        if ($useRenderer) {
+            $renderer = $useRenderer;
+        } else {
+            $renderer = is_array($column) && array_key_exists('renderer', $column) ? $column['renderer'] : null;
+        }
         if ($renderer instanceof \Closure) {
             /* @var $renderer \Closure */
 
@@ -122,7 +109,7 @@ abstract class AbstractRenderer implements ReportsRendererInterface
             $localPath[] = $key;
 
             $localPrintPath   = $printPath;
-            $localPrintPath[] = $value;
+            $localPrintPath[] = $value === '' ? 'None' : $value;
 
             $childOutput = $this->getFinalMatrixPathsWithPrintable($localPath, $distinctValues, $localPrintPath);
             if (!$childOutput) {

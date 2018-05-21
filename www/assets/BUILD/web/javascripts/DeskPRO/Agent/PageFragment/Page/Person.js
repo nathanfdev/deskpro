@@ -700,6 +700,31 @@ DeskPRO.Agent.PageFragment.Page.Person = new Orb.Class({
 					});
 				}
 
+        this.customFieldsUpload = new DeskPRO.Agent.PageHelper.CustomFieldUpload(fieldsForm);
+				$('.File.customfield input', fieldsForm).each(function() {
+					var $el = $(this);
+					if (!$el.val()) {
+						return;
+					}
+
+					if (!$('[data-blob-id='+$el.val()+']', fieldsForm).length) {
+						var $removeBtn = $('<em class="remove-attach-trigger"></em>');
+						var $editWrapper = $('<div class="edit-wrapper" data-blob-id="'+$el.val()+'" />');
+						var $fileLink = $(fieldsRendered).find('[data-blob-id='+$el.val()+']').clone();
+
+						$editWrapper.append($('<label>'+$('<div />').append($fileLink).html()+'</label>'));
+						$editWrapper.append($removeBtn);
+						$editWrapper.insertAfter($el);
+
+						$removeBtn.on('click', function() {
+							$el.remove();
+							$editWrapper.remove();
+
+              self.customFieldsUpload.updateVisibility();
+						});
+          }
+				});
+
 				$('.prop-edit-trigger', box).hide();
 				$('.is-loading', box).hide();
 				$('.save', box).show();
@@ -718,7 +743,7 @@ DeskPRO.Agent.PageFragment.Page.Person = new Orb.Class({
 		});
 		$('.save', box).on('click', function() {
 			var formData = { custom_fields_definitions: self.$scope.custom_fields_definitions };
-			$('input[type="text"], input[type="password"], input:checked, select, textarea', fieldsForm).each(function(){
+			$('input[type="text"], input[type="password"], input[type="hidden"], input:checked, select, textarea', fieldsForm).each(function(){
 			  var n = $(this).attr('name');
 			  if (!n) return;
 			  if (!!n && n.indexOf('[]') !== -1 && formData[n]) n = n.replace(/\[\]/, '[' + Orb.uuid() + ']')
@@ -775,6 +800,7 @@ DeskPRO.Agent.PageFragment.Page.Person = new Orb.Class({
 
 		this.initUsEditor();
 		this.initUgEditor();
+    this.initBrandEditor();
 
 		if (this.getEl('approve_user')[0]) {
 
@@ -1206,5 +1232,81 @@ DeskPRO.Agent.PageFragment.Page.Person = new Orb.Class({
 				}
 			});
 		});
-	}
+	},
+
+  initBrandEditor: function() {
+    var self = this;
+    var brandBox = this.getEl('brands_box');
+
+    var editBtn   = brandBox.find('.edit-trigger');
+    var cancelBtn = brandBox.find('.cancel-trigger');
+    var saveBtn   = brandBox.find('.save-trigger');
+
+    var displayBox = this.getEl('brands_display_box');
+    var editBox    = this.getEl('brands_edit_box');
+
+    var showEdit = function() {
+      brandBox.removeClass('loading');
+      editBtn.hide();
+      saveBtn.show();
+      cancelBtn.show();
+      displayBox.hide();
+      editBox.show();
+      brandBox.removeClass('no-section').find('> section').show();
+    };
+    var showSaving = function() {
+      brandBox.addClass('loading');
+      editBtn.hide();
+      saveBtn.hide();
+      cancelBtn.hide();
+      displayBox.show();
+      editBox.hide();
+    };
+    var showNormal = function() {
+      brandBox.removeClass('loading');
+      editBtn.show();
+      saveBtn.hide();
+      cancelBtn.hide();
+      displayBox.show();
+      editBox.hide();
+    };
+
+    editBtn.on('click', function() {
+      showEdit();
+    });
+    cancelBtn.on('click', function() {
+      showNormal();
+    });
+    saveBtn.on('click', function() {
+      var formData = editBox.find(':checkbox.brand-check:checked').serializeArray();
+      formData.push({name: 'action', value: 'set-brands'});
+
+      displayBox.find('li.brand-row').hide();
+
+      brandBox.find(':checkbox.brand-check:checked').each(function() {
+        var id = $(this).val();
+        displayBox.find('li.brand-row-' + id).show();
+      });
+
+      showSaving();
+      $.ajax({
+        url: BASE_URL + 'agent/people/' + self.meta.person_id + '/ajax-save',
+        type: 'POST',
+        dataType: 'json',
+        data: formData,
+        context: this,
+        complete: function() {
+          showNormal();
+        },
+        success: function(data) {
+          // if no brand selected - person will have default brand set
+          if (!brandBox.find(':checkbox.brand-check:checked').length) {
+            displayBox.find('li.default-brand').show();
+            editBox.find(':checkbox.default-brand').prop("checked", true);
+          }
+          showNormal();
+        }
+      });
+    });
+  }
 });

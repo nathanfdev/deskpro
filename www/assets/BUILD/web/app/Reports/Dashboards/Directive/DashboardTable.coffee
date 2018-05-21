@@ -1,5 +1,5 @@
 define ['datatables', "datatables.pageResize"], () ->
-  Reports_Directive_DashboardTable = ['$sce', 'DashboardWidgetService', ($sce, DashboardWidgetService) ->
+  Reports_Directive_DashboardTable = ['$sce', 'DashboardWidgetService', '$timeout', ($sce, DashboardWidgetService, $timeout) ->
     return {
       restrict: 'E'
       replace: true
@@ -11,10 +11,14 @@ define ['datatables', "datatables.pageResize"], () ->
         options: '@'
         row: '@'
         col: '@'
+        loaded: '@'
 
       templateUrl: $sce.trustAsResourceUrl("ReportsInterfaceBundle:Dashboard/Widget:table_dt.html")
 
       link: (scope, element) ->
+        scope.loaded = false
+        scope.noData = false
+
         el = $(element)
         dt = null
         box = el.parent()
@@ -25,6 +29,8 @@ define ['datatables', "datatables.pageResize"], () ->
         interval = 0;
 
         initTable = (widget) ->
+          scope.loaded = true
+
           if interval?
             clearInterval(interval)
           scope.columns = widget.columns
@@ -46,7 +52,8 @@ define ['datatables', "datatables.pageResize"], () ->
             deferRender:    true,
             dom:            "rtS",
             scrollCollapse: true,
-            autoWidth:      true
+            autoWidth:      true,
+            ordering:       false,
             fnDrawCallback: (settings) ->
               if settings._iDisplayLength == -1 || settings._iDisplayLength >= settings.fnRecordsDisplay()
                 $(settings.nTableWrapper).find('.dataTables_paginate').hide();
@@ -63,7 +70,9 @@ define ['datatables', "datatables.pageResize"], () ->
 
         if tableData and tableData.data?
           tableData.noRedraw = true
-          initTable tableData
+          $timeout(->
+            initTable tableData
+          ,1)
         else if scope.jsCode
           try
             eval(scope.jsCode)
@@ -72,13 +81,26 @@ define ['datatables', "datatables.pageResize"], () ->
 
           if promise and promise.then
             promise.then (response) ->
+              scope.loaded = true
+              scope.noData = true
+
               if response and response.data
                 initTable response
+        else if DashboardWidgetService.widgetsResults and DashboardWidgetService.widgetsResults[scope.widgetId]
+          DashboardWidgetService.widgetsResults[scope.widgetId].promise.then (renderedResult) =>
+            scope.loaded = true
+            scope.noData = true
+
+            if renderedResult and renderedResult.data
+              initTable renderedResult
         else
           DashboardWidgetService
             .getWidget(conf).then (widget) =>
-              if widget and widget.data
-                initTable widget
+              scope.loaded = true
+              scope.noData = true
+
+              if widget.rendered_result and widget.rendered_result.data
+                initTable widget.rendered_result
     }
   ]
 

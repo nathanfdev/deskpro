@@ -50,6 +50,17 @@ define(['DeskPRO/Util/Strings', 'DeskPRO/Util/Util'], function(Strings, Util) {
 			return deferred.promise;
 		});
 
+    function checkRequirements() {
+      Api.sendGet('/apps/packages/deskpro_us_okta/check-requirements').then(function(res) {
+        $scope.has_errors = !res.data.success;
+        if(!res.data.success) {
+          $scope.errors['requirements'] = res.data.error;
+        }
+      });
+    }
+
+    checkRequirements();
+
 		//##############################################################################################################
 		//# Test modal
 		//##############################################################################################################

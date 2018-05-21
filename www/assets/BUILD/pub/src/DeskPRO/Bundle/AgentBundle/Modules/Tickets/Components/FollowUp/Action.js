@@ -1,9 +1,9 @@
 import React from 'react';
 import PropTypes from 'prop-types';
+import { FormattedMessage } from 'react-intl';
 import { connect } from 'react-redux';
 import { Select, Label, Radio } from '@deskpro/react-components';
 import { newid } from '@deskpro/react-components/dist/utils';
-import agentPhrases from 'DeskPRO/Bundle/AgentBundle/AgentPhrases';
 import { meSelector } from 'DeskPRO/Bundle/AppBundle/Modules/RecordsStore/Shortcuts/me';
 import Editor from './Editor';
 
@@ -106,15 +106,20 @@ class Action extends React.Component {
     }
     return (
       <div>
-        <Label>{agentPhrases.get('agent.general.agent')}</Label>
-        <Select
-          name="agent"
-          options={agents}
-          clearable={false}
-          searchable={false}
-          value={action.options.agent}
-          onChange={this.onSelectChange}
-        />
+        <Label><FormattedMessage id="agent.general.agent" /></Label>
+        <FormattedMessage id="agent.general.please_select">
+          {placeholder => (
+            <Select
+              name="agent"
+              options={agents}
+              clearable={false}
+              searchable={false}
+              value={action.options.agent}
+              onChange={this.onSelectChange}
+              placeholder={placeholder}
+            />
+          )}
+        </FormattedMessage>
       </div>
     );
   };
@@ -141,15 +146,20 @@ class Action extends React.Component {
     ));
     return (
       <div>
-        <Label>{agentPhrases.get('agent.general.team')}</Label>
-        <Select
-          name="agent_team"
-          options={agentTeams}
-          clearable={false}
-          searchable={false}
-          value={action.options.agent_team}
-          onChange={this.onSelectChange}
-        />
+        <Label><FormattedMessage id="agent.general.team" /></Label>
+        <FormattedMessage id="agent.general.please_select">
+          {placeholder => (
+            <Select
+              name="agent_team"
+              options={agentTeams}
+              clearable={false}
+              searchable={false}
+              value={action.options.agent_team}
+              onChange={this.onSelectChange}
+              placeholder={placeholder}
+            />
+          )}
+        </FormattedMessage>
       </div>
     );
   };
@@ -162,14 +172,14 @@ class Action extends React.Component {
     const { action } = this.props;
     return (
       <div>
-        <Label>Hold</Label><br />
+        <Label><FormattedMessage id="agent.general.hold" /></Label><br />
         <Radio
           name="is_hold"
           checked={action.options.is_hold === 0}
           onChange={this.onRadioChange}
           value={0}
         >
-          {agentPhrases.get('agent.tickets.unhold_btn')}
+          <FormattedMessage id="agent.tickets.unhold_btn" />
         </Radio>
         <Radio
           name="is_hold"
@@ -177,7 +187,7 @@ class Action extends React.Component {
           onChange={this.onRadioChange}
           value={1}
         >
-          {agentPhrases.get('agent.tickets.hold_btn')}
+          <FormattedMessage id="agent.tickets.hold_btn" />
         </Radio>
       </div>
     );
@@ -187,25 +197,30 @@ class Action extends React.Component {
     const { action, ticketPerms } = this.props;
     const options = [];
     if (ticketPerms.modify_set_awaiting_agent) {
-      options.push({ value: 'awaiting_agent', label: agentPhrases.get('agent.tickets.status_awaiting_agent') });
+      options.push({ value: 'awaiting_agent', label: <FormattedMessage id="agent.tickets.status_awaiting_agent" /> });
     }
     if (ticketPerms.modify_set_awaiting_user) {
-      options.push({ value: 'awaiting_user', label: agentPhrases.get('agent.tickets.status_awaiting_user') });
+      options.push({ value: 'awaiting_user', label: <FormattedMessage id="agent.tickets.status_awaiting_user" /> });
     }
     if (ticketPerms.modify_set_resolved) {
-      options.push({ value: 'resolved', label: agentPhrases.get('agent.tickets.status_resolved') });
+      options.push({ value: 'resolved', label: <FormattedMessage id="agent.tickets.status_resolved" /> });
     }
     return (
       <div>
-        <Label>{agentPhrases.get('agent.general.status')}</Label>
-        <Select
-          name="status"
-          options={options}
-          clearable={false}
-          searchable={false}
-          value={action.options.status}
-          onChange={this.onSelectChange}
-        />
+        <Label><FormattedMessage id="agent.general.status" /></Label>
+        <FormattedMessage id="agent.general.please_select">
+          {placeholder => (
+            <Select
+              name="status"
+              options={options}
+              clearable={false}
+              searchable={false}
+              placeholder={placeholder}
+              value={action.options.status}
+              onChange={this.onSelectChange}
+            />
+          )}
+        </FormattedMessage>
       </div>
     );
   };
@@ -229,7 +244,7 @@ class Action extends React.Component {
     );
     return (
       <div>
-        <Label>{agentPhrases.get('agent.general.macro')}</Label>
+        <Label><FormattedMessage id="agent.general.macro" /></Label>
         <Select
           name="macroId"
           options={macros}
@@ -247,7 +262,7 @@ class Action extends React.Component {
     return (
       <div className="action">
         <div className="type">
-          <Label htmlFor={this.typeId}>Type</Label>
+          <Label htmlFor={this.typeId}><FormattedMessage id="agent.general.type" /></Label>
           <Select
             id={this.typeId}
             options={types}

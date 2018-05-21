@@ -33,7 +33,7 @@ interface DpqlPlaceholderInterface
      *
      * @return Prepared|bool Prepared results or false if there's no output
      */
-    public function prepare(SqlSelect $statement, $section, array $stack, SqlSelect $select, ResultMetadata $result);
+    public function prepare(SelectPart $statement, $section, array $stack, SqlSelect $select, ResultMetadata $result);
 
     /**
      * Prepares the placeholder for use, including validating that the usage is valid.
@@ -49,7 +49,7 @@ interface DpqlPlaceholderInterface
      *
      * @return Prepared|bool Prepared results or false if there's no output
      */
-    public function prepareWithIntervals(SqlSelect $statement, $section, array $stack, SqlSelect $select, ResultMetadata $result, array $intervals = []);
+    public function prepareWithIntervals(SelectPart $statement, $section, array $stack, SqlSelect $select, ResultMetadata $result, array $intervals = []);
 
     /**
      * Prepares the placeholder when it's called in a binary comparison context.

@@ -270,8 +270,9 @@ class UsersourcesController extends AbstractController
             throw $this->createNotFoundException('usersource id='.$id.' not found for type='.$type);
         }
 
-        $source->title      = $this->in->getString('title');
-        $source->is_enabled = $this->in->getBool('is_enabled');
+        $source->setTitle($this->in->getString('title'));
+        $source->setIsEnabled($this->in->getBool('is_enabled'));
+        $source->setOptions($this->in->getCleanValueArray('options'));
         $this->em->persist($source);
         $this->em->flush();
 
@@ -348,6 +349,16 @@ class UsersourcesController extends AbstractController
             ],
             $adapter->getIframeTemplateParams(false))
         );
+    }
+
+    /**
+     * @param string $id
+     *
+     * @return Response
+     */
+    public function checkRequirementsAction($id)
+    {
+        return $this->createApiSuccessResponse(['id' => $id]);
     }
 
     public function updateDisplayOrderAction()

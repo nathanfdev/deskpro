@@ -7,7 +7,7 @@ services:
 
   swiftmailer.mailer.default.transport:
     class: Application\EmailBundle\SwiftMailer\Transport\DeskproTransport
-    arguments: ["@email.source_mapper", "@email.email_account_manager", "@swiftmailer.mailer.default.transport.eventdispatcher", "@logger"]
+    arguments: ["@email.source_mapper", "@email.email_account_manager", "@swiftmailer.mailer.default.transport.eventdispatcher", "@brand_stack", "@logger"]
     tags:
       - { name: monolog.logger, channel: dp.email.out.transport }
 
@@ -65,6 +65,10 @@ services:
       arguments: ["@email.email_account_manager", "@deskpro.blob_storage", "@logger"]
       tags:
         - { name: monolog.logger, channel: dp.email.out.transport }
+
+  mailer.utils:
+      class: Application\EmailBundle\SwiftMailer\MailerUtils
+      arguments: ["@mailer", "@email.email_sender", "@brand_stack", "@deskpro.core.translate"]
 
   in_email.proc_queue:
       class: Application\EmailBundle\Incoming\ProcQueue\ProcQueueInterface

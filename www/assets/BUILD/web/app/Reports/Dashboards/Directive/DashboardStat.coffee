@@ -1,20 +1,59 @@
 define ->
-  Reports_Directive_DashboardStat = ['$state', ($state) ->
+  Reports_Directive_DashboardStat = ['$state', 'DashboardWidgetService', '$timeout', ($state, DashboardWidgetService, $timeout) ->
     return {
     restrict: 'E',
     replace: true,
+    scope:
+      widgetId: '@'
+      loaded: '@'
     template: """
-      <div class="stat">
-          <div class="stat-value"></div>
-          <div class="stat-description"></div>
+      <div style="height: auto">
+        <div ng-hide='loaded' class="stat-value no-data">loading...</div>
+        <div ng-show='loaded && noData' class="box stat-box"><div class="stat-value no-data">no data</div></div>
+        <div ng-show='loaded' class="stat">
+            <div class="stat-value"></div>
+            <div class="stat-description"></div>
+        </div>
       </div>
     """
     link: (scope, element, attrs) ->
+      scope.loaded = false
+
       initValue = (result) ->
+        scope.loaded = true
+
+        el = $(element)
+        box = el.parent()
+
         if !result
           return
 
-        el = $(element)
+        scope.noData = false
+
+        try
+          options = if result.options then JSON.parse(result.options) else {}
+        catch e
+          options = {}
+          console.warn("invalid options")
+          console.log(e)
+
+        data = if result.data then JSON.parse(result.data) else []
+
+        if options.click_url?
+          vars = {};
+          matches = options?.click_url.match(/\$\{([a-zA-z0-9_]+)\}/)
+          url = options.click_url
+
+          for match, index in matches
+            if index % 2 == 1
+              vars[match] = matches[index - 1]
+            for key, variable of vars
+              if data[key]?
+                url = url.replace(variable, data[key])
+
+          box.css {cursor: 'pointer'}
+          box.click () -> window.open url
+
         valueElement = el.find('.stat-value')
         valueElement.html(result.value)
         if result.description
@@ -30,9 +69,29 @@ define ->
 
         if promise and promise.then
           promise.then (response) ->
-            initValue(response)
+            scope.loaded = true
+            scope.noData = true
+            $timeout(->
+              initValue(response)
+            ,1)
+      else if attrs.value
+        $timeout(->
+          initValue(attrs)
+        ,1)
+      else if DashboardWidgetService.widgetsResults and DashboardWidgetService.widgetsResults[scope.widgetId]
+        DashboardWidgetService.widgetsResults[scope.widgetId].promise.then (renderedResult) =>
+          scope.loaded = true
+          scope.noData = true
+          if renderedResult
+            initValue(renderedResult)
       else
-        initValue(attrs)
+        DashboardWidgetService
+          .getWidget(scope.widgetId || 0)
+          .then (widget) =>
+            scope.loaded = true
+            scope.noData = true
+            if widget? && widget.rendered_result
+              initValue(widget.rendered_result)
 
       # dynamic handler position
       el = $(element)
@@ -49,6 +108,8 @@ define ->
           h = $(this)
           c = 1 + valueElementTop
           h[0].style.bottom = "#{c}px"
+
+
     }
   ]
 

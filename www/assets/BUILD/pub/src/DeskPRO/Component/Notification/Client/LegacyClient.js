@@ -78,6 +78,12 @@ export default class LegacyClient extends AbstractClient {
   }
 
   handleUserNotifyPoll(response) {
+    if (response.cm_strategy && response.cm_strategy !== 'db') {
+      if (!this.userNotified) {
+        window.DeskPRO_Window.showRefreshAlert(null, 'Your connection method is out of date, you may miss notifications and messages');
+        this.userNotified = true;
+      }
+    }
     const that = this;
     if (response.notifications) {
       const last = response.notifications[response.notifications.length - 1];

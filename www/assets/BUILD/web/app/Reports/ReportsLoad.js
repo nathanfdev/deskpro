@@ -16,6 +16,7 @@ define([
   'jqueryUi',
   'underscore',
   'stacktrace',
+  'handlebars',
 
   'bootstrapTooltip',
 

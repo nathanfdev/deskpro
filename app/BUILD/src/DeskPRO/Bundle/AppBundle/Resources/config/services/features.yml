@@ -38,6 +38,13 @@ services:
     tags:
       - { name: deskpro.feature }
 
+  deskpro.features.new_filters:
+    class: DeskPRO\Bundle\AppBundle\Features\NewFiltersFeature
+    arguments:
+      - "@settings_resolver"
+    tags:
+      - { name: deskpro.feature }
+
   deskpro.features.new_snippets:
     class: DeskPRO\Bundle\AppBundle\Features\NewSnippetsFeature
     arguments:

@@ -4,9 +4,11 @@ import ReactDOM from 'react-dom';
 import { Provider } from 'react-redux';
 import { AppContainer } from 'react-hot-loader';
 import { DragDropContextProvider } from 'react-dnd';
+import { IntlProvider, addLocaleData } from 'react-intl';
 import HTML5Backend from 'react-dnd-html5-backend';
 import Twig from 'twig';
 import { api } from 'DeskPRO/Bundle/AppBundle/DAL';
+import agentPhrases from 'DeskPRO/Bundle/AgentBundle/AgentPhrases';
 import { AgentTopBarContainer } from 'DeskPRO/Bundle/AgentBundle/Modules/TopBar/Components/AgentTopBar';
 import { SideBarContainer } from 'DeskPRO/Bundle/AgentBundle/Modules/SideBar/Components/SideBar';
 import { LeftDrawerContainer } from 'DeskPRO/Bundle/AgentBundle/Modules/SideBar/Components/LeftDrawer';
@@ -29,6 +31,7 @@ import LegacySnippetInserter from 'DeskPRO/Bundle/AgentBundle/Modules/Snippets/S
 import RteTextArea from 'DeskPRO/Bundle/AgentBundle/Modules/Publish/Services/RteTextarea';
 import store from 'DeskPRO/Bundle/AgentBundle/Services/store';
 import { FollowUpContainer } from './Modules/Tickets/Components/FollowUp/FollowUp';
+import AgentFiltersContainer from './Modules/Filters/Components/AgentFiltersContainer';
 
 class AgentLegacyApp {
 
@@ -45,6 +48,11 @@ class AgentLegacyApp {
 
     window.LegacyRteTextarea = new RteTextArea();
     window.LegacySnippetInserter = new LegacySnippetInserter();
+
+    this.locale = window.DP_LOCALE.replace(/_/, '-');
+
+    const possibleLocale = window.DP_LOCALE.split(/_/)[0] || 'en';
+    addLocaleData(require(`react-intl/locale-data/${possibleLocale}`)); // eslint-disable-line import/no-dynamic-require, global-require
 
     if (window.DP_SKIP_REACT) {
       return;
@@ -70,6 +78,9 @@ class AgentLegacyApp {
       this.renderPiece(LeftDrawerContainer, LeftDrawerContainer.getType());
       this.renderPiece(AgentOnboardingContainer, AgentOnboardingContainer.getType());
       this.renderPiece(NotificationServiceContainer, NotificationServiceContainer.getType());
+      if (window.DP_HAS_NEW_FILTERS) {
+        this.renderPiece(AgentFiltersContainer, AgentFiltersContainer.getType());
+      }
       window.$('#dp_loading').remove();
 
       window.LegacyStoreProvider = new LegacyStoreProvider();
@@ -113,13 +124,27 @@ class AgentLegacyApp {
         ReactDOM.render(
           <AppContainer>
             <Provider store={this.store}>
-              <DragDropContextProvider backend={HTML5Backend} window={node}>
-                {element}
-              </DragDropContextProvider>
+              <IntlProvider
+                locale={this.locale}
+                messages={agentPhrases.getPhrases()}
+              >
+                <DragDropContextProvider backend={HTML5Backend} window={node}>
+                  {element}
+                </DragDropContextProvider>
+              </IntlProvider>
             </Provider>
           </AppContainer>, node);
       } else {
-        ReactDOM.render(<Provider store={this.store}>{element}</Provider>, node);
+        ReactDOM.render(
+          <Provider store={this.store}>
+            <IntlProvider
+              locale={this.locale}
+              messages={agentPhrases.getPhrases()}
+            >
+              {element}
+            </IntlProvider>
+          </Provider>, node
+        );
       }
       return;
     }
@@ -137,11 +162,16 @@ class AgentLegacyApp {
     ReactDOM.render(
       <AppContainer>
         <Provider store={this.store}>
-          <VoiceControlsContainer
-            tabRef={(c) => { tabRef = c; }}
-            ticketId={ticketId}
-            onEndCall={onEndCall}
-          />
+          <IntlProvider
+            locale={this.locale}
+            messages={agentPhrases.getPhrases()}
+          >
+            <VoiceControlsContainer
+              tabRef={(c) => { tabRef = c; }}
+              ticketId={ticketId}
+              onEndCall={onEndCall}
+            />
+          </IntlProvider>
         </Provider>
       </AppContainer>,
       node
@@ -171,10 +201,15 @@ class AgentLegacyApp {
     ReactDOM.render(
       <AppContainer>
         <Provider store={this.store}>
-          <VoiceTicketMessageContainer
-            tabRef={(c) => { tabRef = c; }}
-            data={data}
-          />
+          <IntlProvider
+            locale={this.locale}
+            messages={agentPhrases.getPhrases()}
+          >
+            <VoiceTicketMessageContainer
+              tabRef={(c) => { tabRef = c; }}
+              data={data}
+            />
+          </IntlProvider>
         </Provider>
       </AppContainer>,
       node
@@ -187,10 +222,15 @@ class AgentLegacyApp {
     ReactDOM.render(
       <AppContainer>
         <Provider store={this.store}>
-          <ArchiveFilesContainer
-            authId={data.authId}
-            layout={layout}
-          />
+          <IntlProvider
+            locale={this.locale}
+            messages={agentPhrases.getPhrases()}
+          >
+            <ArchiveFilesContainer
+              authId={data.authId}
+              layout={layout}
+            />
+          </IntlProvider>
         </Provider>
       </AppContainer>,
       node.get(0)
@@ -201,9 +241,14 @@ class AgentLegacyApp {
     ReactDOM.render(
       <AppContainer>
         <Provider store={this.store}>
-          <FollowUpContainer
-            {...data}
-          />
+          <IntlProvider
+            locale={this.locale}
+            messages={agentPhrases.getPhrases()}
+          >
+            <FollowUpContainer
+              {...data}
+            />
+          </IntlProvider>
         </Provider>
       </AppContainer>,
       node
@@ -220,12 +265,17 @@ class AgentLegacyApp {
     ReactDOM.render(
       <AppContainer>
         <Provider store={this.store}>
-          <EditorContainer
-            value={value}
-            inputType={inputType}
-            save={save}
-            updateSource={updateSource}
-          />
+          <IntlProvider
+            locale={this.locale}
+            messages={agentPhrases.getPhrases()}
+          >
+            <EditorContainer
+              value={value}
+              inputType={inputType}
+              save={save}
+              updateSource={updateSource}
+            />
+          </IntlProvider>
         </Provider>
       </AppContainer>,
       node

@@ -35,11 +35,6 @@ class ProcessAgentFwd extends ProcessAbstract
     protected $ticket_email;
 
     /**
-     * @var \Application\DeskPRO\Entity\EmailAccount
-     */
-    protected $account;
-
-    /**
      * @var \Orb\Input\Cleaner\Cleaner
      */
     protected $cleaner;
@@ -124,7 +119,9 @@ class ProcessAgentFwd extends ProcessAbstract
             if (App::getContainer()->get('deskpro.feature_flags')->hasBeta('email_templates')) {
                 $viewModel = App::getContainer()->get('email.agent_viewmodel_factory')
                     ->createAgentErrorInvalidForwardModel($this->error);
-                App::getContainer()->get('email.email_sender')->send($viewModel,
+                App::$container->get('mailer.utils')->sendModelWithPersonContext(
+                    $this->person,
+                    $viewModel,
                     [
                         'to'          => $this->reader->getFromAddress()->getEmail(),
                         'attachments' => [\Swift_Attachment::newInstance(
@@ -149,11 +146,7 @@ class ProcessAgentFwd extends ProcessAbstract
                     'message/rfc822'
                 ));
 
-                App::$container->getTranslator()->setTemporaryLanguage($this->person->getLanguage(), function () use ($message) {
-                    $message->prepare();
-                });
-
-                App::getMailer()->send($message);
+                App::$container->get('mailer.utils')->sendWithPersonContext($this->person, $message);
             }
 
             return;
@@ -179,6 +172,12 @@ class ProcessAgentFwd extends ProcessAbstract
             $personProcessor->passPerson($personEmailItem, $user);
         } else {
             $user = $personProcessor->createPerson($personEmailItem);
+        }
+        if (!$personProcessor->isPersonAssociatedWithAccountBrands($this->account, $user)) {
+            $brand = $personProcessor->associatePersonWithAccountBrand($this->account, $user, $forceRegEnabled = false);
+            if ($brand) {
+                $this->logMessage("[TicketGatewayProcessor] Add Person #{$user->id} to Account Brand #{$brand->id}");
+            }
         }
 
         //------------------------------
@@ -300,11 +299,7 @@ class ProcessAgentFwd extends ProcessAbstract
                 'message/rfc822'
             ));
 
-            App::$container->getTranslator()->setTemporaryLanguage($this->person->getLanguage(), function () use ($message) {
-                $message->prepare();
-            });
-
-            App::getMailer()->send($message);
+            App::$container->get('mailer.utils')->sendWithPersonContext($this->person, $message);
 
             return;
         }
@@ -455,7 +450,9 @@ class ProcessAgentFwd extends ProcessAbstract
             if (App::getContainer()->get('deskpro.feature_flags')->hasBeta('email_templates')) {
                 $viewModel = App::getContainer()->get('email.agent_viewmodel_factory')
                     ->createAgentErrorInvalidForwardModel($this->error);
-                App::getContainer()->get('email.email_sender')->send($viewModel,
+                App::getContainer()->get('mailer.utils')->sendModelWithPersonContext(
+                    $this->person,
+                    $viewModel,
                     [
                         'to'          => $this->reader->getFromAddress()->getEmail(),
                         'attachments' => [\Swift_Attachment::newInstance(
@@ -480,11 +477,7 @@ class ProcessAgentFwd extends ProcessAbstract
                     'message/rfc822'
                 ));
 
-                App::$container->getTranslator()->setTemporaryLanguage($this->person->getLanguage(), function () use ($message) {
-                    $message->prepare();
-                });
-
-                App::getMailer()->send($message);
+                App::$container->get('mailer.utils')->sendWithPersonContext($this->person, $message);
             }
 
             return;
@@ -501,6 +494,12 @@ class ProcessAgentFwd extends ProcessAbstract
             $personProcessor->passPerson($personEmailItem, $user);
         } else {
             $user = $personProcessor->createPerson($personEmailItem);
+        }
+        if (!$personProcessor->isPersonAssociatedWithAccountBrands($this->account, $user)) {
+            $brand = $personProcessor->associatePersonWithAccountBrand($this->account, $user, $forceRegEnabled = false);
+            if ($brand) {
+                $this->logMessage("[TicketGatewayProcessor] Add Person #{$user->id} to Account Brand #{$brand->id}");
+            }
         }
 
         //------------------------------
@@ -669,11 +668,7 @@ class ProcessAgentFwd extends ProcessAbstract
                 'message/rfc822'
             ));
 
-            App::$container->getTranslator()->setTemporaryLanguage($this->person->getLanguage(), function () use ($message) {
-                $message->prepare();
-            });
-
-            App::getMailer()->send($message);
+            App::$container->get('mailer.utils')->sendWithPersonContext($this->person, $message);
 
             return;
         }

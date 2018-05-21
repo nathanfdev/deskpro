@@ -30,7 +30,7 @@ class StringPart extends AbstractPart
      * {@inheritdoc}
      */
     public function prepare(
-        SelectPart $statement, $section, array $stack, SqlSelect $select, ResultMetadata $result
+        SelectPart $statement, $section, array $stack, SqlSelect $select, ResultMetadata $metadata
     ) {
         return new Prepared($select->quoteForSql($this->string), $this->string, false, 'string');
     }
@@ -41,5 +41,10 @@ class StringPart extends AbstractPart
     public function toDpql(SelectPart $statement, $section, array $stack)
     {
         return $statement->quoteDpqlString($this->string);
+    }
+
+    public function getValue()
+    {
+        return $this->string;
     }
 }

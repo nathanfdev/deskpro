@@ -34,6 +34,11 @@ class DefaultDataFixture extends AbstractDpFixture implements OrderedFixtureInte
 
         $this->appsSync($manager);
         $dataProcessor = new DefaultDataProcessor($this->container);
+        $dataProcessor->setExtraOptions([
+            'objectManager'       => $manager,
+            'referenceRepository' => $this->referenceRepository,
+            'via'                 => self::class,
+        ]);
         $dataProcessor->runInstall();
     }
 

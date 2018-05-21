@@ -44,6 +44,11 @@ class DefaultDataProcessor
      */
     private $logger;
 
+    /**
+     * @var array
+     */
+    private $extraOptions = [];
+
     public function __construct(DeskproContainer $container, $root_dir = null)
     {
         if ($root_dir === null) {
@@ -54,6 +59,22 @@ class DefaultDataProcessor
         $this->root_dir  = $root_dir;
 
         $this->logger = new NullLogger();
+    }
+
+    /**
+     * @return array
+     */
+    public function getExtraOptions()
+    {
+        return $this->extraOptions;
+    }
+
+    /**
+     * @param array $extraOptions
+     */
+    public function setExtraOptions($extraOptions)
+    {
+        $this->extraOptions = $extraOptions;
     }
 
     /**
@@ -143,7 +164,7 @@ class DefaultDataProcessor
 
         $this->data_classes = array_merge(
             $this->data_classes,
-            DpPlugins::getManager()->getExtraDefaultDataClasses()
+            DpPlugins::getManager()->getExtraDefaultDataClasses($this)
         );
 
         usort($this->data_classes, function ($a, $b) {
@@ -294,6 +315,6 @@ class DefaultDataProcessor
     {
         $classname = DpPlugins::getManager()->getRewrittenClassName($classname);
 
-        return new $classname($this->container, $this->logger);
+        return new $classname($this->container, $this->logger, $this->extraOptions);
     }
 }

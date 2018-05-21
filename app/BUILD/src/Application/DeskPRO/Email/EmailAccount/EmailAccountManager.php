@@ -211,7 +211,7 @@ class EmailAccountManager
      *
      * @return \Application\DeskPRO\Entity\EmailAccount
      */
-    public function findAccountForSwiftmailerMessage(\Swift_Mime_Message $message)
+    public function findAccountForSwiftmailerMessage(\Swift_Mime_Message $message, $brand = null)
     {
         if ($message instanceof MessageOptionsInterface) {
             if ($message->getMessageOptions()->has(MessageOptionsInterface::OPT_ACCOUNT_ID)) {
@@ -234,7 +234,7 @@ class EmailAccountManager
             }
         }
 
-        return $this->getDefaultOutAccountWithFallback();
+        return $this->getDefaultOutAccountWithFallback($brand);
     }
 
     /**
@@ -328,8 +328,17 @@ class EmailAccountManager
      *
      * @return EmailAccount
      */
-    public function getPrimaryTicketAccount()
+    public function getPrimaryTicketAccount($brand = null)
     {
+        // try to find first account that has brand and matches our needs
+        if ($brand) {
+            foreach ($this->getAllActiveAccounts() as $acc) {
+                if ($this->accountHasFetcherStorage($acc) && $this->accountHasTransport($acc) && $acc->hasBrand($brand)) {
+                    return $acc;
+                }
+            }
+        }
+
         foreach ($this->getAllActiveAccounts() as $acc) {
             if ($this->accountHasFetcherStorage($acc) && $this->accountHasTransport($acc)) {
                 return $acc;
@@ -349,7 +358,7 @@ class EmailAccountManager
     public function getPrimaryTicketAccountWithFallback($brand = null)
     {
         try {
-            return $this->getPrimaryTicketAccount();
+            return $this->getPrimaryTicketAccount($brand);
         } catch (MissingConfigurationException $e) {
             return $this->getDefaultOutAccountWithFallback($brand);
         }
@@ -420,6 +429,15 @@ class EmailAccountManager
 
             if ($account) { // return here only if we have something
                 return $account;
+            }
+        }
+
+        // try to find first account that has brand and matches our needs
+        if ($brand) {
+            foreach ($this->getAllActiveAccounts() as $acc) {
+                if ($this->accountHasTransport($acc) && $acc->hasBrand($brand)) {
+                    return $acc;
+                }
             }
         }
 

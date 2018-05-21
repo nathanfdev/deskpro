@@ -482,9 +482,17 @@ class Translate implements PersonContextInterface, TranslatorInterface
             $phraseName = str_replace('\.', '.', $phraseName);
         }
 
-        $parts = Strings::rexplode('.', $phraseName, 2);
+        $parts = explode('.', $phraseName);
 
-        return $parts[0];
+        // foo.bar         => foo
+        // foo.bar.baz     => foo.bar
+        // foo.bar.baz.hoo => foo.bar
+        $name = $parts[0];
+        if (isset($parts[2])) {
+            $name .= '.'.$parts[1];
+        }
+
+        return $name;
     }
 
     /**

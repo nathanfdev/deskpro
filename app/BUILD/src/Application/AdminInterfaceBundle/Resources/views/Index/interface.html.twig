@@ -107,7 +107,7 @@
                     {% endif %}
                 {{ nav.list_item_group_end() }}
                 {{ nav.list_item_group(phrase('adm.general.apps_agents'), 'fa-user', '', 'agents') }}
-                    {{ nav.list_subitem('Agents', ng_href('agents.agents'), 'agents.agents', 'fa-user') }}
+                    {{ nav.list_subitem(phrase('agent.general.agents'), ng_href('agents.agents'), 'agents.agents', 'fa-user') }}
                     {{ nav.list_subitem('Auth & SSO', ng_href('agents.usersources'), 'agents.usersources', 'fa-key') }}
                     {{ nav.list_subitem('Teams', ng_href('agents.teams'), 'agents.teams', 'fa-users') }}
                     {{ nav.list_subitem('Permission Groups', ng_href('agents.groups'), 'agents.groups', 'fa-shield') }}
@@ -333,7 +333,8 @@
         window.DP_HAS_VOICE         = {% if app.hasVoice() %}true{% else %}false{% endif %};
         window.DP_HAS_DEV           = {% if app.hasFeature('dev') %}true{% else %}false{% endif %};
         window.DP_HAS_NEW_EMAILS    = {% if app.hasBeta('email_templates') %}true{% else %}false{% endif %};
-        window.DP_VERSION_NUMBER    = '{{ app.getVersionName() }}';
+        window.DP_LOCALE            = '{{ app.user.language.locale }}';
+        window.DP_BUILD_ID           = '{{ app.getBuildId() }}';
         window.DP_SECURE_LIC_SERVER = '{{ license_server }}';
         window.DP_ENABLED_LANGS     = [{% for language in enabled_languages() %}{{ '{' }}code: '{{ language.urlCode }}', locale: '{{ language.locale }}', title:'{{ language.title|capitalize }}',flag:'{{ language.flag_image }}'{{ '}' }}{% if not loop.last %},{% endif %}{% endfor %}];
         {% if app.isCloud() %}
@@ -354,6 +355,7 @@
         window.DP_ADMIN_BUNDLE_PATH = '{{ asset('DeskPRO_AdminBundle.js', 'app_assets') }}';
         window.DP_DISABLE_RELATIVE_TIMES = {% if app.isRelativeTimesDisabled() %}true{% else %}false{% endif %};
     </script>
+    {{ include_code_plugin('admin_pre_res') }}
     {{ js_error_tracking('admin_interface') }}
     <script type="text/javascript" src="{{ asset('app/DeskPRO/preboot.js') }}"></script>
     <script type="text/javascript">
@@ -365,6 +367,8 @@
     <script type="text/javascript">{{ rjs_apps_config|raw }}</script>
 
     {% include 'DeskPRO:Common:notify-login-script.html.twig' with {show:true} %}
+
+    {{ include_code_plugin('admin_res') }}
 
 </body>
 </html>

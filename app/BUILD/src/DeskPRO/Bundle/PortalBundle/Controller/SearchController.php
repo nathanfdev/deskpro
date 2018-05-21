@@ -29,6 +29,16 @@ use Symfony\Component\PropertyAccess\PropertyAccess;
 class SearchController extends AbstractController
 {
     /**
+     * Last search log id variable name.
+     */
+    const SEARCH_LOG_ID_VAR = 'search_log_id';
+    /**
+     * During this timeout overwrite last search log item with new search data
+     * Used with type-ahead search to not log intermediate search queries (~while user still typing).
+     */
+    const SEARCH_LOG_TIMEOUT_SEC = 300;
+
+    /**
      * This handles both an ajax version (for paging; i.e. "View More" button) and non-ajax for the actual initial
      * GET request of the search page.
      *
@@ -54,23 +64,14 @@ class SearchController extends AbstractController
         $ajax          = $request->isXmlHttpRequest();
         $perPage       = $ajax ? 10 : 2;
         $type          = $ajax ? $request->get('type', null) : null;
+        $searchLogId   = 0;
 
         if ($q) {
-            $isSearch = true;
-
-            $results = $this->fetchSearchResults($request, $type ? [$type] : null, $person, $q, $curPage, $perPage);
-
-            $searchlog             = SearchLog::create($q, count($results) + count($stickyResults));
-            $searchlog->person     = $this->getUser();
-            $searchlog->ip_address = $request->getClientIp();
-            $this->getEm()->transactional(
-                function (EntityManager $em) use ($searchlog) {
-                    $em->persist($searchlog);
-                    $em->flush();
-                }
-            );
-
-            $request->getSession()->set('last_searchlog_id', $searchlog->id);
+            $isSearch    = true;
+            $results     = $this->fetchSearchResults($request, $type ? [$type] : null, $person, $q, $curPage, $perPage);
+            $searchLogId = $results['meta'][self::SEARCH_LOG_ID_VAR];
+            // we don't need meta here
+            unset($results['meta']);
         }
 
         $combinedCounts = ['total_results' => 0];
@@ -94,6 +95,11 @@ class SearchController extends AbstractController
         //$pagination->setCurrentPage((int) $pageinfo['curpage']);
 
         $breadcrumbs = $this->getBreadcrumbGenerator()->buildSearch($q);
+
+        // pass searchLogId to `search_and_contact_bar` tag
+        if ($searchLogId) {
+            $request->attributes->set(self::SEARCH_LOG_ID_VAR, $searchLogId);
+        }
 
         return $this->renderThemeView(
             'Theme:Search:search_results.html.twig',
@@ -313,7 +319,7 @@ class SearchController extends AbstractController
         $total   = 0;
         $results = [];
 
-        if ($q) {
+        if ($q && is_string($q)) {
             /** @var SearchEngine $se */
             $se = $this->get('search_engine');
 
@@ -355,18 +361,6 @@ class SearchController extends AbstractController
                     ]);
                 }
             }
-
-            $searchLog             = SearchLog::create($q, count($results) + count($stickyResults));
-            $searchLog->person     = $this->getUser();
-            $searchLog->ip_address = $request->getClientIp();
-            $this->getEm()->transactional(
-                function (EntityManager $em) use ($searchLog) {
-                    $em->persist($searchLog);
-                    $em->flush();
-                }
-            );
-
-            $request->getSession()->set('last_searchlog_id', $searchLog->id);
         }
 
         $pageInfo = Numbers::getPaginationPages($total, $curPage, $perPage);
@@ -461,6 +455,8 @@ class SearchController extends AbstractController
             $omnisearchResults[$type] = ['results' => $results, 'pageinfo' => $pageInfo];
         }
 
+        $this->logSearch($request, $q, $omnisearchResults);
+
         return $omnisearchResults;
     }
 
@@ -469,5 +465,41 @@ class SearchController extends AbstractController
         $results = $this->fetchSearchResults($request, $types, $person, $q, $curPage, $perPage);
 
         return $this->get('portal_search_serializer')->serializeArray($results);
+    }
+
+    private function logSearch(Request $request, $q, &$searchResults)
+    {
+        $searchLog = null;
+
+        $lastSearchLogId = (int) $request->get(self::SEARCH_LOG_ID_VAR);
+        if ($lastSearchLogId) {
+            $searchLog = $this->getEm()->getRepository('DeskPRO:SearchLog')
+                ->getByIds([$lastSearchLogId], false, self::SEARCH_LOG_TIMEOUT_SEC);
+            $searchLog = array_pop($searchLog);
+        }
+
+        if (!$searchLog) {
+            $searchLog = new SearchLog();
+        }
+
+        $searchLog->setRawQuery($q);
+        $searchLog->person     = $this->getUser();
+        $searchLog->ip_address = $request->getClientIp();
+        //touch `date_created` manually because we might update existing SearchLog
+        $searchLog->date_created = new \DateTime();
+        $searchLog->num_results  = array_reduce($searchResults, function ($cntTotal, $resultItem) {
+            return $cntTotal + $resultItem['pageinfo']['total_results'];
+        }, 0);
+
+        $this->getEm()->transactional(
+            function (EntityManager $em) use ($searchLog) {
+                $em->persist($searchLog);
+                $em->flush();
+            }
+        );
+
+        $searchResults['meta'] = [
+            self::SEARCH_LOG_ID_VAR => $searchLog->getId(),
+        ];
     }
 }

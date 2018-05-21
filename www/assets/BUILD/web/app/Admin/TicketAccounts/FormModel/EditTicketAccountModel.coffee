@@ -2,7 +2,7 @@ define [
   'DeskPRO/Util/Util'
 ], (Util) ->
   class Admin_TicketAccounts_FormModel_EditTicketAccountModel
-    constructor: (@account, deps, trigger) ->
+    constructor: (@account, deps, trigger, brands) ->
       @form = {}
       @form.account_type        = @account.account_type || 'tickets';
       @form.address             = @account.address
@@ -45,6 +45,16 @@ define [
       @form.cert_file = @account.cert_blob?.filename
       @form.key_file = @account.key_blob?.filename
       @form.key_pass_phrase = @account.key_pass_phrase
+
+      #--------------------
+      # Brands
+      #--------------------
+      if brands.length <= 1
+        @form.is_all_brands = true;
+        @form.brands        = [];
+      else
+        @form.is_all_brands = @account.is_all_brands;
+        @form.brands = if @account.brand_ids && @account.brand_ids.length then @account.brand_ids else brands.map((x) -> x.id);
 
       #--------------------
       # Trigger
@@ -235,6 +245,8 @@ define [
         else
           form.out_smtp_account.secure_mode = null
 
+      if form.is_all_brands
+        form.brands = []
 
       trigger_actions = []
       department_id = parseInt(@form.trigger_actions.SetDepartment?.options?.department_id || 0)

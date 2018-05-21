@@ -42,10 +42,15 @@ class Percent extends AbstractFunc
         }
 
         $condition = reset($this->_arguments);
-        $prepped   = $condition->prepare($statement, $section, $stack, $select, $result);
+        $renderer  = 'percent';
+        if (isset($this->arguments[1]) && $this->_arguments[1] instanceof Dpql\Statement\Part\Number && $this->_arguments[1]->getValue() ===
+            1) {
+            $renderer = 'percentfull';
+        }
+        $prepped = $condition->prepare($statement, $section, $stack, $select, $result);
 
         $sql = 'IF(COUNT(*) > 0, (SUM(IF('.$prepped->sql().', 1, 0)) / COUNT(*)) * 100, 0)';
 
-        return new Prepared($sql, 'PERCENT('.$prepped->name().')', false, 'percent');
+        return new Prepared($sql, 'PERCENT('.$prepped->name().')', false, $renderer);
     }
 }

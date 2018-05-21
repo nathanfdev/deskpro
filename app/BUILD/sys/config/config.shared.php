@@ -135,14 +135,6 @@ $definition->setClass('Application\\DeskPRO\\Reports\\ReportsWidgetService');
 $definition->setArguments([new Reference('doctrine.orm.entity_manager')]);
 $container->setDefinition('reports.widget.service', $definition);
 
-$definition = new Definition();
-$definition->setClass('Application\\DeskPRO\\Reports\\ReportSaver');
-$definition->setArguments([
-    new Reference('doctrine.orm.entity_manager'),
-    new Reference('reports.dashboard_widget.service'),
-]);
-$container->setDefinition('deskpro.reports.saver', $definition);
-
 //###########################################################################
 // Doctrine services
 //###########################################################################
@@ -304,12 +296,11 @@ $container->loadFromExtension(
             ],
 
             'types' => [
-                'term_engine_term' => 'DeskPRO\Bundle\AppBundle\Doctrine\Type\TermEngineTermType',
-                'dpblob'           => 'Application\\DeskPRO\\DBAL\\Types\\DpBlobType',
-                'dpblob_file'      => 'Application\\DeskPRO\\DBAL\\Types\\DpBlobFileType',
-                'dp_json_obj'      => 'Application\\DeskPRO\\DBAL\\Types\\DpJsonObject',
-                'array'            => 'Application\\DeskPRO\\DBAL\\Types\\DpArrayType',
-                'object'           => 'Application\\DeskPRO\\DBAL\\Types\\DpObjectType',
+                'dpblob'      => 'Application\\DeskPRO\\DBAL\\Types\\DpBlobType',
+                'dpblob_file' => 'Application\\DeskPRO\\DBAL\\Types\\DpBlobFileType',
+                'dp_json_obj' => 'Application\\DeskPRO\\DBAL\\Types\\DpJsonObject',
+                'array'       => 'Application\\DeskPRO\\DBAL\\Types\\DpArrayType',
+                'object'      => 'Application\\DeskPRO\\DBAL\\Types\\DpObjectType',
             ],
         ],
     ]

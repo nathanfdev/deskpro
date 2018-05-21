@@ -137,6 +137,7 @@ class PortalExtension extends \Twig_Extension implements \Twig_Extension_Globals
             new \Twig_SimpleFunction('is_portal_widget_enabled', [$this, 'isPortalWidgetEnabled']),
             new \Twig_SimpleFunction('portal_widget_loader', [$this, 'getWidgetLoader'], ['is_safe' => ['html']]),
             new \Twig_SimpleFunction('should_show_nav_buttons', [$this, 'shouldShowNavButtons']),
+            new \Twig_SimpleFunction('can_login', [$this, 'canLogin']),
 
             // Copied from legacy templating, used to render notification rows
             new \Twig_SimpleFunction('has_phrase', [$this, 'hasPhrase'], ['is_safe' => ['html']]),
@@ -602,6 +603,14 @@ class PortalExtension extends \Twig_Extension implements \Twig_Extension_Globals
     public function safeLinkUrls($text)
     {
         return Strings::linkifyHtml(htmlspecialchars($text), true);
+    }
+
+    /**
+     * @return bool
+     */
+    public function canLogin()
+    {
+        return $this->container->get('dp_authentication_manager.user')->isAuthVisible();
     }
 
     /**

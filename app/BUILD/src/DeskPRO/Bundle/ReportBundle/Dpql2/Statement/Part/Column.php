@@ -3,6 +3,7 @@
 namespace DeskPRO\Bundle\ReportBundle\Dpql2\Statement\Part;
 
 use Application\DeskPRO\EntityRepository\AbstractEntityRepository;
+use DeskPRO\Bundle\AppBundle\Entity\Currency;
 use DeskPRO\Bundle\ReportBundle\Dpql2\DpqlException;
 use DeskPRO\Bundle\ReportBundle\Dpql2\Func\DpqlFuncRegistry;
 use DeskPRO\Bundle\ReportBundle\Dpql2\Helper\CustomDataHelper;
@@ -85,18 +86,24 @@ class Column extends AbstractPart
     ELSE CONCAT(\'ID-\', %1$s.id)
 END)
 ', 'person'],
-        'products'                 => ['id', 'title'],
-        'slas'                     => ['id', 'title'],
-        'tickets'                  => ['id', 'subject', 'ticket'],
-        'ticket_categories'        => ['id', 'title'],
-        'ticket_priorities'        => ['id', 'title'],
-        'ticket_workflows'         => ['id', 'title'],
-        'custom_def_article'       => ['id', 'title'],
-        'custom_def_chat'          => ['id', 'title'],
-        'custom_def_feedback'      => ['id', 'title'],
-        'custom_def_organizations' => ['id', 'title'],
-        'custom_def_ticket'        => ['id', 'title'],
-        'custom_def_people'        => ['id', 'title'],
+        'products'                  => ['id', 'title'],
+        'slas'                      => ['id', 'title'],
+        'tickets'                   => ['id', 'subject', 'ticket'],
+        'ticket_categories'         => ['id', 'title'],
+        'ticket_priorities'         => ['id', 'title'],
+        'ticket_workflows'          => ['id', 'title'],
+        'custom_def_article'        => ['id', 'title'],
+        'custom_def_chat'           => ['id', 'title'],
+        'custom_def_feedback'       => ['id', 'title'],
+        'custom_def_organizations'  => ['id', 'title'],
+        'custom_def_ticket'         => ['id', 'title'],
+        'custom_def_people'         => ['id', 'title'],
+        'custom_data_article'       => ['id', 'title'],
+        'custom_data_chat'          => ['id', 'title'],
+        'custom_data_feedback'      => ['id', 'title'],
+        'custom_data_organizations' => ['id', 'title'],
+        'custom_data_ticket'        => ['id', 'title'],
+        'custom_data_people'        => ['id', 'title'],
     ];
 
     /**
@@ -162,7 +169,7 @@ END)
     /**
      * {@inheritdoc}
      */
-    public function prepare(SelectPart $statement, $section, array $stack, SqlSelect $select, ResultMetadata $result)
+    public function prepare(SelectPart $statement, $section, array $stack, SqlSelect $select, ResultMetadata $metadata)
     {
         $parts = $this->parts;
         $table = array_shift($parts);
@@ -246,6 +253,34 @@ END)
                         case 'decimal':
                         case 'float':
                             $renderer = 'number';
+
+                            // get field type
+                            // and modify renderer based on its type
+                            if (preg_match('/custom_data_(.*)$/', $sqlTable, $matches)) {
+                                $extraConditionValue = $matches[1];
+
+                                $field = $this->customDataHelper->getCustomField($repository->getTableName(), $extraConditionValue);
+                                if ($field && $field->isCurrencyType()) {
+                                    $currencyId = $field->getOption('currency_id');
+                                    $currency   = null;
+                                    $delimiter  = 1;
+                                    if ($currencyId) {
+                                        $currency = $this->em->getRepository(Currency::class)->find($currencyId);
+                                        if ($currency) {
+                                            $delimiter = $currency->getDelimiter();
+                                        }
+                                    }
+
+                                    $sql      = "($sql / $delimiter)";
+                                    $renderer = function (AbstractValueRenderer $valueRenderer, $value, array $row, AbstractRenderer $renderer, ResultMetadata $metadata) use ($field, $currency) {
+                                        if ($currency) {
+                                            $value = $currency->getSymbol().number_format($value, $currency->getDecimalPlaces(), '.', ',');
+                                        }
+
+                                        return $valueRenderer->renderValue($value, $field->getType(), $metadata);
+                                    };
+                                }
+                            }
                             break;
 
                         case 'date':
@@ -299,7 +334,7 @@ END)
 
                 foreach ($association['joinColumns'] as $joinColumn) {
                     // are we referencing a field that is only listed in an association?
-                    if (strtolower($joinColumn['name']) == $part) {
+                    if (strtolower(Strings::camelCaseToUnderscore($joinColumn['name'])) == $part) {
                         if ($extraConditionValue !== false) {
                             throw new DpqlException("$partsString contains an unexpected extra condition");
                         }
@@ -312,7 +347,7 @@ END)
             }
 
             foreach ($repository->getReportAssociations() as $name => $association) {
-                if (strtolower($name) == $part) {
+                if (strtolower(Strings::camelCaseToUnderscore($name)) == $part) {
                     $target          = $association['targetEntity'];
                     $childRepository = $this->em->getRepository($target);
 
@@ -351,7 +386,7 @@ END)
 
             foreach ($repository->getAssociationMappings() as $association) {
                 // are we referencing an association?
-                if (strtolower($association['fieldName']) == $part) {
+                if (strtolower(Strings::camelCaseToUnderscore($association['fieldName'])) == $part) {
                     $target          = $association['targetEntity'];
                     $childRepository = $this->em->getRepository($target);
 
@@ -443,7 +478,7 @@ END)
             $name       = $part;
             if ($assocTable == 'ticket_slas') {
                 $call    = $this->statementFactory->createColumn(array_merge($this->parts, ['sla']));
-                $prepped = $call->prepare($statement, $section, $stack, $select, $result);
+                $prepped = $call->prepare($statement, $section, $stack, $select, $metadata);
 
                 return new Prepared($prepped->sql(), $this->_prettifyColumnName($name), $prepped->printed());
             } elseif ($assocTable === 'custom_field_data') {
@@ -452,7 +487,7 @@ END)
                     $this->statementFactory->createColumn(array_merge($this->parts, ['definition', 'title'])),
                     $this->statementFactory->createColumn(array_merge($this->parts, ['input'])),
                 ]);
-                $prepped = $call->prepare($statement, $section, $stack, $select, $result);
+                $prepped = $call->prepare($statement, $section, $stack, $select, $metadata);
 
                 return new Prepared($prepped->sql(), $this->_prettifyColumnName($name), false, $renderer);
             } elseif (preg_match('/^custom_data_/', $assocTable)) {
@@ -461,7 +496,7 @@ END)
                 $preppedPrint = null;
                 if ($field && (array_search($type = $field->getTypeName(), ['date', 'datetime']) !== false)) {
                     $call    = $this->statementFactory->createColumn(array_merge($this->parts, ['value']));
-                    $prepped = $call->prepare($statement, $section, $stack, $select, $result);
+                    $prepped = $call->prepare($statement, $section, $stack, $select, $metadata);
 
                     $renderer = function (AbstractValueRenderer $valueRenderer, $value, array $row, AbstractRenderer $renderer, ResultMetadata $metadata) use ($type) {
                         $date = $value ? new \DateTime('@'.$value) : null;
@@ -470,21 +505,21 @@ END)
                     };
                 } elseif ($field && $section === 'group' && $field->isChoiceType()) {
                     $call    = $this->statementFactory->createColumn(array_merge($this->parts, ['field', 'id']));
-                    $prepped = $call->prepare($statement, $section, $stack, $select, $result);
+                    $prepped = $call->prepare($statement, $section, $stack, $select, $metadata);
 
                     $callPrint = $this->statementFactory->createFunctionCall('if', [
                         $this->statementFactory->createColumn(array_merge($this->parts, ['value'])),
                         $this->statementFactory->createColumn(array_merge($this->parts, ['field', 'title'])),
                         $this->statementFactory->createColumn(array_merge($this->parts, ['input'])),
                     ]);
-                    $preppedPrint = $callPrint->prepare($statement, $section, $stack, $select, $result);
+                    $preppedPrint = $callPrint->prepare($statement, $section, $stack, $select, $metadata);
                 } else {
                     $call = $this->statementFactory->createFunctionCall('if', [
                         $this->statementFactory->createColumn(array_merge($this->parts, ['value'])),
                         $this->statementFactory->createColumn(array_merge($this->parts, ['field', 'title'])),
                         $this->statementFactory->createColumn(array_merge($this->parts, ['input'])),
                     ]);
-                    $prepped = $call->prepare($statement, $section, $stack, $select, $result);
+                    $prepped = $call->prepare($statement, $section, $stack, $select, $metadata);
                 }
 
                 return new Prepared($prepped->sql(), $this->_prettifyColumnName($field ? $field->getTitle() : $name), $preppedPrint ? $preppedPrint->sql() : false, $renderer);
@@ -494,7 +529,7 @@ END)
                     $this->statementFactory->createColumn(array_merge($this->parts, ['parent', 'title'])),
                     $this->statementFactory->createColumn(array_merge($this->parts, ['title'])),
                 ]);
-                $prepped = $call->prepare($statement, $section, $stack, $select, $result);
+                $prepped = $call->prepare($statement, $section, $stack, $select, $metadata);
 
                 return new Prepared($prepped->sql(), $this->_prettifyColumnName($name));
             } elseif (isset(self::$_tableResolver[$assocTable])) {

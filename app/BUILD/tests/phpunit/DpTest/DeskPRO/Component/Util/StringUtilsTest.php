@@ -86,4 +86,56 @@ class StringUtilsTest extends DeskProTestCase
             ['x', '', false, false],
         ];
     }
+
+    public function testRemoveFromStart()
+    {
+        $this->assertEquals('baz', StringUtils::removeFromStart('foo.bar.', 'foo.bar.baz'));
+        $this->assertEquals(null, StringUtils::removeFromStart('FOO.BAR.', 'foo.bar.baz'));
+        $this->assertEquals('baz', StringUtils::removeFromStart('FOO.BAR.', 'foo.bar.baz', true));
+        $this->assertEquals(null, StringUtils::removeFromStart('loo.bar.', 'foo.bar.baz'));
+    }
+
+    public function testFormat()
+    {
+        $this->assertEquals(
+            'Hello, world!',
+            StringUtils::format('Hello, {name}!', ['name' => 'world'])
+        );
+
+        $this->assertEquals(
+            'Hello,      world!',
+            StringUtils::format('Hello, {name: 10s}!', ['name' => 'world'])
+        );
+
+        $this->assertEquals(
+            'Hello, 0!',
+            StringUtils::format('Hello, {name:d}!', ['name' => 'world'])
+        );
+
+        $this->assertEquals(
+            'A {foo} C',
+            StringUtils::format('{foo} {bar} {baz}', ['foo' => 'A', 'bar' => '{foo}', 'baz' => 'C'])
+        );
+    }
+
+    public function testReformatString()
+    {
+        $this->assertEquals(
+            '>>>Hello<<<',
+            StringUtils::reformatString('Hello', '>>>{.}<<<')
+        );
+
+        $this->assertEquals(
+            'A:B:C is A, B, C',
+            StringUtils::reformatString('A:B:C', '{.} is {1}, {2}, {last}', '/^(\w+):(\w+):(?P<last>\w+)$/')
+        );
+    }
+
+    public function testReformatLines()
+    {
+        $this->assertEquals(
+            "\tA\n\tB\n\tC",
+            StringUtils::reformatLines("A\nB\nC", "\t{.}")
+        );
+    }
 }

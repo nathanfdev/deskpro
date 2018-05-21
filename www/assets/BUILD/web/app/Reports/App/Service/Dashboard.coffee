@@ -42,6 +42,8 @@ define ['DeskPRO/Util/Arrays'], (Arrays) ->
           .sendPutJson "/dashboards/#{dashboard.id}", data
           .then (response) =>
             deferred.resolve response
+          .catch (response) =>
+            deferred.reject(response.data)
       else
         @Api2
           .sendPostJson '/dashboards', data
@@ -52,8 +54,8 @@ define ['DeskPRO/Util/Arrays'], (Arrays) ->
               dashboard.permissions = response.data.permissions
               @storage.dbs.push(dashboard)
               deferred.resolve dashboard
-          , () ->
-            console.error 'something goes wrong!'
+          .catch (response) =>
+            deferred.reject(response.data)
 
       deferred.promise
 

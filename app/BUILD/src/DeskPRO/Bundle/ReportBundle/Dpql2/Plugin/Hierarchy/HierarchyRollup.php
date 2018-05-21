@@ -20,7 +20,7 @@ class HierarchyRollup
      *
      * @return array
      */
-    public static function init(array $results)
+    public static function init(array $results, $rollupMode = HierarchyPlugin::ROLLUP_MODE_SUM)
     {
         $len = count($results);
         for ($i = 0; $i < $len; ++$i) {
@@ -30,6 +30,9 @@ class HierarchyRollup
             for ($j = $i + 1; ($j < $len) && ($results[$j]['hierarchy_depth'] > $depth); ++$j) {
                 self::ensureFields($results[$j]);
                 $results[$i]['hierarchy_rollup_count'] += $results[$j]['hierarchy_count'];
+                if ($rollupMode == HierarchyPlugin::ROLLUP_MODE_AVG) {
+                    $results[$i]['hierarchy_rollup_count'] = $results[$i]['hierarchy_rollup_count'] / 2;
+                }
             }
         }
 

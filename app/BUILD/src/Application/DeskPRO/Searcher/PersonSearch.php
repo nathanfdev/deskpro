@@ -26,6 +26,7 @@ class PersonSearch extends SearcherAbstract
     // these term names.
 
     const TERM_ID                   = 'person_id';
+    const TERM_RANGE_ID             = 'person_range_id';
     const TERM_ORGANIZATION         = 'person_organization';
     const TERM_ORGANIZATION_NAME    = 'person_organization_name';
     const TERM_ORGANIZATION_MANAGER = 'person_organization_manager';
@@ -291,6 +292,7 @@ class PersonSearch extends SearcherAbstract
 
                 switch ($term) {
                     case self::TERM_ID:
+                    case self::TERM_RANGE_ID:
                         // One specific id
                         if (isset($choice['person_id'])) {
                             switch ($op) {
@@ -946,6 +948,7 @@ class PersonSearch extends SearcherAbstract
             switch ($term) {
 
                 case self::TERM_ID:
+                case self::TERM_RANGE_ID:
                     // One specific id
                     if (isset($choice['person_id'])) {
                         switch ($op) {

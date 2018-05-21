@@ -103,7 +103,17 @@ class SendUserNewEmail extends AbstractEmailAction
 
                 return;
         }
+
+        $brandStack = $this->getContainer()->getBrandStack();
+        if ($ticket->getBrand()) {
+            $brandStack->push($ticket->getBrand());
+        }
+
         $viewModel = $this->createViewModelFromTemplate($template, $arguments, $context);
+
+        if (!$viewModel) {
+            return;
+        }
 
         $mailer = $this->getContainer()->get('mailer');
 
@@ -151,11 +161,6 @@ class SendUserNewEmail extends AbstractEmailAction
                     return;
                 }
             }
-        }
-
-        $brandStack = $this->getContainer()->getBrandStack();
-        if ($ticket->getBrand()) {
-            $brandStack->push($ticket->getBrand());
         }
 
         if ($ticket->getTicketPersonEmail() && $ticket->getTicketPersonEmail()->getPerson()) {

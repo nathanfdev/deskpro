@@ -269,17 +269,17 @@ abstract class HandlerAbstract
      * Render the HTML form input.
      *
      * @param  $formView
-     * @param array $template_vars
+     * @param array $templateVars
      *
      * @return string
      */
-    public function renderFormHtml($formView, array $template_vars = [])
+    public function renderFormHtml($formView, array $templateVars = [])
     {
         $templating = $this->getTemplateEngine();
 
-        if (!empty($template_vars['field_group'])) {
+        if (!empty($templateVars['field_group'])) {
             $f           = $this->getFormField();
-            $field_group = App::get('form.factory')->createNamedBuilder($template_vars['field_group'], 'form');
+            $field_group = App::get('form.factory')->createNamedBuilder($templateVars['field_group'], 'form');
             $field_group->add($f);
             $form      = $field_group->getForm();
             $groupView = $form->createView();
@@ -287,7 +287,7 @@ abstract class HandlerAbstract
             $field_group->remove($f->getName());
         }
 
-        $vars = array_merge($this->getRenderTemplateVars(), $template_vars, [
+        $vars = array_merge($this->getRenderTemplateVars(), $templateVars, [
             'formView'           => $formView,
             'field_def'          => $this->field_def,
             'field_handler'      => $this,

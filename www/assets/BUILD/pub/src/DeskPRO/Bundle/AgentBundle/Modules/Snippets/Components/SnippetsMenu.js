@@ -1,13 +1,13 @@
 import PropTypes from 'prop-types';
 import React from 'react';
 import { connect } from 'react-redux';
+import { FormattedMessage } from 'react-intl';
 import Immutable from 'immutable';
 import Isvg from 'react-inlinesvg';
 import debounce from 'lodash/debounce';
 import { Input, Button, Progress, ProgressBar } from '@deskpro/react-components';
 import { meSelector } from 'DeskPRO/Bundle/AppBundle/Modules/RecordsStore/Shortcuts/me';
 import { allSelectorFactory } from 'DeskPRO/Bundle/AppBundle/Modules/RecordsStore';
-import agentPhrases from 'DeskPRO/Bundle/AgentBundle/AgentPhrases';
 import MassActions from 'DeskPRO/Bundle/AgentBundle/Modules/Snippets/Components/MassActions';
 import SnippetsFiltering from 'DeskPRO/Bundle/AgentBundle/Modules/Snippets/Components/SnippetsFiltering';
 import { SnippetsModalContainer } from 'DeskPRO/Bundle/AgentBundle/Modules/Snippets/Components/SnippetsModal';
@@ -675,7 +675,7 @@ export class SnippetsMenu extends React.Component {
             </a>
           </div>
           <div className="top">
-            <h1>{agentPhrases.get('agent.general.snippets')}</h1> <span className="count">({snippets.size})</span>
+            <h1><FormattedMessage id="agent.general.snippets" defaultMessage="Snippets" /></h1> <span className="count">({snippets.size})</span>
             { (
               window.DESKPRO_PERSON_PERMS['agent_snippets.create_snippet']
               || window.DESKPRO_PERSON_PERMS['agent_snippets.create_self_snippet']
@@ -688,7 +688,7 @@ export class SnippetsMenu extends React.Component {
                 onClick={this.newSnippet}
                 size="medium"
               >
-                + {agentPhrases.get('agent.general.snippet')}
+                + <FormattedMessage id="agent.general.snippet" defaultMessage="Snippet" />
               </Button>
               : null}
             <MassActionsSelect
@@ -736,8 +736,13 @@ export class SnippetsMenu extends React.Component {
               <Progress size="large" type="cta" style={{ margin: 10, border: '1px solid #ccc' }}>
                 <ProgressBar percent={massActionsProgress.current * 100 / massActionsProgress.total} />
               </Progress>
-              {agentPhrases.get('agent.snippets.mass_actions_progress',
-                { current: massActionsProgress.current, total: massActionsProgress.total })}
+              <FormattedMessage
+                id="agent.snippets.mass_actions_progress"
+                values={{
+                  current: massActionsProgress.current,
+                  total:   massActionsProgress.total
+                }}
+              />
             </div>
             : <SnippetsList
               me={me}

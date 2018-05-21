@@ -230,12 +230,7 @@ CODE;
         if (preg_match('/<dp:/', $code)) {
             return false;
         }
-        $whiteList = array_map(
-            function ($variable) {
-                return '{{ '.$variable.' }}';
-            },
-            $this->getVariableWhiteList()
-        );
+        $whiteList = $this->getVariableWhiteList();
         if (preg_match_all('/{{[^}]+}}/', $code, $matches)) {
             foreach ($matches[0] as $match) {
                 if (in_array($match, $whiteList)) {

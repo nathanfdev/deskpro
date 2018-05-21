@@ -3,6 +3,7 @@
 namespace DeskPRO\Bundle\ReportBundle\Dpql2\Placeholder;
 
 use DeskPRO\Bundle\ReportBundle\Dpql2\DpqlException;
+use DpSys\CodePlugin\DpPlugins;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 
 /**
@@ -56,6 +57,16 @@ class DpqlPlaceholderRegistry
     {
         $name = strtoupper($name);
         $name = preg_replace('/(\w+)_(\d+)/', '\\1\\2', $name);
+
+        $p = DpPlugins::getManager()->getDpqlPlaceholder(
+            $name,
+            $this->container->get('dpql.context_storage'),
+            $this->container
+        );
+
+        if ($p) {
+            return $p;
+        }
 
         if (isset($this->placeholders[$name])) {
             return $this->container->get($this->placeholders[$name]);

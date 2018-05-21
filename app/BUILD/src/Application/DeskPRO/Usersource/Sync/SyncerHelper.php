@@ -128,7 +128,15 @@ class SyncerHelper
             // tries the auto-agent routine, if agent usersource (just like on login from a usersource)
             LoginProcessor::tryAutoAgent($usersource, $person);
         }
-        LoginProcessor::tryUsergroupPromotion($usersource, $person, $user_info);
+        try {
+            LoginProcessor::tryUsergroupPromotion($usersource, $person, $user_info);
+        } catch (\Exception $ex) {
+            // actions, even if configured incorrectly shouldn't affect the auto user sync
+            $this->log(Logger::ERR, sprintf(
+                'Exception during login actions. Ignoring this exception. Error message: %s',
+                $ex->getMessage()
+            ));
+        }
 
         // Update custom field data
         App::getSystemService('person_fields_manager')->copyUsersourceData(

@@ -30,7 +30,7 @@ class AliasRef extends AbstractPart
     /**
      * {@inheritdoc}
      */
-    public function prepare(SelectPart $statement, $section, array $stack, SqlSelect $select, ResultMetadata $result)
+    public function prepare(SelectPart $statement, $section, array $stack, SqlSelect $select, ResultMetadata $metadata)
     {
         if (!in_array($section, ['split', 'group', 'order'])) {
             throw new DpqlException('Alias references may only be used in SPLIT BY, GROUP BY, and ORDER BY sections.');

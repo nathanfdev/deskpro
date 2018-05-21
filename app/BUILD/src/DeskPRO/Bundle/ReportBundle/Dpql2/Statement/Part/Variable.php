@@ -29,7 +29,7 @@ class Variable extends AbstractPart
     /**
      * {@inheritdoc}
      */
-    public function prepare(SelectPart $statement, $section, array $stack, SqlSelect $select, ResultMetadata $result)
+    public function prepare(SelectPart $statement, $section, array $stack, SqlSelect $select, ResultMetadata $metadata)
     {
         return new Prepared($select->quoteForSql($this->name), '${'.$this->name.'}', false, 'string');
     }
@@ -38,6 +38,11 @@ class Variable extends AbstractPart
      * {@inheritdoc}
      */
     public function toDpql(SelectPart $statement, $section, array $stack)
+    {
+        return '${'.$this->name.'}';
+    }
+
+    public function getValue()
     {
         return '${'.$this->name.'}';
     }

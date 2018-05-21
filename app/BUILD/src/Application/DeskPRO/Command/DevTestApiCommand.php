@@ -11,6 +11,7 @@ use Application\DeskPRO\Entity\ApiKey;
 use DeskPRO\Bundle\AppBundle\Entity\ApiKeyAction;
 use DeskPRO\Bundle\AppBundle\Util\HttpClient;
 use GuzzleHttp\Exception\ClientException;
+use GuzzleHttp\Exception\RequestException;
 use GuzzleHttp\RequestOptions;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
@@ -221,6 +222,8 @@ class DevTestApiCommand extends \Symfony\Bundle\FrameworkBundle\Command\Containe
                 default:
                     return 1;
             }
+        } catch (RequestException $e) {
+            $response = $e->getResponse();
         } catch (ClientException $e) {
             $response = $e->getResponse();
         }

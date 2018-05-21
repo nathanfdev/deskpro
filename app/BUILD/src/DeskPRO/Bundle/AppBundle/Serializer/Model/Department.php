@@ -120,5 +120,6 @@ class Department
         $this->is_tickets_enabled = $department->isTicketsEnabled();
         $this->display_order      = $department->getDisplayOrder();
         $this->brands             = $department->getBrands();
+        $this->avatar             = $avatar;
     }
 }

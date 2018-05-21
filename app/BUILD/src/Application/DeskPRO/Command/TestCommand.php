@@ -32,7 +32,13 @@ class TestCommand extends ContainerAwareCommand
      */
     protected function execute(InputInterface $input, OutputInterface $output)
     {
-        echo __FILE__;
+        global $DP_ENV;
+
+        echo 'Base:      '.$DP_ENV->getDpRoot();
+        echo "\n";
+        echo 'Build:     '.$DP_ENV->getAppName();
+        echo "\n";
+        echo 'Build Dir: '.$DP_ENV->getAppDir();
         echo "\n";
 
         return 0;

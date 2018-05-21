@@ -118,6 +118,10 @@ DeskPRO.Agent.PageFragment.Page.NewTicket = new Orb.Class({
 			downloadTemplate: $('.template-download', this.wrapper)
 		});
 		this.wrapper.bind('fileuploaddone', function(e, data) {
+      if ($(e.target).hasClass('customfield')) {
+        return;
+      }
+
 			self.uploading = false;
 			self.getEl('reply_as_type').parent().removeAttr('disabled');
 			self.getEl('reply_as_type').parent().siblings('.status-menu-trigger').removeAttr('disabled');
@@ -127,7 +131,11 @@ DeskPRO.Agent.PageFragment.Page.NewTicket = new Orb.Class({
 			});
 
 		});
-		this.wrapper.bind('fileuploadstart', function() {
+		this.wrapper.bind('fileuploadstart', function(e) {
+			if ($(e.target).hasClass('customfield')) {
+				return;
+			}
+
 			self.uploading = true;
 			self.getEl('reply_as_type').parent().attr('disabled', 'disabled');
 			self.getEl('reply_as_type').parent().siblings('.status-menu-trigger').attr('disabled', 'disabled');
@@ -187,6 +195,8 @@ DeskPRO.Agent.PageFragment.Page.NewTicket = new Orb.Class({
         $(this).trigger('change');
       });
 		});
+
+    this.customFieldsUpload = new DeskPRO.Agent.PageHelper.CustomFieldUpload(this.wrapper);
 
 		this.wrapper.find('.pending-info').on('click', '.reset', function(ev) {
 			ev.preventDefault();
@@ -433,12 +443,18 @@ DeskPRO.Agent.PageFragment.Page.NewTicket = new Orb.Class({
 		var statusMacroList = statusMenu.find('.macro-list');
 		var statusMacroListMap = null;
 		var replyAsType = this.getEl('reply_as_type');
+		var noteAsType = this.getEl('note_as_type');
 
 		var statusMenuMenu = this.statusMenuMenu = new DeskPRO.UI.Menu2(statusMenu, {
 			positionBy: self.getEl('reply_btn_group'),
 			onBeforeMenuOpen: function(info) {
+				var type;
 				var statusMenu = info.statusMenu;
-				var type = replyAsType.data('type');
+				if (self.isNote) {
+					type = noteAsType.data('type');
+				} else {
+					type = replyAsType.data('type');
+				}
 				statusMenu.find('li').removeClass('cursor')
 					.filter('[data-type]').removeClass('on')
 					.filter('[data-type="' + type + '"]').addClass('on');
@@ -548,7 +564,7 @@ DeskPRO.Agent.PageFragment.Page.NewTicket = new Orb.Class({
 				$('.hide-reply').show();
         self.isNote = true;
 				emailCheckboxState = $input.prop('checked');
-				replyAsState = self.getEl('reply_as_type').data('type');
+				replyAsState = self.getEl('note_as_type').data('type');
 				self.storedReplyText = self.textarea.getCode();
 				self.textarea.setCode(self.storedNoteText || '');
         $input.prop('checked', false).parent().hide();
@@ -676,9 +692,16 @@ DeskPRO.Agent.PageFragment.Page.NewTicket = new Orb.Class({
 	},
 
 	setReplyAsOption: function(item, ignoreMacro) {
-		var replyAsType = this.getEl('reply_as_type');
+		var replyAsType;
+		var html;
+		if (this.isNote) {
+			replyAsType = this.getEl('note_as_type');
+			html = Orb.escapeHtml(item.data('note-label'));
+		} else {
+			replyAsType = this.getEl('reply_as_type');
+			html = Orb.escapeHtml(item.data('label'));
+		}
 
-		var html = Orb.escapeHtml(item.data('label'));
 		html = html.replace(/^Send Reply/, 'Send <span class="show-key-shortcut">R</span>eply');
 		replyAsType.data('type', item.data('type')).html(html);
 
@@ -820,7 +843,11 @@ DeskPRO.Agent.PageFragment.Page.NewTicket = new Orb.Class({
 		api.$editor.linkify();
 		api.syncCode();
 
-		this.getEl('action').val(this.getEl('reply_as_type').data('type'));
+		if (this.isNote) {
+			this.getEl('action').val(this.getEl('note_as_type').data('type'));
+		} else {
+			this.getEl('action').val(this.getEl('reply_as_type').data('type'));
+		}
 		var formData = this.form.serializeArray();
     formData.push({
       name: 'is_note',
@@ -1748,7 +1775,36 @@ DeskPRO.Agent.PageFragment.Page.NewTicket = new Orb.Class({
 			blobs,
       ticketLangId,
       {
-        person: this.meta.person_api_data
+        person: this.meta.person_api_data,
+				// Hack to reinsert variable to replace them on the server later
+				ref: '{{ entity.ref }}',
+				subject: '{{ entity.subject }}',
+				department: {
+					title: '{{ entity.department.title }}',
+					parent: '{{ entity.department.parent }}'
+				},
+     		brand: {
+          name: '{{ entity.brand.name }}',
+      	},
+				product: {
+        	title: '{{ entity.product.title }}'
+				},
+     		category: {
+        	title: '{{ entity.category.title }}'
+				},
+     		workflow: {
+        	title: '{{ entity.workflow.title }}'
+				},
+     		priority: {
+        	title: '{{ entity.priority.title }}'
+				},
+				agent: {
+					display_name: '{{ entity.agent.display_name }}',
+					primary_email: '{{ entity.agent.primary_email }}'
+				},
+     		agent_team: {
+        	name: '{{ entity.agent_team.name }}'
+        }
       },
       'ticket',
       this.textarea,

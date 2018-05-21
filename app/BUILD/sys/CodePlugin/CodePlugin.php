@@ -2,13 +2,28 @@
 
 namespace DpSys\CodePlugin;
 
+use Application\InstallBundle\Data\DefaultDataProcessor;
+use DeskPRO\Bundle\ReportBundle\Dpql2\DpqlContextStorage;
+use DeskPRO\Bundle\ReportBundle\Dpql2\Placeholder\AbstractPlaceholder;
 use Symfony\Component\DependencyInjection\Container;
 use Symfony\Component\HttpFoundation\Request;
 
 class CodePlugin
 {
-    const CUSTOM_HTML_AGENT_RES  = 'agent_res';
-    const CUSTOM_HTML_REPOTS_RES = 'reports_res';
+    const CUSTOM_HTML_ADMIN_RES     = 'admin_res';
+    const CUSTOM_HTML_ADMIN_PRE_RES = 'admin_pre_res';
+    const CUSTOM_HTML_AGENT_RES     = 'agent_res';
+    const CUSTOM_HTML_AGENT_PRE_RES = 'agent_res_pre';
+    const CUSTOM_HTML_AGENT_PRINT   = 'agent_print';
+    const CUSTOM_HTML_REPOTS_RES    = 'reports_res';
+
+    /**
+     * @return string
+     */
+    public function getPluginBasePath()
+    {
+        return realpath(__FILE__);
+    }
 
     /**
      * In specific cases where the system is looking up classnames
@@ -33,9 +48,11 @@ class CodePlugin
     /**
      * Get an array of additional default data classes (classes must all extend AbstractDefaultData).
      *
+     * @param DefaultDataProcessor $processor
+     *
      * @return array
      */
-    public function getDefaultDataClasses()
+    public function getDefaultDataClasses(DefaultDataProcessor $processor)
     {
         return [];
     }
@@ -111,6 +128,39 @@ class CodePlugin
      * @return null|string The name of the class and action. e.g. Foo\Bar::myAction
      */
     public function routeScriptController(Request $request, $context, $controller, $action)
+    {
+        return null;
+    }
+
+    /**
+     * @param string             $placeholderName
+     * @param DpqlContextStorage $contextStorage
+     * @param Container          $container
+     *
+     * @return AbstractPlaceholder|null
+     */
+    public function getDpqlPlaceholder($placeholderName, DpqlContextStorage $contextStorage, Container $container)
+    {
+        return null;
+    }
+
+    /**
+     * Get extra commands to register on the app bundle.
+     *
+     * @return \Symfony\Component\Console\Command\Command[]
+     */
+    public function getAppCommands()
+    {
+        return [];
+    }
+
+    /**
+     * @param strig $contextId
+     * @param array $contextOptions
+     *
+     * @return null|array
+     */
+    public function getOptionsArray($contextId, array $contextOptions = [])
     {
         return null;
     }

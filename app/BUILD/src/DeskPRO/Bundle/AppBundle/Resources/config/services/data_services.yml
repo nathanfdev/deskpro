@@ -72,10 +72,6 @@ services:
     class: DeskPRO\Bundle\AppBundle\DataService\AgentDataService
     arguments: ["@doctrine.orm.default_entity_manager"]
 
-  data.tickets.ticket_counts:
-    class: DeskPRO\Bundle\AppBundle\DataService\Tickets\TicketCountsDataService
-    arguments: ["@doctrine.orm.entity_manager", "@term_engine.dbal_ticket_filters.engine", "@security.token_storage"]
-
   data.guides:
     class: DeskPRO\Bundle\AppBundle\DataService\GuidesDataService
     arguments: ["@doctrine.orm.default_entity_manager", "@permissions_manager"]

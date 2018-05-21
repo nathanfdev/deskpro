@@ -1,5 +1,5 @@
-define ->
-  Reports_Directive_Amcharts = ['$compile', '$state', 'DashboardWidgetService', ($compile, $state, DashboardWidgetService) ->
+define ['handlebars'], (Handlebars) ->
+  Reports_Directive_Amcharts = ['$compile', '$state', 'DashboardWidgetService', '$timeout', ($compile, $state, DashboardWidgetService, $timeout) ->
     return {
       restrict: 'E'
       replace: true
@@ -13,13 +13,24 @@ define ->
         version: '@'
         widgetType: '@'
         chartType: '@'
+        loaded: '@'
 
       link: (scope, element) ->
-        template = "<div id=\"ch#{scope.widgetId}\"></div>"
+        window.initHandlebars(Handlebars)
+
+        template = """
+          <div>
+            <div ng-hide='loaded' class="box stat-box"><div class="stat-value no-data">loading...</div></div>
+            <div ng-show='loaded && noData' class="box stat-box"><div class="stat-value no-data">no data</div></div>
+            <div ng-show='loaded' id="ch#{scope.widgetId}"></div>
+          </div>
+        """
         linkFn = $compile(template)
         content = linkFn(scope)
         element.replaceWith(content)
         chart = false
+        scope.loaded = false
+        scope.noData = false
 
         chartDiv    = angular.element(document.getElementById("ch#{scope.widgetId}"))
         chartParent = chartDiv.parent().parent()
@@ -50,7 +61,9 @@ define ->
 
           # this is valid for serial and pie charts, gauge has not dataProvider
           if (chartData and chartData.dataProvider?) || (scope.chartType == 'gauge' && chartData.axes?[0]?.bands?)
-            drawWidget chartData
+            $timeout(->
+              drawWidget(chartData)
+            , 1)
           else if scope.jsCode
             try
               eval(scope.jsCode)
@@ -59,18 +72,41 @@ define ->
 
             if promise and promise.then
               promise.then (response) ->
+                scope.loaded = true
+                scope.noData = true
+
                 drawWidget response
+          else if DashboardWidgetService.widgetsResults and DashboardWidgetService.widgetsResults[scope.widgetId]
+            DashboardWidgetService.widgetsResults[scope.widgetId].promise.then (renderedResult) =>
+              scope.loaded = true
+              scope.noData = true
+              if renderedResult && (renderedResult.dataProvider || renderedResult.axes?[0]?.bands?)
+                drawWidget(renderedResult)
           else
             DashboardWidgetService
               .getWidget(scope.widgetId || 0)
               .then (widget) =>
-                if widget? && widget && (widget.dataProvider || widget.axes?[0]?.bands?)
-                  drawWidget(widget)
+                scope.loaded = true
+                scope.noData = true
+
+                if widget? && widget.rendered_result && (widget.rendered_result.dataProvider || widget.rendered_result.axes?[0]?.bands?)
+                  drawWidget(widget.rendered_result)
 
         drawWidget = (widget) ->
-          if interval
-            clearInterval(interval)
+          $timeout(->
+            scope.loaded = true
+            scope.noData = false
+            doDrawWidget(widget)
+          , 1)
+
+        doDrawWidget = (widget) ->
           drawn = true
+          clearInterval(interval) if interval
+          if chart
+            chart.clear()
+            chart.destroy()
+            chart = null
+
           try
             options = if scope.options then JSON.parse(scope.options) else {}
           catch e
@@ -83,10 +119,61 @@ define ->
           if widget.dataProvider? && widget.dataProvider[0]? && (Object.keys(widget.dataProvider[0]).length > 6 || (widget.type == 'pie' && widget.dataProvider.length > 6))
             widget.legend = false
 
-          if chart and widget.dataProvider
-            chart.dataProvider = widget.dataProvider
+          if widget.valueAxes && widget.valueAxes[0] && (widget.valueAxes[0].hash || widget.valueAxes[0].labelTemplate)
+            widget.valueAxes[0].labelFunction = (value) ->
+              hash = widget.valueAxes[0].hash
+              finalValue = value;
+              if hash && hash[value]
+                finalValue = hash[value]
+              if widget.valueAxes[0].labelTemplate
+                template = Handlebars.compile(widget.valueAxes[0].labelTemplate)
+                finalValue = template({ 'value': finalValue })
+
+              return finalValue
+
+          if widget.valueAxes && widget.valueAxes[1] && widget.valueAxes[1].hash
+            widget.valueAxes[1].labelFunction = (value) ->
+              hash = widget.valueAxes[1].hash
+              return if hash[value] then hash[value] else ''
+
+          if widget.categoryAxis && widget.categoryAxis.labelTemplate
+            widget.categoryAxis.labelFunction = (value) ->
+              template = Handlebars.compile(widget.categoryAxis.labelTemplate)
+              return template({ category: value })
+
+          if widget.graphs
+            widget.graphs = widget.graphs.map((g) ->
+              if g.balloonTextTemplate
+                g.balloonFunction = (item, graph) ->
+                  vars = { item: item, graph: graph }
+                  Object.keys(item.dataContext).forEach((k) -> vars[k] = item.dataContext[k])
+                  if not vars.value and graph.valueField
+                    vars.value = item.dataContext[graph.valueField]
+                  return Handlebars.compile(g.balloonTextTemplate)(vars)
+
+              return g
+            )
+
+          if widget.dataProvider
+            mergedData = widget
           else
-            chart = new AmCharts.makeChart("ch#{scope.widgetId}", lodashMerge(widget, options));
+            mergedData = lodashMerge(widget, options)
+            if options.allGraphs and widget.graphs
+              widget.graphs = widget.graphs.map((g) ->
+                g = lodashMerge(g, options.allGraphs)
+                return g
+              )
+            if options.allValueAxis and widget.valueAxis
+              widget.valueAxis = widget.valueAxis.map((va) ->
+                va = lodashMerge(va, options.allValueAxis)
+                return va
+              )
+
+          if window.DP_DEBUG
+            console.log("--- WidgetID: #{scope.widgetId} ---")
+            console.log(mergedData)
+
+          chart = new AmCharts.makeChart("ch#{scope.widgetId}", mergedData);
 
           chartDiv.height(chartParent.height() - chartHeader.outerHeight())
           chart.validateData()
