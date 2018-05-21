@@ -4,7 +4,6 @@ namespace DeskPRO\Bundle\ReportBundle\Service;
 
 use Application\DeskPRO\Entity\Person;
 use Application\DeskPRO\Entity\ReportDashboardReport as DashboardReportEntity;
-use Application\DeskPRO\Entity\ReportDashboardWidget;
 use Application\DeskPRO\Entity\SavedDashboardReport;
 use Application\DeskPRO\Entity\SavedDashboardWidget;
 use DeskPRO\Bundle\AppBundle\Entity\Report\ScheduledReport;
@@ -66,7 +65,7 @@ class ReportSaver
             $widget->setVariables($widgetVars);
             $widgetData = $this->widgetService->renderWidget($widget, $person);
 
-            if ($widgetData && $widget->getType() == ReportDashboardWidget::WIDGET_TYPE_TABLE) {
+            if ($widgetData && $widget->getType() == DashboardWidgetManager::WIDGET_TYPE_TABLE) {
                 $aoColumns = [];
                 $columns   = [];
                 foreach ($widgetData['columns'] as $column) {
@@ -114,7 +113,7 @@ class ReportSaver
 
         switch ($frequency) {
             case ScheduledReport::FREQUENCY_DAILY:
-                $nextDate->modify(sprintf('tomorrow %s', $whenSetting['time']));
+                $nextDate->modify(sprintf('today %s', $whenSetting['time']));
                 break;
             case ScheduledReport::FREQUENCY_WEEKLY:
                 $nextDate->modify(sprintf('%s %s', $whenSetting['weekday'], $whenSetting['time']));

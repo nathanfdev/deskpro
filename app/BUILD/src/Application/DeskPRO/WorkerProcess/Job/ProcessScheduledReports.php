@@ -68,7 +68,6 @@ class ProcessScheduledReports extends AbstractJob
     protected function sendProcessedReport(ScheduledReport $scheduledReport, SavedDashboardReport $savedReport)
     {
         $message = $this->getContainer()->getMailer()->createMessage();
-        $message->setToPerson($scheduledReport->getPerson());
         $message->setTemplate(
             'DeskPRO:emails_agent:scheduled-report.html.twig',
             [
@@ -86,6 +85,9 @@ class ProcessScheduledReports extends AbstractJob
             ]
         );
 
-        $this->getContainer()->getMailer()->send($message);
+        foreach ($scheduledReport->getSendTo() as $to) {
+            $message->setTo($to);
+            $this->getContainer()->getMailer()->send($message);
+        }
     }
 }
