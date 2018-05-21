@@ -542,7 +542,9 @@
     padding: 25px;
     border-top: 1px solid $global-border;
 
-
+    .dataTables_reset {
+      display: none;;
+    }
 
     .dataTables_wrapper {
       border: none !important;
@@ -573,6 +575,7 @@
       span.dataTables_reset {
         margin-left: -18px;
         cursor: pointer;
+        display: initial;
       }
 
       .dataTables_paginate {
