@@ -55,7 +55,7 @@
                     </a>
                 </p>
             </li>
-            <li ng-class="{'active': 'advanced' == widget.widget_id}" ng-click="makeChoice('advanced')">
+            <li ng-class="{'active': 'advanced' == widget.widget_id}" ng-if="isAdvancedMatchSearchText()" ng-click="makeChoice('advanced')">
                 <span class="mark"></span>
                 <h1>
                     Advanced: Widget from arbitrary Javascript code

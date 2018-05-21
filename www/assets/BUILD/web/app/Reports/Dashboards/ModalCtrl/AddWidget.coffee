@@ -109,6 +109,16 @@ define ['DeskPRO/Util/Arrays',], (Arrays) -> [
           return true for label in value.labels when label.toLocaleLowerCase().indexOf(search) >= 0
           return false
 
+    $scope.isAdvancedMatchSearchText = () ->
+      if $scope.searchText == ''
+        return true
+      else
+        search = $scope.searchText.toLocaleLowerCase()
+        if 'Advanced: Widget from arbitrary Javascript code'.toLocaleLowerCase().indexOf(search) >= 0
+          return true
+
+      return false
+
     ####################################################################################################################
     # SAVE
     ####################################################################################################################
