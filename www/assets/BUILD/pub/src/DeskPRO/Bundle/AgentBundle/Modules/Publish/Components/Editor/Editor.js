@@ -175,7 +175,7 @@ export class Editor extends React.Component {
           imageUploadURL:    '/api/v2/blobs/froala',
           charCounterCount:  false,
           enter:             $.FroalaEditor.ENTER_BR,
-          key:               'qENARBFSTb1G1QJg1RA=='
+          key:               'MC1D2D1G2lG4J4A14A7D3D6F6C2C3F3gSXSE1LHAFJVCXCLS=='
         };
 
         if (window.DeskPRO_Window) {

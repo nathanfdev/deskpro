@@ -458,7 +458,7 @@ class Container extends React.Component {
       enter:                     $.FroalaEditor.ENTER_BR,
       placeholderText:           false,
       immediateReactModelUpdate: true,
-      key:                       'qENARBFSTb1G1QJg1RA==',
+      key:                       'MC1D2D1G2lG4J4A14A7D3D6F6C2C3F3gSXSE1LHAFJVCXCLS==',
       events:                    {
         'froalaEditor.focus':       Container.onFocus,
         'froalaEditor.blur':        () => { this.editor.selection.save(); Container.onBlur(); },
