@@ -382,6 +382,9 @@ class PublishController extends AbstractController
 
     public function saveCommentAction($typename, $commentId)
     {
+        if (!$this->person->hasPerm('agent_publish.validate')) {
+            throw $this->createNotFoundException();
+        }
         $entity = $this->_getCommentEntityName($typename);
 
         $comment          = $this->em->find($entity, $commentId);
@@ -661,6 +664,10 @@ class PublishController extends AbstractController
 
     public function draftsMassActionsAction($action)
     {
+        if (!$this->person->hasPerm('agent_publish.validate')) {
+            throw $this->createNotFoundException();
+        }
+
         $data = $this->in->getCleanValueArray('content', 'array', 'string');
 
         $this->em->beginTransaction();
