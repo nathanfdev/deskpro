@@ -448,10 +448,10 @@ class DashboardData extends AbstractDefaultData
                     $this->getEm()->persist($permissions);
                 }
                 foreach ($agents as $agent) {
-                    if (!$agent->isAdmin()) {
+                    if (!$agent->isAdmin() && $agent->can_reports) {
                         $permissions = new Permission();
                         $permissions
-                            ->setName(Permission::VIEW)
+                            ->setName(Permission::FULL)
                             ->setDashboard($dashboardEntity)
                             ->setPerson($agent);
                         $this->getEm()->persist($permissions);
