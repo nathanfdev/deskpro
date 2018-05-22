@@ -49,12 +49,12 @@ define [
       #--------------------
       # Brands
       #--------------------
-      if brands.length <= 1
-        @form.is_all_brands = true;
-        @form.brands        = [];
-      else
+      if brands?.length
         @form.is_all_brands = @account.is_all_brands;
         @form.brands = if @account.brand_ids && @account.brand_ids.length then @account.brand_ids else brands.map((x) -> x.id);
+      else
+        @form.is_all_brands = true;
+        @form.brands        = [];
 
       #--------------------
       # Trigger
