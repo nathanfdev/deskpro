@@ -121,6 +121,10 @@ $popup-background: #f5f6f7;
     text-align: center;
     color: #fff;
     font-weight: 400;
+
+    &.disabled {
+      opacity: 0.5;
+    }
   }
 
   .button-secondary {

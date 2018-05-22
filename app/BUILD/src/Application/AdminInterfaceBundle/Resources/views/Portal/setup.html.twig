@@ -307,6 +307,12 @@
             {##########################################################################################################}
 
             <div class="form-footer">
+                <div class="text-danger" ng-show="ma_error_message">
+                    <strong>{{ ng_var('ma_error_message') }}</strong>
+                </div>
+                <div class="text-info" ng-show="ma_pending_message">
+                    <strong>{{ ng_var('ma_pending_message') }}</strong>
+                </div>
                 <hr>
                 <div dp-hide-spinning="saving">
                     <button ng-if="brand_id == 'new'" type="submit" ng-click="Ctrl.createBrand()">{{ phrase('admin.portal.create_brand') }}</button>

@@ -28,7 +28,7 @@ define ->
             vars = {}
             for key, value of scope.vars
               vars[key] = {'value': value}
-            scope.changeParams {params: vars}
+            scope.changeParams {params: vars, reportWidget: scope.report}
 
         scope.changeValue()
     }

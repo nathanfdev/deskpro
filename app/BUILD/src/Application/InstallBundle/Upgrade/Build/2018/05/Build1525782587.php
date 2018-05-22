@@ -79,7 +79,7 @@ class Build1525782587 extends AbstractBuild implements OnlineBuildInterface
                     'description'   => '',
                     'query'         => $newQuery['query'],
                     'is_custom'     => 1,
-                    'labels'        => $dpqlQuery['category'],
+                    'labels'        => trim($dpqlQuery['category'].', upgraded', ' ,'),
                     'display_order' => $dpqlQuery['display_order'],
                     'display_types' => implode(',', $newQuery['displayTypes']),
                     'variables'     => json_encode($newQuery['variables']),
@@ -163,7 +163,7 @@ class Build1525782587 extends AbstractBuild implements OnlineBuildInterface
         $newVars  = [];
 
         // titles contain defaults: Average time to resolve tickets <1:date group, default: this_month> ...
-        $titleVars = RegexUtils::getAllMatchSets('/<(?P<id>\d+):\s*(?P<type>(?:date|field|order:status))\s+group\s*default:\s*(?P<default>\w+)\s*>/i', $dpql);
+        $titleVars = RegexUtils::getAllMatchSets('/<(?P<id>\d+):\s*(?P<type>(?:date\s+group|field\s+group:[a-zA-Z_]+|order:status))(\s*,\s*default:\s*(?P<default>\w+))?\s*>/i', $dpqlQuery['title']);
         if (!$titleVars) {
             $titleVars = [];
         }
@@ -234,7 +234,7 @@ class Build1525782587 extends AbstractBuild implements OnlineBuildInterface
                     $varName   = 'field_'.$id;
                     $newVars[] = [
                         'name'       => $varName,
-                        'type'       => 'orders',
+                        'type'       => 'fields',
                         'field_type' => $var['fieldType'],
                         'table'      => $var['fieldName'],
                     ];
@@ -248,11 +248,13 @@ class Build1525782587 extends AbstractBuild implements OnlineBuildInterface
             if ($titlePart) {
                 $newTitle = str_replace($titlePart[0], '${'.$varName.'}', $newTitle);
             }
+
+            $newTitle = str_replace(['<chart:bar>', '<chart:line>', '<chart:pie>', '<chart:table>'], '', $newTitle);
         }
 
         return [
             'query'        => $dpql,
-            'title'        => $newTitle,
+            'title'        => trim($newTitle),
             'variables'    => $newVars,
             'displayTypes' => $displayTypes,
         ];

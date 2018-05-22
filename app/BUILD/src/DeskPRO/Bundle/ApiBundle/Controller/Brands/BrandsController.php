@@ -3,6 +3,7 @@
 namespace DeskPRO\Bundle\ApiBundle\Controller\Brands;
 
 use Application\DeskPRO\Entity\Brand;
+use Cloud\LegacyApiBundle\Helper\CloudBrandHelper;
 use DeskPRO\Bundle\ApiBundle\ApiDoc\Annotation\ApiDoc;
 use DeskPRO\Bundle\ApiBundle\Controller\CrudController;
 use DeskPRO\Bundle\AppBundle\Annotation\ActionPermissions\Annotation\ApiModes;
@@ -136,6 +137,10 @@ class BrandsController extends CrudController
 
         $view = View::create($this->wrap($brand), Response::HTTP_CREATED);
         $view->setLocation($this->getLocationUrl($brand, $request));
+
+        if (defined('DPC_IS_CLOUD')) {
+            CloudBrandHelper::flushBrandDomains();
+        }
 
         return $view;
     }

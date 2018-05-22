@@ -16,7 +16,7 @@
         <div class="bucket" dp-dropdown="dp-select-label-dropdown" dp-dropdown-opener="dp-select-label-opener">
             <a id="dp-select-label-opener" class="link-pointer select">
                 <span ng-if="selectedLabels == 0">Select labels:</span>
-                <span ng-if="selectedLabels > 0">Selected: {{ ng_var('selectedLabels') }}</span>
+                <span ng-if="selectedLabels > 0">Labels selected: {{ ng_var('selectedLabels') }}</span>
                 <i class="fa fa-caret-down"></i>
             </a>
 
@@ -42,7 +42,7 @@
                 <h1>
                     <dp-report-variables
                             widget="widget"
-                            change-widget-params="changeWidgetParams(params)"
+                            change-widget-params="changeWidgetParams(params, report)"
                             report="report"
                             possible-values="groupParams">
                     </dp-report-variables>
@@ -64,7 +64,13 @@
         </ul>
     </div>
     <footer>
-        <a ng-click="chooseType()" class="link-pointer button">Next</a>
+        <button
+                ng-disabled="!widget.widget_id"
+                ng-click="chooseType()"
+                ng-class="{'disabled': !widget.widget_id}"
+                class="link-pointer button">
+            Next
+        </button>
     </footer>
 
 </section>

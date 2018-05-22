@@ -81,6 +81,7 @@ return [
     'api.error_codes.accept_server_error'             => 'There was a problem uploading this file. Please try again.',
     'api.error_codes.accept_size'                     => 'Sorry but this file is too large. Maximum allowed size is {{ detail }}.',
     'api.error_codes.invalid_dpql_query'              => 'Unable to parse this DPQL query.',
+    'api.error_codes.dpql_syntax_error'               => 'Error parsing DPQL statement at line {{ line }} (got {{ token }}).',
     'api.error_codes.voice_no_department_permission'  => 'Agent {{agent}} has no permission for department {{department}}.',
     'api.error_codes.no_source_provided'              => 'Unable to fetch data, no report widget or js code provided.',
     'api.error_codes.not_unique_alias'                => 'This alias "{{ alias }}" already exists.',

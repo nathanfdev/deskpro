@@ -38,6 +38,7 @@ class AuthController extends AbstractApiController
     public function getSessionAction(Request $request)
     {
         $widgetSettingsResolver = $this->get('widget_settings_resolver');
+        $brand                  = $this->get('brand_stack')->getActive()->getBrand();
 
         // track visitor id
         $visitorId = $this->get('visitor_identification_provider')->getVisitorIdentifier(true);
@@ -47,9 +48,16 @@ class AuthController extends AbstractApiController
         $trackVisitor = $request->request->get('trackVisitor');
 
         if ($trackVisitor) {
+            $urlSettings = $widgetSettingsResolver->getWidgetUrlSettings($brand, $request);
+
             try {
                 $hit = $this->get('hitrecord.record_factory')->fromParameters($trackVisitor, $request, $visitorId);
-                $this->get('hitrecord.record_storage')->record($hit);
+
+                // write hit record if it's from an external site
+                // otherwise we have PageHitController to track visitor
+                if (strpos($hit->getUrl(), $urlSettings->getHelpdesk()) === false) {
+                    $this->get('hitrecord.record_storage')->record($hit);
+                }
             } catch (\Exception $e) {
                 $hit = null;
             }
@@ -74,7 +82,7 @@ class AuthController extends AbstractApiController
 
         $model = new WidgetSession(
             $this->get('security.token_storage')->getToken(),
-            $widgetSettingsResolver->getWidgetGlobalOptions(),
+            $widgetSettingsResolver->getWidgetGlobalOptions($brand),
             $this->isGranted(UseSectionVoter::USE_CHAT),
             $this->container->get('language_stack')->getActiveOrDefault(),
             $lastChat ? $lastChat->getAuthId() : null,

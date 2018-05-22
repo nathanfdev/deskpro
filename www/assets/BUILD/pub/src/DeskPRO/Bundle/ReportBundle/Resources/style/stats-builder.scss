@@ -542,8 +542,61 @@
     padding: 25px;
     border-top: 1px solid $global-border;
 
+    .dataTables_reset {
+      display: none;;
+    }
+
     .dataTables_wrapper {
-      width: 500px;
+      border: none !important;
+      padding-top: 8px;
+
+      div.dataTables_length {
+        display: none;
+      }
+
+      table.dataTable thead th {
+        font-weight: bold;
+        text-align: left;
+      }
+
+      .dataTables_info, span.dataTables_reset {
+        font-size: 11px;
+        color: #888;
+      }
+
+      .dataTables_info {
+        margin-left: 65px;
+        margin-top: -26px;
+      }
+
+      .dataTables_reset_wrapper td {
+        padding-top: 0;
+      }
+      span.dataTables_reset {
+        margin-left: -18px;
+        cursor: pointer;
+        display: initial;
+      }
+
+      .dataTables_paginate {
+        font-size: 11px;
+        margin-top: -26px;
+        .paginate_button.disabled {
+          display: none;
+        }
+        .paginate_button, .paginate_button.current, .paginate_button:hover {
+          border: none !important;
+          background: transparent !important;
+          min-width: auto;
+          width: auto;
+          color: #888 !important;
+          margin: 0;
+          padding: 0.5em;
+        }
+        .paginate_button.current, .paginate_button:hover {
+          color: #000 !important;
+        }
+      }
     }
 
     .box {
@@ -650,9 +703,10 @@
     .dp-textarea textarea {
       width: 65%;
       height: 300px;
-      white-space: nowrap;
       overflow: auto;
       font-family: Monaco, Consolas, monospace;
+      white-space: pre-wrap;
+      word-wrap: break-word;
     }
 
     .field-hidden {

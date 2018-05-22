@@ -20,6 +20,21 @@ $dp-styles-font-path: '../../../../../../node_modules/@deskpro/react-components/
 @import 'dashboards/dashboards';
 @import 'dashboards/gridster';
 
+#dp_source {
+  background: #ecf0f3 !important;
+
+  #dp-add-dashboard-opener {
+    font-size: 14px;
+    font-weight: 600;
+    margin-top: 10px;
+
+    i {
+      margin-right: 5px
+    }
+  }
+
+}
+
 .two-panels-menu {
   display: table;
   border-collapse: collapse;

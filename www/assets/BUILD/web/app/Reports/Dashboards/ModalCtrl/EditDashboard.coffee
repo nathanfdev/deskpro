@@ -241,6 +241,8 @@ define ['DeskPRO/Util/Arrays', 'DeskPRO/Util/Util'], (Arrays, Util) -> [
         })
       else if permission.name == 'view'
         permission.name = 'full'
+      else if permission.name == 'full'
+        permission.name = 'view'
 
     $scope.toggleViewAllAgents = (agentId) ->
       permission = $scope.dashboard.permissions.filter((permission) => permission.person == agentId)[0]

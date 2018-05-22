@@ -125,8 +125,8 @@ define ['DeskPRO/Util/Arrays'], (Arrays) -> [
       }
       modalInstance.result.then(
         () =>
-          DashboardService.deleteDashboard($scope.dashboard)
-          $state.go('reports.dashboards.view.empty')
+          DashboardService.deleteDashboard($scope.dashboard).then ->
+            $state.go('reports.dashboards.index')
       )
 
     $scope.canEdit = () ->

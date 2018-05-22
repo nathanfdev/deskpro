@@ -374,7 +374,7 @@ class DashboardData extends AbstractDefaultData
                             'options' => '{"legend": false}',
                         ],
                         [
-                            'title'      => 'Top Snippets',
+                            'title'      => 'Top Snippets This Month',
                             'position'   => '7:6',
                             'size'       => '2:2',
                             'widget_key' => 'top-snippets-x-date',

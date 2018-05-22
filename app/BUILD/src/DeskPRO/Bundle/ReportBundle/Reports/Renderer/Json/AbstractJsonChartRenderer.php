@@ -132,6 +132,10 @@ abstract class AbstractJsonChartRenderer extends AbstractJsonRenderer
                 $category          = implode(' / ', $printable);
                 $maxCategoryLength = max($maxCategoryLength, strlen($category));
 
+                if ($category === '') {
+                    $category = 'None';
+                }
+
                 $rowData = ['category' => $category];
 
                 $i = 0;
@@ -195,7 +199,12 @@ abstract class AbstractJsonChartRenderer extends AbstractJsonRenderer
                             $grouper = $this->renderCellValue($row, $column, $metadata);
                             continue;
                         } else {
-                            $categories[] = $this->renderCellValue($row, $column, $metadata);
+                            $category = $this->renderCellValue($row, $column, $metadata);
+                            if ($category === '') {
+                                $category = 'None';
+                            }
+
+                            $categories[] = $category;
                         }
                     }
                     $category = implode(' / ', $categories);
@@ -353,7 +362,11 @@ abstract class AbstractJsonChartRenderer extends AbstractJsonRenderer
                         array_unshift($categories, $row['hierarchy_root_title']);
                     }
 
-                    $category          = implode(' / ', $categories);
+                    $category = implode(' / ', $categories);
+                    if ($category === '') {
+                        $category = 'None';
+                    }
+
                     $maxCategoryLength = max($maxCategoryLength, strlen($category));
 
                     $value = $this->filterGraphValue($this->getColumnValue($row, $sel));
@@ -401,7 +414,8 @@ abstract class AbstractJsonChartRenderer extends AbstractJsonRenderer
         }
 
         if (static::getOutputFormat() === 'pie') {
-            $pieData = [];
+            $pieData    = [];
+            $graphValue = 'value';
 
             if (count($graphs) > 1) {
                 foreach ($chartData as $key => $info) {
@@ -463,9 +477,9 @@ abstract class AbstractJsonChartRenderer extends AbstractJsonRenderer
                     'data'  => $data,
                 ]);
             } else {
-                $graph = reset($graphs);
-
-                $pieData = [
+                $graph      = reset($graphs);
+                $graphValue = $graph['value'];
+                $pieData    = [
                     [
                         'title' => $graph['title'],
                         'data'  => $chartData,
@@ -476,7 +490,7 @@ abstract class AbstractJsonChartRenderer extends AbstractJsonRenderer
             $arrayOutput['type']             = 'pie';
             $arrayOutput['startDuration']    = 0;
             $arrayOutput['titleField']       = 'category';
-            $arrayOutput['valueField']       = 'value';
+            $arrayOutput['valueField']       = $graphValue;
             $arrayOutput['legend']           = false;
             $arrayOutput['outlineColor']     = '#ffffff';
             $arrayOutput['outlineAlpha']     = '0.8';
