@@ -3,6 +3,7 @@ import React from 'react';
 import { connect } from 'react-redux';
 import { loadAll, collectionSelectorFactory } from 'DeskPRO/Bundle/AppBundle/Modules/RecordsStore';
 import { agentAcceptTimeoutSelector } from '../../../../../../Application/Selectors/dpWindow';
+import { findAnotherAgent } from '../../../../../Actions/chatActions';
 import {
   agentIdSelector,
   chatIdSelector,
@@ -34,7 +35,8 @@ export class OnlineAgentContainer extends React.Component {
     agentId:            PropTypes.number,
     agentName:          PropTypes.string,
     agentAvatar:        PropTypes.object,
-    hasAssignedMessage: PropTypes.bool
+    hasAssignedMessage: PropTypes.bool,
+    chatId:             PropTypes.number
   };
 
   constructor(props) {
@@ -54,7 +56,10 @@ export class OnlineAgentContainer extends React.Component {
   }
 
   onStartFindAgent = () => {
+    const { dispatch, chatId } = this.props;
+
     this.setState({ disconnected: true });
+    dispatch(findAnotherAgent(chatId));
   };
 
   render() {

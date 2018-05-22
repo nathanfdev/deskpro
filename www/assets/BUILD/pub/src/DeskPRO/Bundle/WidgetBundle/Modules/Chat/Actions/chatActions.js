@@ -430,3 +430,16 @@ export const sendFeedback = createAction(
     return widgetApi.sendPost(`DP_API/chats/${chatId}/feedback`, params, { ...ajaxOptions(state) });
   }
 );
+
+export const findAnotherAgent = createAction(
+  'WIDGET_CHAT_FIND_ANOTHER_AGENT',
+  (chatId, params) => (dispatch, getState) => {
+    const state = getState();
+    if (!chatId) {
+      return null;
+    }
+
+    return widgetApi.sendPost(`DP_API/chats/${chatId}/find_agent`, params, { ...ajaxOptions(state) });
+  }
+);
+

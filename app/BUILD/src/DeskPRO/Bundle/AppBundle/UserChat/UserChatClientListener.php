@@ -34,6 +34,7 @@ class UserChatClientListener implements EventSubscriberInterface
     {
         return [
             UserChatEvent::STARTED        => 'onStarted',
+            UserChatEvent::FIND_AGENT     => 'onStarted',
             UserChatEvent::USER_RETURNED  => 'onUserReturned',
             UserChatEvent::ENDED          => 'onEnded',
             UserChatEvent::END_BY         => 'onEndedBy',
