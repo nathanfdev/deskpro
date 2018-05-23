@@ -14,7 +14,7 @@ use JMS\Serializer\Annotation as JMS;
 /**
  * Class Person.
  */
-class Person extends BasePerson
+class Person extends ExtendedPerson
 {
     /**
      * The user`s profile picture.
@@ -51,49 +51,6 @@ class Person extends BasePerson
      * @var bool
      */
     protected $isContact;
-
-    /**
-     * Is this person a user?
-     *
-     * @var bool
-     */
-    protected $isUser;
-
-    /**
-     * Was this person an agent?
-     *
-     * @JMS\Type("boolean")
-     *
-     * @var bool
-     */
-    protected $wasAgent;
-
-    /**
-     * Is person allowed to use agent interface.
-     *
-     * @JMS\Type("boolean")
-     *
-     * @var bool
-     */
-    protected $canAgent;
-
-    /**
-     * Is person allowed to use admin interface.
-     *
-     * @JMS\Type("boolean")
-     *
-     * @var bool
-     */
-    protected $canAdmin;
-
-    /**
-     * Is person allowed to use billing interface.
-     *
-     * @JMS\Type("boolean")
-     *
-     * @var bool
-     */
-    protected $canBilling;
 
     /**
      * Are autoresponses disabled?
@@ -387,11 +344,6 @@ class Person extends BasePerson
         $this->disablePicture          = $person->disable_picture;
         $this->gravatarUrl             = $person->getGravatarUrl();
         $this->isContact               = $person->is_contact;
-        $this->isUser                  = $person->isUser();
-        $this->wasAgent                = $person->wasAgent();
-        $this->canAgent                = $person->canAgent();
-        $this->canAdmin                = $person->canAdmin();
-        $this->canBilling              = $person->getRealCanBilling();
         $this->disableAutoresponses    = $person->disable_autoresponses;
         $this->disableAutoresponsesLog = $person->disable_autoresponses_log;
         $this->isConfirmed             = $person->isConfirmed();
