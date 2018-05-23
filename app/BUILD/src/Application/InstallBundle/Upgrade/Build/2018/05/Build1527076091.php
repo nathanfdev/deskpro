@@ -4,7 +4,7 @@ namespace Application\InstallBundle\Upgrade\Build;
 
 use Application\DeskPRO\DBAL\Connection;
 
-class Build1526991771 extends AbstractBuild implements OnlineBuildInterface
+class Build1527076091 extends AbstractBuild implements OnlineBuildInterface
 {
     public function addNewTables()
     {
