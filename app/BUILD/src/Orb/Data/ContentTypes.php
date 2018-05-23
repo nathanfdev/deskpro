@@ -277,6 +277,35 @@ class ContentTypes
     }
 
     /**
+     * https://developer.mozilla.org/en-US/docs/Web/HTTP/Basics_of_HTTP/Data_URIs.
+     *
+     * Check if string is DataUrl and try to detect mime type
+     *
+     * @param type $dataUrl
+     *
+     * @return string
+     */
+    public static function getContentTypeFromDataUrl($dataUrl)
+    {
+        if (!$dataUrl) {
+            return;
+        }
+
+        // first 100 chars enough to detect mime type
+        $dataUrl = substr($dataUrl, 0, 100);
+
+        $regexp  = '/^(data:)([\w\/\+]+);(charset=[\w-]+|base64).*,(.*)/i';
+        $matches = [];
+
+        $res = preg_match($regexp, $dataUrl, $matches);
+        if ($res !== 1) {
+            return;
+        }
+
+        return $matches[2];
+    }
+
+    /**
      * Search for a suitable file extension for a given contenttype.
      *
      * There can be multiple extensions for a given content-type (htm or html, jpg or jpeg etc). Only the
