@@ -235,8 +235,10 @@ define ['DeskPRO/Util/Arrays'], (Arrays) ->
       @Api2
       .sendPutJson url, data
       .then () ->
+        deferred.resolve()
         return
       , () ->
+        deferred.reject()
         console.error 'something goes wrong!'
       deferred.promise
 

@@ -209,9 +209,20 @@ define ['DeskPRO/Util/Arrays'], (Arrays) -> [
             report
       }
       modalInstance.result.then (result) ->
-        DashboardService.saveReport(result, true).then (savedReport) ->
-          $scope.report = savedReport
-          $state.go('reports.dashboards.view.report', { report_id: savedReport.id})
+        DashboardService.saveReport(result).then (savedReport) ->
+          DashboardsInfo.getReportDetail(report_id).then((loadedReport) ->
+            $scope.report = loadedReport
+            $scope.report.variables = loadedReport.variables
+            $state.go('reports.dashboards.view.report', { report_id: loadedReport.id})
+          )
+      modalInstance.result.catch (reason) ->
+        if reason == 'scheduled'
+          DashboardsInfo.getReportDetail(report_id).then((loadedReport) ->
+            $scope.report = loadedReport
+            $scope.report.variables = loadedReport.variables
+            $state.go('reports.dashboards.view.report', { report_id: loadedReport.id})
+          )
+
 
 
     $scope.changeReportLevelVar = () ->
