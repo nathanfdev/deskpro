@@ -3,8 +3,8 @@ define [
   'Admin/TicketAccounts/FormModel/EditTicketAccountModel',
 ], (Util, BaseFormModel) ->
   class Admin_Cloud_TicketAccounts_FormModel_EditTicketAccountModel extends BaseFormModel
-    constructor: (@account, deps, trigger) ->
-      super(@account, deps, trigger)
+    constructor: (@account, deps, trigger, brands) ->
+      super(@account, deps, trigger, brands)
 
       if @form.address and @form.address.indexOf('@') != -1
         @form.address_name = @form.address.split('@')[0]

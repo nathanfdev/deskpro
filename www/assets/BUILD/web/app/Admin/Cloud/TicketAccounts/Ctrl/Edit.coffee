@@ -17,7 +17,7 @@ define [
       @new_is_confirmed = true
 
     getFormModel: ->
-      return new EditTicketAccountModel(@account || {}, @deps || [], @trigger || {})
+      return new EditTicketAccountModel(@account || {}, @deps || [], @trigger || {}, @brands || {})
 
     setupTestModalScope: ($scope) ->
       if @form_model.form.use_custom_email_address
