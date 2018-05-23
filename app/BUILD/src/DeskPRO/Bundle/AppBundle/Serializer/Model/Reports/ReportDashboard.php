@@ -60,15 +60,27 @@ class ReportDashboard
      *
      * @param ReportDashboardEntity $entity
      */
-    public function __construct(ReportDashboardEntity $entity)
+    public function __construct(ReportDashboardEntity $entity, $allAdmins)
     {
         $this->id         = $entity->getId();
         $this->title      = $entity->getTitle();
         $this->isDefault  = $entity->isDefault();
         $this->isAgent    = $entity->isAgent();
-        $permissionsArray = is_array($entity->getPermissions())
-            ? $entity->getPermissions()
-            : $entity->getPermissions()->toArray();
+        $permissionsArray = [];
+        foreach ($entity->getPermissions() as $permission) {
+            if ($permission->getPerson()) {
+                $permissionsArray[$permission->getPerson()->getId()] = $permission;
+            } else {
+                $permissionsArray[] = $permission;
+            }
+        }
+        foreach ($allAdmins as $admin) {
+            if (!isset($permissionsArray[$admin->getId()])) {
+                $fakePermission = new ReportDashboardPermission();
+                $fakePermission->setPerson($admin)->setName(ReportDashboardPermission::FULL);
+                $permissionsArray[] = ($fakePermission);
+            }
+        }
         $this->permissions = array_filter($permissionsArray, function ($permission) {
             /** @var ReportDashboardPermission $permission */
             if ($permission->getAgent() && !$permission->getAgent()->isActiveAgent()) {

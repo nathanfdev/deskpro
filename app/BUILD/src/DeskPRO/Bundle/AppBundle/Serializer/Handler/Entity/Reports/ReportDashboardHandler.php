@@ -2,6 +2,7 @@
 
 namespace DeskPRO\Bundle\AppBundle\Serializer\Handler\Entity\Reports;
 
+use Application\DeskPRO\Entity\Person;
 use Application\DeskPRO\Entity\ReportDashboard as ReportDashboardEntity;
 use Application\DeskPRO\Entity\ReportDashboardReport as ReportDashboardReportEntity;
 use DeskPRO\Bundle\AppBundle\Serializer\Deferred\CallbackDeferredProperty;
@@ -31,6 +32,11 @@ class ReportDashboardHandler extends AbstractEntityHandler
     private $reports;
 
     /**
+     * @var Person[]
+     */
+    private $allReportsAdmins;
+
+    /**
      * Constructor.
      *
      * @param EntityManager $em
@@ -57,7 +63,7 @@ class ReportDashboardHandler extends AbstractEntityHandler
     {
         $this->dashboardIds[] = $entity->getId();
 
-        $model     = new ReportDashboardModel($entity);
+        $model     = new ReportDashboardModel($entity, $this->getAllReportAdmins());
         $sideloads = $context->getSideloadStore();
         $sideloads->addCustomSideload(
             'reports',
@@ -90,5 +96,24 @@ class ReportDashboardHandler extends AbstractEntityHandler
         }
 
         return $dashboardReports;
+    }
+
+    /**
+     * @return Person[]
+     */
+    private function getAllReportAdmins()
+    {
+        if (!$this->allReportsAdmins) {
+            $this->allReportsAdmins = $this->em
+                ->getRepository(Person::class)
+                ->createQueryBuilder('p')
+                ->andWhere('p.can_admin = 1')
+                ->orWhere('p.can_reports = 1')
+                ->getQuery()
+                ->getResult()
+            ;
+        }
+
+        return $this->allReportsAdmins;
     }
 }
