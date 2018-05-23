@@ -459,7 +459,7 @@ abstract class AbstractBuild
      *
      * @return string
      */
-    public function readSetting($name, $default)
+    public function readSetting($name, $default = null)
     {
         $db    = $this->container->getDb();
         $exist = $db->countWithPlaceholders('settings', 'name = ?', [$name]);
