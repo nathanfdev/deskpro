@@ -93,7 +93,7 @@ export default class IMOverlay extends React.Component {
 
   getHeader(header, list) {
     if (this.state.filter) {
-      return `${header} (${list.size})`;
+      return [header, ` (${list.size})`];
     }
     return header;
   }
@@ -211,7 +211,7 @@ export default class IMOverlay extends React.Component {
 
     let header = <FormattedMessage id="agent.general.groups" />;
     if (this.state.filter) {
-      header = `${header} (${filteredGroups.size + filteredDepartments.size + filteredTeams.size})`;
+      header = [header, ` (${filteredGroups.size + filteredDepartments.size + filteredTeams.size})`];
     }
 
     return  {
