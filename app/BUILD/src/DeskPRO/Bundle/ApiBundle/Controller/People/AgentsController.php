@@ -68,6 +68,32 @@ class AgentsController extends AbstractPeopleController
     }
 
     /**
+     * @param Request $request
+     *
+     * @ApiDoc(
+     *     section="Agents",
+     *     description="extended agents models",
+     *     statusCodes={
+     *         200="Returned if everything is ok"
+     *     },
+     *     output="DeskPRO\Bundle\AppBundle\Serializer\Model\Person\ExtendedPerson"
+     * )
+     * @SerializerView(mapping={
+     *     "Application\DeskPRO\Entity\Person": "DeskPRO\Bundle\AppBundle\Serializer\Model\Person\ExtendedPerson"
+     * })
+     *
+     * @Rest\Get("/extended", name="api_agents_extended")
+     *
+     * @throws \Exception
+     *
+     * @return View
+     */
+    public function listExtendedAction(Request $request)
+    {
+        return $this->listAction($request);
+    }
+
+    /**
      * @ApiDoc(
      *     section="Agents",
      *     description="get a list of agents, assigned to chats",
@@ -167,7 +193,7 @@ class AgentsController extends AbstractPeopleController
         parent::applyListFilters($qb, $alias, $request);
 
         $qb->andWhere("$alias.is_agent = 1");
-        $qb->select("partial $alias.{id,first_name,last_name,name,is_agent}");
+        $qb->select("partial $alias.{id,first_name,last_name,name,is_agent,can_agent,can_admin,can_reports,can_billing,is_user}");
     }
 
     /**
