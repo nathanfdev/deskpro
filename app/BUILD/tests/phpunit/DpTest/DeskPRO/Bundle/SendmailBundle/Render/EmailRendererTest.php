@@ -230,6 +230,11 @@ class EmailRendererTest extends SendmailTestCase
                         'type'        => 'boolean',
                         'attribute'   => 'online_for_chat',
                     ],
+                    'can_reports' => [
+                        'description' => 'Is person allowed to use reports interface.',
+                        'type'        => 'boolean',
+                        'attribute'   => 'can_reports',
+                    ],
                 ],
             ],
             'site_url' => [
