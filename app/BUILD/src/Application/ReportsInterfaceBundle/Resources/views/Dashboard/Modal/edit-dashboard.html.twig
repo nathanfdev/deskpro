@@ -218,8 +218,8 @@
                             <input
                                 ng-title="Toogle view permission for {{ ng_var('agent.name') }}"
                                 ng-click='toggleAgentViewDashboard(agent.id)'
-                                ng-checked="canAgentViewDashboard(agent.id)"
-                                ng-disabled="dashboard.permissions.all == 'view' || dashboard.permissions.all == 'full'"
+                                ng-checked="canAgentViewDashboard(agent.id) || agent.can_reports || agent.can_admin"
+                                ng-disabled="dashboard.permissions.all == 'view' || dashboard.permissions.all == 'full' || agent.can_reports || agent.can_admin"
                                 type="checkbox"
                             />
                         </td>
@@ -227,8 +227,8 @@
                             <input
                                 ng-title="Toogle edit permission for {{ ng_var('agent.name') }}"
                                 ng-click='toggleAgentEditDashboard(agent.id)'
-                                ng-checked="canAgentEditDashboard(agent.id)"
-                                ng-disabled="dashboard.permissions.all == 'full'"
+                                ng-checked="canAgentEditDashboard(agent.id) || agent.can_reports || agent.can_admin"
+                                ng-disabled="dashboard.permissions.all == 'full' || agent.can_reports || agent.can_admin"
                                 type="checkbox"
                             />
                         </td>
