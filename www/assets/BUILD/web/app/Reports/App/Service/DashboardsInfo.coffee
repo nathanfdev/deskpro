@@ -62,7 +62,7 @@ define ['DeskPRO/Util/Arrays', 'DeskPRO/Util/Util'], (Arrays, Util) ->
           if includeReports
             db.reports = res.data.linked.reports[db.id]
 
-          d.resolve(@dashboardList)
+        d.resolve(@dashboardList)
       , =>
         d.reject()
         @dashboardListPromise = null
