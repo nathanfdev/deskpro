@@ -2,7 +2,7 @@
 
 namespace Application\InstallBundle\Upgrade\Build;
 
-class Build1526290644 extends AbstractBuild implements OnlineBuildInterface
+class Build1527073728 extends AbstractBuild implements OnlineBuildInterface
 {
     public function addNewTables()
     {
@@ -14,7 +14,7 @@ class Build1526290644 extends AbstractBuild implements OnlineBuildInterface
 
     public function run()
     {
-        $regEnabled       = (bool) $this->readSetting('core.reg_enabled');
+        $regEnabled       = (bool) $this->readSetting('core.reg_enabled', true);
         $localUsersources = $this->getDbConnection('default')->fetchAll('SELECT id, options FROM `usersources` WHERE app_id IS NULL');
 
         foreach ($localUsersources as $usersource) {

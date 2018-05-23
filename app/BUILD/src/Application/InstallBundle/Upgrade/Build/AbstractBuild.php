@@ -455,12 +455,18 @@ abstract class AbstractBuild
 
     /**
      * @param string $name
+     * @param mixed  $default
      *
      * @return string
      */
-    public function readSetting($name)
+    public function readSetting($name, $default)
     {
-        $db = $this->container->getDb();
+        $db    = $this->container->getDb();
+        $exist = $db->countWithPlaceholders('settings', 'name = ?', [$name]);
+
+        if (!$exist) {
+            return $default;
+        }
 
         return $db->fetchColumn('SELECT value FROM settings WHERE name = ?', [$name]);
     }
