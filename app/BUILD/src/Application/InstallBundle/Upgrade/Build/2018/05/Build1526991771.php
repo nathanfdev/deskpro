@@ -44,7 +44,7 @@ UPDATE;
 DELETE FROM `report_dashboard_permission`
 WHERE `person_id` NOT IN (?)
   AND `dashboard_id` IN (?)
-  AND collate  `name` = 'view'      
+  AND `name` = 'view'      
 DELETE;
 
         $connection->executeQuery($sql, [$agentIds, $dashboardIds], [Connection::PARAM_INT_ARRAY, Connection::PARAM_INT_ARRAY]);
