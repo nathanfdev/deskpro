@@ -1069,6 +1069,16 @@ class TicketController extends AbstractController
             }
         }
 
+        $maxCc = (int) App::getSetting('core_tickets.email_cc_max_count');
+        if ($maxCc && $ticket->getCcs()->count() >= $maxCc) {
+            return $this->createJsonResponse(
+                [
+                    'error'      => true,
+                    'error_code' => 'cc_limit',
+                ]
+            );
+        }
+
         $this->db->beginTransaction();
 
         try {
@@ -4691,6 +4701,21 @@ class TicketController extends AbstractController
             }
             if (!$this->in->getString('newticket.department_id')) {
                 $errors['department_id'] = true;
+            }
+
+            $maxCc = (int) App::getSetting('core_tickets.email_cc_max_count');
+            if ($maxCc) {
+                $ccAddPersons = array_unique($this->in->getCleanValueArray('newticket.add_cc_person', 'uint'));
+                //@TODO remove duplicates
+                $ccAddNewPersons = $this->in->getCleanValueArray(
+                    'newticket.add_cc_newperson',
+                    'raw',
+                    'discard'
+                );
+                $cnt = count($ccAddPersons) + count($ccAddNewPersons);
+                if ($cnt > $maxCc) {
+                    $errors['cc_limit'] = true;
+                }
             }
 
             if ($errors) {

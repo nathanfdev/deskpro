@@ -2149,6 +2149,7 @@ return [
     'agent.tickets.draft_message'                              => 'Draft Message',
     'agent.tickets.draft_note'                                 => 'Draft Note',
     'agent.tickets.edit_snippet_category'                      => 'Edit Snippet Category',
+    'agent.tickets.email_cc_limit_reached'                     => 'Maximum CC\'s limit ({{max}}) reached',
     'agent.tickets.email_is_agent_use_followers'               => 'The user you specified is an agent. To add an agent to this ticket, use the "Add a follower" button in the Properties box.',
     'agent.tickets.email_is_dupe'                              => 'The email address you entered is already on this ticket.',
     'agent.tickets.email_is_ticket_account'                    => 'The email address you entered belongs to a an account in Admin > Tickets > Email Accounts. You cannot create a ticket for an email account.',

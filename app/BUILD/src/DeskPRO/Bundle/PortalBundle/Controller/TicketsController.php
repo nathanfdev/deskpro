@@ -341,6 +341,13 @@ class TicketsController extends AbstractController
             return $redirect_response;
         }
 
+        $maxCc = (int) $this->getBrandSetting('core_tickets.email_cc_max_count');
+        if ($maxCc && $ticket->getCcs()->count() >= $maxCc) {
+            $this->addFlash('error', $this->phrase('portal.flashes.ticket_participant_cc_limit_reached', ['max' => $maxCc]));
+
+            return $redirect_response;
+        }
+
         $person_factory = $this->get('person_factory');
         $context        = new CreatePersonContext('gateway.person');
         $person         = $person_factory->getOrCreatePersonByEmail($email, $context);

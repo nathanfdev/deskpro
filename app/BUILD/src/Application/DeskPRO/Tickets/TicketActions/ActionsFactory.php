@@ -142,6 +142,7 @@ class ActionsFactory
                 break;
             case 'add_cc':
                 $options['add_emails'] = !empty($value['add_emails']) ? $value['add_emails'] : '';
+                $options['max_cc']     = (int) App::getSetting('core_tickets.email_cc_max_count');
                 break;
             case 'remove_participants':
                 $options['remove_participants'] = !empty($value['remove_participants']) && is_array($value['remove_participants']) ? $value['remove_participantsq'] : [];

@@ -28,7 +28,12 @@ class AddCcAction extends AbstractAction
      */
     protected $add_people;
 
-    public function __construct($add_emails)
+    /**
+     * @var int
+     */
+    protected $max_cc;
+
+    public function __construct($add_emails, $max_cc)
     {
         if (!is_array($add_emails)) {
             $add_emails = explode(',', $add_emails);
@@ -45,6 +50,7 @@ class AddCcAction extends AbstractAction
         $valid = array_unique($valid);
 
         $this->add_emails = $valid;
+        $this->max_cc     = $max_cc;
     }
 
     /**
@@ -86,6 +92,9 @@ class AddCcAction extends AbstractAction
      */
     public function apply(Ticket $ticket)
     {
+        if ($this->max_cc && $ticket->getCcs()->count() >= $this->max_cc) {
+            return;
+        }
         $people = $this->getPeople();
         foreach ($people as $person) {
             $ticket->addParticipantPerson($person);

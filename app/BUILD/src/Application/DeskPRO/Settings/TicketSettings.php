@@ -55,6 +55,8 @@ class TicketSettings
     public $add_agent_ccs = false;
     /** @var int */
     public $gateway_max_email = 0;
+    /** @var int */
+    public $email_cc_max_count = 20;
 
     /** @var array */
     public $from_email_headers;
@@ -146,8 +148,9 @@ class TicketSettings
         $this->agent_defaults['reply_resolve_auto_close_tab']      = (bool) $this->settings->get('core_tickets.resolve_auto_close_tab');
         $this->agent_defaults['view_reverse_order']                = (bool) $this->settings->get('core_tickets.default_ticket_reverse_order');
 
-        $this->add_agent_ccs     = (bool) $this->settings->get('core_tickets.add_agent_ccs');
-        $this->gateway_max_email = (int) $this->settings->get('core.gateway_max_email');
+        $this->add_agent_ccs      = (bool) $this->settings->get('core_tickets.add_agent_ccs');
+        $this->gateway_max_email  = (int) $this->settings->get('core.gateway_max_email');
+        $this->email_cc_max_count = (int) $this->settings->get('core_tickets.email_cc_max_count');
 
         $wh = $this->settings->get('core_tickets.work_hours');
         if ($wh) {
@@ -214,6 +217,7 @@ class TicketSettings
             'agent_defaults',
             'add_agent_ccs',
             'gateway_max_email',
+            'email_cc_max_count',
             'working_hours',
             'from_email_headers',
             'email_reply_as_note',
@@ -308,6 +312,7 @@ class TicketSettings
 
         $this->settings->setSetting('core_tickets.add_agent_ccs', $this->add_agent_ccs);
         $this->settings->setSetting('core.gateway_max_email', $this->gateway_max_email ?: null);
+        $this->settings->setSetting('core_tickets.email_cc_max_count', $this->email_cc_max_count !== null ? (int) $this->email_cc_max_count : null);
 
         $wh = $this->working_hours;
         if ($wh) {
