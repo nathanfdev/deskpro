@@ -561,10 +561,10 @@ class GetMsgScript extends LowScriptAbstract
             }
         }
 
-        if (isset($this->_settings[$name])) {
+        if ($DP_ENV->getConfig("settings.$name")) {
+            return $DP_ENV->getConfig("settings.$name");
+        } elseif (isset($this->_settings[$name])) {
             return $this->_settings[$name];
-        } elseif ($DP_ENV->getConfig($name)) {
-            return $DP_ENV->getConfig($name);
         }
         // if not a config settings we fail over on regular settings
         $this->_getContainer();
