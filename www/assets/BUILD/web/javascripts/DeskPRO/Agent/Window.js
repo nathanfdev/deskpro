@@ -16,6 +16,14 @@ DeskPRO.Agent.Window = new Orb.Class({
 
 	init: function() {
 
+		this.hasInit = false;
+		this.hasInitBootAction = false;
+
+		this.initParts = {
+			'DeskPRO_Window': false,
+			'bootstrapActions': false
+		};
+
 		this.hashHandling = true;
 		this.onloadStack = [];
 		this.dismissAlertQueue = [];
@@ -981,6 +989,7 @@ DeskPRO.Agent.Window = new Orb.Class({
 		// of tabs from url bar or local history, but
 		// actually clicking stuff will instant
     DeskPRO_Window.TabBar.enableInitOnRender();
+    window.DP_PAGE_PART_HAS_INIT('DeskPRO_Window');
 	},
 
 	initScope: function() {

@@ -117,8 +117,13 @@ class DeskproAppStore {
     registerOutgoingWidgetRequestListeners(appServices);
 
     // subscribe to redux store changes
+    // TODO -- this is awful. needs to be changed to reducers so it doesnt run on every single action!
     reduxStore.subscribe(() => {
       const newState = reduxStore.getState();
+
+      if (!newState.DeskproApps.Main.get('apps')) {
+        return;
+      }
 
       // notify app services
       appServices.onAppStateChanged(newState);
