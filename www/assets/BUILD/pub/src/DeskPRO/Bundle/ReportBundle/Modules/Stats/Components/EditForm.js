@@ -294,7 +294,7 @@ export class EditFormComponent extends React.Component {
     return (
       <form onSubmit={this.props.handleSubmit}>
         <Container>
-          {hasError && <div className="form-error-message">Please check form accuarte, there is an error.</div>}
+          {hasError && <div className="form-error-message">Please check form accurate, there is an error.</div>}
           {Object.keys(formErrors).length > 0
             ? <div className="form-error-message">
               {Object.keys(formErrors).map(key => (<span>{key}: {formErrors[key]}<br /></span>))}
