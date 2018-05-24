@@ -43,7 +43,7 @@ define ['underscore','Admin/Main/Ctrl/Base'], (_, Admin_Ctrl_Base) ->
     # Actually do the clear
     ###
     clearAll: ->
-      @Api.sendDelete('/server_error_logs/').success( =>
+      @Api.sendDelete('/server_error_logs').success( =>
         @$scope.server_error_logs.logs = null
       ).error(=>
         @showAlert("Clearing the logs failed because the log file is not writable by the web server. You must make the " + @logs_path + "/error.log file writable before you can clear it.")
