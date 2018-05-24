@@ -31,7 +31,9 @@ class EmailPostRenderFilter extends AbstractPostRenderFilter
         // Dont run emog on messages, only on the email template
         // This takes out email messages and replaces them with tokens until we're done
         $save_blocks = [];
-        $code        = preg_replace_callback('#<!-- DP_MESSAGE_BEGIN -->(.*?)<!-- DP_MESSAGE_END -->#', function ($m) use (&$save_blocks) {
+        // regex `s` modifier required here to match `\n` within `.`
+        // message might have new lines (for example in case of signature)
+        $code = preg_replace_callback('#<!-- DP_MESSAGE_BEGIN -->(.*?)<!-- DP_MESSAGE_END -->#s', function ($m) use (&$save_blocks) {
             $rand = uniqid('DPBLOCK', true);
             $save_blocks[$rand] = $m[0];
 
