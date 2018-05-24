@@ -69,7 +69,7 @@ class ProcessScheduledReports extends AbstractJob
     {
         $message = $this->getContainer()->getMailer()->createMessage();
         $message->setTemplate(
-            'DeskPRO:emails_agent:scheduled-report.html.twig',
+            'DeskPRO:emails_user:scheduled-report.html.twig',
             [
                 'person'      => $scheduledReport->getPerson(),
                 'frequency'   => $scheduledReport->getFrequency(),
