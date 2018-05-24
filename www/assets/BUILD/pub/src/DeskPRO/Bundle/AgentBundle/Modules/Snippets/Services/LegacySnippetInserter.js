@@ -77,7 +77,13 @@ class LegacySnippetInserter {
       result = useText;
     }
 
-    let data = result.replace(/<\/p>\s*<p>/g, '<br/>');
+    // redactor sometimes has empty lines, we don't need to convert them to new lines
+    let data = result.replace(/<p><\/p>/g, '');
+    data = data.replace(/<div><\/div>/g, '');
+    // in the end, we want convert <p><br></p> to just <br>, so strip extra <br>
+    data = data.replace(/<p><br><\/p>/g, '<p></p>');
+
+    data = data.replace(/<\/p>\s*<p>/g, '<br/>');
     data = data.replace(/^<p>/, '');
     data = data.replace(/<\/p>$/, '');
     const div = document.createElement('div');
