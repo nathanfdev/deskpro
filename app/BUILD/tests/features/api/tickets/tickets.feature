@@ -121,6 +121,20 @@ Feature: /tickets endpoint
     And the JSON node "data" should have 4 elements
     And the JSON node "linked" should have 0 elements
 
+  Scenario: I retrieve list of tickets with count set
+    When I send a GET request to "/api/v2/tickets?count=2"
+    Then the response status code should be 200
+    And the JSON node "data" should have 2 elements
+    And the JSON node "linked" should have 0 elements
+
+  Scenario: I retrieve list of tickets with offset and count set
+    When I send a GET request to "/api/v2/tickets?offset=1&count=2"
+    Then the response status code should be 200
+    And the JSON node "data" should have 2 elements
+    And the JSON node "linked" should have 0 elements
+    And the JSON node "data[0].id" should be equal to "{ticket2}"
+    And the JSON node "data[1].id" should be equal to "{ticket3}"
+
   Scenario: I retrieve list of hidden and archived tickets
     When I send a GET request to "/api/v2/tickets?status[]=hidden&status[]=archived"
     Then the response status code should be 200

@@ -101,6 +101,26 @@ Feature: /ticket_filters endpoint
     And the JSON node "data[0].id" should be equal to "{t1}"
     And the JSON node "data[1].id" should be equal to "{t3}"
 
+  Scenario: I retrieve list of filter's tickets with page and count
+    Given only the following LegacyTicketFilter records exist:
+      | #  | Title    | Is Enabled | Is Global | Sys Name | Display Order | Terms                                                                                                                                                                        |
+      | f1 | Filter 1 | 1          | 1         | agent    | 1             | [{"type":"agent","op":"is","options":{"agent":"-1"}},{"type":"status","op":"is","options":{"status":"awaiting_agent"}},{"type":"is_hold","op":"is","options":{"is_hold":0}}] |
+    And only the following Ticket records exist:
+      | #  | Subject  | Status         |
+      | t1 | Ticket 1 | awaiting_agent |
+      | t2 | Ticket 2 | awaiting_user  |
+      | t3 | Ticket 3 | awaiting_agent |
+      | t4 | Ticket 4 | awaiting_agent |
+      | t5 | Ticket 5 | awaiting_agent |
+    And I re-fill ticket search table
+
+    When I send a GET request to "/api/v2/ticket_filters/{f1}/tickets?page=2&count=2"
+    Then the response status code should be 200
+    And the response should be in JSON
+    And the JSON node "data" should have 2 elements
+    And the JSON node "data[0].id" should be equal to "{t4}"
+    And the JSON node "data[1].id" should be equal to "{t5}"
+
   Scenario: I check filter permissions
     Given "agent@deskpro.dev" agent exists
     And only the following AgentTeam records exist:
