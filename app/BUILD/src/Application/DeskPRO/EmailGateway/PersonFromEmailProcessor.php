@@ -260,9 +260,21 @@ class PersonFromEmailProcessor
             $brand = $this->getAccountBrands($account)->first();
         }
 
+        $db = App::getDb();
+        $db->beginTransaction();
+        try {
+            $db->insert('person_to_brand', [
+                'person_id' => $person->getId(),
+                'brand_id'  => $brand->getId(),
+            ]);
+            $db->commit();
+        } catch (\Exception $e) {
+            // We expect/handle a duplicate key error here
+            $db->rollback(false);
+        }
+
         $person->addBrand($brand);
         App::$container->getEm()->persist($person);
-        App::$container->getEm()->flush($person);
 
         return $brand;
     }

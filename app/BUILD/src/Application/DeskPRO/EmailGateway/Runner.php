@@ -738,8 +738,9 @@ BODY;
         $doCheckNextBatch = true;
 
         while (true) {
-            // Make sure any records are flusehd
-            App::getOrm()->flush();
+            // All records should be flushed
+            // Make sure there are no orphaned records
+            App::getOrm()->clear();
 
             // Protection against nested transactions.
             // This should not be needed, but its a safety against unclosed transactions.

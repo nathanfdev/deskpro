@@ -89,7 +89,6 @@ class UserRuleProcessor
 
             if ($change) {
                 $this->em->persist($person);
-                $this->em->flush();
             }
         }
     }
