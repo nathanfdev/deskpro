@@ -62,50 +62,48 @@ class AgentLegacyApp {
     DeskproAppStore.onAgentLegacyAppRun(store, window);
 
     this.store.dispatch(preloadData()).then(() => {
-      window.$(document).ready(() => this.start());
+      window.DP_PAGE_PART_HAS_INIT('bootstrapActions');
     });
+
+    window.DP_ADD_PAGE_INIT_FN(() => this.start());
   }
 
   start() {
     window.DP_DEV_MODE = __DEV__; // eslint-disable-line no-undef
-    if (typeof window.DeskPRO_Window === 'undefined'
-      || !this.store.getState().Application.bootstrap.get('isBootstrapped')) {
-      setTimeout(this.start.bind(this), 100);
-    } else {
-      this.renderPiece(AgentTopBarContainer, AgentTopBarContainer.getType());
-      this.renderPiece(AgentList, AgentList.getType());
-      this.renderPiece(SideBarContainer, SideBarContainer.getType());
-      this.renderPiece(LeftDrawerContainer, LeftDrawerContainer.getType());
-      this.renderPiece(AgentOnboardingContainer, AgentOnboardingContainer.getType());
-      this.renderPiece(NotificationServiceContainer, NotificationServiceContainer.getType());
-      if (window.DP_HAS_NEW_FILTERS) {
-        this.renderPiece(AgentFiltersContainer, AgentFiltersContainer.getType());
-      }
-      window.$('#dp_loading').remove();
 
-      window.LegacyStoreProvider = new LegacyStoreProvider();
-      window.LegacyStoreProvider.init(this.store);
-
-      const messageBroker = window.DeskPRO_Window.getMessageBroker();
-      messageBroker.addMessageListener('agent.online-agents', (event) => {
-        this.store.dispatch(setOnlineAgents(event.online_agents));
-      });
-      messageBroker.addMessageListener('agent.online-agents-userchat', (event) => {
-        this.store.dispatch(setOnlineUserChatAgents(event.online_agents));
-      });
-
-      if (window.DP_HAS_VOICE) {
-        const state = this.store.getState();
-        const voiceEnabled = isVoiceEnabledSelector(state);
-
-        if (voiceEnabled) {
-          this.store.dispatch(voiceBootstrap());
-        }
-      }
-
-     // let the app store know we finished the start sequence so
-      DeskproAppStore.onAgentLegacyAppReady(this.store, window, api, messageBroker);
+    this.renderPiece(AgentTopBarContainer, AgentTopBarContainer.getType());
+    this.renderPiece(AgentList, AgentList.getType());
+    this.renderPiece(SideBarContainer, SideBarContainer.getType());
+    this.renderPiece(LeftDrawerContainer, LeftDrawerContainer.getType());
+    this.renderPiece(AgentOnboardingContainer, AgentOnboardingContainer.getType());
+    this.renderPiece(NotificationServiceContainer, NotificationServiceContainer.getType());
+    if (window.DP_HAS_NEW_FILTERS) {
+      this.renderPiece(AgentFiltersContainer, AgentFiltersContainer.getType());
     }
+    window.$('#dp_loading').remove();
+
+    window.LegacyStoreProvider = new LegacyStoreProvider();
+    window.LegacyStoreProvider.init(this.store);
+
+    const messageBroker = window.DeskPRO_Window.getMessageBroker();
+    messageBroker.addMessageListener('agent.online-agents', (event) => {
+      this.store.dispatch(setOnlineAgents(event.online_agents));
+    });
+    messageBroker.addMessageListener('agent.online-agents-userchat', (event) => {
+      this.store.dispatch(setOnlineUserChatAgents(event.online_agents));
+    });
+
+    if (window.DP_HAS_VOICE) {
+      const state = this.store.getState();
+      const voiceEnabled = isVoiceEnabledSelector(state);
+
+      if (voiceEnabled) {
+        this.store.dispatch(voiceBootstrap());
+      }
+    }
+
+   // let the app store know we finished the start sequence so
+    DeskproAppStore.onAgentLegacyAppReady(this.store, window, api, messageBroker);
   }
 
   renderPiece(piece, piecePlace) {

@@ -84,7 +84,7 @@ DeskPRO.Agent.RecentTabs = new Orb.Class({
 			context: this,
 			success: function(data) {
 				// Any tabs opened before the last list was re-loaded
-				var readd = false;
+				var readd = false, self = this;
 				if (this.recent.length) {
 					readd = this.recent;
 				}
@@ -94,17 +94,15 @@ DeskPRO.Agent.RecentTabs = new Orb.Class({
 				this.recent = [];
 
 				// Regen tab IDs lookup map
-				Array.each(data, function(item) {
-					this.add(item[0], item[1], item[2], item[3], item[4]);
-				}, this);
+				if (data) {
+					this.addBatch(data);
+				}
 
 				// Reset the proper pending list (dont re-sync the ones we just loaded)
 				this.recentPendingSync = pending;
 
 				if (readd) {
-					Array.each(readd, function(item) {
-						this.add(item[0], item[1], item[2], item[3], item[4]);
-					}, this);
+          this.addBatch(readd);
 				}
 			}
 		});
@@ -117,7 +115,6 @@ DeskPRO.Agent.RecentTabs = new Orb.Class({
 	close: function() {
 		// Backwards compat
 	},
-
 
 	/**
 	 * Add a new item to the list
@@ -170,6 +167,67 @@ DeskPRO.Agent.RecentTabs = new Orb.Class({
 		this.length = this.recent.length;
 	},
 
+	addBatch: function(items) {
+    $('#recent_tabs_list_li_none').remove();
+    var nowTs = parseInt((new Date()).getTime() / 1000);
+
+    var self = this;
+    var rows = [];
+    var removeIds = [];
+
+    items.forEach(function(item) {
+    	var type = item[0], id = item[1], title = item[2], url = item[3], ts = item[4] || nowTs;
+      var idString = type + '-' + id, idx = null;
+
+      // If we already have the tab, remove it so it will be
+      // re-added to the front of the array
+      if (self.recentTabIds[idString]) {
+        delete self.recentTabIds[idString];
+        self.recent.forEach(function(item, i) {
+          if ((item[0] + '-' + item[1]) == idString) {
+            idx = i;
+            return false;
+          }
+        });
+
+        if (idx !== null) {
+          self.recent.splice(idx, 1);
+          removeIds.push(idString);
+        }
+      }
+
+      self.recent.unshift([type, id, title, url, ts]);
+      self.recentTabIds[idString] = true;
+
+      var itm = [type, id, title, url, ts];
+      self.recentPendingSync.unshift(itm);
+      rows.push(self.renderRow(itm, true));
+		});
+
+    var updateList = function() {
+      if (rows.length) {
+        self.list.prepend(rows);
+			}
+			if (removeIds) {
+        removeIds.forEach(function(id) {
+					self.list.find('li.' + id).remove();
+				});
+			}
+		};
+
+    while (this.recent.length > 350) {
+      var last = this.recent.pop();
+      removeIds.push(last[0] + '-' + last[1]);
+    }
+
+    if (rows.length || removeIds.length) {
+			if (window.requestAnimationFrame) {
+				window.requestAnimationFrame(updateList);
+			} else {
+        updateList();
+			}
+		}
+	},
 
 	/**
 	 * Render an item onto the beginning of the list
@@ -177,28 +235,24 @@ DeskPRO.Agent.RecentTabs = new Orb.Class({
 	 * @param {Array} item
 	 * @returns {jQuery}
 	 */
-	renderRow: function(item) {
-		var row = $(DeskPRO_Window.util.getPlainTpl('#recent_tabs_list_tpl'));
+	renderRow: function(item, dontAdd) {
 		var stringMatch = item[2].toLowerCase();
 
-		row.addClass(item[0] + '-' + item[1] + ' ' + item[0]);
+    var d = new Date(item[4]*1000);
+
+		var rowHtml = '<li>\n' +
+      '<a data-route="page:"'+item[3]+' route-notabreload="1">\n' +
+      '  <div class="title">\n' +
+      '    <i class="icon-envelope dp-icon-placeholder"></i>\n' +
+      '    <strong>'+item[1]+'</strong>\n' +
+      '    <span>'+Orb.escapeHtml(item[2]+'')+'</span>\n' +
+      '  </div>\n' +
+      '</a>\n' +
+      '</li>';
+
+		var row = $(rowHtml);
+    row.addClass(item[0] + '-' + item[1] + ' ' + item[0]);
 		row.data('string-match', stringMatch);
-		row.find('a')
-			.data('route', 'page:'+item[3])
-			.attr('data-route', 'page:'+item[3])
-			.data('route-notabreload', '1')
-			.attr('data-route-notabreload', '1')
-			.find('span').text(item[2]);
-		row.find('a').find('strong').text(item[1]);
-
-		var d = new Date(item[4]*1000);
-		row.find('time').attr('datetime', d.toISOString());
-
-		Orb.Util.TimeAgo.refreshElements(row.find('time').toArray());
-
-		if (this.idW) {
-			row.find('strong').css('min-width', this.idW);
-		}
 
 		var filterVal = $.trim($('#recent_tabs_list_filter').val());
 		if (!filterVal || stringMatch.indexOf(filterVal.toLowerCase()) !== -1) {
@@ -207,13 +261,9 @@ DeskPRO.Agent.RecentTabs = new Orb.Class({
 			row.hide();
 		}
 
-		this.list.prepend(row);
-
-		var w = row.find('strong').width();
-		if (w > this.idW) {
-			this.idW = w;
-			this.list.find('strong').css('min-width', w);
-		}
+		if (!dontAdd) {
+      this.list.prepend(row);
+    }
 
 		return row;
 	},

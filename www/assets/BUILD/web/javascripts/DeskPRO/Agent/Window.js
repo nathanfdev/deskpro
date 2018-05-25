@@ -16,6 +16,14 @@ DeskPRO.Agent.Window = new Orb.Class({
 
 	init: function() {
 
+		this.hasInit = false;
+		this.hasInitBootAction = false;
+
+		this.initParts = {
+			'DeskPRO_Window': false,
+			'bootstrapActions': false
+		};
+
 		this.hashHandling = true;
 		this.onloadStack = [];
 		this.dismissAlertQueue = [];
@@ -981,6 +989,12 @@ DeskPRO.Agent.Window = new Orb.Class({
 		// of tabs from url bar or local history, but
 		// actually clicking stuff will instant
     DeskPRO_Window.TabBar.enableInitOnRender();
+    window.DP_PAGE_PART_HAS_INIT('DeskPRO_Window');
+    window.DP_ADD_PAGE_INIT_FN(function() {
+    	window.setTimeout(function() {
+        self.getSectionDataSendQueued();
+			}, 500);
+		});
 	},
 
 	initScope: function() {
@@ -3032,8 +3046,6 @@ DeskPRO.Agent.Window = new Orb.Class({
 				el.on('click', function() { self.switchToSection(el.attr('id')) });
 			}
 		});
-
-		this.getSectionDataSendQueued();
 	},
 
 	switchToSection: function(section_id, no_load_list) {
@@ -3424,7 +3436,7 @@ DeskPRO.Agent.Window = new Orb.Class({
 		this.loadingSections[section_id] = true;
 
 		// If we're in queued mode, then dont send anything yet
-		if (this._getSectionDataQueued) {
+		if (this._getSectionDataQueued && section_id != 'tickets_section') {
 			this._getSectionDataQueued.push([section_id, callback]);
 			return;
 		}
@@ -3486,7 +3498,13 @@ DeskPRO.Agent.Window = new Orb.Class({
 					return;
 				}
 
-				callback(data);
+        if (window.requestAnimationFrame) {
+          window.requestAnimationFrame(function() {
+            callback(data);
+          });
+        } else {
+          callback(data);
+        }
 			},
 			tryCount : 0,
 		    retryLimit: 3,
@@ -3558,7 +3576,13 @@ DeskPRO.Agent.Window = new Orb.Class({
 						self.getSectionData(sectionId);
 					}
 					if (callback_map[sectionId]) {
-						callback_map[sectionId](sectionData);
+						if (window.requestAnimationFrame) {
+              window.requestAnimationFrame(function() {
+                callback_map[sectionId](sectionData);
+							});
+						} else {
+              callback_map[sectionId](sectionData);
+            }
 					}
 				});
 			}

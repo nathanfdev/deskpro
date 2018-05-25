@@ -20,19 +20,28 @@ DeskPRO.Agent.PageFragment.Basic = new Orb.Class({
 		if (!this.IS_ACTIVE) {
 			return;
 		}
-		if (this.wrapper) {
-			if (!this.scrollHandlers) {
-				this.scrollHandlers = this.wrapper.find('div.with-scroll-handler');
-			}
-			for (x = 0; x < this.scrollHandlers.length; x++) {
-				var sh = $(this.scrollHandlers[x]).data('scroll_handler');
-				if (sh && sh.updateSize) {
-					sh.updateSize();
-				}
-			};
-		}
+		var runner = (function() {
+      if (this.wrapper) {
+        if (!this.scrollHandlers) {
+          this.scrollHandlers = this.wrapper.find('div.with-scroll-handler');
+        }
+        for (x = 0; x < this.scrollHandlers.length; x++) {
+          var sh = $(this.scrollHandlers[x]).data('scroll_handler');
+          if (sh && sh.updateSize) {
+            sh.updateSize();
+          }
+        }
+        ;
+      }
 
-		this.fireEvent('updateUi');
+      this.fireEvent('updateUi');
+    }).bind(this);
+
+		if (window.requestAnimationFrame) {
+      window.requestAnimationFrame(runner);
+		} else {
+			runner();
+		}
 	},
 
 	initialize: function(html) {
@@ -94,7 +103,13 @@ DeskPRO.Agent.PageFragment.Basic = new Orb.Class({
 			}
 
 			this.initPage(wrapper);
-			this.initApps();
+			if (window.requestAnimationFrame) {
+        window.requestAnimationFrame(function() {
+          self.initApps();
+				});
+			} else {
+        this.initApps();
+			}
 
 			DeskPRO_Window.TabBar.rescanTitles();
 
