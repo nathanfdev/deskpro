@@ -136,7 +136,7 @@ class Blob extends \Application\DeskPRO\Domain\DomainObject
      *
      * @var string
      */
-    protected $content_type = null;
+    protected $content_type = '';
 
     /**
      * @var string
@@ -494,6 +494,11 @@ class Blob extends \Application\DeskPRO\Domain\DomainObject
      */
     public function setContentType($contentType)
     {
+        // fallback if no content type
+        if (!$contentType) {
+            $contentType = 'application/octet-stream';
+        }
+
         $this->setModelField('content_type', $contentType);
 
         return $this;
