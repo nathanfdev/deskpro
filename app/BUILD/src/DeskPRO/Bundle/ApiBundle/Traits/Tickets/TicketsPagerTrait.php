@@ -30,7 +30,7 @@ trait TicketsPagerTrait
 
     /**
      * @param int   $total
-     * @param array $ids
+     * @param array $ids         - ids must be already for concrete page (processed by $currentPage and $maxPerPage)
      * @param int   $currentPage
      * @param int   $maxPerPage
      *
@@ -38,6 +38,7 @@ trait TicketsPagerTrait
      */
     public function getTicketsPager($total, array $ids, $currentPage, $maxPerPage)
     {
+        // $ids must be already for concrete page (processed by $currentPage and $maxPerPage)
         $tickets = $this->getTicketsByIdsQuery($ids)->getQuery()->getResult();
         $pager   = new Pagerfanta(new FixedAdapter($total, $tickets));
 
