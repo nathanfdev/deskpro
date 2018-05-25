@@ -409,6 +409,23 @@ class ChatController extends AbstractApiController
     }
 
     /**
+     * @Rest\Post("/{id}/find_agent")
+     * @ParamConverter(converter="portal_api_chat")
+     *
+     * @param ChatConversation $conversation
+     *
+     * @return View
+     */
+    public function findAnotherAgentAction(ChatConversation $conversation)
+    {
+        if (!$conversation->getAgent()) {
+            $this->dispatch(UserChatEvent::STARTED, new UserChatEvent($conversation));
+        }
+
+        return View::create();
+    }
+
+    /**
      * @Rest\Post("/{id}/feedback")
      * @ParamConverter(converter="portal_api_chat")
      *

@@ -7,7 +7,6 @@
 namespace Application\DeskPRO\Chat\UserChat;
 
 use Application\DeskPRO\App;
-use Application\DeskPRO\CustomFields\ChatFieldManager;
 use Application\DeskPRO\DBAL\Connection;
 use Application\DeskPRO\Entity\ChatConversation;
 use Application\DeskPRO\Entity\ChatMessage;
@@ -19,8 +18,6 @@ use Application\DeskPRO\Translate\Translate;
 use DeskPRO\Bundle\AppBundle\Notification\Event\LegacySystemEvent;
 use DeskPRO\Bundle\AppBundle\Notification\Event\UserChat\UserChatEvent;
 use Doctrine\ORM\EntityManager;
-use Orb\Util\Arrays;
-use Orb\Validator\StringEmail;
 use Symfony\Component\EventDispatcher\EventDispatcherInterface;
 
 /**
@@ -95,183 +92,6 @@ class UserChatManager
     public function setAutoAssigner(AutoAssigner $assigner)
     {
         $this->auto_assigner = $assigner;
-    }
-
-    /**
-     * Start a new chat conversation, or if its within time and still open, resume the previous.
-     *
-     * @param array $chat_options
-     * @param bool  $is_window_mode
-     * @param bool  $error_code
-     *
-     * @throws \Exception
-     *
-     * @return ChatConversation|null
-     */
-    public function startChat(array $chat_options, $is_window_mode = false, &$error_code = false)
-    {
-        $convo = $this->em->getRepository(ChatConversation::class)->getLatestChatForSession($this->session);
-
-        $is_new_convo = false;
-        $new_person   = false;
-        /** @var ChatFieldManager $field_manager */
-        $field_manager = App::getSystemService('chat_fields_manager');
-        $chat_fields   = @$chat_options['chat_fields'] ?: [];
-
-        if (!$convo) {
-            $convo          = new ChatConversation();
-            $convo->session = $this->session;
-            if ($this->person) {
-                $convo->person = $this->person;
-            }
-
-            if (!empty($chat_options['department_id'])) {
-                $dep = $this->em->getRepository('DeskPRO:Department')->find($chat_options['department_id']);
-                if ($dep) {
-                    $convo->department = $dep;
-                }
-            }
-
-            if (isset($chat_options['chat_fields'])) {
-                if ($errors = $this->validateCustomFields($chat_fields)) {
-                    $error_code = 'invalid_custom_fields';
-
-                    return;
-                }
-            }
-
-            // Spam trap
-            $traps = [@$chat_options['full_name'], @$chat_options['email_address']];
-            $traps = Arrays::func($traps, 'trim');
-            $traps = Arrays::removeEmptyString($traps);
-            if (count($traps) || @$chat_options['email_address2'] != 'yes') {
-                $error_code = 'person_disabled';
-
-                return;
-            }
-
-            $chat_options['name']  = empty($chat_options['name']) ? '' : $chat_options['name'];
-            $chat_options['email'] = empty($chat_options['email']) ? '' : $chat_options['email'];
-
-            // Mixed up name/email boxes
-            if ($chat_options['name'] && $chat_options['email'] && StringEmail::isValueValid($chat_options['name']) && !StringEmail::isValueValid($chat_options['email'])) {
-                $tmp                   = $chat_options['email'];
-                $chat_options['email'] = $chat_options['name'];
-                $chat_options['name']  = $tmp;
-                // Put email into name box
-            } elseif ($chat_options['name'] && !$chat_options['email'] && StringEmail::isValueValid($chat_options['name'])) {
-                $chat_options['email'] = $chat_options['name'];
-                $chat_options['name']  = '';
-            }
-
-            if (!empty($chat_options['name'])) {
-                $convo->person_name = $chat_options['name'];
-            }
-            if (!empty($chat_options['email']) && \Orb\Validator\StringEmail::isValueValid($chat_options['email']) && !App::$container->getEmailAccountManager()->findAccountForEmailAddress($chat_options['email'])) {
-                $convo->person_email = $chat_options['email'];
-
-                $related_person = $this->em->getRepository('DeskPRO:Person')->findOneByEmail($chat_options['email']);
-                if ($related_person) {
-                    $convo->person = $related_person;
-                } else {
-                    $new_person = Person::newContactPerson();
-                    if ($convo->person_name) {
-                        $new_person->name = $convo->person_name;
-                    }
-                    $new_person->setEmail($convo->person_email);
-                    $convo->person        = $new_person;
-                    $new_person->language = $this->tr->getLanguage();
-                }
-            }
-            $is_new_convo = true;
-
-            if ($convo->person && $convo->person->is_disabled) {
-                $error_code = 'person_disabled';
-
-                return;
-            }
-        }
-
-        if ($is_window_mode) {
-            $convo['is_window'] = true;
-        }
-
-        $this->em->beginTransaction();
-
-        try {
-            if ($new_person) {
-                $this->em->persist($new_person);
-                $this->em->flush();
-            }
-
-            $this->em->persist($convo);
-            $this->em->flush();
-
-            if (isset($chat_options['chat_fields'])) {
-                $field_manager->saveFormToObject($chat_fields, $convo);
-            }
-
-            if ($is_new_convo) {
-                $this->addSystemMessage($convo, 'message_started', [], [
-                    'user_hidden' => true,
-                    'is_html'     => false,
-                ]);
-                if (isset($_GET['parent_url']) && is_string($_GET['parent_url'])) {
-                    $this->addUserTrack($convo, $_GET['parent_url']);
-                } else {
-                    $url = '';
-                    if ($k = strpos($url, 'parent_url=')) {
-                        $str  = substr($url, $k);
-                        $vars = null;
-                        @parse_str($str, $vars);
-
-                        if (!empty($vars['parent_url']) && is_string($vars['parent_url'])) {
-                            $url = $vars['parent_url'];
-                        }
-                    }
-
-                    $this->addUserTrack($convo, $url);
-                }
-            }
-
-            if (!$convo->agent && $this->auto_assigner) {
-                $assign_agent = $this->auto_assigner->getAgent($convo);
-                if ($assign_agent) {
-                    $this->assignAgent($convo, $assign_agent);
-                }
-            }
-
-            $this->em->flush();
-
-            if (isset($chat_options['content']) && $chat_options['content']) {
-                $this->addUserMessage($convo, $chat_options['content']);
-                $newchat_cm_data['initial_message'] = $chat_options['content'];
-
-                $this->em->flush();
-            }
-
-            if ($is_new_convo) {
-                $newchat_cm_data = $convo->getInfo();
-
-                $this->eventDispatcher->dispatch(
-                    UserChatEvent::EVENT_NAME,
-                    new UserChatEvent('chat.new', $newchat_cm_data)
-                );
-            }
-
-            if ($convo->person) {
-                $action = new \Application\DeskPRO\People\ActivityLogger\ActionType\NewChat($convo->person, $convo);
-                $this->activityLogger->saveAction($action);
-            }
-
-            $this->em->flush();
-            $this->em->commit();
-        } catch (\Exception $e) {
-            $this->em->rollback();
-            throw $e;
-        }
-
-        return $convo;
     }
 
     public function validateCustomFields($data)

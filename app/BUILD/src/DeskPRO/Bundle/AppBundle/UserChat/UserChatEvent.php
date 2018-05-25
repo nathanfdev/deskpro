@@ -29,6 +29,7 @@ class UserChatEvent extends Event
     const ACK_MESSAGES   = 'user_chat.ack_messages';
     const USER_TYPING    = 'user_chat.user_typing';
     const POLLING        = 'user_chat.polling';
+    const FIND_AGENT     = 'user_chat.find_agent';
 
     /**
      * @var ChatConversation
