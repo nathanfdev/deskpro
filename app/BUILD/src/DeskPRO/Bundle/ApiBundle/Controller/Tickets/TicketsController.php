@@ -243,6 +243,7 @@ class TicketsController extends AbstractTicketsController
 
             // default to searching non-hidden
             if (!isset($params['status']) && !isset($params['not_status'])) {
+                // please note that we use this status to check if we need a limit below
                 $params['not_status'] = 'hidden';
             }
 
@@ -403,9 +404,9 @@ class TicketsController extends AbstractTicketsController
 
             $parser   = $this->container->get('ticketfilters.queryparser');
             $searcher = $ticketFilters->getArchiveSearcher();
-            $qb       = $searcher
-                ->getIdsQueryBuilder($parser->parseQuery($searchQuery), $context, $searchParams)
-                ->setMaxResults(1000);
+            $qb       = $searcher->getIdsQueryBuilder($parser->parseQuery($searchQuery), $context, $searchParams);
+
+            $this->addLimitInCaseOfNoCriteria($qb, $searchParams, $params);
 
             $ids         = $qb->execute()->fetchAll(\PDO::FETCH_COLUMN);
             $total       = count($ids);

@@ -4,6 +4,8 @@ namespace DeskPRO\Bundle\ApiBundle\Traits\Tickets;
 
 use Application\DeskPRO\Entity\Ticket;
 use DeskPRO\Bundle\AppBundle\Serializer\OffsetList;
+use DeskPRO\Bundle\AppBundle\TicketFilters\SqlBuilder\SqlBuilder;
+use DeskPRO\Bundle\AppBundle\TicketFilters\TicketSearchParams;
 use Doctrine\ORM\EntityManager;
 use Pagerfanta\Adapter\FixedAdapter;
 use Pagerfanta\Pagerfanta;
@@ -64,5 +66,31 @@ trait TicketsPagerTrait
         ;
 
         return $qb;
+    }
+
+    /**
+     * Don't add limit if  using no criteria  and ordering by id
+     * To be able to export all tickets.
+     *
+     * @param QueryBuilder       $qb
+     * @param TicketSearchParams $searchParams
+     * @param array              $params
+     *
+     * @return type
+     */
+    private function addLimitInCaseOfNoCriteria(SqlBuilder $qb, TicketSearchParams $searchParams, array $params)
+    {
+        if (
+            $searchParams->hasOrderFields()
+            && count($searchParams->getOrderFields()) == 1
+            && $searchParams->getOrderFields()[0][0] === TicketSearchParams::ORDER_ID
+            && !$searchParams->hasGroupFields()
+            && !$searchParams->hasSubFilterFields()
+            && $params === ['not_status' => 'hidden'] // this is the default status during the search
+        ) {
+            return;
+        }
+
+        $qb->setMaxResults(1000);
     }
 }
