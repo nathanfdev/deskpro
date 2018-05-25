@@ -131,7 +131,7 @@ define ['DeskPRO/Util/Arrays', 'DeskPRO/Util/Util'], (Arrays, Util) ->
       if(@agents)
         d.resolve(@agents)
       else
-        @Api2.sendGet('/agents').then( (res) ->
+        @Api2.sendGet('/agents/extended').then( (res) ->
           agents = res.data.data
           agents.map((agent) ->
             agent.avatar.url = (agent.avatar.url_pattern || agent.avatar.default_url_pattern).replace('{{IMG_SIZE}}', 20)

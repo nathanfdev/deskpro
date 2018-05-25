@@ -47,6 +47,10 @@ abstract class AbstractReportDashboardVoter implements PermissionGroupEntityVote
      */
     protected function canEditDashboard(ReportDashboard $entity, Person $user)
     {
+        if ($entity->getPerson() === $user || $user->isAdmin() || $user->can_reports) {
+            return true;
+        }
+
         if (!$this->checkViewPermission($entity, $user)) {
             return false;
         }
@@ -72,7 +76,7 @@ abstract class AbstractReportDashboardVoter implements PermissionGroupEntityVote
     {
         $result = false;
 
-        if ($dashboard->getPerson() === $user) {
+        if ($dashboard->getPerson() === $user || $user->isAdmin() || $user->can_reports) {
             $result = true;
         }
 

@@ -15,7 +15,9 @@ use DeskPRO\Bundle\AppBundle\Content\AvatarResolver;
 use DeskPRO\Bundle\AppBundle\DataService\AgentDataService;
 use DeskPRO\Bundle\AppBundle\Entity\AgentData;
 use DeskPRO\Bundle\AppBundle\Serializer\Deferred\CallbackDeferredProperty;
+use DeskPRO\Bundle\AppBundle\Serializer\Model\Person\BasePerson;
 use DeskPRO\Bundle\AppBundle\Serializer\Model\Person\BasePerson as BasePersonModel;
+use DeskPRO\Bundle\AppBundle\Serializer\Model\Person\ExtendedPerson;
 use DeskPRO\Bundle\AppBundle\Serializer\Model\Person\Person as PersonModel;
 use DeskPRO\Bundle\AppBundle\Serializer\Model\Person\PersonProfile as PersonProfileModel;
 use DeskPRO\Bundle\AppBundle\Serializer\Model\Person\WidgetPerson;
@@ -148,6 +150,8 @@ class PersonHandler extends AbstractEntityHandler
                 return $this->createWidgetPerson($entity);
             case BasePersonModel::class:
                 return $this->createBasePerson($entity);
+            case ExtendedPerson::class:
+                return $this->createExtendedPerson($entity);
             default:
                 return $this->createPerson($entity);
         }
@@ -161,9 +165,32 @@ class PersonHandler extends AbstractEntityHandler
     private function createBasePerson(Person $entity)
     {
         $model = new BasePersonModel($entity, $this->avatarResolver->getAvatarModel($entity));
-        $model->setOnline($this->agentDataService->isAgentOnline($entity));
 
+        return $this->fillInCommonFields($model, $entity);
+    }
+
+    /**
+     * @param Person $entity
+     *
+     * @return BasePersonModel
+     */
+    private function createExtendedPerson(Person $entity)
+    {
+        $model = new ExtendedPerson($entity, $this->avatarResolver->getAvatarModel($entity));
+
+        return $this->fillInCommonFields($model, $entity);
+    }
+
+    /**
+     * @param BasePerson $model
+     * @param Person     $entity
+     *
+     * @return BasePerson|ExtendedPerson|PersonModel
+     */
+    private function fillInCommonFields(BasePerson $model, Person $entity)
+    {
         $this->personIds[$entity->getId()] = true;
+        $model->setOnline($this->agentDataService->isAgentOnline($entity));
         $model->setLastSeen(new CallbackDeferredProperty([$this, 'getLastSeen'], [$entity]));
         $model->setAgentData(new CallbackDeferredProperty([$this, 'getAgentData'], [$entity]));
         $model->setOnlineForChat(new CallbackDeferredProperty([$this, 'getOnlineForChat'], [$entity]));
@@ -181,13 +208,14 @@ class PersonHandler extends AbstractEntityHandler
         $this->personIds[$entity->getId()] = true;
 
         $model = new PersonModel($entity, $this->avatarResolver->getAvatarModel($entity));
-        $model
+        $this
+            ->fillInCommonFields($model, $entity)
             ->setOnline($this->agentDataService->isAgentOnline($entity))
             ->setLastSeen(new CallbackDeferredProperty([$this, 'getLastSeen'], [$entity]))
             ->setOnlineForChat(new CallbackDeferredProperty([$this, 'getOnlineForChat'], [$entity]))
+            ->setAgentData(new CallbackDeferredProperty([$this, 'getAgentData'], [$entity]))
             ->setCustomData(new CallbackDeferredProperty([$this, 'getCustomData'], [$entity]))
             ->setContactData(new CallbackDeferredProperty([$this, 'getContactData'], [$entity]))
-            ->setAgentData(new CallbackDeferredProperty([$this, 'getAgentData'], [$entity]))
             ->setPhoneNumbers(new CallbackDeferredProperty([$this, 'getPhoneNumbers'], [$entity]))
             ->setAgentTeams(new CallbackDeferredProperty([$this, 'getAgentTeams'], [$entity]))
             ->setPrimaryTeam(new CallbackDeferredProperty([$this, 'getPrimaryTeam'], [$entity]))

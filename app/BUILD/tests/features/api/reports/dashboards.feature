@@ -37,7 +37,7 @@ Feature: /dashboards endpoint
     Then the JSON node "data.id" should be equal to "{d1}"
     And the JSON node "data.title" should be equal to "Dashboard 1"
     And the JSON node "data.is_default" should be equal to 1
-    And the JSON node "data.permissions" should have 2 elements
+    And the JSON node "data.permissions" should have 3 elements
     And the JSON node "data.permissions[0].id" should not exist
     And the JSON node "data.permissions[0].person" should be equal to "{agent}"
     And the JSON node "data.permissions[0].name" should be equal to "view"
@@ -56,7 +56,7 @@ Feature: /dashboards endpoint
     Then the response status code should be 201
     And the JSON node "data.title" should be equal to "New Dashboard"
     And the JSON node "data.is_default" should be equal to 0
-    And the JSON node "data.permissions" should have 1 element
+    And the JSON node "data.permissions" should have 3 elements
     And the JSON node "data.permissions[0].person" should be equal to "{agent}"
     And the JSON node "data.permissions[0].name" should be equal to "full"
 
@@ -80,7 +80,7 @@ Feature: /dashboards endpoint
     Then the response status code should be 201
     And the JSON node "data.title" should be equal to "New Dashboard"
     And the JSON node "data.is_default" should be equal to 0
-    And the JSON node "data.permissions" should have 2 elements
+    And the JSON node "data.permissions" should have 3 elements
     And the JSON node "data.permissions[0].person" should be equal to "{agent}"
     And the JSON node "data.permissions[0].name" should be equal to "full"
     And the JSON node "data.permissions[1].person" should be equal to "{agent_2@deskpro.dev}"
@@ -139,7 +139,7 @@ Feature: /dashboards endpoint
     When I send a GET request to "/api/v2/dashboards/{d2}"
     Then the JSON node "data.title" should be equal to "Updated Dashboard"
     And the JSON node "data.is_default" should be equal to 0
-    And the JSON node "data.permissions" should have 2 elements
+    And the JSON node "data.permissions" should have 3 elements
     And the JSON node "data.permissions[0].person" should be equal to "{agent_2@deskpro.dev}"
     And the JSON node "data.permissions[0].name" should be equal to "full"
     And the JSON node "data.permissions[1].person" should be equal to "{agent}"
@@ -229,7 +229,7 @@ Feature: /dashboards endpoint
 
     Then the JSON node "data.title" should be equal to "Dashboard 1 (copy)"
     And the JSON node "data.is_default" should be equal to 0
-    And the JSON node "data.permissions" should have 2 element
+    And the JSON node "data.permissions" should have 3 element
     And the JSON node "data.permissions[0].name" should be equal to "view"
     And the JSON node "data.permissions[0].person" should be equal to "{agent}"
 
