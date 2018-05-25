@@ -56,7 +56,7 @@ use Symfony\Component\HttpFoundation\Response;
  *     }
  * )
  * @ApiDoc(
- *     target="postAction",
+ *     target="postAction,putAction",
  *     input={
  *      "class"="DeskPRO\Bundle\AppBundle\Form\Type\UserChat\ChatConversationType",
  *      "options"={
@@ -67,7 +67,6 @@ use Symfony\Component\HttpFoundation\Response;
  */
 class UserChatsController extends CrudController
 {
-    public static $exposeOnly  = ['get', 'post', 'list', 'count', 'delete'];
     public static $entity      = ChatConversation::class;
     public static $type        = ChatConversationType::class;
     public static $sortOptions = [
