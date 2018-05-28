@@ -569,6 +569,17 @@ DeskPRO.Agent.RteEditor = {
         return true;
       }
 
+      // process all pasted PRE tags content
+      // leave only text
+      var allPre = html.match(/<pre(.*?)>([\w\W]*?)<\/pre>/gi);
+      if (allPre !== null) {
+        for (var pre of allPre) {
+          var preParts = pre.match(/<pre(.*?)>([\w\W]*?)<\/pre>/i);
+          preParts[2] = this.cleanupPre(preParts[2]);
+          html = html.replace(pre, '<pre class="dp-pre">' + preParts[2] + '</pre>');
+        }
+      }
+
       // remove comments and php tags
       html = html.replace(/<!--[\s\S]*?-->|<\?(?:php)?[\s\S]*?\?>/gi, '');
 
