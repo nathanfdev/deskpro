@@ -560,11 +560,20 @@ DeskPRO.Agent.RteEditor = {
     var origPasteCleanup = api.pasteClean;
     api.pasteCleanUp = $.proxy(function(html) {
       var parent = this.getParentNode();
+      var current = this.getCurrentNode();
+      var selected = this.getSelectedNode();
 
       // clean up pre
-      if ($(parent).get(0).tagName === 'PRE')
+      if ((parent || current || selected)
+          && (
+            $(parent).get(0).tagName === 'PRE'
+            || $(current).get(0).tagName === 'PRE'
+            || $(selected).get(0).tagName === 'PRE'
+          )
+      )
       {
         html = this.cleanupPre(html);
+        html = this.encodeEntities(html);
         this.pasteCleanUpInsert(html);
         return true;
       }
