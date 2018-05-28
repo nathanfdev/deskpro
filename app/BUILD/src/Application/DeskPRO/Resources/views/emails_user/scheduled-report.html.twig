@@ -1,8 +1,10 @@
 <dp:subject>{{ phrase('agent.email_subjects.scheduled_report_ready', {report_title: reportTitle}) }}</dp:subject>
-{{ phrase('agent.scheduled_report.accost', {person_title: person.getDisplayName()}) }}
+{{ phrase('agent.scheduled_report.accost', {person_title: person_title}) }}
 
 <br /><br />
 
+{{ phrase('agent.scheduled_report.scheduler', {scheduler_name: scheduler.getDisplayName()}) }}
+<br/>
 {{ phrase('agent.scheduled_report.acknowledgment', {frequency: frequency}) }}
 
 <br /><br />
