@@ -453,7 +453,8 @@ export const cancelInvite = createAction(
     const agentId = me.get('id');
     const from    = `client:deskpro${agentId}`;
 
-    return api.sendPut(`DP_API/voice_client/phone_call/${callId}/cancel_invite/${agent.get('id')}`).success(() => {
+    const promise = api.sendPut(`DP_API/voice_client/phone_call/${callId}/cancel_invite/${agent.get('id')}`);
+    promise.success(() => {
       if (type === 'cold') {
         window.Twilio.Device.connect({
           From:    from,
@@ -462,6 +463,8 @@ export const cancelInvite = createAction(
         });
       }
     });
+
+    return promise;
   }
 );
 
