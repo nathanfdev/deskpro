@@ -6,6 +6,7 @@
 
 namespace Application\DeskPRO\WorkerProcess\Job;
 
+use Application\DeskPRO\Entity\Person;
 use Application\DeskPRO\Entity\SavedDashboardReport;
 use Application\DeskPRO\EntityRepository\Person as PersonRepository;
 use DeskPRO\Bundle\AppBundle\Entity\Report\ScheduledReport;
@@ -70,9 +71,10 @@ class ProcessScheduledReports extends AbstractJob
     protected function sendProcessedReport(ScheduledReport $scheduledReport, SavedDashboardReport $savedReport)
     {
         $message = $this->getContainer()->getMailer()->createMessage();
+        $em      = $this->getContainer()->get('doctrine.orm.default_entity_manager');
 
         /** @var PersonRepository $personRepository */
-        $personRepository = $this->getContainer()->get('doctrine.orm.default_entity_manager');
+        $personRepository = $em->getRepository(Person::class);
 
         foreach ($scheduledReport->getSendTo() as $to) {
             $person = $personRepository->findOneByEmail($to);
