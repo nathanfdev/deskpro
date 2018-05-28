@@ -241,7 +241,7 @@ DeskPRO.Agent.RecentTabs = new Orb.Class({
     var d = new Date(item[4]*1000);
 
 		var rowHtml = '<li>\n' +
-      '<a data-route="page:"'+item[3]+' route-notabreload="1">\n' +
+      '<a data-route="page:'+item[3]+'" route-notabreload="1">\n' +
       '  <div class="title">\n' +
       '    <i class="icon-envelope dp-icon-placeholder"></i>\n' +
       '    <strong>'+item[1]+'</strong>\n' +
