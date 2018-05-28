@@ -576,6 +576,7 @@ DeskPRO.Agent.RteEditor = {
         for (var pre of allPre) {
           var preParts = pre.match(/<pre(.*?)>([\w\W]*?)<\/pre>/i);
           preParts[2] = this.cleanupPre(preParts[2]);
+          preParts[2] = this.encodeEntities(preParts[2]);
           html = html.replace(pre, '<pre class="dp-pre">' + preParts[2] + '</pre>');
         }
       }
