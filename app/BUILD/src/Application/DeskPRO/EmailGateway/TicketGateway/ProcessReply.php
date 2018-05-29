@@ -302,6 +302,16 @@ class ProcessReply extends ProcessAbstract
             if ($context == 'user') {
                 $this->setError('empty');
 
+                // Reset some objects so they dont get flushed during next loop
+                App::getOrm()->detach($this->ticket);
+                App::getOrm()->detach($message);
+
+                foreach ($ticket_attach as $a) {
+                    $a->ticket  = null;
+                    $a->message = null;
+                    App::getOrm()->detach($a);
+                }
+
                 return;
             }
         }
