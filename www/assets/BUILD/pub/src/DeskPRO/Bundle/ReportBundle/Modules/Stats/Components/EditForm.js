@@ -318,12 +318,12 @@ export class EditFormComponent extends React.Component {
             <div className="input-wrap">
               <FormSection name="query">
                 <Section hidden={this.state.queryInputMode !== 'form'}>
-                  <reduxForm.Input onChange={() => {}} label="SELECT" name="select" />
-                  <reduxForm.Input onChange={() => {}} label="FROM" name="from" />
-                  <reduxForm.Input onChange={() => {}} label="WHERE" name="where" />
-                  <reduxForm.Input onChange={() => {}} label="ORDER BY" name="order_by" />
-                  <reduxForm.Input onChange={() => {}} label="SPLIT BY" name="split_by" />
-                  <reduxForm.Input onChange={() => {}} label="GROUP BY" name="group_by" />
+                  <reduxForm.Textarea autosize onChange={() => {}} label="SELECT" name="select" />
+                  <reduxForm.Textarea autosize onChange={() => {}} label="FROM" name="from" />
+                  <reduxForm.Textarea autosize onChange={() => {}} label="WHERE" name="where" />
+                  <reduxForm.Textarea autosize onChange={() => {}} label="ORDER BY" name="order_by" />
+                  <reduxForm.Textarea autosize onChange={() => {}} label="SPLIT BY" name="split_by" />
+                  <reduxForm.Textarea autosize onChange={() => {}} label="GROUP BY" name="group_by" />
                   <div
                     className={classNames({
                       'field-hidden': !(select && select.match(/count\s*\(.*?\)/i) && groupBy.length)
@@ -340,7 +340,7 @@ export class EditFormComponent extends React.Component {
                   </div>
                 </Section>
                 <Section hidden={this.state.queryInputMode !== 'dpql'}>
-                  <reduxForm.Textarea name="raw" />
+                  <reduxForm.Textarea name="raw" autosize />
                 </Section>
               </FormSection>
               <div className="vars-wrap">
