@@ -740,7 +740,7 @@ BODY;
         while (true) {
             // All records should be flushed
             // Make sure there are no orphaned records
-            App::getOrm()->clear();
+            App::getOrm()->flush();
 
             // Protection against nested transactions.
             // This should not be needed, but its a safety against unclosed transactions.
