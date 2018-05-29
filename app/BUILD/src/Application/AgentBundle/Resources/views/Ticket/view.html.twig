@@ -610,14 +610,14 @@
                                                 <li class="agent-{{ a.person.id }}" data-agent-id="{{ a.person.id }}">
                                                     <a class="dp-btn dp-btn-small agent-link" data-agent-id="{{ a.person.id }}">
                                                         <span class="text" style="background-image: url({{ a.person.getPictureUrl(15) }})">{{ a.person.display_name }}</span>
-                                                        {% if ticket_perms.modify_followed %}
+                                                        {% if ticket_perms.modify_assign_agent %}
                                                         <span class="remove-row-trigger"> <i class="icon-remove"></i></span>
                                                         {% endif %}
                                                     </a>
                                                 </li>
                                             {% endfor %}
                                         </ul>
-                                        {% if ticket_perms.modify_followed %}
+                                        {% if ticket_perms.modify_assign_agent %}
                                         <div class="new-follower" id="{{ baseId }}_followers_sel_wrap">
                                             <select id="{{ baseId }}_followers_sel" class="dpe_select"
                                                     data-style-type="icons" data-select-icon-size="22">

@@ -2292,7 +2292,7 @@ class TicketController extends AbstractController
                 );
                 $ticket->addPropertyChangedListener($event_listener);
 
-                if ($this->in->getBool('with_set_agent_parts') && $this->person->PermissionsManager->TicketChecker->canModify($ticket, 'followed')) {
+                if ($this->in->getBool('with_set_agent_parts') && $this->person->PermissionsManager->TicketChecker->canModify($ticket, 'assign_agent')) {
                     $set_parts = $this->in->getCleanValueArray('set_agent_part_ids', 'uint', 'discard');
                     $agents    = $this->em->getRepository(Person::class)->getPeopleFromIds($set_parts);
                     $ticket->setAgentParticipants($agents);
