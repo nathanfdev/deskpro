@@ -8,9 +8,12 @@ use Application\DeskPRO\Entity\Session;
 use DeskPRO\Bundle\AppBundle\Entity\HitRecord;
 use DeskPRO\Bundle\AppBundle\Entity\Snippet;
 use DeskPRO\Bundle\AppBundle\Entity\SnippetUseLog;
+use DeskPRO\Bundle\AppBundle\Entity\VoicemailRecord;
 use DeskPRO\Bundle\AppBundle\Entity\VoiceNumber;
 use DeskPRO\Bundle\AppBundle\Entity\VoicePhoneCall;
 use DeskPRO\Bundle\AppBundle\Entity\VoicePhoneCallLog;
+use DeskPRO\Bundle\AppBundle\Entity\VoiceQueue;
+use DeskPRO\Bundle\AppBundle\Entity\VoiceQueueAgent;
 use DeskPRO\Bundle\ReportBundle\Dpql2\DpqlContextStorage;
 use DeskPRO\Bundle\ReportBundle\Dpql2\DpqlException;
 use DeskPRO\Bundle\ReportBundle\Dpql2\Helper\CustomDataHelper;
@@ -305,6 +308,9 @@ class SelectPart
         'voice_numbers'               => VoiceNumber::class,
         'voice_phone_calls'           => VoicePhoneCall::class,
         'voice_phone_call_logs'       => VoicePhoneCallLog::class,
+        'voice_queues'                => VoiceQueue::class,
+        'voice_queue_agents'          => VoiceQueueAgent::class,
+        'voicemail_records'           => VoicemailRecord::class,
     ];
 
     /**
