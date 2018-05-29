@@ -936,7 +936,7 @@ class ServeFileScript extends LowScriptAbstract
         if (!isset($_GET['dl']) && ContentTypes::isInlineContentType($blob['content_type'], $safeInlineContent, $blob['filename'])) {
             header('Content-Disposition: inline; filename="'.addslashes($blob['filename']).'"');
         } else {
-            header('Content-Disposition: attachment; filename="'.addslashes($blob['filename_safe']).'"');
+            header('Content-Disposition: attachment; filename="'.addslashes($blob['filename']).'"');
         }
 
         $d = \DateTime::createFromFormat('Y-m-d H:i:s', $blob['date_created']);
