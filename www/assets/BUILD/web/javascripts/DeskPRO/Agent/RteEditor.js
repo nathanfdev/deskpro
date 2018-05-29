@@ -583,12 +583,13 @@ DeskPRO.Agent.RteEditor = {
       // leave only text
       var allPre = html.match(/<pre(.*?)>([\w\W]*?)<\/pre>/gi);
       if (allPre !== null) {
-        for (var pre of allPre) {
+        $.each(allPre, $.proxy(function(i,pre)
+        {
           var preParts = pre.match(/<pre(.*?)>([\w\W]*?)<\/pre>/i);
           preParts[2] = this.cleanupPre(preParts[2]);
           preParts[2] = this.encodeEntities(preParts[2]);
           html = html.replace(pre, '<pre class="dp-pre">' + preParts[2] + '</pre>');
-        }
+        }, this));
       }
 
       // remove comments and php tags
