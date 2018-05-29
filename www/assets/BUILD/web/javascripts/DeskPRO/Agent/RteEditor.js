@@ -572,6 +572,7 @@ DeskPRO.Agent.RteEditor = {
           )
       )
       {
+        html = html.replace(/<br\s*\/*\s*>/gi, '\n'); // enhance cleanupPre
         html = this.cleanupPre(html);
         html = this.encodeEntities(html);
         this.pasteCleanUpInsert(html);
