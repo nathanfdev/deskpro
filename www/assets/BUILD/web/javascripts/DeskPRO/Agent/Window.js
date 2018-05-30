@@ -3936,7 +3936,7 @@ DeskPRO.Agent.Window = new Orb.Class({
 
       // this is important as I need this keyup handler to run before redactor's own because of new line handling
       ed.data('events').keyup.reverse();
-		});
+    });
   },
 
 	hideAgentNotifyList: function(obj) {
