@@ -5,21 +5,20 @@ namespace DeskPRO\Bundle\AppBundle\Notification\Delivery\Handler;
 use Application\DeskPRO\NewSettings\SettingsResolver;
 use DeskPRO\Bundle\AppBundle\Notification\Message\ActionAlert;
 use DeskPRO\Bundle\AppBundle\Notification\Message\MessageInterface;
-use DeskPRO\Bundle\AppBundle\Notification\Message\Notification;
 use DeskPRO\Bundle\AppBundle\Util\HttpClient;
 use DpSys\LowError\SystemErrorHandler;
 use Firebase\JWT\JWT;
+use GuzzleHttp\Psr7\Response;
 use GuzzleHttp\RequestOptions;
 
 /**
  * Class DeskproDeliveryHandler.
  */
-class DeskproDeliveryHandler extends AbstractDeliveryHandler
+class DeskproDeliveryHandler extends MultiplexDeliverHandler
 {
     const TYPE = 'notification.delivery.handler.deskpro';
 
-    const CHANNEL_ACTION_ALERT = 'action_alert';
-    const CHANNEL_USER_NOTIFY  = 'user_notify';
+    const MAX_MESSAGE_SIZE = 102400; // 100Kb for deskpro notification service by default;
 
     /**
      * @var array
@@ -35,15 +34,21 @@ class DeskproDeliveryHandler extends AbstractDeliveryHandler
     private $secret;
 
     /**
+     * @var int
+     */
+    private $maxMessageSize;
+
+    /**
      * @param SettingsResolver $resolver
      * @param HttpClient       $client
      */
     public function __construct(SettingsResolver $resolver, HttpClient $client)
     {
-        $settingsBag  = $resolver->getGlobalSettings();
-        $this->secret = $settingsBag->get('notification.settings.deskpro_client.secret', '');
-
-        $this->client = $client;
+        $settingsBag          = $resolver->getGlobalSettings();
+        $this->secret         = $settingsBag->get('notification.settings.deskpro_client.secret', '');
+        $this->tries          = $settingsBag->get('notification.settings.deskpro_client.tries', 3);
+        $this->maxMessageSize = $settingsBag->get('notification.settings.deskpro_client.max_message_size', static::MAX_MESSAGE_SIZE);
+        $this->client         = $client;
     }
 
     /**
@@ -76,45 +81,56 @@ class DeskproDeliveryHandler extends AbstractDeliveryHandler
         ];
     }
 
+    /**
+     * {@inheritdoc}
+     */
     public function deliver()
     {
         if (!empty($this->messages)) {
             foreach (array_chunk($this->messages, 10) as $chunk) {
-                $tries     = 3;
-                $exception = null;
-                do {
-                    $response = $this->triggerBatch($chunk);
-                    if ($response->getStatusCode() !== 200) {
-                        if (!$exception) {
-                            $exception = new \RuntimeException('Failed to send events: '.print_r($response, true));
-                        }
-                    } else {
-                        $exception = null;
-                    }
-                } while ($response->getStatusCode() !== 200 && $tries-- > 0);
+                $encodedDataLength = strlen(json_encode($chunk)); // we're interesting actual bytes, not chars
 
-                if ($exception) {
-                    SystemErrorHandler::logException($exception);
+                try {
+                    if ($encodedDataLength > $this->getMaxMessageSize()) {
+                        $this->deliverDivided($chunk);
+                    } else {
+                        $this->innerDeliver($chunk);
+                    }
+                } catch (\Exception $e) {
+                    SystemErrorHandler::logException($e);
                 }
             }
         }
         $this->messages = [];
     }
 
-    /**
-     * @param MessageInterface $message
-     *
-     * @return string
-     */
-    protected function getChannel(MessageInterface $message)
+    protected function encodeMultiplexData($data)
     {
-        if ($message instanceof ActionAlert) {
-            return self::CHANNEL_ACTION_ALERT;
-        } elseif ($message instanceof Notification) {
-            return self::CHANNEL_USER_NOTIFY;
-        }
+        return $data;
+    }
 
-        throw new \InvalidArgumentException('Message should be ActionAlert or Notification');
+    /**
+     * @param $chunk
+     */
+    protected function innerDeliver($chunk)
+    {
+        $tries     = 3;
+        $exception = null;
+        do {
+            $response = $this->triggerBatch($chunk);
+
+            if ($response->getStatusCode() !== 200) {
+                if (!$exception) {
+                    $exception = new \RuntimeException('Failed to send Deskpro notifications service events: '.print_r($response, true));
+                }
+            } else {
+                $exception = null;
+            }
+        } while ($response->getStatusCode() !== 200 && $tries-- > 0);
+
+        if ($exception) {
+            SystemErrorHandler::logException($exception);
+        }
     }
 
     /**
@@ -124,6 +140,15 @@ class DeskproDeliveryHandler extends AbstractDeliveryHandler
      */
     protected function triggerBatch($chunk)
     {
-        return $this->client->post('/send', [RequestOptions::JSON => ['jwt' => JWT::encode($chunk, $this->secret)]]);
+        try {
+            return $this->client->post('/send', [RequestOptions::JSON => ['jwt' => JWT::encode($chunk, $this->secret)]]);
+        } catch (\Exception $e) {
+            return new Response($e->getCode(), [], $e->getMessage());
+        }
+    }
+
+    protected function getMaxMessageSize()
+    {
+        return $this->maxMessageSize;
     }
 }
