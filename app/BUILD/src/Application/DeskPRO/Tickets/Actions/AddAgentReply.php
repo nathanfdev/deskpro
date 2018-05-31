@@ -70,6 +70,16 @@ class AddAgentReply extends AbstractContainerAwareAction implements ActionInterf
             $reply_text = $formatter->formatText($reply_text, $ticket);
         }
 
+        $reply_text = $this->getContainer()->get('deskpro.core.input_cleaner')->clean($reply_text, 'html');
+        $reply_text = \Orb\Util\Strings::trimHtml($reply_text);
+        $reply_text = \Orb\Util\Strings::prepareWysiwygHtml($reply_text);
+
+        if (!$reply_text) {
+            $context->getLogger()->notice('[AddAgentReply] Reply text evaluates to an empty string');
+
+            return;
+        }
+
         $message->setMessage($reply_text);
 
         $ticket->addMessage($message);
