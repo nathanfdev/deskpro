@@ -114,7 +114,7 @@ class DeskproDeliveryHandler extends MultiplexDeliverHandler
      */
     protected function innerDeliver($chunk)
     {
-        $tries     = 3;
+        $tries     = $this->tries;
         $exception = null;
         do {
             $response = $this->triggerBatch($chunk);
