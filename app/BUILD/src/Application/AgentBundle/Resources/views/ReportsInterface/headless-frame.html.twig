@@ -17,8 +17,10 @@
                                 title="{{ ng_var('widget.title') }}"
                                 widget-id = "{{ ng_var('widget.id') }}"
                                 chart-data = "{{ ng_var('widget.data') }}"
-                                chtype="{{ ng_var('widget.widget_type') }}"
+                                widget-type="{{ ng_var('widget.widget_type') }}"
+                                chart-type="{{ ng_var('widget.type') }}"
                                 options="{{ ng_var('widget.options') }}"
+                                js-code="{{ ng_var('widget.js_code') }}"
                         />
                     </div>
                     <div class="box" ng-if="widget.data && widget.type === 'table'">
@@ -27,6 +29,8 @@
                                 table-data="{{ ng_var('widget.data') }}"
                                 widget-id = "{{ ng_var('widget.id') }}"
                                 wtype="{{ ng_var('widget.type') }}"
+                                options="{{ ng_var('widget.options') }}"
+                                js-code="{{ ng_var('widget.js_code') }}"
                         />
                     </div>
                     <div class="box stat-box" ng-if="widget.data && widget.type === 'simple_stat'">
@@ -36,6 +40,9 @@
                                 value="{{ ng_var('widget.data.value') }}"
                                 description="{{ ng_var('widget.data.description') }}"
                                 widget-id = "{{ ng_var('widget.id') }}"
+                                data="{{ ng_var('widget.rendered_result') }}"
+                                options="{{ ng_var('widget.options') }}"
+                                js-code="{{ ng_var('widget.js_code') }}"
                         />
                     </div>
                 </div>
