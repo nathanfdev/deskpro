@@ -71,7 +71,7 @@ class AddAgentNote extends AbstractContainerAwareAction implements ActionInterfa
             $note_text = $formatter->formatText($note_text, $ticket);
         }
 
-        $note_text = $this->getContainer()->get('deskpro.core.input_cleaner')->clean($note_text, 'html');
+        $note_text = $this->getContainer()->getInputCleaner()->clean($note_text, 'html');
         $note_text = \Orb\Util\Strings::trimHtml($note_text);
         $note_text = \Orb\Util\Strings::prepareWysiwygHtml($note_text);
 
