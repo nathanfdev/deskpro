@@ -56,8 +56,7 @@ class DeskproDeliveryHandler extends MultiplexDeliverHandler
      */
     public function schedule(MessageInterface $message)
     {
-
-        //this is particular message should be sent only throught db client
+        //this is particular message should be sent only through db client
         if ($message->getType() === 'read.notifications.alert') {
             return;
         }
