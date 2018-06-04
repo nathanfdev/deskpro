@@ -37,6 +37,11 @@ class ActiveDirectory extends AbstractLdapBasedAdapter implements FormLoginInter
     const OPT_LOOKUP_PASSWORD = 'password';
 
     /**
+     * Disable SSL certificate validation. Allow to use self-signed certificates.
+     */
+    const OPT_DISABLE_CERT_VALIDATION = 'disable_cert_validation';
+
+    /**
      * @var \Orb\Log\Logger
      */
     protected $logger;
@@ -54,16 +59,17 @@ class ActiveDirectory extends AbstractLdapBasedAdapter implements FormLoginInter
      * @var array
      */
     protected $options = [
-        self::OPT_HOST              => 'localhost',
-        self::OPT_PORT              => null, // null means default of 389 or 636 if ssl enabled
-        self::OPT_TLS               => false,
-        self::OPT_SSL               => false,
-        self::OPT_BASE_DN           => '',
-        self::OPT_DOMAIN_NAME       => '',
-        self::OPT_DOMAIN_NAME_SHORT => '',
-        self::OPT_FILTER_FORMAT     => false,
-        self::OPT_LOOKUP_USERNAME   => null,
-        self::OPT_LOOKUP_PASSWORD   => null,
+        self::OPT_HOST                    => 'localhost',
+        self::OPT_PORT                    => null, // null means default of 389 or 636 if ssl enabled
+        self::OPT_TLS                     => false,
+        self::OPT_SSL                     => false,
+        self::OPT_BASE_DN                 => '',
+        self::OPT_DOMAIN_NAME             => '',
+        self::OPT_DOMAIN_NAME_SHORT       => '',
+        self::OPT_FILTER_FORMAT           => false,
+        self::OPT_LOOKUP_USERNAME         => null,
+        self::OPT_LOOKUP_PASSWORD         => null,
+        self::OPT_DISABLE_CERT_VALIDATION => false,
     ];
 
     public function __construct(array $options)
@@ -87,6 +93,9 @@ class ActiveDirectory extends AbstractLdapBasedAdapter implements FormLoginInter
      */
     public function getZendAuthAdapter()
     {
+        if (isset($this->options[self::OPT_DISABLE_CERT_VALIDATION]) && $this->options[self::OPT_DISABLE_CERT_VALIDATION]) {
+            putenv('LDAPTLS_REQCERT=never');
+        }
         $options = [];
         foreach (
             [
