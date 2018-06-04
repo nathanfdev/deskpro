@@ -11,7 +11,7 @@ class PhpMatcherDumper extends BasePhpMatcherDumper
         $options['base_class'] = 'Symfony\\Bundle\\FrameworkBundle\\Routing\\RedirectableUrlMatcher';
 
         $dump = parent::dump($options);
-        $dump = str_replace('public function match($pathinfo)', 'protected function doMatch($pathinfo)', $dump);
+        $dump = str_replace('public function match($rawPathinfo)', 'protected function doMatch($rawPathinfo)', $dump);
 
         $add_match = <<<'EOF'
 public function match($pathinfo)
