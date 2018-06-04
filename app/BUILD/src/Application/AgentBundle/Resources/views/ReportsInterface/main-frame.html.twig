@@ -8,7 +8,7 @@
                                 <li class="dp-list__element dp-column-drawer">
                                     <h1 class="dp-heading">Dashboards</h1>
                                     <div class="dp-column-drawer__body dp-column-drawer__body--opened">
-                                        <ul class="dp-list dp-drawer-item-list">
+                                        <ul class="dp-list dp-drawer-item-list is-dashboard-list">
                                             <li
                                                 ng-if="hasAccessToBuiltIn"
                                                 class="dp-list__element dp-drawer-item type-heading"
@@ -37,7 +37,7 @@
                                             </li>
                                             <li
                                                 ng-if="canUseReports()"
-                                                class="dp-list__element dp-drawer-item">
+                                                class="dp-list__element dp-drawer-item is-add-btn">
                                                 <h1 class="dp-heading" ng-click="openCreate()" id="dp-add-dashboard-opener">
                                                     [<i class="fa fa-plus"></i>ADD]
                                                 </h1>
@@ -46,7 +46,7 @@
                                     </div>
                                 </li>
 
-                                <li class="dp-list__element dp-column-drawer">
+                                <li class="dp-list__element dp-column-drawer is-reports-list">
                                     <h1 class="dp-heading">Reports</h1>
                                     <div class="dp-column-drawer__body dp-column-drawer__body--opened">
                                         <ul class="dp-list dp-drawer-item-list">

@@ -76,6 +76,9 @@
     {% endif %}
 
 	<title>{{ phrase('agent.interface.deskpro_agent_interface') }}</title>
+
+    {{ include_code_plugin('reports_res_pre') }}
+
 	<style type="text/css">
 		body {
 			overflow: hidden;
@@ -153,7 +156,7 @@
 </head>
 <body>
 
-<div id="dp_loading"><div class="msg-outer"><div class="msg"><h1>{{ phrase('agent.general.loading_interface') }}</h1></div></div></div>
+<div id="dp_loading" class="window-loading-indicator"><div class="msg-outer"><div class="msg"><h1>{{ phrase('agent.general.loading_interface') }}</h1></div></div></div>
 <div id="dp_win" ui-view></div>
 
 <script>
