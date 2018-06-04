@@ -72,8 +72,10 @@ define ['Admin/Main/Ctrl/Base'], (Admin_Ctrl_Base) ->
         @assignDepsPerms @registeredGroup
         @assignDepsPerms @group
 
-        if (Object.keys(@group.deps_perms.tickets).reduce (x, y) => x && @isLocked(y, 'tickets')) then @all_perms.all_tickets_locked = true;
-        if (Object.keys(@group.deps_perms.chat).reduce (x, y) => x && @isLocked(y, 'chat')) then @all_perms.all_chat_locked = true;
+        if @group.deps_perms.tickets.length
+          if (Object.keys(@group.deps_perms.tickets).reduce (x, y) => x && @isLocked(y, 'tickets')) then @all_perms.all_tickets_locked = true;
+        if @group.deps_perms.chat.length
+          if (Object.keys(@group.deps_perms.chat).reduce (x, y) => x && @isLocked(y, 'chat')) then @all_perms.all_chat_locked = true;
 
         @updateAllPermsState()
 
