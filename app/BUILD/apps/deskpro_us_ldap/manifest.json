@@ -113,7 +113,7 @@
 		{
 		  "name": "disable_cert_validation",
 		  "type": "checkbox",
-		  "label": "Disable certificate validation",
+		  "label": "",
 		  "checkbox_label": "Disable SSL certificate validation",
 		  "description": "Allows to use self-sigend SSL certificate.",
 		  "default_value": false

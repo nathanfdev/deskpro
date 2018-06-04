@@ -60,8 +60,9 @@ class AppOptionsMapper
                 $options['useSsl']      = false;
                 break;
             default:
-                $options['useStartTls'] = false;
-                $options['useSsl']      = false;
+                $options['useStartTls']             = false;
+                $options['useSsl']                  = false;
+                $options['disable_cert_validation'] = false;
         }
 
         if (!$options['port']) {

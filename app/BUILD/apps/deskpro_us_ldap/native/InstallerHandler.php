@@ -9,6 +9,7 @@
 namespace deskpro_us_ldap;
 
 use Application\DeskPRO\App\Native\InstallerHandler\AbstractUsersourceInstallerHandler;
+use Application\DeskPRO\App\Native\InstallerHandler\InstallerContext;
 use Application\DeskPRO\Entity\AppInstance;
 use Application\DeskPRO\Entity\Usersource;
 use deskpro_us_ldap\Usersource\AppOptionsMapper;
@@ -16,6 +17,20 @@ use Doctrine\ORM\EntityManager;
 
 class InstallerHandler extends AbstractUsersourceInstallerHandler
 {
+    /**
+     * {@inheritdoc}
+     */
+    public function processSettings(InstallerContext $context, array $settings)
+    {
+        $settings = parent::processSettings($context, $settings);
+
+        if (!$settings['secure']) {
+            $settings['disable_cert_validation'] = false;
+        }
+
+        return $settings;
+    }
+
     /**
      * {@inheritdoc}
      */

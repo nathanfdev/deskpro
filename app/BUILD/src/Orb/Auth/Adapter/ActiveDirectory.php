@@ -93,7 +93,9 @@ class ActiveDirectory extends AbstractLdapBasedAdapter implements FormLoginInter
      */
     public function getZendAuthAdapter()
     {
-        if (isset($this->options[self::OPT_DISABLE_CERT_VALIDATION]) && $this->options[self::OPT_DISABLE_CERT_VALIDATION]) {
+        if ($this->isSecure()
+            && isset($this->options[self::OPT_DISABLE_CERT_VALIDATION]) && $this->options[self::OPT_DISABLE_CERT_VALIDATION]
+        ) {
             putenv('LDAPTLS_REQCERT=never');
         }
         $options = [];
@@ -482,6 +484,15 @@ class ActiveDirectory extends AbstractLdapBasedAdapter implements FormLoginInter
         }
 
         return;
+    }
+
+    /**
+     * Check if SSL or TLS options enabled.
+     */
+    public function isSecure()
+    {
+        return (isset($this->options[self::OPT_SSL]) && $this->options[self::OPT_SSL])
+                || (isset($this->options[self::OPT_TLS]) && $this->options[self::OPT_TLS]);
     }
 
     /**
