@@ -861,7 +861,7 @@ i.icon.fitted {
     display: inline-block;
     visibility: hidden;
   }
-  .dp-drawer-item:hover .dp-icon__filter {
+  .dp-drawer-item.dp-drawer-item--selected:hover .dp-icon__filter {
     visibility: visible;
   }
   .dp-drawer-item .dp-avatar {
