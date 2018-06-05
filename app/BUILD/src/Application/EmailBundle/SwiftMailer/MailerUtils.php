@@ -1,9 +1,5 @@
 <?php
 
-/**
- * DeskPRO.
- */
-
 namespace Application\EmailBundle\SwiftMailer;
 
 use Application\DeskPRO\Entity\Person;
@@ -13,6 +9,9 @@ use DeskPRO\Bundle\PortalBundle\Brand\BrandStack;
 use DeskPRO\Bundle\SendmailBundle\Sender\EmailSender;
 use DeskPRO\Bundle\SendmailBundle\View\Model\EmailBaseType;
 
+/**
+ * Class MailerUtils.
+ */
 class MailerUtils
 {
     /**
@@ -35,6 +34,14 @@ class MailerUtils
      */
     protected $emailSender;
 
+    /**
+     * Constructor.
+     *
+     * @param Mailer      $mailer
+     * @param EmailSender $emailSender
+     * @param BrandStack  $brandStack
+     * @param Translate   $translator
+     */
     public function __construct(Mailer $mailer, EmailSender $emailSender, BrandStack $brandStack, Translate $translator)
     {
         $this->mailer      = $mailer;
@@ -48,29 +55,33 @@ class MailerUtils
      *
      * This will attempt to catch exceptions so the brand is always reset afterwards.
      *
-     * @param Person  $person
      * @param Message $message
+     * @param Person  $person
      *
      * @return mixed
      */
-    public function sendWithPersonContext(Person $person, Message $message)
+    public function sendWithPersonContext(Message $message, Person $person = null)
     {
-        $brand = $person->getBrands()->first();
-        if (!$brand) {
-            $brand = $this->brandStack->getDefaultBrand();
-        }
+        if ($person) {
+            $brand = $person->getBrands()->first();
+            if (!$brand) {
+                $brand = $this->brandStack->getDefaultBrand();
+            }
 
-        $self = $this;
+            // wrap in temporary Brand
+            return $this->brandStack->pushTemporary($brand, function () use ($person, $message) {
+                // wrap in temporary Language
+                $this->translator->setTemporaryLanguage($person->getLanguage(), function () use ($message) {
+                    $message->prepare();
+                });
 
-        // wrap in temporary Brand
-        return $this->brandStack->pushTemporary($brand, function () use ($self, $person, $message) {
-            // wrap in temporary Language
-            $self->translator->setTemporaryLanguage($person->getLanguage(), function () use ($message) {
-                $message->prepare();
+                return $this->mailer->send($message);
             });
+        } else {
+            $message->prepare();
 
-            return $self->mailer->send($message);
-        });
+            return $this->mailer->send($message);
+        }
     }
 
     /**

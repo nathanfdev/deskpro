@@ -1109,7 +1109,7 @@ class LoginController extends AbstractController
             $message->setTo($email, $person->getDisplayName());
 
             $this->container->getTranslator()->setDefaultPersonContext($person);
-            $this->container->get('mailer.utils')->sendWithPersonContext($person, $message);
+            $this->container->get('mailer.utils')->sendWithPersonContext($message, $person);
         }
 
         if ($_format == 'json') {

@@ -146,7 +146,7 @@ class ProcessAgentFwd extends ProcessAbstract
                     'message/rfc822'
                 ));
 
-                App::$container->get('mailer.utils')->sendWithPersonContext($this->person, $message);
+                App::$container->get('mailer.utils')->sendWithPersonContext($message, $this->person);
             }
 
             return;
@@ -299,7 +299,7 @@ class ProcessAgentFwd extends ProcessAbstract
                 'message/rfc822'
             ));
 
-            App::$container->get('mailer.utils')->sendWithPersonContext($this->person, $message);
+            App::$container->get('mailer.utils')->sendWithPersonContext($message, $this->person);
 
             return;
         }
@@ -477,7 +477,7 @@ class ProcessAgentFwd extends ProcessAbstract
                     'message/rfc822'
                 ));
 
-                App::$container->get('mailer.utils')->sendWithPersonContext($this->person, $message);
+                App::$container->get('mailer.utils')->sendWithPersonContext($message, $this->person);
             }
 
             return;
@@ -668,7 +668,7 @@ class ProcessAgentFwd extends ProcessAbstract
                 'message/rfc822'
             ));
 
-            App::$container->get('mailer.utils')->sendWithPersonContext($this->person, $message);
+            App::$container->get('mailer.utils')->sendWithPersonContext($message, $this->person);
 
             return;
         }

@@ -685,7 +685,7 @@ class PersonController extends AbstractController
                                 'person' => $person,
                             ]);
 
-                            $this->container->get('mailer.utils')->sendWithPersonContext($person, $message);
+                            $this->container->get('mailer.utils')->sendWithPersonContext($message, $person);
                         }
                     }
                 }

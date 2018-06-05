@@ -90,7 +90,7 @@ class ProcessReply extends ProcessAbstract
                     ]);
                     $message->setTo($this->reader->getFromAddress()->getEmail());
 
-                    App::$container->get('mailer.utils')->sendWithPersonContext($this->person, $message);
+                    App::$container->get('mailer.utils')->sendWithPersonContext($message, $this->person);
                 }
 
                 $this->setError('perm_insufficient');
@@ -151,7 +151,7 @@ class ProcessReply extends ProcessAbstract
                 ]);
                 $message->setTo($this->reader->getFromAddress()->getEmail());
 
-                App::$container->get('mailer.utils')->sendWithPersonContext($this->person, $message);
+                App::$container->get('mailer.utils')->sendWithPersonContext($message, $this->person);
             }
 
             return;

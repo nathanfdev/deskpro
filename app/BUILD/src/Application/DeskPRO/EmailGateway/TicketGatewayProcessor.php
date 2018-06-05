@@ -191,7 +191,7 @@ class TicketGatewayProcessor extends AbstractGatewayProcessor
                 ]);
                 $message->setTo($this->reader->getFromAddress()->getEmail());
 
-                $this->container->get('mailer.utils')->sendWithPersonContext($person, $message);
+                $this->container->get('mailer.utils')->sendWithPersonContext($message, $person);
             }
 
             if ($isRateReject) {
@@ -285,7 +285,7 @@ class TicketGatewayProcessor extends AbstractGatewayProcessor
                             ]
                         );
                         $message->setTo($this->reader->getFromAddress()->getEmail());
-                        $this->container->get('mailer.utils')->sendWithPersonContext($person, $message);
+                        $this->container->get('mailer.utils')->sendWithPersonContext($message, $person);
                     }
                 }
             }
@@ -353,7 +353,7 @@ class TicketGatewayProcessor extends AbstractGatewayProcessor
                             'message/rfc822'
                         ));
 
-                        $this->container->get('mailer.utils')->sendWithPersonContext($person, $message);
+                        $this->container->get('mailer.utils')->sendWithPersonContext($message, $person);
                     }
                 }
 
