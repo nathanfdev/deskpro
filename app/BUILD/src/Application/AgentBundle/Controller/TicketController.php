@@ -4499,6 +4499,11 @@ class TicketController extends AbstractController
             }
         }
 
+        $departments = App::$container->get('form_hierarchy_generator')->generateTicketDepartmentsHierarchy($this->person);
+        if ($departments->countSelectable() === 1) {
+            $ticket->setDepartment($departments->getFirstSelectable());
+        }
+
         if ($message && count($message->attachments)) {
             $attachments = [];
             $storage     = $this->container->getBlobStorage();
