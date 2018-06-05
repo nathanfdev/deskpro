@@ -39,14 +39,18 @@ export default class ItemFilter extends React.Component {
    */
   togglePopup = (e) => {
     e.stopPropagation();
-    this.popper.toggle();
+    if (this.popper) {
+      this.popper.toggle();
+    }
   };
 
   /**
    * Opens the popper
    */
   open = () => {
-    this.popper.open();
+    if (this.popper) {
+      this.popper.open();
+    }
   };
 
   /**
