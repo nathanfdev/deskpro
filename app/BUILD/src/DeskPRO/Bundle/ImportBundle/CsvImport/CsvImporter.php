@@ -280,7 +280,7 @@ class CsvImporter
                 $message = $this->mailer->createMessage();
                 $message->setToPerson($person);
                 $message->setTemplate('DeskPRO:emails_user:register-welcome-byagent.html.twig', ['person' => $person]);
-                $this->mailerUtils->sendWithPersonContext($person, $message);
+                $this->mailerUtils->sendWithPersonContext($message, $person);
             }
         }
 
