@@ -162,7 +162,7 @@ class CountBuilder
         });
 
         // Fill in titles, and connect children to their parent
-        MapUtils::forEach($countMap, function ($i, Count $count) use ($titles, $countMap) {
+        MapUtils::each($countMap, function ($i, Count $count) use ($titles, $countMap) {
             if ($count->getType() && $count->getId()) {
                 if (isset($titles[$count->getType()][$count->getId()])) {
                     $title = $titles[$count->getType()][$count->getId()];

@@ -223,10 +223,12 @@ class MapUtils
     }
 
     /**
+     * Basically foreach. You'd only use this where you want the scoping of a fn callback.
+     *
      * @param $array
      * @param $fn
      */
-    public static function forEach($array, $fn)
+    public static function each($array, $fn)
     {
         foreach ($array as $k => $v) {
             try {
