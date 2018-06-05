@@ -5,6 +5,7 @@ import {
   Heading,
   Icon,
   DrawerList,
+  Scrollbar,
 } from '@deskpro/react-components';
 import { FormattedMessage } from 'react-intl';
 import FiltersSet from './FiltersSet';
@@ -53,6 +54,7 @@ export default class AgentFilters extends React.Component {
     this.state = {
       mode,
     };
+    this.maxHeight = document.getElementById('react_dp_agent_filters').offsetHeight - 46;
     this.drawers = {};
   }
 
@@ -87,44 +89,49 @@ export default class AgentFilters extends React.Component {
           <FormattedMessage id="agent.search.type_ticket" />
         </Heading>
         <DrawerList>
-          {filterSets.toArray().map(filterSet => (
-            <FiltersSet
-              key={filterSet.get('id')}
-              ref={(c) => { this.drawers[`filterSet${filterSet.get('id')}`] = c; }}
-              opened
-              onSelectMode={this.onSelectMode}
-              onGroupingChange={onGroupingChange}
-              agents={agents}
-              agentTeams={agentTeams}
-              filterSet={filterSet}
-              filters={filters}
-              filtersCounts={filtersCounts}
-              groupFields={groupFields}
-              mode={mode}
-              ticketCustomFields={ticketCustomFields}
-              ticketDepartments={ticketDepartments}
-            />
-            )
-          )}
-          <div className="agent-filters--stars">
-            <Stars
-              ref={(c) => { this.drawers.stars = c; }}
-              stars={stars}
-              starsCounts={starsCounts}
-              opened
-              onSelectMode={this.onSelectMode}
-              mode={mode}
-            />
-          </div>
-          <div className="agent-filters--labels">
-            <Labels
-              ref={(c) => { this.drawers.labels = c; }}
-              labels={labels}
-              opened
-              onSelectMode={this.onSelectMode}
-              mode={mode}
-            />
-          </div>
+          <Scrollbar
+            autoHeightMax={this.maxHeight}
+            hideTracksWhenNotNeeded
+          >
+            {filterSets.toArray().map(filterSet => (
+              <FiltersSet
+                key={filterSet.get('id')}
+                ref={(c) => { this.drawers[`filterSet${filterSet.get('id')}`] = c; }}
+                opened
+                onSelectMode={this.onSelectMode}
+                onGroupingChange={onGroupingChange}
+                agents={agents}
+                agentTeams={agentTeams}
+                filterSet={filterSet}
+                filters={filters}
+                filtersCounts={filtersCounts}
+                groupFields={groupFields}
+                mode={mode}
+                ticketCustomFields={ticketCustomFields}
+                ticketDepartments={ticketDepartments}
+              />
+              )
+            )}
+            <div className="agent-filters--stars">
+              <Stars
+                ref={(c) => { this.drawers.stars = c; }}
+                stars={stars}
+                starsCounts={starsCounts}
+                opened
+                onSelectMode={this.onSelectMode}
+                mode={mode}
+              />
+            </div>
+            <div className="agent-filters--labels">
+              <Labels
+                ref={(c) => { this.drawers.labels = c; }}
+                labels={labels}
+                opened
+                onSelectMode={this.onSelectMode}
+                mode={mode}
+              />
+            </div>
+          </Scrollbar>
         </DrawerList>
       </Column>
     );
