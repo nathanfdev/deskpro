@@ -223,6 +223,21 @@ class MapUtils
     }
 
     /**
+     * @param $array
+     * @param $fn
+     */
+    public static function forEach($array, $fn)
+    {
+        foreach ($array as $k => $v) {
+            try {
+                call_user_func($fn, $k, $v);
+            } catch (BreakIterationException $e) {
+                break;
+            }
+        }
+    }
+
+    /**
      * Calls your function on each element of an array. Your function will be passed the key and value,
      * and return a new value to add the resulting list.
      *

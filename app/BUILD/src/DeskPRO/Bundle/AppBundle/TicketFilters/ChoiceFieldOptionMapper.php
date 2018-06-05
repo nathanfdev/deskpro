@@ -68,6 +68,53 @@ class ChoiceFieldOptionMapper implements OptionMappterInterface
     }
 
     /**
+     * @param $fieldId
+     * @param $valueId
+     *
+     * @return array|null
+     */
+    public function getValueById($fieldId, $valueId)
+    {
+        list($type, $customFieldId) = $this->customFieldSet->parseCustomFieldId($fieldId);
+
+        switch ($type) {
+            case TermFieldIds::TICKET_CUSTOM:
+                $repos = $this->ticketFieldRepos;
+                break;
+
+            default:
+                return null;
+        }
+
+        /** @var CustomDefAbstract $field */
+        $field = $repos->find($customFieldId);
+        if (!$field) {
+            return null;
+        }
+
+        foreach ($field->getChildren() as $c) {
+            if ($c->getId() == $valueId || $c->hasAlias($valueId)) {
+                return array_unique(array_merge([$c->getId()], $this->getChoiceChildren($field, $c)));
+            }
+        }
+
+        return null;
+    }
+
+    private function getChoiceChildren(CustomDefAbstract $field, CustomDefAbstract $node)
+    {
+        $ret = [];
+
+        foreach ($field->getChildren() as $child) {
+            if ($child->getOption('parent_id') == $node->getId()) {
+                $ret = array_merge([$child->getId()], $this->getChoiceChildren($field, $child));
+            }
+        }
+
+        return $ret;
+    }
+
+    /**
      * @param $str
      *
      * @return string

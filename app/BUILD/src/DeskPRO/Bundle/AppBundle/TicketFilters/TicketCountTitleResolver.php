@@ -3,6 +3,7 @@
 namespace DeskPRO\Bundle\AppBundle\TicketFilters;
 
 use Application\DeskPRO\Entity\AgentTeam;
+use Application\DeskPRO\Entity\CustomDefAbstract;
 use Application\DeskPRO\Entity\CustomDefTicket;
 use Application\DeskPRO\Entity\Department;
 use Application\DeskPRO\Entity\Language;
@@ -179,6 +180,56 @@ class TicketCountTitleResolver implements CountTitleResolver
 
             default:
                 return [];
+        }
+    }
+
+    public function getHierarchyMap($fieldId, array $values)
+    {
+        $fieldInfo = TicketSearchParams::parseFieldId($fieldId);
+
+        switch ($fieldInfo['type']) {
+            case TicketSearchParams::GROUP_TICKET_FIELD_PREFIX:
+                $ticketFieldId = (int) $fieldInfo['name'];
+
+                $field = $this->container->get('doctrine.orm.entity_manager')->find(CustomDefTicket::class, $ticketFieldId);
+
+                if (!$field) {
+                    return null;
+                }
+
+                $map = [];
+
+                $eachFn = function (CustomDefAbstract $f) use ($field, &$iterator, &$map) {
+                    $id       = $f->getId();
+                    $parentId = $f->getOption('parent_id', null);
+
+                    $entryParentIds = [];
+
+                    if ($parentId) {
+                        $entryParentIds[] = $parentId;
+
+                        $nextParentId = $parentId;
+                        while ($curParent = $f->getChildById($nextParentId)) {
+                            $nextParentId = $curParent->getId();
+                            if ($nextParentId) {
+                                $entryParentIds[] = $nextParentId;
+                            }
+                        }
+
+                        $entryParentIds = array_reverse($entryParentIds); // top to bottom
+                    }
+
+                    $map[$id] = $entryParentIds;
+                };
+
+                foreach ($field->getChildren() as $childField) {
+                    $eachFn($childField);
+                }
+
+                return $map;
+
+            default:
+                return null;
         }
     }
 }

@@ -76,6 +76,12 @@ abstract class AbstractCount
     protected $groupedBy;
 
     /**
+     * @var array
+     * @JMS\Exclude()
+     */
+    protected $meta = [];
+
+    /**
      * Make constructor private to allow construction only through factory methods.
      */
     protected function __construct()
@@ -231,6 +237,35 @@ abstract class AbstractCount
     public function add($int)
     {
         $this->count += $int;
+    }
+
+    /**
+     * @param string $key
+     * @param mixed  $value
+     * @param mixed
+     */
+    public function setMeta($key, $value)
+    {
+        $this->meta[$key] = $value;
+    }
+
+    /**
+     * @param string $key
+     * @param mixed  $default
+     *
+     * @return mixed|null
+     */
+    public function getMeta($key, $default = null)
+    {
+        return isset($this->meta[$key]) ? $this->meta[$key] : $default;
+    }
+
+    /**
+     * @return array
+     */
+    public function getAllMeta()
+    {
+        return $this->meta;
     }
 
     /**
