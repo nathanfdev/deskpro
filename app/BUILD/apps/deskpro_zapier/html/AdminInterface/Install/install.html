@@ -1,0 +1,23 @@
+<article class="form-horizontal dp-form">
+	<div class="panel panel-fill indent">
+		<div class="panel-body">
+			<!--#include file="AdminInterface/Install/settings-list.html" -->
+		</div>
+	</div>
+</article>
+<footer class="dp-panelblock-footer">
+	<div class="dp-content">
+		<div class="dp-btn-controls">
+			<div dp-hide-spinning="saving_settings">
+				<a class="btn btn-default" ng-click="Ctrl.cancelInstall()"><i class="fa fa-arrow-left"></i> Cancel</a>
+				<button class="btn btn-info" ng-click="openTestModal()"><i class="fa fa-bolt"></i> Test Settings</button>
+				<button class="btn btn-success" ng-click="Ctrl.installApp();">Install App <i class="fa fa-arrow-right"></i></button>
+			</div>
+			<div dp-show-spinning="saving_settings">
+				<i class="spinner-flat"></i>
+			</div>
+		</div>
+	</div>
+</footer>
+
+<script type="text/ng-template" id="deskpro_zapier/Install/test-settings-modal.html"><!--#include file="AdminInterface/Install/test-modal.html" --></script>

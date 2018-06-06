@@ -1,0 +1,32 @@
+<div ng-show="matches.length">
+	<table cellspacing="0" cellpadding="0" width="100%" class="field-holders-table th-la sla-table">
+		<tbody>
+			<tr>
+				<th style="font-size: 11px; padding: 1px 4px;">Name</th>
+				<th style="font-size: 11px; padding: 1px 4px;">Email</th>
+				<th style="font-size: 11px; padding: 1px 4px;">Orders</th>
+				<th style="font-size: 11px; padding: 1px 4px;">View Profile <i class="fa fa-globe"></i></th>
+			</tr>
+			<tr ng-repeat="contact in matches">
+				<td>{{contact.name}}</td>
+				<td>{{contact.email}}</td>
+				<td>
+					<ul>
+						<li ng-repeat="order in contact.orders">
+							<a href="{{order.url}}" target="_blank">Order #{{order.id}}</a>
+							&mdash;
+							{{order.grand_total}} {{order.currency}}
+							({{order.created_at}})
+						</li>
+					</ul>
+				</td>
+				<td><a ng-href="{{contact.profile}}" target="_blank">View Profile</a></td>
+			</tr>
+		</tbody>
+	</table>
+</div>
+<div ng-show="!matches.length">
+	<p>
+		No matching customers.
+	</p>
+</div>
