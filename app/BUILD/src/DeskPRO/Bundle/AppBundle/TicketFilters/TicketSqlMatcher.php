@@ -38,6 +38,11 @@ class TicketSqlMatcher extends AbstractMatcher
     private $customFieldSet;
 
     /**
+     * @var OptionMappterInterface
+     */
+    private $fieldOptionMapper;
+
+    /**
      * @var bool
      */
     private $applyContextPermissions = true;
@@ -45,13 +50,14 @@ class TicketSqlMatcher extends AbstractMatcher
     /**
      * TicketSqlMatcher constructor.
      *
-     * @param ValueResolver  $valueResolver
-     * @param array          $handlers
-     * @param Connection     $db
-     * @param string         $mode           TicketSqlMatcher::ACTIVE for active tickets, or TicketSqlMatcher::ALL for all tickets (slower)
-     * @param CustomFieldSet $customFieldSet
+     * @param ValueResolver          $valueResolver
+     * @param array                  $handlers
+     * @param Connection             $db
+     * @param string                 $mode              TicketSqlMatcher::ACTIVE for active tickets, or TicketSqlMatcher::ALL for all tickets (slower)
+     * @param CustomFieldSet         $customFieldSet
+     * @param OptionMappterInterface $fieldOptionMapper
      */
-    public function __construct(ValueResolver $valueResolver, array $handlers, Connection $db, $mode, CustomFieldSet $customFieldSet = null)
+    public function __construct(ValueResolver $valueResolver, array $handlers, Connection $db, $mode, CustomFieldSet $customFieldSet = null, OptionMappterInterface $fieldOptionMapper = null)
     {
         parent::__construct($valueResolver, $handlers);
         $this->db = $db;
@@ -60,8 +66,9 @@ class TicketSqlMatcher extends AbstractMatcher
             throw new \InvalidArgumentException('Invalid mode');
         }
 
-        $this->mode           = $mode;
-        $this->customFieldSet = $customFieldSet ?: new CustomFieldSet();
+        $this->mode              = $mode;
+        $this->customFieldSet    = $customFieldSet ?: new CustomFieldSet();
+        $this->fieldOptionMapper = $fieldOptionMapper;
     }
 
     /**
@@ -417,10 +424,14 @@ class TicketSqlMatcher extends AbstractMatcher
                                     ->andWhere("$joinId.field_id IS NULL")
                                     ->setParameter('rootFieldId', $field->field);
                             } else {
+                                if ($this->fieldOptionMapper) {
+                                    $value = $this->fieldOptionMapper->getValueById(TermFieldIds::getCustomFieldTermId($fieldType, $field->field), $value);
+                                }
+
                                 $qb->leftJoin('tickets', 'custom_data_ticket', $joinId, "$joinId.ticket_id = tickets.id AND $joinId.root_field_id = :rootFieldId")
-                                    ->andWhere("$joinId.field_id = :filterValue")
+                                    ->andWhere("$joinId.field_id IN (:filterValue)")
                                     ->setParameter('rootFieldId', $field->field)
-                                    ->setParameter('filterValue', $value);
+                                    ->setParameter('filterValue', (array) $value, Connection::PARAM_INT_ARRAY);
                             }
                             break;
 

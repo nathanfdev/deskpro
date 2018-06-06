@@ -1362,8 +1362,8 @@ class ServeFileScript extends LowScriptAbstract
 
     private function findGzipBlob($blob)
     {
-        $sth = $this->getPdoRead()->prepare('SELECT * FROM blobs WHERE sys_name = :sys_name');
-        $sth->execute(['sys_name' => "blob-$blob[id]-gzip"]);
+        $sth = $this->getPdoRead()->prepare('SELECT * FROM blobs WHERE sys_name = :sys_name AND storage_loc = "db"');
+        $sth->execute(['sys_name' => "blob-{$blob['id']}-gzip"]);
 
         return $sth->fetch(\PDO::FETCH_ASSOC);
     }
@@ -1383,8 +1383,9 @@ class ServeFileScript extends LowScriptAbstract
         $file       = $bs->copyBlobRecordToString($blobObject);
 
         $bs->createBlobRecordFromString(gzencode($file), $blobObject->filename, $blobObject->content_type, [
-            'sys_name'      => "blob-$blob[id]-gzip",
-            'original_blob' => $blobObject,
+            'sys_name'             => "blob-{$blob['id']}-gzip",
+            'original_blob'        => $blobObject,
+            'storage_loc_specific' => 'db',
         ]);
 
         $this->sendHeaders($blob);

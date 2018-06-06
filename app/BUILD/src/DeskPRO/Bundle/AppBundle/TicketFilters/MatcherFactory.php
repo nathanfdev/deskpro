@@ -110,7 +110,11 @@ class MatcherFactory
             $this->getTermHandlers(),
             $this->container->get('doctrine.dbal.read_search_connection'),
             $activeOnly ? TicketSqlMatcher::ACTIVE : TicketSqlMatcher::ALL,
-            $this->loader->getCustomFieldsSet()
+            $this->loader->getCustomFieldsSet(),
+            new ChoiceFieldOptionMapper(
+                $this->loader->getCustomFieldsSet(),
+                $this->container->get('doctrine.orm.entity_manager')->getRepository(CustomDefTicket::class)
+            )
         );
 
         if ($this->logger) {
