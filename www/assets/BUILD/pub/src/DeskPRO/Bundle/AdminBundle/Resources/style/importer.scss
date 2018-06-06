@@ -41,6 +41,10 @@
     .progress {
       height: 1.75em;
       overflow: visible;
+
+      a {
+        cursor: pointer;
+      }
     }
 
     &-container {
