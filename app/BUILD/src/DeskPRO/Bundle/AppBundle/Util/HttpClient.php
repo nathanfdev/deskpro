@@ -22,15 +22,17 @@ class HttpClient extends Client
     public function __construct($config = [])
     {
         global $DP_ENV;
-        $usSysCABundle = (bool) $DP_ENV->getConfig('settings.http_client.use_sys_ca_bundle');
 
         $proxy = $DP_ENV->getConfig('settings.http_client.proxy');
         if ($proxy && empty($config[RequestOptions::PROXY])) {
             $config[RequestOptions::PROXY] = $proxy;
         }
 
+        $usSysCABundle = (bool) $DP_ENV->getConfig('settings.http_client.use_sys_ca_bundle');
+        // True by default
+        $doVerify = isset($config[RequestOptions::VERIFY]) ? false !== @$config[RequestOptions::VERIFY] : true;
         // cp from \DeskPRO_LowUtil_RequestCurl::setCaBundle
-        if (isset($config[RequestOptions::VERIFY]) && false !== @$config[RequestOptions::VERIFY] && !$usSysCABundle) {
+        if ($doVerify && !$usSysCABundle) {
             $config[RequestOptions::VERIFY] = CaBundle::getBundledCaBundlePath();
         }
 
