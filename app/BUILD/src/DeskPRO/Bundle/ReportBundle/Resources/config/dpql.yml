@@ -30,6 +30,7 @@ services:
     arguments:
       - "@settings_resolver"
       - "@doctrine.orm.default_entity_manager"
+      - "@reports.widget.service"
       - "@dpql.lexer"
       - "@dpql.parser"
       - "@dpql.context_storage"

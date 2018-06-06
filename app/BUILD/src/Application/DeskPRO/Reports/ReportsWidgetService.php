@@ -48,9 +48,11 @@ class ReportsWidgetService
     }
 
     /**
+     * @param bool $addReportLevel should we add report level var indicator?
+     *
      * @return array
      */
-    public function getGroupParams()
+    public function getGroupParams($addReportLevel = true)
     {
         $groupParams = $this->repository->getReportGroupParams();
 
@@ -76,18 +78,24 @@ class ReportsWidgetService
         /** @var OrganizationRepository $orgRepository */
         $orgRepository = $this->em->getRepository(Organization::class);
 
-        $groupParams['values']['agent'][DashboardWidgetManager::WIDGET_VALUE_FROM_REPORT] = ['value from report'];
+        if ($addReportLevel) {
+            $groupParams['values']['agent'][DashboardWidgetManager::WIDGET_VALUE_FROM_REPORT] = ['value from report'];
+        }
         foreach ($agents as $agent) {
             $groupParams['values']['agent'][$agent->getId()] = [$agent->getDisplayName()];
         }
 
-        $groupParams['values']['department'][DashboardWidgetManager::WIDGET_VALUE_FROM_REPORT] = ['value from report'];
+        if ($addReportLevel) {
+            $groupParams['values']['department'][DashboardWidgetManager::WIDGET_VALUE_FROM_REPORT] = ['value from report'];
+        }
         foreach ($departments as $department) {
             $postfix                                                   = $department->isTicketsEnabled() ? '' : ' [Chat]';
             $groupParams['values']['department'][$department->getId()] = [$department->getTitle().$postfix];
         }
 
-        $groupParams['values']['team'][DashboardWidgetManager::WIDGET_VALUE_FROM_REPORT] = ['value from report'];
+        if ($addReportLevel) {
+            $groupParams['values']['team'][DashboardWidgetManager::WIDGET_VALUE_FROM_REPORT] = ['value from report'];
+        }
         foreach ($agentTeams as $agentTeam) {
             $groupParams['values']['team'][$agentTeam->getId()] = [$agentTeam->getName()];
         }
@@ -99,26 +107,29 @@ class ReportsWidgetService
             $orgRepository->getOrganizationNames()
         );
 
-        $groupParams['values']['organization'][DashboardWidgetManager::WIDGET_VALUE_FROM_REPORT] = ['value from report'];
+        if ($addReportLevel) {
+            $groupParams['values']['organization'][DashboardWidgetManager::WIDGET_VALUE_FROM_REPORT] = ['value from report'];
+        }
 
-        $groupParams['ticket_custom_fields']   = $this->customFields(CustomDefTicket::class);
-        $groupParams['org_custom_fields']      = $this->customFields(CustomDefOrganization::class);
-        $groupParams['user_custom_fields']     = $this->customFields(CustomDefPerson::class);
-        $groupParams['article_custom_fields']  = $this->customFields(CustomDefArticle::class);
-        $groupParams['chat_custom_fields']     = $this->customFields(CustomDefChat::class);
-        $groupParams['feedback_custom_fields'] = $this->customFields(CustomDefFeedback::class);
-        $groupParams['billing_custom_fields']  = $this->customFields(CustomDefBilling::class);
-        $groupParams['product_custom_fields']  = $this->customFields(CustomDefProduct::class);
+        $groupParams['ticket_custom_fields']   = $this->customFields(CustomDefTicket::class, $addReportLevel);
+        $groupParams['org_custom_fields']      = $this->customFields(CustomDefOrganization::class, $addReportLevel);
+        $groupParams['user_custom_fields']     = $this->customFields(CustomDefPerson::class, $addReportLevel);
+        $groupParams['article_custom_fields']  = $this->customFields(CustomDefArticle::class, $addReportLevel);
+        $groupParams['chat_custom_fields']     = $this->customFields(CustomDefChat::class, $addReportLevel);
+        $groupParams['feedback_custom_fields'] = $this->customFields(CustomDefFeedback::class, $addReportLevel);
+        $groupParams['billing_custom_fields']  = $this->customFields(CustomDefBilling::class, $addReportLevel);
+        $groupParams['product_custom_fields']  = $this->customFields(CustomDefProduct::class, $addReportLevel);
 
         return $groupParams;
     }
 
     /**
-     * @param $class
+     * @param string $class
+     * @param bool   $addReportLevel
      *
      * @return array
      */
-    private function customFields($class)
+    private function customFields($class, $addReportLevel = true)
     {
         $defs   = $this->em->getRepository($class)->findBy(['parent' => null, 'is_enabled' => true]);
         $result = [];
@@ -142,7 +153,9 @@ class ReportsWidgetService
                 }
 
                 $result[$def->getRawTitle()] += $arr;
-                $result[$def->getRawTitle()][DashboardWidgetManager::WIDGET_VALUE_FROM_REPORT] = ['value from report'];
+                if ($addReportLevel) {
+                    $result[$def->getRawTitle()][DashboardWidgetManager::WIDGET_VALUE_FROM_REPORT] = ['value from report'];
+                }
             }
         }
 
