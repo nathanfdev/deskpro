@@ -3,10 +3,11 @@
 
   const options = window.DESKPRO_EMBED_OPTIONS;
 
-  getInstInfo(options.helpdeskUrl, options.instId || 'default').then(function (instInfo, window, document) {
-    const appSrc = instInfo.assetUrl + '/pub/build/' + (options.type === 'form' ? 'DeskPRO_EmbedFormBundle.js' : 'DeskPRO_EmbedHelpdeskBundle.js');
+  getInstInfo(options.helpdeskUrl, options.instId || 'default').then((instInfo) => {
+    const script = options.type === 'form' ? 'DeskPRO_EmbedFormBundle.js' : 'DeskPRO_EmbedHelpdeskBundle.js';
+    const appSrc = `${instInfo.assetUrl}/pub/build/${script}`;
 
-    const loadFn = function () {
+    const loadFn = () => {
       const appNode = document.createElement('script');
       appNode.charset = 'UTF8';
       appNode.type = 'application/javascript';
@@ -17,4 +18,3 @@
     onReadyState(loadFn);
   });
 })(window, document);
-
