@@ -170,7 +170,15 @@ class VoiceControlsContainer extends React.Component {
     const { dispatch } = this.props;
     const connection = this.getConnection();
 
-    dispatch(cancelInvite(connection.message.CallId, target, type));
+    const promise = dispatch(cancelInvite(connection.message.CallId, target, type));
+    promise.then(() => {
+      this.setState({
+        addTarget:          null,
+        addTargetType:      null,
+        transferTarget:     null,
+        transferTargetType: null
+      });
+    });
   };
 
   endCall = () => {
