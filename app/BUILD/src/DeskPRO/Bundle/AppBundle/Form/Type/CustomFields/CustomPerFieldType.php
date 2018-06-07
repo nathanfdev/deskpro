@@ -30,10 +30,7 @@ class CustomPerFieldType extends AbstractType
     {
         $builder->addEventListener(FormEvents::PRE_SET_DATA, [$this, 'onGenerateFields']);
         $builder->addEventListener(FormEvents::SUBMIT, [$this, 'onTransformToCustomData'], -1);
-
-        if ($options['inline']) {
-            $builder->addEventSubscriber(new InlineCustomDataListener());
-        }
+        $builder->addEventSubscriber(new InlineCustomDataListener());
     }
 
     /**

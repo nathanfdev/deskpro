@@ -62,3 +62,8 @@ Feature: New ticket form
     Then the response should contain "<input type=\\"text\\" id=\\"ticket_ticket_field_{tf1}_data\\" name=\\"ticket[ticket_field_{tf1}][data]\\" value=\\"Default value[script]alert"
     And the response should contain "<textarea id=\\"ticket_ticket_field_{tf2}_data\\" name=\\"ticket[ticket_field_{tf2}][data]\\">Default value[script]alert"
     And the response should contain "<textarea id=\\"ticket_message_message\\" name=\\"ticket[message][message]\\" required=\\"required\\">Default value<"
+
+  Scenario: I check inline custom fields
+    When I go to "/new-ticket?ticket[ticket_field_{tf1}]=val1&ticket[ticket_field_{tf2}]=val2"
+    Then the "ticket_ticket_field_{tf1}_data" field should contain "val1"
+    And the "ticket_ticket_field_{tf2}_data" field should contain "val2"
