@@ -74,7 +74,10 @@ export class ChatBeginContainer extends React.Component {
       };
       chatDepartments.map((dep) => {
         if (dep.get('parent') === department.get('id')) {
-          choice.children = [];
+          if (!choice.children) {
+            choice.children = [];
+          }
+
           rec(dep, choice.children);
         }
 
