@@ -6,7 +6,7 @@ class Build1528390176 extends AbstractBuild implements OnlineBuildInterface
 {
     public function addNewTables()
     {
-        $this->execDbQuery('default', 'DROP TABLE IF EXISTS `saved_dashboard_widget`;');
+        $this->execDbQuery('default', 'DROP TABLE IF EXISTS `saved_dashboard_widget`');
 
         $this->execDbQuery('default', '
 CREATE TABLE IF NOT EXISTS `saved_dashboard_widget` (
@@ -25,7 +25,7 @@ CREATE TABLE IF NOT EXISTS `saved_dashboard_widget` (
   KEY `IDX_7EEC518D7E09ED3D` (`saved_report_id`),
   CONSTRAINT `FK_7EEC518D7E09ED3D` FOREIGN KEY (`saved_report_id`) REFERENCES `saved_dashboard_report` (`id`) ON DELETE CASCADE,
   CONSTRAINT `FK_7EEC518DB31FDD11` FOREIGN KEY (`dashboard_widget_id`) REFERENCES `report_dashboard_widget` (`id`) ON DELETE SET NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;');
+) ENGINE=InnoDB DEFAULT CHARSET=utf8');
     }
 
     public function runAlters()
