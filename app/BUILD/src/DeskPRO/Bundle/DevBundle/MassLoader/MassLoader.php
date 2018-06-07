@@ -429,8 +429,12 @@ class MassLoader
 
             for ($i = 0; $i < $options['messagesBatchCount']; ++$i) {
                 $messages[] = [
-                    'ticket_id' => $newTicketId,
-                    'message'   => $this->faker->text(5),
+                    'ticket_id'     => $newTicketId,
+                    'message'       => $this->faker->text(5),
+                    'date_created'  => $this->faker->dateTimeBetween('-2 years', 'now')->format('Y-m-d H:i:s'),
+                    'person_id'     => $this->faker->randomElement($this->fetchAllIds('people')),
+                    'is_agent_note' => $this->faker->boolean(10),
+
                 ];
             }
         }
