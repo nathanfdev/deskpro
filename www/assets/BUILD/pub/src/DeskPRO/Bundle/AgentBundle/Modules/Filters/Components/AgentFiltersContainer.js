@@ -74,7 +74,6 @@ class AgentFiltersContainer extends SeparateComponent {
   };
 
   onSelectMode = (mode) => {
-    console.log(mode);
     if (mode !== this.state.mode) {
       switch (mode.type) {
         case 'filter':

@@ -5,6 +5,7 @@ import {
   Heading,
   Icon,
   DrawerList,
+  Scrollbar,
 } from '@deskpro/react-components';
 import { FormattedMessage } from 'react-intl';
 import FiltersSet from './FiltersSet';
@@ -50,15 +51,39 @@ export default class AgentFilters extends React.Component {
         filter: props.filterSets.first().get('filters').first(),
       };
     }
+    let maxHeight;
+    const parent = document.getElementById('react_dp_agent_filters');
+    if (parent) {
+      maxHeight = parent.offsetHeight - 47;
+    } else {
+      maxHeight = 600;
+    }
+    window.addEventListener('resize', this.windowResize);
+    this.drawers = {};
     this.state = {
       mode,
+      maxHeight
     };
-    this.drawers = {};
   }
+
+  componentWillUnmount = () => {
+    window.removeEventListener('resize', this.windowResize);
+  };
 
   onSelectMode = (mode) => {
     this.setState({ mode });
     this.props.onSelectMode(mode);
+  };
+
+  windowResize = () => {
+    const parent = document.getElementById('react_dp_agent_filters');
+    if (!this.resizing) {
+      window.requestAnimationFrame(() => {
+        this.setState({ maxHeight: parent.offsetHeight - 47 });
+        this.resizing = false;
+      });
+    }
+    this.resizing = true;
   };
 
   render() {
@@ -87,44 +112,49 @@ export default class AgentFilters extends React.Component {
           <FormattedMessage id="agent.search.type_ticket" />
         </Heading>
         <DrawerList>
-          {filterSets.toArray().map(filterSet => (
-            <FiltersSet
-              key={filterSet.get('id')}
-              ref={(c) => { this.drawers[`filterSet${filterSet.get('id')}`] = c; }}
-              opened
-              onSelectMode={this.onSelectMode}
-              onGroupingChange={onGroupingChange}
-              agents={agents}
-              agentTeams={agentTeams}
-              filterSet={filterSet}
-              filters={filters}
-              filtersCounts={filtersCounts}
-              groupFields={groupFields}
-              mode={mode}
-              ticketCustomFields={ticketCustomFields}
-              ticketDepartments={ticketDepartments}
-            />
-            )
-          )}
-          <div className="agent-filters--stars">
-            <Stars
-              ref={(c) => { this.drawers.stars = c; }}
-              stars={stars}
-              starsCounts={starsCounts}
-              opened
-              onSelectMode={this.onSelectMode}
-              mode={mode}
-            />
-          </div>
-          <div className="agent-filters--labels">
-            <Labels
-              ref={(c) => { this.drawers.labels = c; }}
-              labels={labels}
-              opened
-              onSelectMode={this.onSelectMode}
-              mode={mode}
-            />
-          </div>
+          <Scrollbar
+            autoHeightMax={this.state.maxHeight}
+            hideTracksWhenNotNeeded
+          >
+            {filterSets.toArray().map(filterSet => (
+              <FiltersSet
+                key={filterSet.get('id')}
+                ref={(c) => { this.drawers[`filterSet${filterSet.get('id')}`] = c; }}
+                opened
+                onSelectMode={this.onSelectMode}
+                onGroupingChange={onGroupingChange}
+                agents={agents}
+                agentTeams={agentTeams}
+                filterSet={filterSet}
+                filters={filters}
+                filtersCounts={filtersCounts}
+                groupFields={groupFields}
+                mode={mode}
+                ticketCustomFields={ticketCustomFields}
+                ticketDepartments={ticketDepartments}
+              />
+              )
+            )}
+            <div className="agent-filters--stars">
+              <Stars
+                ref={(c) => { this.drawers.stars = c; }}
+                stars={stars}
+                starsCounts={starsCounts}
+                opened
+                onSelectMode={this.onSelectMode}
+                mode={mode}
+              />
+            </div>
+            <div className="agent-filters--labels">
+              <Labels
+                ref={(c) => { this.drawers.labels = c; }}
+                labels={labels}
+                opened
+                onSelectMode={this.onSelectMode}
+                mode={mode}
+              />
+            </div>
+          </Scrollbar>
         </DrawerList>
       </Column>
     );
