@@ -71,6 +71,16 @@ class AddAgentNote extends AbstractContainerAwareAction implements ActionInterfa
             $note_text = $formatter->formatText($note_text, $ticket);
         }
 
+        $note_text = $this->getContainer()->getInputCleaner()->clean($note_text, 'html');
+        $note_text = \Orb\Util\Strings::trimHtml($note_text);
+        $note_text = \Orb\Util\Strings::prepareWysiwygHtml($note_text);
+
+        if (!$note_text) {
+            $context->getLogger()->notice('[AddAgentNote] Note text evaluates to an empty string');
+
+            return;
+        }
+
         $message->setMessage($note_text);
 
         $ticket->addMessage($message);

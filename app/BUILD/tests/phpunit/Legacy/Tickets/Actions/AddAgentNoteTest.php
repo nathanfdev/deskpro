@@ -3,12 +3,12 @@
 namespace DpUnitTests\DeskPRO\Tickets\Actions;
 
 use Application\DeskPRO\Entity\Ticket;
-use Application\DeskPRO\Tickets\Actions\AddAgentReply;
+use Application\DeskPRO\Tickets\Actions\AddAgentNote;
 use Application\DeskPRO\Tickets\ExecutorContext;
 use DpTest\DeskProTestCase;
 use DpTestSrc\TestBundle\Mock\ContainerMock;
 
-class AddAgentReplyTest extends DeskProTestCase
+class AddAgentNoteTest extends DeskProTestCase
 {
     /**
      * @var \Application\DeskPRO\DependencyInjection\DeskproContainer
@@ -39,11 +39,11 @@ class AddAgentReplyTest extends DeskProTestCase
         $exec   = new ExecutorContext();
 
         $tok    = sha1(microtime(true).mt_rand(10000, 99999));
-        $action = new AddAgentReply(
+        $action = new AddAgentNote(
             [
                 'by_assigned_agent' => true,
                 'by_agent_id'       => 1,
-                'reply_text'        => 'Test reply '.$tok,
+                'note_text'         => 'Test note '.$tok,
                 'no_formatter'      => true,
             ]
         );
@@ -54,6 +54,7 @@ class AddAgentReplyTest extends DeskProTestCase
         $this->assertContains($tok, $ticket->messages[0]->message);
         $this->assertNotNull($ticket->messages[0]->person);
         $this->assertEquals(1, $ticket->messages[0]->person->id);
+        $this->assertTrue($ticket->messages[0]->isAgentNote());
     }
 
     public function testEmojiTransformToHtmlEntities()
@@ -70,11 +71,11 @@ class AddAgentReplyTest extends DeskProTestCase
         $ticket = new Ticket();
         $exec   = new ExecutorContext();
 
-        $action = new AddAgentReply(
+        $action = new AddAgentNote(
             [
                 'by_assigned_agent' => true,
                 'by_agent_id'       => 1,
-                'reply_text'        => 'Test reply 😀 😁',
+                'note_text'         => 'Test note 😀 😁',
                 'no_formatter'      => true,
             ]
         );
@@ -84,6 +85,6 @@ class AddAgentReplyTest extends DeskProTestCase
         $action->applyAction($ticket, $exec);
 
         // THEN
-        $this->assertEquals('Test reply &#128512; &#128513;', $ticket->messages[0]->message);
+        $this->assertEquals('Test note &#128512; &#128513;', $ticket->messages[0]->message);
     }
 }
