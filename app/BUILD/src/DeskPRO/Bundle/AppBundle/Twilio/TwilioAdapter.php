@@ -1046,8 +1046,15 @@ class TwilioAdapter
         $account      = $phoneCall->getNumber()->getAccount();
         $participants = $this->getConferenceParticipants($account, $phoneCall->getConferenceSid());
 
+        if (!$phoneCall->getUserParticipants()->count()) {
+            return;
+        }
+
+        /** @var VoicePhoneCallParticipantUser $userParticipant */
+        $userParticipant = $phoneCall->getUserParticipants()->first();
+
         foreach ($participants as $participant) {
-            if ($participant->callSid === $phoneCall->getCallSid()) {
+            if ($participant->callSid === $userParticipant->getCallSid()) {
                 $participant->update([
                     'hold' => $isHold ? 'true' : 'false',
                 ]);
