@@ -953,6 +953,22 @@ ORDER BY DPQL_COUNT() DESC
 LIMIT 100',
                 'variables' => '[]',
             ],
+        'voice-calls-grouped-by-x' => [
+            'title'         => 'Number of voice calls ${date} grouped by ${field}',
+            'labels'        => 'voice',
+            'description'   => '',
+            'display_types' => 'table',
+            'display_order' => 250,
+            'query'         => '
+SELECT DPQL_COUNT() AS \'Total Voice Calls\'
+FROM voice_phone_calls
+WHERE voice_phone_calls.date_created = ${date}
+GROUP BY ${field}
+ORDER BY DPQL_COUNT() DESC
+LIMIT 100
+            ',
+            'variables' => '[{"name":"date","type":"dates"}, {"name":"field","type":"fields","field_type":"voice_phone_calls","table":"voice_phone_calls"}]',
+        ],
     ];
 
     /**

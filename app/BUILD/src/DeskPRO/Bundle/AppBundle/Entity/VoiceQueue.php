@@ -17,7 +17,7 @@ use Symfony\Component\Validator\Constraints as Assert;
 /**
  * Class VoiceQueue.
  *
- * @ORM\Entity()
+ * @ORM\Entity(repositoryClass="DeskPRO\Bundle\AppBundle\Entity\Repository\VoiceQueueRepository")
  * @ORM\Table(name="voice_queues", uniqueConstraints={
  *   @ORM\UniqueConstraint(name="task_queue_sid", columns={"task_queue_sid"}),
  *   @ORM\UniqueConstraint(name="name", columns={"name"})

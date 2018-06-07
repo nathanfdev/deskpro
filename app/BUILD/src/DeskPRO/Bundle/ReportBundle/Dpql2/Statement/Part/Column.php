@@ -104,6 +104,8 @@ END)
         'custom_data_organizations' => ['id', 'title'],
         'custom_data_ticket'        => ['id', 'title'],
         'custom_data_people'        => ['id', 'title'],
+        'voice_queues'              => ['id', 'name'],
+        'voice_numbers'             => ['id', 'number'],
     ];
 
     /**
