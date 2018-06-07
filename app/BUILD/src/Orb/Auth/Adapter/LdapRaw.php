@@ -29,6 +29,11 @@ class LdapRaw extends AbstractLdapBasedAdapter implements FormLoginInterface
     const OPT_FIELD_USERNAME = 'field_username';
 
     /**
+     * Disable SSL certificate validation. Allow to use self-signed certificates.
+     */
+    const OPT_DISABLE_CERT_VALIDATION = 'disable_cert_validation';
+
+    /**
      * @var \Orb\Log\Logger
      */
     protected $logger;
@@ -46,19 +51,20 @@ class LdapRaw extends AbstractLdapBasedAdapter implements FormLoginInterface
      * @var array
      */
     protected $options = [
-        self::OPT_HOST            => 'localhost',
-        self::OPT_PORT            => null, // null means default of 389 or 636 if ssl enabled
-        self::OPT_TLS             => false,
-        self::OPT_SSL             => false,
-        self::OPT_BASE_DN         => '',
-        self::OPT_LOOKUP_USERNAME => null,
-        self::OPT_LOOKUP_PASSWORD => null,
-        self::OPT_FIELD_ID        => 'dn',
-        self::OPT_FIELD_EMAIL     => 'mail',
-        self::OPT_FIELD_USERNAME  => 'uid',
-        'accountCanonicalForm'    => 2,
-        'bindRequiresDn'          => true,
-        'ldapClass'               => null,
+        self::OPT_HOST                    => 'localhost',
+        self::OPT_PORT                    => null, // null means default of 389 or 636 if ssl enabled
+        self::OPT_TLS                     => false,
+        self::OPT_SSL                     => false,
+        self::OPT_BASE_DN                 => '',
+        self::OPT_LOOKUP_USERNAME         => null,
+        self::OPT_LOOKUP_PASSWORD         => null,
+        self::OPT_FIELD_ID                => 'dn',
+        self::OPT_FIELD_EMAIL             => 'mail',
+        self::OPT_FIELD_USERNAME          => 'uid',
+        self::OPT_DISABLE_CERT_VALIDATION => false,
+        'accountCanonicalForm'            => 2,
+        'bindRequiresDn'                  => true,
+        'ldapClass'                       => null,
     ];
 
     public function __construct(array $options)
@@ -91,6 +97,11 @@ class LdapRaw extends AbstractLdapBasedAdapter implements FormLoginInterface
      */
     public function getZendAuthAdapter()
     {
+        if ($this->isSecure()
+            && isset($this->options[self::OPT_DISABLE_CERT_VALIDATION]) && $this->options[self::OPT_DISABLE_CERT_VALIDATION]
+        ) {
+            putenv('LDAPTLS_REQCERT=never');
+        }
         $options = ['tryUsernameSplit' => false];
         foreach (
             [
@@ -454,6 +465,15 @@ class LdapRaw extends AbstractLdapBasedAdapter implements FormLoginInterface
         }
 
         return;
+    }
+
+    /**
+     * Check if SSL or TLS options enabled.
+     */
+    public function isSecure()
+    {
+        return (isset($this->options[self::OPT_SSL]) && $this->options[self::OPT_SSL])
+                || (isset($this->options[self::OPT_TLS]) && $this->options[self::OPT_TLS]);
     }
 
     /**

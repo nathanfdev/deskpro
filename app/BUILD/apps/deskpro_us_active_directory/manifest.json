@@ -104,6 +104,14 @@
 		  "default_value": false
 		},
 		{
+		  "name": "disable_cert_validation",
+		  "type": "checkbox",
+		  "label": "",
+		  "checkbox_label": "Disable SSL certificate validation",
+		  "description": "Allows to use self-sigend SSL certificate.",
+		  "default_value": false
+		},
+		{
 		  "name": "disable_ldap_paging",
 		  "type": "checkbox",
 		  "label": "Disable LDAP Paging",

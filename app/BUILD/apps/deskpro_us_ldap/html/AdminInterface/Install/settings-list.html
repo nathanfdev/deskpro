@@ -40,6 +40,20 @@
 			<option value="tls">TLS</option>
 		</select>
 		<span class="help-block">If your server supports connection encryption, you can enable it here.</span>
+    <div ng-show="setting_values.secure">
+      <label>
+        <input type="checkbox" ng-model="setting_values.disable_cert_validation"/>
+        Disable SSL certificate validation
+      </label>
+      <span class="help-block">Allows to use self-sigend SSL certificate.</span>
+      <span class="help-block" ng-show="setting_values.secure && setting_values.disable_cert_validation">
+        Please note, that:
+        <ul>
+          <li>it is not safe to disable certificate validation</li>
+          <li>this option works only if PHP setup allows to change 'LDAPTLS_REQCERT' env variable (check <a href='http://php.net/manual/en/function.putenv.php'>putenv</a> function)</li>
+        </ul>
+      </span>
+    </div>
 	</div>
 </div>
 

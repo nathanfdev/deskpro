@@ -39,15 +39,16 @@ class AppOptionsMapper
             $a_filter = trim($a_filter);
         }
 
-        $options['port']                = $settings->get('port');
-        $options['host']                = $settings->get('host');
-        $options['baseDn']              = $settings->get('base_dn');
-        $options['username']            = $settings->get('service_username');
-        $options['password']            = $settings->get('service_password');
-        $options['accountFilterFormat'] = $a_filter ? $a_filter : null;
-        $options['ldapPaging']          = $settings->get('ldap_paging');
-        $options['ldapPerPage']         = $settings->get('ldap_per_page');
-        $options['raw_info_filter']     = $settings->get('raw_info_filter');
+        $options['port']                    = $settings->get('port');
+        $options['host']                    = $settings->get('host');
+        $options['baseDn']                  = $settings->get('base_dn');
+        $options['username']                = $settings->get('service_username');
+        $options['password']                = $settings->get('service_password');
+        $options['accountFilterFormat']     = $a_filter ? $a_filter : null;
+        $options['disable_cert_validation'] = $settings->get('disable_cert_validation');
+        $options['ldapPaging']              = $settings->get('ldap_paging');
+        $options['ldapPerPage']             = $settings->get('ldap_per_page');
+        $options['raw_info_filter']         = $settings->get('raw_info_filter');
 
         switch ($settings->get('secure')) {
             case 'ssl':
@@ -59,8 +60,9 @@ class AppOptionsMapper
                 $options['useSsl']      = false;
                 break;
             default:
-                $options['useStartTls'] = false;
-                $options['useSsl']      = false;
+                $options['useStartTls']             = false;
+                $options['useSsl']                  = false;
+                $options['disable_cert_validation'] = false;
         }
 
         if (!$options['port']) {
