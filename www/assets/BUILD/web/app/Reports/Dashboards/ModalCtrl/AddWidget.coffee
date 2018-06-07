@@ -39,9 +39,9 @@ define ['DeskPRO/Util/Arrays',], (Arrays) -> [
 
     load_promises.push DashboardWidgetService.getReports().then (result) ->
       $scope.reports = result.reports
-      $scope.labels.push {title: label, active: false } for label in result.labels
-
-      $scope.toggleLabel('Tickets')
+      for label in result.labels
+        $scope.labels.push {title: label, active: false }
+        $scope.toggleLabel(label)
 
     $q.all(load_promises).then(-> $scope.loaded = true)
 
