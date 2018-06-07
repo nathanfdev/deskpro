@@ -37,7 +37,19 @@ DeskPRO.Agent.PageHelper.Comments = new Orb.Class({
 		var clone = $('#comment_tools_menu').first().clone(false);
 		clone.attr('id', Orb.getUniqueId('el'));
 
-		var self = this;
+    if (!window.DESKPRO_PERSON_PERMS['agent_publish.validate']) {
+      clone.find("li[data-action='edit']").hide();
+    }
+
+    if (!window.DESKPRO_PERSON_PERMS['agent_publish.validate']) {
+      clone.find("li[data-action='delete']").hide();
+    }
+
+    if (!window.DESKPRO_PERSON_PERMS['agent_tickets.create']) {
+      clone.find("li[data-action='create-ticket']").hide();
+    }
+
+    var self = this;
 		this._commentMenu = new DeskPRO.UI.Menu({
 			menuElement: clone,
 			onItemClicked: function(info) {

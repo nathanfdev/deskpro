@@ -12,6 +12,7 @@
       pageMeta.baseId = '{{ tplvars.baseId }}';
       pageMeta.guideId = {{ guide.id }};
       pageMeta.display_fields = {{ display_fields|json_encode|raw }};
+      pageMeta.canEdit = {% if not perms.can_edit %}false{% else %}true{% endif %};
     </script>
 {% endblock top %}
 
@@ -88,10 +89,10 @@
     {##################################}
 
     {% if guide %}
-        <div class="list-listing">
+        <div class="list-listing {% if not perms.can_delete %}perm-no-delete{% endif %} {% if not perms.can_edit %}perm-no-edit{% endif %}">
             <div id="{{ tplvars.baseId }}_tab_cat" style="display: none;">
 
-                <section class="pane-section last" id="{{ tplvars.baseId }}_del_guide">
+                <section class="pane-section last nodelete-hide" id="{{ tplvars.baseId }}_del_guide">
                     <header><h1>{{ phrase('agent.publish.delete_guide') }}</h1></header>
                     <article style="padding: 10px;">
                         <div class="dp-not-loading">
@@ -113,7 +114,7 @@
                                     <th width="100">{{ phrase('agent.general.title') }}</th>
                                     <td>
                                         <input type="hidden" name="category[id]" value="{{ guide.id }}" />
-                                        <input type="text" name="category[title]" value="{{ guide.title }}" />
+                                        <input type="text" name="category[title]" value="{{ guide.title }}" {% if not perms.can_edit %} disabled {% endif %}/>
                                     </td>
                                 </tr>
                                 <tr class="vtop">
@@ -123,7 +124,7 @@
                                             {% for ug in app.getUsergroups().getUserUsergroups() %}
                                                 <li>
                                                     <label>
-                                                        <input class="ug-check ug-{{ ug.id }} {% if ug.sys_name %}ug-{{ ug.sys_name }}{% endif %}" type="checkbox" name="category[usergroups][]" value="{{ ug.id }}" {% if ug.id in cat_usergroups %}checked="checked"{% endif %} />
+                                                        <input class="ug-check ug-{{ ug.id }} {% if ug.sys_name %}ug-{{ ug.sys_name }}{% endif %}" type="checkbox" name="category[usergroups][]" value="{{ ug.id }}" {% if ug.id in cat_usergroups %}checked="checked"{% endif %} {% if not perms.can_edit %} disabled="disabled" {% endif %} />
                                                         {{ ug.title }}
                                                     </label>
                                                 </li>
@@ -135,7 +136,7 @@
                                 <tr>
                                     <th>{{ phrase('agent.general.brand') }}</th>
                                     <td>
-                                        <select class="dp-select-widget-simple brand_id" name="category[brand_id]" id="publish_brand_id" style="width: 100%">
+                                        <select class="dp-select-widget-simple brand_id" name="category[brand_id]" id="publish_brand_id" style="width: 100%" {% if not perms.can_edit %} disabled="disabled" {% endif %}>
                                             {% for brand in brands %}
                                                 <option value="{{ brand.id }}" {% if guide.brand_id == brand.id %}selected="selected"{% endif %}>
                                                     {{ brand.name }}
@@ -151,7 +152,7 @@
                     </article>
                 </section>
 
-                <section class="pane-section last">
+                <section class="pane-section last noedit-hide">
                     <header><h1>{{ phrase('agent.publish.reorder_guide_title') }}</h1></header>
                     <article>
                         <div style="padding: 10px;" id="{{ tplvars.baseId }}_cattree" data-treedata="{{ cat_structure_data|json_encode }}"></div>
@@ -159,7 +160,7 @@
                     </article>
                 </section>
 
-                <footer class="pane-footer" id="{{ tplvars.baseId }}_guidefoot">
+                <footer class="pane-footer noedit-hide" id="{{ tplvars.baseId }}_guidefoot">
                     <div class="dp-not-loading">
                         <button class="dp-btn guide-save-trigger" data-save-url="{{ path('agent_publish_savecats', {type: 'topics'}) }}">{{ phrase('agent.general.save') }}</button>
                     </div>

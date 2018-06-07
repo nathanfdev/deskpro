@@ -42,7 +42,7 @@
 {# Articles #}
 {##################################}
 
-<div id="{{ tplvars.baseId }}_tab_main">
+<div id="{{ tplvars.baseId }}_tab_main" class="{% if not perms.can_delete %}perm-no-delete{% endif %} {% if not perms.can_edit %}perm-no-edit{% endif %}">
 
 	{% include 'AgentBundle:Kb:filter-display-options.html.twig' %}
 	{% include 'AgentBundle:Kb:filter-control-bar.html.twig' %}
@@ -92,10 +92,10 @@
 {##################################}
 
 {% if category %}
-<div class="list-listing">
+<div class="list-listing {% if not perms.can_delete %}perm-no-delete{% endif %} {% if not perms.can_edit %}perm-no-edit{% endif %}">
 <div id="{{ tplvars.baseId }}_tab_cat" style="display: none;">
 
-	<section class="pane-section last" id="{{ tplvars.baseId }}_del_cat">
+	<section class="pane-section last nodelete-hide" id="{{ tplvars.baseId }}_del_cat">
 		<header><h1>{{ phrase('agent.publish.delete_category') }}</h1></header>
 		<article style="padding: 10px;">
 			<div class="dp-not-loading">
@@ -117,7 +117,7 @@
 							<th width="100">{{ phrase('agent.general.title') }}</th>
 							<td>
 								<input type="hidden" name="category[id]" value="{{ category.id }}" />
-								<input type="text" name="category[title]" value="{{ category.title }}" />
+								<input type="text" name="category[title]" value="{{ category.title }}" {% if not perms.can_edit %} disabled {% endif %} />
 							</td>
 						</tr>
 						<tr class="vtop">
@@ -127,7 +127,7 @@
 									{% for ug in app.getUsergroups().getUserUsergroups() %}
 										<li>
 											<label>
-												<input class="ug-check ug-{{ ug.id }} {% if ug.sys_name %}ug-{{ ug.sys_name }}{% endif %}" type="checkbox" name="category[usergroups][]" value="{{ ug.id }}" {% if ug.id in cat_usergroups %}checked="checked"{% endif %} />
+												<input class="ug-check ug-{{ ug.id }} {% if ug.sys_name %}ug-{{ ug.sys_name }}{% endif %}" type="checkbox" name="category[usergroups][]" value="{{ ug.id }}" {% if ug.id in cat_usergroups %}checked="checked"{% endif %} {% if not perms.can_edit %} disabled="disabled" {% endif %} />
 												{{ ug.title }}
 											</label>
 										</li>
@@ -141,7 +141,7 @@
 		</article>
 	</section>
 
-	<section class="pane-section last">
+	<section class="pane-section last noedit-hide">
 		<header><h1>{{ phrase('agent.publish.reorder_category_title') }}</h1></header>
 		<article>
 			<div style="padding: 10px;" id="{{ tplvars.baseId }}_cattree" data-treedata="{{ cat_structure_data|json_encode }}"></div>
@@ -149,7 +149,7 @@
 		</article>
 	</section>
 
-	<footer class="pane-footer" id="{{ tplvars.baseId }}_catfoot">
+	<footer class="pane-footer noedit-hide" id="{{ tplvars.baseId }}_catfoot">
 		<div class="dp-not-loading">
 			<button class="dp-btn cat-save-trigger" data-save-url="{{ path('agent_publish_savecats', {type: 'article'}) }}">{{ phrase('agent.general.save') }}</button>
 		</div>

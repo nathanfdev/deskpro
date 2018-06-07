@@ -3,7 +3,12 @@
 		{% set info = content_info.info %}
 		{% set content = content_info.obj %}
 		<article class="row-item content {{ info.content_type }}-{{content.id}} {{ get_type(content)|lower }}">
-			<input class="item-select" type="checkbox" value="{{ info.content_type }}.{{content.id}}" data-content-type="{{ info.content_type }}" data-content-id="{{ content.id }}" />
+			<input class="item-select"
+             type="checkbox"
+             value="{{ info.content_type }}.{{content.id}}"
+             data-content-type="{{ info.content_type }}"
+             data-content-id="{{ content.id }}"
+             {% if not app.user.hasPerm('agent_publish.validate') %}style="display:none;"{% endif %} />
 			<div class="top-row">
 				<div class="top-row-left">
 					<h3>

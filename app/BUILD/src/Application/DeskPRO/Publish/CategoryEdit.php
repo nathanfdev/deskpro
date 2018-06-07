@@ -417,4 +417,20 @@ class CategoryEdit
     {
         return AgentHelper::getCatEntityNameFor($type);
     }
+
+    /**
+     * Find Category entity of type.
+     *
+     * @param string $type
+     * @param int    $categoryId
+     *
+     * @return CategoryAbstract
+     */
+    public static function findCategoryFor($type, $categoryId)
+    {
+        $entity             = self::getEntityNameFor($type);
+        $categoryRepository = App::getOrm()->getRepository($entity);
+
+        return $categoryRepository->find($categoryId);
+    }
 }

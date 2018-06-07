@@ -35,7 +35,8 @@ export class GuideTreeContainer extends React.Component {
     tree:            PropTypes.object,
     openTopic:       PropTypes.func,
     dispatch:        PropTypes.func.isRequired,
-    displayStatuses: PropTypes.arrayOf(PropTypes.oneOf(['draft', 'unpublished', 'archived']))
+    displayStatuses: PropTypes.arrayOf(PropTypes.oneOf(['draft', 'unpublished', 'archived'])),
+    canDrag:         PropTypes.bool
   };
 
   static defaultProps = {
@@ -68,6 +69,7 @@ export class GuideTreeContainer extends React.Component {
         onClick={node => this.props.openTopic(node.id)}
         reloadTree={this.reloadTree}
         displayStatuses={this.props.displayStatuses}
+        canDrag={this.props.canDrag}
       />
     );
   }
@@ -79,7 +81,8 @@ export class GuideTree extends React.Component {
     onClick:         PropTypes.func,
     handleChange:    PropTypes.func,
     reloadTree:      PropTypes.func,
-    displayStatuses: PropTypes.array
+    displayStatuses: PropTypes.array,
+    canDrag:         PropTypes.bool
   };
   static defaultProps = {
     height: 800,
@@ -180,6 +183,7 @@ export class GuideTree extends React.Component {
           onMoveNode={this.onMoveNode}
           nodeContentRenderer={TopicRenderer}
           generateNodeProps={this.generateNodeProps}
+          canDrag={this.props.canDrag}
         />
       </div>
     );

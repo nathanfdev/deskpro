@@ -18,6 +18,7 @@ const propTypes = {
   style:                    PropTypes.object,
   parentNode:               PropTypes.object,
   canDrag:                  PropTypes.bool,
+  treeId:                   PropTypes.string,
   didDrop:                  PropTypes.bool,
 
   // Drag and drop API functions
@@ -41,6 +42,9 @@ const NodeRendererDefault = ({
   isDragging,
   isOver,
   canDrop,
+  canDrag,
+  treeId, // we don't use this explicitly, but we need to extract this var from `otherProps`
+          // otherwise there will be an error in component
   node,
   draggedNode,
   path,
@@ -74,7 +78,7 @@ const NodeRendererDefault = ({
         </div>
       </div>
     );
-  } else {
+  } else if (canDrag) {
     // Show the handle used to initiate a drag-and-drop
     handle = connectDragSource((
       <div className="moveHandle" />
