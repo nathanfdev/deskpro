@@ -35,6 +35,9 @@ class LastWeek extends AbstractDateRange
         $date->modify('+6 days'); // 7 days will take us to the next start of the week
         $end = $date->format('Y-m-d');
 
-        return ["$start to $end", "$start 00:00:00", "$end 23:59:59"];
+        $beforeStart = new \DateTime("$start 23:59:59");
+        $beforeStart->modify('-1 day');
+
+        return ["$start to $end", "$start 00:00:00", "$end 23:59:59", $beforeStart->format('Y-m-d H:i:s')];
     }
 }

@@ -21,6 +21,9 @@ class LastMonth extends AbstractDateRange
         $endDateValue   = $endDate->format('Y-m-d');
         $startDateValue = $endDate->format('Y-m').'-01';
 
-        return ["$startDateValue to $endDateValue", "$startDateValue 00:00:00", "$endDateValue 23:59:59"];
+        $beforeStart = new \DateTime("$startDateValue 23:59:59");
+        $beforeStart->modify('-1 day');
+
+        return ["$startDateValue to $endDateValue", "$startDateValue 00:00:00", "$endDateValue 23:59:59", $beforeStart->format('Y-m-d H:i:s')];
     }
 }

@@ -19,6 +19,9 @@ class Past6Months extends AbstractDateRange
         $date->modify('-6 months');
         $beginning = $date->format('Y-m-d');
 
-        return ["$beginning to $today", "$beginning 00:00:00", $now];
+        $beforeStart = new \DateTime("$beginning 23:59:59");
+        $beforeStart->modify('-1 day');
+
+        return ["$beginning to $today", "$beginning 00:00:00", $now, $beforeStart->format('Y-m-d H:i:s')];
     }
 }

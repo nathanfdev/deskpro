@@ -17,6 +17,9 @@ class Yesterday extends AbstractDateRange
 
         $yesterday = $date->format('Y-m-d');
 
-        return [$yesterday, "$yesterday 00:00:00", "$yesterday 23:59:59"];
+        $beforeStart = new \DateTime("$yesterday 23:59:59");
+        $beforeStart->modify('-1 day');
+
+        return [$yesterday, "$yesterday 00:00:00", "$yesterday 23:59:59", $beforeStart->format('Y-m-d H:i:s')];
     }
 }
