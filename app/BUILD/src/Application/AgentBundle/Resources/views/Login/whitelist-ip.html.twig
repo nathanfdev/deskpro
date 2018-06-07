@@ -1,16 +1,16 @@
 {% extends 'AgentBundle:Login:layout.html.twig' %}
 {% block content %}
 	<div class="title">
-		Log in from unverified IP address
+		{{ phrase('agent.login.whitelist_ip_title') }}
 	</div>
 	<div class="content">
-		<p>You are attempting to access this account from an unverified IP address:</p>
+		<p>{{ phrase('agent.login.whitelist_ip_content') }}</p>
 
 		<div style="padding: 10px; background: #fff; border: 1px solid #bbb; margin: 15px 0 15px 0;">
 			{{ ip }}
 		</div>
 
 		<br/>
-		<p>You should check your email and follow the instructions within to verify your IP address.</p>
+		<p>{{ phrase('agent.login.whitelist_ip_note') }}</p>
 	</div>
 {% endblock %}

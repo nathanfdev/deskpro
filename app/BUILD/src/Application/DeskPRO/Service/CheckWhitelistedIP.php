@@ -2,10 +2,12 @@
 
 namespace Application\DeskPRO\Service;
 
+use Application\AgentBundle\Controller\MainController;
 use Application\DeskPRO\DependencyInjection\DeskproContainer;
 use Application\DeskPRO\Entity\Person;
 use Application\DeskPRO\Entity\TmpData;
 use Application\DeskPRO\EntityRepository\WhiteListedIp;
+use Application\DeskPRO\HttpKernel\Controller\Controller;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
 
@@ -21,10 +23,14 @@ class CheckWhitelistedIP
      * @param Request          $request
      * @param DeskproContainer $container
      * @param Person           $person
+     * @param Controller       $controller
+     *
+     * @throws \Doctrine\ORM\OptimisticLockException
+     * @throws \Exception
      *
      * @return bool
      */
-    public static function checkIP(Request $request, DeskproContainer $container, Person $person = null)
+    public static function checkIP(Request $request, DeskproContainer $container, Person $person = null, $controller = null)
     {
         if (!$container->getSetting('agent.ip_security.enabled')) {
             return true;
@@ -56,28 +62,30 @@ class CheckWhitelistedIP
         $container->getEm()->persist($codeData);
         $container->getEm()->flush();
 
-        $url = $container->get('router')->generate(
-            'agent_whitelist_ip', ['code' => $codeData->getCode()], UrlGeneratorInterface::ABSOLUTE_URL
-        );
-        $vars = [
-            'ip'        => $ip,
-            'code'      => $codeData->getCode(),
-            'person'    => $person,
-            'interface' => DP_INTERFACE,
-            'url'       => $url,
-        ];
+        if ($controller && $controller instanceof MainController) {
+            $url = $container->get('router')->generate(
+                'agent_whitelist_ip', ['code' => $codeData->getCode()], UrlGeneratorInterface::ABSOLUTE_URL
+            );
+            $vars = [
+                'ip'        => $ip,
+                'code'      => $codeData->getCode(),
+                'person'    => $person,
+                'interface' => DP_INTERFACE,
+                'url'       => $url,
+            ];
 
-        if ($container->get('deskpro.feature_flags')->hasBeta('email_templates')) {
-            $viewModel = $container->get('email.agent_viewmodel_factory')
-                ->createAgentWhitelistIpModel($url);
-            $container->get('email.email_sender')
-                ->send($viewModel, ['to' => $person]);
-        } else {
-            $message = $container->getMailer()->createMessage();
-            $message->setTemplate('DeskPRO:emails_agent:whitelist-ip.html.twig', $vars);
-            $message->setTo($person->getPrimaryEmailAddress(), $person->getDisplayName());
+            if ($container->get('deskpro.feature_flags')->hasBeta('email_templates')) {
+                $viewModel = $container->get('email.agent_viewmodel_factory')
+                    ->createAgentWhitelistIpModel($url);
+                $container->get('email.email_sender')
+                    ->send($viewModel, ['to' => $person]);
+            } else {
+                $message = $container->getMailer()->createMessage();
+                $message->setTemplate('DeskPRO:emails_agent:whitelist-ip.html.twig', $vars);
+                $message->setTo($person->getPrimaryEmailAddress(), $person->getDisplayName());
 
-            $container->getMailer()->send($message);
+                $container->getMailer()->send($message);
+            }
         }
 
         return false;
