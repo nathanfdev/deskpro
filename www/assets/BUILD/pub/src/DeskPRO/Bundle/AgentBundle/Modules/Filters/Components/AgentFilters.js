@@ -54,7 +54,12 @@ export default class AgentFilters extends React.Component {
     this.state = {
       mode,
     };
-    this.maxHeight = document.getElementById('react_dp_agent_filters').offsetHeight - 46;
+    const parent = document.getElementById('react_dp_agent_filters');
+    if (parent) {
+      this.maxHeight = parent.offsetHeight - 46;
+    } else {
+      this.maxHeight = 600;
+    }
     this.drawers = {};
   }
 
