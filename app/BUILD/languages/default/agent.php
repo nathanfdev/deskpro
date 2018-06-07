@@ -2826,6 +2826,7 @@ return [
     'agent.voice.call_started'                              => 'Call started',
     'agent.voice.call_ended'                                => 'Call ended',
     'agent.email_subjects.scheduled_report_ready'           => 'View your report: {{report_title}}',
-    'agent.scheduled_report.accost'                         => 'Dear {{person_title}}',
-    'agent.scheduled_report.acknowledgment'                 => 'Your {{frequency}} report is ready to view:',
+    'agent.scheduled_report.accost'                         => 'Hello {{person_title}}!',
+    'agent.scheduled_report.scheduler'                      => '{{scheduler_name}} scheduled a report and set you as email recipient.',
+    'agent.scheduled_report.acknowledgment'                 => '{{frequency}} report is ready to view:',
 ];

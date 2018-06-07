@@ -235,8 +235,10 @@ define ['DeskPRO/Util/Arrays'], (Arrays) ->
       @Api2
       .sendPutJson url, data
       .then () ->
+        deferred.resolve()
         return
       , () ->
+        deferred.reject()
         console.error 'something goes wrong!'
       deferred.promise
 
@@ -279,7 +281,7 @@ define ['DeskPRO/Util/Arrays'], (Arrays) ->
 
     scheduleReport: (report, schedule, enabled) ->
       deferred = @$q.defer()
-      if enabled == '1'
+      if parseInt(enabled, 10) == 1
         data = {
           schedule: {
             frequency: schedule.frequency

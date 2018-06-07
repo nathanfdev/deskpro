@@ -1,11 +1,13 @@
 define -> [
   '$scope',
   'DashboardService',
+  'DashboardsInfo',
   '$modalInstance',
   'report',
   ($scope,
-   DashboardService
-   $modalInstance
+   DashboardService,
+   DashboardsInfo,
+   $modalInstance,
    report
   ) ->
 
@@ -43,10 +45,12 @@ define -> [
       $modalInstance.dismiss('cancel')
 
     $scope.saveReport = ->
+      DashboardsInfo.clearLastReportDetail()
       $modalInstance.close($scope.report)
 
     $scope.scheduleReport= ->
       DashboardService.scheduleReport(report, $scope.schedule, $scope.enabled)
       .then () ->
+        DashboardsInfo.clearLastReportDetail()
         $modalInstance.dismiss('scheduled')
 ]
