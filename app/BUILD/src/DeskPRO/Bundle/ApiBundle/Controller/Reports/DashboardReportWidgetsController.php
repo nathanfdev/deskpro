@@ -128,17 +128,17 @@ class DashboardReportWidgetsController extends CrudController
      */
     protected function applyListFilters(QueryBuilder $qb, $alias, Request $request)
     {
-        $qb
-            ->join("$alias.report", 'r')
-            ->join('r.dashboard', 'd')
-            ->join('d.permissions', 'p')
-            ->join('p.person', 'per')
-            ->andWhere('p.person IN (:person) OR p.team IN (:teams) OR d.person IN (:person)')
-            ->orWhere('p.person IS NULL AND p.team IS NULL AND p.department IS NULL')
-            ->orWhere('(per.can_admin = 1 OR per.can_reports = 1)')
-            ->setParameter('person', $this->getUser())
-            ->setParameter('teams', $this->getUser()->getTeams())
-        ;
+        if (!$this->getUser()->isAdmin() && !$this->getUser()->can_reports) {
+            $qb
+                ->join("$alias.report", 'r')
+                ->join('r.dashboard', 'd')
+                ->join('d.permissions', 'p')
+                ->andWhere('p.person IN (:person) OR p.team IN (:teams) OR d.person IN (:person)')
+                ->orWhere('p.person IS NULL AND p.team IS NULL AND p.department IS NULL')
+                ->setParameter('person', $this->getUser())
+                ->setParameter('teams', $this->getUser()->getTeams())
+            ;
+        }
 
         if ($request->get('report')) {
             $qb->andWhere("$alias.report = :report");
