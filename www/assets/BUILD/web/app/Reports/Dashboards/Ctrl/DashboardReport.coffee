@@ -255,8 +255,11 @@ define ['DeskPRO/Util/Arrays'], (Arrays) -> [
             cloneVar = $.extend({}, variable);
             if variable.type == 'dates' && $scope.groupParams[variable.type]
               cloneVar.value = $scope.groupParams[variable.type][Object.keys($scope.groupParams[variable.type])[0]][0]
+            else if variable.type == 'values' && $scope.groupParams[variable.type]
+              cloneVar.value = Object.keys($scope.groupParams[variable.type][variable.field_type])[0]
             else if $scope.groupParams[variable.type]
-              cloneVar.value = cloneVar.value = $scope.groupParams[variable.type][variable.field_type][Object.keys($scope.groupParams[variable.type])[0]][0]
+              cloneVar.value = $scope.groupParams[variable.type][variable.field_type][Object.keys($scope.groupParams[variable.type][variable.field_type])[0]][0]
+
             angular.forEach($scope.report.variables, (reportVar) ->
               if reportVar.name == cloneVar.name
                 cloneVar.value = reportVar.value
