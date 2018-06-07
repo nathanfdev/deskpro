@@ -51,21 +51,39 @@ export default class AgentFilters extends React.Component {
         filter: props.filterSets.first().get('filters').first(),
       };
     }
-    this.state = {
-      mode,
-    };
+    let maxHeight;
     const parent = document.getElementById('react_dp_agent_filters');
     if (parent) {
-      this.maxHeight = parent.offsetHeight - 46;
+      maxHeight = parent.offsetHeight - 47;
     } else {
-      this.maxHeight = 600;
+      maxHeight = 600;
     }
+    window.addEventListener('resize', this.windowResize);
     this.drawers = {};
+    this.state = {
+      mode,
+      maxHeight
+    };
   }
+
+  componentWillUnmount = () => {
+    window.removeEventListener('resize', this.windowResize);
+  };
 
   onSelectMode = (mode) => {
     this.setState({ mode });
     this.props.onSelectMode(mode);
+  };
+
+  windowResize = () => {
+    const parent = document.getElementById('react_dp_agent_filters');
+    if (!this.resizing) {
+      window.requestAnimationFrame(() => {
+        this.setState({ maxHeight: parent.offsetHeight - 47 });
+        this.resizing = false;
+      });
+    }
+    this.resizing = true;
   };
 
   render() {
@@ -95,7 +113,7 @@ export default class AgentFilters extends React.Component {
         </Heading>
         <DrawerList>
           <Scrollbar
-            autoHeightMax={this.maxHeight}
+            autoHeightMax={this.state.maxHeight}
             hideTracksWhenNotNeeded
           >
             {filterSets.toArray().map(filterSet => (
