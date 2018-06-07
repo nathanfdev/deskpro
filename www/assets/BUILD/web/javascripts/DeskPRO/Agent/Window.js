@@ -3685,254 +3685,259 @@ DeskPRO.Agent.Window = new Orb.Class({
 		return DeskPRO.Agent.RteEditor.initRteAgentReply(textarea, options);
 	},
 
-	initAgentNotifierForRte: function(obj, textarea, alwaysAvailable) {
-		var api = textarea.data('redactor');
-		if (!api) {
-			return;
-		}
+  initAgentNotifierForRte: function(obj, textarea, alwaysAvailable) {
+    var self = this;
 
-		var ed = textarea.getEditor();
-		var self = this;
+    // Notifier depends from window.notifyAgentMap initialized during bootstrapActions
+    // add below function to waiting pull
+    window.DP_ADD_PAGE_INIT_FN(function() {
+      var api = textarea.data('redactor');
+      if (!api) {
+        return;
+      }
 
-		var agentMapLower = {}, hasAgents = false;
-		var notifyAgentMap = window.notifyAgentMap || [];
-		Object.each(notifyAgentMap, function(data, agentId) {
-			hasAgents = true;
-			agentMapLower[agentId] = data.name.toLowerCase();
-		});
+      var ed = textarea.getEditor();
 
-		if (!hasAgents) {
-			return;
-		}
+      var agentMapLower = {}, hasAgents = false;
+      var notifyAgentMap = window.notifyAgentMap || [];
+      Object.each(notifyAgentMap, function(data, agentId) {
+        hasAgents = true;
+        agentMapLower[agentId] = data.name.toLowerCase();
+      });
 
-		obj.agentNotifyList = $('<ul />').addClass('message-agent-notify-list').hide().appendTo(document.body);
+      if (!hasAgents) {
+        return;
+      }
 
-		var insertAgentNotify = function(agentId) {
-			if (typeof notifyAgentMap[agentId] === 'undefined') {
-				return;
-			}
+      obj.agentNotifyList = $('<ul />').addClass('message-agent-notify-list').hide().appendTo(document.body);
 
-			self.hideAgentNotifyList(obj);
+      var insertAgentNotify = function(agentId) {
+        if (typeof notifyAgentMap[agentId] === 'undefined') {
+          return;
+        }
 
-			var focus = api.getFocus(),
-				focusNode = $(focus[0]),
-				testText;
+        self.hideAgentNotifyList(obj);
 
-			if (!focus || !focus[0]) {
-				return;
-			}
+        var focus = api.getFocus(),
+          focusNode = $(focus[0]),
+          testText;
 
-			if (focus[0].nodeType == 3) {
-				testText = focusNode.text().substring(0, focus[1]);
-			} else {
-				focus[0] = focusNode.contents().get(focus[1] - 1);
-				focusNode = $(focus[0]);
-				testText = focusNode.text();
-				focus[1] = testText.length;
-			}
+        if (!focus || !focus[0]) {
+          return;
+        }
 
-			var	lastAt = testText.lastIndexOf('@');
+        if (focus[0].nodeType == 3) {
+          testText = focusNode.text().substring(0, focus[1]);
+        } else {
+          focus[0] = focusNode.contents().get(focus[1] - 1);
+          focusNode = $(focus[0]);
+          testText = focusNode.text();
+          focus[1] = testText.length;
+        }
 
-			if (lastAt != -1) {
-				api.setSelection(focus[0], lastAt, focus[0], focus[1]);
-			}
+        var	lastAt = testText.lastIndexOf('@');
 
-			// web kit handles content editable without an issue. this prevents the span
-			// from being extended unnecessarily
-			var editable = $.browser.webkit ? ' contenteditable="false"' : '';
-			api.insertHtml('<span' + editable + ' data-notify-agent-id="' + agentId + '">@' + Orb.escapeHtml(notifyAgentMap[agentId].name) + '</span>&nbsp;');
-		};
+        if (lastAt != -1) {
+          api.setSelection(focus[0], lastAt, focus[0], focus[1]);
+        }
 
-		obj.agentNotifyList.on('mousedown', 'li', function(e) {
-			e.preventDefault();
-			insertAgentNotify($(this).data('agent-id'));
-		});
+        // web kit handles content editable without an issue. this prevents the span
+        // from being extended unnecessarily
+        var editable = $.browser.webkit ? ' contenteditable="false"' : '';
+        api.insertHtml('<span' + editable + ' data-notify-agent-id="' + agentId + '">@' + Orb.escapeHtml(notifyAgentMap[agentId].name) + '</span>&nbsp;');
+      };
 
-		ed.on('click blur', function() {
-			if (obj.isNote || alwaysAvailable) {
-				self.hideAgentNotifyList(obj);
-			}
-		});
+      obj.agentNotifyList.on('mousedown', 'li', function(e) {
+        e.preventDefault();
+        insertAgentNotify($(this).data('agent-id'));
+      });
 
-		ed.on('keydown', function(e) {
-			if (!obj.isNote && !alwaysAvailable) {
-				self.hideAgentNotifyList(obj);
-				return;
-			}
+      ed.on('click blur', function() {
+        if (obj.isNote || alwaysAvailable) {
+          self.hideAgentNotifyList(obj);
+        }
+      });
 
-			switch (e.keyCode) {
-				case 38: // up
-				case 40: // down
-				case 13: // enter
-					if (!obj.agentNotifyList.is(':visible')) {
-						return;
-					}
-					break;
+      ed.on('keydown', function(e) {
+        if (!obj.isNote && !alwaysAvailable) {
+          self.hideAgentNotifyList(obj);
+          return;
+        }
 
-				default:
-					return;
-			}
+        switch (e.keyCode) {
+          case 38: // up
+          case 40: // down
+          case 13: // enter
+            if (!obj.agentNotifyList.is(':visible')) {
+              return;
+            }
+            break;
 
-			e.preventDefault();
+          default:
+            return;
+        }
 
-			if (e.keyCode == 13) { // enter - inserting the selected
-				var li = obj.agentNotifyList.find('li.selected');
-				if (!li.length) {
-					li = obj.agentNotifyList.find('li:first');
-				}
+        e.preventDefault();
 
-				insertAgentNotify(li.data('agent-id'));
-			} else if (e.keyCode == 40) { // down - moves down the list
-				var li = obj.agentNotifyList.find('li.selected');
-				if (!li.length) {
-					obj.agentNotifyList.find('li:first').addClass('selected');
-				} else {
-					li.removeClass('selected');
-					var next = li.next('li');
-					if (next.length) {
-						next.addClass('selected');
-					} else {
-						obj.agentNotifyList.find('li:first').addClass('selected');
-					}
-				}
-			} else if (e.keyCode == 38) { // up - moves up the list
-				var li = obj.agentNotifyList.find('li.selected');
-				if (!li.length) {
-					obj.agentNotifyList.find('li:last').addClass('selected');
-				} else {
-					li.removeClass('selected');
-					var prev = li.prev('li');
-					if (prev.length) {
-						prev.addClass('selected');
-					} else {
-						obj.agentNotifyList.find('li:last').addClass('selected');
-					}
-				}
-			}
-		});
+        if (e.keyCode == 13) { // enter - inserting the selected
+          var li = obj.agentNotifyList.find('li.selected');
+          if (!li.length) {
+            li = obj.agentNotifyList.find('li:first');
+          }
 
-		ed.on('keyup', function(e) {
-			if (!obj.isNote && !alwaysAvailable) {
-				return;
-			}
+          insertAgentNotify(li.data('agent-id'));
+        } else if (e.keyCode == 40) { // down - moves down the list
+          var li = obj.agentNotifyList.find('li.selected');
+          if (!li.length) {
+            obj.agentNotifyList.find('li:first').addClass('selected');
+          } else {
+            li.removeClass('selected');
+            var next = li.next('li');
+            if (next.length) {
+              next.addClass('selected');
+            } else {
+              obj.agentNotifyList.find('li:first').addClass('selected');
+            }
+          }
+        } else if (e.keyCode == 38) { // up - moves up the list
+          var li = obj.agentNotifyList.find('li.selected');
+          if (!li.length) {
+            obj.agentNotifyList.find('li:last').addClass('selected');
+          } else {
+            li.removeClass('selected');
+            var prev = li.prev('li');
+            if (prev.length) {
+              prev.addClass('selected');
+            } else {
+              obj.agentNotifyList.find('li:last').addClass('selected');
+            }
+          }
+        }
+      });
 
-			if (e.ctrlKey || e.metaKey) {
-				return;
-			}
+      ed.on('keyup', function(e) {
+        if (!obj.isNote && !alwaysAvailable) {
+          return;
+        }
 
-			switch (e.keyCode) {
-				case 16: // shift
-				case 17: // ctrl
-				case 18: // alt
-				case 19: // pause/break
-				case 20: // caps lock
-				case 91: // left windows
-				case 92: // right windows
-				case 93: // select
-				case 224: // apple key
-					return;
+        if (e.ctrlKey || e.metaKey) {
+          return;
+        }
 
-				case 13: // enter
-				case 38: // up
-				case 40: // down
-					// these don't hide as that messes up the keydown handler
-					e.stopImmediatePropagation();
-					e.preventDefault();
-					return;
+        switch (e.keyCode) {
+          case 16: // shift
+          case 17: // ctrl
+          case 18: // alt
+          case 19: // pause/break
+          case 20: // caps lock
+          case 91: // left windows
+          case 92: // right windows
+          case 93: // select
+          case 224: // apple key
+            return;
 
-				case 9: // tab
-				case 27: // esc
-				case 33: // page up
-				case 34: // page down
-				case 35: // end
-				case 36: // home
-				case 37: // left
-				case 39: // right
-					self.hideAgentNotifyList(obj);
-					return;
+          case 13: // enter
+          case 38: // up
+          case 40: // down
+            // these don't hide as that messes up the keydown handler
+            e.stopImmediatePropagation();
+            e.preventDefault();
+            return;
 
-				default:
-					// function keys and other special ones
-					if (e.keyCode >= 112 && e.keyCode <= 145) {
-						self.hideAgentNotifyList(obj);
-						return;
-					}
-			}
+          case 9: // tab
+          case 27: // esc
+          case 33: // page up
+          case 34: // page down
+          case 35: // end
+          case 36: // home
+          case 37: // left
+          case 39: // right
+            self.hideAgentNotifyList(obj);
+            return;
 
-			var focus = api.getFocus(),
-				origin = api.getOrigin(),
-				selection = api.getSelection();
+          default:
+            // function keys and other special ones
+            if (e.keyCode >= 112 && e.keyCode <= 145) {
+              self.hideAgentNotifyList(obj);
+              return;
+            }
+        }
 
-			if (focus[0] != origin[0] || focus[1] != origin[1]) {
-				// selected multiple points, don't show
-				self.hideAgentNotifyList(obj);
-				return;
-			}
+        var focus = api.getFocus(),
+          origin = api.getOrigin(),
+          selection = api.getSelection();
 
-			var	focusNode = $(focus[0]),
-				testText = focus[0].nodeType == 3 ? focusNode.text().substring(0, focus[1]) : $(focusNode.contents().get(focus[1] - 1)).text(),
-				lastAt = testText.lastIndexOf('@'),
-				matches = [];
+        if (focus[0] != origin[0] || focus[1] != origin[1]) {
+          // selected multiple points, don't show
+          self.hideAgentNotifyList(obj);
+          return;
+        }
 
-			if (lastAt != -1 && (lastAt == 0 || testText[lastAt - 1].match(/^(\s|[\.!?:;,()<>|/-])$/))) {
-				var afterAt = testText.substring(lastAt + 1, testText.length).toLowerCase();
+        var	focusNode = $(focus[0]),
+          testText = focus[0].nodeType == 3 ? focusNode.text().substring(0, focus[1]) : $(focusNode.contents().get(focus[1] - 1)).text(),
+          lastAt = testText.lastIndexOf('@'),
+          matches = [];
 
-				if (afterAt.length >= 2 && afterAt.length < 75) {
-					Object.each(notifyAgentMap, function(data, agentId) {
-						if (agentMapLower[agentId].indexOf(afterAt) == 0) {
-							matches.push(agentId);
-						}
-					});
-				}
-			}
+        if (lastAt != -1 && (lastAt == 0 || testText[lastAt - 1].match(/^(\s|[\.!?:;,()<>|/-])$/))) {
+          var afterAt = testText.substring(lastAt + 1, testText.length).toLowerCase();
 
-			if (matches.length) {
-				var selectedId = obj.agentNotifyList.find('li:selected').data('agent-id');
+          if (afterAt.length >= 2 && afterAt.length < 75) {
+            Object.each(notifyAgentMap, function(data, agentId) {
+              if (agentMapLower[agentId].indexOf(afterAt) == 0) {
+                matches.push(agentId);
+              }
+            });
+          }
+        }
 
-				obj.agentNotifyList.empty();
-				for (var i = 0; i < matches.length; i++) {
-					var li = $('<li>')
-						.text(notifyAgentMap[matches[i]].name)
-						.css('background-image', 'url('+notifyAgentMap[matches[i]].picture_url+')')
-						.data('agent-id', matches[i]);
-					if (matches[i] === selectedId) {
-						li.addClass('selected');
-					}
-					obj.agentNotifyList.append(li);
-				}
+        if (matches.length) {
+          var selectedId = obj.agentNotifyList.find('li:selected').data('agent-id');
 
-				if (!obj.agentNotifyList.find('li:selected').length) {
-					obj.agentNotifyList.find('li:first').addClass('selected');
-				}
+          obj.agentNotifyList.empty();
+          for (var i = 0; i < matches.length; i++) {
+            var li = $('<li>')
+              .text(notifyAgentMap[matches[i]].name)
+              .css('background-image', 'url('+notifyAgentMap[matches[i]].picture_url+')')
+              .data('agent-id', matches[i]);
+            if (matches[i] === selectedId) {
+              li.addClass('selected');
+            }
+            obj.agentNotifyList.append(li);
+          }
 
-				var containingNode = focus[0].nodeType == 3 ? focusNode.parent() : focusNode;
-				if (!containingNode.is('div, p, li, ul, ol, blockquote, table, body')) {
-					containingNode = containingNode.closest('div, p, li, ul, ol, blockquote, table, body');
-				}
-				var offset = containingNode.offset();
+          if (!obj.agentNotifyList.find('li:selected').length) {
+            obj.agentNotifyList.find('li:first').addClass('selected');
+          }
 
-				if (selection) {
-					var selOffset = Orb.getSelectionCoords(selection);
-					if (selOffset) {
-						offset = selOffset;
-					}
-				}
+          var containingNode = focus[0].nodeType == 3 ? focusNode.parent() : focusNode;
+          if (!containingNode.is('div, p, li, ul, ol, blockquote, table, body')) {
+            containingNode = containingNode.closest('div, p, li, ul, ol, blockquote, table, body');
+          }
+          var offset = containingNode.offset();
 
-				obj.agentNotifyList.css({
-					top: offset.top - obj.agentNotifyList.outerHeight() - 1,
-					left: offset.left
-				});
+          if (selection) {
+            var selOffset = Orb.getSelectionCoords(selection);
+            if (selOffset) {
+              offset = selOffset;
+            }
+          }
 
-				obj.agentNotifyList.show();
-				obj.agentNotifyListShown = true;
-			} else {
-				self.hideAgentNotifyList(obj);
-			}
-		});
+          obj.agentNotifyList.css({
+            top: offset.top - obj.agentNotifyList.outerHeight() - 1,
+            left: offset.left
+          });
 
-		// this is important as I need this keyup handler to run before redactor's own because of new line handling
-		ed.data('events').keyup.reverse();
-	},
+          obj.agentNotifyList.show();
+          obj.agentNotifyListShown = true;
+        } else {
+          self.hideAgentNotifyList(obj);
+        }
+      });
+
+      // this is important as I need this keyup handler to run before redactor's own because of new line handling
+      ed.data('events').keyup.reverse();
+    });
+  },
 
 	hideAgentNotifyList: function(obj) {
 		if (obj.agentNotifyList && obj.agentNotifyListShown) {
