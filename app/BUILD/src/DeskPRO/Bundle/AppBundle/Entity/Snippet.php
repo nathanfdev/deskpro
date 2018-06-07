@@ -208,7 +208,7 @@ class Snippet implements EntityInterface, NotifyPropertyChanged
         $this->translations       = new ArrayCollection();
         $this->ownershipTeams     = new ArrayCollection();
         $this->visibleDepartments = new ArrayCollection();
-        $this->labels             = new ArrayCollection();
+        $this->setModelField('labels', new ArrayCollection());
         $this->setModelField('dateCreated', new \DateTime());
     }
 
@@ -440,6 +440,7 @@ class Snippet implements EntityInterface, NotifyPropertyChanged
         if (!$this->hasLabel($label)) {
             $this->labels->add($label);
             $label->setSnippet($this);
+            $this->setModelField('labels', $this->labels);
         }
 
         return $this;
@@ -471,6 +472,7 @@ class Snippet implements EntityInterface, NotifyPropertyChanged
         foreach ($this->labels as $l) {
             if ($l->getLabel() === $label->getLabel()) {
                 $this->labels->removeElement($l);
+                $this->setModelField('labels', $this->labels);
             }
         }
 
@@ -532,6 +534,34 @@ class Snippet implements EntityInterface, NotifyPropertyChanged
     }
 
     /**
+     * @return $this
+     */
+    public function clearTeams()
+    {
+        $this->ownershipTeams->clear();
+
+        return $this;
+    }
+
+    /**
+     * @param AgentTeam $team
+     *
+     * @return bool
+     */
+    public function hasTeam(AgentTeam $team)
+    {
+        return $this->ownershipTeams->contains($team);
+    }
+
+    /**
+     * @return bool
+     */
+    public function hasTeams()
+    {
+        return (bool) count($this->ownershipTeams);
+    }
+
+    /**
      * @return bool
      */
     public function isVisibleGlobal()
@@ -583,6 +613,34 @@ class Snippet implements EntityInterface, NotifyPropertyChanged
     public function getVisibleDepartments()
     {
         return $this->visibleDepartments;
+    }
+
+    /**
+     * @return $this
+     */
+    public function clearDepartments()
+    {
+        $this->visibleDepartments->clear();
+
+        return $this;
+    }
+
+    /**
+     * @param Department $department
+     *
+     * @return bool
+     */
+    public function hasDepartment(Department $department)
+    {
+        return $this->visibleDepartments->contains($department);
+    }
+
+    /**
+     * @return bool
+     */
+    public function hasDepartments()
+    {
+        return (bool) count($this->visibleDepartments);
     }
 
     /**
