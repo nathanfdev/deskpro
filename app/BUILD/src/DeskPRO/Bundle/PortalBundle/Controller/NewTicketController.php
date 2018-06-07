@@ -99,7 +99,12 @@ class NewTicketController extends AbstractController
         if (!$form->isSubmitted() && $request->query->has('ticket')) {
             // set default values
             // using the string constant to acquire data from query instead of Form::getName for BC
-            $form->submit($request->query->get('ticket') ?: []);
+            $defaultData = $request->query->get('ticket') ?: [];
+            if ($request->attributes->getInt('department_id') && !isset($defaultData['department'])) {
+                $defaultData['department'] = $request->attributes->getInt('department_id');
+            }
+
+            $form->submit($defaultData);
             FormValidatorChecker::clearFormErrors($form);
         }
 
