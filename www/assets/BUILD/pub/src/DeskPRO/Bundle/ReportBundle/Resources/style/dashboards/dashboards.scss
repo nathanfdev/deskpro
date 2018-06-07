@@ -1421,11 +1421,17 @@ $gridster-box-header-height: 40px;
       border: none;
 
       .box-header-btns {
-        top: 8px;
+        top: 11px;
         display: none;
         a {
           margin-left: 8px;
           color: #bbb;
+          display: inline-block !important;
+
+          span {
+            padding-left: 3px;
+            font-size: 11px;
+          }
         }
       }
 
