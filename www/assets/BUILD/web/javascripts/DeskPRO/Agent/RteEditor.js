@@ -560,13 +560,36 @@ DeskPRO.Agent.RteEditor = {
     var origPasteCleanup = api.pasteClean;
     api.pasteCleanUp = $.proxy(function(html) {
       var parent = this.getParentNode();
+      var current = this.getCurrentNode();
+      var selected = this.getSelectedNode();
 
       // clean up pre
-      if ($(parent).get(0).tagName === 'PRE')
+      if ((parent || current || selected)
+          && (
+            $(parent).get(0).tagName === 'PRE'
+            || $(current).get(0).tagName === 'PRE'
+            || $(selected).get(0).tagName === 'PRE'
+          )
+      )
       {
+        html = html.replace(/<br\s*\/*\s*>/gi, '\n'); // enhance cleanupPre
         html = this.cleanupPre(html);
+        html = this.encodeEntities(html);
         this.pasteCleanUpInsert(html);
         return true;
+      }
+
+      // process all pasted PRE tags content
+      // leave only text
+      var allPre = html.match(/<pre(.*?)>([\w\W]*?)<\/pre>/gi);
+      if (allPre !== null) {
+        $.each(allPre, $.proxy(function(i,pre)
+        {
+          var preParts = pre.match(/<pre(.*?)>([\w\W]*?)<\/pre>/i);
+          preParts[2] = this.cleanupPre(preParts[2]);
+          preParts[2] = this.encodeEntities(preParts[2]);
+          html = html.replace(pre, '<pre class="dp-pre">' + preParts[2] + '</pre>');
+        }, this));
       }
 
       // remove comments and php tags
