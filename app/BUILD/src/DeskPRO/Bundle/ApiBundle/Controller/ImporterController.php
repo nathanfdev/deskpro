@@ -13,6 +13,8 @@ use DeskPRO\Bundle\ImportBundle\Serializer\Model\ImportStatus;
 use FOS\RestBundle\Controller\Annotations as Rest;
 use FOS\RestBundle\View\View;
 use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\HttpKernel\Exception\BadRequestHttpException;
 
 /**
  * Class ImporterController.
@@ -38,6 +40,8 @@ class ImporterController extends BaseController
      *
      * @param Request $request
      *
+     * @throws \Exception
+     *
      * @return View
      */
     public function startImportAction(Request $request)
@@ -58,6 +62,36 @@ class ImporterController extends BaseController
     /**
      * @ApiDoc(
      *     section="Importer",
+     *     description="Stop current importer process.",
+     *     statusCodes={
+     *         204="Returned if everything is ok"
+     *     },
+     *     noInput=true,
+     *     noOutput=true
+     * )
+     *
+     * @Rest\Post("/stop_import")
+     *
+     * @throws BadRequestHttpException
+     *
+     * @return View
+     */
+    public function stopImportAction()
+    {
+        $activeJob = $this->get('dp.importer.data_service.job')->getActiveJob();
+        if (!$activeJob) {
+            throw $this->createBadRequestException('No active imports was found');
+        }
+
+        $this->getManager()->remove($activeJob);
+        $this->getManager()->flush();
+
+        return new View(null, Response::HTTP_NO_CONTENT);
+    }
+
+    /**
+     * @ApiDoc(
+     *     section="Importer",
      *     description="Check if an external data source connect options are valid.",
      *     statusCodes={
      *         200="Returned if everything is ok"
@@ -69,6 +103,8 @@ class ImporterController extends BaseController
      * @Rest\Post("/test_settings")
      *
      * @param Request $request
+     *
+     * @throws \Exception
      *
      * @return View
      */
@@ -105,6 +141,8 @@ class ImporterController extends BaseController
      *
      * @param Job $job
      *
+     * @throws \Exception
+     *
      * @return View
      */
     public function statusAction(Job $job = null)
@@ -116,11 +154,13 @@ class ImporterController extends BaseController
             throw $this->createNotFoundException();
         }
 
-        return $this->wrap(new ImportStatus($job));
+        return new View($this->wrap(new ImportStatus($job)));
     }
 
     /**
      * @param Request $request
+     *
+     * @throws \Exception
      *
      * @return array
      */

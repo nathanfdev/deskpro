@@ -2,7 +2,7 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import LoadingPage from 'DeskPRO/Bundle/AdminBundle/Modules/Common/Components/LoadingPage';
-import { getImportStatus } from '../../../Actions/importerActions';
+import { getImportStatus, stopImport } from '../../../Actions/importerActions';
 import ImporterStatus from './ImporterStatus';
 import { importerSources } from '../ImporterContainer';
 import { replaceRoute } from '../../../../../Services/history';
@@ -45,6 +45,10 @@ class ImporterStatusContainer extends React.Component {
     promise.then(onSuccessResponse, onErrorResponse);
   };
 
+  stopImport = () => {
+    this.props.dispatch(stopImport());
+  };
+
   render() {
     const { status } = this.state;
     if (!status) {
@@ -65,6 +69,7 @@ class ImporterStatusContainer extends React.Component {
         appliedCounts={status.applied_counts}
         status={status.status}
         log={status.log}
+        stopImport={this.stopImport}
       />
     );
   }

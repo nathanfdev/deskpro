@@ -6,6 +6,11 @@ export const startImport = createAction(
   data => api.sendPost('DP_API/importer/start_import', data)
 );
 
+export const stopImport = createAction(
+  'ADMIN_APPS_IMPORTER_STOP_IMPORT',
+  data => api.sendPost('DP_API/importer/stop_import', data)
+);
+
 export const testSettings = createAction(
   'ADMIN_APPS_IMPORTER_TEST_SETTINGS',
   data => api.sendPost('DP_API/importer/test_settings', data)
