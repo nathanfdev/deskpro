@@ -140,6 +140,33 @@ class EzcReader extends AbstractReader
 
         $this->mail = $this->mail[0];
 
+        if ($this->mail->body instanceof \ezcMailMultipart && $this->mail->body->multipartType() === 'mixed') {
+            // we gonna roughly change part types and text in case we have multipart/mixed here with plain text
+            // further processors would deal with html and other parts themselves
+            $types = [];
+            foreach ($this->mail->fetchParts() as $part) {
+                if ($part instanceof \ezcMailText) {
+                    if (!isset($types[$part->subType])) {
+                        $types[$part->subType] = 0;
+                    }
+                    ++$types[$part->subType];
+                }
+            }
+
+            // if we have both a html and a text part,
+            // convert the text to html so its read as a single part
+            if (isset($types['plain']) && isset($types['html'])) {
+                foreach ($this->mail->fetchParts() as $part) {
+                    if ($part instanceof \ezcMailText && $part->subType === 'plain') {
+                        $part->subType         = 'html';
+                        $part->text            = '<div>'.nl2br(htmlspecialchars(Strings::convertToUtf8($part->text, $part->charset), ENT_SUBSTITUTE, 'UTF-8')).'</div>';
+                        $part->charset         = 'UTF-8';
+                        $part->originalCharset = 'UTF-8';
+                    }
+                }
+            }
+        }
+
         foreach ($this->mail->fetchParts() as $part) {
             if (isset($part->mimeType) && $part->mimeType === 'pkcs7-mime') {
                 $this->decryptEmail();
@@ -585,8 +612,8 @@ class EzcReader extends AbstractReader
                 $body->body_utf8        = $allUtf;
                 $body->original_charset = $charset;
 
-                // Charsets differ, so we need
-                // to construct based on the utf8-only body
+            // Charsets differ, so we need
+            // to construct based on the utf8-only body
             } else {
                 $body                   = new Item\BodyHtml();
                 $body->body             = $allUtf;
