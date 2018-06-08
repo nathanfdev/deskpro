@@ -210,6 +210,9 @@ scr.src   = '$loaderSrc';
 CODE;
     }
 
+    /**
+     * @return string
+     */
     private function getHdWidget()
     {
         $loaderSrc = $this->request->getUriForPath('/assets/'.$this->env->getAppName().'/pub/build/embed_loader.min.js');
@@ -220,8 +223,11 @@ window.DESKPRO_EMBED_OPTIONS = {
     "helpdeskUrl": DpHelpdesk_Options.deskproUrl.replace(/\/$/, ''),
     "containerId": DpHelpdesk_Options.containerId,
     "type": "helpdesk",
-    "language": "",
-    "width": 0
+    "language": DpHelpdesk_Options.languageId,
+    "width": 0,
+    "minHeight": DpHelpdesk_Options.initialHeight,
+    "loadPath": DpHelpdesk_Options.loadPath,
+    "ticketFormDefaults": DpHelpdesk_Options.ticketFormDefaults
 };
 
 document.getElementById(DpHelpdesk_Options.containerId).style.display = 'block';

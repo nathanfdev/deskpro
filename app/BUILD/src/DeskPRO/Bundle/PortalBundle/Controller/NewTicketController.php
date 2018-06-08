@@ -96,15 +96,22 @@ class NewTicketController extends AbstractController
         $rerendering       = $form->has('rerender_form');
         $rerendering_saved = $request->attributes->get('rerender-form', false);
 
-        if (!$form->isSubmitted() && $request->query->has('ticket')) {
+        $defaultValues = null;
+        if ($request->hasSession() && $request->getSession()->has('ticket_form_defaults')) {
+            $defaultValues = $request->getSession()->get('ticket_form_defaults');
+        }
+        if ($request->query->has('ticket')) {
+            $defaultValues = $request->query->get('ticket');
+        }
+
+        if (!$form->isSubmitted() && $defaultValues) {
             // set default values
             // using the string constant to acquire data from query instead of Form::getName for BC
-            $defaultData = $request->query->get('ticket') ?: [];
-            if ($request->attributes->getInt('department_id') && !isset($defaultData['department'])) {
-                $defaultData['department'] = $request->attributes->getInt('department_id');
+            if ($request->attributes->getInt('department_id') && !isset($defaultValues['department'])) {
+                $defaultValues['department'] = $request->attributes->getInt('department_id');
             }
 
-            $form->submit($defaultData);
+            $form->submit($defaultValues);
             FormValidatorChecker::clearFormErrors($form);
         }
 

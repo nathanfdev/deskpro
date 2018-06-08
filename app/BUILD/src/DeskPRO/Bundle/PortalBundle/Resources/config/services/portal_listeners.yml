@@ -54,6 +54,12 @@ services:
     tags:
       - { name: kernel.event_subscriber }
 
+  embed_widget_defaults.listener:
+    class: DeskPRO\Bundle\PortalBundle\EventListener\EmbedWidgetDefaultsListener
+    arguments: ["@portal_mode_storage"]
+    tags:
+      - { name: kernel.event_subscriber }
+
   iframe_resizer.listener:
       class: DeskPRO\Bundle\PortalBundle\EventListener\IframeResizerListener
       arguments: ["@portal_mode_storage"]
