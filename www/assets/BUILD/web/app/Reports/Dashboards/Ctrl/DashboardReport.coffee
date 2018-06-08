@@ -29,6 +29,11 @@ define ['DeskPRO/Util/Arrays'], (Arrays) -> [
 
     report_id = parseInt($stateParams.report_id)
     $scope.report_id = parseInt($stateParams.report_id)
+    $scope.autoRefresh = if localStorage.getItem("dp.dashboard.autoRefresh.#{$scope.report_id}") == '1' then 1 else 0
+    if $scope.autoRefresh
+      $scope.refreshInterval = setInterval(=>
+        $scope.refreshDashboardReport()
+      , 10*60*1000)
 
     $scope.gridsterOptions =
       margins: [13, 13],
@@ -231,19 +236,7 @@ define ['DeskPRO/Util/Arrays'], (Arrays) -> [
       $scope.loaded = false
 
       DashboardService.saveReportVars($scope.report).then( () ->
-        reloadPromises = []
-        $scope.widgets = [];
-        reloadPromises.push DashboardsInfo.getReportDetail($scope.report.id, true).then((loadedReport) ->
-          $scope.report = loadedReport
-        )
-
-        reloadPromises.push DashboardWidgetService.getWidgets(report_id).then((widgets) ->
-            $scope.widgets = widgets
-          )
-
-        $q.all(reloadPromises).then(->
-          $scope.updateReportVariables(false, () => $scope.loaded = true)
-        )
+        $scope.refreshDashboardReport()
       )
 
     $scope.canViewAllAgents = () ->
@@ -299,4 +292,32 @@ define ['DeskPRO/Util/Arrays'], (Arrays) -> [
       for permission in $scope.dashboard.permissions
         return true if (permission.person == $scope.me.person.id || (!permission.person && !permission.team && !permission.department)) && permission.name == 'full'
       return false
-  ]
+
+    $scope.refreshDashboardReport = () ->
+      reloadPromises = []
+      $scope.widgets = [];
+      reloadPromises.push DashboardsInfo.getReportDetail($scope.report.id, true).then((loadedReport) ->
+        $scope.report = loadedReport
+      )
+
+      reloadPromises.push DashboardWidgetService.getWidgets(report_id).then((widgets) ->
+        $scope.widgets = widgets
+      )
+
+      $q.all(reloadPromises).then(->
+        $scope.updateReportVariables(false, () => $scope.loaded = true)
+      )
+
+    $scope.toggleAutoRefreshReport = () ->
+      $scope.autoRefresh = !$scope.autoRefresh
+      newVal = if $scope.autoRefresh then 1 else 0
+      localStorage.setItem('dp.dashboard.autoRefresh.'+$scope.report_id, newVal)
+
+      if $scope.autoRefresh
+        $scope.refreshInterval = setInterval(=>
+          $scope.refreshDashboardReport()
+        , 10*60*1000)
+      else
+        clearInterval($scope.refreshInterval)
+
+]

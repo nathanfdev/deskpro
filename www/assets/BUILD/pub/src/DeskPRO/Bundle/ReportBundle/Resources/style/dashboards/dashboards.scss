@@ -587,6 +587,24 @@ ul li.type-heading:hover {
     margin-top: 0;
     vertical-align: middle;
 
+    &.auto-refresh {
+      float: right;
+
+      li {
+        margin-left: 5px;
+
+        &:first-child {
+          margin-left: 0;
+        }
+
+        label {
+          input {
+            margin-right: 5px;
+          }
+        }
+      }
+    }
+
     span {
       vertical-align: middle;
       padding-right: 4px;
