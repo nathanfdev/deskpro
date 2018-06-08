@@ -24,7 +24,7 @@ class InstallerHandler extends AbstractUsersourceInstallerHandler
     {
         $settings = parent::processSettings($context, $settings);
 
-        if (!$settings['secure']) {
+        if (!isset($settings['secure']) || !$settings['secure']) {
             $settings['disable_cert_validation'] = false;
         }
 
