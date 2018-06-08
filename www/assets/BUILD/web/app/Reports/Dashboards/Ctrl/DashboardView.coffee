@@ -20,12 +20,14 @@ define ['DeskPRO/Util/Arrays'], (Arrays) -> [
     # fetches perm info
     load_promises.push DashboardsInfo.getDashboardDetail($stateParams.dashboard_id).then( (db) ->
       $scope.dashboard = db
-      $state.go('reports.dashboards.view.empty')
+
     )
     load_promises.push DashboardsInfo.getReportsList(dashboard_id).then( (reports) ->
       $scope.reports = reports
       if reports.length > 0
         $state.go('reports.dashboards.view.report', { report_id: reports[0].id} )
+      else
+        $state.go('reports.dashboards.view.empty')
     )
     load_promises.push DashboardsInfo.getAgents().then( (agents) ->
       agents.map((agent) => $scope.agents[agent.id] = agent)
