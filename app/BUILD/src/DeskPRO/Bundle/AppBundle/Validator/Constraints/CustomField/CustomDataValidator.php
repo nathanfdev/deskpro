@@ -23,6 +23,9 @@ class CustomDataValidator extends ConstraintValidator
         if (!$constraint instanceof CustomData) {
             throw new UnexpectedTypeException($constraint, CustomData::class);
         }
+        if (!$value) {
+            return;
+        }
         if (!$value instanceof Collection) {
             throw new UnexpectedTypeException($value, Collection::class);
         }
