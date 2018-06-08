@@ -6701,6 +6701,15 @@ ul.categories-article-list {
 
 .fr-view {
   overflow: hidden;
+  img.topAligned {
+    vertical-align: top;
+  }
+  img.middleAligned {
+    vertical-align: middle;
+  }
+  img.bottomAligned {
+    vertical-align: bottom;
+  }
 }
 
 .kb-article-news {
