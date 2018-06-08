@@ -8,7 +8,9 @@ namespace Application\DeskPRO\WorkerProcess\Job;
 
 use Application\DeskPRO\App;
 use Application\DeskPRO\Entity\TmpData;
+use Application\DeskPRO\ORM\Util\Util as ORMUtil;
 use DeskPRO\Bundle\UpdateBundle\Service\UpdateCleanup;
+use Doctrine\ORM\EntityManager;
 use Exception;
 use Monolog\Logger;
 use Symfony\Bridge\Monolog\Handler\DebugHandler;
@@ -17,7 +19,8 @@ use Symfony\Component\Finder\Finder;
 
 class CleanupDaily extends AbstractJob
 {
-    const DEFAULT_INTERVAL = 86400;
+    const DEFAULT_INTERVAL              = 86400;
+    const MISSED_FK_FOUND_TMP_DATA_NAME = 'missed_fk_found';
 
     public function run()
     {
@@ -39,6 +42,7 @@ class CleanupDaily extends AbstractJob
         $this->_truncateBigIdTables();
         $this->_cleanupRateLimitLogs();
         $this->_cleanupOldBuilds();
+        $this->_checkFKConstraints();
         $this->_cleanHttpCache();
     }
 
@@ -326,6 +330,56 @@ class CleanupDaily extends AbstractJob
 
         if ($logString) {
             $this->logStatus($logString);
+        }
+    }
+
+    private function _checkFKConstraints()
+    {
+        if (defined('DPC_IS_CLOUD')) {
+            return;
+        }
+
+        /** @var EntityManager[] $entityManagers */
+        $entityManagers = [
+            'default' => App::getContainer()->get('doctrine.orm.default_entity_manager'),
+            'system'  => App::getContainer()->get('doctrine.orm.system_entity_manager'),
+            'audit'   => App::getContainer()->get('doctrine.orm.audit_entity_manager'),
+        ];
+
+        $missedFkFound = false;
+        foreach ($entityManagers as $name => $em) {
+            $timeMs = microtime(true);
+            $this->logStatus("Checking FK constraints on {$name} entities");
+            $check = ORMUtil::isAllFKConstraintsExist($em);
+            $this->logStatus(sprintf('.. done in %.4fs', microtime(true) - $timeMs));
+
+            if (!$check) {
+                $missedFkFound = true;
+                break;
+            }
+        }
+
+        $em = App::getContainer()->getEm();
+        $em->getConnection()->delete('tmp_data', ['name' => self::MISSED_FK_FOUND_TMP_DATA_NAME]);
+        if ($missedFkFound) {
+            $this->logStatus('ERROR: Missing constraints found');
+            $tmpData = TmpData::create(
+                self::MISSED_FK_FOUND_TMP_DATA_NAME,
+                [],
+                '+2 days',
+                self::MISSED_FK_FOUND_TMP_DATA_NAME
+            );
+            $em->persist($tmpData);
+            $em->flush();
+        } else {
+            $this->logStatus('All FKs look okay');
+
+            $tmpData = $em->getRepository(TmpData::class)->getByName(self::MISSED_FK_FOUND_TMP_DATA_NAME);
+
+            if ($tmpData) {
+                $em->remove($tmpData);
+                $em->flush();
+            }
         }
     }
 
