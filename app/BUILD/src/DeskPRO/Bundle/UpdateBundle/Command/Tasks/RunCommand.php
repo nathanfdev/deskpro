@@ -38,7 +38,7 @@ class RunCommand extends ContainerAwareCommand
         if (
             !$input->getOption('skip-fk-checks')
             && ($ret = $this->FKConstraintsCheck($output))) {
-            return $ret;
+            // nothing -- for now, not preventing, just showing warning
         }
 
         if ($ret = $this->legacyVersionCheck($output)) {
@@ -303,9 +303,12 @@ class RunCommand extends ContainerAwareCommand
 
         foreach ($entityManagers as $em) {
             if (!ORMUtil::isAllFKConstraintsExist($em)) {
-                $output->writeln('<error>Your database schema is corrupt and is missing relationship mapping information (foreign keys).</error>');
+                $output->writeln('<error>WARNING: Your database schema is corrupt and is missing relationship mapping information (foreign keys).</error>');
                 $output->writeln('<error>This can lead to referential integrity issues that cause errors and unexpected behaviour.</error>');
-                $output->writeln('<error>Please contact Deskpro support at https://support.deskpro.com/ for assistance in solving this.</error>');
+                $output->writeln('<error>Read this article for help resolving the problem:</error>');
+                $output->writeln('<error>https://support.deskpro.com/kb/articles/665</error>');
+                $output->writeln('The upgrade will continue in 10 secods...');
+                sleep(10);
 
                 return 1;
             }

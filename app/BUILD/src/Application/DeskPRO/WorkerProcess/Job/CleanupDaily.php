@@ -347,8 +347,13 @@ class CleanupDaily extends AbstractJob
         ];
 
         $missedFkFound = false;
-        foreach ($entityManagers as $em) {
-            if (!ORMUtil::isAllFKConstraintsExist($em)) {
+        foreach ($entityManagers as $name => $em) {
+            $timeMs = microtime(true);
+            $this->logStatus("Checking FK constraints on {$name} entities");
+            $check = ORMUtil::isAllFKConstraintsExist($em);
+            $this->logStatus(sprintf('.. done in %.4fs', microtime(true) - $timeMs));
+
+            if (!$check) {
                 $missedFkFound = true;
                 break;
             }
@@ -357,6 +362,7 @@ class CleanupDaily extends AbstractJob
         $em = App::getContainer()->getEm();
         $em->getConnection()->delete('tmp_data', ['name' => self::MISSED_FK_FOUND_TMP_DATA_NAME]);
         if ($missedFkFound) {
+            $this->logStatus('ERROR: Missing constraints found');
             $tmpData = TmpData::create(
                 self::MISSED_FK_FOUND_TMP_DATA_NAME,
                 [],
@@ -365,6 +371,15 @@ class CleanupDaily extends AbstractJob
             );
             $em->persist($tmpData);
             $em->flush();
+        } else {
+            $this->logStatus('All FKs look okay');
+
+            $tmpData = $em->getRepository(TmpData::class)->getByName(self::MISSED_FK_FOUND_TMP_DATA_NAME);
+
+            if ($tmpData) {
+                $em->remove($tmpData);
+                $em->flush();
+            }
         }
     }
 
