@@ -366,7 +366,7 @@ class LdapSyncer extends AbstractSyncer
         if (isset($raw_info['jpegphoto'])) {
             $raw_info['picture_data'] = Arrays::getFirstItem($raw_info['jpegphoto']);
         } elseif (isset($raw_info['thumbnailphoto'])) {
-            $raw_info['thumbnailphoto'] = Arrays::getFirstItem($raw_info['thumbnailphoto']);
+            $raw_info['picture_data'] = Arrays::getFirstItem($raw_info['thumbnailphoto']);
         }
         if (isset($raw_info['telephonenumber'])) {
             $raw_info['phone'] = Arrays::getFirstItem($raw_info['telephonenumber']);
