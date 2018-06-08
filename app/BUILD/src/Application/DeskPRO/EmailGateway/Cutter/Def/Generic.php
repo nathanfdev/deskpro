@@ -301,7 +301,7 @@ class Generic implements ForwardDef, QuoteDef
                 // Try to detect '=== REPLY ABOVE THIS LINE ===' bits
                 $matches = [];
                 if (preg_match(
-                        '#(?:=(?:3D)?){3}(?:\s|&nbsp;)*.+(?: \[.+\])?(?:\s|&nbsp;)*(?:=(?:3D)?){3}#',
+                        '#(?:=(?:3D)?){3}(?:\s|&nbsp;)*[^=]+(?: \[.+\])?(?:\s|&nbsp;)*(?:=(?:3D)?){3}#',
                         $body,
                         $matches,
                         \PREG_OFFSET_CAPTURE

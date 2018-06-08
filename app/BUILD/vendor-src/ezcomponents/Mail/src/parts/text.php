@@ -33,7 +33,7 @@
  *           The encoding of the text. Defaults to eight bit.
  * @property string $text
  *           The main data of this text part.
- * @property-read string $originalCharset
+ * @property      string $originalCharset
  *                The characterset in which a text part originally was before
  *                the conversion to UTF-8 when parsing incomming mail.
  *
@@ -85,10 +85,8 @@ class ezcMailText extends ezcMailPart
             case 'subType':
             case 'encoding':
             case 'text':
-                $this->properties[$name] = $value;
-                break;
             case 'originalCharset':
-                throw new ezcBasePropertyPermissionException( $name, ezcBasePropertyPermissionException::READ );
+                $this->properties[$name] = $value;
                 break;
             default:
                 return parent::__set( $name, $value );
