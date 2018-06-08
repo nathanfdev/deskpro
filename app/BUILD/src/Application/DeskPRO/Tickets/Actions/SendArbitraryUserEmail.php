@@ -16,6 +16,7 @@ use Application\DeskPRO\Entity\Ticket;
 use Application\DeskPRO\Tickets\ExecutorContextInterface;
 use Application\DeskPRO\Tickets\TicketEmailBuilder;
 use Orb\Util\CheckedOptionsArray;
+use Orb\Validator\StringEmail;
 
 /**
  * Send an email to the user.
@@ -96,6 +97,14 @@ class SendArbitraryUserEmail extends AbstractEmailAction
 
         $regClosed = !$this->getContainer()->get('dp_authentication_manager.user')->isRegistrationFormVisible();
         foreach ($emails as $email) {
+            if (!$email) {
+                continue;
+            }
+            if (!StringEmail::isValueValid($email)) {
+                $context->getLogger()->debug('[SendArbitraryUserEmail] email $email is not valid, skipping');
+                continue;
+            }
+
             $person = $this->getContainer()->getEm()->getRepository(Person::class)->findOneByEmail($email);
             if ($person) {
                 $sendPeople[$email] = $person;
