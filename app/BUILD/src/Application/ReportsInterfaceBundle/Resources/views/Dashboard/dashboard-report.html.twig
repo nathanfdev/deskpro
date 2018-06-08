@@ -21,6 +21,22 @@
                 </li>
             </ul>
         </nav>
+        <nav class="reports-control auto-refresh">
+            <ul>
+                <li>
+                    <button ng-click="refreshDashboardReport()" class="dp-button dp-button--m dp-button--secondary dp-button--shape-default">
+                        <i class="fa fa-refresh"></i>
+                    </button>
+                </li>
+                <li>
+                    <label>
+                        <input type="checkbox"
+                               ng-click="toggleAutoRefreshReport()"
+                               ng-model="autoRefresh"
+                               ng-checked="autoRefresh" /> Auto refresh every 10 minutes</label>
+                </li>
+            </ul>
+        </nav>
         <nav class="reports-control" ng-show="loaded">
             <ul>
                 <li ng-repeat="(index, var) in report.variables">
