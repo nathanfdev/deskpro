@@ -1,6 +1,6 @@
 import { createAction } from 'DeskPRO/Component/Ampliflux';
 import { repository, api } from 'DeskPRO/Bundle/AppBundle/DAL';
-import { setCollection, addToCollection } from 'DeskPRO/Bundle/AppBundle/Modules/RecordsStore';
+import { setCollection, addToCollection, removeFromCollection } from 'DeskPRO/Bundle/AppBundle/Modules/RecordsStore';
 import { transformReportDataToApi } from '../../Stats/Components/helper';
 
 export const reportsLoaded = createAction('REPORTS_LOADED');
@@ -34,6 +34,18 @@ export const loadReport = createAction(
       resolve(response.data);
     })
 ));
+
+export const deleteReport = createAction(
+  'REPORTS_DELETE_REPORT',
+  id => (dispatch) => {
+    const promise = repository('Reports').remove(id);
+    promise.success(() => {
+      dispatch(removeFromCollection('Reports', 'all', [id]));
+    });
+
+    return promise;
+  }
+);
 
 export const runReport = createAction(
   'REPORTS_RUN_REPORT',

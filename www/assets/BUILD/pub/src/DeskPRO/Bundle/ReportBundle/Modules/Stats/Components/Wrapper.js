@@ -13,7 +13,8 @@ import {
   runReport,
   saveAndRun,
   parseQuery,
-  cloneReport
+  cloneReport,
+  deleteReport
 } from '../../Application/Actions/reportActions';
 import { allReportsSelector } from '../Selectors/reports';
 import { allReportLabelsSelector } from '../../Application/Selectors/reports';
@@ -64,6 +65,7 @@ class Wrapper extends React.Component {
 
     this.onEditReportClick          = this.onEditReportClick.bind(this);
     this.onRunReportClick           = this.onRunReportClick.bind(this);
+    this.onDeleteReportClick        = this.onDeleteReportClick.bind(this);
     this.onCloneReportClick         = this.onCloneReportClick.bind(this);
     this.onChangeReportDisplayTypes = this.onChangeReportDisplayTypes.bind(this);
     this.onChangeFilterText         = this.onChangeFilterText.bind(this);
@@ -101,6 +103,14 @@ class Wrapper extends React.Component {
   onEditReportClick(report) {
     this.props.dispatch(loadReport(report.get('id')));
     this.setState({ mode: 'edit' });
+  }
+
+  onDeleteReportClick(report) {
+    this.props.dispatch(deleteReport(report.get('id'))).then(() => {
+      this.setState({
+        mode: null
+      });
+    });
   }
 
   onRunReportClick(report) {
@@ -268,6 +278,7 @@ class Wrapper extends React.Component {
               reportLoading={reportLoading}
               onEditReportClick={this.onEditReportClick}
               onRunClick={this.onRunReportClick}
+              onDeleteClick={this.onDeleteReportClick}
             />
             : null
           }
