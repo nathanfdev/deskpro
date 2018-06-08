@@ -19,7 +19,7 @@ import { GuideTreeContainer } from 'DeskPRO/Bundle/AgentBundle/Modules/Publish/C
 import { EditorContainer } from 'DeskPRO/Bundle/AgentBundle/Modules/Publish/Components/Editor/Editor';
 import VoiceControlsContainer from 'DeskPRO/Bundle/AgentBundle/Modules/Voice/Components/Controls/VoiceControlsContainer';
 import VoiceTicketMessageContainer from 'DeskPRO/Bundle/AgentBundle/Modules/Voice/Components/TicketMessage/TicketMessageContainer';
-import { preloadData } from 'DeskPRO/Bundle/AgentBundle/Modules/Application/Actions/bootstrapActions';
+import { preloadData, postBoostrap } from 'DeskPRO/Bundle/AgentBundle/Modules/Application/Actions/bootstrapActions';
 import { setOnlineAgents, setOnlineUserChatAgents } from 'DeskPRO/Bundle/AgentBundle/Modules/Agent/Actions/agentActions';
 import { NotificationServiceContainer } from 'DeskPRO/Bundle/AgentBundle/Modules/Application/Components/Notifications/NotificationServiceContainer';
 import { isVoiceEnabledSelector } from 'DeskPRO/Bundle/AgentBundle/Modules/Voice/Selectors/client';
@@ -63,6 +63,7 @@ class AgentLegacyApp {
 
     this.store.dispatch(preloadData()).then(() => {
       window.DP_PAGE_PART_HAS_INIT('bootstrapActions');
+      this.store.dispatch(postBoostrap());
     });
 
     window.DP_ADD_PAGE_INIT_FN(() => this.start());

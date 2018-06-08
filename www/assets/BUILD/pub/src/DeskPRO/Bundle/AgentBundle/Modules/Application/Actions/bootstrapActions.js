@@ -75,14 +75,6 @@ export const preloadData    = createAction(
         batchComponents.defaultBrand  = { endpoint: 'brands/default' };
       }
 
-      if (window.DP_HAS_NEW_SNIPPETS) {
-        batchComponents.snippets  = {
-          endpoint: 'snippets',
-          query:    'count=200&inline_sideloads=true&include=snippet_translation,blob'
-        };
-        batchComponents.snippet_labels  = { endpoint: 'snippets/labels' };
-      }
-
       if (window.DP_HAS_FOLLOW_UP) {
         batchComponents.ticket_macros  = { endpoint: 'ticket_macros' };
       }
@@ -144,33 +136,6 @@ export const preloadData    = createAction(
           dispatch(setVoiceActivities(data.voice_activities));
           dispatch(setVoiceSettings(data.voice_settings));
           dispatch(setCollection('VoiceNumber', 'all', data.voice_numbers));
-        }
-
-        if (window.DP_HAS_NEW_SNIPPETS) {
-          dispatch(setCollection('Snippets', 'all', data.snippets));
-          dispatch(setCollection('SnippetLabels', 'all', data.snippet_labels));
-          let blobs = [];
-          if (responses.snippets.linked.blob) {
-            blobs = responses.snippets.linked.blob;
-          }
-          dispatch(setCollection('SnippetBlobs', 'all', replaceIds(blobs, 'blob_id')));
-          const pagination = responses.snippets.meta.pagination;
-          let currentPage = pagination.current_page;
-          while (currentPage < pagination.total_pages) {
-            currentPage += 1;
-            const extraSnippets = {
-              endpoint: 'snippets',
-              query:    `count=${pagination.count}&page=${currentPage}&inline_sideloads=true&include=snippet_translation,blob`
-            };
-            api.sendGet(api.prepareParams({ snippets: extraSnippets }))
-              .success((response) => {
-                dispatch(addToCollection('Snippets', 'all', response.responses.snippets.data));
-                if (response.responses.snippets.linked.blob) {
-                  dispatch(addToCollection('SnippetBlobs', 'all', replaceIds(response.responses.snippets.linked.blob, 'blob_id')));
-                }
-              })
-            ;
-          }
         }
 
         if (window.DP_HAS_FOLLOW_UP) {
@@ -271,6 +236,62 @@ export const preloadData    = createAction(
       ;
 
       Promise.all([phrasesLoad, batchLoad]).then(() => resolve());
+    }
+  )
+);
+
+export const postBoostrap = createAction(
+  'BOOTSTRAP_POST_DATA',
+  () => dispatch => new Promise(
+    (resolve) => {
+      const batchComponents = {};
+
+      if (window.DP_HAS_NEW_SNIPPETS) {
+        batchComponents.snippets  = {
+          endpoint: 'snippets',
+          query:    'count=200&inline_sideloads=true&include=snippet_translation,blob'
+        };
+        batchComponents.snippet_labels  = { endpoint: 'snippets/labels' };
+      }
+
+      const onBatchComponentsSuccess = ({ responses }) => {
+        const data = flattenBatchResponses(responses);
+
+        if (window.DP_HAS_NEW_SNIPPETS) {
+          dispatch(setCollection('Snippets', 'all', data.snippets));
+          dispatch(setCollection('SnippetLabels', 'all', data.snippet_labels));
+          let blobs = [];
+          if (responses.snippets.linked.blob) {
+            blobs = responses.snippets.linked.blob;
+          }
+          dispatch(setCollection('SnippetBlobs', 'all', replaceIds(blobs, 'blob_id')));
+          const pagination = responses.snippets.meta.pagination;
+          let currentPage = pagination.current_page;
+          while (currentPage < pagination.total_pages) {
+            currentPage += 1;
+            const extraSnippets = {
+              endpoint: 'snippets',
+              query:    `count=${pagination.count}&page=${currentPage}&inline_sideloads=true&include=snippet_translation,blob`
+            };
+            api.sendGet(api.prepareParams({ snippets: extraSnippets }))
+              .success((response) => {
+                dispatch(addToCollection('Snippets', 'all', response.responses.snippets.data));
+                if (response.responses.snippets.linked.blob) {
+                  dispatch(addToCollection('SnippetBlobs', 'all', replaceIds(response.responses.snippets.linked.blob, 'blob_id')));
+                }
+              })
+            ;
+          }
+        }
+
+        return data;
+      };
+
+      const batchLoad = api.sendGet(api.prepareParams(batchComponents))
+        .success(onBatchComponentsSuccess)
+      ;
+
+      Promise.all([batchLoad]).then(() => resolve());
     }
   )
 );
