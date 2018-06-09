@@ -983,7 +983,7 @@ LIMIT 100
                 FROM ticket_charges
                 WHERE ticket_charges.date_created = ${date}
                 ORDER BY ticket_charges.date_created',
-            'variables' => '[{"name":"date","type":"dates", "default": "today"}',
+            'variables' => '[{"name":"date","type":"dates", "default": "today"}]',
         ],
         'total-charges-per-day-date' => [
             'title'         => 'Total [charges] per day ${date}',
@@ -1000,10 +1000,10 @@ LIMIT 100
                 WHERE ticket_charges.date_created = ${date}
                 GROUP BY DPQL_DATE(ticket_charges.date_created) AS \'Date\'
             ',
-            'variables' => '[{"name":"date","type":"dates", "default": "this_month"}',
+            'variables' => '[{"name":"date","type":"dates", "default": "this_month"}]',
         ],
         'total-amount-charges-per-day-date' => [
-            'title'         => 'Total [amount charges] per day <1:date group, default: this_month>',
+            'title'         => 'Total [amount charges] per day ${date}',
             'labels'        => 'billing',
             'description'   => '',
             'display_types' => 'table,simple_bars',
@@ -1015,6 +1015,7 @@ LIMIT 100
                     WHERE ticket_charges.date_created = ${date} AND ticket_charges.amount > 0
                     GROUP BY DPQL_DATE(ticket_charges.date_created) AS \'Date\'
             ',
+            'variables' => '[{"name":"date","type":"dates", "default": "this_month"}]',
         ],
         'total-time-charges-per-day-date' => [
             'title'         => 'Total [time charges] per day ${date}',
@@ -1029,7 +1030,7 @@ LIMIT 100
                 WHERE ticket_charges.date_created = ${date} AND ticket_charges.charge_time > 0
                 GROUP BY DPQL_DATE(ticket_charges.date_created) AS \'Date\'
             ',
-            'variables' => '[{"name":"date","type":"dates", "default": "this_month"}',
+            'variables' => '[{"name":"date","type":"dates", "default": "this_month"}]',
         ],
         'total-charges-person-date' => [
             'title'         => 'Total [charges] per person ${date}',
@@ -1046,7 +1047,7 @@ LIMIT 100
                 WHERE ticket_charges.date_created = ${date}
                 GROUP BY ticket_charges.person
             ',
-            'variables' => '[{"name":"date","type":"dates", "default": "this_month"}',
+            'variables' => '[{"name":"date","type":"dates", "default": "this_month"}]',
         ],
         'total-amount-charges-person-date' => [
             'title'         => 'Total [amount charges] per person ${date}',
@@ -1061,7 +1062,7 @@ LIMIT 100
                 WHERE ticket_charges.date_created = ${date} AND ticket_charges.amount > 0
                 GROUP BY ticket_charges.person
             ',
-            'variables' => '[{"name":"date","type":"dates", "default": "this_month"}',
+            'variables' => '[{"name":"date","type":"dates", "default": "this_month"}]',
         ],
         'total-time-charges-person-date' => [
             'title'         => 'Total [time charges] per person ${date}',
@@ -1075,7 +1076,7 @@ LIMIT 100
               WHERE ticket_charges.date_created = ${date} AND ticket_charges.charge_time > 0
               GROUP BY ticket_charges.person
             ',
-            'variables' => '[{"name":"date","type":"dates", "default": "this_month"}',
+            'variables' => '[{"name":"date","type":"dates", "default": "this_month"}]',
         ],
         'list-charges-person-date' => [
             'title'         => 'List of charges per person ${date}',
@@ -1093,7 +1094,7 @@ LIMIT 100
                 SPLIT BY ticket_charges.person
                 ORDER BY ticket_charges.date_created
             ',
-            'variables' => '[{"name":"date","type":"dates", "default": "this_month"}',
+            'variables' => '[{"name":"date","type":"dates", "default": "this_month"}]',
         ],
         'total-charges-organization-date' => [
             'title'         => 'Total [charges] per organization ${date}',
@@ -1110,7 +1111,7 @@ LIMIT 100
                 WHERE ticket_charges.date_created = ${date} AND ticket_charges.organization_id <> NULL
                 GROUP BY ticket_charges.organization
             ',
-            'variables' => '[{"name":"date","type":"dates", "default": "this_month"}',
+            'variables' => '[{"name":"date","type":"dates", "default": "this_month"}]',
         ],
         'total-amount-charges-organization-date' => [
             'title'         => 'Total [amount charges] per organization ${date}',
@@ -1127,7 +1128,7 @@ LIMIT 100
                   AND ticket_charges.amount > 0
                 GROUP BY ticket_charges.organization
             ',
-            'variables' => '[{"name":"date","type":"dates", "default": "this_month"}',
+            'variables' => '[{"name":"date","type":"dates", "default": "this_month"}]',
         ],
         'total-time-charges-organization-date' => [
             'title'         => 'Total [time charges] per organization ${date}',
@@ -1144,7 +1145,7 @@ LIMIT 100
                   AND ticket_charges.charge_time > 0
                 GROUP BY ticket_charges.organization
             ',
-            'variables' => '[{"name":"date","type":"dates", "default": "this_month"}',
+            'variables' => '[{"name":"date","type":"dates", "default": "this_month"}]',
         ],
         'list-charges-organization-date' => [
             'title'         => 'List of charges per organization ${date}',
@@ -1162,7 +1163,7 @@ LIMIT 100
                 SPLIT BY ticket_charges.organization
                 ORDER BY ticket_charges.date_created
             ',
-            'variables' => '[{"name":"date","type":"dates", "default": "this_month"}',
+            'variables' => '[{"name":"date","type":"dates", "default": "this_month"}]',
         ],
     ];
 
