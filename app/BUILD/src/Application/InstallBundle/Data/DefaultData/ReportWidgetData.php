@@ -979,7 +979,7 @@ LIMIT 100
             'query'         => '
                 SELECT
                   DPQL_TOTAL(DPQL_TIME_LENGTH(ticket_charges.charge_time)) AS \'Time\', 
-                  DPQL_TOTAL(DPQL_FORMAT(ticket_charges.amount, \'number\', 2)) AS \'Amount ($currency)\', $select_bits ticket_charges.agent, ticket_charges.date_created, ticket_charges.ticket
+                  DPQL_TOTAL(DPQL_FORMAT(ticket_charges.amount, \'number\', 2)) AS \'Amount (${billingCurrency})\', ${billingSelectBits} ticket_charges.agent, ticket_charges.date_created, ticket_charges.ticket
                 FROM ticket_charges
                 WHERE ticket_charges.date_created = ${date}
                 ORDER BY ticket_charges.date_created',
@@ -995,7 +995,7 @@ LIMIT 100
                 SELECT
                     DPQL_TOTAL(DPQL_COUNT()) AS \'Number of Charges\', 
                     DPQL_TOTAL(DPQL_TIME_LENGTH(SUM(ticket_charges.charge_time))) AS \'Total Time\',
-                    DPQL_TOTAL(DPQL_FORMAT(SUM(ticket_charges.amount), \'number\', 2)) AS \'Total Amount($currency)\'
+                    DPQL_TOTAL(DPQL_FORMAT(SUM(ticket_charges.amount), \'number\', 2)) AS \'Total Amount(${billingCurrency})\'
                 FROM ticket_charges
                 WHERE ticket_charges.date_created = ${date}
                 GROUP BY DPQL_DATE(ticket_charges.date_created) AS \'Date\'
@@ -1010,7 +1010,7 @@ LIMIT 100
             'display_order' => 302,
             'query'         => '
                 SELECT 
-                    DPQL_TOTAL(DPQL_FORMAT(SUM(ticket_charges.amount), \'number\', 2)) AS \'Total Amount ($currency)\'
+                    DPQL_TOTAL(DPQL_FORMAT(SUM(ticket_charges.amount), \'number\', 2)) AS \'Total Amount (${billingCurrency})\'
                     FROM ticket_charges
                     WHERE ticket_charges.date_created = ${date} AND ticket_charges.amount > 0
                     GROUP BY DPQL_DATE(ticket_charges.date_created) AS \'Date\'
@@ -1041,7 +1041,7 @@ LIMIT 100
                 SELECT
                     DPQL_TOTAL(DPQL_COUNT()) AS \'Number of Charges\',
                     DPQL_TOTAL(DPQL_TIME_LENGTH(SUM(ticket_charges.charge_time))) AS \'Total Time\',
-                    DPQL_TOTAL(DPQL_FORMAT(SUM(ticket_charges.amount), \'number\', 2)) AS \'Total Amount ($currency)\'
+                    DPQL_TOTAL(DPQL_FORMAT(SUM(ticket_charges.amount), \'number\', 2)) AS \'Total Amount (${billingCurrency})\'
                 FROM ticket_charges
                 WHERE ticket_charges.date_created = ${date}
                 GROUP BY ticket_charges.person
@@ -1056,7 +1056,7 @@ LIMIT 100
             'display_order' => 305,
             'query'         => '
                 SELECT
-                  DPQL_TOTAL(DPQL_FORMAT(SUM(ticket_charges.amount), \'number\', 2)) AS \'Total Amount ($currency)\'
+                  DPQL_TOTAL(DPQL_FORMAT(SUM(ticket_charges.amount), \'number\', 2)) AS \'Total Amount (${billingCurrency})\'
                 FROM ticket_charges
                 WHERE ticket_charges.date_created = ${date} AND ticket_charges.amount > 0
                 GROUP BY ticket_charges.person
@@ -1086,8 +1086,8 @@ LIMIT 100
             'query'         => '
                 SELECT 
                     DPQL_TOTAL(DPQL_TIME_LENGTH(ticket_charges.charge_time)) AS \'Time\', 
-                    DPQL_TOTAL(DPQL_FORMAT(ticket_charges.amount, \'number\', 2)) AS \'Amount ($currency)\',
-                    $select_bits ticket_charges.agent, ticket_charges.date_created, ticket_charges.ticket
+                    DPQL_TOTAL(DPQL_FORMAT(ticket_charges.amount, \'number\', 2)) AS \'Amount (${billingCurrency})\',
+                    ${billingSelectBits} ticket_charges.agent, ticket_charges.date_created, ticket_charges.ticket
                 FROM ticket_charges
                 WHERE ticket_charges.date_created = ${date}
                 SPLIT BY ticket_charges.person
@@ -1105,7 +1105,7 @@ LIMIT 100
                 SELECT 
                     DPQL_TOTAL(DPQL_COUNT()) AS \'Number of Charges\', 
                     DPQL_TOTAL(DPQL_TIME_LENGTH(SUM(ticket_charges.charge_time))) AS \'Total Time\',
-                    DPQL_TOTAL(DPQL_FORMAT(SUM(ticket_charges.amount), \'number\', 2)) AS \'Total Amount ($currency)\'
+                    DPQL_TOTAL(DPQL_FORMAT(SUM(ticket_charges.amount), \'number\', 2)) AS \'Total Amount (${billingCurrency})\'
                 FROM ticket_charges
                 WHERE ticket_charges.date_created = ${date} AND ticket_charges.organization_id <> NULL
                 GROUP BY ticket_charges.organization
@@ -1120,7 +1120,7 @@ LIMIT 100
             'display_order' => 309,
             'query'         => '
                 SELECT
-                    DPQL_TOTAL(DPQL_FORMAT(SUM(ticket_charges.amount), \'number\', 2)) AS \'Total Amount ($currency)\'
+                    DPQL_TOTAL(DPQL_FORMAT(SUM(ticket_charges.amount), \'number\', 2)) AS \'Total Amount (${billingCurrency})\'
                 FROM ticket_charges
                 WHERE ticket_charges.date_created = ${date}
                   AND ticket_charges.organization_id <> NULL
@@ -1155,8 +1155,8 @@ LIMIT 100
             'query'         => '
                 SELECT 
                     DPQL_TOTAL(DPQL_TIME_LENGTH(ticket_charges.charge_time)) AS \'Time\', 
-                    DPQL_TOTAL(DPQL_FORMAT(ticket_charges.amount, \'number\', 2)) AS \'Amount ($currency)\',
-                    $select_bits ticket_charges.agent, ticket_charges.date_created, ticket_charges.ticket
+                    DPQL_TOTAL(DPQL_FORMAT(ticket_charges.amount, \'number\', 2)) AS \'Amount (${billingCurrency})\',
+                    ${billingSelectBits} ticket_charges.agent, ticket_charges.date_created, ticket_charges.ticket
                 FROM ticket_charges
                 WHERE ticket_charges.date_created = ${date} AND ticket_charges.organization_id <> NULL
                 SPLIT BY ticket_charges.organization

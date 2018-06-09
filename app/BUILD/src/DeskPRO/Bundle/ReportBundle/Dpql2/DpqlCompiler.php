@@ -2,6 +2,8 @@
 
 namespace DeskPRO\Bundle\ReportBundle\Dpql2;
 
+use Application\DeskPRO\App;
+use Application\DeskPRO\CustomFields\BillingFieldManager;
 use Application\DeskPRO\Entity\Person;
 use Application\DeskPRO\Entity\ReportWidget;
 use Application\DeskPRO\EntityRepository\ReportWidget as ReportWidgetRepository;
@@ -48,11 +50,16 @@ class DpqlCompiler
     protected $tokenStorage;
 
     /**
-     * @var
+     * @var ReportsWidgetService
      */
     protected $reportsWidgetService;
 
-    /**ReportsWidgetService
+    /**
+     * @var BillingFieldManager
+     */
+    protected $billingFieldManager;
+
+    /**
      * Constructor.
      *
      * @param SettingsResolver     $settingsResolver
@@ -75,6 +82,7 @@ class DpqlCompiler
         $this->settingsResolver     = $settingsResolver;
         $this->em                   = $em;
         $this->reportsWidgetService = $reportsWidgetService;
+        $this->billingFieldManager  = App::getContainer()->getBillingFieldManager();
         $this->lexer                = $lexer;
         $this->parser               = $parser;
         $this->contextStorage       = $contextStorage;
@@ -109,6 +117,7 @@ class DpqlCompiler
         $this->contextStorage->setContext($context);
 
         $input = preg_replace('/DISPLAY [^\n]+\n/', '', $input);
+        $input = $this->replaceBillingData($input);
         $input = $this->replacePlaceholders($input, $placeholders);
         $input = $this->replaceVariables($input, $placeholders);
 
@@ -261,6 +270,39 @@ class DpqlCompiler
         return $input;
     }
 
+    public function replaceBillingData($input)
+    {
+        $currency = $this->settingsResolver->getGlobalSettings()->get('core_tickets.billing_currency');
+
+        $fields     = $this->billingFieldManager->getFields();
+        $selectBits = [];
+        foreach ($fields as $f) {
+            $selectBits[] = 'ticket_charges.custom_data['.$f->getId().'] AS \''.addslashes($f->getTitle()).'\'';
+        }
+
+        $selectBits = implode(', ', $selectBits);
+        if ($selectBits) {
+            $selectBits = $selectBits.', ';
+        }
+
+        $vars = [
+            'variables' => [
+                [
+                    'name'  => 'billingCurrency',
+                    'type'  => DashboardWidgetManager::WIDGET_VAR_TYPE_BILLING,
+                    'value' => $currency,
+                ],
+                [
+                    'name'  => 'billingSelectBits',
+                    'type'  => DashboardWidgetManager::WIDGET_VAR_TYPE_BILLING,
+                    'value' => $selectBits,
+                ],
+            ],
+        ];
+
+        return $this->replaceVariables($input, $vars);
+    }
+
     /**
      * @param       $input
      * @param array $placeholders
@@ -295,6 +337,11 @@ class DpqlCompiler
                         // this would include 'value' and all custom def stuff
                         default:
                             $value = @$variable['value'] ?: @$variable['field_value'] ?: $match[0];
+
+                            if ($variable['type'] === DashboardWidgetManager::WIDGET_VAR_TYPE_BILLING) {
+                                // it's internal vars, which are not accessible by a user
+                                return $value;
+                            }
 
                             if (
                                 $value === DashboardWidgetManager::WIDGET_VALUE_FROM_REPORT
