@@ -1165,6 +1165,71 @@ LIMIT 100
             ',
             'variables' => '[{"name":"date","type":"dates", "default": "this_month"}]',
         ],
+        'total-charges-agent-date' => [
+            'title'         => 'Total [charges] per agent ${date}',
+            'labels'        => 'billing',
+            'description'   => '',
+            'display_types' => 'table',
+            'display_order' => 312,
+            'query'         => '
+                SELECT 
+                    DPQL_TOTAL(DPQL_COUNT()) AS \'Number of Charges\', 
+                    DPQL_TOTAL(DPQL_TIME_LENGTH(SUM(ticket_charges.charge_time))) AS \'Total Time\', 
+                    DPQL_TOTAL(DPQL_FORMAT(SUM(ticket_charges.amount), \'number\', 2)) AS \'Total Amount (${billingCurrency})\'
+                FROM ticket_charges
+                WHERE ticket_charges.date_created = ${date}
+                GROUP BY ticket_charges.agent
+            ',
+            'variables' => '[{"name":"date","type":"dates", "default": "this_month"}]',
+        ],
+        'total-amount-charges-agent-date' => [
+            'title'         => 'Total [amount charges] per agent ${date}',
+            'labels'        => 'billing',
+            'description'   => '',
+            'display_types' => 'table,simple_bars',
+            'display_order' => 313,
+            'query'         => '
+                SELECT 
+                    DPQL_TOTAL(DPQL_FORMAT(SUM(ticket_charges.amount), \'number\', 2)) AS \'Total Amount (${billingCurrency})\'
+                FROM ticket_charges
+                WHERE ticket_charges.date_created = ${date} AND ticket_charges.amount > 0
+                GROUP BY ticket_charges.agent
+            ',
+            'variables' => '[{"name":"date","type":"dates", "default": "this_month"}]',
+        ],
+        'total-time-charges-agent-date' => [
+            'title'         => 'Total [time charges] per agent ${date}',
+            'labels'        => 'billing',
+            'description'   => '',
+            'display_types' => 'table,simple_bars',
+            'display_order' => 314,
+            'query'         => '
+                SELECT 
+                    DPQL_TOTAL(DPQL_TIME_LENGTH(SUM(ticket_charges.charge_time))) AS \'Total Time\'
+                FROM ticket_charges
+                WHERE ticket_charges.date_created = ${date} AND ticket_charges.charge_time > 0
+                GROUP BY ticket_charges.agent
+            ',
+            'variables' => '[{"name":"date","type":"dates", "default": "this_month"}]',
+        ],
+        'list-charges-agent-date' => [
+            'title'         => 'List of charges per agent ${date}',
+            'labels'        => 'billing',
+            'description'   => '',
+            'display_types' => 'table',
+            'display_order' => 315,
+            'query'         => '
+                SELECT
+                    DPQL_TOTAL(DPQL_TIME_LENGTH(ticket_charges.charge_time)) AS \'Time\', 
+                    DPQL_TOTAL(DPQL_FORMAT(ticket_charges.amount, \'number\', 2)) AS \'Amount (${billingCurrency})\',
+                    ${billingSelectBits} ticket_charges.date_created, ticket_charges.ticket
+                FROM ticket_charges
+                WHERE ticket_charges.date_created = ${date}
+                SPLIT BY ticket_charges.agent
+                ORDER BY ticket_charges.date_created
+            ',
+            'variables' => '[{"name":"date","type":"dates", "default": "this_month"}]',
+        ],
     ];
 
     /**
