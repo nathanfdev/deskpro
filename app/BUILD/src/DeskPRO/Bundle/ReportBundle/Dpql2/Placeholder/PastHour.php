@@ -22,6 +22,6 @@ class PastHour extends AbstractDateRange
         $beforeStart = new \DateTime("$beginning");
         $beforeStart->modify('-1 second');
 
-        return ["$beginning to $today", "$beginning 00:00:00", $now, $beforeStart->format('Y-m-d H:i:s')];
+        return ["$beginning to $today", "$beginning", $now, $beforeStart->format('Y-m-d H:i:s')];
     }
 }
