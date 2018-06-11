@@ -14,7 +14,6 @@ use Symfony\Component\Form\FormInterface;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Session\Session;
-use Symfony\Component\PropertyAccess\PropertyAccess;
 use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
 
 class FormSaver
@@ -115,9 +114,6 @@ class FormSaver
         $route        = $request->attributes->get('_route');
         $route_params = $request->attributes->get('_route_params');
 
-        // we have to do a "hack" to find the saved auth codes for the attachments
-        $data = $this->dealWithAttachmentsAuthCodes($form, $data);
-
         $saved_form = new SavedForm($data_type, SavedForm::INTENTION_LOGIN, $person);
         $saved_form->setFormData($data);
         $saved_form->setMetaData([
@@ -164,9 +160,6 @@ class FormSaver
         $data         = $request->request->all();
         $route        = $request->attributes->get('_route');
         $route_params = $request->attributes->get('_route_params');
-
-        // we have to do a "hack" to find the saved auth codes for the attachments
-        $data = $this->dealWithAttachmentsAuthCodes($form, $data);
 
         $saved_form = new SavedForm($data_type, SavedForm::INTENTION_VERIFY_EMAIL, $person); // may or may not be a person, but if there is saved it to the form
         $saved_form->setFormData($data);
@@ -261,44 +254,5 @@ class FormSaver
         }
 
         $this->session->set(static::SAVED_FORMS_SESSION_KEY, $existing);
-    }
-
-    /**
-     * @param FormInterface $form
-     * @param array         $data
-     *
-     * @return mixed
-     */
-    public function dealWithAttachmentsAuthCodes(FormInterface $form, array $data)
-    {
-        // we have to loop through the form's view to find the saved
-        // auth codes from the BlobType form type and then "insert" them
-        // into $data
-        $form_views          = $form->createView();
-        $attachment_raw_data = [];
-        foreach ($form_views as $name => $form_view) {
-            if ($name === 'attachments') {
-                foreach ($form_view->children as $attachment_view) {
-                    if (array_key_exists('blob_auth', $attachment_view->children)) {
-                        $blob_field                                          = $attachment_view->children['blob_auth'];
-                        $attachment_raw_data[$blob_field->vars['full_name']] = $blob_field->vars['value'];
-                    }
-                }
-            }
-        }
-        if (count($attachment_raw_data)) {
-            $accessor = PropertyAccess::createPropertyAccessor();
-            foreach ($attachment_raw_data as $full_name => $value) {
-                $path     = [];
-                $exploded = explode('[', $full_name);
-                foreach ($exploded as $piece) {
-                    $path[] = '['.$piece.(strpos($piece, ']') ? '' : ']');
-                }
-                $property_path = implode('', $path);
-                $accessor->setValue($data, $property_path, $value);
-            }
-        }
-
-        return $data;
     }
 }
