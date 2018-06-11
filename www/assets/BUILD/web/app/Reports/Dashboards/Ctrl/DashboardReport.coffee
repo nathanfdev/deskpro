@@ -26,6 +26,7 @@ define ['DeskPRO/Util/Arrays'], (Arrays) -> [
     }
     $scope.widgets = []
     $scope.groupParams = DashboardWidgetService.groupParams
+    $scope.layoutEditing = false
 
     report_id = parseInt($stateParams.report_id)
     $scope.report_id = parseInt($stateParams.report_id)
