@@ -5,26 +5,11 @@ import * as actions from '../Actions/reportActions';
 
 const initialState = {
   reportsLoaded: false,
-  currentReport: Immutable.fromJS({}),
   groupParams:   Immutable.fromJS({}),
-  reportLoading: true,
   labels:        []
 };
 
 export default createReducer(initialState, {
-  [actions.loadReport]: async({
-    start:   state => state.set('reportLoading', true),
-    success: (state, payload) => state.set('currentReport', Immutable.fromJS(payload)),
-    done:    state => state.set('reportLoading', false)
-  }),
-  [actions.runReport]: async({
-    start:   state => state.set('reportLoading', true),
-    success: (state, payload) => state.set('currentReport', Immutable.fromJS(payload)),
-    done:    state => state.set('reportLoading', false)
-  }),
-  [actions.newReport]: async({
-    success: (state, payload) => state.set('currentReport', Immutable.fromJS(payload))
-  }),
   [actions.reportsLoaded]:   state => state.set('reportsLoaded', true),
   [actions.loadGroupParams]: async({
     success: setFullPayload('groupParams')
