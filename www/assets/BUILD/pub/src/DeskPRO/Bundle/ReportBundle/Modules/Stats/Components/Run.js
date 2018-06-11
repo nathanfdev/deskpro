@@ -194,19 +194,20 @@ class Run extends React.Component {
       if (renderedResult.get('title')) {
         return (
           <div>
+            {this.renderDownload()}
             <b>{renderedResult.get('title')}</b>
-            {[this.renderDownload(), Run.renderChart(renderedResult, index)]}
+            {Run.renderChart(renderedResult, index)}
           </div>
         );
       }
 
-      return [this.renderDownload(), Run.renderChart(renderedResult, index), <span onClick={this.onDownloadClick}>Download as CSV</span>];
+      return [this.renderDownload(), Run.renderChart(renderedResult, index)];
     });
   }
 
   renderDownload() {
-    return (<div>
-      <span onClick={this.onDownloadClick}>Download as CSV</span>
+    return (<div className="download_link">
+      <span onClick={this.onDownloadClick}><i className="fa fa-file-excel-o" />Download as CSV</span>
     </div>);
   }
 
