@@ -115,9 +115,10 @@ WHERE tickets.status = \'resolved\'
             'query'         => 'SELECT tickets_messages.person AS \'Agent\', DPQL_COUNT() AS \'Replies\'
 FROM tickets_messages
 WHERE tickets_messages.date_created = ${date}
+  AND tickets_messages.is_agent_note = 0
   AND tickets_messages.person.is_agent = 1
 GROUP BY tickets_messages.person
-ORDER BY DPQL_COUNT() DESC
+ORDER BY @\'Replies\' DESC
 ',
             'variables' => '[{"name":"date","type":"dates","default":"today"}]',
         ],
@@ -144,6 +145,7 @@ ORDER BY DPQL_COUNT() DESC
             FROM  tickets_messages 
             WHERE
                 tickets_messages.date_created = %PAST_24_HOURS%
+                AND tickets_messages.is_agent_note = 0
                 AND tickets_messages.person.is_agent = 1
             GROUP BY DPQL_HOUR(tickets_messages.date_created, 0, 23) AS \'Hour\'',
             'variables' => '[]',
