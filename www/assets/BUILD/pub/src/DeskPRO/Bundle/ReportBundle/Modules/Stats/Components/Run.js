@@ -195,13 +195,19 @@ class Run extends React.Component {
         return (
           <div>
             <b>{renderedResult.get('title')}</b>
-            {[Run.renderChart(renderedResult, index), <span onClick={this.onDownloadClick}>Download as CSV</span>]}
+            {[this.renderDownload(), Run.renderChart(renderedResult, index)]}
           </div>
         );
       }
 
-      return [Run.renderChart(renderedResult, index), <span onClick={this.onDownloadClick}>Download as CSV</span>];
+      return [this.renderDownload(), Run.renderChart(renderedResult, index), <span onClick={this.onDownloadClick}>Download as CSV</span>];
     });
+  }
+
+  renderDownload() {
+    return (<div>
+      <span onClick={this.onDownloadClick}>Download as CSV</span>
+    </div>);
   }
 
   renderRun() {

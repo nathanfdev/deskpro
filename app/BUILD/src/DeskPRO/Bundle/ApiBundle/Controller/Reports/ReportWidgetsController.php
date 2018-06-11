@@ -13,6 +13,8 @@ use DeskPRO\Bundle\AppBundle\Form\Type\Reports\ReportWidgetType;
 use DeskPRO\Bundle\ReportBundle\Dpql2\DpqlException;
 use DeskPRO\Bundle\ReportBundle\Dpql2\Statement\SelectPart;
 use DeskPRO\Bundle\ReportBundle\Reports\Renderer\ReportsRendererInterface;
+use DeskPRO\Bundle\ReportBundle\Reports\SplitResult;
+use DeskPRO\Bundle\ReportBundle\Reports\SplitResults;
 use FOS\RestBundle\Controller\Annotations as Rest;
 use FOS\RestBundle\View\View;
 use Symfony\Component\HttpFoundation\Request;
@@ -109,13 +111,23 @@ class ReportWidgetsController extends CrudController
         );
         $renderer = $this->get('reports.renderer_registry')->getRenderer(ReportsRendererInterface::TYPE_TABLE, $type);
 
+        if ($results instanceof SplitResults) {
+            $actualResults = '';
+            foreach ($results->getResults() as $result) {
+                /* @var SplitResult $result */
+                $actualResults .= $result->getTitle().";\r\n".$result->getResults()."\r\n";
+            }
+        } else {
+            $actualResults = $results;
+        }
+
         $tmpData = new TmpData();
         $tmpData
             ->setDateExpire(new \DateTime('+15 minutes'))
-            ->setData('content', $results)
+            ->setData('content', $actualResults)
             ->setData('content_type', $renderer->getContentType())
             ->setData('content_disposition', 'attachment; filename='.$reportWidget->getTitle().'.'.$renderer->getExtension())
-            ->setData('content_length', strlen($results));
+            ->setData('content_length', strlen($actualResults));
 
         $this->getContainer()->getEm()->persist($tmpData);
         $this->getContainer()->getEm()->flush($tmpData);
