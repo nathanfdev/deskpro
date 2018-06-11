@@ -11,9 +11,11 @@ use DeskPRO\Bundle\AppBundle\Form\Error\Exception\InvalidFormException;
 use DeskPRO\Bundle\AppBundle\Form\Type\Reports\ReportWidgetType;
 use DeskPRO\Bundle\ReportBundle\Dpql2\DpqlException;
 use DeskPRO\Bundle\ReportBundle\Dpql2\Statement\SelectPart;
+use DeskPRO\Bundle\ReportBundle\Reports\Renderer\ReportsRendererInterface;
 use FOS\RestBundle\Controller\Annotations as Rest;
 use FOS\RestBundle\View\View;
 use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\HttpFoundation\Response;
 
 /**
  * Class ReportWidgetsController.
@@ -71,6 +73,47 @@ class ReportWidgetsController extends CrudController
         }
 
         return new View($this->wrap($reportWidget));
+    }
+
+    /**
+     * @Rest\Post("/download/{reportWidget}/{type}")
+     *
+     * @param ReportWidget $reportWidget
+     * @param string       $type
+     * @param Request      $request
+     *
+     * @throws \Exception
+     *
+     * @return Response
+     */
+    public function downloadAction(ReportWidget $reportWidget, $type, Request $request)
+    {
+        $form = $this->createForm(static::$type, $reportWidget, ['display_only' => true]);
+        $form->submit($request->request->all());
+
+        if (!$form->isValid()) {
+            throw new InvalidFormException($form);
+        }
+
+        $query     = $reportWidget->getQuery();
+        $variables = $reportWidget->getVariables();
+
+        $results = $this->getContainer()->get('reports.dashboard_widget.service')->doRender(
+            $query,
+            ['variables' => $variables],
+            ReportsRendererInterface::TYPE_TABLE,
+            $type,
+            $this->getUser()
+        );
+        $renderer = $this->get('reports.renderer_registry')->getRenderer(ReportsRendererInterface::TYPE_TABLE, $type);
+
+        $response = new Response();
+        $response->headers->set('Content-Type', $renderer->getContentType());
+        $response->headers->set('Content-Disposition', 'attachment; filename='.$reportWidget->getTitle().'.'.$renderer->getExtension());
+        $response->headers->set('Content-Length', strlen($results));
+        $response->setContent($results);
+
+        return $response;
     }
 
     /**
