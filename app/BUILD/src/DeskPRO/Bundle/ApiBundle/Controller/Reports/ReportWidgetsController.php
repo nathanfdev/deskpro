@@ -3,6 +3,7 @@
 namespace DeskPRO\Bundle\ApiBundle\Controller\Reports;
 
 use Application\DeskPRO\Entity\ReportWidget;
+use Application\DeskPRO\Entity\TmpData;
 use DeskPRO\Bundle\ApiBundle\ApiDoc\Annotation\ApiDoc;
 use DeskPRO\Bundle\ApiBundle\Controller\CrudController;
 use DeskPRO\Bundle\AppBundle\Annotation\ActionPermissions\Annotation\ApiModes;
@@ -16,6 +17,7 @@ use FOS\RestBundle\Controller\Annotations as Rest;
 use FOS\RestBundle\View\View;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 
 /**
  * Class ReportWidgetsController.
@@ -84,7 +86,7 @@ class ReportWidgetsController extends CrudController
      *
      * @throws \Exception
      *
-     * @return Response
+     * @return View
      */
     public function downloadAction(ReportWidget $reportWidget, $type, Request $request)
     {
@@ -107,11 +109,42 @@ class ReportWidgetsController extends CrudController
         );
         $renderer = $this->get('reports.renderer_registry')->getRenderer(ReportsRendererInterface::TYPE_TABLE, $type);
 
+        $tmpData = new TmpData();
+        $tmpData
+            ->setDateExpire(new \DateTime('+15 minutes'))
+            ->setData('content', $results)
+            ->setData('content_type', $renderer->getContentType())
+            ->setData('content_disposition', 'attachment; filename='.$reportWidget->getTitle().'.'.$renderer->getExtension())
+            ->setData('content_length', strlen($results));
+
+        $this->getContainer()->getEm()->persist($tmpData);
+        $this->getContainer()->getEm()->flush($tmpData);
+
+        return new View($this->wrap(['auth' => $tmpData->getAuth()]));
+    }
+
+    /**
+     * @Rest\Get("/download/generated/{auth}")
+     *
+     * @param string $auth
+     *
+     * @throws \Exception
+     *
+     * @return Response
+     */
+    public function downloadGeneratedFileAction($auth)
+    {
+        $tmpData = $this->getContainer()->getEm()->getRepository(TmpData::class)->findOneBy(['auth' => $auth]);
+
+        if (!$tmpData) {
+            throw new NotFoundHttpException();
+        }
+
         $response = new Response();
-        $response->headers->set('Content-Type', $renderer->getContentType());
-        $response->headers->set('Content-Disposition', 'attachment; filename='.$reportWidget->getTitle().'.'.$renderer->getExtension());
-        $response->headers->set('Content-Length', strlen($results));
-        $response->setContent($results);
+        $response->headers->set('Content-Type', $tmpData->getData('content_type'));
+        $response->headers->set('Content-Disposition', $tmpData->getData('content_disposition'));
+        $response->headers->set('Content-Length', $tmpData->getData('content_length'));
+        $response->setContent($tmpData->getData('content'));
 
         return $response;
     }

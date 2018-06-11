@@ -104,7 +104,6 @@ class Wrapper extends React.Component {
 
   onDownloadReportClick(report, type) {
     this.props.dispatch(downloadReport(report.get('id'), transformReportData(report), type));
-    this.setState({ mode: 'edit' });
   }
 
   onEditReportClick(report) {

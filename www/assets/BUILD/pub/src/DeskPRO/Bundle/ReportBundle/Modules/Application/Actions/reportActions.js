@@ -101,7 +101,9 @@ export const downloadReport = createAction(
       };
     }
 
-    return api.sendPost(`DP_API/report_widgets/download/${reportId}/${type}`, data);
+    api.sendPost(`DP_API/report_widgets/download/${reportId}/${type}`, data).success(
+      response => window.open(`/api/v2/report_widgets/download/generated/${response.data.auth}`)
+    );
   });
 
 export const loadGroupParams = createAction(
