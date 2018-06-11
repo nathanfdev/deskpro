@@ -38,7 +38,7 @@ class VarsFieldComponent extends React.PureComponent {
       return choice;
     });
 
-    return (<reduxForm.Select onChange={() => {}} key={name} name={name} options={choices} />);
+    return (<reduxForm.Select label="Default Value" onChange={() => {}} key={name} name={name} options={choices} />);
   }
 
   static renderTypeField(name, values) {
@@ -119,12 +119,12 @@ class VarsFieldComponent extends React.PureComponent {
                 name={`${varName}.type`}
               />
               { this.isDateType(variable) &&
-                VarsFieldComponent.renderDateField(`${varName}.field_value`, groupParams.dates) }
+                VarsFieldComponent.renderDateField(`${varName}.default`, groupParams.dates) }
               { this.isVarType(variable) &&
                 VarsFieldComponent.renderTypeField(`${varName}.field_type`, groupParams[variable.type]) }
               { this.varTypeHasValue(variable) &&
                 VarsFieldComponent.renderTypeValueField(
-                  `${varName}.field_value`,
+                  `${varName}.default`,
                   groupParams[variable.type][variable.field_type]
                 ) }
             </div>);
