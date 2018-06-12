@@ -10,7 +10,8 @@ class SearchBox extends React.Component {
     onBlur:       PropTypes.func,
     onClearInput: PropTypes.func,
     focusOnMount: PropTypes.bool,
-    icon:         PropTypes.node
+    icon:         PropTypes.node,
+    children:     PropTypes.node,
   };
   static defaultProps = {
     onUserInput() {},
@@ -40,7 +41,6 @@ class SearchBox extends React.Component {
   };
 
   clearInput = () => {
-    console.log('clear input');
     this.textInput.value = '';
     this.props.onUserInput(
       this.textInput.value
@@ -52,19 +52,23 @@ class SearchBox extends React.Component {
 
   render() {
     const { placeholder, text, onFocus, onBlur } = this.props;
+    let { children } = this.props;
+    if (!children) {
+      children = (<input
+        type="search"
+        placeholder={placeholder}
+        ref={(c) => { this.textInput = c; }}
+        onChange={this.handleChange}
+        onFocus={onFocus}
+        onBlur={onBlur}
+        value={text}
+        required="required"
+      />);
+    }
     return (
       <div className="ui input left icon search">
         {this.getIcon()}
-        <input
-          type="search"
-          placeholder={placeholder}
-          ref={(c) => { this.textInput = c; }}
-          onChange={this.handleChange}
-          onFocus={onFocus}
-          onBlur={onBlur}
-          value={text}
-          required="required"
-        />
+        { children }
         <i onClick={this.clearInput} className="remove circle icon right" />
       </div>
     );

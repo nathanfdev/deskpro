@@ -275,7 +275,8 @@ $contrast: 5% !default;
       //margin-left: 0;
     }
     .ui.input {
-      input[type=search] {
+      input[type=search],
+      & > div {
         border: 0;
         width: 164px;
         padding-left: 8px !important;
@@ -290,6 +291,9 @@ $contrast: 5% !default;
           }
         }
         &:invalid + i.icon.remove {
+          display: none;
+        }
+        .fa-search {
           display: none;
         }
       }
