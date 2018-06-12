@@ -7,6 +7,7 @@ use DeskPRO\Bundle\AppBundle\TicketFilters\Context;
 use DeskPRO\Bundle\AppBundle\TicketFilters\Model\Entity\TicketModel;
 use DeskPRO\Bundle\AppBundle\TicketFilters\OptValue\OptValue;
 use DeskPRO\Bundle\AppBundle\TicketFilters\TermFieldIds;
+use DeskPRO\Bundle\AppBundle\TicketFilters\Terms\Util\SqlQueryUtils;
 use DeskPRO\Component\FilterQueryLanguage\Query\Node\Term;
 use DeskPRO\Component\Util\ListUtils;
 
@@ -45,7 +46,7 @@ class PersonTermsHandler extends AbstractTermsHandler
             case TermFieldIds::PERSON_ID:
                 $value = $this->normalizePersonId($options->getValue());
 
-                return $this->checkValue($ticketModel->person->id, $operator, $value);
+                return CheckValueUtils::checkValue($ticketModel->person->id, $operator, $value);
 
             default:
                 throw new \InvalidArgumentException();
@@ -58,7 +59,7 @@ class PersonTermsHandler extends AbstractTermsHandler
             case TermFieldIds::PERSON_ID:
                 $value = $this->normalizePersonId($options->getValue());
 
-                return $this->checkValueQueryCondition('{tickets}.person_id', $operator, $value);
+                return SqlQueryUtils::buildQueryCondition('{tickets}.person_id', $operator, $value);
 
             default:
                 throw new \InvalidArgumentException();

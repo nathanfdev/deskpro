@@ -7,6 +7,8 @@ use DeskPRO\Bundle\AppBundle\TicketFilters\Model\Entity\TicketModel;
 use DeskPRO\Bundle\AppBundle\TicketFilters\OptValue\OptValue;
 use DeskPRO\Bundle\AppBundle\TicketFilters\SqlBuilder\SqlCondition;
 use DeskPRO\Bundle\AppBundle\TicketFilters\TermFieldIds;
+use DeskPRO\Bundle\AppBundle\TicketFilters\Terms\Util\CheckValueUtils;
+use DeskPRO\Bundle\AppBundle\TicketFilters\Terms\Util\SqlQueryUtils;
 use DeskPRO\Component\FilterQueryLanguage\Query\Node\Term;
 
 class TicketBasicTermsHandler extends AbstractTermsHandler
@@ -67,7 +69,7 @@ class TicketBasicTermsHandler extends AbstractTermsHandler
             default: throw new \InvalidArgumentException('Unknown field');
         }
 
-        return $this->checkValue($fieldValue, $operator, $options);
+        return CheckValueUtils::checkValue($fieldValue, $operator, $options);
     }
 
     /**
@@ -95,7 +97,7 @@ class TicketBasicTermsHandler extends AbstractTermsHandler
         }
 
         if ($column) {
-            return $this->checkValueQueryCondition($column, $operator, $options);
+            return SqlQueryUtils::buildQueryCondition($column, $operator, $options);
         }
 
         switch ($fieldId) {
@@ -103,19 +105,19 @@ class TicketBasicTermsHandler extends AbstractTermsHandler
                 $cond = new SqlCondition();
                 $cond->addUniqueJoin('tickets', 'tickets_participants', 'part', '{part}.ticket_id = {tickets}.id');
 
-                return $this->checkValueQueryCondition('{part}.person_id', $operator, $options, $cond);
+                return SqlQueryUtils::buildQueryCondition('{part}.person_id', $operator, $options, $cond);
 
             case TermFieldIds::TICKET_LABELS:
                 $cond = new SqlCondition();
                 $cond->addUniqueJoin('tickets', 'labels_tickets', 'label', '{label}.ticket_id = {tickets}.id');
 
-                return $this->checkValueQueryCondition('{label}.label', $operator, $options, $cond);
+                return SqlQueryUtils::buildQueryCondition('{label}.label', $operator, $options, $cond);
 
             case TermFieldIds::TICKET_PROBLEM_ID:
                 $cond = new SqlCondition();
                 $cond->addUniqueJoin('tickets', 'problem2tickets', 'prob', '{prob}.ticket_id = {tickets}.id');
 
-                return $this->checkValueQueryCondition('{prob}.problem_id', $operator, $options, $cond);
+                return SqlQueryUtils::buildQueryCondition('{prob}.problem_id', $operator, $options, $cond);
         }
 
         throw new \InvalidArgumentException('Unknown field');

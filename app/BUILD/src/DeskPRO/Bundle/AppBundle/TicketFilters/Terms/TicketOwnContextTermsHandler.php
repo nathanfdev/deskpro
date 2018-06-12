@@ -8,6 +8,8 @@ use DeskPRO\Bundle\AppBundle\TicketFilters\Model\Entity\TicketModel;
 use DeskPRO\Bundle\AppBundle\TicketFilters\OptValue\OptValue;
 use DeskPRO\Bundle\AppBundle\TicketFilters\SqlBuilder\SqlCondition;
 use DeskPRO\Bundle\AppBundle\TicketFilters\TermFieldIds;
+use DeskPRO\Bundle\AppBundle\TicketFilters\Terms\Util\CheckValueUtils;
+use DeskPRO\Bundle\AppBundle\TicketFilters\Terms\Util\SqlQueryUtils;
 use DeskPRO\Component\FilterQueryLanguage\Query\Node\Term;
 use DeskPRO\Component\Util\ListUtils;
 use Doctrine\DBAL\Connection;
@@ -49,7 +51,7 @@ class TicketOwnContextTermsHandler extends AbstractTermsHandler
                     $flaggedWith = null;
                 }
 
-                return $this->checkValue($flaggedWith, $operator, $value);
+                return CheckValueUtils::checkValue($flaggedWith, $operator, $value);
 
             default:
                 throw new \InvalidArgumentException();
@@ -74,7 +76,7 @@ class TicketOwnContextTermsHandler extends AbstractTermsHandler
 
                 $value = $this->mapIdToColor($options->getValue());
 
-                return $this->checkValueQueryCondition('{flag}.color', $operator, $value, $cond);
+                return SqlQueryUtils::buildQueryCondition('{flag}.color', $operator, $value, $cond);
 
             default:
                 throw new \InvalidArgumentException();

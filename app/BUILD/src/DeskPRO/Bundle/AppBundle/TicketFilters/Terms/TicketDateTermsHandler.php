@@ -6,6 +6,7 @@ use DeskPRO\Bundle\AppBundle\TicketFilters\Context;
 use DeskPRO\Bundle\AppBundle\TicketFilters\Model\Entity\TicketModel;
 use DeskPRO\Bundle\AppBundle\TicketFilters\OptValue\OptValue;
 use DeskPRO\Bundle\AppBundle\TicketFilters\TermFieldIds;
+use DeskPRO\Bundle\AppBundle\TicketFilters\Terms\Util\CheckValueUtils;
 use DeskPRO\Component\FilterQueryLanguage\Query\Node\Term;
 
 class TicketDateTermsHandler extends AbstractTermsHandler
@@ -50,7 +51,7 @@ class TicketDateTermsHandler extends AbstractTermsHandler
                 throw new \InvalidArgumentException();
         }
 
-        return $this->checkValue($fieldValue, $operator, $options);
+        return CheckValueUtils::checkValue($fieldValue, $operator, $options);
     }
 
     /**

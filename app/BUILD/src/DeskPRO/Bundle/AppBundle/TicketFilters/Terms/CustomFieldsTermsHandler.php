@@ -14,6 +14,8 @@ use DeskPRO\Bundle\AppBundle\TicketFilters\OptValue\CompareValue;
 use DeskPRO\Bundle\AppBundle\TicketFilters\OptValue\OptValue;
 use DeskPRO\Bundle\AppBundle\TicketFilters\SqlBuilder\SqlCondition;
 use DeskPRO\Bundle\AppBundle\TicketFilters\TermFieldIds;
+use DeskPRO\Bundle\AppBundle\TicketFilters\Terms\Util\CheckValueUtils;
+use DeskPRO\Bundle\AppBundle\TicketFilters\Terms\Util\SqlQueryUtils;
 use DeskPRO\Component\FilterQueryLanguage\Query\Node\Term;
 use DeskPRO\Component\FilterQueryLanguage\Query\Query;
 use DeskPRO\Component\Util\ListUtils;
@@ -155,7 +157,7 @@ class CustomFieldsTermsHandler extends AbstractTermsHandler
                 break;
         }
 
-        return $this->checkValue($fieldValue, $operator, $checkValue);
+        return CheckValueUtils::checkValue($fieldValue, $operator, $checkValue);
     }
 
     /**
@@ -186,10 +188,10 @@ class CustomFieldsTermsHandler extends AbstractTermsHandler
 
         switch ($field->type) {
             case CustomDefAbstract::TYPE_CHOICE:
-                return $this->checkValueQueryCondition('{dat}.field_id', $operator, $options, $cond);
+                return SqlQueryUtils::buildQueryCondition('{dat}.field_id', $operator, $options, $cond);
 
             case CustomDefAbstract::TYPE_TOGGLE:
-                return $this->checkValueQueryCondition('{dat}.value', $operator, $options, $cond);
+                return SqlQueryUtils::buildQueryCondition('{dat}.value', $operator, $options, $cond);
 
             case CustomDefAbstract::TYPE_DATETIME:
             case CustomDefAbstract::TYPE_DATE:
@@ -218,18 +220,18 @@ class CustomFieldsTermsHandler extends AbstractTermsHandler
                 if ($options instanceof BetweenValue) {
                     $values = ListUtils::map($options->getValue(), $inputToTs);
 
-                    return $this->checkValueQueryCondition('{dat}.value', Query::OP_BETWEEN, $values, $cond);
+                    return SqlQueryUtils::buildQueryCondition('{dat}.value', Query::OP_BETWEEN, $values, $cond);
                 } else {
                     $checkValue = $inputToTs($options->getValue());
 
-                    return $this->checkValueQueryCondition('{dat}.value', $operator, $checkValue, $cond);
+                    return SqlQueryUtils::buildQueryCondition('{dat}.value', $operator, $checkValue, $cond);
                 }
 
             case CustomDefAbstract::TYPE_CURRENCY:
-                return $this->checkValueQueryCondition('{dat}.value', $operator, $options, $cond);
+                return SqlQueryUtils::buildQueryCondition('{dat}.value', $operator, $options, $cond);
 
             default:
-                return $this->checkValueQueryCondition('{dat}.input', $operator, $options, $cond);
+                return SqlQueryUtils::buildQueryCondition('{dat}.input', $operator, $options, $cond);
         }
     }
 

@@ -8,6 +8,8 @@ use DeskPRO\Bundle\AppBundle\TicketFilters\Model\Entity\TicketModel;
 use DeskPRO\Bundle\AppBundle\TicketFilters\OptValue\OptValue;
 use DeskPRO\Bundle\AppBundle\TicketFilters\SqlBuilder\SqlCondition;
 use DeskPRO\Bundle\AppBundle\TicketFilters\TermFieldIds;
+use DeskPRO\Bundle\AppBundle\TicketFilters\Terms\Util\CheckValueUtils;
+use DeskPRO\Bundle\AppBundle\TicketFilters\Terms\Util\SqlQueryUtils;
 use DeskPRO\Component\FilterQueryLanguage\Query\Node\Term;
 use DeskPRO\Component\FilterQueryLanguage\Query\Query;
 
@@ -62,7 +64,7 @@ class TicketSlaTermsHandler extends AbstractTermsHandler
             default: throw new \InvalidArgumentException('Unknown field');
         }
 
-        return $this->checkValue($fieldValue, $operator, $options);
+        return CheckValueUtils::checkValue($fieldValue, $operator, $options);
     }
 
     public function matchHasPassingSlas($fieldId, $operator, array $params, TicketModel $ticketModel, Context $context, Term $term)
@@ -107,7 +109,7 @@ class TicketSlaTermsHandler extends AbstractTermsHandler
                 $cond = new SqlCondition();
                 $cond->addUniqueJoin('tickets', 'ticket_slas', 'slas', '{slas}.ticket_id = {tickets}.id');
 
-                return $this->checkValueQueryCondition('{slas}.sla_id', $operator, $options, $cond);
+                return SqlQueryUtils::buildQueryCondition('{slas}.sla_id', $operator, $options, $cond);
                 break;
             default:
                 throw new \InvalidArgumentException('Unknown field');
