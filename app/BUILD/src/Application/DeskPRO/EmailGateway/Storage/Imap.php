@@ -159,7 +159,11 @@ class Imap extends Server
      */
     public function clearCaches()
     {
-        return imap_gc($this->imapStream, IMAP_GC_ELT | IMAP_GC_ENV | IMAP_GC_TEXTS);
+        if (!$this->imapStream) {
+            return false;
+        }
+
+        return @imap_gc($this->imapStream, IMAP_GC_ELT | IMAP_GC_ENV | IMAP_GC_TEXTS);
     }
 
     /**
