@@ -6699,16 +6699,53 @@ ul.categories-article-list {
   }
 }
 
+.article-content.fr-view,
 .fr-view {
   overflow: hidden;
-  img.topAligned {
-    vertical-align: top;
-  }
-  img.middleAligned {
-    vertical-align: middle;
-  }
-  img.bottomAligned {
-    vertical-align: bottom;
+  & img {
+    position: relative;
+    max-width: 100%;
+    &.fr-dib {
+      margin: 5px auto;
+      display: block;
+      float: none;
+      vertical-align: top;
+    }
+    &.fr-dib.fr-fil {
+      margin-left: 0;
+      text-align: left;
+    }
+    &.fr-dib.fr-fir {
+      margin-right: 0;
+      text-align: right;
+    }
+    &.fr-dii {
+      display: inline-block;
+      float: none;
+      vertical-align: bottom;
+      margin-left: 5px;
+      margin-right: 5px;
+      max-width: calc(100% - (2 * 5px));
+    }
+    &.fr-dii.fr-fil {
+      float: left;
+      margin: 5px 5px 5px 0;
+      max-width: calc(100% - 5px);
+    }
+    &.fr-dii.fr-fir {
+      float: right;
+      margin: 5px 0 5px 5px;
+      max-width: calc(100% - 5px);
+    }
+    &.topAligned {
+      vertical-align: top;
+    }
+    &.middleAligned {
+      vertical-align: middle;
+    }
+    &.bottomAligned {
+      vertical-align: bottom;
+    }
   }
 }
 
