@@ -31,7 +31,7 @@ class OAuthAccessToken implements EntityInterface, AccessTokenInterface, NotifyP
 
     /**
      * @ORM\ManyToOne(targetEntity="DeskPRO\Bundle\AppBundle\Entity\OAuthClient")
-     * @ORM\JoinColumn(nullable=false)
+     * @ORM\JoinColumn(nullable=false, onDelete="CASCADE")
      *
      * @var OAuthClient
      */
@@ -39,7 +39,7 @@ class OAuthAccessToken implements EntityInterface, AccessTokenInterface, NotifyP
 
     /**
      * @ORM\OneToOne(targetEntity="Application\DeskPRO\Entity\ApiToken", cascade={"persist", "remove"})
-     * @ORM\JoinColumn(name="api_token_id", nullable=false)
+     * @ORM\JoinColumn(name="api_token_id", nullable=false, onDelete="CASCADE")
      *
      * @var ApiToken
      */
@@ -127,6 +127,14 @@ class OAuthAccessToken implements EntityInterface, AccessTokenInterface, NotifyP
     public function getToken()
     {
         return $this->apiToken->getToken();
+    }
+
+    /**
+     * @return ApiToken
+     */
+    public function getTokenEntity()
+    {
+        return $this->apiToken;
     }
 
     /**
