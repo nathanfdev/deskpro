@@ -63,7 +63,7 @@ class DataTable extends React.Component {
 
   render() {
     return (
-      <div style={{ height: this.props.options.height ? this.props.options.height : 200 }}>
+      <div style={{ height: this.props.options.height }}>
         <table className="display" ref={(el) => { this.el = el; }}>
           <tfoot>
             <tr className="dataTables_reset_wrapper">

@@ -105,12 +105,13 @@ class Run extends React.Component {
           options={{
             scrollCollapse: true,
             autoWidth:      true,
-            pageResize:     true,
+            pageResize:     false,
+            pageLength:     50,
             ordering:       true,
             order:          [],
             searching:      false,
             lengthChange:   true,
-            height:         400
+            height:         null
           }}
         />);
       case 'stat':
