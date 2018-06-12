@@ -20,6 +20,7 @@ class Run extends React.Component {
     onRunClick:                 PropTypes.func.isRequired,
     onDeleteClick:              PropTypes.func.isRequired,
     onEditReportClick:          PropTypes.func.isRequired,
+    onDownloadClick:            PropTypes.func.isRequired,
     groupParams:                PropTypes.object.isRequired,
   };
 
@@ -149,6 +150,12 @@ class Run extends React.Component {
     this.props.onRunClick(this.props.report);
   };
 
+  onDownloadClick = (event) => {
+    event.preventDefault();
+    event.stopPropagation();
+    this.props.onDownloadClick(this.props.report, 'csv');
+  };
+
   onDeleteClick = (event) => {
     event.preventDefault();
     event.stopPropagation();
@@ -188,14 +195,21 @@ class Run extends React.Component {
       if (renderedResult.get('title')) {
         return (
           <div>
+            {this.renderDownload()}
             <b>{renderedResult.get('title')}</b>
             {Run.renderChart(renderedResult, index)}
           </div>
         );
       }
 
-      return Run.renderChart(renderedResult, index);
+      return [this.renderDownload(), Run.renderChart(renderedResult, index)];
     });
+  }
+
+  renderDownload() {
+    return (<div className="download_link">
+      <span onClick={this.onDownloadClick}><i className="fa fa-file-excel-o" />Download as CSV</span>
+    </div>);
   }
 
   renderRun() {

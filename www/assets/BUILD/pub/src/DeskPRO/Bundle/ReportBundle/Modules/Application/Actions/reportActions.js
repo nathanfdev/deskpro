@@ -77,6 +77,35 @@ export const runReport = createAction(
     );
   });
 
+export const downloadReport = createAction(
+  'REPORTS_DOWNLOAD_REPORT',
+  (reportId, report, type) => {
+    const data = {
+      display_types: report.display_types,
+      variables:     report.vars,
+      input_mode:    report.extended_query ? 'dpql' : 'form',
+      title:         report.title,
+    };
+    if (report.extended_query) {
+      data.query = report.query;
+    } else {
+      data.query_parts = {
+        select:   report.select,
+        from:     report.from,
+        where:    report.where,
+        split_by: report.split_by,
+        group_by: report.group_by,
+        order_by: report.order_by,
+        limit:    report.limit,
+        offset:   report.offset
+      };
+    }
+
+    api.sendPost(`DP_API/report_widgets/download/${reportId}/${type}`, data).success(
+      response => window.open(`/api/v2/report_widgets/download/generated/${response.data.auth}`)
+    );
+  });
+
 export const loadGroupParams = createAction(
   'REPORTS_LOAD_GROUP_PARAMS',
   () => new Promise(resolve => api.sendGet('DP_API/report_widgets/group-params').success(response => resolve(response)))

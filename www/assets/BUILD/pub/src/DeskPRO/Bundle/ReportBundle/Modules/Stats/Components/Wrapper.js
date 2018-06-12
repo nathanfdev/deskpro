@@ -14,7 +14,8 @@ import {
   saveAndRun,
   parseQuery,
   cloneReport,
-  deleteReport
+  deleteReport,
+  downloadReport
 } from '../../Application/Actions/reportActions';
 import { allReportsSelector } from '../Selectors/reports';
 import { allReportLabelsSelector } from '../../Application/Selectors/reports';
@@ -64,6 +65,7 @@ class Wrapper extends React.Component {
     };
 
     this.onEditReportClick          = this.onEditReportClick.bind(this);
+    this.onDownloadReportClick      = this.onDownloadReportClick.bind(this);
     this.onRunReportClick           = this.onRunReportClick.bind(this);
     this.onDeleteReportClick        = this.onDeleteReportClick.bind(this);
     this.onCloneReportClick         = this.onCloneReportClick.bind(this);
@@ -98,6 +100,10 @@ class Wrapper extends React.Component {
     });
     const newReports = this.state.reports.set(report.get('id'), changedReport);
     this.setState({ currentReport: report, reports: newReports }, () => this.onRunReportClick(changedReport));
+  }
+
+  onDownloadReportClick(report, type) {
+    this.props.dispatch(downloadReport(report.get('id'), transformReportData(report), type));
   }
 
   onEditReportClick(report) {
@@ -278,6 +284,7 @@ class Wrapper extends React.Component {
               reportLoading={reportLoading}
               onEditReportClick={this.onEditReportClick}
               onRunClick={this.onRunReportClick}
+              onDownloadClick={this.onDownloadReportClick}
               onDeleteClick={this.onDeleteReportClick}
             />
             : null

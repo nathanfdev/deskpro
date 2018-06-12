@@ -176,6 +176,8 @@ class TmpData extends \Application\DeskPRO\Domain\DomainObject
      *
      * @param  $key
      * @param  $value
+     *
+     * @return $this
      */
     public function setData($key, $value)
     {
@@ -187,6 +189,8 @@ class TmpData extends \Application\DeskPRO\Domain\DomainObject
         }
 
         $this->_onPropertyChanged('data', $old, $this->data);
+
+        return $this;
     }
 
     /**

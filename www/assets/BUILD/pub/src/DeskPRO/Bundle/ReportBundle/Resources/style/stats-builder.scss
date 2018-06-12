@@ -542,6 +542,15 @@
     padding: 25px;
     border-top: 1px solid $global-border;
 
+    .download_link {
+      color: $dp-greyscale-650;
+      cursor: pointer;
+      margin-bottom: 3px;
+      i {
+        margin-right: 10px;
+      }
+    }
+
     .dataTables_reset {
       display: none;;
     }
