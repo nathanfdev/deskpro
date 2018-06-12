@@ -258,7 +258,7 @@ class __DP_CI_Security
     protected function _remove_evil_attributes($str, $is_image)
     {
         // All javascript event handlers (e.g. onload, onclick, onmouseover), style, and xmlns
-        $evil_attributes = ['on\w*', 'style', 'xmlns', 'formaction', 'form', 'xlink:href'];
+        $evil_attributes = ['\s+on\w*', 'style', 'xmlns', 'formaction', 'form', 'xlink:href'];
 
         if ($is_image === true) {
             /*
