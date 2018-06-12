@@ -47,6 +47,10 @@ SQL
      */
     public function test_date_interval($placeholder, $date1, $date2)
     {
+        $dateMinus1sec = new \DateTime($date1);
+        $dateMinus1sec->modify('-1 sec');
+        $dateMinus1sec = $dateMinus1sec->format('Y-m-d H:i:s');
+
         $this->assertDpqlQuery(
             <<<DPQL
 SELECT tickets.date_created
@@ -55,9 +59,27 @@ WHERE tickets.date_created = %$placeholder%
 DPQL
             ,
             <<<SQL
-SELECT /*+ MAX_EXECUTION_TIME(30000) */ `tickets`.`date_created`
-FROM `tickets`
-WHERE (`tickets`.`date_created` BETWEEN '$date1' AND '$date2')
+SELECT /*+ MAX_EXECUTION_TIME(30000) */ `tickets`.`date_created` 
+FROM `tickets` 
+WHERE ((`tickets`.`date_created` > '$dateMinus1sec' AND `tickets`.`date_created` BETWEEN '$date1' AND '$date2') OR `tickets`.`date_created` > NOW()) 
+LIMIT 2500
+SQL
+        );
+    }
+
+    public function test_tomorrow()
+    {
+        $this->assertDpqlQuery(
+            <<<'DPQL'
+SELECT tickets.date_created
+FROM tickets
+WHERE tickets.date_created = %TOMORROW%
+DPQL
+            ,
+            <<<'SQL'
+SELECT /*+ MAX_EXECUTION_TIME(30000) */ `tickets`.`date_created` 
+FROM `tickets` 
+WHERE (`tickets`.`date_created` BETWEEN '2017-12-27 00:00:00' AND '2017-12-27 23:59:59') 
 LIMIT 2500
 SQL
         );
@@ -83,7 +105,6 @@ SQL
             ['THIS_MONTH', '2017-12-01 00:00:00', '2017-12-31 23:59:59'],
             ['THIS_YEAR', '2017-01-01 00:00:00', '2017-12-31 23:59:59'],
             ['TODAY', '2017-12-26 00:00:00', '2017-12-26 23:59:59'],
-            ['TOMORROW', '2017-12-27 00:00:00', '2017-12-27 23:59:59'],
             ['YESTERDAY', '2017-12-25 00:00:00', '2017-12-25 23:59:59'],
         ];
     }
