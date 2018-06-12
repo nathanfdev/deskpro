@@ -14,7 +14,7 @@ class OAuth2 extends BaseOAuth2
     /**
      * @var EntityManager
      */
-    protected $entityManager;
+    protected $em;
 
     /**
      * @param EntityManager $em
