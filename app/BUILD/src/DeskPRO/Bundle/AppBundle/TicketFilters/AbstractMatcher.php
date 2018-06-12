@@ -2,6 +2,7 @@
 
 namespace DeskPRO\Bundle\AppBundle\TicketFilters;
 
+use DeskPRO\Bundle\AppBundle\TicketFilters\Terms\TermsHandlerInterface;
 use DeskPRO\Component\FilterQueryLanguage\Query\Node\Term;
 use DeskPRO\Component\FilterQueryLanguage\Query\Opt\CompareOpt;
 use DeskPRO\Component\FilterQueryLanguage\Query\Val\FuncVal;
