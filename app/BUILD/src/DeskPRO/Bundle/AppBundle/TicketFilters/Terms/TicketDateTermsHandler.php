@@ -8,22 +8,35 @@ use DeskPRO\Bundle\AppBundle\TicketFilters\OptValue\OptValue;
 use DeskPRO\Bundle\AppBundle\TicketFilters\TermFieldIds;
 use DeskPRO\Bundle\AppBundle\TicketFilters\Terms\Util\CheckValueUtils;
 use DeskPRO\Component\FilterQueryLanguage\Query\Node\Term;
+use DeskPRO\Component\FilterQueryLanguage\Query\Query;
+use DeskPRO\Component\Util\MemoizeMethod;
 
-class TicketDateTermsHandler extends AbstractTermsHandler
+class TicketDateTermsHandler implements ValueTermHandler, SqlTermHandler
 {
+    use MemoizeMethod;
+
     /**
-     * {@inheritdoc}
+     * @return HandlerDef
      */
-    public function getHandledFields()
+    public function getValueHandlerDef()
     {
-        return [
-            TermFieldIds::TICKET_DATE_CREATED,
-            TermFieldIds::TICKET_DATE_RESOLVED,
-            TermFieldIds::TICKET_DATE_LAST_AGENT_REPLY,
-            TermFieldIds::TICKET_DATE_LAST_USER_REPLY,
-            TermFieldIds::TICKET_DATE_AGENT_WAITING,
-            TermFieldIds::TICKET_DATE_USER_WAITING,
-        ];
+        return $this->memoizedRun(function () {
+            return HandlerDef::create()
+                ->addField(TermFieldIds::TICKET_DATE_CREATED, Query::commonDateValueOperators())
+                ->addField(TermFieldIds::TICKET_DATE_RESOLVED, Query::commonDateValueOperators())
+                ->addField(TermFieldIds::TICKET_DATE_LAST_AGENT_REPLY, Query::commonDateValueOperators())
+                ->addField(TermFieldIds::TICKET_DATE_LAST_USER_REPLY, Query::commonDateValueOperators())
+                ->addField(TermFieldIds::TICKET_DATE_AGENT_WAITING, Query::commonDateValueOperators())
+                ->addField(TermFieldIds::TICKET_DATE_USER_WAITING, Query::commonDateValueOperators());
+        }, __FUNCTION__);
+    }
+
+    /**
+     * @return HandlerDef
+     */
+    public function getSqlHandlerDef()
+    {
+        return $this->getValueHandlerDef();
     }
 
     /**
@@ -86,5 +99,21 @@ class TicketDateTermsHandler extends AbstractTermsHandler
         }
 
         throw new \InvalidArgumentException('Unknown field');
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function doesTicketMatchFunc($name, $fieldId, $operator, array $params, TicketModel $ticketModel, Context $context, Term $term)
+    {
+        throw new \RuntimeException('No functions defined');
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function buildQueryFuncCondition($name, $fieldId, $operator, array $params, Context $context, Term $term)
+    {
+        throw new \RuntimeException('No functions defined');
     }
 }

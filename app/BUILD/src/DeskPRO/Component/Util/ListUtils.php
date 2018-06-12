@@ -118,7 +118,9 @@ class ListUtils
 
             if (is_array($res) || $res instanceof \Traversable) {
                 foreach ($res as $subV) {
-                    $flat[] = $subV;
+                    if ($subV !== null) {
+                        $flat[] = $subV;
+                    }
                 }
             } elseif ($res !== null) {
                 $flat[] = $res;

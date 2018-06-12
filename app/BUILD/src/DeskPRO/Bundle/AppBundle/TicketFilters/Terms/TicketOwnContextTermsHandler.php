@@ -11,11 +11,15 @@ use DeskPRO\Bundle\AppBundle\TicketFilters\TermFieldIds;
 use DeskPRO\Bundle\AppBundle\TicketFilters\Terms\Util\CheckValueUtils;
 use DeskPRO\Bundle\AppBundle\TicketFilters\Terms\Util\SqlQueryUtils;
 use DeskPRO\Component\FilterQueryLanguage\Query\Node\Term;
+use DeskPRO\Component\FilterQueryLanguage\Query\Query;
 use DeskPRO\Component\Util\ListUtils;
+use DeskPRO\Component\Util\MemoizeMethod;
 use Doctrine\DBAL\Connection;
 
-class TicketOwnContextTermsHandler extends AbstractTermsHandler
+class TicketOwnContextTermsHandler implements ValueTermHandler, SqlTermHandler
 {
+    use MemoizeMethod;
+
     /**
      * @var Connection
      */
@@ -29,13 +33,28 @@ class TicketOwnContextTermsHandler extends AbstractTermsHandler
         $this->db = $db;
     }
 
-    public function getHandledFields()
+    /**
+     * @return HandlerDef
+     */
+    public function getValueHandlerDef()
     {
-        return [
-            TermFieldIds::TICKET_STARRED,
-        ];
+        return $this->memoizedRun(function () {
+            return HandlerDef::create()
+                ->addField(TermFieldIds::TICKET_STARRED, [Query::OP_IN, Query::OP_NOT_IN, Query::OP_HAS, Query::OP_EQ, Query::OP_NEQ]);
+        }, __FUNCTION__);
     }
 
+    /**
+     * @return HandlerDef
+     */
+    public function getSqlHandlerDef()
+    {
+        return $this->getValueHandlerDef();
+    }
+
+    /**
+     * {@inheritdoc}
+     */
     public function doesTicketMatch($fieldId, $operator, OptValue $options, TicketModel $ticketModel, Context $context, Term $term)
     {
         switch ($fieldId) {
@@ -58,6 +77,17 @@ class TicketOwnContextTermsHandler extends AbstractTermsHandler
         }
     }
 
+    /**
+     * {@inheritdoc}
+     */
+    public function doesTicketMatchFunc($name, $fieldId, $operator, array $params, TicketModel $ticketModel, Context $context, Term $term)
+    {
+        throw new \RuntimeException('No functions defined');
+    }
+
+    /**
+     * {@inheritdoc}
+     */
     public function buildQueryCondition($fieldId, $operator, OptValue $options, Context $context, Term $term)
     {
         switch ($fieldId) {
@@ -100,5 +130,13 @@ class TicketOwnContextTermsHandler extends AbstractTermsHandler
         }
 
         return isset(TicketFlagged::$colorMap[$id]) ? TicketFlagged::$colorMap[$id] : $id;
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function buildQueryFuncCondition($name, $fieldId, $operator, array $params, Context $context, Term $term)
+    {
+        throw new \RuntimeException('No functions defined');
     }
 }

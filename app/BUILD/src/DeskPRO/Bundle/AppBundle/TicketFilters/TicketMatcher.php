@@ -3,19 +3,38 @@
 namespace DeskPRO\Bundle\AppBundle\TicketFilters;
 
 use DeskPRO\Bundle\AppBundle\TicketFilters\Model\Entity\TicketModel;
-use DeskPRO\Bundle\AppBundle\TicketFilters\Terms\FunctionCompareDef;
+use DeskPRO\Bundle\AppBundle\TicketFilters\Terms\ValueTermHandler;
 use DeskPRO\Component\FilterQueryLanguage\Query\Node\GroupOp\AndGroupOp;
 use DeskPRO\Component\FilterQueryLanguage\Query\Node\GroupOp\NotGroupOp;
 use DeskPRO\Component\FilterQueryLanguage\Query\Node\GroupOp\OrGroupOp;
 use DeskPRO\Component\FilterQueryLanguage\Query\Node\Term;
 use DeskPRO\Component\FilterQueryLanguage\Query\Node\TermGroup;
 use DeskPRO\Component\FilterQueryLanguage\Query\Query;
+use DeskPRO\Component\Util\ListUtils;
+use Zend\Memory\Value;
 
 /**
  * The matcher matches a ticket against in-memory model values.
  */
 class TicketMatcher extends AbstractMatcher
 {
+    /**
+     * @var ValueTermHandler[]
+     */
+    private $handlers;
+
+    /**
+     * TicketMatcher constructor.
+     *
+     * @param ValueResolver      $valueResolver
+     * @param ValueTermHandler[] $handlers
+     */
+    public function __construct(ValueResolver $valueResolver, array $handlers)
+    {
+        parent::__construct($valueResolver);
+        $this->handlers = $handlers;
+    }
+
     /**
      * @param Query       $query
      * @param TicketModel $ticketModel
@@ -100,27 +119,31 @@ class TicketMatcher extends AbstractMatcher
         $fieldId  = $term->field->identity;
         $operator = $term->operator->getOperator();
 
-        // Top-level value is a function call,
-        // see if we handle it with a special handler
-        if ($match = $this->getMatchFunctionForTerm($term)) {
-            /** @var TermsHandlerInterface $h */
-            $h = $match[0];
-            /** @var FunctionCompareDef $def */
-            $def = $match[1];
+        if ($this->isFunctionTerm($term)) {
+            $fnName = $term->options->value->name;
 
-            if (!in_array($operator, $def->operators)) {
-                throw new \InvalidArgumentException("Cannot use function {$def->name} with operator {$term->operator->getOperator()}. Allowed operators: ".implode(', ', $def->operators));
+            if ($funcHandlers = $this->getHandlersForFunc($fnName)) {
+                $isInvalid = false;
+                foreach ($funcHandlers as $h) {
+                    if ($h->getValueHandlerDef()->canHandleFieldFunc($fnName, $fieldId, $operator)) {
+                        return $h->doesTicketMatchFunc(
+                            $h->getValueHandlerDef()->getDefinedFuncName($fnName),
+                            $fieldId,
+                            $operator,
+                            $this->getValueResovler()->getFuncCallParamValues($term->options->value, $term, $context),
+                            $ticketModel,
+                            $context,
+                            $term
+                        );
+                    } else {
+                        $isInvalid = true;
+                    }
+                }
+
+                if ($isInvalid) {
+                    throw new \InvalidArgumentException("Invalid function call: {$fnName} with field {$fieldId} and operator {$operator}.");
+                }
             }
-
-            return call_user_func(
-                [$h, $def->matchFn],
-                $fieldId,
-                $operator,
-                $this->getValueResovler()->getFuncCallParamValues($term->options->value, $term, $context),
-                $ticketModel,
-                $context,
-                $term
-            );
         }
 
         $fieldHandlers = $this->getHandlersForFieldId($fieldId);
@@ -146,5 +169,25 @@ class TicketMatcher extends AbstractMatcher
         }
 
         return false;
+    }
+
+    /**
+     * @return ValueTermHandler[]
+     */
+    private function getHandlersForFieldId($fieldId)
+    {
+        return ListUtils::filter($this->handlers, function (ValueTermHandler $h) use ($fieldId) {
+            return $h->getValueHandlerDef()->hasField($fieldId);
+        });
+    }
+
+    /**
+     * @return ValueTermHandler[]
+     */
+    private function getHandlersForFunc($func)
+    {
+        return ListUtils::filter($this->handlers, function (ValueTermHandler $h) use ($func) {
+            return $h->getValueHandlerDef()->hasFunction($func);
+        });
     }
 }

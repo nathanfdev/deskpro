@@ -9,10 +9,14 @@ use DeskPRO\Bundle\AppBundle\TicketFilters\OptValue\OptValue;
 use DeskPRO\Bundle\AppBundle\TicketFilters\TermFieldIds;
 use DeskPRO\Bundle\AppBundle\TicketFilters\Terms\Util\SqlQueryUtils;
 use DeskPRO\Component\FilterQueryLanguage\Query\Node\Term;
+use DeskPRO\Component\FilterQueryLanguage\Query\Query;
 use DeskPRO\Component\Util\ListUtils;
+use DeskPRO\Component\Util\MemoizeMethod;
 
-class PersonTermsHandler extends AbstractTermsHandler
+class PersonTermsHandler implements ValueTermHandler, SqlTermHandler
 {
+    use MemoizeMethod;
+
     /**
      * @var PersonRepos
      */
@@ -29,17 +33,27 @@ class PersonTermsHandler extends AbstractTermsHandler
     }
 
     /**
-     * {@inheritdoc}
+     * @return HandlerDef
      */
-    public function getHandledFields()
+    public function getValueHandlerDef()
     {
-        return [
-            TermFieldIds::PERSON_ID,
-            //Terms::PERSON_LABELS,
-            //Terms::PERSON_USERGROUPS,
-        ];
+        return $this->memoizedRun(function () {
+            return HandlerDef::create()
+                ->addField(TermFieldIds::PERSON_ID, Query::commonIdOperators());
+        }, __FUNCTION__);
     }
 
+    /**
+     * @return HandlerDef
+     */
+    public function getSqlHandlerDef()
+    {
+        return $this->getValueHandlerDef();
+    }
+
+    /**
+     * {@inheritdoc}
+     */
     public function doesTicketMatch($fieldId, $operator, OptValue $options, TicketModel $ticketModel, Context $context, Term $term)
     {
         switch ($fieldId) {
@@ -53,6 +67,9 @@ class PersonTermsHandler extends AbstractTermsHandler
         }
     }
 
+    /**
+     * {@inheritdoc}
+     */
     public function buildQueryCondition($fieldId, $operator, OptValue $options, Context $context, Term $term)
     {
         switch ($fieldId) {
@@ -84,5 +101,15 @@ class PersonTermsHandler extends AbstractTermsHandler
         }
 
         return 0;
+    }
+
+    public function buildQueryFuncCondition($name, $fieldId, $operator, array $params, Context $context, Term $term)
+    {
+        throw new \RuntimeException('No functions defined');
+    }
+
+    public function doesTicketMatchFunc($name, $fieldId, $operator, array $params, TicketModel $ticketModel, Context $context, Term $term)
+    {
+        throw new \RuntimeException('No functions defined');
     }
 }

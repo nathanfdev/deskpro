@@ -4,13 +4,14 @@ namespace DeskPRO\Bundle\AppBundle\TicketFilters;
 
 use Application\DeskPRO\Entity\CustomDefTicket;
 use Application\DeskPRO\Entity\Person;
-use DeskPRO\Bundle\AppBundle\TicketFilters\Terms\AbstractTermsHandler;
 use DeskPRO\Bundle\AppBundle\TicketFilters\Terms\CustomFieldsTermsHandler;
 use DeskPRO\Bundle\AppBundle\TicketFilters\Terms\PersonTermsHandler;
+use DeskPRO\Bundle\AppBundle\TicketFilters\Terms\SqlTermHandler;
 use DeskPRO\Bundle\AppBundle\TicketFilters\Terms\TicketBasicTermsHandler;
 use DeskPRO\Bundle\AppBundle\TicketFilters\Terms\TicketDateTermsHandler;
 use DeskPRO\Bundle\AppBundle\TicketFilters\Terms\TicketOwnContextTermsHandler;
 use DeskPRO\Bundle\AppBundle\TicketFilters\Terms\TicketSlaTermsHandler;
+use DeskPRO\Bundle\AppBundle\TicketFilters\Terms\ValueTermHandler;
 use Psr\Log\LoggerInterface;
 use Symfony\Component\DependencyInjection\Container;
 
@@ -27,7 +28,7 @@ class MatcherFactory
     private $loader;
 
     /**
-     * @var AbstractTermsHandler[]
+     * @var array
      */
     private $termHandlers;
 
@@ -51,30 +52,30 @@ class MatcherFactory
     }
 
     /**
-     * @return AbstractTermsHandler[]
+     * @return ValueTermHandler[]|SqlTermHandler[]
      */
-    private function getTermHandlers()
+    private function getTermHandlers($ofType)
     {
-        if ($this->termHandlers !== null) {
-            return $this->termHandlers;
+        if ($this->termHandlers === null) {
+            $this->termHandlers = [
+                new TicketBasicTermsHandler(),
+                new TicketSlaTermsHandler(),
+                new TicketDateTermsHandler(),
+                new CustomFieldsTermsHandler(
+                    $this->loader->getCustomFieldsSet(),
+                    new ChoiceFieldOptionMapper(
+                        $this->loader->getCustomFieldsSet(),
+                        $this->container->get('doctrine.orm.entity_manager')->getRepository(CustomDefTicket::class)
+                    )
+                ),
+                new TicketOwnContextTermsHandler($this->container->get('doctrine.dbal.read_search_connection')),
+                new PersonTermsHandler($this->container->get('doctrine.orm.entity_manager')->getRepository(Person::class)),
+            ];
         }
 
-        $this->termHandlers = [
-            new TicketBasicTermsHandler(),
-            new TicketSlaTermsHandler(),
-            new TicketDateTermsHandler(),
-            new CustomFieldsTermsHandler(
-                $this->loader->getCustomFieldsSet(),
-                new ChoiceFieldOptionMapper(
-                    $this->loader->getCustomFieldsSet(),
-                    $this->container->get('doctrine.orm.entity_manager')->getRepository(CustomDefTicket::class)
-                )
-            ),
-            new TicketOwnContextTermsHandler($this->container->get('doctrine.dbal.read_search_connection')),
-            new PersonTermsHandler($this->container->get('doctrine.orm.entity_manager')->getRepository(Person::class)),
-        ];
-
-        return $this->termHandlers;
+        return array_filter($this->termHandlers, function ($h) use ($ofType) {
+            return $h instanceof $ofType;
+        });
     }
 
     /**
@@ -86,7 +87,7 @@ class MatcherFactory
 
         $matcher = new TicketMatcher(
             $resolver,
-            $this->getTermHandlers()
+            $this->getTermHandlers(ValueTermHandler::class)
         );
 
         if ($this->logger) {
@@ -107,7 +108,7 @@ class MatcherFactory
 
         $matcher = new TicketSqlMatcher(
             $resolver,
-            $this->getTermHandlers(),
+            $this->getTermHandlers(SqlTermHandler::class),
             $this->container->get('doctrine.dbal.read_search_connection'),
             $activeOnly ? TicketSqlMatcher::ACTIVE : TicketSqlMatcher::ALL,
             $this->loader->getCustomFieldsSet(),

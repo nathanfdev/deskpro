@@ -10,37 +10,46 @@ use DeskPRO\Bundle\AppBundle\TicketFilters\TermFieldIds;
 use DeskPRO\Bundle\AppBundle\TicketFilters\Terms\Util\CheckValueUtils;
 use DeskPRO\Bundle\AppBundle\TicketFilters\Terms\Util\SqlQueryUtils;
 use DeskPRO\Component\FilterQueryLanguage\Query\Node\Term;
+use DeskPRO\Component\FilterQueryLanguage\Query\Query;
+use DeskPRO\Component\Util\MemoizeMethod;
 
-class TicketBasicTermsHandler extends AbstractTermsHandler
+class TicketBasicTermsHandler implements ValueTermHandler, SqlTermHandler
 {
+    use MemoizeMethod;
+
     /**
-     * {@inheritdoc}
+     * @return HandlerDef
      */
-    public function getHandledFields()
+    public function getValueHandlerDef()
     {
-        return [
-            TermFieldIds::TICKET_ID,
+        return $this->memoizedRun(function () {
+            return HandlerDef::create()
+                ->addField(TermFieldIds::TICKET_ID, Query::commonIdOperators())
+                ->addField(TermFieldIds::ORG_ID, Query::commonIdReferenceOperators())
+                ->addField(TermFieldIds::TICKET_STATUS, Query::commonStringValueOperators())
+                ->addField(TermFieldIds::TICKET_DEPARTMENT, Query::commonIdOperators())
+                ->addField(TermFieldIds::TICKET_AGENT, Query::commonIdReferenceOperators())
+                ->addField(TermFieldIds::TICKET_AGENT_TEAM, Query::commonIdReferenceOperators())
+                ->addField(TermFieldIds::TICKET_FOLLOWERS, Query::commonIdReferenceOperators())
+                ->addField(TermFieldIds::TICKET_LANGUAGE, Query::commonIdReferenceOperators())
+                ->addField(TermFieldIds::TICKET_PRODUCT, Query::commonIdReferenceOperators())
+                ->addField(TermFieldIds::TICKET_CATEGORY, Query::commonIdReferenceOperators())
+                ->addField(TermFieldIds::TICKET_PRIORITY, Query::commonIdReferenceOperators())
+                ->addField(TermFieldIds::TICKET_URGENCY, Query::commonValueOperators())
+                ->addField(TermFieldIds::TICKET_WORKFLOW, Query::commonIdReferenceOperators())
+                ->addField(TermFieldIds::TICKET_LABELS, Query::commonStringValueOperators())
+                ->addField(TermFieldIds::TICKET_EMAIL_ACCOUNT, Query::commonIdReferenceOperators())
+                ->addField(TermFieldIds::TICKET_IS_HOLD, Query::commonBoolValueOperators())
+                ->addField(TermFieldIds::TICKET_PROBLEM_ID, Query::commonIdReferenceOperators());
+        }, __FUNCTION__);
+    }
 
-            // org id in here because only one supproted now, when adding other org fields
-            // should move this into that handler instead to keep consistency
-            TermFieldIds::ORG_ID,
-
-            TermFieldIds::TICKET_STATUS,
-            TermFieldIds::TICKET_DEPARTMENT,
-            TermFieldIds::TICKET_AGENT,
-            TermFieldIds::TICKET_AGENT_TEAM,
-            TermFieldIds::TICKET_FOLLOWERS,
-            TermFieldIds::TICKET_LANGUAGE,
-            TermFieldIds::TICKET_PRODUCT,
-            TermFieldIds::TICKET_CATEGORY,
-            TermFieldIds::TICKET_PRIORITY,
-            TermFieldIds::TICKET_URGENCY,
-            TermFieldIds::TICKET_WORKFLOW,
-            TermFieldIds::TICKET_LABELS,
-            TermFieldIds::TICKET_EMAIL_ACCOUNT,
-            TermFieldIds::TICKET_IS_HOLD,
-            TermFieldIds::TICKET_PROBLEM_ID,
-        ];
+    /**
+     * @return HandlerDef
+     */
+    public function getSqlHandlerDef()
+    {
+        return $this->getValueHandlerDef();
     }
 
     /**
@@ -70,6 +79,14 @@ class TicketBasicTermsHandler extends AbstractTermsHandler
         }
 
         return CheckValueUtils::checkValue($fieldValue, $operator, $options);
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function doesTicketMatchFunc($name, $fieldId, $operator, array $params, TicketModel $ticketModel, Context $context, Term $term)
+    {
+        throw new \RuntimeException('No functions defined');
     }
 
     /**
@@ -121,5 +138,13 @@ class TicketBasicTermsHandler extends AbstractTermsHandler
         }
 
         throw new \InvalidArgumentException('Unknown field');
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function buildQueryFuncCondition($name, $fieldId, $operator, array $params, Context $context, Term $term)
+    {
+        throw new \RuntimeException('No functions defined');
     }
 }
