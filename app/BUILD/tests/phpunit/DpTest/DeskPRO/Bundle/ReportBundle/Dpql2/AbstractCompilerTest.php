@@ -4,6 +4,7 @@ namespace DpTest\DeskPRO\Bundle\ReportBundle\Dpql2;
 
 use DeskPRO\Bundle\ReportBundle\Dpql2\DpqlCompiler;
 use DeskPRO\Bundle\ReportBundle\Dpql2\DpqlContext;
+use DeskPRO\Bundle\ReportBundle\Dpql2\DpqlContextStorage;
 use DpTest\ApiTestCase;
 
 /**
@@ -40,8 +41,9 @@ abstract class AbstractCompilerTest extends ApiTestCase
      * @param string $dpql
      * @param string $sql
      */
-    protected function assertDpqlQuery($dpql, $sql)
+    protected function assertDpqlQuery($dpql, $sql, $settMode = DpqlContextStorage::MODE_RUN)
     {
+        $this->getContainer()->get('dpql.context_storage')->setMode($settMode);
         $statement   = $this->compiler->compile($dpql, [], $this->context);
         $exceptedSql = preg_replace('/\s+/', ' ', $sql);
         $actualSql   = preg_replace('/\s+/', ' ', $statement->toSql());

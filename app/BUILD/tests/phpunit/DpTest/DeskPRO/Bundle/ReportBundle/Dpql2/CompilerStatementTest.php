@@ -2,6 +2,8 @@
 
 namespace DpTest\DeskPRO\Bundle\ReportBundle\Dpql2;
 
+use DeskPRO\Bundle\ReportBundle\Dpql2\DpqlContextStorage;
+
 /**
  * Class CompilerStatementTest.
  */
@@ -711,6 +713,24 @@ FROM `ticket_feedback`
 WHERE (`ticket_feedback`.`date_created` = 'date') 
 LIMIT 2500
 SQL
+        );
+    }
+
+    public function test_edit_compiler_mode()
+    {
+        $this->assertDpqlQuery(
+            <<<'DPQL'
+SELECT DPQL_COUNT(), snippets.id FROM snippets WHERE snippets.date_created > '2018-01-25'
+DPQL
+            ,
+            <<<'SQL'
+SELECT /*+ MAX_EXECUTION_TIME(30000) */ COUNT(*), `snippets`.`id`
+FROM `snippets`
+WHERE (`snippets`.`date_created` > '2018-01-25')
+LIMIT 2500
+SQL
+            ,
+            DpqlContextStorage::MODE_EDIT
         );
     }
 }
