@@ -668,6 +668,7 @@ DPQL
             , []);
     }
 
+    // as we made a change in dpql datetime columnss we're using Y-m-d H:i:s format for every query we run.
     public function test_came_case_props()
     {
         $this->assertDpqlQuery(
@@ -678,7 +679,7 @@ DPQL
             <<<'SQL'
 SELECT /*+ MAX_EXECUTION_TIME(30000) */ COUNT(*), `snippets`.`id`
 FROM `snippets`
-WHERE (`snippets`.`date_created` > '2018-01-25')
+WHERE (`snippets`.`date_created` > '2018-01-25 00:00:00')
 LIMIT 2500
 SQL
         );
