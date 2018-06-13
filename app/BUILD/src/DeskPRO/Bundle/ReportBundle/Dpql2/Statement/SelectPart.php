@@ -1315,6 +1315,14 @@ class SelectPart
     }
 
     /**
+     * @return DpqlContextStorage
+     */
+    public function getDpqlContextStorage()
+    {
+        return $this->contextStorage;
+    }
+
+    /**
      * @param bool $withRollup
      */
     public function setWithRollup($withRollup)

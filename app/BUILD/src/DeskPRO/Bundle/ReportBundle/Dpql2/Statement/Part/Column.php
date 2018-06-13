@@ -4,6 +4,7 @@ namespace DeskPRO\Bundle\ReportBundle\Dpql2\Statement\Part;
 
 use Application\DeskPRO\EntityRepository\AbstractEntityRepository;
 use DeskPRO\Bundle\AppBundle\Entity\Currency;
+use DeskPRO\Bundle\ReportBundle\Dpql2\DpqlContextStorage;
 use DeskPRO\Bundle\ReportBundle\Dpql2\DpqlException;
 use DeskPRO\Bundle\ReportBundle\Dpql2\Func\DpqlFuncRegistry;
 use DeskPRO\Bundle\ReportBundle\Dpql2\Helper\CustomDataHelper;
@@ -242,8 +243,12 @@ END)
                     switch ($field['type']) {
                         case 'datetime':
                             $tzOffsetSeconds = $statement->getTimezoneOffsetForFunction($stack);
-                            if ($tzOffsetSeconds) {
-                                $sql = "($sql + INTERVAL $tzOffsetSeconds SECOND)";
+
+                            if ($section === 'where' && $stack[0]->rhs instanceof StringPart &&
+                                $statement->getDpqlContextStorage()->getMode() === DpqlContextStorage::MODE_RUN) {
+                                $date = new \DateTime($stack[0]->rhs->string);
+                                $date->modify(($tzOffsetSeconds >= 0 ? '-'.$tzOffsetSeconds : '+'.-$tzOffsetSeconds).' seconds');
+                                $stack[0]->rhs->string = $date->format('Y-m-d H:i:s');
                             }
 
                             $renderer = 'datetime';
