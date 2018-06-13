@@ -334,11 +334,9 @@ class GeneralSettings
         $brandRepo = App::$container->get('doctrine.orm.default_entity_manager')->getRepository(Brand::class);
         foreach ($this->default_from_email as $brand => $email) {
             $brand = $brandRepo->find($brand);
-            if (!$brand) {
-                $brandStack = App::$container->get('brand_stack');
-                $brand      = $brandStack->getDefaultBrand();
+            if ($brand) {
+                $this->brandSettingsRepository->updateSetting('core.default_from_email', $email, $brand);
             }
-            $this->brandSettingsRepository->updateSetting('core.default_from_email', $email, $brand);
         }
 
         $this->globalSettings->setSetting('core.default_timezone', $this->default_timezone ?: 'UTC');
