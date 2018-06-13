@@ -170,12 +170,14 @@ class TitleWithVars extends React.Component {
 
   static transformVars(report) {
     const vars = {};
-    report
-      .get('variables')
+    const variables = report.get('variables') || Immutable.fromJS([]);
+
+    variables
       .filter(value => value.has('default') && value.get('default') || value.has('value') && value.get('value'))
       .forEach((value) => {
         vars[value.get('name')] = value.has('value') && value.get('value') ? value.get('value') : value.get('default');
       });
+
     return vars;
   }
 
@@ -216,7 +218,7 @@ class TitleWithVars extends React.Component {
 
 
   replaceVars() {
-    let title = this.props.report.get('title');
+    let title = this.props.report.get('title') || '';
     title = title.replace(/\$\{([a-zA-Z0-9_]+)\}/g, '#VAR#$$$$$1#VAR#');
     title = title.split('#VAR#');
 
@@ -231,10 +233,9 @@ class TitleWithVars extends React.Component {
   }
 
   replaceMissingVars() {
-    const title = this.props.report.get('title');
-    const vars = this.props.report
-      .get('variables')
-      .filter(value => title.indexOf(`\${${value.get('name')}}`) === -1);
+    const title = this.props.report.get('title') || '';
+    const variables = this.props.report.get('variables') || Immutable.fromJS([]);
+    const vars = variables.filter(value => title.indexOf(`\${${value.get('name')}}`) === -1);
 
     return vars.map(value => (
       <div key={`${value.get('name')}`}>

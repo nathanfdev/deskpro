@@ -683,4 +683,33 @@ LIMIT 2500
 SQL
         );
     }
+
+    public function test_sub_select()
+    {
+        $this->assertDpqlQuery(
+            <<<'DPQL'
+SELECT
+    DPQL_FORMAT(
+	(
+    	 (SELECT DPQL_COUNT() FROM ticket_feedback WHERE ticket_feedback.rating = 1 AND ticket_feedback.date_created = ${date})
+    	  / 
+    	 (SELECT DPQL_COUNT() FROM ticket_feedback WHERE ticket_feedback.date_created = ${date})
+    	),
+    'percent', 0)
+    AS 'stat_value',
+'satisfied users' as 'stat_description'
+FROM ticket_feedback
+WHERE ticket_feedback.date_created = ${date}
+DPQL
+            ,
+            <<<'SQL'
+SELECT /*+ MAX_EXECUTION_TIME(30000) */ 
+((SELECT /*+ MAX_EXECUTION_TIME(30000) */ COUNT(*) FROM `ticket_feedback` WHERE ((`ticket_feedback`.`rating` = 1) AND (`ticket_feedback`.`date_created` = 'date')) LIMIT 2500) 
+  / (SELECT /*+ MAX_EXECUTION_TIME(30000) */ COUNT(*) FROM `ticket_feedback` WHERE (`ticket_feedback`.`date_created` = 'date') LIMIT 2500)), 'satisfied users' 
+FROM `ticket_feedback` 
+WHERE (`ticket_feedback`.`date_created` = 'date') 
+LIMIT 2500
+SQL
+        );
+    }
 }

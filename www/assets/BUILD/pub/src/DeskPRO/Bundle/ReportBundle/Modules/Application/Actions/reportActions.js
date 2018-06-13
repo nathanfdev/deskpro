@@ -27,13 +27,15 @@ export const loadReports = createAction(
 
 export const loadReport = createAction(
   'REPORTS_LOAD_REPORT',
-  id => dispatch => new Promise(resolve => repository('Reports')
-    .load(id)
-    .success((response) => {
+  id => (dispatch) => {
+    const promise = repository('Reports').load(id);
+    promise.success((response) => {
       dispatch(addToCollection('Reports', 'all', { [response.data.id]: response.data }, [response.data.id]));
-      resolve(response.data);
-    })
-));
+    });
+
+    return promise;
+  }
+);
 
 export const deleteReport = createAction(
   'REPORTS_DELETE_REPORT',
@@ -71,10 +73,7 @@ export const runReport = createAction(
       };
     }
 
-    return new Promise(resolve => api
-      .sendPost(`DP_API/report_widgets/test/${reportId}?include=rendered_result&inline_sideloads=1`, data)
-      .success(response => resolve(response.data))
-    );
+    return api.sendPost(`DP_API/report_widgets/test/${reportId}?include=rendered_result&inline_sideloads=1`, data);
   });
 
 export const downloadReport = createAction(
@@ -140,41 +139,6 @@ export const saveReport = createAction(
   }
 );
 
-export const newReport = createAction(
-  'REPORTS_NEW_REPORT',
-  report => new Promise((resolve) => {
-    let toClone = report;
-    if (!report) {
-      toClone = {};
-    }
-    const newReportObject = {
-      id:            0,
-      unique_key:    '',
-      title:         '',
-      description:   '',
-      query:         toClone.query || '',
-      labels:        [],
-      display_order: 10,
-      display_types: [],
-      variables:     toClone.variables || [],
-      query_parts:   toClone.query_parts || {
-        select:      '',
-        from:        '',
-        where:       '',
-        split_by:    '',
-        group_by:    '',
-        order_by:    '',
-        with_rollup: false,
-        limit:       '',
-        offset:      ''
-      },
-      is_custom: true,
-      is_new:    true
-    };
-    return resolve(newReportObject);
-  })
-);
-
 export const saveAndRun = createAction(
   'REPORTS_SAVE_AND_RUN_REPORT',
   data => (dispatch) => {
@@ -184,12 +148,5 @@ export const saveAndRun = createAction(
         dispatch(runReport(response.data.id, data));
       }
     });
-  }
-);
-
-export const cloneReport = createAction(
-  'REPORTS_CLONE_REPORT',
-  report => (dispatch) => {
-    dispatch(newReport(report));
   }
 );

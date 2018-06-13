@@ -15,6 +15,7 @@ class Run extends React.Component {
   static propTypes = {
     report:                     PropTypes.object.isRequired,
     reportLoading:              PropTypes.bool.isRequired,
+    reportErrors:               PropTypes.object.isRequired,
     onChangeReportDisplayTypes: PropTypes.func.isRequired,
     onChangeReportVar:          PropTypes.func.isRequired,
     onRunClick:                 PropTypes.func.isRequired,
@@ -213,16 +214,26 @@ class Run extends React.Component {
   }
 
   renderRun() {
-    const { report, onChangeReportVar, groupParams } = this.props;
+    const { report, reportErrors, onChangeReportVar, groupParams } = this.props;
 
     const title = (<TitleWithVars
       onChangeReportVar={onChangeReportVar}
       groupParams={groupParams}
       report={report}
     />);
+
+    const compileError = reportErrors.getIn(['errors', 'fields', 'query_parts', 'errors', 0, 'message']);
     const content = report.get('rendered_result', Immutable.List()).filter(value => value).size > 0
-      ? <div className="results-wrap">{this.renderReport()}</div>
-      : <div className="no-results">No results found.</div>;
+      ? (
+        <div className="results-wrap">
+          {this.renderReport()}
+        </div>
+      )
+      : (
+        <div className="no-results">
+          {compileError || 'No results found.'}
+        </div>
+      );
 
     const choices = displayTypes;
 
