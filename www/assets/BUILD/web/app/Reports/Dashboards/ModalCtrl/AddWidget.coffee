@@ -41,7 +41,7 @@ define ['DeskPRO/Util/Arrays',], (Arrays) -> [
       $scope.reports = result.reports
       for label in result.labels
         $scope.labels.push {title: label, active: false }
-        $scope.toggleLabel(label)
+      $scope.filterByLabels()
 
     $q.all(load_promises).then(-> $scope.loaded = true)
 
