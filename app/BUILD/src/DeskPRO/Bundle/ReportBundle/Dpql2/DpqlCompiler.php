@@ -316,7 +316,9 @@ class DpqlCompiler
         }
         $variables = [];
         foreach ($placeholders['variables'] as $var) {
-            $variables[$var['name']] = $var;
+            if (isset($var['name'])) {
+                $variables[$var['name']] = $var;
+            }
         }
 
         $groupParams = $this->reportsWidgetService->getGroupParams(false);
