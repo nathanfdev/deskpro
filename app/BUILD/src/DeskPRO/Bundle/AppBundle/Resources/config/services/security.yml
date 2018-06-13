@@ -278,3 +278,10 @@ services:
       - "@doctrine.orm.default_entity_manager"
     tags:
       - { name: security.voter.permission_groups }
+
+  security.voter.permission_groups.report_widget:
+    class: DeskPRO\Bundle\AppBundle\Security\Voter\PermissionGroups\EntityVoter\Reports\ReportWidgetVoter
+    arguments:
+      - "@doctrine.orm.default_entity_manager"
+    tags:
+      - { name: security.voter.permission_groups }
