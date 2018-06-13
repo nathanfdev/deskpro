@@ -196,68 +196,17 @@ class JsonTableRenderer extends AbstractJsonRenderer
         $rowsRendered = [];
         $rowCount     = 0;
 
-        $groupSkipCount = [];
-        foreach ($groupColumns as $groupId => $groupColumn) {
-            $groupSkipCount[$groupId] = 0;
-        }
-
         foreach ($rows as $rowId => $row) {
             $cells = [];
 
             if ($groupColumns) {
-                $myGroupSkipCount = $groupSkipCount;
-
                 $groupValues = [];
                 foreach ($groupColumns as $groupId => $groupColumn) {
                     $groupValues[$groupId] = $this->getColumnValue($row, $groupColumn['groupResultId']);
                 }
 
-                $nextRowId = $rowId + 1;
-                if (isset($rows[$nextRowId])) {
-                    $firstNonMatch = null;
-                    for (; isset($rows[$nextRowId]); ++$nextRowId) {
-                        $nextRow = $rows[$nextRowId];
-                        $matched = 0;
-
-                        foreach ($groupColumns as $groupId => $groupColumn) {
-                            if ($firstNonMatch !== null && $firstNonMatch == $groupId) {
-                                // can't go any further as this column doesn't match from before
-                                break;
-                            }
-
-                            $groupValue = $this->getColumnValue($nextRow, $groupColumn['groupResultId']);
-                            if ($groupValues[$groupId] == $groupValue) {
-                                ++$matched;
-                                if (!$myGroupSkipCount[$groupId]) {
-                                    // if there's a skip count for this, we don't need to increase it
-                                    // as it's already been accounted for
-                                    ++$groupSkipCount[$groupId];
-                                }
-                            } else {
-                                $firstNonMatch = $groupId;
-                                break;
-                            }
-                        }
-
-                        if (!$matched) {
-                            break;
-                        }
-                    }
-                }
-
                 foreach ($groupColumns as $groupId => $groupColumn) {
-                    if ($myGroupSkipCount[$groupId]) {
-                        --$groupSkipCount[$groupId];
-                        continue;
-                    }
-
-                    $rowSpan = ($groupSkipCount[$groupId]
-                        ? ' rowspan="'.($groupSkipCount[$groupId] + 1).'"'
-                        : ''
-                    );
-                    $rendered = $this->renderCellValue($row, $groupColumn, $metadata);
-
-                    $cells[] = "<th$rowSpan>$rendered</th>";
+                    $cells[] = $this->renderCellValue($row, $groupColumn, $metadata);
                 }
             }
 
