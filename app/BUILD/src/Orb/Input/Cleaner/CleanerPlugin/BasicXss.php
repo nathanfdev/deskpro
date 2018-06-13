@@ -258,7 +258,7 @@ class __DP_CI_Security
     protected function _remove_evil_attributes($str, $is_image)
     {
         // All javascript event handlers (e.g. onload, onclick, onmouseover), style, and xmlns
-        $evil_attributes = ['\s+on\w*', 'style', 'xmlns', 'formaction', 'form', 'xlink:href'];
+        $evil_attributes = ['on\w*', 'style', 'xmlns', 'formaction', 'form', 'xlink:href'];
 
         if ($is_image === true) {
             /*
@@ -301,11 +301,11 @@ class __DP_CI_Security
 
         // remaining evil attr OUTSIDE of tags we should just mangle
         // eg onerror= becomes "on error="
-        $str = preg_replace_callback('/('.implode('|', $evil_attributes).')(\s*=\s*(\042|\047|\w))/is', function ($m) {
+        $str = preg_replace_callback('/\s+('.implode('|', $evil_attributes).')(\s*=\s*(\042|\047|\w))/is', function ($m) {
             $harmless = $m[1];
             $harmless = substr($harmless, 0, 2).' '.substr($harmless, 2);
 
-            return $harmless.$m[2];
+            return ' '.$harmless.$m[2];
         }, $str);
 
         return $str;
