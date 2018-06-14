@@ -62,7 +62,7 @@ trait MemoizeMethod
             if (!isset($this->memoizedResults[$methodName])) {
                 $this->memoizedResults[$methodName] = [];
             }
-            $this->memoizedResults[$methodName][$id] = $this->$methodName(...$args);
+            $this->memoizedResults[$methodName][$id] = call_user_func_array([$this, $methodName], $args);
         }
 
         return $this->memoizedResults[$methodName][$id];
