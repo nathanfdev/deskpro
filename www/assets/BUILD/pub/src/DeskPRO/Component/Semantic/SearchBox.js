@@ -51,24 +51,31 @@ class SearchBox extends React.Component {
   };
 
   render() {
-    const { placeholder, text, onFocus, onBlur } = this.props;
-    let { children } = this.props;
+    const { placeholder, text, onFocus, onBlur, children } = this.props;
+    let childrenWithProps;
+    const props = {
+      placeholder
+    };
     if (!children) {
-      children = (<input
+      childrenWithProps = (<input
         type="search"
-        placeholder={placeholder}
         ref={(c) => { this.textInput = c; }}
         onChange={this.handleChange}
         onFocus={onFocus}
         onBlur={onBlur}
         value={text}
         required="required"
+        {...props}
       />);
+    } else {
+      childrenWithProps = React.Children.map(children, child =>
+        React.cloneElement(child, props)
+      );
     }
     return (
       <div className="ui input left icon search">
         {this.getIcon()}
-        { children }
+        { childrenWithProps }
         <i onClick={this.clearInput} className="remove circle icon right" />
       </div>
     );

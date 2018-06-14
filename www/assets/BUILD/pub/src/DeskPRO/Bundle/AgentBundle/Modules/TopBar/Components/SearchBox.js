@@ -109,6 +109,7 @@ class SearchBox extends React.Component {
           tokenTypes={this.getTokenTypes()}
           value={value}
           onChange={this.handleChange}
+          placeholder=""
         />
       </SemanticSearchBox>
     );

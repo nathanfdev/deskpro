@@ -278,7 +278,6 @@ $contrast: 5% !default;
       input[type=search],
       & > div {
         border: 0;
-        width: 164px;
         padding-left: 8px !important;
         margin-right: 2px;
         background: transparent;
@@ -295,6 +294,34 @@ $contrast: 5% !default;
         }
         .fa-search {
           display: none;
+        }
+      }
+      input[type=search] {
+        width: 164px;
+      }
+      & > div {
+        min-width: 187px;
+        height: 37px;
+        padding: 2px 0 !important;
+        color: #2b2f2f;
+        margin-left: 2px;
+        & .remove {
+          top: 6px;
+        }
+        input {
+          padding-right: 0 !important;
+          padding-bottom: 2px;
+          border: none;
+        }
+        .label {
+          padding: 1px 5px;
+          border-radius: 2px 0 0 2px;
+          vertical-align: top;
+          margin: 8px 0;
+        }
+        .value {
+          margin: 8px 0;
+          padding: 2px 5px 2px 8px;
         }
       }
     }
