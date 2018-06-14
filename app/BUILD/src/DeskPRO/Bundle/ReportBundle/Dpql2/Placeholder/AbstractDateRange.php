@@ -104,14 +104,27 @@ abstract class AbstractDateRange extends AbstractPlaceholder
         $rangeEnd         = $this->adjustForIntervals($range[2], $intervals);
         $beforeRangeStart = null;
         if (isset($range[3])) {
-            $beforeRangeStart = $this->adjustForIntervals($range[3], $intervals);
+            $matches = [];
+            preg_match_all('#\((.*) (\+|-) INTERVAL (\d+) SECOND\)#', $lhsSql, $matches);
+            $hackIntervals = [];
+            if (@$matches[2][0] && @$matches[3][0]) {
+                $hackIntervals[] = new BinaryInterval(
+                    '+' === $matches[2][0] ? Parser::T_OP_MINUS : Parser::T_OP_PLUS,
+                    $lhs,
+                    (int) $matches[3][0],
+                    'seconds'
+                );
+            }
+            $beforeRangeStart = $this->adjustForIntervals($range[3], $hackIntervals);
         }
 
         switch ($comparison) {
             case '=':
                 $sql = "$lhsSql BETWEEN '$rangeStart' AND '$rangeEnd'";
                 if ($beforeRangeStart) {
-                    $sql = "($lhsSql > '$beforeRangeStart' AND ".$sql.") OR $lhsSql > NOW()";
+                    $newLhsSql = preg_replace('#\((.*) (\+|-) INTERVAL \d+ SECOND\)#', '$1', $lhsSql);
+
+                    $sql = "($newLhsSql > '$beforeRangeStart' AND ".$sql.") OR $newLhsSql > NOW()";
                 }
                 break;
 
