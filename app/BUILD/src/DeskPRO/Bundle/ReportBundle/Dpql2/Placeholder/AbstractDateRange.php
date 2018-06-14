@@ -134,6 +134,8 @@ abstract class AbstractDateRange extends AbstractPlaceholder
             case '<=':
                 $sql = "$lhsSql <= '$rangeEnd'";
                 break;
+            default:
+                $sql = '';
         }
 
         return new Prepared("($sql)", $outputName);
