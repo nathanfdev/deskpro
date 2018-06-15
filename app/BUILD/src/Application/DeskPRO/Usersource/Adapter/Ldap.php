@@ -49,7 +49,7 @@ class Ldap extends AbstractAdapter
             $options['accountFilterFormat'] = '(|(dn=%s)(mail=%s)(uid=%s))';
         }
 
-        return new \Orb\Auth\Adapter\LdapRaw($this->usersource->options);
+        return new \Orb\Auth\Adapter\LdapRaw($options);
     }
 
     /**
