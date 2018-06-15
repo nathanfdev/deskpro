@@ -7,6 +7,7 @@ use DeskPRO\Bundle\AppBundle\TicketFilters\Model\Entity\TicketModel;
 use DeskPRO\Bundle\AppBundle\TicketFilters\OptValue\OptValue;
 use DeskPRO\Bundle\AppBundle\TicketFilters\TermFieldIds;
 use DeskPRO\Bundle\AppBundle\TicketFilters\Terms\Util\CheckValueUtils;
+use DeskPRO\Bundle\AppBundle\TicketFilters\Terms\Util\SqlQueryUtils;
 use DeskPRO\Component\FilterQueryLanguage\Query\Node\Term;
 use DeskPRO\Component\FilterQueryLanguage\Query\Query;
 use DeskPRO\Component\Util\MemoizeMethod;
@@ -95,7 +96,7 @@ class TicketDateTermsHandler implements ValueTermHandler, SqlTermHandler
         }
 
         if ($column) {
-            return $this->checkValueQueryCondition($column, $operator, $options);
+            return SqlQueryUtils::buildQueryCondition($column, $operator, $options);
         }
 
         throw new \InvalidArgumentException('Unknown field');
