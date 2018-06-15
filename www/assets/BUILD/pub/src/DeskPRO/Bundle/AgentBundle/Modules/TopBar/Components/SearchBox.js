@@ -2,12 +2,21 @@ import React from 'react';
 import TokenField from '@deskpro/token-field';
 import SemanticSearchBox from 'DeskPRO/Component/Semantic/SearchBox';
 import { injectIntl, FormattedMessage } from 'react-intl';
+import { collectionSelectorFactory } from 'DeskPRO/Bundle/AppBundle/Modules/RecordsStore';
+import { agentsSelector } from 'DeskPRO/Bundle/AppBundle/Modules/RecordsStore/Shortcuts/agents';
 import PropTypes from 'prop-types';
+import { connect } from 'react-redux';
 
 @injectIntl
+@connect(state => ({
+  ticketDepartments: collectionSelectorFactory('Department', 'all_tickets')(state),
+  agents:            agentsSelector(state),
+}))
 class SearchBox extends React.Component {
   static propTypes = {
-    intl: PropTypes.object,
+    intl:              PropTypes.object,
+    ticketDepartments: PropTypes.object,
+    agents:            PropTypes.object,
   };
 
   constructor(props) {
@@ -42,7 +51,28 @@ class SearchBox extends React.Component {
       widget: 'SelectInput',
       props:  {
         dataSource: {
-          getOptions: []
+          getOptions: this.props.ticketDepartments.toArray()
+                        .sort((a, b) => a.get('title') > b.get('title'))
+                        .map(e => ({
+                          label: e.get('title'),
+                          value: e.get('id'),
+                        }))
+        },
+      },
+      showSearch: true,
+    },
+    {
+      id:     'agent',
+      label:  this.props.intl.formatMessage({ id: 'agent.general.agent' }).toLowerCase(),
+      widget: 'SelectInput',
+      props:  {
+        dataSource: {
+          getOptions: this.props.agents.toArray()
+                        .sort((a, b) => a.get('name') > b.get('name'))
+                        .map(e => ({
+                          label: e.get('name'),
+                          value: e.get('id'),
+                        }))
         },
       },
       showSearch: true,
