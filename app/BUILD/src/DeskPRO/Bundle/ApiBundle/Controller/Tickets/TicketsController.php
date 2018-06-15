@@ -114,6 +114,10 @@ class TicketsController extends AbstractTicketsController
      *          {"name"="star", "description"="star filter", "dataType"="integer", "pattern"="\d+"},
      *          {"name"="status", "description"="status filter", "dataType"="integer", "pattern"="[\w+]"},
      *          {"name"="not_status", "description"="not status filter", "dataType"="integer", "pattern"="[\w+]"},
+     *          {"name"="date_created", "description"="date created filter", "dataType"="string", "pattern"="[\w+]"},
+     *          {"name"="date_resolved", "description"="date resolved filter", "dataType"="string", "pattern"="[\w+]"},
+     *          {"name"="date_last_agent_reply", "description"="date last agent reply filter", "dataType"="string", "pattern"="[\w+]"},
+     *          {"name"="date_last_user_reply", "description"="date last user reply filter", "dataType"="string", "pattern"="[\w+]"},
      *          {"name"="agent", "description"="agent filter", "dataType"="integer", "pattern"="\d+"},
      *          {"name"="person", "description"="person filter", "dataType"="integer", "pattern"="\d+"},
      *          {"name"="language", "description"="language filter", "dataType"="integer", "pattern"="\d+"},
@@ -139,6 +143,8 @@ class TicketsController extends AbstractTicketsController
      * @Rest\Get("")
      *
      * @param Request $request
+     *
+     * @throws \Exception
      *
      * @return View
      */
@@ -331,6 +337,22 @@ class TicketsController extends AbstractTicketsController
                             $searchQueryParts[] = '('.implode(' OR ', $myParts).')';
                         }
 
+                        break;
+                    case 'date_created':
+                        list($op, $valueQuoted) = $this->parseDateField($value);
+                        $searchQueryParts[]     = TermFieldIds::TICKET_DATE_CREATED." {$op} {$valueQuoted}";
+                        break;
+                    case 'date_resolved':
+                        list($op, $valueQuoted) = $this->parseDateField($value);
+                        $searchQueryParts[]     = TermFieldIds::TICKET_DATE_RESOLVED." {$op} {$valueQuoted}";
+                        break;
+                    case 'date_last_agent_reply':
+                        list($op, $valueQuoted) = $this->parseDateField($value);
+                        $searchQueryParts[]     = TermFieldIds::TICKET_DATE_LAST_AGENT_REPLY." {$op} {$valueQuoted}";
+                        break;
+                    case 'date_last_user_reply':
+                        list($op, $valueQuoted) = $this->parseDateField($value);
+                        $searchQueryParts[]     = TermFieldIds::TICKET_DATE_LAST_USER_REPLY." {$op} {$valueQuoted}";
                         break;
                     default:
 
@@ -526,5 +548,21 @@ class TicketsController extends AbstractTicketsController
 
         $this->saveTicket($entity);
         $entity->deleteTicket($this->getUser(), '', false);
+    }
+
+    /**
+     * @param string $value
+     *
+     * @throws \Symfony\Component\HttpKernel\Exception\BadRequestHttpException
+     *
+     * @return array
+     */
+    private function parseDateField($value)
+    {
+        try {
+            return QueryUtil::parseDateFieldFromQuery($value);
+        } catch (\Exception $e) {
+            throw $this->createBadRequestException($e->getMessage());
+        }
     }
 }
