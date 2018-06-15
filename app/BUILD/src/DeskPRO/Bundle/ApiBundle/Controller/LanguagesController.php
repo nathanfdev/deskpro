@@ -276,6 +276,7 @@ class LanguagesController extends CrudController
             'agent.tickets.hold_btn',
             'agent.tickets.put_on_hold',
             'agent.tickets.run_macro_action',
+            'agent.tickets.status_archived',
             'agent.tickets.status_awaiting_agent',
             'agent.tickets.status_awaiting_user',
             'agent.tickets.status_resolved',

@@ -463,6 +463,9 @@ $contrast: 5% !default;
     }
   }
 }
+.tether-element .dp-select {
+  z-index: 100;
+}
 
 .ui.popup {
   padding: 0;

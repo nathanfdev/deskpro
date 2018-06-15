@@ -1,39 +1,14 @@
 import React from 'react';
 import TokenField from '@deskpro/token-field';
 import SemanticSearchBox from 'DeskPRO/Component/Semantic/SearchBox';
+import { injectIntl, FormattedMessage } from 'react-intl';
+import PropTypes from 'prop-types';
 
-const countries = [
-  { label: 'Austria', value: 'AT' },
-  { label: 'Belgium', value: 'BE' },
-  { label: 'Bulgaria', value: 'BG' },
-  { label: 'Croatia', value: 'HR' },
-  { label: 'Cyprus', value: 'CY' },
-  { label: 'Czech Republic', value: 'CZ' },
-  { label: 'Denmark', value: 'DK' },
-  { label: 'Estonia', value: 'EE' },
-  { label: 'Finland', value: 'FI' },
-  { label: 'France', value: 'FR' },
-  { label: 'Germany', value: 'DE' },
-  { label: 'Greece', value: 'GR' },
-  { label: 'Hungary', value: 'HU' },
-  { label: 'Ireland', value: 'IE' },
-  { label: 'Italy', value: 'IT' },
-  { label: 'Latvia', value: 'LV' },
-  { label: 'Lithuania', value: 'LT' },
-  { label: 'Luxembourg', value: 'LU' },
-  { label: 'Malta', value: 'MT' },
-  { label: 'Netherlands', value: 'NL' },
-  { label: 'Poland', value: 'PL' },
-  { label: 'Portugal', value: 'PT' },
-  { label: 'Romania', value: 'RO' },
-  { label: 'Slovakia', value: 'SK' },
-  { label: 'Slovenia', value: 'SI' },
-  { label: 'Spain', value: 'ES' },
-  { label: 'Sweden', value: 'SE' },
-  { label: 'United Kingdom', value: 'GB' }
-];
-
+@injectIntl
 class SearchBox extends React.Component {
+  static propTypes = {
+    intl: PropTypes.object,
+  };
 
   constructor(props) {
     super(props);
@@ -44,10 +19,33 @@ class SearchBox extends React.Component {
 
   getTokenTypes = () => [
     {
-      id:          'date',
-      widget:      'DateTimeInput',
-      props:       {},
-      description: 'Date the ticket was submitted'
+      id:     'status',
+      label:  this.props.intl.formatMessage({ id: 'agent.general.status' }).toLowerCase(),
+      widget: 'SelectInput',
+      props:  {
+        dataSource: {
+          getOptions: [
+            { label: this.props.intl.formatMessage({ id: 'agent.tickets.status_awaiting_agent' }), value: 'awaiting_agent' },
+            { label: this.props.intl.formatMessage({ id: 'agent.tickets.status_awaiting_user' }), value: 'awaiting_user' },
+            { label: this.props.intl.formatMessage({ id: 'agent.tickets.status_resolved' }), value: 'resolved' },
+            { label: this.props.intl.formatMessage({ id: 'agent.tickets.status_archived' }), value: 'archived' },
+          ],
+        },
+        renderHeader: <h3><FormattedMessage id="agent.general.status" /></h3>,
+        showSearch:   false
+      },
+      description: 'Status of the ticket'
+    },
+    {
+      id:     'department',
+      label:  this.props.intl.formatMessage({ id: 'agent.general.department' }).toLowerCase(),
+      widget: 'SelectInput',
+      props:  {
+        dataSource: {
+          getOptions: []
+        },
+      },
+      showSearch: true,
     },
     {
       id:          'date-ticket-created',
@@ -75,17 +73,6 @@ class SearchBox extends React.Component {
         convertFromValue: value => Math.round(value / 1024 / 1024),
         convertToValue:   value => value * 1024 * 1024,
       }
-    },
-    {
-      id:     'country',
-      widget: 'SelectInput',
-      props:  {
-        dataSource: {
-          getOptions: countries,
-        },
-        renderHeader: <h3>Countries</h3>,
-        showSearch:   false
-      },
     },
     {
       id:          'user-waiting',
