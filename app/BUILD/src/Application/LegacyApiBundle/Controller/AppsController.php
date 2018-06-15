@@ -19,9 +19,9 @@ use DeskPRO\Bundle\AppBundle\Notification\Event\LegacySystemEvent;
 use DeskPRO\Bundle\AppBundle\Serializer\ApiWrapper;
 use DeskPRO\Bundle\AppBundle\Serializer\Sideload\SideloadSerializationContext;
 use DeskPRO\Bundle\AppStoreBundle\Domain\AppBundleValidator;
+use DeskPRO\Bundle\AppStoreBundle\Infrastructure\AppBundleAdapters\BundleFileHandlingStrategyZip;
 use DeskPRO\Bundle\AppStoreBundle\Infrastructure\ApplicationManagerService;
 use DeskPRO\Bundle\AppStoreBundle\Infrastructure\AppManifestReader;
-use DeskPRO\Bundle\AppStoreBundle\Infrastructure\AppZipArchiveBundle;
 use DeskPRO\Component\Filesystem\SafeFile;
 use DpSys\LowError\SystemErrorHandler;
 use Imagine\Image\Box as ImageBox;
@@ -847,7 +847,12 @@ class AppsController extends AbstractController
     // upload-package
     //###################################################################################################################
 
-    public function uploadPackageAction(Request $request)
+    /**
+     * @param Request $request
+     * @return \Symfony\Component\HttpFoundation\Response
+     * @throws \Exception
+     */
+    public function uploadPackageAction( Request $request)
     {
         /** @var \Symfony\Component\HttpFoundation\File\UploadedFile $file */
         $file = $request->files->get('file');
@@ -922,7 +927,9 @@ class AppsController extends AbstractController
         }
 
         // detect apps v2
-        $appBundle       = new AppZipArchiveBundle(new \ZipArchive(), new \SplFileInfo($file));
+        /** @var BundleFileHandlingStrategyZip $bundleReader */
+        $bundleReader = $this->container->get(BundleFileHandlingStrategyZip::class);
+        $appBundle       = $bundleReader->reader($file);
         $bundleValidator = $this->container->get(AppBundleValidator::class);
         if ($bundleValidator->validateBundle($appBundle)) {
             $manifestString = SafeFile::fileGetContents($app_dir.'/manifest.json', $app_dir);
@@ -1011,7 +1018,8 @@ class AppsController extends AbstractController
     /**
      * @param string $name
      *
-     * @return AppZipArchiveBundle|null
+     * @return \DeskPRO\Bundle\AppStoreBundle\Domain\AppBundle
+     * @throws \Exception
      */
     private function getAppV2ArchiveBundle($name)
     {
@@ -1035,6 +1043,8 @@ class AppsController extends AbstractController
             return;
         }
 
-        return new AppZipArchiveBundle(new \ZipArchive(), new \SplFileInfo($blobPath));
+        /** @var BundleFileHandlingStrategyZip $bundleReader */
+        $bundleReader = $this->container->get(BundleFileHandlingStrategyZip::class);
+        return $bundleReader->reader($blobPath);
     }
 }

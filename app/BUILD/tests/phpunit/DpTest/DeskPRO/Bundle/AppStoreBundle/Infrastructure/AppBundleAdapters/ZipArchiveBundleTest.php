@@ -1,11 +1,11 @@
 <?php
 
-namespace DpTest\DeskPRO\Bundle\AppStoreBundle\Infrastructure;
+namespace DpTest\DeskPRO\Bundle\AppStoreBundle\Infrastructure\AppBundleAdapters;
 
 use DeskPRO\Bundle\AppStoreBundle\Infrastructure;
 use DpTest\DeskProTestCase;
 
-class AppZipArchiveBundleTest extends DeskProTestCase
+class ZipArchiveBundleTest extends DeskProTestCase
 {
     /**
      * @test
@@ -13,7 +13,7 @@ class AppZipArchiveBundleTest extends DeskProTestCase
     public function retrieve_contents_of_manifest()
     {
         $manifestContents = 'dummy manifest contents';
-        $zipArchiveBundle = Infrastructure\AppZipBundleBuilder::fromTmp()->setManifest($manifestContents)->build();
+        $zipArchiveBundle = Infrastructure\AppBundleAdapters\ZipArchiveBundleWriter::fromTmp()->setManifest($manifestContents)->build();
 
         $actualManifestContents = $zipArchiveBundle->getManifestAsString();
         $this->assertEquals($manifestContents, $actualManifestContents, 'retrieving the contents of a missing manifest should return null');
@@ -24,7 +24,7 @@ class AppZipArchiveBundleTest extends DeskProTestCase
      */
     public function retrieve_the_contents_of_a_missing_manifest_should_return_null()
     {
-        $zipArchiveBundle = Infrastructure\AppZipBundleBuilder::fromTmp()->addFile(__FILE__)->build();
+        $zipArchiveBundle = Infrastructure\AppBundleAdapters\ZipArchiveBundleWriter::fromTmp()->addFile(__FILE__)->build();
 
         $manifestString = $zipArchiveBundle->getManifestAsString();
         $this->assertNull($manifestString, 'retrieving the contents of a missing manifest should return null');
@@ -41,7 +41,7 @@ class AppZipArchiveBundleTest extends DeskProTestCase
         global $DP_ENV;
         $wwwRoot = $DP_ENV->getWwwRoot();
 
-        $zipArchiveBundle   = Infrastructure\AppZipBundleBuilder::fromTmp()->addFolder($wwwRoot, 2)->build();
+        $zipArchiveBundle   = Infrastructure\AppBundleAdapters\ZipArchiveBundleWriter::fromTmp()->addFolder($wwwRoot, 2)->build();
         $actualFilePathList = [];
         $resourceObjects    = $zipArchiveBundle->listAllResources();
         foreach ($resourceObjects as $object) {
