@@ -12,6 +12,7 @@ use DeskPRO\Bundle\ReportBundle\Dashboard\DashboardWidgetManager;
 use DeskPRO\Bundle\ReportBundle\Dpql2\DpqlCompiler;
 use DeskPRO\Bundle\ReportBundle\Dpql2\DpqlException;
 use DeskPRO\Bundle\ReportBundle\Reports\Renderer\ReportsRendererRegistry;
+use DeskPRO\Bundle\ReportBundle\Reports\SplitResult;
 use DeskPRO\Bundle\ReportBundle\Reports\SplitResults;
 
 /**
@@ -136,6 +137,13 @@ class ReportWidgetHandler extends AbstractEntityHandler
                         }
                         $result[] = $data;
                     }
+                } elseif ($data instanceof SplitResult) {
+                    $formatData = $this->dashboardWidgetService->formatData($data->getResults(), $displayType);
+                    if ($formatData) {
+                        $formatData['title']     = $data->getTitle();
+                        $formatData['chartType'] = $graphType;
+                    }
+                    $result[] = $formatData;
                 } else {
                     $data = $this->dashboardWidgetService->formatData($data, $displayType);
                     if ($data) {
