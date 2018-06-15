@@ -109,7 +109,7 @@ class TicketSlaTermsHandler implements ValueTermHandler, SqlTermHandler
      */
     public function buildQueryFuncCondition($name, $fieldId, $operator, array $params, Context $context, Term $term)
     {
-        switch ($name) {
+        switch (strtolower($name)) {
             case 'passingslas':
                 return $this->buildHasAnySlas(TicketSla::STATUS_OK, $params);
             case 'warningslas':
