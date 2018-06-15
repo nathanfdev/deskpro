@@ -18,7 +18,8 @@ class EditContainer extends React.Component {
     labels:       PropTypes.object.isRequired,
     onCloneClick: PropTypes.func.isRequired,
     onRunClick:   PropTypes.func.isRequired,
-    dispatch:     PropTypes.func.isRequired
+    dispatch:     PropTypes.func.isRequired,
+    onSubmit:     PropTypes.func.isRequired
   };
 
   static dpqlParser(query) {
@@ -112,7 +113,11 @@ class EditContainer extends React.Component {
 
     dispatch(saveReport(reportData))
         .then(() => {
-          this.setState({ saving: false, error: false, formErrors: {} });
+          const current = transformReportDataToApi(reportData);
+          current.id = reportData.id;
+          current.is_custom = true;
+          current.extended_query = reportData.raw ? reportData.raw.indexOf('LAYER WITH') !== -1 : false;
+          this.setState({ saving: false, error: false, formErrors: {} }, () => this.props.onSubmit(current));
         })
         .catch((response) => {
           const flattenErrors = {};

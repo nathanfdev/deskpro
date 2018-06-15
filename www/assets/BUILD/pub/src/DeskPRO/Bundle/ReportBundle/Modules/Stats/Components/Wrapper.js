@@ -8,7 +8,6 @@ import { Edit } from './Edit';
 import Run from './Run';
 import {
   loadReport,
-  saveReport,
   runReport,
   saveAndRun,
   parseQuery,
@@ -244,7 +243,7 @@ class Wrapper extends React.Component {
   }
 
   onSubmit(data) {
-    return this.props.dispatch(saveReport(data));
+    this.setState({ currentReport: Immutable.fromJS(data), reportLoading: false });
   }
 
   setLabels(props) {
