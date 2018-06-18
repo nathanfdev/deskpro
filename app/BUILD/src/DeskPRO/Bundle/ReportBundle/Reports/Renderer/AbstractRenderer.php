@@ -265,7 +265,7 @@ abstract class AbstractRenderer implements ReportsRendererInterface
     /**
      * {@inheritdoc}
      */
-    public function mergeResults(array $results, array $options)
+    public function mergeResults(array $results, $graphType, array $options)
     {
         return implode('PHP_EOL', $results);
     }
