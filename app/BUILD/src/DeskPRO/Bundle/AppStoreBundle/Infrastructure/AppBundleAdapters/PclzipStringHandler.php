@@ -11,7 +11,7 @@ class PclzipStringHandler
         }
 
         $tmpPath = $this->createTempDir();
-        $filename = $tmpPath . PATH_SEPARATOR . $fileEntry['stored_filename'];
+        $filename = $tmpPath . DIRECTORY_SEPARATOR . $fileEntry['stored_filename'];
         $from->extractByIndex($fileEntry['index'], $tmpPath);
 
 
@@ -20,8 +20,7 @@ class PclzipStringHandler
         }
 
         $contents = file_get_contents($filename);
-        unlink($tmpPath);
-        unlink($filename);
+        $this->removeDir($tmpPath);
         return $contents;
     }
 
@@ -40,7 +39,7 @@ class PclzipStringHandler
             mkdir($contentDir, 0777);
         }
 
-        file_put_contents($actualPath, pathinfo($actualPath, PATHINFO_BASENAME));
+        file_put_contents($actualPath, $content);
         $into->add($actualPath, "", $tempDir);
         $this->removeDir($tempDir);
     }

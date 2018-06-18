@@ -81,7 +81,7 @@ class PclzipAdapter implements Domain\AppBundle
         $list = [];
         /** @var array $entry */
         foreach ($resources as $entry) {
-            $list[] = new PclzipBundleResource($this->archive, $entry['index'], $entry['stored_filename']);
+            $list[] = new PclzipBundleResource($this->archive, $entry);
         }
 
         return $list;
