@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file",
         "This file is @generated automatically"
     ],
-    "content-hash": "1b33d3b30cc521c79c7ae665d58a883f",
+    "content-hash": "4045b245d2a8d3f7b26638ddba864c81",
     "packages": [
         {
             "name": "alchemy/zippy",
@@ -2804,6 +2804,50 @@
                 "spam"
             ],
             "time": "2015-09-02T17:23:59+00:00"
+        },
+        {
+            "name": "gorhill/php-fine-diff",
+            "version": "0.1.0",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/falk-graeser/PHP-FineDiff.git",
+                "reference": "b0c9ab136958882c501d461b0ad204f908e19392"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/falk-graeser/PHP-FineDiff/zipball/b0c9ab136958882c501d461b0ad204f908e19392",
+                "reference": "b0c9ab136958882c501d461b0ad204f908e19392",
+                "shasum": ""
+            },
+            "type": "library",
+            "autoload": {
+                "psr-4": {
+                    "GorHill\\FineDiff\\": "GorHill/FineDiff"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Raymond Hill",
+                    "email": "r.michael@queo-group.com",
+                    "homepage": "http://www.queoflow.com/",
+                    "role": "Developer"
+                },
+                {
+                    "name": "Falk Gräser",
+                    "email": "f.graeser@queo-group.com",
+                    "homepage": "http://www.queoflow.com/",
+                    "role": "The-Clean-Up-Guy"
+                }
+            ],
+            "homepage": "http://www.raymondhill.net/finediff/",
+            "keywords": [
+                "finediff"
+            ],
+            "time": "2015-07-30T10:21:26+00:00"
         },
         {
             "name": "gregwar/captcha",
