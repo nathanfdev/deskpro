@@ -83,3 +83,8 @@ services:
     class: DeskPRO\Bundle\ApiBundle\Request\PortalSessionReader
     arguments:
       - "@doctrine.orm.entity_manager"
+
+  api_tickets_term_builder:
+    class: DeskPRO\Bundle\ApiBundle\TicketFilters\TermBuilder
+    arguments:
+      - "@ticketfilters.queryparser"

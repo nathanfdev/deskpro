@@ -9,8 +9,7 @@ use DeskPRO\Bundle\AppBundle\TicketFilters\Model\Entity\CustomField;
 use DeskPRO\Bundle\AppBundle\TicketFilters\SqlBuilder\SqlBuilder;
 use DeskPRO\Bundle\AppBundle\TicketFilters\SqlBuilder\SqlCondition;
 use DeskPRO\Bundle\AppBundle\TicketFilters\SqlBuilder\SqlConditionGroup;
-use DeskPRO\Bundle\AppBundle\TicketFilters\Terms\SqlTermHandler;
-use DeskPRO\Bundle\AppBundle\TicketFilters\Terms\TermsHandlerInterface;
+use DeskPRO\Bundle\AppBundle\TicketFilters\Terms\SqlTermHandlerInterface;
 use DeskPRO\Component\FilterQueryLanguage\Query\Node\Term;
 use DeskPRO\Component\FilterQueryLanguage\Query\Node\TermGroup;
 use DeskPRO\Component\FilterQueryLanguage\Query\Query;
@@ -19,13 +18,16 @@ use DeskPRO\Component\Util\ListUtils;
 use DeskPRO\Component\Util\StructComparer;
 use Doctrine\DBAL\Connection;
 
+/**
+ * Class TicketSqlMatcher.
+ */
 class TicketSqlMatcher extends AbstractMatcher
 {
     const ACTIVE = 'active';
     const ALL    = 'all';
 
     /**
-     * @var SqlTermHandler[]
+     * @var SqlTermHandlerInterface[]
      */
     private $handlers;
 
@@ -45,7 +47,7 @@ class TicketSqlMatcher extends AbstractMatcher
     private $customFieldSet;
 
     /**
-     * @var OptionMappterInterface
+     * @var OptionMapperInterface
      */
     private $fieldOptionMapper;
 
@@ -57,14 +59,16 @@ class TicketSqlMatcher extends AbstractMatcher
     /**
      * TicketSqlMatcher constructor.
      *
-     * @param ValueResolver          $valueResolver
-     * @param SqlTermHandler[]       $handlers
-     * @param Connection             $db
-     * @param string                 $mode              TicketSqlMatcher::ACTIVE for active tickets, or TicketSqlMatcher::ALL for all tickets (slower)
-     * @param CustomFieldSet         $customFieldSet
-     * @param OptionMappterInterface $fieldOptionMapper
+     * @param ValueResolver             $valueResolver
+     * @param SqlTermHandlerInterface[] $handlers
+     * @param Connection                $db
+     * @param string                    $mode              TicketSqlMatcher::ACTIVE for active tickets, or TicketSqlMatcher::ALL for all tickets (slower)
+     * @param CustomFieldSet            $customFieldSet
+     * @param OptionMapperInterface     $fieldOptionMapper
+     *
+     * @throws \InvalidArgumentException
      */
-    public function __construct(ValueResolver $valueResolver, array $handlers, Connection $db, $mode, CustomFieldSet $customFieldSet = null, OptionMappterInterface $fieldOptionMapper = null)
+    public function __construct(ValueResolver $valueResolver, array $handlers, Connection $db, $mode, CustomFieldSet $customFieldSet = null, OptionMapperInterface $fieldOptionMapper = null)
     {
         parent::__construct($valueResolver);
         $this->db = $db;
@@ -553,7 +557,7 @@ class TicketSqlMatcher extends AbstractMatcher
                             $h->getSqlHandlerDef()->getDefinedFuncName($fnName),
                             $fieldId,
                             $operator,
-                            $this->getValueResovler()->getFuncCallParamValues($term->options->value, $term, $context),
+                            $this->getValueResolver()->getFuncCallParamValues($term->options->value, $term, $context),
                             $context,
                             $term
                         );
@@ -574,11 +578,11 @@ class TicketSqlMatcher extends AbstractMatcher
             throw new \OutOfBoundsException("No handler is capable of handling $fieldId");
         }
 
-        $options = $this->getValueResovler()->optionValueFromTerm($term, $context);
+        $options = $this->getValueResolver()->optionValueFromTerm($term, $context);
 
         $parts = [];
         foreach ($fieldHandlers as  $handler) {
-            /** @var $handler SqlTermHandler */
+            /** @var $handler SqlTermHandlerInterface */
             if ($c = $handler->buildQueryCondition(
                 $fieldId,
                 $operator,
@@ -686,21 +690,21 @@ class TicketSqlMatcher extends AbstractMatcher
     }
 
     /**
-     * @return SqlTermHandler[]
+     * @return SqlTermHandlerInterface[]
      */
     private function getHandlersForFieldId($fieldId)
     {
-        return ListUtils::filter($this->handlers, function (SqlTermHandler $h) use ($fieldId) {
+        return ListUtils::filter($this->handlers, function (SqlTermHandlerInterface $h) use ($fieldId) {
             return $h->getSqlHandlerDef()->hasField($fieldId);
         });
     }
 
     /**
-     * @return SqlTermHandler[]
+     * @return SqlTermHandlerInterface[]
      */
     private function getHandlersForFunc($func)
     {
-        return ListUtils::filter($this->handlers, function (SqlTermHandler $h) use ($func) {
+        return ListUtils::filter($this->handlers, function (SqlTermHandlerInterface $h) use ($func) {
             return $h->getSqlHandlerDef()->hasFunction($func);
         });
     }

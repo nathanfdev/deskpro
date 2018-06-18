@@ -5,9 +5,11 @@ namespace DeskPRO\Bundle\AppBundle\TicketFilters\Terms\Util;
 use DeskPRO\Bundle\AppBundle\TicketFilters\OptValue\OptValue;
 use DeskPRO\Bundle\AppBundle\TicketFilters\SqlBuilder\SqlCondition;
 use DeskPRO\Component\FilterQueryLanguage\Query\Query;
-use DeskPRO\Component\Util\ListUtils;
 use Doctrine\DBAL\Connection;
 
+/**
+ * Class SqlQueryUtils.
+ */
 class SqlQueryUtils
 {
     /**
@@ -39,21 +41,15 @@ class SqlQueryUtils
      * @param string         $fieldColumn
      * @param string         $operator
      * @param mixed|OptValue $checkValue
+     * @param bool           $handleNull
+     *
+     * @throws \InvalidArgumentException
      *
      * @return array Array of ['where' => XXX, 'params' => ['x' => ['val', type]]]
      */
     public static function buildQueryWhere($fieldColumn, $operator, $checkValue, $handleNull = false)
     {
-        if ($checkValue instanceof OptValue) {
-            $checkValue = $checkValue->getValue();
-        }
-
-        if ($checkValue instanceof \DateTime) {
-            $tmp = clone $checkValue;
-            $tmp->setTimezone(new \DateTimeZone('UTC'));
-            $checkValue = $tmp->format('Y-m-d H:i:s');
-        }
-
+        $checkValue = ValueFormatter::formatCheckValue($checkValue);
         $colVarName = preg_replace('/[^a-zA-Z0-9]/', '', $fieldColumn);
 
         switch ($operator) {
@@ -113,22 +109,10 @@ class SqlQueryUtils
             case Query::OP_IN:
             case Query::OP_HAS:
             case Query::OP_NOT_IN:
-                if ($checkValue === null) {
-                    $checkValue = [];
-                }
-                if ($checkValue === 0 || $checkValue === '0') {
-                    $checkValue = [];
-                }
-                if (!is_array($checkValue)) {
-                    $checkValue = [$checkValue];
-                }
-
-                $checkValue = ListUtils::flatten($checkValue);
-
-                $op = $operator === Query::OP_NOT_IN ? 'NOT IN' : 'IN';
+                $checkValue = ValueFormatter::formatList($checkValue);
+                $op         = $operator === Query::OP_NOT_IN ? 'NOT IN' : 'IN';
 
                 $where = "$fieldColumn $op (:$colVarName)";
-
                 if ($operator === Query::OP_NOT_IN && $handleNull) {
                     $where = "$where OR $fieldColumn IS NULL";
                 }
@@ -140,17 +124,10 @@ class SqlQueryUtils
 
             case Query::OP_BETWEEN:
             case Query::OP_NOT_BETWEEN:
-                if (empty($checkValue[0]) || empty($checkValue[1])) {
+                $checkValue = ValueFormatter::formatRange($checkValue);
+                if (!$checkValue) {
                     return false;
                 }
-
-                $checkValue = ListUtils::map($checkValue, function ($v) {
-                    if ($v instanceof \DateTime) {
-                        return $v->format('Y-m-d H:i:s');
-                    }
-
-                    return $v;
-                });
 
                 $op = $operator === Query::OP_NOT_BETWEEN ? 'NOT BETWEEN' : 'BETWEEN';
 
@@ -163,29 +140,18 @@ class SqlQueryUtils
                 ];
 
             case Query::OP_IS_NULL:
-            case Query::OP_NOT_NULL:
-                $op = $operator === Query::OP_NOT_NULL ? 'IS NOT NULL' : 'IS NULL';
-
-                return [
-                    'where'  => "$fieldColumn $op",
-                    'params' => [],
-                ];
-
             case Query::OP_EMPTY:
-            case Query::OP_NOT_EMPTY:
-                $op = $operator === Query::OP_NOT_EMPTY ? 'IS NOT NULL' : 'IS NULL';
-
+            case Query::OP_NOT_EXISTS:
                 return [
-                    'where'  => "$fieldColumn $op",
+                    'where'  => "$fieldColumn IS NULL",
                     'params' => [],
                 ];
 
+            case Query::OP_NOT_NULL:
+            case Query::OP_NOT_EMPTY:
             case Query::OP_EXISTS:
-            case Query::OP_NOT_EXISTS:
-                $op = $operator === Query::OP_EXISTS ? 'IS NOT NULL' : 'IS NULL';
-
                 return [
-                    'where'  => "$fieldColumn $op",
+                    'where'  => "$fieldColumn IS NOT NULL",
                     'params' => [],
                 ];
 

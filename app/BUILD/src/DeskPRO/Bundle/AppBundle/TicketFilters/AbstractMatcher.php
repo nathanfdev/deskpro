@@ -2,7 +2,6 @@
 
 namespace DeskPRO\Bundle\AppBundle\TicketFilters;
 
-use DeskPRO\Bundle\AppBundle\TicketFilters\Terms\TermsHandlerInterface;
 use DeskPRO\Component\FilterQueryLanguage\Query\Node\Term;
 use DeskPRO\Component\FilterQueryLanguage\Query\Opt\CompareOpt;
 use DeskPRO\Component\FilterQueryLanguage\Query\Val\FuncVal;
@@ -10,6 +9,9 @@ use Psr\Log\LoggerAwareInterface;
 use Psr\Log\LoggerAwareTrait;
 use Psr\Log\NullLogger;
 
+/**
+ * Class AbstractMatcher.
+ */
 abstract class AbstractMatcher implements LoggerAwareInterface
 {
     use LoggerAwareTrait;
@@ -17,26 +19,25 @@ abstract class AbstractMatcher implements LoggerAwareInterface
     /**
      * @var ValueResolver
      */
-    private $valueResovler;
+    protected $valueResolver;
 
     /**
      * TicketMatcher constructor.
      *
      * @param ValueResolver $valueResolver
-     * @param array         $handlers
      */
     public function __construct(ValueResolver $valueResolver)
     {
-        $this->valueResovler = $valueResolver;
+        $this->valueResolver = $valueResolver;
         $this->logger        = new NullLogger();
     }
 
     /**
      * @return ValueResolver
      */
-    public function getValueResovler()
+    public function getValueResolver()
     {
-        return $this->valueResovler;
+        return $this->valueResolver;
     }
 
     /**

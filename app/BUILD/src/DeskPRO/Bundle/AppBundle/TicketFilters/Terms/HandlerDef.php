@@ -2,6 +2,9 @@
 
 namespace DeskPRO\Bundle\AppBundle\TicketFilters\Terms;
 
+/**
+ * Class HandlerDef.
+ */
 class HandlerDef
 {
     /**

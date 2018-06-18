@@ -2,6 +2,7 @@
 
 namespace DpTest\Bundle\AppBundle\TicketFilters;
 
+use Application\DeskPRO\NewSearch\Manager\Elasticsearch;
 use DeskPRO\Bundle\AppBundle\TicketFilters\Context;
 use DeskPRO\Bundle\AppBundle\TicketFilters\CustomFieldSet;
 use DeskPRO\Bundle\AppBundle\TicketFilters\Model\Agent;
@@ -43,12 +44,12 @@ class TicketMatcherTest extends \PHPUnit_Framework_TestCase
     private $ticket2;
 
     /**
-     * @var AgentContext
+     * @var Agent
      */
     private $agentContext;
 
     /**
-     * @var MatcherContext
+     * @var Context
      */
     private $matcherContext;
 
@@ -70,7 +71,7 @@ class TicketMatcherTest extends \PHPUnit_Framework_TestCase
         $this->matcherContext = new Context($this->agentContext);
 
         $this->matcher = new TicketMatcher($resolver, [
-            new TicketBasicTermsHandler(),
+            new TicketBasicTermsHandler($this->getMockBuilder(Elasticsearch::class)->disableOriginalConstructor()->getMock()),
             new TicketSlaTermsHandler(),
             new TicketDateTermsHandler(),
             new CustomFieldsTermsHandler(new CustomFieldSet([

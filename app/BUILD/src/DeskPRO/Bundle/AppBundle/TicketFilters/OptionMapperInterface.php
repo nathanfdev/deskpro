@@ -2,7 +2,7 @@
 
 namespace DeskPRO\Bundle\AppBundle\TicketFilters;
 
-interface OptionMappterInterface
+interface OptionMapperInterface
 {
     public function getValue($fieldId, $value);
 

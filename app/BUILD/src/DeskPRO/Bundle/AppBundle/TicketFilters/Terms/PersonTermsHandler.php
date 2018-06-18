@@ -7,13 +7,18 @@ use DeskPRO\Bundle\AppBundle\TicketFilters\Context;
 use DeskPRO\Bundle\AppBundle\TicketFilters\Model\Entity\TicketModel;
 use DeskPRO\Bundle\AppBundle\TicketFilters\OptValue\OptValue;
 use DeskPRO\Bundle\AppBundle\TicketFilters\TermFieldIds;
+use DeskPRO\Bundle\AppBundle\TicketFilters\Terms\Util\CheckValueUtils;
+use DeskPRO\Bundle\AppBundle\TicketFilters\Terms\Util\ElasticQueryUtils;
 use DeskPRO\Bundle\AppBundle\TicketFilters\Terms\Util\SqlQueryUtils;
 use DeskPRO\Component\FilterQueryLanguage\Query\Node\Term;
 use DeskPRO\Component\FilterQueryLanguage\Query\Query;
 use DeskPRO\Component\Util\ListUtils;
 use DeskPRO\Component\Util\MemoizeMethod;
 
-class PersonTermsHandler implements ValueTermHandler, SqlTermHandler
+/**
+ * Class PersonTermsHandler.
+ */
+class PersonTermsHandler implements ValueTermHandlerInterface, SqlTermHandlerInterface, ElasticTermHandlerInterface
 {
     use MemoizeMethod;
 
@@ -83,6 +88,59 @@ class PersonTermsHandler implements ValueTermHandler, SqlTermHandler
         }
     }
 
+    /**
+     * {@inheritdoc}
+     */
+    public function buildQueryFuncCondition($name, $fieldId, $operator, array $params, Context $context, Term $term)
+    {
+        throw new \RuntimeException('No functions defined');
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function doesTicketMatchFunc($name, $fieldId, $operator, array $params, TicketModel $ticketModel, Context $context, Term $term)
+    {
+        throw new \RuntimeException('No functions defined');
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function getElasticHandlerDef()
+    {
+        return $this->getValueHandlerDef();
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function buildElasticCondition($fieldId, $operator, OptValue $options, Context $context, Term $term)
+    {
+        switch ($fieldId) {
+            case TermFieldIds::PERSON_ID:
+                $value = $this->normalizePersonId($options->getValue());
+
+                return ElasticQueryUtils::buildQuery('person_id', $operator, $value);
+
+            default:
+                throw new \InvalidArgumentException();
+        }
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function buildElasticFuncCondition($name, $fieldId, $operator, array $params, Context $context, Term $term)
+    {
+        throw new \RuntimeException('No functions defined');
+    }
+
+    /**
+     * @param $value
+     *
+     * @return array|int
+     */
     private function normalizePersonId($value)
     {
         if (is_array($value)) {
@@ -101,15 +159,5 @@ class PersonTermsHandler implements ValueTermHandler, SqlTermHandler
         }
 
         return 0;
-    }
-
-    public function buildQueryFuncCondition($name, $fieldId, $operator, array $params, Context $context, Term $term)
-    {
-        throw new \RuntimeException('No functions defined');
-    }
-
-    public function doesTicketMatchFunc($name, $fieldId, $operator, array $params, TicketModel $ticketModel, Context $context, Term $term)
-    {
-        throw new \RuntimeException('No functions defined');
     }
 }

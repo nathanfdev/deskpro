@@ -8,12 +8,11 @@ use DeskPRO\Bundle\AppBundle\TicketFilters\CustomFieldSet;
 use DeskPRO\Bundle\AppBundle\TicketFilters\Model\Entity\CustomData;
 use DeskPRO\Bundle\AppBundle\TicketFilters\Model\Entity\CustomField;
 use DeskPRO\Bundle\AppBundle\TicketFilters\Model\Entity\TicketModel;
-use DeskPRO\Bundle\AppBundle\TicketFilters\OptionMappterInterface;
+use DeskPRO\Bundle\AppBundle\TicketFilters\OptionMapperInterface;
 use DeskPRO\Bundle\AppBundle\TicketFilters\OptValue\BetweenValue;
 use DeskPRO\Bundle\AppBundle\TicketFilters\OptValue\CompareValue;
 use DeskPRO\Bundle\AppBundle\TicketFilters\OptValue\OptValue;
 use DeskPRO\Bundle\AppBundle\TicketFilters\SqlBuilder\SqlCondition;
-use DeskPRO\Bundle\AppBundle\TicketFilters\SqlBuilder\SqlConditionGroup;
 use DeskPRO\Bundle\AppBundle\TicketFilters\TermFieldIds;
 use DeskPRO\Bundle\AppBundle\TicketFilters\Terms\Util\CheckValueUtils;
 use DeskPRO\Bundle\AppBundle\TicketFilters\Terms\Util\SqlQueryUtils;
@@ -22,7 +21,10 @@ use DeskPRO\Component\FilterQueryLanguage\Query\Query;
 use DeskPRO\Component\Util\ListUtils;
 use DeskPRO\Component\Util\MemoizeMethod;
 
-class CustomFieldsTermsHandler implements ValueTermHandler, SqlTermHandler
+/**
+ * Class CustomFieldsTermsHandler.
+ */
+class CustomFieldsTermsHandler implements ValueTermHandlerInterface, SqlTermHandlerInterface, ElasticTermHandlerInterface
 {
     use MemoizeMethod;
 
@@ -32,16 +34,16 @@ class CustomFieldsTermsHandler implements ValueTermHandler, SqlTermHandler
     private $customFieldSet;
 
     /**
-     * @var OptionMappterInterface
+     * @var OptionMapperInterface
      */
     private $optionMapper;
 
     /**
      * Terms constructor.
      *
-     * @param OptionMappterInterface $optionMappter
+     * @param OptionMapperInterface $optionMappter
      */
-    public function __construct(CustomFieldSet $customFieldSet, OptionMappterInterface $optionMappter = null)
+    public function __construct(CustomFieldSet $customFieldSet, OptionMapperInterface $optionMappter = null)
     {
         $this->customFieldSet = $customFieldSet;
         $this->optionMapper   = $optionMappter;
@@ -128,15 +130,7 @@ class CustomFieldsTermsHandler implements ValueTermHandler, SqlTermHandler
     }
 
     /**
-     * @param string      $name
-     * @param string      $fieldId
-     * @param string      $operator
-     * @param array       $params
-     * @param TicketModel $ticketModel
-     * @param Context     $context
-     * @param Term        $term
-     *
-     * @return bool
+     * {@inheritdoc}
      */
     public function doesTicketMatchFunc($name, $fieldId, $operator, array $params, TicketModel $ticketModel, Context $context, Term $term)
     {
@@ -155,6 +149,8 @@ class CustomFieldsTermsHandler implements ValueTermHandler, SqlTermHandler
      * @param TicketModel $ticketModel
      * @param Context     $context
      * @param Term        $term
+     *
+     * @throws \Exception
      *
      * @return bool
      */
@@ -311,19 +307,12 @@ class CustomFieldsTermsHandler implements ValueTermHandler, SqlTermHandler
     }
 
     /**
-     * @param string  $name
-     * @param string  $fieldId
-     * @param string  $operator
-     * @param array   $params
-     * @param Context $context
-     * @param Term    $term
-     *
-     * @return SqlCondition|SqlCondition[]|SqlConditionGroup|SqlConditionGroup[]
+     * {@inheritdoc}
      */
     public function buildQueryFuncCondition($name, $fieldId, $operator, array $params, Context $context, Term $term)
     {
-        switch ($name) {
-            case 'Option':
+        switch (strtolower($name)) {
+            case 'option':
                 return $this->buildFieldOptionQueryCondition($fieldId, $operator, $params, $context, $term);
         }
 
@@ -349,5 +338,31 @@ class CustomFieldsTermsHandler implements ValueTermHandler, SqlTermHandler
         $value = $this->optionMapper->getValue($type.'.'.$field->field, $v) ?: $v;
 
         return new CompareValue($value);
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function getElasticHandlerDef()
+    {
+        return $this->memoizedRun(function () {
+            return HandlerDef::create();
+        }, __FUNCTION__);
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function buildElasticCondition($fieldId, $operator, OptValue $options, Context $context, Term $term)
+    {
+        throw new \RuntimeException('No fields defined');
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function buildElasticFuncCondition($name, $fieldId, $operator, array $params, Context $context, Term $term)
+    {
+        throw new \RuntimeException('No functions defined');
     }
 }

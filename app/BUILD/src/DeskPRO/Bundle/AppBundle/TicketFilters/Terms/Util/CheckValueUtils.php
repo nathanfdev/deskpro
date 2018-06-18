@@ -6,12 +6,17 @@ use DeskPRO\Bundle\AppBundle\TicketFilters\OptValue\OptValue;
 use DeskPRO\Component\FilterQueryLanguage\Query\Query;
 use DeskPRO\Component\Util\ListUtils;
 
+/**
+ * Class CheckValueUtils.
+ */
 class CheckValueUtils
 {
     /**
      * @param mixed          $fieldValue
      * @param string         $operator
      * @param mixed|OptValue $checkValue
+     *
+     * @throws \InvalidArgumentException
      *
      * @return bool
      */
@@ -43,17 +48,7 @@ class CheckValueUtils
             case Query::OP_IN:
             case Query::OP_HAS:
             case Query::OP_NOT_IN:
-                if ($checkValue === null) {
-                    $checkValue = [];
-                }
-                if ($checkValue === 0 || $checkValue === '0') {
-                    $checkValue = [];
-                }
-                if (!is_array($checkValue)) {
-                    $checkValue = [$checkValue];
-                }
-
-                $checkValue = ListUtils::flatten($checkValue);
+                $checkValue = ValueFormatter::formatList($checkValue);
 
                 if (is_array($fieldValue)) {
                     $res = ListUtils::containsAny($fieldValue, $checkValue, false);

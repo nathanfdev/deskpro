@@ -2,21 +2,22 @@
 
 namespace DpTest\Bundle\AppBundle\TicketFilters\Terms;
 
+use Application\DeskPRO\NewSearch\Manager\Elasticsearch;
 use DeskPRO\Bundle\AppBundle\TicketFilters\Terms\TicketBasicTermsHandler;
 use DeskPRO\Bundle\AppBundle\TicketFilters\Terms\TicketOwnContextTermsHandler;
 use DeskPRO\Bundle\AppBundle\TicketFilters\TicketSqlMatcher;
-use DpTest\Bundle\AppBundle\TicketFilters\BaseTicketSqlMatcherTest;
+use DpTest\Bundle\AppBundle\TicketFilters\AbstractTicketSqlMatcherTest;
 use DpTestSrc\TestBundle\Mock\Dbal\ConnectionMock;
 
-require_once __DIR__.'/../BaseTicketSqlMatcherTest.php';
+require_once __DIR__.'/../AbstractTicketSqlMatcherTest.php';
 
-class TicketOwnContextSqlTest extends BaseTicketSqlMatcherTest
+class TicketOwnContextSqlTest extends AbstractTicketSqlMatcherTest
 {
     protected function setUpMatcher()
     {
         $db            = ConnectionMock::create();
         $this->matcher = new TicketSqlMatcher($this->valueResolver, [
-            new TicketBasicTermsHandler(),
+            new TicketBasicTermsHandler($this->getMockBuilder(Elasticsearch::class)->disableOriginalConstructor()->getMock()),
             new TicketOwnContextTermsHandler($db),
         ], $db, TicketSqlMatcher::ACTIVE);
 

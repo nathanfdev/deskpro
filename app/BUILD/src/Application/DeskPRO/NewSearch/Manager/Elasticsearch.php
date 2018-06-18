@@ -188,25 +188,48 @@ class Elasticsearch implements SearchManagerInterface, ContainerAwareInterface
         $this->person = $person;
     }
 
-    public function testVersion($url = '')
+    /**
+     * @param string $url
+     *
+     * @return string|null
+     */
+    public function getVersion($url = '')
     {
         if (!$url) {
             $url = $this->container->get('deskpro.core.settings')->get('elastica.clients.default.url');
         }
-        $config        = ClientFactory::createConfigFromUrl($url);
-        $clientFactory = $this->container->get('deskpro.elastica.client_factory');
-        $client        = $clientFactory->createClientByConfig($config);
-        $res           = $client->request('/');
-        if ($res instanceof Response) {
-            $res     = $res->getData();
-            $version = isset($res['version']['number']) ? $res['version']['number'] : null;
 
-            if (!$version) {
-                throw new \Exception('Unable to get ElasticSearch version.');
+        try {
+            $config        = ClientFactory::createConfigFromUrl($url);
+            $clientFactory = $this->container->get('deskpro.elastica.client_factory');
+            $client        = $clientFactory->createClientByConfig($config);
+            $res           = $client->request('/');
+            if ($res instanceof Response) {
+                $res     = $res->getData();
+                $version = isset($res['version']['number']) ? $res['version']['number'] : null;
+
+                return $version;
             }
-            if (version_compare($version, '2.0.0') < 0 || version_compare($version, '6.0.0') >= 0) {
-                throw new \Exception("Deskpro is not compatible with your ElasticSearch $version server. Please use DeskPRO with an ElasticSearch 2.x or 5.x server.");
-            }
+        } catch (\Exception $e) {
+        }
+
+        return;
+    }
+
+    /**
+     * @param string $url
+     *
+     * @throws \Exception
+     */
+    public function testVersion($url = '')
+    {
+        $version = $this->getVersion($url);
+
+        if (!$version) {
+            throw new \Exception('Unable to get ElasticSearch version.');
+        }
+        if (version_compare($version, '2.0.0') < 0 || version_compare($version, '6.0.0') >= 0) {
+            throw new \Exception("Deskpro is not compatible with your ElasticSearch $version server. Please use DeskPRO with an ElasticSearch 2.x or 5.x server.");
         }
     }
 }

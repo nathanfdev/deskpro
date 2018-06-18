@@ -7,12 +7,16 @@ use DeskPRO\Bundle\AppBundle\TicketFilters\Model\Entity\TicketModel;
 use DeskPRO\Bundle\AppBundle\TicketFilters\OptValue\OptValue;
 use DeskPRO\Bundle\AppBundle\TicketFilters\TermFieldIds;
 use DeskPRO\Bundle\AppBundle\TicketFilters\Terms\Util\CheckValueUtils;
+use DeskPRO\Bundle\AppBundle\TicketFilters\Terms\Util\ElasticQueryUtils;
 use DeskPRO\Bundle\AppBundle\TicketFilters\Terms\Util\SqlQueryUtils;
 use DeskPRO\Component\FilterQueryLanguage\Query\Node\Term;
 use DeskPRO\Component\FilterQueryLanguage\Query\Query;
 use DeskPRO\Component\Util\MemoizeMethod;
 
-class TicketDateTermsHandler implements ValueTermHandler, SqlTermHandler
+/**
+ * Class TicketDateTermsHandler.
+ */
+class TicketDateTermsHandler implements ValueTermHandlerInterface, SqlTermHandlerInterface, ElasticTermHandlerInterface
 {
     use MemoizeMethod;
 
@@ -114,6 +118,56 @@ class TicketDateTermsHandler implements ValueTermHandler, SqlTermHandler
      * {@inheritdoc}
      */
     public function buildQueryFuncCondition($name, $fieldId, $operator, array $params, Context $context, Term $term)
+    {
+        throw new \RuntimeException('No functions defined');
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function getElasticHandlerDef()
+    {
+        return $this->memoizedRun(function () {
+            return HandlerDef::create()
+                ->addField(TermFieldIds::TICKET_DATE_CREATED, Query::commonDateValueOperators());
+        }, __FUNCTION__);
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function buildElasticCondition($fieldId, $operator, OptValue $options, Context $context, Term $term)
+    {
+        $column     = null;
+        $checkValue = $options->getValue();
+        if (is_string($checkValue)) {
+            $checkValue = new \DateTime($checkValue);
+        } elseif (is_array($checkValue)) {
+            if (isset($checkValue[0]) && is_string($checkValue[0])) {
+                $checkValue[0] = new \DateTime($checkValue[0]);
+            }
+            if (isset($checkValue[1]) && is_string($checkValue[1])) {
+                $checkValue[1] = new \DateTime($checkValue[1]);
+            }
+        }
+
+        switch ($fieldId) {
+            case TermFieldIds::TICKET_DATE_CREATED:
+                $column = 'date_created';
+                break;
+        }
+
+        if (!$column) {
+            throw new \InvalidArgumentException('Unknown field');
+        }
+
+        return ElasticQueryUtils::buildQuery($column, $operator, $checkValue);
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function buildElasticFuncCondition($name, $fieldId, $operator, array $params, Context $context, Term $term)
     {
         throw new \RuntimeException('No functions defined');
     }

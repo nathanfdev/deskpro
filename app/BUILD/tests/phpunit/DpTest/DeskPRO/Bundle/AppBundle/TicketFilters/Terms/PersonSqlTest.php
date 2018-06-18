@@ -4,15 +4,16 @@ namespace DpTest\Bundle\AppBundle\TicketFilters\Terms;
 
 use Application\DeskPRO\Entity\Person;
 use Application\DeskPRO\EntityRepository\Person as PersonRepos;
+use Application\DeskPRO\NewSearch\Manager\Elasticsearch;
 use DeskPRO\Bundle\AppBundle\TicketFilters\Terms\PersonTermsHandler;
 use DeskPRO\Bundle\AppBundle\TicketFilters\Terms\TicketBasicTermsHandler;
 use DeskPRO\Bundle\AppBundle\TicketFilters\TicketSqlMatcher;
-use DpTest\Bundle\AppBundle\TicketFilters\BaseTicketSqlMatcherTest;
+use DpTest\Bundle\AppBundle\TicketFilters\AbstractTicketSqlMatcherTest;
 use DpTestSrc\TestBundle\Mock\Dbal\ConnectionMock;
 
-require_once __DIR__.'/../BaseTicketSqlMatcherTest.php';
+require_once __DIR__.'/../AbstractTicketSqlMatcherTest.php';
 
-class PersonSqlTest extends BaseTicketSqlMatcherTest
+class PersonSqlTest extends AbstractTicketSqlMatcherTest
 {
     protected function setUpMatcher()
     {
@@ -30,7 +31,7 @@ class PersonSqlTest extends BaseTicketSqlMatcherTest
             ->willReturn($person);
 
         $this->matcher = new TicketSqlMatcher($this->valueResolver, [
-            new TicketBasicTermsHandler(),
+            new TicketBasicTermsHandler($this->getMockBuilder(Elasticsearch::class)->disableOriginalConstructor()->getMock()),
             new PersonTermsHandler($repos),
         ], ConnectionMock::create(), TicketSqlMatcher::ACTIVE);
 

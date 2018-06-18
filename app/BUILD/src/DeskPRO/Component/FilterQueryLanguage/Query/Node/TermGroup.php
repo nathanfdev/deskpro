@@ -5,6 +5,9 @@ namespace DeskPRO\Component\FilterQueryLanguage\Query\Node;
 use DeskPRO\Component\FilterQueryLanguage\Query\Node\GroupOp\GroupOp;
 use DeskPRO\Component\FilterQueryLanguage\Query\Query;
 
+/**
+ * Class TermGroup.
+ */
 class TermGroup extends Node
 {
     const TYPE = Query::NODE_TERM_GROUP;
@@ -15,7 +18,7 @@ class TermGroup extends Node
     public $operator;
 
     /**
-     * @var Node[]
+     * @var Term|Node[]
      */
     public $terms = [];
 

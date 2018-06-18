@@ -5,7 +5,7 @@ namespace DpTest\Bundle\AppBundle\TicketFilters;
 use DeskPRO\Bundle\AppBundle\TicketFilters\Model\Agent;
 use DeskPRO\Bundle\AppBundle\TicketFilters\TicketSearchParams;
 
-class TicketSqlMatcherTest extends BaseTicketSqlMatcherTest
+class TicketSqlMatcherTest extends AbstractTicketSqlMatcherTest
 {
     public function test_id_match()
     {

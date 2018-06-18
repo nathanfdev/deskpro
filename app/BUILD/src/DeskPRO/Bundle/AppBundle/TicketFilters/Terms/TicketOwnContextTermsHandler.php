@@ -16,7 +16,10 @@ use DeskPRO\Component\Util\ListUtils;
 use DeskPRO\Component\Util\MemoizeMethod;
 use Doctrine\DBAL\Connection;
 
-class TicketOwnContextTermsHandler implements ValueTermHandler, SqlTermHandler
+/**
+ * Class TicketOwnContextTermsHandler.
+ */
+class TicketOwnContextTermsHandler implements ValueTermHandlerInterface, SqlTermHandlerInterface, ElasticTermHandlerInterface
 {
     use MemoizeMethod;
 
@@ -136,6 +139,32 @@ class TicketOwnContextTermsHandler implements ValueTermHandler, SqlTermHandler
      * {@inheritdoc}
      */
     public function buildQueryFuncCondition($name, $fieldId, $operator, array $params, Context $context, Term $term)
+    {
+        throw new \RuntimeException('No functions defined');
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function getElasticHandlerDef()
+    {
+        return $this->memoizedRun(function () {
+            return HandlerDef::create();
+        }, __FUNCTION__);
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function buildElasticCondition($fieldId, $operator, OptValue $options, Context $context, Term $term)
+    {
+        throw new \RuntimeException('No fields defined');
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function buildElasticFuncCondition($name, $fieldId, $operator, array $params, Context $context, Term $term)
     {
         throw new \RuntimeException('No functions defined');
     }

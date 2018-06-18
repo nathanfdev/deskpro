@@ -3,7 +3,7 @@
 namespace DeskPRO\Bundle\AppBundle\TicketFilters;
 
 use DeskPRO\Bundle\AppBundle\TicketFilters\Model\Entity\TicketModel;
-use DeskPRO\Bundle\AppBundle\TicketFilters\Terms\ValueTermHandler;
+use DeskPRO\Bundle\AppBundle\TicketFilters\Terms\ValueTermHandlerInterface;
 use DeskPRO\Component\FilterQueryLanguage\Query\Node\GroupOp\AndGroupOp;
 use DeskPRO\Component\FilterQueryLanguage\Query\Node\GroupOp\NotGroupOp;
 use DeskPRO\Component\FilterQueryLanguage\Query\Node\GroupOp\OrGroupOp;
@@ -11,7 +11,6 @@ use DeskPRO\Component\FilterQueryLanguage\Query\Node\Term;
 use DeskPRO\Component\FilterQueryLanguage\Query\Node\TermGroup;
 use DeskPRO\Component\FilterQueryLanguage\Query\Query;
 use DeskPRO\Component\Util\ListUtils;
-use Zend\Memory\Value;
 
 /**
  * The matcher matches a ticket against in-memory model values.
@@ -19,15 +18,15 @@ use Zend\Memory\Value;
 class TicketMatcher extends AbstractMatcher
 {
     /**
-     * @var ValueTermHandler[]
+     * @var ValueTermHandlerInterface[]
      */
     private $handlers;
 
     /**
      * TicketMatcher constructor.
      *
-     * @param ValueResolver      $valueResolver
-     * @param ValueTermHandler[] $handlers
+     * @param ValueResolver               $valueResolver
+     * @param ValueTermHandlerInterface[] $handlers
      */
     public function __construct(ValueResolver $valueResolver, array $handlers)
     {
@@ -130,7 +129,7 @@ class TicketMatcher extends AbstractMatcher
                             $h->getValueHandlerDef()->getDefinedFuncName($fnName),
                             $fieldId,
                             $operator,
-                            $this->getValueResovler()->getFuncCallParamValues($term->options->value, $term, $context),
+                            $this->getValueResolver()->getFuncCallParamValues($term->options->value, $term, $context),
                             $ticketModel,
                             $context,
                             $term
@@ -152,7 +151,7 @@ class TicketMatcher extends AbstractMatcher
             throw new \OutOfBoundsException("No handler is capable of handling $fieldId");
         }
 
-        $options = $this->getValueResovler()->optionValueFromTerm($term, $context);
+        $options = $this->getValueResolver()->optionValueFromTerm($term, $context);
 
         foreach ($fieldHandlers as  $handler) {
             /** @var $handler TermsHandlerInterface */
@@ -172,21 +171,21 @@ class TicketMatcher extends AbstractMatcher
     }
 
     /**
-     * @return ValueTermHandler[]
+     * @return ValueTermHandlerInterface[]
      */
     private function getHandlersForFieldId($fieldId)
     {
-        return ListUtils::filter($this->handlers, function (ValueTermHandler $h) use ($fieldId) {
+        return ListUtils::filter($this->handlers, function (ValueTermHandlerInterface $h) use ($fieldId) {
             return $h->getValueHandlerDef()->hasField($fieldId);
         });
     }
 
     /**
-     * @return ValueTermHandler[]
+     * @return ValueTermHandlerInterface[]
      */
     private function getHandlersForFunc($func)
     {
-        return ListUtils::filter($this->handlers, function (ValueTermHandler $h) use ($func) {
+        return ListUtils::filter($this->handlers, function (ValueTermHandlerInterface $h) use ($func) {
             return $h->getValueHandlerDef()->hasFunction($func);
         });
     }

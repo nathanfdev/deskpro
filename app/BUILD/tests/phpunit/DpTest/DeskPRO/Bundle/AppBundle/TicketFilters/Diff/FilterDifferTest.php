@@ -2,6 +2,7 @@
 
 namespace DpTest\Bundle\AppBundle\TicketFilters\Diff;
 
+use Application\DeskPRO\NewSearch\Manager\Elasticsearch;
 use DeskPRO\Bundle\AppBundle\TicketFilters\CustomFieldSet;
 use DeskPRO\Bundle\AppBundle\TicketFilters\Diff\DiffEnv;
 use DeskPRO\Bundle\AppBundle\TicketFilters\Diff\FilterDiffer;
@@ -37,7 +38,7 @@ class FilterDifferTest extends \PHPUnit_Framework_TestCase
 
         $resolver = new ValueResolver();
         $matcher  = new TicketMatcher($resolver, [
-            new TicketBasicTermsHandler(),
+            new TicketBasicTermsHandler($this->getMockBuilder(Elasticsearch::class)->disableOriginalConstructor()->getMock()),
             new CustomFieldsTermsHandler($customFieldSet),
         ]);
 

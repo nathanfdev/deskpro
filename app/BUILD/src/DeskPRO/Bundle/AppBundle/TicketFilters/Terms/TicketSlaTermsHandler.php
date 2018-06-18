@@ -14,7 +14,10 @@ use DeskPRO\Component\FilterQueryLanguage\Query\Node\Term;
 use DeskPRO\Component\FilterQueryLanguage\Query\Query;
 use DeskPRO\Component\Util\MemoizeMethod;
 
-class TicketSlaTermsHandler implements ValueTermHandler, SqlTermHandler
+/**
+ * Class TicketSlaTermsHandler.
+ */
+class TicketSlaTermsHandler implements ValueTermHandlerInterface, SqlTermHandlerInterface, ElasticTermHandlerInterface
 {
     use MemoizeMethod;
 
@@ -135,5 +138,31 @@ class TicketSlaTermsHandler implements ValueTermHandler, SqlTermHandler
         }
 
         return $cond;
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function getElasticHandlerDef()
+    {
+        return $this->memoizedRun(function () {
+            return HandlerDef::create();
+        }, __FUNCTION__);
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function buildElasticCondition($fieldId, $operator, OptValue $options, Context $context, Term $term)
+    {
+        throw new \RuntimeException('No fields defined');
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function buildElasticFuncCondition($name, $fieldId, $operator, array $params, Context $context, Term $term)
+    {
+        throw new \RuntimeException('No functions defined');
     }
 }
