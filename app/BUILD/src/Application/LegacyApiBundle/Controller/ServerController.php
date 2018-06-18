@@ -22,7 +22,7 @@ use Application\DeskPRO\ServerMysqlSortOrder\ServerMysqlSortOrder;
 use Application\DeskPRO\ServerMysqlStatus\ServerMysqlStatus;
 use Application\DeskPRO\ServerReportFile\ServerReportFile;
 use Application\DeskPRO\ServerTaskQueue\ServerTaskQueue;
-use Application\DeskPRO\WorkerProcess\Job\CleanupDaily;
+use Application\DeskPRO\WorkerProcess\Job\CleanupAlways;
 use Application\LegacyApiBundle\PermissionStrategy\AdminManagePermission;
 use DeskPRO\Bundle\AppBundle\Annotation\ActionPermissions\Annotation\ApiModes;
 use DpRun\DpEnv;
@@ -462,7 +462,7 @@ class ServerController extends AbstractController implements ProtectedController
 
         $gatewayErrorCount  = $this->em->getRepository('DeskPRO:EmailSource')->countErrorStatus(['ticket', 'ticketmessage']);
         $sendmailErrorCount = $this->db->fetchColumn("SELECT COUNT(*) FROM sendmail_sources WHERE status = 'error'");
-        $missedFkFound      = $this->em->getRepository('DeskPRO:TmpData')->findByName(CleanupDaily::MISSED_FK_FOUND_TMP_DATA_NAME);
+        $missedFkFound      = $this->em->getRepository('DeskPRO:TmpData')->findByName(CleanupAlways::MISSED_FK_FOUND_TMP_DATA_NAME);
 
         return $this->createJsonResponse([
             'error_count'          => $errorCount,
