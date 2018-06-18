@@ -50,9 +50,11 @@ class ProcessScheduledReports extends AbstractJob
                 $report->setNextSendDate($nextSendDate);
             }
 
-            if ($report->getNextSendDate()->setTimezone($timezone) <= $now) {
-                $savedReport = $reportSaver->saveReport($report->getReport(), $report->getPerson());
-                $this->sendProcessedReport($report, $savedReport);
+            if ($report->getSendTo()) {
+                if ($report->getNextSendDate()->setTimezone($timezone) <= $now) {
+                    $savedReport = $reportSaver->saveReport($report->getReport(), $report->getPerson());
+                    $this->sendProcessedReport($report, $savedReport);
+                }
             }
 
             $nextSendDate = $reportSaver->calculateNextSendDate(
