@@ -70,14 +70,14 @@ class ProcessScheduledReports extends AbstractJob
 
     protected function sendProcessedReport(ScheduledReport $scheduledReport, SavedDashboardReport $savedReport)
     {
-        $message = $this->getContainer()->getMailer()->createMessage();
-        $em      = $this->getContainer()->get('doctrine.orm.default_entity_manager');
+        $em = $this->getContainer()->get('doctrine.orm.default_entity_manager');
 
         /** @var PersonRepository $personRepository */
         $personRepository = $em->getRepository(Person::class);
 
         foreach ($scheduledReport->getSendTo() as $to) {
-            $person = $personRepository->findOneByEmail($to);
+            $message = $this->getContainer()->getMailer()->createMessage();
+            $person  = $personRepository->findOneByEmail($to);
 
             $message->setTemplate(
                 'DeskPRO:emails_user:scheduled-report.html.twig',
