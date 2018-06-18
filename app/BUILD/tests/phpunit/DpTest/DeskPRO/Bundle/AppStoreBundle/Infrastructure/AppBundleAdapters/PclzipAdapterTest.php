@@ -6,7 +6,7 @@ use Application\DeskPRO\DependencyInjection\SystemServices\ZipperService;
 use DeskPRO\Bundle\AppStoreBundle\Infrastructure\AppBundleAdapters\PclzipBundleWriter;
 use DpTest\DeskProTestCase;
 
-class PclzipBundleTest extends DeskProTestCase
+class PclzipAdapterTest extends DeskProTestCase
 {
     public static function setUpBeforeClass()
     {
@@ -53,6 +53,8 @@ class PclzipBundleTest extends DeskProTestCase
         $resourceObjects    = $zipArchiveBundle->listAllResources();
         foreach ($resourceObjects as $object) {
             $actualFilePathList[] = $object->getPath();
+            $content = $object->getContent();
+            $this->assertNotNull($content);
         }
         //clean up
         unlink($zipArchiveBundle->getFilePath());

@@ -36,7 +36,7 @@ class PclzipStringHandler
 
         $contentDir = pathinfo($actualPath, PATHINFO_DIRNAME);
         if ($contentDir !== $tempDir) {
-            mkdir($contentDir, 0777);
+            mkdir($contentDir, 0777, true);
         }
 
         file_put_contents($actualPath, $content);
@@ -49,7 +49,11 @@ class PclzipStringHandler
         $files = array_diff(scandir($dir), array('.','..'));
         foreach ($files as $file) {
             $path = $dir . DIRECTORY_SEPARATOR. $file;
-            is_dir($path) ? $this->removeDir($dir) : unlink($path);
+            if (is_dir($path)) {
+                $this->removeDir($path);
+            } else {
+                unlink($path);
+            }
         }
         return rmdir($dir);
     }

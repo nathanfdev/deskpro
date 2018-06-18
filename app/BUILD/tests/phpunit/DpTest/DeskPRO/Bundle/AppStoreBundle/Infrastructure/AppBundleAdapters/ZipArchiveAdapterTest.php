@@ -5,7 +5,7 @@ namespace DpTest\DeskPRO\Bundle\AppStoreBundle\Infrastructure\AppBundleAdapters;
 use DeskPRO\Bundle\AppStoreBundle\Infrastructure;
 use DpTest\DeskProTestCase;
 
-class ZipArchiveBundleTest extends DeskProTestCase
+class ZipArchiveAdapterTest extends DeskProTestCase
 {
     /**
      * @test
