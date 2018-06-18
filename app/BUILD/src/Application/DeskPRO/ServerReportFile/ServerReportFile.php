@@ -57,6 +57,7 @@ class ServerReportFile
         'errorlog-web.txt'      => '_createWebErrorLog',
         'errorlog-cli.txt'      => '_createCliErrorLog',
         'upgrade-log.txt'       => '_createUpgradeLog',
+        'fix-schema.log'        => '_createFixSchemaLog',
         'mysql-schema.sql'      => '_createMysqlSchema',
         'mysql-status.txt'      => '_createMysqlStatus',
         'mysql-vars.txt'        => '_createMysqlVariables',
@@ -333,6 +334,31 @@ class ServerReportFile
 
         try {
             $file .= $this->_readFile(dp_get_log_dir().'/upgrade.log');
+        } catch (IOException $e) {
+            $file = '';
+        }
+        try {
+            $this->_createFile($this->tmpdir.'/'.$fileName, $file);
+        } catch (IOException $e) {
+            echo $e->getMessage();
+
+            return false;
+        }
+
+        return true;
+    }
+
+    /**
+     * @param $fileName
+     *
+     * @return bool
+     */
+    protected function _createFixSchemaLog($fileName)
+    {
+        $file = str_repeat('#', 72)."#\n fix-schema.log\n".str_repeat('#', 72)."\n\n";
+
+        try {
+            $file .= $this->_readFile(dp_get_log_dir().'/fix-schema.txt');
         } catch (IOException $e) {
             $file = '';
         }
