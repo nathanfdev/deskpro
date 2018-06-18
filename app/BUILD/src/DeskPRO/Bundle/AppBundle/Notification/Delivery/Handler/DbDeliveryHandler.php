@@ -73,4 +73,20 @@ class DbDeliveryHandler extends AbstractDeliveryHandler
 
         $this->messages = [];
     }
+
+    /**
+     * @param MessageInterface $message
+     *
+     * @return string
+     */
+    protected function getChannel(MessageInterface $message)
+    {
+        if ($message instanceof ActionAlert) {
+            return self::ACTION_ALERT_TABLE;
+        } elseif ($message instanceof Notification) {
+            return self::NOTIFICATION_TABLE;
+        }
+
+        throw new \InvalidArgumentException('Message should be ActionAlert or Notification');
+    }
 }
