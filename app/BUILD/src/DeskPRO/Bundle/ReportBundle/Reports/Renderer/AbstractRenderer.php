@@ -50,7 +50,7 @@ abstract class AbstractRenderer implements ReportsRendererInterface
             $index = $id - 1;
         }
 
-        return $id && array_key_exists($index, $row) ? $row[$index] : '';
+        return $id && array_key_exists($index, $row) && $row[$index] ? $row[$index] : '';
     }
 
     /**
@@ -67,7 +67,7 @@ abstract class AbstractRenderer implements ReportsRendererInterface
                     $value[] = $resultId ? $row[$resultId - 1] : '';
                 }
             } else {
-                $value = $column['resultId'] && isset($row[$column['resultId'] - 1]) ? $row[$column['resultId'] - 1] : '';
+                $value = $column['resultId'] && isset($row[$column['resultId'] - 1]) && $row[$column['resultId'] - 1] ? $row[$column['resultId'] - 1] : '';
             }
         }
 
