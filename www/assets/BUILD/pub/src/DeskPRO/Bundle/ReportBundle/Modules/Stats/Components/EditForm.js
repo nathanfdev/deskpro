@@ -280,6 +280,7 @@ export class EditFormComponent extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
+      formErrors:        {},
       queryInputMode:    EditFormComponent.isExtendedQuery(props) ? 'dpql' : 'form',
       queryModeChanging: true
     };
@@ -307,7 +308,8 @@ export class EditFormComponent extends React.Component {
   queryModeChange = (to) => {
     const extendedQuery = EditFormComponent.isExtendedQuery(this.props);
     if (extendedQuery) {
-      console.info('Cant change mode to form, you\'re using extended query syntax');
+      this.setState({ formErrors: { Mode: 'Can\'t change mode to form, you\'re using extended query syntax' } });
+      console.info('Can\'t change mode to form, you\'re using extended query syntax');
       return;
     }
 
@@ -332,7 +334,7 @@ export class EditFormComponent extends React.Component {
           }
         });
       } else {
-        this.setState({ queryInputMode: to, queryModeChanging: false });
+        this.setState({ queryInputMode: to, queryModeChanging: false, formErrors: {} });
       }
     }
   };
@@ -341,6 +343,8 @@ export class EditFormComponent extends React.Component {
     const groupBy = this.props.groupBy || '';
     const { select, groupParams, labels, formErrors, hasError, isCustom } = this.props;
 
+    const errors = { ...formErrors, ...this.state.formErrors };
+
     const renderVars = field => <VarsField change={this.props.change} fields={field.fields} groupParams={groupParams || {}} />;
     const renderLabels = field => <LabelsField fields={field.fields} options={labels} isCustom={isCustom} />;
 
@@ -348,9 +352,9 @@ export class EditFormComponent extends React.Component {
       <form onSubmit={this.props.handleSubmit}>
         <Container>
           {hasError && <div className="form-error-message">Please check form accurate, there is an error.</div>}
-          {Object.keys(formErrors).length > 0
+          {Object.keys(errors).length > 0
             ? <div className="form-error-message">
-              {Object.keys(formErrors).map(key => (<span>{key}: {formErrors[key]}<br /></span>))}
+              {Object.keys(errors).map(key => (<span>{key}: {errors[key]}<br /></span>))}
             </div>
             : null
           }
