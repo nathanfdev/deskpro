@@ -47,7 +47,7 @@ class ZipperService
      */
     public static function create( DeskproContainer $container)
     {
-        $extensions = ZipperService::getInstalledExtensions();
+        $extensions = static::getInstalledExtensions();
         $adapter = ZipperService::createZipAdapter($container, $extensions);
         return new Zip\Zip($adapter);
     }

@@ -21,6 +21,16 @@ class Zip
     }
 
     /**
+     * Returns the fully qualified class name of its adapter
+     *
+     * @return string
+     */
+    public function getAdapterType()
+    {
+        return get_class($this->adapter);
+    }
+
+    /**
      * Compress a file or directory of files.
      *
      * @param string $path The file or directory to ZIP
