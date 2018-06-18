@@ -252,6 +252,11 @@ FKs must first be correct and accurate before the integrity can be validated.)')
             }
         }
 
+        if ($input->getOption('run')) {
+            // causes FK check on cron to run to refresh notice in admin (CleanupAlways)
+            $this->getContainer()->get('database_connection')->delete('settings', ['name' => 'core.last_fk_check']);
+        }
+
         $output->writeln('<info>All done.</info>');
     }
 
