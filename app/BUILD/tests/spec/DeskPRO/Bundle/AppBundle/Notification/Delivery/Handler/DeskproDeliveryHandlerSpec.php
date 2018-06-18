@@ -22,6 +22,10 @@ class DeskproDeliveryHandlerSpec extends ObjectBehavior
         $resolver->getGlobalSettings()->willReturn($bag);
         $response->getStatusCode()->willReturn(200);
         $bag->get('notification.settings.deskpro_client.secret', '')->willReturn('test');
+        $bag->get('notification.settings.deskpro_client.tries', 3)->willReturn(3);
+        $bag->get('notification.settings.deskpro_client.max_message_size', DeskproDeliveryHandler::MAX_MESSAGE_SIZE)
+            ->willReturn(DeskproDeliveryHandler::MAX_MESSAGE_SIZE);
+
         $this->beConstructedWith($resolver, $client);
     }
 
