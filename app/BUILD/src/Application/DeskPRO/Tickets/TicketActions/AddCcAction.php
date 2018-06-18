@@ -135,7 +135,7 @@ class AddCcAction extends AbstractAction
         $email_addresses = array_merge($email_addresses, $otherAction->getEmailAddresses());
         $email_addresses = array_unique($email_addresses);
 
-        $new = new self($email_addresses);
+        $new = new self($email_addresses, $this->max_cc);
 
         return $new;
     }
