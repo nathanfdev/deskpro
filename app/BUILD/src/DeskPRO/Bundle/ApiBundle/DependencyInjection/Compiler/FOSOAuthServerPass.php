@@ -17,8 +17,10 @@ class FOSOAuthServerPass implements CompilerPassInterface
      */
     public function process(ContainerBuilder $container)
     {
-        $def = $container->getDefinition('fos_oauth_server.server');
-        $def->setClass(OAuth2::class);
-        $def->addMethodCall('setEntityManager', [new Reference('doctrine.orm.default_entity_manager')]);
+        if ($container->has('fos_oauth_server.server')) {
+            $def = $container->getDefinition('fos_oauth_server.server');
+            $def->setClass(OAuth2::class);
+            $def->addMethodCall('setEntityManager', [new Reference('doctrine.orm.default_entity_manager')]);
+        }
     }
 }
