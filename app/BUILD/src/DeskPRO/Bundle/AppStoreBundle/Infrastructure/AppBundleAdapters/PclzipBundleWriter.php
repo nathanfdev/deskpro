@@ -16,7 +16,7 @@ class PclzipBundleWriter
     public static function fromTmp($dir = null)
     {
         $root = is_null($dir) ? sys_get_temp_dir() : $dir;
-        $file = tempnam($root, 'foo');
+        $file = tempnam($root, 'pclzip-bundle-writer');
 
         return self::fromFile($file);
     }

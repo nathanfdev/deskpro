@@ -12,6 +12,9 @@ class PclzipBundleResource implements AppBundleResource
     /** @var array */
     private $entry;
 
+    /** @var string */
+    private $content;
+
     /**
      * PclzipBundleResource constructor.
      * @param \PclZip $archive
@@ -53,21 +56,5 @@ class PclzipBundleResource implements AppBundleResource
         }
 
         return $this->content;
-    }
-
-    /**
-     * @return null|string
-     */
-    private function createTempDir()
-    {
-        $tmpFile = tempnam(sys_get_temp_dir(),'');
-        if (file_exists($tmpFile)) {
-            unlink($tmpFile);
-        }
-        mkdir($tmpFile);
-        if (is_dir($tmpFile)) {
-            return $tmpFile;
-        }
-        return null;
     }
 }

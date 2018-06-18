@@ -16,14 +16,14 @@ class BundleFileHandlingStrategyZip
      * @param array|string $availableExtensions list of available extensions
      * @return BundleFileHandlingStrategyZip
      */
-    public static function instance( $availableExtensions)
+    public static function instance(array $availableExtensions)
     {
         if (in_array(ZipperService::EXTENSION_ZIP, $availableExtensions)) {
-            return  BundleFileHandlingStrategyZip::instance(ZipperService::EXTENSION_ZIP);
+            return new BundleFileHandlingStrategyZip(ZipperService::EXTENSION_ZIP);
         }
 
         if (in_array(ZipperService::EXTENSION_ZLIB, $availableExtensions)) {
-            return  BundleFileHandlingStrategyZip::instance(ZipperService::EXTENSION_ZLIB);
+            return new BundleFileHandlingStrategyZip(ZipperService::EXTENSION_ZLIB);
         }
 
         $msg = sprintf('unknown extensions: %s', implode(', ', $availableExtensions));
@@ -37,6 +37,15 @@ class BundleFileHandlingStrategyZip
     private function __construct($strategy)
     {
         $this->strategy = $strategy;
+    }
+
+    /**
+     * @param string $strategy
+     * @return bool
+     */
+    public function usesStrategy($strategy)
+    {
+        return $this->strategy === $strategy;
     }
 
     /**
