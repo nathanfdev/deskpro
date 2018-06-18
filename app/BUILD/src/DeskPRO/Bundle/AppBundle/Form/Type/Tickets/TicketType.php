@@ -3,6 +3,7 @@
 namespace DeskPRO\Bundle\AppBundle\Form\Type\Tickets;
 
 use Application\DeskPRO\Entity\AgentTeam;
+use Application\DeskPRO\Entity\Brand;
 use Application\DeskPRO\Entity\CustomDefTicket;
 use Application\DeskPRO\Entity\Department;
 use Application\DeskPRO\Entity\LabelTicket;
@@ -24,7 +25,8 @@ use DeskPRO\Bundle\AppBundle\Form\Type\Labels\LabelsCollectionType;
 use DeskPRO\Bundle\AppBundle\Form\Type\PersonAssignType;
 use DeskPRO\Bundle\AppBundle\Form\Type\Tickets\TicketParticipants\TicketParticipantsType;
 use DeskPRO\Bundle\AppBundle\Settings\Model\Tickets\DefaultDepartmentSettings;
-use DeskPRO\Bundle\PortalBundle\Form\Form\DataTransformer\CustomFieldAliasTransformer;
+use Doctrine\ORM\EntityManager;
+use Doctrine\ORM\EntityRepository;
 use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
@@ -52,15 +54,22 @@ class TicketType extends AbstractType
     private $helper;
 
     /**
+     * @var EntityManager
+     */
+    private $em;
+
+    /**
      * Constructor.
      *
      * @param CustomFieldManager $fieldManager
      * @param BrandFormHelper    $helper
+     * @param EntityManager      $em
      */
-    public function __construct(CustomFieldManager $fieldManager, BrandFormHelper $helper)
+    public function __construct(CustomFieldManager $fieldManager, BrandFormHelper $helper, EntityManager $em)
     {
         $this->fieldManager = $fieldManager;
         $this->helper       = $helper;
+        $this->em           = $em;
     }
 
     /**
@@ -135,12 +144,20 @@ class TicketType extends AbstractType
             ])
         ;
 
+        $brands = $this->em->getRepository(Brand::class)->findAll();
+        if (count($brands) > 1) {
+            $builder->add('brand', EntityType::class, [
+                'class'    => Brand::class,
+                'required' => false,
+            ]);
+        }
+
         // resolve field name aliases
         $fieldNameResolver = $this->fieldManager->getFieldNameResolver(CustomDefTicket::class);
         $builder->addEventSubscriber($fieldNameResolver);
 
         $builder->addEventSubscriber(new TicketDisableAutoProcessListener());
-        $builder->addEventListener(FormEvents::PRE_SUBMIT, [$this, 'onAddMessageField']);
+        $builder->addEventListener(FormEvents::PRE_SUBMIT, [$this, 'onPreSubmit']);
     }
 
     /**
@@ -165,7 +182,7 @@ class TicketType extends AbstractType
      *
      * @param FormEvent $event
      */
-    public function onAddMessageField(FormEvent $event)
+    public function onPreSubmit(FormEvent $event)
     {
         $form = $event->getForm();
         $data = $event->getData();
@@ -173,6 +190,7 @@ class TicketType extends AbstractType
         /** @var Ticket $ticket */
         $ticket = $form->getData();
 
+        // add messages
         if (isset($data['message'])) {
             $message = $ticket->getMessages()->first();
             if (!$message) {
@@ -197,6 +215,23 @@ class TicketType extends AbstractType
                     'ticket' => $form->getData(),
                     'person' => $form->getConfig()->getOption('person'),
                 ],
+            ]);
+        }
+
+        // update department field if a brand was submitted
+        // should be able to get just related departments
+        if (isset($data['brand'])) {
+            $form->remove('department');
+            $form->add('department', EntityType::class, [
+                'class'         => Department::class,
+                'query_builder' => function (EntityRepository $er) use ($data) {
+                    return $er
+                        ->createQueryBuilder('d')
+                        ->join('d.brands', 'b')
+                        ->where('b.id = :brand')
+                        ->setParameter('brand', $data['brand'])
+                    ;
+                },
             ]);
         }
     }
