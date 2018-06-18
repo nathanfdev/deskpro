@@ -48,7 +48,8 @@ class GeneralSettingsType extends AbstractType
     public function configureOptions(OptionsResolver $resolver)
     {
         $resolver->setDefaults([
-            'data_class' => GeneralSettings::class,
+            'data_class'         => GeneralSettings::class,
+            'allow_extra_fields' => true,
         ]);
     }
 }
