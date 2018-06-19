@@ -12,6 +12,7 @@ use Application\DeskPRO\Entity;
 use Application\DeskPRO\Entity\Brand;
 use Application\DeskPRO\Entity\EmailAccount;
 use Application\DeskPRO\Entity\Person;
+use DeskPRO\Component\Util\ListUtils;
 use Orb\Util\Arrays;
 
 /**
@@ -257,7 +258,7 @@ class PersonFromEmailProcessor
         }
 
         if (!$brand) {
-            $brand = $this->getAccountBrands($account)->first();
+            $brand = ListUtils::first($this->getAccountBrands($account));
         }
 
         $db = App::getDb();
