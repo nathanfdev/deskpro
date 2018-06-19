@@ -470,6 +470,9 @@ $contrast: 5% !default;
 }
 .tether-element .dp-select {
   z-index: 100;
+  .dp-list__element .dp-icon {
+    position: static;
+  }
 }
 
 .ui.popup {

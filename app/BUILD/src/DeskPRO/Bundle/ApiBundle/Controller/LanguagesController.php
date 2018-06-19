@@ -190,6 +190,7 @@ class LanguagesController extends CrudController
             'agent.general.types',
             'agent.general.unassign',
             'agent.general.upload_image',
+            'agent.general.urgency',
             'agent.general.url',
             'agent.general.user',
             'agent.general.when',

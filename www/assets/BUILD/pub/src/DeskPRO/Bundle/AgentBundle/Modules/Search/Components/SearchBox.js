@@ -108,6 +108,52 @@ class SearchBox extends React.Component {
       },
       showSearch: true,
     },
+    {
+      id:     'category',
+      label:  this.props.intl.formatMessage({ id: 'agent.general.category' }).toLowerCase(),
+      widget: 'SelectInput',
+      props:  {
+        dataSource: {
+          getOptions: () => this.props.dispatch(searchActions.loadCategories())
+        },
+      },
+      showSearch: true,
+    },
+    {
+      id:     'priority',
+      label:  this.props.intl.formatMessage({ id: 'agent.general.priority' }).toLowerCase(),
+      widget: 'SelectInput',
+      props:  {
+        dataSource: {
+          getOptions: () => this.props.dispatch(searchActions.loadPriorities())
+        },
+      },
+      showSearch: true,
+    },
+    {
+      id:     'urgency',
+      label:  this.props.intl.formatMessage({ id: 'agent.general.urgency' }).toLowerCase(),
+      widget: 'SelectInput',
+      props:  {
+        dataSource: {
+          getOptions: Array.from(Array(9).keys())
+                        .map(e => ({
+                          label: e + 1,
+                          value: e + 1,
+                        }))
+        },
+      },
+    },
+    {
+      id:     'workflow',
+      label:  this.props.intl.formatMessage({ id: 'agent.general.workflow' }).toLowerCase(),
+      widget: 'SelectInput',
+      props:  {
+        dataSource: {
+          getOptions: () => this.props.dispatch(searchActions.loadWorkflows())
+        },
+      },
+    },
   ];
 
   handleChange = (value) => {

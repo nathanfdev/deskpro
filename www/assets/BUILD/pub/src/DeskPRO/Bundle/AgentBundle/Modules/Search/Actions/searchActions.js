@@ -11,3 +11,36 @@ export const loadProducts = createAction(
     });
   })
 );
+
+export const loadCategories = createAction(
+  'SEARCH_LOAD_CATEGORIES',
+  params => new Promise((resolve) => {
+    repository('TicketCategories').loadAll(params).then((promise) => {
+      const res = promise.getData();
+
+      resolve(res.data);
+    });
+  })
+);
+
+export const loadPriorities = createAction(
+  'SEARCH_LOAD_PRIORITIES',
+  params => new Promise((resolve) => {
+    repository('TicketPriorities').loadAll(params).then((promise) => {
+      const res = promise.getData();
+
+      resolve(res.data);
+    });
+  })
+);
+
+export const loadWorkflows = createAction(
+  'SEARCH_LOAD_WORKFLOWS',
+  params => new Promise((resolve) => {
+    repository('TicketWorkflows').loadAll(params).then((promise) => {
+      const res = promise.getData();
+
+      resolve(res.data);
+    });
+  })
+);
