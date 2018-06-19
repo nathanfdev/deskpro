@@ -27,7 +27,7 @@ import { isVoiceAvailableSelector } from '../../Voice/Selectors/client';
 import { onlineUserChatAgentsSelector, userChatEnabledSelector } from '../../Agent/Selectors/agents';
 import { toggleUserChat } from '../../Agent/Actions/agentActions';
 import { closeIframes } from '../../Application/Actions/bootstrapActions';
-import SearchBox from './SearchBox';
+import SearchBox from '../../Search/Components/SearchBox';
 
 @connect(state => ({
   agents:              collectionSelectorFactory('Person', 'agents')(state),

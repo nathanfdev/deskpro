@@ -39,4 +39,5 @@ export const repositoriesConfig = {
   Brands:          { type: 'api', url: '/brands', allowAll: true },
   TicketMacros:    { type: 'api', url: '/ticket_macros', allowAll: true },
   Ticket:          { type: 'api', url: '/tickets', allowAll: true, repositoryClass: TicketRepository },
+  TicketProducts:  { type: 'api', url: '/ticket_products', allowAll: true },
 };

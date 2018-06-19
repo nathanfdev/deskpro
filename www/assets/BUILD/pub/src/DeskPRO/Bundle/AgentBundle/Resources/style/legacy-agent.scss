@@ -299,14 +299,19 @@ $contrast: 5% !default;
       input[type=search] {
         width: 164px;
       }
-      & > div {
-        min-width: 187px;
+      & > div.token-field {
+        min-width: 162px;
         height: 37px;
         padding: 2px 0 !important;
         color: #2b2f2f;
         margin-left: 2px;
+        margin-right: 25px;
         & .remove {
           top: 6px;
+        }
+        .input-box {
+          min-width: 10px;
+          height: auto;
         }
         input {
           padding-right: 0 !important;
