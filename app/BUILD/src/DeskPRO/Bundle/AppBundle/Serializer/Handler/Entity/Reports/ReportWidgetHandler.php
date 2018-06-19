@@ -84,15 +84,15 @@ class ReportWidgetHandler extends AbstractEntityHandler
         }
 
         $extendedQuery = false;
+
         try {
             $statement  = $this->compiler->compile($entity->getQuery());
             $queryParts = $statement->getDpqlPartsForInput();
         } catch (DpqlException $e) {
+            $queryParts = [];
+
             if ($e->getCode() === DpqlException::CODE_LAYERED_DIRECT_COMPILE_ERROR) {
                 $extendedQuery = true;
-                $queryParts    = [];
-            } else {
-                throw $e;
             }
         }
 
