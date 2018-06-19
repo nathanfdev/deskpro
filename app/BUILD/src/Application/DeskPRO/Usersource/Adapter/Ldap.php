@@ -43,13 +43,7 @@ class Ldap extends AbstractAdapter
      */
     protected function _createAuthAdapterObject()
     {
-        $options = $this->usersource->options;
-
-        if (!isset($options['accountFilterFormat'])) {
-            $options['accountFilterFormat'] = '(|(dn=%s)(mail=%s)(uid=%s))';
-        }
-
-        return new \Orb\Auth\Adapter\LdapRaw($options);
+        return new \Orb\Auth\Adapter\LdapRaw($this->usersource->options);
     }
 
     /**
