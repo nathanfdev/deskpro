@@ -108,6 +108,8 @@ class LanguagesController extends CrudController
             'agent.general.create',
             'agent.general.criteria',
             'agent.general.crm',
+            'agent.general.date_created',
+            'agent.general.date_resolved',
             'agent.general.day',
             'agent.general.days',
             'agent.general.delete',

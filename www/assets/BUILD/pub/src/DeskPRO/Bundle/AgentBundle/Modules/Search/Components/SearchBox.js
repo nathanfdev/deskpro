@@ -62,8 +62,8 @@ class SearchBox extends React.Component {
                           value: e.get('id'),
                         }))
         },
+        showSearch: true,
       },
-      showSearch: true,
     },
     {
       id:     'agent',
@@ -78,8 +78,8 @@ class SearchBox extends React.Component {
                           value: e.get('id'),
                         }))
         },
+        showSearch: true,
       },
-      showSearch: true,
     },
     {
       id:     'agent_team',
@@ -94,8 +94,8 @@ class SearchBox extends React.Component {
                           value: e.get('id'),
                         }))
         },
+        showSearch: true,
       },
-      showSearch: true,
     },
     {
       id:     'product',
@@ -105,8 +105,8 @@ class SearchBox extends React.Component {
         dataSource: {
           getOptions: () => this.props.dispatch(searchActions.loadProducts())
         },
+        showSearch: true,
       },
-      showSearch: true,
     },
     {
       id:     'category',
@@ -116,8 +116,8 @@ class SearchBox extends React.Component {
         dataSource: {
           getOptions: () => this.props.dispatch(searchActions.loadCategories())
         },
+        showSearch: true,
       },
-      showSearch: true,
     },
     {
       id:     'priority',
@@ -127,8 +127,8 @@ class SearchBox extends React.Component {
         dataSource: {
           getOptions: () => this.props.dispatch(searchActions.loadPriorities())
         },
+        showSearch: true,
       },
-      showSearch: true,
     },
     {
       id:     'urgency',
@@ -142,6 +142,7 @@ class SearchBox extends React.Component {
                           value: e + 1,
                         }))
         },
+        showSearch: false,
       },
     },
     {
@@ -154,6 +155,40 @@ class SearchBox extends React.Component {
         },
       },
     },
+    {
+      id:     'subject',
+      label:  this.props.intl.formatMessage({ id: 'agent.general.subject' }).toLowerCase(),
+      widget: 'TextInput',
+      props:  {},
+    },
+    {
+      id:     'date_created',
+      label:  this.props.intl.formatMessage({ id: 'agent.general.date_created' }).toLowerCase().replace(/ /, '-'),
+      widget: 'DateTimeInput',
+      props:  {},
+    },
+    {
+      id:     'date_resolved',
+      label:  this.props.intl.formatMessage({ id: 'agent.general.date_resolved' }).toLowerCase().replace(/ /, '-'),
+      widget: 'DateTimeInput',
+      props:  {},
+    },
+    {
+      id:     'last-agent-reply',
+      widget: 'DateTimeInput',
+      props:  {},
+    },
+    {
+      id:     'last-user-reply',
+      widget: 'DateTimeInput',
+      props:  {},
+    },
+    {
+      id:          'user-waiting',
+      widget:      'DurationInput',
+      props:       {},
+      description: 'Time waited by user'
+    }
   ];
 
   handleChange = (value) => {
