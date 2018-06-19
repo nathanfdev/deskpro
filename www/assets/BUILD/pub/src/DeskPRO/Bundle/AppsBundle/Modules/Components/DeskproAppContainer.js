@@ -63,18 +63,6 @@ class DeskproAppContainer extends React.Component {
    */
   static renderEmpty() { return (<div />); }
 
-  /**
-   * @param {WidgetConfiguration} widgetConfiguration
-   *
-   * @return {Object}
-   */
-  static mapWidgetConfigurationToReactComponent(widgetConfiguration) {
-    return (<WidgetIframe
-      id={`urn:deskpro:widget?widgetId=${widgetConfiguration.id}`}
-      url={widgetConfiguration.getUrl()}
-    />);
-  }
-
   constructor(props) {
     super(props);
     this.widgets = [];
@@ -181,6 +169,16 @@ class DeskproAppContainer extends React.Component {
    * @param {{data: Object}} event
    */
   onWidgetInit(widgetConfiguration, event) { // eslint-disable-line no-unused-vars
+    const { context } = this.props;
+
+    const existingWidget = find(this.widgets, widget => widget.configuration === widgetConfiguration);
+    if (existingWidget) {
+      return {
+        instanceProps: widgetConfiguration.appConfig.toWidgetProps().toJS(),
+        contextProps:  context.widgetProps.toJS()
+      };
+    }
+
     const { addWidgetEventListener } = this.props;
     const widget = new Widget({
       configuration: widgetConfiguration,
@@ -194,7 +192,6 @@ class DeskproAppContainer extends React.Component {
 
     this.registerWidget(widget, removeListeners);
 
-    const { context } = this.props;
     return {
       instanceProps: widgetConfiguration.appConfig.toWidgetProps().toJS(),
       contextProps:  context.widgetProps.toJS()
@@ -206,7 +203,7 @@ class DeskproAppContainer extends React.Component {
      * @param {WidgetConfiguration} widgetConfiguration
      */
     for (const widgetConfiguration of this.props.widgetsConfigList) {
-      postRobot.once(
+      postRobot.on(
         `urn:deskpro:apps.widget.onready?widgetId=${widgetConfiguration.id}`,
         this.onWidgetInit.bind(this, widgetConfiguration)
       );
@@ -249,7 +246,7 @@ class DeskproAppContainer extends React.Component {
    * @returns {XML}
    */
   renderWidgets() {
-    const components = this.props.widgetsConfigList.map(DeskproAppContainer.mapWidgetConfigurationToReactComponent);
+    const components = this.props.widgetsConfigList.map(WidgetIframe.fromConfiguration);
     return React.createElement('div', {}, components);
   }
 
