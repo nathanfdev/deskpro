@@ -5,7 +5,7 @@ namespace DeskPRO\Bundle\ReportBundle\Reports\Renderer\Json;
 use DeskPRO\Bundle\ReportBundle\Reports\ResultMetadata;
 
 /**
- * Class JsonChartRenderer.
+ * Class JsonTableRenderer.
  */
 class JsonTableRenderer extends AbstractJsonRenderer
 {
