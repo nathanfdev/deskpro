@@ -18,8 +18,6 @@ class CloudBrandHelper
             (SELECT value FROM settings WHERE name = 'core.deskpro_url')
             UNION
             (SELECT value FROM settings_brand WHERE name = 'core.deskpro_url')
-            UNION
-            (SELECT CONCAT('https://', url, '/') AS value FROM brands)
         ");
 
         // just makes sure the setting via a dynamic setting is included

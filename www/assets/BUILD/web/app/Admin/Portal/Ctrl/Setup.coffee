@@ -5,7 +5,13 @@ define ['Admin/Main/Ctrl/Base'], (Admin_Ctrl_Base) ->
     @DEPS = ['$timeout']
 
     init: ->
-      @settings = {}
+      @settings = {
+        deskpro_url: '',
+        deskpro_name: '',
+        deskpro_domain: '',
+        domain_choice: 'default',
+        orig_deskpro_url: null
+      }
       @portalSettings = @DataService.get 'PortalGeneralSettings'
 
       @$scope.brand_id = @$stateParams.brandId
@@ -24,6 +30,19 @@ define ['Admin/Main/Ctrl/Base'], (Admin_Ctrl_Base) ->
       tmpUpdate = => @portalSettings.updateSettingsTemporary(@settings)
       for i in ['apps_feedback', 'apps_kb', 'apps_news', 'apps_downloads', 'iface_portal', 'iface_widget']
         @$scope.$watch('Ctrl.settings.'+i, tmpUpdate)
+
+      if window.DP_IS_CLOUD
+        updateFn = () =>
+          if !@settings.deskpro_domain or @settings.deskpro_domain == ''
+            @settings.deskpro_url = ''
+            return
+
+          if @settings.domain_choice == 'default'
+            @settings.deskpro_url = 'https://' + @settings.deskpro_domain + '.deskpro.com/'
+          else
+            @settings.deskpro_url = 'https://' + @settings.deskpro_domain + '/'
+
+        @$scope.$watch('Ctrl.settings.deskpro_domain + Ctrl.settings.domain_choice', updateFn)
 
     setPortalMode: (v) ->
       if v == "publish"
@@ -163,10 +182,22 @@ define ['Admin/Main/Ctrl/Base'], (Admin_Ctrl_Base) ->
       )
 
     createBrand: ->
+      if !@settings.brand_name
+        if @settings.deskpro_name
+          @settings.brand_name = @settings.deskpro_name
+        else if @settings.deskpro_url
+          @settings.brand_name = @settings.deskpro_url.replace(/^https?:\/\//i, '').replace(/\/+$/, '')
+
+      if !@settings.deskpro_name
+        if @settings.brand_name
+          @settings.deskpro_name = @settings.brand_name
+        else if @settings.deskpro_url
+          @settings.deskpro_name = @settings.deskpro_url.replace(/^https?:\/\//i, '').replace(/\/+$/, '')
+
       if (!@settings.deskpro_name || !@settings.deskpro_url)
         @Growl.error "You must specify a name and a url"
         $('#helpdesk_name').focus()
-        @startSpinner()
+        @stopSpinner()
         return false
 
       if !@settings.deskpro_url.match(/^https?:\/\//i)
@@ -180,7 +211,7 @@ define ['Admin/Main/Ctrl/Base'], (Admin_Ctrl_Base) ->
       @startSpinner()
 
       if window.DP_IS_CLOUD
-        checkP = @cloudSetupHost().then()
+        checkP = @cloudSetupHost()
       else
         checkP = @Api2.sendPostJson('/brands/check_url', {url: @settings.deskpro_url})
 
