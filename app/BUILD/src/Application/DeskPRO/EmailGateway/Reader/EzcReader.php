@@ -12,6 +12,7 @@ use Application\DeskPRO\EmailGateway\Reader\Item\AuthenticationResults;
 use Application\DeskPRO\Entity\Blob;
 use Application\DeskPRO\Entity\EmailAccount;
 use DeskPRO\Bundle\AppBundle\AppEnv\AppEnv;
+use ezcMailMultipartMixed;
 use Orb\Util\Strings;
 
 /**
@@ -140,33 +141,6 @@ class EzcReader extends AbstractReader
 
         $this->mail = $this->mail[0];
 
-        if ($this->mail->body instanceof \ezcMailMultipart && $this->mail->body->multipartType() === 'mixed') {
-            // we gonna roughly change part types and text in case we have multipart/mixed here with plain text
-            // further processors would deal with html and other parts themselves
-            $types = [];
-            foreach ($this->mail->fetchParts() as $part) {
-                if ($part instanceof \ezcMailText) {
-                    if (!isset($types[$part->subType])) {
-                        $types[$part->subType] = 0;
-                    }
-                    ++$types[$part->subType];
-                }
-            }
-
-            // if we have both a html and a text part,
-            // convert the text to html so its read as a single part
-            if (isset($types['plain']) && isset($types['html'])) {
-                foreach ($this->mail->fetchParts() as $part) {
-                    if ($part instanceof \ezcMailText && $part->subType === 'plain') {
-                        $part->subType         = 'html';
-                        $part->text            = '<div>'.nl2br(htmlspecialchars(Strings::convertToUtf8($part->text, $part->charset), ENT_SUBSTITUTE, 'UTF-8')).'</div>';
-                        $part->charset         = 'UTF-8';
-                        $part->originalCharset = 'UTF-8';
-                    }
-                }
-            }
-        }
-
         foreach ($this->mail->fetchParts() as $part) {
             if (isset($part->mimeType) && $part->mimeType === 'pkcs7-mime') {
                 $this->decryptEmail();
@@ -175,6 +149,46 @@ class EzcReader extends AbstractReader
                 $this->validateSignature();
             }
         }
+
+        $iter = function ($part) use (&$iter) {
+            if ($part instanceof ezcMailMultipartMixed) {
+                $htmlPart = null;
+                $textPart = null;
+                $count    = 0;
+                foreach ($part->getParts() as $p) {
+                    if ($p instanceof \ezcMailMultipart) {
+                        $iter($p);
+                    } else {
+                        ++$count;
+                        if (
+                            $p instanceof \ezcMailText
+                            && $p->subType === 'plain'
+                            && !($p->contentDisposition && $p->contentDisposition->disposition == 'attachment')
+                        ) {
+                            $textPart = $p;
+                        }
+                        if (
+                            $p instanceof \ezcMailText
+                            && $p->subType === 'html'
+                            && !($p->contentDisposition && $p->contentDisposition->disposition == 'attachment')
+                        ) {
+                            $htmlPart = $p;
+                        }
+                    }
+                }
+
+                // if this mixed part contains 1 text part and 1 html part,
+                // then we're going to turn the text part into html so its concatenated
+                if ($count === 2 && $textPart && $htmlPart) {
+                    $textPart->subType         = 'html';
+                    $textPart->text            = '<div>'.nl2br(htmlspecialchars(Strings::convertToUtf8($textPart->text, $textPart->charset), ENT_SUBSTITUTE, 'UTF-8')).'</div>';
+                    $textPart->charset         = 'UTF-8';
+                    $textPart->originalCharset = 'UTF-8';
+                }
+            }
+        };
+
+        $iter($this->mail->body);
     }
 
     /**
