@@ -8,3 +8,4 @@ services:
     arguments:
       - "@doctrine.orm.default_entity_manager"
       - "@brand_stack"
+      - "@brand_aware_settings_resolver"
