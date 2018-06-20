@@ -49,6 +49,7 @@ use Symfony\Component\HttpKernel\HttpKernelInterface;
  *          {"name"="agent_team", "description"="agent teams filter", "dataType"="array|integer|null", "pattern"="[\d+,]+"},
  *          {"name"="user_group", "description"="usergroups filter", "dataType"="array|integer|null", "pattern"="[\d+,]+"},
  *          {"name"="label", "description"="labels filter option", "dataType"="array", "pattern"="[\w+,]+"},
+ *          {"name"="name", "description"="name filter option", "dataType"="string", "pattern"="\w+"},
  *          {
  *              "name"="person_field.{id}",
  *              "description"="
@@ -235,6 +236,11 @@ class PeopleController extends AbstractPeopleController
         if ($request->get('not_me')) {
             $qb->andWhere("$alias.id != :id");
             $qb->setParameter('id', $this->getUser()->getId());
+        }
+
+        if ($request->get('name')) {
+            $qb->andWhere("$alias.name LIKE :name");
+            $qb->setParameter('name', '%'.addcslashes($request->get('name'), '%_').'%');
         }
 
         if (null !== $request->get('agent_team')) {

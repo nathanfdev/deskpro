@@ -109,7 +109,7 @@ class SearchBox extends React.Component {
         widget: 'SelectInput',
         props:  {
           dataSource: {
-            getOptions: () => this.props.dispatch(searchActions.loadProducts())
+            getOptions: title => this.props.dispatch(searchActions.loadProducts({ title }))
           },
           showSearch: true,
         },
@@ -120,7 +120,7 @@ class SearchBox extends React.Component {
         widget: 'SelectInput',
         props:  {
           dataSource: {
-            getOptions: () => this.props.dispatch(searchActions.loadCategories())
+            getOptions: title => this.props.dispatch(searchActions.loadCategories({ title }))
           },
           showSearch: true,
         },
@@ -131,7 +131,7 @@ class SearchBox extends React.Component {
         widget: 'SelectInput',
         props:  {
           dataSource: {
-            getOptions: () => this.props.dispatch(searchActions.loadPriorities())
+            getOptions: title => this.props.dispatch(searchActions.loadPriorities({ title }))
           },
           showSearch: true,
         },
@@ -157,7 +157,7 @@ class SearchBox extends React.Component {
         widget: 'SelectInput',
         props:  {
           dataSource: {
-            getOptions: () => this.props.dispatch(searchActions.loadWorkflows())
+            getOptions: title => this.props.dispatch(searchActions.loadWorkflows({ title }))
           },
         },
       },
@@ -194,7 +194,24 @@ class SearchBox extends React.Component {
         widget:      'DurationInput',
         props:       {},
         description: 'Time waited by user'
-      }
+      },
+      {
+        id:     'person-name',
+        label:  this.props.intl.formatMessage({ id: 'agent.general.name' }).toLowerCase(),
+        widget: 'SelectInput',
+        props:  {
+          dataSource: {
+            getOptions: name => this.props.dispatch(searchActions.loadPersons({ name }))
+          },
+          showSearch: true,
+        },
+      },
+      {
+        id:     'email-address',
+        label:  this.props.intl.formatMessage({ id: 'agent.general.email_address' }).toLowerCase().replace(/ /, '-'),
+        widget: 'TextInput',
+        props:  {},
+      },
     ];
     this.setState(tokenTypes);
     this.props.dispatch(searchActions.loadCustomFields()).then((res) => {

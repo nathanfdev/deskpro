@@ -69,6 +69,10 @@ class TicketProblemsController extends CrudController
             $qb->andWhere("{$alias}.is_open = :is_open");
             $qb->setParameter('is_open', $isOpen);
         }
+        if ($request->get('title')) {
+            $qb->andWhere("$alias.title LIKE :title");
+            $qb->setParameter('title', '%'.addcslashes($request->get('title'), '%_').'%');
+        }
     }
 
     /**
