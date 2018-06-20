@@ -26,170 +26,223 @@ class SearchBox extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
-      value: [],
+      value:      [],
+      tokenTypes: [],
     };
   }
 
-  getTokenTypes = () => [
-    {
-      id:     'status',
-      label:  this.props.intl.formatMessage({ id: 'agent.general.status' }).toLowerCase(),
-      widget: 'SelectInput',
-      props:  {
-        dataSource: {
-          getOptions: [
-            { label: this.props.intl.formatMessage({ id: 'agent.tickets.status_awaiting_agent' }), value: 'awaiting_agent' },
-            { label: this.props.intl.formatMessage({ id: 'agent.tickets.status_awaiting_user' }), value: 'awaiting_user' },
-            { label: this.props.intl.formatMessage({ id: 'agent.tickets.status_resolved' }), value: 'resolved' },
-            { label: this.props.intl.formatMessage({ id: 'agent.tickets.status_archived' }), value: 'archived' },
-          ],
+  componentWillMount = () => {
+    this.initTokenTypes();
+  };
+
+  initTokenTypes = () => {
+    const tokenTypes = [
+      {
+        id:     'status',
+        label:  this.props.intl.formatMessage({ id: 'agent.general.status' }).toLowerCase(),
+        widget: 'SelectInput',
+        props:  {
+          dataSource: {
+            getOptions: [
+              { label: this.props.intl.formatMessage({ id: 'agent.tickets.status_awaiting_agent' }), value: 'awaiting_agent' },
+              { label: this.props.intl.formatMessage({ id: 'agent.tickets.status_awaiting_user' }), value: 'awaiting_user' },
+              { label: this.props.intl.formatMessage({ id: 'agent.tickets.status_resolved' }), value: 'resolved' },
+              { label: this.props.intl.formatMessage({ id: 'agent.tickets.status_archived' }), value: 'archived' },
+            ],
+          },
+          renderHeader: <h3><FormattedMessage id="agent.general.status" /></h3>,
+          showSearch:   false
         },
-        renderHeader: <h3><FormattedMessage id="agent.general.status" /></h3>,
-        showSearch:   false
+        description: 'Status of the ticket'
       },
-      description: 'Status of the ticket'
-    },
-    {
-      id:     'department',
-      label:  this.props.intl.formatMessage({ id: 'agent.general.department' }).toLowerCase(),
-      widget: 'SelectInput',
-      props:  {
-        dataSource: {
-          getOptions: this.props.ticketDepartments.toArray()
-                        .sort((a, b) => a.get('title') > b.get('title'))
-                        .map(e => ({
-                          label: e.get('title'),
-                          value: e.get('id'),
-                        }))
-        },
-        showSearch: true,
-      },
-    },
-    {
-      id:     'agent',
-      label:  this.props.intl.formatMessage({ id: 'agent.general.agent' }).toLowerCase(),
-      widget: 'SelectInput',
-      props:  {
-        dataSource: {
-          getOptions: this.props.agents.toArray()
-                        .sort((a, b) => a.get('name') > b.get('name'))
-                        .map(e => ({
-                          label: e.get('name'),
-                          value: e.get('id'),
-                        }))
-        },
-        showSearch: true,
-      },
-    },
-    {
-      id:     'agent_team',
-      label:  this.props.intl.formatMessage({ id: 'agent.general.agent_team' }).toLowerCase().replace(/ /, '-'),
-      widget: 'SelectInput',
-      props:  {
-        dataSource: {
-          getOptions: this.props.agentTeams.toArray()
-                        .sort((a, b) => a.get('name') > b.get('name'))
-                        .map(e => ({
-                          label: e.get('name'),
-                          value: e.get('id'),
-                        }))
-        },
-        showSearch: true,
-      },
-    },
-    {
-      id:     'product',
-      label:  this.props.intl.formatMessage({ id: 'agent.general.product' }).toLowerCase(),
-      widget: 'SelectInput',
-      props:  {
-        dataSource: {
-          getOptions: () => this.props.dispatch(searchActions.loadProducts())
-        },
-        showSearch: true,
-      },
-    },
-    {
-      id:     'category',
-      label:  this.props.intl.formatMessage({ id: 'agent.general.category' }).toLowerCase(),
-      widget: 'SelectInput',
-      props:  {
-        dataSource: {
-          getOptions: () => this.props.dispatch(searchActions.loadCategories())
-        },
-        showSearch: true,
-      },
-    },
-    {
-      id:     'priority',
-      label:  this.props.intl.formatMessage({ id: 'agent.general.priority' }).toLowerCase(),
-      widget: 'SelectInput',
-      props:  {
-        dataSource: {
-          getOptions: () => this.props.dispatch(searchActions.loadPriorities())
-        },
-        showSearch: true,
-      },
-    },
-    {
-      id:     'urgency',
-      label:  this.props.intl.formatMessage({ id: 'agent.general.urgency' }).toLowerCase(),
-      widget: 'SelectInput',
-      props:  {
-        dataSource: {
-          getOptions: Array.from(Array(9).keys())
-                        .map(e => ({
-                          label: e + 1,
-                          value: e + 1,
-                        }))
-        },
-        showSearch: false,
-      },
-    },
-    {
-      id:     'workflow',
-      label:  this.props.intl.formatMessage({ id: 'agent.general.workflow' }).toLowerCase(),
-      widget: 'SelectInput',
-      props:  {
-        dataSource: {
-          getOptions: () => this.props.dispatch(searchActions.loadWorkflows())
+      {
+        id:     'department',
+        label:  this.props.intl.formatMessage({ id: 'agent.general.department' }).toLowerCase(),
+        widget: 'SelectInput',
+        props:  {
+          dataSource: {
+            getOptions: this.props.ticketDepartments.toArray()
+                          .sort((a, b) => a.get('title') > b.get('title'))
+                          .map(e => ({
+                            label: e.get('title'),
+                            value: e.get('id'),
+                          }))
+          },
+          showSearch: true,
         },
       },
-    },
-    {
-      id:     'subject',
-      label:  this.props.intl.formatMessage({ id: 'agent.general.subject' }).toLowerCase(),
-      widget: 'TextInput',
-      props:  {},
-    },
-    {
-      id:     'date_created',
-      label:  this.props.intl.formatMessage({ id: 'agent.general.date_created' }).toLowerCase().replace(/ /, '-'),
-      widget: 'DateTimeInput',
-      props:  {},
-    },
-    {
-      id:     'date_resolved',
-      label:  this.props.intl.formatMessage({ id: 'agent.general.date_resolved' }).toLowerCase().replace(/ /, '-'),
-      widget: 'DateTimeInput',
-      props:  {},
-    },
-    {
-      id:     'last-agent-reply',
-      widget: 'DateTimeInput',
-      props:  {},
-    },
-    {
-      id:     'last-user-reply',
-      widget: 'DateTimeInput',
-      props:  {},
-    },
-    {
-      id:          'user-waiting',
-      widget:      'DurationInput',
-      props:       {},
-      description: 'Time waited by user'
+      {
+        id:     'agent',
+        label:  this.props.intl.formatMessage({ id: 'agent.general.agent' }).toLowerCase(),
+        widget: 'SelectInput',
+        props:  {
+          dataSource: {
+            getOptions: this.props.agents.toArray()
+                          .sort((a, b) => a.get('name') > b.get('name'))
+                          .map(e => ({
+                            label: e.get('name'),
+                            value: e.get('id'),
+                          }))
+          },
+          showSearch: true,
+        },
+      },
+      {
+        id:     'agent_team',
+        label:  this.props.intl.formatMessage({ id: 'agent.general.agent_team' }).toLowerCase().replace(/ /, '-'),
+        widget: 'SelectInput',
+        props:  {
+          dataSource: {
+            getOptions: this.props.agentTeams.toArray()
+                          .sort((a, b) => a.get('name') > b.get('name'))
+                          .map(e => ({
+                            label: e.get('name'),
+                            value: e.get('id'),
+                          }))
+          },
+          showSearch: true,
+        },
+      },
+      {
+        id:     'product',
+        label:  this.props.intl.formatMessage({ id: 'agent.general.product' }).toLowerCase(),
+        widget: 'SelectInput',
+        props:  {
+          dataSource: {
+            getOptions: () => this.props.dispatch(searchActions.loadProducts())
+          },
+          showSearch: true,
+        },
+      },
+      {
+        id:     'category',
+        label:  this.props.intl.formatMessage({ id: 'agent.general.category' }).toLowerCase(),
+        widget: 'SelectInput',
+        props:  {
+          dataSource: {
+            getOptions: () => this.props.dispatch(searchActions.loadCategories())
+          },
+          showSearch: true,
+        },
+      },
+      {
+        id:     'priority',
+        label:  this.props.intl.formatMessage({ id: 'agent.general.priority' }).toLowerCase(),
+        widget: 'SelectInput',
+        props:  {
+          dataSource: {
+            getOptions: () => this.props.dispatch(searchActions.loadPriorities())
+          },
+          showSearch: true,
+        },
+      },
+      {
+        id:     'urgency',
+        label:  this.props.intl.formatMessage({ id: 'agent.general.urgency' }).toLowerCase(),
+        widget: 'SelectInput',
+        props:  {
+          dataSource: {
+            getOptions: Array.from(Array(9).keys())
+                          .map(e => ({
+                            label: e + 1,
+                            value: e + 1,
+                          }))
+          },
+          showSearch: false,
+        },
+      },
+      {
+        id:     'workflow',
+        label:  this.props.intl.formatMessage({ id: 'agent.general.workflow' }).toLowerCase(),
+        widget: 'SelectInput',
+        props:  {
+          dataSource: {
+            getOptions: () => this.props.dispatch(searchActions.loadWorkflows())
+          },
+        },
+      },
+      {
+        id:     'subject',
+        label:  this.props.intl.formatMessage({ id: 'agent.general.subject' }).toLowerCase(),
+        widget: 'TextInput',
+        props:  {},
+      },
+      {
+        id:     'date_created',
+        label:  this.props.intl.formatMessage({ id: 'agent.general.date_created' }).toLowerCase().replace(/ /, '-'),
+        widget: 'DateTimeInput',
+        props:  {},
+      },
+      {
+        id:     'date_resolved',
+        label:  this.props.intl.formatMessage({ id: 'agent.general.date_resolved' }).toLowerCase().replace(/ /, '-'),
+        widget: 'DateTimeInput',
+        props:  {},
+      },
+      {
+        id:     'last-agent-reply',
+        widget: 'DateTimeInput',
+        props:  {},
+      },
+      {
+        id:     'last-user-reply',
+        widget: 'DateTimeInput',
+        props:  {},
+      },
+      {
+        id:          'user-waiting',
+        widget:      'DurationInput',
+        props:       {},
+        description: 'Time waited by user'
+      }
+    ];
+    this.setState(tokenTypes);
+    this.props.dispatch(searchActions.loadCustomFields()).then((res) => {
+      const customFields = res.map(field => ({
+        id:          `custom_field_${field.id}`,
+        label:       field.title.toLowerCase().replace(/ /, '-'),
+        widget:      this.tokenFromField(field),
+        props:       this.tokenPropsFromField(field),
+        description: field.description,
+      }));
+      tokenTypes.concat(customFields);
+      this.setState({
+        tokenTypes: tokenTypes.concat(customFields)
+      });
+    });
+  };
+
+  tokenFromField = (field) => {
+    switch (field.widget_type) {
+      case 'choice':
+      case 'multichoice':
+      case 'radio':
+      case 'checkbox':
+        return 'SelectInput';
+      case 'date':
+      case 'datetime':
+        return 'DateTimeInput';
+      case 'text':
+      case 'textarea':
+      default:
+        return 'TextInput';
     }
-  ];
+  };
+
+  tokenPropsFromField = (field) => {
+    const props = {};
+    if (field.choices.length) {
+      props.dataSource = {
+        getOptions: field.choices
+                      .sort((a, b) => a.title > b.title)
+                      .map(e => ({
+                        label: e.title,
+                        value: e.id,
+                      }))
+      };
+    }
+    return props;
+  };
 
   handleChange = (value) => {
     this.setState({
@@ -199,11 +252,11 @@ class SearchBox extends React.Component {
 
   render() {
     const { ...props } = this.props;
-    const { value } = this.state;
+    const { value, tokenTypes } = this.state;
     return (
       <SemanticSearchBox {...props}>
         <TokenField
-          tokenTypes={this.getTokenTypes()}
+          tokenTypes={tokenTypes}
           value={value}
           onChange={this.handleChange}
           placeholder=""

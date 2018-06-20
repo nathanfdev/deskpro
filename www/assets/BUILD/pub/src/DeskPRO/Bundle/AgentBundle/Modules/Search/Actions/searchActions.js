@@ -44,3 +44,14 @@ export const loadWorkflows = createAction(
     });
   })
 );
+
+export const loadCustomFields = createAction(
+  'SEARCH_LOAD_CUSTOM_FIELDS',
+  params => new Promise((resolve) => {
+    repository('TicketCustomFields').loadAll(params).then((promise) => {
+      const res = promise.getData();
+
+      resolve(res.data);
+    });
+  })
+);
