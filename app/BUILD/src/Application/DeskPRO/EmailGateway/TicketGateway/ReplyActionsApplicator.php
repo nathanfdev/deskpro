@@ -145,7 +145,7 @@ class ReplyActionsApplicator implements Loggable
                 }
 
                 if ($custom_field_data) {
-                    $fm->saveFormToObject($custom_field_data, $ticket, true);
+                    $fm->saveFormToObject($custom_field_data, $ticket, false);
                 }
                 break;
             case 'is_reply':
