@@ -390,3 +390,15 @@ Feature: /tickets endpoint
     """
     Then the response status code should be 400
     And the JSON node "errors.fields.department.errors[0].code" should contain "bad_choice"
+
+  Scenario: I create a ticket with specific date
+    When I send a POST request to "/api/v2/tickets" with body:
+    """
+{
+  "subject": "Sample Ticket",
+  "person": ~admin~,
+  "date_created": "2018-06-20"
+}
+    """
+    Then the response status code should be 201
+    And the JSON node "data.date_created" should be equal to "2018-06-20T00:00:00+0000"
