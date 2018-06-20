@@ -122,7 +122,7 @@ abstract class AbstractJsonRenderer extends AbstractRenderer
     /**
      * {@inheritdoc}
      */
-    public function mergeResults(array $results, array $options)
+    public function mergeResults(array $results, $graphType, array $options)
     {
         $mainResults = array_shift($results);
 
@@ -133,7 +133,10 @@ abstract class AbstractJsonRenderer extends AbstractRenderer
         $mainResults['dataProvider'] = $assocKeyedDataProvider;
         foreach ($mainResults['graphs'] as &$graph) {
             $graph['columnWidth'] = 0.5;
-            $graph['fillAlphas']  = 0.9;
+
+            if ($graphType !== 'line') {
+                $graph['fillAlphas'] = 0.9;
+            }
         }
 
         foreach ($results as $resultIndex => $result) {

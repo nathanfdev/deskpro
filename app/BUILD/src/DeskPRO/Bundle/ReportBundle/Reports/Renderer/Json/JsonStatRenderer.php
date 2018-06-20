@@ -146,12 +146,9 @@ class JsonStatRenderer extends AbstractJsonRenderer
     }
 
     /**
-     * @param array $results
-     * @param array $options
-     *
-     * @return mixed
+     * {@inheritdoc}
      */
-    public function mergeResults(array $results, array $options)
+    public function mergeResults(array $results, $graphType, array $options)
     {
         return reset($results);
     }

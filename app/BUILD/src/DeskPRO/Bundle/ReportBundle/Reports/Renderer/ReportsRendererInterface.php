@@ -63,10 +63,11 @@ interface ReportsRendererInterface
     /**
      * Merge layered results.
      *
-     * @param array $results
-     * @param array $options
+     * @param array  $results
+     * @param string $graphType
+     * @param array  $options
      *
      * @return mixed
      */
-    public function mergeResults(array $results, array $options);
+    public function mergeResults(array $results, $graphType, array $options);
 }
