@@ -7,7 +7,13 @@ services:
 
   swiftmailer.mailer.default.transport:
     class: Application\EmailBundle\SwiftMailer\Transport\DeskproTransport
-    arguments: ["@email.source_mapper", "@email.email_account_manager", "@swiftmailer.mailer.default.transport.eventdispatcher", "@brand_stack", "@logger"]
+    arguments:
+      - "@email.source_mapper"
+      - "@email.email_account_manager"
+      - "@swiftmailer.mailer.default.transport.eventdispatcher"
+      - "@brand_stack"
+      - "@settings_resolver"
+      - "@logger"
     tags:
       - { name: monolog.logger, channel: dp.email.out.transport }
 
