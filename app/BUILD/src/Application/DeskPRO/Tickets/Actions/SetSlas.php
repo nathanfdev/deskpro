@@ -90,6 +90,10 @@ class SetSlas extends AbstractContainerAwareAction implements ActionInterface, M
                 } else {
                     $ticket_sla = $ticket->removeSla($sla);
                     $em->remove($ticket_sla);
+                    // need to flush to avoid `Integrity constraint violation` for key `unique_ticket_sla_idx`
+                    // in case if later during same transaction same sla will be added
+                    // https://github.com/doctrine/doctrine2/issues/5109
+                    $em->flush();
                     $context->getLogger()->debug(sprintf('[SetSlas] Remove %d', $sla_id));
                     $cm_sender->sendMessage($ticket, $ticket_sla, $ticket_sla->sla_status, $ticket_sla->is_completed);
                 }
