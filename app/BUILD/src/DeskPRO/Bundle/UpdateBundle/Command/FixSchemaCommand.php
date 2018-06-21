@@ -7,7 +7,6 @@ use Application\DeskPRO\ORM\Util\Util as ORMUtil;
 use DeskPRO\Component\Doctrine\ORM\Tools\SchemaTool;
 use Doctrine\DBAL\Connection;
 use Doctrine\DBAL\DBALException;
-use Doctrine\DBAL\Schema\Schema;
 use Doctrine\ORM\EntityManager;
 use Monolog\Handler\StreamHandler;
 use Monolog\Logger;
@@ -26,11 +25,6 @@ class FixSchemaCommand extends ContainerAwareCommand
      * @var Connection[]
      */
     private $connections = [];
-
-    /**
-     * @var Schema[]
-     */
-    private $originalSchemas = [];
 
     /**
      * {@inheritdoc}
@@ -117,10 +111,10 @@ FKs must first be correct and accurate before the integrity can be validated.)')
             $fixDiff = $this->getFixSchemaQueries($entityManagers);
 
             if ($input->getOption('fix-fks')) {
-                foreach ($fixDiff['drop_fks'] as $dbId => $queries) {
-                    $output->writeln('<info>Drop outdated foreign keys ...</info>');
-                    $logger->debug('Drop outdated foreign keys.');
+                $output->writeln('<info>Drop outdated foreign keys ...</info>');
+                $logger->debug('Drop outdated foreign keys.');
 
+                foreach ($fixDiff['drop_fks'] as $dbId => $queries) {
                     foreach ($queries as $query) {
                         $query = $this->correctDropForeignKeyQuery($dbId, $query, $output, $logger);
 
@@ -309,7 +303,7 @@ FKs must first be correct and accurate before the integrity can be validated.)')
             $fixDiff['add_fks'][$dbId]      = [];
             $fixDiff['drop_fks'][$dbId]     = [];
 
-            $schemaDiff = ORMUtil::getUpdateSchemaSql($em);
+            $schemaDiff = ORMUtil::getUpdateSchemaSql($em, true);
             if ($schemaDiff) {
                 foreach ($schemaDiff as $query) {
                     if (preg_match('/^CREATE (UNIQUE |)INDEX/', $query)) {
@@ -541,20 +535,6 @@ FKs must first be correct and accurate before the integrity can be validated.)')
     }
 
     /**
-     * @param string $dbId
-     *
-     * @return Schema
-     */
-    private function getOriginalSchema($dbId)
-    {
-        if (!isset($this->originalSchemas[$dbId])) {
-            $this->originalSchemas[$dbId] = $this->getConnection($dbId)->getSchemaManager()->createSchema();
-        }
-
-        return $this->originalSchemas[$dbId];
-    }
-
-    /**
      * @param string          $dbId
      * @param string          $query
      * @param OutputInterface $output
@@ -567,8 +547,7 @@ FKs must first be correct and accurate before the integrity can be validated.)')
         if (preg_match('/DROP INDEX (.+) ON (.+)/', $query, $matches)) {
             list(, $indexName, $tableName) = $matches;
 
-            $schema = $this->getOriginalSchema($dbId);
-            $table  = $schema->getTable($tableName);
+            $table = $this->getConnection($dbId)->getSchemaManager()->listTableDetails($tableName);
 
             try {
                 $index        = $table->getIndex($indexName);
@@ -599,8 +578,7 @@ FKs must first be correct and accurate before the integrity can be validated.)')
         if (preg_match('/ALTER TABLE (.+) DROP FOREIGN KEY (.+)/', $query, $matches)) {
             list(, $tableName, $fkName) = $matches;
 
-            $schema = $this->getOriginalSchema($dbId);
-            $table  = $schema->getTable($tableName);
+            $table = $this->getConnection($dbId)->getSchemaManager()->listTableDetails($tableName);
 
             try {
                 $foreignKey   = $table->getForeignKey($fkName);
