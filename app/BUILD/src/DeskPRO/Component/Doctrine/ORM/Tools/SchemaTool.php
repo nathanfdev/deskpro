@@ -2,13 +2,16 @@
 
 namespace DeskPRO\Component\Doctrine\ORM\Tools;
 
-use Doctrine\DBAL\Schema\Column;
 use Doctrine\DBAL\Schema\Comparator;
+use Doctrine\DBAL\Schema\Schema;
 use Doctrine\DBAL\Schema\Table;
 use Doctrine\DBAL\Schema\TableDiff;
 use Doctrine\ORM\EntityManagerInterface;
 use Doctrine\ORM\Tools\SchemaTool as BaseSchemaTool;
 
+/**
+ * Class SchemaTool.
+ */
 class SchemaTool extends BaseSchemaTool
 {
     /**
@@ -120,5 +123,56 @@ class SchemaTool extends BaseSchemaTool
         }
 
         return true;
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function getUpdateSchemaSql(array $classes, $saveMode = false, $ignoreUnknownTables = false)
+    {
+        $sm       = $this->em->getConnection()->getSchemaManager();
+        $toSchema = $this->getSchemaFromMetadata($classes);
+        if ($ignoreUnknownTables) {
+            $fromSchema = $this->createOriginalSchemaFromMetadata($classes);
+        } else {
+            $fromSchema = $sm->createSchema();
+        }
+
+        $comparator = new Comparator();
+        $schemaDiff = $comparator->compare($fromSchema, $toSchema);
+
+        if ($saveMode) {
+            return $schemaDiff->toSaveSql($this->getPlatform());
+        }
+
+        return $schemaDiff->toSql($this->getPlatform());
+    }
+
+    /**
+     * Creates a schema instance for the current database just for specific tables.
+     *
+     * @param array $classes
+     *
+     * @return \Doctrine\DBAL\Schema\Schema
+     */
+    public function createOriginalSchemaFromMetadata(array $classes)
+    {
+        $sm       = $this->em->getConnection()->getSchemaManager();
+        $toSchema = $this->getSchemaFromMetadata($classes);
+        $tables   = array_map(function (Table $table) use ($sm) {
+            return $sm->listTableDetails($table->getName());
+        }, $toSchema->getTables());
+
+        $namespaces = [];
+        if ($sm->getDatabasePlatform()->supportsSchemas()) {
+            $namespaces = $sm->listNamespaceNames();
+        }
+
+        $sequences = [];
+        if ($sm->getDatabasePlatform()->supportsSequences()) {
+            $sequences = $sm->listSequences();
+        }
+
+        return new Schema($tables, $sequences, $sm->createSchemaConfig(), $namespaces);
     }
 }
