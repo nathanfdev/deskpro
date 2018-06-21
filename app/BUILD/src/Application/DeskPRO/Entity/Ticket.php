@@ -3199,8 +3199,12 @@ class Ticket extends DomainObject implements HighlightableModelInterface, Labels
      *
      * @return $this
      */
-    public function setDateCreated(\DateTime $date_created)
+    public function setDateCreated(\DateTime $date_created = null)
     {
+        if (!$date_created) {
+            $date_created = new \DateTime();
+        }
+
         $this->setModelField('date_created', $date_created);
 
         return $this;
