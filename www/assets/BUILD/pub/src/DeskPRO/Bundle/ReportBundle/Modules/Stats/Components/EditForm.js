@@ -167,16 +167,15 @@ const LabelsField = formValues('labels')(LabelsFieldComponent);
 export class EditFormComponent extends React.Component {
 
   static defaultProps = {
-    select:        '',
-    groupBy:       '',
-    dpqlParser:    null,
-    change:        null,
-    queryValues:   {},
-    handleSubmit:  null,
-    formErrors:    {},
-    hasError:      false,
-    labels:        [],
-    extendedQuery: false
+    select:       '',
+    groupBy:      '',
+    dpqlParser:   null,
+    change:       null,
+    queryValues:  {},
+    handleSubmit: null,
+    formErrors:   {},
+    hasError:     false,
+    labels:       [],
   };
 
   static propTypes = {
@@ -192,7 +191,6 @@ export class EditFormComponent extends React.Component {
     handleSubmit:  PropTypes.func,
     formErrors:    PropTypes.object,
     hasError:      PropTypes.bool,
-    extendedQuery: PropTypes.bool,
   };
 
   static toDpql(fields) {
@@ -224,10 +222,14 @@ export class EditFormComponent extends React.Component {
     return parts.join('\n');
   }
 
+  static isExtendedQuery(props) {
+    return props.queryValues.raw ? props.queryValues.raw.indexOf('LAYER WITH') !== -1 : false;
+  }
+
   constructor(props) {
     super(props);
     this.state = {
-      queryInputMode:    props.extendedQuery ? 'dpql' : 'form',
+      queryInputMode:    EditFormComponent.isExtendedQuery(props) ? 'dpql' : 'form',
       queryModeChanging: true
     };
   }
@@ -252,7 +254,7 @@ export class EditFormComponent extends React.Component {
   }
 
   queryModeChange = (to) => {
-    const extendedQuery = this.props.queryValues.raw ? this.props.queryValues.raw.indexOf('LAYER WITH') !== -1 : false;
+    const extendedQuery = EditFormComponent.isExtendedQuery(this.props);
     if (extendedQuery) {
       console.info('Cant change mode to form, you\'re using extended query syntax');
       return;

@@ -57,10 +57,9 @@ class EditContainer extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
-      saving:        false,
-      error:         false,
-      formErrors:    {},
-      extendedQuery: false,
+      saving:     false,
+      error:      false,
+      formErrors: {},
       ...EditContainer.getStateFromReport(props.report)
     };
   }
@@ -105,10 +104,9 @@ class EditContainer extends React.Component {
     };
 
     this.setState({
-      saving:        true,
-      error:         false,
-      formErrors:    {},
-      extendedQuery: reportData.inputMode === 'dpql'
+      saving:     true,
+      error:      false,
+      formErrors: {}
     });
 
     dispatch(saveReport(reportData))
@@ -143,7 +141,7 @@ class EditContainer extends React.Component {
   };
 
   renderForm() {
-    const { initialFormValue, saving, error, formErrors, extendedQuery } = this.state;
+    const { initialFormValue, saving, error, formErrors } = this.state;
     const { groupParams, report, labels } = this.props;
 
     const EditStatForm = reduxForm({
@@ -179,7 +177,6 @@ class EditContainer extends React.Component {
         formErrors={formErrors}
         labels={labels.toJS()}
         groupParams={groupParams.toJS()}
-        extendedQuery={extendedQuery || report.get('extended_query', false)}
         dpqlParser={EditContainer.dpqlParser}
       />
       {controls}
