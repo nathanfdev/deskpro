@@ -104,7 +104,7 @@ class SearchBox extends React.Component {
         },
       },
       {
-        id:     'product',
+        id:     'ticket_product',
         label:  this.props.intl.formatMessage({ id: 'agent.general.product' }).toLowerCase(),
         widget: 'SelectInput',
         props:  {
@@ -115,7 +115,7 @@ class SearchBox extends React.Component {
         },
       },
       {
-        id:     'category',
+        id:     'ticket_category',
         label:  this.props.intl.formatMessage({ id: 'agent.general.category' }).toLowerCase(),
         widget: 'SelectInput',
         props:  {
@@ -126,7 +126,7 @@ class SearchBox extends React.Component {
         },
       },
       {
-        id:     'priority',
+        id:     'ticket_priority',
         label:  this.props.intl.formatMessage({ id: 'agent.general.priority' }).toLowerCase(),
         widget: 'SelectInput',
         props:  {
@@ -152,7 +152,7 @@ class SearchBox extends React.Component {
         },
       },
       {
-        id:     'workflow',
+        id:     'ticket_workflow',
         label:  this.props.intl.formatMessage({ id: 'agent.general.workflow' }).toLowerCase(),
         widget: 'SelectInput',
         props:  {
@@ -180,23 +180,26 @@ class SearchBox extends React.Component {
         props:  {},
       },
       {
-        id:     'last-agent-reply',
+        id:     'last_agent_reply',
+        label:  'last-agent-reply',
         widget: 'DateTimeInput',
         props:  {},
       },
       {
-        id:     'last-user-reply',
+        id:     'last_user_reply',
+        label:  'last-user-reply',
         widget: 'DateTimeInput',
         props:  {},
       },
       {
-        id:          'user-waiting',
+        id:          'user_waiting',
+        label:       'user-waiting',
         widget:      'DurationInput',
         props:       {},
         description: 'Time waited by user'
       },
       {
-        id:     'person-name',
+        id:     'person_name',
         label:  this.props.intl.formatMessage({ id: 'agent.general.name' }).toLowerCase(),
         widget: 'SelectInput',
         props:  {
@@ -207,7 +210,7 @@ class SearchBox extends React.Component {
         },
       },
       {
-        id:     'email-address',
+        id:     'email_address',
         label:  this.props.intl.formatMessage({ id: 'agent.general.email_address' }).toLowerCase().replace(/ /, '-'),
         widget: 'TextInput',
         props:  {},
