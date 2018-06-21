@@ -5,6 +5,7 @@
     "type": "object",
     "oneOf": [
       { "$ref": "#/definitions/op" },
+      { "$ref": "#/definitions/set" },
       { "$ref": "#/definitions/exactValue" },
       { "$ref": "#/definitions/dateTime" },
       { "$ref": "#/definitions/numericRange" }
@@ -23,7 +24,7 @@
             "isExplicit": {
               "type": "boolean"
             }
-          },
+          }
         },
         "value": {
           "type": "array",
@@ -31,12 +32,24 @@
             "type": "object",
             "oneOf": [
               { "$ref": "#/definitions/op" },
+              { "$ref": "#/definitions/set" },
               { "$ref": "#/definitions/exactValue" },
               { "$ref": "#/definitions/dateTime" },
               { "$ref": "#/definitions/numericRange" }
             ],
-            "required": ["type", "value"]
+            "required": ["type"]
           }
+        }
+      },
+      "additionalProperties": false
+    },
+    "set": {
+      "properties": {
+        "type": {
+          "type": "string"
+        },
+        "op": {
+          "enum": ["ISSET", "NOT_ISSET"]
         }
       },
       "additionalProperties": false
@@ -55,8 +68,12 @@
               "type": "number"
             }
           ]
+        },
+        "op": {
+          "enum": ["EQ", "NEQ", "LT", "LTE", "GT", "GTE", "IN", "NOT_IN"]
         }
       },
+      "required": ["type", "value"],
       "additionalProperties": false
     },
     "dateTime": {
@@ -71,6 +88,9 @@
             { "$ref": "#/definitions/dateTime/definitions/dateTimeAbsolute" }
           ],
           "required": ["inputType"]
+        },
+        "op": {
+          "enum": ["EQ", "NEQ", "LT", "LTE", "GT", "GTE", "IN", "NOT_IN", "ISSET", "NOT_ISSET"]
         }
       },
       "additionalProperties": false,
@@ -94,9 +114,6 @@
             "date": {
               "type": "string",
               "format": "date-time"
-            },
-            "op": {
-              "enum": ["=", ">", "<", "range"]
             }
           },
           "additionalProperties": false
