@@ -40,10 +40,16 @@ abstract class AbstractCompilerTest extends ApiTestCase
     /**
      * @param string $dpql
      * @param string $sql
+     * @param int    $setMode
+     *
+     * @throws \DeskPRO\Bundle\ReportBundle\Dpql2\DpqlException
      */
-    protected function assertDpqlQuery($dpql, $sql, $settMode = DpqlContextStorage::MODE_RUN)
-    {
-        $this->getContainer()->get('dpql.context_storage')->setMode($settMode);
+    protected function assertDpqlQuery(
+        $dpql,
+        $sql,
+        $setMode = DpqlContextStorage::MODE_RUN
+    ) {
+        $this->getContainer()->get('dpql.context_storage')->setMode($setMode);
         $statement   = $this->compiler->compile($dpql, [], $this->context);
         $exceptedSql = preg_replace('/\s+/', ' ', $sql);
         $actualSql   = preg_replace('/\s+/', ' ', $statement->toSql());
