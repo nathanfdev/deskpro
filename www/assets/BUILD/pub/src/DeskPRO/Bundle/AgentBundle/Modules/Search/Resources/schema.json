@@ -71,6 +71,9 @@
         },
         "op": {
           "enum": ["EQ", "NEQ", "LT", "LTE", "GT", "GTE", "IN", "NOT_IN"]
+        },
+        "meta": {
+          "type": "array"
         }
       },
       "required": ["type", "value"],
@@ -90,7 +93,7 @@
           "required": ["inputType"]
         },
         "op": {
-          "enum": ["EQ", "NEQ", "LT", "LTE", "GT", "GTE", "IN", "NOT_IN", "ISSET", "NOT_ISSET"]
+          "enum": ["EQ", "NEQ", "LT", "LTE", "GT", "GTE", "IN", "NOT_IN"]
         }
       },
       "additionalProperties": false,
