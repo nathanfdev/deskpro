@@ -1905,6 +1905,19 @@ class TicketController extends AbstractController
         $new_message = $this->cleaner->clean($new_message, 'html_core');
         $new_message = Strings::trimHtml($new_message);
         $new_message = Strings::prepareWysiwygHtml($new_message);
+
+        $logOriginalContents = $this->in->getBool('log_original_contents');
+
+        $details = [
+            'message_id' => $message->getId(),
+        ];
+        if ($logOriginalContents) {
+            $details += [
+                'old_message'      => $old_message,
+                'old_full_message' => $old_full_message,
+            ];
+        }
+
         $message->setMessageHtml($new_message);
         $message->message_full = null;
 
@@ -1913,11 +1926,7 @@ class TicketController extends AbstractController
         $ticket_log->person      = $this->person;
         $ticket_log->action_type = 'message_edit';
         $ticket_log->id_object   = $message->getId();
-        $ticket_log->details     = [
-            'message_id'       => $message->getId(),
-            'old_message'      => $old_message,
-            'old_full_message' => $old_full_message,
-        ];
+        $ticket_log->details     = $details;
 
         $this->db->beginTransaction();
         try {
