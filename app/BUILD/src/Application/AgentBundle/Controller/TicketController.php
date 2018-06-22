@@ -1916,7 +1916,9 @@ class TicketController extends AbstractController
         $newMessage = Strings::trimHtml($newMessage);
         $newMessage = Strings::prepareWysiwygHtml($newMessage);
 
-        $logOriginalContents = $this->in->getBool('log_original_contents');
+        $logOriginalContents =
+            $this->in->getBool('log_original_contents')
+            || !$this->person->PermissionsManager->TicketChecker->canEditMessages($message->ticket);
 
         $details = [
             'message_id' => $message->getId(),
