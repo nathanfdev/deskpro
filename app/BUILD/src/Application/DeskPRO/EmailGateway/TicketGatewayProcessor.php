@@ -422,7 +422,7 @@ class TicketGatewayProcessor extends AbstractGatewayProcessor
         // Create ticket email obj
         //-------------------------
 
-        $ticketEmail                  = new TicketIncomingEmail($this);
+        $ticketEmail                  = new TicketIncomingEmail();
         $ticketEmail->reader          = $this->reader;
         $ticketEmail->ticket          = $ticket;
         $ticketEmail->person          = $person;
