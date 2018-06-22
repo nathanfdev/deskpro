@@ -69,6 +69,7 @@ use Orb\Util\Arrays;
 use Orb\Util\DpStrings;
 use Orb\Util\Strings;
 use Orb\Validator\StringEmail;
+use Symfony\Bundle\FrameworkBundle\Routing\Router;
 use Symfony\Component\Filesystem\Filesystem;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -442,6 +443,12 @@ class TicketController extends AbstractController
             'ticket_attachments'         => $ticket_attachments,
             'ticket_message_attachments' => $ticket_message_attachments,
             'linked_chat'                => $linkedChat,
+
+            'ticket_permalink' => $this->get('router')->generate(
+                'go_to_ticket_id',
+                ['id' => $ticket->getId()],
+                Router::ABSOLUTE_URL
+            ),
 
             'validator_errors' => $validator_errors,
 
