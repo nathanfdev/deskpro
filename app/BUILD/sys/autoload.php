@@ -62,7 +62,6 @@ $loader->addClassMap([
     'POParser'                                        => DP_APP_DIR.'/vendor-src/simplepo/POParser.php',
     'TempPoMsgStore'                                  => DP_APP_DIR.'/vendor-src/simplepo/POParser.php',
     'Facebook'                                        => DP_APP_DIR.'/vendor-src/facebook/php-sdk/src/facebook.php',
-    'FineDiff'                                        => DP_APP_DIR.'/vendor-src/gorhill/finediff/finediff.php',
     'Text_LanguageDetect'                             => DP_APP_DIR.'/vendor-src/Text_LanguageDetect/lib/Text/LanguageDetect.php',
     'Text_LanguageDetect_Exception'                   => DP_APP_DIR.'/vendor-src/Text_LanguageDetect/lib/Text/LanguageDetect/Exception.php',
     'Text_LanguageDetect_ISO639'                      => DP_APP_DIR.'/vendor-src/Text_LanguageDetect/lib/Text/LanguageDetect/ISO639.php',

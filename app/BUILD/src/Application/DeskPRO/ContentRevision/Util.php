@@ -18,6 +18,7 @@ use Application\DeskPRO\Entity\NewsRevision;
 use Application\DeskPRO\Entity\Person;
 use Application\DeskPRO\Entity\Topic;
 use Application\DeskPRO\Entity\TopicRevision;
+use GorHill\FineDiff\FineDiff;
 
 class Util
 {
@@ -105,10 +106,10 @@ class Util
                 }
             }
 
-            $diff = new \FineDiff(
+            $diff = new FineDiff(
                 $rev_old['content'],
                 $rev_new['content'],
-                \FineDiff::$wordGranularity
+                FineDiff::$wordGranularity
             );
             $rendered_diff = $diff->renderDiffToHTML();
 
