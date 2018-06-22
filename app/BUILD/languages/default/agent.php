@@ -2258,6 +2258,7 @@ return [
     'agent.tickets.log_is_now'                                 => 'is now',
     'agent.tickets.log_message_deleted'                        => 'Message deleted',
     'agent.tickets.log_message_old_message'                    => 'Old Message',
+    'agent.tickets.log_message_no_old_message'                 => 'There is no old message logged.',
     'agent.tickets.log_message_updated'                        => 'Message #{{id}} updated',
     'agent.tickets.log_followup_created'                       => 'New follow up #{{id}} for {{date_to_run}}',
     'agent.tickets.log_followup_removed'                       => 'Follow up #{{id}} was deleted',
