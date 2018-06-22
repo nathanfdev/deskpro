@@ -1378,7 +1378,11 @@
                               style="width: 98%; height: 200px; color: #000; size: 10px; font-family: Monaco, Consolas, monospace;"
                               name="message_text" class="message_text"></textarea>
                 </div>
-                <div class="overlay-footer">
+                <div class="overlay-footer" style="height: 45px;">
+                    <label class="log_original_contents">
+                        <input type="checkbox" value='1' name="log_original_contents" checked="checked"/>
+                        <span>{{ phrase('agent.tickets.log_original_contents') }}</span>
+                    </label>
                     <button class="clean-white save-text-trigger">{{ phrase('agent.general.save') }}</button>
                     <span class="flat-spinner save-text-loading" style="display: none"></span>
                 </div>

@@ -2527,6 +2527,7 @@ return [
     'agent.tickets.preview_created_ticket'                     => 'created ticket',
     'agent.tickets.preview_replied'                            => 'replied',
     'agent.tickets.preview_wrote_note'                         => 'wrote a note',
+    'agent.tickets.log_original_contents'                      => 'Log original contents',
     'agent.time.future'                                        => 'Future',
     'agent.time.group_12_to_24_hours'                          => '12 - 24 hours',
     'agent.time.group_15_to_30_mins'                           => '15 - 30 minutes',
