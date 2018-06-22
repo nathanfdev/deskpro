@@ -241,6 +241,11 @@ class TicketMessage extends DomainObject
      */
     protected $email_message_id;
 
+    /**
+     * TicketMessage constructor.
+     *
+     * @param null $email_id
+     */
     public function __construct($email_id = null)
     {
         $this->setModelField('date_created', new \DateTime());
@@ -282,6 +287,9 @@ class TicketMessage extends DomainObject
         return $this;
     }
 
+    /**
+     * @param $id
+     */
     public function setTicketId($id)
     {
         $this->setModelField('ticket', App::getEntityRepository('DeskPRO:Ticket')->find($id));
@@ -315,6 +323,11 @@ class TicketMessage extends DomainObject
         return $this;
     }
 
+    /**
+     * @param $id
+     *
+     * @return $this
+     */
     public function setPersonId($id)
     {
         $this->setModelField('person', App::getEntityRepository('DeskPRO:Person')->find($id));
@@ -342,6 +355,11 @@ class TicketMessage extends DomainObject
         return $this->person ? $this->person->getId() : null;
     }
 
+    /**
+     * @param $system
+     *
+     * @return $this
+     */
     public function setCreationSystem($system)
     {
         $this->setModelField('creation_system', $system);
@@ -357,6 +375,11 @@ class TicketMessage extends DomainObject
         return $this->hostname;
     }
 
+    /**
+     * @param $hostname
+     *
+     * @return $this
+     */
     public function setHostname($hostname)
     {
         $this->setModelField('hostname', $hostname);
@@ -364,6 +387,9 @@ class TicketMessage extends DomainObject
         return $this;
     }
 
+    /**
+     * @return int|null
+     */
     public function getMessageLength()
     {
         if ($this->_message_length !== null) {
@@ -375,6 +401,12 @@ class TicketMessage extends DomainObject
         return $this->_message_length;
     }
 
+    /**
+     * @param int    $max_length
+     * @param string $ellipses
+     *
+     * @return bool|mixed|string
+     */
     public function getMessagePreviewText($max_length = 0, $ellipses = '...')
     {
         $message = $this->message;
@@ -407,6 +439,11 @@ class TicketMessage extends DomainObject
         return $message;
     }
 
+    /**
+     * @param $max_length
+     *
+     * @return bool|mixed|string
+     */
     public function getMessageHtmlClipped($max_length)
     {
         $message = $this->getMessageHtml();
@@ -422,6 +459,11 @@ class TicketMessage extends DomainObject
         return $message;
     }
 
+    /**
+     * @param bool $resizeInlines
+     *
+     * @return string
+     */
     public function getMessageHtml($resizeInlines = true)
     {
         return $this->procInlineAttach($this->message, $resizeInlines);
@@ -539,6 +581,9 @@ class TicketMessage extends DomainObject
         return $message;
     }
 
+    /**
+     * @return mixed
+     */
     public function convertEmbeddedImagesToInlineAttach()
     {
         $messageText = $this->convertEmbeddedImagesToInlineAttachInText($this->message);
@@ -547,6 +592,11 @@ class TicketMessage extends DomainObject
         return $messageText;
     }
 
+    /**
+     * @param $message_text
+     *
+     * @return mixed
+     */
     public function convertEmbeddedImagesToInlineAttachInText($message_text)
     {
         foreach ($this->attachments as $attachment) {
@@ -572,6 +622,11 @@ class TicketMessage extends DomainObject
         return $message_text;
     }
 
+    /**
+     * @throws \Doctrine\ORM\ORMException
+     *
+     * @return array
+     */
     public function getUsedSignatureImageBlobs()
     {
         RegexUtils::safePregMatchAll(
@@ -592,6 +647,9 @@ class TicketMessage extends DomainObject
         return [];
     }
 
+    /**
+     * @return string
+     */
     public function getMessageText()
     {
         $message = $this->message;
@@ -600,6 +658,9 @@ class TicketMessage extends DomainObject
         return $message;
     }
 
+    /**
+     * @return string
+     */
     public function getMessageFullText()
     {
         if (!$this->message_full) {
@@ -613,6 +674,17 @@ class TicketMessage extends DomainObject
         return $message;
     }
 
+    /**
+     * @return string
+     */
+    public function getMessage()
+    {
+        return $this->message;
+    }
+
+    /**
+     * @return string
+     */
     public function getMessageFull()
     {
         if (!$this->message_full) {
@@ -622,6 +694,9 @@ class TicketMessage extends DomainObject
         return $this->procInlineAttach($this->message_full);
     }
 
+    /**
+     * @return string
+     */
     public function getMessagePlainHtml()
     {
         return nl2br($this->getMessageText());
@@ -635,6 +710,9 @@ class TicketMessage extends DomainObject
         return $this->originalMessage ?: $this->message;
     }
 
+    /**
+     * @param $message
+     */
     public function setMessageHtml($message)
     {
         $this->setMessage($message);
@@ -654,6 +732,11 @@ class TicketMessage extends DomainObject
         return $message_quote;
     }
 
+    /**
+     * @param $message
+     *
+     * @return $this
+     */
     public function setMessageText($message)
     {
         $this->setMessage(Strings::text2html($message));
@@ -661,6 +744,11 @@ class TicketMessage extends DomainObject
         return $this;
     }
 
+    /**
+     * @param $message
+     *
+     * @return $this
+     */
     public function setMessage($message)
     {
         $message = trim((string) $message);
@@ -774,6 +862,9 @@ class TicketMessage extends DomainObject
         );
     }
 
+    /**
+     * @param TicketAttachment $attachment
+     */
     public function removeAttachment(TicketAttachment $attachment)
     {
         $this->attachments->removeElement($attachment);
@@ -832,6 +923,9 @@ class TicketMessage extends DomainObject
         return false;
     }
 
+    /**
+     * @return string
+     */
     public function getMessageHash()
     {
         if (!$this->message_hash) {
@@ -1021,6 +1115,11 @@ class TicketMessage extends DomainObject
     // Doctrine Metadata
     //###########################################################################
 
+    /**
+     * @param ClassMetadata $metadata
+     *
+     * @throws \Doctrine\ORM\Mapping\MappingException
+     */
     public static function loadMetadata(ClassMetadata $metadata)
     {
         $metadata->setInheritanceType(ClassMetadataInfo::INHERITANCE_TYPE_NONE);
