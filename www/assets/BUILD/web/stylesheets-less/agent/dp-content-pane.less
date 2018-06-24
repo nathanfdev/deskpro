@@ -1,3 +1,4 @@
+@import "include.less";
 @import "lib.less";
 
 .box-header-gradient {
@@ -8598,32 +8599,110 @@ a.assign-self-link {
   }
 }
 
+// the width of the apps column in the expanded state
+@apps-column-width-expanded: 240px;
+// the width of the apps column in the collapsed state
+@apps-column-width-collapsed: 40px;
+
+//this transition applies to both the sidebar container and the adjacent content layer
+.apps-column-slide-effect() {
+
+  -webkit-transition: all 350ms ease-out;
+  -moz-transition: all 350ms ease-out;
+  -o-transition: all 350ms ease-out;
+  transition: all 350ms ease-out;
+
+}
+
 .layout-content {
 	z-index: 1;
+
+  .apps-column-slide-effect
 }
+
 .with-apps-sidebar {
+
 	overflow: hidden !important;
-	overflow-x: hidden !important;
-	overflow-y: hidden !important;
 
 	.layout-content {
 		position: absolute;
-		top: 0; right: 0; bottom: 0; left: 0;
+		top: 0;
+    // make sure the apps column is visible when in collapsed state
+    right: @apps-column-width-collapsed;
+    bottom: 0;
+    left: 0;
 		overflow: hidden;
 		overflow-y: auto;
 	}
 
 	.layout-sidebar-icons { display: block; }
+
+  .layout-sidebar__visible-area {
+    display: block;
+  }
 }
 
-.layout-sidebar .pin-btn {
-	.fa-lock { display: block; }
-	.fa-chevron-right { display: none; }
+.with-apps-sidebar-pinned
+{
+  .layout-sidebar {
+
+    display: block;
+    box-shadow: none;
+
+    .pin-btn {
+      .fa-lock { display: none; }
+      .fa-chevron-right { display: block; }
+    }
+  }
+
+  .layout-content {
+    overflow: auto;
+
+    .dp-page-content {
+      min-width: 575px;
+    }
+  }
+
+  &.with-apps-sidebar-expanded {
+    .layout-content {
+      right: @apps-column-width-expanded; // width
+    }
+  }
+
+  &.with-apps-sidebar-collapsed {
+    .layout-content {
+      right: @apps-column-width-collapsed;
+    }
+  }
+
 }
-.with-docked-apps-sidebar .layout-sidebar .pin-btn {
-	.fa-lock { display: none; }
-	.fa-chevron-right { display: block; }
+
+.with-apps-sidebar-expanded
+{
+  .layout-sidebar {
+    width: @apps-column-width-expanded;
+  }
+
+  .layout-sidebar__icons {
+    display: none;
+  }
 }
+
+.with-apps-sidebar-collapsed
+{
+  .layout-sidebar {
+    width: @apps-column-width-collapsed; // 240-40
+  }
+
+  .layout-sidebar__apps {
+    display: none;
+  }
+
+  .layout-sidebar__icons {
+    display: block;
+  }
+}
+
 
 .layout-sidebar-icons {
 	display: none;
@@ -8698,34 +8777,130 @@ a.assign-self-link {
 
 .dp-app-v2-container {
   width: 100%;
-  margin: 30px auto auto;
+  //margin: 30px auto auto;
 }
 
-.layout-sidebar {
-	display: none;
-	background: #fff;
-	border-left: 1px solid #aeaeb4;
-	box-shadow: 0px 0px 19px 0px rgba(0,0,0,0.39);
+// in the initial state, the sidebar is hidden to allow the client to figure out if it would be shown or not
+.layout-sidebar__visible-area
+{
+  display: none;
+}
 
-	width: 350px;
+
+.layout-sidebar__header
+{
+  display: flex;
+  align-items: stretch;
+  height: 60px
+}
+
+.layout-sidebar__groups
+{
+  flex-grow: 1;
+  display: flex;
+  align-items: stretch;
+}
+
+.layout-sidebar__group-tab
+{
+  flex: 0 0 @apps-column-width-collapsed;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.layout-sidebar__icons
+{
+  width: @apps-column-width-collapsed;
+
+  z-index: 5;
+  position:absolute;
+  bottom: 0;
+  top: 0;
+  left:0;
+}
+
+.layout-sidebar__apps
+{
+  width: @apps-column-width-expanded;
+
+  background: @agent_panetabs_bg_color;
+  z-index: 10;
+  position:absolute;
+  bottom: 0;
+  top: 0;
+  left:0;
+  overflow-y: auto;
+}
+
+.layout-sidebar__icon-view
+{
+
+  padding-top: 15px;
+  padding-bottom: 15px;
+
+  border-bottom: 1px transparent;
+  border-top: 1px transparent;
+
+  margin-bottom: -1px;
+
+  img {
+    width: 25px;
+    height: 25px;
+    display: block;
+    margin: 0 auto;
+  }
+}
+
+.layout-sidebar__icon-view--group-start
+{
+  border-top: 1px solid;
+}
+
+.layout-sidebar__icon-view--group-end
+{
+  border-bottom: 1px solid;
+}
+
+
+.layout-sidebar__toggle
+{
+  flex: 0 0 40px;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+
+  color: #959a9e;
+  cursor: pointer;
+
+  &:hover {
+    color: #444;
+  }
+}
+
+
+.layout-sidebar {
+
+  .apps-column-slide-effect;
+
+  background: @agent_panetabs_bg_color;
+	border-left: 1px solid #aeaeb4;
+	box-shadow: 0 0 19px 0 rgba(0,0,0,0.39);
+
+
+	width: @apps-column-width-collapsed;
 	position: absolute;
 	top: 0; right: 0; bottom: 0;
 	z-index: 999999;
 
-	.pin-btn {
-		display: block;
-		position: absolute;
-		top: 9px;
-		right: 10px;
-		z-index: 11;
 
-		color: #959a9e;
-		cursor: pointer;
-
-		&:hover {
-			color: #444;
-		}
-	}
+  .pin-btn
+  {
+    .fa-lock { display: block; }
+    .fa-chevron-right { display: none; }
+  }
 
   .dp-app-context {
 	  position: absolute;
@@ -8782,24 +8957,6 @@ a.assign-self-link {
 		font-size: 12px;
 	  }
 	}
-}
-
-.with-docked-apps-sidebar {
-	.layout-sidebar-icons {
-		right: 4px;
-	}
-	.layout-sidebar {
-		display: block;
-		box-shadow: none;
-	}
-}
-
-.with-docked-apps-sidebar .layout-content {
-  overflow: auto;
-
-  .dp-page-content {
-	min-width: 575px;
-  }
 }
 
 .dp-content-post {

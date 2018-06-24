@@ -2,8 +2,15 @@ import React from 'react';
 import ReactDOM from 'react-dom';
 import { Provider } from 'react-redux';
 
-import { DeskproAppContainer, LegacySidebarContainer, LegacyAppSidebar } from '../Components';
+import { DeskproAppContainerProps, DeskproAppContainer, LegacySidebarContainer, LegacyAppSidebar, AppsColumnContainer } from '../Components';
 import { ContainerConfiguration } from './ContainerConfiguration';
+
+/**
+ * @return {DeskPRO.MessageBroker}
+ */
+function sendMessageLegacyMessageBroker(name, data) {
+  return window.DeskPRO_Window.getMessageBroker().sendMessage(name, data);
+}
 
 /**
  * This class mounts the react container components
@@ -40,7 +47,7 @@ class ContainerMounter {
     const { renderType: renderStrategy } = configuration;
     if (renderStrategy === 'inplace') {
       mountRoot = domNode;
-    } else if (renderStrategy === 'legacy-sidebar') {
+    } else if (renderStrategy === 'legacy-sidebar' || renderStrategy === 'apps-column') {
       mountRoot = LegacyAppSidebar.fromSelector(configuration.renderSidebarContainer).getContentRoot();
     }
 
@@ -63,7 +70,9 @@ class ContainerMounter {
     const { renderType: renderStrategy } = configuration;
     if (renderStrategy === 'inplace') {
       reactElement = this.renderInplace(domNode, configuration, props);
-    } else if (renderStrategy === 'legacy-sidebar') {
+    } else if (renderStrategy === 'apps-column') {
+      reactElement = this.renderAppsColumn(domNode, configuration, props);
+    }    else if (renderStrategy === 'legacy-sidebar') {
       reactElement = this.renderLegacySidebar(domNode, configuration, props);
     }
 
@@ -90,6 +99,23 @@ class ContainerMounter {
     ReactDOM.render(reactElement, reactContainer);
 
 
+    return reactElement;
+  };
+
+  /**
+   * @param dom
+   * @param {ContainerConfiguration} configuration
+   * @param {Object} props
+   * @return {XML}
+   */
+  renderAppsColumn = (dom, configuration, props) => {
+    const { reduxStore } = this;
+    const reactContainer = LegacyAppSidebar.fromSelector(configuration.renderSidebarContainer).getContentRoot();
+
+    const container = React.createElement(AppsColumnContainer, { ...props, configuration, sendMessageLegacyMessageBroker });
+    const reactElement = <Provider store={reduxStore}>{ container }</Provider>;
+
+    ReactDOM.render(reactElement, reactContainer);
     return reactElement;
   };
 

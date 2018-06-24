@@ -28,10 +28,10 @@
   {% if person.is_agent %}pageMeta.isAgent = true;{% endif %}
 </script>
 <div
-      class="layout-sidebar dp-app-v2-sidebar"
+      class="layout-sidebar layout-sidebar__visible-area dp-app-v2-sidebar"
       id="{{ baseId }}_layout_sidebar"
       data-deskproapp="person-sidebar"
-      data-deskproapp-render="legacy-sidebar"
+      data-deskproapp-render="apps-column"
       data-deskproapp-render-sidebar="#{{ baseId }}_layout_sidebar"
       data-deskproapp-render-icons="#{{ baseId }}_layout_sidebar_icons > ul:first-child"
 >

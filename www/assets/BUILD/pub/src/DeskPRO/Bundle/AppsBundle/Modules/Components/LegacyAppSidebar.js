@@ -31,10 +31,7 @@ class LegacyAppSidebar {
 
   getContentRoot = () => this.domRoot.querySelector('.dp-app-context[data-deskproapp-marker]');
 
-  isLocked = () => {
-    const sidebarLockedIcon = this.domRoot.querySelector('i.fa.fa-lock');
-    return window.getComputedStyle(sidebarLockedIcon).display === 'none';
-  };
+  isLocked = () => this.domRoot.className.match(/(?:^|\s)sidebar-pinned(?!\S)/);
 
   showLegacyContent = () => {
     hideAll(this.domRoot, '.dp-app-context');

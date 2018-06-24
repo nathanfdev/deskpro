@@ -1,10 +1,11 @@
 import PropTypes from 'prop-types';
 import React from 'react';
-import { Widget } from '../Domain/Widget';
+import { Widget } from '../Domain';
 
 import { ContainerEvents } from './ContainerEvents';
 import { EventProvider } from './EventProvider';
-import { WidgetContainer } from './WidgetContainer';
+import { WidgetContainerListEmpty } from './WidgetContainerListEmpty';
+import { WidgetContainerList } from './WidgetContainerList';
 
 import { receiveMessage, receiveSubscription, registerOutgoingMessageListener } from '../WidgetMessage';
 
@@ -215,13 +216,6 @@ class DeskproAppContainer extends React.Component {
     );
   };
 
-  renderWidget = configuration =>  (<WidgetContainer
-    configuration={configuration}
-    getEvent={this.state.getEvent}
-    getEventProviders={this.getEventProviders}
-    unregister={this.unregisterWidget}
-  />);
-
   /**
    * Renders the container and all the apps
    *
@@ -230,12 +224,17 @@ class DeskproAppContainer extends React.Component {
   render() {
     const { widgetsConfigList } = this.props;
     if (widgetsConfigList && widgetsConfigList.length > 0) {
-      return (<div>
-        {this.props.widgetsConfigList.map(this.renderWidget)}
-      </div>);
+      return (
+        <WidgetContainerList
+          widgets={this.props.widgetsConfigList}
+          getEvent={this.state.getEvent}
+          getEventProviders={this.getEventProviders}
+          unregister={this.unregisterWidget}
+        />
+      );
     }
 
-    return (<div />);
+    return (<WidgetContainerListEmpty />);
   }
 
 
