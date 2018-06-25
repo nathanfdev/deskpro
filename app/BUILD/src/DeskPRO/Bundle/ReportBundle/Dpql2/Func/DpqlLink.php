@@ -9,6 +9,7 @@ use DeskPRO\Bundle\ReportBundle\Dpql2\Statement\SelectPart;
 use DeskPRO\Bundle\ReportBundle\Reports\Renderer\AbstractRenderer;
 use DeskPRO\Bundle\ReportBundle\Reports\Renderer\AbstractValueRenderer;
 use DeskPRO\Bundle\ReportBundle\Reports\Renderer\Html\HtmlValueRenderer;
+use DeskPRO\Bundle\ReportBundle\Reports\Renderer\Json\JsonTableRenderer;
 use DeskPRO\Bundle\ReportBundle\Reports\ResultMetadata;
 use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
 
@@ -75,7 +76,7 @@ class DpqlLink extends AbstractDpqlFunc
      */
     public function formatLink($print, $format, array $argSelect, array $row, AbstractValueRenderer $valueRenderer, AbstractRenderer $renderer, ResultMetadata $metadata)
     {
-        $breakEarly = $print === null || !($valueRenderer instanceof HtmlValueRenderer);
+        $breakEarly = $print === null || !($valueRenderer instanceof HtmlValueRenderer || $renderer instanceof JsonTableRenderer);
         $print      = $metadata->getGroupYColumns() === 1 && array_key_exists('hierarchy_title', $row)
                ? $row['hierarchy_title']
                : $valueRenderer->renderValue($print, 'string', $metadata);
@@ -86,7 +87,7 @@ class DpqlLink extends AbstractDpqlFunc
 
         $id = 0;
         foreach ($argSelect as $key) {
-            $id = urlencode($renderer->getColumnValue($row, $key));
+            $id = urlencode($renderer->getColumnValue($row, $key)) ?: 0;
         }
 
         switch ($format) {
