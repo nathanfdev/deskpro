@@ -215,7 +215,7 @@ DeskPRO.Agent.PageFragment.Page.NewTicket = new Orb.Class({
 				return;
 			}
 
-			self.wrapper.find('select').each(function() {
+			self.wrapper.find('select:not(.hidden)').each(function() {
 				if ($(this).prop('multiple')) {
 					$(this).width(300);
 				}
@@ -2265,6 +2265,7 @@ DeskPRO.Agent.PageFragment.Page.NewTicket = new Orb.Class({
 
     var followerSel = this.page.getEl('followers_sel');
     var followersList = this.page.getEl('followers_list');
+    var followersListSel = this.page.getEl('followers_list_sel');
 
     this.page.getEl('add_follower_btn').on('click', function(ev) {
       ev.preventDefault();
@@ -2303,16 +2304,22 @@ DeskPRO.Agent.PageFragment.Page.NewTicket = new Orb.Class({
     });
 
     var updateFollowersList = function() {
+      var ids = [];
       var postData = [{
         name: 'with_set_agent_parts',
         value: 1
       }];
+
       followersList.find('li').each(function() {
         postData.push({
           name: 'set_agent_part_ids[]',
           value: $(this).data('agent-id')
         });
+
+        ids.push(''+$(this).data('agent-id'));
       });
+
+      followersListSel.val(ids);
 
       var $assign = self.getEl('follower_me');
       followersList.find('.agent-' + $assign.data('me')).length ? $assign.hide() : $assign.show();
