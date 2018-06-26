@@ -206,9 +206,10 @@ class CustomDefAbstract extends AbstractEntityRepository
 
     public function updateTo(array $fromIds, $toId)
     {
-        $table = str_replace('_def_', '_data_', $this->getTableName());
-        $con   = $this->_em->getConnection();
-        $q     = sprintf('update %s set field_id = :to where field_id in (:ids)', $table);
+        $entity = str_replace('\\CustomDef', '\\CustomData', $this->getEntityName());
+        $table  = $this->_em->getRepository($entity)->getTableName();
+        $con    = $this->_em->getConnection();
+        $q      = sprintf('update %s set field_id = :to where field_id in (:ids)', $table);
         $con->executeQuery(
             $q,
             ['ids' => $fromIds, 'to' => $toId],
