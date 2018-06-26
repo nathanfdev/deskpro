@@ -1924,7 +1924,7 @@ DeskPRO.Agent.PageFragment.Page.NewTicket = new Orb.Class({
           	val = previousValue;
 					}
 				}
-				selectDepartment.select2('val', val);
+				selectDepartment.select2('val', val).change();
 			});
 		});
 	},
