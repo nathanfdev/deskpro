@@ -99,6 +99,7 @@ Feature: /people endpoint
     And the JSON node "data.contact_data[1].username" should be equal to "twitter_username"
     And the JSON node "data.contact_data[1].comment" should be equal to "some text"
     And the JSON node "data.contact_data[2].contact_type" should be equal to "facebook"
+    And the JSON node "data.is_disabled" should be equal to 0
 
   Scenario: I modify and retrieve a person
     Given "guineapig@deskpro.dev" user exists
@@ -226,3 +227,17 @@ Feature: /people endpoint
     Given "guineapig@deskpro.dev" user exists
     When I send a POST request to "/api/v2/people/{guineapig@deskpro.dev}/sessions/clear"
     Then the response status code should be 204
+
+  Scenario: I set person as disabled
+    Given "guineapig@deskpro.dev" user exists
+    When I send a PUT request to "/api/v2/people/{guineapig@deskpro.dev}" with body:
+    """
+{
+  "is_disabled": true
+}
+    """
+    And the response status code should be 204
+
+    When I send a GET request to "/api/v2/people/{guineapig@deskpro.dev}"
+    Then the response status code should be 200
+    And the JSON node "data.is_disabled" should be equal to 1
