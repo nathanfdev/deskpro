@@ -1181,9 +1181,17 @@
                 {% if ticket_perms.modify_messages %}
                     <li data-option-id="edit">{{ phrase('agent.general.edit') }}</li>
                 {% endif %}
-                <li data-option-id="download_email">{{ phrase('agent.tickets.email_download') }}</li>
+                <li
+                    class="email-download"
+                    data-option-id="email_download"
+                    data-url="{{ path('agent_ticket_download_message_email', {_rt: security_token('request_token', 10800), messageId: '00000'}) }}"
+                >
+                    {{ phrase('agent.tickets.email_download') }}
+                </li>
                 {% if ticket_perms.modify_messages %}
-                    <li data-option-id="delete_email">{{ phrase('agent.tickets.email_delete') }}</li>
+                    <li data-option-id="email_delete">
+                        {{ phrase('agent.tickets.email_delete') }}
+                    </li>
                 {% endif %}
                 {% if app.user.can_admin %}
                     <li data-option-id="debug"
