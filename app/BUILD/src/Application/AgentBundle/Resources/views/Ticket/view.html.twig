@@ -1189,7 +1189,9 @@
                     {{ phrase('agent.tickets.email_download') }}
                 </li>
                 {% if ticket_perms.modify_messages %}
-                    <li data-option-id="email_delete">
+                    <li
+                        class='email-delete'
+                        data-option-id="email_delete">
                         {{ phrase('agent.tickets.email_delete') }}
                     </li>
                 {% endif %}

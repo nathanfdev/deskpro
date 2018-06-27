@@ -5559,6 +5559,32 @@ CSS;
         }
     }
 
+    /**
+     * @param $messageId
+     *
+     * @throws \Exception
+     *
+     * @return Response
+     */
+    public function deleteTicketMessageEmailAction($messageId)
+    {
+        $message = $this->getMessageOr404($messageId);
+        if (!$this->person->PermissionsManager->TicketChecker->canEditMessages($message->ticket)) {
+            throw $this->createAccessDeniedException();
+        }
+
+        if ($message->email_source) {
+            $this->em->remove($message->email_source);
+            $this->em->flush();
+        }
+
+        return $this->createJsonResponse(
+            [
+                'success' => true,
+            ]
+        );
+    }
+
     //###########################################################################
 
     public function checkPerm($ticket, $check_perm)
