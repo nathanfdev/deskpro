@@ -2300,8 +2300,10 @@ class TicketController extends AbstractController
 
                 if ($this->person->PermissionsManager->TicketChecker->canModify($ticket, 'fields')) {
                     if ($this->request->request->has('custom_fields')) {
-                        $post_custom_fields = $this->request->get('custom_fields', []);
-                        $field_manager->saveFormToObject($post_custom_fields, $ticket);
+                        $postCustomFields = $this->request->get('custom_fields', []);
+                        $layoutCustomData = $this->filterSubmittedLayoutData($layout, 'ticket_field', $postCustomFields);
+
+                        $field_manager->saveFormToObject($layoutCustomData, $ticket, true);
                         $this->em->persist($ticket);
 
                         $new_custom_fields = $new_field_manager->createFormForOwner(
@@ -2327,18 +2329,18 @@ class TicketController extends AbstractController
                     }
 
                     if ($this->request->request->has('custom_person_fields')) {
-                        $person_field_manager->saveFormToObject(
-                            $this->request->get('custom_person_fields') ?: [],
-                            $ticket->person
-                        );
+                        $postCustomFields = $this->request->get('custom_person_fields') ?: [];
+                        $layoutCustomData = $this->filterSubmittedLayoutData($layout, 'user_field', $postCustomFields);
+
+                        $person_field_manager->saveFormToObject($layoutCustomData, $ticket->person, true);
                         $this->em->persist($ticket->person);
                     }
 
                     if ($this->request->request->has('custom_org_fields') && $ticket->person->organization) {
-                        $org_field_manager->saveFormToObject(
-                            $this->request->get('custom_org_fields') ?: [],
-                            $ticket->person->organization
-                        );
+                        $postCustomFields = $this->request->get('custom_org_fields') ?: [];
+                        $layoutCustomData = $this->filterSubmittedLayoutData($layout, 'org_field', $postCustomFields);
+
+                        $org_field_manager->saveFormToObject($layoutCustomData, $ticket->person->organization, true);
                         $this->em->persist($ticket->person->organization);
                     }
 
@@ -5872,5 +5874,27 @@ CSS;
         }
 
         return $account;
+    }
+
+    /**
+     * @param LayoutDisplay $layout
+     * @param string        $fieldType
+     * @param array         $submittedData
+     *
+     * @return array
+     */
+    private function filterSubmittedLayoutData(LayoutDisplay $layout, $fieldType, $submittedData)
+    {
+        $layoutCustomData = [];
+        foreach ($layout->all() as $layoutField) {
+            if ($layoutField->getFieldType() === $fieldType) {
+                $fieldName = 'field_'.$layoutField->getFieldId();
+                if (isset($submittedData[$fieldName])) {
+                    $layoutCustomData[$fieldName] = $submittedData[$fieldName];
+                }
+            }
+        }
+
+        return $layoutCustomData;
     }
 }
