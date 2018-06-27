@@ -109,7 +109,7 @@ class SearchBox extends React.Component {
         widget: 'SelectInput',
         props:  {
           dataSource: {
-            getOptions: title => this.props.dispatch(searchActions.loadProducts({ title }))
+            getOptions: search => this.props.dispatch(searchActions.loadProducts({ search }))
           },
           showSearch: true,
         },
@@ -120,7 +120,7 @@ class SearchBox extends React.Component {
         widget: 'SelectInput',
         props:  {
           dataSource: {
-            getOptions: title => this.props.dispatch(searchActions.loadCategories({ title }))
+            getOptions: search => this.props.dispatch(searchActions.loadCategories({ search }))
           },
           showSearch: true,
         },
@@ -131,7 +131,7 @@ class SearchBox extends React.Component {
         widget: 'SelectInput',
         props:  {
           dataSource: {
-            getOptions: title => this.props.dispatch(searchActions.loadPriorities({ title }))
+            getOptions: search => this.props.dispatch(searchActions.loadPriorities({ search }))
           },
           showSearch: true,
         },
@@ -157,7 +157,7 @@ class SearchBox extends React.Component {
         widget: 'SelectInput',
         props:  {
           dataSource: {
-            getOptions: title => this.props.dispatch(searchActions.loadWorkflows({ title }))
+            getOptions: search => this.props.dispatch(searchActions.loadWorkflows({ search }))
           },
         },
       },
@@ -200,11 +200,11 @@ class SearchBox extends React.Component {
       },
       {
         id:     'person_name',
-        label:  this.props.intl.formatMessage({ id: 'agent.general.name' }).toLowerCase(),
+        label:  this.props.intl.formatMessage({ id: 'agent.general.name' }).toLowerCase().replace(/ /, '-'),
         widget: 'SelectInput',
         props:  {
           dataSource: {
-            getOptions: name => this.props.dispatch(searchActions.loadPersons({ name }))
+            getOptions: search => this.props.dispatch(searchActions.loadPersons({ search }))
           },
           showSearch: true,
         },
@@ -214,6 +214,17 @@ class SearchBox extends React.Component {
         label:  this.props.intl.formatMessage({ id: 'agent.general.email_address' }).toLowerCase().replace(/ /, '-'),
         widget: 'TextInput',
         props:  {},
+      },
+      {
+        id:     'organization',
+        label:  this.props.intl.formatMessage({ id: 'agent.general.organization' }).toLowerCase().replace(/ /, '-'),
+        widget: 'SelectInput',
+        props:  {
+          dataSource: {
+            getOptions: search => this.props.dispatch(searchActions.loadOrganizations({ search }))
+          },
+          showSearch: true,
+        },
       },
     ];
     this.setState(tokenTypes);

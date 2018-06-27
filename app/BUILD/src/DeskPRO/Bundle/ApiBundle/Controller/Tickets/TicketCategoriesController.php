@@ -5,6 +5,8 @@ namespace DeskPRO\Bundle\ApiBundle\Controller\Tickets;
 use Application\DeskPRO\Entity\TicketCategory;
 use DeskPRO\Bundle\ApiBundle\ApiDoc\Annotation\ApiDoc;
 use DeskPRO\Bundle\ApiBundle\Controller\CrudController;
+use DeskPRO\Bundle\ApiBundle\Doctrine\RequestHelper\RequestQueryContext;
+use DeskPRO\Bundle\ApiBundle\Doctrine\RequestHelper\SearchHelper;
 use DeskPRO\Bundle\AppBundle\Annotation\ActionPermissions\Annotation\ApiModes;
 use Doctrine\ORM\QueryBuilder;
 use FOS\RestBundle\Controller\Annotations as Rest;
@@ -30,9 +32,7 @@ class TicketCategoriesController extends CrudController
     {
         parent::applyListFilters($qb, $alias, $request);
 
-        if ($request->get('title')) {
-            $qb->andWhere("$alias.title LIKE :title");
-            $qb->setParameter('title', '%'.addcslashes($request->get('title'), '%_').'%');
-        }
+        $context = new RequestQueryContext($qb, $alias, $request);
+        SearchHelper::applyFieldFilter($context, 'search', 'title');
     }
 }

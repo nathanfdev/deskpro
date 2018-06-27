@@ -76,3 +76,16 @@ export const loadPersons = createAction(
     });
   })
 );
+
+export const loadOrganizations = createAction(
+  'SEARCH_LOAD_ORGANIZATIONS',
+  (params = {}) => new Promise((resolve) => {
+    params.order_by = 'name';
+    params.order_dir = 'asc';
+    repository('Organization').search(params).then((promise) => {
+      const res = promise.getData();
+
+      resolve(res.data);
+    });
+  })
+);
