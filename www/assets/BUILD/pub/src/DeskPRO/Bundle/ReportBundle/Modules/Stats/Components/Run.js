@@ -243,7 +243,7 @@ class Run extends React.Component {
           <div className="title">{title}</div>
           <div className="ctrl">
             <Button size="medium" type="secondary" onClick={this.onRunClick}><i className="fa fa-refresh" /></Button>
-            <Button size="medium" onClick={this.onEditClick}>Edit Report</Button>
+            <Button size="medium" onClick={this.onEditClick}>Edit Stat</Button>
             {report.get('is_custom') && <Button size="medium" onClick={this.onDeleteClick}>Delete</Button>}
           </div>
         </div>

@@ -167,7 +167,7 @@ class EditContainer extends React.Component {
       <div style={{ textAlign: 'center', margin: '15px' }}>
         { report.get('is_custom')
           ? saveBtn
-          : <em>You cannot edit a built-in report. If you want to change it, click the clone button above.</em> }
+          : <em>You cannot edit a built-in stat. If you want to change it, click the clone button above.</em> }
       </div>
     );
 
@@ -196,7 +196,7 @@ class EditContainer extends React.Component {
               <Button size="medium" onClick={this.onCloneClick}><i className="fa fa-clone" /> Clone</Button>
             </div>
           </div>
-          : <div className="title-bar"><div className="title">New Report</div></div> }
+          : <div className="title-bar"><div className="title">New Stat</div></div> }
         {this.renderForm()}
       </div>
     );
