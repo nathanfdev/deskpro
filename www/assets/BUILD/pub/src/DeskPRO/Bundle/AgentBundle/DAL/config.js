@@ -23,6 +23,7 @@ export const repositoriesConfig = {
   PersonSetting:        { type: 'api', url: '/person_setting', repositoryClass: PersonSettingRepository },
   Project:              { type: 'api', url: '/task_projects', allowAll: true },
   Snippets:             { type: 'api', url: '/snippets', repositoryClass: SnippetsRepository },
+  Slas:                 { type: 'api', url: '/slas' },
   Timezone:             { type: 'api', url: '/timezones', allowAll: true },
   Topic:                { type: 'api', url: '/topics' },
   UserChat:             { type: 'api', url: '/user_chats', repositoryClass: UserChatRepository },

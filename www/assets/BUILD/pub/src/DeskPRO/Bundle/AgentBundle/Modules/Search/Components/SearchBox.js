@@ -39,7 +39,7 @@ class SearchBox extends React.Component {
     const tokenTypes = [
       {
         id:     'status',
-        label:  this.props.intl.formatMessage({ id: 'agent.general.status' }).toLowerCase(),
+        label:  this.props.intl.formatMessage({ id: 'agent.general.status' }).toLowerCase().replace(/ /, '-'),
         widget: 'SelectInput',
         props:  {
           dataSource: {
@@ -57,7 +57,7 @@ class SearchBox extends React.Component {
       },
       {
         id:     'department',
-        label:  this.props.intl.formatMessage({ id: 'agent.general.department' }).toLowerCase(),
+        label:  this.props.intl.formatMessage({ id: 'agent.general.department' }).toLowerCase().replace(/ /, '-'),
         widget: 'SelectInput',
         props:  {
           dataSource: {
@@ -73,7 +73,7 @@ class SearchBox extends React.Component {
       },
       {
         id:     'agent',
-        label:  this.props.intl.formatMessage({ id: 'agent.general.agent' }).toLowerCase(),
+        label:  this.props.intl.formatMessage({ id: 'agent.general.agent' }).toLowerCase().replace(/ /, '-'),
         widget: 'SelectInput',
         props:  {
           dataSource: {
@@ -105,7 +105,7 @@ class SearchBox extends React.Component {
       },
       {
         id:     'ticket_product',
-        label:  this.props.intl.formatMessage({ id: 'agent.general.product' }).toLowerCase(),
+        label:  this.props.intl.formatMessage({ id: 'agent.general.product' }).toLowerCase().replace(/ /, '-'),
         widget: 'SelectInput',
         props:  {
           dataSource: {
@@ -116,7 +116,7 @@ class SearchBox extends React.Component {
       },
       {
         id:     'ticket_category',
-        label:  this.props.intl.formatMessage({ id: 'agent.general.category' }).toLowerCase(),
+        label:  this.props.intl.formatMessage({ id: 'agent.general.category' }).toLowerCase().replace(/ /, '-'),
         widget: 'SelectInput',
         props:  {
           dataSource: {
@@ -127,7 +127,7 @@ class SearchBox extends React.Component {
       },
       {
         id:     'ticket_priority',
-        label:  this.props.intl.formatMessage({ id: 'agent.general.priority' }).toLowerCase(),
+        label:  this.props.intl.formatMessage({ id: 'agent.general.priority' }).toLowerCase().replace(/ /, '-'),
         widget: 'SelectInput',
         props:  {
           dataSource: {
@@ -138,7 +138,7 @@ class SearchBox extends React.Component {
       },
       {
         id:     'urgency',
-        label:  this.props.intl.formatMessage({ id: 'agent.general.urgency' }).toLowerCase(),
+        label:  this.props.intl.formatMessage({ id: 'agent.general.urgency' }).toLowerCase().replace(/ /, '-'),
         widget: 'SelectInput',
         props:  {
           dataSource: {
@@ -153,7 +153,7 @@ class SearchBox extends React.Component {
       },
       {
         id:     'ticket_workflow',
-        label:  this.props.intl.formatMessage({ id: 'agent.general.workflow' }).toLowerCase(),
+        label:  this.props.intl.formatMessage({ id: 'agent.general.workflow' }).toLowerCase().replace(/ /, '-'),
         widget: 'SelectInput',
         props:  {
           dataSource: {
@@ -163,7 +163,7 @@ class SearchBox extends React.Component {
       },
       {
         id:     'subject',
-        label:  this.props.intl.formatMessage({ id: 'agent.general.subject' }).toLowerCase(),
+        label:  this.props.intl.formatMessage({ id: 'agent.general.subject' }).toLowerCase().replace(/ /, '-'),
         widget: 'TextInput',
         props:  {},
       },
@@ -224,6 +224,27 @@ class SearchBox extends React.Component {
             getOptions: search => this.props.dispatch(searchActions.loadOrganizations({ search }))
           },
           showSearch: true,
+        },
+      },
+      {
+        id:     'sla',
+        label:  this.props.intl.formatMessage({ id: 'agent.general.sla' }).toLowerCase().replace(/ /, '-'),
+        widget: 'BooleanInput',
+        props:  {
+          translations: {
+            true:  this.props.intl.formatMessage({ id: 'agent.general.yes' }),
+            false: this.props.intl.formatMessage({ id: 'agent.general.no' }),
+          }
+        },
+      },
+      {
+        id:     'sla_status',
+        label:  this.props.intl.formatMessage({ id: 'agent.general.sla_status' }).toLowerCase().replace(/ /, '-'),
+        widget: 'SelectInput',
+        props:  {
+          dataSource: {
+            getOptions: search => this.props.dispatch(searchActions.loadSlas({ search }))
+          },
         },
       },
     ];

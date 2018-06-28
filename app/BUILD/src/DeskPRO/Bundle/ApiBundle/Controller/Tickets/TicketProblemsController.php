@@ -64,14 +64,13 @@ class TicketProblemsController extends CrudController
      */
     protected function applyListFilters(QueryBuilder $qb, $alias, Request $request)
     {
+        $context = new RequestQueryContext($qb, $alias, $request);
+        SearchHelper::applyFieldFilter($context, 'search', 'title');
+
         $isOpen = $request->get('is_open');
         if (!is_null($isOpen)) {
             $qb->andWhere("{$alias}.is_open = :is_open");
             $qb->setParameter('is_open', $isOpen);
-        }
-        if ($request->get('title')) {
-            $qb->andWhere("$alias.title LIKE :title");
-            $qb->setParameter('title', '%'.addcslashes($request->get('title'), '%_').'%');
         }
     }
 

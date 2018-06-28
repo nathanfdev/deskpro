@@ -89,3 +89,15 @@ export const loadOrganizations = createAction(
     });
   })
 );
+
+export const loadSlas = createAction(
+  'SEARCH_LOAD_SLAS',
+  (params = {}) => new Promise((resolve) => {
+    params.order_dir = 'asc';
+    repository('Slas').search(params).then((promise) => {
+      const res = promise.getData();
+
+      resolve(res.data);
+    });
+  })
+);
