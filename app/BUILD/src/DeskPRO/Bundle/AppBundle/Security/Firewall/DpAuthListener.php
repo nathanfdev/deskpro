@@ -22,6 +22,7 @@ use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
+use Symfony\Component\Security\Core\Authentication\Token\TokenInterface;
 use Symfony\Component\Security\Core\Exception\AuthenticationException;
 use Symfony\Component\Security\Core\Exception\BadCredentialsException;
 use Symfony\Component\Security\Http\Firewall\AbstractAuthenticationListener;
@@ -94,7 +95,29 @@ class DpAuthListener extends AbstractAuthenticationListener implements Container
         }
 
         try {
-            return $this->authenticationManager->authenticate($tokenOrResponse);
+            $returnValue = $this->authenticationManager->authenticate($tokenOrResponse);
+            if ($returnValue instanceof TokenInterface && $returnValue->getUser() instanceof Person) {
+                $person = $returnValue->getUser();
+
+                // check if user has this brand
+                $brand = $this->container->get('brand_stack')->getActive()->getBrand();
+                if ($brand && !$person->hasBrand($brand)) {
+                    // reg for this brand is enabled
+                    // add person to this brand and continue log in
+                    if ($this->container->get('dp_authentication_manager.user')->isRegistrationFormVisible()) {
+                        $person->addBrand($brand);
+
+                        $em = $this->container->get('doctrine.orm.default_entity_manager');
+                        $em->persist($person);
+                        $em->flush();
+                    } else {
+                        // no way to log in, show incorrect credentials message
+                        throw new BadCredentialsException('portal.account.login-invalid');
+                    }
+                }
+            }
+
+            return $returnValue;
         } catch (AuthenticationException $e) {
             if (isset($abuseCheck)) {
                 $this->container->get('anti_abuse')->saveRateLimit($abuseCheck);

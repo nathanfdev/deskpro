@@ -5,7 +5,7 @@ class PortalUrlGenerator {
   /*
    * base_url must NOT contain lang_code. it is base path to index.php via the web.
    */
-  constructor(portalWindow) {
+  constructor() {
     this.lang_code = portalWindow.lang;
     this.is_multi_lang = portalWindow.is_multi_lang;
     this.base_url = String(portalWindow.base_url).replace(/\/$/, ''); // remove trailing slash
@@ -15,22 +15,22 @@ class PortalUrlGenerator {
   }
 
   path(path) {
-    return this._makeUrl(this.base_url, path);
+    return PortalUrlGenerator.makeUrl(this.base_url, path);
   }
 
   rootPath(path) {
-    return this._makeUrl(this.root_url, path);
+    return PortalUrlGenerator.makeUrl(this.root_url, path);
   }
 
   legacyWebPath(path) {
-    return this._makeUrl(this.legacy_web_url, path);
+    return PortalUrlGenerator.makeUrl(this.legacy_web_url, path);
   }
 
   appAssetsPath(path) {
-    return this._makeUrl(this.app_assets_url, path);
+    return PortalUrlGenerator.makeUrl(this.app_assets_url, path);
   }
 
-  _makeUrl(base, path) {
+  static makeUrl(base, path) {
     const returnPath = [base];
 
     // remove leading/trailing slashes from path input
@@ -49,4 +49,4 @@ class PortalUrlGenerator {
   }
 }
 
-export const portalUrlGenerator = new PortalUrlGenerator(portalWindow);
+export const portalUrlGenerator = new PortalUrlGenerator();
