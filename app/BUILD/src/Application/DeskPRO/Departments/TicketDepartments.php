@@ -2,6 +2,7 @@
 
 namespace Application\DeskPRO\Departments;
 
+use Application\DeskPRO\Entity\Brand;
 use Application\DeskPRO\Hierarchy\LazyPreloadedHierarchy;
 
 class TicketDepartments extends LazyPreloadedHierarchy
@@ -50,10 +51,19 @@ class TicketDepartments extends LazyPreloadedHierarchy
     }
 
     /**
+     * @param Brand $brand
+     *
      * @return \Application\DeskPRO\Entity\Department
      */
-    public function getDefaultDepartment()
+    public function getDefaultDepartment(Brand $brand = null)
     {
+        if ($brand) {
+            $defaultBrandDepartment = $brand->getDepartments()->first();
+            if ($defaultBrandDepartment) {
+                return $defaultBrandDepartment;
+            }
+        }
+
         if (!$this->default_id || !$this->getById($this->default_id) || $this->hasChildren($this->default_id)) {
             foreach ($this->getAll() as $dep) {
                 if (!$this->hasChildren($dep)) {

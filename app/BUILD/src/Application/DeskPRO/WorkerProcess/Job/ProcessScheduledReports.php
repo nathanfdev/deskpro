@@ -50,9 +50,11 @@ class ProcessScheduledReports extends AbstractJob
                 $report->setNextSendDate($nextSendDate);
             }
 
-            if ($report->getNextSendDate()->setTimezone($timezone) <= $now) {
-                $savedReport = $reportSaver->saveReport($report->getReport(), $report->getPerson());
-                $this->sendProcessedReport($report, $savedReport);
+            if ($report->getSendTo()) {
+                if ($report->getNextSendDate()->setTimezone($timezone) <= $now) {
+                    $savedReport = $reportSaver->saveReport($report->getReport(), $report->getPerson());
+                    $this->sendProcessedReport($report, $savedReport);
+                }
             }
 
             $nextSendDate = $reportSaver->calculateNextSendDate(
@@ -70,14 +72,14 @@ class ProcessScheduledReports extends AbstractJob
 
     protected function sendProcessedReport(ScheduledReport $scheduledReport, SavedDashboardReport $savedReport)
     {
-        $message = $this->getContainer()->getMailer()->createMessage();
-        $em      = $this->getContainer()->get('doctrine.orm.default_entity_manager');
+        $em = $this->getContainer()->get('doctrine.orm.default_entity_manager');
 
         /** @var PersonRepository $personRepository */
         $personRepository = $em->getRepository(Person::class);
 
         foreach ($scheduledReport->getSendTo() as $to) {
-            $person = $personRepository->findOneByEmail($to);
+            $message = $this->getContainer()->getMailer()->createMessage();
+            $person  = $personRepository->findOneByEmail($to);
 
             $message->setTemplate(
                 'DeskPRO:emails_user:scheduled-report.html.twig',

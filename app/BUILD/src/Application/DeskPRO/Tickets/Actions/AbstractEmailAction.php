@@ -251,8 +251,8 @@ abstract class AbstractEmailAction extends AbstractContainerAwareAction implemen
     protected function renderStringTemplate($string, Ticket $ticket, ExecutorContextInterface $context, array $extra_vars = null)
     {
         /** @var TemplatingExtension $renderer */
-        $renderer = $this->getContainer()->getTwig()->getExtension('deskpro_templating');
-        $actionVars = ActionVars::getContextVars($context);
+        $renderer          = $this->getContainer()->getTwig()->getExtension('deskpro_templating');
+        $actionVars        = ActionVars::getContextVars($context);
         $extraRendererVars = empty($extra_vars) ? $actionVars : array_merge($actionVars, $extra_vars);
 
         return $renderer->renderTicketTemplate($string, $ticket, $context, $extraRendererVars);
@@ -318,8 +318,10 @@ abstract class AbstractEmailAction extends AbstractContainerAwareAction implemen
 
             return false;
         }
-        $factory = $this->getContainer()->get('email.user_viewmodel_factory');
-        $action  = 'create'.$viewModel.'Model';
+        $factory = strpos($template, 'SendmailBundle:emails_agent:') === 0
+                    ? $this->getContainer()->get('email.agent_viewmodel_factory')
+                    : $this->getContainer()->get('email.user_viewmodel_factory');
+        $action = 'create'.$viewModel.'Model';
 
         if (!is_callable([$factory, $action])) {
             $context->getLogger()->info('Missing method '.$action.' in factory');

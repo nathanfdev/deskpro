@@ -467,6 +467,7 @@ class SystemErrorHandler
         $context_data = '';
 
         $no_send_error = false;
+        $no_log_error  = false;
 
         // Dont output apc warnings (but still log them)
         if (strpos($errstr, 'Unable to allocate memory for pool') !== false) {
@@ -487,6 +488,7 @@ class SystemErrorHandler
         // Dont send connection errors with smtp
         if (strpos($errfile, 'StreamBuffer.php') !== false && strpos($errstr, 'bytes failed with errno') !== false) {
             $no_send_error = true;
+            $no_log_error  = true; // logged through normal email log
         }
 
         if (strpos($errstr, 'htmlspecialchars(): Invalid multibyte sequence in argument') !== false) {
@@ -537,6 +539,7 @@ class SystemErrorHandler
             || strpos($errstr, 'Unknown: LOGIN failed') !== false
         ) {
             $no_send_error = true;
+            $no_log_error  = true; // logged through normal error log
         }
 
         // Socket/network errors
@@ -591,6 +594,7 @@ class SystemErrorHandler
             'error_time'        => microtime(true),
             'time_to_error'     => defined('DP_START_TIME') ? sprintf('%0.4f', microtime(true) - DP_START_TIME) : 0,
             'no_send_error'     => $no_send_error,
+            'no_log_error'      => $no_log_error,
             'client_user_agent' => isset($_SERVER['HTTP_USER_AGENT']) ? $_SERVER['HTTP_USER_AGENT'] : '',
             'url'               => $url,
             'request_id'        => self::getRequestId(),
@@ -646,6 +650,10 @@ class SystemErrorHandler
      */
     public static function processErrorInfo(array $errinfo)
     {
+        if (isset($errinfo['no_log_error']) && $errinfo['no_log_error']) {
+            return;
+        }
+
         $str       = [];
         $extraData = self::getDpEnv()->getConfig('settings.extra_errorlog_fields', []);
 
@@ -723,8 +731,10 @@ class SystemErrorHandler
             $str = substr_replace($str, '<DP_LOG.BEGIN:', $pos, strlen('<DP_LOG:'));
         }
 
-        $dbInfo = LowUtil::getMysqlInfoFromConfigArray(self::getDpEnv()->getConfig('database'));
-        $str    = str_replace($dbInfo['password'], '***', $str);
+        if (self::getDpEnv()->getConfig('database')) {
+            $dbInfo = LowUtil::getMysqlInfoFromConfigArray(self::getDpEnv()->getConfig('database'));
+            $str    = str_replace($dbInfo['password'], '***', $str);
+        }
 
         // Always write error line to standard error log
         if (defined('DPC_IS_CLOUD') && defined('DPC_SITE_DOMAIN')) {

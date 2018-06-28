@@ -83,7 +83,7 @@ class PdfTableRenderer implements ReportsRendererInterface
     /**
      * {@inheritdoc}
      */
-    public function mergeResults(array $results, array $options)
+    public function mergeResults(array $results, $graphType, array $options)
     {
         // TODO: Implement mergeResults() method.
     }

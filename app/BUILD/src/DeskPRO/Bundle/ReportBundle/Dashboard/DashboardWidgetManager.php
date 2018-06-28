@@ -422,7 +422,7 @@ class DashboardWidgetManager
         });
         if (count($renderedResults) > 1) {
             if ($multiLayer) {
-                return $renderer->mergeResults($renderedResults, $options ?: []);
+                return $renderer->mergeResults($renderedResults, $graphType, $options ?: []);
             }
 
             // SPLIT BY, return as array

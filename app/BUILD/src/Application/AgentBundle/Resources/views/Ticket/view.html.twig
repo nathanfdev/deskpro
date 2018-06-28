@@ -596,13 +596,15 @@
                                         {% for a in agent_parts if a.person.id == app.user.id %}
                                             {% set show = 'display:none;' %}
                                         {% endfor %}
-                                        <span id="{{ baseId }}_follower_me" class="assign-self-link-wrap"
-                                              style="{{ show }}" data-me="{{ app.user.id }}">
-						&middot;
-											<a class="assign-self-link">
-							{{ phrase('agent.general.add_me') }}
-						</a>
-                    </span>
+                                        {% if ticket_perms.modify_assign_agent %}
+                                          <span id="{{ baseId }}_follower_me" class="assign-self-link-wrap"
+                                                style="{{ show }}" data-me="{{ app.user.id }}">
+                                                &middot;
+                                                <a class="assign-self-link">
+                                                  {{ phrase('agent.general.add_me') }}
+                                                </a>
+                                          </span>
+                                        {% endif %}
                                     </label>
                                     <div class="followers-list">
                                         <ul id="{{ baseId }}_followers_list">

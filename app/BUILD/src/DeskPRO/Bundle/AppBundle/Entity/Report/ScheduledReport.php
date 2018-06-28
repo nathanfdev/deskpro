@@ -6,9 +6,11 @@ use Application\Deskpro\Entity\Person;
 use Application\DeskPRO\Entity\ReportDashboardReport;
 use DeskPRO\Bundle\AppBundle\Entity\EntityInterface;
 use DeskPRO\Bundle\AppBundle\Entity\NotifyPropertyChangedTrait;
+use DeskPRO\Component\Util\ListUtils;
 use Doctrine\Common\NotifyPropertyChanged;
 use Doctrine\ORM\Mapping as ORM;
 use JMS\Serializer\Annotation as JMS;
+use Orb\Validator\StringEmail;
 use Symfony\Component\Validator\Constraints as Assert;
 
 /**
@@ -244,7 +246,13 @@ class ScheduledReport implements EntityInterface, NotifyPropertyChanged
      */
     public function getSendTo()
     {
-        return $this->sendTo;
+        if (!$this->sendTo) {
+            return [];
+        }
+
+        return ListUtils::filterMap($this->sendTo, function ($v) {
+            return trim($v) ?: null;
+        });
     }
 
     /**
@@ -254,6 +262,14 @@ class ScheduledReport implements EntityInterface, NotifyPropertyChanged
      */
     public function setSendTo(array $sendTo)
     {
+        $sendTo = ListUtils::filterMap($sendTo, function ($v) {
+            $v = trim($v);
+            if (!StringEmail::isValueValid($v)) {
+                return null;
+            }
+
+            return $v;
+        });
         $this->setModelField('sendTo', $sendTo);
 
         return $this;

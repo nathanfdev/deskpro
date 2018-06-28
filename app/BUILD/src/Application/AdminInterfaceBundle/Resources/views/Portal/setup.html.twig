@@ -3,7 +3,8 @@
 <div class="content-wrapper new-style">
     <section class="content setup">
 
-        <h1><i class="fa fa-cog"></i> {{ phrase('admin.setup.user_interface') }}</h1>
+        <h1 ng-if="brand_id == 'new'"><i class="fa fa-cog"></i> New Brand</h1>
+        <h1 ng-if="brand_id != 'new'"><i class="fa fa-cog"></i> {{ phrase('admin.setup.user_interface') }}</h1>
 
         <form>
             <div>
@@ -78,27 +79,53 @@
 
                         <div class="bucket-two-thirds">
                             <div class="form-text">
-                                <p>{{ phrase('admin.setup.helpdesk_name_help') }}</p>
+                                <p>{{ phrase('admin.setup.helpdesk_name_help') }}</p>default
                             </div>
                         </div>
                     </div>
+                </div><!-- End .content-section -->
+            </div>
 
-                    <div class="row" ng-if="brand.id != default_brand.id">
+
+            <div class="content-section" ng-if="brand.id != default_brand.id">
+                {% if app.isCloud() %}
+                    <h2 class="with-divider form-header">
+                        <span>
+                            Helpdesk Domain &nbsp;&nbsp;
+                            <input type="radio" ng-model="Ctrl.settings.domain_choice" value="default" style="display: inline-block; margin-right: 5px; width: auto; float: none; vertical-align: baseline;" /> Deskpro Domain
+                            &nbsp;&nbsp;
+                            <input type="radio" ng-model="Ctrl.settings.domain_choice" value="custom" style="display: inline-block; margin-right: 5px; width: auto; float: none; vertical-align: baseline;" /> Custom
+                        </span>
+                    </h2>
+
+                    <div class="row">
                         <div class="bucket-third">
                             <div class="inline-input">
-                                <label>{{ phrase('admin.setup.helpdesk_url') }}:</label>
-                                <input id="helpdesk_url" type="text" placeholder="{{ phrase('admin.setup.helpdesk_url') }}" ng-model="Ctrl.settings.deskpro_url" />
-                            </div>
-                        </div>
-
-                        <div class="bucket-two-thirds">
-                            <div class="form-text">
-                                <p>{{ phrase('admin.setup.helpdesk_url_help') }}</p>
+                                <label>Helpdesk URL:</label>
+                                https://<input id="helpdesk_url" type="text" placeholder="example" ng-model="Ctrl.settings.deskpro_domain" style="width: 175px; float: none; display: inline;" /><span ng-show="Ctrl.settings.domain_choice == 'default'">.deskpro.com</span>/
                             </div>
                         </div>
                     </div>
 
-                    <div class="row" ng-show="brand_id != 'new' && brand.id != default_brand.id">
+                    <div style="margin-top: 5px; margin-left: 170px; background: #d8edf6; padding: 8px; width: 500px;" ng-show="Ctrl.settings.domain_choice == 'custom'">
+                        <p>
+                            <strong>Important</strong>: You must edit your DNS to create a <code>CNAME</code> record to <code>{{ constant('DPC_SITE_DOMAIN') }}</code>
+                        </p>
+                        <p>
+                            For more information, refer to <a href="http://support.deskpro.com/kb/articles/79-using-a-custom-domain-name" target="_blank">this Deskpro knowledgebase article</a>.
+                        </p>
+                    </div>
+                {% else %}
+                    <h2 class="with-divider form-header"><span>Helpdesk URL</span></h2>
+
+                    <div class="bucket-third">
+                        <div class="inline-input">
+                            <label>{{ phrase('admin.setup.helpdesk_url') }}:</label>
+                            <input id="helpdesk_url" type="text" placeholder="{{ phrase('admin.setup.helpdesk_url') }}" ng-model="Ctrl.settings.deskpro_url" />
+                        </div>
+                    </div>
+
+                    <div class="row">
                         <div class="bucket-third">
                             <div class="inline-input">
                                 <label>{{ phrase('admin.setup.view_brand') }}:</label>
@@ -106,18 +133,7 @@
                             </div>
                         </div>
                     </div>
-
-                    {% if app.isCloud() %}
-                        <div style="margin-top: 5px; margin-left: 170px; background: #d8edf6; padding: 8px; width: 500px;">
-                            <p>
-                                <strong>Important</strong>: You must edit your DNS to create a <code>CNAME</code> record to <code>{{ constant('DPC_SITE_DOMAIN') }}</code>
-                            </p>
-                            <p>
-                                For more information, refer to <a href="http://support.deskpro.com/kb/articles/79-using-a-custom-domain-name" target="_blank">this Deskpro knowledgebase article</a>.
-                            </p>
-                        </div>
-                    {% endif %}
-                </div><!-- End .content-section -->
+                {% endif %}
             </div>
 
             {##########################################################################################################}

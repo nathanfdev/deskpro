@@ -13,7 +13,6 @@ use Application\DeskPRO\DBAL\SchemaHelper;
 use DeskPRO\Component\Doctrine\ORM\Tools\SchemaTool as DPSchemaTool;
 use Doctrine\ORM\EntityManager;
 use Doctrine\ORM\PersistentCollection;
-use Doctrine\ORM\Tools\SchemaTool;
 
 /**
  * Simple utility methods for working with the ORM.
@@ -43,19 +42,20 @@ class Util
 
     /**
      * @param \Doctrine\ORM\EntityManager $em
+     * @param bool                        $ignoreUnknownTables
      *
      * @return array
      */
-    public static function getUpdateSchemaSql(EntityManager $em = null)
+    public static function getUpdateSchemaSql(EntityManager $em = null, $ignoreUnknownTables = false)
     {
         if ($em === null) {
             $em = App::getOrm();
         }
 
         $metadata = $em->getMetadataFactory()->getAllMetadata();
-        $tool     = new SchemaTool($em);
+        $tool     = new DPSchemaTool($em);
 
-        $arr   = $tool->getUpdateSchemaSql($metadata, true);
+        $arr   = $tool->getUpdateSchemaSql($metadata, true, $ignoreUnknownTables);
         $lines = [];
         foreach ($arr as $a) {
             // Doctrine doesn't seem to detect this properly and always thinks this is needed

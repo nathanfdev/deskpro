@@ -18,7 +18,8 @@ class EditContainer extends React.Component {
     labels:       PropTypes.object.isRequired,
     onCloneClick: PropTypes.func.isRequired,
     onRunClick:   PropTypes.func.isRequired,
-    dispatch:     PropTypes.func.isRequired
+    dispatch:     PropTypes.func.isRequired,
+    onSubmit:     PropTypes.func.isRequired
   };
 
   static dpqlParser(query) {
@@ -56,10 +57,9 @@ class EditContainer extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
-      saving:        false,
-      error:         false,
-      formErrors:    {},
-      extendedQuery: false,
+      saving:     false,
+      error:      false,
+      formErrors: {},
       ...EditContainer.getStateFromReport(props.report)
     };
   }
@@ -104,15 +104,18 @@ class EditContainer extends React.Component {
     };
 
     this.setState({
-      saving:        true,
-      error:         false,
-      formErrors:    {},
-      extendedQuery: reportData.inputMode === 'dpql'
+      saving:     true,
+      error:      false,
+      formErrors: {}
     });
 
     dispatch(saveReport(reportData))
         .then(() => {
-          this.setState({ saving: false, error: false, formErrors: {} });
+          const current = transformReportDataToApi(reportData);
+          current.id = reportData.id;
+          current.is_custom = true;
+          current.extended_query = reportData.raw ? reportData.raw.indexOf('LAYER WITH') !== -1 : false;
+          this.setState({ saving: false, error: false, formErrors: {} }, () => this.props.onSubmit(current));
         })
         .catch((response) => {
           const flattenErrors = {};
@@ -138,7 +141,7 @@ class EditContainer extends React.Component {
   };
 
   renderForm() {
-    const { initialFormValue, saving, error, formErrors, extendedQuery } = this.state;
+    const { initialFormValue, saving, error, formErrors } = this.state;
     const { groupParams, report, labels } = this.props;
 
     const EditStatForm = reduxForm({
@@ -174,7 +177,6 @@ class EditContainer extends React.Component {
         formErrors={formErrors}
         labels={labels.toJS()}
         groupParams={groupParams.toJS()}
-        extendedQuery={extendedQuery || report.get('extended_query', false)}
         dpqlParser={EditContainer.dpqlParser}
       />
       {controls}

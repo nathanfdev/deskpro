@@ -117,10 +117,10 @@ class VerifyDepartment implements TicketSaveActionInterface
             ? DefaultDepartmentSettings::DEFAULT_DEPARTMENT_AGENT_TYPE
             : DefaultDepartmentSettings::DEFAULT_DEPARTMENT_USER_TYPE;
 
-        $defaultDepartment = $this->helper->getDefaultDepartment($type);
+        $defaultDepartment = $this->helper->getDefaultDepartment($type, $ticket->getBrand());
 
         if (!$defaultDepartment || $this->ticketDeps->getChildren($defaultDepartment)) {
-            $defaultDepartment = $this->ticketDeps->getDefaultDepartment();
+            $defaultDepartment = $this->ticketDeps->getDefaultDepartment($ticket->getBrand());
             if ($defaultDepartment) {
                 $context->getLogger()->info(
                     sprintf(

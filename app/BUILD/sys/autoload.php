@@ -58,7 +58,6 @@ $loader->addClassMap([
     'CssMin'                                          => DP_APP_DIR.'/vendor-src/cssmin/cssmin.php',
     'HipChatApi'                                      => DP_APP_DIR.'/vendor-src/hipchat/HipChatApi.php',
     'Markdown_Parser'                                 => DP_APP_DIR.'/vendor-src/php-markdown/markdown.php',
-    'FineDiff'                                        => DP_APP_DIR.'/vendor-src/PHP-FineDiff/finediff.php',
     'GoogleOpenID'                                    => DP_APP_DIR.'/vendor-src/googleopenid/GoogleOpenID.php',
     'POParser'                                        => DP_APP_DIR.'/vendor-src/simplepo/POParser.php',
     'TempPoMsgStore'                                  => DP_APP_DIR.'/vendor-src/simplepo/POParser.php',
