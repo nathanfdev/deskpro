@@ -149,6 +149,9 @@ class PersonType extends AbstractType
                 'by_reference' => false,
                 'required'     => false,
             ])
+            ->add('is_disabled', ApiBooleanType::class, [
+                'required' => false,
+            ])
         ;
 
         // resolve field name aliases
