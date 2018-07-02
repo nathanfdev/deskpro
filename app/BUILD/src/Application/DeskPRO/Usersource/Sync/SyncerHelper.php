@@ -129,7 +129,7 @@ class SyncerHelper
             LoginProcessor::tryAutoAgent($usersource, $person);
         }
 
-        if (!empty($user_info['picture_data'])) {
+        if (!empty($user_info['picture_data']) && $usersource->getOption('syncProfilePictures', false)) {
             $this->updatePictureData($person, $user_info['picture_data']);
         }
 

@@ -46,6 +46,7 @@ class AppOptionsMapper
         $options['password']                = $settings->get('service_password');
         $options['accountFilterFormat']     = $a_filter ? $a_filter : null;
         $options['disable_cert_validation'] = $settings->get('disable_cert_validation');
+        $options['syncProfilePictures']     = $settings->get('sync_profile_pictures');
         $options['ldapPaging']              = $settings->get('ldap_paging');
         $options['ldapPerPage']             = $settings->get('ldap_per_page');
         $options['raw_info_filter']         = $settings->get('raw_info_filter');
