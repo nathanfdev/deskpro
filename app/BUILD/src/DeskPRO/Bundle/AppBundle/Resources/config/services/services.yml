@@ -181,6 +181,10 @@ services:
     class: DeskPRO\Bundle\AppBundle\TicketFilters\TicketSqlMatcher
     factory: "ticketfilters.matcher_factory:createSqlMatcher"
 
+  ticketfilter.elastic_matcher:
+    class: DeskPRO\Bundle\AppBundle\TicketFilters\ElasticMatcher
+    factory: "ticketfilters.matcher_factory:createElasticMatcher"
+
   ticketfilters.queryparser:
     class: DeskPRO\Component\FilterQueryLanguage\Parser
 

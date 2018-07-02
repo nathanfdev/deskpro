@@ -2,6 +2,7 @@
 
 namespace DpTest\Bundle\AppBundle\TicketFilters;
 
+use Application\DeskPRO\NewSearch\Manager\Elasticsearch;
 use DeskPRO\Bundle\AppBundle\TicketFilters\Context;
 use DeskPRO\Bundle\AppBundle\TicketFilters\CustomFieldSet;
 use DeskPRO\Bundle\AppBundle\TicketFilters\Model\Agent;
@@ -11,10 +12,14 @@ use DeskPRO\Bundle\AppBundle\TicketFilters\Terms\TicketBasicTermsHandler;
 use DeskPRO\Bundle\AppBundle\TicketFilters\TicketSearchParams;
 use DeskPRO\Bundle\AppBundle\TicketFilters\TicketSqlMatcher;
 use DeskPRO\Bundle\AppBundle\TicketFilters\ValueResolver;
-use DeskPRO\Component\FilterQueryLanguage\Parser;
 use DpTestSrc\TestBundle\Mock\Dbal\ConnectionMock;
 
-abstract class BaseTicketSqlMatcherTest extends \PHPUnit_Framework_TestCase
+require_once __DIR__.'/AbstractMatcherTest.php';
+
+/**
+ * Class BaseTicketSqlMatcherTest.
+ */
+abstract class AbstractTicketSqlMatcherTest extends AbstractMatcherTest
 {
     /**
      * @var ValueResolver
@@ -67,7 +72,7 @@ abstract class BaseTicketSqlMatcherTest extends \PHPUnit_Framework_TestCase
     protected function setUpMatcher()
     {
         $this->matcher = new TicketSqlMatcher($this->valueResolver, [
-            new TicketBasicTermsHandler(),
+            new TicketBasicTermsHandler($this->getMockBuilder(Elasticsearch::class)->disableOriginalConstructor()->getMock()),
             new CustomFieldsTermsHandler(new CustomFieldSet([
                 new CustomField(1, 'choice', ['my_choice']),
                 new CustomField(2, 'choice', ['my_other_choice']),
@@ -108,23 +113,6 @@ abstract class BaseTicketSqlMatcherTest extends \PHPUnit_Framework_TestCase
 
         $this->assertEquals($expectedSql, $realSql);
         $this->assertEquals($expectedParams, $realParams);
-    }
-
-    /**
-     * @param string             $fql
-     * @param TicketSearchParams $params
-     *
-     * @return \DeskPRO\Bundle\AppBundle\TicketFilters\SqlBuilder\SqlBuilder
-     */
-    public function queryFromFql($fql, TicketSearchParams $params = null)
-    {
-        $qb = $this->matcher->getCountQueryBuilder(
-            $this->parseFql($fql),
-            $this->matcherContext,
-            $params
-        );
-
-        return $qb;
     }
 
     /**
@@ -182,15 +170,19 @@ abstract class BaseTicketSqlMatcherTest extends \PHPUnit_Framework_TestCase
     }
 
     /**
-     * @param $fql
+     * @param string             $fql
+     * @param TicketSearchParams $params
      *
-     * @return array
+     * @return \DeskPRO\Bundle\AppBundle\TicketFilters\SqlBuilder\SqlBuilder
      */
-    protected function parseFql($fql)
+    public function queryFromFql($fql, TicketSearchParams $params = null)
     {
-        $parser = new Parser();
-        $q      = $parser->parseQuery($fql);
+        $qb = $this->matcher->getCountQueryBuilder(
+            $this->parseFql($fql),
+            $this->matcherContext,
+            $params
+        );
 
-        return $q;
+        return $qb;
     }
 }

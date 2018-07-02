@@ -7,11 +7,21 @@ use DeskPRO\Bundle\AppBundle\TicketFilters\Context;
 use DeskPRO\Bundle\AppBundle\TicketFilters\Model\Entity\TicketModel;
 use DeskPRO\Bundle\AppBundle\TicketFilters\OptValue\OptValue;
 use DeskPRO\Bundle\AppBundle\TicketFilters\TermFieldIds;
+use DeskPRO\Bundle\AppBundle\TicketFilters\Terms\Util\CheckValueUtils;
+use DeskPRO\Bundle\AppBundle\TicketFilters\Terms\Util\ElasticQueryUtils;
+use DeskPRO\Bundle\AppBundle\TicketFilters\Terms\Util\SqlQueryUtils;
 use DeskPRO\Component\FilterQueryLanguage\Query\Node\Term;
+use DeskPRO\Component\FilterQueryLanguage\Query\Query;
 use DeskPRO\Component\Util\ListUtils;
+use DeskPRO\Component\Util\MemoizeMethod;
 
-class PersonTermsHandler extends AbstractTermsHandler
+/**
+ * Class PersonTermsHandler.
+ */
+class PersonTermsHandler implements ValueTermHandlerInterface, SqlTermHandlerInterface, ElasticTermHandlerInterface
 {
+    use MemoizeMethod;
+
     /**
      * @var PersonRepos
      */
@@ -28,43 +38,109 @@ class PersonTermsHandler extends AbstractTermsHandler
     }
 
     /**
-     * {@inheritdoc}
+     * @return HandlerDef
      */
-    public function getHandledFields()
+    public function getValueHandlerDef()
     {
-        return [
-            TermFieldIds::PERSON_ID,
-            //Terms::PERSON_LABELS,
-            //Terms::PERSON_USERGROUPS,
-        ];
+        return $this->memoizedRun(function () {
+            return HandlerDef::create()
+                ->addField(TermFieldIds::PERSON_ID, Query::commonIdOperators());
+        }, __FUNCTION__);
     }
 
+    /**
+     * @return HandlerDef
+     */
+    public function getSqlHandlerDef()
+    {
+        return $this->getValueHandlerDef();
+    }
+
+    /**
+     * {@inheritdoc}
+     */
     public function doesTicketMatch($fieldId, $operator, OptValue $options, TicketModel $ticketModel, Context $context, Term $term)
     {
         switch ($fieldId) {
             case TermFieldIds::PERSON_ID:
                 $value = $this->normalizePersonId($options->getValue());
 
-                return $this->checkValue($ticketModel->person->id, $operator, $value);
+                return CheckValueUtils::checkValue($ticketModel->person->id, $operator, $value);
 
             default:
                 throw new \InvalidArgumentException();
         }
     }
 
+    /**
+     * {@inheritdoc}
+     */
     public function buildQueryCondition($fieldId, $operator, OptValue $options, Context $context, Term $term)
     {
         switch ($fieldId) {
             case TermFieldIds::PERSON_ID:
                 $value = $this->normalizePersonId($options->getValue());
 
-                return $this->checkValueQueryCondition('{tickets}.person_id', $operator, $value);
+                return SqlQueryUtils::buildQueryCondition('{tickets}.person_id', $operator, $value);
 
             default:
                 throw new \InvalidArgumentException();
         }
     }
 
+    /**
+     * {@inheritdoc}
+     */
+    public function buildQueryFuncCondition($name, $fieldId, $operator, array $params, Context $context, Term $term)
+    {
+        throw new \RuntimeException('No functions defined');
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function doesTicketMatchFunc($name, $fieldId, $operator, array $params, TicketModel $ticketModel, Context $context, Term $term)
+    {
+        throw new \RuntimeException('No functions defined');
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function getElasticHandlerDef()
+    {
+        return $this->getValueHandlerDef();
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function buildElasticCondition($fieldId, $operator, OptValue $options, Context $context, Term $term)
+    {
+        switch ($fieldId) {
+            case TermFieldIds::PERSON_ID:
+                $value = $this->normalizePersonId($options->getValue());
+
+                return ElasticQueryUtils::buildQuery('person_id', $operator, $value);
+
+            default:
+                throw new \InvalidArgumentException();
+        }
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function buildElasticFuncCondition($name, $fieldId, $operator, array $params, Context $context, Term $term)
+    {
+        throw new \RuntimeException('No functions defined');
+    }
+
+    /**
+     * @param $value
+     *
+     * @return array|int
+     */
     private function normalizePersonId($value)
     {
         if (is_array($value)) {

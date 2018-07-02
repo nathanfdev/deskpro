@@ -5,10 +5,13 @@ namespace DeskPRO\Bundle\AppBundle\TicketFilters;
 use DeskPRO\Bundle\AppBundle\TicketFilters\Model\Agent;
 use Symfony\Component\PropertyAccess\PropertyAccess;
 
+/**
+ * Class Context.
+ */
 class Context
 {
     /**
-     * @var AgentContext
+     * @var Agent
      */
     private $agent;
 
@@ -22,6 +25,11 @@ class Context
      */
     private $contextAccessor;
 
+    /**
+     * Constructor.
+     *
+     * @param Agent $agent
+     */
     public function __construct(Agent $agent)
     {
         $this->agent = $agent;
@@ -42,7 +50,7 @@ class Context
     }
 
     /**
-     * @return AgentContext
+     * @return Agent
      */
     public function getAgent()
     {

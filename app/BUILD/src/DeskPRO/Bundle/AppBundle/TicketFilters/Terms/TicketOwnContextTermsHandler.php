@@ -8,12 +8,21 @@ use DeskPRO\Bundle\AppBundle\TicketFilters\Model\Entity\TicketModel;
 use DeskPRO\Bundle\AppBundle\TicketFilters\OptValue\OptValue;
 use DeskPRO\Bundle\AppBundle\TicketFilters\SqlBuilder\SqlCondition;
 use DeskPRO\Bundle\AppBundle\TicketFilters\TermFieldIds;
+use DeskPRO\Bundle\AppBundle\TicketFilters\Terms\Util\CheckValueUtils;
+use DeskPRO\Bundle\AppBundle\TicketFilters\Terms\Util\SqlQueryUtils;
 use DeskPRO\Component\FilterQueryLanguage\Query\Node\Term;
+use DeskPRO\Component\FilterQueryLanguage\Query\Query;
 use DeskPRO\Component\Util\ListUtils;
+use DeskPRO\Component\Util\MemoizeMethod;
 use Doctrine\DBAL\Connection;
 
-class TicketOwnContextTermsHandler extends AbstractTermsHandler
+/**
+ * Class TicketOwnContextTermsHandler.
+ */
+class TicketOwnContextTermsHandler implements ValueTermHandlerInterface, SqlTermHandlerInterface, ElasticTermHandlerInterface
 {
+    use MemoizeMethod;
+
     /**
      * @var Connection
      */
@@ -27,13 +36,28 @@ class TicketOwnContextTermsHandler extends AbstractTermsHandler
         $this->db = $db;
     }
 
-    public function getHandledFields()
+    /**
+     * @return HandlerDef
+     */
+    public function getValueHandlerDef()
     {
-        return [
-            TermFieldIds::TICKET_STARRED,
-        ];
+        return $this->memoizedRun(function () {
+            return HandlerDef::create()
+                ->addField(TermFieldIds::TICKET_STARRED, [Query::OP_IN, Query::OP_NOT_IN, Query::OP_HAS, Query::OP_EQ, Query::OP_NEQ]);
+        }, __FUNCTION__);
     }
 
+    /**
+     * @return HandlerDef
+     */
+    public function getSqlHandlerDef()
+    {
+        return $this->getValueHandlerDef();
+    }
+
+    /**
+     * {@inheritdoc}
+     */
     public function doesTicketMatch($fieldId, $operator, OptValue $options, TicketModel $ticketModel, Context $context, Term $term)
     {
         switch ($fieldId) {
@@ -49,13 +73,24 @@ class TicketOwnContextTermsHandler extends AbstractTermsHandler
                     $flaggedWith = null;
                 }
 
-                return $this->checkValue($flaggedWith, $operator, $value);
+                return CheckValueUtils::checkValue($flaggedWith, $operator, $value);
 
             default:
                 throw new \InvalidArgumentException();
         }
     }
 
+    /**
+     * {@inheritdoc}
+     */
+    public function doesTicketMatchFunc($name, $fieldId, $operator, array $params, TicketModel $ticketModel, Context $context, Term $term)
+    {
+        throw new \RuntimeException('No functions defined');
+    }
+
+    /**
+     * {@inheritdoc}
+     */
     public function buildQueryCondition($fieldId, $operator, OptValue $options, Context $context, Term $term)
     {
         switch ($fieldId) {
@@ -74,7 +109,7 @@ class TicketOwnContextTermsHandler extends AbstractTermsHandler
 
                 $value = $this->mapIdToColor($options->getValue());
 
-                return $this->checkValueQueryCondition('{flag}.color', $operator, $value, $cond);
+                return SqlQueryUtils::buildQueryCondition('{flag}.color', $operator, $value, $cond);
 
             default:
                 throw new \InvalidArgumentException();
@@ -98,5 +133,39 @@ class TicketOwnContextTermsHandler extends AbstractTermsHandler
         }
 
         return isset(TicketFlagged::$colorMap[$id]) ? TicketFlagged::$colorMap[$id] : $id;
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function buildQueryFuncCondition($name, $fieldId, $operator, array $params, Context $context, Term $term)
+    {
+        throw new \RuntimeException('No functions defined');
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function getElasticHandlerDef()
+    {
+        return $this->memoizedRun(function () {
+            return HandlerDef::create();
+        }, __FUNCTION__);
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function buildElasticCondition($fieldId, $operator, OptValue $options, Context $context, Term $term)
+    {
+        throw new \RuntimeException('No fields defined');
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function buildElasticFuncCondition($name, $fieldId, $operator, array $params, Context $context, Term $term)
+    {
+        throw new \RuntimeException('No functions defined');
     }
 }

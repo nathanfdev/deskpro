@@ -2,6 +2,7 @@
 
 namespace DpTest\Bundle\AppBundle\TicketFilters\Diff;
 
+use Application\DeskPRO\NewSearch\Manager\Elasticsearch;
 use DeskPRO\Bundle\AppBundle\TicketFilters\Diff\DiffEnv;
 use DeskPRO\Bundle\AppBundle\TicketFilters\Model\Agent;
 use DeskPRO\Bundle\AppBundle\TicketFilters\Model\Entity\TicketModel;
@@ -21,7 +22,7 @@ class DiffEnvTest extends \PHPUnit_Framework_TestCase
     {
         $resolver = new ValueResolver();
         $matcher  = new TicketMatcher($resolver, [
-            new TicketBasicTermsHandler(),
+            new TicketBasicTermsHandler($this->getMockBuilder(Elasticsearch::class)->disableOriginalConstructor()->getMock()),
         ]);
 
         $agentContexts = FilterData::getAgents();

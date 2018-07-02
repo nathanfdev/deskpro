@@ -8,48 +8,39 @@ use DeskPRO\Bundle\AppBundle\TicketFilters\Model\Entity\TicketModel;
 use DeskPRO\Bundle\AppBundle\TicketFilters\OptValue\OptValue;
 use DeskPRO\Bundle\AppBundle\TicketFilters\SqlBuilder\SqlCondition;
 use DeskPRO\Bundle\AppBundle\TicketFilters\TermFieldIds;
+use DeskPRO\Bundle\AppBundle\TicketFilters\Terms\Util\CheckValueUtils;
+use DeskPRO\Bundle\AppBundle\TicketFilters\Terms\Util\SqlQueryUtils;
 use DeskPRO\Component\FilterQueryLanguage\Query\Node\Term;
 use DeskPRO\Component\FilterQueryLanguage\Query\Query;
+use DeskPRO\Component\Util\MemoizeMethod;
 
-class TicketSlaTermsHandler extends AbstractTermsHandler
+/**
+ * Class TicketSlaTermsHandler.
+ */
+class TicketSlaTermsHandler implements ValueTermHandlerInterface, SqlTermHandlerInterface, ElasticTermHandlerInterface
 {
+    use MemoizeMethod;
+
     /**
-     * {@inheritdoc}
+     * @return HandlerDef
      */
-    public function getHandledFields()
+    public function getValueHandlerDef()
     {
-        return [
-            TermFieldIds::TICKET_SLAS,
-        ];
+        return $this->memoizedRun(function () {
+            return HandlerDef::create()
+                ->addField(TermFieldIds::TICKET_SLAS, Query::commonIdReferenceOperators())
+                ->addFunction('passingSlas', [Query::OP_HAS], [TermFieldIds::TICKET_SLAS])
+                ->addFunction('warningSlas', [Query::OP_HAS], [TermFieldIds::TICKET_SLAS])
+                ->addFunction('failedSlas', [Query::OP_HAS], [TermFieldIds::TICKET_SLAS]);
+        }, __FUNCTION__);
     }
 
     /**
-     * {@inheritdoc}
+     * @return HandlerDef
      */
-    public function getCompareFunctions()
+    public function getSqlHandlerDef()
     {
-        return [
-            FunctionCompareDef::create()
-                ->setName('passingSlas')
-                ->setFields(TermFieldIds::TICKET_SLAS)
-                ->setMatchFn('matchHasPassingSlas')
-                ->setQueryBuilderFn('buildHasPassingSlas')
-                ->setOperators(Query::OP_HAS),
-
-            FunctionCompareDef::create()
-                ->setName('warningSlas')
-                ->setFields(TermFieldIds::TICKET_SLAS)
-                ->setMatchFn('matchHasWarningSlas')
-                ->setQueryBuilderFn('buildHasWarningSlas')
-                ->setOperators(Query::OP_HAS),
-
-            FunctionCompareDef::create()
-                ->setName('failedSlas')
-                ->setFields(TermFieldIds::TICKET_SLAS)
-                ->setMatchFn('matchHasFailingSlas')
-                ->setQueryBuilderFn('buildHasFailingSlas')
-                ->setOperators(Query::OP_HAS),
-        ];
+        return $this->getValueHandlerDef();
     }
 
     /**
@@ -62,22 +53,24 @@ class TicketSlaTermsHandler extends AbstractTermsHandler
             default: throw new \InvalidArgumentException('Unknown field');
         }
 
-        return $this->checkValue($fieldValue, $operator, $options);
+        return CheckValueUtils::checkValue($fieldValue, $operator, $options);
     }
 
-    public function matchHasPassingSlas($fieldId, $operator, array $params, TicketModel $ticketModel, Context $context, Term $term)
+    /**
+     * {@inheritdoc}
+     */
+    public function doesTicketMatchFunc($name, $fieldId, $operator, array $params, TicketModel $ticketModel, Context $context, Term $term)
     {
-        return $this->matchAnySlasStatus($ticketModel, TicketSla::STATUS_OK, $params);
-    }
+        switch ($name) {
+            case 'passingSlas':
+                return $this->matchAnySlasStatus($ticketModel, TicketSla::STATUS_OK, $params);
+            case 'warningSlas':
+                return $this->matchAnySlasStatus($ticketModel, TicketSla::STATUS_WARNING, $params);
+            case 'failedSlas':
+                return $this->matchAnySlasStatus($ticketModel, TicketSla::STATUS_FAIL, $params);
+        }
 
-    public function matchHasWarningSlas($fieldId, $operator, array $params, TicketModel $ticketModel, Context $context, Term $term)
-    {
-        return $this->matchAnySlasStatus($ticketModel, TicketSla::STATUS_WARNING, $params);
-    }
-
-    public function matchHasFailingSlas($fieldId, $operator, array $params, TicketModel $ticketModel, Context $context, Term $term)
-    {
-        return $this->matchAnySlasStatus($ticketModel, TicketSla::STATUS_FAIL, $params);
+        throw new \InvalidArgumentException();
     }
 
     /**
@@ -107,27 +100,30 @@ class TicketSlaTermsHandler extends AbstractTermsHandler
                 $cond = new SqlCondition();
                 $cond->addUniqueJoin('tickets', 'ticket_slas', 'slas', '{slas}.ticket_id = {tickets}.id');
 
-                return $this->checkValueQueryCondition('{slas}.sla_id', $operator, $options, $cond);
+                return SqlQueryUtils::buildQueryCondition('{slas}.sla_id', $operator, $options, $cond);
                 break;
             default:
                 throw new \InvalidArgumentException('Unknown field');
         }
     }
 
-    public function buildHasPassingSlas($fieldId, $operator, array $params, Context $context, Term $term)
+    /**
+     * {@inheritdoc}
+     */
+    public function buildQueryFuncCondition($name, $fieldId, $operator, array $params, Context $context, Term $term)
     {
-        return $this->buildHasAnySlas(TicketSla::STATUS_OK, $params);
+        switch (strtolower($name)) {
+            case 'passingslas':
+                return $this->buildHasAnySlas(TicketSla::STATUS_OK, $params);
+            case 'warningslas':
+                return $this->buildHasAnySlas(TicketSla::STATUS_WARNING, $params);
+            case 'failedslas':
+                return $this->buildHasAnySlas(TicketSla::STATUS_FAIL, $params);
+        }
+
+        throw new \InvalidArgumentException();
     }
 
-    public function buildHasWarningSlas($fieldId, $operator, array $params, Context $context, Term $term)
-    {
-        return $this->buildHasAnySlas(TicketSla::STATUS_WARNING, $params);
-    }
-
-    public function buildHasFailingSlas($fieldId, $operator, array $params, Context $context, Term $term)
-    {
-        return $this->buildHasAnySlas(TicketSla::STATUS_FAIL, $params);
-    }
     public function buildHasAnySlas($findStatus, array $specificIds = null)
     {
         $cond = new SqlCondition();
@@ -142,5 +138,31 @@ class TicketSlaTermsHandler extends AbstractTermsHandler
         }
 
         return $cond;
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function getElasticHandlerDef()
+    {
+        return $this->memoizedRun(function () {
+            return HandlerDef::create();
+        }, __FUNCTION__);
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function buildElasticCondition($fieldId, $operator, OptValue $options, Context $context, Term $term)
+    {
+        throw new \RuntimeException('No fields defined');
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function buildElasticFuncCondition($name, $fieldId, $operator, array $params, Context $context, Term $term)
+    {
+        throw new \RuntimeException('No functions defined');
     }
 }
