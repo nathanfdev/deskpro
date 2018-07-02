@@ -50,6 +50,11 @@ services:
     tags:
       - { name: doctrine.event_subscriber, connection: default }
 
+  event_listener.doctrine.custom_def:
+    class: DeskPRO\Bundle\AppBundle\EventListener\Doctrine\CustomDefHierarchyListener
+    tags:
+      - { name: doctrine.event_subscriber, connection: default }
+
   event_listener.doctrine.agent_message:
     class: DeskPRO\Bundle\AppBundle\EventListener\Doctrine\AgentChatMessageListener
     arguments: ["@event_dispatcher"]
