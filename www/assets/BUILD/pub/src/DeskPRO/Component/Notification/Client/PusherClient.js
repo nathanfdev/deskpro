@@ -2,7 +2,6 @@
  * wrapper for pusher-app client
  */
 import Pusher from 'pusher-js';
-import Immutable from 'immutable';
 import { AbstractClient } from './AbstractClient';
 
 export default class PusherClient extends AbstractClient {
@@ -10,7 +9,7 @@ export default class PusherClient extends AbstractClient {
   constructor(props) {
     super(props);
     const that = this;
-    this.multiplexStore = Immutable.fromJS({});
+
 
     if (this.options.debug) {
       Pusher.log = (message) => {
@@ -106,29 +105,6 @@ export default class PusherClient extends AbstractClient {
       this.handleMultiplexMessage(eventName, data);
     } else if (data.target === 'agent_public' || parseInt(data.target, 10) === this.options.me) {
       this.options.dispatcher(eventName, data);
-    }
-  }
-
-  handleMultiplexMessage(eventName, payload) {
-    const multiplexId = payload.data.multiplexID;
-    this.multiplexStore = this.multiplexStore.setIn([multiplexId, payload.part], payload);
-    if (this.multiplexStore.get(multiplexId).size === parseInt(payload.parts, 10)) {
-      let demultiplexData = '';
-      this.multiplexStore.get(multiplexId).sort((a, b) => a.part - b.part).map((item) => {
-        demultiplexData += item.data;
-        return demultiplexData;
-      });
-      demultiplexData = JSON.parse(atob(demultiplexData));
-      if (Array.isArray(demultiplexData)) {
-        demultiplexData.map((message) => {
-          message.data = JSON.parse(message.data);
-          if (eventName === message.name && (message.data.target === 'agent_public' || parseInt(message.data.target, 10) === this.options.me)) {
-            this.options.dispatcher(eventName, message.data);
-          }
-          return null;
-        });
-      }
-      this.multiplexStore = this.multiplexStore.delete(multiplexId);
     }
   }
 }

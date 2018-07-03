@@ -36,11 +36,15 @@ export default class DpClient extends AbstractClient {
     };
   }
 
+  logMessage(eventName, data) { // eslint-disable-line class-methods-use-this
+    console.log(`DpClient received message with type: ${eventName}`, data);
+  }
+
   bind(channelName, eventName) {
     const that = this;
     this.client.on(`${channelName}-${eventName}`, (data) => {
       if (that.options.debug === true) {
-        console.log(`DpClient received message with type: ${eventName}`, data);
+        that.logMessage(eventName, data);
       }
       if (data.cm_strategy && data.cm_strategy !== 'deskpro') {
         if (!this.userNotified) {
@@ -48,8 +52,10 @@ export default class DpClient extends AbstractClient {
           this.userNotified = true;
         }
       }
-      if (data.target === 'agent_public' || (parseInt(data.target, 10) === that.options.me)) {
-        that.options.dispatcher(eventName, data);
+      if (data.type === 'multiplex_message') {
+        this.handleMultiplexMessage(eventName, data);
+      } else if (data.target === 'agent_public' || (parseInt(data.target, 10) === that.options.me)) {
+        this.options.dispatcher(eventName, data);
       }
     });
   }
