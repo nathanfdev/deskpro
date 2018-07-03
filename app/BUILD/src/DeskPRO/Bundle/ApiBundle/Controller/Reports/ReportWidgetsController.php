@@ -181,6 +181,8 @@ class ReportWidgetsController extends CrudController
                 /* @var SplitResult $result */
                 $actualResults .= $result->getTitle().";\r\n".$result->getResults()."\r\n";
             }
+        } elseif ($results instanceof SplitResult) {
+            $actualResults = $results->getTitle().";\r\n".$results->getResults()."\r\n";
         } else {
             $actualResults = $results;
         }
