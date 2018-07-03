@@ -105,5 +105,5 @@ return [
     'sparrow_1' => 'p #^On .*?,.*?wrote:#i /p blockquote /blockquote',
 
     // DeskPRO blockqoute
-    'dp' => 'table div.dp-author-row /div /table',
+    'dp' => ['div.dp-author-row', 'reverse' => false],
 ];
