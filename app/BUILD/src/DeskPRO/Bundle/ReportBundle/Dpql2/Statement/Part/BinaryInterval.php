@@ -139,7 +139,7 @@ class BinaryInterval extends AbstractPart
      */
     public function prepareComparison(
         AbstractPart $lhs, $comparison, SelectPart $statement, $section, array $stack,
-        SqlSelect $select, ResultMetadata $result
+        SqlSelect $select, ResultMetadata $result, array $intervals = []
     ) {
         $placeholder = $this->_findPlaceholder();
         if (!$placeholder) {

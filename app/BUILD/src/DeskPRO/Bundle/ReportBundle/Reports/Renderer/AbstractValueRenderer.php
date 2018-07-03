@@ -107,8 +107,8 @@ abstract class AbstractValueRenderer
                     'time'     => 'core.date_time',
                 ];
 
-                $tz = $metadata->getPerson() ? $metadata->getPerson()->getTimezone() : 'UTC';
-
+                $tz     = $metadata->getPerson() ? $metadata->getPerson()->getTimezone() : 'UTC';
+                $offset = $metadata->getPerson() ? $metadata->getPerson()->getTimezoneOffsetSeconds() : '0';
                 try {
                     if ($value instanceof \DateTime) {
                         $date = clone $value;
@@ -116,6 +116,8 @@ abstract class AbstractValueRenderer
                     } else {
                         $date = new \DateTime($value, new \DateTimeZone($tz));
                     }
+
+                    $date->modify(($offset >= 0 ? '+'.$offset : $offset).' seconds');
 
                     return $this->escapeValue($date->format($this->settingsResolver->getGlobalSettings()->get($settingMap[$format])));
                 } catch (\Exception $e) {

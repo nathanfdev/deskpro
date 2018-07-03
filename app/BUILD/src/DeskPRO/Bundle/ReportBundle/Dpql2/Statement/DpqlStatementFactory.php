@@ -106,11 +106,13 @@ class DpqlStatementFactory
      * @param AbstractPart $lhs
      * @param AbstractPart $rhs
      *
+     * @throws \DeskPRO\Bundle\ReportBundle\Dpql2\DpqlException
+     *
      * @return BinaryComparison
      */
     public function createBinaryComparison($operator, AbstractPart $lhs, AbstractPart $rhs)
     {
-        return new BinaryComparison($operator, $lhs, $rhs);
+        return new BinaryComparison($operator, $lhs, $rhs, $this->container->get('dpql.context_storage')->getContext());
     }
 
     /**

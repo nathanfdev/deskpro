@@ -10,6 +10,8 @@ use DeskPRO\Bundle\AppBundle\Annotation\ActionPermissions\Annotation\ApiModes;
 use DeskPRO\Bundle\AppBundle\Annotation\ActionPermissions\Annotation\Feature;
 use DeskPRO\Bundle\AppBundle\Form\Error\Exception\InvalidFormException;
 use DeskPRO\Bundle\AppBundle\Form\Type\Reports\ReportWidgetType;
+use DeskPRO\Bundle\AppBundle\Serializer\Annotation\SerializerView;
+use DeskPRO\Bundle\ReportBundle\Dpql2\DpqlContextStorage;
 use DeskPRO\Bundle\ReportBundle\Dpql2\DpqlException;
 use DeskPRO\Bundle\ReportBundle\Dpql2\Statement\SelectPart;
 use DeskPRO\Bundle\ReportBundle\Reports\Renderer\ReportsRendererInterface;
@@ -47,8 +49,70 @@ class ReportWidgetsController extends CrudController
     public static $listPaginate = false;
 
     /**
-     * todo temporary copied from the legacy api
-     * todo refactor to RecordStore on the client side (agents, agent teams, departments) and remove the action.
+     * @Rest\Post("")
+     *
+     * @param Request $request
+     *
+     * @return View
+     */
+    public function postAction(Request $request)
+    {
+        $this->getContainer()->get('dpql.context_storage')->setMode(DpqlContextStorage::MODE_EDIT);
+
+        return parent::postAction($request);
+    }
+
+    /**
+     * @Rest\Get("/{id}", requirements={"id"="\d+"})
+     *
+     * @param Request $request
+     * @param int     $id
+     *
+     * @return View
+     */
+    public function getAction(Request $request, $id)
+    {
+        $this->getContainer()->get('dpql.context_storage')->setMode(DpqlContextStorage::MODE_EDIT);
+
+        return parent::getAction($request, $id);
+    }
+
+    /**
+     * @Rest\Get("")
+     *
+     * @param Request $request
+     *
+     * @throws \Exception
+     *
+     * @return View
+     */
+    public function listAction(Request $request)
+    {
+        $this->getContainer()->get('dpql.context_storage')->setMode(DpqlContextStorage::MODE_EDIT);
+
+        return parent::listAction($request);
+    }
+
+    /**
+     * @Rest\Put("/{id}", requirements={"id"="\d+"})
+     *
+     * @param int     $id
+     * @param Request $request
+     *
+     * @SerializerView(serializeNull=true)
+     *
+     * @return View
+     */
+    public function putAction($id, Request $request)
+    {
+        $this->getContainer()->get('dpql.context_storage')->setMode(DpqlContextStorage::MODE_EDIT);
+
+        return parent::putAction($id, $request);
+    }
+
+    /**
+     * @todo temporary copied from the legacy api
+     * @todo refactor to RecordStore on the client side (agents, agent teams, departments) and remove the action
      *
      * @Rest\Get("/group-params")
      *
