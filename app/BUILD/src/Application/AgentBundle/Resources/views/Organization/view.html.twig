@@ -13,6 +13,7 @@
 
   pageMeta.organization = {{ org_api|json_encode|raw }};
   pageMeta.api_data = {{ org.toApiData()|json_encode|raw }};
+  pageMeta.api_v2_data = {{ api_v2_data|json_encode|raw }};
 
   pageMeta.perms = {
     edit: {% if app.user.hasPerm('agent_org.edit') %}true{% else %}false{% endif %}

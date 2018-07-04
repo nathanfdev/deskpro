@@ -260,6 +260,62 @@ export const EVENT_WEBAPI_REQUEST_DESKPRO = (response, widget, widgetMessage, se
  * @param {AppServices} services
  * @constructor
  */
+export const EVENT_CONTEXT_PROPERTY_GET = (response, widget, widgetMessage, services) => {
+  const { tabId, path } = widgetMessage.body;
+  const tab = services.tabs.getTab(tabId);
+  if (!tab) {
+    return response(new Error('tab not found'), { tabId, path });
+  }
+
+  let invalidProperty = false;
+  if (path instanceof Array) {
+    invalidProperty = path.filter(segment => !(typeof segment === 'string' && segment.length > 0)).length > 0;
+  } else {
+    invalidProperty = true;
+  }
+
+  if (invalidProperty) {
+    return response(new Error('property invalid'), { tabId, path });
+  }
+
+  const { api_v2_data } = tab.page.meta;
+
+  if (path.length === 0) {
+    return response(null, api_v2_data);
+  }
+
+  const error = {};
+  const reducer = (acc, segment) => {
+    if (acc === error) {
+      return error;
+    }
+
+    if (acc && typeof acc === 'object') {
+      return acc[segment];
+    }
+
+    return error;
+  };
+  const extractedProperty = path.reduce(reducer, api_v2_data);
+
+  if (extractedProperty === error || extractedProperty === undefined) {
+    return response(new Error('property not found'), { tabId, path });
+  }
+
+  return response(null, extractedProperty);
+};
+
+/**
+ *
+ * This event is now deprecated and should only be used for internal purposes
+ * @deprecated
+ *
+ * @param {function} response
+ * @param {Widget} widget
+ * @param {WidgetRequest} widgetMessage
+ * @param {AppServices} services
+ * @constructor
+ */
 export const EVENT_TAB_DATA = (response, widget, widgetMessage, services) => {
   const { body: tabId } = widgetMessage;
   const tab = services.tabs.getTab(tabId);
@@ -496,6 +552,10 @@ export const handlers = {
   EVENT_WEBAPI_REQUEST_DESKPRO,
 
   EVENT_WEBAPI_REQUEST_FETCH,
+
+  // CONTEXT EVENTS
+
+  EVENT_CONTEXT_PROPERTY_GET,
 
   // TAB EVENTS
 

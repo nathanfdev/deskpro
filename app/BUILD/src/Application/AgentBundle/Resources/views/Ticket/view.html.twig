@@ -32,6 +32,7 @@
 
   pageMeta.ticket = {{ ticket_api|json_encode|raw }};
   pageMeta.api_data = {{ ticket.toApiData()|json_encode|raw }};
+  pageMeta.api_v2_data = {{ api_v2_data|json_encode|raw }};
   pageMeta.hasBilling = {{ app.getSetting('core_tickets.enable_billing')? 'true' : 'false' }};
   pageMeta.billingCurrency = '{{ app.getSetting('core_tickets.billing_currency') }}';
   pageMeta.hasTimeLog = {{ app.getSetting('core_tickets.enable_timelog')? 'true' : 'false' }};

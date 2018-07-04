@@ -59,6 +59,7 @@ use Application\EmailBundle\SwiftMailer\Message\MessageOptionsInterface;
 use DeskPRO\Bundle\AppBundle\Entity\SnippetTranslation;
 use DeskPRO\Bundle\AppBundle\Entity\SnippetUseLog;
 use DeskPRO\Bundle\AppBundle\Entity\TicketFeedbackLink;
+use DeskPRO\Bundle\AppBundle\Serializer\ApiWrapper;
 use DeskPRO\Bundle\AppBundle\Serializer\Sideload\SideloadSerializationContext;
 use DeskPRO\Component\Pdf\PdfRendererInterface;
 use DeskPRO\Component\Util\ListUtils;
@@ -95,9 +96,27 @@ class TicketController extends AbstractController
     //###########################################################################
 
     /**
+     * @param Ticket $entity
+     * @return array mixed
+     * @throws \Exception
+     */
+    protected function getAPIv2Data( $entity)
+    {
+        $context = new SideloadSerializationContext();
+        $context->setIncludes(['brand', 'person', 'organization', 'problem']);
+        $context->setInlineSideloads(true);
+        $serialized = $this->container->get('serializer')->toArray(new ApiWrapper($entity), $context);
+        return $serialized;
+    }
+
+    /**
      * @param int $ticket_id
      *
      * @return Response
+     * @throws \Doctrine\ORM\NonUniqueResultException
+     * @throws \Doctrine\ORM\ORMException
+     * @throws \Doctrine\ORM\OptimisticLockException
+     * @throws \Exception
      */
     public function viewAction($ticket_id)
     {
@@ -490,6 +509,9 @@ class TicketController extends AbstractController
             'incidents'      => $incidents,
             'system_account' => $this->getAccount($ticket),
         ];
+
+        // include api_v2_data
+        $vars['api_v2_data'] = $this->getAPIv2Data($ticket);
 
         if (App::getSetting('core_tickets.enable_billing') || App::getSetting('core_tickets.enable_timelog')) {
             $vars['billing_fields_new'] = $billing_fields_new;
@@ -5572,10 +5594,12 @@ CSS;
     }
 
     /**
-     * @param int  $ticket_id
+     * @param int $ticket_id
      * @param null $check_perm
      *
      * @return Ticket
+     * @throws \Doctrine\ORM\NonUniqueResultException
+     * @throws \Doctrine\ORM\ORMException
      */
     protected function getTicketOr404($ticket_id, $check_perm = null)
     {
