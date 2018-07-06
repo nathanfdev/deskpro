@@ -314,7 +314,7 @@ class TicketEmail
         if (isset($vars['attached_blobs'])) {
             /** @var TicketAttachment $attachment */
             foreach ($vars['attached_blobs'] as $attachment) {
-                $message->attachBlob($attachment->getBlob(), $attachment->getBlob()->getDownloadUrl(true), $attachment->isInline());
+                $message->attachBlob($attachment->getBlob(), $attachment->getBlob()->getDownloadUrl(true), false);
             }
         }
 
