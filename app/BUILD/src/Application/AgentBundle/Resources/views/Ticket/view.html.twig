@@ -183,12 +183,15 @@
 					<div class="id-number" id="{{ baseId }}_idref_switch">
 						<span id="{{ baseId }}_id_num" title="{{ phrase('agent.general.ticket_id') }}">
 							<span class="copy-btn-outer"><span class="copy-btn" data-clipboard-text="{{ ticket.id }}" title="{{ phrase('agent.general.copy_to_clipboard') }}"><i class="icon-paste"></i></span></span>
+                            <span class="copy-btn-outer permalink"><span class="copy-btn" data-clipboard-text="{{ ticket_permalink }}" title="{{ phrase('agent.general.copy_to_clipboard') }}"><i class="icon-link"></i></span></span>
 							{{ phrase('agent.general.id') }}: {{ ticket.id }}
 						</span>
 						<span id="{{ baseId }}_ref_num" style="display: none;" title="Ticket Reference">
 							<span class="copy-btn-outer"><span class="copy-btn" data-clipboard-text="{{ ticket.ref }}" title="{{ phrase('agent.general.copy_to_clipboard') }}"><i class="icon-paste"></i></span></span>
+                            <span class="copy-btn-outer permalink"><span class="copy-btn" data-clipboard-text="{{ ticket_permalink }}" title="{{ phrase('agent.general.copy_to_clipboard') }}"><i class="icon-link"></i></span></span>
 							{{ phrase('agent.general.id') }}: {{ ticket.ref }}
 						</span>
+
 					</div>
 				</td>
 				<td>
