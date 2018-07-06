@@ -59,8 +59,8 @@ define ['DeskPRO/Util/Arrays'], (Arrays) ->
       @Api2.sendPutJson \
         "/dashboard_report_widgets/#{widget.id}",
         {
-          "size_x":  if widget.newSizeX? then widget.newSizeX else widget.sizeX
-          "size_y":  if widget.newSizeY? then widget.newSizeY else widget.sizeY
+          "size_x":  widget.sizeX
+          "size_y":  widget.sizeY
           "col":     widget.col
           "row":     widget.row
           "title":   widget.title
