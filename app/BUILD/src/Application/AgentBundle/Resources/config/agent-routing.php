@@ -932,6 +932,19 @@ $collection->create('agent_ticket_download_debug_report', [
     'requirements' => ['ticket_id' => '\\d+'],
 ]);
 
+$collection->create('agent_ticket_download_message_email', [
+    'path'         => '/tickets/messages/{messageId}/download-email',
+    'controller'   => 'AgentBundle:Ticket:downloadTicketMessageEmail',
+    'requirements' => ['messageId' => '\\d+'],
+]);
+
+$collection->create('agent_ticket_delete_message_email', [
+    'path'         => '/tickets/messages/{messageId}/delete-email',
+    'controller'   => 'AgentBundle:Ticket:deleteTicketMessageEmail',
+    'requirements' => ['messageId' => '\\d+'],
+    'methods'      => ['DELETE'],
+]);
+
 $collection->create('agent_ticket_messagepage', [
     'path'         => '/tickets/{ticket_id}/message-page/{page}',
     'controller'   => 'AgentBundle:Ticket:getMessagePage',

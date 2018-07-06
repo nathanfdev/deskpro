@@ -2133,6 +2133,8 @@ return [
     'agent.tickets.date_last_user_reply'                       => 'Date of Last User Reply',
     'agent.tickets.debug_file'                                 => 'Debug File',
     'agent.tickets.debug_file_download'                        => 'Download Debug File',
+    'agent.tickets.email_download'                             => 'Download Email',
+    'agent.tickets.email_delete'                               => 'Delete Email',
     'agent.tickets.debug_file_explain'                         => 'A Deskpro support agent may ask you to provide this file to help diagnose issues.',
     'agent.tickets.decrypted'                                  => 'The message has been extracted from an encrypted email',
     'agent.tickets.decryption_error'                           => 'The encrypted content of this email could not be extracted',

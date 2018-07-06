@@ -1179,10 +1179,29 @@
                 {% if app.user.hasPerm('agent_publish.use') and app.user.hasPerm('agent_publish.validate') %}
                     <li data-option-id="link_new_feedback">{{ phrase('agent.tickets.create_linked_feedback') }}</li>{% endif %}
                 {% if ticket_perms.modify_messages %}
-                    <li data-option-id="edit">{{ phrase('agent.general.edit') }}</li>{% endif %}
+                    <li data-option-id="edit">{{ phrase('agent.general.edit') }}</li>
+                {% endif %}
+                <li
+                    class="email-download"
+                    data-option-id="email_download"
+                    data-url="{{ path('agent_ticket_download_message_email', {_rt: security_token('request_token', 10800), messageId: '00000'}) }}"
+                >
+                    {{ phrase('agent.tickets.email_download') }}
+                </li>
+                {% if ticket_perms.modify_messages %}
+                    <li
+                        class='email-delete'
+                        data-option-id="email_delete">
+                        {{ phrase('agent.tickets.email_delete') }}
+                    </li>
+                {% endif %}
                 {% if app.user.can_admin %}
                     <li data-option-id="debug"
-                        data-url="{{ path('agent_ticket_download_debug_report', {ticket_id: '00000', _rt: security_token('request_token', 10800)}) }}">{{ phrase('agent.tickets.debug_file_download') }}</li>{% endif %}
+                        data-url="{{ path('agent_ticket_download_debug_report', {ticket_id: '00000', _rt: security_token('request_token', 10800)}) }}"
+                    >
+                        {{ phrase('agent.tickets.debug_file_download') }}
+                    </li>
+                {% endif %}
                 {#<li data-option-id="split">{{ phrase('agent.tickets.split_from_here') }}</li>#}
             </ul>
             <div class="dp-menu replybox" id="{{ baseId }}_macros_menu" style="min-width: 225px;">

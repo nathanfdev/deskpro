@@ -5525,6 +5525,67 @@ CSS;
     }
 
     //###########################################################################
+    // download-ticket-message-email
+    //###########################################################################
+
+    /**
+     * @param int $messageId
+     *
+     * @throws \Doctrine\ORM\NonUniqueResultException
+     *
+     * @return Response
+     */
+    public function downloadTicketMessageEmailAction($messageId)
+    {
+        $message = $this->getMessageOr404($messageId);
+        if ($message && $this->person->PermissionsManager->TicketChecker->canView($message->ticket)) {
+            $ticket = $message->ticket;
+        }
+
+        if (!$ticket) {
+            throw $this->createNotFoundException();
+        }
+
+        if ($message->email_source && $message->email_source->getBlob()) {
+            $fileString = $this->container->getBlobStorage()->copyBlobRecordToString($message->email_source->getBlob());
+            $response   = new Response();
+            $response->headers->set('Content-Type', 'message/rfc822');
+            $response->headers->set('Content-Disposition', 'inline; filename=email_source_'.$message->getId().'.eml');
+            $response->setContent($fileString);
+
+            return $response;
+        } else {
+            throw $this->createNotFoundException();
+        }
+    }
+
+    /**
+     * @param $messageId
+     *
+     * @throws \Exception
+     *
+     * @return Response
+     */
+    public function deleteTicketMessageEmailAction($messageId)
+    {
+        $message = $this->getMessageOr404($messageId);
+        if (!$this->person->PermissionsManager->TicketChecker->canEditMessages($message->ticket)) {
+            throw $this->createAccessDeniedException();
+        }
+
+        if ($message->email_source) {
+            $this->em->remove($message->email_source);
+            $this->em->flush();
+        }
+
+        return $this->createJsonResponse(
+            [
+                'success' => true,
+            ]
+        );
+    }
+
+    //###########################################################################
 
     public function checkPerm($ticket, $check_perm)
     {
@@ -5625,6 +5686,33 @@ CSS;
         }
 
         return $ticket;
+    }
+
+    /**
+     * @param int $messageId
+     *
+     * @throws \Doctrine\ORM\NonUniqueResultException
+     *
+     * @return TicketMessage
+     */
+    protected function getMessageOr404($messageId)
+    {
+        $q = $this->em->createQuery(
+            '
+            SELECT m
+            FROM DeskPRO:TicketMessage m
+            WHERE m.id = ?0
+        '
+        );
+        $q->setParameters([$messageId]);
+
+        $message = $q->getOneOrNullResult();
+
+        if (!$message) {
+            throw $this->createNotFoundException("There is no message with ID $messageId");
+        }
+
+        return $message;
     }
 
     public function linkExistingAction($ticket_id, $linked_ticket_id)

@@ -2745,6 +2745,10 @@ DeskPRO.Agent.PageFragment.Page.Ticket = new Orb.Class({
 			menuElement: menuElement,
 			onBeforeMenuOpened: function(info) {
 				var message = $(info.menu.getOpenTriggerElement()).closest('article.message');
+				if(message.data('messageHasSource') == false) {
+          menuElement.find('li.email-download').remove();
+          menuElement.find('li.email-delete').remove();
+				}
 				if (message.hasClass('note-message')) {
 					menuElement.find('li.set-as-message').show();
 					menuElement.find('li.set-as-note').hide();
@@ -2941,6 +2945,24 @@ DeskPRO.Agent.PageFragment.Page.Ticket = new Orb.Class({
 
 				window.open(url, 'debugwin', "status=0,toolbar=0,location=0,menubar=0,directories=0,resizable=1,scrollbars=1,height="+height+",width="+width);
 				break;
+
+			case 'email_download':
+        var url = itemEl.data('url');
+        url = url.replace(/00000/g, messageId);
+        window.open(url, 'emailwin', "status=0,toolbar=0,location=0,menubar=0,directories=0,resizable=1,scrollbars=1,height=50,width=50");
+				break;
+
+      case 'email_delete':
+        var row = this.wrapper.find('article.message-' + messageId);
+        $.ajax({
+          url:      BASE_URL + 'agent/tickets/messages/'+messageId+'/delete-email',
+					type:     'DELETE',
+          dataType: 'json',
+          success:  function() {
+              row.data('messageHasSource', false);
+          }
+        });
+        break;
 		}
 	},
 
