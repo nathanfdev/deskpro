@@ -78,6 +78,11 @@ class NewTicket
     public $organization_id;
 
     /**
+     * @var array
+     */
+    public $add_followers = [];
+
+    /**
      * @var \Doctrine\ORM\EntityManager
      */
     protected $_em;
@@ -512,6 +517,10 @@ class NewTicket
                     $this->_em->persist($part);
                 }
             }
+        }
+
+        if ($this->add_followers) {
+            $ticket->setParticipantAgentIds($this->add_followers);
         }
 
         $this->_em->persist($ticket);

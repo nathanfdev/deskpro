@@ -4808,6 +4808,16 @@ class TicketController extends AbstractController
             }
 
             //------------------------------
+            // Add Followers
+            //------------------------------
+
+            $add_followers = $this->in->getCleanValueArray('add_followers', 'uint', 'discard');
+            $add_followers = ListUtils::filterOutFalsey($add_followers);
+            if ($add_followers) {
+                $newTicket->add_followers = $add_followers;
+            }
+
+            //------------------------------
             // Save
             //------------------------------
 
@@ -4960,18 +4970,6 @@ class TicketController extends AbstractController
                         }
                     }
 
-                    $this->em->flush();
-                }
-
-                //------------------------------
-                // Add Followers
-                //------------------------------
-
-                $add_followers = $this->in->getCleanValueArray('add_followers', 'uint', 'discard');
-                $add_followers = ListUtils::filterOutFalsey($add_followers);
-                if ($add_followers) {
-                    $ticket->setParticipantAgentIds($add_followers);
-                    $this->em->persist($ticket);
                     $this->em->flush();
                 }
 
