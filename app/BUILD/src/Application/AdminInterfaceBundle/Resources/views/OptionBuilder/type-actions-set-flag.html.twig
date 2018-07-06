@@ -1,0 +1,94 @@
+<dp-optionbuilder-row>
+    <div class="dp-ob-standard-row">
+        <table class="display-table">
+            <tr>
+                <td class="nowrap">
+                    <label class="row-label">
+                        Set Flag{% if app.hasBeta('email_templates') %} (legacy){% endif %}
+                    </label>
+                </td>
+                <td ng-show="rowOpts.rowEnabled" class="row-options">
+                    <table class="display-table spaced">
+                        <tr>
+                            <td width="80" class="nowrap" style="padding-right: 8px;"><label class="row-label">Select flag</label></td>
+                            <td ng-show="rowOpts.rowEnabled" class="row-options">
+                                <select
+                                        ui-select2="{dropdownAutoWidth:true}"
+                                        ng-model="model.value"
+                                        style="min-width: 140px"
+                                >
+                                    <option value="{{ ng_var('opt.value') }}" ng-repeat="opt in flags">{{ ng_var('opt.title') }}</option>
+                                </select>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td style="vertical-align: top;">Agents:</td>
+                            <td>
+                                <ul class="checkbox-list" style="min-width: 260px; max-height: 175px; overflow: auto;">
+                                    <li style="border-bottom: 1px solid #ccc;" ng-if="object_type != 'escalation'">
+                                        <label>
+                                            <input type="checkbox" ng-model="model.agent_ids.notify_list" />
+                                            Subscribed agents
+                                            <i style="color: #aaa;" class="fa fa-question-circle" tooltip="All agents have notification subscription preferences. This option will send the email to any agent who is subscribed to whatever action initiated this event. For example, if this action was fired via a new ticket, then this option will send an email to any agent subscribed to 'new tickets'."></i>
+                                        </label>
+                                    </li>
+                                    <li ng-repeat="agent in agents">
+                                        <label>
+                                            <input type="checkbox" ng-model="model.agent_ids[agent.id]" />
+                                            {{ ng_var('agent.display_name') }}
+                                        </label>
+                                    </li>
+                                    <li style="border-top: 1px solid #ccc;">
+                                        <label>
+                                            <input type="checkbox" ng-model="model.agent_ids.ticket_agent" />
+                                            Assigned Agent
+                                        </label>
+                                    </li>
+                                    <li>
+                                        <label>
+                                            <input type="checkbox" ng-model="model.agent_ids.ticket_team" />
+                                            Agents of Assigned Team
+                                        </label>
+                                    </li>
+                                    <li>
+                                        <label>
+                                            <input type="checkbox" ng-model="model.agent_ids.ticket_followers" />
+                                            Ticket Followers
+                                        </label>
+                                    </li>
+                                    <li>
+                                        <label>
+                                            <input type="checkbox" ng-model="model.agent_ids.ticket_follower_teams" />
+                                            Teams of Ticket Followers
+                                        </label>
+                                    </li>
+                                    <li ng-if="object_type != 'escalation'">
+                                        <label>
+                                            <input type="checkbox" ng-model="model.agent_ids.person" />
+                                            Agent Performer
+                                            <i style="color: #aaa;" class="fa fa-question-circle" tooltip="Send the email to the agent that caused this trigger to run."></i>
+                                        </label>
+                                    </li>
+                                    <li ng-if="object_type != 'escalation'">
+                                        <label>
+                                            <input type="checkbox" ng-model="model.agent_ids.person_team" />
+                                            Teams of Agent Performer
+                                            <i style="color: #aaa;" class="fa fa-question-circle" tooltip="Send the email to the teams of the agent that caused this trigger to run."></i>
+                                        </label>
+                                    </li>
+                                    <li ng-if="object_type != 'escalation'">
+                                        <label>
+                                            <input type="checkbox" ng-model="model.agent_ids.all_agents" />
+                                            All Agents
+                                            <i style="color: #aaa;" class="fa fa-question-circle" tooltip="Send the email to all agents."></i>
+                                        </label>
+                                    </li>
+                                </ul>
+                            </td>
+                        </tr>
+                    </table>
+                </td>
+            </tr>
+        </table>
+    </div>
+</dp-optionbuilder-row>
