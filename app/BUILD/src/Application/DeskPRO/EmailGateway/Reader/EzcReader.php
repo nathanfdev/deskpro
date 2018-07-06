@@ -515,6 +515,13 @@ class EzcReader extends AbstractReader
                             if (!empty($part->contentDisposition->$field)) {
                                 try {
                                     $attach->file_name = basename($part->contentDisposition->$field);
+                                    if (strpos($attach->file_name, '=?iso-') !== false) {
+                                        $decodedFilename = iconv_mime_decode($attach->file_name);
+                                        if ($decodedFilename !== false) {
+                                            $attach->file_name = $decodedFilename;
+                                        }
+                                    }
+
                                     $attach->mime_type = \Orb\Data\ContentTypes::getContentTypeFromFilename($part->contentDisposition->displayFileName);
                                 } catch (\Exception $e) {
                                 }
