@@ -41,8 +41,8 @@ define ['DeskPRO/Util/Arrays'], (Arrays) -> [
       width: 10000,
       columns: 150,
       colWidth: 50,
-      pushing: false,
-      floating: false,
+      pushing: true,
+      floating: true,
       swapping: true,
       draggable:
         enabled: false
@@ -112,8 +112,8 @@ define ['DeskPRO/Util/Arrays'], (Arrays) -> [
 
     $scope.toggleLayoutEdit = () ->
       $scope.layoutEditing = !$scope.layoutEditing
-      $scope.gridsterOptions.pushing = $scope.layoutEditing
-      $scope.gridsterOptions.floating = $scope.layoutEditing
+#      $scope.gridsterOptions.pushing = $scope.layoutEditing
+#      $scope.gridsterOptions.floating = $scope.layoutEditing
       $scope.gridsterOptions.draggable.enabled = $scope.layoutEditing
       $scope.gridsterOptions.resizable.enabled = $scope.layoutEditing
 
