@@ -197,7 +197,7 @@ class Run extends React.Component {
         return (
           <div>
             {this.renderDownload()}
-            <b>{renderedResult.get('title')}</b>
+            <b dangerouslySetInnerHTML={{ __html: renderedResult.get('title') }} />
             {Run.renderChart(renderedResult, index)}
           </div>
         );
