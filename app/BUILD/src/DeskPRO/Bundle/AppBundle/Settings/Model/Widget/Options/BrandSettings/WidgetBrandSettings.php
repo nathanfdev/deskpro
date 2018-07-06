@@ -70,6 +70,8 @@ class WidgetBrandSettings extends AbstractBrandAwareSettings
     public function setWidget(WidgetBrandCommonSettings $widget)
     {
         $this->widget = $widget;
+
+        return $this;
     }
 
     /**
@@ -88,6 +90,8 @@ class WidgetBrandSettings extends AbstractBrandAwareSettings
     public function setButton(ButtonSettings\WidgetBrandButtonSettings $button)
     {
         $this->button = $button;
+
+        return $this;
     }
 
     /**

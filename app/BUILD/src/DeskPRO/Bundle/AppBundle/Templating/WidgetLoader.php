@@ -5,6 +5,7 @@ namespace DeskPRO\Bundle\AppBundle\Templating;
 use Application\DeskPRO\Entity\Brand;
 use Application\DeskPRO\Entity\Person;
 use DeskPRO\Bundle\AppBundle\AppEnv\AppEnvInterface;
+use DeskPRO\Bundle\AppBundle\Language\LanguageStack;
 use DeskPRO\Bundle\AppBundle\Settings\WidgetSettingsResolver;
 use Firebase\JWT\JWT;
 use JMS\Serializer\Serializer;
@@ -37,23 +38,31 @@ class WidgetLoader
     private $tokenStorage;
 
     /**
+     * @var LanguageStack
+     */
+    private $languageStack;
+
+    /**
      * Constructor.
      *
      * @param AppEnvInterface        $appEnv
      * @param WidgetSettingsResolver $settingsResolver
      * @param Serializer             $serializer
      * @param TokenStorage           $tokenStorage
+     * @param LanguageStack          $languageStack
      */
     public function __construct(
         AppEnvInterface        $appEnv,
         WidgetSettingsResolver $settingsResolver,
         Serializer             $serializer,
-        TokenStorage           $tokenStorage
+        TokenStorage           $tokenStorage,
+        LanguageStack          $languageStack
     ) {
         $this->appEnv           = $appEnv;
         $this->settingsResolver = $settingsResolver;
         $this->serializer       = $serializer;
         $this->tokenStorage     = $tokenStorage;
+        $this->languageStack    = $languageStack;
     }
 
     /**
@@ -77,6 +86,7 @@ class WidgetLoader
         if ($withOptions) {
             $options = $this->serializer->toArray($this->settingsResolver->getWidgetBrandOptions($brand));
             $options = array_merge($options, [
+                'language'       => $this->languageStack->getActive()->getId(),
                 'noFetchOptions' => true,
             ]);
 

@@ -164,11 +164,17 @@ class WidgetSettingsResolver extends AbstractBrandAwareSettingsResolver
         return (bool) $this->getSetting(self::JWT_REQUIRED, $brand);
     }
 
+    /**
+     * @return bool
+     */
     public function isChatRequireLogin()
     {
         return (bool) $this->getSetting(self::CHAT_REQUIRE_LOGIN);
     }
 
+    /**
+     * @return bool
+     */
     public function isChatEmailValidation()
     {
         return (bool) $this->getSetting(self::CHAT_EMAIL_VALIDATION);

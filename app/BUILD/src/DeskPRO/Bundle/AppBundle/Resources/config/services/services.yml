@@ -121,6 +121,7 @@ services:
       - "@widget_settings_resolver"
       - "@serializer"
       - "@security.token_storage"
+      - "@language_stack"
 
   app.environment:
     class: DeskPRO\Bundle\AppBundle\DependencyInjection\SystemServices\EnvironmentService
