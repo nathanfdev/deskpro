@@ -47,13 +47,9 @@ define ['DeskPRO/Util/Arrays'], (Arrays) -> [
       draggable:
         enabled: false
         handle: '.box-header'
-        stop: (event, $element, $widget) ->
-          DashboardWidgetService.saveWidget($widget)
       resizable:
         enabled: false
         handles: ['n', 'e', 's', 'w', 'se', 'sw']
-        stop: (event, $element, $widget) ->
-          DashboardWidgetService.saveWidget($widget)
 
     load_promises = []
     load_promises.push DashboardsInfo.getReportDetail(report_id).then((loadedReport) ->
