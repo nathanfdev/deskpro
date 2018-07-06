@@ -117,7 +117,7 @@ class BinaryComparison extends AbstractPart
                 $tzOffset = $this->context->getPerson()->getTimezoneOffsetSeconds();
                 if ($tzOffset) {
                     $intervalsOperator = $tzOffset > 0 ? Parser::T_OP_MINUS : $intervalsOperator = Parser::T_OP_PLUS;
-                    $intervals[]       = new BinaryInterval($intervalsOperator, $lhs, $tzOffset, 'seconds');
+                    $intervals[]       = new BinaryInterval($intervalsOperator, $lhs, abs($tzOffset), 'seconds');
                 }
             }
 

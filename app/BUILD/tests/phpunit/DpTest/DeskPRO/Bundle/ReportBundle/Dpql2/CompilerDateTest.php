@@ -93,6 +93,36 @@ SQL
 );
     }
 
+    public function test_timezone_applied_for_placeholders_when_negative_tz_offset()
+    {
+        $person = new Person();
+        $person->setTimezone('America/Chicago');
+        $this->context = new DpqlContext($person);
+
+        //we need to calculate date programmatically cause we can just face with daylight savings
+        $dateStart = new \DateTime('today midnight');
+        $dateEnd   = new \DateTime('tomorrow midnight');
+        $dateEnd->modify('-1 second');
+
+        $dateModifiedStart       = $this->getModifiedDate('America/Chicago', $dateStart->format('Y-m-d H:i:s'));
+        $dateModifiedBeforeStart = $this->getModifiedDate('America/Chicago', $dateStart->modify('-1 second')->format('Y-m-d H:i:s'));
+        $dateModifiedEnd         = $this->getModifiedDate('America/Chicago', $dateEnd->format('Y-m-d H:i:s'));
+
+        $this->assertDpqlQuery(
+            <<<'DPQL'
+SELECT tickets.date_created FROM tickets WHERE tickets.date_created = %TODAY%
+DPQL
+            ,
+            <<<SQL
+SELECT /*+ MAX_EXECUTION_TIME(30000) */ `tickets`.`date_created`
+FROM `tickets`
+WHERE ((`tickets`.`date_created` > '$dateModifiedBeforeStart' AND `tickets`.`date_created` BETWEEN '$dateModifiedStart' 
+AND '$dateModifiedEnd') OR `tickets`.`date_created` > NOW())
+LIMIT 2500
+SQL
+        );
+    }
+
     private function getModifiedDate($timeZone, $dateString)
     {
         $dateTZ = new \DateTimeZone($timeZone);
