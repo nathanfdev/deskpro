@@ -98,7 +98,9 @@ class AgentPermissions implements \ArrayAccess, \Orb\Helper\ShortCallableInterfa
             return $this->_disallowed_ids[$context];
         }
 
-        $all_ids = App::$container->getTicketDepartments()->getAllAllowedIds();
+        $all_ids = $context === 'tickets'
+                   ? App::$container->getTicketDepartments()->getAllAllowedIds()
+                   : App::$container->getChatDepartments()->getAllAllowedIds();
 
         $allowed_ids    = $this->getAllowedDepartments($context, $forceAgentData);
         $disallowed_ids = array_diff($all_ids, $allowed_ids);
