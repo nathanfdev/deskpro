@@ -3,7 +3,6 @@
 namespace DeskPRO\Bundle\ApiBundle\Controller;
 
 use Application\DeskPRO\CustomFields;
-use Application\DeskPRO\Entity\CustomDefAbstract;
 use DeskPRO\Bundle\AppBundle\Form\Error\Exception\InvalidFormException;
 use DeskPRO\Bundle\AppBundle\Form\Type\CustomFields\CustomFieldType;
 use Doctrine\ORM\QueryBuilder;
@@ -40,13 +39,7 @@ abstract class AbstractCustomFieldsController extends CrudController
     }
 
     /**
-     * @param CustomDefAbstract $model
-     * @param Request           $request
-     * @param array             $options
-     *
-     * @throws InvalidFormException
-     *
-     * @return View
+     * {@inheritdoc}
      */
     protected function handleForm($model, Request $request, array $options = [])
     {
