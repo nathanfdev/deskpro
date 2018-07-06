@@ -69,8 +69,10 @@ class NoTicketAccessRedirectListener implements EventSubscriberInterface
         $exception = $event->getException();
         $request   = $event->getRequest();
 
-        if (!$exception instanceof AccessDeniedException
-            || $request->attributes->get('_route') !== 'portal_tickets_view') {
+        $isTicketView      = $request->attributes->get('_route') === 'portal_tickets_view';
+        $isGuestTicketView = $request->attributes->get('_route') === 'portal_tickets_guest_view';
+
+        if (!$exception instanceof AccessDeniedException || !($isTicketView || $isGuestTicketView)) {
             return;
         }
 
@@ -82,12 +84,16 @@ class NoTicketAccessRedirectListener implements EventSubscriberInterface
 
         // get ticket
         $qb = $this->em->createQueryBuilder();
-        $qb
-            ->select('t')
-            ->from(Ticket::class, 't')
-            ->where('t.id = :ref OR t.ref = :ref')
-            ->setParameter('ref', $request->attributes->get('ticket_ref'))
-        ;
+        $qb->select('t');
+        $qb->from(Ticket::class, 't');
+
+        if ($isTicketView) {
+            $qb->where('t.id = :ref OR t.ref = :ref');
+            $qb->setParameter('ref', $request->attributes->get('ticket_ref'));
+        } else {
+            $qb->where('t.auth = :auth');
+            $qb->setParameter('auth', $request->attributes->get('auth'));
+        }
 
         /** @var Ticket $ticket */
         $ticket = $qb->getQuery()->getOneOrNullResult();
@@ -104,7 +110,7 @@ class NoTicketAccessRedirectListener implements EventSubscriberInterface
             new RedirectResponse($this->router->generate(
                 'portal_set_password',
                 [
-                    'email' => $ticket->getPerson()->getEmailAddress(),
+                    'email' => $isGuestTicketView ? $ticket->getPerson()->getEmailAddress() : '',
                 ],
                 RouterInterface::ABSOLUTE_PATH
             )
