@@ -203,14 +203,14 @@ export class EditFormComponent extends React.Component {
     if (fields.split_by) {
       parts.push(`SPLIT BY ${fields.split_by}`);
     }
-    if (fields.order_by) {
-      parts.push(`ORDER BY ${fields.order_by}`);
-    }
     if (fields.group_by) {
       parts.push(`GROUP BY ${fields.group_by}`);
       if (fields.with_rollup) {
         parts.push('WITH ROLLUP');
       }
+    }
+    if (fields.order_by) {
+      parts.push(`ORDER BY ${fields.order_by}`);
     }
     if (fields.limit && fields.offset) {
       parts.push(`LIMIT ${fields.limit} OFFSET ${fields.offset}`);
