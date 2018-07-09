@@ -2,14 +2,14 @@
 
 namespace DeskPRO\Bundle\AppBundle\Features;
 
-class NewFiltersFeature extends AbstractBetaFeature
+class NewSearchFeature extends AbstractBetaFeature
 {
     /**
      * {@inheritdoc}
      */
     public function getId()
     {
-        return 'new_filters';
+        return 'new_search';
     }
 
     /**
@@ -17,7 +17,7 @@ class NewFiltersFeature extends AbstractBetaFeature
      */
     public function getTitle()
     {
-        return 'New Filters';
+        return 'New Search';
     }
 
     /**
@@ -25,7 +25,7 @@ class NewFiltersFeature extends AbstractBetaFeature
      */
     public function getShortDescription()
     {
-        return 'Improved filtering in the agent interface';
+        return 'Improved searching in the agent interface';
     }
 
     /**
@@ -33,7 +33,7 @@ class NewFiltersFeature extends AbstractBetaFeature
      */
     public function getEnableDescription()
     {
-        return 'The new filtering system improves filtering features (such as filter sharing, filter sets) and improves accuracy and real-time functions.';
+        return 'The new searching system improves searching features with a token based search and a new result tab.';
     }
 
     /**
@@ -41,7 +41,7 @@ class NewFiltersFeature extends AbstractBetaFeature
      */
     public function getDisableDescription()
     {
-        return 'Disabling this feature will return the agent interface to using the previous filtering system.';
+        return 'Disabling this feature will return the agent interface to using the previous searching system.';
     }
 
     /**

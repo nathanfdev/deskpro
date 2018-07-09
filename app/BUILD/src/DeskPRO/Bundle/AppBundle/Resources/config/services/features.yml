@@ -45,6 +45,13 @@ services:
     tags:
       - { name: deskpro.feature }
 
+  deskpro.features.new_search:
+    class: DeskPRO\Bundle\AppBundle\Features\NewSearchFeature
+    arguments:
+      - "@settings_resolver"
+    tags:
+      - { name: deskpro.feature }
+
   deskpro.features.new_snippets:
     class: DeskPRO\Bundle\AppBundle\Features\NewSnippetsFeature
     arguments:

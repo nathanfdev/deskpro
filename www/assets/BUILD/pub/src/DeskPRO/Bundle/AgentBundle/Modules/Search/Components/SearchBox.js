@@ -32,7 +32,9 @@ class SearchBox extends React.Component {
   }
 
   componentWillMount = () => {
-    this.initTokenTypes();
+    if (window.DP_HAS_NEW_SEARCH) {
+      this.initTokenTypes();
+    }
   };
 
   initTokenTypes = () => {
@@ -305,17 +307,20 @@ class SearchBox extends React.Component {
   render() {
     const { ...props } = this.props;
     const { value, tokenTypes } = this.state;
-    return (
-      <SemanticSearchBox {...props}>
-        <TokenField
-          tokenTypes={tokenTypes}
-          value={value}
-          onChange={this.handleChange}
-          placeholder=""
-          zIndex={1800}
-        />
-      </SemanticSearchBox>
-    );
+    if (window.DP_HAS_NEW_SEARCH) {
+      return (
+        <SemanticSearchBox {...props}>
+          <TokenField
+            tokenTypes={tokenTypes}
+            value={value}
+            onChange={this.handleChange}
+            placeholder=""
+            zIndex={1800}
+          />
+        </SemanticSearchBox>
+      );
+    }
+    return <SemanticSearchBox {...props} />;
   }
 }
 
