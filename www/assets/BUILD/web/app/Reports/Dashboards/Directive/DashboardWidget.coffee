@@ -1,28 +1,21 @@
 define ->
-  Reports_Directive_Widget= ['$compile', '$state', 'DashboardWidgetService', ($compile, $state, DashboardWidgetService) ->
+  Reports_Directive_Widget= ['DashboardWidgetService', (DashboardWidgetService) ->
     return {
-      restrict: 'E'
-      replace: true
+      restrict: 'A'
+      replace: false
       scope:
         widgetId: '@'
-        myIndex: '@'
+        options: '@'
+        title: '@'
 
-      link: (scope, element, attrs) ->
-        i = attrs.widgetId
-        template = "<div id=\"ch#{i}\"></div>"
-        linkFn = $compile(template)
-        content = linkFn(scope)
-        element.replaceWith(content)
-        conf = scope.widgetId || 0;
-        chartDiv = angular.element(document.getElementById("ch" + i))
-
-        initChart = () ->
-          DashboardWidgetService
-            .getWidget(conf)
-            .then (widget) =>
-              chartDiv.html(widget.rendered_result)
-
-        initChart()
+      link: (scope) ->
+        scope.$on('gridster-item-transition-end', (item) =>
+          gridsterItem = item.targetScope.gridsterItem
+          gridsterItem.id = scope.widgetId
+          gridsterItem.title = scope.title
+          gridsterItem.options = scope.options
+          DashboardWidgetService.saveWidget(gridsterItem)
+        )
     }
   ]
 
