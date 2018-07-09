@@ -44,6 +44,7 @@ class AppOptionsMapper
         $options['accountDomainNameShort']  = $settings->get('short_domain_name');
         $options['accountFilterFormat']     = $settings->get('filter');
         $options['disable_cert_validation'] = $settings->get('disable_cert_validation');
+        $options['syncProfilePictures']     = $settings->get('sync_profile_pictures');
         $options['disableLdapPaging']       = $settings->get('disable_ldap_paging');
         $options['ldapPerPage']             = $settings->get('ldap_per_page');
         $options['raw_info_filter']         = $settings->get('raw_info_filter');

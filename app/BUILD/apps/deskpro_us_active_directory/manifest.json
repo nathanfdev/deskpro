@@ -112,6 +112,14 @@
 		  "default_value": false
 		},
 		{
+		  "name": "sync_profile_pictures",
+		  "type": "checkbox",
+		  "label": "Sync profile pictures",
+		  "checkbox_label": "Sync profile pictures if they are set in the directory",
+		  "description": "",
+		  "default_value": true
+		},
+		{
 		  "name": "disable_ldap_paging",
 		  "type": "checkbox",
 		  "label": "Disable LDAP Paging",
