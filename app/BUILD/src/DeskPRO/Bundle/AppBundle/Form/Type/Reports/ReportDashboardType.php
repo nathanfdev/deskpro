@@ -87,6 +87,9 @@ class ReportDashboardType extends AbstractType
         if ($data instanceof ReportDashboard) {
             $permissions = $data->getPermissions();
             foreach ($permissions as $permission) {
+                if (!$permission->getPerson()) {
+                    continue;
+                }
                 if ($permission->getPerson()->isAdmin() || $permission->getPerson()->can_reports) {
                     $permissions->removeElement($permission);
                 }
