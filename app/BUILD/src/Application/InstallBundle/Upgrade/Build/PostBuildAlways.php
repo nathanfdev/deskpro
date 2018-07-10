@@ -13,10 +13,30 @@ class PostBuildAlways extends AbstractBuild
     {
         $this->out('Post upgrade-always begin');
 
-        $this->out('Clear cache table');
-        $this->execDbQuery('default', 'TRUNCATE TABLE cache');
-        $this->execDbQuery('default', 'TRUNCATE TABLE log_items');
-        $this->execDbQuery('default', 'TRUNCATE TABLE result_cache');
+        $this->out('Clear tables');
+        $tablesByConn = [
+            'default' => ['cache', 'log_items', 'result_cache'],
+            'system'  => ['notification_system_event', 'system_alerts_events', 'system_alerts_incident_events', 'system_alerts_incidents'],
+        ];
+        foreach ($tablesByConn as $connName => $tables) {
+            $this->execDbQuery($connName, 'SET FOREIGN_KEY_CHECKS = 0');
+            foreach ($tables as $t) {
+                $this->out("[$connName] Cleaning $t");
+                if (defined('DPC_IS_CLOUD')) {
+                    // truncate on cloud seems to destabalise galera
+                    // probably because truncate is actually a DDL that is the same as DROP/CREATE
+                    // so we only do that if there are lotttts of rows
+                    if ($this->getDbConnection($connName)->fetchColumn("SELECT COUNT(*) FROM $t") > 2500) {
+                        $this->execDbQuery($connName, "TRUNCATE TABLE $t");
+                    } else {
+                        $this->execDbQuery($connName, "DELETE FROM $t");
+                    }
+                } else {
+                    $this->execDbQuery($connName, "TRUNCATE TABLE $t");
+                }
+            }
+            $this->execDbQuery($connName, 'SET FOREIGN_KEY_CHECKS = 1');
+        }
 
         //------------------------------
         // Reset opcache
