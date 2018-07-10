@@ -115,7 +115,11 @@ class EditContainer extends React.Component {
           current.id = reportData.id;
           current.is_custom = true;
           current.extended_query = reportData.raw ? reportData.raw.indexOf('LAYER WITH') !== -1 : false;
-          this.setState({ saving: false, error: false, formErrors: {} }, () => this.props.onSubmit(current));
+          this.setState({
+            saving:     false,
+            error:      false,
+            formErrors: {}
+          }, () => this.props.onSubmit(current));
         })
         .catch((response) => {
           const flattenErrors = {};
