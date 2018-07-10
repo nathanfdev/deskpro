@@ -183,7 +183,7 @@ class PatternCutter implements QuoteDef
 
         foreach ($this->patterns as $pattern) {
             $matcher = new HtmlMatcher($body, $pattern);
-            $hash    = $hash    = hash('md4', $pattern->getPattern());
+            $hash    = hash('md4', $pattern->getPattern());
             if (isset($this->patternOptions[$hash]) && isset($this->patternOptions[$hash]['reverse'])) {
                 $matcher->setReverse($this->patternOptions[$hash]['reverse']);
             }
