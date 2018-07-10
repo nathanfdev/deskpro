@@ -142,13 +142,13 @@ class LabelsFieldComponent extends React.PureComponent {
   };
 
   static propTypes = {
-    fields:  PropTypes.object.isRequired,
-    options: PropTypes.array.isRequired,
+    fields:   PropTypes.object.isRequired,
+    options:  PropTypes.array.isRequired,
+    isCustom: PropTypes.bool,
   };
 
   render() {
-    const { fields, options } = this.props;
-
+    const { fields, options, isCustom } = this.props;
     const newOptions = options.map(label => label.label);
 
     return (<reduxForm.TagSet
@@ -157,6 +157,7 @@ class LabelsFieldComponent extends React.PureComponent {
       label="Labels"
       tags={fields.getAll() || []}
       options={newOptions}
+      editable={isCustom}
     />);
   }
 }
@@ -176,6 +177,7 @@ export class EditFormComponent extends React.Component {
     formErrors:   {},
     hasError:     false,
     labels:       [],
+    isCustom:     false,
   };
 
   static propTypes = {
@@ -191,6 +193,7 @@ export class EditFormComponent extends React.Component {
     handleSubmit:  PropTypes.func,
     formErrors:    PropTypes.object,
     hasError:      PropTypes.bool,
+    isCustom:      PropTypes.bool,
   };
 
   static toDpql(fields) {
@@ -288,10 +291,10 @@ export class EditFormComponent extends React.Component {
 
   render() {
     const groupBy = this.props.groupBy || '';
-    const { select, groupParams, labels, formErrors, hasError } = this.props;
+    const { select, groupParams, labels, formErrors, hasError, isCustom } = this.props;
 
     const renderVars = field => <VarsField fields={field.fields} groupParams={groupParams || {}} />;
-    const renderLabels = field => <LabelsField fields={field.fields} options={labels} />;
+    const renderLabels = field => <LabelsField fields={field.fields} options={labels} isCustom={isCustom} />;
 
     return (
       <form onSubmit={this.props.handleSubmit}>
