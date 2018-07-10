@@ -13,6 +13,7 @@ import * as searchActions from '../Actions/searchActions';
   ticketDepartments: collectionSelectorFactory('Department', 'all_tickets')(state),
   agents:            agentsSelector(state),
   agentTeams:        allSelectorFactory('AgentTeam')(state),
+  brands:            allSelectorFactory('Brand')(state),
 }))
 class SearchBox extends React.Component {
   static propTypes = {
@@ -20,6 +21,7 @@ class SearchBox extends React.Component {
     ticketDepartments: PropTypes.object,
     agents:            PropTypes.object,
     agentTeams:        PropTypes.object,
+    brands:            PropTypes.object,
     dispatch:          PropTypes.func.isRequired,
   };
 
@@ -218,6 +220,23 @@ class SearchBox extends React.Component {
         props:  {},
       },
       {
+        id:     'followers',
+        label:  this.props.intl.formatMessage({ id: 'agent.general.followers' }).toLowerCase().replace(/ /, '-'),
+        widget: 'SelectInput',
+        props:  {
+          dataSource: {
+            getOptions: this.props.agents.toArray()
+                          .sort((a, b) => a.get('name') > b.get('name'))
+                          .map(e => ({
+                            label: e.get('name'),
+                            value: e.get('id'),
+                          }))
+          },
+          isMultiple: true,
+          showSearch: true,
+        },
+      },
+      {
         id:     'organization',
         label:  this.props.intl.formatMessage({ id: 'agent.general.organization' }).toLowerCase().replace(/ /, '-'),
         widget: 'SelectInput',
@@ -249,12 +268,52 @@ class SearchBox extends React.Component {
           },
         },
       },
+      {
+        id:     'brand',
+        label:  this.props.intl.formatMessage({ id: 'agent.general.brand' }).toLowerCase().replace(/ /, '-'),
+        widget: 'SelectInput',
+        props:  {
+          dataSource: {
+            getOptions: this.props.brands.toArray()
+                          .sort((a, b) => a.get('name') > b.get('name'))
+                          .map(e => ({
+                            label: e.get('name'),
+                            value: e.get('id'),
+                          }))
+          },
+          showSearch: true,
+        },
+      },
+      {
+        id:     'id',
+        label:  this.props.intl.formatMessage({ id: 'agent.general.id' }).toLowerCase().replace(/ /, '-'),
+        widget: 'TextInput',
+        props:  {},
+      },
+      {
+        id:     'file_name',
+        label:  this.props.intl.formatMessage({ id: 'agent.general.file' }).toLowerCase().replace(/ /, '-'),
+        widget: 'TextInput',
+        props:  {},
+      },
+      {
+        id:     'file_size',
+        label:  this.props.intl.formatMessage({ id: 'agent.general.filesize' }).toLowerCase().replace(/ /, '-'),
+        widget: 'NumericRangeInput',
+        props:  {},
+      },
+      {
+        id:     'filetype',
+        label:  this.props.intl.formatMessage({ id: 'agent.general.filetype' }).toLowerCase().replace(/ /, '-'),
+        widget: 'TextInput',
+        props:  {},
+      },
     ];
     this.setState(tokenTypes);
     this.props.dispatch(searchActions.loadCustomFields()).then((res) => {
       const customFields = res.map(field => ({
         id:          `custom_field_${field.id}`,
-        label:       field.title.toLowerCase().replace(/ /, '-'),
+        label:       `${this.props.intl.formatMessage({ id: 'agent.general.field' }).toLowerCase()}-${field.title.toLowerCase().replace(/ /, '-')}`,
         widget:      this.tokenFromField(field),
         props:       this.tokenPropsFromField(field),
         description: field.description,
