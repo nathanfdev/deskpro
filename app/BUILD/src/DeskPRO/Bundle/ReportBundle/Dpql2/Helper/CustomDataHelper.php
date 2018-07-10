@@ -61,6 +61,10 @@ class CustomDataHelper
      */
     public function getDefTable($customDataTable)
     {
+        if ($customDataTable === 'custom_data_person') {
+            return 'custom_def_people';
+        }
+
         return str_replace('_data_', '_def_', $customDataTable);
     }
 
