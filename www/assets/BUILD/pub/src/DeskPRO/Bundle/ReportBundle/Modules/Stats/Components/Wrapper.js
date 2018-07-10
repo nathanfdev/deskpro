@@ -243,7 +243,8 @@ class Wrapper extends React.Component {
   }
 
   onSubmit(data) {
-    this.setState({ currentReport: Immutable.fromJS(data), reportLoading: false });
+    const report = Immutable.fromJS(data);
+    this.setState({ currentReport: report, reportLoading: true }, () => this.onRunReportClick(report));
   }
 
   setLabels(props) {
