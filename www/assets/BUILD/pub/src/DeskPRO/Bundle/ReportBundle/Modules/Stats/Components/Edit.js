@@ -182,6 +182,7 @@ class EditContainer extends React.Component {
         labels={labels.toJS()}
         groupParams={groupParams.toJS()}
         dpqlParser={EditContainer.dpqlParser}
+        isCustom={report.get('is_custom')}
       />
       {controls}
     </div>);
