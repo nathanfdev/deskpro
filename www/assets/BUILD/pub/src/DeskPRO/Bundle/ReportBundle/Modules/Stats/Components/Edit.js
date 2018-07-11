@@ -110,9 +110,9 @@ class EditContainer extends React.Component {
     });
 
     dispatch(saveReport(reportData))
-        .then(() => {
+        .then((response) => {
           const current = transformReportDataToApi(reportData);
-          current.id = reportData.id;
+          current.id = response.data.data.id ? response.data.data.id : reportData.id;
           current.is_custom = true;
           current.extended_query = reportData.raw ? reportData.raw.indexOf('LAYER WITH') !== -1 : false;
           this.setState({
