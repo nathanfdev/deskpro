@@ -25,8 +25,12 @@ function createResponseHandler(responseCount, resolve, reject) { // eslint-disab
     responses.push(message);
 
     // still waiting for some responses
-    if (currentCount !== responseCount) {
+    if (currentCount < responseCount) {
       return;
+    }
+
+    if (currentCount > responseCount) {
+      console.warn(`the currentCount (${currentCount}) of widget responses is paradoxically more than those that were sent ${responseCount}`);
     }
 
     // we received all the responses
