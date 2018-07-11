@@ -18,6 +18,8 @@ class PatternCutter implements QuoteDef
      */
     protected $patterns = [];
 
+    protected $patternOptions = [];
+
     /**
      * @var PatternCutter\HtmlPattern[]
      */
@@ -111,6 +113,14 @@ class PatternCutter implements QuoteDef
      */
     public function addPattern($pattern)
     {
+        $patternOptions = [];
+        if (is_array($pattern)) {
+            $patternString = array_shift($pattern);
+            if (!empty($pattern)) {
+                $patternOptions = $pattern;
+            }
+            $pattern = $patternString;
+        }
         if (is_string($pattern)) {
             if (strpos($pattern, 'lang:') === 0) {
                 $translate_map = $this->getTranslateMap();
@@ -122,11 +132,18 @@ class PatternCutter implements QuoteDef
                     foreach ($set as $f => $r) {
                         $pattern = str_replace($f, $r, $pattern);
                     }
-
+                    if ($patternOptions) {
+                        $hash                        = hash('md4', $pattern);
+                        $this->patternOptions[$hash] = $patternOptions;
+                    }
                     $pattern          = new HtmlPattern($pattern);
                     $this->patterns[] = $pattern;
                 }
             } else {
+                if ($patternOptions) {
+                    $hash                        = hash('md4', $pattern);
+                    $this->patternOptions[$hash] = $patternOptions;
+                }
                 $pattern          = new HtmlPattern($pattern);
                 $this->patterns[] = $pattern;
             }
@@ -166,6 +183,10 @@ class PatternCutter implements QuoteDef
 
         foreach ($this->patterns as $pattern) {
             $matcher = new HtmlMatcher($body, $pattern);
+            $hash    = hash('md4', $pattern->getPattern());
+            if (isset($this->patternOptions[$hash]) && isset($this->patternOptions[$hash]['reverse'])) {
+                $matcher->setReverse($this->patternOptions[$hash]['reverse']);
+            }
             if ($matcher->isMatch()) {
                 $this->matched_patterns[] = $pattern;
                 $body                     = $matcher->getMarkedDocument();
