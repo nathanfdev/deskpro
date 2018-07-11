@@ -5,7 +5,7 @@
 </div>
 <!-- DP_MESSAGE_END -->
 <a name="dp_message_{{ message.id }}_end" class="dp_message_{{ message.id }}_end dp_marker_link"></a>
-{% if app.isPortalEnabled() and message.attachments.count %}
+{% if app.isPortalEnabled() and message.attachments.count and not app.getSetting('core_tickets.disable_attachments_list') %}
 	<div style="font-size:11px">
 		<br/>
 		<strong>Attachments</strong>

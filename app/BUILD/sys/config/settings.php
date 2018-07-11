@@ -464,6 +464,8 @@ return [
     // See TicketGatewayProcessor::createTicketDetector and SubjectMatchDetector::enableExactSubjectMatching
     'core_tickets.enable_exact_subject_matching' => false,
 
+    'core_tickets.core_tickets_disable_attachments_list' => false,
+
     // True to force agent emails to have the marker line
     'core_tickets.gateway_agent_require_marker' => true,
 
