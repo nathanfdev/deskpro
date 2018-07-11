@@ -2,7 +2,7 @@ import React from 'react';
 import ReactDOM from 'react-dom';
 import { Provider } from 'react-redux';
 
-import { DeskproAppContainerProps, DeskproAppContainer, LegacySidebarContainer, LegacyAppSidebar } from '../Components';
+import { DeskproAppContainer, LegacySidebarContainer, LegacyAppSidebar } from '../Components';
 import { ContainerConfiguration } from './ContainerConfiguration';
 
 /**
@@ -57,7 +57,7 @@ class ContainerMounter {
   mountAt(context, domNode) {
     const configuration = ContainerConfiguration.fromDOM(domNode);
     const widgetsConfigList = this.getWidgetConfigForContainer(configuration);
-    const props = DeskproAppContainerProps.create({ context, widgetsConfigList });
+    const props = { context, widgetsConfigList };
 
     let reactElement = null;
     const { renderType: renderStrategy } = configuration;

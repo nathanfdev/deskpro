@@ -66,37 +66,6 @@ DeskPRO.Agent.PageFragment.Page.Ticket = new Orb.Class({
 
 	initPage: function(el) {
 
-    var handleReplySave = this.handleReplySave.bind(this);
-
-    var onActivateScope = this;
-    var onActivate = function () {
-      return { ticket_id: onActivateScope.meta.ticket_id, meta: onActivateScope.meta }
-    };
-    onActivate.bind(this);
-
-    var onResponse = function (handlerTrap, widget, message) {
-      var response = message.body;
-      var release = response.allowReply;
-      var reason = null;
-      if (!response.allowReply) {
-        reason = response.reason ? response.reason : 'Reply is disabled';
-      }
-
-      if (reason) { DeskPRO_Window.showAlert(reason); }
-      handlerTrap(release);
-    };
-
-		if (window.DeskPRO_APPSTORE) {
-			this.handleReplySaveInterceptor = window.DeskPRO_APPSTORE.interceptEvent(
-				'context.ticket.reply',
-				onResponse,
-				onActivate,
-				handleReplySave
-			);
-		} else {
-			this.handleReplySaveInterceptor = handleReplySave;
-		}
-
 		this.wrapper = el;
 
 		var self = this;
@@ -696,7 +665,7 @@ DeskPRO.Agent.PageFragment.Page.Ticket = new Orb.Class({
 			}
 		});
 
-		$('form.ticket-reply-form', this.getEl('replybox_wrap')).bind('replyboxsubmit', this.handleReplySaveInterceptor);
+		$('form.ticket-reply-form', this.getEl('replybox_wrap')).bind('replyboxsubmit', this.handleReplySave.bind(this));
 
 		this.ticketActions = new DeskPRO.Agent.PageFragment.Page.Ticket.TicketActions(this);
 		this.ownObject(this.ticketActions);
@@ -1215,13 +1184,36 @@ DeskPRO.Agent.PageFragment.Page.Ticket = new Orb.Class({
 		DeskPRO_Window.showAlert('You are not allowed to make any changes to this ticket until it has been unlocked.');
 	},
 
-	handleReplySave: function(ev, formData, handler, meta) {
+  handleReplySave: function (ev, formData, handler, meta) {
 
+    function onSuccess(response)
+    {
+      if (response.canceled) {
+        var reason = typeof response.message === 'string' ? response.message : 'Reply is disabled';
+        DeskPRO_Window.showAlert(reason);
+      } else {
+        this.doHandleReplySave(ev, formData, handler, meta);
+      }
+    }
+
+    window.DeskPRO_APPSTORE.emitAsync(
+      'context.ticket.reply',
+      {
+        ticket_id:    this.meta.ticket_id,
+        api_data:     this.meta.api_data,
+        api_v2_data:  this.meta.api_v2_data,
+        hasTimeLog:   this.meta.hasTimeLog,
+        hasBilling:   this.meta.hasBilling
+      }
+    ).then(onSuccess.bind(this))
+  },
+
+	doHandleReplySave: function(ev, formData, handler, meta) {
   	this.replyHasBillingControl = meta.hasBillingControl;
 
 		if (this.pauseSend) {
 			window.setTimeout((function() {
-				this.handleReplySave(ev, formData, handler);
+				this.doHandleReplySave(ev, formData, handler);
 			}).bind(this), 250);
 		}
 
@@ -1372,8 +1364,8 @@ DeskPRO.Agent.PageFragment.Page.Ticket = new Orb.Class({
 					result.client_messages = null;
 				}
 
-				if (typeof window.DeskPRO_APPSTORE.dispatchEvent === 'function') {
-          window.DeskPRO_APPSTORE.dispatchEvent('context.ticket.reply-success', result);
+				if (typeof window.DeskPRO_APPSTORE.emitAsync === 'function') {
+          window.DeskPRO_APPSTORE.emitAsync('context.ticket.reply-success', result);
         }
 
 				if (result.error_messages) {
@@ -1562,8 +1554,8 @@ DeskPRO.Agent.PageFragment.Page.Ticket = new Orb.Class({
 
 		// other events
 		this.fireEvent('ticket_updated', [data]);
-    if (typeof window.DeskPRO_APPSTORE.dispatchEvent === 'function') {
-      window.DeskPRO_APPSTORE.dispatchEvent('context.ticket.update-success', data);
+    if (typeof window.DeskPRO_APPSTORE.emitAsync === 'function') {
+      window.DeskPRO_APPSTORE.emitAsync('context.ticket.update-success', data);
     }
 
 	},
@@ -1637,7 +1629,7 @@ DeskPRO.Agent.PageFragment.Page.Ticket = new Orb.Class({
 				}
 				this.getEl('replybox_wrap').empty().append(data.replybox_html);
 				DeskPRO_Window.initInterfaceServices(this.getEl('replybox_wrap'));
-				$('form.ticket-reply-form', this.getEl('replybox_wrap')).bind('replyboxsubmit', this.handleReplySaveInterceptor);
+				$('form.ticket-reply-form', this.getEl('replybox_wrap')).bind('replyboxsubmit', this.handleReplySave.bind(this));
 				$('input[name="charge_time"]', this.wrapper).prop('checked', chargeCheckboxState);
 			}
 		}

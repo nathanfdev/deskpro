@@ -19,11 +19,11 @@ export class WidgetContainer extends React.PureComponent {
     const { name, message } = getEvent(this.props.configuration);
 
     if (name && message && this.window) {
-      postRobot.send(this.window, name, message.toJS());
+      postRobot.send(this.window, name, message.toJS()).catch(e => console.error('message not send because of post-robot error ', e));
     }
 
     if (name && message && !this.window) {
-      console.log('message arrived before window is ready');
+      console.error('message not send because widget window is not ready ', message);
     }
   }
 

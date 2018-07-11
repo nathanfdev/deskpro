@@ -393,47 +393,9 @@ export const EVENT_RESET_SIZE = (response, widget, message, services) => {
 
     response(null, { height });
   } catch (e) {
-    // console.log('app reset size failed', e);
+    console.error('app reset size failed', e);
     response(e);
   }
-};
-
-/**
- * @param {function} response
- * @param {Widget} widget
- * @param {WidgetRequest} message
- * @param {AppServices} services
- * @constructor
- */
-export const EVENT_SUBSCRIBE = (response, widget, message, services) => {
-  const { events  } = message.body; // eslint-disable-line no-shadow
-  if (!(events instanceof Array)) {
-    response(new Error('expecting a list of event names'));
-    return;
-  }
-
-  const availableEvents = [
-    {
-      name:           'context.ticket.reply',
-      invocationType: 'event.invocation_requestresponse'
-    },
-    {
-      name:           'context.ticket.reply-success',
-      invocationType: 'event.invocation_fireandforget'
-    },
-    {
-      name:           'context.ticket.update-success',
-      invocationType: 'event.invocation_fireandforget'
-    }
-  ];
-
-  const actualEvents = availableEvents.filter(ev => events.indexOf(ev.name) !== -1);
-  if (actualEvents.length) {
-    actualEvents.each(event => services.addEventListener(event.name, widget));
-    response(null, actualEvents);
-  }
-
-  response(new Error('no such events found'));
 };
 
 // DESKPRO WINDOW EVENT HANDLERS
@@ -575,8 +537,6 @@ export const handlers = {
 
   EVENT_RESET_SIZE,
 
-  EVENT_SUBSCRIBE,
-
   // DESKPRO WINDOW EVENTS
 
   EVENT_DESKPROWINDOW_SHOW_NOTIFICATION,
@@ -588,30 +548,39 @@ export const handlers = {
   EVENT_DESKPROWINDOW_DOM_QUERY
 };
 
-/**
- * @param {EventDispatcher} eventDispatcher
- * @param {String} eventName
- * @param {Function} eventHandler
- * @param {AppServices} appServices
- */
-const registerListener = ({ eventDispatcher, eventName, eventHandler, appServices }) => {
-  const listener = (response, widget, widgetRequest) => eventHandler(response, widget, widgetRequest, appServices);
-  eventDispatcher.addListener(eventName, listener);
-  return listener;
-};
 
 /**
- * @param {EventDispatcher} eventDispatcher
- * @param {AppServices} appServices
+ * @param {Object} appServices
+ * @param {Function} handler
+ * @return {function(Function, Widget, (WidgetRequest|WidgetResponse)): function(Function, Widget, (WidgetRequest|WidgetResponse), Object)}
  */
-export const registerListeners = (eventDispatcher, appServices) => {
-  /** @param {String} key */
-  const mapper = key => registerListener({
-    eventName:    events[key],
-    eventHandler: handlers[key],
-    eventDispatcher,
-    appServices
-  });
-  // intersect the handlers with events, picking entries which exist in both maps;
-  return Object.keys(handlers).filter(key => Object.prototype.hasOwnProperty.call(events, key)).map(mapper);
-};
+function createListener(appServices, handler) {
+  /**
+   * @param {function} response
+   * @param {Widget} widget
+   * @param {WidgetRequest|WidgetResponse} widgetRequest
+   * @return {function}
+   */
+  function listener(response, widget, widgetRequest)  {
+    return handler(response, widget, widgetRequest, appServices);
+  }
+
+  return listener;
+}
+
+/**
+ * Returns a map of event name and listener
+ *
+ * @param {object} appServices
+ * @return {{}}
+ */
+export default function bindIncomingMessageHandlers(appServices) {
+  function reducer(acc, key)  {
+    const eventName = events[key];
+    acc[eventName] = createListener(appServices, handlers[key]);
+    return acc;
+  }
+
+// intersect the handlers with events, picking entries which exist in both maps;
+  return Object.keys(handlers).filter(key => Object.prototype.hasOwnProperty.call(events, key)).reduce(reducer, {});
+}

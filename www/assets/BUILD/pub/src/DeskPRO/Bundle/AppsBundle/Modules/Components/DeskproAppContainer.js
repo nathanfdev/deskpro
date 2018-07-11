@@ -6,6 +6,8 @@ import { ContainerEvents } from './ContainerEvents';
 import { EventProvider } from './EventProvider';
 import { WidgetContainer } from './WidgetContainer';
 
+import { receiveMessage, receiveSubscription, registerOutgoingMessageListener } from '../WidgetMessage';
+
 /**
  * @param {Array} list
  * @param {function} filter
@@ -26,11 +28,19 @@ const find = (list, filter) => {
 class DeskproAppContainer extends React.Component {
 
   static propTypes = {
-    widgetsConfigList:             PropTypes.array.isRequired,
-    context:                       PropTypes.object.isRequired,
-    dispatchIncomingWidgetMessage: PropTypes.func.isRequired,
-    addWidgetEventListener:        PropTypes.func.isRequired,
-    parseIncomingWidgetMessageJS:  PropTypes.func.isRequired
+    widgetsConfigList: PropTypes.array.isRequired,
+    context:           PropTypes.object.isRequired,
+
+    registerOutgoingMessageListener: PropTypes.func,
+    receiveMessage:                  PropTypes.func,
+    receiveSubscription:             PropTypes.func
+  };
+
+
+  static defaultProps = {
+    registerOutgoingMessageListener,
+    receiveMessage,
+    receiveSubscription
   };
 
   state = {
@@ -46,30 +56,32 @@ class DeskproAppContainer extends React.Component {
   /**
    * @param {Widget} widget
    * @param {String} eventName
-   * @param {WidgetRequest} widgetMessage
+   * @param {{data: Object}} event
    */
-  onWidgetMouseEventMessage(widget, eventName, widgetMessage) { /* empty on purpose, can be overriden by subclasses*/ } // eslint-disable-line no-unused-vars
+  onWidgetMouseEventMessage(widget, eventName, event) { /* empty on purpose, can be overriden by subclasses*/ } // eslint-disable-line no-unused-vars
 
-  /**
-   * @param {Widget} widget
-   * @param {String} eventName
-   * @param {WidgetRequest|WidgetResponse} widgetMessage
-   */
-  onWidgetAppMessage(widget, eventName, widgetMessage)  {
-    const { dispatchIncomingWidgetMessage } = this.props;
-    dispatchIncomingWidgetMessage(eventName, widgetMessage, widget);
-  }
 
   // generic widget message handlers
 
-  onWidgetEventSubscribe = (widgetConfiguration, eventName, eventSubscriber) => {
-    const widget = find(this.widgets, aWidget => aWidget.configuration === widgetConfiguration);
-    if (!widget) { return null; }
+  /**
+   * @param {WidgetConfiguration} widgetConfiguration
+   * @param {{data: Object}} event
+   * @return {null}
+   */
+  onWidgetEventSubscribe(widgetConfiguration, event)  {
+    const widget = new Widget({
+      configuration: widgetConfiguration,
+      windowId:      widgetConfiguration.canonicId
+    });
+    const unsubscribers = this.props.receiveSubscription(widget, event);
 
-    const unsubscribe = eventSubscriber(eventName, widget);
-    this.listeners.push({ widget, removeListener: unsubscribe });
-    return null;
-  };
+    Object.keys(unsubscribers).forEach((key) => {
+      this.state.listeners.push({
+        widgetConfiguration,
+        removeListener: unsubscribers[key]
+      });
+    });
+  }
 
   /**
    * @param {WidgetConfiguration} widgetConfiguration
@@ -82,25 +94,24 @@ class DeskproAppContainer extends React.Component {
       throw new Error('failed to dispatch incoming message: unrecognized widget');
     }
 
-    const { parseIncomingWidgetMessageJS } = this.props;
-    const widgetMessage = parseIncomingWidgetMessageJS(event.data);
-
-    if (!widgetMessage) {
-      throw new Error('failed to dispatch incoming message: could not parse widget message');
-    }
-
     const from = new Widget({
       configuration: widgetConfiguration,
       windowId:      widgetConfiguration.canonicId
     });
 
+    // implementation leak
     const { eventName } = event.data;
-    if (eventName === ContainerEvents.EVENT_WINDOW_MOUSEEVENT) {
-      this.onWidgetMouseEventMessage(from, eventName, widgetMessage);
-    } else if (eventName)  {
-      this.onWidgetAppMessage(from, eventName, widgetMessage);
-    } else {
-      throw new Error('failed to dispatch incoming message: unrecognized event name');
+
+    try {
+      if (eventName === ContainerEvents.EVENT_WINDOW_MOUSEEVENT) {
+        this.onWidgetMouseEventMessage(from, eventName, event.data);
+      } else if (eventName === ContainerEvents.EVENT_SUBSCRIBE) {
+        this.onWidgetEventSubscribe(widgetConfiguration, event);
+      } else {
+        this.props.receiveMessage(from, event);
+      }
+    } catch (e) {
+      console.error('failed to process a widget message ', e);
     }
   };
 
@@ -136,11 +147,13 @@ class DeskproAppContainer extends React.Component {
       };
     }
 
-    const { addWidgetEventListener } = this.props;
+    const from = new Widget({
+      configuration: widgetConfiguration,
+      windowId:      widgetConfiguration.canonicId
+    });
 
     const listeners = [
-      addWidgetEventListener(widgetConfiguration.id, this.onWidgetMessageSend),
-      addWidgetEventListener(`subscribe.${widgetConfiguration.id}`, this.onWidgetEventSubscribe)
+      this.props.registerOutgoingMessageListener(from, this.onWidgetMessageSend),
     ];
     // no need to trigger a refresh for now
     Array.prototype.push.apply(this.state.listeners, listeners.map(removeListener => ({ widgetConfiguration, removeListener })));

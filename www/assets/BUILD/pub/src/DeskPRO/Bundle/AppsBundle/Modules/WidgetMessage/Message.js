@@ -14,16 +14,15 @@ const incrementCorrelationId = () => {
   return nextCorrelationId;
 };
 
-
-export class WidgetRequest {
+class WidgetMessage {
   /**
-   * @param body
    * @param id
    * @param correlationId
    * @param widgetId
+   * @param [props]
    */
-  constructor({ body, id, correlationId, widgetId })  {
-    this.props = { body, id, correlationId, widgetId };
+  constructor({ id, correlationId, widgetId, ...props })  {
+    this.props = { id, correlationId, widgetId, ...props };
   }
 
   get id() { return this.props.id; }
@@ -32,12 +31,24 @@ export class WidgetRequest {
 
   get correlationId() { return this.props.correlationId; }
 
-  get body() { return this.props.body; }
-
   toJS = () => ({ ...this.props })
 }
 
-export class WidgetResponse {
+export class WidgetRequest extends WidgetMessage {
+  /**
+   * @param body
+   * @param id
+   * @param correlationId
+   * @param widgetId
+   */
+  constructor({ body, id, correlationId, widgetId })  {
+    super({ body, id, correlationId, widgetId });
+  }
+
+  get body() { return this.props.body; }
+}
+
+export class WidgetResponse extends WidgetMessage {
   /**
    * @param id
    * @param widgetId
@@ -46,26 +57,19 @@ export class WidgetResponse {
    * @param status
    */
   constructor({ id, widgetId, correlationId, body, status })  {
-    this.props = { id, widgetId, correlationId, body, status };
+    super({ id, widgetId, correlationId, body, status });
   }
-
-  get id() { return this.props.id; }
-
-  get widgetId() { return this.props.widgetId; }
-
-  get correlationId() { return this.props.correlationId; }
 
   get status() { return this.props.status; }
 
   get body() { return this.props.body; }
-
-  toJS = () => ({ ...this.props })
 }
 
 /**
  * @param {WidgetRequest} widgetRequest
  * @param {Error|String} error
  * @param {Object} data additional error data
+ *
  * @return WidgetResponse
  */
 export const createErrorResponse = (widgetRequest, error, data) => {
@@ -99,12 +103,13 @@ export const createSuccessResponse = (widgetRequest, data) => {
 /**
  * @param {Widget} widget
  * @param {*} body
+ *
  * @return {WidgetRequest}
  */
 export const createRequest = (widget, body) => {
   const id = incrementMessageId();
   const correlationId = incrementCorrelationId();
-  const { instanceId: widgetId } = widget;
+  const { id: widgetId } = widget;
 
   return new WidgetRequest({ id, correlationId, widgetId, body });
 };
@@ -114,15 +119,20 @@ export const createRequest = (widget, body) => {
  * @return {WidgetRequest|WidgetResponse}
  */
 export const parseIncomingMessageJS = (widgetMessage) => {
-  const { args, messageId, status, body, correlationId, id, widgetId } = widgetMessage;
+  const { status, body, correlationId, widgetId } = widgetMessage;
+  const id = incrementMessageId();
+
+  // a response
   if (status) {
     const parsedBody = status === 'error' && typeof  body === 'string' ? JSON.parse(body) : body;
     return new WidgetResponse({ id, widgetId, correlationId, body: parsedBody, status });
   }
 
-  if (args) {
-    return new WidgetRequest({ id: messageId, widgetId, correlationId, body: args[0] });
-  }
+  // old message format
+  // const { args, messageId } = widgetMessage;
+  // if (args) {
+  //   return new WidgetRequest({ id: messageId, widgetId, correlationId, body: args[0] });
+  // }
 
   if (correlationId) {
     return new WidgetRequest({ id, correlationId, widgetId, body });
