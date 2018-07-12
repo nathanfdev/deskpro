@@ -1,17 +1,17 @@
 <?php
 
-namespace DeskPRO\Bundle\AppStoreBundle\Infrastructure;
+namespace DeskPRO\Bundle\AppStoreBundle\Infrastructure\AppBundleAdapters;
 
 use DeskPRO\Bundle\AppStoreBundle\Domain;
 
-class AppZipBundleBuilder
+class ZipArchiveBundleWriter implements ZipBundleWriter
 {
     /**
      * Creates a ZipArchiveBuilder that will create the bundle in a randomly named file from the system temp dir.
      *
      * @param null $dir
      *
-     * @return AppZipBundleBuilder
+     * @return ZipArchiveBundleWriter
      */
     public static function fromTmp($dir = null)
     {
@@ -26,7 +26,7 @@ class AppZipBundleBuilder
      *
      * @param string $file path to a file
      *
-     * @return AppZipBundleBuilder
+     * @return ZipArchiveBundleWriter
      */
     public static function fromFile($file)
     {
@@ -65,7 +65,7 @@ class AppZipBundleBuilder
      * @param string $dir
      * @param int    $maxDepth
      *
-     * @return AppZipBundleBuilder
+     * @return ZipArchiveBundleWriter
      */
     public function addFolder($dir, $maxDepth = -1)
     {
@@ -101,7 +101,7 @@ class AppZipBundleBuilder
      * @param string|\SplFileInfo $file
      * @param null                $localName
      *
-     * @return AppZipBundleBuilder
+     * @return ZipArchiveBundleWriter
      */
     public function addFile($file, $localName = null)
     {
@@ -127,7 +127,7 @@ class AppZipBundleBuilder
     /**
      * @param string $manifest
      *
-     * @return $this
+     * @return ZipArchiveBundleWriter
      */
     public function setManifest($manifest)
     {
@@ -141,7 +141,7 @@ class AppZipBundleBuilder
     }
 
     /**
-     * @return AppZipArchiveBundle
+     * @return ZipArchiveAdapter
      */
     public function build()
     {
@@ -151,7 +151,6 @@ class AppZipBundleBuilder
         }
 
         $archive = new \ZipArchive();
-
-        return new AppZipArchiveBundle($archive, new \SplFileInfo($this->archivePath));
+        return new ZipArchiveAdapter($archive, new \SplFileInfo($this->archivePath));
     }
 }
