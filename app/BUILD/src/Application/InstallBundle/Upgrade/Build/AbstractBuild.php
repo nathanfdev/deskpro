@@ -177,12 +177,14 @@ abstract class AbstractBuild
      * @deprecated Use execDbQuery(), or execDbQueryQuiet if you want to suppress errors
      *
      * @throws \Exception
+     *
+     * @return int Number of affected rows
      */
     public function execMutateSql($sql, $ignore_err = false)
     {
         $sql = preg_replace('#^\s*#m', '', $sql);
         try {
-            $this->container->getDb()->exec($sql);
+            return $this->container->getDb()->exec($sql);
         } catch (\Exception $e) {
             $this->logger->info('SQL: '.$sql);
             $this->logger->info('Ignored: '.$e->getMessage());
@@ -199,6 +201,8 @@ abstract class AbstractBuild
      * @param string $sql      The query to execute
      *
      * @throws \Exception
+     *
+     * @return int Number of affected rows
      */
     public function execDbQuery($connName, $sql)
     {
@@ -206,7 +210,7 @@ abstract class AbstractBuild
 
         $sql = preg_replace('#^\s*#m', '', $sql);
         try {
-            $db->exec($sql);
+            return $db->exec($sql);
         } catch (\Exception $e) {
             $this->logger->info('SQL['.$connName.']: '.$sql);
             $this->logger->info('Error: '.$e->getMessage());
