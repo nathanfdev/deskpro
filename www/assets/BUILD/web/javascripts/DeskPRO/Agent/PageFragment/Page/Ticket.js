@@ -1550,8 +1550,6 @@ DeskPRO.Agent.PageFragment.Page.Ticket = new Orb.Class({
 	handleTicketUpdate: function(data) {
 		this.doHandleTicketUpdate(data);
 
-		console.log('handleTicketUpdate');
-
 		// other events
 		this.fireEvent('ticket_updated', [data]);
     if (typeof window.DeskPRO_APPSTORE.emitAsync === 'function') {
