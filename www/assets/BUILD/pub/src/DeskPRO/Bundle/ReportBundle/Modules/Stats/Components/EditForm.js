@@ -246,7 +246,7 @@ export class EditFormComponent extends React.Component {
 
   static toDpql(fields) {
     const parts = [];
-    parts.push(`SELECT ${fields.select || 'COUNT()'}`);
+    parts.push(`SELECT ${fields.select || 'DPQL_COUNT()'}`);
     parts.push(`FROM ${fields.from || '???'}`);
     if (fields.where) {
       parts.push(`WHERE ${fields.where}`);
