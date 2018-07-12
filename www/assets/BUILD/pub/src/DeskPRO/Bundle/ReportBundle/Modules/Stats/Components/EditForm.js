@@ -94,7 +94,7 @@ class VarsFieldComponent extends React.PureComponent {
     const { usesCustomTable } = this.state;
     usesCustomTable[varName] = !usesCustomTable[varName];
     if (!usesCustomTable[varName]) {
-      this.props.change(varFormName, '');
+      this.props.change(`${varFormName}.table`, '');
     }
     this.setState(usesCustomTable);
   };
@@ -165,7 +165,7 @@ class VarsFieldComponent extends React.PureComponent {
                 VarsFieldComponent.renderDateField(`${varName}.default`, groupParams.dates) }
               { this.isVarType(variable) &&
                 VarsFieldComponent.renderTypeField(`${varName}.field_type`, groupParams[variable.type]) }
-              { this.isVarType(variable) && this.renderCheckbox(variable.name, index)}
+              { this.isVarType(variable) && this.renderCheckbox(variable.name, varName)}
               { this.state.usesCustomTable[variable.name] ? <reduxForm.Input
                 onChange={() => {}}
                 name={`${varName}.table`}
