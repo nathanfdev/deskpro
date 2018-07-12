@@ -74,16 +74,18 @@ function createTimeoutHandler(receipts, message, resolve, reject) { // eslint-di
  * @param {function} resolve
  * @param {function} reject
  * @param {function(function, Number)} setTimeout
- * @param {string} eventName
+ * @param {string} eventName the name of the event
+ * @param {string} contextId the id of the originating context (usually an ui component, such as ticket tab)
  * @param {*} message
  */
-function emitAsyncHandler(resolve, reject, setTimeout, eventName, message) {
+function emitAsyncHandler(resolve, reject, setTimeout, eventName, contextId, message) {
   // let's assume exchangeType = 'request-response'
   /**
    * @var {Array<Widget>}
    */
   const widgets = [];
-  notifyEventSubscribers(eventName, (widget) => {
+  const contextEventName = [eventName, contextId].join('.');
+  notifyEventSubscribers(contextEventName, (widget) => {
     widgets.push(widget);
   });
 
@@ -117,18 +119,19 @@ export function registerOutgoingMessageListener(widget, listener) {
 
 /**
  * @param {function(function, Number)} setTimeout
- * @param {string} eventName
+ * @param {string} eventName the name of the event
+ * @param {string} contextId the id of the originating context (usually an ui component, such as ticket tab)
  * @param {*} message
  * @return {executor}
  */
-function createEmitExecutor(setTimeout, eventName, message) {
+function createEmitExecutor(setTimeout, eventName, contextId, message) {
   /**
    * @param {function} resolve
    * @param {function} reject
    */
   function executor(resolve, reject) {
     try {
-      emitAsyncHandler(resolve, reject, setTimeout, eventName, message);
+      emitAsyncHandler(resolve, reject, setTimeout, eventName, contextId, message);
     } catch (e) {
       console.error('app events emitter error ', eventName, message, e);
       reject(e);
@@ -142,16 +145,17 @@ function createEmitExecutor(setTimeout, eventName, message) {
  * Returns a function that can dispatch a message to all listening widgets
  *
  * @param {function(function, Number)} setTimeout a setTimeout implementation
- * @return {function(string, *): Promise}
+ * @return {function(string, string, *): Promise}
  */
 export function createEmitAsync(setTimeout) {
   /**
-   * @param {string} eventName
+   * @param {string} eventName the name of the event
+   * @param {string} contextId the id of the originating context (usually an ui component, such as ticket tab)
    * @param {*} message
    * @return {Promise}
    */
-  function emitAsync(eventName, message) {
-    return new Promise(createEmitExecutor(setTimeout, eventName, message));
+  function emitAsync(eventName, contextId, message) {
+    return new Promise(createEmitExecutor(setTimeout, eventName, contextId, message));
   }
 
   return emitAsync;

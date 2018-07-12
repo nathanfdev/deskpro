@@ -73,7 +73,7 @@ class DeskproAppContainer extends React.Component {
       configuration: widgetConfiguration,
       windowId:      widgetConfiguration.canonicId
     });
-    const unsubscribers = this.props.receiveSubscription(widget, event);
+    const unsubscribers = this.props.receiveSubscription(widget, event, this.props.context);
 
     Object.keys(unsubscribers).forEach((key) => {
       this.state.listeners.push({

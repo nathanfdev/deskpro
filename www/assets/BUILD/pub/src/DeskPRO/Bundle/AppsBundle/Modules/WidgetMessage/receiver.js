@@ -25,8 +25,9 @@ export function registerIncomingRequestListeners(listeners) {
  *
  * @param {Widget} widget
  * @param {{data: Object}} event
+ * @param {Context} context the context for the widget from where the events will be emitted
  */
-export function receiveSubscription(widget, event) {
+export function receiveSubscription(widget, event, context) {
   const { eventName } = event.data;
 
   if (EVENT_SUBSCRIBE !== eventName) {
@@ -67,7 +68,9 @@ export function receiveSubscription(widget, event) {
   sendResponse(eventName, widget, response);
 
   return events.reduce((acc, name) => {
-    acc[name] = registerEventSubscriber(name, subscriber);
+    // let's namespace this event so we don't send events to all the widgets instead of those in the same context
+    const contextName = [name, context.tabId].join('.');
+    acc[name] = registerEventSubscriber(contextName, subscriber);
     return acc;
   }, {});
 }
