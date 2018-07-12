@@ -8,6 +8,7 @@ namespace DeskPRO\Bundle\AppBundle\ObjectRouter\LinkGenerator;
 
 use Application\DeskPRO\Entity\ArticleAttachment;
 use Application\DeskPRO\Entity\Download;
+use Application\DeskPRO\Entity\NewsAttachment;
 use DeskPRO\Bundle\AppBundle\ObjectRouter\LinkGeneratorInterface;
 use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
 
@@ -43,6 +44,8 @@ class DownloadsLinkGenerator implements LinkGeneratorInterface
             ($object instanceof Download && $type === 'serve')
             ||
             ($object instanceof ArticleAttachment && $type === 'serve')
+            ||
+            ($object instanceof NewsAttachment && $type === 'serve')
         ;
     }
 

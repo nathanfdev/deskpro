@@ -615,6 +615,21 @@ JS;
 
                     break;
 
+                case 'news':
+                    $news = $this->em->find('DeskPRO:News', $this->in->getUint('object_id'));
+
+                    $attach           = new \Application\DeskPRO\Entity\NewsAttachment();
+                    $attach['blob']   = $blob;
+                    $attach['person'] = $this->person;
+
+                    $news->addAttachment($attach);
+
+                    $this->em->persist($attach);
+                    $this->em->persist($news);
+                    $this->em->flush();
+
+                    break;
+
                 case 'feedback':
                     $feedback = $this->em->find('DeskPRO:Feedback', $this->in->getUint('object_id'));
 
