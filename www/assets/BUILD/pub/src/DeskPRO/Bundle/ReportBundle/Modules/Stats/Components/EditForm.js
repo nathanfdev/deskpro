@@ -67,10 +67,32 @@ class VarsFieldComponent extends React.PureComponent {
     return (<reduxForm.Select onChange={() => {}} label="Default Value" key={name} name={name} options={choices} />);
   }
 
+  constructor(props) {
+    super(props);
+    const { fields, vars } = props;
+    const usesCustomTable = {};
+
+    fields.forEach((varName, index) => {
+      const variable = vars && vars[index] ? vars[index] : {};
+      usesCustomTable[variable.name] = Boolean(variable.table);
+      return variable;
+    });
+
+    this.state = {
+      usesCustomTable
+    };
+  }
+
   onAddButtonClick = (event) => {
     event.preventDefault();
     event.stopPropagation();
     this.props.fields.push();
+  };
+
+  onCheckboxClick = (varName) => {
+    const { usesCustomTable } = this.state;
+    usesCustomTable[varName] = !usesCustomTable[varName];
+    this.setState(usesCustomTable);
   };
 
   // eslint-disable-next-line class-methods-use-this
@@ -84,6 +106,22 @@ class VarsFieldComponent extends React.PureComponent {
 
   varTypeHasValue(variable) {
     return this.isVarType(variable) && variable.field_type && this.props.groupParams[variable.type][variable.field_type];
+  }
+
+  renderCheckbox(varName) {
+    const inputProps = {
+      onClick: () => { this.onCheckboxClick(varName); },
+      type:    'checkbox'
+    };
+    if (this.state.usesCustomTable[varName]) {
+      inputProps.checked = 'checked';
+    }
+    return (
+      <label>
+        <input {...inputProps} />
+        Use special table
+      </label>
+    );
   }
 
   render() {
@@ -122,6 +160,11 @@ class VarsFieldComponent extends React.PureComponent {
                 VarsFieldComponent.renderDateField(`${varName}.default`, groupParams.dates) }
               { this.isVarType(variable) &&
                 VarsFieldComponent.renderTypeField(`${varName}.field_type`, groupParams[variable.type]) }
+              { this.isVarType(variable) && this.renderCheckbox(variable.name)}
+              { this.state.usesCustomTable[variable.name] ? <reduxForm.Input
+                onChange={() => {}}
+                name={`${varName}.table`}
+              /> : null }
               { this.varTypeHasValue(variable) &&
                 VarsFieldComponent.renderTypeValueField(
                   `${varName}.default`,
