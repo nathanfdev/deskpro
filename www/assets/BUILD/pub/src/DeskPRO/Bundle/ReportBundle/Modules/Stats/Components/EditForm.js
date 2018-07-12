@@ -15,7 +15,8 @@ class VarsFieldComponent extends React.PureComponent {
   static propTypes = {
     groupParams: PropTypes.object.isRequired,
     fields:      PropTypes.object.isRequired,
-    vars:        PropTypes.array
+    vars:        PropTypes.array,
+    change:      PropTypes.func
   };
 
   static validateVarName(name) {
@@ -89,9 +90,12 @@ class VarsFieldComponent extends React.PureComponent {
     this.props.fields.push();
   };
 
-  onCheckboxClick = (varName) => {
+  onCheckboxClick = (varName, varFormName) => {
     const { usesCustomTable } = this.state;
     usesCustomTable[varName] = !usesCustomTable[varName];
+    if (!usesCustomTable[varName]) {
+      this.props.change(varFormName, '');
+    }
     this.setState(usesCustomTable);
   };
 
@@ -108,10 +112,11 @@ class VarsFieldComponent extends React.PureComponent {
     return this.isVarType(variable) && variable.field_type && this.props.groupParams[variable.type][variable.field_type];
   }
 
-  renderCheckbox(varName) {
+  renderCheckbox(varName, varFormName) {
     const inputProps = {
-      onClick: () => { this.onCheckboxClick(varName); },
-      type:    'checkbox'
+      onChange: () => {},
+      onClick:  () => { this.onCheckboxClick(varName, varFormName); },
+      type:     'checkbox'
     };
     if (this.state.usesCustomTable[varName]) {
       inputProps.checked = 'checked';
@@ -160,7 +165,7 @@ class VarsFieldComponent extends React.PureComponent {
                 VarsFieldComponent.renderDateField(`${varName}.default`, groupParams.dates) }
               { this.isVarType(variable) &&
                 VarsFieldComponent.renderTypeField(`${varName}.field_type`, groupParams[variable.type]) }
-              { this.isVarType(variable) && this.renderCheckbox(variable.name)}
+              { this.isVarType(variable) && this.renderCheckbox(variable.name, index)}
               { this.state.usesCustomTable[variable.name] ? <reduxForm.Input
                 onChange={() => {}}
                 name={`${varName}.table`}
@@ -336,7 +341,7 @@ export class EditFormComponent extends React.Component {
     const groupBy = this.props.groupBy || '';
     const { select, groupParams, labels, formErrors, hasError, isCustom } = this.props;
 
-    const renderVars = field => <VarsField fields={field.fields} groupParams={groupParams || {}} />;
+    const renderVars = field => <VarsField change={this.props.change} fields={field.fields} groupParams={groupParams || {}} />;
     const renderLabels = field => <LabelsField fields={field.fields} options={labels} isCustom={isCustom} />;
 
     return (
