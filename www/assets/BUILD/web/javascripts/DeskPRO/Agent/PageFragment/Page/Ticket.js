@@ -1197,7 +1197,7 @@ DeskPRO.Agent.PageFragment.Page.Ticket = new Orb.Class({
     }
 
     window.DeskPRO_APPSTORE.emitAsync(
-      'context.ticket.reply',
+      'ticket.reply',
       {
         ticket_id:    this.meta.ticket_id,
         api_data:     this.meta.api_data,
@@ -1365,7 +1365,7 @@ DeskPRO.Agent.PageFragment.Page.Ticket = new Orb.Class({
 				}
 
 				if (typeof window.DeskPRO_APPSTORE.emitAsync === 'function') {
-          window.DeskPRO_APPSTORE.emitAsync('context.ticket.reply-success', result);
+          window.DeskPRO_APPSTORE.emitAsync('ticket.reply-success', result);
         }
 
 				if (result.error_messages) {
@@ -1555,7 +1555,7 @@ DeskPRO.Agent.PageFragment.Page.Ticket = new Orb.Class({
 		// other events
 		this.fireEvent('ticket_updated', [data]);
     if (typeof window.DeskPRO_APPSTORE.emitAsync === 'function') {
-      window.DeskPRO_APPSTORE.emitAsync('context.ticket.update-success', data);
+      window.DeskPRO_APPSTORE.emitAsync('ticket.update-success', data);
     }
 
 	},
