@@ -1407,6 +1407,37 @@ class SystemErrorHandler
             self::$noShowErrors = false;
         }
     }
+
+    /**
+     * Temporarily disable normal error handling. Useful for stuff like fopen etc where PHP triggers errors
+     * instead of exceptions.
+     *
+     * This will still throw exceptions if they are raised. This only eats errors/warnings.
+     *
+     * @param callable $cb
+     * @param array    $errors If provided, any errors that occur will be go in this array
+     *
+     * @throws \Exception
+     *
+     * @return mixed
+     */
+    public static function runWithoutErrorHandler($cb, array &$errors = [])
+    {
+        set_error_handler(function ($type, $message, $file, $line) use (&$errors) {
+            $errors[] = [
+                'type'    => $type,
+                'message' => $message,
+                'file'    => $file,
+                'line'    => $line,
+            ];
+        }, E_ALL | E_STRICT);
+
+        try {
+            return call_user_func($cb);
+        } finally {
+            restore_error_handler();
+        }
+    }
 }
 
 /**
