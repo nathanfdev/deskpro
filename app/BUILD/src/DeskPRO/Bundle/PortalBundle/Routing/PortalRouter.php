@@ -187,7 +187,7 @@ class PortalRouter implements WarmableInterface, RouterInterface, RequestMatcher
         $portalMode = $this->portalModeStorage->getMode();
         if (
             $portalMode
-            && ($portalMode->isBrand() || $portalMode->isAdminPreview())
+            && $portalMode->isAdminPreview()
             && $this->router instanceof RouterWithDynamicContext
         ) {
             $this->router = RouterUtils::unwrapDecoratedRouter($this->router);

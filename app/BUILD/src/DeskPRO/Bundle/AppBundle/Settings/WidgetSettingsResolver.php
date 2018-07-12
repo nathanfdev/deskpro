@@ -211,7 +211,7 @@ class WidgetSettingsResolver extends AbstractBrandAwareSettingsResolver
 
         if ($portalMode && $portalMode->isBrand()) {
             $baseUrl     = $this->router->generate('portal_home', [], UrlGeneratorInterface::ABSOLUTE_URL);
-            $helpdeskUrl = rtrim($baseUrl, '/').'/brand-'.$brand->getId();
+            $helpdeskUrl = rtrim($baseUrl, '/');
         } else {
             $baseUrl     = $this->router->generate('portal_home', ['brand' => $brand], UrlGeneratorInterface::ABSOLUTE_URL);
             $helpdeskUrl = $baseUrl;
