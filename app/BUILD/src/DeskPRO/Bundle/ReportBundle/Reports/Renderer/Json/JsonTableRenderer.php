@@ -36,7 +36,7 @@ class JsonTableRenderer extends AbstractJsonRenderer
             return;
         }
 
-        if ($metadata->getGroupXColumns()) {
+        if ($metadata->getGroupXColumns() && !$metadata->hasFlag(ResultMetadata::FLAG_HIERARCHICAL)) {
             return $this->renderMatrixTable($metadata, $rows, $options);
         }
 
@@ -206,12 +206,18 @@ class JsonTableRenderer extends AbstractJsonRenderer
                 }
 
                 foreach ($groupColumns as $groupId => $groupColumn) {
-                    $cells[] = $this->renderCellValue($row, $groupColumn, $metadata);
+                    $padding = ($metadata->hasFlag(ResultMetadata::FLAG_HIERARCHICAL) && empty($cells))
+                        ? $this->getRowPadding($row)
+                        : '';
+                    $cells[] = $padding.$this->renderCellValue($row, $groupColumn, $metadata);
                 }
             }
 
             foreach ($selectColumns as $column) {
-                $cells[] = $this->renderCellValue($row, $column, $metadata);
+                $padding = ($metadata->hasFlag(ResultMetadata::FLAG_HIERARCHICAL) && empty($cells))
+                    ? $this->getRowPadding($row)
+                    : '';
+                $cells[] = $padding.$this->renderCellValue($row, $column, $metadata);
             }
 
             ++$rowCount;
@@ -223,6 +229,16 @@ class JsonTableRenderer extends AbstractJsonRenderer
         } else {
             return [];
         }
+    }
+
+    private function getRowPadding(array $row)
+    {
+        $padding = '';
+        if (array_key_exists('hierarchy_depth', $row) && ($depth = $row['hierarchy_depth'])) {
+            $padding = str_repeat('&nbsp;', 4 * $depth).'&#8209;&#8209;&nbsp;';
+        }
+
+        return $padding;
     }
 
     /**
