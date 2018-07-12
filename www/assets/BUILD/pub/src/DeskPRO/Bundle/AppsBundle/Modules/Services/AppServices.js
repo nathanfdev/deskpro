@@ -2,7 +2,7 @@ import { meSelector } from 'DeskPRO/Bundle/AppBundle/Modules/RecordsStore/Shortc
 
 import { WidgetDOM } from '../WidgetDOM';
 import { InstanceProxyClient, DPAPIClient } from '../HttpClients';
-import { Base64Converter } from './Base64Converter';
+import { Base64Converter } from './base64';
 import { OauthProxy } from './OauthProxy';
 
 export class AppServices {

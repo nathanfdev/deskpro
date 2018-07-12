@@ -81,12 +81,12 @@ export class OauthProxy {
       return this.buildOauth1AuthorizeUrl.bind(this, { protocolVersion, provider, ...others });
     }
 
-    return null;
+    throw new Error(`Unknown protocol version: ${protocolVersion}`);
   }
 
   buildRedirectUrl({ provider, protocolVersion, applicationId })  {
     let path = protocolVersion === '2.0' || !protocolVersion ? [] : [protocolVersion];
-    path = path.concat([provider, 'grant-access', applicationId].join('/'));
+    path = path.concat([provider, 'grant-access', applicationId]).join('/');
     const url = appendPathname(this.oauthProxyEndpoint, path);
     return changeUrl(url, {});
   }
@@ -104,7 +104,7 @@ export class OauthProxy {
       return this.buildOauth2RefreshTokenUrl.bind(this, protocolParams);
     }
 
-    return null;
+    throw new Error('Refresh access url is only available for oauth version 2.0');
   }
 
   /**
