@@ -22,7 +22,6 @@ if (!assetsUrl) {
 export function css(jsx) {
   return (
     <div>
-      <link type="text/css" rel="stylesheet" href={`${assetsUrl}/DeskPRO_AgentBundle_style.css`} />
       <link type="text/css" rel="stylesheet" href={`${assetsUrl}/DeskPRO_AgentLegacyBundle_style.css`} />
       {jsx}
     </div>
