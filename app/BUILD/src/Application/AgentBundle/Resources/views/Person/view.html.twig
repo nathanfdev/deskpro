@@ -18,6 +18,7 @@
 
   pageMeta.person = {{ person_api|json_encode|raw }};
   pageMeta.api_data = {{ person.toApiData()|json_encode|raw }};
+  pageMeta.api_v2_data = {{ api_v2_data|json_encode|raw }};
 
   pageMeta.perms = {{ perms|json_encode|raw }};
 

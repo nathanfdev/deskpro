@@ -3,10 +3,9 @@ import * as postRobot from 'post-robot';
 import { AppsRegistry, AppsConfigBuilder } from 'DeskPRO/Bundle/AppsBundle/Modules/Config';
 import { AppServices, mountContextInWindow, unmountContextInWindow, ContainerMounter } from 'DeskPRO/Bundle/AppsBundle/Modules/Services';
 import {
-  registerIncomingWidgetRequestListeners,
-  registerOutgoingWidgetRequestListeners,
-  dispatchOutgoingWidgetRequestOnIntercept,
-  dispatchOutgoingWidgetMessage
+  registerIncomingRequestListeners,
+  bindIncomingMessageHandlers,
+  emitAsync
 } from 'DeskPRO/Bundle/AppsBundle/Modules/WidgetMessage';
 
 
@@ -89,8 +88,7 @@ class DeskproAppStore {
   static onAgentLegacyAppRun(reduxStore, window) {
     // register the global object which is referenced by legacy code
     window.DeskPRO_APPSTORE = {
-      interceptEvent: dispatchOutgoingWidgetRequestOnIntercept, // TODO this needs a better name
-      dispatchEvent:  (eventName, message) => dispatchOutgoingWidgetMessage(eventName, message)
+      emitAsync
     };
   }
 
@@ -113,8 +111,7 @@ class DeskproAppStore {
 
     const appServices = new AppServices({ api, apiToken, window: windowObject, config });
     appServices.onAppStateChanged(state);
-    registerIncomingWidgetRequestListeners(appServices);
-    registerOutgoingWidgetRequestListeners(appServices);
+    registerIncomingRequestListeners(bindIncomingMessageHandlers(appServices));
 
     // subscribe to redux store changes
     // TODO -- this is awful. needs to be changed to reducers so it doesnt run on every single action!

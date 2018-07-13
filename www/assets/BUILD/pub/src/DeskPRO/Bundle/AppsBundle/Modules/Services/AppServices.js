@@ -1,9 +1,8 @@
 import { meSelector } from 'DeskPRO/Bundle/AppBundle/Modules/RecordsStore/Shortcuts/me';
 
 import { WidgetDOM } from '../WidgetDOM';
-import { subscribeWidgetToEvent } from '../WidgetMessage';
 import { InstanceProxyClient, DPAPIClient } from '../HttpClients';
-import { Base64Converter } from './Base64Converter';
+import { Base64Converter } from './base64';
 import { OauthProxy } from './OauthProxy';
 
 export class AppServices {
@@ -132,8 +131,6 @@ export class AppServices {
     const { document } = this.props.window;
     return new WidgetDOM({ document });
   }
-
-  addEventListener = (eventName, widget) => subscribeWidgetToEvent(eventName, widget);
 
   showNotification = (notification) => {
     if (typeof notification === 'string') {
