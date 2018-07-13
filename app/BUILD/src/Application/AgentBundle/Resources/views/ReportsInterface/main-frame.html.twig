@@ -19,6 +19,7 @@
                                                 ng-repeat="dashboard in (dashboards|filter:defaultDashboardsFilter) track by dashboard.id"
                                                 ui-sref="reports.dashboards.view({ dashboard_id: dashboard.id })"
                                                 ui-sref-active="dp-drawer-item--selected"
+                                                ui-sref-opts="{reload:true}"
                                             >
                                                 <span class="dp-drawer-item__pos-middle">{{ ng_var('dashboard.title') }}</span>
                                             </li>
@@ -32,6 +33,7 @@
                                                 ng-repeat="dashboard in (dashboards|filter:customDashboardsFilter) track by dashboard.id"
                                                 ui-sref="reports.dashboards.view({ dashboard_id: dashboard.id })"
                                                 ui-sref-active="dp-drawer-item--selected"
+                                                ui-sref-opts="{reload:true}"
                                             >
                                                 <span class="dp-drawer-item__pos-middle">{{ ng_var('dashboard.title') }}</span>
                                             </li>
