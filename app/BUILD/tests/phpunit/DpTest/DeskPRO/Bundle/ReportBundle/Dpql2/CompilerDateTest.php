@@ -101,7 +101,8 @@ SQL
 
         //we need to calculate date programmatically cause we can just face with daylight savings
         $dateStart = $this->context->getDate();
-        $dateEnd   = clone $dateStart;
+        $dateStart->modify('today');
+        $dateEnd = clone $dateStart;
         $dateEnd->modify('+1 day')->modify('-1 second');
 
         $dateModifiedStart       = $this->getModifiedDate('America/Chicago', $dateStart->format('Y-m-d H:i:s'));
