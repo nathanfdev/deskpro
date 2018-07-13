@@ -89,6 +89,7 @@ class ReportDashboardWidgetType extends AbstractType
                         $qb
                             ->join('r.dashboard', 'd')
                             ->join('d.permissions', 'p')
+                            ->andWhere('d.is_default = 0')
                             ->andWhere('p.person IN (:person) OR p.team IN (:teams) OR d.person IN (:person)')
                             ->orWhere('p.person IS NULL AND p.team IS NULL AND p.department IS NULL')
                             ->setParameter('person', $options['person'])
