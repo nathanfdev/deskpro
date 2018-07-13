@@ -100,9 +100,9 @@ SQL
         $this->context = new DpqlContext($person);
 
         //we need to calculate date programmatically cause we can just face with daylight savings
-        $dateStart = new \DateTime('today midnight');
-        $dateEnd   = new \DateTime('tomorrow midnight');
-        $dateEnd->modify('-1 second');
+        $dateStart = $this->context->getDate();
+        $dateEnd   = clone $dateStart;
+        $dateEnd->modify('+1 day')->modify('-1 second');
 
         $dateModifiedStart       = $this->getModifiedDate('America/Chicago', $dateStart->format('Y-m-d H:i:s'));
         $dateModifiedBeforeStart = $this->getModifiedDate('America/Chicago', $dateStart->modify('-1 second')->format('Y-m-d H:i:s'));
