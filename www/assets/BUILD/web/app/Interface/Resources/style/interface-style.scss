@@ -6,6 +6,7 @@
 @import '../../../../node_modules/bootstrap/scss/dropdown';
 @import '../../../../node_modules/bootstrap/scss/type';
 @import "../../../../vendor/eonasdan-bootstrap-datetimepicker/build/css/bootstrap-datetimepicker.css";
+@import "../../../../bower_components/toastr/toastr.css";
 
 $tablet: new-breakpoint(max-width 960px 6);
 $mobile: new-breakpoint(max-width 640px 6);

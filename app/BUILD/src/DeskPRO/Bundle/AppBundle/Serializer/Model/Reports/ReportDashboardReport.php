@@ -6,6 +6,7 @@ use Application\DeskPRO\Entity\Person;
 use Application\DeskPRO\Entity\ReportDashboard as ReportDashboardEntity;
 use Application\DeskPRO\Entity\ReportDashboardReport as ReportDashboardReportEntity;
 use DeskPRO\Bundle\AppBundle\Entity\Report\ScheduledReport;
+use DeskPRO\Bundle\AppBundle\Serializer\Sideload\InlineCustomSideload;
 use JMS\Serializer\Annotation as JMS;
 
 /**
@@ -58,6 +59,13 @@ class ReportDashboardReport
     private $schedule;
 
     /**
+     * @JMS\Type("raw")
+     *
+     * @var InlineCustomSideload
+     */
+    private $widgets;
+
+    /**
      * Constructor.
      *
      * @param ReportDashboardReportEntity $entity
@@ -74,5 +82,13 @@ class ReportDashboardReport
         if ($person) {
             $this->schedule = $entity->getPersonSchedule($person);
         }
+    }
+
+    /**
+     * @param InlineCustomSideload $widgets
+     */
+    public function setWidgets(InlineCustomSideload $widgets)
+    {
+        $this->widgets = $widgets;
     }
 }

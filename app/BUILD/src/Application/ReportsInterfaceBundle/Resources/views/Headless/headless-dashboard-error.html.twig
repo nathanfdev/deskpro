@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta http-equiv="X-UA-Compatible" content="IE=Edge,chrome=1" />
+    <meta charset="utf-8" />
+    <meta name="robots" content="noindex,nofollow" />
+    <meta name="viewport" content="width=device-width, height=device-height, user-scalable=yes, initial-scale=1.0" id="dp_meta_viewport" />
+    <meta name="google" content="notranslate" />
+    <script type="text/javascript">
+      (function() {
+        var h = 'device-height';
+        var w = 'device-width';
+        var d = false;
+
+        if (window.innerWidth < 1000) {
+          w = '1000';
+          d = true;
+        }
+        if (window.innerHeight < 750) {
+          h = 700;
+          d = true;
+        }
+
+        if (d) {
+          var vp = document.getElementById('dp_meta_viewport');
+          if (vp) {
+            vp.setAttribute('content','height='+h+', width='+w+', user-scalable=yes, initial-scale=1.0');
+          }
+        }
+      })();
+    </script>
+
+    <style type="text/css">
+        body,html {
+            -ms-touch-action: none;
+        }
+    </style>
+
+    <script type="text/javascript">var DP_IS_DOMDUMP_VIEW = false;</script>
+    <script type="text/javascript">
+        {% if app.isDebug() %}
+        DP_DEBUG = true;
+        {% else %}
+        DP_DEBUG = false;
+        {% endif %}
+
+        {% if app.isCloud() %}
+        DPC_IS_CLOUD = true;
+        {% else %}
+        DPC_IS_CLOUD = false;
+        {% endif %}
+
+        window.IS_BILLING_ERROR = {% if is_billing_error %}true{% else %}false{% endif %};
+
+        window.DP_LOADED_TIME = (new Date()).getTime() / 1000;
+
+        if (!window.console) window.console = {};
+        if (!window.console.error) window.console.error = function(){};
+        if (!window.console.log)   window.console.log   = function(){};
+        if (!window.console.warn)  window.console.warn  = function(){};
+        if (!window.console.info)  window.console.info  = function(){};
+        if (!window.console.debug) window.console.debug = function(){};
+        if (!window.console.trace) window.console.trace = function(){};
+    </script>
+
+    {% if app.getSetting('core.favicon_blob_id') %}
+        <link rel="shortcut icon" id="favicon" href="{{ path('favicon', {}, true) }}" />
+    {% else %}
+        <link rel="icon" type="image/png" sizes="16x16" href="{{ asset('DeskPRO/Bundle/AppBundle/Resources/img/favicon-16x16.png', 'appsrc_assets') }}" />
+        <link rel="icon" type="image/png" sizes="24x24" href="{{ asset('DeskPRO/Bundle/AppBundle/Resources/img/favicon-24x24.png', 'appsrc_assets') }}" />
+        <link rel="icon" type="image/png" sizes="32x32" href="{{ asset('DeskPRO/Bundle/AppBundle/Resources/img/favicon-32x32.png', 'appsrc_assets') }}" />
+        <link rel="icon" type="image/png" sizes="32x32" href="{{ asset('DeskPRO/Bundle/AppBundle/Resources/img/favicon-64x64.png', 'appsrc_assets') }}" />
+        <link rel="icon" type="image/png" sizes="96x96" href="{{ asset('DeskPRO/Bundle/AppBundle/Resources/img/favicon-96x96.png', 'appsrc_assets') }}" />
+    {% endif %}
+
+    <title>{{ phrase('agent.interface.deskpro_agent_interface') }}</title>
+    <style type="text/css">
+        body {
+            overflow: hidden;
+            background: #fff !important;
+            padding: 10px;
+        }
+    </style>
+    <style>
+        html {
+            height: {{ printConfig['height'] }};
+            width: {{ printConfig['width'] }};
+        }
+    </style>
+    <script type="text/javascript" src="{{ asset('vendor/html5shiv.min.js') }}"></script>
+</head>
+<body>
+
+<div id="dp_win">
+    {{ error_message }}
+</div>
+
+<script>
+  (function() {
+    var link = document.createElement('link');
+    link.rel = "stylesheet";
+      {% if not app.isCloud() %}
+    link.href = "{{ asset('fonts/OpenSans.css') }}";
+      {%  else %}
+    link.href = "//fonts.googleapis.com/css?family=Open Sans:300,400,600,700,400italic,700italic&subset=latin";
+      {%  endif %}
+    document.querySelector("head").appendChild(link);
+  })();
+</script>
+<link href='https://fonts.googleapis.com/css?family=Lato:400,700,900,100,300' rel='stylesheet' type='text/css'>
+<link rel="stylesheet" href="{{ asset('app-build/Interface/Resources/style/interface-style.css') }}"/>
+<link rel="stylesheet" href="{{ asset('app-build/Admin/Resources/style/icons-style.css') }}"/>
+<link type="text/css" rel="stylesheet" href="{{ asset('DeskPRO_ReportBundle_style.css', 'app_assets') }}" />
+</body>
+</html>

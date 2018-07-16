@@ -34,7 +34,8 @@ define [
   'moment',
   'momentTimezone',
   'DeskPRO/Directive/DpDateTimePicker',
-  'customEventPolyfill'
+  'customEventPolyfill',
+  'toastr',
 ], (
   angular,
 

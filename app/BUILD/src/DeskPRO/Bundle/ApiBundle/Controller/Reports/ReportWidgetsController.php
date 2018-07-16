@@ -129,6 +129,8 @@ class ReportWidgetsController extends CrudController
      * @param ReportWidget $reportWidget
      * @param Request      $request
      *
+     * @throws \Exception
+     *
      * @return View
      */
     public function testAction(ReportWidget $reportWidget, Request $request)
@@ -267,6 +269,8 @@ class ReportWidgetsController extends CrudController
      * {@inheritdoc}
      *
      * @param ReportWidget $entity
+     *
+     * @throws \Exception
      */
     protected function deleteEntity($entity)
     {
@@ -274,6 +278,6 @@ class ReportWidgetsController extends CrudController
             throw $this->createBadRequestException('You can delete only custom reports.');
         }
 
-        parent::deleteEntity($entity);
+        return parent::deleteEntity($entity);
     }
 }

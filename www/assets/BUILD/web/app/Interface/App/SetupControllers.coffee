@@ -2,6 +2,7 @@ define [
   # Controllers
   'Reports/Main/Ctrl/New/Nav',
   'Reports/Main/Ctrl/New/Headless',
+  'Reports/Main/Ctrl/New/HeadlessDashboard',
 
   'Reports/Dashboards/Ctrl/DashboardReport',
   'Reports/Dashboards/Ctrl/DashboardView',
@@ -21,6 +22,7 @@ define [
 ], (
   Reports_Main_New_Nav,
   Reports_Main_Ctrl_Headless,
+  Reports_Main_Ctrl_HeadlessDashboard,
 
   # Controllers
   Reports_Dashboards_Ctrl_DashboardReport,
@@ -40,8 +42,9 @@ define [
   Reports_Stats_Ctrl_WidgetView,
 ) ->
   return (Module) ->
-    Module.controller('Reports.App.New.Nav',         Reports_Main_New_Nav)
-    Module.controller('Reports.App.New.Headless',    Reports_Main_Ctrl_Headless)
+    Module.controller('Reports.App.New.Nav',               Reports_Main_New_Nav)
+    Module.controller('Reports.App.New.Headless',          Reports_Main_Ctrl_Headless)
+    Module.controller('Reports.App.New.HeadlessDashboard', Reports_Main_Ctrl_HeadlessDashboard)
 
     Module.controller('Reports.App.DashboardReport', Reports_Dashboards_Ctrl_DashboardReport)
     Module.controller('Reports.App.DashboardView',   Reports_Dashboards_Ctrl_DashboardView)

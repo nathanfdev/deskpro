@@ -49,6 +49,7 @@ final class ErrorsCodes
     const UNIQUE_ENTITY               = 'unique_entity';
     const INVALID_EMAIL               = 'invalid_email';
     const INVALID_URL                 = 'invalid_url';
+    const INVALID_IP                  = 'invalid_ip';
     const TOO_FEW_ELEMENTS            = 'too_few_elements';
     const TOO_MANY_ELEMENTS           = 'too_many_elements';
     const TOO_LOW                     = 'too_low';

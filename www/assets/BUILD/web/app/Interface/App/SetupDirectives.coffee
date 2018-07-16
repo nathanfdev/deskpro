@@ -21,6 +21,7 @@ define [
   'DeskPRO/Directive/DpHideSpinning',
   'DeskPRO/Directive/DpTabBody',
   'DeskPRO/Directive/DpTabBtn',
+  'DeskPRO/Directive/DpClipboard',
 ], (
 
   # DASHBOARDS SPECIFIC DIRECTIVES
@@ -43,7 +44,8 @@ define [
   Reports_App_Directive_DpShowSpinning,
   Reports_App_Directive_DpHideSpinning,
   Reports_App_Directive_DpTabBody,
-  Reports_App_Directive_DpTabBtn
+  Reports_App_Directive_DpTabBtn,
+  DeskPRO_Directive_DpClipboard,
 ) ->
   return (Module) ->
     ###
@@ -74,3 +76,4 @@ define [
     Module.directive('dpHideSpinning', Reports_App_Directive_DpHideSpinning)
     Module.directive('dpTabBody', Reports_App_Directive_DpTabBody)
     Module.directive('dpTabBtn', Reports_App_Directive_DpTabBtn)
+    Module.directive('dpClipboard', DeskPRO_Directive_DpClipboard)

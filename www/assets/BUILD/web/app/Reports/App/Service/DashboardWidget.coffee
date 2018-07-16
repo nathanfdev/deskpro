@@ -11,6 +11,7 @@ define ['DeskPRO/Util/Arrays'], (Arrays) ->
       @widgets = {}
       @widgetsResults = {}
 
+    loadGroupParams: () ->
       @Api2.sendGet('report_widgets/group-params').then (response) =>
         @groupParams = response.data
 

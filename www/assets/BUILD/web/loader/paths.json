@@ -78,6 +78,7 @@
   "AdminStartLoad":                  "app/AdminStart/AdminStartLoad",
   "InterfaceLoad":                   "app/Interface/InterfaceLoad",
   "HeadlessInterfaceLoad":           "app/Interface/HeadlessInterfaceLoad",
+  "HeadlessDashboardInterfaceLoad":  "app/Interface/HeadlessDashboardInterfaceLoad",
   "ReportsLoad":                     "app/Reports/ReportsLoad",
 
   "DeskPRO":                         "app-build/DeskPRO",

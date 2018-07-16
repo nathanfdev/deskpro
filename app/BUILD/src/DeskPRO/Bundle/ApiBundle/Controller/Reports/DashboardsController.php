@@ -65,6 +65,23 @@ class DashboardsController extends CrudController
     }
 
     /**
+     * @Rest\Get("/{id}/shareable_links")
+     *
+     * @param Request $request
+     * @param int     $id
+     *
+     * @return Response
+     */
+    public function getShareableLinksAction(Request $request, $id)
+    {
+        $this->denyAccessUnlessGranted(PermissionGroupVoter::VIEW, $this->getPermissionGroupEntityContext($id, $request));
+
+        return DashboardShareableLinksController::subRequestSearch($this->getKernel(), $request, [
+            'dashboard' => $id,
+        ]);
+    }
+
+    /**
      * @Rest\Post("/{dashboard}/clone", requirements={"dashboard"="\d+"})
      *
      * @param ReportDashboard $dashboard

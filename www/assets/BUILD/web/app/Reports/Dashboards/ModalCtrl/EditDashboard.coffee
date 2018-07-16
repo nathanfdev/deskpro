@@ -1,12 +1,15 @@
 define ['DeskPRO/Util/Arrays', 'DeskPRO/Util/Util'], (Arrays, Util) -> [
-  '$scope', '$q', '$modalInstance', 'dashboard_id', 'modal_options', 'DashboardsInfo', 'DashboardService'
-  ($scope, $q, $modalInstance, dashboard_id, modal_options, DashboardsInfo, DashboardService) ->
+  '$scope', '$q', '$modal', '$modalInstance', 'dashboard_id', 'modal_options', 'DashboardsInfo', 'DashboardService', 'Growl'
+  ($scope, $q, $modal, $modalInstance, dashboard_id, modal_options, DashboardsInfo, DashboardService, Growl) ->
     $scope.loaded = false
     $scope.dashboard = null
     $scope.reports = []
     $scope.agents = []
     $scope.activeTab = 'info'
     $scope.is_new = false
+    $scope.shareLinks = []
+    $scope.shareLink = null
+    $scope.shareLinkView = null
 
     $scope.did_edit_reports = false
 
@@ -48,6 +51,9 @@ define ['DeskPRO/Util/Arrays', 'DeskPRO/Util/Util'], (Arrays, Util) -> [
       )
       load_promises.push DashboardsInfo.getReportsList(dashboard_id).then( (reports) ->
         $scope.reports = reports
+      )
+      load_promises.push DashboardService.getShareableLinks(dashboard_id).then( (shareableLinks) ->
+        $scope.shareLinks = shareableLinks
       )
     else
       $scope.is_new = true
@@ -289,6 +295,78 @@ define ['DeskPRO/Util/Arrays', 'DeskPRO/Util/Util'], (Arrays, Util) -> [
       else if permission.name == 'view'
         permission.name = 'full'
 
+    $scope.openNewShareLinkForm = () ->
+      $scope.shareLink = {
+        dashboard: $scope.dashboard.id
+        title: ''
+        default_report: null
+        who_can_use: 'anyone'
+        ip_whitelist: ''
+      }
+      $scope.shareLinkView = 'new'
+
+    $scope.openShareLinkForm = (shareLink) ->
+      $scope.shareLink = angular.copy shareLink
+      $scope.shareLinkView = 'share'
+
+    $scope.openEditShareLinkForm = (shareLink) ->
+      $scope.shareLink = shareLink
+      $scope.shareLinkView = 'edit'
+
+    $scope.saveShareLink = () ->
+      $scope.saving = true
+      if !$scope.shareLink
+        return
+      if $scope.shareLink.id
+        promise = DashboardService.updateShareLink($scope.shareLink)
+      else
+        promise = DashboardService.createShareLink($scope.shareLink)
+        promise.then((newSharedLink) ->
+          $scope.shareLinks.push newSharedLink
+        )
+
+      promise.then(
+        () ->
+          $scope.shareLink = null
+          $scope.shareLinkView = null
+          $scope.saving = false
+          Growl.success('Shared link is saved')
+        (response) ->
+          if (response.errors?.fields?.title?.errors[0])
+            $scope.error = 'Title could not be blank'
+          $scope.saving = false
+      )
+      
+    $scope.deleteShareLink = (shareLink) ->
+      modalInstance = $modal.open {
+        templateUrl: "ReportsInterfaceBundle:Index:modal-confirm.html",
+        controller: ['$scope', '$modalInstance', ($scope, $modalInstance) ->
+          $scope.title   = 'Confirm discard'
+          $scope.message = 'Are you sure you want to delete this link?'
+
+          $scope.dismiss = ->
+            $modalInstance.dismiss()
+
+          $scope.confirm = ->
+            $modalInstance.close()
+        ]
+      }
+      modalInstance.result.then(
+        () =>
+          DashboardService.deleteDashboardShareableLink(shareLink).then ->
+            Arrays.removeValue $scope.shareLinks, shareLink
+      )
+
+    $scope.createShortUrlForShareLink = (shareLink) ->
+      DashboardService.createShortUrlForShareLink(shareLink).then( (shortUrl) ->
+        shareLink.short_url = shortUrl
+        for link in $scope.shareLinks
+          if link.id == shareLink.id
+            link.short_url = shortUrl
+      )
+
+    $scope.successAlert = (message) ->
+      Growl.success(message)
 
     ####################################################################################################################
     # SAVE

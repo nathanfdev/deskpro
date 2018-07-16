@@ -60,6 +60,8 @@ use Application\DeskPRO\Entity\Product;
 use Application\DeskPRO\Entity\ReportDashboard;
 use Application\DeskPRO\Entity\ReportDashboardPermission;
 use Application\DeskPRO\Entity\ReportDashboardReport;
+use Application\DeskPRO\Entity\ReportDashboardShareableLink;
+use Application\DeskPRO\Entity\ReportDashboardShareableShortUrl;
 use Application\DeskPRO\Entity\ReportDashboardWidget;
 use Application\DeskPRO\Entity\ReportWidget;
 use Application\DeskPRO\Entity\Session;
@@ -254,7 +256,7 @@ class ObjectsManager
                 $value = null;
             } elseif (preg_match('/^NOW\(\)(.*?)$/', $value, $matches)) {
                 $value = new \DateTime();
-                if (isset($matches[1])) {
+                if (!empty($matches[1])) {
                     $value->modify($matches[1]);
                 }
             } elseif (($date = \DateTime::createFromFormat('Y-m-d G:i:s', $value)) !== false) {
@@ -380,6 +382,8 @@ class ObjectsManager
             'ReportDashboardPermission'        => [Factory\SimpleFactory::class, 'create', ReportDashboardPermission::class],
             'ReportDashboardReport'            => [Factory\SimpleFactory::class, 'create', ReportDashboardReport::class],
             'ReportDashboardWidget'            => [Factory\SimpleFactory::class, 'create', ReportDashboardWidget::class],
+            'ReportDashboardShareableLink'     => [Factory\SimpleFactory::class, 'create', ReportDashboardShareableLink::class],
+            'ReportDashboardShareableShortUrl' => [Factory\SimpleFactory::class, 'create', ReportDashboardShareableShortUrl::class],
             'ScheduledReport'                  => [Factory\SimpleFactory::class, 'create', ScheduledReport::class],
             'Job'                              => [Factory\SimpleFactory::class, 'create', Job::class],
             'CustomTicketFieldDefinitionAlias' => [Factory\SimpleFactory::class, 'create', CustomTicketFieldDefinitionAlias::class],
@@ -419,7 +423,6 @@ class ObjectsManager
             'TicketAttachment'                 => [$this, 'find', TicketAttachment::class],
             'TicketFlagged'                    => [$this, 'find', TicketFlagged::class],
             'TicketMacro'                      => [$this, 'find', TicketMacro::class],
-            'TicketFilter'                     => [$this, 'find', TicketFilter::class],
             'TicketSla'                        => [$this, 'find', TicketSla::class],
             'TicketLog'                        => [$this, 'find', TicketLog::class],
             'TicketFilter'                     => [$this, 'find', TicketFilter::class],
@@ -511,6 +514,8 @@ class ObjectsManager
             'ReportDashboardPermission'        => [$this, 'find', ReportDashboardPermission::class],
             'ReportDashboardReport'            => [$this, 'find', ReportDashboardReport::class],
             'ReportDashboardWidget'            => [$this, 'find', ReportDashboardWidget::class],
+            'ReportDashboardShareableLink'     => [$this, 'find', ReportDashboardShareableLink::class],
+            'ReportDashboardShareableShortUrl' => [$this, 'find', ReportDashboardShareableShortUrl::class],
             'ScheduledReport'                  => [$this, 'find', ScheduledReport::class],
             'Job'                              => [$this, 'find', Job::class],
             'CustomTicketFieldDefinitionAlias' => [$this, 'find', CustomTicketFieldDefinitionAlias::class],

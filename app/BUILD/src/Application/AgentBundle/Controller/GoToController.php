@@ -9,11 +9,24 @@ use Application\DeskPRO\Entity\Feedback;
 use Application\DeskPRO\Entity\News;
 use Application\DeskPRO\Entity\Organization;
 use Application\DeskPRO\Entity\Person;
+use Application\DeskPRO\Entity\ReportDashboardShareableLink;
+use Application\DeskPRO\Entity\ReportDashboardShareableShortUrl;
 use Application\DeskPRO\Entity\Ticket;
 use Application\DeskPRO\Entity\Topic;
+use Symfony\Component\HttpFoundation\RedirectResponse;
+use Symfony\Component\HttpFoundation\Request;
 
 class GoToController extends AbstractController
 {
+    /**
+     * {@inheritdoc}
+     */
+    public function preActionHandler(Request $request, $action, $arguments = null)
+    {
+        // there could be a redirect to anonymous action (e.g. reports)
+        // so don't check if a user is logged in
+    }
+
     /**
      * {@inheritdoc}
      */
@@ -25,7 +38,9 @@ class GoToController extends AbstractController
     /**
      * @param int $id
      *
-     * @return \Symfony\Component\HttpFoundation\RedirectResponse
+     * @throws \Exception
+     *
+     * @return RedirectResponse
      */
     public function ticketIdAction($id)
     {
@@ -34,7 +49,7 @@ class GoToController extends AbstractController
         if (!$ticket) {
             $ticket = $this->getDoctrine()->getRepository(Ticket::class)->findTicketRef($id);
             if (!$ticket) {
-                $this->createNotFoundException();
+                throw $this->createNotFoundException();
             }
         }
 
@@ -44,7 +59,7 @@ class GoToController extends AbstractController
     /**
      * @param string $ref
      *
-     * @return \Symfony\Component\HttpFoundation\RedirectResponse
+     * @return RedirectResponse
      */
     public function ticketRefAction($ref)
     {
@@ -60,7 +75,7 @@ class GoToController extends AbstractController
     /**
      * @param Person $person
      *
-     * @return \Symfony\Component\HttpFoundation\RedirectResponse
+     * @return RedirectResponse
      */
     public function personIdAction(Person $person)
     {
@@ -70,7 +85,7 @@ class GoToController extends AbstractController
     /**
      * @param string $emailAddress
      *
-     * @return \Symfony\Component\HttpFoundation\RedirectResponse
+     * @return RedirectResponse
      */
     public function personEmailAddressAction($emailAddress)
     {
@@ -86,7 +101,7 @@ class GoToController extends AbstractController
     /**
      * @param Organization $organization
      *
-     * @return \Symfony\Component\HttpFoundation\RedirectResponse
+     * @return RedirectResponse
      */
     public function organizationIdAction(Organization $organization)
     {
@@ -96,7 +111,7 @@ class GoToController extends AbstractController
     /**
      * @param Article $article
      *
-     * @return \Symfony\Component\HttpFoundation\RedirectResponse
+     * @return RedirectResponse
      */
     public function articleIdAction(Article $article)
     {
@@ -106,7 +121,7 @@ class GoToController extends AbstractController
     /**
      * @param Download $download
      *
-     * @return \Symfony\Component\HttpFoundation\RedirectResponse
+     * @return RedirectResponse
      */
     public function downloadIdAction(Download $download)
     {
@@ -116,7 +131,7 @@ class GoToController extends AbstractController
     /**
      * @param News $news
      *
-     * @return \Symfony\Component\HttpFoundation\RedirectResponse
+     * @return RedirectResponse
      */
     public function newsIdAction(News $news)
     {
@@ -126,7 +141,7 @@ class GoToController extends AbstractController
     /**
      * @param Feedback $feedback
      *
-     * @return \Symfony\Component\HttpFoundation\RedirectResponse
+     * @return RedirectResponse
      */
     public function feedbackIdAction(Feedback $feedback)
     {
@@ -136,7 +151,7 @@ class GoToController extends AbstractController
     /**
      * @param ChatConversation $conversation
      *
-     * @return \Symfony\Component\HttpFoundation\RedirectResponse
+     * @return RedirectResponse
      */
     public function chatIdAction(ChatConversation $conversation)
     {
@@ -146,11 +161,45 @@ class GoToController extends AbstractController
     /**
      * @param Topic $topic
      *
-     * @return \Symfony\Component\HttpFoundation\RedirectResponse
+     * @return RedirectResponse
      */
     public function topicIdAction(Topic $topic)
     {
         return $this->redirect($this->getBasePath().'#app.publish,m:'.$topic->getId());
+    }
+
+    /**
+     * @param string $authCode
+     *
+     * @throws \Exception
+     *
+     * @return RedirectResponse
+     */
+    public function dashboardLinkAction($authCode)
+    {
+        $link = $this->getDoctrine()->getRepository(ReportDashboardShareableLink::class)->findOneBy(['authCode' => $authCode]);
+        if (!$link) {
+            throw $this->createNotFoundException();
+        }
+
+        return $this->redirect($this->getDashboardLinkUrl($link));
+    }
+
+    /**
+     * @param string $authCode
+     *
+     * @throws \Exception
+     *
+     * @return RedirectResponse
+     */
+    public function dashboardShortUrlAction($authCode)
+    {
+        $shortUrl = $this->getDoctrine()->getRepository(ReportDashboardShareableShortUrl::class)->findOneBy(['authCode' => $authCode]);
+        if (!$shortUrl || $shortUrl->isExpired()) {
+            throw $this->createNotFoundException();
+        }
+
+        return $this->redirect($this->getDashboardLinkUrl($shortUrl->getShareableLink()));
     }
 
     /**
@@ -159,5 +208,20 @@ class GoToController extends AbstractController
     private function getBasePath()
     {
         return $this->get('router')->generate('agent');
+    }
+
+    /**
+     * @param ReportDashboardShareableLink $link
+     *
+     * @return string
+     */
+    private function getDashboardLinkUrl(ReportDashboardShareableLink $link)
+    {
+        $url = $this->getBasePath().'reports-interface/dashboard/'.$link->getAuthCode();
+        if ($link->getDefaultReport()) {
+            $url .= '#/'.$link->getDefaultReport()->getId();
+        }
+
+        return $url;
     }
 }

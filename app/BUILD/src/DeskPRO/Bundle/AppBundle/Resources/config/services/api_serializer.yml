@@ -349,6 +349,8 @@ services:
 
   api_serializer.handler.report_dashboard_report:
     class: DeskPRO\Bundle\AppBundle\Serializer\Handler\Entity\Reports\ReportDashboardReportHandler
+    arguments:
+      - "@doctrine.orm.default_entity_manager"
     tags:
       - { name: "jms_serializer.subscribing_handler" }
 
@@ -356,6 +358,21 @@ services:
     class: DeskPRO\Bundle\AppBundle\Serializer\Handler\Entity\Reports\ReportDashboardWidgetHandler
     arguments:
       - "@reports.dashboard_widget.service"
+    tags:
+      - { name: "jms_serializer.subscribing_handler" }
+
+  api_serializer.handler.report_dashboard_shareable_link:
+    class: DeskPRO\Bundle\AppBundle\Serializer\Handler\Entity\Reports\ReportDashboardShareableLinkHandler
+    arguments:
+      - "@doctrine.orm.default_entity_manager"
+      - "@router"
+    tags:
+      - { name: "jms_serializer.subscribing_handler" }
+
+  api_serializer.handler.report_dashboard_shareable_short_url:
+    class: DeskPRO\Bundle\AppBundle\Serializer\Handler\Entity\Reports\ReportDashboardShareableShortUrlHandler
+    arguments:
+      - "@router"
     tags:
       - { name: "jms_serializer.subscribing_handler" }
 

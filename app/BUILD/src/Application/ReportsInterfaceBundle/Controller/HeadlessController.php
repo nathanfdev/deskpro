@@ -1,19 +1,22 @@
 <?php
 
-/**
- * DeskPRO.
- */
-
 namespace Application\ReportsInterfaceBundle\Controller;
 
+use Application\DeskPRO\Entity\ReportDashboardShareableLink;
 use Application\DeskPRO\Entity\SavedDashboardReport;
-use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
+use DeskPRO\Bundle\AppBundle\Serializer\ApiWrapper;
+use DeskPRO\Bundle\AppBundle\Serializer\Sideload\SideloadSerializationContext;
+use DeskPRO\Component\Util\IpUtils;
+use Symfony\Component\HttpFoundation\Request;
 
+/**
+ * Class HeadlessController.
+ */
 class HeadlessController extends \Application\DeskPRO\Controller\AbstractController
 {
     /**
-     * @param $id
-     * @param $authcode
+     * @param int    $id
+     * @param string $authcode
      *
      * @throws \Exception
      *
@@ -26,7 +29,7 @@ class HeadlessController extends \Application\DeskPRO\Controller\AbstractControl
         $report = $entityRepository->findOneBy(['id' => $id, 'authcode' => $authcode]);
 
         if (!$report) {
-            throw new NotFoundHttpException();
+            throw $this->createNotFoundException();
         }
         $widgetService = $this->get('reports.dashboard_widget.service');
         $widgets       = [];
@@ -47,6 +50,58 @@ class HeadlessController extends \Application\DeskPRO\Controller\AbstractControl
                 'widgets' => $widgets,
             ],
             'printConfig' => $reportPdfGenerator->calculatePrintConfig($report),
+        ]);
+    }
+
+    /**
+     * @param string  $authcode
+     * @param Request $request
+     *
+     * @throws \Exception
+     *
+     * @return \Symfony\Component\HttpFoundation\Response
+     */
+    public function dashboardAction($authcode, Request $request)
+    {
+        $link = $this->em->getRepository(ReportDashboardShareableLink::class)->findOneBy([
+            'authCode' => $authcode,
+        ]);
+
+        if (!$link) {
+            return $this->render('ReportsInterfaceBundle:Headless:headless-dashboard-error.html.twig', [
+                'error_message' => 'Dashboard not found.',
+            ]);
+        }
+
+        // check whitelist permissions
+        if ($link->getWhoCanUse() === ReportDashboardShareableLink::USE_WHITELIST
+            && !IpUtils::checkIp($request->getClientIp(), $link->getIpWhitelist())) {
+            return $this->render('ReportsInterfaceBundle:Headless:headless-dashboard-error.html.twig', [
+                'error_message' => 'Access denied.',
+            ]);
+        }
+
+        $dashboard = $link->getDashboard();
+
+        $context = new SideloadSerializationContext();
+        $context->setInlineSideloads(true);
+        $context->setIncludes(['reports']);
+
+        $serializedDashboard = $this->container->get('serializer')->toArray(new ApiWrapper($dashboard), $context);
+        $serializedDashboard = $serializedDashboard['data'];
+
+        $currentReport = null;
+        if ($link->getDefaultReport()) {
+            $currentReport = $link->getDefaultReport();
+        } else {
+            $currentReport = $dashboard->getReports()->first();
+        }
+
+        return $this->render('ReportsInterfaceBundle:Headless:headless-dashboard.html.twig', [
+            'dashboard'    => $serializedDashboard,
+            'report_id'    => $currentReport ? $currentReport->getId() : null,
+            'auth_code'    => $authcode,
+            'group_params' => $this->container->get('reports.widget.service')->getGroupParams(),
         ]);
     }
 }
