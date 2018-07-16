@@ -3,6 +3,7 @@
 namespace DeskPRO\Bundle\AppStoreBundle\Infrastructure;
 
 use DeskPRO\Bundle\AppStoreBundle;
+use DeskPRO\Bundle\AppStoreBundle\Infrastructure\AppBundleAdapters\BundleFileHandlingStrategyZip;
 use Symfony\Bundle\FrameworkBundle\Command\ContainerAwareCommand;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
@@ -49,7 +50,9 @@ class InstallAppCommand extends ContainerAwareCommand
         }
 
         $bundleLocation = $input->getArgument('bundle');
-        $bundle         = new AppZipArchiveBundle(new \ZipArchive(), new \SplFileInfo($bundleLocation));
+        /** @var BundleFileHandlingStrategyZip $bundleReader */
+        $bundleReader   = $this->getContainer()->get(BundleFileHandlingStrategyZip::class);
+        $bundle         = $bundleReader->reader($bundleLocation);
 
         $bundleValidator = $this->getContainer()->get(AppStoreBundle\Domain\AppBundleValidator::class);
         $validBundle     = $bundleValidator->verifyBundle($bundle);

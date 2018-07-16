@@ -213,6 +213,18 @@ class NewsController extends AbstractController
 
                 break;
 
+            case 'remove-blob':
+
+                foreach ($news->attachments as $k => $attach) {
+                    if ($attach->blob['id'] == $this->in->getUInt('blob_id')) {
+                        $news->attachments->remove($k);
+                        $this->em->remove($attach);
+                        break;
+                    }
+                }
+
+                break;
+
             case 'category':
                 $cat                 = $this->em->find(NewsCategory::class, $this->in->getUInt('category_id'));
                 $news['category']    = $cat;

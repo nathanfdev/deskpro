@@ -39,6 +39,8 @@ use Application\DeskPRO\EntityRepository\TicketCharge as TicketChargeRepository;
 use Application\DeskPRO\EntityRepository\Usergroup as UsergroupRepository;
 use Application\DeskPRO\Searcher\TicketSearch;
 use DeskPRO\Bundle\AppBundle\Notification\Event\Organization\OrganizationCreatedEvent;
+use DeskPRO\Bundle\AppBundle\Serializer\ApiWrapper;
+use DeskPRO\Bundle\AppBundle\Serializer\Sideload\SideloadSerializationContext;
 use Doctrine\DBAL\DBALException;
 use Orb\Util\Arrays;
 use Symfony\Component\HttpFoundation\Request;
@@ -54,6 +56,22 @@ use Symfony\Component\Security\Core\Exception\AccessDeniedException;
  */
 class OrganizationController extends AbstractController
 {
+    /**
+     * @param Organization $entity
+     * @return array mixed
+     * @throws \Exception
+     */
+    protected function getAPIv2Data( $entity)
+    {
+        $context = new SideloadSerializationContext();
+
+        // no related entities required for organization but there might be in the future
+        // $context->setIncludes(['person']);
+        // $context->setInlineSideloads(true);
+        $serialized = $this->container->get('serializer')->toArray(new ApiWrapper($entity), $context);
+        return $serialized;
+    }
+
     //###########################################################################
     // view
     //###########################################################################
@@ -64,6 +82,7 @@ class OrganizationController extends AbstractController
      * @throws DBALException
      *
      * @return Response
+     * @throws \Exception
      */
     public function viewAction($organization_id)
     {
@@ -162,7 +181,7 @@ class OrganizationController extends AbstractController
             ];
         }
 
-        return $this->render('AgentBundle:Organization:view.html.twig', [
+        $vars = [
             'org'                           => $org,
             'org_email_domains'             => $orgDomainData['org_email_domains'],
             'org_count_domain_nonmembers'   => $orgDomainData['org_count_domain_nonmembers'],
@@ -186,7 +205,12 @@ class OrganizationController extends AbstractController
             'members_count'                 => $membersCount,
             'custom_fields'                 => $customFields,
             'custom_fields_definitions'     => $customFieldsDefinitions,
-        ]);
+        ];
+
+        // include api_v2_data
+        $vars['api_v2_data'] = $this->getAPIv2Data($org);
+
+        return $this->render('AgentBundle:Organization:view.html.twig', $vars);
     }
 
     //###########################################################################
@@ -830,6 +854,9 @@ class OrganizationController extends AbstractController
      * @param $security_token
      *
      * @return Response
+     * @throws \Doctrine\ORM\ORMException
+     * @throws \Doctrine\ORM\OptimisticLockException
+     * @throws \Doctrine\ORM\TransactionRequiredException
      */
     public function deleteOrganizationAction($organization_id, $security_token)
     {
@@ -942,6 +969,9 @@ class OrganizationController extends AbstractController
      * @param int $organization_id
      *
      * @return Organization
+     * @throws \Doctrine\ORM\ORMException
+     * @throws \Doctrine\ORM\OptimisticLockException
+     * @throws \Doctrine\ORM\TransactionRequiredException
      */
     protected function getOrgOr404($organization_id)
     {

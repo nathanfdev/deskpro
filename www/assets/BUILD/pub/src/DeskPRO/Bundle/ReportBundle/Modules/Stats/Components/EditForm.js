@@ -15,7 +15,8 @@ class VarsFieldComponent extends React.PureComponent {
   static propTypes = {
     groupParams: PropTypes.object.isRequired,
     fields:      PropTypes.object.isRequired,
-    vars:        PropTypes.array
+    vars:        PropTypes.array,
+    change:      PropTypes.func
   };
 
   static validateVarName(name) {
@@ -67,10 +68,35 @@ class VarsFieldComponent extends React.PureComponent {
     return (<reduxForm.Select onChange={() => {}} label="Default Value" key={name} name={name} options={choices} />);
   }
 
+  constructor(props) {
+    super(props);
+    const { fields, vars } = props;
+    const usesCustomTable = {};
+
+    fields.forEach((varName, index) => {
+      const variable = vars && vars[index] ? vars[index] : {};
+      usesCustomTable[variable.name] = Boolean(variable.table);
+      return variable;
+    });
+
+    this.state = {
+      usesCustomTable
+    };
+  }
+
   onAddButtonClick = (event) => {
     event.preventDefault();
     event.stopPropagation();
     this.props.fields.push();
+  };
+
+  onCheckboxClick = (varName, varFormName) => {
+    const { usesCustomTable } = this.state;
+    usesCustomTable[varName] = !usesCustomTable[varName];
+    if (!usesCustomTable[varName]) {
+      this.props.change(`${varFormName}.table`, '');
+    }
+    this.setState(usesCustomTable);
   };
 
   // eslint-disable-next-line class-methods-use-this
@@ -84,6 +110,23 @@ class VarsFieldComponent extends React.PureComponent {
 
   varTypeHasValue(variable) {
     return this.isVarType(variable) && variable.field_type && this.props.groupParams[variable.type][variable.field_type];
+  }
+
+  renderCheckbox(varName, varFormName) {
+    const inputProps = {
+      onChange: () => {},
+      onClick:  () => { this.onCheckboxClick(varName, varFormName); },
+      type:     'checkbox'
+    };
+    if (this.state.usesCustomTable[varName]) {
+      inputProps.checked = 'checked';
+    }
+    return (
+      <label>
+        <input {...inputProps} />
+        Use special table
+      </label>
+    );
   }
 
   render() {
@@ -122,6 +165,11 @@ class VarsFieldComponent extends React.PureComponent {
                 VarsFieldComponent.renderDateField(`${varName}.default`, groupParams.dates) }
               { this.isVarType(variable) &&
                 VarsFieldComponent.renderTypeField(`${varName}.field_type`, groupParams[variable.type]) }
+              { this.isVarType(variable) && this.renderCheckbox(variable.name, varName)}
+              { this.state.usesCustomTable[variable.name] ? <reduxForm.Input
+                onChange={() => {}}
+                name={`${varName}.table`}
+              /> : null }
               { this.varTypeHasValue(variable) &&
                 VarsFieldComponent.renderTypeValueField(
                   `${varName}.default`,
@@ -198,7 +246,7 @@ export class EditFormComponent extends React.Component {
 
   static toDpql(fields) {
     const parts = [];
-    parts.push(`SELECT ${fields.select || 'COUNT()'}`);
+    parts.push(`SELECT ${fields.select || 'DPQL_COUNT()'}`);
     parts.push(`FROM ${fields.from || '???'}`);
     if (fields.where) {
       parts.push(`WHERE ${fields.where}`);
@@ -293,7 +341,7 @@ export class EditFormComponent extends React.Component {
     const groupBy = this.props.groupBy || '';
     const { select, groupParams, labels, formErrors, hasError, isCustom } = this.props;
 
-    const renderVars = field => <VarsField fields={field.fields} groupParams={groupParams || {}} />;
+    const renderVars = field => <VarsField change={this.props.change} fields={field.fields} groupParams={groupParams || {}} />;
     const renderLabels = field => <LabelsField fields={field.fields} options={labels} isCustom={isCustom} />;
 
     return (

@@ -11,13 +11,15 @@ const addEventListener = (dom, event, handler) => {
 
 class LegacySidebarContainer extends React.Component {
   static propTypes = {
-    widgetsConfigList:             PropTypes.array.isRequired,
-    context:                       PropTypes.object.isRequired,
-    dispatchIncomingWidgetMessage: PropTypes.func.isRequired,
-    addWidgetEventListener:        PropTypes.func.isRequired,
-    parseIncomingWidgetMessageJS:  PropTypes.func.isRequired,
+    widgetsConfigList: PropTypes.array.isRequired,
+    context:           PropTypes.object.isRequired,
+
+    registerOutgoingMessageListener: PropTypes.func,
+    receiveMessage:                  PropTypes.func,
+    receiveEventSubscription:        PropTypes.func,
+
     // own properties
-    configuration:                 PropTypes.object.isRequired
+    configuration: PropTypes.object.isRequired
   };
 
   componentDidMount()  {
@@ -97,10 +99,11 @@ class LegacySidebarContainer extends React.Component {
   render()  {
     return (<DeskproAppContainer
       context={this.props.context}
-      addWidgetEventListener={this.props.addWidgetEventListener}
-      dispatchIncomingWidgetMessage={this.props.dispatchIncomingWidgetMessage}
-      parseIncomingWidgetMessageJS={this.props.parseIncomingWidgetMessageJS}
       widgetsConfigList={this.props.widgetsConfigList}
+
+      registerOutgoingMessageListener={this.props.registerOutgoingMessageListener}
+      receiveMessage={this.props.receiveMessage}
+      receiveEventSubscription={this.props.receiveEventSubscription}
     />);
   }
 }

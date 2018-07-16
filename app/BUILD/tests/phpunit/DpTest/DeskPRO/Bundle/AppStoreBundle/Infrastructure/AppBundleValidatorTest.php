@@ -62,7 +62,7 @@ class AppBundleValidatorTest extends AbstractKernelAwareTestCase
             $manifestLocation = $this->locateFile($filePath);
             $manifestContents = file_get_contents($manifestLocation);
 
-            $zipBundle = Infrastructure\AppZipBundleBuilder::fromTmp()->setManifest($manifestContents)->build();
+            $zipBundle = Infrastructure\AppBundleAdapters\ZipArchiveBundleWriter::fromTmp()->setManifest($manifestContents)->build();
             $isValid = $validator->validateBundle($zipBundle);
             $this->assertTrue($isValid, sprintf('a bundle with a valid %s manifest should pass validation', $version));
         }
@@ -81,7 +81,7 @@ class AppBundleValidatorTest extends AbstractKernelAwareTestCase
         $latestManifestVersion = $this->getContainer()->getParameter('manifest.current.version');
         $validator = Infrastructure\Services::createAppBundleValidator($this->getFileLocator(), $latestManifestVersion);
 
-        $zipBundle = Infrastructure\AppZipBundleBuilder::fromTmp()->setManifest($manifestContents)->build();
+        $zipBundle = Infrastructure\AppBundleAdapters\ZipArchiveBundleWriter::fromTmp()->setManifest($manifestContents)->build();
         $isValid = $validator->validateBundle($zipBundle);
 
         $this->assertTrue($isValid, 'a bundle with a manifest conforming with the default manifest schema should pass validation');
@@ -93,7 +93,7 @@ class AppBundleValidatorTest extends AbstractKernelAwareTestCase
     public function test_empty_manifest_fails_validation()
     {
         $manifestContents = json_encode(new \stdClass());
-        $zipBundle = Infrastructure\AppZipBundleBuilder::fromTmp()->setManifest($manifestContents)->build();
+        $zipBundle = Infrastructure\AppBundleAdapters\ZipArchiveBundleWriter::fromTmp()->setManifest($manifestContents)->build();
 
         $latestManifestVersion = $this->getContainer()->getParameter('manifest.current.version');
         $validator = Infrastructure\Services::createAppBundleValidator($this->getFileLocator(), $latestManifestVersion);

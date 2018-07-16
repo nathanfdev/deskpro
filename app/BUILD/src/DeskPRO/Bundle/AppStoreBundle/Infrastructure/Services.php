@@ -2,12 +2,23 @@
 
 namespace DeskPRO\Bundle\AppStoreBundle\Infrastructure;
 
+use Application\DeskPRO\DependencyInjection\SystemServices\ZipperService;
 use DeskPRO\Bundle\AppBundle\HttpKernel\Config\FileLocator;
+use DeskPRO\Bundle\AppStoreBundle\Infrastructure\AppBundleAdapters\BundleFileHandlingStrategyZip;
 use Doctrine\ORM;
 use JsonSchema\Validator;
 
 class Services
 {
+    /**
+     * @return BundleFileHandlingStrategyZip
+     */
+    public static function createBundleFileHandlingStrategy()
+    {
+        $extensions = ZipperService::getInstalledExtensions();
+        return BundleFileHandlingStrategyZip::instance($extensions);
+    }
+
     /**
      * @param ORM\EntityManager $entityManager
      * @return AppStorage\AccessService

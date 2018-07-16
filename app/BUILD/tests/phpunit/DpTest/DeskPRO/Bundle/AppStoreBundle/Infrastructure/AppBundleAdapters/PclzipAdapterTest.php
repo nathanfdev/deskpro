@@ -1,19 +1,26 @@
 <?php
 
-namespace DpTest\DeskPRO\Bundle\AppStoreBundle\Infrastructure;
+namespace DpTest\DeskPRO\Bundle\AppStoreBundle\Infrastructure\AppBundleAdapters;
 
-use DeskPRO\Bundle\AppStoreBundle\Infrastructure;
+use Application\DeskPRO\DependencyInjection\SystemServices\ZipperService;
+use DeskPRO\Bundle\AppStoreBundle\Infrastructure\AppBundleAdapters\PclzipBundleWriter;
 use DpTest\DeskProTestCase;
 
-class AppZipArchiveBundleTest extends DeskProTestCase
+class PclzipAdapterTest extends DeskProTestCase
 {
+    public static function setUpBeforeClass()
+    {
+        parent::setUpBeforeClass();
+        ZipperService::requirePclzip();
+    }
+
     /**
      * @test
      */
     public function retrieve_contents_of_manifest()
     {
         $manifestContents = 'dummy manifest contents';
-        $zipArchiveBundle = Infrastructure\AppZipBundleBuilder::fromTmp()->setManifest($manifestContents)->build();
+        $zipArchiveBundle = PclzipBundleWriter::fromTmp()->setManifest($manifestContents)->build();
 
         $actualManifestContents = $zipArchiveBundle->getManifestAsString();
         $this->assertEquals($manifestContents, $actualManifestContents, 'retrieving the contents of a missing manifest should return null');
@@ -24,7 +31,7 @@ class AppZipArchiveBundleTest extends DeskProTestCase
      */
     public function retrieve_the_contents_of_a_missing_manifest_should_return_null()
     {
-        $zipArchiveBundle = Infrastructure\AppZipBundleBuilder::fromTmp()->addFile(__FILE__)->build();
+        $zipArchiveBundle = PclzipBundleWriter::fromTmp()->addFile(__FILE__)->build();
 
         $manifestString = $zipArchiveBundle->getManifestAsString();
         $this->assertNull($manifestString, 'retrieving the contents of a missing manifest should return null');
@@ -41,11 +48,13 @@ class AppZipArchiveBundleTest extends DeskProTestCase
         global $DP_ENV;
         $wwwRoot = $DP_ENV->getWwwRoot();
 
-        $zipArchiveBundle   = Infrastructure\AppZipBundleBuilder::fromTmp()->addFolder($wwwRoot, 2)->build();
+        $zipArchiveBundle   = PclzipBundleWriter::fromTmp()->addFolder($wwwRoot, 2)->build();
         $actualFilePathList = [];
         $resourceObjects    = $zipArchiveBundle->listAllResources();
         foreach ($resourceObjects as $object) {
             $actualFilePathList[] = $object->getPath();
+            $content = $object->getContent();
+            $this->assertNotNull($content);
         }
         //clean up
         unlink($zipArchiveBundle->getFilePath());
@@ -63,7 +72,8 @@ class AppZipArchiveBundleTest extends DeskProTestCase
                 $filePathList[] = $localName;
             }
         }
-
+        $this->assertGreaterThan(0, count($filePathList));
         $this->assertEquals($filePathList, $actualFilePathList, 'unexpected list of app bundle files');
     }
+
 }

@@ -6,8 +6,8 @@
 
 namespace DpBehat;
 
+use DeskPRO\Bundle\AppStoreBundle\Infrastructure\AppBundleAdapters\ZipArchiveBundleWriter;
 use DeskPRO\Bundle\AppStoreBundle\Infrastructure\ApplicationManagerService;
-use DeskPRO\Bundle\AppStoreBundle\Infrastructure\AppZipBundleBuilder;
 use DpBehat\Data\DataContext;
 
 class AppsContext extends BaseContext
@@ -24,7 +24,7 @@ class AppsContext extends BaseContext
         $tmpRoot = $dpEnv->getUserTmpDir();
 
         $dir             = $this->getTestDir($folder);
-        $appArchive      = AppZipBundleBuilder::fromTmp($tmpRoot)->addFolder($dir)->build();
+        $appArchive      = ZipArchiveBundleWriter::fromTmp($tmpRoot)->addFolder($dir)->build();
         $lastPackagedApp = $appArchive->getFilePath();
         DataContext::setPlaceholder('lastPackagedApp', $lastPackagedApp);
     }
@@ -41,7 +41,7 @@ class AppsContext extends BaseContext
         $tmpRoot = $dpEnv->getUserTmpDir();
 
         $dir             = $this->getTestDir($folder);
-        $appArchive      = AppZipBundleBuilder::fromTmp($tmpRoot)->addFolder($dir)->build();
+        $appArchive      = ZipArchiveBundleWriter::fromTmp($tmpRoot)->addFolder($dir)->build();
 
         /** @var ApplicationManagerService $instanceCreator */
         $instanceCreator = $this->get('apps2.application_manager');

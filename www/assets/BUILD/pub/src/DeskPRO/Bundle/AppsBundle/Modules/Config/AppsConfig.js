@@ -78,16 +78,22 @@ class AppsConfig extends PropertyBag {
   get httpProxyEndpoint() { return this.props.httpProxyEndpoint; }
 
   /**
+   * Only used in development mode where it points to the dev server url
+   *
    * @type {string}
    */
   get endpoint() { return this.props.endpoint; }
 
   /**
+   * Only used in development mode. The if of the dev application instance
+   *
    * @type {string}
    */
   get instanceId() { return this.props.instanceId; }
 
   /**
+   * Only used in development mode. The if of the dev application
+   *
    * @type {string}
    */
   get applicationId() { return this.props.applicationId; }
