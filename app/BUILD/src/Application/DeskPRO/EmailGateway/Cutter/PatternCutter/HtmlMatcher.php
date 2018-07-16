@@ -66,6 +66,18 @@ class HtmlMatcher
     }
 
     /**
+     * @param bool $reverse
+     *
+     * @return $this
+     */
+    public function setReverse($reverse = false)
+    {
+        $this->reverse = (bool) $reverse;
+
+        return $this;
+    }
+
+    /**
      * Given a tokenized pattern, process it against the body to find matching results.
      *
      * @return array

@@ -36,6 +36,7 @@ class InstallCommand extends ContainerAwareCommand
             ->addOption('restart', null, InputOption::VALUE_NONE, 'Restart an installation (instead of resume)')
             ->addOption('truncate-db', null, InputOption::VALUE_NONE, 'If the db has existing tables, then we will truncate all tables instead of recreating. This can make things slightly faster during testing.')
             ->addOption('recreate-db', null, InputOption::VALUE_NONE, 'If the db name exists, it will be dropped and re-created (the db user must have permission to drop/create dbs).')
+            ->addOption('existing-db', null, InputOption::VALUE_NONE, 'Skip installing tables and fixtures (eg. useful if you pre-initialised the database from a skeleton dump).')
             ->addOption('redo-step', 'r', InputOption::VALUE_REQUIRED, 'Redo a specific step even if it is marked as complete')
             ->addOption('profile', 'p', InputOption::VALUE_REQUIRED, 'Get answers from a profile file')
             ->addOption('skip-wizard', null, InputOption::VALUE_NONE, 'Use the existing config files and skip the install wizard (including checks)')
@@ -250,7 +251,11 @@ class InstallCommand extends ContainerAwareCommand
         }
 
         $dbExistAction = null;
-        if ($input->getOption('truncate-db')) {
+
+        if ($input->getOption('existing-db')) {
+            $skip_list[] = 'install_tables';
+            $skip_list[] = 'install_fixtures';
+        } elseif ($input->getOption('truncate-db')) {
             $dbExistAction = InstallStep\InstallTablesStep::TRUNCATE_DB;
         } elseif ($input->getOption('recreate-db')) {
             $dbExistAction = InstallStep\InstallTablesStep::RECREATE_DB;

@@ -82,8 +82,15 @@ class UrlRequestContextFactory
         }
 
         $context = clone $defaultContext;
-        $context->setHost($urlParts['host']);
-        $context->setScheme($urlParts['scheme']);
+
+        $portalModeStorage = $this->container->get('portal_mode_storage');
+        $portalMode        = $portalModeStorage->getMode() ?: null;
+        if ($portalMode && strpos($portalMode->getModePath(), '/brand-') === 0) {
+            $context->setHost($context->getHost().$portalMode->getModePath());
+        } else {
+            $context->setHost($urlParts['host']);
+            $context->setScheme($urlParts['scheme']);
+        }
 
         $port = (int) @$urlParts['port'];
         if (!$port) {

@@ -105,13 +105,13 @@ class AppsController extends BaseController
 
     /**
      * @Rest\Post("", condition="request.headers.get('Content-Type') matches '#application/zip#i'")
-     * @ParamConverter("bundle", class="AppStoreBundle:Infrastructure\AppZipArchiveBundle", converter="DeskPRO\Bundle\AppStoreBundle\ParamConverter\AppZipArchiveBundleParamConverter")
+     * @ParamConverter("bundle", class="AppStoreBundle:Domain\AppBundle", converter="DeskPRO\Bundle\AppStoreBundle\ParamConverter\BundleFileReaderAdapter")
      *
-     * @param AppStoreBundle\Infrastructure\AppZipArchiveBundle $bundle
+     * @param \DeskPRO\Bundle\AppStoreBundle\Domain\AppBundle $bundle
      *
      * @return string
      */
-    public function createFromZipFileAction(AppStoreBundle\Infrastructure\AppZipArchiveBundle $bundle)
+    public function createFromZipFileAction(\DeskPRO\Bundle\AppStoreBundle\Domain\AppBundle $bundle)
     {
         /** @var AppStoreBundle\Domain\AppBundleValidator $bundleValidator */
         $bundleValidator = $this->container->get(AppStoreBundle\Domain\AppBundleValidator::class);

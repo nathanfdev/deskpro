@@ -244,6 +244,28 @@
                             <label>
                                 <h4>
                                     <label>
+                                        <input type="checkbox" ng-model="settings.core_tickets_disable_attachments_list">
+                                        Disable attachment permalink list at the bottom of email message text.
+                                    </label>
+                                </h4>
+                            </label>
+                            <div>
+								<span class="help-block">
+									This means users will not be able to download files that were not sent as attachments in the email itself. For example, if an attachment exceeds the max outgoing size limit above (resulting in the file not being sent in the email), then the user will have no way to access it.
+								</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="row">
+                <div class="col-lg-10">
+                    <div class="panel panel-innertable">
+                        <div class="inner-group">
+                            <label>
+                                <h4>
+                                    <label>
                                         <input type="checkbox" ng-model="settings.core_tickets_enable_email_preview">
                                         {{ phrase('admin.ticket_accounts.email_preview') }}
                                     </label>

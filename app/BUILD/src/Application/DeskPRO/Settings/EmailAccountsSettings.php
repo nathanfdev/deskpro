@@ -50,6 +50,7 @@ class EmailAccountsSettings
         'core_tickets.enable_exact_subject_matching'        => false,
         'core_tickets.reject_spf_level'                     => false,
         'core_tickets.reject_dkim_level'                    => false,
+        'core_tickets.disable_attachments_list'             => false,
     ];
 
     /**

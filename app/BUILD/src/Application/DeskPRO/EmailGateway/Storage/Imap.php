@@ -6,6 +6,7 @@
 
 namespace Application\DeskPRO\EmailGateway\Storage;
 
+use DpSys\LowError\SystemErrorHandler;
 use Fetch\Server;
 
 class Imap extends Server
@@ -37,9 +38,27 @@ class Imap extends Server
             if ($options['no_validation']) {
                 $this->setFlag('novalidate-cert');
             }
+        } else {
+            $this->setFlag('notls');
         }
 
         $this->setAuthentication($options['user'], $options['password']);
+    }
+
+    /**
+     * @throws \Exception
+     *
+     * @return resource|void
+     */
+    public function getImapStream()
+    {
+        SystemErrorHandler::runWithoutErrorHandler(function () {
+            if (!isset($this->imapStream)) {
+                $this->setImapStream();
+            }
+
+            return $this->imapStream;
+        });
     }
 
     /**

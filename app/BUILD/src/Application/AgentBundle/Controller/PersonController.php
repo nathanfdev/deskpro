@@ -41,6 +41,8 @@ use Application\DeskPRO\People\PersonMerge\PersonMerge;
 use Application\DeskPRO\Reader\VCard;
 use Application\EmailBundle\SwiftMailer\Mailer;
 use DeskPRO\Bundle\AppBundle\Notification\Event\People\PersonCreatedEvent;
+use DeskPRO\Bundle\AppBundle\Serializer\ApiWrapper;
+use DeskPRO\Bundle\AppBundle\Serializer\Sideload\SideloadSerializationContext;
 use Orb\Util\Arrays;
 use Orb\Util\DpStrings;
 use Orb\Validator\StringEmail;
@@ -54,6 +56,20 @@ use Symfony\Component\Security\Core\Exception\AccessDeniedException;
  */
 class PersonController extends AbstractController
 {
+    /**
+     * @param Organization $entity
+     * @return array mixed
+     * @throws \Exception
+     */
+    protected function getAPIv2Data( $entity)
+    {
+        $context = new SideloadSerializationContext();
+        $context->setIncludes(['brand', 'team']);
+        $context->setInlineSideloads(true);
+        $serialized = $this->container->get('serializer')->toArray(new ApiWrapper($entity), $context);
+        return $serialized;
+    }
+
     //###########################################################################
     // /agent/people/:person_id                                   agent_people_view
     //###########################################################################
@@ -320,7 +336,7 @@ class PersonController extends AbstractController
             $defaultBrandId = $brands[0]->getId();
         }
 
-        return $this->render('AgentBundle:Person:view.html.twig', [
+        $vars = [
             'with_warn_for_email'       => $with_warn_for_email,
             'person'                    => $person,
             'banned_emails'             => $banned_emails,
@@ -355,7 +371,12 @@ class PersonController extends AbstractController
             'default_brand_id'          => $defaultBrandId,
 
             'custom_fields_definitions' => $custom_fields_definitions,
-        ]);
+        ];
+
+        // include api_v2_data
+        $vars['api_v2_data'] = $this->getAPIv2Data($person);
+
+        return $this->render('AgentBundle:Person:view.html.twig', $vars);
     }
 
     public function getBasicInfoAction($person_id)

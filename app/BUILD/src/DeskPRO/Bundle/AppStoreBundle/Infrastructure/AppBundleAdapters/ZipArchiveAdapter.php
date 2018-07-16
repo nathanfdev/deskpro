@@ -1,13 +1,10 @@
 <?php
 
-namespace DeskPRO\Bundle\AppStoreBundle\Infrastructure;
+namespace DeskPRO\Bundle\AppStoreBundle\Infrastructure\AppBundleAdapters;
 
 use DeskPRO\Bundle\AppStoreBundle\Domain;
 
-/**
- * Class AppZipArchiveBundle.
- */
-class AppZipArchiveBundle implements Domain\AppBundle
+class ZipArchiveAdapter implements Domain\AppBundle
 {
     /**
      * @var \ZipArchive
@@ -22,13 +19,14 @@ class AppZipArchiveBundle implements Domain\AppBundle
     /**
      * Creates a ZipArchiveBuilder that will create the bundle at the specified location.
      *
-     * @param string $file path to a file
+     * @param string $file|\SplFileInfo path to a file
      *
-     * @return AppZipArchiveBundle
+     * @return ZipArchiveAdapter
      */
     public static function fromFile($file)
     {
-        $fileInfo = new \SplFileInfo($file);
+        $fileInfo = $file instanceof \SplFileInfo ? $file : new \SplFileInfo($file);
+
         if (!$fileInfo->isReadable()) {
             $exMsg = sprintf('trying to read an application zip bundle from a non-readable location: %s', $file);
             throw new \RuntimeException($exMsg);
