@@ -46,6 +46,13 @@ class News extends ContentAbstract implements HighlightableModelInterface, Label
     protected $revisions;
 
     /**
+     * @var \Doctrine\Common\Collections\ArrayCollection
+     *
+     * @Assert\Valid()
+     */
+    protected $attachments;
+
+    /**
      * String array of labels associated with this news.
      *
      * @Assert\Valid()
@@ -71,6 +78,16 @@ class News extends ContentAbstract implements HighlightableModelInterface, Label
      * @var string
      */
     protected $end_action = null;
+
+    /**
+     * Constructor.
+     */
+    public function __construct()
+    {
+        parent::__construct();
+
+        $this->attachments = new ArrayCollection();
+    }
 
     public function getContentHtml()
     {
@@ -145,6 +162,36 @@ class News extends ContentAbstract implements HighlightableModelInterface, Label
         }
 
         return $path;
+    }
+
+    /**
+     * @return ArrayCollection|NewsAttachment[]
+     */
+    public function getAttachments()
+    {
+        return $this->attachments;
+    }
+
+    /**
+     * Reset attachments.
+     *
+     * @return $this
+     */
+    public function resetAttachments()
+    {
+        $this->attachments->clear();
+        $this->_onPropertyChanged('attachments', null, $this->attachments);
+
+        return $this;
+    }
+
+    /**
+     * @param NewsAttachment $attach
+     */
+    public function addAttachment(NewsAttachment $attach)
+    {
+        $this->attachments->add($attach);
+        $attach['news'] = $this;
     }
 
     /**
@@ -493,6 +540,14 @@ class News extends ContentAbstract implements HighlightableModelInterface, Label
         );
         $metadata->mapOneToMany(
             [
+                'fieldName'    => 'attachments',
+                'targetEntity' => 'Application\\DeskPRO\\Entity\\NewsAttachment',
+                'cascade'      => [0 => 'remove', 1 => 'persist', 3 => 'merge'],
+                'mappedBy'     => 'news',
+            ]
+        );
+        $metadata->mapOneToMany(
+            [
                 'fieldName'     => 'labels',
                 'targetEntity'  => 'Application\\DeskPRO\\Entity\\LabelNews',
                 'cascade'       => [0 => 'remove', 1 => 'persist', 3 => 'merge'],
@@ -555,5 +610,16 @@ class News extends ContentAbstract implements HighlightableModelInterface, Label
         );
 
         $metadata->addLifecycleCallback('_preUpdate', 'preUpdate');
+    }
+
+    /**
+     * @return array
+     */
+    protected function getUpdateFields()
+    {
+        $fields   = parent::getUpdateFields();
+        $fields[] = 'attachments';
+
+        return $fields;
     }
 }

@@ -1,6 +1,26 @@
 <div class="full-tab-content">
 	<div class="news-content-wrap content-post-wrap">
-		{{ news.content_html|raw }}
+
+		<section class="dp-news-post dp-content-post dp-content-page" style="margin: 0">
+			<article id="dp_news_content">
+				{{ news.content_html|raw }}
+			</article>
+		</section>
+		
+		{% if news.attachments|length %}
+		<ul class="attachment-list">
+			{% for attach in news.attachments %}
+				<li class="{% if attach.blob.isImage() %}is-image{% else %}icon icon-attachment icon-filetype-{{attach.blob.extension|default('none')}}{% endif %}" rel="message-{{attach.blob.id}}">
+					{% if attach.blob.isImage() %}
+						<a href="{{ attach.blob.download_url }}" target="_blank"><img src="{{ path('serve_blob', {'blob_auth_id': attach.blob.auth_id, 'filename': attach.blob.filename_safe, 's': 50, 'size-fit': '1'}) }}" alt="" class="preview" /></a>
+					{% endif %}
+					<a href="{{ attach.blob.download_url }}" target="_blank">{{attach.blob.filename}}</a>
+					<span class="size">({{ attach.blob.readable_filesize }})</span>
+				</li>
+			{% endfor %}
+		</ul>
+		{% endif %}
+
 	</div>
 	<div class="news-editor-wrap article-editor-wrap" style="display: none">
 		<div class="news-editor">
@@ -12,6 +32,23 @@
 				</div>
 			{% endif %}
 			<textarea class="edit-content-field" name="news[content]" rows="5" cols="50">{{ state.news.content|default(news.content) }}</textarea>
+			<div style="float: left;">
+				{% include 'AgentBundle:Common:attach-row-tmpl.html.twig' with {formname: 'newnews[attach][]'} %}
+				<h6>{{ phrase('agent.general.attachments') }}</h6>
+				<div class="file-input">
+					<input type="file" name="file-upload" multiple="multiple" />
+				</div>
+				<ul class="dp-hide-empty attachment-list files file-list" {% if not news.attachments|length %}style="display: none;"{% endif %}>
+					{% for attach in news.attachments %}
+						<li class="{% if attach.blob.isImage() %}is-image{% else %}icon icon-attachment icon-filetype-{{attach.blob.extension|default('none')}}{% endif %}" rel="message-{{attach.blob.id}}">
+							<em class="remove-attach-trigger delete" data-blob-id="{{ attach.blob.id }}"></em>
+							<a href="{{ attach.blob.download_url }}" target="_blank">{{attach.blob.filename}}</a>
+							<span class="size">({{ attach.blob.readable_filesize }})</span>
+						</li>
+					{% endfor %}
+				</ul>
+			</div>
+			<br class="clear" />
 			<textarea class="edit-content-field-default" style="display: none;">{{news.content}}</textarea>
 		</div>
 	</div>

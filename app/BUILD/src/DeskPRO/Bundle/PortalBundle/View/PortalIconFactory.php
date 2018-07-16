@@ -13,6 +13,7 @@ use Application\DeskPRO\Entity\Download;
 use Application\DeskPRO\Entity\Feedback;
 use Application\DeskPRO\Entity\FeedbackAttachment;
 use Application\DeskPRO\Entity\News;
+use Application\DeskPRO\Entity\NewsAttachment;
 use Application\DeskPRO\Entity\Ticket;
 use Application\DeskPRO\Entity\TicketAttachment;
 use Application\DeskPRO\Entity\Topic;
@@ -100,6 +101,8 @@ class PortalIconFactory
             return $this->makeFileIcon($content->getBlob());
         } elseif ($content instanceof News) {
             return $this->makeNewsIcon($content);
+        } elseif ($content instanceof NewsAttachment) {
+            return $this->makeFileIcon($content->getBlob());
         } elseif ($content instanceof Feedback) {
             return $this->makeFeedbackIcon($content);
         } elseif ($content instanceof Topic) {
