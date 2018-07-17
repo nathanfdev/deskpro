@@ -115,6 +115,8 @@ class DpAuthListener extends AbstractAuthenticationListener implements Container
                         throw new BadCredentialsException('portal.account.login-invalid');
                     }
                 }
+
+                $this->logLoginSuccess($person, $request->getClientIp());
             }
 
             return $returnValue;
@@ -422,6 +424,26 @@ class DpAuthListener extends AbstractAuthenticationListener implements Container
                     'date_created' => date('Y-m-d H:i:s'),
                 ]
             );
+        }
+    }
+
+    /**
+     * @param Person $person
+     * @param string $ip
+     */
+    private function logLoginSuccess(Person $person, $ip)
+    {
+        // log just if it's an agent
+        if ($person->isAgent()) {
+            $this->container->get('doctrine.dbal.default_connection')->insert('login_log', [
+                'person_id'    => $person->getId(),
+                'area'         => DP_INTERFACE,
+                'is_success'   => 1,
+                'ip_address'   => $ip,
+                'hostname'     => @gethostbyaddr($ip) ?: '',
+                'user_agent'   => empty($_SERVER['HTTP_USER_AGENT']) ? '' : $_SERVER['HTTP_USER_AGENT'],
+                'date_created' => date('Y-m-d H:i:s'),
+            ]);
         }
     }
 
