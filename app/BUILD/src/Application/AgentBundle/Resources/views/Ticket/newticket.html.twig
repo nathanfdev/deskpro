@@ -11,6 +11,7 @@ pageMeta.auto_start_bill = {% if app.getSetting('core_tickets.enable_timelog') a
 
 {% set baseId = el_uid() %}
 pageMeta.baseId = '{{ baseId }}';
+pageMeta.defaultDepartments = {{ default_departments|json_encode|raw }};
 </script>
 
 <script>

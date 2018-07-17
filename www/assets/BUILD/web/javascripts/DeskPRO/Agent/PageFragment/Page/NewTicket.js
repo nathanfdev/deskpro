@@ -1908,7 +1908,8 @@ DeskPRO.Agent.PageFragment.Page.NewTicket = new Orb.Class({
 		var self = this;
 		var selectBrand = this.getEl('brand');
 		selectBrand.on('change', function () {
-			$.get('/agent/tickets/new/get-departments/' + this.value, function(res) {
+			var value = this.value;
+			$.get('/agent/tickets/new/get-departments/' + value, function(res) {
 				var selectDepartment = self.getEl('dep');
 				var previousValue = selectDepartment.val();
 				selectDepartment.children().remove();
@@ -1923,6 +1924,9 @@ DeskPRO.Agent.PageFragment.Page.NewTicket = new Orb.Class({
           if (options.filter('option[value='+previousValue+']').length > 0) {
           	val = previousValue;
 					}
+				}
+				if (!val && self.meta.defaultDepartments[value]) {
+          val = self.meta.defaultDepartments[value];
 				}
 				selectDepartment.select2('val', val).change();
 			});

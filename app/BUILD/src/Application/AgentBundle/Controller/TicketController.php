@@ -61,6 +61,7 @@ use DeskPRO\Bundle\AppBundle\Entity\SnippetUseLog;
 use DeskPRO\Bundle\AppBundle\Entity\TicketFeedbackLink;
 use DeskPRO\Bundle\AppBundle\Serializer\ApiWrapper;
 use DeskPRO\Bundle\AppBundle\Serializer\Sideload\SideloadSerializationContext;
+use DeskPRO\Bundle\AppBundle\Settings\Model\Tickets\DefaultDepartmentSettings;
 use DeskPRO\Component\Pdf\PdfRendererInterface;
 use DeskPRO\Component\Util\ListUtils;
 use Doctrine\Common\Collections\ArrayCollection;
@@ -98,26 +99,30 @@ class TicketController extends AbstractController
 
     /**
      * @param Ticket $entity
-     * @return array mixed
+     *
      * @throws \Exception
+     *
+     * @return array mixed
      */
-    protected function getAPIv2Data( $entity)
+    protected function getAPIv2Data($entity)
     {
         $context = new SideloadSerializationContext();
         $context->setIncludes(['brand', 'person', 'organization', 'problem']);
         $context->setInlineSideloads(true);
         $serialized = $this->container->get('serializer')->toArray(new ApiWrapper($entity), $context);
+
         return $serialized;
     }
 
     /**
      * @param int $ticket_id
      *
-     * @return Response
      * @throws \Doctrine\ORM\NonUniqueResultException
      * @throws \Doctrine\ORM\ORMException
      * @throws \Doctrine\ORM\OptimisticLockException
      * @throws \Exception
+     *
+     * @return Response
      */
     public function viewAction($ticket_id)
     {
@@ -4597,6 +4602,12 @@ class TicketController extends AbstractController
             ['title' => 'asc']
         );
 
+        $defaultDepartments = [];
+        foreach ($brands as $brand) {
+            $defaultDepartment                   = $this->container->get('brand_form_helper')->getDefaultDepartment(DefaultDepartmentSettings::DEFAULT_DEPARTMENT_AGENT_TYPE, $brand);
+            $defaultDepartments[$brand->getId()] = $defaultDepartment ? $defaultDepartment->getId() : null;
+        }
+
         return $this->render(
             'AgentBundle:Ticket:newticket.html.twig',
             [
@@ -4617,6 +4628,7 @@ class TicketController extends AbstractController
                 'custom_org_fields'    => $customOrgFields,
                 'brands'               => $brands,
                 'default_brand'        => $this->get('brand_stack')->getDefaultBrand()->getId(),
+                'default_departments'  => $defaultDepartments,
             ]
         );
     }
@@ -5662,12 +5674,13 @@ CSS;
     }
 
     /**
-     * @param int $ticket_id
+     * @param int  $ticket_id
      * @param null $check_perm
      *
-     * @return Ticket
      * @throws \Doctrine\ORM\NonUniqueResultException
      * @throws \Doctrine\ORM\ORMException
+     *
+     * @return Ticket
      */
     protected function getTicketOr404($ticket_id, $check_perm = null)
     {
