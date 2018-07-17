@@ -169,6 +169,9 @@ class JsonTableRenderer extends AbstractJsonRenderer
         foreach ($resultHandler->getSelectColumns() as $column) {
             $columns[] = $this->valueRenderer->escapeValue($column['title']);
         }
+        if ($resultHandler->hasFlag(ResultMetadata::FLAG_WITH_ROLLUP)) {
+            $columns[] = 'Total';
+        }
 
         return $columns;
     }
@@ -218,6 +221,9 @@ class JsonTableRenderer extends AbstractJsonRenderer
                     ? $this->getRowPadding($row)
                     : '';
                 $cells[] = $padding.$this->renderCellValue($row, $column, $metadata);
+            }
+            if ($metadata->hasFlag(ResultMetadata::FLAG_WITH_ROLLUP)) {
+                $cells[] = $this->renderCellValue($row, 'hierarchy_rollup_count', $metadata);
             }
 
             ++$rowCount;
