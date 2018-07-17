@@ -267,9 +267,18 @@ class Wrapper extends React.Component {
   filter(value) {
     let result = true;
 
-    const { activeLabels, labels, searchText } = this.state;
+    const { searchText } = this.state;
 
     const actualSearch = searchText.replace(regex, '').trim().toLowerCase();
+    const activeLabels = [];
+
+    let match;
+    do {
+      match = regex.exec(searchText);
+      if (match) {
+        activeLabels.push(match[1]);
+      }
+    } while (match);
 
     if (!actualSearch) {
       result = true;
@@ -281,12 +290,10 @@ class Wrapper extends React.Component {
         .reduce((reduced, label) => reduced || label.toLowerCase().indexOf(actualSearch) >= 0, false);
     }
 
-    let labelsToCheck = [];
-    if (activeLabels > 0) {
-      labelsToCheck = labels.filter(label => label.get('active')).map(label => label.get('label')).toList().toJS();
+    if (activeLabels.length > 0) {
       result = result && value
         .get('labels')
-        .reduce((reduced, label) => reduced || labelsToCheck.indexOf(label) >= 0, false);
+        .reduce((reduced, label) => reduced || activeLabels.indexOf(label) >= 0, false);
     }
 
     return result;
