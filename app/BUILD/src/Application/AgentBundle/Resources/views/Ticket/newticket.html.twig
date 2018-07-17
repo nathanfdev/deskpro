@@ -283,7 +283,7 @@ pageMeta.baseId = '{{ baseId }}';
                         {{ phrase('agent.general.subject') }}:
 					</th>
 					<td>
-						<input type="text" name="newticket[subject]" class="subject" id="{{baseId}}_subject" />
+						<input type="text" name="newticket[subject]" class="subject" id="{{baseId}}_subject" value="{% if ticket.id %}{{ ticket.subject }}{% endif %}" />
 					</td>
 				</tr>
 				</tbody>
