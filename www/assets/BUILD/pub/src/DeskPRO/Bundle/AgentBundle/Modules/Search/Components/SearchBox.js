@@ -90,6 +90,7 @@ class SearchBox extends React.Component {
           },
           showSearch: true,
         },
+        showOnFocus: true,
       },
       {
         id:     'agent_team',
@@ -117,6 +118,7 @@ class SearchBox extends React.Component {
           },
           showSearch: true,
         },
+        category: this.props.intl.formatMessage({ id: 'agent.general.ticket' }).toLowerCase(),
       },
       {
         id:     'ticket_category',
@@ -128,6 +130,7 @@ class SearchBox extends React.Component {
           },
           showSearch: true,
         },
+        category: this.props.intl.formatMessage({ id: 'agent.general.ticket' }).toLowerCase(),
       },
       {
         id:     'ticket_priority',
@@ -139,6 +142,7 @@ class SearchBox extends React.Component {
           },
           showSearch: true,
         },
+        category: this.props.intl.formatMessage({ id: 'agent.general.ticket' }).toLowerCase(),
       },
       {
         id:     'urgency',
@@ -154,6 +158,7 @@ class SearchBox extends React.Component {
           },
           showSearch: false,
         },
+        category: this.props.intl.formatMessage({ id: 'agent.general.ticket' }).toLowerCase(),
       },
       {
         id:     'ticket_workflow',
@@ -164,6 +169,7 @@ class SearchBox extends React.Component {
             getOptions: search => this.props.dispatch(searchActions.loadWorkflows({ search }))
           },
         },
+        category: this.props.intl.formatMessage({ id: 'agent.general.ticket' }).toLowerCase(),
       },
       {
         id:     'subject',
@@ -184,23 +190,26 @@ class SearchBox extends React.Component {
         props:  {},
       },
       {
-        id:     'last_agent_reply',
-        label:  'last-agent-reply',
-        widget: 'DateTimeInput',
-        props:  {},
+        id:       'last_agent_reply',
+        label:    'last-agent-reply',
+        widget:   'DateTimeInput',
+        props:    {},
+        category: this.props.intl.formatMessage({ id: 'agent.general.ticket' }).toLowerCase(),
       },
       {
-        id:     'last_user_reply',
-        label:  'last-user-reply',
-        widget: 'DateTimeInput',
-        props:  {},
+        id:       'last_user_reply',
+        label:    'last-user-reply',
+        widget:   'DateTimeInput',
+        props:    {},
+        category: this.props.intl.formatMessage({ id: 'agent.general.ticket' }).toLowerCase(),
       },
       {
         id:          'user_waiting',
         label:       'user-waiting',
         widget:      'DurationInput',
         props:       {},
-        description: 'Time waited by user'
+        description: 'Time waited by user',
+        category:    this.props.intl.formatMessage({ id: 'agent.general.ticket' }).toLowerCase(),
       },
       {
         id:     'person_name',
@@ -235,6 +244,7 @@ class SearchBox extends React.Component {
           isMultiple: true,
           showSearch: true,
         },
+        category: this.props.intl.formatMessage({ id: 'agent.general.ticket' }).toLowerCase(),
       },
       {
         id:     'organization',
@@ -257,6 +267,7 @@ class SearchBox extends React.Component {
             false: this.props.intl.formatMessage({ id: 'agent.general.no' }),
           }
         },
+        category: this.props.intl.formatMessage({ id: 'agent.general.ticket' }).toLowerCase(),
       },
       {
         id:     'sla_status',
@@ -267,6 +278,7 @@ class SearchBox extends React.Component {
             getOptions: search => this.props.dispatch(searchActions.loadSlas({ search }))
           },
         },
+        category: this.props.intl.formatMessage({ id: 'agent.general.ticket' }).toLowerCase(),
       },
       {
         id:     'brand',
@@ -375,6 +387,7 @@ class SearchBox extends React.Component {
             onChange={this.handleChange}
             placeholder=""
             zIndex={1800}
+            showTokensOnFocus
           />
         </SemanticSearchBox>
       );
