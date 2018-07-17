@@ -379,7 +379,7 @@ export class EditFormComponent extends React.Component {
                   <reduxForm.Textarea autosize onChange={() => {}} label="GROUP BY" name="group_by" />
                   <div
                     className={classNames({
-                      'field-hidden': !(select && select.match(/count\s*\(.*?\)/i) && groupBy.length)
+                      'field-hidden': !(select && select.match(/dpql_count\(.*\)/i) && groupBy.length)
                     })}
                   >
                     <reduxForm.Checkbox
@@ -413,5 +413,5 @@ export class EditFormComponent extends React.Component {
 export const EditForm = formValues({
   queryValues: 'query',
   select:      'query.select',
-  groupBy:     'query.groupBy'
+  groupBy:     'query.group_by'
 })(EditFormComponent);
