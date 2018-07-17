@@ -1,10 +1,12 @@
 import PropTypes from 'prop-types';
 import React from 'react';
+import classNames from 'classnames';
 
 class SearchBox extends React.Component {
   static propTypes = {
     placeholder:  PropTypes.string,
     text:         PropTypes.string,
+    className:    PropTypes.string,
     onUserInput:  PropTypes.func,
     onFocus:      PropTypes.func,
     onBlur:       PropTypes.func,
@@ -12,13 +14,16 @@ class SearchBox extends React.Component {
     focusOnMount: PropTypes.bool,
     icon:         PropTypes.node,
     children:     PropTypes.node,
+    clear:        PropTypes.bool,
   };
   static defaultProps = {
     onUserInput() {},
     onFocus() {},
     onBlur() {},
     onClearInput() {},
-    focusOnMount: false
+    className:    '',
+    focusOnMount: false,
+    clear:        true,
   };
 
   componentDidMount() {
@@ -51,7 +56,7 @@ class SearchBox extends React.Component {
   };
 
   render() {
-    const { placeholder, text, onFocus, onBlur, children } = this.props;
+    const { placeholder, text, onFocus, onBlur, children, className, clear } = this.props;
     let childrenWithProps;
     const props = {
       placeholder
@@ -73,10 +78,13 @@ class SearchBox extends React.Component {
       );
     }
     return (
-      <div className="ui input left icon search">
+      <div className={classNames('ui input left icon search', className)}>
         {this.getIcon()}
         { childrenWithProps }
-        <i onClick={this.clearInput} className="remove circle icon right" />
+        { clear ?
+          <i onClick={this.clearInput} className="remove circle icon right" />
+          : null
+        }
       </div>
     );
   }

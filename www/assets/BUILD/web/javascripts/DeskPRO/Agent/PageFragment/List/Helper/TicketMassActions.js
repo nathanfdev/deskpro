@@ -826,7 +826,9 @@ DeskPRO.Agent.PageFragment.List.Helper.TicketMassActions = new Orb.Class({
               detail: {
                 module: 'SnippetsMenu',
                 width: 745,
-                zIndex: 22000,
+                style: {
+                  zIndex: 22000
+                },
                 insertSnippet: self.insertSnippet.bind(self)
               }
             });

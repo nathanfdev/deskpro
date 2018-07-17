@@ -299,35 +299,10 @@ $contrast: 5% !default;
       input[type=search] {
         width: 164px;
       }
-      & > div.token-field {
-        min-width: 162px;
-        height: 37px;
-        padding: 2px 0 !important;
-        color: #2b2f2f;
-        margin-left: 2px;
-        margin-right: 25px;
-        & .remove {
-          top: 6px;
-        }
-        .input-box {
-          min-width: 10px;
-          height: auto;
-        }
-        input {
-          padding-right: 0 !important;
-          padding-bottom: 2px;
-          border: none;
-        }
-        .label {
-          padding: 1px 5px;
-          border-radius: 2px 0 0 2px;
-          vertical-align: top;
-          margin: 8px 0;
-        }
-        .value {
-          margin: 8px 0;
-          padding: 2px 5px 2px 8px;
-        }
+      & > div.new-search {
+        width: 180px;
+        height: 41px;
+        cursor: text;
       }
     }
   }
@@ -1026,6 +1001,63 @@ i.icon.fitted {
         }
       }
     }
+  }
+}
+#search_menu {
+  background-color: $dp-greyscale-00;
+  border-right: solid 1px $dp-greyscale-250;
+  .isvg.search {
+    position: absolute;
+    padding-top: 14px;
+    padding-left: 11px;
+    display: inline-block;
+    svg {
+      height: 20px;
+    }
+  }
+  & div.token-field {
+    min-width: 162px;
+    height: 48px;
+    padding: 15px 0 5px 40px !important;
+    color: #2b2f2f;
+    margin-left: 2px;
+    margin-right: 25px;
+    & .remove {
+      top: 6px;
+    }
+    .input-box {
+      min-width: 10px;
+      height: auto;
+    }
+    input {
+      padding-right: 0 !important;
+      padding-bottom: 2px;
+      border: none;
+    }
+    .label {
+      padding: 1px 5px;
+      border-radius: 2px 0 0 2px;
+      vertical-align: top;
+      margin: 8px 0;
+    }
+    .value {
+      margin: 8px 0;
+      padding: 2px 5px 2px 8px;
+    }
+  }
+  .isvg.close-icon {
+    vertical-align: middle;
+    svg {
+      height: 18px;
+    }
+  }
+  a.close-icon {
+    position: absolute;
+    right: 10px;
+    top: 10px;
+    padding: 5px 5px 5px 10px;
+    border-left: 1px solid $dp-greyscale-250;
+    cursor: pointer;
   }
 }
 
