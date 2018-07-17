@@ -383,6 +383,7 @@ export class EditFormComponent extends React.Component {
                     })}
                   >
                     <reduxForm.Checkbox
+                      className="rollup"
                       label="WITH ROLLUP - Adds a Total column to grouped COUNT queries made against hierarchies"
                       name="with_rollup"
                     />
