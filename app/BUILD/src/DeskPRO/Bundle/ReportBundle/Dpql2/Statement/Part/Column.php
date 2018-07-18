@@ -122,6 +122,7 @@ END)
         'custom_data_organizations' => '%1$s.root_field_id = %2$s',
         'custom_data_person'        => '%1$s.root_field_id = %2$s',
         'custom_data_ticket'        => '%1$s.root_field_id = %2$s',
+        'custom_data_chat'          => '%1$s.root_field_id = %2$s',
         'custom_data_billing'       => '%1$s.root_field_id = %2$s',
         'custom_field_data'         => '%1$s.root_definition_id = %2$s',
         'ticket_slas'               => '%1$s.sla_id = %2$s',
