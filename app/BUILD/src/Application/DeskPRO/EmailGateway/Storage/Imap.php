@@ -50,15 +50,42 @@ class Imap extends Server
      *
      * @return resource|void
      */
-    public function getImapStream()
+    public function getImapStream(&$errors = [])
     {
-        SystemErrorHandler::runWithoutErrorHandler(function () {
-            if (!isset($this->imapStream)) {
+        return SystemErrorHandler::runWithoutErrorHandler(function () {
+            if (!$this->imapStream) {
                 $this->setImapStream();
             }
 
             return $this->imapStream;
-        });
+        }, $errors);
+    }
+
+    /**
+     * Get the imap stream or throw an exception if it failed.
+     *
+     * @throws \Exception
+     *
+     * @return resource
+     */
+    public function getImapStreamThrow()
+    {
+        $err = [];
+        $s   = $this->getImapStream($err);
+
+        if (!$s) {
+            if ($err) {
+                $err = array_map(function ($e) {
+                    return $e['message'];
+                }, $err);
+                $err = implode('; ', $err);
+                throw new \Exception("Error during connect: $err");
+            } else {
+                throw new \Exception('Error during connect: unknown');
+            }
+        }
+
+        return $s;
     }
 
     /**
@@ -66,7 +93,7 @@ class Imap extends Server
      */
     public function getAllUnseenMessageUids()
     {
-        $result = imap_search($this->getImapStream(), 'UNSEEN UNDELETED', SE_UID);
+        $result = imap_search($this->getImapStreamThrow(), 'UNSEEN UNDELETED', SE_UID);
 
         if ($result === false) {
             return [];
@@ -82,7 +109,7 @@ class Imap extends Server
      */
     public function getAllMessageUids()
     {
-        $result = imap_search($this->getImapStream(), 'ALL UNDELETED', SE_UID);
+        $result = imap_search($this->getImapStreamThrow(), 'ALL UNDELETED', SE_UID);
 
         if ($result === false) {
             return [];
@@ -100,7 +127,7 @@ class Imap extends Server
      */
     public function getRawMessage($uid)
     {
-        $raw_body = imap_fetchbody($this->getImapStream(), $uid, '', FT_UID);
+        $raw_body = imap_fetchbody($this->getImapStreamThrow(), $uid, '', FT_UID);
 
         if ($raw_body === false) {
             throw new \Exception(sprintf('Failed to retrieve raw body for message'));
@@ -116,7 +143,7 @@ class Imap extends Server
      */
     public function getMessageSize($uid)
     {
-        $results = imap_fetch_overview($this->imapStream, $uid, FT_UID);
+        $results = imap_fetch_overview($this->getImapStreamThrow(), $uid, FT_UID);
         if (!$results) {
             return;
         }
@@ -150,7 +177,7 @@ class Imap extends Server
      */
     public function moveMessageMailbox($uid, $new_mailbox)
     {
-        imap_mail_move($this->imapStream, "$uid", "$new_mailbox", CP_UID);
+        imap_mail_move($this->getImapStreamThrow(), "$uid", "$new_mailbox", CP_UID);
         //imap_expunge($this->imapStream);
     }
 
@@ -159,7 +186,7 @@ class Imap extends Server
      */
     public function deleteMessage($uid)
     {
-        imap_delete($this->imapStream, $uid, FT_UID);
+        imap_delete($this->getImapStreamThrow(), $uid, FT_UID);
         //imap_expunge($this->imapStream);
     }
 
@@ -170,7 +197,7 @@ class Imap extends Server
      */
     public function getRawHeaders($uid)
     {
-        return imap_fetchheader($this->imapStream, $uid, FT_UID);
+        return imap_fetchheader($this->getImapStreamThrow(), $uid, FT_UID);
     }
 
     /**
