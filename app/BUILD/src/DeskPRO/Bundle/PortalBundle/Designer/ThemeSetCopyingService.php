@@ -87,28 +87,42 @@ class ThemeSetCopyingService
     }
 
     /**
-     * @param ThemeSet $source
-     * @param ThemeSet $destination
+     * @param ThemeSet $fromThemeSet
+     * @param ThemeSet $toThemeSet
      *
      * @throws \Doctrine\ORM\OptimisticLockException
      */
-    private function cloneThemeSetAssets(ThemeSet $source, ThemeSet $destination)
+    private function cloneThemeSetAssets(ThemeSet $fromThemeSet, ThemeSet $toThemeSet)
     {
-        $themeSetAssetRepository = $this->em->getRepository(ThemeSetAsset::class);
-        /** @var ThemeSetAsset[] $assets */
-        $assets            = $themeSetAssetRepository->findBy(['theme_set' => $source]);
-        $destinationAssets = $themeSetAssetRepository->findBy(['theme_set' => $destination]);
-        foreach ($assets as $asset) {
-            $destAsset = current(array_filter($destinationAssets, function ($a) use ($asset) {
-                /* @var ThemeSetAsset $a */
-                return $a->getName() === $asset->getName();
-            }));
-            $this->cloneThemeSetAsset($asset, $destination, $destAsset);
-        }
-        foreach ($destinationAssets as $asset) {
+        $newAssets = $this->em->getRepository(ThemeSetAsset::class)->findBy(['theme_set' => $fromThemeSet]);
+        $oldAssets = $this->em->getRepository(ThemeSetAsset::class)->findBy(['theme_set' => $toThemeSet]);
+
+        // delete old assets
+        foreach ($oldAssets as $asset) {
             $this->em->remove($asset);
         }
+
         $this->em->flush();
+
+        // we don't have unique key for asset name so just
+        // prevent copying assets with the same names
+        $uniqueAssets = [];
+        foreach ($newAssets as $asset) {
+            $uniqueAssets[$asset->getName()] = $asset;
+        }
+
+        // copy new assets
+        foreach ($uniqueAssets as $newAsset) {
+            /* @var ThemeSetAsset $oldAsset */
+            $oldAsset = current(array_filter($oldAssets, function ($a) use ($newAsset) {
+                /* @var ThemeSetAsset $a */
+                return $a->getName() === $newAsset->getName();
+            }));
+
+            $oldBlob = $oldAsset ? $oldAsset->getBlob() : null;
+
+            $this->cloneThemeSetAsset($newAsset, $toThemeSet, $oldBlob);
+        }
     }
 
     /**
@@ -144,39 +158,40 @@ class ThemeSetCopyingService
     }
 
     /**
-     * @param ThemeSetAsset      $asset
-     * @param ThemeSet           $theme_set
-     * @param ThemeSetAsset|null $destAsset
+     * @param ThemeSetAsset $newAsset
+     * @param ThemeSet      $toThemeSet
+     * @param Blob|null     $oldBlob
      *
      * @throws \Doctrine\ORM\OptimisticLockException
      *
      * @return ThemeSetAsset
      */
-    private function cloneThemeSetAsset(ThemeSetAsset $asset, ThemeSet $theme_set, $destAsset = null)
+    private function cloneThemeSetAsset(ThemeSetAsset $newAsset, ThemeSet $toThemeSet, Blob $oldBlob = null)
     {
-        $destClone = null;
-        if ($destAsset) {
-            $destClone = $destAsset->getBlob();
-            $this->em->remove($destAsset);
-        }
-        $this->em->flush();
-        $clone = clone $asset;
-        if ($blob = $asset->getBlob()) {
-            if ($destClone && $destClone->getBlobHash() === $blob->getBlobHash()) {
-                $clone->setBlob($destClone);
+        // clone theme asset
+        $clonedAsset = clone $newAsset;
+        $clonedAsset->setThemeSet($toThemeSet);
+        if ($blob = $newAsset->getBlob()) {
+            // the blob wasn't changed, just re-use it
+            if ($oldBlob && $oldBlob->getBlobHash() === $blob->getBlobHash()) {
+                $clonedAsset->setBlob($oldBlob);
             } else {
-                $clone->setBlob($this->cloneBlob($blob));
-                // We set the blob as temp to be clean out by a later job
-                if ($destClone) {
-                    $destClone->setIsTemp(true);
-                }
+                // the blob was changed, clone from the new asset
+                $clonedAsset->setBlob($this->cloneBlob($blob));
             }
         }
-        $clone->setThemeSet($theme_set);
-        $this->em->persist($clone);
+
+        $this->em->persist($clonedAsset);
+
+        // the old blob was changed and overwritten, mark it as temp to remove by a clean job later
+        if ($oldBlob && $clonedAsset->getBlob() !== $oldBlob) {
+            $blob->setIsTemp(true);
+            $this->em->persist($oldBlob);
+        }
+
         $this->em->flush();
 
-        return $clone;
+        return $clonedAsset;
     }
 
     /**
