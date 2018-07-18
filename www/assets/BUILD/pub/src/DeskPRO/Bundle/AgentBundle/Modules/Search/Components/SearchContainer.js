@@ -37,7 +37,13 @@ class SearchContainer extends React.Component {
     if (window.DP_HAS_NEW_SEARCH) {
       this.initTokenTypes();
     }
+    window.document.addEventListener('dpLeftDrawerOpened', this.focus);
   };
+
+  componentWillUnmount = () => {
+    window.document.removeEventListener('dpLeftDrawerOpened', this.focus);
+  };
+
 
   initTokenTypes = () => {
     const tokenTypes = [
@@ -370,9 +376,19 @@ class SearchContainer extends React.Component {
     return props;
   };
 
+  closeMenu = () => {
+    this.tokenField.blur();
+    this.props.closeMenu();
+  };
+
+  focus = () => {
+    if (this.tokenField) {
+      this.tokenField.focus();
+    }
+  };
+
   render() {
     const { value, tokenTypes } = this.state;
-    const { closeMenu } = this.props;
     return (
       <div id="search_menu">
         <Isvg
@@ -390,7 +406,7 @@ class SearchContainer extends React.Component {
           zIndex={1800}
           showTokensOnFocus
         />
-        <a className="close-icon" onClick={closeMenu}>
+        <a className="close-icon" onClick={this.closeMenu}>
           <Isvg
             className="close-icon"
             src={`${window.DESKPRO_APP_ASSETS_URL}/DeskPRO/Bundle/AgentBundle/Resources/img/general/close.svg`}

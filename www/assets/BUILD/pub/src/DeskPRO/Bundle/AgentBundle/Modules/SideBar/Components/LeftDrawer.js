@@ -47,7 +47,6 @@ export class LeftDrawerContainer extends SeparateComponent {
           break;
         }
         case 'Search': {
-          console.log('Search');
           this.resize();
           module = SearchContainer;
           props = {
@@ -83,6 +82,13 @@ export class LeftDrawerContainer extends SeparateComponent {
   componentWillUnmount() {
     window.document.removeEventListener('dpLeftDrawerClose', this.closeDrawer);
     window.document.removeEventListener('dpChangeSection', this.closeDrawer);
+  }
+
+  componentDidUpdate() {
+    if (this.state.active) {
+      const event = new CustomEvent('dpLeftDrawerOpened');
+      window.document.dispatchEvent(event);
+    }
   }
 
   openDrawer = () => {

@@ -1022,27 +1022,22 @@ i.icon.fitted {
     color: #2b2f2f;
     margin-left: 2px;
     margin-right: 25px;
-    & .remove {
-      top: 6px;
-    }
     .input-box {
       min-width: 10px;
       height: auto;
     }
-    input {
-      padding-right: 0 !important;
-      padding-bottom: 2px;
-      border: none;
+    .dp-input input {
+      border: 1px solid #c0c4c4;
+      border-radius: 0 2px 2px 0;
+      height: 22px;
     }
     .label {
       padding: 1px 5px;
       border-radius: 2px 0 0 2px;
       vertical-align: top;
-      margin: 8px 0;
     }
     .value {
-      margin: 8px 0;
-      padding: 2px 5px 2px 8px;
+      padding: 1px 5px 1px 8px;
     }
   }
   .isvg.close-icon {
