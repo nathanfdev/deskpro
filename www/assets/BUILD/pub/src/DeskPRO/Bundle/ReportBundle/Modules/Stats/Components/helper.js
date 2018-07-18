@@ -38,6 +38,7 @@ export function transformReportData(report) {
     where:          queryParts.get('where', ''),
     split_by:       queryParts.get('split_by', ''),
     group_by:       queryParts.get('group_by', ''),
+    with_rollup:    queryParts.get('with_rollup', ''),
     order_by:       queryParts.get('order_by', ''),
     offset:         queryParts.get('offset', ''),
     limit:          queryParts.get('limit', ''),
@@ -61,14 +62,15 @@ export function transformReportDataToApi(reportData, error = false) {
     data.input_mode    = reportData.inputMode || 'form';
     data.query         = reportData.raw;
     data.query_parts   = {
-      select:   reportData.select,
-      from:     reportData.from,
-      where:    reportData.where,
-      split_by: reportData.split_by,
-      group_by: reportData.group_by,
-      order_by: reportData.order_by,
-      limit:    reportData.limit,
-      offset:   reportData.offset
+      select:      reportData.select,
+      from:        reportData.from,
+      where:       reportData.where,
+      split_by:    reportData.split_by,
+      group_by:    reportData.group_by,
+      with_rollup: reportData.with_rollup,
+      order_by:    reportData.order_by,
+      limit:       reportData.limit,
+      offset:      reportData.offset
     };
 
     if (!error) {

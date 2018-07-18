@@ -1282,7 +1282,7 @@ class SelectPart
         } else {
             $offset = (!empty($parts['offset']) ? " OFFSET {$parts['offset']}" : '');
             if ($parts['select'] === '') {
-                $parts['select'] = 'COUNT()';
+                $parts['select'] = 'DPQL_COUNT()';
             }
 
             return "SELECT {$parts['select']}"

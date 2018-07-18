@@ -38,15 +38,16 @@ class EditContainer extends React.Component {
       title:  report.get('title'),
       labels: report.get('labels', Immutable.List()).toArray(),
       query:  {
-        raw:      report.get('query'),
-        select:   queryParts.get('select', ''),
-        from:     queryParts.get('from', ''),
-        where:    queryParts.get('where', ''),
-        split_by: queryParts.get('split_by', ''),
-        group_by: queryParts.get('group_by', ''),
-        order_by: queryParts.get('order_by', ''),
-        offset:   queryParts.get('offset', ''),
-        limit:    queryParts.get('limit', '')
+        raw:         report.get('query'),
+        select:      queryParts.get('select', ''),
+        from:        queryParts.get('from', ''),
+        where:       queryParts.get('where', ''),
+        split_by:    queryParts.get('split_by', ''),
+        group_by:    queryParts.get('group_by', ''),
+        with_rollup: queryParts.get('with_rollup', ''),
+        order_by:    queryParts.get('order_by', ''),
+        offset:      queryParts.get('offset', ''),
+        limit:       queryParts.get('limit', '')
       },
       vars: report.get('variables', Immutable.Map()).toJS(),
     };

@@ -62,14 +62,15 @@ export const runReport = createAction(
       data.query = report.query;
     } else {
       data.query_parts = {
-        select:   report.select,
-        from:     report.from,
-        where:    report.where,
-        split_by: report.split_by,
-        group_by: report.group_by,
-        order_by: report.order_by,
-        limit:    report.limit,
-        offset:   report.offset
+        select:      report.select,
+        from:        report.from,
+        where:       report.where,
+        split_by:    report.split_by,
+        group_by:    report.group_by,
+        with_rollup: report.with_rollup,
+        order_by:    report.order_by,
+        limit:       report.limit,
+        offset:      report.offset
       };
     }
 
@@ -89,14 +90,15 @@ export const downloadReport = createAction(
       data.query = report.query;
     } else {
       data.query_parts = {
-        select:   report.select,
-        from:     report.from,
-        where:    report.where,
-        split_by: report.split_by,
-        group_by: report.group_by,
-        order_by: report.order_by,
-        limit:    report.limit,
-        offset:   report.offset
+        select:      report.select,
+        from:        report.from,
+        where:       report.where,
+        split_by:    report.split_by,
+        group_by:    report.group_by,
+        with_rollup: report.with_rollup,
+        order_by:    report.order_by,
+        limit:       report.limit,
+        offset:      report.offset
       };
     }
 
