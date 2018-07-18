@@ -781,7 +781,7 @@ class TwilioAdapter
                 'targets' => [
                     [
                         'queue'      => $queue->getTaskQueueSid(),
-                        'expression' => 'worker.agent_id NOT IN task.rejected_workers',
+                        'expression' => 'worker.agent_id > 0',
                         'priority'   => 1,
                         'timeout'    => $queue->getVoicemailTimeout() ?: self::VOICEMAIL_WAITING_TIMEOUT,
                     ],
@@ -804,7 +804,7 @@ class TwilioAdapter
                 'targets' => [
                     [
                         'queue'      => $agent->getVoiceTaskQueueSid(),
-                        'expression' => 'worker.agent_id NOT IN task.rejected_workers',
+                        'expression' => 'worker.agent_id > 0',
                         'priority'   => 1,
                         'timeout'    => $this->settingsResolver->getVoiceSettings()->getAgentVoicemailTimeout(),
                     ],
