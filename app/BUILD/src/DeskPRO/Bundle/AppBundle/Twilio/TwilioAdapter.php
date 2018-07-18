@@ -766,6 +766,8 @@ class TwilioAdapter
      * @param VoiceAccount $account
      * @param string       $assignmentCallbackUrl
      *
+     * @throws \Exception
+     *
      * @return WorkflowInstance
      */
     public function createOrUpdateWorkflow(VoiceAccount $account, $assignmentCallbackUrl)
@@ -823,10 +825,20 @@ class TwilioAdapter
 
         $workspace = $this->getWorkspace($account);
         if ($account->getQueueWorkflowSid()) {
-            $workflow = $workspace->workflows($account->getQueueWorkflowSid())->update([
-                'configuration'         => $configuration,
-                'assignmentCallbackUrl' => $assignmentCallbackUrl,
-            ]);
+            try {
+                $workflow = $workspace->workflows($account->getQueueWorkflowSid())->update([
+                    'configuration'         => $configuration,
+                    'assignmentCallbackUrl' => $assignmentCallbackUrl,
+                ]);
+            } catch (RestException $e) {
+                if ($e->getStatusCode() === Response::HTTP_NOT_FOUND) {
+                    $workflow = $workspace->workflows->create('DeskPRO Queue Routing Workflow', $configuration, [
+                        'assignmentCallbackUrl' => $assignmentCallbackUrl,
+                    ]);
+                } else {
+                    throw $e;
+                }
+            }
         } else {
             $workflow = $workspace->workflows->create('DeskPRO Queue Routing Workflow', $configuration, [
                 'assignmentCallbackUrl' => $assignmentCallbackUrl,
