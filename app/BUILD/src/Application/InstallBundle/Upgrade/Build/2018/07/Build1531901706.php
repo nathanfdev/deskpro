@@ -5,7 +5,7 @@ namespace Application\InstallBundle\Upgrade\Build;
 use Application\DeskPRO\Tickets\Actions\SetFlag;
 use Orb\Types\JsonObjectSerializer;
 
-class Build1531123414 extends AbstractBuild implements OnlineBuildInterface
+class Build1531901706 extends AbstractBuild implements OnlineBuildInterface
 {
     public function addNewTables()
     {

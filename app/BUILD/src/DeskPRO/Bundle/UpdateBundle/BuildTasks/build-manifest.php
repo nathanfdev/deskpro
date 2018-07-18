@@ -973,33 +973,33 @@ return [
         'skipPostBuild' => false,
         'isOnlineBuild' => true,
     ],
-    1530719542 => [
-        'file'          => '/src/Application/InstallBundle/Upgrade/Build/2018/07/Build1530719542.php',
-        'classname'     => 'Application\InstallBundle\Upgrade\Build\Build1530719542',
+    1531901705 => [
+        'file'          => '/src/Application/InstallBundle/Upgrade/Build/2018/07/Build1531901705.php',
+        'classname'     => 'Application\InstallBundle\Upgrade\Build\Build1531901705',
         'skipPostBuild' => false,
         'isOnlineBuild' => true,
     ],
-    1531123414 => [
-        'file'          => '/src/Application/InstallBundle/Upgrade/Build/2018/07/Build1531123414.php',
-        'classname'     => 'Application\InstallBundle\Upgrade\Build\Build1531123414',
+    1531901706 => [
+        'file'          => '/src/Application/InstallBundle/Upgrade/Build/2018/07/Build1531901706.php',
+        'classname'     => 'Application\InstallBundle\Upgrade\Build\Build1531901706',
         'skipPostBuild' => false,
         'isOnlineBuild' => true,
     ],
-    1531398154 => [
-        'file'          => '/src/Application/InstallBundle/Upgrade/Build/2018/07/Build1531398154.php',
-        'classname'     => 'Application\InstallBundle\Upgrade\Build\Build1531398154',
+    1531901707 => [
+        'file'          => '/src/Application/InstallBundle/Upgrade/Build/2018/07/Build1531901707.php',
+        'classname'     => 'Application\InstallBundle\Upgrade\Build\Build1531901707',
+        'skipPostBuild' => true,
+        'isOnlineBuild' => true,
+    ],
+    1531901708 => [
+        'file'          => '/src/Application/InstallBundle/Upgrade/Build/2018/07/Build1531901708.php',
+        'classname'     => 'Application\InstallBundle\Upgrade\Build\Build1531901708',
         'skipPostBuild' => false,
         'isOnlineBuild' => true,
     ],
-    1531319032 => [
-        'file'          => '/src/Application/InstallBundle/Upgrade/Build/2018/07/Build1531319032.php',
-        'classname'     => 'Application\InstallBundle\Upgrade\Build\Build1531319032',
-        'skipPostBuild' => false,
-        'isOnlineBuild' => true,
-    ],
-    1531397415 => [
-        'file'          => '/src/Application/InstallBundle/Upgrade/Build/2018/07/Build1531397415.php',
-        'classname'     => 'Application\InstallBundle\Upgrade\Build\Build1531397415',
+    1531901709 => [
+        'file'          => '/src/Application/InstallBundle/Upgrade/Build/2018/07/Build1531901709.php',
+        'classname'     => 'Application\InstallBundle\Upgrade\Build\Build1531901709',
         'skipPostBuild' => false,
         'isOnlineBuild' => true,
     ],
