@@ -72,7 +72,7 @@
 								<article>
 									<dp-option-builder types-def="EditCtrl.criteriaTypeDef"
 													   save-target="EditCtrl.form.terms"
-													   options="{tag_first: false, tag_after: 'and'}"
+													   options="{tag_first: false, tag_after: 'and', tagString: 'and', tagClass: 'and'}"
 													   option-types="criteriaOptionTypes">
 										<add-btn-label>Criteria</add-btn-label>
 									</dp-option-builder>
@@ -89,7 +89,7 @@
 								<article>
 									<dp-option-builder types-def="EditCtrl.criteriaTypeDef"
 										save-target="EditCtrl.form.terms_any"
-										options="{tag_first: false, tag_after: 'or'}"
+										options="{tag_first: false, tag_after: 'or', tagString: 'or', tagClass: 'or'}"
 										option-types="criteriaOptionTypes">
 										<add-btn-label>Criteria</add-btn-label>
 									</dp-option-builder>
