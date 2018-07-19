@@ -6,6 +6,8 @@ use Application\DeskPRO\Entity\Setting;
 use DeskPRO\Bundle\ApiBundle\ApiDoc\Annotation\ApiDoc;
 use DeskPRO\Bundle\ApiBundle\Controller\BaseController;
 use DeskPRO\Bundle\AppBundle\Annotation\ActionPermissions\Annotation\ApiModes;
+use DeskPRO\Bundle\AppBundle\Form\Error\Exception\InvalidFormException;
+use DeskPRO\Bundle\AppBundle\Form\Type\Logs\ApiLogsOptionsType;
 use DeskPRO\Bundle\AppBundle\Serializer\Model\Logs\OptionsModel;
 use FOS\RestBundle\Controller\Annotations as Rest;
 use FOS\RestBundle\View\View;
@@ -39,16 +41,7 @@ class LogsController extends BaseController
      */
     public function getOptionsAction()
     {
-        $this->get('settings_resolver')->getGlobalSettings()->getBool('api_log.enabled');
-
-        $options = new OptionsModel(
-            $this->get('settings_resolver')->getGlobalSettings()->getBool('api_log.enabled'),
-            $this->get('settings_resolver')->getGlobalSettings()->get('api_log.max_request_body_length'),
-            $this->get('settings_resolver')->getGlobalSettings()->get('api_log.max_response_body_length'),
-            $this->container->get('api_log.helper')->getModes()
-        );
-
-        return View::create($this->wrap($options));
+        return View::create($this->wrap($this->getOptionsModel()));
     }
 
     /**
@@ -58,45 +51,36 @@ class LogsController extends BaseController
      *     section="Logs",
      *     resourceDescription="Operations about logs",
      *     description="update logging options",
-     *     requirements={
-     *         {
-     *             "name"="enabled",
-     *             "requirement"="1|0",
-     *             "dataType"="boolean",
-     *             "description"="provide 1 if you want to enable logging"
-     *         },
-     *         {
-     *             "name"="modes",
-     *             "requirement"="(\w,)+",
-     *             "dataType"="array",
-     *             "description"="strings array, values are session, key, token"
-     *         },
-     *     },
      *     statusCodes={
      *         204="Returned if everything is OK",
      *     },
-     *     parameters={
-     *         {"name"="enabled", "description"="", "dataType"="boolean", "required"=true},
-     *         {"name"="modes", "description"="", "dataType"="array", "required"=true},
-     *         {"name"="request_length", "description"="", "dataType"="integer", "required"=true},
-     *         {"name"="response_length", "description"="", "dataType"="integer", "required"=true}
+     *     input={
+     *      "class"="DeskPRO\Bundle\AppBundle\Form\Type\Logs\ApiLogsOptionsType",
+     *      "options"={
+     *          "data"="DeskPRO\Bundle\AppBundle\Serializer\Model\Logs\OptionsModel"
      *      }
+     *     }
      * )
-     *
-     * @todo replace with form
      *
      * @Rest\Put("/api_logs_options", name="api_logs_options_update")
      *
      * @param Request $request
      *
+     * @throws \Exception
+     *
      * @return View
      */
     public function putOptionsAction(Request $request)
     {
-        $enabled        = $request->request->getBoolean('enabled');
-        $modes          = $request->request->get('modes');
-        $requestLength  = $request->request->get('request_length');
-        $responseLength = $request->request->get('response_length');
+        $form = $this->createForm(ApiLogsOptionsType::class, $this->getOptionsModel());
+        $form->submit($request->request->all(), false);
+
+        if (!$form->isValid()) {
+            throw new InvalidFormException($form);
+        }
+
+        /** @var OptionsModel $data */
+        $data = $form->getData();
 
         $em   = $this->get('doctrine.orm.default_entity_manager');
         $repo = $em->getRepository(Setting::class);
@@ -107,7 +91,7 @@ class LogsController extends BaseController
             $enabledSetting->setName('api_log.enabled');
         }
 
-        $enabledSetting->setValue($enabled);
+        $enabledSetting->setValue($data->isEnabled());
 
         // update modes setting
         if (!$modesSetting = $repo->findOneBy(['name' => 'api_log.modes'])) {
@@ -115,7 +99,7 @@ class LogsController extends BaseController
             $modesSetting->setName('api_log.modes');
         }
 
-        $modesSetting->setValue(serialize($modes));
+        $modesSetting->setValue(serialize($data->getModes()));
 
         // update request length setting
         if (!$requestLengthSetting = $repo->findOneBy(['name' => 'api_log.max_request_body_length'])) {
@@ -123,7 +107,7 @@ class LogsController extends BaseController
             $requestLengthSetting->setName('api_log.max_request_body_length');
         }
 
-        $requestLengthSetting->setValue($requestLength);
+        $requestLengthSetting->setValue($data->getRequestLength());
 
         // update response length setting
         if (!$responseLengthSetting = $repo->findOneBy(['name' => 'api_log.max_response_body_length'])) {
@@ -131,7 +115,7 @@ class LogsController extends BaseController
             $responseLengthSetting->setName('api_log.max_response_body_length');
         }
 
-        $responseLengthSetting->setValue($responseLength);
+        $responseLengthSetting->setValue($data->getResponseLength());
 
         $em->persist($enabledSetting);
         $em->persist($modesSetting);
@@ -185,6 +169,8 @@ class LogsController extends BaseController
      * @param Request $request
      * @param int     $id
      *
+     * @throws \Exception
+     *
      * @return View
      */
     public function replayLogAction(Request $request, $id)
@@ -207,5 +193,21 @@ class LogsController extends BaseController
         }
 
         return View::create($this->wrap($log));
+    }
+
+    /**
+     * @return OptionsModel
+     */
+    private function getOptionsModel()
+    {
+        $options = new OptionsModel();
+        $options
+            ->setEnabled((bool) $this->container->get('api_log.helper')->isLoggingEnabled())
+            ->setRequestLength((int) $this->container->get('api_log.helper')->getMaxRequestBodyLength())
+            ->setResponseLength((int) $this->container->get('api_log.helper')->getMaxResponseBodyLength())
+            ->setModes($this->container->get('api_log.helper')->getModes())
+        ;
+
+        return $options;
     }
 }

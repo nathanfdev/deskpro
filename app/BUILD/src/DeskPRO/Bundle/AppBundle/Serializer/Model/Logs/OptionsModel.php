@@ -23,7 +23,7 @@ class OptionsModel
      *
      * @JMS\Type("integer")
      *
-     * @var bool
+     * @var int
      */
     protected $requestLength;
 
@@ -32,7 +32,7 @@ class OptionsModel
      *
      * @JMS\Type("integer")
      *
-     * @var bool
+     * @var int
      */
     protected $responseLength;
 
@@ -46,18 +46,82 @@ class OptionsModel
     protected $modes = [];
 
     /**
-     * OptionsModel constructor.
-     *
-     * @param bool  $enabled
-     * @param int   $requestLength
-     * @param int   $responseLength
-     * @param array $modes
+     * @return bool
      */
-    public function __construct($enabled, $requestLength, $responseLength, array $modes)
+    public function isEnabled()
     {
-        $this->enabled        = (bool) $enabled;
-        $this->modes          = $modes;
-        $this->requestLength  = $requestLength;
+        return $this->enabled;
+    }
+
+    /**
+     * @param bool $enabled
+     *
+     * @return $this
+     */
+    public function setEnabled($enabled)
+    {
+        $this->enabled = $enabled;
+
+        return $this;
+    }
+
+    /**
+     * @return int
+     */
+    public function getRequestLength()
+    {
+        return $this->requestLength;
+    }
+
+    /**
+     * @param int $requestLength
+     *
+     * @return $this
+     */
+    public function setRequestLength($requestLength)
+    {
+        $this->requestLength = $requestLength;
+
+        return $this;
+    }
+
+    /**
+     * @return int
+     */
+    public function getResponseLength()
+    {
+        return $this->responseLength;
+    }
+
+    /**
+     * @param int $responseLength
+     *
+     * @return $this
+     */
+    public function setResponseLength($responseLength)
+    {
         $this->responseLength = $responseLength;
+
+        return $this;
+    }
+
+    /**
+     * @return array
+     */
+    public function getModes()
+    {
+        return $this->modes;
+    }
+
+    /**
+     * @param array $modes
+     *
+     * @return $this
+     */
+    public function setModes(array $modes)
+    {
+        $this->modes = $modes;
+
+        return $this;
     }
 }
