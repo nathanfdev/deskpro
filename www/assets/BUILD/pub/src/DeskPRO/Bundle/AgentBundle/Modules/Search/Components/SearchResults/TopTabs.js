@@ -4,7 +4,7 @@ import { Tabs, TabLink } from '@deskpro/react-components';
 
 export default class TopTabs extends React.Component {
   static propTypes = {
-    active:   PropTypes.bool,
+    active:   PropTypes.string,
     results:  PropTypes.object,
     onChange: PropTypes.func,
   };

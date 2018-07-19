@@ -50,6 +50,7 @@ export default class Publishing extends React.Component {
     if (results.feedback && results.feedback.length) {
       drawers.push(
         <Drawer
+          key="feedback"
           heading={<span><Icon name="thumbs-up" /> Feedback</span>}
           opened={activeDrawer === 'feedback'}
           onClick={selected => this.onSelect(selected, 'feedback')}
@@ -61,6 +62,7 @@ export default class Publishing extends React.Component {
     if (results.articles && results.articles.length) {
       drawers.push(
         <Drawer
+          key="articles"
           heading={<span><Icon name="list-alt" /> Articles</span>}
           opened={activeDrawer === 'articles'}
           onClick={selected => this.onSelect(selected, 'articles')}
@@ -72,6 +74,7 @@ export default class Publishing extends React.Component {
     if (results.news && results.news.length) {
       drawers.push(
         <Drawer
+          key="news"
           heading={<span><Icon name="bolt" /> News</span>}
           opened={activeDrawer === 'news'}
           onClick={selected => this.onSelect(selected, 'news')}
@@ -83,6 +86,7 @@ export default class Publishing extends React.Component {
     if (results.downloads && results.downloads.length) {
       drawers.push(
         <Drawer
+          key="downloads"
           heading={<span><Icon name="download" /> Downloads</span>}
           opened={activeDrawer === 'downloads'}
           onClick={selected => this.onSelect(selected, 'downloads')}

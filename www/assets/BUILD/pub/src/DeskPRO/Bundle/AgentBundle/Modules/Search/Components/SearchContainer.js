@@ -6,7 +6,9 @@ import Isvg from 'react-inlinesvg';
 import TokenField from '@deskpro/token-field';
 import { collectionSelectorFactory, allSelectorFactory } from 'DeskPRO/Bundle/AppBundle/Modules/RecordsStore';
 import { agentsSelector } from 'DeskPRO/Bundle/AppBundle/Modules/RecordsStore/Shortcuts/agents';
+import fakeResults from 'tests/DemoState/AgentBundle/Modules/Search/result.json';
 import * as searchActions from '../Actions/searchActions';
+import SearchResults from './SearchResults';
 
 @connect(state => ({
   ticketDepartments: collectionSelectorFactory('Department', 'all_tickets')(state),
@@ -23,6 +25,11 @@ class SearchContainer extends React.Component {
     brands:            PropTypes.object,
     dispatch:          PropTypes.func.isRequired,
     closeMenu:         PropTypes.func.isRequired,
+    updateStyle:       PropTypes.func,
+  };
+
+  static defaultProps = {
+    updateStyle() {},
   };
 
   constructor(props) {
@@ -31,6 +38,8 @@ class SearchContainer extends React.Component {
       value:      [],
       tokenTypes: [],
       focused:    false,
+      results:    {},
+      style:      {},
     };
   }
   componentWillMount = () => {
@@ -43,7 +52,6 @@ class SearchContainer extends React.Component {
   componentWillUnmount = () => {
     window.document.removeEventListener('dpLeftDrawerOpened', this.focus);
   };
-
 
   initTokenTypes = () => {
     const tokenTypes = [
@@ -376,8 +384,38 @@ class SearchContainer extends React.Component {
     return props;
   };
 
+  handleChange = (value) => {
+    let results = {};
+    if (value.length > 2) {
+      results = fakeResults;
+    }
+    this.setState({
+      results
+    });
+    this.updateStyle(results);
+  };
+
+  updateStyle = (results) => {
+    let style = {};
+    if (Object.keys(results).length === 0) {
+      style = {
+        height: 48
+      };
+    }
+    if (JSON.stringify(this.state.style) !== JSON.stringify(style)) {
+      this.setState({
+        style
+      });
+      this.props.updateStyle(style);
+    }
+  };
+
   closeMenu = () => {
     this.tokenField.blur();
+    this.setState({
+      value:   [],
+      results: {}
+    });
     this.props.closeMenu();
   };
 
@@ -387,31 +425,43 @@ class SearchContainer extends React.Component {
     }
   };
 
+  renderResults() {
+    const { results } = this.state;
+    if (Object.keys(results).length === 0) {
+      return null;
+    }
+    return (
+      <SearchResults
+        results={results}
+      />
+    );
+  }
+
   render() {
-    const { value, tokenTypes } = this.state;
+    const { tokenTypes } = this.state;
     return (
       <div id="search_menu">
-        <Isvg
-          className="search"
-          src={`${window.DESKPRO_APP_ASSETS_URL}/DeskPRO/Bundle/AgentBundle/Resources/img/general/search.svg`}
-        />
-        <TokenField
-          ref={(c) => { this.tokenField = c; }}
-          tokenTypes={tokenTypes}
-          value={value}
-          onChange={this.handleChange}
-          onFocus={this.handleFocus}
-          onBlur={this.handleBlur}
-          placeholder=""
-          zIndex={1800}
-          showTokensOnFocus
-        />
-        <a className="close-icon" onClick={this.closeMenu}>
+        <div className="top">
           <Isvg
-            className="close-icon"
-            src={`${window.DESKPRO_APP_ASSETS_URL}/DeskPRO/Bundle/AgentBundle/Resources/img/general/close.svg`}
+            className="search"
+            src={`${window.DESKPRO_APP_ASSETS_URL}/DeskPRO/Bundle/AgentBundle/Resources/img/general/search.svg`}
           />
-        </a>
+          <TokenField
+            ref={(c) => { this.tokenField = c; }}
+            tokenTypes={tokenTypes}
+            onChange={this.handleChange}
+            placeholder=""
+            zIndex={1800}
+            showTokensOnFocus
+          />
+          <a className="close-icon" onClick={this.closeMenu}>
+            <Isvg
+              className="close-icon"
+              src={`${window.DESKPRO_APP_ASSETS_URL}/DeskPRO/Bundle/AgentBundle/Resources/img/general/close.svg`}
+            />
+          </a>
+        </div>
+        {this.renderResults()}
       </div>
     );
   }

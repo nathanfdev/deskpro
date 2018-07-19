@@ -110,6 +110,12 @@ export class LeftDrawerContainer extends SeparateComponent {
     });
   };
 
+  updateStyle = (style) => {
+    this.setState({
+      style
+    });
+  };
+
   resize = () => {
     let width;
     if (!window.DeskPRO_Window.paneVis.tabs || !window.DeskPRO_Window.paneVis.list) {
@@ -132,6 +138,7 @@ export class LeftDrawerContainer extends SeparateComponent {
         <Module
           open={active}
           width={width}
+          updateStyle={this.updateStyle}
           {...props}
           ref={(c) => { this.module = c; }}
         />
