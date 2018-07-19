@@ -2609,7 +2609,7 @@ return [
     'agent.time.short-day_monday'                              => 'Mon',
     'agent.time.short-day_saturday'                            => 'Sat',
     'agent.time.short-day_sunday'                              => 'Sun',
-    'agent.time.short-day_thursday'                            => 'Thur',
+    'agent.time.short-day_thursday'                            => 'Thu',
     'agent.time.short-day_tuesday'                             => 'Tue',
     'agent.time.short-day_wednesday'                           => 'Wed',
     'agent.time.short-month_april'                             => 'Apr',
