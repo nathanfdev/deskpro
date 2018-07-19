@@ -22,10 +22,7 @@ class DpqlNow extends AbstractDpqlFunc
             throw new DpqlException('DPQL_NOW() can only accept 0 arguments');
         }
 
-        $tzOffsetSeconds = $statement->getTimezoneOffsetForFunction($stack);
-        $interval        = ($tzOffsetSeconds ? " + INTERVAL $tzOffsetSeconds SECOND" : '');
-
-        $sql = "(UTC_TIMESTAMP()$interval)";
+        $sql = 'UTC_TIMESTAMP()';
 
         return new Prepared($sql, 'DPQL_NOW()', false, 'datetime');
     }
