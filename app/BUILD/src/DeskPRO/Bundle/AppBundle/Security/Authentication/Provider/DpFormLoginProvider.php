@@ -6,6 +6,7 @@ use Application\DeskPRO\Auth\AuthenticationManager;
 use Application\DeskPRO\Auth\AuthenticationManager as DpAuthManager;
 use Application\DeskPRO\Auth\LoginProcessor;
 use Application\DeskPRO\Entity\Usersource;
+use Application\DeskPRO\Usersource\Adapter\DeskPRO;
 use DeskPRO\Bundle\AppBundle\Security\DpFormLoginToken;
 use DeskPRO\Bundle\AppBundle\Security\DpPersonUserProvider;
 use DpSys\LowError\SystemErrorHandler;
@@ -95,16 +96,16 @@ class DpFormLoginProvider implements AuthenticationProviderInterface
             if ($brand && !$person->hasBrand($brand)) {
                 // reg for this brand is enabled
                 // add person to this brand and continue log in
-                if ($this->container->get('dp_authentication_manager.user')->isRegistrationFormVisible()) {
-                    $person->addBrand($brand);
-
-                    $em = $this->container->get('doctrine.orm.default_entity_manager');
-                    $em->persist($person);
-                    $em->flush();
-                } else {
+                if ($usersource->getSourceType() === DeskPRO::class && !$this->container->get('dp_authentication_manager.user')->isRegistrationFormVisible()) {
                     // no way to log in, show incorrect credentials message
                     throw new BadCredentialsException('portal.account.login-invalid');
                 }
+
+                $person->addBrand($brand);
+
+                $em = $this->container->get('doctrine.orm.default_entity_manager');
+                $em->persist($person);
+                $em->flush();
             }
 
             $authenticatedToken = new DpFormLoginToken($person, $person->getPassword(), array_merge(['ROLE_USER'], $person->getRoles()));
