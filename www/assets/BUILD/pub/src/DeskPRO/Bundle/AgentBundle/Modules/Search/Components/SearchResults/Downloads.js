@@ -16,8 +16,6 @@ export default class Downloads extends React.Component {
               <tr key={download.id}>
                 <td>
                   <span className="id">{`#${download.id}`}</span>
-                </td>
-                <td>
                   <span className="title">{download.title}</span>< br />
                   {download.status}
                 </td>

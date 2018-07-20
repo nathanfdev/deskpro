@@ -16,8 +16,6 @@ export default class Feedback extends React.Component {
               <tr key={f.id}>
                 <td>
                   <span className="id">{`#${f.id}`}</span>
-                </td>
-                <td>
                   <span className="title">{f.title}</span>< br />
                   {f.status}
                 </td>

@@ -179,6 +179,7 @@ class LanguagesController extends CrudController
             'agent.general.save',
             'agent.general.saved',
             'agent.general.search',
+            'agent.general.search_results',
             'agent.general.select',
             'agent.general.select_all',
             'agent.general.show',

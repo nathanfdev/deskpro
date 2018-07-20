@@ -985,6 +985,7 @@ return [
     'agent.general.saved'                                      => 'Saved',
     'agent.general.saving'                                     => 'Saving',
     'agent.general.search'                                     => 'Search',
+    'agent.general.search_results'                             => 'Search results',
     'agent.general.search_terms'                               => 'Search Terms',
     'agent.general.seconds'                                    => 'seconds',
     'agent.general.select'                                     => 'Select',

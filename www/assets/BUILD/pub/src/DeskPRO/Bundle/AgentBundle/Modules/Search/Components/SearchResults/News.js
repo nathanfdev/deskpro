@@ -16,8 +16,6 @@ export default class News extends React.Component {
               <tr key={n.id}>
                 <td>
                   <span className="id">{`#${n.id}`}</span>
-                </td>
-                <td>
                   <span className="title">{n.title}</span>< br />
                   {n.status}
                 </td>

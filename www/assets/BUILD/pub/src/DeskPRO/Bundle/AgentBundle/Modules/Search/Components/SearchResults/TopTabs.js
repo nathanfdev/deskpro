@@ -35,14 +35,14 @@ export default class TopTabs extends React.Component {
     if (this.getPublishingCount() > 0) {
       tabs.push(
         <TabLink name="publishing" key="publishing">
-          Publishing <span className="count">({this.getPublishingCount()})</span>
+          Publishing <span className="count">{this.getPublishingCount()}</span>
         </TabLink>
       );
     }
     if (this.getAdminCount() > 0) {
       tabs.push(
         <TabLink name="admin" key="admin">
-          Admin <span className="count">({this.getAdminCount()})</span>
+          Admin <span className="count">{this.getAdminCount()}</span>
         </TabLink>
       );
     }

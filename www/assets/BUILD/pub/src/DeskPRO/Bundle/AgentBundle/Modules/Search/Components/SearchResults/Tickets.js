@@ -1,5 +1,94 @@
 import React from 'react';
 import PropTypes from 'prop-types';
+import { Icon } from '@deskpro/react-components';
+import AgentAvatar from 'DeskPRO/Component/Avatar/AgentAvatar';
+
+class Ticket extends React.Component {
+  static propTypes = {
+    ticket: PropTypes.object
+  };
+
+  constructor(props) {
+    super(props);
+    this.state = {
+      messagesExpanded: false
+    };
+  }
+
+  toggleMessages = () => {
+    this.setState({
+      messagesExpanded: !this.state.messagesExpanded
+    });
+  };
+
+  renderMessages() {
+    const { messages } = this.props.ticket;
+    if (messages && messages.length) {
+      if (messages.length > 1) {
+        if (!this.state.messagesExpanded) {
+          return (
+            <div className="messages">
+              <span className="messages-count" onClick={this.toggleMessages}>
+                1 of {messages.length} <Icon name="caret-down" />
+              </span> {messages[0].text}
+            </div>
+          );
+        }
+        return (
+          <div className="messages">
+            <table>
+              <tbody>
+                {messages.map((message, index) => (
+                  <tr>
+                    <td>
+                      {index === 0 ?
+                        <span className="messages-count" onClick={this.toggleMessages}>
+                          <Icon name="caret-up" />
+                        </span>
+                        : null
+                      }
+                    </td>
+                    <td className="message">
+                      {message.text}
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+        );
+      }
+      return (
+        <div className="messages">{messages[0].text}</div>
+      );
+    }
+    return null;
+  }
+
+
+  render() {
+    const { ticket } = this.props;
+    return (
+      <div className="ticket">
+        <div className="ticket-info">
+          <span className="id">{`#${ticket.id}`}</span>
+          <span className="title">
+            {ticket.subject}
+          </span>
+          <span className="separator" />
+          <span className="person-name">
+            {ticket.person_name}
+          </span>
+          <span className="person-email">
+            {ticket.person_email}
+          </span>
+          <AgentAvatar agent={ticket.agent} />
+        </div>
+        {this.renderMessages()}
+      </div>
+    );
+  }
+}
 
 export default class Tickets extends React.Component {
   static propTypes = {
@@ -9,22 +98,11 @@ export default class Tickets extends React.Component {
   render() {
     const { tickets } = this.props;
     return (
-      <section>
-        <header><h1>Tickets</h1> <span className="count">({tickets.length})</span></header>
-        <table>
-          <tbody>
-            {tickets.map(ticket =>
-              <tr key={ticket.id}>
-                <td>
-                  <span className="id">{`#${ticket.id}`}</span>
-                </td>
-                <td className="title">
-                  {ticket.subject}
-                </td>
-              </tr>
-            )}
-          </tbody>
-        </table>
+      <section className="tickets">
+        <header><h1>Tickets</h1> <span className="count">{tickets.length}</span></header>
+        {tickets.map(ticket =>
+          <Ticket key={ticket.id} ticket={ticket} />
+        )}
       </section>
     );
   }

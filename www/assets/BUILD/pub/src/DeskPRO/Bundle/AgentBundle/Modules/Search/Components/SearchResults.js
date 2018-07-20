@@ -1,5 +1,6 @@
 import React from 'react';
 import PropTypes from 'prop-types';
+import { FormattedMessage } from 'react-intl';
 import { Section } from '@deskpro/react-components';
 import { Organizations, People, Publishing, Tickets, TopTabs } from './SearchResults/';
 
@@ -11,7 +12,7 @@ class SearchResults extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
-      activePane: 'helpdesk'
+      activePane: 'publishing'
     };
   }
 
@@ -56,6 +57,7 @@ class SearchResults extends React.Component {
     const { activePane } = this.state;
     return (
       <div id="dp_search_results">
+        <h1><FormattedMessage id="agent.general.search_results" /></h1>
         <TopTabs active={activePane} results={results} onChange={this.handleTabChange} />
         <Section hidden={activePane !== 'publishing'}>
           <Publishing results={results} />

@@ -17,8 +17,6 @@ export default class Articles extends React.Component {
               <tr key={article.id}>
                 <td>
                   <span className="id">{`#${article.id}`}</span>
-                </td>
-                <td>
                   <span className="title">{article.title}</span>< br />
                   <span className="status">{article.status}</span> <span className="content">{article.content}</span>
                 </td>

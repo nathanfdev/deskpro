@@ -113,6 +113,24 @@
               "Pricing and Purchasing Questions"
             ]
           },
+          "person_name": {
+            "$id": "/properties/people/items/properties/name",
+            "type": "string",
+            "title": "Person name",
+            "default": "",
+            "examples": [
+              "Kenneth James"
+            ]
+          },
+          "person_email": {
+            "$id": "/properties/people/items/properties/email",
+            "type": "string",
+            "title": "Person email",
+            "default": "",
+            "examples": [
+              "raterequests@alllogistics.com"
+            ]
+          },
           "agent": {
             "$id": "/properties/tickets/items/properties/agent",
             "type": "integer",

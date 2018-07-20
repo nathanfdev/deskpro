@@ -6,25 +6,29 @@ export default class Organizations extends React.Component {
     organizations: PropTypes.array
   };
 
+  static getLogo(org) {
+    if (org.img) {
+      return <img className="avatar" alt="avatar" src={org.img} />;
+    }
+    return null;
+  }
+
   render() {
     const { organizations } = this.props;
     return (
-      <section>
+      <section className="organizations">
         <header><h1>Organizations</h1></header>
-        <table>
-          <tbody>
-            {organizations.map(org =>
-              <tr key={org.id}>
-                <td className="title">
-                  {org.name}
-                </td>
-                <td>
-                  {`${org.members} Members`}
-                </td>
-              </tr>
+        {organizations.map(org =>
+          <div className="organization" key={org.id}>
+            {Organizations.getLogo(org)}
+            <span className="title">
+              {org.name}
+            </span>
+            <span className="members">
+              {`${org.members} Members`}
+            </span>
+          </div>
             )}
-          </tbody>
-        </table>
       </section>
     );
   }

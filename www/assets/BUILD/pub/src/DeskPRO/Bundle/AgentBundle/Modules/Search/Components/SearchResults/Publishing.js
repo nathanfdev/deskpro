@@ -1,5 +1,6 @@
 import React from 'react';
 import PropTypes from 'prop-types';
+import classNames from 'classnames';
 import { Icon, ListElement, ToggleableList } from '@deskpro/react-components';
 import Articles from './Articles';
 import Downloads from './Downloads';
@@ -8,8 +9,9 @@ import News from './News';
 
 const Drawer = ({ onClick, heading, opened, children }) => (
   <ListElement>
-    <h3 onClick={onClick}>
+    <h3 onClick={onClick} className={classNames({ opened })}>
       {heading}
+      <span className={classNames('caret', opened ? 'caret-up' : 'caret-down')} />
     </h3>
     <div style={{ display: opened ? 'block' : 'none' }}>
       {children}
@@ -51,7 +53,12 @@ export default class Publishing extends React.Component {
       drawers.push(
         <Drawer
           key="feedback"
-          heading={<span><Icon name="thumbs-up" /> Feedback</span>}
+          heading={
+            <span>
+              <Icon name="thumbs-o-up" size="m" fixedWidth /> Feedback
+              &nbsp;<span className="count">{results.feedback.length}</span>
+            </span>
+          }
           opened={activeDrawer === 'feedback'}
           onClick={selected => this.onSelect(selected, 'feedback')}
         >
@@ -63,7 +70,7 @@ export default class Publishing extends React.Component {
       drawers.push(
         <Drawer
           key="articles"
-          heading={<span><Icon name="list-alt" /> Articles</span>}
+          heading={<span><Icon name="list-alt" size="m" fixedWidth /> Articles</span>}
           opened={activeDrawer === 'articles'}
           onClick={selected => this.onSelect(selected, 'articles')}
         >
@@ -75,7 +82,7 @@ export default class Publishing extends React.Component {
       drawers.push(
         <Drawer
           key="news"
-          heading={<span><Icon name="bolt" /> News</span>}
+          heading={<span><Icon name="bolt" size="m" fixedWidth /> News</span>}
           opened={activeDrawer === 'news'}
           onClick={selected => this.onSelect(selected, 'news')}
         >
@@ -87,7 +94,7 @@ export default class Publishing extends React.Component {
       drawers.push(
         <Drawer
           key="downloads"
-          heading={<span><Icon name="download" /> Downloads</span>}
+          heading={<span><Icon name="download" size="m" fixedWidth /> Downloads</span>}
           opened={activeDrawer === 'downloads'}
           onClick={selected => this.onSelect(selected, 'downloads')}
         >
