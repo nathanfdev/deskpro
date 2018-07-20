@@ -955,6 +955,7 @@ i.icon.fitted {
     font-size: smaller;
     margin-right: 10px;
     height: 14px;
+    line-height: 14px;
   }
   .title {
     font-weight: bold;
@@ -1092,6 +1093,7 @@ i.icon.fitted {
       .ticket-info {
         display: flex;
         flex-direction: row;
+        align-items: center;
         .dp-avatar {
           margin-left: auto;
           background-color: cadetblue;
@@ -1154,6 +1156,7 @@ i.icon.fitted {
       border-bottom: solid 1px $dp-greyscale-300;
       padding: 5px 10px;
       margin-bottom: 0;
+      cursor: pointer;
       .fa {
         color: $dp-greyscale-400;
       }
