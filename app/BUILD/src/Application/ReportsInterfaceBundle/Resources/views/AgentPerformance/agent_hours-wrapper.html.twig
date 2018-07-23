@@ -4,15 +4,17 @@
 			<span>
 				<input type="text" class="form-control"
                        style="width: 140px; display: inline-block;"
-                       datepicker-popup="dd MMMM yyyy" ng-model="service.date1"
-                       datepicker-options="{'show-weeks': false}"/>
+					   dp-datetime-popup="DD MMM YYYY"
+                       ng-model="service.date1"
+                       />
 			</span>
         to
 			<span>
 				<input type="text" class="form-control"
                        style="width: 140px; display: inline-block;"
-                       datepicker-popup="dd MMMM yyyy" ng-model="service.date2"
-                       datepicker-options="{'show-weeks': false}"/>
+					   dp-datetime-popup="DD MMM YYYY"
+					   ng-model="service.date2"
+                       />
 			</span>
 
         <button class="btn btn-primary" ng-click="service.updateFilter()">Show</button>
