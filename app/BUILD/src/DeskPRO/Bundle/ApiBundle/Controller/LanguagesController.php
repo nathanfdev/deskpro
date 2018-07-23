@@ -183,6 +183,7 @@ class LanguagesController extends CrudController
             'agent.general.select',
             'agent.general.select_all',
             'agent.general.show',
+            'agent.general.show_x_more',
             'agent.general.sla',
             'agent.general.sla_status',
             'agent.general.snippet',

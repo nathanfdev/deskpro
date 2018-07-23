@@ -15,7 +15,8 @@ addLocaleData(enLocaleData);
 
 const messages = {
   en: {
-    'agent.general.search_results': 'Search results'
+    'agent.general.search_results': 'Search results',
+    'agent.general.show_x_more':    'Show {count} more'
   }
 };
 

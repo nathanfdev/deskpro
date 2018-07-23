@@ -1023,6 +1023,7 @@ return [
     'agent.general.show'                                       => 'Show',
     'agent.general.showing'                                    => 'Showing',
     'agent.general.showing_results_x_of_y'                     => 'Showing results {{display_count}} of {{size}}',
+    'agent.general.show_x_more'                                => 'Show {{count}} more',
     'agent.general.since_time'                                 => 'since {{time}}',
     'agent.general.skype'                                      => 'Skype',
     'agent.general.sla'                                        => 'SLA',

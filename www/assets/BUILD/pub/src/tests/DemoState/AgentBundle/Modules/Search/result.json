@@ -5,6 +5,12 @@
       "name":"Deskpro",
       "members":123,
       "img": "deskpro.png"
+    },
+    {
+      "id":2,
+      "name":"Deskpro",
+      "members":123,
+      "img": "deskpro.png"
     }
   ],
   "people":[

@@ -1,7 +1,7 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import { Icon } from '@deskpro/react-components';
-import AgentAvatar from 'DeskPRO/Component/Avatar/AgentAvatar';
+// import AgentAvatar from 'DeskPRO/Component/Avatar/AgentAvatar';
 
 class Ticket extends React.Component {
   static propTypes = {
@@ -82,7 +82,7 @@ class Ticket extends React.Component {
           <span className="person-email">
             {ticket.person_email}
           </span>
-          <AgentAvatar agent={ticket.agent} />
+          {/* <AgentAvatar agent={ticket.agent} />*/}
         </div>
         {this.renderMessages()}
       </div>
