@@ -1,11 +1,18 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import { Icon } from '@deskpro/react-components';
-// import AgentAvatar from 'DeskPRO/Component/Avatar/AgentAvatar';
+import AgentAvatar from 'DeskPRO/Component/Avatar/AgentAvatar';
 
-class Ticket extends React.Component {
+export class Ticket extends React.Component {
   static propTypes = {
-    ticket: PropTypes.object
+    ticket:          PropTypes.object.isRequired,
+    displayPerson:   PropTypes.bool,
+    displayMessages: PropTypes.bool,
+  };
+
+  static defaultProps = {
+    displayPerson:   true,
+    displayMessages: true,
   };
 
   constructor(props) {
@@ -21,9 +28,26 @@ class Ticket extends React.Component {
     });
   };
 
+  renderPerson() {
+    const { ticket, displayPerson } = this.props;
+    if (displayPerson) {
+      return [
+        <span className="separator" key="separator" />,
+        <span className="person-name" key="name">
+          {ticket.person_name}
+        </span>,
+        <span className="person-email" key="email">
+          {ticket.person_email}
+        </span>
+      ];
+    }
+    return null;
+  }
+
   renderMessages() {
+    const { displayMessages } = this.props;
     const { messages } = this.props.ticket;
-    if (messages && messages.length) {
+    if (displayMessages && messages && messages.length) {
       if (messages.length > 1) {
         if (!this.state.messagesExpanded) {
           return (
@@ -75,14 +99,8 @@ class Ticket extends React.Component {
           <span className="title">
             {ticket.subject}
           </span>
-          <span className="separator" />
-          <span className="person-name">
-            {ticket.person_name}
-          </span>
-          <span className="person-email">
-            {ticket.person_email}
-          </span>
-          {/* <AgentAvatar agent={ticket.agent} />*/}
+          {this.renderPerson()}
+          <AgentAvatar agent={ticket.agent} />
         </div>
         {this.renderMessages()}
       </div>

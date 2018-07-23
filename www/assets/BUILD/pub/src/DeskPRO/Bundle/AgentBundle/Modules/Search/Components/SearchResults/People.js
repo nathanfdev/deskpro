@@ -1,7 +1,9 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import { FormattedMessage } from 'react-intl';
+import classNames from 'classnames';
 import { Icon } from '@deskpro/react-components';
+import PersonTickets from './PersonTickets';
 
 export default class People extends React.Component {
   static propTypes = {
@@ -14,30 +16,14 @@ export default class People extends React.Component {
   };
 
   static getAvatar(person) {
-    return <img className="avatar" alt="avatar" src={person.img} />;
-  }
-
-  static renderPeople(people) {
-    return people.map(person =>
-      <div key={person.id} className="person">
-        {People.getAvatar(person)}
-        <span className="title">{person.name}</span>
-        <span className="email">{person.email}</span>
-        <span className="tickets-count">
-          <Icon name="envelope-o" size="m" />
-          {person.tickets}
-        </span>
-        <span className="new-ticket">
-          <Icon name="envelope-o" size="m" />
-        </span>
-      </div>
-    );
+    return <img className="avatar" src={person.img} role="presentation" />;
   }
 
   constructor(props) {
     super(props);
     this.state = {
-      expanded: false
+      expanded:      false,
+      personTickets: null,
     };
   }
 
@@ -47,9 +33,21 @@ export default class People extends React.Component {
     });
   };
 
+  showPersonTickets = (personId) => {
+    if (this.state.personTickets === personId) {
+      this.setState({
+        personTickets: null
+      });
+    } else {
+      this.setState({
+        personTickets: personId
+      });
+    }
+  };
+
   renderCollapsed() {
     const { people, maxItems } = this.props;
-    const collapsed = People.renderPeople(people.slice(0, maxItems));
+    const collapsed = this.renderPeople(people.slice(0, maxItems));
     collapsed.push(
       <div className="expand" key="expand" onClick={this.showMore}>
         <FormattedMessage id="agent.general.show_x_more" values={{ count: people.length - maxItems }} />
@@ -58,13 +56,39 @@ export default class People extends React.Component {
     return collapsed;
   }
 
+  renderPeople(people) {
+    const result = [];
+    people.forEach((person) => {
+      result.push(
+        <div key={person.id} className={classNames('person', { expanded: person.id === this.state.personTickets })}>
+          {People.getAvatar(person)}
+          <span className="title">{person.name}</span>
+          <span className="email">{person.email}</span>
+          <a className="tickets-count" onClick={() => this.showPersonTickets(person.id)}>
+            <Icon name="envelope-o" size="m" />
+            {person.tickets}
+          </a>
+          <span className="new-ticket">
+            <Icon name="envelope-o" size="m" />
+          </span>
+        </div>
+      );
+      if (person.id === this.state.personTickets) {
+        result.push(
+          <PersonTickets className="person-tickets" key={`person-tickets-${person.id}`} personId={person.id} />
+        );
+      }
+    });
+    return result;
+  }
+
   render() {
     const { people, maxItems } = this.props;
     return (
       <section className="people">
         <header><h1>People</h1></header>
         { (people.length <= maxItems || this.state.expanded) ?
-          People.renderPeople(people)
+          this.renderPeople(people)
           : this.renderCollapsed()
         }
       </section>

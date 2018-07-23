@@ -54,18 +54,19 @@ class SearchContainer extends React.Component {
   };
 
   initTokenTypes = () => {
+    const { intl } = this.props;
     const tokenTypes = [
       {
         id:     'status',
-        label:  this.props.intl.formatMessage({ id: 'agent.general.status' }).toLowerCase().replace(/ /, '-'),
+        label:  intl.formatMessage({ id: 'agent.general.status' }).toLowerCase().replace(/ /, '-'),
         widget: 'SelectInput',
         props:  {
           dataSource: {
             getOptions: [
-              { label: this.props.intl.formatMessage({ id: 'agent.tickets.status_awaiting_agent' }), value: 'awaiting_agent' },
-              { label: this.props.intl.formatMessage({ id: 'agent.tickets.status_awaiting_user' }), value: 'awaiting_user' },
-              { label: this.props.intl.formatMessage({ id: 'agent.tickets.status_resolved' }), value: 'resolved' },
-              { label: this.props.intl.formatMessage({ id: 'agent.tickets.status_archived' }), value: 'archived' },
+              { label: intl.formatMessage({ id: 'agent.tickets.status_awaiting_agent' }), value: 'awaiting_agent' },
+              { label: intl.formatMessage({ id: 'agent.tickets.status_awaiting_user' }), value: 'awaiting_user' },
+              { label: intl.formatMessage({ id: 'agent.tickets.status_resolved' }), value: 'resolved' },
+              { label: intl.formatMessage({ id: 'agent.tickets.status_archived' }), value: 'archived' },
             ],
           },
           renderHeader: <h3><FormattedMessage id="agent.general.status" /></h3>,
@@ -75,7 +76,7 @@ class SearchContainer extends React.Component {
       },
       {
         id:     'department',
-        label:  this.props.intl.formatMessage({ id: 'agent.general.department' }).toLowerCase().replace(/ /, '-'),
+        label:  intl.formatMessage({ id: 'agent.general.department' }).toLowerCase().replace(/ /, '-'),
         widget: 'SelectInput',
         props:  {
           dataSource: {
@@ -92,7 +93,7 @@ class SearchContainer extends React.Component {
       },
       {
         id:     'agent',
-        label:  this.props.intl.formatMessage({ id: 'agent.general.agent' }).toLowerCase().replace(/ /, '-'),
+        label:  intl.formatMessage({ id: 'agent.general.agent' }).toLowerCase().replace(/ /, '-'),
         widget: 'SelectInput',
         props:  {
           dataSource: {
@@ -109,7 +110,7 @@ class SearchContainer extends React.Component {
       },
       {
         id:     'agent_team',
-        label:  this.props.intl.formatMessage({ id: 'agent.general.agent_team' }).toLowerCase().replace(/ /, '-'),
+        label:  intl.formatMessage({ id: 'agent.general.agent_team' }).toLowerCase().replace(/ /, '-'),
         widget: 'SelectInput',
         props:  {
           dataSource: {
@@ -125,7 +126,7 @@ class SearchContainer extends React.Component {
       },
       {
         id:     'ticket_product',
-        label:  this.props.intl.formatMessage({ id: 'agent.general.product' }).toLowerCase().replace(/ /, '-'),
+        label:  intl.formatMessage({ id: 'agent.general.product' }).toLowerCase().replace(/ /, '-'),
         widget: 'SelectInput',
         props:  {
           dataSource: {
@@ -133,11 +134,11 @@ class SearchContainer extends React.Component {
           },
           showSearch: true,
         },
-        category: this.props.intl.formatMessage({ id: 'agent.general.ticket' }).toLowerCase(),
+        category: intl.formatMessage({ id: 'agent.general.ticket' }).toLowerCase(),
       },
       {
         id:     'ticket_category',
-        label:  this.props.intl.formatMessage({ id: 'agent.general.category' }).toLowerCase().replace(/ /, '-'),
+        label:  intl.formatMessage({ id: 'agent.general.category' }).toLowerCase().replace(/ /, '-'),
         widget: 'SelectInput',
         props:  {
           dataSource: {
@@ -145,11 +146,11 @@ class SearchContainer extends React.Component {
           },
           showSearch: true,
         },
-        category: this.props.intl.formatMessage({ id: 'agent.general.ticket' }).toLowerCase(),
+        category: intl.formatMessage({ id: 'agent.general.ticket' }).toLowerCase(),
       },
       {
         id:     'ticket_priority',
-        label:  this.props.intl.formatMessage({ id: 'agent.general.priority' }).toLowerCase().replace(/ /, '-'),
+        label:  intl.formatMessage({ id: 'agent.general.priority' }).toLowerCase().replace(/ /, '-'),
         widget: 'SelectInput',
         props:  {
           dataSource: {
@@ -157,11 +158,11 @@ class SearchContainer extends React.Component {
           },
           showSearch: true,
         },
-        category: this.props.intl.formatMessage({ id: 'agent.general.ticket' }).toLowerCase(),
+        category: intl.formatMessage({ id: 'agent.general.ticket' }).toLowerCase(),
       },
       {
         id:     'urgency',
-        label:  this.props.intl.formatMessage({ id: 'agent.general.urgency' }).toLowerCase().replace(/ /, '-'),
+        label:  intl.formatMessage({ id: 'agent.general.urgency' }).toLowerCase().replace(/ /, '-'),
         widget: 'SelectInput',
         props:  {
           dataSource: {
@@ -173,34 +174,34 @@ class SearchContainer extends React.Component {
           },
           showSearch: false,
         },
-        category: this.props.intl.formatMessage({ id: 'agent.general.ticket' }).toLowerCase(),
+        category: intl.formatMessage({ id: 'agent.general.ticket' }).toLowerCase(),
       },
       {
         id:     'ticket_workflow',
-        label:  this.props.intl.formatMessage({ id: 'agent.general.workflow' }).toLowerCase().replace(/ /, '-'),
+        label:  intl.formatMessage({ id: 'agent.general.workflow' }).toLowerCase().replace(/ /, '-'),
         widget: 'SelectInput',
         props:  {
           dataSource: {
             getOptions: search => this.props.dispatch(searchActions.loadWorkflows({ search }))
           },
         },
-        category: this.props.intl.formatMessage({ id: 'agent.general.ticket' }).toLowerCase(),
+        category: intl.formatMessage({ id: 'agent.general.ticket' }).toLowerCase(),
       },
       {
         id:     'subject',
-        label:  this.props.intl.formatMessage({ id: 'agent.general.subject' }).toLowerCase().replace(/ /, '-'),
+        label:  intl.formatMessage({ id: 'agent.general.subject' }).toLowerCase().replace(/ /, '-'),
         widget: 'TextInput',
         props:  {},
       },
       {
         id:     'date_created',
-        label:  this.props.intl.formatMessage({ id: 'agent.general.date_created' }).toLowerCase().replace(/ /, '-'),
+        label:  intl.formatMessage({ id: 'agent.general.date_created' }).toLowerCase().replace(/ /, '-'),
         widget: 'DateTimeInput',
         props:  {},
       },
       {
         id:     'date_resolved',
-        label:  this.props.intl.formatMessage({ id: 'agent.general.date_resolved' }).toLowerCase().replace(/ /, '-'),
+        label:  intl.formatMessage({ id: 'agent.general.date_resolved' }).toLowerCase().replace(/ /, '-'),
         widget: 'DateTimeInput',
         props:  {},
       },
@@ -209,14 +210,14 @@ class SearchContainer extends React.Component {
         label:    'last-agent-reply',
         widget:   'DateTimeInput',
         props:    {},
-        category: this.props.intl.formatMessage({ id: 'agent.general.ticket' }).toLowerCase(),
+        category: intl.formatMessage({ id: 'agent.general.ticket' }).toLowerCase(),
       },
       {
         id:       'last_user_reply',
         label:    'last-user-reply',
         widget:   'DateTimeInput',
         props:    {},
-        category: this.props.intl.formatMessage({ id: 'agent.general.ticket' }).toLowerCase(),
+        category: intl.formatMessage({ id: 'agent.general.ticket' }).toLowerCase(),
       },
       {
         id:          'user_waiting',
@@ -224,11 +225,11 @@ class SearchContainer extends React.Component {
         widget:      'DurationInput',
         props:       {},
         description: 'Time waited by user',
-        category:    this.props.intl.formatMessage({ id: 'agent.general.ticket' }).toLowerCase(),
+        category:    intl.formatMessage({ id: 'agent.general.ticket' }).toLowerCase(),
       },
       {
         id:     'person_name',
-        label:  this.props.intl.formatMessage({ id: 'agent.general.name' }).toLowerCase().replace(/ /, '-'),
+        label:  intl.formatMessage({ id: 'agent.general.name' }).toLowerCase().replace(/ /, '-'),
         widget: 'SelectInput',
         props:  {
           dataSource: {
@@ -239,13 +240,13 @@ class SearchContainer extends React.Component {
       },
       {
         id:     'email_address',
-        label:  this.props.intl.formatMessage({ id: 'agent.general.email_address' }).toLowerCase().replace(/ /, '-'),
+        label:  intl.formatMessage({ id: 'agent.general.email_address' }).toLowerCase().replace(/ /, '-'),
         widget: 'TextInput',
         props:  {},
       },
       {
         id:     'followers',
-        label:  this.props.intl.formatMessage({ id: 'agent.general.followers' }).toLowerCase().replace(/ /, '-'),
+        label:  intl.formatMessage({ id: 'agent.general.followers' }).toLowerCase().replace(/ /, '-'),
         widget: 'SelectInput',
         props:  {
           dataSource: {
@@ -259,11 +260,11 @@ class SearchContainer extends React.Component {
           isMultiple: true,
           showSearch: true,
         },
-        category: this.props.intl.formatMessage({ id: 'agent.general.ticket' }).toLowerCase(),
+        category: intl.formatMessage({ id: 'agent.general.ticket' }).toLowerCase(),
       },
       {
         id:     'organization',
-        label:  this.props.intl.formatMessage({ id: 'agent.general.organization' }).toLowerCase().replace(/ /, '-'),
+        label:  intl.formatMessage({ id: 'agent.general.organization' }).toLowerCase().replace(/ /, '-'),
         widget: 'SelectInput',
         props:  {
           dataSource: {
@@ -274,30 +275,30 @@ class SearchContainer extends React.Component {
       },
       {
         id:     'sla',
-        label:  this.props.intl.formatMessage({ id: 'agent.general.sla' }).toLowerCase().replace(/ /, '-'),
+        label:  intl.formatMessage({ id: 'agent.general.sla' }).toLowerCase().replace(/ /, '-'),
         widget: 'BooleanInput',
         props:  {
           translations: {
-            true:  this.props.intl.formatMessage({ id: 'agent.general.yes' }),
-            false: this.props.intl.formatMessage({ id: 'agent.general.no' }),
+            true:  intl.formatMessage({ id: 'agent.general.yes' }),
+            false: intl.formatMessage({ id: 'agent.general.no' }),
           }
         },
-        category: this.props.intl.formatMessage({ id: 'agent.general.ticket' }).toLowerCase(),
+        category: intl.formatMessage({ id: 'agent.general.ticket' }).toLowerCase(),
       },
       {
         id:     'sla_status',
-        label:  this.props.intl.formatMessage({ id: 'agent.general.sla_status' }).toLowerCase().replace(/ /, '-'),
+        label:  intl.formatMessage({ id: 'agent.general.sla_status' }).toLowerCase().replace(/ /, '-'),
         widget: 'SelectInput',
         props:  {
           dataSource: {
             getOptions: search => this.props.dispatch(searchActions.loadSlas({ search }))
           },
         },
-        category: this.props.intl.formatMessage({ id: 'agent.general.ticket' }).toLowerCase(),
+        category: intl.formatMessage({ id: 'agent.general.ticket' }).toLowerCase(),
       },
       {
         id:     'brand',
-        label:  this.props.intl.formatMessage({ id: 'agent.general.brand' }).toLowerCase().replace(/ /, '-'),
+        label:  intl.formatMessage({ id: 'agent.general.brand' }).toLowerCase().replace(/ /, '-'),
         widget: 'SelectInput',
         props:  {
           dataSource: {
@@ -313,25 +314,25 @@ class SearchContainer extends React.Component {
       },
       {
         id:     'id',
-        label:  this.props.intl.formatMessage({ id: 'agent.general.id' }).toLowerCase().replace(/ /, '-'),
+        label:  intl.formatMessage({ id: 'agent.general.id' }).toLowerCase().replace(/ /, '-'),
         widget: 'TextInput',
         props:  {},
       },
       {
         id:     'file_name',
-        label:  this.props.intl.formatMessage({ id: 'agent.general.file' }).toLowerCase().replace(/ /, '-'),
+        label:  intl.formatMessage({ id: 'agent.general.file' }).toLowerCase().replace(/ /, '-'),
         widget: 'TextInput',
         props:  {},
       },
       {
         id:     'file_size',
-        label:  this.props.intl.formatMessage({ id: 'agent.general.filesize' }).toLowerCase().replace(/ /, '-'),
+        label:  intl.formatMessage({ id: 'agent.general.filesize' }).toLowerCase().replace(/ /, '-'),
         widget: 'NumericRangeInput',
         props:  {},
       },
       {
         id:     'filetype',
-        label:  this.props.intl.formatMessage({ id: 'agent.general.filetype' }).toLowerCase().replace(/ /, '-'),
+        label:  intl.formatMessage({ id: 'agent.general.filetype' }).toLowerCase().replace(/ /, '-'),
         widget: 'TextInput',
         props:  {},
       },
@@ -340,7 +341,7 @@ class SearchContainer extends React.Component {
     this.props.dispatch(searchActions.loadCustomFields()).then((res) => {
       const customFields = res.map(field => ({
         id:          `custom_field_${field.id}`,
-        label:       `${this.props.intl.formatMessage({ id: 'agent.general.field' }).toLowerCase()}-${field.title.toLowerCase().replace(/ /, '-')}`,
+        label:       `${intl.formatMessage({ id: 'agent.general.field' }).toLowerCase()}-${field.title.toLowerCase().replace(/ /, '-')}`,
         widget:      this.tokenFromField(field),
         props:       this.tokenPropsFromField(field),
         description: field.description,

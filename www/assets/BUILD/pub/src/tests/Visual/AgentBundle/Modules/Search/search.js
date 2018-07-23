@@ -15,13 +15,17 @@ addLocaleData(enLocaleData);
 
 const messages = {
   en: {
+    'agent.general.search':         'Search',
     'agent.general.search_results': 'Search results',
-    'agent.general.show_x_more':    'Show {count} more'
+    'agent.general.show_x_more':    'Show {count} more',
+    'agent.general.sort_asc':       'ASC',
+    'agent.general.sort_by':        'Sort by',
+    'agent.general.sort_desc':      'DESC',
+    'agent.general.urgency':        'Urgency',
   }
 };
 
 results.organizations[0].img = deskpro;
-partialResult.organizations[0].img = deskpro;
 
 const getMessages = locale => messages[locale];
 

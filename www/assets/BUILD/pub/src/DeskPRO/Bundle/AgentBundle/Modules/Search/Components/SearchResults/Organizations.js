@@ -14,7 +14,7 @@ export default class Organizations extends React.Component {
 
   static getLogo(org) {
     if (org.img) {
-      return <img className="avatar" alt="avatar" src={org.img} />;
+      return <img className="avatar" src={org.img} role="presentation" />;
     }
     return null;
   }

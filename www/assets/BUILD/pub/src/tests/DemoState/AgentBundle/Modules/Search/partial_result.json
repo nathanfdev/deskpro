@@ -1,9 +1,16 @@
 {
-  "organizations":[
+  "people":[
     {
       "id":1,
-      "name":"Deskpro",
-      "members":123
+      "name":"Kenneth James",
+      "email":"raterequests@alllogistics.com",
+      "tickets":132
+    },
+    {
+      "id":2,
+      "name":"Richard Blaine",
+      "email":"hello@email.co.uk",
+      "tickets":76
     }
   ],
   "tickets":[
