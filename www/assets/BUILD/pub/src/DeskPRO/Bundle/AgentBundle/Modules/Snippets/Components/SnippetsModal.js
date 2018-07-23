@@ -180,17 +180,28 @@ export class SnippetsModalContainer extends React.Component {
     }
     dispatch(actions.saveSnippet(snippetData))
       .then((newSnippet) => {
-        const shortCodes = window.DESKPRO_TICKET_SNIPPET_SHORTCODES;
         const previousCode = snippet.get('shortcut_code');
-        if (shortCodes[previousCode]
-          && shortCodes[previousCode].indexOf(snippet.get('id') !== -1)) {
-          shortCodes[previousCode] = shortCodes[previousCode].filter(i => i !== snippet.get('id'));
+        const shortCodes = {
+          ticket: window.DESKPRO_TICKET_SNIPPET_SHORTCODES,
+          chat:   window.DESKPRO_CHAT_SNIPPET_SHORTCODES,
+        };
+
+        for (const type in shortCodes) {
+          if (newSnippet.types.indexOf(type) !== -1) {
+            const typeShortCodes = shortCodes[type];
+
+            if (typeShortCodes[previousCode]
+              && typeShortCodes[previousCode].indexOf(snippet.get('id') !== -1)) {
+              typeShortCodes[previousCode] = typeShortCodes[previousCode].filter(i => i !== snippet.get('id'));
+            }
+            if (typeShortCodes[snippet.shortcut_code] && typeShortCodes[snippet.shortcut_code].indexOf(snippet.id) === -1) {
+              typeShortCodes[newSnippet.shortcut_code] = typeShortCodes[newSnippet.shortcut_code].concat([newSnippet.id]);
+            } else if (!typeShortCodes[snippet.shortcut_code]) {
+              typeShortCodes[newSnippet.shortcut_code] = [newSnippet.id];
+            }
+          }
         }
-        if (shortCodes[snippet.shortcut_code] && shortCodes[snippet.shortcut_code].indexOf(snippet.id) === -1) {
-          shortCodes[newSnippet.shortcut_code] = shortCodes[newSnippet.shortcut_code].concat([newSnippet.id]);
-        } else if (!shortCodes[snippet.shortcut_code]) {
-          shortCodes[newSnippet.shortcut_code] = [newSnippet.id];
-        }
+
         this.setState({
           saving: false
         });
