@@ -2336,7 +2336,7 @@ class TicketSearch extends SearcherAbstract
                                             continue;
                                         }
                                         // if its an invalid id, try to find it based off a title match
-                                        if (!ctype_digit($c) || !array_key_exists($c, $children_titles)) {
+                                        if ((!is_int($c) && !ctype_digit($c)) || !array_key_exists($c, $children_titles)) {
                                             $c = array_search(trim(strtolower($c)), $children_titles);
                                         }
                                         $choices_in[] = (int) $c;
@@ -2356,7 +2356,7 @@ class TicketSearch extends SearcherAbstract
                                 $iterator   = function ($parentId) use ($field, &$choices_in, &$iterator) {
                                     /** @var Entity\CustomDefAbstract $child */
                                     foreach ($field->getChildren() as $child) {
-                                        if ((int) $child->getOption('parent_id') === (int) $parentId) {
+                                        if ($parentId && (int) $child->getOption('parent_id') === (int) $parentId) {
                                             $choices_in[] = $child->getId();
                                             $iterator($child->getId());
                                         }
@@ -2364,7 +2364,9 @@ class TicketSearch extends SearcherAbstract
                                 };
 
                                 foreach ($choices_in as $choiceId) {
-                                    $iterator($choiceId);
+                                    if ($choiceId) {
+                                        $iterator($choiceId);
+                                    }
                                 }
 
                                 $choices_in = implode(',', $choices_in);
