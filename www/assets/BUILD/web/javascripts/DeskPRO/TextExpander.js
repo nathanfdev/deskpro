@@ -6,7 +6,8 @@ DeskPRO.TextExpander = new Orb.Class({
 
   initialize: function(options) {
     this.options = {
-      textarea: null
+      textarea: null,
+      type:     'ticket',
     };
     var self = this;
 
@@ -154,7 +155,7 @@ DeskPRO.TextExpander = new Orb.Class({
     var re = new RegExp('^' + input);
     var matches = [];
     var extra = [];
-    var shortcuts = Object.keys(window.DESKPRO_TICKET_SNIPPET_SHORTCODES);
+    var shortcuts = Object.keys(this.options.type === 'chat' ? window.DESKPRO_CHAT_SNIPPET_SHORTCODES : window.DESKPRO_TICKET_SNIPPET_SHORTCODES);
     for (var i = 0; i < shortcuts.length; i++) {
       var code = shortcuts[i];
       if (code.match(re)) {
