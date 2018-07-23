@@ -88,8 +88,14 @@ class NoTicketAccessRedirectListener implements EventSubscriberInterface
         $qb->from(Ticket::class, 't');
 
         if ($isTicketView) {
-            $qb->where('t.id = :ref OR t.ref = :ref');
-            $qb->setParameter('ref', $request->attributes->get('ticket_ref'));
+            $ref = $request->attributes->get('ticket_ref');
+            if (is_int($ref) || ctype_digit($ref)) {
+                $qb->where('t.id = :ref OR t.ref = :ref');
+            } else {
+                $qb->where('t.ref = :ref');
+            }
+
+            $qb->setParameter('ref', $ref);
         } else {
             $qb->where('t.auth = :auth');
             $qb->setParameter('auth', $request->attributes->get('auth'));
