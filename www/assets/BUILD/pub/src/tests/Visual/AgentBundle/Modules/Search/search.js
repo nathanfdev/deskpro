@@ -22,6 +22,7 @@ const messages = {
     'agent.general.sort_by':        'Sort by',
     'agent.general.sort_desc':      'DESC',
     'agent.general.urgency':        'Urgency',
+    'agent.search.manage_tickets':  'Manage tickets',
   }
 };
 

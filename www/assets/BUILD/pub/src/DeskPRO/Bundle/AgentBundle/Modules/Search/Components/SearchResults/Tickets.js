@@ -1,6 +1,8 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import { Icon } from '@deskpro/react-components';
+import { injectIntl, FormattedMessage } from 'react-intl';
+import classNames from 'classnames';
+import { Icon, Select } from '@deskpro/react-components';
 import AgentAvatar from 'DeskPRO/Component/Avatar/AgentAvatar';
 
 export class Ticket extends React.Component {
@@ -18,7 +20,7 @@ export class Ticket extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
-      messagesExpanded: false
+      messagesExpanded: false,
     };
   }
 
@@ -89,6 +91,14 @@ export class Ticket extends React.Component {
     return null;
   }
 
+  renderUrgency() {
+    const { ticket } = this.props;
+    if (ticket.urgency) {
+      return <span className={classNames('sla', `sla${ticket.urgency}`)}>{ticket.urgency}</span>;
+    }
+    return null;
+  }
+
 
   render() {
     const { ticket } = this.props;
@@ -100,6 +110,7 @@ export class Ticket extends React.Component {
             {ticket.subject}
           </span>
           {this.renderPerson()}
+          {this.renderUrgency()}
           <AgentAvatar agent={ticket.agent} />
         </div>
         {this.renderMessages()}
@@ -108,16 +119,58 @@ export class Ticket extends React.Component {
   }
 }
 
+@injectIntl
 export default class Tickets extends React.Component {
   static propTypes = {
+    intl:    PropTypes.object.isRequired,
     tickets: PropTypes.array
   };
 
+  constructor(props) {
+    super(props);
+    this.state = {
+      sort: 'relevance',
+    };
+  }
+
+  getOptions()  {
+    const { formatMessage } = this.props.intl;
+    return [
+      {
+        value: 'relevance',
+        label: formatMessage({ id: 'agent.general.urgency' })
+      },
+      {
+        value: 'urgency_asc',
+        label: `${formatMessage({ id: 'agent.general.urgency' })} ${formatMessage({ id: 'agent.general.sort_asc' })}`
+      },
+      {
+        value: 'urgency_desc',
+        label: `${formatMessage({ id: 'agent.general.urgency' })} ${formatMessage({ id: 'agent.general.sort_desc' })}`
+      },
+    ];
+  }
+
   render() {
     const { tickets } = this.props;
+    const { sort } = this.state;
     return (
       <section className="tickets">
-        <header><h1>Tickets</h1> <span className="count">{tickets.length}</span></header>
+        <header>
+          <h1>Tickets</h1>
+          <span className="count">{tickets.length}</span>
+          <span className="sort-by">
+            <FormattedMessage id="agent.general.sort_by" />
+          </span>
+          <Select
+            className="sort"
+            options={this.getOptions()}
+            clearable={false}
+            searchable={false}
+            value={sort}
+          />
+          <a href="#"><FormattedMessage id="agent.search.manage_tickets" /></a>
+        </header>
         {tickets.map(ticket =>
           <Ticket key={ticket.id} ticket={ticket} />
         )}

@@ -34,6 +34,7 @@
       "person_name": "Kenneth James",
       "person_email": "kenneth@windfarm.co.uk",
       "agent":1,
+      "urgency": 11,
       "messages":[
         {
           "id":123,
@@ -51,6 +52,7 @@
       "person_name": "Toby Falkirk",
       "person_email": "t.falkirk@rambling.com",
       "agent":2,
+      "urgency": 4,
       "messages":[
         {
           "id":123,

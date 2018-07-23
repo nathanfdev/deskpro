@@ -12,6 +12,14 @@ export default class PersonTickets extends React.Component {
     personId: PropTypes.number.isRequired,
   };
 
+  constructor(props) {
+    super(props);
+    this.state = {
+      messagesExpanded: false,
+      sort:             'urgency_asc',
+    };
+  }
+
   getOptions()  {
     const { formatMessage } = this.props.intl;
     return [
@@ -40,6 +48,7 @@ export default class PersonTickets extends React.Component {
 
   render() {
     const { intl } = this.props;
+    const { sort } = this.state;
     return (
       <div className="person-tickets">
         <div className="header">
@@ -47,7 +56,9 @@ export default class PersonTickets extends React.Component {
           <Select
             className="sort"
             options={this.getOptions()}
+            clearable={false}
             searchable={false}
+            value={sort}
           />
           <Input
             className="search"

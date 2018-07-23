@@ -1113,7 +1113,7 @@ i.icon.fitted {
         border-bottom: solid 1px $dp-greyscale-300;
         background-color: $dp-greyscale-150;
         color: $dp-greyscale-600;
-        .dp-select {
+        .sort {
           display: inline-block;
           vertical-align: middle;
           min-width: 150px;
@@ -1136,16 +1136,38 @@ i.icon.fitted {
       display: flex;
       flex-direction: row;
       align-items: center;
+      .sla {
+        margin-left: auto;
+      }
       .dp-avatar {
         margin-left: auto;
-        background-color: cadetblue;
+        background-color: grey;
         width: 20px;
         height: 20px;
+      }
+      .sla + .dp-avatar {
+        margin-left: 10px;
       }
     }
   }
   section.tickets {
-    .messages{
+    header {
+      display: flex;
+      align-items: center;
+      .count {
+        margin-left: 2px;
+      }
+      .sort-by {
+        margin-left: auto;
+      }
+      .sort {
+        display: inline-block;
+        vertical-align: middle;
+        min-width: 150px;
+        margin: 0 5px;
+      }
+    }
+    .messages {
       display: block;
       width: 100%;
       flex-basis: 100%;
@@ -1238,6 +1260,60 @@ i.icon.fitted {
   }
   .count {
     font-weight: normal;
+  }
+  .sla {
+    border: 1px solid;
+    border-radius: 50%;
+    display: inline-block;
+    font-size: 11px;
+    line-height: 17px;
+    width: 20px;
+    height: 20px;
+    text-align: center;
+  }
+  .sla1 {
+    color: $sla-shade-1;
+    border-color: $sla-shade-1;
+  }
+  .sla2 {
+    color: $sla-shade-2;
+    border-color: $sla-shade-2;
+  }
+  .sla3 {
+    color: $sla-shade-3;
+    border-color: $sla-shade-3;
+  }
+  .sla4 {
+    color: $sla-shade-4;
+    border-color: $sla-shade-4;
+  }
+  .sla5 {
+    color: $sla-shade-5;
+    border-color: $sla-shade-5;
+  }
+  .sla6 {
+    color: $sla-shade-6;
+    border-color: $sla-shade-6;
+  }
+  .sla7 {
+    color: $sla-shade-7;
+    border-color: $sla-shade-7;
+  }
+  .sla8 {
+    color: $sla-shade-8;
+    border-color: $sla-shade-8;
+  }
+  .sla9 {
+    color: $sla-shade-9;
+    border-color: $sla-shade-9;
+  }
+  .sla10 {
+    color: $sla-shade-10;
+    border-color: $sla-shade-10;
+  }
+  .sla11 {
+    color: $sla-shade-11;
+    border-color: $sla-shade-11;
   }
 }
 #search_menu {
