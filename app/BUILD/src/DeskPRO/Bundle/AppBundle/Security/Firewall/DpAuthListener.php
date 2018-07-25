@@ -102,18 +102,11 @@ class DpAuthListener extends AbstractAuthenticationListener implements Container
                 // check if user has this brand
                 $brand = $this->container->get('brand_stack')->getActive()->getBrand();
                 if ($brand && !$person->hasBrand($brand)) {
-                    // reg for this brand is enabled
-                    // add person to this brand and continue log in
-                    if ($this->container->get('dp_authentication_manager.user')->isRegistrationFormVisible()) {
-                        $person->addBrand($brand);
+                    $person->addBrand($brand);
 
-                        $em = $this->container->get('doctrine.orm.default_entity_manager');
-                        $em->persist($person);
-                        $em->flush();
-                    } else {
-                        // no way to log in, show incorrect credentials message
-                        throw new BadCredentialsException('portal.account.login-invalid');
-                    }
+                    $em = $this->container->get('doctrine.orm.default_entity_manager');
+                    $em->persist($person);
+                    $em->flush();
                 }
 
                 $this->logLoginSuccess($person, $request->getClientIp());
