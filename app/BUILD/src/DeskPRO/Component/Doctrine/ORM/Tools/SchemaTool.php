@@ -163,6 +163,12 @@ class SchemaTool extends BaseSchemaTool
             return $sm->listTableDetails($table->getName());
         }, $toSchema->getTables());
 
+        // exclude non-exist tables
+        $realTables = $sm->listTableNames();
+        $tables     = array_filter($tables, function (Table $table) use ($realTables) {
+            return in_array($table->getName(), $realTables);
+        });
+
         $namespaces = [];
         if ($sm->getDatabasePlatform()->supportsSchemas()) {
             $namespaces = $sm->listNamespaceNames();
