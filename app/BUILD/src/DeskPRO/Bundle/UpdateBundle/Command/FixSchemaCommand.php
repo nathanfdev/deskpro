@@ -307,6 +307,27 @@ FKs must first be correct and accurate before the integrity can be validated.)')
             if ($schemaDiff) {
                 foreach ($schemaDiff as $query) {
                     if (preg_match('/^CREATE (UNIQUE |)INDEX/', $query)) {
+                        // if we need to create a new unique key then need to make sure we don't have duplicates
+                        // so add also a query to remove them
+                        if (preg_match('/CREATE UNIQUE INDEX [^\s]+ ON ([^\s]+) \(([^\)]+)\)/', $query, $matches)) {
+                            $tableName = $matches[1];
+                            $table     = $this->getConnection($dbId)->getSchemaManager()->listTableDetails($tableName);
+
+                            $pkColumns     = $table->getPrimaryKeyColumns();
+                            $uniqueColumns = explode(',', $matches[2]);
+                            $uniqueColumns = array_map('trim', $uniqueColumns);
+
+                            $where = [];
+                            foreach ($pkColumns as $column) {
+                                $where[] = "n1.$column > n2.$column";
+                            }
+                            foreach ($uniqueColumns as $column) {
+                                $where[] = "n1.$column = n2.$column";
+                            }
+
+                            $fixDiff['add_indexes'][$dbId][] = "DELETE n1 FROM $tableName n1, $tableName n2 WHERE ".implode(' AND ', $where);
+                        }
+
                         $fixDiff['add_indexes'][$dbId][] = $query;
                     } elseif (preg_match('/^DROP (UNIQUE |)INDEX/', $query)) {
                         $fixDiff['drop_indexes'][$dbId][] = $query;
