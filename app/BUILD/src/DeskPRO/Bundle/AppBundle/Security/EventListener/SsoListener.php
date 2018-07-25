@@ -20,6 +20,16 @@ use Symfony\Component\Security\Core\Exception\AuthenticationException;
  */
 class SsoListener implements EventSubscriberInterface
 {
+    public static $autoSsoWhitelistedRouteNames = [
+        'user_context_hash',
+        'user_logout',
+        'portal_ping',
+        'portal_reset_password_process',
+        'portal_set_password_process',
+        'gregwar_captcha.generate_captcha',
+        'goto',
+    ];
+
     /**
      * @var \Symfony\Component\Security\Core\Authorization\AuthorizationCheckerInterface
      */
@@ -124,7 +134,7 @@ class SsoListener implements EventSubscriberInterface
             $session->set('_security.portal.target_path', $request->get('return'));
         }
 
-        $ssoResult = $this->handleAutomaticSso($authInterfaceSettings);
+        $ssoResult = $this->handleAutomaticSso($authInterfaceSettings, $request);
         if ($ssoResult && $ssoResult->isRedirectRequired()) {
             return new RedirectResponse($ssoResult->getRedirectUrl());
         }
@@ -135,12 +145,24 @@ class SsoListener implements EventSubscriberInterface
      *
      * @return null|\Orb\Auth\Result an auth result is returned if the sso redirect is enabled
      */
-    protected function handleAutomaticSso(AuthInterfaceSettings $authInterfaceSettings)
+    protected function handleAutomaticSso(AuthInterfaceSettings $authInterfaceSettings, Request $request)
     {
-        if ($authInterfaceSettings->isAutoSsoEnabled()) {
+        if ($authInterfaceSettings->isAutoSsoEnabled() && !$this->isWhitelisted($request)) {
             return $authInterfaceSettings->getSsoAuthAdapter()->authenticate();
         }
 
         return;
+    }
+
+    /**
+     * @param Request $request
+     *
+     * @return bool
+     */
+    protected function isWhitelisted(Request $request)
+    {
+        $routeName = $request->attributes->get('_route');
+
+        return in_array($routeName, self::$autoSsoWhitelistedRouteNames);
     }
 }
