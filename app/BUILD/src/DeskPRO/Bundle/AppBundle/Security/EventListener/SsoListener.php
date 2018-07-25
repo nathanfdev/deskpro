@@ -130,8 +130,9 @@ class SsoListener implements EventSubscriberInterface
             }
         }
 
-        if ($request->get('return')) {
-            $session->set('_security.portal.target_path', $request->get('return'));
+        $returnUrl = $request->get('return') ?: $request->getUri();
+        if ($returnUrl) {
+            $session->set('_security.portal.target_path', $returnUrl);
         }
 
         $ssoResult = $this->handleAutomaticSso($authInterfaceSettings, $request);
