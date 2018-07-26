@@ -3,11 +3,6 @@ import React from 'react';
 import { FormattedMessage } from 'react-intl';
 import classNames from 'classnames';
 import Isvg from 'react-inlinesvg';
-import logoSvg from 'DeskPRO/Bundle/DemoBundle/Resources/img/logo.svg';
-import hmrcLogoSvg from 'DeskPRO/Bundle/DemoBundle/Resources/img/hmrc.svg';
-import microsoftLogoSvg from 'DeskPRO/Bundle/DemoBundle/Resources/img/microsoft.svg';
-import procterLogoSvg from 'DeskPRO/Bundle/DemoBundle/Resources/img/procter&gamble.svg';
-import valveLogoSvg from 'DeskPRO/Bundle/DemoBundle/Resources/img/valve.svg';
 
 class DpAppRouteContainer extends React.Component {
   static propTypes = {
@@ -23,7 +18,7 @@ class DpAppRouteContainer extends React.Component {
     return (
       <div className={classNames('container', { 'extend-trial': extendTrial })}>
         <div className="logo">
-          <Isvg src={logoSvg} />
+          <Isvg src={`${window.DESKPRO_APP_ASSETS_URL}/DeskPRO/Bundle/DemoBundle/Resources/img/logo.svg`} />
         </div>
         {this.props.children}
         <footer>
@@ -32,10 +27,10 @@ class DpAppRouteContainer extends React.Component {
             defaultMessage="These great organisations rely on our helpdesk software:"
           />
           <div className="logos">
-            <Isvg src={hmrcLogoSvg} />
-            <Isvg src={microsoftLogoSvg} />
-            <Isvg src={procterLogoSvg} />
-            <Isvg src={valveLogoSvg} />
+            <Isvg src={`${window.DESKPRO_APP_ASSETS_URL}/DeskPRO/Bundle/DemoBundle/Resources/img/hmrc.svg`} />
+            <Isvg src={`${window.DESKPRO_APP_ASSETS_URL}/DeskPRO/Bundle/DemoBundle/Resources/img/microsoft.svg`} />
+            <Isvg src={`${window.DESKPRO_APP_ASSETS_URL}/DeskPRO/Bundle/DemoBundle/Resources/img/procter&gamble.svg`} />
+            <Isvg src={`${window.DESKPRO_APP_ASSETS_URL}/DeskPRO/Bundle/DemoBundle/Resources/img/valve.svg`} />
           </div>
         </footer>
       </div>
