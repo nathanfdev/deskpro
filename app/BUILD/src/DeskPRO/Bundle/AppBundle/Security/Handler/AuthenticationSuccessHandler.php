@@ -65,7 +65,17 @@ class AuthenticationSuccessHandler extends DefaultAuthenticationSuccessHandler i
             );
         }
 
-        $redirectUrl = $this->determineTargetUrl($request);
+        try {
+            $userLanguage = $token->getUser()->getLanguage();
+            if (!$userLanguage) {
+                $userLanguage = $this->container->get('language_stack')->getActive();
+            }
+
+            $this->container->get('language_stack')->push($userLanguage);
+            $redirectUrl = $this->determineTargetUrl($request);
+        } finally {
+            $this->container->get('language_stack')->pop();
+        }
 
         // Never redirect back to login controller, can cause loops
         if (strpos($redirectUrl, 'login') !== false) {
@@ -122,6 +132,15 @@ class AuthenticationSuccessHandler extends DefaultAuthenticationSuccessHandler i
             $request->getSession()->remove('_security.'.$this->providerKey.'.target_path');
 
             if ($targetUrl != $login_url && strpos($targetUrl, '_proxy') === false) {
+                try {
+                    $targetRequest = Request::create($targetUrl);
+                    $targetInfo    = $this->container->get('router')->matchRequest($targetRequest);
+
+                    return $this->container->get('router')->generate($targetInfo['_route'], $targetRequest->query->all());
+                } catch (\Exception $e) {
+                    // unable to parse target url, redirect to it as is
+                }
+
                 return $targetUrl;
             }
         }
@@ -136,7 +155,7 @@ class AuthenticationSuccessHandler extends DefaultAuthenticationSuccessHandler i
             }
         }
 
-        return $this->options['default_target_path'];
+        return $this->container->get('router')->buildUrl($this->options['default_target_path']);
     }
 
     /**
