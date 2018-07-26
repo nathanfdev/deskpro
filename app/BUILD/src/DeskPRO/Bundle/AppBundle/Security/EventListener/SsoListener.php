@@ -3,6 +3,7 @@
 namespace DeskPRO\Bundle\AppBundle\Security\EventListener;
 
 use Application\DeskPRO\Auth\AuthInterfaceSettings;
+use DeskPRO\Bundle\AppBundle\Request\RequestUtils;
 use DeskPRO\Bundle\AppBundle\Security\Handler\LogoutHandler;
 use DeskPRO\Bundle\PortalBundle\EventListener\RedirectProtectionListener;
 use Psr\Log\LoggerInterface;
@@ -85,12 +86,21 @@ class SsoListener implements EventSubscriberInterface
         } catch (AuthenticationException $e) {
         }
 
-        $request  = $event->getRequest();
-        $pathInfo = $request->getPathInfo();
-        if ($request->get('disable_sso')) {
+        $request = $event->getRequest();
+
+        if ($request->isXmlHttpRequest()
+            || $request->get('disable_sso')
+            || $request->attributes->get('_tag_name')
+            || RequestUtils::isLowRequest($event->getRequest())
+        ) {
             return;
         }
-        if (preg_match('#^/api/#i', $pathInfo) || preg_match('#^/portal/api/#i', $pathInfo)) {
+
+        $route = $request->attributes->get('_route');
+
+        if (preg_match('#^/api/#i', $request->getPathInfo())
+            || preg_match('#^portal_api_#i', $route)
+            || preg_match('#^deskpro_portal_api_#i', $route)) {
             return;
         }
 
