@@ -3203,7 +3203,8 @@ DeskPRO.Agent.PageFragment.Page.Ticket = new Orb.Class({
 				}
 
 				var postData = {
-					message_html: overlayEl.find('textarea.message_text').val()
+					message_html:          overlayEl.find('textarea.message_text').val(),
+					log_original_contents: overlayEl.find('input[name=log_original_contents]').val()
 				};
 
 				$.ajax({
