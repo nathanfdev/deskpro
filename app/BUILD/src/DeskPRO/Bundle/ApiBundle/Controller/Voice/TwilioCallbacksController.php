@@ -928,9 +928,16 @@ class TwilioCallbacksController extends AbstractVoiceController
         $em->persist($phoneCall);
         $em->flush();
 
-        $this->getContainer()->getJobQueue()->addJob(new Job(VoiceDownloadRecordProcessor::JOB_TYPE, [
-            'call_id' => $phoneCall->getId(),
-        ]));
+        $recordingEnabled = true;
+        if ($phoneCall->getQueue()) {
+            $recordingEnabled = $phoneCall->getQueue()->isRecordingEnabled();
+        }
+
+        if ($recordingEnabled) {
+            $this->getContainer()->getJobQueue()->addJob(new Job(VoiceDownloadRecordProcessor::JOB_TYPE, [
+                'call_id' => $phoneCall->getId(),
+            ]));
+        }
     }
 
     /**

@@ -8,6 +8,7 @@ use Application\DeskPRO\Entity\Person;
 use DeskPRO\Bundle\AppBundle\Entity\AgentData;
 use DeskPRO\Bundle\AppBundle\Entity\VoiceAccount;
 use DeskPRO\Bundle\AppBundle\Entity\VoiceQueue;
+use DeskPRO\Bundle\AppBundle\Form\Type\ApiBooleanType;
 use Doctrine\ORM\EntityRepository;
 use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 use Symfony\Component\Form\AbstractType;
@@ -96,6 +97,10 @@ class VoiceQueueType extends AbstractType
             ->add('max_queue_size', IntegerType::class, [
                 'required'      => true,
                 'property_path' => 'maxQueueSize',
+            ])
+            ->add('recording_enabled', ApiBooleanType::class, [
+                'required'      => false,
+                'property_path' => 'recordingEnabled',
             ])
         ;
 

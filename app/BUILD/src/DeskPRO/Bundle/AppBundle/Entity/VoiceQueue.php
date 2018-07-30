@@ -218,6 +218,16 @@ class VoiceQueue implements EntityInterface, NotifyPropertyChanged
     private $maxQueueSize = 0;
 
     /**
+     * @ORM\Column(name="recording_enabled", type="boolean")
+     *
+     * @JMS\Expose()
+     * @JMS\Type("boolean")
+     *
+     * @var bool
+     */
+    private $recordingEnabled = true;
+
+    /**
      * Constructor.
      */
     public function __construct()
@@ -544,6 +554,26 @@ class VoiceQueue implements EntityInterface, NotifyPropertyChanged
     public function setMaxQueueSize($maxQueueSize)
     {
         $this->setModelField('maxQueueSize', $maxQueueSize);
+
+        return $this;
+    }
+
+    /**
+     * @return bool
+     */
+    public function isRecordingEnabled()
+    {
+        return $this->recordingEnabled;
+    }
+
+    /**
+     * @param bool $recordingEnabled
+     *
+     * @return $this
+     */
+    public function setRecordingEnabled($recordingEnabled)
+    {
+        $this->setModelField('recordingEnabled', $recordingEnabled);
 
         return $this;
     }
