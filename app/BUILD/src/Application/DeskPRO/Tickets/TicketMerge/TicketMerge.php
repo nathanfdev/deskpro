@@ -139,8 +139,8 @@ class TicketMerge implements PersonContextInterface
 
         $old_id = $this->other_ticket->getId();
 
-        $ticket_person       = $this->ticket->person;
-        $other_ticket_person = $this->other_ticket->person;
+        $ticketPerson      = $this->ticket->person;
+        $otherTicketPerson = $this->other_ticket->person;
 
         // Old ticket set to deleted so proper CM's are sent
         $this->other_ticket->setStatus('hidden.deleted');
@@ -269,10 +269,17 @@ class TicketMerge implements PersonContextInterface
         $merge_change->setLostData($this->data_lost);
 
         // If they're different users, then add the old person as a participant on the ticket
-        if ($ticket_person->getId() != $other_ticket_person->getId()) {
-            $part = $this->ticket->addParticipantPerson($other_ticket_person);
-            if ($part && !$part->getId()) {
-                $this->em->persist($part);
+        // add only real users, e.g. ignore auto generated from phone calls
+        if ($otherTicketPerson->getEmail()) {
+            // if e.g. the ticket has a voice user then try to override with a real one
+            if (!$ticketPerson->getEmail()) {
+                $this->ticket->setPerson($otherTicketPerson);
+            // add as participant
+            } elseif ($ticketPerson->getId() !== $otherTicketPerson->getId()) {
+                $part = $this->ticket->addParticipantPerson($otherTicketPerson);
+                if ($part && !$part->getId()) {
+                    $this->em->persist($part);
+                }
             }
         }
 
