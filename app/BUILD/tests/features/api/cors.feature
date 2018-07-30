@@ -32,13 +32,6 @@ Feature: CORS headers
     Then the response status code should be 401
     And the header "Access-Control-Allow-Origin" should not exist
 
-  Scenario: CORS disabled for preflight not auth request
-    When I add Origin header equal to "http://example.com"
-    And I add "Access-Control-Request-Method" header equal to "GET"
-    And I send a OPTIONS request to "/api/v2/me"
-    Then the response status code should be 405
-    And the header "Access-Control-Allow-Origin" should not exist
-
   Scenario: COSR disabled for not OAuth valid token
     Given "smith@deskpro.dev" agent exists
     And there are no "ApiToken" records
@@ -86,9 +79,9 @@ Feature: CORS headers
     And the header "Access-Control-Allow-Origin" should be equal to 'http://example.com'
 
   Scenario: CORS enabled for preflight request
-    When I add Authorization header equal to "key 91:XdfadfadfeYZ"
-    And I add Origin header equal to "http://example.com"
+    When I add Origin header equal to "http://example.com"
     And I add "Access-Control-Request-Method" header equal to "GET"
+    And I add "Access-Control-Request-Headers" header equal to "Authorization"
     And I send a OPTIONS request to "/api/v2/me"
     Then the response status code should be 200
     And the header "Access-Control-Allow-Origin" should be equal to 'http://example.com'

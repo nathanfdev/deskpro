@@ -9,7 +9,6 @@ use Doctrine\ORM\EntityManager;
 use Nelmio\CorsBundle\EventListener\CorsListener as NelmioCorsListener;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpKernel\Event\FilterResponseEvent;
-use Symfony\Component\HttpKernel\Event\GetResponseEvent;
 use Symfony\Component\HttpKernel\HttpKernelInterface;
 use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorageInterface;
 
@@ -62,30 +61,6 @@ class CorsListener extends NelmioCorsListener
      *
      * {@inheritdoc}
      */
-    public function onKernelRequest(GetResponseEvent $event)
-    {
-        if (HttpKernelInterface::MASTER_REQUEST !== $event->getRequestType()) {
-            return;
-        }
-
-        $request = $event->getRequest();
-
-        // in case of preflight request parent class return CORS response
-        // we need to check auth type now and skip execution if needed
-        if ('OPTIONS' === $request->getMethod()) {
-            if (!$this->isSupportedAuthenticationType($request)) {
-                return;
-            }
-        }
-
-        return parent::onKernelRequest($event);
-    }
-
-    /**
-     * Enable CORS only for requests with ApiKey or with OauthToken.
-     *
-     * {@inheritdoc}
-     */
     public function onKernelResponse(FilterResponseEvent $event)
     {
         if (HttpKernelInterface::MASTER_REQUEST !== $event->getRequestType()) {
@@ -106,11 +81,16 @@ class CorsListener extends NelmioCorsListener
      */
     public function forceAccessControlAllowOriginHeader(FilterResponseEvent $event)
     {
-        if (!$this->isSupportedAuthenticationType($event->getRequest())) {
+        // 'OPTIONS' preflight requests not authenticated, we can't detect auth type
+        // enabled CORS for such requests
+        // https://stackoverflow.com/questions/13994507/how-do-you-send-a-custom-header-in-a-cross-domain-cors-xmlhttprequest
+        $isOptionsRequest = $event->getRequest()->getMethod() === 'OPTIONS';
+
+        if (!$isOptionsRequest && !$this->isSupportedAuthenticationType($event->getRequest())) {
             return;
         }
 
-        return parent::onKernelResponse($event);
+        return parent::forceAccessControlAllowOriginHeader($event);
     }
 
     /**
@@ -128,7 +108,7 @@ class CorsListener extends NelmioCorsListener
 
         if (!$token) {
             // no token means:
-            // 1) this check called during `kernel.request` event and authentication was not executed yet (`OPTIONS` request method)
+            // 1) this check called during `kernel.request` event and authentication was not executed yet
             // 2) this check called during `kernel.response` event and authentication failed
             // in any case try to create fake preauthenticated token to get it type (this token is not saved anywhere)
             try {

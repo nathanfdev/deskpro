@@ -152,7 +152,7 @@ nelmio_cors:
 
             # used in response to a preflight request to indicate which HTTP headers can be used when making the actual request
             # we don't have any restriction to incoming headers
-            allow_headers: []
+            allow_headers: ['*']
 
             # used in response to a preflight request to indicate which HTTP methods can be used when making the actual request
             # we don't have any restriction to methods
@@ -164,8 +164,15 @@ nelmio_cors:
 
             # By default, the Access-Control-Allow-Origin response header value is the Origin request header value
             # leave as is
+            #
             # note that `*` will not work with cookie requests (according to specification)
+            #
+            # note that if concrete value set
+            #     then header `Access-Control-Allow-Origin` added to all responses
+            #     even for not CORS requests
             forced_allow_origin_value: ~
+
+            max_age: 3600
 
 # Security Configuration
 security:
