@@ -175,6 +175,10 @@ class VoicePhoneCall
         $this->dateEnded          = $phoneCall->getDateEnded();
         $this->recording          = $phoneCall->getRecording();
         $this->duration           = $phoneCall->getDuration();
+
+        if (is_array($this->data) && array_key_exists('RecordingUrl', $this->data)) {
+            unset($this->data['RecordingUrl']);
+        }
     }
 
     /**
