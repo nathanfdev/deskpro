@@ -30,7 +30,8 @@ DeskPRO.Agent.PageFragment.ListPane.GuideList = new Orb.Class({
       this.meta.guideId,
       900,
 			this.openTopic,
-      this.meta.display_fields
+      this.meta.display_fields,
+      this.meta.canEdit
 		);
 
 		this._initGuideEditor();
@@ -110,7 +111,7 @@ DeskPRO.Agent.PageFragment.ListPane.GuideList = new Orb.Class({
 			if (checked) {
 				ugOther.prop('checked', true);
 				ugOther.prop('disabled', true);
-			} else {
+			} else if (!ugEveryone.prop('disabled')) {
 				ugOther.prop('disabled', false);
 			}
 		};

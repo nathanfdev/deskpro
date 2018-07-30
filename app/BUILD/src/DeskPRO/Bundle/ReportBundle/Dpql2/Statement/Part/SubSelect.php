@@ -45,9 +45,9 @@ class SubSelect extends AbstractPart
     public function toDpql(SelectPart $statement, $section, array $stack)
     {
         if ($this->sql instanceof SelectPart) {
-            return $this->sql->toDpql();
+            return '('.$this->sql->toDpql().')';
         }
 
-        return $this->sql;
+        return '('.$this->sql.')';
     }
 }

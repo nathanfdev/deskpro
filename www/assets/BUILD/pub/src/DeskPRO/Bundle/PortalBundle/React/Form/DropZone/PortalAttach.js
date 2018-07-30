@@ -139,7 +139,9 @@ export default class PortalAttach extends React.Component {
   };
 
   renderLink() {
-    const rand = Math.random();
+    // Somehow input node this.refFileUpload is not completely rerendered and holds first assigned id
+    // if we already have an id - use it
+    const rand = this.refFileUpload ? this.refFileUpload.id : Math.random();
     return (
       <span className="attach-file link">
         <input type="file" ref={(node) => { this.refFileUpload = node; }} id={rand} name="file[blob]" />

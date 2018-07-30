@@ -59,7 +59,9 @@ use Application\EmailBundle\SwiftMailer\Message\MessageOptionsInterface;
 use DeskPRO\Bundle\AppBundle\Entity\SnippetTranslation;
 use DeskPRO\Bundle\AppBundle\Entity\SnippetUseLog;
 use DeskPRO\Bundle\AppBundle\Entity\TicketFeedbackLink;
+use DeskPRO\Bundle\AppBundle\Serializer\ApiWrapper;
 use DeskPRO\Bundle\AppBundle\Serializer\Sideload\SideloadSerializationContext;
+use DeskPRO\Bundle\AppBundle\Settings\Model\Tickets\DefaultDepartmentSettings;
 use DeskPRO\Component\Pdf\PdfRendererInterface;
 use DeskPRO\Component\Util\ListUtils;
 use Doctrine\Common\Collections\ArrayCollection;
@@ -69,6 +71,7 @@ use Orb\Util\Arrays;
 use Orb\Util\DpStrings;
 use Orb\Util\Strings;
 use Orb\Validator\StringEmail;
+use Symfony\Bundle\FrameworkBundle\Routing\Router;
 use Symfony\Component\Filesystem\Filesystem;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -95,7 +98,29 @@ class TicketController extends AbstractController
     //###########################################################################
 
     /**
+     * @param Ticket $entity
+     *
+     * @throws \Exception
+     *
+     * @return array mixed
+     */
+    protected function getAPIv2Data($entity)
+    {
+        $context = new SideloadSerializationContext();
+        $context->setIncludes(['brand', 'person', 'organization', 'problem']);
+        $context->setInlineSideloads(true);
+        $serialized = $this->container->get('serializer')->toArray(new ApiWrapper($entity), $context);
+
+        return $serialized;
+    }
+
+    /**
      * @param int $ticket_id
+     *
+     * @throws \Doctrine\ORM\NonUniqueResultException
+     * @throws \Doctrine\ORM\ORMException
+     * @throws \Doctrine\ORM\OptimisticLockException
+     * @throws \Exception
      *
      * @return Response
      */
@@ -443,6 +468,12 @@ class TicketController extends AbstractController
             'ticket_message_attachments' => $ticket_message_attachments,
             'linked_chat'                => $linkedChat,
 
+            'ticket_permalink' => $this->get('router')->generate(
+                'go_to_ticket_id',
+                ['id' => $ticket->getId()],
+                Router::ABSOLUTE_URL
+            ),
+
             'validator_errors' => $validator_errors,
 
             'draft'             => $draft,
@@ -490,6 +521,9 @@ class TicketController extends AbstractController
             'incidents'      => $incidents,
             'system_account' => $this->getAccount($ticket),
         ];
+
+        // include api_v2_data
+        $vars['api_v2_data'] = $this->getAPIv2Data($ticket);
 
         if (App::getSetting('core_tickets.enable_billing') || App::getSetting('core_tickets.enable_timelog')) {
             $vars['billing_fields_new'] = $billing_fields_new;
@@ -2300,8 +2334,10 @@ class TicketController extends AbstractController
 
                 if ($this->person->PermissionsManager->TicketChecker->canModify($ticket, 'fields')) {
                     if ($this->request->request->has('custom_fields')) {
-                        $post_custom_fields = $this->request->get('custom_fields', []);
-                        $field_manager->saveFormToObject($post_custom_fields, $ticket);
+                        $postCustomFields = $this->request->get('custom_fields', []);
+                        $layoutCustomData = $this->filterSubmittedLayoutData($layout, 'ticket_field', $postCustomFields);
+
+                        $field_manager->saveFormToObject($layoutCustomData, $ticket, true);
                         $this->em->persist($ticket);
 
                         $new_custom_fields = $new_field_manager->createFormForOwner(
@@ -2327,18 +2363,18 @@ class TicketController extends AbstractController
                     }
 
                     if ($this->request->request->has('custom_person_fields')) {
-                        $person_field_manager->saveFormToObject(
-                            $this->request->get('custom_person_fields') ?: [],
-                            $ticket->person
-                        );
+                        $postCustomFields = $this->request->get('custom_person_fields') ?: [];
+                        $layoutCustomData = $this->filterSubmittedLayoutData($layout, 'user_field', $postCustomFields);
+
+                        $person_field_manager->saveFormToObject($layoutCustomData, $ticket->person, true);
                         $this->em->persist($ticket->person);
                     }
 
                     if ($this->request->request->has('custom_org_fields') && $ticket->person->organization) {
-                        $org_field_manager->saveFormToObject(
-                            $this->request->get('custom_org_fields') ?: [],
-                            $ticket->person->organization
-                        );
+                        $postCustomFields = $this->request->get('custom_org_fields') ?: [];
+                        $layoutCustomData = $this->filterSubmittedLayoutData($layout, 'org_field', $postCustomFields);
+
+                        $org_field_manager->saveFormToObject($layoutCustomData, $ticket->person->organization, true);
                         $this->em->persist($ticket->person->organization);
                     }
 
@@ -4566,6 +4602,12 @@ class TicketController extends AbstractController
             ['title' => 'asc']
         );
 
+        $defaultDepartments = [];
+        foreach ($brands as $brand) {
+            $defaultDepartment                   = $this->container->get('brand_form_helper')->getDefaultDepartment(DefaultDepartmentSettings::DEFAULT_DEPARTMENT_AGENT_TYPE, $brand);
+            $defaultDepartments[$brand->getId()] = $defaultDepartment ? $defaultDepartment->getId() : null;
+        }
+
         return $this->render(
             'AgentBundle:Ticket:newticket.html.twig',
             [
@@ -4586,6 +4628,7 @@ class TicketController extends AbstractController
                 'custom_org_fields'    => $customOrgFields,
                 'brands'               => $brands,
                 'default_brand'        => $this->get('brand_stack')->getDefaultBrand()->getId(),
+                'default_departments'  => $defaultDepartments,
             ]
         );
     }
@@ -4801,6 +4844,16 @@ class TicketController extends AbstractController
             }
 
             //------------------------------
+            // Add Followers
+            //------------------------------
+
+            $add_followers = $this->in->getCleanValueArray('add_followers', 'uint', 'discard');
+            $add_followers = ListUtils::filterOutFalsey($add_followers);
+            if ($add_followers) {
+                $newTicket->add_followers = $add_followers;
+            }
+
+            //------------------------------
             // Save
             //------------------------------
 
@@ -4953,18 +5006,6 @@ class TicketController extends AbstractController
                         }
                     }
 
-                    $this->em->flush();
-                }
-
-                //------------------------------
-                // Add Followers
-                //------------------------------
-
-                $add_followers = $this->in->getCleanValueArray('add_followers', 'uint', 'discard');
-                $add_followers = ListUtils::filterOutFalsey($add_followers);
-                if ($add_followers) {
-                    $ticket->setParticipantAgentIds($add_followers);
-                    $this->em->persist($ticket);
                     $this->em->flush();
                 }
 
@@ -5525,6 +5566,67 @@ CSS;
     }
 
     //###########################################################################
+    // download-ticket-message-email
+    //###########################################################################
+
+    /**
+     * @param int $messageId
+     *
+     * @throws \Doctrine\ORM\NonUniqueResultException
+     *
+     * @return Response
+     */
+    public function downloadTicketMessageEmailAction($messageId)
+    {
+        $message = $this->getMessageOr404($messageId);
+        if ($message && $this->person->PermissionsManager->TicketChecker->canView($message->ticket)) {
+            $ticket = $message->ticket;
+        }
+
+        if (!$ticket) {
+            throw $this->createNotFoundException();
+        }
+
+        if ($message->email_source && $message->email_source->getBlob()) {
+            $fileString = $this->container->getBlobStorage()->copyBlobRecordToString($message->email_source->getBlob());
+            $response   = new Response();
+            $response->headers->set('Content-Type', 'message/rfc822');
+            $response->headers->set('Content-Disposition', 'inline; filename=email_source_'.$message->getId().'.eml');
+            $response->setContent($fileString);
+
+            return $response;
+        } else {
+            throw $this->createNotFoundException();
+        }
+    }
+
+    /**
+     * @param $messageId
+     *
+     * @throws \Exception
+     *
+     * @return Response
+     */
+    public function deleteTicketMessageEmailAction($messageId)
+    {
+        $message = $this->getMessageOr404($messageId);
+        if (!$this->person->PermissionsManager->TicketChecker->canEditMessages($message->ticket)) {
+            throw $this->createAccessDeniedException();
+        }
+
+        if ($message->email_source) {
+            $this->em->remove($message->email_source);
+            $this->em->flush();
+        }
+
+        return $this->createJsonResponse(
+            [
+                'success' => true,
+            ]
+        );
+    }
+
+    //###########################################################################
 
     public function checkPerm($ticket, $check_perm)
     {
@@ -5574,6 +5676,9 @@ CSS;
     /**
      * @param int  $ticket_id
      * @param null $check_perm
+     *
+     * @throws \Doctrine\ORM\NonUniqueResultException
+     * @throws \Doctrine\ORM\ORMException
      *
      * @return Ticket
      */
@@ -5625,6 +5730,33 @@ CSS;
         }
 
         return $ticket;
+    }
+
+    /**
+     * @param int $messageId
+     *
+     * @throws \Doctrine\ORM\NonUniqueResultException
+     *
+     * @return TicketMessage
+     */
+    protected function getMessageOr404($messageId)
+    {
+        $q = $this->em->createQuery(
+            '
+            SELECT m
+            FROM DeskPRO:TicketMessage m
+            WHERE m.id = ?0
+        '
+        );
+        $q->setParameters([$messageId]);
+
+        $message = $q->getOneOrNullResult();
+
+        if (!$message) {
+            throw $this->createNotFoundException("There is no message with ID $messageId");
+        }
+
+        return $message;
     }
 
     public function linkExistingAction($ticket_id, $linked_ticket_id)
@@ -5872,5 +6004,27 @@ CSS;
         }
 
         return $account;
+    }
+
+    /**
+     * @param LayoutDisplay $layout
+     * @param string        $fieldType
+     * @param array         $submittedData
+     *
+     * @return array
+     */
+    private function filterSubmittedLayoutData(LayoutDisplay $layout, $fieldType, $submittedData)
+    {
+        $layoutCustomData = [];
+        foreach ($layout->all() as $layoutField) {
+            if ($layoutField->getFieldType() === $fieldType) {
+                $fieldName = 'field_'.$layoutField->getFieldId();
+                if (isset($submittedData[$fieldName])) {
+                    $layoutCustomData[$fieldName] = $submittedData[$fieldName];
+                }
+            }
+        }
+
+        return $layoutCustomData;
     }
 }

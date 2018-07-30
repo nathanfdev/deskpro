@@ -8,6 +8,7 @@
 
 namespace Application\DeskPRO\Entity;
 
+use Application\DeskPRO\EntityRepository\CustomDataChat as CustomDataChatRepository;
 use Doctrine\ORM\Mapping\ClassMetadata;
 use Doctrine\ORM\Mapping\ClassMetadataInfo;
 
@@ -100,9 +101,14 @@ class CustomDataChat extends CustomDataAbstract
     // Doctrine Metadata
     //###########################################################################
 
+    /**
+     * @param ClassMetadata $metadata
+     *
+     * @throws \Doctrine\ORM\Mapping\MappingException
+     */
     public static function loadMetadata(ClassMetadata $metadata)
     {
-        $metadata->customRepositoryClassName = self::class;
+        $metadata->customRepositoryClassName = CustomDataChatRepository::class;
         $metadata->setInheritanceType(ClassMetadataInfo::INHERITANCE_TYPE_NONE);
         $metadata->setPrimaryTable(
             [

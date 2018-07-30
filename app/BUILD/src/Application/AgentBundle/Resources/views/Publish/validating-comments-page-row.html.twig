@@ -32,10 +32,10 @@
 	</div>
 	<div class="controls-row">
 		<div class="bound-faded"></div>
-		<button class="clean-white small validate-approve">{{ phrase('agent.general.approve') }}</button>
-		<button class="clean-white small validate-delete">{{ phrase('agent.general.delete') }}</button>
-		<button class="clean-white small validate-create-ticket">{{ phrase('agent.general.create_ticket') }}</button>
-		<button class="clean-white small validate-edit">{{ phrase('agent.general.ucfirst_edit') }}</button>
+		<button class="clean-white small validate-approve" {% if not app.user.hasPerm('agent_publish.validate') %}style="display:none;"{% endif %}>{{ phrase('agent.general.approve') }}</button>
+		<button class="clean-white small validate-delete" {% if not app.user.hasPerm('agent_publish.validate') %}style="display:none;"{% endif %}>{{ phrase('agent.general.delete') }}</button>
+		<button class="clean-white small validate-create-ticket" {% if not app.user.hasPerm('agent_tickets.create') %}style="display:none;"{% endif %}>{{ phrase('agent.general.create_ticket') }}</button>
+		<button class="clean-white small validate-edit" {% if not app.user.hasPerm('agent_publish.validate') %}style="display:none;"{% endif %}>{{ phrase('agent.general.ucfirst_edit') }}</button>
 	</div>
 </article>
 <div

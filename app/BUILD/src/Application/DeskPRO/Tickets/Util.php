@@ -146,5 +146,19 @@ class Util
             WHERE cf.handler_class = 'Application\\DeskPRO\\CustomFields\\Handler\\File' AND cd.ticket_id = ?;
 SQL
         , [$ticket_id]);
+
+        $db->executeUpdate('
+            UPDATE blobs
+            LEFT JOIN email_sources ON (email_sources.blob_id = blobs.id)
+            LEFT JOIN tickets_messages ON (tickets_messages.email_source_id = email_sources.id)
+            SET blobs.is_temp = 1
+            WHERE tickets_messages.ticket_id = ?
+        ', [$ticket_id]);
+
+        $db->executeUpdate('
+            DELETE email_sources FROM email_sources
+            INNER JOIN tickets_messages ON (tickets_messages.email_source_id = email_sources.id)
+            WHERE tickets_messages.ticket_id = ?
+        ', [$ticket_id]);
     }
 }

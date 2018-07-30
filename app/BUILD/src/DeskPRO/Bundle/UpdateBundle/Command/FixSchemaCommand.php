@@ -7,7 +7,6 @@ use Application\DeskPRO\ORM\Util\Util as ORMUtil;
 use DeskPRO\Component\Doctrine\ORM\Tools\SchemaTool;
 use Doctrine\DBAL\Connection;
 use Doctrine\DBAL\DBALException;
-use Doctrine\DBAL\Schema\Schema;
 use Doctrine\ORM\EntityManager;
 use Monolog\Handler\StreamHandler;
 use Monolog\Logger;
@@ -26,11 +25,6 @@ class FixSchemaCommand extends ContainerAwareCommand
      * @var Connection[]
      */
     private $connections = [];
-
-    /**
-     * @var Schema[]
-     */
-    private $originalSchemas = [];
 
     /**
      * {@inheritdoc}
@@ -116,6 +110,43 @@ FKs must first be correct and accurate before the integrity can be validated.)')
         if ($input->getOption('fix-tables') || $input->getOption('fix-indexes') || $input->getOption('fix-fks')) {
             $fixDiff = $this->getFixSchemaQueries($entityManagers);
 
+            if ($input->getOption('fix-fks')) {
+                $output->writeln('<info>Drop outdated foreign keys ...</info>');
+                $logger->debug('Drop outdated foreign keys.');
+
+                foreach ($fixDiff['drop_fks'] as $dbId => $queries) {
+                    foreach ($queries as $query) {
+                        $query = $this->correctDropForeignKeyQuery($dbId, $query, $output, $logger);
+
+                        $output->writeln('');
+                        $output->writeln($query);
+                        $logger->error($query);
+
+                        if ($input->getOption('run')) {
+                            $this->executeQuery($dbId, $query, $output, $logger);
+                        }
+                    }
+                }
+            }
+            if ($input->getOption('fix-indexes')) {
+                $output->writeln('<info>Drop outdated indexes ...</info>');
+                $logger->debug('Drop outdated indexes.');
+
+                foreach ($fixDiff['drop_indexes'] as $dbId => $queries) {
+                    foreach ($queries as $query) {
+                        $query = $this->correctDropIndexQuery($dbId, $query, $output, $logger);
+
+                        $output->writeln('');
+                        $output->writeln($query);
+                        $logger->error($query);
+
+                        if ($input->getOption('run')) {
+                            $this->executeQuery($dbId, $query, $output, $logger);
+                        }
+                    }
+                }
+            }
+
             if ($input->getOption('fix-tables')) {
                 $output->writeln('<info>Fixing database tables ...</info>');
                 $logger->debug('Fixing database tables.');
@@ -139,19 +170,6 @@ FKs must first be correct and accurate before the integrity can be validated.)')
                 $output->writeln('<info>Fixing indexes ...</info>');
                 $logger->debug('Fixing indexes.');
 
-                foreach ($fixDiff['drop_indexes'] as $dbId => $queries) {
-                    foreach ($queries as $query) {
-                        $query = $this->correctDropIndexQuery($dbId, $query, $output, $logger);
-
-                        $output->writeln('');
-                        $output->writeln($query);
-                        $logger->error($query);
-
-                        if ($input->getOption('run')) {
-                            $this->executeQuery($dbId, $query, $output, $logger);
-                        }
-                    }
-                }
                 foreach ($fixDiff['add_indexes'] as $dbId => $queries) {
                     foreach ($queries as $query) {
                         $output->writeln('');
@@ -168,22 +186,9 @@ FKs must first be correct and accurate before the integrity can be validated.)')
                 $output->writeln('<info>Done fixing indexes.</info>');
             }
             if ($input->getOption('fix-fks')) {
-                $output->writeln('<info>Fixing foreign keys ...</info>');
-                $logger->debug('Fixing foreign keys.');
+                $output->writeln('<info>Add missing foreign keys ...</info>');
+                $logger->debug('Add missing foreign keys.');
 
-                foreach ($fixDiff['drop_fks'] as $dbId => $queries) {
-                    foreach ($queries as $query) {
-                        $query = $this->correctDropForeignKeyQuery($dbId, $query, $output, $logger);
-
-                        $output->writeln('');
-                        $output->writeln($query);
-                        $logger->error($query);
-
-                        if ($input->getOption('run')) {
-                            $this->executeQuery($dbId, $query, $output, $logger);
-                        }
-                    }
-                }
                 foreach ($fixDiff['add_fks'] as $dbId => $queries) {
                     foreach ($queries as $query) {
                         $output->writeln('');
@@ -217,7 +222,7 @@ FKs must first be correct and accurate before the integrity can be validated.)')
                         $logger->debug("Table: $tableName");
 
                         foreach ($tableChecks as $check) {
-                            $fkName = sprintf("\tFK: {$check['name']} (%s)", implode(', ', $check['columns']));
+                            $fkName = sprintf("\tCheck FK: {$check['name']} (%s)", implode(', ', $check['columns']));
 
                             $output->writeln('');
                             $output->writeln($fkName);
@@ -250,6 +255,11 @@ FKs must first be correct and accurate before the integrity can be validated.)')
                 $output->writeln('<comment>Unable to perform integrity fixes due to the database error.</comment>');
                 $output->writeln('<comment>Try to run the command with --fix-tables --fix-indexes --fix-fks first.</comment>');
             }
+        }
+
+        if ($input->getOption('run')) {
+            // causes FK check on cron to run to refresh notice in admin (CleanupAlways)
+            $this->getContainer()->get('database_connection')->delete('settings', ['name' => 'core.last_fk_check']);
         }
 
         $output->writeln('<info>All done.</info>');
@@ -293,10 +303,31 @@ FKs must first be correct and accurate before the integrity can be validated.)')
             $fixDiff['add_fks'][$dbId]      = [];
             $fixDiff['drop_fks'][$dbId]     = [];
 
-            $schemaDiff = ORMUtil::getUpdateSchemaSql($em);
+            $schemaDiff = ORMUtil::getUpdateSchemaSql($em, true);
             if ($schemaDiff) {
                 foreach ($schemaDiff as $query) {
                     if (preg_match('/^CREATE (UNIQUE |)INDEX/', $query)) {
+                        // if we need to create a new unique key then need to make sure we don't have duplicates
+                        // so add also a query to remove them
+                        if (preg_match('/CREATE UNIQUE INDEX [^\s]+ ON ([^\s]+) \(([^\)]+)\)/', $query, $matches)) {
+                            $tableName = $matches[1];
+                            $table     = $this->getConnection($dbId)->getSchemaManager()->listTableDetails($tableName);
+
+                            $pkColumns     = $table->getPrimaryKeyColumns();
+                            $uniqueColumns = explode(',', $matches[2]);
+                            $uniqueColumns = array_map('trim', $uniqueColumns);
+
+                            $where = [];
+                            foreach ($pkColumns as $column) {
+                                $where[] = "n1.$column > n2.$column";
+                            }
+                            foreach ($uniqueColumns as $column) {
+                                $where[] = "n1.$column = n2.$column";
+                            }
+
+                            $fixDiff['add_indexes'][$dbId][] = "DELETE n1 FROM $tableName n1, $tableName n2 WHERE ".implode(' AND ', $where);
+                        }
+
                         $fixDiff['add_indexes'][$dbId][] = $query;
                     } elseif (preg_match('/^DROP (UNIQUE |)INDEX/', $query)) {
                         $fixDiff['drop_indexes'][$dbId][] = $query;
@@ -525,20 +556,6 @@ FKs must first be correct and accurate before the integrity can be validated.)')
     }
 
     /**
-     * @param string $dbId
-     *
-     * @return Schema
-     */
-    private function getOriginalSchema($dbId)
-    {
-        if (!isset($this->originalSchemas[$dbId])) {
-            $this->originalSchemas[$dbId] = $this->getConnection($dbId)->getSchemaManager()->createSchema();
-        }
-
-        return $this->originalSchemas[$dbId];
-    }
-
-    /**
      * @param string          $dbId
      * @param string          $query
      * @param OutputInterface $output
@@ -551,8 +568,7 @@ FKs must first be correct and accurate before the integrity can be validated.)')
         if (preg_match('/DROP INDEX (.+) ON (.+)/', $query, $matches)) {
             list(, $indexName, $tableName) = $matches;
 
-            $schema = $this->getOriginalSchema($dbId);
-            $table  = $schema->getTable($tableName);
+            $table = $this->getConnection($dbId)->getSchemaManager()->listTableDetails($tableName);
 
             try {
                 $index        = $table->getIndex($indexName);
@@ -583,8 +599,7 @@ FKs must first be correct and accurate before the integrity can be validated.)')
         if (preg_match('/ALTER TABLE (.+) DROP FOREIGN KEY (.+)/', $query, $matches)) {
             list(, $tableName, $fkName) = $matches;
 
-            $schema = $this->getOriginalSchema($dbId);
-            $table  = $schema->getTable($tableName);
+            $table = $this->getConnection($dbId)->getSchemaManager()->listTableDetails($tableName);
 
             try {
                 $foreignKey   = $table->getForeignKey($fkName);

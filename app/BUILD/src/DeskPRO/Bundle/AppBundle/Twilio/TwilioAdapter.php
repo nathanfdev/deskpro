@@ -766,6 +766,8 @@ class TwilioAdapter
      * @param VoiceAccount $account
      * @param string       $assignmentCallbackUrl
      *
+     * @throws \Exception
+     *
      * @return WorkflowInstance
      */
     public function createOrUpdateWorkflow(VoiceAccount $account, $assignmentCallbackUrl)
@@ -779,7 +781,7 @@ class TwilioAdapter
                 'targets' => [
                     [
                         'queue'      => $queue->getTaskQueueSid(),
-                        'expression' => 'worker.agent_id NOT IN task.rejected_workers',
+                        'expression' => 'worker.agent_id > 0',
                         'priority'   => 1,
                         'timeout'    => $queue->getVoicemailTimeout() ?: self::VOICEMAIL_WAITING_TIMEOUT,
                     ],
@@ -802,7 +804,7 @@ class TwilioAdapter
                 'targets' => [
                     [
                         'queue'      => $agent->getVoiceTaskQueueSid(),
-                        'expression' => 'worker.agent_id NOT IN task.rejected_workers',
+                        'expression' => 'worker.agent_id > 0',
                         'priority'   => 1,
                         'timeout'    => $this->settingsResolver->getVoiceSettings()->getAgentVoicemailTimeout(),
                     ],
@@ -823,10 +825,20 @@ class TwilioAdapter
 
         $workspace = $this->getWorkspace($account);
         if ($account->getQueueWorkflowSid()) {
-            $workflow = $workspace->workflows($account->getQueueWorkflowSid())->update([
-                'configuration'         => $configuration,
-                'assignmentCallbackUrl' => $assignmentCallbackUrl,
-            ]);
+            try {
+                $workflow = $workspace->workflows($account->getQueueWorkflowSid())->update([
+                    'configuration'         => $configuration,
+                    'assignmentCallbackUrl' => $assignmentCallbackUrl,
+                ]);
+            } catch (RestException $e) {
+                if ($e->getStatusCode() === Response::HTTP_NOT_FOUND) {
+                    $workflow = $workspace->workflows->create('DeskPRO Queue Routing Workflow', $configuration, [
+                        'assignmentCallbackUrl' => $assignmentCallbackUrl,
+                    ]);
+                } else {
+                    throw $e;
+                }
+            }
         } else {
             $workflow = $workspace->workflows->create('DeskPRO Queue Routing Workflow', $configuration, [
                 'assignmentCallbackUrl' => $assignmentCallbackUrl,
@@ -1046,8 +1058,15 @@ class TwilioAdapter
         $account      = $phoneCall->getNumber()->getAccount();
         $participants = $this->getConferenceParticipants($account, $phoneCall->getConferenceSid());
 
+        if (!$phoneCall->getUserParticipants()->count()) {
+            return;
+        }
+
+        /** @var VoicePhoneCallParticipantUser $userParticipant */
+        $userParticipant = $phoneCall->getUserParticipants()->first();
+
         foreach ($participants as $participant) {
-            if ($participant->callSid === $phoneCall->getCallSid()) {
+            if ($participant->callSid === $userParticipant->getCallSid()) {
                 $participant->update([
                     'hold' => $isHold ? 'true' : 'false',
                 ]);

@@ -84,17 +84,20 @@ class ReportDashboardWidgetType extends AbstractType
                 'class'         => ReportDashboardReport::class,
                 'required'      => true,
                 'query_builder' => function (EntityRepository $er) use ($options) {
-                    return $er
-                        ->createQueryBuilder('r')
-                        ->join('r.dashboard', 'd')
-                        ->leftJoin('d.permissions', 'p')
-                        ->where(
-                            'd.is_default = 0',
-                            'p.person IN (:person) OR p.team IN (:teams) OR d.person IN (:person)'
-                        )
-                        ->setParameter('person', $options['person'])
-                        ->setParameter('teams', $options['person']->getTeams())
-                    ;
+                    $qb = $er->createQueryBuilder('r');
+                    if (!$options['person']->isAdmin() && !$options['person']->can_reports) {
+                        $qb
+                            ->join('r.dashboard', 'd')
+                            ->join('d.permissions', 'p')
+                            ->andWhere('d.is_default = 0')
+                            ->andWhere('p.person IN (:person) OR p.team IN (:teams) OR d.person IN (:person)')
+                            ->orWhere('p.person IS NULL AND p.team IS NULL AND p.department IS NULL')
+                            ->setParameter('person', $options['person'])
+                            ->setParameter('teams', $options['person']->getTeams())
+                        ;
+                    }
+
+                    return $qb;
                 },
             ]);
         }

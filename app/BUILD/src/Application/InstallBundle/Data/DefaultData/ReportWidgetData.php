@@ -115,9 +115,10 @@ WHERE tickets.status = \'resolved\'
             'query'         => 'SELECT tickets_messages.person AS \'Agent\', DPQL_COUNT() AS \'Replies\'
 FROM tickets_messages
 WHERE tickets_messages.date_created = ${date}
+  AND tickets_messages.is_agent_note = 0
   AND tickets_messages.person.is_agent = 1
 GROUP BY tickets_messages.person
-ORDER BY DPQL_COUNT() DESC
+ORDER BY @\'Replies\' DESC
 ',
             'variables' => '[{"name":"date","type":"dates","default":"today"}]',
         ],
@@ -144,6 +145,7 @@ ORDER BY DPQL_COUNT() DESC
             FROM  tickets_messages 
             WHERE
                 tickets_messages.date_created = %PAST_24_HOURS%
+                AND tickets_messages.is_agent_note = 0
                 AND tickets_messages.person.is_agent = 1
             GROUP BY DPQL_HOUR(tickets_messages.date_created, 0, 23) AS \'Hour\'',
             'variables' => '[]',
@@ -241,7 +243,7 @@ ORDER BY DPQL_COUNT() DESC',
             'description'   => '',
             'display_types' => 'table,simple_lines',
             'display_order' => 40,
-            'query'         => 'DISPLAY TABLE, LINE
+            'query'         => '
 SELECT DPQL_COUNT() AS \'Views\'
 FROM articles
 WHERE articles.views.date_created = ${date}
@@ -254,7 +256,7 @@ GROUP BY DPQL_ALIAS(DPQL_DATE(articles.views.date_created), \'Date\')',
                 'description'   => '',
                 'display_types' => 'table,simple_bars,pie,simple_area,simple_lines',
                 'display_order' => 30,
-                'query'         => 'DISPLAY TABLE, BAR
+                'query'         => '
 SELECT AVG(chat_conversations.total_to_ended) / 60 AS \'Average Length (Minutes)\'
 FROM chat_conversations
 WHERE chat_conversations.date_created = ${date} AND chat_conversations.is_agent = 0 AND chat_conversations.status = \'ended\' AND chat_conversations.total_to_ended > 0
@@ -267,7 +269,7 @@ GROUP BY ${chat}',
                 'description'   => '',
                 'display_types' => 'table,simple_bars,pie,simple_area,simple_lines',
                 'display_order' => 120,
-                'query'         => 'DISPLAY TABLE, BAR
+                'query'         => '
 SELECT AVG(UNIX_TIMESTAMP(tickets.date_first_agent_reply) - UNIX_TIMESTAMP(tickets.date_created)) / (60 * 60) AS \'Average Time (Hours)\', DPQL_COUNT() AS \'Total Tickets\'
 FROM tickets
 WHERE tickets.date_created = ${date} AND tickets.date_first_agent_reply <> NULL
@@ -280,7 +282,7 @@ GROUP BY ${ticket}',
                 'description'   => '',
                 'display_types' => 'table,simple_bars,pie,simple_area,simple_lines',
                 'display_order' => 100,
-                'query'         => 'DISPLAY TABLE, BAR
+                'query'         => '
 SELECT AVG(UNIX_TIMESTAMP(tickets.date_resolved) - UNIX_TIMESTAMP(tickets.date_created)) / (60 * 60) AS \'Average Time (Hours)\', DPQL_COUNT() AS \'Total Tickets\'
 FROM tickets
 WHERE tickets.status IN (\'resolved\', \'archived\') AND tickets.date_resolved = ${date} AND tickets.date_resolved <> NULL
@@ -293,7 +295,7 @@ GROUP BY ${ticket}',
                 'description'   => '',
                 'display_types' => 'table,simple_bars,pie,simple_area,simple_lines',
                 'display_order' => 110,
-                'query'         => 'DISPLAY TABLE, BAR
+                'query'         => '
 SELECT AVG(tickets.total_user_waiting) / (60 * 60) AS \'Total Waiting Time (Hours)\', DPQL_COUNT() AS \'Total Tickets\'
 FROM tickets
 WHERE tickets.status IN (\'resolved\', \'archived\') AND tickets.date_resolved = ${date}
@@ -306,7 +308,7 @@ GROUP BY ${ticket}',
                 'description'   => '',
                 'display_types' => 'table,simple_lines',
                 'display_order' => 40,
-                'query'         => 'DISPLAY TABLE, LINE
+                'query'         => '
 SELECT DPQL_COUNT() AS \'Views\'
 FROM feedback
 WHERE feedback.views.date_created = ${date}
@@ -334,7 +336,7 @@ LIMIT 100',
                 'description'   => '',
                 'display_types' => 'table',
                 'display_order' => 0,
-                'query'         => 'DISPLAY TABLE
+                'query'         => '
 SELECT DPQL_COUNT() AS \'Total Uses\'
 FROM tickets
 GROUP BY tickets.person_email.email_domain
@@ -348,7 +350,7 @@ LIMIT 100',
                 'description'   => '',
                 'display_types' => 'table',
                 'display_order' => 0,
-                'query'         => 'DISPLAY TABLE
+                'query'         => '
 SELECT DPQL_COUNT() AS \'Total People\'
 FROM people
 GROUP BY people.primary_email.email_domain
@@ -362,7 +364,7 @@ LIMIT 100',
                 'description'   => '',
                 'display_types' => 'table,simple_bars,pie,simple_area,simple_lines',
                 'display_order' => 30,
-                'query'         => 'DISPLAY TABLE, BAR
+                'query'         => '
 SELECT DPQL_COUNT() AS \'Comments Created\'
 FROM article_comments
 WHERE article_comments.date_created = ${date}
@@ -375,7 +377,7 @@ GROUP BY ${article}',
                 'description'   => '',
                 'display_types' => 'table,simple_bars,pie,simple_area,simple_lines',
                 'display_order' => 20,
-                'query'         => 'DISPLAY TABLE, BAR
+                'query'         => '
 SELECT DPQL_COUNT() AS \'Comments Created\'
 FROM article_comments
 WHERE article_comments.date_created = ${date}
@@ -388,7 +390,7 @@ GROUP BY ${article_comment}',
                 'description'   => '',
                 'display_types' => 'table,simple_bars,pie,simple_area,simple_lines',
                 'display_order' => 10,
-                'query'         => 'DISPLAY TABLE, BAR
+                'query'         => '
 SELECT DPQL_COUNT() AS \'Entries Created\'
 FROM articles
 WHERE articles.date_created = ${date}
@@ -401,7 +403,7 @@ GROUP BY ${article}',
                 'description'   => '',
                 'display_types' => 'table,simple_bars,pie,simple_area,simple_lines',
                 'display_order' => 10,
-                'query'         => 'DISPLAY TABLE, BAR
+                'query'         => '
 SELECT DPQL_COUNT() AS \'Chats Created\'
 FROM chat_conversations
 WHERE chat_conversations.date_created = ${date} AND chat_conversations.is_agent = 0
@@ -414,7 +416,7 @@ GROUP BY ${chat}',
                 'description'   => '',
                 'display_types' => 'table,simple_bars,pie,simple_area,simple_lines',
                 'display_order' => 20,
-                'query'         => 'DISPLAY TABLE, BAR
+                'query'         => '
 SELECT DPQL_COUNT() AS \'Chats Created\'
 FROM chat_conversations
 WHERE chat_conversations.date_created = ${date} AND chat_conversations.is_agent = 0 AND chat_conversations.agent_id = NULL
@@ -427,7 +429,7 @@ GROUP BY ${chat}',
                 'description'   => '',
                 'display_types' => 'table,simple_bars,pie,simple_area,simple_lines',
                 'display_order' => 30,
-                'query'         => 'DISPLAY TABLE, BAR
+                'query'         => '
 SELECT DPQL_COUNT() AS \'Comments Created\'
 FROM feedback_comments
 WHERE feedback_comments.date_created = ${date}
@@ -440,7 +442,7 @@ GROUP BY ${feedback}',
                 'description'   => '',
                 'display_types' => 'table,simple_bars,pie,simple_area,simple_lines',
                 'display_order' => 20,
-                'query'         => 'DISPLAY TABLE, BAR
+                'query'         => '
 SELECT DPQL_COUNT() AS \'Comments Created\'
 FROM feedback_comments
 WHERE feedback_comments.date_created = ${date}
@@ -453,7 +455,7 @@ GROUP BY ${feedback_comment}',
                 'description'   => '',
                 'display_types' => 'table,simple_bars,pie,simple_area,simple_lines',
                 'display_order' => 10,
-                'query'         => 'DISPLAY TABLE, BAR
+                'query'         => '
 SELECT DPQL_COUNT() AS \'Entries Created\'
 FROM feedback
 WHERE feedback.date_created = ${date}
@@ -466,7 +468,7 @@ GROUP BY ${feedback}',
                 'description'   => '',
                 'display_types' => 'table,simple_bars,pie,simple_area,simple_lines',
                 'display_order' => 60,
-                'query'         => 'DISPLAY TABLE, BAR
+                'query'         => '
 SELECT DPQL_COUNT() AS \'Ratings\'
 FROM feedback
 WHERE feedback.ratings.date_created = ${date}
@@ -479,7 +481,7 @@ GROUP BY ${feedback}',
                 'description'   => '',
                 'display_types' => 'table',
                 'display_order' => 140,
-                'query'         => 'DISPLAY TABLE
+                'query'         => '
 SELECT DPQL_COUNT() AS \'Total Messages\'
 FROM tickets_messages
 WHERE tickets_messages.person.is_agent = 1 AND tickets_messages.date_created = ${date}
@@ -494,7 +496,7 @@ ORDER BY tickets_messages.date_created',
                 'description'   => '',
                 'display_types' => 'table',
                 'display_order' => 140,
-                'query'         => 'DISPLAY TABLE
+                'query'         => '
 SELECT DPQL_COUNT() AS \'Total Messages\'
 FROM tickets_messages
 WHERE tickets_messages.person.is_agent = 1 AND tickets_messages.date_created = ${date}
@@ -509,7 +511,7 @@ ORDER BY tickets_messages.date_created',
                 'description'   => '',
                 'display_types' => 'table',
                 'display_order' => 140,
-                'query'         => 'DISPLAY TABLE
+                'query'         => '
 SELECT DPQL_COUNT() AS \'Total Messages\'
 FROM tickets_messages
 WHERE tickets_messages.person.is_agent = 1 AND tickets_messages.date_created = ${date} 
@@ -524,7 +526,7 @@ ORDER BY tickets_messages.date_created',
                 'description'   => '',
                 'display_types' => 'table',
                 'display_order' => 140,
-                'query'         => 'DISPLAY TABLE
+                'query'         => '
 SELECT DPQL_COUNT() AS \'Total Messages\'
 FROM tickets_messages
 WHERE tickets_messages.person.is_agent = 1 AND tickets_messages.date_created = ${date}
@@ -539,7 +541,7 @@ ORDER BY DPQL_YEAR(tickets_messages.date_created) DESC',
                 'description'   => '',
                 'display_types' => 'table,simple_area',
                 'display_order' => 15,
-                'query'         => 'DISPLAY TABLE, AREA
+                'query'         => '
 SELECT DPQL_COUNT() AS \'Tickets Created\'
 FROM tickets
 WHERE tickets.date_created = ${date}
@@ -576,7 +578,7 @@ GROUP BY tickets.department.title',
                 'description'   => '',
                 'display_types' => 'table,simple_bars,pie,simple_area,simple_lines',
                 'display_order' => 90,
-                'query'         => 'DISPLAY TABLE, BAR
+                'query'         => '
 SELECT DPQL_COUNT() AS \'Total Tickets\'
 FROM tickets
 WHERE tickets.date_created = ${date}
@@ -589,7 +591,7 @@ GROUP BY DPQL_MATRIX(DPQL_ALIAS(DPQL_DATE_OFFSET_GROUP(DPQL_NOW(), tickets.date_
                 'description'   => '',
                 'display_types' => 'table,simple_bars,pie,simple_area,simple_lines',
                 'display_order' => 80,
-                'query'         => 'DISPLAY TABLE, BAR
+                'query'         => '
 SELECT DPQL_COUNT() AS \'Total Tickets\'
 FROM tickets
 WHERE tickets.status IN (\'resolved\', \'archived\') AND tickets.date_resolved = ${date}
@@ -602,7 +604,7 @@ GROUP BY DPQL_MATRIX(DPQL_ALIAS(DPQL_DATE_OFFSET_GROUP(tickets.date_resolved, ti
                 'description'   => '',
                 'display_types' => 'table,simple_bars,pie,simple_area,simple_lines',
                 'display_order' => 70,
-                'query'         => 'DISPLAY TABLE, BAR
+                'query'         => '
 SELECT DPQL_COUNT() AS \'Total Tickets\'
 FROM tickets
 WHERE tickets.status IN (\'resolved\', \'archived\') AND tickets.date_resolved = ${date}
@@ -615,7 +617,7 @@ GROUP BY DPQL_MATRIX(DPQL_ALIAS(DPQL_DATE_OFFSET_GROUP(tickets.total_user_waitin
                 'description'   => '',
                 'display_types' => 'table,simple_bars,pie,simple_area,simple_lines',
                 'display_order' => 30,
-                'query'         => 'DISPLAY TABLE, BAR
+                'query'         => '
 SELECT DPQL_COUNT() AS \'Total Tickets\'
 FROM tickets
 WHERE tickets.date_resolved = ${date} AND tickets.status IN (\'resolved\', \'archived\')
@@ -641,7 +643,7 @@ GROUP BY DPQL_MATRIX(${ticket}, ${ticket_2})',
                 'description'   => '',
                 'display_types' => 'table,simple_bars,pie,simple_area,simple_lines',
                 'display_order' => 50,
-                'query'         => 'DISPLAY TABLE, BAR
+                'query'         => '
 SELECT DPQL_COUNT() AS \'Total Tickets\'
 FROM tickets
 WHERE tickets.status = \'awaiting_agent\'
@@ -654,7 +656,7 @@ GROUP BY DPQL_MATRIX(DPQL_ALIAS(DPQL_DATE_OFFSET_GROUP(DPQL_NOW(), tickets.date_
                 'description'   => '',
                 'display_types' => 'table,simple_bars,pie,simple_area,simple_lines',
                 'display_order' => 60,
-                'query'         => 'DISPLAY TABLE, BAR
+                'query'         => '
 SELECT DPQL_COUNT() AS \'Total Tickets\'
 FROM tickets
 WHERE tickets.status = \'awaiting_agent\'
@@ -667,7 +669,7 @@ GROUP BY DPQL_MATRIX(DPQL_ALIAS(DPQL_DATE_OFFSET_GROUP(tickets.total_user_waitin
                 'description'   => '',
                 'display_types' => 'table',
                 'display_order' => 50,
-                'query'         => 'DISPLAY TABLE
+                'query'         => '
 SELECT articles.title, DPQL_COUNT() AS \'Views\'
 FROM articles
 WHERE articles.views.date_created = ${date}
@@ -681,7 +683,7 @@ ORDER BY DPQL_COUNT() DESC',
                 'description'   => '',
                 'display_types' => 'table',
                 'display_order' => 50,
-                'query'         => 'DISPLAY TABLE
+                'query'         => '
 SELECT feedback.title, DPQL_COUNT() AS \'Views\'
 FROM feedback
 WHERE feedback.views.date_created = ${date}
@@ -695,7 +697,7 @@ ORDER BY DPQL_COUNT() DESC',
                 'description'   => '',
                 'display_types' => 'table',
                 'display_order' => 200,
-                'query'         => 'DISPLAY TABLE
+                'query'         => '
 SELECT SUM(tickets.total_user_waiting) / (60 * 60) AS \'Total Wait (Hours)\', DPQL_COUNT() AS \'Total Tickets\', AVG(tickets.total_user_waiting) / (60 * 60) AS \'Average Wait (Hours)\'
 FROM tickets
 GROUP BY tickets.organization
@@ -709,7 +711,7 @@ LIMIT 100',
                 'description'   => '',
                 'display_types' => 'table',
                 'display_order' => 190,
-                'query'         => 'DISPLAY TABLE
+                'query'         => '
 SELECT SUM(tickets.total_to_first_reply) / (60 * 60) AS \'Total Wait (Hours)\', DPQL_COUNT() AS \'Total Tickets\', AVG(tickets.total_to_first_reply) / (60 * 60) AS \'Average Wait (Hours)\'
 FROM tickets
 GROUP BY tickets.organization
@@ -723,7 +725,7 @@ LIMIT 100',
                 'description'   => '',
                 'display_types' => 'table',
                 'display_order' => 200,
-                'query'         => 'DISPLAY TABLE
+                'query'         => '
 SELECT SUM(tickets.total_user_waiting) / (60 * 60) AS \'Total Wait (Hours)\', DPQL_COUNT() AS \'Total Tickets\', AVG(tickets.total_user_waiting) / (60 * 60) AS \'Average Wait (Hours)\'
 FROM tickets
 GROUP BY tickets.person
@@ -737,7 +739,7 @@ LIMIT 100',
                 'description'   => '',
                 'display_types' => 'table',
                 'display_order' => 190,
-                'query'         => 'DISPLAY TABLE
+                'query'         => '
 SELECT SUM(tickets.total_to_first_reply) / (60 * 60) AS \'Total Wait (Hours)\', DPQL_COUNT() AS \'Total Tickets\', AVG(tickets.total_to_first_reply) / (60 * 60) AS \'Average Wait (Hours)\'
 FROM tickets
 GROUP BY tickets.person
@@ -751,7 +753,7 @@ LIMIT 100',
                 'description'   => '',
                 'display_types' => 'table,simple_bars,pie,simple_area,simple_lines',
                 'display_order' => 131,
-                'query'         => 'DISPLAY TABLE, BAR
+                'query'         => '
 SELECT DPQL_PERCENT(tickets.date_resolved <> NULL AND UNIX_TIMESTAMP(tickets.date_resolved) - UNIX_TIMESTAMP(tickets.date_created) < 24 * 60 * 60) AS \'Percentage\'
 FROM tickets
 WHERE tickets.date_created = ${date}
@@ -764,7 +766,7 @@ GROUP BY ${ticket}',
                 'description'   => '',
                 'display_types' => 'table,simple_bars,pie,simple_area,simple_lines',
                 'display_order' => 130,
-                'query'         => 'DISPLAY TABLE, BAR
+                'query'         => '
 SELECT DPQL_PERCENT(tickets.total_to_first_reply < 3600) AS \'Percentage\'
 FROM tickets
 WHERE tickets.date_created = ${date} AND tickets.total_to_first_reply > 0
@@ -777,7 +779,7 @@ GROUP BY ${ticket}',
                 'description'   => '',
                 'display_types' => 'table,simple_bars,pie,simple_area,simple_lines',
                 'display_order' => 135,
-                'query'         => 'DISPLAY TABLE, BAR
+                'query'         => '
 SELECT DPQL_PERCENT(tickets.count_agent_replies = 1) AS \'Percentage\'
 FROM tickets
 WHERE tickets.date_created = ${date} AND tickets.date_resolved <> NULL AND tickets.count_agent_replies > 0
@@ -790,7 +792,7 @@ GROUP BY ${ticket}',
                 'description'   => '',
                 'display_types' => 'table,simple_bars,pie,simple_area,simple_lines',
                 'display_order' => 96,
-                'query'         => 'DISPLAY TABLE, BAR
+                'query'         => '
 SELECT DPQL_COUNT() AS \'Total Tickets\'
 FROM tickets
 WHERE tickets.date_created = ${date} AND tickets.ticket_slas.sla_status IN (\'ok\', \'warning\', \'fail\')
@@ -803,7 +805,7 @@ GROUP BY ${ticket}, tickets.ticket_slas.sla_status',
                 'description'   => '',
                 'display_types' => 'table,pie',
                 'display_order' => 95,
-                'query'         => 'DISPLAY TABLE, PIE
+                'query'         => '
 SELECT DPQL_COUNT() AS \'Total Tickets\'
 FROM tickets
 WHERE tickets.date_created = ${date} AND tickets.ticket_slas.sla_status IN (\'ok\', \'warning\', \'fail\')
@@ -832,7 +834,7 @@ LIMIT 100',
                 'description'   => '',
                 'display_types' => 'table,simple_bars,pie,simple_area,simple_lines',
                 'display_order' => 170,
-                'query'         => 'DISPLAY TABLE, BAR
+                'query'         => '
 SELECT DPQL_COUNT() AS \'Total Tickets\'
 FROM tickets
 WHERE tickets.labels.label <> NULL AND tickets.date_created = ${date}
@@ -845,7 +847,7 @@ GROUP BY tickets.labels',
                 'description'   => '',
                 'display_types' => 'table',
                 'display_order' => 160,
-                'query'         => 'DISPLAY TABLE
+                'query'         => '
 SELECT DPQL_COUNT_DISTINCT(tickets_logs.ticket_id) AS \'Tickets Resolved\'
 FROM tickets_logs
 WHERE tickets_logs.action_type = \'changed_status\' AND tickets_logs.id_after = 200 AND tickets_logs.ticket.status IN (\'resolved\', \'archived\') AND tickets_logs.date_created = ${date}
@@ -860,7 +862,7 @@ LIMIT 100',
                 'description'   => '',
                 'display_types' => 'table',
                 'display_order' => 180,
-                'query'         => 'DISPLAY TABLE
+                'query'         => '
 SELECT tickets.id, tickets.subject, tickets.person, tickets.department, tickets.date_created, tickets.agent
 FROM tickets
 WHERE tickets.labels.label <> NULL
@@ -875,7 +877,7 @@ LIMIT 100',
                 'description'   => '',
                 'display_types' => 'table',
                 'display_order' => 41,
-                'query'         => 'DISPLAY TABLE
+                'query'         => '
 SELECT tickets.id, tickets.subject, tickets.person, tickets.department, tickets.date_created, tickets.agent
 FROM tickets
 WHERE tickets.status IN (\'awaiting_agent\', \'awaiting_user\')
@@ -890,7 +892,7 @@ LIMIT 100',
                 'description'   => '',
                 'display_types' => 'table',
                 'display_order' => 220,
-                'query'         => 'DISPLAY TABLE
+                'query'         => '
 SELECT DPQL_COUNT() AS \'Total\', DPQL_COUNT(tickets.status = \'awaiting_agent\') AS \'Total Awaiting Agent\', DPQL_COUNT(tickets.status = \'awaiting_user\') AS \'Total Awaiting User\'
 FROM tickets
 WHERE tickets.status IN (\'awaiting_user\', \'awaiting_agent\') AND tickets.date_created < %PAST_7_DAYS%',
@@ -902,7 +904,7 @@ WHERE tickets.status IN (\'awaiting_user\', \'awaiting_agent\') AND tickets.date
                 'description'   => '',
                 'display_types' => 'table',
                 'display_order' => 230,
-                'query'         => 'DISPLAY TABLE
+                'query'         => '
 SELECT tickets.id, tickets.subject, tickets.person, tickets.department, tickets.date_created, tickets.agent, tickets.priority
 FROM tickets
 WHERE tickets.priority.priority = 1 AND tickets.status IN (\'awaiting_user\', \'awaiting_agent\')
@@ -916,7 +918,7 @@ LIMIT 100',
                 'description'   => '',
                 'display_types' => 'table',
                 'display_order' => 240,
-                'query'         => 'DISPLAY TABLE
+                'query'         => '
 SELECT tickets.id, tickets.subject, tickets.person, tickets.department, tickets.date_created, tickets.agent, tickets.count_agent_replies AS \'Agent Replies\'
 FROM tickets
 WHERE tickets.status IN (\'awaiting_agent\', \'awaiting_user\') AND tickets.count_agent_replies >= 10
@@ -930,7 +932,7 @@ LIMIT 100',
                 'description'   => '',
                 'display_types' => 'table',
                 'display_order' => 230,
-                'query'         => 'DISPLAY TABLE
+                'query'         => '
 SELECT tickets.id, tickets.subject, tickets.person, tickets.department, tickets.date_created, tickets.agent, tickets.urgency
 FROM tickets
 WHERE tickets.urgency > 7 AND tickets.status IN (\'awaiting_user\', \'awaiting_agent\')
@@ -944,7 +946,7 @@ LIMIT 100',
                 'description'   => '',
                 'display_types' => 'table',
                 'display_order' => 150,
-                'query'         => 'DISPLAY TABLE
+                'query'         => '
 SELECT DPQL_COUNT() AS \'Total Tickets\'
 FROM tickets
 WHERE tickets.status IN (\'awaiting_user\', \'awaiting_agent\')
@@ -953,6 +955,283 @@ ORDER BY DPQL_COUNT() DESC
 LIMIT 100',
                 'variables' => '[]',
             ],
+        'voice-calls-grouped-by-x' => [
+            'title'         => 'Number of voice calls ${date} grouped by ${field}',
+            'labels'        => 'voice',
+            'description'   => '',
+            'display_types' => 'table',
+            'display_order' => 250,
+            'query'         => '
+SELECT DPQL_COUNT() AS \'Total Voice Calls\'
+FROM voice_phone_calls
+WHERE voice_phone_calls.date_created = ${date}
+GROUP BY ${field}
+ORDER BY DPQL_COUNT() DESC
+LIMIT 100
+            ',
+            'variables' => '[{"name":"date","type":"dates"}, {"name":"field","type":"fields","field_type":"voice_phone_calls","table":"voice_phone_calls"}]',
+        ],
+        // BILLING REPORTS
+        'list-charges-date' => [
+            'title'         => 'List of charges ${date}',
+            'labels'        => 'billing',
+            'description'   => '',
+            'display_types' => 'table',
+            'display_order' => 300,
+            'query'         => '
+                SELECT
+                  DPQL_TOTAL(DPQL_TIME_LENGTH(ticket_charges.charge_time)) AS \'Time\', 
+                  DPQL_TOTAL(DPQL_FORMAT(ticket_charges.amount, \'number\', 2)) AS \'Amount (${billingCurrency})\', ${billingSelectBits} ticket_charges.agent, ticket_charges.date_created, ticket_charges.ticket
+                FROM ticket_charges
+                WHERE ticket_charges.date_created = ${date}
+                ORDER BY ticket_charges.date_created',
+            'variables' => '[{"name":"date","type":"dates", "default": "today"}]',
+        ],
+        'total-charges-per-day-date' => [
+            'title'         => 'Total [charges] per day ${date}',
+            'labels'        => 'billing',
+            'description'   => '',
+            'display_types' => 'table',
+            'display_order' => 301,
+            'query'         => '
+                SELECT
+                    DPQL_TOTAL(DPQL_COUNT()) AS \'Number of Charges\', 
+                    DPQL_TOTAL(DPQL_TIME_LENGTH(SUM(ticket_charges.charge_time))) AS \'Total Time\',
+                    DPQL_TOTAL(DPQL_FORMAT(SUM(ticket_charges.amount), \'number\', 2)) AS \'Total Amount(${billingCurrency})\'
+                FROM ticket_charges
+                WHERE ticket_charges.date_created = ${date}
+                GROUP BY DPQL_DATE(ticket_charges.date_created) AS \'Date\'
+            ',
+            'variables' => '[{"name":"date","type":"dates", "default": "this_month"}]',
+        ],
+        'total-amount-charges-per-day-date' => [
+            'title'         => 'Total [amount charges] per day ${date}',
+            'labels'        => 'billing',
+            'description'   => '',
+            'display_types' => 'table,simple_bars',
+            'display_order' => 302,
+            'query'         => '
+                SELECT 
+                    DPQL_TOTAL(DPQL_FORMAT(SUM(ticket_charges.amount), \'number\', 2)) AS \'Total Amount (${billingCurrency})\'
+                    FROM ticket_charges
+                    WHERE ticket_charges.date_created = ${date} AND ticket_charges.amount > 0
+                    GROUP BY DPQL_DATE(ticket_charges.date_created) AS \'Date\'
+            ',
+            'variables' => '[{"name":"date","type":"dates", "default": "this_month"}]',
+        ],
+        'total-time-charges-per-day-date' => [
+            'title'         => 'Total [time charges] per day ${date}',
+            'labels'        => 'billing',
+            'description'   => '',
+            'display_types' => 'table,simple_bars',
+            'display_order' => 303,
+            'query'         => '
+                SELECT
+                    DPQL_TOTAL(DPQL_TIME_LENGTH(SUM(ticket_charges.charge_time))) AS \'Total Time\'
+                FROM ticket_charges
+                WHERE ticket_charges.date_created = ${date} AND ticket_charges.charge_time > 0
+                GROUP BY DPQL_DATE(ticket_charges.date_created) AS \'Date\'
+            ',
+            'variables' => '[{"name":"date","type":"dates", "default": "this_month"}]',
+        ],
+        'total-charges-person-date' => [
+            'title'         => 'Total [charges] per person ${date}',
+            'labels'        => 'billing',
+            'description'   => '',
+            'display_types' => 'table',
+            'display_order' => 304,
+            'query'         => '
+                SELECT
+                    DPQL_TOTAL(DPQL_COUNT()) AS \'Number of Charges\',
+                    DPQL_TOTAL(DPQL_TIME_LENGTH(SUM(ticket_charges.charge_time))) AS \'Total Time\',
+                    DPQL_TOTAL(DPQL_FORMAT(SUM(ticket_charges.amount), \'number\', 2)) AS \'Total Amount (${billingCurrency})\'
+                FROM ticket_charges
+                WHERE ticket_charges.date_created = ${date}
+                GROUP BY ticket_charges.person
+            ',
+            'variables' => '[{"name":"date","type":"dates", "default": "this_month"}]',
+        ],
+        'total-amount-charges-person-date' => [
+            'title'         => 'Total [amount charges] per person ${date}',
+            'labels'        => 'billing',
+            'description'   => '',
+            'display_types' => 'table,simple_Bars',
+            'display_order' => 305,
+            'query'         => '
+                SELECT
+                  DPQL_TOTAL(DPQL_FORMAT(SUM(ticket_charges.amount), \'number\', 2)) AS \'Total Amount (${billingCurrency})\'
+                FROM ticket_charges
+                WHERE ticket_charges.date_created = ${date} AND ticket_charges.amount > 0
+                GROUP BY ticket_charges.person
+            ',
+            'variables' => '[{"name":"date","type":"dates", "default": "this_month"}]',
+        ],
+        'total-time-charges-person-date' => [
+            'title'         => 'Total [time charges] per person ${date}',
+            'labels'        => 'billing',
+            'description'   => '',
+            'display_types' => 'table,simple_bars',
+            'display_order' => 306,
+            'query'         => '
+              SELECT DPQL_TOTAL(DPQL_TIME_LENGTH(SUM(ticket_charges.charge_time))) AS \'Total Time\'
+              FROM ticket_charges
+              WHERE ticket_charges.date_created = ${date} AND ticket_charges.charge_time > 0
+              GROUP BY ticket_charges.person
+            ',
+            'variables' => '[{"name":"date","type":"dates", "default": "this_month"}]',
+        ],
+        'list-charges-person-date' => [
+            'title'         => 'List of charges per person ${date}',
+            'labels'        => 'billing',
+            'description'   => '',
+            'display_types' => 'table',
+            'display_order' => 307,
+            'query'         => '
+                SELECT 
+                    DPQL_TOTAL(DPQL_TIME_LENGTH(ticket_charges.charge_time)) AS \'Time\', 
+                    DPQL_TOTAL(DPQL_FORMAT(ticket_charges.amount, \'number\', 2)) AS \'Amount (${billingCurrency})\',
+                    ${billingSelectBits} ticket_charges.agent, ticket_charges.date_created, ticket_charges.ticket
+                FROM ticket_charges
+                WHERE ticket_charges.date_created = ${date}
+                SPLIT BY ticket_charges.person
+                ORDER BY ticket_charges.date_created
+            ',
+            'variables' => '[{"name":"date","type":"dates", "default": "this_month"}]',
+        ],
+        'total-charges-organization-date' => [
+            'title'         => 'Total [charges] per organization ${date}',
+            'labels'        => 'billing',
+            'description'   => '',
+            'display_types' => 'table',
+            'display_order' => 308,
+            'query'         => '
+                SELECT 
+                    DPQL_TOTAL(DPQL_COUNT()) AS \'Number of Charges\', 
+                    DPQL_TOTAL(DPQL_TIME_LENGTH(SUM(ticket_charges.charge_time))) AS \'Total Time\',
+                    DPQL_TOTAL(DPQL_FORMAT(SUM(ticket_charges.amount), \'number\', 2)) AS \'Total Amount (${billingCurrency})\'
+                FROM ticket_charges
+                WHERE ticket_charges.date_created = ${date} AND ticket_charges.organization_id <> NULL
+                GROUP BY ticket_charges.organization
+            ',
+            'variables' => '[{"name":"date","type":"dates", "default": "this_month"}]',
+        ],
+        'total-amount-charges-organization-date' => [
+            'title'         => 'Total [amount charges] per organization ${date}',
+            'labels'        => 'billing',
+            'description'   => '',
+            'display_types' => 'table,simple_bars',
+            'display_order' => 309,
+            'query'         => '
+                SELECT
+                    DPQL_TOTAL(DPQL_FORMAT(SUM(ticket_charges.amount), \'number\', 2)) AS \'Total Amount (${billingCurrency})\'
+                FROM ticket_charges
+                WHERE ticket_charges.date_created = ${date}
+                  AND ticket_charges.organization_id <> NULL
+                  AND ticket_charges.amount > 0
+                GROUP BY ticket_charges.organization
+            ',
+            'variables' => '[{"name":"date","type":"dates", "default": "this_month"}]',
+        ],
+        'total-time-charges-organization-date' => [
+            'title'         => 'Total [time charges] per organization ${date}',
+            'labels'        => 'billing',
+            'description'   => '',
+            'display_types' => 'table,simple_bars',
+            'display_order' => 310,
+            'query'         => '
+                SELECT 
+                    DPQL_TOTAL(DPQL_TIME_LENGTH(SUM(ticket_charges.charge_time))) AS \'Total Time\'
+                FROM ticket_charges
+                WHERE ticket_charges.date_created = ${date} 
+                  AND ticket_charges.organization_id <> NULL 
+                  AND ticket_charges.charge_time > 0
+                GROUP BY ticket_charges.organization
+            ',
+            'variables' => '[{"name":"date","type":"dates", "default": "this_month"}]',
+        ],
+        'list-charges-organization-date' => [
+            'title'         => 'List of charges per organization ${date}',
+            'labels'        => 'billing',
+            'description'   => '',
+            'display_types' => 'table',
+            'display_order' => 311,
+            'query'         => '
+                SELECT 
+                    DPQL_TOTAL(DPQL_TIME_LENGTH(ticket_charges.charge_time)) AS \'Time\', 
+                    DPQL_TOTAL(DPQL_FORMAT(ticket_charges.amount, \'number\', 2)) AS \'Amount (${billingCurrency})\',
+                    ${billingSelectBits} ticket_charges.agent, ticket_charges.date_created, ticket_charges.ticket
+                FROM ticket_charges
+                WHERE ticket_charges.date_created = ${date} AND ticket_charges.organization_id <> NULL
+                SPLIT BY ticket_charges.organization
+                ORDER BY ticket_charges.date_created
+            ',
+            'variables' => '[{"name":"date","type":"dates", "default": "this_month"}]',
+        ],
+        'total-charges-agent-date' => [
+            'title'         => 'Total [charges] per agent ${date}',
+            'labels'        => 'billing',
+            'description'   => '',
+            'display_types' => 'table',
+            'display_order' => 312,
+            'query'         => '
+                SELECT 
+                    DPQL_TOTAL(DPQL_COUNT()) AS \'Number of Charges\', 
+                    DPQL_TOTAL(DPQL_TIME_LENGTH(SUM(ticket_charges.charge_time))) AS \'Total Time\', 
+                    DPQL_TOTAL(DPQL_FORMAT(SUM(ticket_charges.amount), \'number\', 2)) AS \'Total Amount (${billingCurrency})\'
+                FROM ticket_charges
+                WHERE ticket_charges.date_created = ${date}
+                GROUP BY ticket_charges.agent
+            ',
+            'variables' => '[{"name":"date","type":"dates", "default": "this_month"}]',
+        ],
+        'total-amount-charges-agent-date' => [
+            'title'         => 'Total [amount charges] per agent ${date}',
+            'labels'        => 'billing',
+            'description'   => '',
+            'display_types' => 'table,simple_bars',
+            'display_order' => 313,
+            'query'         => '
+                SELECT 
+                    DPQL_TOTAL(DPQL_FORMAT(SUM(ticket_charges.amount), \'number\', 2)) AS \'Total Amount (${billingCurrency})\'
+                FROM ticket_charges
+                WHERE ticket_charges.date_created = ${date} AND ticket_charges.amount > 0
+                GROUP BY ticket_charges.agent
+            ',
+            'variables' => '[{"name":"date","type":"dates", "default": "this_month"}]',
+        ],
+        'total-time-charges-agent-date' => [
+            'title'         => 'Total [time charges] per agent ${date}',
+            'labels'        => 'billing',
+            'description'   => '',
+            'display_types' => 'table,simple_bars',
+            'display_order' => 314,
+            'query'         => '
+                SELECT 
+                    DPQL_TOTAL(DPQL_TIME_LENGTH(SUM(ticket_charges.charge_time))) AS \'Total Time\'
+                FROM ticket_charges
+                WHERE ticket_charges.date_created = ${date} AND ticket_charges.charge_time > 0
+                GROUP BY ticket_charges.agent
+            ',
+            'variables' => '[{"name":"date","type":"dates", "default": "this_month"}]',
+        ],
+        'list-charges-agent-date' => [
+            'title'         => 'List of charges per agent ${date}',
+            'labels'        => 'billing',
+            'description'   => '',
+            'display_types' => 'table',
+            'display_order' => 315,
+            'query'         => '
+                SELECT
+                    DPQL_TOTAL(DPQL_TIME_LENGTH(ticket_charges.charge_time)) AS \'Time\', 
+                    DPQL_TOTAL(DPQL_FORMAT(ticket_charges.amount, \'number\', 2)) AS \'Amount (${billingCurrency})\',
+                    ${billingSelectBits} ticket_charges.date_created, ticket_charges.ticket
+                FROM ticket_charges
+                WHERE ticket_charges.date_created = ${date}
+                SPLIT BY ticket_charges.agent
+                ORDER BY ticket_charges.date_created
+            ',
+            'variables' => '[{"name":"date","type":"dates", "default": "this_month"}]',
+        ],
     ];
 
     /**

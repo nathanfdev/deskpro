@@ -79,6 +79,15 @@ class HelpdeskAlertGenerator extends AbstractGenerator
             $agents = $this->em->getRepository(Person::class)->getAgents();
         } elseif ($snippet->getOwnershipTeams()) {
             $agents = $this->em->getRepository(Person::class)->getAgentsInTeams($snippet->getOwnershipTeams());
+
+            // always add snippet owner
+            $owner = $snippet->getPerson();
+            if ($owner && !array_filter($agents, function ($agent) use ($owner) {
+                return $agent->getId() === $owner->getId();
+            })
+            ) {
+                $agents[] = $owner;
+            }
         }
 
         // we always send through Db delivery because its possible

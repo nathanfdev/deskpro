@@ -8,6 +8,8 @@
 
 namespace Application\DeskPRO\EntityRepository;
 
+use Application\DeskPRO\Entity;
+
 class CustomDataTicket extends AbstractEntityRepository
 {
     public function getDataForTicket(Entity\Ticket $ticket)

@@ -8,6 +8,7 @@ namespace Application\AgentBundle\Form\Model;
 
 use Application\DeskPRO\App;
 use Application\DeskPRO\Entity\News;
+use Application\DeskPRO\Entity\NewsAttachment;
 use Application\DeskPRO\Entity\Person;
 
 class NewNews
@@ -71,6 +72,18 @@ class NewNews
         if ($this->labels) {
             $news->getLabelManager()->setLabelsArray($this->labels, $this->_em);
             $this->_em->flush();
+        }
+
+        // Message Attachments
+        foreach ($this->attach as $blob_id) {
+            $blob = App::getOrm()->getRepository('DeskPRO:Blob')->find($blob_id);
+            if ($blob) {
+                $attach           = new NewsAttachment();
+                $attach['blob']   = $blob;
+                $attach['person'] = $this->_person_context;
+                $this->_em->persist($attach);
+                $news->addAttachment($attach);
+            }
         }
 
         $this->_em->commit();

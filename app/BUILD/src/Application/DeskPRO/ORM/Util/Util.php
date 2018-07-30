@@ -9,9 +9,10 @@
 namespace Application\DeskPRO\ORM\Util;
 
 use Application\DeskPRO\App;
+use Application\DeskPRO\DBAL\SchemaHelper;
+use DeskPRO\Component\Doctrine\ORM\Tools\SchemaTool as DPSchemaTool;
 use Doctrine\ORM\EntityManager;
 use Doctrine\ORM\PersistentCollection;
-use Doctrine\ORM\Tools\SchemaTool;
 
 /**
  * Simple utility methods for working with the ORM.
@@ -41,19 +42,20 @@ class Util
 
     /**
      * @param \Doctrine\ORM\EntityManager $em
+     * @param bool                        $ignoreUnknownTables
      *
      * @return array
      */
-    public static function getUpdateSchemaSql(EntityManager $em = null)
+    public static function getUpdateSchemaSql(EntityManager $em = null, $ignoreUnknownTables = false)
     {
         if ($em === null) {
             $em = App::getOrm();
         }
 
         $metadata = $em->getMetadataFactory()->getAllMetadata();
-        $tool     = new SchemaTool($em);
+        $tool     = new DPSchemaTool($em);
 
-        $arr   = $tool->getUpdateSchemaSql($metadata, true);
+        $arr   = $tool->getUpdateSchemaSql($metadata, true, $ignoreUnknownTables);
         $lines = [];
         foreach ($arr as $a) {
             // Doctrine doesn't seem to detect this properly and always thinks this is needed
@@ -67,5 +69,40 @@ class Util
         }
 
         return $lines;
+    }
+
+    /**
+     * Check that all FK constraints exist in DB.
+     *
+     * @param EntityManager $em
+     *
+     * @return bool
+     */
+    public static function isAllFKConstraintsExist(EntityManager $em)
+    {
+        $metadata     = $em->getMetadataFactory()->getAllMetadata();
+        $schemaTool   = new DPSchemaTool($em);
+        $schemaHelper = new SchemaHelper($em->getConnection());
+        $schema       = $schemaTool->getSchemaFromMetadata($metadata);
+
+        foreach ($schema->getTables() as $table) {
+            foreach ($table->getForeignKeys() as $foreignKey) {
+                try {
+                    $realKey = $schemaHelper->findForeignKey(
+                        $table->getName(),
+                        $foreignKey->getColumns(),
+                        $foreignKey->getForeignTableName(),
+                        $foreignKey->getForeignColumns()
+                    );
+                    if (!$realKey) {
+                        return false;
+                    }
+                } catch (\Exception $e) {
+                    return false;
+                }
+            }
+        }
+
+        return true;
     }
 }

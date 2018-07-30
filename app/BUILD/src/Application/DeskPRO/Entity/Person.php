@@ -972,6 +972,14 @@ class Person extends DomainObject implements
     /**
      * @return bool
      */
+    public function canReports()
+    {
+        return $this->can_reports;
+    }
+
+    /**
+     * @return bool
+     */
     public function isActiveAgent()
     {
         return $this->is_agent && !$this->is_deleted && !$this->is_disabled;

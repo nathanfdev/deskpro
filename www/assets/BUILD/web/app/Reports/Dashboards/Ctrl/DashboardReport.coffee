@@ -26,28 +26,30 @@ define ['DeskPRO/Util/Arrays'], (Arrays) -> [
     }
     $scope.widgets = []
     $scope.groupParams = DashboardWidgetService.groupParams
+    $scope.layoutEditing = false
 
     report_id = parseInt($stateParams.report_id)
     $scope.report_id = parseInt($stateParams.report_id)
+    $scope.autoRefresh = if localStorage.getItem("dp.dashboard.autoRefresh.#{$scope.report_id}") == '1' then 1 else 0
+    if $scope.autoRefresh
+      $scope.refreshInterval = setInterval(=>
+        $scope.refreshDashboardReport()
+      , 10*60*1000)
 
     $scope.gridsterOptions =
       margins: [13, 13],
       width: 10000,
       columns: 150,
       colWidth: 50,
-      pushing: false,
-      floating: false,
+      pushing: true,
+      floating: true,
       swapping: true,
       draggable:
         enabled: false
         handle: '.box-header'
-        stop: (event, $element, $widget) ->
-          DashboardWidgetService.saveWidget($widget)
       resizable:
         enabled: false
         handles: ['n', 'e', 's', 'w', 'se', 'sw']
-        stop: (event, $element, $widget) ->
-          DashboardWidgetService.saveWidget($widget)
 
     load_promises = []
     load_promises.push DashboardsInfo.getReportDetail(report_id).then((loadedReport) ->
@@ -106,8 +108,8 @@ define ['DeskPRO/Util/Arrays'], (Arrays) -> [
 
     $scope.toggleLayoutEdit = () ->
       $scope.layoutEditing = !$scope.layoutEditing
-      $scope.gridsterOptions.pushing = $scope.layoutEditing
-      $scope.gridsterOptions.floating = $scope.layoutEditing
+#      $scope.gridsterOptions.pushing = $scope.layoutEditing
+#      $scope.gridsterOptions.floating = $scope.layoutEditing
       $scope.gridsterOptions.draggable.enabled = $scope.layoutEditing
       $scope.gridsterOptions.resizable.enabled = $scope.layoutEditing
 
@@ -211,28 +213,27 @@ define ['DeskPRO/Util/Arrays'], (Arrays) -> [
             report
       }
       modalInstance.result.then (result) ->
-        DashboardService.saveReport(result, true).then (savedReport) ->
-          $scope.report = savedReport
-          $state.go('reports.dashboards.view.report', { report_id: savedReport.id})
+        DashboardService.saveReport(result).then (savedReport) ->
+          DashboardsInfo.getReportDetail(report_id).then((loadedReport) ->
+            $scope.report = loadedReport
+            $scope.report.variables = loadedReport.variables
+            $state.go('reports.dashboards.view.report', { report_id: loadedReport.id})
+          )
+      modalInstance.result.catch (reason) ->
+        if reason == 'scheduled'
+          DashboardsInfo.getReportDetail(report_id).then((loadedReport) ->
+            $scope.report = loadedReport
+            $scope.report.variables = loadedReport.variables
+            $state.go('reports.dashboards.view.report', { report_id: loadedReport.id})
+          )
+
 
 
     $scope.changeReportLevelVar = () ->
       $scope.loaded = false
 
       DashboardService.saveReportVars($scope.report).then( () ->
-        reloadPromises = []
-        $scope.widgets = [];
-        reloadPromises.push DashboardsInfo.getReportDetail($scope.report.id, true).then((loadedReport) ->
-          $scope.report = loadedReport
-        )
-
-        reloadPromises.push DashboardWidgetService.getWidgets(report_id).then((widgets) ->
-            $scope.widgets = widgets
-          )
-
-        $q.all(reloadPromises).then(->
-          $scope.updateReportVariables(false, () => $scope.loaded = true)
-        )
+        $scope.refreshDashboardReport()
       )
 
     $scope.canViewAllAgents = () ->
@@ -255,8 +256,11 @@ define ['DeskPRO/Util/Arrays'], (Arrays) -> [
             cloneVar = $.extend({}, variable);
             if variable.type == 'dates' && $scope.groupParams[variable.type]
               cloneVar.value = $scope.groupParams[variable.type][Object.keys($scope.groupParams[variable.type])[0]][0]
+            else if variable.type == 'values' && $scope.groupParams[variable.type]
+              cloneVar.value = Object.keys($scope.groupParams[variable.type][variable.field_type])[0]
             else if $scope.groupParams[variable.type]
-              cloneVar.value = cloneVar.value = $scope.groupParams[variable.type][variable.field_type][Object.keys($scope.groupParams[variable.type])[0]][0]
+              cloneVar.value = $scope.groupParams[variable.type][variable.field_type][Object.keys($scope.groupParams[variable.type][variable.field_type])[0]][0]
+
             angular.forEach($scope.report.variables, (reportVar) ->
               if reportVar.name == cloneVar.name
                 cloneVar.value = reportVar.value
@@ -285,4 +289,32 @@ define ['DeskPRO/Util/Arrays'], (Arrays) -> [
       for permission in $scope.dashboard.permissions
         return true if (permission.person == $scope.me.person.id || (!permission.person && !permission.team && !permission.department)) && permission.name == 'full'
       return false
-  ]
+
+    $scope.refreshDashboardReport = () ->
+      reloadPromises = []
+      $scope.widgets = [];
+      reloadPromises.push DashboardsInfo.getReportDetail($scope.report.id, true).then((loadedReport) ->
+        $scope.report = loadedReport
+      )
+
+      reloadPromises.push DashboardWidgetService.getWidgets(report_id).then((widgets) ->
+        $scope.widgets = widgets
+      )
+
+      $q.all(reloadPromises).then(->
+        $scope.updateReportVariables(false, () => $scope.loaded = true)
+      )
+
+    $scope.toggleAutoRefreshReport = () ->
+      $scope.autoRefresh = !$scope.autoRefresh
+      newVal = if $scope.autoRefresh then 1 else 0
+      localStorage.setItem('dp.dashboard.autoRefresh.'+$scope.report_id, newVal)
+
+      if $scope.autoRefresh
+        $scope.refreshInterval = setInterval(=>
+          $scope.refreshDashboardReport()
+        , 10*60*1000)
+      else
+        clearInterval($scope.refreshInterval)
+
+]

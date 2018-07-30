@@ -8,12 +8,11 @@ import { Edit } from './Edit';
 import Run from './Run';
 import {
   loadReport,
-  saveReport,
-  newReport,
   runReport,
   saveAndRun,
   parseQuery,
-  cloneReport
+  deleteReport,
+  downloadReport
 } from '../../Application/Actions/reportActions';
 import { allReportsSelector } from '../Selectors/reports';
 import { allReportLabelsSelector } from '../../Application/Selectors/reports';
@@ -22,8 +21,6 @@ import { regex, activateLabel, transformLabels, transformReportData, countActive
 @connect(state => ({
   reports:       allReportsSelector(state),
   reportsLoaded: state.Application.reports.get('reportsLoaded'),
-  reportLoading: state.Application.reports.get('reportLoading'),
-  currentReport: state.Application.reports.get('currentReport'),
   groupParams:   state.Application.reports.get('groupParams'),
   labels:        allReportLabelsSelector(state)
 }))
@@ -31,20 +28,48 @@ class Wrapper extends React.Component {
 
   static defaultProps = {
     reportsLoaded: false,
-    reportLoading: false,
-    currentReport: null,
     labels:        null
   };
 
   static propTypes = {
     reports:       PropTypes.object.isRequired,
     reportsLoaded: PropTypes.bool,
-    reportLoading: PropTypes.bool,
-    currentReport: PropTypes.object,
     groupParams:   PropTypes.object.isRequired,
     labels:        PropTypes.object,
     dispatch:      PropTypes.func.isRequired,
   };
+
+  static createNewReport(report) {
+    let toClone = report;
+    if (!report) {
+      toClone = {};
+    }
+
+    return Immutable.fromJS({
+      id:            0,
+      unique_key:    '',
+      title:         '',
+      description:   '',
+      query:         toClone.query || '',
+      labels:        [],
+      display_order: 10,
+      display_types: [],
+      variables:     toClone.variables || [],
+      query_parts:   toClone.query_parts || {
+        select:      '',
+        from:        '',
+        where:       '',
+        split_by:    '',
+        group_by:    '',
+        order_by:    '',
+        with_rollup: false,
+        limit:       '',
+        offset:      ''
+      },
+      is_custom: true,
+      is_new:    true
+    });
+  }
 
   constructor(props) {
     super(props);
@@ -56,6 +81,8 @@ class Wrapper extends React.Component {
 
     this.state = {
       currentReport: Immutable.Map(),
+      currentErrors: Immutable.Map(),
+      reportLoading: false,
       reports:       props.reports || Immutable.Map(),
       searchText:    '',
       labels:        newLabels,
@@ -63,7 +90,9 @@ class Wrapper extends React.Component {
     };
 
     this.onEditReportClick          = this.onEditReportClick.bind(this);
+    this.onDownloadReportClick      = this.onDownloadReportClick.bind(this);
     this.onRunReportClick           = this.onRunReportClick.bind(this);
+    this.onDeleteReportClick        = this.onDeleteReportClick.bind(this);
     this.onCloneReportClick         = this.onCloneReportClick.bind(this);
     this.onChangeReportDisplayTypes = this.onChangeReportDisplayTypes.bind(this);
     this.onChangeFilterText         = this.onChangeFilterText.bind(this);
@@ -76,14 +105,13 @@ class Wrapper extends React.Component {
   }
 
   componentWillReceiveProps(props) {
-    const { currentReport } = props;
     let newReports = props.reports;
     this.state.reports.forEach((report) => { // we have to persist changed var values, to keep run mode work
       if (report.get('varChanged')) {
         newReports = newReports.mergeIn([report.get('id')], { variables: report.get('variables'), varChanged: true });
       }
     });
-    this.setState({ currentReport, reports: newReports });
+    this.setState({ reports: newReports });
     this.setLabels(props);
   }
 
@@ -98,18 +126,69 @@ class Wrapper extends React.Component {
     this.setState({ currentReport: report, reports: newReports }, () => this.onRunReportClick(changedReport));
   }
 
+  onDownloadReportClick(report, type) {
+    this.props.dispatch(downloadReport(report.get('id'), transformReportData(report), type));
+  }
+
   onEditReportClick(report) {
-    this.props.dispatch(loadReport(report.get('id')));
+    this.setState({
+      currentReport: Immutable.Map(),
+      reportLoading: true,
+    });
+
+    const promise = this.props.dispatch(loadReport(report.get('id')));
+    promise.then((response) => {
+      this.setState({
+        reportLoading: false,
+        currentReport: Immutable.fromJS(response.data.data)
+      });
+    }, () => {
+      this.setState({
+        reportLoading: false
+      });
+    });
+
     this.setState({ mode: 'edit' });
   }
 
+  onDeleteReportClick(report) {
+    this.props.dispatch(deleteReport(report.get('id'))).then(() => {
+      this.setState({
+        mode: null
+      });
+    });
+  }
+
   onRunReportClick(report) {
-    this.props.dispatch(runReport(report.get('id'), transformReportData(report)));
+    this.setState({
+      currentErrors: Immutable.Map(),
+      currentReport: Immutable.Map(),
+      reportLoading: true,
+    });
+
+    const promise = this.props.dispatch(runReport(report.get('id'), transformReportData(report)));
+    promise.then((response) => {
+      const reportData = report.set('rendered_result', Immutable.fromJS(response.data.data.rendered_result));
+
+      this.setState({
+        reportLoading: false,
+        currentReport: reportData
+      });
+    }, (response) => {
+      this.setState({
+        currentReport: report,
+        currentErrors: Immutable.fromJS(response.data),
+        reportLoading: false
+      });
+    });
+
     this.setState({ mode: 'run' });
   }
 
   onCloneReportClick(report) {
-    this.props.dispatch(cloneReport(report.toJS()));
+    this.setState({
+      currentReport: Wrapper.createNewReport(report.toJS())
+    });
   }
 
   onChangeReportDisplayTypes(displayTypes) {
@@ -143,8 +222,10 @@ class Wrapper extends React.Component {
   }
 
   onAddClick(cloneReportObj) {
-    this.setState({ mode: 'edit' });
-    this.props.dispatch(newReport(cloneReportObj));
+    this.setState({
+      mode:          'edit',
+      currentReport: Wrapper.createNewReport(cloneReportObj)
+    });
   }
 
   onLabelClick(clickedLabel) {
@@ -162,7 +243,8 @@ class Wrapper extends React.Component {
   }
 
   onSubmit(data) {
-    return this.props.dispatch(saveReport(data));
+    const report = Immutable.fromJS(data);
+    this.setState({ currentReport: report, reportLoading: true }, () => this.onRunReportClick(report));
   }
 
   setLabels(props) {
@@ -185,9 +267,18 @@ class Wrapper extends React.Component {
   filter(value) {
     let result = true;
 
-    const { activeLabels, labels, searchText } = this.state;
+    const { searchText } = this.state;
 
     const actualSearch = searchText.replace(regex, '').trim().toLowerCase();
+    const activeLabels = [];
+
+    let match;
+    do {
+      match = regex.exec(searchText);
+      if (match) {
+        activeLabels.push(match[1]);
+      }
+    } while (match);
 
     if (!actualSearch) {
       result = true;
@@ -199,20 +290,18 @@ class Wrapper extends React.Component {
         .reduce((reduced, label) => reduced || label.toLowerCase().indexOf(actualSearch) >= 0, false);
     }
 
-    let labelsToCheck = [];
-    if (activeLabels > 0) {
-      labelsToCheck = labels.filter(label => label.get('active')).map(label => label.get('label')).toList().toJS();
+    if (activeLabels.length > 0) {
       result = result && value
         .get('labels')
-        .reduce((reduced, label) => reduced || labelsToCheck.indexOf(label) >= 0, false);
+        .reduce((reduced, label) => reduced || activeLabels.indexOf(label) >= 0, false);
     }
 
     return result;
   }
 
   render() {
-    const { reportsLoaded, groupParams, reportLoading } = this.props;
-    const { reports, labels, activeLabels, searchText, currentReport, mode } = this.state;
+    const { reportsLoaded, groupParams } = this.props;
+    const { reports, labels, activeLabels, searchText, currentReport, currentErrors, reportLoading, mode } = this.state;
 
     const filteredCustomReports = reports.filter(report => report.get('is_custom')).filter(this.filter);
     const filteredBuiltInReports = reports.filter(report => !report.get('is_custom')).filter(this.filter);
@@ -265,9 +354,12 @@ class Wrapper extends React.Component {
               groupParams={groupParams}
               onChangeReportDisplayTypes={this.onChangeReportDisplayTypes}
               report={currentReport}
+              reportErrors={currentErrors}
               reportLoading={reportLoading}
               onEditReportClick={this.onEditReportClick}
               onRunClick={this.onRunReportClick}
+              onDownloadClick={this.onDownloadReportClick}
+              onDeleteClick={this.onDeleteReportClick}
             />
             : null
           }

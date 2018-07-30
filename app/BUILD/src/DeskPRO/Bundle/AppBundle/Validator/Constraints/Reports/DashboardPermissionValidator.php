@@ -20,7 +20,7 @@ class DashboardPermissionValidator extends ConstraintValidator
             // default dashboard may be edited by admins only, no full access for teams, departments or for all
             $value->getDashboard()->isDefault() &&
             (
-                ($value->getPerson() && !$value->getPerson()->isAdmin()) ||
+                ($value->getPerson() && !$value->getPerson()->isAdmin() && !$value->getPerson()->can_reports) ||
                 $value->getTeam() || $value->getDepartment() || $value->isGlobalPrivilege()
 
             ) &&

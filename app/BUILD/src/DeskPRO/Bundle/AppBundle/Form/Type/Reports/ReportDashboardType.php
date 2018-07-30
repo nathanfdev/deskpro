@@ -85,6 +85,15 @@ class ReportDashboardType extends AbstractType
         $person = $form->getConfig()->getOption('person');
 
         if ($data instanceof ReportDashboard) {
+            $permissions = $data->getPermissions();
+            foreach ($permissions as $permission) {
+                if (!$permission->getPerson()) {
+                    continue;
+                }
+                if ($permission->getPerson()->isAdmin() || $permission->getPerson()->can_reports) {
+                    $permissions->removeElement($permission);
+                }
+            }
             // handle new dashboards
             if (!$data->getId()) {
                 // all created dashboards are custom ones

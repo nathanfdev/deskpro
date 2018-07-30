@@ -41,6 +41,8 @@ class DashboardWidgetManager
 
     const WIDGET_VALUE_FROM_REPORT = 'from_report_value';
 
+    const WIDGET_VAR_TYPE_BILLING = 'billing';
+
     /**
      * @var array
      */
@@ -420,7 +422,7 @@ class DashboardWidgetManager
         });
         if (count($renderedResults) > 1) {
             if ($multiLayer) {
-                return $renderer->mergeResults($renderedResults, $options ?: []);
+                return $renderer->mergeResults($renderedResults, $graphType, $options ?: []);
             }
 
             // SPLIT BY, return as array

@@ -6,8 +6,11 @@
 
 namespace Application\DeskPRO\WorkerProcess\Job;
 
+use Application\DeskPRO\Entity\Person;
 use Application\DeskPRO\Entity\SavedDashboardReport;
+use Application\DeskPRO\EntityRepository\Person as PersonRepository;
 use DeskPRO\Bundle\AppBundle\Entity\Report\ScheduledReport;
+use Orb\Util\Strings;
 use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
 
 /**
@@ -47,9 +50,11 @@ class ProcessScheduledReports extends AbstractJob
                 $report->setNextSendDate($nextSendDate);
             }
 
-            if ($report->getNextSendDate()->setTimezone($timezone) <= $now) {
-                $savedReport = $reportSaver->saveReport($report->getReport(), $report->getPerson());
-                $this->sendProcessedReport($report, $savedReport);
+            if ($report->getSendTo()) {
+                if ($report->getNextSendDate()->setTimezone($timezone) <= $now) {
+                    $savedReport = $reportSaver->saveReport($report->getReport(), $report->getPerson());
+                    $this->sendProcessedReport($report, $savedReport);
+                }
             }
 
             $nextSendDate = $reportSaver->calculateNextSendDate(
@@ -67,25 +72,35 @@ class ProcessScheduledReports extends AbstractJob
 
     protected function sendProcessedReport(ScheduledReport $scheduledReport, SavedDashboardReport $savedReport)
     {
-        $message = $this->getContainer()->getMailer()->createMessage();
-        $message->setToPerson($scheduledReport->getPerson());
-        $message->setTemplate(
-            'DeskPRO:emails_agent:scheduled-report.html.twig',
-            [
-                'person'      => $scheduledReport->getPerson(),
-                'frequency'   => $scheduledReport->getFrequency(),
-                'reportTitle' => $scheduledReport->getReport()->getTitle(),
-                'link'        => $this->getContainer()->get('router')->generate(
-                    'reports-interface-headless-view',
-                    [
-                        'id'       => $savedReport->getId(),
-                        'authcode' => $savedReport->getAuthcode(),
-                    ],
-                    UrlGeneratorInterface::ABSOLUTE_URL
-                ),
-            ]
-        );
+        $em = $this->getContainer()->get('doctrine.orm.default_entity_manager');
 
-        $this->getContainer()->getMailer()->send($message);
+        /** @var PersonRepository $personRepository */
+        $personRepository = $em->getRepository(Person::class);
+
+        foreach ($scheduledReport->getSendTo() as $to) {
+            $message = $this->getContainer()->getMailer()->createMessage();
+            $person  = $personRepository->findOneByEmail($to);
+
+            $message->setTemplate(
+                'DeskPRO:emails_user:scheduled-report.html.twig',
+                [
+                    'person_title' => $person ? $person->getDisplayName() : Strings::getNameFromEmail($to),
+                    'scheduler'    => $scheduledReport->getPerson(),
+                    'frequency'    => $scheduledReport->getFrequency(),
+                    'reportTitle'  => $scheduledReport->getReport()->getTitle(),
+                    'link'         => $this->getContainer()->get('router')->generate(
+                        'reports-interface-headless-view',
+                        [
+                            'id'       => $savedReport->getId(),
+                            'authcode' => $savedReport->getAuthcode(),
+                        ],
+                        UrlGeneratorInterface::ABSOLUTE_URL
+                    ),
+                ]
+            );
+
+            $message->setTo($to);
+            $this->getContainer()->getMailer()->send($message);
+        }
     }
 }

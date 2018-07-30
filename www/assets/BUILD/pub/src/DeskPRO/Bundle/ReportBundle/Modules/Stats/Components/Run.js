@@ -15,10 +15,13 @@ class Run extends React.Component {
   static propTypes = {
     report:                     PropTypes.object.isRequired,
     reportLoading:              PropTypes.bool.isRequired,
+    reportErrors:               PropTypes.object.isRequired,
     onChangeReportDisplayTypes: PropTypes.func.isRequired,
     onChangeReportVar:          PropTypes.func.isRequired,
     onRunClick:                 PropTypes.func.isRequired,
+    onDeleteClick:              PropTypes.func.isRequired,
     onEditReportClick:          PropTypes.func.isRequired,
+    onDownloadClick:            PropTypes.func.isRequired,
     groupParams:                PropTypes.object.isRequired,
   };
 
@@ -104,12 +107,13 @@ class Run extends React.Component {
           options={{
             scrollCollapse: true,
             autoWidth:      true,
-            pageResize:     true,
+            pageResize:     false,
+            pageLength:     50,
             ordering:       true,
             order:          [],
             searching:      false,
             lengthChange:   true,
-            height:         400
+            height:         null
           }}
         />);
       case 'stat':
@@ -124,34 +128,42 @@ class Run extends React.Component {
     this.state = {
       displayTypes: props.report.get('display_types', Immutable.List()).toJS()
     };
-    this.onChangeReportDisplayTypes = this.onChangeReportDisplayTypes.bind(this);
-    this.clickSlice                 = this.clickSlice.bind(this);
-    this.onEditClick                = this.onEditClick.bind(this);
-    this.onRunClick                 = this.onRunClick.bind(this);
   }
 
   componentWillReceiveProps(props) {
     this.setState({ displayTypes: props.report.get('display_types', Immutable.List()).toJS() });
   }
 
-  onChangeReportDisplayTypes(runDisplayTypes) {
+  onChangeReportDisplayTypes = (runDisplayTypes) => {
     const types = runDisplayTypes ? runDisplayTypes.map(v => v.value) : [];
     this.setState({ displayTypes: types }, () => this.props.onChangeReportDisplayTypes(types));
-  }
+  };
 
-  onEditClick(event) {
+  onEditClick = (event) => {
     event.preventDefault();
     event.stopPropagation();
     this.props.onEditReportClick(this.props.report);
-  }
+  };
 
-  onRunClick(event) {
+  onRunClick = (event) => {
     event.preventDefault();
     event.stopPropagation();
     this.props.onRunClick(this.props.report);
-  }
+  };
 
-  clickSlice(event) {
+  onDownloadClick = (event) => {
+    event.preventDefault();
+    event.stopPropagation();
+    this.props.onDownloadClick(this.props.report, 'csv');
+  };
+
+  onDeleteClick = (event) => {
+    event.preventDefault();
+    event.stopPropagation();
+    this.props.onDeleteClick(this.props.report);
+  };
+
+  clickSlice = (event) => {
     const options = this.props.report.get('rendered_result').toJS();
     let selected;
     if (event.dataItem.dataContext.id) {
@@ -175,7 +187,7 @@ class Run extends React.Component {
       chart.dataProvider = options.dataProvider;
     }
     chart.validateData();
-  }
+  };
 
   renderReport() {
     const { report } = this.props;
@@ -184,27 +196,44 @@ class Run extends React.Component {
       if (renderedResult.get('title')) {
         return (
           <div>
-            <b>{renderedResult.get('title')}</b>
+            {this.renderDownload()}
+            <b dangerouslySetInnerHTML={{ __html: renderedResult.get('title') }} />
             {Run.renderChart(renderedResult, index)}
           </div>
         );
       }
 
-      return Run.renderChart(renderedResult, index);
+      return [this.renderDownload(), Run.renderChart(renderedResult, index)];
     });
   }
 
+  renderDownload() {
+    return (<div className="download_link">
+      <span onClick={this.onDownloadClick}><i className="fa fa-file-excel-o" />Download as CSV</span>
+    </div>);
+  }
+
   renderRun() {
-    const { report, onChangeReportVar, groupParams } = this.props;
+    const { report, reportErrors, onChangeReportVar, groupParams } = this.props;
 
     const title = (<TitleWithVars
       onChangeReportVar={onChangeReportVar}
       groupParams={groupParams}
       report={report}
     />);
+
+    const compileError = reportErrors.getIn(['errors', 'fields', 'query_parts', 'errors', 0, 'message']);
     const content = report.get('rendered_result', Immutable.List()).filter(value => value).size > 0
-      ? <div className="results-wrap">{this.renderReport()}</div>
-      : <div className="no-results">No results found.</div>;
+      ? (
+        <div className="results-wrap">
+          {this.renderReport()}
+        </div>
+      )
+      : (
+        <div className="no-results">
+          {compileError || 'No results found.'}
+        </div>
+      );
 
     const choices = displayTypes;
 
@@ -214,7 +243,8 @@ class Run extends React.Component {
           <div className="title">{title}</div>
           <div className="ctrl">
             <Button size="medium" type="secondary" onClick={this.onRunClick}><i className="fa fa-refresh" /></Button>
-            <Button size="medium" onClick={this.onEditClick}>Edit Report</Button>
+            <Button size="medium" onClick={this.onEditClick}>Edit Stat</Button>
+            {report.get('is_custom') && <Button size="medium" onClick={this.onDeleteClick}>Delete</Button>}
           </div>
         </div>
         <div className="display-as-option">

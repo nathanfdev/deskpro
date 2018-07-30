@@ -139,7 +139,16 @@ class VoiceClientPhoneCallController extends AbstractVoiceController
      */
     public function holdCallAction(VoicePhoneCall $phoneCall, Request $request)
     {
-        $this->toggleHoldConference($phoneCall, $request->request->get('hold'));
+        $isHold = $request->request->get('hold');
+
+        $this->get('twilio_adapter')->holdConferenceEndUser($phoneCall, $isHold);
+        $this->get('event_dispatcher')->dispatch(LegacySystemEvent::EVENT_NAME, new LegacySystemEvent(
+            'agent.voice.conference.hold',
+            [
+                'call_id' => $phoneCall->getId(),
+                'hold'    => $isHold,
+            ]
+        ));
 
         return new View(null, Response::HTTP_NO_CONTENT);
     }
@@ -356,23 +365,6 @@ class VoiceClientPhoneCallController extends AbstractVoiceController
         }
 
         return new View(null, Response::HTTP_NO_CONTENT);
-    }
-
-    /**
-     * @param VoicePhoneCall $phoneCall
-     * @param bool           $isHold
-     */
-    private function toggleHoldConference(VoicePhoneCall $phoneCall, $isHold)
-    {
-        $this->get('twilio_adapter')->holdConferenceEndUser($phoneCall, $isHold);
-
-        $this->get('event_dispatcher')->dispatch(LegacySystemEvent::EVENT_NAME, new LegacySystemEvent(
-            'agent.voice.conference.hold',
-            [
-                'call_id' => $phoneCall->getId(),
-                'hold'    => $isHold,
-            ]
-        ));
     }
 
     /**

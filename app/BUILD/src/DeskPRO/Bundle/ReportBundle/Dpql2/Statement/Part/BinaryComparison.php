@@ -2,6 +2,7 @@
 
 namespace DeskPRO\Bundle\ReportBundle\Dpql2\Statement\Part;
 
+use DeskPRO\Bundle\ReportBundle\Dpql2\DpqlContext;
 use DeskPRO\Bundle\ReportBundle\Dpql2\DpqlException;
 use DeskPRO\Bundle\ReportBundle\Dpql2\Parser;
 use DeskPRO\Bundle\ReportBundle\Dpql2\SqlSelect;
@@ -33,6 +34,11 @@ class BinaryComparison extends AbstractPart
      * @var \DeskPRO\Bundle\ReportBundle\Dpql2\Statement\Part\AbstractPart
      */
     public $rhs;
+
+    /**
+     * @var DpqlContext context contains a user, so we can add user TZ for placeholder
+     */
+    private $context;
 
     /**
      * Maps from token IDs to printable/usable operators.
@@ -70,10 +76,11 @@ class BinaryComparison extends AbstractPart
      * @param int          $operator
      * @param AbstractPart $lhs
      * @param AbstractPart $rhs
+     * @param DpqlContext  $context
      *
      * @throws \DeskPRO\Bundle\ReportBundle\Dpql2\DpqlException
      */
-    public function __construct($operator, AbstractPart $lhs, AbstractPart $rhs)
+    public function __construct($operator, AbstractPart $lhs, AbstractPart $rhs, DpqlContext $context)
     {
         if (!isset(self::$_operatorMap[$operator])) {
             throw new DpqlException("Invalid comparison operator (token ID: $operator)");
@@ -82,6 +89,7 @@ class BinaryComparison extends AbstractPart
         $this->operator = $operator;
         $this->lhs      = $lhs;
         $this->rhs      = $rhs;
+        $this->context  = $context;
     }
 
     /**
@@ -104,8 +112,17 @@ class BinaryComparison extends AbstractPart
         }
 
         if ($rhs instanceof Placeholder || $rhs instanceof BinaryInterval) {
+            $intervals = [];
+            if ($rhs instanceof Placeholder && $this->context->getPerson()) {
+                $tzOffset = $this->context->getPerson()->getTimezoneOffsetSeconds();
+                if ($tzOffset) {
+                    $intervalsOperator = $tzOffset > 0 ? Parser::T_OP_MINUS : $intervalsOperator = Parser::T_OP_PLUS;
+                    $intervals[]       = new BinaryInterval($intervalsOperator, $lhs, abs($tzOffset), 'seconds');
+                }
+            }
+
             $prepared = $rhs->prepareComparison(
-                $lhs, $operator, $statement, $section, $childStack, $select, $metadata
+                $lhs, $operator, $statement, $section, $childStack, $select, $metadata, $intervals
             );
             if ($prepared) {
                 return $prepared;

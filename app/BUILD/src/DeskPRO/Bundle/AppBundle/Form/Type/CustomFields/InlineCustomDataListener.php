@@ -17,7 +17,7 @@ class InlineCustomDataListener implements EventSubscriberInterface
     public static function getSubscribedEvents()
     {
         return [
-            FormEvents::PRE_SUBMIT => 'onSetInlineData',
+            FormEvents::PRE_SUBMIT => 'onPreSubmit',
         ];
     }
 
@@ -28,7 +28,7 @@ class InlineCustomDataListener implements EventSubscriberInterface
      *
      * @param FormEvent $event
      */
-    public function onSetInlineData(FormEvent $event)
+    public function onPreSubmit(FormEvent $event)
     {
         $data = $event->getData();
 

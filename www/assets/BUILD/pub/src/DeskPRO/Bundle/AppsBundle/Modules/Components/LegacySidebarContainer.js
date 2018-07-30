@@ -9,26 +9,20 @@ const addEventListener = (dom, event, handler) => {
   return () => dom.removeEventListener(event, handler);
 };
 
-class LegacySidebarContainer extends DeskproAppContainer {
+class LegacySidebarContainer extends React.Component {
   static propTypes = {
-    widgetsConfigList:             PropTypes.array.isRequired,
-    context:                       PropTypes.object.isRequired,
-    dispatchIncomingWidgetMessage: PropTypes.func.isRequired,
-    addWidgetEventListener:        PropTypes.func.isRequired,
-    parseIncomingWidgetMessageJS:  PropTypes.func.isRequired,
+    widgetsConfigList: PropTypes.array.isRequired,
+    context:           PropTypes.object.isRequired,
+
+    registerOutgoingMessageListener: PropTypes.func,
+    receiveMessage:                  PropTypes.func,
+    receiveEventSubscription:        PropTypes.func,
+
     // own properties
-    configuration:                 PropTypes.object.isRequired
+    configuration: PropTypes.object.isRequired
   };
 
-  constructor(props) {
-    super(props);
-    this.removeListeners = [];
-    this.onIconsToggle = true;
-  }
-
-  componentDidMount() {
-    super.componentDidMount();
-
+  componentDidMount()  {
     const { configuration } = this.props;
     const iconsContainer = window.document.querySelector(configuration.renderIconsContainer);
 
@@ -54,35 +48,16 @@ class LegacySidebarContainer extends DeskproAppContainer {
   }
 
   componentWillUnmount() {
-    super.componentWillUnmount();
     for (const cb of this.removeEventListeners) {
       cb();
     }
   }
 
-  /**
-   * @param {Widget} widget
-   * @param {{ type:string }} e
-   */
-  /**
-   * @param {Widget} widget
-   * @param {String} eventName
-   * @param {WidgetRequest} widgetMessage
-   */
-  onWidgetMouseEventMessage(widget, eventName, widgetMessage) {
-    const { body : e } = widgetMessage;
-
-    if (e.type === 'mousedown') {
-      const { configuration } = this.props;
-      LegacyAppSidebar.fromSelector(configuration.renderSidebarContainer).togglePined();
-    }
-  }
-
-  onIconsMouseOut() { this.onIconsToggle = true; }
+  onIconsMouseOut() { this.toggleIcons = true; }
 
   onIconsMouseOver(e) {
-    if (!this.onIconsToggle) { return; }
-    this.onIconsToggle = false;
+    if (!this.toggleIcons) { return; }
+    this.toggleIcons = false;
 
     const { target } = e;
     const { configuration } = this.props;
@@ -115,6 +90,21 @@ class LegacySidebarContainer extends DeskproAppContainer {
     } else if (appIcons.isLegacyAppIconDOM(target)) {
       sidebar.showLegacyContent();
     }
+  }
+
+  toggleIcons = true;
+
+  removeEventListeners = [];
+
+  render()  {
+    return (<DeskproAppContainer
+      context={this.props.context}
+      widgetsConfigList={this.props.widgetsConfigList}
+
+      registerOutgoingMessageListener={this.props.registerOutgoingMessageListener}
+      receiveMessage={this.props.receiveMessage}
+      receiveEventSubscription={this.props.receiveEventSubscription}
+    />);
   }
 }
 

@@ -1,0 +1,17 @@
+{
+	"package_name": "deskpro_zapier",
+	"is_native": true,
+	"title": "Zapier",
+	"description": "Allow to send instant triggers to Zapier API.",
+	"tags": ["notifications","ticket-triggers"],
+	"api_version": 1,
+	"version": 1,
+	"version_name": "1.0.0",
+	"is_single": true,
+	"author": {
+		"name": "DeskPRO",
+		"email": "support@deskpro.com",
+		"link": "https://www.deskpro.com/"
+	},
+	"settings_def": []
+}

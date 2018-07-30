@@ -235,8 +235,10 @@ define ['DeskPRO/Util/Arrays'], (Arrays) ->
       @Api2
       .sendPutJson url, data
       .then () ->
+        deferred.resolve()
         return
       , () ->
+        deferred.reject()
         console.error 'something goes wrong!'
       deferred.promise
 
@@ -279,7 +281,7 @@ define ['DeskPRO/Util/Arrays'], (Arrays) ->
 
     scheduleReport: (report, schedule, enabled) ->
       deferred = @$q.defer()
-      if enabled == '1'
+      if parseInt(enabled, 10) == 1
         data = {
           schedule: {
             frequency: schedule.frequency
@@ -307,3 +309,57 @@ define ['DeskPRO/Util/Arrays'], (Arrays) ->
       .then () ->
         deferred.resolve()
       deferred.promise
+
+    getShareableLinks: (dashboardId) =>
+      d = @$q.defer()
+      @Api2.sendGet("/dashboards/#{dashboardId}/shareable_links").then( (res) ->
+        links = res.data.data
+        for link in links
+          link.ip_whitelist = link.ip_whitelist.join(',')
+
+        d.resolve(links)
+      )
+
+      return d.promise
+
+    createShareLink: (sharedLink) ->
+      data = {
+        title: sharedLink.title
+        dashboard: sharedLink.dashboard
+        default_report: sharedLink.default_report
+        who_can_use: sharedLink.who_can_use
+        ip_whitelist: sharedLink.ip_whitelist
+      }
+
+      d = @$q.defer()
+      @Api2.sendPostJson("/dashboard_shareable_links", data)
+        .success (res) -> d.resolve(res.data)
+        .catch (res) -> d.reject(res.data)
+
+      return d.promise
+
+    updateShareLink: (sharedLink) ->
+      data = {
+        title: sharedLink.title
+        default_report: sharedLink.default_report
+        who_can_use: sharedLink.who_can_use
+        ip_whitelist: sharedLink.ip_whitelist
+      }
+
+      d = @$q.defer()
+      @Api2.sendPutJson("/dashboard_shareable_links/#{sharedLink.id}", data)
+        .success (res) -> d.resolve(res.data)
+        .catch (res) -> d.reject(res.data)
+
+      return d.promise
+
+    deleteDashboardShareableLink: (sharedLink) ->
+      @Api2.sendDelete("/dashboard_shareable_links/#{sharedLink.id}")
+
+    createShortUrlForShareLink: (sharedLink) ->
+      d = @$q.defer()
+      @Api2.sendPostJson("/dashboard_shareable_links/#{sharedLink.id}/create_short_url").then ( (res) ->
+        d.resolve(res.data.data)
+      )
+
+      return d.promise

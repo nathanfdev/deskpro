@@ -5,7 +5,7 @@ namespace DeskPRO\Bundle\AppBundle\TicketFilters;
 use Application\DeskPRO\Entity\CustomDefAbstract;
 use Application\DeskPRO\EntityRepository\CustomDefAbstract as CustomDefAbstractRepos;
 
-class ChoiceFieldOptionMapper implements OptionMappterInterface
+class ChoiceFieldOptionMapper implements OptionMapperInterface
 {
     /**
      * @var CustomFieldSet

@@ -8,7 +8,6 @@ use DeskPRO\Bundle\AppBundle\Annotation\ActionPermissions\Annotation\ApiModes;
 use FOS\RestBundle\Controller\Annotations as Rest;
 use FOS\RestBundle\View\View;
 use Symfony\Component\HttpFoundation\Request;
-use Symfony\Component\HttpKernel\Exception\BadRequestHttpException;
 use Symfony\Component\HttpKernel\HttpKernelInterface;
 
 /**
@@ -28,10 +27,7 @@ class BatchController extends BaseController
      */
     public function executeBatchPostAction(Request $request)
     {
-        if (!is_array($requests = $request->request->get('requests'))) {
-            throw new BadRequestHttpException('the "requests" field is required');
-        }
-
+        $requests  = $request->request->get('requests', []);
         $responses = [];
         foreach ($requests as $identifier => $subRequestInfo) {
             $responses[$identifier] = $this->performSubRequest($subRequestInfo, $request);
@@ -51,9 +47,7 @@ class BatchController extends BaseController
      */
     public function executeBatchGetAction(Request $request)
     {
-        if (!$requests = $request->get('get')) {
-            throw new BadRequestHttpException('You must specify requests in the "get" parameter');
-        }
+        $requests = $request->get('get', []);
         if (!is_array($requests)) {
             $requests = explode(',', $requests);
         }
@@ -71,6 +65,8 @@ class BatchController extends BaseController
     /**
      * @param array   $subRequestInfo
      * @param Request $request
+     *
+     * @throws \Exception
      *
      * @return string
      */

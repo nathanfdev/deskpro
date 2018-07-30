@@ -31,6 +31,7 @@ class CleanupHourly extends AbstractJob
         $this->_cleanupSavedForms();
         $this->_cleanHttpCacheDirs();
         $this->_cleanOauthTokens();
+        $this->_cleanDashboardShortUrls();
     }
 
     //###################################################################################################################
@@ -441,5 +442,15 @@ class CleanupHourly extends AbstractJob
         }
 
         return $count;
+    }
+
+    private function _cleanDashboardShortUrls()
+    {
+        $datetime = date('Y-m-d H:i:s', time());
+        $count    = App::getDb()->executeUpdate('DELETE FROM report_dashboard_shareable_short_url WHERE date_expire < ?', [$datetime]);
+
+        if ($count) {
+            $this->logStatus("Cleaned up $count old dashboard short urls");
+        }
     }
 }

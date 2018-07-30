@@ -32,6 +32,7 @@
 
   pageMeta.ticket = {{ ticket_api|json_encode|raw }};
   pageMeta.api_data = {{ ticket.toApiData()|json_encode|raw }};
+  pageMeta.api_v2_data = {{ api_v2_data|json_encode|raw }};
   pageMeta.hasBilling = {{ app.getSetting('core_tickets.enable_billing')? 'true' : 'false' }};
   pageMeta.billingCurrency = '{{ app.getSetting('core_tickets.billing_currency') }}';
   pageMeta.hasTimeLog = {{ app.getSetting('core_tickets.enable_timelog')? 'true' : 'false' }};
@@ -183,12 +184,15 @@
 					<div class="id-number" id="{{ baseId }}_idref_switch">
 						<span id="{{ baseId }}_id_num" title="{{ phrase('agent.general.ticket_id') }}">
 							<span class="copy-btn-outer"><span class="copy-btn" data-clipboard-text="{{ ticket.id }}" title="{{ phrase('agent.general.copy_to_clipboard') }}"><i class="icon-paste"></i></span></span>
+                            <span class="copy-btn-outer permalink"><span class="copy-btn" data-clipboard-text="{{ ticket_permalink }}" title="{{ phrase('agent.general.copy_permalink') }}"><i class="icon-link"></i></span></span>
 							{{ phrase('agent.general.id') }}: {{ ticket.id }}
 						</span>
 						<span id="{{ baseId }}_ref_num" style="display: none;" title="Ticket Reference">
 							<span class="copy-btn-outer"><span class="copy-btn" data-clipboard-text="{{ ticket.ref }}" title="{{ phrase('agent.general.copy_to_clipboard') }}"><i class="icon-paste"></i></span></span>
+                            <span class="copy-btn-outer permalink"><span class="copy-btn" data-clipboard-text="{{ ticket_permalink }}" title="{{ phrase('agent.general.copy_permalink') }}"><i class="icon-link"></i></span></span>
 							{{ phrase('agent.general.id') }}: {{ ticket.ref }}
 						</span>
+
 					</div>
 				</td>
 				<td>
@@ -596,13 +600,15 @@
                                         {% for a in agent_parts if a.person.id == app.user.id %}
                                             {% set show = 'display:none;' %}
                                         {% endfor %}
-                                        <span id="{{ baseId }}_follower_me" class="assign-self-link-wrap"
-                                              style="{{ show }}" data-me="{{ app.user.id }}">
-						&middot;
-											<a class="assign-self-link">
-							{{ phrase('agent.general.add_me') }}
-						</a>
-                    </span>
+                                        {% if ticket_perms.modify_assign_agent %}
+                                          <span id="{{ baseId }}_follower_me" class="assign-self-link-wrap"
+                                                style="{{ show }}" data-me="{{ app.user.id }}">
+                                                &middot;
+                                                <a class="assign-self-link">
+                                                  {{ phrase('agent.general.add_me') }}
+                                                </a>
+                                          </span>
+                                        {% endif %}
                                     </label>
                                     <div class="followers-list">
                                         <ul id="{{ baseId }}_followers_list">
@@ -1177,10 +1183,29 @@
                 {% if app.user.hasPerm('agent_publish.use') and app.user.hasPerm('agent_publish.validate') %}
                     <li data-option-id="link_new_feedback">{{ phrase('agent.tickets.create_linked_feedback') }}</li>{% endif %}
                 {% if ticket_perms.modify_messages %}
-                    <li data-option-id="edit">{{ phrase('agent.general.edit') }}</li>{% endif %}
+                    <li data-option-id="edit">{{ phrase('agent.general.edit') }}</li>
+                {% endif %}
+                <li
+                    class="email-download"
+                    data-option-id="email_download"
+                    data-url="{{ path('agent_ticket_download_message_email', {_rt: security_token('request_token', 10800), messageId: '00000'}) }}"
+                >
+                    {{ phrase('agent.tickets.email_download') }}
+                </li>
+                {% if ticket_perms.modify_messages %}
+                    <li
+                        class='email-delete'
+                        data-option-id="email_delete">
+                        {{ phrase('agent.tickets.email_delete') }}
+                    </li>
+                {% endif %}
                 {% if app.user.can_admin %}
                     <li data-option-id="debug"
-                        data-url="{{ path('agent_ticket_download_debug_report', {ticket_id: '00000', _rt: security_token('request_token', 10800)}) }}">{{ phrase('agent.tickets.debug_file_download') }}</li>{% endif %}
+                        data-url="{{ path('agent_ticket_download_debug_report', {ticket_id: '00000', _rt: security_token('request_token', 10800)}) }}"
+                    >
+                        {{ phrase('agent.tickets.debug_file_download') }}
+                    </li>
+                {% endif %}
                 {#<li data-option-id="split">{{ phrase('agent.tickets.split_from_here') }}</li>#}
             </ul>
             <div class="dp-menu replybox" id="{{ baseId }}_macros_menu" style="min-width: 225px;">

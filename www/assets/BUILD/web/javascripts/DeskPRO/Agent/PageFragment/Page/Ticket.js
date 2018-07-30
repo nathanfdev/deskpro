@@ -66,37 +66,6 @@ DeskPRO.Agent.PageFragment.Page.Ticket = new Orb.Class({
 
 	initPage: function(el) {
 
-    var handleReplySave = this.handleReplySave.bind(this);
-
-    var onActivateScope = this;
-    var onActivate = function () {
-      return { ticket_id: onActivateScope.meta.ticket_id, meta: onActivateScope.meta }
-    };
-    onActivate.bind(this);
-
-    var onResponse = function (handlerTrap, widget, message) {
-      var response = message.body;
-      var release = response.allowReply;
-      var reason = null;
-      if (!response.allowReply) {
-        reason = response.reason ? response.reason : 'Reply is disabled';
-      }
-
-      if (reason) { DeskPRO_Window.showAlert(reason); }
-      handlerTrap(release);
-    };
-
-		if (window.DeskPRO_APPSTORE) {
-			this.handleReplySaveInterceptor = window.DeskPRO_APPSTORE.interceptEvent(
-				'context.ticket.reply',
-				onResponse,
-				onActivate,
-				handleReplySave
-			);
-		} else {
-			this.handleReplySaveInterceptor = handleReplySave;
-		}
-
 		this.wrapper = el;
 
 		var self = this;
@@ -696,7 +665,7 @@ DeskPRO.Agent.PageFragment.Page.Ticket = new Orb.Class({
 			}
 		});
 
-		$('form.ticket-reply-form', this.getEl('replybox_wrap')).bind('replyboxsubmit', this.handleReplySaveInterceptor);
+		$('form.ticket-reply-form', this.getEl('replybox_wrap')).bind('replyboxsubmit', this.handleReplySave.bind(this));
 
 		this.ticketActions = new DeskPRO.Agent.PageFragment.Page.Ticket.TicketActions(this);
 		this.ownObject(this.ticketActions);
@@ -724,11 +693,11 @@ DeskPRO.Agent.PageFragment.Page.Ticket = new Orb.Class({
 
 		this.getEl('idref_switch').on('click', function() {
 			if ($(this).hasClass('refmode')) {
-				$(this).removeClass('refmode')
+				$(this).removeClass('refmode');
 				self.getEl('ref_num').hide();
 				self.getEl('id_num').show();
 			} else {
-				$(this).addClass('refmode')
+				$(this).addClass('refmode');
 				self.getEl('id_num').hide();
 				self.getEl('ref_num').show();
 			}
@@ -1215,13 +1184,37 @@ DeskPRO.Agent.PageFragment.Page.Ticket = new Orb.Class({
 		DeskPRO_Window.showAlert('You are not allowed to make any changes to this ticket until it has been unlocked.');
 	},
 
-	handleReplySave: function(ev, formData, handler, meta) {
+  handleReplySave: function (ev, formData, handler, meta) {
 
+    function onSuccess(response)
+    {
+      if (response.canceled) {
+        var reason = typeof response.message === 'string' ? response.message : 'Reply is disabled';
+        DeskPRO_Window.showAlert(reason);
+      } else {
+        this.doHandleReplySave(ev, formData, handler, meta);
+      }
+    }
+
+    window.DeskPRO_APPSTORE.emitAsync(
+      'ticket.reply',
+      this.getTabId(),
+      {
+        ticket_id:    this.meta.ticket_id,
+        api_data:     this.meta.api_data,
+        api_v2_data:  this.meta.api_v2_data,
+        hasTimeLog:   this.meta.hasTimeLog,
+        hasBilling:   this.meta.hasBilling
+      }
+    ).then(onSuccess.bind(this))
+  },
+
+	doHandleReplySave: function(ev, formData, handler, meta) {
   	this.replyHasBillingControl = meta.hasBillingControl;
 
 		if (this.pauseSend) {
 			window.setTimeout((function() {
-				this.handleReplySave(ev, formData, handler);
+				this.doHandleReplySave(ev, formData, handler);
 			}).bind(this), 250);
 		}
 
@@ -1372,8 +1365,8 @@ DeskPRO.Agent.PageFragment.Page.Ticket = new Orb.Class({
 					result.client_messages = null;
 				}
 
-				if (typeof window.DeskPRO_APPSTORE.dispatchEvent === 'function') {
-          window.DeskPRO_APPSTORE.dispatchEvent('context.ticket.reply-success', result);
+				if (typeof window.DeskPRO_APPSTORE.emitAsync === 'function') {
+          window.DeskPRO_APPSTORE.emitAsync('ticket.reply-success', this.getTabId(), result);
         }
 
 				if (result.error_messages) {
@@ -1558,12 +1551,10 @@ DeskPRO.Agent.PageFragment.Page.Ticket = new Orb.Class({
 	handleTicketUpdate: function(data) {
 		this.doHandleTicketUpdate(data);
 
-		console.log('handleTicketUpdate');
-
 		// other events
 		this.fireEvent('ticket_updated', [data]);
-    if (typeof window.DeskPRO_APPSTORE.dispatchEvent === 'function') {
-      window.DeskPRO_APPSTORE.dispatchEvent('context.ticket.update-success', data);
+    if (typeof window.DeskPRO_APPSTORE.emitAsync === 'function') {
+      window.DeskPRO_APPSTORE.emitAsync('ticket.update-success', this.getTabId(), data);
     }
 
 	},
@@ -1637,7 +1628,7 @@ DeskPRO.Agent.PageFragment.Page.Ticket = new Orb.Class({
 				}
 				this.getEl('replybox_wrap').empty().append(data.replybox_html);
 				DeskPRO_Window.initInterfaceServices(this.getEl('replybox_wrap'));
-				$('form.ticket-reply-form', this.getEl('replybox_wrap')).bind('replyboxsubmit', this.handleReplySaveInterceptor);
+				$('form.ticket-reply-form', this.getEl('replybox_wrap')).bind('replyboxsubmit', this.handleReplySave.bind(this));
 				$('input[name="charge_time"]', this.wrapper).prop('checked', chargeCheckboxState);
 			}
 		}
@@ -2745,6 +2736,10 @@ DeskPRO.Agent.PageFragment.Page.Ticket = new Orb.Class({
 			menuElement: menuElement,
 			onBeforeMenuOpened: function(info) {
 				var message = $(info.menu.getOpenTriggerElement()).closest('article.message');
+				if(message.data('messageHasSource') == false) {
+          menuElement.find('li.email-download').remove();
+          menuElement.find('li.email-delete').remove();
+				}
 				if (message.hasClass('note-message')) {
 					menuElement.find('li.set-as-message').show();
 					menuElement.find('li.set-as-note').hide();
@@ -2941,6 +2936,24 @@ DeskPRO.Agent.PageFragment.Page.Ticket = new Orb.Class({
 
 				window.open(url, 'debugwin', "status=0,toolbar=0,location=0,menubar=0,directories=0,resizable=1,scrollbars=1,height="+height+",width="+width);
 				break;
+
+			case 'email_download':
+        var url = itemEl.data('url');
+        url = url.replace(/00000/g, messageId);
+        window.open(url, 'emailwin', "status=0,toolbar=0,location=0,menubar=0,directories=0,resizable=1,scrollbars=1,height=50,width=50");
+				break;
+
+      case 'email_delete':
+        var row = this.wrapper.find('article.message-' + messageId);
+        $.ajax({
+          url:      BASE_URL + 'agent/tickets/messages/'+messageId+'/delete-email',
+					type:     'DELETE',
+          dataType: 'json',
+          success:  function() {
+              row.data('messageHasSource', false);
+          }
+        });
+        break;
 		}
 	},
 

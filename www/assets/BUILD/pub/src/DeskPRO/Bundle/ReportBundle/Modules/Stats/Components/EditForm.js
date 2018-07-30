@@ -15,7 +15,8 @@ class VarsFieldComponent extends React.PureComponent {
   static propTypes = {
     groupParams: PropTypes.object.isRequired,
     fields:      PropTypes.object.isRequired,
-    vars:        PropTypes.array
+    vars:        PropTypes.array,
+    change:      PropTypes.func
   };
 
   static validateVarName(name) {
@@ -38,7 +39,7 @@ class VarsFieldComponent extends React.PureComponent {
       return choice;
     });
 
-    return (<reduxForm.Select onChange={() => {}} key={name} name={name} options={choices} />);
+    return (<reduxForm.Select label="Default Value" onChange={() => {}} key={name} name={name} options={choices} />);
   }
 
   static renderTypeField(name, values) {
@@ -67,10 +68,35 @@ class VarsFieldComponent extends React.PureComponent {
     return (<reduxForm.Select onChange={() => {}} label="Default Value" key={name} name={name} options={choices} />);
   }
 
+  constructor(props) {
+    super(props);
+    const { fields, vars } = props;
+    const usesCustomTable = {};
+
+    fields.forEach((varName, index) => {
+      const variable = vars && vars[index] ? vars[index] : {};
+      usesCustomTable[variable.name] = Boolean(variable.table);
+      return variable;
+    });
+
+    this.state = {
+      usesCustomTable
+    };
+  }
+
   onAddButtonClick = (event) => {
     event.preventDefault();
     event.stopPropagation();
     this.props.fields.push();
+  };
+
+  onCheckboxClick = (varName, varFormName) => {
+    const { usesCustomTable } = this.state;
+    usesCustomTable[varName] = !usesCustomTable[varName];
+    if (!usesCustomTable[varName]) {
+      this.props.change(`${varFormName}.table`, '');
+    }
+    this.setState(usesCustomTable);
   };
 
   // eslint-disable-next-line class-methods-use-this
@@ -84,6 +110,23 @@ class VarsFieldComponent extends React.PureComponent {
 
   varTypeHasValue(variable) {
     return this.isVarType(variable) && variable.field_type && this.props.groupParams[variable.type][variable.field_type];
+  }
+
+  renderCheckbox(varName, varFormName) {
+    const inputProps = {
+      onChange: () => {},
+      onClick:  () => { this.onCheckboxClick(varName, varFormName); },
+      type:     'checkbox'
+    };
+    if (this.state.usesCustomTable[varName]) {
+      inputProps.checked = 'checked';
+    }
+    return (
+      <label>
+        <input {...inputProps} />
+        Use special table
+      </label>
+    );
   }
 
   render() {
@@ -119,12 +162,17 @@ class VarsFieldComponent extends React.PureComponent {
                 name={`${varName}.type`}
               />
               { this.isDateType(variable) &&
-                VarsFieldComponent.renderDateField(`${varName}.field_value`, groupParams.dates) }
+                VarsFieldComponent.renderDateField(`${varName}.default`, groupParams.dates) }
               { this.isVarType(variable) &&
                 VarsFieldComponent.renderTypeField(`${varName}.field_type`, groupParams[variable.type]) }
+              { this.isVarType(variable) && this.renderCheckbox(variable.name, varName)}
+              { this.state.usesCustomTable[variable.name] ? <reduxForm.Input
+                onChange={() => {}}
+                name={`${varName}.table`}
+              /> : null }
               { this.varTypeHasValue(variable) &&
                 VarsFieldComponent.renderTypeValueField(
-                  `${varName}.field_value`,
+                  `${varName}.default`,
                   groupParams[variable.type][variable.field_type]
                 ) }
             </div>);
@@ -142,13 +190,13 @@ class LabelsFieldComponent extends React.PureComponent {
   };
 
   static propTypes = {
-    fields:  PropTypes.object.isRequired,
-    options: PropTypes.array.isRequired,
+    fields:   PropTypes.object.isRequired,
+    options:  PropTypes.array.isRequired,
+    isCustom: PropTypes.bool,
   };
 
   render() {
-    const { fields, options } = this.props;
-
+    const { fields, options, isCustom } = this.props;
     const newOptions = options.map(label => label.label);
 
     return (<reduxForm.TagSet
@@ -157,6 +205,7 @@ class LabelsFieldComponent extends React.PureComponent {
       label="Labels"
       tags={fields.getAll() || []}
       options={newOptions}
+      editable={isCustom}
     />);
   }
 }
@@ -167,16 +216,16 @@ const LabelsField = formValues('labels')(LabelsFieldComponent);
 export class EditFormComponent extends React.Component {
 
   static defaultProps = {
-    select:        '',
-    groupBy:       '',
-    dpqlParser:    null,
-    change:        null,
-    queryValues:   {},
-    handleSubmit:  null,
-    formErrors:    {},
-    hasError:      false,
-    labels:        [],
-    extendedQuery: false
+    select:       '',
+    groupBy:      '',
+    dpqlParser:   null,
+    change:       null,
+    queryValues:  {},
+    handleSubmit: null,
+    formErrors:   {},
+    hasError:     false,
+    labels:       [],
+    isCustom:     false,
   };
 
   static propTypes = {
@@ -192,12 +241,12 @@ export class EditFormComponent extends React.Component {
     handleSubmit:  PropTypes.func,
     formErrors:    PropTypes.object,
     hasError:      PropTypes.bool,
-    extendedQuery: PropTypes.bool,
+    isCustom:      PropTypes.bool,
   };
 
   static toDpql(fields) {
     const parts = [];
-    parts.push(`SELECT ${fields.select || 'COUNT()'}`);
+    parts.push(`SELECT ${fields.select || 'DPQL_COUNT()'}`);
     parts.push(`FROM ${fields.from || '???'}`);
     if (fields.where) {
       parts.push(`WHERE ${fields.where}`);
@@ -205,14 +254,14 @@ export class EditFormComponent extends React.Component {
     if (fields.split_by) {
       parts.push(`SPLIT BY ${fields.split_by}`);
     }
-    if (fields.order_by) {
-      parts.push(`ORDER BY ${fields.order_by}`);
-    }
     if (fields.group_by) {
       parts.push(`GROUP BY ${fields.group_by}`);
       if (fields.with_rollup) {
         parts.push('WITH ROLLUP');
       }
+    }
+    if (fields.order_by) {
+      parts.push(`ORDER BY ${fields.order_by}`);
     }
     if (fields.limit && fields.offset) {
       parts.push(`LIMIT ${fields.limit} OFFSET ${fields.offset}`);
@@ -224,10 +273,15 @@ export class EditFormComponent extends React.Component {
     return parts.join('\n');
   }
 
+  static isExtendedQuery(props) {
+    return props.queryValues.raw ? props.queryValues.raw.indexOf('LAYER WITH') !== -1 : false;
+  }
+
   constructor(props) {
     super(props);
     this.state = {
-      queryInputMode:    props.extendedQuery ? 'dpql' : 'form',
+      formErrors:        {},
+      queryInputMode:    EditFormComponent.isExtendedQuery(props) ? 'dpql' : 'form',
       queryModeChanging: true
     };
   }
@@ -252,9 +306,10 @@ export class EditFormComponent extends React.Component {
   }
 
   queryModeChange = (to) => {
-    const extendedQuery = this.props.queryValues.raw ? this.props.queryValues.raw.indexOf('LAYER WITH') !== -1 : false;
+    const extendedQuery = EditFormComponent.isExtendedQuery(this.props);
     if (extendedQuery) {
-      console.info('Cant change mode to form, you\'re using extended query syntax');
+      this.setState({ formErrors: { Mode: 'Can\'t change mode to form, you\'re using extended query syntax' } });
+      console.info('Can\'t change mode to form, you\'re using extended query syntax');
       return;
     }
 
@@ -279,25 +334,27 @@ export class EditFormComponent extends React.Component {
           }
         });
       } else {
-        this.setState({ queryInputMode: to, queryModeChanging: false });
+        this.setState({ queryInputMode: to, queryModeChanging: false, formErrors: {} });
       }
     }
   };
 
   render() {
     const groupBy = this.props.groupBy || '';
-    const { select, groupParams, labels, formErrors, hasError } = this.props;
+    const { select, groupParams, labels, formErrors, hasError, isCustom } = this.props;
 
-    const renderVars = field => <VarsField fields={field.fields} groupParams={groupParams || {}} />;
-    const renderLabels = field => <LabelsField fields={field.fields} options={labels} />;
+    const errors = { ...formErrors, ...this.state.formErrors };
+
+    const renderVars = field => <VarsField change={this.props.change} fields={field.fields} groupParams={groupParams || {}} />;
+    const renderLabels = field => <LabelsField fields={field.fields} options={labels} isCustom={isCustom} />;
 
     return (
       <form onSubmit={this.props.handleSubmit}>
         <Container>
           {hasError && <div className="form-error-message">Please check form accurate, there is an error.</div>}
-          {Object.keys(formErrors).length > 0
+          {Object.keys(errors).length > 0
             ? <div className="form-error-message">
-              {Object.keys(formErrors).map(key => (<span>{key}: {formErrors[key]}<br /></span>))}
+              {Object.keys(errors).map(key => (<span>{key}: {errors[key]}<br /></span>))}
             </div>
             : null
           }
@@ -318,18 +375,19 @@ export class EditFormComponent extends React.Component {
             <div className="input-wrap">
               <FormSection name="query">
                 <Section hidden={this.state.queryInputMode !== 'form'}>
-                  <reduxForm.Input onChange={() => {}} label="SELECT" name="select" />
-                  <reduxForm.Input onChange={() => {}} label="FROM" name="from" />
-                  <reduxForm.Input onChange={() => {}} label="WHERE" name="where" />
-                  <reduxForm.Input onChange={() => {}} label="ORDER BY" name="order_by" />
-                  <reduxForm.Input onChange={() => {}} label="SPLIT BY" name="split_by" />
-                  <reduxForm.Input onChange={() => {}} label="GROUP BY" name="group_by" />
+                  <reduxForm.Textarea autosize onChange={() => {}} label="SELECT" name="select" />
+                  <reduxForm.Textarea autosize onChange={() => {}} label="FROM" name="from" />
+                  <reduxForm.Textarea autosize onChange={() => {}} label="WHERE" name="where" />
+                  <reduxForm.Textarea autosize onChange={() => {}} label="ORDER BY" name="order_by" />
+                  <reduxForm.Textarea autosize onChange={() => {}} label="SPLIT BY" name="split_by" />
+                  <reduxForm.Textarea autosize onChange={() => {}} label="GROUP BY" name="group_by" />
                   <div
                     className={classNames({
-                      'field-hidden': !(select && select.match(/count\s*\(.*?\)/i) && groupBy.length)
+                      'field-hidden': !(select && select.match(/dpql_count\(.*\)/i) && groupBy.length)
                     })}
                   >
                     <reduxForm.Checkbox
+                      className="rollup"
                       label="WITH ROLLUP - Adds a Total column to grouped COUNT queries made against hierarchies"
                       name="with_rollup"
                     />
@@ -340,7 +398,7 @@ export class EditFormComponent extends React.Component {
                   </div>
                 </Section>
                 <Section hidden={this.state.queryInputMode !== 'dpql'}>
-                  <reduxForm.Textarea name="raw" />
+                  <reduxForm.Textarea name="raw" autosize />
                 </Section>
               </FormSection>
               <div className="vars-wrap">
@@ -360,5 +418,5 @@ export class EditFormComponent extends React.Component {
 export const EditForm = formValues({
   queryValues: 'query',
   select:      'query.select',
-  groupBy:     'query.groupBy'
+  groupBy:     'query.group_by'
 })(EditFormComponent);

@@ -62,6 +62,7 @@ class ValidatorErrorCodeFactory
         Assert\Regex::REGEX_FAILED_ERROR         => ErrorsCodes::REGEX,
         Assert\Image::INVALID_MIME_TYPE_ERROR    => ErrorsCodes::NOT_AN_IMAGE,
         Assert\File::NOT_FOUND_ERROR             => ErrorsCodes::NO_UPLOADED_FILE,
+        Assert\Ip::INVALID_IP_ERROR              => ErrorsCodes::INVALID_IP,
     ];
 
     /**

@@ -22,6 +22,7 @@ use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
+use Symfony\Component\Security\Core\Authentication\Token\TokenInterface;
 use Symfony\Component\Security\Core\Exception\AuthenticationException;
 use Symfony\Component\Security\Core\Exception\BadCredentialsException;
 use Symfony\Component\Security\Http\Firewall\AbstractAuthenticationListener;
@@ -94,7 +95,24 @@ class DpAuthListener extends AbstractAuthenticationListener implements Container
         }
 
         try {
-            return $this->authenticationManager->authenticate($tokenOrResponse);
+            $returnValue = $this->authenticationManager->authenticate($tokenOrResponse);
+            if ($returnValue instanceof TokenInterface && $returnValue->getUser() instanceof Person) {
+                $person = $returnValue->getUser();
+
+                // check if user has this brand
+                $brand = $this->container->get('brand_stack')->getActive()->getBrand();
+                if ($brand && !$person->hasBrand($brand)) {
+                    $person->addBrand($brand);
+
+                    $em = $this->container->get('doctrine.orm.default_entity_manager');
+                    $em->persist($person);
+                    $em->flush();
+                }
+
+                $this->logLoginSuccess($person, $request->getClientIp());
+            }
+
+            return $returnValue;
         } catch (AuthenticationException $e) {
             if (isset($abuseCheck)) {
                 $this->container->get('anti_abuse')->saveRateLimit($abuseCheck);
@@ -399,6 +417,26 @@ class DpAuthListener extends AbstractAuthenticationListener implements Container
                     'date_created' => date('Y-m-d H:i:s'),
                 ]
             );
+        }
+    }
+
+    /**
+     * @param Person $person
+     * @param string $ip
+     */
+    private function logLoginSuccess(Person $person, $ip)
+    {
+        // log just if it's an agent
+        if ($person->isAgent()) {
+            $this->container->get('doctrine.dbal.default_connection')->insert('login_log', [
+                'person_id'    => $person->getId(),
+                'area'         => DP_INTERFACE,
+                'is_success'   => 1,
+                'ip_address'   => $ip,
+                'hostname'     => @gethostbyaddr($ip) ?: '',
+                'user_agent'   => empty($_SERVER['HTTP_USER_AGENT']) ? '' : $_SERVER['HTTP_USER_AGENT'],
+                'date_created' => date('Y-m-d H:i:s'),
+            ]);
         }
     }
 

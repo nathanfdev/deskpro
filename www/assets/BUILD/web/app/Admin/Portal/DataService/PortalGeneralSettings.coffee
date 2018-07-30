@@ -63,11 +63,27 @@ define ['DeskPRO/Util/Util'], (Util)  ->
 
       me = @
 
-      if @brandId
+      if @brandId and @brandId != 'new'
         p = @Api2.sendGet('/settings/brands/'+@brandId+'/portal/general').success((res) ->
           if me.brandId == 'new'
             res.data.deskpro_url = ''
             res.data.deskpro_name = ''
+
+          domain = false
+          try
+            parser = document.createElement('a')
+            parser.href = res.data.deskpro_url
+            domain = parser.hostname || false
+
+          if !domain
+            domain = res.data.deskpro_url.replace(/^https?:\/\//i, '').replace(/\/+/, '')
+
+          res.data.deskpro_domain = domain
+          res.data.domain_choice  = if !domain or domain.indexOf('.deskpro.com') != -1 then 'default' else 'custom'
+
+          if res.data.domain_choice == 'default'
+            res.data.deskpro_domain = res.data.deskpro_domain.replace(/\.deskpro\.com$/, '')
+
           me.settings = res.data
           me.settings.orig_deskpro_url = me.settings.deskpro_url
           d.resolve(me.settings)
@@ -77,7 +93,13 @@ define ['DeskPRO/Util/Util'], (Util)  ->
           me.settingPromise[me.brandId] = null
         )
       else
-        p = @$q.when({})
+        p = @$q.when({
+          deskpro_url: '',
+          deskpro_name: '',
+          deskpro_domain: '',
+          domain_choice: 'default',
+          orig_deskpro_url: null
+        })
 
       p
 

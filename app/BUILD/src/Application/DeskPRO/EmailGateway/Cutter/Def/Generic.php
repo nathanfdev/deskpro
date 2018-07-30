@@ -294,23 +294,26 @@ class Generic implements ForwardDef, QuoteDef
         $body = preg_replace('#\s*<div[^>]*DP_PREVIEW_TEXT_MARK[^>]*>(.*?)</div>\s*#is', '', $body);
 
         // Have cuts in the form of <div class="DP_TOP_MARK"> or <!--DP_TOP_MARK-->
-        $pos = strpos($body, 'DP_TOP_MARK');
+        $pos = strpos($body, 'DP_BLOCKQUOTE_BEGIN');
         if ($pos === false) {
-            $pos = strpos($body, 'DP_TOP_MARK_USER');
+            $pos = strpos($body, 'DP_TOP_MARK');
             if ($pos === false) {
-                // Try to detect '=== REPLY ABOVE THIS LINE ===' bits
-                $matches = [];
-                if (preg_match(
-                        '#(?:=(?:3D)?){3}(?:\s|&nbsp;)*.+(?: \[.+\])?(?:\s|&nbsp;)*(?:=(?:3D)?){3}#',
+                $pos = strpos($body, 'DP_TOP_MARK_USER');
+                if ($pos === false) {
+                    // Try to detect '=== REPLY ABOVE THIS LINE ===' bits
+                    $matches = [];
+                    if (preg_match(
+                        '#(?:=(?:3D)?){3}(?:\s|&nbsp;)*[^=]+(?: \[.+\])?(?:\s|&nbsp;)*(?:=(?:3D)?){3}#',
                         $body,
                         $matches,
                         \PREG_OFFSET_CAPTURE
-                )) {
-                    $pos = $matches[0][1];
-                }
+                    )) {
+                        $pos = $matches[0][1];
+                    }
 
-                if ($pos === false) {
-                    return $body;
+                    if ($pos === false) {
+                        return $body;
+                    }
                 }
             }
         }

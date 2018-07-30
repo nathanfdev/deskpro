@@ -102,7 +102,7 @@ class AcceptDatabaseStep extends AbstractStep
 
         $this->writeln($f->formatBlock('Checking database details', 'question', true));
 
-        if (!$this->validateDbInfo($dbinfo, true, $advanced)) {
+        if (!$this->validateDbInfo($dbinfo, true)) {
             $this->writeln('');
             $this->writeln('The database details you entered appear to be incorrect. You will be prompted to re-enter your details.');
             $this->writeln('Press any key when you are ready...');
@@ -117,7 +117,7 @@ class AcceptDatabaseStep extends AbstractStep
         }
     }
 
-    private function validateDbInfo(DbInfo $dbinfo, $autoCreate = false, $canUseDefault = false)
+    private function validateDbInfo(DbInfo $dbinfo, $autoCreate = false)
     {
         $connInfo = \DpRun\LowUtil::getMysqlInfoFromConfigArray([
             'host'     => $dbinfo->host,
@@ -147,18 +147,6 @@ class AcceptDatabaseStep extends AbstractStep
                 $this->writeln('  > <error>FAIL</error>');
                 $this->writeln('<error>DeskPRO requires MySQL version 5.0 or newer.</error>');
                 $isDbError = true;
-            }
-
-            if (!$isDbError && !$canUseDefault) {
-                $this->writeln('Checking to make sure the database is empty...');
-                $tables = $pdo->query('SHOW TABLES')->fetchAll(\PDO::FETCH_COLUMN);
-                if (!$tables) {
-                    $this->writeln('  > <info>OK</info>');
-                } else {
-                    $this->writeln('  > <error>FAIL</error>');
-                    $this->writeln('<error>The database you install DeskPRO into must be completely empty.</error>');
-                    $isDbError = true;
-                }
             }
         } catch (\Exception $e) {
 

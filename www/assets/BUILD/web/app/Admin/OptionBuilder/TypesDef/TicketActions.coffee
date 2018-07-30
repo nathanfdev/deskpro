@@ -588,6 +588,16 @@ define [
           options_data['ticket_labels']     = data.ticket_labels
 
           options_data['ticket_dep_options'] = @standardOptionsFormatter(options_data['ticket_deps'])
+          options_data['flags'] = [
+            {title: 'none', value: ''},
+            {title: 'Red', value: 'red'},
+            {title: 'Blue', value: 'blue'},
+            {title: 'Green', value: 'green'},
+            {title: 'Yellow', value: 'yellow'},
+            {title: 'Orange', value: 'orange'},
+            {title: 'Purple', value: 'purple'},
+            {title: 'Pink', value: 'pink'}
+          ]
 
           if (window.DP_HAS_NEW_EMAILS)
             v2data = result[1].data['data']
@@ -868,26 +878,21 @@ define [
       me = @
       return {
         getTemplate: ->
-          return me.dpTemplateManager.get('OptionBuilder/type-actions-select.html')
+          return me.dpTemplateManager.get('OptionBuilder/type-actions-set-flag.html')
 
         getData: ->
-          return {
-            options: [
-              {title: 'none', value: ''},
-              {title: 'Red', value: 'red'},
-              {title: 'Blue', value: 'blue'},
-              {title: 'Green', value: 'green'},
-              {title: 'Yellow', value: 'yellow'},
-              {title: 'Orange', value: 'orange'},
-              {title: 'Purple', value: 'purple'},
-              {title: 'Pink', value: 'pink'}
-            ]
-          }
+          return me.loadDataOptions()
 
         getDataFormatter: ->
           return {
             getViewValue: (value = {}, data) ->
+              agent_ids = {}
+              if value.options?.agent_ids
+                for aid in value.options?.agent_ids
+                  agent_ids[aid+""] = true
+
               return {
+                agent_ids: agent_ids
                 value: value.options?.color || ''
               }
             getValue: (model = {}, data) ->
@@ -895,6 +900,16 @@ define [
               value.type = 'SetFlag'
               value.options = {}
               value.options.color = model.value || ''
+              value.options.agent_ids = []
+
+              if model.agent_ids
+                for own k, v of model.agent_ids
+                  if v
+                    if Numbers.isNumeric(k)
+                      value.options.agent_ids.push(parseInt(k))
+                    else
+                      value.options.agent_ids.push(k)
+
               return value
           }
       }

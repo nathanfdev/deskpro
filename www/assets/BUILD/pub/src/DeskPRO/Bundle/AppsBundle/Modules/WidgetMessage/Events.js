@@ -10,7 +10,13 @@ export const EVENT_WEBAPI_REQUEST_FETCH = 'webapi.request.fetch';
 
 export const EVENT_WEBAPI_REQUEST_DESKPRO = 'webapi.request.deskpro';
 
+// CONTEXT EVENTS
+
+export const EVENT_CONTEXT_PROPERTY_GET = 'context.property.get';
+
 // TAB EVENTS
+
+// this event is now deprecated and should only be used for internal purposes
 
 export const EVENT_TAB_DATA = 'context.tab_data';
 
@@ -59,6 +65,10 @@ export const events =
     EVENT_WEBAPI_REQUEST_DESKPRO,
 
     EVENT_WEBAPI_REQUEST_FETCH,
+
+  // CONTEXT EVENTS
+
+    EVENT_CONTEXT_PROPERTY_GET,
 
   // TAB EVENTS
 

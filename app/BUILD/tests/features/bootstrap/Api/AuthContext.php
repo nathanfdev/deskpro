@@ -174,8 +174,8 @@ class AuthContext extends BaseContext
     {
         $user =
             DataContext::hasReference($who)
-            ? DataContext::getReference($who, false)
-            : $this->getUserDetails()->getWho($who);
+                ? DataContext::getReference($who, false)
+                : $this->getUserDetails()->getWho($who);
 
         session_start();
         $_SESSION['_sf2_attributes'] = ['auth_person_id' => $user->getId()];
@@ -284,6 +284,12 @@ class AuthContext extends BaseContext
      */
     private function ensureApiKey(Person $person, $code)
     {
+        // reset global rate limit settings
+        $this->em()->getConnection()->executeUpdate(
+            'REPLACE INTO settings (name, value) VALUES (:name, :value)',
+            ['name' => 'api_limits.global.hour', 'value' => -1]
+        );
+
         $key = $this->repository(ApiKey::class)->findOneBy(compact('code'));
         if (!$key) {
             $key         = new ApiKey();
@@ -307,9 +313,17 @@ class AuthContext extends BaseContext
             $this->persistAndFlush($key);
             $this->persistAndFlush($key_limit);
             $this->persistAndFlush($key_action);
-        } elseif ($key->person !== $person) {
-            $key->person = $person;
-            $this->persistAndFlush($key);
+        } else {
+            if ($key->person !== $person) {
+                $key->person = $person;
+                $this->persistAndFlush($key);
+            }
+
+            // reset rate limit settings of existing api key
+            $limit = $this->repository(ApiKeyLimit::class)->findOneBy(['api_key' => $key]);
+            $limit->setCurrent(-1);
+            $limit->setLimit(-1);
+            $this->persistAndFlush($limit);
         }
 
         DataContext::setReference('apiKey', $key);

@@ -21,14 +21,9 @@ Feature: API batch requests
       | o1 | Org 1 |
       | o2 | Org 2 |
 
-  Scenario: Invalid input because I do not include the "requests" node
-    When I send a POST request to "/api/v2/batch" with body:
-    """
-{
-  "invalid": "must include the requests node"
-}
-    """
-    Then the response status code should be 400
+  Scenario: Empty request is allowed
+    When I send a POST request to "/api/v2/batch"
+    Then the response status code should be 200
 
   Scenario: I use batch to make a single GET request using only a string url
     When I send a POST request to "/api/v2/batch" with body:

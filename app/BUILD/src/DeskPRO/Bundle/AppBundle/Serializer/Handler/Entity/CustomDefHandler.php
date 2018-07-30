@@ -12,6 +12,7 @@ use Application\DeskPRO\Entity\CustomDefTicket;
 use Application\DeskPRO\Entity\Language;
 use Application\DeskPRO\Translate\Translate;
 use DeskPRO\Bundle\AppBundle\Serializer\Model\CustomDef as CustomDefModel;
+use DeskPRO\Bundle\AppBundle\Serializer\Model\CustomDefChoice;
 use DeskPRO\Bundle\AppBundle\Serializer\Model\CustomDefTranslation;
 use DeskPRO\Bundle\AppBundle\Serializer\Sideload\SideloadSerializationContext;
 use Doctrine\ORM\EntityManager;
@@ -70,7 +71,49 @@ class CustomDefHandler extends AbstractEntityHandler
      */
     public function createModel($entity, SideloadSerializationContext $context)
     {
-        $model        = new CustomDefModel($entity);
+        $serializerClass = $context->getMappedClass(CustomDefAbstract::class);
+
+        switch ($serializerClass) {
+            case CustomDefChoice::class:
+                return $this->createChoiceModel($entity);
+            default:
+                return $this->createDefModel($entity);
+        }
+    }
+
+    /**
+     * @param CustomDefAbstract $entity
+     *
+     * @return CustomDefModel
+     */
+    private function createDefModel(CustomDefAbstract $entity)
+    {
+        $model = new CustomDefModel($entity);
+        $model->setTranslations($this->loadTranslations($entity));
+
+        return $model;
+    }
+
+    /**
+     * @param CustomDefAbstract $entity
+     *
+     * @return CustomDefChoice
+     */
+    private function createChoiceModel(CustomDefAbstract $entity)
+    {
+        $model = new CustomDefChoice($entity);
+        $model->setTranslations($this->loadTranslations($entity));
+
+        return $model;
+    }
+
+    /**
+     * @param CustomDefAbstract $entity
+     *
+     * @return array
+     */
+    private function loadTranslations(CustomDefAbstract $entity)
+    {
         $translations = [];
 
         if (null === $this->languages) {
@@ -85,8 +128,6 @@ class CustomDefHandler extends AbstractEntityHandler
             );
         }
 
-        $model->setTranslations($translations);
-
-        return $model;
+        return $translations;
     }
 }

@@ -6,7 +6,6 @@ use Application\DeskPRO\DBAL\Connection;
 use Application\DeskPRO\NewSettings\SettingsResolver;
 use DeskPRO\Bundle\AppBundle\Notification\Message\ActionAlert;
 use DeskPRO\Bundle\AppBundle\Notification\Message\MessageInterface;
-use DeskPRO\Bundle\AppBundle\Notification\Message\Notification;
 use DeskPRO\Bundle\AppBundle\Notification\NotificationService;
 use DpSys\LowError\SystemErrorHandler;
 use Pusher;
@@ -14,12 +13,9 @@ use Pusher;
 /**
  * Class PusherDeliveryHandler.
  */
-class PusherDeliveryHandler extends AbstractDeliveryHandler
+class PusherDeliveryHandler extends MultiplexDeliverHandler
 {
     const TYPE = 'notification.delivery.handler.pusher';
-
-    const CHANNEL_ACTION_ALERT = 'action_alert';
-    const CHANNEL_USER_NOTIFY  = 'user_notify';
 
     /**
      * @var Pusher
@@ -47,11 +43,6 @@ class PusherDeliveryHandler extends AbstractDeliveryHandler
     private $requestSoon = false;
 
     /**
-     * @var int
-     */
-    private $tries;
-
-    /**
      * @param Pusher           $pusher
      * @param SettingsResolver $resolver
      * @param Connection       $connection
@@ -74,8 +65,7 @@ class PusherDeliveryHandler extends AbstractDeliveryHandler
      */
     public function schedule(MessageInterface $message)
     {
-
-        //this is particular message should be sent only throught db client
+        //this is particular message should be sent only through db client
         if ($message->getType() === 'read.notifications.alert') {
             return;
         }
@@ -182,22 +172,6 @@ class PusherDeliveryHandler extends AbstractDeliveryHandler
     }
 
     /**
-     * @param MessageInterface $message
-     *
-     * @return string
-     */
-    protected function getChannel(MessageInterface $message)
-    {
-        if ($message instanceof ActionAlert) {
-            return self::CHANNEL_ACTION_ALERT;
-        } elseif ($message instanceof Notification) {
-            return self::CHANNEL_USER_NOTIFY;
-        }
-
-        throw new \InvalidArgumentException('Message should be ActionAlert or Notification');
-    }
-
-    /**
      * @param $chunk
      */
     protected function deliverDivided($chunk)
@@ -214,41 +188,11 @@ class PusherDeliveryHandler extends AbstractDeliveryHandler
             $encodedMessages     = json_encode($channelMessages);
             $channelMessagesSize = strlen($encodedMessages);
 
-            if ($channelMessagesSize > static::MAX_MESSAGE_SIZE) {
+            if ($channelMessagesSize > $this->getMaxMessageSize()) {
                 $this->deliverMultiplex($channel, $encodedMessages);
             } else {
                 $this->innerDeliver($channelMessages);
             }
-        }
-    }
-
-    /**
-     * @param $channel
-     * @param $encodedMessages
-     */
-    protected function deliverMultiplex($channel, $encodedMessages)
-    {
-        // 1Kb of overhead is more than anyone will ever need :)
-        $encodedMessagesParts = str_split(base64_encode($encodedMessages), intval(0.9 * static::MAX_MESSAGE_SIZE));
-        $i                    = 0;
-        $allParts             = count($encodedMessagesParts);
-        $multiplexId          = time().'-'.hash('crc32b', $encodedMessages); // crc32b just much faster than md5 or sha1
-        foreach (array_chunk($encodedMessagesParts, 10) as $encodedMessagesPartsChunk) {
-            $chunk = [];
-            foreach ($encodedMessagesPartsChunk as $part) {
-                $chunk[] = [
-                    'channel' => $channel,
-                    'name'    => self::CHANNEL_ACTION_ALERT,
-                    'data'    => json_encode([
-                        'type'        => 'multiplex_message',
-                        'part'        => ++$i,
-                        'parts'       => $allParts,
-                        'data'        => $part,
-                        'multiplexId' => $multiplexId,
-                    ]),
-                ];
-            }
-            $this->innerDeliver($chunk);
         }
     }
 }

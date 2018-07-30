@@ -34,10 +34,12 @@
 			<time
 				{% if not app.isRelativeTimesDisabled() %}class="timeago"{% endif %}
 				datetime="{{comment.date_created|date('c', 'UTC')}}"
+        {% if not app.user.hasPerm('agent_publish.validate') and not app.user.hasPerm('agent_tickets.create') %}style="margin-right:10px;"{% endif %}
 			>
                 {{ comment.date_created|date('fulltime') }}
 			</time>
-			<span class="edit-gear comment-edit-btn"></span>
+			<span class="edit-gear comment-edit-btn" 
+            {% if not app.user.hasPerm('agent_publish.validate') and not app.user.hasPerm('agent_tickets.create') %}style="display:none;"{% endif %}></span>
 		</header>
 		<div class="body-text">
 			<div class="rendered-message">{{ comment.content_html|raw }}</div>

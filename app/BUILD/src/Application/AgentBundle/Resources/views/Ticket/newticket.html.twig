@@ -11,6 +11,7 @@ pageMeta.auto_start_bill = {% if app.getSetting('core_tickets.enable_timelog') a
 
 {% set baseId = el_uid() %}
 pageMeta.baseId = '{{ baseId }}';
+pageMeta.defaultDepartments = {{ default_departments|json_encode|raw }};
 </script>
 
 <script>
@@ -235,6 +236,11 @@ pageMeta.baseId = '{{ baseId }}';
                             {% endfor %}
                     </span>
 						</label>
+						<select id="{{ baseId }}_followers_list_sel" name="add_followers[]" class="hidden" multiple="multiple" style="display: none">
+                            {% for agent in app.getAgentData().getAgentAvatarList() %}
+								<option value="{{ agent.id }}">{{ agent.display_name }}</option>
+                            {% endfor %}
+						</select>
 						<div class="followers-list">
 							<ul id="{{ baseId }}_followers_list">
                                 {% for a in agent_parts %}
@@ -247,8 +253,7 @@ pageMeta.baseId = '{{ baseId }}';
                                 {% endfor %}
 							</ul>
 							<div class="new-follower" id="{{ baseId }}_followers_sel_wrap">
-								<select id="{{ baseId }}_followers_sel" class="dpe_select"
-										data-style-type="icons" data-select-icon-size="22" name="add_followers[]">
+								<select id="{{ baseId }}_followers_sel" class="dpe_select" data-style-type="icons" data-select-icon-size="22">
 									<option value="0">{{ phrase('agent.general.select_agent') }}</option>
                                     {% for agent in app.getAgentData().getAgentAvatarList() %}
 										<option data-icon="{{ agent.getPictureUrl(20) }}"
@@ -279,7 +284,7 @@ pageMeta.baseId = '{{ baseId }}';
                         {{ phrase('agent.general.subject') }}:
 					</th>
 					<td>
-						<input type="text" name="newticket[subject]" class="subject" id="{{baseId}}_subject" />
+						<input type="text" name="newticket[subject]" class="subject" id="{{baseId}}_subject" value="{% if ticket.id %}{{ ticket.subject }}{% endif %}" />
 					</td>
 				</tr>
 				</tbody>

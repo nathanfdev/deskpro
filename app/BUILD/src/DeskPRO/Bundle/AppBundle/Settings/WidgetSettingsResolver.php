@@ -164,11 +164,17 @@ class WidgetSettingsResolver extends AbstractBrandAwareSettingsResolver
         return (bool) $this->getSetting(self::JWT_REQUIRED, $brand);
     }
 
+    /**
+     * @return bool
+     */
     public function isChatRequireLogin()
     {
         return (bool) $this->getSetting(self::CHAT_REQUIRE_LOGIN);
     }
 
+    /**
+     * @return bool
+     */
     public function isChatEmailValidation()
     {
         return (bool) $this->getSetting(self::CHAT_EMAIL_VALIDATION);
@@ -205,7 +211,7 @@ class WidgetSettingsResolver extends AbstractBrandAwareSettingsResolver
 
         if ($portalMode && $portalMode->isBrand()) {
             $baseUrl     = $this->router->generate('portal_home', [], UrlGeneratorInterface::ABSOLUTE_URL);
-            $helpdeskUrl = rtrim($baseUrl, '/').'/brand-'.$brand->getId();
+            $helpdeskUrl = rtrim($baseUrl, '/');
         } else {
             $baseUrl     = $this->router->generate('portal_home', ['brand' => $brand], UrlGeneratorInterface::ABSOLUTE_URL);
             $helpdeskUrl = $baseUrl;

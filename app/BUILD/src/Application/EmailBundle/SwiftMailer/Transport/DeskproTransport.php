@@ -6,8 +6,8 @@
 
 namespace Application\EmailBundle\SwiftMailer\Transport;
 
-use Application\DeskPRO\App;
 use Application\DeskPRO\Email\EmailAccount\EmailAccountManager;
+use Application\DeskPRO\NewSettings\SettingsResolver;
 use Application\EmailBundle\SourceMapper\SourceMapperInterface;
 use Application\EmailBundle\SwiftMailer\Message\MessageOptionsInterface;
 use DeskPRO\Bundle\PortalBundle\Brand\BrandStack;
@@ -48,17 +48,31 @@ class DeskproTransport implements Swift_Transport, StorageTransportInterface
     private $brandStack;
 
     /**
+     * @var SettingsResolver
+     */
+    private $settingsResolver;
+
+    /**
      * @param SourceMapperInterface        $source_mapper
      * @param EmailAccountManager          $email_accounts
      * @param Swift_Events_EventDispatcher $event_dispatcher
      * @param LoggerInterface              $logger
+     * @param BrandStack                   $brandStack
+     * @param SettingsResolver             $settingsResolver
      */
-    public function __construct(SourceMapperInterface $source_mapper, EmailAccountManager $email_accounts, Swift_Events_EventDispatcher $event_dispatcher, BrandStack $brandStack, LoggerInterface $logger = null)
-    {
+    public function __construct(
+        SourceMapperInterface $source_mapper,
+        EmailAccountManager $email_accounts,
+        Swift_Events_EventDispatcher $event_dispatcher,
+        BrandStack $brandStack,
+        SettingsResolver $settingsResolver,
+        LoggerInterface $logger = null
+    ) {
         $this->event_dispatcher = $event_dispatcher;
         $this->email_accounts   = $email_accounts;
         $this->source_mapper    = $source_mapper;
         $this->brandStack       = $brandStack;
+        $this->settingsResolver = $settingsResolver;
         $this->logger           = $logger ?: new NullLogger();
     }
 
@@ -78,8 +92,10 @@ class DeskproTransport implements Swift_Transport, StorageTransportInterface
             $this->logger->debug('[Before processing] From is empty');
         }
 
-        $acc        = $this->email_accounts->findAccountForSwiftmailerMessage($message, $this->brandStack->getActive()->getBrand());
-        $from_name  = Arrays::getFirstItem($message->getFrom() ?: []) ?: App::getSetting('core.site_name');
+        $brand     = $this->brandStack->getActive()->getBrand();
+        $acc       = $this->email_accounts->findAccountForSwiftmailerMessage($message, $brand);
+        $from_name = Arrays::getFirstItem($message->getFrom() ?: [])
+            ?: $this->settingsResolver->getBrandSettings($brand->getId())->get('core.deskpro_name');
         $from_email = $acc->getUseEmailAddress();
 
         if ($message instanceof MessageOptionsInterface) {

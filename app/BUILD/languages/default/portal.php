@@ -1046,7 +1046,7 @@ return [
     'user.time.short-day_monday'                             => 'Mon',
     'user.time.short-day_saturday'                           => 'Sat',
     'user.time.short-day_sunday'                             => 'Sun',
-    'user.time.short-day_thursday'                           => 'Thur',
+    'user.time.short-day_thursday'                           => 'Thu',
     'user.time.short-day_tuesday'                            => 'Tue',
     'user.time.short-day_wednesday'                          => 'Wed',
     'user.time.short-month_april'                            => 'Apr',

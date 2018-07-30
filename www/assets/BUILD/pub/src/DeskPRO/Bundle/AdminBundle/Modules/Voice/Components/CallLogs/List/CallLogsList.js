@@ -91,7 +91,7 @@ class CallLogsList extends React.Component {
                       <PersonName id={participant.get('person')} className="list-item" key={pindex} />
                     )}
                   </td>
-                  <td className="overflow-ellipsis">
+                  <td>
                     {isInbound
                       ? <button onClick={() => openDialpad(fromNumber)}>
                         {fromNumber}
@@ -99,7 +99,7 @@ class CallLogsList extends React.Component {
                       : number.get('number')
                     }
                   </td>
-                  <td className="overflow-ellipsis">
+                  <td>
                     {isInbound
                       ? number.get('number')
                       : <button onClick={() => openDialpad(toNumber)}>

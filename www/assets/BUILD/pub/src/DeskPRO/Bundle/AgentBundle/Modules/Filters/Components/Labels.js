@@ -5,8 +5,7 @@ import {
   Heading,
   Tag,
   List,
-  Item,
-  Scrollbar
+  Item
 } from '@deskpro/react-components';
 import PropTypes from 'prop-types';
 
@@ -75,31 +74,26 @@ export default class Labels extends React.Component {
         <Heading>
           Labels
         </Heading>
-        <Scrollbar
-          autoHeightMax={400}
-          hideTracksWhenNotNeeded
-        >
-          <List className="dp-drawer-item-list dp-labels">
-            {Object.keys(groups).sort().map(key =>
-              <Item key={key} leftTypes={[LabelTitle]}>
-                <LabelTitle>{key}</LabelTitle>
-                <div className="dp-label-list">
-                  {groups[key].map(label =>
-                    [
-                      <Tag
-                        key={label}
-                        className={classNames('dp-label', { enabled: mode && label === mode.label })}
-                        onClick={() => onSelectMode({ type: 'label', label })}
-                      >
-                        {label}
-                      </Tag>,
-                      ' ']
-                  )}
-                </div>
-              </Item>
-            )}
-          </List>
-        </Scrollbar>
+        <List className="dp-drawer-item-list dp-labels">
+          {Object.keys(groups).sort().map(key =>
+            <Item key={key} leftTypes={[LabelTitle]}>
+              <LabelTitle>{key}</LabelTitle>
+              <div className="dp-label-list">
+                {groups[key].map(label =>
+                  [
+                    <Tag
+                      key={label}
+                      className={classNames('dp-label', { enabled: mode && label === mode.label })}
+                      onClick={() => onSelectMode({ type: 'label', label })}
+                    >
+                      {label}
+                    </Tag>,
+                    ' ']
+                )}
+              </div>
+            </Item>
+          )}
+        </List>
       </Drawer>
     );
   }

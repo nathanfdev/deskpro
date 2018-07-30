@@ -1,0 +1,3 @@
+SELECT * FROM ticket_logs WHERE action_type='started'
+------------------------------------------------------------------------------------------------------------------------
+SELECT * FROM ticket_logs WHERE action_type='started'

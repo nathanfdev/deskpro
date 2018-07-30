@@ -114,6 +114,9 @@ define ['DeskPRO/Util/Arrays', 'DeskPRO/Util/Util'], (Arrays, Util) ->
 
       return d.promise
 
+    clearLastReportDetail: ->
+      @lastReportDetail = null
+
     ###
     # Gets a list of report id/title that exist on a dashboard.
     #

@@ -4,6 +4,7 @@ namespace DeskPRO\Bundle\ReportBundle\Dpql2\Statement\Part;
 
 use Application\DeskPRO\EntityRepository\AbstractEntityRepository;
 use DeskPRO\Bundle\AppBundle\Entity\Currency;
+use DeskPRO\Bundle\ReportBundle\Dpql2\DpqlContextStorage;
 use DeskPRO\Bundle\ReportBundle\Dpql2\DpqlException;
 use DeskPRO\Bundle\ReportBundle\Dpql2\Func\DpqlFuncRegistry;
 use DeskPRO\Bundle\ReportBundle\Dpql2\Helper\CustomDataHelper;
@@ -104,6 +105,8 @@ END)
         'custom_data_organizations' => ['id', 'title'],
         'custom_data_ticket'        => ['id', 'title'],
         'custom_data_people'        => ['id', 'title'],
+        'voice_queues'              => ['id', 'name'],
+        'voice_numbers'             => ['id', 'number'],
     ];
 
     /**
@@ -119,6 +122,7 @@ END)
         'custom_data_organizations' => '%1$s.root_field_id = %2$s',
         'custom_data_person'        => '%1$s.root_field_id = %2$s',
         'custom_data_ticket'        => '%1$s.root_field_id = %2$s',
+        'custom_data_chat'          => '%1$s.root_field_id = %2$s',
         'custom_data_billing'       => '%1$s.root_field_id = %2$s',
         'custom_field_data'         => '%1$s.root_definition_id = %2$s',
         'ticket_slas'               => '%1$s.sla_id = %2$s',
@@ -240,8 +244,12 @@ END)
                     switch ($field['type']) {
                         case 'datetime':
                             $tzOffsetSeconds = $statement->getTimezoneOffsetForFunction($stack);
-                            if ($tzOffsetSeconds) {
-                                $sql = "($sql + INTERVAL $tzOffsetSeconds SECOND)";
+
+                            if ($section === 'where' && $stack[0]->rhs instanceof StringPart &&
+                                $statement->getDpqlContextStorage()->getMode() === DpqlContextStorage::MODE_RUN) {
+                                $date = new \DateTime($stack[0]->rhs->string);
+                                $date->modify(($tzOffsetSeconds >= 0 ? '-'.$tzOffsetSeconds : '+'.-$tzOffsetSeconds).' seconds');
+                                $stack[0]->rhs->string = $date->format('Y-m-d H:i:s');
                             }
 
                             $renderer = 'datetime';

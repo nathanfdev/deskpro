@@ -1,24 +1,26 @@
-# Summary
+ENTER A SHORT SUMMARY HERE.
 
-- Write a summary of what this PR does.
-- If possible, use non-technical language so other members of the team can understand what this does.
+---
 
-# QA Checklist
-
-- If applicable: Write a list of things the QA tester should verify when testing this PR.
-- Include both simple cases as well as edge cases.
-- The goal is to help the QA tester understand the scope of the PR and the areas it might impact.
+Link to YouTrack: ENTER LINK TO YOUR YOUTRACK ISSUE
 
 # PR Checklist
 
-- [ ] I have manually tested my own changes, including the QA checklist I provided above.
-- [ ] I have manually tested code _related_ to but not directly affected by my own changes.
-- [ ] I have written tests to cover my changes (or if not, I have describe below why not).
-- [ ] I have rebased my code on the latest `develop` branch.
-- [ ] My API code has inline documentation and appropriate modes/tags.
-- [ ] I have included a build script for any changes to models.
-- [ ] I have checked that my build script implements the appropriate interface
+- 🔥 Your PR title should be: `DP-XXX: Title of YT issue`
+- 🔥 Make sure you link this PR on your YT issue
+- If your PR is a WIP, apply the `wip` label
+- Manually check your own changes in the product.
+  - Also check stuff related to your change (i.e. make sure your changes didn't break something else).
+- If not immediately obvious, make notes in the YT issue for QA about what they should verify.
+- Make sure tests have been written where appropriate.
+- Make sure you have rebased your code on the latest develop.
+  - And make sure you have moved-up any build scripts.
+  - Make sure your build scripts are all ONLINE build scripts.
 
-# Notes
 
-- Add any notes here such as known issues, ideas for future work or refactoring, etc.
+
+THIS IS A REMINDER OF WHAT YOU SHOULD DO BEFORE OPENING A PR. Please just delete this section so it's not in the real PR. This is just to remind you about what a good PR is about.
+
+👹👹👹👹👹👹👹👹👹
+If you're reading this in someone elses PR it means the author can't follow simple instructions and should be publicly shamed.
+👹👹👹👹👹👹👹👹👹

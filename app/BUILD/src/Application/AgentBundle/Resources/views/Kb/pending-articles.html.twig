@@ -28,7 +28,7 @@
 {% block pane_content %}
 
 	<header class="list-control-bar">
-		<button class="clean-white small add-new-trigger" style="margin:  3px 0 0 3px;">
+		<button class="clean-white small add-new-trigger" style="margin:  3px 0 0 3px;{% if not app.user.hasPerm('agent_publish.validate') %}display:none;{% endif %}">
 			<span>{{ phrase('agent.general.add') }}</span>
 		</button>
 	</header>

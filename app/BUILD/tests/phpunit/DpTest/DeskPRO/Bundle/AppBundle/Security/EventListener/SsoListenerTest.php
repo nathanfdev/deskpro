@@ -46,10 +46,7 @@ class SsoListenerTest extends PortalTestCase
         ;
     }
 
-    /**
-     * @test
-     */
-    public function check_auth_is_called()
+    public function test_check_auth_is_called()
     {
         $event = new GetResponseEvent($this->getPortalKernel(), new Request(), HttpKernelInterface::MASTER_REQUEST);
         $this->listener->expects($this->once())->method('checkAuthSystemForResponse');
@@ -57,13 +54,31 @@ class SsoListenerTest extends PortalTestCase
     }
 
     /**
-     * @test
-     * @dataProvider skipApiProvider
+     * @dataProvider skipPortalApiProvider
+     *
+     * @param string $url
      */
-    public function skip_for_portal_api()
+    public function test_skip_for_portal_api($url)
     {
-        $request = Request::create('/portal/api/tickets');
-        $event   = new GetResponseEvent($this->getPortalKernel(), $request, HttpKernelInterface::MASTER_REQUEST);
+        $request = Request::create($url, 'GET');
+        $request->attributes->add($this->getContainer()->get('router')->match($url));
+
+        $event = new GetResponseEvent($this->getPortalKernel(), $request, HttpKernelInterface::MASTER_REQUEST);
+
+        $this->listener->expects($this->never())->method('checkAuthSystemForResponse');
+        $this->listener->onKernelRequest($event);
+    }
+
+    /**
+     * @dataProvider skipApiProvider
+     *
+     * @param string $url
+     */
+    public function test_skip_for_api($url)
+    {
+        $request = Request::create($url, 'GET');
+
+        $event = new GetResponseEvent($this->getPortalKernel(), $request, HttpKernelInterface::MASTER_REQUEST);
 
         $this->listener->expects($this->never())->method('checkAuthSystemForResponse');
         $this->listener->onKernelRequest($event);
@@ -72,10 +87,19 @@ class SsoListenerTest extends PortalTestCase
     /**
      * @return array
      */
-    public function skipApiProvider()
+    public function skipPortalApiProvider()
     {
         return [
             ['/portal/api/tickets/new'],
+        ];
+    }
+
+    /**
+     * @return array
+     */
+    public function skipApiProvider()
+    {
+        return [
             ['/api/tickets'],
             ['/api/v2/tickets'],
         ];

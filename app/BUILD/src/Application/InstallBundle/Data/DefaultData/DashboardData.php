@@ -383,8 +383,8 @@ class DashboardData extends AbstractDefaultData
                                 [
                                     'name'    => 'date',
                                     'type'    => 'dates',
-                                    'default' => 'today',
-                                    'value'   => 'today',
+                                    'default' => 'last_month',
+                                    'value'   => 'this_month',
                                 ],
                             ],
                         ],

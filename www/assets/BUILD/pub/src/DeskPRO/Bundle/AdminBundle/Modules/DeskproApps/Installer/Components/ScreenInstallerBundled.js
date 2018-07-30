@@ -3,8 +3,10 @@ import PropTypes from 'prop-types';
 
 import uuid from 'uuid';
 import { AppsRegistry } from 'DeskPRO/Bundle/AppsBundle/Modules/Config';
-import { DeskproAppContainerProps, DeskproAppContainer } from 'DeskPRO/Bundle/AppsBundle/Modules/Components';
+import { DeskproAppContainer } from 'DeskPRO/Bundle/AppsBundle/Modules/Components';
 import { Context } from 'DeskPRO/Bundle/AppsBundle/Modules/Domain';
+import { createInterceptor } from 'DeskPRO/Bundle/AppsBundle/Modules/Services/Interceptors';
+import { receiveMessage } from 'DeskPRO/Bundle/AppsBundle/Modules/WidgetMessage';
 
 const TARGET_INSTALL = 'install';
 const INSTALL_STATUS_EVENT = 'install.status';
@@ -38,26 +40,24 @@ export class ScreenInstallerBundled extends React.Component {
   }
 
   /**
-   * Installer widget message interceptor for the INSTALL_STATUS_EVENT
-   *
+   * @param {string} eventName
+   * @param {*} message
    * @param {Widget} widget
-   * @param {String} eventName
-   * @param {WidgetRequest|WidgetResponse} widgetMessage
-   * @param {function} next
+   * @return {{status: boolean, result: null}}
    */
-  dispatchIncomingWidgetMessage = (eventName, widgetMessage, widget, next)  => {
-    const { onInstallFinished } = this.props;
-
+  interceptDispatchIncoming = (eventName, message, widget) => {
+    const status = false;
     if (eventName === INSTALL_STATUS_EVENT) {
       // the application manifest is also available if we need it
       // const { manifest } = widgetMessage.body;
-      const { status } = widgetMessage.body;
-      if (status === 'success') {
+      const { status: installStatus } = message;
+      if (installStatus === 'success') {
+        const { onInstallFinished } = this.props;
         onInstallFinished(widget.instanceId);
-        return;
       }
     }
-    next(eventName, widgetMessage, widget);
+
+    return { status, result: null };
   };
 
   render() {
@@ -65,10 +65,12 @@ export class ScreenInstallerBundled extends React.Component {
 
     const installerConfiguration = AppsRegistry.appConfiguration(installerManifest, config);
     const widgetsConfigList = [AppsRegistry.createWidget(TARGET_INSTALL, installerConfiguration)];
-
     const context = this.createRuntimeContext();
 
-    const props = DeskproAppContainerProps.create({ context, widgetsConfigList, dispatchIncomingWidgetMessage: this.dispatchIncomingWidgetMessage });
-    return (<DeskproAppContainer {...props} />);
+    return (<DeskproAppContainer
+      context={context}
+      widgetsConfigList={widgetsConfigList}
+      receiveMessage={createInterceptor(this.interceptDispatchIncoming, receiveMessage)}
+    />);
   }
 }

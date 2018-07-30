@@ -1,6 +1,6 @@
 import { createAction } from 'DeskPRO/Component/Ampliflux';
 import { repository, api } from 'DeskPRO/Bundle/AppBundle/DAL';
-import { setCollection, addToCollection } from 'DeskPRO/Bundle/AppBundle/Modules/RecordsStore';
+import { setCollection, addToCollection, removeFromCollection } from 'DeskPRO/Bundle/AppBundle/Modules/RecordsStore';
 import { transformReportDataToApi } from '../../Stats/Components/helper';
 
 export const reportsLoaded = createAction('REPORTS_LOADED');
@@ -27,13 +27,27 @@ export const loadReports = createAction(
 
 export const loadReport = createAction(
   'REPORTS_LOAD_REPORT',
-  id => dispatch => new Promise(resolve => repository('Reports')
-    .load(id)
-    .success((response) => {
+  id => (dispatch) => {
+    const promise = repository('Reports').load(id);
+    promise.success((response) => {
       dispatch(addToCollection('Reports', 'all', { [response.data.id]: response.data }, [response.data.id]));
-      resolve(response.data);
-    })
-));
+    });
+
+    return promise;
+  }
+);
+
+export const deleteReport = createAction(
+  'REPORTS_DELETE_REPORT',
+  id => (dispatch) => {
+    const promise = repository('Reports').remove(id);
+    promise.success(() => {
+      dispatch(removeFromCollection('Reports', 'all', [id]));
+    });
+
+    return promise;
+  }
+);
 
 export const runReport = createAction(
   'REPORTS_RUN_REPORT',
@@ -48,20 +62,48 @@ export const runReport = createAction(
       data.query = report.query;
     } else {
       data.query_parts = {
-        select:   report.select,
-        from:     report.from,
-        where:    report.where,
-        split_by: report.split_by,
-        group_by: report.group_by,
-        order_by: report.order_by,
-        limit:    report.limit,
-        offset:   report.offset
+        select:      report.select,
+        from:        report.from,
+        where:       report.where,
+        split_by:    report.split_by,
+        group_by:    report.group_by,
+        with_rollup: report.with_rollup,
+        order_by:    report.order_by,
+        limit:       report.limit,
+        offset:      report.offset
       };
     }
 
-    return new Promise(resolve => api
-      .sendPost(`DP_API/report_widgets/test/${reportId}?include=rendered_result&inline_sideloads=1`, data)
-      .success(response => resolve(response.data))
+    return api.sendPost(`DP_API/report_widgets/test/${reportId}?include=rendered_result&inline_sideloads=1`, data);
+  });
+
+export const downloadReport = createAction(
+  'REPORTS_DOWNLOAD_REPORT',
+  (reportId, report, type) => {
+    const data = {
+      display_types: report.display_types,
+      variables:     report.vars,
+      input_mode:    report.extended_query ? 'dpql' : 'form',
+      title:         report.title,
+    };
+    if (report.extended_query) {
+      data.query = report.query;
+    } else {
+      data.query_parts = {
+        select:      report.select,
+        from:        report.from,
+        where:       report.where,
+        split_by:    report.split_by,
+        group_by:    report.group_by,
+        with_rollup: report.with_rollup,
+        order_by:    report.order_by,
+        limit:       report.limit,
+        offset:      report.offset
+      };
+    }
+
+    api.sendPost(`DP_API/report_widgets/download/${reportId}/${type}`, data).success(
+      response => window.open(`/api/v2/report_widgets/download/generated/${response.data.auth}`)
     );
   });
 
@@ -99,41 +141,6 @@ export const saveReport = createAction(
   }
 );
 
-export const newReport = createAction(
-  'REPORTS_NEW_REPORT',
-  report => new Promise((resolve) => {
-    let toClone = report;
-    if (!report) {
-      toClone = {};
-    }
-    const newReportObject = {
-      id:            0,
-      unique_key:    '',
-      title:         '',
-      description:   '',
-      query:         toClone.query || '',
-      labels:        [],
-      display_order: 10,
-      display_types: [],
-      variables:     toClone.variables || [],
-      query_parts:   toClone.query_parts || {
-        select:      '',
-        from:        '',
-        where:       '',
-        split_by:    '',
-        group_by:    '',
-        order_by:    '',
-        with_rollup: false,
-        limit:       '',
-        offset:      ''
-      },
-      is_custom: true,
-      is_new:    true
-    };
-    return resolve(newReportObject);
-  })
-);
-
 export const saveAndRun = createAction(
   'REPORTS_SAVE_AND_RUN_REPORT',
   data => (dispatch) => {
@@ -143,12 +150,5 @@ export const saveAndRun = createAction(
         dispatch(runReport(response.data.id, data));
       }
     });
-  }
-);
-
-export const cloneReport = createAction(
-  'REPORTS_CLONE_REPORT',
-  report => (dispatch) => {
-    dispatch(newReport(report));
   }
 );

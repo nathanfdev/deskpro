@@ -18,7 +18,7 @@
     "doctrine/common": "2.6.*",
     "doctrine/dbal": "2.5.*",
     "doctrine/orm": "2.5.*",
-    "symfony/symfony": "2.8.37",
+    "symfony/symfony": "2.8.40",
     "twig/twig": "1.35.*",
     "swiftmailer/swiftmailer": "~5.0",
     "kriswallsmith/assetic": "~1.4",
@@ -110,7 +110,8 @@
     "jkuchar/bigfiletools": "^2.0",
     "brick/math": "dev-php-5.5-compatible as 0.5.2",
     "webonyx/graphql-php": "^0.11.5",
-    "html2text/html2text": "^4.1"
+    "html2text/html2text": "^4.1",
+    "gorhill/php-fine-diff": "^0.1.0"
   },
   "require-dev": {
     "mockery/mockery": "0.9.3",

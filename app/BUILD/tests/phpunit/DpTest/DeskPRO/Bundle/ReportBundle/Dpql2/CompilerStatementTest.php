@@ -2,6 +2,8 @@
 
 namespace DpTest\DeskPRO\Bundle\ReportBundle\Dpql2;
 
+use DeskPRO\Bundle\ReportBundle\Dpql2\DpqlContextStorage;
+
 /**
  * Class CompilerStatementTest.
  */
@@ -668,7 +670,53 @@ DPQL
             , []);
     }
 
+    // as we made a change in dpql datetime columnss we're using Y-m-d H:i:s format for every query we run.
     public function test_came_case_props()
+    {
+        $this->assertDpqlQuery(
+            <<<'DPQL'
+SELECT DPQL_COUNT(), snippets.id FROM snippets WHERE snippets.date_created > '2018-01-25'
+DPQL
+            ,
+            <<<'SQL'
+SELECT /*+ MAX_EXECUTION_TIME(30000) */ COUNT(*), `snippets`.`id`
+FROM `snippets`
+WHERE (`snippets`.`date_created` > '2018-01-25 00:00:00')
+LIMIT 2500
+SQL
+        );
+    }
+
+    public function test_sub_select()
+    {
+        $this->assertDpqlQuery(
+            <<<'DPQL'
+SELECT
+    DPQL_FORMAT(
+	(
+    	 (SELECT DPQL_COUNT() FROM ticket_feedback WHERE ticket_feedback.rating = 1 AND ticket_feedback.date_created = ${date})
+    	  / 
+    	 (SELECT DPQL_COUNT() FROM ticket_feedback WHERE ticket_feedback.date_created = ${date})
+    	),
+    'percent', 0)
+    AS 'stat_value',
+'satisfied users' as 'stat_description'
+FROM ticket_feedback
+WHERE ticket_feedback.date_created = ${date}
+DPQL
+            ,
+            <<<'SQL'
+SELECT /*+ MAX_EXECUTION_TIME(30000) */ 
+((SELECT /*+ MAX_EXECUTION_TIME(30000) */ COUNT(*) FROM `ticket_feedback` WHERE ((`ticket_feedback`.`rating` = 1) AND (`ticket_feedback`.`date_created` = 'date')) LIMIT 2500) 
+  / (SELECT /*+ MAX_EXECUTION_TIME(30000) */ COUNT(*) FROM `ticket_feedback` WHERE (`ticket_feedback`.`date_created` = 'date') LIMIT 2500)), 'satisfied users' 
+FROM `ticket_feedback` 
+WHERE (`ticket_feedback`.`date_created` = 'date') 
+LIMIT 2500
+SQL
+        );
+    }
+
+    public function test_edit_compiler_mode()
     {
         $this->assertDpqlQuery(
             <<<'DPQL'
@@ -681,6 +729,8 @@ FROM `snippets`
 WHERE (`snippets`.`date_created` > '2018-01-25')
 LIMIT 2500
 SQL
+            ,
+            DpqlContextStorage::MODE_EDIT
         );
     }
 }

@@ -6,22 +6,42 @@ use DeskPRO\Bundle\AppBundle\TicketFilters\Context;
 use DeskPRO\Bundle\AppBundle\TicketFilters\Model\Entity\TicketModel;
 use DeskPRO\Bundle\AppBundle\TicketFilters\OptValue\OptValue;
 use DeskPRO\Bundle\AppBundle\TicketFilters\TermFieldIds;
+use DeskPRO\Bundle\AppBundle\TicketFilters\Terms\Util\CheckValueUtils;
+use DeskPRO\Bundle\AppBundle\TicketFilters\Terms\Util\ElasticQueryUtils;
+use DeskPRO\Bundle\AppBundle\TicketFilters\Terms\Util\SqlQueryUtils;
 use DeskPRO\Component\FilterQueryLanguage\Query\Node\Term;
+use DeskPRO\Component\FilterQueryLanguage\Query\Query;
+use DeskPRO\Component\Util\MemoizeMethod;
 
-class TicketDateTermsHandler extends AbstractTermsHandler
+/**
+ * Class TicketDateTermsHandler.
+ */
+class TicketDateTermsHandler implements ValueTermHandlerInterface, SqlTermHandlerInterface, ElasticTermHandlerInterface
 {
+    use MemoizeMethod;
+
     /**
-     * {@inheritdoc}
+     * @return HandlerDef
      */
-    public function getHandledFields()
+    public function getValueHandlerDef()
     {
-        return [
-            TermFieldIds::TICKET_DATE_CREATED,
-            TermFieldIds::TICKET_DATE_LAST_AGENT_REPLY,
-            TermFieldIds::TICKET_DATE_LAST_USER_REPLY,
-            TermFieldIds::TICKET_DATE_AGENT_WAITING,
-            TermFieldIds::TICKET_DATE_USER_WAITING,
-        ];
+        return $this->memoizedRun(function () {
+            return HandlerDef::create()
+                ->addField(TermFieldIds::TICKET_DATE_CREATED, Query::commonDateValueOperators())
+                ->addField(TermFieldIds::TICKET_DATE_RESOLVED, Query::commonDateValueOperators())
+                ->addField(TermFieldIds::TICKET_DATE_LAST_AGENT_REPLY, Query::commonDateValueOperators())
+                ->addField(TermFieldIds::TICKET_DATE_LAST_USER_REPLY, Query::commonDateValueOperators())
+                ->addField(TermFieldIds::TICKET_DATE_AGENT_WAITING, Query::commonDateValueOperators())
+                ->addField(TermFieldIds::TICKET_DATE_USER_WAITING, Query::commonDateValueOperators());
+        }, __FUNCTION__);
+    }
+
+    /**
+     * @return HandlerDef
+     */
+    public function getSqlHandlerDef()
+    {
+        return $this->getValueHandlerDef();
     }
 
     /**
@@ -30,15 +50,125 @@ class TicketDateTermsHandler extends AbstractTermsHandler
     public function doesTicketMatch($fieldId, $operator, OptValue $options, TicketModel $ticketModel, Context $context, Term $term)
     {
         switch ($fieldId) {
-            case TermFieldIds::TICKET_DATE_CREATED:          $fieldValue = $ticketModel->date_created; break;
-            case TermFieldIds::TICKET_DATE_LAST_AGENT_REPLY: $fieldValue = $ticketModel->date_last_agent_reply; break;
-            case TermFieldIds::TICKET_DATE_LAST_USER_REPLY:  $fieldValue = $ticketModel->date_last_user_reply; break;
-            case TermFieldIds::TICKET_DATE_AGENT_WAITING:    $fieldValue = $ticketModel->date_agent_waiting; break;
-            case TermFieldIds::TICKET_DATE_USER_WAITING:     $fieldValue = $ticketModel->date_user_waiting; break;
+            case TermFieldIds::TICKET_DATE_CREATED:
+                $fieldValue = $ticketModel->date_created;
+                break;
+            case TermFieldIds::TICKET_DATE_LAST_AGENT_REPLY:
+                $fieldValue = $ticketModel->date_last_agent_reply;
+                break;
+            case TermFieldIds::TICKET_DATE_LAST_USER_REPLY:
+                $fieldValue = $ticketModel->date_last_user_reply;
+                break;
+            case TermFieldIds::TICKET_DATE_AGENT_WAITING:
+                $fieldValue = $ticketModel->date_agent_waiting;
+                break;
+            case TermFieldIds::TICKET_DATE_USER_WAITING:
+                $fieldValue = $ticketModel->date_user_waiting;
+                break;
             default:
                 throw new \InvalidArgumentException();
         }
 
-        return $this->checkValue($fieldValue, $operator, $options);
+        return CheckValueUtils::checkValue($fieldValue, $operator, $options);
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function buildQueryCondition($fieldId, $operator, OptValue $options, Context $context, Term $term)
+    {
+        $column = null;
+        switch ($fieldId) {
+            case TermFieldIds::TICKET_DATE_CREATED:
+                $column = '{tickets}.date_created';
+                break;
+            case TermFieldIds::TICKET_DATE_RESOLVED:
+                $column = '{tickets}.date_resolved';
+                break;
+            case TermFieldIds::TICKET_DATE_LAST_USER_REPLY:
+                $column = '{tickets}.date_last_user_reply';
+                break;
+            case TermFieldIds::TICKET_DATE_LAST_AGENT_REPLY:
+                $column = '{tickets}.date_last_agent_reply';
+                break;
+            case TermFieldIds::TICKET_DATE_AGENT_WAITING:
+                $column = '{tickets}.date_agent_waiting';
+                break;
+            case TermFieldIds::TICKET_DATE_USER_WAITING:
+                $column = '{tickets}.date_user_waiting';
+                break;
+        }
+
+        if ($column) {
+            return SqlQueryUtils::buildQueryCondition($column, $operator, $options);
+        }
+
+        throw new \InvalidArgumentException('Unknown field');
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function doesTicketMatchFunc($name, $fieldId, $operator, array $params, TicketModel $ticketModel, Context $context, Term $term)
+    {
+        throw new \RuntimeException('No functions defined');
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function buildQueryFuncCondition($name, $fieldId, $operator, array $params, Context $context, Term $term)
+    {
+        throw new \RuntimeException('No functions defined');
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function getElasticHandlerDef()
+    {
+        return $this->memoizedRun(function () {
+            return HandlerDef::create()
+                ->addField(TermFieldIds::TICKET_DATE_CREATED, Query::commonDateValueOperators());
+        }, __FUNCTION__);
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function buildElasticCondition($fieldId, $operator, OptValue $options, Context $context, Term $term)
+    {
+        $column     = null;
+        $checkValue = $options->getValue();
+        if (is_string($checkValue)) {
+            $checkValue = new \DateTime($checkValue);
+        } elseif (is_array($checkValue)) {
+            if (isset($checkValue[0]) && is_string($checkValue[0])) {
+                $checkValue[0] = new \DateTime($checkValue[0]);
+            }
+            if (isset($checkValue[1]) && is_string($checkValue[1])) {
+                $checkValue[1] = new \DateTime($checkValue[1]);
+            }
+        }
+
+        switch ($fieldId) {
+            case TermFieldIds::TICKET_DATE_CREATED:
+                $column = 'date_created';
+                break;
+        }
+
+        if (!$column) {
+            throw new \InvalidArgumentException('Unknown field');
+        }
+
+        return ElasticQueryUtils::buildQuery($column, $operator, $checkValue);
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function buildElasticFuncCondition($name, $fieldId, $operator, array $params, Context $context, Term $term)
+    {
+        throw new \RuntimeException('No functions defined');
     }
 }

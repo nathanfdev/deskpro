@@ -6,6 +6,9 @@ use DeskPRO\Bundle\AppBundle\TicketFilters\Model\Agent;
 use DeskPRO\Bundle\AppBundle\TicketFilters\Model\Filter;
 use DeskPRO\Component\FilterQueryLanguage;
 
+/**
+ * Class TicketFilterEnv.
+ */
 class TicketFilterEnv
 {
     /**
@@ -32,6 +35,11 @@ class TicketFilterEnv
      * @var TicketMatcher
      */
     private $ticketMatcher;
+
+    /**
+     * @var ElasticMatcher
+     */
+    private $elasticMatcher;
 
     /**
      * TicketFilterEnv constructor.
@@ -125,5 +133,17 @@ class TicketFilterEnv
         }
 
         return $this->ticketMatcher;
+    }
+
+    /**
+     * @return ElasticMatcher
+     */
+    public function getElasticMatcher()
+    {
+        if (!$this->elasticMatcher) {
+            $this->elasticMatcher = $this->matcherFactory->createElasticMatcher();
+        }
+
+        return $this->elasticMatcher;
     }
 }

@@ -18,6 +18,7 @@ define [
 
   'Reports/Main/Service/SessionPing',
   'DeskPRO/Util/Util',
+  'DeskPRO/Main/Service/Growl',
 ], (
   StateCollection,
   StateConfig,
@@ -39,7 +40,8 @@ define [
   Reports_App_Service_DashboardsInfo,
 
   Reports_Main_Service_SessionPing,
-  Util
+  Util,
+  DeskPRO_Main_Service_Growl,
 ) ->
   return (Module) ->
     Module.service('AppConfig', -> return new AppConfig)
@@ -226,4 +228,10 @@ define [
         SessionPing.startInterval()
       , 20000)
     ])
-    Module.run(['DashboardWidgetService', (DashboardWidgetService) -> ])
+    Module.run(['DashboardWidgetService', (DashboardWidgetService) ->
+      DashboardWidgetService.loadGroupParams()
+    ])
+
+    Module.service('Growl', [ ->
+      return new DeskPRO_Main_Service_Growl()
+    ])

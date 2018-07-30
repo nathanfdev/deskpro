@@ -18,7 +18,8 @@ class EditContainer extends React.Component {
     labels:       PropTypes.object.isRequired,
     onCloneClick: PropTypes.func.isRequired,
     onRunClick:   PropTypes.func.isRequired,
-    dispatch:     PropTypes.func.isRequired
+    dispatch:     PropTypes.func.isRequired,
+    onSubmit:     PropTypes.func.isRequired
   };
 
   static dpqlParser(query) {
@@ -37,15 +38,16 @@ class EditContainer extends React.Component {
       title:  report.get('title'),
       labels: report.get('labels', Immutable.List()).toArray(),
       query:  {
-        raw:      report.get('query'),
-        select:   queryParts.get('select', ''),
-        from:     queryParts.get('from', ''),
-        where:    queryParts.get('where', ''),
-        split_by: queryParts.get('split_by', ''),
-        group_by: queryParts.get('group_by', ''),
-        order_by: queryParts.get('order_by', ''),
-        offset:   queryParts.get('offset', ''),
-        limit:    queryParts.get('limit', '')
+        raw:         report.get('query'),
+        select:      queryParts.get('select', ''),
+        from:        queryParts.get('from', ''),
+        where:       queryParts.get('where', ''),
+        split_by:    queryParts.get('split_by', ''),
+        group_by:    queryParts.get('group_by', ''),
+        with_rollup: queryParts.get('with_rollup', ''),
+        order_by:    queryParts.get('order_by', ''),
+        offset:      queryParts.get('offset', ''),
+        limit:       queryParts.get('limit', '')
       },
       vars: report.get('variables', Immutable.Map()).toJS(),
     };
@@ -56,10 +58,9 @@ class EditContainer extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
-      saving:        false,
-      error:         false,
-      formErrors:    {},
-      extendedQuery: false,
+      saving:     false,
+      error:      false,
+      formErrors: {},
       ...EditContainer.getStateFromReport(props.report)
     };
   }
@@ -104,15 +105,22 @@ class EditContainer extends React.Component {
     };
 
     this.setState({
-      saving:        true,
-      error:         false,
-      formErrors:    {},
-      extendedQuery: reportData.inputMode === 'dpql'
+      saving:     true,
+      error:      false,
+      formErrors: {}
     });
 
     dispatch(saveReport(reportData))
-        .then(() => {
-          this.setState({ saving: false, error: false, formErrors: {} });
+        .then((response) => {
+          const current = transformReportDataToApi(reportData);
+          current.id = response.data.data.id ? response.data.data.id : reportData.id;
+          current.is_custom = true;
+          current.extended_query = reportData.raw ? reportData.raw.indexOf('LAYER WITH') !== -1 : false;
+          this.setState({
+            saving:     false,
+            error:      false,
+            formErrors: {}
+          }, () => this.props.onSubmit(current));
         })
         .catch((response) => {
           const flattenErrors = {};
@@ -138,7 +146,7 @@ class EditContainer extends React.Component {
   };
 
   renderForm() {
-    const { initialFormValue, saving, error, formErrors, extendedQuery } = this.state;
+    const { initialFormValue, saving, error, formErrors } = this.state;
     const { groupParams, report, labels } = this.props;
 
     const EditStatForm = reduxForm({
@@ -164,7 +172,7 @@ class EditContainer extends React.Component {
       <div style={{ textAlign: 'center', margin: '15px' }}>
         { report.get('is_custom')
           ? saveBtn
-          : <em>You cannot edit a built-in report. If you want to change it, click the clone button above.</em> }
+          : <em>You cannot edit a built-in stat. If you want to change it, click the clone button above.</em> }
       </div>
     );
 
@@ -174,8 +182,8 @@ class EditContainer extends React.Component {
         formErrors={formErrors}
         labels={labels.toJS()}
         groupParams={groupParams.toJS()}
-        extendedQuery={extendedQuery || report.get('extended_query', false)}
         dpqlParser={EditContainer.dpqlParser}
+        isCustom={report.get('is_custom')}
       />
       {controls}
     </div>);
@@ -194,7 +202,7 @@ class EditContainer extends React.Component {
               <Button size="medium" onClick={this.onCloneClick}><i className="fa fa-clone" /> Clone</Button>
             </div>
           </div>
-          : <div className="title-bar"><div className="title">New Report</div></div> }
+          : <div className="title-bar"><div className="title">New Stat</div></div> }
         {this.renderForm()}
       </div>
     );

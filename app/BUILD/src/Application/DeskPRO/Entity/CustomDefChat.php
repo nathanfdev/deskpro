@@ -28,6 +28,20 @@ class CustomDefChat extends CustomDefAbstract
      */
     protected $children = null;
 
+    /**
+     * Set parent.
+     *
+     * @param CustomDefChat $parent
+     *
+     * @return $this
+     */
+    public function setParent(CustomDefChat $parent = null)
+    {
+        $this->setModelField('parent', $parent);
+
+        return $this;
+    }
+
     //###########################################################################
     // Doctrine Metadata
     //###########################################################################

@@ -118,3 +118,13 @@ define -> (States) ->
     e.preventDefault()
     event = new CustomEvent('dpHashChange', { detail: { hash: href.replace(/.+(#.+)/, "$1") } } )
     window.parent.document.dispatchEvent(event)
+
+  #----------------------------------------
+  # View mode
+  #----------------------------------------
+
+  States.add('reports.dashboard_view.view')
+    .setUrl('/{authcode:\w+}')
+    .setCtrl('Reports.App.DashboardView')
+    .setTpl('ReportsInterfaceBundle:Dashboard:dashboard-view.html')
+    .setAbstract()

@@ -4,6 +4,9 @@ namespace DeskPRO\Bundle\AppBundle\TicketFilters\Terms;
 
 use DeskPRO\Component\Util\ListUtils;
 
+/**
+ * Class FunctionCompareDef.
+ */
 class FunctionCompareDef
 {
     public $name;

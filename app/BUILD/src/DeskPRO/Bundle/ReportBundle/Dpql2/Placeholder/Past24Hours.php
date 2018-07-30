@@ -19,6 +19,9 @@ class Past24Hours extends AbstractDateRange
         $date->modify('-1 day');
         $beginning = $date->format('Y-m-d H:i:s');
 
-        return ["$beginning to $today", "$beginning", $now];
+        $beforeStart = new \DateTime("$beginning");
+        $beforeStart->modify('-1 second');
+
+        return ["$beginning to $today", $beginning, $now, $beforeStart->format('Y-m-d H:i:s')];
     }
 }

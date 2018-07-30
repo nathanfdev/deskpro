@@ -25,7 +25,8 @@ class ImporterStatus extends React.Component {
     importedSteps:  PropTypes.array,
     importedCounts: PropTypes.array,
     appliedSteps:   PropTypes.array,
-    appliedCounts:  PropTypes.array
+    appliedCounts:  PropTypes.array,
+    stopImport:     PropTypes.func
   };
 
   componentDidMount() {
@@ -45,7 +46,7 @@ class ImporterStatus extends React.Component {
   }, 1);
 
   render() {
-    const { title, status, log } = this.props;
+    const { title, status, log, stopImport } = this.props;
     const { steps = [], importedSteps = [], importedCounts = [], appliedSteps = [], appliedCounts = [] } = this.props;
 
     const wasInit = status !== 'waiting';
@@ -81,7 +82,12 @@ class ImporterStatus extends React.Component {
               <div className="progress" />
             </div>
             <div className="label">
-              {finished ? 'Import completed!' : `Step ${totalImportedSteps + totalAppliedSteps}/${2 * steps.length}`}
+              {finished
+                ? 'Import completed!'
+                : <span>
+                  Step {totalImportedSteps + totalAppliedSteps}/{2 * steps.length} [ <a onClick={stopImport}>abort</a> ]
+                </span>
+              }
             </div>
           </div>
 

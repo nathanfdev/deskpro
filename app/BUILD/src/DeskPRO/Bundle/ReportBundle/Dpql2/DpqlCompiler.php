@@ -2,10 +2,13 @@
 
 namespace DeskPRO\Bundle\ReportBundle\Dpql2;
 
+use Application\DeskPRO\App;
+use Application\DeskPRO\CustomFields\BillingFieldManager;
 use Application\DeskPRO\Entity\Person;
 use Application\DeskPRO\Entity\ReportWidget;
 use Application\DeskPRO\EntityRepository\ReportWidget as ReportWidgetRepository;
 use Application\DeskPRO\NewSettings\SettingsResolver;
+use Application\DeskPRO\Reports\ReportsWidgetService;
 use DeskPRO\Bundle\ReportBundle\Dashboard\DashboardWidgetManager;
 use DeskPRO\Bundle\ReportBundle\Dpql2\Statement\SelectPart;
 use Doctrine\ORM\EntityManager;
@@ -47,28 +50,43 @@ class DpqlCompiler
     protected $tokenStorage;
 
     /**
+     * @var ReportsWidgetService
+     */
+    protected $reportsWidgetService;
+
+    /**
+     * @var BillingFieldManager
+     */
+    protected $billingFieldManager;
+
+    /**
      * Constructor.
      *
-     * @param EntityManager      $em
-     * @param Lexer              $lexer
-     * @param Parser             $parser
-     * @param DpqlContextStorage $contextStorage
-     * @param TokenStorage       $tokenStorage
+     * @param SettingsResolver     $settingsResolver
+     * @param EntityManager        $em
+     * @param ReportsWidgetService $reportsWidgetService
+     * @param Lexer                $lexer
+     * @param Parser               $parser
+     * @param DpqlContextStorage   $contextStorage
+     * @param TokenStorage         $tokenStorage
      */
     public function __construct(
-        SettingsResolver   $settingsResolver,
-        EntityManager      $em,
-        Lexer              $lexer,
-        Parser             $parser,
-        DpqlContextStorage $contextStorage,
-        TokenStorage       $tokenStorage
+        SettingsResolver     $settingsResolver,
+        EntityManager        $em,
+        ReportsWidgetService $reportsWidgetService,
+        Lexer                $lexer,
+        Parser               $parser,
+        DpqlContextStorage   $contextStorage,
+        TokenStorage         $tokenStorage
     ) {
-        $this->settingsResolver = $settingsResolver;
-        $this->em               = $em;
-        $this->lexer            = $lexer;
-        $this->parser           = $parser;
-        $this->contextStorage   = $contextStorage;
-        $this->tokenStorage     = $tokenStorage;
+        $this->settingsResolver     = $settingsResolver;
+        $this->em                   = $em;
+        $this->reportsWidgetService = $reportsWidgetService;
+        $this->billingFieldManager  = App::getContainer()->getBillingFieldManager();
+        $this->lexer                = $lexer;
+        $this->parser               = $parser;
+        $this->contextStorage       = $contextStorage;
+        $this->tokenStorage         = $tokenStorage;
     }
 
     /**
@@ -99,6 +117,7 @@ class DpqlCompiler
         $this->contextStorage->setContext($context);
 
         $input = preg_replace('/DISPLAY [^\n]+\n/', '', $input);
+        $input = $this->replaceBillingData($input);
         $input = $this->replacePlaceholders($input, $placeholders);
         $input = $this->replaceVariables($input, $placeholders);
 
@@ -251,6 +270,39 @@ class DpqlCompiler
         return $input;
     }
 
+    public function replaceBillingData($input)
+    {
+        $currency = $this->settingsResolver->getGlobalSettings()->get('core_tickets.billing_currency');
+
+        $fields     = $this->billingFieldManager->getFields();
+        $selectBits = [];
+        foreach ($fields as $f) {
+            $selectBits[] = 'ticket_charges.custom_data['.$f->getId().'] AS \''.addslashes($f->getTitle()).'\'';
+        }
+
+        $selectBits = implode(', ', $selectBits);
+        if ($selectBits) {
+            $selectBits = $selectBits.', ';
+        }
+
+        $vars = [
+            'variables' => [
+                [
+                    'name'  => 'billingCurrency',
+                    'type'  => DashboardWidgetManager::WIDGET_VAR_TYPE_BILLING,
+                    'value' => $currency,
+                ],
+                [
+                    'name'  => 'billingSelectBits',
+                    'type'  => DashboardWidgetManager::WIDGET_VAR_TYPE_BILLING,
+                    'value' => $selectBits,
+                ],
+            ],
+        ];
+
+        return $this->replaceVariables($input, $vars);
+    }
+
     /**
      * @param       $input
      * @param array $placeholders
@@ -264,12 +316,12 @@ class DpqlCompiler
         }
         $variables = [];
         foreach ($placeholders['variables'] as $var) {
-            $variables[$var['name']] = $var;
+            if (isset($var['name'])) {
+                $variables[$var['name']] = $var;
+            }
         }
 
-        /** @var ReportWidgetRepository $repository */
-        $repository  = $this->em->getRepository(ReportWidget::class);
-        $groupParams = $repository->getReportGroupParams();
+        $groupParams = $this->reportsWidgetService->getGroupParams(false);
 
         $input = preg_replace_callback(
             '#(\$\{\s*([a-zA-Z0-9_]+)\s*\})#',
@@ -287,6 +339,18 @@ class DpqlCompiler
                         // this would include 'value' and all custom def stuff
                         default:
                             $value = @$variable['value'] ?: @$variable['field_value'] ?: $match[0];
+
+                            if ($variable['type'] === DashboardWidgetManager::WIDGET_VAR_TYPE_BILLING) {
+                                // it's internal vars, which are not accessible by a user
+                                return $value;
+                            }
+
+                            if (
+                                $value === DashboardWidgetManager::WIDGET_VALUE_FROM_REPORT
+                                && $variable['type'] === 'values'
+                                && isset($groupParams[$variable['type']][$variable['field_type']])) {
+                                $value = array_keys($groupParams[$variable['type']][$variable['field_type']])[0];
+                            }
 
                             return !is_numeric($value) ? $this->em->getConnection()->quote($value) : $value;
                     }
@@ -309,9 +373,7 @@ class DpqlCompiler
      */
     protected function replaceDate($var, $varName, $variables)
     {
-        /** @var ReportWidgetRepository $repository */
-        $repository  = $this->em->getRepository(ReportWidget::class);
-        $groupParams = $repository->getReportGroupParams();
+        $groupParams = $this->reportsWidgetService->getGroupParams(false);
 
         $default = isset($var['default']) ? $var['default'] : null;
 
@@ -337,9 +399,7 @@ class DpqlCompiler
      */
     protected function replaceGroup($var, $variables, $groupType)
     {
-        /** @var ReportWidgetRepository $repository */
-        $repository  = $this->em->getRepository(ReportWidget::class);
-        $groupParams = $repository->getReportGroupParams();
+        $groupParams = $this->reportsWidgetService->getGroupParams(false);
 
         $varName = $var['name'];
         $type    = $var['field_type'];

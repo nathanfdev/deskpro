@@ -26,6 +26,7 @@ class TermFieldIds
     const TICKET_PROBLEM_ID            = 'ticket.problems';
     const TICKET_SLAS                  = 'ticket.slas';
     const TICKET_DATE_CREATED          = 'ticket.date_created';
+    const TICKET_DATE_RESOLVED         = 'ticket.date_resolved';
     const TICKET_DATE_LAST_AGENT_REPLY = 'ticket.date_last_agent_reply';
     const TICKET_DATE_LAST_USER_REPLY  = 'ticket.date_last_user_reply';
     const TICKET_DATE_AGENT_WAITING    = 'ticket.date_agent_waiting';
@@ -54,8 +55,10 @@ class TermFieldIds
     const FUNC_FAILED_SLAS  = 'failedSlas';
 
     /**
-     * @param $type
-     * @param $customFieldId
+     * @param string $type
+     * @param string $customFieldId
+     *
+     * @throws \InvalidArgumentException
      *
      * @return string
      */

@@ -27,6 +27,7 @@ class AddAgentReplyTest extends DeskProTestCase
         $this->container = ContainerMock::create()
             ->withAgentData()
             ->withNullEm()
+            ->withCleaner()
             ->get();
 
         return $this->container;
@@ -53,5 +54,36 @@ class AddAgentReplyTest extends DeskProTestCase
         $this->assertContains($tok, $ticket->messages[0]->message);
         $this->assertNotNull($ticket->messages[0]->person);
         $this->assertEquals(1, $ticket->messages[0]->person->id);
+    }
+
+    public function testEmojiTransformToHtmlEntities()
+    {
+        // GIVEN
+        $cleaner = new \Orb\Input\Cleaner\Cleaner();
+        $cleaner->addCleaner(new \Orb\Input\Cleaner\CleanerPlugin\HtmlPurifier());
+        $conteiner = ContainerMock::create()
+            ->withAgentData()
+            ->withNullEm()
+            ->withCleaner($cleaner)
+            ->get();
+
+        $ticket = new Ticket();
+        $exec   = new ExecutorContext();
+
+        $action = new AddAgentReply(
+            [
+                'by_assigned_agent' => true,
+                'by_agent_id'       => 1,
+                'reply_text'        => 'Test reply 😀 😁',
+                'no_formatter'      => true,
+            ]
+        );
+        $action->setContainer($conteiner);
+
+        // WHEN
+        $action->applyAction($ticket, $exec);
+
+        // THEN
+        $this->assertEquals('Test reply &#128512; &#128513;', $ticket->messages[0]->message);
     }
 }

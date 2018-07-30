@@ -17,6 +17,7 @@ define [
   'angularBootstrap',
   'angularSelect2',
   'angularUiRouter',
+  'angularUiSortable',
   'angularUiAce',
   'angular-moment',
   'angularOcLazyLoad',
@@ -33,7 +34,8 @@ define [
   'moment',
   'momentTimezone',
   'DeskPRO/Directive/DpDateTimePicker',
-  'customEventPolyfill'
+  'customEventPolyfill',
+  'toastr',
 ], (
   angular,
 
@@ -53,6 +55,7 @@ define [
     'ui.bootstrap',
     'ui.ace',
     'ui.select2',
+    'ui.sortable',
     'angularMoment',
     'oc.lazyLoad',
     'gridster',

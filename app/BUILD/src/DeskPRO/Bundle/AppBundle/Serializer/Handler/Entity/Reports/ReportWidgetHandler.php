@@ -12,6 +12,7 @@ use DeskPRO\Bundle\ReportBundle\Dashboard\DashboardWidgetManager;
 use DeskPRO\Bundle\ReportBundle\Dpql2\DpqlCompiler;
 use DeskPRO\Bundle\ReportBundle\Dpql2\DpqlException;
 use DeskPRO\Bundle\ReportBundle\Reports\Renderer\ReportsRendererRegistry;
+use DeskPRO\Bundle\ReportBundle\Reports\SplitResult;
 use DeskPRO\Bundle\ReportBundle\Reports\SplitResults;
 
 /**
@@ -71,6 +72,8 @@ class ReportWidgetHandler extends AbstractEntityHandler
      * {@inheritdoc}
      *
      * @param ReportWidgetEntity $entity
+     *
+     * @throws \Exception
      */
     public function createModel($entity, SideloadSerializationContext $context)
     {
@@ -81,15 +84,15 @@ class ReportWidgetHandler extends AbstractEntityHandler
         }
 
         $extendedQuery = false;
+
         try {
             $statement  = $this->compiler->compile($entity->getQuery());
             $queryParts = $statement->getDpqlPartsForInput();
         } catch (DpqlException $e) {
+            $queryParts = [];
+
             if ($e->getCode() === DpqlException::CODE_LAYERED_DIRECT_COMPILE_ERROR) {
                 $extendedQuery = true;
-                $queryParts    = [];
-            } else {
-                throw $e;
             }
         }
 
@@ -115,33 +118,44 @@ class ReportWidgetHandler extends AbstractEntityHandler
      */
     public function getRenderedResult(ReportWidgetEntity $entity)
     {
-        $result = [];
-        foreach ($entity->getDisplayTypes() as $displayType) {
-            $graphType = $this->dashboardWidgetService->getWidgetGraphType($displayType);
-            $data      = $this->dashboardWidgetService->doRender(
-                $entity->getQuery(),
-                ['variables' => $entity->getVariables()],
-                $graphType
-            );
+        try {
+            $result = [];
+            foreach ($entity->getDisplayTypes() as $displayType) {
+                $graphType = $this->dashboardWidgetService->getWidgetGraphType($displayType);
+                $data      = $this->dashboardWidgetService->doRender(
+                    $entity->getQuery(),
+                    ['variables' => $entity->getVariables()],
+                    $graphType
+                );
 
-            if ($data instanceof SplitResults) {
-                foreach ($data->getResults() as $splitResult) {
-                    $data = $this->dashboardWidgetService->formatData($splitResult->getResults(), $displayType);
+                if ($data instanceof SplitResults) {
+                    foreach ($data->getResults() as $splitResult) {
+                        $data = $this->dashboardWidgetService->formatData($splitResult->getResults(), $displayType);
+                        if ($data) {
+                            $data['title']     = $splitResult->getTitle();
+                            $data['chartType'] = $graphType;
+                        }
+                        $result[] = $data;
+                    }
+                } elseif ($data instanceof SplitResult) {
+                    $formatData = $this->dashboardWidgetService->formatData($data->getResults(), $displayType);
+                    if ($formatData) {
+                        $formatData['title']     = $data->getTitle();
+                        $formatData['chartType'] = $graphType;
+                    }
+                    $result[] = $formatData;
+                } else {
+                    $data = $this->dashboardWidgetService->formatData($data, $displayType);
                     if ($data) {
-                        $data['title']     = $splitResult->getTitle();
                         $data['chartType'] = $graphType;
                     }
                     $result[] = $data;
                 }
-            } else {
-                $data = $this->dashboardWidgetService->formatData($data, $displayType);
-                if ($data) {
-                    $data['chartType'] = $graphType;
-                }
-                $result[] = $data;
             }
-        }
 
-        return $result;
+            return $result;
+        } catch (\Exception $e) {
+            return;
+        }
     }
 }

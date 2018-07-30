@@ -1558,13 +1558,13 @@ class AgentsController extends AbstractController implements ProtectedController
             ];
             $filterSubs = $otherSubs = [];
             $profile    = [
-                'signature_html' => $row[7],
+                'signature_html' => isset($row[7]) ? $row[7] : '',
             ];
 
-            if ('yes' === strtolower($row[4])) {
+            if (isset($row[4]) && 'yes' === strtolower($row[4])) {
                 $data['zones'][] = 'admin';
             }
-            if ('yes' === strtolower($row[5])) {
+            if (isset($row[5]) && 'yes' === strtolower($row[5])) {
                 $data['zones'][] = 'reports';
             }
             foreach (explode(',', $row[2]) as $group) {
@@ -1586,7 +1586,7 @@ class AgentsController extends AbstractController implements ProtectedController
             }
 
             // subscribe to default notifications
-            if ('yes' === strtolower($row[6])) {
+            if (isset($row[6]) && 'yes' === strtolower($row[6])) {
                 $filterSubs = $defaultFilterSubs;
                 $otherSubs  = $defaultOtherSubs;
             }

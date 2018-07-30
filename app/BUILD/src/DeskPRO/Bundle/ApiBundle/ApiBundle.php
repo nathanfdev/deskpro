@@ -3,6 +3,7 @@
 namespace DeskPRO\Bundle\ApiBundle;
 
 use DeskPRO\Bundle\ApiBundle\DependencyInjection\Compiler\ApiDocPass;
+use DeskPRO\Bundle\ApiBundle\DependencyInjection\Compiler\FOSOAuthServerPass;
 use DeskPRO\Bundle\ApiBundle\DependencyInjection\Compiler\NelmioCorsPass;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
 use Symfony\Component\HttpKernel\Bundle\Bundle;
@@ -17,6 +18,7 @@ class ApiBundle extends Bundle
      */
     public function build(ContainerBuilder $container)
     {
+        $container->addCompilerPass(new FOSOAuthServerPass());
         $container->addCompilerPass(new ApiDocPass());
         $container->addCompilerPass(new NelmioCorsPass());
         parent::build($container);

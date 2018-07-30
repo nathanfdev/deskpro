@@ -34,7 +34,7 @@ class DpqlHour extends AbstractDpqlFunc
 
         $renderer = function (AbstractValueRenderer $valueRenderer, $value, array $row, AbstractRenderer $renderer) {
             $ampm = $value >= 12 ? 'pm' : 'am';
-            $hour = $value % 12 ?: 12;
+            $hour = (int) $value % 12 ?: 12;
 
             return "{$hour}{$ampm}";
         };

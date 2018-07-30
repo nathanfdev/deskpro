@@ -4,7 +4,9 @@ namespace DeskPRO\Bundle\AppStoreBundle\ParamConverter;
 
 use DeskPRO\Bundle\AppStoreBundle\Infrastructure;
 use DeskPRO\Bundle\AppStoreBundle\Domain;
+use DeskPRO\Bundle\AppStoreBundle\Infrastructure\AppBundleAdapters\BundleFileHandlingStrategyZip;
 use Doctrine\ORM;
+use Symfony\Component\DependencyInjection\ContainerInterface;
 use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorage;
 
 /**
@@ -12,6 +14,14 @@ use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorage;
  */
 class ParamConverters
 {
+    static public function createBundleConverterZip(ContainerInterface $container)
+    {
+        $fileConverter = RequestBodyToTemporaryFileConverter::createFromGlobals();
+        /** @var BundleFileHandlingStrategyZip $bundleReader */
+        $bundleReader = $container->get(BundleFileHandlingStrategyZip::class);
+        return new BundleFileReaderAdapter($bundleReader, $fileConverter);
+    }
+
     /**
      * @param ORM\EntityManager $entityManager
      * @return OauthProviderConnectionLoaderConverter

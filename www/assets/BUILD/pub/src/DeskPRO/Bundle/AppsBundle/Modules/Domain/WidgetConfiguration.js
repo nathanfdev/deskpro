@@ -37,6 +37,13 @@ export class WidgetConfiguration extends PropertyBag {
   }
 
   /**
+   * The canonic widget id in URN form
+   *
+   * @type {string}
+   */
+  get canonicId() { return `urn:deskpro:widget?widgetId=${this.props.id}`; }
+
+  /**
    * @type {string}
    */
   get id() { return this.props.id; }

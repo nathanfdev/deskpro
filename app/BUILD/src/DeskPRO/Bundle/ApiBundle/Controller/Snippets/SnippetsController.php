@@ -273,39 +273,35 @@ class SnippetsController extends CrudController
                 }
                 break;
             case 'visibility':
-                $departmentsBuffer = [];
                 foreach ($snippets as $snippet) {
                     if (!$this->getUser()->hasPerm('agent_snippets.edit_by_others') && $snippet->getPerson() !== $this->getUser()) {
                         continue;
                     }
                     if ($value['isVisibleGlobal']) {
-                        if (!$snippet->isVisibleGlobal()) {
+                        if (!$snippet->isVisibleGlobal() || $snippet->hasDepartments()) {
                             $snippet->setIsVisibleGlobal(true);
-                            foreach ($snippet->getVisibleDepartments() as $department) {
-                                $snippet->removeDepartment($department);
-                                $processed[] = $snippet->getId();
-                            }
+                            $snippet->clearDepartments();
+                            $processed[] = $snippet->getId();
                         }
-                    } else {
-                        $snippetsDepartments = $snippet->getVisibleDepartments();
+                    } elseif ($value['selectedDepartments']) {
+                        if ($snippet->isVisibleGlobal()) {
+                            $snippet->setIsVisibleGlobal(false);
+                            $processed[] = $snippet->getId();
+                        }
                         foreach ($value['selectedDepartments'] as $departmentId => $departmentValue) {
-                            if (!isset($departmentsBuffer[$departmentId])) {
-                                $departmentsBuffer[$departmentId] = $this->getManager()->getRepository(Department::class)->find($departmentId);
+                            $department = $this->getManager()->getRepository(Department::class)->find($departmentId);
+                            if (!$department) {
+                                throw $this->createNotFoundException(sprintf('Unkown department %s', $department));
                             }
-                            $department = $departmentsBuffer[$departmentId];
                             if ($departmentValue) {
-                                if (!$snippetsDepartments->contains($department)) {
+                                if (!$snippet->hasDepartment($department)) {
                                     $snippet->addDepartment($department);
-                                    if (!in_array($snippet->getId(), $processed)) {
-                                        $processed[] = $snippet->getId();
-                                    }
+                                    $processed[] = $snippet->getId();
                                 }
                             } else {
-                                if ($snippetsDepartments->contains($department)) {
+                                if ($snippet->hasDepartment($department)) {
                                     $snippet->removeDepartment($department);
-                                    if (!in_array($snippet->getId(), $processed)) {
-                                        $processed[] = $snippet->getId();
-                                    }
+                                    $processed[] = $snippet->getId();
                                 }
                             }
                         }
@@ -313,43 +309,49 @@ class SnippetsController extends CrudController
                 }
                 break;
             case 'ownership':
-                $teamsBuffer = [];
                 foreach ($snippets as $snippet) {
                     if ($value['isOwnershipGlobal']) {
-                        if (!$snippet->isOwnershipGlobal()) {
+                        if (!$snippet->isOwnershipGlobal() || $snippet->hasTeams()) {
                             $snippet->setIsOwnershipGlobal(true);
-                            foreach ($snippet->getOwnershipTeams() as $team) {
-                                $snippet->removeTeam($team);
-                                $processed[] = $snippet->getId();
+                            $snippet->clearTeams();
+                            $processed[] = $snippet->getId();
+                        }
+                    } elseif ($value['selectedTeams']) {
+                        if ($snippet->isOwnershipGlobal()) {
+                            $snippet->setIsOwnershipGlobal(false);
+                            $processed[] = $snippet->getId();
+                        }
+                        foreach ($value['selectedTeams'] as $teamId => $teamValue) {
+                            $team = $this->getManager()->getRepository(AgentTeam::class)->find($teamId);
+                            if (!$team) {
+                                throw $this->createNotFoundException(sprintf('Unkown team %s', $teamId));
+                            }
+                            if ($teamValue) {
+                                if (!$snippet->hasTeam($team)) {
+                                    $snippet->addTeam($team);
+                                    $processed[] = $snippet->getId();
+                                }
+                            } else {
+                                if ($snippet->hasTeam($team)) {
+                                    $snippet->removeTeam($team);
+                                    $processed[] = $snippet->getId();
+                                }
                             }
                         }
                     } else {
-                        $snippetsTeams = $snippet->getOwnershipTeams();
-                        foreach ($value['selectedTeams'] as $teamId => $teamValue) {
-                            if (!isset($teamsBuffer[$teamId])) {
-                                $teamsBuffer[$teamId] = $this->getManager()->getRepository(AgentTeam::class)->find($teamId);
-                            }
-                            $team = $teamsBuffer[$teamId];
-                            if ($teamValue) {
-                                if (!$snippetsTeams->contains($team)) {
-                                    $snippet->addTeam($team);
-                                    if (!in_array($snippet->getId(), $processed)) {
-                                        $processed[] = $snippet->getId();
-                                    }
-                                }
-                            } else {
-                                if ($snippetsTeams->contains($team)) {
-                                    $snippet->removeTeam($team);
-                                    if (!in_array($snippet->getId(), $processed)) {
-                                        $processed[] = $snippet->getId();
-                                    }
-                                }
-                            }
+                        if ($snippet->isOwnershipGlobal() || $snippet->hasTeams()) {
+                            $snippet->setIsOwnershipGlobal(false);
+                            $snippet->clearTeams();
+                            $processed[] = $snippet->getId();
                         }
                     }
                 }
                 break;
             case 'type':
+                if (!$value) {
+                    throw $this->createBadRequestException('At least one type required');
+                }
+
                 foreach ($snippets as $snippet) {
                     foreach ($value as $type => $typeValue) {
                         if (!in_array($type, [Snippet::TYPE_TICKET, Snippet::TYPE_CHAT])) {
@@ -362,7 +364,7 @@ class SnippetsController extends CrudController
                             }
                         } else {
                             if ($snippet->hasType($type)) {
-                                $snippet->addType($type);
+                                $snippet->removeType($type);
                                 $processed[] = $snippet->getId();
                             }
                         }
@@ -371,18 +373,21 @@ class SnippetsController extends CrudController
                 break;
             case 'draft':
                 foreach ($snippets as $snippet) {
-                    if ($value === 'draft') {
+                    if (!isset($value['publish_status'])) {
+                        $value['publish_status'] = '';
+                    }
+                    if ($value['publish_status'] === 'draft') {
                         if (!$snippet->isDraft()) {
                             $snippet->setIsDraft(true);
                             $processed[] = $snippet->getId();
                         }
-                    } elseif ($value === 'published') {
+                    } elseif ($value['publish_status'] === 'published') {
                         if ($snippet->isDraft()) {
                             $snippet->setIsDraft(false);
                             $processed[] = $snippet->getId();
                         }
                     } else {
-                        throw $this->createNotFoundException("#Unkown value {$value} for draft action");
+                        throw $this->createNotFoundException("#Unkown value {$value['publish_status']} for draft action");
                     }
                 }
                 break;
@@ -391,7 +396,7 @@ class SnippetsController extends CrudController
         }
         $this->getManager()->flush();
 
-        return View::create($this->wrap(['processed' => $processed]));
+        return View::create($this->wrap(['processed' => array_values(array_unique($processed))]));
     }
 
     /**

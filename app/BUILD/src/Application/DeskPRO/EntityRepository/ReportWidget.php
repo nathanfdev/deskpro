@@ -242,6 +242,16 @@ class ReportWidget extends AbstractEntityRepository
                     'none'                                           => ['nothing', 'NULL'],
                     DashboardWidgetManager::WIDGET_VALUE_FROM_REPORT => ['value from report', DashboardWidgetManager::WIDGET_VALUE_FROM_REPORT],
                 ],
+                'voice_phone_calls' => [
+                    'type'                                           => ['type', 'DPQL_ALIAS(%s.type, \'Type\')'],
+                    'external_number'                                => ['external_number', 'DPQL_ALIAS(%s.external_number, \'External Number\')'],
+                    'external_number_type'                           => ['external_number_type', 'DPQL_ALIAS(%s.external_number_type, \'External Number Type\')'],
+                    'queue'                                          => ['queue', 'DPQL_ALIAS(%s.queue, \'Queue\')'],
+                    'number'                                         => ['number', 'DPQL_ALIAS(%s.number, \'Number\')'],
+                    'person'                                         => ['person', 'DPQL_ALIAS(%s.person, \'Person\')'],
+                    'status'                                         => ['status', 'DPQL_ALIAS(%s.status, \'Status\')'],
+                    DashboardWidgetManager::WIDGET_VALUE_FROM_REPORT => ['value from report', DashboardWidgetManager::WIDGET_VALUE_FROM_REPORT],
+                ],
             ],
             'dates' => [
                 'today'                                          => ['today', '%TODAY%'],

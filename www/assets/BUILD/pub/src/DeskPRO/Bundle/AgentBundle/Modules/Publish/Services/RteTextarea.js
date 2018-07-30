@@ -18,6 +18,22 @@ class RteTextarea {
         window.MEDIA_MANAGER_WINDOW.open();
       }
     });
+    $.FroalaEditor.DefineIcon('imageVAlign', { NAME: 'arrows-v' });
+    $.FroalaEditor.RegisterCommand('imageVAlign', {
+      title:                'Vertical Align',
+      focus:                false,
+      undo:                 false,
+      refreshAfterCallback: false,
+      type:                 'dropdown',
+      options:              {
+        top:    'Top',
+        middle: 'Middle',
+        bottom: 'Bottom',
+      },
+      callback(cmd, val) {
+        this.image.applyStyle(`${val}Aligned`);
+      }
+    });
 
     const defaultOptions = {
       htmlAllowedAttrs: [
@@ -42,6 +58,7 @@ class RteTextarea {
       imageUploadMethod: 'POST',
       imageUploadParams: { _rt: window.DP_REQUEST_TOKEN, json: true },
       imageUploadURL:    `${BASE_URL}agent/misc/accept-redactor-image-upload`, // eslint-disable-line no-undef
+      imageEditButtons:  ['imageReplace', 'imageAlign', 'imageVAlign', 'imageCaption', 'imageRemove', '|', 'imageLink', 'linkOpen', 'linkEdit', 'linkRemove', '-', 'imageDisplay', 'imageStyle', 'imageAlt', 'imageSize'],
       imageDefaultWidth: 0
     };
 

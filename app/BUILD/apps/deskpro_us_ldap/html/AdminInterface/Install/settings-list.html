@@ -40,6 +40,20 @@
 			<option value="tls">TLS</option>
 		</select>
 		<span class="help-block">If your server supports connection encryption, you can enable it here.</span>
+    <div ng-show="setting_values.secure">
+      <label>
+        <input type="checkbox" ng-model="setting_values.disable_cert_validation"/>
+        Disable SSL certificate validation
+      </label>
+      <span class="help-block">Allows to use self-sigend SSL certificate.</span>
+      <span class="help-block" ng-show="setting_values.secure && setting_values.disable_cert_validation">
+        Please note, that:
+        <ul>
+          <li>it is not safe to disable certificate validation</li>
+          <li>this option works only if PHP setup allows to change 'LDAPTLS_REQCERT' env variable (check <a href='http://php.net/manual/en/function.putenv.php'>putenv</a> function)</li>
+        </ul>
+      </span>
+    </div>
 	</div>
 </div>
 
@@ -76,6 +90,18 @@
 			permission to run filter queries against the directory. Make sure to specify the full DN for the account name. For example, <code>CN=Deskpro,DC=example,DC=com</code>.
 		</span>
 		<p ng-show="errors.service_username || errors.service_password" class="text-danger">Please enter your service user.</p>
+	</div>
+</div>
+
+<div class="form-group">
+	<div class="col-lg-4">
+		<h3>Sync profile pictures</h3>
+	</div>
+	<div class="col-lg-8">
+		<label>
+			<input type="checkbox" ng-model="setting_values.sync_profile_pictures"/>
+			Sync profile pictures if they are set in the directory
+		</label>
 	</div>
 </div>
 

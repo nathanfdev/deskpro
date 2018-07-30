@@ -121,6 +121,7 @@ services:
       - "@widget_settings_resolver"
       - "@serializer"
       - "@security.token_storage"
+      - "@language_stack"
 
   app.environment:
     class: DeskPRO\Bundle\AppBundle\DependencyInjection\SystemServices\EnvironmentService
@@ -180,6 +181,10 @@ services:
   ticketfilter.ticket_sql_searcher:
     class: DeskPRO\Bundle\AppBundle\TicketFilters\TicketSqlMatcher
     factory: "ticketfilters.matcher_factory:createSqlMatcher"
+
+  ticketfilter.elastic_matcher:
+    class: DeskPRO\Bundle\AppBundle\TicketFilters\ElasticMatcher
+    factory: "ticketfilters.matcher_factory:createElasticMatcher"
 
   ticketfilters.queryparser:
     class: DeskPRO\Component\FilterQueryLanguage\Parser

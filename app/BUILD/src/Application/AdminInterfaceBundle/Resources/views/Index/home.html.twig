@@ -118,6 +118,19 @@
 		</div>
 	</div>
 
+	<div style="margin: 15px" ng-if="missed_fk_found">
+		<div class="alert alert-warning" style="margin-bottom: 0; position: relative;">
+			<div style="float:left">
+				<i class="fa fa-exclamation-circle" style="font-size: 40px;"></i>
+			</div>
+			<div style="margin-left: 50px;">
+				<p>
+					The system has detected that your database schema differs from what it should be. It's possible that these differences are trivial and will have no ill-effects, but in some rare cases, schema differences can cause data corruption and even cause errors that prevent the helpdesk from functioning normally. It is highly recommended you fix your schema with the automated schema maintenance tool as described here: <a href="https://support.deskpro.com/kb/articles/665" target="_blank">https://support.deskpro.com/kb/articles/665</a>
+				</p>
+			</div>
+		</div>
+	</div>
+
 	<div style="margin: 15px 15px 0 15px" ng-if="missconfigured_web_root">
 		<div class="alert alert-danger" style="margin-bottom: 0; position: relative; border-width: 10px; border-color: #f00;">
 			<div style="float:left">

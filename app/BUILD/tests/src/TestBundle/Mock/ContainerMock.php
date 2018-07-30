@@ -234,6 +234,21 @@ class ContainerMock
         return $this;
     }
 
+    public function withCleaner($obj = null)
+    {
+        if (!$obj) {
+            $obj = m::mock('Orb\\Input\\Cleaner\\Cleaner');
+            // just return passed text
+            $obj->shouldReceive('clean')->andReturnUsing(function ($text, $type) {
+                return $text;
+            });
+        }
+
+        $this->mock->shouldReceive('getInputCleaner')->andReturn($obj);
+
+        return $this;
+    }
+
     /**
      * @return \Application\DeskPRO\DependencyInjection\DeskproContainer
      */

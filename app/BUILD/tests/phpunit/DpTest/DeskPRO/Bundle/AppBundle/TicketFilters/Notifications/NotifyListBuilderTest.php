@@ -2,6 +2,7 @@
 
 namespace DpTest\Bundle\AppBundle\TicketFilters;
 
+use Application\DeskPRO\NewSearch\Manager\Elasticsearch;
 use DeskPRO\Bundle\AppBundle\TicketFilters\Diff\TicketChange;
 use DeskPRO\Bundle\AppBundle\TicketFilters\Model\Agent;
 use DeskPRO\Bundle\AppBundle\TicketFilters\Model\Entity\TicketModel;
@@ -22,7 +23,7 @@ class NotifyListBuilderTest extends \PHPUnit_Framework_TestCase
     {
         $resolver = new ValueResolver();
         $matcher  = new TicketMatcher($resolver, [
-            new TicketBasicTermsHandler(),
+            new TicketBasicTermsHandler($this->getMockBuilder(Elasticsearch::class)->disableOriginalConstructor()->getMock()),
         ]);
 
         $filters = FilterData::getFilters();

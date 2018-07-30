@@ -112,16 +112,11 @@ class ReportDashboardReportType extends AbstractType
         $data    = $event->getData();
         $options = $form->getConfig()->getOptions();
 
-        /** @var Person $person */
-        $person = $form->getConfig()->getOption('person');
-
         if ($data instanceof ReportDashboardReport) {
             // set dashboard from the parent form
             $dashboard = $options['dashboard'];
             if ($dashboard) {
                 $data->setDashboard($dashboard);
-            } else {
-                $dashboard = $data->getDashboard();
             }
 
             // set sort order for new reports

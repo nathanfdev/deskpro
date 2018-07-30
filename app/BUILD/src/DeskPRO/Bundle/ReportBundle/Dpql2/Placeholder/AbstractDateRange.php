@@ -100,12 +100,19 @@ abstract class AbstractDateRange extends AbstractPlaceholder
             return new Prepared('1', $outputName);
         }
 
-        $rangeStart = $this->adjustForIntervals($range[1], $intervals);
-        $rangeEnd   = $this->adjustForIntervals($range[2], $intervals);
+        $rangeStart       = $this->adjustForIntervals($range[1], $intervals);
+        $rangeEnd         = $this->adjustForIntervals($range[2], $intervals);
+        $beforeRangeStart = null;
+        if (isset($range[3])) {
+            $beforeRangeStart = $this->adjustForIntervals($range[3], $intervals);
+        }
 
         switch ($comparison) {
             case '=':
                 $sql = "$lhsSql BETWEEN '$rangeStart' AND '$rangeEnd'";
+                if ($beforeRangeStart) {
+                    $sql = "($lhsSql > '$beforeRangeStart' AND ".$sql.") OR $lhsSql > NOW()";
+                }
                 break;
 
             case '<>':
@@ -127,6 +134,8 @@ abstract class AbstractDateRange extends AbstractPlaceholder
             case '<=':
                 $sql = "$lhsSql <= '$rangeEnd'";
                 break;
+            default:
+                $sql = '';
         }
 
         return new Prepared("($sql)", $outputName);

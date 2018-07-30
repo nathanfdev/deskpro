@@ -20,6 +20,9 @@ class ThisMonth extends AbstractDateRange
 
         $endDateValue = $endDate->format('Y-m-d');
 
-        return ["$start-01 to $endDateValue", "$start-01 00:00:00", "$endDateValue 23:59:59"];
+        $beforeStart = new \DateTime("$start-01 23:59:59");
+        $beforeStart->modify('-1 day');
+
+        return ["$start-01 to $endDateValue", "$start-01 00:00:00", "$endDateValue 23:59:59", $beforeStart->format('Y-m-d H:i:s')];
     }
 }

@@ -14,8 +14,25 @@ const runEmbed = (helpdeskUrl, options, containerEl) => {
   (node.frameElement || node).style.cssText = 'border: none; margin: 0; padding: 0;';
 
   const langSeg = language && `${language}` !== '0' ? `${language}/` : '';
+  const serialize = (obj, prefix) => {
+    const str = [];
+    for (const p of Object.keys(obj)) {
+      const k = prefix ? `${prefix}[${p}]` : p;
+      const v = obj[p];
+      str.push((v !== null && typeof v === 'object')
+        ? serialize(v, k)
+        : `${encodeURIComponent(k)}=${encodeURIComponent(v)}`);
+    }
+    return str.join('&');
+  };
 
   node.src = helpdeskUrl + (`/frame-embed/${langSeg}`).replace(/\/$/, '');
+  if (options.loadPath) {
+    node.src += options.loadPath;
+  }
+  if (options.ticketFormDefaults) {
+    node.src += `?${serialize(options.ticketFormDefaults, 'ticket_form_defaults')}`;
+  }
 
   const calculatedWidth = () => {
     if (options.width && parseInt(options.width, 10) !== 0 && !isNaN(parseInt(options.width, 10))) {
@@ -41,7 +58,7 @@ const runEmbed = (helpdeskUrl, options, containerEl) => {
   }
 
   updateWidth();
-  node.style.minHeight = '300px';
+  node.style.minHeight = options.minHeight ? `${options.minHeight}px` : '300px';
 
   containerEl.appendChild(node);
   factory.iframeResizer({

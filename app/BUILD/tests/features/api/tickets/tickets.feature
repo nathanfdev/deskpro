@@ -9,6 +9,16 @@ Feature: /tickets endpoint
     And no EmailAccount records exist
     And I'm authenticated as admin
     And agent and user exist
+    And only the following Brand records exist:
+      | #  | Name    |
+      | b1 | Brand 1 |
+      | b2 | Brand 2 |
+      | b3 | Brand 3 |
+    And only the following Department records exist:
+      | #  | Title        | Brands      | Is Tickets Enabled | Is Chat Enabled |
+      | d1 | Department 1 | [{b1},{b2}] | 1                  | 1               |
+      | d2 | Department 2 | [{b2}]      | 1                  | 1               |
+      | d3 | Department 2 | [{b3}]      | 1                  | 1               |
     And only the following Organization records exist:
       | #         | Name                  |
       | microsoft | Microsoft Corporation |
@@ -19,7 +29,6 @@ Feature: /tickets endpoint
       | ticket3 | Third Demo Ticket  | {agent} |              | resolved       |               |
       | ticket4 | Fourth Demo Ticket | {agent} |              | archived       |               |
       | ticket5 | Fifth Demo Ticket  | {agent} |              | hidden         | deleted       |
-    And I have a Department record referenced as department
     And there are no custom ticket fields defined
 
   Scenario: I create a ticket
@@ -32,7 +41,7 @@ Feature: /tickets endpoint
 {
   "subject": "Test Ticket",
   "parent": ~ticket1~,
-  "department": ~department~,
+  "department": ~d1~,
   "is_hold": true,
   "person":  ~user~,
   "agent": ~agent~,
@@ -46,7 +55,7 @@ Feature: /tickets endpoint
     And the JSON node "data.subject" should be equal to "Test Ticket"
     And the JSON node "data.is_hold" should be equal to 1
     And the JSON node "data.parent" should be equal to "{ticket1}"
-    And the JSON node "data.department" should be equal to "{department}"
+    And the JSON node "data.department" should be equal to "{d1}"
     And the JSON node "data.product" should be equal to "{p2}"
     And the JSON node "data.person" should be equal to "{user}"
     And the JSON node "data.agent" should be equal to "{agent}"
@@ -341,3 +350,55 @@ Feature: /tickets endpoint
 }
     """
     Then the response status code should be 201
+
+  Scenario: I set create a ticket for specific brand
+    When I send a POST request to "/api/v2/tickets" with body:
+    """
+{
+  "subject": "Sample Ticket",
+  "person": ~admin~,
+  "brand": ~b1~
+}
+    """
+    Then the response status code should be 201
+    And the JSON node "data.brand" should be equal to "{b1}"
+    And the JSON node "data.department" should be equal to "{d1}"
+
+  Scenario: I set create a ticket specify brand and department
+    When I send a POST request to "/api/v2/tickets" with body:
+    """
+{
+  "subject": "Sample Ticket",
+  "person": ~admin~,
+  "brand": ~b2~,
+  "department": ~d2~
+}
+    """
+    Then the response status code should be 201
+    And the JSON node "data.brand" should be equal to "{b2}"
+    And the JSON node "data.department" should be equal to "{d2}"
+
+  Scenario: I set create a ticket specify unrelated brand and department
+    When I send a POST request to "/api/v2/tickets" with body:
+    """
+{
+  "subject": "Sample Ticket",
+  "person": ~admin~,
+  "brand": ~b1~,
+  "department": ~d2~
+}
+    """
+    Then the response status code should be 400
+    And the JSON node "errors.fields.department.errors[0].code" should contain "bad_choice"
+
+  Scenario: I create a ticket with specific date
+    When I send a POST request to "/api/v2/tickets" with body:
+    """
+{
+  "subject": "Sample Ticket",
+  "person": ~admin~,
+  "date_created": "2018-06-20"
+}
+    """
+    Then the response status code should be 201
+    And the JSON node "data.date_created" should be equal to "2018-06-20T00:00:00+0000"

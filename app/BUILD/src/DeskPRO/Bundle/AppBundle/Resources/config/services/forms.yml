@@ -151,7 +151,7 @@ services:
 
   form.ticket:
     class: DeskPRO\Bundle\AppBundle\Form\Type\Tickets\TicketType
-    arguments: ["@custom_field_manager", "@brand_form_helper"]
+    arguments: ["@custom_field_manager", "@brand_form_helper", "@doctrine.orm.default_entity_manager"]
     tags:
       - { name: form.type }
 

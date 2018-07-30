@@ -12,6 +12,7 @@ use Application\DeskPRO\EmailGateway\Reader\Item\AuthenticationResults;
 use Application\DeskPRO\Entity\Blob;
 use Application\DeskPRO\Entity\EmailAccount;
 use DeskPRO\Bundle\AppBundle\AppEnv\AppEnv;
+use ezcMailMultipartMixed;
 use Orb\Util\Strings;
 
 /**
@@ -148,6 +149,46 @@ class EzcReader extends AbstractReader
                 $this->validateSignature();
             }
         }
+
+        $iter = function ($part) use (&$iter) {
+            if ($part instanceof ezcMailMultipartMixed) {
+                $htmlPart = null;
+                $textPart = null;
+                $count    = 0;
+                foreach ($part->getParts() as $p) {
+                    if ($p instanceof \ezcMailMultipart) {
+                        $iter($p);
+                    } else {
+                        ++$count;
+                        if (
+                            $p instanceof \ezcMailText
+                            && $p->subType === 'plain'
+                            && !($p->contentDisposition && $p->contentDisposition->disposition == 'attachment')
+                        ) {
+                            $textPart = $p;
+                        }
+                        if (
+                            $p instanceof \ezcMailText
+                            && $p->subType === 'html'
+                            && !($p->contentDisposition && $p->contentDisposition->disposition == 'attachment')
+                        ) {
+                            $htmlPart = $p;
+                        }
+                    }
+                }
+
+                // if this mixed part contains 1 text part and 1 html part,
+                // then we're going to turn the text part into html so its concatenated
+                if ($count === 2 && $textPart && $htmlPart) {
+                    $textPart->subType         = 'html';
+                    $textPart->text            = '<div>'.nl2br(htmlspecialchars(Strings::convertToUtf8($textPart->text, $textPart->charset), ENT_SUBSTITUTE, 'UTF-8')).'</div>';
+                    $textPart->charset         = 'UTF-8';
+                    $textPart->originalCharset = 'UTF-8';
+                }
+            }
+        };
+
+        $iter($this->mail->body);
     }
 
     /**
@@ -474,6 +515,13 @@ class EzcReader extends AbstractReader
                             if (!empty($part->contentDisposition->$field)) {
                                 try {
                                     $attach->file_name = basename($part->contentDisposition->$field);
+                                    if (strpos($attach->file_name, '=?iso-') !== false) {
+                                        $decodedFilename = iconv_mime_decode($attach->file_name);
+                                        if ($decodedFilename !== false) {
+                                            $attach->file_name = $decodedFilename;
+                                        }
+                                    }
+
                                     $attach->mime_type = \Orb\Data\ContentTypes::getContentTypeFromFilename($part->contentDisposition->displayFileName);
                                 } catch (\Exception $e) {
                                 }
@@ -585,8 +633,8 @@ class EzcReader extends AbstractReader
                 $body->body_utf8        = $allUtf;
                 $body->original_charset = $charset;
 
-                // Charsets differ, so we need
-                // to construct based on the utf8-only body
+            // Charsets differ, so we need
+            // to construct based on the utf8-only body
             } else {
                 $body                   = new Item\BodyHtml();
                 $body->body             = $allUtf;

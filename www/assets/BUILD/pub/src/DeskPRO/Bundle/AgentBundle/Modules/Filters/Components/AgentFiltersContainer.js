@@ -54,6 +54,7 @@ class AgentFiltersContainer extends SeparateComponent {
         filter: props.filterSets.first().get('filters').first(),
       };
     }
+    this.loadListPane(mode);
     this.state = {
       mode,
     };
@@ -73,20 +74,23 @@ class AgentFiltersContainer extends SeparateComponent {
     this.props.dispatch(loadGrouping(id, groupBy));
   };
 
-  onSelectMode = (mode) => {
-    console.log(mode);
-    if (mode !== this.state.mode) {
-      switch (mode.type) {
-        case 'filter':
-          /* eslint-disable no-undef, camelcase */
-          if (DeskPRO_Window) {
-            const listPath =
+  loadListPane = (mode) => {
+    /* eslint-disable no-undef, camelcase */
+    if (DeskPRO_Window) {
+      const listPath =
               mode.grouping ?
                 `ticket-search/filter/${mode.filter}?subFilterBy=${mode.grouping}&subFilterByValue=${mode.groupingValue}`
                 : `ticket-search/filter/${mode.filter}`;
-            DeskPRO_Window.loadListPane(listPath, { isBackgroundLoad: false });
-          }
-          /* eslint-enable no-undef, camelcase */
+      DeskPRO_Window.loadListPane(listPath, { isBackgroundLoad: false });
+    }
+    /* eslint-enable no-undef, camelcase */
+  };
+
+  onSelectMode = (mode) => {
+    if (mode !== this.state.mode) {
+      switch (mode.type) {
+        case 'filter':
+          this.loadListPane(mode);
           break;
         default:
       }

@@ -16,6 +16,14 @@ class PublishChecker extends AbstractChecker
     protected $person;
 
     /**
+     * @return bool
+     */
+    public function canCreate()
+    {
+        return $this->person->hasPerm('agent_publish.create');
+    }
+
+    /**
      * @param mixed $content
      *
      * @return bool
@@ -36,7 +44,7 @@ class PublishChecker extends AbstractChecker
             return true;
         }
 
-        if ($content->person && $content->person->getId() == $this->person->getId()) {
+        if (property_exists($content, 'person') && $content->person && $content->person->getId() == $this->person->getId()) {
             return true;
         }
 

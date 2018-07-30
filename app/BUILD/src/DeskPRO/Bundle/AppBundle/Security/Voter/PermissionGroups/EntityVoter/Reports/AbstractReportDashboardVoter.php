@@ -76,7 +76,7 @@ abstract class AbstractReportDashboardVoter implements PermissionGroupEntityVote
     {
         $result = false;
 
-        if ($dashboard->getPerson() === $user || $user->isAdmin() || $user->can_reports) {
+        if ($dashboard->getPerson() === $user || $user->isAdmin() || $user->canReports()) {
             $result = true;
         }
 

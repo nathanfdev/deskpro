@@ -111,6 +111,22 @@
 		  "default_value": false
 		},
 		{
+		  "name": "disable_cert_validation",
+		  "type": "checkbox",
+		  "label": "",
+		  "checkbox_label": "Disable SSL certificate validation",
+		  "description": "Allows to use self-sigend SSL certificate.",
+		  "default_value": false
+		},
+    {
+		  "name": "sync_profile_pictures",
+		  "type": "checkbox",
+		  "label": "Sync profile pictures",
+		  "checkbox_label": "Sync profile pictures if they are set in the directory",
+		  "description": "",
+		  "default_value": true
+		},
+		{
 		  "name": "ldap_paging",
 		  "type": "checkbox",
 		  "label": "Enable LDAP Paging",

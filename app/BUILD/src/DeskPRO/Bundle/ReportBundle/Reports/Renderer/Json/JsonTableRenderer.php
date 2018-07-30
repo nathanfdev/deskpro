@@ -5,7 +5,7 @@ namespace DeskPRO\Bundle\ReportBundle\Reports\Renderer\Json;
 use DeskPRO\Bundle\ReportBundle\Reports\ResultMetadata;
 
 /**
- * Class JsonChartRenderer.
+ * Class JsonTableRenderer.
  */
 class JsonTableRenderer extends AbstractJsonRenderer
 {
@@ -36,7 +36,7 @@ class JsonTableRenderer extends AbstractJsonRenderer
             return;
         }
 
-        if ($metadata->getGroupXColumns()) {
+        if ($metadata->getGroupXColumns() && !$metadata->hasFlag(ResultMetadata::FLAG_HIERARCHICAL)) {
             return $this->renderMatrixTable($metadata, $rows, $options);
         }
 
@@ -169,6 +169,9 @@ class JsonTableRenderer extends AbstractJsonRenderer
         foreach ($resultHandler->getSelectColumns() as $column) {
             $columns[] = $this->valueRenderer->escapeValue($column['title']);
         }
+        if ($resultHandler->hasFlag(ResultMetadata::FLAG_WITH_ROLLUP)) {
+            $columns[] = 'Total';
+        }
 
         return $columns;
     }
@@ -196,73 +199,31 @@ class JsonTableRenderer extends AbstractJsonRenderer
         $rowsRendered = [];
         $rowCount     = 0;
 
-        $groupSkipCount = [];
-        foreach ($groupColumns as $groupId => $groupColumn) {
-            $groupSkipCount[$groupId] = 0;
-        }
-
         foreach ($rows as $rowId => $row) {
             $cells = [];
 
             if ($groupColumns) {
-                $myGroupSkipCount = $groupSkipCount;
-
                 $groupValues = [];
                 foreach ($groupColumns as $groupId => $groupColumn) {
                     $groupValues[$groupId] = $this->getColumnValue($row, $groupColumn['groupResultId']);
                 }
 
-                $nextRowId = $rowId + 1;
-                if (isset($rows[$nextRowId])) {
-                    $firstNonMatch = null;
-                    for (; isset($rows[$nextRowId]); ++$nextRowId) {
-                        $nextRow = $rows[$nextRowId];
-                        $matched = 0;
-
-                        foreach ($groupColumns as $groupId => $groupColumn) {
-                            if ($firstNonMatch !== null && $firstNonMatch == $groupId) {
-                                // can't go any further as this column doesn't match from before
-                                break;
-                            }
-
-                            $groupValue = $this->getColumnValue($nextRow, $groupColumn['groupResultId']);
-                            if ($groupValues[$groupId] == $groupValue) {
-                                ++$matched;
-                                if (!$myGroupSkipCount[$groupId]) {
-                                    // if there's a skip count for this, we don't need to increase it
-                                    // as it's already been accounted for
-                                    ++$groupSkipCount[$groupId];
-                                }
-                            } else {
-                                $firstNonMatch = $groupId;
-                                break;
-                            }
-                        }
-
-                        if (!$matched) {
-                            break;
-                        }
-                    }
-                }
-
                 foreach ($groupColumns as $groupId => $groupColumn) {
-                    if ($myGroupSkipCount[$groupId]) {
-                        --$groupSkipCount[$groupId];
-                        continue;
-                    }
-
-                    $rowSpan = ($groupSkipCount[$groupId]
-                        ? ' rowspan="'.($groupSkipCount[$groupId] + 1).'"'
-                        : ''
-                    );
-                    $rendered = $this->renderCellValue($row, $groupColumn, $metadata);
-
-                    $cells[] = "<th$rowSpan>$rendered</th>";
+                    $padding = ($metadata->hasFlag(ResultMetadata::FLAG_HIERARCHICAL) && empty($cells))
+                        ? $this->getRowPadding($row)
+                        : '';
+                    $cells[] = $padding.$this->renderCellValue($row, $groupColumn, $metadata);
                 }
             }
 
             foreach ($selectColumns as $column) {
-                $cells[] = $this->renderCellValue($row, $column, $metadata);
+                $padding = ($metadata->hasFlag(ResultMetadata::FLAG_HIERARCHICAL) && empty($cells))
+                    ? $this->getRowPadding($row)
+                    : '';
+                $cells[] = $padding.$this->renderCellValue($row, $column, $metadata);
+            }
+            if ($metadata->hasFlag(ResultMetadata::FLAG_WITH_ROLLUP)) {
+                $cells[] = $this->renderCellValue($row, 'hierarchy_rollup_count', $metadata);
             }
 
             ++$rowCount;
@@ -274,6 +235,16 @@ class JsonTableRenderer extends AbstractJsonRenderer
         } else {
             return [];
         }
+    }
+
+    private function getRowPadding(array $row)
+    {
+        $padding = '';
+        if (array_key_exists('hierarchy_depth', $row) && ($depth = $row['hierarchy_depth'])) {
+            $padding = str_repeat('&nbsp;', 4 * $depth).'&#8209;&#8209;&nbsp;';
+        }
+
+        return $padding;
     }
 
     /**
@@ -298,7 +269,10 @@ class JsonTableRenderer extends AbstractJsonRenderer
         return $body;
     }
 
-    public function mergeResults(array $results, array $options)
+    /**
+     * {@inheritdoc}
+     */
+    public function mergeResults(array $results, $graphType, array $options)
     {
         return reset($results);
     }

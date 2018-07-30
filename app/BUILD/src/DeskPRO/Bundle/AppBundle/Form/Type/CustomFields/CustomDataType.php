@@ -86,10 +86,7 @@ class CustomDataType extends AbstractType
         $builder->addEventListener(FormEvents::PRE_SET_DATA, [$this, 'onPreSetData']);
         $builder->addEventListener(FormEvents::SUBMIT, [$this, 'onSubmit'], -1);
         $builder->addEventListener(FormEvents::POST_SUBMIT, [$this, 'onPostSubmit'], -1);
-
-        if ($options['inline']) {
-            $builder->addEventSubscriber(new InlineCustomDataListener());
-        }
+        $builder->addEventSubscriber(new InlineCustomDataListener());
     }
 
     /**

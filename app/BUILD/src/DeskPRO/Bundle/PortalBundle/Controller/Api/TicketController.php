@@ -98,7 +98,15 @@ class TicketController extends AbstractApiController
 
         // set default values on the main form
         if ($request->isMethod('get') && $request->query->get('ticket') && !$form->isSubmitted()) {
-            $form->submit($request->query->get('ticket') ?: []);
+            $defaultData = $request->query->get('ticket') ?: [];
+            if ($request->query->getInt('department_id') && !isset($defaultData['department'])) {
+                $defaultData['department'] = $request->query->getInt('department_id');
+            }
+            if ($request->query->getInt('subject') && !isset($defaultData['subject'])) {
+                $defaultData['subject'] = $request->query->getInt('subject');
+            }
+
+            $form->submit($defaultData);
             FormValidatorChecker::clearFormErrors($form);
         }
 

@@ -65,6 +65,23 @@ class DashboardsController extends CrudController
     }
 
     /**
+     * @Rest\Get("/{id}/shareable_links")
+     *
+     * @param Request $request
+     * @param int     $id
+     *
+     * @return Response
+     */
+    public function getShareableLinksAction(Request $request, $id)
+    {
+        $this->denyAccessUnlessGranted(PermissionGroupVoter::VIEW, $this->getPermissionGroupEntityContext($id, $request));
+
+        return DashboardShareableLinksController::subRequestSearch($this->getKernel(), $request, [
+            'dashboard' => $id,
+        ]);
+    }
+
+    /**
      * @Rest\Post("/{dashboard}/clone", requirements={"dashboard"="\d+"})
      *
      * @param ReportDashboard $dashboard
@@ -101,12 +118,15 @@ class DashboardsController extends CrudController
      */
     protected function applyListFilters(QueryBuilder $qb, $alias, Request $request)
     {
+        if ($this->getUser()->isAdmin() || $this->getUser()->can_reports) {
+            return;
+        }
+
         $qb
             ->join("$alias.permissions", 'p')
             ->join('p.person', 'per')
             ->andWhere("p.person IN (:person) OR p.team IN (:teams) OR $alias.person IN (:person)")
             ->orWhere('p.person IS NULL AND p.team IS NULL AND p.department IS NULL')
-            ->orWhere('(per.can_admin = 1 OR per.can_reports = 1)')
             ->setParameter('person', $this->getUser())
             ->setParameter('teams', $this->getUser()->getTeams())
         ;

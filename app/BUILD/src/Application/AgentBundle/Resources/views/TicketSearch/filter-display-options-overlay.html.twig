@@ -18,12 +18,12 @@
 			<option class="urgency_asc" value="ticket.urgency:asc">{{ phrase('agent.tickets.urgency_lowest_highest') }}</option>
 			<option class="date_created_desc" value="ticket.date_created:desc">{{ phrase('agent.general.date_created') }}</option>
 			<option class="date_created_asc" value="ticket.date_created:asc">{{ phrase('agent.general.date_created') }}</option>
-			<option class="date_last_agent_reply_asc" value="ticket.date_last_agent_reply:asc"></option>
-			<option class="date_last_agent_reply_desc" value="ticket.date_last_agent_reply:desc"></option>
-			<option class="date_last_user_reply_asc" value="ticket.date_last_user_reply:asc"></option>
-			<option class="date_last_user_reply_desc" value="ticket.date_last_user_reply:desc"></option>
-			<option class="date_last_reply_asc" value="ticket.date_last_reply:asc"></option>
-			<option class="date_last_reply_desc" value="ticket.date_last_reply:desc"></option>
+			<option class="date_last_agent_reply_asc" value="ticket.date_last_agent_reply:asc">&uarr; {{ phrase('agent.tickets.date_last_agent_reply') }}</option>
+			<option class="date_last_agent_reply_desc" value="ticket.date_last_agent_reply:desc">&darr; {{ phrase('agent.tickets.date_last_agent_reply') }}</option>
+			<option class="date_last_user_reply_asc" value="ticket.date_last_user_reply:asc">&uarr; {{ phrase('agent.tickets.date_last_user_reply') }}</option>
+			<option class="date_last_user_reply_desc" value="ticket.date_last_user_reply:desc">&darr; {{ phrase('agent.tickets.date_last_user_reply') }}</option>
+			<option class="date_last_reply_asc" value="ticket.date_last_reply:asc">&uarr; {{ phrase('agent.tickets.date_last_reply') }}</option>
+			<option class="date_last_reply_desc" value="ticket.date_last_reply:desc">&darr; {{ phrase('agent.tickets.date_last_reply') }}</option>
 			{% if app.getSetting('core.use_ticket_priority') %}
 				<option class="priority_desc" value="ticket.priority:desc">{{ phrase('agent.tickets.priority_highestlowest') }}</option>
 				<option class="priority_asc" value="ticket.priority:asc">{{ phrase('agent.tickets.priority_lowesthighest') }}</option>
