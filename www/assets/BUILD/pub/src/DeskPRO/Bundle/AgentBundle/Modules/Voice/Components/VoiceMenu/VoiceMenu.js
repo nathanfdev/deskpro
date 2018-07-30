@@ -29,9 +29,9 @@ class VoiceMenu extends React.Component {
   constructor(props) {
     super(props);
 
-    const { incomingCall, outgoingCall, outboundNumber } = this.props;
+    const { incomingCall, outgoingCall, outboundNumber, outboundCallsEnabled } = this.props;
     this.state = {
-      tabName: incomingCall || outgoingCall || outboundNumber ? 'phone' : 'settings'
+      tabName: incomingCall || outgoingCall || outboundNumber || outboundCallsEnabled ? 'phone' : 'settings'
     };
   }
 
