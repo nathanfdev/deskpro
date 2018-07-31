@@ -47,7 +47,9 @@ class DeskproDeliveryHandler extends MultiplexDeliverHandler
         $settingsBag          = $resolver->getGlobalSettings();
         $this->secret         = $settingsBag->get('notification.settings.deskpro_client.secret', '');
         $this->tries          = $settingsBag->get('notification.settings.deskpro_client.tries', 3);
-        $this->maxMessageSize = $settingsBag->get('notification.settings.deskpro_client.max_message_size', static::MAX_MESSAGE_SIZE);
+        $maxMessageSize       = $settingsBag->get('notification.settings.deskpro_client.max_message_size', static::MAX_MESSAGE_SIZE);
+        $maxMessageSize       = is_numeric($maxMessageSize) && $maxMessageSize > 0 ? $maxMessageSize : static::MAX_MESSAGE_SIZE;
+        $this->maxMessageSize = $maxMessageSize;
         $this->client         = $client;
     }
 
