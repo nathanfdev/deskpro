@@ -450,6 +450,14 @@ $contrast: 5% !default;
     .count {
       font-weight: 400;
     }
+
+    .online-status {
+      color: #fff;
+      float: right;
+      text-decoration: underline;
+      font-size: 12px;
+      font-weight: normal;
+    }
   }
   .menu {
     padding-top: 11px;

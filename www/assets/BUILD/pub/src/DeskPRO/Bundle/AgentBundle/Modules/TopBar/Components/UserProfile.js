@@ -16,7 +16,7 @@ class UserProfile extends React.Component {
 
     return (
       <div className="voice-profile">
-        <div className="voice-header">
+        <div className="header">
           <FormattedMessage id="agent.general.your_profile" />
         </div>
         <div>

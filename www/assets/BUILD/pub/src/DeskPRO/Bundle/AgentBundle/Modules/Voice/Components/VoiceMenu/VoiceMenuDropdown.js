@@ -16,7 +16,8 @@ class VoiceMenuDropdown extends React.Component {
     onlineAgents:   PropTypes.object,
     voiceEnabled:   PropTypes.bool,
     callsEnabled:   PropTypes.bool,
-    outboundNumber: PropTypes.string
+    outboundNumber: PropTypes.string,
+    openUserMenu:   PropTypes.func
   };
 
   componentDidMount() {
@@ -85,6 +86,13 @@ class VoiceMenuDropdown extends React.Component {
     return <i className="ui call icon red voice-menu-icon" />;
   }
 
+  openUserMenu = (event) => {
+    event.preventDefault();
+
+    this.closePopup();
+    this.props.openUserMenu();
+  };
+
   closePopup = () => {
     this.popup.closePopup();
   };
@@ -99,7 +107,7 @@ class VoiceMenuDropdown extends React.Component {
           positionMy="right top"
           positionAt="right bottom"
           zIndex={99999}
-          content={<VoiceMenu {...this.props} />}
+          content={<VoiceMenu {...this.props} openUserMenu={this.openUserMenu} />}
           className={classNames('voice-menu-popup', { green: incomingCall })}
           allowCloseOnClickOut={!incomingCall && !outgoingCall}
         >

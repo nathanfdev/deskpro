@@ -1,16 +1,5 @@
 $voice-green-border-color: #47BF61;
 
-.voice-header {
-  background: #4696dc;
-  color: $dp-greyscale-50;
-  height: 26px;
-  padding: 4px 10px;
-  font-family: 'Open Sans';
-  font-weight: 600;
-  font-size: 12px;
-  text-transform: uppercase;
-}
-
 .voice-profile {
   width: 360px;
   font-family: 'Open Sans';
@@ -82,6 +71,13 @@ $voice-green-border-color: #47BF61;
           height: 24px;
           float: left;
           position: absolute;
+        }
+
+        span:not(.on) svg .chat-primary {
+          fill: $dp-greyscale-450;
+        }
+        span.on svg .chat-primary {
+          fill: $dp-emerald-primary;
         }
 
         .voice-profile-status-checkbox-title {
