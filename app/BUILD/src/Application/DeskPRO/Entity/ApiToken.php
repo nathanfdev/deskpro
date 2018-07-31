@@ -168,6 +168,16 @@ class ApiToken extends DomainObject
         return $this;
     }
 
+    /**
+     * @return bool
+     */
+    public function isExpired()
+    {
+        $now = new \DateTime();
+
+        return $this->date_expires && $this->date_expires < $now;
+    }
+
     //###########################################################################
     // Doctrine Metadata
     //###########################################################################

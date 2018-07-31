@@ -1,12 +1,9 @@
 <?php
 
-/**
- * DeskPRO.
- */
-
 namespace DeskPRO\Bundle\ApiBundle\Security\Authentication;
 
-use Application\DeskPRO\App;
+use Application\DeskPRO\Entity\ApiKey;
+use Application\DeskPRO\Entity\ApiToken;
 use Application\DeskPRO\Entity\Person;
 use Application\DeskPRO\Entity\Session;
 use DeskPRO\Bundle\ApiBundle\Security\Token\AgentSessionSecurityToken;
@@ -141,60 +138,69 @@ class ApiAuthenticator implements SimplePreAuthenticatorInterface
             || $token instanceof ApiKeySecurityToken
             || $token instanceof ApiTokenSecurityToken
             || $token instanceof LegacyRememberMeSecurityToken
-            ;
+        ;
     }
 
+    /**
+     * @param ApiKeySecurityToken   $token
+     * @param UserProviderInterface $user_provider
+     * @param string                $providerKey
+     *
+     * @return ApiKeySecurityToken
+     */
     protected function authenticateApiKey(
         ApiKeySecurityToken $token,
         UserProviderInterface $user_provider,
         $providerKey
     ) {
-        $unauthorized_msg = ErrorsCodes::INVALID_API_KEY;
-
-        /* @var \Application\DeskPRO\Entity\ApiKey $key */
-        /** @var \Application\DeskPRO\EntityRepository\ApiKey $key_repo */
-        $key_repo = $this->em->getRepository('DeskPRO:ApiKey');
-
-        if (!$key = $key_repo->findByKeyString($token->getCredentials())) {
-            $this->throwUnauthorized($unauthorized_msg);
+        /** @var \Application\DeskPRO\EntityRepository\ApiKey $keyRepo */
+        $keyRepo = $this->em->getRepository(ApiKey::class);
+        if (!$key = $keyRepo->findByKeyString($token->getCredentials())) {
+            $this->throwUnauthorized(ErrorsCodes::INVALID_API_KEY);
         }
 
-        if (!$key->person) {
-            $this->throwUnauthorized($unauthorized_msg);
+        if (!$key->getPerson()) {
+            $this->throwUnauthorized(ErrorsCodes::INVALID_API_KEY);
         }
 
         return new ApiKeySecurityToken(
-            $key->person,
+            $key->getPerson(),
             $token->getCredentials(),
             $providerKey,
-            $this->generateApiRolesForPerson($key->person)
+            $this->generateApiRolesForPerson($key->getPerson())
         );
     }
 
+    /**
+     * @param ApiTokenSecurityToken $token
+     * @param UserProviderInterface $user_provider
+     * @param string                $providerKey
+     *
+     * @return ApiTokenSecurityToken
+     */
     protected function authenticateApiToken(
         ApiTokenSecurityToken $token,
         UserProviderInterface $user_provider,
         $providerKey
     ) {
-        $unauthorized_msg = ErrorsCodes::INVALID_API_TOKEN;
-
-        /* @var \Application\DeskPRO\Entity\ApiToken $api_token */
-        /** @var \Application\DeskPRO\EntityRepository\ApiToken $token_repo */
-        $token_repo = $this->em->getRepository('DeskPRO:ApiToken');
-
-        if (!$api_token = $token_repo->findByTokenString($token->getCredentials())) {
-            $this->throwUnauthorized($unauthorized_msg);
+        /** @var \Application\DeskPRO\EntityRepository\ApiToken $tokenRepo */
+        $tokenRepo = $this->em->getRepository(ApiToken::class);
+        if (!$apiToken = $tokenRepo->findByTokenString($token->getCredentials())) {
+            $this->throwUnauthorized(ErrorsCodes::INVALID_API_TOKEN);
         }
 
-        if (!$api_token->person) {
-            $this->throwUnauthorized($unauthorized_msg);
+        if (!$apiToken->getPerson()) {
+            $this->throwUnauthorized(ErrorsCodes::INVALID_API_TOKEN);
+        }
+        if ($apiToken->isExpired()) {
+            $this->throwUnauthorized(ErrorsCodes::INVALID_API_TOKEN);
         }
 
         return new ApiTokenSecurityToken(
-            $api_token->person,
+            $apiToken->getPerson(),
             $token->getCredentials(),
             $providerKey,
-            $this->generateApiRolesForPerson($api_token->person)
+            $this->generateApiRolesForPerson($apiToken->getPerson())
         );
     }
 
