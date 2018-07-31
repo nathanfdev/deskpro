@@ -32,6 +32,7 @@ final class ErrorsCodes
     const INVALID_SESSION_ID             = 'invalid_session_id';
     const INVALID_API_KEY                = 'invalid_api_key';
     const INVALID_API_TOKEN              = 'invalid_api_token';
+    const INVALID_CORS_AUTH_TYPE         = 'invalid_cors_auth_type';
     const INVALID_AUTHORIZATION_HEADER   = 'invalid_authorization_header';
     const MALFORMED_AUTHORIZATION_HEADER = 'malformed_authorization_header';
     const BAD_CREDENTIALS                = 'bad_credentials';

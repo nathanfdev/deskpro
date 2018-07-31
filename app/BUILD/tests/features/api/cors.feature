@@ -15,7 +15,7 @@ Feature: CORS headers
     And I add Origin header equal to "http://example.com"
     And I send a GET request to "/api/v2/me"
     Then the response status code should be 401
-    And the header "Access-Control-Allow-Origin" should not exist
+    And the header "Access-Control-Allow-Origin" should be equal to 'http://example.com'
 
   Scenario: CORS disabled for session auth type
     Given "smith@deskpro.dev" agent exists
@@ -23,14 +23,16 @@ Feature: CORS headers
     When I add session cookie named "dpsid-agent" for session "smithSession"
     And I add Origin header equal to "http://example.com"
     And I send a GET request to "/api/v2/me"
-    Then the response status code should be 200
-    And the header "Access-Control-Allow-Origin" should not exist
+    Then the response status code should be 401
+    And the header "Access-Control-Allow-Origin" should be equal to 'http://example.com'
+    And the JSON node "code" should be equal to "invalid_cors_auth_type"
 
   Scenario: CORS disabled for not auth request
     When I add Origin header equal to "http://example.com"
     And I send a GET request to "/api/v2/me"
     Then the response status code should be 401
-    And the header "Access-Control-Allow-Origin" should not exist
+    And the header "Access-Control-Allow-Origin" should be equal to 'http://example.com'
+    And the JSON node "code" should be equal to "unauthorized"
 
   Scenario: COSR disabled for not OAuth valid token
     Given "smith@deskpro.dev" agent exists
@@ -39,8 +41,9 @@ Feature: CORS headers
     When I add Authorization header equal to "token {token}:SECRETCODE"
     And I add Origin header equal to "http://example.com"
     And I send a GET request to "/api/v2/me"
-    Then the response status code should be 200
-    And the header "Access-Control-Allow-Origin" should not exist
+    Then the response status code should be 401
+    And the header "Access-Control-Allow-Origin" should be equal to 'http://example.com'
+    And the JSON node "code" should be equal to "invalid_cors_auth_type"
 
   Scenario: CORS enabled for invalid API key
     When I add Authorization header equal to "key 91:XdfadfadfeYZ"

@@ -5,11 +5,13 @@ namespace DeskPRO\Bundle\ApiBundle\EventListener;
 use DeskPRO\Bundle\ApiBundle\Security\Authentication\ApiAuthenticator;
 use DeskPRO\Bundle\ApiBundle\Security\Token\ApiKeySecurityToken;
 use DeskPRO\Bundle\ApiBundle\Security\Token\ApiTokenSecurityToken;
+use DeskPRO\Bundle\AppBundle\Form\Error\ErrorsCodes;
 use Doctrine\ORM\EntityManager;
 use Nelmio\CorsBundle\EventListener\CorsListener as NelmioCorsListener;
 use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpKernel\Event\FilterResponseEvent;
-use Symfony\Component\HttpKernel\HttpKernelInterface;
+use Symfony\Component\HttpKernel\Exception\UnauthorizedHttpException;
 use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorageInterface;
 
 /**
@@ -63,12 +65,12 @@ class CorsListener extends NelmioCorsListener
      */
     public function onKernelResponse(FilterResponseEvent $event)
     {
-        if (HttpKernelInterface::MASTER_REQUEST !== $event->getRequestType()) {
+        if (!$event->isMasterRequest()) {
             return;
         }
 
-        if (!$this->isSupportedAuthenticationType($event->getRequest())) {
-            return;
+        if ($event->getResponse()->getStatusCode() !== Response::HTTP_UNAUTHORIZED && !$this->isSupportedAuthenticationType($event->getRequest())) {
+            throw new UnauthorizedHttpException('key,oauth token realm="DeskPRO API"', ErrorsCodes::INVALID_CORS_AUTH_TYPE);
         }
 
         parent::onKernelResponse($event);
