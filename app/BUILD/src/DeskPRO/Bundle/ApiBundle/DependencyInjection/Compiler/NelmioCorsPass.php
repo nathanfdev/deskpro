@@ -17,6 +17,11 @@ class NelmioCorsPass implements CompilerPassInterface
      */
     public function process(ContainerBuilder $container)
     {
+        // in most cases definition `nelmio_cors.cors_listener` exists
+        // but because of kernel spaghetti for some console commands we have to skip this process
+        if (!$container->hasDefinition('nelmio_cors.cors_listener')) {
+            return;
+        }
         $def = $container->getDefinition('nelmio_cors.cors_listener');
         $def->setClass(CorsListener::class);
         $def->addMethodCall('setApiAuthenticator', [new Reference('api_authenticator')]);
