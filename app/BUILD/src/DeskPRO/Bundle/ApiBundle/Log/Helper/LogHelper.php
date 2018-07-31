@@ -122,7 +122,9 @@ class LogHelper extends AbstractLogHelper
      */
     public function getMaxRequestBodyLength()
     {
-        return $this->resolver->getGlobalSettings()->get('api_log.max_request_body_length', 1024 * 1024);
+        $maxBodyLength = $this->resolver->getGlobalSettings()->get('api_log.max_request_body_length', 1024 * 1024);
+
+        return is_numeric($maxBodyLength) ? $maxBodyLength : 1024 * 1024;
     }
 
     /**
@@ -130,6 +132,8 @@ class LogHelper extends AbstractLogHelper
      */
     public function getMaxResponseBodyLength()
     {
-        return $this->resolver->getGlobalSettings()->get('api_log.max_response_body_length', 1024 * 1024);
+        $maxBodyLength = $this->resolver->getGlobalSettings()->get('api_log.max_response_body_length', 1024 * 1024);
+
+        return is_numeric($maxBodyLength) ? $maxBodyLength : 1024 * 1024;
     }
 }
