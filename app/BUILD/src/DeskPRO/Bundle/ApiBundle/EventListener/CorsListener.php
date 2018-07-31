@@ -8,7 +8,6 @@ use DeskPRO\Bundle\ApiBundle\Security\Token\ApiTokenSecurityToken;
 use DeskPRO\Bundle\AppBundle\Form\Error\ErrorsCodes;
 use Doctrine\ORM\EntityManager;
 use Nelmio\CorsBundle\EventListener\CorsListener as NelmioCorsListener;
-use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpKernel\Event\FilterResponseEvent;
 use Symfony\Component\HttpKernel\Exception\UnauthorizedHttpException;
@@ -68,8 +67,7 @@ class CorsListener extends NelmioCorsListener
         if (!$event->isMasterRequest()) {
             return;
         }
-
-        if ($event->getResponse()->getStatusCode() !== Response::HTTP_UNAUTHORIZED && !$this->isSupportedAuthenticationType($event->getRequest())) {
+        if ($event->getResponse()->getStatusCode() !== Response::HTTP_UNAUTHORIZED && !$this->isSupportedAuthenticationType()) {
             throw new UnauthorizedHttpException('key,oauth token realm="DeskPRO API"', ErrorsCodes::INVALID_CORS_AUTH_TYPE);
         }
 
@@ -88,7 +86,7 @@ class CorsListener extends NelmioCorsListener
         // https://stackoverflow.com/questions/13994507/how-do-you-send-a-custom-header-in-a-cross-domain-cors-xmlhttprequest
         $isOptionsRequest = $event->getRequest()->getMethod() === 'OPTIONS';
 
-        if (!$isOptionsRequest && !$this->isSupportedAuthenticationType($event->getRequest())) {
+        if (!$isOptionsRequest && !$this->isSupportedAuthenticationType()) {
             return;
         }
 
@@ -104,30 +102,15 @@ class CorsListener extends NelmioCorsListener
      * but we still need to setup CORS to proper show 403 error
      * We need to know authentication attempt type
      *
-     * @param Request $request
-     *
      * @return bool
      */
-    protected function isSupportedAuthenticationType(Request $request)
+    protected function isSupportedAuthenticationType()
     {
         $token = $this->tokenStorage->getToken();
-
-        if (!$token) {
-            // no token means:
-            // 1) this check called during `kernel.request` event and authentication was not executed yet
-            // 2) this check called during `kernel.response` event and authentication failed
-            // in any case try to create fake preauthenticated token to get it type (this token is not saved anywhere)
-            try {
-                $token = $this->apiAuthenticator->createToken($request, 'some_fake');
-            } catch (\Exception $e) {
-                // exception means - no authentication at all
-            }
-        }
 
         if ($token instanceof ApiKeySecurityToken) {
             return true;
         }
-
         if ($token instanceof ApiTokenSecurityToken && $this->isOauthToken($token->getCredentials())) {
             return true;
         }
