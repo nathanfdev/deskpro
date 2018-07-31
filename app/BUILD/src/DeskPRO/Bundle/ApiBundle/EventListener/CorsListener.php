@@ -30,7 +30,7 @@ class CorsListener extends NelmioCorsListener
     /**
      * @var EntityManager
      */
-    protected $entityManager;
+    protected $em;
 
     /**
      * @param ApiAuthenticator $apiAuthenticator
@@ -131,6 +131,8 @@ class CorsListener extends NelmioCorsListener
 
     /**
      * @param string $tokenString
+     *
+     * @return bool
      */
     protected function isOauthToken($tokenString)
     {
@@ -148,8 +150,8 @@ class CorsListener extends NelmioCorsListener
 
         // If token was created through the OAuth flow
         // then there is a connected oauth token exist
-        $oauthToken = $this->em->getRepository('AppBundle:OAuthAccessToken')->findByApiToken($apiToken);
+        $oauthToken = $this->em->getRepository('AppBundle:OAuthAccessToken')->findOneByApiToken($apiToken);
 
-        return $oauthToken != false;
+        return $oauthToken !== null;
     }
 }
