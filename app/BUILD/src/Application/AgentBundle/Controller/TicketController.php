@@ -1882,6 +1882,16 @@ class TicketController extends AbstractController
         );
     }
 
+    /**
+     * @param $message_id
+     *
+     * @throws \Doctrine\DBAL\ConnectionException
+     * @throws \Doctrine\ORM\ORMException
+     * @throws \Doctrine\ORM\OptimisticLockException
+     * @throws \Doctrine\ORM\TransactionRequiredException
+     *
+     * @return Response
+     */
     public function ajaxSaveMessageTextAction($message_id)
     {
         /** @var $message \Application\DeskPRO\Entity\TicketMessage */
@@ -1895,34 +1905,46 @@ class TicketController extends AbstractController
             throw $this->createNotFoundException();
         }
 
-        $old_message      = $message->message;
-        $old_full_message = $message->message_full;
+        $oldMessage     = $message->getMessage();
+        $oldFullMessage = $message->getMessageFull();
 
         // Have to get raw text then proc emebedded images, BFORE using HTML cleaner,
         // because the processor uses special classnames which will be stripped using the html_core cleaner
-        $new_message = $this->in->getStringRaw('message_html');
-        $new_message = $message->convertEmbeddedImagesToInlineAttachInText($new_message);
-        $new_message = $this->cleaner->clean($new_message, 'html_core');
-        $new_message = Strings::trimHtml($new_message);
-        $new_message = Strings::prepareWysiwygHtml($new_message);
-        $message->setMessageHtml($new_message);
+        $newMessage = $this->in->getStringRaw('message_html');
+        $newMessage = $message->convertEmbeddedImagesToInlineAttachInText($newMessage);
+        $newMessage = $this->cleaner->clean($newMessage, 'html_core');
+        $newMessage = Strings::trimHtml($newMessage);
+        $newMessage = Strings::prepareWysiwygHtml($newMessage);
+
+        $logOriginalContents =
+            $this->in->getBool('log_original_contents')
+            || !$this->person->PermissionsManager->TicketChecker->canEditMessages($message->ticket);
+
+        $details = [
+            'message_id' => $message->getId(),
+        ];
+        if ($logOriginalContents) {
+            $details += [
+                'old_message'      => $oldMessage,
+                'old_full_message' => $oldFullMessage,
+            ];
+        }
+
+        $message->setMessageHtml($newMessage);
         $message->message_full = null;
 
-        $ticket_log              = new TicketLog();
-        $ticket_log->ticket      = $ticket;
-        $ticket_log->person      = $this->person;
-        $ticket_log->action_type = 'message_edit';
-        $ticket_log->id_object   = $message->getId();
-        $ticket_log->details     = [
-            'message_id'       => $message->getId(),
-            'old_message'      => $old_message,
-            'old_full_message' => $old_full_message,
-        ];
+        $ticketLog = new TicketLog();
+        $ticketLog
+            ->setTicket($ticket)
+            ->setPerson($this->person)
+            ->setActionType('message_edit')
+            ->setIdObject($message->getId())
+            ->setDetails($details);
 
         $this->db->beginTransaction();
         try {
             $this->em->persist($message);
-            $this->em->persist($ticket_log);
+            $this->em->persist($ticketLog);
             $this->em->flush();
             $this->db->commit();
         } catch (\Exception $e) {

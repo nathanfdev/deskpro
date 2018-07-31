@@ -229,6 +229,26 @@ class TicketLog extends DomainObject
         return $this->action_type;
     }
 
+    /**
+     * @param $idObject
+     *
+     * @return $this
+     */
+    public function setIdObject($idObject)
+    {
+        $this->setModelField('id_object', $idObject);
+
+        return $this;
+    }
+
+    /**
+     * @return int
+     */
+    public function getIdObject()
+    {
+        return $this->id_object;
+    }
+
     public function setDetails(array $details)
     {
         if (isset($details['id_before'])) {

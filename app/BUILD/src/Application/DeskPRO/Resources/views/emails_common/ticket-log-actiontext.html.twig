@@ -418,8 +418,14 @@
 	{% elseif log.action_type == 'message_edit' %}
 		<span class="new-val expand" data-set=".set-orig">{{ phrase('agent.tickets.log_message_updated', {id: log.details.message_id}) }}</span>
 		<div class="expand-set set-orig" style="display: none">
-			<div style="width: 95%; max-height: 200px; overflow: auto; font-size: 11px;">{{ phrase('agent.tickets.log_message_old_message') }}<br/>
-				<textarea style="width: 80%; height: 150px; font-family: Consolas, Monaco, monospace;">{{ log.details.old_message }}</textarea>
+			<div style="width: 95%; max-height: 200px; overflow: auto; font-size: 11px;">
+                {{ phrase('agent.tickets.log_message_old_message') }}
+				<br/>
+                {% if log.details.old_message %}
+					<textarea style="width: 80%; height: 150px; font-family: Consolas, Monaco, monospace;">{{ log.details.old_message }}</textarea>
+                {% else %}
+                    {{ phrase('agent.tickets.log_message_no_old_message') }}
+                {% endif %}
 			</div>
 		</div>
 	{% elseif log.action_type == 'trigger' %}
