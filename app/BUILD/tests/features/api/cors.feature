@@ -34,7 +34,7 @@ Feature: CORS headers
     And the header "Access-Control-Allow-Origin" should be equal to 'http://example.com'
     And the JSON node "code" should be equal to "unauthorized"
 
-  Scenario: COSR disabled for not OAuth valid token
+  Scenario: CORS disabled for not OAuth valid token
     Given "smith@deskpro.dev" agent exists
     And there are no "ApiToken" records
     And a valid api token with the code "SECRETCODE" for "smith@deskpro.dev" and referenced as "token" exists
