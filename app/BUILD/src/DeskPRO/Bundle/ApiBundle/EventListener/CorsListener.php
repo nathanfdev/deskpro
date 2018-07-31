@@ -71,7 +71,7 @@ class CorsListener extends NelmioCorsListener
             return;
         }
 
-        return parent::onKernelResponse($event);
+        parent::onKernelResponse($event);
     }
 
     /**
@@ -90,7 +90,7 @@ class CorsListener extends NelmioCorsListener
             return;
         }
 
-        return parent::forceAccessControlAllowOriginHeader($event);
+        parent::forceAccessControlAllowOriginHeader($event);
     }
 
     /**
@@ -101,6 +101,10 @@ class CorsListener extends NelmioCorsListener
      * because it can be null in case of failed authentication
      * but we still need to setup CORS to proper show 403 error
      * We need to know authentication attempt type
+     *
+     * @param Request $request
+     *
+     * @return bool
      */
     protected function isSupportedAuthenticationType(Request $request)
     {
