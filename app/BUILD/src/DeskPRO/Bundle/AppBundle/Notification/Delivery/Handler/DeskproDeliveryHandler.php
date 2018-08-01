@@ -44,10 +44,19 @@ class DeskproDeliveryHandler extends MultiplexDeliverHandler
      */
     public function __construct(SettingsResolver $resolver, HttpClient $client)
     {
-        $settingsBag          = $resolver->getGlobalSettings();
-        $this->secret         = $settingsBag->get('notification.settings.deskpro_client.secret', '');
-        $this->tries          = $settingsBag->get('notification.settings.deskpro_client.tries', 3);
-        $this->maxMessageSize = $settingsBag->get('notification.settings.deskpro_client.max_message_size', static::MAX_MESSAGE_SIZE);
+        $settingsBag    = $resolver->getGlobalSettings();
+        $this->secret   = $settingsBag->get('notification.settings.deskpro_client.secret', '');
+        $this->tries    = $settingsBag->get('notification.settings.deskpro_client.tries', 3);
+        $maxMessageSize = $settingsBag->get('notification.settings.deskpro_client.max_message_size', static::MAX_MESSAGE_SIZE);
+
+        if (!is_numeric($maxMessageSize) || !$maxMessageSize > 0) {
+            $exception = new \InvalidArgumentException(
+                'notification.settings.deskpro_client.max_message_size should have numeric format and should be greater than 0'
+            );
+            SystemErrorHandler::logException($exception, false, null, true);
+        }
+        $maxMessageSize       = is_numeric($maxMessageSize) && $maxMessageSize > 0 ? $maxMessageSize : static::MAX_MESSAGE_SIZE;
+        $this->maxMessageSize = $maxMessageSize;
         $this->client         = $client;
     }
 
