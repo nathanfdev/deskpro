@@ -22,6 +22,10 @@ use DeskPRO\Bundle\ReportBundle\Reports\ResultMetadata;
  */
 class DpqlMonthName extends AbstractDpqlFunc
 {
+    private $months = [
+        1 => 'January', 2 => 'February', 3 => 'March', 4 => 'April', 5 => 'May', 6 => 'June',
+        7 => 'July', 8 => 'August', 9 => 'September', 10 => 'October', 11 => 'November', 12 => 'December',
+    ];
     public static function getName()
     {
         return 'DPQL_MONTHNAME';
@@ -59,71 +63,14 @@ class DpqlMonthName extends AbstractDpqlFunc
             }
         }
 
-        $sql      = $prepped->sql();
+        $sql      = 'MONTH('.$prepped->sql().')';
         $renderer = function (AbstractValueRenderer $valueRenderer, $value, array $row, AbstractRenderer $renderer) use ($format) {
-            try {
-                $d = \DateTime::createFromFormat('Y-m-d H:i:s', $value);
-            } catch (\Exception $e) {
-                return 'Invalid';
-            }
-
+            $month = isset($this->months[$value]) ? $this->months[$value] : 'Unknown'; // this is for Mars probably, go Elon!
             if ($format === 'short') {
-                switch ($d->format('n')) {
-                    case 1:
-                        return 'Jan';
-                    case 2:
-                        return 'Feb';
-                    case 3:
-                        return 'Mar';
-                    case 4:
-                        return 'Apr';
-                    case 5:
-                        return 'May';
-                    case 6:
-                        return 'Jun';
-                    case 7:
-                        return 'Jul';
-                    case 8:
-                        return 'Aug';
-                    case 9:
-                        return 'Sep';
-                    case 10:
-                        return 'Oct';
-                    case 11:
-                        return 'Nov';
-                    case 12:
-                        return 'Dec';
-                }
-            } else {
-                switch ($d->format('n')) {
-                    case 1:
-                        return 'January';
-                    case 2:
-                        return 'February';
-                    case 3:
-                        return 'March';
-                    case 4:
-                        return 'April';
-                    case 5:
-                        return 'May';
-                    case 6:
-                        return 'June';
-                    case 7:
-                        return 'July';
-                    case 8:
-                        return 'August';
-                    case 9:
-                        return 'September';
-                    case 10:
-                        return 'October';
-                    case 11:
-                        return 'November';
-                    case 12:
-                        return 'December';
-                }
+                $month = substr($month, 0, 3);
             }
 
-            return;
+            return $month;
         };
         $res = new Prepared($sql, 'DPQL_MONTHNAME('.$prepped->name().')', false, $renderer);
 
@@ -153,9 +100,6 @@ class DpqlMonthName extends AbstractDpqlFunc
         $res->setGroupFill(function ($min, $max) use ($userMin, $userMax) {
             $fills = [];
 
-            $min = \DateTime::createFromFormat('Y-m-d H:i:s', $min);
-            $max = \DateTime::createFromFormat('Y-m-d H:i:s', $max);
-
             if ($userMin && $userMin < $min) {
                 $min = $userMin;
             }
@@ -163,11 +107,11 @@ class DpqlMonthName extends AbstractDpqlFunc
                 $max = $userMax;
             }
 
-            $cur = clone $min;
+            $cur = $min;
             while ($cur < $max) {
-                $f = $cur->format('Y-m-d 00:00:00');
+                $f = $cur;
                 $fills[] = [$f, $f, $f];
-                $cur->modify('+1 month');
+                $cur += 1;
             }
 
             return $fills;
