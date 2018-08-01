@@ -53,7 +53,7 @@ class DeskproDeliveryHandler extends MultiplexDeliverHandler
             $exception = new \InvalidArgumentException(
                 'notification.settings.deskpro_client.max_message_size should have numeric format and should be greater than 0'
             );
-            SystemErrorHandler::logException($exception);
+            SystemErrorHandler::logException($exception, false, null, true);
         }
         $maxMessageSize       = is_numeric($maxMessageSize) && $maxMessageSize > 0 ? $maxMessageSize : static::MAX_MESSAGE_SIZE;
         $this->maxMessageSize = $maxMessageSize;
