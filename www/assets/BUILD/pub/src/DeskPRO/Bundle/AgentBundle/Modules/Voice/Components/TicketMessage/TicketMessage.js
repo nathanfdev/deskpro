@@ -19,7 +19,8 @@ class TicketMessage extends React.Component {
     connection:           PropTypes.object,
     transcript:           PropTypes.string,
     onCall:               PropTypes.func,
-    outboundCallsEnabled: PropTypes.bool
+    outboundCallsEnabled: PropTypes.bool,
+    dateCreatedFormatted: PropTypes.string
   };
 
   static defaultProps = {
@@ -51,7 +52,7 @@ class TicketMessage extends React.Component {
 
   render() {
     const { message = {}, phoneCall = Immutable.fromJS({}), numbers, people, connection } = this.props;
-    const { transcript, outboundCallsEnabled } = this.props;
+    const { transcript, outboundCallsEnabled, dateCreatedFormatted } = this.props;
     const { onCall } = this.props;
     const { transcriptExpanded, logExpanded } = this.state;
     const participants = phoneCall.get('participants') || [];
@@ -86,7 +87,7 @@ class TicketMessage extends React.Component {
               <time
                 className="timeago with-stickytip timeago-auto-update with-timeago dp-stickytip-init"
                 dateTime={message.date_created}
-                title=""
+                title={dateCreatedFormatted}
               />
             </span>
           </div>

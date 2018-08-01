@@ -7,6 +7,7 @@
 	data-message-author-name="{{message.person.getDisplayName()}}"
 	data-message-author-email="{{message.person.getEmailAddress()}}"
 	data-message-has-source="{{message.hasEmailSource()}}"
+	data-message-date-created-fulltime="{{message.date_created|date('fulltime')}}"
 >
 	{% if message.is_agent_note %}<div class="note-tag" title="{{ phrase('agent.general.note_tag_title') }}"><i>{{ phrase('agent.general.note') }}</i></div>{% endif %}
 	<div class="avatar"><img

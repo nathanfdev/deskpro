@@ -194,7 +194,7 @@ class AgentLegacyApp {
     ReactDOM.unmountComponentAtNode(node);
   }
 
-  renderVoiceMessage(node, data) {
+  renderVoiceMessage(node, data, dateCreatedFormatted) {
     let tabRef;
 
     ReactDOM.render(
@@ -207,6 +207,7 @@ class AgentLegacyApp {
             <VoiceTicketMessageContainer
               tabRef={(c) => { tabRef = c; }}
               data={data}
+              dateCreatedFormatted={dateCreatedFormatted}
             />
           </IntlProvider>
         </Provider>

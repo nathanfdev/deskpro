@@ -1762,7 +1762,11 @@ DeskPRO.Agent.PageFragment.Page.Ticket = new Orb.Class({
 			var $rElement = $('<div class="dp-react-widget as-dpui"></div>').insertAfter($el);
 
 			$el.hide();
-			window.AgentLegacyBundle.renderVoiceMessage($rElement.get(0), $el.data('message'));
+			window.AgentLegacyBundle.renderVoiceMessage(
+				$rElement.get(0),
+				$el.data('message'),
+				$el.data('message-date-created-fulltime')
+			);
 		};
 
 		messageEl.find('.react-voice-component').each(function() {
