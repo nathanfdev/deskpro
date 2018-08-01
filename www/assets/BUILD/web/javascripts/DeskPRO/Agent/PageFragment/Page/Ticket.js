@@ -1506,10 +1506,6 @@ DeskPRO.Agent.PageFragment.Page.Ticket = new Orb.Class({
       var node = document.getElementById(this.meta.baseId + '_controls_react_container');
       window.AgentLegacyBundle.unmountVoiceControls(node);
 		}
-		if (this.confirmCloseOverlay) {
-      this.confirmCloseOverlay.destroy();
-      this.confirmCloseOverlay = null;
-		}
 		if (this.closeTicketOnFail) {
     	window.clearTimeout(this.closeTicketOnFailTimeout);
     	this.closeTicketOnFail = null;
@@ -2468,52 +2464,24 @@ DeskPRO.Agent.PageFragment.Page.Ticket = new Orb.Class({
 			return;
 		}
 
-    var onEndCall = (function() {
+		var self = this;
+    var onEndCall = function() {
       console.debug('Restoring poller interval: %d', DP_POLLER_INTERVAL);
       DeskPRO_Window.getMessageChanneler().poller.setInterval(DP_POLLER_INTERVAL);
-    })();
-    var self = this;
+      DeskPRO_Window.TabBar.unlockTab(DeskPRO_Window.TabBar.getTab(self.meta.tabId));
+    };
 		var node = document.getElementById(this.meta.baseId + '_controls_react_container');
 		this.controls = window.AgentLegacyBundle.renderVoiceControls(node, parseInt(this.meta.ticket_id, 10), onEndCall);
 
 		if (this.controls.isCallActive()) {
 			console.debug('Enabling fast poller interval: %d', DP_POLLER_INTERVAL_FAST);
 			DeskPRO_Window.getMessageChanneler().poller.setInterval(DP_POLLER_INTERVAL_FAST);
+      DeskPRO_Window.TabBar.lockTab(DeskPRO_Window.TabBar.getTab(this.meta.tabId));
 		}
-
-		var confirmCloseOverlay = this.confirmCloseOverlay = new DeskPRO.UI.Overlay({
-			contentElement: this.getEl('closetab_prompt'),
-			addClassname: 'normal-size',
-			onPosition: function(evData) {
-				var tabId = self.getTabId();
-				if (!tabId) return;
-
-				var tabEl = $('#tabbtn_' + tabId);
-				if (!tabEl[0]) {
-					return;
-				}
-				var tabW = tabEl.width();
-
-				evData.left = (tabEl.offset().left + (tabW / 2)) - (evData.w / 2);
-				evData.top = tabEl.offset().top;
-
-				if ((evData.left + evData.w) > evData.pageW) {
-					evData.left = evData.pageW - evData.w - 15;
-				}
-			},
-			onContentSet: function() {
-				$('.end-trigger').on('click', function() {
-					confirmCloseOverlay.close();
-					self.controls.endCall();
-					DeskPRO_Window.TabBar.removeTabById(self.meta.tabId);
-				});
-			}
-		});
 
 		this.addEvent('closeTab', function(event) {
 			if (this.controls.isCallActive()) {
 				event.deskpro.cancelClose = true;
-				confirmCloseOverlay.open();
 			}
 		}, this);
 	},

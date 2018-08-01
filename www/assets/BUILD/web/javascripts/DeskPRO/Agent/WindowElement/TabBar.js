@@ -151,22 +151,48 @@ DeskPRO.Agent.WindowElement.TabBar = new Orb.Class({
       self.$scope.contextTab = tab;
     };
 
-    this.$scope.closeAll = function () {
+    var getCloseAll = function () {
       var tabs = [];
       self._tabs.each(function (tab) {
+        if (tab.locked) {
+          return;
+        }
+
         tabs.push(tab);
       });
-      tabs.each(function (tab) {
+
+      return tabs;
+    };
+
+    this.$scope.showCloseAll = function () {
+      return getCloseAll().length > 0;
+    };
+
+    this.$scope.closeAll = function () {
+      getCloseAll().each(function (tab) {
         self.removeTab(tab);
       });
     };
 
-    this.$scope.closeOthers = function () {
+    var getCloseOthers = function () {
       var tabs = [], active = self.getActiveTab();
       self._tabs.each(function (tab) {
-        tab !== active && tabs.push(tab);
+        if (tab === active || tab.locked) {
+          return;
+        }
+
+        tabs.push(tab);
       });
-      tabs.each(function (tab) {
+
+      return tabs;
+    };
+
+    this.$scope.showCloseOthers = function () {
+      return getCloseOthers().length > 0;
+    };
+
+    this.$scope.closeOthers = function () {
+      getCloseOthers().each(function (tab) {
         self.removeTab(tab);
       });
     };
@@ -850,6 +876,17 @@ DeskPRO.Agent.WindowElement.TabBar = new Orb.Class({
     el.toggleClass('alert-highlight');
   },
 
+  lockTab: function (tab) {
+    this.$scope.$safeApply(function () {
+      tab.locked = true;
+    });
+  },
+
+  unlockTab: function (tab) {
+    this.$scope.$safeApply(function () {
+      tab.locked = false;
+    });
+  },
 
   //##################################################################################################################
   // Handling events
