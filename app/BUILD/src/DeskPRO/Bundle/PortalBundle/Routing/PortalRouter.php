@@ -275,7 +275,7 @@ class PortalRouter implements WarmableInterface, RouterInterface, RequestMatcher
      *
      * @return string
      */
-    protected function buildUrl($path)
+    public function buildUrl($path)
     {
         $urlBuilder = new PortalUrlBuilder(
             $path,
