@@ -59,18 +59,20 @@
 				</p>
 				<table class="inner-form-table" width="100%">
 					<tr>
-						<th width="145">Amazon Access Key:</th>
-						<td><input type="text" class="form-control" ng-model="options.s3_key" style="width: 95%;" required /></td>
+            <th width="145" style="padding-top:20px"><strong>Bucket</strong></th><td/>
 					</tr>
 					<tr>
-						<th>Amazon Secret Key:</th>
-						<td><input type="text" class="form-control" ng-model="options.s3_secret" style="width: 95%;" required /></td>
-					</tr>
-					<tr>
-						<th>S3 Bucket Name:</th>
+						<th>S3 Bucket Name: *</th>
 						<td>
-							<input type="text" class="form-control" ng-model="options.s3_bucket" ng-change="bucketNameTrans(); invalid_bucket_name = false;" style="width: 95%;" required />
-							<div style="margin-top: 4px; font-size: 11px;" ng-show="invalid_bucket_name">
+              <div ng-class="{'has-error': invalid_bucket_name}">
+                <input type="text"
+                       class="form-control"
+                       ng-model="options.s3_bucket"
+                       ng-change="bucketNameTrans(); invalid_bucket_name = false;"
+                       style="width: 95%;"
+                       required />
+              </div>
+							<div class="text-danger" style="margin-top: 4px; font-size: 11px;" ng-show="invalid_bucket_name">
 								Your bucket name must be:
 								<ul>
 									<li>3-63 characters in length</li>
@@ -80,10 +82,83 @@
 						</td>
 					</tr>
 					<tr>
-						<th>S3 Bucket Region:</th>
+						<th>S3 Bucket Region: *</th>
 						<td>
-							<input type="text" class="form-control" ng-model="options.s3_region" style="width: 95%;" required />
+              <div ng-class="{'has-error': invalid_bucket_region}">
+                <input type="text"
+                       class="form-control"
+                       ng-model="options.s3_region"
+                       ng-change="invalid_bucket_region = false;"
+                       style="width: 95%;"
+                       required />
+              </div>
+              <div class="text-danger" style="margin-top: 4px; font-size: 11px;" ng-show="invalid_bucket_region">
+                Bucket Region is required. Example of Bucket Region: us-east-1
+              </div>
 						</td>
+					</tr>
+					<tr>
+            <th width="145" style="padding-top:20px"><strong>Credentials</strong></th><td/>
+					</tr>
+					<tr>
+            <th width="145">
+            </th><td>
+              <label class="option-list">
+                <input type="radio" ng-model="options.s3_credentials_source" value="key" class="option-list"/><span class="title">AWS Access Key</span>
+              </label>
+            </td>
+					</tr>
+					<tr ng-show="isAccessKeysEnabled()">
+						<th width="145">Amazon Access Key: *</th>
+						<td>
+              <div ng-class="{'has-error': invalid_bucket_region}">
+                <input type="text"
+                       class="form-control"
+                       ng-model="options.s3_key"
+                       ng-change="invalid_access_key = false;"
+                       style="width: 95%;"
+                       required />
+              </div>
+              <div class="text-danger" style="margin-top: 4px; font-size: 11px;" ng-show="invalid_access_key">
+                Access Key is required
+              </div>
+            </td>
+					</tr>
+					<tr ng-show="isAccessKeysEnabled()">
+						<th>Amazon Secret Key: *</th>
+						<td>
+              <div ng-class="{'has-error': invalid_bucket_region}">
+                <input type="text"
+                       class="form-control"
+                       ng-model="options.s3_secret"
+                       ng-change="invalid_access_secret = false;"
+                       style="width: 95%;"
+                       required />
+              </div>
+              <div class="text-danger" style="margin-top: 4px; font-size: 11px;" ng-show="invalid_access_secret">
+                Secret key is required
+              </div>
+            </td>
+					</tr>
+					<tr>
+            <th width="145">
+            </th>
+            <td>
+              <label class="option-list">
+                <input type="radio" ng-model="options.s3_credentials_source" value="ec2" class="option-list" /><span class="title">EC2 IAM Role</span>
+              </label>
+            </td>
+          </tr>
+          <tr ng-show="!isAccessKeysEnabled()">
+            <th width="145"/>
+            <td>
+              <p>If Deskpro is running within Amazon's infrastructure (i.e. on EC2 instances), then you can use IAM Roles so Deskpro can obtain access credentials through the instance rather than via an access key.</p>
+              <p>If you are running within AWS, then this is the recommended way to use S3 because it removes the need to create, maintain and audit access keys.</p>
+              <p>Note that this option is NOT applicable if you are using Deskpro on non-AWS infrastructure. This ONLY applies if Deskpro is operation on EC2 instances.</p>
+            </td>
+					</tr>
+					<tr style="margin-top: 15px;">
+            <th width="145" style="padding-top:20px"><strong>Advanced</strong></th><td/>
 					</tr>
 					<tr>
 						<th>S3 custom endpoint:</th>
@@ -94,12 +169,25 @@
 							</div>
 						</td>
 					</tr>
+					<tr>
+						<th>File URL template:</th>
+						<td>
+							<input type="text" class="form-control" ng-model="options.s3_file_url_template" style="width: 95%;" required />
+							<div style="margin-top: 4px; font-size: 11px;" ng-non-bindable>{% verbatim %}
+								You can customize file URL pattern in case of using third-party services that use the same API as AWS.
+                Available variables in pattern: {{bucketName}}, {{bucketRegion}}, {{path}}. Example of default pattern for AWS: https://{{bucketName}}.s3.amazonaws.com/{{path}}
+							{% endverbatim %}</div>
+						</td>
+					</tr>
 				</table>
 			</div>
 		</li>
 	</ul>
 {% endblock %}
 {% block modal_footer %}
+  <div class="text-danger" ng-show="form_invalid" style="padding-bottom: 15px">
+    <p><strong>Please fill all required fields above</strong></p>
+  </div>
 	<button class="btn btn-danger" ng-hide="is_loading" ng-click="confirm()">Save new storage mechanism</button>
 
 	<i class="spinner-flat" ng-show="is_loading"></i>

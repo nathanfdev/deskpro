@@ -26,7 +26,17 @@ class AmazonS3Storage extends AbstractStorageAdapter
     /**
      * @var string
      */
+    protected $region;
+
+    /**
+     * @var string
+     */
     protected $file_url_domain;
+
+    /**
+     * @var string
+     */
+    protected $file_url_template;
 
     /**
      * @var string
@@ -51,7 +61,9 @@ class AmazonS3Storage extends AbstractStorageAdapter
     {
         $this->s3                = $this->options->get('s3_client');
         $this->bucket            = $this->options->get('bucket');
+        $this->region            = $this->options->get('region');
         $this->file_url_domain   = rtrim($this->options->get('file_url_domain'), '/');
+        $this->file_url_template = $this->options->get('file_url_template');
         $this->base_path         = rtrim($this->options->get('base_path', ''), '/');
         $this->attempts          = $this->options->get('attempts', 1);
         $this->retry_sleep       = $this->options->get('retry_sleep', 1);
@@ -179,10 +191,16 @@ class AmazonS3Storage extends AbstractStorageAdapter
             }
         }
 
-        if (!$this->file_url_domain) {
-            $blob->setMeta('file_url', 'https://'.$this->bucket.'.s3.amazonaws.com/'.$path);
-        } else {
+        if ($this->file_url_domain) {
             $blob->setMeta('file_url', 'https://'.$this->file_url_domain.'/'.$path);
+        } elseif ($this->file_url_template) {
+            $blob->setMeta('file_url', str_replace(
+                ['{{bucketName}}', '{{bucketRegion}}', '{{path}}'],
+                [$this->bucket, $this->region, $path],
+                $this->file_url_template
+            ));
+        } else {
+            $blob->setMeta('file_url', 'https://'.$this->bucket.'.s3.amazonaws.com/'.$path);
         }
 
         return strlen($data);

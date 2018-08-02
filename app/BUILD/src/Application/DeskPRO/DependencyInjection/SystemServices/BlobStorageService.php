@@ -55,7 +55,10 @@ class BlobStorageService
 
         $s3_adapter  = null;
         $settingsBag = $container->get('settings_resolver')->getGlobalSettings();
-        if ($settingsBag->get('core.filestorage_s3_key') && $settingsBag->get('core.filestorage_s3_secret') && $settingsBag->get('core.filestorage_s3_bucket')) {
+        if (
+            ($settingsBag->get('core.filestorage_s3_key') && $settingsBag->get('core.filestorage_s3_secret') && $settingsBag->get('core.filestorage_s3_bucket'))
+            || ($settingsBag->get('core.filestorage_s3_bucket') && $settingsBag->get('core.filestorage_s3_credentials_source') == 'ec2')
+        ) {
             $cumulativeTimeout = $settingsBag->get('filestorage.s3.web.cumulative_timeout', 5);
 
             if (php_sapi_name() === 'cli') {
@@ -67,7 +70,9 @@ class BlobStorageService
             $s3_adapter = new AmazonS3Storage([
                 's3_client'              => $container->get('amazon_s3_client'),
                 'bucket'                 => $settingsBag->get('core.filestorage_s3_bucket'),
+                'region'                 => $settingsBag->get('core.filestorage_s3_region'),
                 'file_url_domain'        => $settingsBag->get('core.filestorage_s3_file_url_domain'),
+                'file_url_template'      => $settingsBag->get('core.filestorage_s3_file_url_template'),
                 'base_path'              => $settingsBag->get('core.filestorage_s3_basepath'),
                 'fail_limit_per_request' => 1,
                 'cumulative_timeout'     => $cumulativeTimeout,
