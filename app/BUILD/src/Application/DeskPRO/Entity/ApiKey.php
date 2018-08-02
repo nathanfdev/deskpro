@@ -112,6 +112,14 @@ class ApiKey extends DomainObject
     }
 
     /**
+     * @return Person
+     */
+    public function getPerson()
+    {
+        return $this->person;
+    }
+
+    /**
      * @param bool  $primary
      * @param bool  $deep
      * @param array $visited

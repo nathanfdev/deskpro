@@ -28,6 +28,7 @@ class ApiKernel extends BaseKernel
             new \FOS\RestBundle\FOSRestBundle(),
             new \FOS\ElasticaBundle\FOSElasticaBundle(),
             new \FOS\OAuthServerBundle\FOSOAuthServerBundle(),
+            new \Nelmio\CorsBundle\NelmioCorsBundle(),
             new \JMS\SerializerBundle\JMSSerializerBundle(),
 
             new \Nelmio\ApiDocBundle\NelmioApiDocBundle(),

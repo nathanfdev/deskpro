@@ -23,6 +23,7 @@ return [
     'api.error_codes.invalid'                         => 'Invalid.',
     'api.error_codes.invalid_api_key'                 => 'Invalid API key.',
     'api.error_codes.invalid_api_token'               => 'Invalid API token.',
+    'api.error_codes.invalid_cors_auth_type'          => 'CORS requests are allowed for api keys or oauth tokens only.',
     'api.error_codes.invalid_authorization_header'    => 'Invalid Authorization header (type can be one of "key" or "token").',
     'api.error_codes.invalid_charset'                 => 'This value does not match the expected {{ charset }} charset.',
     'api.error_codes.invalid_data_type'               => 'This data type was not expected.',

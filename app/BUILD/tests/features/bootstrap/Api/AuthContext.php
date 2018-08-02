@@ -12,6 +12,7 @@ use Behat\Mink\Driver\BrowserKitDriver;
 use Behat\Mink\Exception\UnsupportedDriverActionException;
 use DeskPRO\Bundle\AppBundle\Entity\ApiKeyAction;
 use DeskPRO\Bundle\AppBundle\Entity\ApiKeyLimit;
+use DeskPRO\Bundle\AppBundle\Entity\OAuthAccessToken;
 use DeskPRO\Bundle\AppBundle\Limits\Model\AbstractLimit;
 use DpBehat\BaseContext;
 use DpBehat\Data\DataContext;
@@ -132,6 +133,29 @@ class AuthContext extends BaseContext
 
         $this->persistAndFlush($apiToken);
         DataContext::setReference($ref, $apiToken);
+    }
+
+    /**
+     * @Given a valid api token for oauth client :client with the code :token for :who and referenced as :ref exists
+     */
+    public function aValidApiTokenForOauthClientExistsWithTheCodeAndIdForAgent($client, $token, $who, $ref)
+    {
+        if (!DataContext::hasReference($client)) {
+            throw new \Exception("OAuth client ref #$client does not exist");
+        }
+
+        $client = DataContext::getReference($client);
+        $person = DataContext::hasReference($who)
+            ? DataContext::getReference($who)
+            : $this->getUserDetails()->getWho($who);
+        $oauthToken = new OAuthAccessToken();
+        $oauthToken->setToken($token);
+        $oauthToken->setClient($client);
+        $oauthToken->setUser($person);
+        $oauthToken->setScope(ApiToken::SCOPE_SESSION);
+
+        $this->persistAndFlush($oauthToken);
+        DataContext::setReference($ref, $oauthToken->getTokenEntity());
     }
 
     /**
