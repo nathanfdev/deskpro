@@ -36,8 +36,10 @@ use Application\DeskPRO\EntityRepository\Person as PersonRepository;
 use Application\DeskPRO\Form\Type\PhoneNumberType;
 use Application\DeskPRO\HttpFoundation\Cookie;
 use Application\DeskPRO\Log\Event\UserMerged;
+use Application\DeskPRO\Log\Event\UserMergeUndo;
 use Application\DeskPRO\People\PersonEditManager;
 use Application\DeskPRO\People\PersonMerge\PersonMerge;
+use Application\DeskPRO\People\PersonMerge\PersonMergeUndo;
 use Application\DeskPRO\Reader\VCard;
 use Application\EmailBundle\SwiftMailer\Mailer;
 use DeskPRO\Bundle\AppBundle\Notification\Event\People\PersonCreatedEvent;
@@ -58,15 +60,18 @@ class PersonController extends AbstractController
 {
     /**
      * @param Organization $entity
-     * @return array mixed
+     *
      * @throws \Exception
+     *
+     * @return array mixed
      */
-    protected function getAPIv2Data( $entity)
+    protected function getAPIv2Data($entity)
     {
         $context = new SideloadSerializationContext();
         $context->setIncludes(['brand', 'team']);
         $context->setInlineSideloads(true);
         $serialized = $this->container->get('serializer')->toArray(new ApiWrapper($entity), $context);
+
         return $serialized;
     }
 
@@ -1342,6 +1347,35 @@ class PersonController extends AbstractController
             'success' => true,
             'id'      => $person['id'],
             'old_id'  => $oldPersonId,
+        ]);
+    }
+
+    public function mergeUndoAction($person_id, $person_activity_id)
+    {
+        $person         = $this->getPersonOr404($person_id);
+        $personActivity = $this->em->getRepository(PersonActivity::class)->find($person_activity_id);
+        if (!$personActivity) {
+            throw new NotFoundHttpException(sprintf('There is no PersonActivity with ID #%s', $person_activity_id));
+        }
+
+        if (!$this->person->hasPerm('agent_people.merge') || !$this->isPersonEditable($person)) {
+            return $this->createJsonResponse(['success' => false]);
+        }
+
+        $logEvent = new LogEvent(new UserMergeUndo($person, $personActivity), $this->person);
+
+        $mergeUdno = new PersonMergeUndo(
+            $this->em,
+            $this->container->getSystemService('person_merge_backup'),
+            $this->container->getPersonActivityLogger()
+        );
+        $otherPerson = $mergeUdno->undo($personActivity);
+        $this->container->get('deskpro.logger.changelog')->info($logEvent);
+
+        return $this->createJsonResponse([
+            'success'            => true,
+            'person_id'          => $person->getId(),
+            'restored_person_id' => $otherPerson->getId(),
         ]);
     }
 
