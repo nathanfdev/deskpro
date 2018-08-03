@@ -48,7 +48,7 @@
 								<span ng-if="!macro.is_global && macro.person">{{ ng_var('macro.person.display_name') }}</span>
 								<span ng-if="!macro.is_global && macro.department">{{ ng_var('macro.department.title') }}</span>
 							</em>
-							<span class="btn btn-danger btn-xs only-icon" ng-show="delete_mode" style="margin-top: -3px;" ng-click="ListCtrl.startDelete(macro); $event.preventDefault();"><i class="fa fa-trash-o"></i></span>
+							<span class="btn btn-danger btn-xs only-icon" ng-show="delete_mode" style="margin-top: -3px;" ng-click="ListCtrl.startDelete(macro); $event.preventDefault();"><i class="far fa-trash-alt"></i></span>
 						</div>
 						<h4>
 							<span class="title-id" title="ID">#{{ ng_var('macro.id') }}</span>

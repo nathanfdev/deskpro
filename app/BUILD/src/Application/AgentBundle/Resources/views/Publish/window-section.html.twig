@@ -1,7 +1,7 @@
 {% extends 'AgentBundle::source-pane-layout.html.twig' %}
 {% import 'AgentBundle:Common:macro-flagname.html.twig' as flagnamer %}
 {% block pane_main_tab %}
-	<li class="tab active" data-tab-id="pane-content-main"><i class="icon-dp-article"></i> {{ phrase('agent.chrome.nav_publish') }}</li>
+	<li class="tab active" data-tab-id="pane-content-main"><i class="fa icon-dp-article"></i> {{ phrase('agent.chrome.nav_publish') }}</li>
 {% endblock %}
 {% block pane_content %}
 <div class="pane-content pane-content-main">
@@ -9,7 +9,7 @@
 	<section class="pane-section dp-collapsible dp-collapsible-open" id="publish_section_pending">
 		<header>
 			<h1>
-				<em class="dp-collapsible-toggle-btn"><i class="icon-x"></i></em>
+				<em class="dp-collapsible-toggle-btn"><i class="fa icon-x"></i></em>
 				{{ phrase('agent.general.pending') }}
 			</h1>
 		</header>
@@ -75,7 +75,7 @@
 		<section class="pane-section dp-collapsible dp-collapsible-open" id="publish_section_kb">
 			<header>
 				<h1>
-					<em class="dp-collapsible-toggle-btn"><i class="icon-x"></i></em>
+					<em class="dp-collapsible-toggle-btn"><i class="fa icon-x"></i></em>
 					{{ phrase('agent.general.knowledgebase') }}
 				</h1>
 			</header>
@@ -100,7 +100,7 @@
 					<ul class="nav-list nav-list-small nav-list-tree">
 						<li class="is-nav-item">
 							<div class="item" data-route="listpane:{{ path('agent_kb_list', {pending_translate: 1, brand_id: selected_brand_id}) }}">
-								<i class="dp-toggle-icon click-through icon-caret-right"></i>
+								<i class="dp-toggle-icon click-through fas fa-caret-right"></i>
 								<h3>{{ phrase('agent.publish.untranslated_articles') }}</h3>
 								<em class="counter list-counter">{{ kb_translate_queue[0] }}</em>
 							</div>
@@ -125,7 +125,7 @@
 		<section class="pane-section dp-collapsible" id="publish_section_news">
 			<header>
 				<h1>
-					<em class="dp-collapsible-toggle-btn"><i class="icon-x"></i></em>
+					<em class="dp-collapsible-toggle-btn"><i class="fa icon-x"></i></em>
 					{{ phrase('agent.general.news') }}
 				</h1>
 			</header>
@@ -147,7 +147,7 @@
 		<section class="pane-section dp-collapsible" id="publish_section_downloads">
 			<header>
 				<h1>
-					<em class="dp-collapsible-toggle-btn"><i class="icon-x"></i></em>
+					<em class="dp-collapsible-toggle-btn"><i class="fa icon-x"></i></em>
 					{{ phrase('agent.general.downloads') }}
 				</h1>
 			</header>
@@ -169,7 +169,7 @@
 		<section class="pane-section dp-collapsible" id="publish_section_manuals">
 			<header>
 				<h1>
-					<em class="dp-collapsible-toggle-btn"><i class="icon-x"></i></em>
+					<em class="dp-collapsible-toggle-btn"><i class="fa icon-x"></i></em>
                     {{ phrase('agent.general.guides') }}
 				</h1>
 			</header>
@@ -190,7 +190,7 @@
 	<section class="pane-section dp-collapsible" id="publish_section_comments" {% if not counts.comments.all %}style="display: none;"{% endif %}>
 		<header>
 			<h1>
-				<em class="dp-collapsible-toggle-btn"><i class="icon-x"></i></em>
+				<em class="dp-collapsible-toggle-btn"><i class="fa icon-x"></i></em>
 				{{ phrase('agent.general.comments') }}
 			</h1>
 		</header>
@@ -198,7 +198,7 @@
 			<ul class="nav-list nav-list-small nav-list-tree">
 				<li class="is-nav-item">
 					<div class="item" data-route="listpane:{{ path('agent_publish_listcomments', {type: 'all', brandId: selected_brand_id}) }}">
-						<i class="dp-toggle-icon click-through icon-caret-right"></i>
+						<i class="dp-toggle-icon click-through fas fa-caret-right"></i>
 						<h3>{{ phrase('agent.publish.all_comments') }}</h3>
 						<em class="counter list-counter" id="publish_all_comments_count">{{ counts.comments.all|default(0) }}</em>
 					</div>
@@ -230,7 +230,7 @@
 	<section class="pane-section dp-collapsible last" id="publish_section_glossary">
 		<header>
 			<h1>
-				<em class="dp-collapsible-toggle-btn"><i class="icon-x"></i></em>
+				<em class="dp-collapsible-toggle-btn"><i class="fa icon-x"></i></em>
 				{{ phrase('agent.publish.glossary') }}
 			</h1>
 		</header>

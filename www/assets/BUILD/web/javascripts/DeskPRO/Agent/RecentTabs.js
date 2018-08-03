@@ -243,7 +243,7 @@ DeskPRO.Agent.RecentTabs = new Orb.Class({
 		var rowHtml = '<li>\n' +
       '<a data-route="page:'+item[3]+'" route-notabreload="1">\n' +
       '  <div class="title">\n' +
-      '    <i class="icon-envelope dp-icon-placeholder"></i>\n' +
+      '    <i class="icon-envelope fa dp-icon-placeholder"></i>\n' +
       '    <strong>'+item[1]+'</strong>\n' +
       '    <span>'+Orb.escapeHtml(item[2]+'')+'</span>\n' +
       '  </div>\n' +

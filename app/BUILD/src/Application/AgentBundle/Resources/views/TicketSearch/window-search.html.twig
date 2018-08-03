@@ -20,7 +20,7 @@
 				<option value="hidden.deleted">{{ phrase('agent.tickets.status_hidden_deleted') }}</option>
 			</select>
 			<div class="source-pane-select-menu" id="{{ elid }}_menu">
-				<i class="icon-caret-up"></i>
+				<i class="fas fa-caret-up"></i>
 				<ul class="checkbox-list">
 					<li><label><input class="widget-val" type="checkbox" value="awaiting_agent" /> {{ phrase('agent.tickets.status_awaiting_agent') }}</label></li>
 					<li><label><input class="widget-val" type="checkbox" value="awaiting_user" /> {{ phrase('agent.tickets.status_awaiting_user') }}</label></li>
@@ -79,7 +79,7 @@
 		<div class="input-row-title">
 			<strong>{{ phrase('agent.general.fields') }}</strong>
 		</div>
-		<div class="adv-btn trigger-open-panel" data-panel-id="panel-ticket-fields"><i class="icon-cog"></i></div>
+		<div class="adv-btn trigger-open-panel" data-panel-id="panel-ticket-fields"><i class="fas fa-cog"></i></div>
 		<div class="text-value with-adv trigger-open-panel" data-panel-id="panel-ticket-fields" id="{{ elid }}_termlist">
 
 		</div>
@@ -99,7 +99,7 @@
 		<div class="input-row-title">
 			<strong>{{ phrase('agent.general.subject') }}</strong>
 		</div>
-		<div class="adv-btn trigger-open-panel" data-panel-id="panel-ticket-subject" data-target-summary="#{{ elid }}_text_val"><i class="icon-cog"></i></div>
+		<div class="adv-btn trigger-open-panel" data-panel-id="panel-ticket-subject" data-target-summary="#{{ elid }}_text_val"><i class="fas fa-cog"></i></div>
 		<div class="input-row-body with-adv add-to-search">
 			<input type="text" name="search_subject_simple" value="" id="{{ elid }}_text_val" class="is-bound" />
 		</div>
@@ -112,7 +112,7 @@
 					<div class="line"></div>
 					<strong>{{ phrase('agent.general.and') }}</strong>
 				</div>
-				<div class="remove-row-btn trigger-remove-row"><i class="icon-minus-sign"></i></div>
+				<div class="remove-row-btn trigger-remove-row"><i class="fas fa-minus-circle"></i></div>
 				<table class="layout-table v-middle" width="100%">
 					<tr>
 						<td width="80">{{ phrase('agent.general.subject') }}</td>
@@ -138,7 +138,7 @@
 			</div>
 		</div>
 		<div class="add-row">
-			<div class="add-row-btn trigger-clone-row" data-target="#{{ elid }}_orig_row" data-target-list="#{{ elid }}_pane_rows"><i class="icon-plus-sign"></i></div>
+			<div class="add-row-btn trigger-clone-row" data-target="#{{ elid }}_orig_row" data-target-list="#{{ elid }}_pane_rows"><i class="fas fa-plus-circle"></i></div>
 		</div>
 	</div>
 	{% endif %}
@@ -153,7 +153,7 @@
 		<div class="input-row-title">
 			<strong>{{ phrase('agent.general.message') }}</strong>
 		</div>
-		<div class="adv-btn trigger-open-panel" data-panel-id="panel-ticket-message" data-target-summary="#{{ elid }}_text_val"><i class="icon-cog"></i></div>
+		<div class="adv-btn trigger-open-panel" data-panel-id="panel-ticket-message" data-target-summary="#{{ elid }}_text_val"><i class="fas fa-cog"></i></div>
 		<div class="input-row-body with-adv add-to-search">
 			<input type="text" name="search_message_simple" value="" id="{{ elid }}_text_val" class="is-bound" />
 		</div>
@@ -166,7 +166,7 @@
 					<div class="line"></div>
 					<strong>{{ phrase('agent.general.and') }}</strong>
 				</div>
-				<div class="remove-row-btn trigger-remove-row"><i class="icon-minus-sign"></i></div>
+				<div class="remove-row-btn trigger-remove-row"><i class="fas fa-minus-circle"></i></div>
 				<table class="layout-table v-middle" width="100%">
 					<tr>
 						<td width="80">{{ phrase('agent.general.message') }}</td>
@@ -219,7 +219,7 @@
 			</div>
 		</div>
 		<div class="add-row">
-			<div class="add-row-btn trigger-clone-row" data-target="#{{ elid }}_orig_row" data-target-list="#{{ elid }}_pane_rows"><i class="icon-plus-sign"></i></div>
+			<div class="add-row-btn trigger-clone-row" data-target="#{{ elid }}_orig_row" data-target-list="#{{ elid }}_pane_rows"><i class="fas fa-plus-circle"></i></div>
 		</div>
 	</div>
 	{% endif %}
@@ -233,7 +233,7 @@
 		<div class="input-row-title">
 			<strong>{{ phrase('agent.general.user') }}</strong>
 		</div>
-		<div class="adv-btn trigger-open-panel" data-panel-id="panel-user-fields"><i class="icon-cog"></i></div>
+		<div class="adv-btn trigger-open-panel" data-panel-id="panel-user-fields"><i class="fas fa-cog"></i></div>
 		<div class="text-value with-adv trigger-open-panel" data-panel-id="panel-user-fields" id="{{ elid }}_termlist">
 
 		</div>
@@ -253,7 +253,7 @@
 			<div class="input-row-title">
 				<strong>{{ phrase('agent.general.organization') }}</strong>
 			</div>
-			<div class="adv-btn trigger-open-panel" data-panel-id="panel-org-fields"><i class="icon-cog"></i></div>
+			<div class="adv-btn trigger-open-panel" data-panel-id="panel-org-fields"><i class="fas fa-cog"></i></div>
 			<div class="text-value with-adv trigger-open-panel" data-panel-id="panel-org-fields" id="{{ elid }}_termlist">
 
 			</div>
@@ -273,7 +273,7 @@
 		<div class="input-row-title">
 			<strong>{{ phrase('agent.general.dates_and_times') }}</strong>
 		</div>
-		<div class="adv-btn trigger-open-panel" data-panel-id="panel-date-fields"><i class="icon-cog"></i></div>
+		<div class="adv-btn trigger-open-panel" data-panel-id="panel-date-fields"><i class="fas fa-cog"></i></div>
 		<div class="text-value with-adv trigger-open-panel" data-panel-id="panel-date-fields" id="{{ elid }}_termlist">
 
 		</div>
@@ -292,7 +292,7 @@
 		<div class="input-row-title">
 			<strong>{{ phrase('agent.general.linked_feedback_items') }}</strong>
 		</div>
-		<div class="adv-btn trigger-open-panel" data-panel-id="panel-feedback-links-fields"><i class="icon-cog"></i></div>
+		<div class="adv-btn trigger-open-panel" data-panel-id="panel-feedback-links-fields"><i class="fas fa-cog"></i></div>
 		<div class="text-value with-adv trigger-open-panel" data-panel-id="panel-feedback-links-fields" id="{{ elid }}_termlist">
 
 		</div>

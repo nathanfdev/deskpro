@@ -94,12 +94,12 @@ DeskPRO.Agent.RuleBuilder.DateTimeTerm = new Orb.Class({
         display: 'inline-block'
       }),
       icons: {
-        time: 'fa fa-clock-o',
-        date: 'fa fa-calendar-o',
-        up: 'fa fa-chevron-up',
-        down: 'fa fa-chevron-down',
-        previous: 'fa fa-chevron-left',
-        next: 'fa fa-chevron-right'
+        time: 'far fa-clock',
+        date: 'far fa-calendar',
+        up: 'fas fa-chevron-up',
+        down: 'fas fa-chevron-down',
+        previous: 'fas fa-chevron-left',
+        next: 'fas fa-chevron-right'
       }
     });
 
@@ -114,12 +114,12 @@ DeskPRO.Agent.RuleBuilder.DateTimeTerm = new Orb.Class({
         display: 'inline-block'
       }),
       icons: {
-        time: 'fa fa-clock-o',
-        date: 'fa fa-calendar-o',
-        up: 'fa fa-chevron-up',
-        down: 'fa fa-chevron-down',
-        previous: 'fa fa-chevron-left',
-        next: 'fa fa-chevron-right'
+        time: 'far fa-clock',
+        date: 'far fa-calendar',
+        up: 'fas fa-chevron-up',
+        down: 'fas fa-chevron-down',
+        previous: 'fas fa-chevron-left',
+        next: 'fas fa-chevron-right'
       }
     });
 

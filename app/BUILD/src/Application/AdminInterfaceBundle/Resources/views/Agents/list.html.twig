@@ -13,7 +13,7 @@
 					<a href="{{ ng_href('agents.agents.edit', '{id: agent.id}') }}" title="{{ ng_var('agent.primary_email.email') }}">
 						<div style="float:right">
 							<span style="display: inline-block; font-size: 10pt; margin-right: 3px;" tooltip-placement="left" tooltip="Access to admin interface" ng-show="agent.can_admin"><i class="fa fa-wrench"></i></span>
-							<span style="display: inline-block; font-size: 10pt;" tooltip-placement="left" tooltip="Access to reports interface" ng-show="agent.can_reports"><i class="fa fa-bar-chart-o"></i></span>
+							<span style="display: inline-block; font-size: 10pt;" tooltip-placement="left" tooltip="Access to reports interface" ng-show="agent.can_reports"><i class="fas fa-chart-bar"></i></span>
 						</div>
 						<h4>
                             {% include 'AdminInterfaceBundle:Agents:agent.html.twig' %}

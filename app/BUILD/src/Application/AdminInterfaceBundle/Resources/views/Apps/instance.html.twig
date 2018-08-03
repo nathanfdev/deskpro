@@ -9,7 +9,7 @@
 							<img ng-src="{{ ng_var('Ctrl.pack.icon_48') }}" alt="Icon" />
 						</div>
 						<div style="float:right">
-							<button ng-if="Ctrl.pack.readme" class="btn btn-default" ng-click="Ctrl.showReadme();"><i class="fa fa-file-text-o"></i> View README</button>
+							<button ng-if="Ctrl.pack.readme" class="btn btn-default" ng-click="Ctrl.showReadme();"><i class="far fa-file-alt"></i> View README</button>
                             <a ng-if="!Ctrl.pack.native_name" class="btn btn-default"
                                href="{{ '{{ "' ~ path('admin_apps_download_package', {name: '0000'}) ~ '".replace("0000", Ctrl.pack.name) }}'}}"
                                download>

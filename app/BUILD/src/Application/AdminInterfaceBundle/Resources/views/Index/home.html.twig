@@ -282,7 +282,7 @@
 						<div class="dp-mpadded">
 							<div ng-hide="support_sent">
 								<div dp-hide-spinning="sending_support_request">
-									<button class="btn btn-default" ng-click="$event.preventDefault(); Home.sendSupportRequest();"><i class="fa fa-envelope-o"></i> Send Message</button>
+									<button class="btn btn-default" ng-click="$event.preventDefault(); Home.sendSupportRequest();"><i class="far fa-envelope"></i> Send Message</button>
 									&nbsp;&nbsp;&nbsp;
 									<div style="display: inline-block" ng-show="submit_ticket_defaultemail" ng-init="submit_ticket_defaultemail = true">
 										We will reply to <strong>{{ app.user.primary_email_address }}</strong>.
@@ -322,12 +322,12 @@
 								Tickets resolved today: {{ ng_var('Home.quick_stats.resolved_today') }}
 							</li>
 							<li>
-								<i class="fa fa-clock-o"></i>
+								<i class="far fa-clock"></i>
 								Tickets awaiting agent: {{ ng_var('Home.quick_stats.awaiting_agent') }}
 							</li>
 						</ul>
 						<div class="dp-mpadded">
-							<a class="btn btn-default" href="/{{ path('user')|ltrim('/') }}reports/" dp-click-href="#/go_to_reports">View more reports <i class="fa fa-long-arrow-right"></i></a>
+							<a class="btn btn-default" href="/{{ path('user')|ltrim('/') }}reports/" dp-click-href="#/go_to_reports">View more reports <i class="fas fa-long-arrow-alt-right"></i></a>
 						</div>
 					</article>
 				</td>
@@ -353,7 +353,7 @@
 									</header>
 									<article>
 										<p ng-show="Home.cron_status.is_problem">
-											<i class="fa fa-clock-o"></i>
+											<i class="far fa-clock"></i>
 											Your <a href="{{ ng_href('server.cron') }}">scheduled task</a> is not running or has crashed.
 											This means important routines like email processing and escalations are not running.
 										</p>
@@ -377,7 +377,7 @@
 											These errors will have prevented your users from receiving messages from the helpdesk (such as reply notifications).
 										</p>
 										<p ng-show="Home.apc_status.is_problem">
-											<i class="fa fa-hdd-o"></i>
+											<i class="far fa-hdd"></i>
 											APC is reporting cache misses {{ ng_var('Home.apc_status.perc_miss_str') }}% of the time.
 											<a href="https://support.deskpro.com/kb/articles/126" target="_blank">Read more about this error &rarr;</a>
 										</p>

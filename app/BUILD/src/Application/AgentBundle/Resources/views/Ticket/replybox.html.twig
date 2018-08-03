@@ -37,7 +37,7 @@
 					{% if item.type == 'item' %}
 						{% set macro = item.item %}
 						<li class="res-ticketmacro-{{ macro.id }}" data-type="macro:{{ macro.id }}" data-label="{{ phrase('agent.tickets.send_newticket_and_apply_x', {name: macro.title}) }}" data-get-macro-url="{{ path('agent_ticket_ajax_get_macro', {ticket_id: ticket.id | default(0), macro_id: macro.id, macro_reply_context: 1 }) }}">
-							<div class="on-icon"><i class="icon-ok"></i></div>
+							<div class="on-icon"><i class="fas fa-check"></i></div>
 							<span class="macro-title">{{ item.title }}</span>
 						</li>
 					{% else %}
@@ -71,7 +71,7 @@
                 {% for status in ['awaiting_user', 'awaiting_agent', 'resolved'] %}
                     {% if status == ticket.status or ticket_perms['modify_set_' ~ status] %}
                         <li data-type="{{ status }}" data-label="{{ phrase('agent.tickets.send_reply_as_x', {status: phrase('agent.tickets.status_' ~ status)}) }}">
-                            <div class="on-icon"><i class="icon-ok"></i></div>
+                            <div class="on-icon"><i class="fas fa-check"></i></div>
                             {{ phrase('agent.tickets.kbd_' ~ status) }}
                         </li>
                     {% endif %}
@@ -97,7 +97,7 @@
 				<div class="dp-not-loading">
 					<div class="dp-btn-group dp-dropdown">
 						<a class="dp-btn dp-btn-primary trans-trigger">
-							<i class="icon-globe"></i>&nbsp;
+							<i class="fas fa-globe-americas"></i>&nbsp;
 							{{ phrase('agent.tickets.translate_into') }}
 							<span class="translate-lang" data-locale="{{ ticket.language.locale|default(app.languages.getDefault().locale) }}">
 								{% if ticket.language %}{{ phrase_object(ticket.language) }}{% else %}{{ phrase_object(app.languages.getDefault()) }}{% endif %}
@@ -363,13 +363,13 @@
 				</div>
 				<div class="show-note" style="display: none">
 					<a class="dp-btn dp-btn-primary submit-trigger" style="position: relative; z-index: 50;">
-						<i class="icon-share"></i>&nbsp;
+						<i class="fas fa-share"></i>&nbsp;
 						{{ phrase('agent.tickets.add_note') }}
 					</a>
 				</div>
 				<div class="show-fwd" style="display: none">
 					<a class="dp-btn dp-btn-primary fwd-trigger" style="position: relative; z-index: 50;">
-						<i class="icon-share"></i>&nbsp;
+						<i class="fas fa-share"></i>&nbsp;
                         {{ phrase('agent.tickets.forward_message') }}
 					</a>
 				</div>
@@ -388,7 +388,7 @@
 							<label for="{{replyBaseId}}_agent_sel_check">{{ phrase('agent.general.agent') }}:&nbsp;</label>
 						</div>
 						<div class="inner-cell" style="position: relative;">
-							<span style="cursor: pointer;"><span id="{{ replyBaseId }}_agent_sel_text" style="padding-left: 17px; background-repeat: no-repeat; background-position: 0 50%;"></span> <i class="icon-sort-down" style="color: #888; position: relative; top: -2px;"></i></span>
+							<span style="cursor: pointer;"><span id="{{ replyBaseId }}_agent_sel_text" style="padding-left: 17px; background-repeat: no-repeat; background-position: 0 50%;"></span> <i class="fas fa-sort-down" style="color: #888; position: relative; top: -2px;"></i></span>
 							<select name="options[agent_id]" id="{{replyBaseId}}_agent_sel" class="dpe_select" data-style-type="icons" data-select-icon-size="22" style="min-width: 170px;" {% if app.getSetting('core_tickets.reassign_auto_change_status') %}data-auto-switch-status="awaiting_agent"{% endif %} data-invisible-trigger-right="1">
 								{% if ticket_perms.modify_assign_self %}
 									<option value="{{ app.user.id }}" data-icon="{{ app.user.getPictureUrl(15) }}" data-name-short="Me" selected>
@@ -423,7 +423,7 @@
 								<input type="checkbox" name="options[do_assign_team]" id="{{ replyBaseId }}_agent_team_sel_check" {% if app.getSetting(assign_opt) %}checked="checked"{% endif %} />
 								<label for="{{ replyBaseId }}_agent_team_sel_check">{{ phrase('agent.general.team') }}:&nbsp;</label>
 							</div><div class="inner-cell" style="position: relative;">
-								<span style="cursor: pointer;"><span id="{{ replyBaseId }}_agent_team_sel_text" ></span> <i class="icon-sort-down" style="color: #888; position: relative; top: -2px;"></i></span>
+								<span style="cursor: pointer;"><span id="{{ replyBaseId }}_agent_team_sel_text" ></span> <i class="fas fa-sort-down" style="color: #888; position: relative; top: -2px;"></i></span>
 								<select name="options[agent_team_id]" id="{{replyBaseId}}_agent_team_sel" class="dpe_select" data-select-nogrouptitle="1" style="min-width: 170px;" {% if app.getSetting('core_tickets.reassign_auto_change_status') %}data-auto-switch-status="awaiting_agent"{% endif %} data-invisible-trigger-right="1" data-style-type="icons" data-select-icon-size="22">
 									{% if app.user.getTeams()|length and (ticket_perms.modify_assign_self or (ticket.agent_team.id == team.id)) %}
 									<optgroup label="{% if app.user.getTeams()|length > 1 %}Your Teams{% else %}Your Team{% endif %}">
@@ -466,7 +466,7 @@
                     <div class="inner-cell" style="position: relative;">
                         <span style="cursor: pointer;">
                             <span id="{{ replyBaseId }}_jira_app_action_text" ></span>
-                            <i class="icon-sort-down" style="color: #888; position: relative; top: -2px;"></i>
+                            <i class="fas fa-sort-down" style="color: #888; position: relative; top: -2px;"></i>
                         </span>
                         <select name="options[jira_app_action]" id="{{replyBaseId}}_jira_app_action"
                                 class="dpe_select" data-select-nogrouptitle="1" style="min-width: 170px;"

@@ -1113,7 +1113,7 @@ DeskPRO.Agent.ElementHandler.TicketReplyBox = new Orb.Class({
           return;
         }
 
-        var li = $('<li><div class="on-icon"><i class="icon-okay"></i></div><span class="macro-title"></span></li>');
+        var li = $('<li><div class="on-icon"><i class="fas fa-check"></i></div><span class="macro-title"></span></li>');
         if (self.page) {
           li.data('get-macro-url', BASE_URL + 'agent/tickets/' + self.page.meta.ticket_id + '/ajax-get-macro?macro_id=' + info.id + '&macro_reply_context=1');
         }

@@ -2211,15 +2211,15 @@ $search-btn-height: $search-height - 24;
       &.unpadded {
         padding-right: 7px;
       }
-      .fa-comments-o {
+      .fa-comments {
         position: relative;
         top: -1px;
         @include margin-right(4px);
       }
-      .fa-thumbs-o-up {
+      .fa-thumbs-up {
         @include margin-right(4px);
       }
-      .fa-support {
+      .fa-life-ring {
         @include margin-right(4px);
       }
 
@@ -7987,7 +7987,7 @@ ul.big-button-collection {
     }
   }
 
-  .fa {
+  .fa, .far, .fas {
     font-size: 3em;
     color: $gray-light;
   }
@@ -8037,7 +8037,7 @@ ul.big-button-collection {
       width: auto;
       height: auto;
 
-      .fa {
+      .fa, .far, .fas {
         font-size: 1.20em;
         @include margin-right(5px);
         display: inline-block;
@@ -8083,7 +8083,7 @@ ul.big-button-collection {
       margin: 0;
       padding: 10px;
 
-      .title, .subtitle, .fa {
+      .title, .subtitle, .fa, .far, .fas {
         display: inline-block;
         margin: 0;
         padding: 0;
@@ -8091,7 +8091,7 @@ ul.big-button-collection {
         font-weight: normal;
       }
 
-      .fa {
+      .fa, .far, .fas {
         @include margin-right(2px);
         font-size: 1.5em;
       }
@@ -8224,7 +8224,7 @@ ul.big-button-collection {
     cursor: pointer;
     font-weight: bold;
 
-    .fa-navicon {
+    .fa-bars {
       position: relative;
       font-size: 1em;
       top: 1px;
@@ -8232,7 +8232,7 @@ ul.big-button-collection {
     }
 
     &:hover {
-      .fa-navicon {
+      .fa-bars {
         color: $text-color;
       }
     }

@@ -4,7 +4,7 @@
 	<section class="dp-paneblock dp-listpane">
 		<header>
 			<nav>
-				<span dp-ping-flash="run_orders" class="saved-ping"><i class="fa fa-check-square-o-square"></i> {{ phrase('agent.general.saved') }}</span>
+				<span dp-ping-flash="run_orders" class="saved-ping"><i class="far fa-check-square"></i> {{ phrase('agent.general.saved') }}</span>
 				{% include 'AdminInterfaceBundle:Layout:standard-settings-menu.html.twig' %}
 			</nav>
 			<h3 ng-pluralize count="List.webhooks.length" when="{{ ng_plural_phrase('adm.ticket_webhooks.count_webhooks') }}"></h3>

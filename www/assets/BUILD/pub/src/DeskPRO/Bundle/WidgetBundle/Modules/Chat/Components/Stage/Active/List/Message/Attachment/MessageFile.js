@@ -6,7 +6,6 @@ import { filenameMaxLength, getFileIcon } from 'DeskPRO/Component/Util/Filename'
 export class MessageFile extends React.Component {
 
   static propTypes = {
-    message:    PropTypes.object,
     attachment: PropTypes.object
   };
 
@@ -15,9 +14,9 @@ export class MessageFile extends React.Component {
 
     return (
       <div className="dpdesignportal-message-content-file-attachment">
-        <i className={classNames('fa', getFileIcon(attachment.get('content_type')))} />
+        <i className={classNames(getFileIcon(attachment.get('content_type')))} />
 
-        <a href={`${attachment.get('download_url')}?dl=1`} target="_blank">
+        <a href={`${attachment.get('download_url')}?dl=1`} target="_blank" rel="noopener noreferrer">
           {filenameMaxLength(attachment.get('filename'), 30)}
         </a>
 

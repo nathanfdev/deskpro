@@ -25,7 +25,7 @@
            {% if should_display_dropdown %}class="clickaway-dropdown" data-clickaway-target="top-contactus-dropdown"{% endif %}
         >
           <span class="button select-action {% if not should_display_dropdown %}unpadded{% endif %}" >
-            <i class="fa fa-support"></i>
+            <i class="far fa-life-ring"></i>
             {{ phrase('portal.general.nav-newticket') }}
             {% if should_display_dropdown %}
               <span class="select-action-dropdown">
@@ -52,7 +52,7 @@
               {% if can_use_feedback %}
               <li>
                 <a href={{ path('portal_feedback') }}>
-                  <i class="fa fa-thumbs-o-up"></i>
+                  <i class="far fa-thumbs-up"></i>
 
                   <h1>{{ phrase('portal.general.submit-feedback') }}</h1>
 
@@ -63,7 +63,7 @@
               {% if can_use_chat %}
               <li>
                 <a href="#" class="widget-button disabled">
-                  <i class="fa fa-comments-o"></i>
+                  <i class="far fa-comments"></i>
                   <h1>{{ phrase('portal.general.start-chat') }}</h1>
                 </a>
               </li>

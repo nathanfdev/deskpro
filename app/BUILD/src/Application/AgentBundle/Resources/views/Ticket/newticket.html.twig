@@ -249,7 +249,7 @@ pageMeta.defaultDepartments = {{ default_departments|json_encode|raw }};
 												data-agent-id="{{ a.person.id }}"><span class="text"
 																						style="background-image: url({{ a.person.getPictureUrl(15) }})">{{ a.person.display_name }}</span><span
 													class="remove-row-trigger"> <i
-														class="icon-remove"></i></span></a></li>
+														class="fas fa-times"></i></span></a></li>
                                 {% endfor %}
 							</ul>
 							<div class="new-follower" id="{{ baseId }}_followers_sel_wrap">
@@ -263,7 +263,7 @@ pageMeta.defaultDepartments = {{ default_departments|json_encode|raw }};
 								</select>
 							</div>
 							<a class="new-follower-btn" id="{{ baseId }}_add_follower_btn">
-								<i class="icon-signin"></i>
+								<i class="fas fa-sign-in-alt"></i>
                                 {{ phrase('agent.tickets.add_follower') }}
 							</a>
 						</div>
@@ -602,7 +602,7 @@ pageMeta.defaultDepartments = {{ default_departments|json_encode|raw }};
 					<div class="dp-btn-group dp-dropup" id="{{ baseId }}_reply_btn_group">
 						<span class="hide-note">
 							<a class="dp-btn dp-btn-primary submit-trigger">
-								<i class="icon-share-alt"></i>&nbsp;
+								<i class="fas fa-share"></i>&nbsp;
 								{% if app.getSetting('core_tickets.new_status') == 'awaiting_user' %}
 									<span id="{{ baseId }}_reply_as_type" data-type="awaiting_user">{{ phrase('agent.tickets.kbd_send_awaiting_user') }}</span>
 								{% elseif app.getSetting('core_tickets.new_status') == 'awaiting_agent' %}
@@ -616,7 +616,7 @@ pageMeta.defaultDepartments = {{ default_departments|json_encode|raw }};
 						</span>
 						<span class="hide-reply" style="display: none">
 							<a class="dp-btn dp-btn-primary submit-trigger" style="position: relative; z-index: 50;">
-								<i class="icon-share"></i>&nbsp;
+								<i class="fas fa-share-square"></i>&nbsp;
                                 {% if app.getSetting('core_tickets.new_status') == 'awaiting_user' %}
 									<span id="{{ baseId }}_note_as_type" data-type="awaiting_user">{{ phrase('agent.tickets.save_note_as', {'status': phrase('agent.tickets.status_awaiting_user')}) }}</span>
 									{% elseif app.getSetting('core_tickets.new_status') == 'awaiting_agent' %}
@@ -680,7 +680,7 @@ pageMeta.defaultDepartments = {{ default_departments|json_encode|raw }};
 							data-note-label="{{ phrase('agent.tickets.save_note_and_apply_x', {name: macro.title}) }}"
 							data-get-macro-url="{{ path('agent_ticket_ajax_get_macro', {ticket_id: '0', macro_id: macro.id, macro_reply_context: 1 }) }}"
 						>
-							<div class="on-icon"><i class="icon-ok"></i></div>
+							<div class="on-icon"><i class="fas fa-check"></i></div>
 							<span class="macro-title">{{ item.title }}</span>
 						</li>
 					{% else %}
@@ -717,7 +717,7 @@ pageMeta.defaultDepartments = {{ default_departments|json_encode|raw }};
 					data-label="{{ phrase('agent.tickets.send_reply_as_x', {status: phrase('agent.tickets.status_awaiting_user')}) }}"
 					data-note-label="{{ phrase('agent.tickets.save_note_as', {'status': phrase('agent.tickets.status_awaiting_user')}) }}"
 				>
-					<div class="on-icon"><i class="icon-ok"></i></div>
+					<div class="on-icon"><i class="fas fa-check"></i></div>
 					{{ phrase('agent.tickets.kbd_awaiting_user') }}
 				</li>
 				<li
@@ -725,7 +725,7 @@ pageMeta.defaultDepartments = {{ default_departments|json_encode|raw }};
 					data-label="{{ phrase('agent.tickets.send_reply_as_x', {status: phrase('agent.tickets.status_awaiting_agent')}) }}"
 					data-note-label="{{ phrase('agent.tickets.save_note_as', {'status': phrase('agent.tickets.status_awaiting_agent')}) }}"
 				>
-					<div class="on-icon"><i class="icon-ok"></i></div>
+					<div class="on-icon"><i class="fas fa-check"></i></div>
 					{{ phrase('agent.tickets.kbd_awaiting_agent') }}
 				</li>
 				<li
@@ -733,7 +733,7 @@ pageMeta.defaultDepartments = {{ default_departments|json_encode|raw }};
 					data-label="{{ phrase('agent.tickets.send_reply_as_x', {status: phrase('agent.tickets.status_resolved')}) }}"
 					data-note-label="{{ phrase('agent.tickets.save_note_as', {'status': phrase('agent.tickets.status_resolved')}) }}"
 				>
-					<div class="on-icon"><i class="icon-ok"></i></div>
+					<div class="on-icon"><i class="fas fa-check"></i></div>
 					{{ phrase('agent.tickets.kbd_resolved') }}
 				</li>
 			</ul>

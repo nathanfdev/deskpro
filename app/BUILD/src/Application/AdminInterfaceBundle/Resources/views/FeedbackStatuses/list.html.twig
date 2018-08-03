@@ -11,7 +11,7 @@
 	<section class="dp-paneblock dp-listpane">
 		<header>
 			<nav>
-				<span dp-ping-flash="display_orders_active" class="fa fa-check-square-o-square"></i> {{ phrase('agent.general.saved') }}</span>
+				<span dp-ping-flash="display_orders_active" class="far fa-check-square"></i> {{ phrase('agent.general.saved') }}</span>
 				{% include 'AdminInterfaceBundle:Layout:standard-settings-menu.html.twig' %}
 			</nav>
 			<h3 ng-pluralize count="FeedbackStatusesList.feedback_active_statuses.length || 0" when="{{ ng_plural_phrase('adm.general.x_feedback_active_statuses') }}"></h3>
@@ -34,7 +34,7 @@
 	<section class="dp-paneblock dp-listpane">
 		<header>
 			<nav>
-				<span dp-ping-flash="display_orders_closed" class="saved-ping"><i class="fa fa-check-square-o-square"></i> {{ phrase('agent.general.saved') }}</span>
+				<span dp-ping-flash="display_orders_closed" class="saved-ping"><i class="far fa-check-square"></i> {{ phrase('agent.general.saved') }}</span>
 			</nav>
 			<h3 ng-pluralize count="FeedbackStatusesList.feedback_closed_statuses.length || 0" when="{{ ng_plural_phrase('adm.general.x_feedback_closed_statuses') }}"></h3>
 		</header>

@@ -248,13 +248,13 @@
 
           <fieldset style="margin-bottom: 15px;">
             <p>
-              <i class="icon-envelope-alt"></i>
+              <i class="fas fa-envelope"></i>
               <input type="text" class="text" value="{{ failed_login_name }}" name="email" id="email" size="40"
                      placeholder="{{ phrase('agent.general.email') }}/{{ phrase('agent.general.username') }}"
                      tabindex="1" />
             </p>
             <p>
-              <i class="icon-lock"></i>
+              <i class="fas fa-lock"></i>
               <input type="password" autocomplete="off" class="text" value="" name="password" id="password" size="40"
                      tabindex="2" placeholder="{{ phrase('agent.general.password') }}" />
             </p>
@@ -390,7 +390,7 @@
           <fieldset>
             <p>{{ phrase('agent.login.reset-password-info') }}</p>
             <p id="lost_form">
-              <i class="icon-envelope-alt"></i>
+              <i class="fas fa-envelope"></i>
               {{ form_token('user_login') }}
               <input type="text" class="text" value="{{ render_forgot_pw ?: failed_login_name }}" name="email"
                      id="lost_email" size="40" placeholder="{{ phrase('agent.general.email') }}" tabindex="1" />

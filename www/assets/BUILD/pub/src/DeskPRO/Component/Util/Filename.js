@@ -17,18 +17,18 @@ export function getFileIcon(contentType) {
   switch (contentType) {
     case 'application/zip':
     case 'application/x-gzip':
-      return 'fa-file-zip-o';
+      return 'far fa-file-zip';
     case 'application/pdf':
-      return 'fa-file-pdf-o';
+      return 'far fa-file-pdf';
     case 'text/plain':
-      return 'fa-file-text-o';
+      return 'far fa-file-text';
     case 'text/x-php':
-      return 'fa-file-code-o';
+      return 'far fa-file-code';
     case 'application/msword':
-      return 'fa-file-word-o';
+      return 'far fa-file-word';
     case 'audio/mpeg':
-      return 'fa-file-audio-o';
+      return 'far fa-file-audio';
     default:
-      return 'fa-file-o';
+      return 'far fa-file';
   }
 }

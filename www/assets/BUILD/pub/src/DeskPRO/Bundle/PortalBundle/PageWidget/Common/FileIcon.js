@@ -7,6 +7,6 @@ export class FileIcon extends PageWidget {
     const contentType = this.$element.data('content-type');
     const iconClass = getFileIcon(contentType);
 
-    this.$element.prepend(`<span><i class="fa ${iconClass}"></i></span>`);
+    this.$element.prepend(`<span><i class="${iconClass}"></i></span>`);
   }
 }

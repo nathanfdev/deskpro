@@ -183,12 +183,12 @@ DeskPRO.Agent.PageFragment.Page.NewTicket = new Orb.Class({
 				widgetParent: $(this).parent().css('position', 'relative'),
 				widgetPositioning: { vertical: 'bottom' },
 				icons: {
-					time: 'fa fa-clock-o',
-					date: 'fa fa-calendar-o',
-					up: 'fa fa-chevron-up',
-					down: 'fa fa-chevron-down',
-					previous: 'fa fa-chevron-left',
-					next: 'fa fa-chevron-right'
+					time: 'far fa-clock',
+					date: 'far fa-calendar',
+					up: 'fas fa-chevron-up',
+					down: 'fas fa-chevron-down',
+					previous: 'fas fa-chevron-left',
+					next: 'fas fa-chevron-right'
 				}
 			});
       $(this).on('dp.change', function(){
@@ -516,7 +516,7 @@ DeskPRO.Agent.PageFragment.Page.NewTicket = new Orb.Class({
 					return;
 				}
 
-				var li = $('<li><div class="on-icon"><i class="icon-okay"></i></div><span class="macro-title"></span></li>');
+				var li = $('<li><div class="on-icon"><i class="fas fa-check"></i></div><span class="macro-title"></span></li>');
 				if (self.page) {
 					li.data('get-macro-url', BASE_URL + 'agent/tickets/' + self.page.meta.ticket_id + '/ajax-get-macro?macro_id=' + info.id + '&macro_reply_context=1');
 				}

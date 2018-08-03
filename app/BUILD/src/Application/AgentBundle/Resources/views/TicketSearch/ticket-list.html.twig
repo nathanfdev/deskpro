@@ -1,6 +1,6 @@
 <div class="list-pane-instance ng-hide" ng-show="true">
 	<div class="list-pane-header">
-		<h1><div><i class="icon-dp-ticket"></i> {{ ng_bind('ticketCount') }} {{ phrase('agent.general.tickets') }}</div></h1>
+		<h1><div><i class="fa fa-envelope"></i> {{ ng_bind('ticketCount') }} {{ phrase('agent.general.tickets') }}</div></h1>
 	</div>
 	<div class="list-pane-content list-pane-view with-header with-subheader with-footer" ng-class="{'with-alert-subheader': hasUnloadedUpdates}">
 		<header class="view-header">
@@ -33,7 +33,7 @@
 					<span class="status" ng-click="toggleRealtimeUpdates();">
 						<div ng-show="realtime">
 							<em>{{ phrase('agent.tickets.real_time_updates') }}</em>
-							<i class="icon-retweet"></i>
+							<i class="fas fa-retweet"></i>
 							<div dp-sticky-tip offset-top="25" right-align>
 								<article>
 									<div class="content-text">
@@ -44,7 +44,7 @@
 						</div>
 						<div ng-show="!realtime">
 							<em>{{ phrase('agent.tickets.real_time_updates_disabled') }}</em>
-							<i class="icon-retweet"></i>
+							<i class="fas fa-retweet"></i>
 							<div dp-sticky-tip offset-top="25" right-align>
 								<article>
 									<div class="content-text">
@@ -131,7 +131,7 @@
                 {% endif %}
                 <a ng-if="listType == 'table'" title="{{ phrase('agent.tickets.export_to_csv') }}" target="_blank" href="{{ refresh_url }}&view_type=csv&_rt={{ security_token('request_token', 10800) }}">
                     <button class="clean-white">
-                        <i class="fa fa-file-excel-o"></i>
+                        <i class="far fa-file-excel"></i>
                     </button>
                 </a>
 			</div>

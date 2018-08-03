@@ -10,7 +10,7 @@
 {% block modal_footer %}
 	<div ng-hide="is_loading">
 		<button class="btn btn-success" ng-click="dismiss()"><i class="fa fa-undo"></i> {{ phrase('agent.general.cancel') }}</button>
-		<button class="btn btn-danger" ng-click="doDelete()"><i class="fa fa-trash-o"></i> {{ phrase('agent.general.delete') }}</button>
+		<button class="btn btn-danger" ng-click="doDelete()"><i class="far fa-trash"></i> {{ phrase('agent.general.delete') }}</button>
 	</div>
 	<i class="spinner-flat" ng-show="is_loading"></i>
 {% endblock %}

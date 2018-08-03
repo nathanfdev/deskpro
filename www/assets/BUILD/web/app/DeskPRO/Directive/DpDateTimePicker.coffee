@@ -340,8 +340,8 @@ define ['angular', 'moment'], (angular, moment) ->
 								<tr>
 									<td ng-click="switchMode(mode < modes.day ? modes.day : modes.time)">
 										<a>
-											<span class="fa fa-clock-o" ng-if="mode >= modes.day"></span>
-											<span class="fa fa-calendar-o" ng-if="mode < modes.day"></span>
+											<span class="far fa-clock" ng-if="mode >= modes.day"></span>
+											<span class="far fa-calendar" ng-if="mode < modes.day"></span>
 										</a>
 									</td>
 								</tr>
