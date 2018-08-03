@@ -6,6 +6,9 @@
 
 namespace Orb\Data;
 
+/**
+ * Class Countries.
+ */
 class Countries
 {
     /**
@@ -254,6 +257,19 @@ class Countries
         'YU' => 'Yugoslavia',
         'ZM' => 'Zambia',
         'ZW' => 'Zimbabwe',
+        'AX' => 'Aland Islands',
+        'BL' => 'Saint Barthelemy (Saint-Barthelemy)',
+        'BQ' => 'Caribbean Netherlands',
+        'CW' => 'Curacao',
+        'GG' => 'Guernsey',
+        'IM' => 'Isle of Man',
+        'JE' => 'Jersey',
+        'ME' => 'Montenegro (Crna Gora)',
+        'MF' => 'Saint Martin',
+        'SS' => 'South Sudan',
+        'SX' => 'Sint Maarten',
+        'TL' => 'Timor-Leste',
+        'XK' => 'Timor-Leste',
     ];
 
     /**
@@ -1024,6 +1040,18 @@ class Countries
         ['country' => 'Zambia',                                          'country_code' => 'ZM',  'calling_code' => '260'],
         ['country' => 'Zanzibar',                                        'country_code' => null,  'calling_code' => '255'],
         ['country' => 'Zimbabwe',                                        'country_code' => 'ZW',  'calling_code' => '263'],
+        ['country' => 'Aland Islands',                                   'country_code' => 'AX',  'calling_code' => '358'],
+        ['country' => 'Saint Barthelemy (Saint-Barthelemy)',             'country_code' => 'BL',  'calling_code' => '590'],
+        ['country' => 'Caribbean Netherlands',                           'country_code' => 'BQ',  'calling_code' => '599'],
+        ['country' => 'Curacao',                                         'country_code' => 'CW',  'calling_code' => '599'],
+        ['country' => 'Guernsey',                                        'country_code' => 'GG',  'calling_code' => '44'],
+        ['country' => 'Isle of Man',                                     'country_code' => 'IM',  'calling_code' => '44'],
+        ['country' => 'Jersey',                                          'country_code' => 'JE',  'calling_code' => '44'],
+        ['country' => 'Montenegro (Crna Gora)',                          'country_code' => 'ME',  'calling_code' => '382'],
+        ['country' => 'Saint Martin',                                    'country_code' => 'MF',  'calling_code' => '590'],
+        ['country' => 'South Sudan',                                     'country_code' => 'SS',  'calling_code' => '211'],
+        ['country' => 'Sint Maarten',                                    'country_code' => 'SX',  'calling_code' => '1721'],
+        ['country' => 'Timor-Leste',                                     'country_code' => 'TL',  'calling_code' => '670'],
     ];
 
     protected static $us_states = [

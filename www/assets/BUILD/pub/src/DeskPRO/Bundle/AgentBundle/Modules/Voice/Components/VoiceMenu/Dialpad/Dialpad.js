@@ -8,6 +8,7 @@ import Immutable from 'immutable';
 import 'mark.js/dist/jquery.mark';
 import debounce from 'lodash/debounce';
 import classNames from 'classnames';
+import { storageAvailable } from 'DeskPRO/Component/Util/storageAvailable';
 import NumberSelect from '../NumberSelect';
 import DialGrid from '../../Common/DialGrid';
 
@@ -72,6 +73,7 @@ class Dialpad extends React.Component {
   onChange = (formData, changedFields) => {
     this.setState({ formData });
 
+    const $input = $(this.phoneInput.input);
     const { onSearchPerson } = this.props;
     const searchPeople = debounce(() => {
       const callTo = this.state.formData.value.call_to;
@@ -95,6 +97,64 @@ class Dialpad extends React.Component {
 
     if (changedFields.indexOf('call_to') !== -1) {
       searchPeople();
+    }
+
+    // if just 'call to' field was changed then
+    // try to set find appropriate 'call from' number
+    if (changedFields.indexOf('call_to') !== -1 && changedFields.indexOf('call_from') === -1) {
+      // update 'call from' field based on current country code
+      const countryCode = this.phoneInput.getCountryData().iso2;
+      const { numbers = Immutable.fromJS({}) } = this.props;
+
+      let selectedNumber;
+
+      numbers.forEach((number) => {
+        if (number.get('outbound_calls_default')
+          && number.get('outbound_calls_default_countries').contains(countryCode)
+        ) {
+          selectedNumber = number;
+        }
+      });
+
+      if (!selectedNumber) {
+        // try to get global outgoing number
+        numbers.forEach((number) => {
+          if (number.get('outbound_calls_default') && number.get('outbound_calls_default_global')) {
+            selectedNumber = number;
+          }
+        });
+      }
+
+      if (!selectedNumber) {
+        // try to get last selected number
+        if (storageAvailable('localStorage')) {
+          const storedNumberId = localStorage.getItem('dpAgent.voice.lastCallFrom');
+          if (storedNumberId) {
+            selectedNumber = numbers.get(parseInt(storedNumberId, 10));
+          }
+        }
+      }
+
+      if (selectedNumber) {
+        if (formData.value.call_from !== selectedNumber.get('id')) {
+          setTimeout(() => {
+            formData.value.call_from = selectedNumber.get('id');
+            this.setState({
+              formData: createValue({
+                value:     formData.value,
+                errorList: {},
+                onChange:  this.onChange
+              }),
+              searchResults: Immutable.fromJS([])
+            }, () => $input.focus());
+          }, 1);
+        }
+      }
+    } else if (changedFields.indexOf('call_from') !== -1) {
+      // 'call from' number was manually changed, store user's choice in local storage
+      if (storageAvailable('localStorage')) {
+        localStorage.setItem('dpAgent.voice.lastCallFrom', formData.value.call_from);
+      }
     }
   };
 
@@ -186,11 +246,11 @@ class Dialpad extends React.Component {
       <div className="dialpad">
         <Form formValue={formData} onSubmit={this.onSubmit}>
           <Fieldset>
-            <Field select="call_from" label="Call from">
-              <NumberSelect numbers={numbers} />
-            </Field>
             <Field select="call_to">
               <PhoneInput supportSip ref={(c) => { this.phoneInput = c; }} />
+            </Field>
+            <Field select="call_from" label="Call from">
+              <NumberSelect numbers={numbers} />
             </Field>
 
             {searchResults.size > 0 &&

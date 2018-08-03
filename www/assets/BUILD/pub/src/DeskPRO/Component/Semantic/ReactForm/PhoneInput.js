@@ -46,6 +46,10 @@ class PhoneInput extends React.Component {
     }
   }
 
+  getCountryData() {
+    return $(this.input).intlTelInput('getSelectedCountryData');
+  }
+
   initInput() {
     const { isSip } = this.state;
     const $input = $(this.input);
