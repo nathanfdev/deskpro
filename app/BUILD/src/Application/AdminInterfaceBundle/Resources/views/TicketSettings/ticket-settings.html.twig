@@ -631,6 +631,32 @@
 				</div>
 			</article>
 
+			{##################################################################################################}
+
+			<article class="form-horizontal dp-form">
+				<div class="panel panel-innertable">
+					<div class="panel-heading">
+						<h3>
+							<span>{{ phrase('adm.ticket_settings.attachment_auth_title') }}</span>
+							<button dp-inhelp-btn="admin.ticket_settings.attachment_auth"></button>
+						</h3>
+					</div>
+					<div class="panel-help" dp-inhelp-body="admin.ticket_settings.attachment_auth">
+						<p>{{ phrase('adm.ticket_settings.attachment_auth_help') }}</p>
+					</div>
+					<div class="form-group">
+						<div class="col-lg-12">
+							<div class="inner-group">
+								<label>
+									<input type="checkbox" ng-model="settings.attachment_require_auth" />
+									<h4>{{ phrase('adm.ticket_settings.attachment_auth_description') }}</h4>
+								</label>
+							</div>
+						</div>
+					</div>
+				</div>
+			</article>
+
 			<footer>
 				<div class="dp-content">
 					<div class="dp-btn-controls" ng-hide="form_props.$attempted && form_props.$invalid">

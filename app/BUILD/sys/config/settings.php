@@ -440,6 +440,7 @@ return [
 
     'core_tickets.web_require_validation'   => false,
     'core_tickets.email_require_validation' => false,
+    'core_tickets.attachment_require_auth'  => false,
     'core_tickets.enable_email_preview'     => true,
     'core_tickets.use_ref'                  => false,
 
