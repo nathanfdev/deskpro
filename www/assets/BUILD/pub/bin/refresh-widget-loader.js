@@ -41,18 +41,6 @@ function refreshWidgetLoader(loaderFilename) {
   }
 
   console.log(`... done writing ${loaderFilename}`);
-
-  // Refresh precompiled-fontawesome
-  console.log('Writing precompiled-fontawesome.css:');
-  const faInPath  = `${pubDir}/src/DeskPRO/Bundle/PortalBundle/Resources/style/precompiled-fontawesome.scss`;
-  const faOutPath = `${pubDir}/src/DeskPRO/Bundle/PortalBundle/Resources/style/precompiled-fontawesome.css`;
-  const faResult  = sass.renderSync({
-    file:         faInPath,
-    outFile:      faOutPath,
-    includePaths: [bowerDir, nodeModulesDir]
-  });
-  fs.writeFileSync(faOutPath, faResult.css);
-  console.log(`... done writing ${faOutPath}`);
 }
 
 const widgets = [
