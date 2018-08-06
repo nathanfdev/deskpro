@@ -1357,6 +1357,9 @@ class PersonController extends AbstractController
         if (!$personActivity) {
             throw new NotFoundHttpException(sprintf('There is no PersonActivity with ID #%s', $person_activity_id));
         }
+        if (!$personActivity->getPerson() || $personActivity->getPerson()->getId() !== $person->getId()) {
+            throw new NotFoundHttpException('PersonActivity doesn\'t belong to person');
+        }
 
         if (!$this->person->hasPerm('agent_people.merge') || !$this->isPersonEditable($person)) {
             return $this->createJsonResponse(['success' => false]);
@@ -1364,12 +1367,12 @@ class PersonController extends AbstractController
 
         $logEvent = new LogEvent(new UserMergeUndo($person, $personActivity), $this->person);
 
-        $mergeUdno = new PersonMergeUndo(
+        $mergeUndo = new PersonMergeUndo(
             $this->em,
             $this->container->getSystemService('person_merge_backup'),
             $this->container->getPersonActivityLogger()
         );
-        $otherPerson = $mergeUdno->undo($personActivity);
+        $otherPerson = $mergeUndo->undo($personActivity);
         $this->container->get('deskpro.logger.changelog')->info($logEvent);
 
         return $this->createJsonResponse([
