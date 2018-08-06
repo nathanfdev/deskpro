@@ -9,7 +9,6 @@ $portal-res-path: "#{$pub-path}/src/DeskPRO/Bundle/PortalBundle/Resources" !defa
 $portal-img-path: "#{$pub-path}/src/DeskPRO/Bundle/PortalBundle/Resources/img" !default;
 
 $modules-path: "../../../../../../../pub/node_modules" !default;
-$fa-font-path: "#{$modules-path}/font-awesome/fonts" !default;
 
 $form-widget-selector: 'input[type="text"], input[type="email"], input[type="[password"], textarea, .dp-choice-widget-group, .dp-medium-rte-wrapper' !default;
 $zindex-very-top: 7000 !default;

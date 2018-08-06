@@ -1,9 +1,7 @@
-$fa-font-path: "../../../../../../node_modules/font-awesome/fonts";
 $flag-icon-css-path: "../../../../../../node_modules/flag-icon-css/flags";
 $dp-styles-font-path: '../../../../../../node_modules/@deskpro/react-components/src/styles/fonts/';
 $font-family: 'Open Sans', Helvetica, Arial, sans-serif;
 
-@import '../../../../../../node_modules/font-awesome/scss/font-awesome';
 @import '../../../../../../node_modules/flag-icon-css/sass/flag-icon';
 @import "../../../../../../node_modules/react-select/scss/select";
 @import "../../../../../../node_modules/react-select/scss/components";
@@ -16,7 +14,6 @@ $font-family: 'Open Sans', Helvetica, Arial, sans-serif;
 @import 'dev';
 
 $dp-styles-font-path: '../../../../../../node_modules/@deskpro/react-components/src/styles/fonts/';
-$fa-font-path: "//netdna.bootstrapcdn.com/font-awesome/4.7.0/fonts" !default;
 @import "../../../../../../node_modules/@deskpro/react-components/src/styles/main";
 
 .two-panels-menu {

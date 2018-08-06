@@ -11,6 +11,7 @@ $modules-path: "../../../../../../../pub/node_modules";
 @import "misc/mixins";
 @import "./normalize.css";
 @import "../../../../../../node_modules/bourbon/app/assets/stylesheets/bourbon";
+@import "../../../../../../node_modules/@fortawesome/fontawesome-free/css/all.css";
 @import "../../../../../../node_modules/medium-editor/src/sass/medium-editor";
 @import "../../../../../../node_modules/medium-editor/src/sass/themes/beagle";
 
