@@ -9,7 +9,7 @@ export class AttachedFile extends React.Component {
     onRemove:   PropTypes.func
   };
 
-  onRemove = event => {
+  onRemove = (event) => {
     event.preventDefault();
 
     const { attachment, onRemove } = this.props;
@@ -22,7 +22,7 @@ export class AttachedFile extends React.Component {
     return (
       <div className="dpdesignportal-chat-form-attached-file">
         <div className="dpdesignportal-chat-form-attached-file-icon">
-          <i className="fa fa-file-pdf-o" />
+          <i className="far fa-file-pdf" />
         </div>
         <div className="attached-file-title">
           {filenameMaxLength(attachment.get('filename'), 30)} ({attachment.get('filesize_readable')})

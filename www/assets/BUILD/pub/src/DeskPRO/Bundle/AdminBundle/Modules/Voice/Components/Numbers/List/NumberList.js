@@ -60,7 +60,7 @@ class NumberRow extends React.Component {
           </div>
           <div className="column options-button">
             <a onClick={this.onToggleOptions}>
-              <i className="fa fa-gear" />
+              <i className="fas fa-cog" />
             </a>
           </div>
           <div style={{ clear: 'both' }} />

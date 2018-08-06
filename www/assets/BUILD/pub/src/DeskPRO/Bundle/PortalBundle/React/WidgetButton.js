@@ -60,7 +60,7 @@ export class WidgetButton extends React.Component {
     if (status.loaded && onlineAgents.size > 0) {
       return (
         <a href="#open" onClick={this.onOpenWidget} className={classNames({ disabled: !status.chatAvailable })}>
-          <i className="fa fa-comments-o" />
+          <i className="far fa-comments" />
           <h1>{portalPhrases.get('portal.general.start-chat')}</h1>
           <p>
             <span className="online-disc" />

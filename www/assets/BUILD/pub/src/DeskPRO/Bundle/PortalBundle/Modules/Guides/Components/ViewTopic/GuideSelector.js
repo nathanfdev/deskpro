@@ -34,7 +34,7 @@ class GuideSelector extends React.Component {
             <div>
               <a className="guide-pdf" href={activeGuide.guide_pdf} target="_blank" rel="noopener noreferrer">
                 <span>Download PDF</span>
-                <i className="fa fa-file-pdf-o" />
+                <i className="far fa-file-pdf" />
               </a>
             </div> :
             ''
@@ -53,7 +53,7 @@ class GuideSelector extends React.Component {
         { activeGuide.guide_pdf ?
           <a className="guide-pdf" href={activeGuide.guide_pdf} target="_blank" rel="noopener noreferrer">
             <span>Download PDF</span>
-            <i className="fa fa-file-pdf-o" />
+            <i className="far fa-file-pdf" />
           </a> :
           ''
         }

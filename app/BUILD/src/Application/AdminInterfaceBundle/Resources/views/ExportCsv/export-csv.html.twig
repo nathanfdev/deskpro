@@ -12,7 +12,7 @@
 			<div ng-if="status">
 				Status: {{ ng_var('status') }}
 				<span ng-if="offset">({{ ng_var('offset') }} entries exported)</span>
-				<i class="fa fa-refresh fa-spin" ng-if="'running' === status || 'queued' === status"></i>
+				<i class="fas fa-sync fa-spin" ng-if="'running' === status || 'queued' === status"></i>
 			</div>
 
 			<br /><br />

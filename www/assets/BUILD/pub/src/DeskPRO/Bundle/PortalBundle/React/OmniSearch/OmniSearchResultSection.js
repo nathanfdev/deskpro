@@ -170,7 +170,7 @@ export class OmniSearchResultSection extends React.Component {
       t = (
         <span>
           <span className="date-mark">
-            <i className="fa fa-calendar-o" />
+            <i className="far fa-calendar-alt" />
             <TimeAgo
               className="dpdesignportal-event-time"
               formatter={timeAgoFormatter}

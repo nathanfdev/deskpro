@@ -179,7 +179,7 @@
 							<td>
 								<span class="dp_hostname_val">{{ message.hostname|default('Unknown') }}</span>
 								{% if app.getSetting('rdns_ticket_messages') and message.ip_address %}
-									<i class="fa fa-refresh dp_hostname_reload" data-ip="{{ message.ip_address }}" style="margin-left: 5px; cursor: pointer; color: #aaa;" title="Refresh"></i>
+									<i class="fas fa-sync dp_hostname_reload" data-ip="{{ message.ip_address }}" style="margin-left: 5px; cursor: pointer; color: #aaa;" title="Refresh"></i>
 								{% endif %}
 							</td>
 						</tr>

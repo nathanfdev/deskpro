@@ -32,7 +32,7 @@
             {% if can_use_tickets() and ticket_results %}
                 <div class="search-result-category-wrapper" id="ticket_results">
                   <div class="deskpro-search-results">
-                    <div class="search-result-category"><hr><i class="fa fa-list-alt"></i><span class="title">{{ phrase('portal.tickets.search-title') }} <span class="count">({{ ticket_info.total_results }})</span></span></div>
+                    <div class="search-result-category"><hr><i class="far fa-list-alt"></i><span class="title">{{ phrase('portal.tickets.search-title') }} <span class="count">({{ ticket_info.total_results }})</span></span></div>
                     <ul class="dpx-dynamic-search-results" data-type="ticket" data-next="{{ ticket_info.next ? 1 : 0 }}">
                         {% for result_set in ticket_results %}
                             {{ search_macros.search_result(result_set) }}
@@ -50,7 +50,7 @@
             {% if can_use_articles() and article_results %}
                 <div class="search-result-category-wrapper" id="article_results">
                   <div class="deskpro-search-results">
-                    <div class="search-result-category"><hr><i class="fa fa-list-alt"></i><span class="title">{{ phrase('portal.articles.search-title') }} <span class="count">({{ article_info['total_results'] }})</span></span></div>
+                    <div class="search-result-category"><hr><i class="far fa-list-alt"></i><span class="title">{{ phrase('portal.articles.search-title') }} <span class="count">({{ article_info['total_results'] }})</span></span></div>
                     <ul class="dpx-dynamic-search-results" data-type="article" data-next="{{ article_info.next ? 1 : 0 }}">
                         {% for result_set in article_results %}
                             {{ search_macros.search_result(result_set) }}
@@ -68,7 +68,7 @@
             {% if can_use_news() and news_results %}
                 <div class="search-result-category-wrapper" id="news_results">
                   <div class="deskpro-search-results">
-                    <div class="search-result-category"><hr><i class="fa fa-calendar-o"></i><span class="title">{{ phrase('portal.news.search-title') }} <span class="count">({{ news_info['total_results'] }})</span></span></div>
+                    <div class="search-result-category"><hr><i class="far fa-calendar"></i><span class="title">{{ phrase('portal.news.search-title') }} <span class="count">({{ news_info['total_results'] }})</span></span></div>
                     <ul class="dpx-dynamic-search-results" data-type="news" data-next="{{ news_info.next ? 1 : 0 }}">
                         {% for result_set in news_results %}
                             {{ search_macros.search_result(result_set) }}
@@ -86,7 +86,7 @@
             {% if can_use_feedback() and feedback_results %}
                 <div class="search-result-category-wrapper" id="feedback_results">
                   <div class="deskpro-search-results">
-                    <div class="search-result-category"><hr><i class="fa fa-thumbs-o-up"></i><span class="title">{{ phrase('portal.feedback.search-title') }} <span class="count">({{ feedback_info['total_results'] }})</span></span></div>
+                    <div class="search-result-category"><hr><i class="far fa-thumbs-up"></i><span class="title">{{ phrase('portal.feedback.search-title') }} <span class="count">({{ feedback_info['total_results'] }})</span></span></div>
                     <ul class="dpx-dynamic-search-results" data-type="feedback" data-next="{{ feedback_info.next ? 1 : 0 }}">
                         {% for result_set in feedback_results %}
                             {{ search_macros.search_result(result_set) }}

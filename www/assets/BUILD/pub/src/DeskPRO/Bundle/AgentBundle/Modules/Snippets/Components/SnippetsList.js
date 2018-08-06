@@ -41,7 +41,7 @@ export class SnippetsListElement extends React.PureComponent {
   getDraft() {
     const { snippet } = this.props;
     if (snippet.get('is_draft')) {
-      return <span className="draft"><i className="fa fa-file-o" /><FormattedMessage id="agent.general.draft" /></span>;
+      return <span className="draft"><i className="far fa-file" /><FormattedMessage id="agent.general.draft" /></span>;
     }
     return null;
   }
@@ -223,7 +223,7 @@ export class SnippetsListElement extends React.PureComponent {
         </div>
         { window.DESKPRO_PERSON_PERMS['agent_snippets.edit_by_others'] || snippet.get('person') === me.get('id') ?
           <div onClick={() => editSnippet(snippet, langId)} className="edit-snippet">
-            <i className="fa fa-pencil" />
+            <i className="fas fa-pencil-alt" />
           </div>
         : null}
       </div>

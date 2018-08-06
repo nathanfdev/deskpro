@@ -21,7 +21,7 @@ export function getFileIcon(contentType) {
     case 'application/pdf':
       return 'far fa-file-pdf';
     case 'text/plain':
-      return 'far fa-file-text';
+      return 'far fa-file-alt';
     case 'text/x-php':
       return 'far fa-file-code';
     case 'application/msword':

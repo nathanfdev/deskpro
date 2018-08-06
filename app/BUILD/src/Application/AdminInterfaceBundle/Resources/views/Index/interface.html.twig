@@ -116,8 +116,8 @@
                 {{ nav.list_item_group_end() }}
                 {{ nav.list_item_group(phrase('adm.general.apps_tickets'), 'fa-envelope', '', 'tickets') }}
                     {% if app.getSetting('experimental_admin_features') %}
-                        {{ nav.list_subitem('SMS triggers', ng_href('tickets.channel_sms'), 'tickets.channel_sms', 'fa-group') }}
-                        {{ nav.list_subitem('Facebook triggers', ng_href('tickets.channel_facebook'), 'tickets.channel_facebook', 'fa-group') }}
+                        {{ nav.list_subitem('SMS triggers', ng_href('tickets.channel_sms'), 'tickets.channel_sms', 'fa-users') }}
+                        {{ nav.list_subitem('Facebook triggers', ng_href('tickets.channel_facebook'), 'tickets.channel_facebook', 'fa-users') }}
                     {% endif %}
 
                     {{ nav.list_subitem('Departments', ng_href('tickets.ticket_deps'), 'tickets.ticket_deps', 'fa-briefcase') }}
@@ -127,8 +127,8 @@
                     {{ nav.list_subitem('Fields', ng_href('tickets.fields'), 'tickets.fields', 'fa-terminal') }}
 
                     {{ nav.list_subitem('New Ticket triggers', ng_href('tickets.triggers', {type: "newticket"}), 'type:tickets.triggers.newticket', 'fa-user') }}
-                    {{ nav.list_subitem('New Reply triggers', ng_href('tickets.triggers', {type: "newreply"}), 'type:tickets.triggers.newreply', 'fa-group') }}
-                    {{ nav.list_subitem('Ticket Update triggers', ng_href('tickets.triggers', {type: "update"}), 'type:tickets.triggers.update', 'fa-group') }}
+                    {{ nav.list_subitem('New Reply triggers', ng_href('tickets.triggers', {type: "newreply"}), 'type:tickets.triggers.newreply', 'fa-users') }}
+                    {{ nav.list_subitem('Ticket Update triggers', ng_href('tickets.triggers', {type: "update"}), 'type:tickets.triggers.update', 'fa-users') }}
 
                     {{ nav.list_subitem('Webhooks', ng_href('tickets.webhooks', {type: "list"}), 'type:tickets.webhooks.list', 'fa-cloud') }}
 
@@ -138,12 +138,12 @@
                     {{ nav.list_subitem('Escalations', ng_href('tickets.ticket_escalations'), 'tickets.ticket_escalations', 'fa-bolt') }}
                     {{ nav.list_subitem('SLAs', ng_href('tickets.slas'), 'tickets.slas', 'far fa-clock') }}
                     {{ nav.list_subitem('Labels', ng_href('tickets.labels'), 'tickets.labels', 'fa-tags') }}
-                    {{ nav.list_subitem('Round Robin', ng_href('tickets.roundrobin'), 'tickets.roundrobin', 'fa-refresh') }}
+                    {{ nav.list_subitem('Round Robin', ng_href('tickets.roundrobin'), 'tickets.roundrobin', 'fa-sync') }}
 
                     {{ nav.list_subitem('Time Log & Billing Settings', ng_href('tickets.timelog_billing_settings'), 'tickets.timelog_billing_settings', 'fa-cog') }}
                     {{ nav.list_subitem('Time Log & Billing Fields', ng_href('tickets.timelog_billing_fields'), 'tickets.timelog_billing_fields', 'fa-terminal') }}
 
-                    {{ nav.list_subitem('Forward Settings', ng_href('tickets.fwd_settings'), 'tickets.fwd_settings', 'fa-mail-forward') }}
+                    {{ nav.list_subitem('Forward Settings', ng_href('tickets.fwd_settings'), 'tickets.fwd_settings', 'fa-share') }}
                     {{ nav.list_subitem(phrase('adm.problems.title'), ng_href('tickets.problems'), 'tickets.problems', 'fa-bullhorn') }}
                     {{ nav.list_subitem('Settings', ng_href('tickets.settings'), 'tickets.settings', 'fa-cog') }}
                 {{ nav.list_item_group_end() }}
@@ -154,20 +154,20 @@
                         {{ nav.list_subitem('Email triggers', ng_href('emails.ticket_accounts'), 'emails.ticket_accounts', 'far fa-envelope') }}
                     {% endif %}
                     {% if app.hasBeta('email_templates') %}
-                        {{ nav.list_subitem('Templates Editor', ng_href('emails.templates_editor'), 'emails.templates_editor', 'fa-file-text') }}
-                        {{ nav.list_subitem('Email Templates (legacy)', ng_href('emails.email_templates_legacy'), 'emails.email_templates_legacy', 'fa-file-text') }}
+                        {{ nav.list_subitem('Templates Editor', ng_href('emails.templates_editor'), 'emails.templates_editor', 'fa-file-alt') }}
+                        {{ nav.list_subitem('Email Templates (legacy)', ng_href('emails.email_templates_legacy'), 'emails.email_templates_legacy', 'fa-file-alt') }}
                     {%  else %}
-                        {{ nav.list_subitem('Email Templates', ng_href('emails.email_templates'), 'emails.email_templates', 'fa-file-text') }}
+                        {{ nav.list_subitem('Email Templates', ng_href('emails.email_templates'), 'emails.email_templates', 'fa-file-alt') }}
                     {%  endif %}
                 {{ nav.list_item_group_end() }}
                 {{ nav.list_item_group(phrase('adm.general.apps_crm'), 'fa-users', '', 'crm') }}
                     {{ nav.list_subitem('Auth & SSO', ng_href('crm.usersources'), 'crm.usersources', 'fa-key') }}
-                    {{ nav.list_subitem('User Groups', ng_href('crm.groups'), 'crm.groups', 'fa-group') }}
+                    {{ nav.list_subitem('User Groups', ng_href('crm.groups'), 'crm.groups', 'fa-users') }}
                     {{ nav.list_subitem('Users Fields', ng_href('crm.user_fields'), 'crm.user_fields', 'fa-user') }}
-                    {{ nav.list_subitem('Organizations Fields', ng_href('crm.org_fields'), 'crm.org_fields', 'fa-group') }}
+                    {{ nav.list_subitem('Organizations Fields', ng_href('crm.org_fields'), 'crm.org_fields', 'fa-users') }}
                     {{ nav.list_subitem('Rules', ng_href('crm.rules'), 'crm.rules', 'fa-tasks') }}
                     {{ nav.list_subitem('Users Labels', ng_href('crm.user_labels'), 'crm.user_labels', 'fa-user') }}
-                    {{ nav.list_subitem('Organizations Labels', ng_href('crm.org_labels'), 'crm.org_labels', 'fa-group') }}
+                    {{ nav.list_subitem('Organizations Labels', ng_href('crm.org_labels'), 'crm.org_labels', 'fa-users') }}
                     {{ nav.list_subitem('Banning', ng_href('crm.banning'), 'crm.banning', 'fa-ban') }}
                     {{ nav.list_subitem('CSV Import', ng_href('crm.import'), 'crm.import', 'fa-upload') }}
                 {{ nav.list_item_group_end() }}
@@ -202,7 +202,7 @@
                     {{ nav.list_subitem('Chat Departments', ng_href('chat.chat_deps'), 'chat.chat_deps', 'fa-briefcase') }}
                     {{ nav.list_subitem('Fields', ng_href('chat.fields'), 'chat.fields', 'fa-terminal') }}
                     {{ nav.list_subitem('Labels', ng_href('chat.labels'), 'chat.labels', 'fa-tags') }}
-                    {{ nav.list_subitem('Round Robin', ng_href('chat.roundrobin'), 'chat.roundrobin', 'fa-refresh') }}
+                    {{ nav.list_subitem('Round Robin', ng_href('chat.roundrobin'), 'chat.roundrobin', 'fa-sync') }}
                     {{ nav.list_subitem('Site Widget & Chat', ng_href('portal.widget_editor', '{brandId: brandId}'), 'portal.widget_editor_link', 'fa-puzzle-piece') }}
                 {{ nav.list_item_group_end() }}
                 {% if app.hasVoice() %}
@@ -252,7 +252,7 @@
 
                 {% if app.user.can_billing %}
                     <div class="show-in-bare-page">
-                        {{ nav.list_item('Licensing and Billing', ng_href('license'), 'license', 'fa-dollar') }}
+                        {{ nav.list_item('Licensing and Billing', ng_href('license'), 'license', 'fa-dollar-sign') }}
                     </div>
                 {% endif %}
 

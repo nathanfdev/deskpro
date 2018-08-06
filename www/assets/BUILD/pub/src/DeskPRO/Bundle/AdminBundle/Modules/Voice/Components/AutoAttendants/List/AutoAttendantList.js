@@ -118,7 +118,7 @@ class AutoAttendantRow extends React.Component {
 
           <div className="column options-button">
             <a onClick={this.onEdit}>
-              <i className="fa fa-gear" />
+              <i className="fas fa-cog" />
             </a>
           </div>
           {autoAttendant.get('audio_asset') &&

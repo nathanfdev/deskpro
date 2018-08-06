@@ -31,7 +31,7 @@
             img.src = '{{ captcha_code }}?n=' + (new Date()).getTime();
           }
         </script>
-        <a class="captcha_reload" href="javascript:reload_{{ image_id }}();"><i class="fa fa-refresh"
+        <a class="captcha_reload" href="javascript:reload_{{ image_id }}();"><i class="fas fa-sync"
                                                                                 aria-hidden="true"></i></a>
       {% endif %}
       {{ form_widget(form, { attr: { class: 'shorter' } } ) }}

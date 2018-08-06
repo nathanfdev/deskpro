@@ -54,7 +54,7 @@ class ListItem extends React.Component {
             groupParams={groupParams}
             report={report}
           />
-          <span onClick={this.onEditClick} className="controls"><i className="fa fa-pencil" /></span>
+          <span onClick={this.onEditClick} className="controls"><i className="fas fa-pencil-alt" /></span>
         </h1>
         { report.get('labels').size > 0 || !report.get('is_custom') ?
           <p>

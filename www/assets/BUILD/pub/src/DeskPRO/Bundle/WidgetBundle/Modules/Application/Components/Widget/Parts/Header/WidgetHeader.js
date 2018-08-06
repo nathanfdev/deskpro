@@ -16,12 +16,12 @@ export class WidgetHeader extends React.Component {
     chatEnded:   PropTypes.bool
   };
 
-  onOpenMenu = event => {
+  onOpenMenu = (event) => {
     event.preventDefault();
     this.props.onOpenMenu();
   };
 
-  onClose = event => {
+  onClose = (event) => {
     event.preventDefault();
     this.props.onClose();
   };
@@ -40,7 +40,7 @@ export class WidgetHeader extends React.Component {
       <div className="dpdesignportal-header">
         {false /* disabled for now */ &&
           <a href="#" className="dpdesignportal-header-controls left" onClick={this.onOpenMenu}>
-            <i className="fa fa-navicon" />
+            <i className="fas fa-bars" />
           </a>
         }
 

@@ -23,7 +23,7 @@ class VariableValue extends React.Component {
     return (
       <div className="Select-value">
         <span className="Select-value-label">
-          <i className="fa fa-dollar" />&nbsp;
+          <i className="fas fa-dollar-sign" />&nbsp;
           <FormattedMessage id="agent.snippets.variables" />
         </span>
       </div>

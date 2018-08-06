@@ -100,25 +100,25 @@ class UsersourcesHelper
         $type = strtolower($us->getTypeName());
 
         $info = [
-            'icon'        => null, // a css string to use in an <i> element for font awesome icon (example: "fa fa-facebook").
+            'icon'        => null, // a css string to use in an <i> element for font awesome icon (example: "fab fa-facebook-f").
             'text'        => '', // the full text that appears on the login button
             'css_classes' => ['button', 'auth'], // the deskpro css classes that should apply to the login button
         ];
 
         if ('facebook' === $type) {
-            $info['icon']          = 'fa fa-facebook';
+            $info['icon']          = 'fab fa-facebook-f';
             $info['css_classes'][] = 'auth-facebook';
             $info['text']          = $this->usersourceBtnPhrase('Facebook');
         } elseif ('googleplus' === $type) {
-            $info['icon']          = 'fa fa-google-plus';
+            $info['icon']          = 'fab fa-google-plus-g';
             $info['css_classes'][] = 'auth-google';
             $info['text']          = $this->usersourceBtnPhrase('Google Plus');
         } elseif ('google' === $type) {
-            $info['icon']          = 'fa fa-google';
+            $info['icon']          = 'fab fa-google';
             $info['css_classes'][] = 'auth-google';
             $info['text']          = $this->usersourceBtnPhrase('Google');
         } elseif ('twitter' === $type) {
-            $info['icon']          = 'fa fa-twitter';
+            $info['icon']          = 'fab fa-twitter';
             $info['css_classes'][] = 'auth-twitter';
             $info['text']          = $this->usersourceBtnPhrase('Twitter');
         } else {

@@ -19,7 +19,7 @@
             </a>
           {%  endif %}
           <a href="{{ path('portal_articles_pdf', {slug: article.slug}) }}">
-            <span>{{ phrase('portal.general.btn-download-pdf') }}</span> <i class="fa fa-file-pdf-o"></i>
+            <span>{{ phrase('portal.general.btn-download-pdf') }}</span> <i class="far fa-file-pdf"></i>
           </a>
         </div>
       </div>
@@ -33,7 +33,7 @@
         {{ article.date_updated | date('Y-m-d') }}
         <hr>
         {% if brand_setting('user.publish_comments') %}
-          <span class="comments"><i class="fa fa-comments-o"></i> <a href="#comments">{{ phrase('portal.general.comments-count', {count: article.calc_num_comments}) }}</a></span>
+          <span class="comments"><i class="far fa-comments"></i> <a href="#comments">{{ phrase('portal.general.comments-count', {count: article.calc_num_comments}) }}</a></span>
           <hr>
         {% endif %}
         {% if article.primary_category %}

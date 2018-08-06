@@ -8,7 +8,7 @@ export class Card extends Component {
 
   static propTypes = {
     additionalClasses: PropTypes.string,
-    children:          PropTypes.any,
+    children:          PropTypes.node,
     minimized:         PropTypes.bool,
     moving:            PropTypes.bool,
     type:              PropTypes.string.isRequired,
@@ -39,7 +39,7 @@ export class Card extends Component {
 export class CardLine extends Component {
 
   static propTypes = {
-    children: PropTypes.any
+    children: PropTypes.node
   };
 
   render() {
@@ -54,7 +54,7 @@ export class CardLine extends Component {
 export class CardLineLeft extends Component {
 
   static propTypes = {
-    children: PropTypes.any
+    children: PropTypes.node
   };
 
   render() {
@@ -69,7 +69,7 @@ export class CardLineLeft extends Component {
 export class CardLineRight extends Component {
 
   static propTypes = {
-    children: PropTypes.any
+    children: PropTypes.node
   };
 
   render() {
@@ -84,7 +84,7 @@ export class CardLineRight extends Component {
 export class CardLineFull extends Component {
 
   static propTypes = {
-    children: PropTypes.any
+    children: PropTypes.node
   };
 
   render() {
@@ -99,7 +99,7 @@ export class CardLineFull extends Component {
 export class CardContentText extends Component {
 
   static propTypes = {
-    children: PropTypes.any
+    children: PropTypes.node
   };
 
   render() {
@@ -116,7 +116,7 @@ export class CardLineItem extends Component {
   static propTypes = {
     clickParams: PropTypes.object,
     onClick:     PropTypes.func,
-    children:    PropTypes.any,
+    children:    PropTypes.node,
     icon:        PropTypes.string
   };
 
@@ -137,7 +137,7 @@ export class CardLineItem extends Component {
 
     return (
       <span className="dpwd--card-line-item" onClick={this.handleClick}>
-         {icon ? <i className={classes} /> : ''} {this.props.children}
+        {icon ? <i className={classes} /> : ''} {this.props.children}
       </span>
     );
   }
@@ -191,7 +191,7 @@ export class CardReset extends Component {
 
     return (
       <div className="dpm--card-reset" onClick={this.onReset}>
-        <i className={classNames('fa fa-trash', { active: changed })} />
+        <i className={classNames('fa fa-trash-alt', { active: changed })} />
       </div>
     );
   }
@@ -217,7 +217,7 @@ export class CardStatusBar extends Component {
                                { 'dpw--status-bar-left': align === 'left', 'dpw--status-bar-right': align === 'right' }
     );
 
-    return <div className={classes}></div>;
+    return <div className={classes} />;
   }
 }
 
@@ -304,7 +304,7 @@ export class CardComments extends Component {
 
     return (
       <CardLineItem>
-        {commentsCounter} <i className="fa fa-comments-o" />
+        {commentsCounter} <i className="far fa-comments" />
       </CardLineItem>
     );
   }

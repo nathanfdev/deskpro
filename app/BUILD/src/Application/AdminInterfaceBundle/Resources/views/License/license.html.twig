@@ -56,13 +56,13 @@
 										<div ng-if="!Ctrl.license.isExpired">
 											Your demo period expires in {{ ng_var('Ctrl.license.expireDays') }} days.
 											<div style="padding-top: 3px;">
-												<a target="_blank" class="btn btn-primary" href="https://www.deskpro.com/pricing/?download"><i class="fa fa-dollar"></i> Purchase your License Now</a>
+												<a target="_blank" class="btn btn-primary" href="https://www.deskpro.com/pricing/?download"><i class="fa fa-dollar-sign"></i> Purchase your License Now</a>
 											</div>
 										</div>
 										<div ng-if="Ctrl.license.isExpired">
 											Your demo period expired on {{ ng_var('Ctrl.license.expireDate') }}.
 											<div style="padding-top: 3px;">
-												<a target="_blank" class="btn btn-primary" href="https://www.deskpro.com/pricing/?download"><i class="fa fa-dollar"></i> Purchase your License Now</a>
+												<a target="_blank" class="btn btn-primary" href="https://www.deskpro.com/pricing/?download"><i class="fa fa-dollar-sign"></i> Purchase your License Now</a>
 											</div>
 										</div>
 									</div>
@@ -94,20 +94,20 @@
 											<div ng-if="Ctrl.license.expireDays && Ctrl.license.expireDays < 30">
 												Your license expires in {{ ng_var('Ctrl.license.expireDays') }} days on {{ ng_var('Ctrl.license.expireDate') }}.
 												<div style="padding-top: 3px;">
-													<button class="btn btn-default" type="button" ng-click="Ctrl.openRenewLicense()"><i class="fa fa-calendar"></i> Extend your license</button>
+													<button class="btn btn-default" type="button" ng-click="Ctrl.openRenewLicense()"><i class="fa fa-calendar-alt"></i> Extend your license</button>
 												</div>
 											</div>
 											<div ng-if="!Ctrl.license.expireDays || Ctrl.license.expireDays >= 30">
 												Your license expires on {{ ng_var('Ctrl.license.expireDate') }}.
 												<div style="padding-top: 3px;">
-													<button class="btn btn-default" type="button" ng-click="Ctrl.openRenewLicense()"><i class="fa fa-calendar"></i> Extend your license</button>
+													<button class="btn btn-default" type="button" ng-click="Ctrl.openRenewLicense()"><i class="fa fa-calendar-alt"></i> Extend your license</button>
 												</div>
 											</div>
 										</div>
 										<div ng-if="Ctrl.license.isExpired">
 											Your license period expired on {{ ng_var('Ctrl.license.expireDate') }}.
 											&nbsp;&nbsp;&nbsp;
-											<button class="btn btn-warning" type="button" ng-click="Ctrl.openRenewLicense()"><i class="fa fa-calendar"></i> Renew your license now</button>
+											<button class="btn btn-warning" type="button" ng-click="Ctrl.openRenewLicense()"><i class="fa fa-calendar-alt"></i> Renew your license now</button>
 										</div>
 									</div>
 								</div>

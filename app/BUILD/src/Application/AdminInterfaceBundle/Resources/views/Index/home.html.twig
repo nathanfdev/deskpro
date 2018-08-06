@@ -219,7 +219,7 @@
                             </p>
                             <div class="status-content" ng-if="Home.latest_version_status == 'okay' && Home.latest_version.count_behind > 0">
                                 <header>
-                                    <div class="icon bad"><i class="fa fa-warning"></i></div>
+                                    <div class="icon bad"><i class="fas fa-exclamation-triangle"></i></div>
                                     <strong>
                                         The latest version is {{ ng_var('Home.latest_version.build_name') }}.
                                         Your version is <a href="http://support.deskpro.com/news/1" target="_blank">{{ ng_var('Home.latest_version.days_old') }} day(s) old</a>.<br/>
@@ -348,7 +348,7 @@
 								</div>
 								<div class="status-content" ng-show="Home.is_server_problem">
 									<header>
-										<div class="icon bad"><i class="fa fa-warning"></i></div>
+										<div class="icon bad"><i class="fas fa-exclamation-triangle"></i></div>
 										<strong>We have detected problems you should look into</strong>
 									</header>
 									<article>
@@ -358,11 +358,11 @@
 											This means important routines like email processing and escalations are not running.
 										</p>
 										<p ng-show="Home.error_status.error_count > 0">
-											<i class="fa fa-warning"></i>
+											<i class="fas fa-exclamation-triangle"></i>
 											There are <a href="{{ ng_href('server.error_logs') }}">{{ ng_var('Home.error_status.error_count') }} system errors</a> in the error log.
 										</p>
 										<p ng-show="Home.error_status.error_log_size">
-											<i class="fa fa-warning"></i>
+											<i class="fas fa-exclamation-triangle"></i>
 											Your <a href="{{ ng_href('server.error_logs') }}">error log</a> has reached {{ ng_var('Home.error_status.error_log_max_size | filesize_display') }} in size,
 											error logging has been disabled to conserve disk space. <a href="#" ng-click="Home.deleteLogFile();$event.preventDefault();">Delete log file.</a>
 										</p>
@@ -401,7 +401,7 @@
 								</div>
 								<div class="status-content" ng-show="!(Home.error_status.gateway_error_count == 0 && Home.error_status.sendmail_error_count == 0)">
 									<header>
-										<div class="icon bad"><i class="fa fa-warning"></i></div>
+										<div class="icon bad"><i class="fas fa-exclamation-triangle"></i></div>
 										<strong>We have detected problems you should look into</strong>
 									</header>
 									<article>

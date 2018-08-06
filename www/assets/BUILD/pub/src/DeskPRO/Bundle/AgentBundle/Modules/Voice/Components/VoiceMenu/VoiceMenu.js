@@ -125,7 +125,7 @@ class VoiceMenu extends React.Component {
           <TabButton
             tabName="settings"
             title="Settings"
-            iconClass="fa-gear"
+            iconClass="fa-cog"
             onClick={this.onChangeTab}
             active={tabName === 'settings'}
           />}

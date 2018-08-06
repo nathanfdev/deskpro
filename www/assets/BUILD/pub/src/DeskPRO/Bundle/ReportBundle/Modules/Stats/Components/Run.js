@@ -209,7 +209,7 @@ class Run extends React.Component {
 
   renderDownload() {
     return (<div className="download_link">
-      <span onClick={this.onDownloadClick}><i className="fa fa-file-excel-o" />Download as CSV</span>
+      <span onClick={this.onDownloadClick}><i className="far fa-file-excel" />Download as CSV</span>
     </div>);
   }
 
@@ -242,7 +242,7 @@ class Run extends React.Component {
         <div className="title-bar">
           <div className="title">{title}</div>
           <div className="ctrl">
-            <Button size="medium" type="secondary" onClick={this.onRunClick}><i className="fa fa-refresh" /></Button>
+            <Button size="medium" type="secondary" onClick={this.onRunClick}><i className="fas fa-sync" /></Button>
             <Button size="medium" onClick={this.onEditClick}>Edit Stat</Button>
             {report.get('is_custom') && <Button size="medium" onClick={this.onDeleteClick}>Delete</Button>}
           </div>

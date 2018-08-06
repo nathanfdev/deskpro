@@ -148,7 +148,7 @@ class VarsFieldComponent extends React.PureComponent {
             }
 
             return (<div className="varsfield-item" key={key}>
-              <div className="remove-ctrl" onClick={() => fields.remove(index)}><i className="fa fa-trash" /></div>
+              <div className="remove-ctrl" onClick={() => fields.remove(index)}><i className="far fa-trash-alt" /></div>
               <reduxForm.Input
                 onChange={() => {}}
                 label={hint}
