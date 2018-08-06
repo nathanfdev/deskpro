@@ -38,6 +38,27 @@ class ApiAuthenticator implements SimplePreAuthenticatorInterface
 
     public function createToken(Request $request, $providerKey)
     {
+        // Authorize header
+        if ($authorize_header = $request->headers->get('Authorization', null, true)) {
+            $split = preg_split("/[\s,]+/", trim($authorize_header));
+
+            if (count($split) !== 2) {
+                $this->throwUnauthorized(ErrorsCodes::MALFORMED_AUTHORIZATION_HEADER);
+            }
+
+            $authorize_type = trim($split[0]);
+            $authorize_val  = trim($split[1]);
+
+            switch ($authorize_type) {
+                case 'key':
+                    return new ApiKeySecurityToken('anon.', $authorize_val, $providerKey);
+                case 'token':
+                    return new ApiTokenSecurityToken('anon.', $authorize_val, $providerKey);
+                default:
+                    $this->throwUnauthorized(ErrorsCodes::INVALID_AUTHORIZATION_HEADER);
+            }
+        }
+
         // agent session cookie
         /** @var \Application\DeskPRO\EntityRepository\Session $sessionRepo */
         $sessionRepo = $this->em->getRepository(Session::class);
@@ -63,27 +84,6 @@ class ApiAuthenticator implements SimplePreAuthenticatorInterface
             }
 
             return $agentToken;
-        }
-
-        // Authorize header
-        if ($authorize_header = $request->headers->get('Authorization', null, true)) {
-            $split = preg_split("/[\s,]+/", trim($authorize_header));
-
-            if (count($split) !== 2) {
-                $this->throwUnauthorized(ErrorsCodes::MALFORMED_AUTHORIZATION_HEADER);
-            }
-
-            $authorize_type = trim($split[0]);
-            $authorize_val  = trim($split[1]);
-
-            switch ($authorize_type) {
-                case 'key':
-                    return new ApiKeySecurityToken('anon.', $authorize_val, $providerKey);
-                case 'token':
-                    return new ApiTokenSecurityToken('anon.', $authorize_val, $providerKey);
-                default:
-                    $this->throwUnauthorized(ErrorsCodes::INVALID_AUTHORIZATION_HEADER);
-            }
         }
 
         if ($request->cookies->get('dpreme')) {
