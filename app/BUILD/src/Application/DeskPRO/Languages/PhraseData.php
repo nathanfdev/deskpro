@@ -389,7 +389,7 @@ class PhraseData
                     'default'      => $field->getRawTitle(),
                     'lang'         => $translatedTitle, // BC field
                     'custom'       => $translatedTitle,
-                    'lang_default' => $translatedTitle, // BC field
+                    'lang_default' => $field->getRawTitle(), // BC field
                     'set'          => $translatedTitle,
                     'title'        => 'Title',
                 ],
@@ -401,7 +401,7 @@ class PhraseData
                     'default'      => $field->getRawDescription(),
                     'lang'         => $translatedDescription, // BC field
                     'custom'       => $translatedDescription,
-                    'lang_default' => $translatedDescription, // BC field
+                    'lang_default' => $field->getRawDescription(), // BC field
                     'set'          => $translatedDescription,
                     'title'        => 'Description',
                 ],
