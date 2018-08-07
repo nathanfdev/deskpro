@@ -253,6 +253,13 @@ $voice-green-border-color: #47BF61;
           color: $dp-greyscale-850;
         }
 
+        .ui.checkbox {
+          label {
+            font-weight: normal;
+            font-size: 14px;
+          }
+        }
+
         .Select-control {
           border-radius: 0;
         }

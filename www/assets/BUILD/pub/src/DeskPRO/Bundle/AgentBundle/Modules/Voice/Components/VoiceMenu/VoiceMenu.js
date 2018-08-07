@@ -2,6 +2,7 @@ import PropTypes from 'prop-types';
 import React from 'react';
 import { TabButton, Tab } from 'DeskPRO/Component/Tab/Tab';
 import SettingsContainer from './Settings/SettingsContainer';
+import Dialpad from './Dialpad/Dialpad';
 import DialpadContainer from './Dialpad/DialpadContainer';
 import IncomingCall from './IncomingCall/IncomingCall';
 import OutgoingCallContainer from './OutgoingCall/OutgoingCallContainer';
@@ -19,7 +20,6 @@ class VoiceMenu extends React.Component {
     onDeclineCall:         PropTypes.func,
     onHangup:              PropTypes.func,
     outboundCallsEnabled:  PropTypes.bool,
-    outboundNumber:        PropTypes.string,
     outgoingCall:          PropTypes.object,
     ringingVolume:         PropTypes.number,
     agentVoicemailTimeout: PropTypes.number,
@@ -33,23 +33,19 @@ class VoiceMenu extends React.Component {
   constructor(props) {
     super(props);
 
-    const { incomingCall, outgoingCall, outboundNumber, outboundCallsEnabled } = this.props;
+    const { incomingCall, outgoingCall, outboundCallsEnabled } = this.props;
     this.state = {
-      tabName: incomingCall || outgoingCall || outboundNumber || outboundCallsEnabled ? 'phone' : 'settings'
+      tabName: incomingCall || outgoingCall || outboundCallsEnabled ? 'phone' : 'settings'
     };
   }
 
   componentWillReceiveProps(newProps) {
-    if (newProps.incomingCall || newProps.outgoingCall || newProps.outboundNumber) {
+    if (newProps.incomingCall || newProps.outgoingCall) {
       this.setState({
         tabName: 'phone'
       });
     }
   }
-
-  onChangeTab = (tabName) => {
-    this.setState({ tabName });
-  };
 
   getPhoneTabName() {
     const { incomingCall, outgoingCall } = this.props;
@@ -68,6 +64,10 @@ class VoiceMenu extends React.Component {
 
     return incomingCall || outgoingCall ? 'fa-phone' : 'fa-th';
   }
+
+  changeTab = (tabName) => {
+    this.setState({ tabName });
+  };
 
   renderPhoneTab() {
     const { me, agents, people, queues, incomingCall, ringingVolume, agentVoicemailTimeout } = this.props;
@@ -98,7 +98,11 @@ class VoiceMenu extends React.Component {
       );
     }
 
-    return <DialpadContainer />;
+    return (
+      <DialpadContainer>
+        <Dialpad ref={(c) => { this.dialpad = c; }} />
+      </DialpadContainer>
+    );
   }
 
   render() {
@@ -126,7 +130,7 @@ class VoiceMenu extends React.Component {
             tabName="voicemail"
             title="Voicemail"
             iconClass="fa-play-circle"
-            onClick={this.onChangeTab}
+            onClick={this.changeTab}
             active={tabName === 'voicemail'}
           />}
           {!pendingCall &&
@@ -134,7 +138,7 @@ class VoiceMenu extends React.Component {
             tabName="settings"
             title="Settings"
             iconClass="fa-cog"
-            onClick={this.onChangeTab}
+            onClick={this.changeTab}
             active={tabName === 'settings'}
           />}
           {hasPhoneTab &&
@@ -142,7 +146,7 @@ class VoiceMenu extends React.Component {
             tabName="phone"
             title={this.getPhoneTabName()}
             iconClass={this.getPhoneTabIcon()}
-            onClick={this.onChangeTab}
+            onClick={this.changeTab}
             active={tabName === 'phone'}
           />}
         </div>

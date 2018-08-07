@@ -22,8 +22,6 @@ export const removeIncomingCall = createAction('VOICE_AGENT_REMOVE_RESERVATION')
 export const removeConferenceIncomingCalls = createAction('VOICE_AGENT_REMOVE_CONFERENCE_RESERVATIONS');
 export const addConnection = createAction('VOICE_AGENT_ADD_CONNECTION');
 export const removeConnection = createAction('VOICE_AGENT_REMOVE_CONNECTION');
-export const openDialpad = createAction('VOICE_AGENT_OPEN_DIALPAD');
-export const dialpadOpened = createAction('VOICE_AGENT_DIALPAD_OPENED');
 export const setOutgoingCall = createAction('VOICE_AGENT_SET_OUTGOING_CALL');
 export const resetOutgoingCall = createAction('VOICE_AGENT_RESET_OUTGOING_CALL');
 export const updateConnectionState = createAction('VOICE_AGENT_UPDATE_CONNECTION_STATE');
@@ -270,7 +268,11 @@ export const voiceBootstrap = createAction(
 
             dispatch(resetOutgoingCall());
             connection.message.TicketId = data.ticket.id;
-            window.DeskPRO_Window.runPageRoute(`ticket:/agent/tickets/${data.ticket.id}`);
+
+            const routeUrl = `/agent/tickets/${data.ticket.id}`;
+            if (!window.DeskPRO_Window.TabBar.findTabByRouteUrl(routeUrl)) {
+              window.DeskPRO_Window.runPageRoute(`ticket:${routeUrl}`);
+            }
           }
         });
         messageBroker.addMessageListener('agent.voice.outgoing-call-declined', (data) => {
@@ -313,7 +315,7 @@ export const voiceBootstrap = createAction(
 
 export const makeOutboundCall = createAction(
   'VOICE_AGENT_MAKE_OUTBOUND_PHONE_CALL',
-  (callFrom, callTo) => (dispatch, getState) => {
+  (callFrom, callTo, ticketId = null) => (dispatch, getState) => {
     const state   = getState();
     const me      = meSelector(state);
     const agentId = me.get('id');
@@ -321,7 +323,8 @@ export const makeOutboundCall = createAction(
     const numbers = allNumbersSelector(state);
     const promise = api.sendPost('DP_API/voice_client/prepare_outbound_call?include=person', {
       call_from: callFrom,
-      call_to:   callTo
+      call_to:   callTo,
+      ticket:    ticketId
     });
     promise.success(({ data, linked }) => {
       if (linked.person) {
@@ -484,4 +487,11 @@ export const searchPerson = createAction(
     q:      searchString,
     params: { with_phone_number: 1 }
   })}`)
+);
+
+export const openDialpad = createAction(
+  'VOICE_AGENT_OPEN_DIALPAD',
+  (outgoingNumber, ticketId = null, ticketTitle = null) => {
+    window.AgentVoiceDropdown.openDialpad(outgoingNumber, ticketId, ticketTitle);
+  }
 );

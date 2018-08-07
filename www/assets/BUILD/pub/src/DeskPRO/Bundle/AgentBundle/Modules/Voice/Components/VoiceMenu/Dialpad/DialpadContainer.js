@@ -2,8 +2,7 @@ import PropTypes from 'prop-types';
 import React from 'react';
 import { connect } from 'react-redux';
 import { storageAvailable } from 'DeskPRO/Component/Util/storageAvailable';
-import Dialpad from './Dialpad';
-import { dialpadOpened, makeOutboundCall, searchPerson } from '../../../Actions/clientActions';
+import { makeOutboundCall, searchPerson } from '../../../Actions/clientActions';
 import { outboundNumbersSelector } from '../../../Selectors/numbers';
 import { outboundNumberSelector } from '../../../Selectors/client';
 
@@ -14,41 +13,48 @@ import { outboundNumberSelector } from '../../../Selectors/client';
 class DialpadContainer extends React.Component {
 
   static propTypes = {
-    dispatch: PropTypes.func
+    dispatch: PropTypes.func,
+    children: PropTypes.node
   };
 
-  componentDidMount() {
-    this.props.dispatch(dialpadOpened());
-  }
-
-  componentWillReceiveProps() {
-    this.props.dispatch(dialpadOpened());
-  }
-
-  onMakeCall = (callFrom, callTo) => {
+  makeCall = (callFrom, callTo, ticketId) => {
     if (storageAvailable('localStorage')) {
       localStorage.setItem('dpAgent.voice.lastCallFrom', callFrom);
     }
 
-    this.props.dispatch(makeOutboundCall(callFrom, callTo));
+    this.props.dispatch(makeOutboundCall(callFrom, callTo, ticketId));
   };
 
-  onSearchPerson = searchString => this.props.dispatch(searchPerson(searchString));
+  searchPerson = searchString => this.props.dispatch(searchPerson(searchString));
 
   render() {
+    const { children } = this.props;
+
     let lastCallFrom = null;
     if (storageAvailable('localStorage')) {
       lastCallFrom = parseInt(localStorage.getItem('dpAgent.voice.lastCallFrom'), 10);
     }
 
-    return (
-      <Dialpad
-        {...this.props}
-        lastCallFrom={lastCallFrom}
-        onMakeCall={this.onMakeCall}
-        onSearchPerson={this.onSearchPerson}
-      />
-    );
+    // try to get ticket from active tab
+    const tabBar = window.DeskPRO_Window.TabBar;
+    const activeTab = tabBar.getActiveTab();
+
+    let ticketId;
+    let ticketTitle;
+    if (activeTab && activeTab.tabType === 'ticket') {
+      ticketId = activeTab.page.meta.ticket_id;
+      ticketTitle = activeTab.title;
+    }
+
+    return React.cloneElement(children, {
+      ...this.props,
+      ...children.props,
+      lastCallFrom,
+      ticketId,
+      ticketTitle,
+      onMakeCall:     this.makeCall,
+      onSearchPerson: this.searchPerson,
+    });
   }
 }
 

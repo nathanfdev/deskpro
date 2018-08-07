@@ -1038,6 +1038,8 @@ class TwilioCallbacksController extends AbstractVoiceController
     }
 
     /**
+     * User answered an incoming call.
+     *
      * @ApiDoc(
      *     description="Outgoing callback",
      *     statusCodes={
@@ -1085,13 +1087,27 @@ class TwilioCallbacksController extends AbstractVoiceController
         $ticketMessage->setMessage('Call to '.$phoneCall->getExternalNumber());
         $ticketMessage->setAsAgentNote(true);
 
-        $ticket = new Ticket();
-        $ticket->disableAutoTicketProcess();
-        $ticket->setSubject('Call to '.$phoneCall->getExternalNumber());
-        $ticket->setPerson($phoneCall->getPerson());
-        $ticket->setAgent($agent);
-        $ticket->addMessage($ticketMessage);
+        $ticket = null;
 
+        // try to get related ticket from phone call
+        $options = $phoneCall->getData();
+        if (!empty($options['outgoing_ticket_id'])) {
+            $ticket = $this->getManager()->getRepository(Ticket::class)->find($options['outgoing_ticket_id']);
+            if ($ticket) {
+                $ticket->disableAutoTicketProcess();
+            }
+        }
+
+        // no ticket found, create a new one
+        if (!$ticket) {
+            $ticket = new Ticket();
+            $ticket->disableAutoTicketProcess();
+            $ticket->setSubject('Call to '.$phoneCall->getExternalNumber());
+            $ticket->setPerson($phoneCall->getPerson());
+            $ticket->setAgent($agent);
+        }
+
+        $ticket->addMessage($ticketMessage);
         $this->saveTicket($ticket);
 
         $this->get('event_dispatcher')->dispatch(LegacySystemEvent::EVENT_NAME, new LegacySystemEvent(
@@ -1288,6 +1304,9 @@ class TwilioCallbacksController extends AbstractVoiceController
     }
 
     /**
+     * User makes an incoming call.
+     * Callback after Twilio.connect.
+     *
      * @param VoiceAccount $account
      * @param Request      $request
      *
@@ -1375,6 +1394,9 @@ class TwilioCallbacksController extends AbstractVoiceController
     }
 
     /**
+     * Agent makes an outgoing call.
+     * Callback after Twilio.connect.
+     *
      * @param VoiceAccount $account
      * @param Request      $request
      *
@@ -1397,7 +1419,7 @@ class TwilioCallbacksController extends AbstractVoiceController
 
         $phoneCall
             ->setCallSid($callSid)
-            ->setData($query->all())
+            ->setData(array_merge($phoneCall->getData(), $query->all()))
         ;
 
         // create agent participant

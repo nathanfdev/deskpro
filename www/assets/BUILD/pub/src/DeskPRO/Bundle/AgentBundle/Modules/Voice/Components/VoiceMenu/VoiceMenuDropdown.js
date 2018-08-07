@@ -8,20 +8,20 @@ import VoiceMenu from './VoiceMenu';
 class VoiceMenuDropdown extends React.Component {
 
   static propTypes = {
-    voiceSynced:    PropTypes.bool,
-    isSecure:       PropTypes.bool,
-    micEnabled:     PropTypes.bool,
-    incomingCall:   PropTypes.object,
-    outgoingCall:   PropTypes.object,
-    onlineAgents:   PropTypes.object,
-    voiceEnabled:   PropTypes.bool,
-    callsEnabled:   PropTypes.bool,
-    outboundNumber: PropTypes.string,
-    openUserMenu:   PropTypes.func
+    voiceSynced:  PropTypes.bool,
+    isSecure:     PropTypes.bool,
+    micEnabled:   PropTypes.bool,
+    incomingCall: PropTypes.object,
+    outgoingCall: PropTypes.object,
+    onlineAgents: PropTypes.object,
+    voiceEnabled: PropTypes.bool,
+    callsEnabled: PropTypes.bool,
+    openUserMenu: PropTypes.func
   };
 
   componentDidMount() {
     const { incomingCall } = this.props;
+    window.AgentVoiceDropdown = this;
 
     if (incomingCall) {
       this.popup.openPopup();
@@ -29,9 +29,9 @@ class VoiceMenuDropdown extends React.Component {
   }
 
   componentWillReceiveProps(newProps) {
-    const { incomingCall, outboundNumber } = this.props;
+    const { incomingCall } = this.props;
 
-    if ((!incomingCall && newProps.incomingCall) || (!outboundNumber && newProps.outboundNumber)) {
+    if (!incomingCall && newProps.incomingCall) {
       this.popup.openPopup();
     }
   }
@@ -97,6 +97,19 @@ class VoiceMenuDropdown extends React.Component {
     this.popup.closePopup();
   };
 
+  openDialpad = (outgoingNumber, ticketId = null, ticketTitle = null) => {
+    this.popup.openPopup();
+    setTimeout(() => {
+      this.voiceMenu.changeTab('phone');
+      setTimeout(() => {
+        if (ticketId) {
+          this.voiceMenu.dialpad.setOutgoingNumber(outgoingNumber);
+          this.voiceMenu.dialpad.setTicket(ticketId, ticketTitle);
+        }
+      }, 1);
+    }, 1);
+  };
+
   render() {
     const { incomingCall, outgoingCall } = this.props;
 
@@ -107,7 +120,13 @@ class VoiceMenuDropdown extends React.Component {
           positionMy="right top"
           positionAt="right bottom"
           zIndex={99999}
-          content={<VoiceMenu {...this.props} openUserMenu={this.openUserMenu} />}
+          content={
+            <VoiceMenu
+              {...this.props}
+              ref={(c) => { this.voiceMenu = c; }}
+              openUserMenu={this.openUserMenu}
+            />
+          }
           className={classNames('voice-menu-popup', { green: incomingCall })}
           allowCloseOnClickOut={!incomingCall && !outgoingCall}
         >

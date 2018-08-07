@@ -64,12 +64,12 @@ class VoiceControlsContainer extends React.Component {
       endCall:      this.endCall
     });
 
-    const connection = this.getConnection();
-    if (!connection) {
-      return;
-    }
-
     this.interval = setInterval(() => {
+      const connection = this.getConnection();
+      if (!connection) {
+        return;
+      }
+
       const connectionStatus = connection.status();
       const connectionState = this.getConnectionState();
       const { me } = this.props;

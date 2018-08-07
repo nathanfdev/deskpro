@@ -2,7 +2,7 @@
 
 <article
 	class="content-message message message-{{message.id}} {% if not message.is_agent_note %}public-message{% endif %} {% if message.is_agent_note %}note-message{% elseif message.person.is_agent %}agent-message{% else %}user-message{% endif %} {% if ticket_message_attachments[message.id] %}with-attach{% endif %} {% if all_feedback[message.id] %}with-feedback{% endif %} {% if isVoiceMessage %}react-voice-component{% endif %}"
-	data-message-id="{{message.id}}" {% if isVoiceMessage %}data-message="{{ message|serialize(['voice_phone_call']) }}"{% endif %}
+	data-message-id="{{message.id}}" {% if isVoiceMessage %}data-message="{{ message|serialize(['voice_phone_call', 'ticket']) }}"{% endif %}
 	data-message-ts="{{message.date_created.getTimestamp()}}"
 	data-message-author-name="{{message.person.getDisplayName()}}"
 	data-message-author-email="{{message.person.getEmailAddress()}}"

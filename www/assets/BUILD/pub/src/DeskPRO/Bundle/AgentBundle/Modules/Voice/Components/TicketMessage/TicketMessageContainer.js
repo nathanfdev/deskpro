@@ -38,7 +38,9 @@ class TicketMessageContainer extends React.Component {
 
   onCall = () => {
     const phoneCall = this.getPhoneCall();
-    this.props.dispatch(openDialpad(phoneCall.get('external_number')));
+    const ticket = this.getTicket();
+
+    this.props.dispatch(openDialpad(phoneCall.get('external_number'), ticket.get('id'), ticket.get('subject')));
   };
 
   onOpenSettings = () => {
@@ -58,6 +60,13 @@ class TicketMessageContainer extends React.Component {
 
     // get from message data attribute from template
     return Immutable.fromJS(data.linked.voice_phone_call[phoneCallId]);
+  }
+
+  getTicket() {
+    const { data } = this.props;
+    const message = data.data;
+
+    return Immutable.fromJS(data.linked.ticket[message.ticket]);
   }
 
   getConnection() {
@@ -93,6 +102,7 @@ class TicketMessageContainer extends React.Component {
       <TicketMessage
         {...this.props}
         message={data.data}
+        ticket={this.getTicket()}
         phoneCall={this.getPhoneCall()}
         connection={this.getConnection()}
         onCall={this.onCall}

@@ -1,7 +1,7 @@
 import PropTypes from 'prop-types';
 import React from 'react';
 import { Fieldset, createValue } from '@deskpro/react-forms';
-import { Form, Field, PhoneInput } from 'DeskPRO/Component/Semantic/ReactForm';
+import { Form, Field, PhoneInput, Checkbox } from 'DeskPRO/Component/Semantic/ReactForm';
 import { ClickOut } from 'DeskPRO/Component/ClickOut';
 import $ from 'jquery';
 import Immutable from 'immutable';
@@ -16,8 +16,9 @@ class Dialpad extends React.Component {
 
   static propTypes = {
     numbers:        PropTypes.object,
-    outboundNumber: PropTypes.string,
     lastCallFrom:   PropTypes.number,
+    ticketId:       PropTypes.number,
+    ticketTitle:    PropTypes.string,
     onMakeCall:     PropTypes.func,
     onSearchPerson: PropTypes.func
   };
@@ -37,13 +38,16 @@ class Dialpad extends React.Component {
       formData: createValue({
         value: {
           call_from: callFrom,
-          call_to:   props.outboundNumber
+          call_to:   null,
+          ticket:    null
         },
         errorList: {},
         onChange:  this.onChange
       }),
       searchResults: Immutable.fromJS([]),
-      submit:        false
+      submit:        false,
+      ticketId:      props.ticketId,
+      ticketTitle:   props.ticketTitle
     };
   }
 
@@ -169,7 +173,7 @@ class Dialpad extends React.Component {
       return;
     }
 
-    const promise = onMakeCall(value.call_from, value.call_to);
+    const promise = onMakeCall(value.call_from, value.call_to, value.ticket);
     if (!promise) {
       return;
     }
@@ -211,7 +215,15 @@ class Dialpad extends React.Component {
     });
   };
 
-  onSelectSearchResult = (number) => {
+  onClearSearchResults = () => {
+    setTimeout(() => {
+      this.setState({
+        searchResults: Immutable.fromJS([])
+      });
+    }, 1);
+  };
+
+  setOutgoingNumber = (number) => {
     const $input = $(this.phoneInput.input);
     const { formData } = this.state;
 
@@ -230,17 +242,20 @@ class Dialpad extends React.Component {
     }, 1);
   };
 
-  onClearSearchResults = () => {
-    setTimeout(() => {
-      this.setState({
-        searchResults: Immutable.fromJS([])
-      });
-    }, 1);
+  setTicket = (ticketId, ticketTitle) => {
+    const { formData } = this.state;
+    formData.value.ticket = ticketId;
+
+    this.setState({
+      formData,
+      ticketId,
+      ticketTitle
+    });
   };
 
   render() {
     const { numbers = Immutable.fromJS({}) } = this.props;
-    const { formData, searchResults, submit } = this.state;
+    const { formData, searchResults, submit, ticketId, ticketTitle } = this.state;
 
     return (
       <div className="dialpad">
@@ -249,20 +264,28 @@ class Dialpad extends React.Component {
             <Field select="call_to">
               <PhoneInput supportSip ref={(c) => { this.phoneInput = c; }} />
             </Field>
-            <Field select="call_from" label="Call from">
-              <NumberSelect numbers={numbers} />
-            </Field>
 
             {searchResults.size > 0 &&
             <ClickOut onClickOut={this.onClearSearchResults}>
               <SearchResults
                 query={formData.value.call_to}
                 results={searchResults}
-                onSelect={this.onSelectSearchResult}
+                onSelect={this.setOutgoingNumber}
               />
             </ClickOut>}
 
             <DialGrid onClick={this.onClickNumber} />
+
+            <Field select="call_from" label="Call from">
+              <NumberSelect numbers={numbers} />
+            </Field>
+            {ticketId &&
+            <Field select="ticket">
+              <Checkbox
+                choice={ticketId}
+                label={`Attach this call to the open ticket (#${ticketId}): ${ticketTitle}`}
+              />
+            </Field>}
 
             <button className={classNames('ui button green call-button', { loading: submit })}>
               <i className="icon call" />
