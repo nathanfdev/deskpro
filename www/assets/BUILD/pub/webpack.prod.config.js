@@ -96,10 +96,18 @@ const config = {
         ]
       },
       {
-        test: /\.(png|gif|jpg|jpeg|woff|woff2|ttf|eot|svg|mp3|ogg|wav)(\?|$)/,
+        test: /\.(png|gif|jpg|jpeg|svg|mp3|ogg|wav)(\?|$)/,
         use:  [
           {
             loader: 'file-loader'
+          }
+        ]
+      },
+      {
+        test: /\.(woff|woff2|ttf|eot)(\?|$)/,
+        use:  [
+          {
+            loader: 'url-loader'
           }
         ]
       },
@@ -140,7 +148,21 @@ const config = {
         test: /\.css$/,
         use:  ExtractTextPlugin.extract({
           fallback: 'style-loader',
-          use:      'css-loader'
+          use:      [
+            {
+              loader:  'css-loader',
+              options: {
+                sourceMap: true
+              }
+            },
+            {
+              loader:  'resolve-url-loader',
+              options: {
+                sourceMap: true,
+                keepQuery: true
+              }
+            }
+          ]
         })
       }
     ]
