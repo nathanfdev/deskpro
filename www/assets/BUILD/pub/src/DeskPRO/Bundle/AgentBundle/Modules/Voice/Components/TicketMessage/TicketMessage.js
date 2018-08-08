@@ -97,6 +97,7 @@ class TicketMessage extends React.Component {
               </div>
             : <div className="voice-ticket-message-controls">
               {recording && <MediaControls recording={recording} />}
+              {!recording && phoneCall.get('recording_is_downloading') ? 'Call recording is being processed. It will be available for download in a few minutes.' : ''}
               {outboundCallsEnabled &&
               <Button className="basic call-button" onClick={onCall}>
                 <i className="icon call" /> Call {phoneCall.get('external_number')}

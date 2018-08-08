@@ -4,6 +4,7 @@ namespace Application\DeskPRO\JobQueue\Processor;
 
 use Application\DeskPRO\BlobStorage\DeskproBlobStorage;
 use DeskPRO\Bundle\AppBundle\Entity\VoicePhoneCall;
+use DeskPRO\Bundle\AppBundle\Entity\VoicePhoneCallLog;
 use DeskPRO\Bundle\AppBundle\Notification\Event\LegacySystemEvent;
 use DeskPRO\Bundle\AppBundle\Serializer\ApiWrapper;
 use DeskPRO\Bundle\AppBundle\Serializer\Sideload\SideloadSerializationContext;
@@ -45,16 +46,17 @@ class VoiceDownloadRecordProcessor extends AbstractJobProcessor
     /**
      * Constructor.
      *
-     * @param Connection         $connection
-     * @param EntityManager      $em
-     * @param DeskproBlobStorage $blobStorage
-     * @param Serializer         $serializer
+     * @param Connection               $connection
+     * @param EntityManager            $em
+     * @param DeskproBlobStorage       $blobStorage
+     * @param Serializer               $serializer
+     * @param EventDispatcherInterface $eventDispatcher
      */
     public function __construct(
-        Connection $connection,
-        EntityManager $em,
-        DeskproBlobStorage $blobStorage,
-        Serializer $serializer,
+        Connection               $connection,
+        EntityManager            $em,
+        DeskproBlobStorage       $blobStorage,
+        Serializer               $serializer,
         EventDispatcherInterface $eventDispatcher
     ) {
         parent::__construct($connection);
@@ -100,7 +102,27 @@ class VoiceDownloadRecordProcessor extends AbstractJobProcessor
                         'agent.voice.voicemail.new-message',
                         ['data' => $serializedData]
                 ));
+            } else {
+                $serializedData = $this->serializer->toArray(
+                    new ApiWrapper($phoneCall),
+                    new SideloadSerializationContext()
+                );
+
+                $this->eventDispatcher->dispatch(
+                    LegacySystemEvent::EVENT_NAME,
+                    new LegacySystemEvent(
+                        'agent.voice.recording_downloaded',
+                        ['data' => $serializedData]
+                    ));
             }
+
+            // log conference start event
+            $log = new VoicePhoneCallLog();
+            $log->setActionType(VoicePhoneCallLog::ACTION_RECORDING_DOWNLOADED);
+            $log->setPhoneCall($phoneCall);
+
+            $this->em->persist($phoneCall);
+            $this->em->flush();
 
             $this->runSuccessHandler($job);
         } catch (\Exception $e) {

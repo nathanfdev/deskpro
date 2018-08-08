@@ -28,8 +28,23 @@ class TicketMessageContainer extends React.Component {
     phoneCalls:  PropTypes.object
   };
 
+  constructor(props) {
+    super(props);
+
+    this.state = {
+      data: props.data
+    };
+  }
+
   componentDidMount() {
     this.loadParticipants();
+
+    const messageBroker = window.DeskPRO_Window.getMessageBroker();
+    messageBroker.addMessageListener('agent.voice.recording_downloaded', ({ data }) => {
+      const newData = this.state.data;
+      newData.linked.voice_phone_call[data.data.id] = data.data;
+      this.setState({ data: newData });
+    });
   }
 
   componentDidUpdate() {
@@ -48,7 +63,8 @@ class TicketMessageContainer extends React.Component {
   };
 
   getPhoneCall() {
-    const { phoneCalls, data } = this.props;
+    const { phoneCalls } = this.props;
+    const { data } = this.state;
     const message = data.data;
     const phoneCallId = message.attributes[0].phone_call;
 
@@ -63,7 +79,7 @@ class TicketMessageContainer extends React.Component {
   }
 
   getTicket() {
-    const { data } = this.props;
+    const { data } = this.state;
     const message = data.data;
 
     return Immutable.fromJS(data.linked.ticket[message.ticket]);
@@ -96,7 +112,7 @@ class TicketMessageContainer extends React.Component {
   }
 
   render() {
-    const { data } = this.props;
+    const { data } = this.state;
 
     return (
       <TicketMessage
