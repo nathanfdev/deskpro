@@ -4,8 +4,7 @@ Feature: apps packages api
   I want to retrieve information about apps packages
 
   Background:
-    Given I'm authenticated as admin
-    And there are no "App" records
+    Given there are no "App" records
     # This will add a `lastCreatedInstanceId`, `lastInstalledAppId` context variable
     And I install the app from folder "resources/apps/state-tests"
     And I install the app from folder "resources/apps/simple-app"
