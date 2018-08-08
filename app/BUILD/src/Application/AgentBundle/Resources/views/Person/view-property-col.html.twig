@@ -333,13 +333,13 @@
                                 <tr class="us-{{ as.usersource.id }}">
                                     <th>
                                         {% if not as.usersource.app %}
-                                            <img src="{{ asset_full('/images/dp-logo-16.png') }}"
+                                            <img src="{{ asset('images/dp-logo-16.png') }}"
                                                  alt="{{ as.usersource.title }}" />
                                         {% else %}
                                             <img src="{{ as.usersource.app.package.toApiData['icon_16'] }}"
                                                  alt="{{ as.usersource.title }}" />
                                         {% endif %}
-                                        {{ as.usersource.title }}
+                                        ({{ phrase('agent.general.' ~ as.usersource.type ) | capitalize }}) {{ as.usersource.title }}
                                     </th>
                                     <td>
                                         {% if as.identity_friendly and as.identity_friendly != as.identity %}
@@ -361,13 +361,13 @@
                                 <tr class="us-{{ as.usersource.id }}" data-us-id="{{ as.usersource.id }}">
                                     <th>
                                         {% if not as.usersource.app %}
-                                            <img src="{{ asset_full('/images/dp-logo-16.png') }}"
+                                            <img src="{{ asset('images/dp-logo-16.png') }}"
                                                  alt="{{ as.usersource.title }}" />
                                         {% else %}
                                             <img src="{{ as.usersource.app.package.toApiData['icon_16'] }}"
                                                  alt="{{ as.usersource.title }}" />
                                         {% endif %}
-                                        {{ as.usersource.title }}
+                                        ({{ phrase('agent.general.' ~ as.usersource.type ) | capitalize }}) {{ as.usersource.title }}
                                         <button class="remove-trigger clean-white small"
                                                 data-confirm="Are you sure you want to remove this user source?">Remove
                                         </button>
