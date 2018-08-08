@@ -45,6 +45,7 @@ const config = {
 
     // Agent
     phonenumber_utils: './node_modules/intl-tel-input/lib/libphonenumber/build/utils',
+    fontawesome: './node_modules/@fortawesome/fontawesome-free/css/all.css',
     // // DeskPRO_AgentBundle: './src/DeskPRO/Bundle/AgentBundle/DeskPRO_AgentBundle',
     // // DeskPRO_AgentBundle_style: './src/DeskPRO/Bundle/AgentBundle/Resources/style/agent-style.scss',
     DeskPRO_AgentLegacyBundle: [
@@ -148,6 +149,13 @@ const config = {
             }
           ],
           publicPath: './'
+        })
+      },
+      {
+        test:    /\.css$/,
+        use: ExtractTextPlugin.extract({
+          fallback: 'style-loader',
+          use: 'css-loader'
         })
       }
     ]

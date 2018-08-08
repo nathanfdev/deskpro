@@ -55,7 +55,6 @@ class StylesheetCompiler
         $variables['portal-res-path'] = "'../../assets/{$buildDir}/pub/src/DeskPRO/Bundle/PortalBundle/Resources'";
         $variables['portal-img-path'] = "'../../assets/{$buildDir}/pub/src/DeskPRO/Bundle/PortalBundle/Resources/img'";
         $variables['modules-path']    = "'../../assets/{$buildDir}/pub/node_modules'";
-        $variables['fa-font-path']    = "'../../assets/{$buildDir}/pub/node_modules/font-awesome/fonts'";
 
         foreach ($variables as $variable => $value) {
             $custom_vars_scss .= '$'."$variable: $value;\n";
