@@ -29,9 +29,11 @@ use Doctrine\ORM\EntityManager;
 use Doctrine\ORM\EntityRepository;
 use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 use Symfony\Component\Form\AbstractType;
+use Symfony\Component\Form\Extension\Core\DataTransformer\IntegerToLocalizedStringTransformer;
 use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
 use Symfony\Component\Form\Extension\Core\Type\CollectionType;
 use Symfony\Component\Form\Extension\Core\Type\DateTimeType as CoreDateTimeType;
+use Symfony\Component\Form\Extension\Core\Type\IntegerType;
 use Symfony\Component\Form\Extension\Core\Type\NumberType;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\FormBuilderInterface;
@@ -149,6 +151,67 @@ class TicketType extends AbstractType
             ])
         ;
 
+        if ($builder->getOption('admin_api_key_request')) {
+            $builder
+                ->add('date_feedback_rating', CoreDateTimeType::class, [
+                    'widget'   => 'single_text',
+                    'required' => false,
+                ])
+                ->add('date_resolved', CoreDateTimeType::class, [
+                    'widget'   => 'single_text',
+                    'required' => false,
+                ])
+                ->add('date_archived', CoreDateTimeType::class, [
+                    'widget'   => 'single_text',
+                    'required' => false,
+                ])
+                ->add('date_first_agent_assign', CoreDateTimeType::class, [
+                    'widget'   => 'single_text',
+                    'required' => false,
+                ])
+                ->add('date_first_agent_reply', CoreDateTimeType::class, [
+                    'widget'   => 'single_text',
+                    'required' => false,
+                ])
+                ->add('date_last_agent_reply', CoreDateTimeType::class, [
+                    'widget'   => 'single_text',
+                    'required' => false,
+                ])
+                ->add('date_last_user_reply', CoreDateTimeType::class, [
+                    'widget'   => 'single_text',
+                    'required' => false,
+                ])
+                ->add('date_agent_waiting', CoreDateTimeType::class, [
+                    'widget'   => 'single_text',
+                    'required' => false,
+                ])
+                ->add('date_user_waiting', CoreDateTimeType::class, [
+                    'widget'   => 'single_text',
+                    'required' => false,
+                ])
+                ->add('date_status', CoreDateTimeType::class, [
+                    'widget'   => 'single_text',
+                    'required' => false,
+                ])
+                ->add('date_on_hold', CoreDateTimeType::class, [
+                    'widget'   => 'single_text',
+                    'required' => false,
+                ])
+                ->add('date_locked', CoreDateTimeType::class, [
+                    'widget'   => 'single_text',
+                    'required' => false,
+                ])
+                ->add('total_user_waiting', IntegerType::class, [
+                    'required'      => false,
+                    'rounding_mode' => IntegerToLocalizedStringTransformer::ROUND_HALF_UP,
+                ])
+                ->add('total_to_first_reply', IntegerType::class, [
+                    'required'      => false,
+                    'rounding_mode' => IntegerToLocalizedStringTransformer::ROUND_HALF_UP,
+                ])
+            ;
+        }
+
         $brands = $this->em->getRepository(Brand::class)->findAll();
         if (count($brands) > 1) {
             $builder->add('brand', EntityType::class, [
@@ -173,9 +236,11 @@ class TicketType extends AbstractType
         $resolver
             ->setRequired('person')
             ->setDefaults([
-                'data_class'      => Ticket::class,
-                'agent_interface' => false,
+                'data_class'            => Ticket::class,
+                'agent_interface'       => false,
+                'admin_api_key_request' => false,
             ])
+            ->setAllowedTypes('admin_api_key_request', 'bool')
             ->setAllowedTypes('person', Person::class)
         ;
     }
