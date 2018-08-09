@@ -100,6 +100,7 @@ class PersonMerge implements PersonContextInterface
             $this->_mergeFeedback();
             $this->_mergeNews();
             $this->_mergeTasks();
+            $this->_mergePhoneCalls();
             $this->_mergeTickets();
             $this->_mergeOther();
 
@@ -271,6 +272,31 @@ class PersonMerge implements PersonContextInterface
         foreach ($complex_tables as $table => $columns) {
             foreach ($columns as $column) {
                 $this->_updateTablePersonId($table, $column);
+            }
+        }
+    }
+
+    protected function _mergePhoneCalls()
+    {
+        $userTables = [
+            'voice_phone_calls',
+            'voice_phone_call_participants',
+            'voice_phone_call_logs',
+        ];
+
+        foreach ($userTables as $table) {
+            $this->_updateTablePersonId($table, 'person_id');
+        }
+
+        if ($this->person->isAgent() && $this->other_person->isAgent()) {
+            $agentTables = [
+                'voicemail_records',
+                'voice_targets',
+                'voice_queue_agents',
+            ];
+
+            foreach ($agentTables as $table) {
+                $this->_updateTablePersonId($table, 'agent_id');
             }
         }
     }
