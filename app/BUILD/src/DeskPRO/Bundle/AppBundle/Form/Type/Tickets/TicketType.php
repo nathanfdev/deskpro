@@ -269,10 +269,11 @@ class TicketType extends AbstractType
             }
 
             $form->add('message', TicketMessageType::class, [
-                'mapped'         => false,
-                'ticket'         => $form->getData(),
-                'person'         => $form->getConfig()->getOption('person'),
-                'ticket_message' => $message,
+                'mapped'                => false,
+                'ticket'                => $form->getData(),
+                'person'                => $form->getConfig()->getOption('person'),
+                'ticket_message'        => $message,
+                'admin_api_key_request' => $form->getConfig()->getOption('admin_api_key_request'),
             ]);
         }
 
@@ -282,8 +283,9 @@ class TicketType extends AbstractType
                 'allow_add'     => true,
                 'entry_type'    => TicketMessageType::class,
                 'entry_options' => [
-                    'ticket' => $form->getData(),
-                    'person' => $form->getConfig()->getOption('person'),
+                    'ticket'                => $form->getData(),
+                    'person'                => $form->getConfig()->getOption('person'),
+                    'admin_api_key_request' => $form->getConfig()->getOption('admin_api_key_request'),
                 ],
             ]);
         }
