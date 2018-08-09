@@ -23,7 +23,7 @@ class UserProfile extends React.Component {
           {window.DP_HAS_VOICE && <StatusFormContainer />}
           <div className="voice-profile-menu">
             <div className="voice-profile-menu-item preferences" onClick={onClickPreferences}>
-              <i className="fa fa-gear" />
+              <i className="fas fa-cog" />
               <FormattedMessage id="agent.chrome.link_preferences" />
             </div>
             <div className="voice-profile-menu-item help" onClick={onClickHelp}>

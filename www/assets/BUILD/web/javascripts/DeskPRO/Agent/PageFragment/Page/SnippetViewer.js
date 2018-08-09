@@ -546,7 +546,7 @@ DeskPRO.Agent.PageFragment.Page.SnippetViewer = new Orb.Class({
 
 							self.getEl('editsnippet_category_select').find('option[value="' + catId + '"]').text(catTitle);
 						} else {
-							catEl = $('<li><a><span class="label"></span></a><span class="trigger-edit-cat"><i class="icon-cog"></i></span></li>');
+							catEl = $('<li><a><span class="label"></span></a><span class="trigger-edit-cat"><i class="fas fa-cog"></i></span></li>');
 							catEl.addClass('category category-' + cat.id);
 							catEl.data('category-id', cat.id).attr('data-category-id', cat.id);
 							if (shareOpt == 'global') {

@@ -1,7 +1,7 @@
 import PropTypes from 'prop-types';
 import React from 'react';
-import { ControlItem } from '../ControlItem';
 import { portalPhrases } from 'DeskPRO/Bundle/PortalBundle/PortalPhrases';
+import { ControlItem } from '../ControlItem';
 
 export class ReopenChatButton extends React.Component {
 
@@ -17,7 +17,7 @@ export class ReopenChatButton extends React.Component {
 
     return (
       <ControlItem onClick={onReopen} disabled={locked || (isEnded && !canReopen)}>
-        {portalPhrases.get('portal.chat.reopen_chat_action')} <i className="fa fa-commenting-o" />
+        {portalPhrases.get('portal.chat.reopen_chat_action')} <i className="far fa-comment-dots" />
       </ControlItem>
     );
   }

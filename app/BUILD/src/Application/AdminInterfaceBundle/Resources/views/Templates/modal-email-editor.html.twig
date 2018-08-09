@@ -58,7 +58,7 @@
 			</div>
 			<div ng-hide="saving_template">
 				<button class="btn btn-warning" ng-click="revert()" ng-show="email.is_custom && email.original.exists"><i class="fa fa-step-backward"></i> Revert To Default</button>
-				<button class="btn btn-danger" ng-click="revert()" ng-show="email.is_custom && !email.original.exists"><i class="fa fa-trash-o"></i> Delete Template</button>
+				<button class="btn btn-danger" ng-click="revert()" ng-show="email.is_custom && !email.original.exists"><i class="far fa-trash-alt"></i> Delete Template</button>
 				<button class="btn btn-success" ng-click="save()" ng-disabled="email_name_error"><i class="fa fa-save"></i> {{ phrase('agent.general.save') }}</button>
 			</div>
 			<div ng-show="saving_template">

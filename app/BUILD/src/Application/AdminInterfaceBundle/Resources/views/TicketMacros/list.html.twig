@@ -48,7 +48,7 @@
 								<span ng-if="!macro.is_global && macro.person">{{ ng_var('macro.person.display_name') }}</span>
 								<span ng-if="!macro.is_global && macro.department">{{ ng_var('macro.department.title') }}</span>
 							</em>
-							<span class="btn btn-danger btn-xs only-icon" ng-show="delete_mode" style="margin-top: -3px;" ng-click="ListCtrl.startDelete(macro); $event.preventDefault();"><i class="fa fa-trash-o"></i></span>
+							<span class="btn btn-danger btn-xs only-icon" ng-show="delete_mode" style="margin-top: -3px;" ng-click="ListCtrl.startDelete(macro); $event.preventDefault();"><i class="far fa-trash-alt"></i></span>
 						</div>
 						<h4>
 							<span class="title-id" title="ID">#{{ ng_var('macro.id') }}</span>
@@ -114,7 +114,7 @@
 			<ul>
 
 				<li><i class="fa fa-book"></i> <a href="https://support.deskpro.com/guides/topic/377" target="_blank">Macros</a></li>
-				<li><i class="fa fa-file-text"></i> <a href="https://support.deskpro.com/kb/articles/185" target="_blank">Ticket assignment workflows</a></li>
+				<li><i class="fas fa-file-alt"></i> <a href="https://support.deskpro.com/kb/articles/185" target="_blank">Ticket assignment workflows</a></li>
 
 			</ul>
 	</section>

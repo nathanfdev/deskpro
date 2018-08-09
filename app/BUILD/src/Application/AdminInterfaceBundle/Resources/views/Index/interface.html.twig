@@ -90,84 +90,84 @@
         <nav class="dp-layout-appnav" ng-hide="isBillingInterface">
             <div class="sidebar">
                 {{ nav.list() }}
-                {{ nav.list_item(phrase('admin.menu.admin_dashboard'), ng_href('home'), 'dashboard', 'fa-dashboard') }}
+                {{ nav.list_item(phrase('admin.menu.admin_dashboard'), ng_href('home'), 'dashboard', 'fas fa-tachometer-alt') }}
                 {{ nav.list_item_group(phrase('admin.general.apps_setup'), 'fa-cog', '', 'setup') }}
                     {{ nav.list_subitem('Settings', ng_href('setup.settings'), 'setup.settings', 'fa-cog') }}
                     {% if app.isCloud() %}{{ nav.list_subitem('Domain / URL Setup', ng_href('setup.cloud_custom_domain'), 'setup.cloud_custom_domain', 'fa-link') }}{% endif %}
                     {% if not app.isCloud() %}{{ nav.list_subitem('Automatic Updater', ng_href('setup.updater'), 'setup.updater', 'fa-wrench') }}{% endif %}
 
-                    {{ nav.list_subitem('Rate Limiting', ng_href('setup.rate_limiting'), 'setup.rate_limiting', 'fa-clock-o') }}
+                    {{ nav.list_subitem('Rate Limiting', ng_href('setup.rate_limiting'), 'setup.rate_limiting', 'far fa-clock') }}
                     {{ nav.list_subitem('Email Rate Limiting', ng_href('setup.email_rate_limiting'), 'setup.email_rate_limiting', 'fa-download') }}
                     {{ nav.list_subitem('CAPTCHA Settings', ng_href('setup.captcha_settings'), 'setup.captcha_settings', 'fa-thumbs-up') }}
 
-                    {{ nav.list_subitem('Languages', ng_href('setup.languages'), 'setup.languages', 'fa-globe') }}
+                    {{ nav.list_subitem('Languages', ng_href('setup.languages'), 'setup.languages', 'fa-globe-americas') }}
 
                     {% if app.canResetHelpdesk %}
-                        {{ nav.list_subitem('Reset Helpdesk', ng_href('setup.reset_demo'), 'setup.reset_demo', 'fa-trash-o') }}
+                        {{ nav.list_subitem('Reset Helpdesk', ng_href('setup.reset_demo'), 'setup.reset_demo', 'fa-trash-alt') }}
                     {% endif %}
                 {{ nav.list_item_group_end() }}
                 {{ nav.list_item_group(phrase('adm.general.apps_agents'), 'fa-user', '', 'agents') }}
                     {{ nav.list_subitem(phrase('agent.general.agents'), ng_href('agents.agents'), 'agents.agents', 'fa-user') }}
                     {{ nav.list_subitem('Auth & SSO', ng_href('agents.usersources'), 'agents.usersources', 'fa-key') }}
                     {{ nav.list_subitem('Teams', ng_href('agents.teams'), 'agents.teams', 'fa-users') }}
-                    {{ nav.list_subitem('Permission Groups', ng_href('agents.groups'), 'agents.groups', 'fa-shield') }}
+                    {{ nav.list_subitem('Permission Groups', ng_href('agents.groups'), 'agents.groups', 'fa-shield-alt') }}
                     {{ nav.list_subitem('Audit Logs', ng_href('agents.audit_logs'), 'agents.audit_logs', 'fa-list') }}
                     {{ nav.list_subitem('Settings', ng_href('agents.settings'), 'agents.settings', 'fa-cog') }}
                 {{ nav.list_item_group_end() }}
                 {{ nav.list_item_group(phrase('adm.general.apps_tickets'), 'fa-envelope', '', 'tickets') }}
                     {% if app.getSetting('experimental_admin_features') %}
-                        {{ nav.list_subitem('SMS triggers', ng_href('tickets.channel_sms'), 'tickets.channel_sms', 'fa-group') }}
-                        {{ nav.list_subitem('Facebook triggers', ng_href('tickets.channel_facebook'), 'tickets.channel_facebook', 'fa-group') }}
+                        {{ nav.list_subitem('SMS triggers', ng_href('tickets.channel_sms'), 'tickets.channel_sms', 'fa-users') }}
+                        {{ nav.list_subitem('Facebook triggers', ng_href('tickets.channel_facebook'), 'tickets.channel_facebook', 'fa-users') }}
                     {% endif %}
 
                     {{ nav.list_subitem('Departments', ng_href('tickets.ticket_deps'), 'tickets.ticket_deps', 'fa-briefcase') }}
 
-                    {{ nav.list_subitem('Statuses', ng_href('tickets.statuses'), 'tickets.statuses', 'fa-ticket') }}
+                    {{ nav.list_subitem('Statuses', ng_href('tickets.statuses'), 'tickets.statuses', 'fa-ticket-alt') }}
                     {{ nav.list_subitem('Urgency', ng_href('tickets.urgency'), 'tickets.urgency', 'fa-exclamation') }}
                     {{ nav.list_subitem('Fields', ng_href('tickets.fields'), 'tickets.fields', 'fa-terminal') }}
 
                     {{ nav.list_subitem('New Ticket triggers', ng_href('tickets.triggers', {type: "newticket"}), 'type:tickets.triggers.newticket', 'fa-user') }}
-                    {{ nav.list_subitem('New Reply triggers', ng_href('tickets.triggers', {type: "newreply"}), 'type:tickets.triggers.newreply', 'fa-group') }}
-                    {{ nav.list_subitem('Ticket Update triggers', ng_href('tickets.triggers', {type: "update"}), 'type:tickets.triggers.update', 'fa-group') }}
+                    {{ nav.list_subitem('New Reply triggers', ng_href('tickets.triggers', {type: "newreply"}), 'type:tickets.triggers.newreply', 'fa-users') }}
+                    {{ nav.list_subitem('Ticket Update triggers', ng_href('tickets.triggers', {type: "update"}), 'type:tickets.triggers.update', 'fa-users') }}
 
                     {{ nav.list_subitem('Webhooks', ng_href('tickets.webhooks', {type: "list"}), 'type:tickets.webhooks.list', 'fa-cloud') }}
 
-                    {{ nav.list_subitem('Macros', ng_href('tickets.macros'), 'tickets.macros', 'fa-keyboard-o') }}
+                    {{ nav.list_subitem('Macros', ng_href('tickets.macros'), 'tickets.macros', 'far fa-keyboard') }}
                     {{ nav.list_subitem('Filters', ng_href('tickets.ticket_filters'), 'tickets.ticket_filters', 'fa-filter') }}
-                    {{ nav.list_subitem('Satisfaction', ng_href('tickets.satisfaction'), 'tickets.satisfaction', 'fa-smile-o') }}
+                    {{ nav.list_subitem('Satisfaction', ng_href('tickets.satisfaction'), 'tickets.satisfaction', 'far fa-smile') }}
                     {{ nav.list_subitem('Escalations', ng_href('tickets.ticket_escalations'), 'tickets.ticket_escalations', 'fa-bolt') }}
-                    {{ nav.list_subitem('SLAs', ng_href('tickets.slas'), 'tickets.slas', 'fa-clock-o') }}
+                    {{ nav.list_subitem('SLAs', ng_href('tickets.slas'), 'tickets.slas', 'far fa-clock') }}
                     {{ nav.list_subitem('Labels', ng_href('tickets.labels'), 'tickets.labels', 'fa-tags') }}
-                    {{ nav.list_subitem('Round Robin', ng_href('tickets.roundrobin'), 'tickets.roundrobin', 'fa-refresh') }}
+                    {{ nav.list_subitem('Round Robin', ng_href('tickets.roundrobin'), 'tickets.roundrobin', 'fa-sync') }}
 
                     {{ nav.list_subitem('Time Log & Billing Settings', ng_href('tickets.timelog_billing_settings'), 'tickets.timelog_billing_settings', 'fa-cog') }}
                     {{ nav.list_subitem('Time Log & Billing Fields', ng_href('tickets.timelog_billing_fields'), 'tickets.timelog_billing_fields', 'fa-terminal') }}
 
-                    {{ nav.list_subitem('Forward Settings', ng_href('tickets.fwd_settings'), 'tickets.fwd_settings', 'fa-mail-forward') }}
+                    {{ nav.list_subitem('Forward Settings', ng_href('tickets.fwd_settings'), 'tickets.fwd_settings', 'fa-share') }}
                     {{ nav.list_subitem(phrase('adm.problems.title'), ng_href('tickets.problems'), 'tickets.problems', 'fa-bullhorn') }}
                     {{ nav.list_subitem('Settings', ng_href('tickets.settings'), 'tickets.settings', 'fa-cog') }}
                 {{ nav.list_item_group_end() }}
-                {{ nav.list_item_group(phrase('adm.general.apps_emails'), 'fa-envelope-o', '', 'emails') }}
+                {{ nav.list_item_group(phrase('adm.general.apps_emails'), 'far fa-envelope', '', 'emails') }}
                     {%  if not app.getSetting('experimental_admin_features') %}
-                        {{ nav.list_subitem('Email Accounts', ng_href('emails.ticket_accounts'), 'emails.ticket_accounts', 'fa-envelope-o') }}
+                        {{ nav.list_subitem('Email Accounts', ng_href('emails.ticket_accounts'), 'emails.ticket_accounts', 'far fa-envelope') }}
                     {%  else %}
-                        {{ nav.list_subitem('Email triggers', ng_href('emails.ticket_accounts'), 'emails.ticket_accounts', 'fa-envelope-o') }}
+                        {{ nav.list_subitem('Email triggers', ng_href('emails.ticket_accounts'), 'emails.ticket_accounts', 'far fa-envelope') }}
                     {% endif %}
                     {% if app.hasBeta('email_templates') %}
-                        {{ nav.list_subitem('Templates Editor', ng_href('emails.templates_editor'), 'emails.templates_editor', 'fa-file-text') }}
-                        {{ nav.list_subitem('Email Templates (legacy)', ng_href('emails.email_templates_legacy'), 'emails.email_templates_legacy', 'fa-file-text') }}
+                        {{ nav.list_subitem('Templates Editor', ng_href('emails.templates_editor'), 'emails.templates_editor', 'fa-file-alt') }}
+                        {{ nav.list_subitem('Email Templates (legacy)', ng_href('emails.email_templates_legacy'), 'emails.email_templates_legacy', 'fa-file-alt') }}
                     {%  else %}
-                        {{ nav.list_subitem('Email Templates', ng_href('emails.email_templates'), 'emails.email_templates', 'fa-file-text') }}
+                        {{ nav.list_subitem('Email Templates', ng_href('emails.email_templates'), 'emails.email_templates', 'fa-file-alt') }}
                     {%  endif %}
                 {{ nav.list_item_group_end() }}
                 {{ nav.list_item_group(phrase('adm.general.apps_crm'), 'fa-users', '', 'crm') }}
                     {{ nav.list_subitem('Auth & SSO', ng_href('crm.usersources'), 'crm.usersources', 'fa-key') }}
-                    {{ nav.list_subitem('User Groups', ng_href('crm.groups'), 'crm.groups', 'fa-group') }}
+                    {{ nav.list_subitem('User Groups', ng_href('crm.groups'), 'crm.groups', 'fa-users') }}
                     {{ nav.list_subitem('Users Fields', ng_href('crm.user_fields'), 'crm.user_fields', 'fa-user') }}
-                    {{ nav.list_subitem('Organizations Fields', ng_href('crm.org_fields'), 'crm.org_fields', 'fa-group') }}
+                    {{ nav.list_subitem('Organizations Fields', ng_href('crm.org_fields'), 'crm.org_fields', 'fa-users') }}
                     {{ nav.list_subitem('Rules', ng_href('crm.rules'), 'crm.rules', 'fa-tasks') }}
                     {{ nav.list_subitem('Users Labels', ng_href('crm.user_labels'), 'crm.user_labels', 'fa-user') }}
-                    {{ nav.list_subitem('Organizations Labels', ng_href('crm.org_labels'), 'crm.org_labels', 'fa-group') }}
+                    {{ nav.list_subitem('Organizations Labels', ng_href('crm.org_labels'), 'crm.org_labels', 'fa-users') }}
                     {{ nav.list_subitem('Banning', ng_href('crm.banning'), 'crm.banning', 'fa-ban') }}
                     {{ nav.list_subitem('CSV Import', ng_href('crm.import'), 'crm.import', 'fa-upload') }}
                 {{ nav.list_item_group_end() }}
@@ -185,7 +185,7 @@
                     {{ nav.list_subitem('Setup', ng_href('portal.setup', '{brandId: brandId}'), 'portal.setup', 'fa-th-large') }}
                     <div ng-if="brandId > 0 && brandId != 'new'">
                         {{ nav.list_subitem_regex_statemark('Knowledgebase', ng_href('portal.kb_settings', '{brandId: brandId}'), 'portal.kb_settings', 'fa-book', null, '{"is-disabled": !Ctrl.settings.apps_kb || Ctrl.settings.portal_mode !== "publish" || !Ctrl.settings.iface_portal}') }}
-                        {{ nav.list_subitem_regex_statemark('News', ng_href('portal.news_settings', '{brandId: brandId}'), 'portal.news_settings', 'fa-clock-o', null, '{"is-disabled": !Ctrl.settings.apps_news || Ctrl.settings.portal_mode !== "publish" || !Ctrl.settings.iface_portal}') }}
+                        {{ nav.list_subitem_regex_statemark('News', ng_href('portal.news_settings', '{brandId: brandId}'), 'portal.news_settings', 'far fa-clock', null, '{"is-disabled": !Ctrl.settings.apps_news || Ctrl.settings.portal_mode !== "publish" || !Ctrl.settings.iface_portal}') }}
                         {{ nav.list_subitem_regex_statemark('Downloads', ng_href('portal.downloads_settings', '{brandId: brandId}'), 'portal.downloads_settings', 'fa-download', null, '{"is-disabled": !Ctrl.settings.apps_downloads || Ctrl.settings.portal_mode !== "publish" || !Ctrl.settings.iface_portal}') }}
                         {{ nav.list_subitem_regex_statemark('Feedback', ng_href('portal.feedback_settings', '{brandId: brandId}'), 'portal.feedback_settings', 'fa-thumbs-up', null, '{"is-disabled": !Ctrl.settings.apps_feedback || Ctrl.settings.portal_mode !== "publish" || !Ctrl.settings.iface_portal}') }}
                         {% if app.hasBeta('guides') %}
@@ -198,11 +198,11 @@
                         {{ nav.list_subitem('Ticket Form Widget', ng_href('portal.ticket_form_widget', '{brandId: brandId}'), 'portal.ticket_form_widget', 'fa-envelope') }}
                     </div>
                 {{ nav.list_item_group_end() }}
-                {{ nav.list_item_group(phrase('adm.general.apps_chat'), 'fa-comments-o', '', 'chat') }}
+                {{ nav.list_item_group(phrase('adm.general.apps_chat'), 'far fa-comments', '', 'chat') }}
                     {{ nav.list_subitem('Chat Departments', ng_href('chat.chat_deps'), 'chat.chat_deps', 'fa-briefcase') }}
                     {{ nav.list_subitem('Fields', ng_href('chat.fields'), 'chat.fields', 'fa-terminal') }}
                     {{ nav.list_subitem('Labels', ng_href('chat.labels'), 'chat.labels', 'fa-tags') }}
-                    {{ nav.list_subitem('Round Robin', ng_href('chat.roundrobin'), 'chat.roundrobin', 'fa-refresh') }}
+                    {{ nav.list_subitem('Round Robin', ng_href('chat.roundrobin'), 'chat.roundrobin', 'fa-sync') }}
                     {{ nav.list_subitem('Site Widget & Chat', ng_href('portal.widget_editor', '{brandId: brandId}'), 'portal.widget_editor_link', 'fa-puzzle-piece') }}
                 {{ nav.list_item_group_end() }}
                 {% if app.hasVoice() %}
@@ -213,17 +213,17 @@
                         {{ nav.list_subitem('Queue Settings', ng_href('voice-channel.queues'), 'voice-channel.queues', 'fa-list-ul') }}
                         {{ nav.list_subitem('Auto-attendant', ng_href('voice-channel.auto_attendants'), 'voice-channel.auto_attendants', 'fa-sitemap') }}
                         {{ nav.list_subitem('Agents Voice', ng_href('voice-channel.agents'), 'voice-channel.agents', 'fa-user') }}
-                        {{ nav.list_subitem('Call Logs', ng_href('voice-channel.call_logs'), 'voice-channel.call_logs', 'fa-clock-o') }}
+                        {{ nav.list_subitem('Call Logs', ng_href('voice-channel.call_logs'), 'voice-channel.call_logs', 'far fa-clock') }}
                         {#{{ nav.list_subitem('Music & Greetings', ng_href('voice-channel.music_and_greetings'), 'voice-channel.music_and_greetings', 'fa-music') }}#}
                     {{ nav.list_item_group_end() }}
                 {% endif %}
                 {{ nav.list_item_group(phrase('adm.general.apps'), 'fa-cubes', '', 'apps') }}
                     {{ nav.list_subitem(phrase('adm.general.apps'), ng_href('apps.apps'), 'apps.apps', 'fa-puzzle-piece') }}
                     {{ nav.list_subitem(phrase('adm.general.api_keys'), ng_href('apps.api_keys'), 'apps.api_keys', 'fa-key') }}
-                    {{ nav.list_subitem(phrase('adm.general.oauth'), ng_href('apps.oauth_clients'), 'apps.oauth_clients', 'fa-openid') }}
-                    {{ nav.list_subitem(phrase('adm.general.importer'), ng_href('apps.importer'), 'apps.importer', 'fa-cloud-download') }}
+                    {{ nav.list_subitem(phrase('adm.general.oauth'), ng_href('apps.oauth_clients'), 'apps.oauth_clients', 'fab fa-openid') }}
+                    {{ nav.list_subitem(phrase('adm.general.importer'), ng_href('apps.importer'), 'apps.importer', 'fa-cloud-download-alt') }}
                 {{ nav.list_item_group_end() }}
-                {{ nav.list_item_group(phrase('adm.general.tasks'), 'fa-check-circle-o', '', 'tasks') }}
+                {{ nav.list_item_group(phrase('adm.general.tasks'), 'far fa-check-circle', '', 'tasks') }}
                     {{ nav.list_subitem(phrase('adm.tasks.settings'), ng_href('tasks.settings'), 'tasks.settings', 'fa-cog') }}
                 {{ nav.list_item_group_end() }}
                 {% if not app.isCloud() and not app.getSetting('disable_server_section') %}
@@ -232,15 +232,15 @@
                         {{ nav.list_subitem('ElasticSearch', ng_href('server.elastic_search'), 'server.settings_elastic_search', 'fa-search') }}
                         {{ nav.list_subitem('Realtime Events', ng_href('server.notifications'), 'server.notifications', 'fa-rss') }}
                         {{ nav.list_subitem('Report File', ng_href('server.report_file'), 'server.report_file', 'fa-download') }}
-                        {{ nav.list_subitem('Server Requirements', ng_href('server.server_reqs'), 'server.server_reqs', 'fa-check-square-o') }}
-                        {{ nav.list_subitem('File Check', ng_href('server.file_check'), 'server.file_check', 'fa-shield') }}
+                        {{ nav.list_subitem('Server Requirements', ng_href('server.server_reqs'), 'server.server_reqs', 'far fa-check-square') }}
+                        {{ nav.list_subitem('File Check', ng_href('server.file_check'), 'server.file_check', 'fa-shield-alt') }}
                         {{ nav.list_subitem('File Uploads', ng_href('server.file_uploads'), 'server.file_uploads', 'fa-upload') }}
-                        {{ nav.list_subitem('Scheduled Tasks', ng_href('server.cron'), 'server.cron', 'fa-clock-o') }}
+                        {{ nav.list_subitem('Scheduled Tasks', ng_href('server.cron'), 'server.cron', 'far fa-clock') }}
                         {{ nav.list_subitem('PHP Info', ng_href('server.php_info'), 'server.php_info', 'fa-info-circle') }}
-                        {{ nav.list_subitem('MySQL Info', ng_href('server.mysql_info'), 'server.mysql_info', 'fa-hdd-o') }}
+                        {{ nav.list_subitem('MySQL Info', ng_href('server.mysql_info'), 'server.mysql_info', 'far fa-hdd') }}
                         {{ nav.list_subitem('Error Logs', ng_href('server.error_logs'), 'server.error_logs', 'fa-exclamation') }}
                         {{ nav.list_subitem('Incidents', ng_href('server.incidents'), 'server.incidents', 'fa-exclamation') }}
-                        {{ nav.list_subitem('Jobs', ng_href('server.jobs'), 'server.jobs', 'fa-clock-o') }}
+                        {{ nav.list_subitem('Jobs', ng_href('server.jobs'), 'server.jobs', 'far fa-clock') }}
                     {{ nav.list_item_group_end() }}
                 {% endif %}
 
@@ -252,7 +252,7 @@
 
                 {% if app.user.can_billing %}
                     <div class="show-in-bare-page">
-                        {{ nav.list_item('Licensing and Billing', ng_href('license'), 'license', 'fa-dollar') }}
+                        {{ nav.list_item('Licensing and Billing', ng_href('license'), 'license', 'fa-dollar-sign') }}
                     </div>
                 {% endif %}
 
@@ -272,7 +272,7 @@
     {{ ng_tpl('AdminInterfaceBundle:Common:timepicker.html.twig', 'template/timepicker/timepicker.html') }}
 
     <link rel="stylesheet" href="{{ asset('bower_components/normalize-css/normalize.css') }}" />
-    <link rel="stylesheet" href="{{ asset('bower_components/font-awesome/css/font-awesome.min.css') }}" />
+    <link rel="stylesheet" href="{{ asset('fontawesome.css', 'app_assets') }}" type="text/css" />
     <link rel="stylesheet" href="{{ asset('node_modules/Select2/select2.css') }}" />
     <link rel="stylesheet" href="{{ asset('bower_components/spectrum/spectrum.css') }}" />
     <link rel="stylesheet" href="{{ asset('bower_components/blueimp-file-upload/css/jquery.fileupload.css') }}">

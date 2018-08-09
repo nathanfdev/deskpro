@@ -11,7 +11,7 @@ export class ReopenOverlay extends React.Component {
     lostConnection: PropTypes.bool
   };
 
-  onReopen = event => {
+  onReopen = (event) => {
     event.preventDefault();
     this.props.onReopen();
   };
@@ -24,7 +24,7 @@ export class ReopenOverlay extends React.Component {
         {lostConnection
           ? null
           : <button className={classNames('dpdesignportal-button', { locked })} onClick={this.onReopen}>
-            <i className="fa fa-commenting-o" /> {portalPhrases.get('portal.chat.reopen_chat')}
+            <i className="far fa-comment-dots" /> {portalPhrases.get('portal.chat.reopen_chat')}
           </button>
         }
       </div>

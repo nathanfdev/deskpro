@@ -39,7 +39,7 @@ class Settings extends React.Component {
     if (canUseForwarding) {
       props.panels.push({
         title:   'Call forwarding',
-        icon:    'fa fa-mail-forward',
+        icon:    'fas fa-share',
         content: <CallForwardContainer />
       });
     }

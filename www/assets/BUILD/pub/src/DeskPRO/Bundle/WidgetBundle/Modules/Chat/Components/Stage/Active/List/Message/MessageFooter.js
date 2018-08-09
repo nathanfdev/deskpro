@@ -29,7 +29,7 @@ export class MessageFooter extends React.Component {
           {date && <span className="dpdesignportal-message-footer-timer">{moment(date).format('HH:mm')}</span>}
           {notDelivered &&
             <span className="dpdesignportal-message-footer-not-delivered">
-              <i className="fa fa-warning" /> {portalPhrases.get('portal.chat.asset_not_delivered')}
+              <i className="fas fa-exclamation-triangle" /> {portalPhrases.get('portal.chat.asset_not_delivered')}
             </span>
           }
         </div>

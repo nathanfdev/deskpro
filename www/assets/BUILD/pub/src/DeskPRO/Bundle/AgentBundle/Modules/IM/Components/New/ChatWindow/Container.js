@@ -512,7 +512,7 @@ class Container extends React.Component {
                 onClick={this.openAttach}
               />
               <i
-                className="fa fa-smile-o reply-icon emoji trigger"
+                className="far fa-smile reply-icon emoji trigger"
                 onClick={this.openEmoji} ref={(c) => { this.emoji = c; }}
               />
             </form>

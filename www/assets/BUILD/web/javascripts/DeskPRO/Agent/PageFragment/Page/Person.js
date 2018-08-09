@@ -686,12 +686,12 @@ DeskPRO.Agent.PageFragment.Page.Person = new Orb.Class({
 							format: 'YYYY-MM-DD HH:mm',
 							widgetParent: $(this).parent().css('position', 'relative'),
 							icons: {
-								time: 'fa fa-clock-o',
-								date: 'fa fa-calendar-o',
-								up: 'fa fa-chevron-up',
-								down: 'fa fa-chevron-down',
-								previous: 'fa fa-chevron-left',
-								next: 'fa fa-chevron-right'
+								time: 'far fa-clock',
+								date: 'far fa-calendar',
+								up: 'fas fa-chevron-up',
+								down: 'fas fa-chevron-down',
+								previous: 'fas fa-chevron-left',
+								next: 'fas fa-chevron-right'
 							}
 						});
 						$(this).on('dp.change', function(){

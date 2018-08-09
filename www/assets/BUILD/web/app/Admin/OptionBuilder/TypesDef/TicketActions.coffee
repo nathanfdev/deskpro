@@ -921,13 +921,13 @@ define [
       return def
 
     getSetDeleted: (options = {}) ->
-      options.icon = 'fa-chain-broken'
+      options.icon = 'fa-unlink'
       def = @getStandardIs(options)
       return def
 
     getModStopTriggers: (options = {}) ->
       options.propName = 'stop_triggers'
-      options.icon = 'fa-chain-broken'
+      options.icon = 'fa-unlink'
       def = @getStandardIs(options)
       return def
 

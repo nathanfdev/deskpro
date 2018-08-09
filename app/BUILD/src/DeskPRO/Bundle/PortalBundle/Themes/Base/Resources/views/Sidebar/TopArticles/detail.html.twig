@@ -5,7 +5,7 @@
     <ul>
       {% for article in pager %}
         <li>
-          <a href="{{ portal_path(article) }}"><i class="fa fa-file-text-o"></i> {{ article.translated_title }}</a>
+          <a href="{{ portal_path(article) }}"><i class="far fa-file-alt"></i> {{ article.translated_title }}</a>
         <span class="meta">
           {% if article.person %}
             {{ phrase('portal.sidebar.article_posted_by', { name: article.person.display_name_user }) }}

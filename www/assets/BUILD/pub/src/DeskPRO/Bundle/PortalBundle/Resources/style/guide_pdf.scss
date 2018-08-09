@@ -1,12 +1,6 @@
 @import url(https://fonts.googleapis.com/css?family=Lato:400,700,700italic,400italic);
 
 $modules-path: "../../../../../../../pub/node_modules" !default;
-$fa-font-path: "#{$modules-path}/font-awesome/fonts" !default;
-
-@import "../../../../../../node_modules/font-awesome/scss/variables";
-@import "../../../../../../node_modules/font-awesome/scss/path";
-@import "precompiled-fontawesome.css";
-
 
 @import '../../../AppBundle/Resources/style/variables';
 @import "vars";

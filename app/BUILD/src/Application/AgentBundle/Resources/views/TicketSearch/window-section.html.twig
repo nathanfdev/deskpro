@@ -8,8 +8,8 @@
 	<div class="source-pane-header">
         {% block pane_header %}
 			<ul class="pane-tabs">
-				<li class="tab active" data-tab-id="pane-content-main"><i class="icon-dp-ticket"></i> {{ phrase('agent.chrome.nav_tickets') }}</li>
-                {% block pane_other_tabs %}<li class="tab" data-tab-id="pane-content-search"><i class="icon-search"></i> {{ phrase('agent.chrome.nav_search') }}</li>{% endblock %}
+				<li class="tab active" data-tab-id="pane-content-main"><i class="fa icon-dp-ticket"></i> {{ phrase('agent.chrome.nav_tickets') }}</li>
+                {% block pane_other_tabs %}<li class="tab" data-tab-id="pane-content-search"><i class="fa fa-search"></i> {{ phrase('agent.chrome.nav_search') }}</li>{% endblock %}
 			</ul>
         {% endblock %}
 	</div>
@@ -39,7 +39,7 @@
 													data-filter-name="{{filter.sys_name}}"
 											>
 												<div class="item" data-route="listpane:{{ path('agent_ticketsearch_runfilter', {'filter_id': filter.id}) }}">
-													<i class="dp-toggle-icon icon-caret-right click-through"></i>
+													<i class="dp-toggle-icon fas fa-caret-right click-through"></i>
 													<h3>
                                                         {{ filter.title }}
 													</h3>
@@ -47,7 +47,7 @@
 												</div>
 												<div class="item-form" style="display: none;">
 													<div class="select-value-wrap">
-														<div class="select-value"><label id="nav_filter_group_label_{{ filter.id }}"></label> <i class="icon-caret-down"></i></div>
+														<div class="select-value"><label id="nav_filter_group_label_{{ filter.id }}"></label> <i class="fas fa-caret-down"></i></div>
 														<select class="dpe_select invisible-trigger filter_grouping_select" data-filter-id="{{ filter.id }}" data-label-bound="#nav_filter_group_label_{{ filter.id }}" data-dropdown-css-class="invisible-trigger small filter-list" data-select-width="165">
 															<option value="">{{ phrase('agent.tickets.select_group_var') }}</option>
                                                             {% if brands|length > 1 %}
@@ -92,7 +92,7 @@
 													data-filter-name="{{filter.sys_name}}"
 											>
 												<div class="item" data-route="listpane:{{ path('agent_ticketsearch_runfilter', {'filter_id': filter.id}) }}">
-													<i class="dp-toggle-icon icon-caret-right click-through"></i>
+													<i class="dp-toggle-icon fas fa-caret-right click-through"></i>
 													<h3>
                                                         {{ filter.title }}
 													</h3>
@@ -100,7 +100,7 @@
 												</div>
 												<div class="item-form" style="display: none;">
 													<div class="select-value-wrap">
-														<div class="select-value"><label id="nav_filter_group_label_{{ filter.id }}"></label> <i class="icon-caret-down"></i></div>
+														<div class="select-value"><label id="nav_filter_group_label_{{ filter.id }}"></label> <i class="fas fa-caret-down"></i></div>
 														<select class="dpe_select invisible-trigger filter_grouping_select" data-filter-id="{{ filter.id }}" data-label-bound="#nav_filter_group_label_{{ filter.id }}" data-dropdown-css-class="invisible-trigger small filter-list" data-select-width="165">
 															<option value="">{{ phrase('agent.tickets.select_group_var') }}</option>
                                                             {% if brands|length > 1 %}
@@ -145,7 +145,7 @@
 								<h1>{{ phrase('agent.general.filters') }}</h1>
 								<nav>
 									<ul>
-										<li id="ticket_customfilters_launch_editor"><i class="icon-cog"></i></li>
+										<li id="ticket_customfilters_launch_editor"><i class="fas fa-cog"></i></li>
 									</ul>
 								</nav>
 							</header>
@@ -170,7 +170,7 @@
 										</li>
                                     {% else %}
 										<li class="no-data">
-                                            {% set phrase_link %}<span class="icon-cog"></span>{% endset %}
+                                            {% set phrase_link %}<span class="fas fa-cog"></span>{% endset %}
                                             {{ phrase('agent.interface.click_icon_to_add_filter', {'link':phrase_link}, true) }}
 										</li>
                                     {% endif %}
@@ -188,7 +188,7 @@
 									</h1>
 									<nav>
 										<ul>
-											<li id="ticket_slas_launch_editor"><i class="icon-cog"></i></li>
+											<li id="ticket_slas_launch_editor"><i class="fas fa-cog"></i></li>
 										</ul>
 									</nav>
 								</header>

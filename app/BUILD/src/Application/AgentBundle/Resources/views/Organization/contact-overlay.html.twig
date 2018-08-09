@@ -26,7 +26,7 @@
 									{% endfor %}
 								</select>
 								+<span data-element-handler="DeskPRO.Agent.ElementHandler.PhoneCountryCode" data-options-list="#phone_countrycode_menu">
-									<span class="icon-flag" style="display: none"></span>
+									<span class="fas fa-flag" style="display: none"></span>
 									<input type="text" size="4" class="country-code" name="contact_data[{{ contact.id }}][country_calling_code]" value="{{ contact.rec.field_1 }}" placeholder="{{ phrase('agent.people.phone_country_placeholder') }}" />
 								</span>
 								<input type="text" size="4" class="phone-number" name="contact_data[{{ contact.id }}][number]" value="{{ contact.rec.field_2 }}" placeholder="{{ phrase('agent.people.phone_number_placeholder') }}" />
@@ -54,7 +54,7 @@
 							{% endfor %}
 						</select>
 						+<span data-element-handler="DeskPRO.Agent.ElementHandler.PhoneCountryCode" data-options-list="#phone_countrycode_menu">
-							<span class="icon-flag" style="display: none"></span>
+							<span class="fas fa-flag" style="display: none"></span>
 							<input type="text" size="4" class="country-code" name="new_contact_data[phone][%id%][country_calling_code]" value="" placeholder="{{ phrase('agent.people.phone_country_placeholder') }}" />
 						</span>
 						<input type="text" size="4" class="phone-number" name="new_contact_data[phone][%id%][number]" placeholder="{{ phrase('agent.people.phone_number_placeholder') }}" />

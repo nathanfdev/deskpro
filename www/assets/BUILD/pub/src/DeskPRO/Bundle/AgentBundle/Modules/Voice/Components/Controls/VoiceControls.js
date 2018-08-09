@@ -185,7 +185,7 @@ class Active extends React.Component {
         </Title>
 
         <span className="voice-controls-recording">
-          <i className="fa fa-dot-circle-o" />
+          <i className="far fa-dot-circle" />
           Recording
         </span>
 

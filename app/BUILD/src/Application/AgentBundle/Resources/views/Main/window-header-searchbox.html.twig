@@ -8,7 +8,7 @@
 		<i class="x-icon fa fa-times-circle" ng-show="mode == 'search' && searchQuery.length" ng-click="clearSearch()" title="Clear search"></i>
 		<div class="icons-well">
 			<ul>
-				<li class="recent" title="Recent Tabs" id="recent_tabs_btn" ng-click="toggleMode('recent')"><i class="fa fa-clock-o"></i></li>
+				<li class="recent" title="Recent Tabs" id="recent_tabs_btn" ng-click="toggleMode('recent')"><i class="far fa-clock"></i></li>
 				<li class="notif" title="Notifications" id="notifs_btn" ng-click="toggleMode('notif')"><i class="fa fa-bell"></i><em id="notifs_counts" data-count="0">0</em></li>
 			</ul>
 		</div>
@@ -65,7 +65,7 @@
 
 	<div class="dp-header-notify-menu" id="dp_header_notify_wrap">
 		<header>
-			<a class="pref-link trigger-notify-prefs" data-type="main"><i class="icon-cog"></i></a>
+			<a class="pref-link trigger-notify-prefs" data-type="main"><i class="fas fa-cog"></i></a>
 			<a href="#" class="see_current selected">{{ phrase('agent.chrome.notify_list-new-messages', {}, true) }}</a>
 			<a href="#" class="see_dismissed">{{ phrase('agent.chrome.notify_list-view-dismissed') }}</a>
 		</header>
@@ -80,12 +80,12 @@
 			<ul class="notify-list for-dismissed" id="dp_notify_list_archive_main" style="display: none;"></ul>
 		</article>
 		<footer class="for-current">
-			<a class="btn trigger-dismiss"><i class="icon-ban-circle"></i> {{ phrase('agent.chrome.notify_list-dismiss-all') }}</a>
+			<a class="btn trigger-dismiss"><i class="fas fa-ban"></i> {{ phrase('agent.chrome.notify_list-dismiss-all') }}</a>
 		</footer>
 	</div>
 	<script type="text/x-deskpro-plain" id="dp_header_notify_row_tpl">
 		<li class="inside">
-			<div class="dismiss"><i class="icon-remove"></i></div>
+			<div class="dismiss"><i class="fas fa-times"></i></div>
 			<time></time>
 			<big></big>
 			<small></small>

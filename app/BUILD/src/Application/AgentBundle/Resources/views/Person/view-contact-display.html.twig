@@ -9,7 +9,7 @@
 			data-email-address="{{ email.email }}"
 			style="position: relative;"
 		>
-			<span class="copy-btn-outer"><span class="copy-btn" data-clipboard-text="{{ email.email }}" title="Copy to clipboard"><i class="icon-paste"></i></span></span>
+			<span class="copy-btn-outer"><span class="copy-btn" data-clipboard-text="{{ email.email }}" title="Copy to clipboard"><i class="fas fa-paste"></i></span></span>
 			<a href="mailto:{{ email.email }}">{{ email.email }}</a>
 
 			{% if person.emails|length > 1 %}

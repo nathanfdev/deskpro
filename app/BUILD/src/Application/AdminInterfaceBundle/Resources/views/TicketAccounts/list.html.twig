@@ -3,7 +3,7 @@
 	<section class="dp-paneblock dp-listpane">
 		<header>
 			<nav>
-				<span class="status-pinger saved-ping" dp-ping-flash="display_orders"><i class="fa fa-check-square-o-square"></i> {{ phrase('agent.general.saved') }}</span>
+				<span class="status-pinger saved-ping" dp-ping-flash="display_orders"><i class="far fa-check-square"></i> {{ phrase('agent.general.saved') }}</span>
 				{% include 'AdminInterfaceBundle:Layout:standard-settings-menu.html.twig' %}
 			</nav>
 			<h3 ng-pluralize count="TicketAccountsList.accounts.length || 0" when="{{ ng_plural_phrase('adm.tickets.x_email_accounts') }}"></h3>
@@ -112,7 +112,7 @@
 				<li><i class="fa fa-book"></i> <a href="https://support.deskpro.com/guides/topic/209" target="_blank">Manually run email processing (On-Premise)</a> </li>
 				<li><i class="fa fa-book"></i> <a href="https://support.deskpro.com/guides/topic/360#ticket-forwarding-inbound" target="_blank">Inbound ticket forwarding</a> </li>
 				<li><i class="fa fa-book"></i> <a href="https://support.deskpro.com/guides/topic/236#email-action-codes" target="_blank">Email action codes</a></li>
-				{# need to write this article <li><i class="fa fa-file-text"></i> Sending a different auto-response email outside working hours</li> #}
+				{# need to write this article <li><i class="fas fa-file-alt"></i> Sending a different auto-response email outside working hours</li> #}
 
 			</ul>
 		</section>

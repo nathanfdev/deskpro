@@ -69,7 +69,7 @@
 {% macro news_search_result(news) %}
     <li>
         <a href="{{ portal_path(news) }}">
-          <span class="item-title"><span class="date-posted"><i class="fa fa-calendar-o"></i> {{ date_ago(news.date_published) }}</span>{{ news.title }}</span>
+          <span class="item-title"><span class="date-posted"><i class="far fa-calendar"></i> {{ date_ago(news.date_published) }}</span>{{ news.title }}</span>
           <p>{{ news.realContent|html_content_preview(350) }}</p>
         </a>
   </li>

@@ -31,7 +31,7 @@ export class OnlineAgentsPopup extends React.Component {
     return (
       <ChatPopup small {...this.props}>
         <span className="close-panel" onClick={this.onClose}>
-          <i className="fa fa-close" />
+          <i className="fa fa-times" />
         </span>
         <div>
           <div className="preemtive-chat-content" onClick={this.onClick}>

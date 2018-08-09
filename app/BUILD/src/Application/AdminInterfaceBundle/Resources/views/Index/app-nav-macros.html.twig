@@ -8,37 +8,49 @@
     </div>
 {% endmacro %}
 
+{% macro list_icon(icon) %}
+    {% if 'far ' in icon or 'fal ' in icon or 'fab ' in icon %}
+        {{ icon }}
+    {% else %}
+        fas {{ icon }}
+    {% endif %}
+{% endmacro %}
+
 {% macro list_item(title, href, state_mark, icon, cond, ngClass) %}
+    {% import _self as local_nav %}
     <li {% if cond %}ng-if="{{ cond }}"{% endif %} class="navitem navitem-{{ state_mark | replace({".": "-"}) }}">
         <a ng-href="{{ href }}" class="item" {% if ngClass %}ng-class="{{ ngClass }}"{% endif %} dp-state-mark="{{ state_mark }}">
-            <i class="fa {{ icon }}"></i> {{ title }}
+            <i class="{{ local_nav.list_icon(icon) }}"></i> {{ title }}
             <span class="disabled-tag" title="Disabled">Disabled</span>
         </a>
     </li>
 {% endmacro %}
 
 {% macro list_subitem(title, href, state_mark, icon, cond, ngClass) %}
+    {% import _self as local_nav %}
     <li {% if cond %}ng-if="{{ cond }}"{% endif %} class="navitem navitem-{{ state_mark | replace({".": "-"}) }}">
         <a ng-href="{{ href }}" class="item" {% if ngClass %}ng-class="{{ ngClass }}"{% endif %} dp-state-mark="{{ state_mark }}">
-            <i class="fa {{ icon }}"></i> {{ title }}
+            <i class="{{ local_nav.list_icon(icon) }}"></i> {{ title }}
             <span class="disabled-tag" title="Disabled">Disabled</span>
         </a>
     </li>
 {% endmacro %}
 
 {% macro list_subitem_regex_statemark(title, href, state_mark, icon, cond, ngClass) %}
+    {% import _self as local_nav %}
     <li {% if cond %}ng-if="{{ cond }}"{% endif %} class="navitem navitem-{{ state_mark | replace({".": "-"}) }}">
         <a ng-href="{{ href }}" class="item" {% if ngClass %}ng-class="{{ ngClass }}"{% endif %} dp-state-mark-regex="{{ state_mark }}">
-            <i class="fa {{ icon }}"></i> {{ title }}
+            <i class="{{ local_nav.list_icon(icon) }}"></i> {{ title }}
             <span class="disabled-tag" title="Disabled">Disabled</span>
         </a>
     </li>
 {% endmacro %}
 
 {% macro list_item_group(title, icon, href, state_mark, cond, ngClass, groupNgClass) %}
+    {% import _self as local_nav %}
     <li {% if groupNgClass %}ng-class="{{ groupNgClass }}"{% endif %} {% if cond %}ng-show="{{ cond }}"{% endif %} class="navitem navitem-{{ state_mark | replace({".": "-"}) }} is-group">
         <a ng-href="{{ href }}" class="item group" {% if ngClass %}ng-class="{{ ngClass }}"{% endif %} dp-state-mark="{{ state_mark }}">
-            <i class="fa fa-caret-down pull-right"></i><i class="fa {{ icon }}"></i> {{ title }}
+            <i class="fa fa-caret-down pull-right"></i><i class="{{ local_nav.list_icon(icon) }}"></i> {{ title }}
             <span class="disabled-tag" title="Disabled">Disabled</span>
         </a>
         <ul class="sub-list">

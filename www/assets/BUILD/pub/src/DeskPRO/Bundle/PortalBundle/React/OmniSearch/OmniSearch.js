@@ -160,14 +160,14 @@ export class OmniSearch extends React.Component {
           <OmniSearchResultSection
             name={portalPhrases.get('portal.general.nav-tickets')}
             nameApi="ticket"
-            nameIcon="fa fa-support"
+            nameIcon="far fa-life-ring"
             initialResult={'ticket' in data ? data.ticket : {}}
             q={this.state.searchQuery}
           />
           <OmniSearchResultSection
             name={portalPhrases.get('portal.general.nav-kb')}
             nameApi="article"
-            nameIcon="fa fa-file-text-o"
+            nameIcon="far fa-file-alt"
             initialResult={'article' in data ? data.article : {}}
             q={this.state.searchQuery}
           />
@@ -181,7 +181,7 @@ export class OmniSearch extends React.Component {
           <OmniSearchResultSection
             name={portalPhrases.get('portal.general.nav-news')}
             nameApi="news"
-            nameIcon="fa fa-file-text-o"
+            nameIcon="far fa-file-alt"
             initialResult={'news' in data ? data.news : {}}
             q={this.state.searchQuery}
           />

@@ -84,13 +84,13 @@ pageMeta.baseId = '{{ baseId }}';
                 <li data-tab-for="#{{ baseId }}_fields_display_main_wrap">{{ phrase('agent.general.properties') }}</li>
                 {% if ticket_feedback_links|length and app.user.hasPerm('agent_tickets.use') %}
                     <li data-tab-for="#{{ baseId }}_linked_tickets_wrap"><i
-                          class="icon-link"></i> {{ phrase('agent.tickets.linked_tickets') }} (<span
+                          class="fas fa-link"></i> {{ phrase('agent.tickets.linked_tickets') }} (<span
                           id="{{ baseId }}_linked_tickets_count"
                           data-count="{{ ticket_feedback_links|length }}">{{ ticket_feedback_links|length }}</span>)
                     </li>
                 {% endif %}
                   <li data-tab-for="#{{ baseId }}_subscribed_persons_wrap"><i
-                        class="icon-link"></i> {{ phrase('agent.feedback.subscribed_users') }}
+                        class="fas fa-link"></i> {{ phrase('agent.feedback.subscribed_users') }}
                         {% if subscribed_persons|length %}
                           (<span id="{{ baseId }}_subscribed_persons_count"
                                  data-count="{{ subscribed_persons|length }}">{{ subscribed_persons|length }}</span>)

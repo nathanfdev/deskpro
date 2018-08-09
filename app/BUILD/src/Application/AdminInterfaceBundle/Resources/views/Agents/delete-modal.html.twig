@@ -41,7 +41,7 @@
 {% block modal_footer %}
 	<button class="btn btn-danger" ng-click="doDelete(options)" ng-hide="isSelf || is_loading">
 		<span ng-show="options.method == 'user'"><i class="fa fa-user"></i> Convert agent into user</span>
-		<span ng-show="options.method == 'delete'"><i class="fa fa-trash-o"></i> Mark the agent account as deleted</span>
+		<span ng-show="options.method == 'delete'"><i class="far fa-trash-alt"></i> Mark the agent account as deleted</span>
 	</button>
 	<button class="btn btn-default" ng-click="dismiss()" ng-if="isSelf">
 		Cancel

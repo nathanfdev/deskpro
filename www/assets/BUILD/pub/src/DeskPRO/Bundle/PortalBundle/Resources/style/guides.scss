@@ -78,7 +78,8 @@ $portal-img-path: "#{$pub-path}/src/DeskPRO/Bundle/PortalBundle/Resources/img";
       color: $dp-sonic-primary;
     }
     &:before {
-      font: normal normal normal 14px/1 FontAwesome;
+      font-family: 'Font Awesome 5 Free';
+      font-weight: 900;
       font-size: 1.20em;
       margin-right: 5px;
       display: inline-block;
@@ -88,15 +89,18 @@ $portal-img-path: "#{$pub-path}/src/DeskPRO/Bundle/PortalBundle/Resources/img";
     &.knowledgebase:before,
     &.knowledgebase_article:before {
       content: "\F022";
+      font-weight: 400;
     }
     &.download:before {
       content: "\f019";
     }
     &.news:before {
       content: "\F133";
+      font-weight: 400;
     }
     &.feedback:before {
-      content: "\F087";
+      content: "\F164";
+      font-weight: 400;
     }
     &.guide:before,
     &.topic:before {
@@ -116,7 +120,7 @@ $portal-img-path: "#{$pub-path}/src/DeskPRO/Bundle/PortalBundle/Resources/img";
     border-radius: 2px;
     box-sizing: border-box;
     &::before {
-      font: normal normal normal 24px FontAwesome;
+      font: normal normal normal 24px 'Font Awesome 5 Free';
       float: left;
       margin-right: 10px;
     }

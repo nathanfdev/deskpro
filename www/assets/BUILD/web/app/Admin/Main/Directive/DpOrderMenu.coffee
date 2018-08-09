@@ -10,7 +10,7 @@ define [
       template: """
         <span class="dp-order-ctrl dropdown">
           <div class="orig" style="display: none;" ng-transclude></div>
-          <a class="title dropdown-toggle" data-toggle="dropdown">Order by: {{title}} <i class="fa fa-sort-alpha-desc" ng-show="sortDir == 'DESC'"></i><i class="fa fa-sort-alpha-asc" ng-show="sortDir == 'ASC'"></i></a>
+          <a class="title dropdown-toggle" data-toggle="dropdown">Order by: {{title}} <i class="fas fa-sort-alpha-up" ng-show="sortDir == 'DESC'"></i><i class="fa fa-sort-alpha-asc" ng-show="sortDir == 'ASC'"></i></a>
           <ul class="dropdown-menu">
             <li class="dropdown-header">Sort Field</li>
             <li ng-repeat="opt in options"><a ng-click="$event.preventDefault(); setSortField(opt.value);">{{opt.title}} <i class="fa fa-check" ng-show="sortField == opt.value"></i></a></li>

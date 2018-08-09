@@ -11,7 +11,7 @@ pageMeta.agent_id = {{ agent.id|default(0)}};
 
 {% endblock pagemeta %}
 {% block pane_header %}
-	<h1><i class="icon-dp-chat"></i> {{ phrase('agent.userchat.list_title', {count: convos|length}) }}</h1></h1>
+	<h1><i class="fa icon-dp-chat"></i> {{ phrase('agent.userchat.list_title', {count: convos|length}) }}</h1></h1>
 {% endblock %}
 {% block listing %}
 {% if convos|length %}

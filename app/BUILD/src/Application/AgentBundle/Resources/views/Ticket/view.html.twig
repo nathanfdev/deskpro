@@ -183,13 +183,13 @@
 				<td width="10" nowrap="nowrap">
 					<div class="id-number" id="{{ baseId }}_idref_switch">
 						<span id="{{ baseId }}_id_num" title="{{ phrase('agent.general.ticket_id') }}">
-							<span class="copy-btn-outer"><span class="copy-btn" data-clipboard-text="{{ ticket.id }}" title="{{ phrase('agent.general.copy_to_clipboard') }}"><i class="icon-paste"></i></span></span>
-                            <span class="copy-btn-outer permalink"><span class="copy-btn" data-clipboard-text="{{ ticket_permalink }}" title="{{ phrase('agent.general.copy_permalink') }}"><i class="icon-link"></i></span></span>
+							<span class="copy-btn-outer"><span class="copy-btn" data-clipboard-text="{{ ticket.id }}" title="{{ phrase('agent.general.copy_to_clipboard') }}"><i class="fas fa-paste"></i></span></span>
+                            <span class="copy-btn-outer permalink"><span class="copy-btn" data-clipboard-text="{{ ticket_permalink }}" title="{{ phrase('agent.general.copy_permalink') }}"><i class="fas fa-link"></i></span></span>
 							{{ phrase('agent.general.id') }}: {{ ticket.id }}
 						</span>
 						<span id="{{ baseId }}_ref_num" style="display: none;" title="Ticket Reference">
-							<span class="copy-btn-outer"><span class="copy-btn" data-clipboard-text="{{ ticket.ref }}" title="{{ phrase('agent.general.copy_to_clipboard') }}"><i class="icon-paste"></i></span></span>
-                            <span class="copy-btn-outer permalink"><span class="copy-btn" data-clipboard-text="{{ ticket_permalink }}" title="{{ phrase('agent.general.copy_permalink') }}"><i class="icon-link"></i></span></span>
+							<span class="copy-btn-outer"><span class="copy-btn" data-clipboard-text="{{ ticket.ref }}" title="{{ phrase('agent.general.copy_to_clipboard') }}"><i class="fas fa-paste"></i></span></span>
+                            <span class="copy-btn-outer permalink"><span class="copy-btn" data-clipboard-text="{{ ticket_permalink }}" title="{{ phrase('agent.general.copy_permalink') }}"><i class="fas fa-link"></i></span></span>
 							{{ phrase('agent.general.id') }}: {{ ticket.ref }}
 						</span>
 
@@ -241,7 +241,7 @@
                     &nbsp;&nbsp;
                     <a id="{{ baseId }}_org_link" class="dp-btn as-popover"
                        data-route="page:{{ path('agent_org_view', {'organization_id': ticket.person.organization.id}) }}"><i
-                              class="icon-briefcase"></i>
+                              class="fas fa-briefcase"></i>
                         {{ ticket.person.organization }}
                         {% if ticket.person.organization_position %}<span class="email">
                             ({{ ticket.person.organization_position }})</span>{% endif %}
@@ -249,7 +249,7 @@
                 {% endif %}
 
                 {% if ticket_perms.modify_cc and not user_parts|length %}
-                    <a class="cc-btn cc-btn-main" id="{{ baseId }}_cc_list_btn2"><i class="icon-envelope"></i>
+                    <a class="cc-btn cc-btn-main" id="{{ baseId }}_cc_list_btn2"><i class="fas fa-envelope"></i>
                         <em>{{ phrase('agent.tickets.add_cc') }}</em></a>
                 {% endif %}
 
@@ -275,7 +275,7 @@
                         <div class="cc-btn-holder">
                             {% if ticket_perms.modify_cc and user_parts|length %}
                                 <a class="cc-btn cc-btn-main" id="{{ baseId }}_cc_list_btn"><i
-                                          class="icon-envelope"></i> <em>{{ phrase('agent.tickets.add_cc') }}</em></a>
+                                          class="fas fa-envelope"></i> <em>{{ phrase('agent.tickets.add_cc') }}</em></a>
                             {% endif %}
                         </div>
 
@@ -407,7 +407,7 @@
                         {% endfor %}
                     </select>
 
-                    <i id="{{ baseId }}_flagicon" class="icon-flag flag-color-{{ ticket_flagged|default('none') }}"
+                    <i id="{{ baseId }}_flagicon" class="fas fa-flag flag-color-{{ ticket_flagged|default('none') }}"
                        style="margin:0; padding: 0;"></i>
                     <span id="{{ baseId }}_flagtext">{% if ticket_flagged %}{{ flag.flag_name(ticket_flagged) }}{% endif %}</span>
 
@@ -433,13 +433,13 @@
                             <li data-tab-for="#{{ baseId }}_fields_display_main_wrap">{{ phrase('agent.general.properties') }}</li>
                             {% if linked_tickets.count %}
                             <li data-tab-for="#{{ baseId }}_linked_wrap"><i
-                                      class="icon-link"></i> {{ phrase('agent.tickets.linked_tickets') }} (<span
+                                      class="fas fa-link"></i> {{ phrase('agent.tickets.linked_tickets') }} (<span
                                       id="{{ baseId }}_linked_count"
                                       data-count="{{ linked_tickets.count }}">{{ linked_tickets.count }}</span>)
                                 </li>{% endif %}
                             {% if ticket_feedback_links|length and app.user.hasPerm('agent_publish.use') and app.user.hasPerm('agent_publish.validate') %}
                                 <li data-tab-for="#{{ baseId }}_linked_feedback_wrap"><i
-                                      class="icon-link"></i> {{ phrase('agent.tickets.linked_feedback') }} (<span
+                                      class="fas fa-link"></i> {{ phrase('agent.tickets.linked_feedback') }} (<span
                                       id="{{ baseId }}_linked_feedback_count"
                                       data-count="{{ ticket_feedback_links|length }}">{{ ticket_feedback_links|length }}</span>)
                                 </li>
@@ -617,7 +617,7 @@
                                                     <a class="dp-btn dp-btn-small agent-link" data-agent-id="{{ a.person.id }}">
                                                         <span class="text" style="background-image: url({{ a.person.getPictureUrl(15) }})">{{ a.person.display_name }}</span>
                                                         {% if ticket_perms.modify_assign_agent %}
-                                                        <span class="remove-row-trigger"> <i class="icon-remove"></i></span>
+                                                        <span class="remove-row-trigger"> <i class="fas fa-times"></i></span>
                                                         {% endif %}
                                                     </a>
                                                 </li>
@@ -636,7 +636,7 @@
                                             </select>
                                         </div>
                                         <a class="new-follower-btn" id="{{ baseId }}_add_follower_btn">
-                                            <i class="icon-signin"></i>
+                                            <i class="fas fa-sign-in-alt"></i>
                                             {{ phrase('agent.tickets.add_follower') }}
                                         </a>
                                         {% endif %}
@@ -736,37 +736,37 @@
             <ul>
                 <li id="{{ baseId }}_unlock_ticket" {% if not ticket.hasLock() %}style="display: none"{% endif %}
                     data-btn-id="unlock">
-                    <i class="icon-unlock"></i>
+                    <i class="fas fa-unlock"></i>
                     {{ phrase('agent.tickets.unlock') }}
                 </li>
                 <li id="{{ baseId }}_lock_ticket" {% if ticket.hasLock() %}style="display: none"{% endif %}
                     data-btn-id="lock">
-                    <i class="icon-lock"></i>
+                    <i class="fas fa-lock"></i>
                     {{ phrase('agent.tickets.lock') }}
                 </li>
                 {% if ticket_perms.modify_merge %}
                     <li class="merge-menu-trigger noedit-hide" data-btn-id="merge-menu">
-                        <i class="icon-columns"></i>
+                        <i class="fas fa-columns"></i>
                         {{ phrase('agent.general.merge') }}
                         <span class="dp-caret"></span>
                     </li>
                 {% endif %}
                 <li id="{{ baseId }}_macros_menu_trigger" data-btn-id="macros-menu">
-                    <i class="icon-tasks"></i>
+                    <i class="fas fa-tasks"></i>
                     {{ phrase('agent.general.macros') }}
                     <span class="dp-caret"></span>
                 </li>
                 {% if ticket_perms.delete %}
                     {% if not (ticket.hidden_status in ['deleted', 'spam'] ) %}
                         <li id="{{ baseId }}_remove_menu_trigger" data-btn-id="remove-menu">
-                            <i class="icon-trash"></i>
+                            <i class="fas fa-trash-alt"></i>
                             {{ phrase('agent.general.remove') }}
                             <span class="dp-caret"></span>
                         </li>
                     {% endif %}
                 {% endif %}
                 <li id="{{ baseId }}_actions_menu_trigger" data-btn-id="actions-menu">
-                    <i class="icon-edit"></i>
+                    <i class="fas fa-edit"></i>
                     {{ phrase('agent.general.actions') }}
                     <span class="dp-caret"></span>
                 </li>
@@ -1222,7 +1222,7 @@
                                         data-macro-id="{{ macro.id }}"
                                         data-label="{{ phrase('agent.tickets.send_newticket_and_apply_x', {name: macro.title}) }}"
                                         data-get-macro-url="{{ path('agent_ticket_ajax_get_macro', {ticket_id: ticket.id|default(0), macro_id: macro.id, macro_reply_context: 1 }) }}">
-                                        <div class="on-icon"><i class="icon-ok"></i></div>
+                                        <div class="on-icon"><i class="fas fa-check"></i></div>
                                         <span class="macro-title">{{ item.title }}</span>
                                     </li>
                                 {% else %}

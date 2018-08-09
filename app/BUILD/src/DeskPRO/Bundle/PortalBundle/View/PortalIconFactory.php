@@ -143,7 +143,7 @@ class PortalIconFactory
             return '<i class="fa fa-'.$fa.'"'.$style_bit.'></i>';
         }
 
-        return '<i class="fa fa-file-o"></i>';
+        return '<i class="far fa-file"></i>';
     }
 
     /**
@@ -155,7 +155,7 @@ class PortalIconFactory
      */
     public function makeArticleIcon(Article $article)
     {
-        return '<i class="fa fa-file-text-o"></i>';
+        return '<i class="far fa-file-alt"></i>';
     }
 
     /**
@@ -167,7 +167,7 @@ class PortalIconFactory
      */
     public function makeNewsIcon(News $news)
     {
-        return '<i class="fa fa-file-text-o"></i>';
+        return '<i class="far fa-file-alt"></i>';
     }
 
     /**
@@ -179,7 +179,7 @@ class PortalIconFactory
      */
     public function makeFeedbackIcon(Feedback $feedback)
     {
-        return '<i class="fa fa-file-text-o"></i>';
+        return '<i class="far fa-file-alt"></i>';
     }
 
     /**
@@ -203,7 +203,7 @@ class PortalIconFactory
      */
     public function makeTicketIcon(Ticket $ticket)
     {
-        return '<i class="fa fa-support"></i>';
+        return '<i class="far fa-life-ring"></i>';
     }
 
     /**

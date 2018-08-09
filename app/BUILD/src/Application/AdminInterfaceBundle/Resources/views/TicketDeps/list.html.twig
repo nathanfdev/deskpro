@@ -3,7 +3,7 @@
 	<section class="dp-paneblock dp-listpane">
 		<header>
 			<nav>
-				<span class="status-pinger saved-ping" dp-ping-flash="display_orders"><i class="fa fa-check-square-o-square"></i> {{ phrase('agent.general.saved') }}</span>
+				<span class="status-pinger saved-ping" dp-ping-flash="display_orders"><i class="far fa-check-square"></i> {{ phrase('agent.general.saved') }}</span>
 				{% include 'AdminInterfaceBundle:Layout:standard-settings-menu.html.twig' %}
 			</nav>
 			<h3 ng-pluralize count="ListCtrl.deps.length || 0" when="{{ ng_plural_phrase('adm.general.x_departments') }}"></h3>
@@ -51,7 +51,7 @@
 	<section class="dp-paneblock dp-listpane">
 		<header>
 			<nav>
-				<span class="status-pinger saved-ping" dp-ping-flash="display_orders"><i class="fa fa-check-square-o-square"></i> {{ phrase('agent.general.saved') }}</span>
+				<span class="status-pinger saved-ping" dp-ping-flash="display_orders"><i class="far fa-check-square"></i> {{ phrase('agent.general.saved') }}</span>
 			</nav>
 			<h3>{{ phrase('admin.departments.default_department_header') }}</h3>
 			<div class="dp-pane-help-box">
@@ -191,9 +191,9 @@
 				<ul>
 
 				<li><i class="fa fa-book"></i> <a href="https://support.deskpro.com/guides/topic/352" target="_blank">Departments</a></li>
-				<li><i class="fa fa-file-text"></i> <a href="https://support.deskpro.com/kb/articles/191-adding-custom-user-fields-to-ticket-forms" target="_blank">Adding custom user fields to ticket forms</a></li>
-    					<li><i class="fa fa-file-text"></i> <a href="https://support.deskpro.com/kb/articles/185" target="_blank">Ticket assignment workflows</a></li>
-    			<li><i class="fa fa-file-text"></i> <a href="https://support.deskpro.com/kb/articles/256" target="_blank">Limiting agent access to tickets by department</a>
+				<li><i class="fas fa-file-alt"></i> <a href="https://support.deskpro.com/kb/articles/191-adding-custom-user-fields-to-ticket-forms" target="_blank">Adding custom user fields to ticket forms</a></li>
+    					<li><i class="fas fa-file-alt"></i> <a href="https://support.deskpro.com/kb/articles/185" target="_blank">Ticket assignment workflows</a></li>
+    			<li><i class="fas fa-file-alt"></i> <a href="https://support.deskpro.com/kb/articles/256" target="_blank">Limiting agent access to tickets by department</a>
 				</li>
 
 				</ul>

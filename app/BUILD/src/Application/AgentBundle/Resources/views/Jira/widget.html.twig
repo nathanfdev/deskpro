@@ -1,4 +1,4 @@
-$("#" + pageMeta.baseId + "_actions_menu_trigger").after("<li data-action='export-jira'><i class=\"icon-share\"></i> {{ phrase('agent.jira.export_jira') }}</li>");
+$("#" + pageMeta.baseId + "_actions_menu_trigger").after("<li data-action='export-jira'><i class=\"fas fa-share\"></i> {{ phrase('agent.jira.export_jira') }}</li>");
 
 {% if associatedIssues|length > 0 %}
 	$("#" + pageMeta.baseId + "_tasks_wrap_tab").after('<li class="off" data-tab-for="#' + pageMeta.baseId + '_jira_wrap" id="' + pageMeta.baseId + '_jira_wrap_tab">JIRA (<span id="' + pageMeta.baseId + '_jira_count">{{ associatedIssues|length }}</span>)</li>');

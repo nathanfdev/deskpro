@@ -21,13 +21,13 @@
 {% block pane_header %}
 	<ul class="pane-tabs" data-element-handler="DeskPRO.ElementHandler.SimpleTabs" data-active-classname="active">
 		{% if is_trans_view and not trans_lang_id %}
-			<li class="tab active" data-tab-for="#{{ tplvars.baseId }}_tab_main"><i class="icon-dp-article"></i> {{ phrase('agent.publish.kb_list_unique_title', {count: total_results|default(0)}) }}</li>
+			<li class="tab active" data-tab-for="#{{ tplvars.baseId }}_tab_main"><i class="fa icon-dp-article"></i> {{ phrase('agent.publish.kb_list_unique_title', {count: total_results|default(0)}) }}</li>
 		{% else %}
-			<li class="tab active" data-tab-for="#{{ tplvars.baseId }}_tab_main"><i class="icon-dp-article"></i> {{ phrase('agent.publish.kb_list_title', {count: total_results|default(0)}) }}</li>
+			<li class="tab active" data-tab-for="#{{ tplvars.baseId }}_tab_main"><i class="fa icon-dp-article"></i> {{ phrase('agent.publish.kb_list_title', {count: total_results|default(0)}) }}</li>
 		{% endif %}
 
 		{% if category %}
-			<li class="tab" data-tab-for="#{{ tplvars.baseId }}_tab_cat"><i class="icon-folder-close"></i> <span>{{ category.title }}</span></li>
+			<li class="tab" data-tab-for="#{{ tplvars.baseId }}_tab_cat"><i class="fas fa-folder"></i> <span>{{ category.title }}</span></li>
 		{% endif %}
 	</ul>
 {% endblock pane_header %}

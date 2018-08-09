@@ -4,6 +4,7 @@
             <meta http-equiv="X-UA-Compatible" content="IE=Edge,chrome=1" />
             <meta charset="utf-8" />
             <title>{{ brand_setting('core.deskpro_name')|e }}</title>
+            <link href="{{ asset('fontawesome.css', 'app_assets') }}" media="all" rel="stylesheet" type="text/css" />
             <link href="{{ portal_css_url() }}" media="all" rel="stylesheet" type="text/css" />
             <link href="{{ asset('DeskPRO_PortalBundle_vendors_style.css', 'app_assets') }}" media="all" rel="stylesheet" type="text/css" />
         </head>
@@ -30,7 +31,7 @@
                     {% if app.user and app.user.can_admin %}
                     <li>
                         <a href="{{ path('agent') }}#admin:/">
-                            <i class="fa fa-gear"></i>
+                            <i class="fas fa-cog"></i>
                             <span class="title">Admin interface</span>
                         </a>
                     </li>

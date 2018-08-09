@@ -122,7 +122,7 @@ export default class IMOverlay extends React.Component {
 
     return  {
       id:        'recent',
-      title:     <span><i className="fa fa-clock-o dp-im-tab-menu-icon" />{this.getHeader(<FormattedMessage id="agent.chrome.btn_recent" />, chats)}</span>,
+      title:     <span><i className="far fa-clock dp-im-tab-menu-icon" />{this.getHeader(<FormattedMessage id="agent.chrome.btn_recent" />, chats)}</span>,
       className: 'native-bars',
       content
     };
@@ -217,7 +217,7 @@ export default class IMOverlay extends React.Component {
     return  {
       content,
       id:        'groups',
-      title:     <span><i className="fa fa-group dp-im-tab-menu-icon" />{header}</span>,
+      title:     <span><i className="fa fa-users dp-im-tab-menu-icon" />{header}</span>,
       className: 'native-bars'
     };
   }

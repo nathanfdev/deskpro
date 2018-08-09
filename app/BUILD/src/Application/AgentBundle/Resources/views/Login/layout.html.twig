@@ -14,6 +14,7 @@
           window.pageMeta.goToLogin = true;
 		}
 	</script>
+    <link href="{{ asset('fontawesome.css', 'app_assets') }}" media="all" rel="stylesheet" type="text/css" />
 	<link href="{{ asset('DeskPRO_PortalBundle_vendors_style.css', 'app_assets') }}" media="all" rel="stylesheet" type="text/css" />
 	{% if app.returnUrl %}<script>window.DP_RETURN_TO = {{ app.returnUrl | json_encode | raw }};</script>{% endif %}
 	{% include 'AgentBundle:Main:ios-app-banner.html.twig' %}
@@ -228,7 +229,7 @@
 			color: #656c73;
 			opacity: 0.35;
 		}
-		#dp_login #wrapper .dialog-box .content form fieldset i.icon-lock {
+		#dp_login #wrapper .dialog-box .content form fieldset i.fa-lock {
 			font-size: 20px;
 			left: 14px;
 		}
@@ -353,7 +354,9 @@
 		}
 
 		.dp-btn-large [class^="icon-"],
-		.dp-btn-large [class*=" icon-"] {
+		.dp-btn-large [class^="fa-"],
+		.dp-btn-large [class*=" icon-"],
+		.dp-btn-large [class*=" fa-"] {
 			margin-top: 4px;
 		}
 
@@ -366,12 +369,16 @@
 		}
 
 		.dp-btn-small [class^="icon-"],
-		.dp-btn-small [class*=" icon-"] {
+		.dp-btn-small [class^="fa-"],
+		.dp-btn-small [class*=" icon-"],
+		.dp-btn-small [class*=" fa-"] {
 			margin-top: 0;
 		}
 
 		.dp-btn-mini [class^="icon-"],
-		.dp-btn-mini [class*=" icon-"] {
+		.dp-btn-mini [class^="fa-"],
+		.dp-btn-mini [class*=" icon-"],
+		.dp-btn-mini [class*=" fa-"] {
 			margin-top: -1px;
 		}
 
@@ -841,6 +848,6 @@
 {#{% if not app.user.id %}#}
 {{ dp_js_sso_loader('agent') }}
 {#{% endif %}#}
-<link rel="stylesheet" href="{{ asset('fonts/font-awesome.min.css') }}" type="text/css" />
+<link rel="stylesheet" href="{{ asset('fontawesome.css', 'app_assets') }}" type="text/css" />
 </body>
 </html>

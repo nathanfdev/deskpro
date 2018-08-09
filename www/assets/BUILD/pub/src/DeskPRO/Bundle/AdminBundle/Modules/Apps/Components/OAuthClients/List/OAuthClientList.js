@@ -61,7 +61,7 @@ class ListTable extends React.Component {
               <div className="column">{client.get('redirect_uris').join(', ')}</div>
               <div className="column options-button">
                 <a onClick={(event) => { event.preventDefault(); editClient(client); }}>
-                  <i className="fa fa-gear" />
+                  <i className="fas fa-cog" />
                 </a>
               </div>
               <div className="column status-tag">

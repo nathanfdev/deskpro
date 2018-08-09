@@ -62,7 +62,7 @@ pageMeta.fragmentClass = 'DeskPRO.Agent.PageFragment.SettingsPage.Profile';
 				<strong>{{ phrase('agent.settings.additional_emails') }}:</strong>
 				<ul>
 					{% for email in app.user.emails if email.id != app.user.primary_email.id %}
-						<li data-email-id="{{ email.id }}">&bull; <span>{{ email.email }}</span>&nbsp;&nbsp;&nbsp;<i class="icon-trash remove-trigger" title="Remove email"></i></li>
+						<li data-email-id="{{ email.id }}">&bull; <span>{{ email.email }}</span>&nbsp;&nbsp;&nbsp;<i class="far fa-trash-alt remove-trigger" title="Remove email"></i></li>
 					{% endfor %}
 					<li class="add-row">{{ phrase('agent.settings.add_another_email') }}: <input type="text" class="more_emails_txt" /> <a class="more_emails_trigger" href="#">{{ phrase('agent.general.add') }}</a></li>
 				</ul>

@@ -5,7 +5,7 @@
 	data-route="ticket:{{ path('agent_ticket_view', {'ticket_id': ticket.id}) }}"
 	data-route-notabreload="1"
 >
-	<div class="dismiss"><i class="icon-ban-circle"></i></div>
+	<div class="dismiss"><i class="fas fa-ban"></i></div>
 	<time datetime="{{ 'now'|date('c', 'UTC') }}"></time>
 	<big>
 		<span class="row-id">#{{ ticket.id }}</span>

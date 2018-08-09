@@ -450,12 +450,12 @@ DeskPRO.Agent.PageHelper.TicketFields = new Orb.Class({
 				widgetParent: $(this).parent().css('position', 'relative'),
 				widgetPositioning: { vertical: 'bottom' },
 				icons: {
-					time: 'fa fa-clock-o',
-					date: 'fa fa-calendar-o',
-					up: 'fa fa-chevron-up',
-					down: 'fa fa-chevron-down',
-					previous: 'fa fa-chevron-left',
-					next: 'fa fa-chevron-right'
+					time: 'far fa-clock',
+					date: 'far fa-calendar',
+					up: 'fas fa-chevron-up',
+					down: 'fas fa-chevron-down',
+					previous: 'fas fa-chevron-left',
+					next: 'fas fa-chevron-right'
 				}
 			});
 			$(this).on('dp.change', function(){

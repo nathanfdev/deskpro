@@ -26,7 +26,7 @@
 						<td class="phrase-id">
 							<span>{{ ng_var('phrase.id') }}</span>
 							<button type="button" class="btn btn-default btn-xs ng-hide" ng-show="phrase.set && phrase.set != phrase.lang_default" ng-click="phrase.set = phrase.lang_default">
-								<span ng-if="phrase.id.indexOf('custom.') == 0" style="padding-top:0"><i class="fa fa-trash-o" /> Delete</span>
+								<span ng-if="phrase.id.indexOf('custom.') == 0" style="padding-top:0"><i class="far fa-trash-alt" /> Delete</span>
 								<span ng-if="phrase.id.indexOf('custom.') != 0" style="padding-top:0"><i class="fa fa-undo" /> Reset</span>
 							</button>
 						</td>

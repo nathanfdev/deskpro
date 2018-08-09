@@ -136,7 +136,7 @@
 						Click the button below to restart the indexing process.
 					</p>
 					<p>
-						<button class="btn btn-default btn-xs" ng-click="Settings.startReindex()"><i class="fa fa-refresh"></i> Restart the indexer</button>
+						<button class="btn btn-default btn-xs" ng-click="Settings.startReindex()"><i class="fas fa-sync"></i> Restart the indexer</button>
 					</p>
 				</div>
 
@@ -199,8 +199,8 @@
 					</tbody>
 				</table>
 				<div ng-show="indexer_log">
-					<button class="btn btn-default btn-xs" style="margin: 0;" ng-click="show_log = true" ng-hide="show_log"><i class="fa fa-file-text-o"></i> View full log</button>
-					<button class="btn btn-default btn-xs" style="margin: 0;" ng-click="show_log = false" ng-show="show_log"><i class="fa fa-file-text-o"></i> Hide full log</button>
+					<button class="btn btn-default btn-xs" style="margin: 0;" ng-click="show_log = true" ng-hide="show_log"><i class="far fa-file-alt"></i> View full log</button>
+					<button class="btn btn-default btn-xs" style="margin: 0;" ng-click="show_log = false" ng-show="show_log"><i class="far fa-file-alt"></i> Hide full log</button>
 					<div ng-if="show_log" style="margin-top: 4px;">
 						<textarea ng-model="indexer_log" class="form-control" style="width: 100%; height: 175px; font-family: Monaco, Consolas, monospace; font-size: 11px;"></textarea>
 					</div>
@@ -215,7 +215,7 @@
 				<p>
 					The Elasticsearch index was initialized on: {{ ng_var('indexer_status.date_completed.date') }}.
 					&nbsp;
-					<button class="btn btn-default btn-xs" ng-click="Settings.startReindex()"><i class="fa fa-refresh"></i> Reset the search index</button>
+					<button class="btn btn-default btn-xs" ng-click="Settings.startReindex()"><i class="fas fa-sync"></i> Reset the search index</button>
 				</p>
 
 				<br/>
@@ -246,8 +246,8 @@
 					<tr ng-if="indexer_log">
 						<td>Log</td>
 						<td colspan="2">
-							<button class="btn btn-default btn-xs" style="margin: 0;" ng-click="show_log = true" ng-hide="show_log"><i class="fa fa-file-text-o"></i> View full log of initial indexing process</button>
-							<button class="btn btn-default btn-xs" style="margin: 0;" ng-click="show_log = false" ng-show="show_log"><i class="fa fa-file-text-o"></i> Hide full log</button>
+							<button class="btn btn-default btn-xs" style="margin: 0;" ng-click="show_log = true" ng-hide="show_log"><i class="far fa-file-alt"></i> View full log of initial indexing process</button>
+							<button class="btn btn-default btn-xs" style="margin: 0;" ng-click="show_log = false" ng-show="show_log"><i class="far fa-file-alt"></i> Hide full log</button>
 							<div ng-if="show_log" style="margin-top: 4px;">
 								<textarea ng-model="indexer_log" class="form-control" style="width: 100%; height: 175px; font-family: Monaco, Consolas, monospace; font-size: 11px;"></textarea>
 							</div>

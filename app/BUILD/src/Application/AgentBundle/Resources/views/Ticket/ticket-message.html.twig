@@ -54,7 +54,7 @@
 					<div class="message-translate-controls">
 						<div class="translate-controls-off">
 							<span>{{ phrase('agent.general.translation') }}</span>
-							<i class="icon-globe"></i>
+							<i class="fas fa-globe-africa"></i>
 						</div>
 						<div class="translate-controls-on">
 							<div class="dp-is-loading">
@@ -102,7 +102,7 @@
 					</div>
 				{% endif %}
 			</div>
-			<span class="edit-gear ticket-message-edit-btn" data-message-id="{{ message.id }}"><i class="icon-cog"></i></span>
+			<span class="edit-gear ticket-message-edit-btn" data-message-id="{{ message.id }}"><i class="fas fa-cog"></i></span>
 			<div class="dp-stickytip" id="{{ elid }}" style="width: 325px; display: none;">
 				<table cellspacing="0" cellpadding="0" width="100%">
 					<tr>
@@ -165,7 +165,7 @@
 						<tr>
 							<th>{{ phrase('agent.general.ip_address') }}:</th>
 							<td>
-								<a data-route="listpane:{{ path('agent_ticketsearch_runcustomfilter') }}?terms[0][type]=ip_address&amp;terms[0][op]=is&amp;terms[0][ip_address]={{message.ip_address|url_encode}}"><i class="icon-search" title="{{ phrase('agent.tickets.find_other_ip_addy') }}"></i></a>
+								<a data-route="listpane:{{ path('agent_ticketsearch_runcustomfilter') }}?terms[0][type]=ip_address&amp;terms[0][op]=is&amp;terms[0][ip_address]={{message.ip_address|url_encode}}"><i class="fa fa-search" title="{{ phrase('agent.tickets.find_other_ip_addy') }}"></i></a>
 								{{ message.ip_address }}
 								{% if message.getGeoCountry() %}
 									<span class="dp-flag-{{ message.getGeoCountry()|lower }}"></span>
@@ -179,7 +179,7 @@
 							<td>
 								<span class="dp_hostname_val">{{ message.hostname|default('Unknown') }}</span>
 								{% if app.getSetting('rdns_ticket_messages') and message.ip_address %}
-									<i class="fa fa-refresh dp_hostname_reload" data-ip="{{ message.ip_address }}" style="margin-left: 5px; cursor: pointer; color: #aaa;" title="Refresh"></i>
+									<i class="fas fa-sync dp_hostname_reload" data-ip="{{ message.ip_address }}" style="margin-left: 5px; cursor: pointer; color: #aaa;" title="Refresh"></i>
 								{% endif %}
 							</td>
 						</tr>
@@ -280,9 +280,9 @@
 			<ul class="encryption {% if message.getAttribute("signed").getValue() == 1 %}valid{% else %}invalid{% endif %}">
 				<li>
                     {% if message.getAttribute("signed").getValue() == 1 %}
-						<i class="icon-shield"></i> {{ phrase('agent.tickets.signature_valid') }}
+						<i class="fas fa-shield-alt"></i> {{ phrase('agent.tickets.signature_valid') }}
 					{% else %}
-						<i class="icon-exclamation text-danger"></i> {{ phrase('agent.tickets.signature_invalid') }}
+						<i class="fas fa-exclamation text-danger"></i> {{ phrase('agent.tickets.signature_invalid') }}
 					{% endif %}
 				</li>
 			</ul>
@@ -290,14 +290,14 @@
         {%  if message.getAttribute("decrypted") %}
 			<ul class="encryption valid">
 				<li>
-					<i class="icon-lock"></i> {{ phrase('agent.tickets.decrypted') }}
+					<i class="fas fa-lock"></i> {{ phrase('agent.tickets.decrypted') }}
 				</li>
 			</ul>
         {% endif %}
         {%  if message.getAttribute("decryption_error") %}
 			<ul class="encryption invalid">
 				<li>
-					<i class="icon-exclamation"></i> {{ phrase('agent.tickets.decryption_error') }}
+					<i class="fas fa-exclamation"></i> {{ phrase('agent.tickets.decryption_error') }}
 				</li>
 			</ul>
         {% endif %}
