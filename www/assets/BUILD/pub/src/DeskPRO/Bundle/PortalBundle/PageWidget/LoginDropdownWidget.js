@@ -64,6 +64,7 @@ export class LoginDropdownWidget extends PageWidget {
         jsonPayload: false
       }
     ).then((r) => {
+      console.log(r.data);
       if (r.data.success) {
         if ('redirect' in r.data) {
           window.location.href = r.data.redirect;
