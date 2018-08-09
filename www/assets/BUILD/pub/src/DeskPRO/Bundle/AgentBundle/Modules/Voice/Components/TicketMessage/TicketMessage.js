@@ -57,6 +57,8 @@ class TicketMessage extends React.Component {
     const { transcriptExpanded, logExpanded } = this.state;
     const participants = phoneCall.get('participants') || [];
     const recording = phoneCall.get('recording');
+    const recordingProcessed = phoneCall.hasIn(['data', 'RecordingEnabled']);
+    const recordingEnabled = phoneCall.getIn(['data', 'RecordingEnabled']);
     const number = numbers.get(phoneCall.get('number')) || Immutable.fromJS({});
 
     return (
@@ -97,7 +99,8 @@ class TicketMessage extends React.Component {
               </div>
             : <div className="voice-ticket-message-controls">
               {recording && <MediaControls recording={recording} />}
-              {!recording && phoneCall.get('recording_is_downloading') ? 'Call recording is being processed. It will be available for download in a few minutes.' : ''}
+              {!recording && recordingEnabled ? 'Call recording is being processed. It will be available for download in a few minutes.' : ''}
+              {recordingProcessed && !recording && !recordingEnabled ? 'This call was not recorded.' : ''}
               {outboundCallsEnabled &&
               <Button className="basic call-button" onClick={onCall}>
                 <i className="icon call" /> Call {phoneCall.get('external_number')}

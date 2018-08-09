@@ -2,7 +2,7 @@ import PropTypes from 'prop-types';
 import React from 'react';
 import { connect } from 'react-redux';
 import Immutable from 'immutable';
-import { loadBatch, collectionSelectorFactory } from 'DeskPRO/Bundle/AppBundle/Modules/RecordsStore';
+import { loadBatch, collectionSelectorFactory, updateCollection } from 'DeskPRO/Bundle/AppBundle/Modules/RecordsStore';
 import TicketMessage from './TicketMessage';
 import { openDialpad } from '../../Actions/clientActions';
 import { loadNumbers } from '../../Actions/numberActions';
@@ -39,11 +39,15 @@ class TicketMessageContainer extends React.Component {
   componentDidMount() {
     this.loadParticipants();
 
+    const { dispatch } = this.props;
     const messageBroker = window.DeskPRO_Window.getMessageBroker();
-    messageBroker.addMessageListener('agent.voice.recording_downloaded', ({ data }) => {
-      const newData = this.state.data;
-      newData.linked.voice_phone_call[data.data.id] = data.data;
-      this.setState({ data: newData });
+    messageBroker.addMessageListener('agent.voice.recording_status', ({ data }) => {
+      this.setState((state) => {
+        state.data.linked.voice_phone_call[data.data.id] = data.data;
+        return state;
+      });
+
+      dispatch(updateCollection('VoicePhoneCall', Immutable.List([Immutable.fromJS(data.data)])));
     });
   }
 

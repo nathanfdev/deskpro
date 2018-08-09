@@ -111,9 +111,10 @@ class VoiceDownloadRecordProcessor extends AbstractJobProcessor
                 $this->eventDispatcher->dispatch(
                     LegacySystemEvent::EVENT_NAME,
                     new LegacySystemEvent(
-                        'agent.voice.recording_downloaded',
+                        'agent.voice.recording_status',
                         ['data' => $serializedData]
-                    ));
+                    )
+                );
             }
 
             // log conference start event

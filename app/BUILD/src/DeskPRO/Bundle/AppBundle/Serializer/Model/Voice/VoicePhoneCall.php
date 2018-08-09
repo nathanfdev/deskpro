@@ -151,13 +151,6 @@ class VoicePhoneCall
     private $ticket;
 
     /**
-     * @JMS\Type("boolean")
-     *
-     * @var bool
-     */
-    private $recordingIsDownloading = false;
-
-    /**
      * Constructor.
      *
      * @param VoicePhoneCallEntity $phoneCall
@@ -184,10 +177,6 @@ class VoicePhoneCall
         $this->duration           = $phoneCall->getDuration();
 
         if (is_array($this->data) && array_key_exists('RecordingUrl', $this->data)) {
-            if (!$this->recording) {
-                $this->recordingIsDownloading = true;
-            }
-
             unset($this->data['RecordingUrl']);
         }
     }

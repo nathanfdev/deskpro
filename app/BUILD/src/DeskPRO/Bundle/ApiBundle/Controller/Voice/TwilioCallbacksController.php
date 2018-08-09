@@ -31,6 +31,7 @@ use DeskPRO\Bundle\AppBundle\Entity\VoiceTarget\VoiceAgentTarget;
 use DeskPRO\Bundle\AppBundle\Entity\VoiceTarget\VoiceAutoAttendantTarget;
 use DeskPRO\Bundle\AppBundle\Entity\VoiceTarget\VoiceQueueTarget;
 use DeskPRO\Bundle\AppBundle\Notification\Event\LegacySystemEvent;
+use DeskPRO\Bundle\AppBundle\Serializer\ApiWrapper;
 use DeskPRO\Bundle\AppBundle\Serializer\Sideload\SideloadSerializationContext;
 use DeskPRO\Bundle\AppBundle\Twilio\TwilioAdapter;
 use DeskPRO\Bundle\AppBundle\Twilio\Twiml;
@@ -920,24 +921,38 @@ class TwilioCallbacksController extends AbstractVoiceController
             throw $this->createBadRequestException('Phone call not found');
         }
 
-        $phoneCall->setDuration($request->request->get('RecordingDuration'));
-        $phoneCall->setData(array_merge($phoneCall->getData(), [
-            'RecordingUrl' => $request->request->get('RecordingUrl'),
-        ]));
-
-        $em->persist($phoneCall);
-        $em->flush();
-
         $recordingEnabled = true;
         if ($phoneCall->getQueue()) {
             $recordingEnabled = $phoneCall->getQueue()->isRecordingEnabled();
         }
+
+        $phoneCall->setDuration($request->request->get('RecordingDuration'));
+        $phoneCall->setData(array_merge($phoneCall->getData(), [
+            'RecordingUrl'     => $request->request->get('RecordingUrl'),
+            'RecordingEnabled' => $recordingEnabled,
+        ]));
+
+        $em->persist($phoneCall);
+        $em->flush();
 
         if ($recordingEnabled) {
             $this->getContainer()->getJobQueue()->addJob(new Job(VoiceDownloadRecordProcessor::JOB_TYPE, [
                 'call_id' => $phoneCall->getId(),
             ]));
         }
+
+        $serializedData = $this->container->get('serializer')->toArray(
+            new ApiWrapper($phoneCall),
+            new SideloadSerializationContext()
+        );
+
+        $this->container->get('event_dispatcher')->dispatch(
+            LegacySystemEvent::EVENT_NAME,
+            new LegacySystemEvent(
+                'agent.voice.recording_status',
+                ['data' => $serializedData]
+            )
+        );
     }
 
     /**
