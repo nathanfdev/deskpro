@@ -73,7 +73,6 @@ class TicketManager
      */
     private $notificationEventManager;
 
-
     /** @var ExecutorContextVars */
     private $autoVars;
 
@@ -617,13 +616,15 @@ class TicketManager
         if ($eventMethod === 'api') {
             $key = null;
 
-            // try to get legacy api key
-            try {
-                $auth = $this->container->get('deskpro.api.request_auth');
-                if ($auth && $auth->getApiUser()) {
-                    $key = $auth->getApiUser()->api_key ? $auth->getApiUser()->api_key->getId() : null;
+            if (!isset($eventMethodOptions['api_v2']) || !$eventMethodOptions['api_v2']) {
+                // try to get legacy api key
+                try {
+                    $auth = $this->container->get('deskpro.api.request_auth');
+                    if ($auth && $auth->getApiUser()) {
+                        $key = $auth->getApiUser()->api_key ? $auth->getApiUser()->api_key->getId() : null;
+                    }
+                } catch (InactiveScopeException $e) {
                 }
-            } catch (InactiveScopeException $e) {
             }
 
             // try to get new api key
