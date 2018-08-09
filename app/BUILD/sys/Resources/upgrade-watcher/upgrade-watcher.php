@@ -12,7 +12,6 @@
     <meta name="viewport" content="width=device-width">
     <title>DeskPRO</title>
 
-    <link rel="stylesheet" href="<?=$ASSET_PATH?>/bower_components/font-awesome/css/font-awesome.min.css"/>
     <link rel="stylesheet" href="<?=$ASSET_PATH?>/app-build/Admin/Resources/style/admin-style.css"/>
     <link rel="stylesheet" href="<?=$ASSET_PATH?>/app-build/Admin/Resources/style/admin2-style.css"/>
     <style>
