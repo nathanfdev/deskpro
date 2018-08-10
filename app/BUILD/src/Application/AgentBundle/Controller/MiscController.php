@@ -552,6 +552,15 @@ JS;
         $copy_blobauth          = $this->in->getString('copy_blob');
         $allowedImageExtensions = ['gif', 'png', 'jpg', 'jpeg'];
 
+        $props = [];
+        if ($this->in->getString('tag')) {
+            switch (trim($this->in->getString('tag'))) {
+                case 'ticket_attachment':
+                    $props['tag'] = 'ticket_attachment';
+                    break;
+            }
+        }
+
         if ($copy_blobauth) {
             $blob = $this->em->getRepository('DeskPRO:Blob')->getByAuthCode($copy_blobauth);
             if (!$blob) {
@@ -575,7 +584,7 @@ JS;
             $bs       = $this->container->getBlobStorage();
             $raw_file = $bs->copyBlobRecordToString($blob);
 
-            $blob = $bs->createBlobRecordFromString($raw_file, $blob->filename, $blob->content_type, ['is_temp' => true]);
+            $blob = $bs->createBlobRecordFromString($raw_file, $blob->filename, $blob->content_type, $props);
             unset($raw_file);
         } else {
             $file   = $this->request->files->get('file-upload');
@@ -595,7 +604,7 @@ JS;
                 return $this->createJsonResponse([$error]);
             }
 
-            $blob = $accept->accept($file, true);
+            $blob = $accept->accept($file, false, $props);
         }
 
         if ($this->in->getString('attach_to_object')) {

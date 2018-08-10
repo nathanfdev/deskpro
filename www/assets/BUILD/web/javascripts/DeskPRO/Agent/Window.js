@@ -280,6 +280,19 @@ DeskPRO.Agent.Window = new Orb.Class({
 					}
 				}
 
+        if (options.uploadUrlParameters) {
+          var queryString = $.param(options.uploadUrlParameters);
+          var url = options.url;
+          if (url.indexOf('?') === -1) {
+            url += '?';
+          } else {
+            url += '&';
+          }
+          url += queryString;
+          options.url = url;
+          delete(options.uploadUrlParameters);
+        }
+
 				if (options.uploadTemplate) {
 					setel = options.uploadTemplate;
 				} else {

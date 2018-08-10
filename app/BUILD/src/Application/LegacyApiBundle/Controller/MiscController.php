@@ -339,6 +339,15 @@ class MiscController extends AbstractController
         $accept = $this->container->getAttachmentAccepter();
         $error  = null;
 
+        $props = [];
+        if ($this->in->getString('tag')) {
+            switch (trim($this->in->getString('tag'))) {
+                case 'ticket_attachment':
+                    $props['tag'] = 'ticket_attachment';
+                    break;
+            }
+        }
+
         $path = $this->in->getString('path');
         if ($path && strpos($path, 'dp_file:icons:') === 0) {
             $path = preg_replace('#^dp_file:icons:(\.\./){4}#', DP_WEB_ROOT.'/web/', $path);
@@ -349,7 +358,7 @@ class MiscController extends AbstractController
                 throw $this->createNotFoundException();
             }
 
-            $blob = $this->container->getBlobStorage()->createBlobRecordFromFile($path, pathinfo($path, PATHINFO_BASENAME), 'image/png');
+            $blob = $this->container->getBlobStorage()->createBlobRecordFromFile($path, pathinfo($path, PATHINFO_BASENAME), 'image/png', $props);
         } else {
             $file  = $this->request->files->get('file');
             $error = $accept->getError($file, 'agent');
@@ -366,7 +375,7 @@ class MiscController extends AbstractController
                 return $this->createApiErrorResponse($error['error_code'], $message);
             }
 
-            $blob = $accept->accept($file);
+            $blob = $accept->accept($file, false, $props);
         }
 
         return $this->createApiResponse(['blob' => $blob->toApiData()]);

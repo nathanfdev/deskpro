@@ -133,7 +133,7 @@ class ServeFileScript extends LowScriptAbstract
             // A filesystem blob like /123AJKJKHSD1244AXC/filename.zip
             // That is: /(batch)(authcode)(id)(namehash)/name.zip
             //0XNSNTQHTNR43DD567
-            } elseif (preg_match('#^/([0-9]+)([A-Z]+)([0-9]+)([A-Z0-9]{6})(?:/|\-)(.*?)$#', $pathInfo, $m)) {
+            } elseif (preg_match('#^/([0-9]+)([A-Z]+)([0-9]+)([a-fA-F0-9]{6}T?)(?:/|\-)(.*?)$#', $pathInfo, $m)) {
                 $this->addLogMessage('handleFilesystemBlobRequest: %s', implode(', ', $m));
                 $this->handleFilesystemBlobRequest(
                     $m[1],
@@ -146,10 +146,10 @@ class ServeFileScript extends LowScriptAbstract
             // A database-stored bloblike /123AHSDHJGSD0/filename.zip
             // That is (id)(authcode0)
             // The trailing 0 denotes it as a database storage authcode
-            } elseif (preg_match('#^/([0-9]+)([A-Z]+0)(?:/|\-)(.*?)$#', $pathInfo, $m)) {
+            } elseif (preg_match('#^/([0-9]+)([A-Z]+0T?)(?:/|\-)(.*?)$#', $pathInfo, $m)) {
                 $this->addLogMessage('handleDbBlobRequest: %s', implode(', ', $m));
                 $this->handleDbBlobRequest($m[1], $m[2], $m[3]);
-            } elseif (preg_match('#^/brand-[0-9]+/([0-9]+)([A-Z]+0)(?:/|\-)(.*?)$#', $pathInfo, $m)) {
+            } elseif (preg_match('#^/brand-[0-9]+/([0-9]+)([A-Z]+0T?)(?:/|\-)(.*?)$#', $pathInfo, $m)) {
                 $this->addLogMessage('handleDbBlobRequest: %s (legacy brand route)', implode(', ', $m));
                 $this->handleDbBlobRequest($m[1], $m[2], $m[3]);
             } elseif (preg_match('#^/gradient$#', $pathInfo)) {

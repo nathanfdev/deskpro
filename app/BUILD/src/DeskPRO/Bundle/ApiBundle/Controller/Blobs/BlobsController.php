@@ -54,6 +54,7 @@ class BlobsController extends CrudController
             'upload_context' => 'agent',
             'required'       => true,
             'with_context'   => true,
+            'with_tag'       => true,
         ]);
         $form->submit($this->getRequestData($request));
 

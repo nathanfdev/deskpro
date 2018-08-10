@@ -824,7 +824,7 @@ class TicketController extends AbstractController implements ProtectedController
         foreach ($attachments as $file) {
             $error = $accept->getError($file, 'agent');
             if (!$error) {
-                $blob = $accept->accept($file);
+                $blob = $accept->accept($file, false, ['tag' => 'ticket_attachment']);
                 if ($blob) {
                     $blobs[] = $blob;
                 }

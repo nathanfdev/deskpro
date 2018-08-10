@@ -279,7 +279,8 @@ abstract class ProcessAbstract
             $blob = App::getContainer()->getBlobStorage()->createBlobRecordFromString(
                 $attach->getFileContents(),
                 $filename,
-                $attach->getMimeType()
+                $attach->getMimeType(),
+                ['tag' => 'ticket_attachment']
             );
 
             $this->logMessage(sprintf('Processed blob %s (%d)', $blob->filename, $blob->id));

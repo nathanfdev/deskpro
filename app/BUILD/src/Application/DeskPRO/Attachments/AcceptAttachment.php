@@ -238,10 +238,11 @@ class AcceptAttachment
     /**
      * @param \Symfony\Component\HttpFoundation\File\UploadedFile $file
      * @param bool                                                $is_temp
+     * @param array|null                                          $props   Props array passed to DeskproBlobStorage
      *
      * @return \Application\DeskPRO\Entity\Blob
      */
-    public function accept(UploadedFile $file, $is_temp = false)
+    public function accept(UploadedFile $file, $is_temp = false, $props = [])
     {
         try {
             $mime_type = $file->getMimeType();
@@ -270,7 +271,7 @@ class AcceptAttachment
             $file->getRealPath(),
             $filename,
             $mime_type,
-            ['is_temp' => $is_temp]
+            array_merge(['is_temp' => $is_temp], $props)
         );
 
         return $blob;

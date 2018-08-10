@@ -33,6 +33,11 @@ class AcceptAttachmentType extends AbstractType
     private $acceptAttachment;
 
     /**
+     * @var FormError
+     */
+    private $fileFormError;
+
+    /**
      * Constructor.
      *
      * @param DeskproBlobStorage $blobStorage
@@ -73,7 +78,23 @@ class AcceptAttachmentType extends AbstractType
             $builder->addEventListener(FormEvents::POST_SUBMIT, [$this, 'onValidateContext']);
         }
 
-        $builder->get($options['field_name'])->addEventListener(FormEvents::PRE_SUBMIT, [$this, 'onPreSubmit']);
+        if ($options['with_tag']) {
+            $builder->add('tag', ChoiceType::class, [
+                'mapped'            => false,
+                'required'          => false,
+                'label'             => false,
+                'choices_as_values' => true,
+                'choices'           => ['', 'ticket_attachment'],
+            ]);
+        }
+
+        $builder->addEventListener(FormEvents::PRE_SUBMIT, [$this, 'onPreSubmit']);
+
+        // `file` validation done in `onPreSubmit`
+        // but we can't add error directly to `file` field in `onPreSubmit` for whole form
+        // https://stackoverflow.com/questions/32012510/symfony-2-adding-error-to-form-element-on-presubmit-event-subscriber
+        // in case of error we save formError to $this->fileFormError and then assign it in below event
+        $builder->get($options['field_name'])->addEventListener(FormEvents::PRE_SUBMIT, [$this, 'onPreSubmitFileForm']);
     }
 
     /**
@@ -87,6 +108,7 @@ class AcceptAttachmentType extends AbstractType
                 'field_name'   => 'file',
                 'required'     => false,
                 'with_context' => false,
+                'with_tag'     => false,
             ])
             ->setRequired(['upload_context'])
             ->setAllowedValues('upload_context', ['agent', 'user'])
@@ -104,11 +126,12 @@ class AcceptAttachmentType extends AbstractType
         $form = $event->getForm();
         $data = $event->getData();
 
-        if ($data instanceof UploadedFile) {
-            $parentForm = $form->getParent();
-            $options    = $parentForm->getConfig()->getOptions();
+        $options = $form->getConfig()->getOptions();
+        $file    = isset($data[$options['field_name']]) ? $data[$options['field_name']] : null;
 
-            $error = $this->acceptAttachment->getError($data, $options['upload_context']);
+        if ($file instanceof UploadedFile) {
+            $fileForm = $form->get($options['field_name']);
+            $error    = $this->acceptAttachment->getError($file, $options['upload_context']);
             if ($error) {
                 // unable to accept the file, add an error
                 $errorCode   = 'accept_'.$error['error_code'];
@@ -118,12 +141,30 @@ class AcceptAttachmentType extends AbstractType
                 if ($errorDetail) {
                     $params['detail'] = $errorDetail;
                 }
-
-                $form->addError(new FormError($errorCode, $errorCode, $params));
+                $this->fileFormError = new FormError($errorCode, $errorCode, $params);
             } else {
                 // set blob data
-                $parentForm->setData($this->acceptAttachment->accept($data, true));
+                $props = [];
+                if ($options['with_tag'] && isset($data['tag'])) {
+                    $this->fillTagProps($props, $data['tag']);
+                }
+                $form->setData($this->acceptAttachment->accept($file, true, $props));
             }
+        }
+    }
+
+    /**
+     * @internal
+     *
+     * @param FormEvent $event
+     */
+    public function onPreSubmitFileForm(FormEvent $event)
+    {
+        $form = $event->getForm();
+        $data = $event->getData();
+
+        if ($this->fileFormError) {
+            $form->addError($this->fileFormError);
         }
     }
 
@@ -144,6 +185,17 @@ class AcceptAttachmentType extends AbstractType
         $context = $form->get('context')->getData();
         if ($context === 'image' && !$data->isImage()) {
             $form->get($options['field_name'])->addError(new FormError(ErrorsCodes::NOT_AN_IMAGE));
+        }
+    }
+
+    /**
+     * @param array  $props
+     * @param string $tagFormData `tag` form field value
+     */
+    protected function fillTagProps(&$props, $tagFormData)
+    {
+        if ($tagFormData === 'ticket_attachment') {
+            $props['tag'] = 'ticket_attachment';
         }
     }
 }

@@ -438,8 +438,17 @@ class PortalController extends AbstractController
             ], Response::HTTP_BAD_REQUEST);
         }
 
+        $props = [];
+        if ($request->query->get('tag', '')) {
+            switch (trim($request->query->get('tag', ''))) {
+                case 'ticket_attachment':
+                    $props['tag'] = 'ticket_attachment';
+                    break;
+            }
+        }
+
         /** @var Blob $blob */
-        $blob = $this->get('attachment_accepter')->accept($file, true);
+        $blob = $this->get('attachment_accepter')->accept($file, true, $props);
 
         return new JsonResponse([
             'success' => true,

@@ -605,7 +605,8 @@ class ProcessAgentFwd extends ProcessAbstract
             $blob = App::getContainer()->getBlobStorage()->createBlobRecordFromString(
                 $attach->getFileContents(),
                 $attach->getFileName(),
-                $attach->getMimeType()
+                $attach->getMimeType(),
+                ['tag' => 'ticket_attachment']
             );
 
             $processedBlobs[$blob->id] = $blob;
