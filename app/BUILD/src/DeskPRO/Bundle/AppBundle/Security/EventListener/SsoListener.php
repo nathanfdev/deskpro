@@ -100,6 +100,7 @@ class SsoListener implements EventSubscriberInterface
 
         if (preg_match('#^/api/#i', $request->getPathInfo())
             || preg_match('#^portal_api_#i', $route)
+            || $route === 'gregwar_captcha.generate_captcha'
             || preg_match('#^deskpro_portal_api_#i', $route)) {
             return;
         }
@@ -141,7 +142,7 @@ class SsoListener implements EventSubscriberInterface
         }
 
         $returnUrl = $request->get('return') ?: $request->getUri();
-        if ($returnUrl) {
+        if (!$request->isXmlHttpRequest() && $returnUrl) {
             $session->set('_security.portal.target_path', $returnUrl);
         }
 
