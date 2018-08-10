@@ -157,7 +157,7 @@ class LoginProcessor
                     $thisEmail->is_validated = true;
                 }
                 $this->persist($em, $emailObj);
-                $this->flush();
+                $this->flush($em);
             }
 
             // New assoc
@@ -168,7 +168,7 @@ class LoginProcessor
             $this->assoc['identity_friendly'] = $this->identity->getFriendlyIdentity() ?: $this->identity->getIdentity();
             $this->assoc['data']              = $this->identity->getRawData();
             $this->persist($em, $this->assoc);
-            $this->flush();
+            $this->flush($em);
 
         //------------------------------
         // The assoc exists
@@ -198,7 +198,7 @@ class LoginProcessor
                         $emailObj->is_validated      = true;
                         $this->person->primary_email = $emailObj;
                         $this->persist($em, $this->person);
-                        $this->flush();
+                        $this->flush($em);
                     }
                 }
             }
@@ -225,7 +225,7 @@ class LoginProcessor
 
         $this->persist($em, $this->person);
         $this->persist($em, $this->assoc);
-        $this->flush();
+        $this->flush($em);
         $this->commit($em);
 
         return $this->person;
@@ -358,7 +358,7 @@ class LoginProcessor
                 $this->persist($em, $twitter_details);
             }
 
-            $this->flush();
+            $this->flush($em);
         }
     }
 
