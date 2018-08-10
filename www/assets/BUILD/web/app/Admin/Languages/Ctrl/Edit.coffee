@@ -61,6 +61,8 @@ define ['Admin/Main/Ctrl/Base'], (Admin_Ctrl_Base) ->
     doSave: ->
       return if @$scope.form_props.$invalid
 
+      @form.locale = @form.locale.replace(/-/, '_')
+
       @startSpinner('saving')
       @$scope.$parent.ListCtrl.saveLanguage(@id, {
         title: @form.title,

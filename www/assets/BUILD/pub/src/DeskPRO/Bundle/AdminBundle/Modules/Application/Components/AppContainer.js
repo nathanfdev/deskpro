@@ -26,8 +26,12 @@ class AppContainer extends React.Component {
   constructor(props) {
     super(props);
 
-    const possibleLocale = window.DP_LOCALE.split(/_/)[0] || 'en';
-    addLocaleData(require(`react-intl/locale-data/${possibleLocale}`)); // eslint-disable-line import/no-dynamic-require, global-require
+    const possibleLocale = window.DP_LOCALE.replace(/-/, '_').split(/_/)[0] || 'en';
+    try {
+      addLocaleData(require(`react-intl/locale-data/${possibleLocale}`)); // eslint-disable-line import/no-dynamic-require, global-require
+    } catch (e) {
+      addLocaleData(require('react-intl/locale-data/en')); // eslint-disable-line import/no-dynamic-require, global-require
+    }
 
     // Bootstrap API and DAL
     setApi(api);
