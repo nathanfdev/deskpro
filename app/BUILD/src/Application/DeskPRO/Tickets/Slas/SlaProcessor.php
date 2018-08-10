@@ -151,7 +151,7 @@ class SlaProcessor
             }
 
             $this->em->persist($ticket_sla);
-            $this->em->flush($ticket_sla);
+            $this->em->flush();
 
             if ($current_complete != $ticket_sla->is_completed) {
                 $context->getLogger()->info(sprintf('[SlaProcessor] SLA#%d %s -- is_complete: %s', $ticket_sla->sla->id, $ticket_sla->sla->title, $ticket_sla->is_completed ? 'true' : 'false'));
@@ -218,7 +218,7 @@ class SlaProcessor
             if ($ticket_sla->sla->getCalculator()->isTicketSlaFailed($ticket_sla->ticket, $ticket_sla)) {
                 $ticket_sla->sla_status = TicketSla::STATUS_FAIL;
                 $this->em->persist($ticket_sla);
-                $this->em->flush($ticket_sla);
+                $this->em->flush();
 
                 $this->cm_sender->sendMessage($ticket_sla->ticket, $ticket_sla, $current_status, $current_complete);
 
@@ -272,7 +272,7 @@ class SlaProcessor
             if ($ticket_sla->sla->getCalculator()->isTicketSlaWarning($ticket_sla->ticket, $ticket_sla)) {
                 $ticket_sla->sla_status = TicketSla::STATUS_WARNING;
                 $this->em->persist($ticket_sla);
-                $this->em->flush($ticket_sla);
+                $this->em->flush();
 
                 ++$count;
 

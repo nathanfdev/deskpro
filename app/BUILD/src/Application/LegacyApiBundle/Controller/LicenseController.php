@@ -75,7 +75,7 @@ class LicenseController extends AbstractController implements ProtectedControlle
             ], '+1 hour'
         );
         $this->em->persist($ma_token);
-        $this->em->flush($ma_token);
+        $this->em->flush();
 
         $ma_login_url = License::getSecureLicServer().'/login_check_license';
         if (strpos($ma_login_url, 'www.deskpro.com') && strpos($ma_login_url, 'https://') === 0) {

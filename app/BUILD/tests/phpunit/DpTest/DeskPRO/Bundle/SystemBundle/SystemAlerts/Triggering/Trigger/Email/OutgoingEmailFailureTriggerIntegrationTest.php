@@ -42,7 +42,7 @@ class OutgoingEmailFailureTriggerIntegrationTest extends IncomingEmailFailureTri
         $event = new OutgoingEmailFailureEvent(
             $account_id, 'test@dev.lo', new RawTransportException(), new \DateTime($when));
         $this->em->persist($event);
-        $this->em->flush($event);
+        $this->em->flush();
 
         return $event;
     }
@@ -57,7 +57,7 @@ class OutgoingEmailFailureTriggerIntegrationTest extends IncomingEmailFailureTri
     {
         $event = new OutgoingEmailSuccessEvent($account_id, 'test@dev.lo', new \DateTime($when));
         $this->em->persist($event);
-        $this->em->flush($event);
+        $this->em->flush();
 
         return $event;
     }

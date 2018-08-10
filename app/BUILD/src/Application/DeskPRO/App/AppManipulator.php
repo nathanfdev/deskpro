@@ -90,7 +90,7 @@ class AppManipulator
                 );
 
                 $this->em->persist($asset);
-                $this->em->flush($asset);
+                $this->em->flush();
                 $remove_blobs[] = $old_blob;
             }
 

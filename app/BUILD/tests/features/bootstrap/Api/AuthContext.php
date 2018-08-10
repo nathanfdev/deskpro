@@ -256,7 +256,7 @@ class AuthContext extends BaseContext
         $reflection->setAccessible(false);
 
         $this->em()->persist($tmpData);
-        $this->em()->flush($tmpData);
+        $this->em()->flush();
     }
 
     /**

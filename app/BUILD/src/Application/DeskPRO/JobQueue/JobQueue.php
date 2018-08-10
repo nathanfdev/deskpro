@@ -147,7 +147,7 @@ class JobQueue
     {
         // push it immediately to the queue
         $this->em->persist($job);
-        $this->em->flush($job);
+        $this->em->flush();
     }
 
     /**

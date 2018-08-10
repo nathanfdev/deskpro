@@ -58,15 +58,18 @@ class PersonController extends AbstractController
 {
     /**
      * @param Organization $entity
-     * @return array mixed
+     *
      * @throws \Exception
+     *
+     * @return array mixed
      */
-    protected function getAPIv2Data( $entity)
+    protected function getAPIv2Data($entity)
     {
         $context = new SideloadSerializationContext();
         $context->setIncludes(['brand', 'team']);
         $context->setInlineSideloads(true);
         $serialized = $this->container->get('serializer')->toArray(new ApiWrapper($entity), $context);
+
         return $serialized;
     }
 
@@ -802,7 +805,7 @@ class PersonController extends AbstractController
                 'invalid_custom_fields' => $form->getErrors(true, true)->current(),
             ]);
         }
-        $manager->flush($form);
+        $manager->flush();
 
         $field_manager->saveFormToObject($custom_fields, $person);
 
@@ -1654,7 +1657,7 @@ class PersonController extends AbstractController
                 $request->request->set($custom_fields_definitions->getName(), []);
             }
             if ($custom_fields_definitions->handleRequest($request)->isValid()) {
-                $manager->flush($custom_fields_definitions);
+                $manager->flush();
             }
 
             $this->em->getRepository(PersonPref::class)->deletePrefForPersonId('agent.ui.state.newperson', $this->person->id);

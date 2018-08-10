@@ -95,7 +95,7 @@ class DownloadHandlerTest extends AbstractEntityHandlerTest
         $category->setRealTitle('cat');
 
         $this->em()->persist($category);
-        $this->em()->flush($category);
+        $this->em()->flush();
 
         $model = $this->createBaseModel();
 

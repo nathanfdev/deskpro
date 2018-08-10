@@ -70,7 +70,7 @@ class AlertSender
         $tplLine = null;
         $alert   = $this->createAlert($agent, $type, $data);
         $this->em->persist($alert);
-        $this->em->flush($alert);
+        $this->em->flush();
 
         if (isset($data['browser_rendered'])) {
             $tplLine = $data['browser_rendered'];

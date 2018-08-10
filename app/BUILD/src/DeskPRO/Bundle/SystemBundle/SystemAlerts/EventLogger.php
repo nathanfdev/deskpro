@@ -50,7 +50,7 @@ class EventLogger
             }
             $event = $this->ensureEvent($eventOrException);
             $this->em->persist($event);
-            $this->em->flush($event);
+            $this->em->flush();
 
             if ($aloud) {
                 echo 'An error occurred: ', (string) $event, "\n";
@@ -122,7 +122,7 @@ class EventLogger
 
         if (($failure && !$success) || ($failure && $success && ($failure->getId() > $success->getId()))) {
             $this->em->persist($event);
-            $this->em->flush($event);
+            $this->em->flush();
         }
     }
 

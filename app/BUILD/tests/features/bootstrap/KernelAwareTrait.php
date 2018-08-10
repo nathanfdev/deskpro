@@ -149,7 +149,7 @@ trait KernelAwareTrait
     protected function persistAndFlush($entity)
     {
         $this->em()->persist($entity);
-        $this->em()->flush($entity);
+        $this->em()->flush();
     }
 
     /**

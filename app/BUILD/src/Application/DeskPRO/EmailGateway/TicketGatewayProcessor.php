@@ -226,7 +226,7 @@ class TicketGatewayProcessor extends AbstractGatewayProcessor
             if ($brand) {
                 $person->addBrand($brand);
                 $this->container->getEm()->persist($person);
-                $this->container->getEm()->flush($person);
+                $this->container->getEm()->flush();
                 $this->logMessage("[TicketGatewayProcessor] Add Person #{$person->id} to Ticket Brand #{$brand->id}");
             } elseif (!$personProcessor->isPersonAssociatedWithAccountBrands($this->account, $person)) {
                 $brand = $personProcessor->associatePersonWithAccountBrand($this->account, $person, $forceRegEnabled = false);
@@ -632,7 +632,7 @@ class TicketGatewayProcessor extends AbstractGatewayProcessor
                 ]);
 
                 $this->container->getEm()->persist($tmpdata);
-                $this->container->getEm()->flush($tmpdata);
+                $this->container->getEm()->flush();
 
                 if (!$this->reader->isFromRobot() && !$ticket_email->is_bounce) {
                     $this->container->get('portal_validation')->sendTicketByEmailVerificationEmail(

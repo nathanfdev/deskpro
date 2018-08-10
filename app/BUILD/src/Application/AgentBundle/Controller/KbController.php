@@ -118,7 +118,7 @@ class KbController extends AbstractController
             if ($category = $this->em->getRepository(ArticleCategory::class)->find($first)) {
                 $article->addToCategory($category);
                 $this->em->persist($article);
-                $this->em->flush($article);
+                $this->em->flush();
             }
         }
 

@@ -1778,7 +1778,7 @@ class PersonController extends AbstractController implements ProtectedController
         $number->label  = $this->in->getString('label');
         $number->person = $person;
         $this->em->persist($number);
-        $this->em->flush($number);
+        $this->em->flush();
 
         return $this->getPersonPhoneNumberAction($person_id, $number->id);
     }
@@ -1836,7 +1836,7 @@ class PersonController extends AbstractController implements ProtectedController
             $number->label = $label;
         }
 
-        $this->em->flush($number);
+        $this->em->flush();
 
         return $this->getPersonPhoneNumberAction($person_id, $number_id);
     }

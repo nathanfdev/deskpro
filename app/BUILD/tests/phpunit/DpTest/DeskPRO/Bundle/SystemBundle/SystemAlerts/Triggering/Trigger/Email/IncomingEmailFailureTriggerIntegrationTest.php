@@ -181,7 +181,7 @@ class IncomingEmailFailureTriggerIntegrationTest extends BaseIntegrationTest
 
         $event = new IncomingEmailFailureEvent($email, new RuntimeException(), new \DateTime($when));
         $this->em->persist($event);
-        $this->em->flush($event);
+        $this->em->flush();
 
         return $event;
     }
@@ -200,7 +200,7 @@ class IncomingEmailFailureTriggerIntegrationTest extends BaseIntegrationTest
 
         $event = new IncomingEmailSuccessEvent($email, new \DateTime($when));
         $this->em->persist($event);
-        $this->em->flush($event);
+        $this->em->flush();
 
         return $event;
     }

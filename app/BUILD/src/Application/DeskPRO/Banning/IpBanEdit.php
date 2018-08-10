@@ -45,7 +45,7 @@ class IpBanEdit
         $this->db->beginTransaction();
         try {
             $em->persist($this->ip_ban);
-            $em->flush($this->ip_ban);
+            $em->flush();
             $this->db->commit();
         } catch (\Exception $e) {
             $this->db->rollback();

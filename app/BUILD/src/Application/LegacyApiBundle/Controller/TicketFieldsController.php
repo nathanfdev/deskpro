@@ -739,7 +739,7 @@ class TicketFieldsController extends AbstractController implements ProtectedCont
              */
             if ('cb_'.$cb === $field['default_value']) {
                 $field['default_value'] = $child['id'];
-                $this->em->flush($field);
+                $this->em->flush();
             }
 
             /*

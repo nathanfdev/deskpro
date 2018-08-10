@@ -87,7 +87,7 @@ class PersonTestBuilder
         $this->em->persist($this->person);
 
         if ($flush) {
-            $this->em->flush($this->person);
+            $this->em->flush();
         }
 
         return $this->person;

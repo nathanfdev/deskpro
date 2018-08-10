@@ -229,7 +229,7 @@ class PortalController extends AbstractController
         $token->setScope(ApiToken::SCOPE_CLIENT);
 
         $this->getEm()->persist($token);
-        $this->getEm()->flush($token);
+        $this->getEm()->flush();
 
         // remove temp auth code
         $this->getEm()->remove($tmpData);

@@ -80,7 +80,7 @@ class UsersourceSyncLog extends AbstractEntityRepository
     public function save(UsersourceSyncLogEntity $log)
     {
         $this->_em->persist($log);
-        $this->_em->flush($log);
+        $this->_em->flush();
     }
 
     public function createNewLog(UsersourceEntity $usersource)

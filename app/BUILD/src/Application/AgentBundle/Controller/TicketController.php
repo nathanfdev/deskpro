@@ -2421,7 +2421,7 @@ class TicketController extends AbstractController
                                     $problem = new Problem();
                                     $problem->setCreator($this->person)->setTitle($title);
                                     $this->em->persist($problem);
-                                    $this->em->flush($problem);
+                                    $this->em->flush();
                                     $ticket->associateProblem($problem);
                                     break;
                             }
@@ -5074,7 +5074,7 @@ class TicketController extends AbstractController
                                 $problem = new Problem();
                                 $problem->setCreator($this->person)->setTitle($title);
                                 $this->em->persist($problem);
-                                $this->em->flush($problem);
+                                $this->em->flush();
                             }
                         } else {
                             if (!$problem = $this->em->find(Problem::class, $id)) {
@@ -5918,7 +5918,7 @@ CSS;
         }
 
         $problem['is_open'] = false;
-        $this->em->flush($problem);
+        $this->em->flush();
 
         $data = [];
 
@@ -5943,7 +5943,7 @@ CSS;
         }
 
         $problem['is_open'] = true;
-        $this->em->flush($problem);
+        $this->em->flush();
 
         $data = [];
 

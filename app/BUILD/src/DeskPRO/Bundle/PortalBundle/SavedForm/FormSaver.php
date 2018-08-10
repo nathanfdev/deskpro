@@ -127,7 +127,7 @@ class FormSaver
         }
 
         $this->em->persist($saved_form);
-        $this->em->flush($saved_form);
+        $this->em->flush();
 
         $this->declareAutoSubmit($saved_form);
         $this->appendToSavedForms($saved_form);
@@ -178,7 +178,7 @@ class FormSaver
         }
 
         $this->em->persist($saved_form);
-        $this->em->flush($saved_form);
+        $this->em->flush();
 
         return $saved_form;
     }
@@ -223,7 +223,7 @@ class FormSaver
         $this->session->set(static::SAVED_FORMS_SESSION_KEY, $new_existing);
 
         $this->em->remove($saved_form);
-        $this->em->flush($saved_form);
+        $this->em->flush();
     }
 
     /**

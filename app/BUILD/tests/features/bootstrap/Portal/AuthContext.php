@@ -133,7 +133,7 @@ class AuthContext extends BasePortalContext implements RebootableContextInterfac
         $email->setIsValidated(true);
 
         $this->em()->persist($email);
-        $this->em()->flush($email);
+        $this->em()->flush();
 
         $this->em()->refresh($this->me);
     }
@@ -216,7 +216,7 @@ class AuthContext extends BasePortalContext implements RebootableContextInterfac
     {
         $this->me->setName($name);
         $this->me = $this->em()->merge($this->me);
-        $this->em()->flush($this->me);
+        $this->em()->flush();
     }
 
     /**
