@@ -60,6 +60,11 @@ class Alias extends AbstractPart
      */
     public function toDpql(SelectPart $statement, $section, array $stack)
     {
-        return $this->value->toDpql($statement, $section, $stack).' AS '.$statement->quoteDpqlString($this->alias);
+        $select = $this->value->toDpql($statement, $section, $stack);
+        if ($this->value instanceof SelectPart) {
+            $select = '('.$select.')';
+        }
+
+        return $select.' AS '.$statement->quoteDpqlString($this->alias);
     }
 }
