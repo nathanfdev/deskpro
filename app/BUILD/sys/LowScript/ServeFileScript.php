@@ -31,10 +31,12 @@ if (!isset($DP_LOG_MESSAGES)) {
  * --------------
  *
  * There is nothing very special about database-stored files. The blobs authcode is:
- * (id)(password)(0)
+ * (id)(password)(0)(T)
  *
  * That is the blob ID, a random string, and zero. The trailing zero tells this script
  * that it needs to fetch it from the database rather than the filesystem.
+ *
+ * T - is not required suffix indicates that this is a ticket attachment
  *
  * Filesystem Files
  * ----------------
@@ -43,7 +45,7 @@ if (!isset($DP_LOG_MESSAGES)) {
  * folder has 1000 files in it.
  *
  * The authcode is:
- * (folder)(password)(id)(namehash)
+ * (folder)(password)(id)(namehash)(T)
  *
  * The "namehash" is a specil hash of the file filename. Since we don't connect to the database,
  * there's no way to know what the "real" filename of a file is. We output URLs with the correct filename in it
@@ -51,6 +53,8 @@ if (!isset($DP_LOG_MESSAGES)) {
  *
  * The hash is six characters, the three is part of a sha1 and the second three is part of an md5. While probably
  * possible to spoof the name still, using two different hashing functions should make it relatively hard.
+ *
+ * T - is not required suffix indicates that this is a ticket attachment
  *
  * Since we can now trust the filename, we can use it to guess a mime-type based on extension, and send the correct headers,
  * all without connecting to the database.
@@ -133,14 +137,15 @@ class ServeFileScript extends LowScriptAbstract
             // A filesystem blob like /123AJKJKHSD1244AXC/filename.zip
             // That is: /(batch)(authcode)(id)(namehash)/name.zip
             //0XNSNTQHTNR43DD567
-            } elseif (preg_match('#^/([0-9]+)([A-Z]+)([0-9]+)([a-fA-F0-9]{6}T?)(?:/|\-)(.*?)$#', $pathInfo, $m)) {
+            } elseif (preg_match('#^/([0-9]+)([A-Z]+)([0-9]+)([a-fA-F0-9]{6})(T?)(?:/|\-)(.*?)$#', $pathInfo, $m)) {
                 $this->addLogMessage('handleFilesystemBlobRequest: %s', implode(', ', $m));
                 $this->handleFilesystemBlobRequest(
                     $m[1],
                     $m[2],
                     $m[3],
                     $m[4],
-                    $m[5]
+                    $m[5],
+                    $m[6]
                 );
 
             // A database-stored bloblike /123AHSDHJGSD0/filename.zip
@@ -546,16 +551,20 @@ class ServeFileScript extends LowScriptAbstract
      *
      * @throws \Exception
      */
-    protected function handleFilesystemBlobRequest($batch, $authcode, $blob_id, $namehash, $filename)
+    protected function handleFilesystemBlobRequest($batch, $authcode, $blob_id, $namehash, $attachmentTagSuffix, $filename)
     {
         //------------------------------
         // If its a simple file request we
         // can serve it without a db connection
         //------------------------------
 
+        if ($attachmentTagSuffix === 'T') {
+            $this->checkTicketAttachmentAccessTokenOrRedirect($batch.$authcode.$blob_id.$namehash.$attachmentTagSuffix);
+        }
+
         $basePath = $this->dpEnv->getUserFilesDir();
 
-        $filepathPart = $batch.DIRECTORY_SEPARATOR.$batch.$authcode.$blob_id.$namehash;
+        $filepathPart = $batch.DIRECTORY_SEPARATOR.$batch.$authcode.$blob_id.$namehash.$attachmentTagSuffix;
         $filepath     = $basePath.DIRECTORY_SEPARATOR.$filepathPart;
 
         $filenameSafe = Strings::utf8_accents_to_ascii($filename);
@@ -679,6 +688,10 @@ class ServeFileScript extends LowScriptAbstract
     protected function handleDbBlobRequest($blob_id, $authseg, $filename)
     {
         $authcode = $blob_id.$authseg;
+
+        if (substr($authcode, -1) === 'T') {
+            $this->checkTicketAttachmentAccessTokenOrRedirect($authcode);
+        }
 
         $size = null;
         if (isset($_GET['s']) && ((is_numeric($_GET['s']) && $_GET['s'] > 1 && $_GET['s'] <= 600) || preg_match('#^\d+x\d+$#', $_GET['s']))) {
@@ -1420,6 +1433,29 @@ class ServeFileScript extends LowScriptAbstract
         }
 
         return null;
+    }
+
+    private function checkTicketAttachmentAccessTokenOrRedirect($blobAuth)
+    {
+        $isValid = false;
+        if (!empty($_GET['access_token'])) {
+            $secret = $this->getSetting('core.app_secret');
+            if (!$secret) {
+                $secret = $this->dpEnv->getConfig('core.app_secret');
+            }
+            if (!$secret) {
+                $container = $this->bootFullSystem();
+                $secret    = $container->getSetting('core.app_secret', 'secret');
+            }
+            $secret  = md5($secret.$blobAuth);
+            $isValid = Util::checkStaticSecurityToken($_GET['access_token'], $secret);
+        }
+
+        if (!$isValid) {
+            header('HTTP/1.1 302 Moved Temporarily');
+            header("Location: /ticket-attachment/$blobAuth");
+            exit;
+        }
     }
 
     private function userDoesAcceptGzip()

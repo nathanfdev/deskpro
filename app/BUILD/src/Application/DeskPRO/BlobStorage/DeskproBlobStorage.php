@@ -1041,8 +1041,11 @@ class DeskproBlobStorage implements Loggable
 
         $batch = (int) (($blob_entity->id - 1) / 1000) + 1;
 
-        $isTicketAttachment = ($blob_entity->getAuthcode() && substr($blob_entity->getAuthcode(), -1) === 'T');
-        $authcode           = $this->generateAuthCode($adapter_id, $blob_entity, $isTicketAttachment ? ['tag' => 'ticket_attachment'] : null);
+        $authcode = $this->generateAuthCode(
+            $adapter_id,
+            $blob_entity,
+            $blob_entity->isTicketAttachment() ? ['tag' => 'ticket_attachment'] : null
+        );
 
         $blobauth_moved = [
             'old_authcode' => $blob_entity->getAuthcode(),

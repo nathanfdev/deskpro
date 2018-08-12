@@ -51,6 +51,11 @@ class Blob extends \Application\DeskPRO\Domain\DomainObject
     const STORAGE_LOC_S3         = 's3';
 
     /**
+     * Timeout for valid access_token for ticket attachments.
+     */
+    const ACCESS_TOKEN_TIMEOUT = 300;
+
+    /**
      * @var int
      */
     protected $id = null;
@@ -419,6 +424,10 @@ class Blob extends \Application\DeskPRO\Domain\DomainObject
             $url = str_replace('/file.php/', '/file.php/local/', $url);
         }
 
+        if ($this->isTicketAttachment()) {
+            $url .= '?access_token='.App::getContainer()->generateStaticSecurityToken($this->getAuthcode(), self::ACCESS_TOKEN_TIMEOUT);
+        }
+
         return $url;
     }
 
@@ -461,7 +470,13 @@ class Blob extends \Application\DeskPRO\Domain\DomainObject
             $params['size-fit'] = 1;
         }
 
-        return App::get('router')->generate('serve_blob', $params, $absolute);
+        $url = App::get('router')->generate('serve_blob', $params, $absolute);
+
+        if ($this->isTicketAttachment()) {
+            $url .= '?access_token='.App::getContainer()->generateStaticSecurityToken($this->getAuthcode(), self::ACCESS_TOKEN_TIMEOUT);
+        }
+
+        return $url;
     }
 
     /**
@@ -1086,6 +1101,16 @@ class Blob extends \Application\DeskPRO\Domain\DomainObject
             'mappedBy'      => 'blob',
             'orphanRemoval' => true,
         ]);
+    }
+
+    /**
+     * Check if blob is TicketAttachment.
+     *
+     * @return bool
+     */
+    public function isTicketAttachment()
+    {
+        return $this->getAuthcode() && substr($this->getAuthcode(), -1) === 'T';
     }
 
     public function __getPropValue__($k)

@@ -32,50 +32,40 @@ class ServeFileScriptTest extends \PHPUnit_Framework_TestCase
             [
                 '/11DYWABSMCWM1196DAAACB/index.jpeg',
                 'handleFilesystemBlobRequest',
-                ['11', 'DYWABSMCWM', '1196', 'DAAACB', 'index.jpeg'],
+                ['11', 'DYWABSMCWM', '1196', 'DAAACB', null, 'index.jpeg'],
             ],
             // -- trycky case (name hash starts with numbers)
             [
                 '/2CGTYMWBPJX1248526AD7/index.jpeg',
                 'handleFilesystemBlobRequest',
-                ['2', 'CGTYMWBPJX', '1248', '526AD7', 'index.jpeg'],
+                ['2', 'CGTYMWBPJX', '1248', '526AD7', null, 'index.jpeg'],
             ],
             // -- lower case
             [
                 '/2CGTYMWBPJX1248526ad7/index.jpeg',
                 'handleFilesystemBlobRequest',
-                ['2', 'CGTYMWBPJX', '1248', '526ad7', 'index.jpeg'],
+                ['2', 'CGTYMWBPJX', '1248', '526ad7', null, 'index.jpeg'],
             ],
             // -- short id
             [
                 '/2CGTYMWBPJX1526AD7/index.jpeg',
                 'handleFilesystemBlobRequest',
-                ['2', 'CGTYMWBPJX', '1', '526AD7', 'index.jpeg'],
+                ['2', 'CGTYMWBPJX', '1', '526AD7', null, 'index.jpeg'],
             ],
             // -- short long ID
             [
                 '/2CGTYMWBPJX123456789526AD7/index.jpeg',
                 'handleFilesystemBlobRequest',
-                ['2', 'CGTYMWBPJX', '123456789', '526AD7', 'index.jpeg'],
+                ['2', 'CGTYMWBPJX', '123456789', '526AD7', null, 'index.jpeg'],
             ],
 
             // DB ticket attachment
-            [
-                '/1196DYWABSMCWMAAAKN0T/index.jpeg?access_token=abcd',
-                'handleDbBlobRequest',
-                ['1196', 'DYWABSMCWMAAAKN0T', 'index.jpeg?access_token=abcd'],
-            ],
             [
                 '/1196DYWABSMCWMAAAKN0T/index.jpeg',
                 'handleDbBlobRequest',
                 ['1196', 'DYWABSMCWMAAAKN0T', 'index.jpeg'],
             ],
             // DB ticket attachment with brand
-            [
-                '/brand-322/1196DYWABSMCWMAAAKN0T/index.jpeg?access_token=abcd',
-                'handleDbBlobRequest',
-                ['1196', 'DYWABSMCWMAAAKN0T', 'index.jpeg?access_token=abcd'],
-            ],
             [
                 '/brand-322/1196DYWABSMCWMAAAKN0T/index.jpeg',
                 'handleDbBlobRequest',
@@ -84,38 +74,33 @@ class ServeFileScriptTest extends \PHPUnit_Framework_TestCase
 
             // FS ticket attachment
             [
-                '/11DYWABSMCWM1196DAAACBT/index.jpeg?access_token=abcd',
-                'handleFilesystemBlobRequest',
-                ['11', 'DYWABSMCWM', '1196', 'DAAACBT', 'index.jpeg?access_token=abcd'],
-            ],
-            [
                 '/11DYWABSMCWM1196DAAACBT/index.jpeg',
                 'handleFilesystemBlobRequest',
-                ['11', 'DYWABSMCWM', '1196', 'DAAACBT', 'index.jpeg'],
+                ['11', 'DYWABSMCWM', '1196', 'DAAACB', 'T', 'index.jpeg'],
             ],
             // -- trycky case (name hash starts with numbers)
             [
                 '/2CGTYMWBPJX1248526AD7T/index.jpeg',
                 'handleFilesystemBlobRequest',
-                ['2', 'CGTYMWBPJX', '1248', '526AD7T', 'index.jpeg'],
+                ['2', 'CGTYMWBPJX', '1248', '526AD7', 'T', 'index.jpeg'],
             ],
             // -- lower case
             [
                 '/2CGTYMWBPJX1248526ad7T/index.jpeg',
                 'handleFilesystemBlobRequest',
-                ['2', 'CGTYMWBPJX', '1248', '526ad7T', 'index.jpeg'],
+                ['2', 'CGTYMWBPJX', '1248', '526ad7', 'T', 'index.jpeg'],
             ],
             // -- short id
             [
                 '/2CGTYMWBPJX1526AD7T/index.jpeg',
                 'handleFilesystemBlobRequest',
-                ['2', 'CGTYMWBPJX', '1', '526AD7T', 'index.jpeg'],
+                ['2', 'CGTYMWBPJX', '1', '526AD7', 'T', 'index.jpeg'],
             ],
             // -- short long ID
             [
                 '/2CGTYMWBPJX123456789526AD7T/index.jpeg',
                 'handleFilesystemBlobRequest',
-                ['2', 'CGTYMWBPJX', '123456789', '526AD7T', 'index.jpeg'],
+                ['2', 'CGTYMWBPJX', '123456789', '526AD7', 'T', 'index.jpeg'],
             ],
         ];
     }
