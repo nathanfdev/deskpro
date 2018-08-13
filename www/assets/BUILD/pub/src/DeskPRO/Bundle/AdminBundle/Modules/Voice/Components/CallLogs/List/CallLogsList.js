@@ -9,6 +9,7 @@ import SectionHeader from '../../../../Common/Components/SectionHeader';
 import PersonName from '../../../../Common/Components/PersonName';
 import CallStatus from '../Common/CallStatus';
 import CallDuration from '../Common/CallDuration';
+import { replaceRoute } from '../../../../../Services/history';
 
 class CallLogsList extends React.Component {
 
@@ -22,6 +23,14 @@ class CallLogsList extends React.Component {
     openDialpad:         PropTypes.func,
     onToggleLiveUpdates: PropTypes.func
   };
+
+  static openTicket(ticketId) {
+    if (window.parent || window.parent.DP_FRAME_OVERLAYS || window.parent.DP_FRAME_OVERLAYS.admin) {
+      replaceRoute(`/go_to_agent/#agent/tickets/${ticketId}`);
+    } else {
+      replaceRoute(`/go_to_agent/#agent/go/ticket/${ticketId}`);
+    }
+  }
 
   render() {
     const { calls, numbers, pageCount, liveUpdates } = this.props;
@@ -112,7 +121,7 @@ class CallLogsList extends React.Component {
                       ? <span>
                         <i className="fa fa-envelope" />
                         &nbsp;
-                        <a href={`../agent/#t:${ticketId}`} target="_blank" rel="noopener noreferrer">
+                        <a onClick={() => CallLogsList.openTicket(ticketId)}>
                           {ticketId}
                         </a>
                       </span>
