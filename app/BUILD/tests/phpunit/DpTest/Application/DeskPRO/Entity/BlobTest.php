@@ -23,9 +23,9 @@ class BlobTest extends \PHPUnit_Framework_TestCase
 
     public function setUp()
     {
-        $this->container       = ContainerMock::create()->get();
+        //$this->container       = ContainerMock::create()->get();
         $this->containerBefore = App::$container;
-        App::$container        = $this->container;
+        //App::$container        = $this->container;
     }
 
     public function tearDown()
@@ -54,20 +54,26 @@ class BlobTest extends \PHPUnit_Framework_TestCase
     }
 
     /**
-     * @testWith    ["1307DHDCQBHHWNCHKBD0T", true]
-     *              ["1307DHDCQBHHWNCHKBD0",  false]
+     * @testWith    ["1307DHDCQBHHWNCHKBD0T", true, true]
+     *              ["1307DHDCQBHHWNCHKBD0T", false, false]
+     *              ["1307DHDCQBHHWNCHKBD0",  true, false]
+     *              ["1307DHDCQBHHWNCHKBD0",  false, false]
      *
      * @param string $authcode
      * @param bool   $shouldHaveAccessToken
      */
-    public function testGetDownloadUrl($authcode, $shouldHaveAccessToken)
+    public function testGetDownloadUrl($authcode, $isAttachmentAuthEnabled, $shouldHaveAccessToken)
     {
         // GIVEN
+        App::$container = ContainerMock::create()
+            ->withSettings(['core_tickets.attachment_require_auth' => $isAttachmentAuthEnabled])
+            ->get();
+
         $mockRouter = m::mock('Symfony\\Component\\Routing\\Router');
         $mockRouter->shouldIgnoreMissing();
         $mockRouter->shouldReceive('generate')->andReturn('/file.php/somecode/index.jpg');
-        $this->container->shouldReceive('get')->with('router')->andReturn($mockRouter);
-        $this->container->shouldReceive('generateStaticSecurityToken')->andReturn('abcd');
+        App::$container->shouldReceive('get')->with('router')->andReturn($mockRouter);
+        App::$container->shouldReceive('generateStaticSecurityToken')->andReturn('abcd');
 
         $blob = new Blob();
         $blob->setAuthCode($authcode);
@@ -95,20 +101,26 @@ class BlobTest extends \PHPUnit_Framework_TestCase
     }
 
     /**
-     * @testWith    ["1307DHDCQBHHWNCHKBD0T", true]
-     *              ["1307DHDCQBHHWNCHKBD0",  false]
+     * @testWith    ["1307DHDCQBHHWNCHKBD0T", true, true]
+     *              ["1307DHDCQBHHWNCHKBD0T", false, false]
+     *              ["1307DHDCQBHHWNCHKBD0",  true, false]
+     *              ["1307DHDCQBHHWNCHKBD0",  false, false]
      *
      * @param string $authcode
      * @param bool   $shouldHaveAccessToken
      */
-    public function testGetThumbnailUrl($authcode, $shouldHaveAccessToken)
+    public function testGetThumbnailUrl($authcode, $isAttachmentAuthEnabled, $shouldHaveAccessToken)
     {
         // GIVEN
+        App::$container = ContainerMock::create()
+            ->withSettings(['core_tickets.attachment_require_auth' => $isAttachmentAuthEnabled])
+            ->get();
+
         $mockRouter = m::mock('Symfony\\Component\\Routing\\Router');
         $mockRouter->shouldIgnoreMissing();
         $mockRouter->shouldReceive('generate')->andReturn('/file.php/somecode/index.jpg');
-        $this->container->shouldReceive('get')->with('router')->andReturn($mockRouter);
-        $this->container->shouldReceive('generateStaticSecurityToken')->andReturn('abcd');
+        App::$container->shouldReceive('get')->with('router')->andReturn($mockRouter);
+        App::$container->shouldReceive('generateStaticSecurityToken')->andReturn('abcd');
 
         $blob = new Blob();
         $blob->setContentType('image/jpg');

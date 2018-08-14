@@ -1435,18 +1435,21 @@ class ServeFileScript extends LowScriptAbstract
         return null;
     }
 
+    /**
+     *
+     * @param string $blobAuth
+     */
     private function checkTicketAttachmentAccessTokenOrRedirect($blobAuth)
     {
+        if (!$this->_getSetting('core_tickets.attachment_require_auth')) {
+            return true;
+        }
+
         $isValid = false;
         if (!empty($_GET['access_token'])) {
-            $secret = $this->getSetting('core.app_secret');
-            if (!$secret) {
-                $secret = $this->dpEnv->getConfig('core.app_secret');
-            }
-            if (!$secret) {
-                $container = $this->bootFullSystem();
-                $secret    = $container->getSetting('core.app_secret', 'secret');
-            }
+            $secret  = $this->_getSetting('core.app_secret', 'secret');
+
+            // recreate logic from DeskproContainer::generateStaticSecurityToken
             $secret  = md5($secret.$blobAuth);
             $isValid = Util::checkStaticSecurityToken($_GET['access_token'], $secret);
         }
@@ -1456,6 +1459,21 @@ class ServeFileScript extends LowScriptAbstract
             header("Location: /ticket-attachment/$blobAuth");
             exit;
         }
+    }
+
+    private function _getSetting($name, $default = null)
+    {
+        $value = $this->getSetting($name, $default);
+        if (!$value) {
+            $value = $this->dpEnv->getConfig($name, $default);
+        }
+        if (!$value) {
+            $this->addLogMessage('Have to boot container to get setting: %s', $name);
+            $container = $this->bootFullSystem();
+            $value     = $container->getSetting($name, $default);
+        }
+
+        return $value;
     }
 
     private function userDoesAcceptGzip()

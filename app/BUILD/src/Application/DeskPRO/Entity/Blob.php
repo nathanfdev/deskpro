@@ -424,7 +424,11 @@ class Blob extends \Application\DeskPRO\Domain\DomainObject
             $url = str_replace('/file.php/', '/file.php/local/', $url);
         }
 
-        if ($this->isTicketAttachment()) {
+        $isAttachmentRequireAuth = App::getContainer()
+            ->getSettingsResolver()
+            ->getGlobalSettings()
+            ->get('core_tickets.attachment_require_auth');
+        if ($this->isTicketAttachment() && $isAttachmentRequireAuth) {
             $url .= '?access_token='.App::getContainer()->generateStaticSecurityToken($this->getAuthcode(), self::ACCESS_TOKEN_TIMEOUT);
         }
 
@@ -472,7 +476,11 @@ class Blob extends \Application\DeskPRO\Domain\DomainObject
 
         $url = App::get('router')->generate('serve_blob', $params, $absolute);
 
-        if ($this->isTicketAttachment()) {
+        $isAttachmentRequireAuth = App::getContainer()
+            ->getSettingsResolver()
+            ->getGlobalSettings()
+            ->get('core_tickets.attachment_require_auth');
+        if ($this->isTicketAttachment() && $isAttachmentRequireAuth) {
             $url .= '?access_token='.App::getContainer()->generateStaticSecurityToken($this->getAuthcode(), self::ACCESS_TOKEN_TIMEOUT);
         }
 
