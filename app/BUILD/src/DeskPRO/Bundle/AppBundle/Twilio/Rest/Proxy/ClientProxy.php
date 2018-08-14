@@ -27,6 +27,11 @@ class ClientProxy extends Client
     /**
      * @var string
      */
+    protected $proxyPricingUrl;
+
+    /**
+     * @var string
+     */
     protected $proxyUsername;
 
     /**
@@ -135,6 +140,26 @@ class ClientProxy extends Client
     }
 
     /**
+     * @return string
+     */
+    public function getProxyPricingUrl()
+    {
+        return $this->proxyPricingUrl;
+    }
+
+    /**
+     * @param string $proxyPricingUrl
+     *
+     * @return $this
+     */
+    public function setProxyPricingUrl($proxyPricingUrl)
+    {
+        $this->proxyPricingUrl = $proxyPricingUrl;
+
+        return $this;
+    }
+
+    /**
      * {@inheritdoc}
      */
     protected function getApi()
@@ -168,6 +193,18 @@ class ClientProxy extends Client
         }
 
         return $this->_accounts;
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    protected function getPricing()
+    {
+        if (!$this->_pricing) {
+            $this->_pricing = new PricingProxy($this);
+        }
+
+        return $this->_pricing;
     }
 
     /**

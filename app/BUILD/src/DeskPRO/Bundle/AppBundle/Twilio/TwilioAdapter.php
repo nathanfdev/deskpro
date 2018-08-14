@@ -1182,6 +1182,7 @@ class TwilioAdapter
             ->setApiProxyUrl($this->settingsResolver->getProxyApiUrl())
             ->setTaskRouterProxyUrl($this->settingsResolver->getProxyTaskRouterUrl())
             ->setAccountsProxyUrl($this->settingsResolver->getProxyAccountsUrl())
+            ->setProxyPricingUrl($this->settingsResolver->getProxyPricingUrl())
         ;
 
         return $client;
