@@ -14,6 +14,7 @@ class VoiceSettingsResolver
     const VOICE_AGENT_VOICEMAIL_TIMEOUT = 'voice.agent_voicemail_timeout';
     const VOICE_PROXY_API_URL           = 'voice.proxy_api_url';
     const VOICE_PROXY_TASK_ROUTER_URL   = 'voice.proxy_task_router_url';
+    const VOICE_PROXY_ACCOUNTS_URL      = 'voice.proxy_accounts_url';
     const VOICE_PROXY_USERNAME          = 'voice.proxy_username';
     const VOICE_PROXY_PASSWORD          = 'voice.proxy_password';
 
@@ -59,6 +60,14 @@ class VoiceSettingsResolver
     public function getProxyTaskRouterUrl()
     {
         return $this->settingsResolver->getGlobalSettings()->get(self::VOICE_PROXY_TASK_ROUTER_URL);
+    }
+
+    /**
+     * @return string|null
+     */
+    public function getProxyAccountsUrl()
+    {
+        return $this->settingsResolver->getGlobalSettings()->get(self::VOICE_PROXY_ACCOUNTS_URL);
     }
 
     /**

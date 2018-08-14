@@ -22,6 +22,11 @@ class ClientProxy extends Client
     /**
      * @var string
      */
+    protected $accountsProxyUrl;
+
+    /**
+     * @var string
+     */
     protected $proxyUsername;
 
     /**
@@ -110,6 +115,26 @@ class ClientProxy extends Client
     }
 
     /**
+     * @return string
+     */
+    public function getAccountsProxyUrl()
+    {
+        return $this->accountsProxyUrl;
+    }
+
+    /**
+     * @param string $accountsProxyUrl
+     *
+     * @return $this
+     */
+    public function setAccountsProxyUrl($accountsProxyUrl)
+    {
+        $this->accountsProxyUrl = $accountsProxyUrl;
+
+        return $this;
+    }
+
+    /**
      * {@inheritdoc}
      */
     protected function getApi()
@@ -131,6 +156,18 @@ class ClientProxy extends Client
         }
 
         return $this->_taskrouter;
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    protected function getAccounts()
+    {
+        if (!$this->_accounts) {
+            $this->_accounts = new AccountsProxy($this);
+        }
+
+        return $this->_accounts;
     }
 
     /**
