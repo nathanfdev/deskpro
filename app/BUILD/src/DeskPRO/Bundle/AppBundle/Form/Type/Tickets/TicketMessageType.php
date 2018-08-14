@@ -26,6 +26,7 @@ use Doctrine\ORM\EntityRepository;
 use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
+use Symfony\Component\Form\Extension\Core\Type\DateTimeType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\Form\FormConfigBuilder;
 use Symfony\Component\Form\FormEvent;
@@ -176,6 +177,15 @@ class TicketMessageType extends AbstractType
             $builder->addEventListener(FormEvents::POST_SUBMIT, [$this, 'onAccessTicketValidation'], 100);
         }
 
+        if ($options['admin_api_key_request']) {
+            $builder
+                ->add('date_created', DateTimeType::class, [
+                    'widget'   => 'single_text',
+                    'required' => false,
+                ])
+            ;
+        }
+
         $builder->addEventSubscriber(new TicketDisableAutoProcessListener());
         $builder->addEventListener(FormEvents::PRE_SUBMIT, [$this, 'onEnsureMessageTextExists'], 100);
         $builder->addEventListener(FormEvents::PRE_SET_DATA, [$this, 'onSetMessageFromOptions']);
@@ -224,6 +234,7 @@ class TicketMessageType extends AbstractType
                     // check message directly via the form to prevent checking all ticket messages collection
                     new Assert\Valid(),
                 ],
+                'admin_api_key_request' => false,
             ])
             ->setRequired([
                 'ticket',
@@ -237,6 +248,7 @@ class TicketMessageType extends AbstractType
             ->setAllowedTypes('allow_set_person', 'bool')
             ->setAllowedTypes('allow_set_status', 'bool')
             ->setAllowedTypes('allow_apply_macros', 'bool')
+            ->setAllowedTypes('admin_api_key_request', 'bool')
         ;
     }
 

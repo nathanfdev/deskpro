@@ -2,9 +2,11 @@
 
 namespace DeskPRO\Bundle\ApiBundle\Controller\Tickets;
 
+use Application\DeskPRO\Entity\ApiKey;
 use Application\DeskPRO\Entity\Ticket;
 use DeskPRO\Bundle\ApiBundle\ApiDoc\Annotation\ApiDoc;
 use DeskPRO\Bundle\ApiBundle\Controller\Tickets\Traits\TicketSearchTrait;
+use DeskPRO\Bundle\ApiBundle\Security\Token\ApiKeySecurityToken;
 use DeskPRO\Bundle\ApiBundle\Traits\Tickets\TicketSaveTrait;
 use DeskPRO\Bundle\ApiBundle\Traits\Tickets\TicketsPagerTrait;
 use DeskPRO\Bundle\AppBundle\Annotation\ActionPermissions\Annotation\ApiModes;
@@ -327,11 +329,31 @@ class TicketsController extends AbstractTicketsController
     protected function handleForm($model, Request $request, array $options = [])
     {
         $options = array_merge($options, [
-            'agent_interface' => true,
-            'person'          => $this->getUser(),
+            'agent_interface'       => true,
+            'person'                => $this->getUser(),
+            'admin_api_key_request' => $this->isAdminApiKeyRequest(),
         ]);
 
         return parent::handleForm($model, $request, $options);
+    }
+
+    private function isAdminApiKeyRequest()
+    {
+        $token = $this->get('security.token_storage')->getToken();
+
+        if (
+            $token
+            && $token instanceof ApiKeySecurityToken
+            && $key = $this
+                ->get('doctrine.orm.default_entity_manager')
+                ->getRepository(ApiKey::class)
+                ->findByKeyString($token->getCredentials())
+        ) {
+            /* @var $key ApiKey */
+            return $key->isFlagSet(ApiKey::FLAG_SUPER_KEY);
+        }
+
+        return false;
     }
 
     /**
