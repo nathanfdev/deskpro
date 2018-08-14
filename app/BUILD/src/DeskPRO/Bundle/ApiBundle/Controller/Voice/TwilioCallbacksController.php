@@ -1532,9 +1532,18 @@ class TwilioCallbacksController extends AbstractVoiceController
      */
     private function addTargetResponse(VoicePhoneCall $phoneCall, AbstractVoiceTarget $target, Twiml $twiml)
     {
-        $number  = $phoneCall->getNumber();
-        $account = $number->getAccount();
-        $person  = $phoneCall->getPerson();
+        $number        = $phoneCall->getNumber();
+        $account       = $number->getAccount();
+        $person        = $phoneCall->getPerson();
+        $relatedPeople = $this->getManager()->getRepository(Person::class)->findByPhoneNumber($phoneCall->getExternalNumber());
+        $taskOptions   = [
+            'rejected_workers'           => [],
+            'deskpro_call_id'            => $phoneCall->getId(),
+            'deskpro_person_id'          => $person ? $person->getId() : null,
+            'deskpro_related_people_ids' => array_map(function (Person $person) {
+                return $person->getId();
+            }, $relatedPeople),
+        ];
 
         if ($target instanceof VoiceQueueTarget) {
             $queue = $target->getQueue();
@@ -1543,23 +1552,17 @@ class TwilioCallbacksController extends AbstractVoiceController
             $twiml
                 ->enqueue([
                     'workflowSid' => $account->getQueueWorkflowSid(),
-                ])->task(json_encode([
-                    'deskpro_call_id'   => $phoneCall->getId(),
-                    'deskpro_queue_id'  => $queue->getId(),
-                    'deskpro_person_id' => $person ? $person->getId() : null,
-                    'rejected_workers'  => [],
-                ]))
+                ])->task(json_encode(array_merge($taskOptions, [
+                    'deskpro_queue_id' => $queue->getId(),
+                ])))
             ;
         } elseif ($target instanceof VoiceAgentTarget) {
             $twiml
                 ->enqueue([
                     'workflowSid' => $account->getQueueWorkflowSid(),
-                ])->task(json_encode([
-                    'deskpro_call_id'   => $phoneCall->getId(),
-                    'agent_id'          => $target->getAgent()->getId(),
-                    'deskpro_person_id' => $person ? $person->getId() : null,
-                    'rejected_workers'  => [],
-                ]))
+                ])->task(json_encode(array_merge($taskOptions, [
+                    'agent_id' => $target->getAgent()->getId(),
+                ])))
             ;
         } elseif ($target instanceof VoiceAutoAttendantTarget) {
             $autoAttendant = $target->getAutoAttendant();

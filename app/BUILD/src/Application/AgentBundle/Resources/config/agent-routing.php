@@ -914,6 +914,12 @@ $collection->create('agent_ticket_view', [
     'options'      => ['fragment_name' => 't'],
 ]);
 
+$collection->create('agent_ticket_person_view', [
+    'path'         => '/tickets/{ticket_id}/person_view',
+    'controller'   => 'AgentBundle:Ticket:viewTicketPerson',
+    'requirements' => ['ticket_id' => '\\d+'],
+]);
+
 $collection->create('agent_ticket_loadlogs', [
     'path'         => '/tickets/{ticket_id}/load-logs',
     'controller'   => 'AgentBundle:Ticket:loadTicketLogs',

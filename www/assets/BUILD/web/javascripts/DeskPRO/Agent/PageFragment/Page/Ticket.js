@@ -146,6 +146,7 @@ DeskPRO.Agent.PageFragment.Page.Ticket = new Orb.Class({
     this._initProblems();
 		this._initVoice();
 		this._initForward();
+		this._initSelectUser();
 
 		// Change email menu
 		var emailChangeTrig = this.getEl('user_email_menu_trigger');
@@ -2488,6 +2489,78 @@ DeskPRO.Agent.PageFragment.Page.Ticket = new Orb.Class({
 
 	_initForward: function() {
 
+	},
+
+  _initSelectUser: function() {
+    var self = this;
+    $('.select-user-item-options', this.wrapper).hide();
+
+		var $type = $('input[name=select_user]', this.wrapper);
+    $type.first().attr('checked', true);
+    $type.first().parent().find('.select-user-item-options').show();
+
+    $type.on('click', function () {
+			var $selected = $(this);
+      $('.select-user-item-options', this.wrapper).hide();
+      $selected.parent().find('.select-user-item-options').show();
+    });
+
+    var searchbox = this.getEl('user_searchbox');
+    searchbox.bind('personsearchboxclick', function(ev, personId, name, email, sb) {
+      $.ajax({
+        type: 'GET',
+        url: BASE_URL + 'agent/tickets/new/get-person-row/' + personId,
+        dataType: 'html',
+        context: this,
+        success: function() {
+          $('input.person-id', searchbox).val(personId);
+          $('input.select-user', searchbox).val(name);
+        }
+      });
+      sb.close();
+      sb.reset();
+    });
+
+    var reloadPersonView = function() {
+      $.ajax({
+        url: BASE_URL + 'agent/tickets/' + self.meta.ticket_id + '/person_view',
+        type: 'GET',
+        success: function (response) {
+          $('.ticket-person-holder', self.wrapper).html(response);
+        }
+      });
+		};
+
+		$('.select-user-button', this.wrapper).on('click', function () {
+      var value = $('input[name=select_user]:checked', self.wrapper).val();
+      if (value === 'find_person') {
+        var personId = $('input[name=select_user_find_id]', self.wrapper).val();
+        if (personId) {
+          $.ajax({
+            url: BASE_URL + 'agent/people/' + personId + '/merge/' + self.meta.person_id,
+            type: 'POST',
+            success: reloadPersonView
+          });
+				}
+			} else if (value === 'new_person') {
+        $.ajax({
+          url: BASE_URL + 'api/v2/people/' + self.meta.person_id,
+          type: 'PUT',
+					data: {
+          	name: $('input[name=select_user_name]', self.wrapper).val(),
+          	primary_email: $('input[name=select_user_email]', self.wrapper).val(),
+          	language: $('select[name=select_user_language]', self.wrapper).val(),
+					},
+          success: reloadPersonView
+        });
+			} else if (value) {
+        $.ajax({
+          url: BASE_URL + 'agent/people/' + value + '/merge/' + self.meta.person_id,
+          type: 'POST',
+          success: reloadPersonView
+        });
+			}
+    });
 	},
 
 	handleFwd: function(info) {

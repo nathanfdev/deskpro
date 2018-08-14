@@ -79,6 +79,11 @@ export const voiceBootstrap = createAction(
             dispatch(loadBatch('Person', personId, 'all'));
           }
 
+          const relatedPeopleIds = reservation.task.attributes.deskpro_related_people_ids;
+          if (relatedPeopleIds) {
+            dispatch(loadBatch('Person', relatedPeopleIds, 'all'));
+          }
+
           dispatch(addIncomingCall(reservation));
         });
         worker.on('reservation.accepted', () => {
