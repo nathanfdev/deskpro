@@ -12,6 +12,10 @@ use DeskPRO\Bundle\AppBundle\Twilio\TwilioAdapter;
 class VoiceSettingsResolver
 {
     const VOICE_AGENT_VOICEMAIL_TIMEOUT = 'voice.agent_voicemail_timeout';
+    const VOICE_PROXY_API_URL           = 'voice.proxy_api_url';
+    const VOICE_PROXY_TASK_ROUTER_URL   = 'voice.proxy_task_router_url';
+    const VOICE_PROXY_USERNAME          = 'voice.proxy_username';
+    const VOICE_PROXY_PASSWORD          = 'voice.proxy_password';
 
     /**
      * @var SettingsResolver
@@ -39,5 +43,37 @@ class VoiceSettingsResolver
         $model->setAgentVoicemailTimeout($settings->get(self::VOICE_AGENT_VOICEMAIL_TIMEOUT, TwilioAdapter::VOICEMAIL_WAITING_TIMEOUT));
 
         return $model;
+    }
+
+    /**
+     * @return string|null
+     */
+    public function getProxyApiUrl()
+    {
+        return $this->settingsResolver->getGlobalSettings()->get(self::VOICE_PROXY_API_URL);
+    }
+
+    /**
+     * @return string|null
+     */
+    public function getProxyTaskRouterUrl()
+    {
+        return $this->settingsResolver->getGlobalSettings()->get(self::VOICE_PROXY_TASK_ROUTER_URL);
+    }
+
+    /**
+     * @return string|null
+     */
+    public function getProxyUsername()
+    {
+        return $this->settingsResolver->getGlobalSettings()->get(self::VOICE_PROXY_USERNAME);
+    }
+
+    /**
+     * @return string|null
+     */
+    public function getProxyPassword()
+    {
+        return $this->settingsResolver->getGlobalSettings()->get(self::VOICE_PROXY_PASSWORD);
     }
 }

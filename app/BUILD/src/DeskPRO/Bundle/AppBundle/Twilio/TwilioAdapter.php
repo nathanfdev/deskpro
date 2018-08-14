@@ -15,6 +15,7 @@ use DeskPRO\Bundle\AppBundle\Twilio\Model\TwilioActivities;
 use DeskPRO\Bundle\AppBundle\Twilio\Model\TwilioAvailableNumber;
 use DeskPRO\Bundle\AppBundle\Twilio\Model\TwilioExistingNumber;
 use DeskPRO\Bundle\AppBundle\Twilio\Model\TwilioPaginate;
+use DeskPRO\Bundle\AppBundle\Twilio\Rest\Proxy\ClientProxy;
 use Doctrine\ORM\EntityManager;
 use Orb\Util\Strings;
 use Symfony\Component\HttpFoundation\Response;
@@ -1174,7 +1175,15 @@ class TwilioAdapter
      */
     protected function getClient(VoiceAccount $account)
     {
-        return new Client($account->getAccountSid(), $account->getAuthToken());
+        $client = new ClientProxy($account->getAccountSid(), $account->getAuthToken());
+        $client
+            ->setProxyUsername($this->settingsResolver->getProxyUsername())
+            ->setProxyPassword($this->settingsResolver->getProxyPassword())
+            ->setApiProxyUrl($this->settingsResolver->getProxyApiUrl())
+            ->setTaskRouterProxyUrl($this->settingsResolver->getProxyTaskRouterUrl())
+        ;
+
+        return $client;
     }
 
     /**
