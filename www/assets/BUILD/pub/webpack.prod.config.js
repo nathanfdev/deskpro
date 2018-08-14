@@ -112,6 +112,14 @@ const config = {
         ]
       },
       {
+        test: /\.css$/,
+        use:  ExtractTextPlugin.extract({
+          use: [
+            'css-loader'
+          ]
+        })
+      },
+      {
         test:    /\.scss$/,
         include: [
           path.resolve(__dirname, 'src/DeskPRO/Bundle/AdminBundle/Resources/style'),

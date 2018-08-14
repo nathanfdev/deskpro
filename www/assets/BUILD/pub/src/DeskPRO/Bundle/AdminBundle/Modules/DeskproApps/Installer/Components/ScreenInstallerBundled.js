@@ -5,7 +5,7 @@ import uuid from 'uuid';
 import { AppsRegistry } from 'DeskPRO/Bundle/AppsBundle/Modules/Config';
 import { DeskproAppContainer } from 'DeskPRO/Bundle/AppsBundle/Modules/Components';
 import { Context } from 'DeskPRO/Bundle/AppsBundle/Modules/Domain';
-import { createInterceptor } from 'DeskPRO/Bundle/AppsBundle/Modules/Services/Interceptors';
+import { createInterceptor } from 'DeskPRO/Bundle/AppsBundle/Modules/Services/interceptors';
 import { receiveMessage } from 'DeskPRO/Bundle/AppsBundle/Modules/WidgetMessage';
 
 const TARGET_INSTALL = 'install';
