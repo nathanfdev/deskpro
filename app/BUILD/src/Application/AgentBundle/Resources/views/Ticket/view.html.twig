@@ -81,10 +81,10 @@
 {# the sidebar sizer is disabled for at the moment and the plan is to completely remove it #}
 {#<div class="layout-sidebar-sizer" id="{{ baseId }}_layout_sidebar_sizer"></div>#}
 
+<div id="{{ baseId }}_controls_react_container"></div>
 <div id="{{ baseId }}_layout_content" class="layout-content page-ticket {% if ticket.hasLock() %}locked{% endif %} {{ ticket.status_code|replace({'.': '_'}) }} urgency-{{ ticket.urgency }}">
 
     <div class="dp-page-content">
-        <div id="{{ baseId }}_controls_react_container"></div>
         {% set locked_self = ticket.hasLock() and not ticket.isLocked(app.user) %}
         <div class="locked-overlay"
              id="{{ baseId }}_locked_overlay"{% if not ticket.isLocked() %} style="display: none;"{% endif %}></div>

@@ -2472,7 +2472,12 @@ DeskPRO.Agent.PageFragment.Page.Ticket = new Orb.Class({
       DeskPRO_Window.TabBar.unlockTab(DeskPRO_Window.TabBar.getTab(self.meta.tabId));
     };
 		var node = document.getElementById(this.meta.baseId + '_controls_react_container');
-		this.controls = window.AgentLegacyBundle.renderVoiceControls(node, parseInt(this.meta.ticket_id, 10), onEndCall);
+		this.controls = window.AgentLegacyBundle.renderVoiceControls(
+			node,
+			parseInt(this.meta.ticket_id, 10),
+			onEndCall,
+			this.meta.baseId
+		);
 
 		if (this.controls.isCallActive()) {
 			console.debug('Enabling fast poller interval: %d', DP_POLLER_INTERVAL_FAST);

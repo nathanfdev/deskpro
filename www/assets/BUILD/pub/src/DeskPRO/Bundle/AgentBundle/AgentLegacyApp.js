@@ -155,7 +155,7 @@ class AgentLegacyApp {
     this.renderWaits[piecePlace] = setTimeout(() => this.renderPiece(piece, piecePlace), 1000);
   }
 
-  renderVoiceControls(node, ticketId, onEndCall) {
+  renderVoiceControls(node, ticketId, onEndCall, baseId) {
     let tabRef;
 
     ReactDOM.render(
@@ -167,6 +167,7 @@ class AgentLegacyApp {
           >
             <VoiceControlsContainer
               tabRef={(c) => { tabRef = c; }}
+              baseId={baseId}
               ticketId={ticketId}
               onEndCall={onEndCall}
             />
