@@ -264,6 +264,7 @@ www/assets/BUILD/pub/nightwatch.conf.js
 !/www/assets/index.html
 !/www/assets/BUILD
 !/www/assets/.htaccess
+!/www/assets/web.config
 
 /app/BUILD/sys/config/build-info.php
 /app/BUILD/sys/config/build-time.txt
