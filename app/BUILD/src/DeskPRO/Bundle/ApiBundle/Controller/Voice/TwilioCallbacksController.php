@@ -190,6 +190,29 @@ class TwilioCallbacksController extends AbstractVoiceController
                     $phoneCall->setDateEnded(new \DateTime());
                     $phoneCall->setStatus(VoicePhoneCall::STATUS_ENDED);
 
+                    // user ends call
+                    // check the call is not answered and voicemail wasn't reached
+                    // create a ticket for missed calls
+                    // create a ticket just it was assigned to any target
+                    if (!$phoneCall->hasAgentParticipants() && !$phoneCall->getVoicemailRecord() && $phoneCall->getTaskSid()) {
+                        $ticketMessageCall = new TicketMessageVoicePhoneCall();
+                        $ticketMessageCall->setPhoneCall($phoneCall);
+
+                        $ticketMessage = new TicketMessage();
+                        $ticketMessage->setPerson($phoneCall->getPerson());
+                        $ticketMessage->addAttribute($ticketMessageCall);
+                        $ticketMessage->setMessage('Missed call from '.$phoneCall->getExternalNumber());
+                        $ticketMessage->setAsAgentNote(true);
+
+                        $ticket = new Ticket();
+                        $ticket->disableAutoTicketProcess();
+                        $ticket->setSubject('Missed call from '.$phoneCall->getExternalNumber());
+                        $ticket->setPerson($phoneCall->getPerson());
+                        $ticket->addMessage($ticketMessage);
+
+                        $this->saveTicket($ticket);
+                    }
+
                     // log call end event
                     // for now if a end-user finishes the call then it means the conference is ended
                     $log = new VoicePhoneCallLog();
