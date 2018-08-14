@@ -43,7 +43,7 @@ class ApiRequestIdListener implements EventSubscriberInterface
     {
         return [
             KernelEvents::RESPONSE => ['onResponse', 512], //make sure this stuff will be trigger before log and perhaps something else
-            KernelEvents::REQUEST  => ['onRequest', 5], //should run after token was set
+            KernelEvents::REQUEST  => ['onRequest', 8], //should run after token was set
         ];
     }
 
